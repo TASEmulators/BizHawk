@@ -92,7 +92,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SaveFile()
 		{
-			string path = Global.Config.PathEntries.ScreenshotAbsolutePathFor(GlobalWin.Emulator.SystemId);
+			string path = GlobalWin.Config.PathEntries.ScreenshotAbsolutePathFor(GlobalWin.Emulator.SystemId);
 
 			var di = new DirectoryInfo(path);
 

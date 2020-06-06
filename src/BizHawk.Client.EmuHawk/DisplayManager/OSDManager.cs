@@ -47,8 +47,8 @@ namespace BizHawk.Client.EmuHawk
 			MessageFont = blitter.GetFontType(nameof(MessageFont));
 		}
 
-		public Color FixedMessagesColor => Color.FromArgb(Global.Config.MessagesColor);
-		public Color FixedAlertMessageColor => Color.FromArgb(Global.Config.AlertMessageColor);
+		public Color FixedMessagesColor => Color.FromArgb(GlobalWin.Config.MessagesColor);
+		public Color FixedAlertMessageColor => Color.FromArgb(GlobalWin.Config.AlertMessageColor);
 
 		private PointF GetCoordinates(IBlitter g, MessagePosition position, string message)
 		{
@@ -135,14 +135,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DrawMessage(IBlitter g, UIMessage message, int yOffset)
 		{
-			var point = GetCoordinates(g, Global.Config.Messages, message.Message);
+			var point = GetCoordinates(g, GlobalWin.Config.Messages, message.Message);
 			var y = point.Y + yOffset; // TODO: clean me up
 			g.DrawString(message.Message, MessageFont, FixedMessagesColor, point.X, y);
 		}
 
 		public void DrawMessages(IBlitter g)
 		{
-			if (!Global.Config.DisplayMessages)
+			if (!GlobalWin.Config.DisplayMessages)
 			{
 				return;
 			}
@@ -151,13 +151,13 @@ namespace BizHawk.Client.EmuHawk
 
 			if (_messages.Any())
 			{
-				if (Global.Config.StackOSDMessages)
+				if (GlobalWin.Config.StackOSDMessages)
 				{
 					int line = 1;
 					for (int i = _messages.Count - 1; i >= 0; i--, line++)
 					{
 						int yOffset = (line - 1) * 18;
-						if (!Global.Config.Messages.Anchor.IsTop())
+						if (!GlobalWin.Config.Messages.Anchor.IsTop())
 						{
 							yOffset = 0 - yOffset;
 						}
@@ -258,11 +258,11 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public void DrawScreenInfo(IBlitter g)
 		{
-			if (Global.Config.DisplayFrameCounter && !Global.Game.IsNullInstance())
+			if (GlobalWin.Config.DisplayFrameCounter && !Global.Game.IsNullInstance())
 			{
 				string message = MakeFrameCounter();
-				var point = GetCoordinates(g, Global.Config.FrameCounter, message);
-				DrawOsdMessage(g, message, Color.FromArgb(Global.Config.MessagesColor), point.X, point.Y);
+				var point = GetCoordinates(g, GlobalWin.Config.FrameCounter, message);
+				DrawOsdMessage(g, message, Color.FromArgb(GlobalWin.Config.MessagesColor), point.X, point.Y);
 
 				if (GlobalWin.MainForm.IsLagFrame)
 				{
@@ -270,27 +270,27 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			if (Global.Config.DisplayInput && !Global.Game.IsNullInstance())
+			if (GlobalWin.Config.DisplayInput && !Global.Game.IsNullInstance())
 			{
 				if (Global.MovieSession.Movie.IsPlaying()
 					|| (Global.MovieSession.Movie.IsFinished() && GlobalWin.Emulator.Frame == Global.MovieSession.Movie.InputLogLength)) // Account for the last frame of the movie, the movie state is immediately "Finished" here but we still want to show the input
 				{
 					var input = InputStrMovie();
-					var point = GetCoordinates(g, Global.Config.InputDisplay, input);
-					Color c = Color.FromArgb(Global.Config.MovieInput);
+					var point = GetCoordinates(g, GlobalWin.Config.InputDisplay, input);
+					Color c = Color.FromArgb(GlobalWin.Config.MovieInput);
 					g.DrawString(input, MessageFont, c, point.X, point.Y);
 				}
 
 				else // TODO: message config -- allow setting of "previous", "mixed", and "auto"
 				{
 					var previousColor = Color.Orange;
-					Color immediateColor = Color.FromArgb(Global.Config.MessagesColor);
+					Color immediateColor = Color.FromArgb(GlobalWin.Config.MessagesColor);
 					var autoColor = Color.Pink;
 					var changedColor = Color.PeachPuff;
 
 					//we need some kind of string for calculating position when right-anchoring, of something like that
 					var bgStr = InputStrOrAll();
-					var point = GetCoordinates(g, Global.Config.InputDisplay, bgStr);
+					var point = GetCoordinates(g, GlobalWin.Config.InputDisplay, bgStr);
 
 					// now, we're going to render these repeatedly, with higher-priority things overriding
 
@@ -322,27 +322,27 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Global.MovieSession.MultiTrack.IsActive)
 			{
-				var point = GetCoordinates(g, Global.Config.MultitrackRecorder, Global.MovieSession.MultiTrack.Status);
+				var point = GetCoordinates(g, GlobalWin.Config.MultitrackRecorder, Global.MovieSession.MultiTrack.Status);
 				DrawOsdMessage(g, Global.MovieSession.MultiTrack.Status, FixedMessagesColor, point.X, point.Y);
 			}
 
-			if (Global.Config.DisplayFps && Fps != null)
+			if (GlobalWin.Config.DisplayFps && Fps != null)
 			{
-				var point = GetCoordinates(g, Global.Config.Fps, Fps);
+				var point = GetCoordinates(g, GlobalWin.Config.Fps, Fps);
 				DrawOsdMessage(g, Fps, FixedMessagesColor, point.X, point.Y);
 			}
 
-			if (Global.Config.DisplayLagCounter && GlobalWin.Emulator.CanPollInput())
+			if (GlobalWin.Config.DisplayLagCounter && GlobalWin.Emulator.CanPollInput())
 			{
 				var counter = GlobalWin.Emulator.AsInputPollable().LagCount.ToString();
-				var point = GetCoordinates(g, Global.Config.LagCounter, counter);
+				var point = GetCoordinates(g, GlobalWin.Config.LagCounter, counter);
 				DrawOsdMessage(g, counter, FixedAlertMessageColor, point.X, point.Y);
 			}
 
-			if (Global.Config.DisplayRerecordCount)
+			if (GlobalWin.Config.DisplayRerecordCount)
 			{
 				string rerecordCount = MakeRerecordCount();
-				var point = GetCoordinates(g, Global.Config.ReRecordCounter, rerecordCount);
+				var point = GetCoordinates(g, GlobalWin.Config.ReRecordCounter, rerecordCount);
 				DrawOsdMessage(g, rerecordCount, FixedMessagesColor, point.X, point.Y);
 			}
 
@@ -364,11 +364,11 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				var message = sb.ToString();
-				var point = GetCoordinates(g, Global.Config.Autohold, message);
+				var point = GetCoordinates(g, GlobalWin.Config.Autohold, message);
 				g.DrawString(message, MessageFont, Color.White, point.X, point.Y);
 			}
 
-			if (Global.MovieSession.Movie.IsActive() && Global.Config.DisplaySubtitles)
+			if (Global.MovieSession.Movie.IsActive() && GlobalWin.Config.DisplaySubtitles)
 			{
 				var subList = Global.MovieSession.Movie.Subtitles.GetSubtitles(GlobalWin.Emulator.Frame);
 

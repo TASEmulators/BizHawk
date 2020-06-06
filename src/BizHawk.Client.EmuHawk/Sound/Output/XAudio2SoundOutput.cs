@@ -26,7 +26,7 @@ namespace BizHawk.Client.EmuHawk
 			_device = new XAudio2();
 			int? deviceIndex = Enumerable.Range(0, _device.DeviceCount)
 				.Select(n => (int?)n)
-				.FirstOrDefault(n => _device.GetDeviceDetails(n.Value).DisplayName == Global.Config.SoundDevice);
+				.FirstOrDefault(n => _device.GetDeviceDetails(n.Value).DisplayName == GlobalWin.Config.SoundDevice);
 			_masteringVoice = deviceIndex == null ?
 				new MasteringVoice(_device, Sound.ChannelCount, Sound.SampleRate) :
 				new MasteringVoice(_device, Sound.ChannelCount, Sound.SampleRate, deviceIndex.Value);
@@ -64,7 +64,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void StartSound()
 		{
-			BufferSizeSamples = Sound.MillisecondsToSamples(Global.Config.SoundBufferSizeMs);
+			BufferSizeSamples = Sound.MillisecondsToSamples(GlobalWin.Config.SoundBufferSizeMs);
 			MaxSamplesDeficit = BufferSizeSamples;
 
 			var format = new WaveFormat

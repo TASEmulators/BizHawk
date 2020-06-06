@@ -64,8 +64,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return new GifToken(0, 0)
 				{
-					Frameskip = Global.Config.GifWriterFrameskip,
-					FrameDelay = Global.Config.GifWriterDelay
+					Frameskip = GlobalWin.Config.GifWriterFrameskip,
+					FrameDelay = GlobalWin.Config.GifWriterDelay
 				};
 			}
 

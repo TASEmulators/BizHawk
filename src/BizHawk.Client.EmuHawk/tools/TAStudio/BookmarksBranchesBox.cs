@@ -502,7 +502,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void NonExistentBranchMessage(int slot)
 		{
-			string binding = Global.Config.HotkeyBindings.First(x => x.DisplayName == "Add Branch").Bindings;
+			string binding = GlobalWin.Config.HotkeyBindings.First(x => x.DisplayName == "Add Branch").Bindings;
 			Tastudio.MainForm.AddOnScreenMessage($"Branch {slot} does not exist");
 			Tastudio.MainForm.AddOnScreenMessage($"Use {binding} to add branches");
 		}

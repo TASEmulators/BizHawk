@@ -29,7 +29,7 @@ namespace BizHawk.Client.EmuHawk
 			_movie.Author = AuthorTextBox.Text;
 			if (MakeDefaultCheckbox.Checked)
 			{
-				Global.Config.DefaultAuthor = AuthorTextBox.Text;
+				GlobalWin.Config.DefaultAuthor = AuthorTextBox.Text;
 			}
 
 			_movie.EmulatorVersion = EmulatorVersionTextBox.Text;
@@ -49,7 +49,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DefaultAuthorButton_Click(object sender, EventArgs e)
 		{
-			AuthorTextBox.Text = Global.Config.DefaultAuthor;
+			AuthorTextBox.Text = GlobalWin.Config.DefaultAuthor;
 		}
 	}
 }

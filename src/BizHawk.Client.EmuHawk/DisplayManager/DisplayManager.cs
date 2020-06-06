@@ -188,11 +188,11 @@ namespace BizHawk.Client.EmuHawk
 		public void RefreshUserShader()
 		{
 			ShaderChain_user?.Dispose();
-			if (File.Exists(Global.Config.DispUserFilterPath))
+			if (File.Exists(GlobalWin.Config.DispUserFilterPath))
 			{
-				var fi = new FileInfo(Global.Config.DispUserFilterPath);
+				var fi = new FileInfo(GlobalWin.Config.DispUserFilterPath);
 				using var stream = fi.OpenRead();
-				ShaderChain_user = new Filters.RetroShaderChain(GL, new Filters.RetroShaderPreset(stream), Path.GetDirectoryName(Global.Config.DispUserFilterPath));
+				ShaderChain_user = new Filters.RetroShaderChain(GL, new Filters.RetroShaderPreset(stream), Path.GetDirectoryName(GlobalWin.Config.DispUserFilterPath));
 			}
 		}
 
@@ -217,10 +217,10 @@ namespace BizHawk.Client.EmuHawk
 
 			// apply user's crop selections as a negative padding (believe it or not, this largely works)
 			// is there an issue with the aspect ratio? I don't know--but if there is, there would be with the padding too
-			padding.Left -= Global.Config.DispCropLeft;
-			padding.Right -= Global.Config.DispCropRight;
-			padding.Top -= Global.Config.DispCropTop;
-			padding.Bottom -= Global.Config.DispCropBottom;
+			padding.Left -= GlobalWin.Config.DispCropLeft;
+			padding.Right -= GlobalWin.Config.DispCropRight;
+			padding.Top -= GlobalWin.Config.DispCropTop;
+			padding.Bottom -= GlobalWin.Config.DispCropBottom;
 
 			return padding;
 		}
@@ -230,18 +230,18 @@ namespace BizHawk.Client.EmuHawk
 			// select user special FX shader chain
 			var selectedChainProperties = new Dictionary<string, object>();
 			Filters.RetroShaderChain selectedChain = null;
-			if (Global.Config.TargetDisplayFilter == 1 && ShaderChain_hq2x != null && ShaderChain_hq2x.Available)
+			if (GlobalWin.Config.TargetDisplayFilter == 1 && ShaderChain_hq2x != null && ShaderChain_hq2x.Available)
 			{
 				selectedChain = ShaderChain_hq2x;
 			}
 
-			if (Global.Config.TargetDisplayFilter == 2 && ShaderChain_scanlines != null && ShaderChain_scanlines.Available)
+			if (GlobalWin.Config.TargetDisplayFilter == 2 && ShaderChain_scanlines != null && ShaderChain_scanlines.Available)
 			{
 				selectedChain = ShaderChain_scanlines;
-				selectedChainProperties["uIntensity"] = 1.0f - Global.Config.TargetScanlineFilterIntensity / 256.0f;
+				selectedChainProperties["uIntensity"] = 1.0f - GlobalWin.Config.TargetScanlineFilterIntensity / 256.0f;
 			}
 
-			if (Global.Config.TargetDisplayFilter == 3 && ShaderChain_user != null && ShaderChain_user.Available)
+			if (GlobalWin.Config.TargetDisplayFilter == 3 && ShaderChain_user != null && ShaderChain_user.Available)
 			{
 				selectedChain = ShaderChain_user;
 			}
@@ -306,9 +306,9 @@ namespace BizHawk.Client.EmuHawk
 			AppendLuaLayer(chain, "emu");
 
 			if(includeUserFilters)
-				if (Global.Config.DispPrescale != 1)
+				if (GlobalWin.Config.DispPrescale != 1)
 				{
-					var fPrescale = new Filters.PrescaleFilter() { Scale = Global.Config.DispPrescale };
+					var fPrescale = new Filters.PrescaleFilter() { Scale = GlobalWin.Config.DispPrescale };
 					chain.AddFilter(fPrescale, "user_prescale");
 				}
 
@@ -317,7 +317,7 @@ namespace BizHawk.Client.EmuHawk
 				AppendRetroShaderChain(chain, "retroShader", selectedChain, selectedChainProperties);
 
 			// AutoPrescale makes no sense for a None final filter
-			if (Global.Config.DispAutoPrescale && Global.Config.DispFinalFilter != (int)Filters.FinalPresentation.eFilterOption.None)
+			if (GlobalWin.Config.DispAutoPrescale && GlobalWin.Config.DispFinalFilter != (int)Filters.FinalPresentation.eFilterOption.None)
 			{
 				var apf = new Filters.AutoPrescaleFilter();
 				chain.AddFilter(apf, "auto_prescale");
@@ -325,12 +325,12 @@ namespace BizHawk.Client.EmuHawk
 
 			//choose final filter
 			var finalFilter = Filters.FinalPresentation.eFilterOption.None;
-			if (Global.Config.DispFinalFilter == 1)
+			if (GlobalWin.Config.DispFinalFilter == 1)
 			{
 				finalFilter = Filters.FinalPresentation.eFilterOption.Bilinear;
 			}
 
-			if (Global.Config.DispFinalFilter == 2)
+			if (GlobalWin.Config.DispFinalFilter == 2)
 			{
 				finalFilter = Filters.FinalPresentation.eFilterOption.Bicubic;
 			}
@@ -446,7 +446,7 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public void UpdateSource(IVideoProvider videoProvider)
 		{
-			bool displayNothing = Global.Config.DispSpeedupFeatures == 0;
+			bool displayNothing = GlobalWin.Config.DispSpeedupFeatures == 0;
 			var job = new JobInfo
 			{
 				VideoProvider = videoProvider,
@@ -472,7 +472,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public BitmapBuffer RenderVideoProvider(IVideoProvider videoProvider)
 		{
-			// TODO - we might need to gather more Global.Config.DispXXX properties here, so they can be overridden
+			// TODO - we might need to gather more GlobalWin.Config.DispXXX properties here, so they can be overridden
 			var targetSize = new Size(videoProvider.BufferWidth, videoProvider.BufferHeight);
 			var padding = CalculateCompleteContentPadding(true,true);
 			targetSize.Width += padding.Horizontal;
@@ -551,12 +551,12 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public Size CalculateClientSize(IVideoProvider videoProvider, int zoom)
 		{
-			bool arActive = Global.Config.DispFixAspectRatio;
-			bool arSystem = Global.Config.DispManagerAR == EDispManagerAR.System;
-			bool arCustom = Global.Config.DispManagerAR == EDispManagerAR.Custom;
-			bool arCustomRatio = Global.Config.DispManagerAR == EDispManagerAR.CustomRatio;
+			bool arActive = GlobalWin.Config.DispFixAspectRatio;
+			bool arSystem = GlobalWin.Config.DispManagerAR == EDispManagerAR.System;
+			bool arCustom = GlobalWin.Config.DispManagerAR == EDispManagerAR.Custom;
+			bool arCustomRatio = GlobalWin.Config.DispManagerAR == EDispManagerAR.CustomRatio;
 			bool arCorrect = arSystem || arCustom || arCustomRatio;
-			bool arInteger = Global.Config.DispFixScaleInteger;
+			bool arInteger = GlobalWin.Config.DispFixScaleInteger;
 
 			int bufferWidth = videoProvider.BufferWidth;
 			int bufferHeight = videoProvider.BufferHeight;
@@ -565,13 +565,13 @@ namespace BizHawk.Client.EmuHawk
 
 			if (arCustom)
 			{
-				virtualWidth = Global.Config.DispCustomUserARWidth;
-				virtualHeight = Global.Config.DispCustomUserARHeight;
+				virtualWidth = GlobalWin.Config.DispCustomUserARWidth;
+				virtualHeight = GlobalWin.Config.DispCustomUserARHeight;
 			}
 
 			if (arCustomRatio)
 			{
-				FixRatio(Global.Config.DispCustomUserArx, Global.Config.DispCustomUserAry, videoProvider.BufferWidth, videoProvider.BufferHeight, out virtualWidth, out virtualHeight);
+				FixRatio(GlobalWin.Config.DispCustomUserArx, GlobalWin.Config.DispCustomUserAry, videoProvider.BufferWidth, videoProvider.BufferHeight, out virtualWidth, out virtualHeight);
 			}
 
 			//TODO: it is bad that this is happening outside the filter chain
@@ -782,22 +782,22 @@ namespace BizHawk.Client.EmuHawk
 				presenterTextureHeight = vh = sz.Height;
 			}
 
-			if (Global.Config.DispFixAspectRatio)
+			if (GlobalWin.Config.DispFixAspectRatio)
 			{
-				if (Global.Config.DispManagerAR == EDispManagerAR.System)
+				if (GlobalWin.Config.DispManagerAR == EDispManagerAR.System)
 				{
 					//Already set
 				}
-				if (Global.Config.DispManagerAR == EDispManagerAR.Custom)
+				if (GlobalWin.Config.DispManagerAR == EDispManagerAR.Custom)
 				{
 					//not clear what any of these other options mean for "screen controlled" systems
-					vw = Global.Config.DispCustomUserARWidth;
-					vh = Global.Config.DispCustomUserARHeight;
+					vw = GlobalWin.Config.DispCustomUserARWidth;
+					vh = GlobalWin.Config.DispCustomUserARHeight;
 				}
-				if (Global.Config.DispManagerAR == EDispManagerAR.CustomRatio)
+				if (GlobalWin.Config.DispManagerAR == EDispManagerAR.CustomRatio)
 				{
 					//not clear what any of these other options mean for "screen controlled" systems
-					FixRatio(Global.Config.DispCustomUserArx, Global.Config.DispCustomUserAry, videoProvider.BufferWidth, videoProvider.BufferHeight, out vw, out vh);
+					FixRatio(GlobalWin.Config.DispCustomUserArx, GlobalWin.Config.DispCustomUserAry, videoProvider.BufferWidth, videoProvider.BufferHeight, out vw, out vh);
 				}
 			}
 
@@ -853,10 +853,10 @@ namespace BizHawk.Client.EmuHawk
 				fPresent.BackgroundColor = videoProvider.BackgroundColor;
 				fPresent.GuiRenderer = Renderer;
 				fPresent.Flip = isGlTextureId;
-				fPresent.Config_FixAspectRatio = Global.Config.DispFixAspectRatio;
-				fPresent.Config_FixScaleInteger = Global.Config.DispFixScaleInteger;
+				fPresent.Config_FixAspectRatio = GlobalWin.Config.DispFixAspectRatio;
+				fPresent.Config_FixScaleInteger = GlobalWin.Config.DispFixScaleInteger;
 				fPresent.Padding = ClientExtraPadding;
-				fPresent.AutoPrescale = Global.Config.DispAutoPrescale;
+				fPresent.AutoPrescale = GlobalWin.Config.DispAutoPrescale;
 
 				fPresent.GL = GL;
 			}
@@ -907,7 +907,7 @@ namespace BizHawk.Client.EmuHawk
 			if (!job.Offscreen)
 			{
 				//apply the vsync setting (should probably try to avoid repeating this)
-				var vsync = Global.Config.VSyncThrottle || Global.Config.VSync;
+				var vsync = GlobalWin.Config.VSyncThrottle || GlobalWin.Config.VSync;
 
 				//ok, now this is a bit undesirable.
 				//maybe the user wants vsync, but not vsync throttle.
@@ -918,7 +918,7 @@ namespace BizHawk.Client.EmuHawk
 					vsync = false;
 
 				//for now, it's assumed that the presentation panel is the main window, but that may not always be true
-				if (vsync && Global.Config.DispAlternateVsync && Global.Config.VSyncThrottle)
+				if (vsync && GlobalWin.Config.DispAlternateVsync && GlobalWin.Config.VSyncThrottle)
 				{
 					dx9 = GL as IGL_SlimDX9;
 					if (dx9 != null)

@@ -48,7 +48,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			PopulatePlatforms();
 
-			var selectedSystemId = Global.Config.PreferredPlatformsForExtensions[FileExtension];
+			var selectedSystemId = GlobalWin.Config.PreferredPlatformsForExtensions[FileExtension];
 			if (!string.IsNullOrEmpty(selectedSystemId))
 			{
 				var selectedSystem = _availableSystems.FirstOrDefault(s => s.SystemId == selectedSystemId);

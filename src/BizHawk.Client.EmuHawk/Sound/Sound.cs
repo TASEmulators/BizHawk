@@ -22,7 +22,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public Sound(IntPtr mainWindowHandle)
 		{
-			if (Global.Config.SoundOutputMethod != ESoundOutputMethod.Dummy)
+			if (GlobalWin.Config.SoundOutputMethod != ESoundOutputMethod.Dummy)
 			{
 				if (OSTailoredCode.IsUnixHost)
 				{
@@ -31,11 +31,11 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					if (Global.Config.SoundOutputMethod == ESoundOutputMethod.OpenAL)
+					if (GlobalWin.Config.SoundOutputMethod == ESoundOutputMethod.OpenAL)
 						_outputDevice = new OpenALSoundOutput(this);
-					if (Global.Config.SoundOutputMethod == ESoundOutputMethod.DirectSound)
-						_outputDevice = new DirectSoundSoundOutput(this, mainWindowHandle, Global.Config.SoundDevice);
-					if (Global.Config.SoundOutputMethod == ESoundOutputMethod.XAudio2)
+					if (GlobalWin.Config.SoundOutputMethod == ESoundOutputMethod.DirectSound)
+						_outputDevice = new DirectSoundSoundOutput(this, mainWindowHandle, GlobalWin.Config.SoundDevice);
+					if (GlobalWin.Config.SoundOutputMethod == ESoundOutputMethod.XAudio2)
 						_outputDevice = new XAudio2SoundOutput(this);
 				}
 			}
@@ -64,7 +64,7 @@ namespace BizHawk.Client.EmuHawk
 		public void StartSound()
 		{
 			if (_disposed) return;
-			if (!Global.Config.SoundEnabled) return;
+			if (!GlobalWin.Config.SoundEnabled) return;
 			if (IsStarted) return;
 
 			_outputDevice.StartSound();
@@ -138,7 +138,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateSound(float atten)
 		{
-			if (!Global.Config.SoundEnabled || !IsStarted || _bufferedProvider == null || _disposed)
+			if (!GlobalWin.Config.SoundEnabled || !IsStarted || _bufferedProvider == null || _disposed)
 			{
 				_bufferedProvider?.DiscardSamples();
 				return;
@@ -163,7 +163,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (_bufferedProvider == _outputProvider)
 			{
-				if (Global.Config.SoundThrottle)
+				if (GlobalWin.Config.SoundThrottle)
 				{
 					_outputProvider.BaseSoundProvider.GetSamplesSync(out samples, out sampleCount);
 					sampleOffset = 0;

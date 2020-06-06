@@ -46,13 +46,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly Action<string> LogCallback;
 
-		/// <summary>Using this property to get a reference to <see cref="Global.Config">Global.Config</see> is a terrible, horrible, no good, very bad idea. That's why it's not in the <see cref="IEmu">interface</see>.</summary>
+		/// <summary>Using this property to get a reference to <see cref="GlobalWin.Config">GlobalWin.Config</see> is a terrible, horrible, no good, very bad idea. That's why it's not in the <see cref="IEmu">interface</see>.</summary>
 		public Config ForbiddenConfigReference
 		{
 			get
 			{
 				ForbiddenConfigReferenceUsed = true;
-				return Global.Config;
+				return GlobalWin.Config;
 			}
 		}
 
@@ -62,7 +62,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public Action YieldCallback { get; set; }
 
-		public void DisplayVsync(bool enabled) => Global.Config.VSync = enabled;
+		public void DisplayVsync(bool enabled) => GlobalWin.Config.VSync = enabled;
 
 		public void FrameAdvance() => FrameAdvanceCallback();
 
@@ -173,9 +173,9 @@ namespace BizHawk.Client.EmuHawk
 			else LogCallback($"Can not set lag information, {Emulator.Attributes().CoreName} does not implement {nameof(IInputPollable)}");
 		}
 
-		public void LimitFramerate(bool enabled) => Global.Config.ClockThrottle = enabled;
+		public void LimitFramerate(bool enabled) => GlobalWin.Config.ClockThrottle = enabled;
 
-		public void MinimizeFrameskip(bool enabled) => Global.Config.AutoMinimizeSkipping = enabled;
+		public void MinimizeFrameskip(bool enabled) => GlobalWin.Config.AutoMinimizeSkipping = enabled;
 
 		public void Yield() => YieldCallback();
 

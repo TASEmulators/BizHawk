@@ -122,7 +122,7 @@ namespace BizHawk.Client.EmuHawk
 		/// Load a savestate specified by its name
 		/// </summary>
 		/// <param name="name">Savestate friendly name</param>
-		public static void LoadState(string name) => GlobalWin.MainForm.LoadState(Path.Combine(Global.Config.PathEntries.SaveStateAbsolutePath(Global.Game.System), $"{name}.State"), name, suppressOSD: false);
+		public static void LoadState(string name) => GlobalWin.MainForm.LoadState(Path.Combine(GlobalWin.Config.PathEntries.SaveStateAbsolutePath(Global.Game.System), $"{name}.State"), name, suppressOSD: false);
 
 		/// <summary>
 		/// Raised before a quickload is done (just after pressing shortcut button)
@@ -202,7 +202,7 @@ namespace BizHawk.Client.EmuHawk
 		/// Save a state with specified name
 		/// </summary>
 		/// <param name="name">Savestate friendly name</param>
-		public static void SaveState(string name) => GlobalWin.MainForm.SaveState(Path.Combine(Global.Config.PathEntries.SaveStateAbsolutePath(Global.Game.System), $"{name}.State"), name, fromLua: false);
+		public static void SaveState(string name) => GlobalWin.MainForm.SaveState(Path.Combine(GlobalWin.Config.PathEntries.SaveStateAbsolutePath(Global.Game.System), $"{name}.State"), name, fromLua: false);
 
 		/// <summary>
 		/// Sets the extra padding added to the 'native' surface so that you can draw HUD elements in predictable placements
@@ -319,7 +319,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public static void CloseRom() => GlobalWin.MainForm.CloseRom();
 
-		public static void DisplayMessages(bool value) => Global.Config.DisplayMessages = value;
+		public static void DisplayMessages(bool value) => GlobalWin.Config.DisplayMessages = value;
 
 		public static void EnableRewind(bool enabled) => GlobalWin.MainForm.EnableRewind(enabled);
 
@@ -327,7 +327,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (numFrames > 0)
 			{
-				Global.Config.FrameSkip = numFrames;
+				GlobalWin.Config.FrameSkip = numFrames;
 				GlobalWin.MainForm.FrameSkipMessage();
 			}
 			else
@@ -336,16 +336,16 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public static int GetTargetScanlineIntensity() => Global.Config.TargetScanlineFilterIntensity;
+		public static int GetTargetScanlineIntensity() => GlobalWin.Config.TargetScanlineFilterIntensity;
 
-		public static int GetWindowSize() => Global.Config.TargetZoomFactors[Emulator.SystemId];
+		public static int GetWindowSize() => GlobalWin.Config.TargetZoomFactors[Emulator.SystemId];
 
 		public static void SetSoundOn(bool enable)
 		{
-			if (enable != Global.Config.SoundEnabled) GlobalWin.MainForm.ToggleSound();
+			if (enable != GlobalWin.Config.SoundEnabled) GlobalWin.MainForm.ToggleSound();
 		}
 
-		public static bool GetSoundOn() => Global.Config.SoundEnabled;
+		public static bool GetSoundOn() => GlobalWin.Config.SoundEnabled;
 
 		public static bool IsPaused() => GlobalWin.MainForm.EmulatorPaused;
 
@@ -373,9 +373,9 @@ namespace BizHawk.Client.EmuHawk
 
 		public static void ScreenshotToClipboard() => GlobalWin.MainForm.TakeScreenshotToClipboard();
 
-		public static void SetTargetScanlineIntensity(int val) => Global.Config.TargetScanlineFilterIntensity = val;
+		public static void SetTargetScanlineIntensity(int val) => GlobalWin.Config.TargetScanlineFilterIntensity = val;
 
-		public static void SetScreenshotOSD(bool value) => Global.Config.ScreenshotCaptureOsd = value;
+		public static void SetScreenshotOSD(bool value) => GlobalWin.Config.ScreenshotCaptureOsd = value;
 
 		public static int ScreenWidth() => GlobalWin.MainForm.PresentationPanel.NativeSize.Width;
 
@@ -383,7 +383,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (size == 1 || size == 2 || size == 3 || size == 4 || size == 5 || size == 10)
 			{
-				Global.Config.TargetZoomFactors[Emulator.SystemId] = size;
+				GlobalWin.Config.TargetZoomFactors[Emulator.SystemId] = size;
 				GlobalWin.MainForm.FrameBufferResized();
 				GlobalWin.OSD.AddMessage($"Window size set to {size}x");
 			}

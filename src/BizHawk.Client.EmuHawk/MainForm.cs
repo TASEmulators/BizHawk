@@ -875,8 +875,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private Config Config
 		{
-			get => Global.Config;
-			set => Global.Config = value;
+			get => GlobalWin.Config;
+			set => GlobalWin.Config = value;
 		}
 
 		private ToolManager Tools => GlobalWin.Tools;

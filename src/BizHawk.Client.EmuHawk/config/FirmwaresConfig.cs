@@ -471,7 +471,7 @@ namespace BizHawk.Client.EmuHawk
 							}
 						}
 
-						Global.Config.FirmwareUserSpecifications[fr.ConfigKey] = filePath;
+						GlobalWin.Config.FirmwareUserSpecifications[fr.ConfigKey] = filePath;
 					}
 				}
 				catch (Exception ex)
@@ -490,7 +490,7 @@ namespace BizHawk.Client.EmuHawk
 			foreach (ListViewItem lvi in lvFirmwares.SelectedItems)
 			{
 				var fr = lvi.Tag as FirmwareDatabase.FirmwareRecord;
-				Global.Config.FirmwareUserSpecifications.Remove(fr.ConfigKey);
+				GlobalWin.Config.FirmwareUserSpecifications.Remove(fr.ConfigKey);
 			}
 
 			DoScan();
@@ -584,7 +584,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			using var pathConfig = new PathConfig(_mainForm, Global.Config);
+			using var pathConfig = new PathConfig(_mainForm, GlobalWin.Config);
 			pathConfig.ShowDialog(this);
 			RefreshBasePath();
 		}

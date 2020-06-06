@@ -16,26 +16,26 @@ namespace BizHawk.Client.EmuHawk
 
 		private static bool AutoCheckEnabled
 		{
-			get => Global.Config.UpdateAutoCheckEnabled;
-			set => Global.Config.UpdateAutoCheckEnabled = value;
+			get => GlobalWin.Config.UpdateAutoCheckEnabled;
+			set => GlobalWin.Config.UpdateAutoCheckEnabled = value;
 		}
 
 		private static DateTime? LastCheckTimeUTC
 		{
-			get => Global.Config.UpdateLastCheckTimeUtc;
-			set => Global.Config.UpdateLastCheckTimeUtc = value;
+			get => GlobalWin.Config.UpdateLastCheckTimeUtc;
+			set => GlobalWin.Config.UpdateLastCheckTimeUtc = value;
 		}
 
 		private static string LatestVersion
 		{
-			get => Global.Config.UpdateLatestVersion;
-			set => Global.Config.UpdateLatestVersion = value;
+			get => GlobalWin.Config.UpdateLatestVersion;
+			set => GlobalWin.Config.UpdateLatestVersion = value;
 		}
 
 		private static string IgnoreVersion
 		{
-			get => Global.Config.UpdateIgnoreVersion;
-			set => Global.Config.UpdateIgnoreVersion = value;
+			get => GlobalWin.Config.UpdateIgnoreVersion;
+			set => GlobalWin.Config.UpdateIgnoreVersion = value;
 		}
 
 		public static void BeginCheck(bool skipCheck = false)

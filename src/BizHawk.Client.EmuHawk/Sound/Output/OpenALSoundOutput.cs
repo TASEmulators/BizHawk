@@ -22,7 +22,7 @@ namespace BizHawk.Client.EmuHawk
 		public OpenALSoundOutput(Sound sound)
 		{
 			_sound = sound;
-			string deviceName = GetDeviceNames().FirstOrDefault(n => n == Global.Config.SoundDevice);
+			string deviceName = GetDeviceNames().FirstOrDefault(n => n == GlobalWin.Config.SoundDevice);
 			_context = new AudioContext(deviceName, Sound.SampleRate);
 		}
 
@@ -54,7 +54,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void StartSound()
 		{
-			BufferSizeSamples = Sound.MillisecondsToSamples(Global.Config.SoundBufferSizeMs);
+			BufferSizeSamples = Sound.MillisecondsToSamples(GlobalWin.Config.SoundBufferSizeMs);
 			MaxSamplesDeficit = BufferSizeSamples;
 
 			_sourceID = AL.GenSource();

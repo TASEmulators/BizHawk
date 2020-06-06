@@ -15,16 +15,16 @@ namespace BizHawk.Client.EmuHawk
 		{
 			using var dlg = new GifWriterForm
 			{
-				numericUpDown1 = { Value = Global.Config.GifWriterFrameskip },
-				numericUpDown2 = { Value = Global.Config.GifWriterDelay }
+				numericUpDown1 = { Value = GlobalWin.Config.GifWriterFrameskip },
+				numericUpDown2 = { Value = GlobalWin.Config.GifWriterDelay }
 			};
 			dlg.NumericUpDown2_ValueChanged(null, null);
 
 			var result = dlg.ShowDialog(parent);
 			if (result.IsOk())
 			{
-				Global.Config.GifWriterFrameskip = (int)dlg.numericUpDown1.Value;
-				Global.Config.GifWriterDelay = (int)dlg.numericUpDown2.Value;
+				GlobalWin.Config.GifWriterFrameskip = (int)dlg.numericUpDown1.Value;
+				GlobalWin.Config.GifWriterDelay = (int)dlg.numericUpDown2.Value;
 
 				return GifWriter.GifToken.LoadFromConfig();
 			}

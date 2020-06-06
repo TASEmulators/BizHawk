@@ -34,7 +34,7 @@ namespace BizHawk.Client.EmuHawk
 			var ofd = new OpenFileDialog
 			{
 				FileName = $"{Global.Game.FilesystemSafeName()}.syncless.txt",
-				InitialDirectory = Global.Config.PathEntries.AvAbsolutePath()
+				InitialDirectory = GlobalWin.Config.PathEntries.AvAbsolutePath()
 			};
 
 			if (ofd.ShowDialog() == DialogResult.Cancel)

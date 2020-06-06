@@ -120,7 +120,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly Thread UpdateThread;
 
-		public readonly HostInputAdapter Adapter = Global.Config.HostInputMethod switch
+		public readonly HostInputAdapter Adapter = GlobalWin.Config.HostInputMethod switch
 		{
 			EHostInputMethod.OpenTK => new OpenTKInputAdapter(),
 			EHostInputMethod.DirectInput => new DirectInputAdapter(),

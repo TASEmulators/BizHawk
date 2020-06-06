@@ -25,12 +25,12 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		static ExternalToolManager()
 		{
-			if(!Directory.Exists(Global.Config.PathEntries["Global", "External Tools"].Path))
+			if(!Directory.Exists(GlobalWin.Config.PathEntries["Global", "External Tools"].Path))
 			{
-				Directory.CreateDirectory(Global.Config.PathEntries["Global", "External Tools"].Path);
+				Directory.CreateDirectory(GlobalWin.Config.PathEntries["Global", "External Tools"].Path);
 			}
 
-			DirectoryMonitor = new FileSystemWatcher(Global.Config.PathEntries["Global", "External Tools"].Path, "*.dll")
+			DirectoryMonitor = new FileSystemWatcher(GlobalWin.Config.PathEntries["Global", "External Tools"].Path, "*.dll")
 			{
 				IncludeSubdirectories = false
 				, NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite | NotifyFilters.FileName

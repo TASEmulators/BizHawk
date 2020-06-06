@@ -41,5 +41,7 @@ namespace BizHawk.Client.EmuHawk
 		public static bool DisableSecondaryThrottling { get; set; }
 
 		public static Dictionary<string, object> UserBag { get; set; } = new Dictionary<string, object>();
+
+		public static Config Config { get; set; }
 	}
 }

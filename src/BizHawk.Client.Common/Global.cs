@@ -5,7 +5,6 @@ namespace BizHawk.Client.Common
 {
 	public static class Global
 	{
-		public static Config Config { get; set; }
 		public static GameInfo Game { get; set; }
 		public static FirmwareManager FirmwareManager { get; set; }
 		public static IMovieSession MovieSession { get; set; }

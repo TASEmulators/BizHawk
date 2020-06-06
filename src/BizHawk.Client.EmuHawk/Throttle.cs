@@ -63,7 +63,7 @@ namespace BizHawk.Client.EmuHawk
 			else throw new InvalidOperationException();
 #endif
 
-			int skipRate = (forceFrameSkip < 0) ? Global.Config.FrameSkip : forceFrameSkip;
+			int skipRate = (forceFrameSkip < 0) ? GlobalWin.Config.FrameSkip : forceFrameSkip;
 			int ffSkipRate = (forceFrameSkip < 0) ? 3 : forceFrameSkip;
 
 			if (lastSkipRate != skipRate)
@@ -80,7 +80,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					//don't ever skip frames when continuous frame advancing. it's meant for precision work.
 					//but we DO need to throttle
-					if (Global.Config.ClockThrottle)
+					if (GlobalWin.Config.ClockThrottle)
 						extraThrottle = true;
 				}
 				else
@@ -108,12 +108,12 @@ namespace BizHawk.Client.EmuHawk
 				if (framesToSkip < 1)
 					framesToSkip += ffSkipRate;
 			}
-			else if ((extraThrottle || signal_paused || Global.Config.ClockThrottle || signal_overrideSecondaryThrottle) && allowSleep)
+			else if ((extraThrottle || signal_paused || GlobalWin.Config.ClockThrottle || signal_overrideSecondaryThrottle) && allowSleep)
 			{
 				SpeedThrottle(signal_paused);
 			}
 
-			if (Global.Config.AutoMinimizeSkipping && Global.Config.FrameSkip != 0)
+			if (GlobalWin.Config.AutoMinimizeSkipping && GlobalWin.Config.FrameSkip != 0)
 			{
 				if (!signal_continuousFrameAdvancing)
 				{

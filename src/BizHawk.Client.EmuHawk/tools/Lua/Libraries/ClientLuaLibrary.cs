@@ -106,7 +106,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (numFrames >= 0)
 			{
-				Global.Config.FrameSkip = numFrames;
+				GlobalWin.Config.FrameSkip = numFrames;
 				MainForm.FrameSkipMessage();
 			}
 			else
@@ -155,14 +155,14 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod("gettargetscanlineintensity", "Gets the current scanline intensity setting, used for the scanline display filter")]
 		public static int GetTargetScanlineIntensity()
 		{
-			return Global.Config.TargetScanlineFilterIntensity;
+			return GlobalWin.Config.TargetScanlineFilterIntensity;
 		}
 
 		[LuaMethodExample("local incliget = client.getwindowsize( );")]
 		[LuaMethod("getwindowsize", "Gets the main window's size Possible values are 1, 2, 3, 4, 5, and 10")]
 		public int GetWindowSize()
 		{
-			return Global.Config.TargetZoomFactors[Emulator.SystemId];
+			return GlobalWin.Config.TargetZoomFactors[Emulator.SystemId];
 		}
 
 		[LuaMethodExample("client.SetGameExtraPadding( 5, 10, 15, 20 );")]
@@ -301,14 +301,14 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod("settargetscanlineintensity", "Sets the current scanline intensity setting, used for the scanline display filter")]
 		public static void SetTargetScanlineIntensity(int val)
 		{
-			Global.Config.TargetScanlineFilterIntensity = val;
+			GlobalWin.Config.TargetScanlineFilterIntensity = val;
 		}
 
 		[LuaMethodExample("client.setscreenshotosd( true );")]
 		[LuaMethod("setscreenshotosd", "Sets the screenshot Capture OSD property of the client")]
 		public static void SetScreenshotOSD(bool value)
 		{
-			Global.Config.ScreenshotCaptureOsd = value;
+			GlobalWin.Config.ScreenshotCaptureOsd = value;
 		}
 
 		[LuaMethodExample("local incliscr = client.screenwidth( );")]
@@ -324,7 +324,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (size == 1 || size == 2 || size == 3 || size == 4 || size == 5 || size == 10)
 			{
-				Global.Config.TargetZoomFactors[Emulator.SystemId] = size;
+				GlobalWin.Config.TargetZoomFactors[Emulator.SystemId] = size;
 				MainForm.FrameBufferResized();
 				MainForm.AddOnScreenMessage($"Window size set to {size}x");
 			}
@@ -352,7 +352,7 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod("getconfig", "gets the current config settings object")]
 		public object GetConfig()
 		{
-			return Global.Config;
+			return GlobalWin.Config;
 		}
 
 		[LuaMethodExample("client.togglepause( );")]
@@ -431,7 +431,7 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod("displaymessages", "sets whether or not on screen messages will display")]
 		public void DisplayMessages(bool value)
 		{
-			Global.Config.DisplayMessages = value;
+			GlobalWin.Config.DisplayMessages = value;
 		}
 
 		[LuaMethodExample("client.saveram( );")]

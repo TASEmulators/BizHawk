@@ -12,7 +12,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public static Key Handle(Key key)
 		{
-			if (!Global.Config.HandleAlternateKeyboardLayouts) return key;
+			if (!GlobalWin.Config.HandleAlternateKeyboardLayouts) return key;
 			ScanCode inputScanCode = SlimDXScanCodeMap[(int)key];
 			Keys virtualKey = (Keys)BizHawk.Common.Win32Imports.MapVirtualKey((uint)inputScanCode, MAPVK_VSC_TO_VK_EX);
 			ScanCode standardScanCode = GetStandardScanCode(virtualKey);

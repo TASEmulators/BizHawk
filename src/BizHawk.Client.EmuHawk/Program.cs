@@ -108,24 +108,24 @@ namespace BizHawk.Client.EmuHawk
 
 			try
 			{
-				Global.Config = ConfigService.Load<Config>(Config.DefaultIniPath);
+				GlobalWin.Config = ConfigService.Load<Config>(Config.DefaultIniPath);
 			}
 			catch (Exception e)
 			{
 				new ExceptionBox(e).ShowDialog();
 				new ExceptionBox("Since your config file is corrupted or from a different BizHawk version, we're going to recreate it. Back it up before proceeding if you want to investigate further.").ShowDialog();
 				File.Delete(Config.DefaultIniPath);
-				Global.Config = ConfigService.Load<Config>(Config.DefaultIniPath);
+				GlobalWin.Config = ConfigService.Load<Config>(Config.DefaultIniPath);
 			}
 
-			Global.Config.ResolveDefaults();
+			GlobalWin.Config.ResolveDefaults();
 
-			StringLogUtil.DefaultToDisk = Global.Config.Movies.MoviesOnDisk;
+			StringLogUtil.DefaultToDisk = GlobalWin.Config.Movies.MoviesOnDisk;
 
 			// super hacky! this needs to be done first. still not worth the trouble to make this system fully proper
 			if (Array.Exists(args, arg => arg.StartsWith("--gdi", StringComparison.InvariantCultureIgnoreCase)))
 			{
-				Global.Config.DispMethod = EDispMethod.GdiPlus;
+				GlobalWin.Config.DispMethod = EDispMethod.GdiPlus;
 			}
 
 			// create IGL context. we do this whether or not the user has selected OpenGL, so that we can run opengl-based emulator cores
@@ -137,11 +137,11 @@ namespace BizHawk.Client.EmuHawk
 
 			//now create the "GL" context for the display method. we can reuse the IGL_TK context if opengl display method is chosen
 		REDO_DISPMETHOD:
-			if (Global.Config.DispMethod == EDispMethod.GdiPlus)
+			if (GlobalWin.Config.DispMethod == EDispMethod.GdiPlus)
 			{
 				GlobalWin.GL = new IGL_GdiPlus();
 			}
-			else if (Global.Config.DispMethod == EDispMethod.SlimDX9)
+			else if (GlobalWin.Config.DispMethod == EDispMethod.SlimDX9)
 			{
 				try
 				{
@@ -152,7 +152,7 @@ namespace BizHawk.Client.EmuHawk
 					new ExceptionBox(new Exception("Initialization of Direct3d 9 Display Method failed; falling back to GDI+", ex)).ShowDialog();
 
 					// fallback
-					Global.Config.DispMethod = EDispMethod.GdiPlus;
+					GlobalWin.Config.DispMethod = EDispMethod.GdiPlus;
 					goto REDO_DISPMETHOD;
 				}
 			}
@@ -164,7 +164,7 @@ namespace BizHawk.Client.EmuHawk
 				if (GlobalWin.IGL_GL.Version < 200)
 				{
 					// fallback
-					Global.Config.DispMethod = EDispMethod.GdiPlus;
+					GlobalWin.Config.DispMethod = EDispMethod.GdiPlus;
 					goto REDO_DISPMETHOD;
 				}
 			}
@@ -179,7 +179,7 @@ namespace BizHawk.Client.EmuHawk
 				new ExceptionBox(new Exception("Initialization of Display Method failed; falling back to GDI+", ex)).ShowDialog();
 
 				//fallback
-				Global.Config.DispMethod = EDispMethod.GdiPlus;
+				GlobalWin.Config.DispMethod = EDispMethod.GdiPlus;
 				goto REDO_DISPMETHOD;
 			}
 
@@ -196,7 +196,7 @@ namespace BizHawk.Client.EmuHawk
 
 			try
 			{
-				if (Global.Config.SingleInstanceMode)
+				if (GlobalWin.Config.SingleInstanceMode)
 				{
 					try
 					{
@@ -280,7 +280,7 @@ namespace BizHawk.Client.EmuHawk
 			//    later, we look for NLua or KopiLua assembly names and redirect them to files located in the output/DLL/nlua directory
 			if (new AssemblyName(requested).Name == "NLua")
 			{
-				//this method referencing Global.Config makes assemblies get loaded, which isnt smart from the assembly resolver.
+				//this method referencing GlobalWin.Config makes assemblies get loaded, which isnt smart from the assembly resolver.
 				//so.. we're going to resort to something really bad.
 				//avert your eyes.
 				var configPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "config.ini");
