@@ -266,9 +266,6 @@ namespace BizHawk.Client.Common
 		public bool CheatsAutoSaveOnClose { get; set; } = true;
 		public RecentFiles RecentCheats { get; set; } = new RecentFiles(8);
 
-		// TAStudio
-		public TasStateManagerSettings DefaultTasStateManagerSettings { get; set; } = new TasStateManagerSettings();
-
 		// Macro Tool
 		public RecentFiles RecentMacros { get; set; } = new RecentFiles(8);
 

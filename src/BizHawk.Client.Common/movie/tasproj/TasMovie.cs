@@ -17,7 +17,7 @@ namespace BizHawk.Client.Common
 		{
 			Branches = new TasBranchCollection(this);
 			ChangeLog = new TasMovieChangeLog(this);
-			TasStateManager = new TasStateManager(this, Global.Config.DefaultTasStateManagerSettings);
+			TasStateManager = new TasStateManager(this, session.Settings.DefaultTasStateManagerSettings);
 			Header[HeaderKeys.MovieVersion] = "BizHawk v2.0 Tasproj v1.0";
 			Markers = new TasMovieMarkerList(this);
 			Markers.CollectionChanged += Markers_CollectionChanged;
