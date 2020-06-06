@@ -191,14 +191,9 @@ namespace BizHawk.Client.Common
 			}
 
 			int counter = 0;
-			while (true)
+			string line;
+			while ((line = reader.ReadLine()) != null)
 			{
-				var line = reader.ReadLine();
-				if (string.IsNullOrEmpty(line))
-				{
-					break;
-				}
-
 				if (line.Contains("Frame "))
 				{
 					var split = line.Split(' ');

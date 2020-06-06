@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 
 using BizHawk.Common;
@@ -48,14 +47,9 @@ namespace BizHawk.Client.Common
 				}
 
 				Log.Clear();
-				while (true)
+				string line;
+				while ((line = reader.ReadLine()) != null)
 				{
-					var line = reader.ReadLine();
-					if (string.IsNullOrEmpty(line))
-					{
-						break;
-					}
-
 					if (line.Contains("Frame "))
 					{
 						var strs = line.Split(' ');
@@ -82,14 +76,9 @@ namespace BizHawk.Client.Common
 			else
 			{
 				var i = 0;
-				while (true)
+				string line;
+				while ((line = reader.ReadLine()) != null)
 				{
-					var line = reader.ReadLine();
-					if (line == null)
-					{
-						break;
-					}
-
 					if (line.Contains("Frame "))
 					{
 						var strs = line.Split(' ');
@@ -153,14 +142,9 @@ namespace BizHawk.Client.Common
 			errorMessage = "";
 			var newLog = new List<string>();
 			var stateFrame = 0;
-			while (true)
+			string line;
+			while ((line = reader.ReadLine()) != null)
 			{
-				var line = reader.ReadLine();
-				if (line == null)
-				{
-					break;
-				}
-
 				if (line.Trim() == "")
 				{
 					continue;
