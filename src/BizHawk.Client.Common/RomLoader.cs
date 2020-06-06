@@ -34,10 +34,12 @@ namespace BizHawk.Client.Common
 	public class RomLoader
 	{
 		private readonly Config _config;
+		private readonly FirmwareManager _firmwareManager;
 
-		public RomLoader(Config config)
+		public RomLoader(Config config, FirmwareManager firmwareManager)
 		{
 			_config = config;
+			_firmwareManager = firmwareManager;
 		}
 
 		public enum LoadErrorType
@@ -889,7 +891,7 @@ namespace BizHawk.Client.Common
 							var ti83Bios = nextComm.CoreFileProvider.GetFirmware("TI83", "Rom", true);
 
 							// TODO: make the ti-83 a proper firmware file
-							var ti83BiosPath = Global.FirmwareManager.Request(_config.PathEntries, _config.FirmwareUserSpecifications, "TI83", "Rom");
+							var ti83BiosPath = _firmwareManager.Request(_config.PathEntries, _config.FirmwareUserSpecifications, "TI83", "Rom");
 							using (var ti83AsHawkFile = new HawkFile(ti83BiosPath))
 							{
 								var ti83BiosAsRom = new RomGame(ti83AsHawkFile);
