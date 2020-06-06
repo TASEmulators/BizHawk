@@ -41,7 +41,7 @@ namespace BizHawk.Client.Common
 			// We are in record mode so replace the movie log with the one from the savestate
 			if (!Session.MultiTrack.IsActive)
 			{
-				if (Global.Config.Movies.EnableBackupMovies && MakeBackup && Log.Count != 0)
+				if (Session.Settings.EnableBackupMovies && MakeBackup && Log.Count != 0)
 				{
 					SaveBackup();
 					MakeBackup = false;
@@ -124,14 +124,14 @@ namespace BizHawk.Client.Common
 
 			if (stateFramei.StrictlyBoundedBy(0.RangeTo(Log.Count)))
 			{
-				if (!Global.Config.Movies.VBAStyleMovieLoadState)
+				if (!Session.Settings.VBAStyleMovieLoadState)
 				{
 					Truncate(stateFramei);
 				}
 			}
 			else if (stateFramei > Log.Count) // Post movie savestate
 			{
-				if (!Global.Config.Movies.VBAStyleMovieLoadState)
+				if (!Session.Settings.VBAStyleMovieLoadState)
 				{
 					Truncate(Log.Count);
 				}
