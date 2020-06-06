@@ -57,6 +57,7 @@ namespace BizHawk.Client.Common
 			ControllerInputCoalescer.Definition = ActiveController.Definition;
 
 			UdLRControllerAdapter.Source = ActiveController.Or(AutoFireController);
+			UdLRControllerAdapter.AllowUdlr = Global.Config.AllowUdlr;
 
 			StickyXorAdapter.Source = UdLRControllerAdapter;
 			AutofireStickyXorAdapter.Source = StickyXorAdapter;

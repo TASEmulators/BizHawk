@@ -46,11 +46,8 @@
 			this.label3 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
 			this.label38 = new System.Windows.Forms.Label();
-			this.label1 = new System.Windows.Forms.Label();
-			this.rbUDLRForbid = new System.Windows.Forms.RadioButton();
-			this.rbUDLRPriority = new System.Windows.Forms.RadioButton();
-			this.rbUDLRAllow = new System.Windows.Forms.RadioButton();
 			this.btnMisc = new BizHawk.Client.EmuHawk.MenuButton();
+			this.AllowUdCheckbox = new System.Windows.Forms.CheckBox();
 			this.tabControl1.SuspendLayout();
 			this.tableLayoutPanel1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -168,26 +165,26 @@
             this.loadDefaultsToolStripMenuItem,
             this.clearToolStripMenuItem});
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(142, 70);
+			this.contextMenuStrip1.Size = new System.Drawing.Size(147, 70);
 			// 
 			// testToolStripMenuItem
 			// 
 			this.testToolStripMenuItem.Name = "testToolStripMenuItem";
-			this.testToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+			this.testToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
 			this.testToolStripMenuItem.Text = "Save Defaults";
 			this.testToolStripMenuItem.Click += new System.EventHandler(this.ButtonSaveDefaults_Click);
 			// 
 			// loadDefaultsToolStripMenuItem
 			// 
 			this.loadDefaultsToolStripMenuItem.Name = "loadDefaultsToolStripMenuItem";
-			this.loadDefaultsToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+			this.loadDefaultsToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
 			this.loadDefaultsToolStripMenuItem.Text = "Load Defaults";
 			this.loadDefaultsToolStripMenuItem.Click += new System.EventHandler(this.ButtonLoadDefaults_Click);
 			// 
 			// clearToolStripMenuItem
 			// 
 			this.clearToolStripMenuItem.Name = "clearToolStripMenuItem";
-			this.clearToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+			this.clearToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
 			this.clearToolStripMenuItem.Text = "Clear";
 			this.clearToolStripMenuItem.Click += new System.EventHandler(this.ClearBtn_Click);
 			// 
@@ -221,52 +218,6 @@
 			this.label38.TabIndex = 110;
 			this.label38.Text = "* Escape clears a key mapping";
 			// 
-			// label1
-			// 
-			this.label1.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(442, 550);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(57, 13);
-			this.label1.TabIndex = 113;
-			this.label1.Text = "U+D/L+R:";
-			// 
-			// rbUDLRForbid
-			// 
-			this.rbUDLRForbid.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-			this.rbUDLRForbid.AutoSize = true;
-			this.rbUDLRForbid.Location = new System.Drawing.Point(559, 548);
-			this.rbUDLRForbid.Name = "rbUDLRForbid";
-			this.rbUDLRForbid.Size = new System.Drawing.Size(54, 17);
-			this.rbUDLRForbid.TabIndex = 114;
-			this.rbUDLRForbid.TabStop = true;
-			this.rbUDLRForbid.Text = "Forbid";
-			this.rbUDLRForbid.UseVisualStyleBackColor = true;
-			// 
-			// rbUDLRPriority
-			// 
-			this.rbUDLRPriority.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-			this.rbUDLRPriority.AutoSize = true;
-			this.rbUDLRPriority.Location = new System.Drawing.Point(622, 548);
-			this.rbUDLRPriority.Name = "rbUDLRPriority";
-			this.rbUDLRPriority.Size = new System.Drawing.Size(56, 17);
-			this.rbUDLRPriority.TabIndex = 115;
-			this.rbUDLRPriority.TabStop = true;
-			this.rbUDLRPriority.Text = "Priority";
-			this.rbUDLRPriority.UseVisualStyleBackColor = true;
-			// 
-			// rbUDLRAllow
-			// 
-			this.rbUDLRAllow.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-			this.rbUDLRAllow.AutoSize = true;
-			this.rbUDLRAllow.Location = new System.Drawing.Point(503, 548);
-			this.rbUDLRAllow.Name = "rbUDLRAllow";
-			this.rbUDLRAllow.Size = new System.Drawing.Size(50, 17);
-			this.rbUDLRAllow.TabIndex = 116;
-			this.rbUDLRAllow.TabStop = true;
-			this.rbUDLRAllow.Text = "Allow";
-			this.rbUDLRAllow.UseVisualStyleBackColor = true;
-			// 
 			// btnMisc
 			// 
 			this.btnMisc.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -278,6 +229,17 @@
 			this.btnMisc.Text = "Misc...";
 			this.btnMisc.UseVisualStyleBackColor = true;
 			// 
+			// AllowUdCheckbox
+			// 
+			this.AllowUdCheckbox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.AllowUdCheckbox.AutoSize = true;
+			this.AllowUdCheckbox.Location = new System.Drawing.Point(576, 548);
+			this.AllowUdCheckbox.Name = "AllowUdCheckbox";
+			this.AllowUdCheckbox.Size = new System.Drawing.Size(101, 17);
+			this.AllowUdCheckbox.TabIndex = 114;
+			this.AllowUdCheckbox.Text = "Allow U+D/L+R";
+			this.AllowUdCheckbox.UseVisualStyleBackColor = true;
+			// 
 			// ControllerConfig
 			// 
 			this.AcceptButton = this.buttonOK;
@@ -285,10 +247,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.buttonCancel;
 			this.ClientSize = new System.Drawing.Size(932, 572);
-			this.Controls.Add(this.rbUDLRAllow);
-			this.Controls.Add(this.rbUDLRPriority);
-			this.Controls.Add(this.rbUDLRForbid);
-			this.Controls.Add(this.label1);
+			this.Controls.Add(this.AllowUdCheckbox);
 			this.Controls.Add(this.label3);
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.label38);
@@ -297,7 +256,6 @@
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.buttonOK);
 			this.Controls.Add(this.checkBoxAutoTab);
-			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.GameController_MultiSize;
 			this.Name = "ControllerConfig";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Controller Config";
@@ -332,9 +290,6 @@
 				private System.Windows.Forms.Label label3;
 				private System.Windows.Forms.Label label2;
 				private System.Windows.Forms.Label label38;
-				private System.Windows.Forms.Label label1;
-				private System.Windows.Forms.RadioButton rbUDLRForbid;
-				private System.Windows.Forms.RadioButton rbUDLRPriority;
-				private System.Windows.Forms.RadioButton rbUDLRAllow;
+		private System.Windows.Forms.CheckBox AllowUdCheckbox;
 	}
 }

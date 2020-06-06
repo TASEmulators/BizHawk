@@ -3,18 +3,16 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
-using BizHawk.Common;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
-using System.Text.RegularExpressions;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class ControllerConfig : Form
 	{
-		private const int MaxPlayers = 12;
 		private static readonly Dictionary<string, Lazy<Bitmap>> ControllerImages = new Dictionary<string, Lazy<Bitmap>>();
 		private readonly IEmulator _emulator;
 		private readonly Config _config;
@@ -67,6 +65,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ControllerConfig_Load(object sender, EventArgs e)
 		{
+			Icon = Properties.Resources.GameController_MultiSize;
 			Text = $"{_emulator.ControllerDefinition.Name} Configuration";
 		}
 
@@ -180,9 +179,7 @@ namespace BizHawk.Client.EmuHawk
 			SuspendLayout();
 			LoadPanels(_config);
 
-			rbUDLRAllow.Checked = _config.AllowUdlr;
-			rbUDLRForbid.Checked = _config.ForbidUdlr;
-			rbUDLRPriority.Checked = !_config.AllowUdlr && !_config.ForbidUdlr;
+			AllowUdCheckbox.Checked = _config.AllowUdlr;
 			checkBoxAutoTab.Checked = _config.InputConfigAutoTab;
 
 			SetControllerPicture(_emulator.ControllerDefinition.Name);
@@ -327,8 +324,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ButtonOk_Click(object sender, EventArgs e)
 		{
-			_config.AllowUdlr = rbUDLRAllow.Checked;
-			_config.ForbidUdlr = rbUDLRForbid.Checked;
+			_config.AllowUdlr = AllowUdCheckbox.Checked;
 			_config.InputConfigAutoTab = checkBoxAutoTab.Checked;
 
 			Save();

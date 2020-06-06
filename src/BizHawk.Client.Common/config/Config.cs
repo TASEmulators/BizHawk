@@ -77,7 +77,6 @@ namespace BizHawk.Client.Common
 		public bool HandleAlternateKeyboardLayouts { get; set; }
 		public bool SingleInstanceMode { get; set; }
 		public bool AllowUdlr { get; set; }
-		public bool ForbidUdlr { get; set; }
 		public bool ShowContextMenu { get; set; } = true;
 		public bool HotkeyConfigAutoTab { get; set; } = true;
 		public bool InputConfigAutoTab { get; set; } = true;
