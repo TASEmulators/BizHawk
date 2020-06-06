@@ -23,7 +23,7 @@ namespace BizHawk.BizInvoke
 		private class U2
 		{
 			[FieldOffset(0)]
-			public CF Target;
+			public object Target;
 		}
 		private class CF
 		{
@@ -40,6 +40,17 @@ namespace BizHawk.BizInvoke
 			fixed(int* fx = &c.FirstField)
 			{
 				var u = new U { Second = new U2 { Target = c }};
+				ret = (int)((ulong)(UIntPtr)fx - (ulong)u.First.P);
+			}
+			return ret;
+		}
+		public static unsafe int ComputeStringOffset()
+		{
+			var s = new string(new char[0]);
+			int ret;
+			fixed(char* fx = s)
+			{
+				var u = new U { Second = new U2 { Target = s }};
 				ret = (int)((ulong)(UIntPtr)fx - (ulong)u.First.P);
 			}
 			return ret;

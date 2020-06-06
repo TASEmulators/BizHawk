@@ -49,7 +49,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			public uint BackdropColor;
 		}
 
-		[BizImport(CallingConvention.Cdecl, Compatibility = true)]
+		[BizImport(CallingConvention.Cdecl)]
 		public abstract bool gpgx_init(
 			string feromextension,
 			load_archive_cb feload_archive_cb,

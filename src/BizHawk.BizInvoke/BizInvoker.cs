@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.InteropServices;
-
+using System.Text;
 using BizHawk.Common;
 
 namespace BizHawk.BizInvoke
@@ -53,6 +53,10 @@ namespace BizHawk.BizInvoke
 		/// How far into a class pointer the first field is.  Different on mono and fw.
 		/// </summary>
 		private static readonly int ClassFieldOffset;
+		/// <summary>
+		/// How far into a string pointer the first chair is.
+		/// </summary>
+		private static readonly int StringOffset;
 
 		static BizInvoker()
 		{
@@ -60,6 +64,7 @@ namespace BizHawk.BizInvoke
 			ImplAssemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(aname, AssemblyBuilderAccess.Run);
 			ImplModuleBuilder = ImplAssemblyBuilder.DefineDynamicModule("BizInvokerModule");
 			ClassFieldOffset = BizInvokerUtilities.ComputeClassFieldOffset();
+			StringOffset = BizInvokerUtilities.ComputeStringOffset();
 		}
 
 		/// <summary>
@@ -493,7 +498,7 @@ namespace BizHawk.BizInvoke
 				il.Emit(OpCodes.Ldarg_0);
 				il.Emit(OpCodes.Ldfld, adapterField);
 				il.Emit(OpCodes.Ldarg, (short)idx);
-				il.Emit(OpCodes.Call, mi);
+				il.EmitCall(OpCodes.Callvirt, mi, Type.EmptyTypes);
 				il.Emit(OpCodes.Br, end);
 
 				il.MarkLabel(isNull);
@@ -504,7 +509,60 @@ namespace BizHawk.BizInvoke
 
 			if (type == typeof(string))
 			{
-				throw new NotImplementedException("Cannot marshal strings");
+				var end = il.DefineLabel();
+				var isNull = il.DefineLabel();
+
+				il.Emit(OpCodes.Ldarg, (short)idx);
+				il.Emit(OpCodes.Brfalse, isNull);
+
+				var encoding = il.DeclareLocal(typeof(Encoding), false);
+				il.EmitCall(OpCodes.Call, typeof(Encoding).GetProperty("UTF8").GetGetMethod(), Type.EmptyTypes);
+				il.Emit(OpCodes.Stloc, encoding);
+
+				var strlenbytes = il.DeclareLocal(typeof(int), false);
+				il.Emit(OpCodes.Ldloc, encoding);
+				il.Emit(OpCodes.Ldarg, (short)idx);
+				il.Emit(OpCodes.Call, typeof(Encoding).GetMethod("GetByteCount", new[] { typeof(string) }));
+				il.Emit(OpCodes.Stloc, strlenbytes);
+
+				var strval = il.DeclareLocal(typeof(string), true); // pin!
+				il.Emit(OpCodes.Ldarg, (short)idx);
+				il.Emit(OpCodes.Stloc, strval);
+
+				var bytes = il.DeclareLocal(typeof(IntPtr));
+				il.Emit(OpCodes.Ldloc, strlenbytes);
+				il.Emit(OpCodes.Ldc_I4_1);
+				il.Emit(OpCodes.Add); // +1 for null byte
+				il.Emit(OpCodes.Conv_U);
+				il.Emit(OpCodes.Localloc);
+				il.Emit(OpCodes.Stloc, bytes);
+
+				// this
+				il.Emit(OpCodes.Ldloc, encoding);
+				// chars
+				il.Emit(OpCodes.Ldloc, strval);
+				il.Emit(OpCodes.Conv_U);
+				il.Emit(OpCodes.Ldc_I4, StringOffset);
+				il.Emit(OpCodes.Add);
+				// charcount
+				il.Emit(OpCodes.Ldloc, strval);
+				il.Emit(OpCodes.Call, typeof(string).GetProperty("Length").GetGetMethod());
+				// bytes
+				il.Emit(OpCodes.Ldloc, bytes);
+				// bytelength
+				il.Emit(OpCodes.Ldloc, strlenbytes);
+				// call
+				il.Emit(OpCodes.Call, typeof(Encoding).GetMethod("GetBytes", new[] { typeof(char*), typeof(int), typeof(byte*), typeof(int) }));
+				// unused ret
+				il.Emit(OpCodes.Pop);
+
+				il.Emit(OpCodes.Ldloc, bytes);
+				il.Emit(OpCodes.Br, end);
+
+				il.MarkLabel(isNull);
+				LoadConstant(il, IntPtr.Zero);
+				il.MarkLabel(end);
+				return typeof(IntPtr);
 			}
 
 			if (type.IsClass)
