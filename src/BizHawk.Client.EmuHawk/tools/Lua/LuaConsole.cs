@@ -635,9 +635,9 @@ namespace BizHawk.Client.EmuHawk
 				sfd.FileName = Path.GetFileNameWithoutExtension(LuaImp.ScriptList.Filename);
 				sfd.InitialDirectory = Path.GetDirectoryName(LuaImp.ScriptList.Filename);
 			}
-			else if (Global.Game != null)
+			else if (GlobalWin.Game != null)
 			{
-				sfd.FileName = Global.Game.FilesystemSafeName();
+				sfd.FileName = GlobalWin.Game.FilesystemSafeName();
 				sfd.InitialDirectory = Config.PathEntries.LuaAbsolutePath();
 			}
 			else
@@ -834,7 +834,7 @@ namespace BizHawk.Client.EmuHawk
 				DefaultExt = ".lua",
 				FileName = !string.IsNullOrWhiteSpace(LuaImp.ScriptList.Filename)
 					? Path.GetFileNameWithoutExtension(LuaImp.ScriptList.Filename)
-					: Path.GetFileNameWithoutExtension(Global.Game.Name),
+					: Path.GetFileNameWithoutExtension(GlobalWin.Game.Name),
 				OverwritePrompt = true,
 				Filter = new FilesystemFilterSet(FilesystemFilter.LuaScripts).ToString()
 			};

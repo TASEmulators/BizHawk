@@ -260,7 +260,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return Config.PathEntries.AbsolutePathFor(Path.Combine(
 				Config.PathEntries["Global", "Macros"].Path,
-				Global.Game.FilesystemSafeName()), null);
+				GlobalWin.Game.FilesystemSafeName()), null);
 		}
 
 		public bool SaveMacroAs(MovieZone macro)

@@ -890,8 +890,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private GameInfo Game
 		{
-			get => Global.Game;
-			set => Global.Game = value;
+			get => GlobalWin.Game;
+			set => GlobalWin.Game = value;
 		}
 
 		private Sound Sound => GlobalWin.Sound;
@@ -3679,10 +3679,10 @@ namespace BizHawk.Client.EmuHawk
 					//path = ioa_openrom.Path;
 				}
 
-				var oldGame = Global.Game;
+				var oldGame = GlobalWin.Game;
 				var result = loader.LoadRom(path, nextComm, ioaRetro?.CorePath);
 
-				Global.Game = result ? loader.Game : oldGame;
+				GlobalWin.Game = result ? loader.Game : oldGame;
 
 				// we need to replace the path in the OpenAdvanced with the canonical one the user chose.
 				// It can't be done until loader.LoadRom happens (for CanonicalFullPath)
@@ -3967,7 +3967,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				CloseGame(clearSram);
 				Emulator = new NullEmulator();
-				Global.Game = GameInfo.NullInstance;
+				GlobalWin.Game = GameInfo.NullInstance;
 
 				Tools.Restart(Emulator);
 				RewireSound();

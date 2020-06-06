@@ -118,7 +118,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var file = SaveFileDialog(
 				MainForm.CheatList.CurrentFileName,
-				Config.PathEntries.CheatsAbsolutePath(Global.Game.System),
+				Config.PathEntries.CheatsAbsolutePath(GlobalWin.Game.System),
 				"Cheat Files",
 				"cht");
 
@@ -350,7 +350,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var file = OpenFileDialog(
 				MainForm.CheatList.CurrentFileName,
-				Config.PathEntries.CheatsAbsolutePath(Global.Game.System),
+				Config.PathEntries.CheatsAbsolutePath(GlobalWin.Game.System),
 				"Cheat Files",
 				"cht");
 

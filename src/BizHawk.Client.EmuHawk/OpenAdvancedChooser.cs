@@ -72,7 +72,7 @@ namespace BizHawk.Client.EmuHawk
 			try
 			{
 				var coreComm = _mainForm.CreateCoreComm();
-				using var retro = new LibretroCore(coreComm, Global.Game, core);
+				using var retro = new LibretroCore(coreComm, GlobalWin.Game, core);
 				btnLibretroLaunchGame.Enabled = true;
 				if (retro.Description.SupportsNoGame)
 					btnLibretroLaunchNoGame.Enabled = true;

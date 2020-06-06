@@ -137,7 +137,7 @@ namespace BizHawk.Client.EmuHawk
 		private void HideShowGameDbButton()
 		{
 			AddToGameDbBtn.Visible = Emulator.CanGenerateGameDBEntries()
-				&& (Global.Game.Status == RomStatus.Unknown || Global.Game.Status == RomStatus.NotInDatabase);
+				&& (GlobalWin.Game.Status == RomStatus.Unknown || GlobalWin.Game.Status == RomStatus.NotInDatabase);
 		}
 
 		private void AddToGameDbBtn_Click(object sender, EventArgs e)
@@ -148,7 +148,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var gameDbEntry = Emulator.AsGameDBEntryGenerator().GenerateGameDbEntry();
 				var userDb = Path.Combine(PathUtils.ExeDirectoryPath, "gamedb", "gamedb_user.txt");
-				Global.Game.Status = gameDbEntry.Status = picker.PickedStatus;
+				GlobalWin.Game.Status = gameDbEntry.Status = picker.PickedStatus;
 				Database.SaveDatabaseEntry(userDb, gameDbEntry);
 				MainForm.UpdateDumpIcon();
 				HideShowGameDbButton();

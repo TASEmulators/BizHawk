@@ -774,7 +774,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public string GenerateDefaultCheatFilename()
 		{
-			var path = _config.PathEntries.CheatsAbsolutePath(Global.Game.System);
+			var path = _config.PathEntries.CheatsAbsolutePath(GlobalWin.Game.System);
 
 			var f = new FileInfo(path);
 			if (f.Directory != null && f.Directory.Exists == false)
@@ -782,7 +782,7 @@ namespace BizHawk.Client.EmuHawk
 				f.Directory.Create();
 			}
 
-			return Path.Combine(path, $"{Global.Game.FilesystemSafeName()}.cht");
+			return Path.Combine(path, $"{GlobalWin.Game.FilesystemSafeName()}.cht");
 		}
 
 		public void UpdateCheatRelatedTools(object sender, CheatCollection.CheatListEventArgs e)

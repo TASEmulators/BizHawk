@@ -345,7 +345,7 @@ namespace BizHawk.Client.EmuHawk
 			using var sfd = new SaveFileDialog
 			{
 				InitialDirectory = GlobalWin.Config.PathEntries.PalettesAbsolutePathFor("GB"),
-				FileName = $"{Global.Game.Name}.pal",
+				FileName = $"{GlobalWin.Game.Name}.pal",
 				Filter = new FilesystemFilterSet(FilesystemFilter.Palettes).ToString(),
 				RestoreDirectory = true
 			};

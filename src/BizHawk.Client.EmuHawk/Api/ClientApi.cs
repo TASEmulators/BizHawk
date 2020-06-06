@@ -122,7 +122,7 @@ namespace BizHawk.Client.EmuHawk
 		/// Load a savestate specified by its name
 		/// </summary>
 		/// <param name="name">Savestate friendly name</param>
-		public static void LoadState(string name) => GlobalWin.MainForm.LoadState(Path.Combine(GlobalWin.Config.PathEntries.SaveStateAbsolutePath(Global.Game.System), $"{name}.State"), name, suppressOSD: false);
+		public static void LoadState(string name) => GlobalWin.MainForm.LoadState(Path.Combine(GlobalWin.Config.PathEntries.SaveStateAbsolutePath(GlobalWin.Game.System), $"{name}.State"), name, suppressOSD: false);
 
 		/// <summary>
 		/// Raised before a quickload is done (just after pressing shortcut button)
@@ -202,7 +202,7 @@ namespace BizHawk.Client.EmuHawk
 		/// Save a state with specified name
 		/// </summary>
 		/// <param name="name">Savestate friendly name</param>
-		public static void SaveState(string name) => GlobalWin.MainForm.SaveState(Path.Combine(GlobalWin.Config.PathEntries.SaveStateAbsolutePath(Global.Game.System), $"{name}.State"), name, fromLua: false);
+		public static void SaveState(string name) => GlobalWin.MainForm.SaveState(Path.Combine(GlobalWin.Config.PathEntries.SaveStateAbsolutePath(GlobalWin.Game.System), $"{name}.State"), name, fromLua: false);
 
 		/// <summary>
 		/// Sets the extra padding added to the 'native' surface so that you can draw HUD elements in predictable placements

@@ -35,7 +35,7 @@ namespace BizHawk.Client.EmuHawk
 			AddButton_Click(null, null);
 			AddButton_Click(null, null);
 
-			if (!Global.Game.IsNullInstance() &&  !MainForm.CurrentlyOpenRom.EndsWith(".xml"))
+			if (!GlobalWin.Game.IsNullInstance() &&  !MainForm.CurrentlyOpenRom.EndsWith(".xml"))
 			{
 				if (MainForm.CurrentlyOpenRom.Contains("|"))
 				{
@@ -215,12 +215,12 @@ namespace BizHawk.Client.EmuHawk
 			string filename = "";
 			string initialDirectory = Config.PathEntries.MultiDiskAbsolutePath();
 
-			if (!Global.Game.IsNullInstance())
+			if (!GlobalWin.Game.IsNullInstance())
 			{
 				filename = NameBox.Text;
 				if (string.IsNullOrWhiteSpace(filename))
 				{
-					filename = Path.ChangeExtension(Global.Game.FilesystemSafeName(), ".xml");
+					filename = Path.ChangeExtension(GlobalWin.Game.FilesystemSafeName(), ".xml");
 				}
 
 				initialDirectory = Path.GetDirectoryName(filename);

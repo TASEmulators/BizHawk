@@ -145,7 +145,7 @@ namespace BizHawk.Client.EmuHawk
 			return default;
 		}
 
-		public string GetSystemId() => Global.Game.System;
+		public string GetSystemId() => GlobalWin.Game.System;
 
 		public bool IsLagged()
 		{

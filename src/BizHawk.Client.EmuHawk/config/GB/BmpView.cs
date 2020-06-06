@@ -103,7 +103,7 @@ namespace BizHawk.Client.EmuHawk
 
 			using var sfd = new SaveFileDialog
 			{
-				FileName = $"{Global.Game.FilesystemSafeName()}-Palettes",
+				FileName = $"{GlobalWin.Game.FilesystemSafeName()}-Palettes",
 				InitialDirectory = path,
 				Filter = FilesystemFilterSet.Screenshots.ToString(),
 				RestoreDirectory = true

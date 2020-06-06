@@ -184,7 +184,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			using var sfd = new SaveFileDialog
 			{
-				FileName = $"{Global.Game.FilesystemSafeName()}-Nametables",
+				FileName = $"{GlobalWin.Game.FilesystemSafeName()}-Nametables",
 				InitialDirectory = GlobalWin.Config.PathEntries.ScreenshotAbsolutePathFor("NES"),
 				Filter = FilesystemFilterSet.Screenshots.ToString(),
 				RestoreDirectory = true

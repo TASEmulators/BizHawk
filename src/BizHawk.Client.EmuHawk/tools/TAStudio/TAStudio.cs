@@ -686,7 +686,7 @@ namespace BizHawk.Client.EmuHawk
 			
 			tasMovie.PopulateWithDefaultHeaderValues(
 				Emulator,
-				Global.Game,
+				GlobalWin.Game,
 				GlobalWin.FirmwareManager,
 				Config.DefaultAuthor);
 
@@ -813,7 +813,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return Path.Combine(
 				Config.PathEntries.MovieAbsolutePath(),
-				$"{Global.Game.FilesystemSafeName()}.{MovieService.TasMovieExtension}");
+				$"{GlobalWin.Game.FilesystemSafeName()}.{MovieService.TasMovieExtension}");
 		}
 
 		private void SaveTas()

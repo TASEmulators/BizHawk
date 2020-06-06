@@ -258,7 +258,7 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public void DrawScreenInfo(IBlitter g)
 		{
-			if (GlobalWin.Config.DisplayFrameCounter && !Global.Game.IsNullInstance())
+			if (GlobalWin.Config.DisplayFrameCounter && !GlobalWin.Game.IsNullInstance())
 			{
 				string message = MakeFrameCounter();
 				var point = GetCoordinates(g, GlobalWin.Config.FrameCounter, message);
@@ -270,7 +270,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			if (GlobalWin.Config.DisplayInput && !Global.Game.IsNullInstance())
+			if (GlobalWin.Config.DisplayInput && !GlobalWin.Game.IsNullInstance())
 			{
 				if (Global.MovieSession.Movie.IsPlaying()
 					|| (Global.MovieSession.Movie.IsFinished() && GlobalWin.Emulator.Frame == Global.MovieSession.Movie.InputLogLength)) // Account for the last frame of the movie, the movie state is immediately "Finished" here but we still want to show the input

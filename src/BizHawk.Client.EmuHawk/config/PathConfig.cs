@@ -59,7 +59,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetDefaultFocusedTab()
 		{
-			var tab = FindTabByName(Global.Game.System);
+			var tab = FindTabByName(GlobalWin.Game.System);
 			if (tab != null)
 			{
 				PathTabControl.SelectTab(tab);

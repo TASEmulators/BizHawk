@@ -107,7 +107,7 @@ namespace BizHawk.Client.EmuHawk
 							: "This tool doesn't work with this system";
 						return item;
 					}
-					if (applicabilityAttrs[0].NotApplicableTo(Global.Game.Hash, system))
+					if (applicabilityAttrs[0].NotApplicableTo(GlobalWin.Game.Hash, system))
 					{
 						item.ToolTipText = "This tool doesn't work with this game";
 						return item;
