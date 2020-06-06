@@ -196,10 +196,6 @@ namespace BizHawk.Client.Common
 				}
 			}
 
-			// Note: this populates MovieControllerAdapter's Type with the appropriate controller
-			// Don't set it to a movie instance of the adapter or you will lose the definition!
-			Global.InputManager.RewireInputChain();
-
 			if (!record)
 			{
 				if (preferredCores.ContainsKey(systemId))
