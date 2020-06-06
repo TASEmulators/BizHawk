@@ -1036,7 +1036,7 @@ void sgb_render_audio(uint64_t time, void (*callback)(int16_t l, int16_t r, uint
 
 	uint64_t t = sgb.frame_start + refclocks_per_spc_sample - sgb.clock_remainder;
 	for (int i = 0; i < samples; i++, t += refclocks_per_spc_sample)
-		callback(sound_buffer[i * 2], sound_buffer[i * 2] + 1, t);
+		callback(sound_buffer[i * 2], sound_buffer[i * 2 + 1], t);
 
 	sgb.frame_start = time;
 	sgb.clock_remainder = new_remainder;
