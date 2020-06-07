@@ -22,13 +22,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void StateHistorySettings_Load(object sender, EventArgs e)
 		{
-			_stateSizeMb = Statable.SaveStateBinary().Length / 1048576.0M;
+			var stateSize = Statable.SaveStateBinary().Length;
+			_stateSizeMb = stateSize / 1048576.0M;
 
 			MemCapacityNumeric.Maximum = 1024 * 8;
 			MemCapacityNumeric.Minimum = _stateSizeMb + 1;
 
-			MemStateGapDividerNumeric.Maximum = Statable.SaveStateBinary().Length / 1024 / 2 + 1;
-			MemStateGapDividerNumeric.Minimum = Math.Max(Statable.SaveStateBinary().Length / 1024 / 16, 1);
+			MemStateGapDividerNumeric.Maximum = stateSize / 1024 / 2 + 1;
+			MemStateGapDividerNumeric.Minimum = Math.Max(stateSize / 1024 / 16, 1);
 
 			MemCapacityNumeric.Value = NumberExtensions.Clamp(_settings.CapacityMb, MemCapacityNumeric.Minimum, MemCapacityNumeric.Maximum);
 			DiskCapacityNumeric.Value = NumberExtensions.Clamp(_settings.DiskCapacityMb, MemCapacityNumeric.Minimum, MemCapacityNumeric.Maximum);
