@@ -924,7 +924,7 @@ namespace BizHawk.Client.Common
 
 			try
 			{
-				var doExtensionChecks = false;
+				var cancel = false;
 
 				if (OpenAdvanced is OpenAdvanced_Libretro)
 				{
@@ -994,44 +994,41 @@ namespace BizHawk.Client.Common
 				}
 				else
 				{
-					// if not libretro: do extension checking
-					doExtensionChecks = true;
-
 					// do the archive binding we had to skip
 					if (!HandleArchiveBinding(file))
 					{
 						return false;
 					}
-				}
 
-				var cancel = false;
-				var ext = file.Extension.ToLowerInvariant();
-				if (doExtensionChecks) switch (ext)
-				{
-					case ".m3u":
-						(nextEmulator, game) = LoadM3U(path, nextComm, file);
-						break;
-					case ".xml":
-						var result = LoadXML(path, nextComm, file); // must be called before LoadOther because of SNES hacks
-						if (result == null) return false;
-						(nextEmulator, rom, game) = result.Value;
-						break;
-					case ".psf":
-					case ".minipsf":
-						(nextEmulator, rom, game) = LoadPSF(path, nextComm, file);
-						break;
-					default:
-						if (Disc.IsValidExtension(ext))
-						{
-							var result1 = LoadDisc(path, nextComm, file, ext);
-							if (result1 == null) return false;
-							(nextEmulator, game) = result1.Value;
-						}
-						else
-						{
-							(nextEmulator, rom, game) = LoadOther(path, nextComm, forceAccurateCore, file, out cancel);
-						}
-						break;
+					// not libretro: do extension checking
+					var ext = file.Extension.ToLowerInvariant();
+					switch (ext)
+					{
+						case ".m3u":
+							(nextEmulator, game) = LoadM3U(path, nextComm, file);
+							break;
+						case ".xml":
+							var result = LoadXML(path, nextComm, file); // must be called before LoadOther because of SNES hacks
+							if (result == null) return false;
+							(nextEmulator, rom, game) = result.Value;
+							break;
+						case ".psf":
+						case ".minipsf":
+							(nextEmulator, rom, game) = LoadPSF(path, nextComm, file);
+							break;
+						default:
+							if (Disc.IsValidExtension(ext))
+							{
+								var result1 = LoadDisc(path, nextComm, file, ext);
+								if (result1 == null) return false;
+								(nextEmulator, game) = result1.Value;
+							}
+							else
+							{
+								(nextEmulator, rom, game) = LoadOther(path, nextComm, forceAccurateCore, file, out cancel);
+							}
+							break;
+					}
 				}
 
 				if (nextEmulator == null)
