@@ -24,6 +24,11 @@ namespace BizHawk.Client.Common
 		MultitrackRecorder MultiTrack { get; }
 
 		/// <summary>
+		/// Provides a source for sticky controls ot use when recording
+		/// </summary>
+		IStickyController StickySource { get; set; }
+
+		/// <summary>
 		/// Represents the input source that is fed to
 		/// the movie for the purpsoe of recording, if active,
 		/// or to simply pass through if inactive

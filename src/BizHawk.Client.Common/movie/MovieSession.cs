@@ -54,6 +54,7 @@ namespace BizHawk.Client.Common
 
 		public IInputAdapter MovieIn { get; } = new CopyControllerAdapter();
 		public IInputAdapter MovieOut { get; } = new CopyControllerAdapter();
+		public IStickyController StickySource { get; set; }
 
 		public IMovieController MovieController { get; private set; } = new Bk2Controller("", NullController.Instance.Definition);
 
@@ -435,8 +436,7 @@ namespace BizHawk.Client.Common
 			// we don't want TasMovie to latch user input outside its internal recording mode, so limit it to autohold
 			if (Movie is ITasMovie && Movie.IsPlayingOrFinished())
 			{
-				// TODO: same as MovieIn, since autofiresitcky is the last in the chain before movie
-				MovieController.SetFromSticky(Global.InputManager.AutofireStickyXorAdapter);
+				MovieController.SetFromSticky(StickySource);
 			}
 			else
 			{
