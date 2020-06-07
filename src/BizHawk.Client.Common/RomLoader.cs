@@ -312,10 +312,10 @@ namespace BizHawk.Client.Common
 				}
 			}
 
-			IEmulator nextEmulator = null;
+			IEmulator nextEmulator;
 			switch (game.System)
 			{
-				case "NULL":
+				default:
 					nextEmulator = null;
 					break;
 				case "GEN":
@@ -335,9 +335,9 @@ namespace BizHawk.Client.Common
 					else
 					{
 						var sw = new StringWriter();
-						sw.WriteLine("Disc was identified (99.99% confidently) as known good with disc id hash CRC32:{0:X8}", discHash);
+						sw.WriteLine($"Disc was identified (99.99% confidently) as known good with disc id hash CRC32:{discHash}");
 						sw.WriteLine("Nonetheless it could be an unrecognized romhack or patched version.");
-						sw.WriteLine("According to redump.org, the ideal hash for entire disc is: CRC32:{0:X8}", game.GetStringValue("dh"));
+						sw.WriteLine($"According to redump.org, the ideal hash for entire disc is: CRC32:{game.GetStringValue("dh")}");
 						sw.WriteLine("The file you loaded hasn't been hashed entirely (it would take too long)");
 						sw.WriteLine("Compare it with the full hash calculated by the PSX menu's Hash Discs tool");
 						romDetails = sw.ToString();
@@ -352,7 +352,7 @@ namespace BizHawk.Client.Common
 				case "PCE": // TODO: this is clearly not used, its set to PCE by code above
 				case "PCECD":
 					string core = CoreNames.PceHawk;
-					if (_config.PreferredCores.TryGetValue("PCECD", out string preferredCore))
+					if (_config.PreferredCores.TryGetValue("PCECD", out var preferredCore))
 					{
 						core = preferredCore;
 					}
@@ -366,9 +366,9 @@ namespace BizHawk.Client.Common
 						nextEmulator = new TerboGrafix(game, new[] { disc }, nextComm,
 							(Emulation.Cores.Waterbox.NymaCore.NymaSettings)GetCoreSettings<TerboGrafix>(),
 							(Emulation.Cores.Waterbox.NymaCore.NymaSyncSettings)GetCoreSyncSettings<TerboGrafix>(), Deterministic);
-						// nextEmulator = new TerboGrafixSanic(game, new[] { disc }, nextComm,
-						// 	(Emulation.Cores.Waterbox.NymaCore.NymaSettings)GetCoreSettings<TerboGrafixSanic>(),
-						// 	(Emulation.Cores.Waterbox.NymaCore.NymaSyncSettings)GetCoreSyncSettings<TerboGrafixSanic>(), Deterministic);
+//						nextEmulator = new TerboGrafixSanic(game, new[] { disc }, nextComm,
+//							(Emulation.Cores.Waterbox.NymaCore.NymaSettings)GetCoreSettings<TerboGrafixSanic>(),
+//							(Emulation.Cores.Waterbox.NymaCore.NymaSyncSettings)GetCoreSyncSettings<TerboGrafixSanic>(), Deterministic);
 					}
 
 					break;
@@ -413,9 +413,9 @@ namespace BizHawk.Client.Common
 				}
 				else
 				{
-					sw.WriteLine("Disc was identified (99.99% confidently) as known good with disc id hash CRC32:{0:X8}", discHash);
+					sw.WriteLine($"Disc was identified (99.99% confidently) as known good with disc id hash CRC32:{discHash}");
 					sw.WriteLine("Nonetheless it could be an unrecognized romhack or patched version.");
-					sw.WriteLine("According to redump.org, the ideal hash for entire disc is: CRC32:{0:X8}", game.GetStringValue("dh"));
+					sw.WriteLine($"According to redump.org, the ideal hash for entire disc is: CRC32:{game.GetStringValue("dh")}");
 					sw.WriteLine("The file you loaded hasn't been hashed entirely (it would take too long)");
 					sw.WriteLine("Compare it with the full hash calculated by the PSX menu's Hash Discs tool");
 				}
@@ -486,17 +486,10 @@ namespace BizHawk.Client.Common
 			switch (game.System)
 			{
 				default:
-					if (_config.PreferredCores.TryGetValue(game.System, out string coreName))
-					{
-						core = CoreInventory.Instance[game.System, coreName];
-					}
-					else
-					{
-						core = CoreInventory.Instance[game.System];
-					}
-
+					core = _config.PreferredCores.TryGetValue(game.System, out var coreName)
+						? CoreInventory.Instance[game.System, coreName]
+						: CoreInventory.Instance[game.System];
 					break;
-
 				case null:
 					// The user picked nothing in the Core picker
 					break;
@@ -515,7 +508,6 @@ namespace BizHawk.Client.Common
 
 					break;
 				case "SNES":
-				{
 					var name = _config.PreferredCores["SNES"];
 					if (game.ForcedCore.ToLower() == "snes9x")
 					{
@@ -540,9 +532,7 @@ namespace BizHawk.Client.Common
 						nextEmulator = snes;
 					}
 					break;
-				}
 				case "NES":
-				{
 					// apply main spur-of-the-moment switcheroo as lowest priority
 					string preference = _config.PreferredCores["NES"];
 
@@ -563,9 +553,7 @@ namespace BizHawk.Client.Common
 					}
 
 					core = CoreInventory.Instance["NES", preference];
-				}
 					break;
-
 				case "GB":
 				case "GBC":
 					if (!_config.GbAsSgb)
@@ -615,15 +603,7 @@ namespace BizHawk.Client.Common
 					rom.GameInfo.Name = gameName;
 					break;
 				case "GEN":
-					if (game.ForcedCore?.ToLower() == "pico")
-					{
-						core = CoreInventory.Instance["GEN", CoreNames.PicoDrive];
-					}
-					else
-					{
-						core = CoreInventory.Instance["GEN", CoreNames.Gpgx];
-					}
-
+					core = CoreInventory.Instance["GEN", game.ForcedCore?.ToLower() == "pico" ? CoreNames.PicoDrive : CoreNames.Gpgx];
 					break;
 				case "32X":
 					core = CoreInventory.Instance["GEN", CoreNames.PicoDrive];
@@ -643,16 +623,16 @@ namespace BizHawk.Client.Common
 
 		private (IEmulator NextEmulator, RomGame Rom, GameInfo Game) LoadPSF(string path, CoreComm nextComm, HawkFile file)
 		{
-			Func<Stream, int, byte[]> cbDeflater = (Stream instream, int size) =>
+			byte[] CbDeflater(Stream instream, int size)
 			{
 				var inflater = new ICSharpCode.SharpZipLib.Zip.Compression.Inflater(false);
 				var iis = new ICSharpCode.SharpZipLib.Zip.Compression.Streams.InflaterInputStream(instream, inflater);
 				MemoryStream ret = new MemoryStream();
 				iis.CopyTo(ret);
 				return ret.ToArray();
-			};
+			}
 			PSF psf = new PSF();
-			psf.Load(path, cbDeflater);
+			psf.Load(path, CbDeflater);
 			var nextEmulator = new Octoshock(nextComm, psf, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>());
 
 			// total garbage, this
@@ -821,9 +801,9 @@ namespace BizHawk.Client.Common
 							}
 							else
 							{
-								sw.WriteLine("Disc was identified (99.99% confidently) as known good with disc id hash CRC32:{0:X8}", discHash);
+								sw.WriteLine($"Disc was identified (99.99% confidently) as known good with disc id hash CRC32:{discHash}");
 								sw.WriteLine("Nonetheless it could be an unrecognized romhack or patched version.");
-								sw.WriteLine("According to redump.org, the ideal hash for entire disc is: CRC32:{0:X8}", game.GetStringValue("dh"));
+								sw.WriteLine($"According to redump.org, the ideal hash for entire disc is: CRC32:{game.GetStringValue("dh")}");
 								sw.WriteLine("The file you loaded hasn't been hashed entirely (it would take too long)");
 								sw.WriteLine("Compare it with the full hash calculated by the PSX menu's Hash Discs tool");
 							}
@@ -1051,7 +1031,7 @@ namespace BizHawk.Client.Common
 				}
 				else if (file.Extension.ToLowerInvariant() == ".xml")
 				{
-					var result = LoadXML(path, nextComm, file);
+					var result = LoadXML(path, nextComm, file); // must be called before LoadOther because of SNES hacks
 					if (result == null) return false;
 					(nextEmulator, rom, game) = result.Value;
 				}
@@ -1076,11 +1056,7 @@ namespace BizHawk.Client.Common
 			}
 			catch (Exception ex)
 			{
-				string system = null;
-				if (game != null)
-				{
-					system = game.System;
-				}
+				var system = game?.System;
 
 				// all of the specific exceptions we're trying to catch here aren't expected to have inner exceptions,
 				// so drill down in case we got a TargetInvocationException or something like that
