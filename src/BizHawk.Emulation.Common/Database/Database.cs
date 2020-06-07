@@ -13,7 +13,9 @@ namespace BizHawk.Emulation.Common
 {
 	public static class Database
 	{
-		private static readonly Dictionary<string, CompactGameInfo> DB = new Dictionary<string, CompactGameInfo>();
+		private static Dictionary<string, CompactGameInfo> DB;
+
+		static EventWaitHandle acquire = new EventWaitHandle(false, EventResetMode.ManualReset);
 
 		private static string RemoveHashType(string hash)
 		{
@@ -31,19 +33,6 @@ namespace BizHawk.Emulation.Common
 			return hash;
 		}
 
-		public static GameInfo CheckDatabase(string hash)
-		{
-			var hashNoType = RemoveHashType(hash);
-			DB.TryGetValue(hashNoType, out var cgi);
-			if (cgi == null)
-			{
-				Console.WriteLine($"DB: hash {hash} not in game database.");
-				return null;
-			}
-
-			return new GameInfo(cgi);
-		}
-
 		private static void LoadDatabase_Escape(string line, string path)
 		{
 			if (!line.ToUpperInvariant().StartsWith("#INCLUDE"))
@@ -56,7 +45,7 @@ namespace BizHawk.Emulation.Common
 			if (File.Exists(filename))
 			{
 				Debug.WriteLine("loading external game database {0}", line);
-				LoadDatabase(filename);
+				InitializeDatabase(filename);
 			}
 			else
 			{
@@ -97,9 +86,15 @@ namespace BizHawk.Emulation.Common
 			File.AppendAllText(path, sb.ToString());
 		}
 
-		public static void LoadDatabase(string path)
+		static bool initialized = false;
+
+		static void initializeWork(string path)
 		{
-			using var reader = new StreamReader(new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite));
+			//reminder: this COULD be done on several threads, if it takes even longer
+			Dictionary<string, CompactGameInfo> db = new Dictionary<string, CompactGameInfo>();
+			var stopwatch = Stopwatch.StartNew();
+
+			using var reader = new StreamReader(new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read));
 			while (reader.EndOfStream == false)
 			{
 				var line = reader.ReadLine() ?? "";
@@ -129,17 +124,17 @@ namespace BizHawk.Emulation.Common
 						// remove a hash type identifier. well don't really need them for indexing (they're just there for human purposes)
 						Status = items[1].Trim()
 							switch
-							{
-								"B" => RomStatus.BadDump,
-								"V" => RomStatus.BadDump,
-								"T" => RomStatus.TranslatedRom,
-								"O" => RomStatus.Overdump,
-								"I" => RomStatus.Bios,
-								"D" => RomStatus.Homebrew,
-								"H" => RomStatus.Hack,
-								"U" => RomStatus.Unknown,
-								_ => RomStatus.GoodDump
-							},
+						{
+							"B" => RomStatus.BadDump,
+							"V" => RomStatus.BadDump,
+							"T" => RomStatus.TranslatedRom,
+							"O" => RomStatus.Overdump,
+							"I" => RomStatus.Bios,
+							"D" => RomStatus.Homebrew,
+							"H" => RomStatus.Hack,
+							"U" => RomStatus.Unknown,
+							_ => RomStatus.GoodDump
+						},
 						Name = items[2],
 						System = items[3],
 						MetaData = items.Length >= 6 ? items[5] : null,
@@ -148,23 +143,55 @@ namespace BizHawk.Emulation.Common
 					};
 
 #if DEBUG
-					if (DB.ContainsKey(game.Hash))
+					if (db.ContainsKey(game.Hash))
 					{
 						Console.WriteLine("gamedb: Multiple hash entries {0}, duplicate detected on \"{1}\" and \"{2}\"", game.Hash, game.Name, DB[game.Hash].Name);
 					}
 #endif
 
-					DB[game.Hash] = game;
+					db[game.Hash] = game;
 				}
 				catch
 				{
 					Debug.WriteLine($"Error parsing database entry: {line}");
 				}
 			}
+
+			//commit the finished database load
+			//it's left as null until now to help catch mistakes in using the resource
+			DB = db;
+			acquire.Set();
+
+			Console.WriteLine("GameDB load: " + stopwatch.Elapsed + " sec");
+		}
+
+		public static void InitializeDatabase(string path)
+		{
+			if (initialized) throw new InvalidOperationException("Did not expect re-initialize of game Database");
+			initialized = true;
+
+			ThreadPool.QueueUserWorkItem(_=>initializeWork(path));
+		}
+
+		public static GameInfo CheckDatabase(string hash)
+		{
+			acquire.WaitOne();
+
+			var hashNoType = RemoveHashType(hash);
+			DB.TryGetValue(hashNoType, out var cgi);
+			if (cgi == null)
+			{
+				Console.WriteLine($"DB: hash {hash} not in game database.");
+				return null;
+			}
+
+			return new GameInfo(cgi);
 		}
 
 		public static GameInfo GetGameInfo(byte[] romData, string fileName)
 		{
+			acquire.WaitOne();
+
 			var hash = $"{CRC32.Calculate(romData):X8}";
 			if (DB.TryGetValue(hash, out var cgi))
 			{

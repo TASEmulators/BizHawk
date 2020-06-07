@@ -275,6 +275,8 @@ namespace BizHawk.Client.EmuHawk
 				CloseRomContextMenuItem.Image = Properties.Resources.Close;
 			}
 
+			Database.InitializeDatabase(Path.Combine(PathUtils.ExeDirectoryPath, "gamedb", "gamedb.txt"));
+
 			GlobalWin.MainForm = this;
 			Rewinder = new Rewinder();
 
@@ -326,8 +328,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				MessageBox.Show(e.Message);
 			}
-
-			Database.LoadDatabase(Path.Combine(PathUtils.ExeDirectoryPath, "gamedb", "gamedb.txt"));
 
 			// TODO GL - a lot of disorganized wiring-up here
 			// installed separately on Unix (via package manager or from https://developer.nvidia.com/cg-toolkit-download), look in $PATH
