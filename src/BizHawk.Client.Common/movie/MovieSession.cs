@@ -50,7 +50,7 @@ namespace BizHawk.Client.Common
 		public bool NewMovieQueued => _queuedMovie != null;
 		public string QueuedSyncSettings => _queuedMovie.SyncSettingsJson;
 
-		public IMovieController MovieController { get; set; } = new Bk2Controller("", NullController.Instance.Definition);
+		public IMovieController MovieController { get; private set; } = new Bk2Controller("", NullController.Instance.Definition);
 
 		public MultitrackRecorder MultiTrack { get; } = new MultitrackRecorder();
 

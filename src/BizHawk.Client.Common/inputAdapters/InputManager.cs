@@ -13,7 +13,7 @@ namespace BizHawk.Client.Common
 	public class InputManager
 	{
 		// the movie will be spliced in between these if it is present
-		public CopyControllerAdapter MovieInputSourceAdapter { get;  } = new CopyControllerAdapter();
+		public CopyControllerAdapter MovieInputSourceAdapter { get; } = new CopyControllerAdapter();
 		public CopyControllerAdapter MovieOutputHardpoint { get; } = new CopyControllerAdapter();
 		public MultitrackRewiringControllerAdapter MultitrackRewiringAdapter { get; } = new MultitrackRewiringControllerAdapter();
 
