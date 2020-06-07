@@ -28,7 +28,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SetFromMnemonicStr(string inputLogEntry)
 		{
-			var controller = Global.MovieSession.GenerateMovieController();
+			var controller = GlobalWin.MovieSession.GenerateMovieController();
 			try
 			{
 				controller.SetFromMnemonic(inputLogEntry);

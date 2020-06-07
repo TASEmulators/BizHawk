@@ -52,7 +52,7 @@ namespace BizHawk.Client.EmuHawk
 				tabControl1.TabPages.Remove(tabPage2);
 			}
 
-			if (Global.MovieSession.Movie.IsActive())
+			if (GlobalWin.MovieSession.Movie.IsActive())
 			{
 				propertyGrid2.Enabled = false; // disable changes to sync setting when movie, so as not to confuse user
 			}

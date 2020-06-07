@@ -217,7 +217,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						GlobalWin.ExitCode = mf.ProgramRunLoop();
 					}
-					catch (Exception e) when (Global.MovieSession.Movie.IsActive() && !(Debugger.IsAttached || VersionInfo.DeveloperBuild))
+					catch (Exception e) when (GlobalWin.MovieSession.Movie.IsActive() && !(Debugger.IsAttached || VersionInfo.DeveloperBuild))
 					{
 						var result = MessageBox.Show(
 							"EmuHawk has thrown a fatal exception and is about to close.\nA movie has been detected. Would you like to try to save?\n(Note: Depending on what caused this error, this may or may not succeed)",
@@ -227,7 +227,7 @@ namespace BizHawk.Client.EmuHawk
 						);
 						if (result == DialogResult.Yes)
 						{
-							Global.MovieSession.Movie.Save();
+							GlobalWin.MovieSession.Movie.Save();
 						}
 					}
 				}

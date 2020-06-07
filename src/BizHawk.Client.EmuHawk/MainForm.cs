@@ -884,8 +884,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public IMovieSession MovieSession
 		{
-			get => Global. MovieSession;
-			private set => Global.MovieSession = value;
+			get => GlobalWin.MovieSession;
+			private set => GlobalWin.MovieSession = value;
 		}
 
 		private GameInfo Game

@@ -67,24 +67,24 @@ namespace BizHawk.Client.EmuHawk
 
 		private string MakeFrameCounter()
 		{
-			if (Global.MovieSession.Movie.IsFinished())
+			if (GlobalWin.MovieSession.Movie.IsFinished())
 			{
 				var sb = new StringBuilder();
 				sb
 					.Append(GlobalWin.Emulator.Frame)
 					.Append('/')
-					.Append(Global.MovieSession.Movie.FrameCount)
+					.Append(GlobalWin.MovieSession.Movie.FrameCount)
 					.Append(" (Finished)");
 				return sb.ToString();
 			}
 
-			if (Global.MovieSession.Movie.IsPlayingOrFinished())
+			if (GlobalWin.MovieSession.Movie.IsPlayingOrFinished())
 			{
 				var sb = new StringBuilder();
 				sb
 					.Append(GlobalWin.Emulator.Frame)
 					.Append('/')
-					.Append(Global.MovieSession.Movie.FrameCount);
+					.Append(GlobalWin.MovieSession.Movie.FrameCount);
 
 				return sb.ToString();
 			}
@@ -188,7 +188,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public string InputStrMovie()
 		{
-			return MakeStringFor(Global.MovieSession.MovieController);
+			return MakeStringFor(GlobalWin.MovieSession.MovieController);
 		}
 
 		public string InputStrImmediate()
@@ -198,9 +198,9 @@ namespace BizHawk.Client.EmuHawk
 
 		public string InputPrevious()
 		{
-			if (Global.MovieSession.Movie.IsPlayingOrRecording())
+			if (GlobalWin.MovieSession.Movie.IsPlayingOrRecording())
 			{
-				var state = Global.MovieSession.Movie.GetInputState(GlobalWin.Emulator.Frame - 1);
+				var state = GlobalWin.MovieSession.Movie.GetInputState(GlobalWin.Emulator.Frame - 1);
 				if (state != null)
 				{
 					return MakeStringFor(state);
@@ -214,9 +214,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			IController m = Global.InputManager.AutofireStickyXorAdapter;
 
-			if (Global.MovieSession.Movie.IsPlayingOrRecording() && GlobalWin.Emulator.Frame > 0)
+			if (GlobalWin.MovieSession.Movie.IsPlayingOrRecording() && GlobalWin.Emulator.Frame > 0)
 			{
-				m = m.Or(Global.MovieSession.Movie.GetInputState(GlobalWin.Emulator.Frame - 1));
+				m = m.Or(GlobalWin.MovieSession.Movie.GetInputState(GlobalWin.Emulator.Frame - 1));
 			}
 
 			return MakeStringFor(m);
@@ -229,11 +229,11 @@ namespace BizHawk.Client.EmuHawk
 
 		public string MakeIntersectImmediatePrevious()
 		{
-			if (Global.MovieSession.Movie.IsActive())
+			if (GlobalWin.MovieSession.Movie.IsActive())
 			{
-				var m = Global.MovieSession.Movie.IsPlayingOrRecording()
-					? Global.MovieSession.Movie.GetInputState(GlobalWin.Emulator.Frame - 1)
-					: Global.MovieSession.MovieController;
+				var m = GlobalWin.MovieSession.Movie.IsPlayingOrRecording()
+					? GlobalWin.MovieSession.Movie.GetInputState(GlobalWin.Emulator.Frame - 1)
+					: GlobalWin.MovieSession.MovieController;
 
 				return MakeStringFor(Global.InputManager.AutofireStickyXorAdapter.And(m));
 			}
@@ -243,8 +243,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public string MakeRerecordCount()
 		{
-			return Global.MovieSession.Movie.IsActive()
-				? Global.MovieSession.Movie.Rerecords.ToString()
+			return GlobalWin.MovieSession.Movie.IsActive()
+				? GlobalWin.MovieSession.Movie.Rerecords.ToString()
 				: "";
 		}
 
@@ -272,8 +272,8 @@ namespace BizHawk.Client.EmuHawk
 
 			if (GlobalWin.Config.DisplayInput && !GlobalWin.Game.IsNullInstance())
 			{
-				if (Global.MovieSession.Movie.IsPlaying()
-					|| (Global.MovieSession.Movie.IsFinished() && GlobalWin.Emulator.Frame == Global.MovieSession.Movie.InputLogLength)) // Account for the last frame of the movie, the movie state is immediately "Finished" here but we still want to show the input
+				if (GlobalWin.MovieSession.Movie.IsPlaying()
+					|| (GlobalWin.MovieSession.Movie.IsFinished() && GlobalWin.Emulator.Frame == GlobalWin.MovieSession.Movie.InputLogLength)) // Account for the last frame of the movie, the movie state is immediately "Finished" here but we still want to show the input
 				{
 					var input = InputStrMovie();
 					var point = GetCoordinates(g, GlobalWin.Config.InputDisplay, input);
@@ -320,10 +320,10 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			if (Global.MovieSession.MultiTrack.IsActive)
+			if (GlobalWin.MovieSession.MultiTrack.IsActive)
 			{
-				var point = GetCoordinates(g, GlobalWin.Config.MultitrackRecorder, Global.MovieSession.MultiTrack.Status);
-				DrawOsdMessage(g, Global.MovieSession.MultiTrack.Status, FixedMessagesColor, point.X, point.Y);
+				var point = GetCoordinates(g, GlobalWin.Config.MultitrackRecorder, GlobalWin.MovieSession.MultiTrack.Status);
+				DrawOsdMessage(g, GlobalWin.MovieSession.MultiTrack.Status, FixedMessagesColor, point.X, point.Y);
 			}
 
 			if (GlobalWin.Config.DisplayFps && Fps != null)
@@ -368,9 +368,9 @@ namespace BizHawk.Client.EmuHawk
 				g.DrawString(message, MessageFont, Color.White, point.X, point.Y);
 			}
 
-			if (Global.MovieSession.Movie.IsActive() && GlobalWin.Config.DisplaySubtitles)
+			if (GlobalWin.MovieSession.Movie.IsActive() && GlobalWin.Config.DisplaySubtitles)
 			{
-				var subList = Global.MovieSession.Movie.Subtitles.GetSubtitles(GlobalWin.Emulator.Frame);
+				var subList = GlobalWin.MovieSession.Movie.Subtitles.GetSubtitles(GlobalWin.Emulator.Frame);
 
 				foreach (var sub in subList)
 				{

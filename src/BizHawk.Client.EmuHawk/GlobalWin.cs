@@ -45,5 +45,6 @@ namespace BizHawk.Client.EmuHawk
 		public static Config Config { get; set; }
 		public static FirmwareManager FirmwareManager { get; set; }
 		public static GameInfo Game { get; set; }
+		public static IMovieSession MovieSession { get; set; }
 	}
 }

@@ -24,7 +24,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void EditCommentsForm_Load(object sender, EventArgs e)
 		{
-			if (!ForceReadWrite && Global.MovieSession.ReadOnly)
+			if (!ForceReadWrite && GlobalWin.MovieSession.ReadOnly)
 			{
 				CommentGrid.Columns[0].ReadOnly = true;
 				Text = "View Comments";

@@ -272,7 +272,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GetPattern()
 		{
-			int index = Global.MovieSession.MovieController.Definition.BoolButtons.IndexOf(SelectedButton);
+			int index = GlobalWin.MovieSession.MovieController.Definition.BoolButtons.IndexOf(SelectedButton);
 
 			if (SelectedButton == "Default bool Auto-Fire")
 			{
