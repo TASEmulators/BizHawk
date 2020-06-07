@@ -237,7 +237,7 @@ namespace BizHawk.Client.Common
 		}
 
 		// Shenanigans
-		public static string RetroSaveRamAbsolutePath(this PathEntryCollection collection, GameInfo game, IMovie movie)
+		public static string RetroSaveRamAbsolutePath(this PathEntryCollection collection, GameInfo game)
 		{
 			var name = game.FilesystemSafeName();
 			name = Path.GetDirectoryName(name);
@@ -247,11 +247,6 @@ namespace BizHawk.Client.Common
 			}
 
 			name ??= "";
-
-			if (movie.IsActive())
-			{
-				name = Path.Combine(name, $"movie-{Path.GetFileNameWithoutExtension(movie.Filename)}");
-			}
 
 			var pathEntry = collection[game.System, "Save RAM"]
 				?? collection[game.System, "Base"];
