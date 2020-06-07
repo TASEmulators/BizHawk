@@ -924,7 +924,7 @@ namespace BizHawk.Client.Common
 
 			try
 			{
-				string ext = null;
+				var doExtensionChecks = false;
 
 				if (OpenAdvanced is OpenAdvanced_Libretro)
 				{
@@ -1003,9 +1003,8 @@ namespace BizHawk.Client.Common
 						return false;
 					}
 
-					// if not libretro:
-					// do extension checking
-					ext = file.Extension.ToLowerInvariant();
+					// if not libretro: do extension checking
+					doExtensionChecks = true;
 
 					// do the archive binding we had to skip
 					if (!HandleArchiveBinding(file))
@@ -1015,33 +1014,33 @@ namespace BizHawk.Client.Common
 				}
 
 				var cancel = false;
-
-				if (string.IsNullOrEmpty(ext))
+				var ext = file.Extension.ToLowerInvariant();
+				if (doExtensionChecks) switch (ext)
 				{
-				}
-				else if (ext == ".m3u")
-				{
-					(nextEmulator, game) = LoadM3U(path, nextComm, file);
-				}
-				else if (Disc.IsValidExtension(ext))
-				{
-					var result = LoadDisc(path, nextComm, file, ext);
-					if (result == null) return false;
-					(nextEmulator, game) = result.Value;
-				}
-				else if (file.Extension.ToLowerInvariant() == ".xml")
-				{
-					var result = LoadXML(path, nextComm, file); // must be called before LoadOther because of SNES hacks
-					if (result == null) return false;
-					(nextEmulator, rom, game) = result.Value;
-				}
-				else if (file.Extension.ToLowerInvariant() == ".psf" || file.Extension.ToLowerInvariant() == ".minipsf")
-				{
-					(nextEmulator, rom, game) = LoadPSF(path, nextComm, file);
-				}
-				else
-				{
-					(nextEmulator, rom, game) = LoadOther(path, nextComm, forceAccurateCore, file, out cancel);
+					case ".m3u":
+						(nextEmulator, game) = LoadM3U(path, nextComm, file);
+						break;
+					case ".xml":
+						var result = LoadXML(path, nextComm, file); // must be called before LoadOther because of SNES hacks
+						if (result == null) return false;
+						(nextEmulator, rom, game) = result.Value;
+						break;
+					case ".psf":
+					case ".minipsf":
+						(nextEmulator, rom, game) = LoadPSF(path, nextComm, file);
+						break;
+					default:
+						if (Disc.IsValidExtension(ext))
+						{
+							var result1 = LoadDisc(path, nextComm, file, ext);
+							if (result1 == null) return false;
+							(nextEmulator, game) = result1.Value;
+						}
+						else
+						{
+							(nextEmulator, rom, game) = LoadOther(path, nextComm, forceAccurateCore, file, out cancel);
+						}
+						break;
 				}
 
 				if (nextEmulator == null)
