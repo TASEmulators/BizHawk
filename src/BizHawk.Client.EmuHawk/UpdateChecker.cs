@@ -5,8 +5,6 @@ using System.Threading;
 
 using Newtonsoft.Json.Linq;
 
-using BizHawk.Client.Common;
-
 namespace BizHawk.Client.EmuHawk
 {
 	public static class UpdateChecker

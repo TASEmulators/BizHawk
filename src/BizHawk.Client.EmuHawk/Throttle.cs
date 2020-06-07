@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading;
-
-using BizHawk.Client.Common;
 using BizHawk.Common;
 
 //this throttle is nitsuja's fine-tuned techniques from desmume
