@@ -79,16 +79,8 @@ namespace BizHawk.Client.Common
 
 			Global.MovieSession.RecreateMovieController(MovieInputSourceAdapter.Definition);
 
-			// connect the movie session before MovieOutputHardpoint if it is doing anything
-			// otherwise connect the MovieInputSourceAdapter to it, effectively bypassing the movie session
-			if (Global.MovieSession != null)
-			{
-				MovieOutputHardpoint.Source = Global.MovieSession.MovieController;
-			}
-			else
-			{
-				MovieOutputHardpoint.Source = MovieInputSourceAdapter;
-			}
+			// connect the movie session before MovieOutputHardpoint
+			MovieOutputHardpoint.Source = Global.MovieSession.MovieController;
 		}
 
 		private static Controller BindToDefinition(ControllerDefinition def, IDictionary<string, Dictionary<string, string>> allBinds, IDictionary<string, Dictionary<string, AnalogBind>> analogBinds)
