@@ -227,8 +227,11 @@ namespace BizHawk.Client.Common
 			return discs;
 		}
 
-		private (IEmulator NextEmulator, GameInfo Game)? LoadDisc(string path, CoreComm nextComm, HawkFile file, string ext)
+		private bool LoadDisc(string path, CoreComm nextComm, HawkFile file, string ext, out IEmulator nextEmulator, out GameInfo game)
 		{
+			nextEmulator = null;
+			game = null;
+
 			if (file.IsArchive)
 			{
 				throw new InvalidOperationException("Can't load CD files from archives!");
@@ -241,7 +244,7 @@ namespace BizHawk.Client.Common
 			if (discMountJob.OUT_SlowLoadAborted)
 			{
 				DoLoadErrorCallback("This disc would take too long to load. Run it through DiscoHawk first, or find a new rip because this one is probably junk", "", LoadErrorType.DiscError);
-				return null;
+				return false;
 			}
 
 			if (discMountJob.OUT_ErrorLevel)
@@ -259,7 +262,7 @@ namespace BizHawk.Client.Common
 				? discHasher.Calculate_PSX_BizIDHash().ToString("X8")
 				: discHasher.OldHash();
 
-			var game = Database.CheckDatabase(discHash);
+			game = Database.CheckDatabase(discHash);
 			if (game == null)
 			{
 				// try to use our wizard methods
@@ -312,7 +315,6 @@ namespace BizHawk.Client.Common
 				}
 			}
 
-			IEmulator nextEmulator;
 			switch (game.System)
 			{
 				default:
@@ -374,10 +376,10 @@ namespace BizHawk.Client.Common
 					break;
 			}
 
-			return (nextEmulator, game);
+			return true;
 		}
 
-		private (IEmulator NextEmulator, GameInfo Game) LoadM3U(string path, CoreComm nextComm, HawkFile file)
+		private void LoadM3U(string path, CoreComm nextComm, HawkFile file, out IEmulator nextEmulator, out GameInfo gameOutput)
 		{
 			// HACK ZONE - currently only psx supports m3u
 			M3U_File m3u;
@@ -423,19 +425,18 @@ namespace BizHawk.Client.Common
 				sw.WriteLine("-------------------------");
 			}
 
-			var nextEmulator = new Octoshock(nextComm, discs, discNames, null, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>(), sw.ToString());
-			var game1 = new GameInfo
+			nextEmulator = new Octoshock(nextComm, discs, discNames, null, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>(), sw.ToString());
+			gameOutput = new GameInfo
 			{
 				Name = Path.GetFileNameWithoutExtension(file.Name),
 				System = "PSX"
 			};
-			return (nextEmulator, game1);
 		}
 
-		private (IEmulator NextEmulator, RomGame Rom, GameInfo Game) LoadOther(string path, CoreComm nextComm, bool forceAccurateCore, HawkFile file, out bool cancel)
+		private void LoadOther(string path, CoreComm nextComm, bool forceAccurateCore, HawkFile file, out IEmulator nextEmulator, out RomGame rom, out GameInfo game, out bool cancel)
 		{
 			cancel = false;
-			var rom = new RomGame(file);
+			rom = new RomGame(file);
 
 			// hacky for now
 			if (file.Extension.ToLowerInvariant() == ".exe")
@@ -470,7 +471,7 @@ namespace BizHawk.Client.Common
 				}
 			}
 
-			var game = rom.GameInfo;
+			game = rom.GameInfo;
 
 			var isXml = false;
 
@@ -482,7 +483,7 @@ namespace BizHawk.Client.Common
 			}
 
 			CoreInventory.Core core = null;
-			IEmulator nextEmulator = null;
+			nextEmulator = null;
 			switch (game.System)
 			{
 				default:
@@ -617,11 +618,9 @@ namespace BizHawk.Client.Common
 					nextComm, game, rom.RomData, rom.FileData, Deterministic,
 					GetCoreSettings(core.Type), GetCoreSyncSettings(core.Type), rom.Extension);
 			}
-
-			return (nextEmulator, rom, game);
 		}
 
-		private (IEmulator NextEmulator, RomGame Rom, GameInfo Game) LoadPSF(string path, CoreComm nextComm, HawkFile file)
+		private void LoadPSF(string path, CoreComm nextComm, HawkFile file, out IEmulator nextEmulator, out RomGame rom, out GameInfo game)
 		{
 			byte[] CbDeflater(Stream instream, int size)
 			{
@@ -633,23 +632,23 @@ namespace BizHawk.Client.Common
 			}
 			PSF psf = new PSF();
 			psf.Load(path, CbDeflater);
-			var nextEmulator = new Octoshock(nextComm, psf, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>());
+			nextEmulator = new Octoshock(nextComm, psf, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>());
 
 			// total garbage, this
-			var rom = new RomGame(file);
-			var game = rom.GameInfo;
-
-			return (nextEmulator, rom, game);
+			rom = new RomGame(file);
+			game = rom.GameInfo;
 		}
 
-		private (IEmulator NextEmulator, RomGame Rom, GameInfo Game)? LoadXML(string path, CoreComm nextComm, HawkFile file)
+		private bool LoadXML(string path, CoreComm nextComm, HawkFile file, out IEmulator nextEmulator, out RomGame rom, out GameInfo game)
 		{
+			nextEmulator = null;
+			rom = null;
+			game = null;
 			try
 			{
 				var xmlGame = XmlGame.Create(file); // if load fails, are we supposed to retry as a bsnes XML????????
-				var game = xmlGame.GI;
+				game = xmlGame.GI;
 
-				IEmulator nextEmulator;
 				switch (game.System)
 				{
 					case "GB":
@@ -823,7 +822,7 @@ namespace BizHawk.Client.Common
 						var saturnDiscs = DiscsFromXml(xmlGame, "SAT", DiscType.SegaSaturn);
 						if (!saturnDiscs.Any())
 						{
-							return null;
+							return false;
 						}
 
 						nextEmulator = new Saturnus(nextComm, saturnDiscs, Deterministic,
@@ -833,7 +832,7 @@ namespace BizHawk.Client.Common
 						var pcfxDiscs = DiscsFromXml(xmlGame, "PCFX", DiscType.PCFX);
 						if (!pcfxDiscs.Any())
 						{
-							return null;
+							return false;
 						}
 
 						nextEmulator = new Tst(nextComm, pcfxDiscs,
@@ -847,7 +846,7 @@ namespace BizHawk.Client.Common
 							.FirstOrDefault();
 						if (!genDiscs.Any() && romBytes == null)
 						{
-							return null;
+							return false;
 						}
 						nextEmulator = new GPGX(nextComm, game, romBytes, genDiscs, GetCoreSettings<GPGX>(), GetCoreSyncSettings<GPGX>());
 						break;
@@ -868,32 +867,32 @@ namespace BizHawk.Client.Common
 							GetCoreSyncSettings<GGHawkLink>());
 						break;
 					default:
-						return null;
+						return false;
 				}
 
-				return (nextEmulator, null, game);
+				return true;
 			}
 			catch (Exception ex)
 			{
 				try
 				{
 					// need to get rid of this hack at some point
-					var rom = new RomGame(file);
+					rom = new RomGame(file);
 					var basePath = Path.GetDirectoryName(path.Replace("|", "")); // Dirty hack to get around archive filenames (since we are just getting the directory path, it is safe to mangle the filename
 					byte[] xmlData = rom.FileData;
 
-					var game = rom.GameInfo;
+					game = rom.GameInfo;
 					game.System = "SNES";
 
 					var snes = new LibsnesCore(game, null, xmlData, basePath, nextComm, GetCoreSettings<LibsnesCore>(), GetCoreSyncSettings<LibsnesCore>());
-					var nextEmulator = snes;
+					nextEmulator = snes;
 
-					return (nextEmulator, rom, game);
+					return true;
 				}
 				catch
 				{
 					DoLoadErrorCallback(ex.ToString(), "DGB", LoadErrorType.Xml);
-					return null;
+					return false;
 				}
 			}
 		}
@@ -1005,27 +1004,23 @@ namespace BizHawk.Client.Common
 					switch (ext)
 					{
 						case ".m3u":
-							(nextEmulator, game) = LoadM3U(path, nextComm, file);
+							LoadM3U(path, nextComm, file, out nextEmulator, out game);
 							break;
 						case ".xml":
-							var result = LoadXML(path, nextComm, file); // must be called before LoadOther because of SNES hacks
-							if (result == null) return false;
-							(nextEmulator, rom, game) = result.Value;
+							if (!LoadXML(path, nextComm, file, out nextEmulator, out rom, out game)) return false;
 							break;
 						case ".psf":
 						case ".minipsf":
-							(nextEmulator, rom, game) = LoadPSF(path, nextComm, file);
+							LoadPSF(path, nextComm, file, out nextEmulator, out rom, out game);
 							break;
 						default:
 							if (Disc.IsValidExtension(ext))
 							{
-								var result1 = LoadDisc(path, nextComm, file, ext);
-								if (result1 == null) return false;
-								(nextEmulator, game) = result1.Value;
+								if (!LoadDisc(path, nextComm, file, ext, out nextEmulator, out game)) return false;
 							}
 							else
 							{
-								(nextEmulator, rom, game) = LoadOther(path, nextComm, forceAccurateCore, file, out cancel);
+								LoadOther(path, nextComm, forceAccurateCore, file, out nextEmulator, out rom, out game, out cancel); // must be called after LoadXML because of SNES hacks
 							}
 							break;
 					}
