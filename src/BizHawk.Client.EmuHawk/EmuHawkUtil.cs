@@ -47,7 +47,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Snes9x _ => PromptToSwitchCore(CoreNames.Snes9X, CoreNames.Bsnes, () => GlobalWin.Config.PreferredCores["SNES"] = CoreNames.Bsnes),
 				QuickNES _ => PromptToSwitchCore(CoreNames.QuickNes, CoreNames.NesHawk, () => GlobalWin.Config.PreferredCores["NES"] = CoreNames.NesHawk),
-				HyperNyma _ => PromptToSwitchCore(CoreNames.HyperNyma, CoreNames.TurboNyma, () => GlobalWin.Config.PreferredCores["NES"] = CoreNames.NesHawk),
+				HyperNyma _ => PromptToSwitchCore(CoreNames.HyperNyma, CoreNames.TurboNyma, () => GlobalWin.Config.PreferredCores["PCE"] = CoreNames.TurboNyma),
 				_ => true
 			};
 		}
