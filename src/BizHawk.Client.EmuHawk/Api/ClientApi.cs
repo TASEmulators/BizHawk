@@ -420,14 +420,16 @@ namespace BizHawk.Client.EmuHawk
 			{
 				switch (GlobalWin.Emulator.SystemId)
 				{
-					case "PCE":
-						return ((PCEngine) GlobalWin.Emulator).Type switch
+					case "PCE" when GlobalWin.Emulator is PCEngine pceHawk:
+						return pceHawk.Type switch
 						{
 							NecSystemType.TurboGrafx => SystemInfo.PCE,
 							NecSystemType.TurboCD => SystemInfo.PCECD,
 							NecSystemType.SuperGrafx => SystemInfo.SGX,
 							_ => throw new ArgumentOutOfRangeException()
 						};
+					case "PCE":
+						return SystemInfo.PCE; // not always accurate, but anyone wanting accuracy has probably figured out how to use IEmu.GetSystemId()
 					case "SMS":
 						var sms = (SMS) GlobalWin.Emulator;
 						return sms.IsSG1000
