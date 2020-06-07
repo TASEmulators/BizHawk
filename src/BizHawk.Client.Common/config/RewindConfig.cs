@@ -2,7 +2,24 @@
 
 namespace BizHawk.Client.Common
 {
-	public class RewindConfig
+	public interface IRewindSettings
+	{
+		public bool UseDelta { get; }
+		public bool EnabledSmall { get; }
+		public bool EnabledMedium { get; }
+		public bool EnabledLarge { get; }
+		public int FrequencySmall { get; }
+		public int FrequencyMedium { get; }
+		public int FrequencyLarge { get; }
+		public int MediumStateSize { get; }
+		public int LargeStateSize { get; }
+		public int BufferSize { get; }
+		public bool OnDisk { get; }
+		public bool IsThreaded { get; }
+		public int SpeedMultiplier { get; }
+	}
+
+	public class RewindConfig : IRewindSettings
 	{
 		public bool UseDelta { get; set; } = true;
 		public bool EnabledSmall { get; set; } = true;

@@ -35,7 +35,7 @@ namespace BizHawk.Client.Common
 
 		public int RewindFrequency { get; private set; }
 
-		public void Initialize(IStatable statableCore, RewindConfig rewindConfig)
+		public void Initialize(IStatable statableCore, IRewindSettings settings)
 		{
 			Uninitialize();
 
@@ -43,29 +43,29 @@ namespace BizHawk.Client.Common
 
 			int stateSize = _statableCore.CloneSavestate().Length;
 
-			if (stateSize >= rewindConfig.LargeStateSize)
+			if (stateSize >= settings.LargeStateSize)
 			{
-				RewindEnabled = rewindConfig.EnabledLarge;
-				RewindFrequency = rewindConfig.FrequencyLarge;
+				RewindEnabled = settings.EnabledLarge;
+				RewindFrequency = settings.FrequencyLarge;
 			}
-			else if (stateSize >= rewindConfig.MediumStateSize)
+			else if (stateSize >= settings.MediumStateSize)
 			{
-				RewindEnabled = rewindConfig.EnabledMedium;
-				RewindFrequency = rewindConfig.FrequencyMedium;
+				RewindEnabled = settings.EnabledMedium;
+				RewindFrequency = settings.FrequencyMedium;
 			}
 			else
 			{
-				RewindEnabled = rewindConfig.EnabledSmall;
-				RewindFrequency = rewindConfig.FrequencySmall;
+				RewindEnabled = settings.EnabledSmall;
+				RewindFrequency = settings.FrequencySmall;
 			}
 
-			_rewindDeltaEnable = rewindConfig.UseDelta;
+			_rewindDeltaEnable = settings.UseDelta;
 
 			if (RewindActive)
 			{
-				var capacity = rewindConfig.BufferSize * 1024L * 1024L;
-				_rewindBuffer = new StreamBlobDatabase(rewindConfig.OnDisk, capacity, BufferManage);
-				_rewindThread = new RewindThreader(CaptureInternal, RewindInternal, rewindConfig.IsThreaded);
+				var capacity = settings.BufferSize * 1024L * 1024L;
+				_rewindBuffer = new StreamBlobDatabase(settings.OnDisk, capacity, BufferManage);
+				_rewindThread = new RewindThreader(CaptureInternal, RewindInternal, settings.IsThreaded);
 			}
 		}
 
