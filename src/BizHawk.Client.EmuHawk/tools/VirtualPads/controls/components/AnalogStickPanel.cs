@@ -2,7 +2,6 @@
 using System.Drawing;
 using System.Windows.Forms;
 
-using BizHawk.Client.Common;
 using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
