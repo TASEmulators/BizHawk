@@ -22,25 +22,23 @@ namespace BizHawk.Client.EmuHawk
 
 		public Sound(IntPtr mainWindowHandle)
 		{
-			if (GlobalWin.Config.SoundOutputMethod != ESoundOutputMethod.Dummy)
+			if (OSTailoredCode.IsUnixHost)
 			{
-				if (OSTailoredCode.IsUnixHost)
-				{
-					// at the moment unix/mono can only support OpenAL (so ignore whatever is set in the config)
-					_outputDevice = new OpenALSoundOutput(this);
-				}
-				else
-				{
-					if (GlobalWin.Config.SoundOutputMethod == ESoundOutputMethod.OpenAL)
-						_outputDevice = new OpenALSoundOutput(this);
-					if (GlobalWin.Config.SoundOutputMethod == ESoundOutputMethod.DirectSound)
-						_outputDevice = new DirectSoundSoundOutput(this, mainWindowHandle, GlobalWin.Config.SoundDevice);
-					if (GlobalWin.Config.SoundOutputMethod == ESoundOutputMethod.XAudio2)
-						_outputDevice = new XAudio2SoundOutput(this);
-				}
+				// if DirectSound or XAudio is chosen, use OpenAL, otherwise comply with the user's choice
+				_outputDevice = GlobalWin.Config.SoundOutputMethod == ESoundOutputMethod.Dummy
+					? (ISoundOutput) new DummySoundOutput(this)
+					: new OpenALSoundOutput(this);
 			}
-			if (_outputDevice == null)
-				_outputDevice = new DummySoundOutput(this);
+			else
+			{
+				_outputDevice = GlobalWin.Config.SoundOutputMethod switch
+				{
+					ESoundOutputMethod.DirectSound => new DirectSoundSoundOutput(this, mainWindowHandle, GlobalWin.Config.SoundDevice),
+					ESoundOutputMethod.XAudio2 => new XAudio2SoundOutput(this),
+					ESoundOutputMethod.OpenAL => new OpenALSoundOutput(this),
+					_ => new DummySoundOutput(this)
+				};
+			}
 		}
 
 		/// <summary>
