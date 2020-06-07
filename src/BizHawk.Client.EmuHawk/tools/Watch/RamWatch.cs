@@ -99,6 +99,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public IEnumerable<Watch> Watches => _watches.Where(x => !x.IsSeparator);
 
+		protected override void GeneralUpdate() => FrameUpdate();
+
 		public void AddWatch(Watch watch)
 		{
 			_watches.Add(watch);
@@ -768,7 +770,7 @@ namespace BizHawk.Client.EmuHawk
 
 				poke.SetWatch(SelectedWatches);
 
-				if (poke.ShowHawkDialog(this) == DialogResult.OK)
+				if (poke.ShowHawkDialog(this).IsOk())
 				{
 					GeneralUpdate();
 				}

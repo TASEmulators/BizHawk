@@ -48,6 +48,8 @@ namespace BizHawk.Client.EmuHawk
 			_ppu.InstallCallback1(() => Generate(), _scanline);
 		}
 
+		protected override void GeneralUpdate() => UpdateBefore();
+
 		private unsafe void DrawTile(int* dst, int pitch, byte* pal, byte* tile, int* finalPal)
 		{
 			dst += 7;

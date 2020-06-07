@@ -26,6 +26,8 @@ namespace BizHawk.Client.EmuHawk
 			bmpViewBG.ChangeBitmapSize(256, 256);
 		}
 
+		protected override void GeneralUpdate() => UpdateBefore();
+
 		static unsafe void Draw8x8(byte* src, int* dest, int pitch, int* pal)
 		{
 			int inc = pitch - 8;

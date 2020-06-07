@@ -117,6 +117,8 @@ namespace BizHawk.Client.EmuHawk
 			bmpViewTiles.Refresh();
 		}
 
+		protected override void GeneralUpdate() => UpdateBefore();
+
 		protected override unsafe void UpdateBefore()
 		{
 			if (Emu == null)

@@ -705,6 +705,8 @@ namespace BizHawk.Client.EmuHawk
 			GeneralUpdate();
 		}
 
+		protected override void GeneralUpdate() => UpdateBefore();
+
 		protected override void UpdateBefore()
 		{
 			if (!IsHandleCreated || IsDisposed)
