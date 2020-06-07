@@ -486,7 +486,7 @@ namespace BizHawk.Client.Common
 					}
 					return;
 				case "SNES":
-					var name = game.ForcedCore.ToLower() switch
+					var name = game.ForcedCore?.ToLower() switch
 					{
 						"snes9x" => CoreNames.Snes9X,
 						"bsnes" => CoreNames.Bsnes,
