@@ -22,8 +22,9 @@ It will be difficult to build this without having vs2010 and vs2013 installed.
 Currently, we are stuck due to out of date mupen code and prebuilt static libraries.
 If you have the skills required to modify our mupen core, please send us a postcard to let us know and consider volunteering for the BizMupen Rehabilitation Team where we will redo the core on latest master.
 
+mgba: use mingw to build mgba/src/platform/bizhawk/mingw/Makefile
+
 melonds: ??
-mgba: mingw
 
 waterbox:  See separate document waterbox/readme.txt
 
