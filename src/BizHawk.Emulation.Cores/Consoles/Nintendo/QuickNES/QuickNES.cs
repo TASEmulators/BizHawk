@@ -129,11 +129,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		{
 			var def = new ControllerDefinition();
 			def.Name = "NES Controller";
-			def.BoolButtons.AddRange(new[] { "Reset", "Power" }); // console buttons
 			if (_syncSettings.LeftPortConnected || _syncSettings.RightPortConnected)
 				def.BoolButtons.AddRange(PadP1.Select(p => p.Name));
 			if (_syncSettings.LeftPortConnected && _syncSettings.RightPortConnected)
 				def.BoolButtons.AddRange(PadP2.Select(p => p.Name));
+			def.BoolButtons.AddRange(new[] { "Reset", "Power" }); // console buttons
 			ControllerDefinition = def;
 		}
 
