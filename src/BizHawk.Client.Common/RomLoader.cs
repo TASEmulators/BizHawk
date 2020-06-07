@@ -994,15 +994,6 @@ namespace BizHawk.Client.Common
 				}
 				else
 				{
-					// at this point, file is either assigned to the ROM path, if it exists,
-					// or is empty and CoreComm is not a libretro core
-					// so, we still need to check path here before continuing
-					if (string.IsNullOrEmpty(path))
-					{
-						Console.WriteLine("No ROM to Load");
-						return false;
-					}
-
 					// if not libretro: do extension checking
 					doExtensionChecks = true;
 
