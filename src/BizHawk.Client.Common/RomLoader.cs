@@ -227,7 +227,7 @@ namespace BizHawk.Client.Common
 			return discs;
 		}
 
-		private (IEmulator NextEmulator, GameInfo Game)? LoadDisc(string path, CoreComm nextComm, HawkFile file, IEmulator nextEmulator, string ext)
+		private (IEmulator NextEmulator, GameInfo Game)? LoadDisc(string path, CoreComm nextComm, HawkFile file, string ext)
 		{
 			if (file.IsArchive)
 			{
@@ -312,6 +312,7 @@ namespace BizHawk.Client.Common
 				}
 			}
 
+			IEmulator nextEmulator = null;
 			switch (game.System)
 			{
 				case "NULL":
@@ -431,7 +432,7 @@ namespace BizHawk.Client.Common
 			return (nextEmulator, game1);
 		}
 
-		private (IEmulator NextEmulator, RomGame Rom, GameInfo Game) LoadOther(string path, CoreComm nextComm, bool forceAccurateCore, HawkFile file, IEmulator nextEmulator, out bool cancel)
+		private (IEmulator NextEmulator, RomGame Rom, GameInfo Game) LoadOther(string path, CoreComm nextComm, bool forceAccurateCore, HawkFile file, out bool cancel)
 		{
 			cancel = false;
 			var rom = new RomGame(file);
@@ -481,7 +482,7 @@ namespace BizHawk.Client.Common
 			}
 
 			CoreInventory.Core core = null;
-
+			IEmulator nextEmulator = null;
 			switch (game.System)
 			{
 				default:
@@ -661,13 +662,14 @@ namespace BizHawk.Client.Common
 			return (nextEmulator, rom, game);
 		}
 
-		private (IEmulator NextEmulator, RomGame Rom, GameInfo Game)? LoadXML(string path, CoreComm nextComm, HawkFile file, IEmulator nextEmulator, RomGame rom)
+		private (IEmulator NextEmulator, RomGame Rom, GameInfo Game)? LoadXML(string path, CoreComm nextComm, HawkFile file)
 		{
 			try
 			{
 				var xmlGame = XmlGame.Create(file); // if load fails, are we supposed to retry as a bsnes XML????????
 				var game = xmlGame.GI;
 
+				IEmulator nextEmulator;
 				switch (game.System)
 				{
 					case "GB":
@@ -889,14 +891,14 @@ namespace BizHawk.Client.Common
 						return null;
 				}
 
-				return (nextEmulator, rom, game);
+				return (nextEmulator, null, game);
 			}
 			catch (Exception ex)
 			{
 				try
 				{
 					// need to get rid of this hack at some point
-					rom = new RomGame(file);
+					var rom = new RomGame(file);
 					var basePath = Path.GetDirectoryName(path.Replace("|", "")); // Dirty hack to get around archive filenames (since we are just getting the directory path, it is safe to mangle the filename
 					byte[] xmlData = rom.FileData;
 
@@ -904,7 +906,7 @@ namespace BizHawk.Client.Common
 					game.System = "SNES";
 
 					var snes = new LibsnesCore(game, null, xmlData, basePath, nextComm, GetCoreSettings<LibsnesCore>(), GetCoreSyncSettings<LibsnesCore>());
-					nextEmulator = snes;
+					var nextEmulator = snes;
 
 					return (nextEmulator, rom, game);
 				}
@@ -1043,13 +1045,13 @@ namespace BizHawk.Client.Common
 				}
 				else if (Disc.IsValidExtension(ext))
 				{
-					var result = LoadDisc(path, nextComm, file, nextEmulator, ext);
+					var result = LoadDisc(path, nextComm, file, ext);
 					if (result == null) return false;
 					(nextEmulator, game) = result.Value;
 				}
 				else if (file.Extension.ToLowerInvariant() == ".xml")
 				{
-					var result = LoadXML(path, nextComm, file, nextEmulator, rom);
+					var result = LoadXML(path, nextComm, file);
 					if (result == null) return false;
 					(nextEmulator, rom, game) = result.Value;
 				}
@@ -1059,7 +1061,7 @@ namespace BizHawk.Client.Common
 				}
 				else
 				{
-					(nextEmulator, rom, game) = LoadOther(path, nextComm, forceAccurateCore, file, nextEmulator, out cancel);
+					(nextEmulator, rom, game) = LoadOther(path, nextComm, forceAccurateCore, file, out cancel);
 				}
 
 				if (nextEmulator == null)
