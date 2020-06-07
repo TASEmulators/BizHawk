@@ -353,12 +353,12 @@ namespace BizHawk.Client.Common
 							GetCoreSettings<PCEngine>(),
 							GetCoreSyncSettings<PCEngine>()
 						),
-//						CoreNames.TurboTurboNyma => new TerboGrafixSanic(
+//						CoreNames.HyperNyma => new HyperNyma(
 //							game,
 //							new[] { disc },
 //							nextComm,
-//							(NymaCore.NymaSettings) GetCoreSettings<TerboGrafixSanic>(),
-//							(NymaCore.NymaSyncSettings) GetCoreSyncSettings<TerboGrafixSanic>(),
+//							(NymaCore.NymaSettings) GetCoreSettings<HyperNyma>(),
+//							(NymaCore.NymaSyncSettings) GetCoreSyncSettings<HyperNyma>(),
 //							Deterministic
 //						),
 						_ => new TerboGrafix(

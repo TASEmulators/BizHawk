@@ -44,7 +44,7 @@ namespace BizHawk.Client.EmuHawk
 			(new[] { "SNES" }, new[] { CoreNames.Faust, CoreNames.Snes9X, CoreNames.Bsnes }),
 			(new[] { "SGB" }, new[] { CoreNames.Bsnes, CoreNames.SameBoy }),
 			(new[] { "GB", "GBC" }, new[] { CoreNames.Gambatte, CoreNames.GbHawk, CoreNames.SubGbHawk }),
-			(new[] { "PCE", "PCECD", "SGX" }, new[] { CoreNames.TurboTurboNyma, CoreNames.PceHawk, CoreNames.TurboNyma })
+			(new[] { "PCE", "PCECD", "SGX" }, new[] { CoreNames.HyperNyma, CoreNames.PceHawk, CoreNames.TurboNyma })
 		};
 
 		private void MainForm_Load(object sender, EventArgs e)

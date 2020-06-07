@@ -11,19 +11,19 @@ using BizHawk.Emulation.DiscSystem;
 
 namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 {
-	[Core(CoreNames.TurboTurboNyma, "Mednafen Team", true, true, "1.24.3", "https://mednafen.github.io/releases/", false)]
-	public class TerboGrafixSanic : NymaCore, IRegionable, IPceGpuView
+	[Core(CoreNames.HyperNyma, "Mednafen Team", true, true, "1.24.3", "https://mednafen.github.io/releases/", false)]
+	public class HyperNyma : NymaCore, IRegionable, IPceGpuView
 	{
-		private readonly LibTerboGrafixSanic _terboGrafix;
+		private readonly LibHyperNyma _terboGrafix;
 
 		[CoreConstructor(new[] { "PCE", "SGX" })]
-		public TerboGrafixSanic(GameInfo game, byte[] rom, CoreComm comm, string extension,
+		public HyperNyma(GameInfo game, byte[] rom, CoreComm comm, string extension,
 			NymaSettings settings, NymaSyncSettings syncSettings, bool deterministic)
 			: base(comm, "PCE", "PC Engine Controller", settings, syncSettings)
 		{
-			_terboGrafix = DoInit<LibTerboGrafixSanic>(game, rom, null, "pce-fast.wbx", extension, deterministic);
+			_terboGrafix = DoInit<LibHyperNyma>(game, rom, null, "pce-fast.wbx", extension, deterministic);
 		}
-		public TerboGrafixSanic(GameInfo game, Disc[] discs, CoreComm comm,
+		public HyperNyma(GameInfo game, Disc[] discs, CoreComm comm,
 			NymaSettings settings, NymaSyncSettings syncSettings, bool deterministic)
 			: base(comm, "PCE", "PC Engine Controller", settings, syncSettings)
 		{
@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 			{
 				{ "FIRMWARE:syscard3.pce", comm.CoreFileProvider.GetFirmware("PCECD", "Bios", true) },
 			};
-			_terboGrafix = DoInit<LibTerboGrafixSanic>(game, null, discs, "pce-fast.wbx", null, deterministic, firmwares);
+			_terboGrafix = DoInit<LibHyperNyma>(game, null, discs, "pce-fast.wbx", null, deterministic, firmwares);
 		}
 
 		public override string SystemId => IsSgx ? "SGX" : "PCE";
@@ -77,7 +77,7 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 		}
 	}
 
-	public abstract class LibTerboGrafixSanic : LibNymaCore
+	public abstract class LibHyperNyma : LibNymaCore
 	{
 		[BizImport(CallingConvention.Cdecl, Compatibility = true)]
 		public abstract void GetVramInfo([Out]PceGpuData v, int vdcIndex);
