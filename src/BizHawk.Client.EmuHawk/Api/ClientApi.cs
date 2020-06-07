@@ -243,13 +243,13 @@ namespace BizHawk.Client.EmuHawk
 
 			if (joypad.Inputs == 0)
 			{
-				Global.InputManager.AutofireStickyXorAdapter.ClearStickies();
+				GlobalWin.InputManager.AutofireStickyXorAdapter.ClearStickies();
 			}
 			else
 			{
 				foreach (var button in JoypadButtonsArray.Where(button => joypad.Inputs.HasFlag(button)))
 				{
-					Global.InputManager.AutofireStickyXorAdapter.SetSticky(
+					GlobalWin.InputManager.AutofireStickyXorAdapter.SetSticky(
 						RunningSystem == SystemInfo.GB
 							? $"{JoypadConverter.ConvertBack(button, RunningSystem)}"
 							: $"P{player} {JoypadConverter.ConvertBack(button, RunningSystem)}",
@@ -263,8 +263,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				for (var i = 1; i <= RunningSystem.MaxControllers; i++)
 				{
-					Global.InputManager.AutofireStickyXorAdapter.SetAxis($"P{i} X Axis", _allJoyPads[i - 1].AnalogX);
-					Global.InputManager.AutofireStickyXorAdapter.SetAxis($"P{i} Y Axis", _allJoyPads[i - 1].AnalogY);
+					GlobalWin.InputManager.AutofireStickyXorAdapter.SetAxis($"P{i} X Axis", _allJoyPads[i - 1].AnalogX);
+					GlobalWin.InputManager.AutofireStickyXorAdapter.SetAxis($"P{i} Y Axis", _allJoyPads[i - 1].AnalogY);
 				}
 			}
 #endif
@@ -281,7 +281,7 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		private static void GetAllInputs()
 		{
-			var joypadAdapter = Global.InputManager.AutofireStickyXorAdapter;
+			var joypadAdapter = GlobalWin.InputManager.AutofireStickyXorAdapter;
 
 			var pressedButtons = joypadAdapter.Definition.BoolButtons.Where(b => joypadAdapter.IsPressed(b));
 

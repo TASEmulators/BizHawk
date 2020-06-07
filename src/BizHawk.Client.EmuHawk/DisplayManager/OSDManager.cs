@@ -193,7 +193,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public string InputStrImmediate()
 		{
-			return MakeStringFor(Global.InputManager.AutofireStickyXorAdapter);
+			return MakeStringFor(GlobalWin.InputManager.AutofireStickyXorAdapter);
 		}
 
 		public string InputPrevious()
@@ -212,7 +212,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public string InputStrOrAll()
 		{
-			IController m = Global.InputManager.AutofireStickyXorAdapter;
+			IController m = GlobalWin.InputManager.AutofireStickyXorAdapter;
 
 			if (GlobalWin.MovieSession.Movie.IsPlayingOrRecording() && GlobalWin.Emulator.Frame > 0)
 			{
@@ -235,7 +235,7 @@ namespace BizHawk.Client.EmuHawk
 					? GlobalWin.MovieSession.Movie.GetInputState(GlobalWin.Emulator.Frame - 1)
 					: GlobalWin.MovieSession.MovieController;
 
-				return MakeStringFor(Global.InputManager.AutofireStickyXorAdapter.And(m));
+				return MakeStringFor(GlobalWin.InputManager.AutofireStickyXorAdapter.And(m));
 			}
 
 			return "";
@@ -311,7 +311,7 @@ namespace BizHawk.Client.EmuHawk
 					// basically we're tinting whatever is pressed because it's sticky specially
 					// in order to achieve this we want to avoid drawing anything pink that isn't actually held down right now
 					// so we make an AND adapter and combine it using immediate & sticky
-					var autoString = MakeStringFor(Global.InputManager.StickyXorAdapter.Source.Xor(Global.InputManager.AutofireStickyXorAdapter).And(Global.InputManager.AutofireStickyXorAdapter));
+					var autoString = MakeStringFor(GlobalWin.InputManager.StickyXorAdapter.Source.Xor(GlobalWin.InputManager.AutofireStickyXorAdapter).And(GlobalWin.InputManager.AutofireStickyXorAdapter));
 					g.DrawString(autoString, MessageFont, autoColor, point.X, point.Y);
 
 					//recolor everything that's changed from the previous input
@@ -346,16 +346,16 @@ namespace BizHawk.Client.EmuHawk
 				DrawOsdMessage(g, rerecordCount, FixedMessagesColor, point.X, point.Y);
 			}
 
-			if (Global.InputManager.ClientControls["Autohold"] || Global.InputManager.ClientControls["Autofire"])
+			if (GlobalWin.InputManager.ClientControls["Autohold"] || GlobalWin.InputManager.ClientControls["Autofire"])
 			{
 				var sb = new StringBuilder("Held: ");
 
-				foreach (string sticky in Global.InputManager.StickyXorAdapter.CurrentStickies)
+				foreach (string sticky in GlobalWin.InputManager.StickyXorAdapter.CurrentStickies)
 				{
 					sb.Append(sticky).Append(' ');
 				}
 
-				foreach (string autoSticky in Global.InputManager.AutofireStickyXorAdapter.CurrentStickies)
+				foreach (string autoSticky in GlobalWin.InputManager.AutofireStickyXorAdapter.CurrentStickies)
 				{
 					sb
 						.Append("Auto-")

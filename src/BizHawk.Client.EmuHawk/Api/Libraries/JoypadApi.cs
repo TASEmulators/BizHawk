@@ -18,12 +18,12 @@ namespace BizHawk.Client.EmuHawk
 
 		public IDictionary<string, object> Get(int? controller = null)
 		{
-			return Global.InputManager.AutofireStickyXorAdapter.ToDictionary(controller);
+			return GlobalWin.InputManager.AutofireStickyXorAdapter.ToDictionary(controller);
 		}
 
 		public IDictionary<string, object> GetImmediate(int? controller = null)
 		{
-			return Global.InputManager.ActiveController.ToDictionary(controller);
+			return GlobalWin.InputManager.ActiveController.ToDictionary(controller);
 		}
 
 		public void SetFromMnemonicStr(string inputLogEntry)
@@ -38,15 +38,15 @@ namespace BizHawk.Client.EmuHawk
 				LogCallback($"invalid mnemonic string: {inputLogEntry}");
 				return;
 			}
-			foreach (var button in controller.Definition.BoolButtons) Global.InputManager.ButtonOverrideAdapter.SetButton(button, controller.IsPressed(button));
-			foreach (var axis in controller.Definition.AxisControls) Global.InputManager.ButtonOverrideAdapter.SetAxis(axis, controller.AxisValue(axis));
+			foreach (var button in controller.Definition.BoolButtons) GlobalWin.InputManager.ButtonOverrideAdapter.SetButton(button, controller.IsPressed(button));
+			foreach (var axis in controller.Definition.AxisControls) GlobalWin.InputManager.ButtonOverrideAdapter.SetAxis(axis, controller.AxisValue(axis));
 		}
 
 		public void Set(Dictionary<string, bool> buttons, int? controller = null)
 		{
 			// If a controller is specified, we need to iterate over unique button names. If not, we iterate over
 			// ALL button names with P{controller} prefixes
-			foreach (var button in Global.InputManager.ActiveController.ToBoolButtonNameList(controller))
+			foreach (var button in GlobalWin.InputManager.ActiveController.ToBoolButtonNameList(controller))
 			{
 				Set(button, buttons.TryGetValue(button, out var state) ? state : (bool?) null, controller);
 			}
@@ -57,9 +57,9 @@ namespace BizHawk.Client.EmuHawk
 			try
 			{
 				var buttonToSet = controller == null ? button : $"P{controller} {button}";
-				if (state == null) Global.InputManager.ButtonOverrideAdapter.UnSet(buttonToSet);
-				else Global.InputManager.ButtonOverrideAdapter.SetButton(buttonToSet, state.Value);
-				Global.InputManager.ActiveController.Overrides(Global.InputManager.ButtonOverrideAdapter);
+				if (state == null) GlobalWin.InputManager.ButtonOverrideAdapter.UnSet(buttonToSet);
+				else GlobalWin.InputManager.ButtonOverrideAdapter.SetButton(buttonToSet, state.Value);
+				GlobalWin.InputManager.ActiveController.Overrides(GlobalWin.InputManager.ButtonOverrideAdapter);
 			}
 			catch
 			{
@@ -76,7 +76,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			try
 			{
-				Global.InputManager.StickyXorAdapter.SetAxis(controller == null ? control : $"P{controller} {control}", value == null ? (int?) null : (int) value.Value); // the time for changing the API will come --yoshi
+				GlobalWin.InputManager.StickyXorAdapter.SetAxis(controller == null ? control : $"P{controller} {control}", value == null ? (int?) null : (int) value.Value); // the time for changing the API will come --yoshi
 			}
 			catch
 			{

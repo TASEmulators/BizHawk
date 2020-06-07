@@ -133,7 +133,7 @@ namespace BizHawk.Client.EmuHawk
 		private void lvDiscs_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			// emergency measure: if no selection, set no disc
-			Global.InputManager.StickyXorAdapter.SetAxis(_discSelectName, lvDiscs.SelectedIndices.Count == 0 ? 0 : lvDiscs.SelectedIndices[0]);
+			GlobalWin.InputManager.StickyXorAdapter.SetAxis(_discSelectName, lvDiscs.SelectedIndices.Count == 0 ? 0 : lvDiscs.SelectedIndices[0]);
 		}
 
 		private void btnClose_Click(object sender, EventArgs e)

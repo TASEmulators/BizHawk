@@ -30,7 +30,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void KeyClick(string name)
 		{
-			Global.InputManager.ClickyVirtualPadController.Click(name);
+			GlobalWin.InputManager.ClickyVirtualPadController.Click(name);
 		}
 
 		public void Restart()

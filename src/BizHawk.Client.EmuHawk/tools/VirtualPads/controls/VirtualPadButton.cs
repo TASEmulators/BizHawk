@@ -30,8 +30,8 @@ namespace BizHawk.Client.EmuHawk
 				RightClicked = false;
 				Checked = false;
 				//HOOMOO
-				Global.InputManager.AutofireStickyXorAdapter.SetSticky(Name, false);
-				Global.InputManager.StickyXorAdapter.SetSticky(Name, false);
+				GlobalWin.InputManager.AutofireStickyXorAdapter.SetSticky(Name, false);
+				GlobalWin.InputManager.StickyXorAdapter.SetSticky(Name, false);
 			}
 		}
 
@@ -132,7 +132,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (RightClicked)
 			{
-				Global.InputManager.AutofireStickyXorAdapter.SetSticky(Name, Checked);
+				GlobalWin.InputManager.AutofireStickyXorAdapter.SetSticky(Name, Checked);
 
 				if (Checked == false)
 				{
@@ -141,7 +141,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				Global.InputManager.StickyXorAdapter.SetSticky(Name, Checked);
+				GlobalWin.InputManager.StickyXorAdapter.SetSticky(Name, Checked);
 
 				if (Checked == false)
 				{

@@ -164,8 +164,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetAnalog()
 		{
-			Global.InputManager.StickyXorAdapter.SetAxis(XName, HasValue ? X : (int?)null);
-			Global.InputManager.StickyXorAdapter.SetAxis(YName, HasValue ? Y : (int?)null);
+			GlobalWin.InputManager.StickyXorAdapter.SetAxis(XName, HasValue ? X : (int?)null);
+			GlobalWin.InputManager.StickyXorAdapter.SetAxis(YName, HasValue ? Y : (int?)null);
 			Refresh();
 		}
 

@@ -39,8 +39,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Clear()
 		{
-			Global.InputManager.StickyXorAdapter.Unset(XName);
-			Global.InputManager.StickyXorAdapter.Unset(YName);
+			GlobalWin.InputManager.StickyXorAdapter.Unset(XName);
+			GlobalWin.InputManager.StickyXorAdapter.Unset(YName);
 			_overrideX = null;
 			_overrideY = null;
 			_isSet = false;
@@ -160,7 +160,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public int X
 		{
-			get => _overrideX ?? (int)(Global.InputManager.StickyXorAdapter.AxisValue(XName) / MultiplierX);
+			get => _overrideX ?? (int)(GlobalWin.InputManager.StickyXorAdapter.AxisValue(XName) / MultiplierX);
 			set
 			{
 				if (value < 0)
@@ -177,13 +177,13 @@ namespace BizHawk.Client.EmuHawk
 					XNumeric.Value = XNumeric.Maximum;
 				}
 
-				Global.InputManager.StickyXorAdapter.SetAxis(XName, (int)((float)XNumeric.Value * MultiplierX));
+				GlobalWin.InputManager.StickyXorAdapter.SetAxis(XName, (int)((float)XNumeric.Value * MultiplierX));
 				_isSet = true;
 			}
 		}
 		public int Y
 		{
-			get => _overrideY ?? (int)(Global.InputManager.StickyXorAdapter.AxisValue(YName) / MultiplierY);
+			get => _overrideY ?? (int)(GlobalWin.InputManager.StickyXorAdapter.AxisValue(YName) / MultiplierY);
 			set
 			{
 				if (value < 0)
@@ -199,7 +199,7 @@ namespace BizHawk.Client.EmuHawk
 					YNumeric.Value = YNumeric.Maximum;
 				}
 
-				Global.InputManager.StickyXorAdapter.SetAxis(YName, (int)((float)YNumeric.Value * MultiplierY));
+				GlobalWin.InputManager.StickyXorAdapter.SetAxis(YName, (int)((float)YNumeric.Value * MultiplierY));
 				_isSet = true;
 			}
 		}
