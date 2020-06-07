@@ -12,7 +12,7 @@ namespace BizHawk.BizInvoke
 		private IntPtr _handle;
 		private ulong _start;
 		private ulong _size;
-		private bool _guardActive;
+		private bool _active;
 
 		/// <summary>
 		/// Reserve bytes to later be swapped in, but do not map them
@@ -54,7 +54,7 @@ namespace BizHawk.BizInvoke
 			{
 				throw new InvalidOperationException($"{nameof(WinGuard.AddTripGuard)}() returned NULL");
 			}
-			_guardActive = true;
+			_active = true;
 		}
 
 		public void Deactivate()
@@ -63,7 +63,7 @@ namespace BizHawk.BizInvoke
 				throw new InvalidOperationException($"{nameof(Kernel32.UnmapViewOfFile)}() returned NULL");
 			if (!WinGuard.RemoveTripGuard(Z.UU(_start), Z.UU(_size)))
 				throw new InvalidOperationException($"{nameof(WinGuard.RemoveTripGuard)}() returned FALSE");
-			_guardActive = false;
+			_active = false;
 		}
 
 		public void Protect(ulong start, ulong size, Protection prot)
@@ -101,13 +101,17 @@ namespace BizHawk.BizInvoke
 		{
 			if (_handle != IntPtr.Zero)
 			{
+				if (_active)
+				{
+					try
+					{
+						Deactivate();
+					}
+					catch
+					{}
+				}
 				Kernel32.CloseHandle(_handle);
 				_handle = IntPtr.Zero;
-				if (_guardActive)
-				{
-					WinGuard.RemoveTripGuard(Z.UU(_start), Z.UU(_size));
-					_guardActive = false;
-				}
 				GC.SuppressFinalize(this);
 			}
 		}

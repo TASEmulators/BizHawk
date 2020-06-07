@@ -25,7 +25,7 @@ namespace BizHawk.BizInvoke
 			_dirtydata = (WriteDetectionStatus[])(object)new byte[GetPage(EndExclusive - 1) + 1];
 
 			_pal = OSTailoredCode.IsUnixHost
-				? (IMemoryBlockPal)new MemoryBlockUnixPal(Start, Size)
+				? (IMemoryBlockPal)new MemoryBlockLinuxPal(Start, Size)
 				: new MemoryBlockWindowsPal(Start, Size);
 		}
 

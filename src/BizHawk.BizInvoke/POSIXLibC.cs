@@ -31,19 +31,5 @@ namespace BizHawk.BizInvoke
 		/// <remarks>32-bit signed int</remarks>
 		[Flags]
 		public enum MemoryProtection : int { None = 0x0, Read = 0x1, Write = 0x2, Execute = 0x4 }
-
-		public static MemoryProtection ToMemoryProtection(this Protection prot)
-		{
-			switch (prot)
-			{
-				case Protection.None: return MemoryProtection.None;
-				case Protection.R: return MemoryProtection.Read | MemoryProtection.Write; // FIXME
-				case Protection.RW: return MemoryProtection.Read | MemoryProtection.Write;
-				case Protection.RX: return MemoryProtection.Read | MemoryProtection.Execute;
-				case Protection.RW_Invisible: return MemoryProtection.Read | MemoryProtection.Write;
-				case Protection.RW_Stack: return MemoryProtection.Read | MemoryProtection.Write; // FIXME
-				default: throw new ArgumentOutOfRangeException(nameof(prot));
-			}
-		}
 	}
 }
