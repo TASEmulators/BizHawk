@@ -3,13 +3,13 @@ using System.Drawing;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
-using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.CustomControls;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Consoles.NEC.PCE;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 using BizHawk.Emulation.Cores.Nintendo.SNES9X;
-using Cores = BizHawk.Emulation.Cores;
+using BizHawk.Emulation.Cores;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -45,8 +45,9 @@ namespace BizHawk.Client.EmuHawk
 
 			return emulator switch
 			{
-				Snes9x _ => PromptToSwitchCore("Snes9x", "bsnes", () => GlobalWin.Config.PreferredCores["SNES"] = Cores.CoreNames.Bsnes),
-				QuickNES _ => PromptToSwitchCore("QuickNes", "NesHawk", () => GlobalWin.Config.PreferredCores["NES"] = Cores.CoreNames.NesHawk),
+				Snes9x _ => PromptToSwitchCore(CoreNames.Snes9X, CoreNames.Bsnes, () => GlobalWin.Config.PreferredCores["SNES"] = CoreNames.Bsnes),
+				QuickNES _ => PromptToSwitchCore(CoreNames.QuickNes, CoreNames.NesHawk, () => GlobalWin.Config.PreferredCores["NES"] = CoreNames.NesHawk),
+				TerboGrafixSanic _ => PromptToSwitchCore(CoreNames.TurboTurboNyma, CoreNames.TurboNyma, () => GlobalWin.Config.PreferredCores["NES"] = CoreNames.NesHawk),
 				_ => true
 			};
 		}
