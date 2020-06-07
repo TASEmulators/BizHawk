@@ -6,7 +6,6 @@ using System.Linq;
 using System.Windows.Forms;
 using System.ComponentModel;
 using BizHawk.Client.Common;
-using BizHawk.Client.Common.MovieConversionExtensions;
 using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.N64;

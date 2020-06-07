@@ -11,7 +11,7 @@ using BizHawk.Emulation.Cores.Sega.MasterSystem;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 using BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive;
 
-namespace BizHawk.Client.Common.MovieConversionExtensions
+namespace BizHawk.Client.Common
 {
 	public static class MovieConversionExtensions
 	{

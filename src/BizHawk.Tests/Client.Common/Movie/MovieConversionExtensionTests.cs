@@ -1,5 +1,5 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using BizHawk.Client.Common.MovieConversionExtensions;
+using BizHawk.Client.Common;
 
 namespace BizHawk.Common.Tests.Client.Common.Movie
 {
