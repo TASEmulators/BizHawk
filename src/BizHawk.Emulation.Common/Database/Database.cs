@@ -45,7 +45,7 @@ namespace BizHawk.Emulation.Common
 			if (File.Exists(filename))
 			{
 				Debug.WriteLine("loading external game database {0}", line);
-				InitializeDatabase(filename);
+				initializeWork(filename);
 			}
 			else
 			{
@@ -92,7 +92,6 @@ namespace BizHawk.Emulation.Common
 		{
 			//reminder: this COULD be done on several threads, if it takes even longer
 			Dictionary<string, CompactGameInfo> db = new Dictionary<string, CompactGameInfo>();
-			var stopwatch = Stopwatch.StartNew();
 
 			using var reader = new StreamReader(new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read));
 			while (reader.EndOfStream == false)
@@ -161,8 +160,6 @@ namespace BizHawk.Emulation.Common
 			//it's left as null until now to help catch mistakes in using the resource
 			DB = db;
 			acquire.Set();
-
-			Console.WriteLine("GameDB load: " + stopwatch.Elapsed + " sec");
 		}
 
 		public static void InitializeDatabase(string path)
@@ -170,7 +167,11 @@ namespace BizHawk.Emulation.Common
 			if (initialized) throw new InvalidOperationException("Did not expect re-initialize of game Database");
 			initialized = true;
 
-			ThreadPool.QueueUserWorkItem(_=>initializeWork(path));
+			var stopwatch = Stopwatch.StartNew();
+			ThreadPool.QueueUserWorkItem(_=> {
+				initializeWork(path);
+				Console.WriteLine("GameDB load: " + stopwatch.Elapsed + " sec");
+			});
 		}
 
 		public static GameInfo CheckDatabase(string hash)
