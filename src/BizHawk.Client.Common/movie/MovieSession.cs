@@ -39,6 +39,8 @@ namespace BizHawk.Client.Common
 				?? throw new ArgumentNullException($"{nameof(pauseCallback)} cannot be null.");
 			_modeChangedCallback = modeChangedCallback
 				?? throw new ArgumentNullException($"{nameof(modeChangedCallback)} CannotUnloadAppDomainException be null.");
+
+			MultiTrack.RewiringAdapter.Source = MovieIn;
 		}
 
 		public IMovieConfig Settings { get; }
@@ -50,14 +52,12 @@ namespace BizHawk.Client.Common
 		public bool NewMovieQueued => _queuedMovie != null;
 		public string QueuedSyncSettings => _queuedMovie.SyncSettingsJson;
 
+		public IInputAdapter MovieIn { get; } = new CopyControllerAdapter();
+		public IInputAdapter MovieOut { get; } = new CopyControllerAdapter();
+
 		public IMovieController MovieController { get; private set; } = new Bk2Controller("", NullController.Instance.Definition);
 
 		public MultitrackRecorder MultiTrack { get; } = new MultitrackRecorder();
-
-		public void RecreateMovieController(ControllerDefinition definition)
-		{
-			MovieController = new Bk2Controller(definition);
-		}
 
 		public IMovieController GenerateMovieController(ControllerDefinition definition = null)
 		{
@@ -233,6 +233,7 @@ namespace BizHawk.Client.Common
 
 		public void RunQueuedMovie(bool recordMode, IEmulator emulator, IDictionary<string, string> preferredCores)
 		{
+			MovieController = new Bk2Controller(emulator.ControllerDefinition);
 			_queuedMovie.Attach(emulator);
 			foreach (var previousPref in _preferredCores)
 			{
@@ -255,8 +256,6 @@ namespace BizHawk.Client.Common
 			{
 				Movie.StartNewPlayback();
 			}
-
-			MultiTrack.Restart(emulator.ControllerDefinition.PlayerCount);
 		}
 
 		public void ToggleMultitrack()
@@ -350,9 +349,9 @@ namespace BizHawk.Client.Common
 
 		private void LatchInputToMultitrackUser()
 		{
-			var rewiredSource = Global.InputManager.MultitrackRewiringAdapter;
 			if (MultiTrack.IsActive)
 			{
+				var rewiredSource = MultiTrack.RewiringAdapter;
 				rewiredSource.PlayerSource = 1;
 				rewiredSource.PlayerTargetMask = 1 << MultiTrack.CurrentPlayer;
 				if (MultiTrack.RecordAll)
@@ -372,7 +371,8 @@ namespace BizHawk.Client.Common
 
 		private void LatchInputToUser()
 		{
-			MovieController.SetFrom(Global.InputManager.MovieInputSourceAdapter);
+			MovieOut.Source = MovieIn;
+			MovieController.SetFrom(MovieIn); // TODO: this shouldn't be necessary anymore
 		}
 
 		// Latch input from the input log, if available
@@ -393,10 +393,7 @@ namespace BizHawk.Client.Common
 			}
 
 			MovieController.SetFrom(input);
-			if (MultiTrack.IsActive)
-			{
-				Global.InputManager.MultitrackRewiringAdapter.Source = MovieController;
-			}
+			MovieOut.Source = MovieController;
 		}
 
 		private void HandlePlaybackEnd()
@@ -438,6 +435,7 @@ namespace BizHawk.Client.Common
 			// we don't want TasMovie to latch user input outside its internal recording mode, so limit it to autohold
 			if (Movie is ITasMovie && Movie.IsPlayingOrFinished())
 			{
+				// TODO: same as MovieIn, since autofiresitcky is the last in the chain before movie
 				MovieController.SetFromSticky(Global.InputManager.AutofireStickyXorAdapter);
 			}
 			else
@@ -452,9 +450,7 @@ namespace BizHawk.Client.Common
 				}
 			}
 
-			// the movie session makes sure that the correct input has been read and merged to its MovieControllerAdapter;
-			// this has been wired to Global.MovieOutputHardpoint in RewireInputChain
-			Movie.RecordFrame(Movie.Emulator.Frame, Global.InputManager.MovieOutputHardpoint);
+			Movie.RecordFrame(Movie.Emulator.Frame, MovieController);
 		}
 	}
 }

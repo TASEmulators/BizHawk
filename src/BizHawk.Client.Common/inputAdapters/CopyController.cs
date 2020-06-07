@@ -5,7 +5,7 @@ namespace BizHawk.Client.Common
 	/// <summary>
 	/// Just copies source to sink, or returns whatever a NullController would if it is disconnected. useful for immovable hard-points.
 	/// </summary>
-	public class CopyControllerAdapter : IController
+	public class CopyControllerAdapter : IInputAdapter
 	{
 		public ControllerDefinition Definition => Curr.Definition;
 

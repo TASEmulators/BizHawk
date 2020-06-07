@@ -107,7 +107,7 @@ namespace BizHawk.Client.Common
 		}
 	}
 
-	public class AutoFireStickyXorAdapter : IStickyController
+	public class AutoFireStickyXorAdapter : IStickyController, IInputAdapter
 	{
 		public ControllerDefinition Definition => Source.Definition;
 

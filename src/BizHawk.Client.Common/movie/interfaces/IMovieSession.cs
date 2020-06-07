@@ -24,10 +24,18 @@ namespace BizHawk.Client.Common
 		MultitrackRecorder MultiTrack { get; }
 
 		/// <summary>
-		/// Recreates MovieController with the given controller definition
-		/// with an empty controller state
+		/// Represents the input source that is fed to
+		/// the movie for the purpsoe of recording, if active,
+		/// or to simply pass through if inactive
 		/// </summary>
-		void RecreateMovieController(ControllerDefinition definition);
+		IInputAdapter MovieIn { get; }
+
+		/// <summary>
+		/// Represents the movie input in the input chain
+		/// Is a pass through when movies are not active,
+		/// otherwise they handle necessary movie logic
+		/// </summary>
+		IInputAdapter MovieOut { get; }
 
 		/// <summary>
 		/// Creates a <see cref="IMovieController" /> instance based on the

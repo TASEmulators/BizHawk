@@ -9,6 +9,8 @@ namespace BizHawk.Client.Common
 			Restart(1);
 		}
 
+		internal MultitrackRewiringControllerAdapter RewiringAdapter { get; } = new MultitrackRewiringControllerAdapter();
+
 		public bool IsActive { get; set; }
 		public int CurrentPlayer { get; private set; }
 		public int PlayerCount { get; private set; }
@@ -84,10 +86,10 @@ namespace BizHawk.Client.Common
 	/// <summary>
 	/// rewires player1 controls to playerN
 	/// </summary>
-	public class MultitrackRewiringControllerAdapter : IController
+	public class MultitrackRewiringControllerAdapter : IInputAdapter
 	{
 		public IController Source { get; set; }
-		public int PlayerSource { get; set; } = 1;
+		public int PlayerSource { get; set; } = -1;
 		public int PlayerTargetMask { get; set; }
 
 		public ControllerDefinition Definition => Source.Definition;

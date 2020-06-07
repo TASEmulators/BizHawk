@@ -413,7 +413,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			Sound.StartSound();
-			InputManager.SyncControls(Emulator, Config);
+			InputManager.SyncControls(Emulator, MovieSession, Config);
 			GlobalWin.CheatList = new CheatCollection(Config.Cheats);
 			CheatList.Changed += Tools.UpdateCheatRelatedTools;
 			RewireSound();
@@ -2845,7 +2845,7 @@ namespace BizHawk.Client.EmuHawk
 			Config = ConfigService.Load<Config>(iniPath);
 			Config.ResolveDefaults();
 			InitControls(); // rebind hotkeys
-			InputManager.SyncControls(Emulator, Config);
+			InputManager.SyncControls(Emulator, MovieSession, Config);
 			AddOnScreenMessage($"Config file loaded: {iniPath}");
 		}
 
@@ -3706,7 +3706,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					string openAdvancedArgs = $"*{OpenAdvancedSerializer.Serialize(ioa)}";
 					Emulator = loader.LoadedEmulator;
-					InputManager.SyncControls(Emulator, Config);
+					InputManager.SyncControls(Emulator, MovieSession, Config);
 
 					if (oaOpenrom != null && Path.GetExtension(oaOpenrom.Path.Replace("|", "")).ToLowerInvariant() == ".xml" && !(Emulator is LibsnesCore))
 					{

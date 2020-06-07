@@ -932,7 +932,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				AddOnScreenMessage("Controller settings saved");
 				InitControls();
-				InputManager.SyncControls(Emulator, Config);
+				InputManager.SyncControls(Emulator, MovieSession, Config);
 			}
 			else
 			{
@@ -947,7 +947,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				AddOnScreenMessage("Hotkey settings saved");
 				InitControls();
-				InputManager.SyncControls(Emulator, Config);
+				InputManager.SyncControls(Emulator, MovieSession, Config);
 			}
 			else
 			{

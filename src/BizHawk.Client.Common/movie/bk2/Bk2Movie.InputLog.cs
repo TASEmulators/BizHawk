@@ -14,7 +14,7 @@ namespace BizHawk.Client.Common
 		{
 			writer.WriteLine("[Input]");
 
-			var lg = new Bk2LogEntryGenerator(LogKey, Global.InputManager.MovieOutputHardpoint);
+			var lg = new Bk2LogEntryGenerator(LogKey, Session.MovieController);
 			writer.WriteLine(lg.GenerateLogKey());
 
 			foreach (var record in Log)

@@ -275,10 +275,11 @@ namespace BizHawk.Client.Common
 			int oldLength = InputLogLength;
 			ChangeLog.AddGeneralUndo(oldLength, oldLength + numFrames - 1);
 
+			// TODO: same as MovieIn, since autofiresitcky is the last in the chain before movie
 			Session.MovieController.SetFromSticky(Global.InputManager.AutofireStickyXorAdapter);
 
 			// account for autohold. needs autohold pattern to be already recorded in the current frame
-			var lg = LogGeneratorInstance(Global.InputManager.MovieOutputHardpoint);
+			var lg = LogGeneratorInstance(Session.MovieController);
 
 			for (int i = 0; i < numFrames; i++)
 			{

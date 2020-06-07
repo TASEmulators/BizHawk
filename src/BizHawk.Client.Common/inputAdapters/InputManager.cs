@@ -12,11 +12,6 @@ namespace BizHawk.Client.Common
 	// (1)->Input Display
 	public class InputManager
 	{
-		// the movie will be spliced in between these if it is present
-		public CopyControllerAdapter MovieInputSourceAdapter { get; } = new CopyControllerAdapter();
-		public CopyControllerAdapter MovieOutputHardpoint { get; } = new CopyControllerAdapter();
-		public MultitrackRewiringControllerAdapter MultitrackRewiringAdapter { get; } = new MultitrackRewiringControllerAdapter();
-
 		// the original source controller, bound to the user, sort of the "input" port for the chain, i think
 		public Controller ActiveController { get; set; } // TODO: private setter, add a method that takes both controllers in 
 
@@ -26,7 +21,7 @@ namespace BizHawk.Client.Common
 		// the "output" port for the controller chain.
 		public CopyControllerAdapter ControllerOutput { get; } = new CopyControllerAdapter();
 
-		public UdlrControllerAdapter UdLRControllerAdapter { get; } = new UdlrControllerAdapter();
+		private UdlrControllerAdapter UdLRControllerAdapter { get; } = new UdlrControllerAdapter();
 
 		public AutoFireStickyXorAdapter AutofireStickyXorAdapter { get; } = new AutoFireStickyXorAdapter();
 
@@ -51,7 +46,7 @@ namespace BizHawk.Client.Common
 
 		public Controller ClientControls { get; set; }
 
-		public void SyncControls(IEmulator emulator, Config config)
+		public void SyncControls(IEmulator emulator, IMovieSession session, Config config)
 		{
 			var def = emulator.ControllerDefinition;
 
@@ -73,14 +68,8 @@ namespace BizHawk.Client.Common
 			StickyXorAdapter.Source = UdLRControllerAdapter;
 			AutofireStickyXorAdapter.Source = StickyXorAdapter;
 
-			MultitrackRewiringAdapter.Source = AutofireStickyXorAdapter;
-			MovieInputSourceAdapter.Source = MultitrackRewiringAdapter;
-			ControllerOutput.Source = MovieOutputHardpoint;
-
-			Global.MovieSession.RecreateMovieController(MovieInputSourceAdapter.Definition);
-
-			// connect the movie session before MovieOutputHardpoint
-			MovieOutputHardpoint.Source = Global.MovieSession.MovieController;
+			session.MovieIn.Source = AutofireStickyXorAdapter;
+			ControllerOutput.Source = session.MovieOut;
 		}
 
 		private static Controller BindToDefinition(ControllerDefinition def, IDictionary<string, Dictionary<string, string>> allBinds, IDictionary<string, Dictionary<string, AnalogBind>> analogBinds)
