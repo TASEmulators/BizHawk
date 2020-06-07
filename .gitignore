@@ -85,3 +85,4 @@ packages
 
 BizHawk.Emulation.Common/BizHawk.Emulation.Common.csproj.nuget.*
 BizHawk.Emulation.Common/project.assets.json
+launchSettings.json
