@@ -12,12 +12,12 @@ using BizHawk.Emulation.DiscSystem;
 namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 {
 	[Core(CoreNames.TurboNyma, "Mednafen Team", true, true, "1.24.3", "https://mednafen.github.io/releases/", false)]
-	public class TerboGrafix : NymaCore, IRegionable, IPceGpuView
+	public class TurboNyma : NymaCore, IRegionable, IPceGpuView
 	{
 		private readonly LibTerboGrafix _terboGrafix;
 
 		[CoreConstructor(new[] { "PCE", "SGX" })]
-		public TerboGrafix(GameInfo game, byte[] rom, CoreComm comm, string extension,
+		public TurboNyma(GameInfo game, byte[] rom, CoreComm comm, string extension,
 			NymaSettings settings, NymaSyncSettings syncSettings, bool deterministic)
 			: base(comm, "PCE", "PC Engine Controller", settings, syncSettings)
 		{
@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 				SettingsOverrides["pce.disable_bram_hucard"] = "0";
 			_terboGrafix = DoInit<LibTerboGrafix>(game, rom, null, "pce.wbx", extension, deterministic);
 		}
-		public TerboGrafix(GameInfo game, Disc[] discs, CoreComm comm,
+		public TurboNyma(GameInfo game, Disc[] discs, CoreComm comm,
 			NymaSettings settings, NymaSyncSettings syncSettings, bool deterministic)
 			: base(comm, "PCE", "PC Engine Controller", settings, syncSettings)
 		{

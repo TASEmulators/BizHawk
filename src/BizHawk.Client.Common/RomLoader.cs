@@ -361,12 +361,12 @@ namespace BizHawk.Client.Common
 //							(NymaCore.NymaSyncSettings) GetCoreSyncSettings<HyperNyma>(),
 //							Deterministic
 //						),
-						_ => new TerboGrafix(
+						_ => new TurboNyma(
 							game,
 							new[] { disc },
 							nextComm,
-							(NymaCore.NymaSettings) GetCoreSettings<TerboGrafix>(),
-							(NymaCore.NymaSyncSettings) GetCoreSyncSettings<TerboGrafix>(),
+							(NymaCore.NymaSettings) GetCoreSettings<TurboNyma>(),
+							(NymaCore.NymaSyncSettings) GetCoreSyncSettings<TurboNyma>(),
 							Deterministic
 						)
 					};
