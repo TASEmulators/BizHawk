@@ -25,3 +25,7 @@
 [submodule "waterbox/nyma/mednafen"]
 	path = waterbox/nyma/mednafen
 	url = https://github.com/TASVideos/mednafen.git
+[submodule "submodules/gambatte"]
+	path = submodules/gambatte
+	url = https://github.com/TASVideos/gambatte-speedrun.git
+	branch = bizhawk
