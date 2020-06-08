@@ -3827,6 +3827,7 @@ namespace BizHawk.Client.EmuHawk
 					else
 					{
 						Rewinder?.Dispose();
+						Rewinder = null;
 					}
 
 					GlobalWin.InputManager.StickyXorAdapter.ClearStickies();
