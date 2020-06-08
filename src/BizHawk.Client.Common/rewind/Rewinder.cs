@@ -4,7 +4,22 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
-	public class Rewinder : IDisposable
+	public interface IRewinder : IDisposable
+	{
+		int Count { get; }
+		bool HasBuffer { get; }
+		float FullnessRatio { get; }
+		long Size { get; }
+		int RewindFrequency { get; }
+
+		bool RewindActive { get; }
+		bool SuspendRewind { get; set; }
+
+		void Capture(int frame);
+		bool Rewind(int frames);
+	}
+
+	public class Rewinder : IRewinder
 	{
 		private readonly IStatable _statableCore;
 
