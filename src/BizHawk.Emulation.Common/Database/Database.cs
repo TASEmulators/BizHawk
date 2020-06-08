@@ -157,9 +157,6 @@ namespace BizHawk.Emulation.Common
 				}
 			}
 
-			//commit the finished database load
-			//it's left as null until now to help catch mistakes in using the resource
-			DB = DB;
 			acquire.Set();
 		}
 

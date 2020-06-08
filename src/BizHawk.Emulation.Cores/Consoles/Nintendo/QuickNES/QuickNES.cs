@@ -241,7 +241,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		void ComputeBootGod()
 		{
 			// inefficient, sloppy, etc etc
-			BootGodDb.Initialize();
 			var chrrom = _memoryDomains["CHR VROM"];
 			var prgrom = _memoryDomains["PRG ROM"];
 
@@ -262,7 +261,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			}
 
 			sha1 = "sha1:" + sha1; // huh?
-			var carts = BootGodDb.Instance.Identify(sha1);
+			var carts = BootGodDb.Identify(sha1);
 
 			if (carts.Count > 0)
 			{

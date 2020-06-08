@@ -1,40 +1,41 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
+using System.Threading;
 using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	public class BootGodDb
 	{
-		static object staticsyncroot = new object();
-		object syncroot = new object();
+		/// <summary>
+		/// blocks until the DB is done loading
+		/// </summary>
+		static EventWaitHandle acquire;
 
 		bool validate = true;
 
 		private readonly Bag<string, CartInfo> _sha1Table = new Bag<string, CartInfo>();
 
-		private static BootGodDb _instance;
-		public static BootGodDb Instance
-		{
-			get { lock (staticsyncroot) { return _instance; } }
-		}
+		static BootGodDb instance;
 
-		private static Func<byte[]> _GetDatabaseBytes;
-
-		public static Func<byte[]> GetDatabaseBytes
+		public static void Initialize(string basePath)
 		{
-			set { lock (staticsyncroot) { _GetDatabaseBytes = value; } }
-		}
+			if (acquire != null) throw new InvalidOperationException("Bootgod DB multiply initialized");
+			acquire =  new EventWaitHandle(false, EventResetMode.ManualReset); ;
 
-		public static void Initialize()
-		{
-			lock (staticsyncroot)
+			var stopwatch = Stopwatch.StartNew();
+			ThreadPool.QueueUserWorkItem(_ =>
 			{
-				_instance ??= new BootGodDb();
-			}
+				instance = new BootGodDb(basePath);
+				Console.WriteLine("Bootgod DB load: " + stopwatch.Elapsed + " sec");
+				acquire.Set();
+			});
 		}
+
+		private BootGodDb() { }
 
 		private int ParseSize(string str)
 		{
@@ -48,14 +49,26 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			return temp;
 		}
-		public BootGodDb()
+
+		public BootGodDb(string basePath)
 		{
 			// notes: there can be multiple each of prg,chr,wram,vram
 			// we aren't tracking the individual hashes yet.
 
+			string xmlPath = Path.Combine(basePath, "NesCarts.xml");
+			string x7zPath = Path.Combine(basePath, "NesCarts.7z");
+			bool loadXml = File.Exists(xmlPath);
+			using var nesCartFile = new HawkFile(loadXml ? xmlPath : x7zPath);
+			if (!loadXml)
+			{
+				nesCartFile.BindFirst();
+			}
+
+			var stream = nesCartFile.GetStream();
+
 			// in anticipation of any slowness annoying people, and just for shits and giggles, i made a super fast parser
 			int state=0;
-			var xmlReader = XmlReader.Create(new MemoryStream(_GetDatabaseBytes()));
+			var xmlReader = XmlReader.Create(stream);
 			CartInfo currCart = null;
 			string currName = null;
 			while (xmlReader.Read())
@@ -141,9 +154,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			} //end xmlreader loop
 		}
 
-		public List<CartInfo> Identify(string sha1)
+		public static List<CartInfo> Identify(string sha1)
 		{
-			lock (syncroot) return _sha1Table[sha1];
+			if (acquire == null) throw new InvalidOperationException("Bootgod DB not initialized. It's a client responsibility because only a client knows where the database is located.");
+			acquire.WaitOne();
+			return instance._sha1Table[sha1];
 		}
 	}
 }

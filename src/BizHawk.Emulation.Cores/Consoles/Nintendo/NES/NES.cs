@@ -35,7 +35,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			SyncSettings = (NESSyncSettings)syncSettings ?? new NESSyncSettings();
 			ControllerSettings = SyncSettings.Controls;
 
-			BootGodDb.Initialize();
 			videoProvider = new MyVideoProvider(this);
 			Init(game, rom, fdsBios);
 			if (Board is FDS fds)
@@ -86,7 +85,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		private NES()
 		{
-			BootGodDb.Initialize();
 		}
 
 		public void WriteLogTimestamp()
