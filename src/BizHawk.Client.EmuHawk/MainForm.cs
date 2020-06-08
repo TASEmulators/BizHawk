@@ -4014,7 +4014,7 @@ namespace BizHawk.Client.EmuHawk
 				Rewinder = new Rewinder(Emulator.AsStatable(), Config.Rewind);
 			}
 
-			Rewinder.SuspendRewind = !enabled;
+			Rewinder.Suspend = !enabled;
 			AddOnScreenMessage($"Rewind {(enabled ? "enabled" : "suspended")}");
 		}
 
