@@ -12,7 +12,7 @@ lynx: use lynx/msvc/bizlynx.sln
 wonderswan: use wonderswan/msvc/bizswan.sln
 libretrobridge: use LibretroBridge/msvc/LibretroBridge.sln
 quicknes: use quicknes/msvc/libquicknes.sln
-libgambatte: use libgambatte/libgambatte.sln.
+gambatte: use submodules/gambatte/bizhawk/msvc/libgambatte.sln
 octoshock (psx): use psx/octoshock/bizhawk/octoshock.sln
 
 libmupen64plus: 
