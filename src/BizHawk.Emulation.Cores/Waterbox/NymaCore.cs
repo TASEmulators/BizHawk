@@ -172,7 +172,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		// todo: bleh
 		private GCHandle _frameAdvanceInputLock;
 
-		private volatile bool _frameThreadProcActive;
+		private Task _frameThreadProcActive;
 
 		protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
 		{
@@ -193,18 +193,13 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			};
 			if (_frameThreadStart != null)
 			{
-				_frameThreadProcActive = true;
-				Task.Run(() =>
-				{
-					_frameThreadStart();
-					_frameThreadProcActive = false;
-				});
+				_frameThreadProcActive = Task.Run(_frameThreadStart);
 			}
 			return ret;
 		}
 		protected override void FrameAdvancePost()
 		{
-			while (_frameThreadProcActive)
+			if (_frameThreadProcActive != null)
 			{
 				// The nyma core unmanaged code should always release the threadproc to completion
 				// before returning from Emulate, but even when it does occasionally the threadproc
@@ -212,8 +207,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 				// It MUST be allowed to finish now, because the theadproc doesn't know about or participate
 				// in the waterbox core lockout (IMonitor) directly -- it assumes the parent has handled that
+				_frameThreadProcActive.Wait();
+				_frameThreadProcActive = null;
 			}
-			_frameAdvanceInputLock.Free();
 		}
 
 		public DisplayType Region { get; protected set; }
