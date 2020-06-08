@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Newtonsoft.Json;
 
 namespace BizHawk.Client.Common
 {
@@ -6,7 +7,13 @@ namespace BizHawk.Client.Common
 	{
 		public string SystemDisplayName { get; set; }
 		public string Type { get; set; }
-		public string Path { get; set; }
+		[JsonIgnore]
+		private string _path;
+		public string Path
+		{
+			get => _path;
+			set => _path = value.Replace('\\', '/');
+		}
 		public string System { get; set; }
 		public int Ordinal { get; set; }
 
