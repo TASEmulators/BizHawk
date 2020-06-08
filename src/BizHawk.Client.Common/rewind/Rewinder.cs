@@ -28,7 +28,7 @@ namespace BizHawk.Client.Common
 		private byte[] _rewindBufferBacking;
 		private long _memoryLimit = MaxByteArraySize;
 		private readonly RewindThreader _rewindThread;
-		private byte[] _lastState;
+		private byte[] _lastState = new byte[0];
 		private readonly bool _rewindDeltaEnable;
 		private bool _lastRewindLoadedState;
 		private byte[] _deltaBuffer = new byte[0];
@@ -49,7 +49,7 @@ namespace BizHawk.Client.Common
 
 		public Rewinder(IStatable statableCore, IRewindSettings settings)
 		{
-			_statableCore = statableCore;
+			_statableCore = statableCore ?? throw new ArgumentNullException("Rewinder requires a statable core.");
 
 			int stateSize = _statableCore.CloneSavestate().Length;
 
