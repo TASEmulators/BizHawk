@@ -4,24 +4,24 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
-	public class Rewinder
+	public class Rewinder : IDisposable
 	{
-		private IStatable _statableCore;
+		private readonly IStatable _statableCore;
 
 		private const int MaxByteArraySize = 0x7FFFFFC7; // .NET won't let us allocate more than this in one array
 
-		private StreamBlobDatabase _rewindBuffer;
+		private readonly StreamBlobDatabase _rewindBuffer;
 		private byte[] _rewindBufferBacking;
 		private long _memoryLimit = MaxByteArraySize;
-		private RewindThreader _rewindThread;
+		private readonly RewindThreader _rewindThread;
 		private byte[] _lastState;
-		private bool _rewindDeltaEnable;
+		private readonly bool _rewindDeltaEnable;
 		private bool _lastRewindLoadedState;
 		private byte[] _deltaBuffer = new byte[0];
 
 		public bool RewindActive => RewindEnabled && !SuspendRewind;
 
-		private bool RewindEnabled { get; set; }
+		private bool RewindEnabled { get; }
 
 		public bool SuspendRewind { get; set; }
 
@@ -33,12 +33,10 @@ namespace BizHawk.Client.Common
 
 		public bool HasBuffer => _rewindBuffer != null;
 
-		public int RewindFrequency { get; private set; }
+		public int RewindFrequency { get; }
 
-		public void Initialize(IStatable statableCore, IRewindSettings settings)
+		public Rewinder(IStatable statableCore, IRewindSettings settings)
 		{
-			Uninitialize();
-
 			_statableCore = statableCore;
 
 			int stateSize = _statableCore.CloneSavestate().Length;
@@ -69,27 +67,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void Uninitialize()
-		{
-			if (_rewindThread != null)
-			{
-				_rewindThread.Dispose();
-				_rewindThread = null;
-			}
-
-			if (_rewindBuffer != null)
-			{
-				_rewindBuffer.Dispose();
-				_rewindBuffer = null;
-			}
-
-			Clear();
-
-			RewindEnabled = false;
-			RewindFrequency = 0;
-		}
-
-		public void Clear()
+		private void Clear()
 		{
 			_rewindBuffer?.Clear();
 			_lastState = new byte[0];
@@ -366,6 +344,13 @@ namespace BizHawk.Client.Common
 
 				_statableCore.LoadStateBinary(reader);
 			}
+		}
+
+		public void Dispose()
+		{
+			Clear();
+			_rewindBuffer?.Dispose();
+			_rewindThread?.Dispose();
 		}
 	}
 

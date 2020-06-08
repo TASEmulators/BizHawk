@@ -1011,7 +1011,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Emulator.HasSavestates())
 			{
-				using var form = new RewindConfig(Rewinder, Config, Emulator.AsStatable());
+				using var form = new RewindConfig(this, Config, Emulator.AsStatable());
 				AddOnScreenMessage(form.ShowDialog().IsOk()
 					? "Rewind and State settings saved"
 					: "Rewind config aborted");

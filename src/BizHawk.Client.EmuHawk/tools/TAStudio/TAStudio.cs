@@ -276,7 +276,7 @@ namespace BizHawk.Client.EmuHawk
 			SetTextProperty();
 			MainForm.RelinquishControl(this);
 			_originalEndAction = Config.Movies.MovieEndAction;
-			MainForm.ClearRewindData();
+			MainForm.DisableRewind();
 			Config.Movies.MovieEndAction = MovieEndAction.Record;
 			MainForm.SetMainformMovieInfo();
 			MovieSession.ReadOnly = true;
@@ -794,6 +794,7 @@ namespace BizHawk.Client.EmuHawk
 			MainForm.AddOnScreenMessage("TAStudio disengaged");
 			MainForm.TakeBackControl();
 			Config.Movies.MovieEndAction = _originalEndAction;
+			MainForm.EnableRewind(true);
 			MainForm.SetMainformMovieInfo();
 		}
 

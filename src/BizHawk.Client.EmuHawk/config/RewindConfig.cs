@@ -9,7 +9,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class RewindConfig : Form
 	{
-		private readonly Rewinder _rewinder;
+		private readonly MainForm _mainForm;
 		private readonly Config _config;
 		private readonly IStatable _statableCore;
 
@@ -18,9 +18,9 @@ namespace BizHawk.Client.EmuHawk
 		private int _largeStateSize;
 		private int _stateSizeCategory = 1; // 1 = small, 2 = med, 3 = large // TODO: enum
 
-		public RewindConfig(Rewinder rewinder, Config config, IStatable statableCore)
+		public RewindConfig(MainForm mainForm, Config config, IStatable statableCore)
 		{
-			_rewinder = rewinder;
+			_mainForm = mainForm;
 			_config = config;
 			_statableCore = statableCore;
 			InitializeComponent();
@@ -28,10 +28,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RewindConfig_Load(object sender, EventArgs e)
 		{
-			if (_rewinder.HasBuffer)
+			if (_mainForm.Rewinder.HasBuffer)
 			{
-				FullnessLabel.Text = $"{_rewinder.FullnessRatio * 100:0.00}%";
-				RewindFramesUsedLabel.Text = _rewinder.Count.ToString();
+				FullnessLabel.Text = $"{_mainForm.Rewinder.FullnessRatio * 100:0.00}%";
+				RewindFramesUsedLabel.Text = _mainForm.Rewinder.Count.ToString();
 			}
 			else
 			{
@@ -173,11 +173,6 @@ namespace BizHawk.Client.EmuHawk
 			_config.Rewind.OnDisk = PutRewindSetting(_config.Rewind.OnDisk, DiskBufferCheckbox.Checked);
 			_config.Rewind.IsThreaded = PutRewindSetting(_config.Rewind.IsThreaded, RewindIsThreadedCheckbox.Checked);
 
-			if (TriggerRewindSettingsReload)
-			{
-				_rewinder.Initialize(_statableCore, _config.Rewind);
-			}
-
 			// These settings are not used by DoRewindSettings
 			_config.Rewind.SpeedMultiplier = (int)RewindSpeedNumeric.Value;
 			_config.Savestates.CompressionLevelNormal = (int)nudCompression.Value;
@@ -187,6 +182,12 @@ namespace BizHawk.Client.EmuHawk
 			_config.Savestates.SaveScreenshot = ScreenshotInStatesCheckbox.Checked;
 			_config.Savestates.NoLowResLargeScreenshots = !LowResLargeScreenshotsCheckbox.Checked;
 			_config.Savestates.BigScreenshotSize = (int)BigScreenshotNumeric.Value * 1024;
+
+			if (TriggerRewindSettingsReload)
+			{
+				_mainForm.Rewinder.Dispose();
+				_mainForm.Rewinder = new Rewinder(_statableCore, _config.Rewind);
+			}
 
 			DialogResult = DialogResult.OK;
 			Close();
@@ -311,9 +312,9 @@ namespace BizHawk.Client.EmuHawk
 
 			if (UseDeltaCompression.Checked || _stateSize == 0)
 			{
-				if (_rewinder.Count > 0)
+				if (_mainForm.Rewinder.Count > 0)
 				{
-					avgStateSize = _rewinder.Size / _rewinder.Count;
+					avgStateSize = _mainForm.Rewinder.Size / _mainForm.Rewinder.Count;
 				}
 				else
 				{

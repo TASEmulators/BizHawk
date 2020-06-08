@@ -278,7 +278,6 @@ namespace BizHawk.Client.EmuHawk
 			Database.InitializeDatabase(Path.Combine(PathUtils.ExeDirectoryPath, "gamedb", "gamedb.txt"));
 
 			GlobalWin.MainForm = this;
-			Rewinder = new Rewinder();
 
 			GlobalWin.InputManager.ControllerInputCoalescer = new ControllerInputCoalescer();
 			GlobalWin.FirmwareManager = new FirmwareManager();
@@ -897,7 +896,7 @@ namespace BizHawk.Client.EmuHawk
 		private Sound Sound => GlobalWin.Sound;
 		public CheatCollection CheatList => GlobalWin.CheatList;
 
-		private Rewinder Rewinder { get; }
+		public Rewinder Rewinder { get; set; }
 
 		private FirmwareManager FirmwareManager => GlobalWin.FirmwareManager;
 
@@ -2100,7 +2099,7 @@ namespace BizHawk.Client.EmuHawk
 			// skips outputting the audio. There's also a third way which is when no throttle
 			// method is selected, but the clock throttle determines that by itself and
 			// everything appears normal here.
-			var rewind = Rewinder.RewindActive && (InputManager.ClientControls["Rewind"] || PressRewind);
+			var rewind = Rewinder?.RewindActive == true && (InputManager.ClientControls["Rewind"] || PressRewind);
 			var fastForward = InputManager.ClientControls["Fast Forward"] || FastForward;
 			var turbo = IsTurboing;
 
@@ -3823,7 +3822,11 @@ namespace BizHawk.Client.EmuHawk
 
 					if (Emulator.HasSavestates())
 					{
-						Rewinder.Initialize(Emulator.AsStatable(), Config.Rewind);
+						Rewinder = new Rewinder(Emulator.AsStatable(), Config.Rewind);
+					}
+					else
+					{
+						Rewinder?.Dispose();
 					}
 
 					GlobalWin.InputManager.StickyXorAdapter.ClearStickies();
@@ -3934,7 +3937,7 @@ namespace BizHawk.Client.EmuHawk
 			StopAv();
 
 			CommitCoreSettingsToConfig();
-			Rewinder.Uninitialize();
+			Rewinder?.Dispose();
 
 			if (MovieSession.Movie.IsActive()) // Note: this must be called after CommitCoreSettingsToConfig()
 			{
@@ -4005,13 +4008,19 @@ namespace BizHawk.Client.EmuHawk
 
 		public void EnableRewind(bool enabled)
 		{
+			if (Rewinder == null && Emulator.HasSavestates())
+			{
+				Rewinder = new Rewinder(Emulator.AsStatable(), Config.Rewind);
+			}
+
 			Rewinder.SuspendRewind = !enabled;
 			AddOnScreenMessage($"Rewind {(enabled ? "enabled" : "suspended")}");
 		}
 
-		public void ClearRewindData()
+		public void DisableRewind()
 		{
-			Rewinder.Clear();
+			Rewinder?.Dispose();
+			Rewinder = null;
 		}
 
 		// TODO: move me
@@ -4069,7 +4078,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (!IsRewindSlave && MovieSession.Movie.IsActive())
 				{
-					ClearRewindData();
+					DisableRewind();
 				}
 
 				if (!suppressOSD)
@@ -4360,7 +4369,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Master.CaptureRewind();
 			}
-			else if (!suppressCaptureRewind && Rewinder.RewindActive)
+			else if (!suppressCaptureRewind && Rewinder?.RewindActive == true)
 			{
 				Rewinder.Capture(Emulator.Frame);
 			}
@@ -4422,7 +4431,7 @@ namespace BizHawk.Client.EmuHawk
 				return isRewinding;
 			}
 
-			if (Rewinder.RewindActive && (InputManager.ClientControls["Rewind"] || PressRewind))
+			if (Rewinder?.RewindActive == true && (InputManager.ClientControls["Rewind"] || PressRewind))
 			{
 				if (EmulatorPaused)
 				{
