@@ -13,8 +13,11 @@ namespace BizHawk.Emulation.Common
 {
 	public static class Database
 	{
-		private static Dictionary<string, CompactGameInfo> DB;
+		static Dictionary<string, CompactGameInfo> DB = new Dictionary<string, CompactGameInfo>();
 
+		/// <summary>
+		/// blocks until the DB is done loading
+		/// </summary>
 		static EventWaitHandle acquire = new EventWaitHandle(false, EventResetMode.ManualReset);
 
 		private static string RemoveHashType(string hash)
@@ -91,8 +94,6 @@ namespace BizHawk.Emulation.Common
 		static void initializeWork(string path)
 		{
 			//reminder: this COULD be done on several threads, if it takes even longer
-			Dictionary<string, CompactGameInfo> db = new Dictionary<string, CompactGameInfo>();
-
 			using var reader = new StreamReader(new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read));
 			while (reader.EndOfStream == false)
 			{
@@ -142,13 +143,13 @@ namespace BizHawk.Emulation.Common
 					};
 
 #if DEBUG
-					if (db.ContainsKey(game.Hash))
+					if (DB.ContainsKey(game.Hash))
 					{
 						Console.WriteLine("gamedb: Multiple hash entries {0}, duplicate detected on \"{1}\" and \"{2}\"", game.Hash, game.Name, DB[game.Hash].Name);
 					}
 #endif
 
-					db[game.Hash] = game;
+					DB[game.Hash] = game;
 				}
 				catch
 				{
@@ -158,7 +159,7 @@ namespace BizHawk.Emulation.Common
 
 			//commit the finished database load
 			//it's left as null until now to help catch mistakes in using the resource
-			DB = db;
+			DB = DB;
 			acquire.Set();
 		}
 
