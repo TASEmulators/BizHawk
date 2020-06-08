@@ -27,7 +27,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Faust
 			{ "snes_faust.affinity.msu1.data", null },
 			{ "snes_faust.frame_begin_vblank", null },
 			{ "snes_faust.msu1.resamp_quality", null },
-			{ "snes_faust.correct_aspect", null },
 			{ "snes_faust.spex", null },
 			{ "snes_faust.spex.sound", null },
 			{ "nyma.rtcinitialtime", null },

@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		[BizImport(CC)]
 		public abstract bool InitCd(int numdisks);
 
-		public enum CommandType : int
+		public enum CommandType : short
 		{
 			NONE = 0x00,
 			RESET = 0x01,
@@ -84,6 +84,10 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			/// a single command to run at the start of this frame
 			/// </summary>
 			public CommandType Command;
+			/// <summary>
+			/// True to render to a single framebuffer size (LCM * LCM)
+			/// </summary>
+			public short RenderConstantSize;
 			/// <summary>
 			/// raw data for each input port, assumed to be MAX_PORTS * MAX_PORT_DATA long
 			/// </summary>
@@ -135,6 +139,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			public int NominalHeight;
 			public VideoSystem VideoSystem;
 			public int FpsFixed;
+			public int LcmWidth;
+			public int LcmHeight;
 		}
 
 		[BizImport(CC, Compatibility = true)]

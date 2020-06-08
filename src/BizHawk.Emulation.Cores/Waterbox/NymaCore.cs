@@ -98,7 +98,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				}
 
 				var info = *_nyma.GetSystemInfo();
-				_videoBuffer = new int[info.MaxWidth * info.MaxHeight];
+				_videoBuffer = new int[Math.Max(info.MaxWidth * info.MaxHeight, info.LcmWidth * info.LcmHeight)];
 				BufferWidth = info.NominalWidth;
 				BufferHeight = info.NominalHeight;
 				switch (info.VideoSystem)
@@ -182,12 +182,13 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			var ret = new LibNymaCore.FrameInfo
 			{
 				SkipRendering = (short)(render ? 0 : 1),
-				SkipSoundening =(short)(rendersound ? 0 : 1),
+				SkipSoundening = (short)(rendersound ? 0 : 1),
 				Command = controller.IsPressed("Power")
 					? LibNymaCore.CommandType.POWER
 					: controller.IsPressed("Reset")
 						? LibNymaCore.CommandType.RESET
 						: LibNymaCore.CommandType.NONE,
+				RenderConstantSize = (short)(SettingsQuery("nyma.constantfb") != "0" ? 1 : 0),
 				InputPortData = (byte*)_frameAdvanceInputLock.AddrOfPinnedObject(),
 				FrontendTime = GetRtcTime(SettingsQuery("nyma.rtcrealtime") != "0"),
 			};

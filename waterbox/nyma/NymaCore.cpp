@@ -104,7 +104,9 @@ struct MyFrameInfo: public FrameInfo
 	int16_t SkipRendering;
 	int16_t SkipSoundening;
 	// a single MDFN_MSC_* command to run at the start of this frame; 0 if none
-	int32_t Command;
+	int16_t Command;
+	// true to render LCM * LCM instead of raw
+	int16_t RenderConstantSize;
 	// raw data for each input port, assumed to be MAX_PORTS * MAX_PORT_DATA long
 	uint8_t* InputPortData;
 	int64_t FrontendTime;
@@ -139,31 +141,80 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo& frame)
 		int h = EES->DisplayRect.h;
 		int lineStart = EES->DisplayRect.y;
 		int lineEnd = lineStart + h;
-
 		auto multiWidth = EES->LineWidths[0] != -1;
-		int w;
-		if (multiWidth)
+
+		int srcp = Game->fb_width;
+		uint32_t* src = pixels + EES->DisplayRect.x + EES->DisplayRect.y * srcp;
+		uint32_t* dst = frame.VideoBuffer;
+
+		if (!frame.RenderConstantSize || !multiWidth && Game->lcm_width == EES->DisplayRect.w && Game->lcm_height == h)
 		{
-			w = 0;
+			// simple non-resizing blitter
+			// TODO: What does this do with true multiwidth?  Probably not anything good
+
+			int w;
+			if (multiWidth)
+			{
+				w = 0;
+				for (int line = lineStart; line < lineEnd; line++)
+					w = std::max(w, EES->LineWidths[line]);
+			}
+			else
+			{
+				w = EES->DisplayRect.w;
+			}
+
+			frame.Width = w;
+			frame.Height = h;
+			int dstp = w;
+
 			for (int line = lineStart; line < lineEnd; line++)
-				w = std::max(w, EES->LineWidths[line]);
+			{
+				memcpy(dst, src, (multiWidth ? EES->LineWidths[line] : w) * sizeof(uint32_t));
+				src += srcp;
+				dst += dstp;
+			}
 		}
 		else
 		{
-			w = EES->DisplayRect.w;
-		}
+			// resize to lcm_width * lcm_height
 
-		frame.Width = w;
-		frame.Height = h;
-		int srcp = Game->fb_width;
-		int dstp = w;
-		uint32_t* src = pixels + EES->DisplayRect.x + EES->DisplayRect.y * srcp;
-		uint32_t* dst = frame.VideoBuffer;
-		for (int line = lineStart; line < lineEnd; line++)
-		{
-			memcpy(dst, src, (multiWidth ? EES->LineWidths[line] : w) * sizeof(uint32_t));
-			src += srcp;
-			dst += dstp;
+			frame.Width = Game->lcm_width;
+			frame.Height = Game->lcm_height;
+			int dstp = frame.Width;
+
+			int hf = Game->lcm_height / h;
+			for (int line = lineStart; line < lineEnd; line++)
+			{
+				int w = multiWidth ? EES->LineWidths[line] : EES->DisplayRect.w;
+				auto srcNext = src + srcp;
+				if (frame.Width == w)
+				{
+					memcpy(dst, src, w * sizeof(uint32_t));
+					dst += dstp;
+				}
+				else
+				{
+					// stretch horizontal
+					int wf = Game->lcm_width / w;
+					auto dstNext = dst + dstp;
+					for (int x = 0; x < w; x++)
+					{
+						for (int n = 0; n < wf; n++)
+							*dst++ = *src; 
+						src++;
+					}
+					while (dst < dstNext) // 1024 % 3 == 1, not quite "lcm"
+						*dst++ = src[-1];
+				}
+				src = srcNext;
+				for (int y = 1; y < hf; y++)
+				{
+					// stretch vertical
+					memcpy(dst, dst - dstp, dstp * sizeof(uint32_t));
+					dst += dstp;
+				}
+			}
 		}
 	}
 }
@@ -176,6 +227,8 @@ struct SystemInfo
 	int32_t NominalHeight;
 	int32_t VideoSystem;
 	int32_t FpsFixed;
+	int32_t LcmWidth;
+	int32_t LcmHeight;
 };
 SystemInfo SI;
 
@@ -187,6 +240,8 @@ ECL_EXPORT SystemInfo* GetSystemInfo()
 	SI.NominalHeight = Game->nominal_height;
 	SI.VideoSystem = Game->VideoSystem;
 	SI.FpsFixed = Game->fps;
+	SI.LcmWidth = Game->lcm_width;
+	SI.LcmHeight = Game->lcm_height;
 	return &SI;
 } 
 

@@ -51,5 +51,10 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 				throw new InvalidOperationException("Core rejected the saveram");
 			_exe.RemoveTransientFile("SAV:flash");
 		}
+
+		protected override IDictionary<string, string> SettingsOverrides { get; } = new Dictionary<string, string>
+		{
+			{ "nyma.constantfb", null }, // TODO: Couldn't we just autodetect this whenever lcm == max == nominal?
+		};
 	}
 }

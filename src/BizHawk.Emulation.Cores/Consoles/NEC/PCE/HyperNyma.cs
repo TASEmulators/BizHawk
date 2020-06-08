@@ -38,7 +38,6 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 
 		protected override IDictionary<string, string> SettingsOverrides { get; } = new Dictionary<string, string>
 		{
-			{ "pce_fast.correct_aspect", null },
 			{ "pce_fast.mouse_sensitivity", null },
 			{ "pce_fast.disable_softreset", null },
 			{ "pce_fast.cdbios", null },

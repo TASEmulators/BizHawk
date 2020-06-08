@@ -119,7 +119,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			else
 			{
 				// try to get actual value from settings
-				if (NonSyncSettingNames.Contains(name))
+				if (/* TODO: unhack */name == "nyma.constantfb" || NonSyncSettingNames.Contains(name))
 					_settings.MednafenValues.TryGetValue(name, out val);
 				else
 					_syncSettings.MednafenValues.TryGetValue(name, out val);
@@ -208,7 +208,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				s.AllSettingsByKey.Add(setting.SettingsKey, setting);
 				if (!SettingsOverrides.ContainsKey(setting.SettingsKey))
 				{
-					if (NonSyncSettingNames.Contains(setting.SettingsKey))
+					if (/* TODO: unhack */setting.SettingsKey == "nyma.constantfb" || NonSyncSettingNames.Contains(setting.SettingsKey))
 					{
 						s.Settings.Add(setting);
 					}
@@ -223,6 +223,15 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		private static IReadOnlyCollection<SettingT> ExtraSettings = new List<SettingT>
 		{
+			new SettingT
+			{
+				Name = "Constant Framebuffer Size",
+				Description = "Output a constant framebuffer size regardless of internal resolution.",
+				SettingsKey = "nyma.constantfb",
+				DefaultValue = "0",
+				Flags = 0,
+				Type = SettingType.Bool
+			},
 			new SettingT
 			{
 				Name = "Initial Time",
