@@ -4009,12 +4009,22 @@ namespace BizHawk.Client.EmuHawk
 
 		public void EnableRewind(bool enabled)
 		{
-			if (Rewinder == null && Emulator.HasSavestates())
+			if (!Emulator.HasSavestates())
 			{
-				Rewinder = new Rewinder(Emulator.AsStatable(), Config.Rewind);
+				return;
 			}
 
-			Rewinder.Suspend = !enabled;
+			Rewinder ??= new Rewinder(Emulator.AsStatable(), Config.Rewind);
+
+			if (enabled)
+			{
+				Rewinder.Resume();
+			}
+			else
+			{
+				Rewinder.Suspend();
+			}
+
 			AddOnScreenMessage($"Rewind {(enabled ? "enabled" : "suspended")}");
 		}
 

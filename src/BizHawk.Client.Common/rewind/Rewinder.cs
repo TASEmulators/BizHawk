@@ -12,10 +12,12 @@ namespace BizHawk.Client.Common
 		int RewindFrequency { get; }
 
 		bool Active { get; }
-		bool Suspend { get; set; }
 
 		void Capture(int frame);
 		bool Rewind(int frames);
+
+		void Suspend();
+		void Resume();
 	}
 
 	public class Rewinder : IRewinder
@@ -33,11 +35,11 @@ namespace BizHawk.Client.Common
 		private bool _lastRewindLoadedState;
 		private byte[] _deltaBuffer = new byte[0];
 
-		public bool Active => RewindEnabled && !Suspend;
+		public bool Active => RewindEnabled && !_suspend;
 
 		private bool RewindEnabled { get; }
 
-		public bool Suspend { get; set; }
+		private bool _suspend;
 
 		public float FullnessRatio => _rewindBuffer?.FullnessRatio ?? 0;
 
@@ -77,6 +79,16 @@ namespace BizHawk.Client.Common
 				_rewindBuffer = new StreamBlobDatabase(settings.OnDisk, capacity, BufferManage);
 				_rewindThread = new RewindThreader(CaptureInternal, RewindInternal, settings.IsThreaded);
 			}
+		}
+
+		public void Suspend()
+		{
+			_suspend = true;
+		}
+
+		public void Resume()
+		{
+			_suspend = false;
 		}
 
 		private void Clear()
