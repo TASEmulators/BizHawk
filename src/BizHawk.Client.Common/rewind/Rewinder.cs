@@ -7,7 +7,6 @@ namespace BizHawk.Client.Common
 	public interface IRewinder : IDisposable
 	{
 		int Count { get; }
-		bool HasBuffer { get; }
 		float FullnessRatio { get; }
 		long Size { get; }
 		int RewindFrequency { get; }
@@ -45,8 +44,6 @@ namespace BizHawk.Client.Common
 		public int Count => _rewindBuffer?.Count ?? 0;
 
 		public long Size => _rewindBuffer?.Size ?? 0;
-
-		public bool HasBuffer => _rewindBuffer != null;
 
 		public int RewindFrequency { get; }
 
