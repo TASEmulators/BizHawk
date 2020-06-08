@@ -69,12 +69,12 @@ namespace BizHawk.Emulation.Common
 
 			// MSX
 			FirmwareAndOption("B398CFCB94C9F7E808E0FECE54813CFDFB96F8D0", 16384, "MSX", "bios_test", "msx_bios.rom", "MSX BIOS");
-			FirmwareAndOption("18559FA9C2D9E99A319550D809009ECDBA6D396E", 16384, "MSX", "basic_test", "msx_basic.rom", "MSX BASIC");
-			FirmwareAndOption("2F997E8A57528518C82AB3693FDAE243DBBCC508", 32768, "MSX", "bios_test_ext", "msx_bios.rom", "MSX BIOS");
+			FirmwareAndOption("18559FA9C2D9E99A319550D809009ECDBA6D396E", 16384, "MSX", "basic_test", "cbios_basic.rom", "MSX BASIC (C-BIOS v0.29a)");
+			FirmwareAndOption("2F997E8A57528518C82AB3693FDAE243DBBCC508", 32768, "MSX", "bios_test_ext", "cbios_main_msx1.rom", "MSX BIOS (C-BIOS v0.29a)");
 			
 
-			FirmwareAndOption("E998F0C441F4F1800EF44E42CD1659150206CF79", 16384, "MSX", "bios_pal", "msx_bios.rom", "MSX BIOS");
-			FirmwareAndOption("DF48902F5F12AF8867AE1A87F255145F0E5E0774", 16384, "MSX", "bios_jp", "msx_bios.rom", "MSX BIOS");
+			FirmwareAndOption("E998F0C441F4F1800EF44E42CD1659150206CF79", 16384, "MSX", "bios_pal", "8020-20bios.rom", "MSX BIOS (Philips VG-8020)");
+			FirmwareAndOption("DF48902F5F12AF8867AE1A87F255145F0E5E0774", 16384, "MSX", "bios_jp", "4000bios.rom", "MSX BIOS (FS-4000)");
 
 			// Channel F
 			FirmwareAndOption("81193965A374D77B99B4743D317824B53C3E3C78", 1024, "ChannelF", "ChannelF_sl131253", "ChannelF-SL31253.rom", "Channel F Rom0");
