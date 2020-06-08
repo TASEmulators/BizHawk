@@ -141,7 +141,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				GlobalWin.GL = new IGL_GdiPlus();
 			}
-			else if (GlobalWin.Config.DispMethod == EDispMethod.SlimDX9)
+			else if (OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows && GlobalWin.Config.DispMethod == EDispMethod.SlimDX9)
 			{
 				try
 				{
