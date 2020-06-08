@@ -28,7 +28,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RewindConfig_Load(object sender, EventArgs e)
 		{
-			if (_mainForm.Rewinder?.RewindActive == true)
+			if (_mainForm.Rewinder?.Active == true)
 			{
 				FullnessLabel.Text = $"{_mainForm.Rewinder.FullnessRatio * 100:0.00}%";
 				RewindFramesUsedLabel.Text = _mainForm.Rewinder.Count.ToString();

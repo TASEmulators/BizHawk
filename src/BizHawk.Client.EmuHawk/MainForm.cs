@@ -2099,7 +2099,7 @@ namespace BizHawk.Client.EmuHawk
 			// skips outputting the audio. There's also a third way which is when no throttle
 			// method is selected, but the clock throttle determines that by itself and
 			// everything appears normal here.
-			var rewind = Rewinder?.RewindActive == true && (InputManager.ClientControls["Rewind"] || PressRewind);
+			var rewind = Rewinder?.Active == true && (InputManager.ClientControls["Rewind"] || PressRewind);
 			var fastForward = InputManager.ClientControls["Fast Forward"] || FastForward;
 			var turbo = IsTurboing;
 
@@ -4370,7 +4370,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Master.CaptureRewind();
 			}
-			else if (!suppressCaptureRewind && Rewinder?.RewindActive == true)
+			else if (!suppressCaptureRewind && Rewinder?.Active == true)
 			{
 				Rewinder.Capture(Emulator.Frame);
 			}
@@ -4432,7 +4432,7 @@ namespace BizHawk.Client.EmuHawk
 				return isRewinding;
 			}
 
-			if (Rewinder?.RewindActive == true && (InputManager.ClientControls["Rewind"] || PressRewind))
+			if (Rewinder?.Active == true && (InputManager.ClientControls["Rewind"] || PressRewind))
 			{
 				if (EmulatorPaused)
 				{
