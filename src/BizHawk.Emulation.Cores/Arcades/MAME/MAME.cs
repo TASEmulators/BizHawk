@@ -140,6 +140,8 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		public IEmulatorServiceProvider ServiceProvider { get; }
 		public ControllerDefinition ControllerDefinition => MAMEController;
+		public object GetSettings() => null;
+		public PutSettingsDirtyBits PutSettings(object o) => PutSettingsDirtyBits.None;
 		public string SystemId => "MAME";
 		public int[] GetVideoBuffer() => _frameBuffer;
 		public bool DeterministicEmulation => true;
@@ -221,7 +223,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				, "-nothrottle"                         // forbid throttling to "real" speed of the device
 				, "-update_in_pause"                    // ^ including frame-advancing
 				, "-rompath",            _gameDirectory // mame doesn't load roms from full paths, only from dirs to scan
-				, "-joystick_contradictory"             // L+R/U+D on digital joystick
+				, "-joystick_contradictory"             // allow L+R/U+D on digital joystick
 				, "-nonvram_save"                       // prevent dumping non-volatile ram to disk
 				, "-artpath",          "mame\\artwork"  // path to load artowrk from
 				, "-diff_directory",      "mame\\diff"  // hdd diffs, whenever stuff is written back to an image
@@ -234,6 +236,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				, "-mouseprovider",             "none"
 				, "-lightgunprovider",          "none"
 				, "-joystickprovider",          "none"
+			//	, "-debug"                              // launch mame debugger (because we can)
 			};
 
 			LibMAME.mame_launch(args.Length, args);
@@ -344,9 +347,6 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			ms.Close();
 			return _hawkSaveBuffer;
 		}
-
-		public object GetSettings() => null;
-		public PutSettingsDirtyBits PutSettings(object o) => PutSettingsDirtyBits.None;
 
 		public SyncSettings GetSyncSettings()
 		{
