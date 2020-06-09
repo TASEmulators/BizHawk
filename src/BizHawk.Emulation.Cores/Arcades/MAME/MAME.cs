@@ -84,7 +84,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		author: "MAMEDev",
 		isPorted: true,
 		isReleased: false,
-		portedVersion: "0.220",
+		portedVersion: "0.221",
 		portedUrl: "https://github.com/mamedev/mame.git",
 		singleInstance: false)]
 	public partial class MAME : IEmulator, IVideoProvider, ISoundProvider, ISettable<object, MAME.SyncSettings>, IStatable, IInputPollable
@@ -160,6 +160,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		private ManualResetEvent _memoryAccessComplete = new ManualResetEvent(false);
 		private AutoResetEvent _mamePeriodicComplete = new AutoResetEvent(false);
 		private SortedDictionary<string, string> _fieldsPorts = new SortedDictionary<string, string>();
+		private SortedDictionary<string, string> _romHashes = new SortedDictionary<string, string>();
 		private IController _controller = NullController.Instance;
 		private IMemoryDomains _memoryDomains;
 		private byte[] _mameSaveBuffer;
@@ -676,6 +677,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 			CheckVersions();
 			GetInputFields();
+			GetROMsInfo();
 			UpdateVideo();
 			UpdateAspect();
 			UpdateFramerate();
@@ -738,6 +740,25 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			}
 		}
 
+		private void GetROMsInfo()
+		{
+			string ROMsInfo = MameGetString(MAMELuaCommand.GetROMsInfo);
+			string[] ROMs = ROMsInfo.Split(';');
+
+			foreach (string ROM in ROMs)
+			{
+				if (ROM != string.Empty)
+				{
+					string[] substrings = ROM.Split(',');
+					string name = substrings[0];
+					string hashdata = substrings[1].Replace("R", " CRC:").Replace("S", " SHA:");
+					string flags = substrings[2];
+
+					_romHashes.Add(name, hashdata);
+				}
+			}
+		}
+
 		private void SendInput()
 		{
 			foreach (var fieldPort in _fieldsPorts)
@@ -791,6 +812,31 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 					"for name, field in pairs(manager:machine():ioport().ports[tag].fields) do " +
 						"if field.type_class ~= \"dipswitch\" then " +
 							"table.insert(final, string.format(\"%s,%s;\", tag, name)) " +
+						"end " +
+					"end " +
+				"end " +
+				"table.sort(final) " +
+				"return table.concat(final)";
+			public const string GetROMsInfo =
+				"final = {} " +
+				"devices = {} " +
+				"for _, d in pairs(manager:machine().devices) do " +
+					"devices[d:tag()] = d " +
+					"local device = d " +
+					"for i=0,10 do " +
+						"local owner = device:owner() " +
+						"if owner then " +
+							"devices[owner:tag()] = owner " +
+							"device = owner " +
+						"else " +
+							"break " +
+						"end " +
+					"end " +
+				"end " +
+				"for _, d in pairs(devices) do " +
+					"for __, r in pairs(d.roms) do " +
+						"if (r:hashdata() ~= \"\") then " +
+							"table.insert(final, string.format(\"%s,%s,%s;\", r:name(), r:hashdata(), r:flags())) " +
 						"end " +
 					"end " +
 				"end " +
