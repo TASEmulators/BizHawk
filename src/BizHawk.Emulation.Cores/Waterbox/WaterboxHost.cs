@@ -314,6 +314,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				_module.SealImportsAndTakeXorSnapshot();
 				_mmapheap?.Memory.Seal();
 			}
+			Console.WriteLine("WaterboxHost Sealed!");
 		}
 
 		private void ConnectAllImports()
