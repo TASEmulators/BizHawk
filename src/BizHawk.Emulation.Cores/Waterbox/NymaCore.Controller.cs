@@ -155,15 +155,17 @@ namespace BizHawk.Emulation.Cores.Waterbox
 							}
 							case InputType.Axis:
 							{
-								// var data = inputInfo.Extra.AsAxis();
-								ret.AxisControls.Add(name);
-								ret.CategoryLabels[name] = category;
+								var data = input.Extra.AsAxis();
+								var fullName = $"{name} {input.Extra.AsAxis().NameNeg} / {input.Extra.AsAxis().NamePos}";
+
+								ret.AxisControls.Add(fullName);
+								ret.CategoryLabels[fullName] = category;
 								ret.AxisRanges.Add(new ControllerDefinition.AxisRange(
 									0, 0x8000, 0xffff, (input.Flags & AxisFlags.InvertCo) != 0
 								));
 								_thunks.Add((c, b) =>
 								{
-									var val = c.AxisValue(name);
+									var val = c.AxisValue(fullName);
 									b[byteStart] = (byte)val;
 									b[byteStart + 1] = (byte)(val >> 8);
 								});									
@@ -171,15 +173,21 @@ namespace BizHawk.Emulation.Cores.Waterbox
 							}
 							case InputType.AxisRel:
 							{
-								// var data = inputInfo.Extra.AsAxis();
-								ret.AxisControls.Add(name);
-								ret.CategoryLabels[name] = category;
+								var data = input.Extra.AsAxis();
+								var fullName = $"{name} {input.Extra.AsAxis().NameNeg} / {input.Extra.AsAxis().NamePos}";
+
+								ret.AxisControls.Add(fullName);
+								ret.CategoryLabels[fullName] = category;
 								ret.AxisRanges.Add(new ControllerDefinition.AxisRange(
-									-0x8000, 0, 0x7fff, (input.Flags & AxisFlags.InvertCo) != 0
+									// TODO: Mednafen docs say this range should be [-32768, 32767], and inspecting the code
+									// reveals that a 16 bit value is read, but using anywhere near this full range makes
+									// PCFX mouse completely unusable.  Maybe this is some TAS situation where average users
+									// will want a 1/400 multiplier on sensitivity but TASers might want one frame screenwide movement?
+									-127, 0, 127, (input.Flags & AxisFlags.InvertCo) != 0
 								));
 								_thunks.Add((c, b) =>
 								{
-									var val = c.AxisValue(name);
+									var val = c.AxisValue(fullName);
 									b[byteStart] = (byte)val;
 									b[byteStart + 1] = (byte)(val >> 8);
 								});									
