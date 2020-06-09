@@ -14,6 +14,15 @@ namespace BizHawk.Emulation.Cores.Waterbox
 	/// </summary>
 	internal partial class Syscalls : IBinaryStateable
 	{
+		/// <summary>
+		/// Can be set by the frontend and will be called if the core attempts to open a missing file.
+		/// The callee may add additional files to the waterbox during the callback and return `true` to indicate
+		/// that the right file was added and the scan should be rerun.  The callee may return `false` to indicate
+		/// that the file should be reported as missing.  Do not call other things during this callback.
+		/// Can be called at any time by the core, so you may want to remove your callback entirely after init
+		/// if it was for firmware only.
+		/// </summary>
+		public Func<string, bool> MissingFileCallback { get; set; }
 		public interface IFileObject : IBinaryStateable
 		{
 			bool Open(FileAccess access);
@@ -289,7 +298,18 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		public long Open(string path, int flags, int mode)
 		{
 			if (!_availableFiles.TryGetValue(path, out var o))
-				return -ENOENT;
+			{
+				var retry = MissingFileCallback?.Invoke(path) == true;
+				if (retry)
+				{
+					if (!_availableFiles.TryGetValue(path, out o))
+						return -ENOENT;
+				}
+				else
+				{
+					return -ENOENT;
+				}
+			}
 			if (_openFiles.Contains(o))
 				return -EACCES;
 			FileAccess access;

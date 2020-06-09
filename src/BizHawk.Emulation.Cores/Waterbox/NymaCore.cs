@@ -29,7 +29,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		private LibNymaCore _nyma;
 		protected T DoInit<T>(GameInfo game, byte[] rom, Disc[] discs, string wbxFilename, string extension, bool deterministic,
-			ICollection<KeyValuePair<string, byte[]>> firmwares = null)
+			IDictionary<string, ValueTuple<string, string>> firmwares = null)
 			where T : LibNymaCore
 		{
 			var t = PreInit<T>(new WaterboxOptions
@@ -53,12 +53,24 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				var portData = GetInputPortsData();
 				InitSyncSettingsInfo(portData);
 				_nyma.SetFrontendSettingQuery(_settingsQueryDelegate);
+				var filesToRemove = new List<string>();
 				if (firmwares != null)
 				{
-					foreach (var kvp in firmwares)
+					_exe.MissingFileCallback = s =>
 					{
-						_exe.AddReadonlyFile(kvp.Value, kvp.Key);
-					}
+						if (firmwares.TryGetValue(s, out var tt))
+						{
+							var data = CoreComm.CoreFileProvider.GetFirmware(tt.Item1, tt.Item2, false,
+								"Firmware files are usually required and may stop your game from loading");
+							if (data != null)
+							{
+								_exe.AddReadonlyFile(data, s);
+								filesToRemove.Add(s);
+								return true;
+							}
+						}
+						return false;
+					};
 				}
 				if (discs?.Length > 0)
 				{
@@ -91,10 +103,11 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				}
 				if (firmwares != null)
 				{
-					foreach (var kvp in firmwares)
+					foreach (var s in filesToRemove)
 					{
-						_exe.RemoveReadonlyFile(kvp.Key);
+						_exe.RemoveReadonlyFile(s);
 					}
+					_exe.MissingFileCallback = null;
 				}
 
 				var info = *_nyma.GetSystemInfo();

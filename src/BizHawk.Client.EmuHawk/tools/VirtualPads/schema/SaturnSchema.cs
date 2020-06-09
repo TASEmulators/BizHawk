@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -12,6 +13,8 @@ namespace BizHawk.Client.EmuHawk
 	// ReSharper disable once UnusedMember.Global
 	public class SaturnSchema : IVirtualPadSchema
 	{
+		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core) => throw new NotImplementedException();
+		/*
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
 		{
 			var ss = ((Saturnus)core).GetSyncSettings();
@@ -282,5 +285,6 @@ namespace BizHawk.Client.EmuHawk
 				}
 			};
 		}
+		*/
 	}
 }

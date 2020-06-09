@@ -190,5 +190,13 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			}
 			return _parent._mmapheap.Protect((ulong)address, (ulong)size, mprot) ? 0 : MAP_FAILED;
 		}
+
+		[BizExport(CallingConvention.Cdecl, EntryPoint = "__wsyscalltab[28]")]
+		public long MAdvise(UIntPtr address, UIntPtr size, ulong advice)
+		{
+			// malloc will call this with DONTNEED in a few situations.  Ignore for now.
+			// TODO: This could be implemented along with munmap returning pages to non-dirty
+			return 0;
+		}
 	}
 }

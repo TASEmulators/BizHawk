@@ -83,6 +83,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 					foreach (var input in inputs)
 					{
+						if (input.Type == InputType.ResetButton)
+							System.Diagnostics.Debugger.Break();
 						if (input.Type == InputType.Padding)
 							continue;
 
@@ -91,19 +93,23 @@ namespace BizHawk.Emulation.Cores.Waterbox
 						var byteStart = devByteStart + bitOffset / 8;
 						bitOffset %= 8;
 						var baseName = input.Name;
-						if (overrides.ContainsKey(baseName))
+						if (baseName != null && overrides.ContainsKey(baseName))
 							baseName = overrides[baseName];
-						var name = $"P{port + 1} {baseName}";
+						var name = input.Type == InputType.ResetButton ? "Reset" : $"P{port + 1} {baseName}";
 
 						switch (input.Type)
 						{
+							case InputType.ResetButton:
 							case InputType.Button:
 							case InputType.ButtonCanRapid:
 							{
 								// var data = inputInfo.Extra.AsButton();
 								// TODO: Wire up data.ExcludeName
-								ret.BoolButtons.Add(name);
-								ret.CategoryLabels[name] = category;
+								if (input.Type != InputType.ResetButton)
+								{
+									ret.BoolButtons.Add(name);
+									ret.CategoryLabels[name] = category;
+								}
 								_thunks.Add((c, b) =>
 								{
 									if (c.IsPressed(name))

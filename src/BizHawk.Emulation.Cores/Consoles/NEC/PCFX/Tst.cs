@@ -28,13 +28,9 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCFX
 			IEnumerable<Disc> disks, NymaSettings settings, NymaSyncSettings syncSettings, bool deterministic)
 			: base(comm, "PCFX", "PCFX Controller Deck", settings, syncSettings)
 		{
-			var bios = comm.CoreFileProvider.GetFirmware("PCFX", "BIOS", true);
-			if (bios.Length != 1024 * 1024)
-				throw new InvalidOperationException("Wrong size BIOS file!");
-			
-			var firmwares = new Dictionary<string, byte[]>
+			var firmwares = new Dictionary<string, ValueTuple<string, string>>
 			{
-				{ "FIRMWARE:pcfx.rom", bios },
+				{ "FIRMWARE:pcfx.rom", ("PCFX", "BIOS") },
 			};
 
 			DoInit<LibNymaCore>(game, null, disks.ToArray(), "pcfx.wbx", null, deterministic, firmwares);

@@ -14,10 +14,23 @@ namespace BizHawk.Client.Common.movie.import
 		protected override void RunImport()
 		{
 			Result.Movie.HeaderEntries[HeaderKeys.Platform] = "SAT";
-			var ss = new Saturnus.SyncSettings
+			var ss = new Emulation.Cores.Waterbox.NymaCore.NymaSyncSettings
 			{
-				Port1 = SaturnusControllerDeck.Device.Gamepad,
-				Port2 = SaturnusControllerDeck.Device.None
+				PortDevices =
+				{
+					{ 0, "gamepad" },
+					{ 1, "none" },
+					{ 2, "none" },
+					{ 3, "none" },
+					{ 4, "none" },
+					{ 5, "none" },
+					{ 6, "none" },
+					{ 7, "none" },
+					{ 8, "none" },
+					{ 9, "none" },
+					{ 10, "none" },
+					{ 11, "none" },
+				}
 			};
 
 			using var sr = SourceFile.OpenText();

@@ -315,11 +315,11 @@ namespace BizHawk.Client.Common
 					break;
 				case "SAT":
 					nextEmulator = new Saturnus(
-						nextComm,
+						nextComm, game,
 						new[] { disc },
-						Deterministic,
-						(Saturnus.Settings) GetCoreSettings<Saturnus>(),
-						(Saturnus.SyncSettings) GetCoreSyncSettings<Saturnus>()
+						(NymaCore.NymaSettings)GetCoreSettings<Saturnus>(),
+						(NymaCore.NymaSyncSettings)GetCoreSyncSettings<Saturnus>(),
+						Deterministic
 					);
 					break;
 				case "PSX":
@@ -821,11 +821,11 @@ namespace BizHawk.Client.Common
 						var saturnDiscs = DiscsFromXml(xmlGame, "SAT", DiscType.SegaSaturn);
 						if (saturnDiscs.Count == 0) return false;
 						nextEmulator = new Saturnus(
-							nextComm,
+							nextComm, game,
 							saturnDiscs,
-							Deterministic,
-							(Saturnus.Settings) GetCoreSettings<Saturnus>(),
-							(Saturnus.SyncSettings) GetCoreSyncSettings<Saturnus>()
+							(NymaCore.NymaSettings)GetCoreSettings<Saturnus>(),
+							(NymaCore.NymaSyncSettings)GetCoreSyncSettings<Saturnus>(),
+							Deterministic
 						);
 						return true;
 					case "PCFX":

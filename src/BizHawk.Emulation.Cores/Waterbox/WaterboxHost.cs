@@ -359,6 +359,20 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			return _syscalls.RemoveTransientFile(name);
 		}
 
+		/// <summary>
+		/// Can be set by the frontend and will be called if the core attempts to open a missing file.
+		/// The callee may add additional files to the waterbox during the callback and return `true` to indicate
+		/// that the right file was added and the scan should be rerun.  The callee may return `false` to indicate
+		/// that the file should be reported as missing.  Do not call other things during this callback.
+		/// Can be called at any time by the core, so you may want to remove your callback entirely after init
+		/// if it was for firmware only.
+		/// </summary>
+		public Func<string, bool> MissingFileCallback
+		{
+			get => _syscalls.MissingFileCallback;
+			set => _syscalls.MissingFileCallback = value;
+		}
+
 		private const ulong MAGIC = 0x736b776162727477;
 		private const ulong WATERBOXSTATEVERSION = 2;
 

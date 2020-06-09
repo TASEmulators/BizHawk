@@ -601,31 +601,31 @@
 #undef PTHREAD_IN_USE_DETECTION_HARD
 
 /* The size of `char', as computed by sizeof. */
-#undef SIZEOF_CHAR
+#define SIZEOF_CHAR 1
 
 /* The size of `int', as computed by sizeof. */
-#undef SIZEOF_INT
+#define SIZEOF_INT 4
 
 /* The size of `long', as computed by sizeof. */
-#undef SIZEOF_LONG
+#define SIZEOF_LONG 8
 
 /* The size of `long long', as computed by sizeof. */
-#undef SIZEOF_LONG_LONG
+#define SIZEOF_LONG_LONG 8
 
 /* The size of `off_t', as computed by sizeof. */
-#undef SIZEOF_OFF_T
+#define SIZEOF_OFF_T 8
 
 /* The size of `ptrdiff_t', as computed by sizeof. */
-#undef SIZEOF_PTRDIFF_T
+#define SIZEOF_PTRDIFF_T 8
 
 /* The size of `short', as computed by sizeof. */
-#undef SIZEOF_SHORT
+#define SIZEOF_SHORT 2
 
 /* The size of `size_t', as computed by sizeof. */
-#undef SIZEOF_SIZE_T
+#define SIZEOF_SIZE_T 8
 
 /* The size of `void *', as computed by sizeof. */
-#undef SIZEOF_VOID_P
+#define SIZEOF_VOID_P 8
 
 /* The size of `__int64', as computed by sizeof. */
 #undef SIZEOF___INT64

@@ -178,7 +178,11 @@ namespace Mednafen
 		FrontendSettingQuery(name, tmp);
 		return std::string(tmp);
 	}
-
+	std::vector<uint64> MDFN_GetSettingMultiUI(const char *name)
+	{
+		// only used in some saturn debug code, not needed
+		return std::vector<uint64>();
+	}
 	void MDFNMP_Init(uint32 ps, uint32 numpages)
 	{}
 	void MDFNMP_AddRAM(uint32 size, uint32 address, uint8 *RAM, bool use_in_search) // Deprecated
