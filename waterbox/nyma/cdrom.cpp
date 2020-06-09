@@ -110,13 +110,45 @@ void StartGameWithCds(int numdisks)
 	}
 	MDFNGameInfo->RMD = rmd;
 
-	// TODO:  Wire up a way for the user to change disks
 	Mednafen::MDFNGameInfo->SetMedia(
 		0, // drive: 0 unless there's more than one drive
 		2, // state: 0 = open, 1 = closed (media absent), 2 = closed (media present)
 		0, // media: index into the disk list
 		0 // orientation: flip sides on NES FDS.  not used elsewhere?
 	);
+}
+static bool wasPrev;
+static bool wasNext;
+static int cd;
+void SwitchCds(bool prev, bool next)
+{
+	auto newCd = cd;
+	if (prev && !wasPrev)
+	{
+		newCd = std::max(newCd - 1, -1);
+	}
+	if (next && !wasNext)
+	{
+		newCd = std::min(newCd + 1, (int)(CDInterfaces->size() - 1));
+	}
+	if (newCd != cd)
+	{
+		Mednafen::MDFNGameInfo->SetMedia(
+			0, // drive: 0 unless there's more than one drive
+			0, // state: 0 = open, 1 = closed (media absent), 2 = closed (media present)
+			std::max(cd, 0), // media: index into the disk list
+			0 // orientation: flip sides on NES FDS.  not used elsewhere?
+		);
+		Mednafen::MDFNGameInfo->SetMedia(
+			0, // drive: 0 unless there's more than one drive
+			newCd == -1 ? 0 : 2, // state: 0 = open, 1 = closed (media absent), 2 = closed (media present)
+			std::max(newCd, 0), // media: index into the disk list
+			0 // orientation: flip sides on NES FDS.  not used elsewhere?
+		);
+	}
+	cd = newCd;
+	wasPrev = prev;
+	wasNext = next;
 }
 
 // CDInterface::Load pulls in a bunch of things that we do not want, stub them out here

@@ -119,7 +119,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				VsyncDenominator = 1 << 24;
 				_soundBuffer = new short[22050 * 2];
 
-				InitControls(portData);
+				InitControls(portData, discs?.Length > 0);
 				_nyma.SetFrontendSettingQuery(null);
 				if (_disks != null)
 					_nyma.SetCDCallbacks(null, null);
@@ -179,16 +179,26 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			DriveLightOn = false;
 			_controllerAdapter.SetBits(controller, _inputPortData);
 			_frameAdvanceInputLock = GCHandle.Alloc(_inputPortData, GCHandleType.Pinned);
+			LibNymaCore.BizhawkFlags flags = 0;
+			if (!render)
+				flags |= LibNymaCore.BizhawkFlags.SkipRendering;
+			if (!rendersound)
+				flags |= LibNymaCore.BizhawkFlags.SkipSoundening;
+			if (SettingsQuery("nyma.constantfb") != "0")
+				flags |= LibNymaCore.BizhawkFlags.RenderConstantSize;
+			if (controller.IsPressed("Previous Disk"))
+				flags |= LibNymaCore.BizhawkFlags.PreviousDisk;
+			if (controller.IsPressed("Next Disk"))
+				flags |= LibNymaCore.BizhawkFlags.NextDisk;
+
 			var ret = new LibNymaCore.FrameInfo
 			{
-				SkipRendering = (short)(render ? 0 : 1),
-				SkipSoundening = (short)(rendersound ? 0 : 1),
+				Flags = flags,
 				Command = controller.IsPressed("Power")
 					? LibNymaCore.CommandType.POWER
 					: controller.IsPressed("Reset")
 						? LibNymaCore.CommandType.RESET
 						: LibNymaCore.CommandType.NONE,
-				RenderConstantSize = (short)(SettingsQuery("nyma.constantfb") != "0" ? 1 : 0),
 				InputPortData = (byte*)_frameAdvanceInputLock.AddrOfPinnedObject(),
 				FrontendTime = GetRtcTime(SettingsQuery("nyma.rtcrealtime") != "0"),
 			};

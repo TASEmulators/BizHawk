@@ -82,8 +82,6 @@ ECL_EXPORT bool InitRom(const InitData& data)
 	return true;
 }
 
-void StartGameWithCds(int numdisks);
-
 ECL_EXPORT bool InitCd(int numdisks)
 {
 	try
@@ -98,15 +96,25 @@ ECL_EXPORT bool InitCd(int numdisks)
 	return true;
 }
 
+enum BizhawkFlags
+{
+	// skip video output
+	SkipRendering = 1,
+	// skip sound output
+	SkipSoundening = 2,
+	// render at LCM * LCM instead of raw
+	RenderConstantSize = 4,
+	// switch to the previous disk, if possible
+	PreviousDisk = 8,
+	// switch to the next disk, if possible
+	NextDisk = 16
+};
+
 struct MyFrameInfo: public FrameInfo
 {
-	// true to skip video rendering
-	int16_t SkipRendering;
-	int16_t SkipSoundening;
+	int32_t BizhawkFlags;
 	// a single MDFN_MSC_* command to run at the start of this frame; 0 if none
-	int16_t Command;
-	// true to render LCM * LCM instead of raw
-	int16_t RenderConstantSize;
+	int32_t Command;
 	// raw data for each input port, assumed to be MAX_PORTS * MAX_PORT_DATA long
 	uint8_t* InputPortData;
 	int64_t FrontendTime;
@@ -116,7 +124,14 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo& frame)
 {
 	FrontendTime = frame.FrontendTime;
 	LagFlag = true;
-	EES->skip = frame.SkipRendering;
+	EES->skip = !!(frame.BizhawkFlags & BizhawkFlags::SkipRendering);
+
+	{
+		auto prev = !!(frame.BizhawkFlags & BizhawkFlags::PreviousDisk);
+		auto next = !!(frame.BizhawkFlags & BizhawkFlags::NextDisk);
+		if (prev || next)
+			SwitchCds(prev, next);
+	}
 
 	if (frame.Command)
 		Game->DoSimpleCommand(frame.Command);
@@ -131,12 +146,12 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo& frame)
 	EES->SoundFormatChanged = false;
 	frame.Cycles = EES->MasterCycles;
 	frame.Lagged = LagFlag;
-	if (!frame.SkipSoundening)
+	if (!(frame.BizhawkFlags & BizhawkFlags::SkipSoundening))
 	{
 		memcpy(frame.SoundBuffer, EES->SoundBuf, EES->SoundBufSize * 4);
 		frame.Samples = EES->SoundBufSize;
 	}
-	if (!frame.SkipRendering)
+	if (!(frame.BizhawkFlags & BizhawkFlags::SkipRendering))
 	{
 		int h = EES->DisplayRect.h;
 		int lineStart = EES->DisplayRect.y;
@@ -147,7 +162,7 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo& frame)
 		uint32_t* src = pixels + EES->DisplayRect.x + EES->DisplayRect.y * srcp;
 		uint32_t* dst = frame.VideoBuffer;
 
-		if (!frame.RenderConstantSize || !multiWidth && Game->lcm_width == EES->DisplayRect.w && Game->lcm_height == h)
+		if (!(frame.BizhawkFlags & BizhawkFlags::RenderConstantSize) || !multiWidth && Game->lcm_width == EES->DisplayRect.w && Game->lcm_height == h)
 		{
 			// simple non-resizing blitter
 			// TODO: What does this do with true multiwidth?  Probably not anything good

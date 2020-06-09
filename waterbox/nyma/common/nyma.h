@@ -25,3 +25,6 @@ typedef void (*FrameCallback)();
 // The callback may not call any C standard library functions, or otherwise trigger a syscall
 // The callback must return before frame advance finishes
 void RegisterFrameThreadProc(FrameCallback threadproc);
+
+void StartGameWithCds(int numdisks);
+void SwitchCds(bool prev, bool next);

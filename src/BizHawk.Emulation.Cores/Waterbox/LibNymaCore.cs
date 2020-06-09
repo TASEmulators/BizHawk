@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		[BizImport(CC)]
 		public abstract bool InitCd(int numdisks);
 
-		public enum CommandType : short
+		public enum CommandType : int
 		{
 			NONE = 0x00,
 			RESET = 0x01,
@@ -69,25 +69,29 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			TOGGLE_DIP15,
 		}
 
+		[Flags]
+		public enum BizhawkFlags : int
+		{
+			// skip video output
+			SkipRendering = 1,
+			// skip sound output
+			SkipSoundening = 2,
+			// render at LCM * LCM instead of raw
+			RenderConstantSize = 4,
+			// switch to the previous disk, if possible
+			PreviousDisk = 8,
+			// switch to the next disk, if possible
+			NextDisk = 16
+		}
+
 		[StructLayout(LayoutKind.Sequential)]
 		public new class FrameInfo : LibWaterboxCore.FrameInfo
 		{
-			/// <summary>
-			/// true to skip video rendering
-			/// </summary>
-			public short SkipRendering;
-			/// <summary>
-			/// true to skip audion rendering
-			/// </summary>
-			public short SkipSoundening;
+			public BizhawkFlags Flags;
 			/// <summary>
 			/// a single command to run at the start of this frame
 			/// </summary>
 			public CommandType Command;
-			/// <summary>
-			/// True to render to a single framebuffer size (LCM * LCM)
-			/// </summary>
-			public short RenderConstantSize;
 			/// <summary>
 			/// raw data for each input port, assumed to be MAX_PORTS * MAX_PORT_DATA long
 			/// </summary>
