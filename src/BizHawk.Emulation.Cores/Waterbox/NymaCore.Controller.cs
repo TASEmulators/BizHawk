@@ -83,21 +83,20 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 					foreach (var input in inputs)
 					{
-						var inputInfo = input;
-						var bitSize = (int)inputInfo.BitSize;
-						var bitOffset = (int)inputInfo.BitOffset;
+						if (input.Type == InputType.Padding)
+							continue;
+
+						var bitSize = (int)input.BitSize;
+						var bitOffset = (int)input.BitOffset;
 						var byteStart = devByteStart + bitOffset / 8;
 						bitOffset %= 8;
-						var baseName = inputInfo.Name;
+						var baseName = input.Name;
 						if (overrides.ContainsKey(baseName))
 							baseName = overrides[baseName];
 						var name = $"P{port + 1} {baseName}";
-						switch (inputInfo.Type)
+
+						switch (input.Type)
 						{
-							case InputType.Padding:
-							{
-								break;
-							}
 							case InputType.Button:
 							case InputType.ButtonCanRapid:
 							{
@@ -114,7 +113,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 							}
 							case InputType.Switch:
 							{
-								var data = inputInfo.Extra.AsSwitch();
+								var data = input.Extra.AsSwitch();
 								if (data.Positions.Count > 8)
 									throw new NotImplementedException("Need code changes to support Mdfn switch with more than 8 positions");
 								
@@ -160,7 +159,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 								ret.AxisControls.Add(name);
 								ret.CategoryLabels[name] = category;
 								ret.AxisRanges.Add(new ControllerDefinition.AxisRange(
-									0, 0x8000, 0xffff, (inputInfo.Flags & AxisFlags.InvertCo) != 0
+									0, 0x8000, 0xffff, (input.Flags & AxisFlags.InvertCo) != 0
 								));
 								_thunks.Add((c, b) =>
 								{
@@ -176,7 +175,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 								ret.AxisControls.Add(name);
 								ret.CategoryLabels[name] = category;
 								ret.AxisRanges.Add(new ControllerDefinition.AxisRange(
-									-0x8000, 0, 0x7fff, (inputInfo.Flags & AxisFlags.InvertCo) != 0
+									-0x8000, 0, 0x7fff, (input.Flags & AxisFlags.InvertCo) != 0
 								));
 								_thunks.Add((c, b) =>
 								{
@@ -205,7 +204,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 							// TODO: wire up statuses to something (not controller, of course)
 							default:
 							{
-								throw new NotImplementedException($"Unimplemented button type {inputInfo.Type}");
+								throw new NotImplementedException($"Unimplemented button type {input.Type}");
 							}
 						}
 					}

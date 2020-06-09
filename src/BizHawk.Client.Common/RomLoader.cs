@@ -334,12 +334,10 @@ namespace BizHawk.Client.Common
 					);
 					break;
 				case "PCFX":
-					nextEmulator = new Tst(
-						nextComm,
-						new[] { disc },
-						(Tst.Settings) GetCoreSettings<Tst>(),
-						(Tst.SyncSettings) GetCoreSyncSettings<Tst>()
-					);
+					nextEmulator = new Tst(nextComm, game, new[] { disc },
+						(NymaCore.NymaSettings)GetCoreSettings<Tst>(),
+						(NymaCore.NymaSyncSettings)GetCoreSyncSettings<Tst>(),
+						Deterministic);
 					break;
 				case "PCE": // TODO: this is clearly not used, its set to PCE by code above
 				case "PCECD":
@@ -833,12 +831,10 @@ namespace BizHawk.Client.Common
 					case "PCFX":
 						var pcfxDiscs = DiscsFromXml(xmlGame, "PCFX", DiscType.PCFX);
 						if (pcfxDiscs.Count == 0) return false;
-						nextEmulator = new Tst(
-							nextComm,
-							pcfxDiscs,
-							(Tst.Settings) GetCoreSettings<Tst>(),
-							(Tst.SyncSettings) GetCoreSyncSettings<Tst>()
-						);
+						nextEmulator = new Tst(nextComm, game, pcfxDiscs,
+							(NymaCore.NymaSettings)GetCoreSettings<Tst>(),
+							(NymaCore.NymaSyncSettings)GetCoreSyncSettings<Tst>(),
+							Deterministic);
 						return true;
 					case "GEN":
 						var genDiscs = DiscsFromXml(xmlGame, "GEN", DiscType.MegaCD);

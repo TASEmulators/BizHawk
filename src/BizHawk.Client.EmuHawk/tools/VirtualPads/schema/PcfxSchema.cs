@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Consoles.NEC.PCFX;
@@ -11,34 +12,35 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
 		{
-			var ss = ((Tst)core).GetSyncSettings();
+			throw new NotImplementedException();
+			// var ss = ((Tst)core).GetSyncSettings();
 
-			var schemas = new List<PadSchema>();
-			if (ss.Port1 != ControllerType.None || ss.Port2 != ControllerType.None)
-			{
-				switch (ss.Port1)
-				{
-					case ControllerType.Gamepad:
-						schemas.Add(StandardController(1));
-						break;
-					case ControllerType.Mouse:
-						schemas.Add(Mouse(1));
-						break;
-				}
+			// var schemas = new List<PadSchema>();
+			// if (ss.Port1 != ControllerType.None || ss.Port2 != ControllerType.None)
+			// {
+			// 	switch (ss.Port1)
+			// 	{
+			// 		case ControllerType.Gamepad:
+			// 			schemas.Add(StandardController(1));
+			// 			break;
+			// 		case ControllerType.Mouse:
+			// 			schemas.Add(Mouse(1));
+			// 			break;
+			// 	}
 
-				int controllerNum = ss.Port1 != ControllerType.None ? 2 : 1;
-				switch (ss.Port2)
-				{
-					case ControllerType.Gamepad:
-						schemas.Add(StandardController(controllerNum));
-						break;
-					case ControllerType.Mouse:
-						schemas.Add(Mouse(controllerNum));
-						break;
-				}
-			}
+			// 	int controllerNum = ss.Port1 != ControllerType.None ? 2 : 1;
+			// 	switch (ss.Port2)
+			// 	{
+			// 		case ControllerType.Gamepad:
+			// 			schemas.Add(StandardController(controllerNum));
+			// 			break;
+			// 		case ControllerType.Mouse:
+			// 			schemas.Add(Mouse(controllerNum));
+			// 			break;
+			// 	}
+			// }
 
-			return schemas;
+			// return schemas;
 		}
 
 		private static PadSchema StandardController(int controller)
