@@ -1,4 +1,10 @@
 /*
+
+                    Build command
+
+make SUBTARGET=arcade NO_USE_PORTAUDIO=1 DONT_USE_NETWORK=1 NO_USE_MIDI=1 MAIN_SHARED_LIB=1 BIN_DIR="..\somewhere\BizHawk\output\dll" OPTIMIZE=3 PTR64=1 REGENIE=1 -j8
+
+
                     FrameAdvance()
 
 MAME fires the periodic callback on every video and debugger update,
