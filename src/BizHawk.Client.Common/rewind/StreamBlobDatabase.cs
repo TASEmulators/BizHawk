@@ -61,7 +61,7 @@ namespace BizHawk.Client.Common
 
 		public void Dispose()
 		{
-			Stream.Dispose();
+			Stream?.Dispose();
 			Stream = null;
 			if (_mAllocatedBuffer != null)
 			{
