@@ -320,12 +320,10 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public static void RefreshTempPath(this PathEntryCollection collection)
 		{
-			if (!string.IsNullOrWhiteSpace(collection.TempFilesFragment))
-			{
-				// TODO - BUG - needs to route through PathManager.MakeAbsolutePath or something similar, but how?
-				string target = collection.TempFilesFragment;
-				TempFileManager.HelperSetTempPath(target);
-			}
+			if (string.IsNullOrWhiteSpace(collection.TempFilesFragment))
+				return;
+			var path = collection.AbsolutePathFor(collection.TempFilesFragment, null);
+			TempFileManager.HelperSetTempPath(path);
 		}
 
 		private static string ResolveToolsPath(this PathEntryCollection collection, string subPath)
