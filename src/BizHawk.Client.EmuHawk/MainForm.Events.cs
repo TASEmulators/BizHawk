@@ -385,7 +385,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CloseRomMenuItem_Click(object sender, EventArgs e)
 		{
+			Console.WriteLine($"Closing rom clicked Frame: {Emulator.Frame} Emulator: {Emulator.GetType().Name}");
 			CloseRom();
+			Console.WriteLine($"Closing rom clicked DONE Frame: {Emulator.Frame} Emulator: {Emulator.GetType().Name}");
 		}
 
 		private void Savestate1MenuItem_Click(object sender, EventArgs e) { SaveQuickSave("QuickSave1"); }

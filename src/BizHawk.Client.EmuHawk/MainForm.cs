@@ -885,11 +885,9 @@ namespace BizHawk.Client.EmuHawk
 		public void CreateRewinder()
 		{
 			Rewinder?.Dispose();
-
-			if (Emulator.HasSavestates())
-			{
-				Rewinder = new Rewinder(Emulator.AsStatable(), Config.Rewind);
-			}
+			Rewinder = Emulator.HasSavestates()
+				? new Rewinder(Emulator.AsStatable(), Config.Rewind)
+				: null;
 		}
 
 		private FirmwareManager FirmwareManager => GlobalWin.FirmwareManager;
@@ -3957,7 +3955,7 @@ namespace BizHawk.Client.EmuHawk
 				CloseGame(clearSram);
 				Emulator = new NullEmulator();
 				GlobalWin.Game = GameInfo.NullInstance;
-
+				CreateRewinder();
 				Tools.Restart(Emulator);
 				RewireSound();
 				ClearHolds();
