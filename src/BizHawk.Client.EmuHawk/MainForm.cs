@@ -11,7 +11,6 @@ using System.Windows.Forms;
 
 using BizHawk.Common;
 using BizHawk.Common.BufferExtensions;
-using BizHawk.Common.IOExtensions;
 
 using BizHawk.Client.Common;
 using BizHawk.Bizware.BizwareGL;
@@ -303,8 +302,6 @@ namespace BizHawk.Client.EmuHawk
 
 			UpdateStatusSlots();
 			UpdateKeyPriorityIcon();
-
-
 
 			try
 			{
@@ -883,7 +880,17 @@ namespace BizHawk.Client.EmuHawk
 		private Sound Sound => GlobalWin.Sound;
 		public CheatCollection CheatList => GlobalWin.CheatList;
 
-		public IRewinder Rewinder { get; set; }
+		public IRewinder Rewinder { get; private set; }
+
+		public void CreateRewinder()
+		{
+			Rewinder?.Dispose();
+
+			if (Emulator.HasSavestates())
+			{
+				Rewinder = new Rewinder(Emulator.AsStatable(), Config.Rewind);
+			}
+		}
 
 		private FirmwareManager FirmwareManager => GlobalWin.FirmwareManager;
 
@@ -3806,16 +3813,7 @@ namespace BizHawk.Client.EmuHawk
 					CurrentlyOpenRomArgs = args;
 					OnRomChanged();
 					DisplayManager.Blank();
-
-					if (Emulator.HasSavestates())
-					{
-						Rewinder = new Rewinder(Emulator.AsStatable(), Config.Rewind);
-					}
-					else
-					{
-						Rewinder?.Dispose();
-						Rewinder = null;
-					}
+					CreateRewinder();
 
 					GlobalWin.InputManager.StickyXorAdapter.ClearStickies();
 					GlobalWin.InputManager.StickyXorAdapter.ClearStickyAxes();
@@ -4001,7 +3999,10 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			Rewinder ??= new Rewinder(Emulator.AsStatable(), Config.Rewind);
+			if (Rewinder == null)
+			{
+				CreateRewinder();
+			}
 
 			if (enabled)
 			{

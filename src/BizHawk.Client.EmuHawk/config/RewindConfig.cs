@@ -185,8 +185,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (TriggerRewindSettingsReload)
 			{
-				_mainForm.Rewinder.Dispose();
-				_mainForm.Rewinder = new Rewinder(_statableCore, _config.Rewind);
+				_mainForm.CreateRewinder();
 			}
 
 			DialogResult = DialogResult.OK;
