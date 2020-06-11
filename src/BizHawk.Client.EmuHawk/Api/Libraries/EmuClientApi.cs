@@ -23,15 +23,15 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly DisplayManager _displayManager;
 
-		private readonly IEmulator _emulator;
-
-		private readonly GameInfo _game;
-
 		private readonly InputManager _inputManager;
 
 		private readonly MainForm _mainForm;
 
-		private IEmulator Emulator { get; set; }
+		private IEmulator _maybeEmulator;
+
+		public IEmulator Emulator;
+
+		public GameInfo Game;
 
 		private readonly IReadOnlyCollection<JoypadButton> JoypadButtonsArray = Enum.GetValues(typeof(JoypadButton)).Cast<JoypadButton>().ToList(); //TODO can the return of GetValues be cast to JoypadButton[]? --yoshi
 
@@ -41,9 +41,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				switch (_emulator?.SystemId)
+				switch (Emulator.SystemId)
 				{
-					case "PCE" when _emulator is PCEngine pceHawk:
+					case "PCE" when Emulator is PCEngine pceHawk:
 						return pceHawk.Type switch
 						{
 							NecSystemType.TurboGrafx => SystemInfo.PCE,
@@ -54,17 +54,17 @@ namespace BizHawk.Client.EmuHawk
 					case "PCE":
 						return SystemInfo.PCE; // not always accurate, but anyone wanting accuracy has probably figured out how to use IEmu.GetSystemId()
 					case "SMS":
-						var sms = (SMS) _emulator;
+						var sms = (SMS) Emulator;
 						return sms.IsSG1000
 							? SystemInfo.SG
 							: sms.IsGameGear
 								? SystemInfo.GG
 								: SystemInfo.SMS;
 					case "GB":
-						if (_emulator is Gameboy gb) return gb.IsCGBMode() ? SystemInfo.GBC : SystemInfo.GB;
+						if (Emulator is Gameboy gb) return gb.IsCGBMode() ? SystemInfo.GBC : SystemInfo.GB;
 						return SystemInfo.DualGB;
 					default:
-						return SystemInfo.FindByCoreSystem(SystemIdConverter.Convert(_emulator.SystemId));
+						return SystemInfo.FindByCoreSystem(SystemIdConverter.Convert(Emulator.SystemId));
 				}
 			}
 		}
@@ -87,8 +87,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_config = config;
 			_displayManager = displayManager;
-			_emulator = emulator;
-			_game = game;
+			Emulator = emulator;
+			Game = game;
 			_inputManager = inputManager;
 			_mainForm = mainForm;
 		}
@@ -175,7 +175,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public int GetTargetScanlineIntensity() => _config.TargetScanlineFilterIntensity;
 
-		public int GetWindowSize() => _config.TargetZoomFactors[Emulator.SystemId];
+		public int GetWindowSize() => _config.TargetZoomFactors[_maybeEmulator.SystemId];
 
 		public void InvisibleEmulation(bool invisible) => _mainForm.InvisibleEmulation = invisible;
 
@@ -185,7 +185,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool IsTurbo() => _mainForm.IsTurboing;
 
-		public void LoadState(string name) => _mainForm.LoadState(Path.Combine(_config.PathEntries.SaveStateAbsolutePath(_game.System), $"{name}.State"), name, suppressOSD: false);
+		public void LoadState(string name) => _mainForm.LoadState(Path.Combine(_config.PathEntries.SaveStateAbsolutePath(Game.System), $"{name}.State"), name, suppressOSD: false);
 
 		public void OnBeforeQuickLoad(object sender, string quickSaveSlotName, out bool eventHandled)
 		{
@@ -213,7 +213,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void OnRomLoaded(IEmulator emu)
 		{
-			Emulator = emu;
+			_maybeEmulator = emu;
 			VideoProvider = emu.AsVideoProviderOrDefault();
 			RomLoaded?.Invoke(null, EventArgs.Empty);
 
@@ -244,7 +244,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SaveRam() => _mainForm.FlushSaveRAM();
 
-		public void SaveState(string name) => _mainForm.SaveState(Path.Combine(_config.PathEntries.SaveStateAbsolutePath(_game.System), $"{name}.State"), name, fromLua: false);
+		public void SaveState(string name) => _mainForm.SaveState(Path.Combine(_config.PathEntries.SaveStateAbsolutePath(Game.System), $"{name}.State"), name, fromLua: false);
 
 		public int ScreenHeight() => _mainForm.PresentationPanel.NativeSize.Height;
 
@@ -261,7 +261,7 @@ namespace BizHawk.Client.EmuHawk
 		public void SeekFrame(int frame)
 		{
 			var wasPaused = _mainForm.EmulatorPaused;
-			while (Emulator.Frame != frame) _mainForm.SeekFrameAdvance();
+			while (_maybeEmulator.Frame != frame) _mainForm.SeekFrameAdvance();
 			if (!wasPaused) _mainForm.UnpauseEmulator();
 		}
 
@@ -323,7 +323,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (size == 1 || size == 2 || size == 3 || size == 4 || size == 5 || size == 10)
 			{
-				_config.TargetZoomFactors[Emulator.SystemId] = size;
+				_config.TargetZoomFactors[_maybeEmulator.SystemId] = size;
 				_mainForm.FrameBufferResized();
 				_mainForm.AddOnScreenMessage($"Window size set to {size}x");
 			}
@@ -351,7 +351,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateEmulatorAndVP(IEmulator emu)
 		{
-			Emulator = emu;
+			_maybeEmulator = emu;
 			VideoProvider = emu.AsVideoProviderOrDefault();
 		}
 
