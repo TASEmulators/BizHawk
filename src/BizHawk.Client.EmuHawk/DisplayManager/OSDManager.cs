@@ -264,7 +264,7 @@ namespace BizHawk.Client.EmuHawk
 				var point = GetCoordinates(g, GlobalWin.Config.FrameCounter, message);
 				DrawOsdMessage(g, message, Color.FromArgb(GlobalWin.Config.MessagesColor), point.X, point.Y);
 
-				if (GlobalWin.MainForm.IsLagFrame)
+				if (GlobalWin.Emulator.CanPollInput() && GlobalWin.Emulator.AsInputPollable().IsLagFrame)
 				{
 					DrawOsdMessage(g, GlobalWin.Emulator.Frame.ToString(), FixedAlertMessageColor, point.X, point.Y);
 				}

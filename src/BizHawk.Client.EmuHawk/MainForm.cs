@@ -2863,8 +2863,6 @@ namespace BizHawk.Client.EmuHawk
 			PressFrameAdvance = false;
 		}
 
-		public bool IsLagFrame => Emulator.CanPollInput() && Emulator.AsInputPollable().IsLagFrame;
-
 		private void StepRunLoop_Core(bool force = false)
 		{
 			var runFrame = false;
@@ -2874,7 +2872,7 @@ namespace BizHawk.Client.EmuHawk
 			double frameAdvanceTimestampDeltaMs = (double)(currentTimestamp - _frameAdvanceTimestamp) / Stopwatch.Frequency * 1000.0;
 			bool frameProgressTimeElapsed = frameAdvanceTimestampDeltaMs >= Config.FrameProgressDelayMs;
 
-			if (Config.SkipLagFrame && IsLagFrame && frameProgressTimeElapsed && Emulator.Frame > 0)
+			if (Config.SkipLagFrame && Emulator.CanPollInput() && Emulator.AsInputPollable().IsLagFrame && frameProgressTimeElapsed && Emulator.Frame > 0)
 			{
 				runFrame = true;
 			}
@@ -3015,12 +3013,12 @@ namespace BizHawk.Client.EmuHawk
 
 				CheatList.Pulse();
 
-				if (IsLagFrame && Config.AutofireLagFrames)
+				if (Emulator.CanPollInput() && Emulator.AsInputPollable().IsLagFrame && Config.AutofireLagFrames)
 				{
 					InputManager.AutoFireController.IncrementStarts();
 				}
 
-				GlobalWin.InputManager.AutofireStickyXorAdapter.IncrementLoops(IsLagFrame);
+				GlobalWin.InputManager.AutofireStickyXorAdapter.IncrementLoops(Emulator.CanPollInput() && Emulator.AsInputPollable().IsLagFrame);
 
 				PressFrameAdvance = false;
 
