@@ -30,7 +30,7 @@ namespace BizHawk.Client.Common
 
 		/// <summary>
 		/// Represents the input source that is fed to
-		/// the movie for the purpsoe of recording, if active,
+		/// the movie for the purpose of recording, if active,
 		/// or to simply pass through if inactive
 		/// </summary>
 		IInputAdapter MovieIn { get; }
