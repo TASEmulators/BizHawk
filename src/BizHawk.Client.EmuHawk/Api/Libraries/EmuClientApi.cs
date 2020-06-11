@@ -41,7 +41,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				switch (_emulator.SystemId)
+				switch (_emulator?.SystemId)
 				{
 					case "PCE" when _emulator is PCEngine pceHawk:
 						return pceHawk.Type switch
