@@ -1,449 +1,211 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 using BizHawk.Client.Common;
-using BizHawk.Common;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Nintendo.Gameboy;
-using BizHawk.Emulation.Cores.PCEngine;
-using BizHawk.Emulation.Cores.Sega.MasterSystem;
 
-// ReSharper disable UnusedMember.Global
 namespace BizHawk.Client.EmuHawk
 {
-	/// <summary>
-	/// This class contains some methods that
-	/// interact with BizHawk client
-	/// </summary>
 	public static class ClientApi
 	{
-		private static IEmulator Emulator { get; set; }
+		/// <inheritdoc cref="IEmuClient.DoFrameAdvance"/>
+		public static SystemInfo RunningSystem => GlobalWin.ClientApi.RunningSystem;
 
-		private static IVideoProvider VideoProvider { get; set; }
-
-		private static readonly IReadOnlyCollection<JoypadButton> JoypadButtonsArray = Enum.GetValues(typeof(JoypadButton)).Cast<JoypadButton>().ToList(); //TODO can the return of GetValues be cast to JoypadButton[]? --yoshi
-
-		internal static readonly BizHawkSystemIdToEnumConverter SystemIdConverter = new BizHawkSystemIdToEnumConverter();
-
-		private static readonly JoypadStringToEnumConverter JoypadConverter = new JoypadStringToEnumConverter();
-
-		private static List<Joypad> _allJoyPads;
-
-		/// <summary>
-		/// Occurs before a quickload is done (just after user has pressed the shortcut button
-		/// or has click on the item menu)
-		/// </summary>
-		public static event BeforeQuickLoadEventHandler BeforeQuickLoad;
-
-		/// <summary>
-		/// Occurs before a quicksave is done (just after user has pressed the shortcut button
-		/// or has click on the item menu)
-		/// </summary>
-		public static event BeforeQuickSaveEventHandler BeforeQuickSave;
-
-		/// <summary>
-		/// Occurs when a ROM is successfully loaded
-		/// </summary>
-		public static event EventHandler RomLoaded;
-
-		/// <summary>
-		/// Occurs when a savestate is successfully loaded
-		/// </summary>
-		public static event StateLoadedEventHandler StateLoaded;
-
-		/// <summary>
-		/// Occurs when a savestate is successfully saved
-		/// </summary>
-		public static event StateSavedEventHandler StateSaved;
-
-		public static void UpdateEmulatorAndVP(IEmulator emu = null)
+		/// <inheritdoc cref="IEmuClient.BeforeQuickLoad"/>
+		public static event BeforeQuickLoadEventHandler BeforeQuickLoad
 		{
-			Emulator = emu;
-			VideoProvider = emu.AsVideoProviderOrDefault();
+			add => GlobalWin.ClientApi.BeforeQuickLoad += value;
+			remove => GlobalWin.ClientApi.BeforeQuickLoad -= value;
 		}
 
-		/// <summary>
-		/// THE FrameAdvance stuff
-		/// </summary>
-		public static void DoFrameAdvance()
+		/// <inheritdoc cref="IEmuClient.BeforeQuickSave"/>
+		public static event BeforeQuickSaveEventHandler BeforeQuickSave
 		{
-			GlobalWin.MainForm.FrameAdvance();
-			GlobalWin.MainForm.StepRunLoop_Throttle();
-			GlobalWin.MainForm.Render();
+			add => GlobalWin.ClientApi.BeforeQuickSave += value;
+			remove => GlobalWin.ClientApi.BeforeQuickSave -= value;
 		}
 
-		/// <summary>
-		/// THE FrameAdvance stuff
-		/// Auto unpause emulation
-		/// </summary>
-		public static void DoFrameAdvanceAndUnpause()
+		/// <inheritdoc cref="IEmuClient.RomLoaded"/>
+		public static event EventHandler RomLoaded
 		{
-			DoFrameAdvance();
-			UnpauseEmulation();
+			add => GlobalWin.ClientApi.RomLoaded += value;
+			remove => GlobalWin.ClientApi.RomLoaded -= value;
 		}
 
-		/// <summary>
-		/// Use with <see cref="InvisibleEmulation(bool)"/> for CamHack.
-		/// Refer to <see cref="MainForm.InvisibleEmulation"/> for the workflow details.
-		/// </summary>
-		public static void SeekFrame(int frame)
+		/// <inheritdoc cref="IEmuClient.StateLoaded"/>
+		public static event StateLoadedEventHandler StateLoaded
 		{
-			var wasPaused = GlobalWin.MainForm.EmulatorPaused;
-			while (Emulator.Frame != frame) GlobalWin.MainForm.SeekFrameAdvance();
-			if (!wasPaused) GlobalWin.MainForm.UnpauseEmulator();
+			add => GlobalWin.ClientApi.StateLoaded += value;
+			remove => GlobalWin.ClientApi.StateLoaded -= value;
 		}
 
-		/// <summary>
-		/// Use with <see cref="SeekFrame(int)"/> for CamHack.
-		/// Refer to <see cref="MainForm.InvisibleEmulation"/> for the workflow details.
-		/// </summary>
-		public static void InvisibleEmulation(bool invisible) => GlobalWin.MainForm.InvisibleEmulation = invisible;
-
-		/// <summary>
-		/// Gets a <see cref="Joypad"/> for specified player
-		/// </summary>
-		/// <param name="player">Player (one based) you want current inputs</param>
-		/// <returns>A <see cref="Joypad"/> populated with current inputs</returns>
-		/// <exception cref="IndexOutOfRangeException">Raised when you specify a player less than 1 or greater than maximum allows (see SystemInfo class to get this information)</exception>
-		public static Joypad GetInput(int player)
+		/// <inheritdoc cref="IEmuClient.StateSaved"/>
+		public static event StateSavedEventHandler StateSaved
 		{
-			if (!1.RangeTo(RunningSystem.MaxControllers).Contains(player))
-				throw new IndexOutOfRangeException($"{RunningSystem.DisplayName} does not support {player} controller(s)");
-			GetAllInputs();
-			return _allJoyPads[player - 1];
+			add => GlobalWin.ClientApi.StateSaved += value;
+			remove => GlobalWin.ClientApi.StateSaved -= value;
 		}
 
-		/// <summary>
-		/// Load a savestate specified by its name
-		/// </summary>
-		/// <param name="name">Savestate friendly name</param>
-		public static void LoadState(string name) => GlobalWin.MainForm.LoadState(Path.Combine(GlobalWin.Config.PathEntries.SaveStateAbsolutePath(GlobalWin.Game.System), $"{name}.State"), name, suppressOSD: false);
+		/// <inheritdoc cref="IEmuClient.BorderHeight"/>
+		public static int BorderHeight() => GlobalWin.ClientApi.BorderHeight();
 
-		/// <summary>
-		/// Raised before a quickload is done (just after pressing shortcut button)
-		/// </summary>
-		/// <param name="sender">Object who raised the event</param>
-		/// <param name="quickSaveSlotName">Slot used for quickload</param>
-		/// <param name="eventHandled">A boolean that can be set if users want to handle save themselves; if so, BizHawk won't do anything</param>
-		public static void OnBeforeQuickLoad(object sender, string quickSaveSlotName, out bool eventHandled)
-		{
-			if (BeforeQuickLoad == null)
-			{
-				eventHandled = false;
-				return;
-			}
-			var e = new BeforeQuickLoadEventArgs(quickSaveSlotName);
-			BeforeQuickLoad(sender, e);
-			eventHandled = e.Handled;
-		}
+		/// <inheritdoc cref="IEmuClient.BorderWidth"/>
+		public static int BorderWidth() => GlobalWin.ClientApi.BorderWidth();
 
+		/// <inheritdoc cref="IEmuClient.BufferHeight"/>
+		public static int BufferHeight() => GlobalWin.ClientApi.BufferHeight();
 
-		/// <summary>
-		/// Raised before a quicksave is done (just after pressing shortcut button)
-		/// </summary>
-		/// <param name="sender">Object who raised the event</param>
-		/// <param name="quickSaveSlotName">Slot used for quicksave</param>
-		/// <param name="eventHandled">A boolean that can be set if users want to handle save themselves; if so, BizHawk won't do anything</param>
-		public static void OnBeforeQuickSave(object sender, string quickSaveSlotName, out bool eventHandled)
-		{
-			if (BeforeQuickSave == null)
-			{
-				eventHandled = false;
-				return;
-			}
-			var e = new BeforeQuickSaveEventArgs(quickSaveSlotName);
-			BeforeQuickSave(sender, e);
-			eventHandled = e.Handled;
-		}
+		/// <inheritdoc cref="IEmuClient.BufferWidth"/>
+		public static int BufferWidth() => GlobalWin.ClientApi.BufferWidth();
 
+		/// <inheritdoc cref="IEmuClient.ClearAutohold"/>
+		public static void ClearAutohold() => GlobalWin.ClientApi.ClearAutohold();
 
-		/// <summary>
-		/// Raise when a state is loaded
-		/// </summary>
-		/// <param name="sender">Object who raised the event</param>
-		/// <param name="stateName">User friendly name for saved state</param>
-		public static void OnStateLoaded(object sender, string stateName) => StateLoaded?.Invoke(sender, new StateLoadedEventArgs(stateName));
+		/// <inheritdoc cref="IEmuClient.CloseEmulator"/>
+		public static void CloseEmulator() => GlobalWin.ClientApi.CloseEmulator();
 
-		/// <summary>
-		/// Raise when a state is saved
-		/// </summary>
-		/// <param name="sender">Object who raised the event</param>
-		/// <param name="stateName">User friendly name for saved state</param>
-		public static void OnStateSaved(object sender, string stateName) => StateSaved?.Invoke(sender, new StateSavedEventArgs(stateName));
+		/// <inheritdoc cref="IEmuClient.CloseEmulatorWithCode"/>
+		public static void CloseEmulatorWithCode(int exitCode) => GlobalWin.ClientApi.CloseEmulatorWithCode(exitCode);
 
-		/// <summary>
-		/// Raise when a rom is successfully Loaded
-		/// </summary>
-		public static void OnRomLoaded(IEmulator emu)
-		{
-			Emulator = emu;
-			VideoProvider = emu.AsVideoProviderOrDefault();
-			RomLoaded?.Invoke(null, EventArgs.Empty);
+		/// <inheritdoc cref="IEmuClient.CloseRom"/>
+		public static void CloseRom() => GlobalWin.ClientApi.CloseRom();
 
-			try
-			{
-				_allJoyPads = new List<Joypad>(RunningSystem.MaxControllers);
-				for (var i = 1; i <= RunningSystem.MaxControllers; i++)
-					_allJoyPads.Add(new Joypad(RunningSystem, i));
-			}
-			catch (Exception e)
-			{
-				Console.Error.WriteLine("Apihawk is garbage and may not work this session.");
-				Console.Error.WriteLine(e);
-			}
-		}
+		/// <inheritdoc cref="IEmuClient.DisplayMessages"/>
+		public static void DisplayMessages(bool value) => GlobalWin.ClientApi.DisplayMessages(value);
 
-		/// <summary>
-		/// Save a state with specified name
-		/// </summary>
-		/// <param name="name">Savestate friendly name</param>
-		public static void SaveState(string name) => GlobalWin.MainForm.SaveState(Path.Combine(GlobalWin.Config.PathEntries.SaveStateAbsolutePath(GlobalWin.Game.System), $"{name}.State"), name, fromLua: false);
+		/// <inheritdoc cref="IEmuClient.DoFrameAdvance"/>
+		public static void DoFrameAdvance() => GlobalWin.ClientApi.DoFrameAdvance();
 
-		/// <summary>
-		/// Sets the extra padding added to the 'native' surface so that you can draw HUD elements in predictable placements
-		/// </summary>
-		/// <param name="left">Left padding</param>
-		/// <param name="top">Top padding</param>
-		/// <param name="right">Right padding</param>
-		/// <param name="bottom">Bottom padding</param>
-		public static void SetGameExtraPadding(int left, int top = 0, int right = 0, int bottom = 0)
-		{
-			GlobalWin.DisplayManager.GameExtraPadding = new Padding(left, top, right, bottom);
-			GlobalWin.MainForm.FrameBufferResized();
-		}
+		/// <inheritdoc cref="IEmuClient.DoFrameAdvanceAndUnpause"/>
+		public static void DoFrameAdvanceAndUnpause() => GlobalWin.ClientApi.DoFrameAdvanceAndUnpause();
 
-		/// <summary>
-		/// Sets the extra padding added to the 'native' surface so that you can draw HUD elements in predictable placements
-		/// </summary>
-		/// <param name="left">Left padding</param>
-		/// <param name="top">Top padding</param>
-		/// <param name="right">Right padding</param>
-		/// <param name="bottom">Bottom padding</param>
-		public static void SetExtraPadding(int left, int top = 0, int right = 0, int bottom = 0)
-		{
-			GlobalWin.DisplayManager.ClientExtraPadding = new Padding(left, top, right, bottom);
-			GlobalWin.MainForm.FrameBufferResized();
-		}
+		/// <inheritdoc cref="IEmuClient.EnableRewind"/>
+		public static void EnableRewind(bool enabled) => GlobalWin.ClientApi.EnableRewind(enabled);
 
-		/// <summary>
-		/// Set inputs in specified <see cref="Joypad"/> to specified player
-		/// </summary>
-		/// <param name="player">Player (one based) whom inputs must be set</param>
-		/// <param name="joypad"><see cref="Joypad"/> with inputs</param>
-		/// <exception cref="IndexOutOfRangeException">Raised when you specify a player less than 1 or greater than maximum allows (see SystemInfo class to get this information)</exception>
-		/// <remarks>Still have some strange behaviour with multiple inputs; so this feature is still in beta</remarks>
-		public static void SetInput(int player, Joypad joypad)
-		{
-			if (!1.RangeTo(RunningSystem.MaxControllers).Contains(player)) throw new IndexOutOfRangeException($"{RunningSystem.DisplayName} does not support {player} controller(s)");
+		/// <inheritdoc cref="IEmuClient.FrameSkip"/>
+		public static void FrameSkip(int numFrames) => GlobalWin.ClientApi.FrameSkip(numFrames);
 
-			if (joypad.Inputs == 0)
-			{
-				GlobalWin.InputManager.AutofireStickyXorAdapter.ClearStickies();
-			}
-			else
-			{
-				foreach (var button in JoypadButtonsArray.Where(button => joypad.Inputs.HasFlag(button)))
-				{
-					GlobalWin.InputManager.AutofireStickyXorAdapter.SetSticky(
-						RunningSystem == SystemInfo.GB
-							? $"{JoypadConverter.ConvertBack(button, RunningSystem)}"
-							: $"P{player} {JoypadConverter.ConvertBack(button, RunningSystem)}",
-						isSticky: true
-					);
-				}
-			}
+		/// <inheritdoc cref="IEmuClient.GetInput"/>
+		public static Joypad GetInput(int player) => GlobalWin.ClientApi.GetInput(player);
 
-#if false // Using this breaks joypad usage (even in UI); have to figure out why
-			if ((RunningSystem.AvailableButtons & JoypadButton.AnalogStick) == JoypadButton.AnalogStick)
-			{
-				for (var i = 1; i <= RunningSystem.MaxControllers; i++)
-				{
-					GlobalWin.InputManager.AutofireStickyXorAdapter.SetAxis($"P{i} X Axis", _allJoyPads[i - 1].AnalogX);
-					GlobalWin.InputManager.AutofireStickyXorAdapter.SetAxis($"P{i} Y Axis", _allJoyPads[i - 1].AnalogY);
-				}
-			}
-#endif
-		}
+		/// <inheritdoc cref="IEmuClient.GetSoundOn"/>
+		public static bool GetSoundOn() => GlobalWin.ClientApi.GetSoundOn();
 
-		/// <summary>
-		/// Resume the emulation
-		/// </summary>
-		public static void UnpauseEmulation() => GlobalWin.MainForm.UnpauseEmulator();
+		/// <inheritdoc cref="IEmuClient.GetTargetScanlineIntensity"/>
+		public static int GetTargetScanlineIntensity() => GlobalWin.ClientApi.GetTargetScanlineIntensity();
 
-		/// <summary>
-		/// Gets all current inputs for each joypad and store
-		/// them in <see cref="Joypad"/> class collection
-		/// </summary>
-		private static void GetAllInputs()
-		{
-			var joypadAdapter = GlobalWin.InputManager.AutofireStickyXorAdapter;
+		/// <inheritdoc cref="IEmuClient.GetWindowSize"/>
+		public static int GetWindowSize() => GlobalWin.ClientApi.GetWindowSize();
 
-			var pressedButtons = joypadAdapter.Definition.BoolButtons.Where(b => joypadAdapter.IsPressed(b));
+		/// <inheritdoc cref="IEmuClient.InvisibleEmulation"/>
+		public static void InvisibleEmulation(bool invisible) => GlobalWin.ClientApi.InvisibleEmulation(invisible);
 
-			foreach (var j in _allJoyPads) j.ClearInputs();
+		/// <inheritdoc cref="IEmuClient.IsPaused"/>
+		public static bool IsPaused() => GlobalWin.ClientApi.IsPaused();
 
-			Parallel.ForEach(pressedButtons, button =>
-			{
-				if (RunningSystem == SystemInfo.GB) _allJoyPads[0].AddInput(JoypadConverter.Convert(button));
-				else if (int.TryParse(button.Substring(1, 2), out var player)) _allJoyPads[player - 1].AddInput(JoypadConverter.Convert(button.Substring(3)));
-			});
+		/// <inheritdoc cref="IEmuClient.IsSeeking"/>
+		public static bool IsSeeking() => GlobalWin.ClientApi.IsSeeking();
 
-			if ((RunningSystem.AvailableButtons & JoypadButton.AnalogStick) == JoypadButton.AnalogStick)
-			{
-				for (var i = 1; i <= RunningSystem.MaxControllers; i++)
-				{
-					_allJoyPads[i - 1].AnalogX = joypadAdapter.AxisValue($"P{i} X Axis");
-					_allJoyPads[i - 1].AnalogY = joypadAdapter.AxisValue($"P{i} Y Axis");
-				}
-			}
-		}
+		/// <inheritdoc cref="IEmuClient.IsTurbo"/>
+		public static bool IsTurbo() => GlobalWin.ClientApi.IsTurbo();
 
-		public static void CloseEmulator() => GlobalWin.MainForm.CloseEmulator();
+		/// <inheritdoc cref="IEmuClient.LoadState"/>
+		public static void LoadState(string name) => GlobalWin.ClientApi.LoadState(name);
 
-		public static void CloseEmulatorWithCode(int exitCode) => GlobalWin.MainForm.CloseEmulator(exitCode);
+		/// <inheritdoc cref="IEmuClient.OnBeforeQuickLoad"/>
+		public static void OnBeforeQuickLoad(object sender, string quickSaveSlotName, out bool eventHandled) => GlobalWin.ClientApi.OnBeforeQuickLoad(sender, quickSaveSlotName, out eventHandled);
 
-		public static int BorderHeight() => GlobalWin.DisplayManager.TransformPoint(new Point(0, 0)).Y;
+		/// <inheritdoc cref="IEmuClient.OnBeforeQuickSave"/>
+		public static void OnBeforeQuickSave(object sender, string quickSaveSlotName, out bool eventHandled) => GlobalWin.ClientApi.OnBeforeQuickSave(sender, quickSaveSlotName, out eventHandled);
 
-		public static int BorderWidth() => GlobalWin.DisplayManager.TransformPoint(new Point(0, 0)).X;
+		/// <inheritdoc cref="IEmuClient.OnRomLoaded"/>
+		public static void OnRomLoaded(IEmulator emu) => GlobalWin.ClientApi.OnRomLoaded(emu);
 
-		public static int BufferHeight() => VideoProvider.BufferHeight;
+		/// <inheritdoc cref="IEmuClient.OnStateLoaded"/>
+		public static void OnStateLoaded(object sender, string stateName) => GlobalWin.ClientApi.OnStateLoaded(sender, stateName);
 
-		public static int BufferWidth() => VideoProvider.BufferWidth;
+		/// <inheritdoc cref="IEmuClient.OnStateSaved"/>
+		public static void OnStateSaved(object sender, string stateName) => GlobalWin.ClientApi.OnStateSaved(sender, stateName);
 
-		public static void ClearAutohold() => GlobalWin.MainForm.ClearHolds();
+		/// <inheritdoc cref="IEmuClient.OpenRom"/>
+		public static void OpenRom(string path) => GlobalWin.ClientApi.OpenRom(path);
 
-		public static void CloseRom() => GlobalWin.MainForm.CloseRom();
+		/// <inheritdoc cref="IEmuClient.Pause"/>
+		public static void Pause() => GlobalWin.ClientApi.Pause();
 
-		public static void DisplayMessages(bool value) => GlobalWin.Config.DisplayMessages = value;
+		/// <inheritdoc cref="IEmuClient.PauseAv"/>
+		public static void PauseAv() => GlobalWin.ClientApi.PauseAv();
 
-		public static void EnableRewind(bool enabled) => GlobalWin.MainForm.EnableRewind(enabled);
+		/// <inheritdoc cref="IEmuClient.RebootCore"/>
+		public static void RebootCore() => GlobalWin.ClientApi.RebootCore();
 
-		public static void FrameSkip(int numFrames)
-		{
-			if (numFrames > 0)
-			{
-				GlobalWin.Config.FrameSkip = numFrames;
-				GlobalWin.MainForm.FrameSkipMessage();
-			}
-			else
-			{
-				Console.WriteLine("Invalid frame skip value");
-			}
-		}
+		/// <inheritdoc cref="IEmuClient.SaveRam"/>
+		public static void SaveRam() => GlobalWin.ClientApi.SaveRam();
 
-		public static int GetTargetScanlineIntensity() => GlobalWin.Config.TargetScanlineFilterIntensity;
+		/// <inheritdoc cref="IEmuClient.SaveState"/>
+		public static void SaveState(string name) => GlobalWin.ClientApi.SaveState(name);
 
-		public static int GetWindowSize() => GlobalWin.Config.TargetZoomFactors[Emulator.SystemId];
+		/// <inheritdoc cref="IEmuClient.ScreenHeight"/>
+		public static int ScreenHeight() => GlobalWin.ClientApi.ScreenHeight();
 
-		public static void SetSoundOn(bool enable)
-		{
-			if (enable != GlobalWin.Config.SoundEnabled) GlobalWin.MainForm.ToggleSound();
-		}
+		/// <inheritdoc cref="IEmuClient.Screenshot"/>
+		public static void Screenshot(string path = null) => GlobalWin.ClientApi.Screenshot(path);
 
-		public static bool GetSoundOn() => GlobalWin.Config.SoundEnabled;
+		/// <inheritdoc cref="IEmuClient.ScreenshotToClipboard"/>
+		public static void ScreenshotToClipboard() => GlobalWin.ClientApi.ScreenshotToClipboard();
 
-		public static bool IsPaused() => GlobalWin.MainForm.EmulatorPaused;
+		/// <inheritdoc cref="IEmuClient.ScreenWidth"/>
+		public static int ScreenWidth() => GlobalWin.ClientApi.ScreenWidth();
 
-		public static bool IsTurbo() => GlobalWin.MainForm.IsTurboing;
+		/// <inheritdoc cref="IEmuClient.SeekFrame"/>
+		public static void SeekFrame(int frame) => GlobalWin.ClientApi.SeekFrame(frame);
 
-		public static bool IsSeeking() => GlobalWin.MainForm.IsSeeking;
+		/// <inheritdoc cref="IEmuClient.SetExtraPadding"/>
+		public static void SetExtraPadding(int left, int top = 0, int right = 0, int bottom = 0) => GlobalWin.ClientApi.SetExtraPadding(left, top, right, bottom);
 
-		public static void OpenRom(string path) => GlobalWin.MainForm.LoadRom(path, new MainForm.LoadRomArgs { OpenAdvanced = OpenAdvancedSerializer.ParseWithLegacy(path) });
+		/// <inheritdoc cref="IEmuClient.SetGameExtraPadding"/>
+		public static void SetGameExtraPadding(int left, int top = 0, int right = 0, int bottom = 0) => GlobalWin.ClientApi.SetGameExtraPadding(left, top, right, bottom);
 
-		public static void Pause() => GlobalWin.MainForm.PauseEmulator();
+		/// <inheritdoc cref="IEmuClient.SetInput"/>
+		public static void SetInput(int player, Joypad joypad) => GlobalWin.ClientApi.SetInput(player, joypad);
 
-		public static void PauseAv() => GlobalWin.MainForm.PauseAvi = true;
+		/// <inheritdoc cref="IEmuClient.SetScreenshotOSD"/>
+		public static void SetScreenshotOSD(bool value) => GlobalWin.ClientApi.SetScreenshotOSD(value);
 
-		public static void RebootCore() => GlobalWin.MainForm.RebootCore();
+		/// <inheritdoc cref="IEmuClient.SetSoundOn"/>
+		public static void SetSoundOn(bool enable) => GlobalWin.ClientApi.SetSoundOn(enable);
 
-		public static void SaveRam() => GlobalWin.MainForm.FlushSaveRAM();
+		/// <inheritdoc cref="IEmuClient.SetTargetScanlineIntensity"/>
+		public static void SetTargetScanlineIntensity(int val) => GlobalWin.ClientApi.SetTargetScanlineIntensity(val);
 
-		public static int ScreenHeight() => GlobalWin.MainForm.PresentationPanel.NativeSize.Height;
+		/// <inheritdoc cref="IEmuClient.SetWindowSize"/>
+		public static void SetWindowSize(int size) => GlobalWin.ClientApi.SetWindowSize(size);
 
-		public static void Screenshot(string path = null)
-		{
-			if (path == null) GlobalWin.MainForm.TakeScreenshot();
-			else GlobalWin.MainForm.TakeScreenshot(path);
-		}
+		/// <inheritdoc cref="IEmuClient.SpeedMode"/>
+		public static void SpeedMode(int percent) => GlobalWin.ClientApi.SpeedMode(percent);
 
-		public static void ScreenshotToClipboard() => GlobalWin.MainForm.TakeScreenshotToClipboard();
+		/// <inheritdoc cref="IEmuClient.TogglePause"/>
+		public static void TogglePause() => GlobalWin.ClientApi.TogglePause();
 
-		public static void SetTargetScanlineIntensity(int val) => GlobalWin.Config.TargetScanlineFilterIntensity = val;
+		/// <inheritdoc cref="IEmuClient.TransformPoint"/>
+		public static Point TransformPoint(Point point) => GlobalWin.ClientApi.TransformPoint(point);
 
-		public static void SetScreenshotOSD(bool value) => GlobalWin.Config.ScreenshotCaptureOsd = value;
+		/// <inheritdoc cref="IEmuClient.Unpause"/>
+		public static void Unpause() => GlobalWin.ClientApi.Unpause();
 
-		public static int ScreenWidth() => GlobalWin.MainForm.PresentationPanel.NativeSize.Width;
+		/// <inheritdoc cref="IEmuClient.UnpauseAv"/>
+		public static void UnpauseAv() => GlobalWin.ClientApi.UnpauseAv();
 
-		public static void SetWindowSize(int size)
-		{
-			if (size == 1 || size == 2 || size == 3 || size == 4 || size == 5 || size == 10)
-			{
-				GlobalWin.Config.TargetZoomFactors[Emulator.SystemId] = size;
-				GlobalWin.MainForm.FrameBufferResized();
-				GlobalWin.OSD.AddMessage($"Window size set to {size}x");
-			}
-			else
-			{
-				Console.WriteLine("Invalid window size");
-			}
-		}
+		/// <inheritdoc cref="IEmuClient.UnpauseEmulation"/>
+		public static void UnpauseEmulation() => GlobalWin.ClientApi.UnpauseEmulation();
 
-		public static void SpeedMode(int percent)
-		{
-			if (percent.StrictlyBoundedBy(0.RangeTo(6400))) GlobalWin.MainForm.ClickSpeedItem(percent);
-			else Console.WriteLine("Invalid speed value");
-		}
+		/// <inheritdoc cref="IEmuClient.UpdateEmulatorAndVP"/>
+		public static void UpdateEmulatorAndVP(IEmulator emu = null) => GlobalWin.ClientApi.UpdateEmulatorAndVP(emu);
 
-		public static void TogglePause() => GlobalWin.MainForm.TogglePause();
+		/// <inheritdoc cref="IEmuClient.Xpos"/>
+		public static int Xpos() => GlobalWin.ClientApi.Xpos();
 
-		public static Point TransformPoint(Point point) => GlobalWin.DisplayManager.TransformPoint(point);
-
-		public static void Unpause() => GlobalWin.MainForm.UnpauseEmulator();
-
-		public static void UnpauseAv() => GlobalWin.MainForm.PauseAvi = false;
-
-		public static int Xpos() => GlobalWin.MainForm.DesktopLocation.X;
-
-		public static int Ypos() => GlobalWin.MainForm.DesktopLocation.Y;
-
-		/// <summary>
-		/// Gets current emulated system
-		/// </summary>
-		public static SystemInfo RunningSystem
-		{
-			get
-			{
-				switch (GlobalWin.Emulator.SystemId)
-				{
-					case "PCE" when GlobalWin.Emulator is PCEngine pceHawk:
-						return pceHawk.Type switch
-						{
-							NecSystemType.TurboGrafx => SystemInfo.PCE,
-							NecSystemType.TurboCD => SystemInfo.PCECD,
-							NecSystemType.SuperGrafx => SystemInfo.SGX,
-							_ => throw new ArgumentOutOfRangeException()
-						};
-					case "PCE":
-						return SystemInfo.PCE; // not always accurate, but anyone wanting accuracy has probably figured out how to use IEmu.GetSystemId()
-					case "SMS":
-						var sms = (SMS) GlobalWin.Emulator;
-						return sms.IsSG1000
-							? SystemInfo.SG
-							: sms.IsGameGear
-								? SystemInfo.GG
-								: SystemInfo.SMS;
-					case "GB":
-						if (GlobalWin.Emulator is Gameboy gb) return gb.IsCGBMode() ? SystemInfo.GBC : SystemInfo.GB;
-						return SystemInfo.DualGB;
-					default:
-						return SystemInfo.FindByCoreSystem(SystemIdConverter.Convert(GlobalWin.Emulator.SystemId));
-				}
-			}
-		}
+		/// <inheritdoc cref="IEmuClient.Ypos"/>
+		public static int Ypos() => GlobalWin.ClientApi.Ypos();
 	}
 }

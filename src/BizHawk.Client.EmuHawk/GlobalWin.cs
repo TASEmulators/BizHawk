@@ -47,5 +47,7 @@ namespace BizHawk.Client.EmuHawk
 		public static GameInfo Game { get; set; }
 		public static IMovieSession MovieSession { get; set; }
 		public static InputManager InputManager { get; } = new InputManager();
+
+		public static EmuClientApi ClientApi { get; set; }
 	}
 }

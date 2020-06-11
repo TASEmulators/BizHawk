@@ -1,13 +1,13 @@
 ﻿using System;
 
-namespace BizHawk.Client.EmuHawk
+namespace BizHawk.Client.Common
 {
 	/// <summary>
 	/// This class holds event data for BeforeQuickLoad event
 	/// </summary>
 	public sealed class BeforeQuickLoadEventArgs : EventArgs
 	{
-		internal BeforeQuickLoadEventArgs(string name)
+		public BeforeQuickLoadEventArgs(string name)
 		{
 			Name = name;
 		}
@@ -35,7 +35,7 @@ namespace BizHawk.Client.EmuHawk
 	/// </summary>
 	public sealed class BeforeQuickSaveEventArgs : EventArgs
 	{
-		internal BeforeQuickSaveEventArgs(string name)
+		public BeforeQuickSaveEventArgs(string name)
 		{
 			Name = name;
 		}
@@ -66,7 +66,7 @@ namespace BizHawk.Client.EmuHawk
 		/// Initialize a new instance of <see cref="StateLoadedEventArgs"/>
 		/// </summary>
 		/// <param name="stateName">User friendly name of loaded state</param>
-		internal StateLoadedEventArgs(string stateName)
+		public StateLoadedEventArgs(string stateName)
 		{
 			Name = stateName;
 		}
@@ -86,7 +86,7 @@ namespace BizHawk.Client.EmuHawk
 		/// Initialize a new instance of <see cref="StateSavedEventArgs"/>
 		/// </summary>
 		/// <param name="stateName">User friendly name of loaded state</param>
-		internal StateSavedEventArgs(string stateName)
+		public StateSavedEventArgs(string stateName)
 		{
 			Name = stateName;
 		}

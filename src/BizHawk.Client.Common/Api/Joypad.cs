@@ -1,8 +1,8 @@
 ﻿using System;
-using BizHawk.Client.Common;
+
 using BizHawk.Common;
 
-namespace BizHawk.Client.EmuHawk
+namespace BizHawk.Client.Common
 {
 	/// <summary>
 	/// This class holds a joypad for any type of console
@@ -20,7 +20,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <param name="system">What <see cref="SystemInfo"/> this <see cref="Joypad"/> is used for</param>
 		/// <param name="player">Which player this controller is assigned to</param>
 		/// <exception cref="IndexOutOfRangeException"><paramref name="player"/> not in range <c>1..max</c> where <c>max</c> is <paramref name="system"/>.<see cref="SystemInfo.MaxControllers"/></exception>
-		internal Joypad(SystemInfo system, int player)
+		public Joypad(SystemInfo system, int player)
 		{
 			if (!1.RangeTo(system.MaxControllers).Contains(player))
 			{

@@ -99,7 +99,7 @@ namespace BizHawk.Client.EmuHawk
 				item.Tag = (externalToolFile.Location, entryPoint.FullName); // Tag set => no errors (show custom icon even when disabled)
 				if (applicabilityAttrs.Count == 1)
 				{
-					var system = ClientApi.SystemIdConverter.Convert(GlobalWin.Emulator.SystemId);
+					var system = GlobalWin.ClientApi.SystemIdConverter.Convert(GlobalWin.Emulator.SystemId);
 					if (applicabilityAttrs[0].NotApplicableTo(system))
 					{
 						item.ToolTipText = system == CoreSystem.Null
