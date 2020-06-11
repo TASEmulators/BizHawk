@@ -47,7 +47,7 @@ namespace BizHawk.Client.EmuHawk
 		protected virtual void FastUpdateBefore() { }
 		protected virtual void FastUpdateAfter() { }
 
-		public static FileInfo OpenFileDialog(string currentFile, string path, string fileType, string fileExt)
+		public FileInfo OpenFileDialog(string currentFile, string path, string fileType, string fileExt)
 		{
 			if (!Directory.Exists(path))
 			{
@@ -58,7 +58,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				FileName = !string.IsNullOrWhiteSpace(currentFile)
 					? Path.GetFileName(currentFile)
-					: $"{GlobalWin.Game.FilesystemSafeName()}.{fileExt}",
+					: $"{Game.FilesystemSafeName()}.{fileExt}",
 				InitialDirectory = path,
 				Filter = new FilesystemFilterSet(new FilesystemFilter(fileType, new[] { fileExt })).ToString(),
 				RestoreDirectory = true
