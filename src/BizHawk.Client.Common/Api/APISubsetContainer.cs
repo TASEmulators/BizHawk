@@ -7,14 +7,14 @@ namespace BizHawk.Client.Common
 	{
 		public Dictionary<Type, IExternalApi> Libraries { get; set; }
 
-		public IEmuApi Emu => (IEmuApi) Libraries[typeof(IEmuApi)];
+		public IEmulationApi Emulation => (IEmulationApi) Libraries[typeof(IEmulationApi)];
 		public IGameInfoApi GameInfo => (IGameInfoApi) Libraries[typeof(IGameInfoApi)];
 		public IJoypadApi Joypad => (IJoypadApi) Libraries[typeof(IJoypadApi)];
-		public IMemApi Mem => (IMemApi) Libraries[typeof(IMemApi)];
-		public IMemEventsApi MemEvents => (IMemEventsApi) Libraries[typeof(IMemEventsApi)];
+		public IMemoryApi Memory => (IMemoryApi) Libraries[typeof(IMemoryApi)];
+		public IMemoryEventsApi MemoryEvents => (IMemoryEventsApi) Libraries[typeof(IMemoryEventsApi)];
 		public IMemorySaveStateApi MemorySaveState => (IMemorySaveStateApi) Libraries[typeof(IMemorySaveStateApi)];
-		public IInputMovieApi Movie => (IInputMovieApi) Libraries[typeof(IInputMovieApi)];
-		public ISqlApi Sql => (ISqlApi) Libraries[typeof(ISqlApi)];
+		public IMovieApi Movie => (IMovieApi) Libraries[typeof(IMovieApi)];
+		public ISQLiteApi SQLite => (ISQLiteApi) Libraries[typeof(ISQLiteApi)];
 		public IUserDataApi UserData => (IUserDataApi) Libraries[typeof(IUserDataApi)];
 
 		public ApiSubsetContainer(Dictionary<Type, IExternalApi> libs)

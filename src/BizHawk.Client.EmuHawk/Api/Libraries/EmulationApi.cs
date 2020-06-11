@@ -14,7 +14,7 @@ using BizHawk.Emulation.Cores.WonderSwan;
 namespace BizHawk.Client.EmuHawk
 {
 	[Description("A library for interacting with the currently loaded emulator core")]
-	public sealed class EmuApi : IEmuApi
+	public sealed class EmulationApi : IEmulationApi
 	{
 		[RequiredService]
 		private IEmulator Emulator { get; set; }
@@ -37,16 +37,16 @@ namespace BizHawk.Client.EmuHawk
 		[OptionalService]
 		private IRegionable RegionableCore { get; set; }
 
-		public EmuApi(Action<string> logCallback)
+		public EmulationApi(Action<string> logCallback)
 		{
 			LogCallback = logCallback;
 		}
 
-		public EmuApi() : this(Console.WriteLine) {}
+		public EmulationApi() : this(Console.WriteLine) {}
 
 		private readonly Action<string> LogCallback;
 
-		/// <summary>Using this property to get a reference to <see cref="GlobalWin.Config">GlobalWin.Config</see> is a terrible, horrible, no good, very bad idea. That's why it's not in the <see cref="IEmuApi">interface</see>.</summary>
+		/// <summary>Using this property to get a reference to <see cref="GlobalWin.Config">GlobalWin.Config</see> is a terrible, horrible, no good, very bad idea. That's why it's not in the <see cref="IEmulationApi">interface</see>.</summary>
 		public Config ForbiddenConfigReference
 		{
 			get

@@ -2,7 +2,7 @@
 
 namespace BizHawk.Client.Common
 {
-	public interface IMemEventsApi : IExternalApi
+	public interface IMemoryEventsApi : IExternalApi
 	{
 		void AddReadCallback(MemoryCallbackDelegate cb, uint? address, string domain);
 		void AddWriteCallback(MemoryCallbackDelegate cb, uint? address, string domain);

@@ -31,8 +31,8 @@ namespace BizHawk.Client.Common
 
 		private object Settings
 		{
-			get => APIs.Emu.GetSettings();
-			set => APIs.Emu.PutSettings(value);
+			get => APIs.Emulation.GetSettings();
+			set => APIs.Emulation.PutSettings(value);
 		}
 
 		[LuaDeprecatedMethod]

@@ -9,7 +9,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
-	public sealed class MemApi : IMemApi
+	public sealed class MemoryApi : IMemoryApi
 	{
 		[RequiredService]
 		private IEmulator Emulator { get; set; }
@@ -17,12 +17,12 @@ namespace BizHawk.Client.Common
 		[OptionalService]
 		private IMemoryDomains MemoryDomainCore { get; set; }
 
-		public MemApi(Action<string> logCallback)
+		public MemoryApi(Action<string> logCallback)
 		{
 			LogCallback = logCallback;
 		}
 
-		public MemApi() : this(Console.WriteLine) {}
+		public MemoryApi() : this(Console.WriteLine) {}
 
 		private readonly Action<string> LogCallback;
 

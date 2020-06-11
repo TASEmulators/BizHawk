@@ -2,7 +2,7 @@
 
 namespace BizHawk.Client.Common
 {
-	public sealed class MemEventsApi : IMemEventsApi
+	public sealed class MemoryEventsApi : IMemoryEventsApi
 	{
 		[RequiredService]
 		private IDebuggable DebuggableCore { get; set; }

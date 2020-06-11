@@ -20,8 +20,8 @@ namespace BizHawk.Client.Common
 
 		private LibsnesCore.SnesSettings Settings
 		{
-			get => APIs.Emu.GetSettings() as LibsnesCore.SnesSettings ?? new LibsnesCore.SnesSettings();
-			set => APIs.Emu.PutSettings(value);
+			get => APIs.Emulation.GetSettings() as LibsnesCore.SnesSettings ?? new LibsnesCore.SnesSettings();
+			set => APIs.Emulation.PutSettings(value);
 		}
 
 		[LuaMethodExample("if ( snes.getlayer_bg_1( ) ) then\r\n\tconsole.log( \"Returns whether the bg 1 layer is displayed\" );\r\nend;")]

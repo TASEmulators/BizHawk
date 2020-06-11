@@ -6,12 +6,12 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public sealed class SavestateLuaLibrary : DelegatingLuaLibraryEmu
+	public sealed class SaveStateLuaLibrary : DelegatingLuaLibraryEmu
 	{
-		public SavestateLuaLibrary(Lua lua)
+		public SaveStateLuaLibrary(Lua lua)
 			: base(lua) { }
 
-		public SavestateLuaLibrary(Lua lua, Action<string> logOutputCallback)
+		public SaveStateLuaLibrary(Lua lua, Action<string> logOutputCallback)
 			: base(lua, logOutputCallback) { }
 
 		public override string Name => "savestate";

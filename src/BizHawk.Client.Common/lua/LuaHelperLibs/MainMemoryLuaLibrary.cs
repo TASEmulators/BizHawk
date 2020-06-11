@@ -56,17 +56,17 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local uimairea = mainmemory.readbyte( 0x100 );")]
 		[LuaMethod("readbyte", "gets the value from the given address as an unsigned byte")]
-		public uint ReadByte(int addr) => APIs.Mem.ReadByte(addr, Domain.Name);
+		public uint ReadByte(int addr) => APIs.Memory.ReadByte(addr, Domain.Name);
 
 		[LuaMethodExample("mainmemory.writebyte( 0x100, 1000 );")]
 		[LuaMethod("writebyte", "Writes the given value to the given address as an unsigned byte")]
-		public void WriteByte(int addr, uint value) => APIs.Mem.WriteByte(addr, value, Domain.Name);
+		public void WriteByte(int addr, uint value) => APIs.Memory.WriteByte(addr, value, Domain.Name);
 
 		[LuaMethodExample("local nlmairea = mainmemory.readbyterange( 0x100, 64 );")]
 		[LuaMethod("readbyterange", "Reads the address range that starts from address, and is length long. Returns the result into a table of key value pairs (where the address is the key).")]
 		public LuaTable ReadByteRange(int addr, int length)
 		{
-			return APIs.Mem
+			return APIs.Memory
 				.ReadByteRange(addr, length, Domain.Name)
 				.ToLuaTable(Lua);
 		}
@@ -77,7 +77,7 @@ namespace BizHawk.Client.Common
 		public void WriteByteRange(LuaTable memoryblock)
 		{
 #if true
-			foreach (var addr in memoryblock.Keys) APIs.Mem.WriteByte(LuaInt(addr), (uint) memoryblock[addr], Domain.Name);
+			foreach (var addr in memoryblock.Keys) APIs.Memory.WriteByte(LuaInt(addr), (uint) memoryblock[addr], Domain.Name);
 #else
 			var d = Domain;
 			if (d.CanPoke())
@@ -106,224 +106,224 @@ namespace BizHawk.Client.Common
 		[LuaMethod("readfloat", "Reads the given address as a 32-bit float value from the main memory domain with th e given endian")]
 		public float ReadFloat(int addr, bool bigendian)
 		{
-			APIs.Mem.SetBigEndian(bigendian);
-			return APIs.Mem.ReadFloat(addr, Domain.Name);
+			APIs.Memory.SetBigEndian(bigendian);
+			return APIs.Memory.ReadFloat(addr, Domain.Name);
 		}
 
 		[LuaMethodExample("mainmemory.writefloat( 0x100, 10.0, false );")]
 		[LuaMethod("writefloat", "Writes the given 32-bit float value to the given address and endian")]
 		public void WriteFloat(int addr, double value, bool bigendian)
 		{
-			APIs.Mem.SetBigEndian(bigendian);
-			APIs.Mem.WriteFloat(addr, value, Domain.Name);
+			APIs.Memory.SetBigEndian(bigendian);
+			APIs.Memory.WriteFloat(addr, value, Domain.Name);
 		}
 
 		[LuaMethodExample("local inmairea = mainmemory.read_s8( 0x100 );")]
 		[LuaMethod("read_s8", "read signed byte")]
-		public int ReadS8(int addr) => APIs.Mem.ReadS8(addr, Domain.Name);
+		public int ReadS8(int addr) => APIs.Memory.ReadS8(addr, Domain.Name);
 
 		[LuaMethodExample("mainmemory.write_s8( 0x100, 1000 );")]
 		[LuaMethod("write_s8", "write signed byte")]
-		public void WriteS8(int addr, uint value) => APIs.Mem.WriteS8(addr, unchecked((int) value), Domain.Name);
+		public void WriteS8(int addr, uint value) => APIs.Memory.WriteS8(addr, unchecked((int) value), Domain.Name);
 
 		[LuaMethodExample("local uimairea = mainmemory.read_u8( 0x100 );")]
 		[LuaMethod("read_u8", "read unsigned byte")]
-		public uint ReadU8(int addr) => APIs.Mem.ReadU8(addr, Domain.Name);
+		public uint ReadU8(int addr) => APIs.Memory.ReadU8(addr, Domain.Name);
 
 		[LuaMethodExample("mainmemory.write_u8( 0x100, 1000 );")]
 		[LuaMethod("write_u8", "write unsigned byte")]
-		public void WriteU8(int addr, uint value) => APIs.Mem.WriteU8(addr, value, Domain.Name);
+		public void WriteU8(int addr, uint value) => APIs.Memory.WriteU8(addr, value, Domain.Name);
 
 		[LuaMethodExample("local inmairea = mainmemory.read_s16_le( 0x100 );")]
 		[LuaMethod("read_s16_le", "read signed 2 byte value, little endian")]
 		public int ReadS16Little(int addr)
 		{
-			APIs.Mem.SetBigEndian(false);
-			return APIs.Mem.ReadS16(addr, Domain.Name);
+			APIs.Memory.SetBigEndian(false);
+			return APIs.Memory.ReadS16(addr, Domain.Name);
 		}
 
 		[LuaMethodExample("mainmemory.write_s16_le( 0x100, -1000 );")]
 		[LuaMethod("write_s16_le", "write signed 2 byte value, little endian")]
 		public void WriteS16Little(int addr, int value)
 		{
-			APIs.Mem.SetBigEndian(false);
-			APIs.Mem.WriteS16(addr, value, Domain.Name);
+			APIs.Memory.SetBigEndian(false);
+			APIs.Memory.WriteS16(addr, value, Domain.Name);
 		}
 
 		[LuaMethodExample("local inmairea = mainmemory.read_s16_be( 0x100 );")]
 		[LuaMethod("read_s16_be", "read signed 2 byte value, big endian")]
 		public int ReadS16Big(int addr)
 		{
-			APIs.Mem.SetBigEndian();
-			return APIs.Mem.ReadS16(addr, Domain.Name);
+			APIs.Memory.SetBigEndian();
+			return APIs.Memory.ReadS16(addr, Domain.Name);
 		}
 
 		[LuaMethodExample("mainmemory.write_s16_be( 0x100, -1000 );")]
 		[LuaMethod("write_s16_be", "write signed 2 byte value, big endian")]
 		public void WriteS16Big(int addr, int value)
 		{
-			APIs.Mem.SetBigEndian();
-			APIs.Mem.WriteS16(addr, value, Domain.Name);
+			APIs.Memory.SetBigEndian();
+			APIs.Memory.WriteS16(addr, value, Domain.Name);
 		}
 
 		[LuaMethodExample("local uimairea = mainmemory.read_u16_le( 0x100 );")]
 		[LuaMethod("read_u16_le", "read unsigned 2 byte value, little endian")]
 		public uint ReadU16Little(int addr)
 		{
-			APIs.Mem.SetBigEndian(false);
-			return APIs.Mem.ReadU16(addr, Domain.Name);
+			APIs.Memory.SetBigEndian(false);
+			return APIs.Memory.ReadU16(addr, Domain.Name);
 		}
 
 		[LuaMethodExample("mainmemory.write_u16_le( 0x100, 1000 );")]
 		[LuaMethod("write_u16_le", "write unsigned 2 byte value, little endian")]
 		public void WriteU16Little(int addr, uint value)
 		{
-			APIs.Mem.SetBigEndian(false);
-			APIs.Mem.WriteU16(addr, value, Domain.Name);
+			APIs.Memory.SetBigEndian(false);
+			APIs.Memory.WriteU16(addr, value, Domain.Name);
 		}
 
 		[LuaMethodExample("local uimairea = mainmemory.read_u16_be( 0x100 );")]
 		[LuaMethod("read_u16_be", "read unsigned 2 byte value, big endian")]
 		public uint ReadU16Big(int addr)
 		{
-			APIs.Mem.SetBigEndian();
-			return APIs.Mem.ReadU16(addr, Domain.Name);
+			APIs.Memory.SetBigEndian();
+			return APIs.Memory.ReadU16(addr, Domain.Name);
 		}
 
 		[LuaMethodExample("mainmemory.write_u16_be( 0x100, 1000 );")]
 		[LuaMethod("write_u16_be", "write unsigned 2 byte value, big endian")]
 		public void WriteU16Big(int addr, uint value)
 		{
-			APIs.Mem.SetBigEndian();
-			APIs.Mem.WriteU16(addr, value, Domain.Name);
+			APIs.Memory.SetBigEndian();
+			APIs.Memory.WriteU16(addr, value, Domain.Name);
 		}
 
 		[LuaMethodExample("local inmairea = mainmemory.read_s24_le( 0x100 );")]
 		[LuaMethod("read_s24_le", "read signed 24 bit value, little endian")]
 		public int ReadS24Little(int addr)
 		{
-			APIs.Mem.SetBigEndian(false);
-			return APIs.Mem.ReadS24(addr, Domain.Name);
+			APIs.Memory.SetBigEndian(false);
+			return APIs.Memory.ReadS24(addr, Domain.Name);
 		}
 
 		[LuaMethodExample("mainmemory.write_s24_le( 0x100, -1000 );")]
 		[LuaMethod("write_s24_le", "write signed 24 bit value, little endian")]
 		public void WriteS24Little(int addr, int value)
 		{
-			APIs.Mem.SetBigEndian(false);
-			APIs.Mem.WriteS24(addr, value, Domain.Name);
+			APIs.Memory.SetBigEndian(false);
+			APIs.Memory.WriteS24(addr, value, Domain.Name);
 		}
 
 		[LuaMethodExample("local inmairea = mainmemory.read_s24_be( 0x100 );")]
 		[LuaMethod("read_s24_be", "read signed 24 bit value, big endian")]
 		public int ReadS24Big(int addr)
 		{
-			APIs.Mem.SetBigEndian();
-			return APIs.Mem.ReadS24(addr, Domain.Name);
+			APIs.Memory.SetBigEndian();
+			return APIs.Memory.ReadS24(addr, Domain.Name);
 		}
 
 		[LuaMethodExample("mainmemory.write_s24_be( 0x100, -1000 );")]
 		[LuaMethod("write_s24_be", "write signed 24 bit value, big endian")]
 		public void WriteS24Big(int addr, int value)
 		{
-			APIs.Mem.SetBigEndian();
-			APIs.Mem.WriteS24(addr, value, Domain.Name);
+			APIs.Memory.SetBigEndian();
+			APIs.Memory.WriteS24(addr, value, Domain.Name);
 		}
 
 		[LuaMethodExample("local uimairea = mainmemory.read_u24_le( 0x100 );")]
 		[LuaMethod("read_u24_le", "read unsigned 24 bit value, little endian")]
 		public uint ReadU24Little(int addr)
 		{
-			APIs.Mem.SetBigEndian(false);
-			return APIs.Mem.ReadU24(addr, Domain.Name);
+			APIs.Memory.SetBigEndian(false);
+			return APIs.Memory.ReadU24(addr, Domain.Name);
 		}
 
 		[LuaMethodExample("mainmemory.write_u24_le( 0x100, 1000 );")]
 		[LuaMethod("write_u24_le", "write unsigned 24 bit value, little endian")]
 		public void WriteU24Little(int addr, uint value)
 		{
-			APIs.Mem.SetBigEndian(false);
-			APIs.Mem.WriteU24(addr, value, Domain.Name);
+			APIs.Memory.SetBigEndian(false);
+			APIs.Memory.WriteU24(addr, value, Domain.Name);
 		}
 
 		[LuaMethodExample("local uimairea = mainmemory.read_u24_be( 0x100 );")]
 		[LuaMethod("read_u24_be", "read unsigned 24 bit value, big endian")]
 		public uint ReadU24Big(int addr)
 		{
-			APIs.Mem.SetBigEndian();
-			return APIs.Mem.ReadU24(addr, Domain.Name);
+			APIs.Memory.SetBigEndian();
+			return APIs.Memory.ReadU24(addr, Domain.Name);
 		}
 
 		[LuaMethodExample("mainmemory.write_u24_be( 0x100, 1000 );")]
 		[LuaMethod("write_u24_be", "write unsigned 24 bit value, big endian")]
 		public void WriteU24Big(int addr, uint value)
 		{
-			APIs.Mem.SetBigEndian();
-			APIs.Mem.WriteU24(addr, value, Domain.Name);
+			APIs.Memory.SetBigEndian();
+			APIs.Memory.WriteU24(addr, value, Domain.Name);
 		}
 
 		[LuaMethodExample("local inmairea = mainmemory.read_s32_le( 0x100 );")]
 		[LuaMethod("read_s32_le", "read signed 4 byte value, little endian")]
 		public int ReadS32Little(int addr)
 		{
-			APIs.Mem.SetBigEndian(false);
-			return APIs.Mem.ReadS32(addr, Domain.Name);
+			APIs.Memory.SetBigEndian(false);
+			return APIs.Memory.ReadS32(addr, Domain.Name);
 		}
 
 		[LuaMethodExample("mainmemory.write_s32_le( 0x100, -1000 );")]
 		[LuaMethod("write_s32_le", "write signed 4 byte value, little endian")]
 		public void WriteS32Little(int addr, int value)
 		{
-			APIs.Mem.SetBigEndian(false);
-			APIs.Mem.WriteS32(addr, value, Domain.Name);
+			APIs.Memory.SetBigEndian(false);
+			APIs.Memory.WriteS32(addr, value, Domain.Name);
 		}
 
 		[LuaMethodExample("local inmairea = mainmemory.read_s32_be( 0x100 );")]
 		[LuaMethod("read_s32_be", "read signed 4 byte value, big endian")]
 		public int ReadS32Big(int addr)
 		{
-			APIs.Mem.SetBigEndian();
-			return APIs.Mem.ReadS32(addr, Domain.Name);
+			APIs.Memory.SetBigEndian();
+			return APIs.Memory.ReadS32(addr, Domain.Name);
 		}
 
 		[LuaMethodExample("mainmemory.write_s32_be( 0x100, -1000 );")]
 		[LuaMethod("write_s32_be", "write signed 4 byte value, big endian")]
 		public void WriteS32Big(int addr, int value)
 		{
-			APIs.Mem.SetBigEndian();
-			APIs.Mem.WriteS32(addr, value, Domain.Name);
+			APIs.Memory.SetBigEndian();
+			APIs.Memory.WriteS32(addr, value, Domain.Name);
 		}
 
 		[LuaMethodExample("local uimairea = mainmemory.read_u32_le( 0x100 );")]
 		[LuaMethod("read_u32_le", "read unsigned 4 byte value, little endian")]
 		public uint ReadU32Little(int addr)
 		{
-			APIs.Mem.SetBigEndian(false);
-			return APIs.Mem.ReadU32(addr, Domain.Name);
+			APIs.Memory.SetBigEndian(false);
+			return APIs.Memory.ReadU32(addr, Domain.Name);
 		}
 
 		[LuaMethodExample("mainmemory.write_u32_le( 0x100, 1000 );")]
 		[LuaMethod("write_u32_le", "write unsigned 4 byte value, little endian")]
 		public void WriteU32Little(int addr, uint value)
 		{
-			APIs.Mem.SetBigEndian(false);
-			APIs.Mem.WriteU32(addr, value, Domain.Name);
+			APIs.Memory.SetBigEndian(false);
+			APIs.Memory.WriteU32(addr, value, Domain.Name);
 		}
 
 		[LuaMethodExample("local uimairea = mainmemory.read_u32_be( 0x100 );")]
 		[LuaMethod("read_u32_be", "read unsigned 4 byte value, big endian")]
 		public uint ReadU32Big(int addr)
 		{
-			APIs.Mem.SetBigEndian();
-			return APIs.Mem.ReadU32(addr, Domain.Name);
+			APIs.Memory.SetBigEndian();
+			return APIs.Memory.ReadU32(addr, Domain.Name);
 		}
 
 		[LuaMethodExample("mainmemory.write_u32_be( 0x100, 1000 );")]
 		[LuaMethod("write_u32_be", "write unsigned 4 byte value, big endian")]
 		public void WriteU32Big(int addr, uint value)
 		{
-			APIs.Mem.SetBigEndian();
-			APIs.Mem.WriteU32(addr, value, Domain.Name);
+			APIs.Memory.SetBigEndian();
+			APIs.Memory.WriteU32(addr, value, Domain.Name);
 		}
 	}
 }

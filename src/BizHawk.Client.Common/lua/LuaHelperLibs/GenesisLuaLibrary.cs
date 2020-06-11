@@ -21,8 +21,8 @@ namespace BizHawk.Client.Common
 
 		private GPGX.GPGXSettings Settings
 		{
-			get => APIs.Emu.GetSettings() as GPGX.GPGXSettings ?? new GPGX.GPGXSettings();
-			set => APIs.Emu.PutSettings(value);
+			get => APIs.Emulation.GetSettings() as GPGX.GPGXSettings ?? new GPGX.GPGXSettings();
+			set => APIs.Emulation.PutSettings(value);
 		}
 
 		[LuaMethodExample("if ( genesis.getlayer_bga( ) ) then\r\n\tconsole.log( \"Returns whether the bg layer A is displayed\" );\r\nend;")]

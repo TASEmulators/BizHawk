@@ -4,7 +4,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
-	public interface IEmuApi : IExternalApi
+	public interface IEmulationApi : IExternalApi
 	{
 		Action FrameAdvanceCallback { get; set; }
 		Action YieldCallback { get; set; }
