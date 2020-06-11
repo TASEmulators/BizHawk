@@ -19,6 +19,18 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private List<Joypad> _allJoyPads;
 
+		private readonly Config _config;
+
+		private readonly DisplayManager _displayManager;
+
+		private readonly IEmulator _emulator;
+
+		private readonly GameInfo _game;
+
+		private readonly InputManager _inputManager;
+
+		private readonly MainForm _mainForm;
+
 		private IEmulator Emulator { get; set; }
 
 		private readonly IReadOnlyCollection<JoypadButton> JoypadButtonsArray = Enum.GetValues(typeof(JoypadButton)).Cast<JoypadButton>().ToList(); //TODO can the return of GetValues be cast to JoypadButton[]? --yoshi
@@ -29,9 +41,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				switch (GlobalWin.Emulator.SystemId)
+				switch (_emulator.SystemId)
 				{
-					case "PCE" when GlobalWin.Emulator is PCEngine pceHawk:
+					case "PCE" when _emulator is PCEngine pceHawk:
 						return pceHawk.Type switch
 						{
 							NecSystemType.TurboGrafx => SystemInfo.PCE,
@@ -42,17 +54,17 @@ namespace BizHawk.Client.EmuHawk
 					case "PCE":
 						return SystemInfo.PCE; // not always accurate, but anyone wanting accuracy has probably figured out how to use IEmu.GetSystemId()
 					case "SMS":
-						var sms = (SMS) GlobalWin.Emulator;
+						var sms = (SMS) _emulator;
 						return sms.IsSG1000
 							? SystemInfo.SG
 							: sms.IsGameGear
 								? SystemInfo.GG
 								: SystemInfo.SMS;
 					case "GB":
-						if (GlobalWin.Emulator is Gameboy gb) return gb.IsCGBMode() ? SystemInfo.GBC : SystemInfo.GB;
+						if (_emulator is Gameboy gb) return gb.IsCGBMode() ? SystemInfo.GBC : SystemInfo.GB;
 						return SystemInfo.DualGB;
 					default:
-						return SystemInfo.FindByCoreSystem(SystemIdConverter.Convert(GlobalWin.Emulator.SystemId));
+						return SystemInfo.FindByCoreSystem(SystemIdConverter.Convert(_emulator.SystemId));
 				}
 			}
 		}
@@ -71,29 +83,39 @@ namespace BizHawk.Client.EmuHawk
 
 		public event StateSavedEventHandler StateSaved;
 
-		public int BorderHeight() => GlobalWin.DisplayManager.TransformPoint(new Point(0, 0)).Y;
+		public EmuClientApi(Config config, DisplayManager displayManager, IEmulator emulator, GameInfo game, InputManager inputManager, MainForm mainForm)
+		{
+			_config = config;
+			_displayManager = displayManager;
+			_emulator = emulator;
+			_game = game;
+			_inputManager = inputManager;
+			_mainForm = mainForm;
+		}
 
-		public int BorderWidth() => GlobalWin.DisplayManager.TransformPoint(new Point(0, 0)).X;
+		public int BorderHeight() => _displayManager.TransformPoint(new Point(0, 0)).Y;
+
+		public int BorderWidth() => _displayManager.TransformPoint(new Point(0, 0)).X;
 
 		public int BufferHeight() => VideoProvider.BufferHeight;
 
 		public int BufferWidth() => VideoProvider.BufferWidth;
 
-		public void ClearAutohold() => GlobalWin.MainForm.ClearHolds();
+		public void ClearAutohold() => _mainForm.ClearHolds();
 
-		public void CloseEmulator() => GlobalWin.MainForm.CloseEmulator();
+		public void CloseEmulator() => _mainForm.CloseEmulator();
 
-		public void CloseEmulatorWithCode(int exitCode) => GlobalWin.MainForm.CloseEmulator(exitCode);
+		public void CloseEmulatorWithCode(int exitCode) => _mainForm.CloseEmulator(exitCode);
 
-		public void CloseRom() => GlobalWin.MainForm.CloseRom();
+		public void CloseRom() => _mainForm.CloseRom();
 
-		public void DisplayMessages(bool value) => GlobalWin.Config.DisplayMessages = value;
+		public void DisplayMessages(bool value) => _config.DisplayMessages = value;
 
 		public void DoFrameAdvance()
 		{
-			GlobalWin.MainForm.FrameAdvance();
-			GlobalWin.MainForm.StepRunLoop_Throttle();
-			GlobalWin.MainForm.Render();
+			_mainForm.FrameAdvance();
+			_mainForm.StepRunLoop_Throttle();
+			_mainForm.Render();
 		}
 
 		public void DoFrameAdvanceAndUnpause()
@@ -102,14 +124,14 @@ namespace BizHawk.Client.EmuHawk
 			UnpauseEmulation();
 		}
 
-		public void EnableRewind(bool enabled) => GlobalWin.MainForm.EnableRewind(enabled);
+		public void EnableRewind(bool enabled) => _mainForm.EnableRewind(enabled);
 
 		public void FrameSkip(int numFrames)
 		{
 			if (numFrames > 0)
 			{
-				GlobalWin.Config.FrameSkip = numFrames;
-				GlobalWin.MainForm.FrameSkipMessage();
+				_config.FrameSkip = numFrames;
+				_mainForm.FrameSkipMessage();
 			}
 			else
 			{
@@ -119,7 +141,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GetAllInputs()
 		{
-			var joypadAdapter = GlobalWin.InputManager.AutofireStickyXorAdapter;
+			var joypadAdapter = _inputManager.AutofireStickyXorAdapter;
 
 			var pressedButtons = joypadAdapter.Definition.BoolButtons.Where(b => joypadAdapter.IsPressed(b));
 
@@ -149,21 +171,21 @@ namespace BizHawk.Client.EmuHawk
 			return _allJoyPads[player - 1];
 		}
 
-		public bool GetSoundOn() => GlobalWin.Config.SoundEnabled;
+		public bool GetSoundOn() => _config.SoundEnabled;
 
-		public int GetTargetScanlineIntensity() => GlobalWin.Config.TargetScanlineFilterIntensity;
+		public int GetTargetScanlineIntensity() => _config.TargetScanlineFilterIntensity;
 
-		public int GetWindowSize() => GlobalWin.Config.TargetZoomFactors[Emulator.SystemId];
+		public int GetWindowSize() => _config.TargetZoomFactors[Emulator.SystemId];
 
-		public void InvisibleEmulation(bool invisible) => GlobalWin.MainForm.InvisibleEmulation = invisible;
+		public void InvisibleEmulation(bool invisible) => _mainForm.InvisibleEmulation = invisible;
 
-		public bool IsPaused() => GlobalWin.MainForm.EmulatorPaused;
+		public bool IsPaused() => _mainForm.EmulatorPaused;
 
-		public bool IsSeeking() => GlobalWin.MainForm.IsSeeking;
+		public bool IsSeeking() => _mainForm.IsSeeking;
 
-		public bool IsTurbo() => GlobalWin.MainForm.IsTurboing;
+		public bool IsTurbo() => _mainForm.IsTurboing;
 
-		public void LoadState(string name) => GlobalWin.MainForm.LoadState(Path.Combine(GlobalWin.Config.PathEntries.SaveStateAbsolutePath(GlobalWin.Game.System), $"{name}.State"), name, suppressOSD: false);
+		public void LoadState(string name) => _mainForm.LoadState(Path.Combine(_config.PathEntries.SaveStateAbsolutePath(_game.System), $"{name}.State"), name, suppressOSD: false);
 
 		public void OnBeforeQuickLoad(object sender, string quickSaveSlotName, out bool eventHandled)
 		{
@@ -212,47 +234,47 @@ namespace BizHawk.Client.EmuHawk
 
 		public void OnStateSaved(object sender, string stateName) => StateSaved?.Invoke(sender, new StateSavedEventArgs(stateName));
 
-		public void OpenRom(string path) => GlobalWin.MainForm.LoadRom(path, new MainForm.LoadRomArgs { OpenAdvanced = OpenAdvancedSerializer.ParseWithLegacy(path) });
+		public void OpenRom(string path) => _mainForm.LoadRom(path, new MainForm.LoadRomArgs { OpenAdvanced = OpenAdvancedSerializer.ParseWithLegacy(path) });
 
-		public void Pause() => GlobalWin.MainForm.PauseEmulator();
+		public void Pause() => _mainForm.PauseEmulator();
 
-		public void PauseAv() => GlobalWin.MainForm.PauseAvi = true;
+		public void PauseAv() => _mainForm.PauseAvi = true;
 
-		public void RebootCore() => GlobalWin.MainForm.RebootCore();
+		public void RebootCore() => _mainForm.RebootCore();
 
-		public void SaveRam() => GlobalWin.MainForm.FlushSaveRAM();
+		public void SaveRam() => _mainForm.FlushSaveRAM();
 
-		public void SaveState(string name) => GlobalWin.MainForm.SaveState(Path.Combine(GlobalWin.Config.PathEntries.SaveStateAbsolutePath(GlobalWin.Game.System), $"{name}.State"), name, fromLua: false);
+		public void SaveState(string name) => _mainForm.SaveState(Path.Combine(_config.PathEntries.SaveStateAbsolutePath(_game.System), $"{name}.State"), name, fromLua: false);
 
-		public int ScreenHeight() => GlobalWin.MainForm.PresentationPanel.NativeSize.Height;
+		public int ScreenHeight() => _mainForm.PresentationPanel.NativeSize.Height;
 
 		public void Screenshot(string path)
 		{
-			if (path == null) GlobalWin.MainForm.TakeScreenshot();
-			else GlobalWin.MainForm.TakeScreenshot(path);
+			if (path == null) _mainForm.TakeScreenshot();
+			else _mainForm.TakeScreenshot(path);
 		}
 
-		public void ScreenshotToClipboard() => GlobalWin.MainForm.TakeScreenshotToClipboard();
+		public void ScreenshotToClipboard() => _mainForm.TakeScreenshotToClipboard();
 
-		public int ScreenWidth() => GlobalWin.MainForm.PresentationPanel.NativeSize.Width;
+		public int ScreenWidth() => _mainForm.PresentationPanel.NativeSize.Width;
 
 		public void SeekFrame(int frame)
 		{
-			var wasPaused = GlobalWin.MainForm.EmulatorPaused;
-			while (Emulator.Frame != frame) GlobalWin.MainForm.SeekFrameAdvance();
-			if (!wasPaused) GlobalWin.MainForm.UnpauseEmulator();
+			var wasPaused = _mainForm.EmulatorPaused;
+			while (Emulator.Frame != frame) _mainForm.SeekFrameAdvance();
+			if (!wasPaused) _mainForm.UnpauseEmulator();
 		}
 
 		public void SetExtraPadding(int left, int top, int right, int bottom)
 		{
-			GlobalWin.DisplayManager.ClientExtraPadding = new Padding(left, top, right, bottom);
-			GlobalWin.MainForm.FrameBufferResized();
+			_displayManager.ClientExtraPadding = new Padding(left, top, right, bottom);
+			_mainForm.FrameBufferResized();
 		}
 
 		public void SetGameExtraPadding(int left, int top, int right, int bottom)
 		{
-			GlobalWin.DisplayManager.GameExtraPadding = new Padding(left, top, right, bottom);
-			GlobalWin.MainForm.FrameBufferResized();
+			_displayManager.GameExtraPadding = new Padding(left, top, right, bottom);
+			_mainForm.FrameBufferResized();
 		}
 
 		public void SetInput(int player, Joypad joypad)
@@ -261,13 +283,13 @@ namespace BizHawk.Client.EmuHawk
 
 			if (joypad.Inputs == 0)
 			{
-				GlobalWin.InputManager.AutofireStickyXorAdapter.ClearStickies();
+				_inputManager.AutofireStickyXorAdapter.ClearStickies();
 			}
 			else
 			{
 				foreach (var button in JoypadButtonsArray.Where(button => joypad.Inputs.HasFlag(button)))
 				{
-					GlobalWin.InputManager.AutofireStickyXorAdapter.SetSticky(
+					_inputManager.AutofireStickyXorAdapter.SetSticky(
 						RunningSystem == SystemInfo.GB
 							? $"{JoypadConverter.ConvertBack(button, RunningSystem)}"
 							: $"P{player} {JoypadConverter.ConvertBack(button, RunningSystem)}",
@@ -281,29 +303,29 @@ namespace BizHawk.Client.EmuHawk
 			{
 				for (var i = 1; i <= RunningSystem.MaxControllers; i++)
 				{
-					GlobalWin.InputManager.AutofireStickyXorAdapter.SetAxis($"P{i} X Axis", _allJoyPads[i - 1].AnalogX);
-					GlobalWin.InputManager.AutofireStickyXorAdapter.SetAxis($"P{i} Y Axis", _allJoyPads[i - 1].AnalogY);
+					_inputManager.AutofireStickyXorAdapter.SetAxis($"P{i} X Axis", _allJoyPads[i - 1].AnalogX);
+					_inputManager.AutofireStickyXorAdapter.SetAxis($"P{i} Y Axis", _allJoyPads[i - 1].AnalogY);
 				}
 			}
 #endif
 		}
 
-		public void SetScreenshotOSD(bool value) => GlobalWin.Config.ScreenshotCaptureOsd = value;
+		public void SetScreenshotOSD(bool value) => _config.ScreenshotCaptureOsd = value;
 
 		public void SetSoundOn(bool enable)
 		{
-			if (enable != GlobalWin.Config.SoundEnabled) GlobalWin.MainForm.ToggleSound();
+			if (enable != _config.SoundEnabled) _mainForm.ToggleSound();
 		}
 
-		public void SetTargetScanlineIntensity(int val) => GlobalWin.Config.TargetScanlineFilterIntensity = val;
+		public void SetTargetScanlineIntensity(int val) => _config.TargetScanlineFilterIntensity = val;
 
 		public void SetWindowSize(int size)
 		{
 			if (size == 1 || size == 2 || size == 3 || size == 4 || size == 5 || size == 10)
 			{
-				GlobalWin.Config.TargetZoomFactors[Emulator.SystemId] = size;
-				GlobalWin.MainForm.FrameBufferResized();
-				GlobalWin.OSD.AddMessage($"Window size set to {size}x");
+				_config.TargetZoomFactors[Emulator.SystemId] = size;
+				_mainForm.FrameBufferResized();
+				_mainForm.AddOnScreenMessage($"Window size set to {size}x");
 			}
 			else
 			{
@@ -313,19 +335,19 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SpeedMode(int percent)
 		{
-			if (percent.StrictlyBoundedBy(0.RangeTo(6400))) GlobalWin.MainForm.ClickSpeedItem(percent);
+			if (percent.StrictlyBoundedBy(0.RangeTo(6400))) _mainForm.ClickSpeedItem(percent);
 			else Console.WriteLine("Invalid speed value");
 		}
 
-		public void TogglePause() => GlobalWin.MainForm.TogglePause();
+		public void TogglePause() => _mainForm.TogglePause();
 
-		public Point TransformPoint(Point point) => GlobalWin.DisplayManager.TransformPoint(point);
+		public Point TransformPoint(Point point) => _displayManager.TransformPoint(point);
 
-		public void Unpause() => GlobalWin.MainForm.UnpauseEmulator();
+		public void Unpause() => _mainForm.UnpauseEmulator();
 
-		public void UnpauseAv() => GlobalWin.MainForm.PauseAvi = false;
+		public void UnpauseAv() => _mainForm.PauseAvi = false;
 
-		public void UnpauseEmulation() => GlobalWin.MainForm.UnpauseEmulator();
+		public void UnpauseEmulation() => _mainForm.UnpauseEmulator();
 
 		public void UpdateEmulatorAndVP(IEmulator emu)
 		{
@@ -333,8 +355,8 @@ namespace BizHawk.Client.EmuHawk
 			VideoProvider = emu.AsVideoProviderOrDefault();
 		}
 
-		public int Xpos() => GlobalWin.MainForm.DesktopLocation.X;
+		public int Xpos() => _mainForm.DesktopLocation.X;
 
-		public int Ypos() => GlobalWin.MainForm.DesktopLocation.Y;
+		public int Ypos() => _mainForm.DesktopLocation.Y;
 	}
 }
