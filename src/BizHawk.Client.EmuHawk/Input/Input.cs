@@ -331,6 +331,11 @@ namespace BizHawk.Client.EmuHawk
 			
 		}
 
+		/// <summary>
+		/// Controls whether MainForm generates input events. should be turned off for most modal dialogs
+		/// </summary>
+		public Func<bool, AllowInput> MainFormInputAllowedCallback;
+
 		private void UpdateThreadProc()
 		{
 			while (true)
@@ -390,12 +395,12 @@ namespace BizHawk.Client.EmuHawk
 					if (_newEvents.Count != 0)
 					{
 						//WHAT!? WE SHOULD NOT BE SO NAIVELY TOUCHING MAINFORM FROM THE INPUTTHREAD. ITS BUSY RUNNING.
-						AllowInput allowInput = GlobalWin.MainForm.AllowInput(false);
+						AllowInput allowInput = MainFormInputAllowedCallback(false);
 
 						foreach (var ie in _newEvents)
 						{
 							//events are swallowed in some cases:
-							if (ie.LogicalButton.Alt && ShouldSwallow(GlobalWin.MainForm.AllowInput(true), ie))
+							if (ie.LogicalButton.Alt && ShouldSwallow(MainFormInputAllowedCallback(true), ie))
 								continue;
 							if (ie.EventType == InputEventType.Press && ShouldSwallow(allowInput, ie))
 								continue;
@@ -461,7 +466,7 @@ namespace BizHawk.Client.EmuHawk
 			lock (this)
 			{
 				if (_inputEvents.Count == 0) return null;
-				AllowInput allowInput = GlobalWin.MainForm.AllowInput(false);
+				AllowInput allowInput = MainFormInputAllowedCallback(false);
 
 				//wait for the first release after a press to complete input binding, because we need to distinguish pure modifierkeys from modified keys
 				//if you just pressed ctrl, wanting to bind ctrl, we'd see: pressed:ctrl, unpressed:ctrl

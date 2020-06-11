@@ -372,6 +372,40 @@ namespace BizHawk.Client.EmuHawk
 				Sound?.StartSound();
 			};
 
+			Input.Instance.MainFormInputAllowedCallback = yieldAlt => {
+				// the main form gets input
+				if (ActiveForm == this)
+				{
+					return Input.AllowInput.All;
+				}
+
+				// even more special logic for TAStudio:
+				// TODO - implement by event filter in TAStudio
+				if (ActiveForm is TAStudio maybeTAStudio)
+				{
+					if (yieldAlt || maybeTAStudio.IsInMenuLoop)
+					{
+						return Input.AllowInput.None;
+					}
+				}
+
+				// modals that need to capture input for binding purposes get input, of course
+				if (ActiveForm is HotkeyConfig
+					|| ActiveForm is ControllerConfig
+					|| ActiveForm is TAStudio
+					|| ActiveForm is VirtualpadTool)
+				{
+					return Input.AllowInput.All;
+				}
+
+				// if no form is active on this process, then the background input setting applies
+				if (ActiveForm == null && Config.AcceptBackgroundInput)
+				{
+					return Config.AcceptBackgroundInputControllerOnly ? Input.AllowInput.OnlyController : Input.AllowInput.All;
+				}
+
+				return Input.AllowInput.None;
+			};
 			Input.Instance.Adapter.FirstInitAll(Handle);
 			InitControls();
 
@@ -796,45 +830,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			RebootStatusBarIcon.Visible = true;
 			AddOnScreenMessage("Core reboot needed for this setting");
-		}
-
-		/// <summary>
-		/// Controls whether the app generates input events. should be turned off for most modal dialogs
-		/// </summary>
-		public Input.AllowInput AllowInput(bool yieldAlt)
-		{
-			// the main form gets input
-			if (ActiveForm == this)
-			{
-				return Input.AllowInput.All;
-			}
-
-			// even more special logic for TAStudio:
-			// TODO - implement by event filter in TAStudio
-			if (ActiveForm is TAStudio maybeTAStudio)
-			{
-				if (yieldAlt || maybeTAStudio.IsInMenuLoop)
-				{
-					return Input.AllowInput.None;
-				}
-			}
-
-			// modals that need to capture input for binding purposes get input, of course
-			if (ActiveForm is HotkeyConfig
-				|| ActiveForm is ControllerConfig
-				|| ActiveForm is TAStudio
-				|| ActiveForm is VirtualpadTool)
-			{
-				return Input.AllowInput.All;
-			}
-
-			// if no form is active on this process, then the background input setting applies
-			if (ActiveForm == null && Config.AcceptBackgroundInput)
-			{
-				return Config.AcceptBackgroundInputControllerOnly ? Input.AllowInput.OnlyController : Input.AllowInput.All;
-			}
-
-			return Input.AllowInput.None;
 		}
 
 		// TODO: make these actual properties
