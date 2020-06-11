@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -8,10 +9,23 @@ namespace BizHawk.Client.EmuHawk
 {
 	public sealed class InputApi : IInput
 	{
+		private readonly DisplayManager _displayManager;
+
+		private readonly InputManager _inputManager;
+
+		private readonly MainForm _mainForm;
+
+		public InputApi(Action<string> logCallback, DisplayManager displayManager, InputManager inputManager, MainForm mainForm)
+		{
+			_displayManager = displayManager;
+			_inputManager = inputManager;
+			_mainForm = mainForm;
+		}
+
 		public Dictionary<string, bool> Get()
 		{
 			var buttons = new Dictionary<string, bool>();
-			foreach (var kvp in GlobalWin.InputManager.ControllerInputCoalescer.BoolButtons().Where(kvp => kvp.Value)) buttons[kvp.Key] = true;
+			foreach (var kvp in _inputManager.ControllerInputCoalescer.BoolButtons().Where(kvp => kvp.Value)) buttons[kvp.Key] = true;
 			return buttons;
 		}
 
@@ -19,7 +33,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var buttons = new Dictionary<string, object>();
 			// TODO - need to specify whether in "emu" or "native" coordinate space.
-			var p = GlobalWin.DisplayManager.UntransformPoint(Control.MousePosition);
+			var p = _displayManager.UntransformPoint(Control.MousePosition);
 			buttons["X"] = p.X;
 			buttons["Y"] = p.Y;
 			buttons[MouseButtons.Left.ToString()] = (Control.MouseButtons & MouseButtons.Left) != 0;
@@ -27,7 +41,7 @@ namespace BizHawk.Client.EmuHawk
 			buttons[MouseButtons.Right.ToString()] = (Control.MouseButtons & MouseButtons.Right) != 0;
 			buttons[MouseButtons.XButton1.ToString()] = (Control.MouseButtons & MouseButtons.XButton1) != 0;
 			buttons[MouseButtons.XButton2.ToString()] = (Control.MouseButtons & MouseButtons.XButton2) != 0;
-			buttons["Wheel"] = GlobalWin.MainForm.MouseWheelTracker;
+			buttons["Wheel"] = _mainForm.MouseWheelTracker;
 			return buttons;
 		}
 	}

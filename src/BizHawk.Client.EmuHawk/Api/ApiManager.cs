@@ -12,7 +12,9 @@ namespace BizHawk.Client.EmuHawk
 {
 	public static class ApiManager
 	{
-		private static readonly Type[] CtorParamTypes = { typeof(Action<string>) };
+		private static readonly Type[] CtorParamTypesA = { typeof(Action<string>), typeof(DisplayManager), typeof(InputManager), typeof(MainForm) };
+
+		private static readonly Type[] CtorParamTypesB = { typeof(Action<string>) };
 
 		/// <remarks>TODO do we need to keep references to these because of GC weirdness? --yoshi</remarks>
 		private static ApiContainer? _container;
@@ -21,7 +23,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private static ApiContainer Register(IEmulatorServiceProvider serviceProvider, Action<string> logCallback)
 		{
-			var ctorParamTypes = CtorParamTypes;
 			var libDict = new Dictionary<Type, IExternalApi>();
 			foreach (var api in Assembly.GetAssembly(typeof(ApiSubsetContainer)).GetTypes()
 				.Concat(Assembly.GetAssembly(typeof(ApiContainer)).GetTypes())
@@ -29,7 +30,8 @@ namespace BizHawk.Client.EmuHawk
 					&& typeof(IExternalApi).IsAssignableFrom(t)
 					&& ServiceInjector.IsAvailable(serviceProvider, t)))
 			{
-				var instance = api.GetConstructor(ctorParamTypes)?.Invoke(new object[] { logCallback })
+				var instance = api.GetConstructor(CtorParamTypesA)?.Invoke(new object[] { logCallback, GlobalWin.DisplayManager, GlobalWin.InputManager, GlobalWin.MainForm })
+					?? api.GetConstructor(CtorParamTypesB)?.Invoke(new object[] { logCallback })
 					?? Activator.CreateInstance(api);
 				ServiceInjector.UpdateServices(serviceProvider, instance);
 				libDict.Add(

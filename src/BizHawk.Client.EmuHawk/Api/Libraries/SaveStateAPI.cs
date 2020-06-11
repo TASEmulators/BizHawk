@@ -8,14 +8,15 @@ namespace BizHawk.Client.EmuHawk
 {
 	public sealed class SaveStateApi : ISaveState
 	{
-		public SaveStateApi(Action<string> logCallback)
-		{
-			LogCallback = logCallback;
-		}
-
-		public SaveStateApi() : this(Console.WriteLine) {}
+		private readonly MainForm _mainForm;
 
 		private readonly Action<string> LogCallback;
+
+		public SaveStateApi(Action<string> logCallback, DisplayManager displayManager, InputManager inputManager, MainForm mainForm)
+		{
+			LogCallback = logCallback;
+			_mainForm = mainForm;
+		}
 
 		public void Load(string path, bool suppressOSD)
 		{
@@ -25,19 +26,19 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			GlobalWin.MainForm.LoadState(path, Path.GetFileName(path), suppressOSD);
+			_mainForm.LoadState(path, Path.GetFileName(path), suppressOSD);
 		}
 
 		public void LoadSlot(int slotNum, bool suppressOSD)
 		{
-			if (0.RangeTo(9).Contains(slotNum)) GlobalWin.MainForm.LoadQuickSave($"QuickSave{slotNum}", suppressOSD);
+			if (0.RangeTo(9).Contains(slotNum)) _mainForm.LoadQuickSave($"QuickSave{slotNum}", suppressOSD);
 		}
 
-		public void Save(string path, bool suppressOSD) => GlobalWin.MainForm.SaveState(path, path, true, suppressOSD);
+		public void Save(string path, bool suppressOSD) => _mainForm.SaveState(path, path, true, suppressOSD);
 
 		public void SaveSlot(int slotNum, bool suppressOSD)
 		{
-			if (0.RangeTo(9).Contains(slotNum)) GlobalWin.MainForm.SaveQuickSave($"QuickSave{slotNum}", true, suppressOSD);
+			if (0.RangeTo(9).Contains(slotNum)) _mainForm.SaveQuickSave($"QuickSave{slotNum}", true, suppressOSD);
 		}
 	}
 }
