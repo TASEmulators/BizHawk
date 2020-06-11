@@ -13,7 +13,7 @@ using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.NEC.PCFX
 {
-	[Core("T. S. T.", "Mednafen Team", true, true, "0.9.44.1",
+	[Core("T. S. T.", "Mednafen Team", true, true, "1.24.3",
 		"https://mednafen.github.io/releases/", false)]
 	public class Tst : NymaCore
 	{
