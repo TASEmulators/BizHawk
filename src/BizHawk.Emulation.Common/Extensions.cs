@@ -375,7 +375,7 @@ namespace BizHawk.Emulation.Common
 			return buttons;
 		}
 
-		public static string FilesystemSafeName(this GameInfo game)
+		public static string FilesystemSafeName(this IGameInfo game)
 		{
 			var pass1 = game.Name
 				.Replace('/', '+') // '/' is the path dir separator, obviously (methods in Path will treat it as such, even on Windows)

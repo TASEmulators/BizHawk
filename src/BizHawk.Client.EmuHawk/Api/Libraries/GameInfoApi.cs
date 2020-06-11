@@ -4,7 +4,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public sealed class GameInfoApi : IGameInfo
+	public sealed class GameInfoApi : IGameInfoApi
 	{
 		[OptionalService]
 		private IBoardInfo BoardInfo { get; set; }

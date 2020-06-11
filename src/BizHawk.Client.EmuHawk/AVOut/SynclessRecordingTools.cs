@@ -7,34 +7,32 @@ using System.Windows.Forms;
 using BizHawk.Bizware.BizwareGL;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
+using IGameInfo = BizHawk.Emulation.Common.IGameInfo;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class SynclessRecordingTools : Form
 	{
-		public SynclessRecordingTools()
-		{
-			InitializeComponent();
-		}
-
-		private void GetPaths(int index, out string png, out string wav)
-		{
-			string subPath = SynclessRecorder.GetPathFragmentForFrameNum(index);
-			string path = _mFramesDirectory;
-			path = Path.Combine(path, subPath);
-			png = $"{path}.png";
-			wav = $"{path}.wav";
-		}
+		private readonly List<FrameInfo> _mFrameInfos = new List<FrameInfo>();
+		private readonly IGameInfo _game;
+		private readonly string _avAbsolutePath;
 
 		private string _mSynclessConfigFile;
 		private string _mFramesDirectory;
+
+		public SynclessRecordingTools(IGameInfo game, string avAbsolutePath)
+		{
+			_game = game;
+			_avAbsolutePath = avAbsolutePath;
+			InitializeComponent();
+		}
 
 		public void Run()
 		{
 			var ofd = new OpenFileDialog
 			{
-				FileName = $"{GlobalWin.Game.FilesystemSafeName()}.syncless.txt",
-				InitialDirectory = GlobalWin.Config.PathEntries.AvAbsolutePath()
+				FileName = $"{_game.FilesystemSafeName()}.syncless.txt",
+				InitialDirectory = _avAbsolutePath
 			};
 
 			if (ofd.ShowDialog() == DialogResult.Cancel)
@@ -73,8 +71,8 @@ namespace BizHawk.Client.EmuHawk
 
 				_mFrameInfos.Add(new FrameInfo
 				{
-					pngPath = png,
-					wavPath = wav
+					PngPath = png,
+					WavPath = wav
 				});
 				
 				frame++;
@@ -83,13 +81,20 @@ namespace BizHawk.Client.EmuHawk
 			ShowDialog();
 		}
 
-		private readonly List<FrameInfo> _mFrameInfos = new List<FrameInfo>();
-
-		struct FrameInfo
+		private void GetPaths(int index, out string png, out string wav)
 		{
-			public string wavPath, pngPath;
+			string subPath = SynclessRecorder.GetPathFragmentForFrameNum(index);
+			string path = _mFramesDirectory;
+			path = Path.Combine(path, subPath);
+			png = $"{path}.png";
+			wav = $"{path}.wav";
 		}
 
+		private class FrameInfo
+		{
+			public string WavPath { get; set; }
+			public string PngPath { get; set; }
+		}
 
 		private void btnExport_Click(object sender, EventArgs e)
 		{
@@ -99,7 +104,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			int width, height;
-			using(var bmp = new Bitmap(_mFrameInfos[0].pngPath))
+			using(var bmp = new Bitmap(_mFrameInfos[0].PngPath))
 			{
 				width = bmp.Width;
 				height = bmp.Height;
@@ -124,14 +129,14 @@ namespace BizHawk.Client.EmuHawk
 			avw.OpenFile(sfd.FileName);
 			foreach (var fi in _mFrameInfos)
 			{
-				using (var bb = new BitmapBuffer(fi.pngPath, new BitmapLoadOptions()))
+				using (var bb = new BitmapBuffer(fi.PngPath, new BitmapLoadOptions()))
 				{
 					var bbvp = new BitmapBufferVideoProvider(bb);
 					avw.AddFrame(bbvp);
 				}
 
 				// offset = 44 dec
-				var wavBytes = File.ReadAllBytes(fi.wavPath);
+				var wavBytes = File.ReadAllBytes(fi.WavPath);
 				var ms = new MemoryStream(wavBytes) { Position = 44 };
 				var br = new BinaryReader(ms);
 				var sampleData = new List<short>();

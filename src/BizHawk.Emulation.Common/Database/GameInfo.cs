@@ -6,7 +6,19 @@ using BizHawk.Common;
 
 namespace BizHawk.Emulation.Common
 {
-	public class GameInfo
+	public interface IGameInfo
+	{
+		string Name { get; }
+		string System { get; }
+		string Hash { get; }
+		string Region { get; }
+		RomStatus Status { get; }
+		bool NotInDatabase { get; }
+		string FirmwareHash { get; }
+		string ForcedCore { get; }
+	}
+
+	public class GameInfo : IGameInfo
 	{
 		public string Name { get; set; }
 		public string System { get; set; }

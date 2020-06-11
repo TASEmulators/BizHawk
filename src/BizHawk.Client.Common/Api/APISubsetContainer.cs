@@ -8,7 +8,7 @@ namespace BizHawk.Client.Common
 		public Dictionary<Type, IExternalApi> Libraries { get; set; }
 
 		public IEmu Emu => (IEmu) Libraries[typeof(IEmu)];
-		public IGameInfo GameInfo => (IGameInfo) Libraries[typeof(IGameInfo)];
+		public IGameInfoApi GameInfo => (IGameInfoApi) Libraries[typeof(IGameInfoApi)];
 		public IJoypad Joypad => (IJoypad) Libraries[typeof(IJoypad)];
 		public IMem Mem => (IMem) Libraries[typeof(IMem)];
 		public IMemEvents MemEvents => (IMemEvents) Libraries[typeof(IMemEvents)];
