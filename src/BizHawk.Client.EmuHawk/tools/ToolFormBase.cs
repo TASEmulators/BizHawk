@@ -15,6 +15,7 @@ namespace BizHawk.Client.EmuHawk
 		public MainForm MainForm { get; set; }
 
 		public IMovieSession MovieSession { get; set; }
+		public IGameInfo Game { get; set; }
 
 		public virtual bool AskSaveChanges() => true;
 

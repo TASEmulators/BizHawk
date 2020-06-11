@@ -23,6 +23,7 @@ namespace BizHawk.Client.EmuHawk
 		private IExternalApiProvider _apiProvider;
 		private IEmulator _emulator;
 		private IMovieSession _movieSession;
+		private IGameInfo _game;
 
 		// TODO: merge ToolHelper code where logical
 		// For instance, add an IToolForm property called UsesCheats, so that a UpdateCheatRelatedTools() method can update all tools of this type
@@ -36,12 +37,14 @@ namespace BizHawk.Client.EmuHawk
 			MainForm owner,
 			Config config,
 			IEmulator emulator,
-			IMovieSession movieSession)
+			IMovieSession movieSession,
+			IGameInfo game)
 		{
 			_owner = owner;
 			_config = config;
 			_emulator = emulator;
 			_movieSession = movieSession;
+			_game = game;
 			_apiProvider = ApiManager.Restart(_emulator.ServiceProvider);
 		}
 
@@ -74,6 +77,7 @@ namespace BizHawk.Client.EmuHawk
 				tool.Config = _config;
 				tool.MainForm = _owner;
 				tool.MovieSession = _movieSession;
+				tool.Game = _game;
 			}
 		}
 
@@ -479,9 +483,10 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void Restart(IEmulator emulator)
+		public void Restart(IEmulator emulator, IGameInfo game)
 		{
 			_emulator = emulator;
+			_game = game;
 			_apiProvider = ApiManager.Restart(_emulator.ServiceProvider);
 			// If Cheat tool is loaded, restarting will restart the list too anyway
 			if (!Has<Cheats>())

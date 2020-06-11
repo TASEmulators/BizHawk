@@ -274,12 +274,12 @@ namespace BizHawk.Client.EmuHawk
 			using var sfd = new SaveFileDialog();
 			if (LogFile == null)
 			{
-				sfd.FileName = GlobalWin.Game.FilesystemSafeName() + _extension;
+				sfd.FileName = Game.FilesystemSafeName() + _extension;
 				sfd.InitialDirectory = Config.PathEntries.LogAbsolutePath();
 			}
 			else if (!string.IsNullOrWhiteSpace(LogFile.FullName))
 			{
-				sfd.FileName = GlobalWin.Game.FilesystemSafeName();
+				sfd.FileName = Game.FilesystemSafeName();
 				sfd.InitialDirectory = Path.GetDirectoryName(LogFile.FullName);
 			}
 			else
@@ -439,7 +439,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				FileBox.Visible = true;
 				BrowseBox.Visible = true;
-				var name = GlobalWin.Game.FilesystemSafeName();
+				var name = Game.FilesystemSafeName();
 				var filename = Path.Combine(Config.PathEntries.LogAbsolutePath(), name) + _extension;
 				LogFile = new FileInfo(filename);
 				if (LogFile.Directory != null && !LogFile.Directory.Exists)

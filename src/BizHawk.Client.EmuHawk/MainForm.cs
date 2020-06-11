@@ -299,7 +299,7 @@ namespace BizHawk.Client.EmuHawk
 			_throttle = new Throttle();
 
 			Emulator = new NullEmulator();
-			GlobalWin.Tools = new ToolManager(this, Config, Emulator, MovieSession);
+			GlobalWin.Tools = new ToolManager(this, Config, Emulator, MovieSession, Game);
 
 			UpdateStatusSlots();
 			UpdateKeyPriorityIcon();
@@ -3786,7 +3786,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}
 
-					Tools.Restart(Emulator);
+					Tools.Restart(Emulator, Game);
 
 					if (Config.Cheats.LoadFileByGame && Emulator.HasMemoryDomains())
 					{
@@ -3950,7 +3950,7 @@ namespace BizHawk.Client.EmuHawk
 				Emulator = new NullEmulator();
 				GlobalWin.Game = GameInfo.NullInstance;
 				CreateRewinder();
-				Tools.Restart(Emulator);
+				Tools.Restart(Emulator, Game);
 				RewireSound();
 				ClearHolds();
 				Tools.UpdateCheatRelatedTools(null, null);

@@ -177,12 +177,12 @@ namespace BizHawk.Emulation.Common
 
 	public static class GameInfoExtensions
 	{
-		public static bool IsNullInstance(this GameInfo game)
+		public static bool IsNullInstance(this IGameInfo game)
 		{
 			return game == null || game.System == "NULL";
 		}
 
-		public static bool IsRomStatusBad(this GameInfo game)
+		public static bool IsRomStatusBad(this IGameInfo game)
 		{
 			return game.Status == RomStatus.BadDump || game.Status == RomStatus.Overdump;
 		}

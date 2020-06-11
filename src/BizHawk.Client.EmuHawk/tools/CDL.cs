@@ -481,7 +481,7 @@ namespace BizHawk.Client.EmuHawk
 				try
 				{
 					_autoloading = true;
-					var autoResumeFile = $"{GlobalWin.Game.FilesystemSafeName()}.cdl";
+					var autoResumeFile = $"{Game.FilesystemSafeName()}.cdl";
 					var autoResumeDir = Config.PathEntries.LogAbsolutePath();
 					var autoResumePath = Path.Combine(autoResumeDir, autoResumeFile);
 					if (File.Exists(autoResumePath))
