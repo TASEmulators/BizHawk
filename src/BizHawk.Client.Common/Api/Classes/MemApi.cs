@@ -9,7 +9,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
-	public sealed class MemApi : IMem
+	public sealed class MemApi : IMemApi
 	{
 		[RequiredService]
 		private IEmulator Emulator { get; set; }

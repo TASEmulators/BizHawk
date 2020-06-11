@@ -4,7 +4,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
-	public sealed class MemorySaveStateApi : IMemorySaveState
+	public sealed class MemorySaveStateApi : IMemorySaveStateApi
 	{
 		[RequiredService]
 		private IStatable StatableCore { get; set; }

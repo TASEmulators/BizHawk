@@ -3,7 +3,7 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public sealed class UserDataApi : IUserData
+	public sealed class UserDataApi : IUserDataApi
 	{
 		/// <exception cref="InvalidOperationException">type of <paramref name="value"/> cannot be used in userdata</exception>
 		public void Set(string name, object value)

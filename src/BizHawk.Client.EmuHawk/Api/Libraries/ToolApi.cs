@@ -6,7 +6,7 @@ using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public sealed class ToolApi : ITool
+	public sealed class ToolApi : IToolApi
 	{
 		public Type GetTool(string name)
 		{

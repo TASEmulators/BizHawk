@@ -6,7 +6,7 @@ using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public sealed class SaveStateApi : ISaveState
+	public sealed class SaveStateApi : ISaveStateApi
 	{
 		private readonly MainForm _mainForm;
 

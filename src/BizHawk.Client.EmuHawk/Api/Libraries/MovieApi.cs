@@ -7,7 +7,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public sealed class MovieApi : IInputMovie
+	public sealed class MovieApi : IInputMovieApi
 	{
 		public MovieApi(Action<string> logCallback)
 		{

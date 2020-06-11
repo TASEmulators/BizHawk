@@ -5,7 +5,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public sealed class JoypadApi : IJoypad
+	public sealed class JoypadApi : IJoypadApi
 	{
 		public JoypadApi(Action<string> logCallback)
 		{

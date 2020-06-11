@@ -7,7 +7,6 @@ using System.Windows.Forms;
 using BizHawk.Bizware.BizwareGL;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
-using IGameInfo = BizHawk.Emulation.Common.IGameInfo;
 
 namespace BizHawk.Client.EmuHawk
 {

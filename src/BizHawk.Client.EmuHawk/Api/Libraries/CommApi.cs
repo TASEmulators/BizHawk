@@ -4,7 +4,7 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public sealed class CommApi : IComm
+	public sealed class CommApi : ICommApi
 	{
 		public string SocketServerScreenShot() => GlobalWin.socketServer.SendScreenshot();
 

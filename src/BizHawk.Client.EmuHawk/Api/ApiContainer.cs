@@ -7,11 +7,11 @@ namespace BizHawk.Client.EmuHawk
 {
 	public sealed class ApiContainer : ApiSubsetContainer
 	{
-		public IComm Comm => (IComm) Libraries[typeof(IComm)];
-		public IGui Gui => (IGui) Libraries[typeof(IGui)];
-		public IInput Input => (IInput) Libraries[typeof(IInput)];
-		public ISaveState SaveState => (ISaveState) Libraries[typeof(ISaveState)];
-		public ITool Tool => (ITool) Libraries[typeof(ITool)];
+		public ICommApi Comm => (ICommApi) Libraries[typeof(ICommApi)];
+		public IGuiApi Gui => (IGuiApi) Libraries[typeof(IGuiApi)];
+		public IInputApi Input => (IInputApi) Libraries[typeof(IInputApi)];
+		public ISaveStateApi SaveState => (ISaveStateApi) Libraries[typeof(ISaveStateApi)];
+		public IToolApi Tool => (IToolApi) Libraries[typeof(IToolApi)];
 
 		public ApiContainer(Dictionary<Type, IExternalApi> libs) : base(libs) {}
 	}

@@ -1,6 +1,6 @@
 ﻿namespace BizHawk.Client.Common
 {
-	public interface IComm : IExternalApi
+	public interface ICommApi : IExternalApi
 	{
 		string SocketServerScreenShot();
 		string SocketServerScreenShotResponse();

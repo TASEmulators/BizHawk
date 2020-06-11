@@ -12,7 +12,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public sealed class GuiApi : IGui
+	public sealed class GuiApi : IGuiApi
 	{
 		[RequiredService]
 		private IEmulator Emulator { get; set; }

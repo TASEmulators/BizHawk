@@ -2,7 +2,7 @@
 
 namespace BizHawk.Client.Common
 {
-	public interface IInputMovie : IExternalApi
+	public interface IInputMovieApi : IExternalApi
 	{
 		bool StartsFromSavestate();
 		bool StartsFromSaveram();

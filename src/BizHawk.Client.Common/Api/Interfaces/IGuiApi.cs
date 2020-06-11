@@ -4,7 +4,7 @@ using System.Drawing.Imaging;
 
 namespace BizHawk.Client.Common
 {
-	public interface IGui : IDisposable, IExternalApi
+	public interface IGuiApi : IDisposable, IExternalApi
 	{
 		void ToggleCompositingMode();
 		ImageAttributes GetAttributes();

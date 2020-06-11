@@ -2,7 +2,7 @@
 
 namespace BizHawk.Client.Common
 {
-	public interface IJoypad : IExternalApi
+	public interface IJoypadApi : IExternalApi
 	{
 		IDictionary<string, object> Get(int? controller = null);
 		IDictionary<string, object> GetImmediate(int? controller = null);

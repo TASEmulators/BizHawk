@@ -4,7 +4,7 @@ using System.Data.SQLite;
 
 namespace BizHawk.Client.Common
 {
-	public sealed class SqlApi : ISql
+	public sealed class SqlApi : ISqlApi
 	{
 		private SQLiteConnection _dbConnection;
 
