@@ -6,8 +6,6 @@ using System.Linq;
 using SlimDX.DirectSound;
 using SlimDX.Multimedia;
 
-using BizHawk.Client.Common;
-
 namespace BizHawk.Client.EmuHawk
 {
 	public class DirectSoundSoundOutput : ISoundOutput

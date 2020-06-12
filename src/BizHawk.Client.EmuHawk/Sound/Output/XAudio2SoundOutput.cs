@@ -6,8 +6,6 @@ using SlimDX;
 using SlimDX.Multimedia;
 using SlimDX.XAudio2;
 
-using BizHawk.Client.Common;
-
 namespace BizHawk.Client.EmuHawk
 {
 	public class XAudio2SoundOutput : ISoundOutput

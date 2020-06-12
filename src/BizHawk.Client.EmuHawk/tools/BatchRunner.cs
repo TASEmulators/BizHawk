@@ -4,7 +4,6 @@ using System.IO;
 using BizHawk.Common;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Nintendo.GBA;
 
 namespace BizHawk.Client.EmuHawk
 {

@@ -5,8 +5,6 @@ using System.Linq;
 using OpenTK.Audio;
 using OpenTK.Audio.OpenAL;
 
-using BizHawk.Client.Common;
-
 namespace BizHawk.Client.EmuHawk
 {
 	public class OpenALSoundOutput : ISoundOutput

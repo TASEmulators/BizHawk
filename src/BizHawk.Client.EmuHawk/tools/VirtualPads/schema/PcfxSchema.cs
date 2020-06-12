@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Consoles.NEC.PCFX;
 
 namespace BizHawk.Client.EmuHawk
 {

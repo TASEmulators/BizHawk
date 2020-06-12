@@ -9,7 +9,6 @@ using System.IO.MemoryMappedFiles;
 using BizHawk.Bizware.BizwareGL;
 using System.Drawing;
 using BizHawk.Emulation.Common;
-using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {

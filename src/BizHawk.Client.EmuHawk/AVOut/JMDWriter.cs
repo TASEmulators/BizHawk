@@ -10,7 +10,6 @@ using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
 using ICSharpCode.SharpZipLib.Zip.Compression;
 
 using BizHawk.Emulation.Common;
-using BizHawk.Client.Common;
 using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk

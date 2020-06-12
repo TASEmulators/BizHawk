@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using BizHawk.Client.Common;
 using SlimDX.DirectInput;
 
 namespace BizHawk.Client.EmuHawk
