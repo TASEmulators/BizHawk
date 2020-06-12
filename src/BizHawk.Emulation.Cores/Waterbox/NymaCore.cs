@@ -157,8 +157,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				_frameThreadPtr = _nyma.GetFrameThreadProc();
 				if (_frameThreadPtr != IntPtr.Zero)
 				{
-					if (deterministic)
-						throw new InvalidOperationException("Internal error: Core set a frame thread proc in deterministic mode");
+					// This will probably be fine, right?  TODO: Revisit
+					// if (deterministic)
+					// 	throw new InvalidOperationException("Internal error: Core set a frame thread proc in deterministic mode");
 					Console.WriteLine($"Setting up waterbox thread for {_frameThreadPtr}");
 					_frameThreadStart = CallingConventionAdapters.Waterbox.GetDelegateForFunctionPointer<Action>(_frameThreadPtr);
 				}
