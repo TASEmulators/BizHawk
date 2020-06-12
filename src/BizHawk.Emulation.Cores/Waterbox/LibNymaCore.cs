@@ -176,8 +176,13 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			[MarshalAs(UnmanagedType.ByValArray, SizeConst = 101)]
 			public Track[] Tracks;
 		}
+		/// <summary>
+		/// Callback to receive a disk TOC
+		/// </summary>
+		/// <param name="disk"></param>
+		/// <param name="dest">Deposit a LibNymaCore.TOC here</param>
 		[UnmanagedFunctionPointer(CC)]
-		public delegate void CDTOCCallback(int disk, [In, Out]TOC toc);
+		public delegate void CDTOCCallback(int disk, IntPtr dest);
 		[UnmanagedFunctionPointer(CC)]
 		public delegate void CDSectorCallback(int disk, int lba, IntPtr dest);
 		[BizImport(CC)]

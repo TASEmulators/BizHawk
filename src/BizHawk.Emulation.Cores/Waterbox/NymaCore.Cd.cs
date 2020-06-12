@@ -32,9 +32,11 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			}
 		}
 
-		private void CDTOCCallback(int disk, [In, Out]LibNymaCore.TOC t)
+		private void CDTOCCallback(int disk, IntPtr dest)
 		{
-			SetupTOC(t, _disks[disk].TOC);
+			var toc = new LibNymaCore.TOC { Tracks = new LibNymaCore.TOC.Track[101] };
+			SetupTOC(toc, _disks[disk].TOC);
+			Marshal.StructureToPtr(toc, dest, false);
 		}
 		private void CDSectorCallback(int disk, int lba, IntPtr dest)
 		{
