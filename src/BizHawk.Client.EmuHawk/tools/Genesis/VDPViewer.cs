@@ -58,7 +58,7 @@ namespace BizHawk.Client.EmuHawk
 			bv.Size = pixSize;
 			bv.ChangeBitmapSize(pixSize);
 
-			var lockData = bv.BMP.LockBits(new Rectangle(Point.Empty, pixSize), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+			var lockData = bv.Bmp.LockBits(new Rectangle(Point.Empty, pixSize), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 			int pitch = lockData.Stride / sizeof(int);
 			int* dest = (int*)lockData.Scan0;
 
@@ -75,13 +75,13 @@ namespace BizHawk.Client.EmuHawk
 				dest -= 8 * tileW;
 				dest += 8 * pitch;
 			}
-			bv.BMP.UnlockBits(lockData);
+			bv.Bmp.UnlockBits(lockData);
 			bv.Refresh();
 		}
 
 		unsafe void DrawPalettes(int* pal)
 		{
-			var lockData = bmpViewPal.BMP.LockBits(new Rectangle(0, 0, 16, 4), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+			var lockData = bmpViewPal.Bmp.LockBits(new Rectangle(0, 0, 16, 4), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 			int pitch = lockData.Stride / sizeof(int);
 			int* dest = (int*)lockData.Scan0;
 
@@ -91,13 +91,13 @@ namespace BizHawk.Client.EmuHawk
 					*dest++ = *pal++;
 				dest += pitch - 16;
 			}
-			bmpViewPal.BMP.UnlockBits(lockData);
+			bmpViewPal.Bmp.UnlockBits(lockData);
 			bmpViewPal.Refresh();
 		}
 
 		unsafe void DrawTiles()
 		{
-			var lockData = bmpViewTiles.BMP.LockBits(new Rectangle(0, 0, 512, 256), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+			var lockData = bmpViewTiles.Bmp.LockBits(new Rectangle(0, 0, 512, 256), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 			int pitch = lockData.Stride / sizeof(int);
 			int* dest = (int*)lockData.Scan0;
 			byte* src = (byte*)_view.PatternCache;
@@ -113,7 +113,7 @@ namespace BizHawk.Client.EmuHawk
 				if ((tile & 63) == 0)
 					dest += 8 * pitch - 512;
 			}
-			bmpViewTiles.BMP.UnlockBits(lockData);
+			bmpViewTiles.Bmp.UnlockBits(lockData);
 			bmpViewTiles.Refresh();
 		}
 
@@ -169,7 +169,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (found is BmpView bv)
 				{
-					Clipboard.SetImage(bv.BMP);
+					Clipboard.SetImage(bv.Bmp);
 				}
 			}
 		}

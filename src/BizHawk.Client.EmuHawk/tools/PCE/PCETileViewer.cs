@@ -68,7 +68,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Viewer.GetGpuData(checkBoxVDC2.Checked ? 1 : 0, view =>
 			{
-				var lockData = bmpViewSP.BMP.LockBits(new Rectangle(0, 0, 512, 256), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+				var lockData = bmpViewSP.Bmp.LockBits(new Rectangle(0, 0, 512, 256), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 
 				int* dest = (int*)lockData.Scan0;
 				int pitch = lockData.Stride / sizeof(int);
@@ -82,7 +82,7 @@ namespace BizHawk.Client.EmuHawk
 					int destAddr = ty * 16 * pitch + tx * 16;
 					Draw16x16(src + srcAddr, dest + destAddr, pitch, pal);
 				}
-				bmpViewSP.BMP.UnlockBits(lockData);
+				bmpViewSP.Bmp.UnlockBits(lockData);
 			});
 		}
 
@@ -90,7 +90,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Viewer.GetGpuData(checkBoxVDC2.Checked ? 1 : 0, view =>
 			{
-				var lockData = bmpViewBG.BMP.LockBits(new Rectangle(0, 0, 512, 256), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+				var lockData = bmpViewBG.Bmp.LockBits(new Rectangle(0, 0, 512, 256), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 
 				int* dest = (int*)lockData.Scan0;
 				int pitch = lockData.Stride / sizeof(int);
@@ -104,7 +104,7 @@ namespace BizHawk.Client.EmuHawk
 					int destAddr = ty * 8 * pitch + tx * 8;
 					Draw8x8(src + srcAddr, dest + destAddr, pitch, pal);
 				}
-				bmpViewBG.BMP.UnlockBits(lockData);
+				bmpViewBG.Bmp.UnlockBits(lockData);
 			});
 		}
 
@@ -113,8 +113,8 @@ namespace BizHawk.Client.EmuHawk
 			Viewer.GetGpuData(checkBoxVDC2.Checked ? 1 : 0, view =>
 			{
 				int* pal = (int*)view.PaletteCache;
-				DrawPalette(bmpViewBGPal.BMP, pal);
-				DrawPalette(bmpViewSPPal.BMP, pal + 256);
+				DrawPalette(bmpViewBGPal.Bmp, pal);
+				DrawPalette(bmpViewSPPal.Bmp, pal + 256);
 			});
 		}
 
@@ -191,7 +191,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (found is BmpView bv)
 				{
-					Clipboard.SetImage(bv.BMP);
+					Clipboard.SetImage(bv.Bmp);
 				}
 			}
 		}

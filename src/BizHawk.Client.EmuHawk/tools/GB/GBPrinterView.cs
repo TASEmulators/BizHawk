@@ -159,7 +159,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RefreshView()
 		{
-			using (var g = Graphics.FromImage(paperView.BMP))
+			using (var g = Graphics.FromImage(paperView.Bmp))
 			{
 				g.Clear(Color.FromArgb((int)PaperColor));
 				g.DrawImage(_printerHistory, new Point(0, -paperScroll.Value));
@@ -175,7 +175,7 @@ namespace BizHawk.Client.EmuHawk
 
 			BmpView toSave = new BmpView();
 			toSave.ChangeBitmapSize(_printerHistory.Size);
-			using (var g = Graphics.FromImage(toSave.BMP))
+			using (var g = Graphics.FromImage(toSave.Bmp))
 			{
 				g.DrawImage(_printerHistory, Point.Empty);
 				g.Flush();

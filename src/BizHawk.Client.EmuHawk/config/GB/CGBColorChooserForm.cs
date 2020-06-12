@@ -47,7 +47,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private unsafe void RefreshType()
 		{
-			var lockBits = bmpView1.BMP.LockBits(new Rectangle(0, 0, 256, 128), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+			var lockBits = bmpView1.Bmp.LockBits(new Rectangle(0, 0, 256, 128), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
 			int[] lut = GBColors.GetLut(_type);
 
@@ -68,7 +68,7 @@ namespace BizHawk.Client.EmuHawk
 				dest += lockBits.Stride / sizeof(int);
 			}
 
-			bmpView1.BMP.UnlockBits(lockBits);
+			bmpView1.Bmp.UnlockBits(lockBits);
 			bmpView1.Refresh();
 		}
 

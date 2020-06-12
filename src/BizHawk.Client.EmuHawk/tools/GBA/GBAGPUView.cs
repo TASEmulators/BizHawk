@@ -166,7 +166,7 @@ namespace BizHawk.Client.EmuHawk
 				case 2: mbv.ChangeAllSizes(256, 512); break;
 				case 3: mbv.ChangeAllSizes(512, 512); break;
 			}
-			Bitmap bmp = mbv.BmpView.BMP;
+			Bitmap bmp = mbv.BmpView.Bmp;
 			var lockData = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 
 			int* pixels = (int*)lockData.Scan0;
@@ -225,7 +225,7 @@ namespace BizHawk.Client.EmuHawk
 				case 2: mbv.ChangeAllSizes(512, 512); break;
 				case 3: mbv.ChangeAllSizes(1024, 1024); break;
 			}
-			Bitmap bmp = mbv.BmpView.BMP;
+			Bitmap bmp = mbv.BmpView.Bmp;
 			var lockData = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 
 			int* pixels = (int*)lockData.Scan0;
@@ -253,7 +253,7 @@ namespace BizHawk.Client.EmuHawk
 		unsafe void DrawM3BG(MobileBmpView mbv)
 		{
 			mbv.ChangeAllSizes(240, 160);
-			Bitmap bmp = mbv.BmpView.BMP;
+			Bitmap bmp = mbv.BmpView.Bmp;
 			var lockData = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 
 			int* pixels = (int*)lockData.Scan0;
@@ -279,7 +279,7 @@ namespace BizHawk.Client.EmuHawk
 		unsafe void DrawM4BG(MobileBmpView mbv, bool secondFrame)
 		{
 			mbv.ChangeAllSizes(240, 160);
-			Bitmap bmp = mbv.BmpView.BMP;
+			Bitmap bmp = mbv.BmpView.Bmp;
 			var lockData = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 
 			int* pixels = (int*)lockData.Scan0;
@@ -306,7 +306,7 @@ namespace BizHawk.Client.EmuHawk
 		unsafe void DrawM5BG(MobileBmpView mbv, bool secondFrame)
 		{
 			mbv.ChangeAllSizes(160, 128);
-			Bitmap bmp = mbv.BmpView.BMP;
+			Bitmap bmp = mbv.BmpView.Bmp;
 			var lockData = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 
 			int* pixels = (int*)lockData.Scan0;
@@ -408,7 +408,7 @@ namespace BizHawk.Client.EmuHawk
 		unsafe void DrawSprites(MobileBmpView mbv)
 		{
 			mbv.BmpView.ChangeBitmapSize(1024, 512);
-			Bitmap bmp = mbv.BmpView.BMP;
+			Bitmap bmp = mbv.BmpView.Bmp;
 			var lockData = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 
 			Win32Imports.MemSet(lockData.Scan0, 0xff, (uint)(lockData.Height * lockData.Stride));
@@ -441,7 +441,7 @@ namespace BizHawk.Client.EmuHawk
 		unsafe void DrawPalette(MobileBmpView mbv, bool sprite)
 		{
 			mbv.BmpView.ChangeBitmapSize(16, 16);
-			Bitmap bmp = mbv.BmpView.BMP;
+			Bitmap bmp = mbv.BmpView.Bmp;
 			var lockData = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 
 			int* pixels = (int*)lockData.Scan0;
@@ -491,7 +491,7 @@ namespace BizHawk.Client.EmuHawk
 			int th = tophalfonly ? 16 : 32;
 
 			mbv.BmpView.ChangeBitmapSize(tw * 8, 256);
-			Bitmap bmp = mbv.BmpView.BMP;
+			Bitmap bmp = mbv.BmpView.Bmp;
 			var lockData = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 
 			int* pixels = (int*)lockData.Scan0;
@@ -518,7 +518,7 @@ namespace BizHawk.Client.EmuHawk
 			int th = 32;
 
 			mbv.BmpView.ChangeBitmapSize(tw * 8, th * 8);
-			Bitmap bmp = mbv.BmpView.BMP;
+			Bitmap bmp = mbv.BmpView.Bmp;
 			var lockData = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 
 			int* pixels = (int*)lockData.Scan0;
@@ -816,7 +816,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (found is BmpView view)
 				{
-					Clipboard.SetImage(view.BMP);
+					Clipboard.SetImage(view.Bmp);
 					labelClipboard.Text = $"{view.Text} copied to clipboard.";
 					timerMessage.Stop();
 					timerMessage.Start();

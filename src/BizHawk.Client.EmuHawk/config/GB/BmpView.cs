@@ -15,7 +15,7 @@ namespace BizHawk.Client.EmuHawk
 	public class BmpView : Control
 	{
 		[Browsable(false)]
-		public Bitmap BMP { get; private set; }
+		public Bitmap Bmp { get; private set; }
 
 		private bool _scaled;
 
@@ -42,7 +42,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BmpView_SizeChanged(object sender, EventArgs e)
 		{
-			_scaled = !(BMP.Width == Width && BMP.Height == Height);
+			_scaled = !(Bmp.Width == Width && Bmp.Height == Height);
 		}
 
 		private void BmpView_Paint(object sender, PaintEventArgs e)
@@ -51,11 +51,11 @@ namespace BizHawk.Client.EmuHawk
 			{
 				e.Graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
 				e.Graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.Half;
-				e.Graphics.DrawImage(BMP, 0, 0, Width, Height);
+				e.Graphics.DrawImage(Bmp, 0, 0, Width, Height);
 			}
 			else
 			{
-				e.Graphics.DrawImageUnscaled(BMP, 0, 0);
+				e.Graphics.DrawImageUnscaled(Bmp, 0, 0);
 			}
 		}
 
@@ -66,27 +66,27 @@ namespace BizHawk.Client.EmuHawk
 
 		public void ChangeBitmapSize(int w, int h)
 		{
-			if (BMP != null)
+			if (Bmp != null)
 			{
-				if (w == BMP.Width && h == BMP.Height)
+				if (w == Bmp.Width && h == Bmp.Height)
 				{
 					return;
 				}
 
-				BMP.Dispose();
+				Bmp.Dispose();
 			}
 
 
-			BMP = new Bitmap(w, h, PixelFormat.Format32bppArgb);
+			Bmp = new Bitmap(w, h, PixelFormat.Format32bppArgb);
 			BmpView_SizeChanged(null, null);
 			Refresh();
 		}
 
 		public void Clear()
 		{
-			var lockBits = BMP.LockBits(new Rectangle(0, 0, BMP.Width, BMP.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+			var lockBits = Bmp.LockBits(new Rectangle(0, 0, Bmp.Width, Bmp.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 			Win32Imports.MemSet(lockBits.Scan0, 0xff, (uint)(lockBits.Height * lockBits.Stride));
-			BMP.UnlockBits(lockBits);
+			Bmp.UnlockBits(lockBits);
 			Refresh();
 		}
 
@@ -116,7 +116,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var file = new FileInfo(sfd.FileName);
-			var b = BMP;
+			var b = Bmp;
 
 			ImageFormat i;
 			string extension = file.Extension.ToUpper();
