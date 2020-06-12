@@ -491,7 +491,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			if (!EmuHawkUtil.EnsureCoreIsAccurate(Emulator))
+			if (!EnsureCoreIsAccurate())
 			{
 				// Inaccurate core but allow the user to continue anyway
 			}

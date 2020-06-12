@@ -217,7 +217,7 @@ namespace BizHawk.Client.EmuHawk
 			if (!CanAutoload && MovieSession.Movie.NotActive())
 			{
 				// Nag but allow the user to continue anyway, so ignore the return value
-				EmuHawkUtil.EnsureCoreIsAccurate(Emulator);
+				MainForm.EnsureCoreIsAccurate();
 			}
 
 			// Start Scenario 1: A regular movie is active

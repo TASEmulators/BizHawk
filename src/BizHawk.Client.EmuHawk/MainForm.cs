@@ -26,8 +26,10 @@ using BizHawk.Emulation.Cores.Nintendo.GBHawkLink;
 
 using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Client.EmuHawk.CoreExtensions;
+using BizHawk.Client.EmuHawk.CustomControls;
 using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common.Base_Implementations;
+using BizHawk.Emulation.Cores.Consoles.NEC.PCE;
 using BizHawk.Emulation.Cores.Nintendo.SNES9X;
 using BizHawk.Emulation.Cores.Consoles.SNK;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
@@ -4188,6 +4190,43 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Tools.LuaConsole.LuaImp.CallSaveStateEvent(quickSlotName);
 			}
+		}
+
+		public bool EnsureCoreIsAccurate()
+		{
+			bool PromptToSwitchCore(string currentCore, string recommendedCore, Action disableCurrentCore)
+			{
+				using var box = new MsgBox(
+					$"While the {currentCore} core is faster, it is not nearly as accurate as {recommendedCore}.{Environment.NewLine}It is recommended that you switch to the {recommendedCore} core for movie recording.{Environment.NewLine}Switch to {recommendedCore}?",
+					"Accuracy Warning",
+					MessageBoxIcon.Warning);
+
+				box.SetButtons(
+					new[] { "Switch", "Continue" },
+					new[] { DialogResult.Yes, DialogResult.Cancel });
+
+				box.MaximumSize = UIHelper.Scale(new Size(575, 175));
+				box.SetMessageToAutoSize();
+
+				var result = box.ShowDialog();
+
+				if (result != DialogResult.Yes)
+				{
+					return false;
+				}
+
+				disableCurrentCore();
+				RebootCore();
+				return true;
+			}
+
+			return Emulator switch
+			{
+				Snes9x _ => PromptToSwitchCore(CoreNames.Snes9X, CoreNames.Bsnes, () => Config.PreferredCores["SNES"] = CoreNames.Bsnes),
+				QuickNES _ => PromptToSwitchCore(CoreNames.QuickNes, CoreNames.NesHawk, () => Config.PreferredCores["NES"] = CoreNames.NesHawk),
+				HyperNyma _ => PromptToSwitchCore(CoreNames.HyperNyma, CoreNames.TurboNyma, () => Config.PreferredCores["PCE"] = CoreNames.TurboNyma),
+				_ => true
+			};
 		}
 
 		private void SaveStateAs()
