@@ -958,29 +958,29 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (RiceUseDefaultHacks_CB.Checked)
 			{
-				RiceDisableTextureCRC_CB.Checked = GetBoolFromDB("RiceDisableTextureCRC");
-				RiceDisableCulling_CB.Checked = GetBoolFromDB("RiceDisableCulling");
-				RiceIncTexRectEdge_CB.Checked = GetBoolFromDB("RiceIncTexRectEdge");
-				RiceZHack_CB.Checked = GetBoolFromDB("RiceZHack");
-				RiceTextureScaleHack_CB.Checked = GetBoolFromDB("RiceTextureScaleHack");
-				RicePrimaryDepthHack_CB.Checked = GetBoolFromDB("RicePrimaryDepthHack");
-				RiceTexture1Hack_CB.Checked = GetBoolFromDB("RiceTexture1Hack");
-				RiceFastLoadTile_CB.Checked = GetBoolFromDB("RiceFastLoadTile");
-				RiceUseSmallerTexture_CB.Checked = GetBoolFromDB("RiceUseSmallerTexture");
+				RiceDisableTextureCRC_CB.Checked = _game.GetBool("RiceDisableTextureCRC", false);
+				RiceDisableCulling_CB.Checked = _game.GetBool("RiceDisableCulling", false);
+				RiceIncTexRectEdge_CB.Checked = _game.GetBool("RiceIncTexRectEdge", false);
+				RiceZHack_CB.Checked = _game.GetBool("RiceZHack", false);
+				RiceTextureScaleHack_CB.Checked = _game.GetBool("RiceTextureScaleHack", false);
+				RicePrimaryDepthHack_CB.Checked = _game.GetBool("RicePrimaryDepthHack", false);
+				RiceTexture1Hack_CB.Checked = _game.GetBool("RiceTexture1Hack", false);
+				RiceFastLoadTile_CB.Checked = _game.GetBool("RiceFastLoadTile", false);
+				RiceUseSmallerTexture_CB.Checked = _game.GetBool("RiceUseSmallerTexture", false);
 				RiceVIWidth_Text.Text = GetIntFromDB("RiceVIWidth", -1).ToString();
 				RiceVIHeight_Text.Text = GetIntFromDB("RiceVIHeight", -1).ToString();
 				RiceUseCIWidthAndRatio_Combo.SelectedIndex = GetIntFromDB("RiceUseCIWidthAndRatio", 0);
 				RiceFullTMEM_Combo.SelectedIndex = GetIntFromDB("RiceFullTMEM", 0);
-				RiceTxtSizeMethod2_CB.Checked = GetBoolFromDB("RiceTxtSizeMethod2");
-				RiceEnableTxtLOD_CB.Checked = GetBoolFromDB("RiceEnableTxtLOD");
+				RiceTxtSizeMethod2_CB.Checked = _game.GetBool("RiceTxtSizeMethod2", false);
+				RiceEnableTxtLOD_CB.Checked = _game.GetBool("RiceEnableTxtLOD", false);
 				RiceFastTextureCRC_Combo.SelectedIndex = GetIntFromDB("RiceFastTextureCRC", 0);
-				RiceEmulateClear_CB.Checked = GetBoolFromDB("RiceEmulateClear");
-				RiceForceScreenClear_CB.Checked = GetBoolFromDB("RiceForceScreenClear");
+				RiceEmulateClear_CB.Checked = _game.GetBool("RiceEmulateClear", false);
+				RiceForceScreenClear_CB.Checked = _game.GetBool("RiceForceScreenClear", false);
 				RiceAccurateTextureMappingHack_Combo.SelectedIndex = GetIntFromDB("RiceAccurateTextureMappingHack", 0);
 				RiceNormalBlender_Combo.SelectedIndex = GetIntFromDB("RiceNormalBlender", 0);
-				RiceDisableBlender_CB.Checked = GetBoolFromDB("RiceDisableBlender");
-				RiceForceDepthBuffer_CB.Checked = GetBoolFromDB("RiceForceDepthBuffer");
-				RiceDisableObjBG_CB.Checked = GetBoolFromDB("RiceDisableObjBG");
+				RiceDisableBlender_CB.Checked = _game.GetBool("RiceDisableBlender", false);
+				RiceForceDepthBuffer_CB.Checked = _game.GetBool("RiceForceDepthBuffer", false);
+				RiceDisableObjBG_CB.Checked = _game.GetBool("RiceDisableObjBG", false);
 				RiceFrameBufferOption_Combo.SelectedIndex = GetIntFromDB("RiceFrameBufferOption", 0);
 				RiceRenderToTextureOption_Combo.SelectedIndex = GetIntFromDB("RiceRenderToTextureOption", 0);
 				RiceScreenUpdateSettingHack_Combo.SelectedIndex = GetIntFromDB("RiceScreenUpdateSettingHack", 0);
@@ -994,14 +994,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private bool GetBoolFromDB(string parameter)
-		{
-			return _game.OptionPresent(parameter) && _game.OptionValue(parameter) == "true";
-		}
-
 		private int GetIntFromDB(string parameter, int defaultVal)
 		{
-			if (_game.OptionPresent(parameter) && _game.OptionValue(parameter).IsUnsigned())
+			if (_game.OptionValue(parameter)?.IsUnsigned() ?? false)
 			{
 				return int.Parse(_game.OptionValue(parameter));
 			}
