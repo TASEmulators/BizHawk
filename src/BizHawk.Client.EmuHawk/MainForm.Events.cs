@@ -2573,8 +2573,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (MovieSession.Movie.IsActive())
 			{
-				using var form = new EditCommentsForm();
-				form.GetMovie(MovieSession.Movie);
+				using var form = new EditCommentsForm(MovieSession.Movie, MovieSession.ReadOnly);
 				form.ShowDialog();
 			}
 		}

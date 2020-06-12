@@ -518,8 +518,7 @@ namespace BizHawk.Client.EmuHawk
 			var indices = MovieView.SelectedIndices;
 			if (indices.Count > 0)
 			{
-				var form = new EditCommentsForm();
-				form.GetMovie(_movieList[MovieView.SelectedIndices[0]]);
+				var form = new EditCommentsForm(_movieList[MovieView.SelectedIndices[0]], _movieSession.ReadOnly);
 				form.Show();
 			}
 		}

@@ -993,9 +993,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CommentsMenuItem_Click(object sender, EventArgs e)
 		{
-			var form = new EditCommentsForm();
-			form.GetMovie(CurrentTasMovie);
-			form.ForceReadWrite = true;
+			var form = new EditCommentsForm(CurrentTasMovie, true);
 			form.Show();
 		}
 
