@@ -31,7 +31,6 @@ namespace BizHawk.BizInvoke
 		/// </exception>
 		public MemoryBlockLinuxPal(ulong start, ulong size)
 		{
-			// Console.WriteLine($".ctor {start:x16} {size:x16}");
 			_start = start;
 			_size = size;
 			_fd = memfd_create("MemoryBlockUnix", 1 /*MFD_CLOEXEC*/);
@@ -74,11 +73,10 @@ namespace BizHawk.BizInvoke
 				{
 					throw new InvalidOperationException($"{nameof(mmap)}() failed with error {Marshal.GetLastWin32Error()}");
 				}
-				// Console.WriteLine($"Add {_start} {_committedSize}");
-				if ((IntPtr)LinGuard.AddTripGuard(Z.UU(_start), Z.UU(_committedSize)) == IntPtr.Zero)
-				{
-					throw new InvalidOperationException($"{nameof(LinGuard.AddTripGuard)}() returned NULL");
-				}
+			}
+			if ((IntPtr)LinGuard.AddTripGuard(Z.UU(_start), Z.UU(_size)) == IntPtr.Zero)
+			{
+				throw new InvalidOperationException($"{nameof(LinGuard.AddTripGuard)}() returned NULL");
 			}
 			_active = true;
 		}
@@ -90,22 +88,27 @@ namespace BizHawk.BizInvoke
 				var errorCode = munmap(Z.US(_start), Z.UU(_committedSize));
 				if (errorCode != 0)
 					throw new InvalidOperationException($"{nameof(munmap)}() failed with error {Marshal.GetLastWin32Error()}");
-				// Console.WriteLine($"Remove {_start} {_committedSize}");
-				if (!LinGuard.RemoveTripGuard(Z.UU(_start), Z.UU(_committedSize)))
-					throw new InvalidOperationException($"{nameof(LinGuard.RemoveTripGuard)}() returned FALSE");
 			}
+			if (!LinGuard.RemoveTripGuard(Z.UU(_start), Z.UU(_size)))
+				throw new InvalidOperationException($"{nameof(LinGuard.RemoveTripGuard)}() returned FALSE");
 			_active = false;
 		}
 
-		public void Commit(ulong length)
+		public void Commit(ulong newCommittedSize)
 		{
-			// Console.WriteLine($"commit {length:x16}");
-			Deactivate();
-			var errorCode = ftruncate(_fd, Z.US(length));
+			var errorCode = ftruncate(_fd, Z.US(newCommittedSize));
 			if (errorCode != 0)
 				throw new InvalidOperationException($"{nameof(ftruncate)}() failed with error {Marshal.GetLastWin32Error()}");
-			_committedSize = length;
-			Activate();
+			// map in the previously unmapped portions contiguously
+			var ptr = mmap(Z.US(_start + _committedSize), Z.UU(newCommittedSize - _committedSize),
+				MemoryProtection.Read | MemoryProtection.Write | MemoryProtection.Execute,
+				17, // MAP_SHARED | MAP_FIXED
+				_fd, Z.US(_committedSize));
+			if (ptr != Z.US(_start + _committedSize))
+			{
+				throw new InvalidOperationException($"{nameof(mmap)}() failed with error {Marshal.GetLastWin32Error()}");
+			}
+			_committedSize = newCommittedSize;
 		}
 
 		private static MemoryProtection ToMemoryProtection(Protection prot)
@@ -133,7 +136,6 @@ namespace BizHawk.BizInvoke
 
 		public void Protect(ulong start, ulong size, Protection prot)
 		{
-			// Console.WriteLine($"protect {start:x16} {size:x16} {prot}");
 			var errorCode = mprotect(
 				Z.US(start),
 				Z.UU(size),
@@ -145,26 +147,18 @@ namespace BizHawk.BizInvoke
 
 		public void GetWriteStatus(WriteDetectionStatus[] dest, Protection[] pagedata)
 		{
-			if (_committedSize > 0)
-			{
-				// Console.WriteLine($"Examine {_start} {_committedSize}");
-				var p = (IntPtr)LinGuard.ExamineTripGuard(Z.UU(_start), Z.UU(_committedSize));
-				if (p == IntPtr.Zero)
-					throw new InvalidOperationException($"{nameof(LinGuard.ExamineTripGuard)}() returned NULL!");
-				Marshal.Copy(p, (byte[])(object)dest, 0, (int)(_committedSize >> WaterboxUtils.PageShift));
-			}
+			var p = (IntPtr)LinGuard.ExamineTripGuard(Z.UU(_start), Z.UU(_size));
+			if (p == IntPtr.Zero)
+				throw new InvalidOperationException($"{nameof(LinGuard.ExamineTripGuard)}() returned NULL!");
+			Marshal.Copy(p, (byte[])(object)dest, 0, dest.Length);
 		}
 
 		public void SetWriteStatus(WriteDetectionStatus[] src)
 		{
-			if (_committedSize > 0)
-			{
-				// Console.WriteLine($"Examine {_start} {_committedSize}");
-				var p = (IntPtr)LinGuard.ExamineTripGuard(Z.UU(_start), Z.UU(_committedSize));
-				if (p == IntPtr.Zero)
-					throw new InvalidOperationException($"{nameof(LinGuard.ExamineTripGuard)}() returned NULL!");
-				Marshal.Copy((byte[])(object)src, 0, p, (int)(_committedSize >> WaterboxUtils.PageShift));
-			}
+			var p = (IntPtr)LinGuard.ExamineTripGuard(Z.UU(_start), Z.UU(_size));
+			if (p == IntPtr.Zero)
+				throw new InvalidOperationException($"{nameof(LinGuard.ExamineTripGuard)}() returned NULL!");
+			Marshal.Copy((byte[])(object)src, 0, p, src.Length);
 		}
 
 		private static unsafe class LinGuard

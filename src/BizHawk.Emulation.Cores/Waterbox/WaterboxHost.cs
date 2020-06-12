@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading;
 
 namespace BizHawk.Emulation.Cores.Waterbox
 {
@@ -73,6 +74,14 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 	public class WaterboxHost : Swappable, IImportResolver, IBinaryStateable
 	{
+		static WaterboxHost()
+		{
+			if (OSTailoredCode.IsUnixHost)
+			{
+				WaterboxLibcoLinuxStartup.Setup();
+			}
+		}
+
 		/// <summary>
 		/// usual starting point for the executable
 		/// </summary>
@@ -433,5 +442,31 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				_mmapheap = null;
 			}
 		}
+	}
+
+	internal static class WaterboxLibcoLinuxStartup
+	{
+		// TODO: This is a giant mess and get rid of it entirely
+		internal static void Setup()
+		{
+			// Our libco implementation plays around with stuff in the TEB block.  This is bad for a few reasons:
+			// 1. It's windows specific
+			// 2. It's only doing this to satisfy some msvs __stkchk code that should never run
+			// 3. That code is only running because memory allocations in a cothread still send you back
+			// to managed land where things like the .NET jit might run on the costack, oof.
+
+			// We need to stop #3 from happening, probably by making the waterboxhost unmanaged code.  Then if we
+			// still need "GS fiddling" we can have it be part of our syscall layer without having a managed transition
+
+			// Until then, just fake a TEB block for linux -- nothing else uses GS anyway.
+			var ptr = Marshal.AllocHGlobal(0x40);
+			WaterboxUtils.ZeroMemory(ptr, 0x40);
+			Marshal.WriteIntPtr(ptr, 0x30, ptr);
+			if (ArchPrCtl(0x1001 /* SET_GS */, Z.SU((long)ptr)) != 0)
+				throw new InvalidOperationException("ArchPrCtl failed!");
+		}
+
+		[DllImport("libc.so.6", EntryPoint = "arch_prctl")]
+		private static extern int ArchPrCtl(int code, UIntPtr addr);
 	}
 }
