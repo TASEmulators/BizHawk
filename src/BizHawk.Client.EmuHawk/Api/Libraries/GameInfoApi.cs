@@ -25,7 +25,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var options = new Dictionary<string, string>();
 			if (GlobalWin.Game == null) return options;
-			foreach (var option in GlobalWin.Game.GetOptionsDict()) options[option.Key] = option.Value;
+			foreach (var option in GlobalWin.Game.GetOptions()) options[option.Key] = option.Value;
 			return options;
 		}
 	}

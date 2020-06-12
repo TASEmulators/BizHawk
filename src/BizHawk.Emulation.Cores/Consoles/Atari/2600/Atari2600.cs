@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			Rom = rom;
 			_game = game;
 
-			if (!game.GetOptionsDict().ContainsKey("m"))
+			if (!game.GetOptions().ContainsKey("m"))
 			{
 				game.AddOption("m", DetectMapper(rom));
 			}
@@ -46,7 +46,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				game.AddOption("m", "F8_sega");
 			}
 
-			Console.WriteLine("Game uses mapper " + game.GetOptionsDict()["m"]);
+			Console.WriteLine("Game uses mapper " + game.GetOptions()["m"]);
 			Console.WriteLine(Rom.HashSHA1());
 			RebootCore();
 			SetupMemoryDomains();

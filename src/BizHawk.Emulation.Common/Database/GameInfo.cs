@@ -145,7 +145,7 @@ namespace BizHawk.Emulation.Common
 			return defaultVal;
 		}
 
-		public IReadOnlyDictionary<string, string> GetOptionsDict()
+		public IReadOnlyDictionary<string, string> GetOptions()
 		{
 			return new ReadOnlyDictionary<string, string>(Options);
 		}

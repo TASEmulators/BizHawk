@@ -194,7 +194,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		private void RebootCore()
 		{
 			// Regenerate mapper here to make sure its state is entirely clean
-			_mapper = CreateMapper(this, _game.GetOptionsDict()["m"], Rom.Length);
+			_mapper = CreateMapper(this, _game.GetOptions()["m"], Rom.Length);
 			_lagCount = 0;
 			Cpu = new MOS6502X<CpuLink>(new CpuLink(this));
 
@@ -223,16 +223,16 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			RomDetails = $"{_game.Name}\r\nSHA1:{Rom.HashSHA1()}\r\nMD5:{Rom.HashMD5()}\r\nMapper Impl \"{_mapper.GetType()}\"";
 
 			// Some games (ex. 3D tic tac toe), turn off the screen for extended periods, so we need to allow for this here.
-			if (_game.GetOptionsDict().ContainsKey("SP_FRAME"))
+			if (_game.GetOptions().ContainsKey("SP_FRAME"))
 			{
-				if (_game.GetOptionsDict()["SP_FRAME"] == "true")
+				if (_game.GetOptions()["SP_FRAME"] == "true")
 				{
 					SP_FRAME = true;
 				}
 			}
-			if (_game.GetOptionsDict().ContainsKey("SP_RESET"))
+			if (_game.GetOptions().ContainsKey("SP_RESET"))
 			{
-				if (_game.GetOptionsDict()["SP_RESET"] == "true")
+				if (_game.GetOptions()["SP_RESET"] == "true")
 				{
 					SP_RESET = true;
 				}

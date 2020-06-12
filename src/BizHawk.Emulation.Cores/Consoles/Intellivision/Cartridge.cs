@@ -47,7 +47,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			var gi = Database.CheckDatabase(hash_sha1);
 			if (gi != null)
 			{
-				var dict = gi.GetOptionsDict();
+				var dict = gi.GetOptions();
 				if (!dict.ContainsKey("board"))
 				{
 					throw new Exception("INTV gamedb entries must have a board identifier!");

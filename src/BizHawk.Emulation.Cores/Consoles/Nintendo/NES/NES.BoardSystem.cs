@@ -161,7 +161,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			CartInfo cart = new CartInfo();
 
 			//try generating a bootgod cart descriptor from the game database
-			var dict = gi.GetOptionsDict();
+			var dict = gi.GetOptions();
 			cart.GameInfo = gi;
 			if (!dict.ContainsKey("board"))
 				throw new Exception("NES gamedb entries must have a board identifier!");

@@ -124,7 +124,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 			if (gi != null)
 			{
-				var dict = gi.GetOptionsDict();
+				var dict = gi.GetOptions();
 				if (dict.ContainsKey("PAL"))
 				{
 					_isPAL = true;
