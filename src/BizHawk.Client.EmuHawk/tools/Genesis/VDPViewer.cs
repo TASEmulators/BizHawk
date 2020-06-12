@@ -174,29 +174,34 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void SaveAsFile(Bitmap bitmap, string suffix)
+		{
+			bitmap.SaveAsFile(Game, suffix, Emu.SystemId, Config.PathEntries);
+		}
+
 		private void SaveBGAScreenshotToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			bmpViewNTA.SaveFile();
+			SaveAsFile(bmpViewNTA.Bmp, "NTA");
 		}
 
 		private void SaveBGBScreenshotToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			bmpViewNTB.SaveFile();
+			SaveAsFile(bmpViewNTA.Bmp, "NTB");
 		}
 
 		private void SaveTilesScreenshotToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			bmpViewTiles.SaveFile();
+			SaveAsFile(bmpViewNTA.Bmp, "Tiles");
 		}
 
 		private void SaveWindowScreenshotToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			bmpViewNTW.SaveFile();
+			SaveAsFile(bmpViewNTA.Bmp, "Window");
 		}
 
 		private void SavePaletteScreenshotToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			bmpViewPal.SaveFile();
+			SaveAsFile(bmpViewNTA.Bmp, "Palettes");
 		}
 
 		private void CloseMenuItem_Click(object sender, EventArgs e)

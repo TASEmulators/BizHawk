@@ -2,13 +2,16 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
-
+using BizHawk.Client.Common;
 using BizHawk.Common;
 using BizHawk.Common.ReflectionExtensions;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -267,6 +270,39 @@ namespace BizHawk.Client.EmuHawk
 		{
 			using var img = bitmap;
 			Clipboard.SetImage(img);
+		}
+
+		public static void SaveAsFile(this Bitmap bitmap, IGameInfo game, string suffix, string systemId, PathEntryCollection paths)
+		{
+			using var sfd = new SaveFileDialog
+			{
+				FileName = $"{game.FilesystemSafeName()}-{suffix}",
+				InitialDirectory = paths.ScreenshotAbsolutePathFor(systemId),
+				Filter = FilesystemFilterSet.Screenshots.ToString(),
+				RestoreDirectory = true
+			};
+
+			var result = sfd.ShowHawkDialog();
+			if (result != DialogResult.OK)
+			{
+				return;
+			}
+
+			var file = new FileInfo(sfd.FileName);
+			ImageFormat i;
+			string extension = file.Extension.ToUpper();
+			switch (extension)
+			{
+				default:
+				case ".PNG":
+					i = ImageFormat.Png;
+					break;
+				case ".BMP":
+					i = ImageFormat.Bmp;
+					break;
+			}
+
+			bitmap.Save(file.FullName, i);
 		}
 	}
 }

@@ -1,13 +1,10 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Drawing.Imaging;
-using System.IO;
 using System.Drawing;
 using System.Windows.Forms;
 
-using BizHawk.Client.Common;
 using BizHawk.Common;
-using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -22,7 +19,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (DesignMode)
 			{
-				// in the designer
 				SetStyle(ControlStyles.SupportsTransparentBackColor, true);
 			}
 			else
@@ -58,10 +54,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void ChangeBitmapSize(Size s)
-		{
-			ChangeBitmapSize(s.Width, s.Height);
-		}
+		public void ChangeBitmapSize(Size s) => ChangeBitmapSize(s.Width, s.Height);
 
 		public void ChangeBitmapSize(int w, int h)
 		{
@@ -91,47 +84,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SaveFile()
 		{
-			string path = GlobalWin.Config.PathEntries.ScreenshotAbsolutePathFor(GlobalWin.Emulator.SystemId);
-
-			var di = new DirectoryInfo(path);
-
-			if (!di.Exists)
-			{
-				di.Create();
-			}
-
-			using var sfd = new SaveFileDialog
-			{
-				FileName = $"{GlobalWin.Game.FilesystemSafeName()}-Palettes",
-				InitialDirectory = path,
-				Filter = FilesystemFilterSet.Screenshots.ToString(),
-				RestoreDirectory = true
-			};
-
-			var result = sfd.ShowHawkDialog();
-			if (result != DialogResult.OK)
-			{
-				return;
-			}
-
-			var file = new FileInfo(sfd.FileName);
-			var b = Bmp;
-
-			ImageFormat i;
-			string extension = file.Extension.ToUpper();
-
-			switch (extension)
-			{
-				default:
-				case ".PNG":
-					i = ImageFormat.Png;
-					break;
-				case ".BMP":
-					i = ImageFormat.Bmp;
-					break;
-			}
-
-			b.Save(file.FullName, i);
+			Bmp.SaveAsFile(GlobalWin.Game, "Palettes", GlobalWin.Emulator.SystemId, GlobalWin.Config.PathEntries);
 		}
 	}
 }
