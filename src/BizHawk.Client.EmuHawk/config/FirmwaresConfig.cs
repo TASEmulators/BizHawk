@@ -584,7 +584,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			using var pathConfig = new PathConfig(_mainForm, GlobalWin.Config);
+			using var pathConfig = new PathConfig(_mainForm, GlobalWin.Config, GlobalWin.Game.System);
 			pathConfig.ShowDialog(this);
 			RefreshBasePath();
 		}

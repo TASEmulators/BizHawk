@@ -13,6 +13,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private readonly Config _config;
 		private readonly MainForm _mainForm;
+		private readonly string _currentSystemId;
 
 		// All path text boxes should do some kind of error checking
 		// Config path under base, config will default to %exe%
@@ -41,10 +42,11 @@ namespace BizHawk.Client.EmuHawk
 			"..\\"
 		};
 
-		public PathConfig(MainForm mainForm, Config config)
+		public PathConfig(MainForm mainForm, Config config, string currentSystemId)
 		{
 			_mainForm = mainForm;
 			_config = config;
+			_currentSystemId = currentSystemId;
 			InitializeComponent();
 		}
 
@@ -59,7 +61,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetDefaultFocusedTab()
 		{
-			var tab = FindTabByName(GlobalWin.Game.System);
+			var tab = FindTabByName(_currentSystemId);
 			if (tab != null)
 			{
 				PathTabControl.SelectTab(tab);

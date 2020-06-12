@@ -981,7 +981,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PathsMenuItem_Click(object sender, EventArgs e)
 		{
-			using var form = new PathConfig(this, Config);
+			using var form = new PathConfig(this, Config, Game.System);
 			form.ShowDialog();
 		}
 
