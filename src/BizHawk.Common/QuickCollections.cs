@@ -1,7 +1,6 @@
 ﻿#nullable disable
 
 using System;
-using System.Collections.Generic;
 
 namespace BizHawk.Common
 {
@@ -108,92 +107,6 @@ namespace BizHawk.Common
 			head = 0;
 			tail = count;
 			size = count;
-		}
-	}
-
-	// .net has no built-in read only dictionary
-	public sealed class ReadOnlyDictionary<TKey, TValue> : IDictionary<TKey, TValue>
-	{
-		private readonly IDictionary<TKey, TValue> dict;
-
-		public ReadOnlyDictionary(IDictionary<TKey, TValue> dictionary)
-		{
-			dict = dictionary;
-		}
-
-		/// <exception cref="InvalidOperationException">always</exception>
-		public void Add(TKey key, TValue value)
-		{
-			throw new InvalidOperationException();
-		}
-
-		public bool ContainsKey(TKey key)
-		{
-			return dict.ContainsKey(key);
-		}
-
-		public ICollection<TKey> Keys => dict.Keys;
-
-		/// <exception cref="InvalidOperationException">always</exception>
-		public bool Remove(TKey key)
-		{
-			throw new InvalidOperationException();
-		}
-
-		public bool TryGetValue(TKey key, out TValue value)
-		{
-			return dict.TryGetValue(key, out value);
-		}
-
-		public ICollection<TValue> Values => dict.Values;
-
-		/// <exception cref="InvalidOperationException">(from setter) always</exception>
-		public TValue this[TKey key]
-		{
-			get => dict[key];
-			set => throw new InvalidOperationException();
-		}
-
-		/// <exception cref="InvalidOperationException">always</exception>
-		public void Add(KeyValuePair<TKey, TValue> item)
-		{
-			throw new InvalidOperationException();
-		}
-
-		/// <exception cref="InvalidOperationException">always</exception>
-		public void Clear()
-		{
-			throw new InvalidOperationException();
-		}
-
-		public bool Contains(KeyValuePair<TKey, TValue> item)
-		{
-			return dict.Contains(item);
-		}
-
-		public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
-		{
-			dict.CopyTo(array, arrayIndex);
-		}
-
-		public int Count => dict.Count;
-
-		public bool IsReadOnly => true;
-
-		/// <exception cref="InvalidOperationException">always</exception>
-		public bool Remove(KeyValuePair<TKey, TValue> item)
-		{
-			throw new InvalidOperationException();
-		}
-
-		public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
-		{
-			return dict.GetEnumerator();
-		}
-
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-		{
-			return ((System.Collections.IEnumerable)dict).GetEnumerator();
 		}
 	}
 }

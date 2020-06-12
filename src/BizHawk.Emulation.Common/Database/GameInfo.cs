@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Globalization;
-
-using BizHawk.Common;
 
 namespace BizHawk.Emulation.Common
 {
@@ -146,7 +145,7 @@ namespace BizHawk.Emulation.Common
 			return defaultVal;
 		}
 
-		public IDictionary<string, string> GetOptionsDict()
+		public IReadOnlyDictionary<string, string> GetOptionsDict()
 		{
 			return new ReadOnlyDictionary<string, string>(Options);
 		}
