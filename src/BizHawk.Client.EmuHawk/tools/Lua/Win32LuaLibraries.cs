@@ -14,18 +14,15 @@ namespace BizHawk.Client.EmuHawk
 {
 	public class Win32LuaLibraries : LuaLibraries
 	{
-		private readonly MainForm _mainForm;
 		public Win32LuaLibraries()
 		{
 //			if (NLua.Lua.WhichLua == "NLua")
 				_lua["keepalives"] = _lua.NewTable();
 		}
 
-		public Win32LuaLibraries(IEmulatorServiceProvider serviceProvider, MainForm mainForm)
+		public Win32LuaLibraries(MainForm mainForm, IEmulatorServiceProvider serviceProvider)
 			: this()
 		{
-			_mainForm = mainForm;
-
 			LuaWait = new AutoResetEvent(false);
 			Docs.Clear();
 
@@ -52,10 +49,10 @@ namespace BizHawk.Client.EmuHawk
 					// and inject them here
 					if (instance is ClientLuaLibrary clientLib)
 					{
-						clientLib.MainForm = _mainForm;
+						clientLib.MainForm = mainForm;
 					}
 
-					ApiContainerInstance = ApiManager.RestartLua(serviceProvider, ConsoleLuaLibrary.LogOutput);
+					ApiContainerInstance = ApiManager.RestartLua(mainForm, serviceProvider, ConsoleLuaLibrary.LogOutput);
 					if (instance is DelegatingLuaLibraryEmu dlgInstanceEmu) dlgInstanceEmu.APIs = ApiContainerInstance; // this is necessary as the property has the `new` modifier
 					else if (instance is DelegatingLuaLibrary dlgInstance) dlgInstance.APIs = ApiContainerInstance;
 

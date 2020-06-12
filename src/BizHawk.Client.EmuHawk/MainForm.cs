@@ -276,7 +276,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public MainForm(string[] args)
 		{
-			GlobalWin.MainForm = this;
 			GlobalWin.ClientApi = new EmuClientApi(Config, DisplayManager, Emulator, Game, InputManager, this);
 
 			//do this threaded stuff early so it has plenty of time to run in background

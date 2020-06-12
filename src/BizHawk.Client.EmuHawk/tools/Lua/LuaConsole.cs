@@ -206,7 +206,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var currentScripts = LuaImp?.ScriptList; // Temp fix for now
-			LuaImp = OSTailoredCode.IsUnixHost ? (LuaLibraries) new UnixLuaLibraries() : new Win32LuaLibraries(Emulator.ServiceProvider, MainForm);
+			LuaImp = OSTailoredCode.IsUnixHost ? (LuaLibraries) new UnixLuaLibraries() : new Win32LuaLibraries(MainForm, Emulator.ServiceProvider);
 			LuaImp.ScriptList.AddRange(currentScripts ?? Enumerable.Empty<LuaFile>());
 
 			InputBox.AutoCompleteCustomSource.AddRange(LuaImp.Docs.Select(a => $"{a.Library}.{a.Name}").ToArray());

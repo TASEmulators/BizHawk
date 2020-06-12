@@ -21,7 +21,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private static ApiContainer? _luaContainer;
 
-		private static ApiContainer Register(IEmulatorServiceProvider serviceProvider, Action<string> logCallback)
+		private static ApiContainer Register(
+			MainForm mainForm,
+			IEmulatorServiceProvider serviceProvider,
+			Action<string> logCallback)
 		{
 			var libDict = new Dictionary<Type, IExternalApi>();
 			foreach (var api in Assembly.GetAssembly(typeof(ApiSubsetContainer)).GetTypes()
@@ -30,7 +33,7 @@ namespace BizHawk.Client.EmuHawk
 					&& typeof(IExternalApi).IsAssignableFrom(t)
 					&& ServiceInjector.IsAvailable(serviceProvider, t)))
 			{
-				var instance = api.GetConstructor(CtorParamTypesA)?.Invoke(new object[] { logCallback, GlobalWin.DisplayManager, GlobalWin.InputManager, GlobalWin.MainForm })
+				var instance = api.GetConstructor(CtorParamTypesA)?.Invoke(new object[] { logCallback, GlobalWin.DisplayManager, GlobalWin.InputManager, mainForm })
 					?? api.GetConstructor(CtorParamTypesB)?.Invoke(new object[] { logCallback })
 					?? Activator.CreateInstance(api);
 				ServiceInjector.UpdateServices(serviceProvider, instance);
@@ -42,10 +45,10 @@ namespace BizHawk.Client.EmuHawk
 			return new ApiContainer(libDict);
 		}
 
-		public static IExternalApiProvider Restart(IEmulatorServiceProvider newServiceProvider)
-			=> new BasicApiProvider(_container = Register(newServiceProvider, Console.WriteLine));
+		public static IExternalApiProvider Restart(MainForm mainForm, IEmulatorServiceProvider newServiceProvider)
+			=> new BasicApiProvider(_container = Register(mainForm, newServiceProvider, Console.WriteLine));
 
-		public static ApiContainer RestartLua(IEmulatorServiceProvider newServiceProvider, Action<string> logCallback)
-			=> _luaContainer = Register(newServiceProvider, logCallback);
+		public static ApiContainer RestartLua(MainForm mainForm, IEmulatorServiceProvider newServiceProvider, Action<string> logCallback)
+			=> _luaContainer = Register(mainForm, newServiceProvider, logCallback);
 	}
 }

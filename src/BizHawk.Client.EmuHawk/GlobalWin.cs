@@ -8,7 +8,6 @@ namespace BizHawk.Client.EmuHawk
 {
 	public static class GlobalWin
 	{
-		public static MainForm MainForm;
 		public static ToolManager Tools;
 
 		public static IEmulator Emulator { get; set; }
