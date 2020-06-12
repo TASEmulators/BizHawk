@@ -65,11 +65,6 @@ namespace BizHawk.Emulation.Common
 			ParseOptionsDictionary(cgi.MetaData);
 		}
 
-		public void AddOption(string option)
-		{
-			Options[option] = "";
-		}
-
 		public void AddOption(string option, string param)
 		{
 			Options[option] = param;

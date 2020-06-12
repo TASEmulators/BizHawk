@@ -538,7 +538,7 @@ namespace BizHawk.Client.Common
 						if (_config.SgbUseBsnes)
 						{
 							game.System = "SNES";
-							game.AddOption("SGB");
+							game.AddOption("SGB", "");
 							nextEmulator = new LibsnesCore(
 								game,
 								rom.FileData,

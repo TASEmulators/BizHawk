@@ -84,7 +84,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 			if (biosInfo["SuperSysCard"])
 			{
-				game.AddOption("SuperSysCard");
+				game.AddOption("SuperSysCard", "");
 			}
 
 			if (game["NeedSuperSysCard"] && game["SuperSysCard"] == false)

@@ -90,21 +90,21 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		private static bool DetectPal(GameInfo game, byte[] rom)
 		{
 			// force NTSC mode for the new core we instantiate
-			var newgame = game.Clone();
-			if (newgame["PAL"])
+			var newGame = game.Clone();
+			if (newGame["PAL"])
 			{
-				newgame.RemoveOption("PAL");
+				newGame.RemoveOption("PAL");
 			}
 
-			if (!newgame["NTSC"])
+			if (!newGame["NTSC"])
 			{
-				newgame.AddOption("NTSC");
+				newGame.AddOption("NTSC", "");
 			}
 
 			// here we advance past start up irregularities to see how long a frame is based on calls to Vsync
 			// we run 72 frames, then run 270 scanlines worth of cycles.
 			// if we don't hit a new frame, we can be pretty confident we are in PAL
-			using var emu = new Atari2600(newgame, rom, null, null);
+			using var emu = new Atari2600(newGame, rom, null, null);
 			for (int i = 0; i < 72; i++)
 			{
 				emu.FrameAdvance(NullController.Instance, false, false);
