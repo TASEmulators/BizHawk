@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Drawing;
@@ -21,7 +20,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public BmpView()
 		{
-			if (Process.GetCurrentProcess().ProcessName == "devenv")
+			if (DesignMode)
 			{
 				// in the designer
 				SetStyle(ControlStyles.SupportsTransparentBackColor, true);
