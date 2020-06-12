@@ -16,19 +16,22 @@ namespace BizHawk.Client.EmuHawk
 		private readonly GameInfo _game;
 		private readonly IEmulator _emulator;
 		private readonly IMovieSession _movieSession;
+		private readonly FirmwareManager _firmwareManager;
 
 		public RecordMovie(
 			MainForm mainForm,
 			Config config,
 			GameInfo game,
 			IEmulator core,
-			IMovieSession movieSession)
+			IMovieSession movieSession,
+			FirmwareManager firmwareManager)
 		{
 			_mainForm = mainForm;
 			_config = config;
 			_game = game;
 			_emulator = core;
 			_movieSession = movieSession;
+			_firmwareManager = firmwareManager;
 			InitializeComponent();
 
 			if (!_emulator.HasSavestates())
@@ -132,8 +135,8 @@ namespace BizHawk.Client.EmuHawk
 
 				movieToRecord.PopulateWithDefaultHeaderValues(
 					_emulator,
-					GlobalWin.Game,
-					GlobalWin.FirmwareManager,
+					_game,
+					_firmwareManager,
 					AuthorBox.Text ?? _config.DefaultAuthor);
 				movieToRecord.Save();
 				_mainForm.StartNewMovie(movieToRecord, true);

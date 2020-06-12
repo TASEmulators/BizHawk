@@ -496,7 +496,7 @@ namespace BizHawk.Client.EmuHawk
 				// Inaccurate core but allow the user to continue anyway
 			}
 
-			using var form = new RecordMovie(this, Config, Game, Emulator, MovieSession);
+			using var form = new RecordMovie(this, Config, Game, Emulator, MovieSession, FirmwareManager);
 			form.ShowDialog();
 		}
 
