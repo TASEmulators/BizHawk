@@ -8,24 +8,23 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
+	// TODO: don't use textboxes as labels
 	public partial class RamPoke : Form
 	{
-		// TODO: don't use textboxes as labels
-		private List<Watch> _watchList = new List<Watch>();
-
+		private readonly List<Watch> _watchList;
+		private readonly CheatCollection _cheats;
 		public Point InitialLocation { get; set; } = new Point(0, 0);
 
-		public RamPoke()
+		public RamPoke(IEnumerable<Watch> watches, CheatCollection cheats)
 		{
+			_watchList = watches
+				.Where(w => !w.IsSeparator) // Weed out separators just in case
+				.ToList();
+			_cheats = cheats;
 			InitializeComponent();
 		}
 
 		public IToolForm ParentTool { get; set; }
-
-		public void SetWatch(IEnumerable<Watch> watches)
-		{
-			_watchList = watches.ToList();
-		}
 
 		private void UnSupportedConfiguration()
 		{
@@ -35,8 +34,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RamPoke_Load(object sender, EventArgs e)
 		{
-			_watchList = _watchList.Where(x => !x.IsSeparator).ToList(); // Weed out separators just in case
-
 			if (_watchList.Count == 0)
 			{
 				ValueBox.Enabled = false;
@@ -97,11 +94,8 @@ namespace BizHawk.Client.EmuHawk
 				var result = watch.Poke(ValueBox.Text);
 				if (result)
 				{
-					var cheat = GlobalWin.CheatList.FirstOrDefault(c => c.Address == watch.Address && c.Domain == watch.Domain);
-					if (!(cheat is null))
-					{
-						cheat.PokeValue(watch.Value); 
-					}
+					var cheat = _cheats.FirstOrDefault(c => c.Address == watch.Address && c.Domain == watch.Domain);
+					cheat?.PokeValue(watch.Value);
 				}
 				else
 				{

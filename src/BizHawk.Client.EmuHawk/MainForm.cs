@@ -432,7 +432,7 @@ namespace BizHawk.Client.EmuHawk
 
 			Sound.StartSound();
 			InputManager.SyncControls(Emulator, MovieSession, Config);
-			GlobalWin.CheatList = new CheatCollection(Config.Cheats);
+			CheatList = new CheatCollection(Config.Cheats);
 			CheatList.Changed += Tools.UpdateCheatRelatedTools;
 			RewireSound();
 
@@ -874,7 +874,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private Sound Sound => GlobalWin.Sound;
-		public CheatCollection CheatList => GlobalWin.CheatList;
+		public CheatCollection CheatList { get; }
 
 		public IRewinder Rewinder { get; private set; }
 

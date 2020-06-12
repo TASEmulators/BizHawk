@@ -860,14 +860,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (SelectedIndices.Any())
 			{
-				var poke = new RamPoke
+				var poke = new RamPoke(SelectedIndices.Select(t => _searches[t]), MainForm.CheatList)
 				{
 					InitialLocation = this.ChildPointToScreen(WatchListView)
 				};
 
-				poke.SetWatch(SelectedIndices.Select(t => _searches[t]));
 				poke.ShowHawkDialog();
-
 				UpdateList();
 			}
 		}
@@ -1256,11 +1254,12 @@ namespace BizHawk.Client.EmuHawk
 			var allCheats = SelectedWatches.All(x => MainForm.CheatList.IsActive(x.Domain, x.Address));
 			if (allCheats)
 			{
-				SelectedWatches.UnfreezeAll();
+				MainForm.CheatList.RemoveRange(SelectedWatches);
 			}
 			else
 			{
-				SelectedWatches.FreezeAll();
+				MainForm.CheatList.AddRange(
+					SelectedWatches.Select(w => new Cheat(w, w.Value)));
 			}
 		}
 

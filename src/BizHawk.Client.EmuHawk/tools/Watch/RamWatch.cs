@@ -763,12 +763,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (SelectedWatches.Any())
 			{
-				var poke = new RamPoke
+				var poke = new RamPoke(SelectedWatches, MainForm.CheatList)
 				{
 					InitialLocation = this.ChildPointToScreen(WatchListView)
 				};
-
-				poke.SetWatch(SelectedWatches);
 
 				if (poke.ShowHawkDialog(this).IsOk())
 				{
@@ -782,11 +780,12 @@ namespace BizHawk.Client.EmuHawk
 			var allCheats = SelectedWatches.All(x => MainForm.CheatList.IsActive(x.Domain, x.Address));
 			if (allCheats)
 			{
-				SelectedWatches.UnfreezeAll();
+				MainForm.CheatList.RemoveRange(SelectedWatches);
 			}
 			else
 			{
-				SelectedWatches.FreezeAll();
+				MainForm.CheatList.AddRange(
+					SelectedWatches.Select(w => new Cheat(w, w.Value)));
 			}
 		}
 

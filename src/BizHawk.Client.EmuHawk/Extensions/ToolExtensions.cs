@@ -234,19 +234,6 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 			GlobalWin.Sound.StartSound();
 		}
 
-		public static void FreezeAll(this IEnumerable<Watch> watches)
-		{
-			GlobalWin.CheatList.AddRange(
-				watches
-				.Where(w => !w.IsSeparator)
-				.Select(w => new Cheat(w, w.Value)));
-		}
-
-		public static void UnfreezeAll(this IEnumerable<Watch> watches)
-		{
-			GlobalWin.CheatList.RemoveRange(watches.Where(watch => !watch.IsSeparator));
-		}
-
 		public static IEnumerable<ToolStripItem> MenuItems(this IMemoryDomains domains, Action<string> setCallback, string selected = "", int? maxSize = null)
 		{
 			foreach (var domain in domains)

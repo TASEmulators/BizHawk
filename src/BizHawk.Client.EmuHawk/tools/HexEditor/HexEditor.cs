@@ -1654,12 +1654,6 @@ namespace BizHawk.Client.EmuHawk
 
 			if (addresses.Any())
 			{
-				using var poke = new RamPoke
-				{
-					InitialLocation = this.ChildPointToScreen(AddressLabel),
-					ParentTool = this
-				};
-
 				var watches = addresses.Select(
 					address => Watch.GenerateWatch(
 						_domain,
@@ -1668,7 +1662,12 @@ namespace BizHawk.Client.EmuHawk
 						Common.DisplayType.Hex,
 						BigEndian));
 
-				poke.SetWatch(watches);
+				using var poke = new RamPoke(watches, MainForm.CheatList)
+				{
+					InitialLocation = this.ChildPointToScreen(AddressLabel),
+					ParentTool = this
+				};
+
 				poke.ShowHawkDialog();
 				GeneralUpdate();
 			}
