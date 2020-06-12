@@ -10,17 +10,42 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class EditSubtitlesForm : Form
 	{
-		public bool ReadOnly { get; set; }
-		private IMovie _selectedMovie;
+		
+		private readonly IMovie _selectedMovie;
+		private readonly bool _readOnly;
 
-		public EditSubtitlesForm()
+		public EditSubtitlesForm(IMovie movie, bool readOnly)
 		{
+			_selectedMovie = movie;
+			_readOnly = readOnly;
 			InitializeComponent();
 		}
 
 		private void EditSubtitlesForm_Load(object sender, EventArgs e)
 		{
-			if (ReadOnly)
+			var subs = new SubtitleList();
+			subs.AddRange(_selectedMovie.Subtitles);
+
+			for (int x = 0; x < subs.Count; x++)
+			{
+				var s = subs[x];
+				SubGrid.Rows.Add();
+				var c = SubGrid.Rows[x].Cells[0];
+				c.Value = s.Frame;
+				c = SubGrid.Rows[x].Cells[1];
+				c.Value = s.X;
+				c = SubGrid.Rows[x].Cells[2];
+				c.Value = s.Y;
+				c = SubGrid.Rows[x].Cells[3];
+				c.Value = s.Duration;
+				c = SubGrid.Rows[x].Cells[4];
+				c.Value = $"{s.Color:X8}";
+				c.Style.BackColor = Color.FromArgb((int)s.Color);
+				c = SubGrid.Rows[x].Cells[5];
+				c.Value = s.Message;
+			}
+
+			if (_readOnly)
 			{
 				// Set all columns to read only
 				for (int i = 0; i < SubGrid.Columns.Count; i++)
@@ -53,7 +78,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Ok_Click(object sender, EventArgs e)
 		{
-			if (!ReadOnly)
+			if (!_readOnly)
 			{
 				_selectedMovie.Subtitles.Clear();
 				for (int i = 0; i < SubGrid.Rows.Count - 1; i++)
@@ -84,32 +109,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			Close();
-		}
-
-		public void GetMovie(IMovie m)
-		{
-			_selectedMovie = m;
-			var subs = new SubtitleList();
-			subs.AddRange(m.Subtitles);
-
-			for (int x = 0; x < subs.Count; x++)
-			{
-				var s = subs[x];
-				SubGrid.Rows.Add();
-				var c = SubGrid.Rows[x].Cells[0];
-				c.Value = s.Frame;
-				c = SubGrid.Rows[x].Cells[1];
-				c.Value = s.X;
-				c = SubGrid.Rows[x].Cells[2];
-				c.Value = s.Y;
-				c = SubGrid.Rows[x].Cells[3];
-				c.Value = s.Duration;
-				c = SubGrid.Rows[x].Cells[4];
-				c.Value = $"{s.Color:X8}";
-				c.Style.BackColor = Color.FromArgb((int)s.Color);
-				c = SubGrid.Rows[x].Cells[5];
-				c.Value = s.Message;
-			}
 		}
 
 		private void ChangeRow(Subtitle s, int index)
@@ -176,7 +175,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SubGrid_MouseDoubleClick(object sender, MouseEventArgs e)
 		{
-			if (ReadOnly)
+			if (_readOnly)
 			{
 				return;
 			}

@@ -2527,8 +2527,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (MovieSession.Movie.IsActive())
 			{
-				using var form = new EditSubtitlesForm { ReadOnly = MovieSession.ReadOnly };
-				form.GetMovie(MovieSession.Movie);
+				using var form = new EditSubtitlesForm(MovieSession.Movie, MovieSession.ReadOnly);
 				form.ShowDialog();
 			}
 		}
