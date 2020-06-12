@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using BizHawk.Emulation.Cores.Libretro;
 using BizHawk.Client.Common;
+using BizHawk.Emulation.Common;
 
 // these match strings from OpenAdvance. should we make them constants in there?
 namespace BizHawk.Client.EmuHawk
@@ -24,15 +25,17 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private readonly MainForm _mainForm;
 		private readonly Config _config;
+		private readonly IGameInfo _game;
 
 		public AdvancedRomLoaderType Result;
 		public string SuggestedExtensionFilter;
 		private RetroDescription _currentDescription;
 
-		public OpenAdvancedChooser(MainForm mainForm, Config config)
+		public OpenAdvancedChooser(MainForm mainForm, Config config, IGameInfo game)
 		{
 			_mainForm = mainForm;
 			_config = config;
+			_game = game;
 
 			InitializeComponent();
 
@@ -70,7 +73,7 @@ namespace BizHawk.Client.EmuHawk
 			try
 			{
 				var coreComm = _mainForm.CreateCoreComm();
-				using var retro = new LibretroCore(coreComm, GlobalWin.Game, core);
+				using var retro = new LibretroCore(coreComm, _game, core);
 				btnLibretroLaunchGame.Enabled = true;
 				if (retro.Description.SupportsNoGame)
 					btnLibretroLaunchNoGame.Enabled = true;

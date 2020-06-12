@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 		private LibretroApi api;
 
 		// TODO: codepath just for introspection (lighter weight; no speex, no controls, etc.)
-		public LibretroCore(CoreComm nextComm, GameInfo game, string corePath)
+		public LibretroCore(CoreComm nextComm, IGameInfo game, string corePath)
 		{
 			ServiceProvider = new BasicServiceProvider(this);
 			_SyncSettings = new SyncSettings();

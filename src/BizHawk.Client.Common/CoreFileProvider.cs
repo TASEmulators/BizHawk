@@ -29,11 +29,11 @@ namespace BizHawk.Client.Common
 		public string DllPath() => PathUtils.DllDirectoryPath;
 
 		// Poop
-		public string GetRetroSaveRAMDirectory(GameInfo game)
+		public string GetRetroSaveRAMDirectory(IGameInfo game)
 			=> _pathEntries.RetroSaveRamAbsolutePath(game);
 
 		// Poop
-		public string GetRetroSystemPath(GameInfo game)
+		public string GetRetroSystemPath(IGameInfo game)
 			=> _pathEntries.RetroSystemAbsolutePath(game);
 
 		private void FirmwareWarn(string sysID, string firmwareID, bool required, string msg = null)

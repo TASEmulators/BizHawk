@@ -13,12 +13,12 @@
 		/// <summary>
 		/// produces a path that contains saveram... because libretro cores need it
 		/// </summary>
-		string GetRetroSaveRAMDirectory(GameInfo game);
+		string GetRetroSaveRAMDirectory(IGameInfo game);
 
 		/// <summary>
 		/// produces a path for use as a libretro system path (different for each core)
 		/// </summary>
-		string GetRetroSystemPath(GameInfo game);
+		string GetRetroSystemPath(IGameInfo game);
 
 		/// <summary>
 		/// Get a firmware as a byte array
