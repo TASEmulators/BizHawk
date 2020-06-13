@@ -69,6 +69,21 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 			["RUN"] = "Run"
 		};
 
+		protected override HashSet<string> ComputeHiddenPorts()
+		{
+			if (SettingsQuery("pce.input.multitap") == "1")
+			{
+				return new HashSet<string>();
+			}
+			else
+			{
+				return new HashSet<string>
+				{
+					"port2", "port3", "port4", "port5"
+				};
+			}
+		}
+
 		// pce always has two layers, sgx always has 4, and mednafen knows this
 		public bool IsSgx => SettingsInfo.LayerNames.Count == 4;
 

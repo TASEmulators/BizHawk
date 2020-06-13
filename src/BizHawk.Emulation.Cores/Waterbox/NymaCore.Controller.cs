@@ -15,7 +15,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		private void InitControls(List<NPortInfoT> allPorts, bool hasCds)
 		{
-			_controllerAdapter = new ControllerAdapter(allPorts, _syncSettingsActual.PortDevices, ButtonNameOverrides, hasCds);
+			_controllerAdapter = new ControllerAdapter(
+				allPorts, _syncSettingsActual.PortDevices, ButtonNameOverrides, hasCds, ComputeHiddenPorts());
 			_nyma.SetInputDevices(_controllerAdapter.Devices);
 			ControllerDefinition = _controllerAdapter.Definition;
 		}
@@ -37,7 +38,12 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			/// </summary>
 			public string[] Devices { get; }
 			public ControllerDefinition Definition { get; }
-			public ControllerAdapter(List<NPortInfoT> allPorts, IDictionary<int, string> config, IDictionary<string, string> overrides, bool hasCds)
+			public ControllerAdapter(
+				List<NPortInfoT> allPorts,
+				IDictionary<int, string> config,
+				IDictionary<string, string> overrides,
+				bool hasCds,
+				HashSet<string> hiddenPorts)
 			{
 				var ret = new ControllerDefinition
 				{
@@ -61,6 +67,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					var portInfo = allPorts[port];
 					var deviceName = config.ContainsKey(port) ? config[port] : portInfo.DefaultDeviceShortName;
 					finalDevices.Add(deviceName);
+
+					if (hiddenPorts.Contains(portInfo.ShortName))
+						continue;
 
 					var devices = portInfo.Devices;
 					
@@ -264,6 +273,14 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			}
 		}
 
-		protected virtual IDictionary<string, string> ButtonNameOverrides { get; }= new Dictionary<string, string>();
+		protected virtual IDictionary<string, string> ButtonNameOverrides { get; } = new Dictionary<string, string>();
+		/// <summary>
+		/// On some cores, some controller ports are not relevant when certain settings are off (like multitap).
+		/// Override this if your core has such an issue
+		/// </summary>
+		protected virtual HashSet<string> ComputeHiddenPorts()
+		{
+			return new HashSet<string>();
+		}
 	}
 }
