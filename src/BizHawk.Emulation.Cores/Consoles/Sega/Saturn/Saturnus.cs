@@ -57,5 +57,21 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 		protected override ISet<string> NonSyncSettingNames { get; } = new HashSet<string>
 		{
 		};
+
+		protected override HashSet<string> ComputeHiddenPorts()
+		{
+			var devCount = 12;
+			if (SettingsQuery("ss.input.sport1.multitap") != "1")
+				devCount -= 5;
+			if (SettingsQuery("ss.input.sport2.multitap") != "1")
+				devCount -= 5;
+			var ret = new HashSet<string>();
+			for (var i = 1; i <= 12; i++)
+			{
+				if (i > devCount)
+					ret.Add($"port{i}");
+			}
+			return ret;
+		}
 	}
 }
