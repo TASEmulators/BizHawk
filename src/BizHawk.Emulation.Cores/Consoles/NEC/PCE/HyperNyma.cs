@@ -52,7 +52,12 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 
 		protected override IDictionary<string, string> ButtonNameOverrides { get; } = new Dictionary<string, string>
 		{
-			{ "RIGHT →", "Right up my arse" },
+			["UP ↑"] = "Up",
+			["DOWN ↓"] = "Down",
+			["LEFT ←"] = "Left",
+			["RIGHT →"] = "Right",
+			["SELECT"] = "Select",
+			["RUN"] = "Run"
 		};
 
 		// pce always has two layers, sgx always has 4, and mednafen knows this

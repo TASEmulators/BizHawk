@@ -445,6 +445,17 @@ namespace BizHawk.Client.Common
 				["V"] = '5',
 				["VI"] = '6',
 			},
+			["PCE"] = new Dictionary<string, char>
+			{
+				["I"] = '1',
+				["II"] = '2',
+				["III"] = '3',
+				["IV"] = '4',
+				["V"] = '5',
+				["VI"] = '6',
+				["Mode: Set 2-button"] = 'm',
+				["Mode: Set 6-button"] = 'M'
+			},
 			["NDS"] = new Dictionary<string, char>
 			{
 				["LidOpen"] = 'o',
