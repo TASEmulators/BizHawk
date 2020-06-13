@@ -49,7 +49,7 @@ namespace BizHawk.Client.Common
 		public bool NewMovieQueued => _queuedMovie != null;
 		public string QueuedSyncSettings => _queuedMovie.SyncSettingsJson;
 
-		public IInputAdapter MovieIn { get; } = new CopyControllerAdapter();
+		public IInputAdapter MovieIn { private get; set; }
 		public IInputAdapter MovieOut { get; } = new CopyControllerAdapter();
 		public IStickyController StickySource { get; set; }
 
@@ -318,7 +318,6 @@ namespace BizHawk.Client.Common
 		private void LatchInputToUser()
 		{
 			MovieOut.Source = MovieIn;
-			MovieController.SetFrom(MovieIn); // TODO: this shouldn't be necessary anymore
 		}
 
 		// Latch input from the input log, if available
@@ -385,7 +384,7 @@ namespace BizHawk.Client.Common
 			}
 			else
 			{
-				LatchInputToUser();
+				MovieController.SetFrom(MovieIn);
 			}
 
 			Movie.RecordFrame(Movie.Emulator.Frame, MovieController);

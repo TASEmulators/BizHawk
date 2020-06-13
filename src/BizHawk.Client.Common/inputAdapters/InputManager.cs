@@ -68,7 +68,7 @@ namespace BizHawk.Client.Common
 			StickyXorAdapter.Source = UdLRControllerAdapter;
 			AutofireStickyXorAdapter.Source = StickyXorAdapter;
 
-			session.MovieIn.Source = AutofireStickyXorAdapter;
+			session.MovieIn = AutofireStickyXorAdapter;
 			session.StickySource = AutofireStickyXorAdapter;
 			ControllerOutput.Source = session.MovieOut;
 		}
