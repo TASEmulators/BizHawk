@@ -59,5 +59,22 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCFX
 			["SELECT"] = "Select",
 			["RUN"] = "Run"
 		};
+
+		protected override HashSet<string> ComputeHiddenPorts()
+		{
+			// NB: Since we're hiding these settings up above, this will always trim us down to 2 ports
+			var devCount = 8;
+			if (SettingsQuery("pcfx.input.port1.multitap") != "1")
+				devCount -= 3;
+			if (SettingsQuery("pcfx.input.port2.multitap") != "1")
+				devCount -= 3;
+			var ret = new HashSet<string>();
+			for (var i = 1; i <= 8; i++)
+			{
+				if (i > devCount)
+					ret.Add($"port{i}");
+			}
+			return ret;
+		}
 	}
 }
