@@ -145,6 +145,10 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			public int FpsFixed;
 			public int LcmWidth;
 			public int LcmHeight;
+			public int  PointerScaleX;
+			public int  PointerScaleY;
+			public int  PointerOffsetX;
+			public int  PointerOffsetY;
 		}
 
 		[BizImport(CC, Compatibility = true)]

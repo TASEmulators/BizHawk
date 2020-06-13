@@ -132,7 +132,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				VsyncDenominator = 1 << 24;
 				_soundBuffer = new short[22050 * 2];
 
-				InitControls(portData, discs?.Length > 0);
+				InitControls(portData, discs?.Length > 0, ref info);
 				_nyma.SetFrontendSettingQuery(null);
 				if (_disks != null)
 					_nyma.SetCDCallbacks(null, null);

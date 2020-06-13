@@ -4,19 +4,22 @@ using System.IO;
 using System.Linq;
 using BizHawk.Emulation.Common;
 using NymaTypes;
+using static BizHawk.Emulation.Cores.Waterbox.LibNymaCore;
 
 namespace BizHawk.Emulation.Cores.Waterbox
 {
 	unsafe partial class NymaCore
 	{
+		private const int MAX_INPUT_DATA = 256;
+
 		private ControllerAdapter _controllerAdapter;
-		private readonly byte[] _inputPortData = new byte[16 * 16];
+		private readonly byte[] _inputPortData = new byte[MAX_INPUT_DATA];
 		private readonly string _controllerDeckName;
 
-		private void InitControls(List<NPortInfoT> allPorts, bool hasCds)
+		private void InitControls(List<NPortInfoT> allPorts, bool hasCds, ref SystemInfo si)
 		{
 			_controllerAdapter = new ControllerAdapter(
-				allPorts, _syncSettingsActual.PortDevices, ButtonNameOverrides, hasCds, ComputeHiddenPorts());
+				allPorts, _syncSettingsActual.PortDevices, ButtonNameOverrides, hasCds, ref si, ComputeHiddenPorts());
 			_nyma.SetInputDevices(_controllerAdapter.Devices);
 			ControllerDefinition = _controllerAdapter.Definition;
 		}
@@ -24,15 +27,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		protected class ControllerAdapter : IBinaryStateable
 		{
-			/// <summary>
-			/// allowed number of input ports.  must match native
-			/// </summary>
-			private const int MAX_PORTS = 16;
-			/// <summary>
-			/// total maximum bytes on each input port.  must match native
-			/// </summary>
-			private const int MAX_PORT_DATA = 16;
-
 			/// <summary>
 			/// Device list suitable to pass back to the core
 			/// </summary>
@@ -43,6 +37,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				IDictionary<int, string> config,
 				IDictionary<string, string> overrides,
 				bool hasCds,
+				ref SystemInfo systemInfo,
 				HashSet<string> hiddenPorts)
 			{
 				var ret = new ControllerDefinition
@@ -59,10 +54,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 				var finalDevices = new List<string>();
 
-				if (allPorts.Count > MAX_PORTS)
-					throw new InvalidOperationException($"Too many input ports");
 				var switchPreviousFrame = new List<byte>();
-				for (int port = 0, devByteStart = 0; port < allPorts.Count; port++, devByteStart += MAX_PORT_DATA)
+				for (int port = 0, devByteStart = 0; port < allPorts.Count; port++)
 				{
 					var portInfo = allPorts[port];
 					var deviceName = config.ContainsKey(port) ? config[port] : portInfo.DefaultDeviceShortName;
@@ -83,8 +76,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					}
 
 					var deviceInfo = device;
-					if (deviceInfo.ByteLength > MAX_PORT_DATA)
-						throw new InvalidOperationException($"Input device {deviceInfo.ShortName} uses more than {MAX_PORT_DATA} bytes");
 					var category = portInfo.FullName + " - " + deviceInfo.FullName;
 
 					var inputs = deviceInfo.Inputs
@@ -205,24 +196,36 @@ namespace BizHawk.Emulation.Cores.Waterbox
 									var val = c.AxisValue(fullName);
 									b[byteStart] = (byte)val;
 									b[byteStart + 1] = (byte)(val >> 8);
-								});									
-								break;							
+								});
+								break;
 							}
 							case InputType.PointerX:
 							{
-								throw new NotImplementedException("TODO: Support Pointer");
 								// I think the core expects to be sent some sort of 16 bit integer, but haven't investigated much
-								// ret.AxisControls.Add(name);
-								// ret.AxisRanges.Add(new ControllerDefinition.AxisRange(0, ????, ????));
-								// break;
+								ret.AxisControls.Add(name);
+								ret.AxisRanges.Add(new ControllerDefinition.AxisRange(
+									systemInfo.PointerOffsetX, systemInfo.PointerOffsetX, systemInfo.PointerScaleX));
+								_thunks.Add((c, b) =>
+								{
+									var val = c.AxisValue(name);
+									b[byteStart] = (byte)val;
+									b[byteStart + 1] = (byte)(val >> 8);
+								});
+								break;
 							}
 							case InputType.PointerY:
 							{
-								throw new Exception("TODO: Support Pointer");
 								// I think the core expects to be sent some sort of 16 bit integer, but haven't investigated much
-								// ret.AxisControls.Add(name);
-								// ret.AxisRanges.Add(new ControllerDefinition.AxisRange(0, ????, ????, true));
-								// break;
+								ret.AxisControls.Add(name);
+								ret.AxisRanges.Add(new ControllerDefinition.AxisRange(
+									systemInfo.PointerOffsetY, systemInfo.PointerOffsetY, systemInfo.PointerScaleY));
+								_thunks.Add((c, b) =>
+								{
+									var val = c.AxisValue(name);
+									b[byteStart] = (byte)val;
+									b[byteStart + 1] = (byte)(val >> 8);
+								});
+								break;
 							}
 							case InputType.ButtonAnalog:
 							{
@@ -239,13 +242,18 @@ namespace BizHawk.Emulation.Cores.Waterbox
 								});									
 								break;
 							}
-							// TODO: wire up statuses to something (not controller, of course)
+							case InputType.Status:
+								// TODO: wire up statuses to something (not controller, of course)
+								break;
 							default:
 							{
 								throw new NotImplementedException($"Unimplemented button type {input.Type}");
 							}
 						}
 					}
+					devByteStart += (int)deviceInfo.ByteLength;
+					if (devByteStart > MAX_INPUT_DATA)
+						throw new NotImplementedException($"More than {MAX_INPUT_DATA} input data bytes");
 				}
 				ret.BoolButtons.Add("Power");
 				ret.BoolButtons.Add("Reset");
