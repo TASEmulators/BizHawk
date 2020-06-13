@@ -49,5 +49,15 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCFX
 		{
 			"pcfx.slstart", "pcfx.slend",
 		};
+
+		protected override IDictionary<string, string> ButtonNameOverrides { get; } = new Dictionary<string, string>
+		{
+			["UP ↑"] = "Up",
+			["DOWN ↓"] = "Down",
+			["LEFT ←"] = "Left",
+			["RIGHT →"] = "Right",
+			["SELECT"] = "Select",
+			["RUN"] = "Run"
+		};
 	}
 }

@@ -444,6 +444,10 @@ namespace BizHawk.Client.Common
 				["IV"] = '4',
 				["V"] = '5',
 				["VI"] = '6',
+				["MODE 1: Set A"] = 'a',
+				["MODE 1: Set B"] = 'b',
+				["MODE 2: Set A"] = 'A',
+				["MODE 2: Set B"] = 'B'
 			},
 			["PCE"] = new Dictionary<string, char>
 			{
