@@ -281,9 +281,7 @@ namespace BizHawk.Client.Common
 				_modeChangedCallback();
 			}
 
-			// TODO: we aren't ready for this line, keeping the old movie hanging around masks a lot of Tastudio problems
-			// Uncommenting this can cause drawing crashes in tastudio since it depends on a ITasMovie and doesn't have one between closing and opening a rom
-			//Movie = null;
+			Movie = null;
 		}
 
 		public void ConvertToTasProj()
