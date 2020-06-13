@@ -571,8 +571,7 @@ namespace BizHawk.Client.EmuHawk
 			// start dumping, if appropriate
 			if (_argParser.cmdDumpType != null && _argParser.cmdDumpName != null)
 			{
-				if (OSTailoredCode.IsUnixHost) Console.WriteLine("A/V dump requires Win32 API calls, ignored");
-				else RecordAv(_argParser.cmdDumpType, _argParser.cmdDumpName);
+				RecordAv(_argParser.cmdDumpType, _argParser.cmdDumpName);
 			}
 
 			SetMainformMovieInfo();
@@ -3148,7 +3147,7 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		private void RecordAvBase(string videoWriterName, string filename, bool unattended)
 		{
-			if (_currAviWriter != null || OSTailoredCode.IsUnixHost) return;
+			if (_currAviWriter != null) return;
 
 			// select IVideoWriter to use
 			IVideoWriter aw;
