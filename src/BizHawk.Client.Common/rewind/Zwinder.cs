@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.IO.Compression;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -20,7 +21,7 @@ namespace BizHawk.Client.Common
 
 		/// <param name="targetSize">size of rewinder backing store in bytes</param>
 		/// <param name="targetFrameLength">desired frame length (number of emulated frames you can go back before running out of buffer)</param>
-		public Zwinder(long targetSize, int targetFrameLength, IBinaryStateable stateSource)
+		public Zwinder(long targetSize, int targetFrameLength, bool kompress, IBinaryStateable stateSource)
 		{
 			if (targetSize < 65536)
 				throw new ArgumentOutOfRangeException(nameof(targetSize));
@@ -34,6 +35,7 @@ namespace BizHawk.Client.Common
 			_stateSource = stateSource;
 			_targetFrameLength = targetFrameLength;
 			_states = new StateInfo[STATEMASK + 1];
+			_kompress = kompress;
 		}
 
 		/// <summary>
@@ -83,6 +85,8 @@ namespace BizHawk.Client.Common
 		private int _nextStateIndex;
 		private int HeadStateIndex => (_nextStateIndex - 1) & STATEMASK;
 
+		private readonly bool _kompress;
+
 		private IBinaryStateable _stateSource;
 
 		/// <summary>
@@ -128,7 +132,16 @@ namespace BizHawk.Client.Common
 				_buffer,
 				start,
 				Size, _sizeMask);
-			_stateSource.SaveStateBinary(new BinaryWriter(stream));
+
+			if (_kompress)
+			{
+				using var kompressor = new DeflateStream(stream, CompressionLevel.Fastest, leaveOpen: true);
+				_stateSource.SaveStateBinary(new BinaryWriter(kompressor));
+			}
+			else
+			{
+				_stateSource.SaveStateBinary(new BinaryWriter(stream));
+			}
 
 			// invalidate states if we're at the state ringbuffer size limit, or if they were overridden in the bytebuffer
 			var length = stream.Length;
@@ -160,9 +173,15 @@ namespace BizHawk.Client.Common
 				return false; // no states saved
 			int loadIndex = (_nextStateIndex - frames) & STATEMASK;
 
-			_stateSource.LoadStateBinary(
-				new BinaryReader(
-					new LoadStateStream(_buffer, _states[loadIndex].Start, _states[loadIndex].Size, _sizeMask)));
+			var stream = new LoadStateStream(_buffer, _states[loadIndex].Start, _states[loadIndex].Size, _sizeMask);
+			if (_kompress)
+			{
+				_stateSource.LoadStateBinary(new BinaryReader(new DeflateStream(stream, CompressionMode.Decompress, leaveOpen: true)));
+			}
+			else
+			{
+				_stateSource.LoadStateBinary(new BinaryReader(stream));
+			}
 
 			_nextStateIndex = loadIndex;
 			Console.WriteLine($"Size: {Size >> 20}MiB, Used: {Used >> 20}MiB, States: {Count}");
@@ -281,6 +300,7 @@ namespace BizHawk.Client.Common
 			public override int Read(byte[] buffer, int offset, int count)
 			{
 				long n = Math.Min(_size - _position, count);
+				int ret = (int)n;
 				if (n > 0)
 				{
 					var start = (_position + _offset) & _mask;
@@ -300,7 +320,7 @@ namespace BizHawk.Client.Common
 						_position += n;
 					}
 				}
-				return (int)n;
+				return ret;
 			}
 
 			public override int ReadByte()

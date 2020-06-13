@@ -866,7 +866,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Rewinder?.Dispose();
 			Rewinder = Emulator.HasSavestates() && Config.Rewind.EnabledSmall // TODO: replace this with just a single "enabled"?
-				? new Zwinder(1024 * 1024 * 32, 600, Emulator.AsStatable())
+				? new Zwinder(1024 * 1024 * 32, 600, kompress: true, Emulator.AsStatable())
 				// ? new Rewinder(Emulator.AsStatable(), Config.Rewind)
 				: null;
 		}
