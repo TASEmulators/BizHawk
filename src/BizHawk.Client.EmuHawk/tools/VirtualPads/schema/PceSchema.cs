@@ -17,6 +17,11 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
 		{
+			if (!(core is PCEngine))
+			{
+				return Enumerable.Empty<PadSchema>();
+			}
+
 			var ss = ((PCEngine)core).GetSyncSettings();
 
 			var padSchemas = new[]
