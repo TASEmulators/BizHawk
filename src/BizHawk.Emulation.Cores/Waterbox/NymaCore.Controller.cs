@@ -224,6 +224,21 @@ namespace BizHawk.Emulation.Cores.Waterbox
 								// ret.AxisRanges.Add(new ControllerDefinition.AxisRange(0, ????, ????, true));
 								// break;
 							}
+							case InputType.ButtonAnalog:
+							{
+								ret.AxisControls.Add(name);
+								ret.CategoryLabels[name] = category;
+								ret.AxisRanges.Add(new ControllerDefinition.AxisRange(
+									0, 0, 0xffff, false
+								));
+								_thunks.Add((c, b) =>
+								{
+									var val = c.AxisValue(name);
+									b[byteStart] = (byte)val;
+									b[byteStart + 1] = (byte)(val >> 8);
+								});									
+								break;
+							}
 							// TODO: wire up statuses to something (not controller, of course)
 							default:
 							{
