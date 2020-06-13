@@ -38,8 +38,6 @@ namespace BizHawk.Client.Common
 				?? throw new ArgumentNullException($"{nameof(pauseCallback)} cannot be null.");
 			_modeChangedCallback = modeChangedCallback
 				?? throw new ArgumentNullException($"{nameof(modeChangedCallback)} CannotUnloadAppDomainException be null.");
-
-			MultiTrack.RewiringAdapter.Source = MovieIn;
 		}
 
 		public IMovieConfig Settings { get; }
@@ -56,8 +54,6 @@ namespace BizHawk.Client.Common
 		public IStickyController StickySource { get; set; }
 
 		public IMovieController MovieController { get; private set; } = new Bk2Controller("", NullController.Instance.Definition);
-
-		public MultitrackRecorder MultiTrack { get; } = new MultitrackRecorder();
 
 		public IMovieController GenerateMovieController(ControllerDefinition definition = null)
 		{
@@ -242,7 +238,6 @@ namespace BizHawk.Client.Common
 
 			Movie = _queuedMovie;
 			_queuedMovie = null;
-			MultiTrack.Restart(Movie.Emulator.ControllerDefinition.PlayerCount);
 
 			Movie.ProcessSavestate(Movie.Emulator);
 			Movie.ProcessSram(Movie.Emulator);
@@ -255,31 +250,6 @@ namespace BizHawk.Client.Common
 			else
 			{
 				Movie.StartNewPlayback();
-			}
-		}
-
-		public void ToggleMultitrack()
-		{
-			if (Movie.IsActive())
-			{
-				if (Settings.VBAStyleMovieLoadState)
-				{
-					Output("Multi-track can not be used in Full Movie Loadstates mode");
-				}
-				else if (Movie is ITasMovie)
-				{
-					Output("Multi-track can not be used with tasproj movies");
-				}
-				else
-				{
-					MultiTrack.IsActive ^= true;
-					MultiTrack.SelectNone();
-					Output(MultiTrack.IsActive ? "MultiTrack Enabled" : "MultiTrack Disabled");
-				}
-			}
-			else
-			{
-				Output("MultiTrack cannot be enabled while not recording.");
 			}
 		}
 
@@ -298,8 +268,6 @@ namespace BizHawk.Client.Common
 				}
 
 				message += "stopped.";
-
-				MultiTrack.Restart(1);
 
 				var result = Movie.Stop(saveChanges);
 				if (result)
@@ -345,28 +313,6 @@ namespace BizHawk.Client.Common
 		private void Output(string message)
 		{
 			_messageCallback?.Invoke(message);
-		}
-
-		private void LatchInputToMultitrackUser()
-		{
-			if (MultiTrack.IsActive)
-			{
-				var rewiredSource = MultiTrack.RewiringAdapter;
-				rewiredSource.PlayerSource = 1;
-				rewiredSource.PlayerTargetMask = 1 << MultiTrack.CurrentPlayer;
-				if (MultiTrack.RecordAll)
-				{
-					rewiredSource.PlayerTargetMask = unchecked((int)0xFFFFFFFF);
-				}
-
-				if (Movie.InputLogLength > Movie.Emulator.Frame)
-				{
-					var input = Movie.GetInputState(Movie.Emulator.Frame);
-					MovieController.SetFrom(input);
-				}
-
-				MovieController.SetPlayerFrom(rewiredSource, MultiTrack.CurrentPlayer);
-			}
 		}
 
 		private void LatchInputToUser()
@@ -439,14 +385,7 @@ namespace BizHawk.Client.Common
 			}
 			else
 			{
-				if (MultiTrack.IsActive)
-				{
-					LatchInputToMultitrackUser();
-				}
-				else
-				{
-					LatchInputToUser();
-				}
+				LatchInputToUser();
 			}
 
 			Movie.RecordFrame(Movie.Emulator.Frame, MovieController);

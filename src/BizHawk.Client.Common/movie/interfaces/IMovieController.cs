@@ -10,11 +10,6 @@ namespace BizHawk.Client.Common
 		void SetFrom(IController source);
 
 		/// <summary>
-		/// Latches to only the buttons in the given <see cref="IController" /> for the given controller
-		/// </summary>
-		void SetPlayerFrom(IController playerSource, int controllerNum);
-
-		/// <summary>
 		/// Latches to the given <see cref="IStickyController" />
 		/// For buttons it latches autohold state, for analogs it latches mid value.
 		/// </summary>

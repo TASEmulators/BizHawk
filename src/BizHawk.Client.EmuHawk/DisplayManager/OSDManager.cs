@@ -320,12 +320,6 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			if (GlobalWin.MovieSession.MultiTrack.IsActive)
-			{
-				var point = GetCoordinates(g, GlobalWin.Config.MultitrackRecorder, GlobalWin.MovieSession.MultiTrack.Status);
-				DrawOsdMessage(g, GlobalWin.MovieSession.MultiTrack.Status, FixedMessagesColor, point.X, point.Y);
-			}
-
 			if (GlobalWin.Config.DisplayFps && Fps != null)
 			{
 				var point = GetCoordinates(g, GlobalWin.Config.Fps, Fps);

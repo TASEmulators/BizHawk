@@ -21,7 +21,6 @@ namespace BizHawk.Client.Common
 		string QueuedSyncSettings { get; }
 
 		IMovieController MovieController { get; }
-		MultitrackRecorder MultiTrack { get; }
 
 		/// <summary>
 		/// Provides a source for sticky controls ot use when recording
@@ -68,8 +67,6 @@ namespace BizHawk.Client.Common
 		/// Sets the Movie property with the QueuedMovie, clears the queued movie, and starts the new movie
 		/// </summary>
 		void RunQueuedMovie(bool recordMode, IEmulator emulator, IDictionary<string, string> preferredCores);
-
-		void ToggleMultitrack();
 
 		void StopMovie(bool saveChanges = true);
 

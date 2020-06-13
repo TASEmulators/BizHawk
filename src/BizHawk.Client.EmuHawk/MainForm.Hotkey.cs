@@ -299,21 +299,6 @@ namespace BizHawk.Client.EmuHawk
 				case "Save Movie":
 					SaveMovie(); 
 					break;
-				case "Toggle MultiTrack":
-					MovieSession.ToggleMultitrack();
-					break;
-				case "MT Select All":
-					MovieSession.MultiTrack.SelectAll();
-					break;
-				case "MT Select None":
-					MovieSession.MultiTrack.SelectNone();
-					break;
-				case "MT Increment Player":
-					MovieSession.MultiTrack.Increment();
-					break;
-				case "MT Decrement Player":
-					MovieSession.MultiTrack.Decrement();
-					break;
 
 				// Tools
 				case "RAM Watch":

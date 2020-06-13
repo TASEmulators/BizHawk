@@ -231,7 +231,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MovieSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			FullMovieLoadstatesMenuItem.Enabled = !MovieSession.MultiTrack.IsActive;
 			StopMovieWithoutSavingMenuItem.Enabled = MovieSession.Movie.IsActive() && MovieSession.Movie.Changes;
 			StopMovieMenuItem.Enabled
 				= SaveMovieMenuItem.Enabled

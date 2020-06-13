@@ -186,11 +186,6 @@ namespace BizHawk.Client.Common
 						Bind("Movie", "Stop Movie"),
 						Bind("Movie", "Play from beginning"),
 						Bind("Movie", "Save Movie"),
-						Bind("Movie", "Toggle MultiTrack"),
-						Bind("Movie", "MT Select All"),
-						Bind("Movie", "MT Select None"),
-						Bind("Movie", "MT Increment Player"),
-						Bind("Movie", "MT Decrement Player"),
 
 						Bind("Tools", "RAM Watch"),
 						Bind("Tools", "RAM Search"),

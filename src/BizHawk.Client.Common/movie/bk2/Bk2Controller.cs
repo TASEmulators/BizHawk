@@ -59,36 +59,6 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void SetPlayerFrom(IController playerSource, int controllerNum)
-		{
-			foreach (var button in playerSource.Definition.BoolButtons)
-			{
-				var bnp = ButtonNameParser.Parse(button);
-
-				if (bnp?.PlayerNum != controllerNum)
-				{
-					continue;
-				}
-
-				var val = playerSource.IsPressed(button);
-				_myBoolButtons[button] = val;
-			}
-
-			foreach (var button in Definition.AxisControls)
-			{
-				var bnp = ButtonNameParser.Parse(button);
-
-				if (bnp?.PlayerNum != controllerNum)
-				{
-					continue;
-				}
-
-				var val = playerSource.AxisValue(button);
-
-				_myAxisControls[button] = val;
-			}
-		}
-
 		public void SetFromSticky(IStickyController controller)
 		{
 			foreach (var button in Definition.BoolButtons)

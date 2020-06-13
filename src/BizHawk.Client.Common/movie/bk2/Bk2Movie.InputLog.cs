@@ -38,69 +38,36 @@ namespace BizHawk.Client.Common
 			int? stateFrame = null;
 
 			// We are in record mode so replace the movie log with the one from the savestate
-			if (!Session.MultiTrack.IsActive)
+			if (Session.Settings.EnableBackupMovies && MakeBackup && Log.Count != 0)
 			{
-				if (Session.Settings.EnableBackupMovies && MakeBackup && Log.Count != 0)
-				{
-					SaveBackup();
-					MakeBackup = false;
-				}
-
-				Log.Clear();
-				string line;
-				while ((line = reader.ReadLine()) != null)
-				{
-					if (line.StartsWith("|"))
-					{
-						Log.Add(line);
-					}
-					else if (line.StartsWith("Frame "))
-					{
-						var strs = line.Split(' ');
-						try
-						{
-							stateFrame = int.Parse(strs[1]);
-						}
-						catch
-						{
-							errorMessage = "Savestate Frame number failed to parse";
-							return false;
-						}
-					}
-					else if (line.StartsWith("LogKey:"))
-					{
-						LogKey = line.Replace("LogKey:", "");
-					}
-				}
+				SaveBackup();
+				MakeBackup = false;
 			}
-			else
+
+			Log.Clear();
+			string line;
+			while ((line = reader.ReadLine()) != null)
 			{
-				var i = 0;
-				string line;
-				while ((line = reader.ReadLine()) != null)
+				if (line.StartsWith("|"))
 				{
-					if (line.StartsWith("|"))
+					Log.Add(line);
+				}
+				else if (line.StartsWith("Frame "))
+				{
+					var strs = line.Split(' ');
+					try
 					{
-						SetFrameAt(i, line);
-						i++;
+						stateFrame = int.Parse(strs[1]);
 					}
-					else if (line.StartsWith("Frame "))
+					catch
 					{
-						var strs = line.Split(' ');
-						try
-						{
-							stateFrame = int.Parse(strs[1]);
-						}
-						catch
-						{
-							errorMessage = "Savestate Frame number failed to parse";
-							return false;
-						}
+						errorMessage = "Savestate Frame number failed to parse";
+						return false;
 					}
-					else if (line.StartsWith("LogKey:"))
-					{
-						LogKey = line.Replace("LogKey:", "");
-					}
+				}
+				else if (line.StartsWith("LogKey:"))
+				{
+					LogKey = line.Replace("LogKey:", "");
 				}
 			}
 
