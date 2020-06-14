@@ -4,6 +4,8 @@ using System.Drawing;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Sony.PSX;
 
+using static BizHawk.Emulation.Common.ControllerDefinition;
+
 namespace BizHawk.Client.EmuHawk
 {
 	[Schema("PSX")]
@@ -45,7 +47,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static PadSchema DualShockController(int controller)
 		{
-			var stickRanges = Octoshock.DualShockStickRanges;
+			var stickRanges = CreateAxisRangePair(0, 128, 255, AxisPairOrientation.RightAndDown);
 			return new PadSchema
 			{
 				Size = new Size(500, 290),
