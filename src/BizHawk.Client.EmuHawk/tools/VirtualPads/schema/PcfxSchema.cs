@@ -1,7 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
+using System.Windows.Forms;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Waterbox;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -11,35 +13,29 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
 		{
-			throw new NotImplementedException();
-			// var ss = ((Tst)core).GetSyncSettings();
+			var nyma = (NymaCore) core;
+			return NymaSchemas(nyma);
+		}
 
-			// var schemas = new List<PadSchema>();
-			// if (ss.Port1 != ControllerType.None || ss.Port2 != ControllerType.None)
-			// {
-			// 	switch (ss.Port1)
-			// 	{
-			// 		case ControllerType.Gamepad:
-			// 			schemas.Add(StandardController(1));
-			// 			break;
-			// 		case ControllerType.Mouse:
-			// 			schemas.Add(Mouse(1));
-			// 			break;
-			// 	}
-
-			// 	int controllerNum = ss.Port1 != ControllerType.None ? 2 : 1;
-			// 	switch (ss.Port2)
-			// 	{
-			// 		case ControllerType.Gamepad:
-			// 			schemas.Add(StandardController(controllerNum));
-			// 			break;
-			// 		case ControllerType.Mouse:
-			// 			schemas.Add(Mouse(controllerNum));
-			// 			break;
-			// 	}
-			// }
-
-			// return schemas;
+		private static IEnumerable<PadSchema> NymaSchemas(NymaCore nyma)
+		{
+			foreach (NymaCore.PortResult result in nyma.ActualPortData)
+			{
+				var num = int.Parse(result.Port.ShortName.Last().ToString());
+				var device = result.Device.ShortName;
+				if (device == "gamepad")
+				{
+					yield return StandardController(num);
+				}
+				else if (device == "mouse")
+				{
+					yield return Mouse(num);
+				}
+				else if (device != "none")
+				{
+					MessageBox.Show($"Controller type {device} not supported yet.");
+				}
+			}
 		}
 
 		private static PadSchema StandardController(int controller)
@@ -49,43 +45,55 @@ namespace BizHawk.Client.EmuHawk
 				Size = new Size(230, 100),
 				Buttons = new[]
 				{
-					ButtonSchema.Up(34, 17, controller),
-					ButtonSchema.Down(34, 61, controller),
-					ButtonSchema.Left(22, 39, controller),
-					ButtonSchema.Right(44, 39, controller),
-					new ButtonSchema(74, 17, controller, "Mode 1"),
-					new ButtonSchema(74, 40, controller, "Mode 2"),
-					new ButtonSchema(77, 63, controller, "Select") { DisplayName = "s" },
-					new ButtonSchema(101, 63, controller, "Run") { DisplayName = "R" },
+					ButtonSchema.NymaUp(14, 12, controller),
+					ButtonSchema.NymaDown(14, 56, controller),
+					ButtonSchema.NymaLeft(2, 34, controller),
+					ButtonSchema.NymaRight(24, 34, controller),
+					new ButtonSchema(72, 17, controller, "MODE 1: Set A") { DisplayName = "1A" },
+					new ButtonSchema(72, 40, controller, "MODE 2: Set A") { DisplayName = "2A" },
+					new ButtonSchema(102, 17, controller, "MODE 1: Set B") { DisplayName = "1B" },
+					new ButtonSchema(102, 40, controller, "MODE 2: Set B") { DisplayName = "2B" },
 					new ButtonSchema(140, 63, controller, "IV"),
 					new ButtonSchema(166, 53, controller, "V"),
 					new ButtonSchema(192, 43, controller, "VI"),
 					new ButtonSchema(140, 40, controller, "I"),
 					new ButtonSchema(166, 30, controller, "II"),
-					new ButtonSchema(192, 20, controller, "III")
+					new ButtonSchema(192, 20, controller, "III"),
+					new ButtonSchema(77, 63, controller, "SELECT") { DisplayName = "s" },
+					new ButtonSchema(101, 63, controller, "RUN") { DisplayName = "R" }
 				}
 			};
 		}
 
 		private static PadSchema Mouse(int controller)
 		{
+			var range = new ControllerDefinition.AxisRange(-127, 0, 127);
 			return new PadSchema
 			{
-				DisplayName = "Mouse",
-				Size = new Size(375, 320),
+				Size = new Size(345, 225),
 				Buttons = new PadSchemaControl[]
 				{
-					new TargetedPairSchema(14, 17, $"P{controller} X")
+					new AnalogSchema(6, 14, $"P{controller} Motion Left / Right")
 					{
-						TargetSize = new Size(256, 256)
+						SecondaryName = $"P{controller} Motion Up / Down",
+						AxisRange = range,
+						SecondaryAxisRange = range
 					},
-					new ButtonSchema(300, 17, controller, "Mouse Left")
+					new ButtonSchema(275, 15, controller, "Left Button")
 					{
 						DisplayName = "Left"
 					},
-					new ButtonSchema(300, 47, "Mouse Right")
+					new ButtonSchema(275, 45, controller, "Right Button")
 					{
 						DisplayName = "Right"
+					},
+					new ButtonSchema(275, 75, controller, "SELECT")
+					{
+						DisplayName = "Select"
+					},
+					new ButtonSchema(275, 105, controller, "RUN")
+					{
+						DisplayName = "Run"
 					}
 				}
 			};

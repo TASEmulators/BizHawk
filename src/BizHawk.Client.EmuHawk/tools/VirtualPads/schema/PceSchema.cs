@@ -16,12 +16,12 @@ namespace BizHawk.Client.EmuHawk
 	[Schema("PCE")]
 	public class PceSchema : IVirtualPadSchema
 	{
-		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
+		public virtual IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
 		{
 			return core switch
 			{
 				PCEngine pce => PceHawkSchemas(pce),
-				NymaCore hyper => NymaSchemas(hyper),
+				NymaCore nyma => NymaSchemas(nyma),
 				_ => Enumerable.Empty<PadSchema>()
 			};
 		}

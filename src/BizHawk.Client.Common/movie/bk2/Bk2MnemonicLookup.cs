@@ -19,7 +19,6 @@ namespace BizHawk.Client.Common
 					key = key.Substring(3);
 				}
 			}
-			
 
 			if (SystemOverrides.ContainsKey(systemId) && SystemOverrides[systemId].ContainsKey(key))
 			{
@@ -69,7 +68,6 @@ namespace BizHawk.Client.Common
 
 			return button;
 		}
-
 
 		private static readonly Dictionary<string, char> BaseMnemonicLookupTable = new Dictionary<string, char>
 		{
