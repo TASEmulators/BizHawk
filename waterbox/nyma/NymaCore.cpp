@@ -440,6 +440,19 @@ ECL_EXPORT void DumpSettings()
 }
 }
 
+ECL_EXPORT void NotifySettingChanged(const char* name)
+{
+	for (auto a = Game->Settings; a->name; a++)
+	{
+		if (strcmp(a->name, name) == 0)
+		{
+			if (a->ChangeNotification)
+				a->ChangeNotification(name);
+			return;
+		}
+	}
+}
+
 static FrameCallback FrameThreadProc = nullptr;
 
 void RegisterFrameThreadProc(FrameCallback threadproc)

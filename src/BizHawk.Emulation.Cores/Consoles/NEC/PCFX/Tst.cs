@@ -47,6 +47,17 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCFX
 
 			{ "pcfx.slstart", new SettingOverride { NonSync = true, NoRestart = true } },
 			{ "pcfx.slend", new SettingOverride { NonSync = true, NoRestart = true } },
+
+			{ "pcfx.mouse_sensitivity", new SettingOverride { Hide = true } },
+			{ "pcfx.nospritelimit", new SettingOverride { NonSync = true } },
+			{ "pcfx.high_dotclock_width", new SettingOverride { NonSync = true } },
+			{ "pcfx.rainbow.chromaip", new SettingOverride { NonSync = true } },
+
+			{ "pcfx.adpcm.suppress_channel_reset_clicks", new SettingOverride { NonSync = true } },
+			{ "pcfx.adpcm.emulate_buggy_codec", new SettingOverride { NonSync = true } },
+
+			{ "pcfx.resamp_quality", new SettingOverride { NonSync = true } },
+			{ "pcfx.resamp_rate_error", new SettingOverride { Hide = true } },
 		};
 
 		protected override HashSet<string> ComputeHiddenPorts()

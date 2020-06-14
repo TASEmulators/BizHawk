@@ -322,8 +322,9 @@ namespace BizHawk.BizInvoke
 				throw new InvalidOperationException("Savestate internal mismatch");
 			if (!r.ReadBytes(_hash.Length).SequenceEqual(_hash))
 			{
-				// TODO: We'll probably have to allow this for romhackurz
-				throw new InvalidOperationException("Waterbox consistency guarantee failed");
+				// romhackurz need this not to throw on them.
+				// anywhere where non-sync settings enter non-invisible ram, we need this not to throw
+				Console.Error.WriteLine("WARNING: MEMORY BLOCK CONSISTENCY CHECK FAILED");
 			}
 			var newCommittedSize = r.ReadUInt64();
 			if (newCommittedSize > CommittedSize)

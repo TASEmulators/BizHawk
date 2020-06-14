@@ -157,6 +157,13 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		[BizImport(CC)]
 		public abstract void DumpSettings();
 
+		/// <summary>
+		/// Call when a non-sync setting changes value after emulation started.
+		/// The new value should already be available from FrontendSettingQuery
+		/// </summary>
+		[BizImport(CC)]
+		public abstract void NotifySettingChanged(string name);
+
 		public delegate void FrontendSettingQuery(string setting, IntPtr dest);
 		[BizImport(CC)]
 		public abstract void SetFrontendSettingQuery(FrontendSettingQuery q);

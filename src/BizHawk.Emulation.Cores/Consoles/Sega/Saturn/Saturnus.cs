@@ -53,6 +53,30 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 			{ "ss.dbg_exe_cdpath", new SettingOverride { Hide = true } },
 			{ "ss.dbg_exe_cem", new SettingOverride { Hide = true } },
 			{ "ss.dbg_exe_hh", new SettingOverride { Hide = true } },
+
+			{ "ss.scsp.resamp_quality", new SettingOverride { NonSync = true } }, // Don't set NoRestart = true for this
+			{ "ss.input.mouse_sensitivity", new SettingOverride { Hide = true } },
+
+			{ "ss.input.port1.gun_chairs", new SettingOverride { NonSync = true } },
+			{ "ss.input.port2.gun_chairs", new SettingOverride { NonSync = true } },
+			{ "ss.input.port3.gun_chairs", new SettingOverride { NonSync = true } },
+			{ "ss.input.port4.gun_chairs", new SettingOverride { NonSync = true } },
+			{ "ss.input.port5.gun_chairs", new SettingOverride { NonSync = true } },
+			{ "ss.input.port6.gun_chairs", new SettingOverride { NonSync = true } },
+			{ "ss.input.port7.gun_chairs", new SettingOverride { NonSync = true } },
+			{ "ss.input.port8.gun_chairs", new SettingOverride { NonSync = true } },
+			{ "ss.input.port9.gun_chairs", new SettingOverride { NonSync = true } },
+			{ "ss.input.port10.gun_chairs", new SettingOverride { NonSync = true } },
+			{ "ss.input.port11.gun_chairs", new SettingOverride { NonSync = true } },
+			{ "ss.input.port12.gun_chairs", new SettingOverride { NonSync = true } },
+
+			{ "ss.slstart", new SettingOverride { NonSync = true } },
+			{ "ss.slend", new SettingOverride { NonSync = true } },
+			{ "ss.h_overscan", new SettingOverride { NonSync = true } },
+			{ "ss.h_blend", new SettingOverride { NonSync = true } },
+			{ "ss.correct_aspect", new SettingOverride { NonSync = true } },
+			{ "ss.slstartp", new SettingOverride { NonSync = true } },
+			{ "ss.slendp", new SettingOverride { NonSync = true } },
 		};
 
 		protected override HashSet<string> ComputeHiddenPorts()

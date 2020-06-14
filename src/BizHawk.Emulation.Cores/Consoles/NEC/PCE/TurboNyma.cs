@@ -56,6 +56,15 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 			// these can be changed dynamically
 			{ "pce.slstart", new SettingOverride { NonSync = true, NoRestart = true } },
 			{ "pce.slend", new SettingOverride { NonSync = true, NoRestart = true } },
+
+			{ "pce.h_overscan", new SettingOverride { NonSync = true } },
+			{ "pce.mouse_sensitivity", new SettingOverride { Hide = true } },
+			{ "pce.nospritelimit", new SettingOverride { NonSync = true } },
+			{ "pce.resamp_quality", new SettingOverride { NonSync = true } },
+
+			{ "pce.cdpsgvolume", new SettingOverride { NonSync = true, NoRestart = true } },
+			{ "pce.cddavolume", new SettingOverride { NonSync = true, NoRestart = true } },
+			{ "pce.adpcmvolume", new SettingOverride { NonSync = true, NoRestart = true } },
 		};
 
 		protected override HashSet<string> ComputeHiddenPorts()

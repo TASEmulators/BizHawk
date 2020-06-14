@@ -46,6 +46,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Faust
 			{ "snes_faust.spex.sound", new SettingOverride { Hide = true } },
 			{ "nyma.rtcinitialtime", new SettingOverride { Hide = true } },
 			{ "nyma.rtcrealtime", new SettingOverride { Hide = true } },
+
+			{ "snes_faust.resamp_rate_error", new SettingOverride { Hide = true } },
+			{ "snes_faust.resamp_quality", new SettingOverride { NonSync = true } },
+			{ "snes_faust.correct_aspect", new SettingOverride { NonSync = true } },
+			{ "snes_faust.slstart", new SettingOverride { NonSync = true } },
+			{ "snes_faust.slend", new SettingOverride { NonSync = true } },
+			{ "snes_faust.slstartp", new SettingOverride { NonSync = true } },
+			{ "snes_faust.slendp", new SettingOverride { NonSync = true } },
+			{ "snes_faust.h_filter", new SettingOverride { NonSync = true } },
 		};
 	}
 }

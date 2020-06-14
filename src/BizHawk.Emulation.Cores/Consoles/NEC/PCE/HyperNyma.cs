@@ -46,6 +46,10 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 			{ "nyma.rtcrealtime", new SettingOverride { Hide = true } },
 			{ "pce_fast.slstart", new SettingOverride { NonSync = true, NoRestart = true } },
 			{ "pce_fast.slend", new SettingOverride { NonSync = true, NoRestart = true } },
+
+			{ "pce_fast.correct_aspect", new SettingOverride { NonSync = true } },
+			{ "pce_fast.mouse_sensitivity", new SettingOverride { Hide = true } },
+			{ "pce_fast.nospritelimit", new SettingOverride { NonSync = true } },
 		};
 
 		// pce always has two layers, sgx always has 4, and mednafen knows this

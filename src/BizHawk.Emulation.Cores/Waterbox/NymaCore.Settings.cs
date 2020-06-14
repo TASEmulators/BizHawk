@@ -36,6 +36,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			var n = o.Clone();
 			n.Normalize(SettingsInfo);
 			var ret = NymaSettings.Reboot(_settings, n, SettingsInfo);
+			var notifies = NymaSettings.ChangedKeys(_settings, n, SettingsInfo).ToList();
 
 			_settings = n;
 			if (SettingsInfo.LayerNames.Count > 0)
@@ -47,6 +48,10 @@ namespace BizHawk.Emulation.Cores.Waterbox
 						layers &= ~(1ul << i);
 				}
 				_nyma.SetLayers(layers);
+			}
+			foreach (var key in notifies)
+			{
+				_nyma.NotifySettingChanged(key);
 			}
 			return ret;
 		}
@@ -103,6 +108,17 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					MednafenValues.Remove(key);
 				}
 				DisabledLayers = new HashSet<string>(DisabledLayers.Where(l => info.LayerNames.Contains(l)));
+			}
+
+			public static IEnumerable<string> ChangedKeys(NymaSettings x, NymaSettings y, NymaSettingsInfo info)
+			{
+				var possible = info.AllOverrides.Where(kvp => kvp.Value.NonSync && kvp.Value.NoRestart).Select(kvp => kvp.Key);
+				return possible.Where(key =>
+				{
+					x.MednafenValues.TryGetValue(key, out var xx);
+					y.MednafenValues.TryGetValue(key, out var yy);
+					return xx != yy;
+				});
 			}
 
 			public static PutSettingsDirtyBits Reboot(NymaSettings x, NymaSettings y, NymaSettingsInfo info)
