@@ -134,6 +134,9 @@ namespace BizHawk.Client.Common
 			["Mouse Center"] = 'c',
 			["Mouse Start"] = 's',
 
+			["Left Button"] = 'l',
+			["Right Button"] = 'r',
+
 			["Mode"] = 'M',
 			["MODE"] = 'M',
 			["Mode 1"] = 'M',

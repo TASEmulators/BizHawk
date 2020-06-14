@@ -4,7 +4,6 @@ using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Consoles.NEC.PCE;
 using BizHawk.Emulation.Cores.PCEngine;
 using BizHawk.Emulation.Cores.Waterbox;
 
@@ -101,6 +100,10 @@ namespace BizHawk.Client.EmuHawk
 				{
 					yield return StandardController(num);
 				}
+				else if (device == "mouse")
+				{
+					yield return Mouse(num);
+				}
 				else if (device != "none")
 				{
 					MessageBox.Show($"Controller type {device} not supported yet.");
@@ -123,6 +126,40 @@ namespace BizHawk.Client.EmuHawk
 					new ButtonSchema(146, 34, controller, "II"),
 					new ButtonSchema(52, 34, controller, "SELECT") { DisplayName = "s" },
 					new ButtonSchema(74, 34, controller, "RUN") { DisplayName = "R" }
+				}
+			};
+		}
+
+		private static PadSchema Mouse(int controller)
+		{
+			var range = new ControllerDefinition.AxisRange(-127, 0, 127);
+			return new PadSchema
+			{
+				Size = new Size(345, 225),
+				Buttons = new PadSchemaControl[]
+				{
+					new AnalogSchema(6, 14, $"P{controller} Motion Left / Right")
+					{
+						SecondaryName = $"P{controller} Motion Up / Down",
+						AxisRange = range,
+						SecondaryAxisRange = range
+					},
+					new ButtonSchema(275, 15, controller, "Left Button")
+					{
+						DisplayName = "Left"
+					},
+					new ButtonSchema(275, 45, controller, "Right Button")
+					{
+						DisplayName = "Right"
+					},
+					new ButtonSchema(275, 75, controller, "SELECT")
+					{
+						DisplayName = "Select"
+					},
+					new ButtonSchema(275, 105, controller, "RUN")
+					{
+						DisplayName = "Run"
+					}
 				}
 			};
 		}
