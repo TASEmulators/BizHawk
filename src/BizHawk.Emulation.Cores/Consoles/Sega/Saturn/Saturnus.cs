@@ -42,20 +42,17 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 			DoInit<LibNymaCore>(game, null, disks.ToArray(), "ss.wbx", null, deterministic, firmwares);
 		}
 
-		protected override IDictionary<string, string> SettingsOverrides { get; } = new Dictionary<string, string>
+		protected override IDictionary<string, SettingOverride> SettingOverrides { get; } = new Dictionary<string, SettingOverride>
 		{
-			{ "ss.bios_jp", "$J" }, // FIRMWARE:
-			{ "ss.bios_na_eu", "$U" }, // FIRMWARE:
-			{ "ss.cart.kof95_path", "$KOF" }, // FIRMWARE:
-			{ "ss.cart.ultraman_path", "$ULTRA" }, // FIRMWARE:
-			{ "ss.cart.satar4mp_path", "$SATAR" }, // FIRMWARE:
-			{ "ss.affinity.vdp2", null },
-			{ "ss.dbg_exe_cdpath", null },
-			{ "ss.dbg_exe_cem", null },
-			{ "ss.dbg_exe_hh", null },
-		};
-		protected override ISet<string> NonSyncSettingNames { get; } = new HashSet<string>
-		{
+			{ "ss.bios_jp", new SettingOverride { Hide = true , Default = "$J" } }, // FIRMWARE:
+			{ "ss.bios_na_eu", new SettingOverride { Hide = true , Default = "$U" } }, // FIRMWARE:
+			{ "ss.cart.kof95_path", new SettingOverride { Hide = true , Default = "$KOF" } }, // FIRMWARE:
+			{ "ss.cart.ultraman_path", new SettingOverride { Hide = true , Default = "$ULTRA" } }, // FIRMWARE:
+			{ "ss.cart.satar4mp_path", new SettingOverride { Hide = true , Default = "$SATAR" } }, // FIRMWARE:
+			{ "ss.affinity.vdp2", new SettingOverride { Hide = true } },
+			{ "ss.dbg_exe_cdpath", new SettingOverride { Hide = true } },
+			{ "ss.dbg_exe_cem", new SettingOverride { Hide = true } },
+			{ "ss.dbg_exe_hh", new SettingOverride { Hide = true } },
 		};
 
 		protected override HashSet<string> ComputeHiddenPorts()

@@ -36,18 +36,17 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCFX
 			DoInit<LibNymaCore>(game, null, disks.ToArray(), "pcfx.wbx", null, deterministic, firmwares);
 		}
 
-		protected override IDictionary<string, string> SettingsOverrides { get; } = new Dictionary<string, string>
+		protected override IDictionary<string, SettingOverride> SettingOverrides { get; } = new Dictionary<string, SettingOverride>
 		{
-			{ "pcfx.input.port1.multitap", null },
-			{ "pcfx.input.port2.multitap", null },
-			{ "pcfx.bios", null },
-			{ "pcfx.fxscsi", null },
-			{ "nyma.rtcinitialtime", null },
-			{ "nyma.rtcrealtime", null },
-		};
-		protected override ISet<string> NonSyncSettingNames { get; } = new HashSet<string>
-		{
-			"pcfx.slstart", "pcfx.slend",
+			{ "pcfx.input.port1.multitap", new SettingOverride { Hide = true } },
+			{ "pcfx.input.port2.multitap", new SettingOverride { Hide = true } },
+			{ "pcfx.bios", new SettingOverride { Hide = true } },
+			{ "pcfx.fxscsi", new SettingOverride { Hide = true } },
+			{ "nyma.rtcinitialtime", new SettingOverride { Hide = true } },
+			{ "nyma.rtcrealtime", new SettingOverride { Hide = true } },
+
+			{ "pcfx.slstart", new SettingOverride { NonSync = true, NoRestart = true } },
+			{ "pcfx.slend", new SettingOverride { NonSync = true, NoRestart = true } },
 		};
 
 		protected override HashSet<string> ComputeHiddenPorts()

@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Faust
 		{
 			if (deterministic)
 				// force ST renderer
-				SettingsOverrides.Add("snes_faust.renderer", "0");
+				SettingOverrides.Add("snes_faust.renderer", new SettingOverride { Hide = true, Default = "0" });
 
 			DoInit<LibNymaCore>(game, rom, null, "faust.wbx", extension, deterministic);
 		}
@@ -35,18 +35,17 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Faust
 			return ret;
 		}
 
-		protected override IDictionary<string, string> SettingsOverrides { get; } = new Dictionary<string, string>
+		protected override IDictionary<string, SettingOverride> SettingOverrides { get; } = new Dictionary<string, SettingOverride>
 		{
-			// { "snes_faust.renderer", null },
-			{ "snes_faust.affinity.ppu", null },
-			{ "snes_faust.affinity.msu1.audio", null },
-			{ "snes_faust.affinity.msu1.data", null },
-			{ "snes_faust.frame_begin_vblank", null },
-			{ "snes_faust.msu1.resamp_quality", null },
-			{ "snes_faust.spex", null },
-			{ "snes_faust.spex.sound", null },
-			{ "nyma.rtcinitialtime", null },
-			{ "nyma.rtcrealtime", null },
+			{ "snes_faust.affinity.ppu", new SettingOverride { Hide = true } },
+			{ "snes_faust.affinity.msu1.audio", new SettingOverride { Hide = true } },
+			{ "snes_faust.affinity.msu1.data", new SettingOverride { Hide = true } },
+			{ "snes_faust.frame_begin_vblank", new SettingOverride { Hide = true } },
+			{ "snes_faust.msu1.resamp_quality", new SettingOverride { Hide = true } },
+			{ "snes_faust.spex", new SettingOverride { Hide = true } },
+			{ "snes_faust.spex.sound", new SettingOverride { Hide = true } },
+			{ "nyma.rtcinitialtime", new SettingOverride { Hide = true } },
+			{ "nyma.rtcrealtime", new SettingOverride { Hide = true } },
 		};
 	}
 }

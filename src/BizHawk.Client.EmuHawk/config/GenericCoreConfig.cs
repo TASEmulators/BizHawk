@@ -116,7 +116,7 @@ namespace BizHawk.Client.EmuHawk
 					// OH GOD THE HACKS WHY
 					TypeDescriptor.AddProvider(desc, typeof(Emulation.Cores.Waterbox.NymaCore.NymaSettings));
 					TypeDescriptor.AddProvider(desc, typeof(Emulation.Cores.Waterbox.NymaCore.NymaSyncSettings));
-					DoDialog(owner, "Nyma Core", !core.HasSettings, !core.HasSyncSettings);
+					DoDialog(owner, "Nyma Core", !core.SettingsInfo.HasSettings, !core.SettingsInfo.HasSyncSettings);
 				}
 				finally
 				{

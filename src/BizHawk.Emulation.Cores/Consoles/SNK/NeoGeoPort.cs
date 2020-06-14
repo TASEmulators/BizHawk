@@ -52,9 +52,9 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 			_exe.RemoveTransientFile("SAV:flash");
 		}
 
-		protected override IDictionary<string, string> SettingsOverrides { get; } = new Dictionary<string, string>
+		protected override IDictionary<string, SettingOverride> SettingOverrides { get; } = new Dictionary<string, SettingOverride>
 		{
-			{ "nyma.constantfb", null }, // TODO: Couldn't we just autodetect this whenever lcm == max == nominal?
+			{ "nyma.constantfb", new SettingOverride { Hide = true } }, // TODO: Couldn't we just autodetect this whenever lcm == max == nominal?
 		};
 	}
 }

@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 			: base(comm, "PCE", "PC Engine Controller", settings, syncSettings)
 		{
 			if (game["BRAM"])
-				SettingsOverrides["pce.disable_bram_hucard"] = "0";
+				SettingOverrides["pce.disable_bram_hucard"].Default = "0";
 			_terboGrafix = DoInit<LibTurboNyma>(game, rom, null, "pce.wbx", extension, deterministic);
 		}
 		public TurboNyma(GameInfo game, Disc[] discs, CoreComm comm,
@@ -39,24 +39,23 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 
 		public override string SystemId => IsSgx ? "SGX" : "PCE";
 
-		protected override IDictionary<string, string> SettingsOverrides { get; } = new Dictionary<string, string>
+		protected override IDictionary<string, SettingOverride> SettingOverrides { get; } = new Dictionary<string, SettingOverride>
 		{
 			// handled by hawk
-			{ "pce.cdbios", null },
-			{ "pce.gecdbios", null },
+			{ "pce.cdbios", new SettingOverride { Hide = true } },
+			{ "pce.gecdbios", new SettingOverride { Hide = true } },
 			// so fringe i don't want people bothering me about it
-			{ "pce.resamp_rate_error", null },
-			{ "pce.vramsize", null },
+			{ "pce.resamp_rate_error", new SettingOverride { Hide = true } },
+			{ "pce.vramsize", new SettingOverride { Hide = true } },
 			// match hawk behavior on BRAM, instead of giving every game BRAM
-			{ "pce.disable_bram_hucard", "1" },
+			{ "pce.disable_bram_hucard", new SettingOverride { Hide = true, Default = "1" } },
 			// nyma settings that don't apply here
 			// TODO: not quite happy with how this works out
-			{ "nyma.rtcinitialtime", null },
-			{ "nyma.rtcrealtime", null },
-		};
-		protected override ISet<string> NonSyncSettingNames { get; } = new HashSet<string>
-		{
-			"pce.slstart", "pce.slend",
+			{ "nyma.rtcinitialtime", new SettingOverride { Hide = true } },
+			{ "nyma.rtcrealtime", new SettingOverride { Hide = true } },
+			// these can be changed dynamically
+			{ "pce.slstart", new SettingOverride { NonSync = true, NoRestart = true } },
+			{ "pce.slend", new SettingOverride { NonSync = true, NoRestart = true } },
 		};
 
 		protected override HashSet<string> ComputeHiddenPorts()

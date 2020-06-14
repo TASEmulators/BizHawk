@@ -51,8 +51,11 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			{
 				_nyma.PreInit();
 				var portData = GetInputPortsData();
-				InitSyncSettingsInfo(portData);
+				InitAllSettingsInfo(portData);
 				_nyma.SetFrontendSettingQuery(_settingsQueryDelegate);
+				_settings.Normalize(SettingsInfo);
+				_syncSettings.Normalize(SettingsInfo);
+
 				var filesToRemove = new List<string>();
 				if (firmwares != null)
 				{

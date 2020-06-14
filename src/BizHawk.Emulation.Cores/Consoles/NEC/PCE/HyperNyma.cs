@@ -37,17 +37,15 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 
 		public override string SystemId => IsSgx ? "SGX" : "PCE";
 
-		protected override IDictionary<string, string> SettingsOverrides { get; } = new Dictionary<string, string>
+		protected override IDictionary<string, SettingOverride> SettingOverrides { get; } = new Dictionary<string, SettingOverride>
 		{
-			{ "pce_fast.mouse_sensitivity", null },
-			{ "pce_fast.disable_softreset", null },
-			{ "pce_fast.cdbios", null },
-			{ "nyma.rtcinitialtime", null },
-			{ "nyma.rtcrealtime", null },
-		};
-		protected override ISet<string> NonSyncSettingNames { get; } = new HashSet<string>
-		{
-			"pce_fast.slstart", "pce_fast.slend",
+			{ "pce_fast.mouse_sensitivity", new SettingOverride { Hide = true } },
+			{ "pce_fast.disable_softreset", new SettingOverride { Hide = true } },
+			{ "pce_fast.cdbios", new SettingOverride { Hide = true } },
+			{ "nyma.rtcinitialtime", new SettingOverride { Hide = true } },
+			{ "nyma.rtcrealtime", new SettingOverride { Hide = true } },
+			{ "pce_fast.slstart", new SettingOverride { NonSync = true, NoRestart = true } },
+			{ "pce_fast.slend", new SettingOverride { NonSync = true, NoRestart = true } },
 		};
 
 		// pce always has two layers, sgx always has 4, and mednafen knows this
