@@ -4,7 +4,9 @@ using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Consoles.NEC.PCE;
 using BizHawk.Emulation.Cores.PCEngine;
+using BizHawk.Emulation.Cores.Waterbox;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -17,29 +19,34 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
 		{
-			if (!(core is PCEngine))
+			return core switch
 			{
-				return Enumerable.Empty<PadSchema>();
-			}
+				PCEngine pce => PceHawkSchemas(pce),
+				NymaCore hyper => NymaSchemas(hyper),
+				_ => Enumerable.Empty<PadSchema>()
+			};
+		}
 
-			var ss = ((PCEngine)core).GetSyncSettings();
+		private static IEnumerable<PadSchema> PceHawkSchemas(PCEngine core)
+		{
+			var ss = core.GetSyncSettings();
 
 			var padSchemas = new[]
-			{
-				ss.Port1,
-				ss.Port2,
-				ss.Port3,
-				ss.Port4,
-				ss.Port5
-			}
-			.Where(p => p != PceControllerType.Unplugged)
-			.Select((p, i) => GenerateSchemaForPort(p, i + 1))
-			.Where(s => s != null);
+				{
+					ss.Port1,
+					ss.Port2,
+					ss.Port3,
+					ss.Port4,
+					ss.Port5
+				}
+				.Where(p => p != PceControllerType.Unplugged)
+				.Select((p, i) => PceHawkGenerateSchemaForPort(p, i + 1))
+				.Where(s => s != null);
 
 			return padSchemas;
 		}
 
-		private static PadSchema GenerateSchemaForPort(PceControllerType type, int controller)
+		private static PadSchema PceHawkGenerateSchemaForPort(PceControllerType type, int controller)
 		{
 			switch (type)
 			{
@@ -49,11 +56,11 @@ namespace BizHawk.Client.EmuHawk
 				case PceControllerType.Unplugged:
 					return null;
 				case PceControllerType.GamePad:
-					return StandardController(controller);
+					return StandardHawkController(controller);
 			}
 		}
 
-		private static PadSchema StandardController(int controller)
+		private static PadSchema StandardHawkController(int controller)
 		{
 			return new PadSchema
 			{
@@ -80,6 +87,42 @@ namespace BizHawk.Client.EmuHawk
 					{
 						DisplayName = "R"
 					}
+				}
+			};
+		}
+
+		private static IEnumerable<PadSchema> NymaSchemas(NymaCore nyma)
+		{
+			foreach (NymaCore.PortResult result in nyma.ActualPortData)
+			{
+				var num = int.Parse(result.Port.ShortName.Last().ToString());
+				var device = result.Device.ShortName;
+				if (device == "gamepad")
+				{
+					yield return StandardController(num);
+				}
+				else if (device != "none")
+				{
+					MessageBox.Show($"Controller type {device} not supported yet.");
+				}
+			}
+		}
+
+		private static PadSchema StandardController(int controller)
+		{
+			return new PadSchema
+			{
+				Size = new Size(174, 90),
+				Buttons = new[]
+				{
+					ButtonSchema.NymaUp(14, 12, controller),
+					ButtonSchema.NymaDown(14, 56, controller),
+					ButtonSchema.NymaLeft(2, 34, controller),
+					ButtonSchema.NymaRight(24, 34, controller),
+					new ButtonSchema(122, 34, controller, "I"),
+					new ButtonSchema(146, 34, controller, "II"),
+					new ButtonSchema(52, 34, controller, "SELECT") { DisplayName = "s" },
+					new ButtonSchema(74, 34, controller, "RUN") { DisplayName = "R" }
 				}
 			};
 		}

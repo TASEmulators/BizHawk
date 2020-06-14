@@ -92,8 +92,11 @@ namespace BizHawk.Client.Common
 			["Z"] = 'Z',
 
 			["Select"] = 's',
+			["SELECT"] = 's',
 			["Start"] = 'S',
+			["START"] = 'S',
 			["Run"] = 'R',
+			["RUN"] = 'R',
 
 			["Left Shoulder"] = 'l',
 			["Right Shoulder"] = 'r',

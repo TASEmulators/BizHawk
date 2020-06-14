@@ -59,6 +59,19 @@ namespace BizHawk.Client.EmuHawk
 
 		public static ButtonSchema Right(int x, int y, int controller)
 			=> new ButtonSchema(x, y, controller, "Right") { Icon = Resources.Forward };
+
+		// Nyma has its own conventions
+		public static ButtonSchema NymaUp(int x, int y, int controller)
+			=> new ButtonSchema(x, y, controller, "UP ↑") { Icon = Resources.BlueUp };
+
+		public static ButtonSchema NymaDown(int x, int y, int controller)
+			=> new ButtonSchema(x, y, controller, "DOWN ↓") { Icon = Resources.BlueDown };
+
+		public static ButtonSchema NymaLeft(int x, int y, int controller)
+			=> new ButtonSchema(x, y, controller, "LEFT ←") { Icon = Resources.Back };
+
+		public static ButtonSchema NymaRight(int x, int y, int controller)
+			=> new ButtonSchema(x, y, controller, "RIGHT →") { Icon = Resources.Forward };
 	}
 
 	/// <summary>A single analog control (e.g. pressure sensitive button)</summary>
