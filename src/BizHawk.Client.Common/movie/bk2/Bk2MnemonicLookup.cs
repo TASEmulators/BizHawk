@@ -36,6 +36,15 @@ namespace BizHawk.Client.Common
 				return key[0];
 			}
 
+			if (key.Contains("↑"))
+				return 'U';
+			if (key.Contains("↓"))
+				return 'D';
+			if (key.Contains("←"))
+				return 'L';
+			if (key.Contains("→"))
+				return 'R';
+
 			return '!';
 		}
 
@@ -86,6 +95,8 @@ namespace BizHawk.Client.Common
 			["Start"] = 'S',
 			["Run"] = 'R',
 
+			["Left Shoulder"] = 'l',
+			["Right Shoulder"] = 'r',
 			["L"] = 'l',
 			["R"] = 'r',
 
