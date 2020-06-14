@@ -1,6 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using System.Windows.Forms;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Consoles.Sega.Saturn;
+using static BizHawk.Emulation.Common.ControllerDefinition;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -8,59 +13,51 @@ namespace BizHawk.Client.EmuHawk
 	// ReSharper disable once UnusedMember.Global
 	public class SaturnSchema : IVirtualPadSchema
 	{
-		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core) => throw new NotImplementedException();
-		/*
+		private static V GetOrDefault<K, V>(IDictionary<K, V> dict, K key)
+		{
+			dict.TryGetValue(key, out var ret);
+			return ret;
+		}
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
 		{
 			var ss = ((Saturnus)core).GetSyncSettings();
+			var multi1 = GetOrDefault(ss.MednafenValues, "ss.input.sport1.multitap") != "1";
+			var multi2 = GetOrDefault(ss.MednafenValues, "ss.input.sport2.multitap") != "1";
 
-			int totalPorts = (ss.Port1Multitap ? 6 : 1) + (ss.Port2Multitap ? 6 : 1);
+			int totalPorts = 1 + (multi1 ? 6 : 1) + (multi2 ? 6 : 1);
 
-			var padSchemas = new[]
-			{
-				ss.Port1,
-				ss.Port2,
-				ss.Port3,
-				ss.Port4,
-				ss.Port5,
-				ss.Port6,
-				ss.Port7,
-				ss.Port8,
-				ss.Port9,
-				ss.Port10,
-				ss.Port11,
-				ss.Port12
-			}.Take(totalPorts)
-			.Where(p => p != SaturnusControllerDeck.Device.None)
-			.Select((p, i) => GenerateSchemaForPort(p, i + 1))
-			.Where(s => s != null)
-			.Concat(new[] { ConsoleButtons() });
+			var padSchemas = Enumerable.Range(0, 12)
+				.Take(totalPorts)
+				.Concat(new[] { 12 })
+				.Select(p => new { index = p, device = GetOrDefault(ss.PortDevices, p) })
+				.Where(a => a.device != null && a.device != "none")
+				.Select(a => GenerateSchemaForPort(a.device, a.index + 1))
+				.Concat(new[] { ConsoleButtons() })
+				.ToList();
 
 			return padSchemas;
 		}
 
-		private static PadSchema GenerateSchemaForPort(SaturnusControllerDeck.Device device, int controllerNum)
+		private static PadSchema GenerateSchemaForPort(string device, int controllerNum)
 		{
 			switch (device)
 			{
 				default:
-				case SaturnusControllerDeck.Device.None:
+					MessageBox.Show($"This peripheral `{device}` is not supported yet");
 					return null;
-				case SaturnusControllerDeck.Device.Gamepad:
+
+				case "gamepad":
 					return StandardController(controllerNum);
-				case SaturnusControllerDeck.Device.ThreeDeePad:
+				case "3dpad":
 					return ThreeDeeController(controllerNum);
-				case SaturnusControllerDeck.Device.Mouse:
+				case "mouse":
 					return Mouse(controllerNum);
-				case SaturnusControllerDeck.Device.Wheel:
+				case "wheel":
 					return Wheel(controllerNum);
-				case SaturnusControllerDeck.Device.Mission:
+				case "mission":
 					return MissionControl(controllerNum);
-				case SaturnusControllerDeck.Device.DualMission:
+				case "dmission":
 					return DualMissionControl(controllerNum);
-				case SaturnusControllerDeck.Device.Keyboard:
-					MessageBox.Show("This peripheral is not supported yet");
-					return null;
 			}
 		}
 
@@ -90,7 +87,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static PadSchema ThreeDeeController(int controller)
 		{
-			var axisRanges = SaturnusControllerDeck.ThreeDeeAxisRanges;
+			var axisRange = new AxisRange(0, 0x8000, 0xffff);
 			return new PadSchema
 			{
 				Size = new Size(458, 285),
@@ -110,8 +107,8 @@ namespace BizHawk.Client.EmuHawk
 					new AnalogSchema(6, 74, $"P{controller} Stick Horizontal")
 					{
 						SecondaryName = $"P{controller} Stick Vertical",
-						AxisRange = axisRanges[0],
-						SecondaryAxisRange = axisRanges[1]
+						AxisRange = axisRange,
+						SecondaryAxisRange = axisRange
 					},
 					new SingleAxisSchema(8, 12, controller, "Left Shoulder")
 					{
@@ -189,7 +186,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static PadSchema MissionControl(int controller)
 		{
-			var axisRanges = SaturnusControllerDeck.MissionAxisRanges;
+			var axisRange = new AxisRange(0, 0x8000, 0xffff);
 			return new PadSchema
 			{
 				DisplayName = "Mission",
@@ -208,8 +205,8 @@ namespace BizHawk.Client.EmuHawk
 					new AnalogSchema(185, 13, $"P{controller} Stick Horizontal")
 					{
 						SecondaryName = $"P{controller} Stick Vertical",
-						AxisRange = axisRanges[0],
-						SecondaryAxisRange = axisRanges[1]
+						AxisRange = axisRange,
+						SecondaryAxisRange = axisRange
 					},
 					new SingleAxisSchema(135, 13, controller, "Throttle", isVertical: true)
 					{
@@ -223,7 +220,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static PadSchema DualMissionControl(int controller)
 		{
-			var axisRanges = SaturnusControllerDeck.DualMissionAxisRanges;
+			var axisRange = new AxisRange(0, 0x8000, 0xffff);
 			return new PadSchema
 			{
 				DisplayName = "Dual Mission",
@@ -233,8 +230,8 @@ namespace BizHawk.Client.EmuHawk
 					new AnalogSchema(58, 13, $"P{controller} Left Stick Horizontal")
 					{
 						SecondaryName = $"P{controller} Left Stick Vertical",
-						AxisRange = axisRanges[3],
-						SecondaryAxisRange = axisRanges[4]
+						AxisRange = axisRange,
+						SecondaryAxisRange = axisRange
 					},
 					new SingleAxisSchema(8, 13, controller, "Left Throttle", isVertical: true)
 					{
@@ -246,8 +243,8 @@ namespace BizHawk.Client.EmuHawk
 					new AnalogSchema(400, 13, $"P{controller} Right Stick Horizontal")
 					{
 						SecondaryName = $"P{controller} Right Stick Vertical",
-						AxisRange = axisRanges[0],
-						SecondaryAxisRange = axisRanges[1]
+						AxisRange = axisRange,
+						SecondaryAxisRange = axisRange
 					},
 					new SingleAxisSchema(350, 13, controller, "Right Throttle", isVertical: true)
 					{
@@ -280,6 +277,5 @@ namespace BizHawk.Client.EmuHawk
 				}
 			};
 		}
-		*/
 	}
 }
