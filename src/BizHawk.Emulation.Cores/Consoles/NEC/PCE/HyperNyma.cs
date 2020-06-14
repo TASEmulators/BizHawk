@@ -48,7 +48,6 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 			{ "pce_fast.slend", new SettingOverride { NonSync = true, NoRestart = true } },
 
 			{ "pce_fast.correct_aspect", new SettingOverride { NonSync = true } },
-			{ "pce_fast.mouse_sensitivity", new SettingOverride { Hide = true } },
 			{ "pce_fast.nospritelimit", new SettingOverride { NonSync = true } },
 		};
 
