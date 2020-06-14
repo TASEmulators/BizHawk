@@ -142,7 +142,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		private void PrintGdbData()
 		{
 			Console.WriteLine("GDB Symbol Load:");
-			Console.WriteLine($"  add-sym {ModuleName}");
+			Console.WriteLine($"  add-sym {ModuleName} -s .text {_elf.Sections.Single(s => s.Name == ".text").LoadAddress}");
 		}
 
 		private void PrintSections()

@@ -184,9 +184,13 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo& frame)
 
 			for (int line = lineStart; line < lineEnd; line++)
 			{
-				memcpy(dst, src, (multiWidth ? EES->LineWidths[line] : w) * sizeof(uint32_t));
-				src += srcp;
-				dst += dstp;
+				auto lw = multiWidth ? EES->LineWidths[line] : w;
+				if (MDFN_LIKELY(lw > 0))
+				{
+					memcpy(dst, src, lw * sizeof(uint32_t));
+					src += srcp;
+					dst += dstp;
+				}
 			}
 		}
 		else
@@ -207,7 +211,7 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo& frame)
 					memcpy(dst, src, w * sizeof(uint32_t));
 					dst += dstp;
 				}
-				else
+				else if (MDFN_LIKELY(w > 0))
 				{
 					// stretch horizontal
 					int wf = Game->lcm_width / w;
