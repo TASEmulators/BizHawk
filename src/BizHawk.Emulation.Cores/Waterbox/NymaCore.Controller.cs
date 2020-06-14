@@ -32,6 +32,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			/// </summary>
 			public string[] Devices { get; }
 			public ControllerDefinition Definition { get; }
+			public List<PortResult> ActualPortData { get; set; } = new List<PortResult>();
 			public ControllerAdapter(
 				List<NPortInfoT> allPorts,
 				IDictionary<int, string> config,
@@ -74,6 +75,12 @@ namespace BizHawk.Emulation.Cores.Waterbox
 						if (device == null)
 							throw new InvalidOperationException($"Fail: unknown controller device {portInfo.DefaultDeviceShortName}");
 					}
+
+					ActualPortData.Add(new PortResult
+					{
+						Port = portInfo,
+						Device = device
+					});
 
 					var deviceInfo = device;
 					var category = portInfo.FullName + " - " + deviceInfo.FullName;
@@ -305,5 +312,23 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		{
 			return new HashSet<string>();
 		}
+
+		public class PortResult
+		{
+			/// <summary>
+			/// The port, together with all of its potential contents
+			/// </summary>
+			public NPortInfoT Port { get; set; }
+			/// <summary>
+			/// What was actually plugged into the port
+			/// </summary>
+			public NDeviceInfoT Device { get; set; }
+		}
+
+		/// <summary>
+		/// In a fully initialized core, holds information about what was actually plugged in.  Please do not mutate it.
+		/// </summary>
+		/// <value></value>
+		public List<PortResult> ActualPortData => _controllerAdapter.ActualPortData;
 	}
 }
