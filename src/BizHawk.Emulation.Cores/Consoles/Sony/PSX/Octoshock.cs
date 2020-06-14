@@ -24,6 +24,8 @@ using BizHawk.Emulation.Common;
 using BizHawk.Common;
 using BizHawk.Emulation.DiscSystem;
 
+using static BizHawk.Emulation.Common.ControllerDefinition;
+
 #pragma warning disable 649 //adelikat: Disable dumb warnings until this file is complete
 
 namespace BizHawk.Emulation.Cores.Sony.PSX
@@ -220,8 +222,6 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		public string SystemId => "PSX";
 
-		public static readonly IReadOnlyList<ControllerDefinition.AxisRange> DualShockStickRanges = ControllerDefinition.CreateAxisRangePair(0, 128, 255, ControllerDefinition.AxisPairOrientation.RightAndDown);
-
 		public static ControllerDefinition CreateControllerDefinition(SyncSettings syncSettings)
 		{
 			var definition = new ControllerDefinition { Name = "PSX Front Panel" };
@@ -255,7 +255,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 								"P" + pnum + " L"
 							});
 
-					var axisRange = new ControllerDefinition.AxisRange(0, 128, 255);
+					var axisRange = new AxisRange(0, 128, 255);
 					definition.AxisRanges.Add(axisRange);
 					definition.AxisRanges.Add(axisRange);
 					definition.AxisRanges.Add(axisRange);
@@ -287,16 +287,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 						definition.BoolButtons.Add("P" + pnum + " L3");
 						definition.BoolButtons.Add("P" + pnum + " R3");
 						definition.BoolButtons.Add("P" + pnum + " MODE");
-
-						definition.AxisControls.AddRange(new[]
-						{
-								"P" + pnum + " LStick X",
-								"P" + pnum + " LStick Y",
-								"P" + pnum + " RStick X",
-								"P" + pnum + " RStick Y"
-							});
-
-						definition.AxisRanges.AddRange(DualShockStickRanges.Concat(DualShockStickRanges).ToList());
+						definition.AddXYPair($"P{pnum} LStick {{0}}", AxisPairOrientation.RightAndDown, 0, 128, 255);
+						definition.AddXYPair($"P{pnum} RStick {{0}}", AxisPairOrientation.RightAndDown, 0, 128, 255);
 					}
 				}
 			}
@@ -313,7 +305,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			definition.AxisRanges.Add(
 				//new ControllerDefinition.AxisRange(-1, -1, -1) //this is carefully chosen so that we end up with a -1 disc by default (indicating that it's never been set)
 				//hmm.. I don't see why this wouldn't work
-				new ControllerDefinition.AxisRange(0, 1, 1)
+				new AxisRange(0, 1, 1)
 			);
 
 			return definition;

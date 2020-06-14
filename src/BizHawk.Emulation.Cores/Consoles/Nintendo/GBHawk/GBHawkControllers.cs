@@ -5,6 +5,8 @@ using System.Linq;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
+using static BizHawk.Emulation.Common.ControllerDefinition;
+
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
 	/// <summary>
@@ -114,12 +116,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			Definition = new ControllerDefinition
 			{
 				Name = "Gameboy Controller + Tilt",
-				BoolButtons = BaseDefinition
-				.Select(b => "P" + PortNum + " " + b)
-				.ToList(),
-				AxisControls = { "P" + PortNum + " Tilt X", "P" + PortNum + " Tilt Y" },
-				AxisRanges = ControllerDefinition.CreateAxisRangePair(-45, 0, 45, ControllerDefinition.AxisPairOrientation.RightAndUp) //TODO verify direction against hardware
-			};
+				BoolButtons = BaseDefinition.Select(b => $"P{PortNum} {b}").ToList()
+			}.AddXYPair($"P{PortNum} Tilt {{0}}", AxisPairOrientation.RightAndUp, -45, 0, 45); //TODO verify direction against hardware
 		}
 
 		public int PortNum { get; }

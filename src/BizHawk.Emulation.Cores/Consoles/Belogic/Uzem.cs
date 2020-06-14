@@ -2,6 +2,8 @@
 using BizHawk.Emulation.Cores.Waterbox;
 using System;
 
+using static BizHawk.Emulation.Common.ControllerDefinition;
+
 namespace BizHawk.Emulation.Cores.Consoles.Belogic
 {
 	[Core("uzem", "David Etherton", true, true, "", "", false)]
@@ -59,16 +61,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Belogic
 		private static readonly ControllerDefinition Mouse = new ControllerDefinition
 		{
 			Name = "SNES Controller",
-			BoolButtons =
-			{
-				"P1 Mouse Left", "P1 Mouse Right", "Power"
-			},
-			AxisControls =
-			{
-				"P1 Mouse X", "P1 Mouse Y"
-			},
-			AxisRanges = ControllerDefinition.CreateAxisRangePair(-127, 0, 127, ControllerDefinition.AxisPairOrientation.RightAndUp) //TODO verify direction against hardware
-		};
+			BoolButtons = { "P1 Mouse Left", "P1 Mouse Right", "Power" }
+		}.AddXYPair("P1 Mouse {0}", AxisPairOrientation.RightAndUp, -127, 0, 127); //TODO verify direction against hardware
 
 		private static readonly string[] PadBits =
 		{

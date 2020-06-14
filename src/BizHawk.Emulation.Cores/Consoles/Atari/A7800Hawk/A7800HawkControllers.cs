@@ -4,6 +4,8 @@ using System.Linq;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
+using static BizHawk.Emulation.Common.ControllerDefinition;
+
 namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 {
 	/// <summary>
@@ -272,12 +274,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			Definition = new ControllerDefinition
 			{
 				Name = "Light Gun Controller",
-				BoolButtons = BaseDefinition
-				.Select(b => "P" + PortNum + " " + b)
-				.ToList(),
-				AxisControls = { "P" + PortNum + " X", "P" + PortNum + " Y" },
-				AxisRanges = { new ControllerDefinition.AxisRange(1, 160, 320), new ControllerDefinition.AxisRange(1, 121, 242) }
-			};
+				BoolButtons = BaseDefinition.Select(b => $"P{PortNum} {b}").ToList()
+			}.AddXYPair($"P{PortNum} {{0}}", AxisPairOrientation.RightAndUp, (1, 160, 320), (1, 121, 242)); //TODO verify direction against hardware
 		}
 		
 		public int PortNum { get; }

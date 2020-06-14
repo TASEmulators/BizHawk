@@ -3,6 +3,8 @@ using System.Linq;
 
 using BizHawk.Emulation.Common;
 
+using static BizHawk.Emulation.Common.ControllerDefinition;
+
 namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 {
 	public partial class SMS
@@ -44,8 +46,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			},
 			AxisRanges =
 			{
-				new ControllerDefinition.AxisRange(0, 128, 255),
-				new ControllerDefinition.AxisRange(0, 128, 255)
+				new AxisRange(0, 128, 255),
+				new AxisRange(0, 128, 255)
 			}
 		};
 
@@ -55,21 +57,9 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			BoolButtons =
 			{
 				"Reset", "Pause",
-				"P1 Trigger",
-			},
-			AxisControls =
-			{
-				"P1 X", "P1 Y",
-			},
-			AxisRanges =
-			{
-				new ControllerDefinition.AxisRange(0, 64, 127),
-				new ControllerDefinition.AxisRange(0, 500, 1000)
+				"P1 Trigger"
 			}
-		};
-
-		/// <remarks>TODO verify direction against hardware</remarks>
-		private static readonly List<ControllerDefinition.AxisRange> SportsPadTrackballRanges = ControllerDefinition.CreateAxisRangePair(-64, 0, 63, ControllerDefinition.AxisPairOrientation.RightAndUp);
+		}.AddXYPair("P1 {0}", AxisPairOrientation.RightAndUp, (0, 64, 127), (0, 500, 1000)); //TODO verify direction against hardware
 
 		public static readonly ControllerDefinition SMSSportsPadController = new ControllerDefinition
 		{
@@ -79,14 +69,9 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				"Reset", "Pause",
 				"P1 Left", "P1 Right", "P1 Up", "P1 Down", "P1 B1", "P1 B2",
 				"P2 Left", "P2 Right", "P2 Up", "P2 Down", "P2 B1", "P2 B2"
-			},
-			AxisControls =
-			{
-				"P1 X", "P1 Y",
-				"P2 X", "P2 Y"
-			},
-			AxisRanges = SportsPadTrackballRanges.Concat(SportsPadTrackballRanges).ToList()
-		};
+			}
+		}.AddXYPair("P1 {0}", AxisPairOrientation.RightAndUp, -64, 0, 63) //TODO verify direction against hardware
+			.AddXYPair("P2 {0}", AxisPairOrientation.RightAndUp, -64, 0, 63); //TODO ditto
 
 		public static readonly ControllerDefinition SMSKeyboardController = new ControllerDefinition
 		{

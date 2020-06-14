@@ -7,6 +7,10 @@ using BizHawk.Common;
 using System.Collections.Generic;
 using System.Linq;
 
+using BizHawk.Emulation.Cores.Nintendo.SNES;
+
+using static BizHawk.Emulation.Common.ControllerDefinition;
+
 namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 {
 	[Core(CoreNames.Snes9X, "", true, true,
@@ -202,62 +206,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 
 		private class Mouse : Analog
 		{
-			private static readonly ControllerDefinition _definition = new ControllerDefinition
-			{
-				BoolButtons = new List<string>
-				{
-					"0Mouse Left",
-					"0Mouse Right"
-				},
-				AxisControls =
-				{
-					"0Mouse X",
-					"0Mouse Y"
-				},
-				AxisRanges = ControllerDefinition.CreateAxisRangePair(-127, 0, 127, ControllerDefinition.AxisPairOrientation.RightAndUp) //TODO verify direction against hardware
-			};
+			private static readonly ControllerDefinition _definition
+				= new ControllerDefinition { BoolButtons = { "0Mouse Left", "0Mouse Right" } }
+					.AddXYPair("0Mouse {0}", AxisPairOrientation.RightAndUp, -127, 0, 127); //TODO verify direction against hardware
 
 			public override ControllerDefinition Definition => _definition;
 		}
 
 		private class SuperScope : Analog
 		{
-			private static readonly ControllerDefinition _definition = new ControllerDefinition
-			{
-				BoolButtons = new List<string>
-				{
-					"0Trigger",
-					"0Cursor",
-					"0Turbo",
-					"0Pause"
-				},
-				AxisControls =
-				{
-					"0Scope X",
-					"0Scope Y"
-				},
-				AxisRanges = SNES.LibsnesControllerDeck.LightGunRanges
-			};
+			private static readonly ControllerDefinition _definition
+				= new ControllerDefinition { BoolButtons = { "0Trigger", "0Cursor", "0Turbo", "0Pause" } }
+					.AddLightGun("0Scope {0}");
 
 			public override ControllerDefinition Definition => _definition;
 		}
 
 		private class Justifier : Analog
 		{
-			private static readonly ControllerDefinition _definition = new ControllerDefinition
-			{
-				BoolButtons = new List<string>
-				{
-					"0Trigger",
-					"0Start",
-				},
-				AxisControls =
-				{
-					"0Justifier X",
-					"0Justifier Y",
-				},
-				AxisRanges = SNES.LibsnesControllerDeck.LightGunRanges
-			};
+			private static readonly ControllerDefinition _definition
+				= new ControllerDefinition { BoolButtons = { "0Trigger", "0Start" } }
+					.AddLightGun("0Justifier {0}");
 
 			public override ControllerDefinition Definition => _definition;
 		}

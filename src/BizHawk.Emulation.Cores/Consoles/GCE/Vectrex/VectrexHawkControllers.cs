@@ -4,6 +4,8 @@ using System.Linq;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
+using static BizHawk.Emulation.Common.ControllerDefinition;
+
 namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 {
 	/// <summary>
@@ -78,12 +80,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			Definition = new ControllerDefinition
 			{
 				Name = "Vectrex Analog Controller",
-				BoolButtons = BaseDefinition
-				.Select(b => "P" + PortNum + " " + b)
-				.ToList(),
-				AxisControls = { "P" + PortNum + " Stick X", "P" + PortNum + " Stick Y" },
-				AxisRanges = ControllerDefinition.CreateAxisRangePair(-128, 0, 127, ControllerDefinition.AxisPairOrientation.RightAndUp)
-			};
+				BoolButtons = BaseDefinition.Select(b => $"P{PortNum} {b}").ToList()
+			}.AddXYPair($"P{PortNum} Stick {{0}}", AxisPairOrientation.RightAndUp, -128, 0, 127);
 		}
 
 		public int PortNum { get; }

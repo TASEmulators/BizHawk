@@ -8,6 +8,8 @@ using System.Runtime.CompilerServices;
 using BizHawk.Common.PathExtensions;
 using BizHawk.Common.StringExtensions;
 
+using static BizHawk.Emulation.Common.ControllerDefinition;
+
 namespace BizHawk.Emulation.Common
 {
 	public static class EmulatorExtensions
@@ -385,6 +387,65 @@ namespace BizHawk.Emulation.Common
 			var filesystemDir = Path.GetDirectoryName(pass1);
 			var pass2 = Path.GetFileName(pass1).RemoveInvalidFileSystemChars();
 			return Path.Combine(filesystemDir, pass2.RemoveSuffix('.')); // trailing '.' would be duplicated when file extension is added
+		}
+
+		/// <summary>
+		/// Adds an axis to the receiver <see cref="ControllerDefinition"/>, and returns it.
+		/// The new axis will appear after any that were previously defined.
+		/// </summary>
+		/// <returns>identical reference to <paramref name="def"/>; the object is mutated</returns>
+		public static ControllerDefinition AddAxis(this ControllerDefinition def, string name, int min, int mid, int max, bool isReversed = false)
+		{
+			def.AxisControls.Add(name);
+			def.AxisRanges.Add(new AxisRange(min, mid, max, isReversed));
+			return def;
+		}
+
+		/// <summary>
+		/// Adds an X/Y pair of axes to the receiver <see cref="ControllerDefinition"/>, and returns it.
+		/// The new axes will appear after any that were previously defined.
+		/// </summary>
+		/// <param name="nameFormat">format string e.g. <c>"P1 Left {0}"</c> (will be used to interpolate <c>"X"</c> and <c>"Y"</c>)</param>
+		/// <returns>identical reference to <paramref name="def"/>; the object is mutated</returns>
+		public static ControllerDefinition AddXYPair(this ControllerDefinition def, string nameFormat, AxisPairOrientation pDir, int minBoth, int midBoth, int maxBoth)
+		{
+			def.AxisControls.Add(string.Format(nameFormat, "X"));
+			def.AxisControls.Add(string.Format(nameFormat, "Y"));
+			def.AxisRanges.AddRange(CreateAxisRangePair(minBoth, midBoth, maxBoth, pDir));
+			return def;
+		}
+
+		/// <summary>
+		/// Adds an X/Y pair of axes to the receiver <see cref="ControllerDefinition"/>, and returns it.
+		/// The new axes will appear after any that were previously defined.
+		/// </summary>
+		/// <param name="nameFormat">format string e.g. <c>"P1 Left {0}"</c> (will be used to interpolate <c>"X"</c> and <c>"Y"</c>)</param>
+		/// <returns>identical reference to <paramref name="def"/>; the object is mutated</returns>
+		public static ControllerDefinition AddXYPair(this ControllerDefinition def, string nameFormat, AxisPairOrientation pDir, (int Min, int Mid, int Max) rangeX, (int Min, int Mid, int Max) rangeY)
+		{
+			def.AxisControls.Add(string.Format(nameFormat, "X"));
+			def.AxisControls.Add(string.Format(nameFormat, "Y"));
+			def.AxisRanges.Add(new AxisRange(rangeX.Min, rangeX.Mid, rangeX.Max, ((byte) pDir & 2) != 0));
+			def.AxisRanges.Add(new AxisRange(rangeY.Min, rangeY.Mid, rangeY.Max, ((byte) pDir & 1) != 0));
+			return def;
+		}
+
+		/// <summary>
+		/// Adds an X/Y/Z triple of axes to the receiver <see cref="ControllerDefinition"/>, and returns it.
+		/// The new axes will appear after any that were previously defined.
+		/// </summary>
+		/// <param name="nameFormat">format string e.g. <c>"P1 Tilt {0}"</c> (will be used to interpolate <c>"X"</c>, <c>"Y"</c>, and <c>"Z"</c>)</param>
+		/// <returns>identical reference to <paramref name="def"/>; the object is mutated</returns>
+		public static ControllerDefinition AddXYZTriple(this ControllerDefinition def, string nameFormat, int minAll, int midAll, int maxAll)
+		{
+			def.AxisControls.Add(string.Format(nameFormat, "X"));
+			def.AxisControls.Add(string.Format(nameFormat, "Y"));
+			def.AxisControls.Add(string.Format(nameFormat, "Z"));
+			var range = new AxisRange(minAll, midAll, maxAll);
+			def.AxisRanges.Add(range);
+			def.AxisRanges.Add(range);
+			def.AxisRanges.Add(range);
+			return def;
 		}
 	}
 }

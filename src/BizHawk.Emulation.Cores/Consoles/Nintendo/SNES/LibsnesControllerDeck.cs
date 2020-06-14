@@ -5,6 +5,8 @@ using System.Linq;
 using BizHawk.Emulation.Common;
 using BizHawk.Common.NumberExtensions;
 
+using static BizHawk.Emulation.Common.ControllerDefinition;
+
 namespace BizHawk.Emulation.Cores.Nintendo.SNES
 {
 	public class LibsnesControllerDeck
@@ -19,13 +21,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			Justifier,
 			Payload
 		}
-
-		/// <remarks>
-		/// problem: when you're in 240 line mode, the limit on Y needs to be 240. when you're in 224 mode, it needs to be 224.
-		/// perhaps the deck needs to account for this...
-		/// for reference Snes9x is always in 224 mode
-		/// </remarks>
-		public static readonly List<ControllerDefinition.AxisRange> LightGunRanges = new List<ControllerDefinition.AxisRange> { new ControllerDefinition.AxisRange(0, 128, 256), new ControllerDefinition.AxisRange(0, 0, 240) };
 
 		private static ILibsnesController Factory(ControllerType t, LibsnesCore.SnesSyncSettings ss)
 		{
@@ -87,6 +82,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		{
 			return _ports[port].GetState(_mergers[port].UnMerge(controller), index, id);
 		}
+	}
+
+	internal static class SNESControllerDefExtensions
+	{
+		/// <remarks>
+		/// problem: when you're in 240 line mode, the limit on Y needs to be 240. when you're in 224 mode, it needs to be 224.
+		/// perhaps the deck needs to account for this...
+		/// for reference Snes9x is always in 224 mode
+		/// </remarks>
+		public static ControllerDefinition AddLightGun(this ControllerDefinition def, string nameFormat)
+			=> def.AddXYPair(nameFormat, AxisPairOrientation.RightAndUp, (0, 128, 256), (0, 0, 240)); //TODO verify direction against hardware
 	}
 
 	public interface ILibsnesController
@@ -279,20 +285,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 	{
 		public LibsnesApi.SNES_INPUT_PORT PortType => LibsnesApi.SNES_INPUT_PORT.Mouse;
 
-		private static readonly ControllerDefinition _definition = new ControllerDefinition
-		{
-			BoolButtons = new List<string>
-			{
-				"0Mouse Left",
-				"0Mouse Right"
-			},
-			AxisControls =
-			{
-				"0Mouse X",
-				"0Mouse Y"
-			},
-			AxisRanges = ControllerDefinition.CreateAxisRangePair(-127, 0, 127, ControllerDefinition.AxisPairOrientation.RightAndDown) //TODO verify direction against hardware, R+D inferred from behaviour in Mario Paint
-		};
+		private static readonly ControllerDefinition _definition
+			= new ControllerDefinition { BoolButtons = { "0Mouse Left", "0Mouse Right" } }
+				.AddXYPair("0Mouse {0}", AxisPairOrientation.RightAndDown, -127, 0, 127); //TODO verify direction against hardware, R+D inferred from behaviour in Mario Paint
 
 		public ControllerDefinition Definition => _definition;
 
@@ -332,22 +327,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 	{
 		public LibsnesApi.SNES_INPUT_PORT PortType => LibsnesApi.SNES_INPUT_PORT.SuperScope;
 
-		private static readonly ControllerDefinition _definition = new ControllerDefinition
-		{
-			BoolButtons = new List<string>
-			{
-				"0Trigger",
-				"0Cursor",
-				"0Turbo",
-				"0Pause"
-			},
-			AxisControls =
-			{
-				"0Scope X",
-				"0Scope Y"
-			},
-			AxisRanges = LibsnesControllerDeck.LightGunRanges
-		};
+		private static readonly ControllerDefinition _definition
+			= new ControllerDefinition { BoolButtons = { "0Trigger", "0Cursor", "0Turbo", "0Pause" } }
+				.AddLightGun("0Scope {0}");
 
 		public ControllerDefinition Definition => _definition;
 
@@ -379,24 +361,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 	{
 		public LibsnesApi.SNES_INPUT_PORT PortType => LibsnesApi.SNES_INPUT_PORT.Justifier;
 
-		private static readonly ControllerDefinition _definition = new ControllerDefinition
-		{
-			BoolButtons = new List<string>
-			{
-				"0Trigger",
-				"0Start",
-				"1Trigger",
-				"1Start"
-			},
-			AxisControls =
-			{
-				"0Justifier X",
-				"0Justifier Y",
-				"1Justifier X",
-				"1Justifier Y",
-			},
-			AxisRanges = LibsnesControllerDeck.LightGunRanges.Concat(LibsnesControllerDeck.LightGunRanges).ToList()
-		};
+		private static readonly ControllerDefinition _definition
+			= new ControllerDefinition { BoolButtons = { "0Trigger", "0Start", "1Trigger", "1Start" } }
+				.AddLightGun("0Justifier {0}")
+				.AddLightGun("1Justifier {0}");
 
 		public ControllerDefinition Definition => _definition;
 

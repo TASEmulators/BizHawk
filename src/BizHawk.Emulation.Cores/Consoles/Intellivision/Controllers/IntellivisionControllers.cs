@@ -6,6 +6,8 @@ using System.Linq;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
+using static BizHawk.Emulation.Common.ControllerDefinition;
+
 namespace BizHawk.Emulation.Cores.Intellivision
 {
 	/// <summary>
@@ -139,14 +141,8 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		public FakeAnalogController(int portNum)
 		{
 			PortNum = portNum;
-			Definition = new ControllerDefinition
-			{
-				BoolButtons = BaseBoolDefinition
-				.Select(b => "P" + PortNum + " " + b)
-				.ToList(),
-				AxisControls = { "P" + PortNum + " Disc X", "P" + PortNum + " Disc Y" },
-				AxisRanges = ControllerDefinition.CreateAxisRangePair(-127, 0, 127, ControllerDefinition.AxisPairOrientation.RightAndUp) //TODO verify direction against hardware
-			};
+			Definition = new ControllerDefinition { BoolButtons = BaseBoolDefinition.Select(b => $"P{PortNum} {b}").ToList() }
+				.AddXYPair($"P{PortNum} Disc {{0}}", AxisPairOrientation.RightAndUp, -127, 0, 127); //TODO verify direction against hardware
 		}
 
 		public int PortNum { get; }

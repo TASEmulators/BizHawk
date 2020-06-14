@@ -3,6 +3,8 @@ using System.Runtime.InteropServices;
 using System.IO;
 using BizHawk.Emulation.Common;
 
+using static BizHawk.Emulation.Common.ControllerDefinition;
+
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 {
 	[Core("MelonDS", "Arisotura", false, false, null, null, true)]
@@ -92,10 +94,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			ControllerDefinition.BoolButtons.Add("Power");
 
 			ControllerDefinition.BoolButtons.Add("Touch");
-			ControllerDefinition.AxisControls.Add("TouchX");
-			ControllerDefinition.AxisRanges.Add(new ControllerDefinition.AxisRange(0, 128, 255));
-			ControllerDefinition.AxisControls.Add("TouchY");
-			ControllerDefinition.AxisRanges.Add(new ControllerDefinition.AxisRange(0, 96, 191));
+			ControllerDefinition.AddXYPair("Touch{0}", AxisPairOrientation.RightAndUp, (0, 128, 255), (0, 96, 191)); //TODO verify direction against hardware
 
 			CoreComm = comm;
 			_resampler = new SpeexResampler(SpeexResampler.Quality.QUALITY_DEFAULT, 32768, 44100, 32768, 44100);

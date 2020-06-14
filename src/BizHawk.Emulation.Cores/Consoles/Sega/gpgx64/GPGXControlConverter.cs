@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using BizHawk.Emulation.Common;
 
+using static BizHawk.Emulation.Common.ControllerDefinition;
+
 namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 {
 	public class GPGXControlConverter
@@ -93,13 +95,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			new CName("XE E2", LibGPGX.INPUT_KEYS.INPUT_XE_E2),
 		};
 
-		private static readonly ControllerDefinition.AxisRange MouseRange = new ControllerDefinition.AxisRange(-256, 0, 255);
-		
-		// lightgun needs to be transformed to match the current screen resolution
-		private static readonly ControllerDefinition.AxisRange LightgunRange = new ControllerDefinition.AxisRange(0, 5000, 10000);
-
-		private static readonly ControllerDefinition.AxisRange Xea1PRange = new ControllerDefinition.AxisRange(-128, 0, 127);
-
 		private LibGPGX.InputData _target;
 		private IController _source;
 
@@ -126,12 +121,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		private void DoMouseAnalog(int idx, int player)
 		{
-			string nx = $"P{player} Mouse X";
-			string ny = $"P{player} Mouse Y";
-			ControllerDef.AxisControls.Add(nx);
-			ControllerDef.AxisControls.Add(ny);
-			ControllerDef.AxisRanges.Add(MouseRange);
-			ControllerDef.AxisRanges.Add(MouseRange);
+			ControllerDef.AddXYPair($"P{player} Mouse {{0}}", AxisPairOrientation.RightAndUp, -256, 0, 255); //TODO verify direction against hardware
+			var nx = $"P{player} Mouse X";
+			var ny = $"P{player} Mouse Y";
 			_converts.Add(delegate
 			{
 				_target.analog[(2 * idx) + 0] = (short)_source.AxisValue(nx);
@@ -141,12 +133,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		private void DoLightgunAnalog(int idx, int player)
 		{
-			string nx = $"P{player} Lightgun X";
-			string ny = $"P{player} Lightgun Y";
-			ControllerDef.AxisControls.Add(nx);
-			ControllerDef.AxisControls.Add(ny);
-			ControllerDef.AxisRanges.Add(LightgunRange);
-			ControllerDef.AxisRanges.Add(LightgunRange);
+			// lightgun needs to be transformed to match the current screen resolution
+			ControllerDef.AddXYPair($"P{player} Lightgun {{0}}", AxisPairOrientation.RightAndUp, 0, 5000, 10000); //TODO verify direction against hardware
+			var nx = $"P{player} Lightgun X";
+			var ny = $"P{player} Lightgun Y";
 			_converts.Add(delegate
 			{
 				_target.analog[(2 * idx) + 0] = (short)(_source.AxisValue(nx) / 10000.0f * (ScreenWidth - 1));
@@ -156,15 +146,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		private void DoXea1PAnalog(int idx, int player)
 		{
-			string nx = $"P{player} Stick X";
-			string ny = $"P{player} Stick Y";
-			string nz = $"P{player} Stick Z";
-			ControllerDef.AxisControls.Add(nx);
-			ControllerDef.AxisControls.Add(ny);
-			ControllerDef.AxisControls.Add(nz);
-			ControllerDef.AxisRanges.Add(Xea1PRange);
-			ControllerDef.AxisRanges.Add(Xea1PRange);
-			ControllerDef.AxisRanges.Add(Xea1PRange);
+			ControllerDef.AddXYZTriple($"P{player} Stick {{0}}", -128, 0, 127);
+			var nx = $"P{player} Stick X";
+			var ny = $"P{player} Stick Y";
+			var nz = $"P{player} Stick Z";
 			_converts.Add(delegate
 			{
 				_target.analog[(2 * idx) + 0] = (short)_source.AxisValue(nx);

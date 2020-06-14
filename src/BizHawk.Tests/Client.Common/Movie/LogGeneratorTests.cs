@@ -3,6 +3,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
 
+using static BizHawk.Emulation.Common.ControllerDefinition;
+
 namespace BizHawk.Common.Tests.Client.Common.Movie
 {
 	[TestClass]
@@ -21,15 +23,7 @@ namespace BizHawk.Common.Tests.Client.Common.Movie
 
 			_floatController = new SimpleController
 			{
-				Definition = new ControllerDefinition
-				{
-					AxisControls = { "StickX", "StickY" },
-					AxisRanges =
-					{
-						new ControllerDefinition.AxisRange(0, 100, 200),
-						new ControllerDefinition.AxisRange(0, 100, 200)
-					}
-				}
+				Definition = new ControllerDefinition().AddXYPair("Stick{0}", AxisPairOrientation.RightAndUp, 0, 100, 200)
 			};
 		}
 

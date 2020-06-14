@@ -5,6 +5,8 @@ using BizHawk.Emulation.Common;
 using BizHawk.Common;
 using Newtonsoft.Json;
 
+using static BizHawk.Emulation.Common.ControllerDefinition;
+
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	/*
@@ -182,9 +184,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.EndSection();
 		}
 
-		internal static readonly ControllerDefinition.AxisRange ArkanoidPaddleRange = new ControllerDefinition.AxisRange(0, 80, 160);
-
-		internal static readonly List<ControllerDefinition.AxisRange> ZapperRanges = new List<ControllerDefinition.AxisRange> { new ControllerDefinition.AxisRange(0, 128, 255), new ControllerDefinition.AxisRange(0, 120, 239) };
+		internal static readonly AxisRange ArkanoidPaddleRange = new AxisRange(0, 80, 160);
 	}
 
 	public class UnpluggedNES : INesPort
@@ -540,6 +540,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 	}
 
+	internal static class NESControllerDefExtensions
+	{
+		public static ControllerDefinition AddZapper(this ControllerDefinition def, string nameFormat)
+			=> def.AddXYPair(nameFormat, AxisPairOrientation.RightAndUp, (0, 128, 255), (0, 120, 239)); //TODO verify direction against hardware
+	}
+
 	// Dummy interface to indicate zapper behavior, used as a means of type checking for zapper functionality
 	public interface IZapper
 	{
@@ -553,12 +559,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// </summary>
 		public LightgunDelegate PPUCallback { get; set; }
 
-		static ControllerDefinition Definition = new ControllerDefinition
-		{
-			BoolButtons = { "0Fire" },
-			AxisControls = { "0Zapper X", "0Zapper Y" },
-			AxisRanges = NesDeck.ZapperRanges
-		};
+		private static readonly ControllerDefinition Definition
+			= new ControllerDefinition { BoolButtons = { "0Fire" } }.AddZapper("0Zapper {0}");
 
 		public void Strobe(StrobeInfo s, IController c)
 		{
@@ -606,12 +608,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		bool resetting = false;
 		uint latchedvalue = 0;
 
-		static ControllerDefinition Definition = new ControllerDefinition
-		{
-			BoolButtons = { "0Fire" },
-			AxisControls = { "0Zapper X", "0Zapper Y" },
-			AxisRanges = NesDeck.ZapperRanges
-		};
+		private static readonly ControllerDefinition Definition
+			= new ControllerDefinition { BoolButtons = { "0Fire" } }.AddZapper("0Zapper {0}");
 
 		void Latch(IController c)
 		{
@@ -1006,12 +1004,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 	public class OekaKids : IFamicomExpansion
 	{
-		static ControllerDefinition Definition = new ControllerDefinition
-		{
-			BoolButtons = { "0Click", "0Touch" },
-			AxisControls = { "0Pen X", "0Pen Y" },
-			AxisRanges = NesDeck.ZapperRanges // why would a tablet have the same resolution as a CRT monitor? --yoshi
-		};
+		private static readonly ControllerDefinition Definition
+			= new ControllerDefinition { BoolButtons = { "0Click", "0Touch" } }
+				.AddZapper("0Pen {0}"); // why would a tablet have the same resolution as a CRT monitor? --yoshi
 
 		bool resetting;
 		int shiftidx;
