@@ -50,16 +50,6 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 			"pce_fast.slstart", "pce_fast.slend",
 		};
 
-		protected override IDictionary<string, string> ButtonNameOverrides { get; } = new Dictionary<string, string>
-		{
-			["UP ↑"] = "Up",
-			["DOWN ↓"] = "Down",
-			["LEFT ←"] = "Left",
-			["RIGHT →"] = "Right",
-			["SELECT"] = "Select",
-			["RUN"] = "Run"
-		};
-
 		// pce always has two layers, sgx always has 4, and mednafen knows this
 		public bool IsSgx => SettingsInfo.LayerNames.Count == 4;
 

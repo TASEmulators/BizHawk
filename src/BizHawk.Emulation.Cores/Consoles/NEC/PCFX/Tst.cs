@@ -50,16 +50,6 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCFX
 			"pcfx.slstart", "pcfx.slend",
 		};
 
-		protected override IDictionary<string, string> ButtonNameOverrides { get; } = new Dictionary<string, string>
-		{
-			["UP ↑"] = "Up",
-			["DOWN ↓"] = "Down",
-			["LEFT ←"] = "Left",
-			["RIGHT →"] = "Right",
-			["SELECT"] = "Select",
-			["RUN"] = "Run"
-		};
-
 		protected override HashSet<string> ComputeHiddenPorts()
 		{
 			// NB: Since we're hiding these settings up above, this will always trim us down to 2 ports

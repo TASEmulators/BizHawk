@@ -59,16 +59,6 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 			"pce.slstart", "pce.slend",
 		};
 
-		protected override IDictionary<string, string> ButtonNameOverrides { get; } = new Dictionary<string, string>
-		{
-			["UP ↑"] = "Up",
-			["DOWN ↓"] = "Down",
-			["LEFT ←"] = "Left",
-			["RIGHT →"] = "Right",
-			["SELECT"] = "Select",
-			["RUN"] = "Run"
-		};
-
 		protected override HashSet<string> ComputeHiddenPorts()
 		{
 			if (SettingsQuery("pce.input.multitap") == "1")
