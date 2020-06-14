@@ -115,17 +115,23 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return new PadSchema
 			{
-				Size = new Size(174, 90),
+				Size = new Size(230, 100),
 				Buttons = new[]
 				{
 					ButtonSchema.NymaUp(14, 12, controller),
 					ButtonSchema.NymaDown(14, 56, controller),
 					ButtonSchema.NymaLeft(2, 34, controller),
 					ButtonSchema.NymaRight(24, 34, controller),
-					new ButtonSchema(122, 34, controller, "I"),
-					new ButtonSchema(146, 34, controller, "II"),
-					new ButtonSchema(52, 34, controller, "SELECT") { DisplayName = "s" },
-					new ButtonSchema(74, 34, controller, "RUN") { DisplayName = "R" }
+					new ButtonSchema(77, 17, controller, "Mode: Set 2-button") { DisplayName = "2 Btn" },
+					new ButtonSchema(77, 40, controller, "Mode: Set 6-button") { DisplayName = "6 Btn" },
+					new ButtonSchema(140, 63, controller, "IV"),
+					new ButtonSchema(166, 53, controller, "V"),
+					new ButtonSchema(192, 43, controller, "VI"),
+					new ButtonSchema(140, 40, controller, "I"),
+					new ButtonSchema(166, 30, controller, "II"),
+					new ButtonSchema(192, 20, controller, "III"),
+					new ButtonSchema(77, 63, controller, "SELECT") { DisplayName = "s" },
+					new ButtonSchema(101, 63, controller, "RUN") { DisplayName = "R" }
 				}
 			};
 		}
