@@ -118,10 +118,10 @@ namespace BizHawk.Client.EmuHawk
 				Size = new Size(230, 100),
 				Buttons = new[]
 				{
-					ButtonSchema.NymaUp(14, 12, controller),
-					ButtonSchema.NymaDown(14, 56, controller),
-					ButtonSchema.NymaLeft(2, 34, controller),
-					ButtonSchema.NymaRight(24, 34, controller),
+					ButtonSchema.Up(14, 12, controller),
+					ButtonSchema.Down(14, 56, controller),
+					ButtonSchema.Left(2, 34, controller),
+					ButtonSchema.Right(24, 34, controller),
 					new ButtonSchema(77, 17, controller, "Mode: Set 2-button") { DisplayName = "2 Btn" },
 					new ButtonSchema(77, 40, controller, "Mode: Set 6-button") { DisplayName = "6 Btn" },
 					new ButtonSchema(140, 63, controller, "IV"),
