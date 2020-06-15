@@ -259,7 +259,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 		public DisplayType Region => _display_type;
 
-		public ControllerDefinition ControllerDefinition => _inputProvider.ControllerDefinition;
+		public ControllerDefinition ControllerDefinition { get; } = new ControllerDefinition { Name = "Nintendo 64 Controller" };
 
 		public void ResetCounters()
 		{

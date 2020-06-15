@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-
-using BizHawk.Emulation.Common;
+﻿using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.N64.NativeApi;
 
 namespace BizHawk.Emulation.Cores.Nintendo.N64
@@ -13,28 +10,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 		public bool LastFrameInputPolled { get; set; }
 		public bool ThisFrameInputPolled { get; set; }
-		public ControllerDefinition ControllerDefinition => N64ControllerDefinition;
-
-		private static readonly List<ControllerDefinition.AxisRange> AnalogStickRanges = ControllerDefinition.CreateAxisRangePair(-128, 0, 127, ControllerDefinition.AxisPairOrientation.RightAndUp);
-
-		public static readonly ControllerDefinition N64ControllerDefinition = new ControllerDefinition
-		{
-			Name = "Nintendo 64 Controller",
-			BoolButtons =
-			{
-				"P1 A Up", "P1 A Down", "P1 A Left", "P1 A Right", "P1 DPad U", "P1 DPad D", "P1 DPad L", "P1 DPad R", "P1 Start", "P1 Z", "P1 B", "P1 A", "P1 C Up", "P1 C Down", "P1 C Right", "P1 C Left", "P1 L", "P1 R", 
-				"Reset", "Power"
-			},
-			AxisControls =
-			{
-				"P1 X Axis", "P1 Y Axis",
-			},
-			AxisRanges = AnalogStickRanges.Concat(AnalogStickRanges).Concat(AnalogStickRanges).Concat(AnalogStickRanges).ToList(), //TODO is this supposed to be duplicated? docs say AxisRanges.Count should equal AxisControls.Count --yoshi
-			AxisConstraints =
-			{
-				new ControllerDefinition.AxisConstraint { Class = "Natural Circle", Type = ControllerDefinition.AxisConstraintType.Circular, Params = new object[] {"P1 X Axis", "P1 Y Axis", 127.0f} }
-			}
-		};
 
 		private readonly IInputPollable _emuCore;
 
