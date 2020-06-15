@@ -79,10 +79,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					.ToArray();
 				_saveramSize = (int)_saveramAreas.Sum(a => a.Size);
 
-				var sr = _core as ICustomSaveram;
-				if (sr != null)
-					_serviceProvider.Register<ISaveRam>(new CustomSaverammer(sr)); // override the default implementation
-
 				_exe.Seal();
 			}
 		}
