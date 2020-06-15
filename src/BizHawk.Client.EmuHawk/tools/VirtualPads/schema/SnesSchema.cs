@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
-
+using System.Linq;
+using System.Windows.Forms;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.Nintendo.SNES9X;
+using BizHawk.Emulation.Cores.Waterbox;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -16,6 +18,11 @@ namespace BizHawk.Client.EmuHawk
 			if (core is LibsnesCore bsnes)
 			{
 				return GetBsnesPadSchemas(bsnes);
+			}
+
+			if (core is NymaCore nyma)
+			{
+				return GetFaustSchemas(nyma);
 			}
 
 			return GetSnes9xPadSchemas((Snes9x)core);
@@ -102,6 +109,25 @@ namespace BizHawk.Client.EmuHawk
 					case LibsnesControllerDeck.ControllerType.Payload:
 						yield return Payload(playerNum);
 						break;
+				}
+			}
+
+			yield return ConsoleButtons();
+		}
+
+		private static IEnumerable<PadSchema> GetFaustSchemas(NymaCore nyma)
+		{
+			foreach (NymaCore.PortResult result in nyma.ActualPortData)
+			{
+				var num = int.Parse(result.Port.ShortName.Last().ToString());
+				var device = result.Device.ShortName;
+				if (device == "gamepad")
+				{
+					yield return StandardController(num);
+				}
+				else if (device != "none")
+				{
+					MessageBox.Show($"Controller type {device} not supported yet.");
 				}
 			}
 
