@@ -102,22 +102,47 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				SystemRegion = discInfo.region;
 			}
 
-			//see http://problemkaputt.de/psx-spx.htm
-			int CpuClock_n = 44100 * 768;
-			int CpuClock_d = 1;
-			int VidClock_n = CpuClock_n * 11;
-			int VidClock_d = CpuClock_d * 7;
-			if (SystemRegion == OctoshockDll.eRegion.EU)
+			bool use_nocash_specs = false;
+
+			if (use_nocash_specs)
 			{
-				VsyncNumerator = VidClock_n;
-				VsyncDenominator = VidClock_d * 314 * 3406;
-				SystemVidStandard = OctoshockDll.eVidStandard.PAL;
+				//see http://problemkaputt.de/psx-spx.htm
+				int CpuClock_n = 44100 * 768;
+				int CpuClock_d = 1;
+				int VidClock_n = CpuClock_n * 11;
+				int VidClock_d = CpuClock_d * 7;
+				if (SystemRegion == OctoshockDll.eRegion.EU)
+				{
+					VsyncNumerator = VidClock_n;
+					VsyncDenominator = VidClock_d * 314 * 3406;
+					SystemVidStandard = OctoshockDll.eVidStandard.PAL;
+				}
+				else
+				{
+					VsyncNumerator = VidClock_n;
+					VsyncDenominator = VidClock_d * 263 * 3413;
+					SystemVidStandard = OctoshockDll.eVidStandard.NTSC;
+				}
 			}
 			else
 			{
-				VsyncNumerator = VidClock_n;
-				VsyncDenominator = VidClock_d * 263 * 3413;
-				SystemVidStandard = OctoshockDll.eVidStandard.NTSC;
+				//use mednafen specs
+				if (SystemRegion == OctoshockDll.eRegion.EU)
+				{
+					//https://github.com/TASVideos/mednafen/blob/740d63996fc7cebffd39ee253a29ee434965db21/src/psx/gpu.cpp#L175
+					// -> 838865530 / 65536 / 256 -> reduced
+					VsyncNumerator = 419432765;
+					VsyncDenominator = 8388608;
+					SystemVidStandard = OctoshockDll.eVidStandard.PAL;
+				}
+				else
+				{
+					//https://github.com/TASVideos/mednafen/blob/740d63996fc7cebffd39ee253a29ee434965db21/src/psx/gpu.cpp#L183
+					//-> 1005627336 / 65536 / 256 -> reduced
+					VsyncNumerator = 502813668;
+					VsyncDenominator = 8388608;
+					SystemVidStandard = OctoshockDll.eVidStandard.NTSC;
+				}
 			}
 
 			//TODO - known bad firmwares are a no-go. we should refuse to boot them. (that's the mednafen policy)
