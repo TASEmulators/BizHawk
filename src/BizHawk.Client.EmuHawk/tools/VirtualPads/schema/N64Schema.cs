@@ -4,6 +4,8 @@ using System.Drawing;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.N64;
 
+using static BizHawk.Emulation.Common.ControllerDefinition;
+
 namespace BizHawk.Client.EmuHawk
 {
 	[Schema("N64")]
@@ -24,7 +26,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private static PadSchema StandardController(int controller)
 		{
-			var controllerDefRanges = N64Input.N64ControllerDefinition.AxisRanges;
 			return new PadSchema
 			{
 				Size = new Size(275, 316),
@@ -58,8 +59,8 @@ namespace BizHawk.Client.EmuHawk
 					},
 					new AnalogSchema(6, 14, $"P{controller} X Axis")
 					{
-						AxisRange = controllerDefRanges[0],
-						SecondaryAxisRange = controllerDefRanges[1]
+						AxisRange = new AxisRange(-128, 0, 127),
+						SecondaryAxisRange = new AxisRange(-128, 0, 127)
 					}
 				}
 			};
