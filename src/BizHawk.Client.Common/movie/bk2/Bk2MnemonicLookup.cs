@@ -524,6 +524,10 @@ namespace BizHawk.Client.Common
 				["Gun Trigger"] = 'G',
 				["Lightgun X"] = 'X',
 				["Lightgun Y"] = 'Y',
+			},
+			["SAT"] = new Dictionary<string, char>
+			{
+				["Smpc Reset"] = 's'
 			}
 		};
 
