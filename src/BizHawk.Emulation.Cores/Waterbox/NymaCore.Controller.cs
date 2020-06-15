@@ -90,8 +90,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 					foreach (var input in inputs)
 					{
-						if (input.Type == InputType.ResetButton)
-							System.Diagnostics.Debugger.Break();
 						if (input.Type == InputType.Padding)
 							continue;
 
