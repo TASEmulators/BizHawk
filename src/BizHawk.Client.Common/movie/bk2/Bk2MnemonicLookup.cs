@@ -35,15 +35,6 @@ namespace BizHawk.Client.Common
 				return key[0];
 			}
 
-			if (key.Contains("↑"))
-				return 'U';
-			if (key.Contains("↓"))
-				return 'D';
-			if (key.Contains("←"))
-				return 'L';
-			if (key.Contains("→"))
-				return 'R';
-
 			return '!';
 		}
 
