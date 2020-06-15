@@ -124,6 +124,7 @@ namespace BizHawk.Client.Common
 			["Mouse Start"] = 's',
 
 			["Left Button"] = 'l',
+			["Middle Button"] = 'm',
 			["Right Button"] = 'r',
 
 			["Mode"] = 'M',
@@ -527,7 +528,16 @@ namespace BizHawk.Client.Common
 			},
 			["SAT"] = new Dictionary<string, char>
 			{
-				["Smpc Reset"] = 's'
+				["Smpc Reset"] = 's',
+				["D-Pad Up"] = 'U',
+				["D-Pad Down"] = 'D',
+				["D-Pad Left"] = 'L',
+				["D-Pad Right"] = 'L',
+				["Mode: Set Digital(+)"] = '+',
+				["Mode: Set Analog(○)"] = 'o',
+				["L Gear Shift"] = 'L',
+				["R Gear Shift"] = 'R',
+				["Offscreen Shot"] = 'O'
 			}
 		};
 
