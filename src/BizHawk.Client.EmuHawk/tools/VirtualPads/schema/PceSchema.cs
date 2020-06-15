@@ -109,6 +109,8 @@ namespace BizHawk.Client.EmuHawk
 					MessageBox.Show($"Controller type {device} not supported yet.");
 				}
 			}
+
+			yield return ConsoleButtons();
 		}
 
 		private static PadSchema StandardController(int controller)
@@ -160,6 +162,19 @@ namespace BizHawk.Client.EmuHawk
 					},
 					new ButtonSchema(275, 75, controller, "Select"),
 					new ButtonSchema(275, 105, controller, "Run")
+				}
+			};
+		}
+
+		private static PadSchema ConsoleButtons()
+		{
+			return new ConsoleSchema
+			{
+				Size = new Size(150, 50),
+				Buttons = new[]
+				{
+					new ButtonSchema(10, 15, "Reset"),
+					new ButtonSchema(58, 15, "Power")
 				}
 			};
 		}
