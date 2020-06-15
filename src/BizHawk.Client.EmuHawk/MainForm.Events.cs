@@ -1679,7 +1679,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GbSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			GBGPUViewerMenuItem.Enabled = !OSTailoredCode.IsUnixHost;
+			GBGPUViewerMenuItem.Enabled = true;
 		}
 
 		private void GbCoreSettingsMenuItem_Click(object sender, EventArgs e)
