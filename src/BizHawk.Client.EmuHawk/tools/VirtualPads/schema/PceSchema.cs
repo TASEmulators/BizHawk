@@ -130,8 +130,8 @@ namespace BizHawk.Client.EmuHawk
 					new ButtonSchema(140, 40, controller, "I"),
 					new ButtonSchema(166, 30, controller, "II"),
 					new ButtonSchema(192, 20, controller, "III"),
-					new ButtonSchema(77, 63, controller, "SELECT") { DisplayName = "s" },
-					new ButtonSchema(101, 63, controller, "RUN") { DisplayName = "R" }
+					new ButtonSchema(77, 63, controller, "Select") { DisplayName = "s" },
+					new ButtonSchema(101, 63, controller, "Run") { DisplayName = "R" }
 				}
 			};
 		}
@@ -158,14 +158,8 @@ namespace BizHawk.Client.EmuHawk
 					{
 						DisplayName = "Right"
 					},
-					new ButtonSchema(275, 75, controller, "SELECT")
-					{
-						DisplayName = "Select"
-					},
-					new ButtonSchema(275, 105, controller, "RUN")
-					{
-						DisplayName = "Run"
-					}
+					new ButtonSchema(275, 75, controller, "Select"),
+					new ButtonSchema(275, 105, controller, "Run")
 				}
 			};
 		}

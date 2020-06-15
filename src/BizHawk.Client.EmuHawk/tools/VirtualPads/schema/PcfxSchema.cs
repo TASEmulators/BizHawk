@@ -49,18 +49,18 @@ namespace BizHawk.Client.EmuHawk
 					ButtonSchema.Down(14, 56, controller),
 					ButtonSchema.Left(2, 34, controller),
 					ButtonSchema.Right(24, 34, controller),
-					new ButtonSchema(72, 17, controller, "MODE 1: Set A") { DisplayName = "1A" },
-					new ButtonSchema(72, 40, controller, "MODE 2: Set A") { DisplayName = "2A" },
-					new ButtonSchema(102, 17, controller, "MODE 1: Set B") { DisplayName = "1B" },
-					new ButtonSchema(102, 40, controller, "MODE 2: Set B") { DisplayName = "2B" },
+					new ButtonSchema(72, 17, controller, "Mode 1: Set A") { DisplayName = "1A" },
+					new ButtonSchema(72, 40, controller, "Mode 2: Set A") { DisplayName = "2A" },
+					new ButtonSchema(102, 17, controller, "Mode 1: Set B") { DisplayName = "1B" },
+					new ButtonSchema(102, 40, controller, "Mode 2: Set B") { DisplayName = "2B" },
 					new ButtonSchema(140, 63, controller, "IV"),
 					new ButtonSchema(166, 53, controller, "V"),
 					new ButtonSchema(192, 43, controller, "VI"),
 					new ButtonSchema(140, 40, controller, "I"),
 					new ButtonSchema(166, 30, controller, "II"),
 					new ButtonSchema(192, 20, controller, "III"),
-					new ButtonSchema(77, 63, controller, "SELECT") { DisplayName = "s" },
-					new ButtonSchema(101, 63, controller, "RUN") { DisplayName = "R" }
+					new ButtonSchema(77, 63, controller, "Select") { DisplayName = "s" },
+					new ButtonSchema(101, 63, controller, "Run") { DisplayName = "R" }
 				}
 			};
 		}
@@ -86,14 +86,6 @@ namespace BizHawk.Client.EmuHawk
 					new ButtonSchema(275, 45, controller, "Right Button")
 					{
 						DisplayName = "Right"
-					},
-					new ButtonSchema(275, 75, controller, "SELECT")
-					{
-						DisplayName = "Select"
-					},
-					new ButtonSchema(275, 105, controller, "RUN")
-					{
-						DisplayName = "Run"
 					}
 				}
 			};
