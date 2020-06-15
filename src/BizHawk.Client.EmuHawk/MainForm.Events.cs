@@ -1716,7 +1716,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GBASubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			GbaGpuViewerMenuItem.Enabled = !OSTailoredCode.IsUnixHost;
+			GbaGpuViewerMenuItem.Enabled = true;
 		}
 
 		private void NDSSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -1781,7 +1781,7 @@ namespace BizHawk.Client.EmuHawk
 		private void SnesSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			SNESControllerConfigurationMenuItem.Enabled = MovieSession.Movie.NotActive();
-			SnesGfxDebuggerMenuItem.Enabled = !OSTailoredCode.IsUnixHost;
+			SnesGfxDebuggerMenuItem.Enabled = true;
 		}
 
 		private void SNESControllerConfigurationMenuItem_Click(object sender, EventArgs e)
