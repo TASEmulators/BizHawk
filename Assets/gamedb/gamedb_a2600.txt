@@ -1826,8 +1826,8 @@ sha1:d009e5541e302966ba685f28c3a106fb35d056c9		Qb (V2.09) (PAL) (2001) (Retroact
 sha1:f52d5d39fb292d5c37491777850badb70af85fdd		Qb (V2.09) (Stella) (2001) (Retroactive)	A26		m=4K;NTSC=true
 sha1:0ede7873f25204372cae46fb724ad86214e54759		Qb (V2.12) (Stella) (2001) (Retroactive)	A26		m=4K;NTSC=true
 sha1:bcc8347ac293ca1465adeae488bd863d0ef65165		Qb (V2.17) (NTSC) (2001) (Retroactive)	A26		m=4K;NTSC=true
-sha1:1e634a8733cbc50462d363562b80013343d2fac3		Quadrun (Atari)	A26		m=F8;NTSC=true
-sha1:594e8b815bf52dd6f09102b8fb7650d98f24a691		Quadrun (Video Conversion) (Fabrizio Zavagli)	A26		m=F8;NTSC=true
+sha1:1e634a8733cbc50462d363562b80013343d2fac3		Quadrun (Atari)	A26		SP_FRAME=true;SP_RESET=true;m=F8;NTSC=true
+sha1:594e8b815bf52dd6f09102b8fb7650d98f24a691		Quadrun (Video Conversion) (Fabrizio Zavagli)	A26		SP_FRAME=true;SP_RESET=true;m=F8;NTSC=true
 sha1:6c2b0cb2f059ba53a35081e54077ce65f7e39499		Quest (11-10-2002) (Chris Larkin)	A26		m=4K;NTSC=true
 sha1:6c0b91852314b293f675c889e4cf547eb9497452		Quest for Quintana Roo (Telegames) (PAL) [!]	A26		m=F8;PAL=true
 sha1:d83c740d2968343e6401828d62f58be6aea8e858		Quest for Quintana Roo (Telegames) [!]	A26		m=F8;NTSC=true
