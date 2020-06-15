@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		private void InitControls(List<NPortInfoT> allPorts, bool hasCds, ref SystemInfo si)
 		{
 			_controllerAdapter = new ControllerAdapter(
-				allPorts, _syncSettingsActual.PortDevices, ButtonNameOverrides, hasCds, ref si, ComputeHiddenPorts());
+				allPorts, _syncSettingsActual.PortDevices, OverrideButtonName, hasCds, ref si, ComputeHiddenPorts());
 			_nyma.SetInputDevices(_controllerAdapter.Devices);
 			ControllerDefinition = _controllerAdapter.Definition;
 		}
@@ -36,7 +36,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			public ControllerAdapter(
 				List<NPortInfoT> allPorts,
 				IDictionary<int, string> config,
-				IDictionary<string, string> overrides,
+				Func<string, string> overrideName,
 				bool hasCds,
 				ref SystemInfo systemInfo,
 				HashSet<string> hiddenPorts)
@@ -100,8 +100,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 						var byteStart = devByteStart + bitOffset / 8;
 						bitOffset %= 8;
 						var baseName = input.Name;
-						if (baseName != null && overrides.ContainsKey(baseName))
-							baseName = overrides[baseName];
+						if (baseName != null)
+							baseName = overrideName(baseName);
 						var name = input.Type == InputType.ResetButton ? "Reset" : $"P{port + 1} {baseName}";
 
 						switch (input.Type)
@@ -303,7 +303,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			}
 		}
 
-		protected virtual IDictionary<string, string> ButtonNameOverrides { get; } = new Dictionary<string, string>();
 		/// <summary>
 		/// On some cores, some controller ports are not relevant when certain settings are off (like multitap).
 		/// Override this if your core has such an issue
