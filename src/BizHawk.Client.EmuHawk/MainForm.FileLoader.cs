@@ -161,7 +161,7 @@ namespace BizHawk.Client.EmuHawk
 						{
 							sortedFiles[LoadOrdering.LegacyMovieFile].Add(fileInformation);
 						}
-						else if (KnownRomExtensions.Contains(ext))
+						else if (RomLoader.KnownRomExtensions.Contains(ext))
 						{
 							if (string.IsNullOrEmpty(archive) || !_nonArchive.Contains(ext))
 							{

@@ -335,7 +335,7 @@ namespace BizHawk.Client.EmuHawk
 
 			var args = new LoadRomArgs();
 
-			var filter = RomFilter;
+			var filter = RomLoader.RomFilter;
 
 			if (oac.Result == AdvancedRomLoaderType.LibretroLaunchGame)
 			{

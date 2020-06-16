@@ -2223,51 +2223,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		/// <remarks>TODO add and handle <see cref="FilesystemFilter.LuaScripts"/> (you can drag-and-drop scripts and there are already non-rom things in this list, so why not?)</remarks>
-		private static readonly FilesystemFilterSet RomFSFilterSet = new FilesystemFilterSet(
-			new FilesystemFilter("Music Files", new string[0], devBuildExtraExts: new[] { "psf", "minipsf", "sid", "nsf" }),
-			new FilesystemFilter("Disc Images", new[] { "cue", "ccd", "mds", "m3u" }),
-			new FilesystemFilter("NES", new[] { "nes", "fds", "unf", "nsf" }, addArchiveExts: true),
-			new FilesystemFilter("Super NES", new[] { "smc", "sfc", "xml" }, addArchiveExts: true),
-			new FilesystemFilter("PlayStation", new[] { "cue", "ccd", "mds", "m3u" }),
-			new FilesystemFilter("PSX Executables (experimental)", new string[0], devBuildExtraExts: new[] { "exe" }),
-			new FilesystemFilter("PSF Playstation Sound File", new[] { "psf", "minipsf" }),
-			new FilesystemFilter("Nintendo 64", new[] { "z64", "v64", "n64" }),
-			new FilesystemFilter("Gameboy", new[] { "gb", "gbc", "sgb" }, addArchiveExts: true),
-			new FilesystemFilter("Gameboy Advance", new[] { "gba" }, addArchiveExts: true),
-			new FilesystemFilter("Nintendo DS", new[] { "nds" }),
-			new FilesystemFilter("Master System", new[] { "sms", "gg", "sg" }, addArchiveExts: true),
-			new FilesystemFilter("PC Engine", new[] { "pce", "sgx", "cue", "ccd", "mds" }, addArchiveExts: true),
-			new FilesystemFilter("Atari 2600", new[] { "a26" }, devBuildExtraExts: new[] { "bin" }, addArchiveExts: true),
-			new FilesystemFilter("Atari 7800", new[] { "a78" }, devBuildExtraExts: new[] { "bin" }, addArchiveExts: true),
-			new FilesystemFilter("Atari Lynx", new[] { "lnx" }, addArchiveExts: true),
-			new FilesystemFilter("ColecoVision", new[] { "col" }, addArchiveExts: true),
-			new FilesystemFilter("IntelliVision", new[] { "int", "bin", "rom" }, addArchiveExts: true),
-			new FilesystemFilter("TI-83", new[] { "rom" }, addArchiveExts: true),
-			FilesystemFilter.Archives,
-			new FilesystemFilter("Genesis", new[] { "gen", "md", "smd", "32x", "bin", "cue", "ccd" }, addArchiveExts: true),
-			new FilesystemFilter("SID Commodore 64 Music File", new string[0], devBuildExtraExts: new[] { "sid" }, devBuildAddArchiveExts: true),
-			new FilesystemFilter("WonderSwan", new[] { "ws", "wsc" }, addArchiveExts: true),
-			new FilesystemFilter("Apple II", new[] { "dsk", "do", "po" }, addArchiveExts: true),
-			new FilesystemFilter("Virtual Boy", new[] { "vb" }, addArchiveExts: true),
-			new FilesystemFilter("Neo Geo Pocket", new[] { "ngp", "ngc" }, addArchiveExts: true),
-			new FilesystemFilter("Commodore 64", new[] { "prg", "d64", "g64", "crt", "tap" }, addArchiveExts: true),
-			new FilesystemFilter("Amstrad CPC", new string[0], devBuildExtraExts: new[] { "cdt", "dsk" }, devBuildAddArchiveExts: true),
-			new FilesystemFilter("Sinclair ZX Spectrum", new[] { "tzx", "tap", "dsk", "pzx", "csw", "wav" }, addArchiveExts: true),
-			new FilesystemFilter("Odyssey 2", new[] { "o2" }),
-			new FilesystemFilter("Uzebox", new [] { "uze" }),
-			FilesystemFilter.EmuHawkSaveStates
-		);
-
-		private static readonly IReadOnlyCollection<string> KnownRomExtensions = RomFSFilterSet.Filters
-			.SelectMany(f => f.Extensions)
-			.Distinct()
-			.Except(FilesystemFilter.ArchiveExtensions.Concat(new[] { "State" }))
-			.Select(s => $".{s.ToUpperInvariant()}") // this is what's expected at call-site
-			.ToList();
-
-		public static readonly string RomFilter = RomFSFilterSet.ToString("Everything");
-
 		public static readonly string ConfigFileFSFilterString = new FilesystemFilter("Config File", new[] { "ini" }).ToString();
 
 		private void OpenRom()
@@ -2275,7 +2230,7 @@ namespace BizHawk.Client.EmuHawk
 			using var ofd = new OpenFileDialog
 			{
 				InitialDirectory = Config.PathEntries.RomAbsolutePath(Emulator.SystemId),
-				Filter = RomFilter,
+				Filter = RomLoader.RomFilter,
 				RestoreDirectory = false,
 				FilterIndex = _lastOpenRomFilter
 			};

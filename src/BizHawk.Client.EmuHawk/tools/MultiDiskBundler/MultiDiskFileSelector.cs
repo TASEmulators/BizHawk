@@ -68,7 +68,7 @@ namespace BizHawk.Client.EmuHawk
 			using var ofd = new OpenFileDialog
 			{
 				InitialDirectory = _parent.Config.PathEntries.RomAbsolutePath(),
-				Filter = MainForm.RomFilter,
+				Filter = RomLoader.RomFilter,
 				RestoreDirectory = true
 			};
 			string hawkPath = "";
