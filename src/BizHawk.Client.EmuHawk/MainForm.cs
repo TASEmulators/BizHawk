@@ -1142,7 +1142,10 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 
-				Debug.WriteLine($"Selecting display size {lastComputedSize}");
+
+				Console.WriteLine($"For emulator framebuffer {new Size(_currentVideoProvider.BufferWidth, _currentVideoProvider.BufferHeight)}:");
+				Console.WriteLine($"  For virtual size {new Size(_currentVideoProvider.VirtualWidth, _currentVideoProvider.VirtualHeight)}:");
+				Console.WriteLine($"  Selecting display size {lastComputedSize}");
 
 				// Change size
 				Size = new Size(lastComputedSize.Width + borderWidth, lastComputedSize.Height + borderHeight);

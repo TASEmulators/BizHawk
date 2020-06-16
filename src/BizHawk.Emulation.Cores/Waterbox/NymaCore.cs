@@ -117,6 +117,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				_videoBuffer = new int[Math.Max(info.MaxWidth * info.MaxHeight, info.LcmWidth * info.LcmHeight)];
 				BufferWidth = info.NominalWidth;
 				BufferHeight = info.NominalHeight;
+				_mdfnNominalWidth = info.NominalWidth;
+				_mdfnNominalHeight = info.NominalHeight;
 				switch (info.VideoSystem)
 				{
 					// TODO: There seriously isn't any region besides these?
@@ -239,6 +241,11 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				_frameThreadProcActive = null;
 			}
 		}
+
+		private int _mdfnNominalWidth;
+		private int _mdfnNominalHeight;
+		public override int VirtualWidth => _mdfnNominalWidth;
+		public override int VirtualHeight =>_mdfnNominalHeight;
 
 		public DisplayType Region { get; protected set; }
 
