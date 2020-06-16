@@ -739,22 +739,11 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				_emulatorPaused = value;
-				OnPauseChanged?.Invoke(this, new PauseChangedEventArgs(_emulatorPaused));
+				OnPauseChanged?.Invoke(_emulatorPaused);
 			}
 		}
 
-		public delegate void PauseChangedEventHandler(object sender, PauseChangedEventArgs e);
-		public event PauseChangedEventHandler OnPauseChanged;
-
-		public class PauseChangedEventArgs : EventArgs
-		{
-			public PauseChangedEventArgs(bool paused)
-			{
-				Paused = paused;
-			}
-
-			public bool Paused { get; }
-		}
+		public event Action<bool> OnPauseChanged;
 
 		public string CurrentlyOpenRom { get; private set; } // todo - delete me and use only args instead
 		public LoadRomArgs CurrentlyOpenRomArgs { get; private set; }

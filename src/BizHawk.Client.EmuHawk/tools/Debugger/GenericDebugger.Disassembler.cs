@@ -241,12 +241,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void OnPauseChanged(object sender, MainForm.PauseChangedEventArgs e)
+		private void OnPauseChanged(bool isPaused)
 		{
-			if (e.Paused)
-			{
-				FullUpdate();
-			}
+			if (isPaused) FullUpdate();
 		}
 
 		private void DisassemblerContextMenu_Opening(object sender, EventArgs e)
