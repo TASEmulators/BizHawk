@@ -671,15 +671,10 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void CloseEmulator()
+		public void CloseEmulator(int? exitCode = null)
 		{
 			_exitRequestPending = true;
-		}
-
-		public void CloseEmulator(int exitCode)
-		{
-			_exitRequestPending = true;
-			_exitCode = exitCode;
+			if (exitCode != null) _exitCode = exitCode.Value;
 		}
 
 		private void EmulationMenuItem_DropDownOpened(object sender, EventArgs e)
