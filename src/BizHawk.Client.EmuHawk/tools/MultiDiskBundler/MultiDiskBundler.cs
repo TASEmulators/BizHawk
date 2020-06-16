@@ -90,7 +90,7 @@ namespace BizHawk.Client.EmuHawk
 				DialogResult = DialogResult.OK;
 				Close();
 
-				var lra = new MainForm.LoadRomArgs { OpenAdvanced = new OpenAdvanced_OpenRom { Path = fileInfo.FullName } };
+				var lra = new LoadRomArgs { OpenAdvanced = new OpenAdvanced_OpenRom { Path = fileInfo.FullName } };
 				MainForm.LoadRom(fileInfo.FullName, lra);
 			}
 		}

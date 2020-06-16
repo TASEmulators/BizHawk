@@ -231,7 +231,7 @@ namespace BizHawk.Client.EmuHawk
 		public void OpenRom(string path)
 		{
 			var ioa = OpenAdvancedSerializer.ParseWithLegacy(path);
-			MainForm.LoadRom(path, new MainForm.LoadRomArgs { OpenAdvanced = ioa });
+			MainForm.LoadRom(path, new LoadRomArgs { OpenAdvanced = ioa });
 		}
 
 		[LuaMethodExample("client.opentasstudio( );")]

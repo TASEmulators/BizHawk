@@ -3556,12 +3556,6 @@ namespace BizHawk.Client.EmuHawk
 			return platformChooser.PlatformChoice;
 		}
 
-		public class LoadRomArgs
-		{
-			public bool? Deterministic { get; set; }
-			public IOpenAdvanced OpenAdvanced { get; set; }
-		}
-
 		private LoadRomArgs _currentLoadRomArgs;
 
 		public bool LoadRom(string path, LoadRomArgs args)
