@@ -127,7 +127,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 								var data = input.Extra.AsSwitch();
 								if (data.Positions.Count > 8)
 									throw new NotImplementedException("Need code changes to support Mdfn switch with more than 8 positions");
-								
+
 								// fake switches as a series of push downs that select each state
 								// imagine the "gear" selector on a Toyota Prius
 
@@ -138,10 +138,15 @@ namespace BizHawk.Emulation.Cores.Waterbox
 								switchPreviousFrame.Add(0);
 
 								var names = data.Positions.Select(p => $"{name}: Set {p.Name}").ToArray();
-								foreach (var n in names)
+								if (!input.Name.StartsWith("AF ") && !input.Name.EndsWith(" AF")) // hack: don't support some devices
 								{
-									ret.BoolButtons.Add(n);
-									ret.CategoryLabels[n] = category;
+									foreach (var n in names)
+									{
+										{
+											ret.BoolButtons.Add(n);
+											ret.CategoryLabels[n] = category;
+										}
+									}
 								}
 
 								_thunks.Add((c, b) =>
