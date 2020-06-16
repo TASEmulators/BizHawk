@@ -127,14 +127,14 @@ namespace BizHawk.Client.EmuHawk
 			else
 			{
 				using var dlg = new GenericCoreConfig(owner) { Text = title };
-				dlg.ShowDialog(owner);
+				owner.ShowDialogAsChild(dlg);
 			}
 		}
 
 		public static void DoDialog(MainForm owner, string title, bool hideSettings, bool hideSyncSettings)
 		{
 			using var dlg = new GenericCoreConfig(owner, hideSettings, hideSyncSettings) { Text = title };
-			dlg.ShowDialog(owner);
+			owner.ShowDialogAsChild(dlg);
 		}
 		private void PropertyGrid2_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
 		{

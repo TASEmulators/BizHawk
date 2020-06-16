@@ -91,7 +91,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			dlg.checkBoxASync.Checked = audioSync;
-			DialogResult result = dlg.ShowDialog(owner);
+			var result = owner.ShowDialogAsChild(dlg);
 
 			IVideoWriter ret;
 

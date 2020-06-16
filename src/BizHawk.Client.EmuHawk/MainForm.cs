@@ -3460,7 +3460,7 @@ namespace BizHawk.Client.EmuHawk
 		private int? LoadArchiveChooser(HawkFile file)
 		{
 			using var ac = new ArchiveChooser(file);
-			if (ac.ShowDialog(this) == DialogResult.OK)
+			if (ShowDialogAsChild(ac) == DialogResult.OK)
 			{
 				return ac.SelectedMemberIndex;
 			}
@@ -4478,5 +4478,7 @@ namespace BizHawk.Client.EmuHawk
 
 			return isRewinding;
 		}
+
+		public DialogResult ShowDialogAsChild(Form dialog) => dialog.ShowDialog(this);
 	}
 }

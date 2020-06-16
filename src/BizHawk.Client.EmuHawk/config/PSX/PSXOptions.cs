@@ -84,7 +84,7 @@ namespace BizHawk.Client.EmuHawk
 			var size = psx.CurrentVideoSize; 
 			using var dlg = new PSXOptions(mainForm, config, s, ss, vid, size);
 
-			var result = dlg.ShowDialog(mainForm);
+			var result = mainForm.ShowDialogAsChild(dlg);
 			return result;
 		}
 

@@ -33,7 +33,7 @@ namespace BizHawk.Client.EmuHawk
 				ShowBg4 = s.ShowBG4_0
 			};
 
-			var result = dlg.ShowDialog(mainForm);
+			var result = mainForm.ShowDialogAsChild(dlg);
 			if (result == DialogResult.OK)
 			{
 				s.AlwaysDoubleSize = dlg.AlwaysDoubleSize;
