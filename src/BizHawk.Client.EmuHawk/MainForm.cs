@@ -276,8 +276,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public MainForm(string[] args)
 		{
-			GlobalWin.ClientApi = new EmuClientApi(Config, DisplayManager, Emulator, Game, InputManager, this);
-
 			//do this threaded stuff early so it has plenty of time to run in background
 			Database.InitializeDatabase(Path.Combine(PathUtils.ExeDirectoryPath, "gamedb", "gamedb.txt"));
 			BootGodDb.Initialize(Path.Combine(PathUtils.ExeDirectoryPath, "gamedb"));
@@ -295,7 +293,7 @@ namespace BizHawk.Client.EmuHawk
 			Icon = Properties.Resources.logo;
 			InitializeComponent();
 			SetImages();
-			Game = GameInfo.NullInstance;
+			GlobalWin.Game = GameInfo.NullInstance;
 
 			_throttle = new Throttle();
 
@@ -829,7 +827,8 @@ namespace BizHawk.Client.EmuHawk
 
 			private set
 			{
-				GlobalWin.ClientApi.Emulator = GlobalWin.Emulator = value;
+				GlobalWin.Emulator = value;
+				if (GlobalWin.ClientApi != null) GlobalWin.ClientApi.Emulator = value; // first call to this setter is in the ctor, before the APIs have been registered by the ToolManager ctor
 				_currentVideoProvider = GlobalWin.Emulator.AsVideoProviderOrDefault();
 				_currentSoundProvider = GlobalWin.Emulator.AsSoundProviderOrDefault();
 			}
@@ -856,11 +855,7 @@ namespace BizHawk.Client.EmuHawk
 			private set => GlobalWin.MovieSession = value;
 		}
 
-		private GameInfo Game
-		{
-			get => GlobalWin.Game;
-			set => GlobalWin.ClientApi.Game = GlobalWin.Game = value;
-		}
+		private GameInfo Game => GlobalWin.Game;
 
 		private Sound Sound => GlobalWin.Sound;
 		public CheatCollection CheatList { get; }

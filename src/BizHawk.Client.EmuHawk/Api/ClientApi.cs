@@ -8,204 +8,204 @@ namespace BizHawk.Client.EmuHawk
 {
 	public static class ClientApi
 	{
-		/// <inheritdoc cref="IEmuClient.DoFrameAdvance"/>
+		/// <inheritdoc cref="IEmuClientApi.DoFrameAdvance"/>
 		public static SystemInfo RunningSystem => GlobalWin.ClientApi.RunningSystem;
 
-		/// <inheritdoc cref="IEmuClient.BeforeQuickLoad"/>
+		/// <inheritdoc cref="IEmuClientApi.BeforeQuickLoad"/>
 		public static event BeforeQuickLoadEventHandler BeforeQuickLoad
 		{
 			add => GlobalWin.ClientApi.BeforeQuickLoad += value;
 			remove => GlobalWin.ClientApi.BeforeQuickLoad -= value;
 		}
 
-		/// <inheritdoc cref="IEmuClient.BeforeQuickSave"/>
+		/// <inheritdoc cref="IEmuClientApi.BeforeQuickSave"/>
 		public static event BeforeQuickSaveEventHandler BeforeQuickSave
 		{
 			add => GlobalWin.ClientApi.BeforeQuickSave += value;
 			remove => GlobalWin.ClientApi.BeforeQuickSave -= value;
 		}
 
-		/// <inheritdoc cref="IEmuClient.RomLoaded"/>
+		/// <inheritdoc cref="IEmuClientApi.RomLoaded"/>
 		public static event EventHandler RomLoaded
 		{
 			add => GlobalWin.ClientApi.RomLoaded += value;
 			remove => GlobalWin.ClientApi.RomLoaded -= value;
 		}
 
-		/// <inheritdoc cref="IEmuClient.StateLoaded"/>
+		/// <inheritdoc cref="IEmuClientApi.StateLoaded"/>
 		public static event StateLoadedEventHandler StateLoaded
 		{
 			add => GlobalWin.ClientApi.StateLoaded += value;
 			remove => GlobalWin.ClientApi.StateLoaded -= value;
 		}
 
-		/// <inheritdoc cref="IEmuClient.StateSaved"/>
+		/// <inheritdoc cref="IEmuClientApi.StateSaved"/>
 		public static event StateSavedEventHandler StateSaved
 		{
 			add => GlobalWin.ClientApi.StateSaved += value;
 			remove => GlobalWin.ClientApi.StateSaved -= value;
 		}
 
-		/// <inheritdoc cref="IEmuClient.BorderHeight"/>
+		/// <inheritdoc cref="IEmuClientApi.BorderHeight"/>
 		public static int BorderHeight() => GlobalWin.ClientApi.BorderHeight();
 
-		/// <inheritdoc cref="IEmuClient.BorderWidth"/>
+		/// <inheritdoc cref="IEmuClientApi.BorderWidth"/>
 		public static int BorderWidth() => GlobalWin.ClientApi.BorderWidth();
 
-		/// <inheritdoc cref="IEmuClient.BufferHeight"/>
+		/// <inheritdoc cref="IEmuClientApi.BufferHeight"/>
 		public static int BufferHeight() => GlobalWin.ClientApi.BufferHeight();
 
-		/// <inheritdoc cref="IEmuClient.BufferWidth"/>
+		/// <inheritdoc cref="IEmuClientApi.BufferWidth"/>
 		public static int BufferWidth() => GlobalWin.ClientApi.BufferWidth();
 
-		/// <inheritdoc cref="IEmuClient.ClearAutohold"/>
+		/// <inheritdoc cref="IEmuClientApi.ClearAutohold"/>
 		public static void ClearAutohold() => GlobalWin.ClientApi.ClearAutohold();
 
-		/// <inheritdoc cref="IEmuClient.CloseEmulator"/>
+		/// <inheritdoc cref="IEmuClientApi.CloseEmulator"/>
 		public static void CloseEmulator() => GlobalWin.ClientApi.CloseEmulator();
 
-		/// <inheritdoc cref="IEmuClient.CloseEmulatorWithCode"/>
+		/// <inheritdoc cref="IEmuClientApi.CloseEmulatorWithCode"/>
 		public static void CloseEmulatorWithCode(int exitCode) => GlobalWin.ClientApi.CloseEmulatorWithCode(exitCode);
 
-		/// <inheritdoc cref="IEmuClient.CloseRom"/>
+		/// <inheritdoc cref="IEmuClientApi.CloseRom"/>
 		public static void CloseRom() => GlobalWin.ClientApi.CloseRom();
 
-		/// <inheritdoc cref="IEmuClient.DisplayMessages"/>
+		/// <inheritdoc cref="IEmuClientApi.DisplayMessages"/>
 		public static void DisplayMessages(bool value) => GlobalWin.ClientApi.DisplayMessages(value);
 
-		/// <inheritdoc cref="IEmuClient.DoFrameAdvance"/>
+		/// <inheritdoc cref="IEmuClientApi.DoFrameAdvance"/>
 		public static void DoFrameAdvance() => GlobalWin.ClientApi.DoFrameAdvance();
 
-		/// <inheritdoc cref="IEmuClient.DoFrameAdvanceAndUnpause"/>
+		/// <inheritdoc cref="IEmuClientApi.DoFrameAdvanceAndUnpause"/>
 		public static void DoFrameAdvanceAndUnpause() => GlobalWin.ClientApi.DoFrameAdvanceAndUnpause();
 
-		/// <inheritdoc cref="IEmuClient.EnableRewind"/>
+		/// <inheritdoc cref="IEmuClientApi.EnableRewind"/>
 		public static void EnableRewind(bool enabled) => GlobalWin.ClientApi.EnableRewind(enabled);
 
-		/// <inheritdoc cref="IEmuClient.FrameSkip"/>
+		/// <inheritdoc cref="IEmuClientApi.FrameSkip"/>
 		public static void FrameSkip(int numFrames) => GlobalWin.ClientApi.FrameSkip(numFrames);
 
-		/// <inheritdoc cref="IEmuClient.GetInput"/>
+		/// <inheritdoc cref="IEmuClientApi.GetInput"/>
 		public static Joypad GetInput(int player) => GlobalWin.ClientApi.GetInput(player);
 
-		/// <inheritdoc cref="IEmuClient.GetSoundOn"/>
+		/// <inheritdoc cref="IEmuClientApi.GetSoundOn"/>
 		public static bool GetSoundOn() => GlobalWin.ClientApi.GetSoundOn();
 
-		/// <inheritdoc cref="IEmuClient.GetTargetScanlineIntensity"/>
+		/// <inheritdoc cref="IEmuClientApi.GetTargetScanlineIntensity"/>
 		public static int GetTargetScanlineIntensity() => GlobalWin.ClientApi.GetTargetScanlineIntensity();
 
-		/// <inheritdoc cref="IEmuClient.GetWindowSize"/>
+		/// <inheritdoc cref="IEmuClientApi.GetWindowSize"/>
 		public static int GetWindowSize() => GlobalWin.ClientApi.GetWindowSize();
 
-		/// <inheritdoc cref="IEmuClient.InvisibleEmulation"/>
+		/// <inheritdoc cref="IEmuClientApi.InvisibleEmulation"/>
 		public static void InvisibleEmulation(bool invisible) => GlobalWin.ClientApi.InvisibleEmulation(invisible);
 
-		/// <inheritdoc cref="IEmuClient.IsPaused"/>
+		/// <inheritdoc cref="IEmuClientApi.IsPaused"/>
 		public static bool IsPaused() => GlobalWin.ClientApi.IsPaused();
 
-		/// <inheritdoc cref="IEmuClient.IsSeeking"/>
+		/// <inheritdoc cref="IEmuClientApi.IsSeeking"/>
 		public static bool IsSeeking() => GlobalWin.ClientApi.IsSeeking();
 
-		/// <inheritdoc cref="IEmuClient.IsTurbo"/>
+		/// <inheritdoc cref="IEmuClientApi.IsTurbo"/>
 		public static bool IsTurbo() => GlobalWin.ClientApi.IsTurbo();
 
-		/// <inheritdoc cref="IEmuClient.LoadState"/>
+		/// <inheritdoc cref="IEmuClientApi.LoadState"/>
 		public static void LoadState(string name) => GlobalWin.ClientApi.LoadState(name);
 
-		/// <inheritdoc cref="IEmuClient.OnBeforeQuickLoad"/>
+		/// <inheritdoc cref="IEmuClientApi.OnBeforeQuickLoad"/>
 		public static void OnBeforeQuickLoad(object sender, string quickSaveSlotName, out bool eventHandled) => GlobalWin.ClientApi.OnBeforeQuickLoad(sender, quickSaveSlotName, out eventHandled);
 
-		/// <inheritdoc cref="IEmuClient.OnBeforeQuickSave"/>
+		/// <inheritdoc cref="IEmuClientApi.OnBeforeQuickSave"/>
 		public static void OnBeforeQuickSave(object sender, string quickSaveSlotName, out bool eventHandled) => GlobalWin.ClientApi.OnBeforeQuickSave(sender, quickSaveSlotName, out eventHandled);
 
-		/// <inheritdoc cref="IEmuClient.OnRomLoaded"/>
+		/// <inheritdoc cref="IEmuClientApi.OnRomLoaded"/>
 		public static void OnRomLoaded(IEmulator emu) => GlobalWin.ClientApi.OnRomLoaded(emu);
 
-		/// <inheritdoc cref="IEmuClient.OnStateLoaded"/>
+		/// <inheritdoc cref="IEmuClientApi.OnStateLoaded"/>
 		public static void OnStateLoaded(object sender, string stateName) => GlobalWin.ClientApi.OnStateLoaded(sender, stateName);
 
-		/// <inheritdoc cref="IEmuClient.OnStateSaved"/>
+		/// <inheritdoc cref="IEmuClientApi.OnStateSaved"/>
 		public static void OnStateSaved(object sender, string stateName) => GlobalWin.ClientApi.OnStateSaved(sender, stateName);
 
-		/// <inheritdoc cref="IEmuClient.OpenRom"/>
+		/// <inheritdoc cref="IEmuClientApi.OpenRom"/>
 		public static void OpenRom(string path) => GlobalWin.ClientApi.OpenRom(path);
 
-		/// <inheritdoc cref="IEmuClient.Pause"/>
+		/// <inheritdoc cref="IEmuClientApi.Pause"/>
 		public static void Pause() => GlobalWin.ClientApi.Pause();
 
-		/// <inheritdoc cref="IEmuClient.PauseAv"/>
+		/// <inheritdoc cref="IEmuClientApi.PauseAv"/>
 		public static void PauseAv() => GlobalWin.ClientApi.PauseAv();
 
-		/// <inheritdoc cref="IEmuClient.RebootCore"/>
+		/// <inheritdoc cref="IEmuClientApi.RebootCore"/>
 		public static void RebootCore() => GlobalWin.ClientApi.RebootCore();
 
-		/// <inheritdoc cref="IEmuClient.SaveRam"/>
+		/// <inheritdoc cref="IEmuClientApi.SaveRam"/>
 		public static void SaveRam() => GlobalWin.ClientApi.SaveRam();
 
-		/// <inheritdoc cref="IEmuClient.SaveState"/>
+		/// <inheritdoc cref="IEmuClientApi.SaveState"/>
 		public static void SaveState(string name) => GlobalWin.ClientApi.SaveState(name);
 
-		/// <inheritdoc cref="IEmuClient.ScreenHeight"/>
+		/// <inheritdoc cref="IEmuClientApi.ScreenHeight"/>
 		public static int ScreenHeight() => GlobalWin.ClientApi.ScreenHeight();
 
-		/// <inheritdoc cref="IEmuClient.Screenshot"/>
+		/// <inheritdoc cref="IEmuClientApi.Screenshot"/>
 		public static void Screenshot(string path = null) => GlobalWin.ClientApi.Screenshot(path);
 
-		/// <inheritdoc cref="IEmuClient.ScreenshotToClipboard"/>
+		/// <inheritdoc cref="IEmuClientApi.ScreenshotToClipboard"/>
 		public static void ScreenshotToClipboard() => GlobalWin.ClientApi.ScreenshotToClipboard();
 
-		/// <inheritdoc cref="IEmuClient.ScreenWidth"/>
+		/// <inheritdoc cref="IEmuClientApi.ScreenWidth"/>
 		public static int ScreenWidth() => GlobalWin.ClientApi.ScreenWidth();
 
-		/// <inheritdoc cref="IEmuClient.SeekFrame"/>
+		/// <inheritdoc cref="IEmuClientApi.SeekFrame"/>
 		public static void SeekFrame(int frame) => GlobalWin.ClientApi.SeekFrame(frame);
 
-		/// <inheritdoc cref="IEmuClient.SetExtraPadding"/>
-		public static void SetExtraPadding(int left, int top = 0, int right = 0, int bottom = 0) => GlobalWin.ClientApi.SetExtraPadding(left, top, right, bottom);
+		/// <inheritdoc cref="IEmuClientApi.SetClientExtraPadding"/>
+		public static void SetExtraPadding(int left, int top = 0, int right = 0, int bottom = 0) => GlobalWin.ClientApi.SetClientExtraPadding(left, top, right, bottom);
 
-		/// <inheritdoc cref="IEmuClient.SetGameExtraPadding"/>
+		/// <inheritdoc cref="IEmuClientApi.SetGameExtraPadding"/>
 		public static void SetGameExtraPadding(int left, int top = 0, int right = 0, int bottom = 0) => GlobalWin.ClientApi.SetGameExtraPadding(left, top, right, bottom);
 
-		/// <inheritdoc cref="IEmuClient.SetInput"/>
+		/// <inheritdoc cref="IEmuClientApi.SetInput"/>
 		public static void SetInput(int player, Joypad joypad) => GlobalWin.ClientApi.SetInput(player, joypad);
 
-		/// <inheritdoc cref="IEmuClient.SetScreenshotOSD"/>
+		/// <inheritdoc cref="IEmuClientApi.SetScreenshotOSD"/>
 		public static void SetScreenshotOSD(bool value) => GlobalWin.ClientApi.SetScreenshotOSD(value);
 
-		/// <inheritdoc cref="IEmuClient.SetSoundOn"/>
+		/// <inheritdoc cref="IEmuClientApi.SetSoundOn"/>
 		public static void SetSoundOn(bool enable) => GlobalWin.ClientApi.SetSoundOn(enable);
 
-		/// <inheritdoc cref="IEmuClient.SetTargetScanlineIntensity"/>
+		/// <inheritdoc cref="IEmuClientApi.SetTargetScanlineIntensity"/>
 		public static void SetTargetScanlineIntensity(int val) => GlobalWin.ClientApi.SetTargetScanlineIntensity(val);
 
-		/// <inheritdoc cref="IEmuClient.SetWindowSize"/>
+		/// <inheritdoc cref="IEmuClientApi.SetWindowSize"/>
 		public static void SetWindowSize(int size) => GlobalWin.ClientApi.SetWindowSize(size);
 
-		/// <inheritdoc cref="IEmuClient.SpeedMode"/>
+		/// <inheritdoc cref="IEmuClientApi.SpeedMode"/>
 		public static void SpeedMode(int percent) => GlobalWin.ClientApi.SpeedMode(percent);
 
-		/// <inheritdoc cref="IEmuClient.TogglePause"/>
+		/// <inheritdoc cref="IEmuClientApi.TogglePause"/>
 		public static void TogglePause() => GlobalWin.ClientApi.TogglePause();
 
-		/// <inheritdoc cref="IEmuClient.TransformPoint"/>
+		/// <inheritdoc cref="IEmuClientApi.TransformPoint"/>
 		public static Point TransformPoint(Point point) => GlobalWin.ClientApi.TransformPoint(point);
 
-		/// <inheritdoc cref="IEmuClient.Unpause"/>
+		/// <inheritdoc cref="IEmuClientApi.Unpause"/>
 		public static void Unpause() => GlobalWin.ClientApi.Unpause();
 
-		/// <inheritdoc cref="IEmuClient.UnpauseAv"/>
+		/// <inheritdoc cref="IEmuClientApi.UnpauseAv"/>
 		public static void UnpauseAv() => GlobalWin.ClientApi.UnpauseAv();
 
-		/// <inheritdoc cref="IEmuClient.UnpauseEmulation"/>
-		public static void UnpauseEmulation() => GlobalWin.ClientApi.UnpauseEmulation();
+		/// <inheritdoc cref="Unpause"/>
+		public static void UnpauseEmulation() => Unpause();
 
-		/// <inheritdoc cref="IEmuClient.UpdateEmulatorAndVP"/>
+		/// <inheritdoc cref="IEmuClientApi.UpdateEmulatorAndVP"/>
 		public static void UpdateEmulatorAndVP(IEmulator emu = null) => GlobalWin.ClientApi.UpdateEmulatorAndVP(emu);
 
-		/// <inheritdoc cref="IEmuClient.Xpos"/>
+		/// <inheritdoc cref="IEmuClientApi.Xpos"/>
 		public static int Xpos() => GlobalWin.ClientApi.Xpos();
 
-		/// <inheritdoc cref="IEmuClient.Ypos"/>
+		/// <inheritdoc cref="IEmuClientApi.Ypos"/>
 		public static int Ypos() => GlobalWin.ClientApi.Ypos();
 	}
 }

@@ -16,6 +16,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private static readonly Type[] CtorParamTypesB = { typeof(Action<string>) };
 
+		private static readonly Type[] CtorParamTypesEmuClientApi = { typeof(Action<string>), typeof(DisplayManager), typeof(InputManager), typeof(MainForm), typeof(Config), typeof(IEmulator), typeof(GameInfo) };
+
 		/// <remarks>TODO do we need to keep references to these because of GC weirdness? --yoshi</remarks>
 		private static ApiContainer? _container;
 
@@ -33,9 +35,19 @@ namespace BizHawk.Client.EmuHawk
 					&& typeof(IExternalApi).IsAssignableFrom(t)
 					&& ServiceInjector.IsAvailable(serviceProvider, t)))
 			{
-				var instance = api.GetConstructor(CtorParamTypesA)?.Invoke(new object[] { logCallback, GlobalWin.DisplayManager, GlobalWin.InputManager, mainForm })
-					?? api.GetConstructor(CtorParamTypesB)?.Invoke(new object[] { logCallback })
-					?? Activator.CreateInstance(api);
+				//TODO if extra params are ignored, we can use the same array for every ConstructorInfo.Invoke call --yoshi
+				object instance;
+				if (typeof(IEmuClientApi).IsAssignableFrom(api))
+				{
+					instance = (api.GetConstructor(CtorParamTypesEmuClientApi) ?? throw new Exception("failed to call EmuClientApi's hack-filled ctor"))
+						.Invoke(new object[] { logCallback, GlobalWin.DisplayManager, GlobalWin.InputManager, mainForm, GlobalWin.Config, GlobalWin.Emulator, GlobalWin.Game });
+				}
+				else
+				{
+					instance = api.GetConstructor(CtorParamTypesA)?.Invoke(new object[] { logCallback, GlobalWin.DisplayManager, GlobalWin.InputManager, mainForm })
+						?? api.GetConstructor(CtorParamTypesB)?.Invoke(new object[] { logCallback })
+						?? Activator.CreateInstance(api);
+				}
 				ServiceInjector.UpdateServices(serviceProvider, instance);
 				libDict.Add(
 					api.GetInterfaces().First(intf => typeof(IExternalApi).IsAssignableFrom(intf) && intf != typeof(IExternalApi)),
@@ -46,7 +58,12 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		public static IExternalApiProvider Restart(MainForm mainForm, IEmulatorServiceProvider newServiceProvider)
-			=> new BasicApiProvider(_container = Register(mainForm, newServiceProvider, Console.WriteLine));
+		{
+			GlobalWin.ClientApi = null;
+			_container = Register(mainForm, newServiceProvider, Console.WriteLine);
+			GlobalWin.ClientApi = _container.EmuClient as EmuClientApi;
+			return new BasicApiProvider(_container);
+		}
 
 		public static ApiContainer RestartLua(MainForm mainForm, IEmulatorServiceProvider newServiceProvider, Action<string> logCallback)
 			=> _luaContainer = Register(mainForm, newServiceProvider, logCallback);

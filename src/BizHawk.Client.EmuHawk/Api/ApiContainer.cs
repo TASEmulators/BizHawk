@@ -8,6 +8,7 @@ namespace BizHawk.Client.EmuHawk
 	public sealed class ApiContainer : ApiSubsetContainer
 	{
 		public ICommApi Comm => (ICommApi) Libraries[typeof(ICommApi)];
+		public IEmuClientApi EmuClient => (IEmuClientApi) Libraries[typeof(IEmuClientApi)];
 		public IGuiApi Gui => (IGuiApi) Libraries[typeof(IGuiApi)];
 		public IInputApi Input => (IInputApi) Libraries[typeof(IInputApi)];
 		public ISaveStateApi SaveState => (ISaveStateApi) Libraries[typeof(ISaveStateApi)];

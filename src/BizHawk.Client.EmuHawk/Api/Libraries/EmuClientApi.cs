@@ -15,7 +15,7 @@ using BizHawk.Emulation.Cores.Sega.MasterSystem;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public class EmuClientApi : IEmuClient
+	public class EmuClientApi : IEmuClientApi
 	{
 		private List<Joypad> _allJoyPads;
 
@@ -26,6 +26,8 @@ namespace BizHawk.Client.EmuHawk
 		private readonly InputManager _inputManager;
 
 		private readonly MainForm _mainForm;
+
+		private readonly Action<string> _logCallback;
 
 		private IEmulator _maybeEmulator;
 
@@ -83,13 +85,14 @@ namespace BizHawk.Client.EmuHawk
 
 		public event StateSavedEventHandler StateSaved;
 
-		public EmuClientApi(Config config, DisplayManager displayManager, IEmulator emulator, GameInfo game, InputManager inputManager, MainForm mainForm)
+		public EmuClientApi(Action<string> logCallback, DisplayManager displayManager, InputManager inputManager, MainForm mainForm, Config config, IEmulator emulator, GameInfo game)
 		{
 			_config = config;
 			_displayManager = displayManager;
 			Emulator = emulator;
 			Game = game;
 			_inputManager = inputManager;
+			_logCallback = logCallback;
 			_mainForm = mainForm;
 		}
 
@@ -121,7 +124,7 @@ namespace BizHawk.Client.EmuHawk
 		public void DoFrameAdvanceAndUnpause()
 		{
 			DoFrameAdvance();
-			UnpauseEmulation();
+			Unpause();
 		}
 
 		public void EnableRewind(bool enabled) => _mainForm.EnableRewind(enabled);
@@ -135,7 +138,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				Console.WriteLine("Invalid frame skip value");
+				_logCallback("Invalid frame skip value");
 			}
 		}
 
@@ -265,7 +268,7 @@ namespace BizHawk.Client.EmuHawk
 			if (!wasPaused) _mainForm.UnpauseEmulator();
 		}
 
-		public void SetExtraPadding(int left, int top, int right, int bottom)
+		public void SetClientExtraPadding(int left, int top, int right, int bottom)
 		{
 			_displayManager.ClientExtraPadding = new Padding(left, top, right, bottom);
 			_mainForm.FrameBufferResized();
@@ -329,14 +332,14 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				Console.WriteLine("Invalid window size");
+				_logCallback("Invalid window size");
 			}
 		}
 
 		public void SpeedMode(int percent)
 		{
 			if (percent.StrictlyBoundedBy(0.RangeTo(6400))) _mainForm.ClickSpeedItem(percent);
-			else Console.WriteLine("Invalid speed value");
+			else _logCallback("Invalid speed value");
 		}
 
 		public void TogglePause() => _mainForm.TogglePause();
@@ -346,8 +349,6 @@ namespace BizHawk.Client.EmuHawk
 		public void Unpause() => _mainForm.UnpauseEmulator();
 
 		public void UnpauseAv() => _mainForm.PauseAvi = false;
-
-		public void UnpauseEmulation() => _mainForm.UnpauseEmulator();
 
 		public void UpdateEmulatorAndVP(IEmulator emu)
 		{

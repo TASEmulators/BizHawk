@@ -5,7 +5,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
-	public interface IEmuClient
+	public interface IEmuClientApi : IExternalApi
 	{
 		SystemInfo RunningSystem { get; }
 
@@ -173,7 +173,7 @@ namespace BizHawk.Client.Common
 		/// <param name="top">Top padding</param>
 		/// <param name="right">Right padding</param>
 		/// <param name="bottom">Bottom padding</param>
-		void SetExtraPadding(int left, int top = 0, int right = 0, int bottom = 0);
+		void SetClientExtraPadding(int left, int top = 0, int right = 0, int bottom = 0);
 
 		/// <summary>
 		/// Sets the extra padding added to the 'native' surface so that you can draw HUD elements in predictable placements
@@ -210,11 +210,6 @@ namespace BizHawk.Client.Common
 		void Unpause();
 
 		void UnpauseAv();
-
-		/// <summary>
-		/// Resume the emulation
-		/// </summary>
-		void UnpauseEmulation();
 
 		void UpdateEmulatorAndVP(IEmulator emu = null);
 
