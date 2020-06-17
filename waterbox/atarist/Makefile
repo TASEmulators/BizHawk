@@ -80,6 +80,18 @@
 	hatari/src/keymap.c \
 	hatari/src/cfgopts.c \
 	hatari/src/change.c \
+	hatari/src/cpu/gencpu.c \
+	hatari/src/cpu/build68k.c \
+	hatari/src/cpu/jit/codegen_x86.c \
+	hatari/src/cpu/jit/compemu_fpp.c \
+	hatari/src/cpu/jit/compemu_midfunc_x86.c \
+	hatari/src/cpu/jit/compemu_prefs.c \
+	hatari/src/cpu/jit/compemu_support.c \
+	hatari/src/cpu/jit/exception_handler.c \
+	hatari/src/cpu/jit/gencomp.c \
+	hatari/src/dialog.c \
+	hatari/src/faketosData.c \
+	hatari/src/main.c \
 
 SRCS = \
 	hatari/src/acia.c \
@@ -89,7 +101,6 @@ SRCS = \
 	hatari/src/clocks_timings.c \
 	hatari/src/configuration.c \
 	hatari/src/control.c \
-	hatari/src/cpu/build68k.c \
 	hatari/src/cpu/cpummu.c \
 	hatari/src/cpu/cpummu030.c \
 	hatari/src/cpu/custom.c \
@@ -99,15 +110,7 @@ SRCS = \
 	hatari/src/cpu/fpp.c \
 	hatari/src/cpu/fpp_native.c \
 	hatari/src/cpu/fpp_softfloat.c \
-	hatari/src/cpu/gencpu.c \
 	hatari/src/cpu/hatari-glue.c \
-	hatari/src/cpu/jit/codegen_x86.c \
-	hatari/src/cpu/jit/compemu_fpp.c \
-	hatari/src/cpu/jit/compemu_midfunc_x86.c \
-	hatari/src/cpu/jit/compemu_prefs.c \
-	hatari/src/cpu/jit/compemu_support.c \
-	hatari/src/cpu/jit/exception_handler.c \
-	hatari/src/cpu/jit/gencomp.c \
 	hatari/src/cpu/machdep/m68k.c \
 	hatari/src/cpu/memory.c \
 	hatari/src/cpu/newcpu.c \
@@ -120,10 +123,8 @@ SRCS = \
 	hatari/src/createBlankImage.c \
 	hatari/src/cycInt.c \
 	hatari/src/cycles.c \
-	hatari/src/dialog.c \
 	hatari/src/dim.c \
 	hatari/src/dmaSnd.c \
-	hatari/src/faketosData.c \
 	hatari/src/falcon/crossbar.c \
 	hatari/src/falcon/dsp.c \
 	hatari/src/falcon/dsp_core.c \
@@ -151,7 +152,6 @@ SRCS = \
 	hatari/src/joy.c \
 	hatari/src/lilo.c \
 	hatari/src/m68000.c \
-	hatari/src/main.c \
 	hatari/src/memorySnapShot.c \
 	hatari/src/mfp.c \
 	hatari/src/midi.c \
@@ -186,15 +186,51 @@ SRCS = \
 	hatari/src/xbios.c \
 	hatari/src/ymFormat.c \
 	hatari/src/zip.c \
+	glue.c
 
 
 
-
-CCFLAGS := -I. -Ihatari/src/includes -Ihatari/src/debug -Ihatari/src/cpu \
+CCFLAGS = -I. -Ihatari/src/includes -Ihatari/src/debug -Ihatari/src/cpu -I$(OUT_DIR)/gen \
+	-Ihatari/src/falcon -ISDL_include \
 	-Wall -Werror=pointer-to-int-cast -Werror=int-to-pointer-cast -Werror=implicit-function-declaration \
 	-Wno-parentheses \
-	-DHAVE_CONFIG_H=1 \
+	-DHAVE_CONFIG_H=1 -D_GNU_SOURCE=1 -DWITH_SDL2=1 \
 	-std=c99 -fomit-frame-pointer
 
 TARGET := hatali.wbx
 include ../common.mak
+
+#\
+src/cpu/build68k\
+src/cpu/cpudefs.c\
+src/cpu/cpuemu_*.c\
+src/cpu/cpustbl.c\
+src/cpu/cputbl.h\
+src/cpu/gencpu
+
+GEN_DIR := hatari/src/cpu
+
+CPUTBL := $(GEN_DIR)/cputbl.h
+
+$(GEN_DIR)/build68k: $(GEN_DIR)/build68k.c
+	@echo cc $^
+	@mkdir -p $(@D)
+	@gcc -o $@ $^ -Wall -I$(GEN_DIR)
+
+$(GEN_DIR)/gencpu: $(GEN_DIR)/cpudefs.c $(GEN_DIR)/readcpu.c $(GEN_DIR)/gencpu.c
+	@echo cc $^
+	@mkdir -p $(@D)
+	@gcc -o $@ $^ -Wall -I$(GEN_DIR)
+
+$(GEN_DIR)/cpudefs.c: $(GEN_DIR)/build68k
+	@echo build68k
+	@mkdir -p $(@D)
+	@$< < $(GEN_DIR)/table68k > $@
+
+$(GEN_DIR)/cpuemu.c $(GEN_DIR)/cpustbl.c $(GEN_DIR)/cputbl.h: $(GEN_DIR)/gencpu
+	@echo gencpu
+	@cd $(GEN_DIR) && $<
+
+generate-cpu: $(GEN_DIR)/cpudefs.c $(GEN_DIR)/cpuemu.c $(GEN_DIR)/cpustbl.c $(GEN_DIR)/cputbl.h
+
+.PHONY: generate-cpu
