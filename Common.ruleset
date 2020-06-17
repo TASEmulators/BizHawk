@@ -19,9 +19,6 @@
 		<!-- Use the preferred exception type -->
 		<Rule Id="MEN009" Action="Hidden" />
 
-		<!-- Align using directives -->
-		<Rule Id="MEN011" Action="Hidden" />
-
 		<!-- Flags should be powers of two -->
 		<Rule Id="MEN012" Action="Hidden" />
 
