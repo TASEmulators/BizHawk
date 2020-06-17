@@ -42,31 +42,44 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		bool Invalidate(int frame);
 
+		// Remove all states, but not the frame 0 state
 		void Clear();
 
 		void Save(BinaryWriter bw);
 
 		void Load(BinaryReader br);
 
+		/// <summary>
+		/// Get a nearby state.  The returned frame must be less (but not equal to???) the passed frame.
+		/// This may not fail; the StateManager strongly holds a frame 0 state to ensure there's always a possible result.
+		/// </summary>
+		/// <param name="frame"></param>
+		/// <returns></returns>
 		KeyValuePair<int, byte[]> GetStateClosestToFrame(int frame);
 
+		/// <summary>
+		/// Returns true iff Count > 0
+		/// TODO: Surely this is always true because the frame 0 state is always retained?
+		/// </summary>
+		/// <returns></returns>
 		bool Any();
 
+		/// <summary>
+		/// Returns the total number of states currently held by the state manager
+		/// </summary>
+		/// <value></value>
 		int Count { get; }
 
+		/// <summary>
+		/// Returns the most recent frame number that the state manager possesses
+		/// </summary>
+		/// <value></value>
 		int Last { get; }
 
+		/// <summary>
+		/// Adjust internal state saving logic based on changes to Settings
+		/// </summary>
 		void UpdateStateFrequency();
-
-		/// <summary>
-		/// Returns index of the state right above the given frame
-		/// </summary>
-		int GetStateIndexByFrame(int frame);
-
-		/// <summary>
-		/// Returns frame of the state at the given index
-		/// </summary>
-		int GetStateFrameByIndex(int index);
 
 		/// <summary>
 		/// Directly remove a state from the given frame, if it exists
