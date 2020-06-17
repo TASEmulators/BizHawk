@@ -11,7 +11,7 @@ using BizHawk.Emulation.Common;
 // ReSharper disable StyleCop.SA1401
 namespace BizHawk.Client.Common
 {
-	public class QuickBmpFile
+	public static class QuickBmpFile
 	{
 		[StructLayout(LayoutKind.Sequential, Pack = 1)]
 		private class BITMAPFILEHEADER

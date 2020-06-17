@@ -5,7 +5,7 @@ using System.Drawing;
 
 namespace BizHawk.Bizware.BizwareGL
 {
-	public class TexAtlas
+	public static class TexAtlas
 	{
 		public class RectItem
 		{

@@ -9,7 +9,7 @@ using System.ComponentModel;
 
 namespace BizHawk.Common
 {
-	public class SettingsUtil
+	public static class SettingsUtil
 	{
 		private sealed class DefaultValueSetter
 		{

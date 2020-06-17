@@ -13,7 +13,7 @@ namespace BizHawk.Common
 	{
 	}
 
-	public class DeepEquality
+	public static class DeepEquality
 	{
 		/// <summary>
 		/// return true if an array type is not 0-based

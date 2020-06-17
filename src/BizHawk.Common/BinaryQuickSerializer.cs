@@ -14,7 +14,7 @@ namespace BizHawk.Common
 {
 	// fields are serialized/deserialized in their memory order as reported by Marshal.OffsetOf
 	// to do anything useful, passed targets should be [StructLayout.Sequential] or [StructLayout.Explicit]
-	public class BinaryQuickSerializer
+	public static class BinaryQuickSerializer
 	{
 		private static MethodInfo FromExpression(Expression e)
 		{

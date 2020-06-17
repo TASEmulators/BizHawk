@@ -4,7 +4,7 @@ using BizHawk.Emulation.DiscSystem;
 
 namespace BizHawk.Client.DiscoHawk
 {
-	public class AudioExtractor
+	public static class AudioExtractor
 	{
 		public static string FFmpegPath;
 

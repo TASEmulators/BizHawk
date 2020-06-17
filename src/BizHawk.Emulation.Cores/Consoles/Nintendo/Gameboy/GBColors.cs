@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
-	public class GBColors
+	public static class GBColors
 	{
 		/*
 		 * The GBC uses a RGB555 color space, but it most definately does not resemble sRGB at all.

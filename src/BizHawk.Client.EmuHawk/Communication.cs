@@ -12,7 +12,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public class Communication
+	public static class Communication
 	{
 		public class HttpCommunication
 		{

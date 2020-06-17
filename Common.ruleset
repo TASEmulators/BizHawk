@@ -62,9 +62,6 @@
 		<!-- Do not declare visible instance fields -->
 		<Rule Id="CA1051" Action="Hidden" />
 
-		<!-- Static holder types should be Static or NotInheritable -->
-		<Rule Id="CA1052" Action="Hidden" />
-
 		<!-- Uri parameters should not be strings -->
 		<Rule Id="CA1054" Action="Hidden" />
 

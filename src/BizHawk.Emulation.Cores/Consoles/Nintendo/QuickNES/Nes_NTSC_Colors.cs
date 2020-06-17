@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 {
-	public class Nes_NTSC_Colors
+	public static class Nes_NTSC_Colors
 	{
 		// just the color deemphasis routines from nes_ntsc
 

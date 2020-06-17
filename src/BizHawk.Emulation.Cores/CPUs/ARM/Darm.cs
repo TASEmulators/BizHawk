@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 
 namespace BizHawk.Emulation.Cores.Components.ARM
 {
-	public class Darm
+	public static class Darm
 	{
 		public const string dllname = "libdarm.dll";
 		public const CallingConvention cc = CallingConvention.Cdecl;

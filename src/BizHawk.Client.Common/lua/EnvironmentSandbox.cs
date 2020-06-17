@@ -3,7 +3,7 @@
 // TODO - kill this file (or renew the concept as distinct from the LuaSandbox?)
 namespace BizHawk.Client.Common
 {
-	public class EnvironmentSandbox
+	public static class EnvironmentSandbox
 	{
 		public static void Sandbox(Action callback)
 		{

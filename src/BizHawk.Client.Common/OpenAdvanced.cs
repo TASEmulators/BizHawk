@@ -35,7 +35,7 @@ namespace BizHawk.Client.Common
 	}
 
 
-	public class OpenAdvancedSerializer
+	public static class OpenAdvancedSerializer
 	{
 		public static IOpenAdvanced ParseWithLegacy(string text)
 		{
