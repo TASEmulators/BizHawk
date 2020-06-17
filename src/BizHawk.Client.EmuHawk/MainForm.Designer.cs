@@ -3230,8 +3230,6 @@
 			this.Load += new System.EventHandler(this.MainForm_Load);
 			this.Shown += new System.EventHandler(this.MainForm_Shown);
 			this.Enter += new System.EventHandler(this.MainForm_Enter);
-			this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.MainForm_MouseClick);
-			this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MainForm_MouseMove);
 			this.Resize += new System.EventHandler(this.MainForm_Resize);
 			this.MainformMenu.ResumeLayout(false);
 			this.MainformMenu.PerformLayout();

@@ -371,6 +371,17 @@ namespace BizHawk.Client.EmuHawk
 				Sound?.StartSound();
 			};
 
+			MouseClick += MainForm_MouseClick = (sender, e) =>
+			{
+				AutohideCursor(false);
+				if (Config.ShowContextMenu && e.Button == MouseButtons.Right)
+				{
+					MainFormContextMenu.Show(PointToScreen(new Point(e.X, e.Y + MainformMenu.Height)));
+				}
+			};
+			MouseMove += MainForm_MouseMove = (sender, e) => AutohideCursor(false);
+			MainForm_MouseWheel = (sender, e) => MouseWheelTracker += e.Delta;
+
 			Input.Instance.MainFormInputAllowedCallback = yieldAlt => {
 				// the main form gets input
 				if (ActiveForm == this)
