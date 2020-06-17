@@ -802,7 +802,7 @@ namespace BizHawk.Client.Common
 		public MovieActionInsertFrames(int frame, List<string> newInputs)
 		{
 			FirstFrame = frame;
-			LastFrame = frame + newInputs.Count();
+			LastFrame = frame + newInputs.Count;
 			_onlyEmpty = false;
 			_newInputs = newInputs;
 		}

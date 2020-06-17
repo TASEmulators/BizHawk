@@ -48,13 +48,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		{
 			get
 			{
-				if (_dataBlocks.Count() > 0) { return _currentDataBlockIndex; }
+				if (_dataBlocks.Count > 0) { return _currentDataBlockIndex; }
 				else { return -1; }
 			}
 			set
 			{
 				if (value == _currentDataBlockIndex) { return; }
-				if (value < _dataBlocks.Count() && value >= 0)
+				if (value < _dataBlocks.Count && value >= 0)
 				{
 					_currentDataBlockIndex = value;
 					_position = 0;
@@ -204,7 +204,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				// move to the next block
 				_currentDataBlockIndex++;
 
-				if (_currentDataBlockIndex >= _dataBlocks.Count())
+				if (_currentDataBlockIndex >= _dataBlocks.Count)
 				{
 					_currentDataBlockIndex = -1;
 				}
@@ -215,7 +215,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 				if (
 					_currentDataBlockIndex < 0 &&       // block index is -1
-					_dataBlocks.Count() > 0             // number of blocks is greater than 0
+					_dataBlocks.Count > 0               // number of blocks is greater than 0
 					)
 				{
 					// move the index on to 0
@@ -276,7 +276,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 			StringBuilder sbd = new StringBuilder();
 			sbd.Append("(");
-			sbd.Append((targetBlockId + 1) + " of " + _dataBlocks.Count());
+			sbd.Append((targetBlockId + 1) + " of " + _dataBlocks.Count);
 			sbd.Append(") : ");
 			sbd.Append(bl.BlockDescription);
 			if (bl.MetaData.Count > 0)
@@ -492,7 +492,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 					StringBuilder sbd = new StringBuilder();
 					sbd.Append("(");
-					sbd.Append((_currentDataBlockIndex + 1) + " of " + _dataBlocks.Count());
+					sbd.Append((_currentDataBlockIndex + 1) + " of " + _dataBlocks.Count);
 					sbd.Append(") : ");
 					sbd.Append(bl.BlockDescription);
 					if (bl.MetaData.Count > 0)
@@ -506,16 +506,16 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				// increment the current period position
 				_position++;
 
-				if (_position >= _dataBlocks[_currentDataBlockIndex].DataPeriods.Count())
+				if (_position >= _dataBlocks[_currentDataBlockIndex].DataPeriods.Count)
 				{
 					// we have reached the end of the current block
-					if (_dataBlocks[_currentDataBlockIndex].DataPeriods.Count() == 0)
+					if (_dataBlocks[_currentDataBlockIndex].DataPeriods.Count == 0)
 					{
 						// notify about the current block (we are skipping it because its empty)
 						var bl = _dataBlocks[_currentDataBlockIndex];
 						StringBuilder sbd = new StringBuilder();
 						sbd.Append("(");
-						sbd.Append((_currentDataBlockIndex + 1) + " of " + _dataBlocks.Count());
+						sbd.Append((_currentDataBlockIndex + 1) + " of " + _dataBlocks.Count);
 						sbd.Append(") : ");
 						sbd.Append(bl.BlockDescription);
 						if (bl.MetaData.Count > 0)
@@ -528,7 +528,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 					}
 
 					// skip any empty blocks (and process any command blocks)
-					while (_position >= _dataBlocks[_currentDataBlockIndex].DataPeriods.Count())
+					while (_position >= _dataBlocks[_currentDataBlockIndex].DataPeriods.Count)
 					{
 						// check for any commands
 						var command = _dataBlocks[_currentDataBlockIndex].Command;
@@ -543,7 +543,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 								_machine.Spectrum.OSD_TapeStoppedAuto();
 								shouldStop = true;
 
-								if (_currentDataBlockIndex >= _dataBlocks.Count())
+								if (_currentDataBlockIndex >= _dataBlocks.Count)
 									RTZ();
 								else
 								{
@@ -558,7 +558,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 									_machine.Spectrum.OSD_TapeStoppedAuto();
 									shouldStop = true;
 
-									if (_currentDataBlockIndex >= _dataBlocks.Count())
+									if (_currentDataBlockIndex >= _dataBlocks.Count)
 										RTZ();
 									else
 									{
@@ -576,14 +576,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 						_position = 0;
 						_currentDataBlockIndex++;
 
-						if (_currentDataBlockIndex >= _dataBlocks.Count())
+						if (_currentDataBlockIndex >= _dataBlocks.Count)
 						{
 							break;
 						}
 					}
 
 					// check for end of tape
-					if (_currentDataBlockIndex >= _dataBlocks.Count())
+					if (_currentDataBlockIndex >= _dataBlocks.Count)
 					{
 						_currentDataBlockIndex = -1;
 						RTZ();
@@ -592,7 +592,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				}
 
 				// update waitEdge with current position within the current block
-				_waitEdge = _dataBlocks[_currentDataBlockIndex].DataPeriods.Count() > 0 ? _dataBlocks[_currentDataBlockIndex].DataPeriods[_position] : 0;
+				_waitEdge = _dataBlocks[_currentDataBlockIndex].DataPeriods.Count > 0 ? _dataBlocks[_currentDataBlockIndex].DataPeriods[_position] : 0;
 
 				// flip the current state
 				FlipTapeState();

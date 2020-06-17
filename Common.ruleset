@@ -179,9 +179,6 @@
 		<!-- Do not use Count() or LongCount() when Any() can be used -->
 		<Rule Id="CA1827" Action="Hidden" />
 
-		<!-- Use Length/Count property instead of Count() when available -->
-		<Rule Id="CA1829" Action="Hidden" />
-
 		<!-- Dispose objects before losing scope -->
 		<Rule Id="CA2000" Action="Hidden" />
 

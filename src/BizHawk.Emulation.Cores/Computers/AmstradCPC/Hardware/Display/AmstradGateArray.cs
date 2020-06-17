@@ -1255,7 +1255,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				Phases.Add(phase);
 			}
 
-			public int PhaseCount => Phases.Count();
+			public int PhaseCount => Phases.Count;
 
 			public void Clear(int screenMode)
 			{

@@ -922,7 +922,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			t.BlockDescription = BlockType.Loop_Start;
 
 			// loop should start from the next block
-			int loopStart = _datacorder.DataBlocks.Count() + 1;
+			int loopStart = _datacorder.DataBlocks.Count + 1;
 
 			int numberOfRepetitions = GetWordValue(data, _position);
 
@@ -968,7 +968,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			}
 
 			// get the number of blocks to loop
-			int blockCnt = _datacorder.DataBlocks.Count() - loopStart;
+			int blockCnt = _datacorder.DataBlocks.Count - loopStart;
 
 			// loop through each group to repeat
 			for (int b = 0; b < numberOfRepetitions; b++)

@@ -156,7 +156,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 					}
 
 					sec.SectorData = data.ToArray();
-					sec.ActualDataByteLength = data.Count();
+					sec.ActualDataByteLength = data.Count;
 					sec.ContainsMultipleWeakSectors = true;
 				}
 			}
@@ -496,7 +496,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             // commit the sector data
             sec.SectorData = data.ToArray();
             sec.ContainsMultipleWeakSectors = true;
-            sec.ActualDataByteLength = data.Count();
+            sec.ActualDataByteLength = data.Count;
 
         }
         */

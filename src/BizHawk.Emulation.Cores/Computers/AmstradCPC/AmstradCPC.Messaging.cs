@@ -1,4 +1,3 @@
-﻿using System.Linq;
 using System.Text;
 
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
@@ -61,7 +60,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			StringBuilder sb = new StringBuilder();
 			if (_machine.diskImages != null && _machine.UPDDiskDevice != null)
 			{
-				sb.Append("Disk Media Imported (count: " + _machine.diskImages.Count() + ")");
+				sb.Append("Disk Media Imported (count: " + _machine.diskImages.Count + ")");
 				SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Emulator);
 			}
 		}
@@ -149,7 +148,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				return;
 
 			StringBuilder sb = new StringBuilder();
-			sb.Append("Tape Media Imported (count: " + _tapeInfo.Count() + ")");
+			sb.Append("Tape Media Imported (count: " + _tapeInfo.Count + ")");
 			SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Emulator);
 		}
 
@@ -408,7 +407,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 			sb.Append("Block: ");
 			sb.Append("(" + (_machine.TapeDevice.CurrentDataBlockIndex + 1) +
-				" of " + _machine.TapeDevice.DataBlocks.Count() + ") " +
+				" of " + _machine.TapeDevice.DataBlocks.Count + ") " +
 				_machine.TapeDevice.DataBlocks[_machine.TapeDevice.CurrentDataBlockIndex].BlockDescription);
 			SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Tape);
 			sb.Clear();

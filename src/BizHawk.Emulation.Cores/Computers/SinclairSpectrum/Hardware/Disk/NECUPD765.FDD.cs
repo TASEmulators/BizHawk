@@ -1,7 +1,6 @@
 ﻿using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
 using System;
-using System.Linq;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
@@ -237,7 +236,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 					if (Disk == null)
 						return (byte)id;
 
-					if (Disk.DiskTracks.Count() == 0)
+					if (Disk.DiskTracks.Length == 0)
 						return (byte)id;
 
 					if (TrackIndex >= Disk.GetTrackCount())
@@ -298,7 +297,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             public void MoveHead(SkipDirection direction, int cylinderCount)
             {
                 // get total tracks
-                int trackCount = Disk.DiskTracks.Count();
+                int trackCount = Disk.DiskTracks.Length;
 
                 int trk = 0;
 

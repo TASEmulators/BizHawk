@@ -282,7 +282,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		{
 			var jCollection = new List<IJoystick>();
 
-			for (int i = 0; i < joys.Count(); i++)
+			for (int i = 0; i < joys.Count; i++)
 			{
 				jCollection.Add(InstantiateJoystick(joys[i], i + 1));
 			}
