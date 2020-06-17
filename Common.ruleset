@@ -29,9 +29,6 @@
 		<!-- Types that own disposable fields should be disposable -->
 		<Rule Id="CA1001" Action="Hidden" />
 
-		<!-- Collections should implement generic interface -->
-		<Rule Id="CA1010" Action="Hidden" />
-
 		<!-- Mark assemblies with assembly version -->
 		<Rule Id="CA1016" Action="Hidden" />
 

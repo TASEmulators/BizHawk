@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 namespace BizHawk.Client.Common
 {
 	[JsonObject]
-	public class RecentFiles : IEnumerable
+	public class RecentFiles : IEnumerable<string>
 	{
 		// ReSharper disable once FieldCanBeMadeReadOnly.Local
 		private List<string> recentlist;
