@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public static void Initialize(string basePath)
 		{
 			if (acquire != null) throw new InvalidOperationException("Bootgod DB multiply initialized");
-			acquire =  new EventWaitHandle(false, EventResetMode.ManualReset); ;
+			acquire = new EventWaitHandle(false, EventResetMode.ManualReset);
 
 			var stopwatch = Stopwatch.StartNew();
 			ThreadPool.QueueUserWorkItem(_ =>

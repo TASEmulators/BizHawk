@@ -29,7 +29,7 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 			NymaSettings settings, NymaSyncSettings syncSettings, bool deterministic)
 			: base(comm, "PCE", "PC Engine Controller", settings, syncSettings)
 		{
-			var firmwares = new Dictionary<string, ValueTuple<string, string>>
+			var firmwares = new Dictionary<string, (string, string)>
 			{
 				{ "FIRMWARE:syscard3.pce", ("PCECD", "Bios") },
 				{ "FIRMWARE:gecard.pce", ("PCECD", "GE-Bios") },

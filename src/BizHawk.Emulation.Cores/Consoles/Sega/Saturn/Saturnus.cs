@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 			IEnumerable<Disc> disks, NymaSettings settings, NymaSyncSettings syncSettings, bool deterministic)
 			: base(comm, "SAT", "Saturn Controller Deck", settings, syncSettings)
 		{
-			var firmwares = new Dictionary<string, ValueTuple<string, string>>
+			var firmwares = new Dictionary<string, (string, string)>
 			{
 				{ "FIRMWARE:$J", ("SAT", "J") },
 				{ "FIRMWARE:$U", ("SAT", "U") },

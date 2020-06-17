@@ -14,7 +14,7 @@ using NymaTypes;
 
 namespace BizHawk.Emulation.Cores.Waterbox
 {
-	public unsafe abstract partial class NymaCore : WaterboxCore
+	public abstract unsafe partial class NymaCore : WaterboxCore
 	{
 		protected NymaCore(CoreComm comm,
 			string systemId, string controllerDeckName,
@@ -29,7 +29,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		private LibNymaCore _nyma;
 		protected T DoInit<T>(GameInfo game, byte[] rom, Disc[] discs, string wbxFilename, string extension, bool deterministic,
-			IDictionary<string, ValueTuple<string, string>> firmwares = null)
+			IDictionary<string, (string SystemID, string FirmwareID)> firmwares = null)
 			where T : LibNymaCore
 		{
 			var t = PreInit<T>(new WaterboxOptions
@@ -63,7 +63,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					{
 						if (firmwares.TryGetValue(s, out var tt))
 						{
-							var data = CoreComm.CoreFileProvider.GetFirmware(tt.Item1, tt.Item2, false,
+							var data = CoreComm.CoreFileProvider.GetFirmware(tt.SystemID, tt.FirmwareID, false,
 								"Firmware files are usually required and may stop your game from loading");
 							if (data != null)
 							{

@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCFX
 			IEnumerable<Disc> disks, NymaSettings settings, NymaSyncSettings syncSettings, bool deterministic)
 			: base(comm, "PCFX", "PCFX Controller Deck", settings, syncSettings)
 		{
-			var firmwares = new Dictionary<string, ValueTuple<string, string>>
+			var firmwares = new Dictionary<string, (string, string)>
 			{
 				{ "FIRMWARE:pcfx.rom", ("PCFX", "BIOS") },
 			};
