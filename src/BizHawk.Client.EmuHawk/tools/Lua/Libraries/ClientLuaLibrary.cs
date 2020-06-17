@@ -40,7 +40,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodExample("client.exitCode( 0 );")]
 		[LuaMethod("exitCode", "Closes the emulator and returns the provided code")]
-		public void CloseEmulatorWithCode(int exitCode) => APIs.EmuClient.CloseEmulatorWithCode(exitCode);
+		public void CloseEmulatorWithCode(int exitCode) => APIs.EmuClient.CloseEmulator(exitCode);
 
 		[LuaMethodExample("local inclibor = client.borderheight( );")]
 		[LuaMethod("borderheight", "Gets the current height in pixels of the letter/pillarbox area (top side only) around the emu display surface, excluding the gameExtraPadding you've set. This function (the whole lot of them) should be renamed or refactored since the padding areas have got more complex.")]

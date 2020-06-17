@@ -46,9 +46,7 @@ namespace BizHawk.Client.Common
 
 		void ClearAutohold();
 
-		void CloseEmulator();
-
-		void CloseEmulatorWithCode(int exitCode);
+		void CloseEmulator(int? exitCode = null);
 
 		void CloseRom();
 

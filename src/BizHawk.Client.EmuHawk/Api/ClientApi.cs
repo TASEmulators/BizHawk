@@ -64,8 +64,8 @@ namespace BizHawk.Client.EmuHawk
 		/// <inheritdoc cref="IEmuClientApi.CloseEmulator"/>
 		public static void CloseEmulator() => GlobalWin.ClientApi.CloseEmulator();
 
-		/// <inheritdoc cref="IEmuClientApi.CloseEmulatorWithCode"/>
-		public static void CloseEmulatorWithCode(int exitCode) => GlobalWin.ClientApi.CloseEmulatorWithCode(exitCode);
+		/// <inheritdoc cref="IEmuClientApi.CloseEmulator"/>
+		public static void CloseEmulatorWithCode(int exitCode) => GlobalWin.ClientApi.CloseEmulator(exitCode);
 
 		/// <inheritdoc cref="IEmuClientApi.CloseRom"/>
 		public static void CloseRom() => GlobalWin.ClientApi.CloseRom();

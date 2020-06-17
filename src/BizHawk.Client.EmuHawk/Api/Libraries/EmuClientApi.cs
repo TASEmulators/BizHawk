@@ -15,7 +15,7 @@ using BizHawk.Emulation.Cores.Sega.MasterSystem;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public class EmuClientApi : IEmuClientApi
+	public sealed class EmuClientApi : IEmuClientApi
 	{
 		private List<Joypad> _allJoyPads;
 
@@ -106,9 +106,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void ClearAutohold() => _mainForm.ClearHolds();
 
-		public void CloseEmulator() => _mainForm.CloseEmulator();
-
-		public void CloseEmulatorWithCode(int exitCode) => _mainForm.CloseEmulator(exitCode);
+		public void CloseEmulator(int? exitCode = null) => _mainForm.CloseEmulator(exitCode);
 
 		public void CloseRom() => _mainForm.CloseRom();
 
