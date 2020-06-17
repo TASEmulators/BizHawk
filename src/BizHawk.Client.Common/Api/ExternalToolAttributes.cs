@@ -118,6 +118,7 @@ namespace BizHawk.Client.Common
 		}
 	}
 
+	[AttributeUsage(AttributeTargets.Class)]
 	public sealed class ExternalToolEmbeddedIconAttribute : Attribute
 	{
 		/// <remarks>The full path, including the assembly name.</remarks>

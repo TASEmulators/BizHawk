@@ -32,9 +32,6 @@
 		<!-- Mark assemblies with assembly version -->
 		<Rule Id="CA1016" Action="Hidden" />
 
-		<!-- Mark attributes with AttributeUsageAttribute -->
-		<Rule Id="CA1018" Action="Hidden" />
-
 		<!-- Enum Storage should be Int32 -->
 		<Rule Id="CA1028" Action="Hidden" />
 
