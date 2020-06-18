@@ -554,9 +554,12 @@ namespace BizHawk.Client.EmuHawk
 			end = Math.Min(end, _domain.Size);
 			end &= -(long)dataSize;
 
-			var range = new MutableRange<long>(start, end - 1);
-
 			var dict = new Dictionary<long, long>();
+
+			if (end <= start)
+				return dict;
+
+			var range = new MutableRange<long>(start, end - 1);
 
 			switch (dataSize)
 			{
