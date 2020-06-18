@@ -1,7 +1,7 @@
 #!/bin/sh
 MYPATH="`dirname \"$0\"`"
 SYSROOT="`realpath \"$MYPATH/../sysroot\"`"
-LLVMDIR="`realpath \"$MYPATH/../../../llvm-project\"`"
+LLVMDIR="`realpath \"$MYPATH/../llvm-project\"`"
 rm -rf build1
 mkdir build1
 cd build1
@@ -24,4 +24,4 @@ cmake \
 	-DCMAKE_INSTALL_PREFIX="$SYSROOT" \
 	-DCMAKE_AR="/usr/bin/gcc-ar" \
 	-DCMAKE_RANLIB="/usr/bin/gcc-ranlib" \
-	../../../../llvm-project/libcxxabi
+	../../llvm-project/libcxxabi
