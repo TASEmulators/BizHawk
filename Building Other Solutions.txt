@@ -6,7 +6,8 @@ BUILDING .DLL FOR WINDOWS:
 --> When "vs2019" is mentioned, this means Microsoft(R) Visual(R) Studio(R)(R) 2019(TM) using the latest version with all the normal toolchains installed.
 Unless otherwise specified, the build process consists simply of building the sln; the dlls are automatically output to the appropriate place.
 
---> When "mingw" is mentioned, this means a 64 bit gcc setup installed by https://www.msys2.org/.
+--> When "mingw64" is mentioned, this means a 64 bit gcc setup installed by https://www.msys2.org/. Use mingw64.exe from the msys2 install to get the shell for building
+You will need to run "pacman -S mingw-w64-x86_64-gcc" to install the mingw64 compiler. from then on it will automatically be selected in the mingw64 shell
 
 lynx: use lynx/msvc/bizlynx.sln
 wonderswan: use wonderswan/msvc/bizswan.sln
@@ -22,7 +23,7 @@ It will be difficult to build this without having vs2010 and vs2013 installed.
 Currently, we are stuck due to out of date mupen code and prebuilt static libraries.
 If you have the skills required to modify our mupen core, please send us a postcard to let us know and consider volunteering for the BizMupen Rehabilitation Team where we will redo the core on latest master.
 
-mgba: use mingw to build mgba/src/platform/bizhawk/mingw/Makefile
+mgba: use mingw64 to build mgba/src/platform/bizhawk/mingw/Makefile using "make install"
 
 melonds: ??
 
