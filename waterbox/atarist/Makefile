@@ -92,6 +92,9 @@
 	hatari/src/dialog.c \
 	hatari/src/faketosData.c \
 	hatari/src/main.c \
+	hatari/src/rs232.c \
+	hatari/src/statusbar.c \
+	hatari/src/shortcut.c \
 
 SRCS = \
 	hatari/src/acia.c \
@@ -164,17 +167,14 @@ SRCS = \
 	hatari/src/psg.c \
 	hatari/src/reset.c \
 	hatari/src/resolution.c \
-	hatari/src/rs232.c \
 	hatari/src/rtc.c \
 	hatari/src/scandir.c \
 	hatari/src/scc.c \
 	hatari/src/screenConvert.c \
 	hatari/src/screenSnapShot.c \
-	hatari/src/shortcut.c \
 	hatari/src/sound.c \
 	hatari/src/spec512.c \
 	hatari/src/st.c \
-	hatari/src/statusbar.c \
 	hatari/src/stMemory.c \
 	hatari/src/str.c \
 	hatari/src/tos.c \
@@ -186,9 +186,26 @@ SRCS = \
 	hatari/src/xbios.c \
 	hatari/src/ymFormat.c \
 	hatari/src/zip.c \
-	glue.c
+	hatari/src/cpu/cpudefs.c \
+	hatari/src/cpu/cpustbl.c \
+	hatari/src/cpu/cpuemu_0.c \
+	hatari/src/cpu/cpuemu_11.c \
+	hatari/src/cpu/cpuemu_13.c \
+	hatari/src/cpu/cpuemu_20.c \
+	hatari/src/cpu/cpuemu_21.c \
+	hatari/src/cpu/cpuemu_22.c \
+	hatari/src/cpu/cpuemu_23.c \
+	hatari/src/cpu/cpuemu_24.c \
+	hatari/src/cpu/cpuemu_31.c \
+	hatari/src/cpu/cpuemu_32.c \
+	hatari/src/cpu/cpuemu_33.c \
+	hatari/src/cpu/cpuemu_34.c \
+	hatari/src/cpu/cpuemu_35.c \
+	hatari/src/cpu/cpuemu_40.c \
+	hatari/src/cpu/cpuemu_50.c \
+	glue.c audio.c
 
-
+EXTRA_LIBS := -lz
 
 CCFLAGS = -I. -Ihatari/src/includes -Ihatari/src/debug -Ihatari/src/cpu -I$(OUT_DIR)/gen \
 	-Ihatari/src/falcon -ISDL_include \
