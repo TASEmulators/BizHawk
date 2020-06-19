@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace BizHawk.Client.Common
+﻿namespace BizHawk.Client.Common
 {
 	public interface IRewindSettings
 	{
@@ -11,8 +9,6 @@ namespace BizHawk.Client.Common
 		public int FrequencySmall { get; }
 		public int FrequencyMedium { get; }
 		public int FrequencyLarge { get; }
-		public int MediumStateSize { get; }
-		public int LargeStateSize { get; }
 		public int BufferSize { get; }
 		public bool OnDisk { get; }
 	}
@@ -27,8 +23,6 @@ namespace BizHawk.Client.Common
 		public int FrequencyMedium { get; set; } = 4;
 		public int FrequencyLarge { get; set; } = 60;
 
-		public int MediumStateSize { get; set; } = 262144; // 256kb
-		public int LargeStateSize { get; set; } = 1048576; // 1mb
 		public int BufferSize { get; set; } = 128; // in mb
 		public bool OnDisk { get; set; }
 

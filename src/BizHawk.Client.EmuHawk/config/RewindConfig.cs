@@ -14,8 +14,6 @@ namespace BizHawk.Client.EmuHawk
 		private readonly IStatable _statableCore;
 
 		private long _stateSize;
-		private int _mediumStateSize;
-		private int _largeStateSize;
 		private int _stateSizeCategory = 1; // 1 = small, 2 = med, 3 = large // TODO: enum
 
 		public RewindConfig(MainForm mainForm, Config config, IStatable statableCore)
@@ -44,9 +42,6 @@ namespace BizHawk.Client.EmuHawk
 			_stateSize = _statableCore.CloneSavestate().Length;
 			BufferSizeUpDown.Value = Math.Max(_config.Rewind.BufferSize, BufferSizeUpDown.Minimum);
 
-			_mediumStateSize = _config.Rewind.MediumStateSize;
-			_largeStateSize = _config.Rewind.LargeStateSize;
-
 			UseCompression.Checked = _config.Rewind.UseCompression;
 
 			SmallSavestateNumeric.Value = _config.Rewind.FrequencySmall;
@@ -62,14 +57,6 @@ namespace BizHawk.Client.EmuHawk
 			SetLargeEnabled();
 
 			SetStateSize();
-
-			var mediumStateSizeKb = _config.Rewind.MediumStateSize / 1024;
-			var largeStateSizeKb = _config.Rewind.LargeStateSize / 1024;
-
-			MediumStateTrackbar.Value = mediumStateSizeKb;
-			MediumStateUpDown.Value = mediumStateSizeKb;
-			LargeStateTrackbar.Value = largeStateSizeKb;
-			LargeStateUpDown.Value = largeStateSizeKb;
 
 			nudCompression.Value = _config.Savestates.CompressionLevelNormal;
 
@@ -109,31 +96,14 @@ namespace BizHawk.Client.EmuHawk
 		{
 			StateSizeLabel.Text = FormatKB(_stateSize);
 
-			SmallLabel.Text = $"Small savestates (less than {_mediumStateSize / 1024}KB)";
-			MediumLabel.Text = $"Medium savestates ({_mediumStateSize / 1024} - {_largeStateSize / 1024}KB)";
-			LargeLabel.Text = $"Large savestates ({_largeStateSize / 1024}KB or more)";
+			SmallLabel.Text = $"Small savestates";
+			MediumLabel.Text = $"Medium savestates";
+			LargeLabel.Text = $"Large savestates";
 
-			if (_stateSize >= _largeStateSize)
-			{
-				_stateSizeCategory = 3;
-				SmallLabel.Font = new Font(SmallLabel.Font, FontStyle.Regular);
-				MediumLabel.Font = new Font(SmallLabel.Font, FontStyle.Regular);
-				LargeLabel.Font = new Font(SmallLabel.Font, FontStyle.Italic);
-			}
-			else if (_stateSize >= _mediumStateSize)
-			{
-				_stateSizeCategory = 2;
-				SmallLabel.Font = new Font(SmallLabel.Font, FontStyle.Regular);
-				MediumLabel.Font = new Font(SmallLabel.Font, FontStyle.Italic);
-				LargeLabel.Font = new Font(SmallLabel.Font, FontStyle.Regular);
-			}
-			else
-			{
-				_stateSizeCategory = 1;
-				SmallLabel.Font = new Font(SmallLabel.Font, FontStyle.Italic);
-				MediumLabel.Font = new Font(SmallLabel.Font, FontStyle.Regular);
-				LargeLabel.Font = new Font(SmallLabel.Font, FontStyle.Regular);
-			}
+			_stateSizeCategory = 1;
+			SmallLabel.Font = new Font(SmallLabel.Font, FontStyle.Italic);
+			MediumLabel.Font = new Font(SmallLabel.Font, FontStyle.Regular);
+			LargeLabel.Font = new Font(SmallLabel.Font, FontStyle.Regular);
 
 			CalculateEstimates();
 		}
@@ -166,8 +136,6 @@ namespace BizHawk.Client.EmuHawk
 			_config.Rewind.FrequencySmall = PutRewindSetting(_config.Rewind.FrequencySmall, (int)SmallSavestateNumeric.Value);
 			_config.Rewind.FrequencyMedium = PutRewindSetting(_config.Rewind.FrequencyMedium, (int)MediumSavestateNumeric.Value);
 			_config.Rewind.FrequencyLarge = PutRewindSetting(_config.Rewind.FrequencyLarge, (int)LargeSavestateNumeric.Value);
-			_config.Rewind.MediumStateSize = PutRewindSetting(_config.Rewind.MediumStateSize, (int)MediumStateUpDown.Value * 1024);
-			_config.Rewind.LargeStateSize = PutRewindSetting(_config.Rewind.LargeStateSize, (int)LargeStateUpDown.Value * 1024);
 			_config.Rewind.BufferSize = PutRewindSetting(_config.Rewind.BufferSize, (int)BufferSizeUpDown.Value);
 			_config.Rewind.OnDisk = PutRewindSetting(_config.Rewind.OnDisk, DiskBufferCheckbox.Checked);
 
@@ -239,68 +207,6 @@ namespace BizHawk.Client.EmuHawk
 		private void SmallLabel_Click(object sender, EventArgs e)
 		{
 			SmallStateEnabledBox.Checked ^= true;
-		}
-
-		private void MediumStateTrackBar_ValueChanged(object sender, EventArgs e)
-		{
-			MediumStateUpDown.Value = ((TrackBar)sender).Value;
-			if (MediumStateUpDown.Value > LargeStateUpDown.Value)
-			{
-				LargeStateUpDown.Value = MediumStateUpDown.Value;
-				LargeStateTrackbar.Value = (int)MediumStateUpDown.Value;
-			}
-
-			_mediumStateSize = MediumStateTrackbar.Value * 1024;
-			_largeStateSize = LargeStateTrackbar.Value * 1024;
-			SetStateSize();
-		}
-
-		private void MediumStateUpDown_ValueChanged(object sender, EventArgs e)
-		{
-			MediumStateTrackbar.Value = (int)((NumericUpDown)sender).Value;
-			if (MediumStateUpDown.Value > LargeStateUpDown.Value)
-			{
-				LargeStateUpDown.Value = MediumStateUpDown.Value;
-				LargeStateTrackbar.Value = (int)MediumStateUpDown.Value;
-			}
-
-			_mediumStateSize = MediumStateTrackbar.Value * 1024;
-			_largeStateSize = LargeStateTrackbar.Value * 1024;
-			SetStateSize();
-		}
-
-		private void LargeStateTrackBar_ValueChanged(object sender, EventArgs e)
-		{
-			if (LargeStateTrackbar.Value < MediumStateTrackbar.Value)
-			{
-				LargeStateTrackbar.Value = MediumStateTrackbar.Value;
-				LargeStateUpDown.Value = MediumStateTrackbar.Value;
-			}
-			else
-			{
-				LargeStateUpDown.Value = ((TrackBar)sender).Value;
-			}
-
-			_mediumStateSize = MediumStateTrackbar.Value * 1024;
-			_largeStateSize = LargeStateTrackbar.Value * 1024;
-			SetStateSize();
-		}
-
-		private void LargeStateUpDown_ValueChanged(object sender, EventArgs e)
-		{
-			if (LargeStateUpDown.Value < MediumStateUpDown.Value)
-			{
-				LargeStateTrackbar.Value = MediumStateTrackbar.Value;
-				LargeStateUpDown.Value = MediumStateTrackbar.Value;
-			}
-			else
-			{
-				LargeStateTrackbar.Value = (int)((NumericUpDown)sender).Value;
-			}
-
-			_mediumStateSize = MediumStateTrackbar.Value * 1024;
-			_largeStateSize = LargeStateTrackbar.Value * 1024;
-			SetStateSize();
 		}
 
 		private void CalculateEstimates()

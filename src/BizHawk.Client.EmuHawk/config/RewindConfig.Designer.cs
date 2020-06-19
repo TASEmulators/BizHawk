@@ -51,15 +51,6 @@
             this.UseCompression = new System.Windows.Forms.CheckBox();
             this.label1 = new System.Windows.Forms.Label();
             this.StateSizeLabel = new System.Windows.Forms.Label();
-            this.MediumStateTrackbar = new System.Windows.Forms.TrackBar();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.LargeStateUpDown = new System.Windows.Forms.NumericUpDown();
-            this.MediumStateUpDown = new System.Windows.Forms.NumericUpDown();
-            this.LargeStateSizeLabel = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
-            this.LargeStateTrackbar = new System.Windows.Forms.TrackBar();
-            this.MediumStateSizeLabel = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.label19 = new System.Windows.Forms.Label();
             this.RewindSpeedNumeric = new System.Windows.Forms.NumericUpDown();
@@ -103,11 +94,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.LargeSavestateNumeric)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.MediumSavestateNumeric)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.SmallSavestateNumeric)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.MediumStateTrackbar)).BeginInit();
-            this.groupBox2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.LargeStateUpDown)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.MediumStateUpDown)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.LargeStateTrackbar)).BeginInit();
             this.groupBox3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.RewindSpeedNumeric)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.BufferSizeUpDown)).BeginInit();
@@ -387,132 +373,7 @@
             this.StateSizeLabel.Size = new System.Drawing.Size(30, 13);
             this.StateSizeLabel.TabIndex = 6;
             this.StateSizeLabel.Text = "0 KB";
-            // 
-            // MediumStateTrackbar
-            // 
-            this.MediumStateTrackbar.LargeChange = 256;
-            this.MediumStateTrackbar.Location = new System.Drawing.Point(67, 22);
-            this.MediumStateTrackbar.Maximum = 4096;
-            this.MediumStateTrackbar.Minimum = 1;
-            this.MediumStateTrackbar.Name = "MediumStateTrackbar";
-            this.MediumStateTrackbar.Size = new System.Drawing.Size(186, 45);
-            this.MediumStateTrackbar.TabIndex = 1;
-            this.MediumStateTrackbar.TickFrequency = 256;
-            this.MediumStateTrackbar.Value = 1;
-            this.MediumStateTrackbar.ValueChanged += new System.EventHandler(this.MediumStateTrackBar_ValueChanged);
-            // 
-            // groupBox2
-            // 
-            this.groupBox2.Controls.Add(this.LargeStateUpDown);
-            this.groupBox2.Controls.Add(this.MediumStateUpDown);
-            this.groupBox2.Controls.Add(this.LargeStateSizeLabel);
-            this.groupBox2.Controls.Add(this.label5);
-            this.groupBox2.Controls.Add(this.LargeStateTrackbar);
-            this.groupBox2.Controls.Add(this.MediumStateSizeLabel);
-            this.groupBox2.Controls.Add(this.label2);
-            this.groupBox2.Controls.Add(this.MediumStateTrackbar);
-            this.groupBox2.Location = new System.Drawing.Point(12, 387);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(371, 105);
-            this.groupBox2.TabIndex = 5;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "State Size Definition";
-            // 
-            // LargeStateUpDown
-            // 
-            this.LargeStateUpDown.Location = new System.Drawing.Point(259, 67);
-            this.LargeStateUpDown.Maximum = new decimal(new int[] {
-            16384,
-            0,
-            0,
-            0});
-            this.LargeStateUpDown.Minimum = new decimal(new int[] {
-            256,
-            0,
-            0,
-            0});
-            this.LargeStateUpDown.Name = "LargeStateUpDown";
-            this.LargeStateUpDown.Size = new System.Drawing.Size(52, 20);
-            this.LargeStateUpDown.TabIndex = 6;
-            this.LargeStateUpDown.Value = new decimal(new int[] {
-            256,
-            0,
-            0,
-            0});
-            this.LargeStateUpDown.ValueChanged += new System.EventHandler(this.LargeStateUpDown_ValueChanged);
-            // 
-            // MediumStateUpDown
-            // 
-            this.MediumStateUpDown.Location = new System.Drawing.Point(259, 31);
-            this.MediumStateUpDown.Maximum = new decimal(new int[] {
-            4096,
-            0,
-            0,
-            0});
-            this.MediumStateUpDown.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.MediumStateUpDown.Name = "MediumStateUpDown";
-            this.MediumStateUpDown.Size = new System.Drawing.Size(52, 20);
-            this.MediumStateUpDown.TabIndex = 2;
-            this.MediumStateUpDown.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.MediumStateUpDown.ValueChanged += new System.EventHandler(this.MediumStateUpDown_ValueChanged);
-            // 
-            // LargeStateSizeLabel
-            // 
-            this.LargeStateSizeLabel.AutoSize = true;
-            this.LargeStateSizeLabel.Location = new System.Drawing.Point(312, 71);
-            this.LargeStateSizeLabel.Name = "LargeStateSizeLabel";
-            this.LargeStateSizeLabel.Size = new System.Drawing.Size(21, 13);
-            this.LargeStateSizeLabel.TabIndex = 7;
-            this.LargeStateSizeLabel.Text = "KB";
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(27, 63);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(34, 13);
-            this.label5.TabIndex = 4;
-            this.label5.Text = "Large";
-            // 
-            // LargeStateTrackbar
-            // 
-            this.LargeStateTrackbar.LargeChange = 1024;
-            this.LargeStateTrackbar.Location = new System.Drawing.Point(67, 58);
-            this.LargeStateTrackbar.Maximum = 16384;
-            this.LargeStateTrackbar.Minimum = 256;
-            this.LargeStateTrackbar.Name = "LargeStateTrackbar";
-            this.LargeStateTrackbar.Size = new System.Drawing.Size(186, 45);
-            this.LargeStateTrackbar.TabIndex = 5;
-            this.LargeStateTrackbar.TickFrequency = 1024;
-            this.LargeStateTrackbar.Value = 256;
-            this.LargeStateTrackbar.ValueChanged += new System.EventHandler(this.LargeStateTrackBar_ValueChanged);
-            // 
-            // MediumStateSizeLabel
-            // 
-            this.MediumStateSizeLabel.AutoSize = true;
-            this.MediumStateSizeLabel.Location = new System.Drawing.Point(313, 35);
-            this.MediumStateSizeLabel.Name = "MediumStateSizeLabel";
-            this.MediumStateSizeLabel.Size = new System.Drawing.Size(21, 13);
-            this.MediumStateSizeLabel.TabIndex = 3;
-            this.MediumStateSizeLabel.Text = "KB";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(18, 31);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(44, 13);
-            this.label2.TabIndex = 0;
-            this.label2.Text = "Medium";
-            // 
+			// 
             // groupBox3
             // 
             this.groupBox3.Controls.Add(this.label19);
@@ -969,7 +830,6 @@
             this.Controls.Add(this.groupBox7);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
-            this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.Cancel);
             this.Controls.Add(this.OK);
@@ -986,12 +846,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.LargeSavestateNumeric)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.MediumSavestateNumeric)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.SmallSavestateNumeric)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.MediumStateTrackbar)).EndInit();
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.LargeStateUpDown)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.MediumStateUpDown)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.LargeStateTrackbar)).EndInit();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.RewindSpeedNumeric)).EndInit();
@@ -1033,15 +887,6 @@
 		private System.Windows.Forms.CheckBox UseCompression;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Label StateSizeLabel;
-		private System.Windows.Forms.TrackBar MediumStateTrackbar;
-		private System.Windows.Forms.GroupBox groupBox2;
-		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.Label MediumStateSizeLabel;
-		private System.Windows.Forms.Label LargeStateSizeLabel;
-		private System.Windows.Forms.Label label5;
-		private System.Windows.Forms.TrackBar LargeStateTrackbar;
-		private System.Windows.Forms.NumericUpDown LargeStateUpDown;
-		private System.Windows.Forms.NumericUpDown MediumStateUpDown;
 		private System.Windows.Forms.GroupBox groupBox3;
 		private System.Windows.Forms.CheckBox DiskBufferCheckbox;
 		private System.Windows.Forms.Label label4;
