@@ -55,11 +55,9 @@
             this.label19 = new System.Windows.Forms.Label();
             this.RewindSpeedNumeric = new System.Windows.Forms.NumericUpDown();
             this.label18 = new System.Windows.Forms.Label();
-            this.label17 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.BufferSizeUpDown = new System.Windows.Forms.NumericUpDown();
             this.label3 = new System.Windows.Forms.Label();
-            this.DiskBufferCheckbox = new System.Windows.Forms.CheckBox();
             this.label6 = new System.Windows.Forms.Label();
             this.FullnessLabel = new System.Windows.Forms.Label();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
@@ -379,11 +377,9 @@
             this.groupBox3.Controls.Add(this.label19);
             this.groupBox3.Controls.Add(this.RewindSpeedNumeric);
             this.groupBox3.Controls.Add(this.label18);
-            this.groupBox3.Controls.Add(this.label17);
             this.groupBox3.Controls.Add(this.label4);
             this.groupBox3.Controls.Add(this.BufferSizeUpDown);
             this.groupBox3.Controls.Add(this.label3);
-            this.groupBox3.Controls.Add(this.DiskBufferCheckbox);
             this.groupBox3.Controls.Add(this.UseCompression);
             this.groupBox3.Location = new System.Drawing.Point(12, 214);
             this.groupBox3.Name = "groupBox3";
@@ -431,16 +427,7 @@
             this.label18.Size = new System.Drawing.Size(78, 13);
             this.label18.TabIndex = 0;
             this.label18.Text = "Rewind speed:";
-            // 
-            // label17
-            // 
-            this.label17.AutoSize = true;
-            this.label17.Location = new System.Drawing.Point(6, 47);
-            this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(278, 13);
-            this.label17.TabIndex = 3;
-            this.label17.Text = "These options affect rewind performance in various ways:";
-            // 
+			// 
             // label4
             // 
             this.label4.AutoSize = true;
@@ -481,19 +468,7 @@
             this.label3.Size = new System.Drawing.Size(81, 13);
             this.label3.TabIndex = 7;
             this.label3.Text = "Max buffer size:";
-            // 
-            // DiskBufferCheckbox
-            // 
-            this.DiskBufferCheckbox.AutoSize = true;
-            this.DiskBufferCheckbox.Location = new System.Drawing.Point(16, 67);
-            this.DiskBufferCheckbox.Name = "DiskBufferCheckbox";
-            this.DiskBufferCheckbox.Size = new System.Drawing.Size(188, 17);
-            this.DiskBufferCheckbox.TabIndex = 4;
-            this.DiskBufferCheckbox.Text = "Use disk for buffer instead of RAM";
-            this.toolTip1.SetToolTip(this.DiskBufferCheckbox, "To support a longer rewind buffer, you can choose to have it stored on your disk." +
-        " Where, precisely? Not sure. Probably %TEMP%");
-            this.DiskBufferCheckbox.UseVisualStyleBackColor = true;
-            // 
+			// 
             // label6
             // 
             this.label6.AutoSize = true;
@@ -888,7 +863,6 @@
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Label StateSizeLabel;
 		private System.Windows.Forms.GroupBox groupBox3;
-		private System.Windows.Forms.CheckBox DiskBufferCheckbox;
 		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.NumericUpDown BufferSizeUpDown;
 		private System.Windows.Forms.Label label3;
@@ -912,7 +886,6 @@
 				private System.Windows.Forms.Button btnResetCompression;
 				private System.Windows.Forms.GroupBox groupBox7;
 				private System.Windows.Forms.Label label12;
-				private System.Windows.Forms.Label label17;
 				private System.Windows.Forms.Label KbLabel;
 				private System.Windows.Forms.NumericUpDown BigScreenshotNumeric;
 				private System.Windows.Forms.CheckBox LowResLargeScreenshotsCheckbox;

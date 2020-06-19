@@ -10,7 +10,6 @@
 		public int FrequencyMedium { get; }
 		public int FrequencyLarge { get; }
 		public int BufferSize { get; }
-		public bool OnDisk { get; }
 	}
 
 	public class RewindConfig : IRewindSettings
@@ -24,8 +23,6 @@
 		public int FrequencyLarge { get; set; } = 60;
 
 		public int BufferSize { get; set; } = 128; // in mb
-		public bool OnDisk { get; set; }
-
 		public int SpeedMultiplier { get; set; } = 1;
 	}
 }
