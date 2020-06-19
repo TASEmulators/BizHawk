@@ -42,12 +42,8 @@ namespace BizHawk.Client.EmuHawk
 			UseCompression.Checked = _config.Rewind.UseCompression;
 
 			SmallStateEnabledBox.Checked = _config.Rewind.EnabledSmall;
-			MediumStateEnabledBox.Checked = _config.Rewind.EnabledMedium;
-			LargeStateEnabledBox.Checked = _config.Rewind.EnabledLarge;
 
 			SetSmallEnabled();
-			SetMediumEnabled();
-			SetLargeEnabled();
 
 			SetStateSize();
 
@@ -123,8 +119,6 @@ namespace BizHawk.Client.EmuHawk
 			// These settings are used by DoRewindSettings, which we'll only call if anything actually changed (i.e. preserve rewind history if possible)
 			_config.Rewind.UseCompression = PutRewindSetting(_config.Rewind.UseCompression, UseCompression.Checked);
 			_config.Rewind.EnabledSmall = PutRewindSetting(_config.Rewind.EnabledSmall, SmallStateEnabledBox.Checked);
-			_config.Rewind.EnabledMedium = PutRewindSetting(_config.Rewind.EnabledMedium, MediumStateEnabledBox.Checked);
-			_config.Rewind.EnabledLarge = PutRewindSetting(_config.Rewind.EnabledLarge, LargeStateEnabledBox.Checked);
 			_config.Rewind.BufferSize = PutRewindSetting(_config.Rewind.BufferSize, (int)BufferSizeUpDown.Value);
 
 			// These settings are not used by DoRewindSettings
@@ -150,39 +144,9 @@ namespace BizHawk.Client.EmuHawk
 			SmallLabel.Enabled = SmallStateEnabledBox.Checked;
 		}
 
-		private void SetMediumEnabled()
-		{
-			MediumLabel.Enabled = MediumStateEnabledBox.Checked;
-		}
-
-		private void SetLargeEnabled()
-		{
-			LargeLabel.Enabled = LargeStateEnabledBox.Checked;
-		}
-
 		private void SmallStateEnabledBox_CheckStateChanged(object sender, EventArgs e)
 		{
 			SetSmallEnabled();
-		}
-
-		private void MediumStateEnabledBox_CheckStateChanged(object sender, EventArgs e)
-		{
-			SetMediumEnabled();
-		}
-
-		private void LargeStateEnabledBox_CheckStateChanged(object sender, EventArgs e)
-		{
-			SetLargeEnabled();
-		}
-
-		private void LargeLabel_Click(object sender, EventArgs e)
-		{
-			LargeStateEnabledBox.Checked ^= true;
-		}
-
-		private void MediumLabel_Click(object sender, EventArgs e)
-		{
-			MediumStateEnabledBox.Checked ^= true;
 		}
 
 		private void SmallLabel_Click(object sender, EventArgs e)

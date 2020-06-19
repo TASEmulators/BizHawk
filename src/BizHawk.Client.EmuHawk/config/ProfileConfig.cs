@@ -101,8 +101,6 @@ namespace BizHawk.Client.EmuHawk
 			_config.Savestates.MakeBackups = false;
 
 			_config.Savestates.CompressionLevelNormal = 0;
-			_config.Rewind.EnabledLarge = false;
-			_config.Rewind.EnabledMedium = false;
 			_config.Rewind.EnabledSmall = true;
 			_config.SkipLagFrame = false;
 
@@ -183,8 +181,6 @@ namespace BizHawk.Client.EmuHawk
 			_config.Savestates.CompressionLevelNormal = 5;
 
 			// Rewind
-			_config.Rewind.EnabledLarge = false;
-			_config.Rewind.EnabledMedium = false;
 			_config.Rewind.EnabledSmall = false;
 
 			// N64

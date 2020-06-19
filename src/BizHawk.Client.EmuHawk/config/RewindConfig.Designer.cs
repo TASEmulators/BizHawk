@@ -34,11 +34,7 @@
             this.SmallLabel = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.label10 = new System.Windows.Forms.Label();
-            this.LargeStateEnabledBox = new System.Windows.Forms.CheckBox();
-            this.MediumStateEnabledBox = new System.Windows.Forms.CheckBox();
             this.SmallStateEnabledBox = new System.Windows.Forms.CheckBox();
-            this.LargeLabel = new System.Windows.Forms.Label();
-            this.MediumLabel = new System.Windows.Forms.Label();
             this.UseCompression = new System.Windows.Forms.CheckBox();
             this.label1 = new System.Windows.Forms.Label();
             this.StateSizeLabel = new System.Windows.Forms.Label();
@@ -124,11 +120,7 @@
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.label10);
-            this.groupBox1.Controls.Add(this.LargeStateEnabledBox);
-            this.groupBox1.Controls.Add(this.MediumStateEnabledBox);
             this.groupBox1.Controls.Add(this.SmallStateEnabledBox);
-            this.groupBox1.Controls.Add(this.LargeLabel);
-            this.groupBox1.Controls.Add(this.MediumLabel);
             this.groupBox1.Controls.Add(this.SmallLabel);
             this.groupBox1.Location = new System.Drawing.Point(12, 90);
             this.groupBox1.Name = "groupBox1";
@@ -146,26 +138,6 @@
             this.label10.TabIndex = 0;
             this.label10.Text = "Enable";
             // 
-            // LargeStateEnabledBox
-            // 
-            this.LargeStateEnabledBox.AutoSize = true;
-            this.LargeStateEnabledBox.Location = new System.Drawing.Point(9, 87);
-            this.LargeStateEnabledBox.Name = "LargeStateEnabledBox";
-            this.LargeStateEnabledBox.Size = new System.Drawing.Size(15, 14);
-            this.LargeStateEnabledBox.TabIndex = 11;
-            this.LargeStateEnabledBox.UseVisualStyleBackColor = true;
-            this.LargeStateEnabledBox.CheckStateChanged += new System.EventHandler(this.LargeStateEnabledBox_CheckStateChanged);
-            // 
-            // MediumStateEnabledBox
-            // 
-            this.MediumStateEnabledBox.AutoSize = true;
-            this.MediumStateEnabledBox.Location = new System.Drawing.Point(9, 63);
-            this.MediumStateEnabledBox.Name = "MediumStateEnabledBox";
-            this.MediumStateEnabledBox.Size = new System.Drawing.Size(15, 14);
-            this.MediumStateEnabledBox.TabIndex = 6;
-            this.MediumStateEnabledBox.UseVisualStyleBackColor = true;
-            this.MediumStateEnabledBox.CheckStateChanged += new System.EventHandler(this.MediumStateEnabledBox_CheckStateChanged);
-            // 
             // SmallStateEnabledBox
             // 
             this.SmallStateEnabledBox.AutoSize = true;
@@ -175,26 +147,6 @@
             this.SmallStateEnabledBox.TabIndex = 1;
             this.SmallStateEnabledBox.UseVisualStyleBackColor = true;
             this.SmallStateEnabledBox.CheckStateChanged += new System.EventHandler(this.SmallStateEnabledBox_CheckStateChanged);
-            // 
-            // LargeLabel1
-            // 
-            this.LargeLabel.AutoSize = true;
-            this.LargeLabel.Location = new System.Drawing.Point(40, 88);
-            this.LargeLabel.Name = "LargeLabel";
-            this.LargeLabel.Size = new System.Drawing.Size(179, 13);
-            this.LargeLabel.TabIndex = 12;
-            this.LargeLabel.Text = "Large savestates (more than 100KB)";
-            this.LargeLabel.Click += new System.EventHandler(this.LargeLabel_Click);
-            // 
-            // MediumLabel1
-            // 
-            this.MediumLabel.AutoSize = true;
-            this.MediumLabel.Location = new System.Drawing.Point(40, 64);
-            this.MediumLabel.Name = "MediumLabel";
-            this.MediumLabel.Size = new System.Drawing.Size(160, 13);
-            this.MediumLabel.TabIndex = 7;
-            this.MediumLabel.Text = "Medium savestates (32 - 100KB)";
-            this.MediumLabel.Click += new System.EventHandler(this.MediumLabel_Click);
             // 
             // UseCompression
             // 
@@ -660,11 +612,7 @@
 		private System.Windows.Forms.Button Cancel;
 		private System.Windows.Forms.Label SmallLabel;
 		private System.Windows.Forms.GroupBox groupBox1;
-		private System.Windows.Forms.Label LargeLabel;
-		private System.Windows.Forms.Label MediumLabel;
 		private System.Windows.Forms.Label label10;
-		private System.Windows.Forms.CheckBox LargeStateEnabledBox;
-		private System.Windows.Forms.CheckBox MediumStateEnabledBox;
 		private System.Windows.Forms.CheckBox SmallStateEnabledBox;
 		private System.Windows.Forms.CheckBox UseCompression;
 		private System.Windows.Forms.Label label1;
