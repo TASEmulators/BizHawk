@@ -311,7 +311,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (UseDeltaCompression.Checked || _stateSize == 0)
 			{
-				if (_mainForm?.Rewinder.Count > 0)
+				if (_mainForm.Rewinder?.Count > 0)
 				{
 					avgStateSize = _mainForm.Rewinder.Size / _mainForm.Rewinder.Count;
 				}
