@@ -44,8 +44,6 @@
 			this.groupBox4 = new System.Windows.Forms.GroupBox();
 			this.EstTimeLabel = new System.Windows.Forms.Label();
 			this.label11 = new System.Windows.Forms.Label();
-			this.AverageStoredStateSizeLabel = new System.Windows.Forms.Label();
-			this.label9 = new System.Windows.Forms.Label();
 			this.ApproxFramesLabel = new System.Windows.Forms.Label();
 			this.label8 = new System.Windows.Forms.Label();
 			this.RewindFramesUsedLabel = new System.Windows.Forms.Label();
@@ -135,7 +133,7 @@
 			this.UseCompression.TabIndex = 5;
 			this.UseCompression.Text = "Use compression (economizes buffer usage at cost of CPU)";
 			this.UseCompression.UseVisualStyleBackColor = true;
-			this.UseCompression.CheckedChanged += new System.EventHandler(this.UseDeltaCompression_CheckedChanged);
+			this.UseCompression.CheckedChanged += new System.EventHandler(this.UseCompression_CheckedChanged);
 			// 
 			// label1
 			// 
@@ -144,7 +142,7 @@
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(81, 13);
 			this.label1.TabIndex = 5;
-			this.label1.Text = "Savestate Size:";
+			this.label1.Text = "Avg. State Size:";
 			// 
 			// StateSizeLabel
 			// 
@@ -166,7 +164,7 @@
 			// 
 			// BufferSizeUpDown
 			// 
-			this.BufferSizeUpDown.Location = new System.Drawing.Point(93, 69);
+			this.BufferSizeUpDown.Location = new System.Drawing.Point(93, 67);
 			this.BufferSizeUpDown.Maximum = new decimal(new int[] {
             2097512,
             0,
@@ -218,8 +216,6 @@
 			// 
 			this.groupBox4.Controls.Add(this.EstTimeLabel);
 			this.groupBox4.Controls.Add(this.label11);
-			this.groupBox4.Controls.Add(this.AverageStoredStateSizeLabel);
-			this.groupBox4.Controls.Add(this.label9);
 			this.groupBox4.Controls.Add(this.ApproxFramesLabel);
 			this.groupBox4.Controls.Add(this.label8);
 			this.groupBox4.Controls.Add(this.RewindFramesUsedLabel);
@@ -238,7 +234,7 @@
 			// EstTimeLabel
 			// 
 			this.EstTimeLabel.AutoSize = true;
-			this.EstTimeLabel.Location = new System.Drawing.Point(273, 48);
+			this.EstTimeLabel.Location = new System.Drawing.Point(273, 32);
 			this.EstTimeLabel.Name = "EstTimeLabel";
 			this.EstTimeLabel.Size = new System.Drawing.Size(32, 13);
 			this.EstTimeLabel.TabIndex = 19;
@@ -247,34 +243,16 @@
 			// label11
 			// 
 			this.label11.AutoSize = true;
-			this.label11.Location = new System.Drawing.Point(221, 48);
+			this.label11.Location = new System.Drawing.Point(221, 32);
 			this.label11.Name = "label11";
 			this.label11.Size = new System.Drawing.Size(54, 13);
 			this.label11.TabIndex = 18;
 			this.label11.Text = "Est. Time:";
 			// 
-			// AverageStoredStateSizeLabel
-			// 
-			this.AverageStoredStateSizeLabel.AutoSize = true;
-			this.AverageStoredStateSizeLabel.Location = new System.Drawing.Point(273, 16);
-			this.AverageStoredStateSizeLabel.Name = "AverageStoredStateSizeLabel";
-			this.AverageStoredStateSizeLabel.Size = new System.Drawing.Size(41, 13);
-			this.AverageStoredStateSizeLabel.TabIndex = 17;
-			this.AverageStoredStateSizeLabel.Text = "0 bytes";
-			// 
-			// label9
-			// 
-			this.label9.AutoSize = true;
-			this.label9.Location = new System.Drawing.Point(161, 16);
-			this.label9.Name = "label9";
-			this.label9.Size = new System.Drawing.Size(114, 13);
-			this.label9.TabIndex = 16;
-			this.label9.Text = "Avg Stored State Size:";
-			// 
 			// ApproxFramesLabel
 			// 
 			this.ApproxFramesLabel.AutoSize = true;
-			this.ApproxFramesLabel.Location = new System.Drawing.Point(273, 32);
+			this.ApproxFramesLabel.Location = new System.Drawing.Point(273, 17);
 			this.ApproxFramesLabel.Name = "ApproxFramesLabel";
 			this.ApproxFramesLabel.Size = new System.Drawing.Size(47, 13);
 			this.ApproxFramesLabel.TabIndex = 15;
@@ -283,7 +261,7 @@
 			// label8
 			// 
 			this.label8.AutoSize = true;
-			this.label8.Location = new System.Drawing.Point(209, 32);
+			this.label8.Location = new System.Drawing.Point(209, 17);
 			this.label8.Name = "label8";
 			this.label8.Size = new System.Drawing.Size(66, 13);
 			this.label8.TabIndex = 14;
@@ -575,8 +553,6 @@
 		private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label ApproxFramesLabel;
         private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.Label AverageStoredStateSizeLabel;
         private System.Windows.Forms.Label EstTimeLabel;
 				private System.Windows.Forms.Label label11;
 				private System.Windows.Forms.GroupBox groupBox6;

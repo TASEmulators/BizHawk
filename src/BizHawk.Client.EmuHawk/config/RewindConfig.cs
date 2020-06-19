@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows.Forms;
-using System.Drawing;
 
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
@@ -13,7 +12,7 @@ namespace BizHawk.Client.EmuHawk
 		private readonly Config _config;
 		private readonly IStatable _statableCore;
 
-		private long _stateSize;
+		private double _avgStateSize;
 
 		public RewindConfig(MainForm mainForm, Config config, IStatable statableCore)
 		{
@@ -29,21 +28,22 @@ namespace BizHawk.Client.EmuHawk
 			{
 				FullnessLabel.Text = $"{_mainForm.Rewinder.FullnessRatio * 100:0.00}%";
 				RewindFramesUsedLabel.Text = _mainForm.Rewinder.Count.ToString();
+				_avgStateSize = _mainForm.Rewinder.Size * _mainForm.Rewinder.FullnessRatio / _mainForm.Rewinder.Count;
 			}
 			else
 			{
 				FullnessLabel.Text = "N/A";
 				RewindFramesUsedLabel.Text = "N/A";
+				_avgStateSize = _statableCore.CloneSavestate().Length;
 			}
 
-			_stateSize = _statableCore.CloneSavestate().Length;
+			
+			RewindEnabledBox.Checked = _config.Rewind.Enabled;
+			UseCompression.Checked = _config.Rewind.UseCompression;
 			BufferSizeUpDown.Value = Math.Max(_config.Rewind.BufferSize, BufferSizeUpDown.Minimum);
 
-			UseCompression.Checked = _config.Rewind.UseCompression;
-
-			RewindEnabledBox.Checked = _config.Rewind.Enabled;
-
-			SetStateSize();
+			StateSizeLabel.Text = FormatKB(_avgStateSize);
+			CalculateEstimates();
 
 			nudCompression.Value = _config.Savestates.CompressionLevelNormal;
 
@@ -66,7 +66,7 @@ namespace BizHawk.Client.EmuHawk
 				ScreenshotInStatesCheckbox.Checked;
 		}
 
-		private string FormatKB(long n)
+		private string FormatKB(double n)
 		{
 			double num = n / 1024.0;
 
@@ -77,12 +77,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			return $"{num:0.00} KB";
-		}
-
-		private void SetStateSize()
-		{
-			StateSizeLabel.Text = FormatKB(_stateSize);
-			CalculateEstimates();
 		}
 
 		private void Cancel_Click(object sender, EventArgs e)
@@ -130,33 +124,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CalculateEstimates()
 		{
-			long avgStateSize;
-
-			if (UseCompression.Checked || _stateSize == 0)
-			{
-				if (_mainForm.Rewinder?.Count > 0)
-				{
-					avgStateSize = _mainForm.Rewinder.Size / _mainForm.Rewinder.Count;
-				}
-				else
-				{
-					avgStateSize = _stateSize;
-				}
-			}
-			else
-			{
-				avgStateSize = _stateSize;
-			}
-
 			var bufferSize = (long)BufferSizeUpDown.Value;
 			bufferSize *= 1024 * 1024;
-			var estFrames = bufferSize / avgStateSize;
+			var estFrames = bufferSize / _avgStateSize;
 
-			long estFrequency = 0; // TODO
-			long estTotalFrames = estFrames * estFrequency;
+			double estTotalFrames = estFrames;
 			double minutes = estTotalFrames / 60 / 60;
 
-			AverageStoredStateSizeLabel.Text = FormatKB(avgStateSize);
 			ApproxFramesLabel.Text = $"{estFrames:n0} frames";
 			EstTimeLabel.Text = $"{minutes:n} minutes";
 		}
@@ -166,7 +140,7 @@ namespace BizHawk.Client.EmuHawk
 			CalculateEstimates();
 		}
 
-		private void UseDeltaCompression_CheckedChanged(object sender, EventArgs e)
+		private void UseCompression_CheckedChanged(object sender, EventArgs e)
 		{
 			CalculateEstimates();
 		}
