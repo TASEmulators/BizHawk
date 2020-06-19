@@ -31,14 +31,13 @@
 			this.components = new System.ComponentModel.Container();
 			this.OK = new System.Windows.Forms.Button();
 			this.Cancel = new System.Windows.Forms.Button();
-			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.RewindEnabledBox = new System.Windows.Forms.CheckBox();
 			this.UseCompression = new System.Windows.Forms.CheckBox();
-			this.label1 = new System.Windows.Forms.Label();
-			this.StateSizeLabel = new System.Windows.Forms.Label();
 			this.label4 = new System.Windows.Forms.Label();
 			this.BufferSizeUpDown = new System.Windows.Forms.NumericUpDown();
 			this.label3 = new System.Windows.Forms.Label();
+			this.label1 = new System.Windows.Forms.Label();
+			this.StateSizeLabel = new System.Windows.Forms.Label();
 			this.label6 = new System.Windows.Forms.Label();
 			this.FullnessLabel = new System.Windows.Forms.Label();
 			this.groupBox4 = new System.Windows.Forms.GroupBox();
@@ -67,7 +66,8 @@
 			this.label16 = new System.Windows.Forms.Label();
 			this.BackupSavestatesCheckbox = new System.Windows.Forms.CheckBox();
 			this.label12 = new System.Windows.Forms.Label();
-			this.groupBox1.SuspendLayout();
+			this.label2 = new System.Windows.Forms.Label();
+			this.TargetFrameLengthNumeric = new System.Windows.Forms.NumericUpDown();
 			((System.ComponentModel.ISupportInitialize)(this.BufferSizeUpDown)).BeginInit();
 			this.groupBox4.SuspendLayout();
 			this.groupBox6.SuspendLayout();
@@ -75,6 +75,7 @@
 			((System.ComponentModel.ISupportInitialize)(this.nudCompression)).BeginInit();
 			this.groupBox7.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.BigScreenshotNumeric)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.TargetFrameLengthNumeric)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// OK
@@ -100,24 +101,10 @@
 			this.Cancel.UseVisualStyleBackColor = true;
 			this.Cancel.Click += new System.EventHandler(this.Cancel_Click);
 			// 
-			// groupBox1
-			// 
-			this.groupBox1.Controls.Add(this.RewindEnabledBox);
-			this.groupBox1.Controls.Add(this.UseCompression);
-			this.groupBox1.Controls.Add(this.label4);
-			this.groupBox1.Controls.Add(this.BufferSizeUpDown);
-			this.groupBox1.Controls.Add(this.label3);
-			this.groupBox1.Location = new System.Drawing.Point(12, 90);
-			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(371, 118);
-			this.groupBox1.TabIndex = 3;
-			this.groupBox1.TabStop = false;
-			this.groupBox1.Text = "Rewind Settings";
-			// 
-			// SmallStateEnabledBox
+			// RewindEnabledBox
 			// 
 			this.RewindEnabledBox.AutoSize = true;
-			this.RewindEnabledBox.Location = new System.Drawing.Point(16, 19);
+			this.RewindEnabledBox.Location = new System.Drawing.Point(15, 90);
 			this.RewindEnabledBox.Name = "RewindEnabledBox";
 			this.RewindEnabledBox.Size = new System.Drawing.Size(65, 17);
 			this.RewindEnabledBox.TabIndex = 1;
@@ -127,7 +114,7 @@
 			// UseCompression
 			// 
 			this.UseCompression.AutoSize = true;
-			this.UseCompression.Location = new System.Drawing.Point(16, 39);
+			this.UseCompression.Location = new System.Drawing.Point(15, 170);
 			this.UseCompression.Name = "UseCompression";
 			this.UseCompression.Size = new System.Drawing.Size(306, 17);
 			this.UseCompression.TabIndex = 5;
@@ -135,28 +122,10 @@
 			this.UseCompression.UseVisualStyleBackColor = true;
 			this.UseCompression.CheckedChanged += new System.EventHandler(this.UseCompression_CheckedChanged);
 			// 
-			// label1
-			// 
-			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(12, 17);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(81, 13);
-			this.label1.TabIndex = 5;
-			this.label1.Text = "Avg. State Size:";
-			// 
-			// StateSizeLabel
-			// 
-			this.StateSizeLabel.AutoSize = true;
-			this.StateSizeLabel.Location = new System.Drawing.Point(92, 17);
-			this.StateSizeLabel.Name = "StateSizeLabel";
-			this.StateSizeLabel.Size = new System.Drawing.Size(30, 13);
-			this.StateSizeLabel.TabIndex = 6;
-			this.StateSizeLabel.Text = "0 KB";
-			// 
 			// label4
 			// 
 			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(149, 69);
+			this.label4.Location = new System.Drawing.Point(181, 112);
 			this.label4.Name = "label4";
 			this.label4.Size = new System.Drawing.Size(23, 13);
 			this.label4.TabIndex = 9;
@@ -164,7 +133,7 @@
 			// 
 			// BufferSizeUpDown
 			// 
-			this.BufferSizeUpDown.Location = new System.Drawing.Point(93, 67);
+			this.BufferSizeUpDown.Location = new System.Drawing.Point(125, 110);
 			this.BufferSizeUpDown.Maximum = new decimal(new int[] {
             2097512,
             0,
@@ -188,11 +157,29 @@
 			// label3
 			// 
 			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(6, 69);
+			this.label3.Location = new System.Drawing.Point(12, 112);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(81, 13);
 			this.label3.TabIndex = 7;
 			this.label3.Text = "Max buffer size:";
+			// 
+			// label1
+			// 
+			this.label1.AutoSize = true;
+			this.label1.Location = new System.Drawing.Point(12, 17);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(83, 13);
+			this.label1.TabIndex = 5;
+			this.label1.Text = "Avg. State Size:";
+			// 
+			// StateSizeLabel
+			// 
+			this.StateSizeLabel.AutoSize = true;
+			this.StateSizeLabel.Location = new System.Drawing.Point(92, 17);
+			this.StateSizeLabel.Name = "StateSizeLabel";
+			this.StateSizeLabel.Size = new System.Drawing.Size(30, 13);
+			this.StateSizeLabel.TabIndex = 6;
+			this.StateSizeLabel.Text = "0 KB";
 			// 
 			// label6
 			// 
@@ -214,6 +201,13 @@
 			// 
 			// groupBox4
 			// 
+			this.groupBox4.Controls.Add(this.TargetFrameLengthNumeric);
+			this.groupBox4.Controls.Add(this.label2);
+			this.groupBox4.Controls.Add(this.label4);
+			this.groupBox4.Controls.Add(this.UseCompression);
+			this.groupBox4.Controls.Add(this.BufferSizeUpDown);
+			this.groupBox4.Controls.Add(this.RewindEnabledBox);
+			this.groupBox4.Controls.Add(this.label3);
 			this.groupBox4.Controls.Add(this.EstTimeLabel);
 			this.groupBox4.Controls.Add(this.label11);
 			this.groupBox4.Controls.Add(this.ApproxFramesLabel);
@@ -226,10 +220,10 @@
 			this.groupBox4.Controls.Add(this.StateSizeLabel);
 			this.groupBox4.Location = new System.Drawing.Point(12, 12);
 			this.groupBox4.Name = "groupBox4";
-			this.groupBox4.Size = new System.Drawing.Size(371, 72);
+			this.groupBox4.Size = new System.Drawing.Size(371, 205);
 			this.groupBox4.TabIndex = 2;
 			this.groupBox4.TabStop = false;
-			this.groupBox4.Text = "Current Statistics";
+			this.groupBox4.Text = "RewindSettings";
 			// 
 			// EstTimeLabel
 			// 
@@ -499,6 +493,37 @@
 			this.label12.TabIndex = 0;
 			this.label12.Text = "Compression Level";
 			// 
+			// label2
+			// 
+			this.label2.AutoSize = true;
+			this.label2.Location = new System.Drawing.Point(12, 138);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(107, 13);
+			this.label2.TabIndex = 20;
+			this.label2.Text = "Desired frame length:";
+			// 
+			// TargetFrameLengthNumeric
+			// 
+			this.TargetFrameLengthNumeric.Location = new System.Drawing.Point(125, 135);
+			this.TargetFrameLengthNumeric.Maximum = new decimal(new int[] {
+            16383,
+            0,
+            0,
+            0});
+			this.TargetFrameLengthNumeric.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+			this.TargetFrameLengthNumeric.Name = "TargetFrameLengthNumeric";
+			this.TargetFrameLengthNumeric.Size = new System.Drawing.Size(52, 20);
+			this.TargetFrameLengthNumeric.TabIndex = 21;
+			this.TargetFrameLengthNumeric.Value = new decimal(new int[] {
+            600,
+            0,
+            0,
+            0});
+			// 
 			// RewindConfig
 			// 
 			this.AcceptButton = this.OK;
@@ -508,7 +533,6 @@
 			this.ClientSize = new System.Drawing.Size(741, 505);
 			this.Controls.Add(this.groupBox7);
 			this.Controls.Add(this.groupBox4);
-			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.Cancel);
 			this.Controls.Add(this.OK);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -518,8 +542,6 @@
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Rewind & Savestate Cofiguration";
 			this.Load += new System.EventHandler(this.RewindConfig_Load);
-			this.groupBox1.ResumeLayout(false);
-			this.groupBox1.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.BufferSizeUpDown)).EndInit();
 			this.groupBox4.ResumeLayout(false);
 			this.groupBox4.PerformLayout();
@@ -530,6 +552,7 @@
 			this.groupBox7.ResumeLayout(false);
 			this.groupBox7.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.BigScreenshotNumeric)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.TargetFrameLengthNumeric)).EndInit();
 			this.ResumeLayout(false);
 
 		}
@@ -538,7 +561,6 @@
 
 		private System.Windows.Forms.Button OK;
 		private System.Windows.Forms.Button Cancel;
-		private System.Windows.Forms.GroupBox groupBox1;
 		private System.Windows.Forms.CheckBox RewindEnabledBox;
 		private System.Windows.Forms.CheckBox UseCompression;
 		private System.Windows.Forms.Label label1;
@@ -574,5 +596,7 @@
 				private System.Windows.Forms.Label label16;
 				private System.Windows.Forms.CheckBox BackupSavestatesCheckbox;
 				private System.Windows.Forms.Label label20;
+		private System.Windows.Forms.NumericUpDown TargetFrameLengthNumeric;
+		private System.Windows.Forms.Label label2;
 	}
 }
