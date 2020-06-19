@@ -13,19 +13,18 @@ namespace BizHawk.Client.Common
 		/*
 		Main goals:
 		1. No copies, ever.  States are deposited directly to, and read directly from, one giant ring buffer.
-			As a consequence, there is no multithreading because there is nothing to thread.
+			As a consequence, there is no multi-threading because there is nothing to thread.
 		2. Support for arbitrary and changeable state sizes.  Frequency is calculated dynamically.
 		3. No delta compression.  Keep it simple.  If there are cores that benefit heavily from delta compression, we should
 			maintain a separate rewinder alongside this one that is customized for those cores.
 		*/
-
 		public Zwinder(IBinaryStateable stateSource, IRewindSettings settings)
 		{
 			long targetSize = settings.BufferSize * 1024 * 1024;
-			if (targetSize < 65536)
-				throw new ArgumentOutOfRangeException(nameof(targetSize));
 			if (settings.TargetFrameLength < 1)
+			{
 				throw new ArgumentOutOfRangeException(nameof(settings.TargetFrameLength));
+			}
 
 			Size = 1L << (int)Math.Floor(Math.Log(targetSize, 2));
 			_sizeMask = Size - 1;
@@ -33,19 +32,19 @@ namespace BizHawk.Client.Common
 			Active = true;
 			_stateSource = stateSource;
 			_targetFrameLength = settings.TargetFrameLength;
-			_states = new StateInfo[STATEMASK + 1];
-			_kompress = settings.UseCompression;
+			_states = new StateInfo[StateMask + 1];
+			_useCompression = settings.UseCompression;
 		}
 
 		/// <summary>
 		/// Number of states that could be in the state ringbuffer, Mask for the state ringbuffer
 		/// </summary>
-		private const int STATEMASK = 16383;
+		private const int StateMask = 16383;
 
 		/// <summary>
 		/// How many states are actually in the state ringbuffer
 		/// </summary>
-		public int Count => (_nextStateIndex - _firstStateIndex) & STATEMASK;
+		public int Count => (_nextStateIndex - _firstStateIndex) & StateMask;
 
 		public float FullnessRatio => Used / (float)Size;
 
@@ -53,21 +52,19 @@ namespace BizHawk.Client.Common
 		/// total number of bytes used
 		/// </summary>
 		/// <value></value>
-		public long Used
-		{
-			get
-			{
-				if (Count == 0)
-					return 0;
-				return (_states[HeadStateIndex].Start + _states[HeadStateIndex].Size - _states[_firstStateIndex].Start) & _sizeMask;
-			}
-		}
+		public long Used => Count == 0
+			? 0
+			: (_states[HeadStateIndex]
+				.Start + _states[HeadStateIndex]
+				.Size - _states[_firstStateIndex]
+				.Start) & _sizeMask;
 
 		/// <summary>
 		/// Total size of the _buffer
 		/// </summary>
 		/// <value></value>
 		public long Size { get; }
+
 		private readonly long _sizeMask;
 		private byte[] _buffer;
 
@@ -79,12 +76,13 @@ namespace BizHawk.Client.Common
 			public int Size;
 			public int Frame;
 		}
+
 		private StateInfo[] _states;
 		private int _firstStateIndex;
 		private int _nextStateIndex;
-		private int HeadStateIndex => (_nextStateIndex - 1) & STATEMASK;
+		private int HeadStateIndex => (_nextStateIndex - 1) & StateMask;
 
-		private readonly bool _kompress;
+		private readonly bool _useCompression;
 
 		private IBinaryStateable _stateSource;
 
@@ -98,7 +96,9 @@ namespace BizHawk.Client.Common
 		private int ComputeIdealRewindInterval()
 		{
 			if (Count == 0)
+			{
 				return 1; // shrug
+			}
 
 			// assume that the most recent state size is representative of stuff
 			var sizeRatio = Size / (float)_states[HeadStateIndex].Size;
@@ -111,7 +111,10 @@ namespace BizHawk.Client.Common
 		private bool ShouldCapture(int frame)
 		{
 			if (Count == 0)
+			{
 				return true;
+			}
+
 			var frameDiff = frame - _states[HeadStateIndex].Frame;
 			if (frameDiff < 1)
 				// non-linear time is from a combination of other state changing mechanisms and the rewinder
@@ -133,32 +136,27 @@ namespace BizHawk.Client.Common
 				start,
 				Size, _sizeMask);
 
-			if (_kompress)
+			if (_useCompression)
 			{
-				using var kompressor = new DeflateStream(stream, CompressionLevel.Fastest, leaveOpen: true);
-				_stateSource.SaveStateBinary(new BinaryWriter(kompressor));
+				using var compressor = new DeflateStream(stream, CompressionLevel.Fastest, leaveOpen: true);
+				_stateSource.SaveStateBinary(new BinaryWriter(compressor));
 			}
 			else
 			{
 				_stateSource.SaveStateBinary(new BinaryWriter(stream));
 			}
 
-			// invalidate states if we're at the state ringbuffer size limit, or if they were overridden in the bytebuffer
+			// invalidate states if we're at the state ringbuffer size limit, or if they were overridden in the byte buffer
 			var length = stream.Length;
-			while (Count == STATEMASK || Count > 0 && ((_states[_firstStateIndex].Start - start) & _sizeMask) < length)
-				_firstStateIndex = (_firstStateIndex + 1) & STATEMASK;
+			while (Count == StateMask || Count > 0 && ((_states[_firstStateIndex].Start - start) & _sizeMask) < length)
+				_firstStateIndex = (_firstStateIndex + 1) & StateMask;
 			
 			_states[_nextStateIndex].Frame = frame;
 			_states[_nextStateIndex].Start = start;
 			_states[_nextStateIndex].Size = (int)length;
-			_nextStateIndex = (_nextStateIndex + 1) & STATEMASK;
+			_nextStateIndex = (_nextStateIndex + 1) & StateMask;
 
 			Console.WriteLine($"Size: {Size >> 20}MiB, Used: {Used >> 20}MiB, States: {Count}");
-		}
-
-		public void Resume()
-		{
-			Active = true;
 		}
 
 		public bool Rewind(int frames)
@@ -171,17 +169,12 @@ namespace BizHawk.Client.Common
 			frames = Math.Min(frames, Count);
 			if (frames == 0)
 				return false; // no states saved
-			int loadIndex = (_nextStateIndex - frames) & STATEMASK;
+			int loadIndex = (_nextStateIndex - frames) & StateMask;
 
 			var stream = new LoadStateStream(_buffer, _states[loadIndex].Start, _states[loadIndex].Size, _sizeMask);
-			if (_kompress)
-			{
-				_stateSource.LoadStateBinary(new BinaryReader(new DeflateStream(stream, CompressionMode.Decompress, leaveOpen: true)));
-			}
-			else
-			{
-				_stateSource.LoadStateBinary(new BinaryReader(stream));
-			}
+			_stateSource.LoadStateBinary(_useCompression
+				? new BinaryReader(new DeflateStream(stream, CompressionMode.Decompress, leaveOpen: true))
+				: new BinaryReader(stream));
 
 			_nextStateIndex = loadIndex;
 			Console.WriteLine($"Size: {Size >> 20}MiB, Used: {Used >> 20}MiB, States: {Count}");
@@ -192,6 +185,12 @@ namespace BizHawk.Client.Common
 		{
 			Active = false;
 		}
+
+		public void Resume()
+		{
+			Active = true;
+		}
+
 
 		public void Dispose()
 		{
@@ -210,11 +209,11 @@ namespace BizHawk.Client.Common
 				_mask = mask;
 			}
 			
-			private byte[] _buffer;
+			private readonly byte[] _buffer;
 			private readonly long _offset;
-			private long _maxSize;
-			private long _position;
+			private readonly long _maxSize;
 			private readonly long _mask;
+			private long _position;
 
 			public override bool CanRead => false;
 			public override bool CanSeek => false;
@@ -223,8 +222,7 @@ namespace BizHawk.Client.Common
 
 			public override long Position { get => _position; set => throw new IOException(); }
 
-			public override void Flush()
-			{}
+			public override void Flush() {}
 
 			public override int Read(byte[] buffer, int offset, int count) => throw new IOException();
 			public override long Seek(long offset, SeekOrigin origin) => throw new IOException();
@@ -279,9 +277,9 @@ namespace BizHawk.Client.Common
 				_mask = mask;
 			}
 
-			private byte[] _buffer;
+			private readonly byte[] _buffer;
 			private readonly long _offset;
-			private long _size;
+			private readonly long _size;
 			private long _position;
 			private readonly long _mask;
 
@@ -325,10 +323,9 @@ namespace BizHawk.Client.Common
 
 			public override int ReadByte()
 			{
-				if (_position < _size)
-					return _buffer[(_position++ + _offset) & _mask];
-				else
-					return -1;
+				return _position < _size
+					? _buffer[(_position++ + _offset) & _mask]
+					: -1;
 			}
 
 			public override long Seek(long offset, SeekOrigin origin) => throw new IOException();
