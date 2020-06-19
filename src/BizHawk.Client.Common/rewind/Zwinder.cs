@@ -21,8 +21,10 @@ namespace BizHawk.Client.Common
 
 		/// <param name="targetSize">size of rewinder backing store in bytes</param>
 		/// <param name="targetFrameLength">desired frame length (number of emulated frames you can go back before running out of buffer)</param>
-		public Zwinder(long targetSize, int targetFrameLength, bool kompress, IBinaryStateable stateSource)
+		public Zwinder(int targetFrameLength, IBinaryStateable stateSource, IRewindSettings settings)
 		{
+			long targetSize = settings.BufferSize * 1024 * 10248;
+			bool kompress = settings.EnabledSmall;
 			if (targetSize < 65536)
 				throw new ArgumentOutOfRangeException(nameof(targetSize));
 			if (targetFrameLength < 1)
