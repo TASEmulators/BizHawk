@@ -54,10 +54,10 @@ namespace BizHawk.Client.Common
 		/// <value></value>
 		public long Used => Count == 0
 			? 0
-			: (_states[HeadStateIndex]
-				.Start + _states[HeadStateIndex]
-				.Size - _states[_firstStateIndex]
-				.Start) & _sizeMask;
+			: (_states[HeadStateIndex].Start
+				+ _states[HeadStateIndex].Size
+				- _states[_firstStateIndex].Start
+			) & _sizeMask;
 
 		/// <summary>
 		/// Total size of the _buffer
