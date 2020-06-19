@@ -11,6 +11,6 @@
 	{
 		public bool UseCompression { get; set; }
 		public bool Enabled { get; set; } = true;
-		public int BufferSize { get; set; } = 128; // in mb
+		public int BufferSize { get; set; } = 512; // in mb
 	}
 }

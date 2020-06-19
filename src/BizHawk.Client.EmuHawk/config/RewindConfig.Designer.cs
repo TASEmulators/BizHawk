@@ -36,7 +36,6 @@
 			this.UseCompression = new System.Windows.Forms.CheckBox();
 			this.label1 = new System.Windows.Forms.Label();
 			this.StateSizeLabel = new System.Windows.Forms.Label();
-			this.groupBox3 = new System.Windows.Forms.GroupBox();
 			this.label4 = new System.Windows.Forms.Label();
 			this.BufferSizeUpDown = new System.Windows.Forms.NumericUpDown();
 			this.label3 = new System.Windows.Forms.Label();
@@ -71,7 +70,6 @@
 			this.BackupSavestatesCheckbox = new System.Windows.Forms.CheckBox();
 			this.label12 = new System.Windows.Forms.Label();
 			this.groupBox1.SuspendLayout();
-			this.groupBox3.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.BufferSizeUpDown)).BeginInit();
 			this.groupBox4.SuspendLayout();
 			this.groupBox6.SuspendLayout();
@@ -108,6 +106,9 @@
 			// 
 			this.groupBox1.Controls.Add(this.RewindEnabledBox);
 			this.groupBox1.Controls.Add(this.UseCompression);
+			this.groupBox1.Controls.Add(this.label4);
+			this.groupBox1.Controls.Add(this.BufferSizeUpDown);
+			this.groupBox1.Controls.Add(this.label3);
 			this.groupBox1.Location = new System.Drawing.Point(12, 90);
 			this.groupBox1.Name = "groupBox1";
 			this.groupBox1.Size = new System.Drawing.Size(371, 118);
@@ -154,22 +155,10 @@
 			this.StateSizeLabel.TabIndex = 6;
 			this.StateSizeLabel.Text = "0 KB";
 			// 
-			// groupBox3
-			// 
-			this.groupBox3.Controls.Add(this.label4);
-			this.groupBox3.Controls.Add(this.BufferSizeUpDown);
-			this.groupBox3.Controls.Add(this.label3);
-			this.groupBox3.Location = new System.Drawing.Point(12, 214);
-			this.groupBox3.Name = "groupBox3";
-			this.groupBox3.Size = new System.Drawing.Size(371, 167);
-			this.groupBox3.TabIndex = 4;
-			this.groupBox3.TabStop = false;
-			this.groupBox3.Text = "Rewind Options";
-			// 
 			// label4
 			// 
 			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(149, 137);
+			this.label4.Location = new System.Drawing.Point(149, 69);
 			this.label4.Name = "label4";
 			this.label4.Size = new System.Drawing.Size(23, 13);
 			this.label4.TabIndex = 9;
@@ -177,7 +166,7 @@
 			// 
 			// BufferSizeUpDown
 			// 
-			this.BufferSizeUpDown.Location = new System.Drawing.Point(93, 135);
+			this.BufferSizeUpDown.Location = new System.Drawing.Point(93, 69);
 			this.BufferSizeUpDown.Maximum = new decimal(new int[] {
             2097512,
             0,
@@ -201,7 +190,7 @@
 			// label3
 			// 
 			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(6, 137);
+			this.label3.Location = new System.Drawing.Point(6, 69);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(81, 13);
 			this.label3.TabIndex = 7;
@@ -541,7 +530,6 @@
 			this.ClientSize = new System.Drawing.Size(741, 505);
 			this.Controls.Add(this.groupBox7);
 			this.Controls.Add(this.groupBox4);
-			this.Controls.Add(this.groupBox3);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.Cancel);
 			this.Controls.Add(this.OK);
@@ -554,8 +542,6 @@
 			this.Load += new System.EventHandler(this.RewindConfig_Load);
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
-			this.groupBox3.ResumeLayout(false);
-			this.groupBox3.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.BufferSizeUpDown)).EndInit();
 			this.groupBox4.ResumeLayout(false);
 			this.groupBox4.PerformLayout();
@@ -579,7 +565,6 @@
 		private System.Windows.Forms.CheckBox UseCompression;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Label StateSizeLabel;
-		private System.Windows.Forms.GroupBox groupBox3;
 		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.NumericUpDown BufferSizeUpDown;
 		private System.Windows.Forms.Label label3;
