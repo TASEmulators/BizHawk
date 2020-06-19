@@ -1642,11 +1642,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void AtariSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			GenericCoreConfig.DoDialog(this, "Atari 2600 Settings");
-		}
-
 		private void A7800SubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			A7800ControllerSettingsMenuItem.Enabled
@@ -1938,19 +1933,9 @@ namespace BizHawk.Client.EmuHawk
 			GenericCoreConfig.DoDialog(this, "Game Gear Settings");
 		}
 
-		private void VectrexSettingsMenuItem_Click(object sender, EventArgs e)
+		private void GenericCoreSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			GenericCoreConfig.DoDialog(this, "Vectrex Settings", true, false);
-		}
-
-		private void MsxSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			GenericCoreConfig.DoDialog(this, "MSX Settings");
-		}
-
-		private void O2HawkSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			GenericCoreConfig.DoDialog(this, "Odyssey Settings");
+			GenericCoreConfig.DoDialog(this, $"{Emulator.DisplayName()} Settings");
 		}
 
 		private void GenVdpViewerMenuItem_Click(object sender, EventArgs e)

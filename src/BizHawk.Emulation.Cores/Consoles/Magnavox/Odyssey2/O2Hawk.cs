@@ -10,7 +10,8 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 		"O2Hawk",
 		"",
 		isPorted: false,
-		isReleased: false)]
+		isReleased: false,
+		displayName: "Odyssey 2")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class O2Hawk : IEmulator, ISaveRam, IDebuggable, IInputPollable, IRegionable, ISettable<O2Hawk.O2Settings, O2Hawk.O2SyncSettings>, IBoardInfo
 	{
