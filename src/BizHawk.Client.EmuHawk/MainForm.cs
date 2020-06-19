@@ -865,10 +865,18 @@ namespace BizHawk.Client.EmuHawk
 		public void CreateRewinder()
 		{
 			Rewinder?.Dispose();
-			Rewinder = Emulator.HasSavestates() && Config.Rewind.EnabledSmall // TODO: replace this with just a single "enabled"?
-				? new Zwinder(600, Emulator.AsStatable(), Config.Rewind)
-				// ? new Rewinder(Emulator.AsStatable(), Config.Rewind)
-				: null;
+
+			if (Config.Rewind.EnabledSmall)
+			{
+				Rewinder = Emulator.HasSavestates() && Config.Rewind.EnabledSmall // TODO: replace this with just a single "enabled"?
+					? new Zwinder(600, Emulator.AsStatable(), Config.Rewind)
+					// ? new Rewinder(Emulator.AsStatable(), Config.Rewind)
+					: null;
+			}
+			else
+			{
+				Rewinder = null;
+			}
 		}
 
 		private FirmwareManager FirmwareManager => GlobalWin.FirmwareManager;

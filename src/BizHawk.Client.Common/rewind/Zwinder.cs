@@ -24,7 +24,7 @@ namespace BizHawk.Client.Common
 		public Zwinder(int targetFrameLength, IBinaryStateable stateSource, IRewindSettings settings)
 		{
 			long targetSize = settings.BufferSize * 1024 * 1024;
-			bool kompress = settings.EnabledSmall;
+			bool kompress = settings.UseDelta;
 			if (targetSize < 65536)
 				throw new ArgumentOutOfRangeException(nameof(targetSize));
 			if (targetFrameLength < 1)
