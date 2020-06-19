@@ -16,6 +16,5 @@
 		public bool EnabledMedium { get; set; }
 		public bool EnabledLarge { get; set; }
 		public int BufferSize { get; set; } = 128; // in mb
-		public int SpeedMultiplier { get; set; } = 1;
 	}
 }

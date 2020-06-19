@@ -36,7 +36,6 @@ namespace BizHawk.Client.EmuHawk
 				RewindFramesUsedLabel.Text = "N/A";
 			}
 
-			RewindSpeedNumeric.Value = _config.Rewind.SpeedMultiplier;
 			_stateSize = _statableCore.CloneSavestate().Length;
 			BufferSizeUpDown.Value = Math.Max(_config.Rewind.BufferSize, BufferSizeUpDown.Minimum);
 
@@ -129,7 +128,6 @@ namespace BizHawk.Client.EmuHawk
 			_config.Rewind.BufferSize = PutRewindSetting(_config.Rewind.BufferSize, (int)BufferSizeUpDown.Value);
 
 			// These settings are not used by DoRewindSettings
-			_config.Rewind.SpeedMultiplier = (int)RewindSpeedNumeric.Value;
 			_config.Savestates.CompressionLevelNormal = (int)nudCompression.Value;
 			if (rbStatesBinary.Checked) _config.Savestates.Type = SaveStateType.Binary;
 			if (rbStatesText.Checked) _config.Savestates.Type = SaveStateType.Text;

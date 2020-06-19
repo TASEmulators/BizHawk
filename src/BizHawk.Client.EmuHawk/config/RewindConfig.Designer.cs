@@ -43,8 +43,6 @@
             this.label1 = new System.Windows.Forms.Label();
             this.StateSizeLabel = new System.Windows.Forms.Label();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.label19 = new System.Windows.Forms.Label();
-            this.RewindSpeedNumeric = new System.Windows.Forms.NumericUpDown();
             this.label18 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.BufferSizeUpDown = new System.Windows.Forms.NumericUpDown();
@@ -81,7 +79,6 @@
             this.label12 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.RewindSpeedNumeric)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.BufferSizeUpDown)).BeginInit();
             this.groupBox4.SuspendLayout();
             this.groupBox6.SuspendLayout();
@@ -230,8 +227,6 @@
 			// 
             // groupBox3
             // 
-            this.groupBox3.Controls.Add(this.label19);
-            this.groupBox3.Controls.Add(this.RewindSpeedNumeric);
             this.groupBox3.Controls.Add(this.label18);
             this.groupBox3.Controls.Add(this.label4);
             this.groupBox3.Controls.Add(this.BufferSizeUpDown);
@@ -243,37 +238,6 @@
             this.groupBox3.TabIndex = 4;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Rewind Options";
-            // 
-            // label19
-            // 
-            this.label19.AutoSize = true;
-            this.label19.Location = new System.Drawing.Point(128, 21);
-            this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(12, 13);
-            this.label19.TabIndex = 2;
-            this.label19.Text = "x";
-            // 
-            // RewindSpeedNumeric
-            // 
-            this.RewindSpeedNumeric.Location = new System.Drawing.Point(90, 19);
-            this.RewindSpeedNumeric.Maximum = new decimal(new int[] {
-            4,
-            0,
-            0,
-            0});
-            this.RewindSpeedNumeric.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.RewindSpeedNumeric.Name = "RewindSpeedNumeric";
-            this.RewindSpeedNumeric.Size = new System.Drawing.Size(36, 20);
-            this.RewindSpeedNumeric.TabIndex = 1;
-            this.RewindSpeedNumeric.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
             // 
             // label18
             // 
@@ -676,7 +640,6 @@
             this.groupBox1.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.RewindSpeedNumeric)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.BufferSizeUpDown)).EndInit();
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
@@ -739,8 +702,6 @@
 				private System.Windows.Forms.Label label15;
 				private System.Windows.Forms.Label label16;
 				private System.Windows.Forms.CheckBox BackupSavestatesCheckbox;
-				private System.Windows.Forms.Label label19;
-				private System.Windows.Forms.NumericUpDown RewindSpeedNumeric;
 				private System.Windows.Forms.Label label18;
 				private System.Windows.Forms.Label label20;
 	}
