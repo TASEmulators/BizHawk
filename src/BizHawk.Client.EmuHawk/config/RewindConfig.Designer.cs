@@ -65,7 +65,6 @@
             this.RewindSpeedNumeric = new System.Windows.Forms.NumericUpDown();
             this.label18 = new System.Windows.Forms.Label();
             this.label17 = new System.Windows.Forms.Label();
-            this.RewindIsThreadedCheckbox = new System.Windows.Forms.CheckBox();
             this.label4 = new System.Windows.Forms.Label();
             this.BufferSizeUpDown = new System.Windows.Forms.NumericUpDown();
             this.label3 = new System.Windows.Forms.Label();
@@ -520,7 +519,6 @@
             this.groupBox3.Controls.Add(this.RewindSpeedNumeric);
             this.groupBox3.Controls.Add(this.label18);
             this.groupBox3.Controls.Add(this.label17);
-            this.groupBox3.Controls.Add(this.RewindIsThreadedCheckbox);
             this.groupBox3.Controls.Add(this.label4);
             this.groupBox3.Controls.Add(this.BufferSizeUpDown);
             this.groupBox3.Controls.Add(this.label3);
@@ -581,17 +579,6 @@
             this.label17.Size = new System.Drawing.Size(278, 13);
             this.label17.TabIndex = 3;
             this.label17.Text = "These options affect rewind performance in various ways:";
-            // 
-            // RewindIsThreadedCheckbox
-            // 
-            this.RewindIsThreadedCheckbox.AutoSize = true;
-            this.RewindIsThreadedCheckbox.Location = new System.Drawing.Point(16, 112);
-            this.RewindIsThreadedCheckbox.Name = "RewindIsThreadedCheckbox";
-            this.RewindIsThreadedCheckbox.Size = new System.Drawing.Size(151, 17);
-            this.RewindIsThreadedCheckbox.TabIndex = 6;
-            this.RewindIsThreadedCheckbox.Text = "Use additional CPU thread";
-            this.toolTip1.SetToolTip(this.RewindIsThreadedCheckbox, "This doesn\'t always speed things up... that\'s why it\'s an option.");
-            this.RewindIsThreadedCheckbox.UseVisualStyleBackColor = true;
             // 
             // label4
             // 
@@ -1060,7 +1047,6 @@
 		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.NumericUpDown BufferSizeUpDown;
 		private System.Windows.Forms.Label label3;
-		private System.Windows.Forms.CheckBox RewindIsThreadedCheckbox;
 		private System.Windows.Forms.Label label6;
 		private System.Windows.Forms.Label FullnessLabel;
 		private System.Windows.Forms.GroupBox groupBox4;

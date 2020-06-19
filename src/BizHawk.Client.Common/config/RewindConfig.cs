@@ -15,7 +15,6 @@ namespace BizHawk.Client.Common
 		public int LargeStateSize { get; }
 		public int BufferSize { get; }
 		public bool OnDisk { get; }
-		public bool IsThreaded { get; }
 	}
 
 	public class RewindConfig : IRewindSettings
@@ -33,7 +32,6 @@ namespace BizHawk.Client.Common
 		public int BufferSize { get; set; } = 128; // in mb
 		public bool OnDisk { get; set; }
 
-		public bool IsThreaded { get; set; } = Environment.ProcessorCount > 1;
 		public int SpeedMultiplier { get; set; } = 1;
 	}
 }
