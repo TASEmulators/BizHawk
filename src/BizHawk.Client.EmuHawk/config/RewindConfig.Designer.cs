@@ -173,7 +173,7 @@
             0,
             0});
 			this.BufferSizeUpDown.Minimum = new decimal(new int[] {
-            50,
+            64,
             0,
             0,
             0});
@@ -181,7 +181,7 @@
 			this.BufferSizeUpDown.Size = new System.Drawing.Size(52, 20);
 			this.BufferSizeUpDown.TabIndex = 8;
 			this.BufferSizeUpDown.Value = new decimal(new int[] {
-            50,
+            512,
             0,
             0,
             0});
