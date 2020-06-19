@@ -37,7 +37,6 @@
 			this.label1 = new System.Windows.Forms.Label();
 			this.StateSizeLabel = new System.Windows.Forms.Label();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
-			this.label18 = new System.Windows.Forms.Label();
 			this.label4 = new System.Windows.Forms.Label();
 			this.BufferSizeUpDown = new System.Windows.Forms.NumericUpDown();
 			this.label3 = new System.Windows.Forms.Label();
@@ -108,17 +107,18 @@
 			// groupBox1
 			// 
 			this.groupBox1.Controls.Add(this.RewindEnabledBox);
+			this.groupBox1.Controls.Add(this.UseCompression);
 			this.groupBox1.Location = new System.Drawing.Point(12, 90);
 			this.groupBox1.Name = "groupBox1";
 			this.groupBox1.Size = new System.Drawing.Size(371, 118);
 			this.groupBox1.TabIndex = 3;
 			this.groupBox1.TabStop = false;
-			this.groupBox1.Text = "Rewind frequency";
+			this.groupBox1.Text = "Rewind Settings";
 			// 
 			// SmallStateEnabledBox
 			// 
 			this.RewindEnabledBox.AutoSize = true;
-			this.RewindEnabledBox.Location = new System.Drawing.Point(9, 39);
+			this.RewindEnabledBox.Location = new System.Drawing.Point(16, 19);
 			this.RewindEnabledBox.Name = "RewindEnabledBox";
 			this.RewindEnabledBox.Size = new System.Drawing.Size(65, 17);
 			this.RewindEnabledBox.TabIndex = 1;
@@ -128,7 +128,7 @@
 			// UseCompression
 			// 
 			this.UseCompression.AutoSize = true;
-			this.UseCompression.Location = new System.Drawing.Point(16, 89);
+			this.UseCompression.Location = new System.Drawing.Point(16, 39);
 			this.UseCompression.Name = "UseCompression";
 			this.UseCompression.Size = new System.Drawing.Size(306, 17);
 			this.UseCompression.TabIndex = 5;
@@ -156,26 +156,15 @@
 			// 
 			// groupBox3
 			// 
-			this.groupBox3.Controls.Add(this.label18);
 			this.groupBox3.Controls.Add(this.label4);
 			this.groupBox3.Controls.Add(this.BufferSizeUpDown);
 			this.groupBox3.Controls.Add(this.label3);
-			this.groupBox3.Controls.Add(this.UseCompression);
 			this.groupBox3.Location = new System.Drawing.Point(12, 214);
 			this.groupBox3.Name = "groupBox3";
 			this.groupBox3.Size = new System.Drawing.Size(371, 167);
 			this.groupBox3.TabIndex = 4;
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = "Rewind Options";
-			// 
-			// label18
-			// 
-			this.label18.AutoSize = true;
-			this.label18.Location = new System.Drawing.Point(6, 21);
-			this.label18.Name = "label18";
-			this.label18.Size = new System.Drawing.Size(78, 13);
-			this.label18.TabIndex = 0;
-			this.label18.Text = "Rewind speed:";
 			// 
 			// label4
 			// 
@@ -623,7 +612,6 @@
 				private System.Windows.Forms.Label label15;
 				private System.Windows.Forms.Label label16;
 				private System.Windows.Forms.CheckBox BackupSavestatesCheckbox;
-				private System.Windows.Forms.Label label18;
 				private System.Windows.Forms.Label label20;
 	}
 }
