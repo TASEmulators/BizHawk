@@ -4,7 +4,7 @@ namespace BizHawk.Client.Common
 {
 	public interface IRewindSettings
 	{
-		public bool UseDelta { get; }
+		public bool UseCompression { get; }
 		public bool EnabledSmall { get; }
 		public bool EnabledMedium { get; }
 		public bool EnabledLarge { get; }
@@ -20,7 +20,7 @@ namespace BizHawk.Client.Common
 
 	public class RewindConfig : IRewindSettings
 	{
-		public bool UseDelta { get; set; } = true;
+		public bool UseCompression { get; set; }
 		public bool EnabledSmall { get; set; } = true;
 		public bool EnabledMedium { get; set; }
 		public bool EnabledLarge { get; set; }

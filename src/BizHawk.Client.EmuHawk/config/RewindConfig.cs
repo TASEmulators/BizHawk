@@ -48,7 +48,7 @@ namespace BizHawk.Client.EmuHawk
 			_mediumStateSize = _config.Rewind.MediumStateSize;
 			_largeStateSize = _config.Rewind.LargeStateSize;
 
-			UseDeltaCompression.Checked = _config.Rewind.UseDelta;
+			UseCompression.Checked = _config.Rewind.UseCompression;
 
 			SmallSavestateNumeric.Value = _config.Rewind.FrequencySmall;
 			MediumSavestateNumeric.Value = _config.Rewind.FrequencyMedium;
@@ -160,7 +160,7 @@ namespace BizHawk.Client.EmuHawk
 		private void Ok_Click(object sender, EventArgs e)
 		{
 			// These settings are used by DoRewindSettings, which we'll only call if anything actually changed (i.e. preserve rewind history if possible)
-			_config.Rewind.UseDelta = PutRewindSetting(_config.Rewind.UseDelta, UseDeltaCompression.Checked);
+			_config.Rewind.UseCompression = PutRewindSetting(_config.Rewind.UseCompression, UseCompression.Checked);
 			_config.Rewind.EnabledSmall = PutRewindSetting(_config.Rewind.EnabledSmall, SmallStateEnabledBox.Checked);
 			_config.Rewind.EnabledMedium = PutRewindSetting(_config.Rewind.EnabledMedium, MediumStateEnabledBox.Checked);
 			_config.Rewind.EnabledLarge = PutRewindSetting(_config.Rewind.EnabledLarge, LargeStateEnabledBox.Checked);
@@ -309,7 +309,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			long avgStateSize;
 
-			if (UseDeltaCompression.Checked || _stateSize == 0)
+			if (UseCompression.Checked || _stateSize == 0)
 			{
 				if (_mainForm.Rewinder?.Count > 0)
 				{

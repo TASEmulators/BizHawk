@@ -48,7 +48,7 @@
             this.SmallLabel2 = new System.Windows.Forms.Label();
             this.SmallLabel3 = new System.Windows.Forms.Label();
             this.SmallSavestateNumeric = new System.Windows.Forms.NumericUpDown();
-            this.UseDeltaCompression = new System.Windows.Forms.CheckBox();
+            this.UseCompression = new System.Windows.Forms.CheckBox();
             this.label1 = new System.Windows.Forms.Label();
             this.StateSizeLabel = new System.Windows.Forms.Label();
             this.MediumStateTrackbar = new System.Windows.Forms.TrackBar();
@@ -362,14 +362,14 @@
             // 
             // UseDeltaCompression
             // 
-            this.UseDeltaCompression.AutoSize = true;
-            this.UseDeltaCompression.Location = new System.Drawing.Point(16, 89);
-            this.UseDeltaCompression.Name = "UseDeltaCompression";
-            this.UseDeltaCompression.Size = new System.Drawing.Size(332, 17);
-            this.UseDeltaCompression.TabIndex = 5;
-            this.UseDeltaCompression.Text = "Use delta compression (economizes buffer usage at cost of CPU)";
-            this.UseDeltaCompression.UseVisualStyleBackColor = true;
-            this.UseDeltaCompression.CheckedChanged += new System.EventHandler(this.UseDeltaCompression_CheckedChanged);
+            this.UseCompression.AutoSize = true;
+            this.UseCompression.Location = new System.Drawing.Point(16, 89);
+            this.UseCompression.Name = "UseCompression";
+            this.UseCompression.Size = new System.Drawing.Size(332, 17);
+            this.UseCompression.TabIndex = 5;
+            this.UseCompression.Text = "Use compression (economizes buffer usage at cost of CPU)";
+            this.UseCompression.UseVisualStyleBackColor = true;
+            this.UseCompression.CheckedChanged += new System.EventHandler(this.UseDeltaCompression_CheckedChanged);
             // 
             // label1
             // 
@@ -525,7 +525,7 @@
             this.groupBox3.Controls.Add(this.BufferSizeUpDown);
             this.groupBox3.Controls.Add(this.label3);
             this.groupBox3.Controls.Add(this.DiskBufferCheckbox);
-            this.groupBox3.Controls.Add(this.UseDeltaCompression);
+            this.groupBox3.Controls.Add(this.UseCompression);
             this.groupBox3.Location = new System.Drawing.Point(12, 214);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(371, 167);
@@ -1043,7 +1043,7 @@
 		private System.Windows.Forms.CheckBox LargeStateEnabledBox;
 		private System.Windows.Forms.CheckBox MediumStateEnabledBox;
 		private System.Windows.Forms.CheckBox SmallStateEnabledBox;
-		private System.Windows.Forms.CheckBox UseDeltaCompression;
+		private System.Windows.Forms.CheckBox UseCompression;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Label StateSizeLabel;
 		private System.Windows.Forms.TrackBar MediumStateTrackbar;
