@@ -41,9 +41,7 @@ namespace BizHawk.Client.EmuHawk
 
 			UseCompression.Checked = _config.Rewind.UseCompression;
 
-			SmallStateEnabledBox.Checked = _config.Rewind.EnabledSmall;
-
-			SetSmallEnabled();
+			RewindEnabledBox.Checked = _config.Rewind.Enabled;
 
 			SetStateSize();
 
@@ -84,15 +82,6 @@ namespace BizHawk.Client.EmuHawk
 		private void SetStateSize()
 		{
 			StateSizeLabel.Text = FormatKB(_stateSize);
-
-			SmallLabel.Text = "Small savestates";
-			MediumLabel.Text = "Medium savestates";
-			LargeLabel.Text = "Large savestates";
-
-			SmallLabel.Font = new Font(SmallLabel.Font, FontStyle.Italic);
-			MediumLabel.Font = new Font(SmallLabel.Font, FontStyle.Regular);
-			LargeLabel.Font = new Font(SmallLabel.Font, FontStyle.Regular);
-
 			CalculateEstimates();
 		}
 
@@ -118,7 +107,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			// These settings are used by DoRewindSettings, which we'll only call if anything actually changed (i.e. preserve rewind history if possible)
 			_config.Rewind.UseCompression = PutRewindSetting(_config.Rewind.UseCompression, UseCompression.Checked);
-			_config.Rewind.EnabledSmall = PutRewindSetting(_config.Rewind.EnabledSmall, SmallStateEnabledBox.Checked);
+			_config.Rewind.Enabled = PutRewindSetting(_config.Rewind.Enabled, RewindEnabledBox.Checked);
 			_config.Rewind.BufferSize = PutRewindSetting(_config.Rewind.BufferSize, (int)BufferSizeUpDown.Value);
 
 			// These settings are not used by DoRewindSettings
@@ -137,21 +126,6 @@ namespace BizHawk.Client.EmuHawk
 
 			DialogResult = DialogResult.OK;
 			Close();
-		}
-
-		private void SetSmallEnabled()
-		{
-			SmallLabel.Enabled = SmallStateEnabledBox.Checked;
-		}
-
-		private void SmallStateEnabledBox_CheckStateChanged(object sender, EventArgs e)
-		{
-			SetSmallEnabled();
-		}
-
-		private void SmallLabel_Click(object sender, EventArgs e)
-		{
-			SmallStateEnabledBox.Checked ^= true;
 		}
 
 		private void CalculateEstimates()
