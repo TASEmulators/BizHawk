@@ -2,24 +2,24 @@
 
 ./configure-for-waterbox-phase--
 cd build-
-make
+make -j
 make install
 cd ..
 
 ./configure-for-waterbox-phase-0
 cd build0
-make
+make -j
 make install
 cd ..
 
 ./configure-for-waterbox-phase-1
 cd build1
-make
+make -j
 make install
 cd ..
 
 ./configure-for-waterbox-phase-2
 cd build2
-make
+make -j
 make install
 cd ..

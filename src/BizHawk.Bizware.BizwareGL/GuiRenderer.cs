@@ -45,8 +45,8 @@ namespace BizHawk.Bizware.BizwareGL
 				psProgram = DefaultPixelShader_gl;
 			}
 
-			var vs = Owner.CreateVertexShader(false, vsProgram, "vsmain", true);
-			var ps = Owner.CreateFragmentShader(false, psProgram, "psmain", true);
+			var vs = Owner.CreateVertexShader(vsProgram, "vsmain", true);
+			var ps = Owner.CreateFragmentShader(psProgram, "psmain", true);
 			CurrPipeline = DefaultPipeline = Owner.CreatePipeline(VertexLayout, vs, ps, true, "xgui");
 		}
 

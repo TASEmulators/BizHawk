@@ -59,8 +59,8 @@ namespace BizHawk.Client.EmuHawk
 			tw.Dispose();
 		}
 
-		public Shader CreateFragmentShader(bool cg, string source, string entry, bool required) => null;
-		public Shader CreateVertexShader(bool cg, string source, string entry, bool required) => null;
+		public Shader CreateFragmentShader(string source, string entry, bool required) => null;
+		public Shader CreateVertexShader(string source, string entry, bool required) => null;
 
 		public void SetBlendState(IBlendState rsBlend)
 		{

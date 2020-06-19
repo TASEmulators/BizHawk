@@ -1,13 +1,25 @@
 This is the native side of the experimental "waterbox" project for bizhawk.
 It consists of a modified musl libc, and build scripts to tie it all together.
 
-How to use:
+The prescribed possibilities are not exhaustive. Other platforms may work.
+Here is what we're supporting:
 
-1. Get a full Bizhawk checkout.
-	* This needs to be in an NTFS path which is then foreign mounted in WSL2
-2. Get WSL2 + Ubuntu 20.4LTS
-	* Other combinations may work.  Shrug.
-3. Start running commands:
+PREPARE A WIN10 VM:
+1. Make sure the VM has virtualization enabled on the guest. For example in VMWare Workstation, "Virtualize Intel VT-X/EPT or AMD-V/RVI"
+2. Follow WIN10 Workstation preparation guide
+3. If you wish to clone bizhawk on your host system, you can use a VMWare shared folder and: `sudo mount -t drvfs Z: /mnt/z -o metadata` (WSL won't auto-mount the shared drive)
+3b. NO: it doesnt work. using `sudo nano /etc/fstab` you can add a line in this format: `Z: /mnt/z drvfs rw,relatime 0 0` (and then reboot your windows system) to get it to auto-mount
+
+PREPARE A WIN10 WORKSTATION:
+
+Using the guidance at (https://docs.microsoft.com/en-us/windows/wsl/wsl2-kernel & https://docs.microsoft.com/en-us/windows/wsl/install-win10):
+1. Install WSL2 
+2. Install Ubuntu 20.04 LTS (https://www.microsoft.com/en-us/p/ubuntu-2004-lts/9n6svws3rx71)
+3. Clone the bizhawk repository. You can use it through /mnt or /home if you really like 
+4. Install build tools: sudo apt-get update && sudo apt-get install gcc g++ make cmake
+5. Read the documentation in libcxx directory. Be prepared by having llvm-project in the correct location
+6. Build waterbox framework libraries and such:
+NOTE: 
 
 cd musl
 ./configure-for-waterbox

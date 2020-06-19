@@ -160,43 +160,21 @@ namespace BizHawk.Client.EmuHawk
 			public VertexShader vs;
 			public PixelShader ps;
 			public Shader IGLShader;
-			public Dictionary<string, string> MapCodeToNative;
-			public Dictionary<string, string> MapNativeToCode;
 		}
 
 		/// <exception cref="InvalidOperationException"><paramref name="required"/> is <see langword="true"/> and compilation error occurred</exception>
-		public Shader CreateFragmentShader(bool cg, string source, string entry, bool required)
+		public Shader CreateFragmentShader(string source, string entry, bool required)
 		{
 			try
 			{
 				var sw = new ShaderWrapper();
-				if (cg)
-				{
-					var cgc = new CGC();
-					var results = cgc.Run(source, entry, "hlslf", true);
-					source = results.Code;
-					entry = "main";
-					if (!results.Succeeded)
-					{
-						if (required) throw new InvalidOperationException(results.Errors);
-						return new Shader(this, null, false);
-					}
-
-					sw.MapCodeToNative = results.MapCodeToNative;
-					sw.MapNativeToCode = results.MapNativeToCode;
-				}
-
+			
 				string errors = null;
 				ShaderBytecode byteCode;
 
 				try
 				{
-					// cgc can create shaders that will need backwards compatibility...
-					string profile = "ps_1_0";
-					if (cg)
-					{
-						profile = "ps_3_0"; //todo - smarter logic somehow
-					}
+					string profile = "ps_3_0";
 
 					// ShaderFlags.EnableBackwardsCompatibility - used this once upon a time (please leave a note about why)
 					byteCode = ShaderBytecode.Compile(source, null, null, entry, profile, ShaderFlags.UseLegacyD3DX9_31Dll, out errors);
@@ -224,39 +202,17 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		/// <exception cref="InvalidOperationException"><paramref name="required"/> is <see langword="true"/> and compilation error occurred</exception>
-		public Shader CreateVertexShader(bool cg, string source, string entry, bool required)
+		public Shader CreateVertexShader(string source, string entry, bool required)
 		{
 			try
 			{
 				var sw = new ShaderWrapper();
-				if (cg)
-				{
-					var cgc = new CGC();
-					var results = cgc.Run(source, entry, "hlslv", true);
-					source = results.Code;
-					entry = "main";
-					if (!results.Succeeded)
-					{
-						if (required) throw new InvalidOperationException(results.Errors);
-						return new Shader(this, null, false);
-					}
-
-					sw.MapCodeToNative = results.MapCodeToNative;
-					sw.MapNativeToCode = results.MapNativeToCode;
-				}
-
 				string errors = null;
 				ShaderBytecode byteCode;
 
 				try
 				{
-					// cgc can create shaders that will need backwards compatibility...
-					string profile = "vs_1_1";
-					if (cg)
-					{
-						profile = "vs_3_0"; //todo - smarter logic somehow
-					}
-
+					string profile = "vs_3_0";
 					byteCode = ShaderBytecode.Compile(source, null, null, entry, profile, ShaderFlags.EnableBackwardsCompatibility, out errors);
 				}
 				catch (Exception ex)
@@ -480,16 +436,6 @@ namespace BizHawk.Client.EmuHawk
 					ui.Opaque = uw;
 					string name = prefix + descr.Name;
 
-					// meh not happy about this stuff
-					if (fs.MapCodeToNative != null || vs.MapCodeToNative != null)
-					{
-						string key = name.TrimStart('$');
-						if (descr.Rows != 1)
-							key += "[0]";
-						if (fs.MapCodeToNative != null && ct == fsct) if (fs.MapCodeToNative.ContainsKey(key)) name = fs.MapCodeToNative[key];
-						if (vs.MapCodeToNative != null && ct == vsct) if (vs.MapCodeToNative.ContainsKey(key)) name = vs.MapCodeToNative[key];
-					}
-					
 					ui.Name = name;
 					uw.Description = descr;
 					uw.EffectHandle = handle;

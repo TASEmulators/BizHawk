@@ -125,14 +125,14 @@ namespace BizHawk.Client.EmuHawk
 			GL.DeleteTexture((int)tex.Opaque);
 		}
 
-		public Shader CreateFragmentShader(bool cg, string source, string entry, bool required)
+		public Shader CreateFragmentShader(string source, string entry, bool required)
 		{
-			return CreateShader(cg, ShaderType.FragmentShader, source, entry, required);
+			return CreateShader(ShaderType.FragmentShader, source, entry, required);
 		}
 
-		public Shader CreateVertexShader(bool cg, string source, string entry, bool required)
+		public Shader CreateVertexShader(string source, string entry, bool required)
 		{
-			return CreateShader(cg, ShaderType.VertexShader, source, entry, required);
+			return CreateShader(ShaderType.VertexShader, source, entry, required);
 		}
 
 		public IBlendState CreateBlendState(BlendingFactorSrc colorSource, BlendEquationMode colorEquation, BlendingFactorDest colorDest,
@@ -691,25 +691,9 @@ namespace BizHawk.Client.EmuHawk
 			return glc;
 		}
 
-		Shader CreateShader(bool cg, ShaderType type, string source, string entry, bool required)
+		Shader CreateShader(ShaderType type, string source, string entry, bool required)
 		{
 			var sw = new ShaderWrapper();
-			if (cg)
-			{
-				var cgc = new CGC();
-				var results = cgc.Run(source, entry, type == ShaderType.FragmentShader ? "glslf" : "glslv", false);
-
-				if (!results.Succeeded)
-				{
-					Console.WriteLine("CGC failed");
-					Console.WriteLine(results.Errors);
-					return new Shader(this, null, false);
-				}
-
-				source = results.Code;
-				sw.MapCodeToNative = results.MapCodeToNative;
-				sw.MapNativeToCode = results.MapNativeToCode;
-			}
 
 			int sid = GL.CreateShader(type);
 			bool ok = CompileShaderSimple(sid, source, required);
