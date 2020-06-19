@@ -866,7 +866,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Rewinder?.Dispose();
 			Rewinder = Emulator.HasSavestates() && Config.Rewind.Enabled
-				? new Zwinder(600, Emulator.AsStatable(), Config.Rewind)
+				? new Zwinder(Emulator.AsStatable(), Config.Rewind)
 				: null;
 		}
 

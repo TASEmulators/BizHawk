@@ -19,22 +19,20 @@ namespace BizHawk.Client.Common
 			maintain a separate rewinder alongside this one that is customized for those cores.
 		*/
 
-		/// <param name="targetSize">size of rewinder backing store in bytes</param>
-		/// <param name="targetFrameLength">desired frame length (number of emulated frames you can go back before running out of buffer)</param>
-		public Zwinder(int targetFrameLength, IBinaryStateable stateSource, IRewindSettings settings)
+		public Zwinder(IBinaryStateable stateSource, IRewindSettings settings)
 		{
 			long targetSize = settings.BufferSize * 1024 * 1024;
 			if (targetSize < 65536)
 				throw new ArgumentOutOfRangeException(nameof(targetSize));
-			if (targetFrameLength < 1)
-				throw new ArgumentOutOfRangeException(nameof(targetFrameLength));
+			if (settings.TargetFrameLength < 1)
+				throw new ArgumentOutOfRangeException(nameof(settings.TargetFrameLength));
 
 			Size = 1L << (int)Math.Floor(Math.Log(targetSize, 2));
 			_sizeMask = Size - 1;
 			_buffer = new byte[Size];
 			Active = true;
 			_stateSource = stateSource;
-			_targetFrameLength = targetFrameLength;
+			_targetFrameLength = settings.TargetFrameLength;
 			_states = new StateInfo[STATEMASK + 1];
 			_kompress = settings.UseCompression;
 		}
