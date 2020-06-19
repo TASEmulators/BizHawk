@@ -7,6 +7,8 @@ using BizHawk.Emulation.Cores.Components.LR35902;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
 using System.Runtime.InteropServices;
 
+// TODO: mode1_disableint_gbc.gbc behaves differently between GBC and GBA, why?
+
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
 	[Core(

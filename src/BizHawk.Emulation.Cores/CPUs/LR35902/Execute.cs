@@ -603,7 +603,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 			// Stop loop
 			instr_table[256 * 60 * 2 + 60 * 5] = IDLE;
 			instr_table[256 * 60 * 2 + 60 * 5 + 1] = IDLE;
-			instr_table[256 * 60 * 2 + 60 * 5 + 2] = IDLE;
+			instr_table[256 * 60 * 2 + 60 * 5 + 2] = HALT_CHK;
 			instr_table[256 * 60 * 2 + 60 * 5 + 3] = STOP;
 
 			// interrupt vectors

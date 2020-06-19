@@ -48,7 +48,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					{
 						// don't draw for one frame after turning on
 						blank_frame = true;
-					}
+					}				
 					LCDC = value;
 					break; 
 				case 0xFF41: // STAT
@@ -481,7 +481,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				total_counter = 0;
 
 				// TODO: If Window is turned on midscanline what happens? When is this check done exactly?
-				if ((window_started && window_latch) || (window_is_reset && !window_latch && (LY >= window_y_latch)))
+				if ((window_started && window_latch) || (window_is_reset && !window_latch && (LY > window_y_latch)))
 				{
 					window_y_tile_inc++;
 					if (window_y_tile_inc==8)

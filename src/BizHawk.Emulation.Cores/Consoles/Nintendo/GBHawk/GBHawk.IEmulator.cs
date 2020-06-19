@@ -285,7 +285,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					{
 						speed_switch = false;
 						Console.WriteLine("Speed Switch: " + cpu.TotalExecutedCycles);
-						int ret = double_speed ? 32768 - 20 : 32768 - 20; // actual time needs checking
+
+						// reset the divider (only way for speed_change_timing_fine.gbc and speed_change_cancel.gbc to both work)
+						timer.divider_reg = 0;
+
+						int ret = double_speed ? 32769 : 32769; // actual time needs checking
 						return ret;
 					}
 

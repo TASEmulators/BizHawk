@@ -430,12 +430,41 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 					}
 
 					interrupt_src_reg = GetIntRegs(0);
-					
+
 					if (stop_time > 0)
 					{
-						if (stop_time == (32768 - 43))
+						// Timer interrupts can prematurely terminate a speedchange, nt sure about other sources
+						// NOTE: some testing around the edge case of where the speed actually changes is needed						
+						if (I_use && interrupts_enabled)
 						{
-							SpeedFunc(1);							
+							interrupts_enabled = false;
+							I_use = false;
+
+							TraceCallback?.Invoke(new TraceInfo
+							{
+								Disassembly = "====un-stop====",
+								RegisterInfo = ""
+							});
+
+							stopped = false;
+							stop_check = false;
+							stop_time = 0;
+
+							TraceCallback?.Invoke(new TraceInfo
+							{
+								Disassembly = "====IRQ====",
+								RegisterInfo = ""
+							});
+
+							// call interrupt processor 
+							// lowest bit set is highest priority
+							instr_pntr = 256 * 60 * 2 + 60 * 6; // point to Interrupt
+							break;
+						}
+
+						if (stop_time == (32768 - 2))
+						{
+							SpeedFunc(1);
 						}
 
 						stop_time--;
@@ -454,16 +483,22 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 							instr_pntr = 256 * 60 * 2 + 60;
 
 							stop_check = false;
+
+							break;
 						}
-						else
+
+						// If a button is pressed during speed change, the processor will jam
+						if (interrupt_src_reg.Bit(4))
 						{
-							instr_pntr = 256 * 60 * 2 + 60 * 5; // point to stop loop
+							stop_time++;
+							break;
 						}
 					}
-					else if (interrupt_src_reg.Bit(4)) // button pressed, even if interrupts are not enabled, still exists stop
+					
+					// Button press will exit stop loop even if speed change in progress, even without interrupts enabled
+					if (interrupt_src_reg.Bit(4))
 					{
 						// TODO: On a gameboy, you can only un-STOP once, needs further testing
-						
 						TraceCallback?.Invoke(new TraceInfo
 						{
 							Disassembly = "====un-stop====",

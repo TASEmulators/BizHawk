@@ -68,6 +68,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				case 0xFF07:
 					timer_control = (byte)((timer_control & 0xf8) | (value & 0x7)); // only bottom 3 bits function
 
+					// NOTE: On GBA models, there is a race condition when enabling with a change in bit check
+					// that would result in a state change that is not consistent in all models, see tac_set_disabled.gbc
+
 					// NOTE: On GBA only, there is a glitch where if the current timer control is 7 and the written value is 7 and
 					// there is a coincident timer increment, there will be an additional increment along with this write.
 					// not sure it effects all models or of exact details, see test tac_set_timer_disabled.gbc
