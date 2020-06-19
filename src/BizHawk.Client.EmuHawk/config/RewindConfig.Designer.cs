@@ -37,17 +37,8 @@
             this.LargeStateEnabledBox = new System.Windows.Forms.CheckBox();
             this.MediumStateEnabledBox = new System.Windows.Forms.CheckBox();
             this.SmallStateEnabledBox = new System.Windows.Forms.CheckBox();
-            this.LargeLabel2 = new System.Windows.Forms.Label();
-            this.LargeLabel3 = new System.Windows.Forms.Label();
-            this.LargeSavestateNumeric = new System.Windows.Forms.NumericUpDown();
             this.LargeLabel = new System.Windows.Forms.Label();
-            this.MediumLabel2 = new System.Windows.Forms.Label();
-            this.MediumLabel3 = new System.Windows.Forms.Label();
-            this.MediumSavestateNumeric = new System.Windows.Forms.NumericUpDown();
             this.MediumLabel = new System.Windows.Forms.Label();
-            this.SmallLabel2 = new System.Windows.Forms.Label();
-            this.SmallLabel3 = new System.Windows.Forms.Label();
-            this.SmallSavestateNumeric = new System.Windows.Forms.NumericUpDown();
             this.UseCompression = new System.Windows.Forms.CheckBox();
             this.label1 = new System.Windows.Forms.Label();
             this.StateSizeLabel = new System.Windows.Forms.Label();
@@ -89,9 +80,6 @@
             this.BackupSavestatesCheckbox = new System.Windows.Forms.CheckBox();
             this.label12 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.LargeSavestateNumeric)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.MediumSavestateNumeric)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.SmallSavestateNumeric)).BeginInit();
             this.groupBox3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.RewindSpeedNumeric)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.BufferSizeUpDown)).BeginInit();
@@ -142,17 +130,8 @@
             this.groupBox1.Controls.Add(this.LargeStateEnabledBox);
             this.groupBox1.Controls.Add(this.MediumStateEnabledBox);
             this.groupBox1.Controls.Add(this.SmallStateEnabledBox);
-            this.groupBox1.Controls.Add(this.LargeLabel2);
-            this.groupBox1.Controls.Add(this.LargeLabel3);
-            this.groupBox1.Controls.Add(this.LargeSavestateNumeric);
             this.groupBox1.Controls.Add(this.LargeLabel);
-            this.groupBox1.Controls.Add(this.MediumLabel2);
-            this.groupBox1.Controls.Add(this.MediumLabel3);
-            this.groupBox1.Controls.Add(this.MediumSavestateNumeric);
             this.groupBox1.Controls.Add(this.MediumLabel);
-            this.groupBox1.Controls.Add(this.SmallLabel2);
-            this.groupBox1.Controls.Add(this.SmallLabel3);
-            this.groupBox1.Controls.Add(this.SmallSavestateNumeric);
             this.groupBox1.Controls.Add(this.SmallLabel);
             this.groupBox1.Location = new System.Drawing.Point(12, 90);
             this.groupBox1.Name = "groupBox1";
@@ -200,47 +179,6 @@
             this.SmallStateEnabledBox.UseVisualStyleBackColor = true;
             this.SmallStateEnabledBox.CheckStateChanged += new System.EventHandler(this.SmallStateEnabledBox_CheckStateChanged);
             // 
-            // LargeLabel2
-            // 
-            this.LargeLabel2.AutoSize = true;
-            this.LargeLabel2.Location = new System.Drawing.Point(227, 88);
-            this.LargeLabel2.Name = "LargeLabel2";
-            this.LargeLabel2.Size = new System.Drawing.Size(33, 13);
-            this.LargeLabel2.TabIndex = 13;
-            this.LargeLabel2.Text = "every";
-            // 
-            // LargeLabel3
-            // 
-            this.LargeLabel3.AutoSize = true;
-            this.LargeLabel3.Location = new System.Drawing.Point(307, 88);
-            this.LargeLabel3.Name = "LargeLabel3";
-            this.LargeLabel3.Size = new System.Drawing.Size(38, 13);
-            this.LargeLabel3.TabIndex = 15;
-            this.LargeLabel3.Text = "frames";
-            // 
-            // LargeSavestateNumeric
-            // 
-            this.LargeSavestateNumeric.Location = new System.Drawing.Point(263, 84);
-            this.LargeSavestateNumeric.Maximum = new decimal(new int[] {
-            1024,
-            0,
-            0,
-            0});
-            this.LargeSavestateNumeric.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.LargeSavestateNumeric.Name = "LargeSavestateNumeric";
-            this.LargeSavestateNumeric.Size = new System.Drawing.Size(38, 20);
-            this.LargeSavestateNumeric.TabIndex = 14;
-            this.LargeSavestateNumeric.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.LargeSavestateNumeric.ValueChanged += new System.EventHandler(this.LargeSavestateNumeric_ValueChanged);
-            // 
             // LargeLabel1
             // 
             this.LargeLabel.AutoSize = true;
@@ -250,47 +188,6 @@
             this.LargeLabel.TabIndex = 12;
             this.LargeLabel.Text = "Large savestates (more than 100KB)";
             this.LargeLabel.Click += new System.EventHandler(this.LargeLabel_Click);
-            // 
-            // MediumLabel2
-            // 
-            this.MediumLabel2.AutoSize = true;
-            this.MediumLabel2.Location = new System.Drawing.Point(227, 64);
-            this.MediumLabel2.Name = "MediumLabel2";
-            this.MediumLabel2.Size = new System.Drawing.Size(33, 13);
-            this.MediumLabel2.TabIndex = 8;
-            this.MediumLabel2.Text = "every";
-            // 
-            // MediumLabel3
-            // 
-            this.MediumLabel3.AutoSize = true;
-            this.MediumLabel3.Location = new System.Drawing.Point(307, 64);
-            this.MediumLabel3.Name = "MediumLabel3";
-            this.MediumLabel3.Size = new System.Drawing.Size(38, 13);
-            this.MediumLabel3.TabIndex = 10;
-            this.MediumLabel3.Text = "frames";
-            // 
-            // MediumSavestateNumeric
-            // 
-            this.MediumSavestateNumeric.Location = new System.Drawing.Point(263, 60);
-            this.MediumSavestateNumeric.Maximum = new decimal(new int[] {
-            1024,
-            0,
-            0,
-            0});
-            this.MediumSavestateNumeric.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.MediumSavestateNumeric.Name = "MediumSavestateNumeric";
-            this.MediumSavestateNumeric.Size = new System.Drawing.Size(38, 20);
-            this.MediumSavestateNumeric.TabIndex = 9;
-            this.MediumSavestateNumeric.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.MediumSavestateNumeric.ValueChanged += new System.EventHandler(this.MediumSavestateNumeric_ValueChanged);
             // 
             // MediumLabel1
             // 
@@ -302,48 +199,7 @@
             this.MediumLabel.Text = "Medium savestates (32 - 100KB)";
             this.MediumLabel.Click += new System.EventHandler(this.MediumLabel_Click);
             // 
-            // SmallLabel2
-            // 
-            this.SmallLabel2.AutoSize = true;
-            this.SmallLabel2.Location = new System.Drawing.Point(227, 40);
-            this.SmallLabel2.Name = "SmallLabel2";
-            this.SmallLabel2.Size = new System.Drawing.Size(33, 13);
-            this.SmallLabel2.TabIndex = 3;
-            this.SmallLabel2.Text = "every";
-            // 
-            // SmallLabel3
-            // 
-            this.SmallLabel3.AutoSize = true;
-            this.SmallLabel3.Location = new System.Drawing.Point(307, 40);
-            this.SmallLabel3.Name = "SmallLabel3";
-            this.SmallLabel3.Size = new System.Drawing.Size(38, 13);
-            this.SmallLabel3.TabIndex = 5;
-            this.SmallLabel3.Text = "frames";
-            // 
-            // SmallSavestateNumeric
-            // 
-            this.SmallSavestateNumeric.Location = new System.Drawing.Point(263, 36);
-            this.SmallSavestateNumeric.Maximum = new decimal(new int[] {
-            1024,
-            0,
-            0,
-            0});
-            this.SmallSavestateNumeric.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.SmallSavestateNumeric.Name = "SmallSavestateNumeric";
-            this.SmallSavestateNumeric.Size = new System.Drawing.Size(38, 20);
-            this.SmallSavestateNumeric.TabIndex = 4;
-            this.SmallSavestateNumeric.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.SmallSavestateNumeric.ValueChanged += new System.EventHandler(this.SmallSavestateNumeric_ValueChanged);
-            // 
-            // UseDeltaCompression
+            // UseCompression
             // 
             this.UseCompression.AutoSize = true;
             this.UseCompression.Location = new System.Drawing.Point(16, 89);
@@ -818,9 +674,6 @@
             this.Load += new System.EventHandler(this.RewindConfig_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.LargeSavestateNumeric)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.MediumSavestateNumeric)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.SmallSavestateNumeric)).EndInit();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.RewindSpeedNumeric)).EndInit();
@@ -844,16 +697,7 @@
 		private System.Windows.Forms.Button Cancel;
 		private System.Windows.Forms.Label SmallLabel;
 		private System.Windows.Forms.GroupBox groupBox1;
-		private System.Windows.Forms.Label SmallLabel2;
-		private System.Windows.Forms.Label SmallLabel3;
-		private System.Windows.Forms.NumericUpDown SmallSavestateNumeric;
-		private System.Windows.Forms.Label LargeLabel2;
-		private System.Windows.Forms.Label LargeLabel3;
-		private System.Windows.Forms.NumericUpDown LargeSavestateNumeric;
 		private System.Windows.Forms.Label LargeLabel;
-		private System.Windows.Forms.Label MediumLabel2;
-		private System.Windows.Forms.Label MediumLabel3;
-		private System.Windows.Forms.NumericUpDown MediumSavestateNumeric;
 		private System.Windows.Forms.Label MediumLabel;
 		private System.Windows.Forms.Label label10;
 		private System.Windows.Forms.CheckBox LargeStateEnabledBox;

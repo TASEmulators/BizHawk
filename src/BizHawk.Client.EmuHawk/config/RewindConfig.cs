@@ -14,7 +14,6 @@ namespace BizHawk.Client.EmuHawk
 		private readonly IStatable _statableCore;
 
 		private long _stateSize;
-		private int _stateSizeCategory = 1; // 1 = small, 2 = med, 3 = large // TODO: enum
 
 		public RewindConfig(MainForm mainForm, Config config, IStatable statableCore)
 		{
@@ -42,10 +41,6 @@ namespace BizHawk.Client.EmuHawk
 			BufferSizeUpDown.Value = Math.Max(_config.Rewind.BufferSize, BufferSizeUpDown.Minimum);
 
 			UseCompression.Checked = _config.Rewind.UseCompression;
-
-			SmallSavestateNumeric.Value = _config.Rewind.FrequencySmall;
-			MediumSavestateNumeric.Value = _config.Rewind.FrequencyMedium;
-			LargeSavestateNumeric.Value = _config.Rewind.FrequencyLarge;
 
 			SmallStateEnabledBox.Checked = _config.Rewind.EnabledSmall;
 			MediumStateEnabledBox.Checked = _config.Rewind.EnabledMedium;
@@ -95,11 +90,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			StateSizeLabel.Text = FormatKB(_stateSize);
 
-			SmallLabel.Text = $"Small savestates";
-			MediumLabel.Text = $"Medium savestates";
-			LargeLabel.Text = $"Large savestates";
+			SmallLabel.Text = "Small savestates";
+			MediumLabel.Text = "Medium savestates";
+			LargeLabel.Text = "Large savestates";
 
-			_stateSizeCategory = 1;
 			SmallLabel.Font = new Font(SmallLabel.Font, FontStyle.Italic);
 			MediumLabel.Font = new Font(SmallLabel.Font, FontStyle.Regular);
 			LargeLabel.Font = new Font(SmallLabel.Font, FontStyle.Regular);
@@ -132,9 +126,6 @@ namespace BizHawk.Client.EmuHawk
 			_config.Rewind.EnabledSmall = PutRewindSetting(_config.Rewind.EnabledSmall, SmallStateEnabledBox.Checked);
 			_config.Rewind.EnabledMedium = PutRewindSetting(_config.Rewind.EnabledMedium, MediumStateEnabledBox.Checked);
 			_config.Rewind.EnabledLarge = PutRewindSetting(_config.Rewind.EnabledLarge, LargeStateEnabledBox.Checked);
-			_config.Rewind.FrequencySmall = PutRewindSetting(_config.Rewind.FrequencySmall, (int)SmallSavestateNumeric.Value);
-			_config.Rewind.FrequencyMedium = PutRewindSetting(_config.Rewind.FrequencyMedium, (int)MediumSavestateNumeric.Value);
-			_config.Rewind.FrequencyLarge = PutRewindSetting(_config.Rewind.FrequencyLarge, (int)LargeSavestateNumeric.Value);
 			_config.Rewind.BufferSize = PutRewindSetting(_config.Rewind.BufferSize, (int)BufferSizeUpDown.Value);
 
 			// These settings are not used by DoRewindSettings
@@ -158,23 +149,17 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetSmallEnabled()
 		{
-			SmallLabel.Enabled = SmallLabel2.Enabled
-				= SmallSavestateNumeric.Enabled = SmallLabel3.Enabled
-				= SmallStateEnabledBox.Checked;
+			SmallLabel.Enabled = SmallStateEnabledBox.Checked;
 		}
 
 		private void SetMediumEnabled()
 		{
-			MediumLabel.Enabled = MediumLabel2.Enabled
-				= MediumSavestateNumeric.Enabled = MediumLabel3.Enabled
-				= MediumStateEnabledBox.Checked;
+			MediumLabel.Enabled = MediumStateEnabledBox.Checked;
 		}
 
 		private void SetLargeEnabled()
 		{
-			LargeLabel.Enabled = LargeLabel2.Enabled
-				= LargeSavestateNumeric.Enabled = LargeLabel3.Enabled
-				= LargeStateEnabledBox.Checked;
+			LargeLabel.Enabled = LargeStateEnabledBox.Checked;
 		}
 
 		private void SmallStateEnabledBox_CheckStateChanged(object sender, EventArgs e)
@@ -231,20 +216,7 @@ namespace BizHawk.Client.EmuHawk
 			bufferSize *= 1024 * 1024;
 			var estFrames = bufferSize / avgStateSize;
 
-			long estFrequency = 0;
-			switch (_stateSizeCategory)
-			{
-				case 1:
-					estFrequency = (long)SmallSavestateNumeric.Value;
-					break;
-				case 2:
-					estFrequency = (long)MediumSavestateNumeric.Value;
-					break;
-				case 3:
-					estFrequency = (long)LargeSavestateNumeric.Value;
-					break;
-			}
-
+			long estFrequency = 0; // TODO
 			long estTotalFrames = estFrames * estFrequency;
 			double minutes = estTotalFrames / 60 / 60;
 
@@ -259,21 +231,6 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void UseDeltaCompression_CheckedChanged(object sender, EventArgs e)
-		{
-			CalculateEstimates();
-		}
-
-		private void SmallSavestateNumeric_ValueChanged(object sender, EventArgs e)
-		{
-			CalculateEstimates();
-		}
-
-		private void MediumSavestateNumeric_ValueChanged(object sender, EventArgs e)
-		{
-			CalculateEstimates();
-		}
-
-		private void LargeSavestateNumeric_ValueChanged(object sender, EventArgs e)
 		{
 			CalculateEstimates();
 		}
