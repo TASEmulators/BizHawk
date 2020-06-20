@@ -557,9 +557,6 @@
 		<!-- Element documentation should not be copied and pasted -->
 		<Rule Id="SA1625" Action="Hidden" />
 
-		<!-- Single-line comments should not use documentation style slashes -->
-		<Rule Id="SA1626" Action="Hidden" />
-
 		<!-- Documentation text should not be empty -->
 		<Rule Id="SA1627" Action="Hidden" />
 

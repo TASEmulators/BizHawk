@@ -188,7 +188,7 @@ namespace BizHawk.Bizware.BizwareGL
 				public RectItem ri;
 			}
 
-			/// Starts a new packing process to a bin of the given dimension.
+			/// <summary>Starts a new packing process to a bin of the given dimension.</summary>
 			public void Init(int width, int height)
 			{
 				binWidth = width;
@@ -201,16 +201,15 @@ namespace BizHawk.Bizware.BizwareGL
 			}
 
 
-			/// Inserts a new rectangle of the given size into the bin.
-			/** Running time is linear to the number of rectangles that have been already packed.
-				@return A pointer to the node that stores the newly added rectangle, or 0 
-					if it didn't fit. */
+			/// <summary>Inserts a new rectangle of the given size into the bin.</summary>
+			/// <returns>A pointer to the node that stores the newly added rectangle, or 0 if it didn't fit.</returns>
+			/// <remarks>Running time is linear to the number of rectangles that have been already packed.</remarks>
 			public Node Insert(int width, int height)
 			{
 				return Insert(root, width, height);
 			}
 
-			/// Computes the ratio of used surface area.
+			/// <summary>Computes the ratio of used surface area.</summary>
 			float Occupancy()
 			{
 				int totalSurfaceArea = binWidth * binHeight;
@@ -225,7 +224,7 @@ namespace BizHawk.Bizware.BizwareGL
 			private int binWidth;
 			private int binHeight;
 
-			/// @return The surface area used by the subtree rooted at node.
+			/// <returns>The surface area used by the subtree rooted at node.</returns>
 			private int UsedSurfaceArea(Node node)
 			{
 				if (node.left != null || node.right != null)
@@ -244,7 +243,7 @@ namespace BizHawk.Bizware.BizwareGL
 			}
 
 
-			/// Inserts a new rectangle in the subtree rooted at the given node.
+			/// <summary>Inserts a new rectangle in the subtree rooted at the given node.</summary>
 			private Node Insert(Node node, int width, int height)
 			{
 

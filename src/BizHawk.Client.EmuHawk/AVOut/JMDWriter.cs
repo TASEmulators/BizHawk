@@ -141,7 +141,7 @@ namespace BizHawk.Client.EmuHawk
 			// output stream is always stereo
 			private readonly bool _stereo;
 
-			/// underlying bytestream that is being written to
+			/// <summary>underlying bytestream that is being written to</summary>
 			private readonly Stream _f;
 
 			/// <exception cref="ArgumentException"><paramref name="f"/> cannot be written to</exception>
