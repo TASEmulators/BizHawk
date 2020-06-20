@@ -2122,7 +2122,6 @@
 			this.GBSubMenu.Name = "GBSubMenu";
 			this.GBSubMenu.Size = new System.Drawing.Size(32, 17);
 			this.GBSubMenu.Text = "&GB";
-			this.GBSubMenu.DropDownOpened += new System.EventHandler(this.GbSubMenu_DropDownOpened);
 			// 
 			// GBcoreSettingsToolStripMenuItem
 			// 
