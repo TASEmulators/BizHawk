@@ -283,8 +283,6 @@
 			this.vDPViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator26 = new System.Windows.Forms.ToolStripSeparator();
 			this.GenesisSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.wonderSwanToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.AppleSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.AppleDisksSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator31 = new System.Windows.Forms.ToolStripSeparator();
@@ -424,7 +422,6 @@
             this.N64SubMenu,
             this.DGBSubMenu,
 			this.GenesisSubMenu,
-			this.wonderSwanToolStripMenuItem,
 			this.AppleSubMenu,
 			this.C64SubMenu,
 			this.IntvSubMenu,
@@ -2498,21 +2495,6 @@
 			this.GenesisSettingsToolStripMenuItem.Text = "&Settings...";
 			this.GenesisSettingsToolStripMenuItem.Click += new System.EventHandler(this.GenesisSettingsMenuItem_Click);
 			// 
-			// wonderSwanToolStripMenuItem
-			// 
-			this.wonderSwanToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.settingsToolStripMenuItem});
-			this.wonderSwanToolStripMenuItem.Name = "wonderSwanToolStripMenuItem";
-			this.wonderSwanToolStripMenuItem.Size = new System.Drawing.Size(83, 17);
-			this.wonderSwanToolStripMenuItem.Text = "&WonderSwan";
-			// 
-			// settingsToolStripMenuItem
-			// 
-			this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-			this.settingsToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
-			this.settingsToolStripMenuItem.Text = "&Settings...";
-			this.settingsToolStripMenuItem.Click += new System.EventHandler(this.WonderSwanSettingsMenuItem_Click);
-			// 
 			// AppleSubMenu
 			// 
 			this.AppleSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -3723,8 +3705,6 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator23;
 		private System.Windows.Forms.ToolStripMenuItem N64CircularAnalogRangeMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem paletteToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem wonderSwanToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ProfilesMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem PceSoundDebuggerToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SynclessRecordingMenuItem;

@@ -1818,7 +1818,6 @@ namespace BizHawk.Client.EmuHawk
 			N64SubMenu.Visible = false;
 			DGBSubMenu.Visible = false;
 			GenesisSubMenu.Visible = false;
-			wonderSwanToolStripMenuItem.Visible = false;
 			AppleSubMenu.Visible = false;
 			C64SubMenu.Visible = false;
 			IntvSubMenu.Visible = false;
@@ -1906,9 +1905,6 @@ namespace BizHawk.Client.EmuHawk
 					{
 						DGBSubMenu.Visible = true;
 					}
-					break;
-				case "WSWAN":
-					wonderSwanToolStripMenuItem.Visible = true;
 					break;
 				case "AppleII":
 					AppleSubMenu.Visible = true;
