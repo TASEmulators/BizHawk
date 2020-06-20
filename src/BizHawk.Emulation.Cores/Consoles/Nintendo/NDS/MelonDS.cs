@@ -23,9 +23,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		internal CoreComm CoreComm { get; }
 
+		private bool _disposed;
 		public void Dispose()
 		{
-			Deinit();
+			if (!_disposed)
+			{
+				Deinit();
+				_resampler.Dispose();
+				_disposed = true;
+			}
 		}
 
 		public bool FrameAdvance(IController controller, bool render, bool renderSound = true)
