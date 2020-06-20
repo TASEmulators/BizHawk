@@ -140,7 +140,7 @@ namespace BizHawk.Client.EmuHawk
 				throw new InvalidOperationException("Tried to start recording an AVI with no video codec token set");
 			}
 
-			threadQ = new System.Collections.Concurrent.BlockingCollection<Object>(30);
+			threadQ = new System.Collections.Concurrent.BlockingCollection<object>(30);
 			workerT = new System.Threading.Thread(new System.Threading.ThreadStart(threadproc));
 			workerT.Start();
 		}
@@ -558,7 +558,7 @@ namespace BizHawk.Client.EmuHawk
 		/// set metadata parameters; should be called before opening file
 		/// NYI
 		/// </summary>
-		public void SetMetaData(string gameName, string authors, UInt64 lengthMS, UInt64 rerecords)
+		public void SetMetaData(string gameName, string authors, ulong lengthMS, ulong rerecords)
 		{
 		}
 

@@ -27,7 +27,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 			for (int i = 1; i < 32; i++) // r0 is always zero
 			{
-				UInt64 val = (regs[GPRnames[i] + "_hi"].Value << 32) | regs[GPRnames[i] + "_lo"].Value;
+				var val = (regs[GPRnames[i] + "_hi"].Value << 32) | regs[GPRnames[i] + "_lo"].Value;
 				string name = GPRnames[i];
 				sb.Append($"{name}:{val:X16} ");
 			}
@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 			for (int i = 0; i < 32; i++) // r0 is always zero
 			{
-				UInt64 val = (regs["CP1 FGR REG" + i + "_hi"].Value << 32) | regs["CP1 FGR REG" + i + "_lo"].Value;
+				var val = (regs["CP1 FGR REG" + i + "_hi"].Value << 32) | regs["CP1 FGR REG" + i + "_lo"].Value;
 				sb.Append($"f{i}:{val:X16} ");
 			}
 

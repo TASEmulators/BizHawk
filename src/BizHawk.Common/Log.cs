@@ -50,7 +50,7 @@ namespace BizHawk.Common
 		{
 			if (EnabledLogDomains.Contains(domain))
 			{
-				LogAction(String.Format(msg, vals));
+				LogAction(string.Format(msg, vals));
 			}
 		}
 

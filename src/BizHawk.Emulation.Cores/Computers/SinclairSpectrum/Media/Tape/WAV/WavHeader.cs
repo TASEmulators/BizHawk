@@ -10,24 +10,24 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 	public class WavHeader
 	{
 		// RIFF chunk (12 bytes)
-		public Int32 chunkID;           // "RIFF"
-		public Int32 fileSize;
-		public Int32 riffType;          // "WAVE"
+		public int chunkID;           // "RIFF"
+		public int fileSize;
+		public int riffType;          // "WAVE"
 
 		// Format chunk (24 bytes)
-		public Int32 fmtID;             // "fmt "
-		public Int32 fmtSize;
-		public Int16 fmtCode;
-		public Int16 channels;
-		public Int32 sampleRate;
-		public Int32 fmtAvgBPS;
-		public Int16 fmtBlockAlign;
-		public Int16 bitDepth;
-		public Int16 fmtExtraSize;
+		public int fmtID;             // "fmt "
+		public int fmtSize;
+		public short fmtCode;
+		public short channels;
+		public int sampleRate;
+		public int fmtAvgBPS;
+		public short fmtBlockAlign;
+		public short bitDepth;
+		public short fmtExtraSize;
 
 		// Data chunk
-		public Int32 dataID;            // "data"
-		public Int32 dataSize;          // The data size should be file size - 36 bytes.
+		public int dataID;            // "data"
+		public int dataSize;          // The data size should be file size - 36 bytes.
 
 
 		public void Deserialize(Stream stream)
@@ -43,8 +43,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			{
 				throw new FormatException($"Not supported RIFF type: '{Encoding.ASCII.GetString(BitConverter.GetBytes(riffType))}'");
 			}
-			Int32 chunkId;
-			Int32 chunkSize;
+			int chunkId;
+			int chunkSize;
 			while (stream.Position < stream.Length)
 			{
 				StreamHelper.Read(stream, out chunkId);

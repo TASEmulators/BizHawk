@@ -21,7 +21,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 		public int Count => m_header.dataSize / m_header.fmtBlockAlign;
 
-		public Int32 ReadNext()
+		public int ReadNext()
 		{
 			// check - sample should be in PCM format
 			if (m_header.fmtCode != WAVE_FORMAT_PCM &&
@@ -54,19 +54,19 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			throw new NotSupportedException($"Not supported audio format ({(m_header.fmtCode == WAVE_FORMAT_PCM ? "PCM" : "FLOAT")}/{m_header.bitDepth} bit)");
 		}
 
-		private Int32 getSamplePcm8(byte[] bufferRaw, int offset, int channel)
+		private int getSamplePcm8(byte[] bufferRaw, int offset, int channel)
 		{
 			return bufferRaw[offset + channel] - 128;
 		}
 
-		private Int32 getSamplePcm16(byte[] bufferRaw, int offset, int channel)
+		private int getSamplePcm16(byte[] bufferRaw, int offset, int channel)
 		{
 			return BitConverter.ToInt16(bufferRaw, offset + 2 * channel);
 		}
 
-		private Int32 getSamplePcm24(byte[] bufferRaw, int offset, int channel)
+		private int getSamplePcm24(byte[] bufferRaw, int offset, int channel)
 		{
-			Int32 result;
+			int result;
 			int subOffset = offset + channel * 3;
 			if (BitConverter.IsLittleEndian)
 			{
@@ -83,23 +83,23 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			return result;
 		}
 
-		private Int32 getSamplePcm32(byte[] bufferRaw, int offset, int channel)
+		private int getSamplePcm32(byte[] bufferRaw, int offset, int channel)
 		{
 			return BitConverter.ToInt32(bufferRaw, offset + 4 * channel);
 		}
 
-		private Int32 getSampleFloat32(byte[] data, int offset, int channel)
+		private int getSampleFloat32(byte[] data, int offset, int channel)
 		{
 			float fSample = BitConverter.ToSingle(data, offset + 4 * channel);
 			// convert to 32 bit integer
-			return (Int32)(fSample * Int32.MaxValue);
+			return (int) (fSample * int.MaxValue);
 		}
 
-		private Int32 getSampleFloat64(byte[] data, int offset, int channel)
+		private int getSampleFloat64(byte[] data, int offset, int channel)
 		{
 			double fSample = BitConverter.ToDouble(data, offset + 8 * channel);
 			// convert to 32 bit integer
-			return (Int32)(fSample * Int32.MaxValue);
+			return (int) (fSample * int.MaxValue);
 		}
 
 		private const int WAVE_FORMAT_PCM = 1;              /* PCM */

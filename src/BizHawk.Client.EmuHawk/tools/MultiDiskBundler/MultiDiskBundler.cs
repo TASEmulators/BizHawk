@@ -126,7 +126,7 @@ namespace BizHawk.Client.EmuHawk
 			//ToDo:
 			//Make this better?
 			//We need to have i at 1 and not zero because Controls Count doesn't start at zero (sort of)
-			Int32 i = 1;
+			var i = 1;
 			//For Each Control box we have, loop
 			foreach (Control ctrl in FileSelectorPanel.Controls)
 			{

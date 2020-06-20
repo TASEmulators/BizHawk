@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 
 		
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		private delegate Int32 GetScreenTextureID();
+		private delegate int GetScreenTextureID();
 		GetScreenTextureID GFXGetScreenTextureID;
 
 		public mupen64plusVideoApi(mupen64plusApi core, VideoPluginSettings settings)

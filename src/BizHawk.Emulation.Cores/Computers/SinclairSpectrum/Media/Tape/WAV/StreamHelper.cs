@@ -8,38 +8,38 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 	/// </summary>
 	public static class StreamHelper
 	{
-		public static void Write(Stream stream, Int32 value)
+		public static void Write(Stream stream, int value)
 		{
 			byte[] data = BitConverter.GetBytes(value);
 			stream.Write(data, 0, data.Length);
 		}
 
-		public static void Write(Stream stream, UInt32 value)
+		public static void Write(Stream stream, uint value)
 		{
 			byte[] data = BitConverter.GetBytes(value);
 			stream.Write(data, 0, data.Length);
 		}
 
-		public static void Write(Stream stream, Int16 value)
+		public static void Write(Stream stream, short value)
 		{
 			byte[] data = BitConverter.GetBytes(value);
 			stream.Write(data, 0, data.Length);
 		}
 
-		public static void Write(Stream stream, UInt16 value)
+		public static void Write(Stream stream, ushort value)
 		{
 			byte[] data = BitConverter.GetBytes(value);
 			stream.Write(data, 0, data.Length);
 		}
 
-		public static void Write(Stream stream, Byte value)
+		public static void Write(Stream stream, byte value)
 		{
 			byte[] data = new byte[1];
 			data[0] = value;
 			stream.Write(data, 0, data.Length);
 		}
 
-		public static void Write(Stream stream, SByte value)
+		public static void Write(Stream stream, sbyte value)
 		{
 			byte[] data = new byte[1];
 			data[0] = (byte)value;
@@ -52,7 +52,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		}
 
 
-		public static void Read(Stream stream, out Int32 value)
+		public static void Read(Stream stream, out int value)
 		{
 			byte[] data = new byte[4];
 			stream.Read(data, 0, data.Length);
@@ -61,35 +61,35 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			value = BitConverter.ToInt32(data, 0);
 		}
 
-		public static void Read(Stream stream, out UInt32 value)
+		public static void Read(Stream stream, out uint value)
 		{
 			byte[] data = new byte[4];
 			stream.Read(data, 0, data.Length);
 			value = BitConverter.ToUInt32(data, 0);
 		}
 
-		public static void Read(Stream stream, out Int16 value)
+		public static void Read(Stream stream, out short value)
 		{
 			byte[] data = new byte[2];
 			stream.Read(data, 0, data.Length);
 			value = BitConverter.ToInt16(data, 0);
 		}
 
-		public static void Read(Stream stream, out UInt16 value)
+		public static void Read(Stream stream, out ushort value)
 		{
 			byte[] data = new byte[2];
 			stream.Read(data, 0, data.Length);
 			value = BitConverter.ToUInt16(data, 0);
 		}
 
-		public static void Read(Stream stream, out Byte value)
+		public static void Read(Stream stream, out byte value)
 		{
 			byte[] data = new byte[1];
 			stream.Read(data, 0, data.Length);
 			value = data[0];
 		}
 
-		public static void Read(Stream stream, out SByte value)
+		public static void Read(Stream stream, out sbyte value)
 		{
 			byte[] data = new byte[1];
 			stream.Read(data, 0, data.Length);

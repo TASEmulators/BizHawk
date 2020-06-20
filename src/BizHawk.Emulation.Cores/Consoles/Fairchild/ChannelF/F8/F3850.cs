@@ -485,7 +485,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				// CYCLE LENGTH: L
 				case ROMC_01:
 					Read_Func(DB, PC0l, PC0h);
-					RegPC0 += (ushort)((SByte) Regs[DB]);
+					RegPC0 += (ushort)((sbyte) Regs[DB]);
 					break;
 
 				// The device whose DC0 address addresses a memory word within the address space of that device must place on the data bus the contents
