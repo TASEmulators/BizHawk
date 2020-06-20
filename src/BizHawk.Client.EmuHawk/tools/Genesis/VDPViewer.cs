@@ -10,6 +10,7 @@ using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[SpecializedTool("VDP Viewer")]
 	public partial class GenVdpViewer : ToolFormBase, IToolFormAutoConfig
 	{
 		[RequiredService]

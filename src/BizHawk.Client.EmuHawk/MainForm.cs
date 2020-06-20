@@ -1817,7 +1817,6 @@ namespace BizHawk.Client.EmuHawk
 			ColecoSubMenu.Visible = false;
 			N64SubMenu.Visible = false;
 			DGBSubMenu.Visible = false;
-			GenesisSubMenu.Visible = false;
 			AppleSubMenu.Visible = false;
 			C64SubMenu.Visible = false;
 			IntvSubMenu.Visible = false;
@@ -1830,9 +1829,6 @@ namespace BizHawk.Client.EmuHawk
 					DisplayDefaultCoreMenu();
 					break;
 				case "NULL":
-					break;
-				case "GEN":
-					GenesisSubMenu.Visible = true;
 					break;
 				case "TI83":
 					TI83SubMenu.Visible = true;

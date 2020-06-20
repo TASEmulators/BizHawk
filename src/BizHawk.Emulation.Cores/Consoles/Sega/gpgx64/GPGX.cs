@@ -18,7 +18,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		isReleased: true,
 		portedVersion: "r874",
 		portedUrl: "https://code.google.com/p/genplus-gx/",
-		singleInstance: false)]
+		singleInstance: false,
+		displayName: "Genesis")]
 	public partial class GPGX : IEmulator, IVideoProvider, ISaveRam, IStatable, IRegionable,
 		IInputPollable, IDebuggable, IDriveLight, ICodeDataLogger, IDisassemblable
 	{

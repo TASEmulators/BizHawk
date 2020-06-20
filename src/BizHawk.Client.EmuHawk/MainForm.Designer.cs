@@ -275,10 +275,6 @@
 			this.N64ExpansionSlotMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.DGBSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.DGBsettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.GenesisSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.vDPViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator26 = new System.Windows.Forms.ToolStripSeparator();
-			this.GenesisSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.AppleSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.AppleDisksSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator31 = new System.Windows.Forms.ToolStripSeparator();
@@ -413,7 +409,6 @@
             this.ColecoSubMenu,
             this.N64SubMenu,
             this.DGBSubMenu,
-			this.GenesisSubMenu,
 			this.AppleSubMenu,
 			this.C64SubMenu,
 			this.IntvSubMenu,
@@ -2427,35 +2422,6 @@
 			this.DGBsettingsToolStripMenuItem.Text = "Settings...";
 			this.DGBsettingsToolStripMenuItem.Click += new System.EventHandler(this.DgbSettingsMenuItem_Click);
 			// 
-			// GenesisSubMenu
-			// 
-			this.GenesisSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.vDPViewerToolStripMenuItem,
-			this.toolStripSeparator26,
-			this.GenesisSettingsToolStripMenuItem});
-			this.GenesisSubMenu.Name = "GenesisSubMenu";
-			this.GenesisSubMenu.Size = new System.Drawing.Size(56, 17);
-			this.GenesisSubMenu.Text = "&Genesis";
-			// 
-			// vDPViewerToolStripMenuItem
-			// 
-			this.vDPViewerToolStripMenuItem.Name = "vDPViewerToolStripMenuItem";
-			this.vDPViewerToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
-			this.vDPViewerToolStripMenuItem.Text = "&VDP Viewer";
-			this.vDPViewerToolStripMenuItem.Click += new System.EventHandler(this.GenVdpViewerMenuItem_Click);
-			// 
-			// toolStripSeparator26
-			// 
-			this.toolStripSeparator26.Name = "toolStripSeparator26";
-			this.toolStripSeparator26.Size = new System.Drawing.Size(214, 6);
-			// 
-			// GenesisSettingsToolStripMenuItem
-			// 
-			this.GenesisSettingsToolStripMenuItem.Name = "GenesisSettingsToolStripMenuItem";
-			this.GenesisSettingsToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
-			this.GenesisSettingsToolStripMenuItem.Text = "&Settings...";
-			this.GenesisSettingsToolStripMenuItem.Click += new System.EventHandler(this.GenesisSettingsMenuItem_Click);
-			// 
 			// AppleSubMenu
 			// 
 			this.AppleSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -3602,8 +3568,6 @@
 		private System.Windows.Forms.ToolStripMenuItem DGBSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem DGBsettingsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem GenericCoreSubMenu;
-		private System.Windows.Forms.ToolStripMenuItem GenesisSubMenu;
-		private System.Windows.Forms.ToolStripMenuItem GenesisSettingsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem A7800ControllerSettingsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem A7800FilterSettingsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem MovieSettingsMenuItem;
@@ -3612,9 +3576,7 @@
 		private System.Windows.Forms.ToolStripMenuItem DisplayConfigMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem PCEtileViewerToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SmsVdpViewerMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem vDPViewerToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SmsSettingsMenuItem;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator26;
 		private System.Windows.Forms.ToolStripMenuItem extensionsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripStatusLabel CoreNameStatusBarButton;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem6;
