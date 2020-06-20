@@ -1754,14 +1754,12 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 
+				var saveram = Emulator.AsSaveRam().CloneSaveRam();
+				if (saveram == null)
+					return true;
+
 				using (var writer = new BinaryWriter(new FileStream(newPath, FileMode.Create, FileAccess.Write)))
-				{
-					var saveram = Emulator.AsSaveRam().CloneSaveRam();
-					if (saveram != null)
-					{
-						writer.Write(saveram, 0, saveram.Length);
-					}
-				}
+					writer.Write(saveram, 0, saveram.Length);
 
 				if (file.Exists)
 				{
