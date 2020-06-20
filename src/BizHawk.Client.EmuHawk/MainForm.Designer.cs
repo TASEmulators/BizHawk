@@ -279,8 +279,6 @@
 			this.N64ExpansionSlotMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.DGBSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.DGBsettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.DGBHawkSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.DGBHawksettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.GGLSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.GGLsettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.GenesisSubMenu = new System.Windows.Forms.ToolStripMenuItem();
@@ -431,7 +429,6 @@
             this.ColecoSubMenu,
             this.N64SubMenu,
             this.DGBSubMenu,
-            this.DGBHawkSubMenu,
 			this.GGLSubMenu,
 			this.GenesisSubMenu,
 			this.wonderSwanToolStripMenuItem,
@@ -2481,21 +2478,6 @@
 			this.DGBsettingsToolStripMenuItem.Text = "Settings...";
 			this.DGBsettingsToolStripMenuItem.Click += new System.EventHandler(this.DgbSettingsMenuItem_Click);
 			// 
-			// DGBHawkSubMenu
-			// 
-			this.DGBHawkSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.DGBHawksettingsToolStripMenuItem});
-			this.DGBHawkSubMenu.Name = "DGBHawkSubMenu";
-			this.DGBHawkSubMenu.Size = new System.Drawing.Size(53, 17);
-			this.DGBHawkSubMenu.Text = "&GB Link";
-			// 
-			// DGBHawksettingsToolStripMenuItem
-			// 
-			this.DGBHawksettingsToolStripMenuItem.Name = "DGBHawksettingsToolStripMenuItem";
-			this.DGBHawksettingsToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
-			this.DGBHawksettingsToolStripMenuItem.Text = "Settings...";
-			this.DGBHawksettingsToolStripMenuItem.Click += new System.EventHandler(this.DgbHawkSettingsMenuItem_Click);
-			// 
 			// GGLSubMenu
 			// 
 			this.GGLSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -3756,8 +3738,6 @@
 		private System.Windows.Forms.ToolStripMenuItem FdsEjectDiskMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem DGBSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem DGBsettingsToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem DGBHawkSubMenu;
-		private System.Windows.Forms.ToolStripMenuItem DGBHawksettingsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem GGLSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem GGLsettingsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem GenericCoreSubMenu;

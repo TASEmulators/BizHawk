@@ -1817,7 +1817,6 @@ namespace BizHawk.Client.EmuHawk
 			ColecoSubMenu.Visible = false;
 			N64SubMenu.Visible = false;
 			DGBSubMenu.Visible = false;
-			DGBHawkSubMenu.Visible = false;
 			GGLSubMenu.Visible = false;
 			GenesisSubMenu.Visible = false;
 			wonderSwanToolStripMenuItem.Visible = false;
@@ -1904,7 +1903,7 @@ namespace BizHawk.Client.EmuHawk
 				case "DGB":
 					if (Emulator is GBHawkLink)
 					{
-						DGBHawkSubMenu.Visible = true;
+						DisplayDefaultCoreMenu();
 					}
 					else
 					{
@@ -1942,10 +1941,6 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case "GGL":
 					GGLSubMenu.Visible = true;
-					break;
-				case "GB3x":
-				case "GB4x":
-					DGBHawkSubMenu.Visible = true;
 					break;
 				case "MAME":
 					arcadeToolStripMenuItem.Visible = true;

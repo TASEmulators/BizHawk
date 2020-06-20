@@ -1913,11 +1913,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void DgbHawkSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			GenericCoreConfig.DoDialog(this, "Gameboy Settings");
-		}
-
 		private void GgSettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			GenericCoreConfig.DoDialog(this, "Game Gear Settings");
