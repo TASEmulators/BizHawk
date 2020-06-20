@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Components.x86
 		public override string ToString() => $"{Addr:X6}:  {RawBytes,-12}  {Mnemonic,-8} {Args}";
 	}
 
-	public partial class x86<CpuType> where CpuType : struct, x86CpuType
+	public partial class x86<TCpu> where TCpu : struct, x86CpuType
 	{
 		private ushort ReadWord(int addr)
 		{

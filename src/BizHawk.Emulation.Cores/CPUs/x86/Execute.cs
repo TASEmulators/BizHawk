@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Components.x86
 {
-	public partial class x86<CpuType> where CpuType : struct, x86CpuType
+	public partial class x86<TCpu> where TCpu : struct, x86CpuType
 	{
 		public void Execute(int cycles)
 		{

@@ -441,9 +441,6 @@
 
 		<!-- Parameter names should begin with lower-case letter -->
 		<Rule Id="SA1313" Action="Hidden" />
-
-		<!-- Type parameter names should begin with T -->
-		<Rule Id="SA1314" Action="Hidden" />
 	</Rules>
 
 	<Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers.MaintainabilityRules">

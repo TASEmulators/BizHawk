@@ -13,7 +13,7 @@ namespace BizHawk.Client.EmuHawk
 	// ReSharper disable once UnusedMember.Global
 	public class SaturnSchema : IVirtualPadSchema
 	{
-		private static V GetOrDefault<K, V>(IDictionary<K, V> dict, K key)
+		private static TValue GetOrDefault<TKey, TValue>(IDictionary<TKey, TValue> dict, TKey key)
 		{
 			dict.TryGetValue(key, out var ret);
 			return ret;

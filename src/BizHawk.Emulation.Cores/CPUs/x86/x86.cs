@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Cores.Components.x86
 	public interface x86CpuType { }
 	public struct Intel8086 : x86CpuType { }
 
-	public sealed partial class x86<CpuType> where CpuType : struct, x86CpuType
+	public sealed partial class x86<TCpu> where TCpu : struct, x86CpuType
 	{
 		// Machine State
 		public Register16 RegAX;
