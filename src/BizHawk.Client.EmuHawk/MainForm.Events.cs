@@ -1550,7 +1550,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SmsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			SmsVdpViewerMenuItem.Visible = Game.System != "SG";
+			SmsVdpViewerMenuItem.Enabled = Tools.IsAvailable<SmsVdpViewer>();
 		}
 
 		private void SmsBiosMenuItem_Click(object sender, EventArgs e)

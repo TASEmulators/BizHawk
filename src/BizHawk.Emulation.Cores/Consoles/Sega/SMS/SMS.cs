@@ -208,6 +208,11 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			// stops a few SMS and GG games from crashing
 			Cpu.Regs[Cpu.SPl] = 0xF0;
 			Cpu.Regs[Cpu.SPh] = 0xDF;
+
+			if (!IsSG1000)
+			{
+				ser.Register<ISmsGpuView>(new SmsGpuView(Vdp));
+			}
 		}
 
 		public void HardReset()
@@ -417,5 +422,21 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		}
 
 		private readonly SmsSyncSettings.Regions _region;
+
+		public class SmsGpuView : ISmsGpuView
+		{
+			private readonly VDP _vdp;
+
+			public SmsGpuView(VDP vdp)
+			{
+				_vdp = vdp;
+			}
+
+			public byte[] PatternBuffer => _vdp.PatternBuffer;
+			public int FrameHeight => _vdp.FrameHeight;
+			public byte[] VRAM => _vdp.VRAM;
+			public int[] Palette => _vdp.Palette;
+			public int CalcNameTableBase() => _vdp.CalcNameTableBase();
+		}
 	}
 }

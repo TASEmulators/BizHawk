@@ -12,8 +12,7 @@ namespace BizHawk.Client.EmuHawk
 	public partial class SmsVdpViewer : ToolFormBase, IToolFormAutoConfig
 	{
 		[RequiredService]
-		private SMS Sms { get; set; }
-		private VDP Vdp => Sms.Vdp;
+		private ISmsGpuView Vdp { get; set; }
 
 		private int _palIndex;
 
