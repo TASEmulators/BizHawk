@@ -120,6 +120,9 @@ namespace BizHawk.Client.EmuHawk
 				case "Increase Speed":
 					IncreaseSpeed();
 					break;
+				case "Reset Speed":
+					ResetSpeed();
+					break;
 				case "Decrease Speed":
 					DecreaseSpeed();
 					break;

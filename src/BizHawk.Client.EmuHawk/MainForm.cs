@@ -2498,13 +2498,27 @@ namespace BizHawk.Client.EmuHawk
 
 		private static readonly int[] SpeedPercents = { 1, 3, 6, 12, 25, 50, 75, 100, 150, 200, 300, 400, 800, 1600, 3200, 6400 };
 
+		private bool CheckCanSetSpeed()
+		{
+			if (Config.ClockThrottle)
+				return true;
+			
+			AddOnScreenMessage("Unable to change speed, please switch to clock throttle");
+			return false;
+		}
+
+		private void ResetSpeed()
+		{
+			if (!CheckCanSetSpeed())
+				return;
+
+			SetSpeedPercent(100);
+		}
+
 		private void IncreaseSpeed()
 		{
-			if (!Config.ClockThrottle)
-			{
-				AddOnScreenMessage("Unable to change speed, please switch to clock throttle");
+			if (!CheckCanSetSpeed())
 				return;
-			}
 
 			var oldPercent = Config.SpeedPercent;
 			int newPercent;
@@ -2522,11 +2536,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DecreaseSpeed()
 		{
-			if (!Config.ClockThrottle)
-			{
-				AddOnScreenMessage("Unable to change speed, please switch to clock throttle");
+			if (!CheckCanSetSpeed())
 				return;
-			}
 
 			var oldPercent = Config.SpeedPercent;
 			int newPercent;

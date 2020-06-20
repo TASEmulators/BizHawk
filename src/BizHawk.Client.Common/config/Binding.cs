@@ -137,6 +137,7 @@ namespace BizHawk.Client.Common
 						Bind("General", "Smaller Window", "Alt+Down"),
 						Bind("General", "Increase Speed", "Plus"),
 						Bind("General", "Decrease Speed", "Minus"),
+						Bind("General", "Reset Speed", "Shift+Plus"),
 						Bind("General", "Reboot Core", "Ctrl+R"),
 						Bind("General", "Toggle Sound"),
 						Bind("General", "Exit Program"),
