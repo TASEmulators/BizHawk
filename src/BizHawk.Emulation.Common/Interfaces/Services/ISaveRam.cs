@@ -10,7 +10,9 @@
 	{
 		/// <summary>
 		/// Returns a copy of the SaveRAM. Editing it won't do you any good unless you later call StoreSaveRam()
-		/// TODO: Prescribe whether this is allowed to return null in case there is no SaveRAM
+		/// This IS allowed to return null.
+		/// Unfortunately, the core may think differently of a nonexisting (null) saveram vs a 0 size saveram.
+		/// Frontend users of the ISaveRam should treat null as nonexisting (and thus not even write the file, so that the "does not exist" condition can be roundtripped and not confused with an empty file)
 		/// </summary>
 		byte[] CloneSaveRam();
 
