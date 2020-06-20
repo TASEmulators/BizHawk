@@ -285,7 +285,10 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				});
 			}
 
-			s.AllOverrides = SettingOverrides.Concat(ExtraOverrides).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+			foreach (var kvp in ExtraOverrides.Concat(SettingOverrides))
+			{
+				s.AllOverrides[kvp.Key] = kvp.Value;
+			}
 			foreach (var setting in GetSettingsData().Concat(ExtraSettings))
 			{
 				s.AllSettingsByKey.Add(setting.SettingsKey, setting);
