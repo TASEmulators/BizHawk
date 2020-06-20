@@ -9,7 +9,7 @@ mod memory_block;
 #[cfg(test)]
 mod tests {
 	#[test]
-	fn it_works() {
-		assert_eq!(2 + 2, 4);
+	fn test_pagesize() {
+		assert_eq!(crate::PAGESIZE, page_size::get());
 	}
 }

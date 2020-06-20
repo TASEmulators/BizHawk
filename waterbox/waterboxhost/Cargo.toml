@@ -3,13 +3,16 @@ name = "waterboxhost"
 version = "0.1.0"
 authors = ["nattthebear <goyuken@gmail.com>"]
 edition = "2018"
+publish = false
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+bitflags = "1.2.1"
+page_size = "0.4.2"
 
 [target.'cfg(windows)'.dependencies]
-winapi = { version = "0.3.8", features = ["memoryapi"] }
+winapi = { version = "0.3.8", features = ["memoryapi", "handleapi", "errhandlingapi"] }
 
 [target.'cfg(unix)'.dependencies]
 libc = "0.2.71"

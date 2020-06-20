@@ -3,18 +3,18 @@ use core::ffi::c_void;
 use crate::*;
 
 /// wraps the allocation of a single PAGESIZE bytes of ram, and is safe-ish to call within a signal handler
-pub struct Snapshot {
+pub struct PageBlock {
 	ptr: NonNull<u8>,
 }
 
-impl Snapshot {
-	pub fn new() -> Snapshot {
+impl PageBlock {
+	pub fn new() -> PageBlock {
 		unsafe {
 			let ptr = alloc();
 			if ptr == null_mut() {
-				panic!("Snapshot could not allocate memory!");
+				panic!("PageBlock could not allocate memory!");
 			} else {
-				Snapshot {
+				PageBlock {
 					ptr: NonNull::new_unchecked(ptr as *mut u8)
 				}
 			}
@@ -33,12 +33,12 @@ impl Snapshot {
 	}
 }
 
-impl Drop for Snapshot {
+impl Drop for PageBlock {
 	fn drop(&mut self) {
 		unsafe {
 			let res = free(self.ptr.as_ptr() as *mut c_void);
 			if !res {
-				eprintln!("Snapshot could not free memory!");
+				panic!("PageBlock could not free memory!");
 			}
 		}
 	}
@@ -54,7 +54,7 @@ unsafe fn alloc() -> *mut c_void {
 }
 #[cfg(windows)]
 unsafe fn free(ptr: *mut c_void) -> bool {
-	match VirtualFree(ptr as *mut winapi::ctypes::c_void, PAGESIZE, MEM_RELEASE) {
+	match VirtualFree(ptr as *mut winapi::ctypes::c_void, 0, MEM_RELEASE) {
 		0 => false,
 		_ => true
 	}
@@ -82,7 +82,7 @@ unsafe fn free(ptr: *mut c_void) -> bool {
 #[cfg(test)]
 #[test]
 fn basic_test() {
-	let mut s = Snapshot::new();
+	let mut s = PageBlock::new();
 
 
 	for x in s.slice().iter() {
