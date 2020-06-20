@@ -714,7 +714,7 @@ namespace BizHawk.Client.EmuHawk
 				return true; // no ToolAttribute on given type -> assumed all supported
 			}
 
-			var displayName = _emulator.DisplayName();
+			var displayName = CoreExtensions.CoreExtensions.DisplayName(_emulator);
 			var systemId = _emulator.SystemId;
 			return !attr.UnsupportedCores.Contains(displayName) // not unsupported
 				&& (!attr.SupportedSystems.Any() || attr.SupportedSystems.Contains(systemId)); // supported (no supported list -> assumed all supported)

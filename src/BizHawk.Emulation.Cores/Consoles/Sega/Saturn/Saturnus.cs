@@ -16,7 +16,7 @@ using System.Text;
 namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 {
 	[Core("Saturnus", "Mednafen Team", true, true, "1.24.3",
-		"https://mednafen.github.io/releases/", false)]
+		"https://mednafen.github.io/releases/", false, "Saturn")]
 	public class Saturnus : NymaCore, IRegionable
 	{
 		[CoreConstructor("SAT")]

@@ -243,8 +243,6 @@
 			this.toolStripSeparator13 = new System.Windows.Forms.ToolStripSeparator();
 			this.AutoloadKeypadMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.paletteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.AtariSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.AtariSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.A7800SubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.A7800ControllerSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.A7800FilterSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -279,20 +277,12 @@
 			this.N64CircularAnalogRangeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MupenStyleLagMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.N64ExpansionSlotMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.SaturnSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.SaturnPreferencesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.DGBSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.DGBsettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.DGBHawkSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.DGBHawksettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.GGLSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.GGLsettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.GenesisSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.vDPViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator26 = new System.Windows.Forms.ToolStripSeparator();
 			this.GenesisSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.wonderSwanToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.AppleSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.AppleDisksSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator31 = new System.Windows.Forms.ToolStripSeparator();
@@ -303,14 +293,6 @@
 			this.C64SettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.IntvSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.IntVControllerSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.sNESToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.preferencesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.pCFXToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.preferencesToolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
-			this.virtualBoyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.preferencesToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-			this.neoGeoPocketToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.preferencesToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
 			this.zXSpectrumToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ZXSpectrumCoreEmulationSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ZXSpectrumControllerConfigurationMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -323,12 +305,8 @@
 			this.ZXSpectrumDisksSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.zxt2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ZXSpectrumExportSnapshotMenuItemMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.VectrexSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.VectrexsettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.MSXSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.MSXsettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.O2HawkSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.O2HawksettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.GenericCoreSubMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.GenericCoreSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.HelpSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.OnlineHelpMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ForumsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -344,8 +322,6 @@
 			this.cpct1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.AmstradCPCDisksSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.cpcd1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.arcadeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.settingsToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
 			this.Atari7800HawkCoreMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MainStatusBar = new StatusStripEx();
 			this.DumpStatusButton = new System.Windows.Forms.ToolStripDropDownButton();
@@ -434,8 +410,7 @@
             this.PCESubMenu,
             this.SMSSubMenu,
             this.TI83SubMenu,
-            this.AtariSubMenu,
-            this.A7800SubMenu,
+			this.A7800SubMenu,
             this.GBSubMenu,
             this.GBASubMenu,
             this.NDSSubMenu,
@@ -443,25 +418,14 @@
             this.SNESSubMenu,
             this.ColecoSubMenu,
             this.N64SubMenu,
-            this.SaturnSubMenu,
             this.DGBSubMenu,
-            this.DGBHawkSubMenu,
-			this.GGLSubMenu,
 			this.GenesisSubMenu,
-			this.wonderSwanToolStripMenuItem,
 			this.AppleSubMenu,
 			this.C64SubMenu,
 			this.IntvSubMenu,
-			this.sNESToolStripMenuItem,
-			this.pCFXToolStripMenuItem,
-			this.virtualBoyToolStripMenuItem,
-			this.neoGeoPocketToolStripMenuItem,
 			this.zXSpectrumToolStripMenuItem,
-			this.VectrexSubMenu,
-			this.MSXSubMenu,
-			this.O2HawkSubMenu,
+			this.GenericCoreSubMenu,
 			this.amstradCPCToolStripMenuItem,
-			this.arcadeToolStripMenuItem,
 			this.HelpSubMenu});
 			this.MainformMenu.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
 			this.MainformMenu.Location = new System.Drawing.Point(0, 0);
@@ -2222,21 +2186,6 @@
 			this.paletteToolStripMenuItem.Text = "Palette...";
 			this.paletteToolStripMenuItem.Click += new System.EventHandler(this.Ti83PaletteMenuItem_Click);
 			// 
-			// AtariSubMenu
-			// 
-			this.AtariSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.AtariSettingsToolStripMenuItem});
-			this.AtariSubMenu.Name = "AtariSubMenu";
-			this.AtariSubMenu.Size = new System.Drawing.Size(42, 17);
-			this.AtariSubMenu.Text = "&Atari";
-			// 
-			// AtariSettingsToolStripMenuItem
-			// 
-			this.AtariSettingsToolStripMenuItem.Name = "AtariSettingsToolStripMenuItem";
-			this.AtariSettingsToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
-			this.AtariSettingsToolStripMenuItem.Text = "Settings...";
-			this.AtariSettingsToolStripMenuItem.Click += new System.EventHandler(this.AtariSettingsMenuItem_Click);
-			// 
 			// A7800SubMenu
 			// 
 			this.A7800SubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -2499,21 +2448,6 @@
 			this.N64ExpansionSlotMenuItem.Text = "&Use Expansion Slot";
 			this.N64ExpansionSlotMenuItem.Click += new System.EventHandler(this.N64ExpansionSlotMenuItem_Click);
 			// 
-			// SaturnSubMenu
-			// 
-			this.SaturnSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.SaturnPreferencesMenuItem});
-			this.SaturnSubMenu.Name = "SaturnSubMenu";
-			this.SaturnSubMenu.Size = new System.Drawing.Size(51, 17);
-			this.SaturnSubMenu.Text = "&Saturn";
-			// 
-			// SaturnPreferencesMenuItem
-			// 
-			this.SaturnPreferencesMenuItem.Name = "SaturnPreferencesMenuItem";
-			this.SaturnPreferencesMenuItem.Size = new System.Drawing.Size(144, 22);
-			this.SaturnPreferencesMenuItem.Text = "Preferences...";
-			this.SaturnPreferencesMenuItem.Click += new System.EventHandler(this.SaturnPreferencesMenuItem_Click);
-			// 
 			// DGBSubMenu
 			// 
 			this.DGBSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -2528,36 +2462,6 @@
 			this.DGBsettingsToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
 			this.DGBsettingsToolStripMenuItem.Text = "Settings...";
 			this.DGBsettingsToolStripMenuItem.Click += new System.EventHandler(this.DgbSettingsMenuItem_Click);
-			// 
-			// DGBHawkSubMenu
-			// 
-			this.DGBHawkSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.DGBHawksettingsToolStripMenuItem});
-			this.DGBHawkSubMenu.Name = "DGBHawkSubMenu";
-			this.DGBHawkSubMenu.Size = new System.Drawing.Size(53, 17);
-			this.DGBHawkSubMenu.Text = "&GB Link";
-			// 
-			// DGBHawksettingsToolStripMenuItem
-			// 
-			this.DGBHawksettingsToolStripMenuItem.Name = "DGBHawksettingsToolStripMenuItem";
-			this.DGBHawksettingsToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
-			this.DGBHawksettingsToolStripMenuItem.Text = "Settings...";
-			this.DGBHawksettingsToolStripMenuItem.Click += new System.EventHandler(this.DgbHawkSettingsMenuItem_Click);
-			// 
-			// GGLSubMenu
-			// 
-			this.GGLSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.GGLsettingsToolStripMenuItem});
-			this.GGLSubMenu.Name = "GGLSubMenu";
-			this.GGLSubMenu.Size = new System.Drawing.Size(54, 17);
-			this.GGLSubMenu.Text = "&GG Link";
-			// 
-			// GGLsettingsToolStripMenuItem
-			// 
-			this.GGLsettingsToolStripMenuItem.Name = "GGLsettingsToolStripMenuItem";
-			this.GGLsettingsToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
-			this.GGLsettingsToolStripMenuItem.Text = "Settings...";
-			this.GGLsettingsToolStripMenuItem.Click += new System.EventHandler(this.GgSettingsMenuItem_Click);
 			// 
 			// GenesisSubMenu
 			// 
@@ -2587,21 +2491,6 @@
 			this.GenesisSettingsToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
 			this.GenesisSettingsToolStripMenuItem.Text = "&Settings...";
 			this.GenesisSettingsToolStripMenuItem.Click += new System.EventHandler(this.GenesisSettingsMenuItem_Click);
-			// 
-			// wonderSwanToolStripMenuItem
-			// 
-			this.wonderSwanToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.settingsToolStripMenuItem});
-			this.wonderSwanToolStripMenuItem.Name = "wonderSwanToolStripMenuItem";
-			this.wonderSwanToolStripMenuItem.Size = new System.Drawing.Size(83, 17);
-			this.wonderSwanToolStripMenuItem.Text = "&WonderSwan";
-			// 
-			// settingsToolStripMenuItem
-			// 
-			this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-			this.settingsToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
-			this.settingsToolStripMenuItem.Text = "&Settings...";
-			this.settingsToolStripMenuItem.Click += new System.EventHandler(this.WonderSwanSettingsMenuItem_Click);
 			// 
 			// AppleSubMenu
 			// 
@@ -2680,66 +2569,6 @@
 			this.IntVControllerSettingsMenuItem.Size = new System.Drawing.Size(175, 22);
 			this.IntVControllerSettingsMenuItem.Text = "Controller Settings...";
 			this.IntVControllerSettingsMenuItem.Click += new System.EventHandler(this.IntVControllerSettingsMenuItem_Click);
-			// 
-			// sNESToolStripMenuItem
-			// 
-			this.sNESToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.preferencesToolStripMenuItem});
-			this.sNESToolStripMenuItem.Name = "sNESToolStripMenuItem";
-			this.sNESToolStripMenuItem.Size = new System.Drawing.Size(44, 17);
-			this.sNESToolStripMenuItem.Text = "&SNES";
-			// 
-			// preferencesToolStripMenuItem
-			// 
-			this.preferencesToolStripMenuItem.Name = "preferencesToolStripMenuItem";
-			this.preferencesToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
-			this.preferencesToolStripMenuItem.Text = "Preferences...";
-			this.preferencesToolStripMenuItem.Click += new System.EventHandler(this.Snes9xSettingsMenuItem_Click);
-			// 
-			// pCFXToolStripMenuItem
-			// 
-			this.pCFXToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.preferencesToolStripMenuItem3});
-			this.pCFXToolStripMenuItem.Name = "pCFXToolStripMenuItem";
-			this.pCFXToolStripMenuItem.Size = new System.Drawing.Size(48, 17);
-			this.pCFXToolStripMenuItem.Text = "&PC-FX";
-			// 
-			// preferencesToolStripMenuItem3
-			// 
-			this.preferencesToolStripMenuItem3.Name = "preferencesToolStripMenuItem3";
-			this.preferencesToolStripMenuItem3.Size = new System.Drawing.Size(144, 22);
-			this.preferencesToolStripMenuItem3.Text = "Preferences...";
-			this.preferencesToolStripMenuItem3.Click += new System.EventHandler(this.PCFXSettingsMenuItem_Click);
-			// 
-			// virtualBoyToolStripMenuItem
-			// 
-			this.virtualBoyToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.preferencesToolStripMenuItem1});
-			this.virtualBoyToolStripMenuItem.Name = "virtualBoyToolStripMenuItem";
-			this.virtualBoyToolStripMenuItem.Size = new System.Drawing.Size(67, 17);
-			this.virtualBoyToolStripMenuItem.Text = "&VirtualBoy";
-			// 
-			// preferencesToolStripMenuItem1
-			// 
-			this.preferencesToolStripMenuItem1.Name = "preferencesToolStripMenuItem1";
-			this.preferencesToolStripMenuItem1.Size = new System.Drawing.Size(144, 22);
-			this.preferencesToolStripMenuItem1.Text = "Preferences...";
-			this.preferencesToolStripMenuItem1.Click += new System.EventHandler(this.VirtualBoySettingsMenuItem_Click);
-			// 
-			// neoGeoPocketToolStripMenuItem
-			// 
-			this.neoGeoPocketToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.preferencesToolStripMenuItem2});
-			this.neoGeoPocketToolStripMenuItem.Name = "neoGeoPocketToolStripMenuItem";
-			this.neoGeoPocketToolStripMenuItem.Size = new System.Drawing.Size(92, 17);
-			this.neoGeoPocketToolStripMenuItem.Text = "&NeoGeo Pocket";
-			// 
-			// preferencesToolStripMenuItem2
-			// 
-			this.preferencesToolStripMenuItem2.Name = "preferencesToolStripMenuItem2";
-			this.preferencesToolStripMenuItem2.Size = new System.Drawing.Size(144, 22);
-			this.preferencesToolStripMenuItem2.Text = "Preferences...";
-			this.preferencesToolStripMenuItem2.Click += new System.EventHandler(this.NeoGeoSettingsMenuItem_Click);
 			// 
 			// zXSpectrumToolStripMenuItem
 			// 
@@ -2837,50 +2666,20 @@
 			this.ZXSpectrumExportSnapshotMenuItemMenuItem.Text = "Export Snapshot";
 			this.ZXSpectrumExportSnapshotMenuItemMenuItem.Click += new System.EventHandler(this.ZXSpectrumExportSnapshotMenuItemMenuItem_Click);
 			// 
-			// VectrexSubMenu
+			// GenericCoreSubMenu
 			// 
-			this.VectrexSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.VectrexsettingsToolStripMenuItem});
-			this.VectrexSubMenu.Name = "VectrexSubMenu";
-			this.VectrexSubMenu.Size = new System.Drawing.Size(56, 17);
-			this.VectrexSubMenu.Text = "&Vectrex";
+			this.GenericCoreSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			this.GenericCoreSettingsMenuItem});
+			this.GenericCoreSubMenu.Name = "GenericCoreSubMenu";
+			this.GenericCoreSubMenu.Size = new System.Drawing.Size(56, 17);
+			this.GenericCoreSubMenu.Text = "&Core";
 			// 
-			// VectrexsettingsToolStripMenuItem
+			// GenericCoreSettingsMenuItem
 			// 
-			this.VectrexsettingsToolStripMenuItem.Name = "VectrexsettingsToolStripMenuItem";
-			this.VectrexsettingsToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
-			this.VectrexsettingsToolStripMenuItem.Text = "Settings...";
-			this.VectrexsettingsToolStripMenuItem.Click += new System.EventHandler(this.VectrexSettingsMenuItem_Click);
-			// 
-			// MSXSubMenu
-			// 
-			this.MSXSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.MSXsettingsToolStripMenuItem});
-			this.MSXSubMenu.Name = "MSXSubMenu";
-			this.MSXSubMenu.Size = new System.Drawing.Size(56, 17);
-			this.MSXSubMenu.Text = "&MSX";
-			// 
-			// MSXsettingsToolStripMenuItem
-			// 
-			this.MSXsettingsToolStripMenuItem.Name = "MSXsettingsToolStripMenuItem";
-			this.MSXsettingsToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
-			this.MSXsettingsToolStripMenuItem.Text = "Settings...";
-			this.MSXsettingsToolStripMenuItem.Click += new System.EventHandler(this.MsxSettingsMenuItem_Click);
-			// 
-			// O2HawkSubMenu
-			// 
-			this.O2HawkSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.O2HawksettingsToolStripMenuItem});
-			this.O2HawkSubMenu.Name = "O2HawkSubMenu";
-			this.O2HawkSubMenu.Size = new System.Drawing.Size(59, 17);
-			this.O2HawkSubMenu.Text = "&Odyssey 2";
-			// 
-			// O2HawksettingsToolStripMenuItem
-			// 
-			this.O2HawksettingsToolStripMenuItem.Name = "O2HawksettingsToolStripMenuItem";
-			this.O2HawksettingsToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
-			this.O2HawksettingsToolStripMenuItem.Text = "Settings...";
-			this.O2HawksettingsToolStripMenuItem.Click += new System.EventHandler(this.O2HawkSettingsMenuItem_Click);
+			this.GenericCoreSettingsMenuItem.Name = "GenericCoreSettingsMenuItem";
+			this.GenericCoreSettingsMenuItem.Size = new System.Drawing.Size(125, 22);
+			this.GenericCoreSettingsMenuItem.Text = "Settings...";
+			this.GenericCoreSettingsMenuItem.Click += new System.EventHandler(this.GenericCoreSettingsMenuItem_Click);
 			// 
 			// HelpSubMenu
 			// 
@@ -3001,21 +2800,6 @@
 			this.cpcd1ToolStripMenuItem.Name = "cpcd1ToolStripMenuItem";
 			this.cpcd1ToolStripMenuItem.Size = new System.Drawing.Size(102, 22);
 			this.cpcd1ToolStripMenuItem.Text = "cpcd1";
-			// 
-			// arcadeToolStripMenuItem
-			// 
-			this.arcadeToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.settingsToolStripMenuItem2});
-			this.arcadeToolStripMenuItem.Name = "arcadeToolStripMenuItem";
-			this.arcadeToolStripMenuItem.Size = new System.Drawing.Size(53, 17);
-			this.arcadeToolStripMenuItem.Text = "Arcade";
-			// 
-			// settingsToolStripMenuItem2
-			// 
-			this.settingsToolStripMenuItem2.Name = "settingsToolStripMenuItem2";
-			this.settingsToolStripMenuItem2.Size = new System.Drawing.Size(125, 22);
-			this.settingsToolStripMenuItem2.Text = "Settings...";
-			this.settingsToolStripMenuItem2.Click += new System.EventHandler(this.ArcadeSettingsMenuItem_Click);
 			// 
 			// Atari7800HawkCoreMenuItem
 			// 
@@ -3812,7 +3596,6 @@
 		private System.Windows.Forms.ToolStripMenuItem SMSSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem PCEBGViewerMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ScreenshotContextMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem AtariSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem A7800SubMenu;
 		private System.Windows.Forms.ToolStripMenuItem NESSoundChannelsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SNESSubMenu;
@@ -3855,8 +3638,6 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator29;
 		private System.Windows.Forms.ToolStripMenuItem N64SubMenu;
 		private System.Windows.Forms.ToolStripMenuItem N64PluginSettingsMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem SaturnSubMenu;
-		private System.Windows.Forms.ToolStripMenuItem SaturnPreferencesMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ConfigContextMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem RewindOptionsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem FirmwaresMenuItem;
@@ -3867,19 +3648,10 @@
 		private System.Windows.Forms.ToolStripMenuItem FdsEjectDiskMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem DGBSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem DGBsettingsToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem DGBHawkSubMenu;
-		private System.Windows.Forms.ToolStripMenuItem DGBHawksettingsToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem GGLSubMenu;
-		private System.Windows.Forms.ToolStripMenuItem GGLsettingsToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem VectrexSubMenu;
-		private System.Windows.Forms.ToolStripMenuItem VectrexsettingsToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem MSXSubMenu;
-		private System.Windows.Forms.ToolStripMenuItem MSXsettingsToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem O2HawkSubMenu;
-		private System.Windows.Forms.ToolStripMenuItem O2HawksettingsToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem GenericCoreSubMenu;
+		private System.Windows.Forms.ToolStripMenuItem GenericCoreSettingsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem GenesisSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem GenesisSettingsToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem AtariSettingsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem A7800ControllerSettingsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem A7800FilterSettingsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem MovieSettingsMenuItem;
@@ -3915,8 +3687,6 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator23;
 		private System.Windows.Forms.ToolStripMenuItem N64CircularAnalogRangeMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem paletteToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem wonderSwanToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ProfilesMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem PceSoundDebuggerToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SynclessRecordingMenuItem;
@@ -3990,15 +3760,7 @@
 		private System.Windows.Forms.ToolStripMenuItem SNESControllerConfigurationMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem C64DisksSubMenu;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator36;
-		private System.Windows.Forms.ToolStripMenuItem sNESToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem preferencesToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem virtualBoyToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem preferencesToolStripMenuItem1;
-		private System.Windows.Forms.ToolStripMenuItem neoGeoPocketToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem preferencesToolStripMenuItem2;
 		private System.Windows.Forms.ToolStripMenuItem Atari7800HawkCoreMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem pCFXToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem preferencesToolStripMenuItem3;
 		private System.Windows.Forms.ToolStripMenuItem zXSpectrumToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ZXSpectrumControllerConfigurationMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ZXSpectrumCoreEmulationSettingsMenuItem;
@@ -4024,7 +3786,5 @@
 		private System.Windows.Forms.ToolStripMenuItem NDSSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem NdsSyncSettingsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem NdsSettingsMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem arcadeToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem2;
 	}
 }

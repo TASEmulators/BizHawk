@@ -8,7 +8,8 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 		"MSXHawk",
 		"",
 		isPorted: false,
-		isReleased: false)]
+		isReleased: false,
+		displayName: "MSX")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class MSX : IEmulator, IVideoProvider, ISoundProvider, ISaveRam, IInputPollable, IRegionable, ISettable<MSX.MSXSettings, MSX.MSXSyncSettings>
 	{

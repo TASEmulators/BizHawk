@@ -6,7 +6,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 		"GBHawkLink4x",
 		"",
 		isPorted: false,
-		isReleased: true)]
+		isReleased: true,
+		displayName: "Gameboy")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class GBHawkLink4x : IEmulator, ISaveRam, IDebuggable, IStatable, IInputPollable, IRegionable,
 	ISettable<GBHawkLink4x.GBLink4xSettings, GBHawkLink4x.GBLink4xSyncSettings>

@@ -10,10 +10,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 		"VectrexHawk",
 		"",
 		isPorted: false,
-		isReleased: true)]
+		isReleased: true,
+		displayName: "Vectrex")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class VectrexHawk : IEmulator, ISaveRam, IDebuggable, IInputPollable, IRegionable, 
-	ISettable<VectrexHawk.VectrexSettings, VectrexHawk.VectrexSyncSettings>
+	ISettable<object, VectrexHawk.VectrexSyncSettings>
 	{
 		public byte[] RAM = new byte[0x400];
 
@@ -49,7 +50,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			ppu = new PPU();
 			serialport = new SerialPort();
 
-			_settings = (VectrexSettings)settings ?? new VectrexSettings();
+			_settings = settings ?? new object();
 			_syncSettings = (VectrexSyncSettings)syncSettings ?? new VectrexSyncSettings();
 			_controllerDeck = new VectrexHawkControllerDeck(_syncSettings.Port1, _syncSettings.Port2);
 
@@ -109,7 +110,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			ser.Register<ISoundProvider>(audio);
 			ServiceProvider = ser;
 
-			_settings = (VectrexSettings)settings ?? new VectrexSettings();
+			_settings = settings ?? new object();
 			_syncSettings = (VectrexSyncSettings)syncSettings ?? new VectrexSyncSettings();
 
 			_tracer = new TraceBuffer { Header = cpu.TraceHeader };

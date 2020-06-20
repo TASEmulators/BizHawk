@@ -1642,11 +1642,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void AtariSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			GenericCoreConfig.DoDialog(this, "Atari 2600 Settings");
-		}
-
 		private void A7800SubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			A7800ControllerSettingsMenuItem.Enabled
@@ -1801,11 +1796,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void Snes9xSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			GenericCoreConfig.DoDialog(this, "Snes9x Settings");
-		}
-
 		private void ColecoSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			if (Emulator is ColecoVision coleco)
@@ -1915,11 +1905,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void SaturnPreferencesMenuItem_Click(object sender, EventArgs e)
-		{
-			GenericCoreConfig.DoDialog(this, "Saturn Settings");
-		}
-
 		private void DgbSettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			if (Emulator is GambatteLink gambatte)
@@ -1928,29 +1913,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void DgbHawkSettingsMenuItem_Click(object sender, EventArgs e)
+		private void GenericCoreSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			GenericCoreConfig.DoDialog(this, "Gameboy Settings");
-		}
-
-		private void GgSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			GenericCoreConfig.DoDialog(this, "Game Gear Settings");
-		}
-
-		private void VectrexSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			GenericCoreConfig.DoDialog(this, "Vectrex Settings", true, false);
-		}
-
-		private void MsxSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			GenericCoreConfig.DoDialog(this, "MSX Settings");
-		}
-
-		private void O2HawkSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			GenericCoreConfig.DoDialog(this, "Odyssey Settings");
+			GenericCoreConfig.DoDialog(this, $"{Emulator.DisplayName()} Settings");
 		}
 
 		private void GenVdpViewerMenuItem_Click(object sender, EventArgs e)
@@ -1961,11 +1926,6 @@ namespace BizHawk.Client.EmuHawk
 		private void GenesisSettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			GenericCoreConfig.DoDialog(this, "Genesis Settings");
-		}
-
-		private void WonderSwanSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			GenericCoreConfig.DoDialog(this, "WonderSwan Settings");
 		}
 
 		private void AppleIISettingsMenuItem_Click(object sender, EventArgs e)
@@ -2058,21 +2018,6 @@ namespace BizHawk.Client.EmuHawk
 				using var form = new IntvControllerSettings(this, intv.GetSyncSettings().Clone());
 				form.ShowDialog();
 			}
-		}
-
-		private void VirtualBoySettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			GenericCoreConfig.DoDialog(this, "VirtualBoy Settings");
-		}
-
-		private void NeoGeoSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			GenericCoreConfig.DoDialog(this, "NeoPop Settings");
-		}
-
-		private void PCFXSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			GenericCoreConfig.DoDialog(this, "PC-FX Settings");
 		}
 
 		private void ZXSpectrumControllerConfigurationMenuItem_Click(object sender, EventArgs e)
@@ -2335,11 +2280,6 @@ namespace BizHawk.Client.EmuHawk
 				form.ShowDialog();
 			}
 			
-		}
-
-		private void ArcadeSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			GenericCoreConfig.DoDialog(this, "Arcade Settings");
 		}
 
 		private void HelpSubMenu_DropDownOpened(object sender, EventArgs e)

@@ -1803,12 +1803,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void HandlePlatformMenus()
 		{
-			var system = "";
-			if (!Game.IsNullInstance())
-			{
-				system = Emulator.SystemId;
-			}
-
+			GenericCoreSubMenu.Visible = false;
 			TI83SubMenu.Visible = false;
 			NESSubMenu.Visible = false;
 			PCESubMenu.Visible = false;
@@ -1816,34 +1811,26 @@ namespace BizHawk.Client.EmuHawk
 			GBSubMenu.Visible = false;
 			GBASubMenu.Visible = false;
 			NDSSubMenu.Visible = false;
-			AtariSubMenu.Visible = false;
 			A7800SubMenu.Visible = false;
 			SNESSubMenu.Visible = false;
 			PSXSubMenu.Visible = false;
 			ColecoSubMenu.Visible = false;
 			N64SubMenu.Visible = false;
-			SaturnSubMenu.Visible = false;
 			DGBSubMenu.Visible = false;
-			DGBHawkSubMenu.Visible = false;
-			GGLSubMenu.Visible = false;
 			GenesisSubMenu.Visible = false;
-			wonderSwanToolStripMenuItem.Visible = false;
 			AppleSubMenu.Visible = false;
 			C64SubMenu.Visible = false;
 			IntvSubMenu.Visible = false;
-			virtualBoyToolStripMenuItem.Visible = false;
-			sNESToolStripMenuItem.Visible = false;
-			neoGeoPocketToolStripMenuItem.Visible = false;
-			pCFXToolStripMenuItem.Visible = false;
 			zXSpectrumToolStripMenuItem.Visible = false;
 			amstradCPCToolStripMenuItem.Visible = false;
-			VectrexSubMenu.Visible = false;
-			MSXSubMenu.Visible = false;
-			O2HawkSubMenu.Visible = false;
-			arcadeToolStripMenuItem.Visible = false;
 
-			switch (system)
+			switch (Emulator.SystemId)
 			{
+				default:
+					DisplayDefaultCoreMenu();
+					break;
+				case "NULL":
+					break;
 				case "GEN":
 					GenesisSubMenu.Visible = true;
 					break;
@@ -1880,9 +1867,6 @@ namespace BizHawk.Client.EmuHawk
 				case "NDS":
 					NDSSubMenu.Visible = true;
 					break;
-				case "A26":
-					AtariSubMenu.Visible = true;
-					break;
 				case "A78":
 					A7800SubMenu.Visible = true;
 					break;
@@ -1898,7 +1882,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else if (Emulator is Snes9x || Emulator is Faust)
 					{
-						sNESToolStripMenuItem.Visible = true;
+						DisplayDefaultCoreMenu();
 					}
 					else if (Emulator is Sameboy)
 					{
@@ -1911,21 +1895,15 @@ namespace BizHawk.Client.EmuHawk
 				case "N64":
 					N64SubMenu.Visible = true;
 					break;
-				case "SAT":
-					SaturnSubMenu.Visible = true;
-					break;
 				case "DGB":
 					if (Emulator is GBHawkLink)
 					{
-						DGBHawkSubMenu.Visible = true;
+						DisplayDefaultCoreMenu();
 					}
 					else
 					{
 						DGBSubMenu.Visible = true;
 					}
-					break;
-				case "WSWAN":
-					wonderSwanToolStripMenuItem.Visible = true;
 					break;
 				case "AppleII":
 					AppleSubMenu.Visible = true;
@@ -1935,15 +1913,6 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case "INTV":
 					IntvSubMenu.Visible = true;
-					break;
-				case "VB":
-					virtualBoyToolStripMenuItem.Visible = true;
-					break;
-				case "NGP":
-					neoGeoPocketToolStripMenuItem.Visible = true;
-					break;
-				case "PCFX":
-					pCFXToolStripMenuItem.Visible = true;
 					break;
 				case "ZXSpectrum":
 					zXSpectrumToolStripMenuItem.Visible = true;
@@ -1956,26 +1925,13 @@ namespace BizHawk.Client.EmuHawk
 				case "AmstradCPC":
 					amstradCPCToolStripMenuItem.Visible = true;
 					break;
-				case "GGL":
-					GGLSubMenu.Visible = true;
-					break;
-				case "VEC":
-					VectrexSubMenu.Visible = true;
-					break;
-				case "MSX":
-					MSXSubMenu.Visible = true;
-					break;
-				case "O2":
-					O2HawkSubMenu.Visible = true;
-					break;
-				case "GB3x":
-				case "GB4x":
-					DGBHawkSubMenu.Visible = true;
-					break;
-				case "MAME":
-					arcadeToolStripMenuItem.Visible = true;
-					break;
 			}
+		}
+
+		private void DisplayDefaultCoreMenu()
+		{
+			GenericCoreSubMenu.Visible = true;
+			GenericCoreSubMenu.Text = "&" + EmulatorExtensions.DisplayName(Emulator);
 		}
 
 		private void InitControls()
@@ -2723,7 +2679,7 @@ namespace BizHawk.Client.EmuHawk
 			CoreNameStatusBarButton.Visible = true;
 			var attributes = Emulator.Attributes();
 
-			CoreNameStatusBarButton.Text = Emulator.DisplayName();
+			CoreNameStatusBarButton.Text = CoreExtensions.CoreExtensions.DisplayName(Emulator);
 			CoreNameStatusBarButton.Image = Emulator.Icon();
 			CoreNameStatusBarButton.ToolTipText = attributes.Ported ? "(ported) " : "";
 

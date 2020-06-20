@@ -19,6 +19,17 @@ namespace BizHawk.Emulation.Common
 			return (CoreAttribute)Attribute.GetCustomAttribute(core.GetType(), typeof(CoreAttribute));
 		}
 
+		public static string DisplayName(this IEmulator core)
+		{
+			var attr = (CoreAttribute)Attribute.GetCustomAttribute(core.GetType(), typeof(CoreAttribute));
+			if (attr == null)
+			{
+				return core.GetType().Name;
+			}
+
+			return attr.DisplayName ?? attr.CoreName;
+		}
+
 		// todo: most of the special cases involving the NullEmulator should probably go away
 		public static bool IsNull(this IEmulator core)
 		{

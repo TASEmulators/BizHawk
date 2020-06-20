@@ -92,7 +92,8 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		isReleased: false,
 		portedVersion: "0.221",
 		portedUrl: "https://github.com/mamedev/mame.git",
-		singleInstance: false)]
+		singleInstance: false,
+		displayName: "Arcade")]
 	public partial class MAME : IEmulator, IVideoProvider, ISoundProvider, ISettable<object, MAME.SyncSettings>, IStatable, IInputPollable
 	{
 		public MAME(string dir, string file, object syncSettings, out string gamename)
