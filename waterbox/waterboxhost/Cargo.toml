@@ -1,0 +1,18 @@
+[package]
+name = "waterboxhost"
+version = "0.1.0"
+authors = ["nattthebear <goyuken@gmail.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+
+[target.'cfg(windows)'.dependencies]
+winapi = { version = "0.3.8", features = ["memoryapi"] }
+
+[target.'cfg(unix)'.dependencies]
+libc = "0.2.71"
+
+[lib]
+doctest = false
