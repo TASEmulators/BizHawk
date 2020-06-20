@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			int size = 0;
 			IntPtr area = Core.gpgx_get_sram(ref size);
 			if (size == 0 || area == IntPtr.Zero)
-				return new byte[0];
+				return null;
 
 			byte[] ret = new byte[size];
 			using (_elf.EnterExit())
@@ -22,6 +22,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		public void StoreSaveRam(byte[] data)
 		{
+			if (data.Length == 0)
+			{
+				// not sure how this is happening, but reject them
+				return;
+			}
 			if (!Core.gpgx_put_sram(data, data.Length))
 			{
 				throw new Exception("Core rejected saveram");
