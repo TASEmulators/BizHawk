@@ -7,19 +7,16 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 {
-	public partial class VectrexHawk : IEmulator, ISettable<VectrexHawk.VectrexSettings, VectrexHawk.VectrexSyncSettings>
+	public partial class VectrexHawk : IEmulator, ISettable<object, VectrexHawk.VectrexSyncSettings>
 	{
-		public VectrexSettings GetSettings()
-		{
-			return _settings.Clone();
-		}
+		public object GetSettings() => _settings;
 
 		public VectrexSyncSettings GetSyncSettings()
 		{
 			return _syncSettings.Clone();
 		}
 
-		public PutSettingsDirtyBits PutSettings(VectrexSettings o)
+		public PutSettingsDirtyBits PutSettings(object o)
 		{
 			_settings = o;
 			return PutSettingsDirtyBits.None;
@@ -32,22 +29,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}
 
-		private VectrexSettings _settings = new VectrexSettings();
+		private object _settings = new object();
 		public VectrexSyncSettings _syncSettings = new VectrexSyncSettings();
-
-		public class VectrexSettings
-		{
-
-			public VectrexSettings Clone()
-			{
-				return (VectrexSettings)MemberwiseClone();
-			}
-
-			public VectrexSettings()
-			{
-				SettingsUtil.SetDefaultValues(this);
-			}
-		}
 
 		public class VectrexSyncSettings
 		{
