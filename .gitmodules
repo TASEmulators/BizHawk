@@ -29,3 +29,6 @@
 	path = submodules/gambatte
 	url = https://github.com/TASVideos/gambatte-speedrun.git
 	branch = bizhawk
+[submodule "waterbox/llvm-project"]
+	path = waterbox/llvm-project
+	url = git@github.com:llvm/llvm-project.git
