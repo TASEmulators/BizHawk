@@ -1,5 +1,4 @@
 #!/bin/sh
+# we left this here so it could turn into other deps-building if need be
 cd zlib
-./configure-for-waterbox
-make
-./install-for-waterbox
+./do-everything-for-waterbox

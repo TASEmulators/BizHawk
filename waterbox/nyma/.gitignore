@@ -1,3 +1,7 @@
 # These are already ignored, but for some reason vscode won't pick it up
 # and stop showing me things I don't want to see without this
 /obj
+/zlib/zlib.pc
+/zlib/Makefile
+/zlib/configure.log
+/zlib/libz.a

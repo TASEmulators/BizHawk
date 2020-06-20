@@ -1,5 +1,5 @@
 #!/bin/sh
 ./configure-for-waterbox
 make clean
-make libz.a
+make -j libz.a
 ./install-for-waterbox
