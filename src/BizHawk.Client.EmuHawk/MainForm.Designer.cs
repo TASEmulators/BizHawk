@@ -251,10 +251,6 @@
 			this.toolStripSeparator28 = new System.Windows.Forms.ToolStripSeparator();
 			this.GBGPUViewerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.GBPrinterViewerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.GBASubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.GBAcoresettingsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator33 = new System.Windows.Forms.ToolStripSeparator();
-			this.GbaGpuViewerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.PSXSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.PSXControllerSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.PSXOptionsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -306,7 +302,6 @@
 			this.zxt2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ZXSpectrumExportSnapshotMenuItemMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.GenericCoreSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.GenericCoreSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.HelpSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.OnlineHelpMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ForumsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -412,7 +407,6 @@
             this.TI83SubMenu,
 			this.A7800SubMenu,
             this.GBSubMenu,
-            this.GBASubMenu,
             this.NDSSubMenu,
             this.PSXSubMenu,
             this.SNESSubMenu,
@@ -2248,36 +2242,6 @@
 			this.GBPrinterViewerMenuItem.Text = "&Printer Viewer";
 			this.GBPrinterViewerMenuItem.Click += new System.EventHandler(this.GbPrinterViewerMenuItem_Click);
 			// 
-			// GBASubMenu
-			// 
-			this.GBASubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.GBAcoresettingsToolStripMenuItem1,
-			this.toolStripSeparator33,
-			this.GbaGpuViewerMenuItem});
-			this.GBASubMenu.Name = "GBASubMenu";
-			this.GBASubMenu.Size = new System.Drawing.Size(39, 17);
-			this.GBASubMenu.Text = "GBA";
-			this.GBASubMenu.DropDownOpened += new System.EventHandler(this.GBASubMenu_DropDownOpened);
-			// 
-			// GBAcoresettingsToolStripMenuItem1
-			// 
-			this.GBAcoresettingsToolStripMenuItem1.Name = "GBAcoresettingsToolStripMenuItem1";
-			this.GBAcoresettingsToolStripMenuItem1.Size = new System.Drawing.Size(129, 22);
-			this.GBAcoresettingsToolStripMenuItem1.Text = "&Settings...";
-			this.GBAcoresettingsToolStripMenuItem1.Click += new System.EventHandler(this.GbaCoreSettingsMenuItem_Click);
-			// 
-			// toolStripSeparator33
-			// 
-			this.toolStripSeparator33.Name = "toolStripSeparator33";
-			this.toolStripSeparator33.Size = new System.Drawing.Size(126, 6);
-			// 
-			// GbaGpuViewerMenuItem
-			// 
-			this.GbaGpuViewerMenuItem.Name = "GbaGpuViewerMenuItem";
-			this.GbaGpuViewerMenuItem.Size = new System.Drawing.Size(129, 22);
-			this.GbaGpuViewerMenuItem.Text = "GPU Viewer";
-			this.GbaGpuViewerMenuItem.Click += new System.EventHandler(this.GbaGpuViewerMenuItem_Click);
-			// 
 			// PSXSubMenu
 			// 
 			this.PSXSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -2668,18 +2632,9 @@
 			// 
 			// GenericCoreSubMenu
 			// 
-			this.GenericCoreSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.GenericCoreSettingsMenuItem});
 			this.GenericCoreSubMenu.Name = "GenericCoreSubMenu";
 			this.GenericCoreSubMenu.Size = new System.Drawing.Size(56, 17);
 			this.GenericCoreSubMenu.Text = "&Core";
-			// 
-			// GenericCoreSettingsMenuItem
-			// 
-			this.GenericCoreSettingsMenuItem.Name = "GenericCoreSettingsMenuItem";
-			this.GenericCoreSettingsMenuItem.Size = new System.Drawing.Size(125, 22);
-			this.GenericCoreSettingsMenuItem.Text = "Settings...";
-			this.GenericCoreSettingsMenuItem.Click += new System.EventHandler(this.GenericCoreSettingsMenuItem_Click);
 			// 
 			// HelpSubMenu
 			// 
@@ -3624,8 +3579,6 @@
 		private System.Windows.Forms.ToolStripMenuItem ColecoUseSGMMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ColecoControllerSettingsMenuItem;
 		private System.Windows.Forms.ToolStripStatusLabel LedLightStatusLabel;
-		private System.Windows.Forms.ToolStripMenuItem GBASubMenu;
-		private System.Windows.Forms.ToolStripMenuItem GbaGpuViewerMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem KeyPrioritySubMenu;
 		private System.Windows.Forms.ToolStripMenuItem BothHkAndControllerMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem InputOverHkMenuItem;
@@ -3649,7 +3602,6 @@
 		private System.Windows.Forms.ToolStripMenuItem DGBSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem DGBsettingsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem GenericCoreSubMenu;
-		private System.Windows.Forms.ToolStripMenuItem GenericCoreSettingsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem GenesisSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem GenesisSettingsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem A7800ControllerSettingsMenuItem;
@@ -3700,8 +3652,6 @@
 		private System.Windows.Forms.ToolStripMenuItem MovieEndPauseMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ScreenshotClientClipboardMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem MupenStyleLagMenuItem;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator33;
-		private System.Windows.Forms.ToolStripMenuItem GBAcoresettingsToolStripMenuItem1;
 		private System.Windows.Forms.ToolStripStatusLabel LinkConnectStatusBarButton;
 		private System.Windows.Forms.ToolStripMenuItem N64ExpansionSlotMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem BarcodeReaderMenuItem;

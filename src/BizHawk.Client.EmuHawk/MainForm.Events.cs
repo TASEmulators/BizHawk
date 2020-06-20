@@ -1694,21 +1694,6 @@ namespace BizHawk.Client.EmuHawk
 			Tools.Load<GBPrinterView>();
 		}
 
-		private void GbaCoreSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			GenericCoreConfig.DoDialog(this, "Gameboy Advance Settings");
-		}
-
-		private void GbaGpuViewerMenuItem_Click(object sender, EventArgs e)
-		{
-			Tools.Load<GbaGpuView>();
-		}
-
-		private void GBASubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			GbaGpuViewerMenuItem.Enabled = true;
-		}
-
 		private void NDSSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			NdsSyncSettingsMenuItem.Enabled = MovieSession.Movie.NotActive();

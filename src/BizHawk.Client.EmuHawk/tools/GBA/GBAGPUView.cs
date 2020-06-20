@@ -12,6 +12,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[SpecializedTool("GPU Viewer")]
 	public partial class GbaGpuView : ToolFormBase, IToolFormAutoConfig
 	{
 		[RequiredService]

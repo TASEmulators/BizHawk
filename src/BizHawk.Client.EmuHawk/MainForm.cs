@@ -6,6 +6,7 @@ using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -1809,7 +1810,6 @@ namespace BizHawk.Client.EmuHawk
 			PCESubMenu.Visible = false;
 			SMSSubMenu.Visible = false;
 			GBSubMenu.Visible = false;
-			GBASubMenu.Visible = false;
 			NDSSubMenu.Visible = false;
 			A7800SubMenu.Visible = false;
 			SNESSubMenu.Visible = false;
@@ -1860,9 +1860,6 @@ namespace BizHawk.Client.EmuHawk
 				case "GB":
 				case "GBC":
 					GBSubMenu.Visible = true;
-					break;
-				case "GBA":
-					GBASubMenu.Visible = true;
 					break;
 				case "NDS":
 					NDSSubMenu.Visible = true;
@@ -1928,10 +1925,47 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private static readonly IList<Type> _specializedTools = Assembly
+			.GetAssembly(typeof(MainForm))
+			.GetTypes()
+			.Where(t => typeof(IToolForm).IsAssignableFrom(t) && !t.IsAbstract)
+			.Where(t => t.GetCustomAttribute<SpecializedToolAttribute>() != null)
+			.ToList();
+
 		private void DisplayDefaultCoreMenu()
 		{
 			GenericCoreSubMenu.Visible = true;
 			GenericCoreSubMenu.Text = "&" + EmulatorExtensions.DisplayName(Emulator);
+			GenericCoreSubMenu.DropDownItems.Clear();
+
+			var settingsMenuItem = new ToolStripMenuItem { Text = "&Settings" };
+			settingsMenuItem.Click += GenericCoreSettingsMenuItem_Click;
+			GenericCoreSubMenu.DropDownItems.Add(settingsMenuItem);
+
+			var specializedTools = _specializedTools
+				.Where(t => Tools.IsAvailable(t))
+				.OrderBy(t => t.Name)
+				.ToList();
+
+			if (specializedTools.Any())
+			{
+				GenericCoreSubMenu.DropDownItems.Add(new ToolStripSeparator());
+				foreach (var tool in specializedTools)
+				{
+					var dispName = tool.GetCustomAttribute<SpecializedToolAttribute>().DisplayName;
+					var item = new ToolStripMenuItem
+					{
+						Text = dispName
+					};
+
+					item.Click += (o, e) =>
+					{
+						Tools.Load(tool);
+					};
+
+					GenericCoreSubMenu.DropDownItems.Add(item);
+				}
+			}
 		}
 
 		private void InitControls()
