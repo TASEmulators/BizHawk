@@ -1825,7 +1825,6 @@ namespace BizHawk.Client.EmuHawk
 			C64SubMenu.Visible = false;
 			IntvSubMenu.Visible = false;
 			virtualBoyToolStripMenuItem.Visible = false;
-			sNESToolStripMenuItem.Visible = false;
 			neoGeoPocketToolStripMenuItem.Visible = false;
 			zXSpectrumToolStripMenuItem.Visible = false;
 			amstradCPCToolStripMenuItem.Visible = false;
@@ -1834,8 +1833,7 @@ namespace BizHawk.Client.EmuHawk
 			switch (Emulator.SystemId)
 			{
 				default:
-					GenericCoreSubMenu.Visible = true;
-					GenericCoreSubMenu.Text = "&" + EmulatorExtensions.DisplayName(Emulator);
+					DisplayDefaultCoreMenu();
 					break;
 				case "NULL":
 					break;
@@ -1890,7 +1888,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else if (Emulator is Snes9x || Emulator is Faust)
 					{
-						sNESToolStripMenuItem.Visible = true;
+						DisplayDefaultCoreMenu();
 					}
 					else if (Emulator is Sameboy)
 					{
@@ -1953,6 +1951,12 @@ namespace BizHawk.Client.EmuHawk
 					arcadeToolStripMenuItem.Visible = true;
 					break;
 			}
+		}
+
+		private void DisplayDefaultCoreMenu()
+		{
+			GenericCoreSubMenu.Visible = true;
+			GenericCoreSubMenu.Text = "&" + EmulatorExtensions.DisplayName(Emulator);
 		}
 
 		private void InitControls()

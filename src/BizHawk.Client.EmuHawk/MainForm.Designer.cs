@@ -299,8 +299,6 @@
 			this.C64SettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.IntvSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.IntVControllerSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.sNESToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.preferencesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.virtualBoyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.preferencesToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.neoGeoPocketToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -440,7 +438,6 @@
 			this.AppleSubMenu,
 			this.C64SubMenu,
 			this.IntvSubMenu,
-			this.sNESToolStripMenuItem,
 			this.virtualBoyToolStripMenuItem,
 			this.neoGeoPocketToolStripMenuItem,
 			this.zXSpectrumToolStripMenuItem,
@@ -2636,21 +2633,6 @@
 			this.IntVControllerSettingsMenuItem.Text = "Controller Settings...";
 			this.IntVControllerSettingsMenuItem.Click += new System.EventHandler(this.IntVControllerSettingsMenuItem_Click);
 			// 
-			// sNESToolStripMenuItem
-			// 
-			this.sNESToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.preferencesToolStripMenuItem});
-			this.sNESToolStripMenuItem.Name = "sNESToolStripMenuItem";
-			this.sNESToolStripMenuItem.Size = new System.Drawing.Size(44, 17);
-			this.sNESToolStripMenuItem.Text = "&SNES";
-			// 
-			// preferencesToolStripMenuItem
-			// 
-			this.preferencesToolStripMenuItem.Name = "preferencesToolStripMenuItem";
-			this.preferencesToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
-			this.preferencesToolStripMenuItem.Text = "Preferences...";
-			this.preferencesToolStripMenuItem.Click += new System.EventHandler(this.Snes9xSettingsMenuItem_Click);
-			// 
 			// virtualBoyToolStripMenuItem
 			// 
 			this.virtualBoyToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -3892,8 +3874,6 @@
 		private System.Windows.Forms.ToolStripMenuItem SNESControllerConfigurationMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem C64DisksSubMenu;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator36;
-		private System.Windows.Forms.ToolStripMenuItem sNESToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem preferencesToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem virtualBoyToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem preferencesToolStripMenuItem1;
 		private System.Windows.Forms.ToolStripMenuItem neoGeoPocketToolStripMenuItem;

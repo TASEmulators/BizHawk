@@ -1796,11 +1796,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void Snes9xSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			GenericCoreConfig.DoDialog(this, "Snes9x Settings");
-		}
-
 		private void ColecoSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			if (Emulator is ColecoVision coleco)
