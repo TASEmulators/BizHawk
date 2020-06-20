@@ -299,8 +299,6 @@
 			this.IntVControllerSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.virtualBoyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.preferencesToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-			this.neoGeoPocketToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.preferencesToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
 			this.zXSpectrumToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ZXSpectrumCoreEmulationSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ZXSpectrumControllerConfigurationMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -434,7 +432,6 @@
 			this.C64SubMenu,
 			this.IntvSubMenu,
 			this.virtualBoyToolStripMenuItem,
-			this.neoGeoPocketToolStripMenuItem,
 			this.zXSpectrumToolStripMenuItem,
 			this.GenericCoreSubMenu,
 			this.amstradCPCToolStripMenuItem,
@@ -2627,21 +2624,6 @@
 			this.preferencesToolStripMenuItem1.Text = "Preferences...";
 			this.preferencesToolStripMenuItem1.Click += new System.EventHandler(this.VirtualBoySettingsMenuItem_Click);
 			// 
-			// neoGeoPocketToolStripMenuItem
-			// 
-			this.neoGeoPocketToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.preferencesToolStripMenuItem2});
-			this.neoGeoPocketToolStripMenuItem.Name = "neoGeoPocketToolStripMenuItem";
-			this.neoGeoPocketToolStripMenuItem.Size = new System.Drawing.Size(92, 17);
-			this.neoGeoPocketToolStripMenuItem.Text = "&NeoGeo Pocket";
-			// 
-			// preferencesToolStripMenuItem2
-			// 
-			this.preferencesToolStripMenuItem2.Name = "preferencesToolStripMenuItem2";
-			this.preferencesToolStripMenuItem2.Size = new System.Drawing.Size(144, 22);
-			this.preferencesToolStripMenuItem2.Text = "Preferences...";
-			this.preferencesToolStripMenuItem2.Click += new System.EventHandler(this.NeoGeoSettingsMenuItem_Click);
-			// 
 			// zXSpectrumToolStripMenuItem
 			// 
 			this.zXSpectrumToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -3838,8 +3820,6 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator36;
 		private System.Windows.Forms.ToolStripMenuItem virtualBoyToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem preferencesToolStripMenuItem1;
-		private System.Windows.Forms.ToolStripMenuItem neoGeoPocketToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem preferencesToolStripMenuItem2;
 		private System.Windows.Forms.ToolStripMenuItem Atari7800HawkCoreMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem zXSpectrumToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ZXSpectrumControllerConfigurationMenuItem;

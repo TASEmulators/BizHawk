@@ -2035,11 +2035,6 @@ namespace BizHawk.Client.EmuHawk
 			GenericCoreConfig.DoDialog(this, "VirtualBoy Settings");
 		}
 
-		private void NeoGeoSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			GenericCoreConfig.DoDialog(this, "NeoPop Settings");
-		}
-
 		private void ZXSpectrumControllerConfigurationMenuItem_Click(object sender, EventArgs e)
 		{
 			if (Emulator is ZXSpectrum zxs)

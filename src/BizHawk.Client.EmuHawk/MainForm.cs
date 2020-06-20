@@ -1824,7 +1824,6 @@ namespace BizHawk.Client.EmuHawk
 			C64SubMenu.Visible = false;
 			IntvSubMenu.Visible = false;
 			virtualBoyToolStripMenuItem.Visible = false;
-			neoGeoPocketToolStripMenuItem.Visible = false;
 			zXSpectrumToolStripMenuItem.Visible = false;
 			amstradCPCToolStripMenuItem.Visible = false;
 
@@ -1923,9 +1922,6 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case "VB":
 					virtualBoyToolStripMenuItem.Visible = true;
-					break;
-				case "NGP":
-					neoGeoPocketToolStripMenuItem.Visible = true;
 					break;
 				case "ZXSpectrum":
 					zXSpectrumToolStripMenuItem.Visible = true;
