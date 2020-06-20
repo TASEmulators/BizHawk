@@ -1,7 +1,6 @@
 ﻿#nullable disable
 
 using System;
-using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Security.Cryptography;
@@ -29,21 +28,6 @@ namespace BizHawk.Common.BufferExtensions
 			}
 
 			writer.WriteLine();
-		}
-
-		/// <exception cref="Exception"><paramref name="hex"/> has an odd number of chars</exception>
-		public static void ReadFromHex(this byte[] buffer, string hex)
-		{
-			if (hex.Length % 2 != 0)
-			{
-				throw new Exception("Hex value string does not appear to be properly formatted.");
-			}
-
-			for (int i = 0; i < buffer.Length && i * 2 < hex.Length; i++)
-			{
-				var bytehex = hex[i * 2].ToString() + hex[(i * 2) + 1];
-				buffer[i] = byte.Parse(bytehex, NumberStyles.HexNumber);
-			}
 		}
 
 		/// <exception cref="Exception"><paramref name="buffer"/> can't hold the same number of bytes as <paramref name="hex"/></exception>
