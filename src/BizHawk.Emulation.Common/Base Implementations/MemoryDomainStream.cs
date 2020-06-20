@@ -53,7 +53,7 @@ namespace BizHawk.Emulation.Common
 		public override int Read(byte[] buffer, int offset, int count)
 		{
 			if (offset < 0 || offset + count > buffer.Length)
-				throw new ArgumentOutOfRangeException("offset");
+				throw new ArgumentException("start or end not within bounds of buffer", nameof(offset));
 			count = (int)Math.Min(count, Length - Position);
 			if (count == 0)
 				return 0;
@@ -69,7 +69,7 @@ namespace BizHawk.Emulation.Common
 		public override void Write(byte[] buffer, int offset, int count)
 		{
 			if (offset < 0 || offset + count > buffer.Length)
-				throw new ArgumentOutOfRangeException("offset");
+				throw new ArgumentException("start or end not within bounds of buffer", nameof(offset));
 			for (var i = offset; i < offset + count; i++)
 				_d.PokeByte(Position++, buffer[i]);
 		}
