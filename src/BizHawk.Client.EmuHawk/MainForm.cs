@@ -1817,7 +1817,6 @@ namespace BizHawk.Client.EmuHawk
 			ColecoSubMenu.Visible = false;
 			N64SubMenu.Visible = false;
 			DGBSubMenu.Visible = false;
-			GGLSubMenu.Visible = false;
 			GenesisSubMenu.Visible = false;
 			wonderSwanToolStripMenuItem.Visible = false;
 			AppleSubMenu.Visible = false;
@@ -1933,9 +1932,6 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case "AmstradCPC":
 					amstradCPCToolStripMenuItem.Visible = true;
-					break;
-				case "GGL":
-					GGLSubMenu.Visible = true;
 					break;
 			}
 		}

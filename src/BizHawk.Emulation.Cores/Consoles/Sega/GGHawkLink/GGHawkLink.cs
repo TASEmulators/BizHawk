@@ -7,7 +7,8 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 		"GGHawkLink",
 		"",
 		isPorted: false,
-		isReleased: false)]
+		isReleased: false,
+		displayName: "Game Gear")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class GGHawkLink : IEmulator, ISaveRam, IDebuggable, IStatable, IInputPollable, IRegionable, ILinkable,
 	ISettable<GGHawkLink.GGLinkSettings, GGHawkLink.GGLinkSyncSettings>

@@ -279,8 +279,6 @@
 			this.N64ExpansionSlotMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.DGBSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.DGBsettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.GGLSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.GGLsettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.GenesisSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.vDPViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator26 = new System.Windows.Forms.ToolStripSeparator();
@@ -425,7 +423,6 @@
             this.ColecoSubMenu,
             this.N64SubMenu,
             this.DGBSubMenu,
-			this.GGLSubMenu,
 			this.GenesisSubMenu,
 			this.wonderSwanToolStripMenuItem,
 			this.AppleSubMenu,
@@ -2472,21 +2469,6 @@
 			this.DGBsettingsToolStripMenuItem.Text = "Settings...";
 			this.DGBsettingsToolStripMenuItem.Click += new System.EventHandler(this.DgbSettingsMenuItem_Click);
 			// 
-			// GGLSubMenu
-			// 
-			this.GGLSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.GGLsettingsToolStripMenuItem});
-			this.GGLSubMenu.Name = "GGLSubMenu";
-			this.GGLSubMenu.Size = new System.Drawing.Size(54, 17);
-			this.GGLSubMenu.Text = "&GG Link";
-			// 
-			// GGLsettingsToolStripMenuItem
-			// 
-			this.GGLsettingsToolStripMenuItem.Name = "GGLsettingsToolStripMenuItem";
-			this.GGLsettingsToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
-			this.GGLsettingsToolStripMenuItem.Text = "Settings...";
-			this.GGLsettingsToolStripMenuItem.Click += new System.EventHandler(this.GgSettingsMenuItem_Click);
-			// 
 			// GenesisSubMenu
 			// 
 			this.GenesisSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -3702,8 +3684,6 @@
 		private System.Windows.Forms.ToolStripMenuItem FdsEjectDiskMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem DGBSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem DGBsettingsToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem GGLSubMenu;
-		private System.Windows.Forms.ToolStripMenuItem GGLsettingsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem GenericCoreSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem GenericCoreSettingsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem GenesisSubMenu;

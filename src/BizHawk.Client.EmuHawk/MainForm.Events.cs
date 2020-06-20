@@ -1913,11 +1913,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void GgSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			GenericCoreConfig.DoDialog(this, "Game Gear Settings");
-		}
-
 		private void GenericCoreSettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			GenericCoreConfig.DoDialog(this, $"{Emulator.DisplayName()} Settings");
