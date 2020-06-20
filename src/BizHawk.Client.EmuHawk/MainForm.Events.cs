@@ -2050,11 +2050,6 @@ namespace BizHawk.Client.EmuHawk
 			GenericCoreConfig.DoDialog(this, "NeoPop Settings");
 		}
 
-		private void PCFXSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			GenericCoreConfig.DoDialog(this, "PC-FX Settings");
-		}
-
 		private void ZXSpectrumControllerConfigurationMenuItem_Click(object sender, EventArgs e)
 		{
 			if (Emulator is ZXSpectrum zxs)

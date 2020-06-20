@@ -301,8 +301,6 @@
 			this.IntVControllerSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.sNESToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.preferencesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.pCFXToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.preferencesToolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
 			this.virtualBoyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.preferencesToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.neoGeoPocketToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -443,7 +441,6 @@
 			this.C64SubMenu,
 			this.IntvSubMenu,
 			this.sNESToolStripMenuItem,
-			this.pCFXToolStripMenuItem,
 			this.virtualBoyToolStripMenuItem,
 			this.neoGeoPocketToolStripMenuItem,
 			this.zXSpectrumToolStripMenuItem,
@@ -2654,21 +2651,6 @@
 			this.preferencesToolStripMenuItem.Text = "Preferences...";
 			this.preferencesToolStripMenuItem.Click += new System.EventHandler(this.Snes9xSettingsMenuItem_Click);
 			// 
-			// pCFXToolStripMenuItem
-			// 
-			this.pCFXToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.preferencesToolStripMenuItem3});
-			this.pCFXToolStripMenuItem.Name = "pCFXToolStripMenuItem";
-			this.pCFXToolStripMenuItem.Size = new System.Drawing.Size(48, 17);
-			this.pCFXToolStripMenuItem.Text = "&PC-FX";
-			// 
-			// preferencesToolStripMenuItem3
-			// 
-			this.preferencesToolStripMenuItem3.Name = "preferencesToolStripMenuItem3";
-			this.preferencesToolStripMenuItem3.Size = new System.Drawing.Size(144, 22);
-			this.preferencesToolStripMenuItem3.Text = "Preferences...";
-			this.preferencesToolStripMenuItem3.Click += new System.EventHandler(this.PCFXSettingsMenuItem_Click);
-			// 
 			// virtualBoyToolStripMenuItem
 			// 
 			this.virtualBoyToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -3917,8 +3899,6 @@
 		private System.Windows.Forms.ToolStripMenuItem neoGeoPocketToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem preferencesToolStripMenuItem2;
 		private System.Windows.Forms.ToolStripMenuItem Atari7800HawkCoreMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem pCFXToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem preferencesToolStripMenuItem3;
 		private System.Windows.Forms.ToolStripMenuItem zXSpectrumToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ZXSpectrumControllerConfigurationMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ZXSpectrumCoreEmulationSettingsMenuItem;

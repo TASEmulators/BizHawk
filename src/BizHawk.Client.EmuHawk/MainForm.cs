@@ -1827,7 +1827,6 @@ namespace BizHawk.Client.EmuHawk
 			virtualBoyToolStripMenuItem.Visible = false;
 			sNESToolStripMenuItem.Visible = false;
 			neoGeoPocketToolStripMenuItem.Visible = false;
-			pCFXToolStripMenuItem.Visible = false;
 			zXSpectrumToolStripMenuItem.Visible = false;
 			amstradCPCToolStripMenuItem.Visible = false;
 			arcadeToolStripMenuItem.Visible = false;
@@ -1931,9 +1930,6 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case "NGP":
 					neoGeoPocketToolStripMenuItem.Visible = true;
-					break;
-				case "PCFX":
-					pCFXToolStripMenuItem.Visible = true;
 					break;
 				case "ZXSpectrum":
 					zXSpectrumToolStripMenuItem.Visible = true;
