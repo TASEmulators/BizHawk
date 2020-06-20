@@ -81,7 +81,6 @@ namespace BizHawk.Emulation.Cores.Components
 		/// </summary>
 		/// <param name="source">The source ISoundProvider</param>
 		/// <param name="sourceDescription">An ident string for the ISoundProvider (useful when debugging)</param>
-		/// <param name="isMono">If this is true then only half the samples should be present</param>
 		public void PinSource(ISoundProvider source, string sourceDescription)
 		{
 			PinSource(source, sourceDescription, FinalMaxVolume);
@@ -93,7 +92,6 @@ namespace BizHawk.Emulation.Cores.Components
 		/// <param name="source">The source ISoundProvider</param>
 		/// <param name="sourceDescription">An ident string for the ISoundProvider (useful when debugging)</param>
 		/// <param name="sourceMaxVolume">The MaxVolume level for this particular ISoundProvider</param>
-		/// <param name="isMono">If this is true then only half the samples should be present</param>
 		public void PinSource(ISoundProvider source, string sourceDescription, short sourceMaxVolume)
 		{
 			_soundProviders.Add(new ChildProvider

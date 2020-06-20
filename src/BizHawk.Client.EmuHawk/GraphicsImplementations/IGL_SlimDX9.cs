@@ -325,7 +325,7 @@ namespace BizHawk.Client.EmuHawk
 
 		/// <exception cref="InvalidOperationException">
 		/// <paramref name="required"/> is <see langword="true"/> and either <paramref name="vertexShader"/> or <paramref name="fragmentShader"/> is unavailable (their <see cref="Shader.Available"/> property is <see langword="false"/>), or
-		/// one of <paramref name="vertexLayout"/>'s items has an unsupported value in <see cref="LayoutItem.AttribType"/>, <see cref="LayoutItem.Components"/>, or <see cref="LayoutItem.Usage"/>
+		/// one of <paramref name="vertexLayout"/>'s items has an unsupported value in <see cref="VertexLayout.LayoutItem.AttribType"/>, <see cref="VertexLayout.LayoutItem.Components"/>, or <see cref="VertexLayout.LayoutItem.Usage"/>
 		/// </exception>
 		public Pipeline CreatePipeline(VertexLayout vertexLayout, Shader vertexShader, Shader fragmentShader, bool required, string memo)
 		{

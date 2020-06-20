@@ -11,7 +11,7 @@ using SharpCompress.Common;
 
 namespace BizHawk.Client.Common
 {
-	/// <summary>A <see cref="IFileDearchivalMethod">dearchival method</see> for <see cref="HawkFile"/> implemented using <c>SharpCompress</c> from NuGet.</summary>
+	/// <summary>A <see cref="IFileDearchivalMethod{T}">dearchival method</see> for <see cref="HawkFile"/> implemented using <c>SharpCompress</c> from NuGet.</summary>
 	public class SharpCompressDearchivalMethod : IFileDearchivalMethod<SharpCompressArchiveFile>
 	{
 		private SharpCompressDearchivalMethod() {}

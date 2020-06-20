@@ -541,7 +541,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		/// <summary>write a video frame to the stream</summary>
-		/// <param name="data">raw video data; if length 0, write EOR</param>
+		/// <param name="video">raw video data; if length 0, write EOR</param>
 		/// <exception cref="Exception">internal error, possible A/V desync</exception>
 		/// <exception cref="InvalidOperationException">already written EOR</exception>
 		public void WriteVideoFrame(int[] video)
@@ -569,7 +569,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		/// <summary>write an audio frame to the stream</summary>
-		/// <param name="data">raw audio data; if length 0, write EOR</param>
+		/// <param name="samples">raw audio data; if length 0, write EOR</param>
 		/// <exception cref="Exception">internal error, possible A/V desync</exception>
 		/// <exception cref="InvalidOperationException">already written EOR</exception>
 		public void WriteAudioFrame(short[] samples)

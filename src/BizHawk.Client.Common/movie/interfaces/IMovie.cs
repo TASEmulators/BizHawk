@@ -284,7 +284,7 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <summary>
-		/// Sets the given <see cref="emulator"/> save ram if the movie contains save ram
+		/// Sets the given <paramref name="emulator"/> save ram if the movie contains save ram
 		/// and the core supports save ram
 		/// </summary>
 		public static void ProcessSram(this IMovie movie, IEmulator emulator)

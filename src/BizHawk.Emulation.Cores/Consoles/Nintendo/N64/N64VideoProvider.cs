@@ -15,7 +15,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		/// <summary>
 		/// Creates N64 Video system with mupen64plus backend
 		/// </summary>
-		/// <param name="api">mupen64plus DLL that is used</param>
 		public N64VideoProvider(mupen64plusApi core, VideoPluginSettings videosettings)
 		{
 			this.api = new mupen64plusVideoApi(core, videosettings);

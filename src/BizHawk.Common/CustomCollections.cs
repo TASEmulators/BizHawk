@@ -7,7 +7,7 @@ using System.Runtime.Serialization;
 
 namespace BizHawk.Common
 {
-	/// <summary>Wrapper over <see cref="WorkingDictionary{TKey, TValue}">WorkingDictionary</see>&lt;<paramref name="TKey"/>, <see cref="List{T}">List</see>&lt;<paramref name="TValue"/>>>.</summary>
+	/// <summary>Wrapper over <see cref="WorkingDictionary{TKey, TValue}">WorkingDictionary</see>&lt;<typeparamref name="TKey"/>, <see cref="List{T}">List</see>&lt;<typeparamref name="TValue"/>>>.</summary>
 	[Serializable]
 	public class Bag<TKey, TValue> : IEnumerable<TValue> where TKey : notnull
 	{

@@ -16,7 +16,7 @@ namespace BizHawk.Common
 	/// Strings formatted this way are annotated <see cref="HawkFilePathAttribute">[HawkFilePath]</see>.
 	/// </summary>
 	/// <remarks>
-	/// This class is defensively designed around <see cref="IFileDearchivalMethod"/> to allow swapping out implementations (for speed) without adding any dependencies to this project.<br/>
+	/// This class is defensively designed around <see cref="IFileDearchivalMethod{T}"/> to allow swapping out implementations (for speed) without adding any dependencies to this project.<br/>
 	/// TODO split into "bind" and "open &lt;the bound thing>"<br/>
 	/// TODO scan archive to flatten interior directories down to a path (maintain our own archive item list)
 	/// </remarks>

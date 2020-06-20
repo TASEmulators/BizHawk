@@ -17,7 +17,7 @@ namespace BizHawk.Client.EmuHawk
 
 		/// <exception cref="InvalidOperationException">
 		/// <paramref name="asyncSoundProvider"/>'s mode is not <see cref="SyncSoundMode.Async"/>, or
-		/// A/V parameters haven't been set (need to call <see cref="SetAudioParameters"/> and <see cref="SetMovieParameters"/>)
+		/// A/V parameters haven't been set (need to call <see cref="AVStretcher.SetAudioParameters"/> and <see cref="AVStretcher.SetMovieParameters"/>)
 		/// </exception>
 		public void DumpAV(IVideoProvider v, ISoundProvider asyncSoundProvider, out short[] samples, out int samplesProvided)
 		{

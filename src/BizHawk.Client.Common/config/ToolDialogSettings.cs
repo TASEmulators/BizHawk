@@ -56,7 +56,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		/// <value>the top-left corner of the <see cref="EmuHawk.IToolFormAutoConfig"/>, equivalent to the combined values of <see cref="Wndx"/> and <see cref="Wndy"/></value>
+		/// <value>the top-left corner of the <see cref="IToolFormAutoConfig"/>, equivalent to the combined values of <see cref="Wndx"/> and <see cref="Wndy"/></value>
 		/// <exception cref="InvalidOperationException">either <see cref="Wndx"/> or <see cref="Wndy"/> is null (it is expected to check for this before using this property)</exception>
 		[JsonIgnore]
 		public Point TopLeft

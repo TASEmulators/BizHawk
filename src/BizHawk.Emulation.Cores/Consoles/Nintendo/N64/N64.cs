@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		/// Create mupen64plus Emulator
 		/// </summary>
 		/// <param name="game">Game information of game to load</param>
-		/// <param name="rom">Rom that should be loaded</param>
+		/// <param name="file">Rom that should be loaded</param>
 		/// <param name="syncSettings">N64SyncSettings object</param>
 		[CoreConstructor("N64")]
 		public N64(GameInfo game, byte[] file, object settings, object syncSettings)

@@ -39,7 +39,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		/// <summary>
 		/// Creates a N64 Audio subsystem
 		/// </summary>
-		/// <param name="api">Mupen64 api which is used for fetching sound</param>
 		public N64Audio(mupen64plusApi core)
 		{
 			this.api = new mupen64plusAudioApi(core);

@@ -208,7 +208,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// <summary>
 		/// type of the cpu trace callback
 		/// </summary>
-		/// <param name="data">cpu state</param>
+		/// <param name="state">cpu state</param>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate void TraceCallback(IntPtr state);
 

@@ -6,7 +6,7 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	/// <summary>As <see cref="DelegatingLuaLibrary"/>, but also includes EmuHawk APIs via a <see cref="APIContainer"/>.</summary>
+	/// <summary>As <see cref="DelegatingLuaLibrary"/>, but also includes EmuHawk APIs via an <see cref="ApiContainer"/>.</summary>
 	public abstract class DelegatingLuaLibraryEmu : DelegatingLuaLibrary
 	{
 		protected DelegatingLuaLibraryEmu(Lua lua) : base(lua) {}

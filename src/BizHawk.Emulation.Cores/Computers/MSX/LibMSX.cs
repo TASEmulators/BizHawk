@@ -151,7 +151,6 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 		/// </summary>
 		/// <param name="core">opaque state pointer</param>
 		/// <param name="h">pointer to const char *</param>
-		/// <param name="callback">null to clear</param>
 		[DllImport("MSXHawk.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void MSX_getheader(IntPtr core, StringBuilder h, int l);
 
@@ -159,7 +158,7 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 		/// get the register state from the cpu
 		/// </summary>
 		/// <param name="core">opaque state pointer</param>
-		/// <param name="r">pointer to const char *</param>
+		/// <param name="h">pointer to const char *</param>
 		/// <param name="t">call type</param>
 		/// <param name="l">copy length, must be obtained from appropriate get legnth function</param>
 		[DllImport("MSXHawk.dll", CallingConvention = CallingConvention.Cdecl)]
@@ -169,7 +168,7 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 		/// get the register state from the cpu
 		/// </summary>
 		/// <param name="core">opaque state pointer</param>
-		/// <param name="d">pointer to const char *</param>
+		/// <param name="h">pointer to const char *</param>
 		/// <param name="t">call type</param>
 		/// <param name="l">copy length, must be obtained from appropriate get legnth function</param>
 		[DllImport("MSXHawk.dll", CallingConvention = CallingConvention.Cdecl)]

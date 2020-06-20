@@ -14,7 +14,6 @@ namespace BizHawk.Emulation.Cores.Components
 
 		Action<int> enqueuer;
 
-		/// <param name="freq">frequency of the M2 clock in hz</param>
 		/// <param name="enqueuer">a place to dump deltas to</param>
 		public VRC6Alt(Action<int> enqueuer)
 		{

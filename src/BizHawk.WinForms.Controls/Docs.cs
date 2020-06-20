@@ -41,7 +41,7 @@ namespace BizHawk.WinForms.Controls
 
 		/// <summary>
 		/// Inherits <see cref="FlowLayoutPanel"/>.
-		/// <see cref="FlowLayoutPanel.WrapContents"/> is locked to <see langword="true"/> and <see cref="FlowLayoutPanel.Margin"/> is locked to <see cref="Padding.Empty"/>.
+		/// <see cref="FlowLayoutPanel.WrapContents"/> is locked to <see langword="true"/> and <see cref="Control.Margin"/> is locked to <see cref="Padding.Empty"/>.
 		/// <see cref="FlowLayoutPanel.FlowDirection"/> is locked to <see cref="FlowDirection.LeftToRight"/>/<see cref="FlowDirection.TopDown"/> for rows/columns, respectively.
 		/// </summary>
 		/// <seealso cref="TypeNamePrefix">Naming convention for control types</seealso>
@@ -51,7 +51,7 @@ namespace BizHawk.WinForms.Controls
 
 		/// <summary>
 		/// Inherits <see cref="FlowLayoutPanel"/>.
-		/// <see cref="FlowLayoutPanel.WrapContents"/> is locked to <see langword="false"/> and <see cref="FlowLayoutPanel.Margin"/> is locked to <see cref="Padding.Empty"/>.
+		/// <see cref="FlowLayoutPanel.WrapContents"/> is locked to <see langword="false"/> and <see cref="Control.Margin"/> is locked to <see cref="Padding.Empty"/>.
 		/// <see cref="FlowLayoutPanel.FlowDirection"/> is locked to <see cref="FlowDirection.LeftToRight"/>/<see cref="FlowDirection.TopDown"/> for a single row/column, respectively.
 		/// </summary>
 		/// <seealso cref="TypeNamePrefix">Naming convention for control types</seealso>

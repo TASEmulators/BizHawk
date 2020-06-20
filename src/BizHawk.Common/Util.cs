@@ -38,7 +38,7 @@ namespace BizHawk.Common
 			return data;
 		}
 
-		/// <remarks>adapted from https://stackoverflow.com/a/3928856/7467292, values are compared using <see cref="EqualityComparer.Default">EqualityComparer.Default</see></remarks>
+		/// <remarks>adapted from https://stackoverflow.com/a/3928856/7467292, values are compared using <see cref="EqualityComparer{T}.Default">EqualityComparer.Default</see></remarks>
 		public static bool DictionaryEqual<TKey, TValue>(IDictionary<TKey, TValue> a, IDictionary<TKey, TValue> b)
 			where TKey : notnull
 		{

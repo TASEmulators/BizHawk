@@ -4,7 +4,7 @@ using System.IO;
 
 namespace BizHawk.Common
 {
-	/// <seealso cref="IFileDearchivalMethod"/>
+	/// <seealso cref="IFileDearchivalMethod{T}"/>
 	public interface IHawkArchiveFile : IDisposable
 	{
 		void ExtractFile(int index, Stream stream);
