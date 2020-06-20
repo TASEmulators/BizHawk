@@ -10,6 +10,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[SpecializedTool("Tile Viewer")]
 	public partial class PceTileViewer : ToolFormBase, IToolFormAutoConfig
 	{
 		[RequiredService]

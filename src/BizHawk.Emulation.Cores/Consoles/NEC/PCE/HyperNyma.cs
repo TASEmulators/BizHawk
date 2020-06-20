@@ -11,7 +11,7 @@ using BizHawk.Emulation.DiscSystem;
 
 namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 {
-	[Core(CoreNames.HyperNyma, "Mednafen Team", true, true, "1.24.3", "https://mednafen.github.io/releases/", false)]
+	[Core(CoreNames.HyperNyma, "Mednafen Team", true, true, "1.24.3", "https://mednafen.github.io/releases/", false, "PCE")]
 	public class HyperNyma : NymaCore, IRegionable, IPceGpuView
 	{
 		private readonly LibHyperNyma _terboGrafix;

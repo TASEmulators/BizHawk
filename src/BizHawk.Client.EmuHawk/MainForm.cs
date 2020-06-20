@@ -1807,7 +1807,6 @@ namespace BizHawk.Client.EmuHawk
 			GenericCoreSubMenu.Visible = false;
 			TI83SubMenu.Visible = false;
 			NESSubMenu.Visible = false;
-			PCESubMenu.Visible = false;
 			SMSSubMenu.Visible = false;
 			GBSubMenu.Visible = false;
 			NDSSubMenu.Visible = false;
@@ -1835,11 +1834,6 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case "NES":
 					NESSubMenu.Visible = true;
-					break;
-				case "PCE":
-				case "PCECD":
-				case "SGX":
-					PCESubMenu.Visible = true;
 					break;
 				case "SMS":
 					SMSSubMenu.Text = "&SMS";
@@ -1951,7 +1945,7 @@ namespace BizHawk.Client.EmuHawk
 					var dispName = tool.GetCustomAttribute<SpecializedToolAttribute>().DisplayName;
 					var item = new ToolStripMenuItem
 					{
-						Text = dispName
+						Text = "&" + dispName
 					};
 
 					item.Click += (o, e) =>

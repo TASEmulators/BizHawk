@@ -1548,26 +1548,6 @@ namespace BizHawk.Client.EmuHawk
 			Tools.Load<BarcodeEntry>();
 		}
 
-		private void PceSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			GenericCoreConfig.DoDialog(this, "PCE Settings");
-		}
-
-		private void PceBgViewerMenuItem_Click(object sender, EventArgs e)
-		{
-			Tools.Load<PceBgViewer>();
-		}
-
-		private void PceTileViewerMenuItem_Click(object sender, EventArgs e)
-		{
-			Tools.Load<PceTileViewer>();
-		}
-
-		private void PceSoundDebuggerMenuItem_Click(object sender, EventArgs e)
-		{
-			Tools.Load<PCESoundDebugger>();
-		}
-
 		private void SmsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			SmsVdpViewerMenuItem.Visible = Game.System != "SG";

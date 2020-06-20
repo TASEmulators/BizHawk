@@ -9,6 +9,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[SpecializedTool("BG Viewer")]
 	public partial class PceBgViewer : ToolFormBase, IToolFormAutoConfig
 	{
 		[RequiredService]

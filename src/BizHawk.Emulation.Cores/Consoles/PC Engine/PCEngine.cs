@@ -15,7 +15,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		CoreNames.PceHawk,
 		"Vecna",
 		isPorted: false,
-		isReleased: true)]
+		isReleased: true,
+		displayName: "PCE")]
 	public sealed partial class PCEngine : IEmulator, ISaveRam, IInputPollable, IVideoLogicalOffsets, IRomInfo,
 		IDebuggable, ISettable<PCEngine.PCESettings, PCEngine.PCESyncSettings>, IDriveLight, ICodeDataLogger,
 		IPceGpuView

@@ -227,12 +227,6 @@
 			this.VSInsertCoinP2MenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.VSServiceSwitchMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.BarcodeReaderMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.PCESubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.PceSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator32 = new System.Windows.Forms.ToolStripSeparator();
-			this.PCEBGViewerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.PCEtileViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.PceSoundDebuggerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SMSSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.SmsSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SmsMenuSeparator = new System.Windows.Forms.ToolStripSeparator();
@@ -398,7 +392,6 @@
             this.ConfigSubMenu,
             this.ToolsSubMenu,
             this.NESSubMenu,
-            this.PCESubMenu,
             this.SMSSubMenu,
             this.TI83SubMenu,
 			this.A7800SubMenu,
@@ -2052,51 +2045,6 @@
 			this.BarcodeReaderMenuItem.Text = "Barcode Reader";
 			this.BarcodeReaderMenuItem.Click += new System.EventHandler(this.BarcodeReaderMenuItem_Click);
 			// 
-			// PCESubMenu
-			// 
-			this.PCESubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.PceSettingsMenuItem,
-			this.toolStripSeparator32,
-			this.PCEBGViewerMenuItem,
-			this.PCEtileViewerToolStripMenuItem,
-			this.PceSoundDebuggerToolStripMenuItem});
-			this.PCESubMenu.Name = "PCESubMenu";
-			this.PCESubMenu.Size = new System.Drawing.Size(38, 17);
-			this.PCESubMenu.Text = "&PCE";
-			// 
-			// PceSettingsMenuItem
-			// 
-			this.PceSettingsMenuItem.Name = "PceSettingsMenuItem";
-			this.PceSettingsMenuItem.Size = new System.Drawing.Size(240, 22);
-			this.PceSettingsMenuItem.Text = "Settings...";
-			this.PceSettingsMenuItem.Click += new System.EventHandler(this.PceSettingsMenuItem_Click);
-			// 
-			// toolStripSeparator32
-			// 
-			this.toolStripSeparator32.Name = "toolStripSeparator32";
-			this.toolStripSeparator32.Size = new System.Drawing.Size(237, 6);
-			// 
-			// PCEBGViewerMenuItem
-			// 
-			this.PCEBGViewerMenuItem.Name = "PCEBGViewerMenuItem";
-			this.PCEBGViewerMenuItem.Size = new System.Drawing.Size(240, 22);
-			this.PCEBGViewerMenuItem.Text = "&BG Viewer";
-			this.PCEBGViewerMenuItem.Click += new System.EventHandler(this.PceBgViewerMenuItem_Click);
-			// 
-			// PCEtileViewerToolStripMenuItem
-			// 
-			this.PCEtileViewerToolStripMenuItem.Name = "PCEtileViewerToolStripMenuItem";
-			this.PCEtileViewerToolStripMenuItem.Size = new System.Drawing.Size(240, 22);
-			this.PCEtileViewerToolStripMenuItem.Text = "&Tile Viewer";
-			this.PCEtileViewerToolStripMenuItem.Click += new System.EventHandler(this.PceTileViewerMenuItem_Click);
-			// 
-			// PceSoundDebuggerToolStripMenuItem
-			// 
-			this.PceSoundDebuggerToolStripMenuItem.Name = "PceSoundDebuggerToolStripMenuItem";
-			this.PceSoundDebuggerToolStripMenuItem.Size = new System.Drawing.Size(240, 22);
-			this.PceSoundDebuggerToolStripMenuItem.Text = "&Sound Debugger";
-			this.PceSoundDebuggerToolStripMenuItem.Click += new System.EventHandler(this.PceSoundDebuggerMenuItem_Click);
-			// 
 			// SMSSubMenu
 			// 
 			this.SMSSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -3513,9 +3461,7 @@
 		private System.Windows.Forms.ToolStripMenuItem ImportMoviesMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ForumsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ScreenshotClipboardMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem PCESubMenu;
 		private System.Windows.Forms.ToolStripMenuItem SMSSubMenu;
-		private System.Windows.Forms.ToolStripMenuItem PCEBGViewerMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ScreenshotContextMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem A7800SubMenu;
 		private System.Windows.Forms.ToolStripMenuItem NESSoundChannelsMenuItem;
@@ -3574,7 +3520,6 @@
 		private System.Windows.Forms.ToolStripMenuItem CoresSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem BatchRunnerMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem DisplayConfigMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem PCEtileViewerToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SmsVdpViewerMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SmsSettingsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem extensionsToolStripMenuItem;
@@ -3602,10 +3547,7 @@
 		private System.Windows.Forms.ToolStripMenuItem N64CircularAnalogRangeMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem paletteToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ProfilesMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem PceSoundDebuggerToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SynclessRecordingMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem PceSettingsMenuItem;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator32;
 		private System.Windows.Forms.ToolStripStatusLabel ProfileFirstBootLabel;
 		private System.Windows.Forms.ToolStripMenuItem MovieEndSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem MovieEndFinishMenuItem;
