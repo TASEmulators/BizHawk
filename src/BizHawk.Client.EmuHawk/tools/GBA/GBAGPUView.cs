@@ -671,7 +671,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Form form = (Form)f;
 				// close becomes hide
-				form.FormClosing += delegate(object sender, FormClosingEventArgs e)
+				form.FormClosing += (sender, e) =>
 				{
 					e.Cancel = true;
 					listBoxWidgets.Items.Add(sender);

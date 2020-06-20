@@ -21,7 +21,7 @@ namespace BizHawk.Emulation.Cores.Components
 		public const byte PlaybackMode_LoopOnCompletion = 2;
 		public const byte PlaybackMode_CallbackOnCompletion = 3;
 
-		public Action CallbackAction = delegate { };
+		public Action CallbackAction = () => {};
 
 		public Disc Disc;
 		public DiscSectorReader DiscSectorReader;

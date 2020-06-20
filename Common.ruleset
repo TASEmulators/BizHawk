@@ -351,9 +351,6 @@
 		<!-- Do not use default value type constructor -->
 		<Rule Id="SA1129" Action="Hidden" />
 
-		<!-- Use lambda syntax -->
-		<Rule Id="SA1130" Action="Hidden" />
-
 		<!-- Use readable conditions -->
 		<Rule Id="SA1131" Action="Hidden" />
 

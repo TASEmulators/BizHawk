@@ -437,10 +437,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			}
 			else if (line >= 0 && line <= 153)
 			{
-				scanlinecb = delegate
-				{
-					callback(LibGambatte.gambatte_cpuread(GambatteState, 0xff40));
-				};
+				scanlinecb = () => callback(LibGambatte.gambatte_cpuread(GambatteState, 0xff40));
 				LibGambatte.gambatte_setscanlinecallback(GambatteState, scanlinecb, line);
 			}
 			else

@@ -39,7 +39,7 @@ namespace BizHawk.Client.EmuHawk
 			DirectoryMonitor.Created += DirectoryMonitor_Created;
 			DirectoryMonitor.EnableRaisingEvents = true;
 
-			ClientApi.RomLoaded += delegate { BuildToolStrip(); };
+			ClientApi.RomLoaded += (sender, e) => BuildToolStrip();
 
 			BuildToolStrip();
 		}

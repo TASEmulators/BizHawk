@@ -318,7 +318,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 		public Func<int, byte> ReadMemory21;
 		public Action<int, byte> WriteMemory21;
 		public Action<int, byte> WriteVDC;
-		public Action<int> ThinkAction = delegate { };
+		public Action<int> ThinkAction = i => {};
 
 		public IMemoryCallbackSystem MemoryCallbacks;
 

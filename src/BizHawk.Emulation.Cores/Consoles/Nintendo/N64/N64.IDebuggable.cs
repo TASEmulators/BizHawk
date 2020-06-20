@@ -113,15 +113,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		{
 			var mcs = MemoryCallbacks;
 
-			api.BreakpointHit += delegate(uint address, mupen64plusApi.BreakType type)
+			api.BreakpointHit += (address, type) => api.OnBreakpoint(new mupen64plusApi.BreakParams
 			{
-				api.OnBreakpoint(new mupen64plusApi.BreakParams
-				{
-					_type = type,
-					_addr = address,
-					_mcs = mcs
-				});
-			};
+				_type = type,
+				_addr = address,
+				_mcs = mcs
+			});
 		}
 
 		private void AddBreakpoint(IMemoryCallback callback)

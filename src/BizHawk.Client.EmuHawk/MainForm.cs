@@ -2652,7 +2652,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FdsInsertDiskMenuAdd(string name, string button, string msg)
 		{
-			FDSControlsMenuItem.DropDownItems.Add(name, null, delegate
+			FDSControlsMenuItem.DropDownItems.Add(name, null, (sender, e) =>
 			{
 				if (Emulator.ControllerDefinition.BoolButtons.Contains(button)
 					&& !MovieSession.Movie.IsPlaying())

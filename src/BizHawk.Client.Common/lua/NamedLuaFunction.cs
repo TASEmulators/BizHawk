@@ -17,7 +17,7 @@ namespace BizHawk.Client.Common
 			LuaFile = luaFile;
 			Guid = Guid.NewGuid();
 
-			Callback = delegate
+			Callback = () =>
 			{
 				try
 				{
@@ -29,10 +29,7 @@ namespace BizHawk.Client.Common
 				}
 			};
 
-			MemCallback = delegate
-			{
-				Callback();
-			};
+			MemCallback = (address, value, flags) => Callback();
 		}
 
 		public Guid Guid { get; }

@@ -152,10 +152,7 @@ namespace BizHawk.Client.EmuHawk
 					var tempBox = box;
 					var tempPath = path.Type;
 					var tempSystem = path.System;
-					btn.Click += delegate
-					{
-						BrowseFolder(tempBox, tempPath, tempSystem);
-					};
+					btn.Click += (sender, args) => BrowseFolder(tempBox, tempPath, tempSystem);
 
 					int infoPadding = UIHelper.ScaleX(0);
 					if (t.Name.Contains("Global") && path.Type == "Firmware")
@@ -172,7 +169,7 @@ namespace BizHawk.Client.EmuHawk
 							Anchor = AnchorStyles.Top | AnchorStyles.Right
 						};
 
-						firmwareButton.Click += delegate
+						firmwareButton.Click += (sender, e) =>
 						{
 							if (Owner is FirmwaresConfig)
 							{

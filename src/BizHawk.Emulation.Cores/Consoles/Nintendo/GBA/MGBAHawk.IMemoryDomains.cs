@@ -88,7 +88,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 			// special combined ram memory domain
 			_cwram.Peek =
-				delegate (long addr)
+				addr =>
 				{
 					if (addr < 0 || addr >= (256 + 32) * 1024)
 					{
@@ -103,7 +103,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 					return PeekWRAM(s.wram, addr);
 				};
 			_cwram.Poke =
-				delegate (long addr, byte val)
+				(addr, val) =>
 				{
 					if (addr < 0 || addr >= (256 + 32) * 1024)
 					{

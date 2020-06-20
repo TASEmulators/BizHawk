@@ -109,7 +109,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				string name = $"P{player} {button.Name}";
 				ControllerDef.BoolButtons.Add(name);
 				var buttonFlag = button.Key;
-				_converts.Add(delegate
+				_converts.Add(() =>
 				{
 					if (_source.IsPressed(name))
 					{
@@ -124,7 +124,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			ControllerDef.AddXYPair($"P{player} Mouse {{0}}", AxisPairOrientation.RightAndUp, -256, 0, 255); //TODO verify direction against hardware
 			var nx = $"P{player} Mouse X";
 			var ny = $"P{player} Mouse Y";
-			_converts.Add(delegate
+			_converts.Add(() =>
 			{
 				_target.analog[(2 * idx) + 0] = (short)_source.AxisValue(nx);
 				_target.analog[(2 * idx) + 1] = (short)_source.AxisValue(ny);
@@ -137,7 +137,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			ControllerDef.AddXYPair($"P{player} Lightgun {{0}}", AxisPairOrientation.RightAndUp, 0, 5000, 10000); //TODO verify direction against hardware
 			var nx = $"P{player} Lightgun X";
 			var ny = $"P{player} Lightgun Y";
-			_converts.Add(delegate
+			_converts.Add(() =>
 			{
 				_target.analog[(2 * idx) + 0] = (short)(_source.AxisValue(nx) / 10000.0f * (ScreenWidth - 1));
 				_target.analog[(2 * idx) + 1] = (short)(_source.AxisValue(ny) / 10000.0f * (ScreenHeight - 1));
@@ -150,7 +150,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			var nx = $"P{player} Stick X";
 			var ny = $"P{player} Stick Y";
 			var nz = $"P{player} Stick Z";
-			_converts.Add(delegate
+			_converts.Add(() =>
 			{
 				_target.analog[(2 * idx) + 0] = (short)_source.AxisValue(nx);
 				_target.analog[(2 * idx) + 1] = (short)_source.AxisValue(ny);

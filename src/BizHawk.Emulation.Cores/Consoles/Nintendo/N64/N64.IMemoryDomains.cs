@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 			if (swizzled)
 			{
-				peekByte = delegate(long addr)
+				peekByte = addr =>
 				{
 					if (addr < 0 || addr >= size)
 					{
@@ -39,7 +39,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 					return Marshal.ReadByte(memPtr, (int)(addr ^ 3));
 				};
-				pokeByte = delegate(long addr, byte val)
+				pokeByte = (addr, val) =>
 				{
 					if (addr < 0 || addr >= size)
 					{
@@ -51,7 +51,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			}
 			else
 			{
-				peekByte = delegate(long addr)
+				peekByte = addr =>
 				{
 					if (addr < 0 || addr >= size)
 					{
@@ -60,7 +60,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 					return Marshal.ReadByte(memPtr, (int)(addr));
 				};
-				pokeByte = delegate(long addr, byte val)
+				pokeByte = (addr, val) =>
 				{
 					if (addr < 0 || addr >= size)
 					{
@@ -117,18 +117,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			}
 
 
-			Func<long, byte> peekByte;
-			Action<long, byte> pokeByte;
-
-			peekByte = delegate(long addr)
-			{
-				return api.m64p_read_memory_8((uint)addr);
-			};
-
-			pokeByte = delegate(long addr, byte val)
-			{
-				api.m64p_write_memory_8((uint)addr, val);
-			};
+			Func<long, byte> peekByte = addr => api.m64p_read_memory_8((uint) addr);
+			Action<long, byte> pokeByte = (addr, val) => api.m64p_write_memory_8((uint) addr, val);
 
 			_memoryDomains.Add(new MemoryDomainDelegate
 				(
