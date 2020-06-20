@@ -227,10 +227,6 @@
 			this.VSInsertCoinP2MenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.VSServiceSwitchMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.BarcodeReaderMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.SMSSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.SmsSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.SmsMenuSeparator = new System.Windows.Forms.ToolStripSeparator();
-			this.SmsVdpViewerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.TI83SubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.KeypadMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.LoadTIFileMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -392,7 +388,6 @@
             this.ConfigSubMenu,
             this.ToolsSubMenu,
             this.NESSubMenu,
-            this.SMSSubMenu,
             this.TI83SubMenu,
 			this.A7800SubMenu,
             this.GBSubMenu,
@@ -2045,36 +2040,6 @@
 			this.BarcodeReaderMenuItem.Text = "Barcode Reader";
 			this.BarcodeReaderMenuItem.Click += new System.EventHandler(this.BarcodeReaderMenuItem_Click);
 			// 
-			// SMSSubMenu
-			// 
-			this.SMSSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.SmsSettingsMenuItem,
-			this.SmsMenuSeparator,
-			this.SmsVdpViewerMenuItem});
-			this.SMSSubMenu.Name = "SMSSubMenu";
-			this.SMSSubMenu.Size = new System.Drawing.Size(39, 17);
-			this.SMSSubMenu.Text = "&SMS";
-			this.SMSSubMenu.DropDownOpened += new System.EventHandler(this.SmsSubMenu_DropDownOpened);
-			// 
-			// SmsSettingsMenuItem
-			// 
-			this.SmsSettingsMenuItem.Name = "SmsSettingsMenuItem";
-			this.SmsSettingsMenuItem.Size = new System.Drawing.Size(262, 22);
-			this.SmsSettingsMenuItem.Text = "Settings...";
-			this.SmsSettingsMenuItem.Click += new System.EventHandler(this.SmsBiosMenuItem_Click);
-			// 
-			// toolStripSeparator24
-			// 
-			this.SmsMenuSeparator.Name = "SmsMenuSeparator";
-			this.SmsMenuSeparator.Size = new System.Drawing.Size(259, 6);
-			// 
-			// SMSVDPViewerToolStripMenuItem
-			// 
-			this.SmsVdpViewerMenuItem.Name = "SmsVdpViewerMenuItem";
-			this.SmsVdpViewerMenuItem.Size = new System.Drawing.Size(262, 22);
-			this.SmsVdpViewerMenuItem.Text = "&VDP Viewer";
-			this.SmsVdpViewerMenuItem.Click += new System.EventHandler(this.SmsVdpViewerMenuItem_Click);
-			// 
 			// TI83SubMenu
 			// 
 			this.TI83SubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -3461,7 +3426,6 @@
 		private System.Windows.Forms.ToolStripMenuItem ImportMoviesMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ForumsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ScreenshotClipboardMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem SMSSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem ScreenshotContextMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem A7800SubMenu;
 		private System.Windows.Forms.ToolStripMenuItem NESSoundChannelsMenuItem;
@@ -3475,7 +3439,6 @@
 		private System.Windows.Forms.ToolStripMenuItem ScreenshotCaptureOSDMenuItem1;
 		private System.Windows.Forms.ToolStripStatusLabel RebootStatusBarIcon;
 		private System.Windows.Forms.ToolStripMenuItem TraceLoggerMenuItem;
-		private System.Windows.Forms.ToolStripSeparator SmsMenuSeparator;
 		private System.Windows.Forms.ToolStripMenuItem FDSControlsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SaveMovieMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SaveMovieContextMenuItem;
@@ -3520,8 +3483,6 @@
 		private System.Windows.Forms.ToolStripMenuItem CoresSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem BatchRunnerMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem DisplayConfigMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem SmsVdpViewerMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem SmsSettingsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem extensionsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripStatusLabel CoreNameStatusBarButton;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem6;

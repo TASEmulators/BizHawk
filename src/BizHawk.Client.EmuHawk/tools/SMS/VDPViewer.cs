@@ -9,6 +9,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[SpecializedTool("VDP Viewer")]
 	public partial class SmsVdpViewer : ToolFormBase, IToolFormAutoConfig
 	{
 		[RequiredService]

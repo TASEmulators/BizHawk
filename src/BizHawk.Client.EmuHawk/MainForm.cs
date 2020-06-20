@@ -1807,7 +1807,6 @@ namespace BizHawk.Client.EmuHawk
 			GenericCoreSubMenu.Visible = false;
 			TI83SubMenu.Visible = false;
 			NESSubMenu.Visible = false;
-			SMSSubMenu.Visible = false;
 			GBSubMenu.Visible = false;
 			NDSSubMenu.Visible = false;
 			A7800SubMenu.Visible = false;
@@ -1834,18 +1833,6 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case "NES":
 					NESSubMenu.Visible = true;
-					break;
-				case "SMS":
-					SMSSubMenu.Text = "&SMS";
-					SMSSubMenu.Visible = true;
-					break;
-				case "SG":
-					SMSSubMenu.Text = "&SG";
-					SMSSubMenu.Visible = true;
-					break;
-				case "GG":
-					SMSSubMenu.Text = "&GG";
-					SMSSubMenu.Visible = true;
 					break;
 				case "GB":
 				case "GBC":

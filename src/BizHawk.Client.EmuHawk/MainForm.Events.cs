@@ -1548,21 +1548,6 @@ namespace BizHawk.Client.EmuHawk
 			Tools.Load<BarcodeEntry>();
 		}
 
-		private void SmsSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			SmsVdpViewerMenuItem.Enabled = Tools.IsAvailable<SmsVdpViewer>();
-		}
-
-		private void SmsBiosMenuItem_Click(object sender, EventArgs e)
-		{
-			GenericCoreConfig.DoDialog(this, "SMS Settings");
-		}
-
-		private void SmsVdpViewerMenuItem_Click(object sender, EventArgs e)
-		{
-			Tools.Load<SmsVdpViewer>();
-		}
-
 		private void Ti83SubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			AutoloadKeypadMenuItem.Checked = Config.Ti83AutoloadKeyPad;
