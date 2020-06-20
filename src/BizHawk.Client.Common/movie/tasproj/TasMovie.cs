@@ -40,7 +40,14 @@ namespace BizHawk.Client.Common
 			TasStateManager.Attach(emulator);
 
 			base.Attach(emulator);
+
+			foreach (var button in emulator.ControllerDefinition.BoolButtons)
+			{
+				_mnemonicCache[button] = Bk2MnemonicLookup.Lookup(button, emulator.SystemId);
+			}
 		}
+
+		private readonly Dictionary<string, char> _mnemonicCache = new Dictionary<string, char>();
 
 		public override bool StartsFromSavestate
 		{
@@ -127,15 +134,15 @@ namespace BizHawk.Client.Common
 				_displayCache = (frame, GetInputState(frame));
 			}
 			
-			return CreateDisplayValueForButton(_displayCache.Controller, Emulator.SystemId, buttonName);
+			return CreateDisplayValueForButton(_displayCache.Controller, buttonName);
 		}
 
-		private static string CreateDisplayValueForButton(IController adapter, string systemId, string buttonName)
+		private string CreateDisplayValueForButton(IController adapter, string buttonName)
 		{
 			if (adapter.Definition.BoolButtons.Contains(buttonName))
 			{
 				return adapter.IsPressed(buttonName)
-					? Bk2MnemonicLookup.Lookup(buttonName, systemId).ToString()
+					? _mnemonicCache[buttonName].ToString()
 					: "";
 			}
 
