@@ -34,12 +34,12 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			set { if (value < 0 || value > 2) throw new ArgumentOutOfRangeException(); interruptMode = value; }
 		}
 
-		public Action IRQCallback = delegate () { };
-		public Action NMICallback = delegate () { };
+		public Action IRQCallback = () => {};
+		public Action NMICallback = () => {};
 
 		// this will be a few cycles off for now
 		// it should suffice for now until Alyosha returns from hiatus
-		public Action IRQACKCallback = delegate () { };
+		public Action IRQACKCallback = () => {};
 
 		private void NMI_()
 		{

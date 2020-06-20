@@ -49,8 +49,8 @@ namespace BizHawk.Emulation.Cores.Components.MC6800
 		public bool NMIPending;
 		public bool IRQPending;
 
-		public Action IRQCallback = delegate () { };
-		public Action NMICallback = delegate () { };
+		public Action IRQCallback = () => {};
+		public Action NMICallback = () => {};
 
 		private void ResetInterrupts()
 		{

@@ -466,9 +466,6 @@
 		<!-- Conditional expressions should declare precedence -->
 		<Rule Id="SA1408" Action="Hidden" />
 
-		<!-- Remove delegate parenthesis when possible -->
-		<Rule Id="SA1410" Action="Hidden" />
-
 		<!-- Use trailing comma in multi-line initializers -->
 		<Rule Id="SA1413" Action="Hidden" />
 	</Rules>

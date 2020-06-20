@@ -35,7 +35,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 		public bool TimIntEn;
 		public bool INT_MSTR;
 
-		public Action IRQCallback = delegate () { };
+		public Action IRQCallback = () => {};
 
 		private void ResetInterrupts()
 		{

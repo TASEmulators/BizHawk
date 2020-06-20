@@ -78,9 +78,9 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 		public bool IRQPending;
 		public bool IN_SYNC;
 
-		public Action IRQCallback = delegate () { };
-		public Action FIRQCallback = delegate () { };
-		public Action NMICallback = delegate () { };
+		public Action IRQCallback = () => {};
+		public Action FIRQCallback = () => {};
+		public Action NMICallback = () => {};
 
 		private void ResetInterrupts()
 		{
