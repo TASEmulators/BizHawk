@@ -330,8 +330,6 @@
 			this.cpct1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.AmstradCPCDisksSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.cpcd1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.arcadeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.settingsToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
 			this.Atari7800HawkCoreMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MainStatusBar = new StatusStripEx();
 			this.DumpStatusButton = new System.Windows.Forms.ToolStripDropDownButton();
@@ -440,7 +438,6 @@
 			this.zXSpectrumToolStripMenuItem,
 			this.GenericCoreSubMenu,
 			this.amstradCPCToolStripMenuItem,
-			this.arcadeToolStripMenuItem,
 			this.HelpSubMenu});
 			this.MainformMenu.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
 			this.MainformMenu.Location = new System.Drawing.Point(0, 0);
@@ -2876,21 +2873,6 @@
 			this.cpcd1ToolStripMenuItem.Size = new System.Drawing.Size(102, 22);
 			this.cpcd1ToolStripMenuItem.Text = "cpcd1";
 			// 
-			// arcadeToolStripMenuItem
-			// 
-			this.arcadeToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.settingsToolStripMenuItem2});
-			this.arcadeToolStripMenuItem.Name = "arcadeToolStripMenuItem";
-			this.arcadeToolStripMenuItem.Size = new System.Drawing.Size(53, 17);
-			this.arcadeToolStripMenuItem.Text = "Arcade";
-			// 
-			// settingsToolStripMenuItem2
-			// 
-			this.settingsToolStripMenuItem2.Name = "settingsToolStripMenuItem2";
-			this.settingsToolStripMenuItem2.Size = new System.Drawing.Size(125, 22);
-			this.settingsToolStripMenuItem2.Text = "Settings...";
-			this.settingsToolStripMenuItem2.Click += new System.EventHandler(this.ArcadeSettingsMenuItem_Click);
-			// 
 			// Atari7800HawkCoreMenuItem
 			// 
 			this.Atari7800HawkCoreMenuItem.Name = "Atari7800HawkCoreMenuItem";
@@ -3884,7 +3866,5 @@
 		private System.Windows.Forms.ToolStripMenuItem NDSSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem NdsSyncSettingsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem NdsSettingsMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem arcadeToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem2;
 	}
 }

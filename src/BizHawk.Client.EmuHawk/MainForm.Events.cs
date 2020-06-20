@@ -2302,11 +2302,6 @@ namespace BizHawk.Client.EmuHawk
 			
 		}
 
-		private void ArcadeSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			GenericCoreConfig.DoDialog(this, "Arcade Settings");
-		}
-
 		private void HelpSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			FeaturesMenuItem.Visible = VersionInfo.DeveloperBuild;
