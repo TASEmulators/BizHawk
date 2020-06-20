@@ -20,7 +20,7 @@ namespace BizHawk.Common
 		private (T Start, T EndInclusive) r;
 
 		/// <inheritdoc cref="Overwrite"/>
-		public MutableRange(T start, T endInclusive) => Overwrite(start, endInclusive);
+		internal MutableRange(T start, T endInclusive) => Overwrite(start, endInclusive);
 
 		/// <exception cref="ArgumentOutOfRangeException">(from setter) <paramref name="value"/> > <see cref="EndInclusive"/></exception>
 		public T Start

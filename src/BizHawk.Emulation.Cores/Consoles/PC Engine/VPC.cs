@@ -357,7 +357,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			// clear inter-sprite priority buffer
 			Array.Clear(InterSpritePriorityBuffer, 0, FrameWidth);
 
-			var testRange = new MutableRange<int>(0, vdc.ActiveLine + 1);
+			var testRange = 0.MutableRangeTo(vdc.ActiveLine + 1);
 			for (int i = 0; i < 64; i++)
 			{
 				int y = (vdc.SpriteAttributeTable[(i * 4) + 0] & 1023) - 64;

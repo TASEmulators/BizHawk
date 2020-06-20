@@ -60,7 +60,7 @@ namespace BizHawk.Emulation.Common
 			// TODO: Memory domain doesn't have the overload we need :(
 			var poop = new byte[count];
 			// TODO: Range has the wrong end value
-			_d.BulkPeekByte(new MutableRange<long>(Position, Position + count - 1), poop);
+			_d.BulkPeekByte(Position.RangeToExclusive(Position + count), poop);
 			Array.Copy(poop, 0, buffer, offset, count);
 			Position += count;
 			return count;

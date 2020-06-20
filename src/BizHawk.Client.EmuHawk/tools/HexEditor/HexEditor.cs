@@ -559,7 +559,7 @@ namespace BizHawk.Client.EmuHawk
 			if (end <= start)
 				return dict;
 
-			var range = new MutableRange<long>(start, end - 1);
+			var range = start.RangeToExclusive(end);
 
 			switch (dataSize)
 			{
