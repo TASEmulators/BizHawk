@@ -250,7 +250,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             ST3,
             /// <summary>
             /// 1 byte returned - ST0
-            /// (used for version & invalid)
+            /// (used for version &amp; invalid)
             /// </summary>
             ST0,
             /// <summary>

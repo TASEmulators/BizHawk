@@ -11,7 +11,7 @@ namespace BizHawk.Client.EmuHawk
 	/// <summary>
 	/// Modified OpenTK Gamepad Handler<br/>
 	/// The jump from OpenTK 1.x to 3.x broke the original <see cref="Joystick">OpenTK.Input.Joystick</see> implementation, but we gain <see cref="OpenTKGamePad">OpenTK.Input.GamePad</see> support on Unix. However, the gamepad auto-mapping is a little suspect, so we use both methods.<br/>
-	/// As a side-effect, it should make it easier to implement virtual&rarr;host haptics in the future.
+	/// As a side-effect, it should make it easier to implement virtual→host haptics in the future.
 	/// </summary>
 	public class OTK_GamePad
 	{

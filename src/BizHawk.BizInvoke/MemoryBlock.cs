@@ -136,7 +136,7 @@ namespace BizHawk.BizInvoke
 			return _hash;
 		}
 
-		/// <summary>set r/w/x protection on a portion of memory. rounded to encompassing pages</summary
+		/// <summary>set r/w/x protection on a portion of memory. rounded to encompassing pages</summary>
 		/// <exception cref="InvalidOperationException">failed to protect memory</exception>
 		public void Protect(ulong start, ulong length, Protection prot)
 		{

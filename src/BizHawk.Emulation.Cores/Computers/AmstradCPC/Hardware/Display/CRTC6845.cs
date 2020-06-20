@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 	/// Datasheet:    http://www.cpcwiki.eu/imgs/b/b5/Um6845r.umc.pdf
 	/// ------------------------------------------------------------------------------------------------------
 	/// MC6845        Motorola        2
-	/// Datasheet:    http://www.cpcwiki.eu/imgs/d/da/Mc6845.motorola.pdf & http://bitsavers.trailing-edge.com/components/motorola/_dataSheets/6845.pdf
+	/// Datasheet:    http://www.cpcwiki.eu/imgs/d/da/Mc6845.motorola.pdf &amp; http://bitsavers.trailing-edge.com/components/motorola/_dataSheets/6845.pdf
 	/// ------------------------------------------------------------------------------------------------------
 	/// AMS40489      Amstrad         3           Only exists in the CPC464+, CPC6128+ and GX4000 and is integrated into a single CPC+ ASIC chip (along with the gatearray)
 	/// Datasheet:    {none}
@@ -272,7 +272,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		}
 
 		/// <summary>
-		/// The CRTC latches the Display Start H & L address at different times
+		/// The CRTC latches the Display Start H &amp; L address at different times
 		/// (depending on the chip type)
 		/// </summary>
 		private int StartAddressLatch;
@@ -628,7 +628,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		}
 
 		/// <summary>
-		/// Gets the combined value of R12 & R13
+		/// Gets the combined value of R12 &amp; R13
 		/// </summary>
 		private int StartAddressRegisterValue
 		{
@@ -641,7 +641,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		}
 
 		/// <summary>
-		/// Gets the combined value of R14 & R15
+		/// Gets the combined value of R14 &amp; R15
 		/// </summary>
 		private int CursorAddressRegisterValue
 		{
@@ -654,14 +654,14 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		}
 
 		/// <summary>
-		/// Current programmed HSYNC width for Type 0 (HD6845S & UM6845) & Type 1 (UM6845R)
+		/// Current programmed HSYNC width for Type 0 (HD6845S &amp; UM6845) &amp; Type 1 (UM6845R)
 		/// </summary>
 		// Bits 3..0 define Horizontal Sync Width. 
 		// If 0 is programmed no HSYNC is generated.
 		private int HSYNCWidth_Type0_1 => (Register[SYNC_WIDTHS] >> 0) & 0x0F;
 
 		/// <summary>
-		/// Current programmed HSYNC width for Type 2 (MC6845), 3 (AMS40489) & 4 (pre-ASIC)
+		/// Current programmed HSYNC width for Type 2 (MC6845), 3 (AMS40489) &amp; 4 (pre-ASIC)
 		/// </summary>
 		private int HSYNCWidth_Type2_3_4
 		{
@@ -677,7 +677,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		}
 
 		/// <summary>
-		/// Current programmed VSYNC width for Type 0 (HD6845S & UM6845), 3 (AMS40489) & 4 (pre-ASIC)
+		/// Current programmed VSYNC width for Type 0 (HD6845S &amp; UM6845), 3 (AMS40489) &amp; 4 (pre-ASIC)
 		/// </summary>
 		private int VSYNCWidth_Type0_3_4
 		{
@@ -693,14 +693,14 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		}
 
 		/// <summary>
-		/// Current programmed VSYNC width for Type 1 (UM6845R) & 2 (MC6845)
+		/// Current programmed VSYNC width for Type 1 (UM6845R) &amp; 2 (MC6845)
 		/// </summary>
 		// Bits 7..4 are ignored. 
 		// Vertical Sync is fixed at 16 lines.
 		private int VSYNCWidth_Type1_2 => 16;
 
 		/// <summary>
-		/// Read Register (HD6845S & UM6845)
+		/// Read Register (HD6845S &amp; UM6845)
 		/// </summary>
 		private bool ReadRegister_Type0(ref int data)
 		{
@@ -854,7 +854,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		}
 
 		/// <summary>
-		/// Read Register (AMS40489 & pre-ASIC)
+		/// Read Register (AMS40489 &amp; pre-ASIC)
 		/// </summary>
 		private bool ReadRegister_Type3_4(ref int data)
 		{
@@ -920,7 +920,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		}
 
 		/// <summary>
-		/// Write Active Register (HD6845S & UM6845)
+		/// Write Active Register (HD6845S &amp; UM6845)
 		/// </summary>
 		private void WriteRegister_Type0(int data)
 		{
@@ -957,7 +957,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		}
 
 		/// <summary>
-		/// Write Active Register (HD6845S & UM6845)
+		/// Write Active Register (HD6845S &amp; UM6845)
 		/// </summary>
 		private void WriteRegister_Type1(int data)
 		{
@@ -1085,7 +1085,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		}
 
 		/// <summary>
-		/// Read Status Register (HD6845S & UM6845)
+		/// Read Status Register (HD6845S &amp; UM6845)
 		/// No status register available
 		/// </summary>
 		private bool ReadStatus_Unavailable(ref int data)
@@ -2179,7 +2179,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		private const int CURSOR_H = 14;
 		private const int CURSOR_L = 15;
 		/// <summary>
-		/// This 14 bit read -only register is used to store the contents of the Address Register(H & L) when the LPSTB input pulses high.
+		/// This 14 bit read -only register is used to store the contents of the Address Register(H &amp; L) when the LPSTB input pulses high.
 		/// This register consists of an 8 bit lower and 6 bit higher register.
 		/// </summary>
 		private const int LIGHT_PEN_H = 16;

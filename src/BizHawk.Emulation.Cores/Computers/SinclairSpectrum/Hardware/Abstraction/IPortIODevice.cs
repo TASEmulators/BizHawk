@@ -2,7 +2,7 @@
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
 	/// <summary>
-	/// Represents a device that utilizes port IN & OUT
+	/// Represents a device that utilizes port IN &amp; OUT
 	/// </summary>
 	public interface IPortIODevice
 	{

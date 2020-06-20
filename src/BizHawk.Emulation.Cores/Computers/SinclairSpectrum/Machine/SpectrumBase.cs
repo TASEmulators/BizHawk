@@ -113,7 +113,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		public bool _renderSound;
 
 		/// <summary>
-		/// Mask constants & misc
+		/// Mask constants &amp; misc
 		/// </summary>
 		protected const int BORDER_BIT = 0x07;
 		protected const int EAR_BIT = 0x10;

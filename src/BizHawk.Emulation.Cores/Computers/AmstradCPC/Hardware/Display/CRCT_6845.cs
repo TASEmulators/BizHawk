@@ -325,7 +325,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// R13:    Display Start Address (Low)
 		/// Unit:   
 		/// Notes:  Define the LSB of MA when a CRTC-screen starts
-		///         Allows you to offset the start of screen memory for hardware scrolling, and if using memory from address &0000 with the firmware.
+		///         Allows you to offset the start of screen memory for hardware scrolling, and if using memory from address &amp;0000 with the firmware.
 		/// </summary>
 		public const int DISP_START_ADDR_L = 13;
 		/// <summary>

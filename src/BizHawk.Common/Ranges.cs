@@ -6,7 +6,7 @@ using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Common
 {
-	/// <summary>represents a closed range of <typeparamref name="T"/> (class invariant: <see cref="Start"/> &le; <see cref="EndInclusive"/>)</summary>
+	/// <summary>represents a closed range of <typeparamref name="T"/> (class invariant: <see cref="Start"/> ≤ <see cref="EndInclusive"/>)</summary>
 	public interface Range<out T> where T : unmanaged, IComparable<T>
 	{
 		T Start { get; }
@@ -14,7 +14,7 @@ namespace BizHawk.Common
 		T EndInclusive { get; }
 	}
 
-	/// <summary>represents a closed range of <typeparamref name="T"/> which can be grown or shrunk (class invariant: <see cref="Start"/> &le; <see cref="EndInclusive"/>)</summary>
+	/// <summary>represents a closed range of <typeparamref name="T"/> which can be grown or shrunk (class invariant: <see cref="Start"/> ≤ <see cref="EndInclusive"/>)</summary>
 	public class MutableRange<T> : Range<T> where T : unmanaged, IComparable<T>
 	{
 		private (T Start, T EndInclusive) r;
@@ -224,8 +224,8 @@ namespace BizHawk.Common
 		/// <inheritdoc cref="RangeToExclusive(int,int)"/>
 		public static Range<byte> RangeToExclusive(this byte start, byte endExclusive) => MutableRangeToExclusive(start, endExclusive);
 
-		/// <exception cref="ArgumentOutOfRangeException"><paramref name="endExclusive"/> &le; <paramref name="start"/> (empty ranges where <paramref name="start"/> = <paramref name="endExclusive"/> are not permitted)</exception>
-		/// <exception cref="ArithmeticException"><paramref name="endExclusive"/> is min value of integral type (therefore <paramref name="endExclusive"/> &le; <paramref name="start"/>)</exception>
+		/// <exception cref="ArgumentOutOfRangeException"><paramref name="endExclusive"/> ≤ <paramref name="start"/> (empty ranges where <paramref name="start"/> = <paramref name="endExclusive"/> are not permitted)</exception>
+		/// <exception cref="ArithmeticException"><paramref name="endExclusive"/> is min value of integral type (therefore <paramref name="endExclusive"/> ≤ <paramref name="start"/>)</exception>
 		public static Range<int> RangeToExclusive(this int start, int endExclusive) => MutableRangeToExclusive(start, endExclusive);
 
 		/// <inheritdoc cref="RangeToExclusive(int,int)"/>

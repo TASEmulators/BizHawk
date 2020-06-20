@@ -1322,7 +1322,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			/// </summary>
 			Amstrad40226,
 			/// <summary>
-			/// Plus & GX-4000
+			/// Plus &amp; GX-4000
 			/// All the Plus range is built upon a bigger ASIC chip which is integrating many features of the classic CPC (FDC, CRTC, PPI, Gate Array/PAL) and all 
 			/// the new Plus specific features. The Gate Array on the Plus have a new register, named RMR2, to expand the ROM mapping functionnalities of the machine. 
 			/// This register requires to be unlocked first to be available. And finally, the RGB levels produced by the ASIC on the Plus are noticeably differents

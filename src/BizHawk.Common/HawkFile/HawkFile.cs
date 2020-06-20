@@ -62,7 +62,7 @@ namespace BizHawk.Common
 
 		public readonly bool IsArchive;
 
-		/// <summary>Indicates whether the file is an archive member (IsArchive && IsBound[to member])</summary>
+		/// <summary>Indicates whether the file is an archive member (IsArchive &amp;&amp; IsBound[to member])</summary>
 		public bool IsArchiveMember => IsArchive && IsBound;
 
 		/// <summary>Gets a value indicating whether this instance is bound</summary>
