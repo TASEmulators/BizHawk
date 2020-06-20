@@ -1816,7 +1816,6 @@ namespace BizHawk.Client.EmuHawk
 			PSXSubMenu.Visible = false;
 			ColecoSubMenu.Visible = false;
 			N64SubMenu.Visible = false;
-			SaturnSubMenu.Visible = false;
 			DGBSubMenu.Visible = false;
 			DGBHawkSubMenu.Visible = false;
 			GGLSubMenu.Visible = false;
@@ -1904,9 +1903,6 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case "N64":
 					N64SubMenu.Visible = true;
-					break;
-				case "SAT":
-					SaturnSubMenu.Visible = true;
 					break;
 				case "DGB":
 					if (Emulator is GBHawkLink)

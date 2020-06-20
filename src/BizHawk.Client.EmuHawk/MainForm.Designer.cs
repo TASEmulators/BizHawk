@@ -277,8 +277,6 @@
 			this.N64CircularAnalogRangeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MupenStyleLagMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.N64ExpansionSlotMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.SaturnSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.SaturnPreferencesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.DGBSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.DGBsettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.DGBHawkSubMenu = new System.Windows.Forms.ToolStripMenuItem();
@@ -436,7 +434,6 @@
             this.SNESSubMenu,
             this.ColecoSubMenu,
             this.N64SubMenu,
-            this.SaturnSubMenu,
             this.DGBSubMenu,
             this.DGBHawkSubMenu,
 			this.GGLSubMenu,
@@ -2475,21 +2472,6 @@
 			this.N64ExpansionSlotMenuItem.Text = "&Use Expansion Slot";
 			this.N64ExpansionSlotMenuItem.Click += new System.EventHandler(this.N64ExpansionSlotMenuItem_Click);
 			// 
-			// SaturnSubMenu
-			// 
-			this.SaturnSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.SaturnPreferencesMenuItem});
-			this.SaturnSubMenu.Name = "SaturnSubMenu";
-			this.SaturnSubMenu.Size = new System.Drawing.Size(51, 17);
-			this.SaturnSubMenu.Text = "&Saturn";
-			// 
-			// SaturnPreferencesMenuItem
-			// 
-			this.SaturnPreferencesMenuItem.Name = "SaturnPreferencesMenuItem";
-			this.SaturnPreferencesMenuItem.Size = new System.Drawing.Size(144, 22);
-			this.SaturnPreferencesMenuItem.Text = "Preferences...";
-			this.SaturnPreferencesMenuItem.Click += new System.EventHandler(this.SaturnPreferencesMenuItem_Click);
-			// 
 			// DGBSubMenu
 			// 
 			this.DGBSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -3800,8 +3782,6 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator29;
 		private System.Windows.Forms.ToolStripMenuItem N64SubMenu;
 		private System.Windows.Forms.ToolStripMenuItem N64PluginSettingsMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem SaturnSubMenu;
-		private System.Windows.Forms.ToolStripMenuItem SaturnPreferencesMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ConfigContextMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem RewindOptionsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem FirmwaresMenuItem;

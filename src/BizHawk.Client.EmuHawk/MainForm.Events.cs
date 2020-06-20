@@ -1910,11 +1910,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void SaturnPreferencesMenuItem_Click(object sender, EventArgs e)
-		{
-			GenericCoreConfig.DoDialog(this, "Saturn Settings");
-		}
-
 		private void DgbSettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			if (Emulator is GambatteLink gambatte)
