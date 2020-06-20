@@ -40,7 +40,6 @@
 		/// Channel F addressable through the address space)
 		/// </summary>
 		/// <param name="addr"></param>
-		/// <returns></returns>
 		public void WriteBus(ushort addr, byte value)
 		{
 

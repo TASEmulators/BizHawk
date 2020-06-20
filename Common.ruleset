@@ -551,9 +551,6 @@
 		<!-- Element return value documentation should have text -->
 		<Rule Id="SA1616" Action="Hidden" />
 
-		<!-- Void return value should not be documented -->
-		<Rule Id="SA1617" Action="Hidden" />
-
 		<!-- Property summary documentation should match accessors -->
 		<Rule Id="SA1623" Action="Hidden" />
 
