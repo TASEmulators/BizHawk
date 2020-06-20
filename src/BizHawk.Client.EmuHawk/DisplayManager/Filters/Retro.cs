@@ -39,7 +39,7 @@ namespace BizHawk.Client.EmuHawk.Filters
 			Errors = "";
 
 			//load up the shaders
-			Shaders = new RetroShader[preset.Passes.Count];
+			var shaders = new RetroShader[preset.Passes.Count];
 			for (var i = 0; i < preset.Passes.Count; i++)
 			{
 				//acquire content. we look for it in any reasonable filename so that one preset can bind to multiple shaders
@@ -72,7 +72,7 @@ namespace BizHawk.Client.EmuHawk.Filters
 					return;
 				}
 
-				var shader = Shaders[i] = new RetroShader(Owner, content, debug);
+				var shader = shaders[i] = new RetroShader(Owner, content, debug);
 				if (!shader.Available)
 				{
 					Errors += $"===================\r\nPass {i}:\r\n{shader.Errors}\n";
@@ -80,6 +80,7 @@ namespace BizHawk.Client.EmuHawk.Filters
 				}
 			}
 
+			Shaders = shaders;
 			Available = true;
 		}
 
@@ -103,7 +104,7 @@ namespace BizHawk.Client.EmuHawk.Filters
 		public readonly string Errors;
 		public readonly IGL Owner;
 		public readonly RetroShaderPreset Preset;
-		public readonly RetroShader[] Shaders;
+		public readonly RetroShader[] Shaders = new RetroShader[0];
 		public readonly RetroShaderPreset.ShaderPass[] Passes;
 
 		private bool _isDisposed;
