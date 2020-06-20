@@ -15,11 +15,11 @@ namespace BizHawk.Emulation.Common
 	public class SpeexResampler : IDisposable, ISoundProvider
 	{
 		private static readonly LibSpeexDSP NativeDSP;
-		private static readonly IImportResolver NativeDLL;
 		static SpeexResampler()
 		{
-			NativeDLL = new DynamicLibraryImportResolver(OSTailoredCode.IsUnixHost ? "libspeexdsp.so.1" : "libspeexdsp.dll");
-			NativeDSP = BizInvoker.GetInvoker<LibSpeexDSP>(NativeDLL, CallingConventionAdapters.Native);
+			var resolver = new DynamicLibraryImportResolver(
+				OSTailoredCode.IsUnixHost ? "libspeexdsp.so.1" : "libspeexdsp.dll", eternal: true);
+			NativeDSP = BizInvoker.GetInvoker<LibSpeexDSP>(resolver, CallingConventionAdapters.Native);
 		}
 
 		// to accept an ISyncSoundProvider input

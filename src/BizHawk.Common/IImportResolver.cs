@@ -25,11 +25,22 @@ namespace BizHawk.Common
 		});
 
 		private IntPtr _p;
+		private bool _eternal;
 
-		public DynamicLibraryImportResolver(string dllName)
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="dllName"></param>
+		/// <param name="eternal">
+		/// If true, the DLL will never be unloaded, even by god.  Use this when you need lifetime semantics similar to [DllImport]
+		/// </param>
+		public DynamicLibraryImportResolver(string dllName, bool eternal = false)
 		{
 			static string ResolveFilePath(string orig) => orig[0] == '/' ? orig : asdf.Value.Select(dir => dir + orig).FirstOrDefault(File.Exists) ?? orig;
 			_p = OSTailoredCode.LinkedLibManager.LoadOrThrow(OSTailoredCode.IsUnixHost ? ResolveFilePath(dllName) : dllName);
+			_eternal = eternal;
+			if (eternal)
+				GC.SuppressFinalize(this);
 		}
 
 		public IntPtr GetProcAddrOrZero(string entryPoint) => OSTailoredCode.LinkedLibManager.GetProcAddrOrZero(_p, entryPoint);
@@ -38,7 +49,8 @@ namespace BizHawk.Common
 
 		private void DisposeHelper()
 		{
-			if (_p == IntPtr.Zero) return; // already freed
+			if (_eternal || _p == IntPtr.Zero)
+				return;
 			OSTailoredCode.LinkedLibManager.FreeByPtr(_p);
 			_p = IntPtr.Zero;
 		}
