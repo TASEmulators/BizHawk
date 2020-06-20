@@ -40,11 +40,11 @@
 			this.label4 = new System.Windows.Forms.Label();
 			this.buttonAuto = new System.Windows.Forms.Button();
 			this.panelSizeSelect = new System.Windows.Forms.Panel();
-			this.checkBoxPad = new System.Windows.Forms.CheckBox();
-			this.checkBoxASync = new System.Windows.Forms.CheckBox();
 			this.lblSize = new System.Windows.Forms.Label();
 			this.numericTextBoxW = new BizHawk.Client.EmuHawk.NumericTextBox();
 			this.numericTextBoxH = new BizHawk.Client.EmuHawk.NumericTextBox();
+			this.checkBoxPad = new System.Windows.Forms.CheckBox();
+			this.checkBoxASync = new System.Windows.Forms.CheckBox();
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.lblResolutionWarning = new System.Windows.Forms.Label();
 			this.tableLayoutPanel4.SuspendLayout();
@@ -177,26 +177,6 @@
 			this.panelSizeSelect.Size = new System.Drawing.Size(162, 84);
 			this.panelSizeSelect.TabIndex = 15;
 			// 
-			// checkBoxPad
-			// 
-			this.checkBoxPad.AutoSize = true;
-			this.checkBoxPad.Location = new System.Drawing.Point(444, 35);
-			this.checkBoxPad.Name = "checkBoxPad";
-			this.checkBoxPad.Size = new System.Drawing.Size(45, 17);
-			this.checkBoxPad.TabIndex = 15;
-			this.checkBoxPad.Text = "Pad";
-			this.checkBoxPad.UseVisualStyleBackColor = true;
-			// 
-			// checkBoxASync
-			// 
-			this.checkBoxASync.AutoSize = true;
-			this.checkBoxASync.Location = new System.Drawing.Point(347, 12);
-			this.checkBoxASync.Name = "checkBoxASync";
-			this.checkBoxASync.Size = new System.Drawing.Size(95, 17);
-			this.checkBoxASync.TabIndex = 16;
-			this.checkBoxASync.Text = "Alternate Sync";
-			this.checkBoxASync.UseVisualStyleBackColor = true;
-			// 
 			// lblSize
 			// 
 			this.lblSize.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
@@ -225,6 +205,26 @@
 			this.numericTextBoxH.Name = "numericTextBoxH";
 			this.numericTextBoxH.Size = new System.Drawing.Size(70, 20);
 			this.numericTextBoxH.TabIndex = 11;
+			// 
+			// checkBoxPad
+			// 
+			this.checkBoxPad.AutoSize = true;
+			this.checkBoxPad.Location = new System.Drawing.Point(444, 35);
+			this.checkBoxPad.Name = "checkBoxPad";
+			this.checkBoxPad.Size = new System.Drawing.Size(45, 17);
+			this.checkBoxPad.TabIndex = 15;
+			this.checkBoxPad.Text = "Pad";
+			this.checkBoxPad.UseVisualStyleBackColor = true;
+			// 
+			// checkBoxASync
+			// 
+			this.checkBoxASync.AutoSize = true;
+			this.checkBoxASync.Location = new System.Drawing.Point(347, 12);
+			this.checkBoxASync.Name = "checkBoxASync";
+			this.checkBoxASync.Size = new System.Drawing.Size(95, 17);
+			this.checkBoxASync.TabIndex = 16;
+			this.checkBoxASync.Text = "Alternate Sync";
+			this.checkBoxASync.UseVisualStyleBackColor = true;
 			// 
 			// panel1
 			// 
@@ -261,10 +261,13 @@
 			this.Controls.Add(this.buttonOK);
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.checkBoxResize);
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+			this.MaximizeBox = false;
+			this.MinimizeBox = false;
 			this.Name = "VideoWriterChooserForm";
 			this.ShowIcon = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "Choose A\\V Writer";
+			this.Text = "Choose A/V Writer";
 			this.tableLayoutPanel4.ResumeLayout(false);
 			this.tableLayoutPanel4.PerformLayout();
 			this.panelSizeSelect.ResumeLayout(false);
