@@ -2020,11 +2020,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void VirtualBoySettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			GenericCoreConfig.DoDialog(this, "VirtualBoy Settings");
-		}
-
 		private void ZXSpectrumControllerConfigurationMenuItem_Click(object sender, EventArgs e)
 		{
 			if (Emulator is ZXSpectrum zxs)

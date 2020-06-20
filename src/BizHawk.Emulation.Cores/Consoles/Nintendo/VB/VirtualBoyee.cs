@@ -11,7 +11,7 @@ using System.Linq;
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 {
 	[Core("Virtual Boyee", "Mednafen Team", true, true, "0.9.44.1",
-		"https://mednafen.github.io/releases/", false)]
+		"https://mednafen.github.io/releases/", false, "VirtualBoy")]
 	public class VirtualBoyee : WaterboxCore, ISettable<VirtualBoyee.Settings, VirtualBoyee.SyncSettings>
 	{
 		private LibVirtualBoyee _boyee;

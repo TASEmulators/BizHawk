@@ -1821,7 +1821,6 @@ namespace BizHawk.Client.EmuHawk
 			AppleSubMenu.Visible = false;
 			C64SubMenu.Visible = false;
 			IntvSubMenu.Visible = false;
-			virtualBoyToolStripMenuItem.Visible = false;
 			zXSpectrumToolStripMenuItem.Visible = false;
 			amstradCPCToolStripMenuItem.Visible = false;
 
@@ -1914,9 +1913,6 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case "INTV":
 					IntvSubMenu.Visible = true;
-					break;
-				case "VB":
-					virtualBoyToolStripMenuItem.Visible = true;
 					break;
 				case "ZXSpectrum":
 					zXSpectrumToolStripMenuItem.Visible = true;

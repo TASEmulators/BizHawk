@@ -293,8 +293,6 @@
 			this.C64SettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.IntvSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.IntVControllerSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.virtualBoyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.preferencesToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.zXSpectrumToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ZXSpectrumCoreEmulationSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ZXSpectrumControllerConfigurationMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -425,7 +423,6 @@
 			this.AppleSubMenu,
 			this.C64SubMenu,
 			this.IntvSubMenu,
-			this.virtualBoyToolStripMenuItem,
 			this.zXSpectrumToolStripMenuItem,
 			this.GenericCoreSubMenu,
 			this.amstradCPCToolStripMenuItem,
@@ -2573,21 +2570,6 @@
 			this.IntVControllerSettingsMenuItem.Text = "Controller Settings...";
 			this.IntVControllerSettingsMenuItem.Click += new System.EventHandler(this.IntVControllerSettingsMenuItem_Click);
 			// 
-			// virtualBoyToolStripMenuItem
-			// 
-			this.virtualBoyToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.preferencesToolStripMenuItem1});
-			this.virtualBoyToolStripMenuItem.Name = "virtualBoyToolStripMenuItem";
-			this.virtualBoyToolStripMenuItem.Size = new System.Drawing.Size(67, 17);
-			this.virtualBoyToolStripMenuItem.Text = "&VirtualBoy";
-			// 
-			// preferencesToolStripMenuItem1
-			// 
-			this.preferencesToolStripMenuItem1.Name = "preferencesToolStripMenuItem1";
-			this.preferencesToolStripMenuItem1.Size = new System.Drawing.Size(144, 22);
-			this.preferencesToolStripMenuItem1.Text = "Preferences...";
-			this.preferencesToolStripMenuItem1.Click += new System.EventHandler(this.VirtualBoySettingsMenuItem_Click);
-			// 
 			// zXSpectrumToolStripMenuItem
 			// 
 			this.zXSpectrumToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -3778,8 +3760,6 @@
 		private System.Windows.Forms.ToolStripMenuItem SNESControllerConfigurationMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem C64DisksSubMenu;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator36;
-		private System.Windows.Forms.ToolStripMenuItem virtualBoyToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem preferencesToolStripMenuItem1;
 		private System.Windows.Forms.ToolStripMenuItem Atari7800HawkCoreMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem zXSpectrumToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ZXSpectrumControllerConfigurationMenuItem;
