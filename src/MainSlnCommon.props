@@ -3,8 +3,9 @@
 	<PropertyGroup>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<CodeAnalysisRuleSet>$(ProjectDir)../../Common.ruleset</CodeAnalysisRuleSet>
+		<DocumentationFile>$(ProjectDir)bin/doc_comments.xml</DocumentationFile>
 		<MSBuildWarningsAsMessages>NU1702</MSBuildWarningsAsMessages>
-		<NoWarn>NU1701</NoWarn>
+		<NoWarn>CS1570;CS1572;CS1573;CS1574;CS1591;CS1734;NU1701</NoWarn>
 		<OutputPath>$(ProjectDir)../../output/dll</OutputPath>
 	</PropertyGroup>
 	<ItemGroup>

@@ -234,11 +234,6 @@
 		<Rule Id="CA5351" Action="Hidden" />
 	</Rules>
 
-	<Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers.SpecialRules">
-		<!-- XML comment analysis disabled -->
-		<Rule Id="SA0001" Action="Hidden" />
-	</Rules>
-
 	<Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers.SpacingRules">
 		<!-- Keywords should be spaced correctly -->
 		<Rule Id="SA1000" Action="Hidden" />
@@ -497,6 +492,9 @@
 		<!-- Opening braces should not be followed by blank line -->
 		<Rule Id="SA1505" Action="Hidden" />
 
+		<!-- Element documentation headers should not be followed by blank line -->
+		<Rule Id="SA1506" Action="Hidden" />
+
 		<!-- Code should not contain multiple blank lines in a row -->
 		<Rule Id="SA1507" Action="Hidden" />
 
@@ -538,11 +536,29 @@
 	</Rules>
 
 	<Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers.DocumentationRules">
+		<!-- Element documentation should have summary text -->
+		<Rule Id="SA1606" Action="Hidden" />
+
+		<!-- Property documentation should have value text -->
+		<Rule Id="SA1610" Action="Hidden" />
+
 		<!-- Element parameter documentation should match element parameters -->
 		<Rule Id="SA1612" Action="Hidden" />
 
+		<!-- Element parameter documentation should have text -->
+		<Rule Id="SA1614" Action="Hidden" />
+
+		<!-- Element return value documentation should have text -->
+		<Rule Id="SA1616" Action="Hidden" />
+
+		<!-- Void return value should not be documented -->
+		<Rule Id="SA1617" Action="Hidden" />
+
 		<!-- Property summary documentation should match accessors -->
 		<Rule Id="SA1623" Action="Hidden" />
+
+		<!-- Element documentation should not be copied and pasted -->
+		<Rule Id="SA1625" Action="Hidden" />
 
 		<!-- Single-line comments should not use documentation style slashes -->
 		<Rule Id="SA1626" Action="Hidden" />
