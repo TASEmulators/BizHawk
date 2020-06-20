@@ -9,8 +9,7 @@ namespace BizHawk.Bizware.BizwareGL
 {
 
 	/// <summary>
-	/// This is a wrapper over hopefully any OpenGL bindings..
-	/// And possibly, quite possibly, Direct3d.. even though none of your shaders would work. (could use nvidia CG, native dlls in necessary since this would only be for windows)
+	/// This is a wrapper over OpenGL and direct3d to give a uniform interface
 	/// TODO - This really needs to be split up into an internal and a user interface. so many of the functions are made to support the smart wrappers
 	/// Maybe make a method that returns an interface used for advanced methods (and IGL_TK could implement that as well and just "return this:")
 	/// 

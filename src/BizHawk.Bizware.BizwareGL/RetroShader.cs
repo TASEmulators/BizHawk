@@ -20,10 +20,10 @@ namespace BizHawk.Bizware.BizwareGL
 			VertexLayout = owner.CreateVertexLayout();
 			VertexLayout.DefineVertexAttribute("position", 0, 4, VertexAttribPointerType.Float, AttributeUsage.Position, false, 40, 0);
 			VertexLayout.DefineVertexAttribute("color", 1, 4, VertexAttribPointerType.Float, AttributeUsage.Color0, false, 40, 16); //just dead weight, i have no idea why this is here. but some old HLSL compilers (used in bizhawk for various reasons) will want it to exist here since it exists in the vertex shader
-			VertexLayout.DefineVertexAttribute("texCoord1", 2, 2, VertexAttribPointerType.Float, AttributeUsage.Texcoord0, false, 40, 32);
+			VertexLayout.DefineVertexAttribute("tex", 2, 2, VertexAttribPointerType.Float, AttributeUsage.Texcoord0, false, 40, 32);
 			VertexLayout.Close();
 
-			string defines = "#define TEXCOORD TEXCOORD0\r\n"; //maybe not safe..
+			string defines = "";
 			string vsSource = $"#define VERTEX\r\n{defines}{source}";
 			string psSource = $"#define FRAGMENT\r\n{defines}{source}";
 			var vs = owner.CreateVertexShader(vsSource, "main_vertex", debug);
@@ -53,6 +53,7 @@ namespace BizHawk.Bizware.BizwareGL
 				}
 			}
 
+			//if a sampler isn't available, we can't do much, although this does interfere with debugging (shaders just returning colors will malfunction)
 			if (sampler0 == null)
 				return;
 

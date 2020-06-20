@@ -436,6 +436,10 @@ namespace BizHawk.Client.EmuHawk
 					ui.Opaque = uw;
 					string name = prefix + descr.Name;
 
+					//uniforms done through the entry point signature have $ in their names which isn't helpful, so get rid of that
+					if (name.StartsWith("$"))
+						name = name.Substring(1);
+
 					ui.Name = name;
 					uw.Description = descr;
 					uw.EffectHandle = handle;

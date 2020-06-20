@@ -42,9 +42,21 @@ namespace BizHawk.Client.EmuHawk.Filters
 			Shaders = new RetroShader[preset.Passes.Count];
 			for (var i = 0; i < preset.Passes.Count; i++)
 			{
-				//acquire content
-				var path = Path.Combine(baseDirectory, preset.Passes[i].ShaderPath);
+				//acquire content. we look for it in any reasonable filename so that one preset can bind to multiple shaders
 				string content;
+				var path = Path.Combine(baseDirectory, preset.Passes[i].ShaderPath);
+				if (!File.Exists(path))
+				{
+					if (!Path.HasExtension(path))
+						path += ".cg";
+					if (!File.Exists(path))
+					{
+						if (owner.API == "OPENGL")
+							path = Path.ChangeExtension(path, ".glsl");
+						else
+							path = Path.ChangeExtension(path, ".hlsl");
+					}
+				}
 				try
 				{
 					content = ResolveIncludes(File.ReadAllText(path), Path.GetDirectoryName(path));
@@ -166,24 +178,6 @@ namespace BizHawk.Client.EmuHawk.Filters
 
 		public List<ShaderPass> Passes { get; set; } = new List<ShaderPass>();
 
-		/// <summary>
-		/// Indicates whether any of the passes contain GLSL filenames (these are invalid now)
-		/// </summary>
-		public bool ContainsGlsl
-		{
-			get
-			{
-				foreach (var pass in Passes)
-				{
-					if (Path.GetExtension(pass.ShaderPath)?.ToLowerInvariant() == ".glsl")
-					{
-						return true;
-					}
-				}
-
-				return false;
-			}
-		}
 
 		public enum ScaleType
 		{

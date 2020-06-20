@@ -37,17 +37,15 @@ void main_vertex
    float dx = delta.x;
    float dy = delta.y;
 
-   coords = tex_coords (
-      tex + float2(-dx, -dy),
-      tex + float2(-dx, 0),
-      tex + float2(-dx, dy),
-      tex + float2(0, -dy),
-      tex + float2(0, 0),
-      tex + float2(0, dy),
-      tex + float2(dx, -dy),
-      tex + float2(dx, 0),
-      tex + float2(dx, dy)
-   );
+   coords.c00 = tex + float2(-dx, -dy);
+   coords.c01 = tex + float2(-dx, 0.0);
+   coords.c02 = tex + float2(-dx, dy);
+   coords.c10 = tex + float2(0.0, -dy);
+   coords.c11 = tex + float2(0.0, 0.0);
+   coords.c12 = tex + float2(0.0, dy);
+   coords.c20 = tex + float2(dx, -dy);
+   coords.c21 = tex + float2(dx, 0);
+   coords.c22 = tex + float2(dx, dy);
 }
 
 const float mx = 0.325;      // start smoothing wt.
@@ -67,7 +65,7 @@ float4 main_fragment (in tex_coords co, uniform sampler2D s_p : TEXUNIT0) : COLO
    float3 c20 = tex2D(s_p, co.c20).xyz;
    float3 c21 = tex2D(s_p, co.c21).xyz;
    float3 c22 = tex2D(s_p, co.c22).xyz;
-   float3 dt = float3(1.0);
+   float3 dt = float3(1.0,1.0,1.0);
 
    float md1 = dot(abs(c00 - c22), dt);
    float md2 = dot(abs(c02 - c20), dt);
