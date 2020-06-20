@@ -10,9 +10,10 @@ publish = false
 [dependencies]
 bitflags = "1.2.1"
 page_size = "0.4.2"
+lazy_static = "1.4.0"
 
 [target.'cfg(windows)'.dependencies]
-winapi = { version = "0.3.8", features = ["memoryapi", "handleapi", "errhandlingapi"] }
+winapi = { version = "0.3.8", features = ["memoryapi", "handleapi", "errhandlingapi", "winnt"] }
 
 [target.'cfg(unix)'.dependencies]
 libc = "0.2.71"

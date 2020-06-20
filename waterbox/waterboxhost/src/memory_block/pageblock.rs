@@ -15,7 +15,7 @@ impl PageBlock {
 				panic!("PageBlock could not allocate memory!");
 			} else {
 				PageBlock {
-					ptr: NonNull::new_unchecked(ptr as *mut u8)
+					ptr: NonNull::new_unchecked(ptr as *mut u8),
 				}
 			}
 		}
@@ -83,7 +83,6 @@ unsafe fn free(ptr: *mut c_void) -> bool {
 #[test]
 fn basic_test() {
 	let mut s = PageBlock::new();
-
 
 	for x in s.slice().iter() {
 		assert!(*x == 0);

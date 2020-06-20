@@ -1,5 +1,6 @@
 mod pageblock;
 mod pal;
+mod tripguard;
 
 use pageblock::PageBlock;
 use bitflags::bitflags;
@@ -17,7 +18,6 @@ bitflags! {
 		const STACK = 32;
 	}
 }
-
 
 enum Snapshot {
 	None,
