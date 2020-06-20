@@ -1836,7 +1836,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				default:
 					GenericCoreSubMenu.Visible = true;
-					GenericCoreSubMenu.Text = EmulatorExtensions.DisplayName(Emulator);
+					GenericCoreSubMenu.Text = "&" + EmulatorExtensions.DisplayName(Emulator);
 					break;
 				case "NULL":
 					break;

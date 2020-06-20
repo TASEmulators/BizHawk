@@ -2801,7 +2801,7 @@
 			this.GenericCoreSettingsMenuItem});
 			this.GenericCoreSubMenu.Name = "GenericCoreSubMenu";
 			this.GenericCoreSubMenu.Size = new System.Drawing.Size(56, 17);
-			this.GenericCoreSubMenu.Text = "&MSX";
+			this.GenericCoreSubMenu.Text = "&Core";
 			// 
 			// GenericCoreSettingsMenuItem
 			// 
