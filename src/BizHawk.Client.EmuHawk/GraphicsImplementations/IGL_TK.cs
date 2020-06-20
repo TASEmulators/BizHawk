@@ -6,9 +6,6 @@
 // etc
 // glBindAttribLocation (programID, 0, "vertexPosition_modelspace");
 
-// for future reference: c# tesselators
-// http://www.opentk.com/node/437 (AGG#, codes on Tao forums)
-
 using System;
 using System.IO;
 using System.Collections.Generic;
@@ -198,8 +195,6 @@ namespace BizHawk.Client.EmuHawk
 			var fsw = fragmentShader.Opaque as ShaderWrapper;
 			var sws = new[] { vsw,fsw };
 
-			bool mapVariables = vsw.MapCodeToNative != null || fsw.MapCodeToNative != null;
-
 			ErrorCode errcode;
 			int pid = GL.CreateProgram();
 			GL.AttachShader(pid, vsw.sid);
@@ -207,53 +202,27 @@ namespace BizHawk.Client.EmuHawk
 			GL.AttachShader(pid, fsw.sid);
 			errcode = GL.GetError();
 
-			//NOT BEING USED NOW: USING SEMANTICS INSTEAD
-			////bind the attribute locations from the vertex layout
-			////as we go, look for attribute mappings (CGC will happily reorder and rename our attribute mappings)
-			////what's more it will _RESIZE_ them but this seems benign..somehow..
-			////WELLLLLLL we wish we could do that by names
-			////but the shaders don't seem to be adequate quality (oddly named attributes.. texCoord vs texCoord1). need to use semantics instead.
-			//foreach (var kvp in vertexLayout.Items)
-			//{
-			//  string name = kvp.Value.Name;
-			//  //if (mapVariables)
-			//  //{
-			//  //  foreach (var sw in sws)
-			//  //  {
-			//  //    if (sw.MapNativeToCode.ContainsKey(name))
-			//  //    {
-			//  //      name = sw.MapNativeToCode[name];
-			//  //      break;
-			//  //    }
-			//  //  }
-			//  //}
-
-			//  if(mapVariables) {
-			//    ////proxy for came-from-cgc
-			//    //switch (kvp.Value.Usage)
-			//    //{
-			//    //  case AttributeUsage.Position: 
-			//    //}
-			//  }
-				
-			//  //GL.BindAttribLocation(pid, kvp.Key, name);
-			//}
-
 			GL.LinkProgram(pid);
 			errcode = GL.GetError();
 
 			string resultLog = GL.GetProgramInfoLog(pid);
 
 			if (errcode != ErrorCode.NoError)
+			{
 				if (required)
 					throw new InvalidOperationException($"Error creating pipeline (error returned from glLinkProgram): {errcode}\r\n\r\n{resultLog}");
 				else success = false;
+			}
 
 			GL.GetProgram(pid, GetProgramParameterName.LinkStatus, out var linkStatus);
 			if (linkStatus == 0)
+			{
 				if (required)
 					throw new InvalidOperationException($"Error creating pipeline (link status false returned from glLinkProgram): \r\n\r\n{resultLog}");
 				else success = false;
+				resultLog = GL.GetProgramInfoLog(pid);
+				Console.WriteLine(resultLog);
+			}
 
 			//need to work on validation. apparently there are some weird caveats to glValidate which make it complicated and possibly excuses (barely) the intel drivers' dysfunctional operation
 			//"A sampler points to a texture unit used by fixed function with an incompatible target"
@@ -303,14 +272,6 @@ namespace BizHawk.Client.EmuHawk
 				GL.GetActiveUniform(pid, i, 1024, out length, out size, out var type, out name);
 				errcode = GL.GetError();
 				int loc = GL.GetUniformLocation(pid, name);
-
-				//translate name if appropriate
-				//not sure how effective this approach will be, due to confusion of vertex and fragment uniforms
-				if (mapVariables)
-				{
-					if (vsw.MapCodeToNative.ContainsKey(name)) name = vsw.MapCodeToNative[name];
-					if (fsw.MapCodeToNative.ContainsKey(name)) name = fsw.MapCodeToNative[name];
-				}
 
 				var ui = new UniformInfo { Name = name, Opaque = loc };
 
@@ -425,11 +386,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public unsafe void SetPipelineUniformMatrix(PipelineUniform uniform, Matrix4 mat, bool transpose)
 		{
-			//GL.UniformMatrix4((int)uniform.Opaque, 1, transpose, (float*)&mat);
-			GL.Uniform4((int)uniform.Sole.Opaque + 0, 1, (float*)&mat.Row0);
-			GL.Uniform4((int)uniform.Sole.Opaque + 1, 1, (float*)&mat.Row1);
-			GL.Uniform4((int)uniform.Sole.Opaque + 2, 1, (float*)&mat.Row2);
-			GL.Uniform4((int)uniform.Sole.Opaque + 3, 1, (float*)&mat.Row3);
+			GL.UniformMatrix4((int)uniform.Sole.Opaque, 1, transpose, (float*)&mat);
 		}
 
 		public unsafe void SetPipelineUniformMatrix(PipelineUniform uniform, ref Matrix4 mat, bool transpose)
@@ -694,18 +651,22 @@ namespace BizHawk.Client.EmuHawk
 		Shader CreateShader(ShaderType type, string source, string entry, bool required)
 		{
 			var sw = new ShaderWrapper();
+			string info = "";
 
 			int sid = GL.CreateShader(type);
 			bool ok = CompileShaderSimple(sid, source, required);
 			if(!ok)
 			{
+				GL.GetShaderInfoLog(sid, out info);
 				GL.DeleteShader(sid);
 				sid = 0;
 			}
 
+			Shader ret = new Shader(this, sw, ok);
+			ret.Errors = info;
 			sw.sid = sid;
 
-			return new Shader(this, sw, ok);
+			return ret;
 		}
 
 		bool CompileShaderSimple(int sid, string source, bool required)
