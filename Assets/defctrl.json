@@ -1222,13 +1222,13 @@
 			"Power": ""
 		},
 		"NeoGeo Portable Controller": {
-			"Up": "Up, X1 DpadUp, X1 LStickUp",
-			"Down": "Down, X1 DpadDown, X1 LStickDown",
-			"Left": "Left, X1 DpadLeft, X1 LStickLeft",
-			"Right": "Right, X1 DpadRight, X1 LStickRight",
-			"B": "Z, J1 B1, X1 X",
-			"A": "X, J1 B2, X1 A",
-			"Option": "Enter, J1 B10, X1 Start",
+			"P1 Up": "Up, X1 DpadUp, X1 LStickUp",
+			"P1 Down": "Down, X1 DpadDown, X1 LStickDown",
+			"P1 Left": "Left, X1 DpadLeft, X1 LStickLeft",
+			"P1 Right": "Right, X1 DpadRight, X1 LStickRight",
+			"P1 B": "Z, J1 B1, X1 X",
+			"P1 A": "X, J1 B2, X1 A",
+			"P1 Option": "Enter, J1 B10, X1 Start",
 			"Power": ""
 		},
 		"Vectrex Digital Controller": {

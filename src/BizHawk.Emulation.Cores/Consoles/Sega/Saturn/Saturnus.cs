@@ -21,14 +21,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 	{
 		[CoreConstructor("SAT")]
 		public Saturnus(CoreComm comm, NymaSettings settings, NymaSyncSettings syncSettings)
-			: base(comm, "SAT", "Saturn Controller Deck", settings, syncSettings)
+			: base(comm, "SAT", "Saturn Controller", settings, syncSettings)
 		{
 			throw new InvalidOperationException("To load a Saturn game, please load the CUE file and not the BIN file.");
 		}
 
 		public Saturnus(CoreComm comm, GameInfo game,
 			IEnumerable<Disc> disks, NymaSettings settings, NymaSyncSettings syncSettings, bool deterministic)
-			: base(comm, "SAT", "Saturn Controller Deck", settings, syncSettings)
+			: base(comm, "SAT", "Saturn Controller", settings, syncSettings)
 		{
 			var firmwares = new Dictionary<string, (string, string)>
 			{
