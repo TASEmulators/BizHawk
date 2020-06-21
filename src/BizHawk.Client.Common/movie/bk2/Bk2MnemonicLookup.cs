@@ -166,7 +166,18 @@ namespace BizHawk.Client.Common
 			["Pedal"] = 'P',
 
 			["Next Disk"] = '>',
-			["Previous Disk"] = '<'
+			["Previous Disk"] = '<',
+
+			["F1"] = '1',
+			["F2"] = '2',
+			["F3"] = '3',
+			["F4"] = '4',
+			["F5"] = '5',
+			["F6"] = '6',
+			["F7"] = '7',
+			["F8"] = '8',
+			["F9"] = '9',
+			["F10"] = '0'
 		};
 
 		private static readonly Dictionary<string, Dictionary<string, char>> SystemOverrides = new Dictionary<string, Dictionary<string, char>>
@@ -283,10 +294,6 @@ namespace BizHawk.Client.Common
 			{
 				["L"] = 'L',
 				["R"] = 'R',
-				["F1"] = '1',
-				["F3"] = '3',
-				["F5"] = '5',
-				["F7"] = '7',
 				["Left Arrow"] = 'l',
 				["Plus"] = '+',
 				["Minus"] = '-',
