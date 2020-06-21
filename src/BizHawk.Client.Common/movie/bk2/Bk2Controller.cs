@@ -66,7 +66,7 @@ namespace BizHawk.Client.Common
 				_myBoolButtons[button] = controller.IsSticky(button);
 			}
 
-			// float controls don't have sticky logic, so latch default value
+			// axes don't have sticky logic, so latch default value
 			for (int i = 0; i < Definition.AxisControls.Count; i++)
 			{
 				_myAxisControls[Definition.AxisControls[i]] = Definition.AxisRanges[i].Mid;

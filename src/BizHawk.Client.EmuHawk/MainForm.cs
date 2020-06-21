@@ -991,7 +991,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			} // foreach event
 
-			//also handle floats
+			//also handle axes
 			//we'll need to isolate the mouse coordinates so we can translate them
 			KeyValuePair<string, int>? mouseX = null, mouseY = null;
 			foreach (var f in Input.Instance.GetAxisValues())

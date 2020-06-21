@@ -331,9 +331,9 @@ namespace BizHawk.Emulation.Common
 		}
 
 		/// <summary>
-		/// See ToBoolButtonNameList(). Works the same except with float controls
+		/// See ToBoolButtonNameList(). Works the same except with axes
 		/// </summary>
-		public static List<string> ToFloatControlNameList(this IController controller, int? controllerNum = null)
+		public static List<string> ToAxisControlNameList(this IController controller, int? controllerNum = null)
 		{
 			return ToControlNameList(controller.Definition.AxisControls, controllerNum);
 		}

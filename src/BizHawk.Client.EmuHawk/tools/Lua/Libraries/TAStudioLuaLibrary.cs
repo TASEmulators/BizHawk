@@ -47,7 +47,7 @@ namespace BizHawk.Client.EmuHawk
 		private enum InputChangeTypes
 		{
 			Bool,
-			Float
+			Axis
 		}
 
 		public class TastudioBranchInfo
@@ -215,7 +215,7 @@ namespace BizHawk.Client.EmuHawk
 						if (Tastudio.CurrentTasMovie.GetAxisState(frame, button) != (int) value) // Check if the button state is not already in the state the user set in the lua script
 						{
 							newChange.Type = LuaChangeTypes.InputChange;
-							newChange.InputType = InputChangeTypes.Float;
+							newChange.InputType = InputChangeTypes.Axis;
 							newChange.Frame = frame;
 							newChange.Button = button;
 							newChange.ValueAxis = (int) value;
@@ -226,7 +226,7 @@ namespace BizHawk.Client.EmuHawk
 					else
 					{
 						newChange.Type = LuaChangeTypes.InputChange;
-						newChange.InputType = InputChangeTypes.Float;
+						newChange.InputType = InputChangeTypes.Axis;
 						newChange.Frame = frame;
 						newChange.Button = button;
 						newChange.ValueAxis = (int) value;
@@ -287,7 +287,7 @@ namespace BizHawk.Client.EmuHawk
 									case InputChangeTypes.Bool:
 										Tastudio.CurrentTasMovie.SetBoolState(_changeList[i].Frame, _changeList[i].Button, _changeList[i].ValueBool);
 										break;
-									case InputChangeTypes.Float:
+									case InputChangeTypes.Axis:
 										Tastudio.CurrentTasMovie.SetAxisState(_changeList[i].Frame, _changeList[i].Button, _changeList[i].ValueAxis);
 										break;
 								}

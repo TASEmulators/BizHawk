@@ -92,7 +92,7 @@
 			this.AutoadjustInputMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.applyPatternToPaintedInputToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.onlyOnAutoFireColumnsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.SingleClickFloatEditMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.SingleClickAxisEditMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.UseInputKeysItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
 			this.BindMarkersToInputMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -619,7 +619,7 @@
             this.AutoadjustInputMenuItem,
             this.applyPatternToPaintedInputToolStripMenuItem,
             this.onlyOnAutoFireColumnsToolStripMenuItem,
-            this.SingleClickFloatEditMenuItem,
+            this.SingleClickAxisEditMenuItem,
             this.UseInputKeysItem,
             this.toolStripSeparator4,
             this.BindMarkersToInputMenuItem,
@@ -732,14 +732,14 @@
 			this.onlyOnAutoFireColumnsToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
 			this.onlyOnAutoFireColumnsToolStripMenuItem.Text = "Only on Auto-Fire columns";
 			// 
-			// SingleClickFloatEditMenuItem
+			// SingleClickAxisEditMenuItem
 			// 
-			this.SingleClickFloatEditMenuItem.Enabled = false;
-			this.SingleClickFloatEditMenuItem.Name = "SingleClickFloatEditMenuItem";
-			this.SingleClickFloatEditMenuItem.Size = new System.Drawing.Size(244, 22);
-			this.SingleClickFloatEditMenuItem.Text = "Enter Float Edit mode by single click";
-			this.SingleClickFloatEditMenuItem.Visible = false;
-			this.SingleClickFloatEditMenuItem.Click += new System.EventHandler(this.SingleClickFloatEditMenuItem_Click);
+			this.SingleClickAxisEditMenuItem.Enabled = false;
+			this.SingleClickAxisEditMenuItem.Name = "SingleClickAxisEditMenuItem";
+			this.SingleClickAxisEditMenuItem.Size = new System.Drawing.Size(244, 22);
+			this.SingleClickAxisEditMenuItem.Text = "Enter Axis Edit mode by single click";
+			this.SingleClickAxisEditMenuItem.Visible = false;
+			this.SingleClickAxisEditMenuItem.Click += new System.EventHandler(this.SingleClickAxisEditMenuItem_Click);
 			// 
 			// UseInputKeysItem
 			// 
@@ -1758,7 +1758,7 @@
 		private System.Windows.Forms.ToolStripMenuItem BackupPerFileSaveMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SaveBackupMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SaveBk2BackupMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem SingleClickFloatEditMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem SingleClickAxisEditMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem LoadBranchOnDoubleclickMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SetFontMenuItem;
 	}

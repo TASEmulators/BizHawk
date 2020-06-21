@@ -31,7 +31,7 @@ namespace BizHawk.Client.Common
 		bool IsEmpty { get; }
 
 		/// <summary>
-		/// Gets an input log entry that is considered empty. (booleans will be false, floats will be 0)
+		/// Gets an input log entry that is considered empty. (booleans will be false, axes will be 0)
 		/// </summary>
 		string EmptyEntry { get; }
 	}

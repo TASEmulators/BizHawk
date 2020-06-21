@@ -159,7 +159,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 			}
 
-			// Add in the reset timing float control for subneshawk
+			// Add in the reset timing axis for subneshawk
 			if (using_reset_timing && ControllerDefinition.AxisControls.Count == 0)
 			{
 				ControllerDefinition.AxisControls.Add("Reset Cycle");

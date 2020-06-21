@@ -297,11 +297,11 @@ namespace BizHawk.Client.EmuHawk
 
 			foreach (string name in latching.Definition.AxisControls)
 			{
-				var sFloat = source.AxisValue(name);
+				var axisValue = source.AxisValue(name);
 				int indexRange = source.Definition.AxisControls.IndexOf(name);
-				if (sFloat == source.Definition.AxisRanges[indexRange].Mid)
+				if (axisValue == source.Definition.AxisRanges[indexRange].Mid)
 				{
-					latching.SetAxis(name, sFloat);
+					latching.SetAxis(name, axisValue);
 				}
 			}
 		}

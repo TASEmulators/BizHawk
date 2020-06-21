@@ -124,7 +124,7 @@ namespace BizHawk.Client.Common
 		private (int Frame, IMovieController Controller) _displayCache = (-1, new Bk2Controller("", NullController.Instance.Definition));
 
 		/// <summary>
-		/// Returns the mnemonic value for boolean buttons, and actual value for floats,
+		/// Returns the mnemonic value for boolean buttons, and actual value for axes,
 		/// for a given frame and button.
 		/// </summary>
 		public string DisplayValue(int frame, string buttonName)

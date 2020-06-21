@@ -5,6 +5,6 @@
 	/// </summary>
 	public enum ColumnType
 	{
-		Boolean, Float, Text, Image
+		Boolean, Axis, Text, Image
 	}
 }

@@ -774,7 +774,7 @@ namespace BizHawk.Client.EmuHawk
 			AutosaveAsBk2MenuItem.Checked = Settings.AutosaveAsBk2;
 			AutosaveAsBackupFileMenuItem.Checked = Settings.AutosaveAsBackupFile;
 			BackupPerFileSaveMenuItem.Checked = Settings.BackupPerFileSave;
-			SingleClickFloatEditMenuItem.Checked = Settings.SingleClickFloatEdit;
+			SingleClickAxisEditMenuItem.Checked = Settings.SingleClickAxisEdit;
 			OldControlSchemeForBranchesMenuItem.Checked = Settings.OldControlSchemeForBranches;
 			LoadBranchOnDoubleclickMenuItem.Checked = Settings.LoadBranchOnDoubleClick;
 			BindMarkersToInputMenuItem.Checked = CurrentTasMovie.BindMarkersToInput;
@@ -889,9 +889,9 @@ namespace BizHawk.Client.EmuHawk
 			onlyOnAutoFireColumnsToolStripMenuItem.Enabled = applyPatternToPaintedInputToolStripMenuItem.Checked;
 		}
 
-		private void SingleClickFloatEditMenuItem_Click(object sender, EventArgs e)
+		private void SingleClickAxisEditMenuItem_Click(object sender, EventArgs e)
 		{
-			Settings.SingleClickFloatEdit ^= true;
+			Settings.SingleClickAxisEdit ^= true;
 		}
 
 		private void BindMarkersToInputMenuItem_Click(object sender, EventArgs e)

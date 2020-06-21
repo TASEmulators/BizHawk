@@ -16,7 +16,7 @@ namespace BizHawk.Client.Common
 			return false;
 		}
 
-		// pass floats solely from the original source
+		// pass axes solely from the original source
 		// this works in the code because SourceOr is the autofire controller
 		public int AxisValue(string name) => Source.AxisValue(name);
 
@@ -38,7 +38,7 @@ namespace BizHawk.Client.Common
 			return false;
 		}
 
-		// pass floats solely from the original source
+		// pass axes solely from the original source
 		// this works in the code because SourceOr is the autofire controller
 		public int AxisValue(string name) => Source.AxisValue(name);
 
@@ -56,7 +56,7 @@ namespace BizHawk.Client.Common
 					| (SourceOr?.IsPressed(button) ?? false);
 		}
 
-		// pass floats solely from the original source
+		// pass axes solely from the original source
 		// this works in the code because SourceOr is the autofire controller
 		public int AxisValue(string name) => Source.AxisValue(name);
 

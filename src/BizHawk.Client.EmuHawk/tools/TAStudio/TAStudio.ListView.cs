@@ -15,7 +15,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		// Input Painting
 		private string _startBoolDrawColumn = "";
-		private string _startFloatDrawColumn = "";
+		private string _startAxisDrawColumn = "";
 		private bool _boolPaintState;
 		private int _axisPaintState;
 		private int _axisBackupState;
@@ -334,7 +334,7 @@ namespace BizHawk.Client.EmuHawk
 					else if (index < CurrentTasMovie.InputLogLength)
 					{
 						text = CurrentTasMovie.DisplayValue(index, columnName);
-						if (column.Type == ColumnType.Float)
+						if (column.Type == ColumnType.Axis)
 						{
 							// feos: this could be cached, but I don't notice any slowdown this way either
 							ControllerDefinition.AxisRange range = ControllerType.AxisRanges
@@ -679,10 +679,10 @@ namespace BizHawk.Client.EmuHawk
 						}
 
 
-						if (e.Clicks != 2 && !Settings.SingleClickFloatEdit)
+						if (e.Clicks != 2 && !Settings.SingleClickAxisEdit)
 						{
-							CurrentTasMovie.ChangeLog.BeginNewBatch($"Paint Float {buttonName} from frame {frame}");
-							_startFloatDrawColumn = buttonName;
+							CurrentTasMovie.ChangeLog.BeginNewBatch($"Paint Axis {buttonName} from frame {frame}");
+							_startAxisDrawColumn = buttonName;
 						}
 						else // Double-click enters axis editing mode
 						{
@@ -692,7 +692,7 @@ namespace BizHawk.Client.EmuHawk
 							}
 							else
 							{
-								CurrentTasMovie.ChangeLog.BeginNewBatch($"Float Edit: {frame}");
+								CurrentTasMovie.ChangeLog.BeginNewBatch($"Axis Edit: {frame}");
 								_axisEditColumn = buttonName;
 								AxisEditRow = frame;
 								_axisTypedValue = "";
@@ -778,7 +778,7 @@ namespace BizHawk.Client.EmuHawk
 			_startCursorDrag = false;
 			_startSelectionDrag = false;
 			_startBoolDrawColumn = "";
-			_startFloatDrawColumn = "";
+			_startAxisDrawColumn = "";
 			_paintingMinFrame = -1;
 			TasView.ReleaseCurrentCell();
 
@@ -1137,7 +1137,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			else if (TasView.IsPaintDown && !string.IsNullOrEmpty(_startFloatDrawColumn))
+			else if (TasView.IsPaintDown && !string.IsNullOrEmpty(_startAxisDrawColumn))
 			{
 				CurrentTasMovie.IsCountingRerecords = false;
 
@@ -1148,15 +1148,15 @@ namespace BizHawk.Client.EmuHawk
 					{
 						if (CurrentTasMovie[frame].Lagged.HasValue && CurrentTasMovie[frame].Lagged.Value)
 						{
-							setVal = CurrentTasMovie.GetAxisState(i - 1, _startFloatDrawColumn);
+							setVal = CurrentTasMovie.GetAxisState(i - 1, _startAxisDrawColumn);
 						}
 						else
 						{
-							setVal = AxisPatterns[ControllerType.AxisControls.IndexOf(_startFloatDrawColumn)].GetNextValue();
+							setVal = AxisPatterns[ControllerType.AxisControls.IndexOf(_startAxisDrawColumn)].GetNextValue();
 						}
 					}
 
-					CurrentTasMovie.SetAxisState(i, _startFloatDrawColumn, setVal); // Notice it uses new row, old column, you can only paint across a single column
+					CurrentTasMovie.SetAxisState(i, _startAxisDrawColumn, setVal); // Notice it uses new row, old column, you can only paint across a single column
 					JumpToGreenzone();
 				}
 			}

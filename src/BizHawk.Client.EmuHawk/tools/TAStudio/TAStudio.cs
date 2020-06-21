@@ -64,7 +64,7 @@ namespace BizHawk.Client.EmuHawk
 				AutosaveAsBk2 = false;
 				AutosaveAsBackupFile = false;
 				BackupPerFileSave = false;
-				SingleClickFloatEdit = false;
+				SingleClickAxisEdit = false;
 				OldControlSchemeForBranches = false;
 				LoadBranchOnDoubleClick = true;
 
@@ -89,7 +89,7 @@ namespace BizHawk.Client.EmuHawk
 			public bool AutosaveAsBk2 { get; set; }
 			public bool AutosaveAsBackupFile { get; set; }
 			public bool BackupPerFileSave { get; set; }
-			public bool SingleClickFloatEdit { get; set; }
+			public bool SingleClickAxisEdit { get; set; }
 			public bool OldControlSchemeForBranches { get; set; } // branch loading will behave differently depending on the recording mode
 			public bool LoadBranchOnDoubleClick { get; set; }
 			public bool DenoteStatesWithIcons { get; set; }
@@ -423,7 +423,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					var range = ControllerType.AxisRanges
 						[ControllerType.AxisControls.IndexOf(kvp.Key)];
-					type = ColumnType.Float;
+					type = ColumnType.Axis;
 					digits = Math.Max(kvp.Value.Length, range.MaxDigits);
 				}
 				else
