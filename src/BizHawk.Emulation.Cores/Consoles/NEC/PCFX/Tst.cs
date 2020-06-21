@@ -19,14 +19,14 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCFX
 	{
 		[CoreConstructor("PCFX")]
 		public Tst(CoreComm comm, NymaSettings settings, NymaSyncSettings syncSettings)
-			: base(comm, "PCFX", "PCFX Controller Deck", settings, syncSettings)
+			: base(comm, "PCFX", "PC-FX Controller", settings, syncSettings)
 		{
 			throw new InvalidOperationException("To load a PC-FX game, please load the CUE file and not the BIN file.");
 		}
 
 		public Tst(CoreComm comm, GameInfo game,
 			IEnumerable<Disc> disks, NymaSettings settings, NymaSyncSettings syncSettings, bool deterministic)
-			: base(comm, "PCFX", "PCFX Controller Deck", settings, syncSettings)
+			: base(comm, "PCFX", "PC-FX Controller", settings, syncSettings)
 		{
 			var firmwares = new Dictionary<string, (string, string)>
 			{

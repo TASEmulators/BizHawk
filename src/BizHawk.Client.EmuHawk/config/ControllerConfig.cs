@@ -88,7 +88,7 @@ namespace BizHawk.Client.EmuHawk
 			return new AnalogBindPanel(settings, buttons) { Dock = DockStyle.Fill, AutoScroll = true };
 		}
 
-		private static Regex ButtonMatchesPlayer = new Regex("^P(\\d+)\\s");
+		private static readonly Regex ButtonMatchesPlayer = new Regex("^P(\\d+)\\s");
 
 		private void LoadToPanel<T>(Control dest, string controllerName, IList<string> controllerButtons, Dictionary<string,string> categoryLabels, IDictionary<string, Dictionary<string, T>> settingsBlock, T defaultValue, PanelCreator<T> createPanel)
 		{
