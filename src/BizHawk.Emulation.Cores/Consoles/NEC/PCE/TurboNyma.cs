@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 	[Core(CoreNames.TurboNyma, "Mednafen Team", true, true, "1.24.3", "https://mednafen.github.io/releases/", false, "PCE")]
 	public class TurboNyma : NymaCore, IRegionable, IPceGpuView
 	{
-		private readonly LibTurboNyma _terboGrafix;
+		private readonly LibTurboNyma _turboNyma;
 
 		[CoreConstructor(new[] { "PCE", "SGX" })]
 		public TurboNyma(GameInfo game, byte[] rom, CoreComm comm, string extension,
@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 		{
 			if (game["BRAM"])
 				SettingOverrides["pce.disable_bram_hucard"].Default = "0";
-			_terboGrafix = DoInit<LibTurboNyma>(game, rom, null, "pce.wbx", extension, deterministic);
+			_turboNyma = DoInit<LibTurboNyma>(game, rom, null, "turbo.wbx", extension, deterministic);
 		}
 		public TurboNyma(GameInfo game, Disc[] discs, CoreComm comm,
 			NymaSettings settings, NymaSyncSettings syncSettings, bool deterministic)
@@ -34,7 +34,7 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 				{ "FIRMWARE:syscard3.pce", ("PCECD", "Bios") },
 				{ "FIRMWARE:gecard.pce", ("PCECD", "GE-Bios") },
 			};
-			_terboGrafix = DoInit<LibTurboNyma>(game, null, discs, "pce.wbx", null, deterministic, firmwares);
+			_turboNyma = DoInit<LibTurboNyma>(game, null, discs, "turbo.wbx", null, deterministic, firmwares);
 		}
 
 		public override string SystemId => IsSgx ? "SGX" : "PCE";
@@ -91,7 +91,7 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 			{
 				var palScratch = new int[512];
 				var v = new PceGpuData();
-				_terboGrafix.GetVramInfo(v, vdc);
+				_turboNyma.GetVramInfo(v, vdc);
 				fixed(int* p = palScratch)
 				{
 					for (var i = 0; i < 512; i++)

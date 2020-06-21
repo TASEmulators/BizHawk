@@ -14,14 +14,14 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 	[Core(CoreNames.HyperNyma, "Mednafen Team", true, true, "1.24.3", "https://mednafen.github.io/releases/", false, "PCE")]
 	public class HyperNyma : NymaCore, IRegionable, IPceGpuView
 	{
-		private readonly LibHyperNyma _terboGrafix;
+		private readonly LibHyperNyma _hyperNyma;
 
 		[CoreConstructor(new[] { "PCE", "SGX" })]
 		public HyperNyma(GameInfo game, byte[] rom, CoreComm comm, string extension,
 			NymaSettings settings, NymaSyncSettings syncSettings, bool deterministic)
 			: base(comm, "PCE", "PC Engine Controller", settings, syncSettings)
 		{
-			_terboGrafix = DoInit<LibHyperNyma>(game, rom, null, "pce-fast.wbx", extension, deterministic);
+			_hyperNyma = DoInit<LibHyperNyma>(game, rom, null, "hyper.wbx", extension, deterministic);
 		}
 		public HyperNyma(GameInfo game, Disc[] discs, CoreComm comm,
 			NymaSettings settings, NymaSyncSettings syncSettings, bool deterministic)
@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 				{ "FIRMWARE:syscard3.pce", ("PCECD", "Bios") },
 				// { "FIRMWARE:gecard.pce", ("PCECD", "GE-Bios") },
 			};
-			_terboGrafix = DoInit<LibHyperNyma>(game, null, discs, "pce-fast.wbx", null, deterministic, firmwares);
+			_hyperNyma = DoInit<LibHyperNyma>(game, null, discs, "hyper.wbx", null, deterministic, firmwares);
 		}
 
 		public override string SystemId => IsSgx ? "SGX" : "PCE";
@@ -60,7 +60,7 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 			{
 				var palScratch = new int[512];
 				var v = new PceGpuData();
-				_terboGrafix.GetVramInfo(v, vdc);
+				_hyperNyma.GetVramInfo(v, vdc);
 				fixed(int* p = palScratch)
 				{
 					for (var i = 0; i < 512; i++)
