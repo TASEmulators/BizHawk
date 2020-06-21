@@ -60,7 +60,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static PadSchema AnalogController(int controller)
 		{
-			var controllerDefRanges = new AnalogControls(controller).Definition.AxisRanges;
+			var defAxes = new AnalogControls(controller).Definition.Axes;
 			return new PadSchema
 			{
 				Size = new Size(280, 300),
@@ -72,8 +72,8 @@ namespace BizHawk.Client.EmuHawk
 					Button(146, 34, controller, 4),
 					new AnalogSchema(2, 80, $"P{controller} Stick X")
 					{
-						AxisRange = controllerDefRanges[0],
-						SecondaryAxisRange = controllerDefRanges[1]
+						AxisRange = defAxes.SpecAtIndex(0).Range,
+						SecondaryAxisRange = defAxes.SpecAtIndex(1).Range
 					}
 				}
 			};

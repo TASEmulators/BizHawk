@@ -1,5 +1,7 @@
 ﻿using BizHawk.Emulation.Common;
 
+using static BizHawk.Emulation.Common.ControllerDefinition;
+
 namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 {
 	public partial class SMS : IEmulator
@@ -24,8 +26,9 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 						return SMSPaddleController;
 					case SmsSyncSettings.ControllerTypes.LightPhaser:
 						// scale the vertical to the display mode
-						SMSLightPhaserController.AxisRanges[1] = new ControllerDefinition.AxisRange(0, Vdp.FrameHeight / 2, Vdp.FrameHeight - 1);
-
+						var axisName = SMSLightPhaserController.Axes[1];
+						SMSLightPhaserController.Axes[axisName] = SMSLightPhaserController.Axes[axisName]
+							.With(range: new AxisRange(0, Vdp.FrameHeight / 2, Vdp.FrameHeight - 1));
 						return SMSLightPhaserController;
 					case SmsSyncSettings.ControllerTypes.SportsPad:
 						return SMSSportsPadController;

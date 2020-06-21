@@ -88,13 +88,8 @@ namespace BizHawk.Client.Common
 						"Right", "Left", "Down", "Up", "Start", "Select",
 						"B", "A", "X", "Y", "L", "R", "LidOpen", "LidClose", "Touch"
 					}
-				}
+				}.AddXYPair("Touch{0}", ControllerDefinition.AxisPairOrientation.RightAndUp, (0, 128, 255), (0, 96, 191)) //TODO verify direction against hardware
 			};
-
-			controller.Definition.AxisControls.Add("TouchX");
-			controller.Definition.AxisRanges.Add(new ControllerDefinition.AxisRange(0, 128, 255));
-			controller.Definition.AxisControls.Add("TouchY");
-			controller.Definition.AxisRanges.Add(new ControllerDefinition.AxisRange(0, 96, 191));
 
 			controller["LidOpen"] = false;
 			controller["LidOpen"] = false;

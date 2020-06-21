@@ -173,8 +173,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			theta_prev = theta;
 			phi_prev = phi;
 
-			theta = (float)(c.AxisValue(Definition.AxisControls[1]) * Math.PI / 180.0);
-			phi = (float)(c.AxisValue(Definition.AxisControls[0]) * Math.PI / 180.0);
+			theta = (float)(c.AxisValue(Definition.Axes[1]) * Math.PI / 180.0);
+			phi = (float)(c.AxisValue(Definition.Axes[0]) * Math.PI / 180.0);
 
 			float temp = (float)(Math.Cos(theta) * Math.Sin(phi));
 

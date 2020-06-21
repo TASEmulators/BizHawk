@@ -197,7 +197,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 
 			public void ApplyState(IController controller, short[] input, int offset)
 			{
-				foreach (var s in Definition.AxisControls)
+				foreach (var s in Definition.Axes.Keys)
 					input[offset++] = (short)(controller.AxisValue(s));
 				foreach (var s in Definition.BoolButtons)
 					input[offset++] = (short)(controller.IsPressed(s) ? 1 : 0);

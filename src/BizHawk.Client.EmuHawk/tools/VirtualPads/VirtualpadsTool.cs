@@ -90,14 +90,14 @@ namespace BizHawk.Client.EmuHawk
 			if (VersionInfo.DeveloperBuild)
 			{
 				var buttonControls = Emulator.ControllerDefinition.BoolButtons;
-				var axisControls = Emulator.ControllerDefinition.AxisControls;
+				var axisControls = Emulator.ControllerDefinition.Axes;
 				foreach (var schema in padSchemata) foreach (var controlSchema in schema.Buttons)
 				{
 					Predicate<string> searchSetContains = controlSchema switch
 					{
 						ButtonSchema _ => buttonControls.Contains,
-						DiscManagerSchema _ => s => buttonControls.Contains(s) || axisControls.Contains(s),
-						_ => axisControls.Contains
+						DiscManagerSchema _ => s => buttonControls.Contains(s) || axisControls.ContainsKey(s),
+						_ => axisControls.ContainsKey
 					};
 					if (!searchSetContains(controlSchema.Name))
 					{

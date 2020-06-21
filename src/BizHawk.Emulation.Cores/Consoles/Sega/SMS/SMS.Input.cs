@@ -38,18 +38,9 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				"Reset", "Pause",
 				"P1 Left", "P1 Right", "P1 B1",
 				"P2 Left", "P2 Right", "P2 B1",
-			},
-			AxisControls =
-			{
-				"P1 Paddle",
-				"P2 Paddle"
-			},
-			AxisRanges =
-			{
-				new AxisRange(0, 128, 255),
-				new AxisRange(0, 128, 255)
 			}
-		};
+		}.AddAxis("P1 Paddle", 0, 128, 255)
+			.AddAxis("P2 Paddle", 0, 128, 255);
 
 		public static readonly ControllerDefinition SMSLightPhaserController = new ControllerDefinition
 		{

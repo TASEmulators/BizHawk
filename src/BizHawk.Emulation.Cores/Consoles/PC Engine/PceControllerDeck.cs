@@ -43,18 +43,11 @@ namespace BizHawk.Emulation.Cores.PCEngine
 					.Concat(_port5.Definition.BoolButtons)
 					.ToList()
 			};
-
-			Definition.AxisControls.AddRange(_port1.Definition.AxisControls);
-			Definition.AxisControls.AddRange(_port2.Definition.AxisControls);
-			Definition.AxisControls.AddRange(_port3.Definition.AxisControls);
-			Definition.AxisControls.AddRange(_port4.Definition.AxisControls);
-			Definition.AxisControls.AddRange(_port5.Definition.AxisControls);
-
-			Definition.AxisRanges.AddRange(_port1.Definition.AxisRanges);
-			Definition.AxisRanges.AddRange(_port2.Definition.AxisRanges);
-			Definition.AxisRanges.AddRange(_port3.Definition.AxisRanges);
-			Definition.AxisRanges.AddRange(_port4.Definition.AxisRanges);
-			Definition.AxisRanges.AddRange(_port5.Definition.AxisRanges);
+			foreach (var kvp in _port1.Definition.Axes) Definition.Axes.Add(kvp);
+			foreach (var kvp in _port2.Definition.Axes) Definition.Axes.Add(kvp);
+			foreach (var kvp in _port3.Definition.Axes) Definition.Axes.Add(kvp);
+			foreach (var kvp in _port4.Definition.Axes) Definition.Axes.Add(kvp);
+			foreach (var kvp in _port5.Definition.Axes) Definition.Axes.Add(kvp);
 		}
 
 		private readonly IPort _port1;

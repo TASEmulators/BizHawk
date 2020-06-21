@@ -160,8 +160,8 @@ namespace BizHawk.Emulation.Cores.Intellivision
 				}
 			}
 
-			int x = (int)c.AxisValue(Definition.AxisControls[0]);
-			int y = (int)c.AxisValue(Definition.AxisControls[1]);
+			int x = (int)c.AxisValue(Definition.Axes[0]);
+			int y = (int)c.AxisValue(Definition.Axes[1]);
 			result |= CalcDirection(x, y);
 
 			return result;

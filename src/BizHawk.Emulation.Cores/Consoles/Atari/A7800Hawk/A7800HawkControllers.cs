@@ -313,8 +313,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		public bool Is_LightGun(IController c, out float x, out float y)
 		{
-			x = c.AxisValue(Definition.AxisControls[0]);
-			y = c.AxisValue(Definition.AxisControls[1]);
+			x = c.AxisValue(Definition.Axes[0]);
+			y = c.AxisValue(Definition.Axes[1]);
 			return true;
 		}
 

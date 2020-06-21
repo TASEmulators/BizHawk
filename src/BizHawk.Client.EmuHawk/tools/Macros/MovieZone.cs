@@ -49,9 +49,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					d.AxisControls.Add(k);
-					int rangeIndex = _emulator.ControllerDefinition.AxisControls.IndexOf(k);
-					d.AxisRanges.Add(_emulator.ControllerDefinition.AxisRanges[rangeIndex]);
+					d.Axes.Add(k, _emulator.ControllerDefinition.Axes[k]);
 				}
 			}
 
@@ -104,7 +102,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					d.AxisControls.Add(key);
+					d.Axes.Add(key, _emulator.ControllerDefinition.Axes[key]);
 				}
 			}
 
@@ -268,7 +266,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					d.AxisControls.Add(k);
+					d.Axes.Add(k, _emulator.ControllerDefinition.Axes[key]);
 				}
 			}
 
@@ -282,7 +280,7 @@ namespace BizHawk.Client.EmuHawk
 				latching.SetBool(button, source.IsPressed(button));
 			}
 
-			foreach (string name in source.Definition.AxisControls)
+			foreach (string name in source.Definition.Axes.Keys)
 			{
 				latching.SetAxis(name, source.AxisValue(name));
 			}
@@ -295,11 +293,10 @@ namespace BizHawk.Client.EmuHawk
 				latching.SetBool(button, latching.IsPressed(button) | source.IsPressed(button));
 			}
 
-			foreach (string name in latching.Definition.AxisControls)
+			foreach (string name in latching.Definition.Axes.Keys)
 			{
 				var axisValue = source.AxisValue(name);
-				int indexRange = source.Definition.AxisControls.IndexOf(name);
-				if (axisValue == source.Definition.AxisRanges[indexRange].Mid)
+				if (axisValue == source.Definition.Axes[name].Range.Mid)
 				{
 					latching.SetAxis(name, axisValue);
 				}

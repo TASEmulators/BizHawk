@@ -159,7 +159,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static PadSchema Mouse(int controller)
 		{
-			var controllerDefRanges = new SnesMouseController().Definition.AxisRanges;
+			var defAxes = new SnesMouseController().Definition.Axes;
 			return new PadSchema
 			{
 				Size = new Size(345, 225),
@@ -167,8 +167,8 @@ namespace BizHawk.Client.EmuHawk
 				{
 					new AnalogSchema(6, 14, $"P{controller} Mouse X")
 					{
-						AxisRange = controllerDefRanges[0],
-						SecondaryAxisRange = controllerDefRanges[1]
+						AxisRange = defAxes.SpecAtIndex(0).Range,
+						SecondaryAxisRange = defAxes.SpecAtIndex(1).Range
 					},
 					new ButtonSchema(275, 15, controller, "Mouse Left")
 					{

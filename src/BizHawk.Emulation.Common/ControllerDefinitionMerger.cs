@@ -40,14 +40,13 @@ namespace BizHawk.Emulation.Common
 					remaps[s] = r;
 				}
 
-				foreach (string s in def.AxisControls)
+				foreach (var kvp in def.Axes)
 				{
-					string r = Allocate(s, ref plr, ref playerNext);
-					ret.AxisControls.Add(r);
-					remaps[s] = r;
+					string r = Allocate(kvp.Key, ref plr, ref playerNext);
+					ret.Axes.Add(r, kvp.Value);
+					remaps[kvp.Key] = r;
 				}
 
-				ret.AxisRanges.AddRange(def.AxisRanges);
 				plr = playerNext;
 				unmergers.Add(new ControlDefUnMerger(remaps));
 			}

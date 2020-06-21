@@ -183,8 +183,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			Right.SyncState(ser);
 			ser.EndSection();
 		}
-
-		internal static readonly AxisRange ArkanoidPaddleRange = new AxisRange(0, 80, 160);
 	}
 
 	public class UnpluggedNES : INesPort
@@ -388,12 +386,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		bool resetting = false;
 		byte latchedvalue = 0x54 ^ 0xff;
 
-		static ControllerDefinition Definition = new ControllerDefinition
-		{
-			BoolButtons = { "0Fire" },
-			AxisControls = { "0Paddle" },
-			AxisRanges = { NesDeck.ArkanoidPaddleRange }
-		};
+		private static readonly ControllerDefinition Definition
+			= new ControllerDefinition { BoolButtons = { "0Fire" } }
+				.AddAxis("0Paddle", 0, 80, 160);
 
 		public void Strobe(StrobeInfo s, IController c)
 		{
@@ -746,12 +741,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		bool resetting = false;
 		byte latchedvalue = 0x54 ^ 0xff;
 
-		static ControllerDefinition Definition = new ControllerDefinition
-		{
-			BoolButtons = { "0Fire" },
-			AxisControls = { "0Paddle" },
-			AxisRanges = { NesDeck.ArkanoidPaddleRange }
-		};
+		private static readonly ControllerDefinition Definition
+			= new ControllerDefinition { BoolButtons = { "0Fire" } }
+				.AddAxis("0Paddle", 0, 80, 160);
 
 		public void Strobe(StrobeInfo s, IController c)
 		{

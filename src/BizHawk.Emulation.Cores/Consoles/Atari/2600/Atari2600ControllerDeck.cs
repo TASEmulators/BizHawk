@@ -37,11 +37,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					.ToList()
 			};
 
-			Definition.AxisControls.AddRange(Port1.Definition.AxisControls);
-			Definition.AxisControls.AddRange(Port2.Definition.AxisControls);
-
-			Definition.AxisRanges.AddRange(Port1.Definition.AxisRanges);
-			Definition.AxisRanges.AddRange(Port2.Definition.AxisRanges);
+			foreach (var kvp in Port1.Definition.Axes) Definition.Axes.Add(kvp);
+			foreach (var kvp in Port2.Definition.Axes) Definition.Axes.Add(kvp);
 		}
 
 		public byte ReadPort1(IController c)

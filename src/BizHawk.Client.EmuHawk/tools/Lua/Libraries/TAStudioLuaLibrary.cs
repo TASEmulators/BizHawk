@@ -385,7 +385,7 @@ namespace BizHawk.Client.EmuHawk
 						table[button] = controller.IsPressed(button);
 					}
 
-					foreach (var button in controller.Definition.AxisControls)
+					foreach (var button in controller.Definition.Axes.Keys)
 					{
 						table[button] = controller.AxisValue(button);
 					}

@@ -51,7 +51,7 @@ namespace BizHawk.Client.Common
 					{
 						dict.Add(button, Bk2MnemonicLookup.Lookup(button, _systemId).ToString());
 					}
-					else if (_source.Definition.AxisControls.Contains(button))
+					else if (_source.Definition.Axes.ContainsKey(button))
 					{
 						dict.Add(button, Bk2MnemonicLookup.LookupAxis(button, _systemId));
 					}
@@ -73,15 +73,13 @@ namespace BizHawk.Client.Common
 				{
 					foreach (var button in group)
 					{
-						if (_source.Definition.AxisControls.Contains(button))
+						if (_source.Definition.Axes.TryGetValue(button, out var range))
 						{
 							int val;
-							int i = _source.Definition.AxisControls.IndexOf(button);
-							var mid = _source.Definition.AxisRanges[i].Mid;
 
 							if (createEmpty)
 							{
-								val = mid;
+								val = range.Range.Mid;
 							}
 							else
 							{

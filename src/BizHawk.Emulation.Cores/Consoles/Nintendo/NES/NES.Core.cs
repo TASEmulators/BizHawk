@@ -160,10 +160,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			// Add in the reset timing axis for subneshawk
-			if (using_reset_timing && ControllerDefinition.AxisControls.Count == 0)
+			if (using_reset_timing && ControllerDefinition.Axes.Count == 0)
 			{
-				ControllerDefinition.AxisControls.Add("Reset Cycle");
-				ControllerDefinition.AxisRanges.Add(new ControllerDefinition.AxisRange(0, 0, 500000));
+				ControllerDefinition.AddAxis("Reset Cycle", 0, 0, 500000);
 			}
 
 			// don't replace the magicSoundProvider on reset, as it's not needed

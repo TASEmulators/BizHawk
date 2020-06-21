@@ -39,7 +39,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 			foreach (var button in controller.Definition.BoolButtons) GlobalWin.InputManager.ButtonOverrideAdapter.SetButton(button, controller.IsPressed(button));
-			foreach (var axis in controller.Definition.AxisControls) GlobalWin.InputManager.ButtonOverrideAdapter.SetAxis(axis, controller.AxisValue(axis));
+			foreach (var axis in controller.Definition.Axes.Keys) GlobalWin.InputManager.ButtonOverrideAdapter.SetAxis(axis, controller.AxisValue(axis));
 		}
 
 		public void Set(Dictionary<string, bool> buttons, int? controller = null)

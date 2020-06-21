@@ -272,19 +272,11 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 							"P" + pnum + " A",
 					});
 
-					definition.AxisControls.AddRange(new[]
-						{
-								"P" + pnum + " Twist",
-								"P" + pnum + " 1",
-								"P" + pnum + " 2",
-								"P" + pnum + " L"
-							});
-
 					var axisRange = new AxisRange(0, 128, 255);
-					definition.AxisRanges.Add(axisRange);
-					definition.AxisRanges.Add(axisRange);
-					definition.AxisRanges.Add(axisRange);
-					definition.AxisRanges.Add(axisRange);
+					definition.AddAxis($"P{pnum} Twist", axisRange);
+					definition.AddAxis($"P{pnum} 1", axisRange);
+					definition.AddAxis($"P{pnum} 2", axisRange);
+					definition.AddAxis($"P{pnum} L", axisRange);
 				}
 				else
 				{
@@ -325,13 +317,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				"Reset"
 			});
 
-			definition.AxisControls.Add("Disc Select");
-
-			definition.AxisRanges.Add(
-				//new ControllerDefinition.AxisRange(-1, -1, -1) //this is carefully chosen so that we end up with a -1 disc by default (indicating that it's never been set)
-				//hmm.. I don't see why this wouldn't work
-				new AxisRange(0, 1, 1)
-			);
+			definition.AddAxis("Disc Select", new AxisRange(0, 1, 1));
 
 			return definition;
 		}
