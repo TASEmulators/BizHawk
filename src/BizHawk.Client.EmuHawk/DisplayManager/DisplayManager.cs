@@ -784,6 +784,11 @@ namespace BizHawk.Client.EmuHawk
 
 			if (GlobalWin.Config.DispFixAspectRatio)
 			{
+				if (GlobalWin.Config.DispManagerAR == EDispManagerAR.None)
+				{
+					vw = bufferWidth;
+					vh = bufferHeight;
+				}
 				if (GlobalWin.Config.DispManagerAR == EDispManagerAR.System)
 				{
 					//Already set
