@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using BizHawk.Emulation.Common;
 using NymaTypes;
+
+using static BizHawk.Emulation.Common.ControllerDefinition;
 using static BizHawk.Emulation.Cores.Waterbox.LibNymaCore;
 
 namespace BizHawk.Emulation.Cores.Waterbox
@@ -176,11 +178,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 								var data = input.Extra.AsAxis();
 								var fullName = $"{name} {overrideName(data.NameNeg)} / {overrideName(data.NamePos)}";
 
-								ret.AxisControls.Add(fullName);
+								ret.AddAxis(fullName, new AxisRange(0, 0x8000, 0xFFFF, (input.Flags & AxisFlags.InvertCo) != 0));
 								ret.CategoryLabels[fullName] = category;
-								ret.AxisRanges.Add(new ControllerDefinition.AxisRange(
-									0, 0x8000, 0xffff, (input.Flags & AxisFlags.InvertCo) != 0
-								));
 								_thunks.Add((c, b) =>
 								{
 									var val = c.AxisValue(fullName);
@@ -194,15 +193,12 @@ namespace BizHawk.Emulation.Cores.Waterbox
 								var data = input.Extra.AsAxis();
 								var fullName = $"{name} {input.Extra.AsAxis().NameNeg} / {input.Extra.AsAxis().NamePos}";
 
-								ret.AxisControls.Add(fullName);
+								// TODO: Mednafen docs say this range should be [-32768, 32767], and inspecting the code
+								// reveals that a 16 bit value is read, but using anywhere near this full range makes
+								// PCFX mouse completely unusable.  Maybe this is some TAS situation where average users
+								// will want a 1/400 multiplier on sensitivity but TASers might want one frame screenwide movement?
+								ret.AddAxis(fullName, new AxisRange(-127, 0, 127, (input.Flags & AxisFlags.InvertCo) != 0));
 								ret.CategoryLabels[fullName] = category;
-								ret.AxisRanges.Add(new ControllerDefinition.AxisRange(
-									// TODO: Mednafen docs say this range should be [-32768, 32767], and inspecting the code
-									// reveals that a 16 bit value is read, but using anywhere near this full range makes
-									// PCFX mouse completely unusable.  Maybe this is some TAS situation where average users
-									// will want a 1/400 multiplier on sensitivity but TASers might want one frame screenwide movement?
-									-127, 0, 127, (input.Flags & AxisFlags.InvertCo) != 0
-								));
 								_thunks.Add((c, b) =>
 								{
 									var val = c.AxisValue(fullName);
@@ -214,9 +210,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 							case InputType.PointerX:
 							{
 								// I think the core expects to be sent some sort of 16 bit integer, but haven't investigated much
-								ret.AxisControls.Add(name);
-								ret.AxisRanges.Add(new ControllerDefinition.AxisRange(
-									systemInfo.PointerOffsetX, systemInfo.PointerOffsetX, systemInfo.PointerScaleX));
+								ret.AddAxis(name, new AxisRange(systemInfo.PointerOffsetX, systemInfo.PointerOffsetX, systemInfo.PointerScaleX));
 								_thunks.Add((c, b) =>
 								{
 									var val = c.AxisValue(name);
@@ -228,9 +222,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 							case InputType.PointerY:
 							{
 								// I think the core expects to be sent some sort of 16 bit integer, but haven't investigated much
-								ret.AxisControls.Add(name);
-								ret.AxisRanges.Add(new ControllerDefinition.AxisRange(
-									systemInfo.PointerOffsetY, systemInfo.PointerOffsetY, systemInfo.PointerScaleY));
+								ret.AddAxis(name, new AxisRange(systemInfo.PointerOffsetY, systemInfo.PointerOffsetY, systemInfo.PointerScaleY));
 								_thunks.Add((c, b) =>
 								{
 									var val = c.AxisValue(name);
@@ -241,11 +233,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 							}
 							case InputType.ButtonAnalog:
 							{
-								ret.AxisControls.Add(name);
+								ret.AddAxis(name, new AxisRange(0, 0, 0xFFFF));
 								ret.CategoryLabels[name] = category;
-								ret.AxisRanges.Add(new ControllerDefinition.AxisRange(
-									0, 0, 0xffff, false
-								));
 								_thunks.Add((c, b) =>
 								{
 									var val = c.AxisValue(name);

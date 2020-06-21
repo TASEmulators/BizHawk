@@ -90,7 +90,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static readonly Regex ButtonMatchesPlayer = new Regex("^P(\\d+)\\s");
 
-		private void LoadToPanel<T>(Control dest, string controllerName, IList<string> controllerButtons, Dictionary<string,string> categoryLabels, IDictionary<string, Dictionary<string, T>> settingsBlock, T defaultValue, PanelCreator<T> createPanel)
+		private void LoadToPanel<T>(Control dest, string controllerName, IReadOnlyCollection<string> controllerButtons, Dictionary<string,string> categoryLabels, IDictionary<string, Dictionary<string, T>> settingsBlock, T defaultValue, PanelCreator<T> createPanel)
 		{
 			if (!settingsBlock.TryGetValue(controllerName, out var settings))
 			{
@@ -193,7 +193,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			LoadToPanel(NormalControlsTab, _emulator.ControllerDefinition.Name, _emulator.ControllerDefinition.BoolButtons, _emulator.ControllerDefinition.CategoryLabels, normal, "", CreateNormalPanel);
 			LoadToPanel(AutofireControlsTab, _emulator.ControllerDefinition.Name, _emulator.ControllerDefinition.BoolButtons, _emulator.ControllerDefinition.CategoryLabels, autofire, "", CreateNormalPanel);
-			LoadToPanel(AnalogControlsTab, _emulator.ControllerDefinition.Name, _emulator.ControllerDefinition.AxisControls, _emulator.ControllerDefinition.CategoryLabels, analog, new AnalogBind("", 1.0f, 0.1f), CreateAnalogPanel);
+			LoadToPanel(AnalogControlsTab, _emulator.ControllerDefinition.Name, _emulator.ControllerDefinition.Axes.Keys.ToList(), _emulator.ControllerDefinition.CategoryLabels, analog, new AnalogBind("", 1.0f, 0.1f), CreateAnalogPanel);
 
 			if (AnalogControlsTab.Controls.Count == 0)
 			{

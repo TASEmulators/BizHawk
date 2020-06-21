@@ -70,7 +70,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static PadSchema AnalogController(int controller)
 		{
-			var controllerDefRanges = new FakeAnalogController(controller).Definition.AxisRanges;
+			var defAxes = new FakeAnalogController(controller).Definition.Axes;
 			return new PadSchema
 			{
 				DisplayName = $"Player {controller}",
@@ -79,8 +79,8 @@ namespace BizHawk.Client.EmuHawk
 				{
 					new AnalogSchema(1, 121, $"P{controller} Disc X")
 					{
-						AxisRange = controllerDefRanges[0],
-						SecondaryAxisRange = controllerDefRanges[1]
+						AxisRange = defAxes.SpecAtIndex(0).Range,
+						SecondaryAxisRange = defAxes.SpecAtIndex(1).Range
 					}
 				})
 			};

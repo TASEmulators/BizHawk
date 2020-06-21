@@ -48,7 +48,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static PadSchema TurboController(int controller)
 		{
-			var controllerDefRanges = new ColecoTurboController(controller).Definition.AxisRanges;
+			var defAxes = new ColecoTurboController(controller).Definition.Axes;
 			return new PadSchema
 			{
 				Size = new Size(275, 260),
@@ -56,8 +56,8 @@ namespace BizHawk.Client.EmuHawk
 				{
 					new AnalogSchema(6, 14, $"P{controller} Disc X")
 					{
-						AxisRange = controllerDefRanges[0],
-						SecondaryAxisRange = controllerDefRanges[1]
+						AxisRange = defAxes.SpecAtIndex(0).Range,
+						SecondaryAxisRange = defAxes.SpecAtIndex(1).Range
 					},
 					new ButtonSchema(6, 224, controller, "Pedal")
 				}

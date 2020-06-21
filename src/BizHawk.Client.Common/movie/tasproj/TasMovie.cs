@@ -146,7 +146,7 @@ namespace BizHawk.Client.Common
 					: "";
 			}
 
-			if (adapter.Definition.AxisControls.Contains(buttonName))
+			if (adapter.Definition.Axes.ContainsKey(buttonName))
 			{
 				return adapter.AxisValue(buttonName).ToString();
 			}

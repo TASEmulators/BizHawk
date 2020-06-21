@@ -148,8 +148,8 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 				
 				if (c.IsPressed(Definition.BoolButtons[0])) retVal &= 0x3F;
 				
-				float x = c.AxisValue(Definition.AxisControls[0]);
-				float y = c.AxisValue(Definition.AxisControls[1]);
+				float x = c.AxisValue(Definition.Axes[0]);
+				float y = c.AxisValue(Definition.Axes[1]);
 
 				var angle = updateWheel ? wheelAngle : CalcDirection(x, y);
 				
@@ -219,8 +219,8 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 		public float UpdateWheel(IController c)
 		{
-			float x = c.AxisValue(Definition.AxisControls[0]);
-			float y = c.AxisValue(Definition.AxisControls[1]);
+			float x = c.AxisValue(Definition.Axes[0]);
+			float y = c.AxisValue(Definition.Axes[1]);
 			return CalcDirection(x, y);
 		}
 	}
@@ -250,8 +250,8 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 				if (c.IsPressed(Definition.BoolButtons[3])) retVal &= 0xF7;
 				if (c.IsPressed(Definition.BoolButtons[4])) retVal &= 0x3F;
 
-				float x = c.AxisValue(Definition.AxisControls[0]);
-				float y = c.AxisValue(Definition.AxisControls[1]);
+				float x = c.AxisValue(Definition.Axes[0]);
+				float y = c.AxisValue(Definition.Axes[1]);
 
 				var angle = updateWheel ? wheelAngle : CalcDirection(x, y);
 
@@ -348,8 +348,8 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 		public float UpdateWheel(IController c)
 		{
-			float x = c.AxisValue(Definition.AxisControls[0]);
-			float y = c.AxisValue(Definition.AxisControls[1]);
+			float x = c.AxisValue(Definition.Axes[0]);
+			float y = c.AxisValue(Definition.Axes[1]);
 			return CalcDirection(x, y);
 		}
 	}

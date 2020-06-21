@@ -65,7 +65,7 @@ namespace BizHawk.Emulation.Common
 				_buttons.Add(k, source.IsPressed(k) ? 1 : 0);
 			}
 
-			foreach (var k in Definition.AxisControls)
+			foreach (var k in Definition.Axes.Keys)
 			{
 				if (_buttons.Keys.Contains(k))
 				{

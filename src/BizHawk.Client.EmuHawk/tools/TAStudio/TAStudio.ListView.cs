@@ -358,9 +358,7 @@ namespace BizHawk.Client.EmuHawk
 						if (column.Type == ColumnType.Axis)
 						{
 							// feos: this could be cached, but I don't notice any slowdown this way either
-							ControllerDefinition.AxisRange range = ControllerType.AxisRanges
-								[ControllerType.AxisControls.IndexOf(columnName)];
-							if (text == ((float) range.Mid).ToString())
+							if (text == ((float) ControllerType.Axes[columnName].Range.Mid).ToString())
 							{
 								text = "";
 							}
@@ -487,11 +485,11 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (index == 0)
 				{
-					index = ControllerType.AxisControls.IndexOf(button);
+					index = ControllerType.Axes.IndexOf(button);
 				}
 				else
 				{
-					index += ControllerType.AxisControls.Count - 1;
+					index += ControllerType.Axes.Count - 1;
 				}
 
 				int? value = null;
@@ -690,8 +688,8 @@ namespace BizHawk.Client.EmuHawk
 						if (applyPatternToPaintedInputToolStripMenuItem.Checked && (!onlyOnAutoFireColumnsToolStripMenuItem.Checked
 							|| TasView.CurrentCell.Column.Emphasis))
 						{
-							AxisPatterns[ControllerType.AxisControls.IndexOf(buttonName)].Reset();
-							CurrentTasMovie.SetAxisState(frame, buttonName, AxisPatterns[ControllerType.AxisControls.IndexOf(buttonName)].GetNextValue());
+							AxisPatterns[ControllerType.Axes.IndexOf(buttonName)].Reset();
+							CurrentTasMovie.SetAxisState(frame, buttonName, AxisPatterns[ControllerType.Axes.IndexOf(buttonName)].GetNextValue());
 							_patternPaint = true;
 						}
 						else
@@ -1173,7 +1171,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 						else
 						{
-							setVal = AxisPatterns[ControllerType.AxisControls.IndexOf(_startAxisDrawColumn)].GetNextValue();
+							setVal = AxisPatterns[ControllerType.Axes.IndexOf(_startAxisDrawColumn)].GetNextValue();
 						}
 					}
 
@@ -1203,7 +1201,7 @@ namespace BizHawk.Client.EmuHawk
 					return;
 				}
 
-				var value = (_axisPaintState + increment).ConstrainWithin(ControllerType.AxisRanges[ControllerType.AxisControls.IndexOf(_axisEditColumn)].Range);
+				var value = (_axisPaintState + increment).ConstrainWithin(ControllerType.Axes[_axisEditColumn].Range.Range);
 				CurrentTasMovie.SetAxisState(_axisEditRow, _axisEditColumn, value);
 				_axisTypedValue = value.ToString();
 
@@ -1276,13 +1274,13 @@ namespace BizHawk.Client.EmuHawk
 			float prev = value;
 			string prevTyped = _axisTypedValue;
 
-			var range = ControllerType.AxisRanges[ControllerType.AxisControls.IndexOf(_axisEditColumn)];
-			var (rMin, rMax) = range.FloatRange;
+			var range = ControllerType.Axes[_axisEditColumn];
+			var (rMin, rMax) = range.Range.FloatRange;
 
 			// feos: typing past max digits overwrites existing value, not touching the sign
 			// but doesn't handle situations where the range is like -50 through 100, where minimum is negative and has less digits
 			// it just uses 3 as maxDigits there too, leaving room for typing impossible values (that are still ignored by the game and then clamped)
-			int maxDigits = range.MaxDigits;
+			int maxDigits = range.Range.MaxDigits;
 			int curDigits = _axisTypedValue.Length;
 			string curMinus;
 			if (_axisTypedValue.StartsWith("-"))

@@ -36,7 +36,7 @@ namespace BizHawk.Client.Common
 				{
 					Name = c,
 					IsBool = _type.BoolButtons.Contains(c),
-					IsAxis = _type.AxisControls.Contains(c)
+					IsAxis = _type.Axes.ContainsKey(c)
 				})
 				.ToList();
 		}
@@ -53,7 +53,7 @@ namespace BizHawk.Client.Common
 				_myBoolButtons[button] = source.IsPressed(button);
 			}
 
-			foreach (var name in Definition.AxisControls)
+			foreach (var name in Definition.Axes.Keys)
 			{
 				_myAxisControls[name] = source.AxisValue(name);
 			}
@@ -67,9 +67,9 @@ namespace BizHawk.Client.Common
 			}
 
 			// axes don't have sticky logic, so latch default value
-			for (int i = 0; i < Definition.AxisControls.Count; i++)
+			foreach (var kvp in Definition.Axes)
 			{
-				_myAxisControls[Definition.AxisControls[i]] = Definition.AxisRanges[i].Mid;
+				_myAxisControls[kvp.Key] = kvp.Value.Range.Mid;
 			}
 		}
 

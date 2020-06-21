@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -22,9 +23,7 @@ namespace BizHawk.Emulation.Common
 		{
 			Name = source.Name;
 			BoolButtons.AddRange(source.BoolButtons);
-			AxisControls.AddRange(source.AxisControls);
-			AxisRanges.AddRange(source.AxisRanges);
-			AxisConstraints.AddRange(source.AxisConstraints);
+			foreach (var kvp in source.Axes) Axes.Add(kvp);
 			CategoryLabels = source.CategoryLabels;
 		}
 
@@ -38,23 +37,76 @@ namespace BizHawk.Emulation.Common
 		/// </summary>
 		public List<string> BoolButtons { get; set; } = new List<string>();
 
-		/// <summary>
-		/// Gets a list of all non-boolean types, that can be represented by a numerical value (such as analog controls, stylus coordinates, etc
-		/// </summary>
-		public List<string> AxisControls { get; } = new List<string>();
+		public sealed class AxisDict : IReadOnlyDictionary<string, AxisSpec>
+		{
+			private readonly IList<string> _keys = new List<string>();
 
-		/// <summary>
-		/// Gets a list of all axis ranges for each axis control (must be one to one with AxisControls)
-		/// AxisRanges include the min/max/default values
-		/// </summary>
-		public List<AxisRange> AxisRanges { get; set; } = new List<AxisRange>();
+			private readonly IDictionary<string, AxisSpec> _specs = new Dictionary<string, AxisSpec>();
 
-		/// <summary>
-		/// Gets the axis constraints that apply artificial constraints to float values
-		/// For instance, a N64 controller's analog range is actually larger than the amount allowed by the plastic that artificially constrains it to lower values
-		/// Axis constraints provide a way to technically allow the full range but have a user option to constrain down to typical values that a real control would have
-		/// </summary>
-		public List<AxisConstraint> AxisConstraints { get; } = new List<AxisConstraint>();
+			public int Count => _keys.Count;
+
+			public bool HasContraints { get; private set; }
+
+			public IEnumerable<string> Keys => _keys;
+
+			public IEnumerable<AxisSpec> Values => _specs.Values;
+
+			public string this[int index] => _keys[index];
+
+			public AxisSpec this[string index]
+			{
+				get => _specs[index];
+				set => _specs[index] = value;
+			}
+
+			public void Add(string key, AxisSpec value)
+			{
+				_keys.Add(key);
+				_specs.Add(key, value);
+				if (value.Constraint != null) HasContraints = true;
+			}
+
+			public void Add(KeyValuePair<string, AxisSpec> item) => Add(item.Key, item.Value);
+
+			public void Clear()
+			{
+				_keys.Clear();
+				_specs.Clear();
+				HasContraints = false;
+			}
+
+			public bool ContainsKey(string key) => _keys.Contains(key);
+
+			public IEnumerator<KeyValuePair<string, AxisSpec>> GetEnumerator() => _specs.GetEnumerator();
+
+			IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+			public int IndexOf(string key) => _keys.IndexOf(key);
+
+			public AxisSpec SpecAtIndex(int index) => this[_keys[index]];
+
+			public bool TryGetValue(string key, out AxisSpec value) => _specs.TryGetValue(key, out value);
+		}
+
+		public readonly AxisDict Axes = new AxisDict();
+
+		public readonly struct AxisSpec
+		{
+			/// <summary>
+			/// Gets the axis constraints that apply artificial constraints to float values
+			/// For instance, a N64 controller's analog range is actually larger than the amount allowed by the plastic that artificially constrains it to lower values
+			/// Axis constraints provide a way to technically allow the full range but have a user option to constrain down to typical values that a real control would have
+			/// </summary>
+			public readonly AxisConstraint? Constraint;
+
+			public readonly AxisRange Range;
+
+			public AxisSpec(AxisRange range, AxisConstraint? constraint = null)
+			{
+				Constraint = constraint;
+				Range = range;
+			}
+		}
 
 		/// <summary>
 		/// Gets the category labels. These labels provide a means of categorizing controls in various controller display and config screens
@@ -63,17 +115,14 @@ namespace BizHawk.Emulation.Common
 
 		public void ApplyAxisConstraints(string constraintClass, IDictionary<string, int> axes)
 		{
-			if (AxisConstraints == null)
-			{
-				return;
-			}
+			if (!Axes.HasContraints) return;
 
-			foreach (var constraint in AxisConstraints)
+			foreach (var kvp in Axes)
 			{
-				if (constraint.Class != constraintClass)
-				{
-					continue;
-				}
+				if (kvp.Value.Constraint == null) continue;
+				var constraint = kvp.Value.Constraint.Value;
+
+				if (constraint.Class != constraintClass) continue;
 
 				switch (constraint.Type)
 				{
@@ -168,7 +217,7 @@ namespace BizHawk.Emulation.Common
 		{
 			get
 			{
-				var list = new List<string>(AxisControls);
+				var list = new List<string>(Axes.Keys);
 				list.AddRange(BoolButtons);
 
 				// starts with console buttons, then each player's buttons individually
@@ -201,7 +250,7 @@ namespace BizHawk.Emulation.Common
 		{
 			get
 			{
-				var allNames = AxisControls.Concat(BoolButtons).ToList();
+				var allNames = Axes.Keys.Concat(BoolButtons).ToList();
 				var player = allNames
 					.Select(PlayerNumber)
 					.DefaultIfEmpty(0)
@@ -219,7 +268,7 @@ namespace BizHawk.Emulation.Common
 
 		public bool Any()
 		{
-			return BoolButtons.Any() || AxisControls.Any();
+			return BoolButtons.Any() || Axes.Any();
 		}
 	}
 }

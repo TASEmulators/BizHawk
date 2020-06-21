@@ -12,10 +12,10 @@ namespace BizHawk.Client.Common
 		public Controller(ControllerDefinition definition)
 		{
 			Definition = definition;
-			for (int i = 0; i < Definition.AxisControls.Count; i++)
+			foreach (var kvp in Definition.Axes)
 			{
-				_axes[Definition.AxisControls[i]] = Definition.AxisRanges[i].Mid;
-				_axisRanges[Definition.AxisControls[i]] = Definition.AxisRanges[i];
+				_axes[kvp.Key] = kvp.Value.Range.Mid;
+				_axisRanges[kvp.Key] = kvp.Value.Range;
 			}
 		}
 
