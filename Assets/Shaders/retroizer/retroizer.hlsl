@@ -81,7 +81,7 @@ void main_vertex
 		#define BLOOM;
 			static const float BloomIntensity = 0.75f;
 			static const float BloomExponent = 1.00f;
-			static const float[5][5] BloomWeights =
+			static const float BloomWeights[5][5] =
 			{
 				{0.003765,	0.015019,	0.023792,	0.015019,	0.003765},
 				{0.015019,	0.059912,	0.094907,	0.059912,	0.015019},
@@ -89,7 +89,7 @@ void main_vertex
 				{0.015019,	0.059912,	0.094907,	0.059912,	0.015019},
 				{0.003765,	0.015019,	0.023792,	0.015019,	0.003765}			
 			};
-			static const float[5] BloomPositions = { -2, -1, 0 , 1 , 2};
+			static const float BloomPositions[5] = { -2, -1, 0 , 1 , 2};
 
 
 ////
@@ -99,6 +99,12 @@ void main_vertex
 
 float expow(float value, float exponent) {
 	return lerp(1.0f,pow(value,max(exponent,1.0f)),saturate(exponent));
+}
+
+//the code that calls expow() carefully builds float2 for some reason and calls this only to have it implicitly thrown away (which is a warning)
+//so this was added to get rid of the warning
+float expow(float2 value, float2 exponent) {
+	return lerp(1.0f,pow(value,max(exponent,1.0f)),saturate(exponent)).x;
 }
 
 // MultiSampling for ghosting effect
@@ -199,7 +205,7 @@ float4 main_fragment
 	uniform float Time
 ) : COLOR
 {
-    vec4 color = vec4(1.0f,1.0f,1.0f,1.0f);
+    float4 color = float4(1.0f,1.0f,1.0f,1.0f);
     color.xyz = TVEffect(TexCoord,FakeResolution, s_p, Time);
 	return color;
 }
