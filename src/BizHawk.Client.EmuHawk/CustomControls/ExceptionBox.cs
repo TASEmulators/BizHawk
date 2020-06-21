@@ -50,6 +50,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (keyData == (Keys.C | Keys.Control))
 			{
+				if (txtException.SelectionLength > 0)
+					return false;
 				DoCopy();
 				return true;
 			}
