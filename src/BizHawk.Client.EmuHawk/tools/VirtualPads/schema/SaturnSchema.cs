@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Consoles.Sega.Saturn;
+using BizHawk.Emulation.Cores.Waterbox;
 using static BizHawk.Emulation.Common.ControllerDefinition;
 
 namespace BizHawk.Client.EmuHawk
@@ -13,29 +12,22 @@ namespace BizHawk.Client.EmuHawk
 	// ReSharper disable once UnusedMember.Global
 	public class SaturnSchema : IVirtualPadSchema
 	{
-		private static TValue GetOrDefault<TKey, TValue>(IDictionary<TKey, TValue> dict, TKey key)
-		{
-			dict.TryGetValue(key, out var ret);
-			return ret;
-		}
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
 		{
-			var ss = ((Saturnus)core).GetSyncSettings();
-			var multi1 = GetOrDefault(ss.MednafenValues, "ss.input.sport1.multitap") != "1";
-			var multi2 = GetOrDefault(ss.MednafenValues, "ss.input.sport2.multitap") != "1";
+			var nyma = (NymaCore)core;
+			foreach (var result in nyma.ActualPortData
+				.Where(r => r.Port.ShortName != "builtin"))
+			{
+				var num = int.Parse(result.Port.ShortName.Last().ToString());
+				var device = result.Device.ShortName;
+				var schema = GenerateSchemaForPort(device, num);
+				if (schema != null)
+				{
+					yield return schema;
+				}
+			}
 
-			int totalPorts = 1 + (multi1 ? 6 : 1) + (multi2 ? 6 : 1);
-
-			var padSchemas = Enumerable.Range(0, 12)
-				.Take(totalPorts)
-				.Concat(new[] { 12 })
-				.Select(p => new { index = p, device = GetOrDefault(ss.PortDevices, p) })
-				.Where(a => a.device != null && a.device != "none")
-				.Select(a => GenerateSchemaForPort(a.device, a.index + 1))
-				.Concat(new[] { ConsoleButtons() })
-				.ToList();
-
-			return padSchemas;
+			yield return ConsoleButtons();
 		}
 
 		private static PadSchema GenerateSchemaForPort(string device, int controllerNum)
@@ -45,7 +37,8 @@ namespace BizHawk.Client.EmuHawk
 				default:
 					MessageBox.Show($"This peripheral `{device}` is not supported yet");
 					return null;
-
+				case "none":
+					return null;
 				case "gamepad":
 					return StandardController(controllerNum);
 				case "3dpad":
@@ -93,10 +86,10 @@ namespace BizHawk.Client.EmuHawk
 				Size = new Size(458, 285),
 				Buttons = new PadSchemaControl[]
 				{
-					ButtonSchema.Up(290, 77, controller),
-					ButtonSchema.Down(290, 121, controller),
-					ButtonSchema.Left(278, 99, controller),
-					ButtonSchema.Right(300, 99, controller),
+					ButtonSchema.Up(290, 77, $"P{controller} D-Pad Up"),
+					ButtonSchema.Down(290, 121, $"P{controller} D-Pad Down"),
+					ButtonSchema.Left(278, 99, $"P{controller} D-Pad Left"),
+					ButtonSchema.Right(300, 99, $"P{controller} D-Pad Right"),
 					new ButtonSchema(334, 112, controller, "Start") { DisplayName = "S" },
 					new ButtonSchema(366, 123, controller, "A"),
 					new ButtonSchema(390, 113, controller, "B"),
@@ -104,20 +97,20 @@ namespace BizHawk.Client.EmuHawk
 					new ButtonSchema(366, 100, controller, "X"),
 					new ButtonSchema(390, 90, controller, "Y"),
 					new ButtonSchema(414, 80, controller, "Z"),
-					new AnalogSchema(6, 74, $"P{controller} Stick Horizontal")
+					new AnalogSchema(6, 74, $"P{controller} Analog Left / Right")
 					{
-						SecondaryName = $"P{controller} Stick Vertical",
+						SecondaryName = $"P{controller} Analog Up / Down",
 						AxisRange = axisRange,
 						SecondaryAxisRange = axisRange
 					},
-					new SingleAxisSchema(8, 12, controller, "Left Shoulder")
+					new SingleAxisSchema(8, 12, controller, "L")
 					{
 						DisplayName = "L",
 						TargetSize = new Size(128, 55),
 						MinValue = 0,
 						MaxValue = 255
 					},
-					new SingleAxisSchema(328, 12, controller, "Right Shoulder")
+					new SingleAxisSchema(328, 12, controller, "R")
 					{
 						DisplayName = "R",
 						TargetSize = new Size(128, 55),
@@ -261,7 +254,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return new ConsoleSchema
 			{
-				Size = new Size(250, 50),
+				Size = new Size(327, 50),
 				Buttons = new[]
 				{
 					new ButtonSchema(10, 15, "Reset"),
@@ -273,6 +266,10 @@ namespace BizHawk.Client.EmuHawk
 					new ButtonSchema(175, 15, "Next Disk")
 					{
 						DisplayName = "Next Disc"
+					},
+					new ButtonSchema(242, 15, "P13 Smpc Reset")
+					{
+						DisplayName = "Smpc Reset"
 					}
 				}
 			};

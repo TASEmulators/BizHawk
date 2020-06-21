@@ -532,7 +532,7 @@ namespace BizHawk.Client.Common
 				["D-Pad Up"] = 'U',
 				["D-Pad Down"] = 'D',
 				["D-Pad Left"] = 'L',
-				["D-Pad Right"] = 'L',
+				["D-Pad Right"] = 'R',
 				["Mode: Set Digital(+)"] = '+',
 				["Mode: Set Analog(○)"] = 'o',
 				["L Gear Shift"] = 'L',
