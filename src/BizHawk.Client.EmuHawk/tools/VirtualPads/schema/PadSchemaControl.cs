@@ -104,7 +104,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public int MaxValue { get; }
 
-		public string SecondaryName { get; }
+		public string SecondaryName { get; set; }
 
 		public Size TargetSize { get; set; }
 

@@ -12,6 +12,8 @@ namespace BizHawk.Client.EmuHawk
 	// ReSharper disable once UnusedMember.Global
 	public class SaturnSchema : IVirtualPadSchema
 	{
+		private static readonly AxisRange AxisRange = new AxisRange(0, 0x8000, 0xffff);
+
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
 		{
 			var nyma = (NymaCore)core;
@@ -51,6 +53,8 @@ namespace BizHawk.Client.EmuHawk
 					return MissionControl(controllerNum);
 				case "dmission":
 					return DualMissionControl(controllerNum);
+				case "gun":
+					return LightGun(controllerNum);
 			}
 		}
 
@@ -80,7 +84,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private static PadSchema ThreeDeeController(int controller)
 		{
-			var axisRange = new AxisRange(0, 0x8000, 0xffff);
 			return new PadSchema
 			{
 				Size = new Size(458, 285),
@@ -100,8 +103,8 @@ namespace BizHawk.Client.EmuHawk
 					new AnalogSchema(6, 74, $"P{controller} Analog Left / Right")
 					{
 						SecondaryName = $"P{controller} Analog Up / Down",
-						AxisRange = axisRange,
-						SecondaryAxisRange = axisRange
+						AxisRange = AxisRange,
+						SecondaryAxisRange = AxisRange
 					},
 					new SingleAxisSchema(8, 12, controller, "L")
 					{
@@ -129,19 +132,20 @@ namespace BizHawk.Client.EmuHawk
 				Size = new Size(375, 320),
 				Buttons = new PadSchemaControl[]
 				{
-					new TargetedPairSchema(14, 17, $"P{controller} X")
+					new TargetedPairSchema(14, 17, $"P{controller} Motion Left / Right", AxisRange.Max)
 					{
+						SecondaryName = $"P{controller} Motion Up / Down",
 						TargetSize = new Size(256, 256)
 					},
-					new ButtonSchema(300, 17, controller, "Mouse Left")
+					new ButtonSchema(300, 17, controller, "Left Button")
 					{
 						DisplayName = "Left"
 					},
-					new ButtonSchema(300, 47, controller, "Mouse Center")
+					new ButtonSchema(300, 47, controller, "Middle Button")
 					{
-						DisplayName = "Center"
+						DisplayName = "Middle"
 					},
-					new ButtonSchema(300, 77, controller, "Mouse Right")
+					new ButtonSchema(300, 77, controller, "Right Button")
 					{
 						DisplayName = "Right"
 					},
@@ -155,35 +159,35 @@ namespace BizHawk.Client.EmuHawk
 			return new PadSchema
 			{
 				DisplayName = "Wheel",
-				Size = new Size(325, 100),
+				Size = new Size(325, 130),
 				Buttons = new PadSchemaControl[]
 				{
-					new SingleAxisSchema(8, 12, controller, "Wheel")
+					new SingleAxisSchema(45, 70, controller, "Analog Left / Right")
 					{
-						TargetSize = new Size(128, 55),
+						TargetSize = new Size(256, 45),
 						MinValue = 0,
-						MaxValue = 255
+						MaxValue = 65535,
+						DisplayName = "Wheel"
 					},
-					ButtonSchema.Up(150, 20, controller),
-					ButtonSchema.Down(150, 43, controller),
-					new ButtonSchema(180, 63, controller, "A"),
-					new ButtonSchema(204, 53, controller, "B"),
-					new ButtonSchema(228, 43, controller, "C"),
-					new ButtonSchema(180, 40, controller, "X"),
-					new ButtonSchema(204, 30, controller, "Y"),
-					new ButtonSchema(228, 20, controller, "Z"),
-					new ButtonSchema(268, 20, controller, "Start")
+					new ButtonSchema(15, 12, controller, "Z"),
+					new ButtonSchema(42, 22, controller, "Y"),
+					new ButtonSchema(69, 32, controller, "X"),
+					new ButtonSchema(145, 32, controller, "Start"),
+					new ButtonSchema(231, 32, controller, "A"),
+					new ButtonSchema(258, 22, controller, "B"),
+					new ButtonSchema(285, 12, controller, "C"),
+					ButtonSchema.Left(122, 32, $"P{controller} L Gear Shift"),
+					ButtonSchema.Right(185, 32, $"P{controller} R Gear Shift")
 				}
 			};
 		}
 
 		private static PadSchema MissionControl(int controller)
 		{
-			var axisRange = new AxisRange(0, 0x8000, 0xffff);
 			return new PadSchema
 			{
 				DisplayName = "Mission",
-				Size = new Size(445, 230),
+				Size = new Size(455, 230),
 				Buttons = new PadSchemaControl[]
 				{
 					new ButtonSchema(45, 15, controller, "Start"),
@@ -195,17 +199,18 @@ namespace BizHawk.Client.EmuHawk
 					new ButtonSchema(30, 70, controller, "A"),
 					new ButtonSchema(55, 70, controller, "B"),
 					new ButtonSchema(80, 70, controller, "C"),
-					new AnalogSchema(185, 13, $"P{controller} Stick Horizontal")
+					new AnalogSchema(195, 13, $"P{controller} Stick Left / Right")
 					{
-						SecondaryName = $"P{controller} Stick Vertical",
-						AxisRange = axisRange,
-						SecondaryAxisRange = axisRange
+						SecondaryName = $"P{controller} Stick Fore / Back",
+						AxisRange = AxisRange,
+						SecondaryAxisRange = AxisRange
 					},
-					new SingleAxisSchema(135, 13, controller, "Throttle", isVertical: true)
+					new SingleAxisSchema(135, 13, controller, "Throttle Down / Up", isVertical: true)
 					{
+						DisplayName = "Throttle",
 						TargetSize = new Size(64, 178),
-						MinValue = 0,
-						MaxValue = 255
+						MinValue = AxisRange.Min,
+						MaxValue = AxisRange.Max
 					}
 				}
 			};
@@ -213,38 +218,71 @@ namespace BizHawk.Client.EmuHawk
 
 		private static PadSchema DualMissionControl(int controller)
 		{
-			var axisRange = new AxisRange(0, 0x8000, 0xffff);
 			return new PadSchema
 			{
 				DisplayName = "Dual Mission",
-				Size = new Size(680, 230),
+				Size = new Size(850, 230),
 				Buttons = new PadSchemaControl[]
 				{
-					new AnalogSchema(58, 13, $"P{controller} Left Stick Horizontal")
+					new AnalogSchema(68, 13, $"P{controller} L Stick Left / Right")
 					{
-						SecondaryName = $"P{controller} Left Stick Vertical",
-						AxisRange = axisRange,
-						SecondaryAxisRange = axisRange
+						SecondaryName = $"P{controller} L Stick Fore / Back",
+						AxisRange = AxisRange,
+						SecondaryAxisRange = AxisRange
 					},
-					new SingleAxisSchema(8, 13, controller, "Left Throttle", isVertical: true)
+					new SingleAxisSchema(8, 13, controller, "L Throttle Down / Up", isVertical: true)
 					{
 						DisplayName = "Throttle",
 						TargetSize = new Size(64, 178),
-						MinValue = 0,
-						MaxValue = 255
+						MinValue = AxisRange.Min,
+						MaxValue = AxisRange.Max
 					},
-					new AnalogSchema(400, 13, $"P{controller} Right Stick Horizontal")
+					
+					new ButtonSchema(400, 15, controller, "Start"),
+					new ButtonSchema(360, 58, controller, "L"),
+					new ButtonSchema(460, 58, controller, "R"),
+					new ButtonSchema(385, 43, controller, "X"),
+					new ButtonSchema(410, 43, controller, "Y"),
+					new ButtonSchema(435, 43, controller, "Z"),
+					new ButtonSchema(385, 70, controller, "A"),
+					new ButtonSchema(410, 70, controller, "B"),
+					new ButtonSchema(435, 70, controller, "C"),
+
+					new AnalogSchema(570, 13, $"P{controller} R Stick Left / Right")
 					{
-						SecondaryName = $"P{controller} Right Stick Vertical",
-						AxisRange = axisRange,
-						SecondaryAxisRange = axisRange
+						SecondaryName = $"P{controller} R Stick Fore / Back",
+						AxisRange = AxisRange,
+						SecondaryAxisRange = AxisRange
 					},
-					new SingleAxisSchema(350, 13, controller, "Right Throttle", isVertical: true)
+					new SingleAxisSchema(510, 13, controller, "R Throttle Down / Up", isVertical: true)
 					{
 						DisplayName = "Throttle",
 						TargetSize = new Size(64, 178),
-						MinValue = 0,
-						MaxValue = 255
+						MinValue = AxisRange.Min,
+						MaxValue = AxisRange.Max
+					}
+				}
+			};
+		}
+
+		private static PadSchema LightGun(int controller)
+		{
+			return new PadSchema
+			{
+				DisplayName = "Light Gun",
+				Size = new Size(375, 320),
+				Buttons = new PadSchemaControl[]
+				{
+					new TargetedPairSchema(14, 17, $"P{controller} X Axis", AxisRange.Max)
+					{
+						SecondaryName = $"P{controller} Y Axis",
+						TargetSize = new Size(256, 256)
+					},
+					new ButtonSchema(300, 17, controller, "Trigger"),
+					new ButtonSchema(300, 57, controller, "Start"),
+					new ButtonSchema(300, 290, controller, "Offscreen Shot")
+					{
+						DisplayName = "Offscreen"
 					}
 				}
 			};
