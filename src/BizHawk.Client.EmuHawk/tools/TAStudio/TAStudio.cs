@@ -623,6 +623,7 @@ namespace BizHawk.Client.EmuHawk
 				return false;
 			}
 
+			_engaged = false;
 			var newMovie = (ITasMovie)MovieSession.Get(file.FullName);
 			newMovie.BindMarkersToInput = Settings.BindMarkersToInput;
 			newMovie.TasStateManager.InvalidateCallback = GreenzoneInvalidated;
@@ -633,6 +634,7 @@ namespace BizHawk.Client.EmuHawk
 				return false;
 			}
 
+			_engaged = true;
 			Settings.RecentTas.Add(newMovie.Filename); // only add if it did load
 
 			if (startsFromSavestate)
