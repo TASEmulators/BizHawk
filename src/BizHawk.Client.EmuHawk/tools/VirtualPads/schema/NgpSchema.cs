@@ -22,13 +22,13 @@ namespace BizHawk.Client.EmuHawk
 				Size = new Size(174, 79),
 				Buttons = new[]
 				{
-					ButtonSchema.Up(14, 12),
-					ButtonSchema.Down(14, 56),
-					ButtonSchema.Left(2, 34),
-					ButtonSchema.Right(24, 34),
-					new ButtonSchema(74, 34, "B"),
-					new ButtonSchema(98, 34, "A"),
-					new ButtonSchema(146, 12, "Option") { DisplayName = "O" }
+					ButtonSchema.Up(14, 12, 1),
+					ButtonSchema.Down(14, 56, 1),
+					ButtonSchema.Left(2, 34, 1),
+					ButtonSchema.Right(24, 34, 1),
+					new ButtonSchema(74, 34, 1, "B"),
+					new ButtonSchema(98, 34, 1, "A"),
+					new ButtonSchema(146, 12, 1, "Option") { DisplayName = "O" }
 				}
 			};
 		}
@@ -37,10 +37,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return new ConsoleSchema
 			{
-				Size = new Size(75, 50),
+				Size = new Size(150, 50),
 				Buttons = new[]
 				{
-					new ButtonSchema(10, 15, "Power")
+					new ButtonSchema(10, 15, "Reset"),
+					new ButtonSchema(58, 15, "Power")
 				}
 			};
 		}
