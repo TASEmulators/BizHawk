@@ -3903,16 +3903,20 @@ namespace BizHawk.Client.EmuHawk
 				CreateRewinder();
 			}
 
-			if (enabled)
+			// CreateRewinder doesn't necessarily create an instance of rewinder, still need to check null
+			if (Rewinder != null)
 			{
-				Rewinder.Resume();
-			}
-			else
-			{
-				Rewinder.Suspend();
-			}
+				if (enabled)
+				{
+					Rewinder.Resume();
+				}
+				else
+				{
+					Rewinder.Suspend();
+				}
 
-			AddOnScreenMessage($"Rewind {(enabled ? "enabled" : "suspended")}");
+				AddOnScreenMessage($"Rewind {(enabled ? "enabled" : "suspended")}");
+			}
 		}
 
 		public void DisableRewind()
