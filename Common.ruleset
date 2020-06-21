@@ -274,9 +274,6 @@
 		<!-- Closing braces should be spaced correctly -->
 		<Rule Id="SA1013" Action="Hidden" />
 
-		<!-- Closing generic brackets should be spaced correctly -->
-		<Rule Id="SA1015" Action="Hidden" />
-
 		<!-- Member access symbols should be spaced correctly -->
 		<Rule Id="SA1019" Action="Hidden" />
 

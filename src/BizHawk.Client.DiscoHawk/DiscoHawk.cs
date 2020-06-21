@@ -203,7 +203,7 @@ namespace BizHawk.Client.DiscoHawk
 			string dirArg = null;
 			string infile = null;
 			var loadDiscInterface = DiscInterface.BizHawk;
-			var compareDiscInterfaces = new List<DiscInterface> ();
+			var compareDiscInterfaces = new List<DiscInterface>();
 			bool hawk = false;
 			
 			int idx = 0;
