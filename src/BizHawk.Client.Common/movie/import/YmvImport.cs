@@ -114,7 +114,7 @@ namespace BizHawk.Client.Common.movie.import
 			};
 
 			// Split up the sections of the frame.
-			string[] sections = line.Split(new [] { "|" }, StringSplitOptions.RemoveEmptyEntries);
+			var sections = line.Split(new[] { "|" }, StringSplitOptions.RemoveEmptyEntries);
 			if (sections.Length != 2)
 			{
 				Result.Errors.Add("Unsupported input configuration");

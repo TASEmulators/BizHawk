@@ -60,7 +60,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				DisplayName = $"Player {controller}",
 				Size = new Size(174, 74),
-				Buttons = new []
+				Buttons = new[]
 				{
 					ButtonSchema.Up(23, 15, controller),
 					ButtonSchema.Down(23, 36, controller),

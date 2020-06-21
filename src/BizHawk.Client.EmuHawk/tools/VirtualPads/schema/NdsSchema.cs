@@ -49,7 +49,7 @@ namespace BizHawk.Client.EmuHawk.tools.VirtualPads.schema
 			return new ConsoleSchema
 			{
 				Size = new Size(160, 45),
-				Buttons = new []
+				Buttons = new[]
 				{
 					new ButtonSchema(8, 18, "LidOpen") { DisplayName = "Lid Open" },
 					new ButtonSchema(68, 18, "LidClose") { DisplayName = "Lid Close" }

@@ -1103,7 +1103,7 @@ namespace BizHawk.Client.Common
 			new FilesystemFilter("Amstrad CPC", new string[0], devBuildExtraExts: new[] { "cdt", "dsk" }, devBuildAddArchiveExts: true),
 			new FilesystemFilter("Sinclair ZX Spectrum", new[] { "tzx", "tap", "dsk", "pzx", "csw", "wav" }, addArchiveExts: true),
 			new FilesystemFilter("Odyssey 2", new[] { "o2" }),
-			new FilesystemFilter("Uzebox", new [] { "uze" }),
+			new FilesystemFilter("Uzebox", new[] { "uze" }),
 			FilesystemFilter.EmuHawkSaveStates
 		);
 

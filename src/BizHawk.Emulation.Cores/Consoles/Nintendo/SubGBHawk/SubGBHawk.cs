@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubGBHawk
 		"",
 		isPorted: false,
 		isReleased: true)]
-	[ServiceNotApplicable(new [] { typeof(IDriveLight) })]
+	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class SubGBHawk : IEmulator, IStatable, IInputPollable,
 		ISettable<GBHawk.GBHawk.GBSettings, GBHawk.GBHawk.GBSyncSettings>
 	{

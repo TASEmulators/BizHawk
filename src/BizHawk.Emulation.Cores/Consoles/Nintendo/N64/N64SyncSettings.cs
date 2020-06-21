@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			Rsp = RspType.Rsp_Hle;
 			DisableExpansionSlot = true;
 
-			Controllers = new []
+			Controllers = new[]
 			{
 				new N64ControllerSettings(),
 				new N64ControllerSettings { IsConnected = false },

@@ -64,7 +64,7 @@ namespace BizHawk.Client.EmuHawk
 			tsbViewStyle.SelectedIndex = 0;
 
 			lvCDL.AllColumns.Clear();
-			lvCDL.AllColumns.AddRange(new []
+			lvCDL.AllColumns.AddRange(new[]
 			{
 				new RollColumn { Name = "CDLFile", Text = "CDL File @", UnscaledWidth = 107, Type = ColumnType.Text  },
 				new RollColumn { Name = "Domain", Text = "Domain", UnscaledWidth = 126, Type = ColumnType.Text  },

@@ -292,9 +292,6 @@
 		<!-- Code should not contain multiple whitespace in a row -->
 		<Rule Id="SA1025" Action="Hidden" />
 
-		<!-- Code should not contain space after new or stackalloc keyword in implicitly typed array allocation -->
-		<Rule Id="SA1026" Action="Hidden" />
-
 		<!-- Use tabs correctly -->
 		<Rule Id="SA1027" Action="Hidden" />
 
