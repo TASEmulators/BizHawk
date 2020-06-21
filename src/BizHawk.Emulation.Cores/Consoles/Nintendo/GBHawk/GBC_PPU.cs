@@ -401,7 +401,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 									else { last_HBL = 0xFF; }
 									HBL_HDMA_count = 0x10;
 									HBL_HDMA_go = false;
-									HDMA_countdown = 4;
+									HDMA_countdown = Core.double_speed ? 2 : 4;
 								}
 
 								HDMA_tick++;
