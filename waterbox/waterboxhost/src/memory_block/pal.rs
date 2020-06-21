@@ -1,15 +1,8 @@
 // Platform abstraction layer over mmap/etc.  Doesn't do much checking, not meant for general consumption
+use super::Protection;
 
+#[derive(Debug)]
 pub struct Handle(usize);
-
-pub enum Protection {
-	None,
-	R,
-	RW,
-	RX,
-	RWX,
-	RWStack
-}
 
 #[cfg(windows)]
 pub use win::*;
@@ -50,6 +43,10 @@ mod win {
 
 	pub unsafe fn close(handle: Handle) -> bool {
 		CloseHandle(handle.0 as *mut c_void) != 0
+	}
+
+	pub fn bad() -> Handle {
+		return Handle(INVALID_HANDLE_VALUE as usize);
 	}
 
 	pub fn map(handle: &Handle, start: usize, size: usize) -> bool {
@@ -122,6 +119,10 @@ mod nix {
 
 	pub unsafe fn close(handle: Handle) -> bool {
 		libc::close(handle.0 as i32) == 0
+	}
+
+	pub fn bad() -> Handle {
+		return Handle(-1i32 as usize);
 	}
 
 	pub fn map(handle: &Handle, start: usize, size: usize) -> bool {

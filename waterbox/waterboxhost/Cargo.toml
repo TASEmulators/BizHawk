@@ -11,6 +11,8 @@ publish = false
 bitflags = "1.2.1"
 page_size = "0.4.2"
 lazy_static = "1.4.0"
+getset = "0.1.1"
+parking_lot = "0.10.2"
 
 [target.'cfg(windows)'.dependencies]
 winapi = { version = "0.3.8", features = ["memoryapi", "handleapi", "errhandlingapi", "winnt"] }

@@ -3,6 +3,7 @@ use core::ffi::c_void;
 use crate::*;
 
 /// wraps the allocation of a single PAGESIZE bytes of ram, and is safe-ish to call within a signal handler
+#[derive(Debug)]
 pub struct PageBlock {
 	ptr: NonNull<u8>,
 }

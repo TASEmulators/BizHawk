@@ -17,10 +17,6 @@ struct GlobalData {
 	initialized: bool,
 	active_blocks: Vec<MemoryBlockRef>, 
 }
-struct MemoryBlockRef(*mut MemoryBlock);
-unsafe impl Send for MemoryBlockRef {
-
-}
 
 unsafe fn register(block: *mut MemoryBlock) {
 	let mut data = global_data.lock().unwrap();
@@ -64,7 +60,7 @@ unsafe fn trip(addr: usize) -> TripResult {
 		page.snapshot = Snapshot::Data(snapshot);
 	}
 	page.flags.insert(PageFlags::DIRTY);
-	let new_prot = if page.flags.contains(PageFlags::X) { pal::Protection::RWX } else { pal::Protection::RW };
+	let new_prot = if page.flags.contains(PageFlags::X) { Protection::RWX } else { Protection::RW };
 	assert!(pal::protect(page_start_addr, PAGESIZE, new_prot));
 	TripResult::Handled
 }
