@@ -155,6 +155,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TasView_QueryItemIcon(int index, RollColumn column, ref Bitmap bitmap, ref int offsetX, ref int offsetY)
 		{
+			if (!_engaged)
+			{
+				return;
+			}
+
 			var overrideIcon = QueryItemIconCallback?.Invoke(index, column.Name);
 
 			if (overrideIcon != null)
@@ -218,6 +223,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TasView_QueryItemBkColor(int index, RollColumn column, ref Color color)
 		{
+			if (!_engaged)
+			{
+				return;
+			}
+
 			Color? overrideColor = QueryItemBgColorCallback?.Invoke(index, column.Name);
 
 			if (overrideColor.HasValue)
@@ -260,6 +270,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TasView_QueryRowBkColor(int index, ref Color color)
 		{
+			if (!_engaged)
+			{
+				return;
+			}
+
 			var record = CurrentTasMovie[index];
 
 			if (MainForm.IsSeeking && MainForm.PauseOnFrame == index)
@@ -299,6 +314,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TasView_QueryItemText(int index, RollColumn column, out string text, ref int offsetX, ref int offsetY)
 		{
+			if (!_engaged)
+			{
+				text = "";
+				return;
+			}
+
 			var overrideText = QueryItemTextCallback?.Invoke(index, column.Name);
 			if (overrideText != null)
 			{

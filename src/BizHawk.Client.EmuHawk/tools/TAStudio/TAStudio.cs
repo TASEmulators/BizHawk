@@ -33,6 +33,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool _initialized;
 		private bool _exiting;
+		private bool _engaged;
 
 		private bool CanAutoload => Settings.RecentTas.AutoLoad && !string.IsNullOrEmpty(Settings.RecentTas.MostRecent);
 
@@ -109,7 +110,6 @@ namespace BizHawk.Client.EmuHawk
 				recentMacrosToolStripMenuItem.Image = Properties.Resources.Recent;
 				TASEditorManualOnlineMenuItem.Image = Properties.Resources.Help;
 				ForumThreadMenuItem.Image = Properties.Resources.TAStudio;
-
 				Icon = Properties.Resources.TAStudio_MultiSize;
 			}
 
@@ -210,6 +210,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool Engage()
 		{
+			_engaged = false;
 			MainForm.PauseOnFrame = null;
 			MainForm.PauseEmulator();
 
@@ -283,6 +284,7 @@ namespace BizHawk.Client.EmuHawk
 			SetSplicer();
 			SetupBoolPatterns();
 
+			_engaged = true;
 			return true;
 		}
 
@@ -790,6 +792,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Disengage()
 		{
+			_engaged = false;
 			MainForm.PauseOnFrame = null;
 			MainForm.AddOnScreenMessage("TAStudio disengaged");
 			MainForm.TakeBackControl();
