@@ -172,7 +172,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 							case InputType.Axis:
 							{
 								var data = input.Extra.AsAxis();
-								var fullName = $"{name} {input.Extra.AsAxis().NameNeg} / {input.Extra.AsAxis().NamePos}";
+								var fullName = $"{name} {overrideName(data.NameNeg)} / {overrideName(data.NamePos)}";
 
 								ret.AxisControls.Add(fullName);
 								ret.CategoryLabels[fullName] = category;
@@ -184,7 +184,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 									var val = c.AxisValue(fullName);
 									b[byteStart] = (byte)val;
 									b[byteStart + 1] = (byte)(val >> 8);
-								});									
+								});
 								break;
 							}
 							case InputType.AxisRel:
