@@ -223,7 +223,6 @@
 			this.Controls.Add(this.HotkeyTabControl);
 			this.Controls.Add(this.AutoTabCheckBox);
 			this.Controls.Add(this.label38);
-			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.HotKeys_MultiSize;
 			this.Name = "HotkeyConfig";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Configure Hotkeys";

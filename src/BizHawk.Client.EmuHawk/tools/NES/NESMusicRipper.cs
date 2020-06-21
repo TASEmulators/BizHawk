@@ -23,6 +23,7 @@ namespace BizHawk.Client.EmuHawk
 		public NESMusicRipper()
 		{
 			InitializeComponent();
+			Icon = Properties.Resources.NESControllerIcon_MultiSize;
 			SyncContents();
 		}
 

@@ -430,7 +430,6 @@ namespace BizHawk.Client.EmuHawk
 			this.Controls.Add(this.NumStatesLabel);
 			this.Controls.Add(this.OkBtn);
 			this.Controls.Add(this.CancelBtn);
-			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.TAStudio_MultiSize;
 			this.MinimumSize = new System.Drawing.Size(225, 165);
 			this.Name = "StateHistorySettingsForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;

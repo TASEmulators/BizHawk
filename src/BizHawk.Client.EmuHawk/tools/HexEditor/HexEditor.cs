@@ -121,6 +121,7 @@ namespace BizHawk.Client.EmuHawk
 			_fontHeight = fontSize1.Height;
 
 			InitializeComponent();
+			Icon = Properties.Resources.poke_MultiSize;
 			AddressesLabel.BackColor = Color.Transparent;
 			SetHeader();
 			Closing += (o, e) => CloseHexFind();

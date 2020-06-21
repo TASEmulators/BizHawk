@@ -427,7 +427,6 @@
             this.Controls.Add(this.btnOK);
             this.Controls.Add(this.groupBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.GameController_MultiSize;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "PSXControllerConfig";

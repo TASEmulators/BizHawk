@@ -11,6 +11,7 @@ namespace BizHawk.Client.EmuHawk
 		private CGBColorChooserForm()
 		{
 			InitializeComponent();
+			Icon = Properties.Resources.gambatte_MultiSize;
 			bmpView1.ChangeBitmapSize(new Size(256, 128));
 		}
 

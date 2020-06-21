@@ -21,6 +21,7 @@ namespace BizHawk.Client.EmuHawk
 			_sortReverse = false;
 
 			InitializeComponent();
+			Icon = Properties.Resources.TAStudio_MultiSize;
 		}
 
 		private void EditCommentsForm_Load(object sender, EventArgs e)

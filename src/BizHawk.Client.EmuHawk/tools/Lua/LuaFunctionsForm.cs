@@ -21,6 +21,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_docs = docs;
 			InitializeComponent();
+			Icon = Properties.Resources.textdoc_MultiSize;
 			FunctionView.RetrieveVirtualItem += FunctionView_QueryItemText;
 		}
 

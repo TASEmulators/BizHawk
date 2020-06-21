@@ -19,6 +19,7 @@ namespace BizHawk.Client.EmuHawk
 			_selectedMovie = movie;
 			_readOnly = readOnly;
 			InitializeComponent();
+			Icon = Properties.Resources.TAStudio_MultiSize;
 		}
 
 		private void EditSubtitlesForm_Load(object sender, EventArgs e)

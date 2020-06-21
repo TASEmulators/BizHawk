@@ -261,7 +261,6 @@
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.SoundMenuStrip);
-			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.Bug_MultiSize;
 			this.MainMenuStrip = this.SoundMenuStrip;
 			this.Name = "PCESoundDebugger";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

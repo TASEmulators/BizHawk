@@ -113,7 +113,6 @@
 			this.Controls.Add(this.CancelBtn);
 			this.Controls.Add(this.OkBtn);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.GameController_MultiSize;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "N64ControllersSetup";

@@ -12,6 +12,7 @@ namespace BizHawk.Client.EmuHawk
 		public BizBox()
 		{
 			InitializeComponent();
+			Icon = Properties.Resources.logo;
 		}
 
 		private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

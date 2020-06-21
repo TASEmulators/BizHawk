@@ -105,7 +105,6 @@
 			this.Controls.Add(this.CommentGrid);
 			this.Controls.Add(this.OK);
 			this.Controls.Add(this.Cancel);
-			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.TAStudio_MultiSize;
 			this.MinimumSize = new System.Drawing.Size(188, 121);
 			this.Name = "EditCommentsForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

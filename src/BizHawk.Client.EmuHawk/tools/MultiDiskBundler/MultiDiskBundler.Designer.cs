@@ -190,7 +190,6 @@
             this.Controls.Add(this.CancelBtn);
             this.Controls.Add(this.SaveRunButton);
             this.Controls.Add(this.MultiDiskMenuStrip);
-            this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.dual_MultiSize;
             this.MainMenuStrip = this.MultiDiskMenuStrip;
             this.Name = "MultiDiskBundler";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

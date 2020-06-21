@@ -295,7 +295,6 @@
 			this.Controls.Add(this.lvCDL);
 			this.Controls.Add(this.toolStrip1);
 			this.Controls.Add(this.menuStrip1);
-			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.cdlogger_MultiSize;
 			this.MainMenuStrip = this.menuStrip1;
 			this.MinimumSize = new System.Drawing.Size(150, 130);
 			this.Name = "CDL";

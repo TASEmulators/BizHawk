@@ -13,6 +13,7 @@ namespace BizHawk.Client.EmuHawk
 		public SubtitleMaker()
 		{
 			InitializeComponent();
+			Icon = Properties.Resources.TAStudio_MultiSize;
 		}
 
 		public void DisableFrame()

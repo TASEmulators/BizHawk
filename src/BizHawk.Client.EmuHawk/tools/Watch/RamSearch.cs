@@ -46,6 +46,7 @@ namespace BizHawk.Client.EmuHawk
 			SetStyle(ControlStyles.UserPaint, true);
 			SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
 			InitializeComponent();
+			Icon = Properties.Resources.search_MultiSize;
 			WatchListView.QueryItemText += ListView_QueryItemText;
 			WatchListView.QueryItemBkColor += ListView_QueryItemBkColor;
 			Closing += (o, e) => SaveConfigSettings();

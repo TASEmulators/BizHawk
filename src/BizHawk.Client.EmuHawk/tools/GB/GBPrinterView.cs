@@ -30,6 +30,7 @@ namespace BizHawk.Client.EmuHawk
 		public GBPrinterView()
 		{
 			InitializeComponent();
+			Icon = Properties.Resources.gambatte_MultiSize;
 
 			// adjust the color of the printed output to be more papery
 			_paperAdjustment = new ColorMatrix

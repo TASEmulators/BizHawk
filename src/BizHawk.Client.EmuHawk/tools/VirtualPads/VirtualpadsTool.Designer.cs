@@ -169,7 +169,6 @@
 			this.ClientSize = new System.Drawing.Size(452, 312);
 			this.Controls.Add(this.ControllerBox);
 			this.Controls.Add(this.PadMenu);
-			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.GameController_MultiSize;
 			this.Name = "VirtualpadTool";
 			this.Text = "Virtual Pads";
 			this.Load += new System.EventHandler(this.VirtualpadTool_Load);

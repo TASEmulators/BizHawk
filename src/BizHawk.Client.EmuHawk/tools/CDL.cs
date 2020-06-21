@@ -60,6 +60,7 @@ namespace BizHawk.Client.EmuHawk
 			SetStyle(ControlStyles.UserPaint, true);
 			SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
 			InitializeComponent();
+			Icon = Properties.Resources.cdlogger_MultiSize;
 
 			tsbViewStyle.SelectedIndex = 0;
 

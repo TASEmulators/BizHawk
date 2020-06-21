@@ -644,7 +644,6 @@
 			this.Controls.Add(this.Header);
 			this.Controls.Add(this.MemoryViewerBox);
 			this.Controls.Add(this.HexMenuStrip);
-			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.poke_MultiSize;
 			this.MainMenuStrip = this.HexMenuStrip;
 			this.MinimumSize = new System.Drawing.Size(360, 180);
 			this.Name = "HexEditor";

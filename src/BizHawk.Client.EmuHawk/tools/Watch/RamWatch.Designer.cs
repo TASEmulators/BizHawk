@@ -882,7 +882,6 @@
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.RamWatchMenu);
             this.Controls.Add(this.WatchListView);
-            this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.watch_MultiSize;
             this.Name = "RamWatch";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = " RAM Watch";

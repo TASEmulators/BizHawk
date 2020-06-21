@@ -129,7 +129,6 @@
 			this.Controls.Add(this.statusStrip1);
 			this.Controls.Add(this.tabControl1);
 			this.Controls.Add(this.menuStrip1);
-			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.logo;
 			this.MainMenuStrip = this.menuStrip1;
 			this.Name = "CoreFeatureAnalysis";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

@@ -121,7 +121,6 @@
 			this.Controls.Add(this.BackgroundPanel);
 			this.Controls.Add(this.OkBtn);
 			this.Controls.Add(this.CancelBtn);
-			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.calculator_MultiSize;
 			this.Name = "TI83PaletteConfig";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Palette Config";

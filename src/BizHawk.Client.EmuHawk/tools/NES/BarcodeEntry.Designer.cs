@@ -93,7 +93,6 @@
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.textBox1);
-			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.NESControllerIcon_MultiSize;
 			this.Name = "BarcodeEntry";
 			this.Text = "Barcode Entry";
 			this.ResumeLayout(false);

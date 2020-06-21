@@ -30,6 +30,7 @@ namespace BizHawk.Client.EmuHawk
 		public NESNameTableViewer()
 		{
 			InitializeComponent();
+			Icon = Properties.Resources.NESControllerIcon_MultiSize;
 		}
 
 		private void NESNameTableViewer_Load(object sender, EventArgs e)

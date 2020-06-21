@@ -13,6 +13,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_movie = movie;
 			InitializeComponent();
+			Icon = Properties.Resources.TAStudio_MultiSize;
 		}
 
 		private void MovieHeaderEditor_Load(object sender, EventArgs e)

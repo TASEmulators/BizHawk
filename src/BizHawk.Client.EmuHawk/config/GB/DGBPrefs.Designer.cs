@@ -125,7 +125,6 @@
 			this.Controls.Add(this.buttonOK);
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.tabControl1);
-			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.dual_MultiSize;
 			this.Name = "DGBPrefs";
 			this.Text = "Gameboy Link Settings";
 			this.tabControl1.ResumeLayout(false);

@@ -206,7 +206,6 @@ namespace BizHawk.Client.EmuHawk
 			this.Controls.Add(this.AuthorTextBox);
 			this.Controls.Add(this.OkBtn);
 			this.Controls.Add(this.CancelBtn);
-			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.TAStudio_MultiSize;
 			this.MinimumSize = new System.Drawing.Size(150, 311);
 			this.Name = "MovieHeaderEditor";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;

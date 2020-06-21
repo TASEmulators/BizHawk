@@ -19,6 +19,7 @@ namespace BizHawk.Client.EmuHawk
 			_ownerFile = ownerFile;
 			_luaImp = luaImp;
 			InitializeComponent();
+			Icon = Properties.Resources.textdoc_MultiSize;
 			StartPosition = FormStartPosition.CenterParent;
 			Closing += (o, e) => CloseThis();
 		}

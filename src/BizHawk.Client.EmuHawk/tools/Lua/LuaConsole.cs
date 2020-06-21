@@ -73,6 +73,7 @@ namespace BizHawk.Client.EmuHawk
 			_lastColumnSorted = "";
 
 			InitializeComponent();
+			Icon = Properties.Resources.textdoc_MultiSize;
 
 			Closing += (o, e) =>
 			{

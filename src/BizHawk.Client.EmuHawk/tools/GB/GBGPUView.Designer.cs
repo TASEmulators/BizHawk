@@ -504,7 +504,6 @@
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.menuStrip1);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.gambatte_MultiSize;
 			this.MainMenuStrip = this.menuStrip1;
 			this.Name = "GbGpuView";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

@@ -123,7 +123,6 @@
 			this.Controls.Add(this.Port1ComboBox);
 			this.Controls.Add(this.CancelBtn);
 			this.Controls.Add(this.OkBtn);
-			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.GameController_MultiSize;
 			this.Name = "A7800ControllerSettings";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Controller Settings";

@@ -192,7 +192,6 @@
 			this.Controls.Add(this.linkLabel1);
 			this.Controls.Add(this.pictureBox1);
 			this.Controls.Add(this.OK);
-			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.logo;
 			this.MinimumSize = new System.Drawing.Size(453, 253);
 			this.Name = "BizBox";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

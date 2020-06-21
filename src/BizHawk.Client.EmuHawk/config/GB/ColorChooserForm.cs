@@ -14,6 +14,7 @@ namespace BizHawk.Client.EmuHawk
 		private ColorChooserForm()
 		{
 			InitializeComponent();
+			Icon = Properties.Resources.gambatte_MultiSize;
 		}
 
 		private readonly Color[] _colors = new Color[12];

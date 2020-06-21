@@ -314,7 +314,6 @@
 			this.Controls.Add(this.panel3);
 			this.Controls.Add(this.panel2);
 			this.Controls.Add(this.panel1);
-			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.gambatte_MultiSize;
 			this.MinimumSize = new System.Drawing.Size(310, 264);
 			this.Name = "ColorChooserForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

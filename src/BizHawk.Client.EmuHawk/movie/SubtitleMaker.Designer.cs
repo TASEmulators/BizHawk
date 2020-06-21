@@ -222,7 +222,6 @@
             this.Controls.Add(this.Message);
             this.Controls.Add(this.Cancel);
             this.Controls.Add(this.OK);
-            this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.TAStudio_MultiSize;
             this.MinimumSize = new System.Drawing.Size(272, 225);
             this.Name = "SubtitleMaker";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

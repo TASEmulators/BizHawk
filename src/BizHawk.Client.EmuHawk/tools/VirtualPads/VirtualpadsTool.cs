@@ -41,6 +41,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			StickyPads = true;
 			InitializeComponent();
+			Icon = Properties.Resources.GameController_MultiSize;
 		}
 
 		private void VirtualpadTool_Load(object sender, EventArgs e)

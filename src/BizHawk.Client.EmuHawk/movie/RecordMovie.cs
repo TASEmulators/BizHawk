@@ -33,6 +33,7 @@ namespace BizHawk.Client.EmuHawk
 			_movieSession = movieSession;
 			_firmwareManager = firmwareManager;
 			InitializeComponent();
+			Icon = Properties.Resources.TAStudio_MultiSize;
 
 			if (!_emulator.HasSavestates())
 			{

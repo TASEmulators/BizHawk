@@ -111,6 +111,7 @@ namespace BizHawk.Client.EmuHawk
 		public CoreFeatureAnalysis()
 		{
 			InitializeComponent();
+			Icon = Properties.Resources.logo;
 			KnownCores = new Dictionary<string, CoreInfo>();
 		}
 

@@ -320,7 +320,6 @@
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.TracerBox);
 			this.Controls.Add(this.menuStrip1);
-			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.pencil_MultiSize;
 			this.KeyPreview = true;
 			this.MainMenuStrip = this.menuStrip1;
 			this.MinimumSize = new System.Drawing.Size(400, 230);

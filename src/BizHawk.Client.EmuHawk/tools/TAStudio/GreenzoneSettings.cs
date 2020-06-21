@@ -18,6 +18,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_settings = settings;
 			InitializeComponent();
+			Icon = Properties.Resources.TAStudio_MultiSize;
 		}
 
 		private void StateHistorySettings_Load(object sender, EventArgs e)

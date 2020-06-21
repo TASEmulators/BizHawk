@@ -16,6 +16,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_config = config;
 			InitializeComponent();
+			Icon = Properties.Resources.HotKeys_MultiSize;
 			tabPage1.Focus();
 		}
 

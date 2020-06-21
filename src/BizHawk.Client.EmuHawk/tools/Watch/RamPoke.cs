@@ -22,6 +22,7 @@ namespace BizHawk.Client.EmuHawk
 				.ToList();
 			_cheats = cheats;
 			InitializeComponent();
+			Icon = Properties.Resources.poke_MultiSize;
 		}
 
 		public IToolForm ParentTool { get; set; }

@@ -43,6 +43,7 @@ namespace BizHawk.Client.EmuHawk
 			_emulator = emulator;
 			_movieSession = movieSession;
 			InitializeComponent();
+			Icon = Properties.Resources.TAStudio_MultiSize;
 			MovieView.RetrieveVirtualItem += MovieView_QueryItemText;
 			MovieView.VirtualMode = true;
 			_sortReverse = false;

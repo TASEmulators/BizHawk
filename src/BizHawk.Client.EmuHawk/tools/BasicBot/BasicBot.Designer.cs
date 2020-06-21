@@ -1171,7 +1171,6 @@
 			this.Controls.Add(this.ControlsBox);
 			this.Controls.Add(this.BotStatusStrip);
 			this.Controls.Add(this.BotMenu);
-			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.basicbot;
 			this.MainMenuStrip = this.BotMenu;
 			this.Name = "BasicBot";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

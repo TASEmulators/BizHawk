@@ -33,6 +33,7 @@ namespace BizHawk.Client.EmuHawk
 		public Cheats()
 		{
 			InitializeComponent();
+			Icon = Properties.Resources.Freeze_MultiSize;
 			Settings = new CheatsSettings();
 
 			Closing += (o, e) =>

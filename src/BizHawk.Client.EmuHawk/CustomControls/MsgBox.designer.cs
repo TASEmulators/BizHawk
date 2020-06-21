@@ -110,7 +110,6 @@
 			this.Controls.Add(this.btn2);
 			this.Controls.Add(this.messageLbl);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.MsgBox_MultiSize;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "DialogBox";

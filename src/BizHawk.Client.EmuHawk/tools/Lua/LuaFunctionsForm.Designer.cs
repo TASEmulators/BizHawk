@@ -151,7 +151,6 @@
 			this.Controls.Add(this.FilterBox);
 			this.Controls.Add(this.FunctionView);
 			this.Controls.Add(this.OK);
-			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.textdoc_MultiSize;
 			this.MinimumSize = new System.Drawing.Size(200, 50);
 			this.Name = "LuaFunctionsForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

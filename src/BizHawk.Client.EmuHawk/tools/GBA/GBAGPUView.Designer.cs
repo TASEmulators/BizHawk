@@ -174,7 +174,6 @@
 			this.Controls.Add(this.panel1);
 			this.Controls.Add(this.listBoxWidgets);
 			this.Controls.Add(this.menuStrip1);
-			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.gba_MultiSize.Value;
 			this.KeyPreview = true;
 			this.MainMenuStrip = this.menuStrip1;
 			this.Name = "GbaGpuView";

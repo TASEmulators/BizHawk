@@ -839,7 +839,6 @@
 			this.Controls.Add(this.PalettesGroup);
 			this.Controls.Add(this.PatternGroup);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.NESControllerIcon_MultiSize;
 			this.KeyPreview = true;
 			this.MainMenuStrip = this.NesPPUMenu;
 			this.Margin = new System.Windows.Forms.Padding(4);

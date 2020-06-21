@@ -16,6 +16,7 @@ namespace BizHawk.Client.EmuHawk
 			_speccy = speccy;
 
 			InitializeComponent();
+			Icon = Properties.Resources.GameController_MultiSize;
 		}
 
 		private void OkBtn_Click(object sender, EventArgs e)

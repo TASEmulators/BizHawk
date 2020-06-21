@@ -120,7 +120,6 @@
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.paperScroll);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.gambatte_MultiSize;
             this.MainMenuStrip = this.menuStrip1;
             this.MaximizeBox = false;
             this.Name = "GBPrinterView";

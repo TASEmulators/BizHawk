@@ -31,6 +31,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		{
 			var icon = GetMessageBoxIcon(boxIcon);
 			InitializeComponent();
+			Icon = Properties.Resources.MsgBox_MultiSize;
 
 			ControlBox = false; // Do not set in designer (causes problems with auto scaling)
 			messageLbl.Text = message;

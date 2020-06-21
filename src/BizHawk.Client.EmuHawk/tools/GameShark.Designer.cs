@@ -117,7 +117,6 @@
 			this.Controls.Add(this.txtCheat);
 			this.Controls.Add(this.btnGo);
 			this.Controls.Add(this.mnuGameShark);
-			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.Shark_MultiSize;
 			this.MainMenuStrip = this.mnuGameShark;
 			this.MaximizeBox = false;
 			this.MinimumSize = new System.Drawing.Size(230, 155);

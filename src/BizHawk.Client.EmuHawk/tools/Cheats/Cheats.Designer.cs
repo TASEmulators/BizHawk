@@ -618,7 +618,6 @@
 			this.Controls.Add(this.toolStrip1);
 			this.Controls.Add(this.CheatsMenu);
 			this.Controls.Add(this.CheatListView);
-			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.Freeze_MultiSize;
 			this.MinimumSize = new System.Drawing.Size(285, 384);
 			this.Name = "Cheats";
 			this.Text = "Cheats";

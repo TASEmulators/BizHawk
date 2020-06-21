@@ -1353,7 +1353,6 @@
 			this.Controls.Add(this.WatchListView);
 			this.Controls.Add(this.TotalSearchLabel);
 			this.Controls.Add(this.RamSearchMenu);
-			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.search_MultiSize;
 			this.MainMenuStrip = this.RamSearchMenu;
 			this.MinimumSize = new System.Drawing.Size(290, 399);
 			this.Name = "RamSearch";

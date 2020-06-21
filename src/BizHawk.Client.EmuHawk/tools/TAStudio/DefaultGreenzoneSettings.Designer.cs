@@ -91,7 +91,6 @@
 			this.Controls.Add(this.DefaultsButton);
 			this.Controls.Add(this.OkBtn);
 			this.Controls.Add(this.CancelBtn);
-			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.TAStudio_MultiSize;
 			this.Name = "DefaultGreenzoneSettings";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
 			this.Text = "Default Savestate History Settings";

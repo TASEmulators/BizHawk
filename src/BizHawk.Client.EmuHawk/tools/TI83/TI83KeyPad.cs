@@ -15,6 +15,7 @@ namespace BizHawk.Client.EmuHawk
 		public TI83KeyPad()
 		{
 			InitializeComponent();
+			Icon = Properties.Resources.calculator_MultiSize;
 		}
 
 		[ConfigPersist]

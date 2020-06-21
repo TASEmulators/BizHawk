@@ -35,6 +35,7 @@ namespace BizHawk.Client.EmuHawk
 		public RamWatch()
 		{
 			InitializeComponent();
+			Icon = Properties.Resources.watch_MultiSize;
 			Settings = new RamWatchSettings();
 
 			WatchListView.QueryItemText += WatchListView_QueryItemText;

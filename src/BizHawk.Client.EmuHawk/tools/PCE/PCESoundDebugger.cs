@@ -21,6 +21,7 @@ namespace BizHawk.Client.EmuHawk
 		public PCESoundDebugger()
 		{
 			InitializeComponent();
+			Icon = Properties.Resources.Bug_MultiSize;
 
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			SetStyle(ControlStyles.UserPaint, true);

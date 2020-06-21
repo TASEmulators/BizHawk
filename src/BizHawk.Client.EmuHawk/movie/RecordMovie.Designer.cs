@@ -178,7 +178,6 @@
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.OK);
 			this.Controls.Add(this.Cancel);
-			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.TAStudio_MultiSize;
 			this.MaximizeBox = false;
 			this.MaximumSize = new System.Drawing.Size(1440, 201);
 			this.MinimizeBox = false;

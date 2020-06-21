@@ -362,7 +362,6 @@
 			this.Controls.Add(this.RegistersGroupBox);
 			this.Controls.Add(this.DisassemblerBox);
 			this.Controls.Add(this.menuStrip1);
-			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.Bug_MultiSize;
 			this.MainMenuStrip = this.menuStrip1;
 			this.Name = "GenericDebugger";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

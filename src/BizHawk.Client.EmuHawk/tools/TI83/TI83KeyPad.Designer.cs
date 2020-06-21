@@ -1903,7 +1903,6 @@
 			this.Controls.Add(this.SecondButton);
 			this.Controls.Add(this.YButton);
 			this.Controls.Add(this.menuStrip1);
-			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.calculator_MultiSize;
 			this.MainMenuStrip = this.menuStrip1;
 			this.MaximizeBox = false;
 			this.MaximumSize = new System.Drawing.Size(371, 581);

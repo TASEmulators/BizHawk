@@ -81,6 +81,7 @@ namespace BizHawk.Client.EmuHawk
 		public BasicBot()
 		{
 			InitializeComponent();
+			Icon = Properties.Resources.basicbot;
 			Text = DialogTitle;
 			Settings = new BasicBotSettings();
 

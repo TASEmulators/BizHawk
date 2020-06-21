@@ -25,6 +25,7 @@ namespace BizHawk.Client.EmuHawk
 		public MultiDiskBundler()
 		{
 			InitializeComponent();
+			Icon = Properties.Resources.dual_MultiSize;
 		}
 
 		private void MultiGameCreator_Load(object sender, EventArgs e) => Restart();

@@ -144,7 +144,6 @@
 			this.Controls.Add(this.checkBoxFamicom);
 			this.Controls.Add(this.CancelBtn);
 			this.Controls.Add(this.OkBtn);
-			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.GameController_MultiSize;
 			this.Name = "NesControllerSettings";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "NES Controller Settings";

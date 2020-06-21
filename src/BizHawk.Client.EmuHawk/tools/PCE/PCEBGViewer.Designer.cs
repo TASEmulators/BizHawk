@@ -254,7 +254,6 @@
 			this.Controls.Add(this.groupBox5);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.PceBgViewerMenu);
-			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.pce_MultiSize;
 			this.MainMenuStrip = this.PceBgViewerMenu;
 			this.Name = "PceBgViewer";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

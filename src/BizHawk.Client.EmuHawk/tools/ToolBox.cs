@@ -18,6 +18,7 @@ namespace BizHawk.Client.EmuHawk
 		public ToolBox()
 		{
 			InitializeComponent();
+			Icon = Properties.Resources.ToolBox_MultiSize;
 		}
 
 		private void ToolBox_Load(object sender, EventArgs e)

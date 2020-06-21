@@ -226,7 +226,6 @@ namespace BizHawk.Client.EmuHawk
 			this.Controls.Add(this.AddressBox);
 			this.Controls.Add(this.label1);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.poke_MultiSize;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "RamPoke";

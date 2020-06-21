@@ -140,7 +140,6 @@
 			this.Controls.Add(this.buttonOK);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.propertyGrid1);
-			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.QuickNes_MultiSize;
 			this.MinimumSize = new System.Drawing.Size(390, 285);
 			this.Name = "QuickNesConfig";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
