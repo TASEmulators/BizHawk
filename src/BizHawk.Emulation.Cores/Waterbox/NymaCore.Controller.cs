@@ -19,7 +19,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		private void InitControls(List<NPortInfoT> allPorts, bool hasCds, ref SystemInfo si)
 		{
 			_controllerAdapter = new ControllerAdapter(
-				allPorts, _syncSettingsActual.PortDevices, OverrideButtonName, hasCds, ref si, ComputeHiddenPorts());
+				allPorts, _syncSettingsActual.PortDevices, OverrideButtonName, hasCds, ref si, ComputeHiddenPorts(),
+				_controllerDeckName);
 			_nyma.SetInputDevices(_controllerAdapter.Devices);
 			ControllerDefinition = _controllerAdapter.Definition;
 		}
@@ -39,11 +40,12 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				Func<string, string> overrideName,
 				bool hasCds,
 				ref SystemInfo systemInfo,
-				HashSet<string> hiddenPorts)
+				HashSet<string> hiddenPorts,
+				string controllerDeckName)
 			{
 				var ret = new ControllerDefinition
 				{
-					Name = "Mednafen Controller",
+					Name = controllerDeckName,
 					CategoryLabels =
 					{
 						{ "Power", "System" },

@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Faust
 		[CoreConstructor("SNES")]
 		public Faust(GameInfo game, byte[] rom, CoreComm comm, string extension,
 			NymaSettings settings, NymaSyncSettings syncSettings, bool deterministic)
-			: base(comm, "SNES", "I don't think anything uses this parameter", settings, syncSettings)
+			: base(comm, "SNES", "SNES Controller", settings, syncSettings)
 		{
 			if (deterministic)
 				// force ST renderer
