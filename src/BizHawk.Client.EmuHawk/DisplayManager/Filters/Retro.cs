@@ -75,7 +75,7 @@ namespace BizHawk.Client.EmuHawk.Filters
 				var shader = shaders[i] = new RetroShader(Owner, content, debug);
 				if (!shader.Available)
 				{
-					Errors += $"===================\r\nPass {i}:\r\n{shader.Errors}\n";
+					Errors += $"===================\r\nPass {i}:\r\n{(shader.Errors??"").Replace("\n","\r\n")}\n";
 					return;
 				}
 			}
