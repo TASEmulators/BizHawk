@@ -138,7 +138,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 								switchPreviousFrame.Add(0);
 
 								var names = data.Positions.Select(p => $"{name}: Set {p.Name}").ToArray();
-								if (!input.Name.StartsWith("AF ") && !input.Name.EndsWith(" AF")) // hack: don't support some devices
+								if (!input.Name.StartsWith("AF ") && !input.Name.EndsWith(" AF") && !input.Name.StartsWith("Autofire ")) // hack: don't support some devices
 								{
 									foreach (var n in names)
 									{
