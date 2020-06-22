@@ -24,7 +24,7 @@ void main_vertex
    out float4 oPosition : POSITION,
    uniform float4x4 modelViewProj,
 
-   float2 tex : TEXCOORD,
+   float2 tex : TEXCOORD0,
 
    uniform input IN,
    out tex_coords coords
@@ -48,11 +48,11 @@ void main_vertex
    coords.c22 = tex + float2(dx, dy);
 }
 
-const float mx = 0.325;      // start smoothing wt.
-const float k = -0.250;      // wt. decrease factor
-const float max_w = 0.25;    // max filter weigth
-const float min_w = -0.05;    // min filter weigth
-const float lum_add = 0.25;  // effects smoothing
+static const float mx = 0.325;      // start smoothing wt.
+static const float k = -0.250;      // wt. decrease factor
+static const float max_w = 0.25;    // max filter weigth
+static const float min_w = -0.05;    // min filter weigth
+static const float lum_add = 0.25;  // effects smoothing
 
 float4 main_fragment (in tex_coords co, uniform sampler2D s_p : TEXUNIT0) : COLOR
 {
@@ -89,5 +89,5 @@ float4 main_fragment (in tex_coords co, uniform sampler2D s_p : TEXUNIT0) : COLO
    w3 = clamp(lc1 * dot(abs(c11 - c12), dt) + mx, min_w, max_w);
    w4 = clamp(lc2 * dot(abs(c11 - c01), dt) + mx, min_w, max_w);
 
-   return float4(w1 * c10 + w2 * c21 + w3 * c12 + w4 * c01 + (1.0 - w1 - w2 - w3 - w4) * c11, 1.0);
+  return float4(w1 * c10 + w2 * c21 + w3 * c12 + w4 * c01 + (1.0 - w1 - w2 - w3 - w4) * c11, 1.0);
 }
