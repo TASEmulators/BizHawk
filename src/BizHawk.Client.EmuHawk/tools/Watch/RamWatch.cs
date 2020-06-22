@@ -350,14 +350,6 @@ namespace BizHawk.Client.EmuHawk
 
 			if (SelectedWatches.Any())
 			{
-				foreach (var sw in SelectedWatches)
-				{
-					if (sw.Domain != SelectedWatches.First().Domain)
-					{
-						throw new InvalidOperationException("Can't edit multiple watches on varying memory domains");
-					}
-				}
-
 				var we = new WatchEditor
 				{
 					InitialLocation = this.ChildPointToScreen(WatchListView),
