@@ -272,11 +272,10 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 							"P" + pnum + " A",
 					});
 
-					var axisRange = new AxisRange(0, 128, 255);
-					definition.AddAxis($"P{pnum} Twist", axisRange);
-					definition.AddAxis($"P{pnum} 1", axisRange);
-					definition.AddAxis($"P{pnum} 2", axisRange);
-					definition.AddAxis($"P{pnum} L", axisRange);
+					foreach (var axisName in new[] { $"P{pnum} Twist", $"P{pnum} 1", $"P{pnum} 2", $"P{pnum} L" })
+					{
+						definition.AddAxis(axisName, 0.RangeTo(255), 128);
+					}
 				}
 				else
 				{
@@ -304,8 +303,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 						definition.BoolButtons.Add("P" + pnum + " L3");
 						definition.BoolButtons.Add("P" + pnum + " R3");
 						definition.BoolButtons.Add("P" + pnum + " MODE");
-						definition.AddXYPair($"P{pnum} LStick {{0}}", AxisPairOrientation.RightAndDown, 0, 128, 255);
-						definition.AddXYPair($"P{pnum} RStick {{0}}", AxisPairOrientation.RightAndDown, 0, 128, 255);
+						definition.AddXYPair($"P{pnum} LStick {{0}}", AxisPairOrientation.RightAndDown, 0.RangeTo(255), 128);
+						definition.AddXYPair($"P{pnum} RStick {{0}}", AxisPairOrientation.RightAndDown, 0.RangeTo(255), 128);
 					}
 				}
 			}
@@ -317,7 +316,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				"Reset"
 			});
 
-			definition.AddAxis("Disc Select", new AxisRange(0, 1, 1));
+			definition.AddAxis("Disc Select", 0.RangeTo(1), 1);
 
 			return definition;
 		}

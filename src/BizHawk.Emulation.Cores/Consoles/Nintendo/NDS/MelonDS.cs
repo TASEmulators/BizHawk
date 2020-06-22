@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.IO;
+
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 using static BizHawk.Emulation.Common.ControllerDefinition;
@@ -100,7 +102,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			ControllerDefinition.BoolButtons.Add("Power");
 
 			ControllerDefinition.BoolButtons.Add("Touch");
-			ControllerDefinition.AddXYPair("Touch{0}", AxisPairOrientation.RightAndUp, (0, 128, 255), (0, 96, 191)); //TODO verify direction against hardware
+			ControllerDefinition.AddXYPair("Touch{0}", AxisPairOrientation.RightAndUp, 0.RangeTo(255), 128, 0.RangeTo(191), 96); //TODO verify direction against hardware
 
 			CoreComm = comm;
 			_resampler = new SpeexResampler(SpeexResampler.Quality.QUALITY_DEFAULT, 32768, 44100, 32768, 44100);

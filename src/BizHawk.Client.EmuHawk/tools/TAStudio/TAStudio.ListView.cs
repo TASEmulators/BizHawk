@@ -358,7 +358,7 @@ namespace BizHawk.Client.EmuHawk
 						if (column.Type == ColumnType.Axis)
 						{
 							// feos: this could be cached, but I don't notice any slowdown this way either
-							if (text == ((float) ControllerType.Axes[columnName].Range.Mid).ToString())
+							if (text == ((float) ControllerType.Axes[columnName].Mid).ToString())
 							{
 								text = "";
 							}
@@ -1201,7 +1201,7 @@ namespace BizHawk.Client.EmuHawk
 					return;
 				}
 
-				var value = (_axisPaintState + increment).ConstrainWithin(ControllerType.Axes[_axisEditColumn].Range.Range);
+				var value = (_axisPaintState + increment).ConstrainWithin(ControllerType.Axes[_axisEditColumn].Range);
 				CurrentTasMovie.SetAxisState(_axisEditRow, _axisEditColumn, value);
 				_axisTypedValue = value.ToString();
 
@@ -1275,12 +1275,12 @@ namespace BizHawk.Client.EmuHawk
 			string prevTyped = _axisTypedValue;
 
 			var range = ControllerType.Axes[_axisEditColumn];
-			var (rMin, rMax) = range.Range.FloatRange;
+			var (rMin, rMax) = range.FloatRange;
 
 			// feos: typing past max digits overwrites existing value, not touching the sign
 			// but doesn't handle situations where the range is like -50 through 100, where minimum is negative and has less digits
 			// it just uses 3 as maxDigits there too, leaving room for typing impossible values (that are still ignored by the game and then clamped)
-			int maxDigits = range.Range.MaxDigits;
+			int maxDigits = range.MaxDigits;
 			int curDigits = _axisTypedValue.Length;
 			string curMinus;
 			if (_axisTypedValue.StartsWith("-"))

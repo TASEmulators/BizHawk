@@ -41,7 +41,7 @@ namespace BizHawk.Client.Common
 						{
 							var val = (int)_source.AxisValue(button);
 
-							if (val == range.Range.Mid)
+							if (val == range.Mid)
 							{
 								sb.Append("      ");
 							}

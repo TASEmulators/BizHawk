@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Linq;
+
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.NDS;
 
@@ -88,7 +90,7 @@ namespace BizHawk.Client.Common
 						"Right", "Left", "Down", "Up", "Start", "Select",
 						"B", "A", "X", "Y", "L", "R", "LidOpen", "LidClose", "Touch"
 					}
-				}.AddXYPair("Touch{0}", ControllerDefinition.AxisPairOrientation.RightAndUp, (0, 128, 255), (0, 96, 191)) //TODO verify direction against hardware
+				}.AddXYPair("Touch{0}", ControllerDefinition.AxisPairOrientation.RightAndUp, 0.RangeTo(255), 128, 0.RangeTo(191), 96) //TODO verify direction against hardware
 			};
 
 			controller["LidOpen"] = false;

@@ -72,8 +72,8 @@ namespace BizHawk.Client.EmuHawk
 					Button(146, 34, controller, 4),
 					new AnalogSchema(2, 80, $"P{controller} Stick X")
 					{
-						AxisRange = defAxes.SpecAtIndex(0).Range,
-						SecondaryAxisRange = defAxes.SpecAtIndex(1).Range
+						Spec = defAxes.SpecAtIndex(0),
+						SecondarySpec = defAxes.SpecAtIndex(1)
 					}
 				}
 			};

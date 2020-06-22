@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 using static BizHawk.Emulation.Common.ControllerDefinition;
@@ -39,8 +40,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				"P1 Left", "P1 Right", "P1 B1",
 				"P2 Left", "P2 Right", "P2 B1",
 			}
-		}.AddAxis("P1 Paddle", 0, 128, 255)
-			.AddAxis("P2 Paddle", 0, 128, 255);
+		}.AddAxis("P1 Paddle", 0.RangeTo(255), 128)
+			.AddAxis("P2 Paddle", 0.RangeTo(255), 128);
 
 		public static readonly ControllerDefinition SMSLightPhaserController = new ControllerDefinition
 		{
@@ -50,7 +51,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				"Reset", "Pause",
 				"P1 Trigger"
 			}
-		}.AddXYPair("P1 {0}", AxisPairOrientation.RightAndUp, (0, 64, 127), (0, 500, 1000)); //TODO verify direction against hardware
+		}.AddXYPair("P1 {0}", AxisPairOrientation.RightAndUp, 0.RangeTo(127), 64, 0.RangeTo(1000), 500); //TODO verify direction against hardware
 
 		public static readonly ControllerDefinition SMSSportsPadController = new ControllerDefinition
 		{
@@ -61,8 +62,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				"P1 Left", "P1 Right", "P1 Up", "P1 Down", "P1 B1", "P1 B2",
 				"P2 Left", "P2 Right", "P2 Up", "P2 Down", "P2 B1", "P2 B2"
 			}
-		}.AddXYPair("P1 {0}", AxisPairOrientation.RightAndUp, -64, 0, 63) //TODO verify direction against hardware
-			.AddXYPair("P2 {0}", AxisPairOrientation.RightAndUp, -64, 0, 63); //TODO ditto
+		}.AddXYPair("P1 {0}", AxisPairOrientation.RightAndUp, (-64).RangeTo(63), 0) //TODO verify direction against hardware
+			.AddXYPair("P2 {0}", AxisPairOrientation.RightAndUp, (-64).RangeTo(63), 0); //TODO ditto
 
 		public static readonly ControllerDefinition SMSKeyboardController = new ControllerDefinition
 		{

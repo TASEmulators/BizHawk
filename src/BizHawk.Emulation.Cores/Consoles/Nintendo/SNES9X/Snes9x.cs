@@ -208,7 +208,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 		{
 			private static readonly ControllerDefinition _definition
 				= new ControllerDefinition { BoolButtons = { "0Mouse Left", "0Mouse Right" } }
-					.AddXYPair("0Mouse {0}", AxisPairOrientation.RightAndUp, -127, 0, 127); //TODO verify direction against hardware
+					.AddXYPair("0Mouse {0}", AxisPairOrientation.RightAndUp, (-127).RangeTo(127), 0); //TODO verify direction against hardware
 
 			public override ControllerDefinition Definition => _definition;
 		}

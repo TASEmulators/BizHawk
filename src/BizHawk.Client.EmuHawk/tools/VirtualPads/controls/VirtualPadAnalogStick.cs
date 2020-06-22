@@ -7,6 +7,8 @@ using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 using BizHawk.Common;
 
+using static BizHawk.Emulation.Common.ControllerDefinition;
+
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class VirtualPadAnalogStick : UserControl, IVirtualPadControl
@@ -30,9 +32,9 @@ namespace BizHawk.Client.EmuHawk
 			manualTheta.ValueChanged += PolarNumeric_Changed;
 		}
 
-		public ControllerDefinition.AxisRange RangeX { get; set; }
+		public AxisSpec RangeX { get; set; }
 
-		public ControllerDefinition.AxisRange RangeY { get; set; }
+		public AxisSpec RangeY { get; set; }
 
 		public string? SecondaryName { get; set; }
 

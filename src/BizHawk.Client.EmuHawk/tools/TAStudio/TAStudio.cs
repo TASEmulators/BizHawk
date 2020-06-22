@@ -424,7 +424,7 @@ namespace BizHawk.Client.EmuHawk
 				if (ControllerType.Axes.TryGetValue(kvp.Key, out var range))
 				{
 					type = ColumnType.Axis;
-					digits = Math.Max(kvp.Value.Length, range.Range.MaxDigits);
+					digits = Math.Max(kvp.Value.Length, range.MaxDigits);
 				}
 				else
 				{

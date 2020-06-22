@@ -81,7 +81,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			{
 				Name = "Vectrex Analog Controller",
 				BoolButtons = BaseDefinition.Select(b => $"P{PortNum} {b}").ToList()
-			}.AddXYPair($"P{PortNum} Stick {{0}}", AxisPairOrientation.RightAndUp, -128, 0, 127);
+			}.AddXYPair($"P{PortNum} Stick {{0}}", AxisPairOrientation.RightAndUp, (-128).RangeTo(127), 0);
 		}
 
 		public int PortNum { get; }

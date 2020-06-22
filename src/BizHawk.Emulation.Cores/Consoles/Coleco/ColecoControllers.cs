@@ -133,7 +133,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		{
 			PortNum = portNum;
 			Definition = new ControllerDefinition { BoolButtons = BaseBoolDefinition.Select(b => $"P{PortNum} {b}").ToList() }
-				.AddXYPair($"P{PortNum} Disc {{0}}", AxisPairOrientation.RightAndUp, -127, 0, 127); //TODO verify direction against hardware
+				.AddXYPair($"P{PortNum} Disc {{0}}", AxisPairOrientation.RightAndUp, (-127).RangeTo(127), 0); //TODO verify direction against hardware
 		}
 
 		public int PortNum { get; }
@@ -232,7 +232,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		{
 			PortNum = portNum;
 			Definition = new ControllerDefinition { BoolButtons = BaseBoolDefinition.Select(b => $"P{PortNum} {b}").ToList() }
-				.AddXYPair($"P{PortNum} Disc {{0}}", AxisPairOrientation.RightAndUp, -127, 0, 127); //TODO verify direction against hardware
+				.AddXYPair($"P{PortNum} Disc {{0}}", AxisPairOrientation.RightAndUp, (-127).RangeTo(127), 0); //TODO verify direction against hardware
 		}
 
 		public int PortNum { get; }

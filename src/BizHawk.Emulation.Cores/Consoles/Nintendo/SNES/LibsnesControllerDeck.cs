@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Common.NumberExtensions;
 
@@ -92,7 +93,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		/// for reference Snes9x is always in 224 mode
 		/// </remarks>
 		public static ControllerDefinition AddLightGun(this ControllerDefinition def, string nameFormat)
-			=> def.AddXYPair(nameFormat, AxisPairOrientation.RightAndUp, (0, 128, 256), (0, 0, 240)); //TODO verify direction against hardware
+			=> def.AddXYPair(nameFormat, AxisPairOrientation.RightAndUp, 0.RangeTo(256), 128, 0.RangeTo(240), 0); //TODO verify direction against hardware
 	}
 
 	public interface ILibsnesController
@@ -287,7 +288,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		private static readonly ControllerDefinition _definition
 			= new ControllerDefinition { BoolButtons = { "0Mouse Left", "0Mouse Right" } }
-				.AddXYPair("0Mouse {0}", AxisPairOrientation.RightAndDown, -127, 0, 127); //TODO verify direction against hardware, R+D inferred from behaviour in Mario Paint
+				.AddXYPair("0Mouse {0}", AxisPairOrientation.RightAndDown, (-127).RangeTo(127), 0); //TODO verify direction against hardware, R+D inferred from behaviour in Mario Paint
 
 		public ControllerDefinition Definition => _definition;
 

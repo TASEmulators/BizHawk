@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using NymaTypes;
 
@@ -178,7 +180,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 								var data = input.Extra.AsAxis();
 								var fullName = $"{name} {overrideName(data.NameNeg)} / {overrideName(data.NamePos)}";
 
-								ret.AddAxis(fullName, new AxisRange(0, 0x8000, 0xFFFF, (input.Flags & AxisFlags.InvertCo) != 0));
+								ret.AddAxis(fullName, 0.RangeTo(0xFFFF), 0x8000, (input.Flags & AxisFlags.InvertCo) != 0);
 								ret.CategoryLabels[fullName] = category;
 								_thunks.Add((c, b) =>
 								{
@@ -197,7 +199,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 								// reveals that a 16 bit value is read, but using anywhere near this full range makes
 								// PCFX mouse completely unusable.  Maybe this is some TAS situation where average users
 								// will want a 1/400 multiplier on sensitivity but TASers might want one frame screenwide movement?
-								ret.AddAxis(fullName, new AxisRange(-127, 0, 127, (input.Flags & AxisFlags.InvertCo) != 0));
+								ret.AddAxis(fullName, (-127).RangeTo(127), 0, (input.Flags & AxisFlags.InvertCo) != 0);
 								ret.CategoryLabels[fullName] = category;
 								_thunks.Add((c, b) =>
 								{
@@ -210,7 +212,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 							case InputType.PointerX:
 							{
 								// I think the core expects to be sent some sort of 16 bit integer, but haven't investigated much
-								ret.AddAxis(name, new AxisRange(systemInfo.PointerOffsetX, systemInfo.PointerOffsetX, systemInfo.PointerScaleX));
+								ret.AddAxis(name, systemInfo.PointerOffsetX.RangeTo(systemInfo.PointerScaleX), systemInfo.PointerOffsetX);
 								_thunks.Add((c, b) =>
 								{
 									var val = c.AxisValue(name);
@@ -222,7 +224,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 							case InputType.PointerY:
 							{
 								// I think the core expects to be sent some sort of 16 bit integer, but haven't investigated much
-								ret.AddAxis(name, new AxisRange(systemInfo.PointerOffsetY, systemInfo.PointerOffsetY, systemInfo.PointerScaleY));
+								ret.AddAxis(name, systemInfo.PointerOffsetY.RangeTo(systemInfo.PointerScaleY), systemInfo.PointerOffsetY);
 								_thunks.Add((c, b) =>
 								{
 									var val = c.AxisValue(name);
@@ -233,7 +235,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 							}
 							case InputType.ButtonAnalog:
 							{
-								ret.AddAxis(name, new AxisRange(0, 0, 0xFFFF));
+								ret.AddAxis(name, 0.RangeTo(0xFFFF), 0);
 								ret.CategoryLabels[name] = category;
 								_thunks.Add((c, b) =>
 								{

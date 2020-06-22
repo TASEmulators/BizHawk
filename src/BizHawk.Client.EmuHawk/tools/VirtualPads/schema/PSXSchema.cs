@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Sony.PSX;
 
@@ -47,7 +48,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static PadSchema DualShockController(int controller)
 		{
-			var stickRanges = CreateAxisRangePair(0, 128, 255, AxisPairOrientation.RightAndDown);
+			var stickRanges = new[] { new AxisSpec(0.RangeTo(255), 128), new AxisSpec(0.RangeTo(255), 128, isReversed: true) };
 			return new PadSchema
 			{
 				Size = new Size(500, 290),
@@ -90,13 +91,13 @@ namespace BizHawk.Client.EmuHawk
 					},
 					new AnalogSchema(3, 120, $"P{controller} LStick X")
 					{
-						AxisRange = stickRanges[0],
-						SecondaryAxisRange = stickRanges[1]
+						Spec = stickRanges[0],
+						SecondarySpec = stickRanges[1]
 					},
 					new AnalogSchema(260, 120, $"P{controller} RStick X")
 					{
-						AxisRange = stickRanges[0],
-						SecondaryAxisRange = stickRanges[1]
+						Spec = stickRanges[0],
+						SecondarySpec = stickRanges[1]
 					}
 				}
 			};
