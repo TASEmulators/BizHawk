@@ -174,17 +174,13 @@ namespace BizHawk.Client.Common
 
 		/// <summary>
 		/// Add an existing collection of <see cref="Watch"/> into the current one
-		/// <see cref="Watch"/> equality will be checked to avoid doubles
 		/// </summary>
 		/// <param name="watches"><see cref="IEnumerable{Watch}"/> of watch to merge</param>
 		public void AddRange(IEnumerable<Watch> watches)
 		{
 			Parallel.ForEach(watches, watch =>
 			{
-				if (!_watchList.Contains(watch))
-				{
-					_watchList.Add(watch);
-				}
+				_watchList.Add(watch);
 			});
 			Changes = true;
 		}
