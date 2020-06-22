@@ -130,11 +130,19 @@ namespace BizHawk.Client.Common
 				return;
 
 			var start = (_states[HeadStateIndex].Start + _states[HeadStateIndex].Size) & _sizeMask;
-
-			var stream = new SaveStateStream(
-				_buffer,
-				start,
-				Size, _sizeMask);
+			var initialMaxSize = Count > 0
+					? (_states[_firstStateIndex].Start - start) & _sizeMask
+					: Size;
+			Func<long> notifySizeReached = () =>
+			{
+				if (Count == 0)
+					throw new IOException("A single state must not be larger than the buffer");
+				_firstStateIndex = (_firstStateIndex + 1) & StateMask;
+				return Count > 0
+					? (_states[_firstStateIndex].Start - start) & _sizeMask
+					: Size;
+			};
+			var stream = new SaveStateStream(_buffer, start, _sizeMask, initialMaxSize, notifySizeReached);
 
 			if (_useCompression)
 			{
@@ -146,14 +154,9 @@ namespace BizHawk.Client.Common
 				_stateSource.SaveStateBinary(new BinaryWriter(stream));
 			}
 
-			// invalidate states if we're at the state ringbuffer size limit, or if they were overridden in the byte buffer
-			var length = stream.Length;
-			while (Count == StateMask || Count > 0 && ((_states[_firstStateIndex].Start - start) & _sizeMask) < length)
-				_firstStateIndex = (_firstStateIndex + 1) & StateMask;
-			
 			_states[_nextStateIndex].Frame = frame;
 			_states[_nextStateIndex].Start = start;
-			_states[_nextStateIndex].Size = (int)length;
+			_states[_nextStateIndex].Size = (int)stream.Length;
 			_nextStateIndex = (_nextStateIndex + 1) & StateMask;
 
 			Console.WriteLine($"Size: {Size >> 20}MiB, Used: {Used >> 20}MiB, States: {Count}");
@@ -201,19 +204,35 @@ namespace BizHawk.Client.Common
 
 		private class SaveStateStream : Stream
 		{
-			public SaveStateStream(byte[] buffer, long offset, long maxSize, long mask)
+			/// <summary>
+			/// 
+			/// </summary>
+			/// <param name="buffer">The ringbuffer to write into</param>
+			/// <param name="offset">Offset into the buffer to start writing (and treat as position 0 in the stream)</param>
+			/// <param name="mask">Buffer size mask, used to wrap values in the ringbuffer correctly</param>
+			/// <param name="notifySize">
+			/// If the stream will exceed this size, notifySizeReached must be called before clobbering any data
+			/// </param>
+			/// <param name="notifySizeReached">
+			/// The callback that will be called when notifySize is about to be exceeded.  Can either return a new larger notifySize,
+			/// or abort processing with an IOException.  This must fail if size is going to exceed buffer.Length, as nothing else
+			/// is preventing that case.
+			/// </param>
+			public SaveStateStream(byte[] buffer, long offset, long mask, long notifySize, Func<long> notifySizeReached)
 			{
 				_buffer = buffer;
 				_offset = offset;
-				_maxSize = maxSize;
 				_mask = mask;
+				_notifySize = notifySize;
+				_notifySizeReached = notifySizeReached;
 			}
 			
 			private readonly byte[] _buffer;
 			private readonly long _offset;
-			private readonly long _maxSize;
 			private readonly long _mask;
 			private long _position;
+			private long _notifySize;
+			private readonly Func<long> _notifySizeReached;
 
 			public override bool CanRead => false;
 			public override bool CanSeek => false;
@@ -230,9 +249,10 @@ namespace BizHawk.Client.Common
 
 			public override void Write(byte[] buffer, int offset, int count)
 			{
-				long n = Math.Min(_maxSize - _position, count);
-				if (n != count)
-					throw new IOException("A single state cannot be bigger than the buffer!");
+				long requestedSize = _position + count;
+				while (requestedSize > _notifySize)
+					_notifySize = _notifySizeReached();
+				long n = count;
 				if (n > 0)
 				{
 					var start = (_position + _offset) & _mask;
@@ -256,14 +276,10 @@ namespace BizHawk.Client.Common
 
 			public override void WriteByte(byte value)
 			{
-				if (_position < _maxSize)
-				{
-					_buffer[(_position++ + _offset) & _mask] = value;
-				}
-				else
-				{
-					throw new IOException("A single state cannot be bigger than the buffer!");
-				}
+				long requestedSize = _position + 1;
+				while (requestedSize > _notifySize)
+					_notifySize = _notifySizeReached();
+				_buffer[(_position++ + _offset) & _mask] = value;
 			}
 		}
 
