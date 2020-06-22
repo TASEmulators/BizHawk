@@ -741,14 +741,15 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RemoveWatchMenuItem_Click(object sender, EventArgs e)
 		{
-			var items = SelectedItems.ToList();
-			if (items.Any())
+			var indices = SelectedIndices
+				.OrderByDescending(i => i)
+				.ToList();
+			if (indices.Any())
 			{
-				foreach (var item in items)
+				foreach (var index in indices)
 				{
-					_watches.Remove(item);
+					_watches.RemoveAt(index);
 				}
-
 				WatchListView.RowCount = _watches.Count;
 				GeneralUpdate();
 				UpdateWatchCount();
