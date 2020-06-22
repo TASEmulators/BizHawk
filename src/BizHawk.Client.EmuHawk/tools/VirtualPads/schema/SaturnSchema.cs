@@ -2,6 +2,8 @@
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Waterbox;
 using static BizHawk.Emulation.Common.ControllerDefinition;
@@ -12,7 +14,7 @@ namespace BizHawk.Client.EmuHawk
 	// ReSharper disable once UnusedMember.Global
 	public class SaturnSchema : IVirtualPadSchema
 	{
-		private static readonly AxisRange AxisRange = new AxisRange(0, 0x8000, 0xffff);
+		private static readonly AxisSpec AxisRange = new AxisSpec(0.RangeTo(0xffff), 0x8000);
 
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
 		{
@@ -103,8 +105,8 @@ namespace BizHawk.Client.EmuHawk
 					new AnalogSchema(6, 74, $"P{controller} Analog Left / Right")
 					{
 						SecondaryName = $"P{controller} Analog Up / Down",
-						AxisRange = AxisRange,
-						SecondaryAxisRange = AxisRange
+						Spec = AxisRange,
+						SecondarySpec = AxisRange
 					},
 					new SingleAxisSchema(8, 12, controller, "L")
 					{
@@ -202,8 +204,8 @@ namespace BizHawk.Client.EmuHawk
 					new AnalogSchema(195, 13, $"P{controller} Stick Left / Right")
 					{
 						SecondaryName = $"P{controller} Stick Fore / Back",
-						AxisRange = AxisRange,
-						SecondaryAxisRange = AxisRange
+						Spec = AxisRange,
+						SecondarySpec = AxisRange
 					},
 					new SingleAxisSchema(135, 13, controller, "Throttle Down / Up", isVertical: true)
 					{
@@ -227,8 +229,8 @@ namespace BizHawk.Client.EmuHawk
 					new AnalogSchema(68, 13, $"P{controller} L Stick Left / Right")
 					{
 						SecondaryName = $"P{controller} L Stick Fore / Back",
-						AxisRange = AxisRange,
-						SecondaryAxisRange = AxisRange
+						Spec = AxisRange,
+						SecondarySpec = AxisRange
 					},
 					new SingleAxisSchema(8, 13, controller, "L Throttle Down / Up", isVertical: true)
 					{
@@ -251,8 +253,8 @@ namespace BizHawk.Client.EmuHawk
 					new AnalogSchema(570, 13, $"P{controller} R Stick Left / Right")
 					{
 						SecondaryName = $"P{controller} R Stick Fore / Back",
-						AxisRange = AxisRange,
-						SecondaryAxisRange = AxisRange
+						Spec = AxisRange,
+						SecondarySpec = AxisRange
 					},
 					new SingleAxisSchema(510, 13, controller, "R Throttle Down / Up", isVertical: true)
 					{

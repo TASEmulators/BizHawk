@@ -79,8 +79,8 @@ namespace BizHawk.Client.EmuHawk
 				{
 					new AnalogSchema(1, 121, $"P{controller} Disc X")
 					{
-						AxisRange = defAxes.SpecAtIndex(0).Range,
-						SecondaryAxisRange = defAxes.SpecAtIndex(1).Range
+						Spec = defAxes.SpecAtIndex(0),
+						SecondarySpec = defAxes.SpecAtIndex(1)
 					}
 				})
 			};

@@ -7,6 +7,8 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 using static BizHawk.Emulation.Common.ControllerDefinition;
@@ -255,7 +257,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 				definition.BoolButtons.Add(string.Format(item,"RetroPad"));
 
 			definition.BoolButtons.Add("Pointer Pressed"); //TODO: this isnt showing up in the binding panel. I don't want to find out why.
-			definition.AddXYPair("Pointer {0}", AxisPairOrientation.RightAndUp, -32767, 0, 32767);
+			definition.AddXYPair("Pointer {0}", AxisPairOrientation.RightAndUp, (-32767).RangeTo(32767), 0);
 
 			foreach (var key in new[]{
 				"Key Backspace", "Key Tab", "Key Clear", "Key Return", "Key Pause", "Key Escape",

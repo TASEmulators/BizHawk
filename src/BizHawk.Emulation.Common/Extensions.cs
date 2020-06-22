@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
+using BizHawk.Common;
 using BizHawk.Common.PathExtensions;
 using BizHawk.Common.StringExtensions;
 
@@ -406,20 +407,21 @@ namespace BizHawk.Emulation.Common
 		/// </summary>
 		/// <param name="constraint">pass only for one axis in a pair, by convention the X axis</param>
 		/// <returns>identical reference to <paramref name="def"/>; the object is mutated</returns>
-		public static ControllerDefinition AddAxis(this ControllerDefinition def, string name, AxisRange range, AxisConstraint? constraint = null)
+		public static ControllerDefinition AddAxis(this ControllerDefinition def, string name, Range<int> range, int mid, bool isReversed = false, AxisConstraint? constraint = null)
 		{
-			def.Axes.Add(name, new AxisSpec(range, constraint));
+			def.Axes.Add(name, new AxisSpec(range, mid, isReversed, constraint));
 			return def;
 		}
 
 		/// <summary>
-		/// Adds an axis to the receiver <see cref="ControllerDefinition"/>, and returns it.
-		/// The new axis will appear after any that were previously defined.
+		/// Adds an X/Y pair of axes to the receiver <see cref="ControllerDefinition"/>, and returns it.
+		/// The new axes will appear after any that were previously defined.
 		/// </summary>
-		/// <param name="constraint">pass only for one axis in a pair, by convention the X axis</param>
+		/// <param name="nameFormat">format string e.g. <c>"P1 Left {0}"</c> (will be used to interpolate <c>"X"</c> and <c>"Y"</c>)</param>
 		/// <returns>identical reference to <paramref name="def"/>; the object is mutated</returns>
-		public static ControllerDefinition AddAxis(this ControllerDefinition def, string name, int min, int mid, int max, bool isReversed = false, AxisConstraint? constraint = null)
-			=> def.AddAxis(name, new AxisRange(min, mid, max, isReversed), constraint);
+		public static ControllerDefinition AddXYPair(this ControllerDefinition def, string nameFormat, AxisPairOrientation pDir, Range<int> rangeX, int midX, Range<int> rangeY, int midY, AxisConstraint? constraint = null)
+			=> def.AddAxis(string.Format(nameFormat, "X"), rangeX, midX, ((byte) pDir & 2) != 0, constraint)
+				.AddAxis(string.Format(nameFormat, "Y"), rangeY, midY, ((byte) pDir & 1) != 0);
 
 		/// <summary>
 		/// Adds an X/Y pair of axes to the receiver <see cref="ControllerDefinition"/>, and returns it.
@@ -427,18 +429,8 @@ namespace BizHawk.Emulation.Common
 		/// </summary>
 		/// <param name="nameFormat">format string e.g. <c>"P1 Left {0}"</c> (will be used to interpolate <c>"X"</c> and <c>"Y"</c>)</param>
 		/// <returns>identical reference to <paramref name="def"/>; the object is mutated</returns>
-		public static ControllerDefinition AddXYPair(this ControllerDefinition def, string nameFormat, AxisPairOrientation pDir, (int Min, int Mid, int Max) rangeX, (int Min, int Mid, int Max) rangeY, AxisConstraint? constraint = null)
-			=> def.AddAxis(string.Format(nameFormat, "X"), rangeX.Min, rangeX.Mid, rangeX.Max, ((byte) pDir & 2) != 0, constraint)
-				.AddAxis(string.Format(nameFormat, "Y"), rangeY.Min, rangeY.Mid, rangeY.Max, ((byte) pDir & 1) != 0);
-
-		/// <summary>
-		/// Adds an X/Y pair of axes to the receiver <see cref="ControllerDefinition"/>, and returns it.
-		/// The new axes will appear after any that were previously defined.
-		/// </summary>
-		/// <param name="nameFormat">format string e.g. <c>"P1 Left {0}"</c> (will be used to interpolate <c>"X"</c> and <c>"Y"</c>)</param>
-		/// <returns>identical reference to <paramref name="def"/>; the object is mutated</returns>
-		public static ControllerDefinition AddXYPair(this ControllerDefinition def, string nameFormat, AxisPairOrientation pDir, int minBoth, int midBoth, int maxBoth, AxisConstraint? constraint = null)
-			=> def.AddXYPair(nameFormat, pDir, (minBoth, midBoth, maxBoth), (minBoth, midBoth, maxBoth), constraint);
+		public static ControllerDefinition AddXYPair(this ControllerDefinition def, string nameFormat, AxisPairOrientation pDir, Range<int> rangeBoth, int midBoth, AxisConstraint? constraint = null)
+			=> def.AddXYPair(nameFormat, pDir, rangeBoth, midBoth, rangeBoth, midBoth, constraint);
 
 		/// <summary>
 		/// Adds an X/Y/Z triple of axes to the receiver <see cref="ControllerDefinition"/>, and returns it.
@@ -446,14 +438,11 @@ namespace BizHawk.Emulation.Common
 		/// </summary>
 		/// <param name="nameFormat">format string e.g. <c>"P1 Tilt {0}"</c> (will be used to interpolate <c>"X"</c>, <c>"Y"</c>, and <c>"Z"</c>)</param>
 		/// <returns>identical reference to <paramref name="def"/>; the object is mutated</returns>
-		public static ControllerDefinition AddXYZTriple(this ControllerDefinition def, string nameFormat, int minAll, int midAll, int maxAll)
-		{
-			var range = new AxisRange(minAll, midAll, maxAll);
-			return def.AddAxis(string.Format(nameFormat, "X"), range)
-				.AddAxis(string.Format(nameFormat, "Y"), range)
-				.AddAxis(string.Format(nameFormat, "Z"), range);
-		}
+		public static ControllerDefinition AddXYZTriple(this ControllerDefinition def, string nameFormat, Range<int> rangeAll, int midAll)
+			=> def.AddAxis(string.Format(nameFormat, "X"), rangeAll, midAll)
+				.AddAxis(string.Format(nameFormat, "Y"), rangeAll, midAll)
+				.AddAxis(string.Format(nameFormat, "Z"), rangeAll, midAll);
 
-		public static AxisSpec With(this in AxisSpec spec, AxisRange range) => new AxisSpec(range, spec.Constraint);
+		public static AxisSpec With(this in AxisSpec spec, Range<int> range, int mid) => new AxisSpec(range, mid, spec.IsReversed, spec.Constraint);
 	}
 }

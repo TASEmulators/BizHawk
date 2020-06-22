@@ -23,7 +23,7 @@ namespace BizHawk.Common.Tests.Client.Common.Movie
 
 			_axisController = new SimpleController
 			{
-				Definition = new ControllerDefinition().AddXYPair("Stick{0}", AxisPairOrientation.RightAndUp, 0, 100, 200)
+				Definition = new ControllerDefinition().AddXYPair("Stick{0}", AxisPairOrientation.RightAndUp, 0.RangeTo(200), 100)
 			};
 		}
 

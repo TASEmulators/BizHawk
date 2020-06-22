@@ -69,7 +69,7 @@ namespace BizHawk.Client.Common
 			// axes don't have sticky logic, so latch default value
 			foreach (var kvp in Definition.Axes)
 			{
-				_myAxisControls[kvp.Key] = kvp.Value.Range.Mid;
+				_myAxisControls[kvp.Key] = kvp.Value.Mid;
 			}
 		}
 

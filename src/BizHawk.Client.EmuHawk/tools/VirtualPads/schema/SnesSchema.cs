@@ -167,8 +167,8 @@ namespace BizHawk.Client.EmuHawk
 				{
 					new AnalogSchema(6, 14, $"P{controller} Mouse X")
 					{
-						AxisRange = defAxes.SpecAtIndex(0).Range,
-						SecondaryAxisRange = defAxes.SpecAtIndex(1).Range
+						Spec = defAxes.SpecAtIndex(0),
+						SecondarySpec = defAxes.SpecAtIndex(1)
 					},
 					new ButtonSchema(275, 15, controller, "Mouse Left")
 					{

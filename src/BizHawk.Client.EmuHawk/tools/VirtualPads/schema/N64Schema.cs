@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.N64;
 
@@ -59,8 +60,8 @@ namespace BizHawk.Client.EmuHawk
 					},
 					new AnalogSchema(6, 14, $"P{controller} X Axis")
 					{
-						AxisRange = new AxisRange(-128, 0, 127),
-						SecondaryAxisRange = new AxisRange(-128, 0, 127)
+						Spec = new AxisSpec((-128).RangeTo(127), 0),
+						SecondarySpec = new AxisSpec((-128).RangeTo(127), 0)
 					}
 				}
 			};

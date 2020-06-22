@@ -1,4 +1,5 @@
-﻿using BizHawk.Emulation.Common;
+﻿using BizHawk.Common;
+using BizHawk.Emulation.Common;
 
 using static BizHawk.Emulation.Common.ControllerDefinition;
 
@@ -37,9 +38,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				def.AddXYPair(
 					$"P{player} {{0}} Axis",
 					AxisPairOrientation.RightAndUp,
-					-128,
+					(-128).RangeTo(127),
 					0,
-					127,
 					new AxisConstraint
 					{
 						Class = "Natural Circle",

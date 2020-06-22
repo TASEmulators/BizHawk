@@ -99,11 +99,27 @@ namespace BizHawk.Emulation.Common
 			/// </summary>
 			public readonly AxisConstraint? Constraint;
 
-			public readonly AxisRange Range;
+			public Range<float> FloatRange => ((float) Min).RangeTo(Max);
 
-			public AxisSpec(AxisRange range, AxisConstraint? constraint = null)
+			public readonly bool IsReversed;
+
+			public int Max => Range.EndInclusive;
+
+			/// <value>maximum decimal digits analog input can occupy with no-args ToString</value>
+			/// <remarks>does not include the extra char needed for a minus sign</remarks>
+			public int MaxDigits => Math.Max(Math.Abs(Min).ToString().Length, Math.Abs(Max).ToString().Length);
+
+			public readonly int Mid;
+
+			public int Min => Range.Start;
+
+			public readonly Range<int> Range;
+
+			public AxisSpec(Range<int> range, int mid, bool isReversed = false, AxisConstraint? constraint = null)
 			{
 				Constraint = constraint;
+				IsReversed = isReversed;
+				Mid = mid;
 				Range = range;
 			}
 		}
@@ -150,42 +166,6 @@ namespace BizHawk.Emulation.Common
 				}
 			}
 		}
-
-		public readonly struct AxisRange
-		{
-			public readonly bool IsReversed;
-
-			public readonly int Max;
-
-			/// <remarks>used as default/neutral/unset</remarks>
-			public readonly int Mid;
-
-			public readonly int Min;
-
-			public Range<float> FloatRange => ((float) Min).RangeTo(Max);
-
-			/// <value>maximum decimal digits analog input can occupy with no-args ToString</value>
-			/// <remarks>does not include the extra char needed for a minus sign</remarks>
-			public int MaxDigits => Math.Max(Math.Abs(Min).ToString().Length, Math.Abs(Max).ToString().Length);
-
-			public Range<int> Range => Min.RangeTo(Max);
-
-			public AxisRange(int min, int mid, int max, bool isReversed = false)
-			{
-				const string ReversedBoundsExceptionMessage = nameof(AxisRange) + " must not have " + nameof(max) + " < " + nameof(min) + ". pass " + nameof(isReversed) + ": true to ctor instead, or use " + nameof(CreateAxisRangePair);
-				if (max < min) throw new ArgumentOutOfRangeException(nameof(max), max, ReversedBoundsExceptionMessage);
-				IsReversed = isReversed;
-				Max = max;
-				Mid = mid;
-				Min = min;
-			}
-		}
-
-		public static List<AxisRange> CreateAxisRangePair(int min, int mid, int max, AxisPairOrientation pDir) => new List<AxisRange>
-		{
-			new AxisRange(min, mid, max, ((byte) pDir & 2) != 0),
-			new AxisRange(min, mid, max, ((byte) pDir & 1) != 0)
-		};
 
 		/// <summary>represents the direction of <c>(+, +)</c></summary>
 		/// <remarks>docs of individual controllers are being collected in comments of https://github.com/TASVideos/BizHawk/issues/1200</remarks>

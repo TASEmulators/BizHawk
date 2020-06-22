@@ -79,7 +79,7 @@ namespace BizHawk.Client.Common
 
 							if (createEmpty)
 							{
-								val = range.Range.Mid;
+								val = range.Mid;
 							}
 							else
 							{

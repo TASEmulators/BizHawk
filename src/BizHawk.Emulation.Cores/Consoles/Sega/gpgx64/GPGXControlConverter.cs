@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 using static BizHawk.Emulation.Common.ControllerDefinition;
@@ -121,7 +123,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		private void DoMouseAnalog(int idx, int player)
 		{
-			ControllerDef.AddXYPair($"P{player} Mouse {{0}}", AxisPairOrientation.RightAndUp, -256, 0, 255); //TODO verify direction against hardware
+			ControllerDef.AddXYPair($"P{player} Mouse {{0}}", AxisPairOrientation.RightAndUp, (-256).RangeTo(255), 0); //TODO verify direction against hardware
 			var nx = $"P{player} Mouse X";
 			var ny = $"P{player} Mouse Y";
 			_converts.Add(() =>
@@ -134,7 +136,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		private void DoLightgunAnalog(int idx, int player)
 		{
 			// lightgun needs to be transformed to match the current screen resolution
-			ControllerDef.AddXYPair($"P{player} Lightgun {{0}}", AxisPairOrientation.RightAndUp, 0, 5000, 10000); //TODO verify direction against hardware
+			ControllerDef.AddXYPair($"P{player} Lightgun {{0}}", AxisPairOrientation.RightAndUp, 0.RangeTo(10000), 5000); //TODO verify direction against hardware
 			var nx = $"P{player} Lightgun X";
 			var ny = $"P{player} Lightgun Y";
 			_converts.Add(() =>
@@ -146,7 +148,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		private void DoXea1PAnalog(int idx, int player)
 		{
-			ControllerDef.AddXYZTriple($"P{player} Stick {{0}}", -128, 0, 127);
+			ControllerDef.AddXYZTriple($"P{player} Stick {{0}}", (-128).RangeTo(127), 0);
 			var nx = $"P{player} Stick X";
 			var ny = $"P{player} Stick Y";
 			var nz = $"P{player} Stick Z";

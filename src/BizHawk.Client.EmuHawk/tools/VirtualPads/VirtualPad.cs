@@ -96,8 +96,8 @@ namespace BizHawk.Client.EmuHawk
 						SecondaryName = analog.SecondaryName,
 						Location = UIHelper.Scale(analog.Location),
 						Size = UIHelper.Scale(new Size(180 + 79, 200 + 9)),
-						RangeX = analog.AxisRange,
-						RangeY = analog.SecondaryAxisRange
+						RangeX = analog.Spec,
+						RangeY = analog.SecondarySpec
 					},
 					TargetedPairSchema targetedPair => new VirtualPadTargetScreen
 					{

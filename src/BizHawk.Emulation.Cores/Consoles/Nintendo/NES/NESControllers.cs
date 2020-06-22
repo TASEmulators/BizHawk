@@ -388,7 +388,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		private static readonly ControllerDefinition Definition
 			= new ControllerDefinition { BoolButtons = { "0Fire" } }
-				.AddAxis("0Paddle", 0, 80, 160);
+				.AddAxis("0Paddle", 0.RangeTo(160), 80);
 
 		public void Strobe(StrobeInfo s, IController c)
 		{
@@ -538,7 +538,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	internal static class NESControllerDefExtensions
 	{
 		public static ControllerDefinition AddZapper(this ControllerDefinition def, string nameFormat)
-			=> def.AddXYPair(nameFormat, AxisPairOrientation.RightAndUp, (0, 128, 255), (0, 120, 239)); //TODO verify direction against hardware
+			=> def.AddXYPair(nameFormat, AxisPairOrientation.RightAndUp, 0.RangeTo(255), 128, 0.RangeTo(239), 120); //TODO verify direction against hardware
 	}
 
 	// Dummy interface to indicate zapper behavior, used as a means of type checking for zapper functionality
@@ -743,7 +743,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		private static readonly ControllerDefinition Definition
 			= new ControllerDefinition { BoolButtons = { "0Fire" } }
-				.AddAxis("0Paddle", 0, 80, 160);
+				.AddAxis("0Paddle", 0.RangeTo(160), 80);
 
 		public void Strobe(StrobeInfo s, IController c)
 		{

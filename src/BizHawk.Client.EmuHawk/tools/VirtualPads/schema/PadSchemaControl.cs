@@ -7,6 +7,8 @@ using System.Windows.Forms;
 using BizHawk.Client.EmuHawk.Properties;
 using BizHawk.Emulation.Common;
 
+using static BizHawk.Emulation.Common.ControllerDefinition;
+
 namespace BizHawk.Client.EmuHawk
 {
 	public abstract class PadSchemaControl
@@ -88,9 +90,9 @@ namespace BizHawk.Client.EmuHawk
 	/// <summary>An analog stick (X, Y) pair</summary>
 	public sealed class AnalogSchema : PadSchemaControl
 	{
-		public ControllerDefinition.AxisRange AxisRange { get; set; }
+		public AxisSpec Spec { get; set; }
 
-		public ControllerDefinition.AxisRange SecondaryAxisRange { get; set; }
+		public AxisSpec SecondarySpec { get; set; }
 
 		public string SecondaryName { get; set; }
 

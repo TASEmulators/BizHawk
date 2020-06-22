@@ -6,6 +6,8 @@ using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
 
+using static BizHawk.Emulation.Common.ControllerDefinition;
+
 namespace BizHawk.Client.EmuHawk
 {
 	public sealed class AnalogStickPanel : Panel
@@ -53,7 +55,7 @@ namespace BizHawk.Client.EmuHawk
 			Refresh();
 		}
 
-		public void Init(string nameX, ControllerDefinition.AxisRange rangeX, string nameY, ControllerDefinition.AxisRange rangeY)
+		public void Init(string nameX, AxisSpec rangeX, string nameY, AxisSpec rangeY)
 		{
 			Name = XName = nameX;
 			_fullRangeX = rangeX;
@@ -64,8 +66,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private Range<int> _rangeX = 0.RangeTo(0);
 		private Range<int> _rangeY = 0.RangeTo(0);
-		private ControllerDefinition.AxisRange _fullRangeX;
-		private ControllerDefinition.AxisRange _fullRangeY;
+		private AxisSpec _fullRangeX;
+		private AxisSpec _fullRangeY;
 
 		private bool _reverseX;
 		private bool _reverseY;

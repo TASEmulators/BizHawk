@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Text;
+
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBA
@@ -258,7 +260,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		{
 			Name = "GBA Controller",
 			BoolButtons = { "Up", "Down", "Left", "Right", "Start", "Select", "B", "A", "L", "R", "Power" }
-		}.AddXYZTriple("Tilt {0}", -32767, 0, 32767)
-			.AddAxis("Light Sensor", 0, 100, 200);
+		}.AddXYZTriple("Tilt {0}", (-32767).RangeTo(32767), 0)
+			.AddAxis("Light Sensor", 0.RangeTo(200), 100);
 	}
 }

@@ -2,8 +2,12 @@
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Waterbox;
+
+using static BizHawk.Emulation.Common.ControllerDefinition;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -69,7 +73,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static PadSchema Mouse(int controller)
 		{
-			var range = new ControllerDefinition.AxisRange(-127, 0, 127);
+			var range = new AxisSpec((-127).RangeTo(127), 0);
 			return new PadSchema
 			{
 				Size = new Size(345, 225),
@@ -78,8 +82,8 @@ namespace BizHawk.Client.EmuHawk
 					new AnalogSchema(6, 14, $"P{controller} Motion Left / Right")
 					{
 						SecondaryName = $"P{controller} Motion Up / Down",
-						AxisRange = range,
-						SecondaryAxisRange = range
+						Spec = range,
+						SecondarySpec = range
 					},
 					new ButtonSchema(275, 15, controller, "Left Button")
 					{
