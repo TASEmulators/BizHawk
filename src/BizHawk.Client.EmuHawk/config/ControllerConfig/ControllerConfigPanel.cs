@@ -38,10 +38,6 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 		}
 
-		private void ControllerConfigPanel_Load(object sender, EventArgs e)
-		{
-		}
-
 		private void ClearAll()
 		{
 			_inputs.ForEach(x => x.Clear());
@@ -56,7 +52,11 @@ namespace BizHawk.Client.EmuHawk
 			var saveTo = saveConfigObject ?? _realConfigObject;
 			for (int button = 0; button < _buttons.Count; button++)
 			{
-				saveTo[_buttons[button]] = _inputs[button].Bindings;
+				var bindings = _inputs[button].Bindings;
+				if (!string.IsNullOrWhiteSpace(bindings))
+				{
+					saveTo[_buttons[button]] = bindings;
+				}
 			}
 		}
 

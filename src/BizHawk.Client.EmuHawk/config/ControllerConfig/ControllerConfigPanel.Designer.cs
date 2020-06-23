@@ -55,10 +55,8 @@
 			this.ContextMenuStrip = this.contextMenuStrip1;
 			this.Name = "ControllerConfigPanel";
 			this.Size = new System.Drawing.Size(203, 292);
-			this.Load += new System.EventHandler(this.ControllerConfigPanel_Load);
 			this.contextMenuStrip1.ResumeLayout(false);
 			this.ResumeLayout(false);
-
 		}
 
 		#endregion
