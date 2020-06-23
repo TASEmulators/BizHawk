@@ -29,8 +29,15 @@ pub unsafe fn register(block: *mut MemoryBlock) {
 
 pub unsafe fn unregister(block: *mut MemoryBlock) {
 	let mut data = GLOBAL_DATA.lock().unwrap();
-	let pos = data.active_blocks.iter().position(|x| x.0 == block).unwrap();
-	data.active_blocks.remove(pos);
+	let pos = data.active_blocks.iter().position(|x| x.0 == block);
+	match pos {
+		Some(index) => {
+			data.active_blocks.remove(index);
+		},
+		None => {
+			panic!("Tried to unregister MemoryBlock which was not registered")
+		}
+	}
 }
 
 enum TripResult {
@@ -53,11 +60,7 @@ unsafe fn trip(addr: usize) -> TripResult {
 	}
 	page.maybe_snapshot(page_start_addr);
 	page.dirty = true;
-	let new_prot = match &page.status {
-		PageAllocation::Allocated(p) => p,
-		PageAllocation::Free => panic!(),
-	};
-	assert!(pal::protect(AddressRange { start: page_start_addr, size: PAGESIZE }, *new_prot));
+	assert!(pal::protect(AddressRange { start: page_start_addr, size: PAGESIZE }, page.native_prot()));
 	TripResult::Handled
 }
 
@@ -70,9 +73,10 @@ fn initialize() {
 	unsafe extern "system" fn handler(p_info: *mut EXCEPTION_POINTERS) -> i32 {
 		let p_record = &mut *(*p_info).ExceptionRecord;
 		let flags = p_record.ExceptionInformation[0];
-		if p_record.ExceptionCode != STATUS_ACCESS_VIOLATION // only trigger on access violations...
-			|| (flags & 1) == 0 { // ...due to a write attempts
-			return EXCEPTION_CONTINUE_SEARCH
+		match p_record.ExceptionCode {
+			STATUS_ACCESS_VIOLATION if (flags & 1) != 0 => (), // write exception
+			STATUS_GUARD_PAGE_VIOLATION => (), // guard exception
+			_ => return EXCEPTION_CONTINUE_SEARCH
 		}
 		let fault_address = p_record.ExceptionInformation[1] as usize;
 		match trip(fault_address) {
