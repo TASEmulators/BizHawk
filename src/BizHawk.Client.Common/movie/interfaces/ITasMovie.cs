@@ -23,6 +23,8 @@ namespace BizHawk.Client.Common
 		IStringLog VerificationLog { get; }
 		int LastEditedFrame { get; }
 
+		Action<int> GreenzoneInvalidated { get; set; }
+
 		string DisplayValue(int frame, string buttonName);
 		void FlagChanges();
 		void ClearChanges();

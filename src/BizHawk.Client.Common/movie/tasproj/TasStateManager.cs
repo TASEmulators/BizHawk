@@ -33,7 +33,7 @@ namespace BizHawk.Client.Common
 		private int FileStateGap => 1 << Settings.FileStateGap;
 
 		/// <exception cref="InvalidOperationException">loaded core expects savestate size of <c>0 B</c></exception>
-		public TasStateManager(ITasMovie movie, TasStateManagerSettings settings)
+		public TasStateManager(ITasMovie movie, IEmulator emulator, TasStateManagerSettings settings, byte[] frameZeroState)
 		{
 			_movie = movie;
 			Settings = new TasStateManagerSettings(settings);
@@ -67,8 +67,6 @@ namespace BizHawk.Client.Common
 
 			UpdateStateFrequency();
 		}
-
-		public Action<int> InvalidateCallback { get; set; }
 
 		public TasStateManagerSettings Settings { get; set; }
 
@@ -120,10 +118,9 @@ namespace BizHawk.Client.Common
 			LimitStateCount();
 		}
 
-		public void Capture(bool force = false)
+		public void Capture(int frame, IBinaryStateable source, bool force = false)
 		{
 			bool shouldCapture;
-			int frame = _emulator.Frame;
 
 			if (_movie.StartsFromSavestate && frame == 0) // Never capture frame 0 on savestate anchored movies since we have it anyway
 			{
@@ -148,7 +145,9 @@ namespace BizHawk.Client.Common
 
 			if (shouldCapture)
 			{
-				SetState(frame, (byte[])_core.SaveStateBinary().Clone(), skipRemoval: false);
+				var ms = new MemoryStream();
+				source.SaveStateBinary(new BinaryWriter(ms));
+				SetState(frame, ms.ToArray(), skipRemoval: false);
 			}
 		}
 
@@ -192,7 +191,6 @@ namespace BizHawk.Client.Common
 			if (frame == 0) frame = 1; // Never invalidate frame 0
 			var statesToRemove = _states.Where(s => s.Key >= frame).ToList();
 			foreach (var state in statesToRemove) Remove(state.Key);
-			InvalidateCallback?.Invoke(frame);
 			return statesToRemove.Count != 0;
 		}
 
@@ -220,7 +218,7 @@ namespace BizHawk.Client.Common
 		// 4 bytes - frame
 		// 4 bytes - length of savestate
 		// 0 - n savestate
-		public void Save(BinaryWriter bw)
+		public void SaveStateBinary(BinaryWriter bw)
 		{
 			List<int> noSave = ExcludeStates();
 			bw.Write(_states.Count - noSave.Count);
@@ -238,7 +236,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void Load(BinaryReader br)
+		public void LoadStateBinary(BinaryReader br)
 		{
 			_states.Clear();
 
@@ -262,15 +260,15 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public KeyValuePair<int, byte[]> GetStateClosestToFrame(int frame)
+		public KeyValuePair<int, Stream> GetStateClosestToFrame(int frame)
 		{
 			var s = _states.LastOrDefault(state => state.Key < frame);
 			if (s.Key > 0)
 			{
-				return s;
+				return new KeyValuePair<int, Stream>(s.Key, new MemoryStream(s.Value, false));
 			}
 
-			return new KeyValuePair<int, byte[]>(0, InitialState);
+			return new KeyValuePair<int, Stream>(0, new MemoryStream(InitialState, false));
 		}
 
 		public int GetStateIndexByFrame(int frame)

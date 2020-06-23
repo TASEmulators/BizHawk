@@ -17,7 +17,6 @@ namespace BizHawk.Client.Common
 		{
 			Branches = new TasBranchCollection(this);
 			ChangeLog = new TasMovieChangeLog(this);
-			TasStateManager = new TasStateManager(this, session.Settings.DefaultTasStateManagerSettings);
 			Header[HeaderKeys.MovieVersion] = "BizHawk v2.0 Tasproj v1.0";
 			Markers = new TasMovieMarkerList(this);
 			Markers.CollectionChanged += Markers_CollectionChanged;
@@ -37,7 +36,8 @@ namespace BizHawk.Client.Common
 			}
 
 			_inputPollable = emulator.AsInputPollable();
-			TasStateManager.Attach(emulator);
+			// TODO: Where's the frame 0 state, do I have to fish it out of somewhere?
+			TasStateManager = new TasStateManager(this, emulator, Session.Settings.DefaultTasStateManagerSettings, null);
 
 			base.Attach(emulator);
 
@@ -71,7 +71,9 @@ namespace BizHawk.Client.Common
 		public TasLagLog LagLog { get; } = new TasLagLog();
 
 		public override string PreferredExtension => Extension;
-		public IStateManager TasStateManager { get; }
+		public IStateManager TasStateManager { get; private set; }
+
+		public Action<int> GreenzoneInvalidated { get; set; }
 
 		public ITasMovieRecord this[int index]
 		{
@@ -111,6 +113,7 @@ namespace BizHawk.Client.Common
 		{
 			var anyLagInvalidated = LagLog.RemoveFrom(frame);
 			var anyStateInvalidated = TasStateManager.Invalidate(frame + 1);
+			GreenzoneInvalidated(frame + 1);
 			if (anyLagInvalidated || anyStateInvalidated)
 			{
 				Changes = true;
@@ -172,7 +175,7 @@ namespace BizHawk.Client.Common
 
 			if (!TasStateManager.HasState(Emulator.Frame))
 			{
-				TasStateManager.Capture(Emulator.Frame == LastEditedFrame - 1);
+				TasStateManager.Capture(Emulator.Frame, Emulator.AsStatable(), Emulator.Frame == LastEditedFrame - 1);
 			}
 		}
 
@@ -270,6 +273,7 @@ namespace BizHawk.Client.Common
 			{
 				LagLog.RemoveFrom(timelineBranchFrame.Value);
 				TasStateManager.Invalidate(timelineBranchFrame.Value);
+				GreenzoneInvalidated(timelineBranchFrame.Value);
 			}
 
 			return true;

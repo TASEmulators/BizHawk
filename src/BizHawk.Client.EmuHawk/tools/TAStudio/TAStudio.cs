@@ -540,7 +540,7 @@ namespace BizHawk.Client.EmuHawk
 			_engaged = false;
 			var newMovie = (ITasMovie)MovieSession.Get(file.FullName);
 			newMovie.BindMarkersToInput = Settings.BindMarkersToInput;
-			newMovie.TasStateManager.InvalidateCallback = GreenzoneInvalidated;
+			newMovie.GreenzoneInvalidated = GreenzoneInvalidated;
 
 			if (!HandleMovieLoadStuff(newMovie))
 			{
@@ -595,9 +595,9 @@ namespace BizHawk.Client.EmuHawk
 			var filename = DefaultTasProjName(); // TODO don't do this, take over any mainform actions that can crash without a filename
 			var tasMovie = (ITasMovie)MovieSession.Get(filename);
 			tasMovie.BindMarkersToInput = Settings.BindMarkersToInput;
-			
 
-			tasMovie.TasStateManager.InvalidateCallback = GreenzoneInvalidated;
+
+			tasMovie.GreenzoneInvalidated = GreenzoneInvalidated;
 			tasMovie.PropertyChanged += TasMovie_OnPropertyChanged;
 			
 			tasMovie.PopulateWithDefaultHeaderValues(
@@ -611,7 +611,6 @@ namespace BizHawk.Client.EmuHawk
 			tasMovie.Save();
 			if (HandleMovieLoadStuff(tasMovie))
 			{
-				CurrentTasMovie.TasStateManager.Capture(); // Capture frame 0 always.
 			}
 
 			// clear all selections
@@ -657,7 +656,6 @@ namespace BizHawk.Client.EmuHawk
 			ResumeLayout();
 			if (result)
 			{
-				CurrentTasMovie.TasStateManager.Capture(); // Capture frame 0 always.
 				BookMarkControl.UpdateTextColumnWidth();
 				MarkerControl.UpdateTextColumnWidth();
 			}
@@ -960,9 +958,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void LoadState(KeyValuePair<int, byte[]> state)
+		public void LoadState(KeyValuePair<int, Stream> state)
 		{
-			StatableEmulator.LoadStateBinary(state.Value);
+			StatableEmulator.LoadStateBinary(new BinaryReader(state.Value));
 
 			if (state.Key == 0 && CurrentTasMovie.StartsFromSavestate)
 			{
