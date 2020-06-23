@@ -6,6 +6,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		void StartSound();
 		void StopSound();
+		bool SoundLost();
 		void ApplyVolumeSettings(double volume);
 		int MaxSamplesDeficit { get; }
 		int CalculateSamplesNeeded();

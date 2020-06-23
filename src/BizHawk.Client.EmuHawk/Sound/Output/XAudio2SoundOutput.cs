@@ -59,6 +59,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_sourceVoice.Volume = (float)volume;
 		}
+		public bool SoundLost()
+		{
+			return false;
+		}
 
 		public void StartSound()
 		{

@@ -49,7 +49,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			AL.Source(_sourceID, ALSourcef.Gain, (float)volume);
 		}
-
+		public bool SoundLost()
+		{
+			return false;
+		}
 		public void StartSound()
 		{
 			BufferSizeSamples = Sound.MillisecondsToSamples(GlobalWin.Config.SoundBufferSizeMs);

@@ -25,7 +25,10 @@ namespace BizHawk.Client.EmuHawk
 		public void ApplyVolumeSettings(double volume)
 		{
 		}
-
+		public bool SoundLost()
+		{
+			return false;
+		}
 		public void StartSound()
 		{
 			BufferSizeSamples = Sound.MillisecondsToSamples(GlobalWin.Config.SoundBufferSizeMs);
