@@ -1,5 +1,4 @@
 
-use std::ptr::null_mut;
 use super::MemoryBlock;
 use std::sync::Mutex;
 use crate::*;
@@ -21,7 +20,7 @@ struct GlobalData {
 pub unsafe fn register(block: *mut MemoryBlock) {
 	let mut data = GLOBAL_DATA.lock().unwrap();
 	if !data.initialized {
-		initialize();
+		trip_pal::initialize();
 		data.initialized = true;
 	}
 	data.active_blocks.push(MemoryBlockRef(block));
@@ -60,81 +59,87 @@ unsafe fn trip(addr: usize) -> TripResult {
 	}
 	page.maybe_snapshot(page_start_addr);
 	page.dirty = true;
-	assert!(pal::protect(AddressRange { start: page_start_addr, size: PAGESIZE }, page.native_prot()));
-	TripResult::Handled
+	if pal::protect(AddressRange { start: page_start_addr, size: PAGESIZE }, page.native_prot()) {
+		TripResult::Handled
+	} else {
+		std::process::abort();
+	}
 }
 
 #[cfg(windows)]
-fn initialize() {
+mod trip_pal {
+	use super::*;
 	use winapi::um::errhandlingapi::*;
 	use winapi::um::winnt::*;
 	use winapi::vc::excpt::*;
 
-	unsafe extern "system" fn handler(p_info: *mut EXCEPTION_POINTERS) -> i32 {
-		let p_record = &mut *(*p_info).ExceptionRecord;
-		let flags = p_record.ExceptionInformation[0];
-		match p_record.ExceptionCode {
-			STATUS_ACCESS_VIOLATION if (flags & 1) != 0 => (), // write exception
-			STATUS_GUARD_PAGE_VIOLATION => (), // guard exception
-			_ => return EXCEPTION_CONTINUE_SEARCH
+	pub fn initialize() {
+		unsafe extern "system" fn handler(p_info: *mut EXCEPTION_POINTERS) -> i32 {
+			let p_record = &*(*p_info).ExceptionRecord;
+			let flags = p_record.ExceptionInformation[0];
+			match p_record.ExceptionCode {
+				STATUS_ACCESS_VIOLATION if (flags & 1) != 0 => (), // write exception
+				STATUS_GUARD_PAGE_VIOLATION => (), // guard exception
+				_ => return EXCEPTION_CONTINUE_SEARCH
+			}
+			let fault_address = p_record.ExceptionInformation[1] as usize;
+			match trip(fault_address) {
+				TripResult::Handled => EXCEPTION_CONTINUE_EXECUTION,
+				TripResult::NotHandled => EXCEPTION_CONTINUE_SEARCH,
+			}
 		}
-		let fault_address = p_record.ExceptionInformation[1] as usize;
-		match trip(fault_address) {
-			TripResult::Handled => EXCEPTION_CONTINUE_EXECUTION,
-			TripResult::NotHandled => EXCEPTION_CONTINUE_SEARCH,
+		unsafe {
+			let res = AddVectoredExceptionHandler(1 /* CALL_FIRST */, Some(handler));
+			assert!(!res.is_null(), "AddVectoredExceptionHandler failed");
 		}
-	}
-	unsafe {
-		let res = AddVectoredExceptionHandler(1 /* CALL_FIRST */, Some(handler));
-		assert!(res != null_mut(), "AddVectoredExceptionHandler failed");
 	}
 }
 
 #[cfg(unix)]
-type SaHandler = unsafe extern fn(i32) -> ();
-#[cfg(unix)]
-type SaSigaction = unsafe extern fn(i32, *const siginfo_t, *const ucontext_t) -> ();
-#[cfg(unix)]
-use libc::*;
-#[cfg(unix)]
-static mut ALTSTACK: [u8; SIGSTKSZ] = [0; SIGSTKSZ];
-#[cfg(unix)]
-static mut SA_OLD: Option<Box<sigaction>> = None;
-#[cfg(unix)]
-fn initialize() {
-	use std::mem::{transmute, zeroed};
+mod trip_pal {
+	use libc::*;
+	use super::*;
 
-	unsafe extern fn handler(sig: i32, info: *const siginfo_t, ucontext: *const ucontext_t) {
-		let fault_address = (*info).si_addr() as usize;
-		let write = (*ucontext).uc_mcontext.gregs[REG_ERR as usize] & 2 != 0;
-		let rethrow = !write || match trip(fault_address) {
-			TripResult::NotHandled => true,
-			_ => false
-		};
-		if rethrow {
-			if SA_OLD.as_ref().unwrap().sa_flags & SA_SIGINFO != 0 {
-				transmute::<usize, SaSigaction>(SA_OLD.as_ref().unwrap().sa_sigaction)(sig, info, ucontext);
-			} else {
-				transmute::<usize, SaHandler>(SA_OLD.as_ref().unwrap().sa_sigaction)(sig);
+	type SaHandler = unsafe extern fn(i32) -> ();
+	type SaSigaction = unsafe extern fn(i32, *const siginfo_t, *const ucontext_t) -> ();
+	static mut SA_OLD: Option<Box<sigaction>> = None;
+
+	pub fn initialize() {
+		use std::mem::{transmute, zeroed};
+
+		unsafe extern fn handler(sig: i32, info: *const siginfo_t, ucontext: *const ucontext_t) {
+			let fault_address = (*info).si_addr() as usize;
+			let write = (*ucontext).uc_mcontext.gregs[REG_ERR as usize] & 2 != 0;
+			let rethrow = !write || match trip(fault_address) {
+				TripResult::NotHandled => true,
+				_ => false
+			};
+			if rethrow {
+				let sa_old = SA_OLD.as_ref().unwrap();
+				if sa_old.sa_flags & SA_SIGINFO != 0 {
+					transmute::<usize, SaSigaction>(sa_old.sa_sigaction)(sig, info, ucontext);
+				} else {
+					transmute::<usize, SaHandler>(sa_old.sa_sigaction)(sig);
+				}
+				abort();
 			}
-			abort();
 		}
-	}
-	unsafe {
-		SA_OLD = Some(Box::new(zeroed::<sigaction>()));
-		let ss = stack_t {
-			ss_flags: 0,
-			ss_sp: &mut ALTSTACK[0] as *mut u8 as *mut c_void,
-			ss_size: SIGSTKSZ
-		};
-		assert!(sigaltstack(&ss, null_mut()) == 0, "sigaltstack failed");
-		let mut sa = sigaction {
-			sa_mask: zeroed::<sigset_t>(),
-			sa_sigaction: transmute::<SaSigaction, usize>(handler),
-			sa_flags: SA_ONSTACK | SA_SIGINFO,
-			sa_restorer: None,
-		};
-		sigfillset(&mut sa.sa_mask);
-		assert!(sigaction(SIGSEGV, &sa, &mut **SA_OLD.as_mut().unwrap() as *mut sigaction) == 0, "sigaction failed");
+		unsafe {
+			SA_OLD = Some(Box::new(zeroed()));
+			let ss = stack_t {
+				ss_flags: 0,
+				ss_sp: Box::into_raw(Box::new(zeroed::<[u8; SIGSTKSZ]>)) as *mut c_void,
+				ss_size: SIGSTKSZ
+			};
+			assert!(sigaltstack(&ss, 0 as *mut stack_t) == 0, "sigaltstack failed");
+			let mut sa = sigaction {
+				sa_mask: zeroed(),
+				sa_sigaction: transmute::<SaSigaction, usize>(handler),
+				sa_flags: SA_ONSTACK | SA_SIGINFO,
+				sa_restorer: None,
+			};
+			sigfillset(&mut sa.sa_mask);
+			assert!(sigaction(SIGSEGV, &sa, &mut **SA_OLD.as_mut().unwrap() as *mut sigaction) == 0, "sigaction failed");
+		}
 	}
 }

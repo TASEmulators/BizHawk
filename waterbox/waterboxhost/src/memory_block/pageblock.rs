@@ -32,6 +32,12 @@ impl PageBlock {
 			std::slice::from_raw_parts_mut(self.ptr.as_ptr(), PAGESIZE)
 		}
 	}
+	pub fn as_ptr(&self) -> *const u8 {
+		self.ptr.as_ptr()
+	}
+	pub fn as_mut_ptr(&mut self) -> *mut u8 {
+		self.ptr.as_ptr()
+	}
 }
 
 impl Drop for PageBlock {

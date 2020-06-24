@@ -1,9 +1,13 @@
 #![crate_type = "cdylib"]
 
-// TODO: Turn this off once we've built the exported public API
+#![feature(try_trait)]
+#![feature(core_intrinsics)]
+
 #![allow(dead_code)]
 
-use std::io::{Read, Write, Error};
+use std::io::{Read, Write};
+use anyhow::anyhow;
+use syscall_defs::{SyscallNumber, SyscallReturn};
 
 const PAGESIZE: usize = 0x1000;
 const PAGEMASK: usize = 0xfff;
@@ -11,13 +15,19 @@ const PAGESHIFT: i32 = 12;
 
 mod memory_block;
 mod syscall_defs;
+mod bin;
+mod elf;
+mod fs;
+mod host;
+mod cinterface;
 
 pub trait IStateable {
-	fn save_sate(&mut self, stream: Box<dyn Write>) -> Result<(), Error>;
-	fn load_state(&mut self, stream: Box<dyn Read>) -> Result<(), Error>;
+	fn save_state(&mut self, stream: &mut dyn Write) -> anyhow::Result<()>;
+	fn load_state(&mut self, stream: &mut dyn Read) -> anyhow::Result<()>;
 }
 
-#[derive(Debug, Clone, Copy)]
+#[repr(C)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct AddressRange {
 	pub start: usize,
 	pub size: usize,
@@ -37,6 +47,72 @@ impl AddressRange {
 	pub unsafe fn slice_mut(&self) -> &'static mut [u8] {
 		std::slice::from_raw_parts_mut(self.start as *mut u8, self.size)
 	}
+	/// Unsafe: Pointers are unchecked and mut is not required (TODO: but why?)
+	pub unsafe fn zero(&self) {
+		std::ptr::write_bytes(self.start as *mut u8, 0, self.size);
+	}
+	/// Expands an address range to page alignment
+	pub fn align_expand(&self) -> AddressRange {
+		return AddressRange {
+			start: align_down(self.start),
+			size: align_up(self.end()) - align_down(self.start),
+		}
+	}
+}
+impl IStateable for AddressRange {
+	fn save_state(&mut self, stream: &mut dyn Write) -> anyhow::Result<()> {
+		bin::write(stream, &self.start)?;
+		bin::write(stream, &self.size)?;
+		Ok(())
+	}
+	fn load_state(&mut self, stream: &mut dyn Read) -> anyhow::Result<()> {
+		bin::read(stream, &mut self.start)?;
+		bin::read(stream, &mut self.size)?;
+		Ok(())
+	}
+}
+
+fn align_down(p: usize) -> usize {
+	p & !PAGEMASK
+}
+fn align_up(p: usize) -> usize {
+	((p - 1) | PAGEMASK) + 1
+}
+
+/// Information about memory layout injected into the guest application
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct WbxSysLayout {
+	pub elf: AddressRange,
+	pub sbrk: AddressRange,
+	pub sealed: AddressRange,
+	pub invis: AddressRange,
+	pub plain: AddressRange,
+	pub mmap: AddressRange,
+}
+impl WbxSysLayout {
+	pub fn all(&self) -> AddressRange {
+		AddressRange {
+			start: self.elf.start,
+			size: self.mmap.end() - self.elf.start
+		}
+	}
+}
+
+/// Information for making syscalls injected into the guest application
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct WbxSysSyscall {
+	pub ud: usize,
+	pub syscall: extern "win64" fn(nr: SyscallNumber, ud: usize, a1: usize, a2: usize, a3: usize, a4: usize, a5: usize, a6: usize) -> SyscallReturn,
+}
+
+/// Data that is injected into the guest application
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct WbxSysArea {
+	pub layout: WbxSysLayout,
+	pub syscall: WbxSysSyscall,
 }
 
 #[cfg(test)]
