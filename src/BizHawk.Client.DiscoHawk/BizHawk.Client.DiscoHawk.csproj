@@ -70,13 +70,13 @@
 		<Content Include="discohawk.ico" />
 	</ItemGroup>
 	<ItemGroup>
-		<Compile Update="About.cs" SubType="Form" />
+		<Compile Update="About.cs" />
 		<Compile Update="About.Designer.cs" DependentUpon="About.cs" />
 		<EmbeddedResource Update="About.resx" DependentUpon="About.cs" />
-		<Compile Update="ComparisonResults.cs" SubType="Form" />
+		<Compile Update="ComparisonResults.cs" />
 		<Compile Update="ComparisonResults.Designer.cs" DependentUpon="ComparisonResults.cs" />
 		<EmbeddedResource Update="ComparisonResults.resx" DependentUpon="ComparisonResults.cs" />
-		<Compile Update="MainDiscoForm.cs" SubType="Form" />
+		<Compile Update="MainDiscoForm.cs" />
 		<Compile Update="MainDiscoForm.Designer.cs" DependentUpon="MainDiscoForm.cs" />
 
 		<EmbeddedResource Remove="MainDiscoForm.resx" />

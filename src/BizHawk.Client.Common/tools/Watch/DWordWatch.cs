@@ -194,24 +194,24 @@ namespace BizHawk.Client.Common
 		// TODO: Implements IFormattable
 		public string FormatValue(uint val)
 		{
-			switch (Type)
+			string FormatFloat()
 			{
-				default:
-				case DisplayType.Unsigned:
-					return val.ToString();
-				case DisplayType.Signed:
-					return ((int)val).ToString();
-				case DisplayType.Hex:
-					return $"{val:X8}";
-				case DisplayType.FixedPoint_20_12:
-					return $"{(int)val / 4096.0:0.######}";
-				case DisplayType.FixedPoint_16_16:
-					return $"{(int)val / 65536.0:0.######}";
-				case DisplayType.Float:
-					var bytes = BitConverter.GetBytes(val);
-					var _float = BitConverter.ToSingle(bytes, 0);
-					return _float.ToString(); // adelikat: decided that we like sci notation instead of spooky rounding
-			}
+				var bytes = BitConverter.GetBytes(val);
+				var _float = BitConverter.ToSingle(bytes, 0);
+				return _float.ToString();
+			};
+
+			return Type switch
+			{
+				_ when !IsValid => "-",
+				DisplayType.Unsigned => val.ToString(),
+				DisplayType.Signed => ((int)val).ToString(),
+				DisplayType.Hex => $"{val:X8}",
+				DisplayType.FixedPoint_20_12 => $"{(int)val / 4096.0:0.######}",
+				DisplayType.FixedPoint_16_16 => $"{(int)val / 65536.0:0.######}",
+				DisplayType.Float => FormatFloat(),
+				_ => val.ToString()
+			};
 		}
 
 		/// <summary>
@@ -219,6 +219,11 @@ namespace BizHawk.Client.Common
 		/// between current value and the previous one
 		/// </summary>
 		public override string Diff => $"{_value - (long)_previous:+#;-#;0}";
+
+		/// <summary>
+		/// Returns true if the Watch is valid, false otherwise
+		/// </summary>
+		public override bool IsValid => Domain.Size == 0 || Address < (Domain.Size - 3);
 
 		/// <summary>
 		/// Get the maximum possible value
