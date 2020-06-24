@@ -52,6 +52,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public bool HBL_HDMA_go;
 		public bool HBL_test;
 		public byte LYC_t;
+		public byte LY_read;
 		public int LYC_cd;
 
 		public override byte ReadReg(int addr)
@@ -64,7 +65,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				case 0xFF41: ret = STAT;							break; // STAT
 				case 0xFF42: ret = scroll_y;						break; // SCY
 				case 0xFF43: ret = scroll_x;						break; // SCX
-				case 0xFF44: ret = LY;								break; // LY
+				case 0xFF44: ret = LY_read;							break; // LY
 				case 0xFF45: ret = LYC;								break; // LYC
 				case 0xFF46: ret = DMA_addr;						break; // DMA 
 				case 0xFF47: ret = BGP;								break; // BGP
@@ -162,6 +163,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					break; 
 				case 0xFF44: // LY
 					LY = 0; /*reset*/
+					LY_read = 0;
 					break;
 				case 0xFF45:  // LYC
 					// tests indicate that latching writes to LYC should take place 4 cycles after the write
@@ -670,7 +672,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 				if (LY_inc == 0)
 				{
-					if (cycle == 12)
+					if (cycle == 10)
+					{
+						LY_read = LY;
+					}
+					else if (cycle == 12)
 					{
 						LYC_INT = false;
 						STAT &= 0xFB;
@@ -688,7 +694,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				}
 
 				// here LY=LYC will be asserted or cleared (but only if LY isnt 0 as that's a special case)
-				if ((cycle == 4) && (LY != 0))
+				if ((cycle == 2) && (LY != 0))
+				{
+					LY_read = LY;
+				}
+				else if ((cycle == 4) && (LY != 0))
 				{
 					if (LY_inc == 1)
 					{
@@ -719,6 +729,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				LCD_was_off = true;
 
 				LY = 0;
+				LY_read = 0;
 				Core.cpu.LY = LY;
 
 				cycle = 0;
@@ -1697,6 +1708,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync(nameof(OBJ_bytes_index), ref OBJ_bytes_index);
 
 			ser.Sync(nameof(LYC_t), ref LYC_t);
+			ser.Sync(nameof(LY_read), ref LY_read);
 			ser.Sync(nameof(LYC_cd), ref LYC_cd);
 
 			base.SyncState(ser);
@@ -1710,6 +1722,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			scroll_x = 0;
 			LY = 0;
 			LYC = 0;
+			LY_read = 0;
 			DMA_addr = 0;
 			BGP = 0xFF;
 			obj_pal_0 = 0;
