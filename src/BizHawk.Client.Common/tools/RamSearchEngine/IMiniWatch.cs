@@ -11,6 +11,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 		long Address { get; }
 		long Previous { get; } // do not store sign extended variables in here.
 		void SetPreviousToCurrent(MemoryDomain domain, bool bigEndian);
+		bool IsValid(MemoryDomain domain);
 	}
 
 	internal sealed class MiniByteWatch : IMiniWatch
@@ -21,14 +22,29 @@ namespace BizHawk.Client.Common.RamSearchEngine
 		public MiniByteWatch(MemoryDomain domain, long addr)
 		{
 			Address = addr;
-			_previous = domain.PeekByte(Address % domain.Size);
+			_previous = GetByte(Address, domain);
 		}
 
 		public long Previous => _previous;
 
 		public void SetPreviousToCurrent(MemoryDomain domain, bool bigEndian)
 		{
-			_previous = domain.PeekByte(Address % domain.Size);
+			_previous = GetByte(Address, domain);
+		}
+
+		public bool IsValid(MemoryDomain domain)
+		{
+			return Address < domain.Size;
+		}
+
+		public static byte GetByte(long address, MemoryDomain domain)
+		{
+			if (address >= domain.Size)
+			{
+				return 0;
+			}
+
+			return domain.PeekByte(address);
 		}
 	}
 
@@ -40,14 +56,29 @@ namespace BizHawk.Client.Common.RamSearchEngine
 		public MiniWordWatch(MemoryDomain domain, long addr, bool bigEndian)
 		{
 			Address = addr;
-			_previous = domain.PeekUshort(Address % domain.Size, bigEndian);
+			_previous = GetUshort(Address, domain, bigEndian);
 		}
 
 		public long Previous => _previous;
 
 		public void SetPreviousToCurrent(MemoryDomain domain, bool bigEndian)
 		{
-			_previous = domain.PeekUshort(Address, bigEndian);
+			_previous = GetUshort(Address, domain, bigEndian);
+		}
+
+		public bool IsValid(MemoryDomain domain)
+		{
+			return Address < (domain.Size - 1);
+		}
+
+		public static ushort GetUshort(long address, MemoryDomain domain, bool bigEndian)
+		{
+			if (address >= (domain.Size - 1))
+			{
+				return 0;
+			}
+
+			return domain.PeekUshort(address, bigEndian);
 		}
 	}
 
@@ -59,14 +90,29 @@ namespace BizHawk.Client.Common.RamSearchEngine
 		public MiniDWordWatch(MemoryDomain domain, long addr, bool bigEndian)
 		{
 			Address = addr;
-			_previous = domain.PeekUint(Address % domain.Size, bigEndian);
+			_previous = GetUint(Address, domain, bigEndian);
 		}
 
 		public long Previous => _previous;
 
 		public void SetPreviousToCurrent(MemoryDomain domain, bool bigEndian)
 		{
-			_previous = domain.PeekUint(Address, bigEndian);
+			_previous = GetUint(Address, domain, bigEndian);
+		}
+
+		public bool IsValid(MemoryDomain domain)
+		{
+			return Address < (domain.Size - 3);
+		}
+
+		public static uint GetUint(long address, MemoryDomain domain, bool bigEndian)
+		{
+			if (address >= (domain.Size - 3))
+			{
+				return 0;
+			}
+
+			return domain.PeekUint(address, bigEndian);
 		}
 	}
 }

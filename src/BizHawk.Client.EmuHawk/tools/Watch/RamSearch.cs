@@ -196,7 +196,7 @@ namespace BizHawk.Client.EmuHawk
 				var isCheat = MainForm.CheatList.IsActive(_settings.Domain, _searches[index].Address);
 				var isWeeded = Settings.PreviewMode && !_forcePreviewClear && _searches.Preview(_searches[index].Address);
 
-				if (_searches[index].Address >= _searches[index].Domain.Size)
+				if (!_searches[index].IsValid)
 				{
 					nextColor = Color.PeachPuff;
 				}
