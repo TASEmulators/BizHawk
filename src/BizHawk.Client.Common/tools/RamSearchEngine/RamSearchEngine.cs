@@ -42,7 +42,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 		}
 
 		public IEnumerable<long> OutOfRangeAddress => _watchList
-			.Where(watch => watch.Address >= Domain.Size)
+			.Where(watch => !watch.IsValid(Domain))
 			.Select(watch => watch.Address);
 
 		public void Start()
@@ -610,10 +610,10 @@ namespace BizHawk.Client.Common.RamSearchEngine
 			// do not return sign extended variables from here.
 			return _settings.Size switch
 			{
-				WatchSize.Byte => _settings.Domain.PeekByte(addr % Domain.Size),
-				WatchSize.Word => _settings.Domain.PeekUshort(addr % Domain.Size, _settings.BigEndian),
-				WatchSize.DWord => _settings.Domain.PeekUint(addr % Domain.Size, _settings.BigEndian),
-				_ => _settings.Domain.PeekByte(addr % Domain.Size)
+				WatchSize.Byte => MiniByteWatch.GetByte(addr, Domain),
+				WatchSize.Word => MiniWordWatch.GetUshort(addr, Domain, _settings.BigEndian),
+				WatchSize.DWord => MiniDWordWatch.GetUint(addr, Domain, _settings.BigEndian),
+				_ => MiniByteWatch.GetByte(addr, Domain)
 			};
 		}
 
