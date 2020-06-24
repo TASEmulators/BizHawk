@@ -49,23 +49,44 @@ namespace BizHawk.Client.EmuHawk
 
 		public int MaxSamplesDeficit { get; private set; }
 
-		public void ApplyVolumeSettings(double volume)
+		private bool IsPlaying => _deviceBuffer != null && ((_deviceBuffer.Status & BufferStatus.BufferLost) != 0 || (_deviceBuffer.Status & BufferStatus.Playing) == 0);
+
+		private void StartPlaying()
 		{
-			try
+			if (_deviceBuffer != null)
 			{
-				// I'm not sure if this is "technically" correct but it works okay
-				int range = (int)Volume.Maximum - (int)Volume.Minimum;
-				_deviceBuffer.Volume = (int)(Math.Pow(volume, 0.1) * range) + (int)Volume.Minimum;
-			}
-			catch (DirectSoundException ex)
-			{
-				_deviceBuffer.Restore();
+				_actualWriteOffsetBytes = -1;
+				_filledBufferSizeBytes = 0;
+				_lastWriteTime = 0;
+				_lastWriteCursor = 0;
+				while (!IsPlaying)
+				{
+					try
+					{
+						_deviceBuffer.Play(0, PlayFlags.Looping);
+					}
+					catch (DirectSoundException ex)
+					{
+						_deviceBuffer.Restore();
+					}
+				}
 			}
 		}
 
-		public bool SoundLost()
+		public void ApplyVolumeSettings(double volume)
 		{
-			return (_deviceBuffer.Status & BufferStatus.BufferLost) != 0 || _deviceBuffer.Status == BufferStatus.None;
+			if (IsPlaying)
+			{
+				try
+				{
+					// I'm not sure if this is "technically" correct but it works okay
+					int range = (int)Volume.Maximum - (int)Volume.Minimum;
+					_deviceBuffer.Volume = (int)(Math.Pow(volume, 0.1) * range) + (int)Volume.Minimum;
+				}
+				catch (DirectSoundException)
+				{
+				}
+			}
 		}
 
 		public void StartSound()
@@ -101,40 +122,33 @@ namespace BizHawk.Client.EmuHawk
 						BufferFlags.ControlVolume,
 					SizeInBytes = BufferSizeBytes
 				};
+
 			while (_deviceBuffer == null)
 			{
 				try
 				{
 					_deviceBuffer = new SecondarySoundBuffer(_device, desc);
 				}
-				catch (DirectSoundException ex)
+				catch (DirectSoundException)
 				{
 					System.Threading.Thread.Sleep(10);
 				}
 			}
-			_actualWriteOffsetBytes = -1;
-			_filledBufferSizeBytes = 0;
-			_lastWriteTime = 0;
-			_lastWriteCursor = 0;
-			try
-			{
-				_deviceBuffer.Play(0, PlayFlags.Looping);
-			}
-			catch (DirectSoundException ex)
-			{
-				_deviceBuffer.Restore();
-			}
+
+			StartPlaying();
 		}
 
 		public void StopSound()
 		{
-			try
+			if (IsPlaying)
 			{
-				_deviceBuffer.Stop();
-			}
-			catch (DirectSoundException ex)
-			{
-				_deviceBuffer.Restore();
+				try
+				{
+					_deviceBuffer.Stop();
+				}
+				catch (DirectSoundException)
+				{
+				}
 			}
 			_deviceBuffer.Dispose();
 			_deviceBuffer = null;
@@ -144,38 +158,41 @@ namespace BizHawk.Client.EmuHawk
 		public int CalculateSamplesNeeded()
 		{
 			int samplesNeeded = 0;
-			try
+			if (IsPlaying)
 			{
-				long currentWriteTime = Stopwatch.GetTimestamp();
-				int playCursor = _deviceBuffer.CurrentPlayPosition;
-				int writeCursor = _deviceBuffer.CurrentWritePosition;
-				bool isInitializing = _actualWriteOffsetBytes == -1;
-				bool detectedUnderrun = false;
-				if (!isInitializing)
+				try
 				{
-					double elapsedSeconds = (currentWriteTime - _lastWriteTime) / (double)Stopwatch.Frequency;
-					double bufferSizeSeconds = (double)BufferSizeSamples / Sound.SampleRate;
-					int cursorDelta = CircularDistance(_lastWriteCursor, writeCursor, BufferSizeBytes);
-					cursorDelta += BufferSizeBytes * (int)Math.Round((elapsedSeconds - (cursorDelta / (double)(Sound.SampleRate * Sound.BlockAlign))) / bufferSizeSeconds);
-					_filledBufferSizeBytes -= cursorDelta;
-					detectedUnderrun = _filledBufferSizeBytes < 0;
+					long currentWriteTime = Stopwatch.GetTimestamp();
+					int playCursor = _deviceBuffer.CurrentPlayPosition;
+					int writeCursor = _deviceBuffer.CurrentWritePosition;
+					bool isInitializing = _actualWriteOffsetBytes == -1;
+					bool detectedUnderrun = false;
+					if (!isInitializing)
+					{
+						double elapsedSeconds = (currentWriteTime - _lastWriteTime) / (double)Stopwatch.Frequency;
+						double bufferSizeSeconds = (double)BufferSizeSamples / Sound.SampleRate;
+						int cursorDelta = CircularDistance(_lastWriteCursor, writeCursor, BufferSizeBytes);
+						cursorDelta += BufferSizeBytes * (int)Math.Round((elapsedSeconds - (cursorDelta / (double)(Sound.SampleRate * Sound.BlockAlign))) / bufferSizeSeconds);
+						_filledBufferSizeBytes -= cursorDelta;
+						detectedUnderrun = _filledBufferSizeBytes < 0;
+					}
+					if (isInitializing || detectedUnderrun)
+					{
+						_actualWriteOffsetBytes = writeCursor;
+						_filledBufferSizeBytes = 0;
+					}
+					samplesNeeded = CircularDistance(_actualWriteOffsetBytes, playCursor, BufferSizeBytes) / Sound.BlockAlign;
+					if (isInitializing || detectedUnderrun)
+					{
+						_sound.HandleInitializationOrUnderrun(detectedUnderrun, ref samplesNeeded);
+					}
+					_lastWriteTime = currentWriteTime;
+					_lastWriteCursor = writeCursor;
 				}
-				if (isInitializing || detectedUnderrun)
+				catch (DirectSoundException)
 				{
-					_actualWriteOffsetBytes = writeCursor;
-					_filledBufferSizeBytes = 0;
+					samplesNeeded = 0;
 				}
-				samplesNeeded = CircularDistance(_actualWriteOffsetBytes, playCursor, BufferSizeBytes) / Sound.BlockAlign;
-				if (isInitializing || detectedUnderrun)
-				{
-					_sound.HandleInitializationOrUnderrun(detectedUnderrun, ref samplesNeeded);
-				}
-				_lastWriteTime = currentWriteTime;
-				_lastWriteCursor = writeCursor;
-			}
-			catch (DirectSoundException ex)
-			{
-				_deviceBuffer.Restore();
 			}
 			return samplesNeeded;
 		}
@@ -187,10 +204,28 @@ namespace BizHawk.Client.EmuHawk
 
 		public void WriteSamples(short[] samples, int sampleOffset, int sampleCount)
 		{
-			if (sampleCount == 0) return;
-			_deviceBuffer.Write(samples, sampleOffset * Sound.ChannelCount, sampleCount * Sound.ChannelCount, _actualWriteOffsetBytes, LockFlags.None);
-			_actualWriteOffsetBytes = (_actualWriteOffsetBytes + (sampleCount * Sound.BlockAlign)) % BufferSizeBytes;
-			_filledBufferSizeBytes += sampleCount * Sound.BlockAlign;
+			// For lack of a better place, this function will be the one that attempts to restart playing
+			// after a sound buffer is lost.
+			if (IsPlaying)
+			{
+				if (sampleCount == 0) return;
+				try
+				{
+					_deviceBuffer.Write(samples, sampleOffset * Sound.ChannelCount, sampleCount * Sound.ChannelCount, _actualWriteOffsetBytes, LockFlags.None);
+					_actualWriteOffsetBytes = (_actualWriteOffsetBytes + (sampleCount * Sound.BlockAlign)) % BufferSizeBytes;
+					_filledBufferSizeBytes += sampleCount * Sound.BlockAlign;
+				}
+				catch (DirectSoundException ex)
+				{
+					_deviceBuffer.Restore();
+					StartPlaying();
+				}
+			}
+			else
+			{
+				_deviceBuffer.Restore();
+				StartPlaying();
+			}
 		}
 	}
 }

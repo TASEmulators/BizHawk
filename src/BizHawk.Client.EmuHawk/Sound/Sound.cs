@@ -144,13 +144,6 @@ namespace BizHawk.Client.EmuHawk
 
 			if (atten < 0) atten = 0;
 			if (atten > 1) atten = 1;
-
-			if (_outputDevice.SoundLost())
-			{
-				_outputDevice.StopSound();
-				_outputDevice.StartSound();
-			}
-
 			_outputDevice.ApplyVolumeSettings(atten);
 
 			int samplesNeeded = _outputDevice.CalculateSamplesNeeded();
