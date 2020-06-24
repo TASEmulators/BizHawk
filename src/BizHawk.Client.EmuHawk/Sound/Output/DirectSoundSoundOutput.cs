@@ -49,7 +49,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public int MaxSamplesDeficit { get; private set; }
 
-		private bool IsPlaying => _deviceBuffer != null && ((_deviceBuffer.Status & BufferStatus.BufferLost) != 0 || (_deviceBuffer.Status & BufferStatus.Playing) == 0);
+		private bool IsPlaying => _deviceBuffer != null && (_deviceBuffer.Status & BufferStatus.BufferLost) == 0 && (_deviceBuffer.Status & BufferStatus.Playing) == BufferStatus.Playing;
 
 		private void StartPlaying()
 		{
@@ -65,9 +65,10 @@ namespace BizHawk.Client.EmuHawk
 					{
 						_deviceBuffer.Play(0, PlayFlags.Looping);
 					}
-					catch (DirectSoundException ex)
+					catch (DirectSoundException)
 					{
 						_deviceBuffer.Restore();
+						System.Threading.Thread.Sleep(10);
 					}
 				}
 			}
