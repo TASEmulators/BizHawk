@@ -94,6 +94,11 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Ignore that stuff
 		/// </summary>
+		public override bool IsValid => true;
+
+		/// <summary>
+		/// Ignore that stuff
+		/// </summary>
 		public override string Diff => "";
 
 		/// <summary>

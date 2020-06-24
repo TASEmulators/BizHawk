@@ -267,67 +267,55 @@ namespace BizHawk.Client.Common
 
 		protected byte GetByte()
 		{
-			if (_domain.Size == 0)
+			if (!IsValid)
 			{
-				return _domain.PeekByte(Address);
+				return 0;
 			}
 
-			return _domain.PeekByte(Address % _domain.Size);
+			return _domain.PeekByte(Address);
 		}
 
 		protected ushort GetWord()
 		{
-			if (_domain.Size == 0)
+			if (!IsValid)
 			{
-				return _domain.PeekUshort(Address, BigEndian);
+				return 0;
 			}
 
-			return _domain.PeekUshort(Address % _domain.Size, BigEndian); // TODO: % size still isn't correct since it could be the last byte of the domain
+			return _domain.PeekUshort(Address, BigEndian);
 		}
 
 		protected uint GetDWord()
 		{
-			if (_domain.Size == 0)
+			if (!IsValid)
 			{
-				return _domain.PeekUint(Address, BigEndian); // TODO: % size still isn't correct since it could be the last byte of the domain
+				return 0;
 			}
 
-			return _domain.PeekUint(Address % _domain.Size, BigEndian); // TODO: % size still isn't correct since it could be the last byte of the domain
+			return _domain.PeekUint(Address, BigEndian);
 		}
 
 		protected void PokeByte(byte val)
 		{
-			if (_domain.Size == 0)
+			if (IsValid)
 			{
 				_domain.PokeByte(Address, val);
-			}
-			else
-			{
-				_domain.PokeByte(Address % _domain.Size, val);
 			}
 		}
 
 		protected void PokeWord(ushort val)
 		{
-			if (_domain.Size == 0)
+			if (IsValid)
 			{
-				_domain.PokeUshort(Address, val, BigEndian); // TODO: % size still isn't correct since it could be the last byte of the domain
-			}
-			else
-			{
-				_domain.PokeUshort(Address % _domain.Size, val, BigEndian); // TODO: % size still isn't correct since it could be the last byte of the domain
+				_domain.PokeUshort(Address, val, BigEndian);
 			}
 		}
 
 		protected void PokeDWord(uint val)
 		{
-			if (_domain.Size == 0)
+			if (IsValid)
 			{
-				_domain.PokeUint(Address, val, BigEndian); // TODO: % size still isn't correct since it could be the last byte of the domain
-			}
-			else
-			{
-				_domain.PokeUint(Address % _domain.Size, val, BigEndian); // TODO: % size still isn't correct since it could be the last byte of the domain
+				_domain.PokeUint(Address, val, BigEndian);
 			}
 		}
 
@@ -471,6 +459,11 @@ namespace BizHawk.Client.Common
 		/// Gets a string representation of the current value
 		/// </summary>
 		public abstract string ValueString { get; }
+
+		/// <summary>
+		/// Returns true if the Watch is valid, false otherwise
+		/// </summary>
+		public abstract bool IsValid { get; }
 
 		/// <summary>
 		/// Try to sets the value into the <see cref="MemoryDomain"/>

@@ -404,7 +404,6 @@ namespace BizHawk.Client.EmuHawk
 				var result = we.ShowHawkDialog(this);
 				if (result == DialogResult.OK)
 				{
-					Changes();
 					if (duplicate)
 					{
 						_watches.AddRange(we.Watches);
@@ -418,6 +417,7 @@ namespace BizHawk.Client.EmuHawk
 							_watches[indexes[i]] = we.Watches[i];
 						}
 					}
+					Changes();
 				}
 
 				GeneralUpdate();
@@ -587,7 +587,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			ErrorIconButton.Visible = _watches.Where(watch => !watch.IsSeparator).Any(watch => watch.Address >= watch.Domain.Size);
+			ErrorIconButton.Visible = _watches.Where(watch => !watch.IsSeparator).Any(watch => !watch.IsValid);
 
 			MessageLabel.Text = message;
 		}
@@ -608,7 +608,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				color = BackColor;
 			}
-			else if (_watches[index].Address >= _watches[index].Domain.Size)
+			else if (!_watches[index].IsValid)
 			{
 				color = Color.PeachPuff;
 			}
@@ -1230,7 +1230,7 @@ namespace BizHawk.Client.EmuHawk
 		private void ErrorIconButton_Click(object sender, EventArgs e)
 		{
 			var items = _watches
-				.Where(watch => watch.Address >= watch.Domain.Size)
+				.Where(watch => !watch.IsValid)
 				.ToList(); // enumerate because _watches is about to be changed
 
 			foreach (var item in items)

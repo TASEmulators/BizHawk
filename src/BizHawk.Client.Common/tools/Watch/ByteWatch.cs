@@ -170,6 +170,7 @@ namespace BizHawk.Client.Common
 		{
 			return Type switch
 			{
+				_ when !IsValid => "-",
 				DisplayType.Unsigned => val.ToString(),
 				DisplayType.Signed => ((sbyte) val).ToString(),
 				DisplayType.Hex => $"{val:X2}",
@@ -183,6 +184,11 @@ namespace BizHawk.Client.Common
 		/// between current value and the previous one
 		/// </summary>
 		public override string Diff => $"{_value - (short)_previous:+#;-#;0}";
+
+		/// <summary>
+		/// Returns true if the Watch is valid, false otherwise
+		/// </summary>
+		public override bool IsValid => Domain.Size == 0 || Address < Domain.Size;
 
 		/// <summary>
 		/// Get the maximum possible value
