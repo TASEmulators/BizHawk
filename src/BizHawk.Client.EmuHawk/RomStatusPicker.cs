@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using BizHawk.Client.EmuHawk.Properties;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -9,14 +10,19 @@ namespace BizHawk.Client.EmuHawk
 		public RomStatusPicker()
 		{
 			InitializeComponent();
-			PickedStatus = RomStatus.Unknown;
 		}
 
-		public RomStatus PickedStatus { get; private set; }
+		public RomStatus PickedStatus { get; private set; } = RomStatus.Unknown;
 
 		private void RomStatusPicker_Load(object sender, EventArgs e)
 		{
 			GoodRadio.Select();
+			pictureBox1.Image = pictureBox1.InitialImage = Resources.GreenCheck;
+			pictureBox2.Image = pictureBox2.InitialImage = Resources.HomeBrew;
+			pictureBox3.Image = pictureBox3.InitialImage = Resources.Hack;
+			pictureBox4.Image = pictureBox4.InitialImage = Resources.Translation;
+			pictureBox5.Image = pictureBox5.InitialImage = Resources.ExclamationRed;
+			pictureBox6.Image = pictureBox6.InitialImage = Resources.ExclamationRed;
 		}
 
 		private void OkBtn_Click(object sender, EventArgs e)

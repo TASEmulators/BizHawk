@@ -92,8 +92,6 @@
 			// 
 			// pictureBox1
 			// 
-			this.pictureBox1.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.GreenCheck;
-			this.pictureBox1.InitialImage = global::BizHawk.Client.EmuHawk.Properties.Resources.GreenCheck;
 			this.pictureBox1.Location = new System.Drawing.Point(29, 10);
 			this.pictureBox1.Name = "pictureBox1";
 			this.pictureBox1.Size = new System.Drawing.Size(16, 16);
@@ -120,8 +118,6 @@
 			// 
 			// pictureBox2
 			// 
-			this.pictureBox2.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.HomeBrew;
-			this.pictureBox2.InitialImage = global::BizHawk.Client.EmuHawk.Properties.Resources.HomeBrew;
 			this.pictureBox2.Location = new System.Drawing.Point(29, 35);
 			this.pictureBox2.Name = "pictureBox2";
 			this.pictureBox2.Size = new System.Drawing.Size(16, 16);
@@ -148,8 +144,6 @@
 			// 
 			// pictureBox3
 			// 
-			this.pictureBox3.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Hack;
-			this.pictureBox3.InitialImage = global::BizHawk.Client.EmuHawk.Properties.Resources.Hack;
 			this.pictureBox3.Location = new System.Drawing.Point(29, 60);
 			this.pictureBox3.Name = "pictureBox3";
 			this.pictureBox3.Size = new System.Drawing.Size(16, 16);
@@ -176,8 +170,6 @@
 			// 
 			// pictureBox4
 			// 
-			this.pictureBox4.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Translation;
-			this.pictureBox4.InitialImage = global::BizHawk.Client.EmuHawk.Properties.Resources.Translation;
 			this.pictureBox4.Location = new System.Drawing.Point(29, 85);
 			this.pictureBox4.Name = "pictureBox4";
 			this.pictureBox4.Size = new System.Drawing.Size(16, 16);
@@ -204,8 +196,6 @@
 			// 
 			// pictureBox5
 			// 
-			this.pictureBox5.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.ExclamationRed;
-			this.pictureBox5.InitialImage = global::BizHawk.Client.EmuHawk.Properties.Resources.ExclamationRed;
 			this.pictureBox5.Location = new System.Drawing.Point(29, 110);
 			this.pictureBox5.Name = "pictureBox5";
 			this.pictureBox5.Size = new System.Drawing.Size(16, 16);
@@ -232,8 +222,6 @@
 			// 
 			// pictureBox6
 			// 
-			this.pictureBox6.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.ExclamationRed;
-			this.pictureBox6.InitialImage = global::BizHawk.Client.EmuHawk.Properties.Resources.ExclamationRed;
 			this.pictureBox6.Location = new System.Drawing.Point(29, 135);
 			this.pictureBox6.Name = "pictureBox6";
 			this.pictureBox6.Size = new System.Drawing.Size(16, 16);
