@@ -1661,7 +1661,6 @@
 			this.LeftButton.BackColor = System.Drawing.Color.CornflowerBlue;
 			this.LeftButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.LeftButton.ForeColor = System.Drawing.Color.White;
-			this.LeftButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.whiteTriLeft;
 			this.LeftButton.Location = new System.Drawing.Point(224, 130);
 			this.LeftButton.Name = "LeftButton";
 			this.LeftButton.Size = new System.Drawing.Size(27, 53);
@@ -1674,7 +1673,6 @@
 			this.RightButton.BackColor = System.Drawing.Color.CornflowerBlue;
 			this.RightButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.RightButton.ForeColor = System.Drawing.Color.White;
-			this.RightButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.whiteTriRight;
 			this.RightButton.Location = new System.Drawing.Point(307, 130);
 			this.RightButton.Name = "RightButton";
 			this.RightButton.Size = new System.Drawing.Size(27, 53);
@@ -1688,7 +1686,6 @@
 			this.DownButton.BackColor = System.Drawing.Color.CornflowerBlue;
 			this.DownButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.DownButton.ForeColor = System.Drawing.Color.White;
-			this.DownButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.whiteTriDown;
 			this.DownButton.Location = new System.Drawing.Point(250, 182);
 			this.DownButton.Name = "DownButton";
 			this.DownButton.Size = new System.Drawing.Size(58, 21);
@@ -1702,7 +1699,6 @@
 			this.UpButton.BackColor = System.Drawing.Color.CornflowerBlue;
 			this.UpButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.UpButton.ForeColor = System.Drawing.Color.White;
-			this.UpButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.whiteTriUp;
 			this.UpButton.Location = new System.Drawing.Point(250, 109);
 			this.UpButton.Name = "UpButton";
 			this.UpButton.Size = new System.Drawing.Size(58, 21);

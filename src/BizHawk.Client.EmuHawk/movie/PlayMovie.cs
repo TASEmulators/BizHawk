@@ -44,6 +44,9 @@ namespace BizHawk.Client.EmuHawk
 			_movieSession = movieSession;
 			InitializeComponent();
 			Icon = Properties.Resources.TAStudio_MultiSize;
+			BrowseMovies.Image = Properties.Resources.OpenFile;
+			Scan.Image = Properties.Resources.Scan;
+			editToolStripMenuItem.Image = Properties.Resources.CutHS;
 			MovieView.RetrieveVirtualItem += MovieView_QueryItemText;
 			MovieView.VirtualMode = true;
 			_sortReverse = false;

@@ -38,7 +38,6 @@
 			// 
 			// btnSpecial
 			// 
-			this.btnSpecial.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.arrow_black_down;
 			this.btnSpecial.Location = new System.Drawing.Point(472, 0);
 			this.btnSpecial.Margin = new System.Windows.Forms.Padding(2, 0, 0, 0);
 			this.btnSpecial.Name = "btnSpecial";

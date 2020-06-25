@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using BizHawk.Emulation.Common;
 
 using BizHawk.Client.Common;
+using BizHawk.Client.EmuHawk.Properties;
 using BizHawk.Client.EmuHawk.ToolExtensions;
 
 // TODO - select which memorydomains go out to the CDL file. will this cause a problem when re-importing it? 
@@ -14,7 +15,6 @@ using BizHawk.Client.EmuHawk.ToolExtensions;
 // TODO - consider setting colors for columns in CDL
 // TODO - option to print domain name in caption instead of 0x01 etc.
 // TODO - context menu should have copy option too
-
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class CDL : ToolFormBase, IToolFormAutoConfig
@@ -59,8 +59,16 @@ namespace BizHawk.Client.EmuHawk
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			SetStyle(ControlStyles.UserPaint, true);
 			SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
+
 			InitializeComponent();
-			Icon = Properties.Resources.cdlogger_MultiSize;
+			NewMenuItem.Image = Resources.NewFile;
+			OpenMenuItem.Image = Resources.OpenFile;
+			SaveMenuItem.Image = Resources.SaveAs;
+			RecentSubMenu.Image = Resources.Recent;
+			tsbLoggingActive.Image = Resources.placeholder_bitmap;
+			tsbViewUpdate.Image = Resources.placeholder_bitmap;
+			tsbExportText.Image = Resources.LoadConfig;
+			Icon = Resources.cdlogger_MultiSize;
 
 			tsbViewStyle.SelectedIndex = 0;
 

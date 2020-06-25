@@ -171,7 +171,6 @@
 			// 
 			// NewMenuItem
 			// 
-			this.NewMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.NewFile;
 			this.NewMenuItem.Name = "NewMenuItem";
 			this.NewMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
 			this.NewMenuItem.Size = new System.Drawing.Size(195, 22);
@@ -180,7 +179,6 @@
 			// 
 			// OpenMenuItem
 			// 
-			this.OpenMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.OpenFile;
 			this.OpenMenuItem.Name = "OpenMenuItem";
 			this.OpenMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
 			this.OpenMenuItem.Size = new System.Drawing.Size(195, 22);
@@ -189,7 +187,6 @@
 			// 
 			// SaveMenuItem
 			// 
-			this.SaveMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.SaveAs;
 			this.SaveMenuItem.Name = "SaveMenuItem";
 			this.SaveMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
 			this.SaveMenuItem.Size = new System.Drawing.Size(195, 22);
@@ -209,7 +206,6 @@
 			// 
 			this.RecentSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
 			this.toolStripSeparator2});
-			this.RecentSubMenu.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Recent;
 			this.RecentSubMenu.Name = "RecentSubMenu";
 			this.RecentSubMenu.Size = new System.Drawing.Size(195, 22);
 			this.RecentSubMenu.Text = "Recent";
@@ -313,7 +309,6 @@
 			// 
 			// RunBtn
 			// 
-			this.RunBtn.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Play;
 			this.RunBtn.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			this.RunBtn.Location = new System.Drawing.Point(6, 56);
 			this.RunBtn.Name = "RunBtn";
@@ -337,7 +332,6 @@
 			// BotStatusButton
 			// 
 			this.BotStatusButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.BotStatusButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.placeholder_bitmap;
 			this.BotStatusButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.BotStatusButton.Name = "BotStatusButton";
 			this.BotStatusButton.RightToLeftAutoMirrorImage = true;
@@ -402,7 +396,6 @@
 			// 
 			// btnCopyBestInput
 			// 
-			this.btnCopyBestInput.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Duplicate;
 			this.btnCopyBestInput.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			this.btnCopyBestInput.Location = new System.Drawing.Point(12, 94);
 			this.btnCopyBestInput.Name = "btnCopyBestInput";
@@ -417,7 +410,6 @@
 			// PlayBestButton
 			// 
 			this.PlayBestButton.Enabled = false;
-			this.PlayBestButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Play;
 			this.PlayBestButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			this.PlayBestButton.Location = new System.Drawing.Point(12, 46);
 			this.PlayBestButton.Name = "PlayBestButton";
@@ -430,7 +422,6 @@
 			// ClearBestButton
 			// 
 			this.ClearBestButton.Enabled = false;
-			this.ClearBestButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Close;
 			this.ClearBestButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			this.ClearBestButton.Location = new System.Drawing.Point(12, 70);
 			this.ClearBestButton.Name = "ClearBestButton";
@@ -1058,7 +1049,6 @@
 			// 
 			// StopBtn
 			// 
-			this.StopBtn.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Stop;
 			this.StopBtn.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			this.StopBtn.Location = new System.Drawing.Point(6, 56);
 			this.StopBtn.Name = "StopBtn";

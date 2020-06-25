@@ -34,7 +34,6 @@
             // 
             // luaPictureBox
             // 
-            this.luaPictureBox.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.luaPictureBox;
             this.luaPictureBox.Location = new System.Drawing.Point(0, 0);
             this.luaPictureBox.Margin = new System.Windows.Forms.Padding(0);
             this.luaPictureBox.Name = "luaPictureBox";

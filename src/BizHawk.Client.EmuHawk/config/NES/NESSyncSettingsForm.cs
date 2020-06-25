@@ -21,6 +21,7 @@ namespace BizHawk.Client.EmuHawk
 			_mainForm = mainForm;
 			_syncSettings = syncSettings;
 			InitializeComponent();
+			HelpBtn.Image = Properties.Resources.Help;
 
 			if (hasMapperProperties)
 			{

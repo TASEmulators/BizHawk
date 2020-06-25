@@ -34,6 +34,7 @@ namespace BizHawk.Client.EmuHawk
 			_firmwareManager = firmwareManager;
 			InitializeComponent();
 			Icon = Properties.Resources.TAStudio_MultiSize;
+			BrowseBtn.Image = Properties.Resources.OpenFile;
 
 			if (!_emulator.HasSavestates())
 			{

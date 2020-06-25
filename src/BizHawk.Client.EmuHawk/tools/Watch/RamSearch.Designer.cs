@@ -29,7 +29,6 @@
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			System.Windows.Forms.ToolStripMenuItem SearchMenuItem;
 			this.TotalSearchLabel = new System.Windows.Forms.Label();
 			this.WatchListView = new InputRoll();
 			this.ListViewContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -151,7 +150,7 @@
 			this.label1 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
 			this.DisplayTypeDropdown = new System.Windows.Forms.ComboBox();
-			SearchMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.SearchMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ListViewContextMenu.SuspendLayout();
 			this.RamSearchMenu.SuspendLayout();
 			this.CompareToBox.SuspendLayout();
@@ -161,11 +160,10 @@
 			// 
 			// SearchMenuItem
 			// 
-			SearchMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.search;
-			SearchMenuItem.Name = "SearchMenuItem";
-			SearchMenuItem.Size = new System.Drawing.Size(221, 22);
-			SearchMenuItem.Text = "&Search";
-			SearchMenuItem.Click += new System.EventHandler(this.SearchMenuItem_Click);
+			this.SearchMenuItem.Name = "SearchMenuItem";
+			this.SearchMenuItem.Size = new System.Drawing.Size(221, 22);
+			this.SearchMenuItem.Text = "&Search";
+			this.SearchMenuItem.Click += new System.EventHandler(this.SearchMenuItem_Click);
 			// 
 			// TotalSearchLabel
 			// 
@@ -223,7 +221,6 @@
 			// 
 			// DoSearchContextMenuItem
 			// 
-			this.DoSearchContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.search;
 			this.DoSearchContextMenuItem.Name = "DoSearchContextMenuItem";
 			this.DoSearchContextMenuItem.Size = new System.Drawing.Size(217, 22);
 			this.DoSearchContextMenuItem.Text = "&Search";
@@ -231,7 +228,6 @@
 			// 
 			// NewSearchContextMenuItem
 			// 
-			this.NewSearchContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.restart;
 			this.NewSearchContextMenuItem.Name = "NewSearchContextMenuItem";
 			this.NewSearchContextMenuItem.Size = new System.Drawing.Size(217, 22);
 			this.NewSearchContextMenuItem.Text = "&Start New Search";
@@ -244,7 +240,6 @@
 			// 
 			// RemoveContextMenuItem
 			// 
-			this.RemoveContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Delete;
 			this.RemoveContextMenuItem.Name = "RemoveContextMenuItem";
 			this.RemoveContextMenuItem.ShortcutKeyDisplayString = "Del";
 			this.RemoveContextMenuItem.Size = new System.Drawing.Size(217, 22);
@@ -253,7 +248,6 @@
 			// 
 			// AddToRamWatchContextMenuItem
 			// 
-			this.AddToRamWatchContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.FindHS;
 			this.AddToRamWatchContextMenuItem.Name = "AddToRamWatchContextMenuItem";
 			this.AddToRamWatchContextMenuItem.ShortcutKeyDisplayString = "Ctrl+W";
 			this.AddToRamWatchContextMenuItem.Size = new System.Drawing.Size(217, 22);
@@ -262,7 +256,6 @@
 			// 
 			// PokeContextMenuItem
 			// 
-			this.PokeContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.poke;
 			this.PokeContextMenuItem.Name = "PokeContextMenuItem";
 			this.PokeContextMenuItem.ShortcutKeyDisplayString = "Ctrl+P";
 			this.PokeContextMenuItem.Size = new System.Drawing.Size(217, 22);
@@ -271,7 +264,6 @@
 			// 
 			// FreezeContextMenuItem
 			// 
-			this.FreezeContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Freeze;
 			this.FreezeContextMenuItem.Name = "FreezeContextMenuItem";
 			this.FreezeContextMenuItem.ShortcutKeyDisplayString = "Ctrl+F";
 			this.FreezeContextMenuItem.Size = new System.Drawing.Size(217, 22);
@@ -280,7 +272,6 @@
 			// 
 			// UnfreezeAllContextMenuItem
 			// 
-			this.UnfreezeAllContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Unfreeze;
 			this.UnfreezeAllContextMenuItem.Name = "UnfreezeAllContextMenuItem";
 			this.UnfreezeAllContextMenuItem.Size = new System.Drawing.Size(217, 22);
 			this.UnfreezeAllContextMenuItem.Text = "Unfreeze &All";
@@ -342,7 +333,6 @@
 			// 
 			// OpenMenuItem
 			// 
-			this.OpenMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.OpenFile;
 			this.OpenMenuItem.Name = "OpenMenuItem";
 			this.OpenMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
 			this.OpenMenuItem.Size = new System.Drawing.Size(195, 22);
@@ -351,7 +341,6 @@
 			// 
 			// SaveMenuItem
 			// 
-			this.SaveMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.SaveAs;
 			this.SaveMenuItem.Name = "SaveMenuItem";
 			this.SaveMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
 			this.SaveMenuItem.Size = new System.Drawing.Size(195, 22);
@@ -376,7 +365,6 @@
 			// 
 			// TruncateFromFileMenuItem
 			// 
-			this.TruncateFromFileMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.TruncateFromFile;
 			this.TruncateFromFileMenuItem.Name = "TruncateFromFileMenuItem";
 			this.TruncateFromFileMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.TruncateFromFileMenuItem.Text = "&Truncate from File...";
@@ -386,7 +374,6 @@
 			// 
 			this.RecentSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripSeparator2});
-			this.RecentSubMenu.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Recent;
 			this.RecentSubMenu.Name = "RecentSubMenu";
 			this.RecentSubMenu.Size = new System.Drawing.Size(195, 22);
 			this.RecentSubMenu.Text = "Recent";
@@ -594,7 +581,6 @@
 			// 
 			// newSearchToolStripMenuItem
 			// 
-			this.newSearchToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.restart;
 			this.newSearchToolStripMenuItem.Name = "newSearchToolStripMenuItem";
 			this.newSearchToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
 			this.newSearchToolStripMenuItem.Text = "&New Search";
@@ -607,7 +593,6 @@
 			// 
 			// UndoMenuItem
 			// 
-			this.UndoMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.undo;
 			this.UndoMenuItem.Name = "UndoMenuItem";
 			this.UndoMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Z)));
 			this.UndoMenuItem.Size = new System.Drawing.Size(221, 22);
@@ -616,7 +601,6 @@
 			// 
 			// RedoMenuItem
 			// 
-			this.RedoMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.redo;
 			this.RedoMenuItem.Name = "RedoMenuItem";
 			this.RedoMenuItem.ShortcutKeyDisplayString = "";
 			this.RedoMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Y)));
@@ -626,7 +610,6 @@
 			// 
 			// CopyValueToPrevMenuItem
 			// 
-			this.CopyValueToPrevMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Previous;
 			this.CopyValueToPrevMenuItem.Name = "CopyValueToPrevMenuItem";
 			this.CopyValueToPrevMenuItem.Size = new System.Drawing.Size(221, 22);
 			this.CopyValueToPrevMenuItem.Text = "Copy Value to Prev";
@@ -641,7 +624,6 @@
 			// 
 			// RemoveMenuItem
 			// 
-			this.RemoveMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Delete;
 			this.RemoveMenuItem.Name = "RemoveMenuItem";
 			this.RemoveMenuItem.ShortcutKeyDisplayString = "Delete";
 			this.RemoveMenuItem.Size = new System.Drawing.Size(221, 22);
@@ -663,7 +645,6 @@
 			// 
 			// AddToRamWatchMenuItem
 			// 
-			this.AddToRamWatchMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.FindHS;
 			this.AddToRamWatchMenuItem.Name = "AddToRamWatchMenuItem";
 			this.AddToRamWatchMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.W)));
 			this.AddToRamWatchMenuItem.Size = new System.Drawing.Size(221, 22);
@@ -672,7 +653,6 @@
 			// 
 			// PokeAddressMenuItem
 			// 
-			this.PokeAddressMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.poke;
 			this.PokeAddressMenuItem.Name = "PokeAddressMenuItem";
 			this.PokeAddressMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
 			this.PokeAddressMenuItem.Size = new System.Drawing.Size(221, 22);
@@ -681,7 +661,6 @@
 			// 
 			// FreezeAddressMenuItem
 			// 
-			this.FreezeAddressMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Freeze;
 			this.FreezeAddressMenuItem.Name = "FreezeAddressMenuItem";
 			this.FreezeAddressMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F)));
 			this.FreezeAddressMenuItem.Size = new System.Drawing.Size(221, 22);
@@ -830,7 +809,6 @@
 			this.AutoSearchCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.AutoSearchCheckBox.Appearance = System.Windows.Forms.Appearance.Button;
 			this.AutoSearchCheckBox.AutoSize = true;
-			this.AutoSearchCheckBox.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.AutoSearch;
 			this.AutoSearchCheckBox.Location = new System.Drawing.Point(316, 410);
 			this.AutoSearchCheckBox.Name = "AutoSearchCheckBox";
 			this.AutoSearchCheckBox.Size = new System.Drawing.Size(38, 22);
@@ -1007,7 +985,6 @@
 			// DoSearchToolButton
 			// 
 			this.DoSearchToolButton.Enabled = false;
-			this.DoSearchToolButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.search;
 			this.DoSearchToolButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.DoSearchToolButton.Name = "DoSearchToolButton";
 			this.DoSearchToolButton.Size = new System.Drawing.Size(65, 22);
@@ -1021,7 +998,6 @@
 			// 
 			// NewSearchToolButton
 			// 
-			this.NewSearchToolButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.restart;
 			this.NewSearchToolButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.NewSearchToolButton.Name = "NewSearchToolButton";
 			this.NewSearchToolButton.Size = new System.Drawing.Size(51, 22);
@@ -1037,7 +1013,6 @@
 			// 
 			this.CopyValueToPrevToolBarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.CopyValueToPrevToolBarItem.Enabled = false;
-			this.CopyValueToPrevToolBarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Previous;
 			this.CopyValueToPrevToolBarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.CopyValueToPrevToolBarItem.Name = "CopyValueToPrevToolBarItem";
 			this.CopyValueToPrevToolBarItem.Size = new System.Drawing.Size(23, 22);
@@ -1047,7 +1022,6 @@
 			// ClearChangeCountsToolBarItem
 			// 
 			this.ClearChangeCountsToolBarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-			this.ClearChangeCountsToolBarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.placeholder_bitmap;
 			this.ClearChangeCountsToolBarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.ClearChangeCountsToolBarItem.Name = "ClearChangeCountsToolBarItem";
 			this.ClearChangeCountsToolBarItem.Size = new System.Drawing.Size(23, 22);
@@ -1064,7 +1038,6 @@
 			// 
 			this.RemoveToolBarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.RemoveToolBarItem.Enabled = false;
-			this.RemoveToolBarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Delete;
 			this.RemoveToolBarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.RemoveToolBarItem.Name = "RemoveToolBarItem";
 			this.RemoveToolBarItem.Size = new System.Drawing.Size(23, 22);
@@ -1076,7 +1049,6 @@
 			// 
 			this.AddToRamWatchToolBarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.AddToRamWatchToolBarItem.Enabled = false;
-			this.AddToRamWatchToolBarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.FindHS;
 			this.AddToRamWatchToolBarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.AddToRamWatchToolBarItem.Name = "AddToRamWatchToolBarItem";
 			this.AddToRamWatchToolBarItem.Size = new System.Drawing.Size(23, 22);
@@ -1087,7 +1059,6 @@
 			// 
 			this.PokeAddressToolBarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.PokeAddressToolBarItem.Enabled = false;
-			this.PokeAddressToolBarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.poke;
 			this.PokeAddressToolBarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.PokeAddressToolBarItem.Name = "PokeAddressToolBarItem";
 			this.PokeAddressToolBarItem.Size = new System.Drawing.Size(23, 22);
@@ -1098,7 +1069,6 @@
 			// 
 			this.FreezeAddressToolBarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.FreezeAddressToolBarItem.Enabled = false;
-			this.FreezeAddressToolBarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Freeze;
 			this.FreezeAddressToolBarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.FreezeAddressToolBarItem.Name = "FreezeAddressToolBarItem";
 			this.FreezeAddressToolBarItem.Size = new System.Drawing.Size(23, 22);
@@ -1114,7 +1084,6 @@
 			// 
 			this.UndoToolBarButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.UndoToolBarButton.Enabled = false;
-			this.UndoToolBarButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.undo;
 			this.UndoToolBarButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.UndoToolBarButton.Name = "UndoToolBarButton";
 			this.UndoToolBarButton.Size = new System.Drawing.Size(23, 22);
@@ -1125,7 +1094,6 @@
 			// 
 			this.RedoToolBarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.RedoToolBarItem.Enabled = false;
-			this.RedoToolBarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.redo;
 			this.RedoToolBarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.RedoToolBarItem.Name = "RedoToolBarItem";
 			this.RedoToolBarItem.Size = new System.Drawing.Size(23, 22);
@@ -1140,7 +1108,6 @@
 			// RebootToolbarButton
 			// 
 			this.RebootToolbarButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.RebootToolbarButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.reboot;
 			this.RebootToolbarButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.RebootToolbarButton.Name = "RebootToolbarButton";
 			this.RebootToolbarButton.Size = new System.Drawing.Size(23, 22);
@@ -1151,7 +1118,6 @@
 			// 
 			this.ErrorIconButton.BackColor = System.Drawing.Color.NavajoWhite;
 			this.ErrorIconButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.ErrorIconButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.ExclamationRed;
 			this.ErrorIconButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.ErrorIconButton.Name = "ErrorIconButton";
 			this.ErrorIconButton.Size = new System.Drawing.Size(23, 22);
@@ -1272,7 +1238,6 @@
 			// SearchButton
 			// 
 			this.SearchButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.SearchButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.search;
 			this.SearchButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			this.SearchButton.Location = new System.Drawing.Point(244, 409);
 			this.SearchButton.Name = "SearchButton";
@@ -1379,7 +1344,8 @@
 		#endregion
 
 		private System.Windows.Forms.Label TotalSearchLabel;
-		InputRoll WatchListView;
+		private System.Windows.Forms.ToolStripMenuItem SearchMenuItem;
+		private InputRoll WatchListView;
 		private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem OpenMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SaveAsMenuItem;

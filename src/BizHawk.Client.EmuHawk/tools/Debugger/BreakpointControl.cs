@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
+using BizHawk.Client.EmuHawk.Properties;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
 
@@ -22,6 +23,11 @@ namespace BizHawk.Client.EmuHawk
 		public BreakpointControl()
 		{
 			InitializeComponent();
+			AddBreakpointButton.Image = Resources.add;
+			ToggleButton.Image = Resources.Refresh;
+			RemoveBreakpointButton.Image = Resources.Delete;
+			DuplicateBreakpointButton.Image = Resources.Duplicate;
+			EditBreakpointButton.BackgroundImage = Resources.pencil;
 			BreakpointView.RetrieveVirtualItem += BreakPointView_QueryItemText;
 			BreakpointView.VirtualMode = true;
 			_breakpoints.Callback = BreakpointCallback;

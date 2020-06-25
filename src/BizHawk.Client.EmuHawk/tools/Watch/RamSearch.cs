@@ -11,6 +11,7 @@ using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Client.Common.RamSearchEngine;
+using BizHawk.Client.EmuHawk.Properties;
 using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
@@ -45,8 +46,44 @@ namespace BizHawk.Client.EmuHawk
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			SetStyle(ControlStyles.UserPaint, true);
 			SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
+
 			InitializeComponent();
-			Icon = Properties.Resources.search_MultiSize;
+			Icon = Resources.search_MultiSize;
+			SearchMenuItem.Image = Resources.search;
+			DoSearchContextMenuItem.Image = Resources.search;
+			NewSearchContextMenuItem.Image = Resources.restart;
+			RemoveContextMenuItem.Image = Resources.Delete;
+			AddToRamWatchContextMenuItem.Image = Resources.FindHS;
+			PokeContextMenuItem.Image = Resources.poke;
+			FreezeContextMenuItem.Image = Resources.Freeze;
+			UnfreezeAllContextMenuItem.Image = Resources.Unfreeze;
+			OpenMenuItem.Image = Resources.OpenFile;
+			SaveMenuItem.Image = Resources.SaveAs;
+			TruncateFromFileMenuItem.Image = Resources.TruncateFromFile;
+			RecentSubMenu.Image = Resources.Recent;
+			newSearchToolStripMenuItem.Image = Resources.restart;
+			UndoMenuItem.Image = Resources.undo;
+			RedoMenuItem.Image = Resources.redo;
+			CopyValueToPrevMenuItem.Image = Resources.Previous;
+			RemoveMenuItem.Image = Resources.Delete;
+			AddToRamWatchMenuItem.Image = Resources.FindHS;
+			PokeAddressMenuItem.Image = Resources.poke;
+			FreezeAddressMenuItem.Image = Resources.Freeze;
+			AutoSearchCheckBox.Image = Resources.AutoSearch;
+			DoSearchToolButton.Image = Resources.search;
+			NewSearchToolButton.Image = Resources.restart;
+			CopyValueToPrevToolBarItem.Image = Resources.Previous;
+			ClearChangeCountsToolBarItem.Image = Resources.placeholder_bitmap;
+			RemoveToolBarItem.Image = Resources.Delete;
+			AddToRamWatchToolBarItem.Image = Resources.FindHS;
+			PokeAddressToolBarItem.Image = Resources.poke;
+			FreezeAddressToolBarItem.Image = Resources.Freeze;
+			UndoToolBarButton.Image = Resources.undo;
+			RedoToolBarItem.Image = Resources.redo;
+			RebootToolbarButton.Image = Resources.reboot;
+			ErrorIconButton.Image = Resources.ExclamationRed;
+			SearchButton.Image = Resources.search;
+
 			WatchListView.QueryItemText += ListView_QueryItemText;
 			WatchListView.QueryItemBkColor += ListView_QueryItemBkColor;
 			Closing += (o, e) => SaveConfigSettings();
@@ -1396,12 +1433,12 @@ namespace BizHawk.Client.EmuHawk
 			if (allCheats)
 			{
 				FreezeContextMenuItem.Text = "&Unfreeze Address";
-				FreezeContextMenuItem.Image = Properties.Resources.Unfreeze;
+				FreezeContextMenuItem.Image = Resources.Unfreeze;
 			}
 			else
 			{
 				FreezeContextMenuItem.Text = "&Freeze Address";
-				FreezeContextMenuItem.Image = Properties.Resources.Freeze;
+				FreezeContextMenuItem.Image = Resources.Freeze;
 			}
 		}
 

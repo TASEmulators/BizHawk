@@ -86,7 +86,6 @@
 			// BrowseMovies
 			// 
 			this.BrowseMovies.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.BrowseMovies.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.OpenFile;
 			this.BrowseMovies.Location = new System.Drawing.Point(12, 364);
 			this.BrowseMovies.Name = "BrowseMovies";
 			this.BrowseMovies.Size = new System.Drawing.Size(31, 23);
@@ -200,7 +199,6 @@
 			// Scan
 			// 
 			this.Scan.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.Scan.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Scan;
 			this.Scan.Location = new System.Drawing.Point(49, 364);
 			this.Scan.Name = "Scan";
 			this.Scan.Size = new System.Drawing.Size(27, 23);
@@ -230,7 +228,6 @@
 			// 
 			// editToolStripMenuItem
 			// 
-			this.editToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.CutHS;
 			this.editToolStripMenuItem.Name = "editToolStripMenuItem";
 			this.editToolStripMenuItem.Size = new System.Drawing.Size(92, 22);
 			this.editToolStripMenuItem.Text = "&Edit";

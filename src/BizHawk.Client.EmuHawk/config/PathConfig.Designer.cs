@@ -97,7 +97,6 @@
 			// SpecialCommandsBtn
 			// 
 			this.SpecialCommandsBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.SpecialCommandsBtn.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Help;
 			this.SpecialCommandsBtn.Location = new System.Drawing.Point(641, 14);
 			this.SpecialCommandsBtn.Name = "SpecialCommandsBtn";
 			this.SpecialCommandsBtn.Size = new System.Drawing.Size(26, 23);

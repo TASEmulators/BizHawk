@@ -136,7 +136,6 @@
 			// 
 			// ToggleScriptContextItem
 			// 
-			this.ToggleScriptContextItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Refresh1;
 			this.ToggleScriptContextItem.Name = "ToggleScriptContextItem";
 			this.ToggleScriptContextItem.Size = new System.Drawing.Size(203, 22);
 			this.ToggleScriptContextItem.Text = "&Toggle";
@@ -144,7 +143,6 @@
 			// 
 			// PauseScriptContextItem
 			// 
-			this.PauseScriptContextItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Pause;
 			this.PauseScriptContextItem.Name = "PauseScriptContextItem";
 			this.PauseScriptContextItem.Size = new System.Drawing.Size(203, 22);
 			this.PauseScriptContextItem.Text = "Pause or Resume";
@@ -152,7 +150,6 @@
 			// 
 			// EditScriptContextItem
 			// 
-			this.EditScriptContextItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.CutHS;
 			this.EditScriptContextItem.Name = "EditScriptContextItem";
 			this.EditScriptContextItem.Size = new System.Drawing.Size(203, 22);
 			this.EditScriptContextItem.Text = "&Edit";
@@ -160,7 +157,6 @@
 			// 
 			// RemoveScriptContextItem
 			// 
-			this.RemoveScriptContextItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Close;
 			this.RemoveScriptContextItem.Name = "RemoveScriptContextItem";
 			this.RemoveScriptContextItem.Size = new System.Drawing.Size(203, 22);
 			this.RemoveScriptContextItem.Text = "&Remove";
@@ -168,7 +164,6 @@
 			// 
 			// InsertSeperatorContextItem
 			// 
-			this.InsertSeperatorContextItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.InsertSeparator;
 			this.InsertSeperatorContextItem.Name = "InsertSeperatorContextItem";
 			this.InsertSeperatorContextItem.Size = new System.Drawing.Size(203, 22);
 			this.InsertSeperatorContextItem.Text = "Insert Seperator";
@@ -181,7 +176,6 @@
 			// 
 			// StopAllScriptsContextItem
 			// 
-			this.StopAllScriptsContextItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Stop;
 			this.StopAllScriptsContextItem.Name = "StopAllScriptsContextItem";
 			this.StopAllScriptsContextItem.Size = new System.Drawing.Size(203, 22);
 			this.StopAllScriptsContextItem.Text = "Stop All Scripts";
@@ -189,7 +183,6 @@
 			// 
 			// ClearRegisteredFunctionsContextItem
 			// 
-			this.ClearRegisteredFunctionsContextItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Delete;
 			this.ClearRegisteredFunctionsContextItem.Name = "ClearRegisteredFunctionsContextItem";
 			this.ClearRegisteredFunctionsContextItem.Size = new System.Drawing.Size(203, 22);
 			this.ClearRegisteredFunctionsContextItem.Text = "Clear Registered Functions";
@@ -228,7 +221,6 @@
 			// 
 			// NewSessionMenuItem
 			// 
-			this.NewSessionMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.NewFile;
 			this.NewSessionMenuItem.Name = "NewSessionMenuItem";
 			this.NewSessionMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.N)));
@@ -238,7 +230,6 @@
 			// 
 			// OpenSessionMenuItem
 			// 
-			this.OpenSessionMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.OpenFile;
 			this.OpenSessionMenuItem.Name = "OpenSessionMenuItem";
 			this.OpenSessionMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.O)));
@@ -248,7 +239,6 @@
 			// 
 			// SaveSessionMenuItem
 			// 
-			this.SaveSessionMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.SaveAs;
 			this.SaveSessionMenuItem.Name = "SaveSessionMenuItem";
 			this.SaveSessionMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
 			this.SaveSessionMenuItem.Size = new System.Drawing.Size(232, 22);
@@ -287,7 +277,6 @@
 			// 
 			this.RecentScriptsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripSeparator3});
-			this.RecentScriptsSubMenu.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Recent;
 			this.RecentScriptsSubMenu.Name = "RecentScriptsSubMenu";
 			this.RecentScriptsSubMenu.Size = new System.Drawing.Size(232, 22);
 			this.RecentScriptsSubMenu.Text = "Recent Scripts";
@@ -337,7 +326,6 @@
 			// 
 			// NewScriptMenuItem
 			// 
-			this.NewScriptMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.NewFile;
 			this.NewScriptMenuItem.Name = "NewScriptMenuItem";
 			this.NewScriptMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
 			this.NewScriptMenuItem.Size = new System.Drawing.Size(212, 22);
@@ -346,7 +334,6 @@
 			// 
 			// OpenScriptMenuItem
 			// 
-			this.OpenScriptMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.OpenFile;
 			this.OpenScriptMenuItem.Name = "OpenScriptMenuItem";
 			this.OpenScriptMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
 			this.OpenScriptMenuItem.Size = new System.Drawing.Size(212, 22);
@@ -355,7 +342,6 @@
 			// 
 			// RefreshScriptMenuItem
 			// 
-			this.RefreshScriptMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Refresh1;
 			this.RefreshScriptMenuItem.Name = "RefreshScriptMenuItem";
 			this.RefreshScriptMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F5;
 			this.RefreshScriptMenuItem.Size = new System.Drawing.Size(212, 22);
@@ -364,7 +350,6 @@
 			// 
 			// ToggleScriptMenuItem
 			// 
-			this.ToggleScriptMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.checkbox;
 			this.ToggleScriptMenuItem.Name = "ToggleScriptMenuItem";
 			this.ToggleScriptMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.T)));
 			this.ToggleScriptMenuItem.Size = new System.Drawing.Size(212, 22);
@@ -373,7 +358,6 @@
 			// 
 			// PauseScriptMenuItem
 			// 
-			this.PauseScriptMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Pause;
 			this.PauseScriptMenuItem.Name = "PauseScriptMenuItem";
 			this.PauseScriptMenuItem.Size = new System.Drawing.Size(212, 22);
 			this.PauseScriptMenuItem.Text = "Pause or Resume";
@@ -381,7 +365,6 @@
 			// 
 			// EditScriptMenuItem
 			// 
-			this.EditScriptMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.CutHS;
 			this.EditScriptMenuItem.Name = "EditScriptMenuItem";
 			this.EditScriptMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.E)));
 			this.EditScriptMenuItem.Size = new System.Drawing.Size(212, 22);
@@ -390,7 +373,6 @@
 			// 
 			// RemoveScriptMenuItem
 			// 
-			this.RemoveScriptMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Delete;
 			this.RemoveScriptMenuItem.Name = "RemoveScriptMenuItem";
 			this.RemoveScriptMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Delete;
 			this.RemoveScriptMenuItem.Size = new System.Drawing.Size(212, 22);
@@ -411,7 +393,6 @@
 			// 
 			// InsertSeparatorMenuItem
 			// 
-			this.InsertSeparatorMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.InsertSeparator;
 			this.InsertSeparatorMenuItem.Name = "InsertSeparatorMenuItem";
 			this.InsertSeparatorMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.I)));
 			this.InsertSeparatorMenuItem.Size = new System.Drawing.Size(212, 22);
@@ -420,7 +401,6 @@
 			// 
 			// MoveUpMenuItem
 			// 
-			this.MoveUpMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.MoveUp;
 			this.MoveUpMenuItem.Name = "MoveUpMenuItem";
 			this.MoveUpMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.U)));
 			this.MoveUpMenuItem.Size = new System.Drawing.Size(212, 22);
@@ -429,7 +409,6 @@
 			// 
 			// MoveDownMenuItem
 			// 
-			this.MoveDownMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.MoveDown;
 			this.MoveDownMenuItem.Name = "MoveDownMenuItem";
 			this.MoveDownMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D)));
 			this.MoveDownMenuItem.Size = new System.Drawing.Size(212, 22);
@@ -451,7 +430,6 @@
 			// 
 			// StopAllScriptsMenuItem
 			// 
-			this.StopAllScriptsMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Stop;
 			this.StopAllScriptsMenuItem.Name = "StopAllScriptsMenuItem";
 			this.StopAllScriptsMenuItem.Size = new System.Drawing.Size(212, 22);
 			this.StopAllScriptsMenuItem.Text = "Stop All Scripts";
@@ -516,7 +494,6 @@
 			// 
 			// RegisterSublimeText2MenuItem
 			// 
-			this.RegisterSublimeText2MenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.GreenCheck;
 			this.RegisterSublimeText2MenuItem.Name = "RegisterSublimeText2MenuItem";
 			this.RegisterSublimeText2MenuItem.Size = new System.Drawing.Size(144, 22);
 			this.RegisterSublimeText2MenuItem.Text = "&Sublime Text 2";
@@ -617,7 +594,6 @@
 			// 
 			// ClearRegisteredFunctionsLogContextItem
 			// 
-			this.ClearRegisteredFunctionsLogContextItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Delete;
 			this.ClearRegisteredFunctionsLogContextItem.Name = "ClearRegisteredFunctionsLogContextItem";
 			this.ClearRegisteredFunctionsLogContextItem.Size = new System.Drawing.Size(203, 22);
 			this.ClearRegisteredFunctionsLogContextItem.Text = "Clear Registered Functions";
@@ -694,7 +670,6 @@
 			// NewScriptToolbarItem
 			// 
 			this.NewScriptToolbarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.NewScriptToolbarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.NewFile;
 			this.NewScriptToolbarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.NewScriptToolbarItem.Name = "NewScriptToolbarItem";
 			this.NewScriptToolbarItem.Size = new System.Drawing.Size(23, 22);
@@ -704,7 +679,6 @@
 			// OpenScriptToolbarItem
 			// 
 			this.OpenScriptToolbarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.OpenScriptToolbarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.OpenFile;
 			this.OpenScriptToolbarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.OpenScriptToolbarItem.Name = "OpenScriptToolbarItem";
 			this.OpenScriptToolbarItem.Size = new System.Drawing.Size(23, 22);
@@ -714,7 +688,6 @@
 			// ToggleScriptToolbarItem
 			// 
 			this.ToggleScriptToolbarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.ToggleScriptToolbarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.checkbox;
 			this.ToggleScriptToolbarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.ToggleScriptToolbarItem.Name = "ToggleScriptToolbarItem";
 			this.ToggleScriptToolbarItem.Size = new System.Drawing.Size(23, 22);
@@ -724,7 +697,6 @@
 			// RefreshScriptToolbarItem
 			// 
 			this.RefreshScriptToolbarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.RefreshScriptToolbarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Refresh1;
 			this.RefreshScriptToolbarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.RefreshScriptToolbarItem.Name = "RefreshScriptToolbarItem";
 			this.RefreshScriptToolbarItem.Size = new System.Drawing.Size(23, 22);
@@ -734,7 +706,6 @@
 			// PauseToolbarItem
 			// 
 			this.PauseToolbarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.PauseToolbarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Pause;
 			this.PauseToolbarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.PauseToolbarItem.Name = "PauseToolbarItem";
 			this.PauseToolbarItem.Size = new System.Drawing.Size(23, 22);
@@ -744,7 +715,6 @@
 			// EditToolbarItem
 			// 
 			this.EditToolbarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.EditToolbarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.CutHS;
 			this.EditToolbarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.EditToolbarItem.Name = "EditToolbarItem";
 			this.EditToolbarItem.Size = new System.Drawing.Size(23, 22);
@@ -754,7 +724,6 @@
 			// RemoveScriptToolbarItem
 			// 
 			this.RemoveScriptToolbarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.RemoveScriptToolbarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Delete;
 			this.RemoveScriptToolbarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.RemoveScriptToolbarItem.Name = "RemoveScriptToolbarItem";
 			this.RemoveScriptToolbarItem.Size = new System.Drawing.Size(23, 22);
@@ -764,7 +733,6 @@
 			// DuplicateToolbarButton
 			// 
 			this.DuplicateToolbarButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.DuplicateToolbarButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Duplicate;
 			this.DuplicateToolbarButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.DuplicateToolbarButton.Name = "DuplicateToolbarButton";
 			this.DuplicateToolbarButton.Size = new System.Drawing.Size(23, 22);
@@ -779,7 +747,6 @@
 			// MoveUpToolbarItem
 			// 
 			this.MoveUpToolbarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.MoveUpToolbarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.MoveUp;
 			this.MoveUpToolbarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.MoveUpToolbarItem.Name = "MoveUpToolbarItem";
 			this.MoveUpToolbarItem.Size = new System.Drawing.Size(23, 22);
@@ -789,7 +756,6 @@
 			// toolStripButtonMoveDown
 			// 
 			this.toolStripButtonMoveDown.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.toolStripButtonMoveDown.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.MoveDown;
 			this.toolStripButtonMoveDown.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.toolStripButtonMoveDown.Name = "toolStripButtonMoveDown";
 			this.toolStripButtonMoveDown.Size = new System.Drawing.Size(23, 22);
@@ -799,7 +765,6 @@
 			// InsertSeparatorToolbarItem
 			// 
 			this.InsertSeparatorToolbarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.InsertSeparatorToolbarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.InsertSeparator;
 			this.InsertSeparatorToolbarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.InsertSeparatorToolbarItem.Name = "InsertSeparatorToolbarItem";
 			this.InsertSeparatorToolbarItem.Size = new System.Drawing.Size(23, 22);
@@ -814,7 +779,6 @@
 			// EraseToolbarItem
 			// 
 			this.EraseToolbarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.EraseToolbarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Erase;
 			this.EraseToolbarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.EraseToolbarItem.Name = "EraseToolbarItem";
 			this.EraseToolbarItem.Size = new System.Drawing.Size(23, 22);

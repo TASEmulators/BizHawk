@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
+using BizHawk.Client.EmuHawk.Properties;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -17,6 +18,17 @@ namespace BizHawk.Client.EmuHawk
 		public MarkerControl()
 		{
 			InitializeComponent();
+			JumpToMarkerToolStripMenuItem.Image = Resources.JumpTo;
+			ScrollToMarkerToolStripMenuItem.Image = Resources.ScrollTo;
+			EditMarkerToolStripMenuItem.Image = Resources.pencil;
+			AddMarkerToolStripMenuItem.Image = Resources.add;
+			RemoveMarkerToolStripMenuItem.Image = Resources.Delete;
+			JumpToMarkerButton.Image = Resources.JumpTo;
+			EditMarkerButton.Image = Resources.pencil;
+			AddMarkerButton.Image = Resources.add;
+			RemoveMarkerButton.Image = Resources.Delete;
+			ScrollToMarkerButton.Image = Resources.ScrollTo;
+			AddMarkerWithTextButton.Image = Resources.AddEdit;
 			SetupColumns();
 			MarkerView.QueryItemBkColor += MarkerView_QueryItemBkColor;
 			MarkerView.QueryItemText += MarkerView_QueryItemText;

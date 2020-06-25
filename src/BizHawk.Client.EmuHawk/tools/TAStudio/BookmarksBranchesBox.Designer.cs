@@ -73,7 +73,6 @@
 			// 
 			this.UndoBranchButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.UndoBranchButton.Enabled = false;
-			this.UndoBranchButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.undo;
 			this.UndoBranchButton.Location = new System.Drawing.Point(156, 247);
 			this.UndoBranchButton.Name = "UndoBranchButton";
 			this.UndoBranchButton.Size = new System.Drawing.Size(24, 24);
@@ -85,7 +84,6 @@
 			// 
 			this.JumpToBranchButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.JumpToBranchButton.Enabled = false;
-			this.JumpToBranchButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.JumpTo;
 			this.JumpToBranchButton.Location = new System.Drawing.Point(126, 247);
 			this.JumpToBranchButton.Name = "JumpToBranchButton";
 			this.JumpToBranchButton.Size = new System.Drawing.Size(24, 24);
@@ -98,7 +96,6 @@
 			// 
 			this.UpdateBranchButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.UpdateBranchButton.Enabled = false;
-			this.UpdateBranchButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.reboot;
 			this.UpdateBranchButton.Location = new System.Drawing.Point(96, 247);
 			this.UpdateBranchButton.Name = "UpdateBranchButton";
 			this.UpdateBranchButton.Size = new System.Drawing.Size(24, 24);
@@ -110,7 +107,6 @@
 			// AddWithTextBranchButton
 			// 
 			this.AddWithTextBranchButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.AddWithTextBranchButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.AddEdit;
 			this.AddWithTextBranchButton.Location = new System.Drawing.Point(36, 247);
 			this.AddWithTextBranchButton.Name = "AddWithTextBranchButton";
 			this.AddWithTextBranchButton.Size = new System.Drawing.Size(24, 24);
@@ -122,7 +118,6 @@
 			// AddBranchButton
 			// 
 			this.AddBranchButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.AddBranchButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.add;
 			this.AddBranchButton.Location = new System.Drawing.Point(6, 247);
 			this.AddBranchButton.Name = "AddBranchButton";
 			this.AddBranchButton.Size = new System.Drawing.Size(24, 24);
@@ -135,7 +130,6 @@
 			// 
 			this.LoadBranchButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.LoadBranchButton.Enabled = false;
-			this.LoadBranchButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Debugger;
 			this.LoadBranchButton.Location = new System.Drawing.Point(66, 247);
 			this.LoadBranchButton.Name = "LoadBranchButton";
 			this.LoadBranchButton.Size = new System.Drawing.Size(24, 24);
@@ -196,7 +190,6 @@
 			// 
 			// AddBranchContextMenu
 			// 
-			this.AddBranchContextMenu.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.add;
 			this.AddBranchContextMenu.Name = "AddBranchContextMenu";
 			this.AddBranchContextMenu.Size = new System.Drawing.Size(146, 22);
 			this.AddBranchContextMenu.Text = "Add";
@@ -204,7 +197,6 @@
 			// 
 			// AddBranchWithTextContextMenuItem
 			// 
-			this.AddBranchWithTextContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.AddEdit;
 			this.AddBranchWithTextContextMenuItem.Name = "AddBranchWithTextContextMenuItem";
 			this.AddBranchWithTextContextMenuItem.Size = new System.Drawing.Size(146, 22);
 			this.AddBranchWithTextContextMenuItem.Text = "Add with Text";
@@ -212,7 +204,6 @@
 			// 
 			// LoadBranchContextMenuItem
 			// 
-			this.LoadBranchContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Debugger;
 			this.LoadBranchContextMenuItem.Name = "LoadBranchContextMenuItem";
 			this.LoadBranchContextMenuItem.Size = new System.Drawing.Size(146, 22);
 			this.LoadBranchContextMenuItem.Text = "Load";
@@ -220,7 +211,6 @@
 			// 
 			// UpdateBranchContextMenuItem
 			// 
-			this.UpdateBranchContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.reboot;
 			this.UpdateBranchContextMenuItem.Name = "UpdateBranchContextMenuItem";
 			this.UpdateBranchContextMenuItem.Size = new System.Drawing.Size(146, 22);
 			this.UpdateBranchContextMenuItem.Text = "&Update";
@@ -228,7 +218,6 @@
 			// 
 			// EditBranchTextContextMenuItem
 			// 
-			this.EditBranchTextContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.pencil;
 			this.EditBranchTextContextMenuItem.Name = "EditBranchTextContextMenuItem";
 			this.EditBranchTextContextMenuItem.Size = new System.Drawing.Size(146, 22);
 			this.EditBranchTextContextMenuItem.Text = "Edit Text";
@@ -236,7 +225,6 @@
 			// 
 			// JumpToBranchContextMenuItem
 			// 
-			this.JumpToBranchContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.JumpTo;
 			this.JumpToBranchContextMenuItem.Name = "JumpToBranchContextMenuItem";
 			this.JumpToBranchContextMenuItem.Size = new System.Drawing.Size(146, 22);
 			this.JumpToBranchContextMenuItem.Text = "Jump To";
@@ -245,7 +233,6 @@
 			// UndoBranchToolStripMenuItem
 			// 
 			this.UndoBranchToolStripMenuItem.Enabled = false;
-			this.UndoBranchToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.undo;
 			this.UndoBranchToolStripMenuItem.Name = "UndoBranchToolStripMenuItem";
 			this.UndoBranchToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
 			this.UndoBranchToolStripMenuItem.Text = "Undo";
@@ -258,7 +245,6 @@
 			// 
 			// RemoveBranchContextMenuItem
 			// 
-			this.RemoveBranchContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Delete;
 			this.RemoveBranchContextMenuItem.Name = "RemoveBranchContextMenuItem";
 			this.RemoveBranchContextMenuItem.Size = new System.Drawing.Size(146, 22);
 			this.RemoveBranchContextMenuItem.Text = "Remove";

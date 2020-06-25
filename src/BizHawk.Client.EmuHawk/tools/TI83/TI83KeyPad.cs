@@ -1,6 +1,6 @@
 ﻿using System;
-
 using BizHawk.Client.Common;
+using BizHawk.Client.EmuHawk.Properties;
 using BizHawk.Emulation.Cores.Calculators;
 using BizHawk.Emulation.Common;
 
@@ -15,7 +15,11 @@ namespace BizHawk.Client.EmuHawk
 		public TI83KeyPad()
 		{
 			InitializeComponent();
-			Icon = Properties.Resources.calculator_MultiSize;
+			Icon = Resources.calculator_MultiSize;
+			LeftButton.Image = Resources.whiteTriLeft;
+			RightButton.Image = Resources.whiteTriRight;
+			DownButton.Image = Resources.whiteTriDown;
+			UpButton.Image = Resources.whiteTriUp;
 		}
 
 		[ConfigPersist]

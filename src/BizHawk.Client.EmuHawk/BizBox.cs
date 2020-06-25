@@ -1,9 +1,10 @@
-﻿using BizHawk.Emulation.Common;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
+using BizHawk.Client.EmuHawk.Properties;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -12,7 +13,9 @@ namespace BizHawk.Client.EmuHawk
 		public BizBox()
 		{
 			InitializeComponent();
-			Icon = Properties.Resources.logo;
+			Icon = Resources.logo;
+			pictureBox1.Image = Resources.corphawk;
+			btnCopyHash.Image = Resources.Duplicate;
 		}
 
 		private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

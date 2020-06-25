@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
+using BizHawk.Client.EmuHawk.Properties;
 using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
@@ -73,7 +74,43 @@ namespace BizHawk.Client.EmuHawk
 			_lastColumnSorted = "";
 
 			InitializeComponent();
-			Icon = Properties.Resources.textdoc_MultiSize;
+			ToggleScriptContextItem.Image = Resources.Refresh1;
+			PauseScriptContextItem.Image = Resources.Pause;
+			EditScriptContextItem.Image = Resources.CutHS;
+			RemoveScriptContextItem.Image = Resources.Close;
+			InsertSeperatorContextItem.Image = Resources.InsertSeparator;
+			StopAllScriptsContextItem.Image = Resources.Stop;
+			ClearRegisteredFunctionsContextItem.Image = Resources.Delete;
+			NewSessionMenuItem.Image = Resources.NewFile;
+			OpenSessionMenuItem.Image = Resources.OpenFile;
+			SaveSessionMenuItem.Image = Resources.SaveAs;
+			NewScriptMenuItem.Image = Resources.NewFile;
+			OpenScriptMenuItem.Image = Resources.OpenFile;
+			RefreshScriptMenuItem.Image = Resources.Refresh1;
+			ToggleScriptMenuItem.Image = Resources.checkbox;
+			PauseScriptMenuItem.Image = Resources.Pause;
+			EditScriptMenuItem.Image = Resources.CutHS;
+			RemoveScriptMenuItem.Image = Resources.Delete;
+			InsertSeparatorMenuItem.Image = Resources.InsertSeparator;
+			MoveUpMenuItem.Image = Resources.MoveUp;
+			MoveDownMenuItem.Image = Resources.MoveDown;
+			StopAllScriptsMenuItem.Image = Resources.Stop;
+			RegisterSublimeText2MenuItem.Image = Resources.GreenCheck;
+			ClearRegisteredFunctionsLogContextItem.Image = Resources.Delete;
+			NewScriptToolbarItem.Image = Resources.NewFile;
+			OpenScriptToolbarItem.Image = Resources.OpenFile;
+			ToggleScriptToolbarItem.Image = Resources.checkbox;
+			RefreshScriptToolbarItem.Image = Resources.Refresh1;
+			PauseToolbarItem.Image = Resources.Pause;
+			EditToolbarItem.Image = Resources.CutHS;
+			RemoveScriptToolbarItem.Image = Resources.Delete;
+			DuplicateToolbarButton.Image = Resources.Duplicate;
+			MoveUpToolbarItem.Image = Resources.MoveUp;
+			toolStripButtonMoveDown.Image = Resources.MoveDown;
+			InsertSeparatorToolbarItem.Image = Resources.InsertSeparator;
+			EraseToolbarItem.Image = Resources.Erase;
+			RecentScriptsSubMenu.Image = Resources.Recent;
+			Icon = Resources.textdoc_MultiSize;
 
 			Closing += (o, e) =>
 			{

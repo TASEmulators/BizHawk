@@ -10,6 +10,7 @@ using BizHawk.Client.EmuHawk.ToolExtensions;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
+using BizHawk.Client.EmuHawk.Properties;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -81,7 +82,17 @@ namespace BizHawk.Client.EmuHawk
 		public BasicBot()
 		{
 			InitializeComponent();
-			Icon = Properties.Resources.basicbot;
+			Icon = Resources.basicbot;
+			NewMenuItem.Image = Resources.NewFile;
+			OpenMenuItem.Image = Resources.OpenFile;
+			SaveMenuItem.Image = Resources.SaveAs;
+			RecentSubMenu.Image = Resources.Recent;
+			RunBtn.Image = Resources.Play;
+			BotStatusButton.Image = Resources.placeholder_bitmap;
+			btnCopyBestInput.Image = Resources.Duplicate;
+			PlayBestButton.Image = Resources.Play;
+			ClearBestButton.Image = Resources.Close;
+			StopBtn.Image = Resources.Stop;
 			Text = DialogTitle;
 			Settings = new BasicBotSettings();
 

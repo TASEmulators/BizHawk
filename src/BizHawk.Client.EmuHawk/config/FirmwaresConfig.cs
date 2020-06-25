@@ -9,6 +9,7 @@ using System.Windows.Forms;
 
 using BizHawk.Common;
 using BizHawk.Client.Common;
+using BizHawk.Client.EmuHawk.Properties;
 using BizHawk.Emulation.Common;
 
 // notes: eventually, we intend to have a "firmware acquisition interface" exposed to the emulator cores.
@@ -99,8 +100,16 @@ namespace BizHawk.Client.EmuHawk
 			_config = config;
 			InitializeComponent();
 
+			tbbGroup.Image
+				= tbbScan.Image 
+				= tbbOrganize.Image
+				= tbbImport.Image
+				= tbbClose.Image
+				= tbbCloseReload.Image
+				= tbbOpenFolder.Image = Resources.placeholder_bitmap;
+
 			// prep ImageList for ListView with 3 item states for {idUnsure, idMissing, idOk}
-			imageList1.Images.AddRange(new[] { Properties.Resources.RetroQuestion, Properties.Resources.ExclamationRed, Properties.Resources.GreenCheck });
+			imageList1.Images.AddRange(new[] { Resources.RetroQuestion, Resources.ExclamationRed, Resources.GreenCheck });
 
 			_listViewSorter = new ListViewSorter(-1);
 

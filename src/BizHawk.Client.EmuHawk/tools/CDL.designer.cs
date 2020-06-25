@@ -92,7 +92,6 @@
 			// 
 			// NewMenuItem
 			// 
-			this.NewMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.NewFile;
 			this.NewMenuItem.Name = "NewMenuItem";
 			this.NewMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
 			this.NewMenuItem.Size = new System.Drawing.Size(193, 22);
@@ -101,7 +100,6 @@
 			// 
 			// OpenMenuItem
 			// 
-			this.OpenMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.OpenFile;
 			this.OpenMenuItem.Name = "OpenMenuItem";
 			this.OpenMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
 			this.OpenMenuItem.Size = new System.Drawing.Size(193, 22);
@@ -110,7 +108,6 @@
 			// 
 			// SaveMenuItem
 			// 
-			this.SaveMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.SaveAs;
 			this.SaveMenuItem.Name = "SaveMenuItem";
 			this.SaveMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
 			this.SaveMenuItem.Size = new System.Drawing.Size(193, 22);
@@ -137,7 +134,6 @@
 			// 
 			this.RecentSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.noneToolStripMenuItem});
-			this.RecentSubMenu.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Recent;
 			this.RecentSubMenu.Name = "RecentSubMenu";
 			this.RecentSubMenu.Size = new System.Drawing.Size(193, 22);
 			this.RecentSubMenu.Text = "Recent";
@@ -215,7 +211,6 @@
 			// 
 			this.tsbLoggingActive.CheckOnClick = true;
 			this.tsbLoggingActive.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-			this.tsbLoggingActive.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.placeholder_bitmap;
 			this.tsbLoggingActive.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.tsbLoggingActive.Name = "tsbLoggingActive";
 			this.tsbLoggingActive.Size = new System.Drawing.Size(41, 22);
@@ -233,7 +228,6 @@
 			this.tsbViewUpdate.CheckOnClick = true;
 			this.tsbViewUpdate.CheckState = System.Windows.Forms.CheckState.Checked;
 			this.tsbViewUpdate.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-			this.tsbViewUpdate.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.placeholder_bitmap;
 			this.tsbViewUpdate.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.tsbViewUpdate.Name = "tsbViewUpdate";
 			this.tsbViewUpdate.Size = new System.Drawing.Size(46, 22);
@@ -257,7 +251,6 @@
 			// 
 			// tsbExportText
 			// 
-			this.tsbExportText.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.LoadConfig;
 			this.tsbExportText.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.tsbExportText.Name = "tsbExportText";
 			this.tsbExportText.Size = new System.Drawing.Size(87, 22);

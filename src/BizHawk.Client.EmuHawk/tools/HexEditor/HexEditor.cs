@@ -14,6 +14,7 @@ using BizHawk.Common.StringExtensions;
 using BizHawk.Common.IOExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
+using BizHawk.Client.EmuHawk.Properties;
 using BizHawk.Client.EmuHawk.ToolExtensions;
 
 namespace BizHawk.Client.EmuHawk
@@ -121,7 +122,21 @@ namespace BizHawk.Client.EmuHawk
 			_fontHeight = fontSize1.Height;
 
 			InitializeComponent();
-			Icon = Properties.Resources.poke_MultiSize;
+			Icon = Resources.poke_MultiSize;
+			SaveMenuItem.Image = Resources.SaveAs;
+			CopyMenuItem.Image = Resources.Duplicate;
+			PasteMenuItem.Image = Resources.Paste;
+			AddToRamWatchMenuItem.Image = Resources.FindHS;
+			FreezeAddressMenuItem.Image = Resources.Freeze;
+			UnfreezeAllMenuItem.Image = Resources.Unfreeze;
+			PokeAddressMenuItem.Image = Resources.poke;
+			CopyContextItem.Image = Resources.Duplicate;
+			PasteContextItem.Image = Resources.Paste;
+			FreezeContextItem.Image = Resources.Freeze;
+			AddToRamWatchContextItem.Image = Resources.FindHS;
+			UnfreezeAllContextItem.Image = Resources.Unfreeze;
+			PokeContextItem.Image = Resources.poke;
+
 			AddressesLabel.BackColor = Color.Transparent;
 			SetHeader();
 			Closing += (o, e) => CloseHexFind();
@@ -1513,12 +1528,12 @@ namespace BizHawk.Client.EmuHawk
 
 			if (_highlightedAddress.HasValue && IsFrozen(_highlightedAddress.Value))
 			{
-				FreezeAddressMenuItem.Image = Properties.Resources.Unfreeze;
+				FreezeAddressMenuItem.Image = Resources.Unfreeze;
 				FreezeAddressMenuItem.Text = "Un&freeze Address";
 			}
 			else
 			{
-				FreezeAddressMenuItem.Image = Properties.Resources.Freeze;
+				FreezeAddressMenuItem.Image = Resources.Freeze;
 				FreezeAddressMenuItem.Text = "&Freeze Address";
 			}
 
@@ -1980,12 +1995,12 @@ namespace BizHawk.Client.EmuHawk
 			if (_highlightedAddress.HasValue && IsFrozen(_highlightedAddress.Value))
 			{
 				FreezeContextItem.Text = "Un&freeze";
-				FreezeContextItem.Image = Properties.Resources.Unfreeze;
+				FreezeContextItem.Image = Resources.Unfreeze;
 			}
 			else
 			{
 				FreezeContextItem.Text = "&Freeze";
-				FreezeContextItem.Image = Properties.Resources.Freeze;
+				FreezeContextItem.Image = Resources.Freeze;
 			}
 
 

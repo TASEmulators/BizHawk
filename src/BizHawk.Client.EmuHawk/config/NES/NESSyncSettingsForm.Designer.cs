@@ -91,7 +91,6 @@
 			// HelpBtn
 			// 
 			this.HelpBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.HelpBtn.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Help;
 			this.HelpBtn.Location = new System.Drawing.Point(12, 177);
 			this.HelpBtn.Name = "HelpBtn";
 			this.HelpBtn.Size = new System.Drawing.Size(23, 23);

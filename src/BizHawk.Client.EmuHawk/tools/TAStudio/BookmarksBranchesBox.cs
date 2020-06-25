@@ -4,8 +4,8 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-
 using BizHawk.Client.Common;
+using BizHawk.Client.EmuHawk.Properties;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -46,6 +46,20 @@ namespace BizHawk.Client.EmuHawk
 		public BookmarksBranchesBox()
 		{
 			InitializeComponent();
+			UndoBranchButton.Image = Resources.undo;
+			JumpToBranchButton.Image = Resources.JumpTo;
+			UpdateBranchButton.Image = Resources.reboot;
+			AddWithTextBranchButton.Image = Resources.AddEdit;
+			AddBranchButton.Image = Resources.add;
+			LoadBranchButton.Image = Resources.Debugger;
+			AddBranchContextMenu.Image = Resources.add;
+			AddBranchWithTextContextMenuItem.Image = Resources.AddEdit;
+			LoadBranchContextMenuItem.Image = Resources.Debugger;
+			UpdateBranchContextMenuItem.Image = Resources.reboot;
+			EditBranchTextContextMenuItem.Image = Resources.pencil;
+			JumpToBranchContextMenuItem.Image = Resources.JumpTo;
+			UndoBranchToolStripMenuItem.Image = Resources.undo;
+			RemoveBranchContextMenuItem.Image = Resources.Delete;
 			SetupColumns();
 			BranchView.QueryItemText += QueryItemText;
 			BranchView.QueryItemBkColor += QueryItemBkColor;

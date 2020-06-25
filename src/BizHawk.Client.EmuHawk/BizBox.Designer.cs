@@ -57,7 +57,6 @@
 			// 
 			// pictureBox1
 			// 
-			this.pictureBox1.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.corphawk;
 			this.pictureBox1.Location = new System.Drawing.Point(12, 10);
 			this.pictureBox1.Name = "pictureBox1";
 			this.pictureBox1.Size = new System.Drawing.Size(164, 164);
@@ -123,7 +122,6 @@
 			this.btnCopyHash.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.btnCopyHash.AutoSize = true;
 			this.btnCopyHash.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-			this.btnCopyHash.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Duplicate;
 			this.btnCopyHash.Location = new System.Drawing.Point(12, 505);
 			this.btnCopyHash.Name = "btnCopyHash";
 			this.btnCopyHash.Size = new System.Drawing.Size(22, 22);

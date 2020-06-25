@@ -68,7 +68,6 @@
 			// BrowseBtn
 			// 
 			this.BrowseBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.BrowseBtn.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.OpenFile;
 			this.BrowseBtn.Location = new System.Drawing.Point(423, 13);
 			this.BrowseBtn.Name = "BrowseBtn";
 			this.BrowseBtn.Size = new System.Drawing.Size(25, 23);

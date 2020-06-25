@@ -130,7 +130,6 @@
 			// 
 			// SaveMenuItem
 			// 
-			this.SaveMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.SaveAs;
 			this.SaveMenuItem.Name = "SaveMenuItem";
 			this.SaveMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
 			this.SaveMenuItem.Size = new System.Drawing.Size(229, 22);
@@ -225,7 +224,6 @@
 			// 
 			// CopyMenuItem
 			// 
-			this.CopyMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Duplicate;
 			this.CopyMenuItem.Name = "CopyMenuItem";
 			this.CopyMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
 			this.CopyMenuItem.Size = new System.Drawing.Size(147, 22);
@@ -242,7 +240,6 @@
 			// 
 			// PasteMenuItem
 			// 
-			this.PasteMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Paste;
 			this.PasteMenuItem.Name = "PasteMenuItem";
 			this.PasteMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V)));
 			this.PasteMenuItem.Size = new System.Drawing.Size(147, 22);
@@ -362,7 +359,6 @@
 			// 
 			// AddToRamWatchMenuItem
 			// 
-			this.AddToRamWatchMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.FindHS;
 			this.AddToRamWatchMenuItem.Name = "AddToRamWatchMenuItem";
 			this.AddToRamWatchMenuItem.ShortcutKeyDisplayString = "Ctrl+W";
 			this.AddToRamWatchMenuItem.Size = new System.Drawing.Size(221, 22);
@@ -371,7 +367,6 @@
 			// 
 			// FreezeAddressMenuItem
 			// 
-			this.FreezeAddressMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Freeze;
 			this.FreezeAddressMenuItem.Name = "FreezeAddressMenuItem";
 			this.FreezeAddressMenuItem.ShortcutKeyDisplayString = "Space";
 			this.FreezeAddressMenuItem.Size = new System.Drawing.Size(221, 22);
@@ -380,7 +375,6 @@
 			// 
 			// UnfreezeAllMenuItem
 			// 
-			this.UnfreezeAllMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Unfreeze;
 			this.UnfreezeAllMenuItem.Name = "UnfreezeAllMenuItem";
 			this.UnfreezeAllMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.Delete)));
 			this.UnfreezeAllMenuItem.Size = new System.Drawing.Size(221, 22);
@@ -389,7 +383,6 @@
 			// 
 			// PokeAddressMenuItem
 			// 
-			this.PokeAddressMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.poke;
 			this.PokeAddressMenuItem.Name = "PokeAddressMenuItem";
 			this.PokeAddressMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
 			this.PokeAddressMenuItem.Size = new System.Drawing.Size(221, 22);
@@ -467,7 +460,6 @@
 			// 
 			// CopyContextItem
 			// 
-			this.CopyContextItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Duplicate;
 			this.CopyContextItem.Name = "CopyContextItem";
 			this.CopyContextItem.ShortcutKeyDisplayString = "Ctrl+C";
 			this.CopyContextItem.Size = new System.Drawing.Size(221, 22);
@@ -483,7 +475,6 @@
 			// 
 			// PasteContextItem
 			// 
-			this.PasteContextItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Paste;
 			this.PasteContextItem.Name = "PasteContextItem";
 			this.PasteContextItem.ShortcutKeyDisplayString = "Ctrl+V";
 			this.PasteContextItem.Size = new System.Drawing.Size(221, 22);
@@ -492,7 +483,6 @@
 			// 
 			// FreezeContextItem
 			// 
-			this.FreezeContextItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Freeze;
 			this.FreezeContextItem.Name = "FreezeContextItem";
 			this.FreezeContextItem.ShortcutKeyDisplayString = "Space";
 			this.FreezeContextItem.Size = new System.Drawing.Size(221, 22);
@@ -501,7 +491,6 @@
 			// 
 			// AddToRamWatchContextItem
 			// 
-			this.AddToRamWatchContextItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.FindHS;
 			this.AddToRamWatchContextItem.Name = "AddToRamWatchContextItem";
 			this.AddToRamWatchContextItem.ShortcutKeyDisplayString = "Ctrl+W";
 			this.AddToRamWatchContextItem.Size = new System.Drawing.Size(221, 22);
@@ -510,7 +499,6 @@
 			// 
 			// UnfreezeAllContextItem
 			// 
-			this.UnfreezeAllContextItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Unfreeze;
 			this.UnfreezeAllContextItem.Name = "UnfreezeAllContextItem";
 			this.UnfreezeAllContextItem.ShortcutKeyDisplayString = "Shift+Del";
 			this.UnfreezeAllContextItem.Size = new System.Drawing.Size(221, 22);
@@ -519,7 +507,6 @@
 			// 
 			// PokeContextItem
 			// 
-			this.PokeContextItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.poke;
 			this.PokeContextItem.Name = "PokeContextItem";
 			this.PokeContextItem.ShortcutKeyDisplayString = "Ctrl+P";
 			this.PokeContextItem.Size = new System.Drawing.Size(221, 22);

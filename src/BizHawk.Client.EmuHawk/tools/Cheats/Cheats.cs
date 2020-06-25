@@ -8,6 +8,7 @@ using System.Windows.Forms;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
+using BizHawk.Client.EmuHawk.Properties;
 using BizHawk.Client.EmuHawk.ToolExtensions;
 
 namespace BizHawk.Client.EmuHawk
@@ -33,7 +34,28 @@ namespace BizHawk.Client.EmuHawk
 		public Cheats()
 		{
 			InitializeComponent();
-			Icon = Properties.Resources.Freeze_MultiSize;
+			Icon = Resources.Freeze_MultiSize;
+			ToggleContextMenuItem.Image = Resources.Refresh1;
+			RemoveContextMenuItem.Image = Resources.Delete;
+			DisableAllContextMenuItem.Image = Resources.Stop;
+			NewMenuItem.Image = Resources.NewFile;
+			OpenMenuItem.Image = Resources.OpenFile;
+			SaveMenuItem.Image = Resources.SaveAs;
+			RecentSubMenu.Image = Resources.Recent;
+			RemoveCheatMenuItem.Image = Resources.Delete;
+			InsertSeparatorMenuItem.Image = Resources.InsertSeparator;
+			MoveUpMenuItem.Image = Resources.MoveUp;
+			MoveDownMenuItem.Image = Resources.MoveDown;
+			ToggleMenuItem.Image = Resources.Refresh1;
+			DisableAllCheatsMenuItem.Image = Resources.Stop;
+			NewToolBarItem.Image = Resources.NewFile;
+			OpenToolBarItem.Image = Resources.OpenFile;
+			SaveToolBarItem.Image = Resources.SaveAs;
+			RemoveToolbarItem.Image = Resources.Delete;
+			SeparatorToolbarItem.Image = Resources.InsertSeparator;
+			MoveUpToolbarItem.Image = Resources.MoveUp;
+			MoveDownToolbarItem.Image = Resources.MoveDown;
+			LoadGameGenieToolbarItem.Image = Resources.placeholder_bitmap;
 			Settings = new CheatsSettings();
 
 			Closing += (o, e) =>

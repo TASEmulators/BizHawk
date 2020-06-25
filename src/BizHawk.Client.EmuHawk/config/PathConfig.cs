@@ -48,6 +48,7 @@ namespace BizHawk.Client.EmuHawk
 			_config = config;
 			_currentSystemId = currentSystemId;
 			InitializeComponent();
+			SpecialCommandsBtn.Image = Properties.Resources.Help;
 		}
 
 		private void LoadSettings()

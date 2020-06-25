@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using BizHawk.Emulation.Common;
 
 using BizHawk.Client.Common;
+using BizHawk.Client.EmuHawk.Properties;
 using BizHawk.Client.EmuHawk.ToolExtensions;
 
 namespace BizHawk.Client.EmuHawk
@@ -35,7 +36,49 @@ namespace BizHawk.Client.EmuHawk
 		public RamWatch()
 		{
 			InitializeComponent();
-			Icon = Properties.Resources.watch_MultiSize;
+			newToolStripMenuItem.Image = Resources.addWatch;
+			EditContextMenuItem.Image = Resources.CutHS;
+			RemoveContextMenuItem.Image = Resources.Delete;
+			DuplicateContextMenuItem.Image = Resources.Duplicate;
+			PokeContextMenuItem.Image = Resources.poke;
+			FreezeContextMenuItem.Image = Resources.Freeze;
+			UnfreezeAllContextMenuItem.Image = Resources.Unfreeze;
+			InsertSeperatorContextMenuItem.Image = Resources.InsertSeparator;
+			MoveUpContextMenuItem.Image = Resources.MoveUp;
+			MoveDownContextMenuItem.Image = Resources.MoveDown;
+			MoveTopContextMenuItem.Image = Resources.MoveTop;
+			MoveBottomContextMenuItem.Image = Resources.MoveBottom;
+			ErrorIconButton.Image = Resources.ExclamationRed;
+			newToolStripButton.Image = Resources.NewFile;
+			openToolStripButton.Image = Resources.OpenFile;
+			saveToolStripButton.Image = Resources.SaveAs;
+			newWatchToolStripButton.Image = Resources.addWatch;
+			editWatchToolStripButton.Image = Resources.CutHS;
+			cutToolStripButton.Image = Resources.Delete;
+			clearChangeCountsToolStripButton.Image = Resources.placeholder_bitmap;
+			duplicateWatchToolStripButton.Image = Resources.Duplicate;
+			PokeAddressToolBarItem.Image = Resources.poke;
+			FreezeAddressToolBarItem.Image = Resources.Freeze;
+			seperatorToolStripButton.Image = Resources.InsertSeparator;
+			moveUpToolStripButton.Image = Resources.MoveUp;
+			moveDownToolStripButton.Image = Resources.MoveDown;
+			NewListMenuItem.Image = Resources.NewFile;
+			OpenMenuItem.Image = Resources.OpenFile;
+			SaveMenuItem.Image = Resources.SaveAs;
+			RecentSubMenu.Image = Resources.Recent;
+			NewWatchMenuItem.Image = Resources.FindHS;
+			EditWatchMenuItem.Image = Resources.CutHS;
+			RemoveWatchMenuItem.Image = Resources.Delete;
+			DuplicateWatchMenuItem.Image = Resources.Duplicate;
+			PokeAddressMenuItem.Image = Resources.poke;
+			FreezeAddressMenuItem.Image = Resources.Freeze;
+			InsertSeparatorMenuItem.Image = Resources.InsertSeparator;
+			MoveUpMenuItem.Image = Resources.MoveUp;
+			MoveDownMenuItem.Image = Resources.MoveDown;
+			MoveTopMenuItem.Image = Resources.MoveTop;
+			MoveBottomMenuItem.Image = Resources.MoveBottom;
+			Icon = Resources.watch_MultiSize;
+
 			Settings = new RamWatchSettings();
 
 			WatchListView.QueryItemText += WatchListView_QueryItemText;
@@ -1078,12 +1121,12 @@ namespace BizHawk.Client.EmuHawk
 			if (allCheats)
 			{
 				FreezeContextMenuItem.Text = "&Unfreeze Address";
-				FreezeContextMenuItem.Image = Properties.Resources.Unfreeze;
+				FreezeContextMenuItem.Image = Resources.Unfreeze;
 			}
 			else
 			{
 				FreezeContextMenuItem.Text = "&Freeze Address";
-				FreezeContextMenuItem.Image = Properties.Resources.Freeze;
+				FreezeContextMenuItem.Image = Resources.Freeze;
 			}
 
 			UnfreezeAllContextMenuItem.Visible = MainForm.CheatList.ActiveCount > 0;

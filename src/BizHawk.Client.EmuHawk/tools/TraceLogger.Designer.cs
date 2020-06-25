@@ -148,7 +148,6 @@
 			// 
 			// SaveLogMenuItem
 			// 
-			this.SaveLogMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.SaveAs;
 			this.SaveLogMenuItem.Name = "SaveLogMenuItem";
 			this.SaveLogMenuItem.Size = new System.Drawing.Size(143, 22);
 			this.SaveLogMenuItem.Text = "&Save Log";

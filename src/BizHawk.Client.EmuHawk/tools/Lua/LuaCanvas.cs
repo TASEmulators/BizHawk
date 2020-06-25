@@ -16,6 +16,7 @@ namespace BizHawk.Client.EmuHawk
 		public LuaCanvas(int width, int height, int? x = null, int? y = null)
 		{
 			InitializeComponent();
+			luaPictureBox.Image = Properties.Resources.luaPictureBox;
 			luaPictureBox.Width = width;
 			luaPictureBox.Height = height;
 			luaPictureBox.Image = new Bitmap(width, height);

@@ -64,7 +64,6 @@
 			// 
 			// JumpToMarkerToolStripMenuItem
 			// 
-			this.JumpToMarkerToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.JumpTo;
 			this.JumpToMarkerToolStripMenuItem.Name = "JumpToMarkerToolStripMenuItem";
 			this.JumpToMarkerToolStripMenuItem.Size = new System.Drawing.Size(118, 22);
 			this.JumpToMarkerToolStripMenuItem.Text = "Jump To";
@@ -72,7 +71,6 @@
 			// 
 			// ScrollToMarkerToolStripMenuItem
 			// 
-			this.ScrollToMarkerToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.ScrollTo;
 			this.ScrollToMarkerToolStripMenuItem.Name = "ScrollToMarkerToolStripMenuItem";
 			this.ScrollToMarkerToolStripMenuItem.Size = new System.Drawing.Size(118, 22);
 			this.ScrollToMarkerToolStripMenuItem.Text = "Scroll To";
@@ -80,7 +78,6 @@
 			// 
 			// EditMarkerToolStripMenuItem
 			// 
-			this.EditMarkerToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.pencil;
 			this.EditMarkerToolStripMenuItem.Name = "EditMarkerToolStripMenuItem";
 			this.EditMarkerToolStripMenuItem.Size = new System.Drawing.Size(118, 22);
 			this.EditMarkerToolStripMenuItem.Text = "Edit";
@@ -88,7 +85,6 @@
 			// 
 			// AddMarkerToolStripMenuItem
 			// 
-			this.AddMarkerToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.add;
 			this.AddMarkerToolStripMenuItem.Name = "AddMarkerToolStripMenuItem";
 			this.AddMarkerToolStripMenuItem.Size = new System.Drawing.Size(118, 22);
 			this.AddMarkerToolStripMenuItem.Text = "Add";
@@ -101,7 +97,6 @@
 			// 
 			// RemoveMarkerToolStripMenuItem
 			// 
-			this.RemoveMarkerToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Delete;
 			this.RemoveMarkerToolStripMenuItem.Name = "RemoveMarkerToolStripMenuItem";
 			this.RemoveMarkerToolStripMenuItem.Size = new System.Drawing.Size(118, 22);
 			this.RemoveMarkerToolStripMenuItem.Text = "Remove";
@@ -111,7 +106,6 @@
 			// 
 			this.JumpToMarkerButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.JumpToMarkerButton.Enabled = false;
-			this.JumpToMarkerButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.JumpTo;
 			this.JumpToMarkerButton.Location = new System.Drawing.Point(66, 247);
 			this.JumpToMarkerButton.Name = "JumpToMarkerButton";
 			this.JumpToMarkerButton.Size = new System.Drawing.Size(24, 24);
@@ -124,7 +118,6 @@
 			// 
 			this.EditMarkerButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.EditMarkerButton.Enabled = false;
-			this.EditMarkerButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.pencil;
 			this.EditMarkerButton.Location = new System.Drawing.Point(126, 247);
 			this.EditMarkerButton.Name = "EditMarkerButton";
 			this.EditMarkerButton.Size = new System.Drawing.Size(24, 24);
@@ -136,7 +129,6 @@
 			// AddMarkerButton
 			// 
 			this.AddMarkerButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.AddMarkerButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.add;
 			this.AddMarkerButton.Location = new System.Drawing.Point(6, 247);
 			this.AddMarkerButton.Name = "AddMarkerButton";
 			this.AddMarkerButton.Size = new System.Drawing.Size(24, 24);
@@ -149,7 +141,6 @@
 			// 
 			this.RemoveMarkerButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.RemoveMarkerButton.Enabled = false;
-			this.RemoveMarkerButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Delete;
 			this.RemoveMarkerButton.Location = new System.Drawing.Point(156, 247);
 			this.RemoveMarkerButton.Name = "RemoveMarkerButton";
 			this.RemoveMarkerButton.Size = new System.Drawing.Size(24, 24);
@@ -162,7 +153,6 @@
 			// 
 			this.ScrollToMarkerButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.ScrollToMarkerButton.Enabled = false;
-			this.ScrollToMarkerButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.ScrollTo;
 			this.ScrollToMarkerButton.Location = new System.Drawing.Point(96, 247);
 			this.ScrollToMarkerButton.Name = "ScrollToMarkerButton";
 			this.ScrollToMarkerButton.Size = new System.Drawing.Size(24, 24);
@@ -174,7 +164,6 @@
 			// AddMarkerWithTextButton
 			// 
 			this.AddMarkerWithTextButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.AddMarkerWithTextButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.AddEdit;
 			this.AddMarkerWithTextButton.Location = new System.Drawing.Point(36, 247);
 			this.AddMarkerWithTextButton.Name = "AddMarkerWithTextButton";
 			this.AddMarkerWithTextButton.Size = new System.Drawing.Size(24, 24);
