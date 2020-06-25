@@ -113,6 +113,8 @@ namespace BizHawk.Emulation.Common
 
 			public int Min => Range.Start;
 
+			public string PairedAxis => Constraint?.PairedAxis;
+
 			public readonly Range<int> Range;
 
 			public AxisSpec(Range<int> range, int mid, bool isReversed = false, AxisConstraint constraint = null)
@@ -162,6 +164,15 @@ namespace BizHawk.Emulation.Common
 			public string Class { get; }
 
 			public string PairedAxis { get; }
+		}
+
+		public sealed class NoOpAxisConstraint : AxisConstraint
+		{
+			public string Class { get; } = null;
+
+			public string PairedAxis { get; }
+
+			public NoOpAxisConstraint(string pairedAxis) => PairedAxis = pairedAxis;
 		}
 
 		public sealed class CircularAxisConstraint : AxisConstraint

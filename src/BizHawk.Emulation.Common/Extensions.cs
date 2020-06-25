@@ -420,8 +420,12 @@ namespace BizHawk.Emulation.Common
 		/// <param name="nameFormat">format string e.g. <c>"P1 Left {0}"</c> (will be used to interpolate <c>"X"</c> and <c>"Y"</c>)</param>
 		/// <returns>identical reference to <paramref name="def"/>; the object is mutated</returns>
 		public static ControllerDefinition AddXYPair(this ControllerDefinition def, string nameFormat, AxisPairOrientation pDir, Range<int> rangeX, int midX, Range<int> rangeY, int midY, AxisConstraint constraint = null)
-			=> def.AddAxis(string.Format(nameFormat, "X"), rangeX, midX, ((byte) pDir & 2) != 0, constraint)
-				.AddAxis(string.Format(nameFormat, "Y"), rangeY, midY, ((byte) pDir & 1) != 0);
+		{
+			var yAxisName = string.Format(nameFormat, "Y");
+			var finalConstraint = constraint ?? new NoOpAxisConstraint(yAxisName);
+			return def.AddAxis(string.Format(nameFormat, "X"), rangeX, midX, ((byte) pDir & 2) != 0, finalConstraint)
+				.AddAxis(yAxisName, rangeY, midY, ((byte) pDir & 1) != 0);
+		}
 
 		/// <summary>
 		/// Adds an X/Y pair of axes to the receiver <see cref="ControllerDefinition"/>, and returns it.
