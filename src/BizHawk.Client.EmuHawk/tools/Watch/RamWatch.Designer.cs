@@ -29,7 +29,7 @@
 		private void InitializeComponent()
 		{
             this.components = new System.ComponentModel.Container();
-            this.WatchCountLabel = new System.Windows.Forms.Label();
+            this.WatchCountLabel = new BizHawk.WinForms.Controls.LocLabelEx();
             this.ListViewContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.EditContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -117,11 +117,8 @@
             // 
             // WatchCountLabel
             // 
-            this.WatchCountLabel.AutoSize = true;
             this.WatchCountLabel.Location = new System.Drawing.Point(16, 57);
             this.WatchCountLabel.Name = "WatchCountLabel";
-            this.WatchCountLabel.Size = new System.Drawing.Size(56, 13);
-            this.WatchCountLabel.TabIndex = 5;
             this.WatchCountLabel.Text = "0 watches";
             // 
             // ListViewContextMenu
@@ -913,7 +910,7 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
 		private System.Windows.Forms.ToolStripButton moveUpToolStripButton;
 		private System.Windows.Forms.ToolStripButton moveDownToolStripButton;
-		private System.Windows.Forms.Label WatchCountLabel;
+		private BizHawk.WinForms.Controls.LocLabelEx WatchCountLabel;
 		private System.Windows.Forms.ToolStripSeparator Separator2;
 		private System.Windows.Forms.ToolStripMenuItem OriginalMenuItem;
 		private System.Windows.Forms.ContextMenuStrip ListViewContextMenu;
