@@ -26,6 +26,7 @@ namespace BizHawk.Client.EmuHawk
 		public LogWindow()
 		{
 			InitializeComponent();
+			AddToGameDbBtn.Image = Properties.Resources.add;
 			Closing += (o, e) =>
 			{
 				Detach();
