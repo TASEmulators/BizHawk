@@ -28,7 +28,7 @@ namespace BizHawk.Client.Common
 		private readonly WorkingDictionary<string, List<string>> _bindings = new WorkingDictionary<string, List<string>>();
 		private readonly WorkingDictionary<string, bool> _buttons = new WorkingDictionary<string, bool>();
 		private readonly WorkingDictionary<string, int> _axes = new WorkingDictionary<string, int>();
-		private readonly Dictionary<string, ControllerDefinition.AxisSpec> _axisRanges = new WorkingDictionary<string, ControllerDefinition.AxisSpec>();
+		private readonly Dictionary<string, AxisSpec> _axisRanges = new WorkingDictionary<string, AxisSpec>();
 		private readonly Dictionary<string, AnalogBind> _axisBindings = new Dictionary<string, AnalogBind>();
 
 		/// <summary>don't do this</summary>

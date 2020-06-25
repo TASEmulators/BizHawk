@@ -8,8 +8,6 @@ using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.PCEngine;
 using BizHawk.Emulation.Cores.Waterbox;
 
-using static BizHawk.Emulation.Common.ControllerDefinition;
-
 namespace BizHawk.Client.EmuHawk
 {
 	[Schema("PCECD")]

@@ -4,8 +4,6 @@ using System.Linq;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
-using static BizHawk.Emulation.Common.ControllerDefinition;
-
 namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 {
 	/// <summary>

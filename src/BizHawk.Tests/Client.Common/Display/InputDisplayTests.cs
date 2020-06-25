@@ -4,8 +4,6 @@ using BizHawk.Client.Common;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
-using static BizHawk.Emulation.Common.ControllerDefinition;
-
 namespace BizHawk.Tests.Client.Common.Display
 {
 	[TestClass]

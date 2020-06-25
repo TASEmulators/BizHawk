@@ -7,7 +7,6 @@ using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using NymaTypes;
 
-using static BizHawk.Emulation.Common.ControllerDefinition;
 using static BizHawk.Emulation.Cores.Waterbox.LibNymaCore;
 
 namespace BizHawk.Emulation.Cores.Waterbox

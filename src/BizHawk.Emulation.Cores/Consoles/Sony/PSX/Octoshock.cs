@@ -24,8 +24,6 @@ using BizHawk.Emulation.Common;
 using BizHawk.Common;
 using BizHawk.Emulation.DiscSystem;
 
-using static BizHawk.Emulation.Common.ControllerDefinition;
-
 #pragma warning disable 649 //adelikat: Disable dumb warnings until this file is complete
 
 namespace BizHawk.Emulation.Cores.Sony.PSX

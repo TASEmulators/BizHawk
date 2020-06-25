@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
-using static BizHawk.Emulation.Common.ControllerDefinition;
-
 namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 {
 	public class GPGXControlConverter

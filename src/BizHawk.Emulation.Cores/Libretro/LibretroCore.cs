@@ -11,8 +11,6 @@ using System.Runtime.InteropServices;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
-using static BizHawk.Emulation.Common.ControllerDefinition;
-
 namespace BizHawk.Emulation.Cores.Libretro
 {
 	[Core("Libretro", "zeromus", isPorted: false, isReleased: false)]

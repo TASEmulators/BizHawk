@@ -9,8 +9,6 @@ using BizHawk.Common;
 using BizHawk.Common.PathExtensions;
 using BizHawk.Common.StringExtensions;
 
-using static BizHawk.Emulation.Common.ControllerDefinition;
-
 namespace BizHawk.Emulation.Common
 {
 	public static class EmulatorExtensions

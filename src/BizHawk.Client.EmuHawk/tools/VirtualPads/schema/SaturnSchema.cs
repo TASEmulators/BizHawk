@@ -6,8 +6,6 @@ using System.Windows.Forms;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Waterbox;
-using static BizHawk.Emulation.Common.ControllerDefinition;
-
 namespace BizHawk.Client.EmuHawk
 {
 	[Schema("SAT")]

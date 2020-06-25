@@ -6,8 +6,6 @@ using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
 
-using static BizHawk.Emulation.Common.ControllerDefinition;
-
 namespace BizHawk.Client.EmuHawk
 {
 	public sealed class AnalogStickPanel : Panel

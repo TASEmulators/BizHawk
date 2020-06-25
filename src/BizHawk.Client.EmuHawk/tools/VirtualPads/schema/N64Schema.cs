@@ -5,8 +5,6 @@ using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.N64;
 
-using static BizHawk.Emulation.Common.ControllerDefinition;
-
 namespace BizHawk.Client.EmuHawk
 {
 	[Schema("N64")]

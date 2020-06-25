@@ -9,8 +9,6 @@ using System.Linq;
 
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 
-using static BizHawk.Emulation.Common.ControllerDefinition;
-
 namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 {
 	[Core(CoreNames.Snes9X, "", true, true,

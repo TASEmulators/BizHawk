@@ -7,8 +7,6 @@ using System.Windows.Forms;
 using BizHawk.Client.EmuHawk.Properties;
 using BizHawk.Emulation.Common;
 
-using static BizHawk.Emulation.Common.ControllerDefinition;
-
 namespace BizHawk.Client.EmuHawk
 {
 	public abstract class PadSchemaControl

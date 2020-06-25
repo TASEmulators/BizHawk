@@ -5,8 +5,6 @@ using BizHawk.Emulation.Common;
 using BizHawk.Common;
 using Newtonsoft.Json;
 
-using static BizHawk.Emulation.Common.ControllerDefinition;
-
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	/*

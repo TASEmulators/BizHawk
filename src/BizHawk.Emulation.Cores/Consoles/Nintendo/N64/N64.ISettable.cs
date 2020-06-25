@@ -1,8 +1,6 @@
 ﻿using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
-using static BizHawk.Emulation.Common.ControllerDefinition;
-
 namespace BizHawk.Emulation.Cores.Nintendo.N64
 {
 	public partial class N64 : ISettable<N64Settings, N64SyncSettings>

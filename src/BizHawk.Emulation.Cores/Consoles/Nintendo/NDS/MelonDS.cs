@@ -5,8 +5,6 @@ using System.IO;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
-using static BizHawk.Emulation.Common.ControllerDefinition;
-
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 {
 	[Core("MelonDS", "Arisotura", false, false, null, null, true)]

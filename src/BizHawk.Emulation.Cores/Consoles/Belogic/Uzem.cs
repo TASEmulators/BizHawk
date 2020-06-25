@@ -4,8 +4,6 @@ using System;
 
 using BizHawk.Common;
 
-using static BizHawk.Emulation.Common.ControllerDefinition;
-
 namespace BizHawk.Emulation.Cores.Consoles.Belogic
 {
 	[Core("uzem", "David Etherton", true, true, "", "", false)]

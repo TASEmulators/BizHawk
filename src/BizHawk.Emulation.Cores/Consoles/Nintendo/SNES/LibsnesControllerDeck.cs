@@ -6,8 +6,6 @@ using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Common.NumberExtensions;
 
-using static BizHawk.Emulation.Common.ControllerDefinition;
-
 namespace BizHawk.Emulation.Cores.Nintendo.SNES
 {
 	public class LibsnesControllerDeck

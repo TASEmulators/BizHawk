@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-
-using BizHawk.Common;
 
 namespace BizHawk.Emulation.Common
 {
@@ -37,94 +33,7 @@ namespace BizHawk.Emulation.Common
 		/// </summary>
 		public List<string> BoolButtons { get; set; } = new List<string>();
 
-		public sealed class AxisDict : IReadOnlyDictionary<string, AxisSpec>
-		{
-			private readonly IList<string> _keys = new List<string>();
-
-			private readonly IDictionary<string, AxisSpec> _specs = new Dictionary<string, AxisSpec>();
-
-			public int Count => _keys.Count;
-
-			public bool HasContraints { get; private set; }
-
-			public IEnumerable<string> Keys => _keys;
-
-			public IEnumerable<AxisSpec> Values => _specs.Values;
-
-			public string this[int index] => _keys[index];
-
-			public AxisSpec this[string index]
-			{
-				get => _specs[index];
-				set => _specs[index] = value;
-			}
-
-			public void Add(string key, AxisSpec value)
-			{
-				_keys.Add(key);
-				_specs.Add(key, value);
-				if (value.Constraint != null) HasContraints = true;
-			}
-
-			public void Add(KeyValuePair<string, AxisSpec> item) => Add(item.Key, item.Value);
-
-			public void Clear()
-			{
-				_keys.Clear();
-				_specs.Clear();
-				HasContraints = false;
-			}
-
-			public bool ContainsKey(string key) => _keys.Contains(key);
-
-			public IEnumerator<KeyValuePair<string, AxisSpec>> GetEnumerator() => _specs.GetEnumerator();
-
-			IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-
-			public int IndexOf(string key) => _keys.IndexOf(key);
-
-			public AxisSpec SpecAtIndex(int index) => this[_keys[index]];
-
-			public bool TryGetValue(string key, out AxisSpec value) => _specs.TryGetValue(key, out value);
-		}
-
 		public readonly AxisDict Axes = new AxisDict();
-
-		public readonly struct AxisSpec
-		{
-			/// <summary>
-			/// Gets the axis constraints that apply artificial constraints to float values
-			/// For instance, a N64 controller's analog range is actually larger than the amount allowed by the plastic that artificially constrains it to lower values
-			/// Axis constraints provide a way to technically allow the full range but have a user option to constrain down to typical values that a real control would have
-			/// </summary>
-			public readonly AxisConstraint Constraint;
-
-			public Range<float> FloatRange => ((float) Min).RangeTo(Max);
-
-			public readonly bool IsReversed;
-
-			public int Max => Range.EndInclusive;
-
-			/// <value>maximum decimal digits analog input can occupy with no-args ToString</value>
-			/// <remarks>does not include the extra char needed for a minus sign</remarks>
-			public int MaxDigits => Math.Max(Math.Abs(Min).ToString().Length, Math.Abs(Max).ToString().Length);
-
-			public readonly int Mid;
-
-			public int Min => Range.Start;
-
-			public string PairedAxis => Constraint?.PairedAxis;
-
-			public readonly Range<int> Range;
-
-			public AxisSpec(Range<int> range, int mid, bool isReversed = false, AxisConstraint constraint = null)
-			{
-				Constraint = constraint;
-				IsReversed = isReversed;
-				Mid = mid;
-				Range = range;
-			}
-		}
 
 		/// <summary>
 		/// Gets the category labels. These labels provide a means of categorizing controls in various controller display and config screens
@@ -146,59 +55,6 @@ namespace BizHawk.Emulation.Common
 						(axes[xAxis], axes[yAxis]) = circular.ApplyTo(axes[xAxis], axes[yAxis]);
 						break;
 				}
-			}
-		}
-
-		/// <summary>represents the direction of <c>(+, +)</c></summary>
-		/// <remarks>docs of individual controllers are being collected in comments of https://github.com/TASVideos/BizHawk/issues/1200</remarks>
-		public enum AxisPairOrientation : byte
-		{
-			RightAndUp = 0,
-			RightAndDown = 1,
-			LeftAndUp = 2,
-			LeftAndDown = 3
-		}
-
-		public interface AxisConstraint
-		{
-			public string Class { get; }
-
-			public string PairedAxis { get; }
-		}
-
-		public sealed class NoOpAxisConstraint : AxisConstraint
-		{
-			public string Class { get; } = null;
-
-			public string PairedAxis { get; }
-
-			public NoOpAxisConstraint(string pairedAxis) => PairedAxis = pairedAxis;
-		}
-
-		public sealed class CircularAxisConstraint : AxisConstraint
-		{
-			public string Class { get; }
-
-			private readonly float Magnitude;
-
-			public string PairedAxis { get; }
-
-			public CircularAxisConstraint(string @class, string pairedAxis, float magnitude)
-			{
-				Class = @class;
-				Magnitude = magnitude;
-				PairedAxis = pairedAxis;
-			}
-
-			public (int X, int Y) ApplyTo(int rawX, int rawY)
-			{
-				var xVal = (double) rawX;
-				var yVal = (double) rawY;
-				var length = Math.Sqrt(xVal * xVal + yVal * yVal);
-				var ratio = Magnitude / length;
-				return ratio < 1.0
-					? ((int) (xVal * ratio), (int) (yVal * ratio))
-					: ((int) xVal, (int) yVal);
 			}
 		}
 
