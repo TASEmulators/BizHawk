@@ -40,12 +40,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 					AxisPairOrientation.RightAndUp,
 					(-128).RangeTo(127),
 					0,
-					new AxisConstraint
-					{
-						Class = "Natural Circle",
-						Type = AxisConstraintType.Circular,
-						Params = new object[] { $"P{player} X Axis", $"P{player} Y Axis", 127.0f }
-					}
+					new CircularAxisConstraint("Natural Circle", $"P{player} Y Axis", 127.0f)
 				);
 			}
 

@@ -407,7 +407,7 @@ namespace BizHawk.Emulation.Common
 		/// </summary>
 		/// <param name="constraint">pass only for one axis in a pair, by convention the X axis</param>
 		/// <returns>identical reference to <paramref name="def"/>; the object is mutated</returns>
-		public static ControllerDefinition AddAxis(this ControllerDefinition def, string name, Range<int> range, int mid, bool isReversed = false, AxisConstraint? constraint = null)
+		public static ControllerDefinition AddAxis(this ControllerDefinition def, string name, Range<int> range, int mid, bool isReversed = false, AxisConstraint constraint = null)
 		{
 			def.Axes.Add(name, new AxisSpec(range, mid, isReversed, constraint));
 			return def;
@@ -419,7 +419,7 @@ namespace BizHawk.Emulation.Common
 		/// </summary>
 		/// <param name="nameFormat">format string e.g. <c>"P1 Left {0}"</c> (will be used to interpolate <c>"X"</c> and <c>"Y"</c>)</param>
 		/// <returns>identical reference to <paramref name="def"/>; the object is mutated</returns>
-		public static ControllerDefinition AddXYPair(this ControllerDefinition def, string nameFormat, AxisPairOrientation pDir, Range<int> rangeX, int midX, Range<int> rangeY, int midY, AxisConstraint? constraint = null)
+		public static ControllerDefinition AddXYPair(this ControllerDefinition def, string nameFormat, AxisPairOrientation pDir, Range<int> rangeX, int midX, Range<int> rangeY, int midY, AxisConstraint constraint = null)
 			=> def.AddAxis(string.Format(nameFormat, "X"), rangeX, midX, ((byte) pDir & 2) != 0, constraint)
 				.AddAxis(string.Format(nameFormat, "Y"), rangeY, midY, ((byte) pDir & 1) != 0);
 
@@ -429,7 +429,7 @@ namespace BizHawk.Emulation.Common
 		/// </summary>
 		/// <param name="nameFormat">format string e.g. <c>"P1 Left {0}"</c> (will be used to interpolate <c>"X"</c> and <c>"Y"</c>)</param>
 		/// <returns>identical reference to <paramref name="def"/>; the object is mutated</returns>
-		public static ControllerDefinition AddXYPair(this ControllerDefinition def, string nameFormat, AxisPairOrientation pDir, Range<int> rangeBoth, int midBoth, AxisConstraint? constraint = null)
+		public static ControllerDefinition AddXYPair(this ControllerDefinition def, string nameFormat, AxisPairOrientation pDir, Range<int> rangeBoth, int midBoth, AxisConstraint constraint = null)
 			=> def.AddXYPair(nameFormat, pDir, rangeBoth, midBoth, rangeBoth, midBoth, constraint);
 
 		/// <summary>

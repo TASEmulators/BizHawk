@@ -97,7 +97,7 @@ namespace BizHawk.Emulation.Common
 			/// For instance, a N64 controller's analog range is actually larger than the amount allowed by the plastic that artificially constrains it to lower values
 			/// Axis constraints provide a way to technically allow the full range but have a user option to constrain down to typical values that a real control would have
 			/// </summary>
-			public readonly AxisConstraint? Constraint;
+			public readonly AxisConstraint Constraint;
 
 			public Range<float> FloatRange => ((float) Min).RangeTo(Max);
 
@@ -115,7 +115,7 @@ namespace BizHawk.Emulation.Common
 
 			public readonly Range<int> Range;
 
-			public AxisSpec(Range<int> range, int mid, bool isReversed = false, AxisConstraint? constraint = null)
+			public AxisSpec(Range<int> range, int mid, bool isReversed = false, AxisConstraint constraint = null)
 			{
 				Constraint = constraint;
 				IsReversed = isReversed;
@@ -132,37 +132,17 @@ namespace BizHawk.Emulation.Common
 		public void ApplyAxisConstraints(string constraintClass, IDictionary<string, int> axes)
 		{
 			if (!Axes.HasContraints) return;
-
 			foreach (var kvp in Axes)
 			{
-				if (kvp.Value.Constraint == null) continue;
-				var constraint = kvp.Value.Constraint.Value;
-
-				if (constraint.Class != constraintClass) continue;
-
-				switch (constraint.Type)
+				var constraint = kvp.Value.Constraint;
+				if (constraint == null || constraint.Class != constraintClass) continue;
+				switch (constraint)
 				{
-					case AxisConstraintType.Circular:
-						{
-							string xAxis = constraint.Params[0] as string ?? "";
-							string yAxis = constraint.Params[1] as string ?? "";
-							float range = (float)constraint.Params[2];
-							if (!axes.ContainsKey(xAxis)) break;
-							if (!axes.ContainsKey(yAxis)) break;
-							double xVal = axes[xAxis];
-							double yVal = axes[yAxis];
-							double length = Math.Sqrt((xVal * xVal) + (yVal * yVal));
-							if (length > range)
-							{
-								double ratio = range / length;
-								xVal *= ratio;
-								yVal *= ratio;
-							}
-
-							axes[xAxis] = (int) xVal;
-							axes[yAxis] = (int) yVal;
-							break;
-						}
+					case CircularAxisConstraint circular:
+						var xAxis = kvp.Key;
+						var yAxis = circular.PairedAxis;
+						(axes[xAxis], axes[yAxis]) = circular.ApplyTo(axes[xAxis], axes[yAxis]);
+						break;
 				}
 			}
 		}
@@ -177,16 +157,38 @@ namespace BizHawk.Emulation.Common
 			LeftAndDown = 3
 		}
 
-		public enum AxisConstraintType
+		public interface AxisConstraint
 		{
-			Circular
+			public string Class { get; }
+
+			public string PairedAxis { get; }
 		}
 
-		public struct AxisConstraint
+		public sealed class CircularAxisConstraint : AxisConstraint
 		{
-			public string Class;
-			public AxisConstraintType Type;
-			public object[] Params;
+			public string Class { get; }
+
+			private readonly float Magnitude;
+
+			public string PairedAxis { get; }
+
+			public CircularAxisConstraint(string @class, string pairedAxis, float magnitude)
+			{
+				Class = @class;
+				Magnitude = magnitude;
+				PairedAxis = pairedAxis;
+			}
+
+			public (int X, int Y) ApplyTo(int rawX, int rawY)
+			{
+				var xVal = (double) rawX;
+				var yVal = (double) rawY;
+				var length = Math.Sqrt(xVal * xVal + yVal * yVal);
+				var ratio = Magnitude / length;
+				return ratio < 1.0
+					? ((int) (xVal * ratio), (int) (yVal * ratio))
+					: ((int) xVal, (int) yVal);
+			}
 		}
 
 		/// <summary>
