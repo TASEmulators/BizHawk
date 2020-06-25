@@ -20,7 +20,7 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 			_mainForm = mainForm;
 
-			var settable = new SettingsAdapter(GlobalWin.Emulator);
+			var settable = new SettingsAdapter(_mainForm.Emulator);
 
 			if (settable.HasSettings && !ignoreSettings)
 			{
@@ -52,7 +52,7 @@ namespace BizHawk.Client.EmuHawk
 				tabControl1.TabPages.Remove(tabPage2);
 			}
 
-			if (GlobalWin.MovieSession.Movie.IsActive())
+			if (_mainForm.MovieSession.Movie.IsActive())
 			{
 				propertyGrid2.Enabled = false; // disable changes to sync setting when movie, so as not to confuse user
 			}
@@ -108,7 +108,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public static void DoDialog(MainForm owner, string title)
 		{
-			if (GlobalWin.Emulator is Emulation.Cores.Waterbox.NymaCore core)
+			if (owner.Emulator is Emulation.Cores.Waterbox.NymaCore core)
 			{
 				var desc = new Emulation.Cores.Waterbox.NymaTypeDescriptorProvider(core.SettingsInfo);
 				try
