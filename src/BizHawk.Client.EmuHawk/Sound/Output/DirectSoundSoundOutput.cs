@@ -18,10 +18,12 @@ namespace BizHawk.Client.EmuHawk
 		private int _filledBufferSizeBytes;
 		private long _lastWriteTime;
 		private int _lastWriteCursor;
+		private int _retryCounter;
 
 		public DirectSoundSoundOutput(Sound sound, IntPtr mainWindowHandle, string soundDevice)
 		{
 			_sound = sound;
+			_retryCounter = 5;
 
 			var deviceInfo = DirectSound.GetDevices().FirstOrDefault(d => d.Description == soundDevice);
 			_device = deviceInfo != null ? new DirectSound(deviceInfo.DriverGuid) : new DirectSound();
@@ -53,24 +55,64 @@ namespace BizHawk.Client.EmuHawk
 
 		private void StartPlaying()
 		{
-			if (_deviceBuffer != null)
+			_actualWriteOffsetBytes = -1;
+			_filledBufferSizeBytes = 0;
+			_lastWriteTime = 0;
+			_lastWriteCursor = 0;
+			int attempts = _retryCounter;
+			while (!IsPlaying && attempts > 0)
 			{
-				_actualWriteOffsetBytes = -1;
-				_filledBufferSizeBytes = 0;
-				_lastWriteTime = 0;
-				_lastWriteCursor = 0;
-				while (!IsPlaying)
+				attempts--;
+				try
 				{
-					try
+					if (_deviceBuffer == null)
 					{
-						_deviceBuffer.Play(0, PlayFlags.Looping);
+						var format = new WaveFormat
+						{
+							SamplesPerSecond = Sound.SampleRate,
+							BitsPerSample = Sound.BytesPerSample * 8,
+							Channels = Sound.ChannelCount,
+							FormatTag = WaveFormatTag.Pcm,
+							BlockAlignment = Sound.BlockAlign,
+							AverageBytesPerSecond = Sound.SampleRate * Sound.BlockAlign
+						};
+
+						var desc = new SoundBufferDescription
+						{
+							Format = format,
+							Flags =
+									BufferFlags.GlobalFocus |
+									BufferFlags.Software |
+									BufferFlags.GetCurrentPosition2 |
+									BufferFlags.ControlVolume,
+							SizeInBytes = BufferSizeBytes
+						};
+
+						_deviceBuffer = new SecondarySoundBuffer(_device, desc);
 					}
-					catch (DirectSoundException)
+
+					_deviceBuffer.Play(0, PlayFlags.Looping);
+				}
+				catch (DirectSoundException)
+				{
+					if (_deviceBuffer != null)
 					{
 						_deviceBuffer.Restore();
+					}
+					if (attempts > 0)
+					{
 						System.Threading.Thread.Sleep(10);
 					}
 				}
+			}
+
+			if (IsPlaying)
+			{
+				_retryCounter = 5;
+			}
+			else if (_retryCounter > 1)
+			{
+				_retryCounter--;
 			}
 		}
 
@@ -102,39 +144,6 @@ namespace BizHawk.Client.EmuHawk
 			// absolute minimum we could use here.
 			int minBufferFullnessMs = Math.Min(35 + ((GlobalWin.Config.SoundBufferSizeMs - 60) / 2), 65);
 			MaxSamplesDeficit = BufferSizeSamples - Sound.MillisecondsToSamples(minBufferFullnessMs);
-
-			var format = new WaveFormat
-				{
-					SamplesPerSecond = Sound.SampleRate,
-					BitsPerSample = Sound.BytesPerSample * 8,
-					Channels = Sound.ChannelCount,
-					FormatTag = WaveFormatTag.Pcm,
-					BlockAlignment = Sound.BlockAlign,
-					AverageBytesPerSecond = Sound.SampleRate * Sound.BlockAlign
-				};
-
-			var desc = new SoundBufferDescription
-				{
-					Format = format,
-					Flags =
-						BufferFlags.GlobalFocus |
-						BufferFlags.Software |
-						BufferFlags.GetCurrentPosition2 |
-						BufferFlags.ControlVolume,
-					SizeInBytes = BufferSizeBytes
-				};
-
-			while (_deviceBuffer == null)
-			{
-				try
-				{
-					_deviceBuffer = new SecondarySoundBuffer(_device, desc);
-				}
-				catch (DirectSoundException)
-				{
-					System.Threading.Thread.Sleep(10);
-				}
-			}
 
 			StartPlaying();
 		}
@@ -216,7 +225,7 @@ namespace BizHawk.Client.EmuHawk
 					_actualWriteOffsetBytes = (_actualWriteOffsetBytes + (sampleCount * Sound.BlockAlign)) % BufferSizeBytes;
 					_filledBufferSizeBytes += sampleCount * Sound.BlockAlign;
 				}
-				catch (DirectSoundException ex)
+				catch (DirectSoundException)
 				{
 					_deviceBuffer.Restore();
 					StartPlaying();
@@ -224,7 +233,10 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				_deviceBuffer.Restore();
+				if (_deviceBuffer != null)
+				{
+					_deviceBuffer.Restore();
+				}
 				StartPlaying();
 			}
 		}
