@@ -1,10 +1,12 @@
+#nullable enable
+
 using System;
 
 namespace BizHawk.Emulation.Common
 {
 	public sealed class CircularAxisConstraint : AxisConstraint
 	{
-		public string Class { get; }
+		public string? Class { get; }
 
 		private readonly float Magnitude;
 

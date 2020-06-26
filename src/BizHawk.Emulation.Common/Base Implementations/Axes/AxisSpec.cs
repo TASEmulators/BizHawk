@@ -1,3 +1,5 @@
+#nullable enable
+
 using System;
 
 using BizHawk.Common;
@@ -11,7 +13,7 @@ namespace BizHawk.Emulation.Common
 		/// For instance, a N64 controller's analog range is actually larger than the amount allowed by the plastic that artificially constrains it to lower values
 		/// Axis constraints provide a way to technically allow the full range but have a user option to constrain down to typical values that a real control would have
 		/// </summary>
-		public readonly AxisConstraint Constraint;
+		public readonly AxisConstraint? Constraint;
 
 		public Range<float> FloatRange => ((float) Min).RangeTo(Max);
 
@@ -27,11 +29,11 @@ namespace BizHawk.Emulation.Common
 
 		public int Min => Range.Start;
 
-		public string PairedAxis => Constraint?.PairedAxis;
+		public string? PairedAxis => Constraint?.PairedAxis;
 
 		public readonly Range<int> Range;
 
-		public AxisSpec(Range<int> range, int mid, bool isReversed = false, AxisConstraint constraint = null)
+		public AxisSpec(Range<int> range, int mid, bool isReversed = false, AxisConstraint? constraint = null)
 		{
 			Constraint = constraint;
 			IsReversed = isReversed;
