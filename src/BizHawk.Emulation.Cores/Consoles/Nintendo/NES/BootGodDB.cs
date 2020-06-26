@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ThreadPool.QueueUserWorkItem(_ =>
 			{
 				instance = new BootGodDb(basePath);
-				Console.WriteLine("Bootgod DB load: " + stopwatch.Elapsed + " sec");
+				Util.DebugWriteLine("Bootgod DB load: " + stopwatch.Elapsed + " sec");
 				acquire.Set();
 			});
 		}

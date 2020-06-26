@@ -11,6 +11,7 @@ using System.IO;
 using System.Collections.Generic;
 
 using BizHawk.Bizware.BizwareGL;
+using BizHawk.Common;
 
 using OpenTK;
 using OpenTK.Graphics;
@@ -221,7 +222,7 @@ namespace BizHawk.Client.EmuHawk
 					throw new InvalidOperationException($"Error creating pipeline (link status false returned from glLinkProgram): \r\n\r\n{resultLog}");
 				else success = false;
 				resultLog = GL.GetProgramInfoLog(pid);
-				Console.WriteLine(resultLog);
+				Util.DebugWriteLine(resultLog);
 			}
 
 			//need to work on validation. apparently there are some weird caveats to glValidate which make it complicated and possibly excuses (barely) the intel drivers' dysfunctional operation

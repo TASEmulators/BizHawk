@@ -168,7 +168,7 @@ namespace BizHawk.Emulation.Common
 			var stopwatch = Stopwatch.StartNew();
 			ThreadPool.QueueUserWorkItem(_=> {
 				initializeWork(path);
-				Console.WriteLine("GameDB load: " + stopwatch.Elapsed + " sec");
+				Util.DebugWriteLine("GameDB load: " + stopwatch.Elapsed + " sec");
 			});
 		}
 

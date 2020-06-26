@@ -156,7 +156,7 @@ namespace BizHawk.Client.EmuHawk
 				afsfreq = 1000;
 				tmethod = 0;
 			}
-			Console.WriteLine("throttle method: {0}; resolution: {1}", tmethod, afsfreq);
+			Util.DebugWriteLine("throttle method: {0}; resolution: {1}", tmethod, afsfreq);
 			tfreq = afsfreq * 65536;
 		}
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -20,6 +21,22 @@ namespace BizHawk.Common
 				len -= n;
 			}
 		}
+
+		/// <summary>equivalent to <see cref="Console.WriteLine()">Console.WriteLine</see> but is <c>#ifdef DEBUG</c></summary>
+		[Conditional("DEBUG")]
+		public static void DebugWriteLine() => Console.WriteLine();
+
+		/// <summary>equivalent to <see cref="Console.WriteLine(string)">Console.WriteLine</see> but is <c>#ifdef DEBUG</c></summary>
+		[Conditional("DEBUG")]
+		public static void DebugWriteLine(string value) => Console.WriteLine(value);
+
+		/// <summary>equivalent to <see cref="Console.WriteLine(object)">Console.WriteLine</see> but is <c>#ifdef DEBUG</c></summary>
+		[Conditional("DEBUG")]
+		public static void DebugWriteLine(object value) => Console.WriteLine(value);
+
+		/// <summary>equivalent to <see cref="Console.WriteLine(string, object[])">Console.WriteLine</see> but is <c>#ifdef DEBUG</c></summary>
+		[Conditional("DEBUG")]
+		public static void DebugWriteLine(string format, params object[] arg) => Console.WriteLine(format, arg);
 
 		/// <exception cref="InvalidOperationException">issues with parsing <paramref name="src"/></exception>
 		/// <remarks>TODO use <see cref="MemoryStream(int)"/> and <see cref="MemoryStream.ToArray"/> instead of using <see cref="MemoryStream(byte[])"/> and keeping a reference to the array? --yoshi</remarks>
