@@ -13,7 +13,6 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private readonly MainForm _mainForm;
 		private readonly Config _config;
-		private readonly GameInfo _game;
 		private readonly IEmulator _emulator;
 		private readonly N64Settings _s;
 		private readonly N64SyncSettings _ss;
@@ -44,12 +43,10 @@ namespace BizHawk.Client.EmuHawk
 		public N64VideoPluginConfig(
 			MainForm mainForm,
 			Config config,
-			GameInfo game,
 			IEmulator emulator)
 		{
 			_mainForm = mainForm;
 			_config = config;
-			_game = game;
 			_emulator = emulator;
 
 			// because mupen is a pile of garbage, this all needs to work even when N64 is not loaded
@@ -845,44 +842,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Glide64mk2_UseDefaultHacks1.Checked || Glide64mk2_UseDefaultHacks2.Checked)
 			{
-				Glide64mk2_use_sts1_only.Checked = _game.GetBool("Glide64mk2_use_sts1_only", false);
-				Glide64mk2_optimize_texrect.Checked = _game.GetBool("Glide64mk2_optimize_texrect", true);
-				Glide64mk2_increase_texrect_edge.Checked = _game.GetBool("Glide64mk2_increase_texrect_edge", false);
-				Glide64mk2_ignore_aux_copy.Checked = _game.GetBool("Glide64mk2_ignore_aux_copy", false);
-				Glide64mk2_hires_buf_clear.Checked = _game.GetBool("Glide64mk2_hires_buf_clear", true);
-				Glide64mk2_force_microcheck.Checked = _game.GetBool("Glide64mk2_force_microcheck", false);
-				Glide64mk2_fog.Checked = _game.GetBool("Glide64mk2_fog", true);
-				Glide64mk2_fb_smart.Checked = _game.GetBool("Glide64mk2_fb_smart", false);
-				Glide64mk2_fb_read_alpha.Checked = _game.GetBool("Glide64mk2_fb_read_alpha", false);
-				Glide64mk2_fb_hires.Checked = _game.GetBool("Glide64mk2_fb_hires", true);
-				Glide64mk2_detect_cpu_write.Checked = _game.GetBool("Glide64mk2_detect_cpu_write", false);
-				Glide64mk2_decrease_fillrect_edge.Checked = _game.GetBool("Glide64mk2_decrease_fillrect_edge", false);
-				Glide64mk2_buff_clear.Checked = _game.GetBool("Glide64mk2_buff_clear", true);
-				Glide64mk2_alt_tex_size.Checked = _game.GetBool("Glide64mk2_alt_tex_size", true);
-				Glide64mk2_swapmode.SelectedIndex = _game.GetInt("Glide64mk2_swapmode", 1);
-				Glide64mk2_stipple_pattern.Text = _game.GetInt("Glide64mk2_stipple_pattern", 1041204192).ToString();
-				Glide64mk2_stipple_mode.Text = _game.GetInt("Glide64mk2_stipple_mode", 2).ToString();
-				Glide64mk2_lodmode.SelectedIndex = _game.GetInt("Glide64mk2_lodmode", 0);
-				Glide64mk2_filtering.SelectedIndex = _game.GetInt("Glide64mk2_filtering", 0);
-				Glide64mk2_correct_viewport.Checked = _game.GetBool("Glide64mk2_correct_viewport", false);
-				Glide64mk2_force_calc_sphere.Checked = _game.GetBool("Glide64mk2_force_calc_sphere", false);
-				Glide64mk2_pal230.Checked = _game.GetBool("Glide64mk2_pal230", false);
-				Glide64mk2_texture_correction.Checked = _game.GetBool("Glide64mk2_texture_correction", true);
-				Glide64mk2_n64_z_scale.Checked = _game.GetBool("Glide64mk2_n64_z_scale", false);
-				Glide64mk2_old_style_adither.Checked = _game.GetBool("Glide64mk2_old_style_adither", false);
-				Glide64mk2_zmode_compare_less.Checked = _game.GetBool("Glide64mk2_zmode_compare_less", false);
-				Glide64mk2_adjust_aspect.Checked = _game.GetBool("Glide64mk2_adjust_aspect", true);
-				Glide64mk2_clip_zmax.Checked = _game.GetBool("Glide64mk2_clip_zmax", true);
-				Glide64mk2_clip_zmin.Checked = _game.GetBool("Glide64mk2_clip_zmin", false);
-				Glide64mk2_force_quad3d.Checked = _game.GetBool("Glide64mk2_force_quad3d", false);
-				Glide64mk2_useless_is_useless.Checked = _game.GetBool("Glide64mk2_useless_is_useless", false);
-				Glide64mk2_fb_read_always.Checked = _game.GetBool("Glide64mk2_fb_read_always", false);
-				Glide64mk2_aspectmode.SelectedIndex = _game.GetInt("Glide64mk2_aspectmode", 0);
-				Glide64mk2_fb_crc_mode.SelectedIndex = _game.GetInt("Glide64mk2_fb_crc_mode", 1);
-				Glide64mk2_enable_hacks_for_game.SelectedIndex = _game.GetInt("Glide64mk2_enable_hacks_for_game", 0);
-				Glide64mk2_read_back_to_screen.SelectedIndex = _game.GetInt("Glide64mk2_read_back_to_screen", 0);
-				Glide64mk2_fast_crc.Checked = _game.GetBool("Glide64mk2_fast_crc", true);
-
 				ToggleGlide64mk2HackCheckboxEnable(false);
 			}
 			else
@@ -893,60 +852,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UpdateGLideN64HacksSection()
 		{
-			if (GLideN64_UseDefaultHacks.Checked)
-			{
-				GLideN64_EnableN64DepthCompare.Checked = _game.GetBool("GLideN64_N64DepthCompare", false);
-				GLideN64_EnableCopyColorToRDRAM.SelectedItem = ((N64SyncSettings.N64GLideN64PluginSettings.CopyColorToRDRAMMode)GetIntFromDB("GLideN64_CopyColorToRDRAM", (int)N64SyncSettings.N64GLideN64PluginSettings.CopyColorToRDRAMMode.AsyncMode)).GetDescription();
-				GLideN64_EnableCopyDepthToRDRAM.SelectedItem = ((N64SyncSettings.N64GLideN64PluginSettings.CopyDepthToRDRAMMode)GetIntFromDB("GLideN64_CopyDepthToRDRAM", (int)N64SyncSettings.N64GLideN64PluginSettings.CopyDepthToRDRAMMode.DoNotCopy)).GetDescription();
-				GLideN64_EnableCopyColorFromRDRAM.Checked = _game.GetBool("GLideN64_CopyColorFromRDRAM", false);
-				GLideN64_EnableCopyAuxiliaryToRDRAM.Checked = _game.GetBool("GLideN64_CopyAuxiliaryToRDRAM", false);
-
-				ToggleGLideN64HackCheckboxEnable(false);
-			}
-			else
-			{
-				ToggleGLideN64HackCheckboxEnable(true);
-			}
+			ToggleGLideN64HackCheckboxEnable(!GLideN64_UseDefaultHacks.Checked);
 		}
 
 		private void UpdateGlideHacksSection()
 		{
 			if (GlideUseDefaultHacks1.Checked || GlideUseDefaultHacks2.Checked)
 			{
-				Glide_alt_tex_size.Checked = _game.GetBool("Glide_alt_tex_size", false);
-				Glide_buff_clear.Checked = _game.GetBool("Glide_buff_clear", true);
-				Glide_decrease_fillrect_edge.Checked = _game.GetBool("Glide_decrease_fillrect_edge", false);
-				Glide_detect_cpu_write.Checked = _game.GetBool("Glide_detect_cpu_write", false);
-				Glide_fb_clear.Checked = _game.GetBool("Glide_fb_clear", false);
-				Glide_fb_hires.Checked = _game.GetBool("Glide_fb_hires", true);
-				Glide_fb_read_alpha.Checked = _game.GetBool("Glide_fb_read_alpha", false);
-				Glide_fb_smart.Checked = _game.GetBool("Glide_fb_smart", false);
-				Glide_fillcolor_fix.Checked = _game.GetBool("Glide_fillcolor_fix", false);
-				Glide_fog.Checked = _game.GetBool("Glide_fog", true);
-				Glide_force_depth_compare.Checked = _game.GetBool("Glide_force_depth_compare", false);
-				Glide_force_microcheck.Checked = _game.GetBool("Glide_force_microcheck", false);
-				Glide_fb_hires_buf_clear.Checked = _game.GetBool("Glide_fb_hires_buf_clear", true);
-				Glide_fb_ignore_aux_copy.Checked = _game.GetBool("Glide_fb_ignore_aux_copy", false);
-				Glide_fb_ignore_previous.Checked = _game.GetBool("Glide_fb_ignore_previous", false);
-				Glide_increase_primdepth.Checked = _game.GetBool("Glide_increase_primdepth", false);
-				Glide_increase_texrect_edge.Checked = _game.GetBool("Glide_increase_texrect_edge", false);
-				Glide_fb_optimize_texrect.Checked = _game.GetBool("Glide_fb_optimize_texrect", true);
-				Glide_fb_optimize_write.Checked = _game.GetBool("Glide_fb_optimize_write", false);
-				Glide_PPL.Checked = _game.GetBool("Glide_PPL", false);
-				Glide_soft_depth_compare.Checked = _game.GetBool("Glide_soft_depth_compare", false);
-				Glide_use_sts1_only.Checked = _game.GetBool("Glide_use_sts1_only", false);
-				Glide_wrap_big_tex.Checked = _game.GetBool("Glide_wrap_big_tex", false);
-
-				Glide_depth_bias.Text = _game.GetInt("Glide_depth_bias", 20).ToString();
-				Glide_filtering.SelectedIndex = _game.GetInt("Glide_filtering", 1);
-				Glide_fix_tex_coord.Text = _game.GetInt("Glide_fix_tex_coord", 0).ToString();
-				Glide_lodmode.SelectedIndex = _game.GetInt("Glide_lodmode", 0);
-
-				Glide_stipple_mode.Text = _game.GetInt("Glide_stipple_mode", 2).ToString();
-				Glide_stipple_pattern.Text = _game.GetInt("Glide_stipple_pattern", 1041204192).ToString();
-				Glide_swapmode.SelectedIndex = _game.GetInt("Glide_swapmode", 1);
-				Glide_enable_hacks_for_game.SelectedIndex = _game.GetInt("Glide_enable_hacks_for_game", 0);
-				
 				ToggleGlideHackCheckboxEnable(false);
 			}
 			else
@@ -957,52 +869,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UpdateRiceHacksSection()
 		{
-			if (RiceUseDefaultHacks_CB.Checked)
-			{
-				RiceDisableTextureCRC_CB.Checked = _game.GetBool("RiceDisableTextureCRC", false);
-				RiceDisableCulling_CB.Checked = _game.GetBool("RiceDisableCulling", false);
-				RiceIncTexRectEdge_CB.Checked = _game.GetBool("RiceIncTexRectEdge", false);
-				RiceZHack_CB.Checked = _game.GetBool("RiceZHack", false);
-				RiceTextureScaleHack_CB.Checked = _game.GetBool("RiceTextureScaleHack", false);
-				RicePrimaryDepthHack_CB.Checked = _game.GetBool("RicePrimaryDepthHack", false);
-				RiceTexture1Hack_CB.Checked = _game.GetBool("RiceTexture1Hack", false);
-				RiceFastLoadTile_CB.Checked = _game.GetBool("RiceFastLoadTile", false);
-				RiceUseSmallerTexture_CB.Checked = _game.GetBool("RiceUseSmallerTexture", false);
-				RiceVIWidth_Text.Text = GetIntFromDB("RiceVIWidth", -1).ToString();
-				RiceVIHeight_Text.Text = GetIntFromDB("RiceVIHeight", -1).ToString();
-				RiceUseCIWidthAndRatio_Combo.SelectedIndex = GetIntFromDB("RiceUseCIWidthAndRatio", 0);
-				RiceFullTMEM_Combo.SelectedIndex = GetIntFromDB("RiceFullTMEM", 0);
-				RiceTxtSizeMethod2_CB.Checked = _game.GetBool("RiceTxtSizeMethod2", false);
-				RiceEnableTxtLOD_CB.Checked = _game.GetBool("RiceEnableTxtLOD", false);
-				RiceFastTextureCRC_Combo.SelectedIndex = GetIntFromDB("RiceFastTextureCRC", 0);
-				RiceEmulateClear_CB.Checked = _game.GetBool("RiceEmulateClear", false);
-				RiceForceScreenClear_CB.Checked = _game.GetBool("RiceForceScreenClear", false);
-				RiceAccurateTextureMappingHack_Combo.SelectedIndex = GetIntFromDB("RiceAccurateTextureMappingHack", 0);
-				RiceNormalBlender_Combo.SelectedIndex = GetIntFromDB("RiceNormalBlender", 0);
-				RiceDisableBlender_CB.Checked = _game.GetBool("RiceDisableBlender", false);
-				RiceForceDepthBuffer_CB.Checked = _game.GetBool("RiceForceDepthBuffer", false);
-				RiceDisableObjBG_CB.Checked = _game.GetBool("RiceDisableObjBG", false);
-				RiceFrameBufferOption_Combo.SelectedIndex = GetIntFromDB("RiceFrameBufferOption", 0);
-				RiceRenderToTextureOption_Combo.SelectedIndex = GetIntFromDB("RiceRenderToTextureOption", 0);
-				RiceScreenUpdateSettingHack_Combo.SelectedIndex = GetIntFromDB("RiceScreenUpdateSettingHack", 0);
-				RiceEnableHacksForGame_Combo.SelectedIndex = GetIntFromDB("RiceEnableHacksForGame", 0);
-				
-				ToggleRiceHackCheckboxEnable(false);
-			}
-			else
-			{
-				ToggleRiceHackCheckboxEnable(true);
-			}
-		}
-
-		private int GetIntFromDB(string parameter, int defaultVal)
-		{
-			if (_game.OptionValue(parameter)?.IsUnsigned() ?? false)
-			{
-				return int.Parse(_game.OptionValue(parameter));
-			}
-
-			return defaultVal;
+			ToggleRiceHackCheckboxEnable(!RiceUseDefaultHacks_CB.Checked);
 		}
 
 		private void ToggleRiceHackCheckboxEnable (bool val)

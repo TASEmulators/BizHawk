@@ -1799,7 +1799,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void N64PluginSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			using var form = new N64VideoPluginConfig(this, Config, Game, Emulator);
+			using var form = new N64VideoPluginConfig(this, Config, Emulator);
 			if (form.ShowDialog().IsOk())
 			{
 				if (Emulator.IsNull())
