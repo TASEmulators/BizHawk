@@ -32,37 +32,37 @@
 			this.N64plugintabcontrol = new System.Windows.Forms.TabControl();
 			this.N64vpluginglobaltab = new System.Windows.Forms.TabPage();
 			this.VideoResolutionYTextBox = new System.Windows.Forms.TextBox();
-			this.LabelVideoResolutionY = new System.Windows.Forms.Label();
+			this.LabelVideoResolutionY = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.VideoResolutionXTextBox = new System.Windows.Forms.TextBox();
-			this.LabelVideoResolutionX = new System.Windows.Forms.Label();
-			this.label49 = new System.Windows.Forms.Label();
+			this.LabelVideoResolutionX = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label49 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.RspTypeDropdown = new System.Windows.Forms.ComboBox();
-			this.label48 = new System.Windows.Forms.Label();
+			this.label48 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.CoreTypeDropdown = new System.Windows.Forms.ComboBox();
-			this.label47 = new System.Windows.Forms.Label();
-			this.label2 = new System.Windows.Forms.Label();
+			this.label47 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label2 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.VideoResolutionComboBox = new System.Windows.Forms.ComboBox();
 			this.PluginComboBox = new System.Windows.Forms.ComboBox();
-			this.label1 = new System.Windows.Forms.Label();
+			this.label1 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.GLideN64Tab = new System.Windows.Forms.TabPage();
 			this.Glide64mk2TabPage = new System.Windows.Forms.TabPage();
 			this.Glide64TabPage = new System.Windows.Forms.TabPage();
 			this.RiceTabPage = new System.Windows.Forms.TabPage();
-			this.label71 = new System.Windows.Forms.Label();
-			this.label70 = new System.Windows.Forms.Label();
-			this.label69 = new System.Windows.Forms.Label();
-			this.label68 = new System.Windows.Forms.Label();
-			this.label67 = new System.Windows.Forms.Label();
-			this.label66 = new System.Windows.Forms.Label();
-			this.label65 = new System.Windows.Forms.Label();
-			this.label64 = new System.Windows.Forms.Label();
-			this.label63 = new System.Windows.Forms.Label();
-			this.label62 = new System.Windows.Forms.Label();
-			this.label61 = new System.Windows.Forms.Label();
-			this.label60 = new System.Windows.Forms.Label();
-			this.label59 = new System.Windows.Forms.Label();
-			this.label57 = new System.Windows.Forms.Label();
-			this.label51 = new System.Windows.Forms.Label();
+			this.label71 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label70 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label69 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label68 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label67 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label66 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label65 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label64 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label63 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label62 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label61 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label60 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label59 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label57 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label51 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.SaveButton = new System.Windows.Forms.Button();
 			this.CancelBT = new System.Windows.Forms.Button();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
@@ -129,11 +129,8 @@
 			// 
 			// LabelVideoResolutionY
 			// 
-			this.LabelVideoResolutionY.AutoSize = true;
 			this.LabelVideoResolutionY.Location = new System.Drawing.Point(22, 273);
 			this.LabelVideoResolutionY.Name = "LabelVideoResolutionY";
-			this.LabelVideoResolutionY.Size = new System.Drawing.Size(41, 13);
-			this.LabelVideoResolutionY.TabIndex = 21;
 			this.LabelVideoResolutionY.Text = "Height:";
 			this.LabelVideoResolutionY.Visible = false;
 			// 
@@ -149,21 +146,15 @@
 			// 
 			// LabelVideoResolutionX
 			// 
-			this.LabelVideoResolutionX.AutoSize = true;
 			this.LabelVideoResolutionX.Location = new System.Drawing.Point(22, 247);
 			this.LabelVideoResolutionX.Name = "LabelVideoResolutionX";
-			this.LabelVideoResolutionX.Size = new System.Drawing.Size(38, 13);
-			this.LabelVideoResolutionX.TabIndex = 19;
 			this.LabelVideoResolutionX.Text = "Width:";
 			this.LabelVideoResolutionX.Visible = false;
 			// 
 			// label49
 			// 
-			this.label49.AutoSize = true;
 			this.label49.Location = new System.Drawing.Point(206, 13);
 			this.label49.Name = "label49";
-			this.label49.Size = new System.Drawing.Size(58, 13);
-			this.label49.TabIndex = 18;
 			this.label49.Text = "Rsp Plugin";
 			this.label49.Visible = false;
 			// 
@@ -183,11 +174,8 @@
 			// 
 			// label48
 			// 
-			this.label48.AutoSize = true;
 			this.label48.Location = new System.Drawing.Point(10, 13);
 			this.label48.Name = "label48";
-			this.label48.Size = new System.Drawing.Size(56, 13);
-			this.label48.TabIndex = 16;
 			this.label48.Text = "Core Type";
 			// 
 			// CoreTypeDropdown
@@ -205,20 +193,14 @@
 			// 
 			// label47
 			// 
-			this.label47.AutoSize = true;
 			this.label47.Location = new System.Drawing.Point(10, 115);
 			this.label47.Name = "label47";
-			this.label47.Size = new System.Drawing.Size(313, 13);
-			this.label47.TabIndex = 14;
 			this.label47.Text = "(GLideN64 is the newest plugin and has the highest compatibility)";
 			// 
 			// label2
 			// 
-			this.label2.AutoSize = true;
 			this.label2.Location = new System.Drawing.Point(10, 201);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(87, 13);
-			this.label2.TabIndex = 13;
 			this.label2.Text = "Video Resolution";
 			// 
 			// VideoResolutionComboBox
@@ -263,11 +245,8 @@
 			// 
 			// label1
 			// 
-			this.label1.AutoSize = true;
 			this.label1.Location = new System.Drawing.Point(10, 75);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(99, 13);
-			this.label1.TabIndex = 1;
 			this.label1.Text = "Active Video Plugin";
 			// 
 			// GLideN64Tab
@@ -314,137 +293,92 @@
 			// 
 			// label71
 			// 
-			this.label71.AutoSize = true;
 			this.label71.Location = new System.Drawing.Point(15, 94);
 			this.label71.Name = "label71";
-			this.label71.Size = new System.Drawing.Size(91, 13);
-			this.label71.TabIndex = 32;
 			this.label71.Text = "Resolution Height";
 			// 
 			// label70
 			// 
-			this.label70.AutoSize = true;
 			this.label70.Location = new System.Drawing.Point(15, 64);
 			this.label70.Name = "label70";
-			this.label70.Size = new System.Drawing.Size(88, 13);
-			this.label70.TabIndex = 31;
 			this.label70.Text = "Resolution Width";
 			// 
 			// label69
 			// 
-			this.label69.AutoSize = true;
 			this.label69.Location = new System.Drawing.Point(15, 34);
 			this.label69.Name = "label69";
-			this.label69.Size = new System.Drawing.Size(106, 13);
-			this.label69.TabIndex = 0;
 			this.label69.Text = "Direct3D Clear Mode";
 			// 
 			// label68
 			// 
-			this.label68.AutoSize = true;
 			this.label68.Location = new System.Drawing.Point(51, 316);
 			this.label68.Name = "label68";
-			this.label68.Size = new System.Drawing.Size(87, 13);
-			this.label68.TabIndex = 27;
 			this.label68.Text = "Copy framebuffer";
 			// 
 			// label67
 			// 
-			this.label67.AutoSize = true;
 			this.label67.Location = new System.Drawing.Point(49, 286);
 			this.label67.Name = "label67";
-			this.label67.Size = new System.Drawing.Size(89, 13);
-			this.label67.TabIndex = 25;
 			this.label67.Text = "Force Z Compare";
 			// 
 			// label66
 			// 
-			this.label66.AutoSize = true;
 			this.label66.Location = new System.Drawing.Point(24, 256);
 			this.label66.Name = "label66";
-			this.label66.Size = new System.Drawing.Size(114, 13);
-			this.label66.TabIndex = 23;
 			this.label66.Text = "Direct3D trans pipeline";
 			// 
 			// label65
 			// 
-			this.label65.AutoSize = true;
 			this.label65.Location = new System.Drawing.Point(32, 226);
 			this.label65.Name = "label65";
-			this.label65.Size = new System.Drawing.Size(106, 13);
-			this.label65.TabIndex = 21;
 			this.label65.Text = "Force alpha blending";
 			// 
 			// label64
 			// 
-			this.label64.AutoSize = true;
 			this.label64.Location = new System.Drawing.Point(15, 195);
 			this.label64.Name = "label64";
-			this.label64.Size = new System.Drawing.Size(123, 13);
-			this.label64.TabIndex = 19;
 			this.label64.Text = "Use legacy pixel pipeline";
 			// 
 			// label63
 			// 
-			this.label63.AutoSize = true;
 			this.label63.Location = new System.Drawing.Point(15, 177);
 			this.label63.Name = "label63";
-			this.label63.Size = new System.Drawing.Size(76, 13);
-			this.label63.TabIndex = 17;
 			this.label63.Text = "to match yours";
 			// 
 			// label62
 			// 
-			this.label62.AutoSize = true;
 			this.label62.Location = new System.Drawing.Point(15, 164);
 			this.label62.Name = "label62";
-			this.label62.Size = new System.Drawing.Size(123, 13);
-			this.label62.TabIndex = 16;
 			this.label62.Text = "Adjust game aspect ratio";
 			// 
 			// label61
 			// 
-			this.label61.AutoSize = true;
 			this.label61.Location = new System.Drawing.Point(49, 49);
 			this.label61.Name = "label61";
-			this.label61.Size = new System.Drawing.Size(89, 13);
-			this.label61.TabIndex = 14;
 			this.label61.Text = "Antialiasing Level";
 			// 
 			// label60
 			// 
-			this.label60.AutoSize = true;
 			this.label60.Location = new System.Drawing.Point(21, 136);
 			this.label60.Name = "label60";
-			this.label60.Size = new System.Drawing.Size(117, 13);
-			this.label60.TabIndex = 12;
 			this.label60.Text = "Always use texture filter";
 			// 
 			// label59
 			// 
-			this.label59.AutoSize = true;
 			this.label59.Location = new System.Drawing.Point(76, 107);
 			this.label59.Name = "label59";
-			this.label59.Size = new System.Drawing.Size(62, 13);
-			this.label59.TabIndex = 10;
 			this.label59.Text = "Super 2xsal";
 			// 
 			// label57
 			// 
-			this.label57.AutoSize = true;
 			this.label57.Location = new System.Drawing.Point(82, 79);
 			this.label57.Name = "label57";
-			this.label57.Size = new System.Drawing.Size(56, 13);
-			this.label57.TabIndex = 7;
 			this.label57.Text = "Brightness";
 			// 
 			// label51
 			// 
-			this.label51.AutoSize = true;
 			this.label51.Location = new System.Drawing.Point(18, 15);
 			this.label51.Name = "label51";
-			this.label51.Size = new System.Drawing.Size(120, 13);
-			this.label51.TabIndex = 5;
 			this.label51.Text = "Anisotropic filtering level";
 			// 
 			// SaveButton
@@ -536,9 +470,9 @@
 
 		private System.Windows.Forms.TabControl N64plugintabcontrol;
 		private System.Windows.Forms.TabPage N64vpluginglobaltab;
-		private System.Windows.Forms.Label label1;
+		private BizHawk.WinForms.Controls.LocLabelEx label1;
 		private System.Windows.Forms.ComboBox PluginComboBox;
-		private System.Windows.Forms.Label label2;
+		private BizHawk.WinForms.Controls.LocLabelEx label2;
 		private System.Windows.Forms.ComboBox VideoResolutionComboBox;
 		private System.Windows.Forms.Button SaveButton;
 		private System.Windows.Forms.Button CancelBT;
@@ -546,28 +480,28 @@
 		private System.Windows.Forms.ToolTip toolTip1;
 		private System.Windows.Forms.TabPage Glide64TabPage;
 		private System.Windows.Forms.TabPage Glide64mk2TabPage;
-		private System.Windows.Forms.Label label47;
-		private System.Windows.Forms.Label label48;
+		private BizHawk.WinForms.Controls.LocLabelEx label47;
+		private BizHawk.WinForms.Controls.LocLabelEx label48;
 		private System.Windows.Forms.ComboBox CoreTypeDropdown;
-		private System.Windows.Forms.Label label49;
+		private BizHawk.WinForms.Controls.LocLabelEx label49;
 		private System.Windows.Forms.ComboBox RspTypeDropdown;
-		private System.Windows.Forms.Label label51;
-		private System.Windows.Forms.Label label57;
-		private System.Windows.Forms.Label label59;
-		private System.Windows.Forms.Label label60;
-		private System.Windows.Forms.Label label61;
-		private System.Windows.Forms.Label label62;
-		private System.Windows.Forms.Label label63;
-		private System.Windows.Forms.Label label64;
-		private System.Windows.Forms.Label label65;
-		private System.Windows.Forms.Label label66;
-		private System.Windows.Forms.Label label67;
-		private System.Windows.Forms.Label label68;
-		private System.Windows.Forms.Label label69;
-		private System.Windows.Forms.Label label70;
-		private System.Windows.Forms.Label label71;
-		private System.Windows.Forms.Label LabelVideoResolutionY;
-		private System.Windows.Forms.Label LabelVideoResolutionX;
+		private BizHawk.WinForms.Controls.LocLabelEx label51;
+		private BizHawk.WinForms.Controls.LocLabelEx label57;
+		private BizHawk.WinForms.Controls.LocLabelEx label59;
+		private BizHawk.WinForms.Controls.LocLabelEx label60;
+		private BizHawk.WinForms.Controls.LocLabelEx label61;
+		private BizHawk.WinForms.Controls.LocLabelEx label62;
+		private BizHawk.WinForms.Controls.LocLabelEx label63;
+		private BizHawk.WinForms.Controls.LocLabelEx label64;
+		private BizHawk.WinForms.Controls.LocLabelEx label65;
+		private BizHawk.WinForms.Controls.LocLabelEx label66;
+		private BizHawk.WinForms.Controls.LocLabelEx label67;
+		private BizHawk.WinForms.Controls.LocLabelEx label68;
+		private BizHawk.WinForms.Controls.LocLabelEx label69;
+		private BizHawk.WinForms.Controls.LocLabelEx label70;
+		private BizHawk.WinForms.Controls.LocLabelEx label71;
+		private BizHawk.WinForms.Controls.LocLabelEx LabelVideoResolutionY;
+		private BizHawk.WinForms.Controls.LocLabelEx LabelVideoResolutionX;
 		private System.Windows.Forms.TextBox VideoResolutionYTextBox;
 		private System.Windows.Forms.TextBox VideoResolutionXTextBox;
 		private System.Windows.Forms.TabPage GLideN64Tab;
