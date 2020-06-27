@@ -201,6 +201,16 @@ namespace BizHawk.Client.Common
 				return _float.ToString();
 			};
 
+			string FormatBinary()
+			{
+				var str = Convert.ToString(val, 2).PadLeft(32, '0');
+				for (var i = 28; i > 0; i -= 4)
+				{
+					str = str.Insert(i, " ");
+				}
+				return str;
+			};
+
 			return Type switch
 			{
 				_ when !IsValid => "-",
@@ -210,6 +220,7 @@ namespace BizHawk.Client.Common
 				DisplayType.FixedPoint_20_12 => $"{(int)val / 4096.0:0.######}",
 				DisplayType.FixedPoint_16_16 => $"{(int)val / 65536.0:0.######}",
 				DisplayType.Float => FormatFloat(),
+				DisplayType.Binary => FormatBinary(),
 				_ => val.ToString()
 			};
 		}
