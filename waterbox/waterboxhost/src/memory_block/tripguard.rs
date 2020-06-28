@@ -125,13 +125,20 @@ mod trip_pal {
 			}
 		}
 		unsafe {
+			// TODO: sigaltstack is per thread, so this won't work
+			// At the same time, one seems to be set up automatically on each thread, so this isn't needed.
+			// let ss = stack_t {
+			// 	ss_flags: 0,
+			// 	ss_sp: Box::into_raw(Box::new(zeroed::<[u8; SIGSTKSZ]>())) as *mut c_void,
+			// 	ss_size: SIGSTKSZ
+			// };
+			// let mut ss_old = stack_t {
+			// 	ss_flags: 0,
+			// 	ss_sp: 0 as *mut c_void,
+			// 	ss_size: 0
+			// };
+			// assert!(sigaltstack(&ss, &mut ss_old) == 0, "sigaltstack failed");
 			SA_OLD = Some(Box::new(zeroed()));
-			let ss = stack_t {
-				ss_flags: 0,
-				ss_sp: Box::into_raw(Box::new(zeroed::<[u8; SIGSTKSZ]>)) as *mut c_void,
-				ss_size: SIGSTKSZ
-			};
-			assert!(sigaltstack(&ss, 0 as *mut stack_t) == 0, "sigaltstack failed");
 			let mut sa = sigaction {
 				sa_mask: zeroed(),
 				sa_sigaction: transmute::<SaSigaction, usize>(handler),
