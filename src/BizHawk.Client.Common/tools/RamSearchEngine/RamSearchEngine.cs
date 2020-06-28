@@ -248,7 +248,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 			}
 
 			var addresses = watches.Select(w => w.Address);
-			_watchList.RemoveAll(w => addresses.Contains(w.Address));
+			RemoveAddressRange(addresses);
 		}
 
 		public void RemoveRange(IEnumerable<int> indices)
@@ -260,6 +260,11 @@ namespace BizHawk.Client.Common.RamSearchEngine
 
 			var removeList = indices.Select(i => _watchList[i]); // This will fail after int.MaxValue but RAM Search fails on domains that large anyway
 			_watchList = _watchList.Except(removeList).ToList();
+		}
+
+		public void RemoveAddressRange(IEnumerable<long> addresses)
+		{
+			_watchList.RemoveAll(w => addresses.Contains(w.Address));
 		}
 
 		public void AddRange(IEnumerable<long> addresses, bool append)
@@ -313,7 +318,6 @@ namespace BizHawk.Client.Common.RamSearchEngine
 
 		public bool UndoEnabled { get; set; }
 		
-
 		public bool CanUndo => UndoEnabled && _history.CanUndo;
 
 		public bool CanRedo => UndoEnabled && _history.CanRedo;

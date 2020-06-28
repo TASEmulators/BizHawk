@@ -68,10 +68,7 @@ namespace  BizHawk.Client.Common.RamSearchEngine
 
 		public void ClearChangeCount() => ChangeCount = 0;
 
-		public bool IsValid(MemoryDomain domain)
-		{
-			return Address < domain.Size;
-		}
+		public bool IsValid(MemoryDomain domain) => MiniByteWatch.IsValid(Address, domain);
 	}
 
 	internal sealed class MiniWordWatchDetailed : IMiniWatchDetails
@@ -126,10 +123,7 @@ namespace  BizHawk.Client.Common.RamSearchEngine
 
 		public void ClearChangeCount() => ChangeCount = 0;
 
-		public bool IsValid(MemoryDomain domain)
-		{
-			return Address < (domain.Size - 1);
-		}
+		public bool IsValid(MemoryDomain domain) => MiniWordWatch.IsValid(Address, domain);
 	}
 
 	internal sealed class MiniDWordWatchDetailed : IMiniWatchDetails
@@ -184,9 +178,6 @@ namespace  BizHawk.Client.Common.RamSearchEngine
 
 		public void ClearChangeCount() => ChangeCount = 0;
 
-		public bool IsValid(MemoryDomain domain)
-		{
-			return Address < (domain.Size - 3);
-		}
+		public bool IsValid(MemoryDomain domain) => MiniDWordWatch.IsValid(Address, domain);
 	}
 }

@@ -1490,7 +1490,7 @@ namespace BizHawk.Client.EmuHawk
 		private void ErrorIconButton_Click(object sender, EventArgs e)
 		{
 			var outOfRangeAddresses = _searches.OutOfRangeAddress.ToList();
-
+			_searches.RemoveAddressRange(outOfRangeAddresses);
 			SetRemovedMessage(outOfRangeAddresses.Count);
 
 			UpdateList();
