@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
+using static BizHawk.Emulation.Cores.Waterbox.WaterboxHost.WaterboxHostNative;
 
 namespace BizHawk.Emulation.Cores.Waterbox
 {
@@ -72,222 +73,74 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		public bool SkipMemoryConsistencyCheck { get; set; } = false;
 	}
 
-	public class WaterboxHost : Swappable, IImportResolver, IBinaryStateable
+	public unsafe class WaterboxHost : IMonitor, IImportResolver, IBinaryStateable
 	{
-		static WaterboxHost()
-		{
-			if (OSTailoredCode.IsUnixHost)
-			{
-				WaterboxLibcoLinuxStartup.Setup();
-			}
-		}
 
 		/// <summary>
 		/// usual starting point for the executable
 		/// </summary>
 		public const ulong CanonicalStart = 0x0000036f00000000;
 
-		/// <summary>
-		/// the next place where we can put a module or heap
-		/// </summary>
-		private ulong _nextStart = CanonicalStart;
+		private IntPtr _nativeHost;
+		private IntPtr _activatedNativeHost;
 
-		/// <summary>
-		/// increment _nextStart after adding a module
-		/// </summary>
-		private void ComputeNextStart(ulong size)
+		private static readonly WaterboxHostNative NativeImpl;
+		static WaterboxHost()
 		{
-			_nextStart += size;
-			// align to 1MB, then increment 16MB
-			_nextStart = ((_nextStart - 1) | 0xfffff) + 0x1000001;
-		}
-
-		/// <summary>
-		/// standard malloc() heap
-		/// </summary>
-		internal Heap _heap;
-
-		/// <summary>
-		/// sealed heap (writable only during init)
-		/// </summary>
-		internal Heap _sealedheap;
-
-		/// <summary>
-		/// invisible heap (not savestated, use with care)
-		/// </summary>
-		internal Heap _invisibleheap;
-
-		/// <summary>
-		/// extra savestated heap
-		/// </summary>
-		internal Heap _plainheap;
-
-		/// <summary>
-		/// memory map emulation
-		/// </summary>
-		internal MapHeap _mmapheap;
-
-		/// <summary>
-		/// the loaded elf file
-		/// </summary>
-		private ElfLoader _module;
-
-		/// <summary>
-		/// all loaded heaps
-		/// </summary>
-		private readonly List<Heap> _heaps = new List<Heap>();
-
-		/// <summary>
-		/// anything at all that needs to be disposed on finish
-		/// </summary>
-		private readonly List<IDisposable> _disposeList = new List<IDisposable>();
-
-		/// <summary>
-		/// anything at all that needs its state saved and loaded
-		/// </summary>
-		private readonly List<IBinaryStateable> _savestateComponents = new List<IBinaryStateable>();
-
-		private readonly EmuLibc _emu;
-		private readonly Syscalls _syscalls;
-
-		/// <summary>
-		/// the set of functions made available for the elf module
-		/// </summary>
-		private readonly IImportResolver _imports;
-
-		/// <summary>
-		/// timestamp of creation acts as a sort of "object id" in the savestate
-		/// </summary>
-		private readonly long _createstamp = WaterboxUtils.Timestamp();
-
-		private Heap CreateHeapHelper(uint sizeKB, string name, bool saveStated)
-		{
-			if (sizeKB != 0)
-			{
-				var heap = new Heap(_nextStart, sizeKB * 1024, name);
-				heap.Memory.Activate();
-				ComputeNextStart(sizeKB * 1024);
-				AddMemoryBlock(heap.Memory, name);
-				if (saveStated)
-					_savestateComponents.Add(heap);
-				_disposeList.Add(heap);
-				_heaps.Add(heap);
-				return heap;
-			}
-			else
-			{
-				return null;
-			}
+			NativeImpl = BizInvoker.GetInvoker<WaterboxHostNative>(
+				new DynamicLibraryImportResolver("waterboxhost.dll", eternal: true),
+				CallingConventionAdapters.Native);
 		}
 
 		public WaterboxHost(WaterboxOptions opt)
 		{
-			_nextStart = opt.StartAddress;
-			Initialize(_nextStart);
-			using (this.EnterExit())
+			var nativeOpts = new MemoryLayoutTemplate
 			{
-				_emu = new EmuLibc(this);
-				_syscalls = new Syscalls(this);
+				start = Z.UU(opt.StartAddress),
+				elf_size = Z.UU(64 * 1024 * 1024),
+				sbrk_size = Z.UU(opt.SbrkHeapSizeKB * 1024),
+				sealed_size = Z.UU(opt.SealedHeapSizeKB * 1024),
+				invis_size = Z.UU(opt.InvisibleHeapSizeKB * 1024),
+				plain_size = Z.UU(opt.PlainHeapSizeKB * 1024),
+				mmap_size = Z.UU(opt.MmapHeapSizeKB * 1024),
+			};
 
-				_imports = new PatchImportResolver(
-					NotImplementedSyscalls.Instance,
-					BizExvoker.GetExvoker(_emu, CallingConventionAdapters.Waterbox),
-					BizExvoker.GetExvoker(_syscalls, CallingConventionAdapters.Waterbox)
-				);
+			var moduleName = opt.Filename;
 
-				if (true)
-				{
-					var moduleName = opt.Filename;
-
-					var path = Path.Combine(opt.Path, moduleName);
-					var gzpath = path + ".gz";
-					byte[] data;
-					if (File.Exists(gzpath))
-					{
-						using var fs = new FileStream(gzpath, FileMode.Open, FileAccess.Read);
-						data = Util.DecompressGzipFile(fs);
-					}
-					else
-					{
-						data = File.ReadAllBytes(path);
-					}
-
-					_module = new ElfLoader(moduleName, data, _nextStart, opt.SkipCoreConsistencyCheck, opt.SkipMemoryConsistencyCheck);
-
-					ComputeNextStart(_module.Memory.Size);
-					AddMemoryBlock(_module.Memory, moduleName);
-					_savestateComponents.Add(_module);
-					_disposeList.Add(_module);
-				}
-
-				ConnectAllImports();
-
-				// load all heaps
-				_heap = CreateHeapHelper(opt.SbrkHeapSizeKB, "brk-heap", true);
-				_sealedheap = CreateHeapHelper(opt.SealedHeapSizeKB, "sealed-heap", true);
-				_invisibleheap = CreateHeapHelper(opt.InvisibleHeapSizeKB, "invisible-heap", false);
-				_plainheap = CreateHeapHelper(opt.PlainHeapSizeKB, "plain-heap", true);
-
-				if (opt.MmapHeapSizeKB != 0)
-				{
-					_mmapheap = new MapHeap(_nextStart, opt.MmapHeapSizeKB * 1024, "mmap-heap");
-					_mmapheap.Memory.Activate();
-					ComputeNextStart(opt.MmapHeapSizeKB * 1024);
-					AddMemoryBlock(_mmapheap.Memory, "mmap-heap");
-					_savestateComponents.Add(_mmapheap);
-					_disposeList.Add(_mmapheap);
-				}
-
-				// TODO: This debugger stuff doesn't work on nix?
-				System.Diagnostics.Debug.WriteLine($"About to enter unmanaged code for {opt.Filename}");
-				if (OSTailoredCode.IsUnixHost)
-				{
-					if (System.Diagnostics.Debugger.IsAttached)
-						System.Diagnostics.Debugger.Break();
-				}
-				else
-				{
-					if (!System.Diagnostics.Debugger.IsAttached && Win32Imports.IsDebuggerPresent())
-					{
-						// this means that GDB or another unconventional debugger is attached.
-						// if that's the case, and it's observing this core, it probably wants a break
-						System.Diagnostics.Debugger.Break();
-					}
-				}
-				_module.RunNativeInit();
+			var path = Path.Combine(opt.Path, moduleName);
+			var gzpath = path + ".gz";
+			byte[] data;
+			if (File.Exists(gzpath))
+			{
+				using var fs = new FileStream(gzpath, FileMode.Open, FileAccess.Read);
+				data = Util.DecompressGzipFile(fs);
 			}
+			else
+			{
+				data = File.ReadAllBytes(path);
+			}
+
+			var retobj = new ReturnData();
+			NativeImpl.wbx_create_host(nativeOpts, opt.Filename, CReader.FromStream(new MemoryStream(data, false)), retobj);
+			_nativeHost = retobj.GetDataOrThrow();
 		}
 
 		public IntPtr GetProcAddrOrZero(string entryPoint)
 		{
-			var addr = _module.GetProcAddrOrZero(entryPoint);
-			if (addr != IntPtr.Zero)
+			using (this.EnterExit())
 			{
-				var exclude = _imports.GetProcAddrOrZero(entryPoint);
-				if (exclude != IntPtr.Zero)
-				{
-					// don't reexport anything that's part of waterbox internals
-					return IntPtr.Zero;
-				}	
+				var retobj = new ReturnData();
+				NativeImpl.wbx_get_proc_addr(_activatedNativeHost, entryPoint, retobj);
+				return retobj.GetDataOrThrow();
 			}
-			return addr;
 		}
 
 		public IntPtr GetProcAddrOrThrow(string entryPoint)
 		{
-			var addr = _module.GetProcAddrOrZero(entryPoint);
+			var addr = GetProcAddrOrZero(entryPoint);
 			if (addr != IntPtr.Zero)
 			{
-				var exclude = _imports.GetProcAddrOrZero(entryPoint);
-				if (exclude != IntPtr.Zero)
-				{
-					// don't reexport anything that's part of waterbox internals
-					throw new InvalidOperationException($"Tried to resolve {entryPoint}, but it should not be exported");
-				}
-				else
-				{
-					return addr;
-				}
+				return addr;
 			}
 			else
 			{
@@ -299,36 +152,11 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		{
 			using (this.EnterExit())
 			{
-				// if libco is used, the jmp_buf for the main cothread can have stack stuff in it.
-				// this isn't a problem, since we only savestate when the core is not running, and
-				// the next time it's run, that buf will be overridden again.
-				// but it breaks xor state verification, so when we seal, nuke it.
-
-				// this could be the responsibility of something else other than the PeRunner; I am not sure yet...
-
-				// TODO: MAKE SURE THIS STILL WORKS
-				IntPtr co_clean;
-				if ((co_clean = _module.GetProcAddrOrZero("co_clean")) != IntPtr.Zero)
-				{
-					Console.WriteLine("Calling co_clean().");
-					CallingConventionAdapters.Waterbox.GetDelegateForFunctionPointer<Action>(co_clean)();
-				}
-
-				_sealedheap.Seal();
-				foreach (var h in _heaps)
-				{
-					if (h != _invisibleheap && h != _sealedheap) // TODO: if we have more non-savestated heaps, refine this hack
-						h.Memory.Seal();
-				}
-				_module.SealImportsAndTakeXorSnapshot();
-				_mmapheap?.Memory.Seal();
+				var retobj = new ReturnData();
+				NativeImpl.wbx_seal(_activatedNativeHost, retobj);
+				retobj.GetDataOrThrow();
 			}
 			Console.WriteLine("WaterboxHost Sealed!");
-		}
-
-		private void ConnectAllImports()
-		{
-			_module.ConnectSyscalls(_imports);
 		}
 
 		/// <summary>
@@ -338,7 +166,12 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// <param name="name">the filename that the unmanaged core will access the file by</param>
 		public void AddReadonlyFile(byte[] data, string name)
 		{
-			_syscalls.AddReadonlyFile((byte[])data.Clone(), name);
+			using (this.EnterExit())
+			{
+				var retobj = new ReturnData();
+				NativeImpl.wbx_mount_file(_activatedNativeHost, name, CReader.FromStream(new MemoryStream(data, false)), false, retobj);
+				retobj.GetDataOrThrow();
+			}
 		}
 
 		/// <summary>
@@ -347,7 +180,12 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// </summary>
 		public void RemoveReadonlyFile(string name)
 		{
-			_syscalls.RemoveReadonlyFile(name);
+			using (this.EnterExit())
+			{
+				var retobj = new ReturnData();
+				NativeImpl.wbx_unmount_file(_activatedNativeHost, name, null, retobj);
+				retobj.GetDataOrThrow();
+			}
 		}
 
 		/// <summary>
@@ -356,7 +194,12 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// </summary>
 		public void AddTransientFile(byte[] data, string name)
 		{
-			_syscalls.AddTransientFile(data, name); // don't need to clone data, as it's used at init only
+			using (this.EnterExit())
+			{
+				var retobj = new ReturnData();
+				NativeImpl.wbx_mount_file(_activatedNativeHost, name, CReader.FromStream(new MemoryStream(data, false)), true, retobj);
+				retobj.GetDataOrThrow();
+			}
 		}
 
 		/// <summary>
@@ -365,19 +208,50 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// <returns>The state of the file when it was removed</returns>
 		public byte[] RemoveTransientFile(string name)
 		{
-			return _syscalls.RemoveTransientFile(name);
+			using (this.EnterExit())
+			{
+				var retobj = new ReturnData();
+				var ms = new MemoryStream();
+				NativeImpl.wbx_unmount_file(_activatedNativeHost, name, CWriter.FromStream(ms), retobj);
+				retobj.GetDataOrThrow();
+				return ms.ToArray();
+			}
+		}
+
+		public class MissingFileResult
+		{
+			public byte[] data;
+			public bool writable;
 		}
 
 		/// <summary>
 		/// Can be set by the frontend and will be called if the core attempts to open a missing file.
-		/// The callee may add additional files to the waterbox during the callback and return `true` to indicate
-		/// that the right file was added and the scan should be rerun.  The callee may return `false` to indicate
-		/// that the file should be reported as missing.  Do not call other things during this callback.
+		/// The callee returns a result object, either null to indicate that the file should be reported as missing,
+		/// or data and writable status for a file to be just in time mounted.
+		/// Do not call anything on the waterbox things during this callback.
 		/// Can be called at any time by the core, so you may want to remove your callback entirely after init
 		/// if it was for firmware only.
+		/// writable == false is equivalent to AddReadonlyFile, writable == true is equivalent to AddTransientFile
 		/// </summary>
-		public Func<string, bool> MissingFileCallback
+		public Func<string, MissingFileResult> MissingFileCallback
 		{
+			set
+			{
+				using (this.EnterExit())
+				{
+					var mfc_o = value == null ? null : new WaterboxHostNative.MissingFileCallback
+					{
+						callback = (_unused, name) =>
+						{
+							var res = value(name);
+						}
+					};
+
+					NativeImpl.wbx_set_missing_file_callback(_activatedNativeHost, value == null
+						? null
+						: )
+				}
+			}
 			get => _syscalls.MissingFileCallback;
 			set => _syscalls.MissingFileCallback = value;
 		}
@@ -442,31 +316,173 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				_mmapheap = null;
 			}
 		}
-	}
 
-	internal static class WaterboxLibcoLinuxStartup
-	{
-		// TODO: This is a giant mess and get rid of it entirely
-		internal static void Setup()
+		public abstract class WaterboxHostNative
 		{
-			// Our libco implementation plays around with stuff in the TEB block.  This is bad for a few reasons:
-			// 1. It's windows specific
-			// 2. It's only doing this to satisfy some msvs __stkchk code that should never run
-			// 3. That code is only running because memory allocations in a cothread still send you back
-			// to managed land where things like the .NET jit might run on the costack, oof.
+			[StructLayout(LayoutKind.Sequential)]
+			public class ReturnData
+			{
+				[MarshalAs(UnmanagedType.ByValArray, SizeConst = 1024)]
+				public byte[] ErrorMessage = new byte[1024];
+				public IntPtr Data;
 
-			// We need to stop #3 from happening, probably by making the waterboxhost unmanaged code.  Then if we
-			// still need "GS fiddling" we can have it be part of our syscall layer without having a managed transition
+				public IntPtr GetDataOrThrow()
+				{
+					if (ErrorMessage[0] != 0)
+					{
+						fixed(byte* p = ErrorMessage)
+							throw new InvalidOperationException(Mershul.PtrToStringUtf8((IntPtr)p));
+					}
+					return Data;
+				}
+			}
 
-			// Until then, just fake a TEB block for linux -- nothing else uses GS anyway.
-			var ptr = Marshal.AllocHGlobal(0x40);
-			WaterboxUtils.ZeroMemory(ptr, 0x40);
-			Marshal.WriteIntPtr(ptr, 0x30, ptr);
-			if (ArchPrCtl(0x1001 /* SET_GS */, Z.SU((long)ptr)) != 0)
-				throw new InvalidOperationException("ArchPrCtl failed!");
+			[StructLayout(LayoutKind.Sequential)]
+			public class MemoryLayoutTemplate
+			{
+				/// Absolute pointer to the start of the mapped space
+				public UIntPtr start;
+				/// Memory space for the elf executable.  The elf must be non-relocatable and
+				/// all loaded segments must fit within [start..start + elf_size]
+				public UIntPtr elf_size;
+				/// Memory space to serve brk(2)
+				public UIntPtr sbrk_size;
+				/// Memory space to serve alloc_sealed(3)
+				public UIntPtr sealed_size;
+				/// Memory space to serve alloc_invisible(3)
+				public UIntPtr invis_size;
+				/// Memory space to serve alloc_plain(3)
+				public UIntPtr plain_size;
+				/// Memory space to serve mmap(2) and friends.
+				/// Calls without MAP_FIXED or MREMAP_FIXED will be placed in this area.
+				/// TODO: Are we allowing fixed calls to happen anywhere in the block?
+				public UIntPtr mmap_size;
+			}
+			public delegate IntPtr StreamCallback(IntPtr userdata, IntPtr /*byte**/ data, UIntPtr size);
+			public delegate UIntPtr /*MissingFileResult*/ FileCallback(IntPtr userdata, UIntPtr /*string*/ name);
+			[StructLayout(LayoutKind.Sequential)]
+			public class CWriter
+			{
+				/// will be passed to callback
+				public IntPtr userdata;
+				/// write bytes.  Return number of bytes written on success, or < 0 on failure.
+				/// Permitted to write less than the provided number of bytes.
+				public StreamCallback callback;
+				public static CWriter FromStream(Stream stream)
+				{
+					return new CWriter
+					{
+						// TODO: spans
+						callback = (_unused, data, size) =>
+						{
+							try
+							{
+								var count = (int)size;
+								var buff = new byte[count];
+								Marshal.Copy(data, buff, 0, count);
+								stream.Write(buff, 0, count);
+								return Z.SS(count);
+							}
+							catch
+							{
+								return Z.SS(-1);
+							}
+						}
+					};
+				}
+			}
+			[StructLayout(LayoutKind.Sequential)]
+			public class CReader
+			{
+				/// will be passed to callback
+				public UIntPtr userdata;
+				/// Read bytes into the buffer.  Return number of bytes read on success, or < 0 on failure.
+				/// permitted to read less than the provided buffer size, but must always read at least 1
+				/// byte if EOF is not reached.  If EOF is reached, should return 0.
+				public StreamCallback callback;
+				public static CReader FromStream(Stream stream)
+				{
+					return new CReader
+					{
+						// TODO: spans
+						callback = (_unused, data, size) =>
+						{
+							try
+							{
+								var count = (int)size;
+								var buff = new byte[count];
+								var n = stream.Read(buff, 0, count);
+								Marshal.Copy(buff, 0, data, count);
+								return Z.SS(n);
+							}
+							catch
+							{
+								return Z.SS(-1);
+							}
+						}
+					};
+				}
+			}
+			[StructLayout(LayoutKind.Sequential)]
+			public class MissingFileCallback
+			{
+				public UIntPtr userdata;
+				public FileCallback callback;
+			}
+			[StructLayout(LayoutKind.Sequential)]
+			public class MissingFileResult : CReader
+			{
+				public bool writable;
+			}
+
+			[BizImport(CallingConvention.Cdecl, Compatibility = true)]
+			public abstract void wbx_create_host(MemoryLayoutTemplate layout, string moduleName, CReader wbx, ReturnData /*WaterboxHost*/ ret);
+			/// Tear down a host environment.  May not be called while the environment is active.
+			[BizImport(CallingConvention.Cdecl, Compatibility = true)]
+			public abstract void wbx_destroy_host(IntPtr /*WaterboxHost*/ obj, [Out]ReturnData /*void*/ ret);
+			/// Activate a host environment.  This swaps it into memory and makes it available for use.
+			/// Pointers to inside the environment are only valid while active.  Uses a mutex internally
+			/// so as to not stomp over other host environments in the same 4GiB slice.
+			/// Returns a pointer to the activated object, used to do most other functions.
+			[BizImport(CallingConvention.Cdecl, Compatibility = true)]
+			public abstract void wbx_activate_host(IntPtr /*WaterboxHost*/ obj, ReturnData /*ActivatedWaterboxHost*/ ret);
+			/// Deactivates a host environment, and releases the mutex.
+			[BizImport(CallingConvention.Cdecl, Compatibility = true)]
+			public abstract void wbx_deactivate_host(IntPtr /*ActivatedWaterboxHost*/ obj, ReturnData /*void*/ ret);
+			/// Returns the address of an exported function from the guest executable.  This pointer is only valid
+			/// while the host is active.  A missing proc is not an error and simply returns 0.
+			[BizImport(CallingConvention.Cdecl, Compatibility = true)]
+			public abstract void wbx_get_proc_addr(IntPtr /*ActivatedWaterboxHost*/ obj, string name, ReturnData /*UIntPtr*/ ret);
+			/// Calls the seal operation, which is a one time action that prepares the host to save states.
+			[BizImport(CallingConvention.Cdecl, Compatibility = true)]
+			public abstract void wbx_seal(IntPtr /*ActivatedWaterboxHost*/ obj, ReturnData /*void*/ ret);
+			/// Mounts a file in the environment.  All data will be immediately consumed from the reader, which will not be used after this call.
+			/// To prevent nondeterminism, adding and removing files is very limited WRT savestates.  If a file is writable, it must never exist
+			/// when save_state is called, and can only be used for transient operations.  If a file is readable, it can appear in savestates,
+			/// but it must exist in every savestate and the exact sequence of add_file calls must be consistent from savestate to savestate.
+			[BizImport(CallingConvention.Cdecl, Compatibility = true)]
+			public abstract void wbx_mount_file(IntPtr /*ActivatedWaterboxHost*/ obj, string name, CReader reader, bool writable, ReturnData /*void*/ ret);
+			/// Remove a file previously added.  Writer is optional; if provided, the contents of the file at time of removal will be dumped to it.
+			/// It is an error to remove a file which is currently open in the guest.
+			[BizImport(CallingConvention.Cdecl, Compatibility = true)]
+			public abstract void wbx_unmount_file(IntPtr /*ActivatedWaterboxHost*/ obj, string name, CWriter writer, [Out]ReturnData /*void*/ ret);
+			/// Set (or clear, with None) a callback to be called whenever the guest tries to load a nonexistant file.
+			/// The callback will be provided with the name of the requested load, and can either return null to signal the waterbox
+			/// to return ENOENT to the guest, or a struct to immediately load that file.  You may not call any wbx methods
+			/// in the callback.  If the MissingFileResult is provided, it will be consumed immediately and will have the same effect
+			/// as wbx_mount_file().  You may free resources associated with the MissingFileResult whenever control next returns to your code.
+			[BizImport(CallingConvention.Cdecl, Compatibility = true)]
+			public abstract void wbx_set_missing_file_callback(IntPtr /*ActivatedWaterboxHost*/ obj, MissingFileCallback mfc_o);
+			/// Save state.  Must not be called before seal.  Must not be called with any writable files mounted.
+			/// Must always be called with the same sequence and contents of readonly files.
+			[BizImport(CallingConvention.Cdecl, Compatibility = true)]
+			public abstract void wbx_save_state(IntPtr /*ActivatedWaterboxHost*/ obj, CWriter writer, [Out]ReturnData /*void*/ ret);
+			/// Load state.  Must not be called before seal.  Must not be called with any writable files mounted.
+			/// Must always be called with the same sequence and contents of readonly files that were in the save state.
+			/// Must be called with the same wbx executable and memory layout as in the savestate.
+			/// Errors generally poison the environment; sorry!
+			[BizImport(CallingConvention.Cdecl, Compatibility = true)]
+			public abstract void wbx_load_state(IntPtr /*ActivatedWaterboxHost*/ obj, CReader reader, [Out]ReturnData /*void*/ ret);
 		}
-
-		[DllImport("libc.so.6", EntryPoint = "arch_prctl")]
-		private static extern int ArchPrCtl(int code, UIntPtr addr);
 	}
 }

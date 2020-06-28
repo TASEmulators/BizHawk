@@ -1,6 +1,6 @@
 use crate::*;
 use host::{ActivatedWaterboxHost, WaterboxHost};
-use std::{os::raw::c_char, ffi::{CString, CStr}};
+use std::{os::raw::c_char, ffi::{/*CString, */CStr}};
 
 /// The memory template for a WaterboxHost.  Don't worry about
 /// making every size as small as possible, since the savestater handles sparse regions
@@ -138,17 +138,17 @@ impl Read for CReader {
 	}
 }
 
-#[repr(C)]
-pub struct MissingFileCallback {
-	pub userdata: usize,
-	pub callback: extern fn(userdata: usize, name: *const c_char) -> *mut MissingFileResult,
-}
+// #[repr(C)]
+// pub struct MissingFileCallback {
+// 	pub userdata: usize,
+// 	pub callback: extern fn(userdata: usize, name: *const c_char) -> *mut MissingFileResult,
+// }
 
-#[repr(C)]
-pub struct MissingFileResult {
-	pub reader: CReader,
-	pub writable: bool,
-}
+// #[repr(C)]
+// pub struct MissingFileResult {
+// 	pub reader: CReader,
+// 	pub writable: bool,
+// }
 
 fn arg_to_str(arg: *const c_char) -> anyhow::Result<String> {
 	let cs = unsafe { CStr::from_ptr(arg as *const c_char) };
@@ -266,33 +266,33 @@ pub extern fn wbx_unmount_file(obj: &mut ActivatedWaterboxHost, name: *const c_c
 /// to return ENOENT to the guest, or a struct to immediately load that file.  You may not call any wbx methods
 /// in the callback.  If the MissingFileResult is provided, it will be consumed immediately and will have the same effect
 /// as wbx_mount_file().  You may free resources associated with the MissingFileResult whenever control next returns to your code.
-#[no_mangle]
-pub extern fn wbx_set_missing_file_callback(obj: &mut ActivatedWaterboxHost, mfc_o: Option<&MissingFileCallback>) {
-	match mfc_o {
-		None => obj.set_missing_file_callback(None),
-		Some(mfc) => {
-			let userdata = mfc.userdata;
-			let callback = mfc.callback;
-			obj.set_missing_file_callback(Some(Box::new(move |name| {
-				let namestr = CString::new(name).unwrap();
-				let mfr = callback(userdata, namestr.as_ptr() as *const c_char);
-				if mfr == 0 as *mut MissingFileResult {
-					return None
-				}
-				unsafe {
-					let data = read_whole_file(&mut (*mfr).reader);
-					match data {
-						Ok(d) => Some(fs::MissingFileResult {
-							data: d,
-							writable: (*mfr).writable
-						}),
-						Err(_) => None,
-					}
-				}
-			})));
-		}
-	}
-}
+// #[no_mangle]
+// pub extern fn wbx_set_missing_file_callback(obj: &mut ActivatedWaterboxHost, mfc_o: Option<&MissingFileCallback>) {
+// 	match mfc_o {
+// 		None => obj.set_missing_file_callback(None),
+// 		Some(mfc) => {
+// 			let userdata = mfc.userdata;
+// 			let callback = mfc.callback;
+// 			obj.set_missing_file_callback(Some(Box::new(move |name| {
+// 				let namestr = CString::new(name).unwrap();
+// 				let mfr = callback(userdata, namestr.as_ptr() as *const c_char);
+// 				if mfr == 0 as *mut MissingFileResult {
+// 					return None
+// 				}
+// 				unsafe {
+// 					let data = read_whole_file(&mut (*mfr).reader);
+// 					match data {
+// 						Ok(d) => Some(fs::MissingFileResult {
+// 							data: d,
+// 							writable: (*mfr).writable
+// 						}),
+// 						Err(_) => None,
+// 					}
+// 				}
+// 			})));
+// 		}
+// 	}
+// }
 
 /// Save state.  Must not be called before seal.  Must not be called with any writable files mounted.
 /// Must always be called with the same sequence and contents of readonly files.
