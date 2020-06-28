@@ -37,7 +37,7 @@
             this.FileSelectorPanel = new System.Windows.Forms.Panel();
             this.AddButton = new System.Windows.Forms.Button();
             this.SystemDropDown = new System.Windows.Forms.ComboBox();
-            this.SystemLabel = new System.Windows.Forms.Label();
+            this.SystemLabel = new BizHawk.WinForms.Controls.LocLabelEx();
             this.btnRemove = new System.Windows.Forms.Button();
             this.grpName.SuspendLayout();
             this.SuspendLayout();
@@ -158,11 +158,8 @@
             // SystemLabel
             // 
             this.SystemLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.SystemLabel.AutoSize = true;
             this.SystemLabel.Location = new System.Drawing.Point(355, 78);
             this.SystemLabel.Name = "SystemLabel";
-            this.SystemLabel.Size = new System.Drawing.Size(44, 13);
-            this.SystemLabel.TabIndex = 15;
             this.SystemLabel.Text = "System:";
             // 
             // btnRemove
@@ -213,7 +210,7 @@
 		private System.Windows.Forms.Button AddButton;
 		private System.Windows.Forms.Button BrowseBtn;
 		private System.Windows.Forms.ComboBox SystemDropDown;
-		private System.Windows.Forms.Label SystemLabel;
+		private BizHawk.WinForms.Controls.LocLabelEx SystemLabel;
 		private System.Windows.Forms.Button btnRemove;
 	}
 }
