@@ -28,14 +28,14 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.label1 = new System.Windows.Forms.Label();
+			this.label1 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.listBox1 = new System.Windows.Forms.ListBox();
-			this.label2 = new System.Windows.Forms.Label();
+			this.label2 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.buttonClear = new System.Windows.Forms.Button();
 			this.buttonGo = new System.Windows.Forms.Button();
-			this.label3 = new System.Windows.Forms.Label();
+			this.label3 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.numericUpDownFrames = new System.Windows.Forms.NumericUpDown();
-			this.label4 = new System.Windows.Forms.Label();
+			this.label4 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.progressBar1 = new System.Windows.Forms.ProgressBar();
 			this.buttonDump = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownFrames)).BeginInit();
@@ -43,11 +43,8 @@
 			// 
 			// label1
 			// 
-			this.label1.AutoSize = true;
 			this.label1.Location = new System.Drawing.Point(12, 9);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(83, 13);
-			this.label1.TabIndex = 1;
 			this.label1.Text = "Drag Files Here:";
 			// 
 			// listBox1
@@ -63,11 +60,8 @@
 			// 
 			// label2
 			// 
-			this.label2.AutoSize = true;
 			this.label2.Location = new System.Drawing.Point(12, 175);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(92, 13);
-			this.label2.TabIndex = 3;
 			this.label2.Text = "Number of Files: 0";
 			// 
 			// buttonClear
@@ -92,11 +86,8 @@
 			// 
 			// label3
 			// 
-			this.label3.AutoSize = true;
 			this.label3.Location = new System.Drawing.Point(12, 246);
 			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(40, 13);
-			this.label3.TabIndex = 6;
 			this.label3.Text = "Status:";
 			// 
 			// numericUpDownFrames
@@ -113,11 +104,8 @@
 			// 
 			// label4
 			// 
-			this.label4.AutoSize = true;
 			this.label4.Location = new System.Drawing.Point(157, 175);
 			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(74, 13);
-			this.label4.TabIndex = 8;
 			this.label4.Text = "Frames to run:";
 			// 
 			// progressBar1
@@ -154,6 +142,7 @@
 			this.Controls.Add(this.label1);
 			this.Name = "BatchRun";
 			this.Text = "BatchRun";
+			this.ShowIcon = false;
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.BatchRun_FormClosing);
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownFrames)).EndInit();
 			this.ResumeLayout(false);
@@ -163,14 +152,14 @@
 
 		#endregion
 
-		private System.Windows.Forms.Label label1;
+		private BizHawk.WinForms.Controls.LocLabelEx label1;
 		private System.Windows.Forms.ListBox listBox1;
-		private System.Windows.Forms.Label label2;
+		private BizHawk.WinForms.Controls.LocLabelEx label2;
 		private System.Windows.Forms.Button buttonClear;
 		private System.Windows.Forms.Button buttonGo;
-		private System.Windows.Forms.Label label3;
+		private BizHawk.WinForms.Controls.LocLabelEx label3;
 		private System.Windows.Forms.NumericUpDown numericUpDownFrames;
-		private System.Windows.Forms.Label label4;
+		private BizHawk.WinForms.Controls.LocLabelEx label4;
 		private System.Windows.Forms.ProgressBar progressBar1;
 		private System.Windows.Forms.Button buttonDump;
 	}
