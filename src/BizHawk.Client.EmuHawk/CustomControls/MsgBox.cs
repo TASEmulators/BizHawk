@@ -51,7 +51,6 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 
 		public void SetMessageToAutoSize()
 		{
-			messageLbl.AutoSize = true;
 			messageLbl.MaximumSize = new Size(MaximumSize.Width - _msgIcon.Width - UIHelper.ScaleX(25), MaximumSize.Height);
 		}
 

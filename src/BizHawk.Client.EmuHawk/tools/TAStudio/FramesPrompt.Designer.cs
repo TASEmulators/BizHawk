@@ -30,7 +30,7 @@
 		{
 			this.OkBtn = new System.Windows.Forms.Button();
 			this.CancelBtn = new System.Windows.Forms.Button();
-			this.label1 = new System.Windows.Forms.Label();
+			this.label1 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.NumFramesBox = new BizHawk.Client.EmuHawk.WatchValueBox();
 			this.SuspendLayout();
 			// 
@@ -59,11 +59,8 @@
 			// 
 			// label1
 			// 
-			this.label1.AutoSize = true;
 			this.label1.Location = new System.Drawing.Point(12, 20);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(120, 13);
-			this.label1.TabIndex = 4;
 			this.label1.Text = "Insert number of frames:";
 			// 
 			// NumFramesBox
@@ -106,6 +103,6 @@
 		private System.Windows.Forms.Button OkBtn;
 		private System.Windows.Forms.Button CancelBtn;
 		private WatchValueBox NumFramesBox;
-		private System.Windows.Forms.Label label1;
+		private BizHawk.WinForms.Controls.LocLabelEx label1;
 	}
 }

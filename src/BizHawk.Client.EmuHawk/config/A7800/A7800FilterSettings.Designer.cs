@@ -30,9 +30,9 @@
 		{
 			this.OkBtn = new System.Windows.Forms.Button();
 			this.CancelBtn = new System.Windows.Forms.Button();
-			this.label4 = new System.Windows.Forms.Label();
+			this.label4 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.Port1ComboBox = new System.Windows.Forms.ComboBox();
-			this.label1 = new System.Windows.Forms.Label();
+			this.label1 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.SuspendLayout();
 			// 
 			// OkBtn
@@ -60,11 +60,8 @@
 			// 
 			// label4
 			// 
-			this.label4.AutoSize = true;
 			this.label4.Location = new System.Drawing.Point(12, 44);
 			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(35, 13);
-			this.label4.TabIndex = 15;
 			this.label4.Text = "Filter: ";
 			// 
 			// Port1ComboBox
@@ -80,11 +77,8 @@
 			// 
 			// label1
 			// 
-			this.label1.AutoSize = true;
 			this.label1.Location = new System.Drawing.Point(12, 14);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(286, 13);
-			this.label1.TabIndex = 17;
 			this.label1.Text = "A7800 Filter Settings: Needed For Tower Toppler and Jinks";
 			// 
 			// A7800FilterSettings
@@ -112,8 +106,8 @@
 
 		private System.Windows.Forms.Button OkBtn;
 		private System.Windows.Forms.Button CancelBtn;
-		private System.Windows.Forms.Label label4;
+		private BizHawk.WinForms.Controls.LocLabelEx label4;
 		private System.Windows.Forms.ComboBox Port1ComboBox;
-		private System.Windows.Forms.Label label1;
+		private BizHawk.WinForms.Controls.LocLabelEx label1;
 	}
 }

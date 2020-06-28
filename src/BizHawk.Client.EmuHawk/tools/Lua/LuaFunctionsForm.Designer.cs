@@ -31,7 +31,7 @@
 			this.OK = new System.Windows.Forms.Button();
 			this.directoryEntry1 = new System.DirectoryServices.DirectoryEntry();
 			this.FilterBox = new System.Windows.Forms.TextBox();
-			this.label1 = new System.Windows.Forms.Label();
+			this.label1 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.ToWikiMarkupButton = new System.Windows.Forms.Button();
 			this.FunctionView = new System.Windows.Forms.ListView();
 			this.LibraryReturn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -64,11 +64,8 @@
 			// label1
 			// 
 			this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.label1.AutoSize = true;
 			this.label1.Location = new System.Drawing.Point(173, 314);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(29, 13);
-			this.label1.TabIndex = 3;
 			this.label1.Text = "Filter";
 			// 
 			// ToWikiMarkupButton
@@ -172,7 +169,7 @@
 		private System.Windows.Forms.ColumnHeader LibraryParameters;
 		private System.Windows.Forms.ColumnHeader LibraryDescription;
 		private System.Windows.Forms.TextBox FilterBox;
-		private System.Windows.Forms.Label label1;
+		private BizHawk.WinForms.Controls.LocLabelEx label1;
 		private System.Windows.Forms.Button ToWikiMarkupButton;
 		private System.Windows.Forms.ContextMenu CopyMenu;
 	}

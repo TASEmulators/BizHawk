@@ -28,17 +28,17 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.XLabel = new System.Windows.Forms.Label();
+			this.XLabel = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.ManualX = new System.Windows.Forms.NumericUpDown();
-			this.YLabel = new System.Windows.Forms.Label();
+			this.YLabel = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.ManualY = new System.Windows.Forms.NumericUpDown();
-			this.MaxLabel = new System.Windows.Forms.Label();
+			this.MaxLabel = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.MaxXNumeric = new System.Windows.Forms.NumericUpDown();
 			this.MaxYNumeric = new System.Windows.Forms.NumericUpDown();
-			this.rLabel = new System.Windows.Forms.Label();
+			this.rLabel = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.manualR = new System.Windows.Forms.NumericUpDown();
 			this.manualTheta = new System.Windows.Forms.NumericUpDown();
-			this.thetaLabel = new System.Windows.Forms.Label();
+			this.thetaLabel = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.AnalogStick = new BizHawk.Client.EmuHawk.AnalogStickPanel();
 			((System.ComponentModel.ISupportInitialize)(this.ManualX)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.ManualY)).BeginInit();
@@ -51,11 +51,8 @@
 			// XLabel
 			// 
 			this.XLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.XLabel.AutoSize = true;
 			this.XLabel.Location = new System.Drawing.Point(187, 7);
 			this.XLabel.Name = "XLabel";
-			this.XLabel.Size = new System.Drawing.Size(14, 13);
-			this.XLabel.TabIndex = 23;
 			this.XLabel.Text = "X";
 			// 
 			// ManualX
@@ -70,11 +67,8 @@
 			// YLabel
 			// 
 			this.YLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.YLabel.AutoSize = true;
 			this.YLabel.Location = new System.Drawing.Point(187, 33);
 			this.YLabel.Name = "YLabel";
-			this.YLabel.Size = new System.Drawing.Size(14, 13);
-			this.YLabel.TabIndex = 26;
 			this.YLabel.Text = "Y";
 			// 
 			// ManualY
@@ -90,11 +84,8 @@
 			// MaxLabel
 			// 
 			this.MaxLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.MaxLabel.AutoSize = true;
 			this.MaxLabel.Location = new System.Drawing.Point(205, 107);
 			this.MaxLabel.Name = "MaxLabel";
-			this.MaxLabel.Size = new System.Drawing.Size(47, 13);
-			this.MaxLabel.TabIndex = 27;
 			this.MaxLabel.Text = "Range%";
 			// 
 			// MaxXNumeric
@@ -121,11 +112,8 @@
 			// rLabel
 			// 
 			this.rLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.rLabel.AutoSize = true;
 			this.rLabel.Location = new System.Drawing.Point(167, 60);
 			this.rLabel.Name = "rLabel";
-			this.rLabel.Size = new System.Drawing.Size(26, 13);
-			this.rLabel.TabIndex = 30;
 			this.rLabel.Text = "Ray";
 			// 
 			// manualR
@@ -149,11 +137,8 @@
 			// thetaLabel
 			// 
 			this.thetaLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.thetaLabel.AutoSize = true;
 			this.thetaLabel.Location = new System.Drawing.Point(167, 86);
 			this.thetaLabel.Name = "thetaLabel";
-			this.thetaLabel.Size = new System.Drawing.Size(20, 13);
-			this.thetaLabel.TabIndex = 32;
 			this.thetaLabel.Text = "θ (°)";
 			// 
 			// AnalogStick
@@ -204,16 +189,16 @@
 		#endregion
 
 		private AnalogStickPanel AnalogStick;
-		private System.Windows.Forms.Label XLabel;
+		private BizHawk.WinForms.Controls.LocLabelEx XLabel;
 		private System.Windows.Forms.NumericUpDown ManualX;
-		private System.Windows.Forms.Label YLabel;
+		private BizHawk.WinForms.Controls.LocLabelEx YLabel;
 		private System.Windows.Forms.NumericUpDown ManualY;
-		private System.Windows.Forms.Label MaxLabel;
+		private BizHawk.WinForms.Controls.LocLabelEx MaxLabel;
 		private System.Windows.Forms.NumericUpDown MaxXNumeric;
 		private System.Windows.Forms.NumericUpDown MaxYNumeric;
-		private System.Windows.Forms.Label rLabel;
+		private BizHawk.WinForms.Controls.LocLabelEx rLabel;
 		private System.Windows.Forms.NumericUpDown manualR;
 		private System.Windows.Forms.NumericUpDown manualTheta;
-		private System.Windows.Forms.Label thetaLabel;
+		private BizHawk.WinForms.Controls.LocLabelEx thetaLabel;
 	}
 }

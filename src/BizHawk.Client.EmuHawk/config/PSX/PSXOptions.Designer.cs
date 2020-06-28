@@ -34,27 +34,27 @@
 			this.btnOk = new System.Windows.Forms.Button();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.linkLabel1 = new System.Windows.Forms.LinkLabel();
-			this.lblTweakedMednafen = new System.Windows.Forms.Label();
+			this.lblTweakedMednafen = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.rbTweakedMednafenMode = new System.Windows.Forms.RadioButton();
-			this.label3 = new System.Windows.Forms.Label();
+			this.label3 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.rbDebugMode = new System.Windows.Forms.RadioButton();
 			this.btnNiceDisplayConfig = new System.Windows.Forms.Button();
-			this.lblMednafen = new System.Windows.Forms.Label();
+			this.lblMednafen = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.rbMednafenMode = new System.Windows.Forms.RadioButton();
-			this.lblPixelPro = new System.Windows.Forms.Label();
+			this.lblPixelPro = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.rbPixelPro = new System.Windows.Forms.RadioButton();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
 			this.rbClipNone = new System.Windows.Forms.RadioButton();
 			this.rbClipToFramebuffer = new System.Windows.Forms.RadioButton();
 			this.rbClipBasic = new System.Windows.Forms.RadioButton();
-			this.lblPAL = new System.Windows.Forms.Label();
+			this.lblPAL = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.PAL_LastLineNumeric = new System.Windows.Forms.NumericUpDown();
 			this.PAL_FirstLineNumeric = new System.Windows.Forms.NumericUpDown();
-			this.lblNTSC = new System.Windows.Forms.Label();
+			this.lblNTSC = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.btnAreaFull = new System.Windows.Forms.Button();
-			this.label4 = new System.Windows.Forms.Label();
-			this.label1 = new System.Windows.Forms.Label();
+			this.label4 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label1 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.NTSC_LastLineNumeric = new System.Windows.Forms.NumericUpDown();
 			this.NTSC_FirstLineNumeric = new System.Windows.Forms.NumericUpDown();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
@@ -134,8 +134,6 @@
 			// 
 			this.lblTweakedMednafen.Location = new System.Drawing.Point(249, 134);
 			this.lblTweakedMednafen.Name = "lblTweakedMednafen";
-			this.lblTweakedMednafen.Size = new System.Drawing.Size(213, 93);
-			this.lblTweakedMednafen.TabIndex = 28;
 			this.lblTweakedMednafen.Text = resources.GetString("lblTweakedMednafen.Text");
 			// 
 			// rbTweakedMednafenMode
@@ -153,8 +151,6 @@
 			// 
 			this.label3.Location = new System.Drawing.Point(249, 35);
 			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(213, 82);
-			this.label3.TabIndex = 26;
 			this.label3.Text = "Displays all content unmodified\r\n • Window size will constantly change\r\n • Aspect" +
     " ratio is usually wrong\r\n • Recommended for hacking\r\n • Ideal for segmented AV d" +
     "umping\r\n • Ideal for screen shots\r\n\r\n";
@@ -185,8 +181,6 @@
 			// 
 			this.lblMednafen.Location = new System.Drawing.Point(6, 134);
 			this.lblMednafen.Name = "lblMednafen";
-			this.lblMednafen.Size = new System.Drawing.Size(213, 93);
-			this.lblMednafen.TabIndex = 23;
 			this.lblMednafen.Text = resources.GetString("lblMednafen.Text");
 			// 
 			// rbMednafenMode
@@ -204,8 +198,6 @@
 			// 
 			this.lblPixelPro.Location = new System.Drawing.Point(6, 35);
 			this.lblPixelPro.Name = "lblPixelPro";
-			this.lblPixelPro.Size = new System.Drawing.Size(252, 78);
-			this.lblPixelPro.TabIndex = 21;
 			this.lblPixelPro.Text = resources.GetString("lblPixelPro.Text");
 			// 
 			// rbPixelPro
@@ -295,11 +287,8 @@
 			// 
 			// lblPAL
 			// 
-			this.lblPAL.AutoSize = true;
 			this.lblPAL.Location = new System.Drawing.Point(131, 17);
 			this.lblPAL.Name = "lblPAL";
-			this.lblPAL.Size = new System.Drawing.Size(27, 13);
-			this.lblPAL.TabIndex = 44;
 			this.lblPAL.Text = "PAL";
 			// 
 			// PAL_LastLineNumeric
@@ -335,11 +324,8 @@
 			// 
 			// lblNTSC
 			// 
-			this.lblNTSC.AutoSize = true;
 			this.lblNTSC.Location = new System.Drawing.Point(62, 17);
 			this.lblNTSC.Name = "lblNTSC";
-			this.lblNTSC.Size = new System.Drawing.Size(36, 13);
-			this.lblNTSC.TabIndex = 41;
 			this.lblNTSC.Text = "NTSC";
 			// 
 			// btnAreaFull
@@ -354,20 +340,14 @@
 			// 
 			// label4
 			// 
-			this.label4.AutoSize = true;
 			this.label4.Location = new System.Drawing.Point(4, 64);
 			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(49, 13);
-			this.label4.TabIndex = 24;
 			this.label4.Text = "Last line:";
 			// 
 			// label1
 			// 
-			this.label1.AutoSize = true;
 			this.label1.Location = new System.Drawing.Point(5, 38);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(48, 13);
-			this.label1.TabIndex = 23;
 			this.label1.Text = "First line:";
 			// 
 			// NTSC_LastLineNumeric
@@ -540,21 +520,21 @@
 		private System.Windows.Forms.GroupBox groupBox1;
 		private System.Windows.Forms.RadioButton rbPixelPro;
 		private System.Windows.Forms.Button btnNiceDisplayConfig;
-		private System.Windows.Forms.Label lblMednafen;
+		private BizHawk.WinForms.Controls.LocLabelEx lblMednafen;
 		private System.Windows.Forms.RadioButton rbMednafenMode;
-		private System.Windows.Forms.Label lblPixelPro;
-		private System.Windows.Forms.Label label3;
+		private BizHawk.WinForms.Controls.LocLabelEx lblPixelPro;
+		private BizHawk.WinForms.Controls.LocLabelEx label3;
 		private System.Windows.Forms.RadioButton rbDebugMode;
-		private System.Windows.Forms.Label lblTweakedMednafen;
+		private BizHawk.WinForms.Controls.LocLabelEx lblTweakedMednafen;
 		private System.Windows.Forms.RadioButton rbTweakedMednafenMode;
 		private System.Windows.Forms.GroupBox groupBox2;
-		private System.Windows.Forms.Label lblPAL;
+		private BizHawk.WinForms.Controls.LocLabelEx lblPAL;
 		private System.Windows.Forms.NumericUpDown PAL_LastLineNumeric;
 		private System.Windows.Forms.NumericUpDown PAL_FirstLineNumeric;
-		private System.Windows.Forms.Label lblNTSC;
+		private BizHawk.WinForms.Controls.LocLabelEx lblNTSC;
 		private System.Windows.Forms.Button btnAreaFull;
-		private System.Windows.Forms.Label label4;
-		private System.Windows.Forms.Label label1;
+		private BizHawk.WinForms.Controls.LocLabelEx label4;
+		private BizHawk.WinForms.Controls.LocLabelEx label1;
 		private System.Windows.Forms.NumericUpDown NTSC_LastLineNumeric;
 		private System.Windows.Forms.NumericUpDown NTSC_FirstLineNumeric;
 		private System.Windows.Forms.LinkLabel linkLabel1;

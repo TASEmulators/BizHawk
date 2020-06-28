@@ -39,7 +39,7 @@
 			this.clearHistoryToHereToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.AutoScrollCheck = new System.Windows.Forms.CheckBox();
 			this.MaxStepsNum = new System.Windows.Forms.NumericUpDown();
-			this.label1 = new System.Windows.Forms.Label();
+			this.label1 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.HistoryView = new InputRoll();
 			this.RightClickMenu.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.MaxStepsNum)).BeginInit();
@@ -154,11 +154,8 @@
 			// label1
 			// 
 			this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.label1.AutoSize = true;
 			this.label1.Location = new System.Drawing.Point(236, 234);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(30, 13);
-			this.label1.TabIndex = 7;
 			this.label1.Text = "Max:";
 			// 
 			// HistoryView
@@ -215,6 +212,6 @@
 		private System.Windows.Forms.ToolStripMenuItem clearHistoryToHereToolStripMenuItem;
 		private System.Windows.Forms.CheckBox AutoScrollCheck;
 		private System.Windows.Forms.NumericUpDown MaxStepsNum;
-		private System.Windows.Forms.Label label1;
+		private BizHawk.WinForms.Controls.LocLabelEx label1;
 	}
 }

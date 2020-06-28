@@ -31,12 +31,12 @@
             this.okButton = new System.Windows.Forms.Button();
             this.threadsBar = new System.Windows.Forms.TrackBar();
             this.compressionBar = new System.Windows.Forms.TrackBar();
-            this.threadLeft = new System.Windows.Forms.Label();
-            this.threadRight = new System.Windows.Forms.Label();
-            this.compressionLeft = new System.Windows.Forms.Label();
-            this.compressionRight = new System.Windows.Forms.Label();
-            this.threadTop = new System.Windows.Forms.Label();
-            this.compressionTop = new System.Windows.Forms.Label();
+            this.threadLeft = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.threadRight = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.compressionLeft = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.compressionRight = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.threadTop = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.compressionTop = new BizHawk.WinForms.Controls.LocLabelEx();
             this.cancelButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.threadsBar)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.compressionBar)).BeginInit();
@@ -71,57 +71,39 @@
             // 
             // threadLeft
             // 
-            this.threadLeft.AutoSize = true;
             this.threadLeft.Location = new System.Drawing.Point(15, 25);
             this.threadLeft.Name = "threadLeft";
-            this.threadLeft.Size = new System.Drawing.Size(35, 13);
-            this.threadLeft.TabIndex = 2;
             this.threadLeft.Text = "label1";
             // 
             // threadRight
             // 
-            this.threadRight.AutoSize = true;
             this.threadRight.Location = new System.Drawing.Point(166, 25);
             this.threadRight.Name = "threadRight";
-            this.threadRight.Size = new System.Drawing.Size(35, 13);
-            this.threadRight.TabIndex = 4;
             this.threadRight.Text = "label2";
             // 
             // compressionLeft
             // 
-            this.compressionLeft.AutoSize = true;
             this.compressionLeft.Location = new System.Drawing.Point(15, 96);
             this.compressionLeft.Name = "compressionLeft";
-            this.compressionLeft.Size = new System.Drawing.Size(35, 13);
-            this.compressionLeft.TabIndex = 6;
             this.compressionLeft.Text = "label3";
             // 
             // compressionRight
             // 
-            this.compressionRight.AutoSize = true;
             this.compressionRight.Location = new System.Drawing.Point(166, 96);
             this.compressionRight.Name = "compressionRight";
-            this.compressionRight.Size = new System.Drawing.Size(35, 13);
-            this.compressionRight.TabIndex = 8;
             this.compressionRight.Text = "label4";
             // 
             // threadTop
             // 
-            this.threadTop.AutoSize = true;
             this.threadTop.Location = new System.Drawing.Point(62, 9);
             this.threadTop.Name = "threadTop";
-            this.threadTop.Size = new System.Drawing.Size(98, 13);
-            this.threadTop.TabIndex = 3;
             this.threadTop.Text = "Number of Threads";
             this.threadTop.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // compressionTop
             // 
-            this.compressionTop.AutoSize = true;
             this.compressionTop.Location = new System.Drawing.Point(64, 70);
             this.compressionTop.Name = "compressionTop";
-            this.compressionTop.Size = new System.Drawing.Size(96, 13);
-            this.compressionTop.TabIndex = 7;
             this.compressionTop.Text = "Compression Level";
             this.compressionTop.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
@@ -169,12 +151,12 @@
 		private System.Windows.Forms.Button okButton;
 		private System.Windows.Forms.TrackBar threadsBar;
 		private System.Windows.Forms.TrackBar compressionBar;
-		private System.Windows.Forms.Label threadLeft;
-		private System.Windows.Forms.Label threadRight;
-		private System.Windows.Forms.Label compressionLeft;
-		private System.Windows.Forms.Label compressionRight;
-		private System.Windows.Forms.Label threadTop;
-		private System.Windows.Forms.Label compressionTop;
+		private BizHawk.WinForms.Controls.LocLabelEx threadLeft;
+		private BizHawk.WinForms.Controls.LocLabelEx threadRight;
+		private BizHawk.WinForms.Controls.LocLabelEx compressionLeft;
+		private BizHawk.WinForms.Controls.LocLabelEx compressionRight;
+		private BizHawk.WinForms.Controls.LocLabelEx threadTop;
+		private BizHawk.WinForms.Controls.LocLabelEx compressionTop;
 		private System.Windows.Forms.Button cancelButton;
 	}
 }

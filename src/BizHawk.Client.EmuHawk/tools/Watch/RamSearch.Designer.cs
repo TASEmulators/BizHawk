@@ -29,7 +29,7 @@
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			this.TotalSearchLabel = new System.Windows.Forms.Label();
+			this.TotalSearchLabel = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.WatchListView = new InputRoll();
 			this.ListViewContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.DoSearchContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -104,8 +104,8 @@
 			this.FloatingWindowMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
 			this.RestoreDefaultsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.MemDomainLabel = new System.Windows.Forms.Label();
-			this.MessageLabel = new System.Windows.Forms.Label();
+			this.MemDomainLabel = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.MessageLabel = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.AutoSearchCheckBox = new System.Windows.Forms.CheckBox();
 			this.CompareToBox = new System.Windows.Forms.GroupBox();
@@ -147,8 +147,8 @@
 			this.LessThanRadio = new System.Windows.Forms.RadioButton();
 			this.SearchButton = new System.Windows.Forms.Button();
 			this.SizeDropdown = new System.Windows.Forms.ComboBox();
-			this.label1 = new System.Windows.Forms.Label();
-			this.label2 = new System.Windows.Forms.Label();
+			this.label1 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label2 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.DisplayTypeDropdown = new System.Windows.Forms.ComboBox();
 			this.SearchMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ListViewContextMenu.SuspendLayout();
@@ -167,11 +167,8 @@
 			// 
 			// TotalSearchLabel
 			// 
-			this.TotalSearchLabel.AutoSize = true;
 			this.TotalSearchLabel.Location = new System.Drawing.Point(12, 49);
 			this.TotalSearchLabel.Name = "TotalSearchLabel";
-			this.TotalSearchLabel.Size = new System.Drawing.Size(64, 13);
-			this.TotalSearchLabel.TabIndex = 2;
 			this.TotalSearchLabel.Text = "0 addresses";
 			// 
 			// WatchListView
@@ -787,21 +784,15 @@
 			// 
 			// MemDomainLabel
 			// 
-			this.MemDomainLabel.AutoSize = true;
 			this.MemDomainLabel.Location = new System.Drawing.Point(135, 49);
 			this.MemDomainLabel.Name = "MemDomainLabel";
-			this.MemDomainLabel.Size = new System.Drawing.Size(70, 13);
-			this.MemDomainLabel.TabIndex = 8;
 			this.MemDomainLabel.Text = "Main Memory";
 			// 
 			// MessageLabel
 			// 
 			this.MessageLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.MessageLabel.AutoSize = true;
 			this.MessageLabel.Location = new System.Drawing.Point(9, 434);
 			this.MessageLabel.Name = "MessageLabel";
-			this.MessageLabel.Size = new System.Drawing.Size(106, 13);
-			this.MessageLabel.TabIndex = 9;
 			this.MessageLabel.Text = " todo                         ";
 			// 
 			// AutoSearchCheckBox
@@ -1266,21 +1257,15 @@
 			// label1
 			// 
 			this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.label1.AutoSize = true;
 			this.label1.Location = new System.Drawing.Point(244, 358);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(27, 13);
-			this.label1.TabIndex = 97;
 			this.label1.Text = "Size";
 			// 
 			// label2
 			// 
 			this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.label2.AutoSize = true;
 			this.label2.Location = new System.Drawing.Point(327, 358);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(41, 13);
-			this.label2.TabIndex = 99;
 			this.label2.Text = "Display";
 			// 
 			// DisplayTypeDropdown
@@ -1343,7 +1328,7 @@
 
 		#endregion
 
-		private System.Windows.Forms.Label TotalSearchLabel;
+		private BizHawk.WinForms.Controls.LocLabelEx TotalSearchLabel;
 		private System.Windows.Forms.ToolStripMenuItem SearchMenuItem;
 		private InputRoll WatchListView;
 		private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
@@ -1354,8 +1339,8 @@
 		private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem RestoreDefaultsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SaveWinPositionMenuItem;
-		private System.Windows.Forms.Label MemDomainLabel;
-		private System.Windows.Forms.Label MessageLabel;
+		private BizHawk.WinForms.Controls.LocLabelEx MemDomainLabel;
+		private BizHawk.WinForms.Controls.LocLabelEx MessageLabel;
 		private System.Windows.Forms.ToolStripMenuItem RecentSubMenu;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
 		private System.Windows.Forms.ToolStripMenuItem AppendFileMenuItem;
@@ -1457,8 +1442,8 @@
 		private System.Windows.Forms.ToolStripSeparator RebootToolBarSeparator;
 		private System.Windows.Forms.ToolStripButton RebootToolbarButton;
 		private System.Windows.Forms.ComboBox SizeDropdown;
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.Label label2;
+		private BizHawk.WinForms.Controls.LocLabelEx label1;
+		private BizHawk.WinForms.Controls.LocLabelEx label2;
 		private System.Windows.Forms.ComboBox DisplayTypeDropdown;
 		private System.Windows.Forms.ToolStripMenuItem GoToAddressMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem FloatingWindowMenuItem;

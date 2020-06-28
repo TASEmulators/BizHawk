@@ -30,10 +30,10 @@
 		{
 			this.mnuGameShark = new System.Windows.Forms.MenuStrip();
 			this.btnClear = new System.Windows.Forms.Button();
-			this.lblCheat = new System.Windows.Forms.Label();
+			this.lblCheat = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.txtCheat = new System.Windows.Forms.TextBox();
 			this.btnGo = new System.Windows.Forms.Button();
-			this.lblDescription = new System.Windows.Forms.Label();
+			this.lblDescription = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.txtDescription = new System.Windows.Forms.TextBox();
 			this.SuspendLayout();
 			// 
@@ -57,11 +57,8 @@
 			// 
 			// lblCheat
 			// 
-			this.lblCheat.AutoSize = true;
 			this.lblCheat.Location = new System.Drawing.Point(12, 63);
 			this.lblCheat.Name = "lblCheat";
-			this.lblCheat.Size = new System.Drawing.Size(63, 13);
-			this.lblCheat.TabIndex = 11;
 			this.lblCheat.Text = "Cheat Code";
 			// 
 			// txtCheat
@@ -89,11 +86,8 @@
 			// 
 			// lblDescription
 			// 
-			this.lblDescription.AutoSize = true;
 			this.lblDescription.Location = new System.Drawing.Point(12, 38);
 			this.lblDescription.Name = "lblDescription";
-			this.lblDescription.Size = new System.Drawing.Size(60, 13);
-			this.lblDescription.TabIndex = 17;
 			this.lblDescription.Text = "Description";
 			// 
 			// txtDescription
@@ -131,10 +125,10 @@
 
 		private System.Windows.Forms.MenuStrip mnuGameShark;
 		internal System.Windows.Forms.Button btnClear;
-		internal System.Windows.Forms.Label lblCheat;
+		internal BizHawk.WinForms.Controls.LocLabelEx lblCheat;
 		internal System.Windows.Forms.TextBox txtCheat;
 		internal System.Windows.Forms.Button btnGo;
-		private System.Windows.Forms.Label lblDescription;
+		private BizHawk.WinForms.Controls.LocLabelEx lblDescription;
 		private System.Windows.Forms.TextBox txtDescription;
 	}
 }

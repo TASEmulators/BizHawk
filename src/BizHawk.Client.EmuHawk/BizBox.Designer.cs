@@ -31,15 +31,15 @@
 			this.OK = new System.Windows.Forms.Button();
 			this.pictureBox1 = new System.Windows.Forms.PictureBox();
 			this.linkLabel1 = new System.Windows.Forms.LinkLabel();
-			this.label3 = new System.Windows.Forms.Label();
-			this.label4 = new System.Windows.Forms.Label();
+			this.label3 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label4 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.CoreInfoPanel = new System.Windows.Forms.Panel();
-			this.VersionLabel = new System.Windows.Forms.Label();
+			this.VersionLabel = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.btnCopyHash = new System.Windows.Forms.Button();
 			this.linkLabel2 = new System.Windows.Forms.LinkLabel();
 			this.linkLabel3 = new System.Windows.Forms.LinkLabel();
-			this.DateLabel = new System.Windows.Forms.Label();
-			this.DeveloperBuildLabel = new System.Windows.Forms.Label();
+			this.DateLabel = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.DeveloperBuildLabel = new BizHawk.WinForms.Controls.LocLabelEx();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -78,22 +78,16 @@
 			// 
 			// label3
 			// 
-			this.label3.AutoSize = true;
 			this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.label3.Location = new System.Drawing.Point(197, 10);
 			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(78, 20);
-			this.label3.TabIndex = 5;
 			this.label3.Text = "BizHawk";
 			// 
 			// label4
 			// 
-			this.label4.AutoSize = true;
 			this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.label4.Location = new System.Drawing.Point(207, 31);
 			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(168, 32);
-			this.label4.TabIndex = 6;
 			this.label4.Text = "\"A multi-platform emulator...\r\nfor productive people.\"";
 			// 
 			// CoreInfoPanel
@@ -110,11 +104,8 @@
 			// 
 			// VersionLabel
 			// 
-			this.VersionLabel.AutoSize = true;
 			this.VersionLabel.Location = new System.Drawing.Point(198, 75);
 			this.VersionLabel.Name = "VersionLabel";
-			this.VersionLabel.Size = new System.Drawing.Size(108, 13);
-			this.VersionLabel.TabIndex = 7;
 			this.VersionLabel.Text = "versioninfo goes here";
 			// 
 			// btnCopyHash
@@ -154,21 +145,15 @@
 			// 
 			// DateLabel
 			// 
-			this.DateLabel.AutoSize = true;
 			this.DateLabel.Location = new System.Drawing.Point(198, 91);
 			this.DateLabel.Name = "DateLabel";
-			this.DateLabel.Size = new System.Drawing.Size(104, 13);
-			this.DateLabel.TabIndex = 21;
 			this.DateLabel.Text = "timestamp goes here";
 			// 
 			// DeveloperBuildLabel
 			// 
-			this.DeveloperBuildLabel.AutoSize = true;
 			this.DeveloperBuildLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.DeveloperBuildLabel.Location = new System.Drawing.Point(194, 137);
 			this.DeveloperBuildLabel.Name = "DeveloperBuildLabel";
-			this.DeveloperBuildLabel.Size = new System.Drawing.Size(240, 37);
-			this.DeveloperBuildLabel.TabIndex = 22;
 			this.DeveloperBuildLabel.Text = "Developer Build";
 			// 
 			// BizBox
@@ -206,15 +191,15 @@
 		private System.Windows.Forms.Button OK;
 		private System.Windows.Forms.PictureBox pictureBox1;
 		private System.Windows.Forms.LinkLabel linkLabel1;
-		private System.Windows.Forms.Label label3;
-		private System.Windows.Forms.Label label4;
+		private BizHawk.WinForms.Controls.LocLabelEx label3;
+		private BizHawk.WinForms.Controls.LocLabelEx label4;
 		private System.Windows.Forms.Panel CoreInfoPanel;
 		//private System.Windows.Forms.TextBox textBox1;
-		private System.Windows.Forms.Label VersionLabel;
+		private BizHawk.WinForms.Controls.LocLabelEx VersionLabel;
 		private System.Windows.Forms.Button btnCopyHash;
 		private System.Windows.Forms.LinkLabel linkLabel2;
         private System.Windows.Forms.LinkLabel linkLabel3;
-		private System.Windows.Forms.Label DateLabel;
-		private System.Windows.Forms.Label DeveloperBuildLabel;
+		private BizHawk.WinForms.Controls.LocLabelEx DateLabel;
+		private BizHawk.WinForms.Controls.LocLabelEx DeveloperBuildLabel;
 	}
 }

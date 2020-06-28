@@ -29,8 +29,8 @@
 		private void InitializeComponent()
 		{
             this.AnalogTrackBar = new System.Windows.Forms.TrackBar();
-            this.DisplayNameLabel = new System.Windows.Forms.Label();
-            this.ValueLabel = new System.Windows.Forms.Label();
+            this.DisplayNameLabel = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.ValueLabel = new BizHawk.WinForms.Controls.LocLabelEx();
             ((System.ComponentModel.ISupportInitialize)(this.AnalogTrackBar)).BeginInit();
             this.SuspendLayout();
             // 
@@ -47,21 +47,15 @@
             // DisplayNameLabel
             // 
             this.DisplayNameLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.DisplayNameLabel.AutoSize = true;
             this.DisplayNameLabel.Location = new System.Drawing.Point(6, 51);
             this.DisplayNameLabel.Name = "DisplayNameLabel";
-            this.DisplayNameLabel.Size = new System.Drawing.Size(33, 13);
-            this.DisplayNameLabel.TabIndex = 1;
             this.DisplayNameLabel.Text = "Slider";
             // 
             // ValueLabel
             // 
             this.ValueLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.ValueLabel.AutoSize = true;
             this.ValueLabel.Location = new System.Drawing.Point(257, 51);
             this.ValueLabel.Name = "ValueLabel";
-            this.ValueLabel.Size = new System.Drawing.Size(37, 13);
-            this.ValueLabel.TabIndex = 2;
             this.ValueLabel.Text = "99999";
             // 
             // VirtualPadAnalogButton
@@ -83,7 +77,7 @@
 		#endregion
 
 		private System.Windows.Forms.TrackBar AnalogTrackBar;
-		private System.Windows.Forms.Label DisplayNameLabel;
-		private System.Windows.Forms.Label ValueLabel;
+		private BizHawk.WinForms.Controls.LocLabelEx DisplayNameLabel;
+		private BizHawk.WinForms.Controls.LocLabelEx ValueLabel;
 	}
 }

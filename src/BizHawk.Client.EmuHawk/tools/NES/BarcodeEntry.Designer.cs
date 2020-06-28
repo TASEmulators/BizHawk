@@ -29,9 +29,9 @@
 		private void InitializeComponent()
 		{
 			this.textBox1 = new System.Windows.Forms.TextBox();
-			this.label1 = new System.Windows.Forms.Label();
-			this.label2 = new System.Windows.Forms.Label();
-			this.label3 = new System.Windows.Forms.Label();
+			this.label1 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label2 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label3 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.button1 = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
@@ -47,29 +47,20 @@
 			// 
 			// label1
 			// 
-			this.label1.AutoSize = true;
 			this.label1.Location = new System.Drawing.Point(12, 36);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(176, 13);
-			this.label1.TabIndex = 1;
 			this.label1.Text = "Enter the digits of the barcode here:";
 			// 
 			// label2
 			// 
-			this.label2.AutoSize = true;
 			this.label2.Location = new System.Drawing.Point(12, 9);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(503, 13);
-			this.label2.TabIndex = 2;
 			this.label2.Text = "THIS IS AN EXPERIMENTAL FEATURE AND WILL DESYNC MOVIES.  DO NOT USE WITH MOVIES.";
 			// 
 			// label3
 			// 
-			this.label3.AutoSize = true;
 			this.label3.Location = new System.Drawing.Point(12, 75);
 			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(35, 13);
-			this.label3.TabIndex = 3;
 			this.label3.Text = "label3";
 			// 
 			// button1
@@ -103,9 +94,9 @@
 		#endregion
 
 		private System.Windows.Forms.TextBox textBox1;
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.Label label3;
+		private BizHawk.WinForms.Controls.LocLabelEx label1;
+		private BizHawk.WinForms.Controls.LocLabelEx label2;
+		private BizHawk.WinForms.Controls.LocLabelEx label3;
 		private System.Windows.Forms.Button button1;
 	}
 }

@@ -28,17 +28,14 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.FileExtensionLabel = new System.Windows.Forms.Label();
+			this.FileExtensionLabel = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.PlatformDropdown = new System.Windows.Forms.ComboBox();
 			this.SuspendLayout();
 			// 
 			// FileExtensionLabel
 			// 
-			this.FileExtensionLabel.AutoSize = true;
 			this.FileExtensionLabel.Location = new System.Drawing.Point(3, 5);
 			this.FileExtensionLabel.Name = "FileExtensionLabel";
-			this.FileExtensionLabel.Size = new System.Drawing.Size(24, 13);
-			this.FileExtensionLabel.TabIndex = 0;
 			this.FileExtensionLabel.Text = ".bin";
 			// 
 			// PlatformDropdown
@@ -66,7 +63,7 @@
 
 		#endregion
 
-		private System.Windows.Forms.Label FileExtensionLabel;
+		private BizHawk.WinForms.Controls.LocLabelEx FileExtensionLabel;
 		private System.Windows.Forms.ComboBox PlatformDropdown;
 	}
 }

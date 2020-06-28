@@ -50,19 +50,19 @@
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
 			this.groupBox4 = new System.Windows.Forms.GroupBox();
-			this.PaletteLabel = new System.Windows.Forms.Label();
-			this.label5 = new System.Windows.Forms.Label();
-			this.TableLabel = new System.Windows.Forms.Label();
-			this.label4 = new System.Windows.Forms.Label();
-			this.PPUAddressLabel = new System.Windows.Forms.Label();
-			this.XYLabel = new System.Windows.Forms.Label();
-			this.TileIDLabel = new System.Windows.Forms.Label();
-			this.label3 = new System.Windows.Forms.Label();
-			this.label2 = new System.Windows.Forms.Label();
-			this.label1 = new System.Windows.Forms.Label();
+			this.PaletteLabel = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label5 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.TableLabel = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label4 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.PPUAddressLabel = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.XYLabel = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.TileIDLabel = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label3 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label2 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label1 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.groupBox5 = new System.Windows.Forms.GroupBox();
-			this.label7 = new System.Windows.Forms.Label();
-			this.label6 = new System.Windows.Forms.Label();
+			this.label7 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label6 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.RefreshRate = new System.Windows.Forms.TrackBar();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.groupBox1.SuspendLayout();
@@ -288,92 +288,62 @@
 			// 
 			// PaletteLabel
 			// 
-			this.PaletteLabel.AutoSize = true;
 			this.PaletteLabel.Location = new System.Drawing.Point(64, 96);
 			this.PaletteLabel.Name = "PaletteLabel";
-			this.PaletteLabel.Size = new System.Drawing.Size(22, 13);
-			this.PaletteLabel.TabIndex = 9;
 			this.PaletteLabel.Text = "     ";
 			// 
 			// label5
 			// 
-			this.label5.AutoSize = true;
 			this.label5.Location = new System.Drawing.Point(6, 96);
 			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(43, 13);
-			this.label5.TabIndex = 8;
 			this.label5.Text = "Palette:";
 			// 
 			// TableLabel
 			// 
-			this.TableLabel.AutoSize = true;
 			this.TableLabel.Location = new System.Drawing.Point(64, 78);
 			this.TableLabel.Name = "TableLabel";
-			this.TableLabel.Size = new System.Drawing.Size(22, 13);
-			this.TableLabel.TabIndex = 7;
 			this.TableLabel.Text = "     ";
 			// 
 			// label4
 			// 
-			this.label4.AutoSize = true;
 			this.label4.Location = new System.Drawing.Point(6, 78);
 			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(37, 13);
-			this.label4.TabIndex = 6;
 			this.label4.Text = "Table:";
 			// 
 			// PPUAddressLabel
 			// 
-			this.PPUAddressLabel.AutoSize = true;
 			this.PPUAddressLabel.Location = new System.Drawing.Point(64, 60);
 			this.PPUAddressLabel.Name = "PPUAddressLabel";
-			this.PPUAddressLabel.Size = new System.Drawing.Size(22, 13);
-			this.PPUAddressLabel.TabIndex = 5;
 			this.PPUAddressLabel.Text = "     ";
 			// 
 			// XYLabel
 			// 
-			this.XYLabel.AutoSize = true;
 			this.XYLabel.Location = new System.Drawing.Point(64, 43);
 			this.XYLabel.Name = "XYLabel";
-			this.XYLabel.Size = new System.Drawing.Size(22, 13);
-			this.XYLabel.TabIndex = 4;
 			this.XYLabel.Text = "     ";
 			// 
 			// TileIDLabel
 			// 
-			this.TileIDLabel.AutoSize = true;
 			this.TileIDLabel.Location = new System.Drawing.Point(64, 26);
 			this.TileIDLabel.Name = "TileIDLabel";
-			this.TileIDLabel.Size = new System.Drawing.Size(22, 13);
-			this.TileIDLabel.TabIndex = 3;
 			this.TileIDLabel.Text = "     ";
 			// 
 			// label3
 			// 
-			this.label3.AutoSize = true;
 			this.label3.Location = new System.Drawing.Point(6, 60);
 			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(57, 13);
-			this.label3.TabIndex = 2;
 			this.label3.Text = "PPU Addr:";
 			// 
 			// label2
 			// 
-			this.label2.AutoSize = true;
 			this.label2.Location = new System.Drawing.Point(6, 43);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(35, 13);
-			this.label2.TabIndex = 1;
 			this.label2.Text = "X / Y:";
 			// 
 			// label1
 			// 
-			this.label1.AutoSize = true;
 			this.label1.Location = new System.Drawing.Point(6, 26);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(41, 13);
-			this.label1.TabIndex = 0;
 			this.label1.Text = "Tile ID:";
 			// 
 			// groupBox5
@@ -390,20 +360,14 @@
 			// 
 			// label7
 			// 
-			this.label7.AutoSize = true;
 			this.label7.Location = new System.Drawing.Point(7, 186);
 			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(31, 13);
-			this.label7.TabIndex = 2;
 			this.label7.Text = "More";
 			// 
 			// label6
 			// 
-			this.label6.AutoSize = true;
 			this.label6.Location = new System.Drawing.Point(7, 32);
 			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(29, 13);
-			this.label6.TabIndex = 1;
 			this.label6.Text = "Less";
 			// 
 			// RefreshRate
@@ -470,20 +434,20 @@
 		private System.Windows.Forms.GroupBox groupBox2;
 		private System.Windows.Forms.GroupBox groupBox3;
 		private System.Windows.Forms.GroupBox groupBox4;
-		private System.Windows.Forms.Label PPUAddressLabel;
-		private System.Windows.Forms.Label XYLabel;
-		private System.Windows.Forms.Label TileIDLabel;
-		private System.Windows.Forms.Label label3;
-		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.Label label4;
-		private System.Windows.Forms.Label TableLabel;
-		private System.Windows.Forms.Label label5;
-		private System.Windows.Forms.Label PaletteLabel;
+		private BizHawk.WinForms.Controls.LocLabelEx PPUAddressLabel;
+		private BizHawk.WinForms.Controls.LocLabelEx XYLabel;
+		private BizHawk.WinForms.Controls.LocLabelEx TileIDLabel;
+		private BizHawk.WinForms.Controls.LocLabelEx label3;
+		private BizHawk.WinForms.Controls.LocLabelEx label2;
+		private BizHawk.WinForms.Controls.LocLabelEx label1;
+		private BizHawk.WinForms.Controls.LocLabelEx label4;
+		private BizHawk.WinForms.Controls.LocLabelEx TableLabel;
+		private BizHawk.WinForms.Controls.LocLabelEx label5;
+		private BizHawk.WinForms.Controls.LocLabelEx PaletteLabel;
 		private System.Windows.Forms.GroupBox groupBox5;
-		private System.Windows.Forms.Label label6;
+		private BizHawk.WinForms.Controls.LocLabelEx label6;
 		private System.Windows.Forms.TrackBar RefreshRate;
-		private System.Windows.Forms.Label label7;
+		private BizHawk.WinForms.Controls.LocLabelEx label7;
 		private System.Windows.Forms.ToolStripMenuItem FileSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem ScreenshotMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;

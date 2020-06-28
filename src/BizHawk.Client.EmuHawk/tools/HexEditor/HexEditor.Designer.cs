@@ -88,9 +88,9 @@
 			this.viewN64MatrixToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MemoryViewerBox = new System.Windows.Forms.GroupBox();
 			this.HexScrollBar = new System.Windows.Forms.VScrollBar();
-			this.AddressLabel = new System.Windows.Forms.Label();
-			this.AddressesLabel = new System.Windows.Forms.Label();
-			this.Header = new System.Windows.Forms.Label();
+			this.AddressLabel = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.AddressesLabel = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.Header = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.HexMenuStrip.SuspendLayout();
 			this.ViewerContextMenuStrip.SuspendLayout();
 			this.MemoryViewerBox.SuspendLayout();
@@ -591,22 +591,16 @@
 			// 
 			// AddressLabel
 			// 
-			this.AddressLabel.AutoSize = true;
 			this.AddressLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.AddressLabel.Location = new System.Drawing.Point(3, 30);
 			this.AddressLabel.Name = "AddressLabel";
-			this.AddressLabel.Size = new System.Drawing.Size(25, 13);
-			this.AddressLabel.TabIndex = 2;
 			this.AddressLabel.Text = "      ";
 			// 
 			// AddressesLabel
 			// 
-			this.AddressesLabel.AutoSize = true;
 			this.AddressesLabel.ContextMenuStrip = this.ViewerContextMenuStrip;
 			this.AddressesLabel.Location = new System.Drawing.Point(79, 30);
 			this.AddressesLabel.Name = "AddressesLabel";
-			this.AddressesLabel.Size = new System.Drawing.Size(31, 13);
-			this.AddressesLabel.TabIndex = 0;
 			this.AddressesLabel.Text = "RAM";
 			this.AddressesLabel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.AddressesLabel_MouseDown);
 			this.AddressesLabel.MouseLeave += new System.EventHandler(this.AddressesLabel_MouseLeave);
@@ -615,12 +609,9 @@
 			// 
 			// Header
 			// 
-			this.Header.AutoSize = true;
 			this.Header.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.Header.Location = new System.Drawing.Point(28, 44);
 			this.Header.Name = "Header";
-			this.Header.Size = new System.Drawing.Size(35, 13);
-			this.Header.TabIndex = 2;
 			this.Header.Text = "label1";
 			// 
 			// HexEditor
@@ -675,7 +666,7 @@
 		private System.Windows.Forms.ToolStripMenuItem AddToRamWatchMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem FreezeAddressMenuItem;
 		public System.Windows.Forms.GroupBox MemoryViewerBox;
-		private System.Windows.Forms.Label AddressesLabel;
+		private BizHawk.WinForms.Controls.LocLabelEx AddressesLabel;
 		private System.Windows.Forms.VScrollBar HexScrollBar;
 		private System.Windows.Forms.ToolStripMenuItem UnfreezeAllMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem UnfreezeAllContextItem;
@@ -696,8 +687,8 @@
 		private System.Windows.Forms.ToolStripMenuItem SetColorsMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
 		private System.Windows.Forms.ToolStripMenuItem ResetColorsToDefaultMenuItem;
-		public System.Windows.Forms.Label Header;
-		private System.Windows.Forms.Label AddressLabel;
+		public BizHawk.WinForms.Controls.LocLabelEx Header;
+		private BizHawk.WinForms.Controls.LocLabelEx AddressLabel;
 		private System.Windows.Forms.ToolStripMenuItem CopyContextItem;
 		private System.Windows.Forms.ToolStripMenuItem PasteContextItem;
 		private System.Windows.Forms.ToolStripMenuItem FindNextMenuItem;

@@ -30,14 +30,14 @@
         {
 			this.OkBtn = new System.Windows.Forms.Button();
 			this.CancelBtn = new System.Windows.Forms.Button();
-			this.label4 = new System.Windows.Forms.Label();
+			this.label4 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.MachineSelectionComboBox = new System.Windows.Forms.ComboBox();
-			this.label1 = new System.Windows.Forms.Label();
+			this.label1 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.determEmucheckBox1 = new System.Windows.Forms.CheckBox();
-			this.lblAutoLoadText = new System.Windows.Forms.Label();
+			this.lblAutoLoadText = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.autoLoadcheckBox1 = new System.Windows.Forms.CheckBox();
-			this.lblBorderInfo = new System.Windows.Forms.Label();
-			this.label2 = new System.Windows.Forms.Label();
+			this.lblBorderInfo = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label2 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.borderTypecomboBox1 = new System.Windows.Forms.ComboBox();
 			this.textBoxMachineNotes = new System.Windows.Forms.TextBox();
 			this.SuspendLayout();
@@ -67,11 +67,8 @@
 			// 
 			// label4
 			// 
-			this.label4.AutoSize = true;
 			this.label4.Location = new System.Drawing.Point(12, 46);
 			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(98, 13);
-			this.label4.TabIndex = 15;
 			this.label4.Text = "Emulated Machine:";
 			// 
 			// MachineSelectionComboBox
@@ -88,11 +85,8 @@
 			// 
 			// label1
 			// 
-			this.label1.AutoSize = true;
 			this.label1.Location = new System.Drawing.Point(12, 14);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(159, 13);
-			this.label1.TabIndex = 17;
 			this.label1.Text = "Amstrad CPC Emulation Settings";
 			// 
 			// determEmucheckBox1
@@ -110,8 +104,6 @@
 			this.lblAutoLoadText.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.lblAutoLoadText.Location = new System.Drawing.Point(155, 373);
 			this.lblAutoLoadText.Name = "lblAutoLoadText";
-			this.lblAutoLoadText.Size = new System.Drawing.Size(281, 56);
-			this.lblAutoLoadText.TabIndex = 27;
 			this.lblAutoLoadText.Text = "When enabled CPCHawk will automatically start and stop the tape whenever the tape" +
     " motor state changes";
 			this.lblAutoLoadText.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -131,18 +123,13 @@
 			this.lblBorderInfo.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.lblBorderInfo.Location = new System.Drawing.Point(177, 315);
 			this.lblBorderInfo.Name = "lblBorderInfo";
-			this.lblBorderInfo.Size = new System.Drawing.Size(259, 53);
-			this.lblBorderInfo.TabIndex = 30;
 			this.lblBorderInfo.Text = "null";
 			this.lblBorderInfo.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
 			// label2
 			// 
-			this.label2.AutoSize = true;
 			this.label2.Location = new System.Drawing.Point(12, 315);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(118, 13);
-			this.label2.TabIndex = 29;
 			this.label2.Text = "Rendered Border Type:";
 			// 
 			// borderTypecomboBox1
@@ -203,14 +190,14 @@
 
         private System.Windows.Forms.Button OkBtn;
         private System.Windows.Forms.Button CancelBtn;
-        private System.Windows.Forms.Label label4;
+        private BizHawk.WinForms.Controls.LocLabelEx label4;
         private System.Windows.Forms.ComboBox MachineSelectionComboBox;
-        private System.Windows.Forms.Label label1;
+        private BizHawk.WinForms.Controls.LocLabelEx label1;
         private System.Windows.Forms.CheckBox determEmucheckBox1;
-        private System.Windows.Forms.Label lblAutoLoadText;
+        private BizHawk.WinForms.Controls.LocLabelEx lblAutoLoadText;
         private System.Windows.Forms.CheckBox autoLoadcheckBox1;
-        private System.Windows.Forms.Label lblBorderInfo;
-        private System.Windows.Forms.Label label2;
+        private BizHawk.WinForms.Controls.LocLabelEx lblBorderInfo;
+        private BizHawk.WinForms.Controls.LocLabelEx label2;
         private System.Windows.Forms.ComboBox borderTypecomboBox1;
 		private System.Windows.Forms.TextBox textBoxMachineNotes;
 	}

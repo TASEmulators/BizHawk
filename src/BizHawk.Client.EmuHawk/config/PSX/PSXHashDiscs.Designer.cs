@@ -31,8 +31,8 @@
 			this.btnClose = new System.Windows.Forms.Button();
 			this.btnHash = new System.Windows.Forms.Button();
 			this.txtHashes = new System.Windows.Forms.TextBox();
-			this.label1 = new System.Windows.Forms.Label();
-			this.label2 = new System.Windows.Forms.Label();
+			this.label1 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label2 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.SuspendLayout();
 			// 
 			// btnClose
@@ -67,20 +67,14 @@
 			// 
 			// label1
 			// 
-			this.label1.AutoSize = true;
 			this.label1.Location = new System.Drawing.Point(24, 211);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(200, 13);
-			this.label1.TabIndex = 3;
 			this.label1.Text = "Sorry, this is gonna freeze while it hashes";
 			// 
 			// label2
 			// 
-			this.label2.AutoSize = true;
 			this.label2.Location = new System.Drawing.Point(96, 9);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(223, 26);
-			this.label2.TabIndex = 4;
 			this.label2.Text = "This tool hashes your discs in a standard way.\r\nCheck against redump.org \"Total\" " +
     "CRC-32";
 			// 
@@ -110,7 +104,7 @@
 		private System.Windows.Forms.Button btnClose;
 		private System.Windows.Forms.Button btnHash;
 		private System.Windows.Forms.TextBox txtHashes;
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.Label label2;
+		private BizHawk.WinForms.Controls.LocLabelEx label1;
+		private BizHawk.WinForms.Controls.LocLabelEx label2;
 	}
 }

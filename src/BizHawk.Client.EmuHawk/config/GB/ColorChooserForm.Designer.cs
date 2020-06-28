@@ -40,9 +40,9 @@
 			this.panel10 = new System.Windows.Forms.Panel();
 			this.panel11 = new System.Windows.Forms.Panel();
 			this.panel12 = new System.Windows.Forms.Panel();
-			this.label1 = new System.Windows.Forms.Label();
-			this.label2 = new System.Windows.Forms.Label();
-			this.label3 = new System.Windows.Forms.Label();
+			this.label1 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label2 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label3 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.OK = new System.Windows.Forms.Button();
 			this.Cancel = new System.Windows.Forms.Button();
 			this.buttonInterpolateBG = new System.Windows.Forms.Button();
@@ -164,29 +164,20 @@
 			// 
 			// label1
 			// 
-			this.label1.AutoSize = true;
 			this.label1.Location = new System.Drawing.Point(14, 27);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(22, 13);
-			this.label1.TabIndex = 12;
 			this.label1.Text = "BG";
 			// 
 			// label2
 			// 
-			this.label2.AutoSize = true;
 			this.label2.Location = new System.Drawing.Point(9, 66);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(27, 13);
-			this.label2.TabIndex = 13;
 			this.label2.Text = "SP1";
 			// 
 			// label3
 			// 
-			this.label3.AutoSize = true;
 			this.label3.Location = new System.Drawing.Point(9, 103);
 			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(27, 13);
-			this.label3.TabIndex = 14;
 			this.label3.Text = "SP2";
 			// 
 			// OK
@@ -339,9 +330,9 @@
 		private System.Windows.Forms.Panel panel10;
 		private System.Windows.Forms.Panel panel11;
 		private System.Windows.Forms.Panel panel12;
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.Label label3;
+		private BizHawk.WinForms.Controls.LocLabelEx label1;
+		private BizHawk.WinForms.Controls.LocLabelEx label2;
+		private BizHawk.WinForms.Controls.LocLabelEx label3;
 		private System.Windows.Forms.Button OK;
 		private System.Windows.Forms.Button Cancel;
 		private System.Windows.Forms.Button buttonInterpolateBG;

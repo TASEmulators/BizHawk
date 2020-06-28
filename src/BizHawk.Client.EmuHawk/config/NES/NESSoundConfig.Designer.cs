@@ -31,8 +31,8 @@
 			this.OK = new System.Windows.Forms.Button();
 			this.Cancel = new System.Windows.Forms.Button();
 			this.trackBar1 = new System.Windows.Forms.TrackBar();
-			this.label1 = new System.Windows.Forms.Label();
-			this.label6 = new System.Windows.Forms.Label();
+			this.label1 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label6 = new BizHawk.WinForms.Controls.LocLabelEx();
 			((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -72,20 +72,14 @@
 			// 
 			// label1
 			// 
-			this.label1.AutoSize = true;
 			this.label1.Location = new System.Drawing.Point(122, 12);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(67, 13);
-			this.label1.TabIndex = 7;
 			this.label1.Text = "APU Volume";
 			// 
 			// label6
 			// 
-			this.label6.AutoSize = true;
 			this.label6.Location = new System.Drawing.Point(122, 25);
 			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(13, 13);
-			this.label6.TabIndex = 12;
 			this.label6.Text = "0";
 			// 
 			// NESSoundConfig
@@ -117,7 +111,7 @@
 		private System.Windows.Forms.Button OK;
 		private System.Windows.Forms.Button Cancel;
 		private System.Windows.Forms.TrackBar trackBar1;
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.Label label6;
+		private BizHawk.WinForms.Controls.LocLabelEx label1;
+		private BizHawk.WinForms.Controls.LocLabelEx label6;
 	}
 }

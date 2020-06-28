@@ -31,7 +31,7 @@
 			this.btnOk = new System.Windows.Forms.Button();
 			this.btnCancel = new System.Windows.Forms.Button();
 			this.cbDoubleSize = new System.Windows.Forms.CheckBox();
-			this.lblDoubleSize = new System.Windows.Forms.Label();
+			this.lblDoubleSize = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.radioButton1 = new System.Windows.Forms.RadioButton();
 			this.cbCropSGBFrame = new System.Windows.Forms.CheckBox();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -85,8 +85,6 @@
 			// 
 			this.lblDoubleSize.Location = new System.Drawing.Point(36, 41);
 			this.lblDoubleSize.Name = "lblDoubleSize";
-			this.lblDoubleSize.Size = new System.Drawing.Size(254, 57);
-			this.lblDoubleSize.TabIndex = 7;
 			this.lblDoubleSize.Text = "Some games are changing the resolution constantly (e.g. SD3) so this option can f" +
     "orce the SNES output to stay double-size always. NOTE: The Accuracy core runs as" +
     " if this is selected.\r\n";
@@ -254,7 +252,7 @@
 		private System.Windows.Forms.Button btnOk;
 		private System.Windows.Forms.Button btnCancel;
 		private System.Windows.Forms.CheckBox cbDoubleSize;
-		private System.Windows.Forms.Label lblDoubleSize;
+		private BizHawk.WinForms.Controls.LocLabelEx lblDoubleSize;
 		private System.Windows.Forms.RadioButton radioButton1;
 		private System.Windows.Forms.CheckBox cbCropSGBFrame;
 		private System.Windows.Forms.GroupBox groupBox1;

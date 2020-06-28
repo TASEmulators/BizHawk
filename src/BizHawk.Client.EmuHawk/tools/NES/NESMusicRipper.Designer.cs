@@ -31,13 +31,13 @@
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NESMusicRipper));
 			this.btnControl = new System.Windows.Forms.Button();
 			this.txtDivider = new System.Windows.Forms.TextBox();
-			this.label1 = new System.Windows.Forms.Label();
+			this.label1 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.btnExport = new System.Windows.Forms.Button();
-			this.lblContents = new System.Windows.Forms.Label();
+			this.lblContents = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.textBox1 = new System.Windows.Forms.TextBox();
 			this.txtPatternLength = new System.Windows.Forms.TextBox();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
-			this.label2 = new System.Windows.Forms.Label();
+			this.label2 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
 			this.menuStrip1 = new MenuStripEx();
 			this.FileSubMenu = new System.Windows.Forms.ToolStripMenuItem();
@@ -68,11 +68,8 @@
 			// 
 			// label1
 			// 
-			this.label1.AutoSize = true;
 			this.label1.Location = new System.Drawing.Point(6, 16);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(135, 13);
-			this.label1.TabIndex = 2;
 			this.label1.Text = "APU Divider (trace interval)";
 			// 
 			// btnExport
@@ -88,11 +85,8 @@
 			// 
 			// lblContents
 			// 
-			this.lblContents.AutoSize = true;
 			this.lblContents.Location = new System.Drawing.Point(6, 102);
 			this.lblContents.Name = "lblContents";
-			this.lblContents.Size = new System.Drawing.Size(55, 13);
-			this.lblContents.TabIndex = 4;
 			this.lblContents.Text = "(Contents)";
 			// 
 			// textBox1
@@ -126,11 +120,8 @@
 			// 
 			// label2
 			// 
-			this.label2.AutoSize = true;
 			this.label2.Location = new System.Drawing.Point(12, 21);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(126, 13);
-			this.label2.TabIndex = 8;
 			this.label2.Text = "Pattern Length (512 max)";
 			// 
 			// groupBox2
@@ -208,9 +199,9 @@
 
 		private System.Windows.Forms.Button btnControl;
 		private System.Windows.Forms.TextBox txtDivider;
-		private System.Windows.Forms.Label label1;
+		private BizHawk.WinForms.Controls.LocLabelEx label1;
 		private System.Windows.Forms.Button btnExport;
-		private System.Windows.Forms.Label lblContents;
+		private BizHawk.WinForms.Controls.LocLabelEx lblContents;
 		private MenuStripEx menuStrip1;
 		private System.Windows.Forms.ToolStripMenuItem FileSubMenu;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
@@ -218,7 +209,7 @@
 		private System.Windows.Forms.TextBox textBox1;
 		private System.Windows.Forms.TextBox txtPatternLength;
 		private System.Windows.Forms.GroupBox groupBox1;
-		private System.Windows.Forms.Label label2;
+		private BizHawk.WinForms.Controls.LocLabelEx label2;
 		private System.Windows.Forms.GroupBox groupBox2;
 	}
 }

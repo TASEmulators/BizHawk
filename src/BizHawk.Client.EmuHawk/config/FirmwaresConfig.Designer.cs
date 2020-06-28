@@ -58,8 +58,8 @@
 			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
 			this.panel2 = new System.Windows.Forms.Panel();
 			this.linkBasePath = new System.Windows.Forms.LinkLabel();
-			this.label1 = new System.Windows.Forms.Label();
-			this.label2 = new System.Windows.Forms.Label();
+			this.label1 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label2 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.lvFirmwaresContextMenuStrip.SuspendLayout();
 			this.panel1.SuspendLayout();
@@ -336,21 +336,15 @@
 			// 
 			// label1
 			// 
-			this.label1.AutoSize = true;
 			this.label1.Location = new System.Drawing.Point(3, 0);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(119, 13);
-			this.label1.TabIndex = 25;
 			this.label1.Text = "Firmwares Search Path:";
 			// 
 			// label2
 			// 
-			this.label2.AutoSize = true;
 			this.label2.Location = new System.Drawing.Point(5, 5);
 			this.label2.Margin = new System.Windows.Forms.Padding(5, 5, 3, 0);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(395, 13);
-			this.label2.TabIndex = 27;
 			this.label2.Text = "Firmware such as BIOS files are copyrighted material and not provided by BizHawk";
 			// 
 			// FirmwaresConfig
@@ -404,13 +398,13 @@
 				private System.Windows.Forms.ToolStripMenuItem tsmiCopy;
 				private System.Windows.Forms.Panel panel2;
 				private System.Windows.Forms.LinkLabel linkBasePath;
-				private System.Windows.Forms.Label label1;
+				private BizHawk.WinForms.Controls.LocLabelEx label1;
 				private System.Windows.Forms.ToolStripButton tbbImport;
 				private System.Windows.Forms.ColumnHeader columnHeader8;
 				private System.Windows.Forms.ToolStripButton tbbClose;
 				private System.Windows.Forms.ToolStripButton tbbCloseReload;
 				private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-		private System.Windows.Forms.Label label2;
+		private BizHawk.WinForms.Controls.LocLabelEx label2;
         private System.Windows.Forms.ToolStripButton tbbOpenFolder;
     }
 }

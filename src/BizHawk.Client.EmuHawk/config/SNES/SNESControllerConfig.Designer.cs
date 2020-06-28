@@ -30,17 +30,17 @@
 		{
             this.OkBtn = new System.Windows.Forms.Button();
             this.CancelBtn = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
+            this.label1 = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.label5 = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.label4 = new BizHawk.WinForms.Controls.LocLabelEx();
             this.Port2ComboBox = new System.Windows.Forms.ComboBox();
             this.Port1ComboBox = new System.Windows.Forms.ComboBox();
-            this.MouseSpeedLabel1 = new System.Windows.Forms.Label();
+            this.MouseSpeedLabel1 = new BizHawk.WinForms.Controls.LocLabelEx();
             this.LimitAnalogChangeCheckBox = new System.Windows.Forms.CheckBox();
-            this.MouseSpeedLabel2 = new System.Windows.Forms.Label();
-            this.MouseSpeedLabel3 = new System.Windows.Forms.Label();
-            this.MouseNagLabel1 = new System.Windows.Forms.Label();
-            this.MouseNagLabel2 = new System.Windows.Forms.Label();
+            this.MouseSpeedLabel2 = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.MouseSpeedLabel3 = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.MouseNagLabel1 = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.MouseNagLabel2 = new BizHawk.WinForms.Controls.LocLabelEx();
             this.SuspendLayout();
             // 
             // OkBtn
@@ -68,29 +68,20 @@
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(12, 9);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(124, 13);
-            this.label1.TabIndex = 18;
             this.label1.Text = "SNES Controller Settings";
             // 
             // label5
             // 
-            this.label5.AutoSize = true;
             this.label5.Location = new System.Drawing.Point(9, 88);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(38, 13);
-            this.label5.TabIndex = 22;
             this.label5.Text = "Port 2:";
             // 
             // label4
             // 
-            this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(12, 38);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(38, 13);
-            this.label4.TabIndex = 21;
             this.label4.Text = "Port 1:";
             // 
             // Port2ComboBox
@@ -119,11 +110,8 @@
             // 
             // MouseSpeedLabel1
             // 
-            this.MouseSpeedLabel1.AutoSize = true;
             this.MouseSpeedLabel1.Location = new System.Drawing.Point(12, 195);
             this.MouseSpeedLabel1.Name = "MouseSpeedLabel1";
-            this.MouseSpeedLabel1.Size = new System.Drawing.Size(191, 13);
-            this.MouseSpeedLabel1.TabIndex = 23;
             this.MouseSpeedLabel1.Text = "For casual play this should be checked";
             // 
             // LimitAnalogChangeCheckBox
@@ -138,38 +126,26 @@
             // 
             // MouseSpeedLabel2
             // 
-            this.MouseSpeedLabel2.AutoSize = true;
             this.MouseSpeedLabel2.Location = new System.Drawing.Point(12, 208);
             this.MouseSpeedLabel2.Name = "MouseSpeedLabel2";
-            this.MouseSpeedLabel2.Size = new System.Drawing.Size(229, 13);
-            this.MouseSpeedLabel2.TabIndex = 25;
             this.MouseSpeedLabel2.Text = "The full range of values are rather unusuable in";
             // 
             // MouseSpeedLabel3
             // 
-            this.MouseSpeedLabel3.AutoSize = true;
             this.MouseSpeedLabel3.Location = new System.Drawing.Point(12, 221);
             this.MouseSpeedLabel3.Name = "MouseSpeedLabel3";
-            this.MouseSpeedLabel3.Size = new System.Drawing.Size(246, 13);
-            this.MouseSpeedLabel3.TabIndex = 26;
             this.MouseSpeedLabel3.Text = "normal situations, but good if you need total control";
             // 
             // MouseNagLabel1
             // 
-            this.MouseNagLabel1.AutoSize = true;
             this.MouseNagLabel1.Location = new System.Drawing.Point(12, 135);
             this.MouseNagLabel1.Name = "MouseNagLabel1";
-            this.MouseNagLabel1.Size = new System.Drawing.Size(273, 13);
-            this.MouseNagLabel1.TabIndex = 27;
             this.MouseNagLabel1.Text = "*Note: mouse and scope controls should be bound to an";
             // 
             // MouseNagLabel2
             // 
-            this.MouseNagLabel2.AutoSize = true;
             this.MouseNagLabel2.Location = new System.Drawing.Point(45, 148);
             this.MouseNagLabel2.Name = "MouseNagLabel2";
-            this.MouseNagLabel2.Size = new System.Drawing.Size(134, 13);
-            this.MouseNagLabel2.TabIndex = 28;
             this.MouseNagLabel2.Text = "analog stick not the mouse";
             // 
             // SNESControllerSettings
@@ -205,16 +181,16 @@
 
 		private System.Windows.Forms.Button OkBtn;
 		private System.Windows.Forms.Button CancelBtn;
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.Label label5;
-		private System.Windows.Forms.Label label4;
+		private BizHawk.WinForms.Controls.LocLabelEx label1;
+		private BizHawk.WinForms.Controls.LocLabelEx label5;
+		private BizHawk.WinForms.Controls.LocLabelEx label4;
 		private System.Windows.Forms.ComboBox Port2ComboBox;
 		private System.Windows.Forms.ComboBox Port1ComboBox;
-		private System.Windows.Forms.Label MouseSpeedLabel1;
+		private BizHawk.WinForms.Controls.LocLabelEx MouseSpeedLabel1;
 		private System.Windows.Forms.CheckBox LimitAnalogChangeCheckBox;
-		private System.Windows.Forms.Label MouseSpeedLabel2;
-		private System.Windows.Forms.Label MouseSpeedLabel3;
-		private System.Windows.Forms.Label MouseNagLabel1;
-		private System.Windows.Forms.Label MouseNagLabel2;
+		private BizHawk.WinForms.Controls.LocLabelEx MouseSpeedLabel2;
+		private BizHawk.WinForms.Controls.LocLabelEx MouseSpeedLabel3;
+		private BizHawk.WinForms.Controls.LocLabelEx MouseNagLabel1;
+		private BizHawk.WinForms.Controls.LocLabelEx MouseNagLabel2;
 	}
 }

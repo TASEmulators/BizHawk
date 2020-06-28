@@ -38,7 +38,7 @@
 			this.bmpViewNTA = new BizHawk.Client.EmuHawk.BmpView();
 			this.groupBox5 = new System.Windows.Forms.GroupBox();
 			this.bmpViewNTB = new BizHawk.Client.EmuHawk.BmpView();
-			this.label1 = new System.Windows.Forms.Label();
+			this.label1 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.menuStrip1 = new MenuStripEx();
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveBGAScreenshotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -149,11 +149,8 @@
 			// 
 			// label1
 			// 
-			this.label1.AutoSize = true;
 			this.label1.Location = new System.Drawing.Point(743, 855);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(323, 13);
-			this.label1.TabIndex = 10;
 			this.label1.Text = "CTRL+C copies the pane under the mouse pointer to the clipboard.";
 			// 
 			// menuStrip1
@@ -272,7 +269,7 @@
 		private System.Windows.Forms.GroupBox groupBox3;
 		private System.Windows.Forms.GroupBox groupBox4;
 		private System.Windows.Forms.GroupBox groupBox5;
-		private System.Windows.Forms.Label label1;
+		private BizHawk.WinForms.Controls.LocLabelEx label1;
 		private MenuStripEx menuStrip1;
 		private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem saveBGAScreenshotToolStripMenuItem;

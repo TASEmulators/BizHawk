@@ -34,11 +34,11 @@
 			this.ExecuteRadio = new System.Windows.Forms.RadioButton();
 			this.WriteRadio = new System.Windows.Forms.RadioButton();
 			this.ReadRadio = new System.Windows.Forms.RadioButton();
-			this.label1 = new System.Windows.Forms.Label();
+			this.label1 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.CancelBtn = new System.Windows.Forms.Button();
 			this.AddressBox = new BizHawk.Client.EmuHawk.HexTextBox();
-			this.label2 = new System.Windows.Forms.Label();
+			this.label2 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.AddressMaskBox = new BizHawk.Client.EmuHawk.HexTextBox();
 			this.BreakpointTypeGroupbox.SuspendLayout();
 			this.SuspendLayout();
@@ -99,11 +99,8 @@
 			// 
 			// label1
 			// 
-			this.label1.AutoSize = true;
 			this.label1.Location = new System.Drawing.Point(12, 9);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(59, 13);
-			this.label1.TabIndex = 4;
 			this.label1.Text = "Address 0x";
 			// 
 			// CancelBtn
@@ -130,11 +127,8 @@
 			// 
 			// label2
 			// 
-			this.label2.AutoSize = true;
 			this.label2.Location = new System.Drawing.Point(13, 32);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(47, 13);
-			this.label2.TabIndex = 5;
 			this.label2.Text = "Mask 0x";
 			// 
 			// AddressMaskBox
@@ -184,10 +178,10 @@
 		private System.Windows.Forms.RadioButton WriteRadio;
 		private System.Windows.Forms.RadioButton ReadRadio;
 		private HexTextBox AddressBox;
-		private System.Windows.Forms.Label label1;
+		private BizHawk.WinForms.Controls.LocLabelEx label1;
 		private System.Windows.Forms.ToolTip toolTip1;
 		private System.Windows.Forms.Button CancelBtn;
-		private System.Windows.Forms.Label label2;
+		private BizHawk.WinForms.Controls.LocLabelEx label2;
 		private HexTextBox AddressMaskBox;
 	}
 }
