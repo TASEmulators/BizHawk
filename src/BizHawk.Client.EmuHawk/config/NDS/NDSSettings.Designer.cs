@@ -34,16 +34,16 @@
             this.btnSave = new System.Windows.Forms.Button();
             this.ttipFirmware = new System.Windows.Forms.ToolTip(this.components);
             this.txtName = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.label1 = new BizHawk.WinForms.Controls.LocLabelEx();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.numBirthDay = new System.Windows.Forms.NumericUpDown();
             this.numBirthMonth = new System.Windows.Forms.NumericUpDown();
-            this.label3 = new System.Windows.Forms.Label();
+            this.label3 = new BizHawk.WinForms.Controls.LocLabelEx();
             this.cbxFavColor = new System.Windows.Forms.ComboBox();
-            this.label2 = new System.Windows.Forms.Label();
+            this.label2 = new BizHawk.WinForms.Controls.LocLabelEx();
             this.btnDefault = new System.Windows.Forms.Button();
             this.dtpStartupTime = new System.Windows.Forms.DateTimePicker();
-            this.label4 = new System.Windows.Forms.Label();
+            this.label4 = new BizHawk.WinForms.Controls.LocLabelEx();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numBirthDay)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numBirthMonth)).BeginInit();
@@ -94,11 +94,8 @@
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(6, 19);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(38, 13);
-            this.label1.TabIndex = 3;
             this.label1.Text = "Name:";
             // 
             // groupBox1
@@ -156,11 +153,8 @@
             // 
             // label3
             // 
-            this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(6, 71);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(79, 13);
-            this.label3.TabIndex = 6;
             this.label3.Text = "Birthday (M/D):";
             // 
             // cbxFavColor
@@ -191,11 +185,8 @@
             // 
             // label2
             // 
-            this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(6, 45);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(34, 13);
-            this.label2.TabIndex = 4;
             this.label2.Text = "Color:";
             // 
             // btnDefault
@@ -225,11 +216,8 @@
             // 
             // label4
             // 
-            this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(12, 154);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(57, 13);
-            this.label4.TabIndex = 6;
             this.label4.Text = "Date/time:";
             // 
             // NdsSettings
@@ -270,15 +258,15 @@
 		private System.Windows.Forms.Button btnSave;
 		private System.Windows.Forms.ToolTip ttipFirmware;
 		private System.Windows.Forms.TextBox txtName;
-		private System.Windows.Forms.Label label1;
+		private BizHawk.WinForms.Controls.LocLabelEx label1;
 		private System.Windows.Forms.GroupBox groupBox1;
-		private System.Windows.Forms.Label label3;
+		private BizHawk.WinForms.Controls.LocLabelEx label3;
 		private System.Windows.Forms.ComboBox cbxFavColor;
-		private System.Windows.Forms.Label label2;
+		private BizHawk.WinForms.Controls.LocLabelEx label2;
 		private System.Windows.Forms.NumericUpDown numBirthDay;
 		private System.Windows.Forms.NumericUpDown numBirthMonth;
 		private System.Windows.Forms.Button btnDefault;
 		private System.Windows.Forms.DateTimePicker dtpStartupTime;
-		private System.Windows.Forms.Label label4;
+		private BizHawk.WinForms.Controls.LocLabelEx label4;
 	}
 }

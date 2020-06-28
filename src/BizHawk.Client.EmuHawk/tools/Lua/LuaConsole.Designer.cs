@@ -89,8 +89,8 @@
 			this.ClearRegisteredFunctionsLogContextItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.InputBox = new System.Windows.Forms.TextBox();
-			this.NumberOfScripts = new System.Windows.Forms.Label();
-			this.OutputMessages = new System.Windows.Forms.Label();
+			this.NumberOfScripts = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.OutputMessages = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.toolStrip1 = new ToolStripEx();
 			this.NewScriptToolbarItem = new System.Windows.Forms.ToolStripButton();
 			this.OpenScriptToolbarItem = new System.Windows.Forms.ToolStripButton();
@@ -626,21 +626,15 @@
 			// 
 			// NumberOfScripts
 			// 
-			this.NumberOfScripts.AutoSize = true;
 			this.NumberOfScripts.Location = new System.Drawing.Point(3, 3);
 			this.NumberOfScripts.Name = "NumberOfScripts";
-			this.NumberOfScripts.Size = new System.Drawing.Size(56, 13);
-			this.NumberOfScripts.TabIndex = 4;
 			this.NumberOfScripts.Text = "0 script     ";
 			// 
 			// OutputMessages
 			// 
 			this.OutputMessages.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.OutputMessages.AutoSize = true;
 			this.OutputMessages.Location = new System.Drawing.Point(13, 329);
 			this.OutputMessages.Name = "OutputMessages";
-			this.OutputMessages.Size = new System.Drawing.Size(106, 13);
-			this.OutputMessages.TabIndex = 6;
 			this.OutputMessages.Text = "                                 ";
 			// 
 			// toolStrip1
@@ -882,7 +876,7 @@
 		private System.Windows.Forms.GroupBox groupBox1;
 		private System.Windows.Forms.ToolStripMenuItem NewSessionMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SettingsSubMenu;
-		private System.Windows.Forms.Label NumberOfScripts;
+		private BizHawk.WinForms.Controls.LocLabelEx NumberOfScripts;
 		private System.Windows.Forms.ToolStripMenuItem InsertSeparatorMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem StopAllScriptsMenuItem;
 		private System.Windows.Forms.ContextMenuStrip ScriptListContextMenu;
@@ -923,7 +917,7 @@
 		private System.Windows.Forms.ToolStripButton PauseToolbarItem;
 		private System.Windows.Forms.ToolStripMenuItem PauseScriptContextItem;
 		public System.Windows.Forms.RichTextBox OutputBox;
-		private System.Windows.Forms.Label OutputMessages;
+		private BizHawk.WinForms.Controls.LocLabelEx OutputMessages;
 		private System.Windows.Forms.ToolStripMenuItem OnlineDocsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem NewScriptMenuItem;
 		private System.Windows.Forms.ToolStripButton NewScriptToolbarItem;

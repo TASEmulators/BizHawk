@@ -40,23 +40,23 @@
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.groupFreeze = new System.Windows.Forms.GroupBox();
 			this.pnGroupFreeze = new System.Windows.Forms.Panel();
-			this.labelMemory = new System.Windows.Forms.Label();
+			this.labelMemory = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.check2x = new System.Windows.Forms.CheckBox();
 			this.comboDisplayType = new System.Windows.Forms.ComboBox();
-			this.label47 = new System.Windows.Forms.Label();
+			this.label47 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.pnBackdropColor = new System.Windows.Forms.Panel();
 			this.comboPalette = new System.Windows.Forms.ComboBox();
 			this.checkBackdropColor = new System.Windows.Forms.CheckBox();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
 			this.checkScanlineControl = new System.Windows.Forms.CheckBox();
-			this.label19 = new System.Windows.Forms.Label();
+			this.label19 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.nudScanline = new System.Windows.Forms.NumericUpDown();
 			this.sliderScanline = new System.Windows.Forms.TrackBar();
-			this.label24 = new System.Windows.Forms.Label();
+			this.label24 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.groupBox6 = new System.Windows.Forms.GroupBox();
-			this.labelClipboard = new System.Windows.Forms.Label();
+			this.labelClipboard = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
-			this.label26 = new System.Windows.Forms.Label();
+			this.label26 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.txtOBSELT1OfsBits = new System.Windows.Forms.TextBox();
 			this.groupBox8 = new System.Windows.Forms.GroupBox();
 			this.radioButton6 = new System.Windows.Forms.RadioButton();
@@ -69,46 +69,46 @@
 			this.radioButton3 = new System.Windows.Forms.RadioButton();
 			this.radioButton13 = new System.Windows.Forms.RadioButton();
 			this.radioButton2 = new System.Windows.Forms.RadioButton();
-			this.lblEnPrio3 = new System.Windows.Forms.Label();
+			this.lblEnPrio3 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.txtOBSELT1OfsDescr = new System.Windows.Forms.TextBox();
 			this.checkEN1_OBJ = new System.Windows.Forms.CheckBox();
-			this.label30 = new System.Windows.Forms.Label();
+			this.label30 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.checkEN1_BG4 = new System.Windows.Forms.CheckBox();
 			this.txtOBSELBaseBits = new System.Windows.Forms.TextBox();
 			this.checkEN1_BG3 = new System.Windows.Forms.CheckBox();
 			this.txtOBSELBaseDescr = new System.Windows.Forms.TextBox();
 			this.checkEN1_BG2 = new System.Windows.Forms.CheckBox();
-			this.label29 = new System.Windows.Forms.Label();
+			this.label29 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.checkEN1_BG1 = new System.Windows.Forms.CheckBox();
 			this.txtOBSELSizeBits = new System.Windows.Forms.TextBox();
 			this.checkEN3_OBJ = new System.Windows.Forms.CheckBox();
 			this.checkEN2_OBJ = new System.Windows.Forms.CheckBox();
 			this.txtOBSELSizeDescr = new System.Windows.Forms.TextBox();
-			this.lblEnPrio2 = new System.Windows.Forms.Label();
-			this.label28 = new System.Windows.Forms.Label();
-			this.lblEnPrio1 = new System.Windows.Forms.Label();
-			this.label20 = new System.Windows.Forms.Label();
+			this.lblEnPrio2 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label28 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.lblEnPrio1 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label20 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.checkScreenExtbg = new System.Windows.Forms.CheckBox();
-			this.label38 = new System.Windows.Forms.Label();
-			this.label21 = new System.Windows.Forms.Label();
+			this.label38 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label21 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.txtScreenCGADSUB_Half = new System.Windows.Forms.CheckBox();
 			this.checkScreenHires = new System.Windows.Forms.CheckBox();
-			this.lblEnPrio0 = new System.Windows.Forms.Label();
-			this.label18391 = new System.Windows.Forms.Label();
+			this.lblEnPrio0 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label18391 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.checkEN0_OBJ = new System.Windows.Forms.CheckBox();
 			this.checkScreenOverscan = new System.Windows.Forms.CheckBox();
 			this.checkEN0_BG4 = new System.Windows.Forms.CheckBox();
-			this.label198129381279841 = new System.Windows.Forms.Label();
+			this.label198129381279841 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.checkEN0_BG3 = new System.Windows.Forms.CheckBox();
 			this.checkScreenObjInterlace = new System.Windows.Forms.CheckBox();
 			this.checkEN0_BG2 = new System.Windows.Forms.CheckBox();
-			this.label123812831 = new System.Windows.Forms.Label();
+			this.label123812831 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.checkEN0_BG1 = new System.Windows.Forms.CheckBox();
 			this.checkScreenInterlace = new System.Windows.Forms.CheckBox();
 			this.txtScreenCGADSUB_AddSub_Descr = new System.Windows.Forms.TextBox();
-			this.label2193813 = new System.Windows.Forms.Label();
+			this.label2193813 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.txtScreenCGADSUB_AddSub = new System.Windows.Forms.TextBox();
-			this.label36 = new System.Windows.Forms.Label();
+			this.label36 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.checkTMOBJ = new BizHawk.Client.EmuHawk.CustomCheckBox();
 			this.checkTSOBJ = new BizHawk.Client.EmuHawk.CustomCheckBox();
 			this.checkMathBK = new BizHawk.Client.EmuHawk.CustomCheckBox();
@@ -117,48 +117,48 @@
 			this.checkMathBG3 = new BizHawk.Client.EmuHawk.CustomCheckBox();
 			this.checkMathBG2 = new BizHawk.Client.EmuHawk.CustomCheckBox();
 			this.checkMathBG1 = new BizHawk.Client.EmuHawk.CustomCheckBox();
-			this.label33 = new System.Windows.Forms.Label();
+			this.label33 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.checkMathOBJ = new BizHawk.Client.EmuHawk.CustomCheckBox();
-			this.lblTS = new System.Windows.Forms.Label();
+			this.lblTS = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.checkTSBG4 = new BizHawk.Client.EmuHawk.CustomCheckBox();
 			this.checkTSBG3 = new BizHawk.Client.EmuHawk.CustomCheckBox();
 			this.checkTSBG2 = new BizHawk.Client.EmuHawk.CustomCheckBox();
 			this.checkTSBG1 = new BizHawk.Client.EmuHawk.CustomCheckBox();
-			this.lblTM = new System.Windows.Forms.Label();
+			this.lblTM = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.checkTMBG4 = new BizHawk.Client.EmuHawk.CustomCheckBox();
 			this.checkTMBG3 = new BizHawk.Client.EmuHawk.CustomCheckBox();
 			this.checkTMBG2 = new BizHawk.Client.EmuHawk.CustomCheckBox();
 			this.checkTMBG1 = new BizHawk.Client.EmuHawk.CustomCheckBox();
-			this.label32 = new System.Windows.Forms.Label();
-			this.label31 = new System.Windows.Forms.Label();
-			this.label25 = new System.Windows.Forms.Label();
+			this.label32 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label31 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label25 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.txtScreenCGWSEL_MathFixed = new System.Windows.Forms.TextBox();
-			this.label2893719831 = new System.Windows.Forms.Label();
+			this.label2893719831 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.txtScreenCGWSEL_ColorSubMask = new System.Windows.Forms.TextBox();
-			this.label23 = new System.Windows.Forms.Label();
+			this.label23 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.txtScreenCGWSEL_ColorMask = new System.Windows.Forms.TextBox();
-			this.label22 = new System.Windows.Forms.Label();
-			this.label27 = new System.Windows.Forms.Label();
+			this.label22 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label27 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.checkScreenCGWSEL_DirectColor = new System.Windows.Forms.CheckBox();
-			this.label16 = new System.Windows.Forms.Label();
+			this.label16 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.txtScreenBG4TSize = new System.Windows.Forms.TextBox();
 			this.txtScreenBG3TSize = new System.Windows.Forms.TextBox();
 			this.txtScreenBG2TSize = new System.Windows.Forms.TextBox();
 			this.txtScreenBG1TSize = new System.Windows.Forms.TextBox();
 			this.txtScreenBG4Bpp = new System.Windows.Forms.TextBox();
-			this.label1 = new System.Windows.Forms.Label();
+			this.label1 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.txtScreenBG3Bpp = new System.Windows.Forms.TextBox();
 			this.txtModeBits = new System.Windows.Forms.TextBox();
 			this.txtScreenBG2Bpp = new System.Windows.Forms.TextBox();
-			this.label8 = new System.Windows.Forms.Label();
-			this.label7 = new System.Windows.Forms.Label();
+			this.label8 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label7 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.txtScreenBG1Bpp = new System.Windows.Forms.TextBox();
-			this.lblBG3 = new System.Windows.Forms.Label();
-			this.label4 = new System.Windows.Forms.Label();
-			this.label5 = new System.Windows.Forms.Label();
+			this.lblBG3 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label4 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label5 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.txtBG1Scroll = new System.Windows.Forms.TextBox();
-			this.label37 = new System.Windows.Forms.Label();
+			this.label37 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.txtBG1MapSizeBytes = new System.Windows.Forms.TextBox();
 			this.txtBGPaletteInfo = new System.Windows.Forms.TextBox();
 			this.rbBG4 = new System.Windows.Forms.RadioButton();
@@ -167,31 +167,31 @@
 			this.rbBG1 = new System.Windows.Forms.RadioButton();
 			this.txtBG1TSizeDescr = new System.Windows.Forms.TextBox();
 			this.comboBGProps = new System.Windows.Forms.ComboBox();
-			this.label15 = new System.Windows.Forms.Label();
+			this.label15 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.txtBG1TSizeBits = new System.Windows.Forms.TextBox();
-			this.label13 = new System.Windows.Forms.Label();
+			this.label13 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.txtBG1Colors = new System.Windows.Forms.TextBox();
 			this.txtBG1Bpp = new System.Windows.Forms.TextBox();
-			this.label12 = new System.Windows.Forms.Label();
+			this.label12 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.txtBG1TDAddrDescr = new System.Windows.Forms.TextBox();
-			this.label11 = new System.Windows.Forms.Label();
+			this.label11 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.txtBG1SCAddrDescr = new System.Windows.Forms.TextBox();
-			this.label9 = new System.Windows.Forms.Label();
+			this.label9 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.txtBG1TDAddrBits = new System.Windows.Forms.TextBox();
-			this.label10 = new System.Windows.Forms.Label();
+			this.label10 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.txtBG1SizeInPixels = new System.Windows.Forms.TextBox();
-			this.label3 = new System.Windows.Forms.Label();
+			this.label3 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.txtBG1SCAddrBits = new System.Windows.Forms.TextBox();
 			this.txtBG1SizeInTiles = new System.Windows.Forms.TextBox();
-			this.label2 = new System.Windows.Forms.Label();
+			this.label2 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.txtBG1SizeBits = new System.Windows.Forms.TextBox();
 			this.groupBox5 = new System.Windows.Forms.GroupBox();
 			this.paletteViewer = new BizHawk.Client.EmuHawk.SNESGraphicsViewer();
 			this.tabctrlDetails = new System.Windows.Forms.TabControl();
 			this.tpPalette = new System.Windows.Forms.TabPage();
-			this.label53 = new System.Windows.Forms.Label();
-			this.label52 = new System.Windows.Forms.Label();
-			this.label51 = new System.Windows.Forms.Label();
+			this.label53 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label52 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label51 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.txtPaletteDetailsAddress = new System.Windows.Forms.TextBox();
 			this.txtPaletteDetailsIndex = new System.Windows.Forms.TextBox();
 			this.txtPaletteDetailsIndexHex = new System.Windows.Forms.TextBox();
@@ -200,26 +200,26 @@
 			this.txtDetailsPaletteColor = new System.Windows.Forms.TextBox();
 			this.pnDetailsPaletteColor = new System.Windows.Forms.Panel();
 			this.tpTile = new System.Windows.Forms.TabPage();
-			this.label45 = new System.Windows.Forms.Label();
+			this.label45 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.txtTilePalette = new System.Windows.Forms.TextBox();
 			this.txtTileNumber = new System.Windows.Forms.TextBox();
 			this.txtTileMode = new System.Windows.Forms.TextBox();
-			this.label18 = new System.Windows.Forms.Label();
+			this.label18 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.txtTileColors = new System.Windows.Forms.TextBox();
 			this.txtTileBpp = new System.Windows.Forms.TextBox();
-			this.label42 = new System.Windows.Forms.Label();
+			this.label42 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.txtTileAddress = new System.Windows.Forms.TextBox();
 			this.viewerTile = new BizHawk.Client.EmuHawk.SNESGraphicsViewer();
 			this.tpMapEntry = new System.Windows.Forms.TabPage();
 			this.textBox2 = new System.Windows.Forms.TextBox();
 			this.checkMapEntryVFlip = new System.Windows.Forms.CheckBox();
-			this.label34 = new System.Windows.Forms.Label();
+			this.label34 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.checkMapEntryHFlip = new System.Windows.Forms.CheckBox();
-			this.label17 = new System.Windows.Forms.Label();
-			this.lblMapEntryHFlip = new System.Windows.Forms.Label();
+			this.label17 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.lblMapEntryHFlip = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.txtMapEntryPalette = new System.Windows.Forms.TextBox();
-			this.label14 = new System.Windows.Forms.Label();
-			this.label6 = new System.Windows.Forms.Label();
+			this.label14 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label6 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.txtMapEntryTileAddr = new System.Windows.Forms.TextBox();
 			this.txtMapEntryPrio = new System.Windows.Forms.TextBox();
 			this.txtMapEntryLocation = new System.Windows.Forms.TextBox();
@@ -227,22 +227,22 @@
 			this.viewerMapEntryTile = new BizHawk.Client.EmuHawk.SNESGraphicsViewer();
 			this.tpOBJ = new System.Windows.Forms.TabPage();
 			this.txtObjPriority = new System.Windows.Forms.TextBox();
-			this.label50 = new System.Windows.Forms.Label();
+			this.label50 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.txtObjPaletteMemo = new System.Windows.Forms.TextBox();
-			this.label49 = new System.Windows.Forms.Label();
+			this.label49 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.txtObjPalette = new System.Windows.Forms.TextBox();
-			this.label48 = new System.Windows.Forms.Label();
+			this.label48 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.txtObjNameAddr = new System.Windows.Forms.TextBox();
 			this.txtObjName = new System.Windows.Forms.TextBox();
 			this.txtObjSize = new System.Windows.Forms.TextBox();
-			this.label46 = new System.Windows.Forms.Label();
+			this.label46 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.cbObjLarge = new System.Windows.Forms.CheckBox();
 			this.txtObjNumber = new System.Windows.Forms.TextBox();
 			this.txtObjCoord = new System.Windows.Forms.TextBox();
 			this.cbObjVFlip = new System.Windows.Forms.CheckBox();
-			this.label43 = new System.Windows.Forms.Label();
+			this.label43 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.cbObjHFlip = new System.Windows.Forms.CheckBox();
-			this.label44 = new System.Windows.Forms.Label();
+			this.label44 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.viewerObj = new BizHawk.Client.EmuHawk.SNESGraphicsViewer();
 			this.viewerPanel = new System.Windows.Forms.Panel();
 			this.viewer = new BizHawk.Client.EmuHawk.SNESGraphicsViewer();
@@ -379,11 +379,8 @@
 			// 
 			// labelMemory
 			// 
-			this.labelMemory.AutoSize = true;
 			this.labelMemory.Location = new System.Drawing.Point(3, 2);
 			this.labelMemory.Name = "labelMemory";
-			this.labelMemory.Size = new System.Drawing.Size(176, 13);
-			this.labelMemory.TabIndex = 1;
 			this.labelMemory.Text = "Right-click an item to display it here.";
 			// 
 			// check2x
@@ -417,11 +414,8 @@
 			// 
 			// label47
 			// 
-			this.label47.AutoSize = true;
 			this.label47.Location = new System.Drawing.Point(442, 22);
 			this.label47.Name = "label47";
-			this.label47.Size = new System.Drawing.Size(40, 13);
-			this.label47.TabIndex = 53;
 			this.label47.Text = "Palette";
 			// 
 			// pnBackdropColor
@@ -482,12 +476,9 @@
 			// 
 			// label19
 			// 
-			this.label19.AutoSize = true;
 			this.label19.Location = new System.Drawing.Point(3, 7);
 			this.label19.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
 			this.label19.Name = "label19";
-			this.label19.Size = new System.Drawing.Size(48, 13);
-			this.label19.TabIndex = 41;
 			this.label19.Text = "Scanline";
 			// 
 			// nudScanline
@@ -520,11 +511,8 @@
 			// 
 			// label24
 			// 
-			this.label24.AutoSize = true;
 			this.label24.Location = new System.Drawing.Point(420, 60);
 			this.label24.Name = "label24";
-			this.label24.Size = new System.Drawing.Size(78, 13);
-			this.label24.TabIndex = 49;
 			this.label24.Text = "User Backdrop";
 			// 
 			// groupBox6
@@ -539,11 +527,8 @@
 			// 
 			// labelClipboard
 			// 
-			this.labelClipboard.AutoSize = true;
 			this.labelClipboard.Location = new System.Drawing.Point(4, 18);
 			this.labelClipboard.Name = "labelClipboard";
-			this.labelClipboard.Size = new System.Drawing.Size(152, 13);
-			this.labelClipboard.TabIndex = 0;
 			this.labelClipboard.Text = "Mouseover pane and CTRL+C";
 			// 
 			// groupBox2
@@ -647,11 +632,8 @@
 			// 
 			// label26
 			// 
-			this.label26.AutoSize = true;
 			this.label26.Location = new System.Drawing.Point(6, 194);
 			this.label26.Name = "label26";
-			this.label26.Size = new System.Drawing.Size(42, 13);
-			this.label26.TabIndex = 45;
 			this.label26.Text = "OBSEL";
 			// 
 			// txtOBSELT1OfsBits
@@ -806,12 +788,9 @@
 			// 
 			// lblEnPrio3
 			// 
-			this.lblEnPrio3.AutoSize = true;
 			this.lblEnPrio3.ForeColor = System.Drawing.Color.Blue;
 			this.lblEnPrio3.Location = new System.Drawing.Point(3, 161);
 			this.lblEnPrio3.Name = "lblEnPrio3";
-			this.lblEnPrio3.Size = new System.Drawing.Size(49, 13);
-			this.lblEnPrio3.TabIndex = 101;
 			this.lblEnPrio3.Text = "EN.Prio3";
 			this.lblEnPrio3.Click += new System.EventHandler(this.lblEnPrio3_Click);
 			this.lblEnPrio3.DoubleClick += new System.EventHandler(this.lblEnPrio3_Click);
@@ -837,11 +816,8 @@
 			// 
 			// label30
 			// 
-			this.label30.AutoSize = true;
 			this.label30.Location = new System.Drawing.Point(32, 252);
 			this.label30.Name = "label30";
-			this.label30.Size = new System.Drawing.Size(46, 13);
-			this.label30.TabIndex = 53;
 			this.label30.Text = "@Tiles1";
 			// 
 			// checkEN1_BG4
@@ -896,11 +872,8 @@
 			// 
 			// label29
 			// 
-			this.label29.AutoSize = true;
 			this.label29.Location = new System.Drawing.Point(32, 233);
 			this.label29.Name = "label29";
-			this.label29.Size = new System.Drawing.Size(46, 13);
-			this.label29.TabIndex = 50;
 			this.label29.Text = "@Tiles0";
 			// 
 			// checkEN1_BG1
@@ -956,44 +929,32 @@
 			// 
 			// lblEnPrio2
 			// 
-			this.lblEnPrio2.AutoSize = true;
 			this.lblEnPrio2.ForeColor = System.Drawing.Color.Blue;
 			this.lblEnPrio2.Location = new System.Drawing.Point(3, 146);
 			this.lblEnPrio2.Name = "lblEnPrio2";
-			this.lblEnPrio2.Size = new System.Drawing.Size(49, 13);
-			this.lblEnPrio2.TabIndex = 93;
 			this.lblEnPrio2.Text = "EN.Prio2";
 			this.lblEnPrio2.Click += new System.EventHandler(this.lblEnPrio2_Click);
 			this.lblEnPrio2.DoubleClick += new System.EventHandler(this.lblEnPrio2_Click);
 			// 
 			// label28
 			// 
-			this.label28.AutoSize = true;
 			this.label28.Location = new System.Drawing.Point(32, 213);
 			this.label28.Name = "label28";
-			this.label28.Size = new System.Drawing.Size(27, 13);
-			this.label28.TabIndex = 47;
 			this.label28.Text = "Size";
 			// 
 			// lblEnPrio1
 			// 
-			this.lblEnPrio1.AutoSize = true;
 			this.lblEnPrio1.ForeColor = System.Drawing.Color.Blue;
 			this.lblEnPrio1.Location = new System.Drawing.Point(162, 130);
 			this.lblEnPrio1.Name = "lblEnPrio1";
-			this.lblEnPrio1.Size = new System.Drawing.Size(49, 13);
-			this.lblEnPrio1.TabIndex = 92;
 			this.lblEnPrio1.Text = "EN.Prio1";
 			this.lblEnPrio1.Click += new System.EventHandler(this.lblEnPrio1_Click);
 			this.lblEnPrio1.DoubleClick += new System.EventHandler(this.lblEnPrio1_Click);
 			// 
 			// label20
 			// 
-			this.label20.AutoSize = true;
 			this.label20.Location = new System.Drawing.Point(72, 147);
 			this.label20.Name = "label20";
-			this.label20.Size = new System.Drawing.Size(42, 13);
-			this.label20.TabIndex = 21;
 			this.label20.Text = "SETINI";
 			// 
 			// checkScreenExtbg
@@ -1008,20 +969,14 @@
 			// 
 			// label38
 			// 
-			this.label38.AutoSize = true;
 			this.label38.Location = new System.Drawing.Point(229, 131);
 			this.label38.Name = "label38";
-			this.label38.Size = new System.Drawing.Size(26, 13);
-			this.label38.TabIndex = 91;
 			this.label38.Text = "Half";
 			// 
 			// label21
 			// 
-			this.label21.AutoSize = true;
 			this.label21.Location = new System.Drawing.Point(97, 163);
 			this.label21.Name = "label21";
-			this.label21.Size = new System.Drawing.Size(43, 13);
-			this.label21.TabIndex = 23;
 			this.label21.Text = "EXTBG";
 			// 
 			// txtScreenCGADSUB_Half
@@ -1046,23 +1001,17 @@
 			// 
 			// lblEnPrio0
 			// 
-			this.lblEnPrio0.AutoSize = true;
 			this.lblEnPrio0.ForeColor = System.Drawing.Color.Blue;
 			this.lblEnPrio0.Location = new System.Drawing.Point(162, 115);
 			this.lblEnPrio0.Name = "lblEnPrio0";
-			this.lblEnPrio0.Size = new System.Drawing.Size(49, 13);
-			this.lblEnPrio0.TabIndex = 89;
 			this.lblEnPrio0.Text = "EN.Prio0";
 			this.lblEnPrio0.Click += new System.EventHandler(this.lblEnPrio0_Click);
 			this.lblEnPrio0.DoubleClick += new System.EventHandler(this.lblEnPrio0_Click);
 			// 
 			// label18391
 			// 
-			this.label18391.AutoSize = true;
 			this.label18391.Location = new System.Drawing.Point(97, 177);
 			this.label18391.Name = "label18391";
-			this.label18391.Size = new System.Drawing.Size(40, 13);
-			this.label18391.TabIndex = 25;
 			this.label18391.Text = "HIRES";
 			// 
 			// checkEN0_OBJ
@@ -1097,11 +1046,8 @@
 			// 
 			// label198129381279841
 			// 
-			this.label198129381279841.AutoSize = true;
 			this.label198129381279841.Location = new System.Drawing.Point(97, 191);
 			this.label198129381279841.Name = "label198129381279841";
-			this.label198129381279841.Size = new System.Drawing.Size(47, 13);
-			this.label198129381279841.TabIndex = 27;
 			this.label198129381279841.Text = "O.SCAN";
 			// 
 			// checkEN0_BG3
@@ -1136,11 +1082,8 @@
 			// 
 			// label123812831
 			// 
-			this.label123812831.AutoSize = true;
 			this.label123812831.Location = new System.Drawing.Point(156, 161);
 			this.label123812831.Name = "label123812831";
-			this.label123812831.Size = new System.Drawing.Size(49, 13);
-			this.label123812831.TabIndex = 29;
 			this.label123812831.Text = "O.INTLC";
 			// 
 			// checkEN0_BG1
@@ -1175,11 +1118,8 @@
 			// 
 			// label2193813
 			// 
-			this.label2193813.AutoSize = true;
 			this.label2193813.Location = new System.Drawing.Point(156, 174);
 			this.label2193813.Name = "label2193813";
-			this.label2193813.Size = new System.Drawing.Size(48, 13);
-			this.label2193813.TabIndex = 31;
 			this.label2193813.Text = "S.INTLC";
 			// 
 			// txtScreenCGADSUB_AddSub
@@ -1195,11 +1135,8 @@
 			// 
 			// label36
 			// 
-			this.label36.AutoSize = true;
 			this.label36.Location = new System.Drawing.Point(206, 96);
 			this.label36.Name = "label36";
-			this.label36.Size = new System.Drawing.Size(59, 13);
-			this.label36.TabIndex = 82;
 			this.label36.Text = "CGADSUB";
 			// 
 			// checkTMOBJ
@@ -1289,11 +1226,8 @@
 			// 
 			// label33
 			// 
-			this.label33.AutoSize = true;
 			this.label33.Location = new System.Drawing.Point(162, 94);
 			this.label33.Name = "label33";
-			this.label33.Size = new System.Drawing.Size(31, 13);
-			this.label33.TabIndex = 73;
 			this.label33.Text = "Math";
 			// 
 			// checkMathOBJ
@@ -1309,11 +1243,8 @@
 			// 
 			// lblTS
 			// 
-			this.lblTS.AutoSize = true;
 			this.lblTS.Location = new System.Drawing.Point(162, 78);
 			this.lblTS.Name = "lblTS";
-			this.lblTS.Size = new System.Drawing.Size(21, 13);
-			this.lblTS.TabIndex = 71;
 			this.lblTS.Text = "TS";
 			// 
 			// checkTSBG4
@@ -1362,11 +1293,8 @@
 			// 
 			// lblTM
 			// 
-			this.lblTM.AutoSize = true;
 			this.lblTM.Location = new System.Drawing.Point(162, 63);
 			this.lblTM.Name = "lblTM";
-			this.lblTM.Size = new System.Drawing.Size(23, 13);
-			this.lblTM.TabIndex = 66;
 			this.lblTM.Text = "TM";
 			// 
 			// checkTMBG4
@@ -1415,29 +1343,20 @@
 			// 
 			// label32
 			// 
-			this.label32.AutoSize = true;
 			this.label32.Location = new System.Drawing.Point(46, 46);
 			this.label32.Name = "label32";
-			this.label32.Size = new System.Drawing.Size(27, 13);
-			this.label32.TabIndex = 57;
 			this.label32.Text = "OBJ";
 			// 
 			// label31
 			// 
-			this.label31.AutoSize = true;
 			this.label31.Location = new System.Drawing.Point(26, 78);
 			this.label31.Name = "label31";
-			this.label31.Size = new System.Drawing.Size(21, 13);
-			this.label31.TabIndex = 56;
 			this.label31.Text = "BK";
 			// 
 			// label25
 			// 
-			this.label25.AutoSize = true;
 			this.label25.Location = new System.Drawing.Point(229, 64);
 			this.label25.Name = "label25";
-			this.label25.Size = new System.Drawing.Size(61, 13);
-			this.label25.TabIndex = 44;
 			this.label25.Text = "Math/Fixed";
 			// 
 			// txtScreenCGWSEL_MathFixed
@@ -1453,11 +1372,8 @@
 			// 
 			// label2893719831
 			// 
-			this.label2893719831.AutoSize = true;
 			this.label2893719831.Location = new System.Drawing.Point(229, 45);
 			this.label2893719831.Name = "label2893719831";
-			this.label2893719831.Size = new System.Drawing.Size(52, 13);
-			this.label2893719831.TabIndex = 42;
 			this.label2893719831.Text = "SubMask";
 			// 
 			// txtScreenCGWSEL_ColorSubMask
@@ -1473,11 +1389,8 @@
 			// 
 			// label23
 			// 
-			this.label23.AutoSize = true;
 			this.label23.Location = new System.Drawing.Point(229, 27);
 			this.label23.Name = "label23";
-			this.label23.Size = new System.Drawing.Size(56, 13);
-			this.label23.TabIndex = 40;
 			this.label23.Text = "MainMask";
 			// 
 			// txtScreenCGWSEL_ColorMask
@@ -1493,20 +1406,14 @@
 			// 
 			// label22
 			// 
-			this.label22.AutoSize = true;
 			this.label22.Location = new System.Drawing.Point(206, 10);
 			this.label22.Name = "label22";
-			this.label22.Size = new System.Drawing.Size(53, 13);
-			this.label22.TabIndex = 32;
 			this.label22.Text = "CGWSEL";
 			// 
 			// label27
 			// 
-			this.label27.AutoSize = true;
 			this.label27.Location = new System.Drawing.Point(229, 81);
 			this.label27.Name = "label27";
-			this.label27.Size = new System.Drawing.Size(59, 13);
-			this.label27.TabIndex = 31;
 			this.label27.Text = "DirectColor";
 			// 
 			// checkScreenCGWSEL_DirectColor
@@ -1521,11 +1428,8 @@
 			// 
 			// label16
 			// 
-			this.label16.AutoSize = true;
 			this.label16.Location = new System.Drawing.Point(162, 46);
 			this.label16.Name = "label16";
-			this.label16.Size = new System.Drawing.Size(34, 13);
-			this.label16.TabIndex = 20;
 			this.label16.Text = "TSize";
 			// 
 			// txtScreenBG4TSize
@@ -1580,11 +1484,8 @@
 			// 
 			// label1
 			// 
-			this.label1.AutoSize = true;
 			this.label1.Location = new System.Drawing.Point(4, 20);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(34, 13);
-			this.label1.TabIndex = 0;
 			this.label1.Text = "Mode";
 			// 
 			// txtScreenBG3Bpp
@@ -1620,20 +1521,14 @@
 			// 
 			// label8
 			// 
-			this.label8.AutoSize = true;
 			this.label8.Location = new System.Drawing.Point(162, 27);
 			this.label8.Name = "label8";
-			this.label8.Size = new System.Drawing.Size(25, 13);
-			this.label8.TabIndex = 7;
 			this.label8.Text = "bpp";
 			// 
 			// label7
 			// 
-			this.label7.AutoSize = true;
 			this.label7.Location = new System.Drawing.Point(142, 10);
 			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(28, 13);
-			this.label7.TabIndex = 12;
 			this.label7.Text = "BG4";
 			// 
 			// txtScreenBG1Bpp
@@ -1648,30 +1543,21 @@
 			// 
 			// lblBG3
 			// 
-			this.lblBG3.AutoSize = true;
 			this.lblBG3.Location = new System.Drawing.Point(117, 10);
 			this.lblBG3.Name = "lblBG3";
-			this.lblBG3.Size = new System.Drawing.Size(28, 13);
-			this.lblBG3.TabIndex = 11;
 			this.lblBG3.Text = "BG3";
 			this.toolTip1.SetToolTip(this.lblBG3, "Test");
 			// 
 			// label4
 			// 
-			this.label4.AutoSize = true;
 			this.label4.Location = new System.Drawing.Point(69, 10);
 			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(28, 13);
-			this.label4.TabIndex = 9;
 			this.label4.Text = "BG1";
 			// 
 			// label5
 			// 
-			this.label5.AutoSize = true;
 			this.label5.Location = new System.Drawing.Point(93, 10);
 			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(28, 13);
-			this.label5.TabIndex = 10;
 			this.label5.Text = "BG2";
 			// 
 			// groupBox1
@@ -1723,11 +1609,8 @@
 			// 
 			// label37
 			// 
-			this.label37.AutoSize = true;
 			this.label37.Location = new System.Drawing.Point(35, 137);
 			this.label37.Name = "label37";
-			this.label37.Size = new System.Drawing.Size(36, 13);
-			this.label37.TabIndex = 41;
 			this.label37.Text = "Scroll:";
 			// 
 			// txtBG1MapSizeBytes
@@ -1825,11 +1708,8 @@
 			// 
 			// label15
 			// 
-			this.label15.AutoSize = true;
 			this.label15.Location = new System.Drawing.Point(33, 74);
 			this.label15.Name = "label15";
-			this.label15.Size = new System.Drawing.Size(34, 13);
-			this.label15.TabIndex = 22;
 			this.label15.Text = "TSize";
 			// 
 			// txtBG1TSizeBits
@@ -1845,11 +1725,8 @@
 			// 
 			// label13
 			// 
-			this.label13.AutoSize = true;
 			this.label13.Location = new System.Drawing.Point(124, 52);
 			this.label13.Name = "label13";
-			this.label13.Size = new System.Drawing.Size(36, 13);
-			this.label13.TabIndex = 20;
 			this.label13.Text = "Colors";
 			// 
 			// txtBG1Colors
@@ -1874,11 +1751,8 @@
 			// 
 			// label12
 			// 
-			this.label12.AutoSize = true;
 			this.label12.Location = new System.Drawing.Point(33, 52);
 			this.label12.Name = "label12";
-			this.label12.Size = new System.Drawing.Size(32, 13);
-			this.label12.TabIndex = 17;
 			this.label12.Text = "Bpp; ";
 			// 
 			// txtBG1TDAddrDescr
@@ -1893,11 +1767,8 @@
 			// 
 			// label11
 			// 
-			this.label11.AutoSize = true;
 			this.label11.Location = new System.Drawing.Point(30, 182);
 			this.label11.Name = "label11";
-			this.label11.Size = new System.Drawing.Size(40, 13);
-			this.label11.TabIndex = 14;
 			this.label11.Text = "@Tiles";
 			// 
 			// txtBG1SCAddrDescr
@@ -1912,11 +1783,8 @@
 			// 
 			// label9
 			// 
-			this.label9.AutoSize = true;
 			this.label9.Location = new System.Drawing.Point(145, 116);
 			this.label9.Name = "label9";
-			this.label9.Size = new System.Drawing.Size(18, 13);
-			this.label9.TabIndex = 9;
 			this.label9.Text = "px";
 			// 
 			// txtBG1TDAddrBits
@@ -1932,11 +1800,8 @@
 			// 
 			// label10
 			// 
-			this.label10.AutoSize = true;
 			this.label10.Location = new System.Drawing.Point(30, 158);
 			this.label10.Name = "label10";
-			this.label10.Size = new System.Drawing.Size(40, 13);
-			this.label10.TabIndex = 11;
 			this.label10.Text = "@Scrn";
 			// 
 			// txtBG1SizeInPixels
@@ -1951,11 +1816,8 @@
 			// 
 			// label3
 			// 
-			this.label3.AutoSize = true;
 			this.label3.Location = new System.Drawing.Point(134, 96);
 			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(32, 13);
-			this.label3.TabIndex = 7;
 			this.label3.Text = "Tiles;";
 			// 
 			// txtBG1SCAddrBits
@@ -1981,11 +1843,8 @@
 			// 
 			// label2
 			// 
-			this.label2.AutoSize = true;
 			this.label2.Location = new System.Drawing.Point(34, 95);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(27, 13);
-			this.label2.TabIndex = 4;
 			this.label2.Text = "Size";
 			// 
 			// txtBG1SizeBits
@@ -2055,29 +1914,20 @@
 			// 
 			// label53
 			// 
-			this.label53.AutoSize = true;
 			this.label53.Location = new System.Drawing.Point(73, 76);
 			this.label53.Name = "label53";
-			this.label53.Size = new System.Drawing.Size(48, 13);
-			this.label53.TabIndex = 61;
 			this.label53.Text = "RGB888";
 			// 
 			// label52
 			// 
-			this.label52.AutoSize = true;
 			this.label52.Location = new System.Drawing.Point(93, 54);
 			this.label52.Name = "label52";
-			this.label52.Size = new System.Drawing.Size(26, 13);
-			this.label52.TabIndex = 60;
 			this.label52.Text = "Hex";
 			// 
 			// label51
 			// 
-			this.label51.AutoSize = true;
 			this.label51.Location = new System.Drawing.Point(73, 32);
 			this.label51.Name = "label51";
-			this.label51.Size = new System.Drawing.Size(50, 13);
-			this.label51.TabIndex = 59;
 			this.label51.Text = "Raw Col.";
 			// 
 			// txtPaletteDetailsAddress
@@ -2171,11 +2021,8 @@
 			// 
 			// label45
 			// 
-			this.label45.AutoSize = true;
 			this.label45.Location = new System.Drawing.Point(169, 75);
 			this.label45.Name = "label45";
-			this.label45.Size = new System.Drawing.Size(22, 13);
-			this.label45.TabIndex = 65;
 			this.label45.Text = "Pal";
 			// 
 			// txtTilePalette
@@ -2210,11 +2057,8 @@
 			// 
 			// label18
 			// 
-			this.label18.AutoSize = true;
 			this.label18.Location = new System.Drawing.Point(169, 53);
 			this.label18.Name = "label18";
-			this.label18.Size = new System.Drawing.Size(36, 13);
-			this.label18.TabIndex = 61;
 			this.label18.Text = "Colors";
 			// 
 			// txtTileColors
@@ -2239,11 +2083,8 @@
 			// 
 			// label42
 			// 
-			this.label42.AutoSize = true;
 			this.label42.Location = new System.Drawing.Point(169, 31);
 			this.label42.Name = "label42";
-			this.label42.Size = new System.Drawing.Size(32, 13);
-			this.label42.TabIndex = 58;
 			this.label42.Text = "Bpp; ";
 			// 
 			// txtTileAddress
@@ -2310,11 +2151,8 @@
 			// 
 			// label34
 			// 
-			this.label34.AutoSize = true;
 			this.label34.Location = new System.Drawing.Point(56, 76);
 			this.label34.Name = "label34";
-			this.label34.Size = new System.Drawing.Size(14, 13);
-			this.label34.TabIndex = 62;
 			this.label34.Text = "V";
 			// 
 			// checkMapEntryHFlip
@@ -2329,20 +2167,14 @@
 			// 
 			// label17
 			// 
-			this.label17.AutoSize = true;
 			this.label17.Location = new System.Drawing.Point(93, 53);
 			this.label17.Name = "label17";
-			this.label17.Size = new System.Drawing.Size(40, 13);
-			this.label17.TabIndex = 60;
 			this.label17.Text = "Palette";
 			// 
 			// lblMapEntryHFlip
 			// 
-			this.lblMapEntryHFlip.AutoSize = true;
 			this.lblMapEntryHFlip.Location = new System.Drawing.Point(22, 76);
 			this.lblMapEntryHFlip.Name = "lblMapEntryHFlip";
-			this.lblMapEntryHFlip.Size = new System.Drawing.Size(15, 13);
-			this.lblMapEntryHFlip.TabIndex = 57;
 			this.lblMapEntryHFlip.Text = "H";
 			// 
 			// txtMapEntryPalette
@@ -2358,20 +2190,14 @@
 			// 
 			// label14
 			// 
-			this.label14.AutoSize = true;
 			this.label14.Location = new System.Drawing.Point(95, 75);
 			this.label14.Name = "label14";
-			this.label14.Size = new System.Drawing.Size(25, 13);
-			this.label14.TabIndex = 58;
 			this.label14.Text = "Prio";
 			// 
 			// label6
 			// 
-			this.label6.AutoSize = true;
 			this.label6.Location = new System.Drawing.Point(121, 31);
 			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(31, 13);
-			this.label6.TabIndex = 56;
 			this.label6.Text = "Tile#";
 			// 
 			// txtMapEntryTileAddr
@@ -2465,11 +2291,8 @@
 			// 
 			// label50
 			// 
-			this.label50.AutoSize = true;
 			this.label50.Location = new System.Drawing.Point(160, 31);
 			this.label50.Name = "label50";
-			this.label50.Size = new System.Drawing.Size(25, 13);
-			this.label50.TabIndex = 101;
 			this.label50.Text = "Prio";
 			// 
 			// txtObjPaletteMemo
@@ -2484,11 +2307,8 @@
 			// 
 			// label49
 			// 
-			this.label49.AutoSize = true;
 			this.label49.Location = new System.Drawing.Point(93, 75);
 			this.label49.Name = "label49";
-			this.label49.Size = new System.Drawing.Size(40, 13);
-			this.label49.TabIndex = 99;
 			this.label49.Text = "Palette";
 			// 
 			// txtObjPalette
@@ -2504,11 +2324,8 @@
 			// 
 			// label48
 			// 
-			this.label48.AutoSize = true;
 			this.label48.Location = new System.Drawing.Point(121, 53);
 			this.label48.Name = "label48";
-			this.label48.Size = new System.Drawing.Size(31, 13);
-			this.label48.TabIndex = 96;
 			this.label48.Text = "Tile#";
 			// 
 			// txtObjNameAddr
@@ -2544,11 +2361,8 @@
 			// 
 			// label46
 			// 
-			this.label46.AutoSize = true;
 			this.label46.Location = new System.Drawing.Point(89, 31);
 			this.label46.Name = "label46";
-			this.label46.Size = new System.Drawing.Size(34, 13);
-			this.label46.TabIndex = 92;
 			this.label46.Text = "Large";
 			// 
 			// cbObjLarge
@@ -2593,11 +2407,8 @@
 			// 
 			// label43
 			// 
-			this.label43.AutoSize = true;
 			this.label43.Location = new System.Drawing.Point(56, 76);
 			this.label43.Name = "label43";
-			this.label43.Size = new System.Drawing.Size(14, 13);
-			this.label43.TabIndex = 66;
 			this.label43.Text = "V";
 			// 
 			// cbObjHFlip
@@ -2612,11 +2423,8 @@
 			// 
 			// label44
 			// 
-			this.label44.AutoSize = true;
 			this.label44.Location = new System.Drawing.Point(22, 76);
 			this.label44.Name = "label44";
-			this.label44.Size = new System.Drawing.Size(15, 13);
-			this.label44.TabIndex = 64;
 			this.label44.Text = "H";
 			// 
 			// viewerObj
@@ -2725,22 +2533,22 @@
 		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
 		private System.Windows.Forms.Panel panel1;
 		private System.Windows.Forms.GroupBox groupBox2;
-		private System.Windows.Forms.Label label16;
+		private BizHawk.WinForms.Controls.LocLabelEx label16;
 		private System.Windows.Forms.TextBox txtScreenBG4TSize;
 		private System.Windows.Forms.TextBox txtScreenBG3TSize;
 		private System.Windows.Forms.TextBox txtScreenBG2TSize;
 		private System.Windows.Forms.TextBox txtScreenBG1TSize;
 		private System.Windows.Forms.TextBox txtScreenBG4Bpp;
-		private System.Windows.Forms.Label label1;
+		private BizHawk.WinForms.Controls.LocLabelEx label1;
 		private System.Windows.Forms.TextBox txtScreenBG3Bpp;
 		private System.Windows.Forms.TextBox txtModeBits;
 		private System.Windows.Forms.TextBox txtScreenBG2Bpp;
-		private System.Windows.Forms.Label label8;
-		private System.Windows.Forms.Label label7;
+		private BizHawk.WinForms.Controls.LocLabelEx label8;
+		private BizHawk.WinForms.Controls.LocLabelEx label7;
 		private System.Windows.Forms.TextBox txtScreenBG1Bpp;
-		private System.Windows.Forms.Label lblBG3;
-		private System.Windows.Forms.Label label4;
-		private System.Windows.Forms.Label label5;
+		private BizHawk.WinForms.Controls.LocLabelEx lblBG3;
+		private BizHawk.WinForms.Controls.LocLabelEx label4;
+		private BizHawk.WinForms.Controls.LocLabelEx label5;
 		private System.Windows.Forms.GroupBox groupBox1;
 		private System.Windows.Forms.RadioButton rbBG4;
 		private System.Windows.Forms.RadioButton rbBG3;
@@ -2748,24 +2556,24 @@
 		private System.Windows.Forms.RadioButton rbBG1;
 		private System.Windows.Forms.TextBox txtBG1TSizeDescr;
 		private System.Windows.Forms.ComboBox comboBGProps;
-		private System.Windows.Forms.Label label15;
+		private BizHawk.WinForms.Controls.LocLabelEx label15;
 		private System.Windows.Forms.TextBox txtBG1TSizeBits;
-		private System.Windows.Forms.Label label13;
+		private BizHawk.WinForms.Controls.LocLabelEx label13;
 		private System.Windows.Forms.TextBox txtBG1Colors;
 		private System.Windows.Forms.TextBox txtBG1Bpp;
-		private System.Windows.Forms.Label label12;
+		private BizHawk.WinForms.Controls.LocLabelEx label12;
 		private System.Windows.Forms.TextBox txtBG1TDAddrDescr;
-		private System.Windows.Forms.Label label11;
+		private BizHawk.WinForms.Controls.LocLabelEx label11;
 		private System.Windows.Forms.TextBox txtBG1SCAddrDescr;
-		private System.Windows.Forms.Label label9;
+		private BizHawk.WinForms.Controls.LocLabelEx label9;
 		private System.Windows.Forms.TextBox txtBG1TDAddrBits;
-		private System.Windows.Forms.Label label10;
+		private BizHawk.WinForms.Controls.LocLabelEx label10;
 		private System.Windows.Forms.TextBox txtBG1SizeInPixels;
-		private System.Windows.Forms.Label label3;
+		private BizHawk.WinForms.Controls.LocLabelEx label3;
 		private System.Windows.Forms.TextBox txtBG1SCAddrBits;
-		private System.Windows.Forms.Label label2;
+		private BizHawk.WinForms.Controls.LocLabelEx label2;
 		private System.Windows.Forms.TextBox txtBG1SizeBits;
-		private System.Windows.Forms.Label label19;
+		private BizHawk.WinForms.Controls.LocLabelEx label19;
 		private System.Windows.Forms.ComboBox comboDisplayType;
 		private System.Windows.Forms.TrackBar sliderScanline;
 		private System.Windows.Forms.GroupBox groupBox5;
@@ -2787,46 +2595,46 @@
 		private System.Windows.Forms.CheckBox checkScanlineControl;
 		private System.Windows.Forms.ToolTip toolTip1;
 		private System.Windows.Forms.CheckBox check2x;
-		private System.Windows.Forms.Label label21;
+		private BizHawk.WinForms.Controls.LocLabelEx label21;
 		private System.Windows.Forms.CheckBox checkScreenExtbg;
-		private System.Windows.Forms.Label label20;
-		private System.Windows.Forms.Label label18391;
+		private BizHawk.WinForms.Controls.LocLabelEx label20;
+		private BizHawk.WinForms.Controls.LocLabelEx label18391;
 		private System.Windows.Forms.CheckBox checkScreenHires;
-		private System.Windows.Forms.Label label198129381279841;
+		private BizHawk.WinForms.Controls.LocLabelEx label198129381279841;
 		private System.Windows.Forms.CheckBox checkScreenOverscan;
-		private System.Windows.Forms.Label label123812831;
+		private BizHawk.WinForms.Controls.LocLabelEx label123812831;
 		private System.Windows.Forms.CheckBox checkScreenObjInterlace;
-		private System.Windows.Forms.Label label2193813;
+		private BizHawk.WinForms.Controls.LocLabelEx label2193813;
 		private System.Windows.Forms.CheckBox checkScreenInterlace;
 		private System.Windows.Forms.TextBox txtScreenCGWSEL_ColorMask;
-		private System.Windows.Forms.Label label22;
-		private System.Windows.Forms.Label label2893719831;
+		private BizHawk.WinForms.Controls.LocLabelEx label22;
+		private BizHawk.WinForms.Controls.LocLabelEx label2893719831;
 		private System.Windows.Forms.TextBox txtScreenCGWSEL_ColorSubMask;
-		private System.Windows.Forms.Label label25;
+		private BizHawk.WinForms.Controls.LocLabelEx label25;
 		private System.Windows.Forms.TextBox txtScreenCGWSEL_MathFixed;
-		private System.Windows.Forms.Label label23;
-		private System.Windows.Forms.Label label27;
+		private BizHawk.WinForms.Controls.LocLabelEx label23;
+		private BizHawk.WinForms.Controls.LocLabelEx label27;
 		private System.Windows.Forms.CheckBox checkScreenCGWSEL_DirectColor;
 		private SNESGraphicsViewer viewerTile;
 		private System.Windows.Forms.Panel pnBackdropColor;
 		private System.Windows.Forms.CheckBox checkBackdropColor;
-		private System.Windows.Forms.Label label24;
+		private BizHawk.WinForms.Controls.LocLabelEx label24;
 		private System.Windows.Forms.Timer messagetimer;
 		private System.Windows.Forms.TextBox txtOBSELT1OfsBits;
 		private System.Windows.Forms.TextBox txtOBSELT1OfsDescr;
-		private System.Windows.Forms.Label label30;
+		private BizHawk.WinForms.Controls.LocLabelEx label30;
 		private System.Windows.Forms.TextBox txtOBSELBaseBits;
 		private System.Windows.Forms.TextBox txtOBSELBaseDescr;
-		private System.Windows.Forms.Label label29;
+		private BizHawk.WinForms.Controls.LocLabelEx label29;
 		private System.Windows.Forms.TextBox txtOBSELSizeBits;
-		private System.Windows.Forms.Label label26;
+		private BizHawk.WinForms.Controls.LocLabelEx label26;
 		private System.Windows.Forms.TextBox txtOBSELSizeDescr;
-		private System.Windows.Forms.Label label28;
+		private BizHawk.WinForms.Controls.LocLabelEx label28;
 		private System.Windows.Forms.ComboBox comboPalette;
-		private System.Windows.Forms.Label lblTS;
-		private System.Windows.Forms.Label lblTM;
-		private System.Windows.Forms.Label label32;
-		private System.Windows.Forms.Label label31;
+		private BizHawk.WinForms.Controls.LocLabelEx lblTS;
+		private BizHawk.WinForms.Controls.LocLabelEx lblTM;
+		private BizHawk.WinForms.Controls.LocLabelEx label32;
+		private BizHawk.WinForms.Controls.LocLabelEx label31;
 		private CustomCheckBox checkTSBG4;
 		private CustomCheckBox checkTSBG3;
 		private CustomCheckBox checkTSBG2;
@@ -2839,13 +2647,13 @@
 		private System.Windows.Forms.TextBox txtMapEntryTileNum;
 		private SNESGraphicsViewer viewerMapEntryTile;
 		private System.Windows.Forms.CheckBox checkMapEntryVFlip;
-		private System.Windows.Forms.Label label34;
+		private BizHawk.WinForms.Controls.LocLabelEx label34;
 		private System.Windows.Forms.CheckBox checkMapEntryHFlip;
-		private System.Windows.Forms.Label label17;
-		private System.Windows.Forms.Label lblMapEntryHFlip;
+		private BizHawk.WinForms.Controls.LocLabelEx label17;
+		private BizHawk.WinForms.Controls.LocLabelEx lblMapEntryHFlip;
 		private System.Windows.Forms.TextBox txtMapEntryPalette;
-		private System.Windows.Forms.Label label14;
-		private System.Windows.Forms.Label label6;
+		private BizHawk.WinForms.Controls.LocLabelEx label14;
+		private BizHawk.WinForms.Controls.LocLabelEx label6;
 		private System.Windows.Forms.TextBox txtMapEntryTileAddr;
 		private System.Windows.Forms.TextBox txtMapEntryPrio;
 		private System.Windows.Forms.TextBox txtMapEntryLocation;
@@ -2854,23 +2662,23 @@
 		private CustomCheckBox checkMathBG3;
 		private CustomCheckBox checkMathBG2;
 		private CustomCheckBox checkMathBG1;
-		private System.Windows.Forms.Label label33;
+		private BizHawk.WinForms.Controls.LocLabelEx label33;
 		private CustomCheckBox checkMathOBJ;
 		private CustomCheckBox checkTMOBJ;
 		private CustomCheckBox checkTSOBJ;
 		private CustomCheckBox checkMathBK;
 		private System.Windows.Forms.TextBox txtScreenCGADSUB_AddSub;
-		private System.Windows.Forms.Label label36;
+		private BizHawk.WinForms.Controls.LocLabelEx label36;
 		private System.Windows.Forms.TextBox txtScreenCGADSUB_AddSub_Descr;
-		private System.Windows.Forms.Label label38;
+		private BizHawk.WinForms.Controls.LocLabelEx label38;
 		private System.Windows.Forms.CheckBox txtScreenCGADSUB_Half;
-		private System.Windows.Forms.Label lblEnPrio0;
+		private BizHawk.WinForms.Controls.LocLabelEx lblEnPrio0;
 		private System.Windows.Forms.CheckBox checkEN0_OBJ;
 		private System.Windows.Forms.CheckBox checkEN0_BG4;
 		private System.Windows.Forms.CheckBox checkEN0_BG3;
 		private System.Windows.Forms.CheckBox checkEN0_BG2;
 		private System.Windows.Forms.CheckBox checkEN0_BG1;
-		private System.Windows.Forms.Label lblEnPrio3;
+		private BizHawk.WinForms.Controls.LocLabelEx lblEnPrio3;
 		private System.Windows.Forms.CheckBox checkEN1_OBJ;
 		private System.Windows.Forms.CheckBox checkEN1_BG4;
 		private System.Windows.Forms.CheckBox checkEN1_BG3;
@@ -2878,12 +2686,12 @@
 		private System.Windows.Forms.CheckBox checkEN1_BG1;
 		private System.Windows.Forms.CheckBox checkEN3_OBJ;
 		private System.Windows.Forms.CheckBox checkEN2_OBJ;
-		private System.Windows.Forms.Label lblEnPrio2;
-		private System.Windows.Forms.Label lblEnPrio1;
+		private BizHawk.WinForms.Controls.LocLabelEx lblEnPrio2;
+		private BizHawk.WinForms.Controls.LocLabelEx lblEnPrio1;
 		private System.Windows.Forms.TextBox txtBGPaletteInfo;
 		private System.Windows.Forms.GroupBox groupBox6;
-		private System.Windows.Forms.Label labelClipboard;
-		private System.Windows.Forms.Label label47;
+		private BizHawk.WinForms.Controls.LocLabelEx labelClipboard;
+		private BizHawk.WinForms.Controls.LocLabelEx label47;
 		private System.Windows.Forms.TabPage tpOBJ;
 		private System.Windows.Forms.GroupBox groupFreeze;
 		private System.Windows.Forms.GroupBox groupBox8;
@@ -2898,41 +2706,41 @@
 		private System.Windows.Forms.RadioButton radioButton13;
 		private System.Windows.Forms.RadioButton radioButton2;
 		private System.Windows.Forms.Panel pnGroupFreeze;
-		private System.Windows.Forms.Label labelMemory;
+		private BizHawk.WinForms.Controls.LocLabelEx labelMemory;
 		private System.Windows.Forms.TextBox txtBG1MapSizeBytes;
 		private System.Windows.Forms.TextBox txtBG1SizeInTiles;
 		private System.Windows.Forms.TextBox txtTileMode;
-		private System.Windows.Forms.Label label18;
+		private BizHawk.WinForms.Controls.LocLabelEx label18;
 		private System.Windows.Forms.TextBox txtTileColors;
 		private System.Windows.Forms.TextBox txtTileBpp;
-		private System.Windows.Forms.Label label42;
+		private BizHawk.WinForms.Controls.LocLabelEx label42;
 		private System.Windows.Forms.TextBox txtTileAddress;
 		private SNESGraphicsViewer viewerObj;
 		private System.Windows.Forms.TextBox txtObjNumber;
 		private System.Windows.Forms.TextBox txtObjCoord;
 		private System.Windows.Forms.CheckBox cbObjVFlip;
-		private System.Windows.Forms.Label label43;
+		private BizHawk.WinForms.Controls.LocLabelEx label43;
 		private System.Windows.Forms.CheckBox cbObjHFlip;
-		private System.Windows.Forms.Label label44;
+		private BizHawk.WinForms.Controls.LocLabelEx label44;
 		private System.Windows.Forms.TextBox txtTileNumber;
-		private System.Windows.Forms.Label label45;
+		private BizHawk.WinForms.Controls.LocLabelEx label45;
 		private System.Windows.Forms.TextBox txtTilePalette;
-		private System.Windows.Forms.Label label48;
+		private BizHawk.WinForms.Controls.LocLabelEx label48;
 		private System.Windows.Forms.TextBox txtObjNameAddr;
 		private System.Windows.Forms.TextBox txtObjName;
 		private System.Windows.Forms.TextBox txtObjSize;
-		private System.Windows.Forms.Label label46;
+		private BizHawk.WinForms.Controls.LocLabelEx label46;
 		private System.Windows.Forms.CheckBox cbObjLarge;
-		private System.Windows.Forms.Label label53;
-		private System.Windows.Forms.Label label52;
-		private System.Windows.Forms.Label label51;
+		private BizHawk.WinForms.Controls.LocLabelEx label53;
+		private BizHawk.WinForms.Controls.LocLabelEx label52;
+		private BizHawk.WinForms.Controls.LocLabelEx label51;
 		private System.Windows.Forms.TextBox textBox2;
 		private System.Windows.Forms.TextBox txtObjPriority;
-		private System.Windows.Forms.Label label50;
+		private BizHawk.WinForms.Controls.LocLabelEx label50;
 		private System.Windows.Forms.TextBox txtObjPaletteMemo;
-		private System.Windows.Forms.Label label49;
+		private BizHawk.WinForms.Controls.LocLabelEx label49;
 		private System.Windows.Forms.TextBox txtObjPalette;
 		private System.Windows.Forms.TextBox txtBG1Scroll;
-		private System.Windows.Forms.Label label37;
+		private BizHawk.WinForms.Controls.LocLabelEx label37;
 	}
 }

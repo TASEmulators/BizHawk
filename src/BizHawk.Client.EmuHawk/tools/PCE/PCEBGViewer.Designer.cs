@@ -37,17 +37,17 @@
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.canvas = new BizHawk.Client.EmuHawk.PceBgCanvas();
 			this.groupBox5 = new System.Windows.Forms.GroupBox();
-			this.label7 = new System.Windows.Forms.Label();
-			this.label6 = new System.Windows.Forms.Label();
+			this.label7 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label6 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.RefreshRate = new System.Windows.Forms.TrackBar();
 			this.groupBox4 = new System.Windows.Forms.GroupBox();
-			this.PaletteLabel = new System.Windows.Forms.Label();
-			this.label5 = new System.Windows.Forms.Label();
-			this.PPUAddressLabel = new System.Windows.Forms.Label();
-			this.XYLabel = new System.Windows.Forms.Label();
-			this.TileIDLabel = new System.Windows.Forms.Label();
-			this.label2 = new System.Windows.Forms.Label();
-			this.label1 = new System.Windows.Forms.Label();
+			this.PaletteLabel = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label5 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.PPUAddressLabel = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.XYLabel = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.TileIDLabel = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label2 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label1 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.PceBgViewerMenu.SuspendLayout();
 			this.groupBox1.SuspendLayout();
 			this.groupBox5.SuspendLayout();
@@ -137,20 +137,14 @@
 			// 
 			// label7
 			// 
-			this.label7.AutoSize = true;
 			this.label7.Location = new System.Drawing.Point(7, 186);
 			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(31, 13);
-			this.label7.TabIndex = 2;
 			this.label7.Text = "More";
 			// 
 			// label6
 			// 
-			this.label6.AutoSize = true;
 			this.label6.Location = new System.Drawing.Point(7, 32);
 			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(29, 13);
-			this.label6.TabIndex = 1;
 			this.label6.Text = "Less";
 			// 
 			// RefreshRate
@@ -184,65 +178,44 @@
 			// 
 			// PaletteLabel
 			// 
-			this.PaletteLabel.AutoSize = true;
 			this.PaletteLabel.Location = new System.Drawing.Point(64, 60);
 			this.PaletteLabel.Name = "PaletteLabel";
-			this.PaletteLabel.Size = new System.Drawing.Size(22, 13);
-			this.PaletteLabel.TabIndex = 9;
 			this.PaletteLabel.Text = "     ";
 			// 
 			// label5
 			// 
-			this.label5.AutoSize = true;
 			this.label5.Location = new System.Drawing.Point(6, 60);
 			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(43, 13);
-			this.label5.TabIndex = 8;
 			this.label5.Text = "Palette:";
 			// 
 			// PPUAddressLabel
 			// 
-			this.PPUAddressLabel.AutoSize = true;
 			this.PPUAddressLabel.Location = new System.Drawing.Point(64, 60);
 			this.PPUAddressLabel.Name = "PPUAddressLabel";
-			this.PPUAddressLabel.Size = new System.Drawing.Size(22, 13);
-			this.PPUAddressLabel.TabIndex = 5;
 			this.PPUAddressLabel.Text = "     ";
 			// 
 			// XYLabel
 			// 
-			this.XYLabel.AutoSize = true;
 			this.XYLabel.Location = new System.Drawing.Point(64, 43);
 			this.XYLabel.Name = "XYLabel";
-			this.XYLabel.Size = new System.Drawing.Size(22, 13);
-			this.XYLabel.TabIndex = 4;
 			this.XYLabel.Text = "     ";
 			// 
 			// TileIDLabel
 			// 
-			this.TileIDLabel.AutoSize = true;
 			this.TileIDLabel.Location = new System.Drawing.Point(64, 26);
 			this.TileIDLabel.Name = "TileIDLabel";
-			this.TileIDLabel.Size = new System.Drawing.Size(22, 13);
-			this.TileIDLabel.TabIndex = 3;
 			this.TileIDLabel.Text = "     ";
 			// 
 			// label2
 			// 
-			this.label2.AutoSize = true;
 			this.label2.Location = new System.Drawing.Point(6, 43);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(35, 13);
-			this.label2.TabIndex = 1;
 			this.label2.Text = "X / Y:";
 			// 
 			// label1
 			// 
-			this.label1.AutoSize = true;
 			this.label1.Location = new System.Drawing.Point(6, 26);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(41, 13);
-			this.label1.TabIndex = 0;
 			this.label1.Text = "Tile ID:";
 			// 
 			// PceBgViewer
@@ -282,16 +255,16 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
 		private System.Windows.Forms.GroupBox groupBox1;
 		private System.Windows.Forms.GroupBox groupBox5;
-		private System.Windows.Forms.Label label7;
-		private System.Windows.Forms.Label label6;
+		private BizHawk.WinForms.Controls.LocLabelEx label7;
+		private BizHawk.WinForms.Controls.LocLabelEx label6;
 		private System.Windows.Forms.TrackBar RefreshRate;
 		private System.Windows.Forms.GroupBox groupBox4;
-		private System.Windows.Forms.Label PaletteLabel;
-		private System.Windows.Forms.Label label5;
-		private System.Windows.Forms.Label PPUAddressLabel;
-		private System.Windows.Forms.Label XYLabel;
-		private System.Windows.Forms.Label TileIDLabel;
-		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.Label label1;
+		private BizHawk.WinForms.Controls.LocLabelEx PaletteLabel;
+		private BizHawk.WinForms.Controls.LocLabelEx label5;
+		private BizHawk.WinForms.Controls.LocLabelEx PPUAddressLabel;
+		private BizHawk.WinForms.Controls.LocLabelEx XYLabel;
+		private BizHawk.WinForms.Controls.LocLabelEx TileIDLabel;
+		private BizHawk.WinForms.Controls.LocLabelEx label2;
+		private BizHawk.WinForms.Controls.LocLabelEx label1;
 	}
 }

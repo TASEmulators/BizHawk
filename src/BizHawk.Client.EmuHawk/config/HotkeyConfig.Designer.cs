@@ -29,16 +29,16 @@
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			this.label38 = new System.Windows.Forms.Label();
+			this.label38 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.AutoTabCheckBox = new System.Windows.Forms.CheckBox();
 			this.HotkeyTabControl = new System.Windows.Forms.TabControl();
 			this.tabPage1 = new System.Windows.Forms.TabPage();
 			this.IDB_CANCEL = new System.Windows.Forms.Button();
 			this.IDB_SAVE = new System.Windows.Forms.Button();
 			this.SearchBox = new System.Windows.Forms.TextBox();
-			this.label1 = new System.Windows.Forms.Label();
-			this.label2 = new System.Windows.Forms.Label();
-			this.label3 = new System.Windows.Forms.Label();
+			this.label1 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label2 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label3 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.MiscButton = new BizHawk.Client.EmuHawk.MenuButton();
 			this.clearBtnContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -53,11 +53,8 @@
 			// label38
 			// 
 			this.label38.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.label38.AutoSize = true;
 			this.label38.Location = new System.Drawing.Point(39, 441);
 			this.label38.Name = "label38";
-			this.label38.Size = new System.Drawing.Size(153, 13);
-			this.label38.TabIndex = 4;
 			this.label38.Text = "* Escape clears a key mapping";
 			// 
 			// AutoTabCheckBox
@@ -133,31 +130,22 @@
 			// 
 			// label1
 			// 
-			this.label1.AutoSize = true;
 			this.label1.Location = new System.Drawing.Point(556, 12);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(30, 13);
-			this.label1.TabIndex = 107;
 			this.label1.Text = "Find:";
 			// 
 			// label2
 			// 
 			this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.label2.AutoSize = true;
 			this.label2.Location = new System.Drawing.Point(194, 441);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(168, 13);
-			this.label2.TabIndex = 108;
 			this.label2.Text = "* Disable Auto Tab to multiply bind";
 			// 
 			// label3
 			// 
 			this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.label3.AutoSize = true;
 			this.label3.Location = new System.Drawing.Point(9, 441);
 			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(30, 13);
-			this.label3.TabIndex = 109;
 			this.label3.Text = "Tips:";
 			// 
 			// MiscButton
@@ -237,16 +225,16 @@
 
 		#endregion
 
-		private System.Windows.Forms.Label label38;
+		private BizHawk.WinForms.Controls.LocLabelEx label38;
 		private System.Windows.Forms.CheckBox AutoTabCheckBox;
 		private System.Windows.Forms.TabControl HotkeyTabControl;
 		private System.Windows.Forms.TabPage tabPage1;
 		private System.Windows.Forms.Button IDB_CANCEL;
 		private System.Windows.Forms.Button IDB_SAVE;
         private System.Windows.Forms.TextBox SearchBox;
-        private System.Windows.Forms.Label label1;
-				private System.Windows.Forms.Label label2;
-				private System.Windows.Forms.Label label3;
+        private BizHawk.WinForms.Controls.LocLabelEx label1;
+				private BizHawk.WinForms.Controls.LocLabelEx label2;
+				private BizHawk.WinForms.Controls.LocLabelEx label3;
 				private System.Windows.Forms.ToolTip toolTip1;
 				private MenuButton MiscButton;
 				private System.Windows.Forms.ContextMenuStrip clearBtnContextMenu;

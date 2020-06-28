@@ -32,7 +32,7 @@
 			this.Cancel = new System.Windows.Forms.Button();
 			this.PathTabControl = new System.Windows.Forms.TabControl();
 			this.SaveBtn = new System.Windows.Forms.Button();
-			this.label1 = new System.Windows.Forms.Label();
+			this.label1 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.SpecialCommandsBtn = new System.Windows.Forms.Button();
 			this.RecentForROMs = new System.Windows.Forms.CheckBox();
 			this.DefaultsBtn = new System.Windows.Forms.Button();
@@ -87,11 +87,8 @@
 			// label1
 			// 
 			this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.label1.AutoSize = true;
 			this.label1.Location = new System.Drawing.Point(672, 19);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(97, 13);
-			this.label1.TabIndex = 210;
 			this.label1.Text = "Special Commands";
 			// 
 			// SpecialCommandsBtn
@@ -158,7 +155,7 @@
 		private System.Windows.Forms.Button Cancel;
 		private System.Windows.Forms.TabControl PathTabControl;
 		private System.Windows.Forms.Button SaveBtn;
-		private System.Windows.Forms.Label label1;
+		private BizHawk.WinForms.Controls.LocLabelEx label1;
 		private System.Windows.Forms.Button SpecialCommandsBtn;
 		private System.Windows.Forms.CheckBox RecentForROMs;
 		private System.Windows.Forms.Button DefaultsBtn;

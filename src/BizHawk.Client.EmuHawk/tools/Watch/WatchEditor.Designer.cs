@@ -28,37 +28,31 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
+            this.label1 = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.label2 = new BizHawk.WinForms.Controls.LocLabelEx();
             this.AddressBox = new BizHawk.Client.EmuHawk.HexTextBox();
             this.NotesBox = new System.Windows.Forms.TextBox();
             this.OK = new System.Windows.Forms.Button();
             this.Cancel = new System.Windows.Forms.Button();
-            this.label6 = new System.Windows.Forms.Label();
+            this.label6 = new BizHawk.WinForms.Controls.LocLabelEx();
             this.DomainDropDown = new System.Windows.Forms.ComboBox();
-            this.label3 = new System.Windows.Forms.Label();
+            this.label3 = new BizHawk.WinForms.Controls.LocLabelEx();
             this.SizeDropDown = new System.Windows.Forms.ComboBox();
-            this.DisplayTypeLael = new System.Windows.Forms.Label();
+            this.DisplayTypeLael = new BizHawk.WinForms.Controls.LocLabelEx();
             this.DisplayTypeDropDown = new System.Windows.Forms.ComboBox();
             this.BigEndianCheckBox = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(9, 9);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(62, 13);
-            this.label1.TabIndex = 0;
             this.label1.Text = "Address: 0x";
             // 
             // label2
             // 
-            this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(9, 35);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(38, 13);
-            this.label2.TabIndex = 1;
             this.label2.Text = "Notes:";
             // 
             // AddressBox
@@ -105,11 +99,8 @@
             // 
             // label6
             // 
-            this.label6.AutoSize = true;
             this.label6.Location = new System.Drawing.Point(11, 214);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(83, 13);
-            this.label6.TabIndex = 15;
             this.label6.Text = "Memory Domain";
             // 
             // DomainDropDown
@@ -124,11 +115,8 @@
             // 
             // label3
             // 
-            this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(9, 64);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(27, 13);
-            this.label3.TabIndex = 17;
             this.label3.Text = "Size";
             // 
             // SizeDropDown
@@ -147,11 +135,8 @@
             // 
             // DisplayTypeLael
             // 
-            this.DisplayTypeLael.AutoSize = true;
             this.DisplayTypeLael.Location = new System.Drawing.Point(11, 106);
             this.DisplayTypeLael.Name = "DisplayTypeLael";
-            this.DisplayTypeLael.Size = new System.Drawing.Size(68, 13);
-            this.DisplayTypeLael.TabIndex = 19;
             this.DisplayTypeLael.Text = "Display Type";
             // 
             // DisplayTypeDropDown
@@ -212,17 +197,17 @@
 
         #endregion
 
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
+        private BizHawk.WinForms.Controls.LocLabelEx label1;
+        private BizHawk.WinForms.Controls.LocLabelEx label2;
         private HexTextBox AddressBox;
 		private System.Windows.Forms.TextBox NotesBox;
         private System.Windows.Forms.Button OK;
         private System.Windows.Forms.Button Cancel;
-		private System.Windows.Forms.Label label6;
+		private BizHawk.WinForms.Controls.LocLabelEx label6;
 		private System.Windows.Forms.ComboBox DomainDropDown;
-		private System.Windows.Forms.Label label3;
+		private BizHawk.WinForms.Controls.LocLabelEx label3;
 		private System.Windows.Forms.ComboBox SizeDropDown;
-		private System.Windows.Forms.Label DisplayTypeLael;
+		private BizHawk.WinForms.Controls.LocLabelEx DisplayTypeLael;
 		private System.Windows.Forms.ComboBox DisplayTypeDropDown;
 		private System.Windows.Forms.CheckBox BigEndianCheckBox;
     }

@@ -30,8 +30,8 @@
 		{
 			this.TargetPanel = new System.Windows.Forms.Panel();
 			this.XNumeric = new System.Windows.Forms.NumericUpDown();
-			this.XLabel = new System.Windows.Forms.Label();
-			this.YLabel = new System.Windows.Forms.Label();
+			this.XLabel = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.YLabel = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.YNumeric = new System.Windows.Forms.NumericUpDown();
 			((System.ComponentModel.ISupportInitialize)(this.XNumeric)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.YNumeric)).BeginInit();
@@ -62,21 +62,15 @@
 			// XLabel
 			// 
 			this.XLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.XLabel.AutoSize = true;
 			this.XLabel.Location = new System.Drawing.Point(3, 233);
 			this.XLabel.Name = "XLabel";
-			this.XLabel.Size = new System.Drawing.Size(14, 13);
-			this.XLabel.TabIndex = 2;
 			this.XLabel.Text = "X";
 			// 
 			// YLabel
 			// 
 			this.YLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.YLabel.AutoSize = true;
 			this.YLabel.Location = new System.Drawing.Point(91, 233);
 			this.YLabel.Name = "YLabel";
-			this.YLabel.Size = new System.Drawing.Size(14, 13);
-			this.YLabel.TabIndex = 4;
 			this.YLabel.Text = "Y";
 			// 
 			// YNumeric
@@ -112,8 +106,8 @@
 
 		private System.Windows.Forms.Panel TargetPanel;
 		private System.Windows.Forms.NumericUpDown XNumeric;
-		private System.Windows.Forms.Label XLabel;
-		private System.Windows.Forms.Label YLabel;
+		private BizHawk.WinForms.Controls.LocLabelEx XLabel;
+		private BizHawk.WinForms.Controls.LocLabelEx YLabel;
 		private System.Windows.Forms.NumericUpDown YNumeric;
 	}
 }

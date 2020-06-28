@@ -33,8 +33,8 @@
 			this.CancelBtn = new System.Windows.Forms.Button();
 			this.ProfileSelectComboBox = new System.Windows.Forms.ComboBox();
 			this.ProfileDialogHelpTexBox = new System.Windows.Forms.RichTextBox();
-			this.ProfileOptionsLabel = new System.Windows.Forms.Label();
-			this.OtherOptions = new System.Windows.Forms.Label();
+			this.ProfileOptionsLabel = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.OtherOptions = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.AutoCheckForUpdates = new System.Windows.Forms.CheckBox();
 			this.SuspendLayout();
 			// 
@@ -88,22 +88,16 @@
 			// 
 			// ProfileOptionsLabel
 			// 
-			this.ProfileOptionsLabel.AutoSize = true;
 			this.ProfileOptionsLabel.Location = new System.Drawing.Point(9, 9);
 			this.ProfileOptionsLabel.Name = "ProfileOptionsLabel";
-			this.ProfileOptionsLabel.Size = new System.Drawing.Size(75, 13);
-			this.ProfileOptionsLabel.TabIndex = 3;
 			this.ProfileOptionsLabel.Text = "Profile Options";
 			// 
 			// OtherOptions
 			// 
 			this.OtherOptions.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.OtherOptions.AutoSize = true;
 			this.OtherOptions.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.OtherOptions.Location = new System.Drawing.Point(9, 190);
 			this.OtherOptions.Name = "OtherOptions";
-			this.OtherOptions.Size = new System.Drawing.Size(72, 13);
-			this.OtherOptions.TabIndex = 12;
 			this.OtherOptions.Text = "Other Options";
 			// 
 			// AutoCheckForUpdates
@@ -147,8 +141,8 @@
 		private System.Windows.Forms.Button CancelBtn;
 		private System.Windows.Forms.ComboBox ProfileSelectComboBox;
 		private System.Windows.Forms.RichTextBox ProfileDialogHelpTexBox;
-		private System.Windows.Forms.Label ProfileOptionsLabel;
-		private System.Windows.Forms.Label OtherOptions;
+		private BizHawk.WinForms.Controls.LocLabelEx ProfileOptionsLabel;
+		private BizHawk.WinForms.Controls.LocLabelEx OtherOptions;
 		private System.Windows.Forms.CheckBox AutoCheckForUpdates;
 	}
 }

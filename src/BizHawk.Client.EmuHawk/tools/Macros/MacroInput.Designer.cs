@@ -38,15 +38,15 @@
 			this.ExitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.NameTextbox = new System.Windows.Forms.TextBox();
 			this.ReplaceBox = new System.Windows.Forms.CheckBox();
-			this.label2 = new System.Windows.Forms.Label();
+			this.label2 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.PlaceNum = new System.Windows.Forms.NumericUpDown();
 			this.EndNum = new System.Windows.Forms.NumericUpDown();
 			this.PlaceZoneButton = new System.Windows.Forms.Button();
 			this.StartNum = new System.Windows.Forms.NumericUpDown();
 			this.SetZoneButton = new System.Windows.Forms.Button();
 			this.ZonesList = new System.Windows.Forms.ListBox();
-			this.label3 = new System.Windows.Forms.Label();
-			this.label1 = new System.Windows.Forms.Label();
+			this.label3 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label1 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.CurrentButton = new System.Windows.Forms.Button();
 			this.OverlayBox = new System.Windows.Forms.CheckBox();
 			this.MacroMenu.SuspendLayout();
@@ -144,11 +144,8 @@
 			// 
 			// label2
 			// 
-			this.label2.AutoSize = true;
 			this.label2.Location = new System.Drawing.Point(12, 24);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(127, 13);
-			this.label2.TabIndex = 16;
 			this.label2.Text = "macro start      macro end";
 			// 
 			// PlaceNum
@@ -223,20 +220,14 @@
 			// label3
 			// 
 			this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.label3.AutoSize = true;
 			this.label3.Location = new System.Drawing.Point(178, 184);
 			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(39, 13);
-			this.label3.TabIndex = 17;
 			this.label3.Text = "Frame:";
 			// 
 			// label1
 			// 
-			this.label1.AutoSize = true;
 			this.label1.Location = new System.Drawing.Point(4, 184);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(71, 13);
-			this.label1.TabIndex = 22;
 			this.label1.Text = "Macro Name:";
 			// 
 			// CurrentButton
@@ -305,15 +296,15 @@
 		private System.Windows.Forms.ToolStripMenuItem ExitMenuItem;
 		private System.Windows.Forms.TextBox NameTextbox;
 		private System.Windows.Forms.CheckBox ReplaceBox;
-		private System.Windows.Forms.Label label2;
+		private BizHawk.WinForms.Controls.LocLabelEx label2;
 		private System.Windows.Forms.NumericUpDown PlaceNum;
 		private System.Windows.Forms.NumericUpDown EndNum;
 		private System.Windows.Forms.Button PlaceZoneButton;
 		private System.Windows.Forms.NumericUpDown StartNum;
 		private System.Windows.Forms.Button SetZoneButton;
 		private System.Windows.Forms.ListBox ZonesList;
-		private System.Windows.Forms.Label label3;
-		private System.Windows.Forms.Label label1;
+		private BizHawk.WinForms.Controls.LocLabelEx label3;
+		private BizHawk.WinForms.Controls.LocLabelEx label1;
 		private System.Windows.Forms.ToolStripMenuItem saveAsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem loadMacroToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem RecentToolStripMenuItem;

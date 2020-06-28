@@ -35,7 +35,7 @@
 			this.buttonCancel = new System.Windows.Forms.Button();
 			this.buttonPal = new System.Windows.Forms.Button();
 			this.buttonPalReset = new System.Windows.Forms.Button();
-			this.label1 = new System.Windows.Forms.Label();
+			this.label1 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.groupBox1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.SuspendLayout();
@@ -119,11 +119,8 @@
 			// label1
 			// 
 			this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.label1.AutoSize = true;
 			this.label1.Location = new System.Drawing.Point(12, 374);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(43, 13);
-			this.label1.TabIndex = 6;
 			this.label1.Text = "Palette:";
 			// 
 			// QuickNesConfig
@@ -161,6 +158,6 @@
 		private System.Windows.Forms.Button buttonPal;
 		private System.Windows.Forms.PictureBox pictureBox1;
 		private System.Windows.Forms.Button buttonPalReset;
-		private System.Windows.Forms.Label label1;
+		private BizHawk.WinForms.Controls.LocLabelEx label1;
 	}
 }

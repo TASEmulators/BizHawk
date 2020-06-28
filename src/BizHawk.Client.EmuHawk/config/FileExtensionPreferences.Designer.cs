@@ -31,9 +31,9 @@
 			this.OkBtn = new System.Windows.Forms.Button();
 			this.CancelBtn = new System.Windows.Forms.Button();
 			this.PrefPanel = new System.Windows.Forms.Panel();
-			this.label1 = new System.Windows.Forms.Label();
-			this.label2 = new System.Windows.Forms.Label();
-			this.label3 = new System.Windows.Forms.Label();
+			this.label1 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label2 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label3 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.SuspendLayout();
 			// 
 			// OkBtn
@@ -73,29 +73,20 @@
 			// 
 			// label1
 			// 
-			this.label1.AutoSize = true;
 			this.label1.Location = new System.Drawing.Point(12, 9);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(296, 13);
-			this.label1.TabIndex = 3;
 			this.label1.Text = "Select a preferred Platform to run for the given file extensions.";
 			// 
 			// label2
 			// 
-			this.label2.AutoSize = true;
 			this.label2.Location = new System.Drawing.Point(12, 24);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(352, 13);
-			this.label2.TabIndex = 4;
 			this.label2.Text = "Note: The game database overrides these options.  They only take effect";
 			// 
 			// label3
 			// 
-			this.label3.AutoSize = true;
 			this.label3.Location = new System.Drawing.Point(12, 39);
 			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(245, 13);
-			this.label3.TabIndex = 5;
 			this.label3.Text = "when a Rom is unable to be found in the database";
 			// 
 			// FileExtensionPreferences
@@ -127,8 +118,8 @@
 		private System.Windows.Forms.Button OkBtn;
 		private System.Windows.Forms.Button CancelBtn;
 		private System.Windows.Forms.Panel PrefPanel;
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.Label label3;
+		private BizHawk.WinForms.Controls.LocLabelEx label1;
+		private BizHawk.WinForms.Controls.LocLabelEx label2;
+		private BizHawk.WinForms.Controls.LocLabelEx label3;
 	}
 }

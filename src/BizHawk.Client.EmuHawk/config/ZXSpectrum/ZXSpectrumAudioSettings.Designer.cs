@@ -30,15 +30,15 @@
         {
             this.OkBtn = new System.Windows.Forms.Button();
             this.CancelBtn = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
+            this.label1 = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.label2 = new BizHawk.WinForms.Controls.LocLabelEx();
             this.panTypecomboBox1 = new System.Windows.Forms.ComboBox();
-            this.lblBorderInfo = new System.Windows.Forms.Label();
+            this.lblBorderInfo = new BizHawk.WinForms.Controls.LocLabelEx();
             this.tapeVolumetrackBar = new System.Windows.Forms.TrackBar();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
+            this.label3 = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.label4 = new BizHawk.WinForms.Controls.LocLabelEx();
             this.earVolumetrackBar = new System.Windows.Forms.TrackBar();
-            this.label5 = new System.Windows.Forms.Label();
+            this.label5 = new BizHawk.WinForms.Controls.LocLabelEx();
             this.ayVolumetrackBar = new System.Windows.Forms.TrackBar();
             ((System.ComponentModel.ISupportInitialize)(this.tapeVolumetrackBar)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.earVolumetrackBar)).BeginInit();
@@ -70,20 +70,14 @@
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(12, 14);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(140, 13);
-            this.label1.TabIndex = 17;
             this.label1.Text = "ZX Spectrum Audio Settings";
             // 
             // label2
             // 
-            this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(12, 236);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(135, 13);
-            this.label2.TabIndex = 23;
             this.label2.Text = "AY-3-8912 Panning Config:";
             // 
             // panTypecomboBox1
@@ -102,8 +96,6 @@
             this.lblBorderInfo.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblBorderInfo.Location = new System.Drawing.Point(175, 236);
             this.lblBorderInfo.Name = "lblBorderInfo";
-            this.lblBorderInfo.Size = new System.Drawing.Size(254, 59);
-            this.lblBorderInfo.TabIndex = 24;
             this.lblBorderInfo.Text = "Selects a particular panning configuration for the 3ch AY-3-8912 Programmable Sou" +
     "nd Generator (128K models only)";
             this.lblBorderInfo.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -118,20 +110,14 @@
             // 
             // label3
             // 
-            this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(12, 44);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(73, 13);
-            this.label3.TabIndex = 26;
             this.label3.Text = "Tape Volume:";
             // 
             // label4
             // 
-            this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(12, 108);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(80, 13);
-            this.label4.TabIndex = 28;
             this.label4.Text = "Buzzer Volume:";
             // 
             // earVolumetrackBar
@@ -144,11 +130,8 @@
             // 
             // label5
             // 
-            this.label5.AutoSize = true;
             this.label5.Location = new System.Drawing.Point(12, 172);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(98, 13);
-            this.label5.TabIndex = 30;
             this.label5.Text = "AY-3-8912 Volume:";
             // 
             // ayVolumetrackBar
@@ -195,15 +178,15 @@
 
         private System.Windows.Forms.Button OkBtn;
         private System.Windows.Forms.Button CancelBtn;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
+        private BizHawk.WinForms.Controls.LocLabelEx label1;
+        private BizHawk.WinForms.Controls.LocLabelEx label2;
         private System.Windows.Forms.ComboBox panTypecomboBox1;
-        private System.Windows.Forms.Label lblBorderInfo;
+        private BizHawk.WinForms.Controls.LocLabelEx lblBorderInfo;
         private System.Windows.Forms.TrackBar tapeVolumetrackBar;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label4;
+        private BizHawk.WinForms.Controls.LocLabelEx label3;
+        private BizHawk.WinForms.Controls.LocLabelEx label4;
         private System.Windows.Forms.TrackBar earVolumetrackBar;
-        private System.Windows.Forms.Label label5;
+        private BizHawk.WinForms.Controls.LocLabelEx label5;
         private System.Windows.Forms.TrackBar ayVolumetrackBar;
     }
 }

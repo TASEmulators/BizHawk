@@ -30,14 +30,14 @@
 		{
             this.cbMultitap_1 = new System.Windows.Forms.CheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.lbl_p_1_4 = new System.Windows.Forms.Label();
-            this.lbl_p_1_3 = new System.Windows.Forms.Label();
-            this.lbl_p_1_2 = new System.Windows.Forms.Label();
-            this.lbl_p_1_1 = new System.Windows.Forms.Label();
-            this.lbl_1_4 = new System.Windows.Forms.Label();
-            this.lbl_1_3 = new System.Windows.Forms.Label();
-            this.lbl_1_2 = new System.Windows.Forms.Label();
-            this.lbl_1_1 = new System.Windows.Forms.Label();
+            this.lbl_p_1_4 = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.lbl_p_1_3 = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.lbl_p_1_2 = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.lbl_p_1_1 = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.lbl_1_4 = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.lbl_1_3 = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.lbl_1_2 = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.lbl_1_1 = new BizHawk.WinForms.Controls.LocLabelEx();
             this.combo_1_4 = new System.Windows.Forms.ComboBox();
             this.combo_1_3 = new System.Windows.Forms.ComboBox();
             this.combo_1_2 = new System.Windows.Forms.ComboBox();
@@ -46,14 +46,14 @@
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.lbl_p_2_4 = new System.Windows.Forms.Label();
-            this.lbl_p_2_3 = new System.Windows.Forms.Label();
-            this.lbl_p_2_2 = new System.Windows.Forms.Label();
-            this.lbl_p_2_1 = new System.Windows.Forms.Label();
-            this.lbl_2_4 = new System.Windows.Forms.Label();
-            this.lbl_2_3 = new System.Windows.Forms.Label();
-            this.lbl_2_2 = new System.Windows.Forms.Label();
-            this.lbl_2_1 = new System.Windows.Forms.Label();
+            this.lbl_p_2_4 = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.lbl_p_2_3 = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.lbl_p_2_2 = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.lbl_p_2_1 = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.lbl_2_4 = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.lbl_2_3 = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.lbl_2_2 = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.lbl_2_1 = new BizHawk.WinForms.Controls.LocLabelEx();
             this.combo_2_4 = new System.Windows.Forms.ComboBox();
             this.combo_2_3 = new System.Windows.Forms.ComboBox();
             this.combo_2_2 = new System.Windows.Forms.ComboBox();
@@ -100,81 +100,57 @@
             // 
             // lbl_p_1_4
             // 
-            this.lbl_p_1_4.AutoSize = true;
             this.lbl_p_1_4.Location = new System.Drawing.Point(241, 105);
             this.lbl_p_1_4.Name = "lbl_p_1_4";
-            this.lbl_p_1_4.Size = new System.Drawing.Size(20, 13);
-            this.lbl_p_1_4.TabIndex = 12;
             this.lbl_p_1_4.Text = "P1";
             this.lbl_p_1_4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // lbl_p_1_3
             // 
-            this.lbl_p_1_3.AutoSize = true;
             this.lbl_p_1_3.Location = new System.Drawing.Point(241, 78);
             this.lbl_p_1_3.Name = "lbl_p_1_3";
-            this.lbl_p_1_3.Size = new System.Drawing.Size(20, 13);
-            this.lbl_p_1_3.TabIndex = 11;
             this.lbl_p_1_3.Text = "P1";
             this.lbl_p_1_3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // lbl_p_1_2
             // 
-            this.lbl_p_1_2.AutoSize = true;
             this.lbl_p_1_2.Location = new System.Drawing.Point(241, 50);
             this.lbl_p_1_2.Name = "lbl_p_1_2";
-            this.lbl_p_1_2.Size = new System.Drawing.Size(20, 13);
-            this.lbl_p_1_2.TabIndex = 10;
             this.lbl_p_1_2.Text = "P1";
             this.lbl_p_1_2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // lbl_p_1_1
             // 
-            this.lbl_p_1_1.AutoSize = true;
             this.lbl_p_1_1.Location = new System.Drawing.Point(241, 24);
             this.lbl_p_1_1.Name = "lbl_p_1_1";
-            this.lbl_p_1_1.Size = new System.Drawing.Size(20, 13);
-            this.lbl_p_1_1.TabIndex = 9;
             this.lbl_p_1_1.Text = "P1";
             this.lbl_p_1_1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // lbl_1_4
             // 
-            this.lbl_1_4.AutoSize = true;
             this.lbl_1_4.Location = new System.Drawing.Point(94, 105);
             this.lbl_1_4.Name = "lbl_1_4";
-            this.lbl_1_4.Size = new System.Drawing.Size(15, 13);
-            this.lbl_1_4.TabIndex = 8;
             this.lbl_1_4.Text = "D";
             this.lbl_1_4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // lbl_1_3
             // 
-            this.lbl_1_3.AutoSize = true;
             this.lbl_1_3.Location = new System.Drawing.Point(94, 78);
             this.lbl_1_3.Name = "lbl_1_3";
-            this.lbl_1_3.Size = new System.Drawing.Size(14, 13);
-            this.lbl_1_3.TabIndex = 7;
             this.lbl_1_3.Text = "C";
             this.lbl_1_3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // lbl_1_2
             // 
-            this.lbl_1_2.AutoSize = true;
             this.lbl_1_2.Location = new System.Drawing.Point(94, 51);
             this.lbl_1_2.Name = "lbl_1_2";
-            this.lbl_1_2.Size = new System.Drawing.Size(14, 13);
-            this.lbl_1_2.TabIndex = 6;
             this.lbl_1_2.Text = "B";
             this.lbl_1_2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // lbl_1_1
             // 
-            this.lbl_1_1.AutoSize = true;
             this.lbl_1_1.Location = new System.Drawing.Point(94, 24);
             this.lbl_1_1.Name = "lbl_1_1";
-            this.lbl_1_1.Size = new System.Drawing.Size(14, 13);
-            this.lbl_1_1.TabIndex = 2;
             this.lbl_1_1.Text = "A";
             this.lbl_1_1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
@@ -275,81 +251,57 @@
             // 
             // lbl_p_2_4
             // 
-            this.lbl_p_2_4.AutoSize = true;
             this.lbl_p_2_4.Location = new System.Drawing.Point(241, 105);
             this.lbl_p_2_4.Name = "lbl_p_2_4";
-            this.lbl_p_2_4.Size = new System.Drawing.Size(20, 13);
-            this.lbl_p_2_4.TabIndex = 12;
             this.lbl_p_2_4.Text = "P1";
             this.lbl_p_2_4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // lbl_p_2_3
             // 
-            this.lbl_p_2_3.AutoSize = true;
             this.lbl_p_2_3.Location = new System.Drawing.Point(241, 78);
             this.lbl_p_2_3.Name = "lbl_p_2_3";
-            this.lbl_p_2_3.Size = new System.Drawing.Size(20, 13);
-            this.lbl_p_2_3.TabIndex = 11;
             this.lbl_p_2_3.Text = "P1";
             this.lbl_p_2_3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // lbl_p_2_2
             // 
-            this.lbl_p_2_2.AutoSize = true;
             this.lbl_p_2_2.Location = new System.Drawing.Point(241, 50);
             this.lbl_p_2_2.Name = "lbl_p_2_2";
-            this.lbl_p_2_2.Size = new System.Drawing.Size(20, 13);
-            this.lbl_p_2_2.TabIndex = 10;
             this.lbl_p_2_2.Text = "P1";
             this.lbl_p_2_2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // lbl_p_2_1
             // 
-            this.lbl_p_2_1.AutoSize = true;
             this.lbl_p_2_1.Location = new System.Drawing.Point(241, 24);
             this.lbl_p_2_1.Name = "lbl_p_2_1";
-            this.lbl_p_2_1.Size = new System.Drawing.Size(20, 13);
-            this.lbl_p_2_1.TabIndex = 9;
             this.lbl_p_2_1.Text = "P1";
             this.lbl_p_2_1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // lbl_2_4
             // 
-            this.lbl_2_4.AutoSize = true;
             this.lbl_2_4.Location = new System.Drawing.Point(94, 105);
             this.lbl_2_4.Name = "lbl_2_4";
-            this.lbl_2_4.Size = new System.Drawing.Size(15, 13);
-            this.lbl_2_4.TabIndex = 8;
             this.lbl_2_4.Text = "D";
             this.lbl_2_4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // lbl_2_3
             // 
-            this.lbl_2_3.AutoSize = true;
             this.lbl_2_3.Location = new System.Drawing.Point(94, 78);
             this.lbl_2_3.Name = "lbl_2_3";
-            this.lbl_2_3.Size = new System.Drawing.Size(14, 13);
-            this.lbl_2_3.TabIndex = 7;
             this.lbl_2_3.Text = "C";
             this.lbl_2_3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // lbl_2_2
             // 
-            this.lbl_2_2.AutoSize = true;
             this.lbl_2_2.Location = new System.Drawing.Point(94, 51);
             this.lbl_2_2.Name = "lbl_2_2";
-            this.lbl_2_2.Size = new System.Drawing.Size(14, 13);
-            this.lbl_2_2.TabIndex = 6;
             this.lbl_2_2.Text = "B";
             this.lbl_2_2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // lbl_2_1
             // 
-            this.lbl_2_1.AutoSize = true;
             this.lbl_2_1.Location = new System.Drawing.Point(94, 24);
             this.lbl_2_1.Name = "lbl_2_1";
-            this.lbl_2_1.Size = new System.Drawing.Size(14, 13);
-            this.lbl_2_1.TabIndex = 2;
             this.lbl_2_1.Text = "A";
             this.lbl_2_1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
@@ -445,14 +397,14 @@
 
 		private System.Windows.Forms.CheckBox cbMultitap_1;
 		private System.Windows.Forms.GroupBox groupBox1;
-		private System.Windows.Forms.Label lbl_p_1_4;
-		private System.Windows.Forms.Label lbl_p_1_3;
-		private System.Windows.Forms.Label lbl_p_1_2;
-		private System.Windows.Forms.Label lbl_p_1_1;
-		private System.Windows.Forms.Label lbl_1_4;
-		private System.Windows.Forms.Label lbl_1_3;
-		private System.Windows.Forms.Label lbl_1_2;
-		private System.Windows.Forms.Label lbl_1_1;
+		private BizHawk.WinForms.Controls.LocLabelEx lbl_p_1_4;
+		private BizHawk.WinForms.Controls.LocLabelEx lbl_p_1_3;
+		private BizHawk.WinForms.Controls.LocLabelEx lbl_p_1_2;
+		private BizHawk.WinForms.Controls.LocLabelEx lbl_p_1_1;
+		private BizHawk.WinForms.Controls.LocLabelEx lbl_1_4;
+		private BizHawk.WinForms.Controls.LocLabelEx lbl_1_3;
+		private BizHawk.WinForms.Controls.LocLabelEx lbl_1_2;
+		private BizHawk.WinForms.Controls.LocLabelEx lbl_1_1;
 		private System.Windows.Forms.ComboBox combo_1_4;
 		private System.Windows.Forms.ComboBox combo_1_3;
 		private System.Windows.Forms.ComboBox combo_1_2;
@@ -461,14 +413,14 @@
 		private System.Windows.Forms.Button btnOK;
 		private System.Windows.Forms.Button btnCancel;
 		private System.Windows.Forms.GroupBox groupBox2;
-		private System.Windows.Forms.Label lbl_p_2_4;
-		private System.Windows.Forms.Label lbl_p_2_3;
-		private System.Windows.Forms.Label lbl_p_2_2;
-		private System.Windows.Forms.Label lbl_p_2_1;
-		private System.Windows.Forms.Label lbl_2_4;
-		private System.Windows.Forms.Label lbl_2_3;
-		private System.Windows.Forms.Label lbl_2_2;
-		private System.Windows.Forms.Label lbl_2_1;
+		private BizHawk.WinForms.Controls.LocLabelEx lbl_p_2_4;
+		private BizHawk.WinForms.Controls.LocLabelEx lbl_p_2_3;
+		private BizHawk.WinForms.Controls.LocLabelEx lbl_p_2_2;
+		private BizHawk.WinForms.Controls.LocLabelEx lbl_p_2_1;
+		private BizHawk.WinForms.Controls.LocLabelEx lbl_2_4;
+		private BizHawk.WinForms.Controls.LocLabelEx lbl_2_3;
+		private BizHawk.WinForms.Controls.LocLabelEx lbl_2_2;
+		private BizHawk.WinForms.Controls.LocLabelEx lbl_2_1;
 		private System.Windows.Forms.ComboBox combo_2_4;
 		private System.Windows.Forms.ComboBox combo_2_3;
 		private System.Windows.Forms.ComboBox combo_2_2;

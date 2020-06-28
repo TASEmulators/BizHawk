@@ -30,7 +30,7 @@
 		{
 			this.components = new System.ComponentModel.Container();
 			this.AddBreakpointButton = new System.Windows.Forms.Button();
-			this.BreakpointStatsLabel = new System.Windows.Forms.Label();
+			this.BreakpointStatsLabel = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.ToggleButton = new System.Windows.Forms.Button();
 			this.RemoveBreakpointButton = new System.Windows.Forms.Button();
@@ -56,11 +56,8 @@
 			// 
 			// BreakpointStatsLabel
 			// 
-			this.BreakpointStatsLabel.AutoSize = true;
 			this.BreakpointStatsLabel.Location = new System.Drawing.Point(3, 3);
 			this.BreakpointStatsLabel.Name = "BreakpointStatsLabel";
-			this.BreakpointStatsLabel.Size = new System.Drawing.Size(35, 13);
-			this.BreakpointStatsLabel.TabIndex = 8;
 			this.BreakpointStatsLabel.Text = "label1";
 			// 
 			// ToggleButton
@@ -181,7 +178,7 @@
 		private System.Windows.Forms.Button AddBreakpointButton;
 		private System.Windows.Forms.Button RemoveBreakpointButton;
 		private System.Windows.Forms.ColumnHeader columnHeader3;
-		private System.Windows.Forms.Label BreakpointStatsLabel;
+		private BizHawk.WinForms.Controls.LocLabelEx BreakpointStatsLabel;
 		private System.Windows.Forms.ToolTip toolTip1;
 		private System.Windows.Forms.Button ToggleButton;
 		private System.Windows.Forms.Button DuplicateBreakpointButton;

@@ -32,10 +32,10 @@
 			this.lvDiscs = new System.Windows.Forms.ListView();
 			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.label1 = new System.Windows.Forms.Label();
+			this.label1 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.btnClose = new BizHawk.Client.EmuHawk.VirtualPadButton();
 			this.btnOpen = new BizHawk.Client.EmuHawk.VirtualPadButton();
-			this.lblTimeZero = new System.Windows.Forms.Label();
+			this.lblTimeZero = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -83,11 +83,8 @@
 			// 
 			// label1
 			// 
-			this.label1.AutoSize = true;
 			this.label1.Location = new System.Drawing.Point(6, 11);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(34, 13);
-			this.label1.TabIndex = 3;
 			this.label1.Text = "Tray :";
 			// 
 			// btnClose
@@ -122,11 +119,8 @@
 			// 
 			// lblTimeZero
 			// 
-			this.lblTimeZero.AutoSize = true;
 			this.lblTimeZero.Location = new System.Drawing.Point(142, 11);
 			this.lblTimeZero.Name = "lblTimeZero";
-			this.lblTimeZero.Size = new System.Drawing.Size(135, 13);
-			this.lblTimeZero.TabIndex = 4;
 			this.lblTimeZero.Text = "(T=0: Freely set initial state)";
 			// 
 			// VirtualPadDiscManager
@@ -155,7 +149,7 @@
 		private System.Windows.Forms.ColumnHeader columnHeader1;
 		private System.Windows.Forms.ColumnHeader columnHeader2;
 		private VirtualPadButton btnClose;
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.Label lblTimeZero;
+		private BizHawk.WinForms.Controls.LocLabelEx label1;
+		private BizHawk.WinForms.Controls.LocLabelEx lblTimeZero;
 	}
 }

@@ -33,20 +33,20 @@
 			this.Cancel = new System.Windows.Forms.Button();
 			this.RewindEnabledBox = new System.Windows.Forms.CheckBox();
 			this.UseCompression = new System.Windows.Forms.CheckBox();
-			this.label4 = new System.Windows.Forms.Label();
+			this.label4 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.BufferSizeUpDown = new System.Windows.Forms.NumericUpDown();
-			this.label3 = new System.Windows.Forms.Label();
-			this.label1 = new System.Windows.Forms.Label();
-			this.StateSizeLabel = new System.Windows.Forms.Label();
-			this.label6 = new System.Windows.Forms.Label();
-			this.FullnessLabel = new System.Windows.Forms.Label();
+			this.label3 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label1 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.StateSizeLabel = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label6 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.FullnessLabel = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.groupBox4 = new System.Windows.Forms.GroupBox();
-			this.EstTimeLabel = new System.Windows.Forms.Label();
-			this.label11 = new System.Windows.Forms.Label();
-			this.ApproxFramesLabel = new System.Windows.Forms.Label();
-			this.label8 = new System.Windows.Forms.Label();
-			this.RewindFramesUsedLabel = new System.Windows.Forms.Label();
-			this.label7 = new System.Windows.Forms.Label();
+			this.EstTimeLabel = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label11 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.ApproxFramesLabel = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label8 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.RewindFramesUsedLabel = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label7 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.groupBox6 = new System.Windows.Forms.GroupBox();
 			this.rbStatesText = new System.Windows.Forms.RadioButton();
 			this.rbStatesBinary = new System.Windows.Forms.RadioButton();
@@ -55,18 +55,18 @@
 			this.trackBarCompression = new System.Windows.Forms.TrackBar();
 			this.nudCompression = new System.Windows.Forms.NumericUpDown();
 			this.groupBox7 = new System.Windows.Forms.GroupBox();
-			this.label20 = new System.Windows.Forms.Label();
-			this.KbLabel = new System.Windows.Forms.Label();
+			this.label20 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.KbLabel = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.BigScreenshotNumeric = new System.Windows.Forms.NumericUpDown();
 			this.LowResLargeScreenshotsCheckbox = new System.Windows.Forms.CheckBox();
-			this.label13 = new System.Windows.Forms.Label();
-			this.label14 = new System.Windows.Forms.Label();
+			this.label13 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label14 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.ScreenshotInStatesCheckbox = new System.Windows.Forms.CheckBox();
-			this.label15 = new System.Windows.Forms.Label();
-			this.label16 = new System.Windows.Forms.Label();
+			this.label15 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label16 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.BackupSavestatesCheckbox = new System.Windows.Forms.CheckBox();
-			this.label12 = new System.Windows.Forms.Label();
-			this.label2 = new System.Windows.Forms.Label();
+			this.label12 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label2 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.TargetFrameLengthNumeric = new System.Windows.Forms.NumericUpDown();
 			((System.ComponentModel.ISupportInitialize)(this.BufferSizeUpDown)).BeginInit();
 			this.groupBox4.SuspendLayout();
@@ -124,11 +124,8 @@
 			// 
 			// label4
 			// 
-			this.label4.AutoSize = true;
 			this.label4.Location = new System.Drawing.Point(181, 112);
 			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(23, 13);
-			this.label4.TabIndex = 9;
 			this.label4.Text = "MB";
 			// 
 			// BufferSizeUpDown
@@ -156,47 +153,32 @@
 			// 
 			// label3
 			// 
-			this.label3.AutoSize = true;
 			this.label3.Location = new System.Drawing.Point(12, 112);
 			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(81, 13);
-			this.label3.TabIndex = 7;
 			this.label3.Text = "Max buffer size:";
 			// 
 			// label1
 			// 
-			this.label1.AutoSize = true;
 			this.label1.Location = new System.Drawing.Point(12, 17);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(83, 13);
-			this.label1.TabIndex = 5;
 			this.label1.Text = "Avg. State Size:";
 			// 
 			// StateSizeLabel
 			// 
-			this.StateSizeLabel.AutoSize = true;
 			this.StateSizeLabel.Location = new System.Drawing.Point(92, 17);
 			this.StateSizeLabel.Name = "StateSizeLabel";
-			this.StateSizeLabel.Size = new System.Drawing.Size(30, 13);
-			this.StateSizeLabel.TabIndex = 6;
 			this.StateSizeLabel.Text = "0 KB";
 			// 
 			// label6
 			// 
-			this.label6.AutoSize = true;
 			this.label6.Location = new System.Drawing.Point(67, 48);
 			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(26, 13);
-			this.label6.TabIndex = 10;
 			this.label6.Text = "Full:";
 			// 
 			// FullnessLabel
 			// 
-			this.FullnessLabel.AutoSize = true;
 			this.FullnessLabel.Location = new System.Drawing.Point(94, 48);
 			this.FullnessLabel.Name = "FullnessLabel";
-			this.FullnessLabel.Size = new System.Drawing.Size(21, 13);
-			this.FullnessLabel.TabIndex = 11;
 			this.FullnessLabel.Text = "0%";
 			// 
 			// groupBox4
@@ -227,56 +209,38 @@
 			// 
 			// EstTimeLabel
 			// 
-			this.EstTimeLabel.AutoSize = true;
 			this.EstTimeLabel.Location = new System.Drawing.Point(273, 32);
 			this.EstTimeLabel.Name = "EstTimeLabel";
-			this.EstTimeLabel.Size = new System.Drawing.Size(32, 13);
-			this.EstTimeLabel.TabIndex = 19;
 			this.EstTimeLabel.Text = "0 min";
 			// 
 			// label11
 			// 
-			this.label11.AutoSize = true;
 			this.label11.Location = new System.Drawing.Point(221, 32);
 			this.label11.Name = "label11";
-			this.label11.Size = new System.Drawing.Size(54, 13);
-			this.label11.TabIndex = 18;
 			this.label11.Text = "Est. Time:";
 			// 
 			// ApproxFramesLabel
 			// 
-			this.ApproxFramesLabel.AutoSize = true;
 			this.ApproxFramesLabel.Location = new System.Drawing.Point(273, 17);
 			this.ApproxFramesLabel.Name = "ApproxFramesLabel";
-			this.ApproxFramesLabel.Size = new System.Drawing.Size(47, 13);
-			this.ApproxFramesLabel.TabIndex = 15;
 			this.ApproxFramesLabel.Text = "0 frames";
 			// 
 			// label8
 			// 
-			this.label8.AutoSize = true;
 			this.label8.Location = new System.Drawing.Point(209, 17);
 			this.label8.Name = "label8";
-			this.label8.Size = new System.Drawing.Size(66, 13);
-			this.label8.TabIndex = 14;
 			this.label8.Text = "Est. storage:";
 			// 
 			// RewindFramesUsedLabel
 			// 
-			this.RewindFramesUsedLabel.AutoSize = true;
 			this.RewindFramesUsedLabel.Location = new System.Drawing.Point(94, 32);
 			this.RewindFramesUsedLabel.Name = "RewindFramesUsedLabel";
-			this.RewindFramesUsedLabel.Size = new System.Drawing.Size(13, 13);
-			this.RewindFramesUsedLabel.TabIndex = 13;
 			this.RewindFramesUsedLabel.Text = "0";
 			// 
 			// label7
 			// 
-			this.label7.AutoSize = true;
 			this.label7.Location = new System.Drawing.Point(15, 32);
 			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(78, 13);
-			this.label7.TabIndex = 12;
 			this.label7.Text = "Frames Stored:";
 			// 
 			// groupBox6
@@ -379,20 +343,14 @@
 			// 
 			// label20
 			// 
-			this.label20.AutoSize = true;
 			this.label20.Location = new System.Drawing.Point(21, 291);
 			this.label20.Name = "label20";
-			this.label20.Size = new System.Drawing.Size(315, 13);
-			this.label20.TabIndex = 34;
 			this.label20.Text = "Use a low resolution screenshot for better save/load performance";
 			// 
 			// KbLabel
 			// 
-			this.KbLabel.AutoSize = true;
 			this.KbLabel.Location = new System.Drawing.Point(276, 271);
 			this.KbLabel.Name = "KbLabel";
-			this.KbLabel.Size = new System.Drawing.Size(21, 13);
-			this.KbLabel.TabIndex = 33;
 			this.KbLabel.Text = "KB";
 			// 
 			// BigScreenshotNumeric
@@ -429,20 +387,14 @@
 			// 
 			// label13
 			// 
-			this.label13.AutoSize = true;
 			this.label13.Location = new System.Drawing.Point(21, 235);
 			this.label13.Name = "label13";
-			this.label13.Size = new System.Drawing.Size(186, 13);
-			this.label13.TabIndex = 30;
 			this.label13.Text = "black screen on the frame it is loaded.";
 			// 
 			// label14
 			// 
-			this.label14.AutoSize = true;
 			this.label14.Location = new System.Drawing.Point(19, 221);
 			this.label14.Name = "label14";
-			this.label14.Size = new System.Drawing.Size(290, 13);
-			this.label14.TabIndex = 29;
 			this.label14.Text = "Saves a screenshot and loads it on loadstate so there isn\'t a";
 			// 
 			// ScreenshotInStatesCheckbox
@@ -458,20 +410,14 @@
 			// 
 			// label15
 			// 
-			this.label15.AutoSize = true;
 			this.label15.Location = new System.Drawing.Point(39, 171);
 			this.label15.Name = "label15";
-			this.label15.Size = new System.Drawing.Size(102, 13);
-			this.label15.TabIndex = 27;
 			this.label15.Text = "before overwriting it.";
 			// 
 			// label16
 			// 
-			this.label16.AutoSize = true;
 			this.label16.Location = new System.Drawing.Point(39, 158);
 			this.label16.Name = "label16";
-			this.label16.Size = new System.Drawing.Size(292, 13);
-			this.label16.TabIndex = 26;
 			this.label16.Text = "When set, the client will make a backup copy of a savestate";
 			// 
 			// BackupSavestatesCheckbox
@@ -486,20 +432,14 @@
 			// 
 			// label12
 			// 
-			this.label12.AutoSize = true;
 			this.label12.Location = new System.Drawing.Point(19, 21);
 			this.label12.Name = "label12";
-			this.label12.Size = new System.Drawing.Size(96, 13);
-			this.label12.TabIndex = 0;
 			this.label12.Text = "Compression Level";
 			// 
 			// label2
 			// 
-			this.label2.AutoSize = true;
 			this.label2.Location = new System.Drawing.Point(12, 138);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(107, 13);
-			this.label2.TabIndex = 20;
 			this.label2.Text = "Desired frame length:";
 			// 
 			// TargetFrameLengthNumeric
@@ -563,20 +503,20 @@
 		private System.Windows.Forms.Button Cancel;
 		private System.Windows.Forms.CheckBox RewindEnabledBox;
 		private System.Windows.Forms.CheckBox UseCompression;
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.Label StateSizeLabel;
-		private System.Windows.Forms.Label label4;
+		private BizHawk.WinForms.Controls.LocLabelEx label1;
+		private BizHawk.WinForms.Controls.LocLabelEx StateSizeLabel;
+		private BizHawk.WinForms.Controls.LocLabelEx label4;
 		private System.Windows.Forms.NumericUpDown BufferSizeUpDown;
-		private System.Windows.Forms.Label label3;
-		private System.Windows.Forms.Label label6;
-		private System.Windows.Forms.Label FullnessLabel;
+		private BizHawk.WinForms.Controls.LocLabelEx label3;
+		private BizHawk.WinForms.Controls.LocLabelEx label6;
+		private BizHawk.WinForms.Controls.LocLabelEx FullnessLabel;
 		private System.Windows.Forms.GroupBox groupBox4;
-		private System.Windows.Forms.Label RewindFramesUsedLabel;
-		private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.Label ApproxFramesLabel;
-        private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.Label EstTimeLabel;
-				private System.Windows.Forms.Label label11;
+		private BizHawk.WinForms.Controls.LocLabelEx RewindFramesUsedLabel;
+		private BizHawk.WinForms.Controls.LocLabelEx label7;
+        private BizHawk.WinForms.Controls.LocLabelEx ApproxFramesLabel;
+        private BizHawk.WinForms.Controls.LocLabelEx label8;
+        private BizHawk.WinForms.Controls.LocLabelEx EstTimeLabel;
+				private BizHawk.WinForms.Controls.LocLabelEx label11;
 				private System.Windows.Forms.GroupBox groupBox6;
 				private System.Windows.Forms.RadioButton rbStatesText;
 				private System.Windows.Forms.RadioButton rbStatesBinary;
@@ -585,18 +525,18 @@
 				private System.Windows.Forms.NumericUpDown nudCompression;
 				private System.Windows.Forms.Button btnResetCompression;
 				private System.Windows.Forms.GroupBox groupBox7;
-				private System.Windows.Forms.Label label12;
-				private System.Windows.Forms.Label KbLabel;
+				private BizHawk.WinForms.Controls.LocLabelEx label12;
+				private BizHawk.WinForms.Controls.LocLabelEx KbLabel;
 				private System.Windows.Forms.NumericUpDown BigScreenshotNumeric;
 				private System.Windows.Forms.CheckBox LowResLargeScreenshotsCheckbox;
-				private System.Windows.Forms.Label label13;
-				private System.Windows.Forms.Label label14;
+				private BizHawk.WinForms.Controls.LocLabelEx label13;
+				private BizHawk.WinForms.Controls.LocLabelEx label14;
 				private System.Windows.Forms.CheckBox ScreenshotInStatesCheckbox;
-				private System.Windows.Forms.Label label15;
-				private System.Windows.Forms.Label label16;
+				private BizHawk.WinForms.Controls.LocLabelEx label15;
+				private BizHawk.WinForms.Controls.LocLabelEx label16;
 				private System.Windows.Forms.CheckBox BackupSavestatesCheckbox;
-				private System.Windows.Forms.Label label20;
+				private BizHawk.WinForms.Controls.LocLabelEx label20;
 		private System.Windows.Forms.NumericUpDown TargetFrameLengthNumeric;
-		private System.Windows.Forms.Label label2;
+		private BizHawk.WinForms.Controls.LocLabelEx label2;
 	}
 }

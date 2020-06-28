@@ -31,14 +31,14 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ZxSpectrumJoystickSettings));
             this.OkBtn = new System.Windows.Forms.Button();
             this.CancelBtn = new System.Windows.Forms.Button();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
+            this.label5 = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.label4 = new BizHawk.WinForms.Controls.LocLabelEx();
             this.Port2ComboBox = new System.Windows.Forms.ComboBox();
             this.Port1ComboBox = new System.Windows.Forms.ComboBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.label1 = new BizHawk.WinForms.Controls.LocLabelEx();
             this.Port3ComboBox = new System.Windows.Forms.ComboBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.lblDoubleSize = new System.Windows.Forms.Label();
+            this.label2 = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.lblDoubleSize = new BizHawk.WinForms.Controls.LocLabelEx();
             this.SuspendLayout();
             // 
             // OkBtn
@@ -66,20 +66,14 @@
             // 
             // label5
             // 
-            this.label5.AutoSize = true;
             this.label5.Location = new System.Drawing.Point(9, 207);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(57, 13);
-            this.label5.TabIndex = 16;
             this.label5.Text = "Joystick 2:";
             // 
             // label4
             // 
-            this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(12, 157);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(57, 13);
-            this.label4.TabIndex = 15;
             this.label4.Text = "Joystick 1:";
             // 
             // Port2ComboBox
@@ -106,11 +100,8 @@
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(12, 14);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(151, 13);
-            this.label1.TabIndex = 17;
             this.label1.Text = "ZX Spectrum Joystick Settings";
             // 
             // Port3ComboBox
@@ -126,19 +117,14 @@
             // 
             // label2
             // 
-            this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(12, 259);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(57, 13);
-            this.label2.TabIndex = 19;
             this.label2.Text = "Joystick 3:";
             // 
             // lblDoubleSize
             // 
             this.lblDoubleSize.Location = new System.Drawing.Point(26, 40);
             this.lblDoubleSize.Name = "lblDoubleSize";
-            this.lblDoubleSize.Size = new System.Drawing.Size(254, 117);
-            this.lblDoubleSize.TabIndex = 20;
             this.lblDoubleSize.Text = resources.GetString("lblDoubleSize.Text");
             // 
             // ZXSpectrumJoystickSettings
@@ -172,13 +158,13 @@
 
         private System.Windows.Forms.Button OkBtn;
         private System.Windows.Forms.Button CancelBtn;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Label label4;
+        private BizHawk.WinForms.Controls.LocLabelEx label5;
+        private BizHawk.WinForms.Controls.LocLabelEx label4;
         private System.Windows.Forms.ComboBox Port2ComboBox;
         private System.Windows.Forms.ComboBox Port1ComboBox;
-        private System.Windows.Forms.Label label1;
+        private BizHawk.WinForms.Controls.LocLabelEx label1;
         private System.Windows.Forms.ComboBox Port3ComboBox;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label lblDoubleSize;
+        private BizHawk.WinForms.Controls.LocLabelEx label2;
+        private BizHawk.WinForms.Controls.LocLabelEx lblDoubleSize;
     }
 }

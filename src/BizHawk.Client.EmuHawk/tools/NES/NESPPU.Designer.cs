@@ -30,8 +30,8 @@
 		{
 			this.components = new System.ComponentModel.Container();
 			this.PatternGroup = new System.Windows.Forms.GroupBox();
-			this.Table1PaletteLabel = new System.Windows.Forms.Label();
-			this.Table0PaletteLabel = new System.Windows.Forms.Label();
+			this.Table1PaletteLabel = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.Table0PaletteLabel = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.PatternView = new BizHawk.Client.EmuHawk.PatternViewer();
 			this.PatternContext = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.PatternSaveImageMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -44,15 +44,15 @@
 			this.PaletteImageToClipboardMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.PaletteRefreshMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.DetailsBox = new System.Windows.Forms.GroupBox();
-			this.label2 = new System.Windows.Forms.Label();
-			this.Value5Label = new System.Windows.Forms.Label();
-			this.Value4Label = new System.Windows.Forms.Label();
-			this.label1 = new System.Windows.Forms.Label();
+			this.label2 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.Value5Label = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.Value4Label = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label1 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.ZoomBox = new System.Windows.Forms.PictureBox();
-			this.Value3Label = new System.Windows.Forms.Label();
-			this.Value2Label = new System.Windows.Forms.Label();
-			this.ValueLabel = new System.Windows.Forms.Label();
-			this.AddressLabel = new System.Windows.Forms.Label();
+			this.Value3Label = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.Value2Label = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.ValueLabel = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.AddressLabel = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.SpriteViewerBox = new System.Windows.Forms.GroupBox();
 			this.SpriteView = new BizHawk.Client.EmuHawk.SpriteViewer();
 			this.SpriteContext = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -62,8 +62,8 @@
 			this.txtScanline = new System.Windows.Forms.TextBox();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
-			this.label4 = new System.Windows.Forms.Label();
-			this.label3 = new System.Windows.Forms.Label();
+			this.label4 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label3 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.RefreshRate = new System.Windows.Forms.TrackBar();
 			this.NesPPUMenu = new MenuStripEx();
 			this.FileSubMenu = new System.Windows.Forms.ToolStripMenuItem();
@@ -101,7 +101,7 @@
 			this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
 			this.Messagetimer = new System.Windows.Forms.Timer(this.components);
 			this.CHRROMGroup = new System.Windows.Forms.GroupBox();
-			this.label5 = new System.Windows.Forms.Label();
+			this.label5 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.numericUpDownCHRROMBank = new System.Windows.Forms.NumericUpDown();
 			this.CHRROMView = new BizHawk.Client.EmuHawk.PatternViewer();
 			this.PatternGroup.SuspendLayout();
@@ -137,22 +137,16 @@
 			// 
 			// Table1PaletteLabel
 			// 
-			this.Table1PaletteLabel.AutoSize = true;
 			this.Table1PaletteLabel.Location = new System.Drawing.Point(172, 185);
 			this.Table1PaletteLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.Table1PaletteLabel.Name = "Table1PaletteLabel";
-			this.Table1PaletteLabel.Size = new System.Drawing.Size(68, 17);
-			this.Table1PaletteLabel.TabIndex = 2;
 			this.Table1PaletteLabel.Text = "Palette: 0";
 			// 
 			// Table0PaletteLabel
 			// 
-			this.Table0PaletteLabel.AutoSize = true;
 			this.Table0PaletteLabel.Location = new System.Drawing.Point(8, 185);
 			this.Table0PaletteLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.Table0PaletteLabel.Name = "Table0PaletteLabel";
-			this.Table0PaletteLabel.Size = new System.Drawing.Size(68, 17);
-			this.Table0PaletteLabel.TabIndex = 1;
 			this.Table0PaletteLabel.Text = "Palette: 0";
 			// 
 			// PatternView
@@ -281,42 +275,30 @@
 			// 
 			// label2
 			// 
-			this.label2.AutoSize = true;
 			this.label2.Location = new System.Drawing.Point(8, 38);
 			this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(212, 17);
-			this.label2.TabIndex = 10;
 			this.label2.Text = "Shift-click to remember selection";
 			// 
 			// Value5Label
 			// 
-			this.Value5Label.AutoSize = true;
 			this.Value5Label.Location = new System.Drawing.Point(192, 182);
 			this.Value5Label.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.Value5Label.Name = "Value5Label";
-			this.Value5Label.Size = new System.Drawing.Size(56, 17);
-			this.Value5Label.TabIndex = 9;
 			this.Value5Label.Text = "Value 5";
 			// 
 			// Value4Label
 			// 
-			this.Value4Label.AutoSize = true;
 			this.Value4Label.Location = new System.Drawing.Point(192, 148);
 			this.Value4Label.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.Value4Label.Name = "Value4Label";
-			this.Value4Label.Size = new System.Drawing.Size(56, 17);
-			this.Value4Label.TabIndex = 8;
 			this.Value4Label.Text = "Value 4";
 			// 
 			// label1
 			// 
-			this.label1.AutoSize = true;
 			this.label1.Location = new System.Drawing.Point(8, 20);
 			this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(200, 17);
-			this.label1.TabIndex = 7;
 			this.label1.Text = "Hover over item to view details";
 			// 
 			// ZoomBox
@@ -331,42 +313,30 @@
 			// 
 			// Value3Label
 			// 
-			this.Value3Label.AutoSize = true;
 			this.Value3Label.Location = new System.Drawing.Point(192, 113);
 			this.Value3Label.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.Value3Label.Name = "Value3Label";
-			this.Value3Label.Size = new System.Drawing.Size(56, 17);
-			this.Value3Label.TabIndex = 5;
 			this.Value3Label.Text = "Value 3";
 			// 
 			// Value2Label
 			// 
-			this.Value2Label.AutoSize = true;
 			this.Value2Label.Location = new System.Drawing.Point(13, 182);
 			this.Value2Label.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.Value2Label.Name = "Value2Label";
-			this.Value2Label.Size = new System.Drawing.Size(56, 17);
-			this.Value2Label.TabIndex = 3;
 			this.Value2Label.Text = "Value 2";
 			// 
 			// ValueLabel
 			// 
-			this.ValueLabel.AutoSize = true;
 			this.ValueLabel.Location = new System.Drawing.Point(13, 148);
 			this.ValueLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.ValueLabel.Name = "ValueLabel";
-			this.ValueLabel.Size = new System.Drawing.Size(56, 17);
-			this.ValueLabel.TabIndex = 2;
 			this.ValueLabel.Text = "Value 1";
 			// 
 			// AddressLabel
 			// 
-			this.AddressLabel.AutoSize = true;
 			this.AddressLabel.Location = new System.Drawing.Point(13, 113);
 			this.AddressLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.AddressLabel.Name = "AddressLabel";
-			this.AddressLabel.Size = new System.Drawing.Size(60, 17);
-			this.AddressLabel.TabIndex = 1;
 			this.AddressLabel.Text = "Address";
 			// 
 			// SpriteViewerBox
@@ -465,22 +435,16 @@
 			// 
 			// label4
 			// 
-			this.label4.AutoSize = true;
 			this.label4.Location = new System.Drawing.Point(187, 25);
 			this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(38, 17);
-			this.label4.TabIndex = 11;
 			this.label4.Text = "Less";
 			// 
 			// label3
 			// 
-			this.label3.AutoSize = true;
 			this.label3.Location = new System.Drawing.Point(8, 23);
 			this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(40, 17);
-			this.label3.TabIndex = 10;
 			this.label3.Text = "More";
 			// 
 			// RefreshRate
@@ -797,12 +761,9 @@
 			// 
 			// label5
 			// 
-			this.label5.AutoSize = true;
 			this.label5.Location = new System.Drawing.Point(8, 192);
 			this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(44, 17);
-			this.label5.TabIndex = 2;
 			this.label5.Text = "Bank:";
 			// 
 			// numericUpDownCHRROMBank
@@ -883,26 +844,26 @@
 		private System.Windows.Forms.GroupBox PalettesGroup;
 		private PaletteViewer PaletteView;
 		private System.Windows.Forms.GroupBox DetailsBox;
-		private System.Windows.Forms.Label ValueLabel;
-		private System.Windows.Forms.Label AddressLabel;
+		private BizHawk.WinForms.Controls.LocLabelEx ValueLabel;
+		private BizHawk.WinForms.Controls.LocLabelEx AddressLabel;
 		private PatternViewer PatternView;
-		private System.Windows.Forms.Label Table1PaletteLabel;
-		private System.Windows.Forms.Label Table0PaletteLabel;
-		private System.Windows.Forms.Label Value2Label;
+		private BizHawk.WinForms.Controls.LocLabelEx Table1PaletteLabel;
+		private BizHawk.WinForms.Controls.LocLabelEx Table0PaletteLabel;
+		private BizHawk.WinForms.Controls.LocLabelEx Value2Label;
 		private System.Windows.Forms.GroupBox SpriteViewerBox;
 		private SpriteViewer SpriteView;
 		private System.Windows.Forms.TextBox txtScanline;
 		private System.Windows.Forms.GroupBox groupBox1;
-		private System.Windows.Forms.Label Value3Label;
+		private BizHawk.WinForms.Controls.LocLabelEx Value3Label;
 		private System.Windows.Forms.PictureBox ZoomBox;
-		private System.Windows.Forms.Label Value5Label;
-		private System.Windows.Forms.Label Value4Label;
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.Label label2;
+		private BizHawk.WinForms.Controls.LocLabelEx Value5Label;
+		private BizHawk.WinForms.Controls.LocLabelEx Value4Label;
+		private BizHawk.WinForms.Controls.LocLabelEx label1;
+		private BizHawk.WinForms.Controls.LocLabelEx label2;
 		private System.Windows.Forms.GroupBox groupBox2;
 		private System.Windows.Forms.TrackBar RefreshRate;
-		private System.Windows.Forms.Label label4;
-		private System.Windows.Forms.Label label3;
+		private BizHawk.WinForms.Controls.LocLabelEx label4;
+		private BizHawk.WinForms.Controls.LocLabelEx label3;
 		private MenuStripEx NesPPUMenu;
 		private System.Windows.Forms.ToolStripMenuItem SettingsSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem PatternSubMenu;
@@ -950,7 +911,7 @@
 		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
 		private System.Windows.Forms.Timer Messagetimer;
 		private System.Windows.Forms.GroupBox CHRROMGroup;
-		private System.Windows.Forms.Label label5;
+		private BizHawk.WinForms.Controls.LocLabelEx label5;
 		private System.Windows.Forms.NumericUpDown numericUpDownCHRROMBank;
 		private PatternViewer CHRROMView;
 		private System.Windows.Forms.ToolStripMenuItem cHRROMTileViewerToolStripMenuItem;

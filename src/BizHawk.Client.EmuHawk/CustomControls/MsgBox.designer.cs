@@ -31,7 +31,7 @@
 			this.chkBx = new System.Windows.Forms.CheckBox();
 			this.btn1 = new System.Windows.Forms.Button();
 			this.btn2 = new System.Windows.Forms.Button();
-			this.messageLbl = new System.Windows.Forms.Label();
+			this.messageLbl = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.btn3 = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
@@ -77,12 +77,9 @@
 			// 
 			// messageLbl
 			// 
-			this.messageLbl.AutoSize = true;
 			this.messageLbl.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.messageLbl.Location = new System.Drawing.Point(58, 10);
 			this.messageLbl.Name = "messageLbl";
-			this.messageLbl.Size = new System.Drawing.Size(73, 16);
-			this.messageLbl.TabIndex = 19;
 			this.messageLbl.Text = "[Message]";
 			// 
 			// btn3
@@ -126,7 +123,7 @@
 		private System.Windows.Forms.CheckBox chkBx;
 		private System.Windows.Forms.Button btn1;
 		private System.Windows.Forms.Button btn2;
-		private System.Windows.Forms.Label messageLbl;
+		private BizHawk.WinForms.Controls.LocLabelEx messageLbl;
 		private System.Windows.Forms.Button btn3;
 	}
 }

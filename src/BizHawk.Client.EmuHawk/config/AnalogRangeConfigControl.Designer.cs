@@ -29,8 +29,8 @@
 		private void InitializeComponent()
 		{
 			this.XNumeric = new System.Windows.Forms.NumericUpDown();
-			this.label1 = new System.Windows.Forms.Label();
-			this.label2 = new System.Windows.Forms.Label();
+			this.label1 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label2 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.YNumeric = new System.Windows.Forms.NumericUpDown();
 			this.RadialCheckbox = new System.Windows.Forms.CheckBox();
 			this.AnalogRange = new BizHawk.Client.EmuHawk.AnalogRangeConfig();
@@ -53,20 +53,14 @@
 			// 
 			// label1
 			// 
-			this.label1.AutoSize = true;
 			this.label1.Location = new System.Drawing.Point(71, 30);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(14, 13);
-			this.label1.TabIndex = 3;
 			this.label1.Text = "Y";
 			// 
 			// label2
 			// 
-			this.label2.AutoSize = true;
 			this.label2.Location = new System.Drawing.Point(71, 9);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(14, 13);
-			this.label2.TabIndex = 4;
 			this.label2.Text = "X";
 			// 
 			// YNumeric
@@ -130,8 +124,8 @@
 
 		private AnalogRangeConfig AnalogRange;
 		private System.Windows.Forms.NumericUpDown XNumeric;
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.Label label2;
+		private BizHawk.WinForms.Controls.LocLabelEx label1;
+		private BizHawk.WinForms.Controls.LocLabelEx label2;
 		private System.Windows.Forms.NumericUpDown YNumeric;
 		private System.Windows.Forms.CheckBox RadialCheckbox;
 

@@ -28,45 +28,36 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.CoreNameLabel = new System.Windows.Forms.Label();
-			this.CoreAuthorLabel = new System.Windows.Forms.Label();
-			this.CorePortedLabel = new System.Windows.Forms.Label();
+			this.CoreNameLabel = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.CoreAuthorLabel = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.CorePortedLabel = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.CoreUrlLink = new System.Windows.Forms.LinkLabel();
 			this.SuspendLayout();
 			// 
 			// CoreNameLabel
 			// 
-			this.CoreNameLabel.AutoSize = true;
 			this.CoreNameLabel.Dock = System.Windows.Forms.DockStyle.Left;
 			this.CoreNameLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.CoreNameLabel.Location = new System.Drawing.Point(0, 0);
 			this.CoreNameLabel.MinimumSize = new System.Drawing.Size(100, 23);
 			this.CoreNameLabel.Name = "CoreNameLabel";
 			this.CoreNameLabel.Padding = new System.Windows.Forms.Padding(0, 5, 0, 0);
-			this.CoreNameLabel.Size = new System.Drawing.Size(100, 23);
-			this.CoreNameLabel.TabIndex = 0;
 			this.CoreNameLabel.Text = "label1";
 			// 
 			// CoreAuthorLabel
 			// 
-			this.CoreAuthorLabel.AutoSize = true;
 			this.CoreAuthorLabel.Dock = System.Windows.Forms.DockStyle.Left;
 			this.CoreAuthorLabel.Location = new System.Drawing.Point(100, 0);
 			this.CoreAuthorLabel.Name = "CoreAuthorLabel";
 			this.CoreAuthorLabel.Padding = new System.Windows.Forms.Padding(5, 5, 0, 0);
-			this.CoreAuthorLabel.Size = new System.Drawing.Size(40, 18);
-			this.CoreAuthorLabel.TabIndex = 1;
 			this.CoreAuthorLabel.Text = "label2";
 			// 
 			// CorePortedLabel
 			// 
-			this.CorePortedLabel.AutoSize = true;
 			this.CorePortedLabel.Dock = System.Windows.Forms.DockStyle.Left;
 			this.CorePortedLabel.Location = new System.Drawing.Point(140, 0);
 			this.CorePortedLabel.Name = "CorePortedLabel";
 			this.CorePortedLabel.Padding = new System.Windows.Forms.Padding(5, 5, 0, 0);
-			this.CorePortedLabel.Size = new System.Drawing.Size(40, 18);
-			this.CorePortedLabel.TabIndex = 2;
 			this.CorePortedLabel.Text = "label3";
 			// 
 			// CoreUrlLink
@@ -99,9 +90,9 @@
 
 		#endregion
 
-		private System.Windows.Forms.Label CoreNameLabel;
-		private System.Windows.Forms.Label CoreAuthorLabel;
-		private System.Windows.Forms.Label CorePortedLabel;
+		private BizHawk.WinForms.Controls.LocLabelEx CoreNameLabel;
+		private BizHawk.WinForms.Controls.LocLabelEx CoreAuthorLabel;
+		private BizHawk.WinForms.Controls.LocLabelEx CorePortedLabel;
 		private System.Windows.Forms.LinkLabel CoreUrlLink;
 	}
 }

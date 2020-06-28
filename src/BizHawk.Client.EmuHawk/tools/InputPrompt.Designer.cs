@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-			this.PromptLabel = new System.Windows.Forms.Label();
+			this.PromptLabel = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.PromptBox = new System.Windows.Forms.TextBox();
 			this.OK = new System.Windows.Forms.Button();
 			this.Cancel = new System.Windows.Forms.Button();
@@ -36,11 +36,8 @@
 			// 
 			// PromptLabel
 			// 
-			this.PromptLabel.AutoSize = true;
 			this.PromptLabel.Location = new System.Drawing.Point(33, 9);
 			this.PromptLabel.Name = "PromptLabel";
-			this.PromptLabel.Size = new System.Drawing.Size(73, 13);
-			this.PromptLabel.TabIndex = 0;
 			this.PromptLabel.Text = "Enter a value:";
 			// 
 			// PromptBox
@@ -104,7 +101,7 @@
 
         #endregion
 
-        private System.Windows.Forms.Label PromptLabel;
+        private BizHawk.WinForms.Controls.LocLabelEx PromptLabel;
         private System.Windows.Forms.TextBox PromptBox;
         private System.Windows.Forms.Button OK;
         private System.Windows.Forms.Button Cancel;

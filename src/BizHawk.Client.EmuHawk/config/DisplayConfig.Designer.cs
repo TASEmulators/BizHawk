@@ -33,8 +33,8 @@
 			this.btnCancel = new System.Windows.Forms.Button();
 			this.btnOk = new System.Windows.Forms.Button();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
-			this.lblScanlines = new System.Windows.Forms.Label();
-			this.lblUserFilterName = new System.Windows.Forms.Label();
+			this.lblScanlines = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.lblUserFilterName = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.btnSelectUserFilter = new System.Windows.Forms.Button();
 			this.rbUser = new System.Windows.Forms.RadioButton();
 			this.tbScanlineIntensity = new BizHawk.Client.EmuHawk.TransparentTrackBar();
@@ -51,40 +51,40 @@
 			this.rbUseSystem = new System.Windows.Forms.RadioButton();
 			this.grpARSelection = new System.Windows.Forms.GroupBox();
 			this.txtCustomARY = new System.Windows.Forms.TextBox();
-			this.label12 = new System.Windows.Forms.Label();
+			this.label12 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.txtCustomARX = new System.Windows.Forms.TextBox();
 			this.rbUseCustomRatio = new System.Windows.Forms.RadioButton();
-			this.label4 = new System.Windows.Forms.Label();
+			this.label4 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.txtCustomARHeight = new System.Windows.Forms.TextBox();
-			this.label3 = new System.Windows.Forms.Label();
+			this.label3 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.txtCustomARWidth = new System.Windows.Forms.TextBox();
 			this.rbUseCustom = new System.Windows.Forms.RadioButton();
 			this.rbOpenGL = new System.Windows.Forms.RadioButton();
-			this.label5 = new System.Windows.Forms.Label();
+			this.label5 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.tabControl1 = new System.Windows.Forms.TabControl();
 			this.tpAR = new System.Windows.Forms.TabPage();
 			this.groupBox6 = new System.Windows.Forms.GroupBox();
-			this.label16 = new System.Windows.Forms.Label();
-			this.label15 = new System.Windows.Forms.Label();
+			this.label16 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label15 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.txtCropBottom = new System.Windows.Forms.TextBox();
-			this.label17 = new System.Windows.Forms.Label();
+			this.label17 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.txtCropRight = new System.Windows.Forms.TextBox();
 			this.txtCropTop = new System.Windows.Forms.TextBox();
-			this.label14 = new System.Windows.Forms.Label();
+			this.label14 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.txtCropLeft = new System.Windows.Forms.TextBox();
 			this.btnDefaults = new System.Windows.Forms.Button();
 			this.cbAutoPrescale = new System.Windows.Forms.CheckBox();
-			this.label11 = new System.Windows.Forms.Label();
-			this.label10 = new System.Windows.Forms.Label();
+			this.label11 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label10 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.nudPrescale = new System.Windows.Forms.NumericUpDown();
 			this.tpDispMethod = new System.Windows.Forms.TabPage();
-			this.label6 = new System.Windows.Forms.Label();
+			this.label6 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
-			this.label13 = new System.Windows.Forms.Label();
+			this.label13 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.cbAlternateVsync = new System.Windows.Forms.CheckBox();
-			this.label8 = new System.Windows.Forms.Label();
+			this.label8 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.rbD3D9 = new System.Windows.Forms.RadioButton();
-			this.label7 = new System.Windows.Forms.Label();
+			this.label7 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.rbGDIPlus = new System.Windows.Forms.RadioButton();
 			this.tpMisc = new System.Windows.Forms.TabPage();
 			this.groupBox5 = new System.Windows.Forms.GroupBox();
@@ -95,14 +95,14 @@
 			this.cbAllowDoubleclickFullscreen = new System.Windows.Forms.CheckBox();
 			this.groupBox4 = new System.Windows.Forms.GroupBox();
 			this.cbFSAutohideMouse = new System.Windows.Forms.CheckBox();
-			this.label1 = new System.Windows.Forms.Label();
+			this.label1 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.cbFullscreenHacks = new System.Windows.Forms.CheckBox();
 			this.cbStatusBarFullscreen = new System.Windows.Forms.CheckBox();
 			this.cbMenuFullscreen = new System.Windows.Forms.CheckBox();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
-			this.lblFrameTypeWindowed = new System.Windows.Forms.Label();
+			this.lblFrameTypeWindowed = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.cbStatusBarWindowed = new System.Windows.Forms.CheckBox();
-			this.label9 = new System.Windows.Forms.Label();
+			this.label9 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.cbMenuWindowed = new System.Windows.Forms.CheckBox();
 			this.trackbarFrameSizeWindowed = new BizHawk.Client.EmuHawk.TransparentTrackBar();
 			this.cbCaptionWindowed = new System.Windows.Forms.CheckBox();
@@ -167,20 +167,15 @@
 			// 
 			// lblScanlines
 			// 
-			this.lblScanlines.AutoSize = true;
 			this.lblScanlines.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.lblScanlines.Location = new System.Drawing.Point(104, 39);
 			this.lblScanlines.Name = "lblScanlines";
-			this.lblScanlines.Size = new System.Drawing.Size(15, 13);
-			this.lblScanlines.TabIndex = 11;
 			this.lblScanlines.Text = "%";
 			// 
 			// lblUserFilterName
 			// 
 			this.lblUserFilterName.Location = new System.Drawing.Point(6, 114);
 			this.lblUserFilterName.Name = "lblUserFilterName";
-			this.lblUserFilterName.Size = new System.Drawing.Size(161, 15);
-			this.lblUserFilterName.TabIndex = 10;
 			this.lblUserFilterName.Text = "Will contain user filter name";
 			// 
 			// btnSelectUserFilter
@@ -370,11 +365,8 @@
 			// 
 			// label12
 			// 
-			this.label12.AutoSize = true;
 			this.label12.Location = new System.Drawing.Point(202, 107);
 			this.label12.Name = "label12";
-			this.label12.Size = new System.Drawing.Size(10, 13);
-			this.label12.TabIndex = 17;
 			this.label12.Text = ":";
 			// 
 			// txtCustomARX
@@ -397,11 +389,8 @@
 			// 
 			// label4
 			// 
-			this.label4.AutoSize = true;
 			this.label4.Location = new System.Drawing.Point(13, 41);
 			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(257, 13);
-			this.label4.TabIndex = 12;
 			this.label4.Text = "Allow pixel distortion (e.g. 2x1 pixels, for better AR fit):";
 			// 
 			// txtCustomARHeight
@@ -413,11 +402,8 @@
 			// 
 			// label3
 			// 
-			this.label3.AutoSize = true;
 			this.label3.Location = new System.Drawing.Point(202, 84);
 			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(12, 13);
-			this.label3.TabIndex = 12;
 			this.label3.Text = "x";
 			// 
 			// txtCustomARWidth
@@ -454,8 +440,6 @@
 			// 
 			this.label5.Location = new System.Drawing.Point(21, 123);
 			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(359, 47);
-			this.label5.TabIndex = 16;
 			this.label5.Text = " • May malfunction on some systems.\r\n • May have increased performance for OpenGL" +
     "-based emulation cores.\r\n • May have reduced performance on some systems.\r\n";
 			// 
@@ -514,20 +498,14 @@
 			// 
 			// label16
 			// 
-			this.label16.AutoSize = true;
 			this.label16.Location = new System.Drawing.Point(217, 25);
 			this.label16.Name = "label16";
-			this.label16.Size = new System.Drawing.Size(43, 13);
-			this.label16.TabIndex = 30;
 			this.label16.Text = "Bottom:";
 			// 
 			// label15
 			// 
-			this.label15.AutoSize = true;
 			this.label15.Location = new System.Drawing.Point(74, 25);
 			this.label15.Name = "label15";
-			this.label15.Size = new System.Drawing.Size(29, 13);
-			this.label15.TabIndex = 29;
 			this.label15.Text = "Top:";
 			// 
 			// txtCropBottom
@@ -540,11 +518,8 @@
 			// 
 			// label17
 			// 
-			this.label17.AutoSize = true;
 			this.label17.Location = new System.Drawing.Point(144, 25);
 			this.label17.Name = "label17";
-			this.label17.Size = new System.Drawing.Size(35, 13);
-			this.label17.TabIndex = 26;
 			this.label17.Text = "Right:";
 			// 
 			// txtCropRight
@@ -565,11 +540,8 @@
 			// 
 			// label14
 			// 
-			this.label14.AutoSize = true;
 			this.label14.Location = new System.Drawing.Point(6, 25);
 			this.label14.Name = "label14";
-			this.label14.Size = new System.Drawing.Size(28, 13);
-			this.label14.TabIndex = 16;
 			this.label14.Text = "Left:";
 			// 
 			// txtCropLeft
@@ -603,20 +575,14 @@
 			// 
 			// label11
 			// 
-			this.label11.AutoSize = true;
 			this.label11.Location = new System.Drawing.Point(140, 11);
 			this.label11.Name = "label11";
-			this.label11.Size = new System.Drawing.Size(14, 13);
-			this.label11.TabIndex = 16;
 			this.label11.Text = "X";
 			// 
 			// label10
 			// 
-			this.label10.AutoSize = true;
 			this.label10.Location = new System.Drawing.Point(7, 11);
 			this.label10.Name = "label10";
-			this.label10.Size = new System.Drawing.Size(76, 13);
-			this.label10.TabIndex = 15;
 			this.label10.Text = "User Prescale:";
 			// 
 			// nudPrescale
@@ -656,8 +622,6 @@
 			// 
 			this.label6.Location = new System.Drawing.Point(3, 258);
 			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(359, 23);
-			this.label6.TabIndex = 18;
 			this.label6.Text = "Changes require restart of program to take effect.\r\n";
 			// 
 			// groupBox3
@@ -680,8 +644,6 @@
 			// 
 			this.label13.Location = new System.Drawing.Point(45, 60);
 			this.label13.Name = "label13";
-			this.label13.Size = new System.Drawing.Size(359, 43);
-			this.label13.TabIndex = 22;
 			this.label13.Text = resources.GetString("label13.Text");
 			this.label13.Click += new System.EventHandler(this.label13_Click);
 			this.label13.DoubleClick += new System.EventHandler(this.label13_Click);
@@ -699,8 +661,6 @@
 			// 
 			this.label8.Location = new System.Drawing.Point(21, 30);
 			this.label8.Name = "label8";
-			this.label8.Size = new System.Drawing.Size(359, 27);
-			this.label8.TabIndex = 20;
 			this.label8.Text = " • Best compatibility\r\n • May have trouble with OpenGL-based cores (N64)\r\n";
 			// 
 			// rbD3D9
@@ -719,8 +679,6 @@
 			// 
 			this.label7.Location = new System.Drawing.Point(21, 191);
 			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(359, 47);
-			this.label7.TabIndex = 18;
 			this.label7.Text = " • Slow; Mainly for compatibility purposes\r\n • Missing many features\r\n • Works be" +
     "tter over Remote Desktop, etc.\r\n";
 			// 
@@ -844,8 +802,6 @@
 			// 
 			this.label1.Location = new System.Drawing.Point(7, 88);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(240, 115);
-			this.label1.TabIndex = 27;
 			this.label1.Text = resources.GetString("label1.Text");
 			// 
 			// cbFullscreenHacks
@@ -895,11 +851,8 @@
 			// 
 			// lblFrameTypeWindowed
 			// 
-			this.lblFrameTypeWindowed.AutoSize = true;
 			this.lblFrameTypeWindowed.Location = new System.Drawing.Point(51, 17);
 			this.lblFrameTypeWindowed.Name = "lblFrameTypeWindowed";
-			this.lblFrameTypeWindowed.Size = new System.Drawing.Size(62, 13);
-			this.lblFrameTypeWindowed.TabIndex = 26;
 			this.lblFrameTypeWindowed.Text = "(frame type)";
 			// 
 			// cbStatusBarWindowed
@@ -914,11 +867,8 @@
 			// 
 			// label9
 			// 
-			this.label9.AutoSize = true;
 			this.label9.Location = new System.Drawing.Point(6, 17);
 			this.label9.Name = "label9";
-			this.label9.Size = new System.Drawing.Size(39, 13);
-			this.label9.TabIndex = 22;
 			this.label9.Text = "Frame:";
 			// 
 			// cbMenuWindowed
@@ -1027,31 +977,31 @@
 		private System.Windows.Forms.RadioButton rbFinalFilterBilinear;
 		private System.Windows.Forms.Button btnSelectUserFilter;
 		private System.Windows.Forms.RadioButton rbUser;
-		private System.Windows.Forms.Label lblUserFilterName;
+		private BizHawk.WinForms.Controls.LocLabelEx lblUserFilterName;
 		private System.Windows.Forms.RadioButton rbUseRaw;
 		private System.Windows.Forms.RadioButton rbUseSystem;
 		private System.Windows.Forms.GroupBox grpARSelection;
-		private System.Windows.Forms.Label lblScanlines;
+		private BizHawk.WinForms.Controls.LocLabelEx lblScanlines;
 		private System.Windows.Forms.TextBox txtCustomARHeight;
-		private System.Windows.Forms.Label label3;
+		private BizHawk.WinForms.Controls.LocLabelEx label3;
 		private System.Windows.Forms.TextBox txtCustomARWidth;
 		private System.Windows.Forms.RadioButton rbUseCustom;
-		private System.Windows.Forms.Label label4;
+		private BizHawk.WinForms.Controls.LocLabelEx label4;
 		private System.Windows.Forms.RadioButton rbOpenGL;
-		private System.Windows.Forms.Label label5;
+		private BizHawk.WinForms.Controls.LocLabelEx label5;
 		private System.Windows.Forms.TabControl tabControl1;
 		private System.Windows.Forms.TabPage tpAR;
 		private System.Windows.Forms.TabPage tpDispMethod;
-		private System.Windows.Forms.Label label6;
+		private BizHawk.WinForms.Controls.LocLabelEx label6;
 		private System.Windows.Forms.GroupBox groupBox3;
-		private System.Windows.Forms.Label label7;
+		private BizHawk.WinForms.Controls.LocLabelEx label7;
 		private System.Windows.Forms.RadioButton rbGDIPlus;
 		private System.Windows.Forms.TabPage tpMisc;
-		private System.Windows.Forms.Label label8;
+		private BizHawk.WinForms.Controls.LocLabelEx label8;
 		private System.Windows.Forms.RadioButton rbD3D9;
 		private System.Windows.Forms.TabPage tabPage1;
 		private System.Windows.Forms.CheckBox cbStatusBarWindowed;
-		private System.Windows.Forms.Label label9;
+		private BizHawk.WinForms.Controls.LocLabelEx label9;
 		private BizHawk.Client.EmuHawk.TransparentTrackBar trackbarFrameSizeWindowed;
 		private System.Windows.Forms.CheckBox cbMenuWindowed;
 		private System.Windows.Forms.CheckBox cbCaptionWindowed;
@@ -1059,9 +1009,9 @@
 		private System.Windows.Forms.CheckBox cbStatusBarFullscreen;
 		private System.Windows.Forms.CheckBox cbMenuFullscreen;
 		private System.Windows.Forms.GroupBox groupBox2;
-		private System.Windows.Forms.Label lblFrameTypeWindowed;
-		private System.Windows.Forms.Label label11;
-		private System.Windows.Forms.Label label10;
+		private BizHawk.WinForms.Controls.LocLabelEx lblFrameTypeWindowed;
+		private BizHawk.WinForms.Controls.LocLabelEx label11;
+		private BizHawk.WinForms.Controls.LocLabelEx label10;
 		private System.Windows.Forms.NumericUpDown nudPrescale;
 		private System.Windows.Forms.CheckBox cbFSAutohideMouse;
 		private System.Windows.Forms.GroupBox groupBox5;
@@ -1072,23 +1022,23 @@
 		private System.Windows.Forms.LinkLabel linkLabel1;
 		private System.Windows.Forms.RadioButton rbUseCustomRatio;
 		private System.Windows.Forms.TextBox txtCustomARY;
-		private System.Windows.Forms.Label label12;
+		private BizHawk.WinForms.Controls.LocLabelEx label12;
 		private System.Windows.Forms.TextBox txtCustomARX;
 		private System.Windows.Forms.CheckBox cbAutoPrescale;
-		private System.Windows.Forms.Label label13;
+		private BizHawk.WinForms.Controls.LocLabelEx label13;
 		private System.Windows.Forms.CheckBox cbAlternateVsync;
-		private System.Windows.Forms.Label label1;
+		private BizHawk.WinForms.Controls.LocLabelEx label1;
 		private System.Windows.Forms.CheckBox cbFullscreenHacks;
 		private System.Windows.Forms.Button btnDefaults;
 		private System.Windows.Forms.ToolTip toolTip1;
 		private System.Windows.Forms.GroupBox groupBox6;
-		private System.Windows.Forms.Label label16;
-		private System.Windows.Forms.Label label15;
+		private BizHawk.WinForms.Controls.LocLabelEx label16;
+		private BizHawk.WinForms.Controls.LocLabelEx label15;
 		private System.Windows.Forms.TextBox txtCropBottom;
-		private System.Windows.Forms.Label label17;
+		private BizHawk.WinForms.Controls.LocLabelEx label17;
 		private System.Windows.Forms.TextBox txtCropRight;
 		private System.Windows.Forms.TextBox txtCropTop;
-		private System.Windows.Forms.Label label14;
+		private BizHawk.WinForms.Controls.LocLabelEx label14;
 		private System.Windows.Forms.TextBox txtCropLeft;
 	}
 }

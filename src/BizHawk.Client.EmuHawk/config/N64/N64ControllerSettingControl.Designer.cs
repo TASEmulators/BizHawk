@@ -30,7 +30,7 @@
 		{
 			this.EnabledCheckbox = new System.Windows.Forms.CheckBox();
 			this.PakTypeDropdown = new System.Windows.Forms.ComboBox();
-			this.ControllerNameLabel = new System.Windows.Forms.Label();
+			this.ControllerNameLabel = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.SuspendLayout();
 			// 
 			// EnabledCheckbox
@@ -60,11 +60,8 @@
 			// 
 			// ControllerNameLabel
 			// 
-			this.ControllerNameLabel.AutoSize = true;
 			this.ControllerNameLabel.Location = new System.Drawing.Point(3, 4);
 			this.ControllerNameLabel.Name = "ControllerNameLabel";
-			this.ControllerNameLabel.Size = new System.Drawing.Size(60, 13);
-			this.ControllerNameLabel.TabIndex = 2;
 			this.ControllerNameLabel.Text = "Controller 1";
 			// 
 			// N64ControllerSettingControl
@@ -84,6 +81,6 @@
 
 		private System.Windows.Forms.CheckBox EnabledCheckbox;
 		private System.Windows.Forms.ComboBox PakTypeDropdown;
-		private System.Windows.Forms.Label ControllerNameLabel;
+		private BizHawk.WinForms.Controls.LocLabelEx ControllerNameLabel;
 	}
 }

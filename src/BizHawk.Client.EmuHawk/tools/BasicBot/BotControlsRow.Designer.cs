@@ -28,7 +28,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.ButtonNameLabel = new System.Windows.Forms.Label();
+			this.ButtonNameLabel = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.ProbabilityUpDown = new System.Windows.Forms.NumericUpDown();
 			this.ProbabilitySlider = new System.Windows.Forms.TrackBar();
 			((System.ComponentModel.ISupportInitialize)(this.ProbabilityUpDown)).BeginInit();
@@ -37,11 +37,8 @@
 			// 
 			// ButtonNameLabel
 			// 
-			this.ButtonNameLabel.AutoSize = true;
 			this.ButtonNameLabel.Location = new System.Drawing.Point(3, 0);
 			this.ButtonNameLabel.Name = "ButtonNameLabel";
-			this.ButtonNameLabel.Size = new System.Drawing.Size(35, 13);
-			this.ButtonNameLabel.TabIndex = 0;
 			this.ButtonNameLabel.Text = "label1";
 			// 
 			// ProbabilityUpDown
@@ -87,7 +84,7 @@
 
 		#endregion
 
-		private System.Windows.Forms.Label ButtonNameLabel;
+		private BizHawk.WinForms.Controls.LocLabelEx ButtonNameLabel;
 		private System.Windows.Forms.NumericUpDown ProbabilityUpDown;
 		private System.Windows.Forms.TrackBar ProbabilitySlider;
 	}

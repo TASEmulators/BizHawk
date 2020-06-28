@@ -44,7 +44,7 @@
 			this.BreakPointControl1 = new BizHawk.Client.EmuHawk.BreakpointControl();
 			this.DisassemblerBox = new System.Windows.Forms.GroupBox();
 			this.ToPCBtn = new System.Windows.Forms.Button();
-			this.label1 = new System.Windows.Forms.Label();
+			this.label1 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.DisassemblerView = new InputRoll();
 			this.DisassemblerContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.AddBreakpointContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -224,11 +224,8 @@
 			// 
 			// label1
 			// 
-			this.label1.AutoSize = true;
 			this.label1.Location = new System.Drawing.Point(6, 23);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(29, 13);
-			this.label1.TabIndex = 2;
 			this.label1.Text = "Cpu:";
 			// 
 			// DisassemblerView
@@ -390,7 +387,7 @@
 		private BreakpointControl BreakPointControl1;
 		private System.Windows.Forms.GroupBox DisassemblerBox;
 		private InputRoll DisassemblerView;
-		private System.Windows.Forms.Label label1;
+		private BizHawk.WinForms.Controls.LocLabelEx label1;
 		private System.Windows.Forms.Button StepOutBtn;
 		private System.Windows.Forms.Button StepIntoBtn;
 		private System.Windows.Forms.Button StepOverBtn;

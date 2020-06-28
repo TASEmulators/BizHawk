@@ -32,15 +32,15 @@
 			this.OkBtn = new System.Windows.Forms.Button();
 			this.CancelBtn = new System.Windows.Forms.Button();
 			this.PlatformsGroupBox = new System.Windows.Forms.Panel();
-			this.label1 = new System.Windows.Forms.Label();
-			this.label2 = new System.Windows.Forms.Label();
-			this.label3 = new System.Windows.Forms.Label();
-			this.ExtensionLabel = new System.Windows.Forms.Label();
-			this.RomSizeLabel = new System.Windows.Forms.Label();
-			this.label6 = new System.Windows.Forms.Label();
+			this.label1 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label2 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label3 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.ExtensionLabel = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.RomSizeLabel = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label6 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.AlwaysCheckbox = new System.Windows.Forms.CheckBox();
-			this.label4 = new System.Windows.Forms.Label();
-			this.label5 = new System.Windows.Forms.Label();
+			this.label4 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label5 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.HashBox = new System.Windows.Forms.TextBox();
 			this.SuspendLayout();
 			// 
@@ -96,60 +96,42 @@
 			// label1
 			// 
 			this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.label1.AutoSize = true;
 			this.label1.Location = new System.Drawing.Point(288, 50);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(67, 13);
-			this.label1.TabIndex = 7;
 			this.label1.Text = "Rom Details:";
 			// 
 			// label2
 			// 
-			this.label2.AutoSize = true;
 			this.label2.Location = new System.Drawing.Point(12, 50);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(270, 13);
-			this.label2.TabIndex = 8;
 			this.label2.Text = "Please choose the intended platform to use for this Rom";
 			// 
 			// label3
 			// 
 			this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.label3.AutoSize = true;
 			this.label3.Location = new System.Drawing.Point(288, 74);
 			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(56, 13);
-			this.label3.TabIndex = 9;
 			this.label3.Text = "Extension:";
 			// 
 			// ExtensionLabel
 			// 
 			this.ExtensionLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.ExtensionLabel.AutoSize = true;
 			this.ExtensionLabel.Location = new System.Drawing.Point(288, 89);
 			this.ExtensionLabel.Name = "ExtensionLabel";
-			this.ExtensionLabel.Size = new System.Drawing.Size(24, 13);
-			this.ExtensionLabel.TabIndex = 10;
 			this.ExtensionLabel.Text = ".bin";
 			// 
 			// RomSizeLabel
 			// 
 			this.RomSizeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.RomSizeLabel.AutoSize = true;
 			this.RomSizeLabel.Location = new System.Drawing.Point(288, 134);
 			this.RomSizeLabel.Name = "RomSizeLabel";
-			this.RomSizeLabel.Size = new System.Drawing.Size(25, 13);
-			this.RomSizeLabel.TabIndex = 12;
 			this.RomSizeLabel.Text = "4kb";
 			// 
 			// label6
 			// 
 			this.label6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.label6.AutoSize = true;
 			this.label6.Location = new System.Drawing.Point(288, 116);
 			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(30, 13);
-			this.label6.TabIndex = 11;
 			this.label6.Text = "Size:";
 			// 
 			// AlwaysCheckbox
@@ -165,21 +147,15 @@
 			// label4
 			// 
 			this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.label4.AutoSize = true;
 			this.label4.Location = new System.Drawing.Point(300, 416);
 			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(86, 13);
-			this.label4.TabIndex = 14;
 			this.label4.Text = "for this extension";
 			this.label4.Click += new System.EventHandler(this.label4_Click);
 			// 
 			// label5
 			// 
-			this.label5.AutoSize = true;
 			this.label5.Location = new System.Drawing.Point(288, 162);
 			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(35, 13);
-			this.label5.TabIndex = 15;
 			this.label5.Text = "Hash:";
 			// 
 			// HashBox
@@ -228,15 +204,15 @@
 		private System.Windows.Forms.Button OkBtn;
 		private System.Windows.Forms.Button CancelBtn;
 		private System.Windows.Forms.Panel PlatformsGroupBox;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label ExtensionLabel;
-        private System.Windows.Forms.Label RomSizeLabel;
-        private System.Windows.Forms.Label label6;
+        private BizHawk.WinForms.Controls.LocLabelEx label1;
+        private BizHawk.WinForms.Controls.LocLabelEx label2;
+        private BizHawk.WinForms.Controls.LocLabelEx label3;
+        private BizHawk.WinForms.Controls.LocLabelEx ExtensionLabel;
+        private BizHawk.WinForms.Controls.LocLabelEx RomSizeLabel;
+        private BizHawk.WinForms.Controls.LocLabelEx label6;
 		private System.Windows.Forms.CheckBox AlwaysCheckbox;
-		private System.Windows.Forms.Label label4;
-		private System.Windows.Forms.Label label5;
+		private BizHawk.WinForms.Controls.LocLabelEx label4;
+		private BizHawk.WinForms.Controls.LocLabelEx label5;
 		private System.Windows.Forms.TextBox HashBox;
 	}
 }

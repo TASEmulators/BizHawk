@@ -81,8 +81,8 @@
 			this.MoveDownToolbarItem = new System.Windows.Forms.ToolStripButton();
 			this.GameGenieToolbarSeparator = new System.Windows.Forms.ToolStripSeparator();
 			this.LoadGameGenieToolbarItem = new System.Windows.Forms.ToolStripButton();
-			this.TotalLabel = new System.Windows.Forms.Label();
-			this.MessageLabel = new System.Windows.Forms.Label();
+			this.TotalLabel = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.MessageLabel = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.CheatGroupBox = new System.Windows.Forms.GroupBox();
 			this.CheatEditor = new BizHawk.Client.EmuHawk.CheatEdit();
 			this.CheatsContextMenu.SuspendLayout();
@@ -546,21 +546,15 @@
 			// 
 			// TotalLabel
 			// 
-			this.TotalLabel.AutoSize = true;
 			this.TotalLabel.Location = new System.Drawing.Point(9, 52);
 			this.TotalLabel.Name = "TotalLabel";
-			this.TotalLabel.Size = new System.Drawing.Size(49, 13);
-			this.TotalLabel.TabIndex = 6;
 			this.TotalLabel.Text = "0 Cheats";
 			// 
 			// MessageLabel
 			// 
 			this.MessageLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.MessageLabel.AutoSize = true;
 			this.MessageLabel.Location = new System.Drawing.Point(13, 397);
 			this.MessageLabel.Name = "MessageLabel";
-			this.MessageLabel.Size = new System.Drawing.Size(31, 13);
-			this.MessageLabel.TabIndex = 7;
 			this.MessageLabel.Text = "        ";
 			// 
 			// CheatGroupBox
@@ -658,8 +652,8 @@
 		private System.Windows.Forms.ToolStripButton MoveUpToolbarItem;
 		private System.Windows.Forms.ToolStripButton MoveDownToolbarItem;
 		private System.Windows.Forms.ToolStripButton LoadGameGenieToolbarItem;
-		private System.Windows.Forms.Label TotalLabel;
-		private System.Windows.Forms.Label MessageLabel;
+		private BizHawk.WinForms.Controls.LocLabelEx TotalLabel;
+		private BizHawk.WinForms.Controls.LocLabelEx MessageLabel;
 		private System.Windows.Forms.ToolStripMenuItem AlwaysOnTopMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ToggleMenuItem;
 		private System.Windows.Forms.ToolStripSeparator GameGenieToolbarSeparator;

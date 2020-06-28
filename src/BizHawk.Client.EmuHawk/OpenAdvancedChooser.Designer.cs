@@ -28,8 +28,8 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-            this.label3 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
+            this.label3 = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.label2 = new BizHawk.WinForms.Controls.LocLabelEx();
             this.btnLibretroLaunchNoGame = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -39,7 +39,7 @@
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.btnClassicLaunchGame = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.label1 = new BizHawk.WinForms.Controls.LocLabelEx();
             this.btnMAMELaunchGame = new System.Windows.Forms.Button();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -50,18 +50,13 @@
             // 
             this.label3.Location = new System.Drawing.Point(6, 25);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(198, 45);
-            this.label3.TabIndex = 5;
             this.label3.Text = "Load a ROM with the classic BizHawk autodetection method. But why not just use Op" +
     "en Rom?";
             // 
             // label2
             // 
-            this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(6, 26);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(69, 13);
-            this.label2.TabIndex = 3;
             this.label2.Text = "Current Core:";
             // 
             // btnLibretroLaunchNoGame
@@ -169,8 +164,6 @@
             // 
             this.label1.Location = new System.Drawing.Point(6, 25);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(204, 42);
-            this.label1.TabIndex = 1;
             this.label1.Text = "Load .zip archive as MAME Arcade ROM (do not unzip)";
             this.label1.Click += new System.EventHandler(this.btnMAMELaunchGame_Click);
             // 
@@ -210,8 +203,8 @@
 
 		#endregion
 
-		private System.Windows.Forms.Label label3;
-		private System.Windows.Forms.Label label2;
+		private BizHawk.WinForms.Controls.LocLabelEx label3;
+		private BizHawk.WinForms.Controls.LocLabelEx label2;
 		private System.Windows.Forms.Button btnLibretroLaunchNoGame;
 		private System.Windows.Forms.Button btnCancel;
 		private System.Windows.Forms.GroupBox groupBox2;
@@ -221,7 +214,7 @@
 		private System.Windows.Forms.GroupBox groupBox3;
 		private System.Windows.Forms.Button btnClassicLaunchGame;
 		private System.Windows.Forms.GroupBox groupBox1;
-		private System.Windows.Forms.Label label1;
+		private BizHawk.WinForms.Controls.LocLabelEx label1;
 		private System.Windows.Forms.Button btnMAMELaunchGame;
 	}
 }

@@ -43,9 +43,9 @@
 			this.loadDefaultsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.clearToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-			this.label3 = new System.Windows.Forms.Label();
-			this.label2 = new System.Windows.Forms.Label();
-			this.label38 = new System.Windows.Forms.Label();
+			this.label3 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label2 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label38 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.btnMisc = new BizHawk.Client.EmuHawk.MenuButton();
 			this.AllowUdCheckbox = new System.Windows.Forms.CheckBox();
 			this.tabControl1.SuspendLayout();
@@ -191,31 +191,22 @@
 			// label3
 			// 
 			this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.label3.AutoSize = true;
 			this.label3.Location = new System.Drawing.Point(11, 550);
 			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(30, 13);
-			this.label3.TabIndex = 112;
 			this.label3.Text = "Tips:";
 			// 
 			// label2
 			// 
 			this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.label2.AutoSize = true;
 			this.label2.Location = new System.Drawing.Point(197, 550);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(168, 13);
-			this.label2.TabIndex = 111;
 			this.label2.Text = "* Disable Auto Tab to multiply bind";
 			// 
 			// label38
 			// 
 			this.label38.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.label38.AutoSize = true;
 			this.label38.Location = new System.Drawing.Point(41, 550);
 			this.label38.Name = "label38";
-			this.label38.Size = new System.Drawing.Size(153, 13);
-			this.label38.TabIndex = 110;
 			this.label38.Text = "* Escape clears a key mapping";
 			// 
 			// btnMisc
@@ -287,9 +278,9 @@
 				private System.Windows.Forms.ToolStripMenuItem testToolStripMenuItem;
 				private System.Windows.Forms.ToolStripMenuItem loadDefaultsToolStripMenuItem;
 				private System.Windows.Forms.ToolStripMenuItem clearToolStripMenuItem;
-				private System.Windows.Forms.Label label3;
-				private System.Windows.Forms.Label label2;
-				private System.Windows.Forms.Label label38;
+				private BizHawk.WinForms.Controls.LocLabelEx label3;
+				private BizHawk.WinForms.Controls.LocLabelEx label2;
+				private BizHawk.WinForms.Controls.LocLabelEx label38;
 		private System.Windows.Forms.CheckBox AllowUdCheckbox;
 	}
 }

@@ -30,13 +30,13 @@
 		{
 			this.components = new System.ComponentModel.Container();
 			this.textBox1 = new System.Windows.Forms.TextBox();
-			this.labelButtonName = new System.Windows.Forms.Label();
+			this.labelButtonName = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.trackBarSensitivity = new System.Windows.Forms.TrackBar();
-			this.labelSensitivity = new System.Windows.Forms.Label();
+			this.labelSensitivity = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.timer1 = new System.Windows.Forms.Timer(this.components);
 			this.buttonBind = new System.Windows.Forms.Button();
 			this.trackBarDeadzone = new System.Windows.Forms.TrackBar();
-			this.labelDeadzone = new System.Windows.Forms.Label();
+			this.labelDeadzone = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.buttonFlip = new System.Windows.Forms.Button();
 			this.buttonUnbind = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarSensitivity)).BeginInit();
@@ -53,11 +53,8 @@
 			// 
 			// labelButtonName
 			// 
-			this.labelButtonName.AutoSize = true;
 			this.labelButtonName.Location = new System.Drawing.Point(109, 6);
 			this.labelButtonName.Name = "labelButtonName";
-			this.labelButtonName.Size = new System.Drawing.Size(54, 13);
-			this.labelButtonName.TabIndex = 1;
 			this.labelButtonName.Text = "Bindname";
 			// 
 			// trackBarSensitivity
@@ -75,11 +72,8 @@
 			// 
 			// labelSensitivity
 			// 
-			this.labelSensitivity.AutoSize = true;
 			this.labelSensitivity.Location = new System.Drawing.Point(166, 25);
 			this.labelSensitivity.Name = "labelSensitivity";
-			this.labelSensitivity.Size = new System.Drawing.Size(95, 13);
-			this.labelSensitivity.TabIndex = 3;
 			this.labelSensitivity.Text = "Sensitivity: 5 billion";
 			// 
 			// timer1
@@ -107,11 +101,8 @@
 			// 
 			// labelDeadzone
 			// 
-			this.labelDeadzone.AutoSize = true;
 			this.labelDeadzone.Location = new System.Drawing.Point(166, 60);
 			this.labelDeadzone.Name = "labelDeadzone";
-			this.labelDeadzone.Size = new System.Drawing.Size(97, 13);
-			this.labelDeadzone.TabIndex = 6;
 			this.labelDeadzone.Text = "Deadzone: 5 billion";
 			// 
 			// buttonFlip
@@ -159,13 +150,13 @@
 		#endregion
 
 		private System.Windows.Forms.TextBox textBox1;
-		private System.Windows.Forms.Label labelButtonName;
+		private BizHawk.WinForms.Controls.LocLabelEx labelButtonName;
 		private System.Windows.Forms.TrackBar trackBarSensitivity;
-		private System.Windows.Forms.Label labelSensitivity;
+		private BizHawk.WinForms.Controls.LocLabelEx labelSensitivity;
 		private System.Windows.Forms.Timer timer1;
 		private System.Windows.Forms.Button buttonBind;
 		private System.Windows.Forms.TrackBar trackBarDeadzone;
-		private System.Windows.Forms.Label labelDeadzone;
+		private BizHawk.WinForms.Controls.LocLabelEx labelDeadzone;
 		private System.Windows.Forms.Button buttonFlip;
 		private System.Windows.Forms.Button buttonUnbind;
 	}

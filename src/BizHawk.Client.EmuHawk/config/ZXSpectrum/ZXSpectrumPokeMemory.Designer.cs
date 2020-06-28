@@ -30,11 +30,11 @@
         {
             this.OkBtn = new System.Windows.Forms.Button();
             this.CancelBtn = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
+            this.label1 = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.label4 = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.label2 = new BizHawk.WinForms.Controls.LocLabelEx();
             this.numericUpDownAddress = new System.Windows.Forms.NumericUpDown();
-            this.label3 = new System.Windows.Forms.Label();
+            this.label3 = new BizHawk.WinForms.Controls.LocLabelEx();
             this.numericUpDownByte = new System.Windows.Forms.NumericUpDown();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownAddress)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownByte)).BeginInit();
@@ -65,29 +65,20 @@
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(12, 14);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(273, 13);
-            this.label1.TabIndex = 17;
             this.label1.Text = "Enter an address to POKE along with a single byte value";
             // 
             // label4
             // 
-            this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(12, 52);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(93, 13);
-            this.label4.TabIndex = 27;
             this.label4.Text = "Address (0-65535)";
             // 
             // label2
             // 
-            this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(12, 27);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(266, 13);
-            this.label2.TabIndex = 29;
             this.label2.Text = "(Address values that target ROM space will be ignored)";
             // 
             // numericUpDownAddress
@@ -104,11 +95,8 @@
             // 
             // label3
             // 
-            this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(123, 52);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(70, 13);
-            this.label3.TabIndex = 31;
             this.label3.Text = "Value (0-255)";
             // 
             // numericUpDownByte
@@ -153,11 +141,11 @@
 
         private System.Windows.Forms.Button OkBtn;
         private System.Windows.Forms.Button CancelBtn;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label label2;
+        private BizHawk.WinForms.Controls.LocLabelEx label1;
+        private BizHawk.WinForms.Controls.LocLabelEx label4;
+        private BizHawk.WinForms.Controls.LocLabelEx label2;
         private System.Windows.Forms.NumericUpDown numericUpDownAddress;
-        private System.Windows.Forms.Label label3;
+        private BizHawk.WinForms.Controls.LocLabelEx label3;
         private System.Windows.Forms.NumericUpDown numericUpDownByte;
     }
 }

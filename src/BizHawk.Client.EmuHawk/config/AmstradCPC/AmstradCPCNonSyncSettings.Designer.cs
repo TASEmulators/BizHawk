@@ -30,9 +30,9 @@
         {
 			this.OkBtn = new System.Windows.Forms.Button();
 			this.CancelBtn = new System.Windows.Forms.Button();
-			this.label1 = new System.Windows.Forms.Label();
-			this.lblOSDVerbinfo = new System.Windows.Forms.Label();
-			this.label4 = new System.Windows.Forms.Label();
+			this.label1 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.lblOSDVerbinfo = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label4 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.osdMessageVerbositycomboBox1 = new System.Windows.Forms.ComboBox();
 			this.SuspendLayout();
 			// 
@@ -61,11 +61,8 @@
 			// 
 			// label1
 			// 
-			this.label1.AutoSize = true;
 			this.label1.Location = new System.Drawing.Point(12, 14);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(185, 13);
-			this.label1.TabIndex = 17;
 			this.label1.Text = "ZX Spectrum Misc Non-Sync Settings";
 			// 
 			// lblOSDVerbinfo
@@ -73,18 +70,13 @@
 			this.lblOSDVerbinfo.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.lblOSDVerbinfo.Location = new System.Drawing.Point(175, 60);
 			this.lblOSDVerbinfo.Name = "lblOSDVerbinfo";
-			this.lblOSDVerbinfo.Size = new System.Drawing.Size(196, 53);
-			this.lblOSDVerbinfo.TabIndex = 28;
 			this.lblOSDVerbinfo.Text = "null";
 			this.lblOSDVerbinfo.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
 			// label4
 			// 
-			this.label4.AutoSize = true;
 			this.label4.Location = new System.Drawing.Point(12, 60);
 			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(125, 13);
-			this.label4.TabIndex = 27;
 			this.label4.Text = "OSD Message Verbosity:";
 			// 
 			// osdMessageVerbositycomboBox1
@@ -126,9 +118,9 @@
 
         private System.Windows.Forms.Button OkBtn;
         private System.Windows.Forms.Button CancelBtn;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label lblOSDVerbinfo;
-        private System.Windows.Forms.Label label4;
+        private BizHawk.WinForms.Controls.LocLabelEx label1;
+        private BizHawk.WinForms.Controls.LocLabelEx lblOSDVerbinfo;
+        private BizHawk.WinForms.Controls.LocLabelEx label4;
         private System.Windows.Forms.ComboBox osdMessageVerbositycomboBox1;
     }
 }

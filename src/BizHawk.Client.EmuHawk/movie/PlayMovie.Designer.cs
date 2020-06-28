@@ -38,7 +38,7 @@
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.SubtitlesBtn = new System.Windows.Forms.Button();
 			this.CommentsBtn = new System.Windows.Forms.Button();
-			this.MovieCount = new System.Windows.Forms.Label();
+			this.MovieCount = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.ReadOnlyCheckBox = new System.Windows.Forms.CheckBox();
 			this.IncludeSubDirectories = new System.Windows.Forms.CheckBox();
 			this.Scan = new System.Windows.Forms.Button();
@@ -164,11 +164,8 @@
 			// 
 			// MovieCount
 			// 
-			this.MovieCount.AutoSize = true;
 			this.MovieCount.Location = new System.Drawing.Point(12, 9);
 			this.MovieCount.Name = "MovieCount";
-			this.MovieCount.Size = new System.Drawing.Size(31, 13);
-			this.MovieCount.TabIndex = 7;
 			this.MovieCount.Text = "        ";
 			// 
 			// ReadOnlyCheckBox
@@ -383,7 +380,7 @@
 		private System.Windows.Forms.GroupBox groupBox1;
 		private System.Windows.Forms.Button SubtitlesBtn;
 		private System.Windows.Forms.Button CommentsBtn;
-		private System.Windows.Forms.Label MovieCount;
+		private BizHawk.WinForms.Controls.LocLabelEx MovieCount;
 		private System.Windows.Forms.CheckBox ReadOnlyCheckBox;
 		private System.Windows.Forms.CheckBox IncludeSubDirectories;
 		private System.Windows.Forms.Button Scan;

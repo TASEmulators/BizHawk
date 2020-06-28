@@ -29,7 +29,7 @@
 		private void InitializeComponent()
 		{
 			this.paperView = new BmpView();
-			this.label1 = new System.Windows.Forms.Label();
+			this.label1 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.paperScroll = new System.Windows.Forms.VScrollBar();
 			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -94,7 +94,6 @@
 			//
 			this.label1.Name = "label1";
 			this.label1.Location = new System.Drawing.Point(0, 24);
-			this.label1.Size = new System.Drawing.Size(336, 24);
 			this.label1.Text = "Note: the printer is only connected while this window is open.";
 			this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			//
@@ -140,7 +139,7 @@
 		private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem copyToolStripMenuItem;
 		private BmpView paperView;
-		private System.Windows.Forms.Label label1;
+		private BizHawk.WinForms.Controls.LocLabelEx label1;
 		private System.Windows.Forms.VScrollBar paperScroll;
 	}
 }

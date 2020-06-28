@@ -30,38 +30,38 @@
 		{
 			this.OK = new System.Windows.Forms.Button();
 			this.MessageTypeBox = new System.Windows.Forms.GroupBox();
-			this.AutoholdLabel = new System.Windows.Forms.Label();
+			this.AutoholdLabel = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.AutoholdRadio = new System.Windows.Forms.RadioButton();
-			this.MultitrackLabel = new System.Windows.Forms.Label();
+			this.MultitrackLabel = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.MultitrackRadio = new System.Windows.Forms.RadioButton();
-			this.RerecLabel = new System.Windows.Forms.Label();
+			this.RerecLabel = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.RerecordsRadio = new System.Windows.Forms.RadioButton();
-			this.MessLabel = new System.Windows.Forms.Label();
-			this.InpLabel = new System.Windows.Forms.Label();
-			this.LagLabel = new System.Windows.Forms.Label();
-			this.FCLabel = new System.Windows.Forms.Label();
-			this.FpsPosLabel = new System.Windows.Forms.Label();
+			this.MessLabel = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.InpLabel = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.LagLabel = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.FCLabel = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.FpsPosLabel = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.MessagesRadio = new System.Windows.Forms.RadioButton();
 			this.InputDisplayRadio = new System.Windows.Forms.RadioButton();
 			this.LagCounterRadio = new System.Windows.Forms.RadioButton();
 			this.FrameCounterRadio = new System.Windows.Forms.RadioButton();
 			this.FPSRadio = new System.Windows.Forms.RadioButton();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
-			this.label12 = new System.Windows.Forms.Label();
+			this.label12 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.MovieInputText = new System.Windows.Forms.TextBox();
-			this.label11 = new System.Windows.Forms.Label();
+			this.label11 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.MovieInputColor = new System.Windows.Forms.Panel();
 			this.LInputColorPanel = new System.Windows.Forms.Panel();
 			this.AlertColorPanel = new System.Windows.Forms.Panel();
 			this.ColorPanel = new System.Windows.Forms.Panel();
-			this.label7 = new System.Windows.Forms.Label();
-			this.label8 = new System.Windows.Forms.Label();
+			this.label7 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label8 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.LInputText = new System.Windows.Forms.TextBox();
-			this.label6 = new System.Windows.Forms.Label();
-			this.label5 = new System.Windows.Forms.Label();
+			this.label6 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label5 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.AlertColorText = new System.Windows.Forms.TextBox();
-			this.label4 = new System.Windows.Forms.Label();
-			this.label3 = new System.Windows.Forms.Label();
+			this.label4 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label3 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.ColorText = new System.Windows.Forms.TextBox();
 			this.MessageColorDialog = new System.Windows.Forms.ColorDialog();
 			this.Cancel = new System.Windows.Forms.Button();
@@ -69,8 +69,8 @@
 			this.PositionPanel = new System.Windows.Forms.Panel();
 			this.XNumeric = new System.Windows.Forms.NumericUpDown();
 			this.YNumeric = new System.Windows.Forms.NumericUpDown();
-			this.label1 = new System.Windows.Forms.Label();
-			this.label2 = new System.Windows.Forms.Label();
+			this.label1 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label2 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.PositionGroupBox = new System.Windows.Forms.GroupBox();
 			this.BR = new System.Windows.Forms.RadioButton();
 			this.BL = new System.Windows.Forms.RadioButton();
@@ -81,7 +81,7 @@
 			this.MovieInputColorDialog = new System.Windows.Forms.ColorDialog();
 			this.StackMessagesCheckbox = new System.Windows.Forms.CheckBox();
 			this.WatchesRadio = new System.Windows.Forms.RadioButton();
-			this.WatchesLabel = new System.Windows.Forms.Label();
+			this.WatchesLabel = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.MessageTypeBox.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.XNumeric)).BeginInit();
@@ -130,11 +130,8 @@
 			// AutoholdLabel
 			// 
 			this.AutoholdLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.AutoholdLabel.AutoSize = true;
 			this.AutoholdLabel.Location = new System.Drawing.Point(126, 209);
 			this.AutoholdLabel.Name = "AutoholdLabel";
-			this.AutoholdLabel.Size = new System.Drawing.Size(49, 13);
-			this.AutoholdLabel.TabIndex = 15;
 			this.AutoholdLabel.Text = "255, 255";
 			// 
 			// AutoholdRadio
@@ -152,11 +149,8 @@
 			// MultitrackLabel
 			// 
 			this.MultitrackLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.MultitrackLabel.AutoSize = true;
 			this.MultitrackLabel.Location = new System.Drawing.Point(126, 185);
 			this.MultitrackLabel.Name = "MultitrackLabel";
-			this.MultitrackLabel.Size = new System.Drawing.Size(49, 13);
-			this.MultitrackLabel.TabIndex = 13;
 			this.MultitrackLabel.Text = "255, 255";
 			// 
 			// MultitrackRadio
@@ -174,11 +168,8 @@
 			// RerecLabel
 			// 
 			this.RerecLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.RerecLabel.AutoSize = true;
 			this.RerecLabel.Location = new System.Drawing.Point(126, 161);
 			this.RerecLabel.Name = "RerecLabel";
-			this.RerecLabel.Size = new System.Drawing.Size(49, 13);
-			this.RerecLabel.TabIndex = 11;
 			this.RerecLabel.Text = "255, 255";
 			// 
 			// RerecordsRadio
@@ -195,51 +186,36 @@
 			// MessLabel
 			// 
 			this.MessLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.MessLabel.AutoSize = true;
 			this.MessLabel.Location = new System.Drawing.Point(126, 137);
 			this.MessLabel.Name = "MessLabel";
-			this.MessLabel.Size = new System.Drawing.Size(49, 13);
-			this.MessLabel.TabIndex = 9;
 			this.MessLabel.Text = "255, 255";
 			// 
 			// InpLabel
 			// 
 			this.InpLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.InpLabel.AutoSize = true;
 			this.InpLabel.Location = new System.Drawing.Point(126, 92);
 			this.InpLabel.Name = "InpLabel";
-			this.InpLabel.Size = new System.Drawing.Size(49, 13);
-			this.InpLabel.TabIndex = 8;
 			this.InpLabel.Text = "255, 255";
 			// 
 			// LagLabel
 			// 
 			this.LagLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.LagLabel.AutoSize = true;
 			this.LagLabel.Location = new System.Drawing.Point(126, 68);
 			this.LagLabel.Name = "LagLabel";
-			this.LagLabel.Size = new System.Drawing.Size(49, 13);
-			this.LagLabel.TabIndex = 7;
 			this.LagLabel.Text = "255, 255";
 			// 
 			// FCLabel
 			// 
 			this.FCLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.FCLabel.AutoSize = true;
 			this.FCLabel.Location = new System.Drawing.Point(126, 44);
 			this.FCLabel.Name = "FCLabel";
-			this.FCLabel.Size = new System.Drawing.Size(49, 13);
-			this.FCLabel.TabIndex = 6;
 			this.FCLabel.Text = "255, 255";
 			// 
 			// FpsPosLabel
 			// 
 			this.FpsPosLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.FpsPosLabel.AutoSize = true;
 			this.FpsPosLabel.Location = new System.Drawing.Point(126, 20);
 			this.FpsPosLabel.Name = "FpsPosLabel";
-			this.FpsPosLabel.Size = new System.Drawing.Size(49, 13);
-			this.FpsPosLabel.TabIndex = 5;
 			this.FpsPosLabel.Text = "255, 255";
 			// 
 			// MessagesRadio
@@ -326,11 +302,8 @@
 			// 
 			// label12
 			// 
-			this.label12.AutoSize = true;
 			this.label12.Location = new System.Drawing.Point(1, 161);
 			this.label12.Name = "label12";
-			this.label12.Size = new System.Drawing.Size(63, 13);
-			this.label12.TabIndex = 24;
 			this.label12.Text = "Movie Input";
 			// 
 			// MovieInputText
@@ -345,11 +318,8 @@
 			// 
 			// label11
 			// 
-			this.label11.AutoSize = true;
 			this.label11.Location = new System.Drawing.Point(28, 190);
 			this.label11.Name = "label11";
-			this.label11.Size = new System.Drawing.Size(18, 13);
-			this.label11.TabIndex = 22;
 			this.label11.Text = "0x";
 			// 
 			// MovieInputColor
@@ -390,20 +360,14 @@
 			// 
 			// label7
 			// 
-			this.label7.AutoSize = true;
 			this.label7.Location = new System.Drawing.Point(1, 111);
 			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(86, 13);
-			this.label7.TabIndex = 18;
 			this.label7.Text = "Previous Frame Input";
 			// 
 			// label8
 			// 
-			this.label8.AutoSize = true;
 			this.label8.Location = new System.Drawing.Point(28, 133);
 			this.label8.Name = "label8";
-			this.label8.Size = new System.Drawing.Size(18, 13);
-			this.label8.TabIndex = 17;
 			this.label8.Text = "0x";
 			// 
 			// LInputText
@@ -418,20 +382,14 @@
 			// 
 			// label6
 			// 
-			this.label6.AutoSize = true;
 			this.label6.Location = new System.Drawing.Point(1, 62);
 			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(78, 13);
-			this.label6.TabIndex = 13;
 			this.label6.Text = "Alert messages";
 			// 
 			// label5
 			// 
-			this.label5.AutoSize = true;
 			this.label5.Location = new System.Drawing.Point(28, 84);
 			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(18, 13);
-			this.label5.TabIndex = 12;
 			this.label5.Text = "0x";
 			// 
 			// AlertColorText
@@ -446,20 +404,14 @@
 			// 
 			// label4
 			// 
-			this.label4.AutoSize = true;
 			this.label4.Location = new System.Drawing.Point(6, 18);
 			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(80, 13);
-			this.label4.TabIndex = 8;
 			this.label4.Text = "Main messages";
 			// 
 			// label3
 			// 
-			this.label3.AutoSize = true;
 			this.label3.Location = new System.Drawing.Point(28, 37);
 			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(18, 13);
-			this.label3.TabIndex = 7;
 			this.label3.Text = "0x";
 			// 
 			// ColorText
@@ -554,21 +506,15 @@
 			// label1
 			// 
 			this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.label1.AutoSize = true;
 			this.label1.Location = new System.Drawing.Point(27, 274);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(12, 13);
-			this.label1.TabIndex = 3;
 			this.label1.Text = "x";
 			// 
 			// label2
 			// 
 			this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.label2.AutoSize = true;
 			this.label2.Location = new System.Drawing.Point(92, 273);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(12, 13);
-			this.label2.TabIndex = 4;
 			this.label2.Text = "y";
 			// 
 			// PositionGroupBox
@@ -671,11 +617,8 @@
 			// WatchesLabel
 			// 
 			this.WatchesLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.WatchesLabel.AutoSize = true;
 			this.WatchesLabel.Location = new System.Drawing.Point(126, 116);
 			this.WatchesLabel.Name = "WatchesLabel";
-			this.WatchesLabel.Size = new System.Drawing.Size(49, 13);
-			this.WatchesLabel.TabIndex = 17;
 			this.WatchesLabel.Text = "255, 255";
 			// 
 			// MessageConfig
@@ -724,27 +667,27 @@
 		private System.Windows.Forms.GroupBox groupBox2;
 		private System.Windows.Forms.ColorDialog MessageColorDialog;
 		private System.Windows.Forms.Button Cancel;
-		private System.Windows.Forms.Label MessLabel;
-		private System.Windows.Forms.Label InpLabel;
-		private System.Windows.Forms.Label LagLabel;
-		private System.Windows.Forms.Label FCLabel;
-		private System.Windows.Forms.Label FpsPosLabel;
+		private BizHawk.WinForms.Controls.LocLabelEx MessLabel;
+		private BizHawk.WinForms.Controls.LocLabelEx InpLabel;
+		private BizHawk.WinForms.Controls.LocLabelEx LagLabel;
+		private BizHawk.WinForms.Controls.LocLabelEx FCLabel;
+		private BizHawk.WinForms.Controls.LocLabelEx FpsPosLabel;
 		private System.Windows.Forms.Button ResetDefaultsButton;
 		private System.Windows.Forms.TextBox ColorText;
-		private System.Windows.Forms.Label label3;
+		private BizHawk.WinForms.Controls.LocLabelEx label3;
 		private System.Windows.Forms.Panel PositionPanel;
 		private System.Windows.Forms.NumericUpDown XNumeric;
 		private System.Windows.Forms.NumericUpDown YNumeric;
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.Label label2;
+		private BizHawk.WinForms.Controls.LocLabelEx label1;
+		private BizHawk.WinForms.Controls.LocLabelEx label2;
 		private System.Windows.Forms.GroupBox PositionGroupBox;
-		private System.Windows.Forms.Label label5;
+		private BizHawk.WinForms.Controls.LocLabelEx label5;
 		private System.Windows.Forms.TextBox AlertColorText;
 		private System.Windows.Forms.Panel AlertColorPanel;
-		private System.Windows.Forms.Label label4;
-		private System.Windows.Forms.Label label6;
-		private System.Windows.Forms.Label label7;
-		private System.Windows.Forms.Label label8;
+		private BizHawk.WinForms.Controls.LocLabelEx label4;
+		private BizHawk.WinForms.Controls.LocLabelEx label6;
+		private BizHawk.WinForms.Controls.LocLabelEx label7;
+		private BizHawk.WinForms.Controls.LocLabelEx label8;
 		private System.Windows.Forms.TextBox LInputText;
 		private System.Windows.Forms.Panel LInputColorPanel;
 		private System.Windows.Forms.ColorDialog AlertColorDialog;
@@ -753,20 +696,20 @@
 		private System.Windows.Forms.RadioButton BL;
 		private System.Windows.Forms.RadioButton TR;
 		private System.Windows.Forms.RadioButton TL;
-		private System.Windows.Forms.Label RerecLabel;
+		private BizHawk.WinForms.Controls.LocLabelEx RerecLabel;
 		private System.Windows.Forms.RadioButton RerecordsRadio;
 		private System.Windows.Forms.Panel ColorPanel;
 		private System.Windows.Forms.TextBox MovieInputText;
-		private System.Windows.Forms.Label label11;
+		private BizHawk.WinForms.Controls.LocLabelEx label11;
 		private System.Windows.Forms.Panel MovieInputColor;
-		private System.Windows.Forms.Label label12;
+		private BizHawk.WinForms.Controls.LocLabelEx label12;
 		private System.Windows.Forms.ColorDialog MovieInputColorDialog;
-		private System.Windows.Forms.Label MultitrackLabel;
+		private BizHawk.WinForms.Controls.LocLabelEx MultitrackLabel;
 		private System.Windows.Forms.RadioButton MultitrackRadio;
 		private System.Windows.Forms.CheckBox StackMessagesCheckbox;
-		private System.Windows.Forms.Label AutoholdLabel;
+		private BizHawk.WinForms.Controls.LocLabelEx AutoholdLabel;
 		private System.Windows.Forms.RadioButton AutoholdRadio;
-		private System.Windows.Forms.Label WatchesLabel;
+		private BizHawk.WinForms.Controls.LocLabelEx WatchesLabel;
 		private System.Windows.Forms.RadioButton WatchesRadio;
 	}
 }
