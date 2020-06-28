@@ -27,19 +27,24 @@ namespace BizHawk.Client.Common.RamSearchEngine
 
 		public long Previous => _previous;
 
+		public bool IsValid(MemoryDomain domain)
+		{
+			return IsValid(Address, domain);
+		}
+
 		public void SetPreviousToCurrent(MemoryDomain domain, bool bigEndian)
 		{
 			_previous = GetByte(Address, domain);
 		}
 
-		public bool IsValid(MemoryDomain domain)
+		public static bool IsValid(long address, MemoryDomain domain)
 		{
-			return Address < domain.Size;
+			return address < domain.Size;
 		}
 
 		public static byte GetByte(long address, MemoryDomain domain)
 		{
-			if (address >= domain.Size)
+			if (!IsValid(address, domain))
 			{
 				return 0;
 			}
@@ -68,12 +73,17 @@ namespace BizHawk.Client.Common.RamSearchEngine
 
 		public bool IsValid(MemoryDomain domain)
 		{
-			return Address < (domain.Size - 1);
+			return IsValid(Address, domain);
+		}
+
+		public static bool IsValid(long address, MemoryDomain domain)
+		{
+			return address < (domain.Size - 1);
 		}
 
 		public static ushort GetUshort(long address, MemoryDomain domain, bool bigEndian)
 		{
-			if (address >= (domain.Size - 1))
+			if (!IsValid(address, domain))
 			{
 				return 0;
 			}
@@ -102,12 +112,17 @@ namespace BizHawk.Client.Common.RamSearchEngine
 
 		public bool IsValid(MemoryDomain domain)
 		{
-			return Address < (domain.Size - 3);
+			return IsValid(Address, domain);
+		}
+
+		public static bool IsValid(long address, MemoryDomain domain)
+		{
+			return address < (domain.Size - 3);
 		}
 
 		public static uint GetUint(long address, MemoryDomain domain, bool bigEndian)
 		{
-			if (address >= (domain.Size - 3))
+			if (!IsValid(address, domain))
 			{
 				return 0;
 			}
