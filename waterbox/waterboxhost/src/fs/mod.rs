@@ -90,8 +90,15 @@ impl IStateable for MountedFile {
 	}
 }
 
+pub type MissingFileCallback = Box<dyn FnMut(&str) -> Option<MissingFileResult>>;
+pub struct MissingFileResult {
+	pub data: Vec<u8>,
+	pub writable: bool,
+}
+
 pub struct FileSystem {
 	files: Vec<MountedFile>,
+	missing_file_callback: Option<MissingFileCallback>,
 }
 impl FileSystem {
 	pub fn new() -> FileSystem {
@@ -113,7 +120,12 @@ impl FileSystem {
 					obj: Box::new(SysOutObj { host_handle: Box::new(std::io::stderr()) })
 				},
 			],
+			missing_file_callback: None,
 		}
+	}
+	/// Set (or clear, with None) a callback to be called whenever the guest tries to load a nonexistant file
+	pub fn set_missing_file_callback(&mut self, cb: Option<MissingFileCallback>) {
+		self.missing_file_callback = cb;
 	}
 	/// Accept a file from the outside world.  Writable files may never appear in a savestate,
 	/// and readonly files must not be added or removed from savestate to savestate, so all uses
@@ -145,9 +157,15 @@ impl FileSystem {
 		}
 		Ok(self.files.remove(idx).obj.unmount())
 	}
+
+	fn try_missing_file_cb(&mut self, name: &str) -> Option<()> {
+		self.missing_file_callback
+			.as_mut()
+			.and_then(|cb| cb(name))
+			.map(|res| self.mount(name.to_string(), res.data, res.writable).unwrap())
+	}
 	/// Implements a subset of open(2)
 	pub fn open(&mut self, name: &str, flags: i32, _mode: i32) -> Result<FileDescriptor, SyscallError> {
-		// TODO: Missing file callback
 		let fd = {
 			let mut i = 0;
 			loop {
@@ -157,7 +175,26 @@ impl FileSystem {
 				i += 1;
 			}
 		};
-		let file = match self.files.iter_mut().find(|f| f.name == name) {
+		let file_opt = {
+			let mut did_cb = false;
+			loop {
+				match self.files.iter_mut().find(|f| f.name == name) {
+					Some(f) => break Some(f),
+					None if !did_cb => {
+						match self.try_missing_file_cb(name) {
+							Some(()) => {
+								did_cb = true;
+								continue
+							},
+							None => break None,
+						}
+					}
+					_ => break None,
+				}
+			}
+		};
+
+		let file = match file_opt {
 			Some(f) => f,
 			None => return Err(ENOENT)
 		};

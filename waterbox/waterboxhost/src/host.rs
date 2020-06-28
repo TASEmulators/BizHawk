@@ -2,7 +2,7 @@ use crate::*;
 use crate::{memory_block::ActivatedMemoryBlock, syscall_defs::*};
 use memory_block::{MemoryBlock, Protection};
 use std::{os::raw::c_char, ffi::CStr};
-use fs::{FileDescriptor, FileSystem};
+use fs::{FileDescriptor, FileSystem, MissingFileCallback};
 use elf::ElfLoader;
 use cinterface::MemoryLayoutTemplate;
 
@@ -108,6 +108,9 @@ impl<'a> ActivatedWaterboxHost<'a> {
 	}
 	pub fn unmount_file(&mut self, name: &str) -> anyhow::Result<Vec<u8>> {
 		self.h.fs.unmount(name)
+	}
+	pub fn set_missing_file_callback(&mut self, cb: Option<MissingFileCallback>) {
+		self.h.fs.set_missing_file_callback(cb);
 	}
 }
 
