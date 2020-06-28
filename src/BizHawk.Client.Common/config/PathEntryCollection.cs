@@ -296,6 +296,12 @@ namespace BizHawk.Client.Common
 			new PathEntry { System = "Libretro", SystemDisplayName = "Libretro", Type = "Save RAM", Path = Path.Combine(".", "SaveRAM"), Ordinal = 4 },
 			new PathEntry { System = "Libretro", SystemDisplayName = "Libretro", Type = "Screenshots", Path = Path.Combine(".", "Screenshots"), Ordinal = 5 },
 			new PathEntry { System = "Libretro", SystemDisplayName = "Libretro", Type = "Cheats", Path = Path.Combine(".", "Cheats"), Ordinal = 6 },
+			
+			//It doesn't make much sense to have a ROM dir for libretro, but a lot of stuff is built around the assumption of a ROM dir existing
+			//also, note, sometimes when path gets used, it's for opening a rom, which will be... loaded by... the default system for that rom, i.e. NOT libretro.
+			//Really, "Open Rom" for instance doesn't make sense when you have a libretro core open.
+			//Well, this is better than nothing.
+			new PathEntry { System = "Libretro", SystemDisplayName = "Libretro", Type = "ROM", Path = "%recent%", Ordinal = 7 }, 
 
 			new PathEntry { System = "VB", SystemDisplayName = "VB", Type = "Base", Path = Path.Combine(".", "VB"), Ordinal = 0 },
 			new PathEntry { System = "VB", SystemDisplayName = "VB", Type = "ROM", Path = ".", Ordinal = 1 },
