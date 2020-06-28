@@ -73,7 +73,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		public bool SkipMemoryConsistencyCheck { get; set; } = false;
 	}
 
-	public unsafe class WaterboxHost : IMonitor, IImportResolver, IBinaryStateable
+	public unsafe class WaterboxHost : IMonitor, IImportResolver, IBinaryStateable, IDisposable
 	{
 
 		/// <summary>
@@ -83,6 +83,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		private IntPtr _nativeHost;
 		private IntPtr _activatedNativeHost;
+		private int _enterCount;
 
 		private static readonly WaterboxHostNative NativeImpl;
 		static WaterboxHost()
@@ -218,11 +219,11 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			}
 		}
 
-		public class MissingFileResult
-		{
-			public byte[] data;
-			public bool writable;
-		}
+		// public class MissingFileResult
+		// {
+		// 	public byte[] data;
+		// 	public bool writable;
+		// }
 
 		/// <summary>
 		/// Can be set by the frontend and will be called if the core attempts to open a missing file.
@@ -233,88 +234,98 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// if it was for firmware only.
 		/// writable == false is equivalent to AddReadonlyFile, writable == true is equivalent to AddTransientFile
 		/// </summary>
-		public Func<string, MissingFileResult> MissingFileCallback
-		{
-			set
-			{
-				using (this.EnterExit())
-				{
-					var mfc_o = value == null ? null : new WaterboxHostNative.MissingFileCallback
-					{
-						callback = (_unused, name) =>
-						{
-							var res = value(name);
-						}
-					};
+		// public Func<string, MissingFileResult> MissingFileCallback
+		// {
+		// 	set
+		// 	{
+		// 		// TODO
+		// 		using (this.EnterExit())
+		// 		{
+		// 			var mfc_o = value == null ? null : new WaterboxHostNative.MissingFileCallback
+		// 			{
+		// 				callback = (_unused, name) =>
+		// 				{
+		// 					var res = value(name);
+		// 				}
+		// 			};
 
-					NativeImpl.wbx_set_missing_file_callback(_activatedNativeHost, value == null
-						? null
-						: )
-				}
-			}
-			get => _syscalls.MissingFileCallback;
-			set => _syscalls.MissingFileCallback = value;
-		}
-
-		private const ulong MAGIC = 0x736b776162727477;
-		private const ulong WATERBOXSTATEVERSION = 2;
+		// 			NativeImpl.wbx_set_missing_file_callback(_activatedNativeHost, value == null
+		// 				? null
+		// 				: )
+		// 		}
+		// 	}
+		// 	get => _syscalls.MissingFileCallback;
+		// 	set => _syscalls.MissingFileCallback = value;
+		// }
 
 		public void SaveStateBinary(BinaryWriter bw)
 		{
-			bw.Write(MAGIC);
-			bw.Write(WATERBOXSTATEVERSION);
-			bw.Write(_createstamp);
-			bw.Write(_savestateComponents.Count);
 			using (this.EnterExit())
 			{
-				foreach (var c in _savestateComponents)
-				{
-					c.SaveStateBinary(bw);
-				}
+				var retobj = new ReturnData();
+				NativeImpl.wbx_save_state(_activatedNativeHost, CWriter.FromStream(bw.BaseStream), retobj);
+				retobj.GetDataOrThrow();
 			}
 		}
 
 		public void LoadStateBinary(BinaryReader br)
 		{
-			if (br.ReadUInt64() != MAGIC)
-				throw new InvalidOperationException("Internal savestate error");
-			if (br.ReadUInt64() != WATERBOXSTATEVERSION)
-				throw new InvalidOperationException("Waterbox savestate version mismatch");
-			var differentCore = br.ReadInt64() != _createstamp; // true if a different core instance created the state
-			if (br.ReadInt32() != _savestateComponents.Count)
-				throw new InvalidOperationException("Internal savestate error");
 			using (this.EnterExit())
 			{
-				foreach (var c in _savestateComponents)
-				{
-					c.LoadStateBinary(br);
-				}
-				if (differentCore)
-				{
-					// if a different runtime instance than this one saved the state,
-					// Exvoker imports need to be reconnected
-					Console.WriteLine($"Restoring {nameof(WaterboxHost)} state from a different core...");
-					ConnectAllImports();
-				}
+				var retobj = new ReturnData();
+				NativeImpl.wbx_load_state(_activatedNativeHost, CReader.FromStream(br.BaseStream), retobj);
+				retobj.GetDataOrThrow();
 			}
 		}
 
-		protected override void Dispose(bool disposing)
+		public void Enter()
 		{
-			base.Dispose(disposing);
-			if (disposing)
+			if (_enterCount == 0)
 			{
-				foreach (var d in _disposeList)
-					d.Dispose();
-				_disposeList.Clear();
-				PurgeMemoryBlocks();
-				_module = null;
-				_heap = null;
-				_sealedheap = null;
-				_invisibleheap = null;
-				_plainheap = null;
-				_mmapheap = null;
+				var retobj = new ReturnData();
+				NativeImpl.wbx_activate_host(_nativeHost, retobj);
+				_activatedNativeHost = retobj.GetDataOrThrow();
 			}
+			_enterCount++;
+		}
+
+		public void Exit()
+		{
+			if (_enterCount <= 0)
+			{
+				throw new InvalidOperationException();
+			}
+			else if (_enterCount == 1)
+			{
+				var retobj = new ReturnData();
+				NativeImpl.wbx_deactivate_host(_activatedNativeHost, retobj);
+				retobj.GetDataOrThrow();
+				_activatedNativeHost = IntPtr.Zero;
+			}
+			_enterCount--;
+		}
+
+		public void Dispose()
+		{
+			if (_nativeHost != IntPtr.Zero)
+			{
+				var retobj = new ReturnData();
+				if (_activatedNativeHost != IntPtr.Zero)
+				{
+					NativeImpl.wbx_deactivate_host(_activatedNativeHost, retobj);
+					Console.Error.WriteLine("Warn: Disposed of WaterboxHost which was active");
+					_activatedNativeHost = IntPtr.Zero;
+				}
+				NativeImpl.wbx_destroy_host(_nativeHost, retobj);
+				_enterCount = 0;
+				_nativeHost = IntPtr.Zero;
+				GC.SuppressFinalize(this);
+			}
+		}
+
+		~WaterboxHost()
+		{
+			Dispose();
 		}
 
 		public abstract class WaterboxHostNative

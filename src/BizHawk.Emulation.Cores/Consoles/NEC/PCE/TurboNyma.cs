@@ -29,11 +29,13 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 			NymaSettings settings, NymaSyncSettings syncSettings, bool deterministic)
 			: base(comm, "PCE", "PC Engine Controller", settings, syncSettings)
 		{
-			var firmwares = new Dictionary<string, (string, string)>
-			{
-				{ "FIRMWARE:syscard3.pce", ("PCECD", "Bios") },
-				{ "FIRMWARE:gecard.pce", ("PCECD", "GE-Bios") },
-			};
+			var ids = discs.Select(d => new DiscIdentifier(d).DetectDiscType())
+				.ToList();
+			var firmwares = new Dictionary<string, (string, string)>();
+			if (ids.Contains(DiscType.TurboCD))
+				firmwares.Add("FIRMWARE:syscard3.pce", ("PCECD", "Bios"));
+			if (ids.Contains(DiscType.TurboGECD))
+				firmwares.Add("FIRMWARE:gecard.pce", ("PCECD", "GE-Bios"));
 			_turboNyma = DoInit<LibTurboNyma>(game, null, discs, "turbo.wbx", null, deterministic, firmwares);
 		}
 
