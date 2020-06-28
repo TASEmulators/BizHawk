@@ -1,5 +1,5 @@
 #!/bin/sh
-cd "$(dirname "$0")"
+cd "$(realpath "$(dirname "$0")")"
 if [ "$(ps -C "mono" -o "cmd" --no-headers | grep "EmuHawk.exe")" ]; then
 	echo "EmuHawk is already running, exiting..."
 	exit 0
