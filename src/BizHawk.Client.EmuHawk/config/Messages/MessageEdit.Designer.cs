@@ -33,11 +33,11 @@
             this.BL = new System.Windows.Forms.RadioButton();
             this.TR = new System.Windows.Forms.RadioButton();
             this.TL = new System.Windows.Forms.RadioButton();
-            this.label2 = new BizHawk.WinForms.Controls.LocLabelEx();
-            this.label1 = new BizHawk.WinForms.Controls.LocLabelEx();
             this.YNumeric = new System.Windows.Forms.NumericUpDown();
             this.XNumeric = new System.Windows.Forms.NumericUpDown();
             this.PositionPanel = new System.Windows.Forms.Panel();
+            this.label2 = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.label1 = new BizHawk.WinForms.Controls.LocLabelEx();
             this.PositionGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.YNumeric)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.XNumeric)).BeginInit();
@@ -45,6 +45,9 @@
             // 
             // PositionGroupBox
             // 
+            this.PositionGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.PositionGroupBox.Controls.Add(this.BR);
             this.PositionGroupBox.Controls.Add(this.BL);
             this.PositionGroupBox.Controls.Add(this.TR);
@@ -56,7 +59,7 @@
             this.PositionGroupBox.Controls.Add(this.PositionPanel);
             this.PositionGroupBox.Location = new System.Drawing.Point(3, 3);
             this.PositionGroupBox.Name = "PositionGroupBox";
-            this.PositionGroupBox.Size = new System.Drawing.Size(307, 299);
+            this.PositionGroupBox.Size = new System.Drawing.Size(307, 301);
             this.PositionGroupBox.TabIndex = 4;
             this.PositionGroupBox.TabStop = false;
             this.PositionGroupBox.Text = "Position";
@@ -65,7 +68,7 @@
             // 
             this.BR.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.BR.AutoSize = true;
-            this.BR.Location = new System.Drawing.Point(289, 253);
+            this.BR.Location = new System.Drawing.Point(289, 255);
             this.BR.Name = "BR";
             this.BR.Size = new System.Drawing.Size(14, 13);
             this.BR.TabIndex = 8;
@@ -77,7 +80,7 @@
             // 
             this.BL.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.BL.AutoSize = true;
-            this.BL.Location = new System.Drawing.Point(6, 253);
+            this.BL.Location = new System.Drawing.Point(6, 255);
             this.BL.Name = "BL";
             this.BL.Size = new System.Drawing.Size(14, 13);
             this.BL.TabIndex = 7;
@@ -108,24 +111,10 @@
             this.TL.UseVisualStyleBackColor = true;
             this.TL.CheckedChanged += new System.EventHandler(this.TL_CheckedChanged);
             // 
-            // label2
-            // 
-            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.label2.Location = new System.Drawing.Point(92, 273);
-            this.label2.Name = "label2";
-            this.label2.Text = "y";
-            // 
-            // label1
-            // 
-            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.label1.Location = new System.Drawing.Point(27, 274);
-            this.label1.Name = "label1";
-            this.label1.Text = "x";
-            // 
             // YNumeric
             // 
             this.YNumeric.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.YNumeric.Location = new System.Drawing.Point(106, 271);
+            this.YNumeric.Location = new System.Drawing.Point(106, 273);
             this.YNumeric.Maximum = new decimal(new int[] {
             256,
             0,
@@ -144,7 +133,7 @@
             // XNumeric
             // 
             this.XNumeric.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.XNumeric.Location = new System.Drawing.Point(43, 271);
+            this.XNumeric.Location = new System.Drawing.Point(43, 273);
             this.XNumeric.Maximum = new decimal(new int[] {
             256,
             0,
@@ -162,6 +151,9 @@
             // 
             // PositionPanel
             // 
+            this.PositionPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.PositionPanel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.PositionPanel.Location = new System.Drawing.Point(22, 18);
             this.PositionPanel.Name = "PositionPanel";
@@ -174,13 +166,27 @@
             this.PositionPanel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.PositionPanel_MouseMove);
             this.PositionPanel.MouseUp += new System.Windows.Forms.MouseEventHandler(this.PositionPanel_MouseUp);
             // 
+            // label2
+            // 
+            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label2.Location = new System.Drawing.Point(92, 275);
+            this.label2.Name = "label2";
+            this.label2.Text = "y";
+            // 
+            // label1
+            // 
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label1.Location = new System.Drawing.Point(27, 276);
+            this.label1.Name = "label1";
+            this.label1.Text = "x";
+            // 
             // MessageEdit
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.PositionGroupBox);
             this.Name = "MessageEdit";
-            this.Size = new System.Drawing.Size(318, 310);
+            this.Size = new System.Drawing.Size(318, 312);
             this.PositionGroupBox.ResumeLayout(false);
             this.PositionGroupBox.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.YNumeric)).EndInit();

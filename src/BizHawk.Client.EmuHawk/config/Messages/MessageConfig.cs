@@ -27,8 +27,6 @@ namespace BizHawk.Client.EmuHawk
 		
 		private int _px;
 		private int _py;
-		private bool _mousedown;
-		private bool _programmaticallyChangingValues;
 
 		public MessageConfig(Config config)
 		{
@@ -66,13 +64,8 @@ namespace BizHawk.Client.EmuHawk
 		private void SetMaxXy()
 		{
 			var video = NullVideo.Instance; // Good enough
-			XNumeric.Maximum = video.BufferWidth - 12;
-			YNumeric.Maximum = video.BufferHeight - 12;
-			PositionPanel.Size = new Size(video.BufferWidth + 2, video.BufferHeight + 2);
-
-			PositionGroupBox.Size = new Size(
-				Math.Max(video.BufferWidth, UIHelper.ScaleX(128)) + UIHelper.ScaleX(44),
-				video.BufferHeight + UIHelper.ScaleY(52));
+			MessageEditor.SetMaxXy(video.BufferWidth - 12, video.BufferHeight - 12);
+			MessageEditor.Size = new Size(video.BufferWidth + 2, video.BufferHeight + 2);
 		}
 
 		private void SetColorBox()
@@ -96,30 +89,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetFromOption(MessagePosition position)
 		{
-			_programmaticallyChangingValues = true;
-			XNumeric.Value = position.X;
-			YNumeric.Value = position.Y;
-			_px = position.X;
-			_py = position.Y;
-
-			switch (position.Anchor)
-			{
-				default:
-				case MessagePosition.AnchorType.TopLeft:
-					TL.Checked = true;
-					break;
-				case MessagePosition.AnchorType.TopRight:
-					TR.Checked = true;
-					break;
-				case MessagePosition.AnchorType.BottomLeft:
-					BL.Checked = true;
-					break;
-				case MessagePosition.AnchorType.BottomRight:
-					BR.Checked = true;
-					break;
-			}
-
-			_programmaticallyChangingValues = false;
+			// TODO: bine
 		}
 
 		private void SetPositionInfo()
@@ -157,9 +127,7 @@ namespace BizHawk.Client.EmuHawk
 				SetFromOption(_autohold);
 			}
 
-			PositionPanel.Refresh();
-			XNumeric.Refresh();
-			YNumeric.Refresh();
+			// TODO: refresh
 			SetPositionLabels();
 		}
 
@@ -192,106 +160,6 @@ namespace BizHawk.Client.EmuHawk
 		private void MessageTypeRadio_CheckedChanged(object sender, EventArgs e)
 		{
 			SetPositionInfo();
-		}
-
-		private void PositionPanel_MouseEnter(object sender, EventArgs e)
-		{
-			Cursor = Cursors.Hand;
-		}
-
-		private void PositionPanel_MouseLeave(object sender, EventArgs e)
-		{
-			Cursor = Cursors.Default;
-		}
-
-		private void PositionPanel_Paint(object sender, PaintEventArgs e)
-		{
-			int x = 0;
-			int y = 0;
-
-			if (TL.Checked)
-			{
-				x = _px;
-				y = _py;
-			}
-			else if (TR.Checked)
-			{
-				x = (int)XNumeric.Maximum - _px;
-				y = _py;
-			}
-			else if (BL.Checked)
-			{
-				x = _px;
-				y = (int)YNumeric.Maximum - _py;
-			}
-			else if (BR.Checked)
-			{
-				x = (int)XNumeric.Maximum - _px;
-				y = (int)YNumeric.Maximum - _py;
-			}
-
-			using var p = new Pen(Color.Black);
-			e.Graphics.DrawLine(p, new Point(x, y), new Point(x + 8, y + 8));
-			e.Graphics.DrawLine(p, new Point(x + 8, y), new Point(x, y + 8));
-			e.Graphics.DrawRectangle(p, new Rectangle(x, y, 8, 8));
-		}
-
-		private void PositionPanel_MouseDown(object sender, MouseEventArgs e)
-		{
-			Cursor = Cursors.Arrow;
-			_mousedown = true;
-			SetNewPosition(e.X, e.Y);
-		}
-
-		private void PositionPanel_MouseUp(object sender, MouseEventArgs e)
-		{
-			Cursor = Cursors.Hand;
-			_mousedown = false;
-		}
-
-		private void SetNewPosition(int mx, int my)
-		{
-			_programmaticallyChangingValues = true;
-			if (mx < 0) mx = 0;
-			if (my < 0) my = 0;
-			if (mx > XNumeric.Maximum) mx = (int)XNumeric.Maximum;
-			if (my > YNumeric.Maximum) my = (int)YNumeric.Maximum;
-
-			if (TL.Checked)
-			{
-				// Do nothing
-			}
-			else if (TR.Checked)
-			{
-				mx = (int)XNumeric.Maximum - mx;
-			}
-			else if (BL.Checked)
-			{
-				my = (int)YNumeric.Maximum - my;
-			}
-			else if (BR.Checked)
-			{
-				mx = (int)XNumeric.Maximum - mx;
-				my = (int)YNumeric.Maximum - my;
-			}
-
-			XNumeric.Value = mx;
-			YNumeric.Value = my;
-			_px = mx;
-			_py = my;
-
-			PositionPanel.Refresh();
-			SetPositionLabels();
-
-			_programmaticallyChangingValues = false;
-		}
-
-		private void PositionPanel_MouseMove(object sender, MouseEventArgs e)
-		{
-			if (_mousedown)
-			{
-				SetNewPosition(e.X, e.Y);
-			}
 		}
 
 		private void SetOptionPosition(MessagePosition position)
@@ -376,102 +244,6 @@ namespace BizHawk.Client.EmuHawk
 			SetPositionInfo();
 
 			StackMessagesCheckbox.Checked = _config.StackOSDMessages = true;
-		}
-
-		private void SetAnchorValue(MessagePosition.AnchorType value)
-		{
-			if (FPSRadio.Checked)
-			{
-				_fps.Anchor = value;
-			}
-			else if (FrameCounterRadio.Checked)
-			{
-				_frameCounter.Anchor = value;
-			}
-			else if (LagCounterRadio.Checked)
-			{
-				_lagCounter.Anchor = value;
-			}
-			else if (InputDisplayRadio.Checked)
-			{
-				_inputDisplay.Anchor = value;
-			}
-			else if (WatchesRadio.Checked)
-			{
-				_ramWatches.Anchor = value;
-			}
-			else if (MessagesRadio.Checked)
-			{
-				_messages.Anchor = value;
-			}
-			else if (RerecordsRadio.Checked)
-			{
-				_reRecordCounter.Anchor = value;
-			}
-			else if (AutoholdRadio.Checked)
-			{
-				_autohold.Anchor = value;
-			}
-		}
-
-		private void TL_CheckedChanged(object sender, EventArgs e)
-		{
-			if (TL.Checked)
-			{
-				SetAnchorValue(MessagePosition.AnchorType.TopLeft);
-			}
-
-			PositionPanel.Refresh();
-		}
-
-		private void TR_CheckedChanged(object sender, EventArgs e)
-		{
-			if (TR.Checked)
-			{
-				SetAnchorValue(MessagePosition.AnchorType.TopRight);
-			}
-
-			PositionPanel.Refresh();
-		}
-
-		private void BL_CheckedChanged(object sender, EventArgs e)
-		{
-			if (BL.Checked)
-			{
-				SetAnchorValue(MessagePosition.AnchorType.BottomLeft);
-			}
-
-			PositionPanel.Refresh();
-		}
-
-		private void BR_CheckedChanged(object sender, EventArgs e)
-		{
-			if (BR.Checked)
-			{
-				SetAnchorValue(MessagePosition.AnchorType.BottomRight);
-			}
-
-			PositionPanel.Refresh();
-		}
-
-		private void XNumeric_Changed(object sender, EventArgs e)
-		{
-			if (!_programmaticallyChangingValues)
-			{
-				_px = (int)XNumeric.Value;
-				SetPositionLabels();
-				PositionPanel.Refresh();	
-			}
-		}
-
-		private void YNumeric_Changed(object sender, EventArgs e)
-		{
-			if (!_programmaticallyChangingValues)
-			{
-				_py = (int)YNumeric.Value;
-				SetPositionLabels();
-				PositionPanel.Refresh();
-			}
 		}
 
 		private void ColorPanel_Click(object sender, EventArgs e)

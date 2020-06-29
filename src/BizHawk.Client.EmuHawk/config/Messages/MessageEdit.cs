@@ -1,8 +1,6 @@
 ﻿using BizHawk.Client.Common;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 using System.Windows.Forms;
 
 namespace BizHawk.Client.EmuHawk
@@ -10,7 +8,7 @@ namespace BizHawk.Client.EmuHawk
 	// this is a little messy right now because of remnants of the old config system
 	public partial class MessageEdit : UserControl
 	{
-		private MessagePosition _messagePosition;
+		private MessagePosition _messagePosition = new MessagePosition();
 		private bool _programmaticallyChangingValues;
 		private bool _mousedown;
 
@@ -19,9 +17,38 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 		}
 
-		public void Bind(MessagePosition messagePosition)
+		public void Bind(MessagePosition position)
 		{
-			_messagePosition = messagePosition;
+			_messagePosition = position;
+
+			_programmaticallyChangingValues = true;
+			XNumeric.Value = position.X;
+			YNumeric.Value = position.Y;
+
+			switch (position.Anchor)
+			{
+				default:
+				case MessagePosition.AnchorType.TopLeft:
+					TL.Checked = true;
+					break;
+				case MessagePosition.AnchorType.TopRight:
+					TR.Checked = true;
+					break;
+				case MessagePosition.AnchorType.BottomLeft:
+					BL.Checked = true;
+					break;
+				case MessagePosition.AnchorType.BottomRight:
+					BR.Checked = true;
+					break;
+			}
+
+			_programmaticallyChangingValues = false;
+		}
+
+		public void SetMaxXy(int x, int y)
+		{
+			XNumeric.Maximum = x;
+			YNumeric.Maximum = y;
 		}
 
 		private void TL_CheckedChanged(object sender, EventArgs e)
