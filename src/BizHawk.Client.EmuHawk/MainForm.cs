@@ -3823,6 +3823,7 @@ namespace BizHawk.Client.EmuHawk
 
 			CommitCoreSettingsToConfig();
 			Rewinder?.Dispose();
+			Rewinder = null;
 
 			if (MovieSession.Movie.IsActive()) // Note: this must be called after CommitCoreSettingsToConfig()
 			{
@@ -4392,7 +4393,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (isRewinding)
 				{
-					runFrame = Rewinder.Rewind(1) && Emulator.Frame > 1;
+					runFrame = Rewinder.Rewind() && Emulator.Frame > 1;
 
 					if (runFrame && MovieSession.Movie.IsRecording())
 					{

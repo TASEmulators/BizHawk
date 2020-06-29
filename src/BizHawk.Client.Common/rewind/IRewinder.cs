@@ -12,7 +12,10 @@ namespace BizHawk.Client.Common
 		bool Active { get; }
 
 		void Capture(int frame);
-		bool Rewind(int frames);
+		/// <summary>
+		/// Rewind 1 saved frame, if possible
+		/// </summary>
+		bool Rewind();
 
 		void Suspend();
 		void Resume();
