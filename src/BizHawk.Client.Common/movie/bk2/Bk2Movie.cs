@@ -129,7 +129,6 @@ namespace BizHawk.Client.Common
 
 		public virtual void Truncate(int frame)
 		{
-			// This is a bad way to do multitrack logic, pass the info in instead of going to the global
 			if (frame < Log.Count)
 			{
 				Log.RemoveRange(frame, Log.Count - frame);
