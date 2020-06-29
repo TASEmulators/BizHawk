@@ -8,6 +8,9 @@ rust = "nightly"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[profile.release]
+lto = true
+
 [dependencies]
 bitflags = "1.2.1"
 page_size = "0.4.2"
