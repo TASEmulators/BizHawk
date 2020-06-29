@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -250,7 +251,7 @@ namespace BizHawk.Client.Common
 			_nextStateIndex = reader.ReadInt32();
 		}
 
-		private class SaveStateStream : Stream
+		private class SaveStateStream : Stream, ISpanStream
 		{
 			/// <summary>
 			/// 
@@ -294,6 +295,7 @@ namespace BizHawk.Client.Common
 			public override int Read(byte[] buffer, int offset, int count) => throw new IOException();
 			public override long Seek(long offset, SeekOrigin origin) => throw new IOException();
 			public override void SetLength(long value) => throw new IOException();
+			public int Read(Span<byte> buffer) => throw new IOException();
 
 			public override void Write(byte[] buffer, int offset, int count)
 			{
@@ -322,6 +324,40 @@ namespace BizHawk.Client.Common
 				}
 			}
 
+			public void Write(ReadOnlySpan<byte> buffer)
+			{
+				long requestedSize = _position + buffer.Length;
+				while (requestedSize > _notifySize)
+					_notifySize = _notifySizeReached();
+				long n = buffer.Length;
+				if (n > 0)
+				{
+					var start = (_position + _offset) & _mask;
+					var end = (start + n) & _mask;
+					if (end < start)
+					{
+						long m = _buffer.LongLength - start;
+
+						// Array.Copy(buffer, offset, _buffer, start, m);
+						buffer.Slice(0, (int)m).CopyTo(new Span<byte>(_buffer, (int)start, (int)m));
+
+						// offset += (int)m;
+						buffer = buffer.Slice((int)m);
+
+						n -= m;
+						_position += m;
+						start = 0;
+					}
+					if (n > 0)
+					{
+						// Array.Copy(buffer, offset, _buffer, start, n);
+						buffer.CopyTo(new Span<byte>(_buffer, (int)start, (int)n));
+
+						_position += n;
+					}
+				}
+			}
+
 			public override void WriteByte(byte value)
 			{
 				long requestedSize = _position + 1;
@@ -331,7 +367,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		private class LoadStateStream : Stream
+		private class LoadStateStream : Stream, ISpanStream
 		{
 			public LoadStateStream(byte[] buffer, long offset, long size, long mask)
 			{
@@ -385,6 +421,38 @@ namespace BizHawk.Client.Common
 				return ret;
 			}
 
+			public unsafe int Read(Span<byte> buffer)
+			{
+				long n = Math.Min(_size - _position, buffer.Length);
+				int ret = (int)n;
+				if (n > 0)
+				{
+					var start = (_position + _offset) & _mask;
+					var end = (start + n) & _mask;
+					if (end < start)
+					{
+						long m = _buffer.LongLength - start;
+
+						// Array.Copy(_buffer, start, buffer, offset, m);
+						new ReadOnlySpan<byte>(_buffer, (int)start, (int)m).CopyTo(buffer);
+
+						// offset += (int)m;
+						buffer = buffer.Slice((int)m);
+	
+						n -= m;
+						_position += m;
+						start = 0;
+					}
+					if (n > 0)
+					{
+						// Array.Copy(_buffer, start, buffer, offset, n);
+						new ReadOnlySpan<byte>(_buffer, (int)start, (int)n).CopyTo(buffer);
+						_position += n;
+					}
+				}
+				return ret;
+			}
+
 			public override int ReadByte()
 			{
 				return _position < _size
@@ -395,6 +463,8 @@ namespace BizHawk.Client.Common
 			public override long Seek(long offset, SeekOrigin origin) => throw new IOException();
 			public override void SetLength(long value) => throw new IOException();
 			public override void Write(byte[] buffer, int offset, int count) => throw new IOException();
+
+			public void Write(ReadOnlySpan<byte> buffer) => throw new IOException();
 		}
 	}
 }
