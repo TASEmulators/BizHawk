@@ -1371,7 +1371,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BatchRunnerMenuItem_Click(object sender, EventArgs e)
 		{
-			using var form = new BatchRun(this);
+			using var form = new BatchRun(CreateCoreComm);
 			form.ShowDialog();
 		}
 
