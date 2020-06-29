@@ -50,7 +50,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		public delegate IntPtr StreamCallback(IntPtr userdata, IntPtr /*byte**/ data, UIntPtr size);
 		public delegate UIntPtr /*MissingFileResult*/ FileCallback(IntPtr userdata, UIntPtr /*string*/ name);
 		[StructLayout(LayoutKind.Sequential)]
-		public class CWriter : IDisposable
+		public unsafe class CWriter : IDisposable
 		{
 			/// will be passed to callback
 			public IntPtr userdata;
@@ -59,6 +59,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			public StreamCallback callback;
 			public static CWriter FromStream(Stream stream)
 			{
+				var ss = SpanStream.GetOrBuild(stream);
 				return new CWriter
 				{
 					// TODO: spans
@@ -67,9 +68,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 						try
 						{
 							var count = (int)size;
-							var buff = new byte[count];
-							Marshal.Copy(data, buff, 0, count);
-							stream.Write(buff, 0, count);
+							ss.Write(new ReadOnlySpan<byte>((void*)data, count));
 							return Z.SS(count);
 						}
 						catch
@@ -87,7 +86,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			}
 		}
 		[StructLayout(LayoutKind.Sequential)]
-		public class CReader : IDisposable
+		public unsafe class CReader : IDisposable
 		{
 			/// will be passed to callback
 			public IntPtr userdata;
@@ -97,6 +96,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			public StreamCallback callback;
 			public static CReader FromStream(Stream stream)
 			{
+				var ss = SpanStream.GetOrBuild(stream);
 				return new CReader
 				{
 					// TODO: spans
@@ -105,9 +105,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 						try
 						{
 							var count = (int)size;
-							var buff = new byte[count];
-							var n = stream.Read(buff, 0, count);
-							Marshal.Copy(buff, 0, data, count);
+							var n = ss.Read(new Span<byte>((void*)data, count));
 							return Z.SS(n);
 						}
 						catch
