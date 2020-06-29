@@ -87,44 +87,44 @@ namespace BizHawk.Client.EmuHawk
 			MovieInputText.Text = $"{_movieInput:X8}";
 		}
 
-		private void SetFromOption(MessagePosition position)
+		private void SetFromOption(MessagePosition position, Label label)
 		{
-			// TODO: bine
+			MessageEditor.Bind(position, () => { label.Text = ToCoordinateStr(position); });
 		}
 
 		private void SetPositionInfo()
 		{
 			if (FPSRadio.Checked)
 			{
-				SetFromOption(_fps);
+				SetFromOption(_fps, FpsPosLabel);
 			}
 			else if (FrameCounterRadio.Checked)
 			{
-				SetFromOption(_frameCounter);
+				SetFromOption(_frameCounter, FCLabel);
 			}
 			else if (LagCounterRadio.Checked)
 			{
-				SetFromOption(_lagCounter);
+				SetFromOption(_lagCounter, LagLabel);
 			}
 			else if (InputDisplayRadio.Checked)
 			{
-				SetFromOption(_inputDisplay);
+				SetFromOption(_inputDisplay, InpLabel);
 			}
 			else if (WatchesRadio.Checked)
 			{
-				SetFromOption(_ramWatches);
+				SetFromOption(_ramWatches, WatchesLabel);
 			}
 			else if (MessagesRadio.Checked)
 			{
-				SetFromOption(_messages);
+				SetFromOption(_messages, WatchesLabel);
 			}
 			else if (RerecordsRadio.Checked)
 			{
-				SetFromOption(_reRecordCounter);
+				SetFromOption(_reRecordCounter, RerecLabel);
 			}
 			else if (AutoholdRadio.Checked)
 			{
-				SetFromOption(_autohold);
+				SetFromOption(_autohold, AutoholdLabel);
 			}
 
 			// TODO: refresh

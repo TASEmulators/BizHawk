@@ -9,6 +9,7 @@ namespace BizHawk.Client.EmuHawk
 	public partial class MessageEdit : UserControl
 	{
 		private MessagePosition _messagePosition = new MessagePosition();
+		private Action _changeCallback;
 		private bool _programmaticallyChangingValues;
 		private bool _mousedown;
 
@@ -17,9 +18,10 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 		}
 
-		public void Bind(MessagePosition position)
+		public void Bind(MessagePosition position, Action changeCallback)
 		{
 			_messagePosition = position;
+			_changeCallback = changeCallback;
 
 			_programmaticallyChangingValues = true;
 			XNumeric.Value = position.X;
@@ -43,6 +45,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			_programmaticallyChangingValues = false;
+			PositionGroupBox.Refresh();
 		}
 
 		public void SetMaxXy(int x, int y)
@@ -174,6 +177,7 @@ namespace BizHawk.Client.EmuHawk
 		private void SetAnchor(MessagePosition.AnchorType value)
 		{
 			_messagePosition.Anchor = value;
+			_changeCallback?.Invoke();
 		}
 
 		private void SetPosition(int mx, int my)
@@ -207,8 +211,8 @@ namespace BizHawk.Client.EmuHawk
 			_messagePosition.X = mx;
 			_messagePosition.Y = my;
 
+			_changeCallback?.Invoke();
 			PositionPanel.Refresh();
-
 			_programmaticallyChangingValues = false;
 		}
 	}
