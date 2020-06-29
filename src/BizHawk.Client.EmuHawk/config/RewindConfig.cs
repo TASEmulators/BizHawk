@@ -8,16 +8,21 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class RewindConfig : Form
 	{
-		private readonly MainForm _mainForm;
-		private readonly Config _config;
-		private readonly IStatable _statableCore;
-
 		private double _avgStateSize;
 
-		public RewindConfig(MainForm mainForm, Config config, IStatable statableCore)
+		private readonly Config _config;
+
+		private readonly Action _recreateRewinder;
+
+		private readonly Func<IRewinder> _getRewinder;
+
+		private readonly IStatable _statableCore;
+
+		public RewindConfig(Config config, Action recreateRewinder, Func<IRewinder> getRewinder, IStatable statableCore)
 		{
-			_mainForm = mainForm;
 			_config = config;
+			_recreateRewinder = recreateRewinder;
+			_getRewinder = getRewinder;
 			_statableCore = statableCore;
 			InitializeComponent();
 			btnResetCompression.Image = Properties.Resources.reboot;
@@ -25,11 +30,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RewindConfig_Load(object sender, EventArgs e)
 		{
-			if (_mainForm.Rewinder?.Active == true)
+			//TODO can this be moved to the ctor post-InitializeComponent?
+			var rewinder = _getRewinder();
+			if (rewinder?.Active == true)
 			{
-				FullnessLabel.Text = $"{_mainForm.Rewinder.FullnessRatio * 100:0.00}%";
-				RewindFramesUsedLabel.Text = _mainForm.Rewinder.Count.ToString();
-				_avgStateSize = _mainForm.Rewinder.Size * _mainForm.Rewinder.FullnessRatio / _mainForm.Rewinder.Count;
+				FullnessLabel.Text = $"{rewinder.FullnessRatio * 100:0.00}%";
+				RewindFramesUsedLabel.Text = rewinder.Count.ToString();
+				_avgStateSize = rewinder.Size * rewinder.FullnessRatio / rewinder.Count;
 			}
 			else
 			{
@@ -117,7 +124,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (TriggerRewindSettingsReload)
 			{
-				_mainForm.CreateRewinder();
+				_recreateRewinder();
 			}
 
 			DialogResult = DialogResult.OK;
