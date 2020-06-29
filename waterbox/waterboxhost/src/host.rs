@@ -5,6 +5,7 @@ use std::{os::raw::c_char, ffi::CStr};
 use fs::{FileDescriptor, FileSystem/*, MissingFileCallback*/};
 use elf::ElfLoader;
 use cinterface::MemoryLayoutTemplate;
+use goblin::elf::Elf;
 
 pub struct WaterboxHost {
 	fs: FileSystem,
@@ -16,11 +17,13 @@ pub struct WaterboxHost {
 	sealed: bool,
 }
 impl WaterboxHost {
-	pub fn new(wbx: &[u8], module_name: &str, layout_template: &MemoryLayoutTemplate) -> anyhow::Result<Box<WaterboxHost>> {
-		let layout = layout_template.make_layout()?;
+	pub fn new(data: &[u8], module_name: &str, layout_template: &MemoryLayoutTemplate) -> anyhow::Result<Box<WaterboxHost>> {
+		let wbx = Elf::parse(data)?;
+		let elf_addr = ElfLoader::elf_addr(&wbx);
+		let layout = layout_template.make_layout(elf_addr)?;
 		let mut memory_block = MemoryBlock::new(layout.all());
 		let mut b = memory_block.enter();
-		let elf = ElfLoader::new(wbx, module_name, &layout, &mut b)?;
+		let elf = ElfLoader::new(&wbx, data, module_name, &layout, &mut b)?;
 		let fs = FileSystem::new();
 		drop(b);
 		let mut res = Box::new(WaterboxHost {

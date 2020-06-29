@@ -1,5 +1,5 @@
 use goblin;
-use goblin::elf64::{sym::*, section_header::*};
+use goblin::{elf::Elf, elf64::{sym::*, section_header::*}};
 use crate::*;
 use crate::memory_block::ActivatedMemoryBlock;
 use crate::memory_block::Protection;
@@ -30,13 +30,7 @@ pub struct ElfLoader {
 	import_area: AddressRange,
 }
 impl ElfLoader {
-	pub fn new(data: &[u8],
-		module_name: &str,
-		layout: &WbxSysLayout,
-		b: &mut ActivatedMemoryBlock
-	) -> anyhow::Result<ElfLoader> {
-		let wbx = goblin::elf::Elf::parse(data)?;
-
+	pub fn elf_addr(wbx: &Elf) -> AddressRange {
 		let start = wbx.program_headers.iter()
 			.filter(|x| x.p_vaddr != 0)
 			.map(|x| x.vm_range().start)
@@ -47,11 +41,14 @@ impl ElfLoader {
 			.map(|x| x.vm_range().end)
 			.max()
 			.unwrap();
-		if start < layout.elf.start || end > layout.elf.end() {
-			return Err(anyhow!("{} from {}..{} did not fit in the provided region", module_name, start, end))
-		}
-
-		println!("Mouting `{}` @{:x}", module_name, start);
+		return AddressRange { start, size: end - start };
+	}
+	pub fn new(wbx: &Elf, data: &[u8],
+		module_name: &str,
+		layout: &WbxSysLayout,
+		b: &mut ActivatedMemoryBlock
+	) -> anyhow::Result<ElfLoader> {
+		println!("Mouting `{}` @{:x}", module_name, layout.elf.start);
 		println!("  Sections:");
 
 		let mut sections = Vec::new();	

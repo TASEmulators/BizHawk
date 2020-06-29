@@ -7,11 +7,6 @@ use std::{os::raw::c_char, ffi::{/*CString, */CStr}, io::BufWriter};
 /// well enough.  All values should be PAGESIZE aligned.
 #[repr(C)]
 pub struct MemoryLayoutTemplate {
-	/// Absolute pointer to the start of the mapped space
-	pub start: usize,
-	/// Memory space for the elf executable.  The elf must be non-relocatable and
-	/// all loaded segments must fit within [start..start + elf_size]
-	pub elf_size: usize,
 	/// Memory space to serve brk(2)
 	pub sbrk_size: usize,
 	/// Memory space to serve alloc_sealed(3)
@@ -27,19 +22,14 @@ pub struct MemoryLayoutTemplate {
 }
 impl MemoryLayoutTemplate {
 	/// checks a memory layout for validity
-	pub fn make_layout(&self) -> anyhow::Result<WbxSysLayout> {
-		let start = align_down(self.start);
-		let elf_size = align_up(self.elf_size);
+	pub fn make_layout(&self, elf_addr: AddressRange) -> anyhow::Result<WbxSysLayout> {
 		let sbrk_size = align_up(self.sbrk_size);
 		let sealed_size = align_up(self.sealed_size);
 		let invis_size = align_up(self.invis_size);
 		let plain_size = align_up(self.plain_size);
 		let mmap_size = align_up(self.mmap_size);
 		let mut res = unsafe { std::mem::zeroed::<WbxSysLayout>() };
-		res.elf = AddressRange {
-			start,
-			size: elf_size
-		};
+		res.elf = elf_addr.align_expand();
 		res.sbrk = AddressRange {
 			start: res.elf.end(),
 			size: sbrk_size
@@ -60,7 +50,7 @@ impl MemoryLayoutTemplate {
 			start: res.invis.end(),
 			size: mmap_size
 		};
-		if start >> 32 != (res.mmap.end() - 1) >> 32 {
+		if res.elf.start >> 32 != (res.mmap.end() - 1) >> 32 {
 			Err(anyhow!("HostMemoryLayout must fit into a single 4GiB region!"))
 		} else {
 			Ok(res)

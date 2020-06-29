@@ -55,11 +55,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		public uint MmapHeapSizeKB { get; set; }
 
 		/// <summary>
-		/// start address in memory
-		/// </summary>
-		public ulong StartAddress { get; set; } = WaterboxHost.CanonicalStart;
-
-		/// <summary>
 		/// Skips the check that the wbx file and other associated dlls match from state save to state load.
 		/// DO NOT SET THIS TO TRUE.  A different executable most likely means different meanings for memory locations,
 		/// and nothing will make sense.
@@ -75,12 +70,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 	public unsafe class WaterboxHost : IMonitor, IImportResolver, IBinaryStateable, IDisposable
 	{
-
-		/// <summary>
-		/// usual starting point for the executable
-		/// </summary>
-		public const ulong CanonicalStart = 0x0000036f00000000;
-
 		private IntPtr _nativeHost;
 		private IntPtr _activatedNativeHost;
 		private int _enterCount;
@@ -97,8 +86,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		{
 			var nativeOpts = new MemoryLayoutTemplate
 			{
-				start = Z.UU(opt.StartAddress),
-				elf_size = Z.UU(64 * 1024 * 1024),
 				sbrk_size = Z.UU(opt.SbrkHeapSizeKB * 1024),
 				sealed_size = Z.UU(opt.SealedHeapSizeKB * 1024),
 				invis_size = Z.UU(opt.InvisibleHeapSizeKB * 1024),

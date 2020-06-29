@@ -29,11 +29,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		[StructLayout(LayoutKind.Sequential)]
 		public class MemoryLayoutTemplate
 		{
-			/// Absolute pointer to the start of the mapped space
-			public UIntPtr start;
-			/// Memory space for the elf executable.  The elf must be non-relocatable and
-			/// all loaded segments must fit within [start..start + elf_size]
-			public UIntPtr elf_size;
 			/// Memory space to serve brk(2)
 			public UIntPtr sbrk_size;
 			/// Memory space to serve alloc_sealed(3)
