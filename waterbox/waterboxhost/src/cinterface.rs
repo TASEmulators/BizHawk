@@ -1,6 +1,6 @@
 use crate::*;
 use host::{ActivatedWaterboxHost, WaterboxHost};
-use std::{os::raw::c_char, ffi::{/*CString, */CStr}};
+use std::{os::raw::c_char, ffi::{/*CString, */CStr}, io::BufWriter};
 
 /// The memory template for a WaterboxHost.  Don't worry about
 /// making every size as small as possible, since the savestater handles sparse regions
@@ -298,7 +298,15 @@ pub extern fn wbx_unmount_file(obj: &mut ActivatedWaterboxHost, name: *const c_c
 /// Must always be called with the same sequence and contents of readonly files.
 #[no_mangle]
 pub extern fn wbx_save_state(obj: &mut ActivatedWaterboxHost, writer: &mut CWriter, ret: &mut Return<()>) {
-	ret.put(obj.save_state(writer));
+	// TODO: Is this bufwriter worth it because of the native<->managed transitions, or worth it only because
+	// the managed side doesn't have Span support and so makes an extra copy?
+	let mut buffered = BufWriter::new(writer);
+	let res: anyhow::Result<()> = (|| {
+		obj.save_state(&mut buffered)?;
+		buffered.flush()?;
+		Ok(())
+	})();
+	ret.put(res);
 }
 /// Load state.  Must not be called before seal.  Must not be called with any writable files mounted.
 /// Must always be called with the same sequence and contents of readonly files that were in the save state.

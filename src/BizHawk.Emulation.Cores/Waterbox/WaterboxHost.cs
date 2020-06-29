@@ -122,7 +122,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			}
 
 			var retobj = new ReturnData();
-			NativeImpl.wbx_create_host(nativeOpts, opt.Filename, CReader.FromStream(new MemoryStream(data, false)), retobj);
+			using var r = CReader.FromStream(new MemoryStream(data, false));
+			NativeImpl.wbx_create_host(nativeOpts, opt.Filename, r, retobj);
 			_nativeHost = retobj.GetDataOrThrow();
 		}
 
@@ -170,7 +171,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			using (this.EnterExit())
 			{
 				var retobj = new ReturnData();
-				NativeImpl.wbx_mount_file(_activatedNativeHost, name, CReader.FromStream(new MemoryStream(data, false)), false, retobj);
+				using var r = CReader.FromStream(new MemoryStream(data, false));
+				NativeImpl.wbx_mount_file(_activatedNativeHost, name, r, false, retobj);
 				retobj.GetDataOrThrow();
 			}
 		}
@@ -198,7 +200,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			using (this.EnterExit())
 			{
 				var retobj = new ReturnData();
-				NativeImpl.wbx_mount_file(_activatedNativeHost, name, CReader.FromStream(new MemoryStream(data, false)), true, retobj);
+				using var r = CReader.FromStream(new MemoryStream(data, false));
+				NativeImpl.wbx_mount_file(_activatedNativeHost, name, r, true, retobj);
 				retobj.GetDataOrThrow();
 			}
 		}
@@ -213,7 +216,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			{
 				var retobj = new ReturnData();
 				var ms = new MemoryStream();
-				NativeImpl.wbx_unmount_file(_activatedNativeHost, name, CWriter.FromStream(ms), retobj);
+				using var w = CWriter.FromStream(ms);
+				NativeImpl.wbx_unmount_file(_activatedNativeHost, name, w, retobj);
 				retobj.GetDataOrThrow();
 				return ms.ToArray();
 			}
@@ -263,7 +267,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			using (this.EnterExit())
 			{
 				var retobj = new ReturnData();
-				NativeImpl.wbx_save_state(_activatedNativeHost, CWriter.FromStream(bw.BaseStream), retobj);
+				using var w = CWriter.FromStream(bw.BaseStream);
+				NativeImpl.wbx_save_state(_activatedNativeHost, w, retobj);
 				retobj.GetDataOrThrow();
 			}
 		}
@@ -273,7 +278,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			using (this.EnterExit())
 			{
 				var retobj = new ReturnData();
-				NativeImpl.wbx_load_state(_activatedNativeHost, CReader.FromStream(br.BaseStream), retobj);
+				using var r = CReader.FromStream(br.BaseStream);
+				NativeImpl.wbx_load_state(_activatedNativeHost, r, retobj);
 				retobj.GetDataOrThrow();
 			}
 		}

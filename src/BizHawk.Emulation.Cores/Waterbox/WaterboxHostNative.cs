@@ -50,7 +50,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		public delegate IntPtr StreamCallback(IntPtr userdata, IntPtr /*byte**/ data, UIntPtr size);
 		public delegate UIntPtr /*MissingFileResult*/ FileCallback(IntPtr userdata, UIntPtr /*string*/ name);
 		[StructLayout(LayoutKind.Sequential)]
-		public class CWriter
+		public class CWriter : IDisposable
 		{
 			/// will be passed to callback
 			public IntPtr userdata;
@@ -79,12 +79,18 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					}
 				};
 			}
+			public void Dispose()
+			{
+				// Dummy disposable impl for release mode GC interop shens, or something
+				if (userdata != IntPtr.Zero)
+					throw new Exception();
+			}
 		}
 		[StructLayout(LayoutKind.Sequential)]
-		public class CReader
+		public class CReader : IDisposable
 		{
 			/// will be passed to callback
-			public UIntPtr userdata;
+			public IntPtr userdata;
 			/// Read bytes into the buffer.  Return number of bytes read on success, or < 0 on failure.
 			/// permitted to read less than the provided buffer size, but must always read at least 1
 			/// byte if EOF is not reached.  If EOF is reached, should return 0.
@@ -111,6 +117,12 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					}
 				};
 			}
+			public void Dispose()
+			{
+				// Dummy disposable impl for release mode GC interop shens, or something
+				if (userdata != IntPtr.Zero)
+					throw new Exception();
+			}
 		}
 		// [StructLayout(LayoutKind.Sequential)]
 		// public class MissingFileCallback
@@ -125,7 +137,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		// }
 
 		[BizImport(CallingConvention.Cdecl, Compatibility = true)]
-		public abstract void wbx_create_host([In]MemoryLayoutTemplate layout, string moduleName, CReader wbx, [Out]ReturnData /*WaterboxHost*/ ret);
+		public abstract void wbx_create_host([In]MemoryLayoutTemplate layout, string moduleName, [In]CReader wbx, [Out]ReturnData /*WaterboxHost*/ ret);
 		/// Tear down a host environment.  May not be called while the environment is active.
 		[BizImport(CallingConvention.Cdecl, Compatibility = true)]
 		public abstract void wbx_destroy_host(IntPtr /*WaterboxHost*/ obj, [Out]ReturnData /*void*/ ret);

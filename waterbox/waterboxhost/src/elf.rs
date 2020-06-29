@@ -177,18 +177,21 @@ impl ElfLoader {
 			import_area
 		})
 	}
-	pub fn seal(&self, b: &mut ActivatedMemoryBlock) {
+	pub fn pre_seal(&mut self, b: &mut ActivatedMemoryBlock) {
+		self.run_proc(b, "co_clean");
+		self.run_proc(b, "ecl_seal");
 		for section in self.sections.iter() {
 			if section_name_is_readonly(section.name.as_str()) {
 				b.mprotect(section.addr, Protection::R).unwrap();
 			}
 		}
+		self.clear_syscalls(b);
 	}
 	pub fn connect_syscalls(&mut self, _b: &mut ActivatedMemoryBlock, sys: &WbxSysArea) {
 		let addr = self.import_area;
 		unsafe { *(addr.start as *mut WbxSysArea) = *sys; }
 	}
-	pub fn clear_syscalls(&mut self, _b: &mut ActivatedMemoryBlock) {
+	fn clear_syscalls(&mut self, _b: &mut ActivatedMemoryBlock) {
 		let addr = self.import_area;
 		unsafe { addr.zero(); }
 	}
@@ -198,11 +201,11 @@ impl ElfLoader {
 			std::mem::transmute::<usize, extern "win64" fn() -> ()>(self.entry_point)();
 		}
 	}
-	pub fn co_clean(&mut self, _b: &mut ActivatedMemoryBlock) {
-		match self.get_proc_addr("co_clean") {
+	fn run_proc(&mut self, _b: &mut ActivatedMemoryBlock, name: &str) {
+		match self.get_proc_addr(name) {
 			0 => (),
 			ptr => {
-				println!("Calling co_clean()");
+				println!("Calling {}()", name);
 				unsafe {
 					std::mem::transmute::<usize, extern "win64" fn() -> ()>(ptr)();
 				}

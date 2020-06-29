@@ -34,7 +34,6 @@ impl WaterboxHost {
 		});
 
 		let mut active = res.activate();
-		active.h.elf.connect_syscalls(&mut active.b, &mut active.sys);
 		active.h.elf.native_init(&mut active.b);
 		drop(active);
 
@@ -62,6 +61,7 @@ impl WaterboxHost {
 			sys
 		});
 		res.sys.syscall.ud = res.as_mut() as *mut ActivatedWaterboxHost as usize;
+		res.h.elf.connect_syscalls(&mut res.b, &res.sys);
 		res.h.active = true;
 		res
 	}
@@ -95,11 +95,9 @@ impl<'a> ActivatedWaterboxHost<'a> {
 		if self.h.sealed {
 			return Err(anyhow!("Already sealed!"))
 		}
-		self.h.elf.clear_syscalls(&mut self.b);
-		self.h.elf.seal(&mut self.b);
-		self.h.elf.connect_syscalls(&mut self.b, &self.sys);
-		self.h.elf.co_clean(&mut self.b);
+		self.h.elf.pre_seal(&mut self.b);
 		self.b.seal();
+		self.h.elf.connect_syscalls(&mut self.b, &self.sys);
 		self.h.sealed = true;
 		Ok(())
 	}
