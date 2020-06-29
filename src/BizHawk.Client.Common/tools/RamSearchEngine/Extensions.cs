@@ -15,18 +15,18 @@ namespace BizHawk.Client.Common.RamSearchEngine
 
 		public static IEnumerable<IMiniWatch> ToBytes(this IEnumerable<long> addresses, SearchEngineSettings settings)
 			=> settings.IsDetailed()
-				? addresses.ToBytes(settings.Domain)
-				: addresses.ToDetailedBytes(settings.Domain);
+				? addresses.ToDetailedBytes(settings.Domain)
+				: addresses.ToBytes(settings.Domain);
 
 		public static IEnumerable<IMiniWatch> ToWords(this IEnumerable<long> addresses, SearchEngineSettings settings)
 			=> settings.IsDetailed()
-				? addresses.ToWords(settings.Domain, settings.BigEndian)
-				: addresses.ToDetailedWords(settings.Domain, settings.BigEndian);
+				? addresses.ToDetailedWords(settings.Domain, settings.BigEndian)
+				: addresses.ToWords(settings.Domain, settings.BigEndian);
 
 		public static IEnumerable<IMiniWatch> ToDWords(this IEnumerable<long> addresses, SearchEngineSettings settings)
 			=> settings.IsDetailed()
-				? addresses.ToDWords(settings.Domain, settings.BigEndian)
-				: addresses.ToDetailedDWords(settings.Domain, settings.BigEndian);
+				? addresses.ToDetailedDWords(settings.Domain, settings.BigEndian)
+				: addresses.ToDWords(settings.Domain, settings.BigEndian);
 
 		private static IEnumerable<IMiniWatch> ToBytes(this IEnumerable<long> addresses, MemoryDomain domain)
 			=> addresses.Select(a => new MiniByteWatch(domain, a));
