@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
-
 using BizHawk.Client.Common;
-using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -25,9 +23,6 @@ namespace BizHawk.Client.EmuHawk
 		private int _lastInputColor;
 		private int _movieInput;
 		
-		private int _px;
-		private int _py;
-
 		public MessageConfig(Config config)
 		{
 			_config = config;
@@ -51,21 +46,15 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MessageConfig_Load(object sender, EventArgs e)
 		{
-			SetMaxXy();
 			MessageColorDialog.Color = Color.FromArgb(_messageColor);
 			AlertColorDialog.Color = Color.FromArgb(_alertColor);
 			LInputColorDialog.Color = Color.FromArgb(_lastInputColor);
 			MovieInputColorDialog.Color = Color.FromArgb(_movieInput);
+
+			SetPositionLabels();
 			SetColorBox();
 			SetPositionInfo();
 			StackMessagesCheckbox.Checked = _config.StackOSDMessages;
-		}
-
-		private void SetMaxXy()
-		{
-			var video = NullVideo.Instance; // Good enough
-			MessageEditor.SetMaxXy(video.BufferWidth - 12, video.BufferHeight - 12);
-			MessageEditor.Size = new Size(video.BufferWidth + 2, video.BufferHeight + 2);
 		}
 
 		private void SetColorBox()
@@ -126,9 +115,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				SetFromOption(_autohold, AutoholdLabel);
 			}
-
-			// TODO: refresh
-			SetPositionLabels();
 		}
 
 		private void Ok_Click(object sender, EventArgs e)
@@ -162,60 +148,21 @@ namespace BizHawk.Client.EmuHawk
 			SetPositionInfo();
 		}
 
-		private void SetOptionPosition(MessagePosition position)
+		private string ToCoordinateStr(MessagePosition position)
 		{
-			position.X = _px;
-			position.Y = _py;
+			return $"{position.X}, {position.Y}";
 		}
 
 		private void SetPositionLabels()
 		{
-			if (FPSRadio.Checked)
-			{
-				SetOptionPosition(_fps);
-			}
-			else if (FrameCounterRadio.Checked)
-			{
-				SetOptionPosition(_frameCounter);
-			}
-			else if (LagCounterRadio.Checked)
-			{
-				SetOptionPosition(_lagCounter);
-			}
-			else if (InputDisplayRadio.Checked)
-			{
-				SetOptionPosition(_inputDisplay);
-			}
-			else if (WatchesRadio.Checked)
-			{
-				SetOptionPosition(_ramWatches);
-			}
-			else if (RerecordsRadio.Checked)
-			{
-				SetOptionPosition(_reRecordCounter);
-			}
-			else if (MessagesRadio.Checked)
-			{
-				SetOptionPosition(_messages);
-			}
-			else if (AutoholdRadio.Checked)
-			{
-				SetOptionPosition(_autohold);
-			}
-
 			FpsPosLabel.Text = ToCoordinateStr(_fps);
-			FCLabel.Text =  ToCoordinateStr(_frameCounter);
-			LagLabel.Text =  ToCoordinateStr(_lagCounter);
-			InpLabel.Text =  ToCoordinateStr(_inputDisplay);
-			WatchesLabel.Text =  ToCoordinateStr(_ramWatches);
-			RerecLabel.Text =  ToCoordinateStr(_reRecordCounter);
+			FCLabel.Text = ToCoordinateStr(_frameCounter);
+			LagLabel.Text = ToCoordinateStr(_lagCounter);
+			InpLabel.Text = ToCoordinateStr(_inputDisplay);
+			WatchesLabel.Text = ToCoordinateStr(_ramWatches);
+			RerecLabel.Text = ToCoordinateStr(_reRecordCounter);
 			MessLabel.Text = ToCoordinateStr(_messages);
 			AutoholdLabel.Text = ToCoordinateStr(_autohold);
-		}
-
-		private string ToCoordinateStr(MessagePosition position)
-		{
-			return $"{position.X}, {position.Y}";
 		}
 
 		private void ResetDefaultsButton_Click(object sender, EventArgs e)
@@ -239,7 +186,7 @@ namespace BizHawk.Client.EmuHawk
 			LInputColorDialog.Color = Color.FromArgb(_lastInputColor);
 			MovieInputColorDialog.Color = Color.FromArgb(_movieInput);
 
-			SetMaxXy();
+			SetPositionLabels();
 			SetColorBox();
 			SetPositionInfo();
 

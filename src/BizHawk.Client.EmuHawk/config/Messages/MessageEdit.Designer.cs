@@ -59,7 +59,7 @@
             this.PositionGroupBox.Controls.Add(this.PositionPanel);
             this.PositionGroupBox.Location = new System.Drawing.Point(3, 3);
             this.PositionGroupBox.Name = "PositionGroupBox";
-            this.PositionGroupBox.Size = new System.Drawing.Size(307, 301);
+            this.PositionGroupBox.Size = new System.Drawing.Size(299, 245);
             this.PositionGroupBox.TabIndex = 4;
             this.PositionGroupBox.TabStop = false;
             this.PositionGroupBox.Text = "Position";
@@ -68,7 +68,7 @@
             // 
             this.BR.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.BR.AutoSize = true;
-            this.BR.Location = new System.Drawing.Point(289, 255);
+            this.BR.Location = new System.Drawing.Point(281, 199);
             this.BR.Name = "BR";
             this.BR.Size = new System.Drawing.Size(14, 13);
             this.BR.TabIndex = 8;
@@ -80,7 +80,7 @@
             // 
             this.BL.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.BL.AutoSize = true;
-            this.BL.Location = new System.Drawing.Point(6, 255);
+            this.BL.Location = new System.Drawing.Point(6, 199);
             this.BL.Name = "BL";
             this.BL.Size = new System.Drawing.Size(14, 13);
             this.BL.TabIndex = 7;
@@ -92,7 +92,7 @@
             // 
             this.TR.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.TR.AutoSize = true;
-            this.TR.Location = new System.Drawing.Point(288, 18);
+            this.TR.Location = new System.Drawing.Point(280, 18);
             this.TR.Name = "TR";
             this.TR.Size = new System.Drawing.Size(14, 13);
             this.TR.TabIndex = 6;
@@ -114,9 +114,9 @@
             // YNumeric
             // 
             this.YNumeric.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.YNumeric.Location = new System.Drawing.Point(106, 273);
+            this.YNumeric.Location = new System.Drawing.Point(106, 217);
             this.YNumeric.Maximum = new decimal(new int[] {
-            256,
+            180,
             0,
             0,
             0});
@@ -124,7 +124,7 @@
             this.YNumeric.Size = new System.Drawing.Size(44, 20);
             this.YNumeric.TabIndex = 2;
             this.YNumeric.Value = new decimal(new int[] {
-            255,
+            180,
             0,
             0,
             0});
@@ -133,9 +133,9 @@
             // XNumeric
             // 
             this.XNumeric.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.XNumeric.Location = new System.Drawing.Point(43, 273);
+            this.XNumeric.Location = new System.Drawing.Point(43, 217);
             this.XNumeric.Maximum = new decimal(new int[] {
-            256,
+            244,
             0,
             0,
             0});
@@ -143,7 +143,7 @@
             this.XNumeric.Size = new System.Drawing.Size(44, 20);
             this.XNumeric.TabIndex = 1;
             this.XNumeric.Value = new decimal(new int[] {
-            255,
+            244,
             0,
             0,
             0});
@@ -157,7 +157,7 @@
             this.PositionPanel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.PositionPanel.Location = new System.Drawing.Point(22, 18);
             this.PositionPanel.Name = "PositionPanel";
-            this.PositionPanel.Size = new System.Drawing.Size(264, 248);
+            this.PositionPanel.Size = new System.Drawing.Size(256, 192);
             this.PositionPanel.TabIndex = 0;
             this.PositionPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.PositionPanel_Paint);
             this.PositionPanel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.PositionPanel_MouseDown);
@@ -169,14 +169,14 @@
             // label2
             // 
             this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.label2.Location = new System.Drawing.Point(92, 275);
+            this.label2.Location = new System.Drawing.Point(92, 219);
             this.label2.Name = "label2";
             this.label2.Text = "y";
             // 
             // label1
             // 
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.label1.Location = new System.Drawing.Point(27, 276);
+            this.label1.Location = new System.Drawing.Point(27, 220);
             this.label1.Name = "label1";
             this.label1.Text = "x";
             // 
@@ -186,7 +186,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.PositionGroupBox);
             this.Name = "MessageEdit";
-            this.Size = new System.Drawing.Size(318, 312);
+            this.Size = new System.Drawing.Size(310, 256);
             this.PositionGroupBox.ResumeLayout(false);
             this.PositionGroupBox.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.YNumeric)).EndInit();

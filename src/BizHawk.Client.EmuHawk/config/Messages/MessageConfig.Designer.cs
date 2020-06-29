@@ -461,7 +461,7 @@
             // 
             this.MessageEditor.Location = new System.Drawing.Point(195, 12);
             this.MessageEditor.Name = "MessageEditor";
-            this.MessageEditor.Size = new System.Drawing.Size(305, 273);
+            this.MessageEditor.Size = new System.Drawing.Size(310, 256);
             this.MessageEditor.TabIndex = 8;
             // 
             // MessageConfig

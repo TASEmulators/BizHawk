@@ -48,12 +48,6 @@ namespace BizHawk.Client.EmuHawk
 			PositionGroupBox.Refresh();
 		}
 
-		public void SetMaxXy(int x, int y)
-		{
-			XNumeric.Maximum = x;
-			YNumeric.Maximum = y;
-		}
-
 		private void TL_CheckedChanged(object sender, EventArgs e)
 		{
 			if (TL.Checked)
