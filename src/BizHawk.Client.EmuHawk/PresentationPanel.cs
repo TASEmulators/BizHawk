@@ -11,10 +11,10 @@ namespace BizHawk.Client.EmuHawk
 	/// </summary>
 	public class PresentationPanel
 	{
-		private readonly MainForm _mainForm;
+		private readonly IMainFormForTools _mainForm;
 		private readonly Config _config;
 
-		public PresentationPanel(MainForm mainForm, Config config, IGL gl)
+		public PresentationPanel(IMainFormForTools mainForm, Config config, IGL gl)
 		{
 			_mainForm = mainForm;
 			_config = config;

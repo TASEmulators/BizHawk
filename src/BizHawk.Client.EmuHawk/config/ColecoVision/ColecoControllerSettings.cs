@@ -7,11 +7,11 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class ColecoControllerSettings : Form
 	{
-		private readonly MainForm _mainForm;
+		private readonly IMainFormForConfig _mainForm;
 		private readonly ColecoVision.ColecoSyncSettings _syncSettings;
 
 		public ColecoControllerSettings(
-			MainForm mainForm,
+			IMainFormForConfig mainForm,
 			ColecoVision.ColecoSyncSettings settings)
 		{
 			_mainForm = mainForm;

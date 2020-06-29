@@ -25,7 +25,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly InputManager _inputManager;
 
-		private readonly MainForm _mainForm;
+		private readonly IMainFormForApi _mainForm;
 
 		private readonly Action<string> _logCallback;
 
@@ -85,7 +85,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public event StateSavedEventHandler StateSaved;
 
-		public EmuClientApi(Action<string> logCallback, DisplayManager displayManager, InputManager inputManager, MainForm mainForm, Config config, IEmulator emulator, GameInfo game)
+		public EmuClientApi(Action<string> logCallback, DisplayManager displayManager, InputManager inputManager, IMainFormForApi mainForm, Config config, IEmulator emulator, GameInfo game)
 		{
 			_config = config;
 			_displayManager = displayManager;

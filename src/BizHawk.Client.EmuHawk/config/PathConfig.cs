@@ -12,7 +12,7 @@ namespace BizHawk.Client.EmuHawk
 	public partial class PathConfig : Form
 	{
 		private readonly Config _config;
-		private readonly MainForm _mainForm;
+		private readonly IMainFormForConfig _mainForm;
 		private readonly string _currentSystemId;
 
 		// All path text boxes should do some kind of error checking
@@ -42,7 +42,7 @@ namespace BizHawk.Client.EmuHawk
 			"..\\"
 		};
 
-		public PathConfig(MainForm mainForm, Config config, string currentSystemId)
+		public PathConfig(IMainFormForConfig mainForm, Config config, string currentSystemId)
 		{
 			_mainForm = mainForm;
 			_config = config;

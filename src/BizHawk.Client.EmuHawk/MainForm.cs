@@ -38,7 +38,7 @@ using BizHawk.Emulation.Cores.Consoles.Nintendo.Faust;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class MainForm : Form
+	public partial class MainForm : Form, IMainFormForApi, IMainFormForConfig, IMainFormForTools
 	{
 		/// <remarks><c>AppliesTo[0]</c> is used as the group label, and <c>Config.PreferredCores[AppliesTo[0]]</c> determines the currently selected option</remarks>
 		private static readonly IReadOnlyCollection<(string[] AppliesTo, string[] CoreNames)> CoreData = new List<(string[], string[])> {
@@ -2129,7 +2129,7 @@ namespace BizHawk.Client.EmuHawk
 			AddOnScreenMessage(message);
 		}
 
-		internal void Render()
+		/*internal*/public void Render()
 		{
 			if (Config.DispSpeedupFeatures == 0)
 			{
@@ -2760,7 +2760,7 @@ namespace BizHawk.Client.EmuHawk
 			AddOnScreenMessage($"Config file loaded: {iniPath}");
 		}
 
-		internal void StepRunLoop_Throttle()
+		/*internal*/public void StepRunLoop_Throttle()
 		{
 			SyncThrottle();
 			_throttle.signal_frameAdvance = _runloopFrameAdvance;

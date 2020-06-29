@@ -6,11 +6,11 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class ZxSpectrumAudioSettings : Form
 	{
-		private readonly MainForm _mainForm;
+		private readonly IMainFormForConfig _mainForm;
 		private readonly ZXSpectrum.ZXSpectrumSettings _settings;
 
 		public ZxSpectrumAudioSettings(
-			MainForm mainForm,
+			IMainFormForConfig mainForm,
 			ZXSpectrum.ZXSpectrumSettings settings)
 		{
 			_mainForm = mainForm;

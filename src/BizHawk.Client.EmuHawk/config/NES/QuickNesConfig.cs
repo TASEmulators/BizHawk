@@ -10,12 +10,12 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class QuickNesConfig : Form
 	{
-		private readonly MainForm _mainForm;
+		private readonly IMainFormForConfig _mainForm;
 		private readonly Config _config;
 		private readonly QuickNES.QuickNESSettings _settings;
 
 		public QuickNesConfig(
-			MainForm mainForm,
+			IMainFormForConfig mainForm,
 			Config config,
 			QuickNES.QuickNESSettings settings)
 		{

@@ -6,11 +6,11 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class NdsSettings : Form
 	{
-		private readonly MainForm _mainForm;
+		private readonly IMainFormForConfig _mainForm;
 		private readonly MelonDS.MelonSyncSettings _syncSettings;
 
 		public NdsSettings(
-			MainForm mainForm,
+			IMainFormForConfig mainForm,
 			MelonDS.MelonSyncSettings syncSettings)
 		{
 			_mainForm = mainForm;

@@ -20,7 +20,7 @@ namespace BizHawk.Client.EmuHawk
 		private ITasMovie Movie => Tastudio.CurrentTasMovie;
 		private ITasBranchCollection Branches => Movie.Branches;
 
-		private MainForm MainForm => Tastudio.MainForm;
+		private IMainFormForTools MainForm => Tastudio.MainForm;
 		private TasBranch _backupBranch;
 		private BranchUndo _branchUndo = BranchUndo.None;
 

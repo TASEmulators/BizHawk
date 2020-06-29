@@ -24,7 +24,7 @@ namespace BizHawk.Client.EmuHawk
 		[OptionalService]
 		private IVideoProvider VideoProvider { get; set; }
 
-		public MainForm MainForm { get; set; }
+		public IMainFormForApi MainForm { get; set; }
 
 		public ClientLuaLibrary(Lua lua)
 			: base(lua) { }

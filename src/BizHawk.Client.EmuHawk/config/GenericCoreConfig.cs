@@ -9,13 +9,13 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class GenericCoreConfig : Form
 	{
-		private readonly MainForm _mainForm;
+		private readonly IMainFormForConfig _mainForm;
 		private object _s;
 		private object _ss;
 		private bool _syncSettingsChanged;
 		private bool _settingsChanged;
 
-		private GenericCoreConfig(MainForm mainForm, bool ignoreSettings = false, bool ignoreSyncSettings = false)
+		private GenericCoreConfig(IMainFormForConfig mainForm, bool ignoreSettings = false, bool ignoreSyncSettings = false)
 		{
 			InitializeComponent();
 			_mainForm = mainForm;
@@ -106,7 +106,7 @@ namespace BizHawk.Client.EmuHawk
 			Close();
 		}
 
-		public static void DoDialog(MainForm owner, string title)
+		public static void DoDialog(IMainFormForConfig owner, string title)
 		{
 			if (owner.Emulator is Emulation.Cores.Waterbox.NymaCore core)
 			{
@@ -131,7 +131,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public static void DoDialog(MainForm owner, string title, bool hideSettings, bool hideSyncSettings)
+		public static void DoDialog(IMainFormForConfig owner, string title, bool hideSettings, bool hideSyncSettings)
 		{
 			using var dlg = new GenericCoreConfig(owner, hideSettings, hideSyncSettings) { Text = title };
 			owner.ShowDialogAsChild(dlg);
