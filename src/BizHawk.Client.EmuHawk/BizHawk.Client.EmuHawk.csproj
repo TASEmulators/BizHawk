@@ -147,6 +147,12 @@
 	<ItemGroup>
 		<Compile Update="ArchiveChooser.cs" SubType="Form" />
 		<Compile Update="ArchiveChooser.Designer.cs" DependentUpon="ArchiveChooser.cs" />
+		<Compile Update="config\Messages\MessageEdit.cs">
+		  <SubType>UserControl</SubType>
+		</Compile>
+		<Compile Update="config\Messages\MessageEdit.Designer.cs">
+		  <DependentUpon>MessageEdit.cs</DependentUpon>
+		</Compile>
 		<EmbeddedResource Update="ArchiveChooser.resx" DependentUpon="ArchiveChooser.cs" SubType="Designer" />
 		<Compile Update="AVOut/FFmpegWriterForm.cs" SubType="Form" />
 		<Compile Update="AVOut/FFmpegWriterForm.Designer.cs" DependentUpon="FFmpegWriterForm.cs" />
