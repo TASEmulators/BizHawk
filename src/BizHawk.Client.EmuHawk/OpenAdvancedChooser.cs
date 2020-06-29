@@ -23,19 +23,26 @@ namespace BizHawk.Client.EmuHawk
 
 	public partial class OpenAdvancedChooser : Form
 	{
-		private readonly MainForm _mainForm;
 		private readonly Config _config;
-		private readonly IGameInfo _game;
 
-		public AdvancedRomLoaderType Result;
-		public string SuggestedExtensionFilter;
+		private readonly Func<CoreComm> _createCoreComm;
+
 		private RetroDescription _currentDescription;
 
-		public OpenAdvancedChooser(MainForm mainForm, Config config, IGameInfo game)
+		private readonly IGameInfo _game;
+
+		private readonly Func<bool> _libretroCoreChooserCallback;
+
+		public AdvancedRomLoaderType Result;
+
+		public string SuggestedExtensionFilter;
+
+		public OpenAdvancedChooser(Config config, Func<CoreComm> createCoreComm, IGameInfo game, Func<bool> libretroCoreChooserCallback)
 		{
-			_mainForm = mainForm;
 			_config = config;
+			_createCoreComm = createCoreComm;
 			_game = game;
+			_libretroCoreChooserCallback = libretroCoreChooserCallback;
 
 			InitializeComponent();
 
@@ -50,8 +57,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void btnSetLibretroCore_Click(object sender, EventArgs e)
 		{
-			if(_mainForm.RunLibretroCoreChooser())
-				RefreshLibretroCore(false);
+			if (_libretroCoreChooserCallback()) RefreshLibretroCore(false);
 		}
 
 		private void RefreshLibretroCore(bool bootstrap)
@@ -72,7 +78,7 @@ namespace BizHawk.Client.EmuHawk
 			// scan the current libretro core to see if it can be launched with NoGame,and other stuff
 			try
 			{
-				var coreComm = _mainForm.CreateCoreComm();
+				var coreComm = _createCoreComm();
 				using var retro = new LibretroCore(coreComm, _game, core);
 				btnLibretroLaunchGame.Enabled = true;
 				if (retro.Description.SupportsNoGame)

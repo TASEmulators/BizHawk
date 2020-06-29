@@ -317,7 +317,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OpenAdvancedMenuItem_Click(object sender, EventArgs e)
 		{
-			using var oac = new OpenAdvancedChooser(this, Config, Game);
+			using var oac = new OpenAdvancedChooser(Config, CreateCoreComm, Game, RunLibretroCoreChooser);
 			if (oac.ShowHawkDialog() == DialogResult.Cancel)
 			{
 				return;
