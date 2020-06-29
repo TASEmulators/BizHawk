@@ -16,7 +16,6 @@ namespace BizHawk.Client.EmuHawk
 		private MessagePosition _lagCounter;
 		private MessagePosition _inputDisplay;
 		private MessagePosition _reRecordCounter;
-		private MessagePosition _multitrackRecorder;
 		private MessagePosition _messages;
 		private MessagePosition _autohold;
 		private MessagePosition _ramWatches;
@@ -40,7 +39,6 @@ namespace BizHawk.Client.EmuHawk
 			_lagCounter = _config.LagCounter.Clone();
 			_inputDisplay = _config.InputDisplay.Clone();
 			_reRecordCounter = _config.ReRecordCounter.Clone();
-			_multitrackRecorder = _config.MultitrackRecorder.Clone();
 			_messages = _config.Messages.Clone();
 			_autohold = _config.Autohold.Clone();
 			_ramWatches = _config.RamWatches.Clone();
@@ -154,10 +152,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				SetFromOption(_reRecordCounter);
 			}
-			else if (MultitrackRadio.Checked)
-			{
-				SetFromOption(_multitrackRecorder);
-			}
 			else if (AutoholdRadio.Checked)
 			{
 				SetFromOption(_autohold);
@@ -176,7 +170,6 @@ namespace BizHawk.Client.EmuHawk
 			_config.LagCounter = _lagCounter;
 			_config.InputDisplay = _inputDisplay;
 			_config.ReRecordCounter = _reRecordCounter;
-			_config.MultitrackRecorder = _multitrackRecorder;
 			_config.Messages = _messages;
 			_config.Autohold = _autohold;
 			_config.RamWatches = _ramWatches;
@@ -333,10 +326,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				SetOptionPosition(_reRecordCounter);
 			}
-			else if (MultitrackRadio.Checked)
-			{
-				SetOptionPosition(_multitrackRecorder);
-			}
 			else if (MessagesRadio.Checked)
 			{
 				SetOptionPosition(_messages);
@@ -352,7 +341,6 @@ namespace BizHawk.Client.EmuHawk
 			InpLabel.Text =  ToCoordinateStr(_inputDisplay);
 			WatchesLabel.Text =  ToCoordinateStr(_ramWatches);
 			RerecLabel.Text =  ToCoordinateStr(_reRecordCounter);
-			MultitrackLabel.Text =  ToCoordinateStr(_multitrackRecorder);
 			MessLabel.Text = ToCoordinateStr(_messages);
 			AutoholdLabel.Text = ToCoordinateStr(_autohold);
 		}
@@ -369,7 +357,6 @@ namespace BizHawk.Client.EmuHawk
 			_lagCounter = _config.LagCounter = DefaultMessagePositions.LagCounter.Clone();
 			_inputDisplay = _config.InputDisplay = DefaultMessagePositions.InputDisplay.Clone();
 			_reRecordCounter = _config.ReRecordCounter = DefaultMessagePositions.ReRecordCounter.Clone();
-			_multitrackRecorder = _config.MultitrackRecorder = DefaultMessagePositions.MultitrackRecorder.Clone();
 			_messages = _config.Messages = DefaultMessagePositions.Messages.Clone();
 			_autohold = _config.Autohold = DefaultMessagePositions.Autohold.Clone();
 			_ramWatches = _config.RamWatches = DefaultMessagePositions.RamWatches.Clone();
@@ -420,10 +407,6 @@ namespace BizHawk.Client.EmuHawk
 			else if (RerecordsRadio.Checked)
 			{
 				_reRecordCounter.Anchor = value;
-			}
-			else if (MultitrackRadio.Checked)
-			{
-				_multitrackRecorder.Anchor = value;
 			}
 			else if (AutoholdRadio.Checked)
 			{

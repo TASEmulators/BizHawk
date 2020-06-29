@@ -39,7 +39,6 @@
 		public static MessagePosition LagCounter = new MessagePosition { X = 0, Y = 42 };
 		public static MessagePosition InputDisplay = new MessagePosition { X = 0, Y = 28 };
 		public static MessagePosition ReRecordCounter = new MessagePosition { X = 0, Y = 56 };
-		public static MessagePosition MultitrackRecorder = new MessagePosition { X = 0, Y = 14, Anchor = MessagePosition.AnchorType.TopRight };
 		public static MessagePosition Messages = new MessagePosition { X = 0, Y = 0, Anchor = MessagePosition.AnchorType.BottomLeft };
 		public static MessagePosition Autohold = new MessagePosition { X = 0, Y = 0, Anchor = MessagePosition.AnchorType.TopRight };
 		public static MessagePosition RamWatches = new MessagePosition { X = 0, Y = 70 };

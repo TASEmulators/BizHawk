@@ -167,7 +167,6 @@ namespace BizHawk.Client.Common
 		public MessagePosition LagCounter { get; set; } = DefaultMessagePositions.LagCounter.Clone();
 		public MessagePosition InputDisplay { get; set; } = DefaultMessagePositions.InputDisplay.Clone();
 		public MessagePosition ReRecordCounter { get; set; } = DefaultMessagePositions.ReRecordCounter.Clone();
-		public MessagePosition MultitrackRecorder { get; set; } = DefaultMessagePositions.MultitrackRecorder.Clone();
 		public MessagePosition Messages { get; set; } = DefaultMessagePositions.Messages.Clone();
 		public MessagePosition Autohold { get; set; } = DefaultMessagePositions.Autohold.Clone();
 		public MessagePosition RamWatches { get; set; } = DefaultMessagePositions.RamWatches.Clone();
