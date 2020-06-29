@@ -258,9 +258,9 @@
 		<Compile Update="config/INTV/IntvControllerSettings.cs" SubType="Form" />
 		<Compile Update="config/INTV/IntvControllerSettings.Designer.cs" DependentUpon="IntvControllerSettings.cs" />
 		<EmbeddedResource Update="config/INTV/IntvControllerSettings.resx" DependentUpon="IntvControllerSettings.cs" />
-		<Compile Update="config/MessageConfig.cs" SubType="Form" />
-		<Compile Update="config/MessageConfig.Designer.cs" DependentUpon="MessageConfig.cs" />
-		<EmbeddedResource Update="config/MessageConfig.resx" DependentUpon="MessageConfig.cs" SubType="Designer" />
+		<Compile Update="config\Messages\MessageConfig.cs" SubType="Form" />
+		<Compile Update="config\Messages\MessageConfig.Designer.cs" DependentUpon="MessageConfig.cs" />
+		<EmbeddedResource Update="config\Messages\MessageConfig.resx" DependentUpon="MessageConfig.cs" SubType="Designer" />
 		<Compile Update="config/N64/N64ControllerSettingControl.cs" SubType="UserControl" />
 		<Compile Update="config/N64/N64ControllerSettingControl.Designer.cs" DependentUpon="N64ControllerSettingControl.cs" />
 		<EmbeddedResource Update="config/N64/N64ControllerSettingControl.resx" DependentUpon="N64ControllerSettingControl.cs" />
