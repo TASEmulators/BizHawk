@@ -14,13 +14,13 @@ namespace BizHawk.Client.EmuHawk
 		// Allow selection of palette file from archive
 		// Hotkeys for BG & Sprite display toggle
 		// NTSC filter settings? Hue, Tint (This should probably be a client thing, not a nes specific thing?)
-		private readonly MainForm _mainForm;
+		private readonly IMainFormForConfig _mainForm;
 		private readonly Config _config;
 		private NES.NESSettings _settings;
 		//private Bitmap _bmp;
 
 		public NESGraphicsConfig(
-			MainForm mainForm,
+			IMainFormForConfig mainForm,
 			Config config,
 			NES.NESSettings settings)
 		{

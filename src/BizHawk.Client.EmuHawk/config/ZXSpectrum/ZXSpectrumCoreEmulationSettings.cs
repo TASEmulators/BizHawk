@@ -6,11 +6,11 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class ZxSpectrumCoreEmulationSettings : Form
 	{
-		private readonly MainForm _mainForm;
+		private readonly IMainFormForConfig _mainForm;
 		private readonly ZXSpectrum.ZXSpectrumSyncSettings _syncSettings;
 
 		public ZxSpectrumCoreEmulationSettings(
-			MainForm mainForm,
+			IMainFormForConfig mainForm,
 			ZXSpectrum.ZXSpectrumSyncSettings syncSettings)
 		{
 			_mainForm = mainForm;

@@ -15,7 +15,7 @@ namespace BizHawk.Client.EmuHawk
 		private readonly int _captureWidth = 640;
 		private readonly int _captureHeight = 480;
 
-		private VideoWriterChooserForm(MainForm mainForm, IEmulator emulator, Config config)
+		private VideoWriterChooserForm(IMainFormForTools mainForm, IEmulator emulator, Config config)
 		{
 			InitializeComponent();
 
@@ -55,7 +55,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <returns>user choice, or null on Cancel\Close\invalid</returns>
 		public static IVideoWriter DoVideoWriterChooserDlg(
 			IEnumerable<VideoWriterInfo> list,
-			MainForm owner,
+			IMainFormForTools owner,
 			IEmulator emulator,
 			Config config,
 			out int resizeW,

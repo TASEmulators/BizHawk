@@ -7,11 +7,11 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class NesControllerSettings : Form
 	{
-		private readonly MainForm _mainForm;
+		private readonly IMainFormForConfig _mainForm;
 		private readonly NES.NESSyncSettings _syncSettings;
 
 		public NesControllerSettings(
-			MainForm mainForm,
+			IMainFormForConfig mainForm,
 			NES.NESSyncSettings syncSettings)
 		{
 			_mainForm = mainForm;

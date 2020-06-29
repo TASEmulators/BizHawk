@@ -11,7 +11,7 @@ namespace BizHawk.Client.EmuHawk
 	// TODO - Allow relative paths in record TextBox
 	public partial class RecordMovie : Form
 	{
-		private readonly MainForm _mainForm;
+		private readonly IMainFormForTools _mainForm;
 		private readonly Config _config;
 		private readonly GameInfo _game;
 		private readonly IEmulator _emulator;
@@ -19,7 +19,7 @@ namespace BizHawk.Client.EmuHawk
 		private readonly FirmwareManager _firmwareManager;
 
 		public RecordMovie(
-			MainForm mainForm,
+			IMainFormForTools mainForm,
 			Config config,
 			GameInfo game,
 			IEmulator core,

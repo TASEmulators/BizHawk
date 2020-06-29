@@ -7,11 +7,11 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class A7800FilterSettings : Form
 	{
-		private readonly MainForm _mainForm;
+		private readonly IMainFormForConfig _mainForm;
 		private readonly A7800Hawk.A7800SyncSettings _syncSettings;
 
 		public A7800FilterSettings(
-			MainForm mainForm,
+			IMainFormForConfig mainForm,
 			A7800Hawk.A7800SyncSettings syncSettings)
 		{
 			_mainForm = mainForm;

@@ -29,7 +29,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool SyncSettingsChanged => gbPrefControl1.SyncSettingsChanged || gbPrefControl2.SyncSettingsChanged;
 
-		public static void DoDGBPrefsDialog(MainForm mainForm, GambatteLink gambatte)
+		public static void DoDGBPrefsDialog(IMainFormForConfig mainForm, GambatteLink gambatte)
 		{
 			var s = gambatte.GetSettings();
 			var ss = gambatte.GetSyncSettings();

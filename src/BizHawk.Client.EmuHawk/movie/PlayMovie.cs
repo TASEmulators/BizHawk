@@ -16,7 +16,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class PlayMovie : Form
 	{
-		private readonly MainForm _mainForm;
+		private readonly IMainFormForTools _mainForm;
 		private readonly Config _config;
 		private readonly GameInfo _game;
 		private readonly IEmulator _emulator;
@@ -31,7 +31,7 @@ namespace BizHawk.Client.EmuHawk
 		private string _sortedDetailsCol;
 
 		public PlayMovie(
-			MainForm mainForm,
+			IMainFormForTools mainForm,
 			Config config,
 			GameInfo game,
 			IEmulator emulator,

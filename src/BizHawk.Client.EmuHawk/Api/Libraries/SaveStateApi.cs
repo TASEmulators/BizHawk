@@ -8,11 +8,11 @@ namespace BizHawk.Client.EmuHawk
 {
 	public sealed class SaveStateApi : ISaveStateApi
 	{
-		private readonly MainForm _mainForm;
+		private readonly IMainFormForApi _mainForm;
 
 		private readonly Action<string> LogCallback;
 
-		public SaveStateApi(Action<string> logCallback, DisplayManager displayManager, InputManager inputManager, MainForm mainForm)
+		public SaveStateApi(Action<string> logCallback, DisplayManager displayManager, InputManager inputManager, IMainFormForApi mainForm)
 		{
 			LogCallback = logCallback;
 			_mainForm = mainForm;

@@ -11,7 +11,7 @@ namespace BizHawk.Client.EmuHawk
 			Icon = Properties.Resources.gambatte_MultiSize;
 		}
 
-		public static void DoGBPrefsDialog(MainForm mainForm, Gameboy gb)
+		public static void DoGBPrefsDialog(IMainFormForConfig mainForm, Gameboy gb)
 		{
 			var s = gb.GetSettings();
 			var ss = gb.GetSyncSettings();

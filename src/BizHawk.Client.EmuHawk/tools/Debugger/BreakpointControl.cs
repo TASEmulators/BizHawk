@@ -12,7 +12,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class BreakpointControl : UserControl
 	{
-		public MainForm MainForm { get; set; }
+		public IMainFormForTools MainForm { get; set; }
 		public IDebuggable Core { get; set; }
 		public IMemoryCallbackSystem Mcs { get; set; }
 		public GenericDebugger ParentDebugger { get; set; }

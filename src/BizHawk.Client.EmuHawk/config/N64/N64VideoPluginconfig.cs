@@ -11,7 +11,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class N64VideoPluginConfig : Form
 	{
-		private readonly MainForm _mainForm;
+		private readonly IMainFormForConfig _mainForm;
 		private readonly Config _config;
 		private readonly IEmulator _emulator;
 		private readonly N64Settings _s;
@@ -41,7 +41,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool _programmaticallyChangingPluginComboBox = false;
 
 		public N64VideoPluginConfig(
-			MainForm mainForm,
+			IMainFormForConfig mainForm,
 			Config config,
 			IEmulator emulator)
 		{
