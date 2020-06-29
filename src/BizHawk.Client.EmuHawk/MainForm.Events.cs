@@ -1023,9 +1023,17 @@ namespace BizHawk.Client.EmuHawk
 				: "Rom Extension Preferences cancelled");
 		}
 
+		private void BumpAutoFlushSaveRamTimer()
+		{
+			if (AutoFlushSaveRamIn > Config.FlushSaveRamFrames)
+			{
+				AutoFlushSaveRamIn = Config.FlushSaveRamFrames;
+			}
+		}
+
 		private void CustomizeMenuItem_Click(object sender, EventArgs e)
 		{
-			using var form = new EmuHawkOptions(this, Config);
+			using var form = new EmuHawkOptions(BumpAutoFlushSaveRamTimer, Config, this.AddOnScreenMessage);
 			form.ShowDialog();
 		}
 

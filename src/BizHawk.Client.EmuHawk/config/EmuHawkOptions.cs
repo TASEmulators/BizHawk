@@ -6,13 +6,17 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class EmuHawkOptions : Form
 	{
-		private readonly MainForm _mainForm;
+		private readonly Action _autoFlushSaveRamTimerBumpCallback;
+
 		private readonly Config _config;
 
-		public EmuHawkOptions(MainForm mainForm, Config config)
+		private readonly Action<string> _osdMessageCallback;
+
+		public EmuHawkOptions(Action autoFlushSaveRamTimerBumpCallback, Config config, Action<string> osdMessageCallback)
 		{
-			_mainForm = mainForm;
+			_autoFlushSaveRamTimerBumpCallback = autoFlushSaveRamTimerBumpCallback;
 			_config = config;
+			_osdMessageCallback = osdMessageCallback;
 			InitializeComponent();
 		}
 
@@ -121,10 +125,7 @@ namespace BizHawk.Client.EmuHawk
 			_config.BackupSaveram = BackupSRamCheckbox.Checked;
 			_config.AutosaveSaveRAM = AutosaveSRAMCheckbox.Checked;
 			_config.FlushSaveRamFrames = AutosaveSaveRAMSeconds * 60;
-			if (_mainForm.AutoFlushSaveRamIn > _config.FlushSaveRamFrames)
-			{
-				_mainForm.AutoFlushSaveRamIn = _config.FlushSaveRamFrames;
-			}
+			_autoFlushSaveRamTimerBumpCallback();
 
 			_config.SkipLagFrame = FrameAdvSkipLagCheckbox.Checked;
 			_config.RunLuaDuringTurbo = LuaDuringTurboCheckbox.Checked;
@@ -141,10 +142,10 @@ namespace BizHawk.Client.EmuHawk
 				_config.LuaEngine = ELuaEngine.NLuaPlusKopiLua;
 			}
 
-			_mainForm.AddOnScreenMessage("Custom configurations saved.");
+			_osdMessageCallback("Custom configurations saved.");
 			if (prevLuaEngine != _config.LuaEngine)
 			{
-				_mainForm.AddOnScreenMessage("Restart emulator for Lua change to take effect");
+				_osdMessageCallback("Restart emulator for Lua change to take effect");
 			}
 
 			Close();
@@ -155,7 +156,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Close();
 			DialogResult = DialogResult.Cancel;
-			_mainForm.AddOnScreenMessage("Customizing aborted.");
+			_osdMessageCallback("Customizing aborted.");
 		}
 
 		private void AcceptBackgroundInputCheckbox_CheckedChanged(object sender, EventArgs e)
