@@ -210,8 +210,9 @@ pub extern "win64" fn syscall(nr: SyscallNumber, ud: usize, a1: usize, a2: usize
 				// various unsupported flags
 				return syscall_err(EOPNOTSUPP)
 			}
+			let no_replace = flags & MAP_FIXED_NOREPLACE != 0;
 			let arena_addr = h.sys.layout.mmap;
-			let res = h.b.mmap(AddressRange { start: a1, size: a2 }, prot, arena_addr)?;
+			let res = h.b.mmap(AddressRange { start: a1, size: a2 }, prot, arena_addr, no_replace)?;
 			syscall_ok(res)
 		},
 		NR_MREMAP => {
@@ -300,10 +301,17 @@ pub extern "win64" fn syscall(nr: SyscallNumber, ud: usize, a1: usize, a2: usize
 			let old = h.h.program_break;
 			let res = if a1 != align_down(a1) {
 				old
-			} else if a1 < addr.start || a1 > addr.end() {
+			} else if a1 < addr.start {
+				if a1 == 0 {
+					println!("Initializing heap sbrk at {:x}:{:x}", addr.start, addr.end());
+				}
 				old
+			} else if a1 > addr.end() {
+				eprintln!("Failed to satisfy allocation of {} bytes on sbrk heap", a1 - old);
+				old	
 			} else if a1 > old {
-				h.b.mmap_fixed(AddressRange { start: old, size: a1 - old }, Protection::RW).unwrap();
+				h.b.mmap_fixed(AddressRange { start: old, size: a1 - old }, Protection::RW, true).unwrap();
+				println!("Allocated {} bytes on sbrk heap, usage {}/{}", a1 - old, a1 - addr.start, addr.size);
 				a1
 			} else {
 				old

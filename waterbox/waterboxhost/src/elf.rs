@@ -38,10 +38,12 @@ impl ElfLoader {
 		let wbx = goblin::elf::Elf::parse(data)?;
 
 		let start = wbx.program_headers.iter()
+			.filter(|x| x.p_vaddr != 0)
 			.map(|x| x.vm_range().start)
 			.min()
 			.unwrap();
 		let end = wbx.program_headers.iter()
+			.filter(|x| x.p_vaddr != 0)
 			.map(|x| x.vm_range().end)
 			.max()
 			.unwrap();
@@ -50,6 +52,7 @@ impl ElfLoader {
 		}
 
 		println!("Mouting `{}` @{:x}", module_name, start);
+		println!("  Sections:");
 
 		let mut sections = Vec::new();	
 
@@ -58,8 +61,9 @@ impl ElfLoader {
 				Some(Ok(s)) => s,
 				_ => "<anon>"
 			};
-			println!("  @{:x} {}{}{} `{}` {} bytes",
+			println!("    @{:x}:{:x} {}{}{} `{}` {} bytes",
 				section.sh_addr,
+				section.sh_addr + section.sh_size,
 				if section.sh_flags & (SHF_ALLOC as u64) != 0 { "R" } else { " " },
 				if section.sh_flags & (SHF_WRITE as u64) != 0 { "W" } else { " " },
 				if section.sh_flags & (SHF_EXECINSTR as u64) != 0 { "X" } else { " " },
@@ -112,10 +116,20 @@ impl ElfLoader {
 		{
 			let invis_opt = sections.iter().find(|x| x.name == ".invis");
 			if let Some(invis) = invis_opt {
-				let any_below = sections.iter().any(|x| x.addr.align_expand().end() > invis.addr.align_expand().start);
-				let any_above = sections.iter().any(|x| x.addr.align_expand().start < invis.addr.align_expand().end());
-				if any_below || any_above {
-					return Err(anyhow!("Overlap between .invis and other sections -- check linkscript."));
+				for s in sections.iter() {
+					if s.addr.align_expand().start < invis.addr.align_expand().start {
+						if s.addr.align_expand().end() > invis.addr.align_expand().start {
+							return Err(anyhow!("When aligned, {} partially overlaps .invis from below -- check linkscript.", s.name))
+						}
+					} else if s.addr.align_expand().start > invis.addr.align_expand().start {
+						if invis.addr.align_expand().end() > s.addr.align_expand().start {
+							return Err(anyhow!("When aligned, {} partially overlaps .invis from above -- check linkscript.", s.name))
+						}
+					} else {
+						if s.name != ".invis" {
+							return Err(anyhow!("When aligned, {} partially overlays .invis -- check linkscript", s.name))
+						}
+					}
 				}
 				b.mark_invisible(invis.addr.align_expand())?;
 			}
@@ -123,7 +137,8 @@ impl ElfLoader {
 
 		b.mark_invisible(layout.invis)?;
 
-		for segment in wbx.program_headers.iter() {
+		println!("  Segments:");
+		for segment in wbx.program_headers.iter().filter(|x| x.p_vaddr != 0) {
 			let addr = AddressRange {
 				start: segment.vm_range().start,
 				size: segment.vm_range().end - segment.vm_range().start
@@ -136,12 +151,22 @@ impl ElfLoader {
 				(_, true, false) => Protection::RW,
 				(_, true, true) => Protection::RWX
 			};
-			b.mmap_fixed(prot_addr, prot)?;
+			println!("    %{:x}:{:x} {}{}{} {} bytes",
+				addr.start,
+				addr.end(),
+				if segment.is_read() { "R" } else { " " },
+				if segment.is_write() { "W" } else { " " },
+				if segment.is_executable() { "X" } else { " " },
+				addr.size
+			);
+			// TODO:  Using no_replace false here because the linker puts eh_frame_hdr in a separate segment that overlaps the other RO segment???
+			b.mmap_fixed(prot_addr, Protection::RW, false)?;
 			unsafe {
 				let src = &data[segment.file_range()];
 				let dst = AddressRange { start: addr.start, size: segment.file_range().end - segment.file_range().start }.slice_mut();
 				dst.copy_from_slice(src);
 			}
+			b.mprotect(prot_addr, prot)?;
 		}
 
 		Ok(ElfLoader {

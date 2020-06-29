@@ -31,7 +31,7 @@ fn test_dirty() -> TestResult {
 		let addr = AddressRange { start: 0x36f00000000, size: 0x10000 };
 		let mut b = MemoryBlock::new(addr);
 		let mut g = b.enter();
-		g.mmap_fixed(addr, Protection::RW)?;
+		g.mmap_fixed(addr, Protection::RW, true)?;
 		let ptr = g.b.addr.slice_mut();
 		ptr[0x2003] = 5;
 		assert!(g.b.pages[2].dirty);
@@ -46,7 +46,7 @@ fn test_offset() -> TestResult {
 		let addr = AddressRange { start: 0x36f00000000, size: 0x20000 };
 		let mut b = MemoryBlock::new(addr);
 		let mut g = b.enter();
-		g.mmap_fixed(AddressRange { start: 0x36f00003000, size: 0x1000 }, Protection::RW)?;
+		g.mmap_fixed(AddressRange { start: 0x36f00003000, size: 0x1000 }, Protection::RW, true)?;
 		let ptr = g.b.addr.slice_mut();
 		ptr[0x3663] = 12;
 		assert!(g.b.pages[3].dirty);
@@ -61,7 +61,7 @@ fn test_stk_norm() -> TestResult {
 		let addr = AddressRange { start: 0x36200000000, size: 0x10000 };
 		let mut b = MemoryBlock::new(addr);
 		let mut g = b.enter();
-		g.mmap_fixed(addr, Protection::RWStack)?;
+		g.mmap_fixed(addr, Protection::RWStack, true)?;
 		let ptr = g.b.addr.slice_mut();
 		ptr[0xeeee] = 0xee;
 		ptr[0x44] = 0x44;
@@ -89,7 +89,7 @@ fn test_stack() -> TestResult {
 		let addr = AddressRange { start: 0x36f00000000, size: 0x10000 };
 		let mut b = MemoryBlock::new(addr);
 		let mut g = b.enter();
-		g.mmap_fixed(addr, Protection::RW)?;
+		g.mmap_fixed(addr, Protection::RW, true)?;
 		let ptr = g.b.addr.slice_mut();
 		let mut i = 0;
 
@@ -124,7 +124,7 @@ fn test_state_basic() -> TestResult {
 		let mut b = MemoryBlock::new(addr);
 		let mut g = b.enter();
 		let ptr = g.b.addr.slice_mut();
-		g.mmap_fixed(addr, Protection::RW)?;
+		g.mmap_fixed(addr, Protection::RW, true)?;
 		ptr[0x0000] = 20;
 		ptr[0x1000] = 40;
 		ptr[0x2000] = 60;
@@ -172,7 +172,7 @@ fn test_state_unreadable() -> TestResult {
 		let mut b = MemoryBlock::new(addr);
 		let mut g = b.enter();
 		let ptr = g.b.addr.slice_mut();
-		g.mmap_fixed(addr, Protection::RW)?;
+		g.mmap_fixed(addr, Protection::RW, true)?;
 		g.seal();
 
 		ptr[200] = 200;
@@ -222,7 +222,7 @@ fn test_thready_stack() -> TestResult {
 				let mut g = b.enter();
 
 				blocker.wait();
-				g.mmap_fixed(addr, Protection::RWX)?;
+				g.mmap_fixed(addr, Protection::RWX, true)?;
 				g.mprotect(AddressRange { start: addr.start + PAGESIZE, size: PAGESIZE }, Protection::RWStack)?;
 
 				let ptr = g.b.addr.slice_mut();
@@ -266,7 +266,7 @@ fn test_state_invisible() -> TestResult {
 		let mut b = MemoryBlock::new(addr);
 		let mut g = b.enter();
 		let ptr = g.b.addr.slice_mut();
-		g.mmap_fixed(addr, Protection::RW)?;
+		g.mmap_fixed(addr, Protection::RW, true)?;
 		ptr[0x0055] = 11;
 		ptr[0x1055] = 22;
 		g.mark_invisible(AddressRange { start: 0x36400001000, size: 0x2000 })?;
@@ -316,7 +316,7 @@ fn test_dontneed() -> TestResult {
 		g.seal();
 		let ptr = g.b.addr.slice_mut();
 
-		g.mmap_fixed(addr, Protection::RW)?;
+		g.mmap_fixed(addr, Protection::RW, true)?;
 		for i in 0..addr.size {
 			ptr[i] = i as u8;
 		}
@@ -341,7 +341,7 @@ fn test_remap_nomove() -> TestResult {
 	let mut b = MemoryBlock::new(addr);
 	let mut g = b.enter();
 
-	g.mmap_fixed(AddressRange { start: addr.start, size: 0x4000 }, Protection::RWX)?;
+	g.mmap_fixed(AddressRange { start: addr.start, size: 0x4000 }, Protection::RWX, true)?;
 	g.mremap_nomove(AddressRange { start: addr.start, size: 0x4000 }, 0x6000)?;
 	assert_eq!(g.b.pages[3].status, PageAllocation::Allocated(Protection::RWX));
 	assert_eq!(g.b.pages[5].status, PageAllocation::Allocated(Protection::RWX));
@@ -379,12 +379,12 @@ fn test_mremap_move_expand() -> TestResult {
 		let ptr = g.b.addr.slice_mut();
 
 		let initial_addr = AddressRange { start: 0x36800002000, size: 0x1000 };
-		g.mmap_fixed(initial_addr, Protection::RW)?;
+		g.mmap_fixed(initial_addr, Protection::RW, true)?;
 		ptr[0x2004] = 11;
 		let p1 = g.mremap_maymove(initial_addr, 0x2000, addr)?;
 		assert_eq!(p1, addr.start);
 		assert_eq!(ptr[4], 11);
-		g.mmap_fixed(initial_addr, Protection::RW)?;
+		g.mmap_fixed(initial_addr, Protection::RW, true)?;
 		assert_eq!(ptr[0x2004], 0);
 	}
 	Ok(())
@@ -399,12 +399,12 @@ fn test_mremap_move_shrink() -> TestResult {
 		let ptr = g.b.addr.slice_mut();
 
 		let initial_addr = AddressRange { start: 0x36900001000, size: 0x3000 };
-		g.mmap_fixed(initial_addr, Protection::RW)?;
+		g.mmap_fixed(initial_addr, Protection::RW, true)?;
 		ptr[0x1004] = 11;
 		let p1 = g.mremap_maymove(initial_addr, 0x1000, addr)?;
 		assert_eq!(p1, addr.start);
 		assert_eq!(ptr[4], 11);
-		g.mmap_fixed(initial_addr, Protection::RW)?;
+		g.mmap_fixed(initial_addr, Protection::RW, true)?;
 		assert_eq!(ptr[0x1004], 0);
 	}
 	Ok(())

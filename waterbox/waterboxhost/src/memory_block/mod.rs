@@ -533,10 +533,9 @@ impl<'block> ActivatedMemoryBlock<'block> {
 	}
 
 	/// implements a subset of mmap(2) for anonymous, fixed address mappings
-	pub fn mmap_fixed(&mut self, addr: AddressRange, prot: Protection) -> SyscallResult {
+	pub fn mmap_fixed(&mut self, addr: AddressRange, prot: Protection, no_replace: bool) -> SyscallResult {
 		let mut range = self.b.validate_range(addr)?;
-		if range.iter().any(|p| p.status != PageAllocation::Free) {
-			// assume MAP_FIXED_NOREPLACE at all times
+		if no_replace && range.iter().any(|p| p.status != PageAllocation::Free) {
 			return Err(EEXIST)
 		}
 		MemoryBlock::set_protections(&mut range, PageAllocation::Allocated(prot));
@@ -639,14 +638,14 @@ impl<'block> ActivatedMemoryBlock<'block> {
 		self.munmap_impl(addr, false)
 	}
 
-	pub fn mmap(&mut self, addr: AddressRange, prot: Protection, arena_addr: AddressRange) -> Result<usize, SyscallError> {
+	pub fn mmap(&mut self, addr: AddressRange, prot: Protection, arena_addr: AddressRange, no_replace: bool) -> Result<usize, SyscallError> {
 		if addr.size == 0 {
 			return Err(EINVAL)
 		}
 		if addr.start == 0 {
 			self.mmap_movable(addr.size, prot, arena_addr)
 		} else {
-			self.mmap_fixed(addr, prot)?;
+			self.mmap_fixed(addr, prot, no_replace)?;
 			Ok(addr.start)
 		}
 	}
