@@ -146,23 +146,22 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ResetDefaultsButton_Click(object sender, EventArgs e)
 		{
-			_fps = _config.Fps = DefaultMessagePositions.Fps.Clone();
-			_frameCounter = _config.FrameCounter = DefaultMessagePositions.FrameCounter.Clone();
-			_lagCounter = _config.LagCounter = DefaultMessagePositions.LagCounter.Clone();
-			_inputDisplay = _config.InputDisplay = DefaultMessagePositions.InputDisplay.Clone();
-			_reRecordCounter = _config.ReRecordCounter = DefaultMessagePositions.ReRecordCounter.Clone();
-			_messages = _config.Messages = DefaultMessagePositions.Messages.Clone();
-			_autohold = _config.Autohold = DefaultMessagePositions.Autohold.Clone();
-			_ramWatches = _config.RamWatches = DefaultMessagePositions.RamWatches.Clone();
+			_fps = DefaultMessagePositions.Fps.Clone();
+			_frameCounter = DefaultMessagePositions.FrameCounter.Clone();
+			_lagCounter = DefaultMessagePositions.LagCounter.Clone();
+			_inputDisplay = DefaultMessagePositions.InputDisplay.Clone();
+			_reRecordCounter = DefaultMessagePositions.ReRecordCounter.Clone();
+			_messages = DefaultMessagePositions.Messages.Clone();
+			_autohold = DefaultMessagePositions.Autohold.Clone();
+			_ramWatches = DefaultMessagePositions.RamWatches.Clone();
 
-			_config.MessagesColor = DefaultMessagePositions.MessagesColor;
-			_config.AlertMessageColor = DefaultMessagePositions.AlertMessageColor;
-			_config.LastInputColor = DefaultMessagePositions.LastInputColor;
-			_config.MovieInput = DefaultMessagePositions.MovieInput;
+			ColorRows.Single(r => r.Name == "Main Messages").SelectedColor = DefaultMessagePositions.MessagesColor;
+			ColorRows.Single(r => r.Name == "Alert Messages").SelectedColor = DefaultMessagePositions.AlertMessageColor;
+			ColorRows.Single(r => r.Name == "Previous Frame Input").SelectedColor = DefaultMessagePositions.LastInputColor;
+			ColorRows.Single(r => r.Name == "Movie Input").SelectedColor = DefaultMessagePositions.MovieInput;
 
 			CreateMessageRows();
-			CreateColorBoxes();
-			StackMessagesCheckbox.Checked = _config.StackOSDMessages = true;
+			StackMessagesCheckbox.Checked = true;
 		}
 	}
 }
