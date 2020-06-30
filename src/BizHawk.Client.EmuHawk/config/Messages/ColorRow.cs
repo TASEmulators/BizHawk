@@ -17,16 +17,15 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		public string DisplayName
+		{
+			get => DisplayNameLabel.Text;
+			set => DisplayNameLabel.Text = value;
+		}
+
 		public ColorRow()
 		{
 			InitializeComponent();
-		}
-
-		public void Bind(string displayName, int color)
-		{
-			DisplayNameLabel.Text = displayName;
-			SelectedColor = color;
-			SetColor();
 		}
 
 		private void SetColor()

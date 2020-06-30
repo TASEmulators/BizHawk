@@ -109,11 +109,11 @@ namespace BizHawk.Client.EmuHawk
 				var row = new ColorRow 
 				{
 					Name = color.Key,
-					Location = new Point(10, y) 
+					Location = new Point(10, y),
+					DisplayName = color.Key,
+					SelectedColor = color.Value
 				};
 				row.Size = new Size(ColorBox.Width - 12, row.Size.Height);
-				row.Bind(color.Key, color.Value);
-
 				y += row.Size.Height;
 				ColorBox.Controls.Add(row);
 			}
