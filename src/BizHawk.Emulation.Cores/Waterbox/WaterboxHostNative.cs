@@ -8,18 +8,19 @@ namespace BizHawk.Emulation.Cores.Waterbox
 {
 	public unsafe abstract class WaterboxHostNative
 	{
-		[StructLayout(LayoutKind.Sequential)]
+		[StructLayout(LayoutKind.Explicit)]
 		public class ReturnData
 		{
-			[MarshalAs(UnmanagedType.ByValArray, SizeConst = 1024)]
-			public byte[] ErrorMessage = new byte[1024];
+			[FieldOffset(0)]
+			public byte ErrorMessageStart;
+			[FieldOffset(1024)]
 			public IntPtr Data;
 
 			public unsafe IntPtr GetDataOrThrow()
 			{
-				if (ErrorMessage[0] != 0)
+				if (ErrorMessageStart != 0)
 				{
-					fixed(byte* p = ErrorMessage)
+					fixed(byte* p = &ErrorMessageStart)
 						throw new InvalidOperationException(Mershul.PtrToStringUtf8((IntPtr)p));
 				}
 				return Data;
@@ -137,13 +138,13 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		// public abstract void wbx_set_missing_file_callback(IntPtr /*ActivatedWaterboxHost*/ obj, MissingFileCallback mfc_o);
 		/// Save state.  Must not be called before seal.  Must not be called with any writable files mounted.
 		/// Must always be called with the same sequence and contents of readonly files.
-		[BizImport(CallingConvention.Cdecl, Compatibility = true)]
-		public abstract void wbx_save_state(IntPtr /*ActivatedWaterboxHost*/ obj, WriteCallback writer, IntPtr userdata, [Out]ReturnData /*void*/ ret);
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract void wbx_save_state(IntPtr /*ActivatedWaterboxHost*/ obj, WriteCallback writer, IntPtr userdata, ReturnData /*void*/ ret);
 		/// Load state.  Must not be called before seal.  Must not be called with any writable files mounted.
 		/// Must always be called with the same sequence and contents of readonly files that were in the save state.
 		/// Must be called with the same wbx executable and memory layout as in the savestate.
 		/// Errors generally poison the environment; sorry!
-		[BizImport(CallingConvention.Cdecl, Compatibility = true)]
-		public abstract void wbx_load_state(IntPtr /*ActivatedWaterboxHost*/ obj, ReadCallback reader, IntPtr userdata, [Out]ReturnData /*void*/ ret);
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract void wbx_load_state(IntPtr /*ActivatedWaterboxHost*/ obj, ReadCallback reader, IntPtr userdata, ReturnData /*void*/ ret);
 	}
 }

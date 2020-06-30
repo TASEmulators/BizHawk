@@ -73,6 +73,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		private IntPtr _nativeHost;
 		private IntPtr _activatedNativeHost;
 		private int _enterCount;
+		private object _keepAliveDelegate;
 
 		private static readonly WaterboxHostNative NativeImpl;
 		static WaterboxHost()
@@ -80,6 +81,19 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			NativeImpl = BizInvoker.GetInvoker<WaterboxHostNative>(
 				new DynamicLibraryImportResolver("waterboxhost.dll", eternal: true),
 				CallingConventionAdapters.Native);
+		}
+
+		private ReadCallback Reader(Stream s)
+		{
+			var ret = MakeCallbackForReader(s);
+			_keepAliveDelegate = s;
+			return ret;
+		}
+		private WriteCallback Writer(Stream s)
+		{
+			var ret = MakeCallbackForWriter(s);
+			_keepAliveDelegate = s;
+			return ret;
 		}
 
 		public WaterboxHost(WaterboxOptions opt)
@@ -109,7 +123,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			}
 
 			var retobj = new ReturnData();
-			NativeImpl.wbx_create_host(nativeOpts, opt.Filename, MakeCallbackForReader(new MemoryStream(data, false)), IntPtr.Zero, retobj);
+			NativeImpl.wbx_create_host(nativeOpts, opt.Filename, Reader(new MemoryStream(data, false)), IntPtr.Zero, retobj);
 			_nativeHost = retobj.GetDataOrThrow();
 		}
 
@@ -157,7 +171,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			using (this.EnterExit())
 			{
 				var retobj = new ReturnData();
-				NativeImpl.wbx_mount_file(_activatedNativeHost, name, MakeCallbackForReader(new MemoryStream(data, false)), IntPtr.Zero, false, retobj);
+				NativeImpl.wbx_mount_file(_activatedNativeHost, name, Reader(new MemoryStream(data, false)), IntPtr.Zero, false, retobj);
 				retobj.GetDataOrThrow();
 			}
 		}
@@ -185,7 +199,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			using (this.EnterExit())
 			{
 				var retobj = new ReturnData();
-				NativeImpl.wbx_mount_file(_activatedNativeHost, name, MakeCallbackForReader(new MemoryStream(data, false)), IntPtr.Zero, true, retobj);
+				NativeImpl.wbx_mount_file(_activatedNativeHost, name, Reader(new MemoryStream(data, false)), IntPtr.Zero, true, retobj);
 				retobj.GetDataOrThrow();
 			}
 		}
@@ -200,7 +214,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			{
 				var retobj = new ReturnData();
 				var ms = new MemoryStream();
-				NativeImpl.wbx_unmount_file(_activatedNativeHost, name, MakeCallbackForWriter(ms), IntPtr.Zero, retobj);
+				NativeImpl.wbx_unmount_file(_activatedNativeHost, name, Writer(ms), IntPtr.Zero, retobj);
 				retobj.GetDataOrThrow();
 				return ms.ToArray();
 			}
@@ -250,7 +264,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			using (this.EnterExit())
 			{
 				var retobj = new ReturnData();
-				NativeImpl.wbx_save_state(_activatedNativeHost, MakeCallbackForWriter(bw.BaseStream), IntPtr.Zero, retobj);
+				NativeImpl.wbx_save_state(_activatedNativeHost, Writer(bw.BaseStream), IntPtr.Zero, retobj);
 				retobj.GetDataOrThrow();
 			}
 		}
@@ -260,7 +274,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			using (this.EnterExit())
 			{
 				var retobj = new ReturnData();
-				NativeImpl.wbx_load_state(_activatedNativeHost, MakeCallbackForReader(br.BaseStream), IntPtr.Zero, retobj);
+				NativeImpl.wbx_load_state(_activatedNativeHost, Reader(br.BaseStream), IntPtr.Zero, retobj);
 				retobj.GetDataOrThrow();
 			}
 		}
