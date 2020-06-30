@@ -1,6 +1,4 @@
-﻿#nullable disable
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -13,18 +11,26 @@ namespace BizHawk.Common
 	{
 		private sealed class DefaultValueSetter
 		{
-			public Action<object, object[]> SetDefaultValues;
-			public object[] DefaultValues;
+			public readonly Action<object, object[]> SetDefaultValues;
+
+			public readonly object[] DefaultValues;
+
+			public DefaultValueSetter(Action<object, object[]> setDefaultValues, object[] defaultValues)
+			{
+				SetDefaultValues = setDefaultValues;
+				DefaultValues = defaultValues;
+			}
 		}
 
 
-		private static IDictionary<Type, DefaultValueSetter> DefaultValueSetters = new ConcurrentDictionary<Type, DefaultValueSetter>();
+		private static readonly IDictionary<Type, DefaultValueSetter> DefaultValueSetters = new ConcurrentDictionary<Type, DefaultValueSetter>();
 
 		/// <summary>
 		/// set all properties (not fields!) of obj with a DefaultValueAttribute to that value
 		/// </summary>
 		/// <param name="obj">the obj to act on</param>
 		public static void SetDefaultValues<T>(T obj)
+			where T : notnull
 		{
 			if (!DefaultValueSetters.TryGetValue(typeof(T), out var f))
 			{
@@ -34,7 +40,7 @@ namespace BizHawk.Common
 			f.SetDefaultValues(obj, f.DefaultValues);
 		}
 
-		private static Dictionary<Type, OpCode> IntTypes = new Dictionary<Type,OpCode>
+		private static readonly Dictionary<Type, OpCode> IntTypes = new Dictionary<Type,OpCode>
 		{
 			{ typeof(byte), OpCodes.Conv_U1 },
 			{ typeof(sbyte), OpCodes.Conv_I1 },
@@ -64,9 +70,9 @@ namespace BizHawk.Common
 				MethodInfo method = prop.GetSetMethod(true);
 				foreach (object attr in prop.GetCustomAttributes(true))
 				{
-					if (attr is DefaultValueAttribute)
+					if (attr is DefaultValueAttribute dvAttr)
 					{
-						object value = (attr as DefaultValueAttribute).Value;
+						var value = dvAttr.Value;
 						Type desiredType = method.GetParameters()[0].ParameterType;
 						Type sourceType = value.GetType();
 
@@ -98,11 +104,10 @@ namespace BizHawk.Common
 			}
 			il.Emit(OpCodes.Pop);
 			il.Emit(OpCodes.Ret);
-			return new DefaultValueSetter
-			{
-				SetDefaultValues = (Action<object, object[]>)dyn.CreateDelegate(typeof(Action<object, object[]>)),
-				DefaultValues = DefaultValues.ToArray()
-			};
+			return new DefaultValueSetter(
+				(Action<object, object[]>) dyn.CreateDelegate(typeof(Action<object, object[]>)),
+				DefaultValues.ToArray()
+			);
 		}
 	}
 }

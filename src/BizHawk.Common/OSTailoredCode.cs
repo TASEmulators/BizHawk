@@ -1,5 +1,3 @@
-#nullable disable
-
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
@@ -21,7 +19,7 @@ namespace BizHawk.Common
 
 		private static readonly Lazy<ILinkedLibManager> _LinkedLibManager = new Lazy<ILinkedLibManager>(() => CurrentOS switch
 		{
-			DistinctOS.Linux => (ILinkedLibManager) new UnixMonoLLManager(),
+			DistinctOS.Linux => new UnixMonoLLManager(),
 			DistinctOS.macOS => new UnixMonoLLManager(),
 			DistinctOS.Windows => new WindowsLLManager(),
 			_ => throw new ArgumentOutOfRangeException()
@@ -130,8 +128,8 @@ namespace BizHawk.Common
 		/// <param name="checkStdout">stdout is discarded if false</param>
 		/// <param name="checkStderr">stderr is discarded if false</param>
 		/// <remarks>OS is implicit and needs to be checked at callsite. Returned <see cref="Process"/> has not been started.</remarks>
-		public static Process ConstructSubshell(string cmd, string args, bool checkStdout = true, bool checkStderr = false) =>
-			new Process {
+		public static Process ConstructSubshell(string cmd, string args, bool checkStdout = true, bool checkStderr = false)
+			=> new Process {
 				StartInfo = new ProcessStartInfo {
 					Arguments = args,
 					CreateNoWindow = true,

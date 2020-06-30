@@ -1,4 +1,4 @@
-#nullable disable
+#nullable enable
 
 using System.IO;
 using System.Reflection;
@@ -14,7 +14,7 @@ internal static class VersionInfo
 	public const string HomePage = "http://tasvideos.org/BizHawk.html";
 	public static readonly bool DeveloperBuild = true;
 
-	public static readonly string CustomBuildString;
+	public static readonly string? CustomBuildString;
 
 	public static string GetEmuVersion()
 	{

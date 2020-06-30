@@ -1,5 +1,3 @@
-#nullable disable
-
 using System.Runtime.InteropServices;
 
 namespace BizHawk.Common
