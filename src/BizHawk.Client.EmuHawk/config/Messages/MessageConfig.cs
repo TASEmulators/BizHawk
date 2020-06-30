@@ -91,6 +91,7 @@ namespace BizHawk.Client.EmuHawk
 				if (position.Value == _fps)
 				{
 					row.Checked = true;
+					MessageEditor.Bind(position.Value, () => { row.SetText(); });
 				}
 				y += row.Size.Height;
 
