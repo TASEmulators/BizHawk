@@ -199,7 +199,7 @@ namespace BizHawk.Client.Common
 				var bytes = BitConverter.GetBytes(val);
 				var _float = BitConverter.ToSingle(bytes, 0);
 				return _float.ToString();
-			};
+			}
 
 			string FormatBinary()
 			{
@@ -209,7 +209,7 @@ namespace BizHawk.Client.Common
 					str = str.Insert(i, " ");
 				}
 				return str;
-			};
+			}
 
 			return Type switch
 			{

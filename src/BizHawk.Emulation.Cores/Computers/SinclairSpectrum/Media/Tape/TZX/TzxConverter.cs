@@ -1250,7 +1250,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				// get text length
 				int strLen = data[_position++];
 
-				string title = String.Empty;
+				string title = string.Empty;
 				title = "Info: ";
 
 				switch (type)
