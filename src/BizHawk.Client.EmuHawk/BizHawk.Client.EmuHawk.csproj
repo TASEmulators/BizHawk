@@ -147,6 +147,24 @@
 	<ItemGroup>
 		<Compile Update="ArchiveChooser.cs" SubType="Form" />
 		<Compile Update="ArchiveChooser.Designer.cs" DependentUpon="ArchiveChooser.cs" />
+		<Compile Update="config\Messages\ColorRow.cs">
+		  <SubType>UserControl</SubType>
+		</Compile>
+		<Compile Update="config\Messages\ColorRow.Designer.cs">
+		  <DependentUpon>ColorRow.cs</DependentUpon>
+		</Compile>
+		<Compile Update="config\Messages\MessageRow.cs">
+		  <SubType>UserControl</SubType>
+		</Compile>
+		<Compile Update="config\Messages\MessageRow.Designer.cs">
+		  <DependentUpon>MessageRow.cs</DependentUpon>
+		</Compile>
+		<Compile Update="config\Messages\MessageEdit.cs">
+		  <SubType>UserControl</SubType>
+		</Compile>
+		<Compile Update="config\Messages\MessageEdit.Designer.cs">
+		  <DependentUpon>MessageEdit.cs</DependentUpon>
+		</Compile>
 		<EmbeddedResource Update="ArchiveChooser.resx" DependentUpon="ArchiveChooser.cs" SubType="Designer" />
 		<Compile Update="AVOut/FFmpegWriterForm.cs" SubType="Form" />
 		<Compile Update="AVOut/FFmpegWriterForm.Designer.cs" DependentUpon="FFmpegWriterForm.cs" />
@@ -258,9 +276,15 @@
 		<Compile Update="config/INTV/IntvControllerSettings.cs" SubType="Form" />
 		<Compile Update="config/INTV/IntvControllerSettings.Designer.cs" DependentUpon="IntvControllerSettings.cs" />
 		<EmbeddedResource Update="config/INTV/IntvControllerSettings.resx" DependentUpon="IntvControllerSettings.cs" />
-		<Compile Update="config/MessageConfig.cs" SubType="Form" />
-		<Compile Update="config/MessageConfig.Designer.cs" DependentUpon="MessageConfig.cs" />
-		<EmbeddedResource Update="config/MessageConfig.resx" DependentUpon="MessageConfig.cs" SubType="Designer" />
+		<Compile Update="config\Messages\MessageConfig.cs" SubType="Form" />
+		<Compile Update="config\Messages\MessageConfig.Designer.cs" DependentUpon="MessageConfig.cs" />
+		<EmbeddedResource Update="config\Messages\ColorRow.resx">
+		  <DependentUpon>ColorRow.cs</DependentUpon>
+		</EmbeddedResource>
+		<EmbeddedResource Update="config\Messages\MessageRow.resx">
+		  <DependentUpon>MessageRow.cs</DependentUpon>
+		</EmbeddedResource>
+		<EmbeddedResource Update="config\Messages\MessageConfig.resx" DependentUpon="MessageConfig.cs" SubType="Designer" />
 		<Compile Update="config/N64/N64ControllerSettingControl.cs" SubType="UserControl" />
 		<Compile Update="config/N64/N64ControllerSettingControl.Designer.cs" DependentUpon="N64ControllerSettingControl.cs" />
 		<EmbeddedResource Update="config/N64/N64ControllerSettingControl.resx" DependentUpon="N64ControllerSettingControl.cs" />
