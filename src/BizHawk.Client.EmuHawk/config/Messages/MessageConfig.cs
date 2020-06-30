@@ -68,12 +68,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MessageConfig_Load(object sender, EventArgs e)
 		{
-			MessageColorDialog.Color = Color.FromArgb(_messageColor);
-			AlertColorDialog.Color = Color.FromArgb(_alertColor);
-			LInputColorDialog.Color = Color.FromArgb(_lastInputColor);
-			MovieInputColorDialog.Color = Color.FromArgb(_movieInput);
-
 			CreateMessageRows();
+			CreateColorBoxes();
 			StackMessagesCheckbox.Checked = _config.StackOSDMessages;
 		}
 
@@ -105,6 +101,21 @@ namespace BizHawk.Client.EmuHawk
 				y += row.Size.Height;
 
 				MessageTypeBox.Controls.Add(row);
+			}
+		}
+
+		private void CreateColorBoxes()
+		{
+			groupBox2.Controls.Clear();
+			int y = 12;
+			foreach (var color in Colors)
+			{
+				var row = new ColorRow {  Location = new Point(10, y) };
+				row.Size = new Size(groupBox2.Width - 12, row.Size.Height);
+				row.Bind(color.Key, color.Value);
+
+				y += row.Size.Height;
+				groupBox2.Controls.Add(row);
 			}
 		}
 		
@@ -150,13 +161,8 @@ namespace BizHawk.Client.EmuHawk
 			_lastInputColor = _config.LastInputColor = DefaultMessagePositions.LastInputColor;
 			_movieInput = _config.MovieInput = DefaultMessagePositions.MovieInput;
 
-			MessageColorDialog.Color = Color.FromArgb(_messageColor);
-			AlertColorDialog.Color = Color.FromArgb(_alertColor);
-			LInputColorDialog.Color = Color.FromArgb(_lastInputColor);
-			MovieInputColorDialog.Color = Color.FromArgb(_movieInput);
-
 			CreateMessageRows();
-			// TODO
+			CreateColorBoxes();
 			StackMessagesCheckbox.Checked = _config.StackOSDMessages = true;
 		}
 	}

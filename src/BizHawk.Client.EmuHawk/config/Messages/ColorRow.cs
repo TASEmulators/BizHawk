@@ -1,5 +1,4 @@
-﻿using BizHawk.Client.Common;
-using System;
+﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -15,7 +14,7 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 		}
 
-		public void Bind(string displayName, ref int color)
+		public void Bind(string displayName, int color)
 		{
 			DisplayNameLabel.Text = displayName;
 			_color = color;
@@ -30,7 +29,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ColorPanel_Click(object sender, EventArgs e)
 		{
-			using var colorPicker = new ColorDialog { FullOpen = true };
+			using var colorPicker = new ColorDialog 
+			{ 
+				FullOpen = true, Color = Color.FromArgb(_color)
+			};
+
 			if (colorPicker.ShowDialog().IsOk())
 			{
 				_color = colorPicker.Color.ToArgb();

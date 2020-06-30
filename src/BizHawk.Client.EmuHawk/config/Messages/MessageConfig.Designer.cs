@@ -31,12 +31,8 @@
             this.OK = new System.Windows.Forms.Button();
             this.MessageTypeBox = new System.Windows.Forms.GroupBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.MessageColorDialog = new System.Windows.Forms.ColorDialog();
             this.Cancel = new System.Windows.Forms.Button();
             this.ResetDefaultsButton = new System.Windows.Forms.Button();
-            this.AlertColorDialog = new System.Windows.Forms.ColorDialog();
-            this.LInputColorDialog = new System.Windows.Forms.ColorDialog();
-            this.MovieInputColorDialog = new System.Windows.Forms.ColorDialog();
             this.StackMessagesCheckbox = new System.Windows.Forms.CheckBox();
             this.MessageEditor = new BizHawk.Client.EmuHawk.MessageEdit();
             this.SuspendLayout();
@@ -71,10 +67,6 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Message Colors";
             // 
-            // MessageColorDialog
-            // 
-            this.MessageColorDialog.FullOpen = true;
-            // 
             // Cancel
             // 
             this.Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -97,18 +89,6 @@
             this.ResetDefaultsButton.Text = "Restore Defaults";
             this.ResetDefaultsButton.UseVisualStyleBackColor = true;
             this.ResetDefaultsButton.Click += new System.EventHandler(this.ResetDefaultsButton_Click);
-            // 
-            // AlertColorDialog
-            // 
-            this.AlertColorDialog.FullOpen = true;
-            // 
-            // LInputColorDialog
-            // 
-            this.LInputColorDialog.FullOpen = true;
-            // 
-            // MovieInputColorDialog
-            // 
-            this.MovieInputColorDialog.FullOpen = true;
             // 
             // StackMessagesCheckbox
             // 
@@ -159,12 +139,8 @@
 		private System.Windows.Forms.Button OK;
 		private System.Windows.Forms.GroupBox MessageTypeBox;
 		private System.Windows.Forms.GroupBox groupBox2;
-		private System.Windows.Forms.ColorDialog MessageColorDialog;
 		private System.Windows.Forms.Button Cancel;
 		private System.Windows.Forms.Button ResetDefaultsButton;
-		private System.Windows.Forms.ColorDialog AlertColorDialog;
-		private System.Windows.Forms.ColorDialog LInputColorDialog;
-		private System.Windows.Forms.ColorDialog MovieInputColorDialog;
 		private System.Windows.Forms.CheckBox StackMessagesCheckbox;
 		private MessageEdit MessageEditor;
 	}
