@@ -281,9 +281,9 @@ namespace BizHawk.Client.EmuHawk
 					g.DrawString(input, MessageFont, c, point.X, point.Y);
 				}
 
-				else // TODO: message config -- allow setting of "previous", "mixed", and "auto"
+				else // TODO: message config -- allow setting of "mixed", and "auto"
 				{
-					var previousColor = Color.Orange;
+					var previousColor = Color.FromArgb(GlobalWin.Config.LastInputColor);
 					Color immediateColor = Color.FromArgb(GlobalWin.Config.MessagesColor);
 					var autoColor = Color.Pink;
 					var changedColor = Color.PeachPuff;
