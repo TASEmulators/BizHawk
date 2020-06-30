@@ -42,6 +42,7 @@
             this.RowRadio.TabStop = true;
             this.RowRadio.Text = "Frame Counter";
             this.RowRadio.UseVisualStyleBackColor = true;
+            this.RowRadio.CheckedChanged += new System.EventHandler(this.RowRadio_CheckedChanged);
             // 
             // LocationLabel
             // 
