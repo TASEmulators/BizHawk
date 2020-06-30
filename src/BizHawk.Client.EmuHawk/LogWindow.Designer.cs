@@ -155,7 +155,7 @@
 			this.MainMenuStrip = this.MenuStrip;
 			this.MinimumSize = new System.Drawing.Size(171, 97);
 			this.Name = "LogWindow";
-			this.ShowIcon = false;
+			this.ShowIcon = true;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Log Window";
 			this.Load += new System.EventHandler(this.LogWindow_Load);
