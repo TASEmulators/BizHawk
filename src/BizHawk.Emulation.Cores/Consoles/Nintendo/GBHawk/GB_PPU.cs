@@ -120,8 +120,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					break;
 				case 0xFF4A: // WY
 					window_y = value;
-					if (!window_started) 
-					{ 
+					if (!window_started && (!LCDC.Bit(7) || (value > LY))) 
+					{
 						window_y_latch = window_y;
 						window_y_tile = 0;
 						window_y_tile_inc = 0;
