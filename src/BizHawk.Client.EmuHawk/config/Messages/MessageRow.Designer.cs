@@ -28,20 +28,14 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-            this.RowRadio = new System.Windows.Forms.RadioButton();
+            this.RowRadio = new BizHawk.WinForms.Controls.RadioButtonEx();
             this.LocationLabel = new BizHawk.WinForms.Controls.LocLabelEx();
             this.SuspendLayout();
             // 
             // RowRadio
             // 
-            this.RowRadio.AutoSize = true;
-            this.RowRadio.Location = new System.Drawing.Point(3, 5);
             this.RowRadio.Name = "RowRadio";
-            this.RowRadio.Size = new System.Drawing.Size(94, 17);
-            this.RowRadio.TabIndex = 0;
-            this.RowRadio.TabStop = true;
             this.RowRadio.Text = "Frame Counter";
-            this.RowRadio.UseVisualStyleBackColor = true;
             this.RowRadio.CheckedChanged += new System.EventHandler(this.RowRadio_CheckedChanged);
             // 
             // LocationLabel
@@ -67,7 +61,7 @@
 
 		#endregion
 
-		private System.Windows.Forms.RadioButton RowRadio;
+		private BizHawk.WinForms.Controls.RadioButtonEx RowRadio;
 		private WinForms.Controls.LocLabelEx LocationLabel;
 	}
 }
