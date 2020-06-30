@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using BizHawk.Client.Common;
@@ -17,6 +18,18 @@ namespace BizHawk.Client.EmuHawk
 		private MessagePosition _messages;
 		private MessagePosition _autohold;
 		private MessagePosition _ramWatches;
+
+		private Dictionary<string, MessagePosition> Positions => new Dictionary<string, MessagePosition>
+		{
+			["Fps"] = _fps,
+			["Frame Counter"] = _frameCounter,
+			["Lag Counter"] = _lagCounter,
+			["Input Display"] = _inputDisplay,
+			["Watches"] = _ramWatches,
+			["Messages"] = _messages,
+			["Rerecords"] = _reRecordCounter,
+			["Autohold"] = _autohold
+		};
 
 		private int _messageColor;
 		private int _alertColor;
@@ -51,10 +64,30 @@ namespace BizHawk.Client.EmuHawk
 			LInputColorDialog.Color = Color.FromArgb(_lastInputColor);
 			MovieInputColorDialog.Color = Color.FromArgb(_movieInput);
 
-			SetPositionLabels();
+			CreateMessageRows();
+			//SetPositionLabels();
 			SetColorBox();
-			SetPositionInfo();
+			//TODO: SetPositionInfo();
 			StackMessagesCheckbox.Checked = _config.StackOSDMessages;
+		}
+
+		private void CreateMessageRows()
+		{
+			void SetMessagePosition(MessagePosition position)
+			{
+				MessageEditor.Bind(position, () => { });
+			}
+
+			int y = 12;
+			foreach (var position in Positions)
+			{
+				var row = new MessageRow { Location = new Point(10, y) };
+				row.Size = new Size(MessageTypeBox.Width - 10, row.Size.Height);
+				row.Bind(position.Key, position.Value, SetMessagePosition);
+				y += row.Size.Height;
+
+				MessageTypeBox.Controls.Add(row);
+			}
 		}
 
 		private void SetColorBox()
@@ -81,41 +114,41 @@ namespace BizHawk.Client.EmuHawk
 			MessageEditor.Bind(position, () => { label.Text = position.ToCoordinateStr(); });
 		}
 
-		private void SetPositionInfo()
-		{
-			if (FPSRadio.Checked)
-			{
-				SetFromOption(_fps, FpsPosLabel);
-			}
-			else if (FrameCounterRadio.Checked)
-			{
-				SetFromOption(_frameCounter, FCLabel);
-			}
-			else if (LagCounterRadio.Checked)
-			{
-				SetFromOption(_lagCounter, LagLabel);
-			}
-			else if (InputDisplayRadio.Checked)
-			{
-				SetFromOption(_inputDisplay, InpLabel);
-			}
-			else if (WatchesRadio.Checked)
-			{
-				SetFromOption(_ramWatches, WatchesLabel);
-			}
-			else if (MessagesRadio.Checked)
-			{
-				SetFromOption(_messages, WatchesLabel);
-			}
-			else if (RerecordsRadio.Checked)
-			{
-				SetFromOption(_reRecordCounter, RerecLabel);
-			}
-			else if (AutoholdRadio.Checked)
-			{
-				SetFromOption(_autohold, AutoholdLabel);
-			}
-		}
+		//private void SetPositionInfo()
+		//{
+		//	if (FPSRadio.Checked)
+		//	{
+		//		SetFromOption(_fps, FpsPosLabel);
+		//	}
+		//	else if (FrameCounterRadio.Checked)
+		//	{
+		//		SetFromOption(_frameCounter, FCLabel);
+		//	}
+		//	else if (LagCounterRadio.Checked)
+		//	{
+		//		SetFromOption(_lagCounter, LagLabel);
+		//	}
+		//	else if (InputDisplayRadio.Checked)
+		//	{
+		//		SetFromOption(_inputDisplay, InpLabel);
+		//	}
+		//	else if (WatchesRadio.Checked)
+		//	{
+		//		SetFromOption(_ramWatches, WatchesLabel);
+		//	}
+		//	else if (MessagesRadio.Checked)
+		//	{
+		//		SetFromOption(_messages, WatchesLabel);
+		//	}
+		//	else if (RerecordsRadio.Checked)
+		//	{
+		//		SetFromOption(_reRecordCounter, RerecLabel);
+		//	}
+		//	else if (AutoholdRadio.Checked)
+		//	{
+		//		SetFromOption(_autohold, AutoholdLabel);
+		//	}
+		//}
 
 		private void Ok_Click(object sender, EventArgs e)
 		{
@@ -143,23 +176,6 @@ namespace BizHawk.Client.EmuHawk
 			Close();
 		}
 
-		private void MessageTypeRadio_CheckedChanged(object sender, EventArgs e)
-		{
-			SetPositionInfo();
-		}
-
-		private void SetPositionLabels()
-		{
-			FpsPosLabel.Text = _fps.ToCoordinateStr();
-			FCLabel.Text = _frameCounter.ToCoordinateStr();
-			LagLabel.Text = _lagCounter.ToCoordinateStr();
-			InpLabel.Text = _inputDisplay.ToCoordinateStr();
-			WatchesLabel.Text = _ramWatches.ToCoordinateStr();
-			RerecLabel.Text = _reRecordCounter.ToCoordinateStr();
-			MessLabel.Text = _messages.ToCoordinateStr();
-			AutoholdLabel.Text = _autohold.ToCoordinateStr();
-		}
-
 		private void ResetDefaultsButton_Click(object sender, EventArgs e)
 		{
 			_fps = _config.Fps = DefaultMessagePositions.Fps.Clone();
@@ -181,9 +197,9 @@ namespace BizHawk.Client.EmuHawk
 			LInputColorDialog.Color = Color.FromArgb(_lastInputColor);
 			MovieInputColorDialog.Color = Color.FromArgb(_movieInput);
 
-			SetPositionLabels();
+			//TODO: SetPositionLabels();
 			SetColorBox();
-			SetPositionInfo();
+			//TODO: SetPositionInfo();
 
 			StackMessagesCheckbox.Checked = _config.StackOSDMessages = true;
 		}

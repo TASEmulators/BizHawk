@@ -30,22 +30,6 @@
 		{
             this.OK = new System.Windows.Forms.Button();
             this.MessageTypeBox = new System.Windows.Forms.GroupBox();
-            this.WatchesLabel = new BizHawk.WinForms.Controls.LocLabelEx();
-            this.WatchesRadio = new System.Windows.Forms.RadioButton();
-            this.AutoholdLabel = new BizHawk.WinForms.Controls.LocLabelEx();
-            this.AutoholdRadio = new System.Windows.Forms.RadioButton();
-            this.RerecLabel = new BizHawk.WinForms.Controls.LocLabelEx();
-            this.RerecordsRadio = new System.Windows.Forms.RadioButton();
-            this.MessLabel = new BizHawk.WinForms.Controls.LocLabelEx();
-            this.InpLabel = new BizHawk.WinForms.Controls.LocLabelEx();
-            this.LagLabel = new BizHawk.WinForms.Controls.LocLabelEx();
-            this.FCLabel = new BizHawk.WinForms.Controls.LocLabelEx();
-            this.FpsPosLabel = new BizHawk.WinForms.Controls.LocLabelEx();
-            this.MessagesRadio = new System.Windows.Forms.RadioButton();
-            this.InputDisplayRadio = new System.Windows.Forms.RadioButton();
-            this.LagCounterRadio = new System.Windows.Forms.RadioButton();
-            this.FrameCounterRadio = new System.Windows.Forms.RadioButton();
-            this.FPSRadio = new System.Windows.Forms.RadioButton();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.label12 = new BizHawk.WinForms.Controls.LocLabelEx();
             this.MovieInputText = new System.Windows.Forms.TextBox();
@@ -71,7 +55,6 @@
             this.MovieInputColorDialog = new System.Windows.Forms.ColorDialog();
             this.StackMessagesCheckbox = new System.Windows.Forms.CheckBox();
             this.MessageEditor = new BizHawk.Client.EmuHawk.MessageEdit();
-            this.MessageTypeBox.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -88,174 +71,12 @@
             // 
             // MessageTypeBox
             // 
-            this.MessageTypeBox.Controls.Add(this.WatchesLabel);
-            this.MessageTypeBox.Controls.Add(this.WatchesRadio);
-            this.MessageTypeBox.Controls.Add(this.AutoholdLabel);
-            this.MessageTypeBox.Controls.Add(this.AutoholdRadio);
-            this.MessageTypeBox.Controls.Add(this.RerecLabel);
-            this.MessageTypeBox.Controls.Add(this.RerecordsRadio);
-            this.MessageTypeBox.Controls.Add(this.MessLabel);
-            this.MessageTypeBox.Controls.Add(this.InpLabel);
-            this.MessageTypeBox.Controls.Add(this.LagLabel);
-            this.MessageTypeBox.Controls.Add(this.FCLabel);
-            this.MessageTypeBox.Controls.Add(this.FpsPosLabel);
-            this.MessageTypeBox.Controls.Add(this.MessagesRadio);
-            this.MessageTypeBox.Controls.Add(this.InputDisplayRadio);
-            this.MessageTypeBox.Controls.Add(this.LagCounterRadio);
-            this.MessageTypeBox.Controls.Add(this.FrameCounterRadio);
-            this.MessageTypeBox.Controls.Add(this.FPSRadio);
             this.MessageTypeBox.Location = new System.Drawing.Point(12, 12);
             this.MessageTypeBox.Name = "MessageTypeBox";
             this.MessageTypeBox.Size = new System.Drawing.Size(177, 211);
             this.MessageTypeBox.TabIndex = 2;
             this.MessageTypeBox.TabStop = false;
             this.MessageTypeBox.Text = "Message Type";
-            // 
-            // WatchesLabel
-            // 
-            this.WatchesLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.WatchesLabel.Location = new System.Drawing.Point(126, 116);
-            this.WatchesLabel.Name = "WatchesLabel";
-            this.WatchesLabel.Text = "255, 255";
-            // 
-            // WatchesRadio
-            // 
-            this.WatchesRadio.AutoSize = true;
-            this.WatchesRadio.Location = new System.Drawing.Point(6, 114);
-            this.WatchesRadio.Name = "WatchesRadio";
-            this.WatchesRadio.Size = new System.Drawing.Size(68, 17);
-            this.WatchesRadio.TabIndex = 16;
-            this.WatchesRadio.Text = "Watches";
-            this.WatchesRadio.UseVisualStyleBackColor = true;
-            // 
-            // AutoholdLabel
-            // 
-            this.AutoholdLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.AutoholdLabel.Location = new System.Drawing.Point(126, 185);
-            this.AutoholdLabel.Name = "AutoholdLabel";
-            this.AutoholdLabel.Text = "255, 255";
-            // 
-            // AutoholdRadio
-            // 
-            this.AutoholdRadio.AutoSize = true;
-            this.AutoholdRadio.Location = new System.Drawing.Point(6, 186);
-            this.AutoholdRadio.Name = "AutoholdRadio";
-            this.AutoholdRadio.Size = new System.Drawing.Size(67, 17);
-            this.AutoholdRadio.TabIndex = 14;
-            this.AutoholdRadio.TabStop = true;
-            this.AutoholdRadio.Text = "Autohold";
-            this.AutoholdRadio.UseVisualStyleBackColor = true;
-            this.AutoholdRadio.CheckedChanged += new System.EventHandler(this.MessageTypeRadio_CheckedChanged);
-            // 
-            // RerecLabel
-            // 
-            this.RerecLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.RerecLabel.Location = new System.Drawing.Point(126, 161);
-            this.RerecLabel.Name = "RerecLabel";
-            this.RerecLabel.Text = "255, 255";
-            // 
-            // RerecordsRadio
-            // 
-            this.RerecordsRadio.AutoSize = true;
-            this.RerecordsRadio.Location = new System.Drawing.Point(6, 162);
-            this.RerecordsRadio.Name = "RerecordsRadio";
-            this.RerecordsRadio.Size = new System.Drawing.Size(74, 17);
-            this.RerecordsRadio.TabIndex = 10;
-            this.RerecordsRadio.Text = "Rerecords";
-            this.RerecordsRadio.UseVisualStyleBackColor = true;
-            this.RerecordsRadio.CheckedChanged += new System.EventHandler(this.MessageTypeRadio_CheckedChanged);
-            // 
-            // MessLabel
-            // 
-            this.MessLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.MessLabel.Location = new System.Drawing.Point(126, 137);
-            this.MessLabel.Name = "MessLabel";
-            this.MessLabel.Text = "255, 255";
-            // 
-            // InpLabel
-            // 
-            this.InpLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.InpLabel.Location = new System.Drawing.Point(126, 92);
-            this.InpLabel.Name = "InpLabel";
-            this.InpLabel.Text = "255, 255";
-            // 
-            // LagLabel
-            // 
-            this.LagLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.LagLabel.Location = new System.Drawing.Point(126, 68);
-            this.LagLabel.Name = "LagLabel";
-            this.LagLabel.Text = "255, 255";
-            // 
-            // FCLabel
-            // 
-            this.FCLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.FCLabel.Location = new System.Drawing.Point(126, 44);
-            this.FCLabel.Name = "FCLabel";
-            this.FCLabel.Text = "255, 255";
-            // 
-            // FpsPosLabel
-            // 
-            this.FpsPosLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.FpsPosLabel.Location = new System.Drawing.Point(126, 20);
-            this.FpsPosLabel.Name = "FpsPosLabel";
-            this.FpsPosLabel.Text = "255, 255";
-            // 
-            // MessagesRadio
-            // 
-            this.MessagesRadio.AutoSize = true;
-            this.MessagesRadio.Location = new System.Drawing.Point(6, 138);
-            this.MessagesRadio.Name = "MessagesRadio";
-            this.MessagesRadio.Size = new System.Drawing.Size(73, 17);
-            this.MessagesRadio.TabIndex = 4;
-            this.MessagesRadio.Text = "Messages";
-            this.MessagesRadio.UseVisualStyleBackColor = true;
-            this.MessagesRadio.CheckedChanged += new System.EventHandler(this.MessageTypeRadio_CheckedChanged);
-            // 
-            // InputDisplayRadio
-            // 
-            this.InputDisplayRadio.AutoSize = true;
-            this.InputDisplayRadio.Location = new System.Drawing.Point(6, 90);
-            this.InputDisplayRadio.Name = "InputDisplayRadio";
-            this.InputDisplayRadio.Size = new System.Drawing.Size(86, 17);
-            this.InputDisplayRadio.TabIndex = 3;
-            this.InputDisplayRadio.Text = "Input Display";
-            this.InputDisplayRadio.UseVisualStyleBackColor = true;
-            this.InputDisplayRadio.CheckedChanged += new System.EventHandler(this.MessageTypeRadio_CheckedChanged);
-            // 
-            // LagCounterRadio
-            // 
-            this.LagCounterRadio.AutoSize = true;
-            this.LagCounterRadio.Location = new System.Drawing.Point(6, 66);
-            this.LagCounterRadio.Name = "LagCounterRadio";
-            this.LagCounterRadio.Size = new System.Drawing.Size(83, 17);
-            this.LagCounterRadio.TabIndex = 2;
-            this.LagCounterRadio.Text = "Lag Counter";
-            this.LagCounterRadio.UseVisualStyleBackColor = true;
-            this.LagCounterRadio.CheckedChanged += new System.EventHandler(this.MessageTypeRadio_CheckedChanged);
-            // 
-            // FrameCounterRadio
-            // 
-            this.FrameCounterRadio.AutoSize = true;
-            this.FrameCounterRadio.Location = new System.Drawing.Point(6, 42);
-            this.FrameCounterRadio.Name = "FrameCounterRadio";
-            this.FrameCounterRadio.Size = new System.Drawing.Size(93, 17);
-            this.FrameCounterRadio.TabIndex = 1;
-            this.FrameCounterRadio.Text = "Frame counter";
-            this.FrameCounterRadio.UseVisualStyleBackColor = true;
-            this.FrameCounterRadio.CheckedChanged += new System.EventHandler(this.MessageTypeRadio_CheckedChanged);
-            // 
-            // FPSRadio
-            // 
-            this.FPSRadio.AutoSize = true;
-            this.FPSRadio.Checked = true;
-            this.FPSRadio.Location = new System.Drawing.Point(6, 18);
-            this.FPSRadio.Name = "FPSRadio";
-            this.FPSRadio.Size = new System.Drawing.Size(42, 17);
-            this.FPSRadio.TabIndex = 0;
-            this.FPSRadio.TabStop = true;
-            this.FPSRadio.Text = "Fps";
-            this.FPSRadio.UseVisualStyleBackColor = true;
-            this.FPSRadio.CheckedChanged += new System.EventHandler(this.MessageTypeRadio_CheckedChanged);
             // 
             // groupBox2
             // 
@@ -485,8 +306,6 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Configure On Screen Messages";
             this.Load += new System.EventHandler(this.MessageConfig_Load);
-            this.MessageTypeBox.ResumeLayout(false);
-            this.MessageTypeBox.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
@@ -498,19 +317,9 @@
 
 		private System.Windows.Forms.Button OK;
 		private System.Windows.Forms.GroupBox MessageTypeBox;
-		private System.Windows.Forms.RadioButton MessagesRadio;
-		private System.Windows.Forms.RadioButton InputDisplayRadio;
-		private System.Windows.Forms.RadioButton LagCounterRadio;
-		private System.Windows.Forms.RadioButton FrameCounterRadio;
-		private System.Windows.Forms.RadioButton FPSRadio;
 		private System.Windows.Forms.GroupBox groupBox2;
 		private System.Windows.Forms.ColorDialog MessageColorDialog;
 		private System.Windows.Forms.Button Cancel;
-		private BizHawk.WinForms.Controls.LocLabelEx MessLabel;
-		private BizHawk.WinForms.Controls.LocLabelEx InpLabel;
-		private BizHawk.WinForms.Controls.LocLabelEx LagLabel;
-		private BizHawk.WinForms.Controls.LocLabelEx FCLabel;
-		private BizHawk.WinForms.Controls.LocLabelEx FpsPosLabel;
 		private System.Windows.Forms.Button ResetDefaultsButton;
 		private System.Windows.Forms.TextBox ColorText;
 		private BizHawk.WinForms.Controls.LocLabelEx label3;
@@ -525,8 +334,6 @@
 		private System.Windows.Forms.Panel LInputColorPanel;
 		private System.Windows.Forms.ColorDialog AlertColorDialog;
 		private System.Windows.Forms.ColorDialog LInputColorDialog;
-		private BizHawk.WinForms.Controls.LocLabelEx RerecLabel;
-		private System.Windows.Forms.RadioButton RerecordsRadio;
 		private System.Windows.Forms.Panel ColorPanel;
 		private System.Windows.Forms.TextBox MovieInputText;
 		private BizHawk.WinForms.Controls.LocLabelEx label11;
@@ -534,10 +341,6 @@
 		private BizHawk.WinForms.Controls.LocLabelEx label12;
 		private System.Windows.Forms.ColorDialog MovieInputColorDialog;
 		private System.Windows.Forms.CheckBox StackMessagesCheckbox;
-		private BizHawk.WinForms.Controls.LocLabelEx AutoholdLabel;
-		private System.Windows.Forms.RadioButton AutoholdRadio;
-		private BizHawk.WinForms.Controls.LocLabelEx WatchesLabel;
-		private System.Windows.Forms.RadioButton WatchesRadio;
 		private MessageEdit MessageEditor;
 	}
 }

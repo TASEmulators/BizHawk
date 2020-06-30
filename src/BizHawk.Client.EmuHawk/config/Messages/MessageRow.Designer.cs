@@ -35,7 +35,7 @@
             // RowRadio
             // 
             this.RowRadio.AutoSize = true;
-            this.RowRadio.Location = new System.Drawing.Point(3, 3);
+            this.RowRadio.Location = new System.Drawing.Point(3, 5);
             this.RowRadio.Name = "RowRadio";
             this.RowRadio.Size = new System.Drawing.Size(94, 17);
             this.RowRadio.TabIndex = 0;
@@ -48,7 +48,7 @@
             // 
             this.LocationLabel.AllowDrop = true;
             this.LocationLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.LocationLabel.Location = new System.Drawing.Point(156, 5);
+            this.LocationLabel.Location = new System.Drawing.Point(170, 7);
             this.LocationLabel.Name = "LocationLabel";
             this.LocationLabel.Text = "255, 255";
             // 
@@ -59,7 +59,7 @@
             this.Controls.Add(this.LocationLabel);
             this.Controls.Add(this.RowRadio);
             this.Name = "MessageRow";
-            this.Size = new System.Drawing.Size(224, 31);
+            this.Size = new System.Drawing.Size(224, 28);
             this.ResumeLayout(false);
             this.PerformLayout();
 
