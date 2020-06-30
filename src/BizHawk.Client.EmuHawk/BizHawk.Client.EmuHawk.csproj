@@ -147,6 +147,12 @@
 	<ItemGroup>
 		<Compile Update="ArchiveChooser.cs" SubType="Form" />
 		<Compile Update="ArchiveChooser.Designer.cs" DependentUpon="ArchiveChooser.cs" />
+		<Compile Update="config\Messages\ColorRow.cs">
+		  <SubType>UserControl</SubType>
+		</Compile>
+		<Compile Update="config\Messages\ColorRow.Designer.cs">
+		  <DependentUpon>ColorRow.cs</DependentUpon>
+		</Compile>
 		<Compile Update="config\Messages\MessageRow.cs">
 		  <SubType>UserControl</SubType>
 		</Compile>
@@ -272,6 +278,9 @@
 		<EmbeddedResource Update="config/INTV/IntvControllerSettings.resx" DependentUpon="IntvControllerSettings.cs" />
 		<Compile Update="config\Messages\MessageConfig.cs" SubType="Form" />
 		<Compile Update="config\Messages\MessageConfig.Designer.cs" DependentUpon="MessageConfig.cs" />
+		<EmbeddedResource Update="config\Messages\ColorRow.resx">
+		  <DependentUpon>ColorRow.cs</DependentUpon>
+		</EmbeddedResource>
 		<EmbeddedResource Update="config\Messages\MessageRow.resx">
 		  <DependentUpon>MessageRow.cs</DependentUpon>
 		</EmbeddedResource>
