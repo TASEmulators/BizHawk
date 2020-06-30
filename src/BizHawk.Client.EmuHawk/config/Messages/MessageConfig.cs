@@ -32,18 +32,15 @@ namespace BizHawk.Client.EmuHawk
 			["Autohold"] = _autohold
 		};
 
-		private int _messageColor;
-		private int _alertColor;
-		private int _lastInputColor;
-		private int _movieInput;
-
 		private Dictionary<string, int> Colors => new Dictionary<string, int>
 		{
-			["Main Messages"] = _messageColor,
-			["Alert Messages"] = _alertColor,
-			["Previous Frame Input"] = _lastInputColor,
-			["Movie Input"] = _movieInput
+			["Main Messages"] = _config.MessagesColor,
+			["Alert Messages"] = _config.AlertMessageColor,
+			["Previous Frame Input"] = _config.LastInputColor,
+			["Movie Input"] = _config.MovieInput
 		};
+
+		private IEnumerable<ColorRow> ColorRows => ColorBox.Controls.OfType<ColorRow>();
 
 		public MessageConfig(Config config)
 		{
@@ -56,12 +53,7 @@ namespace BizHawk.Client.EmuHawk
 			_reRecordCounter = _config.ReRecordCounter.Clone();
 			_messages = _config.Messages.Clone();
 			_autohold = _config.Autohold.Clone();
-			_ramWatches = _config.RamWatches.Clone();
-
-			_messageColor = _config.MessagesColor;
-			_alertColor = _config.AlertMessageColor;
-			_lastInputColor = _config.LastInputColor;
-			_movieInput = _config.MovieInput;
+			_ramWatches = _config.RamWatches.Clone();	
 
 			InitializeComponent();
 		}
@@ -90,7 +82,11 @@ namespace BizHawk.Client.EmuHawk
 			int y = 12;
 			foreach (var position in Positions)
 			{
-				var row = new MessageRow { Location = new Point(10, y) };
+				var row = new MessageRow 
+				{ 
+					Name = position.Key,
+					Location = new Point(10, y)
+				};
 				row.Size = new Size(MessageTypeBox.Width - 12, row.Size.Height);
 				row.Bind(position.Key, position.Value, (e) => { SetMessagePosition(row, e); });
 				if (position.Value == _fps)
@@ -110,7 +106,11 @@ namespace BizHawk.Client.EmuHawk
 			int y = 12;
 			foreach (var color in Colors)
 			{
-				var row = new ColorRow {  Location = new Point(10, y) };
+				var row = new ColorRow 
+				{
+					Name = color.Key,
+					Location = new Point(10, y) 
+				};
 				row.Size = new Size(ColorBox.Width - 12, row.Size.Height);
 				row.Bind(color.Key, color.Value);
 
@@ -130,10 +130,10 @@ namespace BizHawk.Client.EmuHawk
 			_config.Autohold = _autohold;
 			_config.RamWatches = _ramWatches;
 
-			_config.MessagesColor = _messageColor;
-			_config.AlertMessageColor = _alertColor;
-			_config.LastInputColor = _lastInputColor;
-			_config.MovieInput = _movieInput;
+			_config.MessagesColor = ColorRows.Single(r => r.Name == "Main Messages").SelectedColor;
+			_config.AlertMessageColor = ColorRows.Single(r => r.Name == "Alert Messages").SelectedColor;
+			_config.LastInputColor = ColorRows.Single(r => r.Name == "Previous Frame Input").SelectedColor;
+			_config.MovieInput = ColorRows.Single(r => r.Name == "Movie Input").SelectedColor;
 
 			_config.StackOSDMessages = StackMessagesCheckbox.Checked;
 			DialogResult = DialogResult.OK;
@@ -156,10 +156,10 @@ namespace BizHawk.Client.EmuHawk
 			_autohold = _config.Autohold = DefaultMessagePositions.Autohold.Clone();
 			_ramWatches = _config.RamWatches = DefaultMessagePositions.RamWatches.Clone();
 
-			_messageColor = _config.MessagesColor = DefaultMessagePositions.MessagesColor;
-			_alertColor = _config.AlertMessageColor = DefaultMessagePositions.AlertMessageColor;
-			_lastInputColor = _config.LastInputColor = DefaultMessagePositions.LastInputColor;
-			_movieInput = _config.MovieInput = DefaultMessagePositions.MovieInput;
+			_config.MessagesColor = DefaultMessagePositions.MessagesColor;
+			_config.AlertMessageColor = DefaultMessagePositions.AlertMessageColor;
+			_config.LastInputColor = DefaultMessagePositions.LastInputColor;
+			_config.MovieInput = DefaultMessagePositions.MovieInput;
 
 			CreateMessageRows();
 			CreateColorBoxes();

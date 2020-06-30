@@ -7,7 +7,7 @@ namespace BizHawk.Client.EmuHawk
 	// this is a little messy right now because of remnants of the old config system
 	public partial class ColorRow : UserControl
 	{
-		private int _color;
+		public int SelectedColor { get; private set; }
 
 		public ColorRow()
 		{
@@ -17,26 +17,26 @@ namespace BizHawk.Client.EmuHawk
 		public void Bind(string displayName, int color)
 		{
 			DisplayNameLabel.Text = displayName;
-			_color = color;
+			SelectedColor = color;
 			SetColor();
 		}
 
 		private void SetColor()
 		{
-			ColorPanel.BackColor = Color.FromArgb(_color);
-			ColorText.Text = $"{_color:X8}";
+			ColorPanel.BackColor = Color.FromArgb(SelectedColor);
+			ColorText.Text = $"{SelectedColor:X8}";
 		}
 
 		private void ColorPanel_Click(object sender, EventArgs e)
 		{
 			using var colorPicker = new ColorDialog 
 			{ 
-				FullOpen = true, Color = Color.FromArgb(_color)
+				FullOpen = true, Color = Color.FromArgb(SelectedColor)
 			};
 
 			if (colorPicker.ShowDialog().IsOk())
 			{
-				_color = colorPicker.Color.ToArgb();
+				SelectedColor = colorPicker.Color.ToArgb();
 				SetColor();
 			}
 		}
