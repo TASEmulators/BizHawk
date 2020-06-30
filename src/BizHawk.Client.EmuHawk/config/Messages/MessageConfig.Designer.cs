@@ -40,6 +40,7 @@
             // OK
             // 
             this.OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.OK.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.OK.Location = new System.Drawing.Point(348, 418);
             this.OK.Name = "OK";
             this.OK.Size = new System.Drawing.Size(75, 23);
@@ -57,11 +58,11 @@
             this.MessageTypeBox.TabStop = false;
             this.MessageTypeBox.Text = "Message Type";
             // 
-            // groupBox2
+            // ColorBox
             // 
             this.ColorBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.ColorBox.Location = new System.Drawing.Point(12, 231);
-            this.ColorBox.Name = "groupBox2";
+            this.ColorBox.Name = "ColorBox";
             this.ColorBox.Size = new System.Drawing.Size(177, 210);
             this.ColorBox.TabIndex = 4;
             this.ColorBox.TabStop = false;

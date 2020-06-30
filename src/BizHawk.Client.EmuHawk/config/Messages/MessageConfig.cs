@@ -136,7 +136,6 @@ namespace BizHawk.Client.EmuHawk
 			_config.MovieInput = ColorRows.Single(r => r.Name == "Movie Input").SelectedColor;
 
 			_config.StackOSDMessages = StackMessagesCheckbox.Checked;
-			DialogResult = DialogResult.OK;
 			Close();
 		}
 
