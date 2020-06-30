@@ -48,7 +48,7 @@
             // 
             this.LocationLabel.AllowDrop = true;
             this.LocationLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.LocationLabel.Location = new System.Drawing.Point(170, 7);
+            this.LocationLabel.Location = new System.Drawing.Point(167, 7);
             this.LocationLabel.Name = "LocationLabel";
             this.LocationLabel.Text = "255, 255";
             // 

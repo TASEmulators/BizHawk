@@ -8,8 +8,9 @@ namespace BizHawk.Client.EmuHawk
 	public partial class MessageRow : UserControl
 	{
 		private Action<MessagePosition> _selectedCallback;
+		private bool _programmaticallyUpdating = false;
 
-		public MessagePosition _messagePosition { get; private set; } = new MessagePosition();
+		public MessagePosition MessagePosition { get; private set; } = new MessagePosition();
 
 		public MessageRow()
 		{
@@ -21,28 +22,33 @@ namespace BizHawk.Client.EmuHawk
 			MessagePosition position,
 			Action<MessagePosition> selectedCallback)
 		{
-			_messagePosition = position;
+			MessagePosition = position;
 			_selectedCallback = selectedCallback;
 			RowRadio.Text = displayName;
 			SetText();
 		}
 
-		public new void Refresh()
+		public bool Checked
 		{
-			SetText();
-			base.Refresh();
+			get => RowRadio.Checked;
+			set 
+			{
+				_programmaticallyUpdating = true;
+				RowRadio.Checked = value;
+				_programmaticallyUpdating = false;
+			}
 		}
 
-		private void SetText()
+		public void SetText()
 		{
-			LocationLabel.Text = _messagePosition.ToCoordinateStr();
+			LocationLabel.Text = MessagePosition.ToCoordinateStr();
 		}
 
 		private void RowRadio_CheckedChanged(object sender, EventArgs e)
 		{
-			if (RowRadio.Checked)
+			if (!_programmaticallyUpdating && RowRadio.Checked)
 			{
-				_selectedCallback.Invoke(_messagePosition);
+				_selectedCallback.Invoke(MessagePosition);
 			}
 		}
 	}

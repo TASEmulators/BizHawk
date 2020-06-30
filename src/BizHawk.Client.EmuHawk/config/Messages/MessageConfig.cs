@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using BizHawk.Client.Common;
 
@@ -65,25 +66,32 @@ namespace BizHawk.Client.EmuHawk
 			MovieInputColorDialog.Color = Color.FromArgb(_movieInput);
 
 			CreateMessageRows();
-			//SetPositionLabels();
 			SetColorBox();
-			//TODO: SetPositionInfo();
 			StackMessagesCheckbox.Checked = _config.StackOSDMessages;
 		}
 
 		private void CreateMessageRows()
 		{
-			void SetMessagePosition(MessagePosition position)
+			void SetMessagePosition(MessageRow row, MessagePosition position)
 			{
-				MessageEditor.Bind(position, () => { });
+				MessageTypeBox.Controls
+					.OfType<MessageRow>()
+					.ToList()
+					.ForEach(m => m.Checked = false);
+				row.Checked = true;
+				MessageEditor.Bind(position, () => { row.SetText(); });
 			}
 
 			int y = 12;
 			foreach (var position in Positions)
 			{
 				var row = new MessageRow { Location = new Point(10, y) };
-				row.Size = new Size(MessageTypeBox.Width - 10, row.Size.Height);
-				row.Bind(position.Key, position.Value, SetMessagePosition);
+				row.Size = new Size(MessageTypeBox.Width - 12, row.Size.Height);
+				row.Bind(position.Key, position.Value, (e) => { SetMessagePosition(row, e); });
+				if (position.Value == _fps)
+				{
+					row.Checked = true;
+				}
 				y += row.Size.Height;
 
 				MessageTypeBox.Controls.Add(row);
@@ -108,48 +116,7 @@ namespace BizHawk.Client.EmuHawk
 			MovieInputColor.BackColor = MovieInputColorDialog.Color;
 			MovieInputText.Text = $"{_movieInput:X8}";
 		}
-
-		private void SetFromOption(MessagePosition position, Label label)
-		{
-			MessageEditor.Bind(position, () => { label.Text = position.ToCoordinateStr(); });
-		}
-
-		//private void SetPositionInfo()
-		//{
-		//	if (FPSRadio.Checked)
-		//	{
-		//		SetFromOption(_fps, FpsPosLabel);
-		//	}
-		//	else if (FrameCounterRadio.Checked)
-		//	{
-		//		SetFromOption(_frameCounter, FCLabel);
-		//	}
-		//	else if (LagCounterRadio.Checked)
-		//	{
-		//		SetFromOption(_lagCounter, LagLabel);
-		//	}
-		//	else if (InputDisplayRadio.Checked)
-		//	{
-		//		SetFromOption(_inputDisplay, InpLabel);
-		//	}
-		//	else if (WatchesRadio.Checked)
-		//	{
-		//		SetFromOption(_ramWatches, WatchesLabel);
-		//	}
-		//	else if (MessagesRadio.Checked)
-		//	{
-		//		SetFromOption(_messages, WatchesLabel);
-		//	}
-		//	else if (RerecordsRadio.Checked)
-		//	{
-		//		SetFromOption(_reRecordCounter, RerecLabel);
-		//	}
-		//	else if (AutoholdRadio.Checked)
-		//	{
-		//		SetFromOption(_autohold, AutoholdLabel);
-		//	}
-		//}
-
+		
 		private void Ok_Click(object sender, EventArgs e)
 		{
 			_config.Fps = _fps;
@@ -197,10 +164,7 @@ namespace BizHawk.Client.EmuHawk
 			LInputColorDialog.Color = Color.FromArgb(_lastInputColor);
 			MovieInputColorDialog.Color = Color.FromArgb(_movieInput);
 
-			//TODO: SetPositionLabels();
 			SetColorBox();
-			//TODO: SetPositionInfo();
-
 			StackMessagesCheckbox.Checked = _config.StackOSDMessages = true;
 		}
 
