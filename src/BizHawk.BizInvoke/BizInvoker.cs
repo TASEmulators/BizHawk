@@ -287,6 +287,19 @@ namespace BizHawk.BizInvoke
 			};
 		}
 
+		private class ParameterLoadInfo
+		{
+			/// <summary>
+			/// The native type for this parameter, to pass to calli
+			/// </summary>
+			public Type NativeType;
+			/// <summary>
+			/// Closure that will actually emit the parameter load to the il stream.  The evaluation stack will
+			/// already have other parameters on it at this time.
+			/// </summary>
+			public Action EmitLoad;
+		}
+
 		/// <summary>
 		/// create a method implementation that uses calli internally
 		/// </summary>
@@ -296,7 +309,7 @@ namespace BizHawk.BizInvoke
 		{
 			var paramInfos = baseMethod.GetParameters();
 			var paramTypes = paramInfos.Select(p => p.ParameterType).ToArray();
-			var nativeParamTypes = new List<Type>();
+			var paramLoadInfos = new List<ParameterLoadInfo>();
 			var returnType = baseMethod.ReturnType;
 			if (returnType != typeof(void) && !returnType.IsPrimitive && !returnType.IsPointer && !returnType.IsEnum)
 			{
@@ -327,10 +340,16 @@ namespace BizHawk.BizInvoke
 				exc = il.BeginExceptionBlock();
 			}
 
+			// phase 1:  empty eval stack and each parameter load thunk does any prep work it needs to do
 			for (int i = 0; i < paramTypes.Length; i++)
 			{
 				// arg 0 is this, so + 1
-				nativeParamTypes.Add(EmitParamterLoad(il, i + 1, paramTypes[i], adapterField));
+				paramLoadInfos.Add(EmitParamterLoad(il, i + 1, paramTypes[i], adapterField));
+			}
+			// phase 2:  actually load the individual params, leaving each one on the stack
+			foreach (var pli in paramLoadInfos)
+			{
+				pli.EmitLoad();
 			}
 
 			il.Emit(OpCodes.Ldarg_0);
@@ -338,7 +357,7 @@ namespace BizHawk.BizInvoke
 			il.EmitCalli(OpCodes.Calli, 
 				nativeCall, 
 				returnType == typeof(bool) ? typeof(byte) : returnType, // undo winapi style bool garbage
-				nativeParamTypes.ToArray());
+				paramLoadInfos.Select(p => p.NativeType).ToArray());
 
 			if (monitorField != null) // monitor: finally exit
 			{
@@ -419,9 +438,10 @@ namespace BizHawk.BizInvoke
 		}
 
 		/// <summary>
-		/// emit a single parameter load with unmanaged conversions
+		/// emit a single parameter load with unmanaged conversions.  The evaluation stack will be empty when the IL generated here runs,
+		/// and should end as empty.
 		/// </summary>
-		private static Type EmitParamterLoad(ILGenerator il, int idx, Type type, FieldInfo adapterField)
+		private static ParameterLoadInfo EmitParamterLoad(ILGenerator il, int idx, Type type, FieldInfo adapterField)
 		{
 			if (type.IsGenericType)
 			{
@@ -435,13 +455,18 @@ namespace BizHawk.BizInvoke
 				{
 					throw new NotImplementedException("Only refs of primitive or enum types are supported!");
 				}
-
-				var loc = il.DeclareLocal(type, true);
-				il.Emit(OpCodes.Ldarg, (short)idx);
-				il.Emit(OpCodes.Dup);
-				il.Emit(OpCodes.Stloc, loc);
-				il.Emit(OpCodes.Conv_I);
-				return typeof(IntPtr);
+				return new ParameterLoadInfo
+				{
+					NativeType = typeof(IntPtr),
+					EmitLoad = () =>
+					{
+						var loc = il.DeclareLocal(type, true);
+						il.Emit(OpCodes.Ldarg, (short)idx);
+						il.Emit(OpCodes.Dup);
+						il.Emit(OpCodes.Stloc, loc);
+						il.Emit(OpCodes.Conv_I);
+					}
+				};
 			}
 
 			if (type.IsArray)
@@ -463,48 +488,59 @@ namespace BizHawk.BizInvoke
 					throw new NotImplementedException("Only 0-based 1-dimensional arrays are supported!");
 				}
 
-				var loc = il.DeclareLocal(type, true);
-				var end = il.DefineLabel();
-				var isNull = il.DefineLabel();
+				return new ParameterLoadInfo
+				{
+					NativeType = typeof(IntPtr),
+					EmitLoad = () => 
+					{
+						var loc = il.DeclareLocal(type, true);
+						var end = il.DefineLabel();
+						var isNull = il.DefineLabel();
 
-				il.Emit(OpCodes.Ldarg, (short)idx);
-				il.Emit(OpCodes.Brfalse, isNull);
+						il.Emit(OpCodes.Ldarg, (short)idx);
+						il.Emit(OpCodes.Brfalse, isNull);
 
-				il.Emit(OpCodes.Ldarg, (short)idx);
-				il.Emit(OpCodes.Dup);
-				il.Emit(OpCodes.Stloc, loc);
-				il.Emit(OpCodes.Ldc_I4_0);
-				il.Emit(OpCodes.Ldelema, et);
-				il.Emit(OpCodes.Conv_I);
-				il.Emit(OpCodes.Br, end);
+						il.Emit(OpCodes.Ldarg, (short)idx);
+						il.Emit(OpCodes.Dup);
+						il.Emit(OpCodes.Stloc, loc);
+						il.Emit(OpCodes.Ldc_I4_0);
+						il.Emit(OpCodes.Ldelema, et);
+						il.Emit(OpCodes.Conv_I);
+						il.Emit(OpCodes.Br, end);
 
-				il.MarkLabel(isNull);
-				LoadConstant(il, IntPtr.Zero);
-				il.MarkLabel(end);
-
-				return typeof(IntPtr);
+						il.MarkLabel(isNull);
+						LoadConstant(il, IntPtr.Zero);
+						il.MarkLabel(end);
+					}
+				};
 			}
 
 			if (typeof(Delegate).IsAssignableFrom(type))
 			{
 				// callback -- use the same callingconventionadapter on it that the invoker is being made from
-				var mi = typeof(ICallingConventionAdapter).GetMethod("GetFunctionPointerForDelegate");
-				var end = il.DefineLabel();
-				var isNull = il.DefineLabel();
+				return new ParameterLoadInfo
+				{
+					NativeType = typeof(IntPtr),
+					EmitLoad = () =>
+					{
+						var mi = typeof(ICallingConventionAdapter).GetMethod("GetFunctionPointerForDelegate");
+						var end = il.DefineLabel();
+						var isNull = il.DefineLabel();
 
-				il.Emit(OpCodes.Ldarg, (short)idx);
-				il.Emit(OpCodes.Brfalse, isNull);
+						il.Emit(OpCodes.Ldarg, (short)idx);
+						il.Emit(OpCodes.Brfalse, isNull);
 
-				il.Emit(OpCodes.Ldarg_0);
-				il.Emit(OpCodes.Ldfld, adapterField);
-				il.Emit(OpCodes.Ldarg, (short)idx);
-				il.EmitCall(OpCodes.Callvirt, mi, Type.EmptyTypes);
-				il.Emit(OpCodes.Br, end);
+						il.Emit(OpCodes.Ldarg_0);
+						il.Emit(OpCodes.Ldfld, adapterField);
+						il.Emit(OpCodes.Ldarg, (short)idx);
+						il.EmitCall(OpCodes.Callvirt, mi, Type.EmptyTypes);
+						il.Emit(OpCodes.Br, end);
 
-				il.MarkLabel(isNull);
-				LoadConstant(il, IntPtr.Zero);
-				il.MarkLabel(end);
-				return typeof(IntPtr);
+						il.MarkLabel(isNull);
+						LoadConstant(il, IntPtr.Zero);
+						il.MarkLabel(end);
+					}
+				};
 			}
 
 			if (type == typeof(string))
@@ -534,6 +570,8 @@ namespace BizHawk.BizInvoke
 				il.Emit(OpCodes.Ldc_I4_1);
 				il.Emit(OpCodes.Add); // +1 for null byte
 				il.Emit(OpCodes.Conv_U);
+				// NB: The evaluation stack must be entirely empty, except for the size argument, when calling localloc.
+				// That's why we have to split every parameter load into two parts, the first of which runs on an empty stack.
 				il.Emit(OpCodes.Localloc);
 				il.Emit(OpCodes.Stloc, bytes);
 
@@ -556,46 +594,65 @@ namespace BizHawk.BizInvoke
 				// unused ret
 				il.Emit(OpCodes.Pop);
 
-				il.Emit(OpCodes.Ldloc, bytes);
 				il.Emit(OpCodes.Br, end);
 
 				il.MarkLabel(isNull);
 				LoadConstant(il, IntPtr.Zero);
+				il.Emit(OpCodes.Stloc, bytes);
 				il.MarkLabel(end);
-				return typeof(IntPtr);
+
+				return new ParameterLoadInfo
+				{
+					NativeType = typeof(IntPtr),
+					EmitLoad = () =>
+					{
+						il.Emit(OpCodes.Ldloc, bytes);
+					}
+				};
 			}
 
 			if (type.IsClass)
 			{
 				// non ref of class can just be passed as pointer
-				var loc = il.DeclareLocal(type, true);
-				var end = il.DefineLabel();
-				var isNull = il.DefineLabel();
+				return new ParameterLoadInfo
+				{
+					NativeType = typeof(IntPtr),
+					EmitLoad = () =>
+					{
+						var loc = il.DeclareLocal(type, true);
+						var end = il.DefineLabel();
+						var isNull = il.DefineLabel();
 
-				il.Emit(OpCodes.Ldarg, (short)idx);
-				il.Emit(OpCodes.Brfalse, isNull);
+						il.Emit(OpCodes.Ldarg, (short)idx);
+						il.Emit(OpCodes.Brfalse, isNull);
 
-				il.Emit(OpCodes.Ldarg, (short)idx);
-				il.Emit(OpCodes.Dup);
-				il.Emit(OpCodes.Stloc, loc);
-				il.Emit(OpCodes.Conv_I);
-				// skip past the methodtable pointer to the first field
-				il.Emit(OpCodes.Ldc_I4, ClassFieldOffset);
-				il.Emit(OpCodes.Conv_I);
-				il.Emit(OpCodes.Add);
-				il.Emit(OpCodes.Br, end);
+						il.Emit(OpCodes.Ldarg, (short)idx);
+						il.Emit(OpCodes.Dup);
+						il.Emit(OpCodes.Stloc, loc);
+						il.Emit(OpCodes.Conv_I);
+						// skip past the methodtable pointer to the first field
+						il.Emit(OpCodes.Ldc_I4, ClassFieldOffset);
+						il.Emit(OpCodes.Conv_I);
+						il.Emit(OpCodes.Add);
+						il.Emit(OpCodes.Br, end);
 
-				il.MarkLabel(isNull);
-				LoadConstant(il, IntPtr.Zero);
-				il.MarkLabel(end);
-
-				return typeof(IntPtr);
+						il.MarkLabel(isNull);
+						LoadConstant(il, IntPtr.Zero);
+						il.MarkLabel(end);
+					}
+				};
 			}
 
 			if (type.IsPrimitive || type.IsEnum || type.IsPointer)
 			{
-				il.Emit(OpCodes.Ldarg, (short)idx);
-				return type;
+				return new ParameterLoadInfo
+				{
+					NativeType = type,
+					EmitLoad = () =>
+					{
+						il.Emit(OpCodes.Ldarg, (short)idx);
+					}
+				};
 			}
 
 			throw new NotImplementedException("Unrecognized parameter type!");
