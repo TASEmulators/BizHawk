@@ -78,7 +78,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetFromOption(MessagePosition position, Label label)
 		{
-			MessageEditor.Bind(position, () => { label.Text = ToCoordinateStr(position); });
+			MessageEditor.Bind(position, () => { label.Text = position.ToCoordinateStr(); });
 		}
 
 		private void SetPositionInfo()
@@ -148,21 +148,16 @@ namespace BizHawk.Client.EmuHawk
 			SetPositionInfo();
 		}
 
-		private string ToCoordinateStr(MessagePosition position)
-		{
-			return $"{position.X}, {position.Y}";
-		}
-
 		private void SetPositionLabels()
 		{
-			FpsPosLabel.Text = ToCoordinateStr(_fps);
-			FCLabel.Text = ToCoordinateStr(_frameCounter);
-			LagLabel.Text = ToCoordinateStr(_lagCounter);
-			InpLabel.Text = ToCoordinateStr(_inputDisplay);
-			WatchesLabel.Text = ToCoordinateStr(_ramWatches);
-			RerecLabel.Text = ToCoordinateStr(_reRecordCounter);
-			MessLabel.Text = ToCoordinateStr(_messages);
-			AutoholdLabel.Text = ToCoordinateStr(_autohold);
+			FpsPosLabel.Text = _fps.ToCoordinateStr();
+			FCLabel.Text = _frameCounter.ToCoordinateStr();
+			LagLabel.Text = _lagCounter.ToCoordinateStr();
+			InpLabel.Text = _inputDisplay.ToCoordinateStr();
+			WatchesLabel.Text = _ramWatches.ToCoordinateStr();
+			RerecLabel.Text = _reRecordCounter.ToCoordinateStr();
+			MessLabel.Text = _messages.ToCoordinateStr();
+			AutoholdLabel.Text = _autohold.ToCoordinateStr();
 		}
 
 		private void ResetDefaultsButton_Click(object sender, EventArgs e)

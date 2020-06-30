@@ -30,6 +30,8 @@
 			return type == MessagePosition.AnchorType.TopLeft
 				|| type == MessagePosition.AnchorType.BottomLeft;
 		}
+
+		public static string ToCoordinateStr(this MessagePosition position) => $"{position.X}, {position.Y}";
 	}
 
 	public static class DefaultMessagePositions
