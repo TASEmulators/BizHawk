@@ -35,6 +35,9 @@
 		<!-- Enum Storage should be Int32 -->
 		<Rule Id="CA1028" Action="Hidden" />
 
+		<!-- Use events where appropriate -->
+		<Rule Id="CA1030" Action="Hidden" />
+
 		<!-- Do not catch general exception types -->
 		<Rule Id="CA1031" Action="Hidden" />
 
@@ -67,6 +70,9 @@
 
 		<!-- Uri return values should not be strings -->
 		<Rule Id="CA1055" Action="Hidden" />
+
+		<!-- Uri properties should not be strings -->
+		<Rule Id="CA1056" Action="Hidden" />
 
 		<!-- Validate arguments of public methods -->
 		<Rule Id="CA1062" Action="Hidden" />
@@ -214,6 +220,9 @@
 
 		<!-- Implement serialization constructors -->
 		<Rule Id="CA2229" Action="Hidden" />
+
+		<!-- Pass system uri objects instead of strings -->
+		<Rule Id="CA2234" Action="Hidden" />
 
 		<!-- Mark ISerializable types with serializable -->
 		<Rule Id="CA2237" Action="Hidden" />
