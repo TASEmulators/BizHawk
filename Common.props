@@ -19,4 +19,7 @@
 		<DefineConstants>TRACE</DefineConstants>
 		<Optimize>true</Optimize>
 	</PropertyGroup>
+	<PropertyGroup Condition=" '$(MachineExtraCompilationFlag)' != '' ">
+		<DefineConstants>$(DefineConstants);$(MachineExtraCompilationFlag)</DefineConstants>
+	</PropertyGroup>
 </Project>
