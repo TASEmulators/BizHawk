@@ -9,14 +9,14 @@ namespace BizHawk.Emulation.Cores.Components
 	/// <summary>
 	/// An interface that extends a sound provider to provide mixing capabilities through the SoundMixer class
 	/// </summary>
-	internal interface IMixedSoundProvider : ISoundProvider
+	public interface IMixedSoundProvider : ISoundProvider
 	{
 		int MaxVolume { get; set; }
 	}
 
 	// This is a straightforward class to mix/chain multiple ISoundProvider sources.
 	// Relies on a hack of passing in the samples per frame for sync sound abilities
-	internal sealed class SoundMixer : ISoundProvider
+	public sealed class SoundMixer : ISoundProvider
 	{
 		private readonly int _spf;
 		private readonly List<IMixedSoundProvider> _soundProviders;

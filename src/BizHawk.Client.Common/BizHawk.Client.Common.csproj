@@ -9,8 +9,11 @@
 		<Reference Include="NLua" HintPath="$(ProjectDir)../../output/dll/nlua/NLua.dll" Private="False" />
 		<PackageReference Include="SharpCompress" Version="0.24.0" />
 		<PackageReference Include="SharpZipLib" Version="1.1.0" />
-		<ProjectReference Include="$(ProjectDir)../BizHawk.Emulation.Cores/BizHawk.Emulation.Cores.csproj" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Bizware.BizwareGL/BizHawk.Bizware.BizwareGL.csproj" />
+		<ProjectReference Include="$(ProjectDir)../BizHawk.Emulation.HawkCores/BizHawk.Emulation.HawkCores.csproj" />
+		<ProjectReference Include="$(ProjectDir)../BizHawk.Emulation.ManagedCores/BizHawk.Emulation.ManagedCores.csproj" />
+		<ProjectReference Include="$(ProjectDir)../BizHawk.Emulation.UnmanagedCores/BizHawk.Emulation.UnmanagedCores.csproj" />
+		<ProjectReference Include="$(ProjectDir)../BizHawk.Emulation.WboxCores/BizHawk.Emulation.WboxCores.csproj" />
 		<Compile Include="$(ProjectDir)../BizHawk.Version/svnrev.cs" />
 		<Compile Include="$(ProjectDir)../BizHawk.Version/VersionInfo.cs" />
 	</ItemGroup>

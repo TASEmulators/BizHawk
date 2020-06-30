@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<Import Project="../MainSlnCommon.props" />
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+	</PropertyGroup>
+	<ItemGroup>
+		<Reference Include="Virtu" HintPath="$(ProjectDir)../../References/Virtu.dll" Private="true" />
+		<ProjectReference Include="$(ProjectDir)../BizHawk.Emulation.CoresBase/BizHawk.Emulation.CoresBase.csproj" />
+		<Compile Include="$(ProjectDir)../BizHawk.Version/svnrev.cs" />
+		<Compile Include="$(ProjectDir)../BizHawk.Version/VersionInfo.cs" />
+	</ItemGroup>
+	<ItemGroup>
+		<Compile Update="Computers/AppleII/AppleII.*.cs" DependentUpon="AppleII.cs" />
+	</ItemGroup>
+</Project>

@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<Import Project="../MainSlnCommon.props" />
+	<PropertyGroup>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<TargetFramework>netstandard2.0</TargetFramework>
+	</PropertyGroup>
+	<ItemGroup>
+		<ProjectReference Include="$(ProjectDir)../BizHawk.Emulation.CoresBase/BizHawk.Emulation.CoresBase.csproj" />
+		<Compile Include="$(ProjectDir)../BizHawk.Version/svnrev.cs" />
+		<Compile Include="$(ProjectDir)../BizHawk.Version/VersionInfo.cs" />
+	</ItemGroup>
+	<ItemGroup>
+		<Compile Update="Consoles/Atari/lynx/Lynx.*.cs" DependentUpon="Lynx.cs" />
+		<Compile Update="Consoles/MSX/MSX.*.cs" DependentUpon="MSX.cs" />
+		<Compile Update="Consoles/Nintendo/Gameboy/Gambatte.*.cs" DependentUpon="Gambatte.cs" />
+		<Compile Update="Consoles/Nintendo/Gameboy/GambatteLink.*.cs" DependentUpon="GambatteLink.cs" />
+		<Compile Update="Consoles/Nintendo/GBA/MGBAHawk.*.cs" DependentUpon="MGBAHawk.cs" />
+		<Compile Update="Consoles/Nintendo/N64/N64.*.cs" DependentUpon="N64.cs" />
+		<Compile Update="Consoles/Sony/PSX/Octoshock.cs" SubType="Code" />
+		<Compile Update="Consoles/Sony/PSX/Octoshock.*.cs" DependentUpon="Octoshock.cs" />
+		<Compile Update="Consoles/WonderSwan/WonderSwan.*.cs" DependentUpon="WonderSwan.cs" />
+	</ItemGroup>
+</Project>

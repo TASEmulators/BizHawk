@@ -17,7 +17,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Components.W65816
 {
-	class W65816_DisassemblerService : IDisassemblable
+	public class W65816_DisassemblerService : IDisassemblable
 	{
 		public string Cpu { get; set; }
 

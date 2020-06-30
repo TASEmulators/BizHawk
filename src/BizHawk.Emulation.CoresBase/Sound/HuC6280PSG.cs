@@ -58,7 +58,7 @@ namespace BizHawk.Emulation.Cores.Components
 			}
 		}
 
-		internal void BeginFrame(long cycles)
+		public void BeginFrame(long cycles)
 		{
 			while (commands.Count > 0)
 			{
@@ -69,12 +69,12 @@ namespace BizHawk.Emulation.Cores.Components
 			frameStartTime = cycles;
 		}
 
-		internal void EndFrame(long cycles)
+		public void EndFrame(long cycles)
 		{
 			frameStopTime = cycles;
 		}
 
-		internal void WritePSG(byte register, byte value, long cycles)
+		public void WritePSG(byte register, byte value, long cycles)
 		{
 			commands.Enqueue(new QueuedCommand { Register = register, Value = value, Time = cycles - frameStartTime });
 		}
@@ -245,7 +245,7 @@ namespace BizHawk.Emulation.Cores.Components
 			}
 		}
 
-		internal void SyncState(Serializer ser)
+		public void SyncState(Serializer ser)
 		{
 			ser.BeginSection("PSG");
 			ser.Sync(nameof(MainVolumeLeft), ref MainVolumeLeft);

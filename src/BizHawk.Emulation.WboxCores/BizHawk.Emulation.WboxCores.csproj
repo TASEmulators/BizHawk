@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<Import Project="../MainSlnCommon.props" />
+	<PropertyGroup>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<TargetFramework>netstandard2.0</TargetFramework>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="ELFSharp" Version="2.10.0" />
+		<Reference Include="FlatBuffers.Core" HintPath="$(ProjectDir)../../References/FlatBuffers.Core.dll" Private="true" />
+		<ProjectReference Include="$(ProjectDir)../BizHawk.BizInvoke/BizHawk.BizInvoke.csproj" />
+		<ProjectReference Include="$(ProjectDir)../BizHawk.Emulation.CoresBase/BizHawk.Emulation.CoresBase.csproj" />
+		<Compile Include="$(ProjectDir)../BizHawk.Version/svnrev.cs" />
+		<Compile Include="$(ProjectDir)../BizHawk.Version/VersionInfo.cs" />
+	</ItemGroup>
+	<ItemGroup>
+		<Compile Update="Consoles/Nintendo/SNES/LibsnesCore.*.cs" DependentUpon="LibsnesCore.cs" />
+		<Compile Update="Consoles/Sega/gpgx64/GPGX.*.cs" DependentUpon="GPGX.cs" />
+	</ItemGroup>
+</Project>

@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<Import Project="../MainSlnCommon.props" />
+	<PropertyGroup>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<TargetFramework>netstandard2.0</TargetFramework>
+	</PropertyGroup>
+	<ItemGroup>
+		<ProjectReference Include="$(ProjectDir)../BizHawk.Emulation.Common/BizHawk.Emulation.Common.csproj" />
+		<ProjectReference Include="$(ProjectDir)../BizHawk.Emulation.DiscSystem/BizHawk.Emulation.DiscSystem.csproj" />
+		<Compile Include="$(ProjectDir)../BizHawk.Version/svnrev.cs" />
+		<Compile Include="$(ProjectDir)../BizHawk.Version/VersionInfo.cs" />
+		<EmbeddedResource Include="Resources/**/*" />
+	</ItemGroup>
+</Project>
