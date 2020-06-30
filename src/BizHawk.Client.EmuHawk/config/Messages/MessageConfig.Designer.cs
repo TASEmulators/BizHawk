@@ -29,8 +29,8 @@
 		private void InitializeComponent()
 		{
             this.OK = new System.Windows.Forms.Button();
-            this.MessageTypeBox = new System.Windows.Forms.GroupBox();
-            this.ColorBox = new System.Windows.Forms.GroupBox();
+            this.MessageTypeBox = new BizHawk.WinForms.Controls.LocSzGroupBoxEx();
+            this.ColorBox = new BizHawk.WinForms.Controls.LocSzGroupBoxEx();
             this.Cancel = new System.Windows.Forms.Button();
             this.ResetDefaultsButton = new System.Windows.Forms.Button();
             this.StackMessagesCheckbox = new System.Windows.Forms.CheckBox();
@@ -54,8 +54,6 @@
             this.MessageTypeBox.Location = new System.Drawing.Point(12, 12);
             this.MessageTypeBox.Name = "MessageTypeBox";
             this.MessageTypeBox.Size = new System.Drawing.Size(177, 211);
-            this.MessageTypeBox.TabIndex = 2;
-            this.MessageTypeBox.TabStop = false;
             this.MessageTypeBox.Text = "Message Type";
             // 
             // ColorBox
@@ -64,8 +62,6 @@
             this.ColorBox.Location = new System.Drawing.Point(12, 231);
             this.ColorBox.Name = "ColorBox";
             this.ColorBox.Size = new System.Drawing.Size(177, 210);
-            this.ColorBox.TabIndex = 4;
-            this.ColorBox.TabStop = false;
             this.ColorBox.Text = "Message Colors";
             // 
             // Cancel
@@ -138,8 +134,8 @@
 		#endregion
 
 		private System.Windows.Forms.Button OK;
-		private System.Windows.Forms.GroupBox MessageTypeBox;
-		private System.Windows.Forms.GroupBox ColorBox;
+		private BizHawk.WinForms.Controls.LocSzGroupBoxEx MessageTypeBox;
+		private BizHawk.WinForms.Controls.LocSzGroupBoxEx ColorBox;
 		private System.Windows.Forms.Button Cancel;
 		private System.Windows.Forms.Button ResetDefaultsButton;
 		private System.Windows.Forms.CheckBox StackMessagesCheckbox;

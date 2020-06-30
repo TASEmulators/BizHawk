@@ -103,7 +103,7 @@ namespace BizHawk.Client.EmuHawk
 		private void CreateColorBoxes()
 		{
 			ColorBox.Controls.Clear();
-			int y = 12;
+			int y = 20;
 			foreach (var color in Colors)
 			{
 				var row = new ColorRow 
