@@ -82,6 +82,8 @@ namespace BizHawk.Client.EmuHawk
 				MessageEditor.Bind(position, () => { row.SetText(); });
 			}
 
+			MessageTypeBox.Controls.Clear();
+
 			int y = 12;
 			foreach (var position in Positions)
 			{
@@ -165,6 +167,7 @@ namespace BizHawk.Client.EmuHawk
 			LInputColorDialog.Color = Color.FromArgb(_lastInputColor);
 			MovieInputColorDialog.Color = Color.FromArgb(_movieInput);
 
+			CreateMessageRows();
 			SetColorBox();
 			StackMessagesCheckbox.Checked = _config.StackOSDMessages = true;
 		}
