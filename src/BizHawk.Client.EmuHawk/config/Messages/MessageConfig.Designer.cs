@@ -30,7 +30,7 @@
 		{
             this.OK = new System.Windows.Forms.Button();
             this.MessageTypeBox = new System.Windows.Forms.GroupBox();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.ColorBox = new System.Windows.Forms.GroupBox();
             this.Cancel = new System.Windows.Forms.Button();
             this.ResetDefaultsButton = new System.Windows.Forms.Button();
             this.StackMessagesCheckbox = new System.Windows.Forms.CheckBox();
@@ -59,13 +59,13 @@
             // 
             // groupBox2
             // 
-            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.groupBox2.Location = new System.Drawing.Point(12, 231);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(177, 210);
-            this.groupBox2.TabIndex = 4;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Message Colors";
+            this.ColorBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.ColorBox.Location = new System.Drawing.Point(12, 231);
+            this.ColorBox.Name = "groupBox2";
+            this.ColorBox.Size = new System.Drawing.Size(177, 210);
+            this.ColorBox.TabIndex = 4;
+            this.ColorBox.TabStop = false;
+            this.ColorBox.Text = "Message Colors";
             // 
             // Cancel
             // 
@@ -119,7 +119,7 @@
             this.Controls.Add(this.StackMessagesCheckbox);
             this.Controls.Add(this.ResetDefaultsButton);
             this.Controls.Add(this.Cancel);
-            this.Controls.Add(this.groupBox2);
+            this.Controls.Add(this.ColorBox);
             this.Controls.Add(this.MessageTypeBox);
             this.Controls.Add(this.OK);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
@@ -138,7 +138,7 @@
 
 		private System.Windows.Forms.Button OK;
 		private System.Windows.Forms.GroupBox MessageTypeBox;
-		private System.Windows.Forms.GroupBox groupBox2;
+		private System.Windows.Forms.GroupBox ColorBox;
 		private System.Windows.Forms.Button Cancel;
 		private System.Windows.Forms.Button ResetDefaultsButton;
 		private System.Windows.Forms.CheckBox StackMessagesCheckbox;

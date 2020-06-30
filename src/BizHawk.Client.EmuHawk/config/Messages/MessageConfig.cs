@@ -106,16 +106,16 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CreateColorBoxes()
 		{
-			groupBox2.Controls.Clear();
+			ColorBox.Controls.Clear();
 			int y = 12;
 			foreach (var color in Colors)
 			{
 				var row = new ColorRow {  Location = new Point(10, y) };
-				row.Size = new Size(groupBox2.Width - 12, row.Size.Height);
+				row.Size = new Size(ColorBox.Width - 12, row.Size.Height);
 				row.Bind(color.Key, color.Value);
 
 				y += row.Size.Height;
-				groupBox2.Controls.Add(row);
+				ColorBox.Controls.Add(row);
 			}
 		}
 		
