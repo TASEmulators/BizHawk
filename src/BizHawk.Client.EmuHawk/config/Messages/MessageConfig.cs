@@ -36,7 +36,15 @@ namespace BizHawk.Client.EmuHawk
 		private int _alertColor;
 		private int _lastInputColor;
 		private int _movieInput;
-		
+
+		private Dictionary<string, int> Colors => new Dictionary<string, int>
+		{
+			["Main Messages"] = _messageColor,
+			["Alert Messages"] = _alertColor,
+			["Previous Frame Input"] = _lastInputColor,
+			["Movie Input"] = _movieInput
+		};
+
 		public MessageConfig(Config config)
 		{
 			_config = config;
@@ -66,7 +74,6 @@ namespace BizHawk.Client.EmuHawk
 			MovieInputColorDialog.Color = Color.FromArgb(_movieInput);
 
 			CreateMessageRows();
-			SetColorBox();
 			StackMessagesCheckbox.Checked = _config.StackOSDMessages;
 		}
 
@@ -99,25 +106,6 @@ namespace BizHawk.Client.EmuHawk
 
 				MessageTypeBox.Controls.Add(row);
 			}
-		}
-
-		private void SetColorBox()
-		{
-			_messageColor = MessageColorDialog.Color.ToArgb();
-			ColorPanel.BackColor = MessageColorDialog.Color;
-			ColorText.Text = $"{_messageColor:X8}";
-
-			_alertColor = AlertColorDialog.Color.ToArgb();
-			AlertColorPanel.BackColor = AlertColorDialog.Color;
-			AlertColorText.Text = $"{_alertColor:X8}";
-
-			_lastInputColor = LInputColorDialog.Color.ToArgb();
-			LInputColorPanel.BackColor = LInputColorDialog.Color;
-			LInputText.Text = $"{_lastInputColor:X8}";
-
-			_movieInput = MovieInputColorDialog.Color.ToArgb();
-			MovieInputColor.BackColor = MovieInputColorDialog.Color;
-			MovieInputText.Text = $"{_movieInput:X8}";
 		}
 		
 		private void Ok_Click(object sender, EventArgs e)
@@ -168,40 +156,8 @@ namespace BizHawk.Client.EmuHawk
 			MovieInputColorDialog.Color = Color.FromArgb(_movieInput);
 
 			CreateMessageRows();
-			SetColorBox();
+			// TODO
 			StackMessagesCheckbox.Checked = _config.StackOSDMessages = true;
-		}
-
-		private void ColorPanel_Click(object sender, EventArgs e)
-		{
-			if (MessageColorDialog.ShowDialog().IsOk())
-			{
-				SetColorBox();
-			}
-		}
-
-		private void AlertColorPanel_Click(object sender, EventArgs e)
-		{
-			if (AlertColorDialog.ShowDialog().IsOk())
-			{
-				SetColorBox();
-			}
-		}
-
-		private void LInputColorPanel_Click(object sender, EventArgs e)
-		{
-			if (LInputColorDialog.ShowDialog().IsOk())
-			{
-				SetColorBox();
-			}
-		}
-
-		private void MovieInputColor_Click(object sender, EventArgs e)
-		{
-			if (MovieInputColorDialog.ShowDialog().IsOk())
-			{
-				SetColorBox();
-			}
 		}
 	}
 }
