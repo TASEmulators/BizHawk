@@ -6,7 +6,7 @@ using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Waterbox
 {
-	public abstract class WaterboxHostNative
+	public unsafe abstract class WaterboxHostNative
 	{
 		[StructLayout(LayoutKind.Sequential)]
 		public class ReturnData
@@ -42,80 +42,48 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			/// TODO: Are we allowing fixed calls to happen anywhere in the block?
 			public UIntPtr mmap_size;
 		}
-		public delegate IntPtr StreamCallback(IntPtr userdata, IntPtr /*byte**/ data, UIntPtr size);
-		public delegate UIntPtr /*MissingFileResult*/ FileCallback(IntPtr userdata, UIntPtr /*string*/ name);
-		[StructLayout(LayoutKind.Sequential)]
-		public unsafe class CWriter : IDisposable
+		/// Read bytes into the buffer.  Return number of bytes read on success, or < 0 on failure.
+		/// permitted to read less than the provided buffer size, but must always read at least 1
+		/// byte if EOF is not reached.  If EOF is reached, should return 0.
+		public delegate IntPtr ReadCallback(IntPtr userdata, IntPtr /*byte**/ data, UIntPtr size);
+		/// write bytes.  Return 0 on success, or < 0 on failure.
+		/// Must write all provided bytes in one call or fail, not permitted to write less (unlike reader).
+		public delegate int WriteCallback(IntPtr userdata, IntPtr /*byte**/ data, UIntPtr size);
+		// public delegate UIntPtr /*MissingFileResult*/ FileCallback(IntPtr userdata, UIntPtr /*string*/ name);
+
+		public static WriteCallback MakeCallbackForWriter(Stream s)
 		{
-			/// will be passed to callback
-			public IntPtr userdata;
-			/// write bytes.  Return number of bytes written on success, or < 0 on failure.
-			/// Permitted to write less than the provided number of bytes.
-			public StreamCallback callback;
-			public static CWriter FromStream(Stream stream)
+			var ss = SpanStream.GetOrBuild(s);
+			return (_unused, data, size) =>
 			{
-				var ss = SpanStream.GetOrBuild(stream);
-				return new CWriter
+				try
 				{
-					// TODO: spans
-					callback = (_unused, data, size) =>
-					{
-						try
-						{
-							var count = (int)size;
-							ss.Write(new ReadOnlySpan<byte>((void*)data, count));
-							return Z.SS(count);
-						}
-						catch
-						{
-							return Z.SS(-1);
-						}
-					}
-				};
-			}
-			public void Dispose()
-			{
-				// Dummy disposable impl for release mode GC interop shens, or something
-				if (userdata != IntPtr.Zero)
-					throw new Exception();
-			}
+					var count = (int)size;
+					ss.Write(new ReadOnlySpan<byte>((void*)data, (int)size));
+					return 0;
+				}
+				catch
+				{
+					return -1;
+				}
+			};
 		}
-		[StructLayout(LayoutKind.Sequential)]
-		public unsafe class CReader : IDisposable
+		public static ReadCallback MakeCallbackForReader(Stream s)
 		{
-			/// will be passed to callback
-			public IntPtr userdata;
-			/// Read bytes into the buffer.  Return number of bytes read on success, or < 0 on failure.
-			/// permitted to read less than the provided buffer size, but must always read at least 1
-			/// byte if EOF is not reached.  If EOF is reached, should return 0.
-			public StreamCallback callback;
-			public static CReader FromStream(Stream stream)
+			var ss = SpanStream.GetOrBuild(s);
+			return (_unused, data, size) =>
 			{
-				var ss = SpanStream.GetOrBuild(stream);
-				return new CReader
+				try
 				{
-					// TODO: spans
-					callback = (_unused, data, size) =>
-					{
-						try
-						{
-							var count = (int)size;
-							var n = ss.Read(new Span<byte>((void*)data, count));
-							return Z.SS(n);
-						}
-						catch
-						{
-							return Z.SS(-1);
-						}
-					}
-				};
-			}
-			public void Dispose()
-			{
-				// Dummy disposable impl for release mode GC interop shens, or something
-				if (userdata != IntPtr.Zero)
-					throw new Exception();
-			}
+					var count = (int)size;
+					var n = ss.Read(new Span<byte>((void*)data, count));
+					return Z.SS(n);
+				}
+				catch
+				{
+					return Z.SS(-1);
+				}
+			};
 		}
 		// [StructLayout(LayoutKind.Sequential)]
 		// public class MissingFileCallback
@@ -130,7 +98,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		// }
 
 		[BizImport(CallingConvention.Cdecl, Compatibility = true)]
-		public abstract void wbx_create_host([In]MemoryLayoutTemplate layout, string moduleName, [In]CReader wbx, [Out]ReturnData /*WaterboxHost*/ ret);
+		public abstract void wbx_create_host([In]MemoryLayoutTemplate layout, string moduleName, ReadCallback wbx, IntPtr userdata, [Out]ReturnData /*WaterboxHost*/ ret);
 		/// Tear down a host environment.  May not be called while the environment is active.
 		[BizImport(CallingConvention.Cdecl, Compatibility = true)]
 		public abstract void wbx_destroy_host(IntPtr /*WaterboxHost*/ obj, [Out]ReturnData /*void*/ ret);
@@ -155,11 +123,11 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// when save_state is called, and can only be used for transient operations.  If a file is readable, it can appear in savestates,
 		/// but it must exist in every savestate and the exact sequence of add_file calls must be consistent from savestate to savestate.
 		[BizImport(CallingConvention.Cdecl, Compatibility = true)]
-		public abstract void wbx_mount_file(IntPtr /*ActivatedWaterboxHost*/ obj, string name, [In]CReader reader, bool writable, [Out]ReturnData /*void*/ ret);
+		public abstract void wbx_mount_file(IntPtr /*ActivatedWaterboxHost*/ obj, string name, ReadCallback reader, IntPtr userdata, bool writable, [Out]ReturnData /*void*/ ret);
 		/// Remove a file previously added.  Writer is optional; if provided, the contents of the file at time of removal will be dumped to it.
 		/// It is an error to remove a file which is currently open in the guest.
 		[BizImport(CallingConvention.Cdecl, Compatibility = true)]
-		public abstract void wbx_unmount_file(IntPtr /*ActivatedWaterboxHost*/ obj, string name, [In]CWriter writer, [Out]ReturnData /*void*/ ret);
+		public abstract void wbx_unmount_file(IntPtr /*ActivatedWaterboxHost*/ obj, string name, WriteCallback writer, IntPtr userdata, [Out]ReturnData /*void*/ ret);
 		/// Set (or clear, with None) a callback to be called whenever the guest tries to load a nonexistant file.
 		/// The callback will be provided with the name of the requested load, and can either return null to signal the waterbox
 		/// to return ENOENT to the guest, or a struct to immediately load that file.  You may not call any wbx methods
@@ -170,12 +138,12 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// Save state.  Must not be called before seal.  Must not be called with any writable files mounted.
 		/// Must always be called with the same sequence and contents of readonly files.
 		[BizImport(CallingConvention.Cdecl, Compatibility = true)]
-		public abstract void wbx_save_state(IntPtr /*ActivatedWaterboxHost*/ obj, [In]CWriter writer, [Out]ReturnData /*void*/ ret);
+		public abstract void wbx_save_state(IntPtr /*ActivatedWaterboxHost*/ obj, WriteCallback writer, IntPtr userdata, [Out]ReturnData /*void*/ ret);
 		/// Load state.  Must not be called before seal.  Must not be called with any writable files mounted.
 		/// Must always be called with the same sequence and contents of readonly files that were in the save state.
 		/// Must be called with the same wbx executable and memory layout as in the savestate.
 		/// Errors generally poison the environment; sorry!
 		[BizImport(CallingConvention.Cdecl, Compatibility = true)]
-		public abstract void wbx_load_state(IntPtr /*ActivatedWaterboxHost*/ obj, [In]CReader reader, [Out]ReturnData /*void*/ ret);
+		public abstract void wbx_load_state(IntPtr /*ActivatedWaterboxHost*/ obj, ReadCallback reader, IntPtr userdata, [Out]ReturnData /*void*/ ret);
 	}
 }
