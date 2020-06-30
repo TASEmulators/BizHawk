@@ -756,10 +756,23 @@ impl<'block>  IStateable for ActivatedMemoryBlock<'block> {
 		self.b.get_stack_dirty();
 		self.b.addr.save_state(stream)?;
 
+		unsafe {
+			let mut statii = Vec::new();
+			let mut dirtii = Vec::new();
+			statii.reserve_exact(self.b.pages.len());
+			dirtii.reserve_exact(self.b.pages.len());
+			for p in self.b.pages.iter() {
+				statii.push(p.status);
+				dirtii.push(p.dirty);
+			}
+			stream.write_all(std::mem::transmute(&statii[..]))?;
+			stream.write_all(std::mem::transmute(&dirtii[..]))?;
+		}
+
 		for (paddr, p) in self.b.page_range().iter_with_addr() {
-			bin::write(stream, &p.status)?;
+			// bin::write(stream, &p.status)?;
 			if !p.invisible {
-				bin::write(stream, &p.dirty)?;
+				// bin::write(stream, &p.dirty)?;
 				if p.dirty {
 					unsafe {
 						if !p.status.readable() {
@@ -794,10 +807,18 @@ impl<'block>  IStateable for ActivatedMemoryBlock<'block> {
 		unsafe {
 			pal::protect(self.b.addr, Protection::RW);
 
+			let mut statii = vec![PageAllocation::Free; self.b.pages.len()];
+			let mut dirtii = vec![false; self.b.pages.len()];
+			stream.read_exact(std::mem::transmute(&mut statii[..]))?;
+			stream.read_exact(std::mem::transmute(&mut dirtii[..]))?;
+
+			let mut index = 0usize;
 			for (paddr, p) in self.b.page_range().iter_mut_with_addr() {
-				let status = bin::readval::<PageAllocation>(stream)?;
+				let status = statii[index];
+				// let status = bin::readval::<PageAllocation>(stream)?;
 				if !p.invisible {
-					let dirty = bin::readval::<bool>(stream)?;
+					let dirty = dirtii[index];
+					// let dirty = bin::readval::<bool>(stream)?;
 					match (p.dirty, dirty) {
 						(false, false) => (),
 						(false, true) => {
@@ -820,6 +841,7 @@ impl<'block>  IStateable for ActivatedMemoryBlock<'block> {
 					p.dirty = dirty;
 				}
 				p.status = status;
+				index += 1;
 			}
 
 			self.b.refresh_all_protections();

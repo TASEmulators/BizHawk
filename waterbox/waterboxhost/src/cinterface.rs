@@ -290,10 +290,10 @@ pub extern fn wbx_unmount_file(obj: &mut ActivatedWaterboxHost, name: *const c_c
 pub extern fn wbx_save_state(obj: &mut ActivatedWaterboxHost, writer: &mut CWriter, ret: &mut Return<()>) {
 	// TODO: Is this bufwriter worth it because of the native<->managed transitions, or worth it only because
 	// the managed side doesn't have Span support and so makes an extra copy?
-	let mut buffered = BufWriter::new(writer);
+	// let mut buffered = BufWriter::new(writer);
 	let res: anyhow::Result<()> = (|| {
-		obj.save_state(&mut buffered)?;
-		buffered.flush()?;
+		obj.save_state(writer)?;
+		// buffered.flush()?;
 		Ok(())
 	})();
 	ret.put(res);
