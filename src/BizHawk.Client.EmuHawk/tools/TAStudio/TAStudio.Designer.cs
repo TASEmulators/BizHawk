@@ -214,9 +214,7 @@ namespace BizHawk.Client.EmuHawk
             this.SettingsSubMenu,
             this.ColumnsSubMenu,
             this.HelpSubMenu});
-			this.TASMenu.Location = new System.Drawing.Point(0, 0);
 			this.TASMenu.Name = "TASMenu";
-			this.TASMenu.Size = new System.Drawing.Size(509, 24);
 			this.TASMenu.TabIndex = 0;
 			this.TASMenu.Text = "menuStrip1";
 			this.TASMenu.MenuActivate += new System.EventHandler(this.TASMenu_MenuActivate);

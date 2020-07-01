@@ -131,9 +131,7 @@ namespace BizHawk.Client.EmuHawk
             this.FileSubMenu,
             this.EditSubMenu,
             this.OptionsSubMenu});
-			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
-			this.menuStrip1.Size = new System.Drawing.Size(644, 24);
 			this.menuStrip1.TabIndex = 2;
 			this.menuStrip1.Text = "menuStrip1";
 			// 

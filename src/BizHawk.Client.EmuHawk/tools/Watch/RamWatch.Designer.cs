@@ -470,9 +470,7 @@ namespace BizHawk.Client.EmuHawk
             this.FileSubMenu,
             this.WatchesSubMenu,
             this.OptionsSubMenu});
-            this.RamWatchMenu.Location = new System.Drawing.Point(0, 0);
             this.RamWatchMenu.Name = "RamWatchMenu";
-            this.RamWatchMenu.Size = new System.Drawing.Size(364, 24);
             this.RamWatchMenu.TabIndex = 3;
             this.RamWatchMenu.Text = "menuStrip1";
             // 

@@ -470,10 +470,8 @@ namespace BizHawk.Client.EmuHawk
             this.FileSubMenu,
             this.PatternSubMenu,
             this.SettingsSubMenu});
-			this.NesPPUMenu.Location = new System.Drawing.Point(0, 0);
 			this.NesPPUMenu.Name = "NesPPUMenu";
 			this.NesPPUMenu.Padding = new System.Windows.Forms.Padding(8, 2, 0, 2);
-			this.NesPPUMenu.Size = new System.Drawing.Size(1139, 28);
 			this.NesPPUMenu.TabIndex = 10;
 			this.NesPPUMenu.Text = "menuStrip1";
 			// 

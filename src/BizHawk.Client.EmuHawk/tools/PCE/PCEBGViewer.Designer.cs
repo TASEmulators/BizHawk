@@ -61,9 +61,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.PceBgViewerMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ViewerSubMenu});
-			this.PceBgViewerMenu.Location = new System.Drawing.Point(0, 0);
 			this.PceBgViewerMenu.Name = "PceBgViewerMenu";
-			this.PceBgViewerMenu.Size = new System.Drawing.Size(676, 24);
 			this.PceBgViewerMenu.TabIndex = 2;
 			this.PceBgViewerMenu.Text = "menuStrip1";
 			// 

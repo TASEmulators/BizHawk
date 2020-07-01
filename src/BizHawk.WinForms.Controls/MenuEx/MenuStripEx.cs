@@ -1,4 +1,6 @@
 ﻿using System;
+using System.ComponentModel;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace BizHawk.WinForms.Controls
@@ -8,6 +10,12 @@ namespace BizHawk.WinForms.Controls
 	/// </summary>
 	public class MenuStripEx : MenuStrip
 	{
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		public new Size Size => base.Size;
+
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		public new Point Location => new Point(0, 0);
+
 		protected override void WndProc(ref Message m)
 		{
 			base.WndProc(ref m);

@@ -307,9 +307,7 @@ namespace BizHawk.Client.EmuHawk
             this.settingsToolStripMenuItem,
             this.searchToolStripMenuItem,
             this.optionsToolStripMenuItem});
-			this.RamSearchMenu.Location = new System.Drawing.Point(0, 0);
 			this.RamSearchMenu.Name = "RamSearchMenu";
-			this.RamSearchMenu.Size = new System.Drawing.Size(445, 24);
 			this.RamSearchMenu.TabIndex = 4;
 			this.RamSearchMenu.Text = "menuStrip1";
 			// 
