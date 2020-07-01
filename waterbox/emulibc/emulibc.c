@@ -86,6 +86,9 @@ void _debug_puts(const char *s)
 
 ECL_EXPORT void ecl_seal()
 {
-	if (mprotect((void*)__wbxsysarea.layout.sealed.start, (__sealed_current - __wbxsysarea.layout.sealed.start + 0xfff) & ~0xffful, PROT_READ) != 0)
-		__asm__("int3");
+	if (__sealed_current)
+	{
+		if (mprotect((void*)__wbxsysarea.layout.sealed.start, (__sealed_current - __wbxsysarea.layout.sealed.start + 0xfff) & ~0xffful, PROT_READ) != 0)
+			__asm__("int3");
+	}
 }
