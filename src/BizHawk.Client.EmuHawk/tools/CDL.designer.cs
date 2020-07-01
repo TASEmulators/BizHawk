@@ -41,17 +41,17 @@ namespace BizHawk.Client.EmuHawk
 			this.noneToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.miAutoStart = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.miAutoSave = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+			this.toolStripSeparator2 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.ClearMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.DisassembleMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+			this.toolStripSeparator1 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.ExitMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.toolStrip1 = new ToolStripEx();
 			this.tsbLoggingActive = new System.Windows.Forms.ToolStripButton();
-			this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+			this.toolStripSeparator3 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.tsbViewUpdate = new System.Windows.Forms.ToolStripButton();
 			this.tsbViewStyle = new System.Windows.Forms.ToolStripComboBox();
-			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+			this.toolStripSeparator4 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.tsbExportText = new System.Windows.Forms.ToolStripButton();
 			this.lvCDL = new InputRoll();
 			this.miAutoResume = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -138,11 +138,6 @@ namespace BizHawk.Client.EmuHawk
 			this.miAutoSave.Text = "Auto-Save";
 			this.miAutoSave.Click += new System.EventHandler(this.miAutoSave_Click);
 			// 
-			// toolStripSeparator2
-			// 
-			this.toolStripSeparator2.Name = "toolStripSeparator2";
-			this.toolStripSeparator2.Size = new System.Drawing.Size(190, 6);
-			// 
 			// ClearMenuItem
 			// 
 			this.ClearMenuItem.Text = "&Clear";
@@ -152,11 +147,6 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.DisassembleMenuItem.Text = "&Disassemble...";
 			this.DisassembleMenuItem.Click += new System.EventHandler(this.DisassembleMenuItem_Click);
-			// 
-			// toolStripSeparator1
-			// 
-			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(190, 6);
 			// 
 			// ExitMenuItem
 			// 
@@ -187,11 +177,6 @@ namespace BizHawk.Client.EmuHawk
 			this.tsbLoggingActive.Text = "Active";
 			this.tsbLoggingActive.CheckedChanged += new System.EventHandler(this.tsbLoggingActive_CheckedChanged);
 			// 
-			// toolStripSeparator3
-			// 
-			this.toolStripSeparator3.Name = "toolStripSeparator3";
-			this.toolStripSeparator3.Size = new System.Drawing.Size(6, 25);
-			// 
 			// tsbViewUpdate
 			// 
 			this.tsbViewUpdate.Checked = true;
@@ -213,11 +198,6 @@ namespace BizHawk.Client.EmuHawk
 			this.tsbViewStyle.Name = "tsbViewStyle";
 			this.tsbViewStyle.Size = new System.Drawing.Size(121, 25);
 			this.tsbViewStyle.SelectedIndexChanged += new System.EventHandler(this.tsbViewStyle_SelectedIndexChanged);
-			// 
-			// toolStripSeparator4
-			// 
-			this.toolStripSeparator4.Name = "toolStripSeparator4";
-			this.toolStripSeparator4.Size = new System.Drawing.Size(6, 25);
 			// 
 			// tsbExportText
 			// 
@@ -283,18 +263,18 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx AppendMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx NewMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx DisassembleMenuItem;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator1;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ExitMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SaveMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx RecentSubMenu;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator2;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx noneToolStripMenuItem;
 		private System.Windows.Forms.ToolStripButton tsbLoggingActive;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator3;
 		private System.Windows.Forms.ToolStripButton tsbViewUpdate;
 		private System.Windows.Forms.ToolStripComboBox tsbViewStyle;
 		private InputRoll lvCDL;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
+		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator4;
 		private System.Windows.Forms.ToolStripButton tsbExportText;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx miAutoStart;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx miAutoSave;

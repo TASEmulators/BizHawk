@@ -36,7 +36,7 @@ namespace BizHawk.Client.EmuHawk
 			this.fileToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.saveScreenshotAsToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.saveScreenshotToClipboardToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+			this.toolStripSeparator1 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.exitToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
 			this.panel1 = new System.Windows.Forms.Panel();
@@ -298,11 +298,6 @@ namespace BizHawk.Client.EmuHawk
 			this.saveScreenshotToClipboardToolStripMenuItem.Enabled = false;
 			this.saveScreenshotToClipboardToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
 			this.saveScreenshotToClipboardToolStripMenuItem.Text = "Save Screenshot to Clipboard";
-			// 
-			// toolStripSeparator1
-			// 
-			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(252, 6);
 			// 
 			// exitToolStripMenuItem
 			// 
@@ -2519,7 +2514,7 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx fileToolStripMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx saveScreenshotAsToolStripMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx saveScreenshotToClipboardToolStripMenuItem;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator1;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx exitToolStripMenuItem;
 		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
 		private System.Windows.Forms.Panel panel1;

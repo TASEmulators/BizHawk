@@ -49,12 +49,12 @@ namespace BizHawk.Client.EmuHawk
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.toolStrip1 = new ToolStripEx();
 			this.tbbGroup = new System.Windows.Forms.ToolStripButton();
-			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+			this.toolStripSeparator2 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.tbbScan = new System.Windows.Forms.ToolStripButton();
 			this.tbbOrganize = new System.Windows.Forms.ToolStripButton();
 			this.tbbImport = new System.Windows.Forms.ToolStripButton();
 			this.tbbClose = new System.Windows.Forms.ToolStripButton();
-			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+			this.toolStripSeparator1 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.tbbCloseReload = new System.Windows.Forms.ToolStripButton();
 			this.tbbOpenFolder = new System.Windows.Forms.ToolStripButton();
 			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
@@ -212,11 +212,6 @@ namespace BizHawk.Client.EmuHawk
 			this.tbbGroup.Text = "Group";
 			this.tbbGroup.Click += new System.EventHandler(this.tbbGroup_Click);
 			// 
-			// toolStripSeparator2
-			// 
-			this.toolStripSeparator2.Name = "toolStripSeparator2";
-			this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
-			// 
 			// tbbScan
 			// 
 			this.tbbScan.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
@@ -254,12 +249,7 @@ namespace BizHawk.Client.EmuHawk
 			this.tbbClose.Size = new System.Drawing.Size(40, 22);
 			this.tbbClose.Text = "Close";
 			this.tbbClose.Click += new System.EventHandler(this.tbbClose_Click);
-			// 
-			// toolStripSeparator1
-			// 
 			this.toolStripSeparator1.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
 			this.toolStripSeparator1.Visible = false;
 			// 
 			// tbbCloseReload
@@ -373,7 +363,7 @@ namespace BizHawk.Client.EmuHawk
 				private System.Windows.Forms.Panel panel1;
 				private ToolStripEx toolStrip1;
 				private System.Windows.Forms.ToolStripButton tbbGroup;
-				private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+				private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator2;
 				private System.Windows.Forms.ToolStripButton tbbScan;
 				private System.Windows.Forms.ToolStripButton tbbOrganize;
 				private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
@@ -394,7 +384,7 @@ namespace BizHawk.Client.EmuHawk
 				private System.Windows.Forms.ColumnHeader columnHeader8;
 				private System.Windows.Forms.ToolStripButton tbbClose;
 				private System.Windows.Forms.ToolStripButton tbbCloseReload;
-				private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+				private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator1;
 		private BizHawk.WinForms.Controls.LocLabelEx label2;
         private System.Windows.Forms.ToolStripButton tbbOpenFolder;
     }

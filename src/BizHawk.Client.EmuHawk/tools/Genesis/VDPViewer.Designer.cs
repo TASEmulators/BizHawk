@@ -48,7 +48,7 @@ namespace BizHawk.Client.EmuHawk
 			this.saveTilesScreenshotToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.saveWindowScreenshotToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.savePaletteScreenshotToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+			this.toolStripSeparator1 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.closeToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
@@ -200,11 +200,6 @@ namespace BizHawk.Client.EmuHawk
 			this.savePaletteScreenshotToolStripMenuItem.Text = "Save Palette Screenshot...";
 			this.savePaletteScreenshotToolStripMenuItem.Click += new System.EventHandler(this.SavePaletteScreenshotToolStripMenuItem_Click);
 			// 
-			// toolStripSeparator1
-			// 
-			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(205, 6);
-			// 
 			// closeToolStripMenuItem
 			// 
 			this.closeToolStripMenuItem.ShortcutKeyDisplayString = "Alt+F4";
@@ -262,7 +257,7 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx saveTilesScreenshotToolStripMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx saveWindowScreenshotToolStripMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx savePaletteScreenshotToolStripMenuItem;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator1;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx closeToolStripMenuItem;
 	}
 }

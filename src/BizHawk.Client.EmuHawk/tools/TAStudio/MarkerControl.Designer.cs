@@ -34,7 +34,7 @@
 			this.ScrollToMarkerToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.EditMarkerToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.AddMarkerToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+			this.toolStripSeparator1 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.RemoveMarkerToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.JumpToMarkerButton = new System.Windows.Forms.Button();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
@@ -81,11 +81,6 @@
 			// 
 			this.AddMarkerToolStripMenuItem.Text = "Add";
 			this.AddMarkerToolStripMenuItem.Click += new System.EventHandler(this.AddMarkerToolStripMenuItem_Click);
-			// 
-			// toolStripSeparator1
-			// 
-			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(115, 6);
 			// 
 			// RemoveMarkerToolStripMenuItem
 			// 
@@ -237,7 +232,7 @@
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx AddMarkerToolStripMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx RemoveMarkerToolStripMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx JumpToMarkerToolStripMenuItem;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator1;
 		private System.Windows.Forms.Button AddMarkerWithTextButton;
 		private System.Windows.Forms.GroupBox MarkersGroupBox;
 	}

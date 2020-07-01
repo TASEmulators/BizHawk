@@ -37,7 +37,7 @@ namespace BizHawk.Client.EmuHawk
 			this.EditScriptContextItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.RemoveScriptContextItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.InsertSeperatorContextItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.ScriptContextSeparator = new System.Windows.Forms.ToolStripSeparator();
+			this.ScriptContextSeparator = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.StopAllScriptsContextItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.ClearRegisteredFunctionsContextItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.menuStrip1 = new MenuStripEx();
@@ -46,12 +46,12 @@ namespace BizHawk.Client.EmuHawk
 			this.OpenSessionMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.SaveSessionMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.SaveSessionAsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
+			this.toolStripSeparator9 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.RecentSessionsSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
+			this.toolStripSeparator8 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.RecentScriptsSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+			this.toolStripSeparator3 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
+			this.toolStripSeparator1 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.ExitMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.ScriptSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.NewScriptMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -62,19 +62,19 @@ namespace BizHawk.Client.EmuHawk
 			this.EditScriptMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.RemoveScriptMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.DuplicateScriptMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
+			this.toolStripSeparator7 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.InsertSeparatorMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.MoveUpMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.MoveDownMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.SelectAllMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
+			this.toolStripSeparator6 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.StopAllScriptsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.RegisteredFunctionsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.SettingsSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.DisableScriptsOnLoadMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.ReturnAllIfNoneSelectedMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.ReloadWhenScriptFileChangesMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+			this.toolStripSeparator4 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.RegisterToTextEditorsSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.RegisterSublimeText2MenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.RegisterNotePadMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -86,7 +86,7 @@ namespace BizHawk.Client.EmuHawk
 			this.ClearConsoleContextItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.SelectAllContextItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.CopyContextItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
+			this.toolStripSeparator5 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.RegisteredFunctionsContextItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.ClearRegisteredFunctionsLogContextItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -102,11 +102,11 @@ namespace BizHawk.Client.EmuHawk
 			this.EditToolbarItem = new System.Windows.Forms.ToolStripButton();
 			this.RemoveScriptToolbarItem = new System.Windows.Forms.ToolStripButton();
 			this.DuplicateToolbarButton = new System.Windows.Forms.ToolStripButton();
-			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+			this.toolStripSeparator2 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.MoveUpToolbarItem = new System.Windows.Forms.ToolStripButton();
 			this.toolStripButtonMoveDown = new System.Windows.Forms.ToolStripButton();
 			this.InsertSeparatorToolbarItem = new System.Windows.Forms.ToolStripButton();
-			this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
+			this.toolStripSeparator10 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.EraseToolbarItem = new System.Windows.Forms.ToolStripButton();
 			this.LuaListView = new BizHawk.Client.EmuHawk.InputRoll();
 			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
@@ -160,11 +160,6 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.InsertSeperatorContextItem.Text = "Insert Seperator";
 			this.InsertSeperatorContextItem.Click += new System.EventHandler(this.InsertSeparatorMenuItem_Click);
-			// 
-			// ScriptContextSeparator
-			// 
-			this.ScriptContextSeparator.Name = "ScriptContextSeparator";
-			this.ScriptContextSeparator.Size = new System.Drawing.Size(200, 6);
 			// 
 			// StopAllScriptsContextItem
 			// 
@@ -229,11 +224,6 @@ namespace BizHawk.Client.EmuHawk
 			this.SaveSessionAsMenuItem.Text = "Save Session &As...";
 			this.SaveSessionAsMenuItem.Click += new System.EventHandler(this.SaveSessionAsMenuItem_Click);
 			// 
-			// toolStripSeparator9
-			// 
-			this.toolStripSeparator9.Name = "toolStripSeparator9";
-			this.toolStripSeparator9.Size = new System.Drawing.Size(229, 6);
-			// 
 			// RecentSessionsSubMenu
 			// 
 			this.RecentSessionsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -241,27 +231,12 @@ namespace BizHawk.Client.EmuHawk
 			this.RecentSessionsSubMenu.Text = "Recent Sessions";
 			this.RecentSessionsSubMenu.DropDownOpened += new System.EventHandler(this.RecentSessionsSubMenu_DropDownOpened);
 			// 
-			// toolStripSeparator8
-			// 
-			this.toolStripSeparator8.Name = "toolStripSeparator8";
-			this.toolStripSeparator8.Size = new System.Drawing.Size(57, 6);
-			// 
 			// RecentScriptsSubMenu
 			// 
 			this.RecentScriptsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripSeparator3});
 			this.RecentScriptsSubMenu.Text = "Recent Scripts";
 			this.RecentScriptsSubMenu.DropDownOpened += new System.EventHandler(this.RecentScriptsSubMenu_DropDownOpened);
-			// 
-			// toolStripSeparator3
-			// 
-			this.toolStripSeparator3.Name = "toolStripSeparator3";
-			this.toolStripSeparator3.Size = new System.Drawing.Size(57, 6);
-			// 
-			// toolStripSeparator1
-			// 
-			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(229, 6);
 			// 
 			// ExitMenuItem
 			// 
@@ -337,11 +312,6 @@ namespace BizHawk.Client.EmuHawk
 			this.DuplicateScriptMenuItem.Text = "&Duplicate Script";
 			this.DuplicateScriptMenuItem.Click += new System.EventHandler(this.DuplicateScriptMenuItem_Click);
 			// 
-			// toolStripSeparator7
-			// 
-			this.toolStripSeparator7.Name = "toolStripSeparator7";
-			this.toolStripSeparator7.Size = new System.Drawing.Size(209, 6);
-			// 
 			// InsertSeparatorMenuItem
 			// 
 			this.InsertSeparatorMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.I)));
@@ -365,11 +335,6 @@ namespace BizHawk.Client.EmuHawk
 			this.SelectAllMenuItem.ShortcutKeyDisplayString = "Ctrl+A";
 			this.SelectAllMenuItem.Text = "Select &All";
 			this.SelectAllMenuItem.Click += new System.EventHandler(this.SelectAllMenuItem_Click);
-			// 
-			// toolStripSeparator6
-			// 
-			this.toolStripSeparator6.Name = "toolStripSeparator6";
-			this.toolStripSeparator6.Size = new System.Drawing.Size(209, 6);
 			// 
 			// StopAllScriptsMenuItem
 			// 
@@ -407,11 +372,6 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.ReloadWhenScriptFileChangesMenuItem.Text = "Reload When Script File Changes";
 			this.ReloadWhenScriptFileChangesMenuItem.Click += new System.EventHandler(this.ReloadWhenScriptFileChangesMenuItem_Click);
-			// 
-			// toolStripSeparator4
-			// 
-			this.toolStripSeparator4.Name = "toolStripSeparator4";
-			this.toolStripSeparator4.Size = new System.Drawing.Size(229, 6);
 			// 
 			// RegisterToTextEditorsSubMenu
 			// 
@@ -492,11 +452,6 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.CopyContextItem.Text = "Copy";
 			this.CopyContextItem.Click += new System.EventHandler(this.CopyContextItem_Click);
-			// 
-			// toolStripSeparator5
-			// 
-			this.toolStripSeparator5.Name = "toolStripSeparator5";
-			this.toolStripSeparator5.Size = new System.Drawing.Size(200, 6);
 			// 
 			// RegisteredFunctionsContextItem
 			// 
@@ -639,11 +594,6 @@ namespace BizHawk.Client.EmuHawk
 			this.DuplicateToolbarButton.Text = "Duplicate Script";
 			this.DuplicateToolbarButton.Click += new System.EventHandler(this.DuplicateScriptMenuItem_Click);
 			// 
-			// toolStripSeparator2
-			// 
-			this.toolStripSeparator2.Name = "toolStripSeparator2";
-			this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
-			// 
 			// MoveUpToolbarItem
 			// 
 			this.MoveUpToolbarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -670,11 +620,6 @@ namespace BizHawk.Client.EmuHawk
 			this.InsertSeparatorToolbarItem.Size = new System.Drawing.Size(23, 22);
 			this.InsertSeparatorToolbarItem.Text = "Insert Separator";
 			this.InsertSeparatorToolbarItem.Click += new System.EventHandler(this.InsertSeparatorMenuItem_Click);
-			// 
-			// toolStripSeparator10
-			// 
-			this.toolStripSeparator10.Name = "toolStripSeparator10";
-			this.toolStripSeparator10.Size = new System.Drawing.Size(6, 25);
 			// 
 			// EraseToolbarItem
 			// 
@@ -774,7 +719,7 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx FileSubMenu;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SaveSessionMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SaveSessionAsMenuItem;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator1;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ExitMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ScriptSubMenu;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx EditScriptMenuItem;
@@ -787,16 +732,16 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx StopAllScriptsMenuItem;
 		private System.Windows.Forms.ContextMenuStrip ScriptListContextMenu;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx RecentScriptsSubMenu;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator3;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx StopAllScriptsContextItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx RemoveScriptContextItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx InsertSeperatorContextItem;
-		private System.Windows.Forms.ToolStripSeparator ScriptContextSeparator;
+		private BizHawk.WinForms.Controls.ToolStripSeparatorEx ScriptContextSeparator;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx EditScriptContextItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ToggleScriptContextItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx RemoveScriptMenuItem;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
+		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator6;
+		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator7;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx MoveUpMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx MoveDownMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SelectAllMenuItem;
@@ -805,15 +750,15 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolStripButton RemoveScriptToolbarItem;
 		private System.Windows.Forms.ToolStripButton ToggleScriptToolbarItem;
 		private System.Windows.Forms.ToolStripButton InsertSeparatorToolbarItem;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator2;
 		private System.Windows.Forms.ToolStripButton MoveUpToolbarItem;
 		private System.Windows.Forms.ToolStripButton toolStripButtonMoveDown;
 		private System.Windows.Forms.ToolStripButton EditToolbarItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx OpenScriptMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx OpenSessionMenuItem;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator9;
+		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator9;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx RecentSessionsSubMenu;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
+		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator8;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx HelpSubMenu;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx FunctionsListMenuItem;
 		private System.Windows.Forms.ContextMenuStrip ConsoleContextMenu;
@@ -831,7 +776,7 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx RegisteredFunctionsContextItem;
 		private System.Windows.Forms.ToolStripButton RefreshScriptToolbarItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx RefreshScriptMenuItem;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator10;
+		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator10;
 		private System.Windows.Forms.ToolStripButton EraseToolbarItem;
 		private System.Windows.Forms.ToolStripButton DuplicateToolbarButton;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx DuplicateScriptMenuItem;
@@ -839,14 +784,14 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.SplitContainer splitContainer1;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ReturnAllIfNoneSelectedMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ReloadWhenScriptFileChangesMenuItem;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
+		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator4;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx RegisterToTextEditorsSubMenu;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx RegisterSublimeText2MenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx RegisterNotePadMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SelectAllContextItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx CopyContextItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ClearRegisteredFunctionsContextItem;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
+		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator5;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ClearRegisteredFunctionsLogContextItem;
 	}
 }

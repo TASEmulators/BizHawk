@@ -45,7 +45,7 @@
 			this.EditBranchTextContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.JumpToBranchContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.UndoBranchToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+			this.toolStripSeparator2 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.RemoveBranchContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.BookmarksBranchesGroupBox.SuspendLayout();
@@ -224,11 +224,6 @@
 			this.UndoBranchToolStripMenuItem.Text = "Undo";
 			this.UndoBranchToolStripMenuItem.Click += new System.EventHandler(this.UndoBranchToolStripMenuItem_Click);
 			// 
-			// toolStripSeparator2
-			// 
-			this.toolStripSeparator2.Name = "toolStripSeparator2";
-			this.toolStripSeparator2.Size = new System.Drawing.Size(143, 6);
-			// 
 			// RemoveBranchContextMenuItem
 			// 
 			this.RemoveBranchContextMenuItem.Text = "Remove";
@@ -262,7 +257,7 @@
 		private System.Windows.Forms.Button AddBranchButton;
 		private System.Windows.Forms.Button LoadBranchButton;
 		private System.Windows.Forms.ToolTip toolTip1;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator2;
 		private System.Windows.Forms.Button JumpToBranchButton;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx JumpToBranchContextMenuItem;
 		private System.Windows.Forms.Button UndoBranchButton;

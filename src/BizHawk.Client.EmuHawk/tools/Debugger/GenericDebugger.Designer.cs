@@ -38,7 +38,7 @@ namespace BizHawk.Client.EmuHawk
 			this.StepIntoMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.StepOverMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.StepOutMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+			this.toolStripSeparator1 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.RefreshMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.RegistersGroupBox = new System.Windows.Forms.GroupBox();
 			this.RegisterPanel = new BizHawk.Client.EmuHawk.RegisterBoxControl();
@@ -116,11 +116,6 @@ namespace BizHawk.Client.EmuHawk
 			this.StepOutMenuItem.ShortcutKeyDisplayString = "Shift+F11";
 			this.StepOutMenuItem.Text = "Step Ou&t";
 			this.StepOutMenuItem.Click += new System.EventHandler(this.StepOutMenuItem_Click);
-			// 
-			// toolStripSeparator1
-			// 
-			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(180, 6);
 			// 
 			// RefreshMenuItem
 			// 
@@ -383,7 +378,7 @@ namespace BizHawk.Client.EmuHawk
 		private HexTextBox SeekToBox;
 		private System.Windows.Forms.Button CancelSeekBtn;
 		private System.Windows.Forms.Button ToPCBtn;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator1;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx RefreshMenuItem;
 		private System.Windows.Forms.ContextMenuStrip DisassemblerContextMenu;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx AddBreakpointContextMenuItem;

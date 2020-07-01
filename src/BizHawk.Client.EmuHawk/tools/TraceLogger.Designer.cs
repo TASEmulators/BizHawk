@@ -40,7 +40,7 @@ namespace BizHawk.Client.EmuHawk
 			this.menuStrip1 = new MenuStripEx();
 			this.FileSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.SaveLogMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+			this.toolStripSeparator1 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.ExitMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.EditSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.CopyMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -141,11 +141,6 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.SaveLogMenuItem.Text = "&Save Log";
 			this.SaveLogMenuItem.Click += new System.EventHandler(this.SaveLogMenuItem_Click);
-			// 
-			// toolStripSeparator1
-			// 
-			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(140, 6);
 			// 
 			// ExitMenuItem
 			// 
@@ -316,7 +311,7 @@ namespace BizHawk.Client.EmuHawk
 		private MenuStripEx menuStrip1;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx FileSubMenu;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SaveLogMenuItem;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator1;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ExitMenuItem;
 		private System.Windows.Forms.GroupBox groupBox2;
 		private System.Windows.Forms.CheckBox LoggingEnabled;

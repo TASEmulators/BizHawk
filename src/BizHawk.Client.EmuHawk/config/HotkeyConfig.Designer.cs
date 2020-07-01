@@ -45,7 +45,7 @@
 			this.clearAllToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.clearCurrentTabToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.restoreDefaultsToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+			this.toolStripSeparator1 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.HotkeyTabControl.SuspendLayout();
 			this.clearBtnContextMenu.SuspendLayout();
 			this.SuspendLayout();
@@ -184,11 +184,6 @@
 			this.restoreDefaultsToolStripMenuItem.Text = "Restore Defaults";
 			this.restoreDefaultsToolStripMenuItem.Click += new System.EventHandler(this.RestoreDefaultsToolStripMenuItem_Click);
 			// 
-			// toolStripSeparator1
-			// 
-			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(164, 6);
-			// 
 			// HotkeyConfig
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -235,6 +230,6 @@
 				private BizHawk.WinForms.Controls.ToolStripMenuItemEx clearAllToolStripMenuItem;
 				private BizHawk.WinForms.Controls.ToolStripMenuItemEx clearCurrentTabToolStripMenuItem;
 				private BizHawk.WinForms.Controls.ToolStripMenuItemEx restoreDefaultsToolStripMenuItem;
-				private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+				private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator1;
 	}
 }

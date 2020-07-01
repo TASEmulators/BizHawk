@@ -40,7 +40,7 @@ namespace BizHawk.Client.EmuHawk
 			this.PadsSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.ClearAllMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.StickyMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+			this.toolStripSeparator4 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.ExitMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.SettingsSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.ClearClearsAnalogInputMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -122,11 +122,6 @@ namespace BizHawk.Client.EmuHawk
 			this.StickyMenuItem.Text = "Sticky";
 			this.StickyMenuItem.Click += new System.EventHandler(this.StickyMenuItem_Click);
 			// 
-			// toolStripSeparator4
-			// 
-			this.toolStripSeparator4.Name = "toolStripSeparator4";
-			this.toolStripSeparator4.Size = new System.Drawing.Size(139, 6);
-			// 
 			// ExitMenuItem
 			// 
 			this.ExitMenuItem.ShortcutKeyDisplayString = "Alt+F4";
@@ -177,7 +172,7 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx StickyContextMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ClearClearsAnalogInputMenuItem;
 		private System.Windows.Forms.Panel ControllerPanel;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
+		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator4;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ExitMenuItem;
 	}
 }

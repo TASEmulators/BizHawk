@@ -72,11 +72,11 @@ namespace BizHawk.Client.EmuHawk
 			this.SavePaletteScreenshotMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.SavePatternScreenshotMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.SaveSpriteScreenshotMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+			this.toolStripSeparator1 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.CopyPaletteToClipboardMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.CopyPatternToClipboardMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.CopySpriteToClipboardMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+			this.toolStripSeparator2 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.ExitMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.PatternSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.Table0PaletteSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -486,11 +486,6 @@ namespace BizHawk.Client.EmuHawk
 			this.SaveSpriteScreenshotMenuItem.Text = "Save Sprite Screenshot...";
 			this.SaveSpriteScreenshotMenuItem.Click += new System.EventHandler(this.SaveSpriteScreenshotMenuItem_Click);
 			// 
-			// toolStripSeparator1
-			// 
-			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(253, 6);
-			// 
 			// CopyPaletteToClipboardMenuItem
 			// 
 			this.CopyPaletteToClipboardMenuItem.Text = "Copy Palette to Clipboard";
@@ -505,11 +500,6 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.CopySpriteToClipboardMenuItem.Text = "Copy Sprite to Clipboard";
 			this.CopySpriteToClipboardMenuItem.Click += new System.EventHandler(this.CopySpriteToClipboardMenuItem_Click);
-			// 
-			// toolStripSeparator2
-			// 
-			this.toolStripSeparator2.Name = "toolStripSeparator2";
-			this.toolStripSeparator2.Size = new System.Drawing.Size(253, 6);
 			// 
 			// ExitMenuItem
 			// 
@@ -809,7 +799,7 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SavePaletteScreenshotMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SavePatternScreenshotMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SaveSpriteScreenshotMenuItem;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator1;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ExitMenuItem;
 		private System.Windows.Forms.ContextMenuStrip PaletteContext;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx PaletteSaveImageMenuItem;
@@ -826,7 +816,7 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx CopyPaletteToClipboardMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx CopyPatternToClipboardMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx CopySpriteToClipboardMenuItem;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator2;
 		private StatusStripEx NesPPUStatusBar;
 		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
 		private System.Windows.Forms.Timer Messagetimer;

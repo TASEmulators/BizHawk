@@ -34,7 +34,7 @@ namespace BizHawk.Client.EmuHawk
 			this.ViewerSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.VDC1MenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.VDC2MenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+			this.toolStripSeparator1 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.ExitMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.canvas = new BizHawk.Client.EmuHawk.PceBgCanvas();
@@ -84,11 +84,6 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.VDC2MenuItem.Text = "VCD&2";
 			this.VDC2MenuItem.Click += new System.EventHandler(this.VDC2MenuItem_Click);
-			// 
-			// toolStripSeparator1
-			// 
-			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
 			// 
 			// ExitMenuItem
 			// 
@@ -243,7 +238,7 @@ namespace BizHawk.Client.EmuHawk
         private BizHawk.WinForms.Controls.ToolStripMenuItemEx ExitMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx VDC1MenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx VDC2MenuItem;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator1;
 		private System.Windows.Forms.GroupBox groupBox1;
 		private System.Windows.Forms.GroupBox groupBox5;
 		private BizHawk.WinForms.Controls.LocLabelEx label7;

@@ -41,7 +41,7 @@ namespace BizHawk.Client.EmuHawk
 			this.FileSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.ScreenshotMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.ScreenshotToClipboardMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+			this.toolStripSeparator2 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.ExitMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.txtScanline = new System.Windows.Forms.TextBox();
 			this.rbNametableNW = new System.Windows.Forms.RadioButton();
@@ -150,11 +150,6 @@ namespace BizHawk.Client.EmuHawk
 			this.ScreenshotToClipboardMenuItem.ShortcutKeyDisplayString = "Ctrl+C";
 			this.ScreenshotToClipboardMenuItem.Text = "Screenshot to &Clipboard";
 			this.ScreenshotToClipboardMenuItem.Click += new System.EventHandler(this.ScreenshotToClipboardMenuItem_Click);
-			// 
-			// toolStripSeparator2
-			// 
-			this.toolStripSeparator2.Name = "toolStripSeparator2";
-			this.toolStripSeparator2.Size = new System.Drawing.Size(240, 6);
 			// 
 			// ExitMenuItem
 			// 
@@ -435,7 +430,7 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.LocLabelEx label7;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx FileSubMenu;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ScreenshotMenuItem;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator2;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ExitMenuItem;
 		private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ScreenshotAsContextMenuItem;

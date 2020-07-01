@@ -33,8 +33,8 @@
 			this.saveAsToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.loadMacroToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.RecentToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-			this.sepToolStripMenuItem = new System.Windows.Forms.ToolStripSeparator();
+			this.toolStripSeparator1 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
+			this.sepToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.ExitMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.NameTextbox = new System.Windows.Forms.TextBox();
 			this.ReplaceBox = new System.Windows.Forms.CheckBox();
@@ -91,16 +91,6 @@
             this.toolStripSeparator1});
 			this.RecentToolStripMenuItem.Text = "Recent";
 			this.RecentToolStripMenuItem.DropDownOpened += new System.EventHandler(this.RecentToolStripMenuItem_DropDownOpened);
-			// 
-			// toolStripSeparator1
-			// 
-			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(57, 6);
-			// 
-			// sepToolStripMenuItem
-			// 
-			this.sepToolStripMenuItem.Name = "sepToolStripMenuItem";
-			this.sepToolStripMenuItem.Size = new System.Drawing.Size(167, 6);
 			// 
 			// ExitMenuItem
 			// 
@@ -298,9 +288,9 @@
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx saveAsToolStripMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx loadMacroToolStripMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx RecentToolStripMenuItem;
-		private System.Windows.Forms.ToolStripSeparator sepToolStripMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripSeparatorEx sepToolStripMenuItem;
 		private System.Windows.Forms.Button CurrentButton;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator1;
 		private System.Windows.Forms.CheckBox OverlayBox;
 
 	}

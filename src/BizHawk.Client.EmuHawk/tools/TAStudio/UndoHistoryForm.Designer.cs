@@ -35,7 +35,7 @@
 			this.RightClickMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.undoHereToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.redoHereToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.sepToolStripMenuItem = new System.Windows.Forms.ToolStripSeparator();
+			this.sepToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.clearHistoryToHereToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.AutoScrollCheck = new System.Windows.Forms.CheckBox();
 			this.MaxStepsNum = new System.Windows.Forms.NumericUpDown();
@@ -97,11 +97,6 @@
 			// 
 			this.redoHereToolStripMenuItem.Text = "Redo To Selection";
 			this.redoHereToolStripMenuItem.Click += new System.EventHandler(this.RedoHereMenuItem_Click);
-			// 
-			// sepToolStripMenuItem
-			// 
-			this.sepToolStripMenuItem.Name = "sepToolStripMenuItem";
-			this.sepToolStripMenuItem.Size = new System.Drawing.Size(205, 6);
 			// 
 			// clearHistoryToHereToolStripMenuItem
 			// 
@@ -202,7 +197,7 @@
 		private System.Windows.Forms.ContextMenuStrip RightClickMenu;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx undoHereToolStripMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx redoHereToolStripMenuItem;
-		private System.Windows.Forms.ToolStripSeparator sepToolStripMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripSeparatorEx sepToolStripMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx clearHistoryToHereToolStripMenuItem;
 		private System.Windows.Forms.CheckBox AutoScrollCheck;
 		private System.Windows.Forms.NumericUpDown MaxStepsNum;
