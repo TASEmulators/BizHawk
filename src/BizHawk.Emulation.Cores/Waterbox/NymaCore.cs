@@ -57,16 +57,19 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				_syncSettings.Normalize(SettingsInfo);
 
 				var filesToRemove = new List<string>();
-				foreach (var kvp in firmwares)
+				if (firmwares != null)
 				{
-					var s = kvp.Key;
-					var tt = kvp.Value;
-					var data = CoreComm.CoreFileProvider.GetFirmware(tt.SystemID, tt.FirmwareID, false,
-						"Firmware files are usually required and may stop your game from loading");
-					if (data != null)
+					foreach (var kvp in firmwares)
 					{
-						_exe.AddReadonlyFile(data, kvp.Key);
-						filesToRemove.Add(s);
+						var s = kvp.Key;
+						var tt = kvp.Value;
+						var data = CoreComm.CoreFileProvider.GetFirmware(tt.SystemID, tt.FirmwareID, false,
+							"Firmware files are usually required and may stop your game from loading");
+						if (data != null)
+						{
+							_exe.AddReadonlyFile(data, kvp.Key);
+							filesToRemove.Add(s);
+						}
 					}
 				}
 				// if (firmwares != null)

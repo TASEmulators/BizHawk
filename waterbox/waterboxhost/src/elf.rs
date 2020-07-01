@@ -179,7 +179,7 @@ impl ElfLoader {
 		self.run_proc(b, "ecl_seal");
 		for section in self.sections.iter() {
 			if section_name_is_readonly(section.name.as_str()) {
-				b.mprotect(section.addr, Protection::R).unwrap();
+				b.mprotect(section.addr.align_expand(), Protection::R).unwrap();
 			}
 		}
 		self.clear_syscalls(b);
