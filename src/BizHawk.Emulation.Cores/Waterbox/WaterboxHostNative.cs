@@ -98,6 +98,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		// 	public bool writable;
 		// }
 
+		/// Given a guest executable and a memory layout, create a new host environment.  All data will be immediately consumed from the reader,
+		/// which will not be used after this call.
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void wbx_create_host(MemoryLayoutTemplate layout, string moduleName, ReadCallback wbx, IntPtr userdata, ReturnData /*WaterboxHost*/ ret);
 		/// Tear down a host environment.  May not be called while the environment is active.
@@ -146,5 +148,10 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// Errors generally poison the environment; sorry!
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void wbx_load_state(IntPtr /*ActivatedWaterboxHost*/ obj, ReadCallback reader, IntPtr userdata, ReturnData /*void*/ ret);
+		/// Control whether the host automatically evicts blocks from memory when they are not active.  For the best performance,
+		/// this should be set to false.  Set to true to help catch dangling pointer issues.  Will be ignored (and forced to true)
+		/// if waterboxhost was built in debug mode.  This is a single global setting.
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract void wbx_set_always_evict_blocks(bool val);
 	}
 }

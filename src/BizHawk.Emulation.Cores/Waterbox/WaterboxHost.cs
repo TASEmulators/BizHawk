@@ -81,6 +81,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			NativeImpl = BizInvoker.GetInvoker<WaterboxHostNative>(
 				new DynamicLibraryImportResolver("waterboxhost.dll", eternal: true),
 				CallingConventionAdapters.Native);
+			#if !DEBUG
+			NativeImpl.wbx_set_always_evict_blocks(false);
+			#endif
 		}
 
 		private ReadCallback Reader(Stream s)

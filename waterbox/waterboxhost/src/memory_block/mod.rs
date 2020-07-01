@@ -316,8 +316,7 @@ impl MemoryBlock {
 	unsafe fn deactivate(&mut self, mut guard: BlockGuard) {
 		// self.trace("deactivate");
 		assert!(self.active);
-		#[cfg(debug_assertions)]
-		{
+		if ALWAYS_EVICT_BLOCKS {
 			// in debug mode, forcibly evict to catch dangling pointers
 			let other_opt = guard.deref_mut();
 			match *other_opt {

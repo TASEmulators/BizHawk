@@ -323,3 +323,14 @@ pub extern fn wbx_load_state(obj: &mut ActivatedWaterboxHost, callback: ReadCall
 	};
 	ret.put(obj.load_state(&mut reader));
 }
+
+/// Control whether the host automatically evicts blocks from memory when they are not active.  For the best performance,
+/// this should be set to false.  Set to true to help catch dangling pointer issues.  Will be ignored (and forced to true)
+/// if waterboxhost was built in debug mode.  This is a single global setting.
+#[no_mangle]
+pub extern fn wbx_set_always_evict_blocks(_val: bool) {
+	#[cfg(not(debug_assertions))]
+	{
+		unsafe { ALWAYS_EVICT_BLOCKS = _val; }
+	}
+}

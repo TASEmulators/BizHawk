@@ -115,6 +115,10 @@ pub struct WbxSysArea {
 	pub syscall: WbxSysSyscall,
 }
 
+/// Always remove memoryblocks from active ram when possible, to help debug dangling pointers.
+/// Severe performance consequences.
+static mut ALWAYS_EVICT_BLOCKS: bool = true;
+
 #[cfg(test)]
 mod tests {
 	#[test]
