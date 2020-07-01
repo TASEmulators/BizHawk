@@ -168,7 +168,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 
 		public new byte[] CloneSaveRam()
 		{
-			_exe.AddTransientFile(null, "save.ram");
+			_exe.AddTransientFile(new byte[0], "save.ram");
 			_core.GetSaveRam();
 			return _exe.RemoveTransientFile("save.ram");
 		}
