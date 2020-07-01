@@ -47,7 +47,7 @@ impl MemoryLayoutTemplate {
 			size: plain_size
 		};
 		res.mmap = AddressRange {
-			start: res.invis.end(),
+			start: res.plain.end(),
 			size: mmap_size
 		};
 		if res.elf.start >> 32 != (res.mmap.end() - 1) >> 32 {

@@ -76,7 +76,7 @@ fn align_down(p: usize) -> usize {
 	p & !PAGEMASK
 }
 fn align_up(p: usize) -> usize {
-	((p - 1) | PAGEMASK) + 1
+	((p.wrapping_sub(1)) | PAGEMASK).wrapping_add(1)
 }
 
 /// Information about memory layout injected into the guest application
