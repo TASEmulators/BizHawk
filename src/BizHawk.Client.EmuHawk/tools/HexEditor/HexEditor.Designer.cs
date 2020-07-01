@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Client.EmuHawk
+﻿using BizHawk.WinForms.Controls;
+
+namespace BizHawk.Client.EmuHawk
 {
 	partial class HexEditor
 	{
@@ -98,7 +100,6 @@
 			// 
 			// HexMenuStrip
 			// 
-			this.HexMenuStrip.ClickThrough = true;
 			this.HexMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.FileSubMenu,
             this.EditMenuItem,

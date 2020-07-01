@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Client.EmuHawk
+﻿using BizHawk.WinForms.Controls;
+
+namespace BizHawk.Client.EmuHawk
 {
 	partial class Cheats
 	{
@@ -159,7 +161,6 @@
 			// 
 			// CheatsMenu
 			// 
-			this.CheatsMenu.ClickThrough = true;
 			this.CheatsMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.FileSubMenu,
             this.CheatsSubMenu,
@@ -437,7 +438,6 @@
 			// 
 			// toolStrip1
 			// 
-			this.toolStrip1.ClickThrough = true;
 			this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.NewToolBarItem,
             this.OpenToolBarItem,

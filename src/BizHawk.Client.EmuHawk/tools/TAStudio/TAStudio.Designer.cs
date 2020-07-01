@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Client.EmuHawk
+﻿using BizHawk.WinForms.Controls;
+
+namespace BizHawk.Client.EmuHawk
 {
 	partial class TAStudio
 	{
@@ -204,7 +206,6 @@
 			// 
 			// TASMenu
 			// 
-			this.TASMenu.ClickThrough = true;
 			this.TASMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.FileSubMenu,
             this.EditSubMenu,
@@ -1237,7 +1238,6 @@
 			// 
 			// TasStatusStrip
 			// 
-			this.TasStatusStrip.ClickThrough = true;
 			this.TasStatusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.MessageStatusLabel,
             this.SavingProgressBar,

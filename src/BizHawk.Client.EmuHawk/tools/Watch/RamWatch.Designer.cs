@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Client.EmuHawk
+﻿using BizHawk.WinForms.Controls;
+
+namespace BizHawk.Client.EmuHawk
 {
 	partial class RamWatch
 	{
@@ -274,7 +276,6 @@
             // 
             // statusStrip1
             // 
-            this.statusStrip1.ClickThrough = true;
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ErrorIconButton,
             this.MessageLabel});
@@ -302,7 +303,6 @@
             // 
             // toolStrip1
             // 
-            this.toolStrip1.ClickThrough = true;
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.newToolStripButton,
             this.openToolStripButton,
@@ -466,7 +466,6 @@
 			// 
             // RamWatchMenu
             // 
-            this.RamWatchMenu.ClickThrough = true;
             this.RamWatchMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.FileSubMenu,
             this.WatchesSubMenu,

@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Client.EmuHawk
+﻿using BizHawk.WinForms.Controls;
+
+namespace BizHawk.Client.EmuHawk
 {
 	partial class PceBgViewer
 	{
@@ -57,7 +59,6 @@
 			// 
 			// PceBgViewerMenu
 			// 
-			this.PceBgViewerMenu.ClickThrough = true;
 			this.PceBgViewerMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ViewerSubMenu});
 			this.PceBgViewerMenu.Location = new System.Drawing.Point(0, 0);

@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Client.EmuHawk
+﻿using BizHawk.WinForms.Controls;
+
+namespace BizHawk.Client.EmuHawk
 {
 	partial class MainForm
 	{
@@ -380,7 +382,6 @@
 			// 
 			// MainformMenu
 			// 
-			this.MainformMenu.ClickThrough = true;
 			this.MainformMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.FileSubMenu,
             this.EmulationSubMenu,
@@ -2642,7 +2643,6 @@
 			// 
 			// MainStatusBar
 			// 
-			this.MainStatusBar.ClickThrough = true;
 			this.MainStatusBar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
 			this.DumpStatusButton,
 			this.EmuStatus,

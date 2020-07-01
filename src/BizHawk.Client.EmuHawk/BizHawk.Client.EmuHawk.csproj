@@ -380,7 +380,6 @@
 		<Compile Update="CustomControls/MsgBox.designer.cs" DependentUpon="MsgBox.cs" />
 		<EmbeddedResource Update="CustomControls/MsgBox.resx" DependentUpon="MsgBox.cs" />
 		<Compile Update="CustomControls/RepeatButton.cs" SubType="Component" />
-		<Compile Update="CustomControls/ToolStripEx.cs" SubType="Component" />
 		<Compile Update="CustomControls/TransparentTrackbar.cs" SubType="Component" />
 		<Compile Update="CustomControls/ViewportPanel.cs" SubType="Component" />
 		<Compile Update="GraphicsImplementations/GLControlWrapper_GdiPlus.cs" SubType="Component" />

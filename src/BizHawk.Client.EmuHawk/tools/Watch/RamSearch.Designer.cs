@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Client.EmuHawk
+﻿using BizHawk.WinForms.Controls;
+
+namespace BizHawk.Client.EmuHawk
 {
 	partial class RamSearch
 	{
@@ -300,7 +302,6 @@
 			// 
 			// RamSearchMenu
 			// 
-			this.RamSearchMenu.ClickThrough = true;
 			this.RamSearchMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
             this.settingsToolStripMenuItem,
@@ -948,7 +949,6 @@
 			// 
 			// toolStrip1
 			// 
-			this.toolStrip1.ClickThrough = true;
 			this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.DoSearchToolButton,
             this.toolStripSeparator10,

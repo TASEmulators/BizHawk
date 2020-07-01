@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Client.EmuHawk
+﻿using BizHawk.WinForms.Controls;
+
+namespace BizHawk.Client.EmuHawk
 {
 	partial class CDL
 	{
@@ -59,7 +61,6 @@
 			// 
 			// menuStrip1
 			// 
-			this.menuStrip1.ClickThrough = true;
 			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.FileSubMenu});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
@@ -193,7 +194,6 @@
 			// 
 			// toolStrip1
 			// 
-			this.toolStrip1.ClickThrough = true;
 			this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsbLoggingActive,
             this.toolStripSeparator3,

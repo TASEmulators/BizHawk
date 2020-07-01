@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Client.EmuHawk
+﻿using BizHawk.WinForms.Controls;
+
+namespace BizHawk.Client.EmuHawk
 {
 	partial class VirtualpadTool
 	{
@@ -96,7 +98,6 @@
 			// 
 			// PadMenu
 			// 
-			this.PadMenu.ClickThrough = true;
 			this.PadMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.PadsSubMenu,
             this.SettingsSubMenu});

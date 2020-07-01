@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Client.EmuHawk
+﻿using BizHawk.WinForms.Controls;
+
+namespace BizHawk.Client.EmuHawk
 {
 	partial class NesPPU
 	{
@@ -463,7 +465,6 @@
 			// 
 			// NesPPUMenu
 			// 
-			this.NesPPUMenu.ClickThrough = true;
 			this.NesPPUMenu.ImageScalingSize = new System.Drawing.Size(20, 20);
 			this.NesPPUMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.FileSubMenu,
@@ -722,7 +723,6 @@
 			// 
 			// NesPPUStatusBar
 			// 
-			this.NesPPUStatusBar.ClickThrough = true;
 			this.NesPPUStatusBar.ImageScalingSize = new System.Drawing.Size(20, 20);
 			this.NesPPUStatusBar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel1});
