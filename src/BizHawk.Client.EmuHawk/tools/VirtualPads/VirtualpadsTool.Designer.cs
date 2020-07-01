@@ -33,17 +33,17 @@ namespace BizHawk.Client.EmuHawk
 			this.components = new System.ComponentModel.Container();
 			this.ControllerBox = new System.Windows.Forms.GroupBox();
 			this.PadBoxContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.clearAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.StickyContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.clearAllToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.StickyContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.ControllerPanel = new System.Windows.Forms.Panel();
 			this.PadMenu = new MenuStripEx();
-			this.PadsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.ClearAllMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.StickyMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.PadsSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.ClearAllMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.StickyMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
-			this.ExitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.SettingsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.ClearClearsAnalogInputMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.ExitMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.SettingsSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.ClearClearsAnalogInputMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.ControllerBox.SuspendLayout();
 			this.PadBoxContextMenu.SuspendLayout();
 			this.PadMenu.SuspendLayout();
@@ -74,16 +74,12 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// clearAllToolStripMenuItem
 			// 
-			this.clearAllToolStripMenuItem.Name = "clearAllToolStripMenuItem";
 			this.clearAllToolStripMenuItem.ShortcutKeyDisplayString = "Del";
-			this.clearAllToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
 			this.clearAllToolStripMenuItem.Text = "Clear All";
 			this.clearAllToolStripMenuItem.Click += new System.EventHandler(this.ClearAllMenuItem_Click);
 			// 
 			// StickyContextMenuItem
 			// 
-			this.StickyContextMenuItem.Name = "StickyContextMenuItem";
-			this.StickyContextMenuItem.Size = new System.Drawing.Size(142, 22);
 			this.StickyContextMenuItem.Text = "Sticky";
 			this.StickyContextMenuItem.Click += new System.EventHandler(this.StickyMenuItem_Click);
 			// 
@@ -112,23 +108,17 @@ namespace BizHawk.Client.EmuHawk
             this.StickyMenuItem,
             this.toolStripSeparator4,
             this.ExitMenuItem});
-			this.PadsSubMenu.Name = "PadsSubMenu";
-			this.PadsSubMenu.Size = new System.Drawing.Size(44, 20);
 			this.PadsSubMenu.Text = "&Pads";
 			this.PadsSubMenu.DropDownOpened += new System.EventHandler(this.PadsSubMenu_DropDownOpened);
 			// 
 			// ClearAllMenuItem
 			// 
-			this.ClearAllMenuItem.Name = "ClearAllMenuItem";
 			this.ClearAllMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Delete;
-			this.ClearAllMenuItem.Size = new System.Drawing.Size(142, 22);
 			this.ClearAllMenuItem.Text = "&Clear All";
 			this.ClearAllMenuItem.Click += new System.EventHandler(this.ClearAllMenuItem_Click);
 			// 
 			// StickyMenuItem
 			// 
-			this.StickyMenuItem.Name = "StickyMenuItem";
-			this.StickyMenuItem.Size = new System.Drawing.Size(142, 22);
 			this.StickyMenuItem.Text = "Sticky";
 			this.StickyMenuItem.Click += new System.EventHandler(this.StickyMenuItem_Click);
 			// 
@@ -139,9 +129,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// ExitMenuItem
 			// 
-			this.ExitMenuItem.Name = "ExitMenuItem";
 			this.ExitMenuItem.ShortcutKeyDisplayString = "Alt+F4";
-			this.ExitMenuItem.Size = new System.Drawing.Size(142, 22);
 			this.ExitMenuItem.Text = "E&xit";
 			this.ExitMenuItem.Click += new System.EventHandler(this.ExitMenuItem_Click);
 			// 
@@ -149,15 +137,11 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.SettingsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ClearClearsAnalogInputMenuItem});
-			this.SettingsSubMenu.Name = "SettingsSubMenu";
-			this.SettingsSubMenu.Size = new System.Drawing.Size(61, 20);
 			this.SettingsSubMenu.Text = "&Settings";
 			this.SettingsSubMenu.DropDownOpened += new System.EventHandler(this.OptionsSubMenu_DropDownOpened);
 			// 
 			// ClearClearsAnalogInputMenuItem
 			// 
-			this.ClearClearsAnalogInputMenuItem.Name = "ClearClearsAnalogInputMenuItem";
-			this.ClearClearsAnalogInputMenuItem.Size = new System.Drawing.Size(230, 22);
 			this.ClearClearsAnalogInputMenuItem.Text = "&Clear also clears Analog Input";
 			this.ClearClearsAnalogInputMenuItem.Click += new System.EventHandler(this.ClearClearsAnalogInputMenuItem_Click);
 			// 
@@ -183,17 +167,17 @@ namespace BizHawk.Client.EmuHawk
 		#endregion
 
 		private MenuStripEx PadMenu;
-		private System.Windows.Forms.ToolStripMenuItem SettingsSubMenu;
-		private System.Windows.Forms.ToolStripMenuItem PadsSubMenu;
-		private System.Windows.Forms.ToolStripMenuItem ClearAllMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SettingsSubMenu;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx PadsSubMenu;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ClearAllMenuItem;
 		private System.Windows.Forms.GroupBox ControllerBox;
-		private System.Windows.Forms.ToolStripMenuItem StickyMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx StickyMenuItem;
 		private System.Windows.Forms.ContextMenuStrip PadBoxContextMenu;
-		private System.Windows.Forms.ToolStripMenuItem clearAllToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem StickyContextMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem ClearClearsAnalogInputMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx clearAllToolStripMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx StickyContextMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ClearClearsAnalogInputMenuItem;
 		private System.Windows.Forms.Panel ControllerPanel;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
-		private System.Windows.Forms.ToolStripMenuItem ExitMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ExitMenuItem;
 	}
 }

@@ -32,10 +32,10 @@
 			this.label1 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.paperScroll = new System.Windows.Forms.VScrollBar();
 			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.saveImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.copyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.fileToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.saveImageToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.editToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.copyToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -54,15 +54,11 @@
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.saveImageToolStripMenuItem});
-            this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "&File";
             // 
             // saveImageToolStripMenuItem
             // 
-            this.saveImageToolStripMenuItem.Name = "saveImageToolStripMenuItem";
             this.saveImageToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.saveImageToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
             this.saveImageToolStripMenuItem.Text = "&Save Image...";
             this.saveImageToolStripMenuItem.Click += new System.EventHandler(this.saveImageToolStripMenuItem_Click);
             // 
@@ -70,15 +66,11 @@
             // 
             this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.copyToolStripMenuItem});
-            this.editToolStripMenuItem.Name = "editToolStripMenuItem";
-            this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
             this.editToolStripMenuItem.Text = "&Edit";
             // 
             // copyToolStripMenuItem
             // 
-            this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
             this.copyToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
-            this.copyToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.copyToolStripMenuItem.Text = "&Copy";
             this.copyToolStripMenuItem.Click += new System.EventHandler(this.copyToolStripMenuItem_Click);
 			//
@@ -134,10 +126,10 @@
 
 		#endregion
 		private System.Windows.Forms.MenuStrip menuStrip1;
-		private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem saveImageToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem copyToolStripMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx fileToolStripMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx saveImageToolStripMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx editToolStripMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx copyToolStripMenuItem;
 		private BmpView paperView;
 		private BizHawk.WinForms.Controls.LocLabelEx label1;
 		private System.Windows.Forms.VScrollBar paperScroll;

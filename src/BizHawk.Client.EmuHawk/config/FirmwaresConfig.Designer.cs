@@ -42,10 +42,10 @@ namespace BizHawk.Client.EmuHawk
 			this.columnHeader8 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.columnHeader7 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.lvFirmwaresContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.tsmiSetCustomization = new System.Windows.Forms.ToolStripMenuItem();
-			this.tsmiClearCustomization = new System.Windows.Forms.ToolStripMenuItem();
-			this.tsmiInfo = new System.Windows.Forms.ToolStripMenuItem();
-			this.tsmiCopy = new System.Windows.Forms.ToolStripMenuItem();
+			this.tsmiSetCustomization = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.tsmiClearCustomization = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.tsmiInfo = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.tsmiCopy = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.toolStrip1 = new ToolStripEx();
 			this.tbbGroup = new System.Windows.Forms.ToolStripButton();
@@ -156,29 +156,21 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// tsmiSetCustomization
 			// 
-			this.tsmiSetCustomization.Name = "tsmiSetCustomization";
-			this.tsmiSetCustomization.Size = new System.Drawing.Size(181, 22);
 			this.tsmiSetCustomization.Text = "&Set Customization";
 			this.tsmiSetCustomization.Click += new System.EventHandler(this.tsmiSetCustomization_Click);
 			// 
 			// tsmiClearCustomization
 			// 
-			this.tsmiClearCustomization.Name = "tsmiClearCustomization";
-			this.tsmiClearCustomization.Size = new System.Drawing.Size(181, 22);
 			this.tsmiClearCustomization.Text = "C&lear Customization";
 			this.tsmiClearCustomization.Click += new System.EventHandler(this.tsmiClearCustomization_Click);
 			// 
 			// tsmiInfo
 			// 
-			this.tsmiInfo.Name = "tsmiInfo";
-			this.tsmiInfo.Size = new System.Drawing.Size(181, 22);
 			this.tsmiInfo.Text = "&Info";
 			this.tsmiInfo.Click += new System.EventHandler(this.tsmiInfo_Click);
 			// 
 			// tsmiCopy
 			// 
-			this.tsmiCopy.Name = "tsmiCopy";
-			this.tsmiCopy.Size = new System.Drawing.Size(181, 22);
 			this.tsmiCopy.Text = "&Copy";
 			this.tsmiCopy.Click += new System.EventHandler(this.tsmiCopy_Click);
 			// 
@@ -391,10 +383,10 @@ namespace BizHawk.Client.EmuHawk
 				private System.Windows.Forms.ColumnHeader columnHeader3;
 				private System.Windows.Forms.ColumnHeader columnHeader7;
 				private System.Windows.Forms.ContextMenuStrip lvFirmwaresContextMenuStrip;
-				private System.Windows.Forms.ToolStripMenuItem tsmiSetCustomization;
-				private System.Windows.Forms.ToolStripMenuItem tsmiClearCustomization;
-				private System.Windows.Forms.ToolStripMenuItem tsmiInfo;
-				private System.Windows.Forms.ToolStripMenuItem tsmiCopy;
+				private BizHawk.WinForms.Controls.ToolStripMenuItemEx tsmiSetCustomization;
+				private BizHawk.WinForms.Controls.ToolStripMenuItemEx tsmiClearCustomization;
+				private BizHawk.WinForms.Controls.ToolStripMenuItemEx tsmiInfo;
+				private BizHawk.WinForms.Controls.ToolStripMenuItemEx tsmiCopy;
 				private System.Windows.Forms.Panel panel2;
 				private System.Windows.Forms.LinkLabel linkBasePath;
 				private BizHawk.WinForms.Controls.LocLabelEx label1;

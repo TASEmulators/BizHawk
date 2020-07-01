@@ -30,12 +30,12 @@
 		{
 			this.components = new System.ComponentModel.Container();
 			this.MarkerContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.JumpToMarkerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.ScrollToMarkerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.EditMarkerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.AddMarkerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.JumpToMarkerToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.ScrollToMarkerToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.EditMarkerToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.AddMarkerToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-			this.RemoveMarkerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.RemoveMarkerToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.JumpToMarkerButton = new System.Windows.Forms.Button();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.EditMarkerButton = new System.Windows.Forms.Button();
@@ -64,29 +64,21 @@
 			// 
 			// JumpToMarkerToolStripMenuItem
 			// 
-			this.JumpToMarkerToolStripMenuItem.Name = "JumpToMarkerToolStripMenuItem";
-			this.JumpToMarkerToolStripMenuItem.Size = new System.Drawing.Size(118, 22);
 			this.JumpToMarkerToolStripMenuItem.Text = "Jump To";
 			this.JumpToMarkerToolStripMenuItem.Click += new System.EventHandler(this.JumpToMarkerToolStripMenuItem_Click);
 			// 
 			// ScrollToMarkerToolStripMenuItem
 			// 
-			this.ScrollToMarkerToolStripMenuItem.Name = "ScrollToMarkerToolStripMenuItem";
-			this.ScrollToMarkerToolStripMenuItem.Size = new System.Drawing.Size(118, 22);
 			this.ScrollToMarkerToolStripMenuItem.Text = "Scroll To";
 			this.ScrollToMarkerToolStripMenuItem.Click += new System.EventHandler(this.ScrollToMarkerToolStripMenuItem_Click);
 			// 
 			// EditMarkerToolStripMenuItem
 			// 
-			this.EditMarkerToolStripMenuItem.Name = "EditMarkerToolStripMenuItem";
-			this.EditMarkerToolStripMenuItem.Size = new System.Drawing.Size(118, 22);
 			this.EditMarkerToolStripMenuItem.Text = "Edit";
 			this.EditMarkerToolStripMenuItem.Click += new System.EventHandler(this.EditMarkerToolStripMenuItem_Click);
 			// 
 			// AddMarkerToolStripMenuItem
 			// 
-			this.AddMarkerToolStripMenuItem.Name = "AddMarkerToolStripMenuItem";
-			this.AddMarkerToolStripMenuItem.Size = new System.Drawing.Size(118, 22);
 			this.AddMarkerToolStripMenuItem.Text = "Add";
 			this.AddMarkerToolStripMenuItem.Click += new System.EventHandler(this.AddMarkerToolStripMenuItem_Click);
 			// 
@@ -97,8 +89,6 @@
 			// 
 			// RemoveMarkerToolStripMenuItem
 			// 
-			this.RemoveMarkerToolStripMenuItem.Name = "RemoveMarkerToolStripMenuItem";
-			this.RemoveMarkerToolStripMenuItem.Size = new System.Drawing.Size(118, 22);
 			this.RemoveMarkerToolStripMenuItem.Text = "Remove";
 			this.RemoveMarkerToolStripMenuItem.Click += new System.EventHandler(this.RemoveMarkerToolStripMenuItem_Click);
 			// 
@@ -242,11 +232,11 @@
 		private System.Windows.Forms.Button ScrollToMarkerButton;
 		private System.Windows.Forms.ToolTip toolTip1;
 		private System.Windows.Forms.ContextMenuStrip MarkerContextMenu;
-		private System.Windows.Forms.ToolStripMenuItem ScrollToMarkerToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem EditMarkerToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem AddMarkerToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem RemoveMarkerToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem JumpToMarkerToolStripMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ScrollToMarkerToolStripMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx EditMarkerToolStripMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx AddMarkerToolStripMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx RemoveMarkerToolStripMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx JumpToMarkerToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
 		private System.Windows.Forms.Button AddMarkerWithTextButton;
 		private System.Windows.Forms.GroupBox MarkersGroupBox;

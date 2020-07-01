@@ -38,12 +38,12 @@ namespace BizHawk.Client.EmuHawk
 			this.bmpViewBG = new BizHawk.Client.EmuHawk.BmpView();
 			this.label1 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.menuStrip1 = new MenuStripEx();
-			this.FileSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.saveTilesScreenshotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.savePalettesScrenshotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.saveBGScreenshotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.FileSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.saveTilesScreenshotToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.savePalettesScrenshotToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.saveBGScreenshotToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-			this.CloseMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.CloseMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.groupBox3.SuspendLayout();
@@ -127,28 +127,20 @@ namespace BizHawk.Client.EmuHawk
             this.saveBGScreenshotToolStripMenuItem,
             this.toolStripSeparator1,
             this.CloseMenuItem});
-			this.FileSubMenu.Name = "FileSubMenu";
-			this.FileSubMenu.Size = new System.Drawing.Size(35, 20);
 			this.FileSubMenu.Text = "&File";
 			// 
 			// saveTilesScreenshotToolStripMenuItem
 			// 
-			this.saveTilesScreenshotToolStripMenuItem.Name = "saveTilesScreenshotToolStripMenuItem";
-			this.saveTilesScreenshotToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
 			this.saveTilesScreenshotToolStripMenuItem.Text = "Save Tiles Screenshot...";
 			this.saveTilesScreenshotToolStripMenuItem.Click += new System.EventHandler(this.saveTilesScreenshotToolStripMenuItem_Click);
 			// 
 			// savePalettesScrenshotToolStripMenuItem
 			// 
-			this.savePalettesScrenshotToolStripMenuItem.Name = "savePalettesScrenshotToolStripMenuItem";
-			this.savePalettesScrenshotToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
 			this.savePalettesScrenshotToolStripMenuItem.Text = "Save Palettes Screnshot...";
 			this.savePalettesScrenshotToolStripMenuItem.Click += new System.EventHandler(this.SavePalettesScreenshotMenuItem_Click);
 			// 
 			// saveBGScreenshotToolStripMenuItem
 			// 
-			this.saveBGScreenshotToolStripMenuItem.Name = "saveBGScreenshotToolStripMenuItem";
-			this.saveBGScreenshotToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
 			this.saveBGScreenshotToolStripMenuItem.Text = "Save BG Screenshot...";
 			this.saveBGScreenshotToolStripMenuItem.Click += new System.EventHandler(this.SaveBgScreenshotMenuItem_Click);
 			// 
@@ -159,9 +151,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// CloseMenuItem
 			// 
-			this.CloseMenuItem.Name = "CloseMenuItem";
 			this.CloseMenuItem.ShortcutKeyDisplayString = "Alt+F4";
-			this.CloseMenuItem.Size = new System.Drawing.Size(203, 22);
 			this.CloseMenuItem.Text = "&Close";
 			this.CloseMenuItem.Click += new System.EventHandler(this.CloseMenuItem_Click);
 			// 
@@ -201,11 +191,11 @@ namespace BizHawk.Client.EmuHawk
 		private BmpView bmpViewBG;
 		private BizHawk.WinForms.Controls.LocLabelEx label1;
 		private MenuStripEx menuStrip1;
-		private System.Windows.Forms.ToolStripMenuItem FileSubMenu;
-		private System.Windows.Forms.ToolStripMenuItem CloseMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem saveTilesScreenshotToolStripMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx FileSubMenu;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx CloseMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx saveTilesScreenshotToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-		private System.Windows.Forms.ToolStripMenuItem savePalettesScrenshotToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem saveBGScreenshotToolStripMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx savePalettesScrenshotToolStripMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx saveBGScreenshotToolStripMenuItem;
 	}
 }

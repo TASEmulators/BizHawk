@@ -32,14 +32,14 @@ namespace BizHawk.Client.EmuHawk
 		{
 			this.components = new System.ComponentModel.Container();
 			this.menuStrip1 = new MenuStripEx();
-			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.ExitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.DebugSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.StepIntoMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.StepOverMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.StepOutMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.fileToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.ExitMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.DebugSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.StepIntoMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.StepOverMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.StepOutMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-			this.RefreshMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.RefreshMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.RegistersGroupBox = new System.Windows.Forms.GroupBox();
 			this.RegisterPanel = new BizHawk.Client.EmuHawk.RegisterBoxControl();
 			this.BreakpointsGroupBox = new System.Windows.Forms.GroupBox();
@@ -49,7 +49,7 @@ namespace BizHawk.Client.EmuHawk
 			this.label1 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.DisassemblerView = new InputRoll();
 			this.DisassemblerContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.AddBreakpointContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.AddBreakpointContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.StepOutBtn = new System.Windows.Forms.Button();
 			this.StepIntoBtn = new System.Windows.Forms.Button();
 			this.StepOverBtn = new System.Windows.Forms.Button();
@@ -78,15 +78,11 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ExitMenuItem});
-			this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-			this.fileToolStripMenuItem.Size = new System.Drawing.Size(35, 20);
 			this.fileToolStripMenuItem.Text = "&File";
 			// 
 			// ExitMenuItem
 			// 
-			this.ExitMenuItem.Name = "ExitMenuItem";
 			this.ExitMenuItem.ShortcutKeyDisplayString = "Alt+F4";
-			this.ExitMenuItem.Size = new System.Drawing.Size(151, 22);
 			this.ExitMenuItem.Text = "&Close";
 			this.ExitMenuItem.Click += new System.EventHandler(this.ExitMenuItem_Click);
 			// 
@@ -98,34 +94,26 @@ namespace BizHawk.Client.EmuHawk
             this.StepOutMenuItem,
             this.toolStripSeparator1,
             this.RefreshMenuItem});
-			this.DebugSubMenu.Name = "DebugSubMenu";
-			this.DebugSubMenu.Size = new System.Drawing.Size(50, 20);
 			this.DebugSubMenu.Text = "&Debug";
 			// 
 			// StepIntoMenuItem
 			// 
 			this.StepIntoMenuItem.Enabled = false;
-			this.StepIntoMenuItem.Name = "StepIntoMenuItem";
 			this.StepIntoMenuItem.ShortcutKeyDisplayString = "F11";
-			this.StepIntoMenuItem.Size = new System.Drawing.Size(183, 22);
 			this.StepIntoMenuItem.Text = "Step &Into";
 			this.StepIntoMenuItem.Click += new System.EventHandler(this.StepIntoMenuItem_Click);
 			// 
 			// StepOverMenuItem
 			// 
 			this.StepOverMenuItem.Enabled = false;
-			this.StepOverMenuItem.Name = "StepOverMenuItem";
 			this.StepOverMenuItem.ShortcutKeyDisplayString = "F10";
-			this.StepOverMenuItem.Size = new System.Drawing.Size(183, 22);
 			this.StepOverMenuItem.Text = "Step O&ver";
 			this.StepOverMenuItem.Click += new System.EventHandler(this.StepOverMenuItem_Click);
 			// 
 			// StepOutMenuItem
 			// 
 			this.StepOutMenuItem.Enabled = false;
-			this.StepOutMenuItem.Name = "StepOutMenuItem";
 			this.StepOutMenuItem.ShortcutKeyDisplayString = "Shift+F11";
-			this.StepOutMenuItem.Size = new System.Drawing.Size(183, 22);
 			this.StepOutMenuItem.Text = "Step Ou&t";
 			this.StepOutMenuItem.Click += new System.EventHandler(this.StepOutMenuItem_Click);
 			// 
@@ -136,9 +124,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// RefreshMenuItem
 			// 
-			this.RefreshMenuItem.Name = "RefreshMenuItem";
 			this.RefreshMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F5;
-			this.RefreshMenuItem.Size = new System.Drawing.Size(183, 22);
 			this.RefreshMenuItem.Text = "Refresh";
 			this.RefreshMenuItem.Click += new System.EventHandler(this.RefreshMenuItem_Click);
 			// 
@@ -258,8 +244,6 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// AddBreakpointContextMenuItem
 			// 
-			this.AddBreakpointContextMenuItem.Name = "AddBreakpointContextMenuItem";
-			this.AddBreakpointContextMenuItem.Size = new System.Drawing.Size(147, 22);
 			this.AddBreakpointContextMenuItem.Text = "Add Breakpoint";
 			this.AddBreakpointContextMenuItem.Click += new System.EventHandler(this.AddBreakpointContextMenuItem_Click);
 			// 
@@ -378,8 +362,8 @@ namespace BizHawk.Client.EmuHawk
 		#endregion
 
 		private MenuStripEx menuStrip1;
-		private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem ExitMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx fileToolStripMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ExitMenuItem;
 		private System.Windows.Forms.GroupBox RegistersGroupBox;
 		private RegisterBoxControl RegisterPanel;
 		private System.Windows.Forms.GroupBox BreakpointsGroupBox;
@@ -390,19 +374,19 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.Button StepOutBtn;
 		private System.Windows.Forms.Button StepIntoBtn;
 		private System.Windows.Forms.Button StepOverBtn;
-		private System.Windows.Forms.ToolStripMenuItem DebugSubMenu;
-		private System.Windows.Forms.ToolStripMenuItem StepIntoMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem StepOverMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem StepOutMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx DebugSubMenu;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx StepIntoMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx StepOverMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx StepOutMenuItem;
 		private System.Windows.Forms.ToolTip toolTip1;
 		private System.Windows.Forms.Button SeekToBtn;
 		private HexTextBox SeekToBox;
 		private System.Windows.Forms.Button CancelSeekBtn;
 		private System.Windows.Forms.Button ToPCBtn;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-		private System.Windows.Forms.ToolStripMenuItem RefreshMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx RefreshMenuItem;
 		private System.Windows.Forms.ContextMenuStrip DisassemblerContextMenu;
-		private System.Windows.Forms.ToolStripMenuItem AddBreakpointContextMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx AddBreakpointContextMenuItem;
 		private System.Windows.Forms.Button RunBtn;
 	}
 }
