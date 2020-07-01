@@ -291,13 +291,23 @@ namespace BizHawk.Client.EmuHawk
 				PauseEmulator,
 				SetMainformMovieInfo);
 
-			Icon = Properties.Resources.logo;
+			MouseClick += MainForm_MouseClick = (sender, e) =>
+			{
+				AutohideCursor(false);
+				if (Config.ShowContextMenu && e.Button == MouseButtons.Right)
+				{
+					MainFormContextMenu.Show(PointToScreen(new Point(e.X, e.Y + MainformMenu.Height)));
+				}
+			};
+			MouseMove += MainForm_MouseMove = (sender, e) => AutohideCursor(false);
+			MainForm_MouseWheel = (sender, e) => MouseWheelTracker += e.Delta;
+
 			InitializeComponent();
+			Icon = Properties.Resources.logo;
 			SetImages();
+
 			GlobalWin.Game = GameInfo.NullInstance;
-
 			_throttle = new Throttle();
-
 			Emulator = new NullEmulator();
 			GlobalWin.Tools = new ToolManager(this, Config, Emulator, MovieSession, Game);
 
@@ -370,17 +380,6 @@ namespace BizHawk.Client.EmuHawk
 
 				Sound?.StartSound();
 			};
-
-			MouseClick += MainForm_MouseClick = (sender, e) =>
-			{
-				AutohideCursor(false);
-				if (Config.ShowContextMenu && e.Button == MouseButtons.Right)
-				{
-					MainFormContextMenu.Show(PointToScreen(new Point(e.X, e.Y + MainformMenu.Height)));
-				}
-			};
-			MouseMove += MainForm_MouseMove = (sender, e) => AutohideCursor(false);
-			MainForm_MouseWheel = (sender, e) => MouseWheelTracker += e.Delta;
 
 			Input.Instance.MainFormInputAllowedCallback = yieldAlt => {
 				// the main form gets input
