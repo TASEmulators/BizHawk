@@ -199,7 +199,7 @@ pub extern "win64" fn syscall(nr: SyscallNumber, ud: usize, a1: usize, a2: usize
 	let mut h = gethost(ud);
 	match nr {
 		NR_MMAP => {
-			let prot = arg_to_prot(a3)?;
+			let mut prot = arg_to_prot(a3)?;
 			let flags = a4;
 			if flags & MAP_ANONYMOUS == 0 {
 				// anonymous + private is easy
@@ -210,6 +210,13 @@ pub extern "win64" fn syscall(nr: SyscallNumber, ud: usize, a1: usize, a2: usize
 			if flags & 0xf00 != 0 {
 				// various unsupported flags
 				return syscall_err(EOPNOTSUPP)
+			}
+			if flags & MAP_STACK != 0 {
+				if prot == Protection::RW {
+					prot = Protection::RWStack;
+				} else {
+					return syscall_err(EINVAL) // stacks must be readable and writable
+				}
 			}
 			let no_replace = flags & MAP_FIXED_NOREPLACE != 0;
 			let arena_addr = h.sys.layout.mmap;

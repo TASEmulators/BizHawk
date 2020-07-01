@@ -65,9 +65,14 @@ fn test_stk_norm() -> TestResult {
 		let ptr = g.b.addr.slice_mut();
 		ptr[0xeeee] = 0xee;
 		ptr[0x44] = 0x44;
+
+		g.b.get_stack_dirty();
+
 		assert!(g.b.pages[0].dirty);
 		assert!(g.b.pages[14].dirty);
 		assert_eq!(ptr[0x8000], 0);
+
+		g.b.get_stack_dirty();
 
 		// This is an unfair test, but it's just documenting the current limitations of the system.
 		// Ideally, page 8 would be clean because we read from it but did not write to it.
@@ -105,6 +110,9 @@ fn test_stack() -> TestResult {
 		let tmp_rsp = addr.end();
 		let res = transmute::<usize, extern "sysv64" fn(rsp: usize) -> u8>(addr.start)(tmp_rsp);
 		assert_eq!(res, 42);
+
+		g.b.get_stack_dirty();
+
 		assert!(g.b.pages[0].dirty);
 		assert!(!g.b.pages[1].dirty);
 		assert!(!g.b.pages[14].dirty);
@@ -236,12 +244,15 @@ fn test_thready_stack() -> TestResult {
 				ptr[i] = 0xc3 ; // ret 
 
 				g.seal();
-	
+
 				assert!(!g.b.pages[0].dirty);
 				assert!(!g.b.pages[1].dirty);
 				let tmp_rsp = addr.end();
 				let res = transmute::<usize, extern "sysv64" fn(rsp: usize) -> u8>(addr.start)(tmp_rsp);
 				assert_eq!(res, 42);
+
+				g.b.get_stack_dirty();
+	
 				assert!(!g.b.pages[0].dirty);
 				assert!(g.b.pages[1].dirty);
 
