@@ -1,4 +1,6 @@
 ﻿using System;
+using System.ComponentModel;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace BizHawk.WinForms.Controls
@@ -8,6 +10,12 @@ namespace BizHawk.WinForms.Controls
 	/// </summary>
 	public class StatusStripEx : StatusStrip
 	{
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		public new Size Size => base.Size;
+
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		public new string Text => "";
+
 		protected override void WndProc(ref Message m)
 		{
 			base.WndProc(ref m);

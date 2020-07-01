@@ -1,4 +1,6 @@
 ﻿using System;
+using System.ComponentModel;
+using System.Drawing;
 using System.Windows.Forms;
 
 //credit: http://blogs.msdn.com/b/rickbrew/archive/2006/01/09/511003.aspx
@@ -9,6 +11,12 @@ namespace BizHawk.WinForms.Controls
 	/// </summary>
 	public class ToolStripEx : ToolStrip
 	{
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		public new Size Size => base.Size;
+
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		public new string Text => "";
+
 		protected override void WndProc(ref Message m)
 		{
 			base.WndProc(ref m);

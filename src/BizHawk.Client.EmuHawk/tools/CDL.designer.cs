@@ -201,9 +201,7 @@ namespace BizHawk.Client.EmuHawk
             this.tsbExportText});
 			this.toolStrip1.Location = new System.Drawing.Point(0, 24);
 			this.toolStrip1.Name = "toolStrip1";
-			this.toolStrip1.Size = new System.Drawing.Size(992, 25);
 			this.toolStrip1.TabIndex = 8;
-			this.toolStrip1.Text = "toolStrip1";
 			// 
 			// tsbLoggingActive
 			// 

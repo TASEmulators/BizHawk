@@ -655,9 +655,7 @@ namespace BizHawk.Client.EmuHawk
             this.EraseToolbarItem});
 			this.toolStrip1.Location = new System.Drawing.Point(0, 24);
 			this.toolStrip1.Name = "toolStrip1";
-			this.toolStrip1.Size = new System.Drawing.Size(584, 25);
 			this.toolStrip1.TabIndex = 5;
-			this.toolStrip1.Text = "toolStrip1";
 			// 
 			// NewScriptToolbarItem
 			// 

@@ -46,7 +46,6 @@ namespace BizHawk.Client.EmuHawk
 			this.ToolBoxStrip.Location = new System.Drawing.Point(2, 2);
 			this.ToolBoxStrip.Name = "ToolBoxStrip";
 			this.ToolBoxStrip.Padding = new System.Windows.Forms.Padding(0);
-			this.ToolBoxStrip.Size = new System.Drawing.Size(137, 179);
 			this.ToolBoxStrip.Stretch = true;
 			this.ToolBoxStrip.TabIndex = 0;
 			this.ToolBoxStrip.TabStop = true;

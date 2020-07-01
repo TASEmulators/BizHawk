@@ -206,9 +206,7 @@ namespace BizHawk.Client.EmuHawk
             this.tbbOpenFolder});
 			this.toolStrip1.Location = new System.Drawing.Point(0, 0);
 			this.toolStrip1.Name = "toolStrip1";
-			this.toolStrip1.Size = new System.Drawing.Size(824, 25);
 			this.toolStrip1.TabIndex = 23;
-			this.toolStrip1.Text = "toolStrip1";
 			// 
 			// tbbGroup
 			// 

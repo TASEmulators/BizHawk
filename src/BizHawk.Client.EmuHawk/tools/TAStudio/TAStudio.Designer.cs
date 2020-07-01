@@ -1243,9 +1243,7 @@ namespace BizHawk.Client.EmuHawk
             this.SplicerStatusLabel});
 			this.TasStatusStrip.Location = new System.Drawing.Point(0, 554);
 			this.TasStatusStrip.Name = "TasStatusStrip";
-			this.TasStatusStrip.Size = new System.Drawing.Size(509, 22);
 			this.TasStatusStrip.TabIndex = 4;
-			this.TasStatusStrip.Text = "statusStrip1";
 			// 
 			// MessageStatusLabel
 			// 

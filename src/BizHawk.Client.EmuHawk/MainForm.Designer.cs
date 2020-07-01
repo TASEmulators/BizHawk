@@ -2669,10 +2669,8 @@ namespace BizHawk.Client.EmuHawk
 			this.MainStatusBar.Location = new System.Drawing.Point(0, 386);
 			this.MainStatusBar.Name = "MainStatusBar";
 			this.MainStatusBar.ShowItemToolTips = true;
-			this.MainStatusBar.Size = new System.Drawing.Size(470, 22);
 			this.MainStatusBar.SizingGrip = false;
 			this.MainStatusBar.TabIndex = 1;
-			this.MainStatusBar.Text = "0";
 			// 
 			// DumpStatusButton
 			// 

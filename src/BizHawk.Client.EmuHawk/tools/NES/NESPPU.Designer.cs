@@ -727,10 +727,8 @@ namespace BizHawk.Client.EmuHawk
 			this.NesPPUStatusBar.Location = new System.Drawing.Point(0, 432);
 			this.NesPPUStatusBar.Name = "NesPPUStatusBar";
 			this.NesPPUStatusBar.Padding = new System.Windows.Forms.Padding(1, 0, 19, 0);
-			this.NesPPUStatusBar.Size = new System.Drawing.Size(1139, 25);
 			this.NesPPUStatusBar.SizingGrip = false;
 			this.NesPPUStatusBar.TabIndex = 11;
-			this.NesPPUStatusBar.Text = "statusStrip1";
 			// 
 			// toolStripStatusLabel1
 			// 
