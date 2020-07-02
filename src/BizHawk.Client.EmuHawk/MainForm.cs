@@ -2649,17 +2649,6 @@ namespace BizHawk.Client.EmuHawk
 			AddOnScreenMessage($"Display Vsync set to {(Config.VSync ? "on" : "off")}");
 		}
 
-		private static bool StateErrorAskUser(string title, string message)
-		{
-			var result = MessageBox.Show(
-				message,
-				title,
-				MessageBoxButtons.YesNo,
-				MessageBoxIcon.Question);
-
-			return result == DialogResult.Yes;
-		}
-
 		private void FdsInsertDiskMenuAdd(string name, string button, string msg)
 		{
 			FDSControlsMenuItem.DropDownItems.Add(name, null, (sender, e) =>
