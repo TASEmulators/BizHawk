@@ -43,7 +43,7 @@
 			this.label2 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.lblFirmware = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.lvmiOptionsContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.tsmiOptionsCopy = new System.Windows.Forms.ToolStripMenuItem();
+			this.tsmiOptionsCopy = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.tableLayoutPanel1.SuspendLayout();
 			this.flowLayoutPanel1.SuspendLayout();
@@ -173,8 +173,6 @@
 			// 
 			// tsmiOptionsCopy
 			// 
-			this.tsmiOptionsCopy.Name = "tsmiOptionsCopy";
-			this.tsmiOptionsCopy.Size = new System.Drawing.Size(99, 22);
 			this.tsmiOptionsCopy.Text = "&Copy";
 			this.tsmiOptionsCopy.Click += new System.EventHandler(this.TsmiOptionsCopy_Click);
 			// 
@@ -212,7 +210,7 @@
 		private BizHawk.WinForms.Controls.LocLabelEx label2;
 		public BizHawk.WinForms.Controls.LocLabelEx lblFirmware;
 		private System.Windows.Forms.ContextMenuStrip lvmiOptionsContextMenuStrip;
-		private System.Windows.Forms.ToolStripMenuItem tsmiOptionsCopy;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx tsmiOptionsCopy;
 		private System.Windows.Forms.ColumnHeader colInfo;
 		private System.Windows.Forms.ImageList imageList1;
 		private System.Windows.Forms.ColumnHeader colSize;

@@ -39,9 +39,9 @@
 			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
 			this.pictureBox1 = new System.Windows.Forms.PictureBox();
 			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.testToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.loadDefaultsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.clearToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.testToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.loadDefaultsToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.clearToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.label3 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.label2 = new BizHawk.WinForms.Controls.LocLabelEx();
@@ -169,22 +169,16 @@
 			// 
 			// testToolStripMenuItem
 			// 
-			this.testToolStripMenuItem.Name = "testToolStripMenuItem";
-			this.testToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
 			this.testToolStripMenuItem.Text = "Save Defaults";
 			this.testToolStripMenuItem.Click += new System.EventHandler(this.ButtonSaveDefaults_Click);
 			// 
 			// loadDefaultsToolStripMenuItem
 			// 
-			this.loadDefaultsToolStripMenuItem.Name = "loadDefaultsToolStripMenuItem";
-			this.loadDefaultsToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
 			this.loadDefaultsToolStripMenuItem.Text = "Load Defaults";
 			this.loadDefaultsToolStripMenuItem.Click += new System.EventHandler(this.ButtonLoadDefaults_Click);
 			// 
 			// clearToolStripMenuItem
 			// 
-			this.clearToolStripMenuItem.Name = "clearToolStripMenuItem";
-			this.clearToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
 			this.clearToolStripMenuItem.Text = "Clear";
 			this.clearToolStripMenuItem.Click += new System.EventHandler(this.ClearBtn_Click);
 			// 
@@ -275,9 +269,9 @@
 		private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
 		private System.Windows.Forms.ToolTip toolTip1;
 		private MenuButton btnMisc;
-				private System.Windows.Forms.ToolStripMenuItem testToolStripMenuItem;
-				private System.Windows.Forms.ToolStripMenuItem loadDefaultsToolStripMenuItem;
-				private System.Windows.Forms.ToolStripMenuItem clearToolStripMenuItem;
+				private BizHawk.WinForms.Controls.ToolStripMenuItemEx testToolStripMenuItem;
+				private BizHawk.WinForms.Controls.ToolStripMenuItemEx loadDefaultsToolStripMenuItem;
+				private BizHawk.WinForms.Controls.ToolStripMenuItemEx clearToolStripMenuItem;
 				private BizHawk.WinForms.Controls.LocLabelEx label3;
 				private BizHawk.WinForms.Controls.LocLabelEx label2;
 				private BizHawk.WinForms.Controls.LocLabelEx label38;

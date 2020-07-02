@@ -29,13 +29,13 @@
 		private void InitializeComponent()
 		{
 			this.MacroMenu = new System.Windows.Forms.MenuStrip();
-			this.FileSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.saveAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.loadMacroToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.RecentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-			this.sepToolStripMenuItem = new System.Windows.Forms.ToolStripSeparator();
-			this.ExitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.FileSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.saveAsToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.loadMacroToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.RecentToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.toolStripSeparator1 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
+			this.sepToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
+			this.ExitMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.NameTextbox = new System.Windows.Forms.TextBox();
 			this.ReplaceBox = new System.Windows.Forms.CheckBox();
 			this.label2 = new BizHawk.WinForms.Controls.LocLabelEx();
@@ -73,21 +73,15 @@
             this.RecentToolStripMenuItem,
             this.sepToolStripMenuItem,
             this.ExitMenuItem});
-			this.FileSubMenu.Name = "FileSubMenu";
-			this.FileSubMenu.Size = new System.Drawing.Size(37, 20);
 			this.FileSubMenu.Text = "&File";
 			// 
 			// saveAsToolStripMenuItem
 			// 
-			this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-			this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
 			this.saveAsToolStripMenuItem.Text = "Save Selected As...";
 			this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.SaveAsToolStripMenuItem_Click);
 			// 
 			// loadMacroToolStripMenuItem
 			// 
-			this.loadMacroToolStripMenuItem.Name = "loadMacroToolStripMenuItem";
-			this.loadMacroToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
 			this.loadMacroToolStripMenuItem.Text = "Load Macro...";
 			this.loadMacroToolStripMenuItem.Click += new System.EventHandler(this.LoadMacroToolStripMenuItem_Click);
 			// 
@@ -95,26 +89,12 @@
 			// 
 			this.RecentToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripSeparator1});
-			this.RecentToolStripMenuItem.Name = "RecentToolStripMenuItem";
-			this.RecentToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
 			this.RecentToolStripMenuItem.Text = "Recent";
 			this.RecentToolStripMenuItem.DropDownOpened += new System.EventHandler(this.RecentToolStripMenuItem_DropDownOpened);
 			// 
-			// toolStripSeparator1
-			// 
-			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(57, 6);
-			// 
-			// sepToolStripMenuItem
-			// 
-			this.sepToolStripMenuItem.Name = "sepToolStripMenuItem";
-			this.sepToolStripMenuItem.Size = new System.Drawing.Size(167, 6);
-			// 
 			// ExitMenuItem
 			// 
-			this.ExitMenuItem.Name = "ExitMenuItem";
 			this.ExitMenuItem.ShortcutKeyDisplayString = "Alt+F4";
-			this.ExitMenuItem.Size = new System.Drawing.Size(170, 22);
 			this.ExitMenuItem.Text = "E&xit";
 			this.ExitMenuItem.Click += new System.EventHandler(this.ExitMenuItem_Click);
 			// 
@@ -292,8 +272,8 @@
 		#endregion
 
 		private System.Windows.Forms.MenuStrip MacroMenu;
-		private System.Windows.Forms.ToolStripMenuItem FileSubMenu;
-		private System.Windows.Forms.ToolStripMenuItem ExitMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx FileSubMenu;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ExitMenuItem;
 		private System.Windows.Forms.TextBox NameTextbox;
 		private System.Windows.Forms.CheckBox ReplaceBox;
 		private BizHawk.WinForms.Controls.LocLabelEx label2;
@@ -305,12 +285,12 @@
 		private System.Windows.Forms.ListBox ZonesList;
 		private BizHawk.WinForms.Controls.LocLabelEx label3;
 		private BizHawk.WinForms.Controls.LocLabelEx label1;
-		private System.Windows.Forms.ToolStripMenuItem saveAsToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem loadMacroToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem RecentToolStripMenuItem;
-		private System.Windows.Forms.ToolStripSeparator sepToolStripMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx saveAsToolStripMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx loadMacroToolStripMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx RecentToolStripMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripSeparatorEx sepToolStripMenuItem;
 		private System.Windows.Forms.Button CurrentButton;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator1;
 		private System.Windows.Forms.CheckBox OverlayBox;
 
 	}

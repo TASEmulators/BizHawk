@@ -33,55 +33,55 @@ namespace BizHawk.Client.EmuHawk
 			this.components = new System.ComponentModel.Container();
 			this.CheatListView = new InputRoll();
 			this.CheatsContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.ToggleContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.RemoveContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.DisableAllContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.ViewInHexEditorContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.ToggleContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.RemoveContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.DisableAllContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.ViewInHexEditorContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.CheatsMenu = new MenuStripEx();
-			this.FileSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.NewMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.OpenMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.SaveMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.SaveAsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.AppendMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.RecentSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
-			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-			this.ExitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.CheatsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.RemoveCheatMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.InsertSeparatorMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-			this.MoveUpMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.MoveDownMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.SelectAllMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
-			this.ToggleMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.DisableAllCheatsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.GameGenieSeparator = new System.Windows.Forms.ToolStripSeparator();
-			this.OpenGameGenieEncoderDecoderMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.OptionsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.AlwaysLoadCheatsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.AutoSaveCheatsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.DisableCheatsOnLoadMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
-			this.AutoloadMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.SaveWindowPositionMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.AlwaysOnTopMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.FloatingWindowMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
-			this.RestoreWindowSizeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.FileSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.NewMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.OpenMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.SaveMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.SaveAsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.AppendMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.RecentSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.toolStripSeparator4 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
+			this.toolStripSeparator1 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
+			this.ExitMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.CheatsSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.RemoveCheatMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.InsertSeparatorMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.toolStripSeparator3 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
+			this.MoveUpMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.MoveDownMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.SelectAllMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.toolStripSeparator6 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
+			this.ToggleMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.DisableAllCheatsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.GameGenieSeparator = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
+			this.OpenGameGenieEncoderDecoderMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.OptionsSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.AlwaysLoadCheatsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.AutoSaveCheatsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.DisableCheatsOnLoadMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.toolStripSeparator7 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
+			this.AutoloadMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.SaveWindowPositionMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.AlwaysOnTopMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.FloatingWindowMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.toolStripSeparator5 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
+			this.RestoreWindowSizeMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.toolStrip1 = new ToolStripEx();
 			this.NewToolBarItem = new System.Windows.Forms.ToolStripButton();
 			this.OpenToolBarItem = new System.Windows.Forms.ToolStripButton();
 			this.SaveToolBarItem = new System.Windows.Forms.ToolStripButton();
-			this.toolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
+			this.toolStripSeparator = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.RemoveToolbarItem = new System.Windows.Forms.ToolStripButton();
 			this.SeparatorToolbarItem = new System.Windows.Forms.ToolStripButton();
-			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+			this.toolStripSeparator2 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.MoveUpToolbarItem = new System.Windows.Forms.ToolStripButton();
 			this.MoveDownToolbarItem = new System.Windows.Forms.ToolStripButton();
-			this.GameGenieToolbarSeparator = new System.Windows.Forms.ToolStripSeparator();
+			this.GameGenieToolbarSeparator = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.LoadGameGenieToolbarItem = new System.Windows.Forms.ToolStripButton();
 			this.TotalLabel = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.MessageLabel = new BizHawk.WinForms.Controls.LocLabelEx();
@@ -131,31 +131,23 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// ToggleContextMenuItem
 			// 
-			this.ToggleContextMenuItem.Name = "ToggleContextMenuItem";
 			this.ToggleContextMenuItem.ShortcutKeyDisplayString = "Enter";
-			this.ToggleContextMenuItem.Size = new System.Drawing.Size(169, 22);
 			this.ToggleContextMenuItem.Text = "&Toggle";
 			this.ToggleContextMenuItem.Click += new System.EventHandler(this.ToggleMenuItem_Click);
 			// 
 			// RemoveContextMenuItem
 			// 
-			this.RemoveContextMenuItem.Name = "RemoveContextMenuItem";
 			this.RemoveContextMenuItem.ShortcutKeyDisplayString = "Delete";
-			this.RemoveContextMenuItem.Size = new System.Drawing.Size(169, 22);
 			this.RemoveContextMenuItem.Text = "&Remove";
 			this.RemoveContextMenuItem.Click += new System.EventHandler(this.RemoveCheatMenuItem_Click);
 			// 
 			// DisableAllContextMenuItem
 			// 
-			this.DisableAllContextMenuItem.Name = "DisableAllContextMenuItem";
-			this.DisableAllContextMenuItem.Size = new System.Drawing.Size(169, 22);
 			this.DisableAllContextMenuItem.Text = "&Disable All";
 			this.DisableAllContextMenuItem.Click += new System.EventHandler(this.DisableAllCheatsMenuItem_Click);
 			// 
 			// ViewInHexEditorContextMenuItem
 			// 
-			this.ViewInHexEditorContextMenuItem.Name = "ViewInHexEditorContextMenuItem";
-			this.ViewInHexEditorContextMenuItem.Size = new System.Drawing.Size(169, 22);
 			this.ViewInHexEditorContextMenuItem.Text = "View in Hex Editor";
 			this.ViewInHexEditorContextMenuItem.Click += new System.EventHandler(this.ViewInHexEditorContextMenuItem_Click);
 			// 
@@ -180,74 +172,48 @@ namespace BizHawk.Client.EmuHawk
             this.RecentSubMenu,
             this.toolStripSeparator1,
             this.ExitMenuItem});
-			this.FileSubMenu.Name = "FileSubMenu";
-			this.FileSubMenu.Size = new System.Drawing.Size(37, 20);
 			this.FileSubMenu.Text = "&File";
 			this.FileSubMenu.DropDownOpened += new System.EventHandler(this.FileSubMenu_DropDownOpened);
 			// 
 			// NewMenuItem
 			// 
-			this.NewMenuItem.Name = "NewMenuItem";
 			this.NewMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
-			this.NewMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.NewMenuItem.Text = "&New";
 			this.NewMenuItem.Click += new System.EventHandler(this.NewMenuItem_Click);
 			// 
 			// OpenMenuItem
 			// 
-			this.OpenMenuItem.Name = "OpenMenuItem";
 			this.OpenMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-			this.OpenMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.OpenMenuItem.Text = "&Open...";
 			this.OpenMenuItem.Click += new System.EventHandler(this.OpenMenuItem_Click);
 			// 
 			// SaveMenuItem
 			// 
-			this.SaveMenuItem.Name = "SaveMenuItem";
 			this.SaveMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-			this.SaveMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.SaveMenuItem.Text = "&Save";
 			this.SaveMenuItem.Click += new System.EventHandler(this.SaveMenuItem_Click);
 			// 
 			// SaveAsMenuItem
 			// 
-			this.SaveAsMenuItem.Name = "SaveAsMenuItem";
 			this.SaveAsMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.S)));
-			this.SaveAsMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.SaveAsMenuItem.Text = "Save &As...";
 			this.SaveAsMenuItem.Click += new System.EventHandler(this.SaveAsMenuItem_Click);
 			// 
 			// AppendMenuItem
 			// 
-			this.AppendMenuItem.Name = "AppendMenuItem";
-			this.AppendMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.AppendMenuItem.Text = "Append File";
 			// 
 			// RecentSubMenu
 			// 
 			this.RecentSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripSeparator4});
-			this.RecentSubMenu.Name = "RecentSubMenu";
-			this.RecentSubMenu.Size = new System.Drawing.Size(195, 22);
 			this.RecentSubMenu.Text = "Recent";
 			this.RecentSubMenu.DropDownOpened += new System.EventHandler(this.RecentSubMenu_DropDownOpened);
 			// 
-			// toolStripSeparator4
-			// 
-			this.toolStripSeparator4.Name = "toolStripSeparator4";
-			this.toolStripSeparator4.Size = new System.Drawing.Size(57, 6);
-			// 
-			// toolStripSeparator1
-			// 
-			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(192, 6);
-			// 
 			// ExitMenuItem
 			// 
-			this.ExitMenuItem.Name = "ExitMenuItem";
 			this.ExitMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F4)));
-			this.ExitMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.ExitMenuItem.Text = "E&xit";
 			this.ExitMenuItem.Click += new System.EventHandler(this.ExitMenuItem_Click);
 			// 
@@ -265,88 +231,55 @@ namespace BizHawk.Client.EmuHawk
             this.DisableAllCheatsMenuItem,
             this.GameGenieSeparator,
             this.OpenGameGenieEncoderDecoderMenuItem});
-			this.CheatsSubMenu.Name = "CheatsSubMenu";
-			this.CheatsSubMenu.Size = new System.Drawing.Size(55, 20);
 			this.CheatsSubMenu.Text = "&Cheats";
 			this.CheatsSubMenu.DropDownOpened += new System.EventHandler(this.CheatsSubMenu_DropDownOpened);
 			// 
 			// RemoveCheatMenuItem
 			// 
-			this.RemoveCheatMenuItem.Name = "RemoveCheatMenuItem";
 			this.RemoveCheatMenuItem.ShortcutKeyDisplayString = "Delete";
-			this.RemoveCheatMenuItem.Size = new System.Drawing.Size(233, 22);
 			this.RemoveCheatMenuItem.Text = "&Remove Cheat";
 			this.RemoveCheatMenuItem.Click += new System.EventHandler(this.RemoveCheatMenuItem_Click);
 			// 
 			// InsertSeparatorMenuItem
 			// 
-			this.InsertSeparatorMenuItem.Name = "InsertSeparatorMenuItem";
 			this.InsertSeparatorMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.I)));
-			this.InsertSeparatorMenuItem.Size = new System.Drawing.Size(233, 22);
 			this.InsertSeparatorMenuItem.Text = "Insert Separator";
 			this.InsertSeparatorMenuItem.Click += new System.EventHandler(this.InsertSeparatorMenuItem_Click);
 			// 
-			// toolStripSeparator3
-			// 
-			this.toolStripSeparator3.Name = "toolStripSeparator3";
-			this.toolStripSeparator3.Size = new System.Drawing.Size(230, 6);
-			// 
 			// MoveUpMenuItem
 			// 
-			this.MoveUpMenuItem.Name = "MoveUpMenuItem";
 			this.MoveUpMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.U)));
-			this.MoveUpMenuItem.Size = new System.Drawing.Size(233, 22);
 			this.MoveUpMenuItem.Text = "Move &Up";
 			this.MoveUpMenuItem.Click += new System.EventHandler(this.MoveUpMenuItem_Click);
 			// 
 			// MoveDownMenuItem
 			// 
-			this.MoveDownMenuItem.Name = "MoveDownMenuItem";
 			this.MoveDownMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D)));
-			this.MoveDownMenuItem.Size = new System.Drawing.Size(233, 22);
 			this.MoveDownMenuItem.Text = "Move &Down";
 			this.MoveDownMenuItem.Click += new System.EventHandler(this.MoveDownMenuItem_Click);
 			// 
 			// SelectAllMenuItem
 			// 
-			this.SelectAllMenuItem.Name = "SelectAllMenuItem";
 			this.SelectAllMenuItem.ShortcutKeyDisplayString = "Ctrl+A";
-			this.SelectAllMenuItem.Size = new System.Drawing.Size(233, 22);
 			this.SelectAllMenuItem.Text = "Select &All";
 			this.SelectAllMenuItem.Click += new System.EventHandler(this.SelectAllMenuItem_Click);
 			// 
-			// toolStripSeparator6
-			// 
-			this.toolStripSeparator6.Name = "toolStripSeparator6";
-			this.toolStripSeparator6.Size = new System.Drawing.Size(230, 6);
-			// 
 			// ToggleMenuItem
 			// 
-			this.ToggleMenuItem.Name = "ToggleMenuItem";
 			this.ToggleMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Enter)));
 			this.ToggleMenuItem.ShortcutKeyDisplayString = "Ctrl + Enter";
-			this.ToggleMenuItem.Size = new System.Drawing.Size(233, 22);
 			this.ToggleMenuItem.Text = "&Toggle";
 			this.ToggleMenuItem.Click += new System.EventHandler(this.ToggleMenuItem_Click);
 			// 
 			// DisableAllCheatsMenuItem
 			// 
-			this.DisableAllCheatsMenuItem.Name = "DisableAllCheatsMenuItem";
 			this.DisableAllCheatsMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Back)));
 			this.DisableAllCheatsMenuItem.ShortcutKeyDisplayString = "Ctrl + Backspace";
-			this.DisableAllCheatsMenuItem.Size = new System.Drawing.Size(233, 22);
 			this.DisableAllCheatsMenuItem.Text = "Disable all";
 			this.DisableAllCheatsMenuItem.Click += new System.EventHandler(this.DisableAllCheatsMenuItem_Click);
 			// 
-			// GameGenieSeparator
-			// 
-			this.GameGenieSeparator.Name = "GameGenieSeparator";
-			this.GameGenieSeparator.Size = new System.Drawing.Size(230, 6);
-			// 
 			// OpenGameGenieEncoderDecoderMenuItem
 			// 
-			this.OpenGameGenieEncoderDecoderMenuItem.Name = "OpenGameGenieEncoderDecoderMenuItem";
-			this.OpenGameGenieEncoderDecoderMenuItem.Size = new System.Drawing.Size(233, 22);
 			this.OpenGameGenieEncoderDecoderMenuItem.Text = "Code Converter";
 			this.OpenGameGenieEncoderDecoderMenuItem.Click += new System.EventHandler(this.OpenGameGenieEncoderDecoderMenuItem_Click);
 			// 
@@ -363,74 +296,46 @@ namespace BizHawk.Client.EmuHawk
             this.FloatingWindowMenuItem,
             this.toolStripSeparator5,
             this.RestoreWindowSizeMenuItem});
-			this.OptionsSubMenu.Name = "OptionsSubMenu";
-			this.OptionsSubMenu.Size = new System.Drawing.Size(61, 20);
 			this.OptionsSubMenu.Text = "&Options";
 			this.OptionsSubMenu.DropDownOpened += new System.EventHandler(this.OptionsSubMenu_DropDownOpened);
 			// 
 			// AlwaysLoadCheatsMenuItem
 			// 
-			this.AlwaysLoadCheatsMenuItem.Name = "AlwaysLoadCheatsMenuItem";
-			this.AlwaysLoadCheatsMenuItem.Size = new System.Drawing.Size(199, 22);
 			this.AlwaysLoadCheatsMenuItem.Text = "Always load cheats";
 			this.AlwaysLoadCheatsMenuItem.Click += new System.EventHandler(this.AlwaysLoadCheatsMenuItem_Click);
 			// 
 			// AutoSaveCheatsMenuItem
 			// 
-			this.AutoSaveCheatsMenuItem.Name = "AutoSaveCheatsMenuItem";
-			this.AutoSaveCheatsMenuItem.Size = new System.Drawing.Size(199, 22);
 			this.AutoSaveCheatsMenuItem.Text = "Autosave cheats";
 			this.AutoSaveCheatsMenuItem.Click += new System.EventHandler(this.AutoSaveCheatsMenuItem_Click);
 			// 
 			// DisableCheatsOnLoadMenuItem
 			// 
-			this.DisableCheatsOnLoadMenuItem.Name = "DisableCheatsOnLoadMenuItem";
-			this.DisableCheatsOnLoadMenuItem.Size = new System.Drawing.Size(199, 22);
 			this.DisableCheatsOnLoadMenuItem.Text = "Disable Cheats on Load";
 			this.DisableCheatsOnLoadMenuItem.Click += new System.EventHandler(this.CheatsOnOffLoadMenuItem_Click);
 			// 
-			// toolStripSeparator7
-			// 
-			this.toolStripSeparator7.Name = "toolStripSeparator7";
-			this.toolStripSeparator7.Size = new System.Drawing.Size(196, 6);
-			// 
 			// AutoloadMenuItem
 			// 
-			this.AutoloadMenuItem.Name = "AutoloadMenuItem";
-			this.AutoloadMenuItem.Size = new System.Drawing.Size(199, 22);
 			this.AutoloadMenuItem.Text = "Autoload";
 			this.AutoloadMenuItem.Click += new System.EventHandler(this.AutoloadMenuItem_Click);
 			// 
 			// SaveWindowPositionMenuItem
 			// 
-			this.SaveWindowPositionMenuItem.Name = "SaveWindowPositionMenuItem";
-			this.SaveWindowPositionMenuItem.Size = new System.Drawing.Size(199, 22);
 			this.SaveWindowPositionMenuItem.Text = "Save Window Position";
 			this.SaveWindowPositionMenuItem.Click += new System.EventHandler(this.SaveWindowPositionMenuItem_Click);
 			// 
 			// AlwaysOnTopMenuItem
 			// 
-			this.AlwaysOnTopMenuItem.Name = "AlwaysOnTopMenuItem";
-			this.AlwaysOnTopMenuItem.Size = new System.Drawing.Size(199, 22);
 			this.AlwaysOnTopMenuItem.Text = "Always on &Top";
 			this.AlwaysOnTopMenuItem.Click += new System.EventHandler(this.AlwaysOnTopMenuItem_Click);
 			// 
 			// FloatingWindowMenuItem
 			// 
-			this.FloatingWindowMenuItem.Name = "FloatingWindowMenuItem";
-			this.FloatingWindowMenuItem.Size = new System.Drawing.Size(199, 22);
 			this.FloatingWindowMenuItem.Text = "Floating Window";
 			this.FloatingWindowMenuItem.Click += new System.EventHandler(this.FloatingWindowMenuItem_Click);
 			// 
-			// toolStripSeparator5
-			// 
-			this.toolStripSeparator5.Name = "toolStripSeparator5";
-			this.toolStripSeparator5.Size = new System.Drawing.Size(196, 6);
-			// 
 			// RestoreWindowSizeMenuItem
 			// 
-			this.RestoreWindowSizeMenuItem.Name = "RestoreWindowSizeMenuItem";
-			this.RestoreWindowSizeMenuItem.Size = new System.Drawing.Size(199, 22);
 			this.RestoreWindowSizeMenuItem.Text = "Restore Default Settings";
 			this.RestoreWindowSizeMenuItem.Click += new System.EventHandler(this.RestoreDefaultsMenuItem_Click);
 			// 
@@ -479,11 +384,6 @@ namespace BizHawk.Client.EmuHawk
 			this.SaveToolBarItem.Text = "&Save";
 			this.SaveToolBarItem.Click += new System.EventHandler(this.SaveMenuItem_Click);
 			// 
-			// toolStripSeparator
-			// 
-			this.toolStripSeparator.Name = "toolStripSeparator";
-			this.toolStripSeparator.Size = new System.Drawing.Size(6, 25);
-			// 
 			// RemoveToolbarItem
 			// 
 			this.RemoveToolbarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -502,11 +402,6 @@ namespace BizHawk.Client.EmuHawk
 			this.SeparatorToolbarItem.Text = "Insert Separator";
 			this.SeparatorToolbarItem.Click += new System.EventHandler(this.InsertSeparatorMenuItem_Click);
 			// 
-			// toolStripSeparator2
-			// 
-			this.toolStripSeparator2.Name = "toolStripSeparator2";
-			this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
-			// 
 			// MoveUpToolbarItem
 			// 
 			this.MoveUpToolbarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -524,11 +419,6 @@ namespace BizHawk.Client.EmuHawk
 			this.MoveDownToolbarItem.Size = new System.Drawing.Size(23, 22);
 			this.MoveDownToolbarItem.Text = "Move Down";
 			this.MoveDownToolbarItem.Click += new System.EventHandler(this.MoveDownMenuItem_Click);
-			// 
-			// GameGenieToolbarSeparator
-			// 
-			this.GameGenieToolbarSeparator.Name = "GameGenieToolbarSeparator";
-			this.GameGenieToolbarSeparator.Size = new System.Drawing.Size(6, 25);
 			// 
 			// LoadGameGenieToolbarItem
 			// 
@@ -608,59 +498,59 @@ namespace BizHawk.Client.EmuHawk
 
 		private InputRoll CheatListView;
 		private MenuStripEx CheatsMenu;
-		private System.Windows.Forms.ToolStripMenuItem FileSubMenu;
-		private System.Windows.Forms.ToolStripMenuItem NewMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem OpenMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem SaveMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem SaveAsMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem AppendMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem RecentSubMenu;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-		private System.Windows.Forms.ToolStripMenuItem ExitMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem CheatsSubMenu;
-		private System.Windows.Forms.ToolStripMenuItem RemoveCheatMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem InsertSeparatorMenuItem;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
-		private System.Windows.Forms.ToolStripMenuItem MoveUpMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem MoveDownMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem SelectAllMenuItem;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
-		private System.Windows.Forms.ToolStripMenuItem DisableAllCheatsMenuItem;
-		private System.Windows.Forms.ToolStripSeparator GameGenieSeparator;
-		private System.Windows.Forms.ToolStripMenuItem OpenGameGenieEncoderDecoderMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem OptionsSubMenu;
-		private System.Windows.Forms.ToolStripMenuItem AlwaysLoadCheatsMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem AutoSaveCheatsMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem DisableCheatsOnLoadMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem AutoloadMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem SaveWindowPositionMenuItem;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
-		private System.Windows.Forms.ToolStripMenuItem RestoreWindowSizeMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx FileSubMenu;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx NewMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx OpenMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SaveMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SaveAsMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx AppendMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx RecentSubMenu;
+		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator4;
+		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator1;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ExitMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx CheatsSubMenu;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx RemoveCheatMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx InsertSeparatorMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator3;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx MoveUpMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx MoveDownMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SelectAllMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator6;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx DisableAllCheatsMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripSeparatorEx GameGenieSeparator;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx OpenGameGenieEncoderDecoderMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx OptionsSubMenu;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx AlwaysLoadCheatsMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx AutoSaveCheatsMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx DisableCheatsOnLoadMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx AutoloadMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SaveWindowPositionMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator5;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx RestoreWindowSizeMenuItem;
 		private ToolStripEx toolStrip1;
 		private System.Windows.Forms.ToolStripButton NewToolBarItem;
 		private System.Windows.Forms.ToolStripButton OpenToolBarItem;
 		private System.Windows.Forms.ToolStripButton SaveToolBarItem;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator;
+		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator;
 		private System.Windows.Forms.ToolStripButton RemoveToolbarItem;
 		private System.Windows.Forms.ToolStripButton SeparatorToolbarItem;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator2;
 		private System.Windows.Forms.ToolStripButton MoveUpToolbarItem;
 		private System.Windows.Forms.ToolStripButton MoveDownToolbarItem;
 		private System.Windows.Forms.ToolStripButton LoadGameGenieToolbarItem;
 		private BizHawk.WinForms.Controls.LocLabelEx TotalLabel;
 		private BizHawk.WinForms.Controls.LocLabelEx MessageLabel;
-		private System.Windows.Forms.ToolStripMenuItem AlwaysOnTopMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem ToggleMenuItem;
-		private System.Windows.Forms.ToolStripSeparator GameGenieToolbarSeparator;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx AlwaysOnTopMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ToggleMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripSeparatorEx GameGenieToolbarSeparator;
 		private System.Windows.Forms.ContextMenuStrip CheatsContextMenu;
-		private System.Windows.Forms.ToolStripMenuItem ToggleContextMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem RemoveContextMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem DisableAllContextMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ToggleContextMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx RemoveContextMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx DisableAllContextMenuItem;
 		private System.Windows.Forms.GroupBox CheatGroupBox;
 		private CheatEdit CheatEditor;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
-		private System.Windows.Forms.ToolStripMenuItem ViewInHexEditorContextMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem FloatingWindowMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator7;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ViewInHexEditorContextMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx FloatingWindowMenuItem;
 	}
 }

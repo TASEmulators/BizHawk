@@ -31,11 +31,11 @@ namespace BizHawk.Client.EmuHawk
 		private void InitializeComponent()
 		{
 			this.PceBgViewerMenu = new MenuStripEx();
-			this.ViewerSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.VDC1MenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.VDC2MenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-			this.ExitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.ViewerSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.VDC1MenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.VDC2MenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.toolStripSeparator1 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
+			this.ExitMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.canvas = new BizHawk.Client.EmuHawk.PceBgCanvas();
 			this.groupBox5 = new System.Windows.Forms.GroupBox();
@@ -72,35 +72,22 @@ namespace BizHawk.Client.EmuHawk
             this.VDC2MenuItem,
             this.toolStripSeparator1,
             this.ExitMenuItem});
-			this.ViewerSubMenu.Name = "ViewerSubMenu";
-			this.ViewerSubMenu.Size = new System.Drawing.Size(51, 20);
 			this.ViewerSubMenu.Text = "&Viewer";
 			this.ViewerSubMenu.DropDownOpened += new System.EventHandler(this.FileSubMenu_DropDownOpened);
 			// 
 			// VDC1MenuItem
 			// 
-			this.VDC1MenuItem.Name = "VDC1MenuItem";
-			this.VDC1MenuItem.Size = new System.Drawing.Size(152, 22);
 			this.VDC1MenuItem.Text = "VDC&1";
 			this.VDC1MenuItem.Click += new System.EventHandler(this.VDC1MenuItem_Click);
 			// 
 			// VDC2MenuItem
 			// 
-			this.VDC2MenuItem.Name = "VDC2MenuItem";
-			this.VDC2MenuItem.Size = new System.Drawing.Size(152, 22);
 			this.VDC2MenuItem.Text = "VCD&2";
 			this.VDC2MenuItem.Click += new System.EventHandler(this.VDC2MenuItem_Click);
 			// 
-			// toolStripSeparator1
-			// 
-			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
-			// 
 			// ExitMenuItem
 			// 
-			this.ExitMenuItem.Name = "ExitMenuItem";
 			this.ExitMenuItem.ShortcutKeyDisplayString = "Alt+F4";
-			this.ExitMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.ExitMenuItem.Text = "E&xit";
 			this.ExitMenuItem.Click += new System.EventHandler(this.ExitMenuItem_Click);
 			// 
@@ -247,11 +234,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private PceBgCanvas canvas;
         private MenuStripEx PceBgViewerMenu;
-		private System.Windows.Forms.ToolStripMenuItem ViewerSubMenu;
-        private System.Windows.Forms.ToolStripMenuItem ExitMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem VDC1MenuItem;
-		private System.Windows.Forms.ToolStripMenuItem VDC2MenuItem;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ViewerSubMenu;
+        private BizHawk.WinForms.Controls.ToolStripMenuItemEx ExitMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx VDC1MenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx VDC2MenuItem;
+		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator1;
 		private System.Windows.Forms.GroupBox groupBox1;
 		private System.Windows.Forms.GroupBox groupBox5;
 		private BizHawk.WinForms.Controls.LocLabelEx label7;

@@ -45,7 +45,7 @@
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.MatchHashCheckBox = new System.Windows.Forms.CheckBox();
 			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.editToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.StopOnFrameCheckbox = new System.Windows.Forms.CheckBox();
 			this.StopOnFrameTextBox = new BizHawk.Client.EmuHawk.WatchValueBox();
 			this.MovieView = new System.Windows.Forms.ListView();
@@ -225,8 +225,6 @@
 			// 
 			// editToolStripMenuItem
 			// 
-			this.editToolStripMenuItem.Name = "editToolStripMenuItem";
-			this.editToolStripMenuItem.Size = new System.Drawing.Size(92, 22);
 			this.editToolStripMenuItem.Text = "&Edit";
 			this.editToolStripMenuItem.Click += new System.EventHandler(this.EditMenuItem_Click);
 			// 
@@ -387,7 +385,7 @@
 		private System.Windows.Forms.ToolTip toolTip1;
 		private System.Windows.Forms.CheckBox MatchHashCheckBox;
 		private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
-		private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx editToolStripMenuItem;
 		private System.Windows.Forms.CheckBox StopOnFrameCheckbox;
 		private WatchValueBox StopOnFrameTextBox;
 		private System.Windows.Forms.CheckBox LastFrameCheckbox;
