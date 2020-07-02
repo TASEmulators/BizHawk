@@ -300,9 +300,9 @@ namespace BizHawk.Client.Common
 			["SNES"] = CoreNames.Snes9X,
 			["GB"] = CoreNames.Gambatte,
 			["GBC"] = CoreNames.Gambatte,
-			["PCE"] = CoreNames.PceHawk,
-			["PCECD"] = CoreNames.PceHawk,
-			["SGX"] = CoreNames.PceHawk
+			["PCE"] = CoreNames.TurboNyma,
+			["PCECD"] = CoreNames.TurboNyma,
+			["SGX"] = CoreNames.TurboNyma
 		};
 
 		// ReSharper disable once UnusedMember.Global
