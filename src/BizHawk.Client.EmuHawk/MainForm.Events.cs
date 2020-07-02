@@ -2613,25 +2613,11 @@ namespace BizHawk.Client.EmuHawk
 			AutohideCursor(false);
 		}
 
-		public void MainForm_MouseWheel(object sender, MouseEventArgs e)
-		{
-			MouseWheelTracker += e.Delta;
-		}
+		public MouseEventHandler MainForm_MouseWheel { get; }
 
-		public void MainForm_MouseMove(object sender, MouseEventArgs e)
-		{
-			AutohideCursor(false);
-		}
+		public MouseEventHandler MainForm_MouseMove { get; }
 
-		public void MainForm_MouseClick(object sender, MouseEventArgs e)
-		{
-			AutohideCursor(false);
-			if (Config.ShowContextMenu && e.Button == MouseButtons.Right)
-			{
-				MainFormContextMenu.Show(
-					PointToScreen(new Point(e.X, e.Y + MainformMenu.Height)));
-			}
-		}
+		public MouseEventHandler MainForm_MouseClick { get; }
 
 		private void MainForm_Resize(object sender, EventArgs e)
 		{

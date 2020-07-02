@@ -11,10 +11,10 @@ namespace BizHawk.Client.EmuHawk
 	/// </summary>
 	public class PresentationPanel
 	{
-		private readonly MainForm _mainForm;
+		private readonly IMainFormForTools _mainForm;
 		private readonly Config _config;
 
-		public PresentationPanel(MainForm mainForm, Config config, IGL gl)
+		public PresentationPanel(IMainFormForTools mainForm, Config config, IGL gl)
 		{
 			_mainForm = mainForm;
 			_config = config;
@@ -28,9 +28,9 @@ namespace BizHawk.Client.EmuHawk
 			// pass through these events to the form. we might need a more scalable solution for mousedown etc. for zapper and whatnot.
 			// http://stackoverflow.com/questions/547172/pass-through-mouse-events-to-parent-control (HTTRANSPARENT)
 			GraphicsControl.MouseDoubleClick += HandleFullscreenToggle;
-			GraphicsControl.MouseClick += (o, e) => _mainForm.MainForm_MouseClick(o, e);
-			GraphicsControl.MouseMove += (o, e) => _mainForm.MainForm_MouseMove(o, e);
-			GraphicsControl.MouseWheel += (o, e) => _mainForm.MainForm_MouseWheel(o, e);
+			GraphicsControl.MouseClick += _mainForm.MainForm_MouseClick;
+			GraphicsControl.MouseMove += _mainForm.MainForm_MouseMove;
+			GraphicsControl.MouseWheel += _mainForm.MainForm_MouseWheel;
 		}
 
 		private bool _isDisposed;

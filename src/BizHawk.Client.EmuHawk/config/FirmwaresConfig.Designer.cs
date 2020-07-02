@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Client.EmuHawk
+﻿using BizHawk.WinForms.Controls;
+
+namespace BizHawk.Client.EmuHawk
 {
     partial class FirmwaresConfig
     {
@@ -192,7 +194,6 @@
 			// 
 			// toolStrip1
 			// 
-			this.toolStrip1.ClickThrough = true;
 			this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tbbGroup,
             this.toolStripSeparator2,
@@ -205,9 +206,7 @@
             this.tbbOpenFolder});
 			this.toolStrip1.Location = new System.Drawing.Point(0, 0);
 			this.toolStrip1.Name = "toolStrip1";
-			this.toolStrip1.Size = new System.Drawing.Size(824, 25);
 			this.toolStrip1.TabIndex = 23;
-			this.toolStrip1.Text = "toolStrip1";
 			// 
 			// tbbGroup
 			// 

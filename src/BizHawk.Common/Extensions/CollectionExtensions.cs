@@ -1,6 +1,4 @@
-﻿#nullable disable
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -16,7 +14,8 @@ namespace BizHawk.Common.CollectionExtensions
 			return desc ? source.OrderByDescending(keySelector) : source.OrderBy(keySelector);
 		}
 
-		public static int LowerBoundBinarySearch<T, TKey>(this IList<T> list, Func<T, TKey> keySelector, TKey key) where TKey : IComparable<TKey>
+		public static int LowerBoundBinarySearch<T, TKey>(this IList<T> list, Func<T, TKey> keySelector, TKey key)
+			where TKey : IComparable<TKey>
 		{
 			int min = 0;
 			int max = list.Count;
@@ -73,7 +72,7 @@ namespace BizHawk.Common.CollectionExtensions
 		/// <exception cref="InvalidOperationException"><paramref name="key"/> not found after mapping <paramref name="keySelector"/> over <paramref name="list"/></exception>
 		/// <remarks>implementation from https://stackoverflow.com/a/1766369/7467292</remarks>
 		public static T BinarySearch<T, TKey>(this IList<T> list, Func<T, TKey> keySelector, TKey key)
-		where TKey : IComparable<TKey>
+			where TKey : IComparable<TKey>
 		{
 			int min = 0;
 			int max = list.Count;

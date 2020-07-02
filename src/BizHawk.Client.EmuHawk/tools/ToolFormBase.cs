@@ -12,7 +12,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public ToolManager Tools { get; set; }
 		public Config Config { get; set; }
-		public MainForm MainForm { get; set; }
+		public IMainFormForTools MainForm { get; set; }
 
 		public IMovieSession MovieSession { get; set; }
 		public IGameInfo Game { get; set; }
@@ -122,7 +122,7 @@ namespace BizHawk.Client.EmuHawk
 
 		protected void RefreshFloatingWindowControl(bool floatingWindow)
 		{
-			Owner = floatingWindow ? null : MainForm;
+			Owner = floatingWindow ? null : (MainForm) MainForm;
 		}
 
 		protected bool IsOnScreen(Point topLeft)

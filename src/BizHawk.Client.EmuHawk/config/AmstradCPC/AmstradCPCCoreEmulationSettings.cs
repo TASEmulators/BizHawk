@@ -6,10 +6,10 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class AmstradCpcCoreEmulationSettings : Form
 	{
-		private readonly MainForm _mainForm;
+		private readonly IMainFormForConfig _mainForm;
 		private readonly AmstradCPC.AmstradCPCSyncSettings _syncSettings;
 
-		public AmstradCpcCoreEmulationSettings(MainForm mainForm,
+		public AmstradCpcCoreEmulationSettings(IMainFormForConfig mainForm,
 			AmstradCPC.AmstradCPCSyncSettings syncSettings)
 		{
 			_mainForm = mainForm;

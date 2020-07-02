@@ -185,7 +185,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					break;
 				case 0xFF4A: // WY
 					window_y = value;
-					if (!window_started)
+					if (!window_started && (!LCDC.Bit(7) || (value > LY)))
 					{
 						window_y_latch = window_y;
 						window_y_tile = 0;
@@ -732,14 +732,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			if (stat_line && !stat_line_old)
 			{
 				if (Core.REG_FFFF.Bit(1)) { Core.cpu.FlagI = true; }
-				Core.REG_FF0F |= 0x02;
-				
-				//if (LY == 46)
-				//{
-					//Console.Write(VBL_INT + " " + LYC_INT + " " + HBL_INT + " " + OAM_INT + " " + LY + " ");
-					//Console.Write(render_offset + " " + scroll_x +  " " + total_counter + " ");
-					//Console.WriteLine(STAT + " " + cycle + " " + Core.cpu.TotalExecutedCycles);
-				//}				
+				Core.REG_FF0F |= 0x02;			
 			}
 
 			stat_line_old = stat_line;

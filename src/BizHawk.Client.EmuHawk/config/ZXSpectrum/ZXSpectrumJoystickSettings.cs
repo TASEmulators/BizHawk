@@ -7,12 +7,12 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class ZxSpectrumJoystickSettings : Form
 	{
-		private readonly MainForm _mainForm;
+		private readonly IMainFormForConfig _mainForm;
 		private readonly ZXSpectrum.ZXSpectrumSyncSettings _syncSettings;
 		private string[] _possibleControllers;
 
 		public ZxSpectrumJoystickSettings(
-			MainForm mainForm,
+			IMainFormForConfig mainForm,
 			ZXSpectrum.ZXSpectrumSyncSettings syncSettings)
 		{
 			_mainForm = mainForm;

@@ -121,10 +121,19 @@
     <value>17, 17</value>
   </metadata>
   <data name="label13.Text" xml:space="preserve">
-    <value>Alternate VSync Method: Some GPUs have problems VSyncing. It seems to manifest on full-screen windows. There will be hiccups when throttling to VSync. Use this to try and solve it (busy loop; burns major CPU)</value>
+    <value>Alternate VSync Method: Some GPUs have problems VSyncing. It seems
+to manifest on full-screen windows. There will be hiccups when throttling
+to VSync. Use this to try and solve it (busy loop; burns major CPU)</value>
   </data>
   <data name="label1.Text" xml:space="preserve">
-    <value>For Windows operating systems &gt;= Vista, with some video cards, the monitors may flicker when going 'windowed fullscreen' while the system disobeys us and goes actual fullscreen instead. This hack prevents that, but may increase frame latency (since in Microsoft's new and disimproved operating systems, windowed mode things may have higher latency)</value>
+    <value>For Windows operating systems &gt;= Vista, with
+some video cards, the monitors may flicker when
+going 'windowed fullscreen' while the system
+disobeys us and goes actual fullscreen instead.
+This hack prevents that, but may increase frame
+latency (since in Microsoft's new and disimproved
+operating systems, windowed mode things may
+have higher latency)</value>
   </data>
   <metadata name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>

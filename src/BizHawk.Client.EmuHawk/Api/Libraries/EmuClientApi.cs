@@ -25,7 +25,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly InputManager _inputManager;
 
-		private readonly MainForm _mainForm;
+		private readonly IMainFormForApi _mainForm;
 
 		private readonly Action<string> _logCallback;
 
@@ -85,7 +85,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public event StateSavedEventHandler StateSaved;
 
-		public EmuClientApi(Action<string> logCallback, DisplayManager displayManager, InputManager inputManager, MainForm mainForm, Config config, IEmulator emulator, GameInfo game)
+		public EmuClientApi(Action<string> logCallback, DisplayManager displayManager, InputManager inputManager, IMainFormForApi mainForm, Config config, IEmulator emulator, GameInfo game)
 		{
 			_config = config;
 			_displayManager = displayManager;
@@ -247,7 +247,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SaveState(string name) => _mainForm.SaveState(Path.Combine(_config.PathEntries.SaveStateAbsolutePath(Game.System), $"{name}.State"), name, fromLua: false);
 
-		public int ScreenHeight() => _mainForm.PresentationPanel.NativeSize.Height;
+		public int ScreenHeight() => _displayManager.GetPanelNativeSize().Height;
 
 		public void Screenshot(string path)
 		{
@@ -257,7 +257,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void ScreenshotToClipboard() => _mainForm.TakeScreenshotToClipboard();
 
-		public int ScreenWidth() => _mainForm.PresentationPanel.NativeSize.Width;
+		public int ScreenWidth() => _displayManager.GetPanelNativeSize().Width;
 
 		public void SeekFrame(int frame)
 		{

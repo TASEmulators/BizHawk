@@ -13,9 +13,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly InputManager _inputManager;
 
-		private readonly MainForm _mainForm;
+		private readonly IMainFormForApi _mainForm;
 
-		public InputApi(Action<string> logCallback, DisplayManager displayManager, InputManager inputManager, MainForm mainForm)
+		public InputApi(Action<string> logCallback, DisplayManager displayManager, InputManager inputManager, IMainFormForApi mainForm)
 		{
 			_displayManager = displayManager;
 			_inputManager = inputManager;

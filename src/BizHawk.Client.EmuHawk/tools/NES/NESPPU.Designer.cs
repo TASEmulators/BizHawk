@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Client.EmuHawk
+﻿using BizHawk.WinForms.Controls;
+
+namespace BizHawk.Client.EmuHawk
 {
 	partial class NesPPU
 	{
@@ -463,16 +465,13 @@
 			// 
 			// NesPPUMenu
 			// 
-			this.NesPPUMenu.ClickThrough = true;
 			this.NesPPUMenu.ImageScalingSize = new System.Drawing.Size(20, 20);
 			this.NesPPUMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.FileSubMenu,
             this.PatternSubMenu,
             this.SettingsSubMenu});
-			this.NesPPUMenu.Location = new System.Drawing.Point(0, 0);
 			this.NesPPUMenu.Name = "NesPPUMenu";
 			this.NesPPUMenu.Padding = new System.Windows.Forms.Padding(8, 2, 0, 2);
-			this.NesPPUMenu.Size = new System.Drawing.Size(1139, 28);
 			this.NesPPUMenu.TabIndex = 10;
 			this.NesPPUMenu.Text = "menuStrip1";
 			// 
@@ -722,17 +721,14 @@
 			// 
 			// NesPPUStatusBar
 			// 
-			this.NesPPUStatusBar.ClickThrough = true;
 			this.NesPPUStatusBar.ImageScalingSize = new System.Drawing.Size(20, 20);
 			this.NesPPUStatusBar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel1});
 			this.NesPPUStatusBar.Location = new System.Drawing.Point(0, 432);
 			this.NesPPUStatusBar.Name = "NesPPUStatusBar";
 			this.NesPPUStatusBar.Padding = new System.Windows.Forms.Padding(1, 0, 19, 0);
-			this.NesPPUStatusBar.Size = new System.Drawing.Size(1139, 25);
 			this.NesPPUStatusBar.SizingGrip = false;
 			this.NesPPUStatusBar.TabIndex = 11;
-			this.NesPPUStatusBar.Text = "statusStrip1";
 			// 
 			// toolStripStatusLabel1
 			// 

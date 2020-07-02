@@ -13,7 +13,7 @@ namespace BizHawk.Client.EmuHawk
 		private readonly string _lblPixelProText, _lblMednafenText, _lblTweakedMednafenText;
 		
 		private PSXOptions(
-			MainForm mainForm,
+			IMainFormForConfig mainForm,
 			Config config,
 			Octoshock.Settings settings,
 			Octoshock.SyncSettings syncSettings,
@@ -63,7 +63,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private Size _previewVideoSize;
-		private readonly MainForm _mainForm;
+		private readonly IMainFormForConfig _mainForm;
 		private readonly Config _config;
 		private readonly OctoshockDll.eVidStandard _previewVideoStandard;
 		private readonly Octoshock.Settings _settings;
@@ -76,7 +76,7 @@ namespace BizHawk.Client.EmuHawk
 			MessageBox.Show("Finetuned Display Options will take effect if you OK from PSX Options");
 		}
 
-		public static DialogResult DoSettingsDialog(MainForm mainForm, Config config, Octoshock psx)
+		public static DialogResult DoSettingsDialog(IMainFormForConfig mainForm, Config config, Octoshock psx)
 		{
 			var s = psx.GetSettings();
 			var ss = psx.GetSyncSettings();

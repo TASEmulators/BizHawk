@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Client.EmuHawk
+﻿using BizHawk.WinForms.Controls;
+
+namespace BizHawk.Client.EmuHawk
 {
 	partial class MainForm
 	{
@@ -380,7 +382,6 @@
 			// 
 			// MainformMenu
 			// 
-			this.MainformMenu.ClickThrough = true;
 			this.MainformMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.FileSubMenu,
             this.EmulationSubMenu,
@@ -405,9 +406,7 @@
 			this.amstradCPCToolStripMenuItem,
 			this.HelpSubMenu});
 			this.MainformMenu.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
-			this.MainformMenu.Location = new System.Drawing.Point(0, 0);
 			this.MainformMenu.Name = "MainformMenu";
-			this.MainformMenu.Size = new System.Drawing.Size(470, 89);
 			this.MainformMenu.TabIndex = 0;
 			this.MainformMenu.Text = "menuStrip1";
 			this.MainformMenu.MenuActivate += new System.EventHandler(this.MainformMenu_MenuActivate);
@@ -2642,7 +2641,6 @@
 			// 
 			// MainStatusBar
 			// 
-			this.MainStatusBar.ClickThrough = true;
 			this.MainStatusBar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
 			this.DumpStatusButton,
 			this.EmuStatus,
@@ -2671,10 +2669,8 @@
 			this.MainStatusBar.Location = new System.Drawing.Point(0, 386);
 			this.MainStatusBar.Name = "MainStatusBar";
 			this.MainStatusBar.ShowItemToolTips = true;
-			this.MainStatusBar.Size = new System.Drawing.Size(470, 22);
 			this.MainStatusBar.SizingGrip = false;
 			this.MainStatusBar.TabIndex = 1;
-			this.MainStatusBar.Text = "0";
 			// 
 			// DumpStatusButton
 			// 
@@ -3230,8 +3226,6 @@
 			this.Load += new System.EventHandler(this.MainForm_Load);
 			this.Shown += new System.EventHandler(this.MainForm_Shown);
 			this.Enter += new System.EventHandler(this.MainForm_Enter);
-			this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.MainForm_MouseClick);
-			this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MainForm_MouseMove);
 			this.Resize += new System.EventHandler(this.MainForm_Resize);
 			this.MainformMenu.ResumeLayout(false);
 			this.MainformMenu.PerformLayout();

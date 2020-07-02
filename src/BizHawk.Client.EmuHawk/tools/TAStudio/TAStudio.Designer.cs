@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Client.EmuHawk
+﻿using BizHawk.WinForms.Controls;
+
+namespace BizHawk.Client.EmuHawk
 {
 	partial class TAStudio
 	{
@@ -204,7 +206,6 @@
 			// 
 			// TASMenu
 			// 
-			this.TASMenu.ClickThrough = true;
 			this.TASMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.FileSubMenu,
             this.EditSubMenu,
@@ -213,9 +214,7 @@
             this.SettingsSubMenu,
             this.ColumnsSubMenu,
             this.HelpSubMenu});
-			this.TASMenu.Location = new System.Drawing.Point(0, 0);
 			this.TASMenu.Name = "TASMenu";
-			this.TASMenu.Size = new System.Drawing.Size(509, 24);
 			this.TASMenu.TabIndex = 0;
 			this.TASMenu.Text = "menuStrip1";
 			this.TASMenu.MenuActivate += new System.EventHandler(this.TASMenu_MenuActivate);
@@ -1237,7 +1236,6 @@
 			// 
 			// TasStatusStrip
 			// 
-			this.TasStatusStrip.ClickThrough = true;
 			this.TasStatusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.MessageStatusLabel,
             this.SavingProgressBar,
@@ -1245,9 +1243,7 @@
             this.SplicerStatusLabel});
 			this.TasStatusStrip.Location = new System.Drawing.Point(0, 554);
 			this.TasStatusStrip.Name = "TasStatusStrip";
-			this.TasStatusStrip.Size = new System.Drawing.Size(509, 22);
 			this.TasStatusStrip.TabIndex = 4;
-			this.TasStatusStrip.Text = "statusStrip1";
 			// 
 			// MessageStatusLabel
 			// 

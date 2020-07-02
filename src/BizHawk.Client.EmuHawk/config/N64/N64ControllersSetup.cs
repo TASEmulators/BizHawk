@@ -9,7 +9,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class N64ControllersSetup : Form
 	{
-		private readonly MainForm _mainForm;
+		private readonly IMainFormForConfig _mainForm;
 		private readonly N64SyncSettings _syncSettings;
 
 		private List<N64ControllerSettingControl> ControllerSettingControls => Controls
@@ -18,7 +18,7 @@ namespace BizHawk.Client.EmuHawk
 			.ToList();
 
 		public N64ControllersSetup(
-			MainForm mainForm,
+			IMainFormForConfig mainForm,
 			N64SyncSettings syncSettings)
 		{
 			_mainForm = mainForm;

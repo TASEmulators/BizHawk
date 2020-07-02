@@ -7,11 +7,11 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class PSXControllerConfig : Form
 	{
-		private readonly MainForm _mainForm;
+		private readonly IMainFormForConfig _mainForm;
 		private readonly Octoshock.SyncSettings _syncSettings;
 
 		public PSXControllerConfig(
-			MainForm mainForm,
+			IMainFormForConfig mainForm,
 			Octoshock.SyncSettings syncSettings)
 		{
 			_mainForm = mainForm;

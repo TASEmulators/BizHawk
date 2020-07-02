@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Client.EmuHawk
+﻿using BizHawk.WinForms.Controls;
+
+namespace BizHawk.Client.EmuHawk
 {
 	partial class PCESoundDebugger
 	{
@@ -245,10 +247,7 @@
 			// 
 			// SoundMenuStrip
 			// 
-			this.SoundMenuStrip.ClickThrough = true;
-			this.SoundMenuStrip.Location = new System.Drawing.Point(0, 0);
 			this.SoundMenuStrip.Name = "SoundMenuStrip";
-			this.SoundMenuStrip.Size = new System.Drawing.Size(787, 24);
 			this.SoundMenuStrip.TabIndex = 4;
 			this.SoundMenuStrip.Text = "menuStrip1";
 			// 

@@ -6,11 +6,11 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class AmstradCpcAudioSettings : Form
 	{
-		private readonly MainForm _mainForm;
+		private readonly IMainFormForConfig _mainForm;
 		private readonly AmstradCPC.AmstradCPCSettings _settings;
 
 		public AmstradCpcAudioSettings(
-			MainForm mainForm,
+			IMainFormForConfig mainForm,
 			AmstradCPC.AmstradCPCSettings settings)
 		{
 			_mainForm = mainForm;

@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Client.EmuHawk
+﻿using BizHawk.WinForms.Controls;
+
+namespace BizHawk.Client.EmuHawk
 {
 	partial class RamSearch
 	{
@@ -300,15 +302,12 @@
 			// 
 			// RamSearchMenu
 			// 
-			this.RamSearchMenu.ClickThrough = true;
 			this.RamSearchMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
             this.settingsToolStripMenuItem,
             this.searchToolStripMenuItem,
             this.optionsToolStripMenuItem});
-			this.RamSearchMenu.Location = new System.Drawing.Point(0, 0);
 			this.RamSearchMenu.Name = "RamSearchMenu";
-			this.RamSearchMenu.Size = new System.Drawing.Size(445, 24);
 			this.RamSearchMenu.TabIndex = 4;
 			this.RamSearchMenu.Text = "menuStrip1";
 			// 
@@ -948,7 +947,6 @@
 			// 
 			// toolStrip1
 			// 
-			this.toolStrip1.ClickThrough = true;
 			this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.DoSearchToolButton,
             this.toolStripSeparator10,
@@ -969,9 +967,7 @@
             this.ErrorIconButton});
 			this.toolStrip1.Location = new System.Drawing.Point(0, 24);
 			this.toolStrip1.Name = "toolStrip1";
-			this.toolStrip1.Size = new System.Drawing.Size(445, 25);
 			this.toolStrip1.TabIndex = 11;
-			this.toolStrip1.Text = "toolStrip1";
 			// 
 			// DoSearchToolButton
 			// 

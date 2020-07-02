@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Client.EmuHawk
+﻿using BizHawk.WinForms.Controls;
+
+namespace BizHawk.Client.EmuHawk
 {
 	partial class Cheats
 	{
@@ -159,14 +161,11 @@
 			// 
 			// CheatsMenu
 			// 
-			this.CheatsMenu.ClickThrough = true;
 			this.CheatsMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.FileSubMenu,
             this.CheatsSubMenu,
             this.OptionsSubMenu});
-			this.CheatsMenu.Location = new System.Drawing.Point(0, 0);
 			this.CheatsMenu.Name = "CheatsMenu";
-			this.CheatsMenu.Size = new System.Drawing.Size(646, 24);
 			this.CheatsMenu.TabIndex = 2;
 			this.CheatsMenu.Text = "menuStrip1";
 			// 
@@ -437,7 +436,6 @@
 			// 
 			// toolStrip1
 			// 
-			this.toolStrip1.ClickThrough = true;
 			this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.NewToolBarItem,
             this.OpenToolBarItem,
@@ -452,9 +450,7 @@
             this.LoadGameGenieToolbarItem});
 			this.toolStrip1.Location = new System.Drawing.Point(0, 24);
 			this.toolStrip1.Name = "toolStrip1";
-			this.toolStrip1.Size = new System.Drawing.Size(646, 25);
 			this.toolStrip1.TabIndex = 3;
-			this.toolStrip1.Text = "toolStrip1";
 			// 
 			// NewToolBarItem
 			// 

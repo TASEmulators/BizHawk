@@ -7,11 +7,11 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class IntvControllerSettings : Form
 	{
-		private readonly MainForm _mainForm;
+		private readonly IMainFormForConfig _mainForm;
 		private readonly Intellivision.IntvSyncSettings _syncSettings;
 
 		public IntvControllerSettings(
-			MainForm mainForm,
+			IMainFormForConfig mainForm,
 			Intellivision.IntvSyncSettings syncSettings)
 		{
 			_mainForm = mainForm;

@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Client.EmuHawk
+﻿using BizHawk.WinForms.Controls;
+
+namespace BizHawk.Client.EmuHawk
 {
 	partial class BasicBot
 	{
@@ -143,14 +145,11 @@
 			// 
 			// BotMenu
 			// 
-			this.BotMenu.ClickThrough = true;
 			this.BotMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
 			this.FileSubMenu,
 			this.OptionsSubMenu,
 			this.helpToolStripMenuItem});
-			this.BotMenu.Location = new System.Drawing.Point(0, 0);
 			this.BotMenu.Name = "BotMenu";
-			this.BotMenu.Size = new System.Drawing.Size(707, 24);
 			this.BotMenu.TabIndex = 0;
 			this.BotMenu.Text = "menuStrip1";
 			// 

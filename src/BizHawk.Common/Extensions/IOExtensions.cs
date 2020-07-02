@@ -1,7 +1,4 @@
-﻿#nullable disable
-
-using System;
-using System.IO;
+﻿using System.IO;
 using System.Text;
 
 namespace BizHawk.Common.IOExtensions

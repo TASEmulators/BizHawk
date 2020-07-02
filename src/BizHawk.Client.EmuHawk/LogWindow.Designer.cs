@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Client.EmuHawk
+﻿using BizHawk.WinForms.Controls;
+
+namespace BizHawk.Client.EmuHawk
 {
 	partial class LogWindow
 	{
@@ -137,9 +139,7 @@
 			// 
 			// MenuStrip
 			// 
-			this.MenuStrip.Location = new System.Drawing.Point(0, 0);
 			this.MenuStrip.Name = "MenuStrip";
-			this.MenuStrip.Size = new System.Drawing.Size(675, 24);
 			this.MenuStrip.TabIndex = 9;
 			this.MenuStrip.Text = "menuStrip1";
 			// 
@@ -155,7 +155,7 @@
 			this.MainMenuStrip = this.MenuStrip;
 			this.MinimumSize = new System.Drawing.Size(171, 97);
 			this.Name = "LogWindow";
-			this.ShowIcon = false;
+			this.ShowIcon = true;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Log Window";
 			this.Load += new System.EventHandler(this.LogWindow_Load);

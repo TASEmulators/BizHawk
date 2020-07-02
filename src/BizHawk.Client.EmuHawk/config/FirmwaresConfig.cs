@@ -28,7 +28,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class FirmwaresConfig : Form
 	{
-		private readonly MainForm _mainForm;
+		private readonly IMainFormForConfig _mainForm;
 		private readonly Config _config;
 
 		// friendlier names than the system Ids
@@ -94,7 +94,7 @@ namespace BizHawk.Client.EmuHawk
 		private string _currSelectorDir;
 		private readonly ListViewSorter _listViewSorter;
 
-		public FirmwaresConfig(MainForm mainForm, Config config, bool retryLoadRom = false, string reloadRomPath = null)
+		public FirmwaresConfig(IMainFormForConfig mainForm, Config config, bool retryLoadRom = false, string reloadRomPath = null)
 		{
 			_mainForm = mainForm;
 			_config = config;

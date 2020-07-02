@@ -9,12 +9,12 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class NESSyncSettingsForm : Form
 	{
-		private readonly MainForm _mainForm;
+		private readonly IMainFormForConfig _mainForm;
 		private readonly DataTableDictionaryBind<string, string> _dataTableDictionary;
 		private readonly NES.NESSyncSettings _syncSettings;
 
 		public NESSyncSettingsForm(
-			MainForm mainForm,
+			IMainFormForConfig mainForm,
 			NES.NESSyncSettings syncSettings,
 			bool hasMapperProperties)
 		{

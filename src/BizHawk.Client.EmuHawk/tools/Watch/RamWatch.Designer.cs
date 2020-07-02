@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Client.EmuHawk
+﻿using BizHawk.WinForms.Controls;
+
+namespace BizHawk.Client.EmuHawk
 {
 	partial class RamWatch
 	{
@@ -274,15 +276,12 @@
             // 
             // statusStrip1
             // 
-            this.statusStrip1.ClickThrough = true;
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ErrorIconButton,
             this.MessageLabel});
             this.statusStrip1.Location = new System.Drawing.Point(0, 356);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(364, 22);
             this.statusStrip1.TabIndex = 8;
-            this.statusStrip1.Text = "statusStrip1";
             // 
             // ErrorIconButton
             // 
@@ -302,7 +301,6 @@
             // 
             // toolStrip1
             // 
-            this.toolStrip1.ClickThrough = true;
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.newToolStripButton,
             this.openToolStripButton,
@@ -322,10 +320,8 @@
             this.toolStripSeparator5});
             this.toolStrip1.Location = new System.Drawing.Point(0, 24);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(364, 25);
             this.toolStrip1.TabIndex = 4;
             this.toolStrip1.TabStop = true;
-            this.toolStrip1.Text = "toolStrip1";
             // 
             // newToolStripButton
             // 
@@ -466,14 +462,11 @@
 			// 
             // RamWatchMenu
             // 
-            this.RamWatchMenu.ClickThrough = true;
             this.RamWatchMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.FileSubMenu,
             this.WatchesSubMenu,
             this.OptionsSubMenu});
-            this.RamWatchMenu.Location = new System.Drawing.Point(0, 0);
             this.RamWatchMenu.Name = "RamWatchMenu";
-            this.RamWatchMenu.Size = new System.Drawing.Size(364, 24);
             this.RamWatchMenu.TabIndex = 3;
             this.RamWatchMenu.Text = "menuStrip1";
             // 

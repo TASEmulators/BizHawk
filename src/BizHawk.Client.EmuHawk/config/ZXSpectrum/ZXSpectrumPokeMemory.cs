@@ -6,10 +6,10 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class ZxSpectrumPokeMemory : Form
 	{
-		private readonly MainForm _mainForm;
+		private readonly IMainFormForConfig _mainForm;
 		private readonly ZXSpectrum _speccy;
 		public ZxSpectrumPokeMemory(
-			MainForm mainForm,
+			IMainFormForConfig mainForm,
 			ZXSpectrum speccy)
 		{
 			_mainForm = mainForm;

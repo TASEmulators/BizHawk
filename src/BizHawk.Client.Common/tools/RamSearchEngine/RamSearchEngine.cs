@@ -16,7 +16,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 
 		private List<IMiniWatch> _watchList = new List<IMiniWatch>();
 		private readonly SearchEngineSettings _settings;
-		private readonly UndoHistory<IMiniWatch> _history = new UndoHistory<IMiniWatch>(true);
+		private readonly UndoHistory<IEnumerable<IMiniWatch>> _history = new UndoHistory<IEnumerable<IMiniWatch>>(true, new List<IMiniWatch>()); //TODO use IList instead of IEnumerable and stop calling `.ToList()` (i.e. cloning) on reads and writes?
 		private bool _isSorted = true; // Tracks whether or not the list is sorted by address, if it is, binary search can be used for finding watches
 
 		public RamSearchEngine(SearchEngineSettings settings, IMemoryDomains memoryDomains)
@@ -141,7 +141,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 
 			if (UndoEnabled)
 			{
-				_history.AddState(_watchList);
+				_history.AddState(_watchList.ToList());
 			}
 
 			return before - _watchList.Count;
@@ -244,7 +244,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 		{
 			if (UndoEnabled)
 			{
-				_history.AddState(_watchList);
+				_history.AddState(_watchList.ToList());
 			}
 
 			var addresses = watches.Select(w => w.Address);
@@ -255,7 +255,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 		{
 			if (UndoEnabled)
 			{
-				_history.AddState(_watchList);
+				_history.AddState(_watchList.ToList());
 			}
 
 			var removeList = indices.Select(i => _watchList[i]); // This will fail after int.MaxValue but RAM Search fails on domains that large anyway

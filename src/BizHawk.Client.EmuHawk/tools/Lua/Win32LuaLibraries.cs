@@ -20,7 +20,7 @@ namespace BizHawk.Client.EmuHawk
 				_lua["keepalives"] = _lua.NewTable();
 		}
 
-		public Win32LuaLibraries(MainForm mainForm, IEmulatorServiceProvider serviceProvider)
+		public Win32LuaLibraries(IMainFormForApi mainForm, IEmulatorServiceProvider serviceProvider)
 			: this()
 		{
 			LuaWait = new AutoResetEvent(false);

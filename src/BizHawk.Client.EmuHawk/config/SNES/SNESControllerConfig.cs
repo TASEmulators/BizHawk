@@ -7,12 +7,12 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class SNESControllerSettings : Form
 	{
-		private readonly MainForm _mainForm;
+		private readonly IMainFormForConfig _mainForm;
 		private readonly LibsnesCore.SnesSyncSettings _syncSettings;
 		private bool _suppressDropdownChangeEvents;
 
 		public SNESControllerSettings(
-			MainForm mainForm,
+			IMainFormForConfig mainForm,
 			LibsnesCore.SnesSyncSettings syncSettings)
 		{
 			_mainForm = mainForm;

@@ -12,11 +12,11 @@ namespace BizHawk.Client.EmuHawk
 {
 	public static class ApiManager
 	{
-		private static readonly Type[] CtorParamTypesA = { typeof(Action<string>), typeof(DisplayManager), typeof(InputManager), typeof(MainForm) };
+		private static readonly Type[] CtorParamTypesA = { typeof(Action<string>), typeof(DisplayManager), typeof(InputManager), typeof(IMainFormForApi) };
 
 		private static readonly Type[] CtorParamTypesB = { typeof(Action<string>) };
 
-		private static readonly Type[] CtorParamTypesEmuClientApi = { typeof(Action<string>), typeof(DisplayManager), typeof(InputManager), typeof(MainForm), typeof(Config), typeof(IEmulator), typeof(GameInfo) };
+		private static readonly Type[] CtorParamTypesEmuClientApi = { typeof(Action<string>), typeof(DisplayManager), typeof(InputManager), typeof(IMainFormForApi), typeof(Config), typeof(IEmulator), typeof(GameInfo) };
 
 		/// <remarks>TODO do we need to keep references to these because of GC weirdness? --yoshi</remarks>
 		private static ApiContainer? _container;
@@ -24,7 +24,7 @@ namespace BizHawk.Client.EmuHawk
 		private static ApiContainer? _luaContainer;
 
 		private static ApiContainer Register(
-			MainForm mainForm,
+			IMainFormForApi mainForm,
 			IEmulatorServiceProvider serviceProvider,
 			Action<string> logCallback)
 		{
@@ -57,7 +57,7 @@ namespace BizHawk.Client.EmuHawk
 			return new ApiContainer(libDict);
 		}
 
-		public static IExternalApiProvider Restart(MainForm mainForm, IEmulatorServiceProvider newServiceProvider)
+		public static IExternalApiProvider Restart(IMainFormForApi mainForm, IEmulatorServiceProvider newServiceProvider)
 		{
 			GlobalWin.ClientApi = null;
 			_container = Register(mainForm, newServiceProvider, Console.WriteLine);
@@ -65,7 +65,7 @@ namespace BizHawk.Client.EmuHawk
 			return new BasicApiProvider(_container);
 		}
 
-		public static ApiContainer RestartLua(MainForm mainForm, IEmulatorServiceProvider newServiceProvider, Action<string> logCallback)
+		public static ApiContainer RestartLua(IMainFormForApi mainForm, IEmulatorServiceProvider newServiceProvider, Action<string> logCallback)
 			=> _luaContainer = Register(mainForm, newServiceProvider, logCallback);
 	}
 }

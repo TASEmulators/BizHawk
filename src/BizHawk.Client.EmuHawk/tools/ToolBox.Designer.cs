@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Client.EmuHawk
+﻿using BizHawk.WinForms.Controls;
+
+namespace BizHawk.Client.EmuHawk
 {
 	partial class ToolBox
 	{
@@ -38,14 +40,12 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.ToolBoxStrip.AutoSize = false;
 			this.ToolBoxStrip.BackColor = System.Drawing.SystemColors.Control;
-			this.ToolBoxStrip.ClickThrough = true;
 			this.ToolBoxStrip.Dock = System.Windows.Forms.DockStyle.None;
 			this.ToolBoxStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
 			this.ToolBoxStrip.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
 			this.ToolBoxStrip.Location = new System.Drawing.Point(2, 2);
 			this.ToolBoxStrip.Name = "ToolBoxStrip";
 			this.ToolBoxStrip.Padding = new System.Windows.Forms.Padding(0);
-			this.ToolBoxStrip.Size = new System.Drawing.Size(137, 179);
 			this.ToolBoxStrip.Stretch = true;
 			this.ToolBoxStrip.TabIndex = 0;
 			this.ToolBoxStrip.TabStop = true;

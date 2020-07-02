@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
@@ -162,7 +163,7 @@ namespace BizHawk.Client.Common
 			_states[_nextStateIndex].Size = (int)stream.Length;
 			_nextStateIndex = (_nextStateIndex + 1) & StateMask;
 
-			Console.WriteLine($"Size: {Size >> 20}MiB, Used: {Used >> 20}MiB, States: {Count}");
+			Util.DebugWriteLine($"Size: {Size >> 20}MiB, Used: {Used >> 20}MiB, States: {Count}");
 		}
 
 		private Stream MakeLoadStream(int index)
@@ -212,7 +213,7 @@ namespace BizHawk.Client.Common
 			if ((uint)index > (uint)Count)
 				throw new IndexOutOfRangeException();
 			_nextStateIndex = (index + _firstStateIndex) & StateMask;
-			Console.WriteLine($"Size: {Size >> 20}MiB, Used: {Used >> 20}MiB, States: {Count}");
+			Util.DebugWriteLine($"Size: {Size >> 20}MiB, Used: {Used >> 20}MiB, States: {Count}");
 		}
 
 		public void SaveStateBinary(BinaryWriter writer)
