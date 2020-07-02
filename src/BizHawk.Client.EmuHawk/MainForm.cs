@@ -171,7 +171,7 @@ namespace BizHawk.Client.EmuHawk
 			if (Config.SkipWaterboxIntegrityChecks)
 				prefs = CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck;
 
-			return new CoreComm(ShowMessageCoreComm, NotifyCoreComm, cfp, prefs);
+			return new CoreComm(ShowMessageCoreComm, AddOnScreenMessage, cfp, prefs);
 		}
 
 		void SetImages()
@@ -2177,7 +2177,7 @@ namespace BizHawk.Client.EmuHawk
 					//HACK
 					var _ = typeof(ToolStrip).InvokeMember(
 						"ProcessMnemonicInternal",
-						System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.InvokeMethod | System.Reflection.BindingFlags.Instance,
+						BindingFlags.NonPublic | BindingFlags.InvokeMethod | BindingFlags.Instance,
 						null,
 						MainformMenu,
 						new object[] { c });
@@ -3377,7 +3377,7 @@ namespace BizHawk.Client.EmuHawk
 		private int? LoadArchiveChooser(HawkFile file)
 		{
 			using var ac = new ArchiveChooser(file);
-			if (ShowDialogAsChild(ac) == DialogResult.OK)
+			if (ShowDialogAsChild(ac).IsOk())
 			{
 				return ac.SelectedMemberIndex;
 			}
@@ -3442,11 +3442,6 @@ namespace BizHawk.Client.EmuHawk
 
 				MessageBox.Show(this, e.Message, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
-		}
-
-		private void NotifyCoreComm(string message)
-		{
-			AddOnScreenMessage(message);
 		}
 
 		private string ChoosePlatformForRom(RomGame rom)
