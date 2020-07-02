@@ -513,7 +513,7 @@ namespace BizHawk.Client.EmuHawk
 		private void WriteLine(string message) => WriteToOutputWindow(message + "\n");
 
 		private int _messageCount;
-		private const int MaxCount = 50;
+		private const int MaxCount = 100;
 		public void WriteToOutputWindow(string message)
 		{
 			if (!OutputBox.IsHandleCreated || OutputBox.IsDisposed)
@@ -1470,6 +1470,7 @@ namespace BizHawk.Client.EmuHawk
 						});
 					});
 
+					_messageCount = 0;
 					_consoleCommandHistory.Insert(0, InputBox.Text);
 					_consoleCommandHistoryIndex = -1;
 					InputBox.Clear();
