@@ -682,8 +682,6 @@ namespace BizHawk.Client.EmuHawk
 							RefreshDialog();
 						}
 
-						JumpToGreenzone();
-
 						_axisPaintState = CurrentTasMovie.GetAxisState(frame, buttonName);
 						if (applyPatternToPaintedInputToolStripMenuItem.Checked && (!onlyOnAutoFireColumnsToolStripMenuItem.Checked
 							|| TasView.CurrentCell.Column.Emphasis))
