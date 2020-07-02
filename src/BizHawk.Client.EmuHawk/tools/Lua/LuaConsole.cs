@@ -435,15 +435,15 @@ namespace BizHawk.Client.EmuHawk
 
 			if (LuaImp.ScriptList[index].Paused)
 			{
-				bitmap = Properties.Resources.Pause;
+				bitmap = Resources.Pause;
 			}
 			else if (LuaImp.ScriptList[index].Enabled)
 			{
-				bitmap = Properties.Resources.ts_h_arrow_green;
+				bitmap = Resources.ts_h_arrow_green;
 			}
 			else
 			{
-				bitmap = Properties.Resources.Stop;
+				bitmap = Resources.Stop;
 			}
 		}
 
@@ -825,7 +825,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var result = ofd.ShowHawkDialog();
-			if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(ofd.FileName))
+			if (result.IsOk() && !string.IsNullOrWhiteSpace(ofd.FileName))
 			{
 				LoadLuaSession(ofd.FileName);
 			}
@@ -884,8 +884,7 @@ namespace BizHawk.Client.EmuHawk
 			};
 
 			var result = sfd.ShowHawkDialog();
-			if (result == DialogResult.OK
-				&& !string.IsNullOrWhiteSpace(sfd.FileName))
+			if (result.IsOk() && !string.IsNullOrWhiteSpace(sfd.FileName))
 			{
 				string defaultTemplate = "while true do\n\temu.frameadvance();\nend";
 				File.WriteAllText(sfd.FileName, defaultTemplate);
@@ -916,7 +915,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var result = ofd.ShowHawkDialog();
-			if (result == DialogResult.OK && ofd.FileNames != null)
+			if (result.IsOk() && ofd.FileNames != null)
 			{
 				foreach (var file in ofd.FileNames)
 				{
@@ -981,10 +980,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PauseScriptMenuItem_Click(object sender, EventArgs e)
 		{
-			foreach (var x in SelectedFiles)
+			foreach (var s in SelectedFiles)
 			{
-				x.TogglePause();
+				s.TogglePause();
 			}
+
 			UpdateDialog();
 		}
 
@@ -1204,7 +1204,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					RegisterSublimeText2MenuItem.Text = "Sublime Text 2 (installed)";
 					RegisterSublimeText2MenuItem.Font = new Font(RegisterSublimeText2MenuItem.Font, FontStyle.Regular);
-					RegisterSublimeText2MenuItem.Image = Properties.Resources.GreenCheck;
+					RegisterSublimeText2MenuItem.Image = Resources.GreenCheck;
 				}
 				else
 				{
@@ -1226,7 +1226,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					RegisterNotePadMenuItem.Text = "Notepad++ (installed)";
 					RegisterNotePadMenuItem.Font = new Font(RegisterNotePadMenuItem.Font, FontStyle.Regular);
-					RegisterNotePadMenuItem.Image = Properties.Resources.GreenCheck;
+					RegisterNotePadMenuItem.Image = Resources.GreenCheck;
 				}
 				else
 				{
