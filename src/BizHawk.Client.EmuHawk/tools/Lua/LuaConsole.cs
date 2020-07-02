@@ -525,6 +525,11 @@ namespace BizHawk.Client.EmuHawk
 
 			if (_messageCount <= MaxCount)
 			{
+				if (_messageCount == MaxCount)
+				{
+					message = "Message Cap reached, supressing output.\n";
+				}
+
 				OutputBox.Invoke(() =>
 				{
 					OutputBox.Text += message;
