@@ -521,17 +521,18 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			OutputBox.Invoke(() =>
-			{
-				_messageCount++;
+			_messageCount++;
 
-				if (_messageCount <= MaxCount)
+			if (_messageCount <= MaxCount)
+			{
+				OutputBox.Invoke(() =>
 				{
 					OutputBox.Text += message;
 					OutputBox.SelectionStart = OutputBox.Text.Length;
 					OutputBox.ScrollToCaret();
-				}
-			});
+				});
+			}
+			
 		}
 
 		public void ClearOutputWindow()
