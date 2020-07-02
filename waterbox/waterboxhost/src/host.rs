@@ -15,17 +15,19 @@ pub struct WaterboxHost {
 	memory_block: Box<MemoryBlock>,
 	active: bool,
 	sealed: bool,
+	image_file: Vec<u8>,
 }
 impl WaterboxHost {
-	pub fn new(data: &[u8], module_name: &str, layout_template: &MemoryLayoutTemplate) -> anyhow::Result<Box<WaterboxHost>> {
-		let wbx = Elf::parse(data)?;
+	pub fn new(image_file: Vec<u8>, module_name: &str, layout_template: &MemoryLayoutTemplate) -> anyhow::Result<Box<WaterboxHost>> {
+		let wbx = Elf::parse(&image_file[..])?;
 		let elf_addr = ElfLoader::elf_addr(&wbx);
 		let layout = layout_template.make_layout(elf_addr)?;
 		let mut memory_block = MemoryBlock::new(layout.all());
 		let mut b = memory_block.enter();
-		let elf = ElfLoader::new(&wbx, data, module_name, &layout, &mut b)?;
+		let elf = ElfLoader::new(&wbx, &image_file[..], module_name, &layout, &mut b)?;
 		let fs = FileSystem::new();
 		drop(b);
+		unsafe { gdb::register(&image_file[..]) }
 		let mut res = Box::new(WaterboxHost {
 			fs,
 			program_break: layout.sbrk.start,
@@ -34,6 +36,7 @@ impl WaterboxHost {
 			memory_block,
 			active: false,
 			sealed: false,
+			image_file,
 		});
 
 		let mut active = res.activate();
@@ -67,6 +70,11 @@ impl WaterboxHost {
 		res.h.elf.connect_syscalls(&mut res.b, &res.sys);
 		res.h.active = true;
 		res
+	}
+}
+impl Drop for WaterboxHost {
+	fn drop(&mut self) {
+		unsafe { gdb::deregister(&self.image_file[..]) }
 	}
 }
 
@@ -196,7 +204,7 @@ fn arg_to_statbuff<'a>(arg: usize) -> &'a mut KStat {
 }
 
 pub extern "win64" fn syscall(nr: SyscallNumber, ud: usize, a1: usize, a2: usize, a3: usize, a4: usize, _a5: usize, _a6: usize) -> SyscallReturn {
-	let mut h = gethost(ud);
+	let h = gethost(ud);
 	match nr {
 		NR_MMAP => {
 			let mut prot = arg_to_prot(a3)?;

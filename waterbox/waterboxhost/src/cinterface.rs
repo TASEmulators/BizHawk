@@ -165,7 +165,7 @@ pub extern fn wbx_create_host(layout: &MemoryLayoutTemplate, module_name: *const
 	};
 	let res = (|| {
 		let data = read_whole_file(&mut reader)?;
-		WaterboxHost::new(&data[..], &arg_to_str(module_name)?[..], layout)
+		WaterboxHost::new(data, &arg_to_str(module_name)?[..], layout)
 	})();
 	ret.put(res.map(|boxed| Box::into_raw(boxed)));
 }
