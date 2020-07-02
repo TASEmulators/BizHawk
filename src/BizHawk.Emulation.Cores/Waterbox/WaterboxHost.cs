@@ -79,7 +79,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		static WaterboxHost()
 		{
 			NativeImpl = BizInvoker.GetInvoker<WaterboxHostNative>(
-				new DynamicLibraryImportResolver("waterboxhost.dll", eternal: true),
+				new DynamicLibraryImportResolver(OSTailoredCode.IsUnixHost ? "libwaterboxhost.so" : "waterboxhost.dll", eternal: true),
 				CallingConventionAdapters.Native);
 			#if !DEBUG
 			NativeImpl.wbx_set_always_evict_blocks(false);
