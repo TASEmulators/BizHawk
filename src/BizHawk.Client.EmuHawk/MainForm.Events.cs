@@ -25,6 +25,7 @@ using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.Nintendo.SubNESHawk;
 using BizHawk.Emulation.Cores.Sony.PSX;
+using BizHawk.WinForms.Controls;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -69,55 +70,19 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveStateSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			SaveState0MenuItem.Font = new Font(
-				SaveState0MenuItem.Font.FontFamily,
-				SaveState0MenuItem.Font.Size,
-				 HasSlot(0) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular);
+			void SetSlotFont(ToolStripMenuItemEx menu, int slot) => menu.SetStyle(
+				HasSlot(slot) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular);
 
-			SaveState1MenuItem.Font = new Font(
-				SaveState1MenuItem.Font.FontFamily,
-				SaveState1MenuItem.Font.Size,
-				HasSlot(1) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular);
-
-			SaveState2MenuItem.Font = new Font(
-				SaveState2MenuItem.Font.FontFamily,
-				SaveState2MenuItem.Font.Size,
-				HasSlot(2) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular);
-
-			SaveState3MenuItem.Font = new Font(
-				SaveState3MenuItem.Font.FontFamily,
-				SaveState3MenuItem.Font.Size,
-				HasSlot(3) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular);
-
-			SaveState4MenuItem.Font = new Font(
-				SaveState4MenuItem.Font.FontFamily,
-				SaveState4MenuItem.Font.Size,
-				HasSlot(4) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular);
-
-			SaveState5MenuItem.Font = new Font(
-				SaveState5MenuItem.Font.FontFamily,
-				SaveState5MenuItem.Font.Size,
-				HasSlot(5) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular);
-
-			SaveState6MenuItem.Font = new Font(
-				SaveState6MenuItem.Font.FontFamily,
-				SaveState6MenuItem.Font.Size,
-				HasSlot(6) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular);
-
-			SaveState7MenuItem.Font = new Font(
-				SaveState7MenuItem.Font.FontFamily,
-				SaveState7MenuItem.Font.Size,
-				HasSlot(7) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular);
-
-			SaveState8MenuItem.Font = new Font(
-				SaveState8MenuItem.Font.FontFamily,
-				SaveState8MenuItem.Font.Size,
-				HasSlot(8) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular);
-
-			SaveState9MenuItem.Font = new Font(
-				SaveState9MenuItem.Font.FontFamily,
-				SaveState9MenuItem.Font.Size,
-				HasSlot(9) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular);
+			SetSlotFont(SaveState0MenuItem, 0);
+			SetSlotFont(SaveState1MenuItem, 1);
+			SetSlotFont(SaveState2MenuItem, 2);
+			SetSlotFont(SaveState3MenuItem, 3);
+			SetSlotFont(SaveState4MenuItem, 4);
+			SetSlotFont(SaveState5MenuItem, 5);
+			SetSlotFont(SaveState6MenuItem, 6);
+			SetSlotFont(SaveState7MenuItem, 7);
+			SetSlotFont(SaveState8MenuItem, 8);
+			SetSlotFont(SaveState9MenuItem, 9);
 
 			SaveState1MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Save State 1"].Bindings;
 			SaveState2MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Save State 2"].Bindings;

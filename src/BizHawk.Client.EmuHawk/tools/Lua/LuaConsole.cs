@@ -1203,20 +1203,20 @@ namespace BizHawk.Client.EmuHawk
 				if (_luaAutoInstaller.IsBizLuaRegistered(LuaAutocompleteInstaller.TextEditors.Sublime2))
 				{
 					RegisterSublimeText2MenuItem.Text = "Sublime Text 2 (installed)";
-					RegisterSublimeText2MenuItem.Font = new Font(RegisterSublimeText2MenuItem.Font, FontStyle.Regular);
+					RegisterSublimeText2MenuItem.SetStyle(FontStyle.Regular);
 					RegisterSublimeText2MenuItem.Image = Resources.GreenCheck;
 				}
 				else
 				{
 					RegisterSublimeText2MenuItem.Text = "Sublime Text 2 (detected)";
-					RegisterSublimeText2MenuItem.Font = new Font(RegisterSublimeText2MenuItem.Font, FontStyle.Italic);
+					RegisterSublimeText2MenuItem.SetStyle(FontStyle.Italic);
 					RegisterSublimeText2MenuItem.Image = null;
 				}
 			}
 			else
 			{
 				RegisterSublimeText2MenuItem.Text = "Sublime Text 2";
-				RegisterSublimeText2MenuItem.Font = new Font(RegisterSublimeText2MenuItem.Font, FontStyle.Regular);
+				RegisterSublimeText2MenuItem.SetStyle(FontStyle.Regular);
 				RegisterSublimeText2MenuItem.Image = null;
 			}
 
@@ -1225,20 +1225,20 @@ namespace BizHawk.Client.EmuHawk
 				if (_luaAutoInstaller.IsBizLuaRegistered(LuaAutocompleteInstaller.TextEditors.NotePad))
 				{
 					RegisterNotePadMenuItem.Text = "Notepad++ (installed)";
-					RegisterNotePadMenuItem.Font = new Font(RegisterNotePadMenuItem.Font, FontStyle.Regular);
+					RegisterNotePadMenuItem.SetStyle(FontStyle.Regular);
 					RegisterNotePadMenuItem.Image = Resources.GreenCheck;
 				}
 				else
 				{
 					RegisterNotePadMenuItem.Text = "Notepad++ (detected)";
-					RegisterNotePadMenuItem.Font = new Font(RegisterNotePadMenuItem.Font, FontStyle.Italic);
+					RegisterNotePadMenuItem.SetStyle(FontStyle.Italic);
 					RegisterNotePadMenuItem.Image = null;
 				}
 			}
 			else
 			{
 				RegisterNotePadMenuItem.Text = "Notepad++";
-				RegisterNotePadMenuItem.Font = new Font(RegisterNotePadMenuItem.Font, FontStyle.Regular);
+				RegisterNotePadMenuItem.SetStyle(FontStyle.Regular);
 				RegisterNotePadMenuItem.Image = null;
 			}
 		}

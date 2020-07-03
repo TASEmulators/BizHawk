@@ -12,6 +12,8 @@ namespace BizHawk.WinForms.Controls
 
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public new string Name => Guid.NewGuid().ToString();
+
+		public void SetStyle(FontStyle style) => Font = new Font(Font.FontFamily, Font.Size, style);
 	}
 
 	public class ToolStripSeparatorEx : ToolStripSeparator
