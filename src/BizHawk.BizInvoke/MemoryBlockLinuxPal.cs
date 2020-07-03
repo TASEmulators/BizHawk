@@ -74,10 +74,6 @@ namespace BizHawk.BizInvoke
 					throw new InvalidOperationException($"{nameof(mmap)}() failed with error {Marshal.GetLastWin32Error()}");
 				}
 			}
-			if ((IntPtr)LinGuard.AddTripGuard(Z.UU(_start), Z.UU(_size)) == IntPtr.Zero)
-			{
-				throw new InvalidOperationException($"{nameof(LinGuard.AddTripGuard)}() returned NULL");
-			}
 			_active = true;
 		}
 
@@ -89,8 +85,6 @@ namespace BizHawk.BizInvoke
 				if (errorCode != 0)
 					throw new InvalidOperationException($"{nameof(munmap)}() failed with error {Marshal.GetLastWin32Error()}");
 			}
-			if (!LinGuard.RemoveTripGuard(Z.UU(_start), Z.UU(_size)))
-				throw new InvalidOperationException($"{nameof(LinGuard.RemoveTripGuard)}() returned FALSE");
 			_active = false;
 		}
 
@@ -123,12 +117,6 @@ namespace BizHawk.BizInvoke
 					return MemoryProtection.Read | MemoryProtection.Write;
 				case Protection.RX:
 					return MemoryProtection.Read | MemoryProtection.Execute;
-				case Protection.RW_Invisible:
-					return MemoryProtection.Read | MemoryProtection.Write;
-				case Protection.RW_Stack:
-					// because of sigaltstack, LinGuard has no issues with readonly stacks and the special distinction that
-					// the windows port draws between stack vs non stack memory is ignored here
-					return MemoryProtection.Read;
 				default:
 					throw new ArgumentOutOfRangeException(nameof(prot));
 			}
@@ -143,57 +131,6 @@ namespace BizHawk.BizInvoke
 			);
 			if (errorCode != 0)
 				throw new InvalidOperationException($"{nameof(mprotect)}() failed with error {Marshal.GetLastWin32Error()}!");
-		}
-
-		public void GetWriteStatus(WriteDetectionStatus[] dest, Protection[] pagedata)
-		{
-			var p = (IntPtr)LinGuard.ExamineTripGuard(Z.UU(_start), Z.UU(_size));
-			if (p == IntPtr.Zero)
-				throw new InvalidOperationException($"{nameof(LinGuard.ExamineTripGuard)}() returned NULL!");
-			Marshal.Copy(p, (byte[])(object)dest, 0, dest.Length);
-		}
-
-		public void SetWriteStatus(WriteDetectionStatus[] src)
-		{
-			var p = (IntPtr)LinGuard.ExamineTripGuard(Z.UU(_start), Z.UU(_size));
-			if (p == IntPtr.Zero)
-				throw new InvalidOperationException($"{nameof(LinGuard.ExamineTripGuard)}() returned NULL!");
-			Marshal.Copy((byte[])(object)src, 0, p, src.Length);
-		}
-
-		private static unsafe class LinGuard
-		{
-			/// <summary>
-			/// Add write detection to an area of memory.  Any page in the specified range that has CanChange
-			/// set and triggers an access violation on write
-			/// will be noted, set to read+write permissions, and execution will be continued.
-			/// CALLER'S RESPONSIBILITY: All addresses are page aligned.
-			/// CALLER'S RESPONSIBILITY: No other thread enters any LinGuard function, or trips any tracked page during this call.
-			/// CALLER'S RESPONSIBILITY: Pages to be tracked are mprotected to R.  Pages with write permission
-			/// cause no issues, but they will not trip.
-			/// </summary>
-			/// <returns>The same information as ExamineTripGuard, or null on failure</returns>
-			[DllImport("linguard.so")]
-			public static extern WriteDetectionStatus* AddTripGuard(UIntPtr start, UIntPtr length);
-			/// <summary>
-			/// Remove write detection from the specified addresses.
-			/// CALLER'S RESPONSIBILITY: All addresses are page aligned.
-			/// CALLER'S RESPONSIBILITY: No other thread enters any LinGuard function, or trips any tracked guard page during this call.
-			/// </summary>
-			/// <returns>false on failure (usually, the address range did not match a known one)</returns>
-			[DllImport("linguard.so")]
-			public static extern bool RemoveTripGuard(UIntPtr start, UIntPtr length);
-			/// <summary>
-			/// Examines a previously installed guard page detection.
-			/// CALLER'S RESPONSIBILITY: All addresses are page aligned.
-			/// CALLER'S RESPONSIBILITY: No other thread enters any LinGuard function, or trips any tracked guard page during this call.
-			/// </summary>
-			/// <returns>
-			/// A pointer to an array of bytes, one byte for each memory page in the range.  Caller should set CanChange on pages to
-			/// observe, and read back DidChange to see if things changed.
-			/// </returns>
-			[DllImport("linguard.so")]
-			public static extern WriteDetectionStatus* ExamineTripGuard(UIntPtr start, UIntPtr length);
 		}
 	}
 }
