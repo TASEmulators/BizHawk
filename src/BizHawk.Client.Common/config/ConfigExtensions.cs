@@ -13,7 +13,7 @@ namespace BizHawk.Client.Common
 		private static JToken Serialize(object o)
 		{
 			var tne = new TypeNameEncapsulator { o = o };
-			return JToken.FromObject(ConfigService.Serializer)["o"];
+			return JToken.FromObject(tne, ConfigService.Serializer)["o"];
 		}
 		private static object Deserialize(JToken j)
 		{
