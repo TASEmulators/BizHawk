@@ -55,6 +55,7 @@ unsafe fn trip(addr: usize) -> TripResult {
 	let page_start_addr = addr & !PAGEMASK;
 	let page = &mut memory_block.pages[(addr - memory_block.addr.start) >> PAGESHIFT];
 	if !page.status.writable() {
+		std::intrinsics::breakpoint();
 		return TripResult::NotHandled
 	}
 	page.maybe_snapshot(page_start_addr);
@@ -62,6 +63,7 @@ unsafe fn trip(addr: usize) -> TripResult {
 	if pal::protect(AddressRange { start: page_start_addr, size: PAGESIZE }, page.native_prot()) {
 		TripResult::Handled
 	} else {
+		std::intrinsics::breakpoint();
 		std::process::abort();
 	}
 }
@@ -79,7 +81,22 @@ mod trip_pal {
 			let flags = p_record.ExceptionInformation[0];
 			match p_record.ExceptionCode {
 				STATUS_ACCESS_VIOLATION if (flags & 1) != 0 => (), // write exception
-				STATUS_GUARD_PAGE_VIOLATION => (), // guard exception
+				STATUS_GUARD_PAGE_VIOLATION => {
+					// guard exception
+
+					// If this is ours, it's from a cothread stack.  If we're on a cothread
+					// stack right now, we need to return without taking our lock because
+					// the stack used in handler() and everything it calls might move onto
+					// another page and trip again which would deadlock us.  (Alternatively,
+					// this might be the second trip in a row while already servicing another one.)
+					// This does not cause determinism issues because of get_stack_dirty() and the
+					// windows specific code in set_protections().
+
+					// The only problem here is that we might be swallowing a completely unrelated guard
+					// exception by returning before checking whether it was in a waterbox block;
+					// in which case we'll find out what we broke eventually.
+					return EXCEPTION_CONTINUE_EXECUTION 
+				},
 				_ => return EXCEPTION_CONTINUE_SEARCH
 			}
 			let fault_address = p_record.ExceptionInformation[1] as usize;
@@ -125,13 +142,20 @@ mod trip_pal {
 			}
 		}
 		unsafe {
+			// TODO: sigaltstack is per thread, so this won't work
+			// At the same time, one seems to be set up automatically on each thread, so this isn't needed.
+			// let ss = stack_t {
+			// 	ss_flags: 0,
+			// 	ss_sp: Box::into_raw(Box::new(zeroed::<[u8; SIGSTKSZ]>())) as *mut c_void,
+			// 	ss_size: SIGSTKSZ
+			// };
+			// let mut ss_old = stack_t {
+			// 	ss_flags: 0,
+			// 	ss_sp: 0 as *mut c_void,
+			// 	ss_size: 0
+			// };
+			// assert!(sigaltstack(&ss, &mut ss_old) == 0, "sigaltstack failed");
 			SA_OLD = Some(Box::new(zeroed()));
-			let ss = stack_t {
-				ss_flags: 0,
-				ss_sp: Box::into_raw(Box::new(zeroed::<[u8; SIGSTKSZ]>)) as *mut c_void,
-				ss_size: SIGSTKSZ
-			};
-			assert!(sigaltstack(&ss, 0 as *mut stack_t) == 0, "sigaltstack failed");
 			let mut sa = sigaction {
 				sa_mask: zeroed(),
 				sa_sigaction: transmute::<SaSigaction, usize>(handler),

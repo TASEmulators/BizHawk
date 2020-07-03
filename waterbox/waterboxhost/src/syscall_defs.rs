@@ -64,7 +64,7 @@ macro_rules! lookup {
 		$(pub const $N: $T = $T($E);)+
 		pub fn $P(val: &$T) -> &'static str {
 			match val {
-				$($T($E) => stringify!($E),)+
+				$($T($E) => stringify!($N),)+
 				_ => "????"
 			}
 		}

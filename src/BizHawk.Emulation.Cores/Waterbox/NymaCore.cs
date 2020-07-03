@@ -59,22 +59,37 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				var filesToRemove = new List<string>();
 				if (firmwares != null)
 				{
-					_exe.MissingFileCallback = s =>
+					foreach (var kvp in firmwares)
 					{
-						if (firmwares.TryGetValue(s, out var tt))
+						var s = kvp.Key;
+						var tt = kvp.Value;
+						var data = CoreComm.CoreFileProvider.GetFirmware(tt.SystemID, tt.FirmwareID, false,
+							"Firmware files are usually required and may stop your game from loading");
+						if (data != null)
 						{
-							var data = CoreComm.CoreFileProvider.GetFirmware(tt.SystemID, tt.FirmwareID, false,
-								"Firmware files are usually required and may stop your game from loading");
-							if (data != null)
-							{
-								_exe.AddReadonlyFile(data, s);
-								filesToRemove.Add(s);
-								return true;
-							}
+							_exe.AddReadonlyFile(data, kvp.Key);
+							filesToRemove.Add(s);
 						}
-						return false;
-					};
+					}
 				}
+				// if (firmwares != null)
+				// {
+				// 	_exe.MissingFileCallback = s =>
+				// 	{
+				// 		if (firmwares.TryGetValue(s, out var tt))
+				// 		{
+				// 			var data = CoreComm.CoreFileProvider.GetFirmware(tt.SystemID, tt.FirmwareID, false,
+				// 				"Firmware files are usually required and may stop your game from loading");
+				// 			if (data != null)
+				// 			{
+				// 				_exe.AddReadonlyFile(data, s);
+				// 				filesToRemove.Add(s);
+				// 				return true;
+				// 			}
+				// 		}
+				// 		return false;
+				// 	};
+				// }
 				if (discs?.Length > 0)
 				{
 					_disks = discs;
@@ -104,14 +119,14 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 					_exe.RemoveReadonlyFile(fn);
 				}
-				if (firmwares != null)
-				{
+				// if (firmwares != null)
+				// {
 					foreach (var s in filesToRemove)
 					{
 						_exe.RemoveReadonlyFile(s);
 					}
-					_exe.MissingFileCallback = null;
-				}
+				// 	_exe.MissingFileCallback = null;
+				// }
 
 				var info = *_nyma.GetSystemInfo();
 				_videoBuffer = new int[Math.Max(info.MaxWidth * info.MaxHeight, info.LcmWidth * info.LcmHeight)];

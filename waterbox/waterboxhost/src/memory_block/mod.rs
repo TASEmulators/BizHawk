@@ -316,8 +316,7 @@ impl MemoryBlock {
 	unsafe fn deactivate(&mut self, mut guard: BlockGuard) {
 		// self.trace("deactivate");
 		assert!(self.active);
-		#[cfg(debug_assertions)]
-		{
+		if ALWAYS_EVICT_BLOCKS {
 			// in debug mode, forcibly evict to catch dangling pointers
 			let other_opt = guard.deref_mut();
 			match *other_opt {
@@ -533,10 +532,9 @@ impl<'block> ActivatedMemoryBlock<'block> {
 	}
 
 	/// implements a subset of mmap(2) for anonymous, fixed address mappings
-	pub fn mmap_fixed(&mut self, addr: AddressRange, prot: Protection) -> SyscallResult {
+	pub fn mmap_fixed(&mut self, addr: AddressRange, prot: Protection, no_replace: bool) -> SyscallResult {
 		let mut range = self.b.validate_range(addr)?;
-		if range.iter().any(|p| p.status != PageAllocation::Free) {
-			// assume MAP_FIXED_NOREPLACE at all times
+		if no_replace && range.iter().any(|p| p.status != PageAllocation::Free) {
 			return Err(EEXIST)
 		}
 		MemoryBlock::set_protections(&mut range, PageAllocation::Allocated(prot));
@@ -639,14 +637,14 @@ impl<'block> ActivatedMemoryBlock<'block> {
 		self.munmap_impl(addr, false)
 	}
 
-	pub fn mmap(&mut self, addr: AddressRange, prot: Protection, arena_addr: AddressRange) -> Result<usize, SyscallError> {
+	pub fn mmap(&mut self, addr: AddressRange, prot: Protection, arena_addr: AddressRange, no_replace: bool) -> Result<usize, SyscallError> {
 		if addr.size == 0 {
 			return Err(EINVAL)
 		}
 		if addr.start == 0 {
 			self.mmap_movable(addr.size, prot, arena_addr)
 		} else {
-			self.mmap_fixed(addr, prot)?;
+			self.mmap_fixed(addr, prot, no_replace)?;
 			Ok(addr.start)
 		}
 	}
@@ -757,10 +755,23 @@ impl<'block>  IStateable for ActivatedMemoryBlock<'block> {
 		self.b.get_stack_dirty();
 		self.b.addr.save_state(stream)?;
 
+		unsafe {
+			let mut statii = Vec::new();
+			let mut dirtii = Vec::new();
+			statii.reserve_exact(self.b.pages.len());
+			dirtii.reserve_exact(self.b.pages.len());
+			for p in self.b.pages.iter() {
+				statii.push(p.status);
+				dirtii.push(p.dirty);
+			}
+			stream.write_all(std::mem::transmute(&statii[..]))?;
+			stream.write_all(std::mem::transmute(&dirtii[..]))?;
+		}
+
 		for (paddr, p) in self.b.page_range().iter_with_addr() {
-			bin::write(stream, &p.status)?;
+			// bin::write(stream, &p.status)?;
 			if !p.invisible {
-				bin::write(stream, &p.dirty)?;
+				// bin::write(stream, &p.dirty)?;
 				if p.dirty {
 					unsafe {
 						if !p.status.readable() {
@@ -795,10 +806,18 @@ impl<'block>  IStateable for ActivatedMemoryBlock<'block> {
 		unsafe {
 			pal::protect(self.b.addr, Protection::RW);
 
+			let mut statii = vec![PageAllocation::Free; self.b.pages.len()];
+			let mut dirtii = vec![false; self.b.pages.len()];
+			stream.read_exact(std::mem::transmute(&mut statii[..]))?;
+			stream.read_exact(std::mem::transmute(&mut dirtii[..]))?;
+
+			let mut index = 0usize;
 			for (paddr, p) in self.b.page_range().iter_mut_with_addr() {
-				let status = bin::readval::<PageAllocation>(stream)?;
+				let status = statii[index];
+				// let status = bin::readval::<PageAllocation>(stream)?;
 				if !p.invisible {
-					let dirty = bin::readval::<bool>(stream)?;
+					let dirty = dirtii[index];
+					// let dirty = bin::readval::<bool>(stream)?;
 					match (p.dirty, dirty) {
 						(false, false) => (),
 						(false, true) => {
@@ -821,6 +840,7 @@ impl<'block>  IStateable for ActivatedMemoryBlock<'block> {
 					p.dirty = dirty;
 				}
 				p.status = status;
+				index += 1;
 			}
 
 			self.b.refresh_all_protections();

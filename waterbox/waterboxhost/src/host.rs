@@ -2,9 +2,10 @@ use crate::*;
 use crate::{memory_block::ActivatedMemoryBlock, syscall_defs::*};
 use memory_block::{MemoryBlock, Protection};
 use std::{os::raw::c_char, ffi::CStr};
-use fs::{FileDescriptor, FileSystem};
+use fs::{FileDescriptor, FileSystem/*, MissingFileCallback*/};
 use elf::ElfLoader;
 use cinterface::MemoryLayoutTemplate;
+use goblin::elf::Elf;
 
 pub struct WaterboxHost {
 	fs: FileSystem,
@@ -14,15 +15,19 @@ pub struct WaterboxHost {
 	memory_block: Box<MemoryBlock>,
 	active: bool,
 	sealed: bool,
+	image_file: Vec<u8>,
 }
 impl WaterboxHost {
-	pub fn new(wbx: &[u8], module_name: &str, layout_template: &MemoryLayoutTemplate) -> anyhow::Result<Box<WaterboxHost>> {
-		let layout = layout_template.make_layout()?;
+	pub fn new(image_file: Vec<u8>, module_name: &str, layout_template: &MemoryLayoutTemplate) -> anyhow::Result<Box<WaterboxHost>> {
+		let wbx = Elf::parse(&image_file[..])?;
+		let elf_addr = ElfLoader::elf_addr(&wbx);
+		let layout = layout_template.make_layout(elf_addr)?;
 		let mut memory_block = MemoryBlock::new(layout.all());
 		let mut b = memory_block.enter();
-		let elf = ElfLoader::new(wbx, module_name, &layout, &mut b)?;
+		let elf = ElfLoader::new(&wbx, &image_file[..], module_name, &layout, &mut b)?;
 		let fs = FileSystem::new();
 		drop(b);
+		unsafe { gdb::register(&image_file[..]) }
 		let mut res = Box::new(WaterboxHost {
 			fs,
 			program_break: layout.sbrk.start,
@@ -31,10 +36,10 @@ impl WaterboxHost {
 			memory_block,
 			active: false,
 			sealed: false,
+			image_file,
 		});
 
 		let mut active = res.activate();
-		active.h.elf.connect_syscalls(&mut active.b, &mut active.sys);
 		active.h.elf.native_init(&mut active.b);
 		drop(active);
 
@@ -62,8 +67,14 @@ impl WaterboxHost {
 			sys
 		});
 		res.sys.syscall.ud = res.as_mut() as *mut ActivatedWaterboxHost as usize;
+		res.h.elf.connect_syscalls(&mut res.b, &res.sys);
 		res.h.active = true;
 		res
+	}
+}
+impl Drop for WaterboxHost {
+	fn drop(&mut self) {
+		unsafe { gdb::deregister(&self.image_file[..]) }
 	}
 }
 
@@ -95,11 +106,9 @@ impl<'a> ActivatedWaterboxHost<'a> {
 		if self.h.sealed {
 			return Err(anyhow!("Already sealed!"))
 		}
-		self.h.elf.clear_syscalls(&mut self.b);
-		self.h.elf.seal(&mut self.b);
-		self.h.elf.connect_syscalls(&mut self.b, &self.sys);
-		self.h.elf.co_clean(&mut self.b);
+		self.h.elf.pre_seal(&mut self.b);
 		self.b.seal();
+		self.h.elf.connect_syscalls(&mut self.b, &self.sys);
 		self.h.sealed = true;
 		Ok(())
 	}
@@ -109,6 +118,9 @@ impl<'a> ActivatedWaterboxHost<'a> {
 	pub fn unmount_file(&mut self, name: &str) -> anyhow::Result<Vec<u8>> {
 		self.h.fs.unmount(name)
 	}
+	// pub fn set_missing_file_callback(&mut self, cb: Option<MissingFileCallback>) {
+	// 	self.h.fs.set_missing_file_callback(cb);
+	// }
 }
 
 const SAVE_START_MAGIC: &str = "ActivatedWaterboxHost_v1";
@@ -192,10 +204,10 @@ fn arg_to_statbuff<'a>(arg: usize) -> &'a mut KStat {
 }
 
 pub extern "win64" fn syscall(nr: SyscallNumber, ud: usize, a1: usize, a2: usize, a3: usize, a4: usize, _a5: usize, _a6: usize) -> SyscallReturn {
-	let mut h = gethost(ud);
+	let h = gethost(ud);
 	match nr {
 		NR_MMAP => {
-			let prot = arg_to_prot(a3)?;
+			let mut prot = arg_to_prot(a3)?;
 			let flags = a4;
 			if flags & MAP_ANONYMOUS == 0 {
 				// anonymous + private is easy
@@ -207,8 +219,16 @@ pub extern "win64" fn syscall(nr: SyscallNumber, ud: usize, a1: usize, a2: usize
 				// various unsupported flags
 				return syscall_err(EOPNOTSUPP)
 			}
+			if flags & MAP_STACK != 0 {
+				if prot == Protection::RW {
+					prot = Protection::RWStack;
+				} else {
+					return syscall_err(EINVAL) // stacks must be readable and writable
+				}
+			}
+			let no_replace = flags & MAP_FIXED_NOREPLACE != 0;
 			let arena_addr = h.sys.layout.mmap;
-			let res = h.b.mmap(AddressRange { start: a1, size: a2 }, prot, arena_addr)?;
+			let res = h.b.mmap(AddressRange { start: a1, size: a2 }, prot, arena_addr, no_replace)?;
 			syscall_ok(res)
 		},
 		NR_MREMAP => {
@@ -297,10 +317,17 @@ pub extern "win64" fn syscall(nr: SyscallNumber, ud: usize, a1: usize, a2: usize
 			let old = h.h.program_break;
 			let res = if a1 != align_down(a1) {
 				old
-			} else if a1 < addr.start || a1 > addr.end() {
+			} else if a1 < addr.start {
+				if a1 == 0 {
+					println!("Initializing heap sbrk at {:x}:{:x}", addr.start, addr.end());
+				}
 				old
+			} else if a1 > addr.end() {
+				eprintln!("Failed to satisfy allocation of {} bytes on sbrk heap", a1 - old);
+				old	
 			} else if a1 > old {
-				h.b.mmap_fixed(AddressRange { start: old, size: a1 - old }, Protection::RW).unwrap();
+				h.b.mmap_fixed(AddressRange { start: old, size: a1 - old }, Protection::RW, true).unwrap();
+				println!("Allocated {} bytes on sbrk heap, usage {}/{}", a1 - old, a1 - addr.start, addr.size);
 				a1
 			} else {
 				old

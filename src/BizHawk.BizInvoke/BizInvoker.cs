@@ -558,7 +558,7 @@ namespace BizHawk.BizInvoke
 				var strlenbytes = il.DeclareLocal(typeof(int), false);
 				il.Emit(OpCodes.Ldloc, encoding);
 				il.Emit(OpCodes.Ldarg, (short)idx);
-				il.Emit(OpCodes.Call, typeof(Encoding).GetMethod("GetByteCount", new[] { typeof(string) }));
+				il.EmitCall(OpCodes.Callvirt, typeof(Encoding).GetMethod("GetByteCount", new[] { typeof(string) }), Type.EmptyTypes);
 				il.Emit(OpCodes.Stloc, strlenbytes);
 
 				var strval = il.DeclareLocal(typeof(string), true); // pin!
@@ -590,7 +590,7 @@ namespace BizHawk.BizInvoke
 				// bytelength
 				il.Emit(OpCodes.Ldloc, strlenbytes);
 				// call
-				il.Emit(OpCodes.Call, typeof(Encoding).GetMethod("GetBytes", new[] { typeof(char*), typeof(int), typeof(byte*), typeof(int) }));
+				il.EmitCall(OpCodes.Callvirt, typeof(Encoding).GetMethod("GetBytes", new[] { typeof(char*), typeof(int), typeof(byte*), typeof(int) }), Type.EmptyTypes);
 				// unused ret
 				il.Emit(OpCodes.Pop);
 

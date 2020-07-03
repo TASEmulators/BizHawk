@@ -1,17 +1,12 @@
 use crate::*;
 use host::{ActivatedWaterboxHost, WaterboxHost};
-use std::{os::raw::c_char, ffi::CStr};
+use std::{os::raw::c_char, io, ffi::{/*CString, */CStr}};
 
 /// The memory template for a WaterboxHost.  Don't worry about
 /// making every size as small as possible, since the savestater handles sparse regions
 /// well enough.  All values should be PAGESIZE aligned.
 #[repr(C)]
 pub struct MemoryLayoutTemplate {
-	/// Absolute pointer to the start of the mapped space
-	pub start: usize,
-	/// Memory space for the elf executable.  The elf must be non-relocatable and
-	/// all loaded segments must fit within [start..start + elf_size]
-	pub elf_size: usize,
 	/// Memory space to serve brk(2)
 	pub sbrk_size: usize,
 	/// Memory space to serve alloc_sealed(3)
@@ -27,19 +22,14 @@ pub struct MemoryLayoutTemplate {
 }
 impl MemoryLayoutTemplate {
 	/// checks a memory layout for validity
-	pub fn make_layout(&self) -> anyhow::Result<WbxSysLayout> {
-		let start = align_down(self.start);
-		let elf_size = align_up(self.elf_size);
+	pub fn make_layout(&self, elf_addr: AddressRange) -> anyhow::Result<WbxSysLayout> {
 		let sbrk_size = align_up(self.sbrk_size);
 		let sealed_size = align_up(self.sealed_size);
 		let invis_size = align_up(self.invis_size);
 		let plain_size = align_up(self.plain_size);
 		let mmap_size = align_up(self.mmap_size);
 		let mut res = unsafe { std::mem::zeroed::<WbxSysLayout>() };
-		res.elf = AddressRange {
-			start,
-			size: elf_size
-		};
+		res.elf = elf_addr.align_expand();
 		res.sbrk = AddressRange {
 			start: res.elf.end(),
 			size: sbrk_size
@@ -57,10 +47,10 @@ impl MemoryLayoutTemplate {
 			size: plain_size
 		};
 		res.mmap = AddressRange {
-			start: res.invis.end(),
+			start: res.plain.end(),
 			size: mmap_size
 		};
-		if start >> 32 != (res.mmap.end() - 1) >> 32 {
+		if res.elf.start >> 32 != (res.mmap.end() - 1) >> 32 {
 			Err(anyhow!("HostMemoryLayout must fit into a single 4GiB region!"))
 		} else {
 			Ok(res)
@@ -94,49 +84,62 @@ impl<T> Return<T> {
 	}
 }
 
-/// stream writer
-#[repr(C)]
-pub struct CWriter {
+/// write bytes.  Return 0 on success, or < 0 on failure.
+/// Must write all provided bytes in one call or fail, not permitted to write less (unlike reader).
+pub type WriteCallback = extern fn(userdata: usize, data: *const u8, size: usize) -> i32;
+struct CWriter {
 	/// will be passed to callback
 	pub userdata: usize,
-	/// write bytes.  Return number of bytes written on success, or < 0 on failure.
-	/// Permitted to write less than the provided number of bytes.
-	pub callback: extern fn(userdata: usize, data: *const u8, size: usize) -> isize,
+	pub callback: WriteCallback,
 }
 impl Write for CWriter {
-	fn write(&mut self, buf: &[u8]) -> std::io::Result<usize> {
+	fn write(&mut self, buf: &[u8]) -> io::Result<usize> {
 		let res = (self.callback)(self.userdata, buf.as_ptr(), buf.len());
 		if res < 0 {
-			Err(std::io::Error::new(std::io::ErrorKind::Other, "Callback signaled abnormal failure"))
+			Err(io::Error::new(io::ErrorKind::Other, "Callback signaled abnormal failure"))
 		} else {
-			Ok(res as usize)
+			Ok(buf.len())
 		}
 	}
-	fn flush(&mut self) -> std::io::Result<()> {
+	fn write_all(&mut self, buf: &[u8]) -> io::Result<()> {
+		self.write(buf)?;
+		Ok(())
+	}
+	fn flush(&mut self) -> io::Result<()> {
 		Ok(())
 	}
 }
 
-/// stream reader
-#[repr(C)]
-pub struct CReader {
-	/// will be passed to callback
+/// Read bytes into the buffer.  Return number of bytes read on success, or < 0 on failure.
+/// permitted to read less than the provided buffer size, but must always read at least 1
+/// byte if EOF is not reached.  If EOF is reached, should return 0.
+pub type ReadCallback = extern fn(userdata: usize, data: *mut u8, size: usize) -> isize;
+struct CReader {
 	pub userdata: usize,
-	/// Read bytes into the buffer.  Return number of bytes read on success, or < 0 on failure.
-	/// permitted to read less than the provided buffer size, but must always read at least 1
-	/// byte if EOF is not reached.  If EOF is reached, should return 0.
-	pub callback: extern fn(userdata: usize, data: *mut u8, size: usize) -> isize,
+	pub callback: ReadCallback,
 }
 impl Read for CReader {
-	fn read(&mut self, buf: &mut [u8]) -> std::io::Result<usize> {
+	fn read(&mut self, buf: &mut [u8]) -> io::Result<usize> {
 		let res = (self.callback)(self.userdata, buf.as_mut_ptr(), buf.len());
 		if res < 0 {
-			Err(std::io::Error::new(std::io::ErrorKind::Other, "Callback signaled abnormal failure"))
+			Err(io::Error::new(io::ErrorKind::Other, "Callback signaled abnormal failure"))
 		} else {
 			Ok(res as usize)
 		}
 	}
 }
+
+// #[repr(C)]
+// pub struct MissingFileCallback {
+// 	pub userdata: usize,
+// 	pub callback: extern fn(userdata: usize, name: *const c_char) -> *mut MissingFileResult,
+// }
+
+// #[repr(C)]
+// pub struct MissingFileResult {
+// 	pub reader: CReader,
+// 	pub writable: bool,
+// }
 
 fn arg_to_str(arg: *const c_char) -> anyhow::Result<String> {
 	let cs = unsafe { CStr::from_ptr(arg as *const c_char) };
@@ -148,17 +151,21 @@ fn arg_to_str(arg: *const c_char) -> anyhow::Result<String> {
 
 fn read_whole_file(reader: &mut CReader) -> anyhow::Result<Vec<u8>> {
 	let mut res = Vec::<u8>::new();
-	std::io::copy(reader, &mut res)?;
+	io::copy(reader, &mut res)?;
 	Ok(res)
 }
 
 /// Given a guest executable and a memory layout, create a new host environment.  All data will be immediately consumed from the reader,
 /// which will not be used after this call.
 #[no_mangle]
-pub extern fn wbx_create_host(layout: &MemoryLayoutTemplate, module_name: *const c_char, wbx: &mut CReader, ret: &mut Return<*mut WaterboxHost>) {
+pub extern fn wbx_create_host(layout: &MemoryLayoutTemplate, module_name: *const c_char, callback: ReadCallback, userdata: usize, ret: &mut Return<*mut WaterboxHost>) {
+	let mut reader = CReader {
+		userdata,
+		callback
+	};
 	let res = (|| {
-		let data = read_whole_file(wbx)?;
-		WaterboxHost::new(&data[..], &arg_to_str(module_name)?[..], layout)
+		let data = read_whole_file(&mut reader)?;
+		WaterboxHost::new(data, &arg_to_str(module_name)?[..], layout)
 	})();
 	ret.put(res.map(|boxed| Box::into_raw(boxed)));
 }
@@ -227,9 +234,13 @@ pub extern fn wbx_seal(obj: &mut ActivatedWaterboxHost, ret: &mut Return<()>) {
 /// when save_state is called, and can only be used for transient operations.  If a file is readable, it can appear in savestates,
 /// but it must exist in every savestate and the exact sequence of add_file calls must be consistent from savestate to savestate.
 #[no_mangle]
-pub extern fn wbx_mount_file(obj: &mut ActivatedWaterboxHost, name: *const c_char, reader: &mut CReader, writable: bool, ret: &mut Return<()>) {
+pub extern fn wbx_mount_file(obj: &mut ActivatedWaterboxHost, name: *const c_char, callback: ReadCallback, userdata: usize, writable: bool, ret: &mut Return<()>) {
+	let mut reader = CReader {
+		userdata,
+		callback
+	};
 	let res: anyhow::Result<()> = (|| {
-		obj.mount_file(arg_to_str(name)?, read_whole_file(reader)?, writable)?;
+		obj.mount_file(arg_to_str(name)?, read_whole_file(&mut reader)?, writable)?;
 		Ok(())
 	})();
 	ret.put(res);
@@ -238,28 +249,88 @@ pub extern fn wbx_mount_file(obj: &mut ActivatedWaterboxHost, name: *const c_cha
 /// Remove a file previously added.  Writer is optional; if provided, the contents of the file at time of removal will be dumped to it.
 /// It is an error to remove a file which is currently open in the guest.
 #[no_mangle]
-pub extern fn wbx_unmount_file(obj: &mut ActivatedWaterboxHost, name: *const c_char, writer: Option<&mut CWriter>, ret: &mut Return<()>) {
+pub extern fn wbx_unmount_file(obj: &mut ActivatedWaterboxHost, name: *const c_char, callback_opt: Option<WriteCallback>, userdata: usize, ret: &mut Return<()>) {
 	let res: anyhow::Result<()> = (|| {
 		let data = obj.unmount_file(&arg_to_str(name)?)?;
-		if let Some(w) = writer {
-			std::io::copy(&mut &data[..], w)?;
+		if let Some(callback) = callback_opt {
+			let mut writer = CWriter {
+				userdata,
+				callback
+			};
+			io::copy(&mut &data[..], &mut writer)?;
 		}
 		Ok(())
 	})();
 	ret.put(res);
 }
 
+/// Set (or clear, with None) a callback to be called whenever the guest tries to load a nonexistant file.
+/// The callback will be provided with the name of the requested load, and can either return null to signal the waterbox
+/// to return ENOENT to the guest, or a struct to immediately load that file.  You may not call any wbx methods
+/// in the callback.  If the MissingFileResult is provided, it will be consumed immediately and will have the same effect
+/// as wbx_mount_file().  You may free resources associated with the MissingFileResult whenever control next returns to your code.
+// #[no_mangle]
+// pub extern fn wbx_set_missing_file_callback(obj: &mut ActivatedWaterboxHost, mfc_o: Option<&MissingFileCallback>) {
+// 	match mfc_o {
+// 		None => obj.set_missing_file_callback(None),
+// 		Some(mfc) => {
+// 			let userdata = mfc.userdata;
+// 			let callback = mfc.callback;
+// 			obj.set_missing_file_callback(Some(Box::new(move |name| {
+// 				let namestr = CString::new(name).unwrap();
+// 				let mfr = callback(userdata, namestr.as_ptr() as *const c_char);
+// 				if mfr == 0 as *mut MissingFileResult {
+// 					return None
+// 				}
+// 				unsafe {
+// 					let data = read_whole_file(&mut (*mfr).reader);
+// 					match data {
+// 						Ok(d) => Some(fs::MissingFileResult {
+// 							data: d,
+// 							writable: (*mfr).writable
+// 						}),
+// 						Err(_) => None,
+// 					}
+// 				}
+// 			})));
+// 		}
+// 	}
+// }
+
 /// Save state.  Must not be called before seal.  Must not be called with any writable files mounted.
 /// Must always be called with the same sequence and contents of readonly files.
 #[no_mangle]
-pub extern fn wbx_save_state(obj: &mut ActivatedWaterboxHost, writer: &mut CWriter, ret: &mut Return<()>) {
-	ret.put(obj.save_state(writer));
+pub extern fn wbx_save_state(obj: &mut ActivatedWaterboxHost, callback: WriteCallback, userdata: usize, ret: &mut Return<()>) {
+	let mut writer = CWriter {
+		userdata,
+		callback
+	};
+	let res: anyhow::Result<()> = (|| {
+		obj.save_state(&mut writer)?;
+		Ok(())
+	})();
+	ret.put(res);
 }
 /// Load state.  Must not be called before seal.  Must not be called with any writable files mounted.
 /// Must always be called with the same sequence and contents of readonly files that were in the save state.
 /// Must be called with the same wbx executable and memory layout as in the savestate.
 /// Errors generally poison the environment; sorry!
 #[no_mangle]
-pub extern fn wbx_load_state(obj: &mut ActivatedWaterboxHost, reader: &mut CReader, ret: &mut Return<()>) {
-	ret.put(obj.load_state(reader));
+pub extern fn wbx_load_state(obj: &mut ActivatedWaterboxHost, callback: ReadCallback, userdata: usize, ret: &mut Return<()>) {
+	let mut reader = CReader {
+		userdata,
+		callback
+	};
+	ret.put(obj.load_state(&mut reader));
+}
+
+/// Control whether the host automatically evicts blocks from memory when they are not active.  For the best performance,
+/// this should be set to false.  Set to true to help catch dangling pointer issues.  Will be ignored (and forced to true)
+/// if waterboxhost was built in debug mode.  This is a single global setting.
+#[no_mangle]
+pub extern fn wbx_set_always_evict_blocks(_val: bool) {
+	#[cfg(not(debug_assertions))]
+	{
+		unsafe { ALWAYS_EVICT_BLOCKS = _val; }
+	}
 }

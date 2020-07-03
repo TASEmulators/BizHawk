@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
+using static BizHawk.Emulation.Cores.Waterbox.WaterboxHostNative;
 
 namespace BizHawk.Emulation.Cores.Waterbox
 {
@@ -54,11 +55,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		public uint MmapHeapSizeKB { get; set; }
 
 		/// <summary>
-		/// start address in memory
-		/// </summary>
-		public ulong StartAddress { get; set; } = WaterboxHost.CanonicalStart;
-
-		/// <summary>
 		/// Skips the check that the wbx file and other associated dlls match from state save to state load.
 		/// DO NOT SET THIS TO TRUE.  A different executable most likely means different meanings for memory locations,
 		/// and nothing will make sense.
@@ -72,222 +68,84 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		public bool SkipMemoryConsistencyCheck { get; set; } = false;
 	}
 
-	public class WaterboxHost : Swappable, IImportResolver, IBinaryStateable
+	public unsafe class WaterboxHost : IMonitor, IImportResolver, IBinaryStateable, IDisposable
 	{
+		private IntPtr _nativeHost;
+		private IntPtr _activatedNativeHost;
+		private int _enterCount;
+		private object _keepAliveDelegate;
+
+		private static readonly WaterboxHostNative NativeImpl;
 		static WaterboxHost()
 		{
-			if (OSTailoredCode.IsUnixHost)
-			{
-				WaterboxLibcoLinuxStartup.Setup();
-			}
+			NativeImpl = BizInvoker.GetInvoker<WaterboxHostNative>(
+				new DynamicLibraryImportResolver(OSTailoredCode.IsUnixHost ? "libwaterboxhost.so" : "waterboxhost.dll", eternal: true),
+				CallingConventionAdapters.Native);
+			#if !DEBUG
+			NativeImpl.wbx_set_always_evict_blocks(false);
+			#endif
 		}
 
-		/// <summary>
-		/// usual starting point for the executable
-		/// </summary>
-		public const ulong CanonicalStart = 0x0000036f00000000;
-
-		/// <summary>
-		/// the next place where we can put a module or heap
-		/// </summary>
-		private ulong _nextStart = CanonicalStart;
-
-		/// <summary>
-		/// increment _nextStart after adding a module
-		/// </summary>
-		private void ComputeNextStart(ulong size)
+		private ReadCallback Reader(Stream s)
 		{
-			_nextStart += size;
-			// align to 1MB, then increment 16MB
-			_nextStart = ((_nextStart - 1) | 0xfffff) + 0x1000001;
+			var ret = MakeCallbackForReader(s);
+			_keepAliveDelegate = s;
+			return ret;
 		}
-
-		/// <summary>
-		/// standard malloc() heap
-		/// </summary>
-		internal Heap _heap;
-
-		/// <summary>
-		/// sealed heap (writable only during init)
-		/// </summary>
-		internal Heap _sealedheap;
-
-		/// <summary>
-		/// invisible heap (not savestated, use with care)
-		/// </summary>
-		internal Heap _invisibleheap;
-
-		/// <summary>
-		/// extra savestated heap
-		/// </summary>
-		internal Heap _plainheap;
-
-		/// <summary>
-		/// memory map emulation
-		/// </summary>
-		internal MapHeap _mmapheap;
-
-		/// <summary>
-		/// the loaded elf file
-		/// </summary>
-		private ElfLoader _module;
-
-		/// <summary>
-		/// all loaded heaps
-		/// </summary>
-		private readonly List<Heap> _heaps = new List<Heap>();
-
-		/// <summary>
-		/// anything at all that needs to be disposed on finish
-		/// </summary>
-		private readonly List<IDisposable> _disposeList = new List<IDisposable>();
-
-		/// <summary>
-		/// anything at all that needs its state saved and loaded
-		/// </summary>
-		private readonly List<IBinaryStateable> _savestateComponents = new List<IBinaryStateable>();
-
-		private readonly EmuLibc _emu;
-		private readonly Syscalls _syscalls;
-
-		/// <summary>
-		/// the set of functions made available for the elf module
-		/// </summary>
-		private readonly IImportResolver _imports;
-
-		/// <summary>
-		/// timestamp of creation acts as a sort of "object id" in the savestate
-		/// </summary>
-		private readonly long _createstamp = WaterboxUtils.Timestamp();
-
-		private Heap CreateHeapHelper(uint sizeKB, string name, bool saveStated)
+		private WriteCallback Writer(Stream s)
 		{
-			if (sizeKB != 0)
-			{
-				var heap = new Heap(_nextStart, sizeKB * 1024, name);
-				heap.Memory.Activate();
-				ComputeNextStart(sizeKB * 1024);
-				AddMemoryBlock(heap.Memory, name);
-				if (saveStated)
-					_savestateComponents.Add(heap);
-				_disposeList.Add(heap);
-				_heaps.Add(heap);
-				return heap;
-			}
-			else
-			{
-				return null;
-			}
+			var ret = MakeCallbackForWriter(s);
+			_keepAliveDelegate = s;
+			return ret;
 		}
 
 		public WaterboxHost(WaterboxOptions opt)
 		{
-			_nextStart = opt.StartAddress;
-			Initialize(_nextStart);
-			using (this.EnterExit())
+			var nativeOpts = new MemoryLayoutTemplate
 			{
-				_emu = new EmuLibc(this);
-				_syscalls = new Syscalls(this);
+				sbrk_size = Z.UU(opt.SbrkHeapSizeKB * 1024),
+				sealed_size = Z.UU(opt.SealedHeapSizeKB * 1024),
+				invis_size = Z.UU(opt.InvisibleHeapSizeKB * 1024),
+				plain_size = Z.UU(opt.PlainHeapSizeKB * 1024),
+				mmap_size = Z.UU(opt.MmapHeapSizeKB * 1024),
+			};
 
-				_imports = new PatchImportResolver(
-					NotImplementedSyscalls.Instance,
-					BizExvoker.GetExvoker(_emu, CallingConventionAdapters.Waterbox),
-					BizExvoker.GetExvoker(_syscalls, CallingConventionAdapters.Waterbox)
-				);
+			var moduleName = opt.Filename;
 
-				if (true)
-				{
-					var moduleName = opt.Filename;
-
-					var path = Path.Combine(opt.Path, moduleName);
-					var gzpath = path + ".gz";
-					byte[] data;
-					if (File.Exists(gzpath))
-					{
-						using var fs = new FileStream(gzpath, FileMode.Open, FileAccess.Read);
-						data = Util.DecompressGzipFile(fs);
-					}
-					else
-					{
-						data = File.ReadAllBytes(path);
-					}
-
-					_module = new ElfLoader(moduleName, data, _nextStart, opt.SkipCoreConsistencyCheck, opt.SkipMemoryConsistencyCheck);
-
-					ComputeNextStart(_module.Memory.Size);
-					AddMemoryBlock(_module.Memory, moduleName);
-					_savestateComponents.Add(_module);
-					_disposeList.Add(_module);
-				}
-
-				ConnectAllImports();
-
-				// load all heaps
-				_heap = CreateHeapHelper(opt.SbrkHeapSizeKB, "brk-heap", true);
-				_sealedheap = CreateHeapHelper(opt.SealedHeapSizeKB, "sealed-heap", true);
-				_invisibleheap = CreateHeapHelper(opt.InvisibleHeapSizeKB, "invisible-heap", false);
-				_plainheap = CreateHeapHelper(opt.PlainHeapSizeKB, "plain-heap", true);
-
-				if (opt.MmapHeapSizeKB != 0)
-				{
-					_mmapheap = new MapHeap(_nextStart, opt.MmapHeapSizeKB * 1024, "mmap-heap");
-					_mmapheap.Memory.Activate();
-					ComputeNextStart(opt.MmapHeapSizeKB * 1024);
-					AddMemoryBlock(_mmapheap.Memory, "mmap-heap");
-					_savestateComponents.Add(_mmapheap);
-					_disposeList.Add(_mmapheap);
-				}
-
-				// TODO: This debugger stuff doesn't work on nix?
-				System.Diagnostics.Debug.WriteLine($"About to enter unmanaged code for {opt.Filename}");
-				if (OSTailoredCode.IsUnixHost)
-				{
-					if (System.Diagnostics.Debugger.IsAttached)
-						System.Diagnostics.Debugger.Break();
-				}
-				else
-				{
-					if (!System.Diagnostics.Debugger.IsAttached && Win32Imports.IsDebuggerPresent())
-					{
-						// this means that GDB or another unconventional debugger is attached.
-						// if that's the case, and it's observing this core, it probably wants a break
-						System.Diagnostics.Debugger.Break();
-					}
-				}
-				_module.RunNativeInit();
+			var path = Path.Combine(opt.Path, moduleName);
+			var gzpath = path + ".gz";
+			byte[] data;
+			if (File.Exists(gzpath))
+			{
+				using var fs = new FileStream(gzpath, FileMode.Open, FileAccess.Read);
+				data = Util.DecompressGzipFile(fs);
 			}
+			else
+			{
+				data = File.ReadAllBytes(path);
+			}
+
+			var retobj = new ReturnData();
+			NativeImpl.wbx_create_host(nativeOpts, opt.Filename, Reader(new MemoryStream(data, false)), IntPtr.Zero, retobj);
+			_nativeHost = retobj.GetDataOrThrow();
 		}
 
 		public IntPtr GetProcAddrOrZero(string entryPoint)
 		{
-			var addr = _module.GetProcAddrOrZero(entryPoint);
-			if (addr != IntPtr.Zero)
+			using (this.EnterExit())
 			{
-				var exclude = _imports.GetProcAddrOrZero(entryPoint);
-				if (exclude != IntPtr.Zero)
-				{
-					// don't reexport anything that's part of waterbox internals
-					return IntPtr.Zero;
-				}	
+				var retobj = new ReturnData();
+				NativeImpl.wbx_get_proc_addr(_activatedNativeHost, entryPoint, retobj);
+				return retobj.GetDataOrThrow();
 			}
-			return addr;
 		}
 
 		public IntPtr GetProcAddrOrThrow(string entryPoint)
 		{
-			var addr = _module.GetProcAddrOrZero(entryPoint);
+			var addr = GetProcAddrOrZero(entryPoint);
 			if (addr != IntPtr.Zero)
 			{
-				var exclude = _imports.GetProcAddrOrZero(entryPoint);
-				if (exclude != IntPtr.Zero)
-				{
-					// don't reexport anything that's part of waterbox internals
-					throw new InvalidOperationException($"Tried to resolve {entryPoint}, but it should not be exported");
-				}
-				else
-				{
-					return addr;
-				}
+				return addr;
 			}
 			else
 			{
@@ -299,36 +157,11 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		{
 			using (this.EnterExit())
 			{
-				// if libco is used, the jmp_buf for the main cothread can have stack stuff in it.
-				// this isn't a problem, since we only savestate when the core is not running, and
-				// the next time it's run, that buf will be overridden again.
-				// but it breaks xor state verification, so when we seal, nuke it.
-
-				// this could be the responsibility of something else other than the PeRunner; I am not sure yet...
-
-				// TODO: MAKE SURE THIS STILL WORKS
-				IntPtr co_clean;
-				if ((co_clean = _module.GetProcAddrOrZero("co_clean")) != IntPtr.Zero)
-				{
-					Console.WriteLine("Calling co_clean().");
-					CallingConventionAdapters.Waterbox.GetDelegateForFunctionPointer<Action>(co_clean)();
-				}
-
-				_sealedheap.Seal();
-				foreach (var h in _heaps)
-				{
-					if (h != _invisibleheap && h != _sealedheap) // TODO: if we have more non-savestated heaps, refine this hack
-						h.Memory.Seal();
-				}
-				_module.SealImportsAndTakeXorSnapshot();
-				_mmapheap?.Memory.Seal();
+				var retobj = new ReturnData();
+				NativeImpl.wbx_seal(_activatedNativeHost, retobj);
+				retobj.GetDataOrThrow();
 			}
 			Console.WriteLine("WaterboxHost Sealed!");
-		}
-
-		private void ConnectAllImports()
-		{
-			_module.ConnectSyscalls(_imports);
 		}
 
 		/// <summary>
@@ -338,7 +171,12 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// <param name="name">the filename that the unmanaged core will access the file by</param>
 		public void AddReadonlyFile(byte[] data, string name)
 		{
-			_syscalls.AddReadonlyFile((byte[])data.Clone(), name);
+			using (this.EnterExit())
+			{
+				var retobj = new ReturnData();
+				NativeImpl.wbx_mount_file(_activatedNativeHost, name, Reader(new MemoryStream(data, false)), IntPtr.Zero, false, retobj);
+				retobj.GetDataOrThrow();
+			}
 		}
 
 		/// <summary>
@@ -347,7 +185,12 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// </summary>
 		public void RemoveReadonlyFile(string name)
 		{
-			_syscalls.RemoveReadonlyFile(name);
+			using (this.EnterExit())
+			{
+				var retobj = new ReturnData();
+				NativeImpl.wbx_unmount_file(_activatedNativeHost, name, null, IntPtr.Zero, retobj);
+				retobj.GetDataOrThrow();
+			}
 		}
 
 		/// <summary>
@@ -356,7 +199,12 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// </summary>
 		public void AddTransientFile(byte[] data, string name)
 		{
-			_syscalls.AddTransientFile(data, name); // don't need to clone data, as it's used at init only
+			using (this.EnterExit())
+			{
+				var retobj = new ReturnData();
+				NativeImpl.wbx_mount_file(_activatedNativeHost, name, Reader(new MemoryStream(data, false)), IntPtr.Zero, true, retobj);
+				retobj.GetDataOrThrow();
+			}
 		}
 
 		/// <summary>
@@ -365,108 +213,123 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// <returns>The state of the file when it was removed</returns>
 		public byte[] RemoveTransientFile(string name)
 		{
-			return _syscalls.RemoveTransientFile(name);
+			using (this.EnterExit())
+			{
+				var retobj = new ReturnData();
+				var ms = new MemoryStream();
+				NativeImpl.wbx_unmount_file(_activatedNativeHost, name, Writer(ms), IntPtr.Zero, retobj);
+				retobj.GetDataOrThrow();
+				return ms.ToArray();
+			}
 		}
+
+		// public class MissingFileResult
+		// {
+		// 	public byte[] data;
+		// 	public bool writable;
+		// }
 
 		/// <summary>
 		/// Can be set by the frontend and will be called if the core attempts to open a missing file.
-		/// The callee may add additional files to the waterbox during the callback and return `true` to indicate
-		/// that the right file was added and the scan should be rerun.  The callee may return `false` to indicate
-		/// that the file should be reported as missing.  Do not call other things during this callback.
+		/// The callee returns a result object, either null to indicate that the file should be reported as missing,
+		/// or data and writable status for a file to be just in time mounted.
+		/// Do not call anything on the waterbox things during this callback.
 		/// Can be called at any time by the core, so you may want to remove your callback entirely after init
 		/// if it was for firmware only.
+		/// writable == false is equivalent to AddReadonlyFile, writable == true is equivalent to AddTransientFile
 		/// </summary>
-		public Func<string, bool> MissingFileCallback
-		{
-			get => _syscalls.MissingFileCallback;
-			set => _syscalls.MissingFileCallback = value;
-		}
+		// public Func<string, MissingFileResult> MissingFileCallback
+		// {
+		// 	set
+		// 	{
+		// 		// TODO
+		// 		using (this.EnterExit())
+		// 		{
+		// 			var mfc_o = value == null ? null : new WaterboxHostNative.MissingFileCallback
+		// 			{
+		// 				callback = (_unused, name) =>
+		// 				{
+		// 					var res = value(name);
+		// 				}
+		// 			};
 
-		private const ulong MAGIC = 0x736b776162727477;
-		private const ulong WATERBOXSTATEVERSION = 2;
+		// 			NativeImpl.wbx_set_missing_file_callback(_activatedNativeHost, value == null
+		// 				? null
+		// 				: )
+		// 		}
+		// 	}
+		// 	get => _syscalls.MissingFileCallback;
+		// 	set => _syscalls.MissingFileCallback = value;
+		// }
 
 		public void SaveStateBinary(BinaryWriter bw)
 		{
-			bw.Write(MAGIC);
-			bw.Write(WATERBOXSTATEVERSION);
-			bw.Write(_createstamp);
-			bw.Write(_savestateComponents.Count);
 			using (this.EnterExit())
 			{
-				foreach (var c in _savestateComponents)
-				{
-					c.SaveStateBinary(bw);
-				}
+				var retobj = new ReturnData();
+				NativeImpl.wbx_save_state(_activatedNativeHost, Writer(bw.BaseStream), IntPtr.Zero, retobj);
+				retobj.GetDataOrThrow();
 			}
 		}
 
 		public void LoadStateBinary(BinaryReader br)
 		{
-			if (br.ReadUInt64() != MAGIC)
-				throw new InvalidOperationException("Internal savestate error");
-			if (br.ReadUInt64() != WATERBOXSTATEVERSION)
-				throw new InvalidOperationException("Waterbox savestate version mismatch");
-			var differentCore = br.ReadInt64() != _createstamp; // true if a different core instance created the state
-			if (br.ReadInt32() != _savestateComponents.Count)
-				throw new InvalidOperationException("Internal savestate error");
 			using (this.EnterExit())
 			{
-				foreach (var c in _savestateComponents)
-				{
-					c.LoadStateBinary(br);
-				}
-				if (differentCore)
-				{
-					// if a different runtime instance than this one saved the state,
-					// Exvoker imports need to be reconnected
-					Console.WriteLine($"Restoring {nameof(WaterboxHost)} state from a different core...");
-					ConnectAllImports();
-				}
+				var retobj = new ReturnData();
+				NativeImpl.wbx_load_state(_activatedNativeHost, Reader(br.BaseStream), IntPtr.Zero, retobj);
+				retobj.GetDataOrThrow();
 			}
 		}
 
-		protected override void Dispose(bool disposing)
+		public void Enter()
 		{
-			base.Dispose(disposing);
-			if (disposing)
+			if (_enterCount == 0)
 			{
-				foreach (var d in _disposeList)
-					d.Dispose();
-				_disposeList.Clear();
-				PurgeMemoryBlocks();
-				_module = null;
-				_heap = null;
-				_sealedheap = null;
-				_invisibleheap = null;
-				_plainheap = null;
-				_mmapheap = null;
+				var retobj = new ReturnData();
+				NativeImpl.wbx_activate_host(_nativeHost, retobj);
+				_activatedNativeHost = retobj.GetDataOrThrow();
+			}
+			_enterCount++;
+		}
+
+		public void Exit()
+		{
+			if (_enterCount <= 0)
+			{
+				throw new InvalidOperationException();
+			}
+			else if (_enterCount == 1)
+			{
+				var retobj = new ReturnData();
+				NativeImpl.wbx_deactivate_host(_activatedNativeHost, retobj);
+				retobj.GetDataOrThrow();
+				_activatedNativeHost = IntPtr.Zero;
+			}
+			_enterCount--;
+		}
+
+		public void Dispose()
+		{
+			if (_nativeHost != IntPtr.Zero)
+			{
+				var retobj = new ReturnData();
+				if (_activatedNativeHost != IntPtr.Zero)
+				{
+					NativeImpl.wbx_deactivate_host(_activatedNativeHost, retobj);
+					Console.Error.WriteLine("Warn: Disposed of WaterboxHost which was active");
+					_activatedNativeHost = IntPtr.Zero;
+				}
+				NativeImpl.wbx_destroy_host(_nativeHost, retobj);
+				_enterCount = 0;
+				_nativeHost = IntPtr.Zero;
+				GC.SuppressFinalize(this);
 			}
 		}
-	}
 
-	internal static class WaterboxLibcoLinuxStartup
-	{
-		// TODO: This is a giant mess and get rid of it entirely
-		internal static void Setup()
+		~WaterboxHost()
 		{
-			// Our libco implementation plays around with stuff in the TEB block.  This is bad for a few reasons:
-			// 1. It's windows specific
-			// 2. It's only doing this to satisfy some msvs __stkchk code that should never run
-			// 3. That code is only running because memory allocations in a cothread still send you back
-			// to managed land where things like the .NET jit might run on the costack, oof.
-
-			// We need to stop #3 from happening, probably by making the waterboxhost unmanaged code.  Then if we
-			// still need "GS fiddling" we can have it be part of our syscall layer without having a managed transition
-
-			// Until then, just fake a TEB block for linux -- nothing else uses GS anyway.
-			var ptr = Marshal.AllocHGlobal(0x40);
-			WaterboxUtils.ZeroMemory(ptr, 0x40);
-			Marshal.WriteIntPtr(ptr, 0x30, ptr);
-			if (ArchPrCtl(0x1001 /* SET_GS */, Z.SU((long)ptr)) != 0)
-				throw new InvalidOperationException("ArchPrCtl failed!");
+			Dispose();
 		}
-
-		[DllImport("libc.so.6", EntryPoint = "arch_prctl")]
-		private static extern int ArchPrCtl(int code, UIntPtr addr);
 	}
 }

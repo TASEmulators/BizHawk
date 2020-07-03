@@ -1,5 +1,5 @@
 use goblin;
-use goblin::elf64::{sym::*, section_header::*};
+use goblin::{elf::Elf, elf64::{sym::*, section_header::*}};
 use crate::*;
 use crate::memory_block::ActivatedMemoryBlock;
 use crate::memory_block::Protection;
@@ -30,26 +30,26 @@ pub struct ElfLoader {
 	import_area: AddressRange,
 }
 impl ElfLoader {
-	pub fn new(data: &[u8],
-		module_name: &str,
-		layout: &WbxSysLayout,
-		b: &mut ActivatedMemoryBlock
-	) -> anyhow::Result<ElfLoader> {
-		let wbx = goblin::elf::Elf::parse(data)?;
-
+	pub fn elf_addr(wbx: &Elf) -> AddressRange {
 		let start = wbx.program_headers.iter()
+			.filter(|x| x.p_vaddr != 0)
 			.map(|x| x.vm_range().start)
 			.min()
 			.unwrap();
 		let end = wbx.program_headers.iter()
+			.filter(|x| x.p_vaddr != 0)
 			.map(|x| x.vm_range().end)
 			.max()
 			.unwrap();
-		if start < layout.elf.start || end > layout.elf.end() {
-			return Err(anyhow!("{} from {}..{} did not fit in the provided region", module_name, start, end))
-		}
-
-		println!("Mouting `{}` @{:x}", module_name, start);
+		return AddressRange { start, size: end - start };
+	}
+	pub fn new(wbx: &Elf, data: &[u8],
+		module_name: &str,
+		layout: &WbxSysLayout,
+		b: &mut ActivatedMemoryBlock
+	) -> anyhow::Result<ElfLoader> {
+		println!("Mouting `{}` @{:x}", module_name, layout.elf.start);
+		println!("  Sections:");
 
 		let mut sections = Vec::new();	
 
@@ -58,8 +58,9 @@ impl ElfLoader {
 				Some(Ok(s)) => s,
 				_ => "<anon>"
 			};
-			println!("  @{:x} {}{}{} `{}` {} bytes",
+			println!("    @{:x}:{:x} {}{}{} `{}` {} bytes",
 				section.sh_addr,
+				section.sh_addr + section.sh_size,
 				if section.sh_flags & (SHF_ALLOC as u64) != 0 { "R" } else { " " },
 				if section.sh_flags & (SHF_WRITE as u64) != 0 { "W" } else { " " },
 				if section.sh_flags & (SHF_EXECINSTR as u64) != 0 { "X" } else { " " },
@@ -112,10 +113,20 @@ impl ElfLoader {
 		{
 			let invis_opt = sections.iter().find(|x| x.name == ".invis");
 			if let Some(invis) = invis_opt {
-				let any_below = sections.iter().any(|x| x.addr.align_expand().end() > invis.addr.align_expand().start);
-				let any_above = sections.iter().any(|x| x.addr.align_expand().start < invis.addr.align_expand().end());
-				if any_below || any_above {
-					return Err(anyhow!("Overlap between .invis and other sections -- check linkscript."));
+				for s in sections.iter() {
+					if s.addr.align_expand().start < invis.addr.align_expand().start {
+						if s.addr.align_expand().end() > invis.addr.align_expand().start {
+							return Err(anyhow!("When aligned, {} partially overlaps .invis from below -- check linkscript.", s.name))
+						}
+					} else if s.addr.align_expand().start > invis.addr.align_expand().start {
+						if invis.addr.align_expand().end() > s.addr.align_expand().start {
+							return Err(anyhow!("When aligned, {} partially overlaps .invis from above -- check linkscript.", s.name))
+						}
+					} else {
+						if s.name != ".invis" {
+							return Err(anyhow!("When aligned, {} partially overlays .invis -- check linkscript", s.name))
+						}
+					}
 				}
 				b.mark_invisible(invis.addr.align_expand())?;
 			}
@@ -123,7 +134,8 @@ impl ElfLoader {
 
 		b.mark_invisible(layout.invis)?;
 
-		for segment in wbx.program_headers.iter() {
+		println!("  Segments:");
+		for segment in wbx.program_headers.iter().filter(|x| x.p_vaddr != 0) {
 			let addr = AddressRange {
 				start: segment.vm_range().start,
 				size: segment.vm_range().end - segment.vm_range().start
@@ -136,12 +148,22 @@ impl ElfLoader {
 				(_, true, false) => Protection::RW,
 				(_, true, true) => Protection::RWX
 			};
-			b.mmap_fixed(prot_addr, prot)?;
+			println!("    %{:x}:{:x} {}{}{} {} bytes",
+				addr.start,
+				addr.end(),
+				if segment.is_read() { "R" } else { " " },
+				if segment.is_write() { "W" } else { " " },
+				if segment.is_executable() { "X" } else { " " },
+				addr.size
+			);
+			// TODO:  Using no_replace false here because the linker puts eh_frame_hdr in a separate segment that overlaps the other RO segment???
+			b.mmap_fixed(prot_addr, Protection::RW, false)?;
 			unsafe {
 				let src = &data[segment.file_range()];
 				let dst = AddressRange { start: addr.start, size: segment.file_range().end - segment.file_range().start }.slice_mut();
 				dst.copy_from_slice(src);
 			}
+			b.mprotect(prot_addr, prot)?;
 		}
 
 		Ok(ElfLoader {
@@ -152,18 +174,21 @@ impl ElfLoader {
 			import_area
 		})
 	}
-	pub fn seal(&self, b: &mut ActivatedMemoryBlock) {
+	pub fn pre_seal(&mut self, b: &mut ActivatedMemoryBlock) {
+		self.run_proc(b, "co_clean");
+		self.run_proc(b, "ecl_seal");
 		for section in self.sections.iter() {
 			if section_name_is_readonly(section.name.as_str()) {
-				b.mprotect(section.addr, Protection::R).unwrap();
+				b.mprotect(section.addr.align_expand(), Protection::R).unwrap();
 			}
 		}
+		self.clear_syscalls(b);
 	}
 	pub fn connect_syscalls(&mut self, _b: &mut ActivatedMemoryBlock, sys: &WbxSysArea) {
 		let addr = self.import_area;
 		unsafe { *(addr.start as *mut WbxSysArea) = *sys; }
 	}
-	pub fn clear_syscalls(&mut self, _b: &mut ActivatedMemoryBlock) {
+	fn clear_syscalls(&mut self, _b: &mut ActivatedMemoryBlock) {
 		let addr = self.import_area;
 		unsafe { addr.zero(); }
 	}
@@ -173,11 +198,11 @@ impl ElfLoader {
 			std::mem::transmute::<usize, extern "win64" fn() -> ()>(self.entry_point)();
 		}
 	}
-	pub fn co_clean(&mut self, _b: &mut ActivatedMemoryBlock) {
-		match self.get_proc_addr("co_clean") {
+	fn run_proc(&mut self, _b: &mut ActivatedMemoryBlock, name: &str) {
+		match self.get_proc_addr(name) {
 			0 => (),
 			ptr => {
-				println!("Calling co_clean()");
+				println!("Calling {}()", name);
 				unsafe {
 					std::mem::transmute::<usize, extern "win64" fn() -> ()>(ptr)();
 				}
