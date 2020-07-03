@@ -304,7 +304,7 @@ namespace BizHawk.Client.Common
 			int fileSuffix = 0;
 			while (File.Exists(newFileName))
 			{
-				newFileName = $"{Path.GetDirectoryName(oldFileName)}{Path.GetFileNameWithoutExtension(oldFileName)} {++fileSuffix}.{TasMovie.Extension}";
+				newFileName = $"{Path.GetDirectoryName(oldFileName)}\\{Path.GetFileNameWithoutExtension(oldFileName)} {++fileSuffix}.{TasMovie.Extension}";
 			}
 
 			return newFileName;
