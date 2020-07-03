@@ -49,11 +49,7 @@ namespace BizHawk.Client.EmuHawk
 			bool needBold = hasSaveRam && Emulator.AsSaveRam().SaveRamModified;
 
 			SaveRAMSubMenu.Enabled = hasSaveRam;
-			if (SaveRAMSubMenu.Font.Bold != needBold)
-			{
-				var font = new Font(SaveRAMSubMenu.Font, needBold ? FontStyle.Bold : FontStyle.Regular);
-				SaveRAMSubMenu.Font = font;
-			}
+			SaveRAMSubMenu.SetStyle(needBold ? FontStyle.Bold : FontStyle.Regular);
 
 			AVSubMenu.Enabled =
 			ScreenshotSubMenu.Enabled =
@@ -142,51 +138,16 @@ namespace BizHawk.Client.EmuHawk
 			SaveToCurrentSlotMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Quick Save"].Bindings;
 			LoadCurrentSlotMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Quick Load"].Bindings;
 
-			SelectSlot0MenuItem.Checked = false;
-			SelectSlot1MenuItem.Checked = false;
-			SelectSlot2MenuItem.Checked = false;
-			SelectSlot3MenuItem.Checked = false;
-			SelectSlot4MenuItem.Checked = false;
-			SelectSlot5MenuItem.Checked = false;
-			SelectSlot6MenuItem.Checked = false;
-			SelectSlot7MenuItem.Checked = false;
-			SelectSlot8MenuItem.Checked = false;
-			SelectSlot9MenuItem.Checked = false;
-			SelectSlot1MenuItem.Checked = false;
-
-			switch (Config.SaveSlot)
-			{
-				case 0:
-					SelectSlot0MenuItem.Checked = true;
-					break;
-				case 1:
-					SelectSlot1MenuItem.Checked = true;
-					break;
-				case 2:
-					SelectSlot2MenuItem.Checked = true;
-					break;
-				case 3:
-					SelectSlot3MenuItem.Checked = true;
-					break;
-				case 4:
-					SelectSlot4MenuItem.Checked = true;
-					break;
-				case 5:
-					SelectSlot5MenuItem.Checked = true;
-					break;
-				case 6:
-					SelectSlot6MenuItem.Checked = true;
-					break;
-				case 7:
-					SelectSlot7MenuItem.Checked = true;
-					break;
-				case 8:
-					SelectSlot8MenuItem.Checked = true;
-					break;
-				case 9:
-					SelectSlot9MenuItem.Checked = true;
-					break;
-			}
+			SelectSlot0MenuItem.Checked = Config.SaveSlot == 0;
+			SelectSlot1MenuItem.Checked = Config.SaveSlot == 1;
+			SelectSlot2MenuItem.Checked = Config.SaveSlot == 2;
+			SelectSlot3MenuItem.Checked = Config.SaveSlot == 3;
+			SelectSlot4MenuItem.Checked = Config.SaveSlot == 4;
+			SelectSlot5MenuItem.Checked = Config.SaveSlot == 5;
+			SelectSlot6MenuItem.Checked = Config.SaveSlot == 6;
+			SelectSlot7MenuItem.Checked = Config.SaveSlot == 7;
+			SelectSlot8MenuItem.Checked = Config.SaveSlot == 8;
+			SelectSlot9MenuItem.Checked = Config.SaveSlot == 9;
 		}
 
 		private void SaveRamSubMenu_DropDownOpened(object sender, EventArgs e)

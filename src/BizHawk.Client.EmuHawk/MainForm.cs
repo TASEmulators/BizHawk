@@ -35,7 +35,6 @@ using BizHawk.Emulation.Cores.Nintendo.SNES9X;
 using BizHawk.Emulation.Cores.Consoles.SNK;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.Faust;
-using BizHawk.Client.EmuHawk.Filters;
 
 namespace BizHawk.Client.EmuHawk
 {
