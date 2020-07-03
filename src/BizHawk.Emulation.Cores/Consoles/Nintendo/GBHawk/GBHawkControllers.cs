@@ -115,7 +115,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			{
 				Name = "Gameboy Controller + Tilt",
 				BoolButtons = BaseDefinition.Select(b => $"P{PortNum} {b}").ToList()
-			}.AddXYPair($"P{PortNum} Tilt {{0}}", AxisPairOrientation.RightAndUp, (-45).RangeTo(45), 0); //TODO verify direction against hardware
+			}.AddXYPair($"P{PortNum} Tilt {{0}}", AxisPairOrientation.RightAndUp, (-90).RangeTo(90), 0); //TODO verify direction against hardware
 		}
 
 		public int PortNum { get; }
