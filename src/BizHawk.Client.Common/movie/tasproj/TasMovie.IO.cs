@@ -47,204 +47,10 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public override bool Load(bool preload)
+		protected override void ClearBeforeLoad()
 		{
-			var file = new FileInfo(Filename);
-			if (!file.Exists)
-			{
-				return false;
-			}
-
-			using (var bl = ZipStateLoader.LoadAndDetect(Filename, true))
-			{
-				if (bl == null)
-				{
-					return false;
-				}
-
-				ClearBeforeLoad();
-				ClearTasprojExtras();
-
-				bl.GetLump(BinaryStateLump.Movieheader, true, delegate(TextReader tr)
-				{
-					string line;
-					while ((line = tr.ReadLine()) != null)
-					{
-						if (!string.IsNullOrWhiteSpace(line))
-						{
-							var pair = line.Split(new[] { ' ' }, 2, StringSplitOptions.RemoveEmptyEntries);
-
-							if (pair.Length > 1)
-							{
-								Header.Add(pair[0], pair[1]);
-							}
-						}
-					}
-				});
-
-				bl.GetLump(BinaryStateLump.Comments, true, delegate(TextReader tr)
-				{
-					string line;
-					while ((line = tr.ReadLine()) != null)
-					{
-						if (!string.IsNullOrWhiteSpace(line))
-						{
-							Comments.Add(line);
-						}
-					}
-				});
-
-				bl.GetLump(BinaryStateLump.Subtitles, true, delegate(TextReader tr)
-				{
-					string line;
-					while ((line = tr.ReadLine()) != null)
-					{
-						if (!string.IsNullOrWhiteSpace(line))
-						{
-							Subtitles.AddFromString(line);
-						}
-					}
-				});
-
-				bl.GetLump(BinaryStateLump.SyncSettings, true, delegate(TextReader tr)
-				{
-					string line;
-					while ((line = tr.ReadLine()) != null)
-					{
-						if (!string.IsNullOrWhiteSpace(line))
-						{
-							SyncSettingsJson = line;
-						}
-					}
-				});
-
-				bl.GetLump(BinaryStateLump.Input, true, delegate(TextReader tr) // Note: ExtractInputLog will clear Lag and State data potentially, this must come before loading those
-				{
-					IsCountingRerecords = false;
-					ExtractInputLog(tr, out _);
-					IsCountingRerecords = true;
-				});
-
-				if (StartsFromSavestate)
-				{
-					bl.GetCoreState(
-						delegate(BinaryReader br, long length)
-						{
-							BinarySavestate = br.ReadBytes((int)length);
-						},
-						delegate(TextReader tr)
-						{
-							TextSavestate = tr.ReadToEnd();
-						});
-				}
-				else if (StartsFromSaveRam)
-				{
-					bl.GetLump(BinaryStateLump.MovieSaveRam, false,
-						delegate(BinaryReader br, long length)
-						{
-							SaveRam = br.ReadBytes((int)length);
-						});
-				}
-
-				// TasMovie enhanced information
-				bl.GetLump(BinaryStateLump.LagLog, false, delegate(TextReader tr)
-				{
-					LagLog.Load(tr);
-				});
-
-				bl.GetLump(BinaryStateLump.StateHistorySettings, false, delegate(TextReader tr)
-				{
-					var json = tr.ReadToEnd();
-					try
-					{
-						TasStateManager.Settings = JsonConvert.DeserializeObject<TasStateManagerSettings>(json);
-					}
-					catch
-					{
-						// Do nothing, and use default settings instead
-					}
-				});
-
-				bl.GetLump(BinaryStateLump.Markers, false, delegate(TextReader tr)
-				{
-					string line;
-					while ((line = tr.ReadLine()) != null)
-					{
-						if (!string.IsNullOrWhiteSpace(line))
-						{
-							Markers.Add(new TasMovieMarker(line));
-						}
-					}
-				});
-
-				if (GetClientSettingsOnLoad != null)
-				{
-					string clientSettings = "";
-					bl.GetLump(BinaryStateLump.ClientSettings, false, delegate(TextReader tr)
-					{
-						string line;
-						while ((line = tr.ReadLine()) != null)
-						{
-							if (!string.IsNullOrWhiteSpace(line))
-							{
-								clientSettings = line;
-							}
-						}
-					});
-
-					if (!string.IsNullOrWhiteSpace(clientSettings))
-					{
-						GetClientSettingsOnLoad(clientSettings);
-					}
-				}
-
-				bl.GetLump(BinaryStateLump.VerificationLog, false, delegate(TextReader tr)
-				{
-					VerificationLog.Clear();
-					while (true)
-					{
-						var line = tr.ReadLine();
-						if (string.IsNullOrEmpty(line))
-						{
-							break;
-						}
-
-						if (line.StartsWith("|"))
-						{
-							VerificationLog.Add(line);
-						}
-					}
-				});
-
-				Branches.Load(bl, this);
-
-				bl.GetLump(BinaryStateLump.Session, false, delegate(TextReader tr)
-				{
-					var json = tr.ReadToEnd();
-					try
-					{
-						TasSession = JsonConvert.DeserializeObject<TasSession>(json);
-					}
-					catch
-					{
-						// Do nothing, and use default settings instead
-					}
-				});
-
-				if (!preload)
-				{
-					if (TasStateManager.Settings.SaveStateHistory)
-					{
-						bl.GetLump(BinaryStateLump.StateHistory, false, delegate(BinaryReader br, long length)
-						{
-							TasStateManager.Load(br);
-						});
-					}
-				}
-			}
-
-			Changes = false;
-			return true;
+			ClearBk2Fields();
+			ClearTasprojExtras();
 		}
 
 		private void ClearTasprojExtras()
@@ -253,6 +59,110 @@ namespace BizHawk.Client.Common
 			TasStateManager.Clear();
 			Markers.Clear();
 			ChangeLog.Clear();
+		}
+		
+		protected override void LoadFields(ZipStateLoader bl, bool preload)
+		{
+			LoadBk2Fields(bl);
+			LoadTasprojExtras(bl, preload);
+		}
+		
+		private void LoadTasprojExtras(ZipStateLoader bl, bool preload)
+		{
+			bl.GetLump(BinaryStateLump.LagLog, false, delegate(TextReader tr)
+			{
+				LagLog.Load(tr);
+			});
+
+			bl.GetLump(BinaryStateLump.StateHistorySettings, false, delegate(TextReader tr)
+			{
+				var json = tr.ReadToEnd();
+				try
+				{
+					TasStateManager.Settings = JsonConvert.DeserializeObject<TasStateManagerSettings>(json);
+				}
+				catch
+				{
+					// Do nothing, and use default settings instead
+				}
+			});
+
+			bl.GetLump(BinaryStateLump.Markers, false, delegate(TextReader tr)
+			{
+				string line;
+				while ((line = tr.ReadLine()) != null)
+				{
+					if (!string.IsNullOrWhiteSpace(line))
+					{
+						Markers.Add(new TasMovieMarker(line));
+					}
+				}
+			});
+
+			if (GetClientSettingsOnLoad != null)
+			{
+				string clientSettings = "";
+				bl.GetLump(BinaryStateLump.ClientSettings, false, delegate(TextReader tr)
+				{
+					string line;
+					while ((line = tr.ReadLine()) != null)
+					{
+						if (!string.IsNullOrWhiteSpace(line))
+						{
+							clientSettings = line;
+						}
+					}
+				});
+
+				if (!string.IsNullOrWhiteSpace(clientSettings))
+				{
+					GetClientSettingsOnLoad(clientSettings);
+				}
+			}
+
+			bl.GetLump(BinaryStateLump.VerificationLog, false, delegate(TextReader tr)
+			{
+				VerificationLog.Clear();
+				while (true)
+				{
+					var line = tr.ReadLine();
+					if (string.IsNullOrEmpty(line))
+					{
+						break;
+					}
+
+					if (line.StartsWith("|"))
+					{
+						VerificationLog.Add(line);
+					}
+				}
+			});
+
+			Branches.Load(bl, this);
+
+			bl.GetLump(BinaryStateLump.Session, false, delegate(TextReader tr)
+			{
+				var json = tr.ReadToEnd();
+				try
+				{
+					TasSession = JsonConvert.DeserializeObject<TasSession>(json);
+				}
+				catch
+				{
+					// Do nothing, and use default settings instead
+				}
+			});
+
+			if (!preload)
+			{
+				if (TasStateManager.Settings.SaveStateHistory)
+				{
+					bl.GetLump(BinaryStateLump.StateHistory, false, delegate(BinaryReader br, long length)
+					{
+						TasStateManager.Load(br);
+					});
+				}
+			}
 		}
 	}
 }
