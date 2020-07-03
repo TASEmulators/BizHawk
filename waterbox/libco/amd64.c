@@ -18,7 +18,15 @@
 
 typedef struct {
 	// used by coswap.s, has to be at the beginning of the struct
-	uint64_t jmp_buf[32];
+	struct {
+		uint64_t rsp;
+		uint64_t rbp;
+		uint64_t rbx;
+		uint64_t r12;
+		uint64_t r13;
+		uint64_t r14;
+		uint64_t r15;
+	} jmp_buf;
 	// points to the lowest address in the stack
 	// NB: because of guard space, this is not valid stack
 	void* stack;
@@ -97,7 +105,7 @@ cothread_t co_create(unsigned int sz, void (*entrypoint)(void))
 		uint64_t* p = (uint64_t*)((char*)co->stack + co->stack_size); // seek to top of stack
 		*--p = (uint64_t)crash; // crash if entrypoint returns
 		*--p = (uint64_t)entrypoint; // start of function
-		co->jmp_buf[0] = (uint64_t)p; // stack pointer
+		co->jmp_buf.rsp = (uint64_t)p; // stack pointer
 	}
 
 	return co;

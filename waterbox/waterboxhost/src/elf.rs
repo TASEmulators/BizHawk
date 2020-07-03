@@ -195,7 +195,7 @@ impl ElfLoader {
 	pub fn native_init(&mut self, _b: &mut ActivatedMemoryBlock) {
 		println!("Calling _start()");
 		unsafe {
-			std::mem::transmute::<usize, extern "win64" fn() -> ()>(self.entry_point)();
+			std::mem::transmute::<usize, extern "sysv64" fn() -> ()>(self.entry_point)();
 		}
 	}
 	fn run_proc(&mut self, _b: &mut ActivatedMemoryBlock, name: &str) {
@@ -204,7 +204,7 @@ impl ElfLoader {
 			ptr => {
 				println!("Calling {}()", name);
 				unsafe {
-					std::mem::transmute::<usize, extern "win64" fn() -> ()>(ptr)();
+					std::mem::transmute::<usize, extern "sysv64" fn() -> ()>(ptr)();
 				}
 			},
 		}

@@ -3,49 +3,19 @@ section .text
 
 align 16
 co_swap:
-	mov [rdx],rsp
-	mov rsp,[rcx]
+	mov [rsi],rsp
+	mov rsp,[rdi]
 	pop rax
-	mov [rdx+ 8],rbp
-	mov [rdx+16],rsi
-	mov [rdx+24],rdi
-	mov [rdx+32],rbx
-	mov [rdx+40],r12
-	mov [rdx+48],r13
-	mov [rdx+56],r14
-	mov [rdx+64],r15
-;#if !defined(LIBCO_NO_SSE)
-	movaps [rdx+ 80],xmm6
-	movaps [rdx+ 96],xmm7
-	movaps [rdx+112],xmm8
-	add rdx,112
-	movaps [rdx+ 16],xmm9
-	movaps [rdx+ 32],xmm10
-	movaps [rdx+ 48],xmm11
-	movaps [rdx+ 64],xmm12
-	movaps [rdx+ 80],xmm13
-	movaps [rdx+ 96],xmm14
-	movaps [rdx+112],xmm15
-;#endif
-	mov rbp,[rcx+ 8]
-	mov rsi,[rcx+16]
-	mov rdi,[rcx+24]
-	mov rbx,[rcx+32]
-	mov r12,[rcx+40]
-	mov r13,[rcx+48]
-	mov r14,[rcx+56]
-	mov r15,[rcx+64]
-;#if !defined(LIBCO_NO_SSE)
-	movaps xmm6, [rcx+ 80]
-	movaps xmm7, [rcx+ 96]
-	movaps xmm8, [rcx+112]
-	add rcx,112
-	movaps xmm9, [rcx+ 16]
-	movaps xmm10,[rcx+ 32]
-	movaps xmm11,[rcx+ 48]
-	movaps xmm12,[rcx+ 64]
-	movaps xmm13,[rcx+ 80]
-	movaps xmm14,[rcx+ 96]
-	movaps xmm15,[rcx+112]
-;#endif
+	mov [rsi+ 8],rbp
+	mov [rsi+16],rbx
+	mov [rsi+24],r12
+	mov [rsi+32],r13
+	mov [rsi+40],r14
+	mov [rsi+48],r15
+	mov rbp,[rdi+ 8]
+	mov rbx,[rdi+16]
+	mov r12,[rdi+24]
+	mov r13,[rdi+32]
+	mov r14,[rdi+40]
+	mov r15,[rdi+48]
 	jmp rax

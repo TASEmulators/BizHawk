@@ -203,7 +203,7 @@ fn arg_to_statbuff<'a>(arg: usize) -> &'a mut KStat {
 	unsafe { &mut *(arg as *mut KStat) }
 }
 
-pub extern "win64" fn syscall(nr: SyscallNumber, ud: usize, a1: usize, a2: usize, a3: usize, a4: usize, _a5: usize, _a6: usize) -> SyscallReturn {
+pub extern "sysv64" fn syscall(nr: SyscallNumber, ud: usize, a1: usize, a2: usize, a3: usize, a4: usize, _a5: usize, _a6: usize) -> SyscallReturn {
 	let h = gethost(ud);
 	match nr {
 		NR_MMAP => {

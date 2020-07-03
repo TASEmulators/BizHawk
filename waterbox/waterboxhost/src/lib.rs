@@ -105,7 +105,7 @@ impl WbxSysLayout {
 #[derive(Copy, Clone)]
 pub struct WbxSysSyscall {
 	pub ud: usize,
-	pub syscall: extern "win64" fn(nr: SyscallNumber, ud: usize, a1: usize, a2: usize, a3: usize, a4: usize, a5: usize, a6: usize) -> SyscallReturn,
+	pub syscall: extern "sysv64" fn(nr: SyscallNumber, ud: usize, a1: usize, a2: usize, a3: usize, a4: usize, a5: usize, a6: usize) -> SyscallReturn,
 }
 
 /// Data that is injected into the guest application

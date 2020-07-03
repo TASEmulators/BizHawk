@@ -23,7 +23,7 @@ print-%: ;
 #LD_PLUGIN := $(shell gcc --print-file-name=liblto_plugin.so)
 
 CC := $(SYSROOT)/bin/musl-gcc
-COMMONFLAGS := -mabi=ms -fvisibility=hidden -I$(WATERBOX_DIR)/emulibc -Wall -mcmodel=large \
+COMMONFLAGS := -fvisibility=hidden -I$(WATERBOX_DIR)/emulibc -Wall -mcmodel=large \
 	-mstack-protector-guard=global -no-pie -fno-pic -fno-pie -fcf-protection=none \
 	-MD -MP
 CCFLAGS := $(CCFLAGS) $(COMMONFLAGS)
@@ -103,9 +103,12 @@ install-debug: $(TARGET_DEBUG)
 
 else
 
+# add fake rules that match the WBX_TARGETS case to ease use of all-cores.mak
+
 .DEFAULT_GOAL = all
 
-.PHONY: all
+.PHONY: all release debug install install-debug
+release debug install install-debug: all
 
 all: $(OBJS) $(DOBJS)
 
