@@ -281,7 +281,7 @@ namespace BizHawk.Client.EmuHawk
 			Database.InitializeDatabase(Path.Combine(PathUtils.ExeDirectoryPath, "gamedb", "gamedb.txt"));
 			BootGodDb.Initialize(Path.Combine(PathUtils.ExeDirectoryPath, "gamedb"));
 
-			GlobalWin.InputManager.ControllerInputCoalescer = new ControllerInputCoalescer();
+			InputManager.ControllerInputCoalescer = new ControllerInputCoalescer();
 			GlobalWin.FirmwareManager = new FirmwareManager();
 			MovieSession = new MovieSession(
 				Config.Movies,
@@ -418,9 +418,9 @@ namespace BizHawk.Client.EmuHawk
 			Input.Instance.Adapter.FirstInitAll(Handle);
 			InitControls();
 
-			GlobalWin.InputManager.ActiveController = new Controller(NullController.Instance.Definition);
-			GlobalWin.InputManager.AutoFireController = _autofireNullControls;
-			GlobalWin.InputManager.AutofireStickyXorAdapter.SetOnOffPatternFromConfig(Config.AutofireOn, Config.AutofireOff);
+			InputManager.ActiveController = new Controller(NullController.Instance.Definition);
+			InputManager.AutoFireController = _autofireNullControls;
+			InputManager.AutofireStickyXorAdapter.SetOnOffPatternFromConfig(Config.AutofireOn, Config.AutofireOff);
 			try
 			{
 				GlobalWin.Sound = new Sound(Handle);
@@ -659,26 +659,26 @@ namespace BizHawk.Client.EmuHawk
 				ProcessInput();
 				InputManager.ClientControls.LatchFromPhysical(_hotkeyCoalescer);
 
-				GlobalWin.InputManager.ActiveController.LatchFromPhysical(GlobalWin.InputManager.ControllerInputCoalescer);
+				InputManager.ActiveController.LatchFromPhysical(InputManager.ControllerInputCoalescer);
 
-				GlobalWin.InputManager.ActiveController.ApplyAxisConstraints(
+				InputManager.ActiveController.ApplyAxisConstraints(
 					(Emulator is N64 && Config.N64UseCircularAnalogConstraint) ? "Natural Circle" : null);
 
-				GlobalWin.InputManager.ActiveController.OR_FromLogical(InputManager.ClickyVirtualPadController);
-				InputManager.AutoFireController.LatchFromPhysical(GlobalWin.InputManager.ControllerInputCoalescer);
+				InputManager.ActiveController.OR_FromLogical(InputManager.ClickyVirtualPadController);
+				InputManager.AutoFireController.LatchFromPhysical(InputManager.ControllerInputCoalescer);
 
 				if (InputManager.ClientControls["Autohold"])
 				{
-					GlobalWin.InputManager.StickyXorAdapter.MassToggleStickyState(GlobalWin.InputManager.ActiveController.PressedButtons);
-					GlobalWin.InputManager.AutofireStickyXorAdapter.MassToggleStickyState(InputManager.AutoFireController.PressedButtons);
+					InputManager.StickyXorAdapter.MassToggleStickyState(InputManager.ActiveController.PressedButtons);
+					InputManager.AutofireStickyXorAdapter.MassToggleStickyState(InputManager.AutoFireController.PressedButtons);
 				}
 				else if (InputManager.ClientControls["Autofire"])
 				{
-					GlobalWin.InputManager.AutofireStickyXorAdapter.MassToggleStickyState(GlobalWin.InputManager.ActiveController.PressedButtons);
+					InputManager.AutofireStickyXorAdapter.MassToggleStickyState(InputManager.ActiveController.PressedButtons);
 				}
 
 				// autohold/autofire must not be affected by the following inputs
-				GlobalWin.InputManager.ActiveController.Overrides(GlobalWin.InputManager.ButtonOverrideAdapter);
+				InputManager.ActiveController.Overrides(InputManager.ButtonOverrideAdapter);
 
 				if (Tools.Has<LuaConsole>())
 				{
@@ -814,8 +814,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public void ClearHolds()
 		{
-			GlobalWin.InputManager.StickyXorAdapter.ClearStickies();
-			GlobalWin.InputManager.AutofireStickyXorAdapter.ClearStickies();
+			InputManager.StickyXorAdapter.ClearStickies();
+			InputManager.AutofireStickyXorAdapter.ClearStickies();
 
 			if (Tools.Has<VirtualpadTool>())
 			{
@@ -896,7 +896,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ProcessInput()
 		{
-			var conInput = (ControllerInputCoalescer)GlobalWin.InputManager.ControllerInputCoalescer;
+			var conInput = (ControllerInputCoalescer)InputManager.ControllerInputCoalescer;
 
 			for (; ; )
 			{
@@ -962,7 +962,7 @@ namespace BizHawk.Client.EmuHawk
 						break;
 					case 1: // Input overrides Hotkeys
 						conInput.Receive(ie);
-						if (!GlobalWin.InputManager.ActiveController.HasBinding(ie.LogicalButton.ToString()))
+						if (!InputManager.ActiveController.HasBinding(ie.LogicalButton.ToString()))
 						{
 							handled = false;
 							if (ie.EventType == Input.InputEventType.Press)
@@ -1201,7 +1201,7 @@ namespace BizHawk.Client.EmuHawk
 			// prohibit this operation if the current controls include LMouse
 			if (allowSuppress)
 			{
-				if (GlobalWin.InputManager.ActiveController.HasBinding("WMouse L"))
+				if (InputManager.ActiveController.HasBinding("WMouse L"))
 				{
 					return;
 				}
@@ -1959,7 +1959,7 @@ namespace BizHawk.Client.EmuHawk
 				controls.BindMulti(b.DisplayName, b.Bindings);
 			}
 
-			GlobalWin.InputManager.ClientControls = controls;
+			InputManager.ClientControls = controls;
 			_autofireNullControls = new AutofireController(
 				Emulator,
 				Config.AutofireOn,
@@ -2838,7 +2838,7 @@ namespace BizHawk.Client.EmuHawk
 
 				// zero 03-may-2014 - moved this before call to UpdateToolsBefore(), since it seems to clear the state which a lua event.framestart is going to want to alter
 				InputManager.ClickyVirtualPadController.FrameTick();
-				GlobalWin.InputManager.ButtonOverrideAdapter.FrameTick();
+				InputManager.ButtonOverrideAdapter.FrameTick();
 
 				if (IsTurboing)
 				{
@@ -2896,7 +2896,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				bool render = !InvisibleEmulation && (!_throttle.skipNextFrame || (_currAviWriter?.UsesVideo ?? false));
-				bool newFrame = Emulator.FrameAdvance(GlobalWin.InputManager.ControllerOutput, render, renderSound);
+				bool newFrame = Emulator.FrameAdvance(InputManager.ControllerOutput, render, renderSound);
 
 				MovieSession.HandleFrameAfter();
 
@@ -2917,7 +2917,7 @@ namespace BizHawk.Client.EmuHawk
 					InputManager.AutoFireController.IncrementStarts();
 				}
 
-				GlobalWin.InputManager.AutofireStickyXorAdapter.IncrementLoops(Emulator.CanPollInput() && Emulator.AsInputPollable().IsLagFrame);
+				InputManager.AutofireStickyXorAdapter.IncrementLoops(Emulator.CanPollInput() && Emulator.AsInputPollable().IsLagFrame);
 
 				PressFrameAdvance = false;
 
@@ -3700,9 +3700,9 @@ namespace BizHawk.Client.EmuHawk
 					DisplayManager.Blank();
 					CreateRewinder();
 
-					GlobalWin.InputManager.StickyXorAdapter.ClearStickies();
-					GlobalWin.InputManager.StickyXorAdapter.ClearStickyAxes();
-					GlobalWin.InputManager.AutofireStickyXorAdapter.ClearStickies();
+					InputManager.StickyXorAdapter.ClearStickies();
+					InputManager.StickyXorAdapter.ClearStickyAxes();
+					InputManager.AutofireStickyXorAdapter.ClearStickies();
 
 					RewireSound();
 					Tools.UpdateCheatRelatedTools(null, null);
@@ -3825,8 +3825,8 @@ namespace BizHawk.Client.EmuHawk
 			Emulator.Dispose();
 			Emulator = new NullEmulator();
 			ClientApi.UpdateEmulatorAndVP(Emulator);
-			GlobalWin.InputManager.ActiveController = new Controller(NullController.Instance.Definition);
-			GlobalWin.InputManager.AutoFireController = _autofireNullControls;
+			InputManager.ActiveController = new Controller(NullController.Instance.Definition);
+			InputManager.AutoFireController = _autofireNullControls;
 			RewireSound();
 			RebootStatusBarIcon.Visible = false;
 			GameIsClosing = false;
