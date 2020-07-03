@@ -171,9 +171,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
-		{
-			return true;
-		}
+		protected override bool ProcessCmdKey(ref Message msg, Keys keyData) => true;
 	}
 }

@@ -470,7 +470,7 @@ namespace BizHawk.Client.EmuHawk
 
 			foreach (var column in TasView.VisibleColumns)
 			{
-				if (GlobalWin.InputManager.StickyXorAdapter.IsSticky(column.Name))
+				if (InputManager.StickyXorAdapter.IsSticky(column.Name))
 				{
 					column.Emphasis = true;
 				}

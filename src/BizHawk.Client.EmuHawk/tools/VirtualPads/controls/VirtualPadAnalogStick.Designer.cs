@@ -145,14 +145,10 @@
 			// 
 			this.AnalogStick.BackColor = System.Drawing.Color.Gray;
 			this.AnalogStick.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.AnalogStick.ClearCallback = null;
 			this.AnalogStick.Location = new System.Drawing.Point(3, 3);
 			this.AnalogStick.Name = "AnalogStick";
-			this.AnalogStick.ReadOnly = false;
 			this.AnalogStick.Size = new System.Drawing.Size(164, 164);
 			this.AnalogStick.TabIndex = 0;
-			this.AnalogStick.X = 0;
-			this.AnalogStick.Y = 0;
 			this.AnalogStick.MouseDown += new System.Windows.Forms.MouseEventHandler(this.AnalogStick_MouseDown);
 			this.AnalogStick.MouseMove += new System.Windows.Forms.MouseEventHandler(this.AnalogStick_MouseMove);
 			// 

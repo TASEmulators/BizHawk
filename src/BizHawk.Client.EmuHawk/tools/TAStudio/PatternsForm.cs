@@ -267,12 +267,12 @@ namespace BizHawk.Client.EmuHawk
 			if ((SelectedButton != "Default float Auto-Fire") && (SelectedButton != "Default bool Auto-Fire"))
 			{
 				_tastudio.UpdateAutoFire(SelectedButton, null);
-			}			
+			}
 		}
 
 		private void GetPattern()
 		{
-			int index = GlobalWin.MovieSession.MovieController.Definition.BoolButtons.IndexOf(SelectedButton);
+			int index = _tastudio.MovieSession.MovieController.Definition.BoolButtons.IndexOf(SelectedButton);
 
 			if (SelectedButton == "Default bool Auto-Fire")
 			{

@@ -90,7 +90,7 @@ namespace BizHawk.Client.EmuHawk
 						MaxValue = singleAxis.MaxValue,
 						Orientation = singleAxis.Orientation
 					},
-					AnalogSchema analog => new VirtualPadAnalogStick
+					AnalogSchema analog => new VirtualPadAnalogStick(GlobalWin.InputManager)
 					{
 						Name = analog.Name,
 						SecondaryName = analog.SecondaryName,

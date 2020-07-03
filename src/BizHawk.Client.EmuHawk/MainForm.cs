@@ -309,7 +309,7 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.Game = GameInfo.NullInstance;
 			_throttle = new Throttle();
 			Emulator = new NullEmulator();
-			GlobalWin.Tools = new ToolManager(this, Config, Emulator, MovieSession, Game);
+			GlobalWin.Tools = new ToolManager(this, Config, InputManager, Emulator, MovieSession, Game);
 
 			UpdateStatusSlots();
 			UpdateKeyPriorityIcon();

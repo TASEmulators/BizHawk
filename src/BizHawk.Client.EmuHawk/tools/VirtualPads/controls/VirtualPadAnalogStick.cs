@@ -11,6 +11,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class VirtualPadAnalogStick : UserControl, IVirtualPadControl
 	{
+		private readonly InputManager _inputManager;
 		private bool _readonly;
 
 		private bool _updatingFromAnalog;
@@ -19,8 +20,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool _updatingFromXY;
 
-		public VirtualPadAnalogStick()
+		public VirtualPadAnalogStick(InputManager inputManager)
 		{
+			_inputManager = inputManager;
 			InitializeComponent();
 			AnalogStick.ClearCallback = ClearCallback;
 
@@ -39,6 +41,7 @@ namespace BizHawk.Client.EmuHawk
 		private void VirtualPadAnalogStick_Load(object sender, EventArgs e)
 		{
 			AnalogStick.Init(
+				_inputManager.StickyXorAdapter,
 				Name,
 				RangeX,
 				!string.IsNullOrEmpty(SecondaryName) ? SecondaryName : Name.Replace("X", "Y"),
@@ -77,11 +80,10 @@ namespace BizHawk.Client.EmuHawk
 			ManualY.Value = 0;
 			manualR.Value = 0;
 			manualTheta.Value = 0;
-			//see HOOMOO
-			GlobalWin.InputManager.AutofireStickyXorAdapter.SetSticky(AnalogStick.XName, false);
-			GlobalWin.InputManager.StickyXorAdapter.Unset(AnalogStick.XName);
-			GlobalWin.InputManager.AutofireStickyXorAdapter.SetSticky(AnalogStick.YName, false);
-			GlobalWin.InputManager.StickyXorAdapter.Unset(AnalogStick.YName);
+			_inputManager.AutofireStickyXorAdapter.SetSticky(AnalogStick.XName, false);
+			_inputManager.StickyXorAdapter.Unset(AnalogStick.XName);
+			_inputManager.AutofireStickyXorAdapter.SetSticky(AnalogStick.YName, false);
+			_inputManager.StickyXorAdapter.Unset(AnalogStick.YName);
 			AnalogStick.HasValue = false;
 		}
 

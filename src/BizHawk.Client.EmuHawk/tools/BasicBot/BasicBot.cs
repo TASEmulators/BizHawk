@@ -752,7 +752,7 @@ namespace BizHawk.Client.EmuHawk
 					foreach (var button in controller.Definition.BoolButtons)
 					{
 						// TODO: make an input adapter specifically for the bot?
-						GlobalWin.InputManager.ButtonOverrideAdapter.SetButton(button, controller.IsPressed(button));
+						InputManager.ButtonOverrideAdapter.SetButton(button, controller.IsPressed(button));
 					}
 				}
 				else
@@ -890,7 +890,7 @@ namespace BizHawk.Client.EmuHawk
 				double probability = _cachedControlProbabilities[button];
 				bool pressed = !(rand.Next(100) < probability);
 
-				GlobalWin.InputManager.ClickyVirtualPadController.SetBool(button, pressed);
+				InputManager.ClickyVirtualPadController.SetBool(button, pressed);
 			}
 
 			_currentBotAttempt.Log.Add(_logGenerator.GenerateLogEntry());
@@ -943,7 +943,7 @@ namespace BizHawk.Client.EmuHawk
 			UpdateBotStatusIcon();
 			MessageLabel.Text = "Running...";
 			_cachedControlProbabilities = ControlProbabilities;
-			_logGenerator = MovieSession.Movie.LogGeneratorInstance(GlobalWin.InputManager.ClickyVirtualPadController);
+			_logGenerator = MovieSession.Movie.LogGeneratorInstance(InputManager.ClickyVirtualPadController);
 		}
 
 		private string CanStart()

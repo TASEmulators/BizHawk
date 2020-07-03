@@ -1,7 +1,8 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
-
+using BizHawk.Client.Common;
 using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
@@ -10,9 +11,11 @@ namespace BizHawk.Client.EmuHawk
 {
 	public sealed class AnalogStickPanel : Panel
 	{
+		private StickyXorAdapter _stickyXorAdapter;
 		private int _x;
 		private int _y;
 
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public int X
 		{
 			get => _x;
@@ -23,6 +26,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public int Y
 		{
 			get => _y;
@@ -33,7 +37,10 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public bool HasValue;
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		public bool HasValue { get; set; }
+
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public bool ReadOnly { private get; set; }
 
 		public string XName { get; private set; } = string.Empty;
@@ -53,8 +60,9 @@ namespace BizHawk.Client.EmuHawk
 			Refresh();
 		}
 
-		public void Init(string nameX, AxisSpec rangeX, string nameY, AxisSpec rangeY)
+		public void Init(StickyXorAdapter stickyXorAdapter, string nameX, AxisSpec rangeX, string nameY, AxisSpec rangeY)
 		{
+			_stickyXorAdapter = stickyXorAdapter;
 			Name = XName = nameX;
 			_fullRangeX = rangeX;
 			YName = nameY;
@@ -127,12 +135,8 @@ namespace BizHawk.Client.EmuHawk
 		private readonly Bitmap _dot = new Bitmap(7, 7);
 		private readonly Bitmap _grayDot = new Bitmap(7, 7);
 
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public Action ClearCallback { private get; set; }
-
-		private void DoClearCallback()
-		{
-			ClearCallback?.Invoke();
-		}
 
 		public AnalogStickPanel()
 		{
@@ -163,8 +167,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetAnalog()
 		{
-			GlobalWin.InputManager.StickyXorAdapter.SetAxis(XName, HasValue ? X : (int?)null);
-			GlobalWin.InputManager.StickyXorAdapter.SetAxis(YName, HasValue ? Y : (int?)null);
+			_stickyXorAdapter.SetAxis(XName, HasValue ? X : (int?)null);
+			_stickyXorAdapter.SetAxis(YName, HasValue ? Y : (int?)null);
 			Refresh();
 		}
 
@@ -184,8 +188,8 @@ namespace BizHawk.Client.EmuHawk
 				// Previous frame
 				if (_previous != null)
 				{
-					var pX = (int)_previous.AxisValue(XName);
-					var pY = (int)_previous.AxisValue(YName);
+					var pX = _previous.AxisValue(XName);
+					var pY = _previous.AxisValue(YName);
 					e.Graphics.DrawLine(_grayPen, PixelMidX, PixelMidY, RealToGfxX(pX), RealToGfxY(pY));
 					e.Graphics.DrawImage(_grayDot, RealToGfxX(pX) - 3, RealToGfxY(_rangeY.EndInclusive) - RealToGfxY(pY) - 3);
 				}
@@ -255,14 +259,14 @@ namespace BizHawk.Client.EmuHawk
 			if (!HasValue && X == 0 && Y == 0) return;
 			X = Y = 0;
 			HasValue = false;
-			DoClearCallback();
+			ClearCallback?.Invoke();
 			Refresh();
 		}
 
 		public void Set(IController controller)
 		{
-			var newX = (int) controller.AxisValue(XName);
-			var newY = (int) controller.AxisValue(YName);
+			var newX = controller.AxisValue(XName);
+			var newY = controller.AxisValue(YName);
 			if (newX != X || newY != Y) SetPosition(newX, newY);
 		}
 

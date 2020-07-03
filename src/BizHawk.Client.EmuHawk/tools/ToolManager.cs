@@ -20,6 +20,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private readonly MainForm _owner;
 		private readonly Config _config;
+		private readonly InputManager _inputManager;
 		private IExternalApiProvider _apiProvider;
 		private IEmulator _emulator;
 		private IMovieSession _movieSession;
@@ -36,12 +37,14 @@ namespace BizHawk.Client.EmuHawk
 		public ToolManager(
 			MainForm owner,
 			Config config,
+			InputManager inputManager,
 			IEmulator emulator,
 			IMovieSession movieSession,
 			IGameInfo game)
 		{
 			_owner = owner;
 			_config = config;
+			_inputManager = inputManager;
 			_emulator = emulator;
 			_movieSession = movieSession;
 			_game = game;
@@ -75,6 +78,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				tool.Tools = this;
 				tool.Config = _config;
+				tool.InputManager = _inputManager;
 				tool.MainForm = _owner;
 				tool.MovieSession = _movieSession;
 				tool.Game = _game;
