@@ -6,7 +6,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
-	public interface IStickyController : IController
+	public interface IStickyController : IInputAdapter
 	{
 		bool IsSticky(string button);
 	}

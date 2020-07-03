@@ -6,7 +6,6 @@ using System.Collections.Generic;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
-using BizHawk.Client.Common.InputAdapterExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {

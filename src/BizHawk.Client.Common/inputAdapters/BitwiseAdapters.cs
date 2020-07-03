@@ -2,7 +2,7 @@
 
 namespace BizHawk.Client.Common
 {
-	public class AndAdapter : IController
+	public class AndAdapter : IInputAdapter
 	{
 		public ControllerDefinition Definition => Source.Definition;
 
@@ -20,11 +20,11 @@ namespace BizHawk.Client.Common
 		// this works in the code because SourceOr is the autofire controller
 		public int AxisValue(string name) => Source.AxisValue(name);
 
-		internal IController Source { get; set; }
+		public IController Source { get; set; }
 		internal IController SourceAnd { get; set; }
 	}
 
-	public class XorAdapter : IController
+	public class XorAdapter : IInputAdapter
 	{
 		public ControllerDefinition Definition => Source.Definition;
 
@@ -42,11 +42,11 @@ namespace BizHawk.Client.Common
 		// this works in the code because SourceOr is the autofire controller
 		public int AxisValue(string name) => Source.AxisValue(name);
 
-		internal IController Source { get; set; }
+		public IController Source { get; set; }
 		internal IController SourceXor { get; set; }
 	}
 
-	public class ORAdapter : IController
+	public class ORAdapter : IInputAdapter
 	{
 		public ControllerDefinition Definition => Source.Definition;
 
@@ -60,7 +60,7 @@ namespace BizHawk.Client.Common
 		// this works in the code because SourceOr is the autofire controller
 		public int AxisValue(string name) => Source.AxisValue(name);
 
-		internal IController Source { get; set; }
+		public IController Source { get; set; }
 		internal IController SourceOr { get; set; }
 	}
 }
