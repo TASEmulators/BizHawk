@@ -25,7 +25,7 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Provides a source for sticky controls ot use when recording
 		/// </summary>
-		IStickyController StickySource { get; set; }
+		IStickyAdapter StickySource { get; set; }
 
 		/// <summary>
 		/// Represents the input source that is fed to

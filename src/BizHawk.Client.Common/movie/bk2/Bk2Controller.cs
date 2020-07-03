@@ -59,7 +59,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void SetFromSticky(IStickyController controller)
+		public void SetFromSticky(IStickyAdapter controller)
 		{
 			foreach (var button in Definition.BoolButtons)
 			{
