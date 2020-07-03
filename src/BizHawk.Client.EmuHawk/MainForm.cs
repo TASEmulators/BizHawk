@@ -669,12 +669,11 @@ namespace BizHawk.Client.EmuHawk
 
 				if (InputManager.ClientControls["Autohold"])
 				{
-					InputManager.StickyXorAdapter.MassToggleStickyState(InputManager.ActiveController.PressedButtons);
-					InputManager.AutofireStickyXorAdapter.MassToggleStickyState(InputManager.AutoFireController.PressedButtons);
+					InputManager.ToggleStickies();
 				}
 				else if (InputManager.ClientControls["Autofire"])
 				{
-					InputManager.AutofireStickyXorAdapter.MassToggleStickyState(InputManager.ActiveController.PressedButtons);
+					InputManager.ToggleAutoStickies();
 				}
 
 				// autohold/autofire must not be affected by the following inputs

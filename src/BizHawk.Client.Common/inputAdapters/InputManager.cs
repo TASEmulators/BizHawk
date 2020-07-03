@@ -73,6 +73,17 @@ namespace BizHawk.Client.Common
 			ControllerOutput.Source = session.MovieOut;
 		}
 
+		public void ToggleStickies()
+		{
+			StickyXorAdapter.MassToggleStickyState(ActiveController.PressedButtons);
+			AutofireStickyXorAdapter.MassToggleStickyState(AutoFireController.PressedButtons);
+		}
+
+		public void ToggleAutoStickies()
+		{
+			AutofireStickyXorAdapter.MassToggleStickyState(ActiveController.PressedButtons);
+		}
+
 		private static Controller BindToDefinition(ControllerDefinition def, IDictionary<string, Dictionary<string, string>> allBinds, IDictionary<string, Dictionary<string, AnalogBind>> analogBinds)
 		{
 			var ret = new Controller(def);
