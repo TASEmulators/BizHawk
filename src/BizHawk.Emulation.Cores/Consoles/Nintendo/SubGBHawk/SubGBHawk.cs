@@ -1,4 +1,6 @@
-﻿using BizHawk.Common;
+﻿using System;
+using System.Collections.Generic;
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.SubGBHawk
@@ -10,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubGBHawk
 		isReleased: true)]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class SubGBHawk : IEmulator, IStatable, IInputPollable,
-		ISettable<GBHawk.GBHawk.GBSettings, GBHawk.GBHawk.GBSyncSettings>
+		ISettable<GBHawk.GBHawk.GBSettings, GBHawk.GBHawk.GBSyncSettings>, IDebuggable
 	{
 		[CoreConstructor(new[] { "GB", "GBC" })]
 		public SubGBHawk(CoreComm comm, GameInfo game, byte[] rom, /*string gameDbFn,*/ object settings, object syncSettings)
@@ -35,7 +37,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubGBHawk
 			ser.Register(_GBCore.ServiceProvider.GetService<ITraceable>());
 			ser.Register(_GBCore.ServiceProvider.GetService<IMemoryDomains>());
 			ser.Register(_GBCore.ServiceProvider.GetService<ISaveRam>());
-			ser.Register(_GBCore.ServiceProvider.GetService<IDebuggable>());
 			ser.Register(_GBCore.ServiceProvider.GetService<IRegionable>());
 			ser.Register(_GBCore.ServiceProvider.GetService<ICodeDataLogger>());
 
@@ -60,5 +61,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubGBHawk
 		public GBHawk.GBHawk.GBSyncSettings GetSyncSettings() => _GBCore.GetSyncSettings();
 		public PutSettingsDirtyBits PutSettings(GBHawk.GBHawk.GBSettings o) => _GBCore.PutSettings(o);
 		public PutSettingsDirtyBits PutSyncSettings(GBHawk.GBHawk.GBSyncSettings o) => _GBCore.PutSyncSettings(o);
+
+
+		// IDebuggable, declare here so TotalexecutedCycles can reflect the cycle count of the movie
+		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
+			=> _GBCore.cpu.GetCpuFlagsAndRegisters();
+
+		public void SetCpuRegister(string register, int value)
+			=> _GBCore.cpu.SetCpuRegister(register, value);
+
+		public IMemoryCallbackSystem MemoryCallbacks => _GBCore.MemoryCallbacks;
+
+		public bool CanStep(StepType type) => false;
+
+		[FeatureNotImplemented]
+		public void Step(StepType type) => throw new NotImplementedException();
+
+		public long TotalExecutedCycles => CycleCount;
 	}
 }
