@@ -247,9 +247,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// SoundMenuStrip
 			// 
-			this.SoundMenuStrip.Name = "SoundMenuStrip";
 			this.SoundMenuStrip.TabIndex = 4;
-			this.SoundMenuStrip.Text = "menuStrip1";
 			// 
 			// PCESoundDebugger
 			// 

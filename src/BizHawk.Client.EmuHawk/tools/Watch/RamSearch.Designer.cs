@@ -272,9 +272,7 @@ namespace BizHawk.Client.EmuHawk
             this.settingsToolStripMenuItem,
             this.searchToolStripMenuItem,
             this.optionsToolStripMenuItem});
-			this.RamSearchMenu.Name = "RamSearchMenu";
 			this.RamSearchMenu.TabIndex = 4;
-			this.RamSearchMenu.Text = "menuStrip1";
 			// 
 			// fileToolStripMenuItem
 			// 

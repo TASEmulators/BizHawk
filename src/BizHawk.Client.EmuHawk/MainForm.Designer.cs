@@ -405,9 +405,7 @@ namespace BizHawk.Client.EmuHawk
 			this.amstradCPCToolStripMenuItem,
 			this.HelpSubMenu});
 			this.MainformMenu.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
-			this.MainformMenu.Name = "MainformMenu";
 			this.MainformMenu.TabIndex = 0;
-			this.MainformMenu.Text = "menuStrip1";
 			this.MainformMenu.MenuActivate += new System.EventHandler(this.MainformMenu_MenuActivate);
 			this.MainformMenu.MenuDeactivate += new System.EventHandler(this.MainformMenu_MenuDeactivate);
 			// 

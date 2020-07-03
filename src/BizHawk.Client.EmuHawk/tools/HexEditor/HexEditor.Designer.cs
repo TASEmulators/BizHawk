@@ -105,9 +105,7 @@ namespace BizHawk.Client.EmuHawk
             this.EditMenuItem,
             this.OptionsSubMenu,
             this.SettingsSubMenu});
-			this.HexMenuStrip.Name = "HexMenuStrip";
 			this.HexMenuStrip.TabIndex = 1;
-			this.HexMenuStrip.Text = "menuStrip1";
 			// 
 			// FileSubMenu
 			// 
