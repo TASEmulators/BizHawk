@@ -35,6 +35,7 @@ using BizHawk.Emulation.Cores.Nintendo.SNES9X;
 using BizHawk.Emulation.Cores.Consoles.SNK;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.Faust;
+using BizHawk.Client.EmuHawk.Filters;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -806,10 +807,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool IsTurboSeeking => PauseOnFrame.HasValue && Config.TurboSeek;
 		public bool IsTurboing => InputManager.ClientControls["Turbo"] || IsTurboSeeking;
 
-		public void AddOnScreenMessage(string message)
-		{
-			GlobalWin.OSD.AddMessage(message);
-		}
+		public void AddOnScreenMessage(string message) => OSD.AddMessage(message);
 
 		public void ClearHolds()
 		{
@@ -844,6 +842,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private InputManager InputManager => GlobalWin.InputManager;
+		private OSDManager OSD => GlobalWin.OSD;
 
 		private IVideoProvider _currentVideoProvider = NullVideo.Instance;
 
@@ -2831,7 +2830,7 @@ namespace BizHawk.Client.EmuHawk
 				_lastFastForwardingOrRewinding = isFastForwardingOrRewinding;
 
 				// client input-related duties
-				GlobalWin.OSD.ClearGuiText();
+				OSD.ClearGuiText();
 
 				CheatList.Pulse();
 
@@ -3011,7 +3010,7 @@ namespace BizHawk.Client.EmuHawk
 					" >>";
 			}
 
-			GlobalWin.OSD.Fps = fpsString;
+			OSD.Fps = fpsString;
 
 			// need to refresh window caption in this case
 			if (Config.DispSpeedupFeatures == 0)
@@ -3510,7 +3509,7 @@ namespace BizHawk.Client.EmuHawk
 					ChooseArchive = LoadArchiveChooser,
 					ChoosePlatform = ChoosePlatformForRom,
 					Deterministic = deterministic,
-					MessageCallback = GlobalWin.OSD.AddMessage,
+					MessageCallback = OSD.AddMessage,
 					OpenAdvanced = args.OpenAdvanced
 				};
 				GlobalWin.FirmwareManager.RecentlyServed.Clear();
@@ -3950,7 +3949,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (new SavestateFile(Emulator, MovieSession, GlobalWin.UserBag).Load(path))
 			{
-				GlobalWin.OSD.ClearGuiText();
+				OSD.ClearGuiText();
 				ClientApi.OnStateLoaded(this, userFriendlyStateName);
 
 				if (Tools.Has<LuaConsole>())
