@@ -48,15 +48,6 @@ namespace BizHawk.Client.Common
 		/// <value></value>
 		public long Size => _buffer.Size;
 
-		private readonly int _targetFrameLength;
-
-		private struct StateInfo
-		{
-			public long Start;
-			public int Size;
-			public int Frame;
-		}
-
 		/// <summary>
 		/// TODO: This is not a frequency, it's the reciprocal
 		/// </summary>
