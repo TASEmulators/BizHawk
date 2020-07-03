@@ -176,6 +176,12 @@ namespace BizHawk.Client.Common
 					}
 				}
 			});
+			// EmulatorVersion used to store the unchanging original emulator version.
+			if (!Header.ContainsKey(HeaderKeys.OriginalEmulatorVersion))
+			{
+				Header[HeaderKeys.OriginalEmulatorVersion] = Header[HeaderKeys.EmulatorVersion];
+			}
+			Header[HeaderKeys.EmulatorVersion] = VersionInfo.GetEmuVersion();
 
 			bl.GetLump(BinaryStateLump.Comments, false, delegate(TextReader tr)
 			{

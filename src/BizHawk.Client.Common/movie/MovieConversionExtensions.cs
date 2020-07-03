@@ -191,6 +191,7 @@ namespace BizHawk.Client.Common
 		{
 			movie.Author = author;
 			movie.EmulatorVersion = VersionInfo.GetEmuVersion();
+			movie.OriginalEmulatorVersion = VersionInfo.GetEmuVersion();
 			movie.SystemID = emulator.SystemId;
 
 			var settable = new SettingsAdapter(emulator);
