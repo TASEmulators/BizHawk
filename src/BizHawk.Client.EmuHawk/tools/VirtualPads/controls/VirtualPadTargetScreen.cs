@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class VirtualPadTargetScreen : UserControl, IVirtualPadControl
 	{
+		private readonly StickyXorAdapter _stickyXorAdapter;
 		private readonly Pen BlackPen = new Pen(Brushes.Black, 2);
 		private readonly Pen GrayPen = new Pen(Brushes.Gray, 2);
 		private readonly Pen RedPen = new Pen(Brushes.Red, 2);
@@ -19,8 +21,9 @@ namespace BizHawk.Client.EmuHawk
 		private int? _overrideX;
 		private int? _overrideY;
 
-		public VirtualPadTargetScreen()
+		public VirtualPadTargetScreen(StickyXorAdapter stickyXorAdapter)
 		{
+			_stickyXorAdapter = stickyXorAdapter;
 			InitializeComponent();
 		}
 
@@ -37,8 +40,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Clear()
 		{
-			GlobalWin.InputManager.StickyXorAdapter.Unset(XName);
-			GlobalWin.InputManager.StickyXorAdapter.Unset(YName);
+			_stickyXorAdapter.Unset(XName);
+			_stickyXorAdapter.Unset(YName);
 			_overrideX = null;
 			_overrideY = null;
 			_isSet = false;
@@ -158,7 +161,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public int X
 		{
-			get => _overrideX ?? (int)(GlobalWin.InputManager.StickyXorAdapter.AxisValue(XName) / MultiplierX);
+			get => _overrideX ?? (int)(_stickyXorAdapter.AxisValue(XName) / MultiplierX);
 			set
 			{
 				if (value < 0)
@@ -175,13 +178,13 @@ namespace BizHawk.Client.EmuHawk
 					XNumeric.Value = XNumeric.Maximum;
 				}
 
-				GlobalWin.InputManager.StickyXorAdapter.SetAxis(XName, (int)((float)XNumeric.Value * MultiplierX));
+				_stickyXorAdapter.SetAxis(XName, (int)((float)XNumeric.Value * MultiplierX));
 				_isSet = true;
 			}
 		}
 		public int Y
 		{
-			get => _overrideY ?? (int)(GlobalWin.InputManager.StickyXorAdapter.AxisValue(YName) / MultiplierY);
+			get => _overrideY ?? (int)(_stickyXorAdapter.AxisValue(YName) / MultiplierY);
 			set
 			{
 				if (value < 0)
@@ -197,7 +200,7 @@ namespace BizHawk.Client.EmuHawk
 					YNumeric.Value = YNumeric.Maximum;
 				}
 
-				GlobalWin.InputManager.StickyXorAdapter.SetAxis(YName, (int)((float)YNumeric.Value * MultiplierY));
+				_stickyXorAdapter.SetAxis(YName, (int)((float)YNumeric.Value * MultiplierY));
 				_isSet = true;
 			}
 		}

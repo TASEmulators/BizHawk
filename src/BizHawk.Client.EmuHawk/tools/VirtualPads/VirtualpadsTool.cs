@@ -108,7 +108,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			ControllerPanel.Controls.AddRange(padSchemata.Select(s => (Control) new VirtualPad(s)).Reverse().ToArray());
+			ControllerPanel.Controls.AddRange(padSchemata.Select(s => (Control) new VirtualPad(s, InputManager)).Reverse().ToArray());
 		}
 
 		public void ScrollToPadSchema(string padSchemaName)
@@ -181,7 +181,7 @@ namespace BizHawk.Client.EmuHawk
 			return null;
 		}
 
-		public IController PreviousFrame()
+		private IController PreviousFrame()
 		{
 			if (MovieSession.Movie.IsPlayingOrRecording() && Emulator.Frame > 1)
 			{

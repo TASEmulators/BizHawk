@@ -5,12 +5,14 @@ using System.Windows.Forms;
 
 using BizHawk.Emulation.Common;
 using System.Drawing;
+using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class VirtualPad : UserControl
 	{
 		private readonly PadSchema _schema;
+		private readonly InputManager _inputManager;
 		private bool _readOnly;
 
 		public void UpdateValues()
@@ -36,7 +38,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public VirtualPad(PadSchema schema)
+		public VirtualPad(PadSchema schema, InputManager inputManager)
 		{
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			SetStyle(ControlStyles.UserPaint, true);
@@ -44,6 +46,7 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 			Dock = DockStyle.Top | DockStyle.Left;
 			_schema = schema;
+			_inputManager = inputManager;
 		}
 
 		private void VirtualPadControl_Load(object sender, EventArgs e)
@@ -72,7 +75,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (_schema.IsConsole)
 			{
-				this.PadBox.ForeColor = SystemColors.HotTrack;
+				PadBox.ForeColor = SystemColors.HotTrack;
 			}
 
 			foreach (var controlSchema in _schema.Buttons)
@@ -80,7 +83,7 @@ namespace BizHawk.Client.EmuHawk
 				PadBox.Controls.Add(controlSchema switch
 				{
 					ButtonSchema button => GenVirtualPadButton(button),
-					SingleAxisSchema singleAxis => new VirtualPadAnalogButton
+					SingleAxisSchema singleAxis => new VirtualPadAnalogButton(_inputManager.StickyXorAdapter)
 					{
 						Name = singleAxis.Name,
 						DisplayName = singleAxis.DisplayName,
@@ -90,7 +93,7 @@ namespace BizHawk.Client.EmuHawk
 						MaxValue = singleAxis.MaxValue,
 						Orientation = singleAxis.Orientation
 					},
-					AnalogSchema analog => new VirtualPadAnalogStick(GlobalWin.InputManager)
+					AnalogSchema analog => new VirtualPadAnalogStick(_inputManager)
 					{
 						Name = analog.Name,
 						SecondaryName = analog.SecondaryName,
@@ -99,7 +102,7 @@ namespace BizHawk.Client.EmuHawk
 						RangeX = analog.Spec,
 						RangeY = analog.SecondarySpec
 					},
-					TargetedPairSchema targetedPair => new VirtualPadTargetScreen
+					TargetedPairSchema targetedPair => new VirtualPadTargetScreen(_inputManager.StickyXorAdapter)
 					{
 						Name = targetedPair.Name,
 						Location = UIHelper.Scale(targetedPair.Location),
@@ -107,9 +110,9 @@ namespace BizHawk.Client.EmuHawk
 						XName = targetedPair.Name,
 						YName = targetedPair.SecondaryName,
 						RangeX = targetedPair.MaxValue,
-						RangeY = targetedPair.MaxValue //TODO split into MaxX and MaxY, and rename VirtualPadTargetScreen.RangeX/RangeY
+						RangeY = targetedPair.MaxValue // TODO split into MaxX and MaxY, and rename VirtualPadTargetScreen.RangeX/RangeY
 					},
-					DiscManagerSchema discManager => new VirtualPadDiscManager(discManager.SecondaryNames) {
+					DiscManagerSchema discManager => new VirtualPadDiscManager(_inputManager.StickyXorAdapter, discManager.SecondaryNames) {
 						Name = discManager.Name,
 						Location = UIHelper.Scale(discManager.Location),
 						Size = UIHelper.Scale(discManager.TargetSize),
