@@ -42,19 +42,19 @@ namespace BizHawk.Client.EmuHawk
 			this.columnHeader8 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.columnHeader7 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.lvFirmwaresContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.tsmiSetCustomization = new System.Windows.Forms.ToolStripMenuItem();
-			this.tsmiClearCustomization = new System.Windows.Forms.ToolStripMenuItem();
-			this.tsmiInfo = new System.Windows.Forms.ToolStripMenuItem();
-			this.tsmiCopy = new System.Windows.Forms.ToolStripMenuItem();
+			this.tsmiSetCustomization = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.tsmiClearCustomization = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.tsmiInfo = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.tsmiCopy = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.toolStrip1 = new ToolStripEx();
 			this.tbbGroup = new System.Windows.Forms.ToolStripButton();
-			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+			this.toolStripSeparator2 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.tbbScan = new System.Windows.Forms.ToolStripButton();
 			this.tbbOrganize = new System.Windows.Forms.ToolStripButton();
 			this.tbbImport = new System.Windows.Forms.ToolStripButton();
 			this.tbbClose = new System.Windows.Forms.ToolStripButton();
-			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+			this.toolStripSeparator1 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.tbbCloseReload = new System.Windows.Forms.ToolStripButton();
 			this.tbbOpenFolder = new System.Windows.Forms.ToolStripButton();
 			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
@@ -156,29 +156,21 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// tsmiSetCustomization
 			// 
-			this.tsmiSetCustomization.Name = "tsmiSetCustomization";
-			this.tsmiSetCustomization.Size = new System.Drawing.Size(181, 22);
 			this.tsmiSetCustomization.Text = "&Set Customization";
 			this.tsmiSetCustomization.Click += new System.EventHandler(this.tsmiSetCustomization_Click);
 			// 
 			// tsmiClearCustomization
 			// 
-			this.tsmiClearCustomization.Name = "tsmiClearCustomization";
-			this.tsmiClearCustomization.Size = new System.Drawing.Size(181, 22);
 			this.tsmiClearCustomization.Text = "C&lear Customization";
 			this.tsmiClearCustomization.Click += new System.EventHandler(this.tsmiClearCustomization_Click);
 			// 
 			// tsmiInfo
 			// 
-			this.tsmiInfo.Name = "tsmiInfo";
-			this.tsmiInfo.Size = new System.Drawing.Size(181, 22);
 			this.tsmiInfo.Text = "&Info";
 			this.tsmiInfo.Click += new System.EventHandler(this.tsmiInfo_Click);
 			// 
 			// tsmiCopy
 			// 
-			this.tsmiCopy.Name = "tsmiCopy";
-			this.tsmiCopy.Size = new System.Drawing.Size(181, 22);
 			this.tsmiCopy.Text = "&Copy";
 			this.tsmiCopy.Click += new System.EventHandler(this.tsmiCopy_Click);
 			// 
@@ -220,11 +212,6 @@ namespace BizHawk.Client.EmuHawk
 			this.tbbGroup.Text = "Group";
 			this.tbbGroup.Click += new System.EventHandler(this.tbbGroup_Click);
 			// 
-			// toolStripSeparator2
-			// 
-			this.toolStripSeparator2.Name = "toolStripSeparator2";
-			this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
-			// 
 			// tbbScan
 			// 
 			this.tbbScan.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
@@ -262,12 +249,7 @@ namespace BizHawk.Client.EmuHawk
 			this.tbbClose.Size = new System.Drawing.Size(40, 22);
 			this.tbbClose.Text = "Close";
 			this.tbbClose.Click += new System.EventHandler(this.tbbClose_Click);
-			// 
-			// toolStripSeparator1
-			// 
 			this.toolStripSeparator1.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
 			this.toolStripSeparator1.Visible = false;
 			// 
 			// tbbCloseReload
@@ -381,7 +363,7 @@ namespace BizHawk.Client.EmuHawk
 				private System.Windows.Forms.Panel panel1;
 				private ToolStripEx toolStrip1;
 				private System.Windows.Forms.ToolStripButton tbbGroup;
-				private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+				private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator2;
 				private System.Windows.Forms.ToolStripButton tbbScan;
 				private System.Windows.Forms.ToolStripButton tbbOrganize;
 				private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
@@ -391,10 +373,10 @@ namespace BizHawk.Client.EmuHawk
 				private System.Windows.Forms.ColumnHeader columnHeader3;
 				private System.Windows.Forms.ColumnHeader columnHeader7;
 				private System.Windows.Forms.ContextMenuStrip lvFirmwaresContextMenuStrip;
-				private System.Windows.Forms.ToolStripMenuItem tsmiSetCustomization;
-				private System.Windows.Forms.ToolStripMenuItem tsmiClearCustomization;
-				private System.Windows.Forms.ToolStripMenuItem tsmiInfo;
-				private System.Windows.Forms.ToolStripMenuItem tsmiCopy;
+				private BizHawk.WinForms.Controls.ToolStripMenuItemEx tsmiSetCustomization;
+				private BizHawk.WinForms.Controls.ToolStripMenuItemEx tsmiClearCustomization;
+				private BizHawk.WinForms.Controls.ToolStripMenuItemEx tsmiInfo;
+				private BizHawk.WinForms.Controls.ToolStripMenuItemEx tsmiCopy;
 				private System.Windows.Forms.Panel panel2;
 				private System.Windows.Forms.LinkLabel linkBasePath;
 				private BizHawk.WinForms.Controls.LocLabelEx label1;
@@ -402,7 +384,7 @@ namespace BizHawk.Client.EmuHawk
 				private System.Windows.Forms.ColumnHeader columnHeader8;
 				private System.Windows.Forms.ToolStripButton tbbClose;
 				private System.Windows.Forms.ToolStripButton tbbCloseReload;
-				private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+				private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator1;
 		private BizHawk.WinForms.Controls.LocLabelEx label2;
         private System.Windows.Forms.ToolStripButton tbbOpenFolder;
     }

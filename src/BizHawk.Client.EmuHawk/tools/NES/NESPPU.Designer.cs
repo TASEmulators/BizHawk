@@ -36,15 +36,15 @@ namespace BizHawk.Client.EmuHawk
 			this.Table0PaletteLabel = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.PatternView = new BizHawk.Client.EmuHawk.PatternViewer();
 			this.PatternContext = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.PatternSaveImageMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.PatternImageToClipboardMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.PatternRefreshMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.PatternSaveImageMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.PatternImageToClipboardMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.PatternRefreshMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.PalettesGroup = new System.Windows.Forms.GroupBox();
 			this.PaletteView = new BizHawk.Client.EmuHawk.PaletteViewer();
 			this.PaletteContext = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.PaletteSaveImageMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.PaletteImageToClipboardMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.PaletteRefreshMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.PaletteSaveImageMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.PaletteImageToClipboardMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.PaletteRefreshMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.DetailsBox = new System.Windows.Forms.GroupBox();
 			this.label2 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.Value5Label = new BizHawk.WinForms.Controls.LocLabelEx();
@@ -58,9 +58,9 @@ namespace BizHawk.Client.EmuHawk
 			this.SpriteViewerBox = new System.Windows.Forms.GroupBox();
 			this.SpriteView = new BizHawk.Client.EmuHawk.SpriteViewer();
 			this.SpriteContext = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.SpriteSaveImageMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.SpriteImageToClipboardMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.SpriteRefreshMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.SpriteSaveImageMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.SpriteImageToClipboardMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.SpriteRefreshMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.txtScanline = new System.Windows.Forms.TextBox();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -68,37 +68,37 @@ namespace BizHawk.Client.EmuHawk
 			this.label3 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.RefreshRate = new System.Windows.Forms.TrackBar();
 			this.NesPPUMenu = new MenuStripEx();
-			this.FileSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.SavePaletteScreenshotMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.SavePatternScreenshotMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.SaveSpriteScreenshotMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-			this.CopyPaletteToClipboardMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.CopyPatternToClipboardMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.CopySpriteToClipboardMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-			this.ExitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.PatternSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.Table0PaletteSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.Table0P0MenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.Table0P1MenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.Table0P2MenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.Table0P3MenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.Table0P4MenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.Table0P5MenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.Table0P6MenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.Table0P7MenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.Table1PaletteSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.Table1P0MenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.Table1P1MenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.Table1P2MenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.Table1P3MenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.Table1P4MenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.Table1P5MenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.Table1P6MenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.Table1P7MenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.SettingsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.cHRROMTileViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.FileSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.SavePaletteScreenshotMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.SavePatternScreenshotMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.SaveSpriteScreenshotMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.toolStripSeparator1 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
+			this.CopyPaletteToClipboardMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.CopyPatternToClipboardMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.CopySpriteToClipboardMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.toolStripSeparator2 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
+			this.ExitMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.PatternSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.Table0PaletteSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.Table0P0MenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.Table0P1MenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.Table0P2MenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.Table0P3MenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.Table0P4MenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.Table0P5MenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.Table0P6MenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.Table0P7MenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.Table1PaletteSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.Table1P0MenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.Table1P1MenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.Table1P2MenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.Table1P3MenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.Table1P4MenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.Table1P5MenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.Table1P6MenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.Table1P7MenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.SettingsSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.cHRROMTileViewerToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.NesPPUStatusBar = new StatusStripEx();
 			this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
 			this.Messagetimer = new System.Windows.Forms.Timer(this.components);
@@ -178,22 +178,16 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// PatternSaveImageMenuItem
 			// 
-			this.PatternSaveImageMenuItem.Name = "PatternSaveImageMenuItem";
-			this.PatternSaveImageMenuItem.Size = new System.Drawing.Size(214, 26);
 			this.PatternSaveImageMenuItem.Text = "&Save Image...";
 			this.PatternSaveImageMenuItem.Click += new System.EventHandler(this.SavePatternScreenshotMenuItem_Click);
 			// 
 			// PatternImageToClipboardMenuItem
 			// 
-			this.PatternImageToClipboardMenuItem.Name = "PatternImageToClipboardMenuItem";
-			this.PatternImageToClipboardMenuItem.Size = new System.Drawing.Size(214, 26);
 			this.PatternImageToClipboardMenuItem.Text = "Image to &Clipboard";
 			this.PatternImageToClipboardMenuItem.Click += new System.EventHandler(this.CopyPatternToClipboardMenuItem_Click);
 			// 
 			// PatternRefreshMenuItem
 			// 
-			this.PatternRefreshMenuItem.Name = "PatternRefreshMenuItem";
-			this.PatternRefreshMenuItem.Size = new System.Drawing.Size(214, 26);
 			this.PatternRefreshMenuItem.Text = "&Refresh";
 			this.PatternRefreshMenuItem.Click += new System.EventHandler(this.PatternRefreshMenuItem_Click);
 			// 
@@ -236,22 +230,16 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// PaletteSaveImageMenuItem
 			// 
-			this.PaletteSaveImageMenuItem.Name = "PaletteSaveImageMenuItem";
-			this.PaletteSaveImageMenuItem.Size = new System.Drawing.Size(214, 26);
 			this.PaletteSaveImageMenuItem.Text = "&Save Image...";
 			this.PaletteSaveImageMenuItem.Click += new System.EventHandler(this.SavePaletteScreenshotMenuItem_Click);
 			// 
 			// PaletteImageToClipboardMenuItem
 			// 
-			this.PaletteImageToClipboardMenuItem.Name = "PaletteImageToClipboardMenuItem";
-			this.PaletteImageToClipboardMenuItem.Size = new System.Drawing.Size(214, 26);
 			this.PaletteImageToClipboardMenuItem.Text = "Image to &Clipboard";
 			this.PaletteImageToClipboardMenuItem.Click += new System.EventHandler(this.CopyPaletteToClipboardMenuItem_Click);
 			// 
 			// PaletteRefreshMenuItem
 			// 
-			this.PaletteRefreshMenuItem.Name = "PaletteRefreshMenuItem";
-			this.PaletteRefreshMenuItem.Size = new System.Drawing.Size(214, 26);
 			this.PaletteRefreshMenuItem.Text = "&Refresh";
 			this.PaletteRefreshMenuItem.Click += new System.EventHandler(this.PaletteRefreshMenuItem_Click);
 			// 
@@ -380,22 +368,16 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// SpriteSaveImageMenuItem
 			// 
-			this.SpriteSaveImageMenuItem.Name = "SpriteSaveImageMenuItem";
-			this.SpriteSaveImageMenuItem.Size = new System.Drawing.Size(214, 26);
 			this.SpriteSaveImageMenuItem.Text = "&Save Image...";
 			this.SpriteSaveImageMenuItem.Click += new System.EventHandler(this.SaveSpriteScreenshotMenuItem_Click);
 			// 
 			// SpriteImageToClipboardMenuItem
 			// 
-			this.SpriteImageToClipboardMenuItem.Name = "SpriteImageToClipboardMenuItem";
-			this.SpriteImageToClipboardMenuItem.Size = new System.Drawing.Size(214, 26);
 			this.SpriteImageToClipboardMenuItem.Text = "Image to &Clipboard";
 			this.SpriteImageToClipboardMenuItem.Click += new System.EventHandler(this.CopySpriteToClipboardMenuItem_Click);
 			// 
 			// SpriteRefreshMenuItem
 			// 
-			this.SpriteRefreshMenuItem.Name = "SpriteRefreshMenuItem";
-			this.SpriteRefreshMenuItem.Size = new System.Drawing.Size(214, 26);
 			this.SpriteRefreshMenuItem.Text = "&Refresh";
 			this.SpriteRefreshMenuItem.Click += new System.EventHandler(this.SpriteRefreshMenuItem_Click);
 			// 
@@ -487,66 +469,40 @@ namespace BizHawk.Client.EmuHawk
             this.CopySpriteToClipboardMenuItem,
             this.toolStripSeparator2,
             this.ExitMenuItem});
-			this.FileSubMenu.Name = "FileSubMenu";
-			this.FileSubMenu.Size = new System.Drawing.Size(44, 24);
 			this.FileSubMenu.Text = "&File";
 			// 
 			// SavePaletteScreenshotMenuItem
 			// 
-			this.SavePaletteScreenshotMenuItem.Name = "SavePaletteScreenshotMenuItem";
-			this.SavePaletteScreenshotMenuItem.Size = new System.Drawing.Size(256, 26);
 			this.SavePaletteScreenshotMenuItem.Text = "Save Palette Screenshot...";
 			this.SavePaletteScreenshotMenuItem.Click += new System.EventHandler(this.SavePaletteScreenshotMenuItem_Click);
 			// 
 			// SavePatternScreenshotMenuItem
 			// 
-			this.SavePatternScreenshotMenuItem.Name = "SavePatternScreenshotMenuItem";
-			this.SavePatternScreenshotMenuItem.Size = new System.Drawing.Size(256, 26);
 			this.SavePatternScreenshotMenuItem.Text = "Save Pattern Screenshot...";
 			this.SavePatternScreenshotMenuItem.Click += new System.EventHandler(this.SavePatternScreenshotMenuItem_Click);
 			// 
 			// SaveSpriteScreenshotMenuItem
 			// 
-			this.SaveSpriteScreenshotMenuItem.Name = "SaveSpriteScreenshotMenuItem";
-			this.SaveSpriteScreenshotMenuItem.Size = new System.Drawing.Size(256, 26);
 			this.SaveSpriteScreenshotMenuItem.Text = "Save Sprite Screenshot...";
 			this.SaveSpriteScreenshotMenuItem.Click += new System.EventHandler(this.SaveSpriteScreenshotMenuItem_Click);
 			// 
-			// toolStripSeparator1
-			// 
-			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(253, 6);
-			// 
 			// CopyPaletteToClipboardMenuItem
 			// 
-			this.CopyPaletteToClipboardMenuItem.Name = "CopyPaletteToClipboardMenuItem";
-			this.CopyPaletteToClipboardMenuItem.Size = new System.Drawing.Size(256, 26);
 			this.CopyPaletteToClipboardMenuItem.Text = "Copy Palette to Clipboard";
 			this.CopyPaletteToClipboardMenuItem.Click += new System.EventHandler(this.CopyPaletteToClipboardMenuItem_Click);
 			// 
 			// CopyPatternToClipboardMenuItem
 			// 
-			this.CopyPatternToClipboardMenuItem.Name = "CopyPatternToClipboardMenuItem";
-			this.CopyPatternToClipboardMenuItem.Size = new System.Drawing.Size(256, 26);
 			this.CopyPatternToClipboardMenuItem.Text = "Copy Pattern to Clipboard";
 			this.CopyPatternToClipboardMenuItem.Click += new System.EventHandler(this.CopyPatternToClipboardMenuItem_Click);
 			// 
 			// CopySpriteToClipboardMenuItem
 			// 
-			this.CopySpriteToClipboardMenuItem.Name = "CopySpriteToClipboardMenuItem";
-			this.CopySpriteToClipboardMenuItem.Size = new System.Drawing.Size(256, 26);
 			this.CopySpriteToClipboardMenuItem.Text = "Copy Sprite to Clipboard";
 			this.CopySpriteToClipboardMenuItem.Click += new System.EventHandler(this.CopySpriteToClipboardMenuItem_Click);
 			// 
-			// toolStripSeparator2
-			// 
-			this.toolStripSeparator2.Name = "toolStripSeparator2";
-			this.toolStripSeparator2.Size = new System.Drawing.Size(253, 6);
-			// 
 			// ExitMenuItem
 			// 
-			this.ExitMenuItem.Name = "ExitMenuItem";
-			this.ExitMenuItem.Size = new System.Drawing.Size(256, 26);
 			this.ExitMenuItem.Text = "E&xit";
 			this.ExitMenuItem.Click += new System.EventHandler(this.ExitMenuItem_Click);
 			// 
@@ -555,8 +511,6 @@ namespace BizHawk.Client.EmuHawk
 			this.PatternSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.Table0PaletteSubMenu,
             this.Table1PaletteSubMenu});
-			this.PatternSubMenu.Name = "PatternSubMenu";
-			this.PatternSubMenu.Size = new System.Drawing.Size(67, 24);
 			this.PatternSubMenu.Text = "&Pattern";
 			// 
 			// Table0PaletteSubMenu
@@ -570,64 +524,46 @@ namespace BizHawk.Client.EmuHawk
             this.Table0P5MenuItem,
             this.Table0P6MenuItem,
             this.Table0P7MenuItem});
-			this.Table0PaletteSubMenu.Name = "Table0PaletteSubMenu";
-			this.Table0PaletteSubMenu.Size = new System.Drawing.Size(180, 26);
 			this.Table0PaletteSubMenu.Text = "Table 0 Palette";
 			this.Table0PaletteSubMenu.DropDownOpened += new System.EventHandler(this.Table0PaletteSubMenu_DropDownOpened);
 			// 
 			// Table0P0MenuItem
 			// 
-			this.Table0P0MenuItem.Name = "Table0P0MenuItem";
-			this.Table0P0MenuItem.Size = new System.Drawing.Size(92, 26);
 			this.Table0P0MenuItem.Text = "0";
 			this.Table0P0MenuItem.Click += new System.EventHandler(this.Palette_Click);
 			// 
 			// Table0P1MenuItem
 			// 
-			this.Table0P1MenuItem.Name = "Table0P1MenuItem";
-			this.Table0P1MenuItem.Size = new System.Drawing.Size(92, 26);
 			this.Table0P1MenuItem.Text = "1";
 			this.Table0P1MenuItem.Click += new System.EventHandler(this.Palette_Click);
 			// 
 			// Table0P2MenuItem
 			// 
-			this.Table0P2MenuItem.Name = "Table0P2MenuItem";
-			this.Table0P2MenuItem.Size = new System.Drawing.Size(92, 26);
 			this.Table0P2MenuItem.Text = "2";
 			this.Table0P2MenuItem.Click += new System.EventHandler(this.Palette_Click);
 			// 
 			// Table0P3MenuItem
 			// 
-			this.Table0P3MenuItem.Name = "Table0P3MenuItem";
-			this.Table0P3MenuItem.Size = new System.Drawing.Size(92, 26);
 			this.Table0P3MenuItem.Text = "3";
 			this.Table0P3MenuItem.Click += new System.EventHandler(this.Palette_Click);
 			// 
 			// Table0P4MenuItem
 			// 
-			this.Table0P4MenuItem.Name = "Table0P4MenuItem";
-			this.Table0P4MenuItem.Size = new System.Drawing.Size(92, 26);
 			this.Table0P4MenuItem.Text = "4";
 			this.Table0P4MenuItem.Click += new System.EventHandler(this.Palette_Click);
 			// 
 			// Table0P5MenuItem
 			// 
-			this.Table0P5MenuItem.Name = "Table0P5MenuItem";
-			this.Table0P5MenuItem.Size = new System.Drawing.Size(92, 26);
 			this.Table0P5MenuItem.Text = "5";
 			this.Table0P5MenuItem.Click += new System.EventHandler(this.Palette_Click);
 			// 
 			// Table0P6MenuItem
 			// 
-			this.Table0P6MenuItem.Name = "Table0P6MenuItem";
-			this.Table0P6MenuItem.Size = new System.Drawing.Size(92, 26);
 			this.Table0P6MenuItem.Text = "6";
 			this.Table0P6MenuItem.Click += new System.EventHandler(this.Palette_Click);
 			// 
 			// Table0P7MenuItem
 			// 
-			this.Table0P7MenuItem.Name = "Table0P7MenuItem";
-			this.Table0P7MenuItem.Size = new System.Drawing.Size(92, 26);
 			this.Table0P7MenuItem.Text = "7";
 			this.Table0P7MenuItem.Click += new System.EventHandler(this.Palette_Click);
 			// 
@@ -642,64 +578,46 @@ namespace BizHawk.Client.EmuHawk
             this.Table1P5MenuItem,
             this.Table1P6MenuItem,
             this.Table1P7MenuItem});
-			this.Table1PaletteSubMenu.Name = "Table1PaletteSubMenu";
-			this.Table1PaletteSubMenu.Size = new System.Drawing.Size(180, 26);
 			this.Table1PaletteSubMenu.Text = "Table 1 Palette";
 			this.Table1PaletteSubMenu.DropDownOpened += new System.EventHandler(this.Table1PaletteSubMenu_DropDownOpened);
 			// 
 			// Table1P0MenuItem
 			// 
-			this.Table1P0MenuItem.Name = "Table1P0MenuItem";
-			this.Table1P0MenuItem.Size = new System.Drawing.Size(92, 26);
 			this.Table1P0MenuItem.Text = "0";
 			this.Table1P0MenuItem.Click += new System.EventHandler(this.Palette_Click);
 			// 
 			// Table1P1MenuItem
 			// 
-			this.Table1P1MenuItem.Name = "Table1P1MenuItem";
-			this.Table1P1MenuItem.Size = new System.Drawing.Size(92, 26);
 			this.Table1P1MenuItem.Text = "1";
 			this.Table1P1MenuItem.Click += new System.EventHandler(this.Palette_Click);
 			// 
 			// Table1P2MenuItem
 			// 
-			this.Table1P2MenuItem.Name = "Table1P2MenuItem";
-			this.Table1P2MenuItem.Size = new System.Drawing.Size(92, 26);
 			this.Table1P2MenuItem.Text = "2";
 			this.Table1P2MenuItem.Click += new System.EventHandler(this.Palette_Click);
 			// 
 			// Table1P3MenuItem
 			// 
-			this.Table1P3MenuItem.Name = "Table1P3MenuItem";
-			this.Table1P3MenuItem.Size = new System.Drawing.Size(92, 26);
 			this.Table1P3MenuItem.Text = "3";
 			this.Table1P3MenuItem.Click += new System.EventHandler(this.Palette_Click);
 			// 
 			// Table1P4MenuItem
 			// 
-			this.Table1P4MenuItem.Name = "Table1P4MenuItem";
-			this.Table1P4MenuItem.Size = new System.Drawing.Size(92, 26);
 			this.Table1P4MenuItem.Text = "4";
 			this.Table1P4MenuItem.Click += new System.EventHandler(this.Palette_Click);
 			// 
 			// Table1P5MenuItem
 			// 
-			this.Table1P5MenuItem.Name = "Table1P5MenuItem";
-			this.Table1P5MenuItem.Size = new System.Drawing.Size(92, 26);
 			this.Table1P5MenuItem.Text = "5";
 			this.Table1P5MenuItem.Click += new System.EventHandler(this.Palette_Click);
 			// 
 			// Table1P6MenuItem
 			// 
-			this.Table1P6MenuItem.Name = "Table1P6MenuItem";
-			this.Table1P6MenuItem.Size = new System.Drawing.Size(92, 26);
 			this.Table1P6MenuItem.Text = "6";
 			this.Table1P6MenuItem.Click += new System.EventHandler(this.Palette_Click);
 			// 
 			// Table1P7MenuItem
 			// 
-			this.Table1P7MenuItem.Name = "Table1P7MenuItem";
-			this.Table1P7MenuItem.Size = new System.Drawing.Size(92, 26);
 			this.Table1P7MenuItem.Text = "7";
 			this.Table1P7MenuItem.Click += new System.EventHandler(this.Palette_Click);
 			// 
@@ -707,15 +625,11 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.SettingsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.cHRROMTileViewerToolStripMenuItem});
-			this.SettingsSubMenu.Name = "SettingsSubMenu";
-			this.SettingsSubMenu.Size = new System.Drawing.Size(74, 24);
 			this.SettingsSubMenu.Text = "&Settings";
 			this.SettingsSubMenu.DropDownOpened += new System.EventHandler(this.SettingsSubMenu_DropDownOpened);
 			// 
 			// cHRROMTileViewerToolStripMenuItem
 			// 
-			this.cHRROMTileViewerToolStripMenuItem.Name = "cHRROMTileViewerToolStripMenuItem";
-			this.cHRROMTileViewerToolStripMenuItem.Size = new System.Drawing.Size(227, 26);
 			this.cHRROMTileViewerToolStripMenuItem.Text = "CHR ROM Tile Viewer";
 			this.cHRROMTileViewerToolStripMenuItem.Click += new System.EventHandler(this.ChrROMTileViewerToolStripMenuItem_Click);
 			// 
@@ -861,48 +775,48 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.LocLabelEx label4;
 		private BizHawk.WinForms.Controls.LocLabelEx label3;
 		private MenuStripEx NesPPUMenu;
-		private System.Windows.Forms.ToolStripMenuItem SettingsSubMenu;
-		private System.Windows.Forms.ToolStripMenuItem PatternSubMenu;
-		private System.Windows.Forms.ToolStripMenuItem Table0PaletteSubMenu;
-		private System.Windows.Forms.ToolStripMenuItem Table0P0MenuItem;
-		private System.Windows.Forms.ToolStripMenuItem Table0P1MenuItem;
-		private System.Windows.Forms.ToolStripMenuItem Table0P2MenuItem;
-		private System.Windows.Forms.ToolStripMenuItem Table0P3MenuItem;
-		private System.Windows.Forms.ToolStripMenuItem Table0P4MenuItem;
-		private System.Windows.Forms.ToolStripMenuItem Table0P5MenuItem;
-		private System.Windows.Forms.ToolStripMenuItem Table0P6MenuItem;
-		private System.Windows.Forms.ToolStripMenuItem Table0P7MenuItem;
-		private System.Windows.Forms.ToolStripMenuItem Table1PaletteSubMenu;
-		private System.Windows.Forms.ToolStripMenuItem Table1P0MenuItem;
-		private System.Windows.Forms.ToolStripMenuItem Table1P1MenuItem;
-		private System.Windows.Forms.ToolStripMenuItem Table1P2MenuItem;
-		private System.Windows.Forms.ToolStripMenuItem Table1P3MenuItem;
-		private System.Windows.Forms.ToolStripMenuItem Table1P4MenuItem;
-		private System.Windows.Forms.ToolStripMenuItem Table1P5MenuItem;
-		private System.Windows.Forms.ToolStripMenuItem Table1P6MenuItem;
-		private System.Windows.Forms.ToolStripMenuItem Table1P7MenuItem;
-		private System.Windows.Forms.ToolStripMenuItem FileSubMenu;
-		private System.Windows.Forms.ToolStripMenuItem SavePaletteScreenshotMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem SavePatternScreenshotMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem SaveSpriteScreenshotMenuItem;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-		private System.Windows.Forms.ToolStripMenuItem ExitMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SettingsSubMenu;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx PatternSubMenu;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx Table0PaletteSubMenu;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx Table0P0MenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx Table0P1MenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx Table0P2MenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx Table0P3MenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx Table0P4MenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx Table0P5MenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx Table0P6MenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx Table0P7MenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx Table1PaletteSubMenu;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx Table1P0MenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx Table1P1MenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx Table1P2MenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx Table1P3MenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx Table1P4MenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx Table1P5MenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx Table1P6MenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx Table1P7MenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx FileSubMenu;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SavePaletteScreenshotMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SavePatternScreenshotMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SaveSpriteScreenshotMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator1;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ExitMenuItem;
 		private System.Windows.Forms.ContextMenuStrip PaletteContext;
-		private System.Windows.Forms.ToolStripMenuItem PaletteSaveImageMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem PaletteRefreshMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx PaletteSaveImageMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx PaletteRefreshMenuItem;
 		private System.Windows.Forms.ContextMenuStrip PatternContext;
-		private System.Windows.Forms.ToolStripMenuItem PatternSaveImageMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem PatternRefreshMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx PatternSaveImageMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx PatternRefreshMenuItem;
 		private System.Windows.Forms.ContextMenuStrip SpriteContext;
-		private System.Windows.Forms.ToolStripMenuItem SpriteSaveImageMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem SpriteRefreshMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem SpriteImageToClipboardMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem PatternImageToClipboardMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem PaletteImageToClipboardMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem CopyPaletteToClipboardMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem CopyPatternToClipboardMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem CopySpriteToClipboardMenuItem;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SpriteSaveImageMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SpriteRefreshMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SpriteImageToClipboardMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx PatternImageToClipboardMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx PaletteImageToClipboardMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx CopyPaletteToClipboardMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx CopyPatternToClipboardMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx CopySpriteToClipboardMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator2;
 		private StatusStripEx NesPPUStatusBar;
 		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
 		private System.Windows.Forms.Timer Messagetimer;
@@ -910,6 +824,6 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.LocLabelEx label5;
 		private System.Windows.Forms.NumericUpDown numericUpDownCHRROMBank;
 		private PatternViewer CHRROMView;
-		private System.Windows.Forms.ToolStripMenuItem cHRROMTileViewerToolStripMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx cHRROMTileViewerToolStripMenuItem;
 	}
 }

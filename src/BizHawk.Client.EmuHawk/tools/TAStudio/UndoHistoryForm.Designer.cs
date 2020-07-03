@@ -33,10 +33,10 @@
 			this.UndoButton = new System.Windows.Forms.Button();
 			this.RedoButton = new System.Windows.Forms.Button();
 			this.RightClickMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.undoHereToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.redoHereToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.sepToolStripMenuItem = new System.Windows.Forms.ToolStripSeparator();
-			this.clearHistoryToHereToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.undoHereToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.redoHereToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.sepToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
+			this.clearHistoryToHereToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.AutoScrollCheck = new System.Windows.Forms.CheckBox();
 			this.MaxStepsNum = new System.Windows.Forms.NumericUpDown();
 			this.label1 = new BizHawk.WinForms.Controls.LocLabelEx();
@@ -90,27 +90,16 @@
 			// 
 			// undoHereToolStripMenuItem
 			// 
-			this.undoHereToolStripMenuItem.Name = "undoHereToolStripMenuItem";
-			this.undoHereToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
 			this.undoHereToolStripMenuItem.Text = "Undo To Selection";
 			this.undoHereToolStripMenuItem.Click += new System.EventHandler(this.UndoHereMenuItem_Click);
 			// 
 			// redoHereToolStripMenuItem
 			// 
-			this.redoHereToolStripMenuItem.Name = "redoHereToolStripMenuItem";
-			this.redoHereToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
 			this.redoHereToolStripMenuItem.Text = "Redo To Selection";
 			this.redoHereToolStripMenuItem.Click += new System.EventHandler(this.RedoHereMenuItem_Click);
 			// 
-			// sepToolStripMenuItem
-			// 
-			this.sepToolStripMenuItem.Name = "sepToolStripMenuItem";
-			this.sepToolStripMenuItem.Size = new System.Drawing.Size(205, 6);
-			// 
 			// clearHistoryToHereToolStripMenuItem
 			// 
-			this.clearHistoryToHereToolStripMenuItem.Name = "clearHistoryToHereToolStripMenuItem";
-			this.clearHistoryToHereToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
 			this.clearHistoryToHereToolStripMenuItem.Text = "Clear History To Selection";
 			this.clearHistoryToHereToolStripMenuItem.Click += new System.EventHandler(this.ClearHistoryToHereMenuItem_Click);
 			// 
@@ -206,10 +195,10 @@
 		private InputRoll HistoryView;
 		private System.Windows.Forms.Button RedoButton;
 		private System.Windows.Forms.ContextMenuStrip RightClickMenu;
-		private System.Windows.Forms.ToolStripMenuItem undoHereToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem redoHereToolStripMenuItem;
-		private System.Windows.Forms.ToolStripSeparator sepToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem clearHistoryToHereToolStripMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx undoHereToolStripMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx redoHereToolStripMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripSeparatorEx sepToolStripMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx clearHistoryToHereToolStripMenuItem;
 		private System.Windows.Forms.CheckBox AutoScrollCheck;
 		private System.Windows.Forms.NumericUpDown MaxStepsNum;
 		private BizHawk.WinForms.Controls.LocLabelEx label1;

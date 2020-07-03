@@ -32,25 +32,25 @@ namespace BizHawk.Client.EmuHawk
 		{
 			this.components = new System.ComponentModel.Container();
 			this.BotMenu = new MenuStripEx();
-			this.FileSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.NewMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.OpenMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.SaveMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.SaveAsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.RecentSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-			this.ExitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.OptionsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.MemoryDomainsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-			this.DataSizeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this._1ByteMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this._2ByteMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this._4ByteMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.BigEndianMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
-			this.TurboWhileBottingMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.FileSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.NewMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.OpenMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.SaveMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.SaveAsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.RecentSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.toolStripSeparator2 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
+			this.toolStripSeparator1 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
+			this.ExitMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.OptionsSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.MemoryDomainsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.toolStripSeparator3 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
+			this.DataSizeMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this._1ByteMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this._2ByteMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this._4ByteMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.BigEndianMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.toolStripSeparator4 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
+			this.TurboWhileBottingMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.RunBtn = new System.Windows.Forms.Button();
 			this.BotStatusStrip = new System.Windows.Forms.StatusStrip();
 			this.BotStatusButton = new System.Windows.Forms.ToolStripStatusLabel();
@@ -120,9 +120,9 @@ namespace BizHawk.Client.EmuHawk
 			this.InvisibleEmulationCheckBox = new System.Windows.Forms.CheckBox();
 			this.panel2 = new System.Windows.Forms.Panel();
 			this.StatsContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.ClearStatsContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.ClearStatsContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-			this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.helpToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.BotMenu.SuspendLayout();
 			this.BotStatusStrip.SuspendLayout();
 			this.ControlsBox.SuspendLayout();
@@ -163,41 +163,31 @@ namespace BizHawk.Client.EmuHawk
 			this.RecentSubMenu,
 			this.toolStripSeparator1,
 			this.ExitMenuItem});
-			this.FileSubMenu.Name = "FileSubMenu";
-			this.FileSubMenu.Size = new System.Drawing.Size(37, 20);
 			this.FileSubMenu.Text = "&File";
 			this.FileSubMenu.DropDownOpened += new System.EventHandler(this.FileSubMenu_DropDownOpened);
 			// 
 			// NewMenuItem
 			// 
-			this.NewMenuItem.Name = "NewMenuItem";
 			this.NewMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
-			this.NewMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.NewMenuItem.Text = "&New";
 			this.NewMenuItem.Click += new System.EventHandler(this.NewMenuItem_Click);
 			// 
 			// OpenMenuItem
 			// 
-			this.OpenMenuItem.Name = "OpenMenuItem";
 			this.OpenMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-			this.OpenMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.OpenMenuItem.Text = "&Open...";
 			this.OpenMenuItem.Click += new System.EventHandler(this.OpenMenuItem_Click);
 			// 
 			// SaveMenuItem
 			// 
-			this.SaveMenuItem.Name = "SaveMenuItem";
 			this.SaveMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-			this.SaveMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.SaveMenuItem.Text = "&Save";
 			this.SaveMenuItem.Click += new System.EventHandler(this.SaveMenuItem_Click);
 			// 
 			// SaveAsMenuItem
 			// 
-			this.SaveAsMenuItem.Name = "SaveAsMenuItem";
 			this.SaveAsMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
 			| System.Windows.Forms.Keys.S)));
-			this.SaveAsMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.SaveAsMenuItem.Text = "Save &As...";
 			this.SaveAsMenuItem.Click += new System.EventHandler(this.SaveAsMenuItem_Click);
 			// 
@@ -205,26 +195,12 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.RecentSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
 			this.toolStripSeparator2});
-			this.RecentSubMenu.Name = "RecentSubMenu";
-			this.RecentSubMenu.Size = new System.Drawing.Size(195, 22);
 			this.RecentSubMenu.Text = "Recent";
 			this.RecentSubMenu.DropDownOpened += new System.EventHandler(this.RecentSubMenu_DropDownOpened);
 			// 
-			// toolStripSeparator2
-			// 
-			this.toolStripSeparator2.Name = "toolStripSeparator2";
-			this.toolStripSeparator2.Size = new System.Drawing.Size(57, 6);
-			// 
-			// toolStripSeparator1
-			// 
-			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(192, 6);
-			// 
 			// ExitMenuItem
 			// 
-			this.ExitMenuItem.Name = "ExitMenuItem";
 			this.ExitMenuItem.ShortcutKeyDisplayString = "Alt+F4";
-			this.ExitMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.ExitMenuItem.Text = "E&xit";
 			this.ExitMenuItem.Click += new System.EventHandler(this.ExitMenuItem_Click);
 			// 
@@ -236,8 +212,6 @@ namespace BizHawk.Client.EmuHawk
 			this.BigEndianMenuItem,
 			this.toolStripSeparator4,
 			this.TurboWhileBottingMenuItem});
-			this.OptionsSubMenu.Name = "OptionsSubMenu";
-			this.OptionsSubMenu.Size = new System.Drawing.Size(61, 20);
 			this.OptionsSubMenu.Text = "&Options";
 			this.OptionsSubMenu.DropDownOpened += new System.EventHandler(this.OptionsSubMenu_DropDownOpened);
 			// 
@@ -245,15 +219,8 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.MemoryDomainsMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
 			this.toolStripSeparator3});
-			this.MemoryDomainsMenuItem.Name = "MemoryDomainsMenuItem";
-			this.MemoryDomainsMenuItem.Size = new System.Drawing.Size(181, 22);
 			this.MemoryDomainsMenuItem.Text = "Memory Domains";
 			this.MemoryDomainsMenuItem.DropDownOpened += new System.EventHandler(this.MemoryDomainsMenuItem_DropDownOpened);
-			// 
-			// toolStripSeparator3
-			// 
-			this.toolStripSeparator3.Name = "toolStripSeparator3";
-			this.toolStripSeparator3.Size = new System.Drawing.Size(57, 6);
 			// 
 			// DataSizeMenuItem
 			// 
@@ -261,48 +228,31 @@ namespace BizHawk.Client.EmuHawk
 			this._1ByteMenuItem,
 			this._2ByteMenuItem,
 			this._4ByteMenuItem});
-			this.DataSizeMenuItem.Name = "DataSizeMenuItem";
-			this.DataSizeMenuItem.Size = new System.Drawing.Size(181, 22);
 			this.DataSizeMenuItem.Text = "Data Size";
 			this.DataSizeMenuItem.DropDownOpened += new System.EventHandler(this.DataSizeMenuItem_DropDownOpened);
 			// 
 			// _1ByteMenuItem
 			// 
-			this._1ByteMenuItem.Name = "_1ByteMenuItem";
-			this._1ByteMenuItem.Size = new System.Drawing.Size(111, 22);
 			this._1ByteMenuItem.Text = "1 Byte";
 			this._1ByteMenuItem.Click += new System.EventHandler(this._1ByteMenuItem_Click);
 			// 
 			// _2ByteMenuItem
 			// 
-			this._2ByteMenuItem.Name = "_2ByteMenuItem";
-			this._2ByteMenuItem.Size = new System.Drawing.Size(111, 22);
 			this._2ByteMenuItem.Text = "2 Bytes";
 			this._2ByteMenuItem.Click += new System.EventHandler(this._2ByteMenuItem_Click);
 			// 
 			// _4ByteMenuItem
 			// 
-			this._4ByteMenuItem.Name = "_4ByteMenuItem";
-			this._4ByteMenuItem.Size = new System.Drawing.Size(111, 22);
 			this._4ByteMenuItem.Text = "4 Bytes";
 			this._4ByteMenuItem.Click += new System.EventHandler(this._4ByteMenuItem_Click);
 			// 
 			// BigEndianMenuItem
 			// 
-			this.BigEndianMenuItem.Name = "BigEndianMenuItem";
-			this.BigEndianMenuItem.Size = new System.Drawing.Size(181, 22);
 			this.BigEndianMenuItem.Text = "Big Endian";
 			this.BigEndianMenuItem.Click += new System.EventHandler(this.BigEndianMenuItem_Click);
 			// 
-			// toolStripSeparator4
-			// 
-			this.toolStripSeparator4.Name = "toolStripSeparator4";
-			this.toolStripSeparator4.Size = new System.Drawing.Size(178, 6);
-			// 
 			// TurboWhileBottingMenuItem
 			// 
-			this.TurboWhileBottingMenuItem.Name = "TurboWhileBottingMenuItem";
-			this.TurboWhileBottingMenuItem.Size = new System.Drawing.Size(181, 22);
 			this.TurboWhileBottingMenuItem.Text = "Turbo While Botting";
 			this.TurboWhileBottingMenuItem.Click += new System.EventHandler(this.TurboWhileBottingMenuItem_Click);
 			// 
@@ -1069,15 +1019,11 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// ClearStatsContextMenuItem
 			// 
-			this.ClearStatsContextMenuItem.Name = "ClearStatsContextMenuItem";
-			this.ClearStatsContextMenuItem.Size = new System.Drawing.Size(101, 22);
 			this.ClearStatsContextMenuItem.Text = "&Clear";
 			this.ClearStatsContextMenuItem.Click += new System.EventHandler(this.ClearStatsContextMenuItem_Click);
 			// 
 			// helpToolStripMenuItem
 			// 
-			this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
-			this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
 			this.helpToolStripMenuItem.Text = "Help";
 			this.helpToolStripMenuItem.Click += new System.EventHandler(this.HelpToolStripMenuItem_Click);
 			// 
@@ -1135,13 +1081,13 @@ namespace BizHawk.Client.EmuHawk
 		#endregion
 
 		private MenuStripEx BotMenu;
-		private System.Windows.Forms.ToolStripMenuItem FileSubMenu;
-		private System.Windows.Forms.ToolStripMenuItem ExitMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx FileSubMenu;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ExitMenuItem;
 		private System.Windows.Forms.Button RunBtn;
-		private System.Windows.Forms.ToolStripMenuItem OpenMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem SaveMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem RecentSubMenu;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx OpenMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SaveMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx RecentSubMenu;
+		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator1;
 		private System.Windows.Forms.StatusStrip BotStatusStrip;
 		private System.Windows.Forms.GroupBox ControlsBox;
 		private System.Windows.Forms.Panel ControlProbabilityPanel;
@@ -1150,7 +1096,7 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.LocLabelEx label2;
 		private BizHawk.WinForms.Controls.LocLabelEx AttemptsLabel;
 		private BizHawk.WinForms.Controls.LocLabelEx FramesLabel;
-		private System.Windows.Forms.ToolStripMenuItem OptionsSubMenu;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx OptionsSubMenu;
 		private System.Windows.Forms.GroupBox GoalGroupBox;
 		private BizHawk.WinForms.Controls.LocLabelEx label6;
 		private HexTextBox TieBreaker1Box;
@@ -1177,25 +1123,25 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.LocLabelEx label17;
 		private BizHawk.WinForms.Controls.LocLabelEx BestAttemptLogLabel;
 		private System.Windows.Forms.Button ClearBestButton;
-		private System.Windows.Forms.ToolStripMenuItem SaveAsMenuItem;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
-		private System.Windows.Forms.ToolStripMenuItem NewMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SaveAsMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator2;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx NewMenuItem;
 		private System.Windows.Forms.Button PlayBestButton;
 		private System.Windows.Forms.ToolStripStatusLabel MessageLabel;
 		private System.Windows.Forms.GroupBox ControlGroupBox;
-		private System.Windows.Forms.ToolStripMenuItem TurboWhileBottingMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem MemoryDomainsMenuItem;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx TurboWhileBottingMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx MemoryDomainsMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator3;
 		private System.Windows.Forms.Panel panel2;
 		private System.Windows.Forms.ContextMenuStrip StatsContextMenu;
-		private System.Windows.Forms.ToolStripMenuItem ClearStatsContextMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ClearStatsContextMenuItem;
 		private System.Windows.Forms.ToolStripStatusLabel BotStatusButton;
-		private System.Windows.Forms.ToolStripMenuItem BigEndianMenuItem;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
-		private System.Windows.Forms.ToolStripMenuItem DataSizeMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem _1ByteMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem _2ByteMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem _4ByteMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx BigEndianMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator4;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx DataSizeMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx _1ByteMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx _2ByteMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx _4ByteMenuItem;
         private System.Windows.Forms.ComboBox Tiebreak2Operator;
         private System.Windows.Forms.ComboBox Tiebreak1Operator;
 		private System.Windows.Forms.Panel panel6;
@@ -1224,7 +1170,7 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.LocLabelEx maximizeLabeltext;
 		private System.Windows.Forms.Button btnCopyBestInput;
 		private System.Windows.Forms.ToolTip toolTip1;
-		private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx helpToolStripMenuItem;
 		private System.Windows.Forms.CheckBox InvisibleEmulationCheckBox;
 	}
 }

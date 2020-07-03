@@ -10,7 +10,7 @@ namespace BizHawk.Client.Common
 {
 	public static class ConfigService
 	{
-		private static readonly JsonSerializer Serializer;
+		internal static readonly JsonSerializer Serializer;
 
 		static ConfigService()
 		{

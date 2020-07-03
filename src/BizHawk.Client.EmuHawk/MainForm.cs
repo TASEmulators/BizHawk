@@ -1058,23 +1058,15 @@ namespace BizHawk.Client.EmuHawk
 
 		public void TakeScreenshotToClipboard()
 		{
-			using (var bb = Config.ScreenshotCaptureOsd ? CaptureOSD() : MakeScreenshotImage())
-			{
-				using var img = bb.ToSysdrawingBitmap();
-				Clipboard.SetImage(img);
-			}
-
+			using var bb = Config.ScreenshotCaptureOsd ? CaptureOSD() : MakeScreenshotImage();
+			bb.ToSysdrawingBitmap().ToClipBoard();
 			AddOnScreenMessage("Screenshot (raw) saved to clipboard.");
 		}
 
 		private void TakeScreenshotClientToClipboard()
 		{
-			using (var bb = DisplayManager.RenderOffscreen(_currentVideoProvider, Config.ScreenshotCaptureOsd))
-			{
-				using var img = bb.ToSysdrawingBitmap();
-				Clipboard.SetImage(img);
-			}
-
+			using var bb = DisplayManager.RenderOffscreen(_currentVideoProvider, Config.ScreenshotCaptureOsd);
+			bb.ToSysdrawingBitmap().ToClipBoard();
 			AddOnScreenMessage("Screenshot (client) saved to clipboard.");
 		}
 
@@ -2647,17 +2639,6 @@ namespace BizHawk.Client.EmuHawk
 		private void VsyncMessage()
 		{
 			AddOnScreenMessage($"Display Vsync set to {(Config.VSync ? "on" : "off")}");
-		}
-
-		private static bool StateErrorAskUser(string title, string message)
-		{
-			var result = MessageBox.Show(
-				message,
-				title,
-				MessageBoxButtons.YesNo,
-				MessageBoxIcon.Question);
-
-			return result == DialogResult.Yes;
 		}
 
 		private void FdsInsertDiskMenuAdd(string name, string button, string msg)

@@ -38,15 +38,15 @@
 			this.LoadBranchButton = new System.Windows.Forms.Button();
 			this.BranchView = new BizHawk.Client.EmuHawk.InputRoll();
 			this.BranchesContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.AddBranchContextMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.AddBranchWithTextContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.LoadBranchContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.UpdateBranchContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.EditBranchTextContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.JumpToBranchContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.UndoBranchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-			this.RemoveBranchContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.AddBranchContextMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.AddBranchWithTextContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.LoadBranchContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.UpdateBranchContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.EditBranchTextContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.JumpToBranchContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.UndoBranchToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.toolStripSeparator2 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
+			this.RemoveBranchContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.BookmarksBranchesGroupBox.SuspendLayout();
 			this.BranchesContextMenu.SuspendLayout();
@@ -190,63 +190,42 @@
 			// 
 			// AddBranchContextMenu
 			// 
-			this.AddBranchContextMenu.Name = "AddBranchContextMenu";
-			this.AddBranchContextMenu.Size = new System.Drawing.Size(146, 22);
 			this.AddBranchContextMenu.Text = "Add";
 			this.AddBranchContextMenu.Click += new System.EventHandler(this.AddBranchToolStripMenuItem_Click);
 			// 
 			// AddBranchWithTextContextMenuItem
 			// 
-			this.AddBranchWithTextContextMenuItem.Name = "AddBranchWithTextContextMenuItem";
-			this.AddBranchWithTextContextMenuItem.Size = new System.Drawing.Size(146, 22);
 			this.AddBranchWithTextContextMenuItem.Text = "Add with Text";
 			this.AddBranchWithTextContextMenuItem.Click += new System.EventHandler(this.AddBranchWithTexToolStripMenuItem_Click);
 			// 
 			// LoadBranchContextMenuItem
 			// 
-			this.LoadBranchContextMenuItem.Name = "LoadBranchContextMenuItem";
-			this.LoadBranchContextMenuItem.Size = new System.Drawing.Size(146, 22);
 			this.LoadBranchContextMenuItem.Text = "Load";
 			this.LoadBranchContextMenuItem.Click += new System.EventHandler(this.LoadBranchToolStripMenuItem_Click);
 			// 
 			// UpdateBranchContextMenuItem
 			// 
-			this.UpdateBranchContextMenuItem.Name = "UpdateBranchContextMenuItem";
-			this.UpdateBranchContextMenuItem.Size = new System.Drawing.Size(146, 22);
 			this.UpdateBranchContextMenuItem.Text = "&Update";
 			this.UpdateBranchContextMenuItem.Click += new System.EventHandler(this.UpdateBranchToolStripMenuItem_Click);
 			// 
 			// EditBranchTextContextMenuItem
 			// 
-			this.EditBranchTextContextMenuItem.Name = "EditBranchTextContextMenuItem";
-			this.EditBranchTextContextMenuItem.Size = new System.Drawing.Size(146, 22);
 			this.EditBranchTextContextMenuItem.Text = "Edit Text";
 			this.EditBranchTextContextMenuItem.Click += new System.EventHandler(this.EditBranchTextToolStripMenuItem_Click);
 			// 
 			// JumpToBranchContextMenuItem
 			// 
-			this.JumpToBranchContextMenuItem.Name = "JumpToBranchContextMenuItem";
-			this.JumpToBranchContextMenuItem.Size = new System.Drawing.Size(146, 22);
 			this.JumpToBranchContextMenuItem.Text = "Jump To";
 			this.JumpToBranchContextMenuItem.Click += new System.EventHandler(this.JumpToBranchToolStripMenuItem_Click);
 			// 
 			// UndoBranchToolStripMenuItem
 			// 
 			this.UndoBranchToolStripMenuItem.Enabled = false;
-			this.UndoBranchToolStripMenuItem.Name = "UndoBranchToolStripMenuItem";
-			this.UndoBranchToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
 			this.UndoBranchToolStripMenuItem.Text = "Undo";
 			this.UndoBranchToolStripMenuItem.Click += new System.EventHandler(this.UndoBranchToolStripMenuItem_Click);
 			// 
-			// toolStripSeparator2
-			// 
-			this.toolStripSeparator2.Name = "toolStripSeparator2";
-			this.toolStripSeparator2.Size = new System.Drawing.Size(143, 6);
-			// 
 			// RemoveBranchContextMenuItem
 			// 
-			this.RemoveBranchContextMenuItem.Name = "RemoveBranchContextMenuItem";
-			this.RemoveBranchContextMenuItem.Size = new System.Drawing.Size(146, 22);
 			this.RemoveBranchContextMenuItem.Text = "Remove";
 			this.RemoveBranchContextMenuItem.Click += new System.EventHandler(this.RemoveBranchToolStripMenuItem_Click);
 			// 
@@ -267,21 +246,21 @@
 		private System.Windows.Forms.GroupBox BookmarksBranchesGroupBox;
 		private InputRoll BranchView;
 		private System.Windows.Forms.ContextMenuStrip BranchesContextMenu;
-		private System.Windows.Forms.ToolStripMenuItem AddBranchContextMenu;
-		private System.Windows.Forms.ToolStripMenuItem RemoveBranchContextMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem LoadBranchContextMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem UpdateBranchContextMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem EditBranchTextContextMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem AddBranchWithTextContextMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx AddBranchContextMenu;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx RemoveBranchContextMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx LoadBranchContextMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx UpdateBranchContextMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx EditBranchTextContextMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx AddBranchWithTextContextMenuItem;
 		private System.Windows.Forms.Button UpdateBranchButton;
 		private System.Windows.Forms.Button AddWithTextBranchButton;
 		private System.Windows.Forms.Button AddBranchButton;
 		private System.Windows.Forms.Button LoadBranchButton;
 		private System.Windows.Forms.ToolTip toolTip1;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator2;
 		private System.Windows.Forms.Button JumpToBranchButton;
-		private System.Windows.Forms.ToolStripMenuItem JumpToBranchContextMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx JumpToBranchContextMenuItem;
 		private System.Windows.Forms.Button UndoBranchButton;
-		private System.Windows.Forms.ToolStripMenuItem UndoBranchToolStripMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx UndoBranchToolStripMenuItem;
 	}
 }

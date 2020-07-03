@@ -32,11 +32,11 @@ namespace BizHawk.Client.EmuHawk
         {
 			this.components = new System.ComponentModel.Container();
 			this.menuStrip1 = new MenuStripEx();
-			this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-			this.KeyPadSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.ExitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.SettingsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.ShowHotkeysMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripMenuItem1 = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.KeyPadSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.ExitMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.SettingsSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.ShowHotkeysMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.YButton = new System.Windows.Forms.Button();
 			this.SecondButton = new System.Windows.Forms.Button();
 			this.WindowButton = new System.Windows.Forms.Button();
@@ -182,24 +182,15 @@ namespace BizHawk.Client.EmuHawk
 			this.menuStrip1.TabIndex = 0;
 			this.menuStrip1.Text = "menuStrip1";
 			// 
-			// toolStripMenuItem1
-			// 
-			this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-			this.toolStripMenuItem1.Size = new System.Drawing.Size(12, 20);
-			// 
 			// KeyPadSubMenu
 			// 
 			this.KeyPadSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ExitMenuItem});
-			this.KeyPadSubMenu.Name = "KeyPadSubMenu";
-			this.KeyPadSubMenu.Size = new System.Drawing.Size(61, 20);
 			this.KeyPadSubMenu.Text = "Key Pad";
 			// 
 			// ExitMenuItem
 			// 
-			this.ExitMenuItem.Name = "ExitMenuItem";
 			this.ExitMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F4)));
-			this.ExitMenuItem.Size = new System.Drawing.Size(134, 22);
 			this.ExitMenuItem.Text = "E&xit";
 			this.ExitMenuItem.Click += new System.EventHandler(this.ExitMenuItem_Click);
 			// 
@@ -207,8 +198,6 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.SettingsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ShowHotkeysMenuItem});
-			this.SettingsSubMenu.Name = "SettingsSubMenu";
-			this.SettingsSubMenu.Size = new System.Drawing.Size(61, 20);
 			this.SettingsSubMenu.Text = "&Settings";
 			this.SettingsSubMenu.DropDownOpened += new System.EventHandler(this.OptionsSubMenu_DropDownOpened);
 			// 
@@ -216,8 +205,6 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.ShowHotkeysMenuItem.Checked = true;
 			this.ShowHotkeysMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.ShowHotkeysMenuItem.Name = "ShowHotkeysMenuItem";
-			this.ShowHotkeysMenuItem.Size = new System.Drawing.Size(191, 22);
 			this.ShowHotkeysMenuItem.Text = "Show Hotkeys";
 			this.ShowHotkeysMenuItem.Click += new System.EventHandler(this.ShowHotkeysMenuItem_Click);
 			// 
@@ -1674,10 +1661,10 @@ namespace BizHawk.Client.EmuHawk
         #endregion
 
         private MenuStripEx menuStrip1;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
-        private System.Windows.Forms.ToolStripMenuItem KeyPadSubMenu;
-        private System.Windows.Forms.ToolStripMenuItem ExitMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem SettingsSubMenu;
+        private BizHawk.WinForms.Controls.ToolStripMenuItemEx toolStripMenuItem1;
+        private BizHawk.WinForms.Controls.ToolStripMenuItemEx KeyPadSubMenu;
+        private BizHawk.WinForms.Controls.ToolStripMenuItemEx ExitMenuItem;
+        private BizHawk.WinForms.Controls.ToolStripMenuItemEx SettingsSubMenu;
         private System.Windows.Forms.Button YButton;
         private System.Windows.Forms.Button SecondButton;
         private System.Windows.Forms.Button WindowButton;
@@ -1805,7 +1792,7 @@ namespace BizHawk.Client.EmuHawk
         private System.Windows.Forms.Button DownButton;
         private System.Windows.Forms.Button UpButton;
         private System.Windows.Forms.ToolTip KeyPadToolTips;
-        private System.Windows.Forms.ToolStripMenuItem ShowHotkeysMenuItem;
+        private BizHawk.WinForms.Controls.ToolStripMenuItemEx ShowHotkeysMenuItem;
         private BizHawk.WinForms.Controls.LocLabelEx label77;
         private BizHawk.WinForms.Controls.LocLabelEx label78;
         private BizHawk.WinForms.Controls.LocLabelEx label79;

@@ -92,34 +92,38 @@ namespace BizHawk.Client.EmuHawk
 				);
 			}
 
-			static void SerializeAndWrite(object output) => GlobalWin.Tools.LuaConsole.WriteToOutputWindow(
-				output is LuaTable table
-					? SerializeTable(table)
-					: output?.ToString() ?? "nil"
-			);
-
 			if (!GlobalWin.Tools.Has<LuaConsole>())
 			{
 				return;
 			}
 
+			var sb = new StringBuilder();
+
+			void SerializeAndWrite(object output) => sb.Append(
+				output is LuaTable table
+					? SerializeTable(table)
+					: output?.ToString() ?? "nil"
+			);
+
 			if (outputs == null)
 			{
-				GlobalWin.Tools.LuaConsole.WriteToOutputWindow($"(no return){terminator}");
+				sb.Append($"(no return){terminator}");
 				return;
 			}
 
 			SerializeAndWrite(outputs[0]);
 			for (int outIndex = 1, indexAfterLast = outputs.Length; outIndex != indexAfterLast; outIndex++)
 			{
-				GlobalWin.Tools.LuaConsole.WriteToOutputWindow(separator);
+				sb.Append(separator);
 				SerializeAndWrite(outputs[outIndex]);
 			}
 
 			if (!string.IsNullOrEmpty(terminator))
 			{
-				GlobalWin.Tools.LuaConsole.WriteToOutputWindow(terminator);
+				sb.Append(terminator);
 			}
+
+			GlobalWin.Tools.LuaConsole.WriteToOutputWindow(sb.ToString());
 		}
 	}
 }

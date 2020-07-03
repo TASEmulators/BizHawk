@@ -37,8 +37,8 @@
 			this.CallButton = new System.Windows.Forms.Button();
 			this.RemoveButton = new System.Windows.Forms.Button();
 			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.callToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.removeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.callToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.removeToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.RemoveAllBtn = new System.Windows.Forms.Button();
 			this.contextMenuStrip1.SuspendLayout();
 			this.SuspendLayout();
@@ -126,15 +126,11 @@
 			// 
 			// callToolStripMenuItem
 			// 
-			this.callToolStripMenuItem.Name = "callToolStripMenuItem";
-			this.callToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
 			this.callToolStripMenuItem.Text = "&Call";
 			this.callToolStripMenuItem.Click += new System.EventHandler(this.CallButton_Click);
 			// 
 			// removeToolStripMenuItem
 			// 
-			this.removeToolStripMenuItem.Name = "removeToolStripMenuItem";
-			this.removeToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
 			this.removeToolStripMenuItem.Text = "&Remove";
 			this.removeToolStripMenuItem.Click += new System.EventHandler(this.RemoveButton_Click);
 			// 
@@ -181,8 +177,8 @@
 		private System.Windows.Forms.Button CallButton;
 		private System.Windows.Forms.Button RemoveButton;
 		private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
-		private System.Windows.Forms.ToolStripMenuItem callToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem removeToolStripMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx callToolStripMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx removeToolStripMenuItem;
 		private System.Windows.Forms.Button RemoveAllBtn;
 	}
 }

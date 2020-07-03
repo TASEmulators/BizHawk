@@ -1,68 +1,140 @@
 ﻿using System;
 using BizHawk.Emulation.Common;
+using Newtonsoft.Json.Linq;
 
 namespace BizHawk.Client.Common
 {
 	public static class ConfigExtensions
 	{
-		public static object GetCoreSettings(this Config config, Type t)
+		private class TypeNameEncapsulator
 		{
-			config.CoreSettings.TryGetValue(t.ToString(), out var ret);
-			return ret;
+			public object o;
+		}
+		private static JToken Serialize(object o)
+		{
+			var tne = new TypeNameEncapsulator { o = o };
+			return JToken.FromObject(ConfigService.Serializer)["o"];
+		}
+		private static object Deserialize(JToken j)
+		{
+			var jne = new JObject(new JProperty("o", j));
+			try
+			{
+				return jne.ToObject<TypeNameEncapsulator>(ConfigService.Serializer).o;
+			}
+			catch
+			{
+				// presumably some sort of config mismatch.  Anywhere we can expose this usefully?
+				return null;
+			}
 		}
 
-		public static object GetCoreSettings<T>(this Config config)
-			where T : IEmulator
+		/// <summary>
+		/// Returns the core settings for a core
+		/// </summary>
+		/// <param name="config"></param>
+		/// <param name="coreType"></param>
+		/// <returns>null if no settings were saved, or there was an error deserializing</returns>
+		public static object GetCoreSettings(this Config config, Type coreType)
 		{
-			return config.GetCoreSettings(typeof(T));
+			config.CoreSettings.TryGetValue(coreType.ToString(), out var j);
+			return Deserialize(j);
 		}
 
-		public static void PutCoreSettings(this Config config, object o, Type t)
+		/// <summary>
+		/// Returns the core settings for a core
+		/// </summary>
+		/// <param name="config"></param>
+		/// <typeparam name="TCore"></typeparam>
+		/// <returns>null if no settings were saved, or there was an error deserializing</returns>
+		public static object GetCoreSettings<TCore>(this Config config)
+			where TCore : IEmulator
+		{
+			return config.GetCoreSettings(typeof(TCore));
+		}
+
+		/// <summary>
+		/// saves the core settings for a core
+		/// </summary>
+		/// <param name="config"></param>
+		/// <param name="o">null to remove settings for that core instead</param>
+		/// <param name="coreType"></param>
+		public static void PutCoreSettings(this Config config, object o, Type coreType)
 		{
 			if (o != null)
 			{
-				config.CoreSettings[t.ToString()] = o;
+				config.CoreSettings[coreType.ToString()] = Serialize(o);
 			}
 			else
 			{
-				config.CoreSettings.Remove(t.ToString());
+				config.CoreSettings.Remove(coreType.ToString());
 			}
 		}
 
-		public static void PutCoreSettings<T>(this Config config, object o)
-			where T : IEmulator
+		/// <summary>
+		/// saves the core settings for a core
+		/// </summary>
+		/// <param name="config"></param>
+		/// <param name="o">null to remove settings for that core instead</param>
+		/// <typeparam name="TCore"></typeparam>
+		public static void PutCoreSettings<TCore>(this Config config, object o)
+			where TCore : IEmulator
 		{
-			config.PutCoreSettings(o, typeof(T));
+			config.PutCoreSettings(o, typeof(TCore));
 		}
 
-		public static object GetCoreSyncSettings<T>(this Config config)
-			where T : IEmulator
+		/// <summary>
+		/// Returns the core syncsettings for a core
+		/// </summary>
+		/// <param name="config"></param>
+		/// <param name="coreType"></param>
+		/// <returns>null if no settings were saved, or there was an error deserializing</returns>
+		public static object GetCoreSyncSettings(this Config config, Type coreType)
 		{
-			return config.GetCoreSyncSettings(typeof(T));
+			config.CoreSyncSettings.TryGetValue(coreType.ToString(), out var j);
+			return Deserialize(j);
 		}
 
-		public static object GetCoreSyncSettings(this Config config, Type t)
+		/// <summary>
+		/// Returns the core syncsettings for a core
+		/// </summary>
+		/// <param name="config"></param>
+		/// <typeparam name="TCore"></typeparam>
+		/// <returns>null if no settings were saved, or there was an error deserializing</returns>
+		public static object GetCoreSyncSettings<TCore>(this Config config)
+			where TCore : IEmulator
 		{
-			config.CoreSyncSettings.TryGetValue(t.ToString(), out var ret);
-			return ret;
+			return config.GetCoreSyncSettings(typeof(TCore));
 		}
 
-		public static void PutCoreSyncSettings(this Config config, object o, Type t)
+		/// <summary>
+		/// saves the core syncsettings for a core
+		/// </summary>
+		/// <param name="config"></param>
+		/// <param name="o">null to remove settings for that core instead</param>
+		/// <param name="coreType"></param>
+		public static void PutCoreSyncSettings(this Config config, object o, Type coreType)
 		{
 			if (o != null)
 			{
-				config.CoreSyncSettings[t.ToString()] = o;
+				config.CoreSyncSettings[coreType.ToString()] = Serialize(o);
 			}
 			else
 			{
-				config.CoreSyncSettings.Remove(t.ToString());
+				config.CoreSyncSettings.Remove(coreType.ToString());
 			}
 		}
 
-		public static void PutCoreSyncSettings<T>(this Config config, object o)
-			where T : IEmulator
+		/// <summary>
+		/// saves the core syncsettings for a core
+		/// </summary>
+		/// <param name="config"></param>
+		/// <param name="o">null to remove settings for that core instead</param>
+		/// <typeparam name="TCore"></typeparam>
+		public static void PutCoreSyncSettings<TCore>(this Config config, object o)
+			where TCore : IEmulator
 		{
-			config.PutCoreSyncSettings(o, typeof(T));
+			config.PutCoreSyncSettings(o, typeof(TCore));
 		}
 	}
 }

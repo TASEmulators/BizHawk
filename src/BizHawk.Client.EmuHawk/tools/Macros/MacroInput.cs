@@ -31,6 +31,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_initializing = true;
 			InitializeComponent();
+			Icon = Properties.Resources.TAStudio_MultiSize;
 		}
 
 		private void MacroInputTool_Load(object sender, EventArgs e)

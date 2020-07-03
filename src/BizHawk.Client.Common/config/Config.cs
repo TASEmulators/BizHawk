@@ -4,6 +4,7 @@ using System.IO;
 using BizHawk.Common;
 using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Cores;
+using Newtonsoft.Json.Linq;
 
 namespace BizHawk.Client.Common
 {
@@ -252,8 +253,8 @@ namespace BizHawk.Client.Common
 		public bool VideoWriterAudioSync { get; set; } = true;
 
 		// Emulation core settings
-		public Dictionary<string, object> CoreSettings { get; set; } = new Dictionary<string, object>();
-		public Dictionary<string, object> CoreSyncSettings { get; set; } = new Dictionary<string, object>();
+		internal Dictionary<string, JToken> CoreSettings { get; set; } = new Dictionary<string, JToken>();
+		internal Dictionary<string, JToken> CoreSyncSettings { get; set; } = new Dictionary<string, JToken>();
 
 		public Dictionary<string, ToolDialogSettings> CommonToolSettings { get; set; } = new Dictionary<string, ToolDialogSettings>();
 		public Dictionary<string, Dictionary<string, object>> CustomToolSettings { get; set; } = new Dictionary<string, Dictionary<string, object>>();
@@ -300,9 +301,9 @@ namespace BizHawk.Client.Common
 			["SNES"] = CoreNames.Snes9X,
 			["GB"] = CoreNames.Gambatte,
 			["GBC"] = CoreNames.Gambatte,
-			["PCE"] = CoreNames.PceHawk,
-			["PCECD"] = CoreNames.PceHawk,
-			["SGX"] = CoreNames.PceHawk
+			["PCE"] = CoreNames.TurboNyma,
+			["PCECD"] = CoreNames.TurboNyma,
+			["SGX"] = CoreNames.TurboNyma
 		};
 
 		// ReSharper disable once UnusedMember.Global
