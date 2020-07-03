@@ -932,7 +932,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FileExtensionsMenuItem_Click(object sender, EventArgs e)
 		{
-			using var form = new FileExtensionPreferences(Config);
+			using var form = new FileExtensionPreferences(Config.PreferredPlatformsForExtensions);
 			var result = form.ShowDialog();
 			AddOnScreenMessage(result.IsOk()
 				? "Rom Extension Preferences changed"

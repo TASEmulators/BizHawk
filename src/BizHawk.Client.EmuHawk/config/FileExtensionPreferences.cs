@@ -1,19 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-
-using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class FileExtensionPreferences : Form
 	{
-		private readonly Config _config;
+		private readonly IDictionary<string, string> _preferredPlatformsForExtensions;
 
-		public FileExtensionPreferences(Config config)
+		public FileExtensionPreferences(IDictionary<string, string> preferredPlatformsForExtensions)
 		{
-			_config = config;
+			_preferredPlatformsForExtensions = preferredPlatformsForExtensions;
 			InitializeComponent();
 		}
 
@@ -21,9 +20,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			int spacing = UIHelper.ScaleY(30);
 			int count = 0;
-			foreach (var kvp in _config.PreferredPlatformsForExtensions)
+			foreach (var kvp in _preferredPlatformsForExtensions)
 			{
-				var picker = new FileExtensionPreferencesPicker
+				var picker = new FileExtensionPreferencesPicker(_preferredPlatformsForExtensions)
 				{
 					FileExtension = kvp.Key,
 					OriginalPreference = kvp.Value,
@@ -39,9 +38,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			foreach (var picker in PrefPanel.Controls.OfType<FileExtensionPreferencesPicker>())
 			{
-				_config.PreferredPlatformsForExtensions[picker.FileExtension] = picker.CurrentlySelectedSystemId;
+				_preferredPlatformsForExtensions[picker.FileExtension] = picker.CurrentlySelectedSystemId;
 			}
 
+			DialogResult = DialogResult.OK;
 			Close();
 		}
 
