@@ -288,7 +288,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			[DefaultValue((uint)0xffff00ff)]
 			public uint BackdropColor { get; set; }
 
-			public LibGPGX.InitSettings GetNativeSettings()
+			public LibGPGX.InitSettings GetNativeSettings(GameInfo game)
 			{
 				return new LibGPGX.InitSettings
 				{
@@ -299,7 +299,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					LowGain = (short)(LowGain * 100),
 					MidGain = (short)(MidGain * 100),
 					HighGain = (short)(HighGain * 100),
-					BackdropColor = BackdropColor
+					BackdropColor = BackdropColor,
+					SixButton = UseSixButton,
+					InputSystemA = SystemForSystem(ControlTypeLeft),
+					InputSystemB = SystemForSystem(ControlTypeRight),
+					Region = Region,
+					ForceSram = game["sram"],
 				};
 			}
 

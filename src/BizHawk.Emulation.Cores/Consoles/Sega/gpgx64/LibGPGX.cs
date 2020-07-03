@@ -33,6 +33,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		[StructLayout(LayoutKind.Sequential)]
 		public class InitSettings
 		{
+			public uint BackdropColor;
+			public Region Region;
+			public ushort LowPassRange;
+			public short LowFreq;
+			public short HighFreq;
+			public short LowGain;
+			public short MidGain;
+			public short HighGain;
 			public enum FilterType : byte
 			{
 				None = 0,
@@ -40,20 +48,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				ThreeBand = 2
 			}
 			public FilterType Filter;
-			public ushort LowPassRange;
-			public short LowFreq;
-			public short HighFreq;
-			public short LowGain;
-			public short MidGain;
-			public short HighGain;
-			public uint BackdropColor;
+			public INPUT_SYSTEM InputSystemA;
+			public INPUT_SYSTEM InputSystemB;
+			public bool SixButton;
+			public bool ForceSram;
 		}
 
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract bool gpgx_init(
 			string feromextension,
 			load_archive_cb feload_archive_cb,
-			bool sixbutton, INPUT_SYSTEM system_a, INPUT_SYSTEM system_b, Region region, bool forcesram,
 			[In]InitSettings settings);
 
 		[BizImport(CallingConvention.Cdecl)]

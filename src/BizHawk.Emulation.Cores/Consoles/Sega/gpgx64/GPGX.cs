@@ -81,10 +81,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				LibGPGX.INPUT_SYSTEM system_a = SystemForSystem(_syncSettings.ControlTypeLeft);
 				LibGPGX.INPUT_SYSTEM system_b = SystemForSystem(_syncSettings.ControlTypeRight);
 
-				var initResult = Core.gpgx_init(
-					romextension,
-					LoadCallback, _syncSettings.UseSixButton, system_a, system_b, _syncSettings.Region, game["sram"],
-					_syncSettings.GetNativeSettings());
+				var initResult = Core.gpgx_init(romextension, LoadCallback, _syncSettings.GetNativeSettings(game));
 
 				if (!initResult)
 					throw new Exception($"{nameof(Core.gpgx_init)}() failed");

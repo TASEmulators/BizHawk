@@ -490,25 +490,28 @@ GPGX_EX unsigned gpgx_peek_s68k_bus(unsigned addr)
 
 struct InitSettings
 {
-	uint8_t Filter;
+	uint32_t BackdropColor;
+	int Region;
 	uint16_t LowPassRange;
 	int16_t LowFreq;
 	int16_t HighFreq;
 	int16_t LowGain;
 	int16_t MidGain;
 	int16_t HighGain;
-	uint32_t BackdropColor;
+	uint8_t Filter;
+	char InputSystemA;
+	char InputSystemB;
+	char SixButton;
+	char ForceSram;
 };
 
-GPGX_EX int gpgx_init(
-	const char *feromextension,
+GPGX_EX int gpgx_init(const char* feromextension,
 	ECL_ENTRY int (*feload_archive_cb)(const char *filename, unsigned char *buffer, int maxsize),
-	int sixbutton, char system_a, char system_b, int region, int forcesram,
 	struct InitSettings *settings)
 {
 	_debug_puts("Initializing GPGX native...");
 
-	cinterface_force_sram = forcesram;
+	cinterface_force_sram = settings->ForceSram;
 
 	memset(&bitmap, 0, sizeof(bitmap));
 
@@ -551,7 +554,7 @@ GPGX_EX int gpgx_init(
 
 	/* system options */
 	config.system = 0; /* AUTO */
-	config.region_detect = region; // see loadrom.c
+	config.region_detect = settings->Region; // see loadrom.c
 	config.vdp_mode = 0; /* AUTO */
 	config.master_clock = 0; /* AUTO */
 	config.force_dtack = 0;
@@ -571,8 +574,8 @@ GPGX_EX int gpgx_init(
 	// everything else is auto or master system only
 	// XEA1P is port 1 only
 	// WAYPLAY is both ports at same time only
-	input.system[0] = system_a;
-	input.system[1] = system_b;
+	input.system[0] = settings->InputSystemA;
+	input.system[1] = settings->InputSystemB;
 
 	cinterface_custom_backdrop_color = settings->BackdropColor;
 
@@ -581,7 +584,7 @@ GPGX_EX int gpgx_init(
 	{
 		int i;
 		for (i = 0; i < MAX_INPUTS; i++)
-			config.input[i].padtype = sixbutton ? DEVICE_PAD6B : DEVICE_PAD3B;
+			config.input[i].padtype = settings->SixButton ? DEVICE_PAD6B : DEVICE_PAD3B;
 	}
 
 	if (!load_rom("PRIMARY_ROM"))
