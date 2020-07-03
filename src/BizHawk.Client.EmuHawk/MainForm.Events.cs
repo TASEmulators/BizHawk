@@ -353,37 +353,31 @@ namespace BizHawk.Client.EmuHawk
 			Console.WriteLine($"Closing rom clicked DONE Frame: {Emulator.Frame} Emulator: {Emulator.GetType().Name}");
 		}
 
-		private void Savestate1MenuItem_Click(object sender, EventArgs e) { SaveQuickSave("QuickSave1"); }
-		private void Savestate2MenuItem_Click(object sender, EventArgs e) { SaveQuickSave("QuickSave2"); }
-		private void Savestate3MenuItem_Click(object sender, EventArgs e) { SaveQuickSave("QuickSave3"); }
-		private void Savestate4MenuItem_Click(object sender, EventArgs e) { SaveQuickSave("QuickSave4"); }
-		private void Savestate5MenuItem_Click(object sender, EventArgs e) { SaveQuickSave("QuickSave5"); }
-		private void Savestate6MenuItem_Click(object sender, EventArgs e) { SaveQuickSave("QuickSave6"); }
-		private void Savestate7MenuItem_Click(object sender, EventArgs e) { SaveQuickSave("QuickSave7"); }
-		private void Savestate8MenuItem_Click(object sender, EventArgs e) { SaveQuickSave("QuickSave8"); }
-		private void Savestate9MenuItem_Click(object sender, EventArgs e) { SaveQuickSave("QuickSave9"); }
-		private void Savestate0MenuItem_Click(object sender, EventArgs e) { SaveQuickSave("QuickSave0"); }
+		private void Savestate1MenuItem_Click(object sender, EventArgs e) => SaveQuickSave("QuickSave1");
+		private void Savestate2MenuItem_Click(object sender, EventArgs e) => SaveQuickSave("QuickSave2");
+		private void Savestate3MenuItem_Click(object sender, EventArgs e) => SaveQuickSave("QuickSave3");
+		private void Savestate4MenuItem_Click(object sender, EventArgs e) => SaveQuickSave("QuickSave4");
+		private void Savestate5MenuItem_Click(object sender, EventArgs e) => SaveQuickSave("QuickSave5");
+		private void Savestate6MenuItem_Click(object sender, EventArgs e) => SaveQuickSave("QuickSave6");
+		private void Savestate7MenuItem_Click(object sender, EventArgs e) => SaveQuickSave("QuickSave7");
+		private void Savestate8MenuItem_Click(object sender, EventArgs e) => SaveQuickSave("QuickSave8");
+		private void Savestate9MenuItem_Click(object sender, EventArgs e) => SaveQuickSave("QuickSave9");
+		private void Savestate0MenuItem_Click(object sender, EventArgs e) => SaveQuickSave("QuickSave0");
 
-		private void SaveNamedStateMenuItem_Click(object sender, EventArgs e)
-		{
-			SaveStateAs();
-		}
+		private void SaveNamedStateMenuItem_Click(object sender, EventArgs e) => SaveStateAs();
 
-		private void Loadstate1MenuItem_Click(object sender, EventArgs e) { LoadQuickSave("QuickSave1"); }
-		private void Loadstate2MenuItem_Click(object sender, EventArgs e) { LoadQuickSave("QuickSave2"); }
-		private void Loadstate3MenuItem_Click(object sender, EventArgs e) { LoadQuickSave("QuickSave3"); }
-		private void Loadstate4MenuItem_Click(object sender, EventArgs e) { LoadQuickSave("QuickSave4"); }
-		private void Loadstate5MenuItem_Click(object sender, EventArgs e) { LoadQuickSave("QuickSave5"); }
-		private void Loadstate6MenuItem_Click(object sender, EventArgs e) { LoadQuickSave("QuickSave6"); }
-		private void Loadstate7MenuItem_Click(object sender, EventArgs e) { LoadQuickSave("QuickSave7"); }
-		private void Loadstate8MenuItem_Click(object sender, EventArgs e) { LoadQuickSave("QuickSave8"); }
-		private void Loadstate9MenuItem_Click(object sender, EventArgs e) { LoadQuickSave("QuickSave9"); }
-		private void Loadstate0MenuItem_Click(object sender, EventArgs e) { LoadQuickSave("QuickSave0"); }
+		private void Loadstate1MenuItem_Click(object sender, EventArgs e) => LoadQuickSave("QuickSave1");
+		private void Loadstate2MenuItem_Click(object sender, EventArgs e) => LoadQuickSave("QuickSave2");
+		private void Loadstate3MenuItem_Click(object sender, EventArgs e) => LoadQuickSave("QuickSave3");
+		private void Loadstate4MenuItem_Click(object sender, EventArgs e) => LoadQuickSave("QuickSave4");
+		private void Loadstate5MenuItem_Click(object sender, EventArgs e) => LoadQuickSave("QuickSave5");
+		private void Loadstate6MenuItem_Click(object sender, EventArgs e) => LoadQuickSave("QuickSave6");
+		private void Loadstate7MenuItem_Click(object sender, EventArgs e) => LoadQuickSave("QuickSave7");
+		private void Loadstate8MenuItem_Click(object sender, EventArgs e) => LoadQuickSave("QuickSave8");
+		private void Loadstate9MenuItem_Click(object sender, EventArgs e) => LoadQuickSave("QuickSave9");
+		private void Loadstate0MenuItem_Click(object sender, EventArgs e) => LoadQuickSave("QuickSave0");
 
-		private void LoadNamedStateMenuItem_Click(object sender, EventArgs e)
-		{
-			LoadStateAs();
-		}
+		private void LoadNamedStateMenuItem_Click(object sender, EventArgs e) => LoadStateAs();
 
 		private void AutoloadLastSlotMenuItem_Click(object sender, EventArgs e)
 		{
@@ -454,10 +448,8 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			if (!EnsureCoreIsAccurate())
-			{
-				// Inaccurate core but allow the user to continue anyway
-			}
+			// Nag user to user a more accurate core, but let them continue anyway
+			EnsureCoreIsAccurate();
 
 			using var form = new RecordMovie(this, Config, Game, Emulator, MovieSession, FirmwareManager);
 			form.ShowDialog();
@@ -863,22 +855,20 @@ namespace BizHawk.Client.EmuHawk
 
 		private void KeyPriorityMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
+			BothHkAndControllerMenuItem.Checked = false;
+			InputOverHkMenuItem.Checked = false;
+			HkOverInputMenuItem.Checked = false;
+
 			switch (Config.InputHotkeyOverrideOptions)
 			{
 				default:
 				case 0:
 					BothHkAndControllerMenuItem.Checked = true;
-					InputOverHkMenuItem.Checked = false;
-					HkOverInputMenuItem.Checked = false;
 					break;
 				case 1:
-					BothHkAndControllerMenuItem.Checked = false;
 					InputOverHkMenuItem.Checked = true;
-					HkOverInputMenuItem.Checked = false;
 					break;
 				case 2:
-					BothHkAndControllerMenuItem.Checked = false;
-					InputOverHkMenuItem.Checked = false;
 					HkOverInputMenuItem.Checked = true;
 					break;
 			}
@@ -1118,12 +1108,12 @@ namespace BizHawk.Client.EmuHawk
 		private void Frameskip8MenuItem_Click(object sender, EventArgs e) { Config.FrameSkip = 8; FrameSkipMessage(); }
 		private void Frameskip9MenuItem_Click(object sender, EventArgs e) { Config.FrameSkip = 9; FrameSkipMessage(); }
 
-		private void Speed50MenuItem_Click(object sender, EventArgs e) { ClickSpeedItem(50); }
-		private void Speed75MenuItem_Click(object sender, EventArgs e) { ClickSpeedItem(75); }
-		private void Speed100MenuItem_Click(object sender, EventArgs e) { ClickSpeedItem(100); }
-		private void Speed150MenuItem_Click(object sender, EventArgs e) { ClickSpeedItem(150); }
-		private void Speed200MenuItem_Click(object sender, EventArgs e) { ClickSpeedItem(200); }
-		private void Speed400MenuItem_Click(object sender, EventArgs e) { ClickSpeedItem(400); }
+		private void Speed50MenuItem_Click(object sender, EventArgs e) => ClickSpeedItem(50);
+		private void Speed75MenuItem_Click(object sender, EventArgs e) => ClickSpeedItem(75);
+		private void Speed100MenuItem_Click(object sender, EventArgs e) => ClickSpeedItem(100);
+		private void Speed150MenuItem_Click(object sender, EventArgs e) => ClickSpeedItem(150);
+		private void Speed200MenuItem_Click(object sender, EventArgs e) => ClickSpeedItem(200);
+		private void Speed400MenuItem_Click(object sender, EventArgs e) => ClickSpeedItem(400);
 
 		private void BothHkAndControllerMenuItem_Click(object sender, EventArgs e)
 		{
@@ -1547,8 +1537,7 @@ namespace BizHawk.Client.EmuHawk
 					RestoreDirectory = true
 				};
 
-				if (ofd.ShowDialog()
-					.IsOk())
+				if (ofd.ShowDialog().IsOk())
 				{
 					try
 					{
@@ -1843,9 +1832,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AppleSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			if (Emulator is AppleII)
+			if (Emulator is AppleII a)
 			{
-				AppleDisksSubMenu.Enabled = ((AppleII)Emulator).DiskCount > 1;
+				AppleDisksSubMenu.Enabled = a.DiskCount > 1;
 			}
 		}
 
@@ -2070,9 +2059,8 @@ namespace BizHawk.Client.EmuHawk
 					File.WriteAllBytes(zxSnapExpDialog.FileName, snap);
 				}
 			}
-			catch (Exception ex)
+			catch (Exception)
 			{
-				var ee = ex;
 			}
 		}
 
