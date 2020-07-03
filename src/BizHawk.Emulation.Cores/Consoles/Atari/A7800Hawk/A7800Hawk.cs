@@ -186,7 +186,13 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					if (cart_2.Bit(2))
 					{
 						cart_RAM = 8;
-					}					
+
+						// the homebrew game serpentine requires extra RAM, seems to use bit 6 to indicate this
+						if (cart_2.Bit(6))
+						{
+							cart_RAM = 16;
+						}
+					}
 				}
 				else
 				{
