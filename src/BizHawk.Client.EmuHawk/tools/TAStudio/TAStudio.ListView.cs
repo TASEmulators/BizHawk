@@ -1171,10 +1171,10 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}
 
-					var getVal = CurrentTasMovie.GetAxisState(i, _startAxisDrawColumn);
+					var getVal = (i < CurrentTasMovie.InputLogLength) ? CurrentTasMovie.GetAxisState(i, _startAxisDrawColumn) : setVal;
 					CurrentTasMovie.SetAxisState(i, _startAxisDrawColumn, setVal); // Notice it uses new row, old column, you can only paint across a single column
 
-					if (getVal != setVal) { JumpToGreenzone(); }				
+					if (getVal != setVal) { JumpToGreenzone(); }
 				}				
 			}
 
