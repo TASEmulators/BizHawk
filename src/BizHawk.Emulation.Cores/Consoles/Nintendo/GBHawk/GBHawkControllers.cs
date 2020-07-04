@@ -181,7 +181,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			// since rotations about X have less of a moment arm compared to by, we take 1/5 of the effect as a baseline
 			float temp2 = (float)((phi - phi_prev) / 0.5 * 25);
 
-			return (ushort)(0x81D0 - Math.Floor(temp * 125) - temp2);
+			return (ushort)(0x8370 - Math.Floor(temp * 220) - temp2);
 		}
 
 		// acc y is just the sine of the angle
@@ -195,7 +195,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			// further it will be assumed that the resulting acceleration is roughly eqvuivalent to gravity
 			float temp2 = (float)((theta - theta_prev)/0.5 * 125);
 
-			return (ushort)(0x81D0 - Math.Floor(temp * 125) + temp2);			
+			return (ushort)(0x8370 - Math.Floor(temp * 220) + temp2);			
 		}
 
 		private static readonly string[] BaseDefinition =
