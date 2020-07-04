@@ -17,14 +17,19 @@ mod win {
 	use std::ptr::{null, null_mut};
 	use winapi::ctypes::c_void;
 
-	fn error() {
-		unsafe {
-			let err = winapi::um::errhandlingapi::GetLastError();
-			eprintln!("WinApi failure code: {}", err);
+	fn error() -> anyhow::Error {
+		anyhow!("WinApi failure code: {}", unsafe { winapi::um::errhandlingapi::GetLastError() })
+	}
+	fn ret(code: i32) -> anyhow::Result<()> {
+		match code {
+			0 => Err(error()),
+			_ => Ok(())
 		}
 	}
 
-	pub fn open(size: usize) -> Option<Handle> {
+	/// Open a file (not backed by the fs) for memory mapping
+	/// Caller must close_handle() later or else leak
+	pub fn open_handle(size: usize) -> anyhow::Result<Handle> {
 		unsafe {
 			let res = CreateFileMappingW(
 				INVALID_HANDLE_VALUE,
@@ -35,23 +40,28 @@ mod win {
 				null()
 			);
 			if res == null_mut() {
-				error();
-				None
+				Err(error())
 			} else {
-				Some(Handle(res as usize))
+				Ok(Handle(res as usize))
 			}
 		}
 	}
 
-	pub unsafe fn close(handle: Handle) -> bool {
-		CloseHandle(handle.0 as *mut c_void) != 0
+	/// close a handle returned by open_handle()
+	/// Unsafe:  Only call with handle returned by open_handle().  Do not call when that handle is mapped
+	pub unsafe fn close_handle(handle: Handle) -> anyhow::Result<()> {
+		ret(CloseHandle(handle.0 as *mut c_void))
 	}
 
+	/// Return a trapping handle.  Calling just about anything with this is bad
 	pub fn bad() -> Handle {
 		return Handle(INVALID_HANDLE_VALUE as usize);
 	}
 
-	pub fn map(handle: &Handle, addr: AddressRange) -> bool {
+	/// Map a handle into an address range
+	/// Probably shouldn't call with addr.size > handle's alloced size
+	/// Leaks if not later unmapped
+	pub fn map_handle(handle: &Handle, addr: AddressRange) -> anyhow::Result<()> {
 		unsafe {
 			let res = MapViewOfFileEx(
 				handle.0 as *mut c_void,
@@ -62,29 +72,58 @@ mod win {
 				addr.start as *mut c_void
 			);
 			if res == addr.start as *mut c_void {
-				true
+				Ok(())
 			} else {
-				error();
-				false
+				Err(error())
 			}
 		}
 	}
 
-	pub unsafe fn unmap(addr: AddressRange) -> bool {
-		UnmapViewOfFile(addr.start as *mut c_void) != 0
+	/// Unmaps an address range previously mapped by map_handle
+	/// Unsafe:  Do not call with any `addr` that does not exactly match a previous successful map_handle
+	pub unsafe fn unmap_handle(addr: AddressRange) -> anyhow::Result<()> {
+		ret(UnmapViewOfFile(addr.start as *mut c_void))
 	}
 
-	pub unsafe fn protect(addr: AddressRange, prot: Protection) -> bool {
-		let p = match prot {
+	fn prottoprot(prot: Protection) -> u32 {
+		match prot {
 			Protection::None => PAGE_NOACCESS,
 			Protection::R => PAGE_READONLY,
 			Protection::RW => PAGE_READWRITE,
 			Protection::RX => PAGE_EXECUTE_READ,
 			Protection::RWX => PAGE_EXECUTE_READWRITE,
 			Protection::RWStack => PAGE_READWRITE | PAGE_GUARD,
-		};
+		}
+	}
+
+	/// Map some anonymous bytes with no fd backing
+	/// addr.start can be 0, which means the OS chooses a location, or non-zero, which gives fixed behavior like map_handle
+	/// Returned address range will be identical in the case of non-zero, or give the actual address in the case of zero.
+	pub fn map_anon(addr: AddressRange, initial_prot: Protection) -> anyhow::Result<AddressRange> {
+		unsafe {
+			let res = VirtualAlloc(addr.start as *mut c_void, 
+				addr.size, MEM_RESERVE | MEM_COMMIT, 
+				prottoprot(initial_prot)) as usize;
+			match res {
+				0 => Err(error()),
+				p => Ok(AddressRange { start: p, size: addr.size })
+			}
+		}
+	}
+
+	/// Change memory protection on allocated bytes
+	/// This should work safely on any aligned subset of map_anon or map_handle
+	pub unsafe fn protect(addr: AddressRange, prot: Protection) -> anyhow::Result<()> {
+		let p = prottoprot(prot);
 		let mut old_protect: u32 = 0;
-		VirtualProtect(addr.start as *mut c_void, addr.size, p, &mut old_protect) != 0
+		let res = VirtualProtect(addr.start as *mut c_void, addr.size, p, &mut old_protect);
+		ret(res)
+	}
+
+	/// Unmap bytes previously mapped by map_anon
+	/// addr should exactly match the return value from map_anon (so if you mapped with start 0, you need to pass the actual start back)
+	pub unsafe fn unmap_annon(addr: AddressRange) -> anyhow::Result<()> {
+		ret(VirtualFree(addr.start as *mut c_void, 0, MEM_RELEASE))
 	}
 
 	pub struct StackTripResult {
@@ -116,39 +155,51 @@ mod nix {
 	use super::*;
 	use libc::*;
 
-	fn error() {
+	fn error() -> anyhow::Error {
 		unsafe {
 			let err = *__errno_location();
-			eprintln!("Libc failure code: {}", err);
+			anyhow!("Libc failure code: {}", err)
+		}
+	}
+	fn ret(code: i32) -> anyhow::Result<()> {
+		match code {
+			0 => Ok(()),
+			_ => Err(error()),
 		}
 	}
 
-	pub fn open(size: usize) -> Option<Handle> {
+	/// Open a file (not backed by the fs) for memory mapping
+	/// Caller must close_handle() later or else leak
+	pub fn open_handle(size: usize) -> anyhow::Result<Handle> {
 		unsafe {
 			let s = std::ffi::CString::new("MemoryBlockUnix").unwrap();
 			let fd = syscall(SYS_memfd_create, s.as_ptr(), MFD_CLOEXEC) as i32;
 			if fd == -1 {
-				error();
-				return None
+				return Err(error())
 			}
 			if ftruncate(fd, size as i64) != 0 {
-				error();
-				None
+				Err(error())
 			} else {
-				Some(Handle(fd as usize))
+				Ok(Handle(fd as usize))
 			}
 		}
 	}
 
-	pub unsafe fn close(handle: Handle) -> bool {
-		libc::close(handle.0 as i32) == 0
+	/// close a handle returned by open_handle()
+	/// Unsafe:  Only call with handle returned by open_handle().  Do not call when that handle is mapped
+	pub unsafe fn close_handle(handle: Handle) -> anyhow::Result<()> {
+		ret(libc::close(handle.0 as i32))
 	}
 
+	/// Return a trapping handle.  Calling just about anything with this is bad
 	pub fn bad() -> Handle {
 		return Handle(-1i32 as usize);
 	}
 
-	pub fn map(handle: &Handle, addr: AddressRange) -> bool {
+	/// Map a handle into an address range
+	/// Probably shouldn't call with addr.size > handle's alloced size
+	/// Leaks if not later unmapped
+	pub fn map_handle(handle: &Handle, addr: AddressRange) -> anyhow::Result<()> {
 		unsafe {
 			let res = mmap(addr.start as *mut c_void,
 				addr.size,
@@ -158,28 +209,58 @@ mod nix {
 				0
 			);
 			if res == addr.start as *mut c_void {
-				true
+				Ok(())
 			} else {
-				error();
-				false
+				Err(error())
 			}
 		}
 	}
 
-	pub unsafe fn unmap(addr: AddressRange) -> bool {
-		munmap(addr.start as *mut c_void, addr.size) == 0
+	/// Unmaps an address range previously mapped by map_handle
+	/// Unsafe:  Do not call with any `addr` that does not exactly match a previous successful map_handle
+	pub unsafe fn unmap_handle(addr: AddressRange) -> anyhow::Result<()> {
+		ret(munmap(addr.start as *mut c_void, addr.size))
 	}
 
-	pub unsafe fn protect(addr: AddressRange, prot: Protection) -> bool {
-		let p = match prot {
+	fn prottoprot(prot: Protection) -> i32 {
+		match prot {
 			Protection::None => PROT_NONE,
 			Protection::R => PROT_READ,
 			Protection::RW => PROT_READ | PROT_WRITE,
 			Protection::RX => PROT_READ | PROT_EXEC,
 			Protection::RWX => PROT_READ | PROT_WRITE | PROT_EXEC,
-			Protection::RWStack => panic!("RWStack should not be passed to pal layer"),
-		};
-		mprotect(addr.start as *mut c_void, addr.size, p) == 0
+			Protection::RWStack => panic!("RWStack should not be passed to nix pal layer"),
+		}
+	}
+
+	/// Map some anonymous bytes with no fd backing
+	/// addr.start can be 0, which means the OS chooses a location, or non-zero, which gives fixed behavior like map_handle
+	/// Returned address range will be identical in the case of non-zero, or give the actual address in the case of zero.
+	pub fn map_anon(addr: AddressRange, initial_prot: Protection) -> anyhow::Result<AddressRange> {
+		unsafe {
+			let mut flags = MAP_PRIVATE | MAP_ANONYMOUS;
+			if addr.start != 0 {
+				flags |= MAP_FIXED | MAP_FIXED_NOREPLACE;
+			}
+			let ptr = mmap(addr.start as *mut c_void, addr.size, prottoprot(initial_prot), flags, -1, 0);
+			match ptr {
+				MAP_FAILED => Err(error()),
+				p => Ok(AddressRange { start: p as usize, size: addr.size })
+			}
+		}
+	}
+
+	/// Change memory protection on allocated bytes
+	/// This should work safely on any aligned subset of map_anon or map_handle
+	pub unsafe fn protect(addr: AddressRange, prot: Protection) -> anyhow::Result<()> {
+		let p = prottoprot(prot);
+		ret(mprotect(addr.start as *mut c_void, addr.size, p))
+	}
+
+	/// Unmap bytes previously mapped by map_anon
+	/// addr should exactly match the return value from map_anon (so if you mapped with start 0, you need to pass the actual start back)
+	pub unsafe fn unmap_annon(addr: AddressRange) -> anyhow::Result<()> {
+		ret(munmap(addr.start as *mut c_void, addr.size))
 	}
 }
 
@@ -189,40 +270,58 @@ mod tests {
 	use std::mem::transmute;
 	
 	#[test]
-	fn basic_test() {
+	fn basic_test() -> anyhow::Result<()> {
 		assert!(crate::PAGESIZE == 0x1000);
 		// can't test the fault states (RWStack, R prohibits write, etc.) without cooperation of tripguard, so do that elsewhere
 		unsafe {
 			let size = 0x20000usize;
 			let start = 0x36a00000000usize;
 			let addr = AddressRange { start, size };
-			let handle = open(size).unwrap();
+			let handle = open_handle(size).unwrap();
 
-			assert!(map(&handle, addr));
-			assert!(protect(addr, Protection::RW));
+			map_handle(&handle, addr)?;
+			protect(addr, Protection::RW)?;
 			*((start + 0x14795) as *mut u8) = 42;
-			assert!(unmap(addr));
+			unmap_handle(addr)?;
 
-			assert!(map(&handle, addr));
-			assert!(protect(addr, Protection::R));
+			map_handle(&handle, addr)?;
+			protect(addr, Protection::R)?;
 			assert_eq!(*((start + 0x14795) as *const u8), 42);
-			assert!(unmap(addr));
+			unmap_handle(addr)?;
 
-			assert!(map(&handle, addr));
-			assert!(protect(addr, Protection::RW));
+			map_handle(&handle, addr)?;
+			protect(addr, Protection::RW)?;
 			*(start as *mut u8) = 0xc3; // RET
-			assert!(protect(addr, Protection::RX));
+			protect(addr, Protection::RX)?;
 			transmute::<usize, extern fn() -> ()>(start)();
-			assert!(protect(addr, Protection::RWX));
+			protect(addr, Protection::RWX)?;
 			*(start as *mut u8) = 0x90; // NOP
 			*((start + 1) as *mut u8) = 0xb0; // MOV AL
 			*((start + 2) as *mut u8) = 0x7b; // 123
 			*((start + 3) as *mut u8) = 0xc3; // RET
 			let i = transmute::<usize, extern fn() -> u8>(start)();
 			assert_eq!(i, 123);
-			assert!(unmap(addr));
+			unmap_handle(addr)?;
 
-			assert!(close(handle));
+			close_handle(handle)?;
 		}
+		Ok(())
+	}
+
+	#[test]
+	fn test_map_anon() -> anyhow::Result<()> {
+		unsafe {
+			let addr_in = AddressRange { start: 0x34100000000, size: 0x20000 };
+			let addr = map_anon(addr_in, Protection::RW)?;
+			assert_eq!(addr.start, addr_in.start);
+			unmap_annon(addr)?;
+		}
+		unsafe {
+			let addr_in = AddressRange { start: 0, size: 0x20000 };
+			let addr = map_anon(addr_in, Protection::RW)?;
+			addr.slice_mut()[0] = 13;
+			unmap_annon(addr)?;
+		}
+		Ok(())
 	}
 }

@@ -1,5 +1,5 @@
 bits 64
-org 0x36a00000000
+org 0x35f00000000
 
 %macro save_ctx 1
 	mov [%1], rsp
@@ -114,16 +114,22 @@ depart:
 	; host starts new guest thread
 	; context.guest.rsp set to stack limit - 0x10
 	; [context.guest.rsp] set to entry point
-	; guest args in args
+	; guest args in context.call
 
 	mov r10, [gs:0x18] ; context, context.host
 	save_ctx r10
-	; TODO: Useful to do a full load_ctx with zeroed values here?
+
+	mov r11, r10
+	add r11, 0x70 ; context.call
+	load_args r11, 6
+
+	; load_ctx, but only RSP.  TODO: Useful to do a full load_ctx with zeroed values here to avoid nondeterminism?
 	mov rsp, [r10 + 0x38]
+
 	mov r11, arrive
 	mov [rsp + 8], r11
 	ret
-align 32, int3
+align 256, int3
 
 arrive:
 	; guest returns from depart
@@ -134,7 +140,7 @@ arrive:
 
 	load_ctx r10
 	ret
-align 32, int3
+align 256, int3
 
 anyret:
 	; host returns the results of a callback, extcall or guest_syscall, to guest
@@ -166,6 +172,8 @@ align 256, int3
 	%endrep
 	align 128, int3
 %endmacro
+
+align 4096, int3
 
 %assign j 0
 %rep 64
