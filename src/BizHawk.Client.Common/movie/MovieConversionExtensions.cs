@@ -304,7 +304,9 @@ namespace BizHawk.Client.Common
 			int fileSuffix = 0;
 			while (File.Exists(newFileName))
 			{
-				newFileName = $"{Path.GetDirectoryName(oldFileName)}/{Path.GetFileNameWithoutExtension(oldFileName)} {++fileSuffix}.{TasMovie.Extension}";
+				// Using this should hopefully be system agnostic
+				var temp_path = Path.Combine(Path.GetDirectoryName(oldFileName), Path.GetFileNameWithoutExtension(oldFileName));
+				newFileName = $"{temp_path} {++fileSuffix}.{TasMovie.Extension}";
 			}
 
 			return newFileName;

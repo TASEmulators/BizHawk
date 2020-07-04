@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
 
@@ -48,8 +49,7 @@ namespace BizHawk.Client.Common
 			set
 			{
 				_filename = value;
-				int index = Filename.LastIndexOf("\\");
-				Name = Filename.Substring(index + 1, Filename.Length - index - 1);
+				Name = Path.GetFileName(Filename);
 			}
 		}
 
