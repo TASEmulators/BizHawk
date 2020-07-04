@@ -6,7 +6,7 @@ use crate::memory_block::Protection;
 use std::collections::HashMap;
 
 /// Special system import area
-const IMPORTS_OBJECT_NAME: &str = "__wbxsysarea";
+const INFO_OBJECT_NAME: &str = "__wbxsysinfo";
 
 /// Section names that are not marked as readonly, but we'll make them readonly anyway
 fn section_name_is_readonly(name: &str) -> bool {
@@ -27,7 +27,6 @@ pub struct ElfLoader {
 	exports: HashMap<String, AddressRange>,
 	entry_point: usize,
 	hash: Vec<u8>,
-	import_area: AddressRange,
 }
 impl ElfLoader {
 	pub fn elf_addr(wbx: &Elf) -> AddressRange {
@@ -82,7 +81,7 @@ impl ElfLoader {
 		}
 
 		let mut exports = HashMap::new();
-		let mut import_area_opt = None;
+		let mut info_area_opt = None;
 
 		for sym in wbx.syms.iter() {
 			let name = match wbx.strtab.get(sym.st_name) {
@@ -95,19 +94,19 @@ impl ElfLoader {
 					AddressRange { start: sym.st_value as usize, size: sym.st_size as usize }
 				);
 			}
-			if name == IMPORTS_OBJECT_NAME {
-				import_area_opt = Some(AddressRange { start: sym.st_value as usize, size: sym.st_size as usize });
+			if name == INFO_OBJECT_NAME {
+				info_area_opt = Some(AddressRange { start: sym.st_value as usize, size: sym.st_size as usize });
 			}
 		}
 
-		let import_area = match import_area_opt {
+		let info_area = match info_area_opt {
 			Some(i) => {
-				if i.size != std::mem::size_of::<WbxSysArea>() {
-					return Err(anyhow!("Symbol {} is the wrong size", IMPORTS_OBJECT_NAME))
+				if i.size != std::mem::size_of::<WbxSysLayout>() {
+					return Err(anyhow!("Symbol {} is the wrong size", INFO_OBJECT_NAME))
 				}
 				i
 			},
-			None => return Err(anyhow!("Symbol {} is missing", IMPORTS_OBJECT_NAME))
+			None => return Err(anyhow!("Symbol {} is missing", INFO_OBJECT_NAME))
 		};
 
 		{
@@ -164,14 +163,23 @@ impl ElfLoader {
 				dst.copy_from_slice(src);
 			}
 			b.mprotect(prot_addr, prot)?;
+
+			{
+				let addr = info_area;
+				unsafe { *(addr.start as *mut WbxSysLayout) = *layout; }
+			}
+
+			// Main thread area.  TODO:  Should this happen here?
+			b.mmap_fixed(layout.main_thread, Protection::RWStack, true)?;
+			b.mprotect(AddressRange { start: layout.main_thread.start, size: PAGESIZE * 4 }, Protection::None)?;
+			b.mark_invisible(layout.main_thread)?;
 		}
 
 		Ok(ElfLoader {
 			sections,
 			exports,
 			entry_point: wbx.entry as usize,
-			hash: bin::hash(data),
-			import_area
+			hash: bin::hash(data)
 		})
 	}
 	pub fn pre_seal(&mut self, b: &mut ActivatedMemoryBlock) {
@@ -182,15 +190,6 @@ impl ElfLoader {
 				b.mprotect(section.addr.align_expand(), Protection::R).unwrap();
 			}
 		}
-		self.clear_syscalls(b);
-	}
-	pub fn connect_syscalls(&mut self, _b: &mut ActivatedMemoryBlock, sys: &WbxSysArea) {
-		let addr = self.import_area;
-		unsafe { *(addr.start as *mut WbxSysArea) = *sys; }
-	}
-	fn clear_syscalls(&mut self, _b: &mut ActivatedMemoryBlock) {
-		let addr = self.import_area;
-		unsafe { addr.zero(); }
 	}
 	pub fn native_init(&mut self, _b: &mut ActivatedMemoryBlock) {
 		println!("Calling _start()");

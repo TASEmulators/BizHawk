@@ -50,7 +50,11 @@ impl MemoryLayoutTemplate {
 			start: res.plain.end(),
 			size: mmap_size
 		};
-		if res.elf.start >> 32 != (res.mmap.end() - 1) >> 32 {
+		res.main_thread = AddressRange {
+			start: res.mmap.end(),
+			size: 1 << 20
+		};
+		if res.all().start >> 32 != (res.all().end() - 1) >> 32 {
 			Err(anyhow!("HostMemoryLayout must fit into a single 4GiB region!"))
 		} else {
 			Ok(res)

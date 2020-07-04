@@ -1,12 +1,22 @@
 use lazy_static::lazy_static;
 use crate::*;
 use memory_block::{Protection, pal};
-use host::WaterboxHost;
+use host::{ActivatedWaterboxHost};
+
+mod call_trampolines;
 
 // manually match these up with interop.s
 const ORG: usize = 0x35f00000000;
 const DEPART_ADDR: usize = ORG + 0x700;
 const ANYRET_ADDR: usize = ORG + 0x900;
+pub const CALLBACK_SLOTS: usize = 64;
+/// Retrieves a function pointer suitable for sending to the guest that will cause
+/// the host to callback to `slot` when called
+pub fn get_callback_ptr(slot: usize, arg_count: usize) -> usize{
+	assert!(slot < CALLBACK_SLOTS);
+	assert!(arg_count <= 6);
+	ORG + 0x1000 + slot * 128 + arg_count * 16
+}
 
 fn init_interop_area() -> AddressRange {
 	unsafe {
@@ -49,6 +59,14 @@ const DEPART: FuncCast<extern "sysv64" fn() -> usize> = FuncCast { p: DEPART_ADD
 /// Reenter waterbox code.  Call after depart() or previous anyret() call left a syscall/extcall in context.call
 /// Return values are exactly the same as from depart()
 const ANYRET: FuncCast<fn(r: usize) -> usize> = FuncCast { p: ANYRET_ADDR };
+
+pub fn is_external_call(nr: usize) -> Option<usize> {
+	if nr >= 0x8000000000000000 {
+		Some(nr - 0x8000000000000000)
+	} else {
+		None
+	}
+}
 
 /// Layout must be synced with interop.s
 #[repr(C)]
@@ -96,8 +114,8 @@ impl Context {
 	}
 }
 
-pub unsafe fn run_guest_thread<F: FnMut(&mut WaterboxHost, &Context) -> usize>(
-	host: &mut WaterboxHost, call: &GuestCall, guest_rip: usize, guest_rsp_limit: usize, 
+pub unsafe fn run_guest_thread<F: FnMut(&mut ActivatedWaterboxHost, &GuestCall) -> usize>(
+	host: &mut ActivatedWaterboxHost, call: &GuestCall, guest_rip: usize, guest_rsp_limit: usize, 
 	mut service_callback: F
 ) -> usize {
 	let mut context = Context::new();
@@ -122,7 +140,7 @@ pub unsafe fn run_guest_thread<F: FnMut(&mut WaterboxHost, &Context) -> usize>(
 
 	let mut ret = (DEPART.f)();
 	while (&context.call.nr as *const usize).read_volatile() != 0xffffffffffffffff {
-		let val = service_callback(host, &context);
+		let val = service_callback(host, &context.call);
 		ret = (ANYRET.f)(val);
 	}
 

@@ -6,6 +6,9 @@ use fs::{FileDescriptor, FileSystem/*, MissingFileCallback*/};
 use elf::ElfLoader;
 use cinterface::MemoryLayoutTemplate;
 use goblin::elf::Elf;
+use context::{GuestCall, CALLBACK_SLOTS};
+
+pub type ExternalCallback = extern fn(a1: usize, a2: usize, a3: usize, a4: usize, a5: usize, a6: usize) -> usize;
 
 pub struct WaterboxHost {
 	fs: FileSystem,
@@ -16,6 +19,7 @@ pub struct WaterboxHost {
 	active: bool,
 	sealed: bool,
 	image_file: Vec<u8>,
+	external_callbacks: [Option<ExternalCallback>; CALLBACK_SLOTS],
 }
 impl WaterboxHost {
 	pub fn new(image_file: Vec<u8>, module_name: &str, layout_template: &MemoryLayoutTemplate) -> anyhow::Result<Box<WaterboxHost>> {
@@ -37,6 +41,7 @@ impl WaterboxHost {
 			active: false,
 			sealed: false,
 			image_file,
+			external_callbacks: [None; CALLBACK_SLOTS],
 		});
 
 		let mut active = res.activate();
@@ -53,21 +58,10 @@ impl WaterboxHost {
 	pub fn activate(&mut self) -> Box<ActivatedWaterboxHost> {
 		let h = unsafe { &mut *(self as *mut WaterboxHost) };
 		let b = self.memory_block.enter();
-		let sys = WbxSysArea {
-			layout: self.layout,
-			syscall: WbxSysSyscall {
-				ud: 0,
-				syscall,
-			}
-		};
-		let mut res = Box::new(ActivatedWaterboxHost {
-			tag: TAG,
+		let res = Box::new(ActivatedWaterboxHost {
 			h,
 			b,
-			sys
 		});
-		res.sys.syscall.ud = res.as_mut() as *mut ActivatedWaterboxHost as usize;
-		res.h.elf.connect_syscalls(&mut res.b, &res.sys);
 		res.h.active = true;
 		res
 	}
@@ -78,12 +72,9 @@ impl Drop for WaterboxHost {
 	}
 }
 
-const TAG: u64 = 0xd01487803948acff;
 pub struct ActivatedWaterboxHost<'a> {
-	tag: u64,
 	h: &'a mut WaterboxHost,
 	b: ActivatedMemoryBlock<'a>,
-	sys: WbxSysArea,
 }
 impl<'a> Drop for ActivatedWaterboxHost<'a> {
 	fn drop(&mut self) {
@@ -92,6 +83,11 @@ impl<'a> Drop for ActivatedWaterboxHost<'a> {
 }
 
 impl<'a> ActivatedWaterboxHost<'a> {
+	pub fn get_external_callback_ptr(&mut self, callback: ExternalCallback, slot: usize, arg_count: usize) -> usize {
+		assert!(slot < CALLBACK_SLOTS);
+		self.h.external_callbacks[slot] = Some(callback);
+		context::get_callback_ptr(slot, arg_count)
+	}
 	pub fn get_proc_addr(&self, name: &str) -> usize {
 		self.h.elf.get_proc_addr(name)
 	}
@@ -108,7 +104,6 @@ impl<'a> ActivatedWaterboxHost<'a> {
 		}
 		self.h.elf.pre_seal(&mut self.b);
 		self.b.seal();
-		self.h.elf.connect_syscalls(&mut self.b, &self.sys);
 		self.h.sealed = true;
 		Ok(())
 	}
@@ -121,6 +116,22 @@ impl<'a> ActivatedWaterboxHost<'a> {
 	// pub fn set_missing_file_callback(&mut self, cb: Option<MissingFileCallback>) {
 	// 	self.h.fs.set_missing_file_callback(cb);
 	// }
+	pub extern fn run_guest_thread(&mut self, native_entry: usize, call: &GuestCall) -> usize {
+		unsafe {
+			let service_callback = |h: &mut ActivatedWaterboxHost, c: &GuestCall| {
+				match context::is_external_call(c.nr) {
+					Some(slot) => {
+						(h.h.external_callbacks[slot]).unwrap()(c.a1, c.a2, c.a3, c.a4, c.a5, c.a6)
+					},
+					None => {
+						syscall(h, SyscallNumber(c.nr), c.a1, c.a2, c.a3, c.a4, c.a5, c.a6).0
+					},
+				}
+			};
+			context::run_guest_thread(self, call, 
+				native_entry, self.h.layout.main_thread.end(), service_callback)
+			}
+	}
 }
 
 const SAVE_START_MAGIC: &str = "ActivatedWaterboxHost_v1";
@@ -144,7 +155,6 @@ impl<'a> IStateable for ActivatedWaterboxHost<'a> {
 		self.h.elf.load_state(stream)?;
 		self.b.load_state(stream)?;
 		bin::verify_magic(stream, SAVE_END_MAGIC)?;
-		self.h.elf.connect_syscalls(&mut self.b, &self.sys);
 		Ok(())
 	}
 }
@@ -153,15 +163,6 @@ fn unimp(nr: SyscallNumber) -> SyscallResult {
 	eprintln!("Stopped on unimplemented syscall {}", lookup_syscall(&nr));
 	unsafe { std::intrinsics::breakpoint() }
 	Err(ENOSYS)
-}
-
-fn gethost<'a>(ud: usize) -> &'a mut ActivatedWaterboxHost<'a> {
-	let res = unsafe { &mut *(ud as *mut ActivatedWaterboxHost) };
-	if res.tag != TAG {
-		unsafe { std::intrinsics::breakpoint() }
-		std::process::abort();
-	}
-	res
 }
 
 fn arg_to_prot(arg: usize) -> Result<Protection, SyscallError> {
@@ -203,8 +204,7 @@ fn arg_to_statbuff<'a>(arg: usize) -> &'a mut KStat {
 	unsafe { &mut *(arg as *mut KStat) }
 }
 
-pub extern "sysv64" fn syscall(nr: SyscallNumber, ud: usize, a1: usize, a2: usize, a3: usize, a4: usize, _a5: usize, _a6: usize) -> SyscallReturn {
-	let h = gethost(ud);
+fn syscall(h: &mut ActivatedWaterboxHost, nr: SyscallNumber, a1: usize, a2: usize, a3: usize, a4: usize, _a5: usize, _a6: usize) -> SyscallReturn {
 	match nr {
 		NR_MMAP => {
 			let mut prot = arg_to_prot(a3)?;
@@ -227,12 +227,12 @@ pub extern "sysv64" fn syscall(nr: SyscallNumber, ud: usize, a1: usize, a2: usiz
 				}
 			}
 			let no_replace = flags & MAP_FIXED_NOREPLACE != 0;
-			let arena_addr = h.sys.layout.mmap;
+			let arena_addr = h.h.layout.mmap;
 			let res = h.b.mmap(AddressRange { start: a1, size: a2 }, prot, arena_addr, no_replace)?;
 			syscall_ok(res)
 		},
 		NR_MREMAP => {
-			let arena_addr = h.sys.layout.mmap;
+			let arena_addr = h.h.layout.mmap;
 			let res = h.b.mremap(AddressRange { start: a1, size: a2 }, a3, arena_addr)?;
 			syscall_ok(res)
 		},
@@ -313,7 +313,7 @@ pub extern "sysv64" fn syscall(nr: SyscallNumber, ud: usize, a1: usize, a2: usiz
 		},
 		NR_BRK => {
 			// TODO: This could be done on the C side
-			let addr = h.sys.layout.sbrk;
+			let addr = h.h.layout.sbrk;
 			let old = h.h.program_break;
 			let res = if a1 != align_down(a1) {
 				old

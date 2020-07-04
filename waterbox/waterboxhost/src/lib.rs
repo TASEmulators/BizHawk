@@ -3,12 +3,13 @@
 #![feature(try_trait)]
 #![feature(core_intrinsics)]
 #![feature(asm)]
+#![feature(naked_functions)]
 
 #![allow(dead_code)]
 
 use std::io::{Read, Write};
 use anyhow::anyhow;
-use syscall_defs::{SyscallNumber, SyscallReturn};
+use syscall_defs::{SyscallReturn};
 
 const PAGESIZE: usize = 0x1000;
 const PAGEMASK: usize = 0xfff;
@@ -92,30 +93,15 @@ pub struct WbxSysLayout {
 	pub invis: AddressRange,
 	pub plain: AddressRange,
 	pub mmap: AddressRange,
+	pub main_thread: AddressRange,
 }
 impl WbxSysLayout {
 	pub fn all(&self) -> AddressRange {
 		AddressRange {
 			start: self.elf.start,
-			size: self.mmap.end() - self.elf.start
+			size: self.main_thread.end() - self.elf.start
 		}
 	}
-}
-
-/// Information for making syscalls injected into the guest application
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct WbxSysSyscall {
-	pub ud: usize,
-	pub syscall: extern "sysv64" fn(nr: SyscallNumber, ud: usize, a1: usize, a2: usize, a3: usize, a4: usize, a5: usize, a6: usize) -> SyscallReturn,
-}
-
-/// Data that is injected into the guest application
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct WbxSysArea {
-	pub layout: WbxSysLayout,
-	pub syscall: WbxSysSyscall,
 }
 
 /// Always remove memoryblocks from active ram when possible, to help debug dangling pointers.
