@@ -591,8 +591,6 @@ namespace BizHawk.Client.EmuHawk
 						_axisPaintState = CurrentTasMovie.GetAxisState(frame, buttonName);
 						
 						_triggerAutoRestore = true;
-						JumpToGreenzone();
-
 						return;
 					}
 				}
@@ -1173,9 +1171,11 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}
 
+					var getVal = CurrentTasMovie.GetAxisState(i, _startAxisDrawColumn);
 					CurrentTasMovie.SetAxisState(i, _startAxisDrawColumn, setVal); // Notice it uses new row, old column, you can only paint across a single column
-					JumpToGreenzone();
-				}
+
+					if (getVal != setVal) { JumpToGreenzone(); }				
+				}				
 			}
 
 			CurrentTasMovie.IsCountingRerecords = wasCountingRerecords;
@@ -1202,8 +1202,6 @@ namespace BizHawk.Client.EmuHawk
 				var value = (_axisPaintState + increment).ConstrainWithin(ControllerType.Axes[_axisEditColumn].Range);
 				CurrentTasMovie.SetAxisState(_axisEditRow, _axisEditColumn, value);
 				_axisTypedValue = value.ToString();
-
-				JumpToGreenzone();
 				RefreshDialog();
 			}
 		}
