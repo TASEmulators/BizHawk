@@ -30,8 +30,8 @@ namespace BizHawk.Emulation.Common
 			FirmwareAndOption("91383B92745CC7CC4F15409AC5BC2C2F699A43F1", 163840, "SNES", "ST018", "st018.rom", "ST018 Rom");
 			FirmwareAndOption("79F5FF55DD10187C7FD7B8DAAB0B3FFBD1F56A2C", 262144, "PCECD", "Bios", "pcecd-3.0-(J).pce", "Super CD Bios (J)");
 			FirmwareAndOption("014881a959e045e00f4db8f52955200865d40280", 32768, "PCECD", "GE-Bios", "gecard.pce", "Games Express CD Card (Japan)");
-			FirmwareAndOption("D9D134BB6B36907C615A594CC7688F7BFCEF5B43", 4096, "A78", "Bios_NTSC", "7800NTSCBIOS.bin", "NTSC Bios");
-			//FirmwareAndOption("CE236581AB7921B59DB95BA12837C22F160896CB", 4096, "A78", "Bios_NTSC", "speed_bios.bin", "NTSC Bios speed");
+			//FirmwareAndOption("D9D134BB6B36907C615A594CC7688F7BFCEF5B43", 4096, "A78", "Bios_NTSC", "7800NTSCBIOS.bin", "NTSC Bios");
+			FirmwareAndOption("CE236581AB7921B59DB95BA12837C22F160896CB", 4096, "A78", "Bios_NTSC", "speed_bios.bin", "NTSC Bios speed");
 
 			FirmwareAndOption("5A140136A16D1D83E4FF32A19409CA376A8DF874", 16384, "A78", "Bios_PAL", "7800PALBIOS.bin", "PAL Bios");
 			FirmwareAndOption("A3AF676991391A6DD716C79022D4947206B78164", 4096, "A78", "Bios_HSC", "7800highscore.bin", "Highscore Bios");
