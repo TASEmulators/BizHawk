@@ -194,17 +194,7 @@ namespace BizHawk.Client.EmuHawk
 			LuaListView.AllColumns.Clear();
 			SetColumns();
 
-			if (Settings.SplitDistance > 0)
-			{
-				try
-				{
-					splitContainer1.SplitterDistance = Settings.SplitDistance;
-				}
-				catch (Exception)
-				{
-					splitContainer1.SplitterDistance = _defaultSplitDistance;
-				}
-			}
+			splitContainer1.SetDistanceOrDefault(Settings.SplitDistance, _defaultSplitDistance);
 		}
 
 		private void BranchesMarkersSplit_SplitterMoved(object sender, SplitterEventArgs e)
