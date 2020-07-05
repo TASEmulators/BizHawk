@@ -420,7 +420,7 @@ namespace BizHawk.Client.EmuHawk
 							toolTip1.SetToolTip(DetailsView, $"Current SHA1: {_game.Hash}");
 						}
 						break;
-					case HeaderKeys.EmulationVersion:
+					case HeaderKeys.EmulatorVersion:
 						if (kvp.Value != VersionInfo.GetEmuVersion())
 						{
 							item.BackColor = Color.Yellow;

@@ -167,13 +167,26 @@ namespace BizHawk.Client.Common
 
 		public string EmulatorVersion
 		{
-			get => Header[HeaderKeys.EmulationVersion];
+			get => Header[HeaderKeys.EmulatorVersion];
 			set
 			{
-				if (Header[HeaderKeys.EmulationVersion] != value)
+				if (Header[HeaderKeys.EmulatorVersion] != value)
 				{
 					Changes = true;
-					Header[HeaderKeys.EmulationVersion] = value;
+					Header[HeaderKeys.EmulatorVersion] = value;
+				}
+			}
+		}
+
+		public string OriginalEmulatorVersion
+		{
+			get => Header[HeaderKeys.OriginalEmulatorVersion];
+			set
+			{
+				if (Header[HeaderKeys.OriginalEmulatorVersion] != value)
+				{
+					Changes = true;
+					Header[HeaderKeys.OriginalEmulatorVersion] = value;
 				}
 			}
 		}
