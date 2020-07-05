@@ -160,7 +160,7 @@ namespace BizHawk.Client.Common
 			{
 				bl.GetLump(BinaryStateLump.StateHistory, false, delegate(BinaryReader br, long length)
 				{
-					TasStateManager.Load(br);
+					TasStateManager.LoadStateBinary(br);
 				});
 			}
 		}

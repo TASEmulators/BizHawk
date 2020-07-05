@@ -36,8 +36,27 @@ namespace BizHawk.Client.Common
 			}
 
 			_inputPollable = emulator.AsInputPollable();
-			// TODO: Where's the frame 0 state, do I have to fish it out of somewhere?
-			TasStateManager = new TasStateManager(this, emulator, Session.Settings.DefaultTasStateManagerSettings, null);
+			var ms = new MemoryStream();
+			emulator.AsStatable().SaveStateBinary(new BinaryWriter(ms));
+
+
+			// TasStateManager = new TasStateManager(this, emulator, Session.Settings.DefaultTasStateManagerSettings, ms.ToArray());
+			TasStateManager = new ZwinderStateManager(new ZwinderStateManagerSettingsWIP
+			{
+				Current = new RewindConfig
+				{
+					UseCompression = false,
+					BufferSize = 64 * 1024 * 1024,
+					TargetFrameLength = 1000,
+				},
+				Recent = new RewindConfig
+				{
+					UseCompression = false,
+					BufferSize = 64 * 1024 * 1024,
+					TargetFrameLength = 1000,
+				},
+				AncientStateInterval = 5000
+			}, ms.ToArray());
 
 			base.Attach(emulator);
 
