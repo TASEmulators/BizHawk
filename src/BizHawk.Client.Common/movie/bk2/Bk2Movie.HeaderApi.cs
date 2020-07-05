@@ -32,7 +32,8 @@ namespace BizHawk.Client.Common
 			{
 				if (!Header.ContainsKey(HeaderKeys.Rerecords))
 				{
-					Header[HeaderKeys.Rerecords] = "0";
+					// Modifying the header itself can cause a race condition between loading a movie and rendering the rerecord count, causing a movie's rerecord count to be overwritten with 0 during loading.
+					return 0;
 				}
 
 				return ulong.Parse(Header[HeaderKeys.Rerecords]);
