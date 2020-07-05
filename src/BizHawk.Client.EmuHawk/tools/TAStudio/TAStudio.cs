@@ -608,7 +608,7 @@ namespace BizHawk.Client.EmuHawk
 
 			SetTasMovieCallbacks(tasMovie);
 			tasMovie.ClearChanges(); // Don't ask to save changes here.
-			tasMovie.Save();
+			// tasMovie.Save();
 			if (HandleMovieLoadStuff(tasMovie))
 			{
 			}

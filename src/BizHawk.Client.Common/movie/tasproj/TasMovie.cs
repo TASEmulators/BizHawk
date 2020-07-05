@@ -46,13 +46,13 @@ namespace BizHawk.Client.Common
 				Current = new RewindConfig
 				{
 					UseCompression = false,
-					BufferSize = 64 * 1024 * 1024,
+					BufferSize = 64,
 					TargetFrameLength = 1000,
 				},
 				Recent = new RewindConfig
 				{
 					UseCompression = false,
-					BufferSize = 64 * 1024 * 1024,
+					BufferSize = 64,
 					TargetFrameLength = 1000,
 				},
 				AncientStateInterval = 5000
