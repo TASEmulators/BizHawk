@@ -48,17 +48,7 @@ namespace BizHawk.Client.Common
 			return true;
 		}
 
-		public bool PreLoadHeaderAndLength(HawkFile hawkFile)
-		{
-			var file = new FileInfo(Filename);
-			if (!file.Exists)
-			{
-				return false;
-			}
-
-			Filename = file.FullName;
-			return Load(true);
-		}
+		public bool PreLoadHeaderAndLength() => Load(true);
 
 		protected virtual void Write(string fn, bool isBackup = false)
 		{

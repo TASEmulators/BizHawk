@@ -136,7 +136,7 @@ namespace BizHawk.Client.EmuHawk
 
 			try
 			{
-				movie.PreLoadHeaderAndLength(hf);
+				movie.PreLoadHeaderAndLength();
 
 				// Don't do this from browse
 				if (movie.Hash == _game.Hash

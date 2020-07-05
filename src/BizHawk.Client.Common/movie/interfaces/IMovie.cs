@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-
-using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -98,7 +96,7 @@ namespace BizHawk.Client.Common
 		/// Loads from the HawkFile the minimal amount of information needed to determine Header info and Movie length
 		/// This method is intended to be more performant than a full load
 		/// </summary>
-		bool PreLoadHeaderAndLength(HawkFile hawkFile);
+		bool PreLoadHeaderAndLength();
 		
 		/// <summary>
 		/// Gets the header key value pairs stored in the movie file
