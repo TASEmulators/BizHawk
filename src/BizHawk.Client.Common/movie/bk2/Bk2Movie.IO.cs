@@ -53,6 +53,12 @@ namespace BizHawk.Client.Common
 		protected virtual void Write(string fn, bool isBackup = false)
 		{
 			SetCycleValues(); // We are pretending these only need to be set on save
+			// EmulatorVersion used to store the unchanging original emulator version.
+			if (!Header.ContainsKey(HeaderKeys.OriginalEmulatorVersion))
+			{
+				Header[HeaderKeys.OriginalEmulatorVersion] = Header[HeaderKeys.EmulatorVersion];
+			}
+			Header[HeaderKeys.EmulatorVersion] = VersionInfo.GetEmuVersion();
 			CreateDirectoryIfNotExists(fn);
 
 			using var bs = new ZipStateSaver(fn, Session.Settings.MovieCompressionLevel);
@@ -166,12 +172,6 @@ namespace BizHawk.Client.Common
 					}
 				}
 			});
-			// EmulatorVersion used to store the unchanging original emulator version.
-			if (!Header.ContainsKey(HeaderKeys.OriginalEmulatorVersion))
-			{
-				Header[HeaderKeys.OriginalEmulatorVersion] = Header[HeaderKeys.EmulatorVersion];
-			}
-			Header[HeaderKeys.EmulatorVersion] = VersionInfo.GetEmuVersion();
 
 			bl.GetLump(BinaryStateLump.Comments, false, delegate(TextReader tr)
 			{
