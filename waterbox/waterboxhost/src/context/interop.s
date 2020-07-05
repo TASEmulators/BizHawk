@@ -1,182 +1,80 @@
 bits 64
 org 0x35f00000000
 
-%macro save_ctx 1
-	mov [%1], rsp
-	mov [%1 + 0x08], rbp
-	mov [%1 + 0x10], rbx
-	mov [%1 + 0x18], r12
-	mov [%1 + 0x20], r13
-	mov [%1 + 0x28], r14
-	mov [%1 + 0x30], r15
-%endmacro
+struc Context
+	.host_rsp resq 1
+	.guest_rsp resq 1
+	.dispatch_syscall resq 1
+	.host_ptr resq 1
+	.extcall_slots resq 64
+endstruc
 
-%macro load_ctx 1
-	mov rsp, [%1]
-	mov rbp, [%1 + 0x08]
-	mov rbx, [%1 + 0x10]
-	mov r12, [%1 + 0x18]
-	mov r13, [%1 + 0x20]
-	mov r14, [%1 + 0x28]
-	mov r15, [%1 + 0x30]
-%endmacro
-
-%macro save_args 2
-	%if %2 > 0
-		mov [%1 + 0x08], rdi
-	%endif
-	%if %2 > 1
-		mov [%1 + 0x10], rsi
-	%endif
-	%if %2 > 2
-		mov [%1 + 0x18], rdx
-	%endif
-	%if %2 > 3
-		mov [%1 + 0x20], rcx
-	%endif
-	%if %2 > 4
-		mov [%1 + 0x28], r8
-	%endif
-	%if %2 > 5
-		mov [%1 + 0x30], r9
-	%endif
-%endmacro
-
-%macro load_args 2
-	%if %2 > 0
-		mov rdi, [%1 + 0x08]
-	%endif
-	%if %2 > 1
-		mov rsi, [%1 + 0x10]
-	%endif
-	%if %2 > 2
-		mov rdx, [%1 + 0x18]
-	%endif
-	%if %2 > 3
-		mov rcx, [%1 + 0x20]
-	%endif
-	%if %2 > 4
-		mov r8, [%1 + 0x28]
-	%endif
-	%if %2 > 5
-		mov r9, [%1 + 0x30]
-	%endif
-%endmacro
-
-%macro guest_syscall 1
-	; guest initiates syscall
-	; NR in rax, 0..6 args
-
-	mov r10, [gs:0x18] ; context, context.host
-
-	mov r11, r10
-	add r11, 0x38 ; context.guest
-	save_ctx r11
-
-	add r11, 0x38 ; context.call
-	mov [r11], rax ; syscall number
-	save_args r11, %1
-
-	load_ctx r10
-
+; sets up guest stack and calls a function
+; r11 - guest entry point
+; r10 - address of context structure
+; regular arg registers are 0..6 args passed through to guest
+call_guest_impl:
+	mov [gs:0x18], r10
+	mov [r10 + Context.host_rsp], rsp
+	mov rsp, [r10 + Context.guest_rsp]
+	call r11 ; stack hygiene note - this host address is saved on the guest stack
+	mov [Context.guest_rsp], rsp ; restore stack so next call using same Context will work
+	mov rsp, [r10 + Context.host_rsp]
+	mov r11, 0
+	mov [gs:0x18], r11
 	ret
-%endmacro
+align 64, int3
 
-syscall0:
-	guest_syscall 0
-align 256, int3
+; alternative to guest call thunks for functions with 0 args
+; rdi - guest entry point
+; rsi - address of context structure
+call_guest_simple:
+	mov r11, rdi
+	mov r10, rsi
+	jmp call_guest_impl
+align 64, int3
 
-syscall1:
-	guest_syscall 1
-align 256, int3
-
-syscall2:
-	guest_syscall 2
-align 256, int3
-
-syscall3:
-	guest_syscall 3
-align 256, int3
-
-syscall4:
-	guest_syscall 4
-align 256, int3
-
-syscall5:
-	guest_syscall 5
-align 256, int3
-
-syscall6:
-	guest_syscall 6
-align 256, int3
-
-depart:
-	; host starts new guest thread
-	; context.guest.rsp set to stack limit - 0x10
-	; [context.guest.rsp] set to entry point
-	; guest args in context.call
-
-	mov r10, [gs:0x18] ; context, context.host
-	save_ctx r10
-
-	mov r11, r10
-	add r11, 0x70 ; context.call
-	load_args r11, 6
-
-	; load_ctx, but only RSP.  TODO: Useful to do a full load_ctx with zeroed values here to avoid nondeterminism?
-	mov rsp, [r10 + 0x38]
-
-	mov r11, arrive
-	mov [rsp + 8], r11
+; called by guest when it wishes to make a syscall
+; must be loaded at fixed address, as that address is burned into guest executables
+; rax - syscall number
+; regular arg registers are 0..6 args to the syscall
+guest_syscall:
+	mov r10, [gs:0x18]
+	mov [r10 + Context.guest_rsp], rsp
+	mov rsp, [r10 + Context.host_rsp]
+	push rax ; arg 7 to dispatch_syscall: nr
+	mov rax, [r10 + Context.dispatch_syscall]
+	call rax
+	mov rsp, [r10 + Context.guest_rsp]
 	ret
-align 256, int3
+align 64, int3
 
-arrive:
-	; guest returns from depart
-	; return to host value in rax
-	mov r10, [gs:0x18] ; context, context.host
-	mov r11, -1 ; Fake syscall number
-	mov [r10 + 0x70], r11
-
-	load_ctx r10
+; called by individual extcall thunks when the guest wishes to make an external call
+; (very similar to guest_syscall)
+; rax - slot number
+; regular arg registers are 0..6 args to the extcall
+guest_extcall_impl:
+	mov r10, [gs:0x18]
+	mov [r10 + Context.guest_rsp], rsp
+	mov rsp, [r10 + Context.host_rsp]
+	mov r11, [r10 + Context.extcall_slots + rax * 8] ; get slot ptr
+	sub rsp, 8 ; align
+	call r11
+	mov rsp, [r10 + Context.guest_rsp]
 	ret
-align 256, int3
+align 64, int3
 
-anyret:
-	; host returns the results of a callback, extcall or guest_syscall, to guest
-	; one argument, the return value
+; individual thunks to each of 64 call slots
+; should be in fixed locations for memory hygiene in the core, since they may be stored there for some time
 
-	mov r10, [gs:0x18] ; context, context.host
-	save_ctx r10
-
-	mov r11, r10
-	add r11, 0x38 ; context.guest
-	load_ctx r11
-	mov rax, rdi
-	ret
-align 256, int3
-
-%macro extcall 2
-	; guest initiates external call
-	; call number is %1 (constant), 0..6 args
-	mov rax, 0x8000000000000000 + %1
-	jmp syscall%2
+%macro guest_extcall_thunk 1
+	mov rax, %1
+	jmp guest_extcall_impl
+	align 16, int3
 %endmacro
-
-%macro extcall_group 1
-	%assign i 0
-	%rep 7
-		extcall %1, i
-		align 16, int3
-		%assign i i+1
-	%endrep
-	align 128, int3
-%endmacro
-
-align 4096, int3
 
 %assign j 0
 %rep 64
-	extcall_group j
+	guest_extcall_thunk j
 	%assign j j+1
 %endrep

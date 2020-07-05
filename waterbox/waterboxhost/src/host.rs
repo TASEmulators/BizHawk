@@ -6,9 +6,7 @@ use fs::{FileDescriptor, FileSystem/*, MissingFileCallback*/};
 use elf::ElfLoader;
 use cinterface::MemoryLayoutTemplate;
 use goblin::elf::Elf;
-use context::{GuestCall, CALLBACK_SLOTS};
-
-pub type ExternalCallback = extern fn(a1: usize, a2: usize, a3: usize, a4: usize, a5: usize, a6: usize) -> usize;
+use context::{CALLBACK_SLOTS, Context, ExternalCallback, thunks::ThunkManager};
 
 pub struct WaterboxHost {
 	fs: FileSystem,
@@ -19,10 +17,12 @@ pub struct WaterboxHost {
 	active: bool,
 	sealed: bool,
 	image_file: Vec<u8>,
-	external_callbacks: [Option<ExternalCallback>; CALLBACK_SLOTS],
+	context: Context,
+	thunks: ThunkManager,
 }
 impl WaterboxHost {
 	pub fn new(image_file: Vec<u8>, module_name: &str, layout_template: &MemoryLayoutTemplate) -> anyhow::Result<Box<WaterboxHost>> {
+		let thunks = ThunkManager::new()?;
 		let wbx = Elf::parse(&image_file[..])?;
 		let elf_addr = ElfLoader::elf_addr(&wbx);
 		let layout = layout_template.make_layout(elf_addr)?;
@@ -41,11 +41,19 @@ impl WaterboxHost {
 			active: false,
 			sealed: false,
 			image_file,
-			external_callbacks: [None; CALLBACK_SLOTS],
+			context: Context {
+				host_rsp: 0,
+				guest_rsp: layout.main_thread.end(),
+				dispatch_syscall: syscall,
+				host_ptr: 0,
+				extcall_slots: [None; 64],
+			},
+			thunks,
 		});
 
 		let mut active = res.activate();
-		active.h.elf.native_init(&mut active.b);
+		println!("Calling _start()");
+		active.run_guest_simple(active.h.elf.entry_point());
 		drop(active);
 
 		Ok(res)
@@ -56,13 +64,16 @@ impl WaterboxHost {
 	}
 
 	pub fn activate(&mut self) -> Box<ActivatedWaterboxHost> {
+		context::prepare_thread();
 		let h = unsafe { &mut *(self as *mut WaterboxHost) };
 		let b = self.memory_block.enter();
-		let res = Box::new(ActivatedWaterboxHost {
+		let mut res = Box::new(ActivatedWaterboxHost {
 			h,
 			b,
 		});
 		res.h.active = true;
+		res.h.context.host_ptr = res.as_mut() as *mut ActivatedWaterboxHost as usize;
+		res.h.thunks.update_context_ptr(&mut res.h.context as *mut Context).unwrap();
 		res
 	}
 }
@@ -79,17 +90,26 @@ pub struct ActivatedWaterboxHost<'a> {
 impl<'a> Drop for ActivatedWaterboxHost<'a> {
 	fn drop(&mut self) {
 		self.h.active = false;
+		self.h.context.host_ptr = 0;
 	}
 }
 
 impl<'a> ActivatedWaterboxHost<'a> {
-	pub fn get_external_callback_ptr(&mut self, callback: ExternalCallback, slot: usize, arg_count: usize) -> usize {
-		assert!(slot < CALLBACK_SLOTS);
-		self.h.external_callbacks[slot] = Some(callback);
-		context::get_callback_ptr(slot, arg_count)
+	pub fn get_external_callback_ptr(&mut self, callback: ExternalCallback, slot: usize) -> anyhow::Result<usize> {
+		if slot >= CALLBACK_SLOTS {
+			Err(anyhow!("slot must be less than {}", CALLBACK_SLOTS))
+		} else {
+			self.h.context.extcall_slots[slot] = Some(callback);
+			Ok(context::get_callback_ptr(slot))
+		}
 	}
-	pub fn get_proc_addr(&self, name: &str) -> usize {
-		self.h.elf.get_proc_addr(name)
+	pub fn get_proc_addr(&mut self, name: &str) -> anyhow::Result<usize> {
+		let ptr = self.h.elf.get_proc_addr(name);
+		if ptr == 0 {
+			Ok(0)
+		} else {
+			self.h.thunks.get_thunk_for_proc(ptr, &mut self.h.context as *mut Context)
+		}
 	}
 	fn check_sealed(&self) -> anyhow::Result<()> {
 		if !self.h.sealed {
@@ -102,7 +122,20 @@ impl<'a> ActivatedWaterboxHost<'a> {
 		if self.h.sealed {
 			return Err(anyhow!("Already sealed!"))
 		}
-		self.h.elf.pre_seal(&mut self.b);
+
+		fn run_proc(h: &mut ActivatedWaterboxHost, name: &str) {
+			match h.h.elf.get_proc_addr(name) {
+				0 => (),
+				ptr => {
+					println!("Calling {}()", name);
+					h.run_guest_simple(ptr);
+				},
+			}
+		}
+		run_proc(self, "co_clean");
+		run_proc(self, "ecl_seal");
+
+		self.h.elf.seal(&mut self.b);
 		self.b.seal();
 		self.h.sealed = true;
 		Ok(())
@@ -116,21 +149,10 @@ impl<'a> ActivatedWaterboxHost<'a> {
 	// pub fn set_missing_file_callback(&mut self, cb: Option<MissingFileCallback>) {
 	// 	self.h.fs.set_missing_file_callback(cb);
 	// }
-	pub extern fn run_guest_thread(&mut self, native_entry: usize, call: &GuestCall) -> usize {
-		unsafe {
-			let service_callback = |h: &mut ActivatedWaterboxHost, c: &GuestCall| {
-				match context::is_external_call(c.nr) {
-					Some(slot) => {
-						(h.h.external_callbacks[slot]).unwrap()(c.a1, c.a2, c.a3, c.a4, c.a5, c.a6)
-					},
-					None => {
-						syscall(h, SyscallNumber(c.nr), c.a1, c.a2, c.a3, c.a4, c.a5, c.a6).0
-					},
-				}
-			};
-			context::run_guest_thread(self, call, 
-				native_entry, self.h.layout.main_thread.end(), service_callback)
-			}
+
+	/// Run a guest entry point that takes no arguments
+	pub fn run_guest_simple(&mut self, entry_point: usize) {
+		context::call_guest_simple(entry_point, &mut self.h.context);
 	}
 }
 
@@ -204,7 +226,8 @@ fn arg_to_statbuff<'a>(arg: usize) -> &'a mut KStat {
 	unsafe { &mut *(arg as *mut KStat) }
 }
 
-fn syscall(h: &mut ActivatedWaterboxHost, nr: SyscallNumber, a1: usize, a2: usize, a3: usize, a4: usize, _a5: usize, _a6: usize) -> SyscallReturn {
+extern "sysv64" fn syscall(a1: usize, a2: usize, a3: usize, a4: usize, _a5: usize, _a6: usize, nr: SyscallNumber) -> SyscallReturn {
+	let h = unsafe { context::access_context() };
 	match nr {
 		NR_MMAP => {
 			let mut prot = arg_to_prot(a3)?;

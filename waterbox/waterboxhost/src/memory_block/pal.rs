@@ -122,7 +122,7 @@ mod win {
 
 	/// Unmap bytes previously mapped by map_anon
 	/// addr should exactly match the return value from map_anon (so if you mapped with start 0, you need to pass the actual start back)
-	pub unsafe fn unmap_annon(addr: AddressRange) -> anyhow::Result<()> {
+	pub unsafe fn unmap_anon(addr: AddressRange) -> anyhow::Result<()> {
 		ret(VirtualFree(addr.start as *mut c_void, 0, MEM_RELEASE))
 	}
 
@@ -259,7 +259,7 @@ mod nix {
 
 	/// Unmap bytes previously mapped by map_anon
 	/// addr should exactly match the return value from map_anon (so if you mapped with start 0, you need to pass the actual start back)
-	pub unsafe fn unmap_annon(addr: AddressRange) -> anyhow::Result<()> {
+	pub unsafe fn unmap_anon(addr: AddressRange) -> anyhow::Result<()> {
 		ret(munmap(addr.start as *mut c_void, addr.size))
 	}
 }
@@ -314,13 +314,13 @@ mod tests {
 			let addr_in = AddressRange { start: 0x34100000000, size: 0x20000 };
 			let addr = map_anon(addr_in, Protection::RW)?;
 			assert_eq!(addr.start, addr_in.start);
-			unmap_annon(addr)?;
+			unmap_anon(addr)?;
 		}
 		unsafe {
 			let addr_in = AddressRange { start: 0, size: 0x20000 };
 			let addr = map_anon(addr_in, Protection::RW)?;
 			addr.slice_mut()[0] = 13;
-			unmap_annon(addr)?;
+			unmap_anon(addr)?;
 		}
 		Ok(())
 	}

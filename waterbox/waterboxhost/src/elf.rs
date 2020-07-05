@@ -182,31 +182,16 @@ impl ElfLoader {
 			hash: bin::hash(data)
 		})
 	}
-	pub fn pre_seal(&mut self, b: &mut ActivatedMemoryBlock) {
-		self.run_proc(b, "co_clean");
-		self.run_proc(b, "ecl_seal");
+	pub fn seal(&mut self, b: &mut ActivatedMemoryBlock) {
 		for section in self.sections.iter() {
 			if section_name_is_readonly(section.name.as_str()) {
 				b.mprotect(section.addr.align_expand(), Protection::R).unwrap();
 			}
 		}
 	}
-	pub fn native_init(&mut self, _b: &mut ActivatedMemoryBlock) {
-		println!("Calling _start()");
-		unsafe {
-			std::mem::transmute::<usize, extern "sysv64" fn() -> ()>(self.entry_point)();
-		}
-	}
-	fn run_proc(&mut self, _b: &mut ActivatedMemoryBlock, name: &str) {
-		match self.get_proc_addr(name) {
-			0 => (),
-			ptr => {
-				println!("Calling {}()", name);
-				unsafe {
-					std::mem::transmute::<usize, extern "sysv64" fn() -> ()>(ptr)();
-				}
-			},
-		}
+
+	pub fn entry_point(&self) -> usize {
+		self.entry_point
 	}
 	pub fn get_proc_addr(&self, proc: &str) -> usize {
 		match self.exports.get(proc) {

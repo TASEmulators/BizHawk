@@ -1,6 +1,7 @@
 use crate::*;
 use host::{ActivatedWaterboxHost, WaterboxHost};
 use std::{os::raw::c_char, io, ffi::{/*CString, */CStr}};
+use context::ExternalCallback;
 
 /// The memory template for a WaterboxHost.  Don't worry about
 /// making every size as small as possible, since the savestater handles sparse regions
@@ -213,18 +214,27 @@ pub extern fn wbx_deactivate_host(obj: *mut ActivatedWaterboxHost, ret: &mut Ret
 	ret.put(Ok(()));
 }
 
-/// Returns the address of an exported function from the guest executable.  This pointer is only valid
-/// while the host is active.  A missing proc is not an error and simply returns 0.
+/// Returns a thunk suitable for calling an exported function from the guest executable.  This pointer is only valid
+/// while the host is active.  A missing proc is not an error and simply returns 0.  The guest function must be,
+/// and the returned callback will be, sysv abi, and will only pass up to 6 int/ptr args and no other arg types.
 #[no_mangle]
 pub extern fn wbx_get_proc_addr(obj: &mut ActivatedWaterboxHost, name: *const c_char, ret: &mut Return<usize>) {
 	match arg_to_str(name) {
 		Ok(s) => {
-			ret.put(Ok(obj.get_proc_addr(&s)));
+			ret.put(obj.get_proc_addr(&s));
 		},
 		Err(e) => {
 			ret.put(Err(e))
 		}
 	}
+}
+/// Returns a function pointer suitable for passing to the guest to allow it to call back while active.
+/// Slot number is an integer that is used to keep pointers consistent across runs:  If the host is loaded
+/// at a different address, and some external function `foo` moves from run to run, things will still work out
+/// in the guest because `foo` was bound to the same slot and a particular slot gives a consistent pointer.
+/// The returned thunk will be, and the callback must be, sysv abi and will only pass up to 6 int/ptr args and no other arg types.
+pub extern fn wbx_get_callback_addr(obj: &mut ActivatedWaterboxHost, callback: ExternalCallback, slot: usize, ret: &mut Return<usize>) {
+	ret.put(obj.get_external_callback_ptr(callback, slot));
 }
 
 /// Calls the seal operation, which is a one time action that prepares the host to save states.

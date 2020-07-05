@@ -39,7 +39,7 @@ impl PageBlock {
 impl Drop for PageBlock {
 	fn drop(&mut self) {
 		unsafe {
-			pal::unmap_annon(AddressRange { start: self.ptr.as_ptr() as usize, size: PAGESIZE }).unwrap();
+			pal::unmap_anon(AddressRange { start: self.ptr.as_ptr() as usize, size: PAGESIZE }).unwrap();
 		}
 	}
 }
