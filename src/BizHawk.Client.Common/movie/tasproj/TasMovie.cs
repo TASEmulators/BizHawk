@@ -53,7 +53,7 @@ namespace BizHawk.Client.Common
 				{
 					UseCompression = false,
 					BufferSize = 64,
-					TargetFrameLength = 1000,
+					TargetFrameLength = 10000,
 				},
 				AncientStateInterval = 5000
 			}, ms.ToArray());
