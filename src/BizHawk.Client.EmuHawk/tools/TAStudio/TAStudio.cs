@@ -1085,7 +1085,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void InsertNumFrames(int insertionFrame, int numberOfFrames)
 		{
-			if (insertionFrame < CurrentTasMovie.InputLogLength)
+			if (insertionFrame <= CurrentTasMovie.InputLogLength)
 			{
 				bool needsToRollback = TasView.FirstSelectedIndex < Emulator.Frame;
 
