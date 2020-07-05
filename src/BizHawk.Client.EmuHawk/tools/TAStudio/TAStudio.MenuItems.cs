@@ -994,7 +994,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void StateHistorySettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			new StateHistorySettingsForm(CurrentTasMovie.TasStateManager.Settings)
+			// TODO: Fix this up to work with new settings object
+			new StateHistorySettingsForm(null)
 			{
 				Owner = Owner,
 				Location = this.ChildPointToScreen(TasView),

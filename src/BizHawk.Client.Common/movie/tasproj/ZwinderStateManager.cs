@@ -11,17 +11,33 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Buffer settings when navigating near now
 		/// </summary>
-		public IRewindSettings Current { get; set; }
+		public IRewindSettings Current { get; set; } = new RewindConfig
+		{
+			UseCompression = false,
+			BufferSize = 64,
+			TargetFrameLength = 1000,
+		};
 		/// <summary>
 		/// Buffer settings when navigating directly before the Current buffer
 		/// </summary>
 		/// <value></value>
-		public IRewindSettings Recent { get; set; }
+		public IRewindSettings Recent { get; set; } = new RewindConfig
+		{
+			UseCompression = false,
+			BufferSize = 64,
+			TargetFrameLength = 1000,
+		};
 		/// <summary>
 		/// How often to maintain states when outside of Current and Recent intervals
 		/// </summary>
 		/// <value></value>
-		public int AncientStateInterval { get; set; }
+		public int AncientStateInterval { get; set; } = 5000;
+
+		/// <summary>
+		/// TODO: NUKE THIS, it doesn't belong here, maybe?
+		/// </summary>
+		/// <value></value>
+		public bool SaveStateHistory { get; set; } = true;
 	}
 	public class ZwinderStateManager : IStateManager
 	{
@@ -39,11 +55,13 @@ namespace BizHawk.Client.Common
 			_current = new ZwinderBuffer(fixme.Current);
 			_recent = new ZwinderBuffer(fixme.Recent);
 			_ancientInterval = fixme.AncientStateInterval;
+			Settings = fixme;
 		}
 		
 		public byte[] this[int frame] => throw new NotImplementedException();
 
-		public TasStateManagerSettings Settings { get; set; }
+		public ZwinderStateManagerSettingsWIP Settings { get; set; }
+
 		public int Count => _current.Count + _recent.Count + _ancient.Count + 1;
 
 		public int Last

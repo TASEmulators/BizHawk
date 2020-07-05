@@ -8,20 +8,20 @@ namespace BizHawk.Client.EmuHawk
 	public partial class DefaultGreenzoneSettings : Form
 	{
 		private readonly MovieConfig _movieSettings;
-		private TasStateManagerSettings _settings;
+		// private TasStateManagerSettings _settings;
 
 		public DefaultGreenzoneSettings(MovieConfig movieSettings)
 		{
 			InitializeComponent();
 			Icon = Properties.Resources.TAStudioIcon;
 			_movieSettings = movieSettings;
-			_settings = new TasStateManagerSettings(movieSettings.DefaultTasStateManagerSettings);
-			SettingsPropertyGrid.SelectedObject = _settings;
+			// _settings = new TasStateManagerSettings(movieSettings.DefaultTasStateManagerSettings);
+			// SettingsPropertyGrid.SelectedObject = _settings;
 		}
 
 		private void OkBtn_Click(object sender, EventArgs e)
 		{
-			_movieSettings.DefaultTasStateManagerSettings = _settings;
+			// _movieSettings.DefaultTasStateManagerSettings = _settings;
 			Close();
 		}
 
@@ -32,8 +32,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DefaultsButton_Click(object sender, EventArgs e)
 		{
-			_settings = new TasStateManagerSettings();
-			SettingsPropertyGrid.SelectedObject = _settings;
+			// _settings = new TasStateManagerSettings();
+			// SettingsPropertyGrid.SelectedObject = _settings;
 		}
 	}
 }

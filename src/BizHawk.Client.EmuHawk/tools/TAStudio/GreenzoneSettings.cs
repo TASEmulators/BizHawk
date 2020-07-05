@@ -11,12 +11,12 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public IStatable Statable { get; set; }
 
-		private readonly TasStateManagerSettings _settings;
+		// private readonly TasStateManagerSettings _settings;
 		private decimal _stateSizeMb;
 
-		public StateHistorySettingsForm(TasStateManagerSettings settings)
+		public StateHistorySettingsForm(object /*TasStateManagerSettings*/ settings)
 		{
-			_settings = settings;
+			// _settings = settings;
 			InitializeComponent();
 			Icon = Properties.Resources.TAStudioIcon;
 		}
@@ -32,12 +32,12 @@ namespace BizHawk.Client.EmuHawk
 			MemStateGapDividerNumeric.Maximum = stateSize / 1024 / 2 + 1;
 			MemStateGapDividerNumeric.Minimum = Math.Max(stateSize / 1024 / 16, 1);
 
-			MemCapacityNumeric.Value = NumberExtensions.Clamp(_settings.CapacityMb, MemCapacityNumeric.Minimum, MemCapacityNumeric.Maximum);
-			DiskCapacityNumeric.Value = NumberExtensions.Clamp(_settings.DiskCapacityMb, MemCapacityNumeric.Minimum, MemCapacityNumeric.Maximum);
-			FileCapacityNumeric.Value = NumberExtensions.Clamp(_settings.DiskSaveCapacityMb, MemCapacityNumeric.Minimum, MemCapacityNumeric.Maximum);
-			MemStateGapDividerNumeric.Value = NumberExtensions.Clamp(_settings.MemStateGapDivider, MemStateGapDividerNumeric.Minimum, MemStateGapDividerNumeric.Maximum);
+			// MemCapacityNumeric.Value = NumberExtensions.Clamp(_settings.CapacityMb, MemCapacityNumeric.Minimum, MemCapacityNumeric.Maximum);
+			// DiskCapacityNumeric.Value = NumberExtensions.Clamp(_settings.DiskCapacityMb, MemCapacityNumeric.Minimum, MemCapacityNumeric.Maximum);
+			// FileCapacityNumeric.Value = NumberExtensions.Clamp(_settings.DiskSaveCapacityMb, MemCapacityNumeric.Minimum, MemCapacityNumeric.Maximum);
+			// MemStateGapDividerNumeric.Value = NumberExtensions.Clamp(_settings.MemStateGapDivider, MemStateGapDividerNumeric.Minimum, MemStateGapDividerNumeric.Maximum);
 
-			FileStateGapNumeric.Value = _settings.FileStateGap;
+			// FileStateGapNumeric.Value = _settings.FileStateGap;
 			SavestateSizeLabel.Text = $"{Math.Round(_stateSizeMb, 2)} MB";
 			CapacityNumeric_ValueChanged(null, null);
 			SaveCapacityNumeric_ValueChanged(null, null);
@@ -48,11 +48,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OkBtn_Click(object sender, EventArgs e)
 		{
-			_settings.CapacityMb = (int)MemCapacityNumeric.Value;
-			_settings.DiskCapacityMb = (int)DiskCapacityNumeric.Value;
-			_settings.DiskSaveCapacityMb = (int)FileCapacityNumeric.Value;
-			_settings.MemStateGapDivider = (int)MemStateGapDividerNumeric.Value;
-			_settings.FileStateGap = (int)FileStateGapNumeric.Value;
+			// _settings.CapacityMb = (int)MemCapacityNumeric.Value;
+			// _settings.DiskCapacityMb = (int)DiskCapacityNumeric.Value;
+			// _settings.DiskSaveCapacityMb = (int)FileCapacityNumeric.Value;
+			// _settings.MemStateGapDivider = (int)MemStateGapDividerNumeric.Value;
+			// _settings.FileStateGap = (int)FileStateGapNumeric.Value;
 			DialogResult = DialogResult.OK;
 			Close();
 		}

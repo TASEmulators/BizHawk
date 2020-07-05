@@ -14,7 +14,7 @@ namespace BizHawk.Client.Common
 		/// <returns>A savestate for the given frame or an empty array if there isn't one</returns>
 		byte[] this[int frame] { get; }
 
-		TasStateManagerSettings Settings { get; set; }
+		ZwinderStateManagerSettingsWIP Settings { get; set; }
 
 		/// <summary>
 		/// Requests that the current emulator state be captured 

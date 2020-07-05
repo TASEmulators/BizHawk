@@ -56,7 +56,7 @@ namespace BizHawk.Client.Common
 		private void ClearTasprojExtras()
 		{
 			LagLog.Clear();
-			TasStateManager.Clear();
+			TasStateManager?.Clear();
 			Markers.Clear();
 			ChangeLog.Clear();
 		}
@@ -82,7 +82,7 @@ namespace BizHawk.Client.Common
 				var json = tr.ReadToEnd();
 				try
 				{
-					TasStateManager.Settings = JsonConvert.DeserializeObject<TasStateManagerSettings>(json);
+					TasStateManager.Settings = JsonConvert.DeserializeObject<ZwinderStateManagerSettingsWIP>(json);
 				}
 				catch
 				{
