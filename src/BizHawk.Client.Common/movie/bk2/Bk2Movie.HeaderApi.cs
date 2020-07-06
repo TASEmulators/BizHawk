@@ -216,6 +216,8 @@ namespace BizHawk.Client.Common
 			return sb.ToString();
 		}
 
+		public bool IsPal => Header.ContainsKey(HeaderKeys.Pal) && Header[HeaderKeys.Pal] == "1";
+
 		public string TextSavestate { get; set; }
 		public byte[] BinarySavestate { get; set; }
 		public int[] SavestateFramebuffer { get; set; }

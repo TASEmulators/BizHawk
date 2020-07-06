@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using BizHawk.Emulation.Common;
 
@@ -56,7 +57,12 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Gets the actual length of time a movie lasts for. For subframe cores, this will be different then the above two options
 		/// </summary>
-		ulong TimeLength { get; }
+		TimeSpan TimeLength { get; }
+
+		/// <summary>
+		/// Gets the frame rate in frames per second for the movie's system.
+		/// </summary>
+		double FrameRate { get; }
 
 		/// <summary>
 		/// Gets the file extension for the current <see cref="IMovie"/> implementation
