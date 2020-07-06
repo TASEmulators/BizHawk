@@ -248,7 +248,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			{
 				VDC_collision = value;
 
-				Console.WriteLine("VDC_collide: " + value + " " + Core.cpu.TotalExecutedCycles);
+				//Console.WriteLine("VDC_collide: " + value + " " + Core.cpu.TotalExecutedCycles);
 			}
 			else if (addr == 0xA3)
 			{
@@ -387,7 +387,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			if (is_pal)
 			{
 				LINE_MAX = 312;
-				LINE_VBL = 288;
+				LINE_VBL = 240;
 			}
 			else
 			{
@@ -984,7 +984,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			0xFFC00000, // red
 			0xFF94309F, // violet
 			0xFF77670B, // yellow
-			0xFF676767, // grey
+			0xFFBCBCBC, // light grey
 			0xFF676767, // grey
 			0xFF3595FF, // light blue
 			0xFF56FF69, // light green

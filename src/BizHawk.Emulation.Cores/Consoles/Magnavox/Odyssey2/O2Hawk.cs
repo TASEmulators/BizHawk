@@ -100,7 +100,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			else
 			{
 				is_pal = true;
-				pic_height = 288;
+				pic_height = 240;
 				_frameHz = 50;
 				ppu = new PAL_PPU();
 			}
