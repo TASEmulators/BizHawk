@@ -49,7 +49,7 @@ namespace BizHawk.Client.Common
 		int FrameCount { get; }
 
 		/// <summary>
-		/// Gets the actual length of the input log, should only be used by code that needs a the input log length
+		/// Gets the actual length of the input log, should only be used by code that needs the input log length
 		/// specifically, not the frame count
 		/// </summary>
 		int InputLogLength { get; }
@@ -99,7 +99,7 @@ namespace BizHawk.Client.Common
 		string BoardName { get; set; }
 
 		/// <summary>
-		/// Loads from the HawkFile the minimal amount of information needed to determine Header info and Movie length
+		/// Loads from the HawkFile the minimal amount of information needed to determine Header info and Movie length.
 		/// This method is intended to be more performant than a full load
 		/// </summary>
 		bool PreLoadHeaderAndLength();
