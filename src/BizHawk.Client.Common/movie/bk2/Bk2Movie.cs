@@ -70,26 +70,44 @@ namespace BizHawk.Client.Common
 		public int FrameCount => Log.Count;
 		public int InputLogLength => Log.Count;
 
-		public ulong TimeLength
+		public TimeSpan TimeLength
 		{
 			get
 			{
-				if (Header.ContainsKey(HeaderKeys.VBlankCount))
+				double dblSeconds;
+				var core = Header[HeaderKeys.Core];
+
+				if (Header.ContainsKey(HeaderKeys.CycleCount) && (core == CoreNames.Gambatte || core == CoreNames.SubGbHawk))
 				{
-					return Convert.ToUInt64(Header[HeaderKeys.VBlankCount]);
+					ulong numCycles = Convert.ToUInt64(Header[HeaderKeys.CycleCount]);
+					double cyclesPerSecond = PlatformFrameRates.GetFrameRate("GB_Clock", IsPal);
+					dblSeconds = numCycles / cyclesPerSecond;
+				}
+				else
+				{
+					ulong numFrames = (ulong) FrameCount;
+					if (Header.ContainsKey(HeaderKeys.VBlankCount))
+					{
+						numFrames = Convert.ToUInt64(Header[HeaderKeys.VBlankCount]);
+					}
+					dblSeconds = numFrames / FrameRate;
 				}
 
-				if (Header.ContainsKey(HeaderKeys.CycleCount) && Header[HeaderKeys.Core] == CoreNames.Gambatte)
-				{
-					return Convert.ToUInt64(Header[HeaderKeys.CycleCount]);
-				}
+				var seconds = (int)(dblSeconds % 60);
+				var days = seconds / 86400;
+				var hours = seconds / 3600;
+				var minutes = (seconds / 60) % 60;
+				var milliseconds = (int)((dblSeconds - seconds) * 1000);
+				return new TimeSpan(days, hours, minutes, seconds, milliseconds);
+			}
+		}
 
-				if (Header.ContainsKey(HeaderKeys.CycleCount) && Header[HeaderKeys.Core] == CoreNames.SubGbHawk)
-				{
-					return Convert.ToUInt64(Header[HeaderKeys.CycleCount]);
-				}
-
-				return (ulong)Log.Count;
+		public double FrameRate
+		{
+			get
+			{
+				var system = HeaderEntries[HeaderKeys.Platform];
+				return PlatformFrameRates.GetFrameRate(system, IsPal);
 			}
 		}
 
