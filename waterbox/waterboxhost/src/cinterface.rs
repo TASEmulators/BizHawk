@@ -233,6 +233,7 @@ pub extern fn wbx_get_proc_addr(obj: &mut ActivatedWaterboxHost, name: *const c_
 /// at a different address, and some external function `foo` moves from run to run, things will still work out
 /// in the guest because `foo` was bound to the same slot and a particular slot gives a consistent pointer.
 /// The returned thunk will be, and the callback must be, sysv abi and will only pass up to 6 int/ptr args and no other arg types.
+#[no_mangle]
 pub extern fn wbx_get_callback_addr(obj: &mut ActivatedWaterboxHost, callback: ExternalCallback, slot: usize, ret: &mut Return<usize>) {
 	ret.put(obj.get_external_callback_ptr(callback, slot));
 }

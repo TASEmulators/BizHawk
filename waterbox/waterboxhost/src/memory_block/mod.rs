@@ -239,12 +239,18 @@ impl MemoryBlock {
 		if addr.start >> 32 != (addr.end() - 1) >> 32 {
 			panic!("MemoryBlock must fit into a single 4G region!");
 		}
+
 		let npage = addr.size >> PAGESHIFT;
 		let mut pages = Vec::new();
 		pages.reserve_exact(npage);
 		for _ in 0..npage {
 			pages.push(Page::new());
 		}
+		#[cfg(feature = "no-dirty-detection")]
+		for p in pages.iter_mut() {
+			p.dirty = true;
+		}
+
 		let handle = pal::open_handle(addr.size).unwrap();
 		let lock_index = (addr.start >> 32) as u32;
 		// add the lock_index stuff now, so we won't have to check for it later on activate / drop
@@ -671,6 +677,7 @@ impl<'block> ActivatedMemoryBlock<'block> {
 			pal::protect(addr, Protection::RW).unwrap();
 			addr.zero();
 			// simple state size optimization: we can undirty pages in this case depending on the initial state
+			#[cfg(not(feature = "no-dirty-detection"))]
 			for p in range.iter_mut() {
 				p.dirty = !p.invisible && match p.snapshot {
 					Snapshot::ZeroFilled => false,
@@ -726,6 +733,15 @@ impl<'block> ActivatedMemoryBlock<'block> {
 				p.snapshot = Snapshot::None;
 			}
 		}
+		#[cfg(feature = "no-dirty-detection")]
+		unsafe {
+			pal::protect(self.b.addr, Protection::R).unwrap();
+			for (a, p) in self.b.page_range().iter_mut_with_addr() {
+				p.dirty = true;
+				p.maybe_snapshot(a.start);
+			}
+		}
+
 		self.b.refresh_all_protections();
 		self.b.sealed = true;
 		self.b.hash = {

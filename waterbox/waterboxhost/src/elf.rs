@@ -163,17 +163,17 @@ impl ElfLoader {
 				dst.copy_from_slice(src);
 			}
 			b.mprotect(prot_addr, prot)?;
-
-			{
-				let addr = info_area;
-				unsafe { *(addr.start as *mut WbxSysLayout) = *layout; }
-			}
-
-			// Main thread area.  TODO:  Should this happen here?
-			b.mmap_fixed(layout.main_thread, Protection::RWStack, true)?;
-			b.mprotect(AddressRange { start: layout.main_thread.start, size: PAGESIZE * 4 }, Protection::None)?;
-			b.mark_invisible(layout.main_thread)?;
 		}
+
+		{
+			let addr = info_area;
+			unsafe { *(addr.start as *mut WbxSysLayout) = *layout; }
+		}
+
+		// Main thread area.  TODO:  Should this happen here?
+		b.mmap_fixed(layout.main_thread, Protection::RWStack, true)?;
+		b.mprotect(AddressRange { start: layout.main_thread.start, size: PAGESIZE * 4 }, Protection::None)?;
+		b.mark_invisible(layout.main_thread)?;
 
 		Ok(ElfLoader {
 			sections,

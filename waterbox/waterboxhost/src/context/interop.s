@@ -18,7 +18,8 @@ call_guest_impl:
 	mov [r10 + Context.host_rsp], rsp
 	mov rsp, [r10 + Context.guest_rsp]
 	call r11 ; stack hygiene note - this host address is saved on the guest stack
-	mov [Context.guest_rsp], rsp ; restore stack so next call using same Context will work
+	mov r10, [gs:0x18]
+	mov [r10 + Context.guest_rsp], rsp ; restore stack so next call using same Context will work
 	mov rsp, [r10 + Context.host_rsp]
 	mov r11, 0
 	mov [gs:0x18], r11
@@ -45,6 +46,7 @@ guest_syscall:
 	push rax ; arg 7 to dispatch_syscall: nr
 	mov rax, [r10 + Context.dispatch_syscall]
 	call rax
+	mov r10, [gs:0x18]
 	mov rsp, [r10 + Context.guest_rsp]
 	ret
 align 64, int3
@@ -60,6 +62,7 @@ guest_extcall_impl:
 	mov r11, [r10 + Context.extcall_slots + rax * 8] ; get slot ptr
 	sub rsp, 8 ; align
 	call r11
+	mov r10, [gs:0x18]
 	mov rsp, [r10 + Context.guest_rsp]
 	ret
 align 64, int3

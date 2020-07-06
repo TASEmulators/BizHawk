@@ -6,7 +6,7 @@ use std::collections::HashMap;
 // each generated thunk should look like this:
 // 49 ba .. .. .. .. .. .. .. ..             mov r10, <host_context_ptr>
 // 49 bb .. .. .. .. .. .. .. ..             mov r11, <guest_entry_point>
-// 49 b8 .. .. .. .. .. .. .. ..             mov rax, <call_guest_impl>
+// 48 b8 .. .. .. .. .. .. .. ..             mov rax, <call_guest_impl>
 // ff e0                                     jmp rax
 
 const THUNK_SIZE: usize = 32;
@@ -32,12 +32,13 @@ impl ThunkManager {
 			Some(p) => return Ok(*p),
 			None => ()
 		}
-		let p = self.memory.start + self.lookup.len() * THUNK_SIZE;
+		let offset = self.lookup.len() * THUNK_SIZE;
+		let p = self.memory.start + offset;
 		if p >= self.memory.end() {
 			Err(anyhow!("No room for another thunk!"))
 		} else {
 			unsafe {
-				let dest = &mut &mut self.memory.slice_mut()[p..p + THUNK_SIZE];
+				let dest = &mut &mut self.memory.slice_mut()[offset..offset + THUNK_SIZE];
 				// mov r10, <host_context_ptr>
 				bin::writeval::<u8>(dest, 0x49)?;
 				bin::writeval::<u8>(dest, 0xba)?;
@@ -49,7 +50,7 @@ impl ThunkManager {
 				bin::writeval(dest, guest_entry_point as usize)?;
 
 				// mov rax, <call_guest_impl>
-				bin::writeval::<u8>(dest, 0x49)?;
+				bin::writeval::<u8>(dest, 0x48)?;
 				bin::writeval::<u8>(dest, 0xb8)?;
 				bin::writeval(dest, CALL_GUEST_IMPL_ADDR)?;
 

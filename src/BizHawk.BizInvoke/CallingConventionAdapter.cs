@@ -90,6 +90,8 @@ namespace BizHawk.BizInvoke
 
 	public static class CallingConventionAdapters
 	{
+		public static ICallingConventionAdapter Waterbox => throw new InvalidOperationException("FIXME");
+
 		private class NativeConvention : ICallingConventionAdapter
 		{
 			public IntPtr GetArrivalFunctionPointer(IntPtr p, ParameterInfo pp, object lifetime)

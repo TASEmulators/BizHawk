@@ -66,9 +66,16 @@ pub struct Context {
 	pub extcall_slots: [Option<ExternalCallback>; 64],
 }
 
-/// Prepares this host thread to be allowed to call guest code.  No op if already called.  Does nothing on Windows.
+/// Prepares this host thread to be allowed to call guest code.  Noop if already called.
 /// Only needs to happen once per host thread
 pub fn prepare_thread() {
+	// not per-thread setup, but setup that needs to happen anyway
+	// todo: lazy_static isn't really the right idea here since we discard the value
+	assert_eq!(INTEROP_AREA.start, ORG);
+
+	// We stomp over [gs:0x18] and use it for our own mini-TLS to track the stack marshalling
+	// On windows, that's a (normally unused and free for the plundering?) field in TIB
+	// On linux, that register is not normally in use, so we put some bytes there and then use it
 	#[cfg(unix)]
 	{
 		use libc::*;
@@ -86,7 +93,7 @@ pub fn prepare_thread() {
 /// Unsafe:  The lifetime is really only good in the current function
 pub unsafe fn access_context() -> &'static mut ActivatedWaterboxHost<'static> {
 	let mut p: *mut Context;
-	asm!("mov {}, [gs:0x18]", out(reg) p);
+	asm!("mov {}, gs:0x18", out(reg) p);
 	if p == null_mut() {
 		std::intrinsics::breakpoint();
 	}

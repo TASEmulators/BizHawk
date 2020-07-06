@@ -31,6 +31,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		public GPGX(CoreComm comm, GameInfo game, byte[] rom, IEnumerable<Disc> cds, object settings, object syncSettings)
 		{
+			LoadCallback = new LibGPGX.load_archive_cb(load_archive);
+			_inputCallback = new LibGPGX.input_cb(input_callback);
+			InitMemCallbacks(); // ExecCallback, ReadCallback, WriteCallback
+			CDCallback = new LibGPGX.CDCallback(CDCallbackProc);
+			cd_callback_handle = new LibGPGX.cd_read_cb(CDRead);
+
 			ServiceProvider = new BasicServiceProvider(this);
 			// this can influence some things internally (autodetect romtype, etc)
 			string romextension = "GEN";
@@ -57,15 +63,19 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				SkipMemoryConsistencyCheck = comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
 			});
 
+			var callingConventionAdapter = CallingConventionAdapters.MakeWaterbox(new Delegate[]
+			{
+				LoadCallback, _inputCallback, ExecCallback, ReadCallback, WriteCallback,
+				CDCallback, cd_callback_handle,
+			}, _elf);
+
 			using (_elf.EnterExit())
 			{
-				Core = BizInvoker.GetInvoker<LibGPGX>(_elf, _elf, CallingConventionAdapters.Waterbox);
+				Core = BizInvoker.GetInvoker<LibGPGX>(_elf, _elf, callingConventionAdapter);
 				_syncSettings = (GPGXSyncSettings)syncSettings ?? new GPGXSyncSettings();
 				_settings = (GPGXSettings)settings ?? new GPGXSettings();
 
 				CoreComm = comm;
-
-				LoadCallback = new LibGPGX.load_archive_cb(load_archive);
 
 				_romfile = rom;
 
@@ -73,7 +83,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				{
 					_cds = cds.ToArray();
 					_cdReaders = cds.Select(c => new DiscSectorReader(c)).ToArray();
-					cd_callback_handle = new LibGPGX.cd_read_cb(CDRead);
 					Core.gpgx_set_cdd_callback(cd_callback_handle);
 					DriveLightEnabled = true;
 				}
@@ -110,16 +119,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 				SetMemoryDomains();
 
-				_inputCallback = new LibGPGX.input_cb(input_callback);
 				Core.gpgx_set_input_callback(_inputCallback);
 
 				// process the non-init settings now
 				PutSettings(_settings);
 
-				//TODO - this hits performance, we need to make it controllable
-				CDCallback = new LibGPGX.CDCallback(CDCallbackProc);
-
-				InitMemCallbacks();
 				KillMemCallbacks();
 
 				_tracer = new GPGXTraceBuffer(this, _memoryDomains, this);
@@ -164,7 +168,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		private bool _disposed = false;
 
-		LibGPGX.load_archive_cb LoadCallback = null;
+		LibGPGX.load_archive_cb LoadCallback;
 
 		LibGPGX.InputData input = new LibGPGX.InputData();
 
