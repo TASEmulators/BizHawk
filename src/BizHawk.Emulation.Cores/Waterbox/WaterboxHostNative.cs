@@ -114,10 +114,18 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// Deactivates a host environment, and releases the mutex.
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void wbx_deactivate_host(IntPtr /*ActivatedWaterboxHost*/ obj, ReturnData /*void*/ ret);
-		/// Returns the address of an exported function from the guest executable.  This pointer is only valid
-		/// while the host is active.  A missing proc is not an error and simply returns 0.
+		/// Returns a thunk suitable for calling an exported function from the guest executable.  This pointer is only valid
+		/// while the host is active.  A missing proc is not an error and simply returns 0.  The guest function must be,
+		/// and the returned callback will be, sysv abi, and will only pass up to 6 int/ptr args and no other arg types.
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void wbx_get_proc_addr(IntPtr /*ActivatedWaterboxHost*/ obj, string name, ReturnData /*UIntPtr*/ ret);
+		/// Returns a function pointer suitable for passing to the guest to allow it to call back while active.
+		/// Slot number is an integer that is used to keep pointers consistent across runs:  If the host is loaded
+		/// at a different address, and some external function `foo` moves from run to run, things will still work out
+		/// in the guest because `foo` was bound to the same slot and a particular slot gives a consistent pointer.
+		/// The returned thunk will be, and the callback must be, sysv abi and will only pass up to 6 int/ptr args and no other arg types.
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract void wbx_get_callback_addr(IntPtr /*ActivatedWaterboxHost*/ obj, UIntPtr callback, int slot, ReturnData /*UIntPtr*/ ret);
 		/// Calls the seal operation, which is a one time action that prepares the host to save states.
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void wbx_seal(IntPtr /*ActivatedWaterboxHost*/ obj, ReturnData /*void*/ ret);
