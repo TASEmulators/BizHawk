@@ -59,6 +59,11 @@ namespace BizHawk.Client.Common
 		ulong TimeLength { get; }
 
 		/// <summary>
+		/// Gets the frame rate in frames per second for the movie's system.
+		/// </summary>
+		double FrameRate { get; }
+
+		/// <summary>
 		/// Gets the file extension for the current <see cref="IMovie"/> implementation
 		/// </summary>
 		string PreferredExtension { get; }

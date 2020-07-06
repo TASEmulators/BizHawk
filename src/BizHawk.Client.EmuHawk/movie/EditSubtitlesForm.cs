@@ -213,16 +213,11 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			// Fetch fps
-			var system = _selectedMovie.HeaderEntries[HeaderKeys.Platform];
-			var pal = _selectedMovie.HeaderEntries.ContainsKey(HeaderKeys.Pal)
-				&& _selectedMovie.HeaderEntries[HeaderKeys.Pal] == "1";
-			var pfr = new PlatformFrameRates();
 			double fps;
-
 			try
 			{
-				fps = pfr[system, pal];
+				// RetroEdit: This cannot actually fail because it defaults to 60.0, so the try-catch block is pointless
+				fps = _selectedMovie.FrameRate;
 			}
 			catch
 			{

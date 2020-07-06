@@ -114,15 +114,13 @@ namespace BizHawk.Client.EmuHawk
 		public double GetFps()
 		{
 			var movie = GlobalWin.MovieSession.Movie;
+			// Why does it need the movie to be active to know the frame rate?
 			if (movie.NotActive())
 			{
 				return default;
 			}
 
-			return new PlatformFrameRates()[
-				movie.HeaderEntries[HeaderKeys.Platform],
-				movie.HeaderEntries.TryGetValue(HeaderKeys.Pal, out var isPal) && isPal == "1"
-			];
+			return movie.FrameRate;
 		}
 	}
 }

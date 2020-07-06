@@ -21,7 +21,6 @@ namespace BizHawk.Client.EmuHawk
 		private readonly GameInfo _game;
 		private readonly IEmulator _emulator;
 		private readonly IMovieSession _movieSession;
-		private readonly PlatformFrameRates _platformFrameRates = new PlatformFrameRates();
 
 		private List<IMovie> _movieList = new List<IMovie>();
 		private bool _sortReverse;
@@ -71,7 +70,7 @@ namespace BizHawk.Client.EmuHawk
 			e.Item = new ListViewItem(entry.Filename);
 			e.Item.SubItems.Add(entry.SystemID);
 			e.Item.SubItems.Add(entry.GameName);
-			e.Item.SubItems.Add(_platformFrameRates.MovieTime(entry).ToString(@"hh\:mm\:ss\.fff"));
+			e.Item.SubItems.Add(entry.TimeLength.ToString(@"hh\:mm\:ss\.fff"));
 		}
 
 		private void Run()
@@ -328,7 +327,7 @@ namespace BizHawk.Client.EmuHawk
 							.Append(_movieList[index].Filename).Append('\t')
 							.Append(_movieList[index].SystemID).Append('\t')
 							.Append(_movieList[index].GameName).Append('\t')
-							.Append(_platformFrameRates.MovieTime(_movieList[index]).ToString(@"hh\:mm\:ss\.fff"))
+							.Append(_movieList[index].TimeLength.ToString(@"hh\:mm\:ss\.fff"))
 							.AppendLine();
 					}
 
@@ -444,7 +443,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var fpsItem = new ListViewItem("Fps");
-			fpsItem.SubItems.Add($"{Fps(_movieList[firstIndex]):0.#######}");
+			fpsItem.SubItems.Add($"{_movieList[firstIndex].FrameRate:0.#######}");
 			DetailsView.Items.Add(fpsItem);
 
 			var framesItem = new ListViewItem("Frames");
@@ -452,16 +451,6 @@ namespace BizHawk.Client.EmuHawk
 			DetailsView.Items.Add(framesItem);
 			CommentsBtn.Enabled = _movieList[firstIndex].Comments.Any();
 			SubtitlesBtn.Enabled = _movieList[firstIndex].Subtitles.Any();
-		}
-
-		public double Fps(IMovie movie)
-		{
-			var system = movie.HeaderEntries[HeaderKeys.Platform];
-			var pal = movie.HeaderEntries.ContainsKey(HeaderKeys.Pal)
-				&& movie.HeaderEntries[HeaderKeys.Pal] == "1";
-
-			return new PlatformFrameRates()[system, pal];
-			
 		}
 
 		private void EditMenuItem_Click(object sender, EventArgs e)
