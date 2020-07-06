@@ -48,22 +48,22 @@ namespace BizHawk.Emulation.Common
 			Option("GBA", "Bios", gbaNormal);
 			Option("GBA", "Bios", gbaJDebug);
 
-			FirmwareAndOption("24F67BDEA115A2C847C8813A262502EE1607B7DF", 16384, "NDS", "bios7", "NDS_bios7.bin", "ARM7 BIOS");
-			FirmwareAndOption("BFAAC75F101C135E32E2AAF541DE6B1BE4C8C62D", 4096, "NDS", "bios9", "NDS_bios9.bin", "ARM9 BIOS");
-			FirmwareAndOption("22A7547DBC302BCBFB4005CFB5A2D426D3F85AC6", 262144, "NDS", "firmware", "NDS_firmware.bin", "NDS Firmware (note: given hash is with blank user data)");
+			FirmwareAndOption("24F67BDEA115A2C847C8813A262502EE1607B7DF", 16384, "NDS", "bios7", "NDS_Bios7.bin", "ARM7 BIOS");
+			FirmwareAndOption("BFAAC75F101C135E32E2AAF541DE6B1BE4C8C62D", 4096, "NDS", "bios9", "NDS_Bios9.bin", "ARM9 BIOS");
+			FirmwareAndOption("22A7547DBC302BCBFB4005CFB5A2D426D3F85AC6", 262144, "NDS", "firmware", "NDS_Firmware.bin", "NDS Firmware (note: given hash is with blank user data)");
 
 			FirmwareAndOption("E4ED47FAE31693E016B081C6BDA48DA5B70D7CCB", 512, "Lynx", "Boot", "LYNX_boot.img", "Boot Rom");
 
 			////FirmwareAndOption("24F67BDEA115A2C847C8813A262502EE1607B7DF", "NDS", "Bios_Arm7", "biosnds7.rom", "ARM7 Bios");
 			////FirmwareAndOption("BFAAC75F101C135E32E2AAF541DE6B1BE4C8C62D", "NDS", "Bios_Arm9", "biosnds9.rom", "ARM9 Bios");
-			FirmwareAndOption("5A65B922B562CB1F57DAB51B73151283F0E20C7A", 8192, "INTV", "EROM", "INTV_erom.bin", "Executive Rom");
-			FirmwareAndOption("F9608BB4AD1CFE3640D02844C7AD8E0BCD974917", 2048, "INTV", "GROM", "INTV_grom.bin", "Graphics Rom");
+			FirmwareAndOption("5A65B922B562CB1F57DAB51B73151283F0E20C7A", 8192, "INTV", "EROM", "INTV_EROM.bin", "Executive Rom");
+			FirmwareAndOption("F9608BB4AD1CFE3640D02844C7AD8E0BCD974917", 2048, "INTV", "GROM", "INTV_GROM.bin", "Graphics Rom");
 
-			FirmwareAndOption("1D503E56DF85A62FEE696E7618DC5B4E781DF1BB", 8192, "C64", "Kernal", "C64_kernal.bin", "Kernal Rom");
-			FirmwareAndOption("79015323128650C742A3694C9429AA91F355905E", 8192, "C64", "Basic", "C64_basic.bin", "Basic Rom");
-			FirmwareAndOption("ADC7C31E18C7C7413D54802EF2F4193DA14711AA", 4096, "C64", "Chargen", "C64_chargen.bin", "Chargen Rom");
-			FirmwareAndOption("AB16F56989B27D89BABE5F89C5A8CB3DA71A82F0", 16384, "C64", "Drive1541", "C64_drive-1541.bin", "1541 Disk Drive Rom");
-			FirmwareAndOption("D3B78C3DBAC55F5199F33F3FE0036439811F7FB3", 16384, "C64", "Drive1541II", "C64_drive-1541ii.bin", "1541-II Disk Drive Rom");
+			FirmwareAndOption("1D503E56DF85A62FEE696E7618DC5B4E781DF1BB", 8192, "C64", "Kernal", "C64_Kernal.bin", "Kernal Rom");
+			FirmwareAndOption("79015323128650C742A3694C9429AA91F355905E", 8192, "C64", "Basic", "C64_Basic.bin", "Basic Rom");
+			FirmwareAndOption("ADC7C31E18C7C7413D54802EF2F4193DA14711AA", 4096, "C64", "Chargen", "C64_Chargen.bin", "Chargen Rom");
+			FirmwareAndOption("AB16F56989B27D89BABE5F89C5A8CB3DA71A82F0", 16384, "C64", "Drive1541", "C64_Drive-1541.bin", "1541 Disk Drive Rom");
+			FirmwareAndOption("D3B78C3DBAC55F5199F33F3FE0036439811F7FB3", 16384, "C64", "Drive1541II", "C64_Drive-1541ii.bin", "1541-II Disk Drive Rom");
 
 			// ZX Spectrum
 			FirmwareAndOption("A584272F21DC82C14B7D4F1ED440E23A976E71F0", 32768, "ZXSpectrum", "PentagonROM", "ZX_pentagon.rom", "Russian Pentagon Clone ROM");
@@ -103,9 +103,9 @@ namespace BizHawk.Emulation.Common
 			Option("SAT", "E", ss_100a_ue);
 			Option("SAT", "E", ss_100_j);
 			Option("SAT", "E", ss_101_j);
-			FirmwareAndOption("a67cd4f550751f8b91de2b8b74528ab4e0c11c77", 2 * 1024 * 1024, "SAT", "KOF95", "kof95.bin", "King of Fighters cartridge");
+			FirmwareAndOption("a67cd4f550751f8b91de2b8b74528ab4e0c11c77", 2 * 1024 * 1024, "SAT", "KOF95", "SAT_KoF95.bin", "King of Fighters cartridge");
 			//Firmware("SAT", "ULTRAMAN", "Ultraman cartridge");
-			FirmwareAndOption("56c1b93da6b660bf393fbf48ca47569000ef4047", 2 * 1024 * 1024, "SAT", "ULTRAMAN", "Ultraman.bin", "Ultraman cartridge");
+			FirmwareAndOption("56c1b93da6b660bf393fbf48ca47569000ef4047", 2 * 1024 * 1024, "SAT", "ULTRAMAN", "SAT_Ultraman.bin", "Ultraman cartridge");
 
 			var ti83_102 = File("CE08F6A808701FC6672230A790167EE485157561", 262144, "TI83_102.rom", "TI-83 Rom v1.02"); // ?? is this size correct?
 			var ti83_103 = File("8399E384804D8D29866CAA4C8763D7A61946A467", 262144, "TI83_103.rom", "TI-83 Rom v1.03"); // ?? is this size correct?
