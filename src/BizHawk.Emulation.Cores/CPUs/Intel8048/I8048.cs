@@ -8,8 +8,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 {
 	public sealed partial class I8048
 	{
-		public O2Hawk Core { get; set; }
-
+		public int LY;
 		// operations that can take place in an instruction
 		public const ushort IDLE = 0; 
 		public const ushort OP = 1;
@@ -541,7 +540,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 					Regs[(ushort)(R7 + RB)],
 					Regs[PSW],
 					TotalExecutedCycles,
-					Core.ppu.LY,
+					LY,
 					FlagC ? "C" : "c",
 					FlagAC ? "A" : "a",
 					FlagF0 ? "F" : "f",
@@ -592,6 +591,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 			ser.Sync(nameof(IRQS), ref IRQS);
 			ser.Sync(nameof(irq_pntr), ref irq_pntr);
 
+			ser.Sync(nameof(LY), ref LY);
 			ser.Sync(nameof(EA), ref EA);
 			ser.Sync(nameof(TF), ref TF);
 			ser.Sync(nameof(timer_en), ref timer_en);

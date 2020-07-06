@@ -4,16 +4,16 @@ using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.I8048;
 
-namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
+namespace BizHawk.Emulation.Cores.Consoles.G7400Hawk
 {
 	[Core(
-		"O2Hawk",
+		"G7400Hawk",
 		"",
 		isPorted: false,
 		isReleased: false,
-		displayName: "Odyssey 2")]
+		displayName: "Videopac G7400")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
-	public partial class O2Hawk : IEmulator, ISaveRam, IDebuggable, IInputPollable, IRegionable, ISettable<O2Hawk.O2Settings, O2Hawk.O2SyncSettings>, IBoardInfo
+	public partial class G7400Hawk : IEmulator, ISaveRam, IDebuggable, IInputPollable, IRegionable, ISettable<G7400Hawk.G7400Settings, G7400Hawk.G7400SyncSettings>, IBoardInfo
 	{
 		// memory domains
 		public byte[] RAM = new byte[0x80];
@@ -42,8 +42,8 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 		public bool is_pal;
 
-		[CoreConstructor("O2")]
-		public O2Hawk(CoreComm comm, GameInfo game, byte[] rom, /*string gameDbFn,*/ object settings, object syncSettings)
+		[CoreConstructor("G7400")]
+		public G7400Hawk(CoreComm comm, GameInfo game, byte[] rom, /*string gameDbFn,*/ object settings, object syncSettings)
 		{
 			var ser = new BasicServiceProvider(this);
 
@@ -58,11 +58,11 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 				OnExecFetch = ExecFetch,
 			};
 
-			_settings = (O2Settings)settings ?? new O2Settings();
-			_syncSettings = (O2SyncSettings)syncSettings ?? new O2SyncSettings();
-			_controllerDeck = new O2HawkControllerDeck("O2 Controller", "O2 Controller");
+			_settings = (G7400Settings)settings ?? new G7400Settings();
+			_syncSettings = (G7400SyncSettings)syncSettings ?? new G7400SyncSettings();
+			_controllerDeck = new G7400HawkControllerDeck("G7400 Controller", "G7400 Controller");
 
-			_bios = comm.CoreFileProvider.GetFirmware("O2", "BIOS", true, "BIOS Not Found, Cannot Load")
+			_bios = comm.CoreFileProvider.GetFirmware("G7400", "BIOS", true, "BIOS Not Found, Cannot Load")
 				?? throw new MissingFirmwareException("Missing Odyssey2 Bios");
 
 			Buffer.BlockCopy(rom, 0x100, header, 0, 0x50);
@@ -77,8 +77,8 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			ser.Register<IVideoProvider>(this);
 			ServiceProvider = ser;
 
-			_settings = (O2Settings)settings ?? new O2Settings();
-			_syncSettings = (O2SyncSettings)syncSettings ?? new O2SyncSettings();
+			_settings = (G7400Settings)settings ?? new G7400Settings();
+			_syncSettings = (G7400SyncSettings)syncSettings ?? new G7400SyncSettings();
 
 			_tracer = new TraceBuffer { Header = cpu.TraceHeader };
 			ser.Register(_tracer);
@@ -86,24 +86,16 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			SetupMemoryDomains();
 			cpu.SetCallbacks(ReadMemory, PeekMemory, PeekMemory, WriteMemory);
 
-			// set up differences between PAL and NTSC systems
-			if (game.Region == "US" || game.Region == "EU-US" || game.Region == null)
-			{
-				is_pal = false;
-				pic_height = 240;
-				_frameHz = 60;
+			// G7400 is PAL only
+			is_pal = true;
+			pic_height = 240;
+			_frameHz = 50;
+			ppu = new PAL_PPU();
 
-				ppu = new NTSC_PPU();
-			}
-			else
-			{
-				is_pal = true;
-				pic_height = 240;
-				_frameHz = 50;
-				ppu = new PAL_PPU();
-			}
 			ppu.Core = this;
+
 			ppu.set_region(is_pal);
+
 			ser.Register<ISoundProvider>(ppu);
 
 			_vidbuffer = new int[372 * pic_height];
@@ -112,9 +104,9 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			HardReset();
 		}
 
-		public DisplayType Region => DisplayType.NTSC;
+		public DisplayType Region => DisplayType.PAL;
 
-		private readonly O2HawkControllerDeck _controllerDeck;
+		private readonly G7400HawkControllerDeck _controllerDeck;
 
 		public void HardReset()
 		{
