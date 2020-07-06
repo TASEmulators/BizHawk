@@ -73,7 +73,8 @@ impl WaterboxHost {
 		});
 		res.h.active = true;
 		res.h.context.host_ptr = res.as_mut() as *mut ActivatedWaterboxHost as usize;
-		res.h.thunks.update_context_ptr(&mut res.h.context as *mut Context).unwrap();
+		// not needed as it hasn't moved
+		// res.h.thunks.update_context_ptr(&mut res.h.context as *mut Context).unwrap();
 		res
 	}
 }

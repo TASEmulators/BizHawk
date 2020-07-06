@@ -125,7 +125,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// in the guest because `foo` was bound to the same slot and a particular slot gives a consistent pointer.
 		/// The returned thunk will be, and the callback must be, sysv abi and will only pass up to 6 int/ptr args and no other arg types.
 		[BizImport(CallingConvention.Cdecl)]
-		public abstract void wbx_get_callback_addr(IntPtr /*ActivatedWaterboxHost*/ obj, UIntPtr callback, int slot, ReturnData /*UIntPtr*/ ret);
+		public abstract void wbx_get_callback_addr(IntPtr /*ActivatedWaterboxHost*/ obj, IntPtr callback, int slot, ReturnData /*UIntPtr*/ ret);
 		/// Calls the seal operation, which is a one time action that prepares the host to save states.
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void wbx_seal(IntPtr /*ActivatedWaterboxHost*/ obj, ReturnData /*void*/ ret);

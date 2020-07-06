@@ -85,10 +85,10 @@ pub fn prepare_thread() {
 /// If called outside call_guest, will fail in various wonderful ways?
 /// Unsafe:  The lifetime is really only good in the current function
 pub unsafe fn access_context() -> &'static mut ActivatedWaterboxHost<'static> {
-	let mut p: *mut ActivatedWaterboxHost;
+	let mut p: *mut Context;
 	asm!("mov {}, [gs:0x18]", out(reg) p);
 	if p == null_mut() {
 		std::intrinsics::breakpoint();
 	}
-	return &mut *p;
+	&mut *((*p).host_ptr as *mut ActivatedWaterboxHost)
 }

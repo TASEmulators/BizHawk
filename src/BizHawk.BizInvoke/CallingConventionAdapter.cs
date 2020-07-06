@@ -12,10 +12,36 @@ namespace BizHawk.BizInvoke
 	/// </summary>
 	public interface ICallingConventionAdapter
 	{
+		/// <summary>
+		/// Like Marshal.GetFunctionPointerForDelegate(), but wraps a thunk around the returned native pointer
+		/// to adjust the calling convention appropriately
+		/// </summary>
 		IntPtr GetFunctionPointerForDelegate(Delegate d);
+		/// <summary>
+		/// Like Marshal.GetFunctionPointerForDelegate, but only the unmanaged thunk-to-thunk part, with no
+		/// managed wrapper involved.  Called "arrival" because it is to be used when the foreign code is calling
+		/// back into host code.
+		/// </summary>
+		/// <returns></returns>
 		IntPtr GetArrivalFunctionPointer(IntPtr p, ParameterInfo pp, object lifetime);
 
+		/// <summary>
+		/// Like Marshal.GetDelegateForFunctionPointer(), but wraps a thunk around the passed native pointer
+		/// to adjust the calling convention appropriately
+		/// </summary>
+		/// <param name="p"></param>
+		/// <param name="delegateType"></param>
+		/// <returns></returns>
 		Delegate GetDelegateForFunctionPointer(IntPtr p, Type delegateType);
+		/// <summary>
+		/// Like Marshal.GetDelegateForFunctionPointer(), but only the unmanaged thunk-to-thunk part, with no
+		/// managed wrapper involved.static  Called "departure" beause it is to be used when first leaving host
+		/// code for foreign code.
+		/// </summary>
+		/// <param name="p"></param>
+		/// <param name="pp"></param>
+		/// <param name="lifetime"></param>
+		/// <returns></returns>
 		IntPtr GetDepartureFunctionPointer(IntPtr p, ParameterInfo pp, object lifetime);
 	}
 
@@ -50,6 +76,18 @@ namespace BizHawk.BizInvoke
 		}
 	}
 
+	/// <summary>
+	/// Abstract over some waterbox functionality, sort of.  Would this ever make sense for anything else?
+	/// </summary>
+	public interface ICallbackAdjuster
+	{
+		/// <summary>
+		/// Returns a thunk over an arrival callback, for the given slot number.  Slots don't have much of
+		/// any meaning to CallingConvention Adapter; it's just a unique key associated with the callback.
+		/// </summary>
+		IntPtr GetCallbackProcAddr(IntPtr exitPoint, int slot);
+	}
+
 	public static class CallingConventionAdapters
 	{
 		private class NativeConvention : ICallingConventionAdapter
@@ -80,19 +118,79 @@ namespace BizHawk.BizInvoke
 		/// </summary>
 		public static ICallingConventionAdapter Native { get; } = new NativeConvention();
 
-		static CallingConventionAdapters()
+		/// <summary>
+		/// waterbox calling convention, including thunk handling for stack marshalling
+		/// </summary>
+		public static ICallingConventionAdapter MakeWaterbox(IEnumerable<Delegate> slots, ICallbackAdjuster waterboxHost)
 		{
-			Waterbox = OSTailoredCode.IsUnixHost
-				? new NativeConvention()
-				: (ICallingConventionAdapter)new MsHostSysVGuest();
-				// ? (ICallingConventionAdapter)new SysVHostMsGuest()
-				// : new NativeConvention();
+			return new WaterboxAdapter(slots, waterboxHost);
 		}
 
-		/// <summary>
-		/// convention appropriate for waterbox guests
-		/// </summary>
-		public static ICallingConventionAdapter Waterbox { get; }
+		private class WaterboxAdapter : ICallingConventionAdapter
+		{
+			private class ReferenceEqualityComparer : IEqualityComparer<Delegate>
+			{
+				public bool Equals(Delegate x, Delegate y)
+				{
+					return x == y;
+				}
+
+				public int GetHashCode(Delegate obj)
+				{
+					return System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(obj);
+				}
+			}
+
+			private static readonly ICallingConventionAdapter WaterboxWrapper;
+			static WaterboxAdapter()
+			{
+				WaterboxWrapper = OSTailoredCode.IsUnixHost
+					? new NativeConvention()
+					: (ICallingConventionAdapter)new MsHostSysVGuest();
+			}
+
+			private readonly Dictionary<Delegate, int> _slots;
+			private readonly ICallbackAdjuster _waterboxHost;
+
+			public WaterboxAdapter(IEnumerable<Delegate> slots, ICallbackAdjuster waterboxHost)
+			{
+				_slots = slots.Select((cb, i) => new { cb, i })
+					.ToDictionary(a => a.cb, a => a.i, new ReferenceEqualityComparer());
+				_waterboxHost = waterboxHost;
+			}
+
+			public IntPtr GetArrivalFunctionPointer(IntPtr p, ParameterInfo pp, object lifetime)
+			{
+				if (!(lifetime is Delegate d))
+				{
+					throw new ArgumentException("For this calling convention adapter, lifetimes must be delegate so guest slot can be inferred");
+				}
+				if (!_slots.TryGetValue(d, out var slot))
+				{
+					throw new InvalidOperationException("All callback delegates must be registered at load");
+				}
+				return _waterboxHost.GetCallbackProcAddr(WaterboxWrapper.GetArrivalFunctionPointer(p, pp, lifetime), slot);
+			}
+
+			public Delegate GetDelegateForFunctionPointer(IntPtr p, Type delegateType)
+			{
+				return WaterboxWrapper.GetDelegateForFunctionPointer(p, delegateType);
+			}
+
+			public IntPtr GetDepartureFunctionPointer(IntPtr p, ParameterInfo pp, object lifetime)
+			{
+				return WaterboxWrapper.GetDepartureFunctionPointer(p, pp, lifetime);
+			}
+
+			public IntPtr GetFunctionPointerForDelegate(Delegate d)
+			{
+				if (!_slots.TryGetValue(d, out var slot))
+				{
+					throw new InvalidOperationException("All callback delegates must be registered at load");
+				}
+				return _waterboxHost.GetCallbackProcAddr(WaterboxWrapper.GetFunctionPointerForDelegate(d), slot);
+			}
+		}
 
 		private class SysVHostMsGuest : ICallingConventionAdapter
 		{
