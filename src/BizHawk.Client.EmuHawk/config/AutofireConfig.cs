@@ -3,7 +3,10 @@ using System.Drawing;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
-using BizHawk.WinForms.Controls;
+using BizHawk.Common;
+using BizHawk.WinForms.BuilderDSL;
+
+using static BizHawk.WinForms.BuilderDSL.BuilderDSL;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -28,51 +31,63 @@ namespace BizHawk.Client.EmuHawk
 			_autoFireController = autoFireController;
 			_stickyXorAdapter = stickyXorAdapter;
 			SuspendLayout();
+			var builderContext = new ControlBuilderContext(isLTR: true);
 
-			cbConsiderLag = new CheckBoxEx { Padding = new Padding(4, 0, 0, 0), Text = "Take lag frames into account" };
-			nudPatternOn = new SzNUDEx { Maximum = 512.0M, Minimum = 1.0M, Size = new Size(48, 20), Value = 1.0M };
-			nudPatternOff = new SzNUDEx { Maximum = 512.0M, Minimum = 1.0M, Size = new Size(48, 20), Value = 1.0M };
-			var flpDialog = new LocSzSingleColumnFLP
+			cbConsiderLag = BuildUnparented(builderContext)
+				.AddCheckBox("Take lag frames into account", blueprint: cb => cb.InnerPaddingInLTR(4, 0, 0, 0))
+				.GetControlRef();
+			Blueprint<NUDBuilder> createNUD = nud =>
 			{
-				Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right,
-				Controls =
-				{
-					new SingleRowFLP
-					{
-						Controls =
-						{
-							new LabelEx { Text = "Pattern:" },
-							nudPatternOn,
-							new LabelEx { Text = "on," },
-							nudPatternOff,
-							new LabelEx { Text = "off" }
-						}
-					},
-					cbConsiderLag
-				},
-				Location = new Point(0, 0),
-				Size = new Size(323, 55)
+				nud.SetInitialValue(1.0M);
+				nud.SetValidRange(1.0M.RangeTo(512.0M));
+				nud.FixedSize(48, 20);
 			};
+			nudPatternOn = BuildUnparented(builderContext).AddNUD(createNUD).GetControlRef();
+			nudPatternOff = BuildUnparented(builderContext).AddNUD(createNUD).GetControlRef();
+			var flpPatternBuilt = BuildUnparented(builderContext).AddFLPSingleRowLTRInLTR(flpPattern =>
+			{
+				flpPattern.AddLabel("Pattern:");
+			});
+			flpPatternBuilt.HackAddChild(nudPatternOn);
+			flpPatternBuilt.AddChildren(flpPattern => flpPattern.AddLabel("on,"));
+			flpPatternBuilt.HackAddChild(nudPatternOff);
+			flpPatternBuilt.AddChildren(flpPattern => flpPattern.AddLabel("off"));
+			var flpDialogBuilt = BuildUnparented(builderContext).AddFLPSingleColumn(flpDialog =>
+			{
+				flpDialog.Position(0, 0);
+				flpDialog.FixedSize(323, 55);
+				flpDialog.AnchorAll();
+			});
+			flpDialogBuilt.HackAddChild(flpPatternBuilt.GetControlRef());
+			flpDialogBuilt.HackAddChild(cbConsiderLag);
 
-			var btnDialogOK = new SzButtonEx { Size = new Size(75, 23), Text = "&OK" };
-			btnDialogOK.Click += btnDialogOK_Click;
-			var btnDialogCancel = new SzButtonEx { DialogResult = DialogResult.Cancel, Size = new Size(75, 23), Text = "&Cancel" };
-			btnDialogCancel.Click += btnDialogCancel_Click;
-			var flpDialogButtons = new LocSzSingleRowFLP
+			var btnDialogOK = BuildUnparented(builderContext).AddButton("&OK", button =>
 			{
-				Anchor = AnchorStyles.Bottom | AnchorStyles.Right,
-				Controls = { btnDialogOK, btnDialogCancel },
-				Location = new Point(161, 61),
-				Size = new Size(162, 29)
-			};
+				button.FixedSize(75, 23);
+				button.SubToClick(btnDialogOK_Click);
+			}).GetControlRef();
+			var btnDialogCancel = BuildUnparented(builderContext).AddButton("&Cancel", button =>
+			{
+				button.SetDialogResult(DialogResult.Cancel);
+				button.FixedSize(75, 23);
+				button.SubToClick(btnDialogCancel_Click);
+			}).GetControlRef();
+			var flpDialogButtonsBuilt = BuildUnparented(builderContext).AddFLPSingleRowLTRInLTR(flpDialogButtons =>
+			{
+				flpDialogButtons.Position(161, 61);
+				flpDialogButtons.FixedSize(162, 29);
+				flpDialogButtons.AnchorBottomRightInLTR();
+			});
+			flpDialogButtonsBuilt.HackAddChild(btnDialogOK);
+			flpDialogButtonsBuilt.HackAddChild(btnDialogCancel);
 
 			AcceptButton = btnDialogOK;
 			AutoScaleDimensions = new SizeF(6F, 13F);
 			AutoScaleMode = AutoScaleMode.Font;
 			CancelButton = btnDialogCancel;
 			ClientSize = new Size(323, 90);
-			Controls.Add(flpDialog);
-			Controls.Add(flpDialogButtons);
+			Controls.Add(flpDialogBuilt.GetControlRef());
+			Controls.Add(flpDialogButtonsBuilt.GetControlRef());
 			Icon = Properties.Resources.Lightning_MultiSize;
 			MaximizeBox = false;
 			base.MinimumSize = new Size(339, 129);
