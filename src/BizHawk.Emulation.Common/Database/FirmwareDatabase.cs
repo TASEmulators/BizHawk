@@ -31,8 +31,8 @@ namespace BizHawk.Emulation.Common
 
 			FirmwareAndOption("79F5FF55DD10187C7FD7B8DAAB0B3FFBD1F56A2C", 262144, "PCECD", "Bios", "PCECD_3.0-(J).pce", "Super CD Bios (J)");
 			FirmwareAndOption("014881a959e045e00f4db8f52955200865d40280", 32768, "PCECD", "GE-Bios", "PCECD_gecard.pce", "Games Express CD Card (Japan)");
-			//FirmwareAndOption("D9D134BB6B36907C615A594CC7688F7BFCEF5B43", 4096, "A78", "Bios_NTSC", "7800NTSCBIOS.bin", "NTSC Bios");
-			FirmwareAndOption("CE236581AB7921B59DB95BA12837C22F160896CB", 4096, "A78", "Bios_NTSC", "A78_NTSC_speed_bios.bin", "NTSC Bios speed");
+			FirmwareAndOption("D9D134BB6B36907C615A594CC7688F7BFCEF5B43", 4096, "A78", "Bios_NTSC", "A78_NTSC_bios.bin", "NTSC Bios");
+			//FirmwareAndOption("CE236581AB7921B59DB95BA12837C22F160896CB", 4096, "A78", "Bios_NTSC", "A78_NTSC_speed_bios.bin", "NTSC Bios speed");
 
 			FirmwareAndOption("5A140136A16D1D83E4FF32A19409CA376A8DF874", 16384, "A78", "Bios_PAL", "A78_PAL_BIOS.bin", "PAL Bios");
 			FirmwareAndOption("A3AF676991391A6DD716C79022D4947206B78164", 4096, "A78", "Bios_HSC", "A78_highscore.bin", "Highscore Bios");
@@ -261,6 +261,7 @@ namespace BizHawk.Emulation.Common
 
 			FirmwareAndOption("b2e1955d957a475de2411770452eff4ea19f4cee", 1024, "O2", "BIOS", "O2_Odyssey2.bin", "Odyssey 2 Bios");
 			FirmwareAndOption("a6120aed50831c9c0d95dbdf707820f601d9452e", 1024, "O2", "BIOS-C52", "O2_PhillipsC52.bin", "Phillips C52 Bios");
+			FirmwareAndOption("5130243429B40B01A14E1304D0394B8459A6FBAE", 1024, "G7400", "BIOS", "G7400_bios.bin", "G7400 Bios");
 
 			FirmwareAndOption("4ED31EC6B0B175BB109C0EB5FD3D193DA823339F", 256, "GB", "World", "GB_boot_ROM.gb", "Game Boy BIOS");
 			FirmwareAndOption("1293D68BF9643BC4F36954C1E80E38F39864528D", 2304, "GBC", "World", "GBC_boot_ROM.gb", "Game Boy Color BIOS");
