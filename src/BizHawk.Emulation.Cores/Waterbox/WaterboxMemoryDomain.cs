@@ -141,7 +141,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		public static MemoryDomainAccessStub Create(IntPtr p, IMonitor monitor)
 		{
 			return BizInvoker.GetInvoker<MemoryDomainAccessStub>(
-				new StubResolver(p), monitor, CallingConventionAdapters.Waterbox);
+				new StubResolver(p), monitor, CallingConventionAdapters.WaterboxDepartureOnly);
 		}
 	}
 

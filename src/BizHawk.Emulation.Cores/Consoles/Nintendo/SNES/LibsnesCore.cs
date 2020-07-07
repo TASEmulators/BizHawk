@@ -60,8 +60,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			_settings = (SnesSettings)settings ?? new SnesSettings();
 			_syncSettings = (SnesSyncSettings)syncSettings ?? new SnesSyncSettings();
 
+			_videocb = snes_video_refresh;
+			_inputpollcb = snes_input_poll;
+			_inputstatecb = snes_input_state;
+			_inputnotifycb = snes_input_notify;
+			_scanlineStartCb = snes_scanlineStart;
+			_tracecb = snes_trace;
+			_soundcb = snes_audio_sample;
+			_pathrequestcb = snes_path_request;
+
 			// TODO: pass profile here
-			Api = new LibsnesApi(CoreComm.CoreFileProvider.DllPath(), CoreComm)
+			Api = new LibsnesApi(CoreComm.CoreFileProvider.DllPath(), CoreComm, new Delegate[]
+			{
+				_videocb,
+				_inputpollcb,
+				_inputstatecb,
+				_inputnotifycb,
+				_scanlineStartCb,
+				_tracecb,
+				_soundcb,
+				_pathrequestcb
+			})
 			{
 				ReadHook = ReadHook,
 				ExecHook = ExecHook,
@@ -78,12 +97,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			Api.CMD_init(_syncSettings.RandomizedInitialState);
 
-			Api.QUERY_set_path_request(snes_path_request);
-
-			_scanlineStartCb = snes_scanlineStart;
-			_tracecb = snes_trace;
-
-			_soundcb = snes_audio_sample;
+			Api.QUERY_set_path_request(_pathrequestcb);
 
 			// start up audio resampler
 			InitAudio();
@@ -174,14 +188,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			}
 
 			Api.QUERY_set_path_request(null);
-			Api.QUERY_set_video_refresh(snes_video_refresh);
-			Api.QUERY_set_input_poll(snes_input_poll);
-			Api.QUERY_set_input_state(snes_input_state);
-			Api.QUERY_set_input_notify(snes_input_notify);
+			Api.QUERY_set_video_refresh(_videocb);
+			Api.QUERY_set_input_poll(_inputpollcb);
+			Api.QUERY_set_input_state(_inputstatecb);
+			Api.QUERY_set_input_notify(_inputnotifycb);
 			Api.QUERY_set_audio_sample(_soundcb);
 			Api.Seal();
 			RefreshPalette();
 		}
+
+		private readonly LibsnesApi.snes_video_refresh_t _videocb;
+		private readonly LibsnesApi.snes_input_poll_t _inputpollcb;
+		private readonly LibsnesApi.snes_input_state_t _inputstatecb;
+		private readonly LibsnesApi.snes_input_notify_t _inputnotifycb;
+		private readonly LibsnesApi.snes_path_request_t _pathrequestcb;
 
 		internal CoreComm CoreComm { get; }
 

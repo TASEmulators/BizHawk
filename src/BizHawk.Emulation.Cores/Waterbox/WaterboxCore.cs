@@ -5,6 +5,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Cores.Waterbox
 {
@@ -43,14 +44,17 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			_inputCallback = InputCallbacks.Call;
 		}
 
-		protected T PreInit<T>(WaterboxOptions options)
+		protected T PreInit<T>(WaterboxOptions options, IEnumerable<Delegate> allExtraDelegates = null)
 			where T : LibWaterboxCore
 		{
 			options.Path ??= CoreComm.CoreFileProvider.DllPath();
 			_exe = new WaterboxHost(options);
+			var delegates = new Delegate[] { _inputCallback }.AsEnumerable();
+			if (allExtraDelegates != null)
+				delegates = delegates.Concat(allExtraDelegates);
 			using (_exe.EnterExit())
 			{
-				var ret = BizInvoker.GetInvoker<T>(_exe, _exe, CallingConventionAdapters.Waterbox);
+				var ret = BizInvoker.GetInvoker<T>(_exe, _exe, CallingConventionAdapters.MakeWaterbox(delegates, _exe));
 				_core = ret;
 				return ret;
 			}

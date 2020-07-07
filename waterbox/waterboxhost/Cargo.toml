@@ -4,7 +4,7 @@ version = "0.1.0"
 authors = ["nattthebear <goyuken@gmail.com>"]
 edition = "2018"
 publish = false
-rust = "nightly"
+#rust = "nightly"
 
 [features]
 no-dirty-detection = []

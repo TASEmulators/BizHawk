@@ -99,16 +99,6 @@ impl ElfLoader {
 			}
 		}
 
-		let info_area = match info_area_opt {
-			Some(i) => {
-				if i.size != std::mem::size_of::<WbxSysLayout>() {
-					return Err(anyhow!("Symbol {} is the wrong size", INFO_OBJECT_NAME))
-				}
-				i
-			},
-			None => return Err(anyhow!("Symbol {} is missing", INFO_OBJECT_NAME))
-		};
-
 		{
 			let invis_opt = sections.iter().find(|x| x.name == ".invis");
 			if let Some(invis) = invis_opt {
@@ -165,10 +155,17 @@ impl ElfLoader {
 			b.mprotect(prot_addr, prot)?;
 		}
 
-		{
-			let addr = info_area;
-			unsafe { *(addr.start as *mut WbxSysLayout) = *layout; }
-		}
+		match info_area_opt {
+			Some(i) => {
+				if i.size != std::mem::size_of::<WbxSysLayout>() {
+					return Err(anyhow!("Symbol {} is the wrong size", INFO_OBJECT_NAME))
+				}
+				unsafe { *(i.start as *mut WbxSysLayout) = *layout; }
+			},
+			// info area can legally be missing if the core calls no emulibc functions
+			// None => return Err(anyhow!("Symbol {} is missing", INFO_OBJECT_NAME))
+			None => ()
+		};
 
 		// Main thread area.  TODO:  Should this happen here?
 		b.mmap_fixed(layout.main_thread, Protection::RWStack, true)?;

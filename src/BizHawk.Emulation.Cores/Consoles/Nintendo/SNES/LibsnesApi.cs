@@ -59,7 +59,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			_readonlyFiles.Add(name);
 		}
 
-		public LibsnesApi(string dllPath, CoreComm comm)
+		public LibsnesApi(string dllPath, CoreComm comm, IEnumerable<Delegate> allCallbacks)
 		{
 			_exe = new WaterboxHost(new WaterboxOptions
 			{
@@ -78,7 +78,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				// Marshal checks that function pointers passed to GetDelegateForFunctionPointer are
 				// _currently_ valid when created, even though they don't need to be valid until
 				// the delegate is later invoked.  so GetInvoker needs to be acquired within a lock.
-				_core = BizInvoker.GetInvoker<CoreImpl>(_exe, _exe, CallingConventionAdapters.Waterbox);
+				_core = BizInvoker.GetInvoker<CoreImpl>(_exe, _exe, CallingConventionAdapters.MakeWaterbox(allCallbacks, _exe));
 				_comm = (CommStruct*)_core.DllInit().ToPointer();
 			}
 		}
@@ -188,6 +188,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		snes_trace_t traceCallback;
 
 		public void QUERY_set_video_refresh(snes_video_refresh_t video_refresh) { this.video_refresh = video_refresh; }
+		// not used??
 		public void QUERY_set_input_poll(snes_input_poll_t input_poll) { this.input_poll = input_poll; }
 		public void QUERY_set_input_state(snes_input_state_t input_state) { this.input_state = input_state; }
 		public void QUERY_set_input_notify(snes_input_notify_t input_notify) { this.input_notify = input_notify; }
