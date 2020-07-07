@@ -56,14 +56,9 @@ namespace BizHawk.Client.EmuHawk
 				_settings.AYVolume = ayVolumetrackBar.Value;
 
 				_mainForm.PutCoreSettings(_settings);
-				DialogResult = DialogResult.OK;
-				Close();
 			}
-			else
-			{
-				DialogResult = DialogResult.OK;
-				Close();
-			}
+			DialogResult = DialogResult.OK;
+			Close();
 		}
 
 		private void CancelBtn_Click(object sender, EventArgs e)
