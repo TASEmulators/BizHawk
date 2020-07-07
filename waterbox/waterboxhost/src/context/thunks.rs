@@ -11,8 +11,6 @@ use std::collections::HashMap;
 
 const THUNK_SIZE: usize = 32;
 
-// every time we remount, the thunks need to be updated with the new r10 value
-
 pub struct ThunkManager {
 	memory: AddressRange,
 	lookup: HashMap<usize, usize>,
@@ -63,16 +61,16 @@ impl ThunkManager {
 			}
 		}
 	}
-	/// updates context value for all previously created thunks
-	pub fn update_context_ptr(&mut self, context: *mut Context) -> anyhow::Result<()> {
-		unsafe {
-			let slice = self.memory.slice_mut();
-			for i in 0..self.lookup.len() {
-				bin::writeval(&mut &mut slice[i * THUNK_SIZE + 2..i * THUNK_SIZE + 10], context as usize)?;
-			}
-		}
-		Ok(())
-	}
+	// /// updates context value for all previously created thunks
+	// pub fn update_context_ptr(&mut self, context: *mut Context) -> anyhow::Result<()> {
+	// 	unsafe {
+	// 		let slice = self.memory.slice_mut();
+	// 		for i in 0..self.lookup.len() {
+	// 			bin::writeval(&mut &mut slice[i * THUNK_SIZE + 2..i * THUNK_SIZE + 10], context as usize)?;
+	// 		}
+	// 	}
+	// 	Ok(())
+	// }
 }
 impl Drop for ThunkManager {
 	fn drop(&mut self) {
