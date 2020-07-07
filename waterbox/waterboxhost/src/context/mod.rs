@@ -79,13 +79,13 @@ pub fn prepare_thread() {
 	// On windows, that's a (normally unused and free for the plundering?) field in TIB
 	// On linux, that register is not normally in use, so we put some bytes there and then use it
 	#[cfg(unix)]
-	{
+	unsafe {
 		use libc::*;
 		let mut gs = 0usize;
-		arch_prctl(ARCH_GET_GS, &gs);
+		assert_eq!(syscall(SYS_arch_prctl, 0x1004 /*ARCH_GET_GS*/, &gs), 0);
 		if gs == 0 {
-			gs = Box::into_raw(Box::new([0usize; 4]));
-			arch_prctl(ARCH_SET_GS, gs);
+			gs = Box::into_raw(Box::new([0usize; 4])) as usize;
+			assert_eq!(syscall(SYS_arch_prctl, 0x1001 /*ARCH_SET_GS*/, gs), 0);
 		}
 	}
 }
