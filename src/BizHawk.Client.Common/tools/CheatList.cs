@@ -6,7 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-using BizHawk.Common.CollectionExtensions;
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -414,51 +414,22 @@ namespace BizHawk.Client.Common
 			return true;
 		}
 
-		public void Sort(string column, bool reverse)
-		{
-			_cheatList = column switch
+		private static readonly RigidMultiPredicateSort<Cheat> ColumnSorts
+			= new RigidMultiPredicateSort<Cheat>(new Dictionary<string, Func<Cheat, IComparable>>
 			{
-				NameColumn => _cheatList.OrderBy(c => c.Name, reverse)
-					.ThenBy(c => c.Address ?? 0)
-					.ToList(),
-				AddressColumn => _cheatList.OrderBy(c => c.Address ?? 0, reverse)
-					.ThenBy(c => c.Name)
-					.ToList(),
-				ValueColumn => _cheatList.OrderBy(c => c.Value ?? 0, reverse)
-					.ThenBy(c => c.Name)
-					.ThenBy(c => c.Address ?? 0)
-					.ToList(),
-				CompareColumn => _cheatList.OrderBy(c => c.Compare ?? 0, reverse)
-					.ThenBy(c => c.Name)
-					.ThenBy(c => c.Address ?? 0)
-					.ToList(),
-				OnColumn => _cheatList.OrderBy(c => c.Enabled, reverse)
-					.ThenBy(c => c.Name)
-					.ThenBy(c => c.Address ?? 0)
-					.ToList(),
-				DomainColumn => _cheatList.OrderBy(c => c.Domain, reverse)
-					.ThenBy(c => c.Name)
-					.ThenBy(c => c.Address ?? 0)
-					.ToList(),
-				SizeColumn => _cheatList.OrderBy(c => (int) c.Size, reverse)
-					.ThenBy(c => c.Name)
-					.ThenBy(c => c.Address ?? 0)
-					.ToList(),
-				EndianColumn => _cheatList.OrderBy(c => c.BigEndian, reverse)
-					.ThenBy(c => c.Name)
-					.ThenBy(c => c.Address ?? 0)
-					.ToList(),
-				TypeColumn => _cheatList.OrderBy(c => c.Type, reverse)
-					.ThenBy(c => c.Name)
-					.ThenBy(c => c.Address ?? 0)
-					.ToList(),
-				ComparisonType => _cheatList.OrderBy(c => c.ComparisonType, reverse)
-					.ThenBy(c => c.Name)
-					.ThenBy(c => c.Address ?? 0)
-					.ToList(),
-				_ => _cheatList
-			};
-		}
+				[NameColumn] = c => c.Name,
+				[AddressColumn] = c => c.Address ?? 0L,
+				[ValueColumn] = c => c.Value ?? 0,
+				[CompareColumn] = c => c.Compare ?? 0,
+				[OnColumn] = c => c.Enabled,
+				[DomainColumn] = c => c.Domain.Name,
+				[SizeColumn] = c => (int) c.Size,
+				[EndianColumn] = c => c.BigEndian,
+				[TypeColumn] = c => c.Type,
+				[ComparisonType] = c => c.ComparisonType
+			});
+
+		public void Sort(string column, bool reverse) => _cheatList = ColumnSorts.AppliedTo(_cheatList, column, firstIsDesc: reverse);
 
 		public void SetDefaultFileName(string defaultFileName)
 		{

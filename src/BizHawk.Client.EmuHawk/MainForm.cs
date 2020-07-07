@@ -291,7 +291,7 @@ namespace BizHawk.Client.EmuHawk
 				PauseEmulator,
 				SetMainformMovieInfo);
 
-			MouseClick += MainForm_MouseClick = (sender, e) =>
+			void MainForm_MouseClick(object sender, MouseEventArgs e)
 			{
 				AutohideCursor(false);
 				if (Config.ShowContextMenu && e.Button == MouseButtons.Right)
@@ -299,8 +299,10 @@ namespace BizHawk.Client.EmuHawk
 					MainFormContextMenu.Show(PointToScreen(new Point(e.X, e.Y + MainformMenu.Height)));
 				}
 			};
-			MouseMove += MainForm_MouseMove = (sender, e) => AutohideCursor(false);
-			MainForm_MouseWheel = (sender, e) => MouseWheelTracker += e.Delta;
+			void MainForm_MouseMove(object sender, MouseEventArgs e) => AutohideCursor(false);
+			void MainForm_MouseWheel(object sender, MouseEventArgs e) => MouseWheelTracker += e.Delta;
+			MouseClick += MainForm_MouseClick;
+			MouseMove += MainForm_MouseMove;
 
 			InitializeComponent();
 			Icon = Properties.Resources.logo;
@@ -325,7 +327,13 @@ namespace BizHawk.Client.EmuHawk
 
 			// TODO GL - a lot of disorganized wiring-up here
 			// installed separately on Unix (via package manager or from https://developer.nvidia.com/cg-toolkit-download), look in $PATH
-			PresentationPanel = new PresentationPanel(this, Config, GlobalWin.GL)
+			PresentationPanel = new PresentationPanel(
+				Config,
+				GlobalWin.GL,
+				ToggleFullscreen,
+				MainForm_MouseClick,
+				MainForm_MouseMove,
+				MainForm_MouseWheel)
 			{
 				GraphicsControl = { MainWindow = true }
 			};
@@ -3265,20 +3273,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AvFrameAdvance()
 		{
-			if (_currAviWriter != null)
+			if (_currAviWriter == null) return;
+
+			// is this the best time to handle this? or deeper inside?
+			if (_argParser._currAviWriterFrameList?.Contains(Emulator.Frame) != false)
 			{
 				// TODO ZERO - this code is pretty jacked. we'll want to frugalize buffers better for speedier dumping, and we might want to rely on the GL layer for padding
 				try
 				{
-					// is this the best time to handle this? or deeper inside?
-					if (_argParser._currAviWriterFrameList != null)
-					{
-						if (!_argParser._currAviWriterFrameList.Contains(Emulator.Frame))
-						{
-							goto HANDLE_AUTODUMP;
-						}
-					}
-
 					IVideoProvider output;
 					IDisposable disposableOutput = null;
 					if (_avwriterResizew > 0 && _avwriterResizeh > 0)
@@ -3311,7 +3313,7 @@ namespace BizHawk.Client.EmuHawk
 							}
 
 							output = new BmpVideoProvider(bmpOut, _currentVideoProvider.VsyncNumerator, _currentVideoProvider.VsyncDenominator);
-							disposableOutput = (IDisposable)output;
+							disposableOutput = (IDisposable) output;
 						}
 						finally
 						{
@@ -3324,7 +3326,7 @@ namespace BizHawk.Client.EmuHawk
 						if (Config.AviCaptureOsd)
 						{
 							output = new BitmapBufferVideoProvider(CaptureOSD());
-							disposableOutput = (IDisposable)output;
+							disposableOutput = (IDisposable) output;
 						}
 						else
 						{
@@ -3338,11 +3340,11 @@ namespace BizHawk.Client.EmuHawk
 					int nsamp;
 					if (_dumpaudiosync)
 					{
-						((VideoStretcher)_currAviWriter).DumpAV(output, _currentSoundProvider, out samp, out nsamp);
+						((VideoStretcher) _currAviWriter).DumpAV(output, _currentSoundProvider, out samp, out nsamp);
 					}
 					else
 					{
-						((AudioStretcher)_currAviWriter).DumpAV(output, _aviSoundInputAsync, out samp, out nsamp);
+						((AudioStretcher) _currAviWriter).DumpAV(output, _aviSoundInputAsync, out samp, out nsamp);
 					}
 
 					disposableOutput?.Dispose();
@@ -3354,18 +3356,17 @@ namespace BizHawk.Client.EmuHawk
 					MessageBox.Show($"Video dumping died:\n\n{e}");
 					AbortAv();
 				}
+			}
 
-			HANDLE_AUTODUMP:
-				if (_argParser._autoDumpLength > 0)
+			if (_argParser._autoDumpLength > 0)
+			{
+				_argParser._autoDumpLength--;
+				if (_argParser._autoDumpLength == 0) // finish
 				{
-					_argParser._autoDumpLength--;
-					if (_argParser._autoDumpLength == 0) // finish
+					StopAv();
+					if (_argParser._autoCloseOnDump)
 					{
-						StopAv();
-						if (_argParser._autoCloseOnDump)
-						{
-							_exitRequestPending = true;
-						}
+						_exitRequestPending = true;
 					}
 				}
 			}

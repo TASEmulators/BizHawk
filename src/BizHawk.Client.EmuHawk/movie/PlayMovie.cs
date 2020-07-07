@@ -21,7 +21,6 @@ namespace BizHawk.Client.EmuHawk
 		private readonly GameInfo _game;
 		private readonly IEmulator _emulator;
 		private readonly IMovieSession _movieSession;
-		private readonly PlatformFrameRates _platformFrameRates = new PlatformFrameRates();
 
 		private List<IMovie> _movieList = new List<IMovie>();
 		private bool _sortReverse;
@@ -71,7 +70,7 @@ namespace BizHawk.Client.EmuHawk
 			e.Item = new ListViewItem(entry.Filename);
 			e.Item.SubItems.Add(entry.SystemID);
 			e.Item.SubItems.Add(entry.GameName);
-			e.Item.SubItems.Add(_platformFrameRates.MovieTime(entry).ToString(@"hh\:mm\:ss\.fff"));
+			e.Item.SubItems.Add(entry.TimeLength.ToString(@"hh\:mm\:ss\.fff"));
 		}
 
 		private void Run()
@@ -136,7 +135,7 @@ namespace BizHawk.Client.EmuHawk
 
 			try
 			{
-				movie.PreLoadHeaderAndLength(hf);
+				movie.PreLoadHeaderAndLength();
 
 				// Don't do this from browse
 				if (movie.Hash == _game.Hash
@@ -328,7 +327,7 @@ namespace BizHawk.Client.EmuHawk
 							.Append(_movieList[index].Filename).Append('\t')
 							.Append(_movieList[index].SystemID).Append('\t')
 							.Append(_movieList[index].GameName).Append('\t')
-							.Append(_platformFrameRates.MovieTime(_movieList[index]).ToString(@"hh\:mm\:ss\.fff"))
+							.Append(_movieList[index].TimeLength.ToString(@"hh\:mm\:ss\.fff"))
 							.AppendLine();
 					}
 
@@ -343,41 +342,19 @@ namespace BizHawk.Client.EmuHawk
 			Close();
 		}
 
+		private static readonly RigidMultiPredicateSort<IMovie> ColumnSorts
+			= new RigidMultiPredicateSort<IMovie>(new Dictionary<string, Func<IMovie, IComparable>>
+			{
+				["File"] = x => Path.GetFileName(x.Filename),
+				["SysID"] = x => x.SystemID,
+				["Game"] = x => x.GameName,
+				["Length (est.)"] = x => x.FrameCount
+			});
+
 		private void MovieView_ColumnClick(object sender, ColumnClickEventArgs e)
 		{
 			var columnName = MovieView.Columns[e.Column].Text;
-			switch (columnName)
-			{
-				case "File":
-				default:
-					_movieList = _movieList.OrderBy(x => Path.GetFileName(x.Filename))
-						.ThenBy(x => x.SystemID)
-						.ThenBy(x => x.GameName)
-						.ThenBy(x => x.FrameCount)
-						.ToList();
-					break;
-				case "SysID":
-					_movieList = _movieList.OrderBy(x => x.SystemID)
-						.ThenBy(x => Path.GetFileName(x.Filename))
-						.ThenBy(x => x.GameName)
-						.ThenBy(x => x.FrameCount)
-						.ToList();
-					break;
-				case "Game":
-					_movieList = _movieList.OrderBy(x => x.GameName)
-						.ThenBy(x => Path.GetFileName(x.Filename))
-						.ThenBy(x => x.SystemID)
-						.ThenBy(x => x.FrameCount)
-						.ToList();
-					break;
-				case "Length (est.)":
-					_movieList = _movieList.OrderBy(x => x.FrameCount)
-						.ThenBy(x => Path.GetFileName(x.Filename))
-						.ThenBy(x => x.SystemID)
-						.ThenBy(x => x.GameName)
-						.ToList();
-					break;
-			}
+			_movieList = ColumnSorts.AppliedTo(_movieList, columnName);
 			if (_sortedCol == columnName && _sortReverse)
 			{
 				_movieList.Reverse();
@@ -420,7 +397,7 @@ namespace BizHawk.Client.EmuHawk
 							toolTip1.SetToolTip(DetailsView, $"Current SHA1: {_game.Hash}");
 						}
 						break;
-					case HeaderKeys.EmulationVersion:
+					case HeaderKeys.EmulatorVersion:
 						if (kvp.Value != VersionInfo.GetEmuVersion())
 						{
 							item.BackColor = Color.Yellow;
@@ -444,7 +421,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var fpsItem = new ListViewItem("Fps");
-			fpsItem.SubItems.Add($"{Fps(_movieList[firstIndex]):0.#######}");
+			fpsItem.SubItems.Add($"{_movieList[firstIndex].FrameRate:0.#######}");
 			DetailsView.Items.Add(fpsItem);
 
 			var framesItem = new ListViewItem("Frames");
@@ -452,16 +429,6 @@ namespace BizHawk.Client.EmuHawk
 			DetailsView.Items.Add(framesItem);
 			CommentsBtn.Enabled = _movieList[firstIndex].Comments.Any();
 			SubtitlesBtn.Enabled = _movieList[firstIndex].Subtitles.Any();
-		}
-
-		public double Fps(IMovie movie)
-		{
-			var system = movie.HeaderEntries[HeaderKeys.Platform];
-			var pal = movie.HeaderEntries.ContainsKey(HeaderKeys.Pal)
-				&& movie.HeaderEntries[HeaderKeys.Pal] == "1";
-
-			return new PlatformFrameRates()[system, pal];
-			
 		}
 
 		private void EditMenuItem_Click(object sender, EventArgs e)

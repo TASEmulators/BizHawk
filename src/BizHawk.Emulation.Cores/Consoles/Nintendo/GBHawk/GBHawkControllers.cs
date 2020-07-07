@@ -115,7 +115,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			{
 				Name = "Gameboy Controller + Tilt",
 				BoolButtons = BaseDefinition.Select(b => $"P{PortNum} {b}").ToList()
-			}.AddXYPair($"P{PortNum} Tilt {{0}}", AxisPairOrientation.RightAndUp, (-45).RangeTo(45), 0); //TODO verify direction against hardware
+			}.AddXYPair($"P{PortNum} Tilt {{0}}", AxisPairOrientation.RightAndUp, (-90).RangeTo(90), 0); //TODO verify direction against hardware
 		}
 
 		public int PortNum { get; }
@@ -181,7 +181,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			// since rotations about X have less of a moment arm compared to by, we take 1/5 of the effect as a baseline
 			float temp2 = (float)((phi - phi_prev) / 0.5 * 25);
 
-			return (ushort)(0x81D0 - Math.Floor(temp * 125) - temp2);
+			return (ushort)(0x8370 - Math.Floor(temp * 216) - temp2);
 		}
 
 		// acc y is just the sine of the angle
@@ -195,7 +195,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			// further it will be assumed that the resulting acceleration is roughly eqvuivalent to gravity
 			float temp2 = (float)((theta - theta_prev)/0.5 * 125);
 
-			return (ushort)(0x81D0 - Math.Floor(temp * 125) + temp2);			
+			return (ushort)(0x8370 - Math.Floor(temp * 216) + temp2);			
 		}
 
 		private static readonly string[] BaseDefinition =
@@ -207,6 +207,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		{
 			// since we need rate of change of angle, need to savestate them
 			ser.Sync(nameof(theta), ref theta);
+			ser.Sync(nameof(phi), ref phi);
 		}
 	}
 }

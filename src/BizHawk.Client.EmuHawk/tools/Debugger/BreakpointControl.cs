@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-
+using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.Properties;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
@@ -144,7 +144,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var b = CreateAddBreakpointDialog(BreakpointOperation.Add);
 
-			if (b.ShowHawkDialog() == DialogResult.OK)
+			if (b.ShowHawkDialog().IsOk())
 			{
 				_breakpoints.Add(Core, MemoryDomains.SystemBus.Name, b.Address, b.AddressMask, b.BreakType);
 			}

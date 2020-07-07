@@ -248,7 +248,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			{
 				VDC_collision = value;
 
-				Console.WriteLine("VDC_collide: " + value + " " + Core.cpu.TotalExecutedCycles);
+				//Console.WriteLine("VDC_collide: " + value + " " + Core.cpu.TotalExecutedCycles);
 			}
 			else if (addr == 0xA3)
 			{
@@ -329,6 +329,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 				cycle = 0;
 
 				LY++;
+				Core.cpu.LY = LY;
 
 				if (LY == LINE_VBL)
 				{
@@ -347,6 +348,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 				if (LY == LINE_MAX)
 				{
 					LY = 0;
+					Core.cpu.LY = LY;
 					VBL = false;
 					Core.in_vblank = false;
 					Core.cpu.T1 = false;
@@ -376,6 +378,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			bg_brightness = grid_brightness = grid_fill = LY_ret = cycle = 0;
 			VBL = HBL = lum_en = false;
 			LY = 0;
+			Core.cpu.LY = LY;
 
 			AudioReset();
 		}
@@ -387,7 +390,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			if (is_pal)
 			{
 				LINE_MAX = 312;
-				LINE_VBL = 288;
+				LINE_VBL = 240;
 			}
 			else
 			{
@@ -984,7 +987,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			0xFFC00000, // red
 			0xFF94309F, // violet
 			0xFF77670B, // yellow
-			0xFF676767, // grey
+			0xFFBCBCBC, // light grey
 			0xFF676767, // grey
 			0xFF3595FF, // light blue
 			0xFF56FF69, // light green
@@ -1265,6 +1268,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 				cycle = 0;
 
 				LY++;
+				Core.cpu.LY = LY;
 
 				if (LY == LINE_VBL)
 				{
@@ -1283,6 +1287,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 				if (LY == LINE_MAX)
 				{
 					LY = 0;
+					Core.cpu.LY = LY;
 					VBL = false;
 					Core.in_vblank = false;
 					Core.cpu.T1 = false;
@@ -1346,6 +1351,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 				cycle = 0;
 
 				LY++;
+				Core.cpu.LY = LY;
 
 				if (LY == LINE_VBL)
 				{
@@ -1364,6 +1370,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 				if (LY == LINE_MAX)
 				{
 					LY = 0;
+					Core.cpu.LY = LY;
 					VBL = false;
 					Core.in_vblank = false;
 					Core.cpu.T1 = false;

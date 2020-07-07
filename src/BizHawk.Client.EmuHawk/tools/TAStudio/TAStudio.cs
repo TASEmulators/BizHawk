@@ -176,31 +176,13 @@ namespace BizHawk.Client.EmuHawk
 				_autosaveTimer.Start();
 			}
 
-			// Remembering Split container logic
-			if (Settings.MainVerticalSplitDistance > 0)
-			{
-				try
-				{
-					MainVertialSplit.SplitterDistance = Settings.MainVerticalSplitDistance;
-				}
-				catch (Exception)
-				{
-					MainVertialSplit.SplitterDistance = _defaultMainSplitDistance;
-				}
-				
-			}
+			MainVertialSplit.SetDistanceOrDefault(
+				Settings.MainVerticalSplitDistance,
+				_defaultMainSplitDistance);
 
-			if (Settings.BranchMarkerSplitDistance > 0)
-			{
-				try
-				{
-					BranchesMarkersSplit.SplitterDistance = Settings.BranchMarkerSplitDistance;
-				}
-				catch (Exception)
-				{
-					BranchesMarkersSplit.SplitterDistance = _defaultBranchMarkerSplitDistance;
-				}
-			}
+			BranchesMarkersSplit.SetDistanceOrDefault(
+				Settings.BranchMarkerSplitDistance,
+				_defaultBranchMarkerSplitDistance);
 
 			TasView.Font = TasViewFont;
 			CurrentTasMovie.BindMarkersToInput = Settings.BindMarkersToInput;
@@ -1085,7 +1067,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void InsertNumFrames(int insertionFrame, int numberOfFrames)
 		{
-			if (insertionFrame < CurrentTasMovie.InputLogLength)
+			if (insertionFrame <= CurrentTasMovie.InputLogLength)
 			{
 				bool needsToRollback = TasView.FirstSelectedIndex < Emulator.Frame;
 

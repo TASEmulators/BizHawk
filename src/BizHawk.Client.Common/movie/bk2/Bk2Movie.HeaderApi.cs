@@ -32,7 +32,8 @@ namespace BizHawk.Client.Common
 			{
 				if (!Header.ContainsKey(HeaderKeys.Rerecords))
 				{
-					Header[HeaderKeys.Rerecords] = "0";
+					// Modifying the header itself can cause a race condition between loading a movie and rendering the rerecord count, causing a movie's rerecord count to be overwritten with 0 during loading.
+					return 0;
 				}
 
 				return ulong.Parse(Header[HeaderKeys.Rerecords]);
@@ -166,13 +167,26 @@ namespace BizHawk.Client.Common
 
 		public string EmulatorVersion
 		{
-			get => Header[HeaderKeys.EmulationVersion];
+			get => Header[HeaderKeys.EmulatorVersion];
 			set
 			{
-				if (Header[HeaderKeys.EmulationVersion] != value)
+				if (Header[HeaderKeys.EmulatorVersion] != value)
 				{
 					Changes = true;
-					Header[HeaderKeys.EmulationVersion] = value;
+					Header[HeaderKeys.EmulatorVersion] = value;
+				}
+			}
+		}
+
+		public string OriginalEmulatorVersion
+		{
+			get => Header[HeaderKeys.OriginalEmulatorVersion];
+			set
+			{
+				if (Header[HeaderKeys.OriginalEmulatorVersion] != value)
+				{
+					Changes = true;
+					Header[HeaderKeys.OriginalEmulatorVersion] = value;
 				}
 			}
 		}
@@ -201,6 +215,8 @@ namespace BizHawk.Client.Common
 
 			return sb.ToString();
 		}
+
+		public bool IsPal => Header.ContainsKey(HeaderKeys.Pal) && Header[HeaderKeys.Pal] == "1";
 
 		public string TextSavestate { get; set; }
 		public byte[] BinarySavestate { get; set; }

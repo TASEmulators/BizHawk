@@ -4,7 +4,8 @@ namespace BizHawk.Client.Common
 {
 	public static class HeaderKeys
 	{
-		public const string EmulationVersion = "emuVersion";
+		public const string EmulatorVersion = "emuVersion";
+		public const string OriginalEmulatorVersion = "OriginalEmuVersion";
 		public const string MovieVersion = "MovieVersion";
 		public const string Platform = "Platform";
 		public const string GameName = "GameName";

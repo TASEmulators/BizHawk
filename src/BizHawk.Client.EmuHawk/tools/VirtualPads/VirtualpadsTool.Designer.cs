@@ -97,9 +97,7 @@ namespace BizHawk.Client.EmuHawk
 			this.PadMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.PadsSubMenu,
             this.SettingsSubMenu});
-			this.PadMenu.Name = "PadMenu";
 			this.PadMenu.TabIndex = 7;
-			this.PadMenu.Text = "menuStrip1";
 			// 
 			// PadsSubMenu
 			// 

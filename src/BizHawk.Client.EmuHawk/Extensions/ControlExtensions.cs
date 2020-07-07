@@ -304,5 +304,20 @@ namespace BizHawk.Client.EmuHawk
 
 			bitmap.Save(file.FullName, i);
 		}
+
+		public static void SetDistanceOrDefault(this SplitContainer splitter, int distance, int defaultDistance)
+		{
+			if (distance > 0)
+			{
+				try
+				{
+					splitter.SplitterDistance = distance;
+				}
+				catch (Exception)
+				{
+					splitter.SplitterDistance = defaultDistance;
+				}
+			}
+		}
 	}
 }

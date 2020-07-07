@@ -62,15 +62,9 @@ namespace BizHawk.Client.EmuHawk
 				_syncSettings.AutoLoadTape = autoLoadcheckBox1.Checked;
 
 				_mainForm.PutCoreSyncSettings(_syncSettings);
-
-				DialogResult = DialogResult.OK;
-				Close();
 			}
-			else
-			{
-				DialogResult = DialogResult.OK;
-				Close();
-			}
+			DialogResult = DialogResult.OK;
+			Close();
 		}
 
 		private void CancelBtn_Click(object sender, EventArgs e)

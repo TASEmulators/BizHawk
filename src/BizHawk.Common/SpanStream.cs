@@ -12,7 +12,7 @@ namespace BizHawk.Common
 		void Write (ReadOnlySpan<byte> buffer);
 		int Read (Span<byte> buffer);
 	}
-	public class SpanStream
+	public static class SpanStream
 	{
 		/// <summary>
 		/// Returns a stream in spanstream mode, or creates a wrapper that provides that functionality

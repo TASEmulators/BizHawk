@@ -149,9 +149,7 @@ namespace BizHawk.Client.EmuHawk
 			this.FileSubMenu,
 			this.OptionsSubMenu,
 			this.helpToolStripMenuItem});
-			this.BotMenu.Name = "BotMenu";
 			this.BotMenu.TabIndex = 0;
-			this.BotMenu.Text = "menuStrip1";
 			// 
 			// FileSubMenu
 			// 

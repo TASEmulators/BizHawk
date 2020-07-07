@@ -67,7 +67,8 @@ namespace BizHawk.Client.Common
 				throw new InvalidOperationException("Savestate size can not be zero!");
 			}
 
-			_states = new SortedList<int, byte[]>(MaxStates);
+			// don't erase states if they exist already (already loaded)
+			if ((_states == null) || (_states.Capacity == 0)) { _states = new SortedList<int, byte[]>(MaxStates); }
 
 			UpdateStateFrequency();
 		}

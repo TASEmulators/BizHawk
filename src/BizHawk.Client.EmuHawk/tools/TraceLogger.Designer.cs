@@ -125,9 +125,7 @@ namespace BizHawk.Client.EmuHawk
             this.FileSubMenu,
             this.EditSubMenu,
             this.OptionsSubMenu});
-			this.menuStrip1.Name = "menuStrip1";
 			this.menuStrip1.TabIndex = 2;
-			this.menuStrip1.Text = "menuStrip1";
 			// 
 			// FileSubMenu
 			// 

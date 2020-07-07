@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace BizHawk.Client.Common
 {
-	public class PlatformFrameRates
+	public static class PlatformFrameRates
 	{
 		// these are political numbers, designed to be in accord with tasvideos.org tradition. they're not necessarily mathematical factualities (although they may be in some cases)
 		// it would be nice if we could turn this into a rational expression natively, and also, to write some comments about the derivation and ideal values (since this seems to be where they're all collected)
@@ -38,6 +38,9 @@ namespace BizHawk.Client.Common
 			["WSWAN"] = (3072000.0 / (159 * 256)), // 75.4716981132
 			["GB"] = 262144.0 / 4389.0, // 59.7275005696
 			["GBC"] = 262144.0 / 4389.0, // 59.7275005696
+
+			// RetroEdit: I don't like how this is cycles per second instead of FPS.
+			// It probably should be moved to a separate place.
 			["GB_Clock"] = 2097152.0,
 			["GBA"] = 262144.0 / 4389.0, // 59.7275005696 
 			["GEN"] = 53693175 / (3420.0 * 262),
@@ -70,51 +73,10 @@ namespace BizHawk.Client.Common
 			["AmstradCPC_PAL"] = 50.08012820512821,
 		};
 
-		public double this[string systemId, bool pal]
+		public static double GetFrameRate(string systemId, bool pal)
 		{
-			get
-			{
-				var key = systemId + (pal ? "_PAL" : "");
-				return Rates.ContainsKey(key) ? Rates[key] : 60.0;
-			}
-		}
-
-		public TimeSpan MovieTime(IMovie movie)
-		{
-			var dblSeconds = GetSeconds(movie);
-			var seconds = (int)(dblSeconds % 60);
-			var days = seconds / 86400;
-			var hours = seconds / 3600;
-			var minutes = (seconds / 60) % 60;
-			var milliseconds = (int)((dblSeconds - seconds) * 1000);
-			return new TimeSpan(days, hours, minutes, seconds, milliseconds);
-		}
-
-		private double Fps(IMovie movie)
-		{
-			var system = movie.HeaderEntries[HeaderKeys.Platform];
-			var core = movie.HeaderEntries[HeaderKeys.Core];
-			var pal = movie.HeaderEntries.ContainsKey(HeaderKeys.Pal)
-				&& movie.HeaderEntries[HeaderKeys.Pal] == "1";
-
-			if (movie.HeaderEntries.ContainsKey(HeaderKeys.CycleCount) && ((core == "Gambatte") || (core == "SubGBHawk")))
-			{
-				system = "GB_Clock";
-			}
-
-			return this[system, pal];
-		}
-
-		private double GetSeconds(IMovie movie)
-		{
-			double frames = movie.TimeLength;
-
-			if (frames < 1)
-			{
-				return 0;
-			}
-
-			return frames / Fps(movie);
+			var key = systemId + (pal ? "_PAL" : "");
+			return Rates.ContainsKey(key) ? Rates[key] : 60.0;
 		}
 	}
 }

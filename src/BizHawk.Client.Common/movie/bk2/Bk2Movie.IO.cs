@@ -42,7 +42,117 @@ namespace BizHawk.Client.Common
 			}
 
 			ClearBeforeLoad();
+			LoadFields(bl, preload);
 
+			Changes = false;
+			return true;
+		}
+
+		public bool PreLoadHeaderAndLength() => Load(true);
+
+		protected virtual void Write(string fn, bool isBackup = false)
+		{
+			SetCycleValues(); // We are pretending these only need to be set on save
+			// EmulatorVersion used to store the unchanging original emulator version.
+			if (!Header.ContainsKey(HeaderKeys.OriginalEmulatorVersion))
+			{
+				Header[HeaderKeys.OriginalEmulatorVersion] = Header[HeaderKeys.EmulatorVersion];
+			}
+			Header[HeaderKeys.EmulatorVersion] = VersionInfo.GetEmuVersion();
+			CreateDirectoryIfNotExists(fn);
+
+			using var bs = new ZipStateSaver(fn, Session.Settings.MovieCompressionLevel);
+			AddLumps(bs);
+
+			if (!isBackup)
+			{
+				Changes = false;
+			}
+		}
+
+		private void SetCycleValues()
+		{
+			if (Emulator is Emulation.Cores.Nintendo.SubNESHawk.SubNESHawk subNes)
+			{
+				Header[HeaderKeys.VBlankCount] = subNes.VblankCount.ToString();
+			}
+			else if (Emulator is Emulation.Cores.Nintendo.Gameboy.Gameboy gameboy)
+			{
+				Header[HeaderKeys.CycleCount] = gameboy.CycleCount.ToString();
+			}
+			else if (Emulator is Emulation.Cores.Nintendo.SubGBHawk.SubGBHawk subGb)
+			{
+				Header[HeaderKeys.CycleCount] = subGb.CycleCount.ToString();
+			}
+		}
+
+		private void CreateDirectoryIfNotExists(string fn)
+		{
+			var file = new FileInfo(fn);
+			if (file.Directory != null && !file.Directory.Exists)
+			{
+				Directory.CreateDirectory(file.Directory.ToString());
+			}
+		}
+
+		protected virtual void AddLumps(ZipStateSaver bs, bool isBackup = false)
+		{
+			AddBk2Lumps(bs);
+		}
+
+		protected void AddBk2Lumps(ZipStateSaver bs)
+		{
+			bs.PutLump(BinaryStateLump.Movieheader, tw => tw.WriteLine(Header.ToString()));
+			bs.PutLump(BinaryStateLump.Comments, tw => tw.WriteLine(CommentsString()));
+			bs.PutLump(BinaryStateLump.Subtitles, tw => tw.WriteLine(Subtitles.ToString()));
+			bs.PutLump(BinaryStateLump.SyncSettings, tw => tw.WriteLine(SyncSettingsJson));
+			bs.PutLump(BinaryStateLump.Input, WriteInputLog);
+
+			if (StartsFromSavestate)
+			{
+				if (TextSavestate != null)
+				{
+					bs.PutLump(BinaryStateLump.CorestateText, (TextWriter tw) => tw.Write(TextSavestate));
+				}
+				else
+				{
+					bs.PutLump(BinaryStateLump.Corestate, (BinaryWriter bw) => bw.Write(BinarySavestate));
+				}
+
+				if (SavestateFramebuffer != null)
+				{
+					bs.PutLump(BinaryStateLump.Framebuffer, (BinaryWriter bw) => bw.Write(SavestateFramebuffer));
+				}
+			}
+			else if (StartsFromSaveRam)
+			{
+				bs.PutLump(BinaryStateLump.MovieSaveRam, (BinaryWriter bw) => bw.Write(SaveRam));
+			}
+		}
+
+		protected virtual void ClearBeforeLoad()
+		{
+			ClearBk2Fields();
+		}
+		
+		protected void ClearBk2Fields()
+		{
+			Header.Clear();
+			Log.Clear();
+			Subtitles.Clear();
+			Comments.Clear();
+			_syncSettingsJson = "";
+			TextSavestate = null;
+			BinarySavestate = null;
+		}
+		
+		protected virtual void LoadFields(ZipStateLoader bl, bool preload)
+		{
+			LoadBk2Fields(bl);
+		}
+		
+		protected void LoadBk2Fields(ZipStateLoader bl)
+		{
 			bl.GetLump(BinaryStateLump.Movieheader, true, delegate(TextReader tr)
 			{
 				string line;
@@ -137,106 +247,6 @@ namespace BizHawk.Client.Common
 						SaveRam = br.ReadBytes((int)length);
 					});
 			}
-
-			Changes = false;
-			return true;
-		}
-
-		public bool PreLoadHeaderAndLength(HawkFile hawkFile)
-		{
-			var file = new FileInfo(Filename);
-			if (!file.Exists)
-			{
-				return false;
-			}
-
-			Filename = file.FullName;
-			return Load(true);
-		}
-
-		protected virtual void Write(string fn, bool isBackup = false)
-		{
-			SetCycleValues(); // We are pretending these only need to be set on save
-			CreateDirectoryIfNotExists(fn);
-
-			using var bs = new ZipStateSaver(fn, Session.Settings.MovieCompressionLevel);
-			AddLumps(bs);
-
-			if (!isBackup)
-			{
-				Changes = false;
-			}
-		}
-
-		private void SetCycleValues()
-		{
-			if (Emulator is Emulation.Cores.Nintendo.SubNESHawk.SubNESHawk subNes)
-			{
-				Header[HeaderKeys.VBlankCount] = subNes.VblankCount.ToString();
-			}
-			else if (Emulator is Emulation.Cores.Nintendo.Gameboy.Gameboy gameboy)
-			{
-				Header[HeaderKeys.CycleCount] = gameboy.CycleCount.ToString();
-			}
-			else if (Emulator is Emulation.Cores.Nintendo.SubGBHawk.SubGBHawk subGb)
-			{
-				Header[HeaderKeys.CycleCount] = subGb.CycleCount.ToString();
-			}
-		}
-
-		private void CreateDirectoryIfNotExists(string fn)
-		{
-			var file = new FileInfo(fn);
-			if (file.Directory != null && !file.Directory.Exists)
-			{
-				Directory.CreateDirectory(file.Directory.ToString());
-			}
-		}
-
-		protected virtual void AddLumps(ZipStateSaver bs, bool isBackup = false)
-		{
-			AddBk2Lumps(bs);
-		}
-
-		protected void AddBk2Lumps(ZipStateSaver bs)
-		{
-			bs.PutLump(BinaryStateLump.Movieheader, tw => tw.WriteLine(Header.ToString()));
-			bs.PutLump(BinaryStateLump.Comments, tw => tw.WriteLine(CommentsString()));
-			bs.PutLump(BinaryStateLump.Subtitles, tw => tw.WriteLine(Subtitles.ToString()));
-			bs.PutLump(BinaryStateLump.SyncSettings, tw => tw.WriteLine(SyncSettingsJson));
-			bs.PutLump(BinaryStateLump.Input, WriteInputLog);
-
-			if (StartsFromSavestate)
-			{
-				if (TextSavestate != null)
-				{
-					bs.PutLump(BinaryStateLump.CorestateText, (TextWriter tw) => tw.Write(TextSavestate));
-				}
-				else
-				{
-					bs.PutLump(BinaryStateLump.Corestate, (BinaryWriter bw) => bw.Write(BinarySavestate));
-				}
-
-				if (SavestateFramebuffer != null)
-				{
-					bs.PutLump(BinaryStateLump.Framebuffer, (BinaryWriter bw) => bw.Write(SavestateFramebuffer));
-				}
-			}
-			else if (StartsFromSaveRam)
-			{
-				bs.PutLump(BinaryStateLump.MovieSaveRam, (BinaryWriter bw) => bw.Write(SaveRam));
-			}
-		}
-
-		protected void ClearBeforeLoad()
-		{
-			Header.Clear();
-			Log.Clear();
-			Subtitles.Clear();
-			Comments.Clear();
-			_syncSettingsJson = "";
-			TextSavestate = null;
-			BinarySavestate = null;
 		}
 	}
 }

@@ -144,9 +144,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.FileSubMenu});
-			this.menuStrip1.Name = "menuStrip1";
 			this.menuStrip1.TabIndex = 5;
-			this.menuStrip1.Text = "menuStrip1";
 			// 
 			// FileSubMenu
 			// 

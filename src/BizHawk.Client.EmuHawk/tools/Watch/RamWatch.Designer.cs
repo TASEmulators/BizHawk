@@ -411,9 +411,7 @@ namespace BizHawk.Client.EmuHawk
             this.FileSubMenu,
             this.WatchesSubMenu,
             this.OptionsSubMenu});
-            this.RamWatchMenu.Name = "RamWatchMenu";
             this.RamWatchMenu.TabIndex = 3;
-            this.RamWatchMenu.Text = "menuStrip1";
             // 
             // FileSubMenu
             // 

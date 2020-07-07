@@ -43,6 +43,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			ser.Sync("pal kara", ref PAL_Kara);
 			ser.Sync("Cart RAM", ref cart_RAM);
 			ser.Sync(nameof(is_pokey), ref is_pokey);
+			ser.Sync(nameof(is_pokey_450), ref is_pokey_450);
 			ser.Sync(nameof(left_toggle), ref left_toggle);
 			ser.Sync(nameof(right_toggle), ref right_toggle);
 			ser.Sync(nameof(left_was_pressed), ref left_was_pressed);

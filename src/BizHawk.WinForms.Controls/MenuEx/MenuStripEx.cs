@@ -16,6 +16,12 @@ namespace BizHawk.WinForms.Controls
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public new Point Location => new Point(0, 0);
 
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		public new string Text => "";
+
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		public new string Name => Guid.NewGuid().ToString();
+
 		protected override void WndProc(ref Message m)
 		{
 			base.WndProc(ref m);

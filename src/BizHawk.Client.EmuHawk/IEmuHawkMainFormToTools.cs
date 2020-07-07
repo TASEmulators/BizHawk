@@ -33,15 +33,6 @@ namespace BizHawk.Client.EmuHawk
 		/// <remarks>only referenced from <see cref="LuaConsole"/></remarks>
 		bool IsTurboing { get; }
 
-		/// <remarks>only referenced from <see cref="PresentationPanel"/></remarks>
-		MouseEventHandler MainForm_MouseClick { get; }
-
-		/// <remarks>only referenced from <see cref="PresentationPanel"/></remarks>
-		MouseEventHandler MainForm_MouseMove { get; }
-
-		/// <remarks>only referenced from <see cref="PresentationPanel"/></remarks>
-		MouseEventHandler MainForm_MouseWheel { get; }
-
 		int? PauseOnFrame { get; set; }
 
 		/// <remarks>only referenced from <see cref="PlaybackBox"/></remarks>
@@ -101,9 +92,6 @@ namespace BizHawk.Client.EmuHawk
 
 		/// <remarks>only referenced from <see cref="BasicBot"/></remarks>
 		void Throttle();
-
-		/// <remarks>only referenced from <see cref="PresentationPanel"/></remarks>
-		void ToggleFullscreen(bool allowSuppress = false);
 
 		/// <remarks>only referenced from <see cref="TAStudio"/></remarks>
 		void TogglePause();

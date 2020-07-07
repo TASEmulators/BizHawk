@@ -41,6 +41,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		public bool PAL_Kara = false;
 		public int cart_RAM = 0;
 		public bool is_pokey = false;
+		public bool is_pokey_450 = false;
 
 		private readonly ITraceable _tracer;
 
@@ -142,12 +143,16 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				if (dict.ContainsKey("RAM"))
 				{
 					int.TryParse(dict["RAM"], out cart_RAM);
-					Console.WriteLine(cart_RAM);
 				}
 
 				if (dict.ContainsKey("Pokey"))
 				{
 					bool.TryParse(dict["Pokey"], out is_pokey);
+				}
+
+				if (dict.ContainsKey("Pokey_450"))
+				{
+					bool.TryParse(dict["Pokey_450"], out is_pokey_450);
 				}
 
 				// some games will not function with the high score bios
@@ -187,8 +192,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					{
 						cart_RAM = 8;
 
-						// the homebrew game serpentine requires extra RAM, seems to use bit 6 to indicate this
-						if (cart_2.Bit(6))
+						// the homebrew game serpentine requires extra RAM, but in the alternative style
+						if (hash_md5 == "md5:9BD70C06D3386F76F8162881699A777A")
 						{
 							cart_RAM = 16;
 						}
@@ -200,6 +205,9 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				}
 
 				if (cart_2.Bit(0)) { is_pokey = true; }
+
+				// the homebrew game serpentine requires the pokey chip to be available at the alternative location 0x450
+				if (cart_2.Bit(6)) { is_pokey_450 = true; }
 			}
 			else
 			{

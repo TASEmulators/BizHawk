@@ -226,7 +226,7 @@
 			"L": "W, J1 B5, X1 LeftShoulder",
 			"R": "E, J1 B6, X1 RightShoulder",
 			"Select": "Space, J1 B9, X1 Back",
-			"Start": "Return, J1 B10, X1 Start",
+			"Start": "Enter, J1 B10, X1 Start",
 			"Touch": "WMouse L"
 		},
 		"Atari 2600 Basic Controller": {

@@ -2527,12 +2527,6 @@ namespace BizHawk.Client.EmuHawk
 			AutohideCursor(false);
 		}
 
-		public MouseEventHandler MainForm_MouseWheel { get; }
-
-		public MouseEventHandler MainForm_MouseMove { get; }
-
-		public MouseEventHandler MainForm_MouseClick { get; }
-
 		private void MainForm_Resize(object sender, EventArgs e)
 		{
 			PresentationPanel.Resized = true;
