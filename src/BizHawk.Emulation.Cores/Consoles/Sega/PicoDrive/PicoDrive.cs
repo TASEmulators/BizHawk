@@ -45,6 +45,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive
 
 			_syncSettings = syncSettings ?? new SyncSettings();
 
+			_cdcallback = CDRead;
+
 			_core = PreInit<LibPicoDrive>(new WaterboxOptions
 			{
 				Filename = "picodrive.wbx",
@@ -55,7 +57,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive
 				PlainHeapSizeKB = 64,
 				SkipCoreConsistencyCheck = comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
 				SkipMemoryConsistencyCheck = comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
-			});
+			}, new Delegate[] { _cdcallback });
 
 			if (has32xBios)
 			{
@@ -72,7 +74,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive
 				_exe.AddReadonlyFile(gpgx.GPGX.GetCDData(cd), "toc");
 				_cd = cd;
 				_cdReader = new DiscSectorReader(_cd);
-				_cdcallback = CDRead;
 				_core.SetCDReadCallback(_cdcallback);
 				DriveLightEnabled = true;
 			}

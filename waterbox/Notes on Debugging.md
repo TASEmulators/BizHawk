@@ -31,6 +31,8 @@ Bring lots of tools, and lots of self loathing.
 	han SIGSEGV nos nopr
 	```
 	But if the real exception you're trying to break on is a SIGSEGV, this leaves you defenseless.
+	You probably want to use the `no-dirty-detection` feature in waterboxhost to turn off these
+	SIGSEGVs for some kinds of debugging.
 * Also understands symbols for waterboxhost.dll, since that was actually built with MINGW.
 * `b rust_panic` to examine rust unwinds before they explode your computer.
 * Breakpoints on symbols in the wbx file just don't work a lot of the time.

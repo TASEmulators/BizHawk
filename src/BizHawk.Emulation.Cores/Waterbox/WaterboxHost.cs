@@ -68,7 +68,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		public bool SkipMemoryConsistencyCheck { get; set; } = false;
 	}
 
-	public unsafe class WaterboxHost : IMonitor, IImportResolver, IBinaryStateable, IDisposable
+	public unsafe class WaterboxHost : IMonitor, IImportResolver, IBinaryStateable, IDisposable, ICallbackAdjuster
 	{
 		private IntPtr _nativeHost;
 		private IntPtr _activatedNativeHost;
@@ -135,7 +135,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			using (this.EnterExit())
 			{
 				var retobj = new ReturnData();
-				NativeImpl.wbx_get_proc_addr(_activatedNativeHost, entryPoint, retobj);
+				NativeImpl.wbx_get_proc_addr_raw(_activatedNativeHost, entryPoint, retobj);
 				return retobj.GetDataOrThrow();
 			}
 		}
@@ -150,6 +150,26 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			else
 			{
 				throw new InvalidOperationException($"{entryPoint} was not exported from elf");
+			}
+		}
+
+		public IntPtr GetCallbackProcAddr(IntPtr exitPoint, int slot)
+		{
+			using (this.EnterExit())
+			{
+				var retobj = new ReturnData();
+				NativeImpl.wbx_get_callback_addr(_activatedNativeHost, exitPoint, slot, retobj);
+				return retobj.GetDataOrThrow();
+			}
+		}
+
+		public IntPtr GetCallinProcAddr(IntPtr entryPoint)
+		{
+			using (this.EnterExit())
+			{
+				var retobj = new ReturnData();
+				NativeImpl.wbx_get_callin_addr(_activatedNativeHost, entryPoint, retobj);
+				return retobj.GetDataOrThrow();
 			}
 		}
 

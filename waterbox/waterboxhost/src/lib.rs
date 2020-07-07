@@ -7,7 +7,7 @@
 
 use std::io::{Read, Write};
 use anyhow::anyhow;
-use syscall_defs::{SyscallNumber, SyscallReturn};
+use syscall_defs::{SyscallReturn};
 
 const PAGESIZE: usize = 0x1000;
 const PAGEMASK: usize = 0xfff;
@@ -21,6 +21,7 @@ mod fs;
 mod host;
 mod cinterface;
 mod gdb;
+mod context;
 
 pub trait IStateable {
 	fn save_state(&mut self, stream: &mut dyn Write) -> anyhow::Result<()>;
@@ -85,6 +86,7 @@ fn align_up(p: usize) -> usize {
 #[derive(Copy, Clone)]
 pub struct WbxSysLayout {
 	pub elf: AddressRange,
+	pub main_thread: AddressRange,
 	pub sbrk: AddressRange,
 	pub sealed: AddressRange,
 	pub invis: AddressRange,
@@ -98,22 +100,6 @@ impl WbxSysLayout {
 			size: self.mmap.end() - self.elf.start
 		}
 	}
-}
-
-/// Information for making syscalls injected into the guest application
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct WbxSysSyscall {
-	pub ud: usize,
-	pub syscall: extern "sysv64" fn(nr: SyscallNumber, ud: usize, a1: usize, a2: usize, a3: usize, a4: usize, a5: usize, a6: usize) -> SyscallReturn,
-}
-
-/// Data that is injected into the guest application
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct WbxSysArea {
-	pub layout: WbxSysLayout,
-	pub syscall: WbxSysSyscall,
 }
 
 /// Always remove memoryblocks from active ram when possible, to help debug dangling pointers.

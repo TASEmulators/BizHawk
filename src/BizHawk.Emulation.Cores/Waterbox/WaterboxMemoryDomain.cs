@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		public MemoryArea Definition { get; }
 
-		public static WaterboxMemoryDomain Create(MemoryArea m, IMonitor monitor)
+		public static WaterboxMemoryDomain Create(MemoryArea m, WaterboxHost monitor)
 		{
 			return m.Flags.HasFlag(MemoryDomainFlags.FunctionHook)
 				? (WaterboxMemoryDomain)new WaterboxMemoryDomainFunc(m, monitor)
@@ -138,9 +138,10 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			public IntPtr GetProcAddrOrZero(string entryPoint) => _p;
 		}
 
-		public static MemoryDomainAccessStub Create(IntPtr p, IMonitor monitor)
+		public static MemoryDomainAccessStub Create(IntPtr p, WaterboxHost host)
 		{
-			return BizInvoker.GetInvoker<MemoryDomainAccessStub>(new StubResolver(p), monitor, CallingConventionAdapters.Waterbox);
+			return BizInvoker.GetInvoker<MemoryDomainAccessStub>(
+				new StubResolver(p), host, CallingConventionAdapters.MakeWaterboxDepartureOnly(host));
 		}
 	}
 
@@ -148,7 +149,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 	{
 		private readonly MemoryDomainAccessStub _access;
 
-		internal WaterboxMemoryDomainFunc(MemoryArea m, IMonitor monitor)
+		internal WaterboxMemoryDomainFunc(MemoryArea m, WaterboxHost monitor)
 			: base(m, monitor)
 		{
 			if (!m.Flags.HasFlag(MemoryDomainFlags.FunctionHook))

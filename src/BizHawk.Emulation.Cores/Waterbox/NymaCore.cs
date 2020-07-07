@@ -32,6 +32,10 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			IDictionary<string, (string SystemID, string FirmwareID)> firmwares = null)
 			where T : LibNymaCore
 		{
+			_settingsQueryDelegate = SettingsQuery;
+			_cdTocCallback = CDTOCCallback;
+			_cdSectorCallback = CDSectorCallback;
+
 			var t = PreInit<T>(new WaterboxOptions
 			{
 				Filename = wbxFilename,
@@ -43,9 +47,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				MmapHeapSizeKB = 1024 * 48,
 				SkipCoreConsistencyCheck = CoreComm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
 				SkipMemoryConsistencyCheck = CoreComm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
-			});
+			}, new Delegate[] { _settingsQueryDelegate, _cdTocCallback, _cdSectorCallback });
 			_nyma = t;
-			_settingsQueryDelegate = new LibNymaCore.FrontendSettingQuery(SettingsQuery);
 
 			using (_exe.EnterExit())
 			{
@@ -94,8 +97,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				{
 					_disks = discs;
 					_diskReaders = _disks.Select(d => new DiscSectorReader(d) { Policy = _diskPolicy }).ToArray();
-					_cdTocCallback = CDTOCCallback;
-					_cdSectorCallback = CDSectorCallback;
 					_nyma.SetCDCallbacks(_cdTocCallback, _cdSectorCallback);
 					var didInit = _nyma.InitCd(_disks.Length);
 					if (!didInit)
@@ -181,7 +182,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					// if (deterministic)
 					// 	throw new InvalidOperationException("Internal error: Core set a frame thread proc in deterministic mode");
 					Console.WriteLine($"Setting up waterbox thread for {_frameThreadPtr}");
-					_frameThreadStart = CallingConventionAdapters.Waterbox.GetDelegateForFunctionPointer<Action>(_frameThreadPtr);
+					_frameThreadStart = CallingConventionAdapters.GetWaterboxUnsafeUnwrapped().GetDelegateForFunctionPointer<Action>(_frameThreadPtr);
 				}
 			}
 

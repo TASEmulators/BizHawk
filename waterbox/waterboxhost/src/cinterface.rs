@@ -1,6 +1,7 @@
 use crate::*;
 use host::{ActivatedWaterboxHost, WaterboxHost};
 use std::{os::raw::c_char, io, ffi::{/*CString, */CStr}};
+use context::ExternalCallback;
 
 /// The memory template for a WaterboxHost.  Don't worry about
 /// making every size as small as possible, since the savestater handles sparse regions
@@ -23,34 +24,26 @@ pub struct MemoryLayoutTemplate {
 impl MemoryLayoutTemplate {
 	/// checks a memory layout for validity
 	pub fn make_layout(&self, elf_addr: AddressRange) -> anyhow::Result<WbxSysLayout> {
-		let sbrk_size = align_up(self.sbrk_size);
-		let sealed_size = align_up(self.sealed_size);
-		let invis_size = align_up(self.invis_size);
-		let plain_size = align_up(self.plain_size);
-		let mmap_size = align_up(self.mmap_size);
 		let mut res = unsafe { std::mem::zeroed::<WbxSysLayout>() };
 		res.elf = elf_addr.align_expand();
-		res.sbrk = AddressRange {
-			start: res.elf.end(),
-			size: sbrk_size
+
+		let mut end = res.elf.end();
+		let mut add_area = |size| {
+			let a = AddressRange {
+				start: end,
+				size: align_up(size)
+			};
+			end = a.end();
+			a
 		};
-		res.sealed = AddressRange {
-			start: res.sbrk.end(),
-			size: sealed_size
-		};
-		res.invis = AddressRange {
-			start: res.sealed.end(),
-			size: invis_size
-		};
-		res.plain = AddressRange {
-			start: res.invis.end(),
-			size: plain_size
-		};
-		res.mmap = AddressRange {
-			start: res.plain.end(),
-			size: mmap_size
-		};
-		if res.elf.start >> 32 != (res.mmap.end() - 1) >> 32 {
+		res.main_thread = add_area(1 << 20);
+		res.sbrk = add_area(self.sbrk_size);
+		res.sealed = add_area(self.sealed_size);
+		res.invis = add_area(self.invis_size);
+		res.plain = add_area(self.plain_size);
+		res.mmap = add_area(self.mmap_size);
+
+		if res.all().start >> 32 != (res.all().end() - 1) >> 32 {
 			Err(anyhow!("HostMemoryLayout must fit into a single 4GiB region!"))
 		} else {
 			Ok(res)
@@ -209,18 +202,51 @@ pub extern fn wbx_deactivate_host(obj: *mut ActivatedWaterboxHost, ret: &mut Ret
 	ret.put(Ok(()));
 }
 
-/// Returns the address of an exported function from the guest executable.  This pointer is only valid
-/// while the host is active.  A missing proc is not an error and simply returns 0.
+/// Returns a thunk suitable for calling an exported function from the guest executable.  This pointer is only valid
+/// while the host is active.  A missing proc is not an error and simply returns 0.  The guest function must be,
+/// and the returned callback will be, sysv abi, and will only pass up to 6 int/ptr args and no other arg types.
 #[no_mangle]
 pub extern fn wbx_get_proc_addr(obj: &mut ActivatedWaterboxHost, name: *const c_char, ret: &mut Return<usize>) {
 	match arg_to_str(name) {
 		Ok(s) => {
-			ret.put(Ok(obj.get_proc_addr(&s)));
+			ret.put(obj.get_proc_addr(&s));
 		},
 		Err(e) => {
 			ret.put(Err(e))
 		}
 	}
+}
+/// Returns a thunk suitable for calling an arbitrary entry point into the guest executable.  This pointer is only valid
+/// while the host is active.  wbx_get_proc_addr already calls this internally on pointers it returns, so this call is
+/// only needed if the guest exposes callin pointers that aren't named exports (for instance, if a function returns
+/// a pointer to another function).
+#[no_mangle]
+pub extern fn wbx_get_callin_addr(obj: &mut ActivatedWaterboxHost, ptr: usize, ret: &mut Return<usize>) {
+	ret.put(obj.get_external_callin_ptr(ptr));
+}
+/// Returns the raw address of a function exported from the guest.  `wbx_get_proc_addr()` is equivalent to
+/// `wbx_get_callin_addr(wbx_get_proc_addr_raw()).  Most things should not use this directly, as the returned
+/// pointer will not have proper stack hygiene and will crash on syscalls from the guest.
+#[no_mangle]
+pub extern fn wbx_get_proc_addr_raw(obj: &mut ActivatedWaterboxHost, name: *const c_char, ret: &mut Return<usize>) {
+	match arg_to_str(name) {
+		Ok(s) => {
+			ret.put(obj.get_proc_addr_raw(&s));
+		},
+		Err(e) => {
+			ret.put(Err(e))
+		}
+	}
+}
+
+/// Returns a function pointer suitable for passing to the guest to allow it to call back while active.
+/// Slot number is an integer that is used to keep pointers consistent across runs:  If the host is loaded
+/// at a different address, and some external function `foo` moves from run to run, things will still work out
+/// in the guest because `foo` was bound to the same slot and a particular slot gives a consistent pointer.
+/// The returned thunk will be, and the callback must be, sysv abi and will only pass up to 6 int/ptr args and no other arg types.
+#[no_mangle]
+pub extern fn wbx_get_callback_addr(obj: &mut ActivatedWaterboxHost, callback: ExternalCallback, slot: usize, ret: &mut Return<usize>) {
+	ret.put(obj.get_external_callback_ptr(callback, slot));
 }
 
 /// Calls the seal operation, which is a one time action that prepares the host to save states.

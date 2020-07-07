@@ -60,11 +60,12 @@ unsafe fn trip(addr: usize) -> TripResult {
 	}
 	page.maybe_snapshot(page_start_addr);
 	page.dirty = true;
-	if pal::protect(AddressRange { start: page_start_addr, size: PAGESIZE }, page.native_prot()) {
-		TripResult::Handled
-	} else {
-		std::intrinsics::breakpoint();
-		std::process::abort();
+	match pal::protect(AddressRange { start: page_start_addr, size: PAGESIZE }, page.native_prot()) {
+		Ok(()) => TripResult::Handled,
+		_ => {
+			std::intrinsics::breakpoint();
+			std::process::abort();
+		}
 	}
 }
 

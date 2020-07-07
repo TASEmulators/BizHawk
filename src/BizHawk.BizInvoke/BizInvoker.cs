@@ -75,13 +75,14 @@ namespace BizHawk.BizInvoke
 		public static T GetInvoker<T>(IImportResolver dll, ICallingConventionAdapter adapter)
 			where T : class
 		{
+			var nonTrivialAdapter = adapter.GetType() != CallingConventionAdapters.Native.GetType();
 			InvokerImpl impl;
 			lock (Impls)
 			{
 				var baseType = typeof(T);
 				if (!Impls.TryGetValue(baseType, out impl))
 				{
-					impl = CreateProxy(baseType, false);
+					impl = CreateProxy(baseType, false, nonTrivialAdapter);
 					Impls.Add(baseType, impl);
 				}
 			}
@@ -98,13 +99,14 @@ namespace BizHawk.BizInvoke
 		public static T GetInvoker<T>(IImportResolver dll, IMonitor monitor, ICallingConventionAdapter adapter)
 			where T : class
 		{
+			var nonTrivialAdapter = adapter.GetType() != CallingConventionAdapters.Native.GetType();
 			InvokerImpl impl;
 			lock (Impls)
 			{
 				var baseType = typeof(T);
 				if (!Impls.TryGetValue(baseType, out impl))
 				{
-					impl = CreateProxy(baseType, true);
+					impl = CreateProxy(baseType, true, nonTrivialAdapter);
 					Impls.Add(baseType, impl);
 				}
 			}
@@ -117,7 +119,7 @@ namespace BizHawk.BizInvoke
 			return (T)impl.Create(dll, monitor, adapter);
 		}
 
-		private static InvokerImpl CreateProxy(Type baseType, bool monitor)
+		private static InvokerImpl CreateProxy(Type baseType, bool monitor, bool nonTrivialAdapter)
 		{
 			if (baseType.IsSealed)
 			{
@@ -180,7 +182,7 @@ namespace BizHawk.BizInvoke
 				var entryPointName = mi.Attr.EntryPoint ?? mi.Info.Name;
 
 				var hook = mi.Attr.Compatibility
-					? ImplementMethodDelegate(type, mi.Info, mi.Attr.CallingConvention, entryPointName, monitorField)
+					? ImplementMethodDelegate(type, mi.Info, mi.Attr.CallingConvention, entryPointName, monitorField, nonTrivialAdapter)
 					: ImplementMethodCalli(type, mi.Info, mi.Attr.CallingConvention, entryPointName, monitorField, adapterField);
 
 				postCreateHooks.Add(hook);
@@ -204,7 +206,8 @@ namespace BizHawk.BizInvoke
 		/// create a method implementation that uses GetDelegateForFunctionPointer internally
 		/// </summary>
 		private static Action<object, IImportResolver, ICallingConventionAdapter> ImplementMethodDelegate(
-			TypeBuilder type, MethodInfo baseMethod, CallingConvention nativeCall, string entryPointName, FieldInfo monitorField)
+			TypeBuilder type, MethodInfo baseMethod, CallingConvention nativeCall, string entryPointName, FieldInfo monitorField,
+			bool nonTrivialAdapter)
 		{
 			// create the delegate type
 			var delegateType = BizInvokeUtilities.CreateDelegateType(baseMethod, nativeCall, type, out var delegateInvoke);
@@ -215,9 +218,13 @@ namespace BizHawk.BizInvoke
 
 			if (paramTypes.Concat(new[] { returnType }).Any(typeof(Delegate).IsAssignableFrom))
 			{
-				// this isn't a problem if CallingConventionAdapters.Waterbox is a no-op
-				if (CallingConventionAdapters.Waterbox.GetType() != CallingConventionAdapters.Native.GetType())
-					throw new InvalidOperationException("Compatibility call mode cannot use ICallingConventionAdapters for automatically marshalled delegate types!");
+				// this isn't a problem if CallingConventionAdapters.Waterbox is a no-op, but it is otherwise:  we don't
+				// have a custom marshaller set up so the user needs to manually pump the callingconventionadapter
+				if (nonTrivialAdapter)
+				{
+					throw new InvalidOperationException(
+						"Compatibility call mode cannot use ICallingConventionAdapters for automatically marshalled delegate types!");
+				}
 			}
 
 			// define a field on the class to hold the delegate

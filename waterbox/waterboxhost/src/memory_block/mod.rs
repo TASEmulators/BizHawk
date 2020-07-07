@@ -1,5 +1,5 @@
 mod pageblock;
-mod pal;
+pub mod pal;
 mod tripguard;
 mod tests;
 
@@ -239,13 +239,19 @@ impl MemoryBlock {
 		if addr.start >> 32 != (addr.end() - 1) >> 32 {
 			panic!("MemoryBlock must fit into a single 4G region!");
 		}
+
 		let npage = addr.size >> PAGESHIFT;
 		let mut pages = Vec::new();
 		pages.reserve_exact(npage);
 		for _ in 0..npage {
 			pages.push(Page::new());
 		}
-		let handle = pal::open(addr.size).unwrap();
+		#[cfg(feature = "no-dirty-detection")]
+		for p in pages.iter_mut() {
+			p.dirty = true;
+		}
+
+		let handle = pal::open_handle(addr.size).unwrap();
 		let lock_index = (addr.start >> 32) as u32;
 		// add the lock_index stuff now, so we won't have to check for it later on activate / drop
 		lock_list::maybe_add(lock_index);
@@ -337,14 +343,14 @@ impl MemoryBlock {
 
 	unsafe fn swapin(&mut self) {
 		// self.trace("swapin");
-		assert!(pal::map(&self.handle, self.addr));
+		pal::map_handle(&self.handle, self.addr).unwrap();
 		tripguard::register(self);
 		self.refresh_all_protections();
 	}
 	unsafe fn swapout(&mut self) {
 		// self.trace("swapout");
 		self.get_stack_dirty();
-		assert!(pal::unmap(self.addr));
+		pal::unmap_handle(self.addr).unwrap();
 		tripguard::unregister(self);
 	}
 
@@ -400,7 +406,7 @@ impl MemoryBlock {
 
 		for c in chunks {
 			unsafe {
-				assert!(pal::protect(c.addr, c.prot));
+				pal::protect(c.addr, c.prot).unwrap();
 			}
 		}
 	}
@@ -471,7 +477,7 @@ impl Drop for MemoryBlock {
 			None => ()
 		}
 		let h = std::mem::replace(&mut self.handle, pal::bad());
-		unsafe { pal::close(h); }
+		unsafe { let _ = pal::close_handle(h); }
 	}
 }
 
@@ -587,7 +593,7 @@ impl<'block> ActivatedMemoryBlock<'block> {
 			old_status.push(p.status);
 		}
 		unsafe {
-			pal::protect(src_addr, Protection::R);
+			pal::protect(src_addr, Protection::R).unwrap();
 			old_data.copy_from_slice(src_addr.slice());
 		}
 		ActivatedMemoryBlock::free_pages_impl(&mut src, false);
@@ -605,7 +611,7 @@ impl<'block> ActivatedMemoryBlock<'block> {
 		let nbcopy = std::cmp::min(addr.size, new_size);
 		let npcopy = nbcopy >> PAGESHIFT;
 		unsafe {
-			pal::protect(dest.addr(), Protection::RW);
+			pal::protect(dest.addr(), Protection::RW).unwrap();
 			dest.addr().slice_mut()[0..nbcopy].copy_from_slice(&old_data[0..nbcopy]);
 		}
 		for (status, pdst) in old_status.iter().zip(dest.iter_mut()) {
@@ -668,9 +674,10 @@ impl<'block> ActivatedMemoryBlock<'block> {
 		// the expectation is that they will start out as zero filled.  accordingly, the most
 		// sensible way to do this is to zero them now
 		unsafe {
-			pal::protect(addr, Protection::RW);
+			pal::protect(addr, Protection::RW).unwrap();
 			addr.zero();
 			// simple state size optimization: we can undirty pages in this case depending on the initial state
+			#[cfg(not(feature = "no-dirty-detection"))]
 			for p in range.iter_mut() {
 				p.dirty = !p.invisible && match p.snapshot {
 					Snapshot::ZeroFilled => false,
@@ -726,6 +733,15 @@ impl<'block> ActivatedMemoryBlock<'block> {
 				p.snapshot = Snapshot::None;
 			}
 		}
+		#[cfg(feature = "no-dirty-detection")]
+		unsafe {
+			pal::protect(self.b.addr, Protection::R).unwrap();
+			for (a, p) in self.b.page_range().iter_mut_with_addr() {
+				p.dirty = true;
+				p.maybe_snapshot(a.start);
+			}
+		}
+
 		self.b.refresh_all_protections();
 		self.b.sealed = true;
 		self.b.hash = {
@@ -775,11 +791,11 @@ impl<'block>  IStateable for ActivatedMemoryBlock<'block> {
 				if p.dirty {
 					unsafe {
 						if !p.status.readable() {
-							assert!(pal::protect(paddr, Protection::R));
+							pal::protect(paddr, Protection::R).unwrap();
 						}
 						stream.write_all(paddr.slice())?;
 						if !p.status.readable() {
-							assert!(pal::protect(paddr, Protection::None));
+							pal::protect(paddr, Protection::None).unwrap();
 						}
 					}
 				}
@@ -804,7 +820,7 @@ impl<'block>  IStateable for ActivatedMemoryBlock<'block> {
 		}
 
 		unsafe {
-			pal::protect(self.b.addr, Protection::RW);
+			pal::protect(self.b.addr, Protection::RW).unwrap();
 
 			let mut statii = vec![PageAllocation::Free; self.b.pages.len()];
 			let mut dirtii = vec![false; self.b.pages.len()];
