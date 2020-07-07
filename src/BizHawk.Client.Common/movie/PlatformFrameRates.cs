@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace BizHawk.Client.Common
 {
-	public class PlatformFrameRates
+	public static class PlatformFrameRates
 	{
 		// these are political numbers, designed to be in accord with tasvideos.org tradition. they're not necessarily mathematical factualities (although they may be in some cases)
 		// it would be nice if we could turn this into a rational expression natively, and also, to write some comments about the derivation and ideal values (since this seems to be where they're all collected)

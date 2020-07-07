@@ -542,6 +542,9 @@
 		<!-- Element return value documentation should have text -->
 		<Rule Id="SA1616" Action="Hidden" />
 
+		<!-- Generic type parameter documentation should have text -->
+		<Rule Id="SA1622" Action="Hidden" />
+
 		<!-- Property summary documentation should match accessors -->
 		<Rule Id="SA1623" Action="Hidden" />
 
