@@ -342,41 +342,19 @@ namespace BizHawk.Client.EmuHawk
 			Close();
 		}
 
+		private static readonly RigidMultiPredicateSort<IMovie> ColumnSorts
+			= new RigidMultiPredicateSort<IMovie>(new Dictionary<string, Func<IMovie, IComparable>>
+			{
+				["File"] = x => Path.GetFileName(x.Filename),
+				["SysID"] = x => x.SystemID,
+				["Game"] = x => x.GameName,
+				["Length (est.)"] = x => x.FrameCount
+			});
+
 		private void MovieView_ColumnClick(object sender, ColumnClickEventArgs e)
 		{
 			var columnName = MovieView.Columns[e.Column].Text;
-			switch (columnName)
-			{
-				case "File":
-				default:
-					_movieList = _movieList.OrderBy(x => Path.GetFileName(x.Filename))
-						.ThenBy(x => x.SystemID)
-						.ThenBy(x => x.GameName)
-						.ThenBy(x => x.FrameCount)
-						.ToList();
-					break;
-				case "SysID":
-					_movieList = _movieList.OrderBy(x => x.SystemID)
-						.ThenBy(x => Path.GetFileName(x.Filename))
-						.ThenBy(x => x.GameName)
-						.ThenBy(x => x.FrameCount)
-						.ToList();
-					break;
-				case "Game":
-					_movieList = _movieList.OrderBy(x => x.GameName)
-						.ThenBy(x => Path.GetFileName(x.Filename))
-						.ThenBy(x => x.SystemID)
-						.ThenBy(x => x.FrameCount)
-						.ToList();
-					break;
-				case "Length (est.)":
-					_movieList = _movieList.OrderBy(x => x.FrameCount)
-						.ThenBy(x => Path.GetFileName(x.Filename))
-						.ThenBy(x => x.SystemID)
-						.ThenBy(x => x.GameName)
-						.ToList();
-					break;
-			}
+			_movieList = ColumnSorts.AppliedTo(_movieList, columnName);
 			if (_sortedCol == columnName && _sortReverse)
 			{
 				_movieList.Reverse();
