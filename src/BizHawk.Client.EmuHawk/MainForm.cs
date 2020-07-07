@@ -291,7 +291,7 @@ namespace BizHawk.Client.EmuHawk
 				PauseEmulator,
 				SetMainformMovieInfo);
 
-			MouseClick += MainForm_MouseClick = (sender, e) =>
+			void MainForm_MouseClick(object sender, MouseEventArgs e)
 			{
 				AutohideCursor(false);
 				if (Config.ShowContextMenu && e.Button == MouseButtons.Right)
@@ -299,8 +299,10 @@ namespace BizHawk.Client.EmuHawk
 					MainFormContextMenu.Show(PointToScreen(new Point(e.X, e.Y + MainformMenu.Height)));
 				}
 			};
-			MouseMove += MainForm_MouseMove = (sender, e) => AutohideCursor(false);
-			MainForm_MouseWheel = (sender, e) => MouseWheelTracker += e.Delta;
+			void MainForm_MouseMove(object sender, MouseEventArgs e) => AutohideCursor(false);
+			void MainForm_MouseWheel(object sender, MouseEventArgs e) => MouseWheelTracker += e.Delta;
+			MouseClick += MainForm_MouseClick;
+			MouseMove += MainForm_MouseMove;
 
 			InitializeComponent();
 			Icon = Properties.Resources.logo;
@@ -325,7 +327,13 @@ namespace BizHawk.Client.EmuHawk
 
 			// TODO GL - a lot of disorganized wiring-up here
 			// installed separately on Unix (via package manager or from https://developer.nvidia.com/cg-toolkit-download), look in $PATH
-			PresentationPanel = new PresentationPanel(this, Config, GlobalWin.GL)
+			PresentationPanel = new PresentationPanel(
+				Config,
+				GlobalWin.GL,
+				ToggleFullscreen,
+				MainForm_MouseClick,
+				MainForm_MouseMove,
+				MainForm_MouseWheel)
 			{
 				GraphicsControl = { MainWindow = true }
 			};
