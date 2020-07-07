@@ -216,6 +216,29 @@ pub extern fn wbx_get_proc_addr(obj: &mut ActivatedWaterboxHost, name: *const c_
 		}
 	}
 }
+/// Returns a thunk suitable for calling an arbitrary entry point into the guest executable.  This pointer is only valid
+/// while the host is active.  wbx_get_proc_addr already calls this internally on pointers it returns, so this call is
+/// only needed if the guest exposes callin pointers that aren't named exports (for instance, if a function returns
+/// a pointer to another function).
+#[no_mangle]
+pub extern fn wbx_get_callin_addr(obj: &mut ActivatedWaterboxHost, ptr: usize, ret: &mut Return<usize>) {
+	ret.put(obj.get_external_callin_ptr(ptr));
+}
+/// Returns the raw address of a function exported from the guest.  `wbx_get_proc_addr()` is equivalent to
+/// `wbx_get_callin_addr(wbx_get_proc_addr_raw()).  Most things should not use this directly, as the returned
+/// pointer will not have proper stack hygiene and will crash on syscalls from the guest.
+#[no_mangle]
+pub extern fn wbx_get_proc_addr_raw(obj: &mut ActivatedWaterboxHost, name: *const c_char, ret: &mut Return<usize>) {
+	match arg_to_str(name) {
+		Ok(s) => {
+			ret.put(obj.get_proc_addr_raw(&s));
+		},
+		Err(e) => {
+			ret.put(Err(e))
+		}
+	}
+}
+
 /// Returns a function pointer suitable for passing to the guest to allow it to call back while active.
 /// Slot number is an integer that is used to keep pointers consistent across runs:  If the host is loaded
 /// at a different address, and some external function `foo` moves from run to run, things will still work out

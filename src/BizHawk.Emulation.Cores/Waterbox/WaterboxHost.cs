@@ -135,7 +135,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			using (this.EnterExit())
 			{
 				var retobj = new ReturnData();
-				NativeImpl.wbx_get_proc_addr(_activatedNativeHost, entryPoint, retobj);
+				NativeImpl.wbx_get_proc_addr_raw(_activatedNativeHost, entryPoint, retobj);
 				return retobj.GetDataOrThrow();
 			}
 		}
@@ -159,6 +159,16 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			{
 				var retobj = new ReturnData();
 				NativeImpl.wbx_get_callback_addr(_activatedNativeHost, exitPoint, slot, retobj);
+				return retobj.GetDataOrThrow();
+			}
+		}
+
+		public IntPtr GetCallinProcAddr(IntPtr entryPoint)
+		{
+			using (this.EnterExit())
+			{
+				var retobj = new ReturnData();
+				NativeImpl.wbx_get_callin_addr(_activatedNativeHost, entryPoint, retobj);
 				return retobj.GetDataOrThrow();
 			}
 		}

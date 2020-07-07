@@ -119,6 +119,17 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// and the returned callback will be, sysv abi, and will only pass up to 6 int/ptr args and no other arg types.
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void wbx_get_proc_addr(IntPtr /*ActivatedWaterboxHost*/ obj, string name, ReturnData /*UIntPtr*/ ret);
+		/// Returns a thunk suitable for calling an arbitrary entry point into the guest executable.  This pointer is only valid
+		/// while the host is active.  wbx_get_proc_addr already calls this internally on pointers it returns, so this call is
+		/// only needed if the guest exposes callin pointers that aren't named exports (for instance, if a function returns
+		/// a pointer to another function).
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract void wbx_get_callin_addr(IntPtr /*ActivatedWaterboxHost*/ obj, IntPtr ptr, ReturnData /*UIntPtr*/ ret);
+		/// Returns the raw address of a function exported from the guest.  `wbx_get_proc_addr()` is equivalent to
+		/// `wbx_get_callin_addr(wbx_get_proc_addr_raw()).  Most things should not use this directly, as the returned
+		/// pointer will not have proper stack hygiene and will crash on syscalls from the guest.
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract void wbx_get_proc_addr_raw(IntPtr /*ActivatedWaterboxHost*/ obj, string name, ReturnData /*UIntPtr*/ ret);
 		/// Returns a function pointer suitable for passing to the guest to allow it to call back while active.
 		/// Slot number is an integer that is used to keep pointers consistent across runs:  If the host is loaded
 		/// at a different address, and some external function `foo` moves from run to run, things will still work out

@@ -77,7 +77,8 @@ namespace BizHawk.BizInvoke
 	}
 
 	/// <summary>
-	/// Abstract over some waterbox functionality, sort of.  Would this ever make sense for anything else?
+	/// Abstract over some waterbox functionality, sort of.  TODO: Would this ever make sense for anything else,
+	/// or maybe it's just actually another CallingConventionAdapter and we're composing them?
 	/// </summary>
 	public interface ICallbackAdjuster
 	{
@@ -86,6 +87,10 @@ namespace BizHawk.BizInvoke
 		/// any meaning to CallingConvention Adapter; it's just a unique key associated with the callback.
 		/// </summary>
 		IntPtr GetCallbackProcAddr(IntPtr exitPoint, int slot);
+		/// <summary>
+		/// Returns a thunk over a departure point.
+		/// </summary>
+		IntPtr GetCallinProcAddr(IntPtr entryPoint);
 	}
 
 	public static class CallingConventionAdapters
@@ -126,10 +131,23 @@ namespace BizHawk.BizInvoke
 			return new WaterboxAdapter(slots, waterboxHost);
 		}
 		/// <summary>
-		/// Waterbox calling convention.  Cannot synthesize callbacks; use MakeWaterbox instead for that
+		/// waterbox calling convention, including thunk handling for stack marshalling.  Can only do callins, not callouts
+		/// </summary>
+		public static ICallingConventionAdapter MakeWaterboxDepartureOnly(ICallbackAdjuster waterboxHost)
+		{
+			return new WaterboxAdapter(null, waterboxHost);
+		}
+
+		/// <summary>
+		/// Get a waterbox calling convention adapater, except no wrapping is done for stack marshalling and callback support.
+		/// This is very unsafe; any attempts by the guest to call syscalls will crash, and stack hygiene will be all wrong.
+		/// DO NOT USE THIS.
 		/// </summary>
 		/// <returns></returns>
-		public static ICallingConventionAdapter WaterboxDepartureOnly { get; } = new WaterboxAdapter(null, null);
+		public static ICallingConventionAdapter GetWaterboxUnsafeUnwrapped()
+		{
+			return WaterboxAdapter.WaterboxWrapper;
+		}
 
 		private class WaterboxAdapter : ICallingConventionAdapter
 		{
@@ -146,7 +164,7 @@ namespace BizHawk.BizInvoke
 				}
 			}
 
-			private static readonly ICallingConventionAdapter WaterboxWrapper;
+			internal static readonly ICallingConventionAdapter WaterboxWrapper;
 			static WaterboxAdapter()
 			{
 				WaterboxWrapper = OSTailoredCode.IsUnixHost
@@ -186,11 +204,13 @@ namespace BizHawk.BizInvoke
 
 			public Delegate GetDelegateForFunctionPointer(IntPtr p, Type delegateType)
 			{
+				p = _waterboxHost.GetCallinProcAddr(p);
 				return WaterboxWrapper.GetDelegateForFunctionPointer(p, delegateType);
 			}
 
 			public IntPtr GetDepartureFunctionPointer(IntPtr p, ParameterInfo pp, object lifetime)
 			{
+				p = _waterboxHost.GetCallinProcAddr(p);
 				return WaterboxWrapper.GetDepartureFunctionPointer(p, pp, lifetime);
 			}
 

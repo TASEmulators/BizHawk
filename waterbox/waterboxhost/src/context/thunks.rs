@@ -23,7 +23,7 @@ impl ThunkManager {
 			lookup: HashMap::new(),
 		})
 	}
-	/// Generates a thunk for calling into waterbox
+	/// Generates a thunk for calling into waterbox.
 	/// Only valid so long as this ThunkManager is alive and set_context_ptr is kept up to date
 	pub fn get_thunk_for_proc(&mut self, guest_entry_point: usize, context: *mut Context) -> anyhow::Result<usize> {
 		match self.lookup.get(&guest_entry_point) {

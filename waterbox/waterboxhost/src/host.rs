@@ -102,6 +102,9 @@ impl<'a> ActivatedWaterboxHost<'a> {
 			Ok(context::get_callback_ptr(slot))
 		}
 	}
+	pub fn get_external_callin_ptr(&mut self, ptr: usize) -> anyhow::Result<usize> {
+		self.h.thunks.get_thunk_for_proc(ptr, &mut self.h.context as *mut Context)
+	}
 	pub fn get_proc_addr(&mut self, name: &str) -> anyhow::Result<usize> {
 		let ptr = self.h.elf.get_proc_addr(name);
 		if ptr == 0 {
@@ -109,6 +112,10 @@ impl<'a> ActivatedWaterboxHost<'a> {
 		} else {
 			self.h.thunks.get_thunk_for_proc(ptr, &mut self.h.context as *mut Context)
 		}
+	}
+	pub fn get_proc_addr_raw(&mut self, name: &str) -> anyhow::Result<usize> {
+		let ptr = self.h.elf.get_proc_addr(name);
+		Ok(ptr)
 	}
 	fn check_sealed(&self) -> anyhow::Result<()> {
 		if !self.h.sealed {
