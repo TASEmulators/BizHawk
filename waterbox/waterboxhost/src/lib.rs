@@ -88,18 +88,18 @@ fn align_up(p: usize) -> usize {
 #[derive(Copy, Clone)]
 pub struct WbxSysLayout {
 	pub elf: AddressRange,
+	pub main_thread: AddressRange,
 	pub sbrk: AddressRange,
 	pub sealed: AddressRange,
 	pub invis: AddressRange,
 	pub plain: AddressRange,
 	pub mmap: AddressRange,
-	pub main_thread: AddressRange,
 }
 impl WbxSysLayout {
 	pub fn all(&self) -> AddressRange {
 		AddressRange {
 			start: self.elf.start,
-			size: self.main_thread.end() - self.elf.start
+			size: self.mmap.end() - self.elf.start
 		}
 	}
 }

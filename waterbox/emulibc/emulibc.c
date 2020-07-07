@@ -9,12 +9,12 @@ struct __AddressRange {
 };
 struct __WbxSysLayout {
 	struct __AddressRange elf;
+	struct __AddressRange main_thread;
 	struct __AddressRange sbrk;
 	struct __AddressRange sealed;
 	struct __AddressRange invis;
 	struct __AddressRange plain;
 	struct __AddressRange mmap;
-	struct __AddressRange main_thread;
 };
 __attribute__((section(".invis"))) __attribute__((visibility("default"))) struct __WbxSysLayout __wbxsysinfo;
 

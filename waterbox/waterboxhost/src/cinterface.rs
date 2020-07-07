@@ -24,37 +24,25 @@ pub struct MemoryLayoutTemplate {
 impl MemoryLayoutTemplate {
 	/// checks a memory layout for validity
 	pub fn make_layout(&self, elf_addr: AddressRange) -> anyhow::Result<WbxSysLayout> {
-		let sbrk_size = align_up(self.sbrk_size);
-		let sealed_size = align_up(self.sealed_size);
-		let invis_size = align_up(self.invis_size);
-		let plain_size = align_up(self.plain_size);
-		let mmap_size = align_up(self.mmap_size);
 		let mut res = unsafe { std::mem::zeroed::<WbxSysLayout>() };
 		res.elf = elf_addr.align_expand();
-		res.sbrk = AddressRange {
-			start: res.elf.end(),
-			size: sbrk_size
+
+		let mut end = res.elf.end();
+		let mut add_area = |size| {
+			let a = AddressRange {
+				start: end,
+				size: align_up(size)
+			};
+			end = a.end();
+			a
 		};
-		res.sealed = AddressRange {
-			start: res.sbrk.end(),
-			size: sealed_size
-		};
-		res.invis = AddressRange {
-			start: res.sealed.end(),
-			size: invis_size
-		};
-		res.plain = AddressRange {
-			start: res.invis.end(),
-			size: plain_size
-		};
-		res.mmap = AddressRange {
-			start: res.plain.end(),
-			size: mmap_size
-		};
-		res.main_thread = AddressRange {
-			start: res.mmap.end(),
-			size: 1 << 20
-		};
+		res.main_thread = add_area(1 << 20);
+		res.sbrk = add_area(self.sbrk_size);
+		res.sealed = add_area(self.sealed_size);
+		res.invis = add_area(self.invis_size);
+		res.plain = add_area(self.plain_size);
+		res.mmap = add_area(self.mmap_size);
+
 		if res.all().start >> 32 != (res.all().end() - 1) >> 32 {
 			Err(anyhow!("HostMemoryLayout must fit into a single 4GiB region!"))
 		} else {
