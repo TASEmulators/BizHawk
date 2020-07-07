@@ -102,14 +102,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public double FrameRate
-		{
-			get
-			{
-				var system = HeaderEntries[HeaderKeys.Platform];
-				return PlatformFrameRates.GetFrameRate(system, IsPal);
-			}
-		}
+		public double FrameRate => PlatformFrameRates.GetFrameRate(SystemID, IsPal);
 
 		public IStringLog GetLogEntries() => Log;
 
