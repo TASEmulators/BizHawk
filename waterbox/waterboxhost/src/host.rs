@@ -227,8 +227,10 @@ fn arg_to_statbuff<'a>(arg: usize) -> &'a mut KStat {
 	unsafe { &mut *(arg as *mut KStat) }
 }
 
-extern "sysv64" fn syscall(a1: usize, a2: usize, a3: usize, a4: usize, _a5: usize, _a6: usize, nr: SyscallNumber) -> SyscallReturn {
-	let h = unsafe { context::access_context() };
+extern "sysv64" fn syscall(
+	a1: usize, a2: usize, a3: usize, a4: usize, _a5: usize, _a6: usize,
+	nr: SyscallNumber, h: &mut ActivatedWaterboxHost
+) -> SyscallReturn {
 	match nr {
 		NR_MMAP => {
 			let mut prot = arg_to_prot(a3)?;

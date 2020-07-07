@@ -2,8 +2,6 @@
 
 #![feature(try_trait)]
 #![feature(core_intrinsics)]
-#![feature(asm)]
-#![feature(naked_functions)]
 
 #![allow(dead_code)]
 

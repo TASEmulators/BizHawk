@@ -3,7 +3,6 @@ use crate::*;
 use memory_block::{Protection, pal};
 use host::{ActivatedWaterboxHost};
 use syscall_defs::SyscallNumber;
-use std::ptr::null_mut;
 
 pub mod thunks;
 
@@ -54,14 +53,17 @@ pub fn call_guest_simple(entry_point: usize, context: &mut Context) -> usize{
 }
 
 
-pub type ExternalCallback = extern "sysv64" fn(a1: usize, a2: usize, a3: usize, a4: usize, a5: usize, a6: usize) -> usize;
+pub type ExternalCallback = extern "sysv64" fn(
+	a1: usize, a2: usize, a3: usize, a4: usize, a5: usize, a6: usize) -> usize;
+pub type SyscallCallback = extern "sysv64" fn(
+	a1: usize, a2: usize, a3: usize, a4: usize, a5: usize, a6: usize, nr: SyscallNumber, h: &mut ActivatedWaterboxHost) -> SyscallReturn;
 
 /// Layout must be synced with interop.s
 #[repr(C)]
 pub struct Context {
 	pub host_rsp: usize,
 	pub guest_rsp: usize,
-	pub dispatch_syscall: extern "sysv64" fn(a1: usize, a2: usize, a3: usize, a4: usize, a5: usize, a6: usize, nr: SyscallNumber) -> SyscallReturn,
+	pub dispatch_syscall: SyscallCallback,
 	pub host_ptr: usize,
 	pub extcall_slots: [Option<ExternalCallback>; 64],
 }
@@ -86,16 +88,4 @@ pub fn prepare_thread() {
 			arch_prctl(ARCH_SET_GS, gs);
 		}
 	}
-}
-
-/// Get the currently loaded ActivatedWaterboxHost
-/// If called outside call_guest, will fail in various wonderful ways?
-/// Unsafe:  The lifetime is really only good in the current function
-pub unsafe fn access_context() -> &'static mut ActivatedWaterboxHost<'static> {
-	let mut p: *mut Context;
-	asm!("mov {}, gs:0x18", out(reg) p);
-	if p == null_mut() {
-		std::intrinsics::breakpoint();
-	}
-	&mut *((*p).host_ptr as *mut ActivatedWaterboxHost)
 }

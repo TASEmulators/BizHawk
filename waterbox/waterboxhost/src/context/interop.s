@@ -43,6 +43,9 @@ guest_syscall:
 	mov r10, [gs:0x18]
 	mov [r10 + Context.guest_rsp], rsp
 	mov rsp, [r10 + Context.host_rsp]
+	sub rsp, 8 ; align
+	mov r11, [r10 + Context.host_ptr]
+	push r11 ; arg 8 to dispatch_syscall: host
 	push rax ; arg 7 to dispatch_syscall: nr
 	mov rax, [r10 + Context.dispatch_syscall]
 	call rax
