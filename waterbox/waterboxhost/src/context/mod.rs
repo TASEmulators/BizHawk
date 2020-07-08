@@ -68,6 +68,11 @@ pub struct Context {
 	pub extcall_slots: [Option<ExternalCallback>; 64],
 }
 
+
+#[cfg(unix)]
+thread_local!(static TIB: Box<[usize; 4]> = Box::new([0usize; 4]));
+
+
 /// Prepares this host thread to be allowed to call guest code.  Noop if already called.
 /// Only needs to happen once per host thread
 pub fn prepare_thread() {
@@ -84,8 +89,10 @@ pub fn prepare_thread() {
 		let mut gs = 0usize;
 		assert_eq!(syscall(SYS_arch_prctl, 0x1004 /*ARCH_GET_GS*/, &gs), 0);
 		if gs == 0 {
-			gs = Box::into_raw(Box::new([0usize; 4])) as usize;
-			assert_eq!(syscall(SYS_arch_prctl, 0x1001 /*ARCH_SET_GS*/, gs), 0);
+			TIB.with(|b| {
+				gs = b.as_ref()[0] as *const usize as usize;
+				assert_eq!(syscall(SYS_arch_prctl, 0x1001 /*ARCH_SET_GS*/, gs), 0);
+			});
 		}
 	}
 }
