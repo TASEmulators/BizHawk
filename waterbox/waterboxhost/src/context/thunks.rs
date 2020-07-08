@@ -11,6 +11,7 @@ use std::collections::HashMap;
 
 const THUNK_SIZE: usize = 32;
 
+/// tracks thunks for calling into waterbox code
 pub struct ThunkManager {
 	memory: AddressRange,
 	lookup: HashMap<usize, usize>,
@@ -25,6 +26,8 @@ impl ThunkManager {
 	}
 	/// Generates a thunk for calling into waterbox.
 	/// Only valid so long as this ThunkManager is alive and set_context_ptr is kept up to date
+	/// See also `call_guest_simple`, which directly performs a call of the sort that these thunks do, but requires
+	/// Context to be passed at the time of call and cannot pass arguments to the guest
 	pub fn get_thunk_for_proc(&mut self, guest_entry_point: usize, context: *mut Context) -> anyhow::Result<usize> {
 		match self.lookup.get(&guest_entry_point) {
 			Some(p) => return Ok(*p),

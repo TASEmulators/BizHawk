@@ -41,13 +41,7 @@ impl WaterboxHost {
 			active: false,
 			sealed: false,
 			image_file,
-			context: Context {
-				host_rsp: 0,
-				guest_rsp: layout.main_thread.end(),
-				dispatch_syscall: syscall,
-				host_ptr: 0,
-				extcall_slots: [None; 64],
-			},
+			context: Context::new(layout.main_thread.end(), syscall),
 			thunks,
 		});
 

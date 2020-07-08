@@ -14,10 +14,10 @@ get going:
 	`wbx_activate_host()`
 2. Connect exports from the guest executable to your host system
 	`wbx_get_proc_addr()`
-3. Run the guest system's init, using function pointers it exposed through wbx_get_proc_addr()
+3. Run the guest system's init, using function pointers it exposed through `wbx_get_proc_addr()`
 4. Get ready to take savestates
 	`wbx_seal()`
-5. Run emulation, using frameadvance or other advance functions exposed by the guest through wbx_get_proc_addr()
+5. Run emulation, using frameadvance or other advance functions exposed by the guest through `wbx_get_proc_addr()`
 6. Save and load states as needed
 	`wbx_save_state()`
 	`wbx_load_state()`
@@ -25,8 +25,13 @@ get going:
 	`wbx_deactivate_host()`
 	`wbx_destroy_host()`
 
-If you're keeping around multiple hosts that may compete for the same address space, use `wbx_activate_host` and `wbx_deactivate_host`
-to switch between them.  If you'd like to expose files to the virtual filesystem, see `wbx_mount_file` and `wbx_unmount_file`
+Some more advanced features:
+
+* If you're keeping around multiple hosts that may compete for the same address space,
+	use `wbx_activate_host()` and `wbx_deactivate_host()` to switch between them.
+* If you'd like to expose files to the virtual filesystem, see `wbx_mount_file()` and `wbx_unmount_file()`.
+* If you need to call dynamically exposed functions that are not part of the static exports, see `wbx_get_callin_addr()`.
+* If you'd like the guest code to be able to call callbacks that you pass to it, see `wbx_get_callback_addr()`.
 
 ## Building
 
