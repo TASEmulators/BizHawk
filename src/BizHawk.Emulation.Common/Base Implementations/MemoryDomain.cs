@@ -160,7 +160,7 @@ namespace BizHawk.Emulation.Common
 			}
 
 			for (var i = 0; i < values.Length; i++, start += 4)
-				values[i] = PeekUshort(start, bigEndian);
+				values[i] = PeekUint(start, bigEndian);
 		}
 
 		public virtual void SendCheatToCore(int addr, byte value, int compare, int compare_type) { }
