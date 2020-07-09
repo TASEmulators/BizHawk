@@ -87,7 +87,6 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="all" />
 		<Reference Include="Microsoft.VisualBasic" />
-		<Reference Include="System.DirectoryServices" />
 		<Reference Include="System.Net.Http" />
 		<Reference Include="System.Windows.Forms" />
 	</ItemGroup>

@@ -29,7 +29,6 @@
 		private void InitializeComponent()
 		{
 			this.OK = new System.Windows.Forms.Button();
-			this.directoryEntry1 = new System.DirectoryServices.DirectoryEntry();
 			this.FilterBox = new System.Windows.Forms.TextBox();
 			this.label1 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.ToWikiMarkupButton = new System.Windows.Forms.Button();
@@ -161,7 +160,6 @@
 		#endregion
 
 		private System.Windows.Forms.Button OK;
-		private System.DirectoryServices.DirectoryEntry directoryEntry1;
 		private System.Windows.Forms.ListView FunctionView;
 		private System.Windows.Forms.ColumnHeader LibraryHead;
 		private System.Windows.Forms.ColumnHeader LibraryReturn;
