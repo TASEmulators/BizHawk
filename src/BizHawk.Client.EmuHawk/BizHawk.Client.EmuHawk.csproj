@@ -86,8 +86,8 @@
 -->
 	<ItemGroup>
 		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="all" />
-		<Reference Include="Microsoft.VisualBasic" />
-		<Reference Include="System.Net.Http" />
+		<PackageReference Include="Microsoft.VisualBasic" Version="10.3.0" />
+		<PackageReference Include="System.Net.Http" Version="4.3.4" />
 		<Reference Include="System.Windows.Forms" />
 	</ItemGroup>
 	<ItemGroup>
