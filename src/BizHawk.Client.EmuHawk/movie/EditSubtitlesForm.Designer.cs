@@ -85,6 +85,7 @@
 			this.SubGrid.Name = "SubGrid";
 			this.SubGrid.Size = new System.Drawing.Size(548, 198);
 			this.SubGrid.TabIndex = 2;
+			this.SubGrid.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.SubGrid_CellContentClick);
 			this.SubGrid.DefaultValuesNeeded += new System.Windows.Forms.DataGridViewRowEventHandler(this.SubGrid_DefaultValuesNeeded);
 			this.SubGrid.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.SubGrid_MouseDoubleClick);
 			// 

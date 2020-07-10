@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using System.Globalization;
 
 using BizHawk.Client.Common;
+using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -255,6 +256,28 @@ namespace BizHawk.Client.EmuHawk
 		private void AddColorTag_CheckedChanged(object sender, EventArgs e)
 		{
 			_selectedMovie.Subtitles.AddColorTag = AddColorTag.Checked;
+		}
+
+		private void SubGrid_CellContentClick(object sender, DataGridViewCellEventArgs e)
+		{
+			if (!_readOnly && e.ColumnIndex == 4)
+			{
+				var color = Color.White;
+				var val = SubGrid[e.ColumnIndex, e.RowIndex].Value;
+				if (val != null)
+				{
+					var hex = int.Parse(val.ToString(), NumberStyles.HexNumber);
+					color = Color.FromArgb(hex);
+				}
+
+				using var picker = new ColorDialog { AllowFullOpen = true, AnyColor = true, Color = color };
+				if (picker.ShowDialog().IsOk())
+				{
+					SubGrid[e.ColumnIndex, e.RowIndex].Value = picker.Color.ToArgb().ToHexString(8);
+					SubGrid[e.ColumnIndex, e.RowIndex].Style.BackColor = picker.Color;
+					SubGrid.RefreshEdit();
+				}
+			}
 		}
 	}
 }
