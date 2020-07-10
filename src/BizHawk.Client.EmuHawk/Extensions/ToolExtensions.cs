@@ -242,7 +242,10 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 				var item = new ToolStripMenuItem
 				{
 					Text = name,
-					Enabled = !(maxSize.HasValue && domain.Size > maxSize.Value),
+					// 0-length domains cause several problems, so they're disabled.
+					// Specifically, scrolling, arrow keys, and PgUp/PgDn all crash.
+					// Also, they're useless for RAM searches.
+					Enabled = !(maxSize.HasValue && domain.Size > maxSize.Value) && domain.Size != 0,
 					Checked = name == selected
 				};
 				item.Click += (o, ev) => setCallback(name);

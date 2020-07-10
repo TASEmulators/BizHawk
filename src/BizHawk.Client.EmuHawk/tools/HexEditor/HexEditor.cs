@@ -190,7 +190,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 			
-			if (MemoryDomains.Any(x => x.Name == _domain.Name))
+			if (MemoryDomains.Any(x => x.Name == _domain.Name && x.Size != 0))
 			{
 				_domain = MemoryDomains[_domain.Name];
 			}
@@ -634,7 +634,12 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				_domain = MemoryDomains[name];
+				var domainCandidate = MemoryDomains[name];
+				if (domainCandidate.Size == 0)
+				{
+					return;
+				}
+				_domain = domainCandidate;
 			}
 
 			BigEndian = _domain.EndianType == MemoryDomain.Endian.Big;
