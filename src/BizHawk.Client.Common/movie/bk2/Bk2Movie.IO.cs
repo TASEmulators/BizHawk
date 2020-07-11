@@ -148,10 +148,10 @@ namespace BizHawk.Client.Common
 		
 		protected virtual void LoadFields(ZipStateLoader bl, bool preload)
 		{
-			LoadBk2Fields(bl);
+			LoadBk2Fields(bl, preload);
 		}
 		
-		protected void LoadBk2Fields(ZipStateLoader bl)
+		protected void LoadBk2Fields(ZipStateLoader bl, bool preload)
 		{
 			bl.GetLump(BinaryStateLump.Movieheader, true, delegate(TextReader tr)
 			{
@@ -172,6 +172,18 @@ namespace BizHawk.Client.Common
 					}
 				}
 			});
+
+			bl.GetLump(BinaryStateLump.Input, true, delegate(TextReader tr)
+			{
+				IsCountingRerecords = false;
+				ExtractInputLog(tr, out _);
+				IsCountingRerecords = true;
+			});
+
+			if (preload)
+			{
+				return;
+			}
 
 			bl.GetLump(BinaryStateLump.Comments, false, delegate(TextReader tr)
 			{
@@ -209,13 +221,6 @@ namespace BizHawk.Client.Common
 						_syncSettingsJson = line;
 					}
 				}
-			});
-
-			bl.GetLump(BinaryStateLump.Input, true, delegate(TextReader tr)
-			{
-				IsCountingRerecords = false;
-				ExtractInputLog(tr, out _);
-				IsCountingRerecords = true;
 			});
 
 			if (StartsFromSavestate)

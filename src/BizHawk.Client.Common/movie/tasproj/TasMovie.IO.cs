@@ -63,11 +63,14 @@ namespace BizHawk.Client.Common
 		
 		protected override void LoadFields(ZipStateLoader bl, bool preload)
 		{
-			LoadBk2Fields(bl);
-			LoadTasprojExtras(bl, preload);
+			LoadBk2Fields(bl, preload);
+			if (!preload)
+			{
+				LoadTasprojExtras(bl);
+			}
 		}
 		
-		private void LoadTasprojExtras(ZipStateLoader bl, bool preload)
+		private void LoadTasprojExtras(ZipStateLoader bl)
 		{
 			bl.GetLump(BinaryStateLump.LagLog, false, delegate(TextReader tr)
 			{
@@ -153,15 +156,12 @@ namespace BizHawk.Client.Common
 				}
 			});
 
-			if (!preload)
+			if (TasStateManager.Settings.SaveStateHistory)
 			{
-				if (TasStateManager.Settings.SaveStateHistory)
+				bl.GetLump(BinaryStateLump.StateHistory, false, delegate(BinaryReader br, long length)
 				{
-					bl.GetLump(BinaryStateLump.StateHistory, false, delegate(BinaryReader br, long length)
-					{
-						TasStateManager.Load(br);
-					});
-				}
+					TasStateManager.Load(br);
+				});
 			}
 		}
 	}
