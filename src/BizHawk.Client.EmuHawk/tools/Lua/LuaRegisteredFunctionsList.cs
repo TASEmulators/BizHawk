@@ -122,15 +122,15 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FunctionView_KeyDown(object sender, KeyEventArgs e)
 		{
-			if (e.KeyCode == Keys.Delete && !e.Control && !e.Alt && !e.Shift) // Delete
+			if (e.IsPressed(Keys.Delete))
 			{
 				RemoveFunctionButton();
 			}
-			else if (e.KeyCode == Keys.Space && !e.Control && !e.Alt && !e.Shift) // Space
+			else if (e.IsPressed(Keys.Space))
 			{
 				CallFunction();
 			}
-			else if (e.KeyCode == Keys.Enter && !e.Control && !e.Alt && !e.Shift) // Enter
+			else if (e.IsPressed(Keys.Enter))
 			{
 				CallFunction();
 			}

@@ -608,11 +608,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CheatListView_KeyDown(object sender, KeyEventArgs e)
 		{
-			if (e.KeyCode == Keys.Delete && !e.Control && !e.Alt && !e.Shift)
+			if (e.IsPressed(Keys.Delete))
 			{
 				RemoveCheatMenuItem_Click(sender, e);
 			}
-			else if (e.KeyCode == Keys.A && e.Control && !e.Alt && !e.Shift)
+			else if (e.IsCtrl(Keys.A))
 			{
 				SelectAllMenuItem_Click(null, null);
 			}

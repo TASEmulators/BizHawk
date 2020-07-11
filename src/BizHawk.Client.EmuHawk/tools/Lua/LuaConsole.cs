@@ -1350,15 +1350,15 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LuaListView_KeyDown(object sender, KeyEventArgs e)
 		{
-			if (e.KeyCode == Keys.Delete && !e.Control && !e.Alt && !e.Shift)
+			if (e.IsPressed(Keys.Delete))
 			{
 				RemoveScriptMenuItem_Click(null, null);
 			}
-			else if (e.KeyCode == Keys.A && e.Control && !e.Alt && !e.Shift) // Select All
+			else if (e.IsCtrl(Keys.A))
 			{
 				SelectAllMenuItem_Click(null, null);
 			}
-			else if (e.KeyCode == Keys.F12 && !e.Control && !e.Alt && !e.Shift) // F12
+			else if (e.IsPressed(Keys.F12))
 			{
 				RegisteredFunctionsMenuItem_Click(null, null);
 			}
@@ -1366,7 +1366,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OutputBox_KeyDown(object sender, KeyEventArgs e)
 		{
-			if (e.KeyCode == Keys.F12 && !e.Control && !e.Alt && !e.Shift) // F12
+			if (e.IsPressed(Keys.F12))
 			{
 				RegisteredFunctionsMenuItem_Click(null, null);
 			}

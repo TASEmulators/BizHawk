@@ -1675,17 +1675,17 @@ namespace BizHawk.Client.EmuHawk
 
 		private void WatchListView_KeyDown(object sender, KeyEventArgs e)
 		{
-			switch (e.KeyCode)
+			if (e.IsPressed(Keys.Delete))
 			{
-				case Keys.Delete when !e.Control && !e.Alt && !e.Shift:
-					RemoveAddresses();
-					break;
-				case Keys.C when e.Control && !e.Alt && !e.Shift:
-					CopyWatchesToClipBoard();
-					break;
-				case Keys.Escape when !e.Control && !e.Alt && !e.Shift:
-					WatchListView.DeselectAll();
-					break;
+				RemoveAddresses();
+			}
+			else if (e.IsCtrl(Keys.C))
+			{
+				CopyWatchesToClipBoard();
+			}
+			else if (e.IsPressed(Keys.Escape))
+			{
+				WatchListView.DeselectAll();
 			}
 		}
 

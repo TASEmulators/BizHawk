@@ -319,5 +319,20 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 		}
+
+		public static bool IsPressed(this KeyEventArgs e, Keys key)
+			=> !e.Alt && !e.Control && !e.Shift && e.KeyCode == key;
+
+		public static bool IsShift(this KeyEventArgs e, Keys key)
+			=> !e.Alt && !e.Control && e.Shift && e.KeyCode == key;
+
+		public static bool IsCtrl(this KeyEventArgs e, Keys key)
+			=> !e.Alt && e.Control && !e.Shift && e.KeyCode == key;
+
+		public static bool IsAlt(this KeyEventArgs e, Keys key)
+			=> e.Alt && !e.Control && !e.Shift && e.KeyCode == key;
+
+		public static bool IsCtrlShift(this KeyEventArgs e, Keys key)
+			=> !e.Alt && e.Control && e.Shift && e.KeyCode == key;
 	}
 }

@@ -1437,19 +1437,19 @@ namespace BizHawk.Client.EmuHawk
 		private void TasView_KeyDown(object sender, KeyEventArgs e)
 		{
 			// taseditor uses Ctrl for selection and Shift for frame cursor
-			if (!e.Control && e.Shift && !e.Alt && e.KeyCode == Keys.PageUp) // Shift + Page Up
+			if (e.IsShift(Keys.PageUp))
 			{
 				GoToPreviousMarker();
 			}
-			else if (!e.Control && e.Shift && !e.Alt && e.KeyCode == Keys.PageDown) // Shift + Page Down
+			else if (e.IsShift(Keys.PageDown))
 			{
 				GoToNextMarker();
 			}
-			else if (!e.Control && e.Shift && !e.Alt && e.KeyCode == Keys.Home) // Shift + Home
+			else if (e.IsShift(Keys.Home))
 			{
 				GoToFrame(0);
 			}
-			else if (!e.Control && e.Shift && !e.Alt && e.KeyCode == Keys.End) // Shift + End
+			else if (e.IsShift(Keys.End))
 			{
 				GoToFrame(CurrentTasMovie.InputLogLength-1);
 			}

@@ -204,15 +204,15 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DisassemblerView_KeyDown(object sender, KeyEventArgs e)
 		{
-			if (e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.C) // Ctrl + C
+			if (e.IsCtrl(Keys.C))
 			{
 				CopySelectedDisassembler();
 			}
-			else if (!e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.PageDown)
+			else if (e.IsPressed(Keys.PageDown))
 			{
 				SmallIncrement();
 			}
-			else if (!e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.PageUp)
+			else if (e.IsPressed(Keys.PageUp))
 			{
 				SmallDecrement();
 			}

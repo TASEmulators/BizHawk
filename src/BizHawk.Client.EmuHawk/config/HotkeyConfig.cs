@@ -208,9 +208,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SearchBox_KeyDown(object sender, KeyEventArgs e)
 		{
-			// Tab or Enter
-			if (!e.Control && !e.Alt && !e.Shift &&
-				(e.KeyCode == Keys.Enter || e.KeyCode == Keys.Tab))
+			if (e.IsPressed(Keys.Enter) || e.IsPressed(Keys.Tab))
 			{
 				var b = _config.HotkeyBindings.FirstOrDefault(x => string.Compare(x.DisplayName, SearchBox.Text, true) == 0);
 

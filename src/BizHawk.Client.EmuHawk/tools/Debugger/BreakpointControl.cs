@@ -235,7 +235,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BreakpointView_KeyDown(object sender, KeyEventArgs e)
 		{
-			if (!e.Control && !e.Alt && !e.Shift && e.KeyCode == Keys.Delete) // Delete
+			if (e.IsPressed(Keys.Delete))
 			{
 				RemoveBreakpointButton_Click(null, null);
 			}

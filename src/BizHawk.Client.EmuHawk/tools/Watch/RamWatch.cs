@@ -1191,19 +1191,19 @@ namespace BizHawk.Client.EmuHawk
 
 		private void WatchListView_KeyDown(object sender, KeyEventArgs e)
 		{
-			if (e.KeyCode == Keys.Delete && !e.Control && !e.Alt && !e.Shift)
+			if (e.IsPressed(Keys.Delete))
 			{
 				RemoveWatchMenuItem_Click(sender, e);
 			}
-			else if (e.KeyCode == Keys.C && e.Control && !e.Alt && !e.Shift) // Ctrl+C
+			else if (e.IsCtrl(Keys.C))
 			{
 				CopyWatchesToClipBoard();
 			}
-			else if (e.KeyCode == Keys.V && e.Control && !e.Alt && !e.Shift) // Ctrl+V
+			else if (e.IsCtrl(Keys.V))
 			{
 				PasteWatchesToClipBoard();
 			}
-			else if (e.KeyCode == Keys.Enter && !e.Control && !e.Alt && !e.Shift) // Enter
+			else if (e.IsPressed(Keys.Enter))
 			{
 				EditWatch();
 			}

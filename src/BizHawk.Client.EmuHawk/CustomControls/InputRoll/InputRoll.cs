@@ -1350,7 +1350,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!SuspendHotkeys)
 			{
-				if (e.Control && !e.Alt && e.Shift && e.KeyCode == Keys.F) // Ctrl+Shift+F
+				if (e.IsCtrlShift(Keys.F))
 				{
 					if (Rotatable)
 					{
@@ -1358,7 +1358,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 				// Scroll
-				else if (!e.Control && !e.Alt && !e.Shift && e.KeyCode == Keys.PageUp) // Page Up
+				else if (e.IsPressed(Keys.PageUp))
 				{
 					if (ChangeSelectionWhenPaging)
 					{
@@ -1380,7 +1380,7 @@ namespace BizHawk.Client.EmuHawk
 						LastVisibleRow = FirstVisibleRow;
 					}
 				}
-				else if (!e.Control && !e.Alt && !e.Shift && e.KeyCode == Keys.PageDown) // Page Down
+				else if (e.IsPressed(Keys.PageDown))
 				{
 					if (ChangeSelectionWhenPaging)
 					{
@@ -1402,21 +1402,21 @@ namespace BizHawk.Client.EmuHawk
 						FirstVisibleRow = LastVisibleRow;
 					}
 				}
-				else if (AllowMassNavigationShortcuts && !e.Control && !e.Alt && !e.Shift && e.KeyCode == Keys.Home) // Home
+				else if (AllowMassNavigationShortcuts && e.IsPressed(Keys.Home))
 				{
 					DeselectAll();
 					SelectRow(0, true);
 					FirstVisibleRow = 0;
 					Refresh();
 				}
-				else if (AllowMassNavigationShortcuts && !e.Control && !e.Alt && !e.Shift && e.KeyCode == Keys.End) // End
+				else if (AllowMassNavigationShortcuts && e.IsPressed(Keys.End))
 				{
 					DeselectAll();
 					SelectRow(RowCount - 1, true);
 					LastVisibleRow = RowCount;
 					Refresh();
 				}
-				else if (!e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.Up) // Up
+				else if (e.IsPressed(Keys.Up))
 				{
 					if (SelectedRows.Any())
 					{
@@ -1431,7 +1431,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}
 				}
-				else if (!e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.Down) // Down
+				else if (e.IsPressed(Keys.Down))
 				{
 					if (SelectedRows.Any())
 					{
@@ -1446,7 +1446,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}
 				}
-				else if (!e.Control && e.Shift && !e.Alt && e.KeyCode == Keys.Up) // Shift+Up
+				else if (e.IsShift(Keys.Up))
 				{
 					if (MultiSelect && _lastSelectedRow > 0)
 					{
@@ -1463,7 +1463,7 @@ namespace BizHawk.Client.EmuHawk
 						Refresh();
 					}
 				}
-				else if (!e.Control && e.Shift && !e.Alt && e.KeyCode == Keys.Down) // Shift+Down
+				else if (e.IsShift(Keys.Down))
 				{
 					if (MultiSelect && _lastSelectedRow < RowCount - 1)
 					{
@@ -1486,7 +1486,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 				// Selection cursor
-				else if (e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.Up) // Ctrl + Up
+				else if (e.IsCtrl(Keys.Up))
 				{
 					if (SelectedRows.Any() && LetKeysModifySelection && SelectedRows.First() > 0)
 					{
@@ -1497,7 +1497,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}
 				}
-				else if (e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.Down) // Ctrl + Down
+				else if (e.IsCtrl(Keys.Down))
 				{
 					if (SelectedRows.Any() && LetKeysModifySelection)
 					{
@@ -1508,35 +1508,35 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}
 				}
-				else if (e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.Left) // Ctrl + Left
+				else if (e.IsCtrl(Keys.Left))
 				{
 					if (SelectedRows.Any() && LetKeysModifySelection)
 					{
 						SelectRow(SelectedRows.Last(), false);
 					}
 				}
-				else if (e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.Right) // Ctrl + Right
+				else if (e.IsCtrl(Keys.Right))
 				{
 					if (SelectedRows.Any() && LetKeysModifySelection && SelectedRows.Last() < _rowCount - 1)
 					{
 						SelectRow(SelectedRows.Last() + 1, true);
 					}
 				}
-				else if (e.Control && e.Shift && !e.Alt && e.KeyCode == Keys.Left) // Ctrl + Shift + Left
+				else if (e.IsCtrlShift(Keys.Left))
 				{
 					if (SelectedRows.Any() && LetKeysModifySelection && SelectedRows.First() > 0)
 					{
 						SelectRow(SelectedRows.First() - 1, true);
 					}
 				}
-				else if (e.Control && e.Shift && !e.Alt && e.KeyCode == Keys.Right) // Ctrl + Shift + Right
+				else if (e.IsCtrlShift(Keys.Right))
 				{
 					if (SelectedRows.Any() && LetKeysModifySelection)
 					{
 						SelectRow(SelectedRows.First(), false);
 					}
 				}
-				else if (e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.PageUp) // Ctrl + Page Up
+				else if (e.IsCtrl(Keys.PageUp))
 				{
 					//jump to above marker with selection courser
 					if (LetKeysModifySelection)
@@ -1544,7 +1544,7 @@ namespace BizHawk.Client.EmuHawk
 						
 					}
 				}
-				else if (e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.PageDown) // Ctrl + Page Down
+				else if (e.IsCtrl(Keys.PageDown))
 				{
 					//jump to below marker with selection courser
 					if (LetKeysModifySelection)

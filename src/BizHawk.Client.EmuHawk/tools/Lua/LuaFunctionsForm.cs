@@ -113,7 +113,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FunctionView_KeyDown(object sender, KeyEventArgs e)
 		{
-			if (e.KeyCode == Keys.C && e.Control && !e.Alt && !e.Shift) // Copy
+			if (e.IsCtrl(Keys.C))
 			{
 				FunctionView_Copy(null, null);
 			}

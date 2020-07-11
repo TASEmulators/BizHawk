@@ -112,7 +112,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ListView_KeyDown(object sender, KeyEventArgs e)
 		{
-			if (e.KeyCode == Keys.C && e.Control && !e.Alt && !e.Shift)
+			if (e.IsCtrl(Keys.C))
 			{
 				ButtonCopy_Click(null, null);
 			}

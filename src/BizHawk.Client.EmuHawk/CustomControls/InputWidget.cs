@@ -177,7 +177,7 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void OnKeyUp(KeyEventArgs e)
 		{
-			if (e.KeyCode == Keys.F4 && e.Modifiers == Keys.Alt)
+			if (e.IsAlt(Keys.F4))
 			{
 				base.OnKeyUp(e);
 			}
@@ -185,7 +185,7 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void OnKeyDown(KeyEventArgs e)
 		{
-			if (e.KeyCode == Keys.F4 && e.Modifiers == Keys.Alt)
+			if (e.IsAlt(Keys.F4))
 			{
 				base.OnKeyDown(e);
 				return;

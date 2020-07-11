@@ -392,13 +392,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void lvFirmwares_KeyDown(object sender, KeyEventArgs e)
 		{
-			if (e.KeyCode == Keys.C && e.Control && !e.Alt && !e.Shift)
+			if (e.IsCtrl(Keys.C))
 			{
 				PerformListCopy();
 			}
 		}
 
-		void PerformListCopy()
+		private void PerformListCopy()
 		{
 			var str = lvFirmwares.CopyItemsAsText();
 			if (str.Length > 0) Clipboard.SetDataObject(str);
