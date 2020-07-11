@@ -46,11 +46,6 @@ namespace BizHawk.Client.Common
 
 		public void Attach(IEmulator emulator)
 		{
-			if (!_emulator.IsNull())
-			{
-				throw new InvalidOperationException("A core has already been attached!");
-			}
-
 			if (!emulator.HasSavestates())
 			{
 				throw new InvalidOperationException($"A core must be able to provide an {nameof(IStatable)} service");
