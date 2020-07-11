@@ -358,7 +358,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void PasteWatchesToClipBoard()
+		private void PasteWatchesFromClipBoard()
 		{
 			var data = Clipboard.GetDataObject();
 
@@ -1201,7 +1201,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (e.IsCtrl(Keys.V))
 			{
-				PasteWatchesToClipBoard();
+				PasteWatchesFromClipBoard();
 			}
 			else if (e.IsPressed(Keys.Enter))
 			{
