@@ -94,6 +94,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		// TODO: this is a mess, simplify
 		public void HandleFrameAfter()
 		{
 			if (Movie is ITasMovie tasMovie)
@@ -101,7 +102,14 @@ namespace BizHawk.Client.Common
 				tasMovie.GreenzoneCurrentFrame();
 				if (tasMovie.IsPlayingOrFinished() && Movie.Emulator.Frame >= tasMovie.InputLogLength)
 				{
-					HandleFrameLoopForRecordMode();
+					if (Settings.MovieEndAction == MovieEndAction.Record)
+					{
+						HandleFrameLoopForRecordMode();
+					}
+					else
+					{
+						HandlePlaybackEnd();
+					}
 				}
 			}
 			else if (Movie.IsPlaying() && Movie.Emulator.Frame >= Movie.InputLogLength)
