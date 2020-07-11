@@ -1683,10 +1683,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				CopyWatchesToClipBoard();
 			}
-			else if (e.IsPressed(Keys.Escape))
-			{
-				WatchListView.DeselectAll();
-			}
 		}
 
 		private void WatchListView_SelectedIndexChanged(object sender, EventArgs e)

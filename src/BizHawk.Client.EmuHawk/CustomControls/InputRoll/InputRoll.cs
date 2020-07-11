@@ -1350,7 +1350,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!SuspendHotkeys)
 			{
-				if (e.IsCtrlShift(Keys.F))
+				if (e.IsPressed(Keys.Escape))
+				{
+					DeselectAll();
+					Refresh();
+				}
+				else if (e.IsCtrlShift(Keys.F))
 				{
 					if (Rotatable)
 					{
