@@ -203,10 +203,18 @@ namespace BizHawk.Emulation.DiscSystem
 					var parts = line.Split('=');
 					if (parts.Length != 2)
 						throw new CCDParseException("Malformed or unexpected CCD format: parsing item into two parts");
+					if (parts[0].ToUpper() == "FLAGS")
+					{
+						// flags are a space-separated collection of symbolic constants:
+						// https://www.gnu.org/software/ccd2cue/manual/html_node/FLAGS-_0028Compact-Disc-fields_0029.html#FLAGS-_0028Compact-Disc-fields_0029
+						// But we don't seem to do anything with them?  Skip because the subsequent code will fail to parse them
+						continue;
+					}
 					int val;
 					if (parts[1].StartsWith("0x") || parts[1].StartsWith("0X"))
 						val = int.Parse(parts[1].Substring(2), NumberStyles.HexNumber);
-					else val = int.Parse(parts[1]);
+					else
+						val = int.Parse(parts[1]);
 					currSection[parts[0].ToUpper()] = val;
 				}
 			} //loop until lines exhausted
