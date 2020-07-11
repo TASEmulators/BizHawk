@@ -880,6 +880,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// TasView
 			//
+			this.TasView.ChangeSelectionWhenPaging = false;
 			this.TasView.InputPaintingMode = true;
 			this.TasView.CellWidthPadding = 3;
 			this.TasView.GridLines = true;

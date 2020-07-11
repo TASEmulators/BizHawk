@@ -377,6 +377,14 @@ namespace BizHawk.Client.EmuHawk
 		public int SeekingCutoffInterval { get; set; }
 
 		/// <summary>
+		/// Gets or sets a value indicating whether pressing page up/down will cause
+		/// the current selection to change
+		/// </summary>
+		[DefaultValue(false)]
+		[Category("Behavior")]
+		public bool ChangeSelectionWhenPaging { get; set; } = true;
+
+		/// <summary>
 		/// Returns all columns including those that are not visible
 		/// </summary>
 		[Browsable(false)]
@@ -1352,33 +1360,47 @@ namespace BizHawk.Client.EmuHawk
 				// Scroll
 				else if (!e.Control && !e.Alt && !e.Shift && e.KeyCode == Keys.PageUp) // Page Up
 				{
-					var selectedRow = SelectedRows.Any() ? SelectedRows.First() : FirstVisibleRow;
-					var increment = LastVisibleRow - FirstVisibleRow;
-					var newSelectedRow = selectedRow - increment;
-					if (newSelectedRow < 0)
+					if (ChangeSelectionWhenPaging)
 					{
-						newSelectedRow = 0;
-					}
+						var selectedRow = SelectedRows.Any() ? SelectedRows.First() : FirstVisibleRow;
+						var increment = LastVisibleRow - FirstVisibleRow;
+						var newSelectedRow = selectedRow - increment;
+						if (newSelectedRow < 0)
+						{
+							newSelectedRow = 0;
+						}
 
-					FirstVisibleRow = newSelectedRow;
-					DeselectAll();
-					SelectRow(newSelectedRow, true);
-					Refresh();
+						FirstVisibleRow = newSelectedRow;
+						DeselectAll();
+						SelectRow(newSelectedRow, true);
+						Refresh();
+					}
+					else if (FirstVisibleRow > 0)
+					{
+						LastVisibleRow = FirstVisibleRow;
+					}
 				}
 				else if (!e.Control && !e.Alt && !e.Shift && e.KeyCode == Keys.PageDown) // Page Down
 				{
-					var selectedRow = SelectedRows.Any() ? SelectedRows.First() : FirstVisibleRow;
-					var increment = LastVisibleRow - FirstVisibleRow;
-					var newSelectedRow = selectedRow + increment;
-					if (newSelectedRow > RowCount - 1)
+					if (ChangeSelectionWhenPaging)
 					{
-						newSelectedRow = RowCount - 1;
-					}
+						var selectedRow = SelectedRows.Any() ? SelectedRows.First() : FirstVisibleRow;
+						var increment = LastVisibleRow - FirstVisibleRow;
+						var newSelectedRow = selectedRow + increment;
+						if (newSelectedRow > RowCount - 1)
+						{
+							newSelectedRow = RowCount - 1;
+						}
 
-					LastVisibleRow = newSelectedRow;
-					DeselectAll();
-					SelectRow(newSelectedRow, true);
-					Refresh();
+						LastVisibleRow = newSelectedRow;
+						DeselectAll();
+						SelectRow(newSelectedRow, true);
+						Refresh();
+					}
+					else if (LastVisibleRow < RowCount)
+					{
+						FirstVisibleRow = LastVisibleRow;
+					}
 				}
 				else if (AllowMassNavigationShortcuts && !e.Control && !e.Alt && !e.Shift && e.KeyCode == Keys.Home) // Home
 				{
