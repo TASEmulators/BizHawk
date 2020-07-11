@@ -482,7 +482,6 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			}
 
 			if (VDC_ctrl.Bit(5))
-
 			{
 				// single characters
 				for (int i = 0; i < 12; i++)

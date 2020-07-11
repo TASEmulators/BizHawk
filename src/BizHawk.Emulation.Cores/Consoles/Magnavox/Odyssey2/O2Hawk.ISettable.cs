@@ -49,6 +49,16 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			[DefaultValue(true)]
 			public bool Show_Sprites { get; set; }
 
+			[DisplayName("Display G7400 Sprites")]
+			[Description("When true, displays G7400 sprites.")]
+			[DefaultValue(true)]
+			public bool Show_G7400_Sprites { get; set; }
+
+			[DisplayName("Display G7400 Background")]
+			[Description("When true, displays G7400 backgroud.")]
+			[DefaultValue(true)]
+			public bool Show_G7400_BG { get; set; }
+
 			public O2Settings Clone()
 			{
 				return (O2Settings)MemberwiseClone();
@@ -64,7 +74,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 		{
 			[DisplayName("Use G7400 Enhanemants")]
 			[Description("When true, boots using G7400 BIOS and features")]
-			[DefaultValue(true)]
+			[DefaultValue(false)]
 			public bool G7400_Enable { get; set; }
 
 			[DisplayName("Use Existing SaveRAM")]
