@@ -78,7 +78,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		private static extern void FrameAdvance(uint buttons, byte touchX, byte touchY);
 
 		[CoreConstructor("NDS")]
-		public MelonDS(byte[] file, CoreComm comm, object settings, object syncSettings)
+		public MelonDS(byte[] file, CoreComm comm, MelonSettings settings, MelonSyncSettings syncSettings)
 		{
 			_serviceProvider = new BasicServiceProvider(this);
 			ControllerDefinition = new ControllerDefinition { Name = "NDS Controller" };

@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class ChannelF
 	{
-		public ChannelF(CoreComm comm, GameInfo game, byte[] rom, object settings, object syncSettings)
+		public ChannelF(CoreComm comm, GameInfo game, byte[] rom)
 		{
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;

@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		isReleased: false)]
 	public partial class AmstradCPC : IRegionable, IDriveLight
 	{
-		public AmstradCPC(CoreComm comm, IEnumerable<byte[]> files, List<GameInfo> game, object settings, object syncSettings)
+		public AmstradCPC(CoreComm comm, IEnumerable<byte[]> files, List<GameInfo> game, AmstradCPCSettings settings, AmstradCPCSyncSettings syncSettings)
 		{
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;

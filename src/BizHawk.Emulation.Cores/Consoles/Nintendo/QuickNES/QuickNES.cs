@@ -34,7 +34,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		}
 
 		[CoreConstructor("NES")]
-		public QuickNES(byte[] file, object settings, object syncSettings)
+		public QuickNES(byte[] file, QuickNESSettings settings, QuickNESSyncSettings syncSettings)
 		{
 			FP = OSTailoredCode.IsUnixHost
 				? (IFPCtrl) new Unix_FPCtrl()

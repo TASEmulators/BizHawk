@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		isReleased: true)]
 	public sealed partial class C64 : IEmulator, IRegionable, IBoardInfo, IRomInfo
 	{
-		public C64(CoreComm comm, IEnumerable<byte[]> roms, GameInfo game, object settings, object syncSettings)
+		public C64(CoreComm comm, IEnumerable<byte[]> roms, GameInfo game, C64Settings settings, C64SyncSettings syncSettings)
 		{
 			PutSyncSettings((C64SyncSettings)syncSettings ?? new C64SyncSettings());
 			PutSettings((C64Settings)settings ?? new C64Settings());

@@ -13,7 +13,9 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 	public sealed partial class ColecoVision : IEmulator, IDebuggable, IInputPollable, ISettable<ColecoVision.ColecoSettings, ColecoVision.ColecoSyncSettings>
 	{
 		[CoreConstructor("Coleco")]
-		public ColecoVision(CoreComm comm, GameInfo game, byte[] rom, object syncSettings)
+		public ColecoVision(CoreComm comm, GameInfo game, byte[] rom,
+			ColecoSettings settings,
+			ColecoSyncSettings syncSettings)
 		{
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;

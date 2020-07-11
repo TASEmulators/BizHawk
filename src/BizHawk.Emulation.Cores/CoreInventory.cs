@@ -48,11 +48,18 @@ namespace BizHawk.Emulation.Cores
 					{
 						throw new InvalidOperationException($"Unexpected parameter name {p.Name} in constructor for {Type}");
 					}
-					
-					// disabling the type check here doesn't really hurt anything, because the Invoke call will still catch any forbidden casts
-					// it does allow us to write "MySettingsType settings" instead of "object settings"
-					// if (expectedType != p.ParameterType)
-					//	throw new InvalidOperationException($"Unexpected type mismatch in parameter {p.Name} in constructor for {Type}");
+					if (pName == "settings")
+					{
+						if (p.ParameterType == typeof(object))
+							throw new InvalidOperationException($"Setting and SyncSetting constructor parameters for {type} must be annotated with the actual type");
+						SettingsType = p.ParameterType;
+					}
+					else if (pName == "syncsettings")
+					{
+						if (p.ParameterType == typeof(object))
+							throw new InvalidOperationException($"Setting and SyncSetting constructor parameters for {type} must be annotated with the actual type");
+						SyncSettingsType = p.ParameterType;
+					}
 					_paramMap.Add(pName, i);
 				}
 			}
@@ -60,6 +67,8 @@ namespace BizHawk.Emulation.Cores
 			public string Name { get; }
 			public Type Type { get; }
 			public ConstructorInfo CTor { get; }
+			public Type SettingsType { get; } = typeof(object);
+			public Type SyncSettingsType { get; } = typeof(object);
 
 			private void Bp(object[] parameters, string name, object value)
 			{

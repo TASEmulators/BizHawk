@@ -94,7 +94,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		private static byte[] GBA_override = { 0xFF, 0x00, 0xCD, 0x03, 0x35, 0xAA, 0x31, 0x90, 0x94, 0x00, 0x00, 0x00, 0x00 };
 
 		[CoreConstructor(new[] { "GB", "GBC" })]
-		public GBHawk(CoreComm comm, GameInfo game, byte[] rom, /*string gameDbFn,*/ object settings, object syncSettings)
+		public GBHawk(CoreComm comm, GameInfo game, byte[] rom, /*string gameDbFn,*/ GBSettings settings, GBSyncSettings syncSettings)
 		{
 			var ser = new BasicServiceProvider(this);
 

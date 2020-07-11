@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		/// <param name="file">Rom that should be loaded</param>
 		/// <param name="syncSettings">N64SyncSettings object</param>
 		[CoreConstructor("N64")]
-		public N64(GameInfo game, byte[] file, object settings, object syncSettings)
+		public N64(GameInfo game, byte[] file, N64Settings settings, N64SyncSettings syncSettings)
 		{
 			ServiceProvider = new BasicServiceProvider(this);
 			InputCallbacks = new InputCallbackSystem();

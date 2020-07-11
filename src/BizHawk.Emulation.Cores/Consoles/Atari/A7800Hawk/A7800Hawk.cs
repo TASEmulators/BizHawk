@@ -73,7 +73,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		}
 
 		[CoreConstructor("A78")]
-		public A7800Hawk(CoreComm comm, byte[] rom, object settings, object syncSettings)
+		public A7800Hawk(CoreComm comm, byte[] rom, A7800Hawk.A7800Settings settings, A7800Hawk.A7800SyncSettings syncSettings)
 		{
 			var ser = new BasicServiceProvider(this);
 

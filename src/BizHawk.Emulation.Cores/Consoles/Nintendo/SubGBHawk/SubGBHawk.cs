@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubGBHawk
 		ISettable<GBHawk.GBHawk.GBSettings, GBHawk.GBHawk.GBSyncSettings>, IDebuggable
 	{
 		[CoreConstructor(new[] { "GB", "GBC" })]
-		public SubGBHawk(CoreComm comm, GameInfo game, byte[] rom, /*string gameDbFn,*/ object settings, object syncSettings)
+		public SubGBHawk(CoreComm comm, GameInfo game, byte[] rom, /*string gameDbFn,*/ GBHawk.GBHawk.GBSettings settings, GBHawk.GBHawk.GBSyncSettings syncSettings)
 		{
 			
 			var subGBSettings = (GBHawk.GBHawk.GBSettings)settings ?? new GBHawk.GBHawk.GBSettings();

@@ -54,28 +54,28 @@ namespace BizHawk.Client.Common
 		}
 
 		// helper methods for the settings events
-		private object GetCoreSettings<T>()
-			where T : IEmulator
+		private TSetting GetCoreSettings<TCore, TSetting>()
+			where TCore : IEmulator
 		{
-			return GetCoreSettings(typeof(T));
+			return (TSetting)GetCoreSettings(typeof(TCore), typeof(TSetting));
 		}
 
-		private object GetCoreSyncSettings<T>()
-			where T : IEmulator
+		private TSync GetCoreSyncSettings<TCore, TSync>()
+			where TCore : IEmulator
 		{
-			return GetCoreSyncSettings(typeof(T));
+			return (TSync)GetCoreSyncSettings(typeof(TCore), typeof(TSync));
 		}
 
-		private object GetCoreSettings(Type t)
+		private object GetCoreSettings(Type t, Type settingsType)
 		{
-			var e = new SettingsLoadArgs(t);
+			var e = new SettingsLoadArgs(t, settingsType);
 			OnLoadSettings?.Invoke(this, e);
 			return e.Settings;
 		}
 
-		private object GetCoreSyncSettings(Type t)
+		private object GetCoreSyncSettings(Type t, Type syncSettingsType)
 		{
-			var e = new SettingsLoadArgs(t);
+			var e = new SettingsLoadArgs(t, syncSettingsType);
 			OnLoadSyncSettings?.Invoke(this, e);
 			return e.Settings;
 		}
@@ -125,9 +125,11 @@ namespace BizHawk.Client.Common
 		{
 			public object Settings { get; set; }
 			public Type Core { get; }
-			public SettingsLoadArgs(Type t)
+			public Type SettingsType { get; }
+			public SettingsLoadArgs(Type t, Type s)
 			{
 				Core = t;
+				SettingsType = s;
 				Settings = null;
 			}
 		}
@@ -309,16 +311,16 @@ namespace BizHawk.Client.Common
 						game,
 						null,
 						new[] { disc },
-						GetCoreSettings<GPGX>(),
-						GetCoreSyncSettings<GPGX>()
+						GetCoreSettings<GPGX, GPGX.GPGXSettings>(),
+						GetCoreSyncSettings<GPGX, GPGX.GPGXSyncSettings>()
 					);
 					break;
 				case "SAT":
 					nextEmulator = new Saturnus(
 						nextComm, game,
 						new[] { disc },
-						(NymaCore.NymaSettings)GetCoreSettings<Saturnus>(),
-						(NymaCore.NymaSyncSettings)GetCoreSyncSettings<Saturnus>(),
+						GetCoreSettings<Saturnus, NymaCore.NymaSettings>(),
+						GetCoreSyncSettings<Saturnus, NymaCore.NymaSyncSettings>(),
 						Deterministic
 					);
 					break;
@@ -328,15 +330,15 @@ namespace BizHawk.Client.Common
 						new List<Disc> { disc },
 						new List<string> { Path.GetFileNameWithoutExtension(path) },
 						null,
-						GetCoreSettings<Octoshock>(),
-						GetCoreSyncSettings<Octoshock>(),
+						GetCoreSettings<Octoshock, Octoshock.Settings>(),
+						GetCoreSyncSettings<Octoshock, Octoshock.SyncSettings>(),
 						DiscHashWarningText(game, discHash)
 					);
 					break;
 				case "PCFX":
 					nextEmulator = new Tst(nextComm, game, new[] { disc },
-						(NymaCore.NymaSettings)GetCoreSettings<Tst>(),
-						(NymaCore.NymaSyncSettings)GetCoreSyncSettings<Tst>(),
+						GetCoreSettings<Tst, NymaCore.NymaSettings>(),
+						GetCoreSyncSettings<Tst, NymaCore.NymaSyncSettings>(),
 						Deterministic);
 					break;
 				case "PCE": // TODO: this is clearly not used, its set to PCE by code above
@@ -348,8 +350,8 @@ namespace BizHawk.Client.Common
 							nextComm,
 							game,
 							disc,
-							GetCoreSettings<PCEngine>(),
-							GetCoreSyncSettings<PCEngine>()
+							GetCoreSettings<PCEngine, PCEngine.PCESettings>(),
+							GetCoreSyncSettings<PCEngine, PCEngine.PCESyncSettings>()
 						),
 //						CoreNames.HyperNyma => new HyperNyma(
 //							game,
@@ -363,8 +365,8 @@ namespace BizHawk.Client.Common
 							game,
 							new[] { disc },
 							nextComm,
-							(NymaCore.NymaSettings) GetCoreSettings<TurboNyma>(),
-							(NymaCore.NymaSyncSettings) GetCoreSyncSettings<TurboNyma>(),
+							GetCoreSettings<TurboNyma, NymaCore.NymaSettings>(),
+							GetCoreSyncSettings<TurboNyma, NymaCore.NymaSyncSettings>(),
 							Deterministic
 						)
 					};
@@ -409,8 +411,8 @@ namespace BizHawk.Client.Common
 				discs,
 				discNames,
 				null,
-				GetCoreSettings<Octoshock>(),
-				GetCoreSyncSettings<Octoshock>(),
+				GetCoreSettings<Octoshock, Octoshock.Settings>(),
+				GetCoreSyncSettings<Octoshock, Octoshock.SyncSettings>(),
 				swRomDetails.ToString()
 			);
 		}
@@ -477,7 +479,7 @@ namespace BizHawk.Client.Common
 						var ti83 = new TI83(
 							ti83BiosAsRom.GameInfo,
 							ti83Bios,
-							GetCoreSettings<TI83>()
+							GetCoreSettings<TI83, TI83.TI83Settings>()
 						);
 						ti83.LinkPort.SendFileToCalc(File.OpenRead(path.SubstringBefore('|')), false);
 						nextEmulator = ti83;
@@ -503,8 +505,8 @@ namespace BizHawk.Client.Common
 							isXml ? rom.FileData : null,
 							Path.GetDirectoryName(path.SubstringBefore('|')),
 							nextComm,
-							GetCoreSettings<LibsnesCore>(),
-							GetCoreSyncSettings<LibsnesCore>()
+							GetCoreSettings<LibsnesCore, LibsnesCore.SnesSettings>(),
+							GetCoreSyncSettings<LibsnesCore, LibsnesCore.SnesSyncSettings>()
 						);
 						return;
 					}
@@ -545,8 +547,8 @@ namespace BizHawk.Client.Common
 								null,
 								null,
 								nextComm,
-								GetCoreSettings<LibsnesCore>(),
-								GetCoreSyncSettings<LibsnesCore>()
+								GetCoreSettings<LibsnesCore, LibsnesCore.SnesSettings>(),
+								GetCoreSyncSettings<LibsnesCore, LibsnesCore.SnesSyncSettings>()
 							);
 							return;
 						}
@@ -562,8 +564,8 @@ namespace BizHawk.Client.Common
 						nextComm,
 						new[] { rom.FileData },
 						rom.GameInfo,
-						GetCoreSettings<C64>(),
-						GetCoreSyncSettings<C64>()
+						GetCoreSettings<C64, C64.C64Settings>(),
+						GetCoreSyncSettings<C64, C64.C64SyncSettings>()
 					);
 					return;
 				case "ZXSpectrum":
@@ -571,8 +573,8 @@ namespace BizHawk.Client.Common
 						nextComm,
 						new[] { rom.RomData },
 						new List<GameInfo> { rom.GameInfo },
-						GetCoreSettings<ZXSpectrum>(),
-						GetCoreSyncSettings<ZXSpectrum>(),
+						GetCoreSettings<ZXSpectrum, ZXSpectrum.ZXSpectrumSettings>(),
+						GetCoreSyncSettings<ZXSpectrum, ZXSpectrum.ZXSpectrumSyncSettings>(),
 						Deterministic
 					);
 					return;
@@ -580,9 +582,7 @@ namespace BizHawk.Client.Common
 					nextEmulator = new ChannelF(
 						nextComm,
 						game,
-						rom.FileData,
-						GetCoreSettings<ChannelF>(),
-						GetCoreSyncSettings<ChannelF>()
+						rom.FileData
 					);
 					return;
 				case "AmstradCPC":
@@ -590,8 +590,8 @@ namespace BizHawk.Client.Common
 						nextComm,
 						new[] { rom.RomData },
 						new List<GameInfo> { rom.GameInfo },
-						GetCoreSettings<AmstradCPC>(),
-						GetCoreSyncSettings<AmstradCPC>()
+						GetCoreSettings<AmstradCPC, AmstradCPC.AmstradCPCSettings>(),
+						GetCoreSyncSettings<AmstradCPC, AmstradCPC.AmstradCPCSyncSettings>()
 					);
 					return;
 				case "PSX":
@@ -600,8 +600,8 @@ namespace BizHawk.Client.Common
 						null,
 						null,
 						rom.FileData,
-						GetCoreSettings<Octoshock>(),
-						GetCoreSyncSettings<Octoshock>(),
+						GetCoreSettings<Octoshock, Octoshock.Settings>(),
+						GetCoreSyncSettings<Octoshock, Octoshock.SyncSettings>(),
 						"PSX etc."
 					);
 					return;
@@ -609,7 +609,7 @@ namespace BizHawk.Client.Common
 					nextEmulator = new MAME(
 						file.Directory,
 						file.CanonicalName,
-						GetCoreSyncSettings<MAME>(),
+						GetCoreSyncSettings<MAME, MAME.SyncSettings>(),
 						out var gameName
 					);
 					rom.GameInfo.Name = gameName;
@@ -633,8 +633,8 @@ namespace BizHawk.Client.Common
 				rom.RomData,
 				rom.FileData,
 				Deterministic,
-				GetCoreSettings(core.Type),
-				GetCoreSyncSettings(core.Type),
+				GetCoreSettings(core.Type, core.SettingsType),
+				GetCoreSyncSettings(core.Type, core.SyncSettingsType),
 				rom.Extension
 			);
 		}
@@ -652,8 +652,8 @@ namespace BizHawk.Client.Common
 			nextEmulator = new Octoshock(
 				nextComm,
 				psf,
-				GetCoreSettings<Octoshock>(),
-				GetCoreSyncSettings<Octoshock>()
+				GetCoreSettings<Octoshock, Octoshock.Settings>(),
+				GetCoreSyncSettings<Octoshock, Octoshock.SyncSettings>()
 			);
 
 			// total garbage, this
@@ -688,8 +688,8 @@ namespace BizHawk.Client.Common
 								leftBytes,
 								right,
 								rightBytes,
-								GetCoreSettings<GBHawkLink>(),
-								GetCoreSyncSettings<GBHawkLink>()
+								GetCoreSettings<GBHawkLink, GBHawkLink.GBLinkSettings>(),
+								GetCoreSyncSettings<GBHawkLink, GBHawkLink.GBLinkSyncSettings>()
 							);
 							// other stuff todo
 							return true;
@@ -702,8 +702,8 @@ namespace BizHawk.Client.Common
 								leftBytes,
 								right,
 								rightBytes,
-								GetCoreSettings<GambatteLink>(),
-								GetCoreSyncSettings<GambatteLink>(),
+								GetCoreSettings<GambatteLink, GambatteLink.GambatteLinkSettings>(),
+								GetCoreSyncSettings<GambatteLink, GambatteLink.GambatteLinkSyncSettings>(),
 								Deterministic
 							);
 							// other stuff todo
@@ -724,8 +724,8 @@ namespace BizHawk.Client.Common
 							centerBytes3x,
 							right3x,
 							rightBytes3x,
-							GetCoreSettings<GBHawkLink3x>(),
-							GetCoreSyncSettings<GBHawkLink3x>()
+							GetCoreSettings<GBHawkLink3x, GBHawkLink3x.GBLink3xSettings>(),
+							GetCoreSyncSettings<GBHawkLink3x, GBHawkLink3x.GBLink3xSyncSettings>()
 						);
 						return true;
 					case "GB4x":
@@ -747,15 +747,15 @@ namespace BizHawk.Client.Common
 							C_Bytes4x,
 							D_4x,
 							D_Bytes4x,
-							GetCoreSettings<GBHawkLink4x>(),
-							GetCoreSyncSettings<GBHawkLink4x>()
+							GetCoreSettings<GBHawkLink4x, GBHawkLink4x.GBLink4xSettings>(),
+							GetCoreSyncSettings<GBHawkLink4x, GBHawkLink4x.GBLink4xSyncSettings>()
 						);
 						return true;
 					case "AppleII":
 						nextEmulator = new AppleII(
 							nextComm,
 							xmlGame.Assets.Select(a => a.Value),
-							(AppleII.Settings) GetCoreSettings<AppleII>()
+							(AppleII.Settings) GetCoreSettings<AppleII, AppleII.Settings>()
 						);
 						return true;
 					case "C64":
@@ -763,8 +763,8 @@ namespace BizHawk.Client.Common
 							nextComm,
 							xmlGame.Assets.Select(a => a.Value),
 							GameInfo.NullInstance,
-							(C64.C64Settings) GetCoreSettings<C64>(),
-							(C64.C64SyncSettings) GetCoreSyncSettings<C64>()
+							GetCoreSettings<C64, C64.C64Settings>(),
+							GetCoreSyncSettings<C64, C64.C64SyncSettings>()
 						);
 						return true;
 					case "ZXSpectrum":
@@ -772,8 +772,8 @@ namespace BizHawk.Client.Common
 							nextComm,
 							xmlGame.Assets.Select(kvp => kvp.Value),
 							xmlGame.Assets.Select(kvp => new GameInfo { Name = Path.GetFileNameWithoutExtension(kvp.Key) }).ToList(),
-							(ZXSpectrum.ZXSpectrumSettings) GetCoreSettings<ZXSpectrum>(),
-							(ZXSpectrum.ZXSpectrumSyncSettings) GetCoreSyncSettings<ZXSpectrum>(),
+							GetCoreSettings<ZXSpectrum, ZXSpectrum.ZXSpectrumSettings>(),
+							GetCoreSyncSettings<ZXSpectrum, ZXSpectrum.ZXSpectrumSyncSettings>(),
 							Deterministic
 						);
 						return true;
@@ -782,8 +782,8 @@ namespace BizHawk.Client.Common
 							nextComm,
 							xmlGame.Assets.Select(kvp => kvp.Value),
 							xmlGame.Assets.Select(kvp => new GameInfo { Name = Path.GetFileNameWithoutExtension(kvp.Key) }).ToList(),
-							(AmstradCPC.AmstradCPCSettings) GetCoreSettings<AmstradCPC>(),
-							(AmstradCPC.AmstradCPCSyncSettings) GetCoreSyncSettings<AmstradCPC>()
+							GetCoreSettings<AmstradCPC, AmstradCPC.AmstradCPCSettings>(),
+							GetCoreSyncSettings<AmstradCPC, AmstradCPC.AmstradCPCSyncSettings>()
 						);
 						return true;
 					case "PSX":
@@ -812,8 +812,8 @@ namespace BizHawk.Client.Common
 							discs,
 							discNames,
 							null,
-							GetCoreSettings<Octoshock>(),
-							GetCoreSyncSettings<Octoshock>(),
+							GetCoreSettings<Octoshock, Octoshock.Settings>(),
+							GetCoreSyncSettings<Octoshock, Octoshock.SyncSettings>(),
 							swRomDetails.ToString()
 						);
 						return true;
@@ -823,8 +823,8 @@ namespace BizHawk.Client.Common
 						nextEmulator = new Saturnus(
 							nextComm, game,
 							saturnDiscs,
-							(NymaCore.NymaSettings)GetCoreSettings<Saturnus>(),
-							(NymaCore.NymaSyncSettings)GetCoreSyncSettings<Saturnus>(),
+							GetCoreSettings<Saturnus, NymaCore.NymaSettings>(),
+							GetCoreSyncSettings<Saturnus, NymaCore.NymaSyncSettings>(),
 							Deterministic
 						);
 						return true;
@@ -832,8 +832,8 @@ namespace BizHawk.Client.Common
 						var pcfxDiscs = DiscsFromXml(xmlGame, "PCFX", DiscType.PCFX);
 						if (pcfxDiscs.Count == 0) return false;
 						nextEmulator = new Tst(nextComm, game, pcfxDiscs,
-							(NymaCore.NymaSettings)GetCoreSettings<Tst>(),
-							(NymaCore.NymaSyncSettings)GetCoreSyncSettings<Tst>(),
+							GetCoreSettings<Tst, NymaCore.NymaSettings>(),
+							GetCoreSyncSettings<Tst, NymaCore.NymaSyncSettings>(),
 							Deterministic);
 						return true;
 					case "GEN":
@@ -845,8 +845,8 @@ namespace BizHawk.Client.Common
 							game,
 							romBytes,
 							genDiscs,
-							GetCoreSettings<GPGX>(),
-							GetCoreSyncSettings<GPGX>()
+							GetCoreSettings<GPGX, GPGX.GPGXSettings>(),
+							GetCoreSyncSettings<GPGX, GPGX.GPGXSyncSettings>()
 						);
 						return true;
 					case "Game Gear":
@@ -860,8 +860,8 @@ namespace BizHawk.Client.Common
 							leftBytesGG,
 							rightGG,
 							rightBytesGG,
-							GetCoreSettings<GGHawkLink>(),
-							GetCoreSyncSettings<GGHawkLink>()
+							GetCoreSettings<GGHawkLink, GGHawkLink.GGLinkSettings>(),
+							GetCoreSyncSettings<GGHawkLink, GGHawkLink.GGLinkSyncSettings>()
 						);
 						return true;
 				}
@@ -881,8 +881,8 @@ namespace BizHawk.Client.Common
 						rom.FileData,
 						Path.GetDirectoryName(path.SubstringBefore('|')),
 						nextComm,
-						GetCoreSettings<LibsnesCore>(),
-						GetCoreSyncSettings<LibsnesCore>()
+						GetCoreSettings<LibsnesCore, LibsnesCore.SnesSettings>(),
+						GetCoreSyncSettings<LibsnesCore, LibsnesCore.SnesSyncSettings>()
 					);
 					return true;
 				}

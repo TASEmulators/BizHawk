@@ -44,7 +44,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 		public bool is_G7400;
 
 		[CoreConstructor("O2")]
-		public O2Hawk(CoreComm comm, GameInfo game, byte[] rom, /*string gameDbFn,*/ object settings, object syncSettings)
+		public O2Hawk(CoreComm comm, GameInfo game, byte[] rom, /*string gameDbFn,*/ O2Settings settings, O2SyncSettings syncSettings)
 		{
 			var ser = new BasicServiceProvider(this);
 

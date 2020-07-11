@@ -6,21 +6,15 @@ namespace BizHawk.Client.Common
 {
 	public static class ConfigExtensions
 	{
-		private class TypeNameEncapsulator
-		{
-			public object o;
-		}
 		private static JToken Serialize(object o)
 		{
-			var tne = new TypeNameEncapsulator { o = o };
-			return JToken.FromObject(tne, ConfigService.Serializer)["o"];
+			return JToken.FromObject(o, ConfigService.Serializer);
 		}
-		private static object Deserialize(JToken j)
+		private static object Deserialize(JToken j, Type type)
 		{
-			var jne = new JObject(new JProperty("o", j));
 			try
 			{
-				return jne.ToObject<TypeNameEncapsulator>(ConfigService.Serializer).o;
+				return j.ToObject(type, ConfigService.Serializer);
 			}
 			catch
 			{
@@ -35,22 +29,20 @@ namespace BizHawk.Client.Common
 		/// <param name="config"></param>
 		/// <param name="coreType"></param>
 		/// <returns>null if no settings were saved, or there was an error deserializing</returns>
-		public static object GetCoreSettings(this Config config, Type coreType)
+		public static object GetCoreSettings(this Config config, Type coreType, Type settingsType)
 		{
 			config.CoreSettings.TryGetValue(coreType.ToString(), out var j);
-			return Deserialize(j);
+			return Deserialize(j, settingsType);
 		}
 
 		/// <summary>
 		/// Returns the core settings for a core
 		/// </summary>
-		/// <param name="config"></param>
-		/// <typeparam name="TCore"></typeparam>
 		/// <returns>null if no settings were saved, or there was an error deserializing</returns>
-		public static object GetCoreSettings<TCore>(this Config config)
+		public static TSetting GetCoreSettings<TCore, TSetting>(this Config config)
 			where TCore : IEmulator
 		{
-			return config.GetCoreSettings(typeof(TCore));
+			return (TSetting)config.GetCoreSettings(typeof(TCore), typeof(TSetting));
 		}
 
 		/// <summary>
@@ -89,22 +81,20 @@ namespace BizHawk.Client.Common
 		/// <param name="config"></param>
 		/// <param name="coreType"></param>
 		/// <returns>null if no settings were saved, or there was an error deserializing</returns>
-		public static object GetCoreSyncSettings(this Config config, Type coreType)
+		public static object GetCoreSyncSettings(this Config config, Type coreType, Type syncSettingsType)
 		{
 			config.CoreSyncSettings.TryGetValue(coreType.ToString(), out var j);
-			return Deserialize(j);
+			return Deserialize(j, syncSettingsType);
 		}
 
 		/// <summary>
 		/// Returns the core syncsettings for a core
 		/// </summary>
-		/// <param name="config"></param>
-		/// <typeparam name="TCore"></typeparam>
 		/// <returns>null if no settings were saved, or there was an error deserializing</returns>
-		public static object GetCoreSyncSettings<TCore>(this Config config)
+		public static TSync GetCoreSyncSettings<TCore, TSync>(this Config config)
 			where TCore : IEmulator
 		{
-			return config.GetCoreSyncSettings(typeof(TCore));
+			return (TSync)config.GetCoreSyncSettings(typeof(TCore), typeof(TSync));
 		}
 
 		/// <summary>

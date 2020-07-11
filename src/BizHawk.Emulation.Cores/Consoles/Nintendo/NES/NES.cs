@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		IBoardInfo, IRomInfo, ISettable<NES.NESSettings, NES.NESSyncSettings>, ICodeDataLogger
 	{
 		[CoreConstructor("NES")]
-		public NES(CoreComm comm, GameInfo game, byte[] rom, object settings, object syncSettings)
+		public NES(CoreComm comm, GameInfo game, byte[] rom, NESSettings settings, NESSyncSettings syncSettings)
 		{
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;

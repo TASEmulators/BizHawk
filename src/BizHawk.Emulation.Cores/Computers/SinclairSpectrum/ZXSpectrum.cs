@@ -21,7 +21,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		isReleased: true)]
 	public partial class ZXSpectrum : IRegionable, IDriveLight
 	{
-		public ZXSpectrum(CoreComm comm, IEnumerable<byte[]> files, List<GameInfo> game, object settings, object syncSettings, bool? deterministic)
+		public ZXSpectrum(CoreComm comm, IEnumerable<byte[]> files, List<GameInfo> game, ZXSpectrumSettings settings, ZXSpectrumSyncSettings syncSettings, bool? deterministic)
 		{
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;

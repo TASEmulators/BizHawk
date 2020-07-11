@@ -2225,7 +2225,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					e.Settings = Config.GetCoreSyncSettings(e.Core);
+					e.Settings = Config.GetCoreSyncSettings(e.Core, e.SettingsType);
 
 					// Only show this nag if the core actually has sync settings, not all cores do
 					if (e.Settings != null && !_suppressSyncSettingsWarning)
@@ -2240,13 +2240,13 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				e.Settings = Config.GetCoreSyncSettings(e.Core);
+				e.Settings = Config.GetCoreSyncSettings(e.Core, e.SettingsType);
 			}
 		}
 
 		private void CoreSettings(object sender, RomLoader.SettingsLoadArgs e)
 		{
-			e.Settings = Config.GetCoreSettings(e.Core);
+			e.Settings = Config.GetCoreSettings(e.Core, e.SettingsType);
 		}
 
 		/// <summary>

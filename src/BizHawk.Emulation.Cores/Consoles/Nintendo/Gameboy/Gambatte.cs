@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		IGameboyCommon, ICycleTiming, ILinkable
 	{
 		[CoreConstructor(new[] { "GB", "GBC" })]
-		public Gameboy(CoreComm comm, GameInfo game, byte[] file, object settings, object syncSettings, bool deterministic)
+		public Gameboy(CoreComm comm, GameInfo game, byte[] file, Gameboy.GambatteSettings settings, Gameboy.GambatteSyncSettings syncSettings, bool deterministic)
 		{
 			var ser = new BasicServiceProvider(this);
 			ser.Register<IDisassemblable>(new GBDisassembler());

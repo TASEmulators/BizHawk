@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		IDebuggable, ISettable<SMS.SmsSettings, SMS.SmsSyncSettings>, ICodeDataLogger
 	{
 		[CoreConstructor(new[] { "SMS", "SG", "GG" })]
-		public SMS(CoreComm comm, GameInfo game, byte[] rom, object settings, object syncSettings)
+		public SMS(CoreComm comm, GameInfo game, byte[] rom, SmsSettings settings, SmsSyncSettings syncSettings)
 		{
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;

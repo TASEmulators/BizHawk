@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 	public partial class TI83 : IEmulator, IVideoProvider, IDebuggable, IInputPollable, ISettable<TI83.TI83Settings, object>
 	{
 		[CoreConstructor("TI83")]
-		public TI83(GameInfo game, byte[] rom, object settings)
+		public TI83(GameInfo game, byte[] rom, TI83.TI83Settings settings)
 		{
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;

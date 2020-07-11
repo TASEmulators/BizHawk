@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		IInputPollable, IDebuggable
 	{
 		[CoreConstructor("WSWAN")]
-		public WonderSwan(byte[] file, bool deterministic, object settings, object syncSettings)
+		public WonderSwan(byte[] file, bool deterministic, WonderSwan.Settings settings, WonderSwan.SyncSettings syncSettings)
 		{
 			ServiceProvider = new BasicServiceProvider(this);
 			_settings = (Settings)settings ?? new Settings();

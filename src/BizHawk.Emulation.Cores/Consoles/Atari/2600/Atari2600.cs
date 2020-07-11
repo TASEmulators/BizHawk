@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		IRegionable, ICreateGameDBEntries, ISettable<Atari2600.A2600Settings, Atari2600.A2600SyncSettings>
 	{
 		[CoreConstructor("A26")]
-		public Atari2600(GameInfo game, byte[] rom, object settings, object syncSettings)
+		public Atari2600(GameInfo game, byte[] rom, Atari2600.A2600Settings settings, Atari2600.A2600SyncSettings syncSettings)
 		{
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;

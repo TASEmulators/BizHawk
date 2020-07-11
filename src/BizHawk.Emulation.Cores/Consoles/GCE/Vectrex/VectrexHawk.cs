@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 		public SerialPort serialport;
 
 		[CoreConstructor("VEC")]
-		public VectrexHawk(CoreComm comm, byte[] rom, object settings, object syncSettings)
+		public VectrexHawk(CoreComm comm, byte[] rom, VectrexHawk.VectrexSyncSettings syncSettings)
 		{
 			var ser = new BasicServiceProvider(this);
 
@@ -50,7 +50,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			ppu = new PPU();
 			serialport = new SerialPort();
 
-			_settings = settings ?? new object();
+			_settings = new object(); // TODO: wtf is this
 			_syncSettings = (VectrexSyncSettings)syncSettings ?? new VectrexSyncSettings();
 			_controllerDeck = new VectrexHawkControllerDeck(_syncSettings.Port1, _syncSettings.Port2);
 
@@ -110,7 +110,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			ser.Register<ISoundProvider>(audio);
 			ServiceProvider = ser;
 
-			_settings = settings ?? new object();
+			_settings = new object(); // TODO: wtf is this
 			_syncSettings = (VectrexSyncSettings)syncSettings ?? new VectrexSyncSettings();
 
 			_tracer = new TraceBuffer { Header = cpu.TraceHeader };

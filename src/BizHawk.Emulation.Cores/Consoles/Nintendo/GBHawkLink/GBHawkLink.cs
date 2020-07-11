@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 		displayName: "Gameboy")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class GBHawkLink : IEmulator, ISaveRam, IDebuggable, IStatable, IInputPollable, IRegionable, ILinkable,
-	ISettable<GBHawkLink.GBLinkSettings, GBHawkLink.GBLinkSyncSettings>
+		ISettable<GBHawkLink.GBLinkSettings, GBHawkLink.GBLinkSyncSettings>
 	{
 		// we want to create two GBHawk instances that we will run concurrently
 		// maybe up to 4 eventually?
@@ -30,7 +30,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 		public bool do_frame_fill;
 
 		//[CoreConstructor("GB", "GBC")]
-		public GBHawkLink(CoreComm comm, GameInfo game_L, byte[] rom_L, GameInfo game_R, byte[] rom_R, /*string gameDbFn,*/ object settings, object syncSettings)
+		public GBHawkLink(CoreComm comm, GameInfo game_L, byte[] rom_L, GameInfo game_R, byte[] rom_R, /*string gameDbFn,*/
+			GBHawkLink.GBLinkSettings settings, GBHawkLink.GBLinkSyncSettings syncSettings)
 		{
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;

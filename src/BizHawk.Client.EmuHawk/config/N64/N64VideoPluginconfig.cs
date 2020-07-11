@@ -57,9 +57,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				_s = (N64Settings)_config.GetCoreSettings<N64>()
+				_s = _config.GetCoreSettings<N64, N64Settings>()
 					?? new N64Settings();
-				_ss = (N64SyncSettings)_config.GetCoreSyncSettings<N64>()
+				_ss = _config.GetCoreSyncSettings<N64, N64SyncSettings>()
 					?? new N64SyncSettings();
 			}
 

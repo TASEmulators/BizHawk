@@ -11,7 +11,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 	public partial class GambatteLink : IEmulator, IVideoProvider, ISoundProvider, IInputPollable, ISaveRam, IStatable, ILinkable,
 		IBoardInfo, IRomInfo, IDebuggable, ISettable<GambatteLink.GambatteLinkSettings, GambatteLink.GambatteLinkSyncSettings>, ICodeDataLogger
 	{
-		public GambatteLink(CoreComm comm, GameInfo leftinfo, byte[] leftrom, GameInfo rightinfo, byte[] rightrom, object settings, object syncSettings, bool deterministic)
+		public GambatteLink(CoreComm comm, GameInfo leftinfo, byte[] leftrom, GameInfo rightinfo, byte[] rightrom,
+			GambatteLink.GambatteLinkSettings settings, GambatteLink.GambatteLinkSyncSettings syncSettings, bool deterministic)
 		{
 			ServiceProvider = new BasicServiceProvider(this);
 			GambatteLinkSettings linkSettings = (GambatteLinkSettings)settings ?? new GambatteLinkSettings();

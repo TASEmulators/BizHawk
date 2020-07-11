@@ -30,7 +30,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 		public bool do_frame_fill;
 
 		//[CoreConstructor("GB", "GBC")]
-		public GBHawkLink3x(CoreComm comm, GameInfo game_L, byte[] rom_L, GameInfo game_C, byte[] rom_C, GameInfo game_R, byte[] rom_R, /*string gameDbFn,*/ object settings, object syncSettings)
+		public GBHawkLink3x(CoreComm comm, GameInfo game_L, byte[] rom_L, GameInfo game_C, byte[] rom_C, GameInfo game_R, byte[] rom_R,
+			/*string gameDbFn,*/ GBHawkLink3x.GBLink3xSettings settings, GBHawkLink3x.GBLink3xSyncSettings syncSettings)
 		{
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;

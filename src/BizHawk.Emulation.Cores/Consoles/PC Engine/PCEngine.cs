@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		IPceGpuView
 	{
 		[CoreConstructor(new[] { "PCE", "SGX" })]
-		public PCEngine(GameInfo game, byte[] rom, object settings, object syncSettings)
+		public PCEngine(GameInfo game, byte[] rom, PCEngine.PCESettings settings, PCEngine.PCESyncSettings syncSettings)
 		{
 			switch (game.System)
 			{
@@ -53,7 +53,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		int IVideoLogicalOffsets.ScreenY => Settings.TopLine;
 
-		public PCEngine(CoreComm comm, GameInfo game, Disc disc, object settings, object syncSettings)
+		public PCEngine(CoreComm comm, GameInfo game, Disc disc, PCESettings settings, PCESyncSettings syncSettings)
 		{
 			SystemId = "PCECD";
 			Type = NecSystemType.TurboCD;

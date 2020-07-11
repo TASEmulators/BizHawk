@@ -24,12 +24,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		IInputPollable, IDebuggable, IDriveLight, ICodeDataLogger, IDisassemblable
 	{
 		[CoreConstructor("GEN")]
-		public GPGX(CoreComm comm, GameInfo game, byte[] file, object settings, object syncSettings)
+		public GPGX(CoreComm comm, GameInfo game, byte[] file, GPGXSettings settings, GPGXSyncSettings syncSettings)
 			: this(comm, game, file, null, settings, syncSettings)
 		{
 		}
 
-		public GPGX(CoreComm comm, GameInfo game, byte[] rom, IEnumerable<Disc> cds, object settings, object syncSettings)
+		public GPGX(CoreComm comm, GameInfo game, byte[] rom, IEnumerable<Disc> cds, GPGXSettings settings, GPGXSyncSettings syncSettings)
 		{
 			LoadCallback = new LibGPGX.load_archive_cb(load_archive);
 			_inputCallback = new LibGPGX.input_cb(input_callback);

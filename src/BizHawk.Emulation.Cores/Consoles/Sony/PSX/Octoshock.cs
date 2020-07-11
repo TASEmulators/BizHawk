@@ -35,7 +35,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		isReleased: true)]
 	public unsafe partial class Octoshock : IEmulator, IVideoProvider, ISoundProvider, ISaveRam, IStatable, IDriveLight, ISettable<Octoshock.Settings, Octoshock.SyncSettings>, IRegionable, IInputPollable, IRomInfo
 	{
-		public Octoshock(CoreComm comm, PSF psf, object settings, object syncSettings)
+		public Octoshock(CoreComm comm, PSF psf, Octoshock.Settings settings, Octoshock.SyncSettings syncSettings)
 		{
 			string romDetails = "It's a PSF, what do you want. Oh, tags maybe?";
 			Load(comm, null, null, null, settings, syncSettings, psf, romDetails);
@@ -44,13 +44,13 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		//note: its annoying that we have to have a disc before constructing this.
 		//might want to change that later. HOWEVER - we need to definitely have a region, at least
-		public Octoshock(CoreComm comm, List<Disc> discs, List<string> discNames, byte[] exe, object settings, object syncSettings, string romDetails)
+		public Octoshock(CoreComm comm, List<Disc> discs, List<string> discNames, byte[] exe, Octoshock.Settings settings, Octoshock.SyncSettings syncSettings, string romDetails)
 		{
 			Load(comm, discs, discNames, exe, settings, syncSettings, null, romDetails);
 			OctoshockDll.shock_PowerOn(psx);
 		}
 
-		void Load(CoreComm comm, List<Disc> discs, List<string> discNames, byte[] exe, object settings, object syncSettings, PSF psf, string romDetails)
+		void Load(CoreComm comm, List<Disc> discs, List<string> discNames, byte[] exe, Octoshock.Settings settings, Octoshock.SyncSettings syncSettings, PSF psf, string romDetails)
 		{
 			RomDetails = romDetails;
 			ConnectTracer();

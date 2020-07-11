@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 		displayName: "Game Gear")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class GGHawkLink : IEmulator, ISaveRam, IDebuggable, IStatable, IInputPollable, IRegionable, ILinkable,
-	ISettable<GGHawkLink.GGLinkSettings, GGHawkLink.GGLinkSyncSettings>
+		ISettable<GGHawkLink.GGLinkSettings, GGHawkLink.GGLinkSyncSettings>
 	{
 		// we want to create two GG instances that we will run concurrently
 		public SMS L;
@@ -25,7 +25,8 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 
 		private bool do_r_next = false;
 
-		public GGHawkLink(CoreComm comm, GameInfo game_L, byte[] rom_L, GameInfo game_R, byte[] rom_R, /*string gameDbFn,*/ object settings, object syncSettings)
+		public GGHawkLink(CoreComm comm, GameInfo game_L, byte[] rom_L, GameInfo game_R, byte[] rom_R, /*string gameDbFn,*/
+			GGLinkSettings settings, GGLinkSyncSettings syncSettings)
 		{
 			var ser = new BasicServiceProvider(this);
 
