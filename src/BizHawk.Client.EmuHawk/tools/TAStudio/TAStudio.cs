@@ -1106,6 +1106,29 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		public void ClearFrames(int beginningFrame, int numberOfFrames)
+		{
+			if (beginningFrame < CurrentTasMovie.InputLogLength)
+			{
+				bool needsToRollback = TasView.FirstSelectedIndex < Emulator.Frame;
+				int last = Math.Min(beginningFrame + numberOfFrames, CurrentTasMovie.InputLogLength);
+				for (int i = beginningFrame; i < last; i++)
+				{
+					CurrentTasMovie.ClearFrame(i);
+				}
+				
+				if (needsToRollback)
+				{
+					GoToLastEmulatedFrameIfNecessary(beginningFrame);
+					DoAutoRestore();
+				}
+				else
+				{
+					RefreshDialog();
+				}
+			}
+		}
+
 		private void Tastudio_Closing(object sender, FormClosingEventArgs e)
 		{
 			if (!_initialized)

@@ -41,7 +41,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			InputChange,
 			InsertFrames,
-			DeleteFrames
+			DeleteFrames,
+			ClearFrames
 		}
 
 		private enum InputChangeTypes
@@ -268,6 +269,21 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[LuaMethodExample("")]
+		[LuaMethod("submitclearframes", "")]
+		public void SubmitClearFrames(int frame, int number)
+		{
+			if (Engaged() && 0.RangeToExclusive(Tastudio.CurrentTasMovie.InputLogLength).Contains(frame) && number > 0)
+			{
+				_changeList.Add(new PendingChanges
+				{
+					Type = LuaChangeTypes.ClearFrames,
+					Frame = frame,
+					Number = number
+				});
+			}
+		}
+
+		[LuaMethodExample("")]
 		[LuaMethod("applyinputchanges", "")]
 		public void ApplyInputChanges()
 		{
@@ -298,6 +314,9 @@ namespace BizHawk.Client.EmuHawk
 							case LuaChangeTypes.DeleteFrames:
 								Tastudio.DeleteFrames(_changeList[i].Frame, _changeList[i].Number);
 								break;
+							case LuaChangeTypes.ClearFrames:
+								Tastudio.ClearFrames(_changeList[i].Frame, _changeList[i].Number);
+								break;
 						}
 					}
 					_changeList.Clear();
@@ -305,8 +324,6 @@ namespace BizHawk.Client.EmuHawk
 					Tastudio.JumpToGreenzone();
 					Tastudio.DoAutoRestore();
 				}
-
-
 			}
 		}
 
