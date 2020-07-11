@@ -24,12 +24,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		IInputPollable, IDebuggable, IDriveLight, ICodeDataLogger, IDisassemblable
 	{
 		[CoreConstructor("GEN")]
-		public GPGX(CoreComm comm, GameInfo game, byte[] file, GPGXSettings settings, GPGXSyncSettings syncSettings)
-			: this(comm, game, file, null, settings, syncSettings)
-		{
-		}
-
-		public GPGX(CoreComm comm, GameInfo game, byte[] rom, IEnumerable<Disc> cds, GPGXSettings settings, GPGXSyncSettings syncSettings)
+		public GPGX(CoreLoadParameters<GPGXSettings, GPGXSyncSettings> lp)
 		{
 			LoadCallback = new LibGPGX.load_archive_cb(load_archive);
 			_inputCallback = new LibGPGX.input_cb(input_callback);
@@ -45,22 +40,22 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			// http://www.sega-16.com/forum/showthread.php?4398-Forgotten-Worlds-giving-you-GAME-OVER-immediately-Fix-inside&highlight=forgotten%20worlds
 
 			//hack, don't use
-			if (rom != null && rom.Length > 32 * 1024 * 1024)
+			if (lp.Roms.FirstOrDefault()?.RomData.Length > 32 * 1024 * 1024)
 			{
 				throw new InvalidOperationException("ROM too big!  Did you try to load a CD as a ROM?");
 			}
 
 			_elf = new WaterboxHost(new WaterboxOptions
 			{
-				Path = comm.CoreFileProvider.DllPath(),
+				Path = lp.Comm.CoreFileProvider.DllPath(),
 				Filename = "gpgx.wbx",
 				SbrkHeapSizeKB = 512,
 				SealedHeapSizeKB = 36 * 1024,
 				InvisibleHeapSizeKB = 4 * 1024,
 				PlainHeapSizeKB = 64 + 1024,
 				MmapHeapSizeKB = 1 * 1024,
-				SkipCoreConsistencyCheck = comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
-				SkipMemoryConsistencyCheck = comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
+				SkipCoreConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
+				SkipMemoryConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
 			});
 
 			var callingConventionAdapter = CallingConventionAdapters.MakeWaterbox(new Delegate[]
@@ -72,17 +67,17 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			using (_elf.EnterExit())
 			{
 				Core = BizInvoker.GetInvoker<LibGPGX>(_elf, _elf, callingConventionAdapter);
-				_syncSettings = (GPGXSyncSettings)syncSettings ?? new GPGXSyncSettings();
-				_settings = (GPGXSettings)settings ?? new GPGXSettings();
+				_syncSettings = lp.SyncSettings ?? new GPGXSyncSettings();
+				_settings = lp.Settings ?? new GPGXSettings();
 
-				CoreComm = comm;
+				CoreComm = lp.Comm;
 
-				_romfile = rom;
+				_romfile = lp.Roms.FirstOrDefault().RomData;
 
-				if (cds != null)
+				if (lp.Discs.Count > 0)
 				{
-					_cds = cds.ToArray();
-					_cdReaders = cds.Select(c => new DiscSectorReader(c)).ToArray();
+					_cds = lp.Discs.Select(d => d.DiscData).ToArray();
+					_cdReaders = _cds.Select(c => new DiscSectorReader(c)).ToArray();
 					Core.gpgx_set_cdd_callback(cd_callback_handle);
 					DriveLightEnabled = true;
 				}
@@ -90,7 +85,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				LibGPGX.INPUT_SYSTEM system_a = SystemForSystem(_syncSettings.ControlTypeLeft);
 				LibGPGX.INPUT_SYSTEM system_b = SystemForSystem(_syncSettings.ControlTypeRight);
 
-				var initResult = Core.gpgx_init(romextension, LoadCallback, _syncSettings.GetNativeSettings(game));
+				var initResult = Core.gpgx_init(romextension, LoadCallback, _syncSettings.GetNativeSettings(lp.Game));
 
 				if (!initResult)
 					throw new Exception($"{nameof(Core.gpgx_init)}() failed");

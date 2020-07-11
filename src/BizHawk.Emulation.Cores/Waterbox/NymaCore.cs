@@ -28,6 +28,23 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		}
 
 		private LibNymaCore _nyma;
+		protected T DoInit<T>(
+			CoreLoadParameters<NymaSettings, NymaSyncSettings> lp,
+			string wbxFilename,
+			IDictionary<string, (string SystemID, string FirmwareID)> firmwares = null
+		)
+			where T : LibNymaCore
+		{
+			return DoInit<T>(
+				lp.Game,
+				lp.Roms.FirstOrDefault()?.RomData,
+				lp.Discs.Select(d => d.DiscData).ToArray(),
+				wbxFilename,
+				lp.Roms.FirstOrDefault()?.Extension,
+				lp.DeterministicEmulationRequested,
+				firmwares
+			);
+		}
 		protected T DoInit<T>(GameInfo game, byte[] rom, Disc[] discs, string wbxFilename, string extension, bool deterministic,
 			IDictionary<string, (string SystemID, string FirmwareID)> firmwares = null)
 			where T : LibNymaCore

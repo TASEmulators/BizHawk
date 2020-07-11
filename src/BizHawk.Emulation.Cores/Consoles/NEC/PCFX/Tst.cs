@@ -17,23 +17,15 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCFX
 		"https://mednafen.github.io/releases/", false, "PC-FX")]
 	public class Tst : NymaCore
 	{
-		[CoreConstructor("PCFX")]
-		public Tst(CoreComm comm, NymaSettings settings, NymaSyncSettings syncSettings)
-			: base(comm, "PCFX", "PC-FX Controller", settings, syncSettings)
-		{
-			throw new InvalidOperationException("To load a PC-FX game, please load the CUE file and not the BIN file.");
-		}
-
-		public Tst(CoreComm comm, GameInfo game,
-			IEnumerable<Disc> disks, NymaSettings settings, NymaSyncSettings syncSettings, bool deterministic)
-			: base(comm, "PCFX", "PC-FX Controller", settings, syncSettings)
+		public Tst(CoreLoadParameters<NymaSettings, NymaSyncSettings> lp)
+			: base(lp.Comm, "PCFX", "PC-FX Controller", lp.Settings, lp.SyncSettings)
 		{
 			var firmwares = new Dictionary<string, (string, string)>
 			{
 				{ "FIRMWARE:pcfx.rom", ("PCFX", "BIOS") },
 			};
 
-			DoInit<LibNymaCore>(game, null, disks.ToArray(), "pcfx.wbx", null, deterministic, firmwares);
+			DoInit<LibNymaCore>(lp, "pcfx.wbx", firmwares);
 		}
 
 		protected override IDictionary<string, SettingOverride> SettingOverrides { get; } = new Dictionary<string, SettingOverride>

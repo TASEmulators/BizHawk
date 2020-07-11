@@ -15,11 +15,19 @@ namespace BizHawk.Emulation.Cores
 
 		public class Core
 		{
+			private class RomGameFake : IRomGame
+			{
+				public byte[] RomData { get; set; }
+				public byte[] FileData { get; set; }
+				public string Extension { get; set; }
+			}
 			// expected names and types of the parameters
 			private static readonly Dictionary<string, Type> ParamTypes = new Dictionary<string, Type>();
 
 			// map parameter names to locations in the constructor
 			private readonly Dictionary<string, int> _paramMap = new Dictionary<string, int>();
+
+			private readonly bool _useCoreLoadParameters;
 
 			static Core()
 			{
@@ -40,6 +48,16 @@ namespace BizHawk.Emulation.Cores
 				CTor = ctor;
 
 				var pp = CTor.GetParameters();
+				if (pp.Length == 1
+					&& pp[0].ParameterType.IsGenericType
+					&& pp[0].ParameterType.GetGenericTypeDefinition() == typeof(CoreLoadParameters<,>)
+				)
+				{
+					_useCoreLoadParameters = true;
+					SettingsType = pp[0].ParameterType.GetGenericArguments()[0];
+					SyncSettingsType = pp[0].ParameterType.GetGenericArguments()[1];
+					return;
+				}
 				for (int i = 0; i < pp.Length ; i++)
 				{
 					var p = pp[i];
@@ -93,6 +111,24 @@ namespace BizHawk.Emulation.Cores
 				string extension
 			)
 			{
+				if (_useCoreLoadParameters)
+				{
+					var paramType = typeof(CoreLoadParameters<,>).MakeGenericType(new[] { SettingsType, SyncSettingsType });
+					// TODO: clean this up
+					dynamic param = Activator.CreateInstance(paramType);
+					param.Comm = comm;
+					param.Game = game;
+					param.Settings = settings;
+					param.SyncSettings = syncSettings;
+					param.Roms.Add(new RomGameFake
+					{
+						RomData = rom,
+						FileData = file,
+						Extension = extension
+					});
+					param.DeterministicEmulationRequested = deterministic;
+					return (IEmulator)CTor.Invoke(new object[] { param });
+				}
 				object[] o = new object[_paramMap.Count];
 				Bp(o, "comm", comm);
 				Bp(o, "game", game);

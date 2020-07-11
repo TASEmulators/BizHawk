@@ -23,16 +23,15 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 		{
 			_hyperNyma = DoInit<LibHyperNyma>(game, rom, null, "hyper.wbx", extension, deterministic);
 		}
-		public HyperNyma(GameInfo game, Disc[] discs, CoreComm comm,
-			NymaSettings settings, NymaSyncSettings syncSettings, bool deterministic)
-			: base(comm, "PCE", "PC Engine Controller", settings, syncSettings)
+		public HyperNyma(CoreLoadParameters<NymaSettings, NymaSyncSettings> lp)
+			: base(lp.Comm, "PCE", "PC Engine Controller", lp.Settings, lp.SyncSettings)
 		{
 			var firmwares = new Dictionary<string, (string, string)>
 			{
 				{ "FIRMWARE:syscard3.pce", ("PCECD", "Bios") },
 				// { "FIRMWARE:gecard.pce", ("PCECD", "GE-Bios") },
 			};
-			_hyperNyma = DoInit<LibHyperNyma>(game, null, discs, "hyper.wbx", null, deterministic, firmwares);
+			_hyperNyma = DoInit<LibHyperNyma>(lp, "hyper.wbx", firmwares);
 		}
 
 		public override string SystemId => IsSgx ? "SGX" : "PCE";

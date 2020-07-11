@@ -39,6 +39,17 @@ namespace BizHawk.Client.Common
 {
 	public class RomLoader
 	{
+		private class DiscGame : IDiscGame
+		{
+			public Disc DiscData { get; set; }
+			public DiscType DiscType { get; set; }
+		}	
+		private class RomGameFake : IRomGame
+		{
+			public byte[] RomData { get; set; }
+			public byte[] FileData { get; set; }
+			public string Extension { get; set; }
+		}
 		private readonly Config _config;
 		private readonly FirmwareManager _firmwareManager;
 
@@ -303,26 +314,34 @@ namespace BizHawk.Client.Common
 				}
 			}
 
+			CoreLoadParameters<TSetting, TSync> MakeCLP<TEmulator, TSetting, TSync>(GameInfo g)
+				where TEmulator : IEmulator
+			{
+				return new CoreLoadParameters<TSetting, TSync>
+				{
+					Comm = nextComm,
+					Game = g,
+					Settings = GetCoreSettings<TEmulator, TSetting>(),
+					SyncSettings = GetCoreSyncSettings<TEmulator, TSync>(),
+					Discs =
+					{
+						new DiscGame
+						{
+							DiscData = disc,
+							DiscType = new DiscIdentifier(disc).DetectDiscType()
+						}
+					},
+					DeterministicEmulationRequested = Deterministic
+				};
+			}
+
 			switch (game.System)
 			{
 				case "GEN":
-					nextEmulator = new GPGX(
-						nextComm,
-						game,
-						null,
-						new[] { disc },
-						GetCoreSettings<GPGX, GPGX.GPGXSettings>(),
-						GetCoreSyncSettings<GPGX, GPGX.GPGXSyncSettings>()
-					);
+					nextEmulator = new GPGX(MakeCLP<GPGX, GPGX.GPGXSettings, GPGX.GPGXSyncSettings>(game));
 					break;
 				case "SAT":
-					nextEmulator = new Saturnus(
-						nextComm, game,
-						new[] { disc },
-						GetCoreSettings<Saturnus, NymaCore.NymaSettings>(),
-						GetCoreSyncSettings<Saturnus, NymaCore.NymaSyncSettings>(),
-						Deterministic
-					);
+					nextEmulator = new Saturnus(MakeCLP<Saturnus, NymaCore.NymaSettings, NymaCore.NymaSyncSettings>(game));
 					break;
 				case "PSX":
 					nextEmulator = new Octoshock(
@@ -336,10 +355,7 @@ namespace BizHawk.Client.Common
 					);
 					break;
 				case "PCFX":
-					nextEmulator = new Tst(nextComm, game, new[] { disc },
-						GetCoreSettings<Tst, NymaCore.NymaSettings>(),
-						GetCoreSyncSettings<Tst, NymaCore.NymaSyncSettings>(),
-						Deterministic);
+					nextEmulator = new Tst(MakeCLP<Tst, NymaCore.NymaSettings, NymaCore.NymaSyncSettings>(game));
 					break;
 				case "PCE": // TODO: this is clearly not used, its set to PCE by code above
 				case "PCECD":
@@ -353,22 +369,8 @@ namespace BizHawk.Client.Common
 							GetCoreSettings<PCEngine, PCEngine.PCESettings>(),
 							GetCoreSyncSettings<PCEngine, PCEngine.PCESyncSettings>()
 						),
-						CoreNames.HyperNyma => new HyperNyma(
-							game,
-							new[] { disc },
-							nextComm,
-							GetCoreSettings<HyperNyma, NymaCore.NymaSettings>(),
-							GetCoreSyncSettings<HyperNyma, NymaCore.NymaSyncSettings>(),
-							Deterministic
-						),
-						_ => new TurboNyma(
-							game,
-							new[] { disc },
-							nextComm,
-							GetCoreSettings<TurboNyma, NymaCore.NymaSettings>(),
-							GetCoreSyncSettings<TurboNyma, NymaCore.NymaSyncSettings>(),
-							Deterministic
-						)
+						CoreNames.HyperNyma => new HyperNyma(MakeCLP<HyperNyma, NymaCore.NymaSettings, NymaCore.NymaSyncSettings>(game)),
+						_ => new TurboNyma(MakeCLP<TurboNyma, NymaCore.NymaSettings, NymaCore.NymaSyncSettings>(game)),
 					};
 					break;
 				default:
@@ -671,6 +673,27 @@ namespace BizHawk.Client.Common
 				var xmlGame = XmlGame.Create(file); // if load fails, are we supposed to retry as a bsnes XML????????
 				game = xmlGame.GI;
 
+				CoreLoadParameters<TSetting, TSync> MakeCLP<TEmulator, TSetting, TSync>(GameInfo g, IEnumerable<Disc> disques)
+					where TEmulator : IEmulator
+				{
+					return new CoreLoadParameters<TSetting, TSync>
+					{
+						Comm = nextComm,
+						Game = g,
+						Settings = GetCoreSettings<TEmulator, TSetting>(),
+						SyncSettings = GetCoreSyncSettings<TEmulator, TSync>(),
+						Discs = disques
+							.Select(d =>
+								(IDiscGame)new DiscGame
+								{
+									DiscData = d,
+									DiscType = new DiscIdentifier(d).DetectDiscType()
+								})
+							.ToList(),
+						DeterministicEmulationRequested = Deterministic
+					};
+				}
+
 				switch (game.System)
 				{
 					case "GB":
@@ -820,35 +843,28 @@ namespace BizHawk.Client.Common
 					case "SAT":
 						var saturnDiscs = DiscsFromXml(xmlGame, "SAT", DiscType.SegaSaturn);
 						if (saturnDiscs.Count == 0) return false;
-						nextEmulator = new Saturnus(
-							nextComm, game,
-							saturnDiscs,
-							GetCoreSettings<Saturnus, NymaCore.NymaSettings>(),
-							GetCoreSyncSettings<Saturnus, NymaCore.NymaSyncSettings>(),
-							Deterministic
-						);
+						nextEmulator = new Saturnus(MakeCLP<Saturnus, NymaCore.NymaSettings, NymaCore.NymaSyncSettings>(game, saturnDiscs));
 						return true;
 					case "PCFX":
 						var pcfxDiscs = DiscsFromXml(xmlGame, "PCFX", DiscType.PCFX);
 						if (pcfxDiscs.Count == 0) return false;
-						nextEmulator = new Tst(nextComm, game, pcfxDiscs,
-							GetCoreSettings<Tst, NymaCore.NymaSettings>(),
-							GetCoreSyncSettings<Tst, NymaCore.NymaSyncSettings>(),
-							Deterministic);
+						nextEmulator = new Tst(MakeCLP<Tst, NymaCore.NymaSettings, NymaCore.NymaSyncSettings>(game, pcfxDiscs));
 						return true;
 					case "GEN":
+					{
 						var genDiscs = DiscsFromXml(xmlGame, "GEN", DiscType.MegaCD);
-						var romBytes = xmlGame.Assets.FirstOrDefault(kvp => !Disc.IsValidExtension(kvp.Key)).Value;
-						if (genDiscs.Count == 0 && romBytes == null) return false;
-						nextEmulator = new GPGX(
-							nextComm,
-							game,
-							romBytes,
-							genDiscs,
-							GetCoreSettings<GPGX, GPGX.GPGXSettings>(),
-							GetCoreSyncSettings<GPGX, GPGX.GPGXSyncSettings>()
-						);
+						var genRoms = xmlGame.Assets.Where(kvp => !Disc.IsValidExtension(kvp.Key)).ToList();
+						if (genDiscs.Count == 0 && genRoms.Count == 0) return false;
+						var clp = MakeCLP<GPGX, GPGX.GPGXSettings, GPGX.GPGXSyncSettings>(game, genDiscs);
+						clp.Roms.AddRange(genRoms.Select(kvp => new RomGameFake
+						{
+							RomData = kvp.Value,
+							FileData = kvp.Value, // TODO: Hope no one needed anything special here
+							Extension = Path.GetExtension(kvp.Key)
+						}));
+						nextEmulator = new GPGX(clp);
 						return true;
+					}
 					case "Game Gear":
 						var leftBytesGG = xmlGame.Assets[0].Value;
 						var rightBytesGG = xmlGame.Assets[1].Value;

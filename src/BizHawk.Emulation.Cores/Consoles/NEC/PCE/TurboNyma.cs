@@ -25,18 +25,16 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 				SettingOverrides["pce.disable_bram_hucard"].Default = "0";
 			_turboNyma = DoInit<LibTurboNyma>(game, rom, null, "turbo.wbx", extension, deterministic);
 		}
-		public TurboNyma(GameInfo game, Disc[] discs, CoreComm comm,
-			NymaSettings settings, NymaSyncSettings syncSettings, bool deterministic)
-			: base(comm, "PCE", "PC Engine Controller", settings, syncSettings)
+		public TurboNyma(CoreLoadParameters<NymaSettings, NymaSyncSettings> lp)
+			: base(lp.Comm, "PCE", "PC Engine Controller", lp.Settings, lp.SyncSettings)
 		{
-			var ids = discs.Select(d => new DiscIdentifier(d).DetectDiscType())
-				.ToList();
+			var ids = lp.Discs.Select(dg => dg.DiscType).ToList();
 			var firmwares = new Dictionary<string, (string, string)>();
 			if (ids.Contains(DiscType.TurboCD))
 				firmwares.Add("FIRMWARE:syscard3.pce", ("PCECD", "Bios"));
 			if (ids.Contains(DiscType.TurboGECD))
 				firmwares.Add("FIRMWARE:gecard.pce", ("PCECD", "GE-Bios"));
-			_turboNyma = DoInit<LibTurboNyma>(game, null, discs, "turbo.wbx", null, deterministic, firmwares);
+			_turboNyma = DoInit<LibTurboNyma>(lp, "turbo.wbx", firmwares);
 		}
 
 		public override string SystemId => IsSgx ? "SGX" : "PCE";

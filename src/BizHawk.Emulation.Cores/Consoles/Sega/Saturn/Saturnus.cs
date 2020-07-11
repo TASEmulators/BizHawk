@@ -26,9 +26,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 			throw new InvalidOperationException("To load a Saturn game, please load the CUE file and not the BIN file.");
 		}
 
-		public Saturnus(CoreComm comm, GameInfo game,
-			IEnumerable<Disc> disks, NymaSettings settings, NymaSyncSettings syncSettings, bool deterministic)
-			: base(comm, "SAT", "Saturn Controller", settings, syncSettings)
+		public Saturnus(CoreLoadParameters<NymaSettings, NymaSyncSettings> lp)
+			: base(lp.Comm, "SAT", "Saturn Controller", lp.Settings, lp.SyncSettings)
 		{
 			var firmwares = new Dictionary<string, (string, string)>
 			{
@@ -38,8 +37,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 				{ "FIRMWARE:$ULTRA", ("SAT", "ULTRAMAN") },
 				// { "FIRMWARE:$SATAR", ("SAT", "AR") }, // action replay garbage
 			};
-
-			DoInit<LibNymaCore>(game, null, disks.ToArray(), "ss.wbx", null, deterministic, firmwares);
+			DoInit<LibNymaCore>(lp, "ss.wbx", firmwares);
 		}
 
 		protected override IDictionary<string, SettingOverride> SettingOverrides { get; } = new Dictionary<string, SettingOverride>
