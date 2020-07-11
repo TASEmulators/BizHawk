@@ -1462,10 +1462,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				EditAnalogProgrammatically(e);
 			}
-			else if (!e.Control && !e.Shift && !e.Alt)
-			{
-				
-			}
 
 			RefreshDialog();
 		}
