@@ -69,20 +69,18 @@ namespace BizHawk.Emulation.Common
 	/// </summary>
 	public class SettingsAdapter
 	{
-		public SettingsAdapter(IEmulator e)
+		public SettingsAdapter(IEmulator emulator)
 		{
-			_emu = e;
-
-			Type impl = e.GetType().GetInterfaces()
-				.FirstOrDefault(t => t.IsGenericType && t.GetGenericTypeDefinition() == typeof(ISettable<,>));
-			if (impl == null)
+			var settableType = emulator.ServiceProvider.AvailableServices
+				.SingleOrDefault(t => t.IsGenericType && t.GetGenericTypeDefinition() == typeof(ISettable<,>));
+			if (settableType == null)
 			{
 				HasSettings = false;
 				HasSyncSettings = false;
 			}
 			else
 			{
-				var tt = impl.GetGenericArguments();
+				var tt = settableType.GetGenericArguments();
 				var settingType = tt[0];
 				var syncType = tt[1];
 				HasSettings = settingType != typeof(object); // object is used for a placeholder where an emu doesn't have both s and ss
@@ -90,25 +88,27 @@ namespace BizHawk.Emulation.Common
 
 				if (HasSettings)
 				{
-					_gets = impl.GetMethod("GetSettings");
-					_puts = impl.GetMethod("PutSettings");
+					_gets = settableType.GetMethod("GetSettings");
+					_puts = settableType.GetMethod("PutSettings");
 				}
 
 				if (HasSyncSettings)
 				{
-					_getss = impl.GetMethod("GetSyncSettings");
-					_putss = impl.GetMethod("PutSyncSettings");
+					_getss = settableType.GetMethod("GetSyncSettings");
+					_putss = settableType.GetMethod("PutSyncSettings");
 				}
+
+				_settable = emulator.ServiceProvider.GetService(settableType);
 			}
 		}
 
-		private readonly IEmulator _emu;
+		private readonly object _settable;
 
 		public bool HasSettings { get; }
 		public bool HasSyncSettings { get; }
 
-		private readonly object[] _tmp1 = new object[1];
-		private readonly object[] _tmp0 = new object[0];
+		private readonly object[] _tempObject = new object[1];
+		private static readonly object[] Empty = new object[0];
 
 		private readonly MethodInfo _gets;
 		private readonly MethodInfo _puts;
@@ -123,7 +123,7 @@ namespace BizHawk.Emulation.Common
 				throw new InvalidOperationException();
 			}
 
-			return _gets.Invoke(_emu, _tmp0);
+			return _gets.Invoke(_settable, Empty);
 		}
 
 		/// <exception cref="InvalidOperationException">does not have sync settings</exception>
@@ -134,7 +134,7 @@ namespace BizHawk.Emulation.Common
 				throw new InvalidOperationException();
 			}
 
-			return _getss.Invoke(_emu, _tmp0);
+			return _getss.Invoke(_settable, Empty);
 		}
 
 		/// <exception cref="InvalidOperationException">does not have non-sync settings</exception>
@@ -145,8 +145,8 @@ namespace BizHawk.Emulation.Common
 				throw new InvalidOperationException();
 			}
 
-			_tmp1[0] = o;
-			return (PutSettingsDirtyBits)_puts.Invoke(_emu, _tmp1);
+			_tempObject[0] = o;
+			return (PutSettingsDirtyBits)_puts.Invoke(_settable, _tempObject);
 		}
 
 		/// <exception cref="InvalidOperationException">does not have sync settings</exception>
@@ -157,8 +157,8 @@ namespace BizHawk.Emulation.Common
 				throw new InvalidOperationException();
 			}
 
-			_tmp1[0] = o;
-			return (PutSettingsDirtyBits)_putss.Invoke(_emu, _tmp1);
+			_tempObject[0] = o;
+			return (PutSettingsDirtyBits)_putss.Invoke(_settable, _tempObject);
 		}
 	}
 }
