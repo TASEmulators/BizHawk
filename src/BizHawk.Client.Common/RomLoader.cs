@@ -353,14 +353,14 @@ namespace BizHawk.Client.Common
 							GetCoreSettings<PCEngine, PCEngine.PCESettings>(),
 							GetCoreSyncSettings<PCEngine, PCEngine.PCESyncSettings>()
 						),
-//						CoreNames.HyperNyma => new HyperNyma(
-//							game,
-//							new[] { disc },
-//							nextComm,
-//							(NymaCore.NymaSettings) GetCoreSettings<HyperNyma>(),
-//							(NymaCore.NymaSyncSettings) GetCoreSyncSettings<HyperNyma>(),
-//							Deterministic
-//						),
+						CoreNames.HyperNyma => new HyperNyma(
+							game,
+							new[] { disc },
+							nextComm,
+							GetCoreSettings<HyperNyma, NymaCore.NymaSettings>(),
+							GetCoreSyncSettings<HyperNyma, NymaCore.NymaSyncSettings>(),
+							Deterministic
+						),
 						_ => new TurboNyma(
 							game,
 							new[] { disc },
