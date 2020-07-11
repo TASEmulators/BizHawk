@@ -43,6 +43,7 @@ namespace BizHawk.Client.Common
 		{
 			public Disc DiscData { get; set; }
 			public DiscType DiscType { get; set; }
+			public string DiscName { get; set; }
 		}	
 		private class RomGameFake : IRomGame
 		{
@@ -231,11 +232,25 @@ namespace BizHawk.Client.Common
 			return true;
 		}
 
-		private List<Disc> DiscsFromXml(XmlGame xmlGame, string systemId, DiscType diskType)
-			=> xmlGame.AssetFullPaths.Where(path => Disc.IsValidExtension(Path.GetExtension(path)))
-				.Select(path => diskType.Create(path, str => DoLoadErrorCallback(str, systemId, LoadErrorType.DiscError)))
-				.Where(disc => disc != null)
+		private List<IDiscGame> DiscsFromXml(XmlGame xmlGame, string systemId, DiscType diskType)
+		{
+			return xmlGame
+				.AssetFullPaths
+				.Where(path => Disc.IsValidExtension(Path.GetExtension(path)))
+				.Select(path => new
+					{
+						d = diskType.Create(path, str => DoLoadErrorCallback(str, systemId, LoadErrorType.DiscError)),
+						p = path,
+					})
+				.Where(a => a.d != null)
+				.Select(a => (IDiscGame)new DiscGame
+				{
+					DiscData = a.d,
+					DiscType = diskType,
+					DiscName = Path.GetFileNameWithoutExtension(a.p)
+				})
 				.ToList();
+		}
 
 		private bool LoadDisc(string path, CoreComm nextComm, HawkFile file, string ext, out IEmulator nextEmulator, out GameInfo game)
 		{
@@ -328,7 +343,8 @@ namespace BizHawk.Client.Common
 						new DiscGame
 						{
 							DiscData = disc,
-							DiscType = new DiscIdentifier(disc).DetectDiscType()
+							DiscType = new DiscIdentifier(disc).DetectDiscType(),
+							DiscName = Path.GetFileNameWithoutExtension(path)
 						}
 					},
 					DeterministicEmulationRequested = Deterministic
@@ -344,15 +360,7 @@ namespace BizHawk.Client.Common
 					nextEmulator = new Saturnus(MakeCLP<Saturnus, NymaCore.NymaSettings, NymaCore.NymaSyncSettings>(game));
 					break;
 				case "PSX":
-					nextEmulator = new Octoshock(
-						nextComm,
-						new List<Disc> { disc },
-						new List<string> { Path.GetFileNameWithoutExtension(path) },
-						null,
-						GetCoreSettings<Octoshock, Octoshock.Settings>(),
-						GetCoreSyncSettings<Octoshock, Octoshock.SyncSettings>(),
-						DiscHashWarningText(game, discHash)
-					);
+					nextEmulator = new Octoshock(MakeCLP<Octoshock, Octoshock.Settings, Octoshock.SyncSettings>(game));
 					break;
 				case "PCFX":
 					nextEmulator = new Tst(MakeCLP<Tst, NymaCore.NymaSettings, NymaCore.NymaSyncSettings>(game));
@@ -382,41 +390,7 @@ namespace BizHawk.Client.Common
 
 		private void LoadM3U(string path, CoreComm nextComm, HawkFile file, out IEmulator nextEmulator, out GameInfo game)
 		{
-			// HACK ZONE - currently only psx supports m3u
-			using var sr = new StreamReader(path);
-			var m3u = M3U_File.Read(sr);
-			if (m3u.Entries.Count == 0) throw new InvalidOperationException("Can't load an empty M3U");
-
-			// load discs for all the m3u
-			m3u.Rebase(Path.GetDirectoryName(path));
-			var discs = new List<Disc>();
-			var discNames = new List<string>();
-			var swRomDetails = new StringWriter();
-			foreach (var e in m3u.Entries)
-			{
-				var disc = DiscType.SonyPSX.Create(e.Path, str => DoLoadErrorCallback(str, "PSX", LoadErrorType.DiscError));
-				discs.Add(disc);
-				discNames.Add(Path.GetFileNameWithoutExtension(e.Path));
-				var discHash = new DiscHasher(disc).Calculate_PSX_BizIDHash().ToString("X8");
-				swRomDetails.WriteLine(Path.GetFileName(e.Path));
-				swRomDetails.WriteLine(DiscHashWarningText(Database.CheckDatabase(discHash), discHash));
-				swRomDetails.WriteLine("-------------------------");
-			}
-
-			game = new GameInfo
-			{
-				Name = Path.GetFileNameWithoutExtension(file.Name),
-				System = "PSX"
-			};
-			nextEmulator = new Octoshock(
-				nextComm,
-				discs,
-				discNames,
-				null,
-				GetCoreSettings<Octoshock, Octoshock.Settings>(),
-				GetCoreSyncSettings<Octoshock, Octoshock.SyncSettings>(),
-				swRomDetails.ToString()
-			);
+			throw new NotImplementedException("M3U not supported!");
 		}
 
 		private void LoadOther(string path, CoreComm nextComm, bool forceAccurateCore, HawkFile file, out IEmulator nextEmulator, out RomGame rom, out GameInfo game, out bool cancel)
@@ -596,17 +570,6 @@ namespace BizHawk.Client.Common
 						GetCoreSyncSettings<AmstradCPC, AmstradCPC.AmstradCPCSyncSettings>()
 					);
 					return;
-				case "PSX":
-					nextEmulator = new Octoshock(
-						nextComm,
-						null,
-						null,
-						rom.FileData,
-						GetCoreSettings<Octoshock, Octoshock.Settings>(),
-						GetCoreSyncSettings<Octoshock, Octoshock.SyncSettings>(),
-						"PSX etc."
-					);
-					return;
 				case "Arcade":
 					nextEmulator = new MAME(
 						file.Directory,
@@ -673,7 +636,7 @@ namespace BizHawk.Client.Common
 				var xmlGame = XmlGame.Create(file); // if load fails, are we supposed to retry as a bsnes XML????????
 				game = xmlGame.GI;
 
-				CoreLoadParameters<TSetting, TSync> MakeCLP<TEmulator, TSetting, TSync>(GameInfo g, IEnumerable<Disc> disques)
+				CoreLoadParameters<TSetting, TSync> MakeCLP<TEmulator, TSetting, TSync>(GameInfo g, DiscType type, string systemId)
 					where TEmulator : IEmulator
 				{
 					return new CoreLoadParameters<TSetting, TSync>
@@ -682,15 +645,8 @@ namespace BizHawk.Client.Common
 						Game = g,
 						Settings = GetCoreSettings<TEmulator, TSetting>(),
 						SyncSettings = GetCoreSyncSettings<TEmulator, TSync>(),
-						Discs = disques
-							.Select(d =>
-								(IDiscGame)new DiscGame
-								{
-									DiscData = d,
-									DiscType = new DiscIdentifier(d).DetectDiscType()
-								})
-							.ToList(),
-						DeterministicEmulationRequested = Deterministic
+						Discs = DiscsFromXml(xmlGame, systemId, type),
+						DeterministicEmulationRequested = Deterministic,
 					};
 				}
 
@@ -810,52 +766,18 @@ namespace BizHawk.Client.Common
 						);
 						return true;
 					case "PSX":
-						var entries = xmlGame.AssetFullPaths;
-						var discs = new List<Disc>();
-						var discNames = new List<string>();
-						var swRomDetails = new StringWriter();
-						foreach (var e in entries)
-						{
-							var disc = DiscType.SonyPSX.Create(e, str => DoLoadErrorCallback(str, "PSX", LoadErrorType.DiscError));
-							discs.Add(disc);
-							discNames.Add(Path.GetFileNameWithoutExtension(e));
-							var discHash = new DiscHasher(disc).Calculate_PSX_BizIDHash().ToString("X8");
-							swRomDetails.WriteLine(Path.GetFileName(e));
-							swRomDetails.WriteLine(DiscHashWarningText(Database.CheckDatabase(discHash), discHash));
-							swRomDetails.WriteLine("-------------------------");
-						}
-						// todo: copy pasta from PSX .cue section
-						game = new GameInfo
-						{
-							Name = Path.GetFileNameWithoutExtension(file.Name),
-							System = "PSX"
-						};
-						nextEmulator = new Octoshock(
-							nextComm,
-							discs,
-							discNames,
-							null,
-							GetCoreSettings<Octoshock, Octoshock.Settings>(),
-							GetCoreSyncSettings<Octoshock, Octoshock.SyncSettings>(),
-							swRomDetails.ToString()
-						);
+						nextEmulator = new Octoshock(MakeCLP<Octoshock, Octoshock.Settings, Octoshock.SyncSettings>(game, DiscType.SonyPSX, "PSX"));
 						return true;
 					case "SAT":
-						var saturnDiscs = DiscsFromXml(xmlGame, "SAT", DiscType.SegaSaturn);
-						if (saturnDiscs.Count == 0) return false;
-						nextEmulator = new Saturnus(MakeCLP<Saturnus, NymaCore.NymaSettings, NymaCore.NymaSyncSettings>(game, saturnDiscs));
+						nextEmulator = new Saturnus(MakeCLP<Saturnus, NymaCore.NymaSettings, NymaCore.NymaSyncSettings>(game, DiscType.SegaSaturn, "SAT"));
 						return true;
 					case "PCFX":
-						var pcfxDiscs = DiscsFromXml(xmlGame, "PCFX", DiscType.PCFX);
-						if (pcfxDiscs.Count == 0) return false;
-						nextEmulator = new Tst(MakeCLP<Tst, NymaCore.NymaSettings, NymaCore.NymaSyncSettings>(game, pcfxDiscs));
+						nextEmulator = new Tst(MakeCLP<Tst, NymaCore.NymaSettings, NymaCore.NymaSyncSettings>(game, DiscType.PCFX, "PCFX"));
 						return true;
 					case "GEN":
 					{
-						var genDiscs = DiscsFromXml(xmlGame, "GEN", DiscType.MegaCD);
 						var genRoms = xmlGame.Assets.Where(kvp => !Disc.IsValidExtension(kvp.Key)).ToList();
-						if (genDiscs.Count == 0 && genRoms.Count == 0) return false;
-						var clp = MakeCLP<GPGX, GPGX.GPGXSettings, GPGX.GPGXSyncSettings>(game, genDiscs);
+						var clp = MakeCLP<GPGX, GPGX.GPGXSettings, GPGX.GPGXSyncSettings>(game, DiscType.MegaCD, "GEN");
 						clp.Roms.AddRange(genRoms.Select(kvp => new RomGameFake
 						{
 							RomData = kvp.Value,
@@ -1131,10 +1053,5 @@ namespace BizHawk.Client.Common
 			.ToList();
 
 		public static readonly string RomFilter = RomFSFilterSet.ToString("Everything");
-
-		private static string DiscHashWarningText(GameInfo game, string discHash)
-			=> game == null || game.IsRomStatusBad() || game.Status == RomStatus.NotInDatabase
-				? "Disc could not be identified as known-good. Look for a better rip."
-				: $"Disc was identified (99.99% confidently) as known good with disc id hash CRC32:{discHash}\nNonetheless it could be an unrecognized romhack or patched version.\nAccording to redump.org, the ideal hash for entire disc is: CRC32:{game.GetStringValue("dh")}\nThe file you loaded hasn't been hashed entirely (it would take too long)\nCompare it with the full hash calculated by the PSX menu's Hash Discs tool";
 	}
 }

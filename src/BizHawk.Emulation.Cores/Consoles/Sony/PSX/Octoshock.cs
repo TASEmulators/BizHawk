@@ -44,13 +44,54 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		//note: its annoying that we have to have a disc before constructing this.
 		//might want to change that later. HOWEVER - we need to definitely have a region, at least
-		public Octoshock(CoreComm comm, List<Disc> discs, List<string> discNames, byte[] exe, Octoshock.Settings settings, Octoshock.SyncSettings syncSettings, string romDetails)
+		[CoreConstructor("PSX")]
+		public Octoshock(CoreLoadParameters<Octoshock.Settings, Octoshock.SyncSettings> lp)
 		{
-			Load(comm, discs, discNames, exe, settings, syncSettings, null, romDetails);
+			string romDetails;
+			if (lp.Discs.Count > 0)
+			{
+				string DiscHashWarningText(GameInfo game, string discHash)
+				{
+					if (game == null || game.IsRomStatusBad() || game.Status == RomStatus.NotInDatabase)
+					{
+						return "Disc could not be identified as known-good. Look for a better rip.";
+					}
+					else
+					{
+						return $"Disc was identified (99.99% confidently) as known good with disc id hash CRC32:{discHash}\n"
+							+ "Nonetheless it could be an unrecognized romhack or patched version.\n"
+							+ $"According to redump.org, the ideal hash for entire disc is: CRC32:{game.GetStringValue("dh")}\n"
+							+ "The file you loaded hasn't been hashed entirely (it would take too long)\n"
+							+ "Compare it with the full hash calculated by the PSX menu's Hash Discs tool";
+					}
+				}
+
+				var sw = new StringWriter();
+				foreach (var d in lp.Discs)
+				{
+					var discHash = new DiscHasher(d.DiscData).Calculate_PSX_BizIDHash().ToString("X8");
+					sw.WriteLine(Path.GetFileName(d.DiscName));
+					sw.WriteLine(DiscHashWarningText(Database.CheckDatabase(discHash), discHash));
+					sw.WriteLine("-------------------------");
+				}
+				romDetails = sw.ToString();
+			}
+			else
+			{
+				romDetails = "PSX exe";
+			}
+
+			Load(
+				lp.Comm,
+				lp.Discs.Select(d => d.DiscData).ToList(),
+				lp.Discs.Select(d => d.DiscName).ToList(),
+				lp.Roms.FirstOrDefault()?.RomData, lp.Settings, lp.SyncSettings, null, romDetails);
 			OctoshockDll.shock_PowerOn(psx);
 		}
 
-		void Load(CoreComm comm, List<Disc> discs, List<string> discNames, byte[] exe, Octoshock.Settings settings, Octoshock.SyncSettings syncSettings, PSF psf, string romDetails)
+		void Load(
+			CoreComm comm, List<Disc> discs, List<string> discNames, byte[] exe,
+			Octoshock.Settings settings, Octoshock.SyncSettings syncSettings, PSF psf, string romDetails)
 		{
 			RomDetails = romDetails;
 			ConnectTracer();

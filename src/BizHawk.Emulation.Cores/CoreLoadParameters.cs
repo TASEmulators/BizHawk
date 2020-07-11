@@ -15,6 +15,7 @@ namespace BizHawk.Emulation.Cores
 	{
 		Disc DiscData { get; }
 		DiscType DiscType { get; }
+		public string DiscName { get; set; }
 	}
 	public class CoreLoadParameters<TSettiing, TSync>
 	{
