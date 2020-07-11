@@ -139,8 +139,7 @@ namespace BizHawk.Client.Common
 				{
 					if (ParseHeader(line, "port2") == "1")
 					{
-						Result.Errors.Add("Famicom port not yet supported");
-						break;
+						Result.Warnings.Add("Famicom port detected but not yet supported, ignoring");
 					}
 				}
 				else if (line.ToLower().StartsWith("fourscore"))
