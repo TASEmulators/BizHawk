@@ -62,6 +62,11 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 		public class O2SyncSettings
 		{
+			[DisplayName("Use G7400 Enhanemants")]
+			[Description("When true, boots using G7400 BIOS and features")]
+			[DefaultValue(true)]
+			public bool G7400_Enable { get; set; }
+
 			[DisplayName("Use Existing SaveRAM")]
 			[Description("When true, existing SaveRAM will be loaded at boot up")]
 			[DefaultValue(true)]

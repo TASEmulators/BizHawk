@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 {
 	public class O2HawkControllerDeck
 	{
-		public O2HawkControllerDeck(string controller1Name, string controller2Name)
+		public O2HawkControllerDeck(string controller1Name, string controller2Name, bool is_G7400)
 		{
 			if (!ValidControllerTypes.ContainsKey(controller1Name))
 			{
@@ -25,14 +25,37 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			Port1 = (IPort)Activator.CreateInstance(ValidControllerTypes[controller1Name], 1);
 			Port2 = (IPort)Activator.CreateInstance(ValidControllerTypes[controller2Name], 2);
 
-			Definition = new ControllerDefinition
+			if (is_G7400)
 			{
-				Name = Port1.Definition.Name,
-				BoolButtons = Port1.Definition.BoolButtons
+				Definition = new ControllerDefinition
+				{
+					Name = Port1.Definition.Name,
+					BoolButtons = Port1.Definition.BoolButtons
 					.Concat(Port2.Definition.BoolButtons)
 					.Concat(new[]
 					{
-						"0", "1", "2", "3", "4", "5", "6", "7", 
+						"0", "1", "2", "3", "4", "5", "6", "7",
+						"8", "9",         "SPC", "?", "L", "P",
+						"+", "W", "E", "R", "T", "U", "I", "O",
+						"Q", "S", "D", "F", "G", "H", "J", "K",
+						"A", "Z", "X", "C", "V", "B", "M", "PERIOD",
+						"-", "*", "/", "=", "YES", "NO", "CLR", "ENT",
+						"Reset","Power", 
+						"SHIFT", "LOCK", "CTNL", ":", "|", "]", "..", ",", "<", "ESC", "BREAK", "RET"
+					})
+					.ToList()
+				};
+			}
+			else
+			{
+				Definition = new ControllerDefinition
+				{
+					Name = Port1.Definition.Name,
+					BoolButtons = Port1.Definition.BoolButtons
+					.Concat(Port2.Definition.BoolButtons)
+					.Concat(new[]
+					{
+						"0", "1", "2", "3", "4", "5", "6", "7",
 						"8", "9",         "SPC", "?", "L", "P",
 						"+", "W", "E", "R", "T", "U", "I", "O",
 						"Q", "S", "D", "F", "G", "H", "J", "K",
@@ -41,7 +64,8 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 						"Reset","Power"
 					})
 					.ToList()
-			};
+				};
+			}
 
 			foreach (var kvp in Port1.Definition.Axes) Definition.Axes.Add(kvp);
 		}

@@ -41,6 +41,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 		public PPU ppu;
 
 		public bool is_pal;
+		public bool is_G7400;
 
 		[CoreConstructor("O2")]
 		public O2Hawk(CoreComm comm, GameInfo game, byte[] rom, /*string gameDbFn,*/ object settings, object syncSettings)
@@ -60,11 +61,22 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 			_settings = (O2Settings)settings ?? new O2Settings();
 			_syncSettings = (O2SyncSettings)syncSettings ?? new O2SyncSettings();
-			_controllerDeck = new O2HawkControllerDeck("O2 Controller", "O2 Controller");
 
-			_bios = comm.CoreFileProvider.GetFirmware("O2", "BIOS", true, "BIOS Not Found, Cannot Load")
+			is_G7400 = _syncSettings.G7400_Enable;
+
+			_controllerDeck = new O2HawkControllerDeck("O2 Controller", "O2 Controller", is_G7400);
+
+			if (is_G7400)
+			{
+				_bios = comm.CoreFileProvider.GetFirmware("G7400", "BIOS", true, "BIOS Not Found, Cannot Load")
+				?? throw new MissingFirmwareException("Missing G7400 Bios");
+			}
+			else
+			{
+				_bios = comm.CoreFileProvider.GetFirmware("O2", "BIOS", true, "BIOS Not Found, Cannot Load")
 				?? throw new MissingFirmwareException("Missing Odyssey2 Bios");
-
+			}
+			
 			Buffer.BlockCopy(rom, 0x100, header, 0, 0x50);
 
 			Console.WriteLine("MD5: " + rom.HashMD5(0, rom.Length));
@@ -87,7 +99,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			cpu.SetCallbacks(ReadMemory, PeekMemory, PeekMemory, WriteMemory);
 
 			// set up differences between PAL and NTSC systems
-			if (game.Region == "US" || game.Region == "EU-US" || game.Region == null)
+			if ((game.Region == "US" || game.Region == "EU-US" || game.Region == null) && !is_G7400)
 			{
 				is_pal = false;
 				pic_height = 240;
