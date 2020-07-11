@@ -618,7 +618,15 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 					if (((LY - OBJ_OFST) >= Sprites[i * 4]) && ((LY - OBJ_OFST) < (Sprites[i * 4] + 8 * double_size)))
 					{
-						right_shift_even = (Sprites[i * 4 + 2].Bit(1) && (((Sprites[i * 4] + 8 * double_size - (LY - OBJ_OFST)) % 2) == 0)) ? 1 : 0;
+						if (double_size == 4)
+						{
+							right_shift_even = (Sprites[i * 4 + 2].Bit(1) && ((((LY - OBJ_OFST) - Sprites[i * 4]) % 8) < 4)) ? 1 : 0;
+						}
+						else
+						{
+							right_shift_even = (Sprites[i * 4 + 2].Bit(1) && ((((LY - OBJ_OFST) - Sprites[i * 4]) % 2) == 0)) ? 1 : 0;
+						}
+						
 						x_base = Sprites[i * 4 + 1];
 
 						if ((right_shift + right_shift_even) == 0)
