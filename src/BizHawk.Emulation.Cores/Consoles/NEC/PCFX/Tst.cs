@@ -20,6 +20,8 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCFX
 		public Tst(CoreLoadParameters<NymaSettings, NymaSyncSettings> lp)
 			: base(lp.Comm, "PCFX", "PC-FX Controller", lp.Settings, lp.SyncSettings)
 		{
+			if (lp.Roms.Count > 0)
+				throw new InvalidOperationException("To load a PC-FX game, please load the CUE file and not the BIN file.");
 			var firmwares = new Dictionary<string, (string, string)>
 			{
 				{ "FIRMWARE:pcfx.rom", ("PCFX", "BIOS") },

@@ -29,6 +29,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 		public Saturnus(CoreLoadParameters<NymaSettings, NymaSyncSettings> lp)
 			: base(lp.Comm, "SAT", "Saturn Controller", lp.Settings, lp.SyncSettings)
 		{
+			if (lp.Roms.Count > 0)
+				throw new InvalidOperationException("To load a Saturn game, please load the CUE file and not the BIN file.");
 			var firmwares = new Dictionary<string, (string, string)>
 			{
 				{ "FIRMWARE:$J", ("SAT", "J") },
