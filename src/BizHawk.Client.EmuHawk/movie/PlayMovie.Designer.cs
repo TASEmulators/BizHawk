@@ -38,16 +38,12 @@
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.SubtitlesBtn = new System.Windows.Forms.Button();
 			this.CommentsBtn = new System.Windows.Forms.Button();
-			this.MovieCount = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.ReadOnlyCheckBox = new System.Windows.Forms.CheckBox();
 			this.IncludeSubDirectories = new System.Windows.Forms.CheckBox();
 			this.Scan = new System.Windows.Forms.Button();
-			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.MatchHashCheckBox = new System.Windows.Forms.CheckBox();
 			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.editToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.StopOnFrameCheckbox = new System.Windows.Forms.CheckBox();
-			this.StopOnFrameTextBox = new BizHawk.Client.EmuHawk.WatchValueBox();
 			this.MovieView = new System.Windows.Forms.ListView();
 			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -55,6 +51,9 @@
 			this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.LastFrameCheckbox = new System.Windows.Forms.CheckBox();
 			this.TurboCheckbox = new System.Windows.Forms.CheckBox();
+			this.StopOnFrameTextBox = new BizHawk.Client.EmuHawk.WatchValueBox();
+			this.MovieCount = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.editToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.groupBox1.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
 			this.SuspendLayout();
@@ -79,7 +78,6 @@
 			this.OK.Size = new System.Drawing.Size(75, 23);
 			this.OK.TabIndex = 50;
 			this.OK.Text = "&OK";
-			this.toolTip1.SetToolTip(this.OK, "Load selected movie");
 			this.OK.UseVisualStyleBackColor = true;
 			this.OK.Click += new System.EventHandler(this.Ok_Click);
 			// 
@@ -90,7 +88,6 @@
 			this.BrowseMovies.Name = "BrowseMovies";
 			this.BrowseMovies.Size = new System.Drawing.Size(31, 23);
 			this.BrowseMovies.TabIndex = 25;
-			this.toolTip1.SetToolTip(this.BrowseMovies, "Browse for additional movie files");
 			this.BrowseMovies.UseVisualStyleBackColor = true;
 			this.BrowseMovies.Click += new System.EventHandler(this.BrowseMovies_Click);
 			// 
@@ -107,9 +104,9 @@
 			this.DetailsView.HideSelection = false;
 			this.DetailsView.Location = new System.Drawing.Point(15, 19);
 			this.DetailsView.Name = "DetailsView";
+			this.DetailsView.ShowItemToolTips = true;
 			this.DetailsView.Size = new System.Drawing.Size(228, 261);
 			this.DetailsView.TabIndex = 10;
-			this.toolTip1.SetToolTip(this.DetailsView, "Contains the header information for the selected movie");
 			this.DetailsView.UseCompatibleStateImageBehavior = false;
 			this.DetailsView.View = System.Windows.Forms.View.Details;
 			this.DetailsView.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.DetailsView_ColumnClick);
@@ -162,12 +159,6 @@
 			this.CommentsBtn.UseVisualStyleBackColor = true;
 			this.CommentsBtn.Click += new System.EventHandler(this.CommentsBtn_Click);
 			// 
-			// MovieCount
-			// 
-			this.MovieCount.Location = new System.Drawing.Point(12, 9);
-			this.MovieCount.Name = "MovieCount";
-			this.MovieCount.Text = "        ";
-			// 
 			// ReadOnlyCheckBox
 			// 
 			this.ReadOnlyCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -200,7 +191,6 @@
 			this.Scan.Name = "Scan";
 			this.Scan.Size = new System.Drawing.Size(27, 23);
 			this.Scan.TabIndex = 30;
-			this.toolTip1.SetToolTip(this.Scan, "Rescan Movie folder for movie files");
 			this.Scan.UseVisualStyleBackColor = true;
 			this.Scan.Click += new System.EventHandler(this.Scan_Click);
 			// 
@@ -221,12 +211,7 @@
 			this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.editToolStripMenuItem});
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(93, 26);
-			// 
-			// editToolStripMenuItem
-			// 
-			this.editToolStripMenuItem.Text = "&Edit";
-			this.editToolStripMenuItem.Click += new System.EventHandler(this.EditMenuItem_Click);
+			this.contextMenuStrip1.Size = new System.Drawing.Size(95, 26);
 			// 
 			// StopOnFrameCheckbox
 			// 
@@ -239,20 +224,6 @@
 			this.StopOnFrameCheckbox.Text = "Stop on frame:";
 			this.StopOnFrameCheckbox.UseVisualStyleBackColor = true;
 			this.StopOnFrameCheckbox.CheckedChanged += new System.EventHandler(this.StopOnFrameCheckbox_CheckedChanged);
-			// 
-			// StopOnFrameTextBox
-			// 
-			this.StopOnFrameTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.StopOnFrameTextBox.ByteSize = BizHawk.Client.Common.WatchSize.DWord;
-			this.StopOnFrameTextBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-			this.StopOnFrameTextBox.Location = new System.Drawing.Point(340, 355);
-			this.StopOnFrameTextBox.MaxLength = 10;
-			this.StopOnFrameTextBox.Name = "StopOnFrameTextBox";
-			this.StopOnFrameTextBox.Nullable = true;
-			this.StopOnFrameTextBox.Size = new System.Drawing.Size(54, 20);
-			this.StopOnFrameTextBox.TabIndex = 58;
-			this.StopOnFrameTextBox.Type = BizHawk.Client.Common.DisplayType.Unsigned;
-			this.StopOnFrameTextBox.TextChanged += new System.EventHandler(this.StopOnFrameTextBox_TextChanged_1);
 			// 
 			// MovieView
 			// 
@@ -269,7 +240,6 @@
 			this.MovieView.FullRowSelect = true;
 			this.MovieView.GridLines = true;
 			this.MovieView.HideSelection = false;
-			this.MovieView.VirtualListSize = 0;
 			this.MovieView.Location = new System.Drawing.Point(12, 28);
 			this.MovieView.MultiSelect = false;
 			this.MovieView.Name = "MovieView";
@@ -327,6 +297,31 @@
 			this.TurboCheckbox.Text = "Turbo";
 			this.TurboCheckbox.UseVisualStyleBackColor = true;
 			// 
+			// StopOnFrameTextBox
+			// 
+			this.StopOnFrameTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.StopOnFrameTextBox.ByteSize = BizHawk.Client.Common.WatchSize.DWord;
+			this.StopOnFrameTextBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+			this.StopOnFrameTextBox.Location = new System.Drawing.Point(340, 355);
+			this.StopOnFrameTextBox.MaxLength = 10;
+			this.StopOnFrameTextBox.Name = "StopOnFrameTextBox";
+			this.StopOnFrameTextBox.Nullable = true;
+			this.StopOnFrameTextBox.Size = new System.Drawing.Size(54, 20);
+			this.StopOnFrameTextBox.TabIndex = 58;
+			this.StopOnFrameTextBox.Type = BizHawk.Client.Common.DisplayType.Unsigned;
+			this.StopOnFrameTextBox.TextChanged += new System.EventHandler(this.StopOnFrameTextBox_TextChanged_1);
+			// 
+			// MovieCount
+			// 
+			this.MovieCount.Location = new System.Drawing.Point(12, 9);
+			this.MovieCount.Name = "MovieCount";
+			this.MovieCount.Text = "        ";
+			// 
+			// editToolStripMenuItem
+			// 
+			this.editToolStripMenuItem.Text = "&Edit";
+			this.editToolStripMenuItem.Click += new System.EventHandler(this.EditMenuItem_Click);
+			// 
 			// PlayMovie
 			// 
 			this.AcceptButton = this.OK;
@@ -382,7 +377,6 @@
 		private System.Windows.Forms.CheckBox ReadOnlyCheckBox;
 		private System.Windows.Forms.CheckBox IncludeSubDirectories;
 		private System.Windows.Forms.Button Scan;
-		private System.Windows.Forms.ToolTip toolTip1;
 		private System.Windows.Forms.CheckBox MatchHashCheckBox;
 		private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx editToolStripMenuItem;

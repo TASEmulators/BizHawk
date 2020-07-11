@@ -370,7 +370,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MovieView_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			toolTip1.SetToolTip(DetailsView, "");
 			DetailsView.Items.Clear();
 			if (MovieView.SelectedIndices.Count < 1)
 			{
@@ -387,20 +386,21 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var item = new ListViewItem(kvp.Key);
 				item.SubItems.Add(kvp.Value);
-
+				item.ToolTipText = kvp.Value;
 				switch (kvp.Key)
 				{
 					case HeaderKeys.Sha1:
 						if (kvp.Value != _game.Hash)
 						{
 							item.BackColor = Color.Pink;
-							toolTip1.SetToolTip(DetailsView, $"Current SHA1: {_game.Hash}");
+							item.ToolTipText = $"Expected: {_game.Hash}\n Actual: {kvp.Value}";
 						}
 						break;
 					case HeaderKeys.EmulatorVersion:
 						if (kvp.Value != VersionInfo.GetEmuVersion())
 						{
 							item.BackColor = Color.Yellow;
+							item.ToolTipText = $"Expected: {VersionInfo.GetEmuVersion()}\n Actual: {kvp.Value}";
 						}
 						break;
 					case HeaderKeys.Platform:
@@ -413,6 +413,7 @@ namespace BizHawk.Client.EmuHawk
 						if (kvp.Value != _emulator.SystemId)
 						{
 							item.BackColor = Color.Pink;
+							item.ToolTipText = $"Expected: {_emulator.SystemId}\n Actual: {kvp.Value}";
 						}
 						break;
 				}
