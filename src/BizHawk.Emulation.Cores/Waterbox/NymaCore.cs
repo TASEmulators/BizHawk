@@ -56,8 +56,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				var portData = GetInputPortsData();
 				InitAllSettingsInfo(portData);
 				_nyma.SetFrontendSettingQuery(_settingsQueryDelegate);
-				_settings.Normalize(SettingsInfo);
-				_syncSettings.Normalize(SettingsInfo);
 
 				var filesToRemove = new List<string>();
 				if (firmwares != null)
@@ -154,11 +152,10 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				_soundBuffer = new short[22050 * 2];
 
 				InitControls(portData, discs?.Length > 0, ref info);
-				_nyma.SetFrontendSettingQuery(null);
-				if (_disks != null)
-					_nyma.SetCDCallbacks(null, null);
 				PostInit();
 				SettingsInfo.LayerNames = GetLayerData();
+				_settings.Normalize(SettingsInfo);
+				_syncSettings.Normalize(SettingsInfo);
 				_nyma.SetFrontendSettingQuery(_settingsQueryDelegate);
 				if (_disks != null)
 					_nyma.SetCDCallbacks(_cdTocCallback, _cdSectorCallback);
