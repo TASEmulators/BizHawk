@@ -9,8 +9,8 @@
 
 	public class TasSession : ITasSession
 	{
-		public int CurrentFrame { get; private set; }
-		public int CurrentBranch { get; private set; } = -1;
+		public int CurrentFrame { get; set; }
+		public int CurrentBranch { get; set; } = -1;
 
 		public void UpdateValues(int frame, int currentBranch)
 		{
