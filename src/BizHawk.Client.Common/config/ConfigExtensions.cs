@@ -6,9 +6,18 @@ namespace BizHawk.Client.Common
 {
 	public static class ConfigExtensions
 	{
+		private class TypeNameEncapsulator
+		{
+			public object o;
+		}
 		private static JToken Serialize(object o)
 		{
-			return JToken.FromObject(o, ConfigService.Serializer);
+			var tne = new TypeNameEncapsulator { o = o };
+			return JToken.FromObject(tne, ConfigService.Serializer)["o"];
+
+			// Maybe todo:  This code is identical to the code above, except that it does not emit the legacy "$type"
+			// parameter that we no longer need here.  Leaving that in to make bisecting during this dev phase easier, and such.
+			// return JToken.FromObject(o, ConfigService.Serializer);
 		}
 		private static object Deserialize(JToken j, Type type)
 		{
