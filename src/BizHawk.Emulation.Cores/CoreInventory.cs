@@ -118,8 +118,8 @@ namespace BizHawk.Emulation.Cores
 					dynamic param = Activator.CreateInstance(paramType);
 					param.Comm = comm;
 					param.Game = game;
-					param.Settings = settings;
-					param.SyncSettings = syncSettings;
+					param.Settings = (dynamic)settings;
+					param.SyncSettings = (dynamic)syncSettings;
 					param.Roms.Add(new RomGameFake
 					{
 						RomData = rom,
