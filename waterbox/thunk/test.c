@@ -37,16 +37,6 @@ __attribute__((sysv_abi)) ll Depart6(ll a, ll b, ll c, ll d, ll e, ll f)
 	return ((__attribute__((ms_abi)) ll (*)(ll, ll, ll, ll, ll, ll))0xdeadbeeffeedface)(a, b, c, d, e, f);
 }
 
-__attribute__((sysv_abi)) ll Depart7(ll a, ll b, ll c, ll d, ll e, ll f, ll g)
-{
-	return ((__attribute__((ms_abi)) ll (*)(ll, ll, ll, ll, ll, ll, ll))0xdeadbeeffeedface)(a, b, c, d, e, f, g);
-}
-
-__attribute__((sysv_abi)) ll Depart8(ll a, ll b, ll c, ll d, ll e, ll f, ll g, ll h)
-{
-	return ((__attribute__((ms_abi)) ll (*)(ll, ll, ll, ll, ll, ll, ll, ll))0xdeadbeeffeedface)(a, b, c, d, e, f, g, h);
-}
-
 __attribute__((ms_abi)) ll Arrive0(void)
 {
 	return ((__attribute__((sysv_abi)) ll (*)(void))0xdeadbeeffeedface)();
@@ -82,16 +72,6 @@ __attribute__((ms_abi)) ll Arrive6(ll a, ll b, ll c, ll d, ll e, ll f)
 	return ((__attribute__((sysv_abi)) ll (*)(ll, ll, ll, ll, ll, ll))0xdeadbeeffeedface)(a, b, c, d, e, f);
 }
 
-__attribute__((ms_abi)) ll Arrive7(ll a, ll b, ll c, ll d, ll e, ll f, ll g)
-{
-	return ((__attribute__((sysv_abi)) ll (*)(ll, ll, ll, ll, ll, ll, ll))0xdeadbeeffeedface)(a, b, c, d, e, f, g);
-}
-
-__attribute__((ms_abi)) ll Arrive8(ll a, ll b, ll c, ll d, ll e, ll f, ll g, ll h)
-{
-	return ((__attribute__((sysv_abi)) ll (*)(ll, ll, ll, ll, ll, ll, ll, ll))0xdeadbeeffeedface)(a, b, c, d, e, f, g, h);
-}
-
 void End(void)
 {
 }
@@ -99,15 +79,15 @@ void End(void)
 #include <stdio.h>
 const void* ptrs[] =
 {
-	Depart0, Depart1, Depart2, Depart3, Depart4, Depart5, Depart6, Depart7, Depart8,
-	Arrive0, Arrive1, Arrive2, Arrive3, Arrive4, Arrive5, Arrive6, Arrive7, Arrive8,
+	Depart0, Depart1, Depart2, Depart3, Depart4, Depart5, Depart6,
+	Arrive0, Arrive1, Arrive2, Arrive3, Arrive4, Arrive5, Arrive6,
 	End
 };
 
 void print(const char* name, int offs)
 {
 	printf("\t\t\tprivate static readonly byte[][] %s =\n\t\t\t{\n", name);
-	for (int i = offs; i < offs + 9; i++)
+	for (int i = offs; i < offs + 7; i++)
 	{
 		printf("\t\t\t\tnew byte[] { ");
 		const uint8_t* start = ptrs[i];
@@ -121,7 +101,9 @@ void print(const char* name, int offs)
 
 int main(void)
 {
-	print("Depart", 0);
-	print("Arrive", 9);
+	// "Depart" and "Arrive" are switched here relative to the function names because this code was originally created for
+	// sysv host ms guest, but now it's the other way around
+	print("Arrive", 0);
+	print("Depart", 7);
 	return 0;
 }
