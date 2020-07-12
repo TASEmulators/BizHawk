@@ -568,9 +568,6 @@ namespace BizHawk.Client.Common
 				case "GEN":
 					core = CoreInventory.Instance["GEN", game.ForcedCore?.ToLower() == "pico" ? CoreNames.PicoDrive : CoreNames.Gpgx];
 					break;
-				case "32X":
-					core = CoreInventory.Instance["GEN", CoreNames.PicoDrive];
-					break;
 				default:
 					core = _config.PreferredCores.TryGetValue(game.System, out var coreName)
 						? CoreInventory.Instance[game.System, coreName]
@@ -916,7 +913,8 @@ namespace BizHawk.Client.Common
 							LoadM3U(path, nextComm, file, out nextEmulator, out game);
 							break;
 						case ".xml":
-							if (!LoadXML(path, nextComm, file, out nextEmulator, out rom, out game)) return false;
+							if (!LoadXML(path, nextComm, file, out nextEmulator, out rom, out game))
+								return false;
 							break;
 						case ".psf":
 						case ".minipsf":
@@ -925,8 +923,10 @@ namespace BizHawk.Client.Common
 						default:
 							if (Disc.IsValidExtension(ext))
 							{
-								if (file.IsArchive) throw new InvalidOperationException("Can't load CD files from archives!");
-								if (!LoadDisc(path, nextComm, file, ext, out nextEmulator, out game)) return false;
+								if (file.IsArchive)
+									throw new InvalidOperationException("Can't load CD files from archives!");
+								if (!LoadDisc(path, nextComm, file, ext, out nextEmulator, out game))
+									return false;
 							}
 							else
 							{
