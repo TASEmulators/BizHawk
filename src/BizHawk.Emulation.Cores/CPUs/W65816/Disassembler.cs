@@ -241,9 +241,6 @@ namespace BizHawk.Emulation.Cores.Components.W65816
 					ibuf = "xba";break;
 				case 0xFB:
 					ibuf = "xce";break;
-				default:
-					length = 1;
-					return "???";
 			}
 
 			// Parse out parameter list

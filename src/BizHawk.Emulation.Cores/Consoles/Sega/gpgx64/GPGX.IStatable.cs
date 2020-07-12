@@ -5,8 +5,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 {
 	public partial class GPGX : IStatable
 	{
-		private byte[] _stateBuffer;
-
 		public void LoadStateBinary(BinaryReader reader)
 		{
 			_elf.LoadStateBinary(reader);
