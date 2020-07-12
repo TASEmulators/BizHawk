@@ -635,6 +635,7 @@ namespace BizHawk.Client.EmuHawk
 						if (!prohibit)
 						{
 							var result = LuaImp.ResumeScript(lf);
+							DetachRegisteredFunctions(lf);
 							if (result.Terminated)
 							{
 								LuaImp.CallExitEvent(lf);
@@ -647,6 +648,7 @@ namespace BizHawk.Client.EmuHawk
 					}, () =>
 					{
 						lf.Stop();
+						DetachRegisteredFunctions(lf);
 						LuaListView.Refresh();
 					});
 				}
@@ -656,7 +658,22 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
+			LuaImp.RunScheduledDisposes();
+			foreach (var nlf in LuaImp.RegisteredFunctions)
+			{
+				nlf.LuaFile.Thread.RunScheduledDisposes();
+			}
+
 			_messageCount = 0;
+		}
+
+		private void DetachRegisteredFunctions(LuaFile lf)
+		{
+			foreach (var nlf in LuaImp.RegisteredFunctions
+				.Where(f => f.LuaFile == lf))
+			{
+				nlf.DetachFromScript();
+			}
 		}
 
 		private FileInfo GetSaveFileFromUser()

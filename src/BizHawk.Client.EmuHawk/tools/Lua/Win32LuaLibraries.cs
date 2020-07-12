@@ -192,6 +192,8 @@ namespace BizHawk.Client.EmuHawk
 				_lua.Pop();
 		}
 
+		public override void RunScheduledDisposes() => _lua.RunScheduledDisposes();
+
 		public override ResumeResult ResumeScript(LuaFile lf)
 		{
 			_currThread = lf.Thread;
@@ -202,7 +204,7 @@ namespace BizHawk.Client.EmuHawk
 
 				var execResult = _currThread.Resume(0);
 
-				_lua.RunScheduledDisposes();
+				_lua.RunScheduledDisposes(); // TODO: I don't think this is needed anymore, we run this regularly anyway
 
 				// not sure how this is going to work out, so do this too
 				_currThread.RunScheduledDisposes();

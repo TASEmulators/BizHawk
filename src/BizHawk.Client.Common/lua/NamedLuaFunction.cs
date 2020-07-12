@@ -23,13 +23,7 @@ namespace BizHawk.Client.Common
 			// and we should refactor
 			if (luaFile == null)
 			{
-				var thread = new Lua();
-				
-				// Current dir will have to do for now, but this will inevitably not be desired
-				// Users will expect it to be the same directly as the thread that spawned this callback
-				// But how do we know what that directory was?
-				LuaSandbox.CreateSandbox(thread, ".");
-				LuaFile = new LuaFile(".") { Thread = thread };
+				DetachFromScript();
 			}
 			else
 			{
@@ -53,11 +47,22 @@ namespace BizHawk.Client.Common
 			MemCallback = (address, value, flags) => Callback();
 		}
 
+		public void DetachFromScript()
+		{
+			var thread = new Lua();
+				
+			// Current dir will have to do for now, but this will inevitably not be desired
+			// Users will expect it to be the same directly as the thread that spawned this callback
+			// But how do we know what that directory was?
+			LuaSandbox.CreateSandbox(thread, ".");
+			LuaFile = new LuaFile(".") { Thread = thread };
+		}
+
 		public Guid Guid { get; }
 
 		public string Name { get; }
 
-		public LuaFile LuaFile { get; }
+		public LuaFile LuaFile { get; private set; }
 
 		public string Event { get; }
 
