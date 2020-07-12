@@ -62,7 +62,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private ControllerDefinition ControllerType => MovieSession.MovieController.Definition;
 
-		public bool WasRecording { get; set; }
 		public AutoPatternBool[] BoolPatterns;
 		public AutoPatternAxis[] AxisPatterns;
 
@@ -85,7 +84,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (MainForm.PauseOnFrame != null)
 				{
-					StopSeeking(true); // don't restore rec mode just yet, as with heavy editing checkbox updating causes lag
+					StopSeeking();
 				}
 				_seekStartFrame = Emulator.Frame;
 			}
@@ -93,7 +92,6 @@ namespace BizHawk.Client.EmuHawk
 			MainForm.PauseOnFrame = frame.Value;
 			int? diff = MainForm.PauseOnFrame - _seekStartFrame;
 
-			WasRecording = CurrentTasMovie.IsRecording() || WasRecording;
 			TastudioPlayMode(); // suspend rec mode until seek ends, to allow mouse editing
 			MainForm.UnpauseEmulator();
 
@@ -103,14 +101,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void StopSeeking(bool skipRecModeCheck = false)
+		public void StopSeeking()
 		{
 			_seekBackgroundWorker.CancelAsync();
-			if (WasRecording && !skipRecModeCheck)
-			{
-				TastudioRecordMode();
-				WasRecording = false;
-			}
 
 			MainForm.PauseOnFrame = null;
 			if (_unpauseAfterSeeking)
@@ -553,7 +546,6 @@ namespace BizHawk.Client.EmuHawk
 
 			int frame = TasView.CurrentCell.RowIndex.Value;
 			string buttonName = TasView.CurrentCell.Column.Name;
-			WasRecording = CurrentTasMovie.IsRecording() || WasRecording;
 
 			if (e.Button == MouseButtons.Left)
 			{
@@ -966,7 +958,6 @@ namespace BizHawk.Client.EmuHawk
 			// skip rerecord counting on drawing entirely, mouse down is enough
 			// avoid introducing another global
 			bool wasCountingRerecords = CurrentTasMovie.IsCountingRerecords;
-			WasRecording = CurrentTasMovie.IsRecording() || WasRecording;
 
 			int startVal, endVal;
 			int frame = e.NewCell.RowIndex.Value;

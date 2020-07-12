@@ -1,6 +1,4 @@
-﻿using BizHawk.Client.Common;
-
-namespace BizHawk.Client.EmuHawk
+﻿namespace BizHawk.Client.EmuHawk
 {
 	public partial class TAStudio
 	{
@@ -29,8 +27,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			// If seeking to a frame before or at the end of the movie, use StartAtNearestFrameAndEmulate
 			// Otherwise, load the latest state (if not already there) and seek while recording.
-			WasRecording = CurrentTasMovie.IsRecording() || WasRecording;
-
 			if (frame <= CurrentTasMovie.InputLogLength)
 			{
 				// Get as close as we can then emulate there

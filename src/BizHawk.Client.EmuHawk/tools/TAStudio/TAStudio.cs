@@ -961,7 +961,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			_unpauseAfterSeeking = (fromRewinding || WasRecording) && !MainForm.EmulatorPaused;
+			_unpauseAfterSeeking = fromRewinding && !MainForm.EmulatorPaused;
 			TastudioPlayMode();
 			var closestState = CurrentTasMovie.TasStateManager.GetStateClosestToFrame(frame);
 			if (closestState.Value.Length > 0 && (frame < Emulator.Frame || closestState.Key > Emulator.Frame))
@@ -986,21 +986,13 @@ namespace BizHawk.Client.EmuHawk
 				{
 					MainForm.UnpauseEmulator();
 				}
-
-				// lua botting users will want to re-activate record mode automatically -- it should be like nothing ever happened
-				if (WasRecording)
-				{
-					TastudioRecordMode();
-				}
-
-				// now the next section won't happen since we're at the right spot
 			}
 
 			// frame == Emulator.Frame when frame == 0
 			if (frame > Emulator.Frame)
 			{
 				// make seek frame keep up with emulation on fast scrolls
-				if (MainForm.EmulatorPaused || MainForm.IsSeeking || fromRewinding || WasRecording)
+				if (MainForm.EmulatorPaused || MainForm.IsSeeking || fromRewinding)
 				{
 					StartSeeking(frame);
 				}
