@@ -21,7 +21,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		IDebuggable, ISettable<PCEngine.PCESettings, PCEngine.PCESyncSettings>, IDriveLight, ICodeDataLogger,
 		IPceGpuView
 	{
-		[CoreConstructor(new[] { "PCE", "SGX" })]
+		[CoreConstructor("PCE", Priority = CorePriority.Low)]
+		[CoreConstructor("SGX", Priority = CorePriority.Low)]
 		public PCEngine(GameInfo game, byte[] rom, PCEngine.PCESettings settings, PCEngine.PCESyncSettings syncSettings)
 		{
 			switch (game.System)

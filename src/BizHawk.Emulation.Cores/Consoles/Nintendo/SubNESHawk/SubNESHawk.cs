@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 	public partial class SubNESHawk : IEmulator, IStatable, IInputPollable,
 		ISettable<NES.NES.NESSettings, NES.NES.NESSyncSettings>
 	{
-		[CoreConstructor("NES")]
+		[CoreConstructor("NES", Priority = CorePriority.SuperLow)]
 		public SubNESHawk(CoreComm comm, GameInfo game, byte[] rom, /*string gameDbFn,*/ NES.NES.NESSettings settings, NES.NES.NESSyncSettings syncSettings)
 		{
 			var subNesSettings = (NES.NES.NESSettings)settings ?? new NES.NES.NESSettings();

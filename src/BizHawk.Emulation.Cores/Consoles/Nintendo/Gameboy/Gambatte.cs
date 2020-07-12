@@ -23,7 +23,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		IBoardInfo, IRomInfo, IDebuggable, ISettable<Gameboy.GambatteSettings, Gameboy.GambatteSyncSettings>,
 		IGameboyCommon, ICycleTiming, ILinkable
 	{
-		[CoreConstructor(new[] { "GB", "GBC" })]
+		[CoreConstructor("GB")]
+		[CoreConstructor("GBC")]
 		public Gameboy(CoreComm comm, GameInfo game, byte[] file, Gameboy.GambatteSettings settings, Gameboy.GambatteSyncSettings syncSettings, bool deterministic)
 		{
 			var ser = new BasicServiceProvider(this);

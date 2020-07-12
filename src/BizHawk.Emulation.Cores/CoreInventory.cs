@@ -28,11 +28,12 @@ namespace BizHawk.Emulation.Cores
 			// If true, this is a new style constructor that takes a CoreLoadParameters object
 			private readonly bool _useCoreLoadParameters;
 
-			public Core(string name, Type type, ConstructorInfo ctor)
+			public Core(string name, Type type, ConstructorInfo ctor, CorePriority priority)
 			{
 				Name = name;
 				Type = type;
 				CTor = ctor;
+				Priority = priority;
 
 				var pp = CTor.GetParameters();
 				if (pp.Length == 1
@@ -65,9 +66,14 @@ namespace BizHawk.Emulation.Cores
 				}
 			}
 
+			/// <summary>
+			/// (hopefully) a CoreNames value
+			/// </summary>
+			/// <value></value>
 			public string Name { get; }
 			public Type Type { get; }
 			public ConstructorInfo CTor { get; }
+			public CorePriority Priority { get; }
 			public Type SettingsType { get; } = typeof(object);
 			public Type SyncSettingsType { get; } = typeof(object);
 
@@ -116,53 +122,22 @@ namespace BizHawk.Emulation.Cores
 			}
 		}
 
-		private void ProcessConstructor(Type type, string system, CoreAttribute coreAttr, ConstructorInfo cons)
+		private void ProcessConstructor(Type type, CoreConstructorAttribute consAttr, CoreAttribute coreAttr, ConstructorInfo cons)
 		{
-			Core core = new Core(coreAttr.CoreName, type, cons);
-			if (!_systems.TryGetValue(system, out var ss))
+			Core core = new Core(coreAttr.CoreName, type, cons, consAttr.Priority);
+			if (!_systems.TryGetValue(consAttr.System, out var ss))
 			{
 				ss = new List<Core>();
-				_systems.Add(system, ss);
+				_systems.Add(consAttr.System, ss);
 			}
 
 			ss.Add(core);
 		}
 
-		/// <summary>
-		/// find a core matching a particular game.system
-		/// </summary>
-		public Core this[string system]
+		public IEnumerable<Core> GetCores(string system)
 		{
-			get
-			{
-				List<Core> ss = _systems[system];
-				if (ss.Count != 1)
-				{
-					throw new InvalidOperationException("Ambiguous core selection!");
-				}
-
-				return ss[0];
-			}
-		}
-
-		/// <summary>
-		/// find a core matching a particular game.system with a particular CoreAttributes.Name
-		/// </summary>
-		public Core this[string system, string core]
-		{
-			get
-			{
-				List<Core> ss = _systems[system];
-				foreach (Core c in ss)
-				{
-					if (c.Name == core)
-					{
-						return c;
-					}
-				}
-
-				throw new InvalidOperationException("No such core!");
-			}
+			_systems.TryGetValue(system, out var cores);
+			return cores ?? Enumerable.Empty<Core>();
 		}
 
 		/// <summary>
@@ -183,9 +158,9 @@ namespace BizHawk.Emulation.Cores
 							.Where(c => c.GetCustomAttributes(typeof(CoreConstructorAttribute), false).Length > 0);
 						foreach(var con in cons)
 						{
-							foreach (string system in ((CoreConstructorAttribute)con.GetCustomAttributes(typeof(CoreConstructorAttribute), false)[0]).Systems)
+							foreach (var consAttr in con.GetCustomAttributes(typeof(CoreConstructorAttribute), false).Cast<CoreConstructorAttribute>())
 							{
-								ProcessConstructor(typ, system, (CoreAttribute)coreAttr[0], con);
+								ProcessConstructor(typ, consAttr, (CoreAttribute)coreAttr[0], con);
 							}
 						}
 					}
@@ -196,23 +171,45 @@ namespace BizHawk.Emulation.Cores
 		public static readonly CoreInventory Instance = new CoreInventory(new[] { typeof(CoreInventory).Assembly });
 	}
 
-	[AttributeUsage(AttributeTargets.Constructor)]
+	public enum CorePriority
+	{
+		/// <summary>
+		/// The gamedb has requested this core for this game
+		/// </summary>
+		GameDbPreference = -300,
+		/// <summary>
+		/// The user has indicated in preferences that this is their favourite core
+		/// </summary>
+		UserPreference = -200,
+		
+		/// <summary>
+		/// A very good core that should be prefered over normal cores.  Don't use this?
+		/// </summary>
+		High = -100,
+
+		/// <summary>
+		/// Most cores should use this
+		/// </summary>
+		Normal = 0,
+		/// <summary>
+		/// Experimental, special use, or garbage core
+		/// </summary>
+		Low = 100,
+		/// <summary>
+		/// TODO:  Do we need this?  Does it need a better name?
+		/// </summary>
+		SuperLow = 200,
+	}
+
+	[AttributeUsage(AttributeTargets.Constructor, AllowMultiple = true)]
 	public sealed class CoreConstructorAttribute : Attribute
 	{
-		private readonly List<string> _systems = new List<string>();
-
-		/// <remarks>TODO neither array nor <see cref="IEnumerable{T}"/> is the correct collection to be using here, try <see cref="IReadOnlyList{T}"/>/<see cref="IReadOnlyCollection{T}"/> instead</remarks>
-		public CoreConstructorAttribute(string[] systems)
-		{
-			_systems.AddRange(systems);
-		}
-
+		public string System { get; }
 		public CoreConstructorAttribute(string system)
 		{
-			_systems.Add(system);
+			System = system;
 		}
-
-		public IEnumerable<string> Systems => _systems;
+		public CorePriority Priority { get; set; }
 	}
 
 	/// <summary>

@@ -19,7 +19,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive
 		private DiscSectorReader _cdReader;
 		private bool _isPal;
 
-		[CoreConstructor(new[] { "GEN", "32X" })]
+		[CoreConstructor("GEN", Priority = CorePriority.Low)]
+		[CoreConstructor("32X")]
 		public PicoDrive(CoreComm comm, GameInfo game, byte[] rom, bool deterministic, SyncSettings syncSettings)
 			: this(comm, game, rom, null, deterministic, syncSettings)
 		{ }

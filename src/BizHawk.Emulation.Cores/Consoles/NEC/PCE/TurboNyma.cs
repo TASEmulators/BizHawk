@@ -16,7 +16,8 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 	{
 		private readonly LibTurboNyma _turboNyma;
 
-		[CoreConstructor(new[] { "PCE", "SGX" })]
+		[CoreConstructor("PCE")]
+		[CoreConstructor("SGX")]
 		public TurboNyma(GameInfo game, byte[] rom, CoreComm comm, string extension,
 			NymaSettings settings, NymaSyncSettings syncSettings, bool deterministic)
 			: base(comm, "PCE", "PC Engine Controller", settings, syncSettings)

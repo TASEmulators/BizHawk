@@ -29,6 +29,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 	public unsafe partial class LibsnesCore : IEmulator, IVideoProvider, ISaveRam, IStatable, IInputPollable, IRegionable, ICodeDataLogger,
 		IDebuggable, ISettable<LibsnesCore.SnesSettings, LibsnesCore.SnesSyncSettings>
 	{
+		[CoreConstructor("SGB")]
+		[CoreConstructor("SNES")]
+		public LibsnesCore(GameInfo game, byte[] rom, CoreComm comm,
+			LibsnesCore.SnesSettings settings, LibsnesCore.SnesSyncSettings syncSettings)
+			:this(game, rom, null, null, comm, settings, syncSettings)
+		{}
+		
 		public LibsnesCore(GameInfo game, byte[] romData, byte[] xmlData, string baseRomPath, CoreComm comm,
 			LibsnesCore.SnesSettings settings, LibsnesCore.SnesSyncSettings syncSettings)
 		{
@@ -47,7 +54,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			CoreComm = comm;
 			byte[] sgbRomData = null;
 
-			if (game["SGB"])
+			if (game.System == "SGB")
 			{
 				if ((romData[0x143] & 0xc0) == 0xc0)
 				{
@@ -112,7 +119,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				romData = newData;
 			}
 
-			if (game["SGB"])
+			if (game.System == "SGB")
 			{
 				IsSGB = true;
 				SystemId = "SNES";

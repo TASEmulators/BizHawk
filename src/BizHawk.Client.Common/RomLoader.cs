@@ -423,7 +423,50 @@ namespace BizHawk.Client.Common
 			throw new NotImplementedException("M3U not supported!");
 		}
 
-		private void LoadOther(string path, CoreComm nextComm, bool forceAccurateCore, HawkFile file, out IEmulator nextEmulator, out RomGame rom, out GameInfo game, out bool cancel)
+		private static string ForcedCoreToCoreName(string forcedCore)
+		{
+			// TODO: Is this yet another list of core names really needed?  Let's just make the gamedb less dumb
+			return forcedCore switch
+			{
+				"snes9x" => CoreNames.Snes9X,
+				"bsnes" => CoreNames.Bsnes,
+				"quicknes" => CoreNames.QuickNes,
+				"pico" => CoreNames.PicoDrive,
+				_ => null
+			};
+		}
+
+		private IEmulator MakeCoreFromCoreInventory(string systemId, CoreInventoryParameters cip, string forcedCoreGameDb)
+		{
+			_config.PreferredCores.TryGetValue(systemId, out var preferredCore);
+			var forcedCore = ForcedCoreToCoreName(forcedCoreGameDb);
+			var cores = CoreInventory.Instance.GetCores(systemId)
+				.OrderBy(c =>
+				{
+					if (c.Name == preferredCore)
+						return (int)CorePriority.UserPreference;
+					else if (c.Name == forcedCore)
+						return (int)CorePriority.GameDbPreference;
+					else
+						return (int)c.Priority;
+				})
+				.ToList();
+			var exceptions = new List<Exception>();
+			foreach (var core in cores)
+			{
+				try
+				{
+					return core.Create(cip);
+				}
+				catch (Exception e)
+				{
+					exceptions.Add(e);
+				}
+			}
+			throw new AggregateException("No core could load the ROM", exceptions);
+		}
+
+		private void LoadOther(string path, CoreComm nextComm, HawkFile file, out IEmulator nextEmulator, out RomGame rom, out GameInfo game, out bool cancel)
 		{
 			cancel = false;
 			rom = new RomGame(file);
@@ -463,92 +506,17 @@ namespace BizHawk.Client.Common
 
 			game = rom.GameInfo;
 
-			var isXml = false;
-			if (file.Extension.ToLowerInvariant() == ".xml")
-			{
-				game.System = "SNES"; // other xml has already been handled
-				isXml = true;
-			}
-
 			nextEmulator = null;
 			if (game.System == null)
 				return; // The user picked nothing in the Core picker
 
-			CoreInventory.Core core;
 			switch (game.System)
 			{
-				case "SNES":
-					var name = game.ForcedCore?.ToLower() switch
-					{
-						"snes9x" => CoreNames.Snes9X,
-						"bsnes" => CoreNames.Bsnes,
-						_ => _config.PreferredCores["SNES"]
-					};
-					try
-					{
-						core = CoreInventory.Instance["SNES", name];
-					}
-					catch // TODO: CoreInventory should support some sort of trygetvalue
-					{
-						// need to get rid of this hack at some point
-						nextEmulator = new LibsnesCore(
-							game,
-							isXml ? null : rom.FileData,
-							isXml ? rom.FileData : null,
-							Path.GetDirectoryName(path.SubstringBefore('|')),
-							nextComm,
-							GetCoreSettings<LibsnesCore, LibsnesCore.SnesSettings>(),
-							GetCoreSyncSettings<LibsnesCore, LibsnesCore.SnesSyncSettings>()
-						);
-						return;
-					}
-					break;
-				case "NES":
-					// apply main spur-of-the-moment switcheroo as lowest priority
-					var preference = _config.PreferredCores["NES"];
-
-					// if user has saw fit to override in gamedb, apply that
-					if (!string.IsNullOrEmpty(game.ForcedCore))
-					{
-						preference = game.ForcedCore.ToLower() switch
-						{
-							"quicknes" => CoreNames.QuickNes,
-							_ => CoreNames.NesHawk
-						};
-					}
-
-					// but only neshawk is accurate
-					if (forceAccurateCore)
-					{
-						preference = CoreNames.NesHawk;
-					}
-
-					core = CoreInventory.Instance["NES", preference];
-					break;
 				case "GB":
 				case "GBC":
 					if (_config.GbAsSgb)
 					{
-						if (_config.SgbUseBsnes)
-						{
-							game.System = "SNES";
-							game.AddOption("SGB", "");
-							nextEmulator = new LibsnesCore(
-								game,
-								rom.FileData,
-								null,
-								null,
-								nextComm,
-								GetCoreSettings<LibsnesCore, LibsnesCore.SnesSettings>(),
-								GetCoreSyncSettings<LibsnesCore, LibsnesCore.SnesSyncSettings>()
-							);
-							return;
-						}
-						core = CoreInventory.Instance["SGB", CoreNames.SameBoy];
-					}
-					else
-					{
-						core = CoreInventory.Instance["GB", _config.PreferredCores["GB"]];
+						game.System = "SGB";
 					}
 					break;
 				case "ChannelF":
@@ -567,17 +535,10 @@ namespace BizHawk.Client.Common
 					);
 					rom.GameInfo.Name = gameName;
 					return;
-				case "GEN":
-					core = CoreInventory.Instance["GEN", game.ForcedCore?.ToLower() == "pico" ? CoreNames.PicoDrive : CoreNames.Gpgx];
-					break;
 				default:
-					core = _config.PreferredCores.TryGetValue(game.System, out var coreName)
-						? CoreInventory.Instance[game.System, coreName]
-						: CoreInventory.Instance[game.System];
 					break;
 			}
-
-			nextEmulator = core.Create(new CoreInventoryParameters(this)
+			var cip = new CoreInventoryParameters(this)
 			{
 				Comm = nextComm,
 				Game = game,
@@ -593,7 +554,8 @@ namespace BizHawk.Client.Common
 				},
 				DeterministicEmulationRequested = Deterministic
 
-			});
+			};
+			nextEmulator = MakeCoreFromCoreInventory(game.System, cip, game.ForcedCore);
 		}
 
 		private void LoadPSF(string path, CoreComm nextComm, HawkFile file, out IEmulator nextEmulator, out RomGame rom, out GameInfo game)
@@ -747,7 +709,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public bool LoadRom(string path, CoreComm nextComm, string launchLibretroCore, bool forceAccurateCore = false, int recursiveCount = 0)
+		public bool LoadRom(string path, CoreComm nextComm, string launchLibretroCore, int recursiveCount = 0)
 		{
 			if (path == null) return false;
 
@@ -862,7 +824,7 @@ namespace BizHawk.Client.Common
 							}
 							else
 							{
-								LoadOther(path, nextComm, forceAccurateCore, file, out nextEmulator, out rom, out game, out cancel); // must be called after LoadXML because of SNES hacks
+								LoadOther(path, nextComm, file, out nextEmulator, out rom, out game, out cancel); // must be called after LoadXML because of SNES hacks
 							}
 							break;
 					}
@@ -894,7 +856,7 @@ namespace BizHawk.Client.Common
 						DoMessageCallback("Unable to use quicknes, using NESHawk instead");
 					}
 
-					return LoadRom(path, nextComm, launchLibretroCore, true, recursiveCount + 1);
+					return LoadRom(path, nextComm, launchLibretroCore, recursiveCount + 1);
 				}
 				else if (ex is MissingFirmwareException)
 				{
@@ -906,7 +868,7 @@ namespace BizHawk.Client.Common
 					// To avoid catch-22, disable SGB mode
 					_config.GbAsSgb = false;
 					DoMessageCallback("Failed to load a GB rom in SGB mode.  Disabling SGB Mode.");
-					return LoadRom(path, nextComm, launchLibretroCore, false, recursiveCount + 1);
+					return LoadRom(path, nextComm, launchLibretroCore, recursiveCount + 1);
 				}
 				else if (ex is NoAvailableCoreException)
 				{

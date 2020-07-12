@@ -23,7 +23,9 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 	public partial class SMS : IEmulator, ISoundProvider, ISaveRam, IInputPollable, IRegionable,
 		IDebuggable, ISettable<SMS.SmsSettings, SMS.SmsSyncSettings>, ICodeDataLogger
 	{
-		[CoreConstructor(new[] { "SMS", "SG", "GG" })]
+		[CoreConstructor("SMS")]
+		[CoreConstructor("SG")]
+		[CoreConstructor("GG")]
 		public SMS(CoreComm comm, GameInfo game, byte[] rom, SmsSettings settings, SmsSyncSettings syncSettings)
 		{
 			var ser = new BasicServiceProvider(this);

@@ -41,6 +41,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 		{ }
 
 		[CoreConstructor("GB")]
+		[CoreConstructor("GBC")]
 		public Sameboy(CoreComm comm, byte[] rom, Settings settings, SyncSettings syncSettings, bool deterministic)
 			: this(rom, comm, false, settings, syncSettings, deterministic)
 		{ }

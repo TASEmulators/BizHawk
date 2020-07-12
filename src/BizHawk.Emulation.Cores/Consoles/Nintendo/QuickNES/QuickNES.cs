@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			QN.qn_setup_mappers();
 		}
 
-		[CoreConstructor("NES")]
+		[CoreConstructor("NES", Priority = CorePriority.Low)]
 		public QuickNES(byte[] file, QuickNESSettings settings, QuickNESSyncSettings syncSettings)
 		{
 			FP = OSTailoredCode.IsUnixHost
