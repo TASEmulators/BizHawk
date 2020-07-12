@@ -20,18 +20,19 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		isReleased: false)]
 	public partial class AmstradCPC : IRegionable, IDriveLight
 	{
-		public AmstradCPC(CoreComm comm, IEnumerable<byte[]> files, List<GameInfo> game, AmstradCPCSettings settings, AmstradCPCSyncSettings syncSettings)
+		[CoreConstructor("AmstradCPC")]
+		public AmstradCPC(CoreLoadParameters<AmstradCPCSettings, AmstradCPCSyncSettings> lp)
 		{
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
-			CoreComm = comm;
-			_gameInfo = game;
+			CoreComm = lp.Comm;
+			_gameInfo = lp.Roms.Select(r => r.Game).ToList();
 			_cpu = new Z80A();
 			_tracer = new TraceBuffer { Header = _cpu.TraceHeader };
-			_files = files?.ToList() ?? new List<byte[]>();
+			_files = lp.Roms.Select(r => r.RomData).ToList();
 
-			settings ??= new AmstradCPCSettings();
-			syncSettings ??= new AmstradCPCSyncSettings();
+			var settings = lp.Settings ?? new AmstradCPCSettings();
+			var syncSettings = lp.SyncSettings ?? new AmstradCPCSyncSettings();
 
 			PutSyncSettings((AmstradCPCSyncSettings)syncSettings);
 			PutSettings((AmstradCPCSettings)settings);

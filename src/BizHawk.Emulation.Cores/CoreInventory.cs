@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores
 				public byte[] RomData { get; set; }
 				public byte[] FileData { get; set; }
 				public string Extension { get; set; }
-				public GameInfo Game => null;
+				public GameInfo Game { get; set; }
 			}
 			// expected names and types of the parameters
 			private static readonly Dictionary<string, Type> ParamTypes = new Dictionary<string, Type>();
@@ -123,7 +123,8 @@ namespace BizHawk.Emulation.Cores
 					{
 						RomData = rom,
 						FileData = file,
-						Extension = extension
+						Extension = extension,
+						Game = game,
 					});
 					param.DeterministicEmulationRequested = deterministic;
 					return (IEmulator)CTor.Invoke(new object[] { param });

@@ -528,39 +528,11 @@ namespace BizHawk.Client.Common
 						core = CoreInventory.Instance["GB", _config.PreferredCores["GB"]];
 					}
 					break;
-				case "C64":
-					nextEmulator = new C64(
-						nextComm,
-						new[] { rom.FileData },
-						rom.GameInfo,
-						GetCoreSettings<C64, C64.C64Settings>(),
-						GetCoreSyncSettings<C64, C64.C64SyncSettings>()
-					);
-					return;
-				case "ZXSpectrum":
-					nextEmulator = new ZXSpectrum(
-						nextComm,
-						new[] { rom.RomData },
-						new List<GameInfo> { rom.GameInfo },
-						GetCoreSettings<ZXSpectrum, ZXSpectrum.ZXSpectrumSettings>(),
-						GetCoreSyncSettings<ZXSpectrum, ZXSpectrum.ZXSpectrumSyncSettings>(),
-						Deterministic
-					);
-					return;
 				case "ChannelF":
 					nextEmulator = new ChannelF(
 						nextComm,
 						game,
 						rom.FileData
-					);
-					return;
-				case "AmstradCPC":
-					nextEmulator = new AmstradCPC(
-						nextComm,
-						new[] { rom.RomData },
-						new List<GameInfo> { rom.GameInfo },
-						GetCoreSettings<AmstradCPC, AmstradCPC.AmstradCPCSettings>(),
-						GetCoreSyncSettings<AmstradCPC, AmstradCPC.AmstradCPCSyncSettings>()
 					);
 					return;
 				case "Arcade":
@@ -692,32 +664,13 @@ namespace BizHawk.Client.Common
 						nextEmulator = MakeCoreFromXml<AppleII>(game);
 						return true;
 					case "C64":
-						nextEmulator = new C64(
-							nextComm,
-							xmlGame.Assets.Select(a => a.Value),
-							GameInfo.NullInstance,
-							GetCoreSettings<C64, C64.C64Settings>(),
-							GetCoreSyncSettings<C64, C64.C64SyncSettings>()
-						);
+						nextEmulator = MakeCoreFromXml<C64>(game);
 						return true;
 					case "ZXSpectrum":
-						nextEmulator = new ZXSpectrum(
-							nextComm,
-							xmlGame.Assets.Select(kvp => kvp.Value),
-							xmlGame.Assets.Select(kvp => new GameInfo { Name = Path.GetFileNameWithoutExtension(kvp.Key) }).ToList(),
-							GetCoreSettings<ZXSpectrum, ZXSpectrum.ZXSpectrumSettings>(),
-							GetCoreSyncSettings<ZXSpectrum, ZXSpectrum.ZXSpectrumSyncSettings>(),
-							Deterministic
-						);
+						nextEmulator = MakeCoreFromXml<ZXSpectrum>(game);
 						return true;
 					case "AmstradCPC":
-						nextEmulator = new AmstradCPC(
-							nextComm,
-							xmlGame.Assets.Select(kvp => kvp.Value),
-							xmlGame.Assets.Select(kvp => new GameInfo { Name = Path.GetFileNameWithoutExtension(kvp.Key) }).ToList(),
-							GetCoreSettings<AmstradCPC, AmstradCPC.AmstradCPCSettings>(),
-							GetCoreSyncSettings<AmstradCPC, AmstradCPC.AmstradCPCSyncSettings>()
-						);
+						nextEmulator = MakeCoreFromXml<AmstradCPC>(game);
 						return true;
 					case "PSX":
 						nextEmulator = MakeCoreFromXml<Octoshock>(game, DiscType.SonyPSX, "PSX");

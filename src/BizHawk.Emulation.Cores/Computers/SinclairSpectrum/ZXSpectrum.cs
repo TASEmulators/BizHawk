@@ -21,32 +21,27 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		isReleased: true)]
 	public partial class ZXSpectrum : IRegionable, IDriveLight
 	{
-		public ZXSpectrum(CoreComm comm, IEnumerable<byte[]> files, List<GameInfo> game, ZXSpectrumSettings settings, ZXSpectrumSyncSettings syncSettings, bool? deterministic)
+		[CoreConstructor("ZXSpectrum")]
+		public ZXSpectrum(
+			CoreLoadParameters<ZXSpectrumSettings, ZXSpectrumSyncSettings> lp)
 		{
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
-			CoreComm = comm;
+			CoreComm = lp.Comm;
 
-			_gameInfo = game;
+			_gameInfo = lp.Roms.Select(r => r.Game).ToList();
 
 			_cpu = new Z80A();
 
 			_tracer = new TraceBuffer { Header = _cpu.TraceHeader };
 
-			_files = files?.ToList() ?? new List<byte[]>();
+			_files = lp.Roms.Select(r => r.RomData).ToList();
 
-			if (settings == null)
-			{
-				settings = new ZXSpectrumSettings();
-			}
+			var settings = lp.Settings ?? new ZXSpectrumSettings();
+			var syncSettings = lp.SyncSettings ?? new ZXSpectrumSyncSettings();
 
-			if (syncSettings == null)
-			{
-				syncSettings = new ZXSpectrumSyncSettings();
-			}
-
-			PutSyncSettings((ZXSpectrumSyncSettings)syncSettings);
-			PutSettings((ZXSpectrumSettings)settings);
+			PutSyncSettings(lp.SyncSettings);
+			PutSettings(lp.Settings);
 
 			var joysticks = new List<JoystickType>
 			{
@@ -57,14 +52,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 			DeterministicEmulation = ((ZXSpectrumSyncSettings)syncSettings).DeterministicEmulation;
 
-			if (deterministic != null && deterministic == true)
+			if (lp.DeterministicEmulationRequested)
 			{
 				if (!DeterministicEmulation)
 				{
 					CoreComm.Notify("Forcing Deterministic Emulation");
 				}
 
-				DeterministicEmulation = deterministic.Value;
+				DeterministicEmulation = lp.DeterministicEmulationRequested;
 			}
 
 			MachineType = SyncSettings.MachineType;
