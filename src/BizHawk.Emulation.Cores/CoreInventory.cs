@@ -20,6 +20,7 @@ namespace BizHawk.Emulation.Cores
 				public byte[] RomData { get; set; }
 				public byte[] FileData { get; set; }
 				public string Extension { get; set; }
+				public GameInfo Game => null;
 			}
 			// expected names and types of the parameters
 			private static readonly Dictionary<string, Type> ParamTypes = new Dictionary<string, Type>();
