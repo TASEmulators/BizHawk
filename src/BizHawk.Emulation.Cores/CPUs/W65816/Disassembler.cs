@@ -44,8 +44,8 @@ namespace BizHawk.Emulation.Cores.Components.W65816
 		public string Disassemble(uint addr, Func<long, byte> peek, ref byte P, out int length)
 		{
 			byte opcode = peek(addr);
-			string ibuf;
-			string pbuf;
+			string ibuf = null;
+			string pbuf = null;
 			int offset = -1, sval = -1;
 
 			bool tsrc_2 = false;
