@@ -89,6 +89,37 @@ namespace BizHawk.Client.Common
 			return e.Settings;
 		}
 
+		private class CoreLoadParametersShort
+		{
+			public CoreComm Comm { get; set; }
+			public GameInfo Game { get; set; }
+			public List<IRomGame> Roms { get; set; } = new List<IRomGame>();
+			public List<IDiscGame> Discs { get; set; } = new List<IDiscGame>();
+		}
+
+		private T MakeCore<T>(CoreLoadParametersShort clps)
+			where T : IEmulator
+		{
+			// TODO: Lots of stuff
+			var ctor = typeof(T)
+				.GetConstructors()
+				.Select(c => new { c, p = c.GetParameters() })
+				.Where(a => a.p.Length == 1)
+				.Select(a => new { a.c, p = a.p[0] })
+				.Where(a => a.p.ParameterType.IsGenericType && a.p.ParameterType.GetGenericTypeDefinition() == typeof(CoreLoadParameters<,>))
+				.Single();
+
+			var clp = (dynamic)Activator.CreateInstance(ctor.p.ParameterType);
+			clp.Comm = clps.Comm;
+			clp.Game = clps.Game;
+			clp.Roms = clps.Roms;
+			clp.Discs = clps.Discs;
+			clp.DeterministicEmulationRequested = Deterministic;
+			clp.Settings = (dynamic)GetCoreSettings(typeof(T), ctor.p.ParameterType.GetGenericArguments()[0]);
+			clp.SyncSettings = (dynamic)GetCoreSyncSettings(typeof(T), ctor.p.ParameterType.GetGenericArguments()[1]);
+			return (T)ctor.c.Invoke(new[] { clp });
+		}
+
 		// For not throwing errors but simply outputting information to the screen
 		public Action<string> MessageCallback { get; set; }
 
@@ -229,26 +260,6 @@ namespace BizHawk.Client.Common
 			return true;
 		}
 
-		private List<IDiscGame> DiscsFromXml(XmlGame xmlGame, string systemId, DiscType diskType)
-		{
-			return xmlGame
-				.AssetFullPaths
-				.Where(path => Disc.IsValidExtension(Path.GetExtension(path)))
-				.Select(path => new
-					{
-						d = diskType.Create(path, str => DoLoadErrorCallback(str, systemId, LoadErrorType.DiscError)),
-						p = path,
-					})
-				.Where(a => a.d != null)
-				.Select(a => (IDiscGame)new DiscGame
-				{
-					DiscData = a.d,
-					DiscType = diskType,
-					DiscName = Path.GetFileNameWithoutExtension(a.p)
-				})
-				.ToList();
-		}
-
 		private bool LoadDisc(string path, CoreComm nextComm, HawkFile file, string ext, out IEmulator nextEmulator, out GameInfo game)
 		{
 			//--- load the disc in a context which will let us abort if it's going to take too long
@@ -326,15 +337,13 @@ namespace BizHawk.Client.Common
 				}
 			}
 
-			CoreLoadParameters<TSetting, TSync> MakeCLP<TEmulator, TSetting, TSync>(GameInfo g)
+			TEmulator MakeCoreFromCds<TEmulator>(GameInfo g)
 				where TEmulator : IEmulator
 			{
-				return new CoreLoadParameters<TSetting, TSync>
+				var clps = new CoreLoadParametersShort
 				{
 					Comm = nextComm,
 					Game = g,
-					Settings = GetCoreSettings<TEmulator, TSetting>(),
-					SyncSettings = GetCoreSyncSettings<TEmulator, TSync>(),
 					Discs =
 					{
 						new DiscGame
@@ -344,23 +353,23 @@ namespace BizHawk.Client.Common
 							DiscName = Path.GetFileNameWithoutExtension(path)
 						}
 					},
-					DeterministicEmulationRequested = Deterministic
 				};
+				return MakeCore<TEmulator>(clps);
 			}
 
 			switch (game.System)
 			{
 				case "GEN":
-					nextEmulator = new GPGX(MakeCLP<GPGX, GPGX.GPGXSettings, GPGX.GPGXSyncSettings>(game));
+					nextEmulator = MakeCoreFromCds<GPGX>(game);
 					break;
 				case "SAT":
-					nextEmulator = new Saturnus(MakeCLP<Saturnus, NymaCore.NymaSettings, NymaCore.NymaSyncSettings>(game));
+					nextEmulator = MakeCoreFromCds<Saturnus>(game);
 					break;
 				case "PSX":
-					nextEmulator = new Octoshock(MakeCLP<Octoshock, Octoshock.Settings, Octoshock.SyncSettings>(game));
+					nextEmulator = MakeCoreFromCds<Octoshock>(game);
 					break;
 				case "PCFX":
-					nextEmulator = new Tst(MakeCLP<Tst, NymaCore.NymaSettings, NymaCore.NymaSyncSettings>(game));
+					nextEmulator = MakeCoreFromCds<Tst>(game);
 					break;
 				case "PCE": // TODO: this is clearly not used, its set to PCE by code above
 				case "PCECD":
@@ -374,8 +383,8 @@ namespace BizHawk.Client.Common
 							GetCoreSettings<PCEngine, PCEngine.PCESettings>(),
 							GetCoreSyncSettings<PCEngine, PCEngine.PCESyncSettings>()
 						),
-						CoreNames.HyperNyma => new HyperNyma(MakeCLP<HyperNyma, NymaCore.NymaSettings, NymaCore.NymaSyncSettings>(game)),
-						_ => new TurboNyma(MakeCLP<TurboNyma, NymaCore.NymaSettings, NymaCore.NymaSyncSettings>(game)),
+						CoreNames.HyperNyma => MakeCoreFromCds<HyperNyma>(game),
+						_ => MakeCoreFromCds<TurboNyma>(game),
 					};
 					break;
 				default:
@@ -616,18 +625,45 @@ namespace BizHawk.Client.Common
 				var xmlGame = XmlGame.Create(file); // if load fails, are we supposed to retry as a bsnes XML????????
 				game = xmlGame.GI;
 
-				CoreLoadParameters<TSetting, TSync> MakeCLP<TEmulator, TSetting, TSync>(GameInfo g, DiscType type, string systemId)
+				List<IDiscGame> DiscsFromXml(string systemId, DiscType diskType)
+				{
+					return xmlGame
+						.AssetFullPaths
+						.Where(path => Disc.IsValidExtension(Path.GetExtension(path)))
+						.Select(path => new
+							{
+								d = diskType.Create(path, str => DoLoadErrorCallback(str, systemId, LoadErrorType.DiscError)),
+								p = path,
+							})
+						.Where(a => a.d != null)
+						.Select(a => (IDiscGame)new DiscGame
+						{
+							DiscData = a.d,
+							DiscType = diskType,
+							DiscName = Path.GetFileNameWithoutExtension(a.p)
+						})
+						.ToList();
+				}
+
+				TEmulator MakeCoreFromXml<TEmulator>(GameInfo g, DiscType type, string systemId)
 					where TEmulator : IEmulator
 				{
-					return new CoreLoadParameters<TSetting, TSync>
+					var clps = new CoreLoadParametersShort
 					{
 						Comm = nextComm,
 						Game = g,
-						Settings = GetCoreSettings<TEmulator, TSetting>(),
-						SyncSettings = GetCoreSyncSettings<TEmulator, TSync>(),
-						Discs = DiscsFromXml(xmlGame, systemId, type),
-						DeterministicEmulationRequested = Deterministic,
+						Roms = xmlGame.Assets
+							.Where(kvp => !Disc.IsValidExtension(kvp.Key))
+							.Select(kvp => (IRomGame)new RomGameFake
+							{
+								RomData = kvp.Value,
+								FileData = kvp.Value, // TODO: Hope no one needed anything special here
+								Extension = Path.GetExtension(kvp.Key)
+							})
+							.ToList(),
+						Discs = DiscsFromXml(systemId, type),
 					};
+					return MakeCore<TEmulator>(clps);
 				}
 
 				switch (game.System)
@@ -746,27 +782,17 @@ namespace BizHawk.Client.Common
 						);
 						return true;
 					case "PSX":
-						nextEmulator = new Octoshock(MakeCLP<Octoshock, Octoshock.Settings, Octoshock.SyncSettings>(game, DiscType.SonyPSX, "PSX"));
+						nextEmulator = MakeCoreFromXml<Octoshock>(game, DiscType.SonyPSX, "PSX");
 						return true;
 					case "SAT":
-						nextEmulator = new Saturnus(MakeCLP<Saturnus, NymaCore.NymaSettings, NymaCore.NymaSyncSettings>(game, DiscType.SegaSaturn, "SAT"));
+						nextEmulator = MakeCoreFromXml<Saturnus>(game, DiscType.SegaSaturn, "SAT");
 						return true;
 					case "PCFX":
-						nextEmulator = new Tst(MakeCLP<Tst, NymaCore.NymaSettings, NymaCore.NymaSyncSettings>(game, DiscType.PCFX, "PCFX"));
+						nextEmulator = MakeCoreFromXml<Tst>(game, DiscType.PCFX, "PCFX");
 						return true;
 					case "GEN":
-					{
-						var genRoms = xmlGame.Assets.Where(kvp => !Disc.IsValidExtension(kvp.Key)).ToList();
-						var clp = MakeCLP<GPGX, GPGX.GPGXSettings, GPGX.GPGXSyncSettings>(game, DiscType.MegaCD, "GEN");
-						clp.Roms.AddRange(genRoms.Select(kvp => new RomGameFake
-						{
-							RomData = kvp.Value,
-							FileData = kvp.Value, // TODO: Hope no one needed anything special here
-							Extension = Path.GetExtension(kvp.Key)
-						}));
-						nextEmulator = new GPGX(clp);
+						nextEmulator = MakeCoreFromXml<GPGX>(game, DiscType.MegaCD, "GEN");
 						return true;
-					}
 					case "Game Gear":
 						var leftBytesGG = xmlGame.Assets[0].Value;
 						var rightBytesGG = xmlGame.Assets[1].Value;
