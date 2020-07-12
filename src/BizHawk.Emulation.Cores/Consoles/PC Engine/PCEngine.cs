@@ -54,6 +54,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		int IVideoLogicalOffsets.ScreenY => Settings.TopLine;
 
+		[CoreConstructor("PCECD", Priority = CorePriority.Low)]
 		public PCEngine(CoreLoadParameters<PCESettings, PCESyncSettings> lp)
 		{
 			SystemId = "PCECD";

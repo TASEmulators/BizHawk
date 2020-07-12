@@ -26,6 +26,7 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 				SettingOverrides["pce.disable_bram_hucard"].Default = "0";
 			_turboNyma = DoInit<LibTurboNyma>(game, rom, null, "turbo.wbx", extension, deterministic);
 		}
+		[CoreConstructor("PCECD")]
 		public TurboNyma(CoreLoadParameters<NymaSettings, NymaSyncSettings> lp)
 			: base(lp.Comm, "PCE", "PC Engine Controller", lp.Settings, lp.SyncSettings)
 		{

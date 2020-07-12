@@ -24,6 +24,7 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 		{
 			_hyperNyma = DoInit<LibHyperNyma>(game, rom, null, "hyper.wbx", extension, deterministic);
 		}
+		[CoreConstructor("PCECD", Priority = CorePriority.Low)]
 		public HyperNyma(CoreLoadParameters<NymaSettings, NymaSyncSettings> lp)
 			: base(lp.Comm, "PCE", "PC Engine Controller", lp.Settings, lp.SyncSettings)
 		{

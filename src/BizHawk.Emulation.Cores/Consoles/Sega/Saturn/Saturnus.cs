@@ -20,12 +20,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 	public class Saturnus : NymaCore, IRegionable
 	{
 		[CoreConstructor("SAT")]
-		public Saturnus(CoreComm comm, NymaSettings settings, NymaSyncSettings syncSettings)
-			: base(comm, "SAT", "Saturn Controller", settings, syncSettings)
-		{
-			throw new InvalidOperationException("To load a Saturn game, please load the CUE file and not the BIN file.");
-		}
-
 		public Saturnus(CoreLoadParameters<NymaSettings, NymaSyncSettings> lp)
 			: base(lp.Comm, "SAT", "Saturn Controller", lp.Settings, lp.SyncSettings)
 		{

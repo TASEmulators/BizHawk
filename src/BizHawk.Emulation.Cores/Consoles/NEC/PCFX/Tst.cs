@@ -17,6 +17,7 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCFX
 		"https://mednafen.github.io/releases/", false, "PC-FX")]
 	public class Tst : NymaCore
 	{
+		[CoreConstructor("PCFX")]
 		public Tst(CoreLoadParameters<NymaSettings, NymaSyncSettings> lp)
 			: base(lp.Comm, "PCFX", "PC-FX Controller", lp.Settings, lp.SyncSettings)
 		{

@@ -66,7 +66,7 @@ namespace BizHawk.Client.Common
 
 			public List<IDiscAsset> Discs { get; set; } = new List<IDiscAsset>();
 
-			public bool DeterministicEmulationRequested { get; set; }
+			public bool DeterministicEmulationRequested => _parent.Deterministic;
 
 			public object FetchSettings(Type emulatorType, Type settingsType)
 				=> _parent.GetCoreSettings(emulatorType, settingsType);
@@ -381,34 +381,21 @@ namespace BizHawk.Client.Common
 				return MakeCore<TEmulator>(clps);
 			}
 
-			switch (game.System)
+			var cip = new CoreInventoryParameters(this)
 			{
-				case "GEN":
-					nextEmulator = MakeCoreFromCds<GPGX>(game);
-					break;
-				case "SAT":
-					nextEmulator = MakeCoreFromCds<Saturnus>(game);
-					break;
-				case "PSX":
-					nextEmulator = MakeCoreFromCds<Octoshock>(game);
-					break;
-				case "PCFX":
-					nextEmulator = MakeCoreFromCds<Tst>(game);
-					break;
-				case "PCE": // TODO: this is clearly not used, its set to PCE by code above
-				case "PCECD":
-					var core = _config.PreferredCores.TryGetValue("PCECD", out var preferredCore) ? preferredCore : CoreNames.PceHawk;
-					nextEmulator = core switch
+				Comm = nextComm,
+				Game = game,
+					Discs =
 					{
-						CoreNames.PceHawk => MakeCoreFromCds<PCEngine>(game),
-						CoreNames.HyperNyma => MakeCoreFromCds<HyperNyma>(game),
-						_ => MakeCoreFromCds<TurboNyma>(game),
-					};
-					break;
-				default:
-					nextEmulator = null;
-					break;
-			}
+						new DiscAsset
+						{
+							DiscData = disc,
+							DiscType = new DiscIdentifier(disc).DetectDiscType(),
+							DiscName = Path.GetFileNameWithoutExtension(path)
+						}
+					},
+			};
+			nextEmulator = MakeCoreFromCoreInventory(cip);
 			return true;
 		}
 
@@ -430,11 +417,11 @@ namespace BizHawk.Client.Common
 			};
 		}
 
-		private IEmulator MakeCoreFromCoreInventory(string systemId, CoreInventoryParameters cip, string forcedCoreGameDb)
+		private IEmulator MakeCoreFromCoreInventory(CoreInventoryParameters cip)
 		{
-			_config.PreferredCores.TryGetValue(systemId, out var preferredCore);
-			var forcedCore = ForcedCoreToCoreName(forcedCoreGameDb);
-			var cores = CoreInventory.Instance.GetCores(systemId)
+			_config.PreferredCores.TryGetValue(cip.Game.System, out var preferredCore);
+			var forcedCore = ForcedCoreToCoreName(cip.Game.ForcedCore);
+			var cores = CoreInventory.Instance.GetCores(cip.Game.System)
 				.OrderBy(c =>
 				{
 					if (c.Name == preferredCore)
@@ -445,6 +432,8 @@ namespace BizHawk.Client.Common
 						return (int)c.Priority;
 				})
 				.ToList();
+			if (cores.Count == 0)
+				throw new InvalidOperationException("No core was found to try on the game");
 			var exceptions = new List<Exception>();
 			foreach (var core in cores)
 			{
@@ -457,7 +446,7 @@ namespace BizHawk.Client.Common
 					exceptions.Add(e);
 				}
 			}
-			throw new AggregateException("No core could load the ROM", exceptions);
+			throw new AggregateException("No core could load the game", exceptions);
 		}
 
 		private void LoadOther(string path, CoreComm nextComm, HawkFile file, out IEmulator nextEmulator, out RomGame rom, out GameInfo game, out bool cancel)
@@ -539,10 +528,8 @@ namespace BizHawk.Client.Common
 						Game = game
 					}
 				},
-				DeterministicEmulationRequested = Deterministic
-
 			};
-			nextEmulator = MakeCoreFromCoreInventory(game.System, cip, game.ForcedCore);
+			nextEmulator = MakeCoreFromCoreInventory(cip);
 		}
 
 		private void LoadPSF(string path, CoreComm nextComm, HawkFile file, out IEmulator nextEmulator, out RomGame rom, out GameInfo game)
