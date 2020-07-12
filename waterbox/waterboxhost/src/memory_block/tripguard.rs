@@ -139,7 +139,6 @@ mod trip_pal {
 				} else {
 					transmute::<usize, SaHandler>(sa_old.sa_sigaction)(sig);
 				}
-				abort();
 			}
 		}
 		unsafe {
