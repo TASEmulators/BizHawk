@@ -95,14 +95,6 @@ namespace BizHawk.Client.Common
 			return e.Settings;
 		}
 
-		private class CoreLoadParametersShort
-		{
-			public CoreComm Comm { get; set; }
-			public GameInfo Game { get; set; }
-			public List<IRomAsset> Roms { get; set; } = new List<IRomAsset>();
-			public List<IDiscAsset> Discs { get; set; } = new List<IDiscAsset>();
-		}
-
 		// For not throwing errors but simply outputting information to the screen
 		public Action<string> MessageCallback { get; set; }
 
