@@ -44,7 +44,7 @@ namespace BizHawk.Emulation.Cores.Components.W65816
 		public string Disassemble(uint addr, Func<long, byte> peek, ref byte P, out int length)
 		{
 			byte opcode = peek(addr);
-			string ibuf = null;
+			string ibuf;
 			string pbuf;
 			int offset = -1, sval = -1;
 
@@ -472,9 +472,6 @@ namespace BizHawk.Emulation.Cores.Components.W65816
 						offset = 3;
 					}
 					break;
-				default:
-					length = 1;
-					return "???";
 			}
 
 			StringBuilder sb = new StringBuilder();
