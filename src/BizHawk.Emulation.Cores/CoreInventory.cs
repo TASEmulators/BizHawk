@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Cores
 
 		public class Core
 		{
-			private class RomGameFake : IRomGame
+			private class RomGameFake : IRomAsset
 			{
 				public byte[] RomData { get; set; }
 				public byte[] FileData { get; set; }

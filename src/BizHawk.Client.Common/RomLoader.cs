@@ -38,17 +38,18 @@ namespace BizHawk.Client.Common
 {
 	public class RomLoader
 	{
-		private class DiscGame : IDiscGame
+		private class DiscAsset : IDiscAsset
 		{
 			public Disc DiscData { get; set; }
 			public DiscType DiscType { get; set; }
 			public string DiscName { get; set; }
 		}	
-		private class RomGameFake : IRomGame
+		private class RomAsset : IRomAsset
 		{
 			public byte[] RomData { get; set; }
 			public byte[] FileData { get; set; }
 			public string Extension { get; set; }
+			public GameInfo Game { get; set; }
 		}
 		private readonly Config _config;
 
@@ -93,8 +94,8 @@ namespace BizHawk.Client.Common
 		{
 			public CoreComm Comm { get; set; }
 			public GameInfo Game { get; set; }
-			public List<IRomGame> Roms { get; set; } = new List<IRomGame>();
-			public List<IDiscGame> Discs { get; set; } = new List<IDiscGame>();
+			public List<IRomAsset> Roms { get; set; } = new List<IRomAsset>();
+			public List<IDiscAsset> Discs { get; set; } = new List<IDiscAsset>();
 		}
 
 		private T MakeCore<T>(CoreLoadParametersShort clps)
@@ -346,7 +347,7 @@ namespace BizHawk.Client.Common
 					Game = g,
 					Discs =
 					{
-						new DiscGame
+						new DiscAsset
 						{
 							DiscData = disc,
 							DiscType = new DiscIdentifier(disc).DetectDiscType(),
@@ -625,7 +626,7 @@ namespace BizHawk.Client.Common
 				var xmlGame = XmlGame.Create(file); // if load fails, are we supposed to retry as a bsnes XML????????
 				game = xmlGame.GI;
 
-				List<IDiscGame> DiscsFromXml(string systemId, DiscType diskType)
+				List<IDiscAsset> DiscsFromXml(string systemId, DiscType diskType)
 				{
 					return xmlGame
 						.AssetFullPaths
@@ -636,7 +637,7 @@ namespace BizHawk.Client.Common
 								p = path,
 							})
 						.Where(a => a.d != null)
-						.Select(a => (IDiscGame)new DiscGame
+						.Select(a => (IDiscAsset)new DiscAsset
 						{
 							DiscData = a.d,
 							DiscType = diskType,
@@ -645,7 +646,7 @@ namespace BizHawk.Client.Common
 						.ToList();
 				}
 
-				TEmulator MakeCoreFromXml<TEmulator>(GameInfo g, DiscType type, string systemId)
+				TEmulator MakeCoreFromXml<TEmulator>(GameInfo g, DiscType? type = null, string systemId = null)
 					where TEmulator : IEmulator
 				{
 					var clps = new CoreLoadParametersShort
@@ -654,14 +655,15 @@ namespace BizHawk.Client.Common
 						Game = g,
 						Roms = xmlGame.Assets
 							.Where(kvp => !Disc.IsValidExtension(kvp.Key))
-							.Select(kvp => (IRomGame)new RomGameFake
+							.Select(kvp => (IRomAsset)new RomAsset
 							{
 								RomData = kvp.Value,
 								FileData = kvp.Value, // TODO: Hope no one needed anything special here
-								Extension = Path.GetExtension(kvp.Key)
+								Extension = Path.GetExtension(kvp.Key),
+								Game = Database.GetGameInfo(kvp.Value, Path.GetFileName(kvp.Key))
 							})
 							.ToList(),
-						Discs = DiscsFromXml(systemId, type),
+						Discs = type.HasValue ? DiscsFromXml(systemId, type.Value) : new List<IDiscAsset>(),
 					};
 					return MakeCore<TEmulator>(clps);
 				}
@@ -691,17 +693,7 @@ namespace BizHawk.Client.Common
 						}
 						else
 						{
-							nextEmulator = new GambatteLink(
-								nextComm,
-								left,
-								leftBytes,
-								right,
-								rightBytes,
-								GetCoreSettings<GambatteLink, GambatteLink.GambatteLinkSettings>(),
-								GetCoreSyncSettings<GambatteLink, GambatteLink.GambatteLinkSyncSettings>(),
-								Deterministic
-							);
-							// other stuff todo
+							nextEmulator = MakeCoreFromXml<GambatteLink>(game);
 							return true;
 						}
 					case "GB3x":

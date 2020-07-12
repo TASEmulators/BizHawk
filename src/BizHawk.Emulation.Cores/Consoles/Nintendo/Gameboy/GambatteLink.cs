@@ -11,15 +11,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 	public partial class GambatteLink : IEmulator, IVideoProvider, ISoundProvider, IInputPollable, ISaveRam, IStatable, ILinkable,
 		IBoardInfo, IRomInfo, IDebuggable, ISettable<GambatteLink.GambatteLinkSettings, GambatteLink.GambatteLinkSyncSettings>, ICodeDataLogger
 	{
-		public GambatteLink(CoreComm comm, GameInfo leftinfo, byte[] leftrom, GameInfo rightinfo, byte[] rightrom,
-			GambatteLink.GambatteLinkSettings settings, GambatteLink.GambatteLinkSyncSettings syncSettings, bool deterministic)
+		public GambatteLink(CoreLoadParameters<GambatteLink.GambatteLinkSettings, GambatteLink.GambatteLinkSyncSettings> lp)
 		{
 			ServiceProvider = new BasicServiceProvider(this);
-			GambatteLinkSettings linkSettings = (GambatteLinkSettings)settings ?? new GambatteLinkSettings();
-			GambatteLinkSyncSettings linkSyncSettings = (GambatteLinkSyncSettings)syncSettings ?? new GambatteLinkSyncSettings();
+			GambatteLinkSettings linkSettings = (GambatteLinkSettings)lp.Settings ?? new GambatteLinkSettings();
+			GambatteLinkSyncSettings linkSyncSettings = (GambatteLinkSyncSettings)lp.SyncSettings ?? new GambatteLinkSyncSettings();
 
-			L = new Gameboy(comm, leftinfo, leftrom, linkSettings.L, linkSyncSettings.L, deterministic);
-			R = new Gameboy(comm, rightinfo, rightrom, linkSettings.R, linkSyncSettings.R, deterministic);
+			L = new Gameboy(lp.Comm, lp.Roms[0].Game, lp.Roms[0].RomData, linkSettings.L, linkSyncSettings.L, lp.DeterministicEmulationRequested);
+			R = new Gameboy(lp.Comm, lp.Roms[1].Game, lp.Roms[1].RomData, linkSettings.R, linkSyncSettings.R, lp.DeterministicEmulationRequested);
 
 			// connect link cable
 			LibGambatte.gambatte_linkstatus(L.GambatteState, 259);

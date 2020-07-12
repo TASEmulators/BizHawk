@@ -6,13 +6,19 @@ using BizHawk.Emulation.DiscSystem;
 
 namespace BizHawk.Emulation.Cores
 {
-	public interface IRomGame
+	public interface IRomAsset
 	{
 		byte[] RomData { get; }
 		byte[] FileData { get; }
 		string Extension { get; }
+		/// <summary>
+		/// GameInfo for this individual asset.  Doesn't make sense a lot of the time;
+		/// only use this if your individual rom assets are full proper games when considered alone.
+		/// Not guaranteed to be set in any other situation.
+		/// </summary>
+		GameInfo Game { get; }
 	}
-	public interface IDiscGame
+	public interface IDiscAsset
 	{
 		Disc DiscData { get; }
 		DiscType DiscType { get; }
@@ -22,7 +28,7 @@ namespace BizHawk.Emulation.Cores
 	{
 		CoreComm Comm { set; }
 		GameInfo Game { set; }
-		List<IRomGame> Roms { get; }
+		List<IRomAsset> Roms { get; }
 		bool DeterministicEmulationRequested { set; }
 		void PutSettings(object settings, object syncSettings);
 	}
@@ -42,13 +48,13 @@ namespace BizHawk.Emulation.Cores
 		/// All roms that should be loaded as part of this core load.
 		/// Order may be significant.  Does not include firmwares or other general resources.
 		/// </summary>
-		public List<IRomGame> Roms { get; set; } = new List<IRomGame>();
+		public List<IRomAsset> Roms { get; set; } = new List<IRomAsset>();
 		/// <summary>
 		/// All discs that should be loaded as part of this core load.
 		/// Order may be significant.
 		/// </summary>
 		/// <value></value>
-		public List<IDiscGame> Discs { get; set; } = new List<IDiscGame>();
+		public List<IDiscAsset> Discs { get; set; } = new List<IDiscAsset>();
 		public bool DeterministicEmulationRequested { get; set; }
 		void ICoreLoadParameters<TSettiing, TSync>.PutSettings(object settings, object syncSettings)
 		{
