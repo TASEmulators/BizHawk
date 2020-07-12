@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using BizHawk.Emulation.Common;
@@ -24,15 +23,7 @@ namespace BizHawk.Emulation.Cores
 		DiscType DiscType { get; }
 		public string DiscName { get; set; }
 	}
-	internal interface ICoreLoadParameters<in TSettiing, in TSync>
-	{
-		CoreComm Comm { set; }
-		GameInfo Game { set; }
-		List<IRomAsset> Roms { get; }
-		bool DeterministicEmulationRequested { set; }
-		void PutSettings(object settings, object syncSettings);
-	}
-	public class CoreLoadParameters<TSettiing, TSync> : ICoreLoadParameters<TSettiing, TSync>
+	public class CoreLoadParameters<TSettiing, TSync>
 	{
 		public CoreComm Comm { get; set; }
 		public GameInfo Game { get; set; }
@@ -56,12 +47,5 @@ namespace BizHawk.Emulation.Cores
 		/// <value></value>
 		public List<IDiscAsset> Discs { get; set; } = new List<IDiscAsset>();
 		public bool DeterministicEmulationRequested { get; set; }
-		void ICoreLoadParameters<TSettiing, TSync>.PutSettings(object settings, object syncSettings)
-		{
-			if (!(settings is TSettiing typedSettings)) throw new ArgumentException("type does not match type param", nameof(settings));
-			if (!(syncSettings is TSync typedSyncSettings)) throw new ArgumentException("type does not match type param", nameof(syncSettings));
-			Settings = typedSettings;
-			SyncSettings = typedSyncSettings;
-		}
 	}
 }

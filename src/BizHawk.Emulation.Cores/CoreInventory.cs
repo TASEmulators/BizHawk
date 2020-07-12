@@ -114,11 +114,13 @@ namespace BizHawk.Emulation.Cores
 			{
 				if (_useCoreLoadParameters)
 				{
+					var paramType = typeof(CoreLoadParameters<,>).MakeGenericType(new[] { SettingsType, SyncSettingsType });
 					// TODO: clean this up
-					var param = (ICoreLoadParameters<object, object>) Activator.CreateInstance(typeof(CoreLoadParameters<,>).MakeGenericType(SettingsType, SyncSettingsType));
+					dynamic param = Activator.CreateInstance(paramType);
 					param.Comm = comm;
 					param.Game = game;
-					param.PutSettings(settings, syncSettings);
+					param.Settings = (dynamic)settings;
+					param.SyncSettings = (dynamic)syncSettings;
 					param.Roms.Add(new RomGameFake
 					{
 						RomData = rom,
