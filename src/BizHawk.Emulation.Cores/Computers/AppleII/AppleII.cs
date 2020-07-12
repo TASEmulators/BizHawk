@@ -21,15 +21,10 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			AppleIIController.BoolButtons.AddRange(ExtraButtons);
 		}
 
+		[CoreConstructor("AppleII")]
 		public AppleII(CoreLoadParameters<Settings, object> lp)
-			: this(lp.Comm, lp.Roms.First().RomData, lp.Settings)
 		{
 			_romSet = lp.Roms.Select(r => r.RomData).ToList();
-		}
-
-		[CoreConstructor("AppleII")]
-		public AppleII(CoreComm comm, byte[] rom, Settings settings)
-		{
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
 
@@ -38,13 +33,11 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 				Header = "6502: PC, opcode, register (A, X, Y, P, SP, Cy), flags (NVTBDIZC)"
 			};
 
-			_disk1 = rom;
-			// TODO: Doesn't this add the first rom twice in the case of multirom?
-			_romSet.Add(rom);
+			_disk1 = _romSet[0];
 
-			_appleIIRom = comm.CoreFileProvider.GetFirmware(
+			_appleIIRom = lp.Comm.CoreFileProvider.GetFirmware(
 				SystemId, "AppleIIe", true, "The Apple IIe BIOS firmware is required");
-			_diskIIRom = comm.CoreFileProvider.GetFirmware(
+			_diskIIRom = lp.Comm.CoreFileProvider.GetFirmware(
 				SystemId, "DiskII", true, "The DiskII firmware is required");
 
 			_machine = new Components(_appleIIRom, _diskIIRom);
@@ -58,7 +51,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			SetCallbacks();
 
 			SetupMemoryDomains();
-			PutSettings(settings ?? new Settings());
+			PutSettings(lp.Settings ?? new Settings());
 		}
 
 		private static readonly ControllerDefinition AppleIIController;

@@ -1,4 +1,5 @@
-﻿using BizHawk.Emulation.Common;
+﻿using System;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 {
@@ -29,9 +30,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 
 		public bool do_frame_fill;
 
-		//[CoreConstructor("GB", "GBC")]
+		[CoreConstructor("DGB")]
 		public GBHawkLink(CoreLoadParameters<GBHawkLink.GBLinkSettings, GBHawkLink.GBLinkSyncSettings> lp)
 		{
+			if (lp.Roms.Count != 2)
+				throw new InvalidOperationException("Wrong number of roms");
+
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
 

@@ -1,4 +1,5 @@
-﻿using BizHawk.Emulation.Common;
+﻿using System;
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
 
 namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
@@ -25,8 +26,13 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 
 		private bool do_r_next = false;
 
+		// TODO: Are there really xml games in the wild with this SystemId?
+		[CoreConstructor("Game Gear")]
 		public GGHawkLink(CoreLoadParameters<GGLinkSettings, GGLinkSyncSettings> lp)
 		{
+			if (lp.Roms.Count != 2)
+				throw new InvalidOperationException("Wrong number of roms");
+
 			var ser = new BasicServiceProvider(this);
 
 			linkSettings = (GGLinkSettings)lp.Settings ?? new GGLinkSettings();

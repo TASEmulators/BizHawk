@@ -121,29 +121,6 @@ namespace BizHawk.Client.Common
 			public List<IDiscAsset> Discs { get; set; } = new List<IDiscAsset>();
 		}
 
-		private T MakeCore<T>(CoreLoadParametersShort clps)
-			where T : IEmulator
-		{
-			// TODO: Lots of stuff
-			var ctor = typeof(T)
-				.GetConstructors()
-				.Select(c => new { c, p = c.GetParameters() })
-				.Where(a => a.p.Length == 1)
-				.Select(a => new { a.c, p = a.p[0] })
-				.Where(a => a.p.ParameterType.IsGenericType && a.p.ParameterType.GetGenericTypeDefinition() == typeof(CoreLoadParameters<,>))
-				.Single();
-
-			var clp = (dynamic)Activator.CreateInstance(ctor.p.ParameterType);
-			clp.Comm = clps.Comm;
-			clp.Game = clps.Game;
-			clp.Roms = clps.Roms;
-			clp.Discs = clps.Discs;
-			clp.DeterministicEmulationRequested = Deterministic;
-			clp.Settings = (dynamic)GetCoreSettings(typeof(T), ctor.p.ParameterType.GetGenericArguments()[0]);
-			clp.SyncSettings = (dynamic)GetCoreSyncSettings(typeof(T), ctor.p.ParameterType.GetGenericArguments()[1]);
-			return (T)ctor.c.Invoke(new[] { clp });
-		}
-
 		// For not throwing errors but simply outputting information to the screen
 		public Action<string> MessageCallback { get; set; }
 
@@ -286,20 +263,13 @@ namespace BizHawk.Client.Common
 
 		private bool LoadDisc(string path, CoreComm nextComm, HawkFile file, string ext, out IEmulator nextEmulator, out GameInfo game)
 		{
-			//--- load the disc in a context which will let us abort if it's going to take too long
-			var discMountJob = new DiscMountJob { IN_FromPath = path, IN_SlowLoadAbortThreshold = 8 };
-			discMountJob.Run();
-
-			if (discMountJob.OUT_SlowLoadAborted)
+			var disc = DiscExtensions.CreateAnyType(path, str => DoLoadErrorCallback(str, "???", LoadErrorType.DiscError));
+			if (disc == null)
 			{
-				DoLoadErrorCallback("This disc would take too long to load. Run it through DiscoHawk first, or find a new rip because this one is probably junk", "", LoadErrorType.DiscError);
-				nextEmulator = null;
 				game = null;
+				nextEmulator = null;
 				return false;
 			}
-			if (discMountJob.OUT_ErrorLevel) throw new InvalidOperationException($"\r\n{discMountJob.OUT_Log}");
-
-			var disc = discMountJob.OUT_Disc;
 
 			// TODO - use more sophisticated IDer
 			var discType = new DiscIdentifier(disc).DetectDiscType();
@@ -359,26 +329,6 @@ namespace BizHawk.Client.Common
 						game.System = "PSX";
 						break;
 				}
-			}
-
-			TEmulator MakeCoreFromCds<TEmulator>(GameInfo g)
-				where TEmulator : IEmulator
-			{
-				var clps = new CoreLoadParametersShort
-				{
-					Comm = nextComm,
-					Game = g,
-					Discs =
-					{
-						new DiscAsset
-						{
-							DiscData = disc,
-							DiscType = new DiscIdentifier(disc).DetectDiscType(),
-							DiscName = Path.GetFileNameWithoutExtension(path)
-						}
-					},
-				};
-				return MakeCore<TEmulator>(clps);
 			}
 
 			var cip = new CoreInventoryParameters(this)
@@ -564,97 +514,39 @@ namespace BizHawk.Client.Common
 				var xmlGame = XmlGame.Create(file); // if load fails, are we supposed to retry as a bsnes XML????????
 				game = xmlGame.GI;
 
-				List<IDiscAsset> DiscsFromXml(string systemId, DiscType diskType)
+				var system = game.System;
+				var cip = new CoreInventoryParameters(this)
 				{
-					return xmlGame
-						.AssetFullPaths
+					Comm = nextComm,
+					Game = game,
+					Roms = xmlGame.Assets
+						.Where(kvp => !Disc.IsValidExtension(kvp.Key))
+						.Select(kvp => (IRomAsset)new RomAsset
+						{
+							RomData = kvp.Value,
+							FileData = kvp.Value, // TODO: Hope no one needed anything special here
+							Extension = Path.GetExtension(kvp.Key),
+							Game = Database.GetGameInfo(kvp.Value, Path.GetFileName(kvp.Key))
+						})
+						.ToList(),
+					Discs = xmlGame.AssetFullPaths
 						.Where(path => Disc.IsValidExtension(Path.GetExtension(path)))
 						.Select(path => new
-							{
-								d = diskType.Create(path, str => DoLoadErrorCallback(str, systemId, LoadErrorType.DiscError)),
-								p = path,
-							})
+						{
+							d = DiscExtensions.CreateAnyType(path, str => DoLoadErrorCallback(str, system, LoadErrorType.DiscError)),
+							p = path,
+						})
 						.Where(a => a.d != null)
 						.Select(a => (IDiscAsset)new DiscAsset
 						{
 							DiscData = a.d,
-							DiscType = diskType,
+							DiscType = new DiscIdentifier(a.d).DetectDiscType(),
 							DiscName = Path.GetFileNameWithoutExtension(a.p)
 						})
-						.ToList();
-				}
-
-				TEmulator MakeCoreFromXml<TEmulator>(GameInfo g, DiscType? type = null, string systemId = null)
-					where TEmulator : IEmulator
-				{
-					var clps = new CoreLoadParametersShort
-					{
-						Comm = nextComm,
-						Game = g,
-						Roms = xmlGame.Assets
-							.Where(kvp => !Disc.IsValidExtension(kvp.Key))
-							.Select(kvp => (IRomAsset)new RomAsset
-							{
-								RomData = kvp.Value,
-								FileData = kvp.Value, // TODO: Hope no one needed anything special here
-								Extension = Path.GetExtension(kvp.Key),
-								Game = Database.GetGameInfo(kvp.Value, Path.GetFileName(kvp.Key))
-							})
-							.ToList(),
-						Discs = type.HasValue ? DiscsFromXml(systemId, type.Value) : new List<IDiscAsset>(),
-					};
-					return MakeCore<TEmulator>(clps);
-				}
-
-				switch (game.System)
-				{
-					case "GB":
-					case "DGB":
-						if (_config.PreferredCores["GB"] == CoreNames.GbHawk)
-						{
-							nextEmulator = MakeCoreFromXml<GBHawkLink>(game);
-							return true;
-						}
-						else
-						{
-							nextEmulator = MakeCoreFromXml<GambatteLink>(game);
-							return true;
-						}
-					case "GB3x":
-						nextEmulator = MakeCoreFromXml<GBHawkLink3x>(game);
-						return true;
-					case "GB4x":
-						nextEmulator = MakeCoreFromXml<GBHawkLink4x>(game);
-						return true;
-					case "AppleII":
-						nextEmulator = MakeCoreFromXml<AppleII>(game);
-						return true;
-					case "C64":
-						nextEmulator = MakeCoreFromXml<C64>(game);
-						return true;
-					case "ZXSpectrum":
-						nextEmulator = MakeCoreFromXml<ZXSpectrum>(game);
-						return true;
-					case "AmstradCPC":
-						nextEmulator = MakeCoreFromXml<AmstradCPC>(game);
-						return true;
-					case "PSX":
-						nextEmulator = MakeCoreFromXml<Octoshock>(game, DiscType.SonyPSX, "PSX");
-						return true;
-					case "SAT":
-						nextEmulator = MakeCoreFromXml<Saturnus>(game, DiscType.SegaSaturn, "SAT");
-						return true;
-					case "PCFX":
-						nextEmulator = MakeCoreFromXml<Tst>(game, DiscType.PCFX, "PCFX");
-						return true;
-					case "GEN":
-						nextEmulator = MakeCoreFromXml<GPGX>(game, DiscType.MegaCD, "GEN");
-						return true;
-					case "Game Gear":
-						nextEmulator = MakeCoreFromXml<GGHawkLink>(game);
-						return true;
-				}
-				return false;
+						.ToList(),
+				};
+				nextEmulator = MakeCoreFromCoreInventory(cip);
+				return true;
 			}
 			catch (Exception ex)
 			{

@@ -4,7 +4,16 @@ namespace BizHawk.Emulation.DiscSystem
 {
 	public static class DiscExtensions
 	{
+		public static Disc CreateAnyType(string path, Action<string> errorCallback)
+		{
+			return CreateImpl(null, path, errorCallback);
+		}
 		public static Disc Create(this DiscType type, string path, Action<string> errorCallback)
+		{
+			return CreateImpl(type, path, errorCallback);
+		}
+
+		private static Disc CreateImpl(DiscType? type, string path, Action<string> errorCallback)
 		{
 			//--- load the disc in a context which will let us abort if it's going to take too long
 			var discMountJob = new DiscMountJob { IN_FromPath = path, IN_SlowLoadAbortThreshold = 8 };
@@ -24,7 +33,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 			var discType = new DiscIdentifier(disc).DetectDiscType();
 
-			if (discType != type)
+			if (type.HasValue && discType != type)
 			{
 				errorCallback($"Not a {type} disc");
 				return null;

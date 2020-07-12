@@ -1,4 +1,5 @@
-﻿using BizHawk.Emulation.Common;
+﻿using System;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 {
@@ -50,9 +51,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 
 		public bool do_frame_fill;
 
-		//[CoreConstructor("GB", "GBC")]
+		[CoreConstructor("GB4x")]
 		public GBHawkLink4x(CoreLoadParameters<GBLink4xSettings, GBLink4xSyncSettings> lp)
 		{
+			if (lp.Roms.Count != 4)
+				throw new InvalidOperationException("Wrong number of roms");
+
 			var ser = new BasicServiceProvider(this);
 
 			Link4xSettings = (GBLink4xSettings)lp.Settings ?? new GBLink4xSettings();
