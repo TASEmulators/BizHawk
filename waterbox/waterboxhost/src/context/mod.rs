@@ -107,7 +107,7 @@ pub fn prepare_thread() {
 		assert_eq!(syscall(SYS_arch_prctl, 0x1004 /*ARCH_GET_GS*/, &gs), 0);
 		if gs == 0 {
 			TIB.with(|b| {
-				gs = b.as_ref()[0] as *const usize as usize;
+				gs = b.as_ref() as *const usize as usize;
 				assert_eq!(syscall(SYS_arch_prctl, 0x1001 /*ARCH_SET_GS*/, gs), 0);
 			});
 		}
