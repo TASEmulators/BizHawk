@@ -9,28 +9,10 @@ using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
 using BizHawk.Emulation.Cores.Libretro;
-using BizHawk.Emulation.Cores.Computers.AppleII;
-using BizHawk.Emulation.Cores.Computers.Commodore64;
-using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
-using BizHawk.Emulation.Cores.Nintendo.Gameboy;
-using BizHawk.Emulation.Cores.Nintendo.GBHawkLink;
-using BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x;
-using BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
-using BizHawk.Emulation.Cores.PCEngine;
-using BizHawk.Emulation.Cores.Sega.GGHawkLink;
 using BizHawk.Emulation.Cores.Sony.PSX;
-using BizHawk.Emulation.Cores.Computers.SinclairSpectrum;
 using BizHawk.Emulation.Cores.Arcades.MAME;
 using BizHawk.Emulation.DiscSystem;
-
-using BizHawk.Emulation.Cores.Consoles.Sega.Saturn;
-using BizHawk.Emulation.Cores.Consoles.NEC.PCFX;
-using BizHawk.Emulation.Cores.Computers.AmstradCPC;
-using BizHawk.Emulation.Cores.Consoles.ChannelF;
-using BizHawk.Emulation.Cores.Consoles.NEC.PCE;
-using BizHawk.Emulation.Cores.Waterbox;
-
 using ICSharpCode.SharpZipLib.Zip.Compression;
 using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
 
