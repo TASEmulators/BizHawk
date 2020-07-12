@@ -879,6 +879,7 @@ namespace BizHawk.Client.EmuHawk
 				string defaultTemplate = "while true do\n\temu.frameadvance();\nend";
 				File.WriteAllText(sfd.FileName, defaultTemplate);
 				LuaImp.ScriptList.Add(new LuaFile(Path.GetFileNameWithoutExtension(sfd.FileName), sfd.FileName));
+				Config.RecentLua.Add(sfd.FileName);
 				UpdateDialog();
 				Process.Start(new ProcessStartInfo
 				{
@@ -910,6 +911,7 @@ namespace BizHawk.Client.EmuHawk
 				foreach (var file in ofd.FileNames)
 				{
 					LoadLuaFile(file);
+					Config.RecentLua.Add(file);
 				}
 
 				UpdateDialog();
@@ -1040,6 +1042,7 @@ namespace BizHawk.Client.EmuHawk
 					string text = File.ReadAllText(script.Path);
 					File.WriteAllText(sfd.FileName, text);
 					LuaImp.ScriptList.Add(new LuaFile(Path.GetFileNameWithoutExtension(sfd.FileName), sfd.FileName));
+					Config.RecentLua.Add(sfd.FileName);
 					UpdateDialog();
 					Process.Start(new ProcessStartInfo
 					{
