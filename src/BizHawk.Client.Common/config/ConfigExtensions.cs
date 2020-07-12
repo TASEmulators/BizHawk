@@ -23,7 +23,7 @@ namespace BizHawk.Client.Common
 		{
 			try
 			{
-				return j.ToObject(type, ConfigService.Serializer);
+				return j?.ToObject(type, ConfigService.Serializer);
 			}
 			catch
 			{
