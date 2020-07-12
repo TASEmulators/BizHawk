@@ -441,26 +441,12 @@ namespace BizHawk.Client.Common
 			}
 
 			nextEmulator = null;
-			if (game.System == null) return; // The user picked nothing in the Core picker
+			if (game.System == null)
+				return; // The user picked nothing in the Core picker
 
 			CoreInventory.Core core;
 			switch (game.System)
 			{
-				case "83P":
-					var ti83Bios = nextComm.CoreFileProvider.GetFirmware("TI83", "Rom", true);
-					var ti83BiosPath = _firmwareManager.Request(_config.PathEntries, _config.FirmwareUserSpecifications, "TI83", "Rom"); // TODO: make the ti-83 a proper firmware file
-					using (var ti83AsHawkFile = new HawkFile(ti83BiosPath))
-					{
-						var ti83BiosAsRom = new RomGame(ti83AsHawkFile);
-						var ti83 = new TI83(
-							ti83BiosAsRom.GameInfo,
-							ti83Bios,
-							GetCoreSettings<TI83, TI83.TI83Settings>()
-						);
-						ti83.LinkPort.SendFileToCalc(File.OpenRead(path.SubstringBefore('|')), false);
-						nextEmulator = ti83;
-					}
-					return;
 				case "SNES":
 					var name = game.ForcedCore?.ToLower() switch
 					{

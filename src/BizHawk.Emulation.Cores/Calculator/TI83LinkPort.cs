@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 		private readonly TI83 Parent;
 		private readonly Queue<byte> CurrentData = new Queue<byte>();
 
-		private FileStream _currentFile;
+		private Stream _currentFile;
 		private byte[] _variableData;
 
 		private Action _nextStep;
@@ -185,7 +185,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 			}
 		}
 
-		public void SendFileToCalc(FileStream fs, bool verify)
+		public void SendFileToCalc(Stream fs, bool verify)
 		{
 			if (verify)
 			{
@@ -197,7 +197,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 			SendNextFile();
 		}
 
-		private void VerifyFile(FileStream fs)
+		private void VerifyFile(Stream fs)
 		{
 			// Verify the file format.
 			byte[] expected = { 0x2a, 0x2a, 0x54, 0x49, 0x38, 0x33, 0x2a, 0x2a, 0x1a, 0x0a, 0x00 };
