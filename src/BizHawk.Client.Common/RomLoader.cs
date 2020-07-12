@@ -51,6 +51,29 @@ namespace BizHawk.Client.Common
 			public string Extension { get; set; }
 			public GameInfo Game { get; set; }
 		}
+		private class CoreInventoryParameters : ICoreInventoryParameters
+		{
+			private readonly RomLoader _parent;
+			public CoreInventoryParameters(RomLoader parent)
+			{
+				_parent = parent;
+			}
+			public CoreComm Comm { get; set; }
+
+			public GameInfo Game { get; set; }
+
+			public List<IRomAsset> Roms { get; set; } = new List<IRomAsset>();
+
+			public List<IDiscAsset> Discs { get; set; } = new List<IDiscAsset>();
+
+			public bool DeterministicEmulationRequested { get; set; }
+
+			public object FetchSettings(Type emulatorType, Type settingsType)
+				=> _parent.GetCoreSettings(emulatorType, settingsType);
+
+			public object FetchSyncSettings(Type emulatorType, Type syncSettingsType)
+				=> _parent.GetCoreSyncSettings(emulatorType, syncSettingsType);
+		}
 		private readonly Config _config;
 
 		public RomLoader(Config config)
@@ -554,16 +577,23 @@ namespace BizHawk.Client.Common
 					break;
 			}
 
-			nextEmulator = core.Create(
-				nextComm,
-				game,
-				rom.RomData,
-				rom.FileData,
-				Deterministic,
-				GetCoreSettings(core.Type, core.SettingsType),
-				GetCoreSyncSettings(core.Type, core.SyncSettingsType),
-				rom.Extension
-			);
+			nextEmulator = core.Create(new CoreInventoryParameters(this)
+			{
+				Comm = nextComm,
+				Game = game,
+				Roms =
+				{
+					new RomAsset
+					{
+						RomData = rom.RomData,
+						FileData = rom.FileData,
+						Extension = rom.Extension,
+						Game = game
+					}
+				},
+				DeterministicEmulationRequested = Deterministic
+
+			});
 		}
 
 		private void LoadPSF(string path, CoreComm nextComm, HawkFile file, out IEmulator nextEmulator, out RomGame rom, out GameInfo game)

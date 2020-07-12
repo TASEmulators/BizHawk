@@ -22,25 +22,11 @@ namespace BizHawk.Emulation.Cores
 				public string Extension { get; set; }
 				public GameInfo Game { get; set; }
 			}
-			// expected names and types of the parameters
-			private static readonly Dictionary<string, Type> ParamTypes = new Dictionary<string, Type>();
 
 			// map parameter names to locations in the constructor
 			private readonly Dictionary<string, int> _paramMap = new Dictionary<string, int>();
-
+			// If true, this is a new style constructor that takes a CoreLoadParameters object
 			private readonly bool _useCoreLoadParameters;
-
-			static Core()
-			{
-				var pp = typeof(Core).GetMethod("Create")?.GetParameters();
-				if (pp != null)
-				{
-					foreach (var p in pp)
-					{
-						ParamTypes.Add(p.Name.ToLowerInvariant(), p.ParameterType);
-					}
-				}
-			}
 
 			public Core(string name, Type type, ConstructorInfo ctor)
 			{
@@ -63,10 +49,6 @@ namespace BizHawk.Emulation.Cores
 				{
 					var p = pp[i];
 					string pName = p.Name.ToLowerInvariant();
-					if (!ParamTypes.TryGetValue(pName, out _))
-					{
-						throw new InvalidOperationException($"Unexpected parameter name {p.Name} in constructor for {Type}");
-					}
 					if (pName == "settings")
 					{
 						if (p.ParameterType == typeof(object))
@@ -100,48 +82,37 @@ namespace BizHawk.Emulation.Cores
 			/// <summary>
 			/// Instantiate an emulator core
 			/// </summary>
-			public IEmulator Create
-			(
-				CoreComm comm,
-				GameInfo game,
-				byte[] rom,
-				byte[] file,
-				bool deterministic,
-				object settings,
-				object syncSettings,
-				string extension
-			)
+			public IEmulator Create(ICoreInventoryParameters cip)
 			{
 				if (_useCoreLoadParameters)
 				{
 					var paramType = typeof(CoreLoadParameters<,>).MakeGenericType(new[] { SettingsType, SyncSettingsType });
 					// TODO: clean this up
 					dynamic param = Activator.CreateInstance(paramType);
-					param.Comm = comm;
-					param.Game = game;
-					param.Settings = (dynamic)settings;
-					param.SyncSettings = (dynamic)syncSettings;
-					param.Roms.Add(new RomGameFake
-					{
-						RomData = rom,
-						FileData = file,
-						Extension = extension,
-						Game = game,
-					});
-					param.DeterministicEmulationRequested = deterministic;
+					param.Comm = cip.Comm;
+					param.Game = cip.Game;
+					param.Settings = (dynamic)cip.FetchSettings(Type, SettingsType);
+					param.SyncSettings = (dynamic)cip.FetchSyncSettings(Type, SyncSettingsType);
+					param.Roms = cip.Roms;
+					param.Discs = cip.Discs;
+					param.DeterministicEmulationRequested = cip.DeterministicEmulationRequested;
 					return (IEmulator)CTor.Invoke(new object[] { param });
 				}
-				object[] o = new object[_paramMap.Count];
-				Bp(o, "comm", comm);
-				Bp(o, "game", game);
-				Bp(o, "rom", rom);
-				Bp(o, "file", file);
-				Bp(o, "deterministic", deterministic);
-				Bp(o, "settings", settings);
-				Bp(o, "syncsettings", syncSettings);
-				Bp(o, "extension", extension);
+				else
+				{
+					// cores using the old constructor parameters can only take a single rom, so assume that here
+					object[] o = new object[_paramMap.Count];
+					Bp(o, "comm", cip.Comm);
+					Bp(o, "game", cip.Game);
+					Bp(o, "rom", cip.Roms[0].RomData);
+					Bp(o, "file", cip.Roms[0].FileData);
+					Bp(o, "deterministic", cip.DeterministicEmulationRequested);
+					Bp(o, "settings", cip.FetchSettings(Type, SettingsType));
+					Bp(o, "syncsettings", cip.FetchSyncSettings(Type, SyncSettingsType));
+					Bp(o, "extension", cip.Roms[0].Extension);
 
-				return (IEmulator)CTor.Invoke(o);
+					return (IEmulator)CTor.Invoke(o);
+				}
 			}
 		}
 
@@ -242,5 +213,19 @@ namespace BizHawk.Emulation.Cores
 		}
 
 		public IEnumerable<string> Systems => _systems;
+	}
+
+	/// <summary>
+	/// What CoreInventory needs to synthesize CoreLoadParameters for a core
+	/// </summary>
+	public interface ICoreInventoryParameters
+	{
+		CoreComm Comm { get; }
+		GameInfo Game { get; }
+		List<IRomAsset> Roms { get; }
+		List<IDiscAsset> Discs { get; }
+		bool DeterministicEmulationRequested { get; }
+		object FetchSettings(Type emulatorType, Type settingsType);
+		object FetchSyncSettings(Type emulatorType, Type syncSettingsType);
 	}
 }
