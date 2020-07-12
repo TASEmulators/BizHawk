@@ -400,13 +400,7 @@ namespace BizHawk.Client.Common
 					var core = _config.PreferredCores.TryGetValue("PCECD", out var preferredCore) ? preferredCore : CoreNames.PceHawk;
 					nextEmulator = core switch
 					{
-						CoreNames.PceHawk => new PCEngine(
-							nextComm,
-							game,
-							disc,
-							GetCoreSettings<PCEngine, PCEngine.PCESettings>(),
-							GetCoreSyncSettings<PCEngine, PCEngine.PCESyncSettings>()
-						),
+						CoreNames.PceHawk => MakeCoreFromCds<PCEngine>(game),
 						CoreNames.HyperNyma => MakeCoreFromCds<HyperNyma>(game),
 						_ => MakeCoreFromCds<TurboNyma>(game),
 					};
