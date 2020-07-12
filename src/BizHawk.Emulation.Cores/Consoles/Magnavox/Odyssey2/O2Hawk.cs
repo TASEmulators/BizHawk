@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 		public byte addr_latch;
 		public byte kb_byte;
-		public bool ppu_en, RAM_en, kybrd_en, copy_en, cart_b0, cart_b1;
+		public bool ppu_en, vpp_en, RAM_en, kybrd_en, copy_en, cart_b0, cart_b1;
 		public ushort rom_bank;
 		public ushort bank_size;
 
@@ -114,8 +114,9 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 				_frameHz = 50;
 				ppu = new PAL_PPU();
 			}
+
 			ppu.Core = this;
-			ppu.set_region(is_pal);
+			ppu.set_region(is_pal, is_G7400);
 			ser.Register<ISoundProvider>(ppu);
 
 			_vidbuffer = new int[372 * pic_height];

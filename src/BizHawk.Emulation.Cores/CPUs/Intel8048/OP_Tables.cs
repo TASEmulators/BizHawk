@@ -280,7 +280,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 							DEA,
 							WR_P, 0, A,
 							IDLE,
-							IDLE,
+							IDLE,						
 							IDLE,
 							IDLE,
 							IDLE);
@@ -476,7 +476,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 							IDLE,
 							SET_ADDR_8, PC, ALU);
 
-				IRQS = 9;
+			IRQS = 9;
 		}
 
 		public void JP_2k(ushort high_addr)

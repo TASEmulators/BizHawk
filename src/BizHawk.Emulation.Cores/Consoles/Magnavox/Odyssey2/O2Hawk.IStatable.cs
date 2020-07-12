@@ -25,6 +25,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 			ser.Sync(nameof(RAM_en), ref RAM_en);
 			ser.Sync(nameof(ppu_en), ref ppu_en);
+			ser.Sync(nameof(vpp_en), ref vpp_en);
 			ser.Sync(nameof(cart_b0), ref cart_b0);
 			ser.Sync(nameof(cart_b1), ref cart_b1);
 			ser.Sync(nameof(copy_en), ref copy_en);

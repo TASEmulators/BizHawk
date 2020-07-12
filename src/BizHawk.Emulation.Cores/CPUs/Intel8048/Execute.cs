@@ -169,7 +169,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 				case 0x90: MOVX_R_A(0);								break; // MOVX @R0,A
 				case 0x91: MOVX_R_A(1);								break; // MOVX @R1,A
 				case 0x92: JPB(4);									break; // JPB 4
-				case 0x93: RETR();									break; //RETR
+				case 0x93: RETR();									break; // RETR
 				case 0x94: CALL(4);									break; // CALL
 				case 0x95: OP_IMP(CM0);								break; // COM F0
 				case 0x96: JP_COND(7, IDLE);						break; // JP (A != 0)

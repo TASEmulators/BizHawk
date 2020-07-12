@@ -75,9 +75,15 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 					// voice module would return here
 					return 0;
 				}
+
 				if (ppu_en)
 				{
 					return ppu.ReadReg(addr_latch);
+				}
+
+				if (vpp_en)
+				{
+					return ppu.ReadRegVPP(addr_latch);
 				}
 
 				// if neither RAM or PPU is enabled, then a RD pulse from instruction IN A,BUS will latch controller
@@ -105,7 +111,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 				// various control pins
 				return (byte)((ppu.lum_en ? 0x80 : 0) |
 				(copy_en ? 0x40 : 0) |
-				(0x20) |
+				(!vpp_en ? 0x20 : 0) |
 				(!RAM_en ? 0x10 : 0) |
 				(!ppu_en ? 0x08 : 0) |
 				(!kybrd_en ? 0x04 : 0) |
@@ -146,6 +152,12 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 						ppu.WriteReg(addr_latch, value);
 						//Console.WriteLine((addr_latch) + " " + value);
 					}
+
+					if (vpp_en)
+					{
+						ppu.WriteRegVPP(addr_latch, value);
+						//Console.WriteLine((addr_latch) + " " + value);
+					}
 				}
 			}
 			else if (port == 1)
@@ -153,6 +165,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 				// various control pins
 				ppu.lum_en = value.Bit(7);
 				copy_en = value.Bit(6);
+				vpp_en = !value.Bit(5) && is_G7400;
 				RAM_en = !value.Bit(4);
 				ppu_en = !value.Bit(3);
 				kybrd_en = !value.Bit(2);
