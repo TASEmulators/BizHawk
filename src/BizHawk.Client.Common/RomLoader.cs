@@ -672,23 +672,9 @@ namespace BizHawk.Client.Common
 				{
 					case "GB":
 					case "DGB":
-						// adelikat: remove need for tags to be hardcoded to left and right, we should clean this up, also maybe the DGB core should just take the xml file and handle it itself
-						var leftBytes = xmlGame.Assets[0].Value;
-						var rightBytes = xmlGame.Assets[1].Value;
-						var left = Database.GetGameInfo(leftBytes, "left.gb");
-						var right = Database.GetGameInfo(rightBytes, "right.gb");
 						if (_config.PreferredCores["GB"] == CoreNames.GbHawk)
 						{
-							nextEmulator = new GBHawkLink(
-								nextComm,
-								left,
-								leftBytes,
-								right,
-								rightBytes,
-								GetCoreSettings<GBHawkLink, GBHawkLink.GBLinkSettings>(),
-								GetCoreSyncSettings<GBHawkLink, GBHawkLink.GBLinkSyncSettings>()
-							);
-							// other stuff todo
+							nextEmulator = MakeCoreFromXml<GBHawkLink>(game);
 							return true;
 						}
 						else
@@ -697,53 +683,13 @@ namespace BizHawk.Client.Common
 							return true;
 						}
 					case "GB3x":
-						var leftBytes3x = xmlGame.Assets[0].Value;
-						var centerBytes3x = xmlGame.Assets[1].Value;
-						var rightBytes3x = xmlGame.Assets[2].Value;
-						var left3x = Database.GetGameInfo(leftBytes3x, "left.gb");
-						var center3x = Database.GetGameInfo(centerBytes3x, "center.gb");
-						var right3x = Database.GetGameInfo(rightBytes3x, "right.gb");
-						nextEmulator = new GBHawkLink3x(
-							nextComm,
-							left3x,
-							leftBytes3x,
-							center3x,
-							centerBytes3x,
-							right3x,
-							rightBytes3x,
-							GetCoreSettings<GBHawkLink3x, GBHawkLink3x.GBLink3xSettings>(),
-							GetCoreSyncSettings<GBHawkLink3x, GBHawkLink3x.GBLink3xSyncSettings>()
-						);
+						nextEmulator = MakeCoreFromXml<GBHawkLink3x>(game);
 						return true;
 					case "GB4x":
-						var A_Bytes4x = xmlGame.Assets[0].Value;
-						var B_Bytes4x = xmlGame.Assets[1].Value;
-						var C_Bytes4x = xmlGame.Assets[2].Value;
-						var D_Bytes4x = xmlGame.Assets[3].Value;
-						var A_4x = Database.GetGameInfo(A_Bytes4x, "A.gb");
-						var B_4x = Database.GetGameInfo(B_Bytes4x, "B.gb");
-						var C_4x = Database.GetGameInfo(C_Bytes4x, "C.gb");
-						var D_4x = Database.GetGameInfo(D_Bytes4x, "D.gb");
-						nextEmulator = new GBHawkLink4x(
-							nextComm,
-							A_4x,
-							A_Bytes4x,
-							B_4x,
-							B_Bytes4x,
-							C_4x,
-							C_Bytes4x,
-							D_4x,
-							D_Bytes4x,
-							GetCoreSettings<GBHawkLink4x, GBHawkLink4x.GBLink4xSettings>(),
-							GetCoreSyncSettings<GBHawkLink4x, GBHawkLink4x.GBLink4xSyncSettings>()
-						);
+						nextEmulator = MakeCoreFromXml<GBHawkLink4x>(game);
 						return true;
 					case "AppleII":
-						nextEmulator = new AppleII(
-							nextComm,
-							xmlGame.Assets.Select(a => a.Value),
-							GetCoreSettings<AppleII, AppleII.Settings>()
-						);
+						nextEmulator = MakeCoreFromXml<AppleII>(game);
 						return true;
 					case "C64":
 						nextEmulator = new C64(
@@ -786,19 +732,7 @@ namespace BizHawk.Client.Common
 						nextEmulator = MakeCoreFromXml<GPGX>(game, DiscType.MegaCD, "GEN");
 						return true;
 					case "Game Gear":
-						var leftBytesGG = xmlGame.Assets[0].Value;
-						var rightBytesGG = xmlGame.Assets[1].Value;
-						var leftGG = Database.GetGameInfo(leftBytesGG, "left.gg");
-						var rightGG = Database.GetGameInfo(rightBytesGG, "right.gg");
-						nextEmulator = new GGHawkLink(
-							nextComm,
-							leftGG,
-							leftBytesGG,
-							rightGG,
-							rightBytesGG,
-							GetCoreSettings<GGHawkLink, GGHawkLink.GGLinkSettings>(),
-							GetCoreSyncSettings<GGHawkLink, GGHawkLink.GGLinkSyncSettings>()
-						);
+						nextEmulator = MakeCoreFromXml<GGHawkLink>(game);
 						return true;
 				}
 				return false;

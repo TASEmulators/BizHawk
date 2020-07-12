@@ -51,13 +51,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 		public bool do_frame_fill;
 
 		//[CoreConstructor("GB", "GBC")]
-		public GBHawkLink4x(CoreComm comm, GameInfo game_A, byte[] rom_A, GameInfo game_B, byte[] rom_B, GameInfo game_C, byte[] rom_C, GameInfo game_D, byte[] rom_D, /*string gameDbFn,*/
-			GBHawkLink4x.GBLink4xSettings settings, GBHawkLink4x.GBLink4xSyncSettings syncSettings)
+		public GBHawkLink4x(CoreLoadParameters<GBLink4xSettings, GBLink4xSyncSettings> lp)
 		{
 			var ser = new BasicServiceProvider(this);
 
-			Link4xSettings = (GBLink4xSettings)settings ?? new GBLink4xSettings();
-			Link4xSyncSettings = (GBLink4xSyncSettings)syncSettings ?? new GBLink4xSyncSettings();
+			Link4xSettings = (GBLink4xSettings)lp.Settings ?? new GBLink4xSettings();
+			Link4xSyncSettings = (GBLink4xSyncSettings)lp.SyncSettings ?? new GBLink4xSyncSettings();
 			_controllerDeck = new GBHawkLink4xControllerDeck(GBHawkLink4xControllerDeck.DefaultControllerName, GBHawkLink4xControllerDeck.DefaultControllerName, 
 															 GBHawkLink4xControllerDeck.DefaultControllerName, GBHawkLink4xControllerDeck.DefaultControllerName);
 
@@ -90,10 +89,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 			tempSyncC.RTCOffset = Link4xSyncSettings.RTCOffset_C;
 			tempSyncD.RTCOffset = Link4xSyncSettings.RTCOffset_D;
 
-			A = new GBHawk.GBHawk(comm, game_A, rom_A, tempSetA, tempSyncA);
-			B = new GBHawk.GBHawk(comm, game_B, rom_B, tempSetB, tempSyncB);
-			C = new GBHawk.GBHawk(comm, game_C, rom_C, tempSetC, tempSyncC);
-			D = new GBHawk.GBHawk(comm, game_D, rom_D, tempSetD, tempSyncD);
+			A = new GBHawk.GBHawk(lp.Comm, lp.Roms[0].Game, lp.Roms[0].RomData, tempSetA, tempSyncA);
+			B = new GBHawk.GBHawk(lp.Comm, lp.Roms[1].Game, lp.Roms[1].RomData, tempSetB, tempSyncB);
+			C = new GBHawk.GBHawk(lp.Comm, lp.Roms[2].Game, lp.Roms[2].RomData, tempSetC, tempSyncC);
+			D = new GBHawk.GBHawk(lp.Comm, lp.Roms[3].Game, lp.Roms[3].RomData, tempSetD, tempSyncD);
 
 			ser.Register<IVideoProvider>(this);
 			ser.Register<ISoundProvider>(this); 

@@ -21,10 +21,10 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			AppleIIController.BoolButtons.AddRange(ExtraButtons);
 		}
 
-		public AppleII(CoreComm comm, IEnumerable<byte[]> romSet, Settings settings)
-			: this(comm, romSet.First(), settings)
+		public AppleII(CoreLoadParameters<Settings, object> lp)
+			: this(lp.Comm, lp.Roms.First().RomData, lp.Settings)
 		{
-			_romSet = romSet.ToList();
+			_romSet = lp.Roms.Select(r => r.RomData).ToList();
 		}
 
 		[CoreConstructor("AppleII")]
@@ -39,6 +39,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			};
 
 			_disk1 = rom;
+			// TODO: Doesn't this add the first rom twice in the case of multirom?
 			_romSet.Add(rom);
 
 			_appleIIRom = comm.CoreFileProvider.GetFirmware(

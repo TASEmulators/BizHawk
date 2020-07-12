@@ -30,14 +30,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 		public bool do_frame_fill;
 
 		//[CoreConstructor("GB", "GBC")]
-		public GBHawkLink(CoreComm comm, GameInfo game_L, byte[] rom_L, GameInfo game_R, byte[] rom_R, /*string gameDbFn,*/
-			GBHawkLink.GBLinkSettings settings, GBHawkLink.GBLinkSyncSettings syncSettings)
+		public GBHawkLink(CoreLoadParameters<GBHawkLink.GBLinkSettings, GBHawkLink.GBLinkSyncSettings> lp)
 		{
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
 
-			linkSettings = (GBLinkSettings)settings ?? new GBLinkSettings();
-			linkSyncSettings = (GBLinkSyncSettings)syncSettings ?? new GBLinkSyncSettings();
+			linkSettings = (GBLinkSettings)lp.Settings ?? new GBLinkSettings();
+			linkSyncSettings = (GBLinkSyncSettings)lp.SyncSettings ?? new GBLinkSyncSettings();
 			_controllerDeck = new GBHawkLinkControllerDeck(GBHawkLinkControllerDeck.DefaultControllerName, GBHawkLinkControllerDeck.DefaultControllerName);
 
 			var temp_set_L = new GBHawk.GBHawk.GBSettings();
@@ -57,8 +56,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 			temp_sync_L.RTCOffset = linkSyncSettings.RTCOffset_L;
 			temp_sync_R.RTCOffset = linkSyncSettings.RTCOffset_R;
 
-			L = new GBHawk.GBHawk(comm, game_L, rom_L, temp_set_L, temp_sync_L);
-			R = new GBHawk.GBHawk(comm, game_R, rom_R, temp_set_R, temp_sync_R);
+			L = new GBHawk.GBHawk(lp.Comm, lp.Roms[0].Game, lp.Roms[0].RomData, temp_set_L, temp_sync_L);
+			R = new GBHawk.GBHawk(lp.Comm, lp.Roms[1].Game, lp.Roms[1].RomData, temp_set_R, temp_sync_R);
 
 			ser.Register<IVideoProvider>(this);
 			ser.Register<ISoundProvider>(this); 
