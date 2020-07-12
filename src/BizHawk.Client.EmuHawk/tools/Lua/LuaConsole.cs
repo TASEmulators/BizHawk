@@ -195,6 +195,7 @@ namespace BizHawk.Client.EmuHawk
 			SetColumns();
 
 			splitContainer1.SetDistanceOrDefault(Settings.SplitDistance, _defaultSplitDistance);
+			LuaImp.RegisteredFunctions.ChangedCallback = UpdateRegisteredFunctionsDialog;
 		}
 
 		private void BranchesMarkersSplit_SplitterMoved(object sender, SplitterEventArgs e)
@@ -225,10 +226,7 @@ namespace BizHawk.Client.EmuHawk
 				foreach (var file in runningScripts)
 				{
 					LuaImp.CallExitEvent(file);
-
 					LuaImp.RegisteredFunctions.RemoveForFile(file, Emulator);
-					UpdateRegisteredFunctionsDialog();
-
 					file.Stop();
 				}
 			}
@@ -1009,8 +1007,7 @@ namespace BizHawk.Client.EmuHawk
 					LuaImp.RegisteredFunctions.RemoveForFile(item, Emulator);
 					LuaImp.ScriptList.Remove(item);
 				}
-				
-				UpdateRegisteredFunctionsDialog();
+
 				UpdateDialog();
 			}
 		}
@@ -1558,14 +1555,11 @@ namespace BizHawk.Client.EmuHawk
 			{
 				LuaImp.RegisteredFunctions.RemoveForFile(file, Emulator); // First remove any existing registered functions for this file
 				EnableLuaFile(file);
-				UpdateRegisteredFunctionsDialog();
 			}
 			else if (!file.Enabled && file.Thread != null)
 			{
 				LuaImp.CallExitEvent(file);
 				LuaImp.RegisteredFunctions.RemoveForFile(file, Emulator);
-				UpdateRegisteredFunctionsDialog();
-
 				LuaImp.CallExitEvent(file);
 				file.Stop();
 				ReDraw();

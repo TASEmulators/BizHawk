@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -9,11 +10,17 @@ namespace BizHawk.Client.Common
 	public class LuaFunctionList : IEnumerable<NamedLuaFunction>
 	{
 		private readonly List<NamedLuaFunction> _functions = new List<NamedLuaFunction>();
+		
+		public Action ChangedCallback { get; set; }
 
 		public NamedLuaFunction this[string guid] => 
 			_functions.FirstOrDefault(nlf => nlf.Guid.ToString() == guid);
 
-		public void Add(NamedLuaFunction nlf) => _functions.Add(nlf);
+		public void Add(NamedLuaFunction nlf)
+		{
+			_functions.Add(nlf);
+			Changed();
+		}
 
 		public bool Remove(NamedLuaFunction function, IEmulator emulator)
 		{
@@ -27,7 +34,13 @@ namespace BizHawk.Client.Common
 				emulator.AsDebuggable().MemoryCallbacks.Remove(function.MemCallback);
 			}
 
-			return _functions.Remove(function);
+			var result = _functions.Remove(function);
+			if (result)
+			{
+				Changed();
+			}
+
+			return result;
 		}
 
 		public void RemoveForFile(LuaFile file, IEmulator emulator)
@@ -39,6 +52,11 @@ namespace BizHawk.Client.Common
 			foreach (var function in functionsToRemove)
 			{
 				Remove(function, emulator);
+			}
+
+			if (functionsToRemove.Count != 0)
+			{
+				Changed();
 			}
 		}
 
@@ -56,10 +74,13 @@ namespace BizHawk.Client.Common
 			}
 
 			_functions.Clear();
+			Changed();
 		}
 
 		public IEnumerator<NamedLuaFunction> GetEnumerator() => _functions.GetEnumerator();
 		IEnumerator IEnumerable.GetEnumerator() => _functions.GetEnumerator();
+
+		private void Changed() => ChangedCallback?.Invoke();
 	}
 
 	public static class LuaFunctionListExtensions
