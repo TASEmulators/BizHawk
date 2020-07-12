@@ -9,7 +9,6 @@ using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
 using BizHawk.Emulation.Cores.Libretro;
-using BizHawk.Emulation.Cores.Calculators;
 using BizHawk.Emulation.Cores.Computers.AppleII;
 using BizHawk.Emulation.Cores.Computers.Commodore64;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
@@ -52,12 +51,10 @@ namespace BizHawk.Client.Common
 			public string Extension { get; set; }
 		}
 		private readonly Config _config;
-		private readonly FirmwareManager _firmwareManager;
 
-		public RomLoader(Config config, FirmwareManager firmwareManager)
+		public RomLoader(Config config)
 		{
 			_config = config;
-			_firmwareManager = firmwareManager;
 		}
 
 		public enum LoadErrorType
@@ -717,7 +714,7 @@ namespace BizHawk.Client.Common
 						nextEmulator = new AppleII(
 							nextComm,
 							xmlGame.Assets.Select(a => a.Value),
-							(AppleII.Settings) GetCoreSettings<AppleII, AppleII.Settings>()
+							GetCoreSettings<AppleII, AppleII.Settings>()
 						);
 						return true;
 					case "C64":

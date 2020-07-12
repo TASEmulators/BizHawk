@@ -69,7 +69,7 @@ namespace BizHawk.Client.EmuHawk
 			_files = new List<string>(files);
 			_numFrames = numFrames;
 
-			_ldr = new RomLoader(GlobalWin.Config, GlobalWin.FirmwareManager);
+			_ldr = new RomLoader(GlobalWin.Config);
 			_ldr.OnLoadError += OnLoadError;
 			_ldr.ChooseArchive = ChooseArchive;
 			_comm = comm;
