@@ -48,7 +48,7 @@ namespace BizHawk.Client.Common
 
 		public void CallSaveStateEvent(string name)
 		{
-			var lfs = RegisteredFunctions.Where(l => l.Event == "OnSavestateSave");
+			var lfs = RegisteredFunctions.Where(l => l.Event == "OnSavestateSave").ToList();
 			try
 			{
 				foreach (var lf in lfs)
@@ -64,7 +64,7 @@ namespace BizHawk.Client.Common
 
 		public void CallLoadStateEvent(string name)
 		{
-			var lfs = RegisteredFunctions.Where(l => l.Event == "OnSavestateLoad");
+			var lfs = RegisteredFunctions.Where(l => l.Event == "OnSavestateLoad").ToList();
 			try
 			{
 				foreach (var lf in lfs)
@@ -80,7 +80,7 @@ namespace BizHawk.Client.Common
 
 		public void CallFrameBeforeEvent()
 		{
-			var lfs = RegisteredFunctions.Where(l => l.Event == "OnFrameStart");
+			var lfs = RegisteredFunctions.Where(l => l.Event == "OnFrameStart").ToList();
 			try
 			{
 				foreach (var lf in lfs)
@@ -96,7 +96,7 @@ namespace BizHawk.Client.Common
 
 		public void CallFrameAfterEvent()
 		{
-			var lfs = RegisteredFunctions.Where(l => l.Event == "OnFrameEnd");
+			var lfs = RegisteredFunctions.Where(l => l.Event == "OnFrameEnd").ToList();
 			try
 			{
 				foreach (var lf in lfs)
