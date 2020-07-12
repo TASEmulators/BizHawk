@@ -519,13 +519,6 @@ namespace BizHawk.Client.Common
 						game.System = "SGB";
 					}
 					break;
-				case "ChannelF":
-					nextEmulator = new ChannelF(
-						nextComm,
-						game,
-						rom.FileData
-					);
-					return;
 				case "Arcade":
 					nextEmulator = new MAME(
 						file.Directory,
