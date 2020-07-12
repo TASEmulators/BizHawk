@@ -328,32 +328,24 @@ namespace BizHawk.Client.Common
 			throw new NotImplementedException("M3U not supported!");
 		}
 
-		private static string ForcedCoreToCoreName(string forcedCore)
-		{
-			// TODO: Is this yet another list of core names really needed?  Let's just make the gamedb less dumb
-			return forcedCore switch
-			{
-				"snes9x" => CoreNames.Snes9X,
-				"bsnes" => CoreNames.Bsnes,
-				"quicknes" => CoreNames.QuickNes,
-				"pico" => CoreNames.PicoDrive,
-				_ => null
-			};
-		}
-
 		private IEmulator MakeCoreFromCoreInventory(CoreInventoryParameters cip)
 		{
 			_config.PreferredCores.TryGetValue(cip.Game.System, out var preferredCore);
-			var forcedCore = ForcedCoreToCoreName(cip.Game.ForcedCore);
+			var forcedCore = cip.Game.ForcedCore;
 			var cores = CoreInventory.Instance.GetCores(cip.Game.System)
 				.OrderBy(c =>
 				{
 					if (c.Name == preferredCore)
+					{
 						return (int)CorePriority.UserPreference;
-					else if (c.Name == forcedCore)
+					}
+
+					if (string.Equals(c.Name, forcedCore, StringComparison.InvariantCulture))
+					{
 						return (int)CorePriority.GameDbPreference;
-					else
-						return (int)c.Priority;
+					}
+
+					return (int)c.Priority;
 				})
 				.ToList();
 			if (cores.Count == 0)
@@ -435,8 +427,6 @@ namespace BizHawk.Client.Common
 					);
 					rom.GameInfo.Name = gameName;
 					return;
-				default:
-					break;
 			}
 			var cip = new CoreInventoryParameters(this)
 			{
