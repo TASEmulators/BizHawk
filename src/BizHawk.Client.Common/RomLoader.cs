@@ -712,19 +712,11 @@ namespace BizHawk.Client.Common
 
 				// all of the specific exceptions we're trying to catch here aren't expected to have inner exceptions,
 				// so drill down in case we got a TargetInvocationException or something like that
-				while (ex.InnerException != null) ex = ex.InnerException;
+				while (ex.InnerException != null)
+					ex = ex.InnerException;
 
 				// Specific hack here, as we get more cores of the same system, this isn't scalable
-				if (ex is UnsupportedGameException)
-				{
-					if (system == "NES")
-					{
-						DoMessageCallback("Unable to use quicknes, using NESHawk instead");
-					}
-
-					return LoadRom(path, nextComm, launchLibretroCore, recursiveCount + 1);
-				}
-				else if (ex is MissingFirmwareException)
+				if (ex is MissingFirmwareException)
 				{
 					DoLoadErrorCallback(ex.Message, system, path, Deterministic, LoadErrorType.MissingFirmware);
 				}
