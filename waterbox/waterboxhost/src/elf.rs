@@ -1,9 +1,9 @@
 use goblin;
 use goblin::{elf::Elf, elf64::{sym::*, section_header::*}};
 use crate::*;
-use crate::memory_block::ActivatedMemoryBlock;
 use crate::memory_block::Protection;
 use std::collections::HashMap;
+use memory_block::MemoryBlock;
 
 /// Special system import area
 const INFO_OBJECT_NAME: &str = "__wbxsysinfo";
@@ -45,7 +45,7 @@ impl ElfLoader {
 	pub fn new(wbx: &Elf, data: &[u8],
 		module_name: &str,
 		layout: &WbxSysLayout,
-		b: &mut ActivatedMemoryBlock
+		b: &mut MemoryBlock
 	) -> anyhow::Result<ElfLoader> {
 		println!("Mouting `{}` @{:x}", module_name, layout.elf.start);
 		println!("  Sections:");
@@ -147,11 +147,7 @@ impl ElfLoader {
 			);
 			// TODO:  Using no_replace false here because the linker puts eh_frame_hdr in a separate segment that overlaps the other RO segment???
 			b.mmap_fixed(prot_addr, Protection::RW, false)?;
-			unsafe {
-				let src = &data[segment.file_range()];
-				let dst = AddressRange { start: addr.start, size: segment.file_range().end - segment.file_range().start }.slice_mut();
-				dst.copy_from_slice(src);
-			}
+			b.copy_from_external(&data[segment.file_range()], addr.start)?;
 			b.mprotect(prot_addr, prot)?;
 		}
 
@@ -160,7 +156,10 @@ impl ElfLoader {
 				if i.size != std::mem::size_of::<WbxSysLayout>() {
 					return Err(anyhow!("Symbol {} is the wrong size", INFO_OBJECT_NAME))
 				}
-				unsafe { *(i.start as *mut WbxSysLayout) = *layout; }
+				unsafe {
+					let src = std::slice::from_raw_parts(layout as *const WbxSysLayout as *const u8, i.size);
+					b.copy_from_external(src, i.start)?;
+				}		
 			},
 			// info area can legally be missing if the core calls no emulibc functions
 			// None => return Err(anyhow!("Symbol {} is missing", INFO_OBJECT_NAME))
@@ -179,7 +178,7 @@ impl ElfLoader {
 			hash: bin::hash(data)
 		})
 	}
-	pub fn seal(&mut self, b: &mut ActivatedMemoryBlock) {
+	pub fn seal(&mut self, b: &mut MemoryBlock) {
 		for section in self.sections.iter() {
 			if section_name_is_readonly(section.name.as_str()) {
 				b.mprotect(section.addr.align_expand(), Protection::R).unwrap();

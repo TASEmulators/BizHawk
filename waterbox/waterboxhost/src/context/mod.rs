@@ -1,7 +1,7 @@
 use lazy_static::lazy_static;
 use crate::*;
 use memory_block::{Protection, pal};
-use host::{ActivatedWaterboxHost};
+use host::{WaterboxHost};
 use syscall_defs::SyscallNumber;
 
 pub mod thunks;
@@ -57,7 +57,7 @@ pub type ExternalCallback = extern "sysv64" fn(
 	a1: usize, a2: usize, a3: usize, a4: usize, a5: usize, a6: usize) -> usize;
 /// Allowed type of the syscall service function
 pub type SyscallCallback = extern "sysv64" fn(
-	a1: usize, a2: usize, a3: usize, a4: usize, a5: usize, a6: usize, nr: SyscallNumber, h: &mut ActivatedWaterboxHost) -> SyscallReturn;
+	a1: usize, a2: usize, a3: usize, a4: usize, a5: usize, a6: usize, nr: SyscallNumber, h: &mut WaterboxHost) -> SyscallReturn;
 
 /// Structure used to track information for calls into waterbox code
 /// Layout must be synced with interop.s

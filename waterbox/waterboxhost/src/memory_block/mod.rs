@@ -7,7 +7,6 @@ use std::sync::MutexGuard;
 use std::ops::DerefMut;
 use pageblock::PageBlock;
 use crate::*;
-use getset::Getters;
 use crate::syscall_defs::*;
 use itertools::Itertools;
 use std::sync::atomic::AtomicU32;
@@ -137,6 +136,8 @@ impl Page {
 /// Used internally to talk about regions of memory together with their allocation status
 struct PageRange<'a> {
 	pub start: usize,
+	pub mirror_start: usize,
+	pub active: bool,
 	pub pages: &'a mut [Page]
 }
 impl<'a> PageRange<'a> {
@@ -146,15 +147,25 @@ impl<'a> PageRange<'a> {
 			size: self.pages.len() << PAGESHIFT
 		}
 	}
-	pub fn split_at_size(&mut self, size: usize) -> (PageRange, PageRange) {
+	pub fn mirror_addr(&self) -> AddressRange {
+		AddressRange {
+			start: self.mirror_start,
+			size: self.pages.len() << PAGESHIFT
+		}		
+	}
+	pub fn split_at_size(self, size: usize) -> (PageRange<'a>, PageRange<'a>) {
 		let (sl, sr) = self.pages.split_at_mut(size >> PAGESHIFT);
 		(
 			PageRange {
 				start: self.start,
+				mirror_start: self.mirror_start,
+				active: self.active,
 				pages: sl
 			},
 			PageRange {
 				start: self.start + size,
+				mirror_start: self.mirror_start + size,
+				active: self.active,
 				pages: sr
 			}
 		)
@@ -181,6 +192,14 @@ impl<'a> PageRange<'a> {
 			(AddressRange { start: page_start, size: PAGESIZE}, p)
 		})
 	}
+	pub fn iter_mut_with_mirror_addr(&mut self) -> impl Iterator<Item = (AddressRange, &mut Page)> {
+		let mut start = self.mirror_start;
+		self.pages.iter_mut().map(move |p| {
+			let page_start = start;
+			start += PAGESIZE;
+			(AddressRange { start: page_start, size: PAGESIZE}, p)
+		})
+	}
 	/// fuse two adjacent ranges.  panics if they do not exactly touch
 	pub fn fuse(left: Self, right: Self) -> PageRange<'a> {
 		unsafe {
@@ -189,6 +208,8 @@ impl<'a> PageRange<'a> {
 			assert_eq!(lp.add(left.pages.len()), rp);
 			PageRange {
 				start: left.start,
+				mirror_start: left.mirror_start,
+				active: left.active,
 				pages: std::slice::from_raw_parts_mut(lp, left.pages.len() + right.pages.len())
 			}
 		}
@@ -197,39 +218,24 @@ impl<'a> PageRange<'a> {
 
 static NEXT_DEBUG_ID: AtomicU32 = AtomicU32::new(0);
 
-#[derive(Getters)]
 #[derive(Debug)]
 pub struct MemoryBlock {
-	#[get]
 	pages: Vec<Page>,
-	#[get]
 	addr: AddressRange,
-	#[get]
+	/// An always-visible second mirror of the address space with RW permissions
+	/// Writes here will not trip dirty detection!
+	mirror: AddressRange,
 	sealed: bool,
-	#[get]
 	hash: Vec<u8>,
 
 	lock_index: u32,
 	handle: pal::Handle,
 
 	debug_id: u32,
-	active: bool,
+	active_guard: Option<BlockGuard>,
 }
 
 type BlockGuard = MutexGuard<'static, Option<MemoryBlockRef>>;
-
-pub struct ActivatedMemoryBlock<'block> {
-	b: &'block mut MemoryBlock,
-	mutex_guard: Option<BlockGuard>,
-}
-impl<'block> Drop for ActivatedMemoryBlock<'block> {
-	fn drop(&mut self) {
-		unsafe {
-			let guard = std::mem::replace(&mut self.mutex_guard, None);
-			self.b.deactivate(guard.unwrap());
-		}
-	}
-}
 
 impl MemoryBlock {
 	pub fn new(addr: AddressRange) -> Box<MemoryBlock> {
@@ -255,11 +261,14 @@ impl MemoryBlock {
 		let lock_index = (addr.start >> 32) as u32;
 		// add the lock_index stuff now, so we won't have to check for it later on activate / drop
 		lock_list::maybe_add(lock_index);
+		let mirror = pal::map_handle(&handle, AddressRange { start: 0, size: addr.size }).unwrap();
+		unsafe { pal::protect(mirror, Protection::RW).unwrap(); }
 
 		let debug_id = NEXT_DEBUG_ID.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
 		let res = Box::new(MemoryBlock {
 			pages,
 			addr,
+			mirror,
 			sealed: false,
 			hash: Vec::new(),
 
@@ -267,7 +276,7 @@ impl MemoryBlock {
 			handle,
 
 			debug_id,
-			active: false,
+			active_guard: None,
 		});
 		// res.trace("new");
 		res
@@ -280,65 +289,71 @@ impl MemoryBlock {
 			name, self.debug_id, ptr, self.lock_index, tid)
 	}
 
-	pub fn enter(&mut self) -> ActivatedMemoryBlock {
-		unsafe {
-			let mutex_guard = self.activate();
-			ActivatedMemoryBlock {
-				b: self,
-				mutex_guard: Some(mutex_guard),
-			}
+	pub fn active(&self) -> bool {
+		match self.active_guard {
+			Some(_) => true,
+			None => false
 		}
 	}
 
 	/// lock memory region and potentially swap this block into memory
-	unsafe fn activate(&mut self) -> BlockGuard {
-		// self.trace("activate");
-		assert!(!self.active);
-		let area = lock_list::get(self.lock_index);
-		let mut guard = area.lock().unwrap();
-
-		let other_opt = guard.deref_mut();
-		match *other_opt {
-			Some(MemoryBlockRef(other)) => {
-				if other != self {
-					assert!(!(*other).active);
-					(*other).swapout();
-					self.swapin();
-					*other_opt = Some(MemoryBlockRef(self));
-				}
-			},
-			None => {
-				self.swapin();
-				*other_opt = Some(MemoryBlockRef(self));	
+	pub fn activate(&mut self) {
+		unsafe {
+			// self.trace("activate");
+			if self.active() {
+				return
 			}
-		}
 
-		self.active = true;
-		guard
-	}
-	/// unlock memory region, and potentially swap this block out of memory
-	#[allow(unused_variables)] // unused stuff in release mode only
-	#[allow(unused_mut)]
-	unsafe fn deactivate(&mut self, mut guard: BlockGuard) {
-		// self.trace("deactivate");
-		assert!(self.active);
-		if ALWAYS_EVICT_BLOCKS {
-			// in debug mode, forcibly evict to catch dangling pointers
+			let area = lock_list::get(self.lock_index);
+			let mut guard = area.lock().unwrap();
+
 			let other_opt = guard.deref_mut();
 			match *other_opt {
 				Some(MemoryBlockRef(other)) => {
 					if other != self {
-						panic!();
+						assert!(!(*other).active());
+						(*other).swapout();
+						self.swapin();
+						*other_opt = Some(MemoryBlockRef(self));
 					}
-					self.swapout();
-					*other_opt = None;
 				},
 				None => {
-					panic!()
+					self.swapin();
+					*other_opt = Some(MemoryBlockRef(self));	
+				}
+			}
+
+			self.active_guard = Some(guard);
+		}
+	}
+	/// unlock memory region, and potentially swap this block out of memory
+	#[allow(unused_variables)] // unused stuff in release mode only
+	#[allow(unused_mut)]
+	pub fn deactivate(&mut self) {
+		// self.trace("deactivate");
+		if !self.active() {
+			return
+		}
+		let mut guard = std::mem::replace(&mut self.active_guard, None).unwrap();
+
+		unsafe {
+			if ALWAYS_EVICT_BLOCKS {
+				// in debug mode, forcibly evict to catch dangling pointers
+				let other_opt = guard.deref_mut();
+				match *other_opt {
+					Some(MemoryBlockRef(other)) => {
+						if other != self {
+							panic!();
+						}
+						self.swapout();
+						*other_opt = None;
+					},
+					None => {
+						panic!()
+					}
 				}
 			}
 		}
-		self.active = false;
 	}
 
 	unsafe fn swapin(&mut self) {
@@ -357,7 +372,9 @@ impl MemoryBlock {
 	fn page_range(&mut self) -> PageRange {
 		PageRange {
 			start: self.addr.start,
-			pages: &mut self.pages[..]
+			mirror_start: self.mirror.start,
+			active: self.active(),
+			pages: &mut self.pages[..],
 		}
 	}
 
@@ -369,10 +386,13 @@ impl MemoryBlock {
 			|| addr.size != align_down(addr.size) {
 			Err(EINVAL)
 		} else {
-			let pstart = (addr.start - self.addr.start) >> PAGESHIFT;
+			let offset = addr.start - self.addr.start;
+			let pstart = offset >> PAGESHIFT;
 			let psize = (addr.size) >> PAGESHIFT;
 			Ok(PageRange {
 				start: addr.start,
+				mirror_start: self.mirror.start + offset,
+				active: self.active(),
 				pages: &mut self.pages[pstart..pstart + psize]
 			})
 		}
@@ -381,6 +401,9 @@ impl MemoryBlock {
 	/// Refresh the correct protections in underlying host RAM on a page range.  Use after
 	/// temporary pal::protect(...) modifications, or to apply the effect of a dirty/prot change on the page
 	fn refresh_protections(range: &PageRange) {
+		if !range.active {
+			return
+		}
 		struct Chunk {
 			addr: AddressRange,
 			prot: Protection,
@@ -424,12 +447,10 @@ impl MemoryBlock {
 		#[cfg(windows)]
 		if status == PageAllocation::Allocated(Protection::RWStack) {
 			// have to precapture snapshots here
-			let mut addr = range.start;
-			for p in range.iter_mut() {
+			for (maddr, p) in range.iter_mut_with_mirror_addr() {
 				unsafe {
-					p.maybe_snapshot(addr);
+					p.maybe_snapshot(maddr.start)
 				}
-				addr += PAGESIZE;
 			}
 		}
 	}
@@ -439,6 +460,9 @@ impl MemoryBlock {
 	fn get_stack_dirty(&mut self) {
 		#[cfg(windows)]
 		unsafe {
+			if !self.active() {
+				return
+			}
 			let mut start = self.addr.start;
 			let mut pindex = 0;
 			while start < self.addr.end() {
@@ -464,6 +488,8 @@ impl MemoryBlock {
 impl Drop for MemoryBlock {
 	fn drop(&mut self) {
 		// self.trace("drop");
+		self.deactivate();
+
 		let area = lock_list::get(self.lock_index);
 		let mut guard = area.lock().unwrap();
 		let other_opt = guard.deref_mut();
@@ -476,22 +502,30 @@ impl Drop for MemoryBlock {
 			},
 			None => ()
 		}
+		unsafe { let _ = pal::unmap_handle(self.mirror); }
 		let h = std::mem::replace(&mut self.handle, pal::bad());
 		unsafe { let _ = pal::close_handle(h); }
 	}
 }
 
-impl<'block> ActivatedMemoryBlock<'block> {
+impl MemoryBlock {
 	/// Looks for some free pages inside an arena
 	fn find_free_pages<'a>(arena: &'a mut PageRange<'a>, npages: usize) -> Result<PageRange<'a>, SyscallError> {
+		let active = arena.active;
 		struct Chunk<'a> {
 			range: PageRange<'a>,
 			free: bool,
 		}
+		let disp = arena.mirror_start.wrapping_sub(arena.start);
 		let range = arena.iter_mut_with_addr()
 			.map(|(a, p)| Chunk {
 				free: p.status == PageAllocation::Free,
-				range: PageRange { start: a.start, pages: std::slice::from_mut(p) },
+				range: PageRange {
+					start: a.start,
+					mirror_start: a.start.wrapping_add(disp),
+					active,
+					pages: std::slice::from_mut(p),
+				},
 			})
 			.coalesce(|x, y| {
 				if x.free == y.free {
@@ -514,7 +548,9 @@ impl<'block> ActivatedMemoryBlock<'block> {
 				} else {
 					Ok(PageRange {
 						start: r.start,
-						pages: &mut r.pages[0..npages]
+						mirror_start: r.mirror_start,
+						active,
+						pages: &mut r.pages[0..npages],
 					})
 				}
 			},
@@ -527,8 +563,8 @@ impl<'block> ActivatedMemoryBlock<'block> {
 		if size != align_down(size) {
 			return Err(EINVAL)
 		}
-		let mut arena = self.b.validate_range(arena_addr).unwrap();
-		match ActivatedMemoryBlock::find_free_pages(&mut arena, size >> PAGESHIFT) {
+		let mut arena = self.validate_range(arena_addr).unwrap();
+		match MemoryBlock::find_free_pages(&mut arena, size >> PAGESHIFT) {
 			Ok(mut range) => {
 				MemoryBlock::set_protections(&mut range, PageAllocation::Allocated(prot));
 				Ok(range.start)		
@@ -539,7 +575,7 @@ impl<'block> ActivatedMemoryBlock<'block> {
 
 	/// implements a subset of mmap(2) for anonymous, fixed address mappings
 	pub fn mmap_fixed(&mut self, addr: AddressRange, prot: Protection, no_replace: bool) -> SyscallResult {
-		let mut range = self.b.validate_range(addr)?;
+		let mut range = self.validate_range(addr)?;
 		if no_replace && range.iter().any(|p| p.status != PageAllocation::Free) {
 			return Err(EEXIST)
 		}
@@ -549,10 +585,10 @@ impl<'block> ActivatedMemoryBlock<'block> {
 
 	/// implements a subset of mremap(2) when MREMAP_MAYMOVE is not set, and MREMAP_FIXED is not
 	fn mremap_nomove(&mut self, addr: AddressRange, new_size: usize) -> SyscallResult {
-		self.b.get_stack_dirty();
+		self.get_stack_dirty();
 		if new_size > addr.size {
 			let full_addr = AddressRange { start: addr.start, size: new_size };
-			let mut range = self.b.validate_range(full_addr)?;
+			let range = self.validate_range(full_addr)?;
 			let (old_range, mut new_range) = range.split_at_size(addr.size);
 			if old_range.iter().any(|p| p.status == PageAllocation::Free) {
 				return Err(EINVAL)
@@ -563,7 +599,7 @@ impl<'block> ActivatedMemoryBlock<'block> {
 			MemoryBlock::set_protections(&mut new_range, old_range.pages[0].status);
 			Ok(())
 		} else {
-			let range = self.b.validate_range(addr)?;
+			let range = self.validate_range(addr)?;
 			if range.iter().any(|p| p.status == PageAllocation::Free) {
 				return Err(EINVAL)
 			}
@@ -575,32 +611,32 @@ impl<'block> ActivatedMemoryBlock<'block> {
 	fn mremap_maymove(&mut self, addr: AddressRange, new_size: usize, arena_addr: AddressRange) -> Result<usize, SyscallError> {
 		// This could be a lot more clever, but it's a difficult problem and doesn't come up often.
 		// So I use a "simple" solution here.
-		self.b.get_stack_dirty();
+		self.get_stack_dirty();
 		if new_size != align_down(new_size) {
 			return Err(EINVAL)
 		}
 
 		// save a copy of src, and unmap
-		let mut src = self.b.validate_range(addr)?;
+		let mut src = self.validate_range(addr)?;
 		if src.iter().any(|p| p.status == PageAllocation::Free) {
 			return Err(EINVAL)
 		}
-		let src_addr = src.addr();
+
+		let src_maddr = src.mirror_addr();
 		let mut old_status = Vec::new();
 		old_status.reserve_exact(src.pages.len());
-		let mut old_data = vec![0u8; src_addr.size];
+		let mut old_data = vec![0u8; src_maddr.size];
 		for p in src.iter() {
 			old_status.push(p.status);
 		}
 		unsafe {
-			pal::protect(src_addr, Protection::R).unwrap();
-			old_data.copy_from_slice(src_addr.slice());
+			old_data.copy_from_slice(src_maddr.slice());
 		}
-		ActivatedMemoryBlock::free_pages_impl(&mut src, false);
+		MemoryBlock::free_pages_impl(&mut src, false);
 
 		// find new location to map to, and copy into there
-		let mut arena = self.b.validate_range(arena_addr).unwrap();
-		let mut dest = match ActivatedMemoryBlock::find_free_pages(&mut arena, new_size >> PAGESHIFT) {
+		let mut arena = self.validate_range(arena_addr).unwrap();
+		let mut dest = match MemoryBlock::find_free_pages(&mut arena, new_size >> PAGESHIFT) {
 			Ok(r) => r,
 			Err(_) => {
 				// woops! reallocate at the old address.
@@ -611,8 +647,7 @@ impl<'block> ActivatedMemoryBlock<'block> {
 		let nbcopy = std::cmp::min(addr.size, new_size);
 		let npcopy = nbcopy >> PAGESHIFT;
 		unsafe {
-			pal::protect(dest.addr(), Protection::RW).unwrap();
-			dest.addr().slice_mut()[0..nbcopy].copy_from_slice(&old_data[0..nbcopy]);
+			dest.mirror_addr().slice_mut()[0..nbcopy].copy_from_slice(&old_data[0..nbcopy]);
 		}
 		for (status, pdst) in old_status.iter().zip(dest.iter_mut()) {
 			pdst.status = *status;
@@ -629,8 +664,8 @@ impl<'block> ActivatedMemoryBlock<'block> {
 
 	/// implements a subset of mprotect(2)
 	pub fn mprotect(&mut self, addr: AddressRange, prot: Protection) -> SyscallResult {
-		self.b.get_stack_dirty();
-		let mut range = self.b.validate_range(addr)?;
+		self.get_stack_dirty();
+		let mut range = self.validate_range(addr)?;
 		if range.iter().any(|p| p.status == PageAllocation::Free) {
 			return Err(ENOMEM)
 		}
@@ -669,12 +704,11 @@ impl<'block> ActivatedMemoryBlock<'block> {
 
 	/// release pages, assuming the range has been fully validated already
 	fn free_pages_impl(range: &mut PageRange, advise_only: bool) {
-		let addr = range.addr();
 		// we do not save the current state of unmapped pages, and if they are later remapped,
 		// the expectation is that they will start out as zero filled.  accordingly, the most
 		// sensible way to do this is to zero them now
 		unsafe {
-			pal::protect(addr, Protection::RW).unwrap();
+			let addr = range.mirror_addr();
 			addr.zero();
 			// simple state size optimization: we can undirty pages in this case depending on the initial state
 			#[cfg(not(feature = "no-dirty-detection"))]
@@ -694,12 +728,12 @@ impl<'block> ActivatedMemoryBlock<'block> {
 
 	/// munmap or MADV_DONTNEED
 	fn munmap_impl(&mut self, addr: AddressRange, advise_only: bool) -> SyscallResult {
-		self.b.get_stack_dirty();
-		let mut range = self.b.validate_range(addr)?;
+		self.get_stack_dirty();
+		let mut range = self.validate_range(addr)?;
 		if range.iter().any(|p| p.status == PageAllocation::Free) {
 			return Err(EINVAL)
 		}
-		ActivatedMemoryBlock::free_pages_impl(&mut range, advise_only);
+		MemoryBlock::free_pages_impl(&mut range, advise_only);
 		Ok(())
 	}
 	/// Marks an address range as invisible.  Its page content will not be saved in states (but
@@ -710,8 +744,8 @@ impl<'block> ActivatedMemoryBlock<'block> {
 		// The limitations on this method are mostly because we want to not need a snapshot or dirty
 		// tracking for invisible pages.  But if we didn't have one and later the pages became visible,
 		// we'd need one and wouldn't be able to reconstruct one.
-		assert!(!self.b.sealed);
-		let mut range = self.b.validate_range(addr)?;
+		assert!(!self.sealed);
+		let mut range = self.validate_range(addr)?;
 		for p in range.iter_mut() {
 			p.dirty = true;
 			p.invisible = true;
@@ -725,29 +759,32 @@ impl<'block> ActivatedMemoryBlock<'block> {
 		self.munmap_impl(addr, true)
 	}
 
-	pub fn seal(&mut self) {
-		assert!(!self.b.sealed);
-		for p in self.b.pages.iter_mut() {
+	pub fn seal(&mut self) -> anyhow::Result<()> {
+		if self.sealed {
+			return Err(anyhow!("Already sealed!"))
+		}
+
+		for p in self.pages.iter_mut() {
 			if p.dirty && !p.invisible {
 				p.dirty = false;
 				p.snapshot = Snapshot::None;
 			}
 		}
+
 		#[cfg(feature = "no-dirty-detection")]
 		unsafe {
-			pal::protect(self.b.addr, Protection::R).unwrap();
-			for (a, p) in self.b.page_range().iter_mut_with_addr() {
+			for (a, p) in self.page_range().iter_mut_with_mirror_addr() {
 				p.dirty = true;
 				p.maybe_snapshot(a.start);
 			}
 		}
 
-		self.b.refresh_all_protections();
-		self.b.sealed = true;
-		self.b.hash = {
+		self.refresh_all_protections();
+		self.sealed = true;
+		self.hash = {
 			let mut hasher = Sha256::new();
-			bin::write(&mut hasher, &self.b.addr).unwrap();
-			for p in self.b.pages.iter() {
+			bin::write(&mut hasher, &self.addr).unwrap();
+			for p in self.pages.iter() {
 				match &p.snapshot {
 					Snapshot::None => bin::writeval(&mut hasher, 1).unwrap(),
 					Snapshot::ZeroFilled => bin::writeval(&mut hasher, 2).unwrap(),
@@ -756,27 +793,50 @@ impl<'block> ActivatedMemoryBlock<'block> {
 			}
 			hasher.finalize()[..].to_owned()
 		};
+
+		Ok(())
+	}
+
+	/// Helper to copy bytes into guest memory, to guest address `start`
+	pub fn copy_from_external(&mut self, src: &[u8], start: usize) -> SyscallResult {
+		{
+			let addr = AddressRange {
+				start,
+				size: src.len()
+			};
+			let mut range = self.validate_range(addr.align_expand())?;
+			for p in range.iter_mut() {
+				p.dirty = true;
+			}
+		}
+		let dest = AddressRange {
+			start: start - self.addr.start + self.mirror.start,
+			size: src.len()
+		};
+		unsafe { dest.slice_mut().copy_from_slice(src) }
+		Ok(())
 	}
 }
 
 const MAGIC: &str = "ActivatedMemoryBlock";
 
-impl<'block>  IStateable for ActivatedMemoryBlock<'block> {
+impl IStateable for MemoryBlock {
 	fn save_state(&mut self, stream: &mut dyn Write) -> anyhow::Result<()> {
-		if !self.b.sealed {
+		if !self.sealed {
 			return Err(anyhow!("Must seal first"))
 		}
+
 		bin::write_magic(stream, MAGIC)?;
-		bin::write_hash(stream, &self.b.hash[..])?;
-		self.b.get_stack_dirty();
-		self.b.addr.save_state(stream)?;
+		bin::write_hash(stream, &self.hash[..])?;
+		self.get_stack_dirty();
+		self.addr.save_state(stream)?;
 
 		unsafe {
 			let mut statii = Vec::new();
 			let mut dirtii = Vec::new();
-			statii.reserve_exact(self.b.pages.len());
-			dirtii.reserve_exact(self.b.pages.len());
-			for p in self.b.pages.iter() {
+			statii.reserve_exact(self.pages.len());
+			dirtii.reserve_exact(self.pages.len());
+			for p in self.pages.iter() {
 				statii.push(p.status);
 				dirtii.push(p.dirty);
 			}
@@ -784,51 +844,47 @@ impl<'block>  IStateable for ActivatedMemoryBlock<'block> {
 			stream.write_all(std::mem::transmute(&dirtii[..]))?;
 		}
 
-		for (paddr, p) in self.b.page_range().iter_with_addr() {
+		for (paddr, p) in self.page_range().iter_mut_with_mirror_addr() {
 			// bin::write(stream, &p.status)?;
 			if !p.invisible {
 				// bin::write(stream, &p.dirty)?;
 				if p.dirty {
 					unsafe {
-						if !p.status.readable() {
-							pal::protect(paddr, Protection::R).unwrap();
-						}
 						stream.write_all(paddr.slice())?;
-						if !p.status.readable() {
-							pal::protect(paddr, Protection::None).unwrap();
-						}
 					}
 				}
 			}
 		}
 		Ok(())
 	}
+
 	fn load_state(&mut self, stream: &mut dyn Read) -> anyhow::Result<()> {
-		assert!(self.b.sealed);
+		if !self.sealed {
+			return Err(anyhow!("Must seal first"))
+		}
+
 		bin::verify_magic(stream, MAGIC)?;
-		match bin::verify_hash(stream, &self.b.hash[..]) {
+		match bin::verify_hash(stream, &self.hash[..]) {
 			Ok(_) => (),
 			Err(_) => eprintln!("Unexpected MemoryBlock hash mismatch."),
 		}
-		self.b.get_stack_dirty();
+		self.get_stack_dirty();
 		{
 			let mut addr = AddressRange { start:0, size: 0 };
 			addr.load_state(stream)?;
-			if addr != self.b.addr {
+			if addr != self.addr {
 				return Err(anyhow!("Bad state data (addr) for ActivatedMemoryBlock"))
 			}
 		}
 
 		unsafe {
-			pal::protect(self.b.addr, Protection::RW).unwrap();
-
-			let mut statii = vec![PageAllocation::Free; self.b.pages.len()];
-			let mut dirtii = vec![false; self.b.pages.len()];
+			let mut statii = vec![PageAllocation::Free; self.pages.len()];
+			let mut dirtii = vec![false; self.pages.len()];
 			stream.read_exact(std::mem::transmute(&mut statii[..]))?;
 			stream.read_exact(std::mem::transmute(&mut dirtii[..]))?;
 
 			let mut index = 0usize;
-			for (paddr, p) in self.b.page_range().iter_mut_with_addr() {
+			for (paddr, p) in self.page_range().iter_mut_with_mirror_addr() {
 				let status = statii[index];
 				// let status = bin::readval::<PageAllocation>(stream)?;
 				if !p.invisible {
@@ -859,7 +915,7 @@ impl<'block>  IStateable for ActivatedMemoryBlock<'block> {
 				index += 1;
 			}
 
-			self.b.refresh_all_protections();
+			self.refresh_all_protections();
 		}
 		Ok(())
 	}

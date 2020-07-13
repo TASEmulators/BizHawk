@@ -1,5 +1,5 @@
 use crate::*;
-use crate::{memory_block::ActivatedMemoryBlock, syscall_defs::*};
+use crate::{syscall_defs::*};
 use memory_block::{MemoryBlock, Protection};
 use std::{os::raw::c_char, ffi::CStr};
 use fs::{FileDescriptor, FileSystem/*, MissingFileCallback*/};
@@ -27,10 +27,9 @@ impl WaterboxHost {
 		let elf_addr = ElfLoader::elf_addr(&wbx);
 		let layout = layout_template.make_layout(elf_addr)?;
 		let mut memory_block = MemoryBlock::new(layout.all());
-		let mut b = memory_block.enter();
-		let elf = ElfLoader::new(&wbx, &image_file[..], module_name, &layout, &mut b)?;
+		let elf = ElfLoader::new(&wbx, &image_file[..], module_name, &layout, &mut memory_block)?;
 		let fs = FileSystem::new();
-		drop(b);
+
 		unsafe { gdb::register(&image_file[..]) }
 		let mut res = Box::new(WaterboxHost {
 			fs,
@@ -44,11 +43,10 @@ impl WaterboxHost {
 			context: Context::new(layout.main_thread.end(), syscall),
 			thunks,
 		});
-
-		let mut active = res.activate();
+		res.activate();
 		println!("Calling _start()");
-		active.run_guest_simple(active.h.elf.entry_point());
-		drop(active);
+		res.run_guest_simple(res.elf.entry_point());
+		res.deactivate();
 
 		Ok(res)
 	}
@@ -57,74 +55,72 @@ impl WaterboxHost {
 		self.active
 	}
 
-	pub fn activate(&mut self) -> Box<ActivatedWaterboxHost> {
-		context::prepare_thread();
-		let h = unsafe { &mut *(self as *mut WaterboxHost) };
-		let b = self.memory_block.enter();
-		let mut res = Box::new(ActivatedWaterboxHost {
-			h,
-			b,
-		});
-		res.h.active = true;
-		res.h.context.host_ptr = res.as_mut() as *mut ActivatedWaterboxHost as usize;
-		res
+	pub fn activate(&mut self) {
+		if !self.active {
+			context::prepare_thread();
+			self.context.host_ptr = self as *mut WaterboxHost as usize;
+			self.memory_block.activate();
+			self.active = true;
+		}
+	}
+
+	pub fn deactivate(&mut self) {
+		if self.active {
+			self.context.host_ptr = 0;
+			self.memory_block.deactivate();
+			self.active = false;
+		}
 	}
 }
+
 impl Drop for WaterboxHost {
 	fn drop(&mut self) {
+		self.deactivate();
 		unsafe { gdb::deregister(&self.image_file[..]) }
 	}
 }
 
-pub struct ActivatedWaterboxHost<'a> {
-	h: &'a mut WaterboxHost,
-	b: ActivatedMemoryBlock<'a>,
-}
-impl<'a> Drop for ActivatedWaterboxHost<'a> {
-	fn drop(&mut self) {
-		self.h.active = false;
-		self.h.context.host_ptr = 0;
-	}
-}
-
-impl<'a> ActivatedWaterboxHost<'a> {
+impl WaterboxHost {
 	pub fn get_external_callback_ptr(&mut self, callback: ExternalCallback, slot: usize) -> anyhow::Result<usize> {
 		if slot >= CALLBACK_SLOTS {
 			Err(anyhow!("slot must be less than {}", CALLBACK_SLOTS))
 		} else {
-			self.h.context.extcall_slots[slot] = Some(callback);
+			self.context.extcall_slots[slot] = Some(callback);
 			Ok(context::get_callback_ptr(slot))
 		}
 	}
 	pub fn get_external_callin_ptr(&mut self, ptr: usize) -> anyhow::Result<usize> {
-		self.h.thunks.get_thunk_for_proc(ptr, &mut self.h.context as *mut Context)
+		self.thunks.get_thunk_for_proc(ptr, &mut self.context as *mut Context)
 	}
 	pub fn get_proc_addr(&mut self, name: &str) -> anyhow::Result<usize> {
-		let ptr = self.h.elf.get_proc_addr(name);
+		let ptr = self.elf.get_proc_addr(name);
 		if ptr == 0 {
 			Ok(0)
 		} else {
-			self.h.thunks.get_thunk_for_proc(ptr, &mut self.h.context as *mut Context)
+			self.thunks.get_thunk_for_proc(ptr, &mut self.context as *mut Context)
 		}
 	}
 	pub fn get_proc_addr_raw(&mut self, name: &str) -> anyhow::Result<usize> {
-		let ptr = self.h.elf.get_proc_addr(name);
+		let ptr = self.elf.get_proc_addr(name);
 		Ok(ptr)
 	}
 	fn check_sealed(&self) -> anyhow::Result<()> {
-		if !self.h.sealed {
+		if !self.sealed {
 			Err(anyhow!("Not sealed!"))
 		} else {
 			Ok(())
 		}
 	}
 	pub fn seal(&mut self) -> anyhow::Result<()> {
-		if self.h.sealed {
+		if self.sealed {
 			return Err(anyhow!("Already sealed!"))
 		}
 
-		fn run_proc(h: &mut ActivatedWaterboxHost, name: &str) {
-			match h.h.elf.get_proc_addr(name) {
+		let was_active = self.active;
+		self.activate();
+
+		fn run_proc(h: &mut WaterboxHost, name: &str) {
+			match h.elf.get_proc_addr(name) {
 				0 => (),
 				ptr => {
 					println!("Calling {}()", name);
@@ -135,47 +131,51 @@ impl<'a> ActivatedWaterboxHost<'a> {
 		run_proc(self, "co_clean");
 		run_proc(self, "ecl_seal");
 
-		self.h.elf.seal(&mut self.b);
-		self.b.seal();
-		self.h.sealed = true;
+		self.elf.seal(&mut self.memory_block);
+		self.memory_block.seal()?;
+
+		if was_active {
+			self.deactivate();
+		}
+		self.sealed = true;
 		Ok(())
 	}
 	pub fn mount_file(&mut self, name: String, data: Vec<u8>, writable: bool) -> anyhow::Result<()> {
-		self.h.fs.mount(name, data, writable)
+		self.fs.mount(name, data, writable)
 	}
 	pub fn unmount_file(&mut self, name: &str) -> anyhow::Result<Vec<u8>> {
-		self.h.fs.unmount(name)
+		self.fs.unmount(name)
 	}
 	// pub fn set_missing_file_callback(&mut self, cb: Option<MissingFileCallback>) {
-	// 	self.h.fs.set_missing_file_callback(cb);
+	// 	self.fs.set_missing_file_callback(cb);
 	// }
 
 	/// Run a guest entry point that takes no arguments
 	pub fn run_guest_simple(&mut self, entry_point: usize) {
-		context::call_guest_simple(entry_point, &mut self.h.context);
+		context::call_guest_simple(entry_point, &mut self.context);
 	}
 }
 
 const SAVE_START_MAGIC: &str = "ActivatedWaterboxHost_v1";
 const SAVE_END_MAGIC: &str = "ʇsoHxoqɹǝʇɐMpǝʇɐʌᴉʇɔ∀";
-impl<'a> IStateable for ActivatedWaterboxHost<'a> {
+impl IStateable for WaterboxHost {
 	fn save_state(&mut self, stream: &mut dyn Write) -> anyhow::Result<()> {
 		self.check_sealed()?;
 		bin::write_magic(stream, SAVE_START_MAGIC)?;
-		self.h.fs.save_state(stream)?;
-		bin::write(stream, &self.h.program_break)?;
-		self.h.elf.save_state(stream)?;
-		self.b.save_state(stream)?;
+		self.fs.save_state(stream)?;
+		bin::write(stream, &self.program_break)?;
+		self.elf.save_state(stream)?;
+		self.memory_block.save_state(stream)?;
 		bin::write_magic(stream, SAVE_END_MAGIC)?;
 		Ok(())
 	}
 	fn load_state(&mut self, stream: &mut dyn Read) -> anyhow::Result<()> {
 		self.check_sealed()?;
 		bin::verify_magic(stream, SAVE_START_MAGIC)?;
-		self.h.fs.load_state(stream)?;
-		bin::read(stream, &mut self.h.program_break)?;
-		self.h.elf.load_state(stream)?;
-		self.b.load_state(stream)?;
+		self.fs.load_state(stream)?;
+		bin::read(stream, &mut self.program_break)?;
+		self.elf.load_state(stream)?;
+		self.memory_block.load_state(stream)?;
 		bin::verify_magic(stream, SAVE_END_MAGIC)?;
 		Ok(())
 	}
@@ -228,7 +228,7 @@ fn arg_to_statbuff<'a>(arg: usize) -> &'a mut KStat {
 
 extern "sysv64" fn syscall(
 	a1: usize, a2: usize, a3: usize, a4: usize, _a5: usize, _a6: usize,
-	nr: SyscallNumber, h: &mut ActivatedWaterboxHost
+	nr: SyscallNumber, h: &mut WaterboxHost
 ) -> SyscallReturn {
 	match nr {
 		NR_MMAP => {
@@ -252,43 +252,43 @@ extern "sysv64" fn syscall(
 				}
 			}
 			let no_replace = flags & MAP_FIXED_NOREPLACE != 0;
-			let arena_addr = h.h.layout.mmap;
-			let res = h.b.mmap(AddressRange { start: a1, size: a2 }, prot, arena_addr, no_replace)?;
+			let arena_addr = h.layout.mmap;
+			let res = h.memory_block.mmap(AddressRange { start: a1, size: a2 }, prot, arena_addr, no_replace)?;
 			syscall_ok(res)
 		},
 		NR_MREMAP => {
-			let arena_addr = h.h.layout.mmap;
-			let res = h.b.mremap(AddressRange { start: a1, size: a2 }, a3, arena_addr)?;
+			let arena_addr = h.layout.mmap;
+			let res = h.memory_block.mremap(AddressRange { start: a1, size: a2 }, a3, arena_addr)?;
 			syscall_ok(res)
 		},
 		NR_MPROTECT => {
 			let prot = arg_to_prot(a3)?;
-			let res = h.b.mprotect(AddressRange { start: a1, size: a2 }, prot);
+			let res = h.memory_block.mprotect(AddressRange { start: a1, size: a2 }, prot);
 			syscall_ret(res)
 		},
-		NR_MUNMAP => syscall_ret(h.b.munmap(AddressRange { start: a1, size: a2 })),
+		NR_MUNMAP => syscall_ret(h.memory_block.munmap(AddressRange { start: a1, size: a2 })),
 		NR_MADVISE => {
 			match a3 {
-				MADV_DONTNEED => syscall_ret(h.b.madvise_dontneed(AddressRange { start: a1, size: a2 })),
+				MADV_DONTNEED => syscall_ret(h.memory_block.madvise_dontneed(AddressRange { start: a1, size: a2 })),
 				_ => syscall_ok(0),
 			}
 		},
 		NR_STAT => {
 			let name = arg_to_str(a1)?;
-			syscall_ret(h.h.fs.stat(&name, arg_to_statbuff(a2)))
+			syscall_ret(h.fs.stat(&name, arg_to_statbuff(a2)))
 		},
 		NR_FSTAT => {
-			syscall_ret(h.h.fs.fstat(arg_to_fd(a1)?, arg_to_statbuff(a2)))
+			syscall_ret(h.fs.fstat(arg_to_fd(a1)?, arg_to_statbuff(a2)))
 		},
 		NR_IOCTL => syscall_ok(0),
 		NR_READ => {
 			unsafe {
-				syscall_ret_i64(h.h.fs.read(arg_to_fd(a1)?, std::slice::from_raw_parts_mut(a2 as *mut u8, a3)))
+				syscall_ret_i64(h.fs.read(arg_to_fd(a1)?, std::slice::from_raw_parts_mut(a2 as *mut u8, a3)))
 			}
 		},
 		NR_WRITE => {
 			unsafe {
-				syscall_ret_i64(h.h.fs.write(arg_to_fd(a1)?, std::slice::from_raw_parts(a2 as *const u8, a3)))
+				syscall_ret_i64(h.fs.write(arg_to_fd(a1)?, std::slice::from_raw_parts(a2 as *const u8, a3)))
 			}
 		},
 		NR_READV => {
@@ -298,7 +298,7 @@ extern "sysv64" fn syscall(
 				let iov = std::slice::from_raw_parts_mut(a2 as *mut Iovec, a3);
 				for io in iov {
 					if io.iov_base != 0 {
-						ret += h.h.fs.read(fd, io.slice_mut())?;
+						ret += h.fs.read(fd, io.slice_mut())?;
 					}
 				}
 				syscall_ok(ret as usize)
@@ -311,19 +311,19 @@ extern "sysv64" fn syscall(
 				let iov = std::slice::from_raw_parts(a2 as *const Iovec, a3);
 				for io in iov {
 					if io.iov_base != 0 {
-						ret += h.h.fs.write(fd, io.slice())?;
+						ret += h.fs.write(fd, io.slice())?;
 					}
 				}
 				syscall_ok(ret as usize)
 			}
 		},
 		NR_OPEN => {
-			syscall_ret_val(h.h.fs.open(&arg_to_str(a1)?, a2 as i32, a3 as i32).map(|x| x.0 as usize))
+			syscall_ret_val(h.fs.open(&arg_to_str(a1)?, a2 as i32, a3 as i32).map(|x| x.0 as usize))
 		},
-		NR_CLOSE => syscall_ret(h.h.fs.close(arg_to_fd(a1)?)),
-		NR_LSEEK => syscall_ret_i64(h.h.fs.seek(arg_to_fd(a1)?, a2 as i64, a3 as i32)),
-		NR_TRUNCATE => syscall_ret(h.h.fs.truncate(&arg_to_str(a1)?, a2 as i64)),
-		NR_FTRUNCATE => syscall_ret(h.h.fs.ftruncate(arg_to_fd(a1)?, a2 as i64)),
+		NR_CLOSE => syscall_ret(h.fs.close(arg_to_fd(a1)?)),
+		NR_LSEEK => syscall_ret_i64(h.fs.seek(arg_to_fd(a1)?, a2 as i64, a3 as i32)),
+		NR_TRUNCATE => syscall_ret(h.fs.truncate(&arg_to_str(a1)?, a2 as i64)),
+		NR_FTRUNCATE => syscall_ret(h.fs.ftruncate(arg_to_fd(a1)?, a2 as i64)),
 		// TODO: 99% sure nothing calls this
 		NR_SET_THREAD_AREA => syscall_err(ENOSYS),
 		// TODO: What calls this?
@@ -338,8 +338,8 @@ extern "sysv64" fn syscall(
 		},
 		NR_BRK => {
 			// TODO: This could be done on the C side
-			let addr = h.h.layout.sbrk;
-			let old = h.h.program_break;
+			let addr = h.layout.sbrk;
+			let old = h.program_break;
 			let res = if a1 != align_down(a1) {
 				old
 			} else if a1 < addr.start {
@@ -351,13 +351,13 @@ extern "sysv64" fn syscall(
 				eprintln!("Failed to satisfy allocation of {} bytes on sbrk heap", a1 - old);
 				old	
 			} else if a1 > old {
-				h.b.mmap_fixed(AddressRange { start: old, size: a1 - old }, Protection::RW, true).unwrap();
+				h.memory_block.mmap_fixed(AddressRange { start: old, size: a1 - old }, Protection::RW, true).unwrap();
 				println!("Allocated {} bytes on sbrk heap, usage {}/{}", a1 - old, a1 - addr.start, addr.size);
 				a1
 			} else {
 				old
 			};
-			h.h.program_break = res;
+			h.program_break = res;
 			syscall_ok(res)
 		},
 		_ => syscall_ret(unimp(nr)),

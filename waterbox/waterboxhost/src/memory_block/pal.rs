@@ -61,7 +61,9 @@ mod win {
 	/// Map a handle into an address range
 	/// Probably shouldn't call with addr.size > handle's alloced size
 	/// Leaks if not later unmapped
-	pub fn map_handle(handle: &Handle, addr: AddressRange) -> anyhow::Result<()> {
+	/// addr.start can be 0, which means the OS chooses a location, or non-zero, which gives fixed address behavior
+	/// Returned address range will be identical in the case of non-zero, or give the actual address in the case of zero.
+	pub fn map_handle(handle: &Handle, addr: AddressRange) -> anyhow::Result<AddressRange> {
 		unsafe {
 			let res = MapViewOfFileEx(
 				handle.0 as *mut c_void,
@@ -71,10 +73,10 @@ mod win {
 				addr.size,
 				addr.start as *mut c_void
 			);
-			if res == addr.start as *mut c_void {
-				Ok(())
-			} else {
+			if res == null_mut() {
 				Err(error())
+			} else {
+				Ok(AddressRange { start: res as usize, size: addr.size })
 			}
 		}
 	}
@@ -97,7 +99,7 @@ mod win {
 	}
 
 	/// Map some anonymous bytes with no fd backing
-	/// addr.start can be 0, which means the OS chooses a location, or non-zero, which gives fixed behavior like map_handle
+	/// addr.start can be 0, which means the OS chooses a location, or non-zero, which gives fixed address behavior
 	/// Returned address range will be identical in the case of non-zero, or give the actual address in the case of zero.
 	pub fn map_anon(addr: AddressRange, initial_prot: Protection) -> anyhow::Result<AddressRange> {
 		unsafe {
@@ -199,19 +201,24 @@ mod nix {
 	/// Map a handle into an address range
 	/// Probably shouldn't call with addr.size > handle's alloced size
 	/// Leaks if not later unmapped
-	pub fn map_handle(handle: &Handle, addr: AddressRange) -> anyhow::Result<()> {
+	/// addr.start can be 0, which means the OS chooses a location, or non-zero, which gives fixed address behavior
+	/// Returned address range will be identical in the case of non-zero, or give the actual address in the case of zero.
+	pub fn map_handle(handle: &Handle, addr: AddressRange) -> anyhow::Result<AddressRange> {
 		unsafe {
-			let res = mmap(addr.start as *mut c_void,
+			let mut flags = MAP_SHARED;
+			if addr.start != 0 {
+				flags |= MAP_FIXED | MAP_FIXED_NOREPLACE;
+			}
+			let ptr = mmap(addr.start as *mut c_void,
 				addr.size,
 				PROT_READ | PROT_WRITE | PROT_EXEC,
-				MAP_SHARED | MAP_FIXED,
+				flags,
 				handle.0 as i32,
 				0
 			);
-			if res == addr.start as *mut c_void {
-				Ok(())
-			} else {
-				Err(error())
+			match ptr {
+				MAP_FAILED => Err(error()),
+				p => Ok(AddressRange { start: p as usize, size: addr.size })
 			}
 		}
 	}
@@ -234,7 +241,7 @@ mod nix {
 	}
 
 	/// Map some anonymous bytes with no fd backing
-	/// addr.start can be 0, which means the OS chooses a location, or non-zero, which gives fixed behavior like map_handle
+	/// addr.start can be 0, which means the OS chooses a location, or non-zero, which gives fixed address behavior
 	/// Returned address range will be identical in the case of non-zero, or give the actual address in the case of zero.
 	pub fn map_anon(addr: AddressRange, initial_prot: Protection) -> anyhow::Result<AddressRange> {
 		unsafe {

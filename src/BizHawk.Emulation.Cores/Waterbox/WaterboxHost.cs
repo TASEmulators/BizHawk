@@ -71,7 +71,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 	public unsafe class WaterboxHost : IMonitor, IImportResolver, IBinaryStateable, IDisposable, ICallbackAdjuster
 	{
 		private IntPtr _nativeHost;
-		private IntPtr _activatedNativeHost;
 		private int _enterCount;
 		private object _keepAliveDelegate;
 
@@ -132,12 +131,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		public IntPtr GetProcAddrOrZero(string entryPoint)
 		{
-			using (this.EnterExit())
-			{
-				var retobj = new ReturnData();
-				NativeImpl.wbx_get_proc_addr_raw(_activatedNativeHost, entryPoint, retobj);
-				return retobj.GetDataOrThrow();
-			}
+			var retobj = new ReturnData();
+			NativeImpl.wbx_get_proc_addr_raw(_nativeHost, entryPoint, retobj);
+			return retobj.GetDataOrThrow();
 		}
 
 		public IntPtr GetProcAddrOrThrow(string entryPoint)
@@ -155,32 +151,23 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		public IntPtr GetCallbackProcAddr(IntPtr exitPoint, int slot)
 		{
-			using (this.EnterExit())
-			{
-				var retobj = new ReturnData();
-				NativeImpl.wbx_get_callback_addr(_activatedNativeHost, exitPoint, slot, retobj);
-				return retobj.GetDataOrThrow();
-			}
+			var retobj = new ReturnData();
+			NativeImpl.wbx_get_callback_addr(_nativeHost, exitPoint, slot, retobj);
+			return retobj.GetDataOrThrow();
 		}
 
 		public IntPtr GetCallinProcAddr(IntPtr entryPoint)
 		{
-			using (this.EnterExit())
-			{
-				var retobj = new ReturnData();
-				NativeImpl.wbx_get_callin_addr(_activatedNativeHost, entryPoint, retobj);
-				return retobj.GetDataOrThrow();
-			}
+			var retobj = new ReturnData();
+			NativeImpl.wbx_get_callin_addr(_nativeHost, entryPoint, retobj);
+			return retobj.GetDataOrThrow();
 		}
 
 		public void Seal()
 		{
-			using (this.EnterExit())
-			{
-				var retobj = new ReturnData();
-				NativeImpl.wbx_seal(_activatedNativeHost, retobj);
-				retobj.GetDataOrThrow();
-			}
+			var retobj = new ReturnData();
+			NativeImpl.wbx_seal(_nativeHost, retobj);
+			retobj.GetDataOrThrow();
 			Console.WriteLine("WaterboxHost Sealed!");
 		}
 
@@ -191,12 +178,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// <param name="name">the filename that the unmanaged core will access the file by</param>
 		public void AddReadonlyFile(byte[] data, string name)
 		{
-			using (this.EnterExit())
-			{
-				var retobj = new ReturnData();
-				NativeImpl.wbx_mount_file(_activatedNativeHost, name, Reader(new MemoryStream(data, false)), IntPtr.Zero, false, retobj);
-				retobj.GetDataOrThrow();
-			}
+			var retobj = new ReturnData();
+			NativeImpl.wbx_mount_file(_nativeHost, name, Reader(new MemoryStream(data, false)), IntPtr.Zero, false, retobj);
+			retobj.GetDataOrThrow();
 		}
 
 		/// <summary>
@@ -205,12 +189,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// </summary>
 		public void RemoveReadonlyFile(string name)
 		{
-			using (this.EnterExit())
-			{
-				var retobj = new ReturnData();
-				NativeImpl.wbx_unmount_file(_activatedNativeHost, name, null, IntPtr.Zero, retobj);
-				retobj.GetDataOrThrow();
-			}
+			var retobj = new ReturnData();
+			NativeImpl.wbx_unmount_file(_nativeHost, name, null, IntPtr.Zero, retobj);
+			retobj.GetDataOrThrow();
 		}
 
 		/// <summary>
@@ -219,12 +200,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// </summary>
 		public void AddTransientFile(byte[] data, string name)
 		{
-			using (this.EnterExit())
-			{
-				var retobj = new ReturnData();
-				NativeImpl.wbx_mount_file(_activatedNativeHost, name, Reader(new MemoryStream(data, false)), IntPtr.Zero, true, retobj);
-				retobj.GetDataOrThrow();
-			}
+			var retobj = new ReturnData();
+			NativeImpl.wbx_mount_file(_nativeHost, name, Reader(new MemoryStream(data, false)), IntPtr.Zero, true, retobj);
+			retobj.GetDataOrThrow();
 		}
 
 		/// <summary>
@@ -233,14 +211,11 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// <returns>The state of the file when it was removed</returns>
 		public byte[] RemoveTransientFile(string name)
 		{
-			using (this.EnterExit())
-			{
 				var retobj = new ReturnData();
 				var ms = new MemoryStream();
-				NativeImpl.wbx_unmount_file(_activatedNativeHost, name, Writer(ms), IntPtr.Zero, retobj);
+				NativeImpl.wbx_unmount_file(_nativeHost, name, Writer(ms), IntPtr.Zero, retobj);
 				retobj.GetDataOrThrow();
 				return ms.ToArray();
-			}
 		}
 
 		// public class MissingFileResult
@@ -284,22 +259,15 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		public void SaveStateBinary(BinaryWriter bw)
 		{
-			using (this.EnterExit())
-			{
-				var retobj = new ReturnData();
-				NativeImpl.wbx_save_state(_activatedNativeHost, Writer(bw.BaseStream), IntPtr.Zero, retobj);
-				retobj.GetDataOrThrow();
-			}
+			var retobj = new ReturnData();
+			NativeImpl.wbx_save_state(_nativeHost, Writer(bw.BaseStream), IntPtr.Zero, retobj);
+			retobj.GetDataOrThrow();
 		}
 
 		public void LoadStateBinary(BinaryReader br)
-		{
-			using (this.EnterExit())
-			{
-				var retobj = new ReturnData();
-				NativeImpl.wbx_load_state(_activatedNativeHost, Reader(br.BaseStream), IntPtr.Zero, retobj);
-				retobj.GetDataOrThrow();
-			}
+		{				var retobj = new ReturnData();
+			NativeImpl.wbx_load_state(_nativeHost, Reader(br.BaseStream), IntPtr.Zero, retobj);
+			retobj.GetDataOrThrow();
 		}
 
 		public void Enter()
@@ -308,7 +276,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			{
 				var retobj = new ReturnData();
 				NativeImpl.wbx_activate_host(_nativeHost, retobj);
-				_activatedNativeHost = retobj.GetDataOrThrow();
+				retobj.GetDataOrThrow();
 			}
 			_enterCount++;
 		}
@@ -322,9 +290,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			else if (_enterCount == 1)
 			{
 				var retobj = new ReturnData();
-				NativeImpl.wbx_deactivate_host(_activatedNativeHost, retobj);
+				NativeImpl.wbx_deactivate_host(_nativeHost, retobj);
 				retobj.GetDataOrThrow();
-				_activatedNativeHost = IntPtr.Zero;
 			}
 			_enterCount--;
 		}
@@ -334,11 +301,10 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			if (_nativeHost != IntPtr.Zero)
 			{
 				var retobj = new ReturnData();
-				if (_activatedNativeHost != IntPtr.Zero)
+				if (_enterCount != 0)
 				{
-					NativeImpl.wbx_deactivate_host(_activatedNativeHost, retobj);
+					NativeImpl.wbx_deactivate_host(_nativeHost, retobj);
 					Console.Error.WriteLine("Warn: Disposed of WaterboxHost which was active");
-					_activatedNativeHost = IntPtr.Zero;
 				}
 				NativeImpl.wbx_destroy_host(_nativeHost, retobj);
 				_enterCount = 0;
