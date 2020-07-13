@@ -23,7 +23,7 @@ namespace BizHawk.Client.EmuHawk
 		private readonly InputManager _inputManager;
 		private IExternalApiProvider _apiProvider;
 		private IEmulator _emulator;
-		private IMovieSession _movieSession;
+		private readonly IMovieSession _movieSession;
 		private IGameInfo _game;
 
 		// TODO: merge ToolHelper code where logical
