@@ -2,8 +2,6 @@
 using System.IO;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using System.Linq;
-
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;

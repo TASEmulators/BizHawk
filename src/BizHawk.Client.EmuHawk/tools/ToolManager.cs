@@ -9,7 +9,6 @@ using System.ComponentModel;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
-using BizHawk.Client.EmuHawk.CoreExtensions;
 using BizHawk.Common;
 using BizHawk.Common.ReflectionExtensions;
 using BizHawk.Emulation.Common;
