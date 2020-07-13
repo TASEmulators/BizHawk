@@ -340,7 +340,7 @@ namespace BizHawk.Client.Common
 						return (int)CorePriority.UserPreference;
 					}
 
-					if (string.Equals(c.Name, forcedCore, StringComparison.InvariantCulture))
+					if (string.Equals(c.Name, forcedCore, StringComparison.InvariantCultureIgnoreCase))
 					{
 						return (int)CorePriority.GameDbPreference;
 					}
