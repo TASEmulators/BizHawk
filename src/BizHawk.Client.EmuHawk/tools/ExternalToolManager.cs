@@ -122,7 +122,7 @@ namespace BizHawk.Client.EmuHawk
 #if DEBUG
 				if (e is ReflectionTypeLoadException rtle)
 				{
-					foreach (var e1 in rtle.LoaderExceptions) Debug.WriteLine(e1.Message);
+					foreach (var e1 in rtle.LoaderExceptions) System.Diagnostics.Debug.WriteLine(e1.Message);
 				}
 #endif
 				item.ToolTipText = e switch
