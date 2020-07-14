@@ -282,6 +282,13 @@ impl MemoryBlock {
 		res
 	}
 
+	/// returns a value that can be added to any guest pointer to get the mirror pointer.
+	/// Use with care, as mirrors are not dirty-tracked.
+	/// May need to be wrapping_add()ed; no guarantee that the mirror is after the guest pointer in host memory.
+	pub fn mirror_displacement(&self) -> usize {
+		self.mirror.start.wrapping_sub(self.addr.start)
+	}
+
 	pub fn trace(&self, name: &str) {
 		let ptr = unsafe { std::mem::transmute::<&Self, usize>(self) };
 		let tid = unsafe { std::mem::transmute::<std::thread::ThreadId, u64>(std::thread::current().id()) };

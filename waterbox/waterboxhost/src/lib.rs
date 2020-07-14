@@ -2,6 +2,8 @@
 
 #![feature(try_trait)]
 #![feature(core_intrinsics)]
+#![feature(asm)]
+#![feature(thread_spawn_unchecked)]
 
 #![allow(dead_code)]
 
@@ -22,6 +24,7 @@ mod host;
 mod cinterface;
 mod gdb;
 mod context;
+mod threading;
 
 pub trait IStateable {
 	fn save_state(&mut self, stream: &mut dyn Write) -> anyhow::Result<()>;

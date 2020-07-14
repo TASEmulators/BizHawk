@@ -37,6 +37,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "cloudabi"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4344512281c643ae7638bbabc3af17a11307803ec8f0fcad9fae512a8bf36467"
+dependencies = [
+ "bitflags",
+]
+
+[[package]]
 name = "cpuid-bool"
 version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -77,6 +86,12 @@ dependencies = [
  "plain",
  "scroll",
 ]
+
+[[package]]
+name = "instant"
+version = "0.1.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5b141fdc7836c525d4d594027d318c84161ca17aaf8113ab1f81ab93ae897485"
 
 [[package]]
 name = "itertools"
@@ -140,7 +155,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d3a704eb390aafdc107b0e392f56a82b668e3a71366993b5340f5833fd62505e"
 dependencies = [
  "lock_api",
- "parking_lot_core",
+ "parking_lot_core 0.7.2",
 ]
 
 [[package]]
@@ -150,7 +165,22 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d58c7c768d4ba344e3e8d72518ac13e259d7c7ade24167003b8488e10b6740a3"
 dependencies = [
  "cfg-if",
- "cloudabi",
+ "cloudabi 0.0.3",
+ "libc",
+ "redox_syscall",
+ "smallvec",
+ "winapi",
+]
+
+[[package]]
+name = "parking_lot_core"
+version = "0.8.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c361aa727dd08437f2f1447be8b59a33b0edd15e0fcee698f935613d9efbca9b"
+dependencies = [
+ "cfg-if",
+ "cloudabi 0.1.0",
+ "instant",
  "libc",
  "redox_syscall",
  "smallvec",
@@ -273,6 +303,7 @@ dependencies = [
  "libc",
  "page_size",
  "parking_lot",
+ "parking_lot_core 0.8.0",
  "sha2",
  "winapi",
 ]

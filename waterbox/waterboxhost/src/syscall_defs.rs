@@ -26,6 +26,7 @@ pub fn syscall_ret_i64(result: Result<i64, SyscallError>) -> SyscallReturn {
 		Err(e) => SyscallReturn::from_error(e)
 	}
 }
+
 /// map a syscall result as the kernel would return it
 pub fn syscall_err(result: SyscallError) -> SyscallReturn {
 	SyscallReturn::from_error(result)
@@ -36,6 +37,7 @@ pub fn syscall_ok(result: usize) -> SyscallReturn {
 }
 
 #[repr(transparent)]
+#[derive(PartialEq, Eq)]
 pub struct SyscallReturn(pub usize);
 impl SyscallReturn {
 	pub const ERROR_THRESH: usize = -4096 as isize as usize;
@@ -221,6 +223,8 @@ lookup! { lookup_errno: SyscallError {
 	ENOTRECOVERABLE = 131;
 	ERFKILL = 132;
 	EHWPOISON = 133;
+	E_WBX_HOSTABORT = 2222; // not passed to the guest.  Any syscall that returns this MUST be restartable later!
+	E_WBX_THREADEXIT = 2223; // not passed to guest.  Internal value used in handling thread exit()
 }}
 
 pub const S_IFMT: u32 = 0o0170000;
@@ -653,6 +657,8 @@ lookup! { lookup_syscall: SyscallNumber {
 	NR_FSPICK = 433;
 	NR_PIDFD_OPEN = 434;
 	NR_CLONE3 = 435;
+	NR_WBX_CLONE = 2000;
+	NR_WBX_CLONE_IN_CHILD = 2001;
 }}
 
 pub const MAP_FAILED: usize = 0xffffffffffffffff;
@@ -750,3 +756,22 @@ pub struct TimeSpec {
 	pub tv_sec: i64,
 	pub tv_nsec: i64,
 }
+
+pub const FUTEX_WAITERS: u32 = 0x80000000;
+pub const FUTEX_OWNER_DIED: u32 = 0x40000000;
+pub const FUTEX_TID_MASK: u32 = 0x3fffffff;
+
+pub const FUTEX_WAIT: i32 = 0;
+pub const FUTEX_WAKE: i32 = 1;
+pub const FUTEX_FD: i32 = 2;
+pub const FUTEX_REQUEUE: i32 = 3;
+pub const FUTEX_CMP_REQUEUE: i32 = 4;
+pub const FUTEX_WAKE_OP: i32 = 5;
+pub const FUTEX_LOCK_PI: i32 = 6;
+pub const FUTEX_UNLOCK_PI: i32 = 7;
+pub const FUTEX_TRYLOCK_PI: i32 = 8;
+pub const FUTEX_WAIT_BITSET: i32 = 9;
+
+pub const FUTEX_PRIVATE: i32 = 128;
+
+pub const FUTEX_CLOCK_REALTIME: i32 = 256;
