@@ -95,6 +95,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			text = "";
 
+			// This could happen if the control is told to redraw while Tastudio is rebooting, as we would not have a TasMovie just yet
+			if (Tastudio.CurrentTasMovie == null)
+			{
+				return;
+			}
+
 			if (index >= Branches.Count)
 			{
 				return;
@@ -111,6 +117,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void QueryItemBkColor(int index, RollColumn column, ref Color color)
 		{
+			// This could happen if the control is told to redraw while Tastudio is rebooting, as we would not have a TasMovie just yet
+			if (Tastudio.CurrentTasMovie == null)
+			{
+				return;
+			}
+
 			var branch = Branches[index];
 			if (branch != null)
 			{

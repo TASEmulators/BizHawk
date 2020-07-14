@@ -58,6 +58,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MarkerView_QueryItemBkColor(int index, RollColumn column, ref Color color)
 		{
+			// This could happen if the control is told to redraw while Tastudio is rebooting, as we would not have a TasMovie just yet
+			if (Tastudio.CurrentTasMovie == null)
+			{
+				return;
+			}
+
 			var prev = Markers.PreviousOrCurrent(Tastudio.Emulator.Frame);
 
 			if (prev != null && index == Markers.IndexOf(prev))
@@ -87,6 +93,12 @@ namespace BizHawk.Client.EmuHawk
 		private void MarkerView_QueryItemText(int index, RollColumn column, out string text, ref int offsetX, ref int offsetY)
 		{
 			text = "";
+
+			// This could happen if the control is told to redraw while Tastudio is rebooting, as we would not have a TasMovie just yet
+			if (Tastudio.CurrentTasMovie == null)
+			{
+				return;
+			}
 
 			if (column.Name == "FrameColumn")
 			{
