@@ -81,12 +81,9 @@ namespace BizHawk.Client.Common
 				var lagged = LagLog[lagIndex];
 				if (lagged == null)
 				{
-					if (Emulator != null)
+					if (IsAttached() && Emulator.Frame == lagIndex)
 					{
-						if (Emulator.Frame == lagIndex)
-						{
-							lagged = _inputPollable.IsLagFrame;
-						}					
+						lagged = _inputPollable.IsLagFrame;
 					}
 				}
 

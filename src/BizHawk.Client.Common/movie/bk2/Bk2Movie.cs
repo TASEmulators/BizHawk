@@ -27,6 +27,8 @@ namespace BizHawk.Client.Common
 			Emulator = emulator;
 		}
 
+		protected bool IsAttached() => Emulator != null;
+
 		public IEmulator Emulator { get; private set; }
 		public IMovieSession Session { get; }
 
