@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using System.ComponentModel;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.ToolExtensions;
+using BizHawk.Client.EmuHawk.Properties;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.N64;
 
@@ -104,18 +105,14 @@ namespace BizHawk.Client.EmuHawk
 
 		public TAStudio()
 		{
-			void SetImages()
-			{
-				RecentSubMenu.Image = Properties.Resources.Recent;
-				recentMacrosToolStripMenuItem.Image = Properties.Resources.Recent;
-				TASEditorManualOnlineMenuItem.Image = Properties.Resources.Help;
-				ForumThreadMenuItem.Image = Properties.Resources.TAStudio;
-				Icon = Properties.Resources.TAStudio_MultiSize;
-			}
+			RecentSubMenu.Image = Resources.Recent;
+			recentMacrosToolStripMenuItem.Image = Resources.Recent;
+			TASEditorManualOnlineMenuItem.Image = Resources.Help;
+			ForumThreadMenuItem.Image = Resources.TAStudio;
+			Icon = Resources.TAStudio_MultiSize;
 
 			Settings = new TAStudioSettings();
 			InitializeComponent();
-			SetImages();
 			InitializeSeekWorker();
 
 			_defaultMainSplitDistance = MainVertialSplit.SplitterDistance;
