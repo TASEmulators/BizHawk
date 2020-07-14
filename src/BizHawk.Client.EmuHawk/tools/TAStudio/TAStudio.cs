@@ -821,7 +821,7 @@ namespace BizHawk.Client.EmuHawk
 					_autosaveTimer?.Start();
 				}
 
-				MessageStatusLabel.Text = $"{CurrentTasMovie.Name} saved.";
+				MessageStatusLabel.Text = "File saved.";
 				Settings.RecentTas.Add(CurrentTasMovie.Filename);
 				Cursor = Cursors.Default;
 				GlobalWin.Sound.StartSound();
@@ -854,7 +854,7 @@ namespace BizHawk.Client.EmuHawk
 				CurrentTasMovie.Save();
 				Settings.RecentTas.Add(CurrentTasMovie.Filename);
 				SetTextProperty();
-				MessageStatusLabel.Text = $"{Path.GetFileName(CurrentTasMovie.Filename)} saved.";
+				MessageStatusLabel.Text = "File saved.";
 				Cursor = Cursors.Default;
 			}
 
