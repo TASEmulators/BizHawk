@@ -79,9 +79,15 @@ namespace BizHawk.Client.Common
 			{
 				var lagIndex = index + 1;
 				var lagged = LagLog[lagIndex];
-				if (lagged == null && Emulator.Frame == lagIndex)
+				if (lagged == null)
 				{
-					lagged = _inputPollable.IsLagFrame;
+					if (Emulator != null)
+					{
+						if (Emulator.Frame == lagIndex)
+						{
+							lagged = _inputPollable.IsLagFrame;
+						}					
+					}
 				}
 
 				return new TasMovieRecord
