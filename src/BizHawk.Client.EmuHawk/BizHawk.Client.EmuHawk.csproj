@@ -98,6 +98,7 @@
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Client.Common/BizHawk.Client.Common.csproj" />
+		<ProjectReference Include="$(ProjectDir)../BizHawk.WinForms.BuilderDSL/BizHawk.WinForms.BuilderDSL.csproj" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.WinForms.Controls/BizHawk.WinForms.Controls.csproj" />
 		<Compile Include="$(ProjectDir)../BizHawk.Common/OSTailoredCode.cs" />
 		<Compile Include="$(ProjectDir)../BizHawk.Version/svnrev.cs" />
