@@ -110,15 +110,15 @@ namespace BizHawk.Client.EmuHawk
 					{
 						DisplayName = "L",
 						TargetSize = new Size(128, 55),
-						MinValue = 0,
-						MaxValue = 255
+						MinValue = AxisRange.Min,
+						MaxValue = AxisRange.Max
 					},
 					new SingleAxisSchema(328, 12, controller, "R")
 					{
 						DisplayName = "R",
 						TargetSize = new Size(128, 55),
-						MinValue = 0,
-						MaxValue = 255
+						MinValue = AxisRange.Min,
+						MaxValue = AxisRange.Max
 					}
 				}
 			};
