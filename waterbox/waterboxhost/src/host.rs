@@ -134,7 +134,7 @@ impl WaterboxHost {
 		self.elf.seal(&mut self.memory_block);
 		self.memory_block.seal()?;
 
-		if was_active {
+		if !was_active {
 			self.deactivate();
 		}
 		self.sealed = true;
