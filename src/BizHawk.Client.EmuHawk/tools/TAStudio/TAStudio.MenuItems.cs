@@ -81,7 +81,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!MainForm.GameIsClosing)
 			{
+				var prev = WantsToControlReboot;
+				WantsToControlReboot = false;
 				StartNewTasMovie();
+				WantsToControlReboot = prev;
 			}
 		}
 
