@@ -479,7 +479,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 			if (timer_en)
 			{
 				timer_prescale++;
-				if (timer_prescale == 32)
+				if (timer_prescale == 32 * 5)
 				{
 					timer_prescale = 0;
 					if (Regs[TIM] == 255)
