@@ -128,5 +128,14 @@ namespace BizHawk.Client.EmuHawk
 				RefreshDialog();
 			}
 		}
+
+		public bool WantsToControlReboot { get; private set; } = true;
+
+		public void RebootCore()
+		{
+			WantsToControlReboot = false;
+			NewTasMenuItem_Click(null, null);
+			WantsToControlReboot = true;
+		}
 	}
 }

@@ -2,6 +2,12 @@
 {
 	public partial class GenericDebugger : IControlMainform
 	{
+
+		public bool WantsToControlReboot => false;
+		public void RebootCore()
+		{
+		}
+
 		public bool WantsToControlSavestates => false;
 
 		public void SaveState() { }

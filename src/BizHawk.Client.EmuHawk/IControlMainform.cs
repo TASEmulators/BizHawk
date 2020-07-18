@@ -2,6 +2,9 @@
 {
 	public interface IControlMainform
 	{
+		bool WantsToControlReboot { get; }
+		void RebootCore();
+
 		bool WantsToControlSavestates { get; }
 
 		void SaveState();

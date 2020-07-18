@@ -1033,8 +1033,19 @@ namespace BizHawk.Client.EmuHawk
 
 		public void RebootCore()
 		{
-			if (CurrentlyOpenRomArgs == null) return;
-			LoadRom(CurrentlyOpenRomArgs.OpenAdvanced.SimplePath, CurrentlyOpenRomArgs);
+			if (IsSlave && Master.WantsToControlReboot)
+			{
+				Master.RebootCore();
+			}
+			else
+			{
+				if (CurrentlyOpenRomArgs == null)
+				{
+					return;
+				}
+
+				LoadRom(CurrentlyOpenRomArgs.OpenAdvanced.SimplePath, CurrentlyOpenRomArgs);
+			}
 		}
 
 		public void PauseEmulator()

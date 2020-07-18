@@ -238,13 +238,13 @@ namespace BizHawk.Client.Common
 		public void RunQueuedMovie(bool recordMode, IEmulator emulator, IDictionary<string, string> preferredCores)
 		{
 			MovieController = new Bk2Controller(emulator.ControllerDefinition);
-			_queuedMovie.Attach(emulator);
 			foreach (var previousPref in _preferredCores)
 			{
 				preferredCores[previousPref.Key] = previousPref.Value;
 			}
 
 			Movie = _queuedMovie;
+			Movie.Attach(emulator);
 			_queuedMovie = null;
 
 			Movie.ProcessSavestate(Movie.Emulator);
