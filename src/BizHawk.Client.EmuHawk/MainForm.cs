@@ -3825,11 +3825,6 @@ namespace BizHawk.Client.EmuHawk
 				StopMovie();
 			}
 
-			if (Tools.IsLoaded<TraceLogger>())
-			{
-				Tools.Get<TraceLogger>().Restart();
-			}
-
 			CheatList.SaveOnClose();
 			Emulator.Dispose();
 			Emulator = new NullEmulator();
