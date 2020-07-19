@@ -146,10 +146,10 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			Pads.ForEach(p => p.SetPrevious(null)); // Not the cleanest way to clear this every frame
+			Readonly = MovieSession.Movie.IsPlaying();
 
 			if (MovieSession.Movie.IsPlaying())
 			{
-				Readonly = true;
 				var currentInput = CurrentInput();
 				if (currentInput != null)
 				{
@@ -160,7 +160,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var previousFrame = PreviousFrame();
 				Pads.ForEach(p => p.SetPrevious(previousFrame));
-				Readonly = false;
 			}
 
 			if (!Readonly && !StickyPads && !MouseButtons.HasFlag(MouseButtons.Left))
