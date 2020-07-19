@@ -682,7 +682,19 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (AskSaveChanges())
 			{
-				LoadFile(new FileInfo(path));
+				LoadFileWithFallback(path);
+			}
+		}
+
+		private void LoadFileWithFallback(string path)
+		{
+			var result = LoadFile(new FileInfo(path));
+			if (!result)
+			{
+				TasView.AllColumns.Clear();
+				WantsToControlReboot = false;
+				StartNewTasMovie();
+				_engaged = true;
 			}
 		}
 

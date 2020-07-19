@@ -112,7 +112,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (ofd.FileName.EndsWith(MovieService.TasMovieExtension))
 					{
-						LoadFile(new FileInfo(ofd.FileName));
+						LoadFileWithFallback(ofd.FileName);
 					}
 					else if (ofd.FileName.EndsWith(MovieService.StandardMovieExtension))
 					{
