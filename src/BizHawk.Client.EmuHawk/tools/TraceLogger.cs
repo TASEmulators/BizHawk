@@ -70,7 +70,11 @@ namespace BizHawk.Client.EmuHawk
 			Closing += (o, e) =>
 			{
 				SaveConfigSettings();
-				Tracer.Sink = null;
+				if (Tracer != null)
+				{
+					Tracer.Sink = null;
+				}
+
 				CloseFile();
 			};
 
