@@ -63,10 +63,17 @@ namespace BizHawk.Client.EmuHawk
 		public void Init(StickyXorAdapter stickyXorAdapter, string nameX, AxisSpec rangeX, string nameY, AxisSpec rangeY)
 		{
 			_stickyXorAdapter = stickyXorAdapter;
+
+			var scaleBase = Math.Min(Size.Width, Size.Height) - 10.0; // be circular when control is stretched
+
 			Name = XName = nameX;
 			_fullRangeX = rangeX;
+			ScaleX = scaleBase / rangeX.Range.Count();
+
 			YName = nameY;
 			_fullRangeY = rangeY;
+			ScaleY = scaleBase / rangeY.Range.Count();
+
 			Rerange();
 		}
 
@@ -93,12 +100,9 @@ namespace BizHawk.Client.EmuHawk
 			SetAnalog();
 		}
 
-		/// <remarks>
-		/// never tested, assuming it works --zeromus
-		/// </remarks>
-		private const float ScaleX = 0.60f;
-		/// <inheritdoc cref="ScaleX"/>
-		private const float ScaleY = 0.60f;
+		private double ScaleX = 0.6;
+
+		private double ScaleY = 0.6;
 
 		/// <remarks>
 		/// min + (max - i) == max - (i - min) == min + max - i
@@ -140,7 +144,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public AnalogStickPanel()
 		{
-			Size = new Size(PixelSizeX + 1, PixelSizeY + 1);
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			SetStyle(ControlStyles.UserPaint, true);
 			SetStyle(ControlStyles.OptimizedDoubleBuffer, true);

@@ -122,7 +122,9 @@ namespace BizHawk.Common.NumberExtensions
 
 			return val;
 		}
-		
+
+		public static int RoundToInt(this double d) => (int) Math.Round(d);
+
 		public static int RoundToInt(this float f) => (int) Math.Round(f);
 
 		/// <summary>2^-53</summary>
