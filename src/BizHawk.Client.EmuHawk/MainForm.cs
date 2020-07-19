@@ -3465,6 +3465,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private LoadRomArgs _currentLoadRomArgs;
+		private bool _isLoadingRom;
 
 		public bool LoadRom(string path, LoadRomArgs args)
 		{
@@ -3489,6 +3490,7 @@ namespace BizHawk.Client.EmuHawk
 			if (args == null)
 				throw new ArgumentNullException(nameof(args));
 
+			_isLoadingRom = true;
 			path = EmuHawkUtil.ResolveShortcut(path);
 
 			// if this is the first call to LoadRom (they will come in recursively) then stash the args
@@ -3752,6 +3754,8 @@ namespace BizHawk.Client.EmuHawk
 				{
 					_currentLoadRomArgs = null;
 				}
+
+				_isLoadingRom = false;
 			}
 		}
 
