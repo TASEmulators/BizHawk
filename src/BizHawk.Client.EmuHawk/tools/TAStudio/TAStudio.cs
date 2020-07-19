@@ -494,74 +494,18 @@ namespace BizHawk.Client.EmuHawk
 				});
 		}
 
-<<<<<<< HEAD
 		public void LoadBranchByIndex(int index) => BookMarkControl.LoadBranchExternal(index);
 		public void ClearFramesExternal() => ClearFramesMenuItem_Click(null, null);
 		public void InsertFrameExternal() => InsertFrameMenuItem_Click(null, null);
 		public void InsertNumFramesExternal() => InsertNumFramesMenuItem_Click(null, null);
 		public void DeleteFramesExternal() => DeleteFramesMenuItem_Click(null, null);
 		public void CloneFramesExternal() => CloneFramesMenuItem_Click(null, null);
+		public void CloneFramesXTimesExternal() => CloneFramesXTimesMenuItem_Click(null, null);
 		public void UndoExternal() => UndoMenuItem_Click(null, null);
 		public void RedoExternal() => RedoMenuItem_Click(null, null);
 		public void SelectBetweenMarkersExternal() => SelectBetweenMarkersMenuItem_Click(null, null);
 		public void SelectAllExternal() => SelectAllMenuItem_Click(null, null);
 		public void ReselectClipboardExternal() => ReselectClipboardMenuItem_Click(null, null);
-=======
-		public void ClearFramesExternal()
-		{
-			ClearFramesMenuItem_Click(null, null);
-		}
-
-		public void InsertFrameExternal()
-		{
-			InsertFrameMenuItem_Click(null, null);
-		}
-
-		public void InsertNumFramesExternal()
-		{
-			InsertNumFramesMenuItem_Click(null, null);
-		}
-
-		public void DeleteFramesExternal()
-		{
-			DeleteFramesMenuItem_Click(null, null);
-		}
-
-		public void CloneFramesExternal()
-		{
-			CloneFramesMenuItem_Click(null, null);
-		}
-
-		public void CloneFramesXTimesExternal()
-		{
-			CloneFramesXTimesMenuItem_Click(null, null);
-		}
-
-		public void UndoExternal()
-		{
-			UndoMenuItem_Click(null, null);
-		}
-
-		public void RedoExternal()
-		{
-			RedoMenuItem_Click(null, null);
-		}
-
-		public void SelectBetweenMarkersExternal()
-		{
-			SelectBetweenMarkersMenuItem_Click(null, null);
-		}
-
-		public void SelectAllExternal()
-		{
-			SelectAllMenuItem_Click(null, null);
-		}
-
-		public void ReselectClipboardExternal()
-		{
-			ReselectClipboardMenuItem_Click(null, null);
-		}
->>>>>>> 86efc8341... basically working
 
 		private int? FirstNonEmptySelectedFrame
 		{

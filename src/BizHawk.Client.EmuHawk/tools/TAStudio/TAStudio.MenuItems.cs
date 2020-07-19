@@ -629,7 +629,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CloneFramesXTimesMenuItem_Click(object sender, EventArgs e)
 		{
-			using var framesPrompt = new FramesPrompt();
+			using var framesPrompt = new FramesPrompt("Clone # Times", "Insert times to clone:");
 			if (framesPrompt.ShowDialog().IsOk())
 			{
 				CloneFramesXTimes(framesPrompt.Frames);

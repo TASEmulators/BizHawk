@@ -61,7 +61,7 @@
 			// 
 			this.label1.Location = new System.Drawing.Point(12, 20);
 			this.label1.Name = "label1";
-			this.label1.Text = "Insert number of frames:";
+			this.label1.Text = bodyMessage;
 			// 
 			// NumFramesBox
 			// 
@@ -91,7 +91,7 @@
 			this.Name = "FramesPrompt";
 			this.ShowIcon = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "Insert Frames";
+			this.Text = headMessage;
 			this.Load += new System.EventHandler(this.FramesPrompt_Load);
 			this.ResumeLayout(false);
 			this.PerformLayout();
