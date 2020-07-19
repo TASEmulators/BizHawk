@@ -76,10 +76,13 @@ namespace BizHawk.Client.EmuHawk
 
 		public void StopMovie(bool suppressSave)
 		{
-			Focus();
-			_suppressAskSave = suppressSave;
-			NewTasMenuItem_Click(null, null);
-			_suppressAskSave = false;
+			if (!MainForm.GameIsClosing)
+			{
+				Focus();
+				_suppressAskSave = suppressSave;
+				NewTasMenuItem_Click(null, null);
+				_suppressAskSave = false;
+			}
 		}
 
 		public bool WantsToControlRewind => true;

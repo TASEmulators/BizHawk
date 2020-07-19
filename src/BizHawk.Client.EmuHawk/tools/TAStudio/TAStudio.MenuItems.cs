@@ -79,13 +79,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NewTasMenuItem_Click(object sender, EventArgs e)
 		{
-			if (!MainForm.GameIsClosing)
-			{
-				var prev = WantsToControlReboot;
-				WantsToControlReboot = false;
-				StartNewTasMovie();
-				WantsToControlReboot = prev;
-			}
+			var prev = WantsToControlReboot;
+			WantsToControlReboot = false;
+			StartNewTasMovie();
+			WantsToControlReboot = prev;
 		}
 
 		private void OpenTasMenuItem_Click(object sender, EventArgs e)
