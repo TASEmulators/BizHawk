@@ -38,7 +38,7 @@ namespace BizHawk.Client.Common.lua.LuaHelperLibs
 
 			activeSockets[id] = ws;
 
-			return id.ToString();
+			return id;
 		}
 
 		[LuaMethodExample("local ws = bizsocket.send(ws_id, 'some message', true);")]
@@ -46,7 +46,7 @@ namespace BizHawk.Client.Common.lua.LuaHelperLibs
 		public void SendToSocket(string id, string content, bool endOfMessage)
 		{
 			var ws = activeSockets[id];
-			var msg = new ArraySegment<byte>(Encoding.ASCII.GetBytes(content));
+			var msg = new ArraySegment<byte>(Encoding.UTF8.GetBytes(content));
 
 			ws.SendAsync(msg, WebSocketMessageType.Text, endOfMessage, CancellationToken.None);
 		}
@@ -61,8 +61,7 @@ namespace BizHawk.Client.Common.lua.LuaHelperLibs
 			var rcvBuffer = new ArraySegment<byte>(rcvBytes);
 
 			var result = ws.ReceiveAsync(rcvBuffer, CancellationToken.None).Result;
-			byte[] msgBytes = rcvBuffer.Take(result.Count).ToArray();
-			string rcvMsg = Encoding.UTF8.GetString(msgBytes);
+			string rcvMsg = Encoding.UTF8.GetString(rcvBuffer.Take(result.Count).ToArray());
 
 			return rcvMsg;
 		}
