@@ -45,7 +45,7 @@ namespace BizHawk.Client.EmuHawk
 		public int LastPositionFrame { get; private set; }
 
 		[ConfigPersist]
-		public TAStudioSettings Settings { get; set; }
+		public TAStudioSettings Settings { get; set; } = new TAStudioSettings();
 
 		[ConfigPersist]
 		public Font TasViewFont { get; set; } = new Font("Arial", 8.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
@@ -105,7 +105,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public TAStudio()
 		{
-			Settings = new TAStudioSettings();
 			InitializeComponent();
 
 			RecentSubMenu.Image = Resources.Recent;
@@ -360,23 +359,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetTasMovieCallbacks(ITasMovie movie)
 		{
-			movie.ClientSettingsForSave = ClientSettingsForSave;
-			movie.GetClientSettingsOnLoad = GetClientSettingsOnLoad;
-		}
-
-		public void LoadBranchByIndex(int index)
-		{
-			BookMarkControl.LoadBranchExternal(index);
-		}
-
-		private string ClientSettingsForSave()
-		{
-			return TasView.UserSettingsSerialized();
-		}
-
-		private void GetClientSettingsOnLoad(string settingsJson)
-		{
-			TasView.LoadSettingsSerialized(settingsJson);
+			movie.ClientSettingsForSave = () => TasView.UserSettingsSerialized();
+			movie.GetClientSettingsOnLoad = json => TasView.LoadSettingsSerialized(json);
 		}
 
 		private void SetUpColumns()
@@ -510,55 +494,17 @@ namespace BizHawk.Client.EmuHawk
 				});
 		}
 
-		public void ClearFramesExternal()
-		{
-			ClearFramesMenuItem_Click(null, null);
-		}
-
-		public void InsertFrameExternal()
-		{
-			InsertFrameMenuItem_Click(null, null);
-		}
-
-		public void InsertNumFramesExternal()
-		{
-			InsertNumFramesMenuItem_Click(null, null);
-		}
-
-		public void DeleteFramesExternal()
-		{
-			DeleteFramesMenuItem_Click(null, null);
-		}
-
-		public void CloneFramesExternal()
-		{
-			CloneFramesMenuItem_Click(null, null);
-		}
-
-		public void UndoExternal()
-		{
-			UndoMenuItem_Click(null, null);
-		}
-
-		public void RedoExternal()
-		{
-			RedoMenuItem_Click(null, null);
-		}
-
-		public void SelectBetweenMarkersExternal()
-		{
-			SelectBetweenMarkersMenuItem_Click(null, null);
-		}
-
-		public void SelectAllExternal()
-		{
-			SelectAllMenuItem_Click(null, null);
-		}
-
-		public void ReselectClipboardExternal()
-		{
-			ReselectClipboardMenuItem_Click(null, null);
-		}
+		public void LoadBranchByIndex(int index) => BookMarkControl.LoadBranchExternal(index);
+		public void ClearFramesExternal() => ClearFramesMenuItem_Click(null, null);
+		public void InsertFrameExternal() => InsertFrameMenuItem_Click(null, null);
+		public void InsertNumFramesExternal() => InsertNumFramesMenuItem_Click(null, null);
+		public void DeleteFramesExternal() => DeleteFramesMenuItem_Click(null, null);
+		public void CloneFramesExternal() => CloneFramesMenuItem_Click(null, null);
+		public void UndoExternal() => UndoMenuItem_Click(null, null);
+		public void RedoExternal() => RedoMenuItem_Click(null, null);
+		public void SelectBetweenMarkersExternal() => SelectBetweenMarkersMenuItem_Click(null, null);
+		public void SelectAllExternal() => SelectAllMenuItem_Click(null, null);
+		public void ReselectClipboardExternal() => ReselectClipboardMenuItem_Click(null, null);
 
 		private int? FirstNonEmptySelectedFrame
 		{
