@@ -501,6 +501,7 @@ namespace BizHawk.Client.EmuHawk
 
 			foreach (var tool in _tools)
 			{
+				SetBaseProperties(tool);
 				if (ServiceInjector.IsAvailable(_emulator.ServiceProvider, tool.GetType()))
 				{
 					ServiceInjector.UpdateServices(_emulator.ServiceProvider, tool);
