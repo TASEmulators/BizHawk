@@ -298,7 +298,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					MainFormContextMenu.Show(PointToScreen(new Point(e.X, e.Y + MainformMenu.Height)));
 				}
-			};
+			}
 			void MainForm_MouseMove(object sender, MouseEventArgs e) => AutohideCursor(false);
 			void MainForm_MouseWheel(object sender, MouseEventArgs e) => MouseWheelTracker += e.Delta;
 			MouseClick += MainForm_MouseClick;
