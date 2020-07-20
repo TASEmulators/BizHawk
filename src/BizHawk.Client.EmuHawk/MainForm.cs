@@ -318,7 +318,10 @@ namespace BizHawk.Client.EmuHawk
 
 			try
 			{
-				_argParser.ParseArguments(args);
+				_argParser.ParseArguments(
+					args,
+					() => (byte[]) new ImageConverter().ConvertTo(MakeScreenshotImage().ToSysdrawingBitmap(), typeof(byte[]))
+				);
 			}
 			catch (ArgParserException e)
 			{

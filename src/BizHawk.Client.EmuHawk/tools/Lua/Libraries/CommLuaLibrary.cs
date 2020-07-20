@@ -66,7 +66,7 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod("socketServerSuccessful", "returns the status of the last Socket server action")]
 		public bool SocketServerSuccessful()
 		{
-			return CheckSocketServer() && GlobalWin.socketServer.Successful();
+			return CheckSocketServer() && GlobalWin.socketServer.Successful;
 		}
 
 		[LuaMethod("socketServerSetTimeout", "sets the timeout in milliseconds for receiving messages")]
@@ -80,7 +80,7 @@ namespace BizHawk.Client.EmuHawk
 		public void SocketServerSetIp(string ip)
 		{
 			CheckSocketServer();
-			GlobalWin.socketServer.Ip = ip;
+			GlobalWin.socketServer.IP = ip;
 		}
 
 		[LuaMethod("socketServerSetPort", "sets the port of the Lua socket server")]
@@ -93,7 +93,7 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod("socketServerGetIp", "returns the IP address of the Lua socket server")]
 		public string SocketServerGetIp()
 		{
-			return GlobalWin.socketServer?.Ip;
+			return GlobalWin.socketServer?.IP;
 		}
 
 		[LuaMethod("socketServerGetPort", "returns the port of the Lua socket server")]

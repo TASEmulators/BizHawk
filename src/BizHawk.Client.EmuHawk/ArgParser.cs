@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 
+using BizHawk.Client.Common;
+
 namespace BizHawk.Client.EmuHawk
 {
 	public class ArgParser
@@ -36,7 +38,7 @@ namespace BizHawk.Client.EmuHawk
 		public bool? audiosync = null;
 
 		/// <exception cref="ArgParserException"><c>--socket_ip</c> passed without specifying <c>--socket_port</c> or vice-versa</exception>
-		public void ParseArguments(string[] args)
+		public void ParseArguments(string[] args, Func<byte[]> takeScreenshotCallback)
 		{
 			for (int i = 0; i < args.Length; i++)
 			{
@@ -147,38 +149,23 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			//initialize HTTP communication
-			if (URL_get != null || URL_post != null)
+			GlobalWin.httpCommunication = URL_get == null && URL_post == null
+				? null // don't bother
+				: new HttpCommunication(takeScreenshotCallback, URL_get, URL_post);
+			GlobalWin.memoryMappedFiles = mmf_filename == null
+				? null // don't bother
+				: new MemoryMappedFiles(takeScreenshotCallback, mmf_filename);
+			if (socket_ip == null && socket_port <= 0)
 			{
-				GlobalWin.httpCommunication = new Communication.HttpCommunication();
-				if (URL_get != null)
-				{
-					GlobalWin.httpCommunication.GetUrl = URL_get;
-				}
-				if (URL_post != null)
-				{
-					GlobalWin.httpCommunication.PostUrl = URL_post;
-				}
+				GlobalWin.socketServer = null; // don't bother
 			}
-
-			// initialize socket server
-			if (socket_ip != null && socket_port > 0)
-			{
-				GlobalWin.socketServer = new Communication.SocketServer();
-				GlobalWin.socketServer.SetIp(socket_ip, socket_port);
-			}
-			else if (socket_ip == null ^ socket_port == 0)
+			else if (socket_ip == null || socket_port <= 0)
 			{
 				throw new ArgParserException("Socket server needs both --socket_ip and --socket_port. Socket server was not started");
 			}
-
-			//initialize mapped memory files
-			if (mmf_filename != null)
+			else
 			{
-				GlobalWin.memoryMappedFiles = new Communication.MemoryMappedFiles
-				{
-					Filename = mmf_filename
-				};
+				GlobalWin.socketServer = new SocketServer(takeScreenshotCallback, socket_ip, socket_port);
 			}
 		}
 

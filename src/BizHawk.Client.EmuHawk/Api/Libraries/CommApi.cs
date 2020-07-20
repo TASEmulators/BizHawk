@@ -14,15 +14,15 @@ namespace BizHawk.Client.EmuHawk
 
 		public string SocketServerResponse() => GlobalWin.socketServer.ReceiveMessage();
 
-		public bool SocketServerSuccessful() => GlobalWin.socketServer.Successful();
+		public bool SocketServerSuccessful() => GlobalWin.socketServer.Successful;
 
 		public void SocketServerSetTimeout(int timeout) => GlobalWin.socketServer.SetTimeout(timeout);
 
-		public void SocketServerSetIp(string ip) => GlobalWin.socketServer.Ip = ip;
+		public void SocketServerSetIp(string ip) => GlobalWin.socketServer.IP = ip;
 
 		public void SetSocketServerPort(int port) => GlobalWin.socketServer.Port = port;
 
-		public string SocketServerGetIp() => GlobalWin.socketServer.Ip;
+		public string SocketServerGetIp() => GlobalWin.socketServer.IP;
 
 		public int SocketServerGetPort() => GlobalWin.socketServer.Port;
 

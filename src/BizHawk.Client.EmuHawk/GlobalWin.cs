@@ -28,9 +28,9 @@ namespace BizHawk.Client.EmuHawk
 		public static GLManager GLManager;
 
 		public static int ExitCode;
-		public static Communication.HttpCommunication httpCommunication = null;
-		public static Communication.SocketServer socketServer = null;
-		public static Communication.MemoryMappedFiles memoryMappedFiles = null;
+		public static HttpCommunication httpCommunication = null;
+		public static SocketServer socketServer = null;
+		public static MemoryMappedFiles memoryMappedFiles = null;
 
 		/// <summary>
 		/// Used to disable secondary throttling (e.g. vsync, audio) for unthrottled modes or when the primary (clock) throttle is taking over (e.g. during fast forward/rewind).
