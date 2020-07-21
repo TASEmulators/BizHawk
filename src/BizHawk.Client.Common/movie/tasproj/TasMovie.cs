@@ -109,15 +109,16 @@ namespace BizHawk.Client.Common
 		// Removes lag log and greenzone after this frame
 		private void InvalidateAfter(int frame)
 		{
-			var anyInvalidated = LagLog.RemoveFrom(frame);
-			TasStateManager.Invalidate(frame + 1);
-			if (anyInvalidated)
+			var anyLagInvalidated = LagLog.RemoveFrom(frame);
+			var anyStateInvalidated = TasStateManager.Invalidate(frame + 1);
+			if (anyLagInvalidated || anyStateInvalidated)
 			{
 				Changes = true;
 			}
+
 			LastEditedFrame = frame;
 
-			if (anyInvalidated && IsCountingRerecords)
+			if (anyStateInvalidated && IsCountingRerecords)
 			{
 				Rerecords++;
 			}
