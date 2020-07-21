@@ -104,6 +104,7 @@ namespace BizHawk.BizInvoke
 		protected override void Dispose(bool disposing)
 		{
 			_closed = true;
+			base.Dispose(disposing);
 		}
 	}
 }
