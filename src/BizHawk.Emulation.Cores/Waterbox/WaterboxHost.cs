@@ -80,21 +80,21 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			NativeImpl = BizInvoker.GetInvoker<WaterboxHostNative>(
 				new DynamicLibraryImportResolver(OSTailoredCode.IsUnixHost ? "libwaterboxhost.so" : "waterboxhost.dll", eternal: true),
 				CallingConventionAdapters.Native);
-			#if !DEBUG
+#if !DEBUG
 			NativeImpl.wbx_set_always_evict_blocks(false);
-			#endif
+#endif
 		}
 
 		private ReadCallback Reader(Stream s)
 		{
 			var ret = MakeCallbackForReader(s);
-			_keepAliveDelegate = s;
+			_keepAliveDelegate = ret;
 			return ret;
 		}
 		private WriteCallback Writer(Stream s)
 		{
 			var ret = MakeCallbackForWriter(s);
-			_keepAliveDelegate = s;
+			_keepAliveDelegate = ret;
 			return ret;
 		}
 
@@ -211,11 +211,11 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// <returns>The state of the file when it was removed</returns>
 		public byte[] RemoveTransientFile(string name)
 		{
-				var retobj = new ReturnData();
-				var ms = new MemoryStream();
-				NativeImpl.wbx_unmount_file(_nativeHost, name, Writer(ms), IntPtr.Zero, retobj);
-				retobj.GetDataOrThrow();
-				return ms.ToArray();
+			var retobj = new ReturnData();
+			var ms = new MemoryStream();
+			NativeImpl.wbx_unmount_file(_nativeHost, name, Writer(ms), IntPtr.Zero, retobj);
+			retobj.GetDataOrThrow();
+			return ms.ToArray();
 		}
 
 		// public class MissingFileResult
@@ -265,7 +265,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		}
 
 		public void LoadStateBinary(BinaryReader br)
-		{				var retobj = new ReturnData();
+		{
+			var retobj = new ReturnData();
 			NativeImpl.wbx_load_state(_nativeHost, Reader(br.BaseStream), IntPtr.Zero, retobj);
 			retobj.GetDataOrThrow();
 		}
