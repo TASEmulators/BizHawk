@@ -887,7 +887,7 @@ namespace BizHawk.Client.EmuHawk
 				? new Zwinder(Emulator.AsStatable(), Config.Rewind)
 				: null;
 
-			AddOnScreenMessage("Rewind started");
+			AddOnScreenMessage(Rewinder?.Active == true ? "Rewind started" : "Rewind disabled");
 		}
 
 		private FirmwareManager FirmwareManager => GlobalWin.FirmwareManager;
