@@ -2,6 +2,7 @@ bits 64
 org 0x35f00000000
 
 struc Context
+	.thread_area resq 1
 	.host_rsp resq 1
 	.guest_rsp resq 1
 	.dispatch_syscall resq 1
@@ -9,6 +10,7 @@ struc Context
 	.extcall_slots resq 64
 endstruc
 
+times 0-($-$$) int3 ; CALL_GUEST_IMPL_ADDR
 ; sets up guest stack and calls a function
 ; r11 - guest entry point
 ; r10 - address of context structure
@@ -24,8 +26,8 @@ call_guest_impl:
 	mov r11, 0
 	mov [gs:0x18], r11
 	ret
-align 64, int3
 
+times 0x40-($-$$) int3 ; CALL_GUEST_SIMPLE_ADDR
 ; alternative to guest call thunks for functions with 0 args
 ; rdi - guest entry point
 ; rsi - address of context structure
@@ -33,13 +35,19 @@ call_guest_simple:
 	mov r11, rdi
 	mov r10, rsi
 	jmp call_guest_impl
-align 64, int3
 
+times 0x80-($-$$) int3
 ; called by guest when it wishes to make a syscall
 ; must be loaded at fixed address, as that address is burned into guest executables
 ; rax - syscall number
 ; regular arg registers are 0..6 args to the syscall
 guest_syscall:
+	push rbp ; this call might be suspended and cothreaded, so nonvolatile regs must be saved
+	push rbx
+	push r12
+	push r13
+	push r14
+	push r15
 	mov r10, [gs:0x18]
 	mov [r10 + Context.guest_rsp], rsp
 	mov rsp, [r10 + Context.host_rsp]
@@ -51,8 +59,27 @@ guest_syscall:
 	call rax
 	mov r10, [gs:0x18]
 	mov rsp, [r10 + Context.guest_rsp]
+	pop r15
+	pop r14
+	pop r13
+	pop r12
+	pop rbx
+	pop rbp
 	ret
-align 64, int3
+
+times 0x100-($-$$) int3 ; EXTCALL_THUNK_ADDR
+; individual thunks to each of 64 call slots
+; should be in fixed locations for memory hygiene in the core, since they may be stored there for some time
+%macro guest_extcall_thunk 1
+	mov rax, %1
+	jmp guest_extcall_impl
+	align 16, int3
+%endmacro
+%assign j 0
+%rep 64
+	guest_extcall_thunk j
+	%assign j j+1
+%endrep
 
 ; called by individual extcall thunks when the guest wishes to make an external call
 ; (very similar to guest_syscall)
@@ -68,19 +95,3 @@ guest_extcall_impl:
 	mov r10, [gs:0x18]
 	mov rsp, [r10 + Context.guest_rsp]
 	ret
-align 64, int3
-
-; individual thunks to each of 64 call slots
-; should be in fixed locations for memory hygiene in the core, since they may be stored there for some time
-
-%macro guest_extcall_thunk 1
-	mov rax, %1
-	jmp guest_extcall_impl
-	align 16, int3
-%endmacro
-
-%assign j 0
-%rep 64
-	guest_extcall_thunk j
-	%assign j j+1
-%endrep

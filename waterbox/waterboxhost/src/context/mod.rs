@@ -10,14 +10,15 @@ pub mod thunks;
 const ORG: usize = 0x35f00000000;
 
 const CALL_GUEST_IMPL_ADDR: usize = ORG;
-const CALL_GUEST_SIMPLE_ADDR: usize = ORG + 64;
+const CALL_GUEST_SIMPLE_ADDR: usize = ORG + 0x40;
+const EXTCALL_THUNK_ADDR: usize = ORG + 0x100;
 
 pub const CALLBACK_SLOTS: usize = 64;
 /// Retrieves a function pointer suitable for sending to the guest that will cause
 /// the host to callback to `slot` when called.  Slot must be less than CALLBACK_SLOTS
 pub fn get_callback_ptr(slot: usize) -> usize{
 	assert!(slot < CALLBACK_SLOTS);
-	ORG + 0x100 + slot * 16
+	EXTCALL_THUNK_ADDR + slot * 16
 }
 
 fn init_interop_area() -> AddressRange {
@@ -63,9 +64,12 @@ pub type SyscallCallback = extern "sysv64" fn(
 /// Layout must be synced with interop.s
 #[repr(C)]
 pub struct Context {
+	/// thread pointer as set by guest libc (pthread_self, set_thread_area)
+	pub thread_area: usize,
 	/// Used internally to track the host's most recent rsp when transitioned to Waterbox code.
 	pub host_rsp: usize,
 	/// Sets the guest's starting rsp, and used internally to track the guest's most recent rsp when transitioned to extcall or syscall
+	/// can be changed by the host to return to a different guest thread
 	pub guest_rsp: usize,
 	/// syscall service function
 	pub dispatch_syscall: SyscallCallback,
@@ -78,6 +82,7 @@ impl Context {
 	/// Returns a suitably initialized context.  It's almost ready to use, but host_ptr must be set before each usage
 	pub fn new(initial_guest_rsp: usize, dispatch_syscall: SyscallCallback) -> Context {
 		Context {
+			thread_area: 0,
 			host_rsp: 0,
 			guest_rsp: initial_guest_rsp,
 			dispatch_syscall,
