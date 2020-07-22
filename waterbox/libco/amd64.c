@@ -20,12 +20,8 @@ typedef struct {
 	// used by coswap.s, has to be at the beginning of the struct
 	struct {
 		uint64_t rsp;
-		uint64_t rbp;
-		uint64_t rbx;
-		uint64_t r12;
-		uint64_t r13;
-		uint64_t r14;
-		uint64_t r15;
+		uint64_t rbp; // we have to save rbp because unless fomit-frame-pointer is set, the compiler regards it as "special" and won't allow clobbers
+		uint64_t rip;
 	} jmp_buf;
 	// points to the lowest address in the stack
 	// NB: because of guard space, this is not valid stack
@@ -104,8 +100,8 @@ cothread_t co_create(unsigned int sz, void (*entrypoint)(void))
 	{
 		uint64_t* p = (uint64_t*)((char*)co->stack + co->stack_size); // seek to top of stack
 		*--p = (uint64_t)crash; // crash if entrypoint returns
-		*--p = (uint64_t)entrypoint; // start of function
 		co->jmp_buf.rsp = (uint64_t)p; // stack pointer
+		co->jmp_buf.rip = (uint64_t)entrypoint; // start of function
 	}
 
 	return co;
@@ -116,40 +112,41 @@ void co_delete(cothread_t handle)
 	free_thread(handle);
 }
 
-// static uint64_t hoststart;
-// static uint64_t hostend;
-
 void co_switch(cothread_t handle)
 {
 	cothread_impl* co = handle;
+	cothread_impl* co_previous_handle = co_active_handle;
+	co_active_handle = co;
 
-	// uint64_t start;
-	// uint64_t end;
-	// if (co_active_handle == &co_host_buffer)
-	// {
-	// 	// migrating off of real thread; save stack params
-	// 	__asm__("movq %%gs:0x08, %0": "=r"(end));
-	// 	__asm__("movq %%gs:0x10, %0": "=r"(start));
-	// 	hoststart = start;
-	// 	hostend = end;
-	// }
-	// if (handle == &co_host_buffer)
-	// {
-	// 	// migrating onto real thread; load stack params
-	// 	start = hoststart;
-	// 	end = hostend;
-	// 	hoststart = 0;
-	// 	hostend = 0;
-	// }
-	// else
-	// {
-	// 	// migrating onto cothread; compute its extents we allocated them
-	// 	start = (uintptr_t)co->stack;
-	// 	end = start + co->stack_size;
-	// }
-	// __asm__("movq %0, %%gs:0x08":: "r"(end));
-	// __asm__("movq %0, %%gs:0x10":: "r"(start));
+	register uint64_t _rdi __asm__("rdi") = (uint64_t)co_previous_handle;
+	register uint64_t _rsi __asm__("rsi") = (uint64_t)co_active_handle;
 
-	register cothread_impl* co_previous_handle = co_active_handle;
-	co_swap(co_active_handle = co, co_previous_handle);
+	/*
+		mov [rdi + 0], rsp
+		mov [rdi + 8], rbp
+		lea rax, [rip + 17]
+		mov [rdi + 16], rax
+		mov rsp, [rsi + 0]
+		mov rbp, [rsi + 8]
+		mov rax, [rsi + 16]
+		jmp rax
+	*/
+	__asm__(
+		"mov %%rsp, 0(%%rdi)\n"
+		"mov %%rbp, 8(%%rdi)\n"
+		"lea 17(%%rip), %%rax\n"
+		"mov %%rax, 16(%%rdi)\n"
+		"mov 0(%%rsi), %%rsp\n"
+		"mov 8(%%rsi), %%rbp\n"
+		"mov 16(%%rsi), %%rax\n"
+		"jmp *%%rax\n"
+		::"r"(_rdi), "r"(_rsi)
+		:"rax", "rbx", "rcx", "rdx", /*"rbp",*/ /*"rsi", "rdi",*/ "r8", "r9", "r10", "r11", "r12", "r13", "r14", "r15",
+			"zmm0", "zmm1", "zmm2", "zmm3", "zmm4", "zmm5", "zmm6", "zmm7", "zmm8", "zmm9",
+			"zmm10", "zmm11", "zmm12", "zmm13", "zmm14", "zmm15",
+			/*"zmm16", "zmm17", "zmm18", "zmm19",
+			"zmm20", "zmm21", "zmm22", "zmm23", "zmm24", "zmm25", "zmm26", "zmm27", "zmm28", "zmm29",
+			"zmm30", "zmm31",*/
+			"memory"
+	);
 }
