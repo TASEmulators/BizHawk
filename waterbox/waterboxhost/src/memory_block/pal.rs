@@ -63,6 +63,7 @@ mod win {
 	/// Leaks if not later unmapped
 	/// addr.start can be 0, which means the OS chooses a location, or non-zero, which gives fixed address behavior
 	/// Returned address range will be identical in the case of non-zero, or give the actual address in the case of zero.
+	/// Returned address range will have no access permissions initially; use protect() to change that.
 	pub fn map_handle(handle: &Handle, addr: AddressRange) -> anyhow::Result<AddressRange> {
 		unsafe {
 			let res = MapViewOfFileEx(
@@ -76,7 +77,9 @@ mod win {
 			if res == null_mut() {
 				Err(error())
 			} else {
-				Ok(AddressRange { start: res as usize, size: addr.size })
+				let ret = AddressRange { start: res as usize, size: addr.size };
+				protect(ret, Protection::None).unwrap();
+				Ok(ret)
 			}
 		}
 	}
@@ -203,6 +206,7 @@ mod nix {
 	/// Leaks if not later unmapped
 	/// addr.start can be 0, which means the OS chooses a location, or non-zero, which gives fixed address behavior
 	/// Returned address range will be identical in the case of non-zero, or give the actual address in the case of zero.
+	/// Returned address range will have no access permissions initially; use protect() to change that.
 	pub fn map_handle(handle: &Handle, addr: AddressRange) -> anyhow::Result<AddressRange> {
 		unsafe {
 			let mut flags = MAP_SHARED;
@@ -211,7 +215,7 @@ mod nix {
 			}
 			let ptr = mmap(addr.start as *mut c_void,
 				addr.size,
-				PROT_READ | PROT_WRITE | PROT_EXEC,
+				PROT_NONE,
 				flags,
 				handle.0 as i32,
 				0

@@ -10,14 +10,15 @@ pub mod thunks;
 const ORG: usize = 0x35f00000000;
 
 const CALL_GUEST_IMPL_ADDR: usize = ORG;
-const CALL_GUEST_SIMPLE_ADDR: usize = ORG + 64;
+const CALL_GUEST_SIMPLE_ADDR: usize = ORG + 0x100;
+const EXTCALL_THUNK_ADDR: usize = ORG + 0x200;
 
 pub const CALLBACK_SLOTS: usize = 64;
 /// Retrieves a function pointer suitable for sending to the guest that will cause
 /// the host to callback to `slot` when called.  Slot must be less than CALLBACK_SLOTS
 pub fn get_callback_ptr(slot: usize) -> usize{
 	assert!(slot < CALLBACK_SLOTS);
-	ORG + 0x100 + slot * 16
+	EXTCALL_THUNK_ADDR + slot * 16
 }
 
 fn init_interop_area() -> AddressRange {

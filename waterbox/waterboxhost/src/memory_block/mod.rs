@@ -233,6 +233,8 @@ pub struct MemoryBlock {
 
 	debug_id: u32,
 	active_guard: Option<BlockGuard>,
+	/// Pretend this block is active.  Used internally by activate/deactivate for blocks that are about to gain / just lost the lock.
+	assume_active: bool,
 }
 
 type BlockGuard = MutexGuard<'static, Option<MemoryBlockRef>>;
@@ -277,6 +279,7 @@ impl MemoryBlock {
 
 			debug_id,
 			active_guard: None,
+			assume_active: false,
 		});
 		// res.trace("new");
 		res
@@ -290,7 +293,7 @@ impl MemoryBlock {
 	}
 
 	pub fn active(&self) -> bool {
-		match self.active_guard {
+		self.assume_active || match self.active_guard {
 			Some(_) => true,
 			None => false
 		}
@@ -360,11 +363,15 @@ impl MemoryBlock {
 		// self.trace("swapin");
 		pal::map_handle(&self.handle, self.addr).unwrap();
 		tripguard::register(self);
+		self.assume_active = true;
 		self.refresh_all_protections();
+		self.assume_active = false;
 	}
 	unsafe fn swapout(&mut self) {
 		// self.trace("swapout");
+		self.assume_active = true;
 		self.get_stack_dirty();
+		self.assume_active = false;
 		pal::unmap_handle(self.addr).unwrap();
 		tripguard::unregister(self);
 	}
@@ -763,6 +770,7 @@ impl MemoryBlock {
 		if self.sealed {
 			return Err(anyhow!("Already sealed!"))
 		}
+		self.get_stack_dirty();
 
 		for p in self.pages.iter_mut() {
 			if p.dirty && !p.invisible {

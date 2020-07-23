@@ -2,6 +2,7 @@
 
 #![feature(try_trait)]
 #![feature(core_intrinsics)]
+#![feature(asm)]
 
 #![allow(dead_code)]
 
