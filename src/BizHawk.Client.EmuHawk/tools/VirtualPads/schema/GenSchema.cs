@@ -101,7 +101,7 @@ namespace BizHawk.Client.EmuHawk
 				new ButtonSchema(98, 40, controller, "A"),
 				new ButtonSchema(122, 40, controller, "B"),
 				new ButtonSchema(146, 40, controller, "C"),
-				new ButtonSchema(122, 12, controller, "Start") { DisplayName = "S" }
+				new ButtonSchema(122, 12, controller, "Start", "S")
 			};
 		}
 
@@ -117,14 +117,8 @@ namespace BizHawk.Client.EmuHawk
 					{
 						TargetSize = new Size(320, 240)
 					},
-					new ButtonSchema(284, 17, controller, "Lightgun Trigger")
-					{
-						DisplayName = "Trigger"
-					},
-					new ButtonSchema(284, 40, controller, "Lightgun Start")
-					{
-						DisplayName = "Start"
-					}
+					new ButtonSchema(284, 17, controller, "Lightgun Trigger", "Trigger"),
+					new ButtonSchema(284, 40, controller, "Lightgun Start", "Start")
 				}
 			};
 		}
@@ -142,22 +136,10 @@ namespace BizHawk.Client.EmuHawk
 //						MaxValue = 255,
 //						TargetSize = new Size(520, 570)
 					},
-					new ButtonSchema(365, 17, controller, "Mouse Left")
-					{
-						DisplayName = "Left"
-					},
-					new ButtonSchema(365, 40, controller, "Mouse Center")
-					{
-						DisplayName = "Center"
-					},
-					new ButtonSchema(365, 63, "Mouse Right")
-					{
-						DisplayName = "Right"
-					},
-					new ButtonSchema(365, 86, "Mouse Start")
-					{
-						DisplayName = "Start"
-					}
+					new ButtonSchema(365, 17, controller, "Mouse Left", "Left"),
+					new ButtonSchema(365, 40, controller, "Mouse Center", "Center"),
+					new ButtonSchema(365, 63, controller, "Mouse Right", "Right"),
+					new ButtonSchema(365, 86, controller, "Mouse Start", "Start")
 				}
 			};
 		}
@@ -207,8 +189,8 @@ namespace BizHawk.Client.EmuHawk
 					new ButtonSchema(122, 40, controller, "B"),
 					new ButtonSchema(146, 40, controller, "C"),
 					new ButtonSchema(98, 65, controller, "D"),
-					new ButtonSchema(122, 65, controller, "E1") { DisplayName = "E¹" },
-					new ButtonSchema(152, 65, controller, "E2") { DisplayName = "E²" },
+					new ButtonSchema(122, 65, controller, "E1", "E¹"),
+					new ButtonSchema(152, 65, controller, "E2", "E²"),
 					new ButtonSchema(122, 12, controller, "Start"),
 					new ButtonSchema(162, 12, controller, "Select")
 				}

@@ -69,7 +69,7 @@ namespace BizHawk.Client.EmuHawk
 					ButtonSchema.Down(34, 61, controller),
 					ButtonSchema.Left(22, 39, controller),
 					ButtonSchema.Right(44, 39, controller),
-					new ButtonSchema(78, 52, controller, "Start") { DisplayName = "S" },
+					new ButtonSchema(78, 52, controller, "Start", "S"),
 					new ButtonSchema(110, 63, controller, "A"),
 					new ButtonSchema(134, 53, controller, "B"),
 					new ButtonSchema(158, 43, controller, "C"),
@@ -93,7 +93,7 @@ namespace BizHawk.Client.EmuHawk
 					ButtonSchema.Down(290, 121, $"P{controller} D-Pad Down"),
 					ButtonSchema.Left(278, 99, $"P{controller} D-Pad Left"),
 					ButtonSchema.Right(300, 99, $"P{controller} D-Pad Right"),
-					new ButtonSchema(334, 112, controller, "Start") { DisplayName = "S" },
+					new ButtonSchema(334, 112, controller, "Start", "S"),
 					new ButtonSchema(366, 123, controller, "A"),
 					new ButtonSchema(390, 113, controller, "B"),
 					new ButtonSchema(414, 103, controller, "C"),
@@ -137,18 +137,9 @@ namespace BizHawk.Client.EmuHawk
 						SecondaryName = $"P{controller} Motion Up / Down",
 						TargetSize = new Size(256, 256)
 					},
-					new ButtonSchema(300, 17, controller, "Left Button")
-					{
-						DisplayName = "Left"
-					},
-					new ButtonSchema(300, 47, controller, "Middle Button")
-					{
-						DisplayName = "Middle"
-					},
-					new ButtonSchema(300, 77, controller, "Right Button")
-					{
-						DisplayName = "Right"
-					},
+					new ButtonSchema(300, 17, controller, "Left Button", "Left"),
+					new ButtonSchema(300, 47, controller, "Middle Button", "Middle"),
+					new ButtonSchema(300, 77, controller, "Right Button", "Right"),
 					new ButtonSchema(300, 107, controller, "Start")
 				}
 			};
@@ -280,10 +271,7 @@ namespace BizHawk.Client.EmuHawk
 					},
 					new ButtonSchema(300, 17, controller, "Trigger"),
 					new ButtonSchema(300, 57, controller, "Start"),
-					new ButtonSchema(300, 290, controller, "Offscreen Shot")
-					{
-						DisplayName = "Offscreen"
-					}
+					new ButtonSchema(300, 290, controller, "Offscreen Shot", "Offscreen")
 				}
 			};
 		}

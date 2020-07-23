@@ -32,7 +32,7 @@ namespace BizHawk.Client.EmuHawk
 					new ButtonSchema(9, 114, controller, "X4"),
 					new ButtonSchema(38, 114, controller, "X2"),
 					new ButtonSchema(23, 136, controller, "X3"),
-					new ButtonSchema(80, 114, controller, "Start") { DisplayName = "S" },
+					new ButtonSchema(80, 114, controller, "Start", "S"),
 					new ButtonSchema(110, 114, controller, "B"),
 					new ButtonSchema(133, 103, controller, "A")
 				}
@@ -49,7 +49,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					new ButtonSchema(23, 12, controller, "A"),
 					new ButtonSchema(46, 22, controller, "B"),
-					new ButtonSchema(32, 58, controller, "Start") { DisplayName = "S" },
+					new ButtonSchema(32, 58, controller, "Start", "S"),
 					new ButtonSchema(23, 112, controller, "Y2"),
 					new ButtonSchema(9, 134, controller, "Y1"),
 					new ButtonSchema(38, 134, controller, "Y3"),

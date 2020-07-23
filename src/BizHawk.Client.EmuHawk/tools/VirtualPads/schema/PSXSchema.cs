@@ -79,14 +79,8 @@ namespace BizHawk.Client.EmuHawk
 					{
 						Icon = Properties.Resources.Cross
 					},
-					new ButtonSchema(112, 62, controller, "Start")
-					{
-						DisplayName = "S"
-					},
-					new ButtonSchema(90, 62, controller, "Select")
-					{
-						DisplayName = "s"
-					},
+					new ButtonSchema(112, 62, controller, "Start", "S"),
+					new ButtonSchema(90, 62, controller, "Select", "s"),
 					new AnalogSchema(3, 120, $"P{controller} LStick X")
 					{
 						Spec = stickRanges[0],
@@ -133,14 +127,8 @@ namespace BizHawk.Client.EmuHawk
 					{
 						Icon = Properties.Resources.Cross
 					},
-					new ButtonSchema(112, 67, controller, "Start")
-					{
-						DisplayName = "S"
-					},
-					new ButtonSchema(90, 67, controller, "Select")
-					{
-						DisplayName = "s"
-					}
+					new ButtonSchema(112, 67, controller, "Start", "S"),
+					new ButtonSchema(90, 67, controller, "Select", "s")
 				}
 			};
 		}
@@ -157,7 +145,7 @@ namespace BizHawk.Client.EmuHawk
 					ButtonSchema.Down(36, 104, controller),
 					ButtonSchema.Left(15, 95, controller),
 					ButtonSchema.Right(57, 95, controller),
-					new ButtonSchema(78, 118, controller, "Start") { DisplayName = "S" },
+					new ButtonSchema(78, 118, controller, "Start", "S"),
 					new ButtonSchema(278, 38, controller, "B"),
 					new ButtonSchema(308, 55, controller, "A"),
 					new ButtonSchema(308, 15, controller, "R"),

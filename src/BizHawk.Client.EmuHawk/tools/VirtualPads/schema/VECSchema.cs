@@ -81,10 +81,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static ButtonSchema Button(int x, int y, int controller, int button)
 		{
-			return new ButtonSchema(x, y, controller, $"Button {button}")
-			{
-				DisplayName = button.ToString()
-			};
+			return new ButtonSchema(x, y, controller, $"Button {button}", button.ToString());
 		}
 
 		private static PadSchema ConsoleButtons()

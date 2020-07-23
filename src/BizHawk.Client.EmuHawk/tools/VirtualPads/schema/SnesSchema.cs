@@ -147,8 +147,8 @@ namespace BizHawk.Client.EmuHawk
 					ButtonSchema.Right(44, 39, controller),
 					new ButtonSchema(2, 10, controller, "L"),
 					new ButtonSchema(174, 10, controller, "R"),
-					new ButtonSchema(70, 39, controller, "Select") { DisplayName = "s" },
-					new ButtonSchema(92, 39, controller, "Start") { DisplayName = "S" },
+					new ButtonSchema(70, 39, controller, "Select", "s"),
+					new ButtonSchema(92, 39, controller, "Start", "S"),
 					new ButtonSchema(121, 39, controller, "Y"),
 					new ButtonSchema(145, 52, controller, "B"),
 					new ButtonSchema(122, 15, controller, "X"),
@@ -170,14 +170,8 @@ namespace BizHawk.Client.EmuHawk
 						Spec = defAxes.SpecAtIndex(0),
 						SecondarySpec = defAxes.SpecAtIndex(1)
 					},
-					new ButtonSchema(275, 15, controller, "Mouse Left")
-					{
-						DisplayName = "Left"
-					},
-					new ButtonSchema(275, 45, controller, "Mouse Right")
-					{
-						DisplayName = "Right"
-					}
+					new ButtonSchema(275, 15, controller, "Mouse Left", "Left"),
+					new ButtonSchema(275, 45, controller, "Mouse Right", "Right")
 				}
 			};
 		}

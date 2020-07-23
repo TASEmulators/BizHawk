@@ -40,11 +40,11 @@ namespace BizHawk.Client.EmuHawk
 			yield return ButtonSchema.Down(14, 56, controller);
 			yield return ButtonSchema.Left(2, 34, controller);
 			yield return ButtonSchema.Right(24, 34, controller);
-			yield return new ButtonSchema(122, 34, controller, "B1") { DisplayName = "1" };
-			yield return new ButtonSchema(146, 34, controller, "B2") { DisplayName = "2" };
+			yield return new ButtonSchema(122, 34, controller, "B1", "1");
+			yield return new ButtonSchema(146, 34, controller, "B2", "2");
 			if (!isSms)
 			{
-				yield return new ButtonSchema(134, 12, controller, "Start") { DisplayName = "S" };
+				yield return new ButtonSchema(134, 12, controller, "Start", "S");
 			}
 		}
 

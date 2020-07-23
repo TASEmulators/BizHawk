@@ -99,13 +99,13 @@ namespace BizHawk.Client.EmuHawk
 				Key(25, 67, controller, 7),
 				Key(51, 67, controller, 8),
 				Key(77, 67, controller, 9),
-				new ButtonSchema(25, 93, controller, "Clear") { DisplayName = "C" },
+				new ButtonSchema(25, 93, controller, "Clear", "C"),
 				Key(51, 93, controller, 0),
-				new ButtonSchema(77, 93, controller, "Enter") { DisplayName = "E" },
-				new ButtonSchema(2, 41, controller, "Top") { DisplayName = "T" },
-				new ButtonSchema(100, 41, controller, "Top") { DisplayName = "T" },
-				new ButtonSchema(2, 67, controller, "L") { DisplayName = "L" },
-				new ButtonSchema(100, 67, controller, "R") { DisplayName = "R" }
+				new ButtonSchema(77, 93, controller, "Enter", "E"),
+				new ButtonSchema(2, 41, controller, "Top", "T"),
+				new ButtonSchema(100, 41, controller, "Top", "T"),
+				new ButtonSchema(2, 67, controller, "L"),
+				new ButtonSchema(100, 67, controller, "R")
 			};
 		}
 
