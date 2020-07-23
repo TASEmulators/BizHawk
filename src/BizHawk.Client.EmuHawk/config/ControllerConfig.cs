@@ -19,34 +19,34 @@ namespace BizHawk.Client.EmuHawk
 
 		static ControllerConfig()
 		{
-			ControllerImages.Add("NES Controller", Properties.Resources.NES_Controller);
-			ControllerImages.Add("SNES Controller", Properties.Resources.SNES_Controller);
+			ControllerImages.Add("NES Controller", Properties.Resources.NesController);
+			ControllerImages.Add("SNES Controller", Properties.Resources.SnesController);
 			ControllerImages.Add("Nintendo 64 Controller", Properties.Resources.N64);
-			ControllerImages.Add("Gameboy Controller", Properties.Resources.GBController);
-			ControllerImages.Add("Gameboy Controller H", Properties.Resources.GBController);
-			ControllerImages.Add("Gameboy Controller + Tilt", Properties.Resources.GBController);
-			ControllerImages.Add("GBA Controller", Properties.Resources.GBA_Controller);
-			ControllerImages.Add("Dual Gameboy Controller", Properties.Resources.GBController);
+			ControllerImages.Add("Gameboy Controller", Properties.Resources.GbController);
+			ControllerImages.Add("Gameboy Controller H", Properties.Resources.GbController);
+			ControllerImages.Add("Gameboy Controller + Tilt", Properties.Resources.GbController);
+			ControllerImages.Add("GBA Controller", Properties.Resources.GbaController);
+			ControllerImages.Add("Dual Gameboy Controller", Properties.Resources.GbController);
 
-			ControllerImages.Add("SMS Controller", Properties.Resources.SMSController);
-			ControllerImages.Add("GPGX Genesis Controller", Properties.Resources.GENController);
+			ControllerImages.Add("SMS Controller", Properties.Resources.SmsController);
+			ControllerImages.Add("GPGX Genesis Controller", Properties.Resources.GenesisController);
 			ControllerImages.Add("Saturn Controller", Properties.Resources.SaturnController);
 
 			ControllerImages.Add("Intellivision Controller", Properties.Resources.IntVController);
-			ControllerImages.Add("ColecoVision Basic Controller", Properties.Resources.colecovisioncontroller);
+			ControllerImages.Add("ColecoVision Basic Controller", Properties.Resources.ColecoVisionController);
 			ControllerImages.Add("Atari 2600 Basic Controller", Properties.Resources.atari_controller);
 			ControllerImages.Add("Atari 7800 ProLine Joystick Controller", Properties.Resources.A78Joystick);
 
-			ControllerImages.Add("PC Engine Controller", Properties.Resources.PCEngineController);
+			ControllerImages.Add("PC Engine Controller", Properties.Resources.PceController);
 			ControllerImages.Add("Commodore 64 Controller", Properties.Resources.C64Joystick);
-			ControllerImages.Add("TI83 Controller", Properties.Resources.TI83_Controller);
+			ControllerImages.Add("TI83 Controller", Properties.Resources.TI83Controller);
 
 			ControllerImages.Add("WonderSwan Controller", Properties.Resources.WonderSwanColor);
 			ControllerImages.Add("Lynx Controller", Properties.Resources.Lynx);
-			ControllerImages.Add("PSX Front Panel", Properties.Resources.psx_dualshock);
+			ControllerImages.Add("PSX Front Panel", Properties.Resources.PsxDualShockController);
 			ControllerImages.Add("Apple IIe Keyboard", Properties.Resources.AppleIIKeyboard);
 			ControllerImages.Add("VirtualBoy Controller", Properties.Resources.VBoyController);
-			ControllerImages.Add("NeoGeo Portable Controller", Properties.Resources.NGPController);
+			ControllerImages.Add("NeoGeo Portable Controller", Properties.Resources.NgpController);
 			ControllerImages.Add("MAME Controller", Properties.Resources.ArcadeController);
 			ControllerImages.Add("NDS Controller", Properties.Resources.DSController);
 		}

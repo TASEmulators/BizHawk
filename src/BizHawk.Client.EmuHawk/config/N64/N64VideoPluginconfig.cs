@@ -64,7 +64,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			InitializeComponent();
-			Icon = Properties.Resources.monitor_MultiSize;
+			Icon = Properties.Resources.MonitorIcon;
 		}
 
 		private void CancelBtn_Click(object sender, EventArgs e)

@@ -82,13 +82,13 @@ namespace BizHawk.Client.EmuHawk
 		public BasicBot()
 		{
 			InitializeComponent();
-			Icon = Resources.basicbot;
+			Icon = Resources.BasicBot;
 			NewMenuItem.Image = Resources.NewFile;
 			OpenMenuItem.Image = Resources.OpenFile;
 			SaveMenuItem.Image = Resources.SaveAs;
 			RecentSubMenu.Image = Resources.Recent;
 			RunBtn.Image = Resources.Play;
-			BotStatusButton.Image = Resources.placeholder_bitmap;
+			BotStatusButton.Image = Resources.Placeholder;
 			btnCopyBestInput.Image = Resources.Duplicate;
 			PlayBestButton.Image = Resources.Play;
 			ClearBestButton.Image = Resources.Close;
@@ -1000,7 +1000,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (_isBotting)
 			{
-				BotStatusButton.Image = Properties.Resources.RecordHS;
+				BotStatusButton.Image = Properties.Resources.Record;
 				BotStatusButton.ToolTipText = "Botting in progress";
 			}
 			else

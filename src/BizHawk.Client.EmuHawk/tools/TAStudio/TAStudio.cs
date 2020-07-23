@@ -111,7 +111,7 @@ namespace BizHawk.Client.EmuHawk
 			recentMacrosToolStripMenuItem.Image = Resources.Recent;
 			TASEditorManualOnlineMenuItem.Image = Resources.Help;
 			ForumThreadMenuItem.Image = Resources.TAStudio;
-			Icon = Resources.TAStudio_MultiSize;
+			Icon = Resources.TAStudioIcon;
 
 			InitializeSeekWorker();
 

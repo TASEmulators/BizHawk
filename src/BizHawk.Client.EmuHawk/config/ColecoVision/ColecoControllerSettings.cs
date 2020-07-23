@@ -17,7 +17,7 @@ namespace BizHawk.Client.EmuHawk
 			_mainForm = mainForm;
 			_syncSettings = settings;
 			InitializeComponent();
-			Icon = Properties.Resources.GameController_MultiSize;
+			Icon = Properties.Resources.GameControllerIcon;
 		}
 
 		private void ColecoControllerSettings_Load(object sender, EventArgs e)

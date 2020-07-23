@@ -122,20 +122,20 @@ namespace BizHawk.Client.EmuHawk
 			_fontHeight = fontSize1.Height;
 
 			InitializeComponent();
-			Icon = Resources.poke_MultiSize;
+			Icon = Resources.PokeIcon;
 			SaveMenuItem.Image = Resources.SaveAs;
 			CopyMenuItem.Image = Resources.Duplicate;
 			PasteMenuItem.Image = Resources.Paste;
-			AddToRamWatchMenuItem.Image = Resources.FindHS;
+			AddToRamWatchMenuItem.Image = Resources.Find;
 			FreezeAddressMenuItem.Image = Resources.Freeze;
 			UnfreezeAllMenuItem.Image = Resources.Unfreeze;
-			PokeAddressMenuItem.Image = Resources.poke;
+			PokeAddressMenuItem.Image = Resources.Poke;
 			CopyContextItem.Image = Resources.Duplicate;
 			PasteContextItem.Image = Resources.Paste;
 			FreezeContextItem.Image = Resources.Freeze;
-			AddToRamWatchContextItem.Image = Resources.FindHS;
+			AddToRamWatchContextItem.Image = Resources.Find;
 			UnfreezeAllContextItem.Image = Resources.Unfreeze;
-			PokeContextItem.Image = Resources.poke;
+			PokeContextItem.Image = Resources.Poke;
 
 			AddressesLabel.BackColor = Color.Transparent;
 			SetHeader();

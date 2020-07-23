@@ -62,7 +62,7 @@ namespace BizHawk.Client.EmuHawk
 		public TraceLogger()
 		{
 			InitializeComponent();
-			Icon = Properties.Resources.pencil_MultiSize;
+			Icon = Properties.Resources.PencilIcon;
 			SaveLogMenuItem.Image = Properties.Resources.SaveAs;
 
 			TraceView.QueryItemText += TraceView_QueryItemText;

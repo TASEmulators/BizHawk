@@ -76,7 +76,7 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 			ToggleScriptContextItem.Image = Resources.Refresh1;
 			PauseScriptContextItem.Image = Resources.Pause;
-			EditScriptContextItem.Image = Resources.CutHS;
+			EditScriptContextItem.Image = Resources.Cut;
 			RemoveScriptContextItem.Image = Resources.Close;
 			InsertSeperatorContextItem.Image = Resources.InsertSeparator;
 			StopAllScriptsContextItem.Image = Resources.Stop;
@@ -87,9 +87,9 @@ namespace BizHawk.Client.EmuHawk
 			NewScriptMenuItem.Image = Resources.NewFile;
 			OpenScriptMenuItem.Image = Resources.OpenFile;
 			RefreshScriptMenuItem.Image = Resources.Refresh1;
-			ToggleScriptMenuItem.Image = Resources.checkbox;
+			ToggleScriptMenuItem.Image = Resources.Checkbox;
 			PauseScriptMenuItem.Image = Resources.Pause;
-			EditScriptMenuItem.Image = Resources.CutHS;
+			EditScriptMenuItem.Image = Resources.Cut;
 			RemoveScriptMenuItem.Image = Resources.Delete;
 			InsertSeparatorMenuItem.Image = Resources.InsertSeparator;
 			MoveUpMenuItem.Image = Resources.MoveUp;
@@ -99,10 +99,10 @@ namespace BizHawk.Client.EmuHawk
 			ClearRegisteredFunctionsLogContextItem.Image = Resources.Delete;
 			NewScriptToolbarItem.Image = Resources.NewFile;
 			OpenScriptToolbarItem.Image = Resources.OpenFile;
-			ToggleScriptToolbarItem.Image = Resources.checkbox;
+			ToggleScriptToolbarItem.Image = Resources.Checkbox;
 			RefreshScriptToolbarItem.Image = Resources.Refresh1;
 			PauseToolbarItem.Image = Resources.Pause;
-			EditToolbarItem.Image = Resources.CutHS;
+			EditToolbarItem.Image = Resources.Cut;
 			RemoveScriptToolbarItem.Image = Resources.Delete;
 			DuplicateToolbarButton.Image = Resources.Duplicate;
 			MoveUpToolbarItem.Image = Resources.MoveUp;
@@ -110,7 +110,7 @@ namespace BizHawk.Client.EmuHawk
 			InsertSeparatorToolbarItem.Image = Resources.InsertSeparator;
 			EraseToolbarItem.Image = Resources.Erase;
 			RecentScriptsSubMenu.Image = Resources.Recent;
-			Icon = Resources.textdoc_MultiSize;
+			Icon = Resources.TextDocIcon;
 
 			Closing += (o, e) =>
 			{

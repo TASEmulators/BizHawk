@@ -17,7 +17,7 @@ namespace BizHawk.Client.EmuHawk
 			_mainForm = mainForm;
 			_settings = settings;
 			InitializeComponent();
-			Icon = Properties.Resources.calculator_MultiSize;
+			Icon = Properties.Resources.CalculateIcon;
 		}
 
 		private void TI83PaletteConfig_Load(object sender, EventArgs e)

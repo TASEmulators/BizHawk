@@ -15,11 +15,11 @@ namespace BizHawk.Client.EmuHawk
 		public TI83KeyPad()
 		{
 			InitializeComponent();
-			Icon = Resources.calculator_MultiSize;
-			LeftButton.Image = Resources.whiteTriLeft;
-			RightButton.Image = Resources.whiteTriRight;
-			DownButton.Image = Resources.whiteTriDown;
-			UpButton.Image = Resources.whiteTriUp;
+			Icon = Resources.CalculateIcon;
+			LeftButton.Image = Resources.WhiteTriLeft;
+			RightButton.Image = Resources.WhiteTriRight;
+			DownButton.Image = Resources.WhiteTriDown;
+			UpButton.Image = Resources.WhiteTriUp;
 		}
 
 		[ConfigPersist]

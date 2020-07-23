@@ -42,10 +42,10 @@ namespace BizHawk.Client.EmuHawk
 			_emulator = emulator;
 			_movieSession = movieSession;
 			InitializeComponent();
-			Icon = Properties.Resources.TAStudio_MultiSize;
+			Icon = Properties.Resources.TAStudioIcon;
 			BrowseMovies.Image = Properties.Resources.OpenFile;
 			Scan.Image = Properties.Resources.Scan;
-			editToolStripMenuItem.Image = Properties.Resources.CutHS;
+			editToolStripMenuItem.Image = Properties.Resources.Cut;
 			MovieView.RetrieveVirtualItem += MovieView_QueryItemText;
 			MovieView.VirtualMode = true;
 			_sortReverse = false;

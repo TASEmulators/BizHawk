@@ -46,19 +46,19 @@ namespace BizHawk.Client.EmuHawk
 		public BookmarksBranchesBox()
 		{
 			InitializeComponent();
-			UndoBranchButton.Image = Resources.undo;
+			UndoBranchButton.Image = Resources.Undo;
 			JumpToBranchButton.Image = Resources.JumpTo;
-			UpdateBranchButton.Image = Resources.reboot;
+			UpdateBranchButton.Image = Resources.Reboot;
 			AddWithTextBranchButton.Image = Resources.AddEdit;
-			AddBranchButton.Image = Resources.add;
+			AddBranchButton.Image = Resources.Add;
 			LoadBranchButton.Image = Resources.Debugger;
-			AddBranchContextMenu.Image = Resources.add;
+			AddBranchContextMenu.Image = Resources.Add;
 			AddBranchWithTextContextMenuItem.Image = Resources.AddEdit;
 			LoadBranchContextMenuItem.Image = Resources.Debugger;
-			UpdateBranchContextMenuItem.Image = Resources.reboot;
-			EditBranchTextContextMenuItem.Image = Resources.pencil;
+			UpdateBranchContextMenuItem.Image = Resources.Reboot;
+			EditBranchTextContextMenuItem.Image = Resources.Pencil;
 			JumpToBranchContextMenuItem.Image = Resources.JumpTo;
-			UndoBranchToolStripMenuItem.Image = Resources.undo;
+			UndoBranchToolStripMenuItem.Image = Resources.Undo;
 			RemoveBranchContextMenuItem.Image = Resources.Delete;
 			SetupColumns();
 			BranchView.QueryItemText += QueryItemText;

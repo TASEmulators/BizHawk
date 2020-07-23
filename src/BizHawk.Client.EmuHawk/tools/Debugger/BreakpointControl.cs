@@ -23,11 +23,11 @@ namespace BizHawk.Client.EmuHawk
 		public BreakpointControl()
 		{
 			InitializeComponent();
-			AddBreakpointButton.Image = Resources.add;
+			AddBreakpointButton.Image = Resources.Add;
 			ToggleButton.Image = Resources.Refresh;
 			RemoveBreakpointButton.Image = Resources.Delete;
 			DuplicateBreakpointButton.Image = Resources.Duplicate;
-			EditBreakpointButton.BackgroundImage = Resources.pencil;
+			EditBreakpointButton.BackgroundImage = Resources.Pencil;
 			BreakpointView.RetrieveVirtualItem += BreakPointView_QueryItemText;
 			BreakpointView.VirtualMode = true;
 			_breakpoints.Callback = BreakpointCallback;

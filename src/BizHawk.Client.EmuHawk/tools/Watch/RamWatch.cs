@@ -36,11 +36,11 @@ namespace BizHawk.Client.EmuHawk
 		public RamWatch()
 		{
 			InitializeComponent();
-			newToolStripMenuItem.Image = Resources.addWatch;
-			EditContextMenuItem.Image = Resources.CutHS;
+			newToolStripMenuItem.Image = Resources.AddWatch;
+			EditContextMenuItem.Image = Resources.Cut;
 			RemoveContextMenuItem.Image = Resources.Delete;
 			DuplicateContextMenuItem.Image = Resources.Duplicate;
-			PokeContextMenuItem.Image = Resources.poke;
+			PokeContextMenuItem.Image = Resources.Poke;
 			FreezeContextMenuItem.Image = Resources.Freeze;
 			UnfreezeAllContextMenuItem.Image = Resources.Unfreeze;
 			InsertSeperatorContextMenuItem.Image = Resources.InsertSeparator;
@@ -52,12 +52,12 @@ namespace BizHawk.Client.EmuHawk
 			newToolStripButton.Image = Resources.NewFile;
 			openToolStripButton.Image = Resources.OpenFile;
 			saveToolStripButton.Image = Resources.SaveAs;
-			newWatchToolStripButton.Image = Resources.addWatch;
-			editWatchToolStripButton.Image = Resources.CutHS;
+			newWatchToolStripButton.Image = Resources.AddWatch;
+			editWatchToolStripButton.Image = Resources.Cut;
 			cutToolStripButton.Image = Resources.Delete;
-			clearChangeCountsToolStripButton.Image = Resources.placeholder_bitmap;
+			clearChangeCountsToolStripButton.Image = Resources.Placeholder;
 			duplicateWatchToolStripButton.Image = Resources.Duplicate;
-			PokeAddressToolBarItem.Image = Resources.poke;
+			PokeAddressToolBarItem.Image = Resources.Poke;
 			FreezeAddressToolBarItem.Image = Resources.Freeze;
 			seperatorToolStripButton.Image = Resources.InsertSeparator;
 			moveUpToolStripButton.Image = Resources.MoveUp;
@@ -66,18 +66,18 @@ namespace BizHawk.Client.EmuHawk
 			OpenMenuItem.Image = Resources.OpenFile;
 			SaveMenuItem.Image = Resources.SaveAs;
 			RecentSubMenu.Image = Resources.Recent;
-			NewWatchMenuItem.Image = Resources.FindHS;
-			EditWatchMenuItem.Image = Resources.CutHS;
+			NewWatchMenuItem.Image = Resources.Find;
+			EditWatchMenuItem.Image = Resources.Cut;
 			RemoveWatchMenuItem.Image = Resources.Delete;
 			DuplicateWatchMenuItem.Image = Resources.Duplicate;
-			PokeAddressMenuItem.Image = Resources.poke;
+			PokeAddressMenuItem.Image = Resources.Poke;
 			FreezeAddressMenuItem.Image = Resources.Freeze;
 			InsertSeparatorMenuItem.Image = Resources.InsertSeparator;
 			MoveUpMenuItem.Image = Resources.MoveUp;
 			MoveDownMenuItem.Image = Resources.MoveDown;
 			MoveTopMenuItem.Image = Resources.MoveTop;
 			MoveBottomMenuItem.Image = Resources.MoveBottom;
-			Icon = Resources.watch_MultiSize;
+			Icon = Resources.WatchIcon;
 
 			Settings = new RamWatchSettings();
 

@@ -20,7 +20,7 @@ namespace BizHawk.Client.EmuHawk
 		public SmsVdpViewer()
 		{
 			InitializeComponent();
-			Icon = Properties.Resources.sms_MultiSize;
+			Icon = Properties.Resources.SmsIcon;
 
 			bmpViewTiles.ChangeBitmapSize(256, 128);
 			bmpViewPalette.ChangeBitmapSize(16, 2);

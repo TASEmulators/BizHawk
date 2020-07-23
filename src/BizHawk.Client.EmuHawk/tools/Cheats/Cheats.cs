@@ -34,7 +34,7 @@ namespace BizHawk.Client.EmuHawk
 		public Cheats()
 		{
 			InitializeComponent();
-			Icon = Resources.Freeze_MultiSize;
+			Icon = Resources.FreezeIcon;
 			ToggleContextMenuItem.Image = Resources.Refresh1;
 			RemoveContextMenuItem.Image = Resources.Delete;
 			DisableAllContextMenuItem.Image = Resources.Stop;
@@ -55,7 +55,7 @@ namespace BizHawk.Client.EmuHawk
 			SeparatorToolbarItem.Image = Resources.InsertSeparator;
 			MoveUpToolbarItem.Image = Resources.MoveUp;
 			MoveDownToolbarItem.Image = Resources.MoveDown;
-			LoadGameGenieToolbarItem.Image = Resources.placeholder_bitmap;
+			LoadGameGenieToolbarItem.Image = Resources.Placeholder;
 			Settings = new CheatsSettings();
 
 			Closing += (o, e) =>

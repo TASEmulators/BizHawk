@@ -47,7 +47,7 @@ namespace BizHawk.Client.EmuHawk
 		public NesPPU()
 		{
 			InitializeComponent();
-			Icon = Properties.Resources.NESControllerIcon_MultiSize;
+			Icon = Properties.Resources.NesControllerIcon;
 			CalculateFormSize();
 		}
 

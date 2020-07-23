@@ -13,8 +13,8 @@ namespace BizHawk.Client.EmuHawk
 		public BizBox()
 		{
 			InitializeComponent();
-			Icon = Resources.logo;
-			pictureBox1.Image = Resources.corphawk;
+			Icon = Resources.Logo;
+			pictureBox1.Image = Resources.CorpHawk;
 			btnCopyHash.Image = Resources.Duplicate;
 		}
 

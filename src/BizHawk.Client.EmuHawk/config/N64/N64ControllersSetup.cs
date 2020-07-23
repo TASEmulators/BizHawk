@@ -24,7 +24,7 @@ namespace BizHawk.Client.EmuHawk
 			_mainForm = mainForm;
 			_syncSettings = syncSettings;
 			InitializeComponent();
-			Icon = Properties.Resources.GameController_MultiSize;
+			Icon = Properties.Resources.GameControllerIcon;
 		}
 
 		private void N64ControllersSetup_Load(object sender, EventArgs e)

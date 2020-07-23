@@ -19,7 +19,7 @@ namespace BizHawk.Client.EmuHawk
 			_autoFireController = autoFireController;
 			_stickyXorAdapter = stickyXorAdapter;
 			InitializeComponent();
-			Icon = Properties.Resources.Lightning_MultiSize;
+			Icon = Properties.Resources.LightningIcon;
 		}
 
 		private void AutofireConfig_Load(object sender, EventArgs e)

@@ -65,10 +65,10 @@ namespace BizHawk.Client.EmuHawk
 			OpenMenuItem.Image = Resources.OpenFile;
 			SaveMenuItem.Image = Resources.SaveAs;
 			RecentSubMenu.Image = Resources.Recent;
-			tsbLoggingActive.Image = Resources.placeholder_bitmap;
-			tsbViewUpdate.Image = Resources.placeholder_bitmap;
+			tsbLoggingActive.Image = Resources.Placeholder;
+			tsbViewUpdate.Image = Resources.Placeholder;
 			tsbExportText.Image = Resources.LoadConfig;
-			Icon = Resources.cdlogger_MultiSize;
+			Icon = Resources.CdLoggerIcon;
 
 			tsbViewStyle.SelectedIndex = 0;
 

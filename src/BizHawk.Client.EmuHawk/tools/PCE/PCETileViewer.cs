@@ -22,7 +22,7 @@ namespace BizHawk.Client.EmuHawk
 		public PceTileViewer()
 		{
 			InitializeComponent();
-			Icon = Properties.Resources.pce_MultiSize;
+			Icon = Properties.Resources.PceIcon;
 			bmpViewBG.ChangeBitmapSize(512, 256);
 			bmpViewSP.ChangeBitmapSize(512, 256);
 			bmpViewBGPal.ChangeBitmapSize(256, 256);

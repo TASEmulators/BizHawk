@@ -25,7 +25,7 @@ namespace BizHawk.Client.EmuHawk
 		public GameShark()
 		{
 			InitializeComponent();
-			Icon = Properties.Resources.Shark_MultiSize;
+			Icon = Properties.Resources.SharkIcon;
 		}
 
 		public void Restart()

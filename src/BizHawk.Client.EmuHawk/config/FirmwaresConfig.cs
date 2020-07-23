@@ -106,7 +106,7 @@ namespace BizHawk.Client.EmuHawk
 				= tbbImport.Image
 				= tbbClose.Image
 				= tbbCloseReload.Image
-				= tbbOpenFolder.Image = Resources.placeholder_bitmap;
+				= tbbOpenFolder.Image = Resources.Placeholder;
 
 			// prep ImageList for ListView with 3 item states for {idUnsure, idMissing, idOk}
 			imageList1.Images.AddRange(new[] { Resources.RetroQuestion, Resources.ExclamationRed, Resources.GreenCheck });

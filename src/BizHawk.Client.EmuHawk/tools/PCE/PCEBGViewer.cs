@@ -30,7 +30,7 @@ namespace BizHawk.Client.EmuHawk
 		public PceBgViewer()
 		{
 			InitializeComponent();
-			Icon = Properties.Resources.pce_MultiSize;
+			Icon = Properties.Resources.PceIcon;
 			Activated += (o, e) => Generate();
 		}
 

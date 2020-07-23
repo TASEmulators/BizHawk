@@ -15,7 +15,7 @@ namespace BizHawk.Client.EmuHawk
 			_mainForm = mainForm;
 			_cpc = cpc;
 			InitializeComponent();
-			Icon = Properties.Resources.GameController_MultiSize;
+			Icon = Properties.Resources.GameControllerIcon;
 		}
 
 		private void OkBtn_Click(object sender, EventArgs e)

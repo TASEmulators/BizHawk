@@ -23,7 +23,7 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 
 			// prep imagelist for listview with 4 item states for (ideal, acceptable, unacceptable, bad)
-			imageList1.Images.AddRange(new[] { Properties.Resources.GreenCheck, Properties.Resources.Freeze, Properties.Resources.thumbsdown, Properties.Resources.ExclamationRed });
+			imageList1.Images.AddRange(new[] { Properties.Resources.GreenCheck, Properties.Resources.Freeze, Properties.Resources.ThumbsDown, Properties.Resources.ExclamationRed });
 		}
 
 		private void LvOptions_KeyDown(object sender, KeyEventArgs e)
