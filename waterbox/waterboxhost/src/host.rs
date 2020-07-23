@@ -169,6 +169,7 @@ impl IStateable for WaterboxHost {
 		bin::write(stream, &self.program_break)?;
 		self.elf.save_state(stream)?;
 		self.memory_block.save_state(stream)?;
+		self.threads.save_state(&self.context, stream)?;
 		bin::write_magic(stream, SAVE_END_MAGIC)?;
 		Ok(())
 	}
@@ -179,6 +180,7 @@ impl IStateable for WaterboxHost {
 		bin::read(stream, &mut self.program_break)?;
 		self.elf.load_state(stream)?;
 		self.memory_block.load_state(stream)?;
+		self.threads.load_state(&mut self.context, stream)?;
 		bin::verify_magic(stream, SAVE_END_MAGIC)?;
 		Ok(())
 	}

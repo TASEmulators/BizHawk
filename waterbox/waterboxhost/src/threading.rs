@@ -84,9 +84,11 @@ impl GuestThreadSet {
 		let old_thread = self.threads.get_mut(&self.active_tid).unwrap();
 		old_thread.rax = ret;
 		old_thread.rsp = context.guest_rsp;
-		let new_thread = self.threads.get_mut(&tid).unwrap();
+		old_thread.thread_area = context.thread_area;
+		let new_thread = self.threads.get(&tid).unwrap();
 		assert_eq!(new_thread.state, ThreadState::Runnable);
 		context.guest_rsp = new_thread.rsp;
+		context.thread_area = new_thread.thread_area;
 		self.active_tid = tid;
 		new_thread.rax
 	}
@@ -263,5 +265,73 @@ impl GuestThreadSet {
 
 	pub fn yield_any(&mut self, context: &mut Context) -> SyscallReturn {
 		self.swap_to_next(context, syscall_ok(0))
+	}
+}
+
+const MAGIC: &str = "GuestThreadSet";
+impl GuestThreadSet {
+	pub fn save_state(&mut self, context: &Context, stream: &mut dyn Write) -> anyhow::Result<()> {
+		assert_eq!(self.active_tid, 1, "Thread hijack?");
+
+		{
+			let main_thread = self.threads.get_mut(&1).unwrap();
+			main_thread.thread_area = context.thread_area;
+			main_thread.rsp = context.guest_rsp;
+		}
+
+		bin::write_magic(stream, MAGIC)?;
+
+		bin::write(stream, &self.next_tid)?;
+		bin::write(stream, &self.active_tid)?;
+
+		bin::write(stream, &self.threads.len())?;
+		for t in self.threads.values() {
+			bin::write(stream, t)?;
+		}
+
+		bin::write(stream, &self.futicies.len())?;
+		for (addr, waiters) in self.futicies.iter() {
+			bin::write(stream, addr)?;
+			bin::write(stream, &waiters.len())?;
+			for tid in waiters.iter() {
+				bin::write(stream, tid)?;
+			}
+		}
+
+		bin::write_magic(stream, MAGIC)?;
+		Ok(())
+	}
+	pub fn load_state(&mut self, context: &mut Context, stream: &mut dyn Read) -> anyhow::Result<()> {
+		assert_eq!(self.active_tid, 1, "Thread hijack?");
+		bin::verify_magic(stream, MAGIC)?;
+
+		bin::read(stream, &mut self.next_tid)?;
+		bin::read(stream, &mut self.active_tid)?;
+
+		self.threads.clear();
+		for _ in 0..bin::readval::<usize>(stream)? {
+			let thread = bin::readval::<GuestThread>(stream)?;
+			self.threads.insert(thread.tid, thread);
+		}
+
+		self.futicies.clear();
+		for _ in 0..bin::readval::<usize>(stream)? {
+			let addr = bin::readval::<usize>(stream)?;
+			let mut waiters = Vec::new();
+			for _ in 0..bin::readval::<usize>(stream)? {
+				waiters.push(bin::readval(stream)?);
+			}
+			self.futicies.insert(addr, waiters);
+		}
+
+		bin::verify_magic(stream, MAGIC)?;
+
+		{
+			let main_thread = self.threads.get(&1).unwrap();
+			context.thread_area = main_thread.thread_area;
+			context.guest_rsp = main_thread.rsp;
+		}
+
+		Ok(())
 	}
 }
