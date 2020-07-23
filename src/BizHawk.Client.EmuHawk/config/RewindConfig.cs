@@ -45,7 +45,6 @@ namespace BizHawk.Client.EmuHawk
 				_avgStateSize = _statableCore.CloneSavestate().Length;
 			}
 
-			
 			RewindEnabledBox.Checked = _config.Rewind.Enabled;
 			UseCompression.Checked = _config.Rewind.UseCompression;
 			BufferSizeUpDown.Value = Math.Max(_config.Rewind.BufferSize, BufferSizeUpDown.Minimum);

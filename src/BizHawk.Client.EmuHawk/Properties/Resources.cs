@@ -38,6 +38,7 @@ namespace BizHawk.Client.EmuHawk.Properties
 		internal static readonly Bitmap melonDS = ReadEmbeddedBitmap("melonDS");
 		internal static readonly Icon Bug_MultiSize = ReadEmbeddedIcon("Bug");
 		internal static readonly Bitmap Bug = ReadEmbeddedBitmap("Bug");
+		internal static readonly Bitmap C64Symbol = ReadEmbeddedBitmap("C64Symbol");
 		internal static readonly Icon calculator_MultiSize = ReadEmbeddedIcon("calculator");
 		internal static readonly Bitmap calculator = ReadEmbeddedBitmap("calculator");
 		internal static readonly Bitmap camera = ReadEmbeddedBitmap("camera");
@@ -112,8 +113,6 @@ namespace BizHawk.Client.EmuHawk.Properties
 		internal static readonly Bitmap LightOn = ReadEmbeddedBitmap("LightOn");
 		internal static readonly Bitmap LoadConfig = ReadEmbeddedBitmap("LoadConfig");
 		internal static readonly Icon logo = ReadEmbeddedIcon("logo");
-		internal static readonly Icon log_window_MultiSize = ReadEmbeddedIcon("log_window");
-		internal static readonly Bitmap log_window = ReadEmbeddedBitmap("log_window");
 		internal static readonly Bitmap luaPictureBox = ReadEmbeddedBitmap("luaPictureBox");
 		internal static readonly Bitmap mame = ReadEmbeddedBitmap("mame");
 		internal static readonly Bitmap MessageConfig = ReadEmbeddedBitmap("MessageConfig");
@@ -145,7 +144,6 @@ namespace BizHawk.Client.EmuHawk.Properties
 		internal static readonly Bitmap placeholder_bitmap = ReadEmbeddedBitmap("placeholder_bitmap");
 		internal static readonly Icon poke_MultiSize = ReadEmbeddedIcon("poke");
 		internal static readonly Bitmap poke = ReadEmbeddedBitmap("poke");
-		internal static readonly Icon Previous_MultiSize = ReadEmbeddedIcon("Previous");
 		internal static readonly Bitmap Previous = ReadEmbeddedBitmap("Previous");
 		internal static readonly Icon QuickNes_MultiSize = ReadEmbeddedIcon("QuickNes");
 		internal static readonly Bitmap QuickNes = ReadEmbeddedBitmap("QuickNes");
@@ -174,7 +172,6 @@ namespace BizHawk.Client.EmuHawk.Properties
 		internal static readonly Bitmap SSE = ReadEmbeddedBitmap("SSE");
 		internal static readonly Bitmap SSW = ReadEmbeddedBitmap("SSW");
 		internal static readonly Bitmap Stop = ReadEmbeddedBitmap("Stop");
-		internal static readonly Bitmap StopButton = ReadEmbeddedBitmap("StopButton");
 		internal static readonly Bitmap SW = ReadEmbeddedBitmap("SW");
 		internal static readonly Icon TAStudio_MultiSize = ReadEmbeddedIcon("TAStudio");
 		internal static readonly Bitmap TAStudio = ReadEmbeddedBitmap("TAStudio");

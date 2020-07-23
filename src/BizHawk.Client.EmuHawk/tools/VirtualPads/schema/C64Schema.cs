@@ -91,7 +91,7 @@ namespace BizHawk.Client.EmuHawk
 					Key(326, 66, "Semicolon", ";"),
 					Key(346, 66, "Equal", "="),
 					Key(370, 66, "Return"),
-					Key(8, 90, "Commodore", "C64"),
+					new ButtonSchema(8, 90, "Key Commodore") { Icon = Properties.Resources.C64Symbol },
 					Key(44, 90, "Left Shift", "Shift"),
 					Key(82, 90, "Z"),
 					Key(106, 90, "X"),

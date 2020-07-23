@@ -107,7 +107,6 @@
 		<EmbeddedResource Include="images/**/*" />
 		<EmbeddedResource Include="Resources/**/*" />
 		<EmbeddedResource Remove="images/.ico" />
-		<EmbeddedResource Remove="images/C64Symbol.png" />
 		<EmbeddedResource Remove="images/ControllerImages/TI83Calculator.png" />
 		<EmbeddedResource Remove="images/corphawk.ico" />
 		<EmbeddedResource Remove="images/ForwardMore.png" />
