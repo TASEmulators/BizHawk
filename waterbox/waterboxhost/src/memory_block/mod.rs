@@ -492,6 +492,32 @@ impl MemoryBlock {
 			}
 		}
 	}
+
+	pub fn page_len(&self) -> usize {
+		self.pages.len()
+	}
+
+	pub fn page_info(&self, index: usize) -> u8 {
+		let p = &self.pages[index];
+		let mut res = match p.status {
+			PageAllocation::Free => 0,
+			PageAllocation::Allocated(prot) => match prot {
+				Protection::None => 0x20,
+				Protection::R => 1,
+				Protection::RW => 3,
+				Protection::RX => 5,
+				Protection::RWX => 7,
+				Protection::RWStack => 0x13,
+			}
+		};
+		if p.dirty {
+			res |= 0x80;
+		}
+		if p.invisible {
+			res |= 0x40;
+		}
+		res
+	}
 }
 
 impl Drop for MemoryBlock {

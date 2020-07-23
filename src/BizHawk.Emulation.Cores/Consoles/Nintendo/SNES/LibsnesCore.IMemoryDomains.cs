@@ -73,7 +73,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				MakeMemoryDomain("SGB CARTRAM", LibsnesApi.SNES_MEMORY.SGB_CARTRAM, MemoryDomain.Endian.Little);
 			}
 
-
+			_memoryDomainList.Add(Api.GetPagesDomain());
 
 			_memoryDomains = new MemoryDomainList(_memoryDomainList);
 			((BasicServiceProvider) ServiceProvider).Register(_memoryDomains);

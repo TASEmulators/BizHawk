@@ -437,5 +437,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			_exe.LoadStateBinary(reader);
 			_core.PostLoadState();
 		}
+
+		public MemoryDomain GetPagesDomain()
+		{
+			return _exe.GetPagesDomain();
+		}
 	}
 }

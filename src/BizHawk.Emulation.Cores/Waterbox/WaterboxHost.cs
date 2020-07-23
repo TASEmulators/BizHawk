@@ -218,11 +218,12 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			return ms.ToArray();
 		}
 
-		// public class MissingFileResult
-		// {
-		// 	public byte[] data;
-		// 	public bool writable;
-		// }
+#if false
+		public class MissingFileResult
+		{
+			public byte[] data;
+			public bool writable;
+		}
 
 		/// <summary>
 		/// Can be set by the frontend and will be called if the core attempts to open a missing file.
@@ -233,29 +234,65 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// if it was for firmware only.
 		/// writable == false is equivalent to AddReadonlyFile, writable == true is equivalent to AddTransientFile
 		/// </summary>
-		// public Func<string, MissingFileResult> MissingFileCallback
-		// {
-		// 	set
-		// 	{
-		// 		// TODO
-		// 		using (this.EnterExit())
-		// 		{
-		// 			var mfc_o = value == null ? null : new WaterboxHostNative.MissingFileCallback
-		// 			{
-		// 				callback = (_unused, name) =>
-		// 				{
-		// 					var res = value(name);
-		// 				}
-		// 			};
+		public Func<string, MissingFileResult> MissingFileCallback
+		{
+			set
+			{
+				// TODO
+				using (this.EnterExit())
+				{
+					var mfc_o = value == null ? null : new WaterboxHostNative.MissingFileCallback
+					{
+						callback = (_unused, name) =>
+						{
+							var res = value(name);
+						}
+					};
 
-		// 			NativeImpl.wbx_set_missing_file_callback(_activatedNativeHost, value == null
-		// 				? null
-		// 				: )
-		// 		}
-		// 	}
-		// 	get => _syscalls.MissingFileCallback;
-		// 	set => _syscalls.MissingFileCallback = value;
-		// }
+					NativeImpl.wbx_set_missing_file_callback(_activatedNativeHost, value == null
+						? null
+						: )
+				}
+			}
+			get => _syscalls.MissingFileCallback;
+			set => _syscalls.MissingFileCallback = value;
+		}
+#endif
+
+		public MemoryDomain GetPagesDomain()
+		{
+			return new WaterboxPagesDomain(this);
+		}
+
+		private class WaterboxPagesDomain : MemoryDomain
+		{
+			protected readonly WaterboxHost _host;
+			public WaterboxPagesDomain(WaterboxHost host)
+			{
+				_host = host;
+
+				var retobj = new ReturnData();
+				NativeImpl.wbx_get_page_len(_host._nativeHost, retobj);
+
+				Name = "Waterbox PageData";
+				Size = (long)retobj.GetDataOrThrow();
+				WordSize = 1;
+				EndianType = Endian.Unknown;
+				Writable = false;
+			}
+
+			public override byte PeekByte(long addr)
+			{
+				var retobj = new ReturnData();
+				NativeImpl.wbx_get_page_data(_host._nativeHost, Z.SU(addr), retobj);
+				return (byte)retobj.GetDataOrThrow();
+			}
+
+			public override void PokeByte(long addr, byte val)
+			{
+				throw new InvalidOperationException();
+			}
+		}
 
 		public void SaveStateBinary(BinaryWriter bw)
 		{
