@@ -408,6 +408,7 @@ extern "sysv64" fn syscall(
 		},
 		NR_SET_THREAD_AREA => syscall_err(ENOSYS), // musl handles this in userspace
 		NR_SET_TID_ADDRESS => syscall_ok(h.threads.set_tid_address(a1) as usize),
+		NR_GETTID => syscall_ok(h.threads.get_tid() as usize),
 		NR_RT_SIGPROCMASK => {
 			// we don't (nor ever plan to?) deliver any signals to guests, so...
 			syscall_ok(0)

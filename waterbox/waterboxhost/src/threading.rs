@@ -257,6 +257,10 @@ impl GuestThreadSet {
 		thread.tid
 	}
 
+	pub fn get_tid(&self) -> u32 {
+		self.active_tid
+	}
+
 	pub fn yield_any(&mut self, context: &mut Context) -> SyscallReturn {
 		self.swap_to_next(context, syscall_ok(0))
 	}

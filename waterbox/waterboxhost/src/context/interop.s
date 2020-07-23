@@ -42,12 +42,7 @@ times 0x80-($-$$) int3
 ; rax - syscall number
 ; regular arg registers are 0..6 args to the syscall
 guest_syscall:
-	push rbp ; this call might be suspended and cothreaded, so nonvolatile regs must be saved
-	push rbx
-	push r12
-	push r13
-	push r14
-	push r15
+	push rbp ; this call might be suspended and cothreaded.  the guest knows to save nonvolatiles if it needs to, except rbp
 	mov r10, [gs:0x18]
 	mov [r10 + Context.guest_rsp], rsp
 	mov rsp, [r10 + Context.host_rsp]
@@ -59,11 +54,6 @@ guest_syscall:
 	call rax
 	mov r10, [gs:0x18]
 	mov rsp, [r10 + Context.guest_rsp]
-	pop r15
-	pop r14
-	pop r13
-	pop r12
-	pop rbx
 	pop rbp
 	ret
 
