@@ -14,6 +14,10 @@ namespace BizHawk.Client.EmuHawk
 	// ReSharper disable once UnusedMember.Global
 	public class PceCdSchema : PceSchema { }
 
+	[Schema("SGX")]
+	// ReSharper disable once UnusedMember.Global
+	public class SgxSchema : PceSchema { }
+
 	[Schema("PCE")]
 	public class PceSchema : IVirtualPadSchema
 	{
