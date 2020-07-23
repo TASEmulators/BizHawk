@@ -35,7 +35,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			InitializeComponent();
 			Icon = Resources.FreezeIcon;
-			ToggleContextMenuItem.Image = Resources.Refresh1;
+			ToggleContextMenuItem.Image = Resources.Refresh;
 			RemoveContextMenuItem.Image = Resources.Delete;
 			DisableAllContextMenuItem.Image = Resources.Stop;
 			NewMenuItem.Image = Resources.NewFile;
@@ -46,7 +46,7 @@ namespace BizHawk.Client.EmuHawk
 			InsertSeparatorMenuItem.Image = Resources.InsertSeparator;
 			MoveUpMenuItem.Image = Resources.MoveUp;
 			MoveDownMenuItem.Image = Resources.MoveDown;
-			ToggleMenuItem.Image = Resources.Refresh1;
+			ToggleMenuItem.Image = Resources.Refresh;
 			DisableAllCheatsMenuItem.Image = Resources.Stop;
 			NewToolBarItem.Image = Resources.NewFile;
 			OpenToolBarItem.Image = Resources.OpenFile;

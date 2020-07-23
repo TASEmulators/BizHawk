@@ -25,7 +25,7 @@ namespace BizHawk.Client.EmuHawk
 			_getRewinder = getRewinder;
 			_statableCore = statableCore;
 			InitializeComponent();
-			btnResetCompression.Image = Properties.Resources.reboot;
+			btnResetCompression.Image = Properties.Resources.Reboot;
 		}
 
 		private void RewindConfig_Load(object sender, EventArgs e)

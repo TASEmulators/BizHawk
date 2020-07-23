@@ -34,7 +34,7 @@ namespace BizHawk.Client.EmuHawk
 
 			ControllerImages.Add("Intellivision Controller", Properties.Resources.IntVController);
 			ControllerImages.Add("ColecoVision Basic Controller", Properties.Resources.ColecoVisionController);
-			ControllerImages.Add("Atari 2600 Basic Controller", Properties.Resources.atari_controller);
+			ControllerImages.Add("Atari 2600 Basic Controller", Properties.Resources.AtariController);
 			ControllerImages.Add("Atari 7800 ProLine Joystick Controller", Properties.Resources.A78Joystick);
 
 			ControllerImages.Add("PC Engine Controller", Properties.Resources.PceController);
@@ -65,7 +65,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ControllerConfig_Load(object sender, EventArgs e)
 		{
-			Icon = Properties.Resources.GameController_MultiSize;
+			Icon = Properties.Resources.GameControllerIcon;
 			Text = $"{_emulator.ControllerDefinition.Name} Configuration";
 		}
 

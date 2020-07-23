@@ -74,7 +74,7 @@ namespace BizHawk.Client.EmuHawk
 			_lastColumnSorted = "";
 
 			InitializeComponent();
-			ToggleScriptContextItem.Image = Resources.Refresh1;
+			ToggleScriptContextItem.Image = Resources.Refresh;
 			PauseScriptContextItem.Image = Resources.Pause;
 			EditScriptContextItem.Image = Resources.Cut;
 			RemoveScriptContextItem.Image = Resources.Close;
@@ -86,7 +86,7 @@ namespace BizHawk.Client.EmuHawk
 			SaveSessionMenuItem.Image = Resources.SaveAs;
 			NewScriptMenuItem.Image = Resources.NewFile;
 			OpenScriptMenuItem.Image = Resources.OpenFile;
-			RefreshScriptMenuItem.Image = Resources.Refresh1;
+			RefreshScriptMenuItem.Image = Resources.Refresh;
 			ToggleScriptMenuItem.Image = Resources.Checkbox;
 			PauseScriptMenuItem.Image = Resources.Pause;
 			EditScriptMenuItem.Image = Resources.Cut;
@@ -100,7 +100,7 @@ namespace BizHawk.Client.EmuHawk
 			NewScriptToolbarItem.Image = Resources.NewFile;
 			OpenScriptToolbarItem.Image = Resources.OpenFile;
 			ToggleScriptToolbarItem.Image = Resources.Checkbox;
-			RefreshScriptToolbarItem.Image = Resources.Refresh1;
+			RefreshScriptToolbarItem.Image = Resources.Refresh;
 			PauseToolbarItem.Image = Resources.Pause;
 			EditToolbarItem.Image = Resources.Cut;
 			RemoveScriptToolbarItem.Image = Resources.Delete;

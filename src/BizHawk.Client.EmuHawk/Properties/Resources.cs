@@ -134,7 +134,7 @@ namespace BizHawk.Client.EmuHawk.Properties
 		internal static readonly Bitmap NewFile = ReadEmbeddedBitmap("NewFile");
 		internal static readonly Bitmap NNE = ReadEmbeddedBitmap("NNE");
 		internal static readonly Bitmap NNW = ReadEmbeddedBitmap("NNW");
-		internal static readonly Bitmap NoConnect_16X16 = ReadEmbeddedBitmap("noconnect_16x16");
+		internal static readonly Bitmap NoConnect16X16 = ReadEmbeddedBitmap("noconnect_16x16");
 		internal static readonly Bitmap NW = ReadEmbeddedBitmap("NW");
 		internal static readonly Bitmap OpenFile = ReadEmbeddedBitmap("OpenFile");
 		internal static readonly Bitmap Paste = ReadEmbeddedBitmap("Paste");
@@ -155,8 +155,7 @@ namespace BizHawk.Client.EmuHawk.Properties
 		internal static readonly Bitmap Recent = ReadEmbeddedBitmap("Recent");
 		internal static readonly Bitmap Record = ReadEmbeddedBitmap("RecordHS");
 		internal static readonly Bitmap Redo = ReadEmbeddedBitmap("redo");
-		internal static readonly Bitmap Refresh = ReadEmbeddedBitmapAt("images.Refresh.bmp");
-		internal static readonly Bitmap Refresh1 = ReadEmbeddedBitmap("Refresh");
+		internal static readonly Bitmap Refresh = ReadEmbeddedBitmap("Refresh");
 		internal static readonly Bitmap Restart = ReadEmbeddedBitmap("restart");
 		internal static readonly Bitmap RetroQuestion = ReadEmbeddedBitmap("RetroQuestion");
 		internal static readonly Bitmap Save = ReadEmbeddedBitmap("Save");
