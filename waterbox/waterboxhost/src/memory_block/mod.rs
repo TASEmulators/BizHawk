@@ -137,7 +137,7 @@ impl Page {
 struct PageRange<'a> {
 	pub start: usize,
 	pub mirror_start: usize,
-	pub active: bool,
+	pub swapped_in: bool,
 	pub pages: &'a mut [Page]
 }
 impl<'a> PageRange<'a> {
@@ -159,13 +159,13 @@ impl<'a> PageRange<'a> {
 			PageRange {
 				start: self.start,
 				mirror_start: self.mirror_start,
-				active: self.active,
+				swapped_in: self.swapped_in,
 				pages: sl
 			},
 			PageRange {
 				start: self.start + size,
 				mirror_start: self.mirror_start + size,
-				active: self.active,
+				swapped_in: self.swapped_in,
 				pages: sr
 			}
 		)
@@ -209,7 +209,7 @@ impl<'a> PageRange<'a> {
 			PageRange {
 				start: left.start,
 				mirror_start: left.mirror_start,
-				active: left.active,
+				swapped_in: left.swapped_in,
 				pages: std::slice::from_raw_parts_mut(lp, left.pages.len() + right.pages.len())
 			}
 		}
@@ -232,9 +232,13 @@ pub struct MemoryBlock {
 	handle: pal::Handle,
 
 	debug_id: u32,
+
+	/// The lock indicating that this is active, as viewed by the outside world
 	active_guard: Option<BlockGuard>,
-	/// Pretend this block is active.  Used internally by activate/deactivate for blocks that are about to gain / just lost the lock.
-	assume_active: bool,
+
+	/// Whether or not this is currently swapped in.  When ALWAYS_EVICT_BLOCKS is off,
+	/// swapping out is done lazily so this might be true even when active_guard is not
+	swapped_in: bool,
 }
 
 type BlockGuard = MutexGuard<'static, Option<MemoryBlockRef>>;
@@ -279,7 +283,7 @@ impl MemoryBlock {
 
 			debug_id,
 			active_guard: None,
-			assume_active: false,
+			swapped_in: false,
 		});
 		// res.trace("new");
 		res
@@ -292,8 +296,8 @@ impl MemoryBlock {
 			name, self.debug_id, ptr, self.lock_index, tid)
 	}
 
-	pub fn active(&self) -> bool {
-		self.assume_active || match self.active_guard {
+	fn has_active_lock(&self) -> bool {
+		match self.active_guard {
 			Some(_) => true,
 			None => false
 		}
@@ -303,7 +307,7 @@ impl MemoryBlock {
 	pub fn activate(&mut self) {
 		unsafe {
 			// self.trace("activate");
-			if self.active() {
+			if self.has_active_lock() {
 				return
 			}
 
@@ -314,7 +318,7 @@ impl MemoryBlock {
 			match *other_opt {
 				Some(MemoryBlockRef(other)) => {
 					if other != self {
-						assert!(!(*other).active());
+						assert!(!(*other).has_active_lock());
 						(*other).swapout();
 						self.swapin();
 						*other_opt = Some(MemoryBlockRef(self));
@@ -334,7 +338,7 @@ impl MemoryBlock {
 	#[allow(unused_mut)]
 	pub fn deactivate(&mut self) {
 		// self.trace("deactivate");
-		if !self.active() {
+		if !self.has_active_lock() {
 			return
 		}
 		let mut guard = std::mem::replace(&mut self.active_guard, None).unwrap();
@@ -363,15 +367,13 @@ impl MemoryBlock {
 		// self.trace("swapin");
 		pal::map_handle(&self.handle, self.addr).unwrap();
 		tripguard::register(self);
-		self.assume_active = true;
+		self.swapped_in = true;
 		self.refresh_all_protections();
-		self.assume_active = false;
 	}
 	unsafe fn swapout(&mut self) {
 		// self.trace("swapout");
-		self.assume_active = true;
 		self.get_stack_dirty();
-		self.assume_active = false;
+		self.swapped_in = false;
 		pal::unmap_handle(self.addr).unwrap();
 		tripguard::unregister(self);
 	}
@@ -380,7 +382,7 @@ impl MemoryBlock {
 		PageRange {
 			start: self.addr.start,
 			mirror_start: self.mirror.start,
-			active: self.active(),
+			swapped_in: self.swapped_in,
 			pages: &mut self.pages[..],
 		}
 	}
@@ -399,7 +401,7 @@ impl MemoryBlock {
 			Ok(PageRange {
 				start: addr.start,
 				mirror_start: self.mirror.start + offset,
-				active: self.active(),
+				swapped_in: self.swapped_in,
 				pages: &mut self.pages[pstart..pstart + psize]
 			})
 		}
@@ -408,7 +410,7 @@ impl MemoryBlock {
 	/// Refresh the correct protections in underlying host RAM on a page range.  Use after
 	/// temporary pal::protect(...) modifications, or to apply the effect of a dirty/prot change on the page
 	fn refresh_protections(range: &PageRange) {
-		if !range.active {
+		if !range.swapped_in {
 			return
 		}
 		struct Chunk {
@@ -467,7 +469,7 @@ impl MemoryBlock {
 	fn get_stack_dirty(&mut self) {
 		#[cfg(windows)]
 		unsafe {
-			if !self.active() {
+			if !self.swapped_in {
 				return
 			}
 			let mut start = self.addr.start;
@@ -518,7 +520,7 @@ impl Drop for MemoryBlock {
 impl MemoryBlock {
 	/// Looks for some free pages inside an arena
 	fn find_free_pages<'a>(arena: &'a mut PageRange<'a>, npages: usize) -> Result<PageRange<'a>, SyscallError> {
-		let active = arena.active;
+		let swapped_in = arena.swapped_in;
 		struct Chunk<'a> {
 			range: PageRange<'a>,
 			free: bool,
@@ -530,7 +532,7 @@ impl MemoryBlock {
 				range: PageRange {
 					start: a.start,
 					mirror_start: a.start.wrapping_add(disp),
-					active,
+					swapped_in,
 					pages: std::slice::from_mut(p),
 				},
 			})
@@ -556,7 +558,7 @@ impl MemoryBlock {
 					Ok(PageRange {
 						start: r.start,
 						mirror_start: r.mirror_start,
-						active,
+						swapped_in,
 						pages: &mut r.pages[0..npages],
 					})
 				}
