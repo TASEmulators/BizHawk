@@ -560,7 +560,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// ExcludeRamWatchMenuItem
 			// 
-			this.ExcludeRamWatchMenuItem.Text = "Always E&xclude RAM Search List";
+			this.ExcludeRamWatchMenuItem.Text = "Always E&xclude RAM Watch List";
 			this.ExcludeRamWatchMenuItem.Click += new System.EventHandler(this.ExcludeRamWatchMenuItem_Click);
 			// 
 			// UseUndoHistoryMenuItem
