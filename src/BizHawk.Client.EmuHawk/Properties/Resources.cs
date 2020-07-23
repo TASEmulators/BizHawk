@@ -114,7 +114,6 @@ namespace BizHawk.Client.EmuHawk.Properties
 		internal static readonly Icon logo = ReadEmbeddedIcon("logo");
 		internal static readonly Icon log_window_MultiSize = ReadEmbeddedIcon("log_window");
 		internal static readonly Bitmap log_window = ReadEmbeddedBitmap("log_window");
-		internal static readonly Bitmap Lua = ReadEmbeddedBitmap("Lua");
 		internal static readonly Bitmap luaPictureBox = ReadEmbeddedBitmap("luaPictureBox");
 		internal static readonly Bitmap mame = ReadEmbeddedBitmap("mame");
 		internal static readonly Bitmap MessageConfig = ReadEmbeddedBitmap("MessageConfig");
@@ -188,6 +187,7 @@ namespace BizHawk.Client.EmuHawk.Properties
 		internal static readonly Bitmap ts_v_arrow_blue = ReadEmbeddedBitmap("tastudio.ts_v_arrow_blue");
 		internal static readonly Bitmap ts_v_arrow_green = ReadEmbeddedBitmap("tastudio.ts_v_arrow_green");
 		internal static readonly Bitmap ts_v_arrow_green_blue = ReadEmbeddedBitmap("tastudio.ts_v_arrow_green_blue");
+		internal static readonly Bitmap TextDoc = ReadEmbeddedBitmap("textdoc");
 		internal static readonly Icon textdoc_MultiSize = ReadEmbeddedIcon("textdoc");
 		internal static readonly Bitmap thumbsdown = ReadEmbeddedBitmap("thumbsdown");
 		internal static readonly Icon ToolBox_MultiSize = ReadEmbeddedIcon("ToolBox");

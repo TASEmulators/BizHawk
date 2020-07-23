@@ -174,7 +174,7 @@ namespace BizHawk.Client.EmuHawk
 			return new CoreComm(ShowMessageCoreComm, AddOnScreenMessage, cfp, prefs);
 		}
 
-		void SetImages()
+		private void SetImages()
 		{
 			OpenRomMenuItem.Image = Properties.Resources.OpenFile;
 			RecentRomSubMenu.Image = Properties.Resources.Recent;
@@ -213,7 +213,7 @@ namespace BizHawk.Client.EmuHawk
 			ToolBoxMenuItem.Image = Properties.Resources.ToolBox;
 			RamWatchMenuItem.Image = Properties.Resources.watch;
 			RamSearchMenuItem.Image = Properties.Resources.search;
-			LuaConsoleMenuItem.Image = Properties.Resources.Lua;
+			LuaConsoleMenuItem.Image = Properties.Resources.TextDoc;
 			TAStudioMenuItem.Image = Properties.Resources.TAStudio;
 			HexEditorMenuItem.Image = Properties.Resources.poke;
 			TraceLoggerMenuItem.Image = Properties.Resources.pencil;
