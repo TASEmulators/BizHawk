@@ -9,7 +9,6 @@ using System.ComponentModel;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
-using BizHawk.Common;
 using BizHawk.Common.ReflectionExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.WinForms.Controls;
@@ -153,14 +152,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			newTool.Restart();
-			if (OSTailoredCode.IsUnixHost && newTool is RamSearch)
-			{
-				// the mono winforms implementation is buggy, skip to the return statement and call Show in MainForm instead
-			}
-			else
-			{
-				newTool.Show();
-			}
+			newTool.Show();
 			return (T)newTool;
 		}
 

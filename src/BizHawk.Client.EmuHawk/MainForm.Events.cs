@@ -1207,17 +1207,7 @@ namespace BizHawk.Client.EmuHawk
 			Tools.LoadRamWatch(true);
 		}
 
-		private void RamSearchMenuItem_Click(object sender, EventArgs e)
-		{
-			var ramSearch = Tools.Load<RamSearch>();
-			if (OSTailoredCode.IsUnixHost)
-			{
-				// this is apparently needed for weird mono-forms-on-different-thread issues
-				// don't do .Show() within Load<T>() for RamSearch - instead put an instance of it here on MainForm, then show here
-				// the mono winforms implementation is.... weird and buggy
-				ramSearch.Show();
-			}
-		}
+		private void RamSearchMenuItem_Click(object sender, EventArgs e) => Tools.Load<RamSearch>();
 
 		private void LuaConsoleMenuItem_Click(object sender, EventArgs e)
 		{
