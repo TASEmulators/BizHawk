@@ -309,6 +309,7 @@ namespace BizHawk.Client.EmuHawk
 				ClearFramesMenuItem.Enabled =
 				DeleteFramesMenuItem.Enabled =
 				CloneFramesMenuItem.Enabled =
+				CloneFramesXTimesMenuItem.Enabled =
 				TruncateMenuItem.Enabled =
 				InsertFrameMenuItem.Enabled =
 				InsertNumFramesMenuItem.Enabled = 
@@ -623,25 +624,42 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CloneFramesMenuItem_Click(object sender, EventArgs e)
 		{
-			if (TasView.AnyRowsSelected)
+			CloneFramesXTimes(1);
+		}
+
+		private void CloneFramesXTimesMenuItem_Click(object sender, EventArgs e)
+		{
+			using var framesPrompt = new FramesPrompt("Clone # Times", "Insert times to clone:");
+			if (framesPrompt.ShowDialog().IsOk())
 			{
-				var framesToInsert = TasView.SelectedRows;
-				var insertionFrame = Math.Min((TasView.LastSelectedIndex ?? 0) + 1, CurrentTasMovie.InputLogLength);
-				var needsToRollback = TasView.FirstSelectedIndex < Emulator.Frame;
+				CloneFramesXTimes(framesPrompt.Frames);
+			}
+		}
 
-				var inputLog = framesToInsert
-					.Select(frame => CurrentTasMovie.GetInputLogEntry(frame))
-					.ToList();
-
-				CurrentTasMovie.InsertInput(insertionFrame, inputLog);
-
-				if (needsToRollback)
+		private void CloneFramesXTimes(int timesToClone)
+		{
+			for (int i = 0; i < timesToClone; i++)
+			{
+				if (TasView.AnyRowsSelected)
 				{
-					GoToLastEmulatedFrameIfNecessary(insertionFrame);
-					DoAutoRestore();
-				}
+					var framesToInsert = TasView.SelectedRows;
+					var insertionFrame = Math.Min((TasView.LastSelectedIndex ?? 0) + 1, CurrentTasMovie.InputLogLength);
+					var needsToRollback = TasView.FirstSelectedIndex < Emulator.Frame;
 
-				FullRefresh();
+					var inputLog = framesToInsert
+						.Select(frame => CurrentTasMovie.GetInputLogEntry(frame))
+						.ToList();
+
+					CurrentTasMovie.InsertInput(insertionFrame, inputLog);
+
+					if (needsToRollback)
+					{
+						GoToLastEmulatedFrameIfNecessary(insertionFrame);
+						DoAutoRestore();
+					}
+
+					FullRefresh();
+				}
 			}
 		}
 
@@ -1318,6 +1336,7 @@ namespace BizHawk.Client.EmuHawk
 				ClearContextMenuItem.Enabled =
 				DeleteFramesContextMenuItem.Enabled =
 				CloneContextMenuItem.Enabled =
+				CloneXTimesContextMenuItem.Enabled =
 				InsertFrameContextMenuItem.Enabled =
 				InsertNumFramesContextMenuItem.Enabled =
 				TruncateContextMenuItem.Enabled =

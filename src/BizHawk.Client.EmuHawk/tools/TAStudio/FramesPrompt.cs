@@ -10,6 +10,14 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 		}
 
+		public FramesPrompt(string headMessage, string bodyMessage)
+		{
+			InitializeComponent();
+
+			this.Text = headMessage;
+			this.label1.Text = bodyMessage;
+		}
+
 		public int Frames => NumFramesBox.ToRawInt() ?? 0;
 
 		private void FramesPrompt_Load(object sender, EventArgs e)

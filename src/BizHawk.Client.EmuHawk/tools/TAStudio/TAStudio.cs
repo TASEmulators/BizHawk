@@ -500,6 +500,7 @@ namespace BizHawk.Client.EmuHawk
 		public void InsertNumFramesExternal() => InsertNumFramesMenuItem_Click(null, null);
 		public void DeleteFramesExternal() => DeleteFramesMenuItem_Click(null, null);
 		public void CloneFramesExternal() => CloneFramesMenuItem_Click(null, null);
+		public void CloneFramesXTimesExternal() => CloneFramesXTimesMenuItem_Click(null, null);
 		public void UndoExternal() => UndoMenuItem_Click(null, null);
 		public void RedoExternal() => RedoMenuItem_Click(null, null);
 		public void SelectBetweenMarkersExternal() => SelectBetweenMarkersMenuItem_Click(null, null);
