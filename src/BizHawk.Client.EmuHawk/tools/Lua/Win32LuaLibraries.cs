@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -6,7 +7,6 @@ using System.Threading;
 
 using NLua;
 
-using BizHawk.Common.ReflectionExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 
@@ -23,6 +23,23 @@ namespace BizHawk.Client.EmuHawk
 		public Win32LuaLibraries(IMainFormForApi mainForm, IEmulatorServiceProvider serviceProvider)
 			: this()
 		{
+			void EnumerateLuaFunctions(string name, Type type, LuaLibraryBase instance)
+			{
+				instance?.Lua?.NewTable(name);
+				foreach (var method in type.GetMethods())
+				{
+					var foundAttrs = method.GetCustomAttributes(typeof(LuaMethodAttribute), false);
+					if (foundAttrs.Length == 0) continue;
+					instance?.Lua?.RegisterFunction($"{name}.{((LuaMethodAttribute) foundAttrs[0]).Name}", instance, method);
+					Docs.Add(new LibraryFunction(
+						name,
+						type.GetCustomAttributes(typeof(DescriptionAttribute), false).Cast<DescriptionAttribute>()
+							.Select(descAttr => descAttr.Description).FirstOrDefault() ?? string.Empty,
+						method
+					));
+				}
+			}
+
 			LuaWait = new AutoResetEvent(false);
 			Docs.Clear();
 
@@ -41,7 +58,6 @@ namespace BizHawk.Client.EmuHawk
 				if (addLibrary)
 				{
 					var instance = (LuaLibraryBase)Activator.CreateInstance(lib, _lua);
-					instance.LuaRegister(lib, Docs);
 					instance.LogOutputCallback = ConsoleLuaLibrary.LogOutput;
 					ServiceInjector.UpdateServices(serviceProvider, instance);
 
@@ -56,6 +72,7 @@ namespace BizHawk.Client.EmuHawk
 					if (instance is DelegatingLuaLibraryEmu dlgInstanceEmu) dlgInstanceEmu.APIs = ApiContainerInstance; // this is necessary as the property has the `new` modifier
 					else if (instance is DelegatingLuaLibrary dlgInstance) dlgInstance.APIs = ApiContainerInstance;
 
+					EnumerateLuaFunctions(instance.Name, lib, instance);
 					Libraries.Add(lib, instance);
 				}
 			}
@@ -65,16 +82,7 @@ namespace BizHawk.Client.EmuHawk
 			EmulationLuaLibrary.FrameAdvanceCallback = Frameadvance;
 			EmulationLuaLibrary.YieldCallback = EmuYield;
 
-			// Add LuaCanvas to Docs
-			Type luaCanvas = typeof(LuaCanvas);
-
-			foreach (var method in luaCanvas.GetMethods())
-			{
-				if (method.GetCustomAttributes(typeof(LuaMethodAttribute), false).Length != 0)
-				{
-					Docs.Add(new LibraryFunction(nameof(LuaCanvas), luaCanvas.Description(), method));
-				}
-			}
+			EnumerateLuaFunctions(nameof(LuaCanvas), typeof(LuaCanvas), null); // add LuaCanvas to Lua function reference table
 		}
 
 		/// <remarks>lazily instantiated</remarks>
