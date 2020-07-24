@@ -42,8 +42,6 @@ namespace BizHawk.Client.EmuHawk
 			this.CloseTableFileMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.RecentTablesSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.noneToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.toolStripSeparator1 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
-			this.ExitMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.EditMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.CopyMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.ExportMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -117,9 +115,7 @@ namespace BizHawk.Client.EmuHawk
             this.toolStripSeparator4,
             this.LoadTableFileMenuItem,
             this.CloseTableFileMenuItem,
-            this.RecentTablesSubMenu,
-            this.toolStripSeparator1,
-            this.ExitMenuItem});
+            this.RecentTablesSubMenu});
 			this.FileSubMenu.Text = "&File";
 			this.FileSubMenu.DropDownOpened += new System.EventHandler(this.FileSubMenu_DropDownOpened);
 			// 
@@ -167,12 +163,6 @@ namespace BizHawk.Client.EmuHawk
 			// noneToolStripMenuItem
 			// 
 			this.noneToolStripMenuItem.Text = "None";
-			// 
-			// ExitMenuItem
-			// 
-			this.ExitMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F4)));
-			this.ExitMenuItem.Text = "E&xit";
-			this.ExitMenuItem.Click += new System.EventHandler(this.ExitMenuItem_Click);
 			// 
 			// EditMenuItem
 			// 
@@ -505,8 +495,6 @@ namespace BizHawk.Client.EmuHawk
 		public MenuStripEx HexMenuStrip;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx FileSubMenu;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SaveAsTextMenuItem;
-		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator1;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ExitMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx OptionsSubMenu;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx MemoryDomainsMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx DataSizeSubMenu;

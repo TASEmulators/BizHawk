@@ -51,8 +51,6 @@ namespace BizHawk.Client.EmuHawk
 			this.toolStripSeparator22 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.toolStripSeparator20 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.ToBk2MenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.toolStripSeparator2 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
-			this.ExitMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.EditSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.UndoMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.RedoMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -236,9 +234,7 @@ namespace BizHawk.Client.EmuHawk
             this.placeMacroAtSelectionToolStripMenuItem,
             this.recentMacrosToolStripMenuItem,
             this.toolStripSeparator20,
-            this.ToBk2MenuItem,
-            this.toolStripSeparator2,
-            this.ExitMenuItem});
+            this.ToBk2MenuItem});
 			this.FileSubMenu.Text = "&File";
 			this.FileSubMenu.DropDownOpened += new System.EventHandler(this.FileSubMenu_DropDownOpened);
 			// 
@@ -324,12 +320,6 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.ToBk2MenuItem.Text = "&Export to Bk2";
 			this.ToBk2MenuItem.Click += new System.EventHandler(this.ToBk2MenuItem_Click);
-			// 
-			// ExitMenuItem
-			// 
-			this.ExitMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F4)));
-			this.ExitMenuItem.Text = "E&xit";
-			this.ExitMenuItem.Click += new System.EventHandler(this.ExitMenuItem_Click);
 			// 
 			// EditSubMenu
 			// 
@@ -1233,12 +1223,10 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SaveTASMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SaveAsTASMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator1;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ExitMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx EditSubMenu;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ConfigSubMenu;
 		private InputRoll TasView;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx RecentSubMenu;
-		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator2;
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator3;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx InsertFrameMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator4;

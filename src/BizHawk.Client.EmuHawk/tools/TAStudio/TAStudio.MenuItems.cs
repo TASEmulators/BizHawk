@@ -295,11 +295,6 @@ namespace BizHawk.Client.EmuHawk
 			Cursor = Cursors.Default;
 		}
 
-		private void ExitMenuItem_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
-
 		private void EditSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			DeselectMenuItem.Enabled =

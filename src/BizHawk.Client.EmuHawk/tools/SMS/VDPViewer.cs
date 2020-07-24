@@ -190,11 +190,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void CloseMenuItem_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
-
 		private void saveTilesScreenshotToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			bmpViewTiles.SaveFile();

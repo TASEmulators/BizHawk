@@ -114,11 +114,6 @@ namespace BizHawk.Client.EmuHawk
 			return true;
 		}
 
-		private void ExitMenuItem_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
-
 		private void SetZoneButton_Click(object sender, EventArgs e)
 		{
 			if (StartNum.Value >= CurrentMovie.InputLogLength || EndNum.Value >= CurrentMovie.InputLogLength)

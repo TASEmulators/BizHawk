@@ -514,11 +514,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void ExitMenuItem_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
-
 		private void NESMusicRipper_FormClosed(object sender, FormClosedEventArgs e)
 		{
 			var apu = Nes.apu;

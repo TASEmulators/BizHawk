@@ -683,11 +683,6 @@ namespace BizHawk.Client.EmuHawk
 			RecentSubMenu.DropDownItems.AddRange(Config.RecentWatches.RecentMenu(LoadFileFromRecent, "Watches"));
 		}
 
-		private void ExitMenuItem_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
-
 		private void WatchesSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			EditWatchMenuItem.Enabled =

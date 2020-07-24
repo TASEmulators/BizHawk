@@ -48,8 +48,6 @@ namespace BizHawk.Client.EmuHawk
 			this.saveTilesScreenshotToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.saveWindowScreenshotToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.savePaletteScreenshotToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.toolStripSeparator1 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
-			this.closeToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.groupBox3.SuspendLayout();
@@ -168,9 +166,7 @@ namespace BizHawk.Client.EmuHawk
             this.saveBGBScreenshotToolStripMenuItem,
             this.saveTilesScreenshotToolStripMenuItem,
             this.saveWindowScreenshotToolStripMenuItem,
-            this.savePaletteScreenshotToolStripMenuItem,
-            this.toolStripSeparator1,
-            this.closeToolStripMenuItem});
+            this.savePaletteScreenshotToolStripMenuItem});
 			this.fileToolStripMenuItem.Text = "&File";
 			// 
 			// saveBGAScreenshotToolStripMenuItem
@@ -197,12 +193,6 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.savePaletteScreenshotToolStripMenuItem.Text = "Save Palette Screenshot...";
 			this.savePaletteScreenshotToolStripMenuItem.Click += new System.EventHandler(this.SavePaletteScreenshotToolStripMenuItem_Click);
-			// 
-			// closeToolStripMenuItem
-			// 
-			this.closeToolStripMenuItem.ShortcutKeyDisplayString = "Alt+F4";
-			this.closeToolStripMenuItem.Text = "&Close";
-			this.closeToolStripMenuItem.Click += new System.EventHandler(this.CloseMenuItem_Click);
 			// 
 			// GenVDPViewer
 			// 
@@ -255,7 +245,5 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx saveTilesScreenshotToolStripMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx saveWindowScreenshotToolStripMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx savePaletteScreenshotToolStripMenuItem;
-		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator1;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx closeToolStripMenuItem;
 	}
 }

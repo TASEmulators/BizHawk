@@ -374,11 +374,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void ExitMenuItem_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
-
 		private void CheatsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			RemoveCheatMenuItem.Enabled =

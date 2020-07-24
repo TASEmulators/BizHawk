@@ -1023,11 +1023,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void CloseMenuItem_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
-
 		private void OptionsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			CheckMisalignedMenuItem.Checked = _settings.CheckMisAligned;

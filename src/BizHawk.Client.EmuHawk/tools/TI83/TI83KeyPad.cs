@@ -104,11 +104,6 @@ namespace BizHawk.Client.EmuHawk
 			KeyPadToolTips.RemoveAll();
 		}
 
-		private void ExitMenuItem_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
-
 		private void OptionsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			ShowHotkeysMenuItem.Checked = TI83ToolTips;

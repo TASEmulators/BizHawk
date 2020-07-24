@@ -186,11 +186,6 @@ namespace BizHawk.Client.EmuHawk
 			Disassembler.Cpu = ((ComboBox) sender).SelectedItem.ToString();
 		}
 
-		private void ExitMenuItem_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
-
 		private void RunBtn_Click(object sender, EventArgs e)
 		{
 			MainForm.UnpauseEmulator();

@@ -845,11 +845,6 @@ namespace BizHawk.Client.EmuHawk
 			SaveSessionAs();
 		}
 
-		private void ExitMenuItem_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
-
 		private void ScriptSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			ToggleScriptMenuItem.Enabled =

@@ -345,11 +345,6 @@ namespace BizHawk.Client.EmuHawk
 			SpriteView.ToBitMap().ToClipBoard();
 		}
 
-		private void ExitMenuItem_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
-
 		private void Table0PaletteSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			Table0P0MenuItem.Checked = PatternView.Pal0 == 0;

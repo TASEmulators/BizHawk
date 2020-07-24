@@ -198,11 +198,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void CloseMenuItem_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
-
 		private void SaveBackgroundScreenshotMenuItem_Click(object sender, EventArgs e)
 		{
 			bmpViewBG.SaveFile();

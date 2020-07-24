@@ -1362,11 +1362,6 @@ namespace BizHawk.Client.EmuHawk
 			RecentTablesSubMenu.DropDownItems.AddRange(RecentTables.RecentMenu(LoadFileFromRecent, "Session"));
 		}
 
-		private void ExitMenuItem_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
-
 		private void EditMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
 			var data = Clipboard.GetDataObject();

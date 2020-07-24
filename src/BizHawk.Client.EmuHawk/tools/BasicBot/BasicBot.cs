@@ -368,11 +368,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void ExitMenuItem_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
-
 		private void OptionsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			TurboWhileBottingMenuItem.Checked = Settings.TurboWhenBotting;
@@ -995,17 +990,17 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_replayMode)
 			{
-				BotStatusButton.Image = Properties.Resources.Play;
+				BotStatusButton.Image = Resources.Play;
 				BotStatusButton.ToolTipText = "Replaying best result";
 			}
 			else if (_isBotting)
 			{
-				BotStatusButton.Image = Properties.Resources.Record;
+				BotStatusButton.Image = Resources.Record;
 				BotStatusButton.ToolTipText = "Botting in progress";
 			}
 			else
 			{
-				BotStatusButton.Image = Properties.Resources.Pause;
+				BotStatusButton.Image = Resources.Pause;
 				BotStatusButton.ToolTipText = "Bot is currently not running";
 			}
 		}
