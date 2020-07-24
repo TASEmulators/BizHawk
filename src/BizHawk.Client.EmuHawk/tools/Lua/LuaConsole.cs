@@ -264,13 +264,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetColumns()
 		{
-			foreach (var column in Settings.Columns)
-			{
-				if (LuaListView.AllColumns[column.Name] == null)
-				{
-					LuaListView.AllColumns.Add(column);
-				}
-			}
+			LuaListView.AllColumns.AddRange(Settings.Columns);
+			LuaListView.Refresh();
 		}
 
 		private void AddFileWatches()

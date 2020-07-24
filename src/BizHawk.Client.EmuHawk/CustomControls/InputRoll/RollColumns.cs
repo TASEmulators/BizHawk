@@ -29,27 +29,23 @@ namespace BizHawk.Client.EmuHawk
 
 		public new void Add(RollColumn column)
 		{
-			if (this.Any(c => c.Name == column.Name))
+			if (this[column.Name] == null)
 			{
-				throw new InvalidOperationException("A column with this name already exists.");
+				base.Add(column);
+				ColumnsChanged();
 			}
-
-			base.Add(column);
-			ColumnsChanged();
 		}
 
 		public new void AddRange(IEnumerable<RollColumn> collection)
 		{
-			var items = collection.ToList();
-			foreach (var column in items)
+			foreach (var column in collection)
 			{
-				if (this.Any(c => c.Name == column.Name))
+				if (this[column.Name] == null)
 				{
-					throw new InvalidOperationException("A column with this name already exists.");
+					Add(column);
 				}
 			}
 
-			base.AddRange(items);
 			ColumnsChanged();
 		}
 

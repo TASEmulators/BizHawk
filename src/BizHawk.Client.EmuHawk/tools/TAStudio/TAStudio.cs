@@ -367,15 +367,14 @@ namespace BizHawk.Client.EmuHawk
 		{
 			TasView.AllColumns.Clear();
 			AddColumn(CursorColumnName, "", 18);
-			AddColumn(
-				new RollColumn
-				{
-					Name = FrameColumnName,
-					Text = "Frame#",
-					UnscaledWidth = 68,
-					Type = ColumnType.Text,
-					Rotatable = true
-				});
+			TasView.AllColumns.Add(new RollColumn
+			{
+				Name = FrameColumnName,
+				Text = "Frame#",
+				UnscaledWidth = 68,
+				Type = ColumnType.Text,
+				Rotatable = true
+			});
 
 			var columnNames = MovieSession.Movie
 				.LogGeneratorInstance(MovieSession.MovieController)
@@ -484,14 +483,13 @@ namespace BizHawk.Client.EmuHawk
 
 		public void AddColumn(string columnName, string columnText, int columnWidth, ColumnType columnType = ColumnType.Boolean)
 		{
-			AddColumn(
-				new RollColumn
-				{
-					Name = columnName,
-					Text = columnText,
-					UnscaledWidth = columnWidth,
-					Type = columnType
-				});
+			TasView.AllColumns.Add(new RollColumn
+			{
+				Name = columnName,
+				Text = columnText,
+				UnscaledWidth = columnWidth,
+				Type = columnType
+			});
 		}
 
 		public void LoadBranchByIndex(int index) => BookMarkControl.LoadBranchExternal(index);
@@ -522,14 +520,6 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				return null;
-			}
-		}
-
-		private void AddColumn(RollColumn column)
-		{
-			if (TasView.AllColumns[column.Name] == null)
-			{
-				TasView.AllColumns.Add(column);
 			}
 		}
 

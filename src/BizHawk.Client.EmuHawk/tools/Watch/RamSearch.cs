@@ -241,13 +241,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetColumns()
 		{
-			foreach (var column in Settings.Columns)
-			{
-				if (WatchListView.AllColumns[column.Name] == null)
-				{
-					WatchListView.AllColumns.Add(column);
-				}
-			}
+			WatchListView.AllColumns.AddRange(Settings.Columns);
+			WatchListView.Refresh();
 		}
 
 		/// <summary>

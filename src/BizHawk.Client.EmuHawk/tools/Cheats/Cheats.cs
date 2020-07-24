@@ -163,15 +163,10 @@ namespace BizHawk.Client.EmuHawk
 			GeneralUpdate();
 		}
 
-		private void SetColumns()
+		private void SetColumns() 
 		{
-			foreach (var column in Settings.Columns)
-			{
-				if (CheatListView.AllColumns[column.Name] == null)
-				{
-					CheatListView.AllColumns.Add(column);
-				}
-			}
+			CheatListView.AllColumns.AddRange(Settings.Columns);
+			CheatListView.Refresh();
 		}
 
 		private void ColumnToggleCallback()
@@ -549,7 +544,6 @@ namespace BizHawk.Client.EmuHawk
 
 			CheatListView.AllColumns.Clear();
 			SetColumns();
-			CheatListView.Refresh();
 		}
 
 		private void CheatListView_DoubleClick(object sender, EventArgs e)
