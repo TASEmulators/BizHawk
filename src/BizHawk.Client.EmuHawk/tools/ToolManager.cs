@@ -87,23 +87,11 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// Loads the tool dialog T (T must implement <see cref="IToolForm"/>) , if it does not exist it will be created, if it is already open, it will be focused
 		/// </summary>
-		/// <typeparam name="T">Type of tool you want to load</typeparam>
 		/// <param name="focus">Define if the tool form has to get the focus or not (Default is true)</param>
-		/// <returns>An instantiated <see cref="IToolForm"/></returns>
-		public T Load<T>(bool focus = true)
-			where T : class, IToolForm
-		{
-			return Load<T>("", focus);
-		}
-
-		/// <summary>
-		/// Loads the tool dialog T (T must implement <see cref="IToolForm"/>) , if it does not exist it will be created, if it is already open, it will be focused
-		/// </summary>
-		/// <typeparam name="T">Type of tool you want to load</typeparam>
 		/// <param name="toolPath">Path to the .dll of the external tool</param>
-		/// <param name="focus">Define if the tool form has to get the focus or not (Default is true)</param>
+		/// <typeparam name="T">Type of tool you want to load</typeparam>
 		/// <returns>An instantiated <see cref="IToolForm"/></returns>
-		public T Load<T>(string toolPath, bool focus = true)
+		public T Load<T>(bool focus = true, string toolPath = "")
 			where T : class, IToolForm
 		{
 			if (!IsAvailable<T>()) return null;
@@ -123,8 +111,7 @@ namespace BizHawk.Client.EmuHawk
 				_tools.Remove(existingTool);
 			}
 
-			var newTool = CreateInstance<T>(toolPath);
-			if (newTool == null) return null;
+			if (!(CreateInstance<T>(toolPath) is T newTool)) return null;
 
 			if (newTool is Form form) form.Owner = _owner;
 			ServiceInjector.UpdateServices(_emulator.ServiceProvider, newTool);
@@ -153,7 +140,7 @@ namespace BizHawk.Client.EmuHawk
 
 			newTool.Restart();
 			newTool.Show();
-			return (T)newTool;
+			return newTool;
 		}
 
 		/// <summary>Loads the external tool's entry form.</summary>
