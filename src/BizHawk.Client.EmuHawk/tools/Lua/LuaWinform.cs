@@ -21,12 +21,7 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 			Icon = Properties.Resources.TextDocIcon;
 			StartPosition = FormStartPosition.CenterParent;
-			Closing += (o, e) => CloseThis();
-		}
-
-		private void CloseThis()
-		{
-			_luaImp.WindowClosed(Handle);
+			Closing += (o, e) => { _luaImp.WindowClosed(Handle); };
 		}
 
 		public void DoLuaEvent(IntPtr handle)

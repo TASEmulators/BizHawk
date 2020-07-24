@@ -84,7 +84,7 @@ namespace BizHawk.Client.EmuHawk
 
 			WatchListView.QueryItemText += ListView_QueryItemText;
 			WatchListView.QueryItemBkColor += ListView_QueryItemBkColor;
-			Closing += (o, e) => SaveConfigSettings();
+			Closing += (o, e) => { Settings.Columns = WatchListView.AllColumns; };
 
 			_sortedColumn = "";
 			_sortReverse = false;
@@ -314,11 +314,6 @@ namespace BizHawk.Client.EmuHawk
 			SetSize(_settings.Size); // Calls NewSearch() automatically
 			_dropdownDontfire = false;
 			HardSetDisplayTypeDropDown(_settings.Type);
-		}
-
-		private void SaveConfigSettings()
-		{
-			Settings.Columns = WatchListView.AllColumns;
 		}
 
 		public void NewSearch()

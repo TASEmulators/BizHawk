@@ -58,7 +58,7 @@ namespace BizHawk.Client.EmuHawk
 
 			Closing += (o, e) =>
 			{
-				SaveConfigSettings();
+				Settings.Columns = CheatListView.AllColumns;
 			};
 
 			CheatListView.QueryItemText += CheatListView_QueryItemText;
@@ -198,11 +198,6 @@ namespace BizHawk.Client.EmuHawk
 				GeneralUpdate();
 				UpdateMessageLabel();
 			}
-		}
-
-		private void SaveConfigSettings()
-		{
-			Settings.Columns = CheatListView.AllColumns;
 		}
 
 		private void LoadConfigSettings()
