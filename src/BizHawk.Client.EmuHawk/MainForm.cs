@@ -107,7 +107,7 @@ namespace BizHawk.Client.EmuHawk
 				Config.GbAsSgb ^= true;
 				if (!Emulator.IsNull()) FlagNeedsReboot(); //TODO only alert if a GB or SGB core is loaded
 			};
-			var N64VideoPluginSettingsMenuItem = new ToolStripMenuItem { Image = Properties.Resources.monitor, Text = "N64 Video Plugin Settings" };
+			var N64VideoPluginSettingsMenuItem = new ToolStripMenuItem { Image = Properties.Resources.Monitor, Text = "N64 Video Plugin Settings" };
 			N64VideoPluginSettingsMenuItem.Click += N64PluginSettingsMenuItem_Click;
 			var setLibretroCoreToolStripMenuItem = new ToolStripMenuItem { Text = "Set Libretro Core" };
 			setLibretroCoreToolStripMenuItem.Click += (clickSender, clickArgs) => RunLibretroCoreChooser();
@@ -129,8 +129,8 @@ namespace BizHawk.Client.EmuHawk
 			UpdateNotification.Visible = false;
 			_statusBarDiskLightOnImage = Properties.Resources.LightOn;
 			_statusBarDiskLightOffImage = Properties.Resources.LightOff;
-			_linkCableOn = Properties.Resources.connect_16x16;
-			_linkCableOff = Properties.Resources.noconnect_16x16;
+			_linkCableOn = Properties.Resources.Connect16X16;
+			_linkCableOff = Properties.Resources.NoConnect16X16;
 			UpdateCoreStatusBarButton();
 			if (Config.FirstBoot)
 			{
@@ -174,7 +174,7 @@ namespace BizHawk.Client.EmuHawk
 			return new CoreComm(ShowMessageCoreComm, AddOnScreenMessage, cfp, prefs);
 		}
 
-		void SetImages()
+		private void SetImages()
 		{
 			OpenRomMenuItem.Image = Properties.Resources.OpenFile;
 			RecentRomSubMenu.Image = Properties.Resources.Recent;
@@ -183,95 +183,95 @@ namespace BizHawk.Client.EmuHawk
 			NextSlotMenuItem.Image = Properties.Resources.MoveRight;
 			ReadonlyMenuItem.Image = Properties.Resources.ReadOnly;
 			RecentMovieSubMenu.Image = Properties.Resources.Recent;
-			RecordMovieMenuItem.Image = Properties.Resources.RecordHS;
+			RecordMovieMenuItem.Image = Properties.Resources.Record;
 			PlayMovieMenuItem.Image = Properties.Resources.Play;
 			StopMovieMenuItem.Image = Properties.Resources.Stop;
-			PlayFromBeginningMenuItem.Image = Properties.Resources.restart;
+			PlayFromBeginningMenuItem.Image = Properties.Resources.Restart;
 			ImportMoviesMenuItem.Image = Properties.Resources.Import;
 			SaveMovieMenuItem.Image = Properties.Resources.SaveAs;
 			SaveMovieAsMenuItem.Image = Properties.Resources.SaveAs;
 			StopMovieWithoutSavingMenuItem.Image = Properties.Resources.Stop;
-			RecordAVMenuItem.Image = Properties.Resources.RecordHS;
-			ConfigAndRecordAVMenuItem.Image = Properties.Resources.AVI;
+			RecordAVMenuItem.Image = Properties.Resources.Record;
+			ConfigAndRecordAVMenuItem.Image = Properties.Resources.Avi;
 			StopAVIMenuItem.Image = Properties.Resources.Stop;
-			ScreenshotMenuItem.Image = Properties.Resources.camera;
+			ScreenshotMenuItem.Image = Properties.Resources.Camera;
 			PauseMenuItem.Image = Properties.Resources.Pause;
-			RebootCoreMenuItem.Image = Properties.Resources.reboot;
+			RebootCoreMenuItem.Image = Properties.Resources.Reboot;
 			SwitchToFullscreenMenuItem.Image = Properties.Resources.Fullscreen;
 			ControllersMenuItem.Image = Properties.Resources.GameController;
 			HotkeysMenuItem.Image = Properties.Resources.HotKeys;
-			DisplayConfigMenuItem.Image = Properties.Resources.tvIcon;
-			SoundMenuItem.Image = Properties.Resources.AudioHS;
-			PathsMenuItem.Image = Properties.Resources.CopyFolderHS;
-			FirmwaresMenuItem.Image = Properties.Resources.pcb;
+			DisplayConfigMenuItem.Image = Properties.Resources.TvIcon;
+			SoundMenuItem.Image = Properties.Resources.Audio;
+			PathsMenuItem.Image = Properties.Resources.CopyFolder;
+			FirmwaresMenuItem.Image = Properties.Resources.Pcb;
 			MessagesMenuItem.Image = Properties.Resources.MessageConfig;
 			AutofireMenuItem.Image = Properties.Resources.Lightning;
 			RewindOptionsMenuItem.Image = Properties.Resources.Previous;
-			ProfilesMenuItem.Image = Properties.Resources.user_blue_small;
+			ProfilesMenuItem.Image = Properties.Resources.Profile;
 			SaveConfigMenuItem.Image = Properties.Resources.Save;
 			LoadConfigMenuItem.Image = Properties.Resources.LoadConfig;
 			ToolBoxMenuItem.Image = Properties.Resources.ToolBox;
-			RamWatchMenuItem.Image = Properties.Resources.watch;
-			RamSearchMenuItem.Image = Properties.Resources.search;
-			LuaConsoleMenuItem.Image = Properties.Resources.Lua;
+			RamWatchMenuItem.Image = Properties.Resources.Watch;
+			RamSearchMenuItem.Image = Properties.Resources.Search;
+			LuaConsoleMenuItem.Image = Properties.Resources.TextDoc;
 			TAStudioMenuItem.Image = Properties.Resources.TAStudio;
-			HexEditorMenuItem.Image = Properties.Resources.poke;
-			TraceLoggerMenuItem.Image = Properties.Resources.pencil;
+			HexEditorMenuItem.Image = Properties.Resources.Poke;
+			TraceLoggerMenuItem.Image = Properties.Resources.Pencil;
 			DebuggerMenuItem.Image = Properties.Resources.Bug;
-			CodeDataLoggerMenuItem.Image = Properties.Resources.cdlogger;
+			CodeDataLoggerMenuItem.Image = Properties.Resources.CdLogger;
 			VirtualPadMenuItem.Image = Properties.Resources.GameController;
 			CheatsMenuItem.Image = Properties.Resources.Freeze;
 			GameSharkConverterMenuItem.Image = Properties.Resources.Shark;
 			MultiDiskBundlerFileMenuItem.Image = Properties.Resources.SaveConfig;
 			NesControllerSettingsMenuItem.Image = Properties.Resources.GameController;
-			NESGraphicSettingsMenuItem.Image = Properties.Resources.tvIcon;
-			NESSoundChannelsMenuItem.Image = Properties.Resources.AudioHS;
-			KeypadMenuItem.Image = Properties.Resources.calculator;
+			NESGraphicSettingsMenuItem.Image = Properties.Resources.TvIcon;
+			NESSoundChannelsMenuItem.Image = Properties.Resources.Audio;
+			KeypadMenuItem.Image = Properties.Resources.Calculator;
 			PSXControllerSettingsMenuItem.Image = Properties.Resources.GameController;
 			SNESControllerConfigurationMenuItem.Image = Properties.Resources.GameController;
 			SnesGfxDebuggerMenuItem.Image = Properties.Resources.Bug;
 			ColecoControllerSettingsMenuItem.Image = Properties.Resources.GameController;
-			N64PluginSettingsMenuItem.Image = Properties.Resources.monitor;
+			N64PluginSettingsMenuItem.Image = Properties.Resources.Monitor;
 			N64ControllerSettingsMenuItem.Image = Properties.Resources.GameController;
 			IntVControllerSettingsMenuItem.Image = Properties.Resources.GameController;
 			OnlineHelpMenuItem.Image = Properties.Resources.Help;
 			ForumsMenuItem.Image = Properties.Resources.TAStudio;
-			FeaturesMenuItem.Image = Properties.Resources.kitchensink;
+			FeaturesMenuItem.Image = Properties.Resources.KitchenSink;
 			AboutMenuItem.Image = Properties.Resources.CorpHawkSmall;
 			DumpStatusButton.Image = Properties.Resources.Blank;
 			PlayRecordStatusButton.Image = Properties.Resources.Blank;
 			PauseStatusButton.Image = Properties.Resources.Blank;
-			RebootStatusBarIcon.Image = Properties.Resources.reboot;
+			RebootStatusBarIcon.Image = Properties.Resources.Reboot;
 			AVIStatusLabel.Image = Properties.Resources.Blank;
 			LedLightStatusLabel.Image = Properties.Resources.LightOff;
 			KeyPriorityStatusLabel.Image = Properties.Resources.Both;
 			CoreNameStatusBarButton.Image = Properties.Resources.CorpHawkSmall;
-			ProfileFirstBootLabel.Image = Properties.Resources.user_blue_small;
-			LinkConnectStatusBarButton.Image = Properties.Resources.connect_16x16;
+			ProfileFirstBootLabel.Image = Properties.Resources.Profile;
+			LinkConnectStatusBarButton.Image = Properties.Resources.Connect16X16;
 			OpenRomContextMenuItem.Image = Properties.Resources.OpenFile;
 			LoadLastRomContextMenuItem.Image = Properties.Resources.Recent;
 			StopAVContextMenuItem.Image = Properties.Resources.Stop;
-			RecordMovieContextMenuItem.Image = Properties.Resources.RecordHS;
+			RecordMovieContextMenuItem.Image = Properties.Resources.Record;
 			PlayMovieContextMenuItem.Image = Properties.Resources.Play;
-			RestartMovieContextMenuItem.Image = Properties.Resources.restart;
+			RestartMovieContextMenuItem.Image = Properties.Resources.Restart;
 			StopMovieContextMenuItem.Image = Properties.Resources.Stop;
 			LoadLastMovieContextMenuItem.Image = Properties.Resources.Recent;
 			StopNoSaveContextMenuItem.Image = Properties.Resources.Stop;
 			SaveMovieContextMenuItem.Image = Properties.Resources.SaveAs;
 			SaveMovieAsContextMenuItem.Image = Properties.Resources.SaveAs;
-			UndoSavestateContextMenuItem.Image = Properties.Resources.undo;
+			UndoSavestateContextMenuItem.Image = Properties.Resources.Undo;
 			toolStripMenuItem6.Image = Properties.Resources.GameController;
 			toolStripMenuItem7.Image = Properties.Resources.HotKeys;
-			toolStripMenuItem8.Image = Properties.Resources.tvIcon;
-			toolStripMenuItem9.Image = Properties.Resources.AudioHS;
-			toolStripMenuItem10.Image = Properties.Resources.CopyFolderHS;
-			toolStripMenuItem11.Image = Properties.Resources.pcb;
+			toolStripMenuItem8.Image = Properties.Resources.TvIcon;
+			toolStripMenuItem9.Image = Properties.Resources.Audio;
+			toolStripMenuItem10.Image = Properties.Resources.CopyFolder;
+			toolStripMenuItem11.Image = Properties.Resources.Pcb;
 			toolStripMenuItem12.Image = Properties.Resources.MessageConfig;
 			toolStripMenuItem13.Image = Properties.Resources.Lightning;
 			toolStripMenuItem14.Image = Properties.Resources.Previous;
 			toolStripMenuItem66.Image = Properties.Resources.Save;
 			toolStripMenuItem67.Image = Properties.Resources.LoadConfig;
-			ScreenshotContextMenuItem.Image = Properties.Resources.camera;
+			ScreenshotContextMenuItem.Image = Properties.Resources.Camera;
 			CloseRomContextMenuItem.Image = Properties.Resources.Close;
 		}
 
@@ -305,7 +305,7 @@ namespace BizHawk.Client.EmuHawk
 			MouseMove += MainForm_MouseMove;
 
 			InitializeComponent();
-			Icon = Properties.Resources.logo;
+			Icon = Properties.Resources.Logo;
 			SetImages();
 
 			GlobalWin.Game = GameInfo.NullInstance;
@@ -886,6 +886,8 @@ namespace BizHawk.Client.EmuHawk
 			Rewinder = Emulator.HasSavestates() && Config.Rewind.Enabled
 				? new Zwinder(Emulator.AsStatable(), Config.Rewind)
 				: null;
+
+			AddOnScreenMessage(Rewinder?.Active == true ? "Rewind started" : "Rewind disabled");
 		}
 
 		private FirmwareManager FirmwareManager => GlobalWin.FirmwareManager;
@@ -3211,7 +3213,7 @@ namespace BizHawk.Client.EmuHawk
 				// commit the avi writing last, in case there were any errors earlier
 				_currAviWriter = aw;
 				AddOnScreenMessage("A/V capture started");
-				AVIStatusLabel.Image = Properties.Resources.AVI;
+				AVIStatusLabel.Image = Properties.Resources.Avi;
 				AVIStatusLabel.ToolTipText = "A/V capture in progress";
 				AVIStatusLabel.Visible = true;
 			}

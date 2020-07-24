@@ -65,22 +65,6 @@ namespace BizHawk.Common.ReflectionExtensions
 		}
 
 		/// <summary>
-		/// Gets the description attribute from a type
-		/// </summary>
-		public static string Description(this Type type)
-		{
-			var descriptions = (DescriptionAttribute[])
-			type.GetCustomAttributes(typeof(DescriptionAttribute), false);
-
-			if (descriptions.Length == 0)
-			{
-				return "";
-			}
-
-			return descriptions[0].Description;
-		}
-
-		/// <summary>
 		/// Gets an enum from a description attribute
 		/// </summary>
 		/// <param name="description">The description attribute value</param>

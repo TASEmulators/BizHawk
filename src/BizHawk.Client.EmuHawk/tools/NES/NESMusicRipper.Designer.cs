@@ -43,8 +43,6 @@ namespace BizHawk.Client.EmuHawk
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
 			this.menuStrip1 = new MenuStripEx();
 			this.FileSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.toolStripSeparator2 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
-			this.ExitMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
@@ -148,16 +146,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// FileSubMenu
 			// 
-			this.FileSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripSeparator2,
-            this.ExitMenuItem});
 			this.FileSubMenu.Text = "&File";
-			// 
-			// ExitMenuItem
-			// 
-			this.ExitMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F4)));
-			this.ExitMenuItem.Text = "E&xit";
-			this.ExitMenuItem.Click += new System.EventHandler(this.ExitMenuItem_Click);
 			// 
 			// NESMusicRipper
 			// 
@@ -192,8 +181,6 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.LocLabelEx lblContents;
 		private MenuStripEx menuStrip1;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx FileSubMenu;
-		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator2;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ExitMenuItem;
 		private System.Windows.Forms.TextBox textBox1;
 		private System.Windows.Forms.TextBox txtPatternLength;
 		private System.Windows.Forms.GroupBox groupBox1;

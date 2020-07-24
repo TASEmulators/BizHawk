@@ -51,8 +51,6 @@ namespace BizHawk.Client.EmuHawk
 			this.toolStripSeparator8 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.RecentScriptsSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.toolStripSeparator3 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
-			this.toolStripSeparator1 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
-			this.ExitMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.ScriptSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.NewScriptMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.OpenScriptMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -189,9 +187,7 @@ namespace BizHawk.Client.EmuHawk
             this.SaveSessionAsMenuItem,
             this.toolStripSeparator9,
             this.RecentSessionsSubMenu,
-            this.RecentScriptsSubMenu,
-            this.toolStripSeparator1,
-            this.ExitMenuItem});
+            this.RecentScriptsSubMenu});
 			this.FileSubMenu.Text = "&File";
 			this.FileSubMenu.DropDownOpened += new System.EventHandler(this.FileSubMenu_DropDownOpened);
 			// 
@@ -235,12 +231,6 @@ namespace BizHawk.Client.EmuHawk
             this.toolStripSeparator3});
 			this.RecentScriptsSubMenu.Text = "Recent Scripts";
 			this.RecentScriptsSubMenu.DropDownOpened += new System.EventHandler(this.RecentScriptsSubMenu_DropDownOpened);
-			// 
-			// ExitMenuItem
-			// 
-			this.ExitMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F4)));
-			this.ExitMenuItem.Text = "E&xit";
-			this.ExitMenuItem.Click += new System.EventHandler(this.ExitMenuItem_Click);
 			// 
 			// ScriptSubMenu
 			// 
@@ -717,8 +707,6 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx FileSubMenu;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SaveSessionMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SaveSessionAsMenuItem;
-		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator1;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ExitMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ScriptSubMenu;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx EditScriptMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ToggleScriptMenuItem;

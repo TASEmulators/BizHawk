@@ -31,7 +31,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_initializing = true;
 			InitializeComponent();
-			Icon = Properties.Resources.TAStudio_MultiSize;
+			Icon = Properties.Resources.TAStudioIcon;
 		}
 
 		private void MacroInputTool_Load(object sender, EventArgs e)
@@ -112,11 +112,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			return true;
-		}
-
-		private void ExitMenuItem_Click(object sender, EventArgs e)
-		{
-			Close();
 		}
 
 		private void SetZoneButton_Click(object sender, EventArgs e)

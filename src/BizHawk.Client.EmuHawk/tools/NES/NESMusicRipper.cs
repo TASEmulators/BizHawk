@@ -23,7 +23,7 @@ namespace BizHawk.Client.EmuHawk
 		public NESMusicRipper()
 		{
 			InitializeComponent();
-			Icon = Properties.Resources.NESControllerIcon_MultiSize;
+			Icon = Properties.Resources.NesControllerIcon;
 			SyncContents();
 		}
 
@@ -512,11 +512,6 @@ namespace BizHawk.Client.EmuHawk
 				_isRunning = true;
 				btnControl.Text = "Stop";
 			}
-		}
-
-		private void ExitMenuItem_Click(object sender, EventArgs e)
-		{
-			Close();
 		}
 
 		private void NESMusicRipper_FormClosed(object sender, FormClosedEventArgs e)

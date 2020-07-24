@@ -47,7 +47,7 @@ namespace BizHawk.Client.EmuHawk
 		public NesPPU()
 		{
 			InitializeComponent();
-			Icon = Properties.Resources.NESControllerIcon_MultiSize;
+			Icon = Properties.Resources.NesControllerIcon;
 			CalculateFormSize();
 		}
 
@@ -343,11 +343,6 @@ namespace BizHawk.Client.EmuHawk
 		private void CopySpriteToClipboardMenuItem_Click(object sender, EventArgs e)
 		{
 			SpriteView.ToBitMap().ToClipBoard();
-		}
-
-		private void ExitMenuItem_Click(object sender, EventArgs e)
-		{
-			Close();
 		}
 
 		private void Table0PaletteSubMenu_DropDownOpened(object sender, EventArgs e)

@@ -2247,19 +2247,19 @@ namespace BizHawk.Client.EmuHawk
 				if (_stateSlots.IsRedo(MovieSession.Movie, Config.SaveSlot))
 				{
 					UndoSavestateContextMenuItem.Text = $"Redo Save to slot {Config.SaveSlot}";
-					UndoSavestateContextMenuItem.Image = Properties.Resources.redo;
+					UndoSavestateContextMenuItem.Image = Properties.Resources.Redo;
 				}
 				else
 				{
 					UndoSavestateContextMenuItem.Text = $"Undo Save to slot {Config.SaveSlot}";
-					UndoSavestateContextMenuItem.Image = Properties.Resources.undo;
+					UndoSavestateContextMenuItem.Image = Properties.Resources.Undo;
 				}
 			}
 			else
 			{
 				UndoSavestateContextMenuItem.Enabled = false;
 				UndoSavestateContextMenuItem.Text = "Undo Savestate";
-				UndoSavestateContextMenuItem.Image = Properties.Resources.undo;
+				UndoSavestateContextMenuItem.Image = Properties.Resources.Undo;
 			}
 
 			ShowMenuContextMenuItem.Text = MainMenuStrip.Visible ? "Hide Menu" : "Show Menu";

@@ -14,7 +14,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_registeredFunctions = registeredFunctions;
 			InitializeComponent();
-			Icon = Properties.Resources.textdoc_MultiSize;
+			Icon = Properties.Resources.TextDocIcon;
 		}
 
 		public Point StartLocation { get; set; } = new Point(0, 0);

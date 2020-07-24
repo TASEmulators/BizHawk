@@ -157,6 +157,14 @@ impl WaterboxHost {
 	pub fn run_guest_simple(&mut self, entry_point: usize) {
 		context::call_guest_simple(entry_point, &mut self.context);
 	}
+
+	pub fn page_len(&self) -> usize {
+		self.memory_block.page_len()
+	}
+
+	pub fn page_info(&self, index: usize) -> u8 {
+		self.memory_block.page_info(index)
+	}
 }
 
 const SAVE_START_MAGIC: &str = "ActivatedWaterboxHost_v1";

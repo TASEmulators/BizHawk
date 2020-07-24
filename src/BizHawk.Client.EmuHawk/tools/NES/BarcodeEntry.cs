@@ -13,7 +13,7 @@ namespace BizHawk.Client.EmuHawk
 		public BarcodeEntry()
 		{
 			InitializeComponent();
-			Icon = Properties.Resources.NESControllerIcon_MultiSize;
+			Icon = Properties.Resources.NesControllerIcon;
 		}
 
 		public void Restart()

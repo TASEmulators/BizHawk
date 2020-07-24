@@ -51,8 +51,6 @@ namespace BizHawk.Client.EmuHawk
 			this.toolStripSeparator22 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.toolStripSeparator20 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.ToBk2MenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.toolStripSeparator2 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
-			this.ExitMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.EditSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.UndoMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.RedoMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -74,6 +72,7 @@ namespace BizHawk.Client.EmuHawk
 			this.InsertFrameMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.DeleteFramesMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.CloneFramesMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.CloneFramesXTimesMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.InsertNumFramesMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.toolStripSeparator6 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.TruncateMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -180,6 +179,7 @@ namespace BizHawk.Client.EmuHawk
 			this.InsertFrameContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.DeleteFramesContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.CloneContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.CloneXTimesContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.InsertNumFramesContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.toolStripSeparator18 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.TruncateContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -234,9 +234,7 @@ namespace BizHawk.Client.EmuHawk
             this.placeMacroAtSelectionToolStripMenuItem,
             this.recentMacrosToolStripMenuItem,
             this.toolStripSeparator20,
-            this.ToBk2MenuItem,
-            this.toolStripSeparator2,
-            this.ExitMenuItem});
+            this.ToBk2MenuItem});
 			this.FileSubMenu.Text = "&File";
 			this.FileSubMenu.DropDownOpened += new System.EventHandler(this.FileSubMenu_DropDownOpened);
 			// 
@@ -323,12 +321,6 @@ namespace BizHawk.Client.EmuHawk
 			this.ToBk2MenuItem.Text = "&Export to Bk2";
 			this.ToBk2MenuItem.Click += new System.EventHandler(this.ToBk2MenuItem_Click);
 			// 
-			// ExitMenuItem
-			// 
-			this.ExitMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F4)));
-			this.ExitMenuItem.Text = "E&xit";
-			this.ExitMenuItem.Click += new System.EventHandler(this.ExitMenuItem_Click);
-			// 
 			// EditSubMenu
 			// 
 			this.EditSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -352,7 +344,8 @@ namespace BizHawk.Client.EmuHawk
             this.InsertFrameMenuItem,
             this.DeleteFramesMenuItem,
             this.CloneFramesMenuItem,
-            this.InsertNumFramesMenuItem,
+            this.CloneFramesXTimesMenuItem,
+			this.InsertNumFramesMenuItem,
             this.toolStripSeparator6,
             this.TruncateMenuItem,
             this.ClearGreenzoneMenuItem,
@@ -453,6 +446,11 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.CloneFramesMenuItem.Text = "&Clone";
 			this.CloneFramesMenuItem.Click += new System.EventHandler(this.CloneFramesMenuItem_Click);
+			// 
+			// CloneFramesXTimesMenuItem
+			// 
+			this.CloneFramesXTimesMenuItem.Text = "Clone # Times";
+			this.CloneFramesXTimesMenuItem.Click += new System.EventHandler(this.CloneFramesXTimesMenuItem_Click);
 			// 
 			// InsertNumFramesMenuItem
 			// 
@@ -900,7 +898,7 @@ namespace BizHawk.Client.EmuHawk
 			this.TasView.LagFramesToHide = 0;
 			this.TasView.LetKeysModifySelection = true;
 			this.TasView.Location = new System.Drawing.Point(3, 0);
-			this.TasView.MultiSelect = false;
+			this.TasView.MultiSelect = true;
 			this.TasView.Name = "TasView";
 			this.TasView.Rotatable = true;
 			this.TasView.RowCount = 0;
@@ -996,7 +994,8 @@ namespace BizHawk.Client.EmuHawk
             this.InsertFrameContextMenuItem,
             this.DeleteFramesContextMenuItem,
             this.CloneContextMenuItem,
-            this.InsertNumFramesContextMenuItem,
+            this.CloneXTimesContextMenuItem,
+			this.InsertNumFramesContextMenuItem,
             this.toolStripSeparator18,
             this.TruncateContextMenuItem,
             this.BranchContextMenuItem,
@@ -1085,6 +1084,11 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.CloneContextMenuItem.Text = "Clone";
 			this.CloneContextMenuItem.Click += new System.EventHandler(this.CloneFramesMenuItem_Click);
+			// 
+			// CloneXTimesContextMenuItem
+			// 
+			this.CloneXTimesContextMenuItem.Text = "Clone # Times";
+			this.CloneXTimesContextMenuItem.Click += new System.EventHandler(this.CloneFramesXTimesMenuItem_Click);
 			// 
 			// InsertNumFramesContextMenuItem
 			// 
@@ -1219,17 +1223,16 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SaveTASMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SaveAsTASMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator1;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ExitMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx EditSubMenu;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ConfigSubMenu;
 		private InputRoll TasView;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx RecentSubMenu;
-		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator2;
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator3;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx InsertFrameMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator4;
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator7;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx CloneFramesMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx CloneFramesXTimesMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx DeleteFramesMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ClearFramesMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx InsertNumFramesMenuItem;
@@ -1288,6 +1291,7 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx InsertFrameContextMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx InsertNumFramesContextMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx CloneContextMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx CloneXTimesContextMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator18;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx TruncateContextMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ClearGreenzoneMenuItem;

@@ -33,7 +33,7 @@ namespace BizHawk.Client.EmuHawk
 		public GbaGpuView()
 		{
 			InitializeComponent();
-			Icon = Properties.Resources.gba_MultiSize.Value;
+			Icon = Properties.Resources.GbaIcon.Value;
 			// TODO: hook up something
 			// we do this twice to avoid having to & 0x7fff with every color
 			int[] tmp = GBColors.GetLut(GBColors.ColorType.vivid);

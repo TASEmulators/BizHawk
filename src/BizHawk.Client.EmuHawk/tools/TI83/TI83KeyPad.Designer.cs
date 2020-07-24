@@ -33,8 +33,7 @@ namespace BizHawk.Client.EmuHawk
 			this.components = new System.ComponentModel.Container();
 			this.menuStrip1 = new MenuStripEx();
 			this.toolStripMenuItem1 = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.KeyPadSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.ExitMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.FileSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.SettingsSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.ShowHotkeysMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.YButton = new System.Windows.Forms.Button();
@@ -176,21 +175,13 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripMenuItem1,
-            this.KeyPadSubMenu,
+            this.FileSubMenu,
             this.SettingsSubMenu});
 			this.menuStrip1.TabIndex = 0;
 			// 
 			// KeyPadSubMenu
 			// 
-			this.KeyPadSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.ExitMenuItem});
-			this.KeyPadSubMenu.Text = "Key Pad";
-			// 
-			// ExitMenuItem
-			// 
-			this.ExitMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F4)));
-			this.ExitMenuItem.Text = "E&xit";
-			this.ExitMenuItem.Click += new System.EventHandler(this.ExitMenuItem_Click);
+			this.FileSubMenu.Text = "&File";
 			// 
 			// OptionsSubMenu
 			// 
@@ -1660,9 +1651,8 @@ namespace BizHawk.Client.EmuHawk
 
         private MenuStripEx menuStrip1;
         private BizHawk.WinForms.Controls.ToolStripMenuItemEx toolStripMenuItem1;
-        private BizHawk.WinForms.Controls.ToolStripMenuItemEx KeyPadSubMenu;
-        private BizHawk.WinForms.Controls.ToolStripMenuItemEx ExitMenuItem;
-        private BizHawk.WinForms.Controls.ToolStripMenuItemEx SettingsSubMenu;
+        private BizHawk.WinForms.Controls.ToolStripMenuItemEx FileSubMenu;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SettingsSubMenu;
         private System.Windows.Forms.Button YButton;
         private System.Windows.Forms.Button SecondButton;
         private System.Windows.Forms.Button WindowButton;

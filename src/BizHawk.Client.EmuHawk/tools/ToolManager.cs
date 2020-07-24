@@ -12,6 +12,7 @@ using BizHawk.Client.Common;
 using BizHawk.Common;
 using BizHawk.Common.ReflectionExtensions;
 using BizHawk.Emulation.Common;
+using BizHawk.WinForms.Controls;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -253,6 +254,24 @@ namespace BizHawk.Client.EmuHawk
 			form.Owner = settings.FloatingWindow ? null : _owner;
 		}
 
+		private void AddCloseButton(ToolStripMenuItem subMenu, Form form)
+		{
+			if (subMenu.DropDownItems.Count > 0)
+			{
+				subMenu.DropDownItems.Add(new ToolStripSeparatorEx());
+			}
+
+			var closeMenuItem = new ToolStripMenuItem
+			{
+				Name = "CloseBtn", 
+				Text = "&Close",
+				ShortcutKeyDisplayString = "Alt+F4"
+			};
+
+			closeMenuItem.Click += (o, e) => { form.Close(); };
+			subMenu.DropDownItems.Add(closeMenuItem);
+		}
+
 		private void AttachSettingHooks(IToolFormAutoConfig tool, ToolDialogSettings settings)
 		{
 			var form = (Form)tool;
@@ -268,7 +287,10 @@ namespace BizHawk.Client.EmuHawk
 						{
 							dest = submenu.DropDownItems;
 							dest.Add(new ToolStripSeparator());
-							break;
+						}
+						else if (submenu.Text.Contains("File"))
+						{
+							AddCloseButton(submenu, form);
 						}
 					}
 

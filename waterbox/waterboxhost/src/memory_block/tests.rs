@@ -5,6 +5,44 @@ use super::*;
 
 type TestResult = anyhow::Result<()>;
 
+struct TibSave {
+	stack_top: usize,
+	stack_bottom: usize,
+}
+
+impl TibSave {
+	fn new() -> TibSave {
+		context::prepare_thread();
+		let mut res = TibSave {
+			stack_top: 0,
+			stack_bottom: 0,
+		};
+		// nt will decline to call ntdll!KiUserExceptionDispatcher if it doesn't like rsp.  The most
+		// obvious example of this is if [rsp] is not writable, which is why we have the whole RWStack nonsense.
+		// But it seems there can be other issues if you hit a fault handler for a non-stack location while the
+		// stack has not yet been unguarded (see test_regular_fault_on_new_stack).  So we add garbage values to TIB
+		// stack extents to fix things up.
+
+		// In normal, non-test code, this TIB manipulation happens in interop.s
+		unsafe {
+			asm!("mov {}, gs:0x08", out(reg) res.stack_top);
+			asm!("mov {}, gs:0x10", out(reg) res.stack_bottom);
+			asm!("mov gs:0x08, {}", in(reg) -1isize);
+			asm!("mov gs:0x10, {}", in(reg) 0isize);
+		}
+		res
+	}
+}
+impl Drop for TibSave {
+	fn drop(&mut self) {
+		unsafe {
+			asm!("mov gs:0x08, {}", in(reg) self.stack_top);
+			asm!("mov gs:0x10, {}", in(reg) self.stack_bottom);
+		}		
+	}
+}
+
+
 /// new / drop, activate / deactivate
 #[test]
 fn test_create() {
@@ -93,6 +131,8 @@ fn test_stk_norm() -> TestResult {
 fn test_stack() -> TestResult {
 	use std::convert::TryInto;
 	unsafe {
+		let _t = TibSave::new();
+
 		let addr = AddressRange { start: 0x36f00000000, size: 0x10000 };
 		let mut b = MemoryBlock::new(addr);
 		b.activate();
@@ -113,6 +153,9 @@ fn test_stack() -> TestResult {
 		let res = transmute::<usize, extern "sysv64" fn(rsp: usize) -> u8>(addr.start)(tmp_rsp);
 		assert_eq!(res, 42);
 
+		b.deactivate();
+		b.activate();
+
 		b.get_stack_dirty();
 
 		assert!(b.pages[0].dirty);
@@ -123,6 +166,49 @@ fn test_stack() -> TestResult {
 		let real_rsp = isize::from_le_bytes(ptr[addr.size - 8..].try_into().unwrap());
 		let current_rsp = &real_rsp as *const isize as isize;
 		assert!((real_rsp - current_rsp).abs() < 0x10000);
+		Ok(())
+	}
+}
+
+/// regular dirt detection, but we're on a usermode stack that has not yet been guard tripped (windows)
+#[test]
+fn test_regular_fault_on_new_stack() -> TestResult {
+	unsafe {
+		let _t = TibSave::new();
+
+		let addr = AddressRange { start: 0x36f00000000, size: 0x10000 };
+		let mut b = MemoryBlock::new(addr);
+		b.activate();
+		b.mmap_fixed(addr, Protection::RW, true)?;
+		let ptr = b.addr.slice_mut();
+		let mut i = 0;
+
+		ptr[i] = 0x48 ; i += 1; ptr[i] = 0x89 ; i += 1; ptr[i] = 0xe0 ; i += 1; // mov rax,rsp
+		ptr[i] = 0x48 ; i += 1; ptr[i] = 0x89 ; i += 1; ptr[i] = 0xfc ; i += 1; // mov rsp,rdi
+		// Important:  Intentionally make no writes or reads from our stack area before tripping this access violation.
+		ptr[i] = 0x48 ; i += 1; ptr[i] = 0x89 ; i += 1; ptr[i] = 0x06 ; i += 1; // mov [rsi],rax
+		ptr[i] = 0x48 ; i += 1; ptr[i] = 0x89 ; i += 1; ptr[i] = 0xc4 ; i += 1; // mov rsp,rax
+		ptr[i] = 0xc3 ; // ret 
+
+		b.mprotect(AddressRange { start: 0x36f00000000, size: 0x1000 }, Protection::RX)?;
+		b.mprotect(AddressRange { start: 0x36f00001000, size: 0x1000 }, Protection::RW)?;
+		b.mprotect(AddressRange { start: 0x36f00008000, size: 0x8000 }, Protection::RWStack)?;
+		let tmp_rsp = addr.end();
+		let dest_ptr: usize = 0x36f00001000;
+		let res = transmute::<_, extern "sysv64" fn(rsp: usize, dest: usize) -> isize>(addr.start)(tmp_rsp, dest_ptr);
+
+		b.get_stack_dirty();
+
+		assert!(b.pages[0].dirty);
+		assert!(b.pages[1].dirty);
+		assert!(!b.pages[2].dirty);
+		// assert!(!b.pages[14].dirty);
+		// assert!(b.pages[15].dirty);
+
+		let real_rsp = *transmute::<_, *mut isize>(dest_ptr);
+		let current_rsp = &real_rsp as *const isize as isize;
+		assert!((real_rsp - current_rsp).abs() < 0x10000);
+		assert_eq!(real_rsp, res);
 		Ok(())
 	}
 }
@@ -139,6 +225,9 @@ fn test_state_basic() -> TestResult {
 		ptr[0x1000] = 40;
 		ptr[0x2000] = 60;
 		ptr[0x3000] = 80;
+		b.deactivate();
+		b.activate();
+		b.deactivate();
 
 		b.seal()?;
 		let mut state0 = Vec::new();
@@ -147,8 +236,12 @@ fn test_state_basic() -> TestResult {
 		// no pages should be in the state
 		assert!(state0.len() < 0x1000);
 
+		b.activate();
+
 		ptr[0x1000] = 100;
 		ptr[0x3000] = 44;
+
+		b.deactivate();
 
 		let mut state1 = Vec::new();
 		b.save_state(&mut state1)?;
@@ -159,17 +252,25 @@ fn test_state_basic() -> TestResult {
 
 		b.load_state(&mut state0.as_slice())?;
 
+		b.activate();
+
 		assert_eq!(ptr[0x0000], 20);
 		assert_eq!(ptr[0x1000], 40);
 		assert_eq!(ptr[0x2000], 60);
 		assert_eq!(ptr[0x3000], 80);
 
+		b.deactivate();
+
 		b.load_state(&mut state1.as_slice())?;
+
+		b.activate();
 
 		assert_eq!(ptr[0x0000], 20);
 		assert_eq!(ptr[0x1000], 100);
 		assert_eq!(ptr[0x2000], 60);
 		assert_eq!(ptr[0x3000], 44);
+
+		b.deactivate();
 
 		Ok(())
 	}
@@ -227,13 +328,15 @@ fn test_thready_stack() -> TestResult {
 		let blocker = barrier.clone();
 		ress.push(thread::spawn(move|| {
 			unsafe {
-				let addr = AddressRange { start: 0x36000000000 + i * 0x100000000, size: PAGESIZE * 2 };
+				let _t = TibSave::new();
+
+				let addr = AddressRange { start: 0x36000000000 + i * 0x100000000, size: PAGESIZE * 8 };
 				let mut b = MemoryBlock::new(addr);
 				b.activate();
 
 				blocker.wait();
 				b.mmap_fixed(addr, Protection::RWX, true)?;
-				b.mprotect(AddressRange { start: addr.start + PAGESIZE, size: PAGESIZE }, Protection::RWStack)?;
+				b.mprotect(AddressRange { start: addr.start + PAGESIZE, size: PAGESIZE * 7 }, Protection::RWStack)?;
 
 				let ptr = b.addr.slice_mut();
 				let mut i = 0;
@@ -248,7 +351,7 @@ fn test_thready_stack() -> TestResult {
 				b.seal()?;
 
 				assert!(!b.pages[0].dirty);
-				assert!(!b.pages[1].dirty);
+				assert!(!b.pages[7].dirty);
 				let tmp_rsp = addr.end();
 				let res = transmute::<usize, extern "sysv64" fn(rsp: usize) -> u8>(addr.start)(tmp_rsp);
 				assert_eq!(res, 42);
@@ -256,7 +359,7 @@ fn test_thready_stack() -> TestResult {
 				b.get_stack_dirty();
 	
 				assert!(!b.pages[0].dirty);
-				assert!(b.pages[1].dirty);
+				assert!(b.pages[7].dirty);
 
 				Ok(())
 			}

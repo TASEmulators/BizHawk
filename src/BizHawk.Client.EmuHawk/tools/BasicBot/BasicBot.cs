@@ -82,13 +82,13 @@ namespace BizHawk.Client.EmuHawk
 		public BasicBot()
 		{
 			InitializeComponent();
-			Icon = Resources.basicbot;
+			Icon = Resources.BasicBot;
 			NewMenuItem.Image = Resources.NewFile;
 			OpenMenuItem.Image = Resources.OpenFile;
 			SaveMenuItem.Image = Resources.SaveAs;
 			RecentSubMenu.Image = Resources.Recent;
 			RunBtn.Image = Resources.Play;
-			BotStatusButton.Image = Resources.placeholder_bitmap;
+			BotStatusButton.Image = Resources.Placeholder;
 			btnCopyBestInput.Image = Resources.Duplicate;
 			PlayBestButton.Image = Resources.Play;
 			ClearBestButton.Image = Resources.Close;
@@ -366,11 +366,6 @@ namespace BizHawk.Client.EmuHawk
 				SaveBotFile(file.FullName);
 				_currentFileName = file.FullName;
 			}
-		}
-
-		private void ExitMenuItem_Click(object sender, EventArgs e)
-		{
-			Close();
 		}
 
 		private void OptionsSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -995,17 +990,17 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_replayMode)
 			{
-				BotStatusButton.Image = Properties.Resources.Play;
+				BotStatusButton.Image = Resources.Play;
 				BotStatusButton.ToolTipText = "Replaying best result";
 			}
 			else if (_isBotting)
 			{
-				BotStatusButton.Image = Properties.Resources.RecordHS;
+				BotStatusButton.Image = Resources.Record;
 				BotStatusButton.ToolTipText = "Botting in progress";
 			}
 			else
 			{
-				BotStatusButton.Image = Properties.Resources.Pause;
+				BotStatusButton.Image = Resources.Pause;
 				BotStatusButton.ToolTipText = "Bot is currently not running";
 			}
 		}

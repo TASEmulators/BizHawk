@@ -33,7 +33,6 @@ namespace BizHawk.Client.EmuHawk
 			this.components = new System.ComponentModel.Container();
 			this.menuStrip1 = new MenuStripEx();
 			this.fileToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.ExitMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.DebugSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.StepIntoMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.StepOverMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -74,15 +73,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// fileToolStripMenuItem
 			// 
-			this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.ExitMenuItem});
 			this.fileToolStripMenuItem.Text = "&File";
-			// 
-			// ExitMenuItem
-			// 
-			this.ExitMenuItem.ShortcutKeyDisplayString = "Alt+F4";
-			this.ExitMenuItem.Text = "&Close";
-			this.ExitMenuItem.Click += new System.EventHandler(this.ExitMenuItem_Click);
 			// 
 			// DebugSubMenu
 			// 
@@ -356,7 +347,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private MenuStripEx menuStrip1;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx fileToolStripMenuItem;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ExitMenuItem;
 		private System.Windows.Forms.GroupBox RegistersGroupBox;
 		private RegisterBoxControl RegisterPanel;
 		private System.Windows.Forms.GroupBox BreakpointsGroupBox;

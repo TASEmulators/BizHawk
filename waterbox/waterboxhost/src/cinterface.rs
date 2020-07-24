@@ -354,3 +354,26 @@ pub extern fn wbx_set_always_evict_blocks(_val: bool) {
 		unsafe { ALWAYS_EVICT_BLOCKS = _val; }
 	}
 }
+
+/// Retrieve the number of pages of guest memory that this host is tracking
+#[no_mangle]
+pub extern fn wbx_get_page_len(obj: &mut WaterboxHost, ret: &mut Return<usize>) {
+	ret.put(Ok(obj.page_len()))
+}
+
+/// Retrieve basic information for a tracked guest page.  Index should be in 0..wbx_get_page_len().
+/// 1 - readable, implies allocated
+/// 2 - writable
+/// 4 - executable
+/// 0x10 - stack
+/// 0x20 - allocated but not readable (guest-generated "guard")
+/// 0x40 - invisible
+/// 0x80 - dirty
+#[no_mangle]
+pub extern fn wbx_get_page_data(obj: &mut WaterboxHost, index: usize, ret: &mut Return<u8>) {
+	if index >= obj.page_len() {
+		ret.put(Err(anyhow!("Index out of range")))
+	} else {
+		ret.put(Ok(obj.page_info(index)))
+	}
+}

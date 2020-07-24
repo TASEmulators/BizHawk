@@ -3,7 +3,6 @@ using System.Drawing;
 using System.Threading;
 
 using NLua;
-using BizHawk.Common.ReflectionExtensions;
 
 namespace BizHawk.Client.Common
 {
@@ -27,7 +26,7 @@ namespace BizHawk.Client.Common
 
 		public abstract string Name { get; }
 		public Action<string> LogOutputCallback { protected get; set; }
-		protected Lua Lua { get; }
+		public Lua Lua { get; }
 
 		public static void ClearCurrentThread()
 		{
@@ -72,18 +71,6 @@ namespace BizHawk.Client.Common
 		protected void Log(object message)
 		{
 			LogOutputCallback?.Invoke(message.ToString());
-		}
-
-		public void LuaRegister(Type callingLibrary, LuaDocumentation docs = null)
-		{
-			Lua.NewTable(Name);
-			foreach (var method in GetType().GetMethods())
-			{
-				var foundAttrs = method.GetCustomAttributes(typeof(LuaMethodAttribute), false);
-				if (foundAttrs.Length == 0) continue;
-				Lua.RegisterFunction($"{Name}.{((LuaMethodAttribute) foundAttrs[0]).Name}", this, method);
-				docs?.Add(new LibraryFunction(Name, callingLibrary.Description(), method));
-			}
 		}
 	}
 }

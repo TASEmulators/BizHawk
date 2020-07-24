@@ -39,8 +39,6 @@ namespace BizHawk.Client.EmuHawk
 			this.SaveAsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.RecentSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.toolStripSeparator2 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
-			this.toolStripSeparator1 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
-			this.ExitMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.OptionsSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.MemoryDomainsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.toolStripSeparator3 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
@@ -158,9 +156,7 @@ namespace BizHawk.Client.EmuHawk
 			this.OpenMenuItem,
 			this.SaveMenuItem,
 			this.SaveAsMenuItem,
-			this.RecentSubMenu,
-			this.toolStripSeparator1,
-			this.ExitMenuItem});
+			this.RecentSubMenu});
 			this.FileSubMenu.Text = "&File";
 			this.FileSubMenu.DropDownOpened += new System.EventHandler(this.FileSubMenu_DropDownOpened);
 			// 
@@ -195,12 +191,6 @@ namespace BizHawk.Client.EmuHawk
 			this.toolStripSeparator2});
 			this.RecentSubMenu.Text = "Recent";
 			this.RecentSubMenu.DropDownOpened += new System.EventHandler(this.RecentSubMenu_DropDownOpened);
-			// 
-			// ExitMenuItem
-			// 
-			this.ExitMenuItem.ShortcutKeyDisplayString = "Alt+F4";
-			this.ExitMenuItem.Text = "E&xit";
-			this.ExitMenuItem.Click += new System.EventHandler(this.ExitMenuItem_Click);
 			// 
 			// OptionsSubMenu
 			// 
@@ -1080,12 +1070,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private MenuStripEx BotMenu;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx FileSubMenu;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ExitMenuItem;
 		private System.Windows.Forms.Button RunBtn;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx OpenMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SaveMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx RecentSubMenu;
-		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator1;
 		private System.Windows.Forms.StatusStrip BotStatusStrip;
 		private System.Windows.Forms.GroupBox ControlsBox;
 		private System.Windows.Forms.Panel ControlProbabilityPanel;

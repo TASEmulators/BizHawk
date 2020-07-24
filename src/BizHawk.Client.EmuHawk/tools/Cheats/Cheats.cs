@@ -13,7 +13,7 @@ using BizHawk.Client.EmuHawk.ToolExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class Cheats : ToolFormBase, IToolForm
+	public partial class Cheats : ToolFormBase, IToolFormAutoConfig
 	{
 		private const string NameColumn = "NamesColumn";
 		private const string AddressColumn = "AddressColumn";
@@ -26,16 +26,14 @@ namespace BizHawk.Client.EmuHawk
 		private const string TypeColumn = "DisplayTypeColumn";
 		private const string ComparisonTypeColumn = "ComparisonTypeColumn";
 
-		private int _defaultWidth;
-		private int _defaultHeight;
 		private string _sortedColumn;
 		private bool _sortReverse;
 
 		public Cheats()
 		{
 			InitializeComponent();
-			Icon = Resources.Freeze_MultiSize;
-			ToggleContextMenuItem.Image = Resources.Refresh1;
+			Icon = Resources.FreezeIcon;
+			ToggleContextMenuItem.Image = Resources.Refresh;
 			RemoveContextMenuItem.Image = Resources.Delete;
 			DisableAllContextMenuItem.Image = Resources.Stop;
 			NewMenuItem.Image = Resources.NewFile;
@@ -46,7 +44,7 @@ namespace BizHawk.Client.EmuHawk
 			InsertSeparatorMenuItem.Image = Resources.InsertSeparator;
 			MoveUpMenuItem.Image = Resources.MoveUp;
 			MoveDownMenuItem.Image = Resources.MoveDown;
-			ToggleMenuItem.Image = Resources.Refresh1;
+			ToggleMenuItem.Image = Resources.Refresh;
 			DisableAllCheatsMenuItem.Image = Resources.Stop;
 			NewToolBarItem.Image = Resources.NewFile;
 			OpenToolBarItem.Image = Resources.OpenFile;
@@ -55,12 +53,12 @@ namespace BizHawk.Client.EmuHawk
 			SeparatorToolbarItem.Image = Resources.InsertSeparator;
 			MoveUpToolbarItem.Image = Resources.MoveUp;
 			MoveDownToolbarItem.Image = Resources.MoveDown;
-			LoadGameGenieToolbarItem.Image = Resources.placeholder_bitmap;
+			LoadGameGenieToolbarItem.Image = Resources.Placeholder;
 			Settings = new CheatsSettings();
 
 			Closing += (o, e) =>
 			{
-				SaveConfigSettings();
+				Settings.Columns = CheatListView.AllColumns;
 			};
 
 			CheatListView.QueryItemText += CheatListView_QueryItemText;
@@ -156,7 +154,6 @@ namespace BizHawk.Client.EmuHawk
 				Settings = new CheatsSettings();
 			}
 
-			TopMost = Settings.TopMost;
 			CheatEditor.MemoryDomains = Core;
 			LoadConfigSettings();
 			CheatsMenu.Items.Add(CheatListView.ToColumnsMenu(ColumnToggleCallback));
@@ -166,15 +163,10 @@ namespace BizHawk.Client.EmuHawk
 			GeneralUpdate();
 		}
 
-		private void SetColumns()
+		private void SetColumns() 
 		{
-			foreach (var column in Settings.Columns)
-			{
-				if (CheatListView.AllColumns[column.Name] == null)
-				{
-					CheatListView.AllColumns.Add(column);
-				}
-			}
+			CheatListView.AllColumns.AddRange(Settings.Columns);
+			CheatListView.Refresh();
 		}
 
 		private void ColumnToggleCallback()
@@ -208,34 +200,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void SaveConfigSettings()
-		{
-			Settings.Columns = CheatListView.AllColumns;
-
-			if (WindowState == FormWindowState.Normal)
-			{
-				Settings.Wndx = Location.X;
-				Settings.Wndy = Location.Y;
-				Settings.Width = Right - Left;
-				Settings.Height = Bottom - Top;
-			}
-		}
-
 		private void LoadConfigSettings()
 		{
-			_defaultWidth = Size.Width;
-			_defaultHeight = Size.Height;
-
-			if (Settings.UseWindowPosition && IsOnScreen(Settings.TopLeft))
-			{
-				Location = Settings.WindowPosition;
-			}
-
-			if (Settings.UseWindowSize)
-			{
-				Size = Settings.WindowSize;
-			}
-
 			CheatListView.AllColumns.Clear();
 			SetColumns();
 		}
@@ -361,7 +327,7 @@ namespace BizHawk.Client.EmuHawk
 		private void RecentSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			RecentSubMenu.DropDownItems.Clear();
-			RecentSubMenu.DropDownItems.AddRange(Config.Cheats.Recent.RecentMenu(LoadFileFromRecent, "Cheats", noAutoload: true));
+			RecentSubMenu.DropDownItems.AddRange(Config.Cheats.Recent.RecentMenu(LoadFileFromRecent, "Cheats"));
 		}
 
 		private void NewMenuItem_Click(object sender, EventArgs e)
@@ -401,11 +367,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				UpdateMessageLabel(saved: true);
 			}
-		}
-
-		private void ExitMenuItem_Click(object sender, EventArgs e)
-		{
-			Close();
 		}
 
 		private void CheatsSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -533,15 +494,11 @@ namespace BizHawk.Client.EmuHawk
 			Tools.Load<GameShark>();
 		}
 
-		private void OptionsSubMenu_DropDownOpened(object sender, EventArgs e)
+		private void SettingsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			AlwaysLoadCheatsMenuItem.Checked = Config.Cheats.LoadFileByGame;
 			AutoSaveCheatsMenuItem.Checked = Config.Cheats.AutoSaveOnClose;
 			DisableCheatsOnLoadMenuItem.Checked = Config.Cheats.DisableOnLoad;
-			AutoloadMenuItem.Checked = Config.Cheats.Recent.AutoLoad;
-			SaveWindowPositionMenuItem.Checked = Settings.SaveWindowPosition;
-			AlwaysOnTopMenuItem.Checked = Settings.TopMost;
-			FloatingWindowMenuItem.Checked = Settings.FloatingWindow;
 		}
 
 		private void AlwaysLoadCheatsMenuItem_Click(object sender, EventArgs e)
@@ -559,30 +516,9 @@ namespace BizHawk.Client.EmuHawk
 			Config.Cheats.DisableOnLoad ^= true;
 		}
 
-		private void AutoloadMenuItem_Click(object sender, EventArgs e)
+		[RestoreDefaults]
+		private void RestoreDefaults()
 		{
-			Config.Cheats.Recent.AutoLoad ^= true;
-		}
-
-		private void SaveWindowPositionMenuItem_Click(object sender, EventArgs e)
-		{
-			Settings.SaveWindowPosition ^= true;
-		}
-
-		private void AlwaysOnTopMenuItem_Click(object sender, EventArgs e)
-		{
-			Settings.TopMost ^= true;
-		}
-
-		private void FloatingWindowMenuItem_Click(object sender, EventArgs e)
-		{
-			Settings.FloatingWindow ^= true;
-			RefreshFloatingWindowControl(Settings.FloatingWindow);
-		}
-
-		private void RestoreDefaultsMenuItem_Click(object sender, EventArgs e)
-		{
-			Size = new Size(_defaultWidth, _defaultHeight);
 			Settings = new CheatsSettings();
 
 			CheatsMenu.Items.Remove(
@@ -596,7 +532,6 @@ namespace BizHawk.Client.EmuHawk
 			Config.Cheats.LoadFileByGame = true;
 			Config.Cheats.AutoSaveOnClose = true;
 
-			RefreshFloatingWindowControl(Settings.FloatingWindow);
 			CheatListView.AllColumns.Clear();
 			SetColumns();
 		}
@@ -681,13 +616,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		protected override void OnShown(EventArgs e)
-		{
-			RefreshFloatingWindowControl(Settings.FloatingWindow);
-			base.OnShown(e);
-		}
-
-		public class CheatsSettings : ToolDialogSettings
+		public class CheatsSettings
 		{
 			public CheatsSettings()
 			{

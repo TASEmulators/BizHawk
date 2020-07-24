@@ -103,9 +103,9 @@ namespace BizHawk.Client.EmuHawk
 				new ButtonSchema(27, 131, controller, "7"),
 				new ButtonSchema(50, 131, controller, "8"),
 				new ButtonSchema(73, 131, controller, "9"),
-				new ButtonSchema(27, 154, controller, "Star") { DisplayName = "*" },
+				new ButtonSchema(27, 154, controller, "Star", "*"),
 				new ButtonSchema(50, 154, controller, "0"),
-				new ButtonSchema(73, 154, controller, "Pound") { DisplayName = "#" }
+				new ButtonSchema(73, 154, controller, "Pound", "#")
 			};
 		}
 	}

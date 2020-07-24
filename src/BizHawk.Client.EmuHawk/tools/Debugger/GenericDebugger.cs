@@ -16,7 +16,7 @@ namespace BizHawk.Client.EmuHawk
 		public GenericDebugger()
 		{
 			InitializeComponent();
-			Icon = Properties.Resources.Bug_MultiSize;
+			Icon = Properties.Resources.BugIcon;
 			Closing += (o, e) => DisengageDebugger();
 
 			DisassemblerView.QueryItemText += DisassemblerView_QueryItemText;
@@ -184,11 +184,6 @@ namespace BizHawk.Client.EmuHawk
 		private void OnCpuDropDownIndexChanged(object sender, EventArgs e)
 		{
 			Disassembler.Cpu = ((ComboBox) sender).SelectedItem.ToString();
-		}
-
-		private void ExitMenuItem_Click(object sender, EventArgs e)
-		{
-			Close();
 		}
 
 		private void RunBtn_Click(object sender, EventArgs e)

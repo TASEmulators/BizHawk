@@ -9,7 +9,7 @@ namespace BizHawk.Client.EmuHawk
 		private DGBPrefs()
 		{
 			InitializeComponent();
-			Icon = Properties.Resources.dual_MultiSize;
+			Icon = Properties.Resources.DualIcon;
 		}
 
 		private void PutSettings(GambatteLink.GambatteLinkSettings s, GambatteLink.GambatteLinkSyncSettings ss)

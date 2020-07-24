@@ -23,7 +23,7 @@ namespace BizHawk.Client.EmuHawk
 			_config = config;
 			_settings = settings;
 			InitializeComponent();
-			Icon = Properties.Resources.QuickNes_MultiSize;
+			Icon = Properties.Resources.QuickNesIcon;
 		}
 
 		private void QuickNesConfig_Load(object sender, EventArgs e)

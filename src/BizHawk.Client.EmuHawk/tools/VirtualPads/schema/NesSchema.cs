@@ -220,8 +220,8 @@ namespace BizHawk.Client.EmuHawk
 					ButtonSchema.Right(44, 24, controller),
 					new ButtonSchema(124, 24, controller, "B"),
 					new ButtonSchema(147, 24, controller, "A"),
-					new ButtonSchema(72, 24, controller, "Select") { DisplayName = "s" },
-					new ButtonSchema(93, 24, controller, "Start") { DisplayName = "S" }
+					new ButtonSchema(72, 24, controller, "Select", "s"),
+					new ButtonSchema(93, 24, controller, "Start", "S")
 				}
 			};
 		}
@@ -241,7 +241,7 @@ namespace BizHawk.Client.EmuHawk
 					ButtonSchema.Right(44, 24, controller),
 					new ButtonSchema(124, 24, controller, "B"),
 					new ButtonSchema(147, 24, controller, "A"),
-					new ButtonSchema(72, 24, controller, "Microphone") { DisplayName = "Mic" }
+					new ButtonSchema(72, 24, controller, "Microphone", "Mic")
 				}
 			};
 		}
@@ -340,38 +340,14 @@ namespace BizHawk.Client.EmuHawk
 				Size = new Size(560, 180),
 				Buttons = new[]
 				{
-					new ButtonSchema(23, 15, controller, "F1")
-					{
-						DisplayName = "    F1    "
-					},
-					new ButtonSchema(76, 15, controller, "F2")
-					{
-						DisplayName = "    F2    "
-					},
-					new ButtonSchema(129, 15, controller, "F3")
-					{
-						DisplayName = "    F3    "
-					},
-					new ButtonSchema(182, 15, controller, "F4")
-					{
-						DisplayName = "    F4    "
-					},
-					new ButtonSchema(235, 15, controller, "F5")
-					{
-						DisplayName = "    F5    "
-					},
-					new ButtonSchema(288, 15, controller, "F6")
-					{
-						DisplayName = "    F6    "
-					},
-					new ButtonSchema(341, 15, controller, "F7")
-					{
-						DisplayName = "    F7    "
-					},
-					new ButtonSchema(394, 15, controller, "F8")
-					{
-						DisplayName = "    F8    "
-					},
+					new ButtonSchema(23, 15, controller, "F1", "    F1    "),
+					new ButtonSchema(76, 15, controller, "F2", "    F2    "),
+					new ButtonSchema(129, 15, controller, "F3", "    F3    "),
+					new ButtonSchema(182, 15, controller, "F4", "    F4    "),
+					new ButtonSchema(235, 15, controller, "F5", "    F5    "),
+					new ButtonSchema(288, 15, controller, "F6", "    F6    "),
+					new ButtonSchema(341, 15, controller, "F7", "    F7    "),
+					new ButtonSchema(394, 15, controller, "F8", "    F8    "),
 					new ButtonSchema(36, 38, controller, "1"),
 					new ButtonSchema(60, 38, controller, "2"),
 					new ButtonSchema(84, 38, controller, "3"),
@@ -382,26 +358,11 @@ namespace BizHawk.Client.EmuHawk
 					new ButtonSchema(204, 38, controller, "8"),
 					new ButtonSchema(228, 38, controller, "9"),
 					new ButtonSchema(252, 38, controller, "0"),
-					new ButtonSchema(276, 38, controller, "Minus")
-					{
-						DisplayName = "-"
-					},
-					new ButtonSchema(296, 38, controller, "Caret")
-					{
-						DisplayName = "^"
-					},
-					new ButtonSchema(320, 38, controller, "Yen")
-					{
-						DisplayName = "¥"
-					},
-					new ButtonSchema(344, 38, controller, "Stop")
-					{
-						DisplayName = "STOP"
-					},
-					new ButtonSchema(15, 61, controller, "Escape")
-					{
-						DisplayName = "ESC"
-					},
+					new ButtonSchema(276, 38, controller, "Minus", "-"),
+					new ButtonSchema(296, 38, controller, "Caret", "^"),
+					new ButtonSchema(320, 38, controller, "Yen", "¥"),
+					new ButtonSchema(344, 38, controller, "Stop", "STOP"),
+					new ButtonSchema(15, 61, controller, "Escape", "ESC"),
 					new ButtonSchema(54, 61, controller, "Q"),
 					new ButtonSchema(80, 61, controller, "W"),
 					new ButtonSchema(108, 61, controller, "E"),
@@ -412,22 +373,10 @@ namespace BizHawk.Client.EmuHawk
 					new ButtonSchema(232, 61, controller, "I"),
 					new ButtonSchema(252, 61, controller, "O"),
 					new ButtonSchema(278, 61, controller, "P"),
-					new ButtonSchema(302, 61, controller, "At")
-					{
-						DisplayName = "@"
-					},
-					new ButtonSchema(330, 61, controller, "Left Bracket")
-					{
-						DisplayName = "["
-					},
-					new ButtonSchema(350, 61, controller, "Return")
-					{
-						DisplayName = "RETURN"
-					},
-					new ButtonSchema(30, 84, controller, "Control")
-					{
-						DisplayName = "CTR"
-					},
+					new ButtonSchema(302, 61, controller, "At", "@"),
+					new ButtonSchema(330, 61, controller, "Left Bracket", "["),
+					new ButtonSchema(350, 61, controller, "Return", "RETURN"),
+					new ButtonSchema(30, 84, controller, "Control", "CTR"),
 					new ButtonSchema(70, 84, controller, "A"),
 					new ButtonSchema(94, 84, controller, "S"),
 					new ButtonSchema(118, 84, controller, "D"),
@@ -437,26 +386,11 @@ namespace BizHawk.Client.EmuHawk
 					new ButtonSchema(220, 84, controller, "J"),
 					new ButtonSchema(242, 84, controller, "K"),
 					new ButtonSchema(266, 84, controller, "L"),
-					new ButtonSchema(290, 84, controller, "Semicolon")
-					{
-						DisplayName = ";"
-					},
-					new ButtonSchema(311, 84, controller, "Colon")
-					{
-						DisplayName = ":"
-					},
-					new ButtonSchema(332, 84, controller, "Right Bracket")
-					{
-						DisplayName = "]"
-					},
-					new ButtonSchema(352, 84, controller, "カナ")
-					{
-						DisplayName = "カナ"
-					},
-					new ButtonSchema(10, 107, controller, "Left Shift")
-					{
-						DisplayName = "SHIFT"
-					},
+					new ButtonSchema(290, 84, controller, "Semicolon", ";"),
+					new ButtonSchema(311, 84, controller, "Colon", ":"),
+					new ButtonSchema(332, 84, controller, "Right Bracket", "]"),
+					new ButtonSchema(352, 84, controller, "カナ"),
+					new ButtonSchema(10, 107, controller, "Left Shift", "SHIFT"),
 					new ButtonSchema(58, 107, controller, "Z"),
 					new ButtonSchema(82, 107, controller, "X"),
 					new ButtonSchema(106, 107, controller, "C"),
@@ -464,62 +398,20 @@ namespace BizHawk.Client.EmuHawk
 					new ButtonSchema(154, 107, controller, "B"),
 					new ButtonSchema(178, 107, controller, "N"),
 					new ButtonSchema(203, 107, controller, "M"),
-					new ButtonSchema(229, 107, controller, "Comma")
-					{
-						DisplayName = ","
-					},
-					new ButtonSchema(249, 107, controller, "Period")
-					{
-						DisplayName = "."
-					},
-					new ButtonSchema(270, 107, controller, "Slash")
-					{
-						DisplayName = "/"
-					},
-					new ButtonSchema(292, 107, controller, "Underscore")
-					{
-						DisplayName = "_"
-					},
-					new ButtonSchema(316, 107, controller, "Right Shift")
-					{
-						DisplayName = "SHIFT"
-					},
-					new ButtonSchema(82, 130, controller, "Graph")
-					{
-						DisplayName = "GRPH"
-					},
-					new ButtonSchema(130, 130, controller, "Space")
-					{
-						DisplayName = "                  SPACE                  "
-					},
-					new ButtonSchema(420, 46, controller, "Clear/Home")
-					{
-						DisplayName = " CLR\nHOME"
-					},
-					new ButtonSchema(470, 46, controller, "Insert")
-					{
-						DisplayName = "\nINS"
-					},
-					new ButtonSchema(506, 46, controller, "Delete")
-					{
-						DisplayName = "\nDEL"
-					},
-					new ButtonSchema(468, 86, controller, "Up")
-					{
-						DisplayName = "  ↑  "
-					},
-					new ButtonSchema(468, 134, controller, "Down")
-					{
-						DisplayName = "  ↓  "
-					},
-					new ButtonSchema(446, 110, controller, "Left")
-					{
-						DisplayName = "  ←  "
-					},
-					new ButtonSchema(488, 110, controller, "Right")
-					{
-						DisplayName = "  ➝  "
-					}
+					new ButtonSchema(229, 107, controller, "Comma", ","),
+					new ButtonSchema(249, 107, controller, "Period", "."),
+					new ButtonSchema(270, 107, controller, "Slash", "/"),
+					new ButtonSchema(292, 107, controller, "Underscore", "_"),
+					new ButtonSchema(316, 107, controller, "Right Shift", "SHIFT"),
+					new ButtonSchema(82, 130, controller, "Graph", "GRPH"),
+					new ButtonSchema(130, 130, controller, "Space", "                  SPACE                  "),
+					new ButtonSchema(420, 46, controller, "Clear/Home", " CLR\nHOME"),
+					new ButtonSchema(470, 46, controller, "Insert", "\nINS"),
+					new ButtonSchema(506, 46, controller, "Delete", "\nDEL"),
+					new ButtonSchema(468, 86, controller, "Up", "  ↑  "),
+					new ButtonSchema(468, 134, controller, "Down", "  ↓  "),
+					new ButtonSchema(446, 110, controller, "Left", "  ←  "),
+					new ButtonSchema(488, 110, controller, "Right", "  ➝  ")
 				}
 			};
 		}

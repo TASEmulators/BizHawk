@@ -22,7 +22,7 @@ namespace BizHawk.Client.EmuHawk
 		public PceTileViewer()
 		{
 			InitializeComponent();
-			Icon = Properties.Resources.pce_MultiSize;
+			Icon = Properties.Resources.PceIcon;
 			bmpViewBG.ChangeBitmapSize(512, 256);
 			bmpViewSP.ChangeBitmapSize(512, 256);
 			bmpViewBGPal.ChangeBitmapSize(256, 256);
@@ -198,11 +198,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void CloseMenuItem_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
-
 		private void SaveBackgroundScreenshotMenuItem_Click(object sender, EventArgs e)
 		{
 			bmpViewBG.SaveFile();
@@ -211,10 +206,6 @@ namespace BizHawk.Client.EmuHawk
 		private void SaveSpriteScreenshotMenuItem_Click(object sender, EventArgs e)
 		{
 			bmpViewSP.SaveFile();
-		}
-
-		private void PceTileViewer_Load(object sender, EventArgs e)
-		{
 		}
 	}
 }

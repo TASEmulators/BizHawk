@@ -20,12 +20,12 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 			JumpToMarkerToolStripMenuItem.Image = Resources.JumpTo;
 			ScrollToMarkerToolStripMenuItem.Image = Resources.ScrollTo;
-			EditMarkerToolStripMenuItem.Image = Resources.pencil;
-			AddMarkerToolStripMenuItem.Image = Resources.add;
+			EditMarkerToolStripMenuItem.Image = Resources.Pencil;
+			AddMarkerToolStripMenuItem.Image = Resources.Add;
 			RemoveMarkerToolStripMenuItem.Image = Resources.Delete;
 			JumpToMarkerButton.Image = Resources.JumpTo;
-			EditMarkerButton.Image = Resources.pencil;
-			AddMarkerButton.Image = Resources.add;
+			EditMarkerButton.Image = Resources.Pencil;
+			AddMarkerButton.Image = Resources.Add;
 			RemoveMarkerButton.Image = Resources.Delete;
 			ScrollToMarkerButton.Image = Resources.ScrollTo;
 			AddMarkerWithTextButton.Image = Resources.AddEdit;

@@ -13,7 +13,7 @@ namespace BizHawk.Client.EmuHawk
 		public DefaultGreenzoneSettings(MovieConfig movieSettings)
 		{
 			InitializeComponent();
-			Icon = Properties.Resources.TAStudio_MultiSize;
+			Icon = Properties.Resources.TAStudioIcon;
 			_movieSettings = movieSettings;
 			_settings = new TasStateManagerSettings(movieSettings.DefaultTasStateManagerSettings);
 			SettingsPropertyGrid.SelectedObject = _settings;

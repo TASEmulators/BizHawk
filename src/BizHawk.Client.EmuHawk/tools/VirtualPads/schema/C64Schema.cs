@@ -28,7 +28,7 @@ namespace BizHawk.Client.EmuHawk
 					ButtonSchema.Down(23, 36, controller),
 					ButtonSchema.Left(2, 24, controller),
 					ButtonSchema.Right(44, 24, controller),
-					new ButtonSchema(124, 24, controller, "Button") { DisplayName = "B" }
+					new ButtonSchema(124, 24, controller, "Button", "B")
 				}
 			};
 		}
@@ -55,8 +55,8 @@ namespace BizHawk.Client.EmuHawk
 					Key(286, 18, "Plus", "+"),
 					Key(310, 18, "Minus", "-"),
 					Key(330, 18, "Pound", "£"),
-					Key(354, 18, "Key Clear/Home", "C/H"),
-					Key(392, 18, "Key Insert/Delete", "I/D"),
+					Key(354, 18, "Clear/Home", "C/H"),
+					Key(392, 18, "Insert/Delete", "I/D"),
 					Key(450, 18, "F1", "F 1"),
 					Key(450, 42, "F3", "F 3"),
 					Key(450, 66, "F5", "F 5"),
@@ -91,7 +91,7 @@ namespace BizHawk.Client.EmuHawk
 					Key(326, 66, "Semicolon", ";"),
 					Key(346, 66, "Equal", "="),
 					Key(370, 66, "Return"),
-					Key(8, 90, "Commodore", "C64"),
+					new ButtonSchema(8, 90, "Key Commodore") { Icon = Properties.Resources.C64Symbol },
 					Key(44, 90, "Left Shift", "Shift"),
 					Key(82, 90, "Z"),
 					Key(106, 90, "X"),

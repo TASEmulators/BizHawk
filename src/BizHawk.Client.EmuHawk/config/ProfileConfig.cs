@@ -28,7 +28,7 @@ namespace BizHawk.Client.EmuHawk
 			_emulator = emulator;
 			_config = config;
 			InitializeComponent();
-			Icon = Properties.Resources.user_blue;
+			Icon = Properties.Resources.ProfileIcon;
 		}
 
 		private void ProfileConfig_Load(object sender, EventArgs e)

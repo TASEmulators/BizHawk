@@ -204,10 +204,5 @@ namespace BizHawk.Client.EmuHawk
 		{
 			SaveAsFile(bmpViewNTA.Bmp, "Palettes");
 		}
-
-		private void CloseMenuItem_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
 	}
 }

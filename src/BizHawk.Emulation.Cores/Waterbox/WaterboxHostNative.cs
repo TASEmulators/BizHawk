@@ -235,5 +235,24 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// </summary>
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void wbx_set_always_evict_blocks(bool val);
+
+		/// <summary>
+		/// Retrieve the number of pages of guest memory that this host is tracking
+		/// </summary>
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract void wbx_get_page_len(IntPtr /*WaterboxHost*/ obj, ReturnData /*UIntPtr*/ ret);
+
+		/// <summary>
+		/// Retrieve basic information for a tracked guest page.  Index should be in 0..wbx_get_page_len().
+		/// 1 - readable, implies allocated
+		/// 2 - writable
+		/// 4 - executable
+		/// 0x10 - stack
+		/// 0x20 - allocated but not readable (guest-generated "guard")
+		/// 0x40 - invisible
+		/// 0x80 - dirty
+		/// </summary>
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract void wbx_get_page_data(IntPtr /*WaterboxHost*/ obj, UIntPtr index, ReturnData /*byte*/ ret);
 	}
 }

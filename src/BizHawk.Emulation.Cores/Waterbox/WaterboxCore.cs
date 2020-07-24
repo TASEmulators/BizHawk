@@ -73,8 +73,12 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				var primaryDomain = memoryDomains
 					.Where(md => md.Definition.Flags.HasFlag(LibWaterboxCore.MemoryDomainFlags.Primary))
 					.Single();
-	
-				var mdl = new MemoryDomainList(memoryDomains.Cast<MemoryDomain>().ToList());
+
+				var mdl = new MemoryDomainList(
+					memoryDomains.Cast<MemoryDomain>()
+						.Concat(new[] { _exe.GetPagesDomain() })
+						.ToList()
+				);
 				mdl.MainMemory = primaryDomain;
 				_serviceProvider.Register<IMemoryDomains>(mdl);
 

@@ -15,12 +15,10 @@ using BizHawk.Client.EmuHawk.ToolExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class RamWatch : ToolFormBase, IToolForm
+	public partial class RamWatch : ToolFormBase, IToolFormAutoConfig
 	{
 		private WatchList _watches;
 
-		private int _defaultWidth;
-		private int _defaultHeight;
 		private string _sortedColumn;
 		private bool _sortReverse;
 
@@ -36,11 +34,11 @@ namespace BizHawk.Client.EmuHawk
 		public RamWatch()
 		{
 			InitializeComponent();
-			newToolStripMenuItem.Image = Resources.addWatch;
-			EditContextMenuItem.Image = Resources.CutHS;
+			newToolStripMenuItem.Image = Resources.AddWatch;
+			EditContextMenuItem.Image = Resources.Cut;
 			RemoveContextMenuItem.Image = Resources.Delete;
 			DuplicateContextMenuItem.Image = Resources.Duplicate;
-			PokeContextMenuItem.Image = Resources.poke;
+			PokeContextMenuItem.Image = Resources.Poke;
 			FreezeContextMenuItem.Image = Resources.Freeze;
 			UnfreezeAllContextMenuItem.Image = Resources.Unfreeze;
 			InsertSeperatorContextMenuItem.Image = Resources.InsertSeparator;
@@ -52,12 +50,12 @@ namespace BizHawk.Client.EmuHawk
 			newToolStripButton.Image = Resources.NewFile;
 			openToolStripButton.Image = Resources.OpenFile;
 			saveToolStripButton.Image = Resources.SaveAs;
-			newWatchToolStripButton.Image = Resources.addWatch;
-			editWatchToolStripButton.Image = Resources.CutHS;
+			newWatchToolStripButton.Image = Resources.AddWatch;
+			editWatchToolStripButton.Image = Resources.Cut;
 			cutToolStripButton.Image = Resources.Delete;
-			clearChangeCountsToolStripButton.Image = Resources.placeholder_bitmap;
+			clearChangeCountsToolStripButton.Image = Resources.Placeholder;
 			duplicateWatchToolStripButton.Image = Resources.Duplicate;
-			PokeAddressToolBarItem.Image = Resources.poke;
+			PokeAddressToolBarItem.Image = Resources.Poke;
 			FreezeAddressToolBarItem.Image = Resources.Freeze;
 			seperatorToolStripButton.Image = Resources.InsertSeparator;
 			moveUpToolStripButton.Image = Resources.MoveUp;
@@ -66,18 +64,18 @@ namespace BizHawk.Client.EmuHawk
 			OpenMenuItem.Image = Resources.OpenFile;
 			SaveMenuItem.Image = Resources.SaveAs;
 			RecentSubMenu.Image = Resources.Recent;
-			NewWatchMenuItem.Image = Resources.FindHS;
-			EditWatchMenuItem.Image = Resources.CutHS;
+			NewWatchMenuItem.Image = Resources.Find;
+			EditWatchMenuItem.Image = Resources.Cut;
 			RemoveWatchMenuItem.Image = Resources.Delete;
 			DuplicateWatchMenuItem.Image = Resources.Duplicate;
-			PokeAddressMenuItem.Image = Resources.poke;
+			PokeAddressMenuItem.Image = Resources.Poke;
 			FreezeAddressMenuItem.Image = Resources.Freeze;
 			InsertSeparatorMenuItem.Image = Resources.InsertSeparator;
 			MoveUpMenuItem.Image = Resources.MoveUp;
 			MoveDownMenuItem.Image = Resources.MoveDown;
 			MoveTopMenuItem.Image = Resources.MoveTop;
 			MoveBottomMenuItem.Image = Resources.MoveBottom;
-			Icon = Resources.watch_MultiSize;
+			Icon = Resources.WatchIcon;
 
 			Settings = new RamWatchSettings();
 
@@ -104,19 +102,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetColumns()
 		{
-			foreach (var column in Settings.Columns)
-			{
-				if (WatchListView.AllColumns[column.Name] == null)
-				{
-					WatchListView.AllColumns.Add(column);
-				}
-			}
+			WatchListView.AllColumns.AddRange(Settings.Columns);
+			WatchListView.Refresh();
 		}
 
 		[ConfigPersist]
 		public RamWatchSettings Settings { get; set; }
 
-		public class RamWatchSettings : ToolDialogSettings
+		public class RamWatchSettings
 		{
 			public RamWatchSettings()
 			{
@@ -486,20 +479,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoadConfigSettings()
 		{
-			// Size and Positioning
-			_defaultWidth = Size.Width;
-			_defaultHeight = Size.Height;
-
-			if (Settings.UseWindowPosition && IsOnScreen(Settings.TopLeft))
-			{
-				Location = Settings.WindowPosition;
-			}
-
-			if (Settings.UseWindowSize)
-			{
-				Size = Settings.WindowSize;
-			}
-
 			WatchListView.AllColumns.Clear();
 			SetColumns();
 		}
@@ -556,14 +535,6 @@ namespace BizHawk.Client.EmuHawk
 		private void SaveConfigSettings()
 		{
 			Settings.Columns = WatchListView.AllColumns;
-
-			if (WindowState == FormWindowState.Normal)
-			{
-				Settings.Wndx = Location.X;
-				Settings.Wndy = Location.Y;
-				Settings.Width = Right - Left;
-				Settings.Height = Bottom - Top;
-			}
 		}
 
 		private void SetMemoryDomain(string name)
@@ -710,11 +681,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			RecentSubMenu.DropDownItems.Clear();
 			RecentSubMenu.DropDownItems.AddRange(Config.RecentWatches.RecentMenu(LoadFileFromRecent, "Watches"));
-		}
-
-		private void ExitMenuItem_Click(object sender, EventArgs e)
-		{
-			Close();
 		}
 
 		private void WatchesSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -967,12 +933,9 @@ namespace BizHawk.Client.EmuHawk
 			WatchListView.SelectAll();
 		}
 
-		private void OptionsSubMenu_DropDownOpened(object sender, EventArgs e)
+		private void SettingsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			WatchesOnScreenMenuItem.Checked = Config.DisplayRamWatch;
-			SaveWindowPositionMenuItem.Checked = Settings.SaveWindowPosition;
-			AlwaysOnTopMenuItem.Checked = Settings.TopMost;
-			FloatingWindowMenuItem.Checked = Settings.FloatingWindow;
 		}
 
 		private void DefinePreviousValueSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -1011,26 +974,10 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void SaveWindowPositionMenuItem_Click(object sender, EventArgs e)
-		{
-			Settings.SaveWindowPosition ^= true;
-		}
-
-		private void AlwaysOnTopMenuItem_Click(object sender, EventArgs e)
-		{
-			TopMost = Settings.TopMost ^= true;
-		}
-
-		private void FloatingWindowMenuItem_Click(object sender, EventArgs e)
-		{
-			Settings.FloatingWindow ^= true;
-			RefreshFloatingWindowControl(Settings.FloatingWindow);
-		}
-
-		private void RestoreDefaultsMenuItem_Click(object sender, EventArgs e)
+		[RestoreDefaults]
+		private void RestoreDefaultsMenuItem()
 		{
 			Settings = new RamWatchSettings();
-			Size = new Size(_defaultWidth, _defaultHeight);
 
 			RamWatchMenu.Items.Remove(
 				RamWatchMenu.Items
@@ -1038,13 +985,10 @@ namespace BizHawk.Client.EmuHawk
 					.First(x => x.Name == "GeneratedColumnsSubMenu"));
 
 			RamWatchMenu.Items.Add(WatchListView.ToColumnsMenu(ColumnToggleCallback));
-
 			Config.DisplayRamWatch = false;
-
-			RefreshFloatingWindowControl(Settings.FloatingWindow);
-
 			WatchListView.AllColumns.Clear();
 			SetColumns();
+			WatchListView.Refresh();
 		}
 
 		private void RamWatch_Load(object sender, EventArgs e)
@@ -1055,7 +999,6 @@ namespace BizHawk.Client.EmuHawk
 				Settings = new RamWatchSettings();
 			}
 
-			TopMost = Settings.TopMost;
 			_watches = new WatchList(MemoryDomains, Emu.SystemId);
 			LoadConfigSettings();
 			RamWatchMenu.Items.Add(WatchListView.ToColumnsMenu(ColumnToggleCallback));

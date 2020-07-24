@@ -62,7 +62,7 @@ namespace BizHawk.Client.EmuHawk
 		public TraceLogger()
 		{
 			InitializeComponent();
-			Icon = Properties.Resources.pencil_MultiSize;
+			Icon = Properties.Resources.PencilIcon;
 			SaveLogMenuItem.Image = Properties.Resources.SaveAs;
 
 			TraceView.QueryItemText += TraceView_QueryItemText;
@@ -313,11 +313,6 @@ namespace BizHawk.Client.EmuHawk
 				MainForm.AddOnScreenMessage($"Log dumped to {LogFile.FullName}");
 				CloseFile();
 			}
-		}
-
-		private void ExitMenuItem_Click(object sender, EventArgs e)
-		{
-			Close();
 		}
 
 		private void CopyMenuItem_Click(object sender, EventArgs e)

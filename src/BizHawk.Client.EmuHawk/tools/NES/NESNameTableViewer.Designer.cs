@@ -41,8 +41,6 @@ namespace BizHawk.Client.EmuHawk
 			this.FileSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.ScreenshotMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.ScreenshotToClipboardMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.toolStripSeparator2 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
-			this.ExitMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.txtScanline = new System.Windows.Forms.TextBox();
 			this.rbNametableNW = new System.Windows.Forms.RadioButton();
 			this.rbNametableNE = new System.Windows.Forms.RadioButton();
@@ -133,9 +131,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.FileSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ScreenshotMenuItem,
-            this.ScreenshotToClipboardMenuItem,
-            this.toolStripSeparator2,
-            this.ExitMenuItem});
+            this.ScreenshotToClipboardMenuItem});
 			this.FileSubMenu.Text = "&File";
 			// 
 			// ScreenshotMenuItem
@@ -148,12 +144,6 @@ namespace BizHawk.Client.EmuHawk
 			this.ScreenshotToClipboardMenuItem.ShortcutKeyDisplayString = "Ctrl+C";
 			this.ScreenshotToClipboardMenuItem.Text = "Screenshot to &Clipboard";
 			this.ScreenshotToClipboardMenuItem.Click += new System.EventHandler(this.ScreenshotToClipboardMenuItem_Click);
-			// 
-			// ExitMenuItem
-			// 
-			this.ExitMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F4)));
-			this.ExitMenuItem.Text = "E&xit";
-			this.ExitMenuItem.Click += new System.EventHandler(this.ExitMenuItem_Click);
 			// 
 			// txtScanline
 			// 
@@ -428,8 +418,6 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.LocLabelEx label7;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx FileSubMenu;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ScreenshotMenuItem;
-		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator2;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ExitMenuItem;
 		private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ScreenshotAsContextMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx RefreshImageContextMenuItem;

@@ -14,6 +14,10 @@ namespace BizHawk.Client.EmuHawk
 	// ReSharper disable once UnusedMember.Global
 	public class PceCdSchema : PceSchema { }
 
+	[Schema("SGX")]
+	// ReSharper disable once UnusedMember.Global
+	public class SgxSchema : PceSchema { }
+
 	[Schema("PCE")]
 	public class PceSchema : IVirtualPadSchema
 	{
@@ -71,22 +75,10 @@ namespace BizHawk.Client.EmuHawk
 					ButtonSchema.Down(14, 56, controller),
 					ButtonSchema.Left(2, 34, controller),
 					ButtonSchema.Right(24, 34, controller),
-					new ButtonSchema(122, 34, controller, "B2")
-					{
-						DisplayName = "II"
-					},
-					new ButtonSchema(146, 34, controller, "B1")
-					{
-						DisplayName = "I"
-					},
-					new ButtonSchema(52, 34, controller, "Select")
-					{
-						DisplayName = "s"
-					},
-					new ButtonSchema(74, 34, controller, "Run")
-					{
-						DisplayName = "R"
-					}
+					new ButtonSchema(122, 34, controller, "B2", "II"),
+					new ButtonSchema(146, 34, controller, "B1", "I"),
+					new ButtonSchema(52, 34, controller, "Select", "s"),
+					new ButtonSchema(74, 34, controller, "Run", "R")
 				}
 			};
 		}
@@ -125,16 +117,16 @@ namespace BizHawk.Client.EmuHawk
 					ButtonSchema.Down(14, 56, controller),
 					ButtonSchema.Left(2, 34, controller),
 					ButtonSchema.Right(24, 34, controller),
-					new ButtonSchema(77, 17, controller, "Mode: Set 2-button") { DisplayName = "2 Btn" },
-					new ButtonSchema(77, 40, controller, "Mode: Set 6-button") { DisplayName = "6 Btn" },
+					new ButtonSchema(77, 17, controller, "Mode: Set 2-button", "2 Btn"),
+					new ButtonSchema(77, 40, controller, "Mode: Set 6-button", "6 Btn"),
 					new ButtonSchema(140, 63, controller, "IV"),
 					new ButtonSchema(166, 53, controller, "V"),
 					new ButtonSchema(192, 43, controller, "VI"),
 					new ButtonSchema(140, 40, controller, "I"),
 					new ButtonSchema(166, 30, controller, "II"),
 					new ButtonSchema(192, 20, controller, "III"),
-					new ButtonSchema(77, 63, controller, "Select") { DisplayName = "s" },
-					new ButtonSchema(101, 63, controller, "Run") { DisplayName = "R" }
+					new ButtonSchema(77, 63, controller, "Select", "s"),
+					new ButtonSchema(101, 63, controller, "Run", "R")
 				}
 			};
 		}

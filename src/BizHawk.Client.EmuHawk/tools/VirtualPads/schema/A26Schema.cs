@@ -55,7 +55,7 @@ namespace BizHawk.Client.EmuHawk
 					ButtonSchema.Down(23, 36, controller),
 					ButtonSchema.Left(2, 24, controller),
 					ButtonSchema.Right(44, 24, controller),
-					new ButtonSchema(124, 24, controller, "Button") { DisplayName = "B" }
+					new ButtonSchema(124, 24, controller, "Button", "B")
 				}
 			};
 		}
@@ -68,14 +68,8 @@ namespace BizHawk.Client.EmuHawk
 				Size = new Size(334, 94),
 				Buttons = new PadSchemaControl[]
 				{
-					new ButtonSchema(5, 24, controller, "Button 1")
-					{
-						DisplayName = "B1"
-					},
-					new ButtonSchema(5, 48, controller, "Button 2")
-					{
-						DisplayName = "B2"
-					},
+					new ButtonSchema(5, 24, controller, "Button 1", "B1"),
+					new ButtonSchema(5, 48, controller, "Button 2", "B2"),
 					new SingleAxisSchema(55, 17, controller, "Paddle X 1")
 					{
 						TargetSize = new Size(128, 69),
@@ -104,9 +98,9 @@ namespace BizHawk.Client.EmuHawk
 					ButtonSchema.Down(23, 36, controller),
 					ButtonSchema.Left(2, 24, controller),
 					ButtonSchema.Right(44, 24, controller),
-					new ButtonSchema(132, 24, controller, "Button") { DisplayName = "B" },
-					new ButtonSchema(68, 36, controller, "Button 1") { DisplayName = "B1" },
-					new ButtonSchema(100, 36, controller, "Button 2") { DisplayName = "B2" }
+					new ButtonSchema(132, 24, controller, "Button", "B"),
+					new ButtonSchema(68, 36, controller, "Button 1", "B1"),
+					new ButtonSchema(100, 36, controller, "Button 2", "B2")
 				}
 			};
 		}
@@ -119,10 +113,7 @@ namespace BizHawk.Client.EmuHawk
 				Size = new Size(334, 94),
 				Buttons = new PadSchemaControl[]
 				{
-					new ButtonSchema(5, 24, controller, "Button")
-					{
-						DisplayName = "B1"
-					},
+					new ButtonSchema(5, 24, controller, "Button", "B1"),
 					new SingleAxisSchema(55, 17, controller, "Wheel X 1")
 					{
 						TargetSize = new Size(128, 69),

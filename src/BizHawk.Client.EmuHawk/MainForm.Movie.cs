@@ -55,7 +55,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (MovieSession.Movie.IsRecording())
 			{
-				PlayRecordStatusButton.Image = Properties.Resources.RecordHS;
+				PlayRecordStatusButton.Image = Properties.Resources.Record;
 				PlayRecordStatusButton.ToolTipText = "Movie is in record mode";
 				PlayRecordStatusButton.Visible = true;
 			}

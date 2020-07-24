@@ -34,8 +34,6 @@
 			this.loadMacroToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.RecentToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.toolStripSeparator1 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
-			this.sepToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
-			this.ExitMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.NameTextbox = new System.Windows.Forms.TextBox();
 			this.ReplaceBox = new System.Windows.Forms.CheckBox();
 			this.label2 = new BizHawk.WinForms.Controls.LocLabelEx();
@@ -70,9 +68,7 @@
 			this.FileSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.saveAsToolStripMenuItem,
             this.loadMacroToolStripMenuItem,
-            this.RecentToolStripMenuItem,
-            this.sepToolStripMenuItem,
-            this.ExitMenuItem});
+            this.RecentToolStripMenuItem});
 			this.FileSubMenu.Text = "&File";
 			// 
 			// saveAsToolStripMenuItem
@@ -91,12 +87,6 @@
             this.toolStripSeparator1});
 			this.RecentToolStripMenuItem.Text = "Recent";
 			this.RecentToolStripMenuItem.DropDownOpened += new System.EventHandler(this.RecentToolStripMenuItem_DropDownOpened);
-			// 
-			// ExitMenuItem
-			// 
-			this.ExitMenuItem.ShortcutKeyDisplayString = "Alt+F4";
-			this.ExitMenuItem.Text = "E&xit";
-			this.ExitMenuItem.Click += new System.EventHandler(this.ExitMenuItem_Click);
 			// 
 			// NameTextbox
 			// 
@@ -273,7 +263,6 @@
 
 		private System.Windows.Forms.MenuStrip MacroMenu;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx FileSubMenu;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ExitMenuItem;
 		private System.Windows.Forms.TextBox NameTextbox;
 		private System.Windows.Forms.CheckBox ReplaceBox;
 		private BizHawk.WinForms.Controls.LocLabelEx label2;
@@ -288,7 +277,6 @@
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx saveAsToolStripMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx loadMacroToolStripMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx RecentToolStripMenuItem;
-		private BizHawk.WinForms.Controls.ToolStripSeparatorEx sepToolStripMenuItem;
 		private System.Windows.Forms.Button CurrentButton;
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator1;
 		private System.Windows.Forms.CheckBox OverlayBox;

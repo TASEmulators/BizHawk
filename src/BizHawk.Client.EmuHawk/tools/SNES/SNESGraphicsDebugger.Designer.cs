@@ -36,8 +36,6 @@ namespace BizHawk.Client.EmuHawk
 			this.fileToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.saveScreenshotAsToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.saveScreenshotToClipboardToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.toolStripSeparator1 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
-			this.exitToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.groupFreeze = new System.Windows.Forms.GroupBox();
@@ -281,9 +279,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.saveScreenshotAsToolStripMenuItem,
-            this.saveScreenshotToClipboardToolStripMenuItem,
-            this.toolStripSeparator1,
-            this.exitToolStripMenuItem});
+            this.saveScreenshotToClipboardToolStripMenuItem});
 			this.fileToolStripMenuItem.Text = "&File";
 			// 
 			// saveScreenshotAsToolStripMenuItem
@@ -296,12 +292,6 @@ namespace BizHawk.Client.EmuHawk
 			this.saveScreenshotToClipboardToolStripMenuItem.Enabled = false;
 			this.saveScreenshotToClipboardToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
 			this.saveScreenshotToClipboardToolStripMenuItem.Text = "Save Screenshot to Clipboard";
-			// 
-			// exitToolStripMenuItem
-			// 
-			this.exitToolStripMenuItem.ShortcutKeyDisplayString = "Alt+F4";
-			this.exitToolStripMenuItem.Text = "E&xit";
-			this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
 			// 
 			// tableLayoutPanel1
 			// 
@@ -2512,8 +2502,6 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx fileToolStripMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx saveScreenshotAsToolStripMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx saveScreenshotToClipboardToolStripMenuItem;
-		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator1;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx exitToolStripMenuItem;
 		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
 		private System.Windows.Forms.Panel panel1;
 		private System.Windows.Forms.GroupBox groupBox2;

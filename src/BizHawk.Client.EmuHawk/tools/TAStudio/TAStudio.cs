@@ -111,7 +111,7 @@ namespace BizHawk.Client.EmuHawk
 			recentMacrosToolStripMenuItem.Image = Resources.Recent;
 			TASEditorManualOnlineMenuItem.Image = Resources.Help;
 			ForumThreadMenuItem.Image = Resources.TAStudio;
-			Icon = Resources.TAStudio_MultiSize;
+			Icon = Resources.TAStudioIcon;
 
 			InitializeSeekWorker();
 
@@ -132,7 +132,6 @@ namespace BizHawk.Client.EmuHawk
 			TasView.QueryItemIcon += TasView_QueryItemIcon;
 			TasView.QueryFrameLag += TasView_QueryFrameLag;
 			TasView.PointedCellChanged += TasView_PointedCellChanged;
-			TasView.MultiSelect = true;
 			LastPositionFrame = -1;
 
 			BookMarkControl.LoadedCallback = BranchLoaded;
@@ -367,15 +366,14 @@ namespace BizHawk.Client.EmuHawk
 		{
 			TasView.AllColumns.Clear();
 			AddColumn(CursorColumnName, "", 18);
-			AddColumn(
-				new RollColumn
-				{
-					Name = FrameColumnName,
-					Text = "Frame#",
-					UnscaledWidth = 68,
-					Type = ColumnType.Text,
-					Rotatable = true
-				});
+			TasView.AllColumns.Add(new RollColumn
+			{
+				Name = FrameColumnName,
+				Text = "Frame#",
+				UnscaledWidth = 68,
+				Type = ColumnType.Text,
+				Rotatable = true
+			});
 
 			var columnNames = MovieSession.Movie
 				.LogGeneratorInstance(MovieSession.MovieController)
@@ -484,14 +482,13 @@ namespace BizHawk.Client.EmuHawk
 
 		public void AddColumn(string columnName, string columnText, int columnWidth, ColumnType columnType = ColumnType.Boolean)
 		{
-			AddColumn(
-				new RollColumn
-				{
-					Name = columnName,
-					Text = columnText,
-					UnscaledWidth = columnWidth,
-					Type = columnType
-				});
+			TasView.AllColumns.Add(new RollColumn
+			{
+				Name = columnName,
+				Text = columnText,
+				UnscaledWidth = columnWidth,
+				Type = columnType
+			});
 		}
 
 		public void LoadBranchByIndex(int index) => BookMarkControl.LoadBranchExternal(index);
@@ -500,6 +497,7 @@ namespace BizHawk.Client.EmuHawk
 		public void InsertNumFramesExternal() => InsertNumFramesMenuItem_Click(null, null);
 		public void DeleteFramesExternal() => DeleteFramesMenuItem_Click(null, null);
 		public void CloneFramesExternal() => CloneFramesMenuItem_Click(null, null);
+		public void CloneFramesXTimesExternal() => CloneFramesXTimesMenuItem_Click(null, null);
 		public void UndoExternal() => UndoMenuItem_Click(null, null);
 		public void RedoExternal() => RedoMenuItem_Click(null, null);
 		public void SelectBetweenMarkersExternal() => SelectBetweenMarkersMenuItem_Click(null, null);
@@ -521,14 +519,6 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				return null;
-			}
-		}
-
-		private void AddColumn(RollColumn column)
-		{
-			if (TasView.AllColumns[column.Name] == null)
-			{
-				TasView.AllColumns.Add(column);
 			}
 		}
 

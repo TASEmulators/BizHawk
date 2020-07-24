@@ -8,7 +8,7 @@ namespace BizHawk.Client.EmuHawk
 		public InputCompositeWidget()
 		{
 			InitializeComponent();
-			btnSpecial.Image = Properties.Resources.arrow_black_down;
+			btnSpecial.Image = Properties.Resources.ArrowBlackDown;
 
 			_dropdownMenu = new ContextMenuStrip();
 			_dropdownMenu.ItemClicked += DropdownMenu_ItemClicked;

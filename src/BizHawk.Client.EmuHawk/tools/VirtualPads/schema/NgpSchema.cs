@@ -28,7 +28,7 @@ namespace BizHawk.Client.EmuHawk
 					ButtonSchema.Right(24, 34, 1),
 					new ButtonSchema(74, 34, 1, "B"),
 					new ButtonSchema(98, 34, 1, "A"),
-					new ButtonSchema(146, 12, 1, "Option") { DisplayName = "O" }
+					new ButtonSchema(146, 12, 1, "Option", "O")
 				}
 			};
 		}

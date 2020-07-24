@@ -55,9 +55,7 @@ namespace BizHawk.Client.EmuHawk
 			this.TruncateFromFileMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.RecentSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.toolStripSeparator2 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
-			this.toolStripSeparator4 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
-			this.exitToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.settingsToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.OptionsSubMenuMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.modeToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.DetailedMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.FastMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -92,20 +90,13 @@ namespace BizHawk.Client.EmuHawk
 			this.FreezeAddressMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.toolStripSeparator13 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.ClearUndoMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.optionsToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.SettingsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.PreviewModeMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.AutoSearchMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.AutoSearchAccountForLagMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.toolStripSeparator9 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.ExcludeRamWatchMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.UseUndoHistoryMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.toolStripSeparator11 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
-			this.AutoloadDialogMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.SaveWinPositionMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.AlwaysOnTopMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.FloatingWindowMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.toolStripSeparator3 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
-			this.RestoreDefaultsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.MemDomainLabel = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.MessageLabel = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
@@ -269,9 +260,9 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.RamSearchMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
-            this.settingsToolStripMenuItem,
+            this.OptionsSubMenuMenuItem,
             this.searchToolStripMenuItem,
-            this.optionsToolStripMenuItem});
+            this.SettingsMenuItem});
 			this.RamSearchMenu.TabIndex = 4;
 			// 
 			// fileToolStripMenuItem
@@ -282,9 +273,7 @@ namespace BizHawk.Client.EmuHawk
             this.SaveAsMenuItem,
             this.AppendFileMenuItem,
             this.TruncateFromFileMenuItem,
-            this.RecentSubMenu,
-            this.toolStripSeparator4,
-            this.exitToolStripMenuItem});
+            this.RecentSubMenu});
 			this.fileToolStripMenuItem.Text = "&File";
 			this.fileToolStripMenuItem.DropDownOpened += new System.EventHandler(this.FileSubMenu_DropDownOpened);
 			// 
@@ -324,15 +313,9 @@ namespace BizHawk.Client.EmuHawk
 			this.RecentSubMenu.Text = "Recent";
 			this.RecentSubMenu.DropDownOpened += new System.EventHandler(this.RecentSubMenu_DropDownOpened);
 			// 
-			// exitToolStripMenuItem
-			// 
-			this.exitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F4)));
-			this.exitToolStripMenuItem.Text = "&Close";
-			this.exitToolStripMenuItem.Click += new System.EventHandler(this.CloseMenuItem_Click);
-			// 
 			// settingsToolStripMenuItem
 			// 
-			this.settingsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			this.OptionsSubMenuMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.modeToolStripMenuItem,
             this.MemoryDomainsSubMenu,
             this.sizeToolStripMenuItem,
@@ -341,8 +324,8 @@ namespace BizHawk.Client.EmuHawk
             this.BigEndianMenuItem,
             this.DisplayTypeSubMenu,
             this.DefinePreviousValueSubMenu});
-			this.settingsToolStripMenuItem.Text = "&Settings";
-			this.settingsToolStripMenuItem.DropDownOpened += new System.EventHandler(this.SettingsSubMenu_DropDownOpened);
+			this.OptionsSubMenuMenuItem.Text = "&Options";
+			this.OptionsSubMenuMenuItem.DropDownOpened += new System.EventHandler(this.OptionsSubMenu_DropDownOpened);
 			// 
 			// modeToolStripMenuItem
 			// 
@@ -526,22 +509,15 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// optionsToolStripMenuItem
 			// 
-			this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			this.SettingsMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.PreviewModeMenuItem,
             this.AutoSearchMenuItem,
             this.AutoSearchAccountForLagMenuItem,
             this.toolStripSeparator9,
             this.ExcludeRamWatchMenuItem,
-            this.UseUndoHistoryMenuItem,
-            this.toolStripSeparator11,
-            this.AutoloadDialogMenuItem,
-            this.SaveWinPositionMenuItem,
-            this.AlwaysOnTopMenuItem,
-            this.FloatingWindowMenuItem,
-            this.toolStripSeparator3,
-            this.RestoreDefaultsMenuItem});
-			this.optionsToolStripMenuItem.Text = "&Options";
-			this.optionsToolStripMenuItem.DropDownOpened += new System.EventHandler(this.OptionsSubMenu_DropDownOpened);
+            this.UseUndoHistoryMenuItem});
+			this.SettingsMenuItem.Text = "&Settings";
+			this.SettingsMenuItem.DropDownOpened += new System.EventHandler(this.SettingsSubMenu_DropDownOpened);
 			// 
 			// PreviewModeMenuItem
 			// 
@@ -560,38 +536,13 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// ExcludeRamWatchMenuItem
 			// 
-			this.ExcludeRamWatchMenuItem.Text = "Always E&xclude RAM Search List";
+			this.ExcludeRamWatchMenuItem.Text = "Always E&xclude RAM Watch List";
 			this.ExcludeRamWatchMenuItem.Click += new System.EventHandler(this.ExcludeRamWatchMenuItem_Click);
 			// 
 			// UseUndoHistoryMenuItem
 			// 
 			this.UseUndoHistoryMenuItem.Text = "&Use Undo History";
 			this.UseUndoHistoryMenuItem.Click += new System.EventHandler(this.UseUndoHistoryMenuItem_Click);
-			// 
-			// AutoloadDialogMenuItem
-			// 
-			this.AutoloadDialogMenuItem.Text = "Auto&load";
-			this.AutoloadDialogMenuItem.Click += new System.EventHandler(this.AutoloadDialogMenuItem_Click);
-			// 
-			// SaveWinPositionMenuItem
-			// 
-			this.SaveWinPositionMenuItem.Text = "&Save Window Position";
-			this.SaveWinPositionMenuItem.Click += new System.EventHandler(this.SaveWinPositionMenuItem_Click);
-			// 
-			// AlwaysOnTopMenuItem
-			// 
-			this.AlwaysOnTopMenuItem.Text = "Always On &Top";
-			this.AlwaysOnTopMenuItem.Click += new System.EventHandler(this.AlwaysOnTopMenuItem_Click);
-			// 
-			// FloatingWindowMenuItem
-			// 
-			this.FloatingWindowMenuItem.Text = "&Floating Window";
-			this.FloatingWindowMenuItem.Click += new System.EventHandler(this.FloatingWindowMenuItem_Click);
-			// 
-			// RestoreDefaultsMenuItem
-			// 
-			this.RestoreDefaultsMenuItem.Text = "&Restore Default Settings";
-			this.RestoreDefaultsMenuItem.Click += new System.EventHandler(this.RestoreDefaultsMenuItem_Click);
 			// 
 			// MemDomainLabel
 			// 
@@ -1118,16 +1069,12 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx OpenMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SaveAsMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SaveMenuItem;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx exitToolStripMenuItem;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx optionsToolStripMenuItem;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx RestoreDefaultsMenuItem;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SaveWinPositionMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SettingsMenuItem;
 		private BizHawk.WinForms.Controls.LocLabelEx MemDomainLabel;
 		private BizHawk.WinForms.Controls.LocLabelEx MessageLabel;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx RecentSubMenu;
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator2;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx AppendFileMenuItem;
-		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator4;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx searchToolStripMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ClearChangeCountsMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx UndoMenuItem;
@@ -1151,20 +1098,16 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolTip toolTip1;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx RedoMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ViewInHexEditorContextMenuItem;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx AutoloadDialogMenuItem;
-		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator11;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx UnfreezeAllContextMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx ContextMenuSeparator3;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx AlwaysOnTopMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator13;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ClearUndoMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx UseUndoHistoryMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx ContextMenuSeparator2;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ClearPreviewContextMenuItem;
-		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator3;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx newSearchToolStripMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator7;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx settingsToolStripMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx OptionsSubMenuMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx modeToolStripMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx DetailedMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx FastMenuItem;
@@ -1229,7 +1172,6 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.LocLabelEx label2;
 		private System.Windows.Forms.ComboBox DisplayTypeDropdown;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx GoToAddressMenuItem;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx FloatingWindowMenuItem;
 		private System.Windows.Forms.ToolStripButton ErrorIconButton;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx Previous_LastChangeMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx AutoSearchAccountForLagMenuItem;

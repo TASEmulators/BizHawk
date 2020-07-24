@@ -74,9 +74,9 @@ namespace BizHawk.Client.EmuHawk
 			_lastColumnSorted = "";
 
 			InitializeComponent();
-			ToggleScriptContextItem.Image = Resources.Refresh1;
+			ToggleScriptContextItem.Image = Resources.Refresh;
 			PauseScriptContextItem.Image = Resources.Pause;
-			EditScriptContextItem.Image = Resources.CutHS;
+			EditScriptContextItem.Image = Resources.Cut;
 			RemoveScriptContextItem.Image = Resources.Close;
 			InsertSeperatorContextItem.Image = Resources.InsertSeparator;
 			StopAllScriptsContextItem.Image = Resources.Stop;
@@ -86,10 +86,10 @@ namespace BizHawk.Client.EmuHawk
 			SaveSessionMenuItem.Image = Resources.SaveAs;
 			NewScriptMenuItem.Image = Resources.NewFile;
 			OpenScriptMenuItem.Image = Resources.OpenFile;
-			RefreshScriptMenuItem.Image = Resources.Refresh1;
-			ToggleScriptMenuItem.Image = Resources.checkbox;
+			RefreshScriptMenuItem.Image = Resources.Refresh;
+			ToggleScriptMenuItem.Image = Resources.Checkbox;
 			PauseScriptMenuItem.Image = Resources.Pause;
-			EditScriptMenuItem.Image = Resources.CutHS;
+			EditScriptMenuItem.Image = Resources.Cut;
 			RemoveScriptMenuItem.Image = Resources.Delete;
 			InsertSeparatorMenuItem.Image = Resources.InsertSeparator;
 			MoveUpMenuItem.Image = Resources.MoveUp;
@@ -99,10 +99,10 @@ namespace BizHawk.Client.EmuHawk
 			ClearRegisteredFunctionsLogContextItem.Image = Resources.Delete;
 			NewScriptToolbarItem.Image = Resources.NewFile;
 			OpenScriptToolbarItem.Image = Resources.OpenFile;
-			ToggleScriptToolbarItem.Image = Resources.checkbox;
-			RefreshScriptToolbarItem.Image = Resources.Refresh1;
+			ToggleScriptToolbarItem.Image = Resources.Checkbox;
+			RefreshScriptToolbarItem.Image = Resources.Refresh;
 			PauseToolbarItem.Image = Resources.Pause;
-			EditToolbarItem.Image = Resources.CutHS;
+			EditToolbarItem.Image = Resources.Cut;
 			RemoveScriptToolbarItem.Image = Resources.Delete;
 			DuplicateToolbarButton.Image = Resources.Duplicate;
 			MoveUpToolbarItem.Image = Resources.MoveUp;
@@ -110,7 +110,7 @@ namespace BizHawk.Client.EmuHawk
 			InsertSeparatorToolbarItem.Image = Resources.InsertSeparator;
 			EraseToolbarItem.Image = Resources.Erase;
 			RecentScriptsSubMenu.Image = Resources.Recent;
-			Icon = Resources.textdoc_MultiSize;
+			Icon = Resources.TextDocIcon;
 
 			Closing += (o, e) =>
 			{
@@ -264,13 +264,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetColumns()
 		{
-			foreach (var column in Settings.Columns)
-			{
-				if (LuaListView.AllColumns[column.Name] == null)
-				{
-					LuaListView.AllColumns.Add(column);
-				}
-			}
+			LuaListView.AllColumns.AddRange(Settings.Columns);
+			LuaListView.Refresh();
 		}
 
 		private void AddFileWatches()
@@ -848,11 +843,6 @@ namespace BizHawk.Client.EmuHawk
 		private void SaveSessionAsMenuItem_Click(object sender, EventArgs e)
 		{
 			SaveSessionAs();
-		}
-
-		private void ExitMenuItem_Click(object sender, EventArgs e)
-		{
-			Close();
 		}
 
 		private void ScriptSubMenu_DropDownOpened(object sender, EventArgs e)

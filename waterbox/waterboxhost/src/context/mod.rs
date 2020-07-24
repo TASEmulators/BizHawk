@@ -10,8 +10,8 @@ pub mod thunks;
 const ORG: usize = 0x35f00000000;
 
 const CALL_GUEST_IMPL_ADDR: usize = ORG;
-const CALL_GUEST_SIMPLE_ADDR: usize = ORG + 0x40;
-const EXTCALL_THUNK_ADDR: usize = ORG + 0x100;
+const CALL_GUEST_SIMPLE_ADDR: usize = ORG + 0x100;
+const EXTCALL_THUNK_ADDR: usize = ORG + 0x200;
 
 pub const CALLBACK_SLOTS: usize = 64;
 /// Retrieves a function pointer suitable for sending to the guest that will cause

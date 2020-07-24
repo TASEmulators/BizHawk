@@ -17,7 +17,7 @@ namespace BizHawk.Client.EmuHawk
 			_mainForm = mainForm;
 			_syncSettings = syncSettings;
 			InitializeComponent();
-			Icon = Properties.Resources.GameController_MultiSize;
+			Icon = Properties.Resources.GameControllerIcon;
 
 			// TODO: use combobox extension and add descriptions to enum values
 			comboBoxFamicom.Items.AddRange(NESControlSettings.GetFamicomExpansionValues().ToArray());

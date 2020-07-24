@@ -8,7 +8,7 @@ namespace BizHawk.Client.EmuHawk
 		private GBPrefs()
 		{
 			InitializeComponent();
-			Icon = Properties.Resources.gambatte_MultiSize;
+			Icon = Properties.Resources.GambatteIcon;
 		}
 
 		public static void DoGBPrefsDialog(IMainFormForConfig mainForm, Gameboy gb)

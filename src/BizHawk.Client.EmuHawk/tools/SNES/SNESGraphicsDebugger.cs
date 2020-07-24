@@ -532,11 +532,6 @@ namespace BizHawk.Client.EmuHawk
 				comboBGProps.SelectedIndex = DisplayTypeBGNum(CurrDisplaySelection) - 1;
 		}
 
-		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
-
 		private void SNESGraphicsDebugger_Load(object sender, EventArgs e)
 		{
 			if (UserBackdropColor != -1)
