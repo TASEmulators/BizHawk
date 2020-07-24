@@ -207,9 +207,5 @@ namespace BizHawk.Client.EmuHawk
 		{
 			bmpViewSP.SaveFile();
 		}
-
-		private void PceTileViewer_Load(object sender, EventArgs e)
-		{
-		}
 	}
 }

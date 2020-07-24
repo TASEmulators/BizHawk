@@ -157,7 +157,6 @@ namespace BizHawk.Client.EmuHawk
 			this.MainMenuStrip = this.menuStrip1;
 			this.Name = "PceTileViewer";
 			this.Text = "Tile Viewer";
-			this.Load += new System.EventHandler(this.PceTileViewer_Load);
 			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.PceTileViewer_KeyDown);
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox2.ResumeLayout(false);
