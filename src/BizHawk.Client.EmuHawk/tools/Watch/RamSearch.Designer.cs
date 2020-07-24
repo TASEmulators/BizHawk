@@ -99,13 +99,6 @@ namespace BizHawk.Client.EmuHawk
 			this.toolStripSeparator9 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.ExcludeRamWatchMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.UseUndoHistoryMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.toolStripSeparator11 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
-			this.AutoloadDialogMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.SaveWinPositionMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.AlwaysOnTopMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.FloatingWindowMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.toolStripSeparator3 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
-			this.RestoreDefaultsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.MemDomainLabel = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.MessageLabel = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
@@ -532,14 +525,7 @@ namespace BizHawk.Client.EmuHawk
             this.AutoSearchAccountForLagMenuItem,
             this.toolStripSeparator9,
             this.ExcludeRamWatchMenuItem,
-            this.UseUndoHistoryMenuItem,
-            this.toolStripSeparator11,
-            this.AutoloadDialogMenuItem,
-            this.SaveWinPositionMenuItem,
-            this.AlwaysOnTopMenuItem,
-            this.FloatingWindowMenuItem,
-            this.toolStripSeparator3,
-            this.RestoreDefaultsMenuItem});
+            this.UseUndoHistoryMenuItem});
 			this.SettingsMenuItem.Text = "&Settings";
 			this.SettingsMenuItem.DropDownOpened += new System.EventHandler(this.SettingsSubMenu_DropDownOpened);
 			// 
@@ -567,31 +553,6 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.UseUndoHistoryMenuItem.Text = "&Use Undo History";
 			this.UseUndoHistoryMenuItem.Click += new System.EventHandler(this.UseUndoHistoryMenuItem_Click);
-			// 
-			// AutoloadDialogMenuItem
-			// 
-			this.AutoloadDialogMenuItem.Text = "Auto&load";
-			this.AutoloadDialogMenuItem.Click += new System.EventHandler(this.AutoloadDialogMenuItem_Click);
-			// 
-			// SaveWinPositionMenuItem
-			// 
-			this.SaveWinPositionMenuItem.Text = "&Save Window Position";
-			this.SaveWinPositionMenuItem.Click += new System.EventHandler(this.SaveWinPositionMenuItem_Click);
-			// 
-			// AlwaysOnTopMenuItem
-			// 
-			this.AlwaysOnTopMenuItem.Text = "Always On &Top";
-			this.AlwaysOnTopMenuItem.Click += new System.EventHandler(this.AlwaysOnTopMenuItem_Click);
-			// 
-			// FloatingWindowMenuItem
-			// 
-			this.FloatingWindowMenuItem.Text = "&Floating Window";
-			this.FloatingWindowMenuItem.Click += new System.EventHandler(this.FloatingWindowMenuItem_Click);
-			// 
-			// RestoreDefaultsMenuItem
-			// 
-			this.RestoreDefaultsMenuItem.Text = "&Restore Default Settings";
-			this.RestoreDefaultsMenuItem.Click += new System.EventHandler(this.RestoreDefaultsMenuItem_Click);
 			// 
 			// MemDomainLabel
 			// 
@@ -1120,8 +1081,6 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SaveMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx exitToolStripMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SettingsMenuItem;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx RestoreDefaultsMenuItem;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SaveWinPositionMenuItem;
 		private BizHawk.WinForms.Controls.LocLabelEx MemDomainLabel;
 		private BizHawk.WinForms.Controls.LocLabelEx MessageLabel;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx RecentSubMenu;
@@ -1151,17 +1110,13 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolTip toolTip1;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx RedoMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ViewInHexEditorContextMenuItem;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx AutoloadDialogMenuItem;
-		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator11;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx UnfreezeAllContextMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx ContextMenuSeparator3;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx AlwaysOnTopMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator13;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ClearUndoMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx UseUndoHistoryMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx ContextMenuSeparator2;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ClearPreviewContextMenuItem;
-		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator3;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx newSearchToolStripMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator7;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx OptionsSubMenuMenuItem;
@@ -1229,7 +1184,6 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.LocLabelEx label2;
 		private System.Windows.Forms.ComboBox DisplayTypeDropdown;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx GoToAddressMenuItem;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx FloatingWindowMenuItem;
 		private System.Windows.Forms.ToolStripButton ErrorIconButton;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx Previous_LastChangeMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx AutoSearchAccountForLagMenuItem;

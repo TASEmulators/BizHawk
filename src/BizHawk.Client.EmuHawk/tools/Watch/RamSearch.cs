@@ -21,7 +21,7 @@ namespace BizHawk.Client.EmuHawk
 	/// <summary>
 	/// A form designed to search through ram values
 	/// </summary>
-	public partial class RamSearch : ToolFormBase, IToolForm
+	public partial class RamSearch : ToolFormBase, IToolFormAutoConfig
 	{
 		private const int MaxDetailedSize = 1024 * 1024; // 1mb, semi-arbitrary decision, sets the size to check for and automatically switch to fast mode for the user
 		private const int MaxSupportedSize = 1024 * 1024 * 64; // 64mb, semi-arbitrary decision, sets the maximum size RAM Search will support (as it will crash beyond this)
@@ -32,8 +32,6 @@ namespace BizHawk.Client.EmuHawk
 		private RamSearchEngine _searches;
 		private SearchEngineSettings _settings;
 
-		private int _defaultWidth;
-		private int _defaultHeight;
 		private string _sortedColumn;
 		private bool _sortReverse;
 		private bool _forcePreviewClear;
@@ -142,8 +140,6 @@ namespace BizHawk.Client.EmuHawk
 				Settings = new RamSearchSettings();
 			}
 
-			TopMost = Settings.TopMost;
-
 			RamSearchMenu.Items.Add(WatchListView.ToColumnsMenu(ColumnToggleCallback));
 
 			_settings = new SearchEngineSettings(MemoryDomains);
@@ -239,21 +235,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoadConfigSettings()
 		{
-			_defaultWidth = Size.Width;
-			_defaultHeight = Size.Height;
-
-			if (Settings.UseWindowPosition && IsOnScreen(Settings.TopLeft))
-			{
-				Location = Settings.WindowPosition;
-			}
-
-			if (Settings.UseWindowSize)
-			{
-				Size = Settings.WindowSize;
-			}
-
-			TopMost = Settings.TopMost;
-
 			WatchListView.AllColumns.Clear();
 			SetColumns();
 		}
@@ -343,14 +324,6 @@ namespace BizHawk.Client.EmuHawk
 		private void SaveConfigSettings()
 		{
 			Settings.Columns = WatchListView.AllColumns;
-
-			if (WindowState == FormWindowState.Normal)
-			{
-				Settings.Wndx = Location.X;
-				Settings.Wndy = Location.Y;
-				Settings.Width = Right - Left;
-				Settings.Height = Bottom - Top;
-			}
 		}
 
 		public void NewSearch()
@@ -963,7 +936,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public class RamSearchSettings : ToolDialogSettings
+		public class RamSearchSettings
 		{
 			public RamSearchSettings()
 			{
@@ -1309,13 +1282,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SettingsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			AutoloadDialogMenuItem.Checked = Settings.AutoLoad;
-			SaveWinPositionMenuItem.Checked = Settings.SaveWindowPosition;
 			ExcludeRamWatchMenuItem.Checked = Settings.AlwaysExcludeRamWatch;
 			UseUndoHistoryMenuItem.Checked = _searches.UndoEnabled;
 			PreviewModeMenuItem.Checked = Settings.PreviewMode;
-			AlwaysOnTopMenuItem.Checked = Settings.TopMost;
-			FloatingWindowMenuItem.Checked = Settings.FloatingWindow;
 			AutoSearchMenuItem.Checked = _autoSearch;
 			AutoSearchAccountForLagMenuItem.Checked = Settings.AutoSearchTakeLagFramesIntoAccount;
 		}
@@ -1353,34 +1322,12 @@ namespace BizHawk.Client.EmuHawk
 			_searches.UndoEnabled ^= true;
 		}
 
-		private void AutoloadDialogMenuItem_Click(object sender, EventArgs e)
-		{
-			Settings.AutoLoad ^= true;
-		}
-
-		private void SaveWinPositionMenuItem_Click(object sender, EventArgs e)
-		{
-			Settings.SaveWindowPosition ^= true;
-		}
-
-		private void AlwaysOnTopMenuItem_Click(object sender, EventArgs e)
-		{
-			TopMost = Settings.TopMost ^= true;
-		}
-
-		private void FloatingWindowMenuItem_Click(object sender, EventArgs e)
-		{
-			Settings.FloatingWindow ^= true;
-			RefreshFloatingWindowControl(Settings.FloatingWindow);
-		}
-
-		private void RestoreDefaultsMenuItem_Click(object sender, EventArgs e)
+		[RestoreDefaults]
+		private void RestoreDefaultsMenuItem()
 		{
 			var recentFiles = Settings.RecentSearches; // We don't want to wipe recent files when restoring
 
 			Settings = new RamSearchSettings { RecentSearches = recentFiles };
-
-			Size = new Size(_defaultWidth, _defaultHeight);
 
 			RamSearchMenu.Items.Remove(
 				RamSearchMenu.Items
@@ -1394,8 +1341,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				SetToFastMode();
 			}
-
-			RefreshFloatingWindowControl(Settings.FloatingWindow);
 
 			WatchListView.AllColumns.Clear();
 			SetColumns();
@@ -1741,12 +1686,6 @@ namespace BizHawk.Client.EmuHawk
 					LoadWatchFile(file, false);
 				}
 			}
-		}
-
-		protected override void OnShown(EventArgs e)
-		{
-			RefreshFloatingWindowControl(Settings.FloatingWindow);
-			base.OnShown(e);
 		}
 
 		// Stupid designer
