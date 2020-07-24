@@ -40,8 +40,6 @@ namespace BizHawk.Client.EmuHawk
 			this.menuStrip1 = new MenuStripEx();
 			this.FileSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.SaveLogMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.toolStripSeparator1 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
-			this.ExitMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.EditSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.CopyMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.SelectAllMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -130,21 +128,13 @@ namespace BizHawk.Client.EmuHawk
 			// FileSubMenu
 			// 
 			this.FileSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.SaveLogMenuItem,
-            this.toolStripSeparator1,
-            this.ExitMenuItem});
+            this.SaveLogMenuItem});
 			this.FileSubMenu.Text = "&File";
 			// 
 			// SaveLogMenuItem
 			// 
 			this.SaveLogMenuItem.Text = "&Save Log";
 			this.SaveLogMenuItem.Click += new System.EventHandler(this.SaveLogMenuItem_Click);
-			// 
-			// ExitMenuItem
-			// 
-			this.ExitMenuItem.ShortcutKeyDisplayString = "Alt+F4";
-			this.ExitMenuItem.Text = "E&xit";
-			this.ExitMenuItem.Click += new System.EventHandler(this.ExitMenuItem_Click);
 			// 
 			// EditSubMenu
 			// 
@@ -309,8 +299,6 @@ namespace BizHawk.Client.EmuHawk
 		private MenuStripEx menuStrip1;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx FileSubMenu;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SaveLogMenuItem;
-		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator1;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ExitMenuItem;
 		private System.Windows.Forms.GroupBox groupBox2;
 		private System.Windows.Forms.CheckBox LoggingEnabled;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx OptionsSubMenu;

@@ -315,11 +315,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void ExitMenuItem_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
-
 		private void CopyMenuItem_Click(object sender, EventArgs e)
 		{
 			var indices = TraceView.SelectedRows.ToList();

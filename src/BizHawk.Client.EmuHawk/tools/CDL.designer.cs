@@ -44,8 +44,6 @@ namespace BizHawk.Client.EmuHawk
 			this.toolStripSeparator2 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.ClearMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.DisassembleMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.toolStripSeparator1 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
-			this.ExitMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.toolStrip1 = new ToolStripEx();
 			this.tsbLoggingActive = new System.Windows.Forms.ToolStripButton();
 			this.toolStripSeparator3 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
@@ -79,9 +77,7 @@ namespace BizHawk.Client.EmuHawk
             this.miAutoResume,
             this.toolStripSeparator2,
             this.ClearMenuItem,
-            this.DisassembleMenuItem,
-            this.toolStripSeparator1,
-            this.ExitMenuItem});
+            this.DisassembleMenuItem});
 			this.FileSubMenu.Text = "&File";
 			this.FileSubMenu.DropDownOpened += new System.EventHandler(this.FileSubMenu_DropDownOpened);
 			// 
@@ -145,12 +141,6 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.DisassembleMenuItem.Text = "&Disassemble...";
 			this.DisassembleMenuItem.Click += new System.EventHandler(this.DisassembleMenuItem_Click);
-			// 
-			// ExitMenuItem
-			// 
-			this.ExitMenuItem.ShortcutKeyDisplayString = "Alt+F4";
-			this.ExitMenuItem.Text = "&Close";
-			this.ExitMenuItem.Click += new System.EventHandler(this.ExitMenuItem_Click);
 			// 
 			// toolStrip1
 			// 
@@ -261,8 +251,6 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx AppendMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx NewMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx DisassembleMenuItem;
-		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator1;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ExitMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SaveMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx RecentSubMenu;
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator2;

@@ -449,12 +449,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void ExitMenuItem_Click(object sender, EventArgs e)
-		{
-			ShutdownCDL();
-			Close();
-		}
-
 		void ShutdownCDL()
 		{
 			_cdl = null;
@@ -485,6 +479,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CDL_Load(object sender, EventArgs e)
 		{
+			Closing += (o, e) => ShutdownCDL();
 			if (CDLAutoResume)
 			{
 				try
