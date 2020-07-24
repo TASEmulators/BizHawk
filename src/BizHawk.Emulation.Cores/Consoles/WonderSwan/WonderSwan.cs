@@ -4,6 +4,8 @@ using System.Linq;
 
 using BizHawk.Emulation.Common;
 
+using EnumsNET;
+
 namespace BizHawk.Emulation.Cores.WonderSwan
 {
 	[Core("Cygne/Mednafen", "Dox, Mednafen Team", true, true, "1.24.3", "https://mednafen.github.io/releases/", false, "WonderSwan")]
@@ -111,7 +113,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			{
 				BizSwan.NecRegs en = (BizSwan.NecRegs)i;
 				uint val = BizSwan.bizswan_getnecreg(Core, en);
-				ret[Enum.GetName(typeof(BizSwan.NecRegs), en)] = (ushort)val;
+				ret[en.GetName()] = (ushort)val;
 			}
 			return ret;
 		}

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using EnumsNET;
+
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
     /// <summary>
@@ -146,7 +148,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                         // this is a bit tricky. we will attempt to parse the double sided disk image byte array,
                         // then output two separate image byte arrays
                         List<byte[]> working = new List<byte[]>();
-                        foreach (DiskType type in Enum.GetValues(typeof(DiskType)))
+                        foreach (var type in Enums.GetValues<DiskType>())
                         {
                             bool found = false;
 

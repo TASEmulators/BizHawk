@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Windows.Forms;
 
-using BizHawk.Common.StringExtensions;
-using BizHawk.Common.ReflectionExtensions;
-using BizHawk.Emulation.Cores.Nintendo.N64;
 using BizHawk.Client.Common;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Nintendo.N64;
+
+using EnumsNET;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -111,13 +112,9 @@ namespace BizHawk.Client.EmuHawk
 				_ => _ss.VideoPlugin
 			};
 
-			_ss.Core = CoreTypeDropdown.SelectedItem
-				.ToString()
-				.GetEnumFromDescription<N64SyncSettings.CoreType>();
+			_ss.Core = Enums.Parse<N64SyncSettings.CoreType>(CoreTypeDropdown.SelectedItem.ToString(), false, EnumFormat.Description);
 
-			_ss.Rsp = RspTypeDropdown.SelectedItem
-				.ToString()
-				.GetEnumFromDescription<N64SyncSettings.RspType>();
+			_ss.Rsp = Enums.Parse<N64SyncSettings.RspType>(RspTypeDropdown.SelectedItem.ToString(), false, EnumFormat.Description);
 
 			if (_emulator is N64)
 			{
@@ -133,8 +130,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void N64VideoPluginConfig_Load(object sender, EventArgs e)
 		{
-			CoreTypeDropdown.PopulateFromEnum<N64SyncSettings.CoreType>(_ss.Core);
-			RspTypeDropdown.PopulateFromEnum<N64SyncSettings.RspType>(_ss.Rsp);
+			CoreTypeDropdown.PopulateFromEnum(_ss.Core);
+			RspTypeDropdown.PopulateFromEnum(_ss.Rsp);
 
 			switch (_ss.VideoPlugin)
 			{

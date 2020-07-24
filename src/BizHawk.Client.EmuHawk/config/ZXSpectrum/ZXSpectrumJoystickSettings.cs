@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Linq;
 using System.Windows.Forms;
+
 using BizHawk.Emulation.Cores.Computers.SinclairSpectrum;
+
+using EnumsNET;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -23,7 +26,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void IntvControllerSettings_Load(object sender, EventArgs e)
 		{
-			_possibleControllers = Enum.GetNames(typeof(JoystickType));
+			_possibleControllers = Enums.GetNames<JoystickType>().ToArray();
 
 			foreach (var val in _possibleControllers)
 			{
@@ -97,9 +100,9 @@ namespace BizHawk.Client.EmuHawk
 
 				if (selectionValid)
 				{
-					_syncSettings.JoystickType1 = (JoystickType)Enum.Parse(typeof(JoystickType), Port1ComboBox.SelectedItem.ToString());
-					_syncSettings.JoystickType2 = (JoystickType)Enum.Parse(typeof(JoystickType), Port2ComboBox.SelectedItem.ToString());
-					_syncSettings.JoystickType3 = (JoystickType)Enum.Parse(typeof(JoystickType), Port3ComboBox.SelectedItem.ToString());
+					_syncSettings.JoystickType1 = Enums.Parse<JoystickType>(Port1ComboBox.SelectedItem.ToString());
+					_syncSettings.JoystickType2 = Enums.Parse<JoystickType>(Port2ComboBox.SelectedItem.ToString());
+					_syncSettings.JoystickType3 = Enums.Parse<JoystickType>(Port3ComboBox.SelectedItem.ToString());
 
 					_mainForm.PutCoreSyncSettings(_syncSettings);
 

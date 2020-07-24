@@ -8,6 +8,8 @@ using System.IO;
 
 using BizHawk.Emulation.DiscSystem;
 
+using EnumsNET;
+
 // cue format preferences notes
 
 // PCEjin -
@@ -212,9 +214,9 @@ namespace BizHawk.Client.DiscoHawk
 				string a = args[idx++];
 				string au = a.ToUpperInvariant();
 				if (au == "LOAD")
-					loadDiscInterface = (DiscInterface)Enum.Parse(typeof(DiscInterface), args[idx++], true);
+					loadDiscInterface = Enums.Parse<DiscInterface>(args[idx++], true);
 				else if (au == "COMPARE")
-					compareDiscInterfaces.Add((DiscInterface)Enum.Parse(typeof(DiscInterface), args[idx++], true));
+					compareDiscInterfaces.Add(Enums.Parse<DiscInterface>(args[idx++], true));
 				else if (au == "HAWK")
 					hawk = true;
 				else if (au == "CUEDIR")

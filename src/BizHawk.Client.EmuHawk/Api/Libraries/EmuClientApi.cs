@@ -13,6 +13,8 @@ using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.PCEngine;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
 
+using EnumsNET;
+
 namespace BizHawk.Client.EmuHawk
 {
 	public sealed class EmuClientApi : IEmuClientApi
@@ -35,7 +37,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public GameInfo Game;
 
-		private readonly IReadOnlyCollection<JoypadButton> JoypadButtonsArray = Enum.GetValues(typeof(JoypadButton)).Cast<JoypadButton>().ToList(); //TODO can the return of GetValues be cast to JoypadButton[]? --yoshi
+		private readonly IReadOnlyCollection<JoypadButton> JoypadButtonsArray = Enums.GetValues<JoypadButton>();
 
 		private readonly JoypadStringToEnumConverter JoypadConverter = new JoypadStringToEnumConverter();
 

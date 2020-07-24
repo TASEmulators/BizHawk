@@ -1,8 +1,9 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.NDS;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
+
+using EnumsNET;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -773,30 +774,16 @@ namespace BizHawk.Client.EmuHawk
 
 		private void IncrementDSLayout(int delta)
 		{
-			bool decrement = delta == -1;
-			if (Emulator is MelonDS ds)
-			{
-				var settings = ds.GetSettings();
-				var num = (int)settings.ScreenLayout;
-				if (decrement)
-				{
-					num--;
-				}
-				else
-				{
-					num++;
-				}
+			if (!(Emulator is MelonDS ds)) return;
 
-				var next = (MelonDS.ScreenLayoutKind)Enum.Parse(typeof(MelonDS.ScreenLayoutKind), num.ToString());
-				if (typeof(MelonDS.ScreenLayoutKind).IsEnumDefined(next))
-				{
-					settings.ScreenLayout = next;
+			var settings = ds.GetSettings();
+			var next = settings.ScreenLayout + delta;
+			if (!next.IsDefined()) return;
 
-					ds.PutSettings(settings);
-					AddOnScreenMessage($"Screen layout to {next}");
-					FrameBufferResized();
-				}
-			}
+			settings.ScreenLayout = next;
+			ds.PutSettings(settings);
+			AddOnScreenMessage($"Screen layout to {next}");
+			FrameBufferResized();
 		}
 
 		// Determines if the value is a hotkey  that would be handled outside of the CheckHotkey method

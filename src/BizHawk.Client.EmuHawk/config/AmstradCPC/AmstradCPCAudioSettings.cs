@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Windows.Forms;
+
 using BizHawk.Emulation.Cores.Computers.AmstradCPC;
+
+using EnumsNET;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -23,7 +26,7 @@ namespace BizHawk.Client.EmuHawk
 		private void IntvControllerSettings_Load(object sender, EventArgs e)
 		{
 			// AY panning config
-			var panTypes = Enum.GetNames(typeof(AY38912.AYPanConfig));
+			var panTypes = Enums.GetNames<AY38912.AYPanConfig>();
 			foreach (var val in panTypes)
 			{
 				panTypecomboBox1.Items.Add(val);
@@ -46,7 +49,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (changed)
 			{
-				_settings.AYPanConfig = (AY38912.AYPanConfig)Enum.Parse(typeof(AY38912.AYPanConfig), panTypecomboBox1.SelectedItem.ToString());
+				_settings.AYPanConfig = Enums.Parse<AY38912.AYPanConfig>(panTypecomboBox1.SelectedItem.ToString());
 
 				_settings.TapeVolume = tapeVolumetrackBar.Value;
 				_settings.AYVolume = ayVolumetrackBar.Value;

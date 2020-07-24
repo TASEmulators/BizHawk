@@ -5,6 +5,8 @@ using System.Text;
 using System.Windows.Forms;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 
+using EnumsNET;
+
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class NESSyncSettingsForm : Form
@@ -37,8 +39,8 @@ namespace BizHawk.Client.EmuHawk
 				InfoLabel.Visible = true;
 			}
 
-			RegionComboBox.Items.AddRange(Enum.GetNames(typeof(NES.NESSyncSettings.Region)));
-			RegionComboBox.SelectedItem = Enum.GetName(typeof(NES.NESSyncSettings.Region), _syncSettings.RegionOverride);
+			RegionComboBox.Items.AddRange(Enums.GetNames<NES.NESSyncSettings.Region>().Cast<object>().ToArray());
+			RegionComboBox.SelectedItem = _syncSettings.RegionOverride.GetName();
 
 			if (_syncSettings.InitialWRamStatePattern != null && _syncSettings.InitialWRamStatePattern.Any())
 			{
@@ -61,10 +63,7 @@ namespace BizHawk.Client.EmuHawk
 		private void OkBtn_Click(object sender, EventArgs e)
 		{
 			var old = _syncSettings.RegionOverride;
-			_syncSettings.RegionOverride = (NES.NESSyncSettings.Region)
-				Enum.Parse(
-				typeof(NES.NESSyncSettings.Region),
-				(string)RegionComboBox.SelectedItem);
+			_syncSettings.RegionOverride = Enums.Parse<NES.NESSyncSettings.Region>((string) RegionComboBox.SelectedItem);
 
 			var oldRam = _syncSettings.InitialWRamStatePattern ?? new List<byte>();
 

@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Windows.Forms;
+
 using BizHawk.Emulation.Cores.Computers.AmstradCPC;
+
+using EnumsNET;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -22,13 +25,13 @@ namespace BizHawk.Client.EmuHawk
 		private void IntvControllerSettings_Load(object sender, EventArgs e)
 		{
 			// OSD Message Verbosity
-			var osdTypes = Enum.GetNames(typeof(AmstradCPC.OSDVerbosity));
+			var osdTypes = Enums.GetNames<AmstradCPC.OSDVerbosity>();
 			foreach (var val in osdTypes)
 			{
 				osdMessageVerbositycomboBox1.Items.Add(val);
 			}
 			osdMessageVerbositycomboBox1.SelectedItem = _settings.OSDMessageVerbosity.ToString();
-			UpdateOSDNotes((AmstradCPC.OSDVerbosity)Enum.Parse(typeof(AmstradCPC.OSDVerbosity), osdMessageVerbositycomboBox1.SelectedItem.ToString()));
+			UpdateOSDNotes(Enums.Parse<AmstradCPC.OSDVerbosity>(osdMessageVerbositycomboBox1.SelectedItem.ToString()));
 		}
 
 		private void OkBtn_Click(object sender, EventArgs e)
@@ -38,7 +41,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (changed)
 			{
-				_settings.OSDMessageVerbosity = (AmstradCPC.OSDVerbosity)Enum.Parse(typeof(AmstradCPC.OSDVerbosity), osdMessageVerbositycomboBox1.SelectedItem.ToString());
+				_settings.OSDMessageVerbosity = Enums.Parse<AmstradCPC.OSDVerbosity>(osdMessageVerbositycomboBox1.SelectedItem.ToString());
 
 				_mainForm.PutCoreSettings(_settings);
 
@@ -78,7 +81,7 @@ namespace BizHawk.Client.EmuHawk
 		private void OSDComboBox_SelectionChangeCommitted(object sender, EventArgs e)
 		{
 			var cb = (ComboBox)sender;
-			UpdateOSDNotes((AmstradCPC.OSDVerbosity)Enum.Parse(typeof(AmstradCPC.OSDVerbosity), cb.SelectedItem.ToString()));
+			UpdateOSDNotes(Enums.Parse<AmstradCPC.OSDVerbosity>(cb.SelectedItem.ToString()));
 		}
 	}
 }

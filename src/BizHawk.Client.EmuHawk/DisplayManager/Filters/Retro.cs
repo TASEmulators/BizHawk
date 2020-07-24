@@ -10,6 +10,9 @@ using System.Drawing;
 using BizHawk.Client.EmuHawk.FilterManager;
 
 using BizHawk.Bizware.BizwareGL;
+
+using EnumsNET;
+
 using OpenTK;
 
 namespace BizHawk.Client.EmuHawk.Filters
@@ -158,9 +161,9 @@ namespace BizHawk.Client.EmuHawk.Filters
 
 				// If no scale type is assumed, it is assumed that it is set to "source" with scaleN set to 1.0.
 				// It is possible to set scale_type_xN and scale_type_yN to specialize the scaling type in either direction. scale_typeN however overrides both of these.
-				sp.ScaleTypeX = (ScaleType)Enum.Parse(typeof(ScaleType), FetchString(dict, $"scale_type_x{i}", "Source"), true);
-				sp.ScaleTypeY = (ScaleType)Enum.Parse(typeof(ScaleType), FetchString(dict, $"scale_type_y{i}", "Source"), true);
-				ScaleType st = (ScaleType)Enum.Parse(typeof(ScaleType), FetchString(dict, $"scale_type{i}", "NotSet"), true);
+				sp.ScaleTypeX = Enums.Parse<ScaleType>(FetchString(dict, $"scale_type_x{i}", "Source"), true);
+				sp.ScaleTypeY = Enums.Parse<ScaleType>(FetchString(dict, $"scale_type_y{i}", "Source"), true);
+				ScaleType st = Enums.Parse<ScaleType>(FetchString(dict, $"scale_type{i}", "NotSet"), true);
 				if (st != ScaleType.NotSet)
 					sp.ScaleTypeX = sp.ScaleTypeY = st;
 

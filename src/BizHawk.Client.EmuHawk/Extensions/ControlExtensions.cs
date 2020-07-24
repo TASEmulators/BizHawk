@@ -8,29 +8,23 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
+
 using BizHawk.Client.Common;
 using BizHawk.Common;
-using BizHawk.Common.ReflectionExtensions;
 using BizHawk.Emulation.Common;
+
+using EnumsNET;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public static class ControlExtensions
 	{
-		/// <exception cref="ArgumentException"><typeparamref name="T"/> does not inherit <see cref="Enum"/></exception>
-		public static void PopulateFromEnum<T>(this ComboBox box, object enumVal)
-			where T : struct, IConvertible
+		public static void PopulateFromEnum<T>(this ComboBox box, T enumVal)
+			where T : struct, Enum
 		{
-			if (!typeof(T).IsEnum)
-			{
-				throw new ArgumentException("T must be an enumerated type");
-			}
-
 			box.Items.Clear();
-			box.Items.AddRange(
-				typeof(T).GetEnumDescriptions()
-				.ToArray());
-			box.SelectedItem = enumVal.GetDescription();
+			box.Items.AddRange(Enums.GetMembers<T>().Select(m => (object) m.AsString(EnumFormat.Description)).ToArray());
+			box.SelectedItem = enumVal.AsString(EnumFormat.Description);
 		}
 
 		// extension method to make Control.Invoke easier to use

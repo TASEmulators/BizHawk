@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using EnumsNET;
+
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
 	public class IPFFloppyDisk : FloppyDisk
@@ -306,7 +308,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				startPos += 4;
 				try
 				{
-					ipf.RecordType = (RecordHeaderType)Enum.Parse(typeof(RecordHeaderType), ident);
+					ipf.RecordType = Enums.Parse<RecordHeaderType>(ident);
 				}
 				catch
 				{

@@ -1,12 +1,14 @@
 ﻿using System;
-using System.IO;
-using System.Windows.Forms;
-using System.Linq;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Windows.Forms;
 
+using BizHawk.Client.Common;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
-using BizHawk.Client.Common;
+
+using EnumsNET;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -242,13 +244,7 @@ namespace BizHawk.Client.EmuHawk
 			 */
 
 			var filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
-			Dictionary<LoadOrdering, List<FileInformation>> sortedFiles = new Dictionary<LoadOrdering, List<FileInformation>>();
-
-			// Initialize the dictionary's lists.
-			foreach (LoadOrdering value in Enum.GetValues(typeof(LoadOrdering)))
-			{
-				sortedFiles.Add(value, new List<FileInformation>());
-			}
+			var sortedFiles = Enums.GetValues<LoadOrdering>().ToDictionary(lo => lo, unused => new List<FileInformation>());
 
 			ProcessFileList(filePaths.Select(EmuHawkUtil.ResolveShortcut), ref sortedFiles);
 
@@ -256,7 +252,7 @@ namespace BizHawk.Client.EmuHawk
 			// If there is exactly one of that type of item, load it.
 			// If there is more than one, ask.
 
-			foreach (LoadOrdering value in Enum.GetValues(typeof(LoadOrdering)))
+			foreach (var value in Enums.GetValues<LoadOrdering>())
 			{
 				switch (sortedFiles[value].Count)
 				{

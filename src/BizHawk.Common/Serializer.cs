@@ -8,6 +8,8 @@ using System.IO;
 using BizHawk.Common.IOExtensions;
 using BizHawk.Common.BufferExtensions;
 
+using EnumsNET;
+
 namespace BizHawk.Common
 {
 	public unsafe class Serializer
@@ -128,20 +130,16 @@ namespace BizHawk.Common
 			}
 		}
 
-		/// <exception cref="InvalidOperationException"><typeparamref name="T"/> does not inherit <see cref="Enum"/></exception>
-		public void SyncEnum<T>(string name, ref T val) where T : struct
+		public void SyncEnum<T>(string name, ref T val)
+			where T : struct, Enum
 		{
-			if (typeof(T).BaseType != typeof(Enum))
-			{
-				throw new InvalidOperationException();
-			}
-			else if (_isText)
+			if (_isText)
 			{
 				SyncEnumText(name, ref val);
 			}
 			else if (IsReader)
 			{
-				val = (T)Enum.ToObject(typeof(T), _br.ReadInt32());
+				val = Enums.ToObject<T>(_br.ReadInt32());
 			}
 			else
 			{
@@ -149,13 +147,14 @@ namespace BizHawk.Common
 			}
 		}
 
-		public void SyncEnumText<T>(string name, ref T val) where T : struct
+		public void SyncEnumText<T>(string name, ref T val)
+			where T : struct, Enum
 		{
 			if (IsReader)
 			{
 				if (Present(name))
 				{
-					val = (T)Enum.Parse(typeof(T), Item(name));
+					val = Enums.Parse<T>(Item(name));
 				}
 			}
 			else

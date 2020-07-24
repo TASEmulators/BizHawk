@@ -1,5 +1,6 @@
-﻿using System;
-using System.Text;
+﻿using System.Text;
+
+using EnumsNET;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
@@ -118,8 +119,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Disk);
 				sb.Clear();
 
-				string protection = "None";
-				protection = Enum.GetName(typeof(ProtectionType), _machine.UPDDiskDevice.DiskPointer.Protection);
+				var protection = _machine.UPDDiskDevice.DiskPointer.Protection.GetName();
 				if (protection == "None")
 					protection += " (OR UNKNOWN)";
 

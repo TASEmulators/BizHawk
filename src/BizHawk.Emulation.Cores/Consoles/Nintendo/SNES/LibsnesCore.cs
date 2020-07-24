@@ -7,6 +7,8 @@ using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.W65816;
 
+using EnumsNET;
+
 // TODO - add serializer (?)
 
 // http://wiki.superfamicom.org/snes/show/Backgrounds
@@ -658,7 +660,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		private void RefreshPalette()
 		{
-			SetPalette((SnesColors.ColorType)Enum.Parse(typeof(SnesColors.ColorType), _settings.Palette, false));
+			SetPalette(Enums.Parse<SnesColors.ColorType>(_settings.Palette, false));
 		}
 	}
 }

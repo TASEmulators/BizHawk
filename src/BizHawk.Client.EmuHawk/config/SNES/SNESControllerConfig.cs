@@ -3,6 +3,8 @@ using System.Windows.Forms;
 
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 
+using EnumsNET;
+
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class SNESControllerSettings : Form
@@ -26,8 +28,8 @@ namespace BizHawk.Client.EmuHawk
 			LimitAnalogChangeCheckBox.Checked = _syncSettings.LimitAnalogChangeSensitivity;
 
 			_suppressDropdownChangeEvents = true;
-			Port1ComboBox.PopulateFromEnum<LibsnesControllerDeck.ControllerType>(_syncSettings.LeftPort);
-			Port2ComboBox.PopulateFromEnum<LibsnesControllerDeck.ControllerType>(_syncSettings.RightPort);
+			Port1ComboBox.PopulateFromEnum(_syncSettings.LeftPort);
+			Port2ComboBox.PopulateFromEnum(_syncSettings.RightPort);
 			_suppressDropdownChangeEvents = false;
 		}
 
@@ -40,8 +42,8 @@ namespace BizHawk.Client.EmuHawk
 
 			if (changed)
 			{
-				_syncSettings.LeftPort = (LibsnesControllerDeck.ControllerType)Enum.Parse(typeof(LibsnesControllerDeck.ControllerType), Port1ComboBox.SelectedItem.ToString());
-				_syncSettings.RightPort = (LibsnesControllerDeck.ControllerType)Enum.Parse(typeof(LibsnesControllerDeck.ControllerType), Port2ComboBox.SelectedItem.ToString());
+				_syncSettings.LeftPort = Enums.Parse<LibsnesControllerDeck.ControllerType>(Port1ComboBox.SelectedItem.ToString());
+				_syncSettings.RightPort = Enums.Parse<LibsnesControllerDeck.ControllerType>(Port2ComboBox.SelectedItem.ToString());
 				_syncSettings.LimitAnalogChangeSensitivity = LimitAnalogChangeCheckBox.Checked;
 
 				_mainForm.PutCoreSyncSettings(_syncSettings);
@@ -62,8 +64,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!_suppressDropdownChangeEvents)
 			{
-				var leftPort = (LibsnesControllerDeck.ControllerType)Enum.Parse(typeof(LibsnesControllerDeck.ControllerType), Port1ComboBox.SelectedItem.ToString());
-				var rightPort = (LibsnesControllerDeck.ControllerType)Enum.Parse(typeof(LibsnesControllerDeck.ControllerType), Port2ComboBox.SelectedItem.ToString());
+				var leftPort = Enums.Parse<LibsnesControllerDeck.ControllerType>(Port1ComboBox.SelectedItem.ToString());
+				var rightPort = Enums.Parse<LibsnesControllerDeck.ControllerType>(Port2ComboBox.SelectedItem.ToString());
 				ToggleMouseSection(leftPort == LibsnesControllerDeck.ControllerType.Mouse
 					|| rightPort == LibsnesControllerDeck.ControllerType.Mouse);
 			}

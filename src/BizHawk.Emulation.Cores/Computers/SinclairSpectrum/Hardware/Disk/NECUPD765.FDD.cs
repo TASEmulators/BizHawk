@@ -1,6 +1,9 @@
-﻿using BizHawk.Common;
+﻿using System;
+
+using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
-using System;
+
+using EnumsNET;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
@@ -745,7 +748,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				FloppyDisk fdd = null;
 				bool found = false;
 
-				foreach (DiskType type in Enum.GetValues(typeof(DiskType)))
+				foreach (var type in Enums.GetValues<DiskType>())
 				{
 					switch (type)
 					{

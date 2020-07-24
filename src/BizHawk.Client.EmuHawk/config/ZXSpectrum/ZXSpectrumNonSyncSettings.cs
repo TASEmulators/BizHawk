@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Windows.Forms;
+
 using BizHawk.Emulation.Cores.Computers.SinclairSpectrum;
+
+using EnumsNET;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -29,13 +32,13 @@ namespace BizHawk.Client.EmuHawk
 			checkBoxShowCoreBrdColor.Checked = _settings.UseCoreBorderForBackground;
 
 			// OSD Message Verbosity
-			var osdTypes = Enum.GetNames(typeof(ZXSpectrum.OSDVerbosity));     
+			var osdTypes = Enums.GetNames<ZXSpectrum.OSDVerbosity>();
 			foreach (var val in osdTypes)
 			{
 				osdMessageVerbositycomboBox1.Items.Add(val);
 			}
 			osdMessageVerbositycomboBox1.SelectedItem = _settings.OSDMessageVerbosity.ToString();
-			UpdateOSDNotes((ZXSpectrum.OSDVerbosity)Enum.Parse(typeof(ZXSpectrum.OSDVerbosity), osdMessageVerbositycomboBox1.SelectedItem.ToString()));
+			UpdateOSDNotes(Enums.Parse<ZXSpectrum.OSDVerbosity>(osdMessageVerbositycomboBox1.SelectedItem.ToString()));
 		}
 
 		private void SetBtnColor()
@@ -54,7 +57,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (changed)
 			{
-				_settings.OSDMessageVerbosity = (ZXSpectrum.OSDVerbosity)Enum.Parse(typeof(ZXSpectrum.OSDVerbosity), osdMessageVerbositycomboBox1.SelectedItem.ToString());
+				_settings.OSDMessageVerbosity = Enums.Parse<ZXSpectrum.OSDVerbosity>(osdMessageVerbositycomboBox1.SelectedItem.ToString());
 				_settings.BackgroundColor = _bgColor;
 				_settings.UseCoreBorderForBackground = checkBoxShowCoreBrdColor.Checked;
 
@@ -96,7 +99,7 @@ namespace BizHawk.Client.EmuHawk
 		private void OSDComboBox_SelectionChangeCommitted(object sender, EventArgs e)
 		{
 			var cb = (ComboBox)sender;
-			UpdateOSDNotes((ZXSpectrum.OSDVerbosity)Enum.Parse(typeof(ZXSpectrum.OSDVerbosity), cb.SelectedItem.ToString()));
+			UpdateOSDNotes(Enums.Parse<ZXSpectrum.OSDVerbosity>(cb.SelectedItem.ToString()));
 		}
 
 		private void buttonChooseBGColor_Click(object sender, EventArgs e)

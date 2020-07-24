@@ -2,6 +2,8 @@
 using System.Runtime.InteropServices;
 using BizHawk.Emulation.Common;
 
+using EnumsNET;
+
 namespace BizHawk.Emulation.Cores.Nintendo.GBA
 {
 	public static class LibmGBA
@@ -24,11 +26,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		public static Buttons GetButtons(IController c)
 		{
 			Buttons ret = 0;
-			foreach (string s in Enum.GetNames(typeof(Buttons)))
+			foreach (var s in Enums.GetNames<Buttons>())
 			{
 				if (c.IsPressed(s))
 				{
-					ret |= (Buttons)Enum.Parse(typeof(Buttons), s);
+					ret |= Enums.Parse<Buttons>(s);
 				}
 			}
 			return ret;

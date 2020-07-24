@@ -5,6 +5,10 @@ using System.Windows.Forms;
 using BizHawk.Common.ReflectionExtensions;
 using BizHawk.Emulation.Cores.Nintendo.N64;
 
+using EnumsNET;
+
+using static BizHawk.Emulation.Cores.Nintendo.N64.N64SyncSettings.N64ControllerSettings;
+
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class N64ControllerSettingControl : UserControl
@@ -39,21 +43,18 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public N64SyncSettings.N64ControllerSettings.N64ControllerPakType PakType
+		public N64ControllerPakType PakType
 		{
-			get => PakTypeDropdown.SelectedItem
-				.ToString()
-				.GetEnumFromDescription<N64SyncSettings.N64ControllerSettings.N64ControllerPakType>();
+			get => Enums.Parse<N64ControllerPakType>(PakTypeDropdown.SelectedItem.ToString(), false, EnumFormat.Description);
 			set
 			{
-				if (PakTypeDropdown.Items.Count > 0) // Null check for designer
+				var chosen = value.AsString(EnumFormat.Description);
+				for (int i = 0, l = PakTypeDropdown.Items.Count; i < l; i++)
 				{
-					var toSelect = PakTypeDropdown.Items
-						.OfType<object>()
-						.FirstOrDefault(item => item.ToString() == value.GetDescription());
-					PakTypeDropdown.SelectedItem = toSelect;
-
+					if (PakTypeDropdown.Items[i].ToString() != chosen) continue;
+					PakTypeDropdown.SelectedIndex = i;
 					Refresh();
+					return;
 				}
 			}
 		}

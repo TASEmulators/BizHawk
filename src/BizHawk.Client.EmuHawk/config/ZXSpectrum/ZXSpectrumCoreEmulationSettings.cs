@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Windows.Forms;
+
 using BizHawk.Emulation.Cores.Computers.SinclairSpectrum;
+
+using EnumsNET;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -22,22 +25,22 @@ namespace BizHawk.Client.EmuHawk
 		private void IntvControllerSettings_Load(object sender, EventArgs e)
 		{
 			// machine selection
-			var machineTypes = Enum.GetNames(typeof(MachineType));
+			var machineTypes = Enums.GetNames<MachineType>();
 			foreach (var val in machineTypes)
 			{
 				MachineSelectionComboBox.Items.Add(val);
 			}
 			MachineSelectionComboBox.SelectedItem = _syncSettings.MachineType.ToString();
-			UpdateMachineNotes((MachineType)Enum.Parse(typeof(MachineType), MachineSelectionComboBox.SelectedItem.ToString()));
+			UpdateMachineNotes(Enums.Parse<MachineType>(MachineSelectionComboBox.SelectedItem.ToString()));
 
 			// border selection
-			var borderTypes = Enum.GetNames(typeof(ZXSpectrum.BorderType));
+			var borderTypes = Enums.GetNames<ZXSpectrum.BorderType>();
 			foreach (var val in borderTypes)
 			{
 				borderTypecomboBox1.Items.Add(val);
 			}
 			borderTypecomboBox1.SelectedItem = _syncSettings.BorderType.ToString();
-			UpdateBorderNotes((ZXSpectrum.BorderType)Enum.Parse(typeof(ZXSpectrum.BorderType), borderTypecomboBox1.SelectedItem.ToString()));
+			UpdateBorderNotes(Enums.Parse<ZXSpectrum.BorderType>(borderTypecomboBox1.SelectedItem.ToString()));
 
 			// deterministic emulation
 			determEmucheckBox1.Checked = _syncSettings.DeterministicEmulation;
@@ -56,8 +59,8 @@ namespace BizHawk.Client.EmuHawk
 
 			if (changed)
 			{
-				_syncSettings.MachineType = (MachineType)Enum.Parse(typeof(MachineType), MachineSelectionComboBox.SelectedItem.ToString());
-				_syncSettings.BorderType = (ZXSpectrum.BorderType)Enum.Parse(typeof(ZXSpectrum.BorderType), borderTypecomboBox1.SelectedItem.ToString());
+				_syncSettings.MachineType = Enums.Parse<MachineType>(MachineSelectionComboBox.SelectedItem.ToString());
+				_syncSettings.BorderType = Enums.Parse<ZXSpectrum.BorderType>(borderTypecomboBox1.SelectedItem.ToString());
 				_syncSettings.DeterministicEmulation = determEmucheckBox1.Checked;
 				_syncSettings.AutoLoadTape = autoLoadcheckBox1.Checked;
 
@@ -77,7 +80,7 @@ namespace BizHawk.Client.EmuHawk
 		private void MachineSelectionComboBox_SelectionChangeCommitted(object sender, EventArgs e)
 		{
 			var cb = (ComboBox)sender;
-			UpdateMachineNotes((MachineType)Enum.Parse(typeof(MachineType), cb.SelectedItem.ToString()));
+			UpdateMachineNotes(Enums.Parse<MachineType>(cb.SelectedItem.ToString()));
 		}
 
 		private void UpdateMachineNotes(MachineType type)
@@ -88,7 +91,7 @@ namespace BizHawk.Client.EmuHawk
 		private void BorderTypeComboBox_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			var cb = (ComboBox)sender;
-			UpdateBorderNotes((ZXSpectrum.BorderType)Enum.Parse(typeof(ZXSpectrum.BorderType), cb.SelectedItem.ToString()));
+			UpdateBorderNotes(Enums.Parse<ZXSpectrum.BorderType>(cb.SelectedItem.ToString()));
 		}
 
 		private void UpdateBorderNotes(ZXSpectrum.BorderType type)

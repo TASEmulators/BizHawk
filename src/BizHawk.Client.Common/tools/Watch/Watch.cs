@@ -7,6 +7,8 @@ using System.Diagnostics;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
 
+using EnumsNET;
+
 namespace BizHawk.Client.Common
 {
 	/// <summary>
@@ -580,7 +582,7 @@ namespace BizHawk.Client.Common
 				"Fixed Point 12.4" => DisplayType.FixedPoint_12_4,
 				"Fixed Point 20.12" => DisplayType.FixedPoint_20_12,
 				"Fixed Point 16.16" => DisplayType.FixedPoint_16_16,
-				_ => (DisplayType) Enum.Parse(typeof(DisplayType), name)
+				_ => Enums.Parse<DisplayType>(name)
 			};
 		}
 
