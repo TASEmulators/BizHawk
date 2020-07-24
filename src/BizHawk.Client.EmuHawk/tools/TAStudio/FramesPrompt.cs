@@ -12,14 +12,13 @@ namespace BizHawk.Client.EmuHawk
 
 		public FramesPrompt(string headMessage, string bodyMessage)
 		{
-			this.headMessage = headMessage;
-			this.bodyMessage = bodyMessage;
 			InitializeComponent();
+
+			this.Text = headMessage;
+			this.label1.Text = bodyMessage;
 		}
 
 		public int Frames => NumFramesBox.ToRawInt() ?? 0;
-		private string headMessage = "Insert Frames";
-		private string bodyMessage = "Insert number of frames:";
 
 		private void FramesPrompt_Load(object sender, EventArgs e)
 		{
