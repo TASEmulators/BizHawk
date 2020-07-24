@@ -194,11 +194,6 @@ namespace BizHawk.Client.EmuHawk
 			NameTableView.ToBitMap().ToClipBoard();
 		}
 
-		private void ExitMenuItem_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
-
 		private void RefreshImageContextMenuItem_Click(object sender, EventArgs e)
 		{
 			GeneralUpdate();
