@@ -132,7 +132,6 @@ namespace BizHawk.Client.EmuHawk
 			TasView.QueryItemIcon += TasView_QueryItemIcon;
 			TasView.QueryFrameLag += TasView_QueryFrameLag;
 			TasView.PointedCellChanged += TasView_PointedCellChanged;
-			TasView.MultiSelect = true;
 			LastPositionFrame = -1;
 
 			BookMarkControl.LoadedCallback = BranchLoaded;

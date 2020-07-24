@@ -908,7 +908,7 @@ namespace BizHawk.Client.EmuHawk
 			this.TasView.LagFramesToHide = 0;
 			this.TasView.LetKeysModifySelection = true;
 			this.TasView.Location = new System.Drawing.Point(3, 0);
-			this.TasView.MultiSelect = false;
+			this.TasView.MultiSelect = true;
 			this.TasView.Name = "TasView";
 			this.TasView.Rotatable = true;
 			this.TasView.RowCount = 0;
