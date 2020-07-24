@@ -1060,7 +1060,7 @@ namespace BizHawk.Client.EmuHawk
 			Close();
 		}
 
-		private void SettingsSubMenu_DropDownOpened(object sender, EventArgs e)
+		private void OptionsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			CheckMisalignedMenuItem.Checked = _settings.CheckMisAligned;
 			BigEndianMenuItem.Checked = _settings.BigEndian;
@@ -1307,7 +1307,7 @@ namespace BizHawk.Client.EmuHawk
 			UpdateUndoToolBarButtons();
 		}
 
-		private void OptionsSubMenu_DropDownOpened(object sender, EventArgs e)
+		private void SettingsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			AutoloadDialogMenuItem.Checked = Settings.AutoLoad;
 			SaveWinPositionMenuItem.Checked = Settings.SaveWindowPosition;
