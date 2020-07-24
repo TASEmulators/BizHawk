@@ -2,6 +2,8 @@
 using System.IO;
 using BizHawk.Emulation.DiscSystem;
 
+using BizHawk.Common;
+
 namespace BizHawk.Client.DiscoHawk
 {
 	public static class AudioExtractor
@@ -45,7 +47,7 @@ namespace BizHawk.Client.DiscoHawk
 				try
 				{
 					File.WriteAllBytes(tempfile, waveData);
-					var ffmpeg = new FFMpeg();
+					var ffmpeg = new FFmpegService();
 					ffmpeg.Run("-f", "s16le", "-ar", "44100", "-ac", "2", "-i", tempfile, "-f", "mp3", "-ab", "192k", mp3Path);
 				}
 				finally

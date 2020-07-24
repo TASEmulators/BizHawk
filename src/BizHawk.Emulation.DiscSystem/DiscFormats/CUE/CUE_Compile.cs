@@ -2,6 +2,8 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 
+using BizHawk.Common;
+
 //this would be a good place for structural validation
 //after this step, we won't want to have to do stuff like that (it will gunk up already sticky code)
 
@@ -327,7 +329,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 			//check whether processing was available
 			if (needsCodec)
 			{
-				FFMpeg ffmpeg = new FFMpeg();
+				FFmpegService ffmpeg = new FFmpegService();
 				if (!ffmpeg.QueryServiceAvailable())
 					Warn("Decoding service will be required for further processing, but is not available");
 			}

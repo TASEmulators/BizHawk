@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.IO;
+
+using BizHawk.Common;
 
 namespace BizHawk.Emulation.DiscSystem
 {
@@ -25,7 +22,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 		private bool CheckForAudio(string path)
 		{
-			FFMpeg ffmpeg = new FFMpeg();
+			FFmpegService ffmpeg = new FFmpegService();
 			var qa = ffmpeg.QueryAudio(path);
 			return qa.IsAudio;
 		}
@@ -62,7 +59,7 @@ namespace BizHawk.Emulation.DiscSystem
 		}
 
 		/// <exception cref="AudioDecoder_Exception">could not find source audio for <paramref name="audioPath"/></exception>
-		public byte[] AcquireWaveData(string audioPath) => new FFMpeg()
+		public byte[] AcquireWaveData(string audioPath) => new FFmpegService()
 			.DecodeAudio(FindAudio(audioPath) ?? throw new AudioDecoder_Exception($"Could not find source audio for: {Path.GetFileName(audioPath)}"));
 	}
 }

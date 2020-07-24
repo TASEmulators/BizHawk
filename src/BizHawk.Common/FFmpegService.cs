@@ -8,7 +8,7 @@ using System.IO;
 
 namespace BizHawk.Common
 {
-	public class FFMpeg
+	public class FFmpegService
 	{
 		public static string FFMpegPath;
 
