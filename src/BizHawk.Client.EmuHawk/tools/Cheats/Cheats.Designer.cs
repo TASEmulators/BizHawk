@@ -64,13 +64,6 @@ namespace BizHawk.Client.EmuHawk
 			this.AlwaysLoadCheatsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.AutoSaveCheatsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.DisableCheatsOnLoadMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.toolStripSeparator7 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
-			this.AutoloadMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.SaveWindowPositionMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.AlwaysOnTopMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.FloatingWindowMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.toolStripSeparator5 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
-			this.RestoreWindowSizeMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.toolStrip1 = new ToolStripEx();
 			this.NewToolBarItem = new System.Windows.Forms.ToolStripButton();
 			this.OpenToolBarItem = new System.Windows.Forms.ToolStripButton();
@@ -286,16 +279,9 @@ namespace BizHawk.Client.EmuHawk
 			this.OptionsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.AlwaysLoadCheatsMenuItem,
             this.AutoSaveCheatsMenuItem,
-            this.DisableCheatsOnLoadMenuItem,
-            this.toolStripSeparator7,
-            this.AutoloadMenuItem,
-            this.SaveWindowPositionMenuItem,
-            this.AlwaysOnTopMenuItem,
-            this.FloatingWindowMenuItem,
-            this.toolStripSeparator5,
-            this.RestoreWindowSizeMenuItem});
-			this.OptionsSubMenu.Text = "&Options";
-			this.OptionsSubMenu.DropDownOpened += new System.EventHandler(this.OptionsSubMenu_DropDownOpened);
+            this.DisableCheatsOnLoadMenuItem});
+			this.OptionsSubMenu.Text = "&Settings";
+			this.OptionsSubMenu.DropDownOpened += new System.EventHandler(this.SettingsSubMenu_DropDownOpened);
 			// 
 			// AlwaysLoadCheatsMenuItem
 			// 
@@ -311,31 +297,6 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.DisableCheatsOnLoadMenuItem.Text = "Disable Cheats on Load";
 			this.DisableCheatsOnLoadMenuItem.Click += new System.EventHandler(this.CheatsOnOffLoadMenuItem_Click);
-			// 
-			// AutoloadMenuItem
-			// 
-			this.AutoloadMenuItem.Text = "Autoload";
-			this.AutoloadMenuItem.Click += new System.EventHandler(this.AutoloadMenuItem_Click);
-			// 
-			// SaveWindowPositionMenuItem
-			// 
-			this.SaveWindowPositionMenuItem.Text = "Save Window Position";
-			this.SaveWindowPositionMenuItem.Click += new System.EventHandler(this.SaveWindowPositionMenuItem_Click);
-			// 
-			// AlwaysOnTopMenuItem
-			// 
-			this.AlwaysOnTopMenuItem.Text = "Always on &Top";
-			this.AlwaysOnTopMenuItem.Click += new System.EventHandler(this.AlwaysOnTopMenuItem_Click);
-			// 
-			// FloatingWindowMenuItem
-			// 
-			this.FloatingWindowMenuItem.Text = "Floating Window";
-			this.FloatingWindowMenuItem.Click += new System.EventHandler(this.FloatingWindowMenuItem_Click);
-			// 
-			// RestoreWindowSizeMenuItem
-			// 
-			this.RestoreWindowSizeMenuItem.Text = "Restore Default Settings";
-			this.RestoreWindowSizeMenuItem.Click += new System.EventHandler(this.RestoreDefaultsMenuItem_Click);
 			// 
 			// toolStrip1
 			// 
@@ -521,10 +482,6 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx AlwaysLoadCheatsMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx AutoSaveCheatsMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx DisableCheatsOnLoadMenuItem;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx AutoloadMenuItem;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SaveWindowPositionMenuItem;
-		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator5;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx RestoreWindowSizeMenuItem;
 		private ToolStripEx toolStrip1;
 		private System.Windows.Forms.ToolStripButton NewToolBarItem;
 		private System.Windows.Forms.ToolStripButton OpenToolBarItem;
@@ -538,7 +495,6 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolStripButton LoadGameGenieToolbarItem;
 		private BizHawk.WinForms.Controls.LocLabelEx TotalLabel;
 		private BizHawk.WinForms.Controls.LocLabelEx MessageLabel;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx AlwaysOnTopMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ToggleMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx GameGenieToolbarSeparator;
 		private System.Windows.Forms.ContextMenuStrip CheatsContextMenu;
@@ -547,8 +503,6 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx DisableAllContextMenuItem;
 		private System.Windows.Forms.GroupBox CheatGroupBox;
 		private CheatEdit CheatEditor;
-		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator7;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ViewInHexEditorContextMenuItem;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx FloatingWindowMenuItem;
 	}
 }
