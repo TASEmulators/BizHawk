@@ -15,12 +15,10 @@ using BizHawk.Client.EmuHawk.ToolExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class RamWatch : ToolFormBase, IToolForm
+	public partial class RamWatch : ToolFormBase, IToolFormAutoConfig
 	{
 		private WatchList _watches;
 
-		private int _defaultWidth;
-		private int _defaultHeight;
 		private string _sortedColumn;
 		private bool _sortReverse;
 
@@ -116,7 +114,7 @@ namespace BizHawk.Client.EmuHawk
 		[ConfigPersist]
 		public RamWatchSettings Settings { get; set; }
 
-		public class RamWatchSettings : ToolDialogSettings
+		public class RamWatchSettings
 		{
 			public RamWatchSettings()
 			{
@@ -486,20 +484,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoadConfigSettings()
 		{
-			// Size and Positioning
-			_defaultWidth = Size.Width;
-			_defaultHeight = Size.Height;
-
-			if (Settings.UseWindowPosition && IsOnScreen(Settings.TopLeft))
-			{
-				Location = Settings.WindowPosition;
-			}
-
-			if (Settings.UseWindowSize)
-			{
-				Size = Settings.WindowSize;
-			}
-
 			WatchListView.AllColumns.Clear();
 			SetColumns();
 		}
@@ -556,14 +540,6 @@ namespace BizHawk.Client.EmuHawk
 		private void SaveConfigSettings()
 		{
 			Settings.Columns = WatchListView.AllColumns;
-
-			if (WindowState == FormWindowState.Normal)
-			{
-				Settings.Wndx = Location.X;
-				Settings.Wndy = Location.Y;
-				Settings.Width = Right - Left;
-				Settings.Height = Bottom - Top;
-			}
 		}
 
 		private void SetMemoryDomain(string name)
@@ -967,12 +943,9 @@ namespace BizHawk.Client.EmuHawk
 			WatchListView.SelectAll();
 		}
 
-		private void OptionsSubMenu_DropDownOpened(object sender, EventArgs e)
+		private void SettingsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			WatchesOnScreenMenuItem.Checked = Config.DisplayRamWatch;
-			SaveWindowPositionMenuItem.Checked = Settings.SaveWindowPosition;
-			AlwaysOnTopMenuItem.Checked = Settings.TopMost;
-			FloatingWindowMenuItem.Checked = Settings.FloatingWindow;
 		}
 
 		private void DefinePreviousValueSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -1011,26 +984,10 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void SaveWindowPositionMenuItem_Click(object sender, EventArgs e)
-		{
-			Settings.SaveWindowPosition ^= true;
-		}
-
-		private void AlwaysOnTopMenuItem_Click(object sender, EventArgs e)
-		{
-			TopMost = Settings.TopMost ^= true;
-		}
-
-		private void FloatingWindowMenuItem_Click(object sender, EventArgs e)
-		{
-			Settings.FloatingWindow ^= true;
-			RefreshFloatingWindowControl(Settings.FloatingWindow);
-		}
-
-		private void RestoreDefaultsMenuItem_Click(object sender, EventArgs e)
+		[RestoreDefaults]
+		private void RestoreDefaultsMenuItem()
 		{
 			Settings = new RamWatchSettings();
-			Size = new Size(_defaultWidth, _defaultHeight);
 
 			RamWatchMenu.Items.Remove(
 				RamWatchMenu.Items
@@ -1038,13 +995,10 @@ namespace BizHawk.Client.EmuHawk
 					.First(x => x.Name == "GeneratedColumnsSubMenu"));
 
 			RamWatchMenu.Items.Add(WatchListView.ToColumnsMenu(ColumnToggleCallback));
-
 			Config.DisplayRamWatch = false;
-
-			RefreshFloatingWindowControl(Settings.FloatingWindow);
-
 			WatchListView.AllColumns.Clear();
 			SetColumns();
+			WatchListView.Refresh();
 		}
 
 		private void RamWatch_Load(object sender, EventArgs e)
@@ -1055,7 +1009,6 @@ namespace BizHawk.Client.EmuHawk
 				Settings = new RamWatchSettings();
 			}
 
-			TopMost = Settings.TopMost;
 			_watches = new WatchList(MemoryDomains, Emu.SystemId);
 			LoadConfigSettings();
 			RamWatchMenu.Items.Add(WatchListView.ToColumnsMenu(ColumnToggleCallback));
