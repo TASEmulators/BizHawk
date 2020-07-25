@@ -26,6 +26,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool _suppressContextMenu;
 		private int _startRow;
 		private int _paintingMinFrame = -1;
+		private bool _playbackInterrupted; // Occurs when the emulator is unpaused and the user click and holds mouse down to begin delivering input
 
 		// Editing analog input
 		private string _axisEditColumn = "";
@@ -615,7 +616,8 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (TasView.CurrentCell.Column.Type != ColumnType.Text) // User changed input
 				{
-					bool wasPaused = MainForm.EmulatorPaused;
+					_playbackInterrupted = !MainForm.EmulatorPaused;
+					MainForm.PauseEmulator();
 
 					if (ControllerType.BoolButtons.Contains(buttonName))
 					{
@@ -717,12 +719,6 @@ namespace BizHawk.Client.EmuHawk
 
 							RefreshDialog();
 						}
-					}
-
-					// taseditor behavior
-					if (!wasPaused)
-					{
-						MainForm.UnpauseEmulator();
 					}
 				}
 			}

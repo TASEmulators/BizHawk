@@ -1009,6 +1009,11 @@ namespace BizHawk.Client.EmuHawk
 				_triggerAutoRestore = false;
 				_autoRestorePaused = null;
 			}
+			
+			if (_playbackInterrupted)
+			{
+				MainForm.UnpauseEmulator(); 
+			}
 		}
 
 		public void InsertNumFrames(int insertionFrame, int numberOfFrames)
