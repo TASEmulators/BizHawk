@@ -142,7 +142,7 @@ impl GuestThreadSet {
 
 		unsafe {
 			// peek inside the pthread struct to find the full area we must mark as stack-protected
-			let pthread = std::slice::from_raw_parts(thread_area as *const usize, 13);
+			let pthread = std::slice::from_raw_parts(thread_area as *const usize, 14);
 			let stack_end = pthread[12];
 			let stack_size = pthread[13];
 			let stack = AddressRange { start: stack_end - stack_size, size: stack_size };

@@ -38,7 +38,7 @@ namespace BizHawk.Emulation.Cores.Sony.PS2
 				SealedHeapSizeKB = 4 * 1024,
 				InvisibleHeapSizeKB = 4 * 1024,
 				PlainHeapSizeKB = 256,
-				MmapHeapSizeKB = 256 * 1024,
+				MmapHeapSizeKB = 2 * 1024 * 1024,
 				SkipCoreConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
 				SkipMemoryConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
 			}, new[] { _cdCallback });

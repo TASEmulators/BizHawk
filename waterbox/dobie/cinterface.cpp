@@ -75,6 +75,7 @@ ECL_EXPORT bool Initialize(const uint8_t* bios, size_t cd_length_, void (*cdcall
 	// load memcards
 	if (!emu->load_CDVD_Container("", std::unique_ptr<CDVD_Container>(new DVD())))
 		return false;
+	emu->reset();
 	return true;
 }
 
