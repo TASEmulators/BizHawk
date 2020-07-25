@@ -1,6 +1,7 @@
 CXXFLAGS := \
 	-Wall -Werror=int-to-pointer-cast \
 	-std=c++14 -fomit-frame-pointer -fno-rtti \
+	-Wno-reorder \
 	-Idobiestation/ext/libdeflate
 CCFLAGS := \
 	-Wall -Wundef -Wpedantic -Wdeclaration-after-statement -Wmissing-prototypes -Wstrict-prototypes -Wvla \
@@ -98,6 +99,7 @@ DEFLATE_SRCS = \
 
 SRCS = \
 	$(addprefix dobiestation/src/core/,$(CORE_SRCS)) \
-	$(addprefix dobiestation/ext/libdeflate/,$(DEFLATE_SRCS))
+	$(addprefix dobiestation/ext/libdeflate/,$(DEFLATE_SRCS)) \
+	cinterface.cpp
 
 include ../common.mak

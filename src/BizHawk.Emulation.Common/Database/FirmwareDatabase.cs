@@ -277,6 +277,8 @@ namespace BizHawk.Emulation.Common
 			Firmware("PCFX", "SCSIROM", "fx-scsi.rom");
 			var fxscsi = File("65482A23AC5C10A6095AEE1DB5824CCA54EAD6E5", 512 * 1024, "PCFX_fx-scsi.rom", "PCFX SCSI ROM");
 			Option("PCFX", "SCSIROM", fxscsi);
+
+			FirmwareAndOption("fbd54bfc020af34008b317dcb80b812dd29b3759", 4 * 1024 * 1024, "PS2", "Whatever", "Some bios or something", "Does anyone read this");
 		}
 
 		// adds a defined firmware ID to the database

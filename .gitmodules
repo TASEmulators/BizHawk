@@ -34,4 +34,4 @@
 	url = git@github.com:llvm/llvm-project.git
 [submodule "waterbox/dobie/dobiestation"]
 	path = waterbox/dobie/dobiestation
-	url = git@github.com:PSI-Rockin/DobieStation.git
+	url = git@github.com:nattthebear/DobieStation.git
