@@ -1,5 +1,3 @@
-﻿using System.Text;
-
 using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -34,7 +32,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public int MmfScreenshot() => GlobalWin.memoryMappedFiles.ScreenShotToFile();
 
-		public int MmfWrite(string mmf_filename, string outputString) => GlobalWin.memoryMappedFiles.WriteToFile(mmf_filename, Encoding.ASCII.GetBytes(outputString));
+		public int MmfWrite(string mmf_filename, string outputString) => GlobalWin.memoryMappedFiles.WriteToFile(mmf_filename, outputString);
 
 		public string MmfRead(string mmf_filename, int expectedSize) => GlobalWin.memoryMappedFiles.ReadFromFile(mmf_filename, expectedSize);
 

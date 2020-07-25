@@ -61,5 +61,7 @@ namespace BizHawk.Client.Common
 				return TryWrite(_mmfFiles[filename] = MemoryMappedFile.CreateOrOpen(filename, outputBytes.Length));
 			}
 		}
+
+		public int WriteToFile(string filename, string outputString) => WriteToFile(filename, Encoding.UTF8.GetBytes(outputString));
 	}
 }

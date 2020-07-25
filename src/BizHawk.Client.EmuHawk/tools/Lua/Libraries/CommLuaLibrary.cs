@@ -149,7 +149,7 @@ namespace BizHawk.Client.EmuHawk
 		public int MmfWrite(string mmf_filename, string outputString)
 		{
 			CheckMmf();
-			return GlobalWin.memoryMappedFiles.WriteToFile(mmf_filename, Encoding.ASCII.GetBytes(outputString));
+			return GlobalWin.memoryMappedFiles.WriteToFile(mmf_filename, outputString);
 		}
 		[LuaMethod("mmfRead", "Reads a string from a memory mapped file")]
 		public string MmfRead(string mmf_filename, int expectedSize)
