@@ -1,10 +1,10 @@
 ﻿using System;
 using System.ComponentModel;
-using NLua;
-using BizHawk.Client.Common;
 using System.Text;
 
-namespace BizHawk.Client.EmuHawk
+using NLua;
+
+namespace BizHawk.Client.Common
 {
 	[Description("A library for communicating with other programs")]
 	public sealed class CommLuaLibrary : DelegatingLuaLibrary
