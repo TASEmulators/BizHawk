@@ -7,7 +7,7 @@ using System.Text;
 namespace BizHawk.Client.EmuHawk
 {
 	[Description("A library for communicating with other programs")]
-	public sealed class CommLuaLibrary : LuaLibraryBase
+	public sealed class CommLuaLibrary : DelegatingLuaLibraryEmu
 	{
 		public CommLuaLibrary(Lua lua)
 			: base(lua) { }
@@ -30,20 +30,20 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[LuaMethod("socketServerIsConnected", "socketServerIsConnected")]
-		public bool SocketServerIsConnected() => GlobalWin.socketServer.Connected;
+		public bool SocketServerIsConnected() => APIs.Comm.Sockets.Connected;
 
 		[LuaMethod("socketServerScreenShot", "sends a screenshot to the Socket server")]
 		public string SocketServerScreenShot()
 		{
 			CheckSocketServer();
-			return GlobalWin.socketServer?.SendScreenshot();
+			return APIs.Comm.Sockets?.SendScreenshot();
 		}
 
 		[LuaMethod("socketServerScreenShotResponse", "sends a screenshot to the Socket server and retrieves the response")]
 		public string SocketServerScreenShotResponse()
 		{
 			CheckSocketServer();
-			return GlobalWin.socketServer?.SendScreenshot(1000).ToString();
+			return APIs.Comm.Sockets?.SendScreenshot(1000).ToString();
 		}
 
 		[LuaMethod("socketServerSend", "sends a string to the Socket server")]
@@ -53,53 +53,53 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return -1;
 			}
-			return GlobalWin.socketServer.SendString(SendString);
+			return APIs.Comm.Sockets.SendString(SendString);
 		}
 
 		[LuaMethod("socketServerResponse", "receives a message from the Socket server")]
 		public string SocketServerResponse()
 		{
 			CheckSocketServer();
-			return GlobalWin.socketServer?.ReceiveMessage();
+			return APIs.Comm.Sockets?.ReceiveMessage();
 		}
 
 		[LuaMethod("socketServerSuccessful", "returns the status of the last Socket server action")]
 		public bool SocketServerSuccessful()
 		{
-			return CheckSocketServer() && GlobalWin.socketServer.Successful;
+			return CheckSocketServer() && APIs.Comm.Sockets.Successful;
 		}
 
 		[LuaMethod("socketServerSetTimeout", "sets the timeout in milliseconds for receiving messages")]
 		public void SocketServerSetTimeout(int timeout)
 		{
 			CheckSocketServer();
-			GlobalWin.socketServer?.SetTimeout(timeout);
+			APIs.Comm.Sockets?.SetTimeout(timeout);
 		}
 
 		[LuaMethod("socketServerSetIp", "sets the IP address of the Lua socket server")]
 		public void SocketServerSetIp(string ip)
 		{
 			CheckSocketServer();
-			GlobalWin.socketServer.IP = ip;
+			APIs.Comm.Sockets.IP = ip;
 		}
 
 		[LuaMethod("socketServerSetPort", "sets the port of the Lua socket server")]
 		public void SocketServerSetPort(int port)
 		{
 			CheckSocketServer();
-			GlobalWin.socketServer.Port = port;
+			APIs.Comm.Sockets.Port = port;
 		}
 
 		[LuaMethod("socketServerGetIp", "returns the IP address of the Lua socket server")]
 		public string SocketServerGetIp()
 		{
-			return GlobalWin.socketServer?.IP;
+			return APIs.Comm.Sockets?.IP;
 		}
 
 		[LuaMethod("socketServerGetPort", "returns the port of the Lua socket server")]
 		public int? SocketServerGetPort()
 		{
-			return GlobalWin.socketServer?.Port;
+			return APIs.Comm.Sockets?.Port;
 		}
 
 		[LuaMethod("socketServerGetInfo", "returns the IP and port of the Lua socket server")]
@@ -109,12 +109,12 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return "";
 			}
-			return GlobalWin.socketServer.GetInfo();
+			return APIs.Comm.Sockets.GetInfo();
 		}
 
 		private bool CheckSocketServer()
 		{
-			if (GlobalWin.socketServer == null)
+			if (APIs.Comm.Sockets == null)
 			{
 				Log("Socket server was not initialized, please initialize it via the command line");
 				return false;
@@ -128,39 +128,39 @@ namespace BizHawk.Client.EmuHawk
 		public void MmfSetFilename(string filename)
 		{
 			CheckMmf();
-			GlobalWin.memoryMappedFiles.Filename = filename;
+			APIs.Comm.MMF.Filename = filename;
 		}
 
 		[LuaMethod("mmfGetFilename", "Gets the filename for the screenshots")]
 		public string MmfGetFilename()
 		{
 			CheckMmf();
-			return GlobalWin.memoryMappedFiles?.Filename;
+			return APIs.Comm.MMF?.Filename;
 		}
 
 		[LuaMethod("mmfScreenshot", "Saves screenshot to memory mapped file")]
 		public int MmfScreenshot()
 		{
 			CheckMmf();
-			return GlobalWin.memoryMappedFiles.ScreenShotToFile();
+			return APIs.Comm.MMF.ScreenShotToFile();
 		}
 
 		[LuaMethod("mmfWrite", "Writes a string to a memory mapped file")]
 		public int MmfWrite(string mmf_filename, string outputString)
 		{
 			CheckMmf();
-			return GlobalWin.memoryMappedFiles.WriteToFile(mmf_filename, outputString);
+			return APIs.Comm.MMF.WriteToFile(mmf_filename, outputString);
 		}
 		[LuaMethod("mmfRead", "Reads a string from a memory mapped file")]
 		public string MmfRead(string mmf_filename, int expectedSize)
 		{
 			CheckMmf();
-			return GlobalWin.memoryMappedFiles?.ReadFromFile(mmf_filename, expectedSize).ToString();
+			return APIs.Comm.MMF?.ReadFromFile(mmf_filename, expectedSize).ToString();
 		}
 
 		private void CheckMmf()
 		{
-			if (GlobalWin.memoryMappedFiles == null)
+			if (APIs.Comm.MMF == null)
 			{
 				Log("Memory mapped file was not initialized, please initialize it via the command line");
 			}
@@ -170,79 +170,76 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod("httpTest", "tests HTTP connections")]
 		public string HttpTest()
 		{
-			var list = new StringBuilder();
-			list.AppendLine(GlobalWin.httpCommunication.Get(GlobalWin.httpCommunication.GetUrl).Result);
-			list.AppendLine(GlobalWin.httpCommunication.SendScreenshot());
-			list.AppendLine("done testing");
-			return list.ToString();
+			if (APIs.Comm.HTTP == null) throw new NullReferenceException(); // to match previous behaviour
+			return APIs.Comm.HttpTest();
 		}
 
 		[LuaMethod("httpTestGet", "tests the HTTP GET connection")]
 		public string HttpTestGet()
 		{
 			CheckHttp();
-			return (GlobalWin.httpCommunication?.Get(GlobalWin.httpCommunication.GetUrl))?.Result;
+			return APIs.Comm.HttpTestGet();
 		}
 
 		[LuaMethod("httpGet", "makes a HTTP GET request")]
 		public string HttpGet(string url)
 		{
 			CheckHttp();
-			return GlobalWin.httpCommunication?.ExecGet(url);
+			return APIs.Comm.HTTP?.ExecGet(url);
 		}
 
 		[LuaMethod("httpPost", "makes a HTTP POST request")]
 		public string HttpPost(string url, string payload)
 		{
 			CheckHttp();
-			return GlobalWin.httpCommunication?.ExecPost(url, payload);
+			return APIs.Comm.HTTP?.ExecPost(url, payload);
 		}
 
 		[LuaMethod("httpPostScreenshot", "HTTP POST screenshot")]
 		public string HttpPostScreenshot()
 		{
 			CheckHttp();
-			return GlobalWin.httpCommunication?.SendScreenshot();
+			return APIs.Comm.HTTP?.SendScreenshot();
 		}
 
 		[LuaMethod("httpSetTimeout", "Sets HTTP timeout in milliseconds")]
 		public void HttpSetTimeout(int timeout)
 		{
 			CheckHttp();
-			GlobalWin.httpCommunication?.SetTimeout(timeout);
+			APIs.Comm.HTTP?.SetTimeout(timeout);
 		}
 
 		[LuaMethod("httpSetPostUrl", "Sets HTTP POST URL")]
 		public void HttpSetPostUrl(string url)
 		{
 			CheckHttp();
-			GlobalWin.httpCommunication.PostUrl = url;
+			APIs.Comm.HTTP.PostUrl = url;
 		}
 
 		[LuaMethod("httpSetGetUrl", "Sets HTTP GET URL")]
 		public void HttpSetGetUrl(string url)
 		{
 			CheckHttp();
-			GlobalWin.httpCommunication.GetUrl = url;
+			APIs.Comm.HTTP.GetUrl = url;
 		}
 
 		[LuaMethod("httpGetPostUrl", "Gets HTTP POST URL")]
 		public string HttpGetPostUrl()
 		{
 			CheckHttp();
-			return GlobalWin.httpCommunication?.PostUrl;
+			return APIs.Comm.HTTP?.PostUrl;
 		}
 
 		[LuaMethod("httpGetGetUrl", "Gets HTTP GET URL")]
 		public string HttpGetGetUrl()
 		{
 			CheckHttp();
-			return GlobalWin.httpCommunication?.GetUrl;
+			return APIs.Comm.HTTP?.GetUrl;
 		}
 
 		private void CheckHttp()
 		{
-			if (GlobalWin.httpCommunication == null)
+			if (APIs.Comm.HTTP == null)
 			{
 				Log("HTTP was not initialized, please initialize it via the command line");
 			}
