@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.IO;
 
+using BizHawk.Common;
 using BizHawk.Emulation.DiscSystem;
 
 // cue format preferences notes
@@ -78,8 +79,7 @@ namespace BizHawk.Client.DiscoHawk
 			var ffmpegPath = Path.Combine(GetExeDirectoryAbsolute(), "ffmpeg.exe");
 			if (!File.Exists(ffmpegPath))
 				ffmpegPath = Path.Combine(Path.Combine(GetExeDirectoryAbsolute(), "dll"), "ffmpeg.exe");
-			//TODO FFMPEG
-			//FFMpeg.FFMpegPath = ffmpegPath;
+			FFmpegService.FFmpegPath = ffmpegPath;
 			AudioExtractor.FFmpegPath = ffmpegPath;
 			new DiscoHawk().Run(args);
 		}

@@ -10,7 +10,13 @@ namespace BizHawk.Common
 {
 	public class FFmpegService
 	{
-		public static string FFMpegPath;
+		public static string FFmpegPath;
+
+		//could return a different version for different operating systems.. shouldnt be hard.
+		public static readonly string Version = "N-92462-g529debc987";
+
+		//likewise
+		public static readonly string Url = "https://github.com/TASVideos/ffmpeg-binaries/blob/master/ffmpeg-20181118-529debc-win64-static_ffmpeg.7z?raw=true";
 
 		public class AudioQueryResult
 		{
@@ -41,7 +47,7 @@ namespace BizHawk.Common
 			try
 			{
 				string stdout = Run("-version").Text;
-				if (stdout.Contains("ffmpeg version")) return true;
+				if (stdout.Contains($"ffmpeg version {Version}")) return true;
 			}
 			catch
 			{
@@ -65,7 +71,7 @@ namespace BizHawk.Common
 				if (i != args.Length - 1) sbCmdline.Append(' ');
 			}
 
-			ProcessStartInfo oInfo = new ProcessStartInfo(FFMpegPath, sbCmdline.ToString())
+			ProcessStartInfo oInfo = new ProcessStartInfo(FFmpegPath, sbCmdline.ToString())
 				{
 					UseShellExecute = false,
 					CreateNoWindow = true,
