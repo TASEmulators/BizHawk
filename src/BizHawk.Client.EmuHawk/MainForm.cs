@@ -568,6 +568,9 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
+			// set up networking before Lua
+			NetworkingHelpers = (_argParser.httpCommunication, _argParser.memoryMappedFiles, _argParser.socketServer);
+
 			//start Lua Console if requested in the command line arguments
 			if (_argParser.luaConsole)
 			{
@@ -877,6 +880,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private Sound Sound => GlobalWin.Sound;
 		public CheatCollection CheatList { get; }
+
+		public (HttpCommunication HTTP, MemoryMappedFiles MMF, SocketServer Sockets) NetworkingHelpers { get; }
 
 		public IRewinder Rewinder { get; private set; }
 
