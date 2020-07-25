@@ -171,7 +171,7 @@ namespace BizHawk.Client.EmuHawk
 		public string HttpTest()
 		{
 			var list = new StringBuilder();
-			list.AppendLine(GlobalWin.httpCommunication.TestGet());
+			list.AppendLine(GlobalWin.httpCommunication.Get(GlobalWin.httpCommunication.GetUrl).Result);
 			list.AppendLine(GlobalWin.httpCommunication.SendScreenshot());
 			list.AppendLine("done testing");
 			return list.ToString();
@@ -181,7 +181,7 @@ namespace BizHawk.Client.EmuHawk
 		public string HttpTestGet()
 		{
 			CheckHttp();
-			return GlobalWin.httpCommunication?.TestGet();
+			return (GlobalWin.httpCommunication?.Get(GlobalWin.httpCommunication.GetUrl))?.Result;
 		}
 
 		[LuaMethod("httpGet", "makes a HTTP GET request")]

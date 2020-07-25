@@ -91,7 +91,5 @@ namespace BizHawk.Client.Common
 				Timeout = timeout;
 			}
 		}
-
-		public string TestGet() => Get(GetUrl).Result;
 	}
 }

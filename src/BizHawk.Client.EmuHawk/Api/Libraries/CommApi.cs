@@ -36,9 +36,9 @@ namespace BizHawk.Client.EmuHawk
 
 		public string MmfRead(string mmf_filename, int expectedSize) => GlobalWin.memoryMappedFiles.ReadFromFile(mmf_filename, expectedSize);
 
-		public string HttpTest() => string.Join("\n", GlobalWin.httpCommunication.TestGet(), GlobalWin.httpCommunication.SendScreenshot(), "done testing");
+		public string HttpTest() => string.Join("\n", HttpTestGet(), GlobalWin.httpCommunication.SendScreenshot(), "done testing");
 
-		public string HttpTestGet() => GlobalWin.httpCommunication.TestGet();
+		public string HttpTestGet() => GlobalWin.httpCommunication.Get(GlobalWin.httpCommunication.GetUrl).Result;
 
 		public string HttpGet(string url) => GlobalWin.httpCommunication.ExecGet(url);
 
