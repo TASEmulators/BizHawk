@@ -1,11 +1,13 @@
+#nullable enable
+
 using System;
 using System.Collections.Generic;
 
 namespace BizHawk.Client.Common
 {
-	public sealed class ApiContainer : IApiContainer
+	public sealed class ApiContainer
 	{
-		public Dictionary<Type, IExternalApi> Libraries { get; set; }
+		public readonly IReadOnlyDictionary<Type, IExternalApi> Libraries;
 
 		public ICommApi Comm => (ICommApi) Libraries[typeof(ICommApi)];
 		public IEmuClientApi EmuClient => (IEmuClientApi) Libraries[typeof(IEmuClientApi)];
@@ -23,6 +25,6 @@ namespace BizHawk.Client.Common
 		public IUserDataApi UserData => (IUserDataApi) Libraries[typeof(IUserDataApi)];
 		public IToolApi Tool => (IToolApi) Libraries[typeof(IToolApi)];
 
-		public ApiContainer(Dictionary<Type, IExternalApi> libs) => Libraries = libs;
+		public ApiContainer(IReadOnlyDictionary<Type, IExternalApi> libs) => Libraries = libs;
 	}
 }
