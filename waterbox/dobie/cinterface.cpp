@@ -79,14 +79,25 @@ ECL_EXPORT bool Initialize(const uint8_t* bios, size_t cd_length_, void (*cdcall
 	return true;
 }
 
-
 ECL_EXPORT void FrameAdvance(MyFrameInfo& f)
 {
 	emu->run();
 	emu->get_inner_resolution(f.Width, f.Height);
 	{
-		uint32_t* src = emu->get_framebuffer();
-		memcpy(f.VideoBuffer, src, f.Width * f.Height * 4);
+		const uint32_t* src = emu->get_framebuffer();
+		const uint32_t* srcend = src + f.Width * f.Height;
+		uint32_t* dst = f.VideoBuffer;
+		while (src < srcend)
+		{
+			uint8_t color[4];
+			memcpy(color, src, 4);
+			uint8_t tmp = color[2];
+			color[2] = color[0];
+			color[0] = tmp;
+			memcpy(dst, color, 4);
+			src++;
+			dst++;
+		}
 	}
 
 	f.Samples = 735; // TODO

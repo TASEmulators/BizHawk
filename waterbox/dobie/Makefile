@@ -3,6 +3,7 @@ CXXFLAGS := \
 	-std=c++14 -fomit-frame-pointer -fno-rtti \
 	-Wno-reorder \
 	-Idobiestation/ext/libdeflate
+
 CCFLAGS := \
 	-Wall -Wundef -Wpedantic -Wdeclaration-after-statement -Wmissing-prototypes -Wstrict-prototypes -Wvla \
 	-D_ANSI_SOURCE \
