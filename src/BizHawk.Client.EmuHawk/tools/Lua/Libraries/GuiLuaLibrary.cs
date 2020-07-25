@@ -5,7 +5,7 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public sealed class GuiLuaLibrary : DelegatingLuaLibraryEmu, IDisposable
+	public sealed class GuiLuaLibrary : DelegatingLuaLibrary, IDisposable
 	{
 		public GuiLuaLibrary(Lua lua)
 			: base(lua) { }

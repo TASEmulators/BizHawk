@@ -7,7 +7,7 @@ using System.Text;
 namespace BizHawk.Client.EmuHawk
 {
 	[Description("A library for communicating with other programs")]
-	public sealed class CommLuaLibrary : DelegatingLuaLibraryEmu
+	public sealed class CommLuaLibrary : DelegatingLuaLibrary
 	{
 		public CommLuaLibrary(Lua lua)
 			: base(lua) { }
