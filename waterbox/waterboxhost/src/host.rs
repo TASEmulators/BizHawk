@@ -376,8 +376,9 @@ extern "sysv64" fn syscall(
 						&mut h.memory_block, 
 						a1, 
 						a2, 
-						a3 as *mut u32,
-						a4
+						a3,
+						a4,
+						a5 as *mut u32,
 					)
 					.map(|tid| tid as usize)
 			)

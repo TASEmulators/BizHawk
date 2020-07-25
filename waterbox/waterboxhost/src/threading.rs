@@ -135,9 +135,10 @@ impl GuestThreadSet {
 	/// flags are hardcoded to CLONE_VM | CLONE_FS
 	/// | CLONE_FILES | CLONE_SIGHAND | CLONE_THREAD | CLONE_SYSVSEM
 	/// | CLONE_SETTLS | CLONE_PARENT_SETTID | CLONE_CHILD_CLEARTID | CLONE_DETACHED.
-	/// Child thread does not return to the same place the parent did; instead, it will begin at enter_guest_thread,
-	/// which will `ret`, and accordingly the musl code arranges for an appropriate address to be on the stack.
-	pub fn spawn(&mut self, memory_block: &mut MemoryBlock, thread_area: usize, guest_rsp: usize, parent_tid: *mut u32, child_tid: usize) -> Result<u32, SyscallError> {
+	/// Child thread does not return to the same place the parent did; instead, it will begin at child_rip
+	pub fn spawn(&mut self, memory_block: &mut MemoryBlock,
+		thread_area: usize, guest_rsp: usize, guest_rip: usize, child_tid: usize, parent_tid: *mut u32
+	) -> Result<u32, SyscallError> {
 		let tid = self.next_tid;
 
 		unsafe {
@@ -148,6 +149,14 @@ impl GuestThreadSet {
 			let stack = AddressRange { start: stack_end - stack_size, size: stack_size };
 			memory_block.mprotect(stack.align_expand(), Protection::RWStack)?;
 
+			// set up data on child_stack:  This thread will begin execution by way of a return from syscall_dispatch
+			// to guest_syscall with the specified value in rsp.  guest_syscall will then `pop rbp ; ret`, so arrange
+			// things for that
+			let child_stack = std::slice::from_raw_parts_mut((guest_rsp - 16) as *mut usize, 2);
+			child_stack[0] = 0; // initial RBP value
+			child_stack[1] = guest_rip; // `ret`
+
+			// "return" tid value to caller
 			*parent_tid = tid;
 		}
 
@@ -156,7 +165,7 @@ impl GuestThreadSet {
 			tid,
 			state: ThreadState::Runnable,
 			rax: syscall_ok(0),
-			rsp: guest_rsp,
+			rsp: guest_rsp - 16,
 			thread_area,
 			tid_address: child_tid,
 		};
