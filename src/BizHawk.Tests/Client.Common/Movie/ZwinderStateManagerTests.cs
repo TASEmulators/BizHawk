@@ -16,7 +16,7 @@ namespace BizHawk.Common.Tests.Client.Common.Movie
 			var buff = ms.ToArray();
 			var rms = new MemoryStream(buff, false);
 
-			var zw2 = ZwinderStateManager.Create(new BinaryReader(rms), new ZwinderStateManagerSettingsWIP());
+			var zw2 = ZwinderStateManager.Create(new BinaryReader(rms), new ZwinderStateManagerSettings());
 
 			// TODO: we could assert more things here to be thorough
 			Assert.IsNotNull(zw2);

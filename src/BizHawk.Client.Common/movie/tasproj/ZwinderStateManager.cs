@@ -5,40 +5,6 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
-	// todo: maybe interface this?
-	public class ZwinderStateManagerSettingsWIP
-	{
-		/// <summary>
-		/// Buffer settings when navigating near now
-		/// </summary>
-		public IRewindSettings Current { get; set; } = new RewindConfig
-		{
-			UseCompression = false,
-			BufferSize = 64,
-			TargetFrameLength = 1000,
-		};
-		/// <summary>
-		/// Buffer settings when navigating directly before the Current buffer
-		/// </summary>
-		/// <value></value>
-		public IRewindSettings Recent { get; set; } = new RewindConfig
-		{
-			UseCompression = false,
-			BufferSize = 64,
-			TargetFrameLength = 10000,
-		};
-		/// <summary>
-		/// How often to maintain states when outside of Current and Recent intervals
-		/// </summary>
-		/// <value></value>
-		public int AncientStateInterval { get; set; } = 5000;
-
-		/// <summary>
-		/// TODO: NUKE THIS, it doesn't belong here, maybe?
-		/// </summary>
-		/// <value></value>
-		public bool SaveStateHistory { get; set; } = true;
-	}
 	public class ZwinderStateManager : IStateManager
 	{
 		private static readonly byte[] NonState = new byte[0];
@@ -51,7 +17,7 @@ namespace BizHawk.Client.Common
 
 		public ZwinderStateManager()
 		{
-			Settings = new ZwinderStateManagerSettingsWIP();
+			Settings = new ZwinderStateManagerSettings();
 			_current = new ZwinderBuffer(Settings.Current);
 			_recent = new ZwinderBuffer(Settings.Recent);
 			_ancientInterval = Settings.AncientStateInterval;
@@ -85,7 +51,7 @@ namespace BizHawk.Client.Common
 		}
 
 		// TODO: private set, refactor LoadTasprojExtras to hold onto a settings object and pass it in to Create() method
-		public ZwinderStateManagerSettingsWIP Settings { get; set; }
+		public ZwinderStateManagerSettings Settings { get; set; }
 
 		public int Count => _current.Count + _recent.Count + _ancient.Count + 1;
 
@@ -222,7 +188,7 @@ namespace BizHawk.Client.Common
 			throw new NotImplementedException();
 		}
 
-		public static ZwinderStateManager Create(BinaryReader br, ZwinderStateManagerSettingsWIP settings)
+		public static ZwinderStateManager Create(BinaryReader br, ZwinderStateManagerSettings settings)
 		{
 			var current = ZwinderBuffer.Create(br);
 			var recent = ZwinderBuffer.Create(br);
