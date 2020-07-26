@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Waterbox;
 using BizHawk.Emulation.DiscSystem;
@@ -28,6 +29,7 @@ namespace BizHawk.Emulation.Cores.Sony.PS2
 			{
 				throw new InvalidOperationException("Must load a CD or DVD with PS2 core!");
 			}
+			ControllerDefinition = DualShock;
 
 			_disc = new DiscSectorReader(lp.Discs[0].DiscData);
 			_cdCallback = ReadCd;
@@ -68,7 +70,50 @@ namespace BizHawk.Emulation.Cores.Sony.PS2
 
 		protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
 		{
-			return new LibDobieStation.FrameInfo();
+			var ret = new LibDobieStation.FrameInfo();
+			for (int i = 0; i < DualShock.BoolButtons.Count; i++)
+			{
+				if (controller.IsPressed(DualShock.BoolButtons[i]))
+				{
+					ret.Buttons |= 1u << i;
+				}
+			}
+			for (int i = 0; i < DualShock.Axes.Count; i++)
+			{
+				ret.Axes |= (uint)controller.AxisValue(DualShock.Axes[i]) << (i * 8);
+			}
+			return ret;
 		}
+
+		private static readonly ControllerDefinition DualShock = new ControllerDefinition
+		{
+			Name = "PS2 DualShock",
+			BoolButtons =
+			{
+				"SELECT",
+				"L3",
+				"R3",
+				"START",
+				"UP",
+				"RIGHT",
+				"DOWN",
+				"LEFT",
+				"L2",
+				"R2",
+				"L1",
+				"R1",
+				"TRIANGLE",
+				"CIRCLE",
+				"CROSS",
+				"SQUARE",
+			},
+			Axes =
+			{
+				{ "RIGHT X", new AxisSpec(RangeExtensions.MutableRangeTo(0, 255), 128) },
+				{ "RIGHT Y", new AxisSpec(RangeExtensions.MutableRangeTo(0, 255), 128) },
+				{ "LEFT X", new AxisSpec(RangeExtensions.MutableRangeTo(0, 255), 128) },
+				{ "LEFT Y", new AxisSpec(RangeExtensions.MutableRangeTo(0, 255), 128) },
+			}
+		};
 	}
 }

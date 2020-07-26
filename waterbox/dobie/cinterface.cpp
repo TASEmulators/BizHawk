@@ -62,6 +62,8 @@ class DVD: public CDVD_Container
 
 struct MyFrameInfo: public FrameInfo
 {
+	uint32_t Buttons;
+	uint32_t Axes;
 };
 
 Emulator* emu;
@@ -81,6 +83,21 @@ ECL_EXPORT bool Initialize(const uint8_t* bios, size_t cd_length_, void (*cdcall
 
 ECL_EXPORT void FrameAdvance(MyFrameInfo& f)
 {
+	for (auto i = 0; i < 16; i++)
+	{
+		if (f.Buttons & 1 << i)
+		{
+			emu->press_button((PAD_BUTTON)i);
+		}
+		else
+		{
+			emu->release_button((PAD_BUTTON)i);
+		}
+	}
+	for (auto i = 0; i < 4; i++)
+	{
+		emu->update_joystick((JOYSTICK)(i >> 1), (JOYSTICK_AXIS)(i & 1), f.Axes >> (i * 8));
+	}
 	emu->run();
 	emu->get_inner_resolution(f.Width, f.Height);
 	{

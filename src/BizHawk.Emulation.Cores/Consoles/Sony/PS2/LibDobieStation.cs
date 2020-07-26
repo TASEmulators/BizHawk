@@ -9,6 +9,8 @@ namespace BizHawk.Emulation.Cores.Sony.PS2
 		[StructLayout(LayoutKind.Sequential)]
 		public new class FrameInfo : LibWaterboxCore.FrameInfo
 		{
+			public uint Buttons;
+			public uint Axes;
 		}
 
 		public unsafe delegate void CdCallback(ulong sector, byte* dest);
