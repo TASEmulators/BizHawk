@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Text;
-
+using BizHawk.BizInvoke;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
@@ -12,6 +12,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		ISaveRam, IStatable, IInputPollable, ISettable<MGBAHawk.Settings, MGBAHawk.SyncSettings>,
 		IDebuggable
 	{
+		private static readonly LibmGBA LibmGBA;
+		public static LibmGBA ZZHacky => LibmGBA;
+
+		static MGBAHawk()
+		{
+			var resolver = new DynamicLibraryImportResolver(
+				OSTailoredCode.IsUnixHost ? "libmgba.dll.so" : "mgba.dll", eternal: true);
+			LibmGBA = BizInvoker.GetInvoker<LibmGBA>(resolver, CallingConventionAdapters.Native);
+		}
+
 		[CoreConstructor("GBA")]
 		public MGBAHawk(byte[] file, CoreComm comm, SyncSettings syncSettings, Settings settings, bool deterministic, GameInfo game)
 		{
