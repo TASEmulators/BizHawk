@@ -71,7 +71,18 @@ namespace BizHawk.Client.Common
 			_ancientInterval = ancientInterval;
 		}
 		
-		public byte[] this[int frame] => throw new NotImplementedException();
+		public byte[] this[int frame]
+		{
+			get
+			{
+				var kvp = this.GetStateClosestToFrame(frame + 1);
+				if (kvp.Key != frame)
+					return new byte[0];
+				var ms = new MemoryStream();
+				kvp.Value.CopyTo(ms);
+				return ms.ToArray();
+			}
+		}
 
 		// TODO: private set, refactor LoadTasprojExtras to hold onto a settings object and pass it in to Create() method
 		public ZwinderStateManagerSettingsWIP Settings { get; set; }

@@ -9,7 +9,8 @@ namespace BizHawk.Client.Common
 	{
 		/// <summary>
 		/// Retrieves the savestate for the given frame,
-		/// If this frame does not have a state currently, will return an empty array
+		/// If this frame does not have a state currently, will return an empty array.false
+		/// Try not to use this as it is not fast.
 		/// </summary>
 		/// <returns>A savestate for the given frame or an empty array if there isn't one</returns>
 		byte[] this[int frame] { get; }
