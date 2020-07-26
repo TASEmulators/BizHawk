@@ -19,7 +19,7 @@ namespace BizHawk.Common.Tests.Client.Common.Movie
 
 			var rms = new MemoryStream(buff, false);
 
-			var zw2 = ZwinderStateManager.Create(new BinaryReader(rms));
+			var zw2 = ZwinderStateManager.Create(new BinaryReader(rms), new ZwinderStateManagerSettingsWIP());
 		}
 	}
 }
