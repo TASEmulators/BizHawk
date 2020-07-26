@@ -5,7 +5,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
-	public interface IStateManager : IBinaryStateable
+	public interface IStateManager // : IBinaryStateable
 	{
 		/// <summary>
 		/// Retrieves the savestate for the given frame,

@@ -8,7 +8,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
-	public class ZwinderBuffer : IBinaryStateable
+	public class ZwinderBuffer
 	{
 		/*
 		Main goals:
@@ -234,13 +234,22 @@ namespace BizHawk.Client.Common
 			writer.Write(_nextStateIndex);
 		}
 
-		public void LoadStateBinary(BinaryReader reader)
-		{
-			if (reader.ReadInt64() != Size) throw new InvalidOperationException("Bad format");
-			if (reader.ReadInt64() != _sizeMask) throw new InvalidOperationException("Bad format");
-			if (reader.ReadInt32() != _targetFrameLength) throw new InvalidOperationException("Bad format");
-			if (reader.ReadBoolean() != _useCompression) throw new InvalidOperationException("Bad format");
+		// public void LoadStateBinary(BinaryReader reader)
+		// {
+		// 	if (reader.ReadInt64() != Size)
+		// 		throw new InvalidOperationException("Bad format");
+		// 	if (reader.ReadInt64() != _sizeMask)
+		// 		throw new InvalidOperationException("Bad format");
+		// 	if (reader.ReadInt32() != _targetFrameLength)
+		// 		throw new InvalidOperationException("Bad format");
+		// 	if (reader.ReadBoolean() != _useCompression)
+		// 		throw new InvalidOperationException("Bad format");
 
+		// 	LoadStateBodyBinary(reader);
+		// }
+
+		private void LoadStateBodyBinary(BinaryReader reader)
+		{
 			reader.Read(_buffer, 0, _buffer.Length);
 			for (var i = 0; i < _states.Length; i++)
 			{
@@ -250,6 +259,26 @@ namespace BizHawk.Client.Common
 			}
 			_firstStateIndex = reader.ReadInt32();
 			_nextStateIndex = reader.ReadInt32();
+		}
+
+		public static ZwinderBuffer Create(BinaryReader reader)
+		{
+			var size = reader.ReadInt64();
+			var sizeMask = reader.ReadInt64();
+			var targetFrameLength = reader.ReadInt32();
+			var useCompression = reader.ReadBoolean();
+			var ret = new ZwinderBuffer(new RewindConfig
+			{
+				BufferSize = (int)(size >> 20),
+				TargetFrameLength = targetFrameLength,
+				UseCompression = useCompression
+			});
+			if (ret.Size != size || ret._sizeMask != sizeMask)
+			{
+				throw new InvalidOperationException("Bad format");
+			}
+			ret.LoadStateBodyBinary(reader);
+			return ret;
 		}
 
 		private class SaveStateStream : Stream, ISpanStream

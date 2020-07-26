@@ -57,6 +57,13 @@ namespace BizHawk.Client.Common
 			_ancientInterval = fixme.AncientStateInterval;
 			Settings = fixme;
 		}
+		private ZwinderStateManager(ZwinderBuffer current, ZwinderBuffer recent, byte[] frameZeroState, int ancientInterval)
+		{
+			_originalState = (byte[])frameZeroState.Clone();
+			_current = current;
+			_recent = recent;
+			_ancientInterval = ancientInterval;
+		}
 		
 		public byte[] this[int frame] => throw new NotImplementedException();
 
@@ -199,30 +206,39 @@ namespace BizHawk.Client.Common
 			throw new NotImplementedException();
 		}
 
-		public void LoadStateBinary(BinaryReader br)
+		public static ZwinderStateManager Create(BinaryReader br)
 		{
-			_current.LoadStateBinary(br);
-			_recent.LoadStateBinary(br);
-			_ancient.Clear();
-			var count = br.ReadInt32();
-			for (var i = 0; i < count; i++)
+			var current = ZwinderBuffer.Create(br);
+			var recent = ZwinderBuffer.Create(br);
+
+			var original = br.ReadBytes(br.ReadInt32());
+
+			var ancientInterval = br.ReadInt32();
+
+			var ret = new ZwinderStateManager(current, recent, null, ancientInterval);
+
+			var ancientCount = br.ReadInt32();
+			for (var i = 0; i < ancientCount; i++)
 			{
 				var key = br.ReadInt32();
 				var length = br.ReadInt32();
 				var data = br.ReadBytes(length);
-				_ancient.Add(new KeyValuePair<int, byte[]>(key, data));
+				ret._ancient.Add(new KeyValuePair<int, byte[]>(key, data));
 			}
-			if (_originalState.Length != br.ReadInt32())
-			{
-				throw new InvalidOperationException("Invalid data; rewinder cannot load into a different emulator");
-			}
-			br.Read(_originalState, 0, _originalState.Length);
+
+			return ret;
 		}
 
 		public void SaveStateBinary(BinaryWriter bw)
 		{
 			_current.SaveStateBinary(bw);
 			_recent.SaveStateBinary(bw);
+
+			bw.Write(_originalState.Length);
+			bw.Write(_originalState);
+
+			bw.Write(_ancientInterval);
+
 			bw.Write(_ancient.Count);
 			foreach (var s in _ancient)
 			{
@@ -230,8 +246,6 @@ namespace BizHawk.Client.Common
 				bw.Write(s.Value.Length);
 				bw.Write(s.Value);
 			}
-			bw.Write(_originalState.Length);
-			bw.Write(_originalState);
 		}
 	}
 }
