@@ -21,7 +21,7 @@ namespace BizHawk.Client.Common
 			_current = new ZwinderBuffer(Settings.Current);
 			_recent = new ZwinderBuffer(Settings.Recent);
 			_ancientInterval = Settings.AncientStateInterval;
-			_originalState = new byte[0];
+			_originalState = NonState;
 		}
 
 		public void Engage(byte[] frameZeroState)
@@ -41,9 +41,9 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				var kvp = this.GetStateClosestToFrame(frame + 1);
+				var kvp = GetStateClosestToFrame(frame + 1);
 				if (kvp.Key != frame)
-					return new byte[0];
+					return NonState;
 				var ms = new MemoryStream();
 				kvp.Value.CopyTo(ms);
 				return ms.ToArray();
