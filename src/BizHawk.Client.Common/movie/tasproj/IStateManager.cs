@@ -5,7 +5,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
-	public interface IStateManager // : IBinaryStateable
+	public interface IStateManager
 	{
 		/// <summary>
 		/// Retrieves the savestate for the given frame,
@@ -40,13 +40,6 @@ namespace BizHawk.Client.Common
 		/// <param name="frame"></param>
 		/// <returns>This stream may be consumed only once, and before any other calls to statemanager occur</returns>
 		KeyValuePair<int, Stream> GetStateClosestToFrame(int frame);
-
-		/// <summary>
-		/// Returns true iff Count > 0
-		/// TODO: Surely this is always true because the frame 0 state is always retained?
-		/// </summary>
-		/// <returns></returns>
-		bool Any();
 
 		/// <summary>
 		/// Returns the total number of states currently held by the state manager

@@ -103,8 +103,6 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public bool Any() => true;
-
 		public void Capture(int frame, IBinaryStateable source, bool force = false)
 		{
 			_current.Capture(frame,

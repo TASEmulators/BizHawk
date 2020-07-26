@@ -316,7 +316,7 @@ namespace BizHawk.Client.EmuHawk
 				&& (Clipboard.GetDataObject()?.GetDataPresent(DataFormats.StringFormat) ?? false);
 
 			ClearGreenzoneMenuItem.Enabled =
-				CurrentTasMovie != null && CurrentTasMovie.TasStateManager.Any();
+				CurrentTasMovie != null && CurrentTasMovie.TasStateManager.Count > 1;
 
 			GreenzoneICheckSeparator.Visible =
 				StateHistoryIntegrityCheckMenuItem.Visible =
