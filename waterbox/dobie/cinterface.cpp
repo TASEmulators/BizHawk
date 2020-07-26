@@ -89,12 +89,8 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo& f)
 		uint32_t* dst = f.VideoBuffer;
 		while (src < srcend)
 		{
-			uint8_t color[4];
-			memcpy(color, src, 4);
-			uint8_t tmp = color[2];
-			color[2] = color[0];
-			color[0] = tmp;
-			memcpy(dst, color, 4);
+			*dst = *src;
+			std::swap(((uint8_t*)dst)[2], ((uint8_t*)dst)[0]);
 			src++;
 			dst++;
 		}
