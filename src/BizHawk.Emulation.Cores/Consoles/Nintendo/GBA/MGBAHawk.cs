@@ -125,7 +125,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				WireMemoryDomainPointers();
 			}
 
-			// LibmGBA.BizSetTraceCallback(Tracer.Enabled ? _tracecb : null);
+			LibmGBA.BizSetTraceCallback(Core, Tracer.Enabled ? _tracecb : null);
 
 			IsLagFrame = LibmGBA.BizAdvance(
 				Core,

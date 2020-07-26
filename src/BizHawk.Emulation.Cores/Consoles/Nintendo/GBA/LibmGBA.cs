@@ -183,18 +183,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		[UnmanagedFunctionPointer(cc)]
 		public delegate void TraceCallback(string msg);
-		// [BizImport(cc, Compatibility = true)]
-		// public abstract void BizSetTraceCallback(TraceCallback cb);
+		[BizImport(cc, Compatibility = true)]
+		public abstract void BizSetTraceCallback(IntPtr ctx, TraceCallback cb);
 
 		[UnmanagedFunctionPointer(cc)]
 		public delegate void MemCallback(uint addr, mWatchpointType type, uint oldValue, uint newValue);
-		// [BizImport(cc, Compatibility = true)]
-		// public abstract void BizSetMemCallback(MemCallback cb);
+		[BizImport(cc, Compatibility = true)]
+		public abstract void BizSetMemCallback(IntPtr ctx, MemCallback cb);
 
 		[UnmanagedFunctionPointer(cc)]
 		public delegate void ExecCallback(uint pc);
-		// [BizImport(cc, Compatibility = true)]
-		// public abstract void BizSetExecCallback(ExecCallback cb);
+		[BizImport(cc, Compatibility = true)]
+		public abstract void BizSetExecCallback(IntPtr ctx, ExecCallback cb);
 
 		[BizImport(cc, Compatibility = true)]
 		public abstract int BizSetWatchpoint(IntPtr ctx, uint addr, mWatchpointType type);

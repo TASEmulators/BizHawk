@@ -56,11 +56,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			{
 				_executeCallback = RunExecCallback;
 				_execPcs[callback.Address.Value] = callback;
-				// MGBAHawk.ZZHacky.BizSetExecCallback(_executeCallback);
+				MGBAHawk.ZZHacky.BizSetExecCallback(_mgba.Core, _executeCallback);
 			}
 			else
 			{
-				// MGBAHawk.ZZHacky.BizSetMemCallback(container.CallDelegate);
+				MGBAHawk.ZZHacky.BizSetMemCallback(_mgba.Core, container.CallDelegate);
 				container.ID = MGBAHawk.ZZHacky.BizSetWatchpoint(_mgba.Core, callback.Address.Value, container.WatchPointType);
 			}
 
@@ -79,7 +79,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 					if (_callbacks.All(cb => cb.Callback.Type != MemoryCallbackType.Execute))
 					{
 						_executeCallback = null;
-						// MGBAHawk.ZZHacky.BizSetExecCallback(null);
+						MGBAHawk.ZZHacky.BizSetExecCallback(_mgba.Core, null);
 					}
 				}
 				else if (MGBAHawk.ZZHacky.BizClearWatchpoint(_mgba.Core, cbToRemove.ID))
