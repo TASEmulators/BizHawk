@@ -541,7 +541,6 @@ namespace BizHawk.Client.EmuHawk
 			var newMovie = (ITasMovie)MovieSession.Get(file.FullName);
 			newMovie.BindMarkersToInput = Settings.BindMarkersToInput;
 			newMovie.TasStateManager.InvalidateCallback = GreenzoneInvalidated;
-			
 
 			if (!HandleMovieLoadStuff(newMovie))
 			{
@@ -627,6 +626,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool HandleMovieLoadStuff(ITasMovie movie)
 		{
 			WantsToControlStopMovie = false;
+			WantsToControlReboot = false;
 			var result = StartNewMovieWrapper(movie);
 
 			if (!result)
@@ -635,6 +635,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			WantsToControlStopMovie = true;
+			WantsToControlReboot = true;
 
 			CurrentTasMovie.ChangeLog.Clear();
 			CurrentTasMovie.ClearChanges();
