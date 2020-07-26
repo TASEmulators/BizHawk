@@ -73,6 +73,7 @@ namespace BizHawk.Client.Common
 		
 		public byte[] this[int frame] => throw new NotImplementedException();
 
+		// TODO: private set, refactor LoadTasprojExtras to hold onto a settings object and pass it in to Create() method
 		public ZwinderStateManagerSettingsWIP Settings { get; set; }
 
 		public int Count => _current.Count + _recent.Count + _ancient.Count + 1;
@@ -212,7 +213,7 @@ namespace BizHawk.Client.Common
 			throw new NotImplementedException();
 		}
 
-		public static ZwinderStateManager Create(BinaryReader br)
+		public static ZwinderStateManager Create(BinaryReader br, ZwinderStateManagerSettingsWIP settings)
 		{
 			var current = ZwinderBuffer.Create(br);
 			var recent = ZwinderBuffer.Create(br);
@@ -221,7 +222,10 @@ namespace BizHawk.Client.Common
 
 			var ancientInterval = br.ReadInt32();
 
-			var ret = new ZwinderStateManager(current, recent, original, ancientInterval);
+			var ret = new ZwinderStateManager(current, recent, original, ancientInterval)
+			{
+				Settings = settings
+			};
 
 			var ancientCount = br.ReadInt32();
 			for (var i = 0; i < ancientCount; i++)
