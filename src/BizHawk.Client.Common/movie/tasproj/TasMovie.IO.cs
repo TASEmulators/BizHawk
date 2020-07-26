@@ -43,7 +43,7 @@ namespace BizHawk.Client.Common
 
 			if (TasStateManager.Settings.SaveStateHistory && !isBackup)
 			{
-				bs.PutLump(BinaryStateLump.StateHistory, bw => TasStateManager.SaveStateBinary(bw));
+				bs.PutLump(BinaryStateLump.StateHistory, bw => TasStateManager.SaveStateHistory(bw));
 			}
 		}
 
@@ -160,7 +160,7 @@ namespace BizHawk.Client.Common
 			{
 				bl.GetLump(BinaryStateLump.StateHistory, false, delegate(BinaryReader br, long length)
 				{
-					TasStateManager.LoadStateBinary(br);
+					TasStateManager = ZwinderStateManager.Create(br);
 				});
 			}
 		}

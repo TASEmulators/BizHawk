@@ -25,7 +25,7 @@ namespace BizHawk.Client.Common
 		{
 			UseCompression = false,
 			BufferSize = 64,
-			TargetFrameLength = 1000,
+			TargetFrameLength = 10000,
 		};
 		/// <summary>
 		/// How often to maintain states when outside of Current and Recent intervals
@@ -43,20 +43,26 @@ namespace BizHawk.Client.Common
 	{
 		private static readonly byte[] NonState = new byte[0];
 
-		private readonly byte[] _originalState;
+		private byte[] _originalState;
 		private readonly ZwinderBuffer _current;
 		private readonly ZwinderBuffer _recent;
 		private readonly List<KeyValuePair<int, byte[]>> _ancient = new List<KeyValuePair<int, byte[]>>();
 		private readonly int _ancientInterval;
 
-		public ZwinderStateManager(ZwinderStateManagerSettingsWIP fixme, byte[] frameZeroState)
+		public ZwinderStateManager()
+		{
+			Settings = new ZwinderStateManagerSettingsWIP();
+			_current = new ZwinderBuffer(Settings.Current);
+			_recent = new ZwinderBuffer(Settings.Recent);
+			_ancientInterval = Settings.AncientStateInterval;
+			_originalState = new byte[0];
+		}
+
+		public void Engage(byte[] frameZeroState)
 		{
 			_originalState = (byte[])frameZeroState.Clone();
-			_current = new ZwinderBuffer(fixme.Current);
-			_recent = new ZwinderBuffer(fixme.Recent);
-			_ancientInterval = fixme.AncientStateInterval;
-			Settings = fixme;
 		}
+
 		private ZwinderStateManager(ZwinderBuffer current, ZwinderBuffer recent, byte[] frameZeroState, int ancientInterval)
 		{
 			_originalState = (byte[])frameZeroState.Clone();
@@ -229,7 +235,7 @@ namespace BizHawk.Client.Common
 			return ret;
 		}
 
-		public void SaveStateBinary(BinaryWriter bw)
+		public void SaveStateHistory(BinaryWriter bw)
 		{
 			_current.SaveStateBinary(bw);
 			_recent.SaveStateBinary(bw);

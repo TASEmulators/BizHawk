@@ -21,6 +21,7 @@ namespace BizHawk.Client.Common
 			Markers = new TasMovieMarkerList(this);
 			Markers.CollectionChanged += Markers_CollectionChanged;
 			Markers.Add(0, "Power on");
+			TasStateManager = new ZwinderStateManager();
 		}
 
 		public override void Attach(IEmulator emulator)
@@ -38,25 +39,7 @@ namespace BizHawk.Client.Common
 			_inputPollable = emulator.AsInputPollable();
 			var ms = new MemoryStream();
 			emulator.AsStatable().SaveStateBinary(new BinaryWriter(ms));
-
-
-			// TasStateManager = new TasStateManager(this, emulator, Session.Settings.DefaultTasStateManagerSettings, ms.ToArray());
-			TasStateManager = new ZwinderStateManager(new ZwinderStateManagerSettingsWIP
-			{
-				Current = new RewindConfig
-				{
-					UseCompression = false,
-					BufferSize = 64,
-					TargetFrameLength = 1000,
-				},
-				Recent = new RewindConfig
-				{
-					UseCompression = false,
-					BufferSize = 64,
-					TargetFrameLength = 10000,
-				},
-				AncientStateInterval = 5000
-			}, ms.ToArray());
+			TasStateManager.Engage(ms.ToArray());
 
 			base.Attach(emulator);
 

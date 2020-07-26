@@ -63,5 +63,11 @@ namespace BizHawk.Client.Common
 		/// Adjust internal state saving logic based on changes to Settings
 		/// </summary>
 		void UpdateStateFrequency();
+
+		// TODO: document
+		void SaveStateHistory(BinaryWriter bw);
+
+		// TODO: document
+		void Engage(byte[] frameZeroState);
 	}
 }
