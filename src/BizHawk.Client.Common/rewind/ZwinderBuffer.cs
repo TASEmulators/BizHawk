@@ -253,9 +253,9 @@ namespace BizHawk.Client.Common
 			reader.Read(_buffer, 0, _buffer.Length);
 			for (var i = 0; i < _states.Length; i++)
 			{
-				_states[i].Start = reader.Read();
-				_states[i].Size = reader.Read();
-				_states[i].Frame = reader.Read();
+				_states[i].Start = reader.ReadInt64();
+				_states[i].Size = reader.ReadInt32();
+				_states[i].Frame = reader.ReadInt32();
 			}
 			_firstStateIndex = reader.ReadInt32();
 			_nextStateIndex = reader.ReadInt32();

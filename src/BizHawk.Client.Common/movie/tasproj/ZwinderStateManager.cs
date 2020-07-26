@@ -221,7 +221,7 @@ namespace BizHawk.Client.Common
 
 			var ancientInterval = br.ReadInt32();
 
-			var ret = new ZwinderStateManager(current, recent, null, ancientInterval);
+			var ret = new ZwinderStateManager(current, recent, original, ancientInterval);
 
 			var ancientCount = br.ReadInt32();
 			for (var i = 0; i < ancientCount; i++)
