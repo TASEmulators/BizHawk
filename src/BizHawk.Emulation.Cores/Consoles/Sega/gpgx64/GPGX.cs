@@ -72,16 +72,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 				CoreComm = lp.Comm;
 
+				_romfile = lp.Roms.FirstOrDefault()?.RomData;
+
 				if (lp.Discs.Count > 0)
 				{
 					_cds = lp.Discs.Select(d => d.DiscData).ToArray();
 					_cdReaders = _cds.Select(c => new DiscSectorReader(c)).ToArray();
 					Core.gpgx_set_cdd_callback(cd_callback_handle);
 					DriveLightEnabled = true;
-				}
-				else
-				{
-					_romfile = lp.Roms.FirstOrDefault().RomData;
 				}
 
 				LibGPGX.INPUT_SYSTEM system_a = SystemForSystem(_syncSettings.ControlTypeLeft);
