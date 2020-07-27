@@ -60,70 +60,60 @@ namespace BizHawk.Client.Common
 			_tsm = tsm;
 		}
 
-		// todo: go through all states once, remove as many as we need.
+		/// <summary>
+		/// This will strategically remove states based on their alignment with the state gap (and its multiples) and their distance from the current frame.
+		/// </summary>
 		public void Trigger(int currentEmulatedFrame, int statesToDecay)
 		{
-			for (; statesToDecay > 0 && _tsm.Count > 1; statesToDecay--)
+			int baseStateIndex = _tsm.GetStateIndexByFrame(currentEmulatedFrame);
+			int baseStateFrame = _tsm.GetStateFrameByIndex(baseStateIndex) / _step; // reduce to step integral TODO: do we actually want this?
+			//      key: priority  value: frame
+			List<KeyValuePair<int, int>> decayPriorities = new List<KeyValuePair<int, int>>();
+
+			for (int currentStateIndex = 1; currentStateIndex < _tsm.Count; currentStateIndex++)
 			{
-				int baseStateIndex = _tsm.GetStateIndexByFrame(currentEmulatedFrame);
-				int baseStateFrame = _tsm.GetStateFrameByIndex(baseStateIndex) / _step;	// reduce to step integral
-				int highestPriority = -1000000;
-				int frameToDecay = -1;
-				bool decayed = false;
+				int currentFrame = _tsm.GetStateFrameByIndex(currentStateIndex);
 
-				for (int currentStateIndex = 1; currentStateIndex < _tsm.Count; currentStateIndex++)
-				{
-					int currentFrame = _tsm.GetStateFrameByIndex(currentStateIndex);
-
-					if (_movie.Markers.IsMarker(currentFrame + 1))
-						continue;
-
-					if (currentFrame + 1 == _movie.LastEditedFrame)
-						continue;
-
-					if (currentFrame % _step > 0)
-					{
-						// ignore the pattern if the state doesn't belong already, drop it blindly and skip everything
-						if (_tsm.Remove(currentFrame))
-						{
-							decayed = true;
-							break;
-						}
-					}
-					else // reduce to step integral for all the decay logic
-						currentFrame /= _step;
-
-					int zeroCount = _zeros[currentFrame & _mask];
-					int priority = (baseStateFrame - currentFrame) >> zeroCount;
-
-					if (priority > highestPriority)
-					{
-						highestPriority = priority;
-						frameToDecay = currentFrame;
-					}
-				}
-				if (decayed)
+				if (_movie.Markers.IsMarker(currentFrame + 1))
 					continue;
-
-				if (frameToDecay > -1)
+				if (currentFrame + 1 == _movie.LastEditedFrame)
+					continue;
+				
+				// not aligned to state gap at all
+				if (currentFrame % _step > 0) 
 				{
-					if (_tsm.Remove(frameToDecay * _step))
-						decayed = true;
+					decayPriorities.Add(new KeyValuePair<int, int>(int.MaxValue, currentFrame));
+					continue;
 				}
 				
-				// we're very sorry about failing to find states to remove, but we can't go beyond capacity, so remove at least something
-				if (!decayed)
-				{
-					if (!_tsm.Remove(_tsm.GetStateFrameByIndex(1)))
-					{
-						// This should never happen, but just in case, we don't want to let memory usage continue to climb.
-						throw new System.Exception("Failed to remove states.");
-					}
-				}
+				// reduce to step integral for the decay logic
+				currentFrame /= _step;
+				int zeroCount = _zeros[currentFrame & _mask];
+				int priority = (baseStateFrame - currentFrame) >> zeroCount;
+				decayPriorities.Add(new KeyValuePair<int, int>(priority, currentFrame * _step));
+			}
+
+			// reverse sort; high priority to remove comes first
+			decayPriorities.Sort((p2, p1) => p1.Key.CompareTo(p2.Key));
+
+			int index = 0;
+			while (statesToDecay > 0 && index < decayPriorities.Count)
+			{
+				if (_tsm.Remove(decayPriorities[index].Value * _step))
+					statesToDecay--;
+			}
+				
+			// we're very sorry about failing to find states to remove, but we can't go beyond capacity, so remove at least something
+			while (statesToDecay > 0)
+			{
+				if (_tsm.Remove(_tsm.GetStateFrameByIndex(1)))
+					statesToDecay--;
+				else // This should never happen, but just in case, we don't want to let memory usage continue to climb.
+					throw new System.Exception("Failed to remove states.");
 			}
 		}
 
-		public void UpdateSettings(int capacity, int step, int bits)
+		public void UpdateSettings(int step, int bits)
 		{
 			_step = step;
 			_bits = bits;
