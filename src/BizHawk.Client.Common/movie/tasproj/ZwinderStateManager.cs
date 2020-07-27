@@ -15,13 +15,19 @@ namespace BizHawk.Client.Common
 		private readonly List<KeyValuePair<int, byte[]>> _ancient = new List<KeyValuePair<int, byte[]>>();
 		private readonly int _ancientInterval;
 
-		public ZwinderStateManager()
+		public ZwinderStateManager(ZwinderStateManagerSettings settings)
 		{
-			Settings = new ZwinderStateManagerSettings();
-			_current = new ZwinderBuffer(Settings.Current);
-			_recent = new ZwinderBuffer(Settings.Recent);
-			_ancientInterval = Settings.AncientStateInterval;
+			Settings = settings;
+			_current = new ZwinderBuffer(settings.Current);
+			_recent = new ZwinderBuffer(settings.Recent);
+			_ancientInterval = settings.AncientStateInterval;
 			_originalState = NonState;
+
+		}
+
+		public ZwinderStateManager()
+			:this(new ZwinderStateManagerSettings())
+		{
 		}
 
 		public void Engage(byte[] frameZeroState)
