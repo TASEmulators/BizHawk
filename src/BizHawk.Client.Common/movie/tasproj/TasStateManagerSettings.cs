@@ -9,7 +9,7 @@ namespace BizHawk.Client.Common
 			DiskSaveCapacityMb = 512;
 			CapacityMb = 512;
 			DiskCapacityMb = 1; // not working yet
-			MemStateGapDivider = 64;
+			MemStateGapDividerKB = 64;
 			FileStateGap = 4;
 		}
 
@@ -18,7 +18,7 @@ namespace BizHawk.Client.Common
 			DiskSaveCapacityMb = settings.DiskSaveCapacityMb;
 			CapacityMb = settings.CapacityMb;
 			DiskCapacityMb = settings.DiskCapacityMb;
-			MemStateGapDivider = settings.MemStateGapDivider;
+			MemStateGapDividerKB = settings.MemStateGapDividerKB;
 			FileStateGap = settings.FileStateGap;
 		}
 
@@ -54,8 +54,8 @@ namespace BizHawk.Client.Common
 		/// Gets or sets the divider that determines memory state gap
 		/// </summary>
 		[DisplayName("Divider for memory state interval")]
-		[Description("The actual state gap in frames is calculated as ExpectedStateSize / div / 1024")]
-		public int MemStateGapDivider { get; set; }
+		[Description("The actual state gap in frames is calculated as ExpectedStateSizeMB * 1024 / div")]
+		public int MemStateGapDividerKB { get; set; }
 
 		/// <summary>
 		/// Gets or sets the amount of states to skip during project saving
