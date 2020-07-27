@@ -48,183 +48,86 @@ namespace BizHawk.Client.Common
 		private readonly ITasMovie _movie;
 		private readonly TasStateManager _tsm;
 
-		private List<int> _zeros;		// amount of least significant zeros in bitwise view (also max pattern step)
-		private int _bits;				// size of _zeros is 2 raised to the power of _bits
-		private int _mask;				// for remainder calculation using bitwise instead of division
-		private int _base;				// repeat count (like fceux's capacity). only used by aligned formula
-		private int _capacity;			// total amount of savestates
-		private int _step;				// initial memory state gap
-		private bool _align;			// extra care about fine alignment. TODO: do we want it?
+		private List<int> _zeros;		// number of ending zeros in binary representation of the index
+		private int _bits;				// max number of bits for which to calculate _zeros
+		private int _mask;				// to mask index into _zeros, to prevent accessing out of range
+
+		private int _step;				// initial gap between states
 
 		public StateManagerDecay(ITasMovie movie, TasStateManager tsm)
 		{
 			_movie = movie;
 			_tsm = tsm;
-			_align = false;
 		}
 
-		// todo: go through all states once, remove as many as we need. refactor to not need goto
-		public void Trigger(int frame, int decayStates)
+		// todo: go through all states once, remove as many as we need.
+		public void Trigger(int currentEmulatedFrame, int statesToDecay)
 		{
-			for (; decayStates > 0 && _tsm.Count > 1;)
+			for (; statesToDecay > 0 && _tsm.Count > 1; statesToDecay--)
 			{
-				int baseStateIndex = _tsm.GetStateIndexByFrame(frame);
-				int baseStateFrame = _tsm.GetStateFrameByIndex(baseStateIndex) / _step;	// reduce right away
-				int forwardPriority = -1000000;
-				int backwardPriority = -1000000;
-				int forwardFrame = -1;
-				int backwardFrame = -1;
+				int baseStateIndex = _tsm.GetStateIndexByFrame(currentEmulatedFrame);
+				int baseStateFrame = _tsm.GetStateFrameByIndex(baseStateIndex) / _step;	// reduce to step integral
+				int highestPriority = -1000000;
+				int frameToDecay = -1;
+				bool decayed = false;
 
-				for (int currentStateIndex = 1; currentStateIndex < baseStateIndex; currentStateIndex++)
+				for (int currentStateIndex = 1; currentStateIndex < _tsm.Count; currentStateIndex++)
 				{
 					int currentFrame = _tsm.GetStateFrameByIndex(currentStateIndex);
 
 					if (_movie.Markers.IsMarker(currentFrame + 1))
-					{
 						continue;
-					}
 
 					if (currentFrame + 1 == _movie.LastEditedFrame)
-					{
 						continue;
-					}
 
 					if (currentFrame % _step > 0)
 					{
 						// ignore the pattern if the state doesn't belong already, drop it blindly and skip everything
 						if (_tsm.Remove(currentFrame))
 						{
-							// decrementing this if no state was removed is BAD
-							decayStates--;
-
-							// this is the kind of highly complex loops that might justify goto
-							goto next_state;
+							decayed = true;
+							break;
 						}
 					}
-					else
-					{
-						// reduce to imaginary integral greenzone for all the decay logic
+					else // reduce to step integral for all the decay logic
 						currentFrame /= _step;
-					}
 
 					int zeroCount = _zeros[currentFrame & _mask];
 					int priority = (baseStateFrame - currentFrame) >> zeroCount;
 
-					if (_align)
+					if (priority > highestPriority)
 					{
-						priority -= (_base * ((1 << zeroCount) * 2 - 1)) >> zeroCount;
-					}
-
-					if (priority > forwardPriority)
-					{
-						forwardPriority = priority;
-						forwardFrame = currentFrame;
+						highestPriority = priority;
+						frameToDecay = currentFrame;
 					}
 				}
+				if (decayed)
+					continue;
 
-				for (int currentStateIndex = _tsm.Count - 1; currentStateIndex > baseStateIndex; currentStateIndex--)
+				if (frameToDecay > -1)
 				{
-					int currentFrame = _tsm.GetStateFrameByIndex(currentStateIndex);
-
-					if (_movie.Markers.IsMarker(currentFrame + 1))
-					{
-						continue;
-					}
-
-					if (currentFrame % _step > 0 && currentFrame + 1 != _movie.LastEditedFrame)
-					{
-						// ignore the pattern if the state doesn't belong already, drop it blindly and skip everything
-						if (_tsm.Remove(currentFrame))
-						{
-							// decrementing this if no state was removed is BAD
-							decayStates--;
-
-							// this is the kind of highly complex loops that might justify goto
-							goto next_state;
-						}
-					}
-					else
-					{
-						// reduce to imaginary integral greenzone for all the decay logic
-						currentFrame /= _step;
-					}
-
-					int zeroCount = _zeros[currentFrame & _mask];
-					int priority = (currentFrame - baseStateFrame) >> zeroCount;
-
-					if (_align)
-					{
-						priority -= (_base * ((1 << zeroCount) * 2 - 1)) >> zeroCount;
-					}
-
-					if (priority > backwardPriority)
-					{
-						backwardPriority = priority;
-						backwardFrame = currentFrame;
-					}
-				}
-				
-				int decayStatesLast = decayStates;
-
-				if (forwardFrame > -1 && backwardFrame > -1)
-				{
-					if (baseStateFrame - forwardFrame > backwardFrame - baseStateFrame)
-					{
-						if (_tsm.Remove(forwardFrame * _step))
-						{
-							// decrementing this if no state was removed is BAD
-							decayStates--;
-						}
-					}
-					else
-					{
-						if (_tsm.Remove(backwardFrame * _step))
-						{
-							// decrementing this if no state was removed is BAD
-							decayStates--;
-						}
-					}
-				}
-				else if (forwardFrame > -1)
-				{
-					if (_tsm.Remove(forwardFrame * _step))
-					{
-						// decrementing this if no state was removed is BAD
-						decayStates--;
-					}
-				}
-				else if (backwardFrame > -1)
-				{
-					if (_tsm.Remove(backwardFrame * _step))
-					{
-						// decrementing this if no state was removed is BAD
-						decayStates--;
-					}
+					if (_tsm.Remove(frameToDecay * _step))
+						decayed = true;
 				}
 				
 				// we're very sorry about failing to find states to remove, but we can't go beyond capacity, so remove at least something
-				// this shouldn't happen, but if we don't do it here, nothing good will happen either
-				if (decayStatesLast == decayStates)
+				if (!decayed)
 				{
-					if (_tsm.Remove(_tsm.GetStateFrameByIndex(1)))
+					if (!_tsm.Remove(_tsm.GetStateFrameByIndex(1)))
 					{
-						// decrementing this if no state was removed is BAD
-						decayStates--;
+						// This should never happen, but just in case, we don't want to let memory usage continue to climb.
+						throw new System.Exception("Failed to remove states.");
 					}
 				}
-
-				// this is the kind of highly complex loops that might justify goto
-				next_state: ;
 			}
 		}
 
 		public void UpdateSettings(int capacity, int step, int bits)
 		{
-			_capacity = capacity;
 			_step = step;
 			_bits = bits;
 			_mask = (1 << _bits) - 1;
-			_base = (_capacity + _bits / 2) / (_bits + 1);
 			_zeros = new List<int> { _bits };
 
 			for (int i = 1; i < (1 << _bits); i++)
