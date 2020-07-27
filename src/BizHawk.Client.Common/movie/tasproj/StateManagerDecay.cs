@@ -82,7 +82,10 @@ namespace BizHawk.Client.Common
 				// not aligned to state gap at all
 				if (currentFrame % _step > 0) 
 				{
-					decayPriorities.Add(new KeyValuePair<int, int>(int.MaxValue, currentFrame));
+					if (_tsm.Remove(currentFrame))
+						statesToDecay--;
+					if (statesToDecay == 0)
+						return;
 					continue;
 				}
 				
@@ -93,14 +96,35 @@ namespace BizHawk.Client.Common
 				decayPriorities.Add(new KeyValuePair<int, int>(priority, currentFrame * _step));
 			}
 
-			// reverse sort; high priority to remove comes first
-			decayPriorities.Sort((p2, p1) => p1.Key.CompareTo(p2.Key));
+			// optimization: if we are only removing 1 state, don't bother sorting the whole list
+			if (statesToDecay == 1)
+			{
+				int highestPriority = decayPriorities[0].Key;
+				int toRemove = decayPriorities[0].Value;
+				for (int i = 1; i < decayPriorities.Count; i++)
+				{
+					if (decayPriorities[i].Key > highestPriority)
+					{
+						highestPriority = decayPriorities[i].Key;
+						toRemove = decayPriorities[i].Value;
+					}
+				}
+				if (!_tsm.Remove(toRemove))
+					throw new System.Exception("Failed to remove state."); // should never happen
+				return;
+			}
+			else
+			{
+				// reverse sort; high priority to remove comes first
+				decayPriorities.Sort((p2, p1) => p1.Key.CompareTo(p2.Key));
+			}
 
 			int index = 0;
 			while (statesToDecay > 0 && index < decayPriorities.Count)
 			{
-				if (_tsm.Remove(decayPriorities[index].Value * _step))
+				if (_tsm.Remove(decayPriorities[index].Value))
 					statesToDecay--;
+				index++;
 			}
 				
 			// we're very sorry about failing to find states to remove, but we can't go beyond capacity, so remove at least something
