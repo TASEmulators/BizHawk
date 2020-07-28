@@ -1,6 +1,6 @@
 ﻿using BizHawk.Emulation.Common;
 
-namespace BizHawk.Client.EmuHawk
+namespace BizHawk.Client.Common
 {
 	public interface IBufferedSoundProvider
 	{

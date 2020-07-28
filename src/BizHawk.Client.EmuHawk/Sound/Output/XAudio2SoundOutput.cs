@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using BizHawk.Client.Common;
+
 using SlimDX;
 using SlimDX.Multimedia;
 using SlimDX.XAudio2;

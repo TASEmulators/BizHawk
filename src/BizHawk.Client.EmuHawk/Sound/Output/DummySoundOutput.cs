@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
 
+using BizHawk.Client.Common;
+
 namespace BizHawk.Client.EmuHawk
 {
 	public class DummySoundOutput : ISoundOutput
