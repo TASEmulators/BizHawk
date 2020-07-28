@@ -77,6 +77,11 @@ namespace BizHawk.Client.Common
 
 		public void Capture(int frame, IBinaryStateable source, bool force = false)
 		{
+			if (frame <= Last)
+			{
+				return;
+			}
+
 			_current.Capture(frame,
 				s => source.SaveStateBinary(new BinaryWriter(s)),
 				index =>
