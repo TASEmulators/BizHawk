@@ -75,6 +75,7 @@ namespace BizHawk.Client.EmuHawk
 			_config.UpdateAutoCheckEnabled = AutoCheckForUpdates.Checked;
 			if (_config.UpdateAutoCheckEnabled != oldUpdateAutoCheckEnabled)
 			{
+				UpdateChecker.GlobalConfig = _config;
 				if (!_config.UpdateAutoCheckEnabled)
 				{
 					UpdateChecker.ResetHistory();
