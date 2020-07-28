@@ -20,6 +20,7 @@ if [ -z "$libpath" ]; then
 fi
 if [ -z "$winepath" ]; then winepath="$libpath/wine"; fi
 export LD_LIBRARY_PATH="$PWD/dll:$PWD:$winepath:$libpath"
+export BIZHAWK_INT_SYSLIB_PATH="$libpath"
 if [ "$1" = "--mono-no-redirect" ]; then
 	shift
 	printf "(received --mono-no-redirect, stdout was not captured)\n" >EmuHawkMono_laststdout.txt

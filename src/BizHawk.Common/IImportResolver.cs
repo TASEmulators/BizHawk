@@ -24,10 +24,11 @@ namespace BizHawk.Common
 		static DynamicLibraryImportResolver()
 		{
 			var currDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase)?.Replace("file:", "") ?? string.Empty;
+			var sysLibDir = Environment.GetEnvironmentVariable("BIZHAWK_INT_SYSLIB_PATH") ?? "/usr/lib";
 			UnixSearchPaths = new[]
 			{
 				$"{currDir}/", $"{currDir}/dll/",
-				"/usr/lib/bizhawk/", "/usr/lib/", "/usr/lib/mupen64plus/"
+				$"{sysLibDir}/bizhawk/", $"{sysLibDir}/", $"{sysLibDir}/mupen64plus/"
 			};
 		}
 
