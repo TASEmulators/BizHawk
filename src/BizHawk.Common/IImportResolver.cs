@@ -34,7 +34,13 @@ namespace BizHawk.Common
 
 		private static string UnixResolveFilePath(string orig) => orig[0] == '/'
 			? orig
-			: UnixSearchPaths.Select(dir => dir + orig).FirstOrDefault(File.Exists) ?? orig;
+			: UnixSearchPaths.Select(dir => dir + orig)
+				.FirstOrDefault(s =>
+				{
+					var fi = new FileInfo(s);
+					return fi.Exists && (fi.Attributes & FileAttributes.Directory) != FileAttributes.Directory;
+				})
+				?? orig;
 
 		private IntPtr _p;
 
