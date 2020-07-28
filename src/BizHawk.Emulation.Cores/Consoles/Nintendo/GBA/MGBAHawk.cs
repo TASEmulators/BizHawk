@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		static MGBAHawk()
 		{
 			var resolver = new DynamicLibraryImportResolver(
-				OSTailoredCode.IsUnixHost ? "libmgba.dll.so" : "mgba.dll", eternal: true);
+				OSTailoredCode.IsUnixHost ? "libmgba.dll.so" : "mgba.dll", hasLimitedLifetime: false);
 			LibmGBA = BizInvoker.GetInvoker<LibmGBA>(resolver, CallingConventionAdapters.Native);
 		}
 
