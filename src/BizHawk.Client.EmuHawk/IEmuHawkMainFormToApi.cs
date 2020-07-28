@@ -31,7 +31,7 @@ namespace BizHawk.Client.EmuHawk
 		long MouseWheelTracker { get; }
 
 		/// <remarks>only referenced from <see cref="CommApi"/></remarks>
-		(HttpCommunication HTTP, MemoryMappedFiles MMF, SocketServer Sockets) NetworkingHelpers { get; }
+		(HttpCommunication HTTP, MemoryMappedFiles MMF, SocketServer Sockets, WebSocketClient WebSocketClient) NetworkingHelpers { get; }
 
 		/// <remarks>only referenced from <see cref="EmuClientApi"/></remarks>
 		bool PauseAvi { set; }

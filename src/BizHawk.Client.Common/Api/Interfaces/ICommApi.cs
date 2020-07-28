@@ -10,6 +10,8 @@ namespace BizHawk.Client.Common
 
 		SocketServer? Sockets { get; }
 
+		WebSocketClient? WebSocketClient { get;  }
+
 		string? HttpTest();
 
 		string? HttpTestGet();
