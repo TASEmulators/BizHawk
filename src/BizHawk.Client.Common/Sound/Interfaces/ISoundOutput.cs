@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BizHawk.Client.EmuHawk
+namespace BizHawk.Client.Common
 {
 	public interface ISoundOutput : IDisposable
 	{

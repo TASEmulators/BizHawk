@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
+using BizHawk.Client.Common;
+
 using SlimDX.DirectSound;
 using SlimDX.Multimedia;
 
