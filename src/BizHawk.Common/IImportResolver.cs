@@ -26,8 +26,8 @@ namespace BizHawk.Common
 			var currDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase)?.Replace("file:", "") ?? string.Empty;
 			UnixSearchPaths = new[]
 			{
-				"/usr/lib/", "/usr/lib/bizhawk/",
-				$"{currDir}/", $"{currDir}/dll/"
+				$"{currDir}/", $"{currDir}/dll/",
+				"/usr/lib/bizhawk/", "/usr/lib/", "/usr/lib/mupen64plus/"
 			};
 		}
 
