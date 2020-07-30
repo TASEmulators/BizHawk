@@ -371,12 +371,14 @@ mod tests {
 		fs.write(fd, ")".as_bytes())?;
 		fs.seek(fd, -1, SEEK_END)?;
 		fs.write(fd, "$$$$".as_bytes())?;
+		fs.seek(fd, 9, SEEK_SET)?;
+		fs.write(fd, "-".as_bytes())?;
 		let mut statbuff = Box::new(KStat::default());
 		fs.fstat(fd, statbuff.as_mut())?;
 		assert_eq!(statbuff.st_size, 11);
 		fs.close(fd)?;
 		let vec = fs.unmount("z")?;
-		assert_eq!(vec, "Qig)tes$$$$".as_bytes());
+		assert_eq!(vec, "Qig)tes$$-$".as_bytes());
 		Ok(())
 	}
 }

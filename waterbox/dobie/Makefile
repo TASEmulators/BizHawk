@@ -1,7 +1,7 @@
 CXXFLAGS := \
 	-Wall -Werror=int-to-pointer-cast \
 	-std=c++14 -fomit-frame-pointer -fno-rtti \
-	-Wno-reorder \
+	-Wno-reorder -Wno-unused-value \
 	-Idobiestation/ext/libdeflate
 
 CCFLAGS := \

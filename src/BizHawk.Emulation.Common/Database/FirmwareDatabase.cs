@@ -278,7 +278,13 @@ namespace BizHawk.Emulation.Common
 			var fxscsi = File("65482A23AC5C10A6095AEE1DB5824CCA54EAD6E5", 512 * 1024, "PCFX_fx-scsi.rom", "PCFX SCSI ROM");
 			Option("PCFX", "SCSIROM", fxscsi);
 
-			FirmwareAndOption("fbd54bfc020af34008b317dcb80b812dd29b3759", 4 * 1024 * 1024, "PS2", "Whatever", "Some bios or something", "Does anyone read this");
+			Firmware("PS2", "BIOS", "PS2 Bios");
+			Option("PS2", "BIOS", File("fbd54bfc020af34008b317dcb80b812dd29b3759", 4 * 1024 * 1024, "ps2-0230j-20080220.bin", "PS2 Bios"));
+			Option("PS2", "BIOS", File("8361d615cc895962e0f0838489337574dbdc9173", 4 * 1024 * 1024, "ps2-0220a-20060905.bin", "PS2 Bios"));
+			Option("PS2", "BIOS", File("da5aacead2fb55807d6d4e70b1f10f4fdcfd3281", 4 * 1024 * 1024, "ps2-0220e-20060905.bin", "PS2 Bios"));
+			Option("PS2", "BIOS", File("3baf847c1c217aa71ac6d298389c88edb3db32e2", 4 * 1024 * 1024, "ps2-0220j-20060905.bin", "PS2 Bios"));
+			Option("PS2", "BIOS", File("f9229fe159d0353b9f0632f3fdc66819c9030458", 4 * 1024 * 1024, "ps2-0230a-20080220.bin", "PS2 Bios"), FirmwareOptionStatus.Ideal);
+			Option("PS2", "BIOS", File("9915b5ba56798f4027ac1bd8d10abe0c1c9c326a", 4 * 1024 * 1024, "ps2-0230e-20080220.bin", "PS2 Bios"));
 		}
 
 		// adds a defined firmware ID to the database

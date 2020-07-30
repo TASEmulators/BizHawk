@@ -45,7 +45,8 @@ namespace BizHawk.Emulation.Cores.Sony.PS2
 				SkipMemoryConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
 			}, new[] { _cdCallback });
 
-			var bios = lp.Comm.CoreFileProvider.GetFirmware("PS2", "Whatever", true);
+			var bios = lp.Comm.CoreFileProvider.GetFirmware("PS2", "BIOS", true);
+			_exe.AddReadonlyFile(new byte[0x840000], "MEMCARD0");
 
 			var worked = _core.Initialize(bios,
 				(ulong)(lp.Discs[0].DiscData.Session1.Tracks[2].LBA - lp.Discs[0].DiscData.Session1.Tracks[1].LBA) * 2048,
@@ -55,6 +56,8 @@ namespace BizHawk.Emulation.Cores.Sony.PS2
 			{
 				throw new InvalidOperationException("Initialize failed!");
 			}
+
+			_exe.RemoveReadonlyFile("MEMCARD0");
 
 			PostInit();
 		}
