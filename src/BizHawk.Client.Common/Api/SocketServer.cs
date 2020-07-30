@@ -37,6 +37,16 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		public (string HostIP, int Port) TargetAddress
+		{
+			get => _targetAddr;
+			set
+			{
+				_targetAddr = value;
+				Connect();
+			}
+		}
+
 #if true
 		private const int Retries = 10;
 #else
@@ -48,8 +58,7 @@ namespace BizHawk.Client.Common
 		public SocketServer(Func<byte[]> takeScreenshotCallback, string ip, int port)
 		{
 			_takeScreenshotCallback = takeScreenshotCallback;
-			_targetAddr = (ip, port);
-			Connect();
+			TargetAddress = (ip, port);
 		}
 
 		private void Connect()

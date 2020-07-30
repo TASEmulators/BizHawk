@@ -36,6 +36,9 @@ namespace BizHawk.Client.EmuHawk
 		public string URL_get = null;
 		public string URL_post = null;
 		public bool? audiosync = null;
+		public HttpCommunication httpCommunication = null;
+		public SocketServer socketServer = null;
+		public MemoryMappedFiles memoryMappedFiles = null;
 
 		/// <exception cref="ArgParserException"><c>--socket_ip</c> passed without specifying <c>--socket_port</c> or vice-versa</exception>
 		public void ParseArguments(string[] args, Func<byte[]> takeScreenshotCallback)
@@ -149,15 +152,15 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			GlobalWin.httpCommunication = URL_get == null && URL_post == null
+			httpCommunication = URL_get == null && URL_post == null
 				? null // don't bother
 				: new HttpCommunication(takeScreenshotCallback, URL_get, URL_post);
-			GlobalWin.memoryMappedFiles = mmf_filename == null
+			memoryMappedFiles = mmf_filename == null
 				? null // don't bother
 				: new MemoryMappedFiles(takeScreenshotCallback, mmf_filename);
 			if (socket_ip == null && socket_port <= 0)
 			{
-				GlobalWin.socketServer = null; // don't bother
+				socketServer = null; // don't bother
 			}
 			else if (socket_ip == null || socket_port <= 0)
 			{
@@ -165,7 +168,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				GlobalWin.socketServer = new SocketServer(takeScreenshotCallback, socket_ip, socket_port);
+				socketServer = new SocketServer(takeScreenshotCallback, socket_ip, socket_port);
 			}
 		}
 

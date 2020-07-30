@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 
 namespace BizHawk.Common
 {
@@ -18,29 +19,39 @@ namespace BizHawk.Common
 
 	public class DynamicLibraryImportResolver : IDisposable, IImportResolver
 	{
-		private static readonly Lazy<IEnumerable<string>> asdf = new Lazy<IEnumerable<string>>(() =>
+		private static readonly IReadOnlyCollection<string> UnixSearchPaths;
+
+		static DynamicLibraryImportResolver()
 		{
 			var currDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase)?.Replace("file:", "") ?? string.Empty;
-			return new[] { "/usr/lib/", "/usr/lib/bizhawk/", "./", "./dll/" }.Select(dir => dir[0] == '.' ? currDir + dir.Substring(1) : dir);
-		});
+			var sysLibDir = Environment.GetEnvironmentVariable("BIZHAWK_INT_SYSLIB_PATH") ?? "/usr/lib";
+			UnixSearchPaths = new[]
+			{
+				$"{currDir}/", $"{currDir}/dll/",
+				$"{sysLibDir}/bizhawk/", $"{sysLibDir}/", $"{sysLibDir}/mupen64plus/"
+			};
+		}
+
+		private static string UnixResolveFilePath(string orig) => orig[0] == '/'
+			? orig
+			: UnixSearchPaths.Select(dir => dir + orig)
+				.FirstOrDefault(s =>
+				{
+					var fi = new FileInfo(s);
+					return fi.Exists && (fi.Attributes & FileAttributes.Directory) != FileAttributes.Directory;
+				})
+				?? orig;
 
 		private IntPtr _p;
-		private bool _eternal;
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="dllName"></param>
-		/// <param name="eternal">
-		/// If true, the DLL will never be unloaded, even by god.  Use this when you need lifetime semantics similar to [DllImport]
-		/// </param>
-		public DynamicLibraryImportResolver(string dllName, bool eternal = false)
+		public readonly bool HasLimitedLifetime;
+
+		/// <param name="hasLimitedLifetime">will never be unloaded iff false (like <see cref="DllImportAttribute">[DllImport]</see>)</param>
+		public DynamicLibraryImportResolver(string dllName, bool hasLimitedLifetime = true)
 		{
-			static string ResolveFilePath(string orig) => orig[0] == '/' ? orig : asdf.Value.Select(dir => dir + orig).FirstOrDefault(File.Exists) ?? orig;
-			_p = OSTailoredCode.LinkedLibManager.LoadOrThrow(OSTailoredCode.IsUnixHost ? ResolveFilePath(dllName) : dllName);
-			_eternal = eternal;
-			if (eternal)
-				GC.SuppressFinalize(this);
+			_p = OSTailoredCode.LinkedLibManager.LoadOrThrow(OSTailoredCode.IsUnixHost ? UnixResolveFilePath(dllName) : dllName); // on Windows, EmuHawk modifies its process' search path
+			HasLimitedLifetime = hasLimitedLifetime;
+			if (!hasLimitedLifetime) GC.SuppressFinalize(this);
 		}
 
 		public IntPtr GetProcAddrOrZero(string entryPoint) => OSTailoredCode.LinkedLibManager.GetProcAddrOrZero(_p, entryPoint);
@@ -49,8 +60,7 @@ namespace BizHawk.Common
 
 		private void DisposeHelper()
 		{
-			if (_eternal || _p == IntPtr.Zero)
-				return;
+			if (!HasLimitedLifetime || _p == IntPtr.Zero) return;
 			OSTailoredCode.LinkedLibManager.FreeByPtr(_p);
 			_p = IntPtr.Zero;
 		}

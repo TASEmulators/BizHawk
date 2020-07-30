@@ -208,7 +208,15 @@ namespace BizHawk.Client.EmuHawk
 
 		public IDisposable AcquireVideoCodecToken(IWin32Window hwnd)
 		{
-			return FFmpegWriterForm.DoFFmpegWriterDlg(hwnd);
+			if (new FFmpegService().QueryServiceAvailable())
+				return FFmpegWriterForm.DoFFmpegWriterDlg(hwnd);
+			else
+			{
+				FFmpegDownloaderForm.Run(hwnd);
+				if (new FFmpegService().QueryServiceAvailable())
+					return FFmpegWriterForm.DoFFmpegWriterDlg(hwnd);
+			}
+			return null;
 		}
 
 		/// <exception cref="ArgumentException"><paramref name="token"/> does not inherit <see cref="FFmpegWriterForm.FormatPreset"/></exception>

@@ -180,6 +180,9 @@ namespace BizHawk.Common
 		{
 			if (!_rootExists) return this;
 			if (_boundStream != null) throw new InvalidOperationException("stream already bound!");
+			
+			if(extensions.Any(e=>e.StartsWith(".")))
+				throw new InvalidOperationException("for this purpose extension should not start with a dot");
 
 			if (_archiveItems == null || _extractor == null)
 			{

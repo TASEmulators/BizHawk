@@ -29,8 +29,8 @@ namespace BizHawk.Client.EmuHawk
 			Action<string> logCallback)
 		{
 			var libDict = new Dictionary<Type, IExternalApi>();
-			foreach (var api in Assembly.GetAssembly(typeof(ApiSubsetContainer)).GetTypes()
-				.Concat(Assembly.GetAssembly(typeof(ApiContainer)).GetTypes())
+			foreach (var api in Assembly.GetAssembly(typeof(IEmuClientApi)).GetTypes()
+				.Concat(Assembly.GetAssembly(typeof(EmuClientApi)).GetTypes())
 				.Where(t => /*t.IsClass && */t.IsSealed
 					&& typeof(IExternalApi).IsAssignableFrom(t)
 					&& ServiceInjector.IsAvailable(serviceProvider, t)))

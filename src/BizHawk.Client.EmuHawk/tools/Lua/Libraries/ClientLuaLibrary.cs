@@ -16,7 +16,7 @@ using NLua;
 namespace BizHawk.Client.EmuHawk
 {
 	[Description("A library for manipulating the EmuHawk client UI")]
-	public sealed class ClientLuaLibrary : DelegatingLuaLibraryEmu
+	public sealed class ClientLuaLibrary : DelegatingLuaLibrary
 	{
 		[RequiredService]
 		private IEmulator Emulator { get; set; }

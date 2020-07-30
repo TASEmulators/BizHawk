@@ -21,6 +21,8 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 
+using BizHawk.Common;
+
 namespace BizHawk.Emulation.DiscSystem.CUE
 {
 	/// <summary>
@@ -102,10 +104,10 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 						}
 					case CompiledCueFileType.DecodeAudio:
 						{
-							FFMpeg ffmpeg = new FFMpeg();
+							FFmpegService ffmpeg = new FFmpegService();
 							if (!ffmpeg.QueryServiceAvailable())
 							{
-								throw new DiscReferenceException(ccf.FullPath, "No decoding service was available (make sure ffmpeg.exe is available. even though this may be a wav, ffmpeg is used to load oddly formatted wave files. If you object to this, please send us a note and we'll see what we can do. It shouldn't be too hard.)");
+								throw new DiscReferenceException(ccf.FullPath, "No decoding service was available (make sure ffmpeg.exe is available. Even though this may be a wav, ffmpeg is used to load oddly formatted wave files. If you object to this, please send us a note and we'll see what we can do. It shouldn't be too hard.)");
 							}
 							AudioDecoder dec = new AudioDecoder();
 							byte[] buf = dec.AcquireWaveData(ccf.FullPath);

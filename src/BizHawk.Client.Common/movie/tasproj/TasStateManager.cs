@@ -113,10 +113,10 @@ namespace BizHawk.Client.Common
 
 		public void UpdateStateFrequency()
 		{
-			_stateFrequency = ((int)_expectedStateSizeInMb / Settings.MemStateGapDivider / 1024)
+			_stateFrequency = ((int)(_expectedStateSizeInMb * 1024 / Settings.MemStateGapDividerKB))
 				.Clamp(MinFrequency, MaxFrequency);
 
-			_decay.UpdateSettings(MaxStates, _stateFrequency, 4);
+			_decay.UpdateSettings(_stateFrequency, 6);
 			LimitStateCount();
 		}
 

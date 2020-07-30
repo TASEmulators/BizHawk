@@ -151,6 +151,7 @@ namespace BizHawk.Client.EmuHawk
 
 				this.BeginInvoke(() => { UpdateNotification.Visible = UpdateChecker.IsNewVersionAvailable; });
 			};
+			UpdateChecker.GlobalConfig = Config;
 			UpdateChecker.BeginCheck(); // Won't actually check unless enabled by user
 		}
 
@@ -568,6 +569,9 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
+			// set up networking before Lua
+			NetworkingHelpers = (_argParser.httpCommunication, _argParser.memoryMappedFiles, _argParser.socketServer);
+
 			//start Lua Console if requested in the command line arguments
 			if (_argParser.luaConsole)
 			{
@@ -877,6 +881,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private Sound Sound => GlobalWin.Sound;
 		public CheatCollection CheatList { get; }
+
+		public (HttpCommunication HTTP, MemoryMappedFiles MMF, SocketServer Sockets) NetworkingHelpers { get; }
 
 		public IRewinder Rewinder { get; private set; }
 
@@ -2767,7 +2773,7 @@ namespace BizHawk.Client.EmuHawk
 			_throttle.signal_frameAdvance = _runloopFrameAdvance;
 			_throttle.signal_continuousFrameAdvancing = _runloopFrameProgress;
 
-			_throttle.Step(true, -1);
+			_throttle.Step(Config, Sound, allowSleep: true, forceFrameSkip: -1);
 		}
 
 		public void FrameAdvance()

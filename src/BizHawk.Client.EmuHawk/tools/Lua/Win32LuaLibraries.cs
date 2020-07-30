@@ -69,8 +69,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					ApiContainerInstance = ApiManager.RestartLua(mainForm, serviceProvider, ConsoleLuaLibrary.LogOutput);
-					if (instance is DelegatingLuaLibraryEmu dlgInstanceEmu) dlgInstanceEmu.APIs = ApiContainerInstance; // this is necessary as the property has the `new` modifier
-					else if (instance is DelegatingLuaLibrary dlgInstance) dlgInstance.APIs = ApiContainerInstance;
+					if (instance is DelegatingLuaLibrary dlgInstance) dlgInstance.APIs = ApiContainerInstance;
 
 					EnumerateLuaFunctions(instance.Name, lib, instance);
 					Libraries.Add(lib, instance);

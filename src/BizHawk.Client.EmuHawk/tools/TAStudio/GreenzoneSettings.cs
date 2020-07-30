@@ -35,7 +35,7 @@ namespace BizHawk.Client.EmuHawk
 			MemCapacityNumeric.Value = NumberExtensions.Clamp(_settings.CapacityMb, MemCapacityNumeric.Minimum, MemCapacityNumeric.Maximum);
 			DiskCapacityNumeric.Value = NumberExtensions.Clamp(_settings.DiskCapacityMb, MemCapacityNumeric.Minimum, MemCapacityNumeric.Maximum);
 			FileCapacityNumeric.Value = NumberExtensions.Clamp(_settings.DiskSaveCapacityMb, MemCapacityNumeric.Minimum, MemCapacityNumeric.Maximum);
-			MemStateGapDividerNumeric.Value = NumberExtensions.Clamp(_settings.MemStateGapDivider, MemStateGapDividerNumeric.Minimum, MemStateGapDividerNumeric.Maximum);
+			MemStateGapDividerNumeric.Value = NumberExtensions.Clamp(_settings.MemStateGapDividerKB, MemStateGapDividerNumeric.Minimum, MemStateGapDividerNumeric.Maximum);
 
 			FileStateGapNumeric.Value = _settings.FileStateGap;
 			SavestateSizeLabel.Text = $"{Math.Round(_stateSizeMb, 2)} MB";
@@ -51,7 +51,7 @@ namespace BizHawk.Client.EmuHawk
 			_settings.CapacityMb = (int)MemCapacityNumeric.Value;
 			_settings.DiskCapacityMb = (int)DiskCapacityNumeric.Value;
 			_settings.DiskSaveCapacityMb = (int)FileCapacityNumeric.Value;
-			_settings.MemStateGapDivider = (int)MemStateGapDividerNumeric.Value;
+			_settings.MemStateGapDividerKB = (int)MemStateGapDividerNumeric.Value;
 			_settings.FileStateGap = (int)FileStateGapNumeric.Value;
 			DialogResult = DialogResult.OK;
 			Close();
@@ -84,7 +84,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MemStateGapDivider_ValueChanged(object sender, EventArgs e)
 		{
-			int val = (int)(Statable.CloneSavestate().Length / MemStateGapDividerNumeric.Value / 1024);
+			int val = (int)(_stateSizeMb * 1024 / MemStateGapDividerNumeric.Value);
 
 			if (val <= 1)
 				MemStateGapDividerNumeric.Maximum = MemStateGapDividerNumeric.Value;

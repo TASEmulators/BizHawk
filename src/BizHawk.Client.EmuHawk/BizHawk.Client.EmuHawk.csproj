@@ -145,6 +145,9 @@
 		<Compile Update="AVOut/FFmpegWriterForm.cs" SubType="Form" />
 		<Compile Update="AVOut/FFmpegWriterForm.Designer.cs" DependentUpon="FFmpegWriterForm.cs" />
 		<EmbeddedResource Update="AVOut/FFmpegWriterForm.resx" DependentUpon="FFmpegWriterForm.cs" />
+		<Compile Update="AVOut/FFmpegDownloaderForm.cs" SubType="Form" />
+		<Compile Update="AVOut/FFmpegDownloaderForm.Designer.cs" DependentUpon="FFmpegDownloaderForm.cs" />
+		<EmbeddedResource Update="AVOut/FFmpegDownloaderForm.resx" DependentUpon="FFmpegDownloaderForm.cs" />
 		<Compile Update="AVOut/GifWriterForm.cs" SubType="Form" />
 		<Compile Update="AVOut/GifWriterForm.Designer.cs" DependentUpon="GifWriterForm.cs" />
 		<EmbeddedResource Update="AVOut/GifWriterForm.resx" DependentUpon="GifWriterForm.cs" />

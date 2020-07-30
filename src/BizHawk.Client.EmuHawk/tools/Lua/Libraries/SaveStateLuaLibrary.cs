@@ -6,7 +6,7 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public sealed class SaveStateLuaLibrary : DelegatingLuaLibraryEmu
+	public sealed class SaveStateLuaLibrary : DelegatingLuaLibrary
 	{
 		public SaveStateLuaLibrary(Lua lua)
 			: base(lua) { }

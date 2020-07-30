@@ -72,7 +72,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 				CoreComm = lp.Comm;
 
-				_romfile = lp.Roms.FirstOrDefault().RomData;
+				_romfile = lp.Roms.FirstOrDefault()?.RomData;
 
 				if (lp.Discs.Count > 0)
 				{

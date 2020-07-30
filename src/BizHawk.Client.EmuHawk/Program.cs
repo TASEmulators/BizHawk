@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using Microsoft.VisualBasic.ApplicationServices;
 
 using BizHawk.Common;
+using BizHawk.Common.PathExtensions;
 using BizHawk.Client.Common;
 
 using OSTC = EXE_PROJECT.OSTailoredCode;
@@ -119,6 +120,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			GlobalWin.Config.ResolveDefaults();
+			FFmpegService.FFmpegPath = Path.Combine(PathUtils.DllDirectoryPath, "ffmpeg.exe");
 
 			StringLogUtil.DefaultToDisk = GlobalWin.Config.Movies.MoviesOnDisk;
 

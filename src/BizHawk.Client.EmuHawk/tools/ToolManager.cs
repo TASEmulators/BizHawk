@@ -9,7 +9,6 @@ using System.ComponentModel;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
-using BizHawk.Common;
 using BizHawk.Common.ReflectionExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.WinForms.Controls;
@@ -65,10 +64,10 @@ namespace BizHawk.Client.EmuHawk
 			{
 				throw new ArgumentException($"Type {toolType.Name} does not implement {nameof(IToolForm)}.");
 			}
-			
-			// The type[] in parameter is used to avoid an ambiguous name exception
-			MethodInfo method = GetType().GetMethod("Load", new Type[] { typeof(bool) }).MakeGenericMethod(toolType);
-			return (IToolForm)method.Invoke(this, new object[] { focus });
+
+			return (IToolForm) typeof(ToolManager).GetMethod("Load", new[] { typeof(bool), typeof(string) })
+				.MakeGenericMethod(toolType)
+				.Invoke(this, new object[] { focus, "" });
 		}
 
 		// If the form inherits ToolFormBase, it will set base properties such as Tools, Config, etc
@@ -88,23 +87,11 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// Loads the tool dialog T (T must implement <see cref="IToolForm"/>) , if it does not exist it will be created, if it is already open, it will be focused
 		/// </summary>
-		/// <typeparam name="T">Type of tool you want to load</typeparam>
 		/// <param name="focus">Define if the tool form has to get the focus or not (Default is true)</param>
-		/// <returns>An instantiated <see cref="IToolForm"/></returns>
-		public T Load<T>(bool focus = true)
-			where T : class, IToolForm
-		{
-			return Load<T>("", focus);
-		}
-
-		/// <summary>
-		/// Loads the tool dialog T (T must implement <see cref="IToolForm"/>) , if it does not exist it will be created, if it is already open, it will be focused
-		/// </summary>
-		/// <typeparam name="T">Type of tool you want to load</typeparam>
 		/// <param name="toolPath">Path to the .dll of the external tool</param>
-		/// <param name="focus">Define if the tool form has to get the focus or not (Default is true)</param>
+		/// <typeparam name="T">Type of tool you want to load</typeparam>
 		/// <returns>An instantiated <see cref="IToolForm"/></returns>
-		public T Load<T>(string toolPath, bool focus = true)
+		public T Load<T>(bool focus = true, string toolPath = "")
 			where T : class, IToolForm
 		{
 			if (!IsAvailable<T>()) return null;
@@ -124,8 +111,7 @@ namespace BizHawk.Client.EmuHawk
 				_tools.Remove(existingTool);
 			}
 
-			var newTool = CreateInstance<T>(toolPath);
-			if (newTool == null) return null;
+			if (!(CreateInstance<T>(toolPath) is T newTool)) return null;
 
 			if (newTool is Form form) form.Owner = _owner;
 			ServiceInjector.UpdateServices(_emulator.ServiceProvider, newTool);
@@ -153,15 +139,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			newTool.Restart();
-			if (OSTailoredCode.IsUnixHost && newTool is RamSearch)
-			{
-				// the mono winforms implementation is buggy, skip to the return statement and call Show in MainForm instead
-			}
-			else
-			{
-				newTool.Show();
-			}
-			return (T)newTool;
+			newTool.Show();
+			return newTool;
 		}
 
 		/// <summary>Loads the external tool's entry form.</summary>
