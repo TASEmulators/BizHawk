@@ -149,10 +149,25 @@ static uint8_t junkus[14];
 
 ECL_EXPORT void GetMemoryAreas(MemoryArea *m)
 {
-	m[0].Data = junkus;
-	m[0].Name = "JUNKUS";
-	m[0].Size = sizeof(junkus);
-	m[0].Flags = MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_WORDSIZE2 | MEMORYAREA_FLAGS_PRIMARY;
+	m[0].Data = emu->RDRAM;
+	m[0].Name = "RDRAM";
+	m[0].Size = 1024 * 1024 * 32;
+	m[0].Flags = MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_PRIMARY;
+
+	m[1].Data = emu->IOP_RAM;
+	m[1].Name = "IOP_RAM";
+	m[1].Size = 1024 * 1024 * 2;
+	m[1].Flags = MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_WORDSIZE4;
+
+	m[2].Data = emu->BIOS;
+	m[2].Name = "BIOS";
+	m[2].Size = 1024 * 1024 * 4;
+	m[2].Flags = MEMORYAREA_FLAGS_WORDSIZE4;
+
+	m[3].Data = emu->SPU_RAM;
+	m[3].Name = "SPU_RAM";
+	m[3].Size = 1024 * 1024 * 2;
+	m[3].Flags = MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_WORDSIZE4;
 }
 
 ECL_EXPORT void SetInputCallback(void (*callback)())

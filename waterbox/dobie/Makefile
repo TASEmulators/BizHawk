@@ -2,7 +2,8 @@ CXXFLAGS := \
 	-Wall -Werror=int-to-pointer-cast \
 	-std=c++14 -fomit-frame-pointer -fno-rtti \
 	-Wno-reorder -Wno-unused-value \
-	-Idobiestation/ext/libdeflate
+	-Idobiestation/ext/libdeflate \
+	-Dprivate=public
 
 CCFLAGS := \
 	-Wall -Wundef -Wpedantic -Wdeclaration-after-statement -Wmissing-prototypes -Wstrict-prototypes -Wvla \
