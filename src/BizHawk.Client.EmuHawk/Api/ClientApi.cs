@@ -8,9 +8,6 @@ namespace BizHawk.Client.EmuHawk
 {
 	public static class ClientApi
 	{
-		/// <inheritdoc cref="IEmuClientApi.DoFrameAdvance"/>
-		public static SystemInfo RunningSystem => GlobalWin.ClientApi.RunningSystem;
-
 		/// <inheritdoc cref="IEmuClientApi.BeforeQuickLoad"/>
 		public static event BeforeQuickLoadEventHandler BeforeQuickLoad
 		{

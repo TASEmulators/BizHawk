@@ -39,7 +39,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly JoypadStringToEnumConverter JoypadConverter = new JoypadStringToEnumConverter();
 
-		public SystemInfo RunningSystem
+		/// <remarks>future humans: if this is broken, rewrite the caller instead if fixing it</remarks>
+		private SystemInfo RunningSystem
 		{
 			get
 			{
@@ -54,7 +55,7 @@ namespace BizHawk.Client.EmuHawk
 							_ => throw new ArgumentOutOfRangeException()
 						};
 					case "PCE":
-						return SystemInfo.PCE; // not always accurate, but anyone wanting accuracy has probably figured out how to use IEmu.GetSystemId()
+						return SystemInfo.PCE;
 					case "SMS":
 						var sms = (SMS) Emulator;
 						return sms.IsSG1000
