@@ -91,6 +91,15 @@ namespace BizHawk.Emulation.Cores.Sony.PS2
 			}
 			return ret;
 		}
+		protected override void FrameAdvancePost()
+		{
+			// DobieStation core kicks back 0 values sometimes.  Not sure what they mean, no image produced?
+			// Easiest to just fix them here.
+			if (BufferWidth == 0)
+				BufferWidth = 640;
+			if (BufferHeight == 0)
+				BufferHeight = 480;
+		}
 
 		public object GetSettings() => new object();
 		public PutSettingsDirtyBits PutSettings(object o) => PutSettingsDirtyBits.None;
