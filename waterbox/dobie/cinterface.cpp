@@ -68,7 +68,19 @@ struct MyFrameInfo: public FrameInfo
 
 Emulator* emu;
 
-ECL_EXPORT bool Initialize(const uint8_t* bios, size_t cd_length_, void (*cdcallback_)(size_t sector, uint8_t* dest))
+struct SyncSettings
+{
+	bool EEJit;
+	bool VU0Jit;
+	bool VU1Jit;
+};
+
+ECL_EXPORT bool Initialize(
+	const uint8_t* bios,
+	size_t cd_length_,
+	void (*cdcallback_)(size_t sector, uint8_t* dest),
+	const SyncSettings& syncSettings
+)
 {
 	cd_length = cd_length_;
 	cdcallback = cdcallback_;
@@ -79,6 +91,12 @@ ECL_EXPORT bool Initialize(const uint8_t* bios, size_t cd_length_, void (*cdcall
 	emu->load_memcard(0, "MEMCARD0");
 	if (!emu->load_CDVD_Container("", std::unique_ptr<CDVD_Container>(new DVD())))
 		return false;
+	emu->set_ee_mode(syncSettings.EEJit ? JIT : INTERPRETER);
+	printf("EE Mode: %s\n", syncSettings.EEJit ? "JIT" : "INTERPRETER");
+	emu->set_vu0_mode(syncSettings.VU0Jit ? JIT : INTERPRETER);
+	printf("VU0 Mode: %s\n", syncSettings.VU0Jit ? "JIT" : "INTERPRETER");
+	emu->set_vu1_mode(syncSettings.VU1Jit ? JIT : INTERPRETER);
+	printf("VU1 Mode: %s\n", syncSettings.VU1Jit ? "JIT" : "INTERPRETER");
 	return true;
 }
 

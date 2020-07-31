@@ -284,6 +284,7 @@ impl MemoryBlock {
 			active_guard: None,
 			swapped_in: false,
 		});
+		println!("MemoryBlock created for address {:x}:{:x} with mirror {:x}:{:x}", addr.start, addr.end(), mirror.start, mirror.end());
 		// res.trace("new");
 		res
 	}

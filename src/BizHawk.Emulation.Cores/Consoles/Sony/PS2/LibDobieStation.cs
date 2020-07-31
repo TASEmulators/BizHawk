@@ -13,9 +13,17 @@ namespace BizHawk.Emulation.Cores.Sony.PS2
 			public uint Axes;
 		}
 
+		[StructLayout(LayoutKind.Sequential)]
+		public class SyncSettings
+		{
+			public bool EEJit;
+			public bool VU0Jit;
+			public bool VU1Jit;
+		}
+
 		public unsafe delegate void CdCallback(ulong sector, byte* dest);
 
 		[BizImport(CC)]
-		public abstract bool Initialize(byte[] bios, ulong cdLength, CdCallback cdCallback);
+		public abstract bool Initialize(byte[] bios, ulong cdLength, CdCallback cdCallback, SyncSettings syncSettings);
 	}
 }

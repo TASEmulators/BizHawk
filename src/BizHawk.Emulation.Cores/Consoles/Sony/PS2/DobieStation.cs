@@ -8,11 +8,11 @@ using BizHawk.Emulation.DiscSystem;
 namespace BizHawk.Emulation.Cores.Sony.PS2
 {
 	[Core("DobieStation", "PSI", true, false, "fa33778b056aa32", "https://github.com/PSI-Rockin/DobieStation", false)]
-	public unsafe class DobieStation : WaterboxCore
+	public unsafe class DobieStation : WaterboxCore, ISettable<object, DobieStation.DobieSyncSettings>
 	{
 		private readonly LibDobieStation _core;
 		[CoreConstructor("PS2")]
-		public DobieStation(CoreLoadParameters<object, object> lp)
+		public DobieStation(CoreLoadParameters<object, DobieSyncSettings> lp)
 			:base(lp.Comm, new Configuration
 			{
 				MaxWidth = 640,
@@ -30,6 +30,8 @@ namespace BizHawk.Emulation.Cores.Sony.PS2
 				throw new InvalidOperationException("Must load a CD or DVD with PS2 core!");
 			}
 			ControllerDefinition = DualShock;
+			_syncSettings = lp.SyncSettings ?? new DobieSyncSettings();
+			_syncSettingsActual = lp.SyncSettings ?? new DobieSyncSettings();
 
 			_disc = new DiscSectorReader(lp.Discs[0].DiscData);
 			_cdCallback = ReadCd;
@@ -50,7 +52,9 @@ namespace BizHawk.Emulation.Cores.Sony.PS2
 
 			var worked = _core.Initialize(bios,
 				(ulong)(lp.Discs[0].DiscData.Session1.Tracks[2].LBA - lp.Discs[0].DiscData.Session1.Tracks[1].LBA) * 2048,
-				_cdCallback);
+				_cdCallback,
+				_syncSettingsActual.GetNativeSettings()
+			);
 
 			if (!worked)
 			{
@@ -88,6 +92,25 @@ namespace BizHawk.Emulation.Cores.Sony.PS2
 			return ret;
 		}
 
+		public object GetSettings() => new object();
+		public PutSettingsDirtyBits PutSettings(object o) => PutSettingsDirtyBits.None;
+
+		private DobieSyncSettings _syncSettings;
+		private readonly DobieSyncSettings _syncSettingsActual;
+
+		public DobieSyncSettings GetSyncSettings()
+		{
+			return _syncSettings.Clone();
+		}
+
+		public PutSettingsDirtyBits PutSyncSettings(DobieSyncSettings o)
+		{
+			_syncSettings = o;
+			return DobieSyncSettings.NeedsReboot(_syncSettings, _syncSettingsActual)
+				? PutSettingsDirtyBits.RebootCore
+				: PutSettingsDirtyBits.None;
+		}
+
 		private static readonly ControllerDefinition DualShock = new ControllerDefinition
 		{
 			Name = "PS2 DualShock",
@@ -118,5 +141,38 @@ namespace BizHawk.Emulation.Cores.Sony.PS2
 				{ "LEFT Y", new AxisSpec(RangeExtensions.MutableRangeTo(0, 255), 128) },
 			}
 		};
+
+		public class DobieSyncSettings
+		{
+			public enum CpuMode
+			{
+				Jit,
+				Interpreter
+			}
+
+			public CpuMode EEMode { get; set;}
+			public CpuMode VU0Mode { get; set; }
+			public CpuMode VU1Mode { get; set; }
+
+			public static bool NeedsReboot(DobieSyncSettings x, DobieSyncSettings y)
+			{
+				return !DeepEquality.DeepEquals(x, y); 
+			}
+
+			public DobieSyncSettings Clone()
+			{
+				return (DobieSyncSettings)MemberwiseClone();
+			}
+
+			public LibDobieStation.SyncSettings GetNativeSettings()
+			{
+				return new LibDobieStation.SyncSettings
+				{
+					EEJit = EEMode == CpuMode.Jit,
+					VU0Jit = VU0Mode == CpuMode.Jit,
+					VU1Jit = VU1Mode == CpuMode.Jit
+				};
+			}
+		}
 	}
 }
