@@ -97,7 +97,15 @@ ECL_EXPORT bool Initialize(
 	printf("VU0 Mode: %s\n", syncSettings.VU0Jit ? "JIT" : "INTERPRETER");
 	emu->set_vu1_mode(syncSettings.VU1Jit ? JIT : INTERPRETER);
 	printf("VU1 Mode: %s\n", syncSettings.VU1Jit ? "JIT" : "INTERPRETER");
+	emu->set_wav_output(true);
 	return true;
+}
+
+static int16_t* audio_pos;
+void hacky_enqueue_audio(stereo_sample s)
+{
+	*audio_pos++ = s.left;
+	*audio_pos++ = s.right;
 }
 
 ECL_EXPORT void FrameAdvance(MyFrameInfo& f)
@@ -117,6 +125,7 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo& f)
 	{
 		emu->update_joystick((JOYSTICK)(i >> 1), (JOYSTICK_AXIS)(i & 1), f.Axes >> (i * 8));
 	}
+	audio_pos = f.SoundBuffer;
 	emu->run();
 	emu->get_inner_resolution(f.Width, f.Height);
 	{
@@ -132,7 +141,8 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo& f)
 		}
 	}
 
-	f.Samples = 735; // TODO
+	f.Samples = (audio_pos - f.SoundBuffer) / 2;
+	audio_pos = nullptr;
 }
 
 static uint8_t junkus[14];
