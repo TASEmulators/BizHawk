@@ -1552,7 +1552,7 @@ namespace BizHawk.Client.EmuHawk
 		// input state which has been destined for client hotkey consumption are colesced here
 		private readonly InputCoalescer _hotkeyCoalescer = new InputCoalescer();
 
-		public PresentationPanel PresentationPanel { get; }
+		private readonly PresentationPanel PresentationPanel;
 
 		// countdown for saveram autoflushing
 		public int AutoFlushSaveRamIn { get; set; }
