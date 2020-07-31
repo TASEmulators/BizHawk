@@ -3,6 +3,8 @@ using System.IO;
 using System.Net;
 using System.Threading;
 
+using BizHawk.Client.Common;
+
 using Newtonsoft.Json.Linq;
 
 namespace BizHawk.Client.EmuHawk
@@ -12,28 +14,30 @@ namespace BizHawk.Client.EmuHawk
 		private static readonly string _latestVersionInfoURL = "https://api.github.com/repos/TASVideos/BizHawk/releases/latest";
 		private static readonly TimeSpan _minimumCheckDuration = TimeSpan.FromHours(8);
 
+		public static Config GlobalConfig;
+
 		private static bool AutoCheckEnabled
 		{
-			get => GlobalWin.Config.UpdateAutoCheckEnabled;
-			set => GlobalWin.Config.UpdateAutoCheckEnabled = value;
+			get => GlobalConfig.UpdateAutoCheckEnabled;
+			set => GlobalConfig.UpdateAutoCheckEnabled = value;
 		}
 
 		private static DateTime? LastCheckTimeUTC
 		{
-			get => GlobalWin.Config.UpdateLastCheckTimeUtc;
-			set => GlobalWin.Config.UpdateLastCheckTimeUtc = value;
+			get => GlobalConfig.UpdateLastCheckTimeUtc;
+			set => GlobalConfig.UpdateLastCheckTimeUtc = value;
 		}
 
 		private static string LatestVersion
 		{
-			get => GlobalWin.Config.UpdateLatestVersion;
-			set => GlobalWin.Config.UpdateLatestVersion = value;
+			get => GlobalConfig.UpdateLatestVersion;
+			set => GlobalConfig.UpdateLatestVersion = value;
 		}
 
 		private static string IgnoreVersion
 		{
-			get => GlobalWin.Config.UpdateIgnoreVersion;
-			set => GlobalWin.Config.UpdateIgnoreVersion = value;
+			get => GlobalConfig.UpdateIgnoreVersion;
+			set => GlobalConfig.UpdateIgnoreVersion = value;
 		}
 
 		public static void BeginCheck(bool skipCheck = false)

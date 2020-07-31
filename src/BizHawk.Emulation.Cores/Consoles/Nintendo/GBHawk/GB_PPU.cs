@@ -83,6 +83,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					scroll_x = value;
 					break;
 				case 0xFF44: // LY
+					// writing to LY has no effect on GBC, not sure about GB (zen intergalactic ninja does this on initialization)
 					LY = 0; /*reset*/
 					break;
 				case 0xFF45:  // LYC

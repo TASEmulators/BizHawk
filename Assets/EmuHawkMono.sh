@@ -5,19 +5,22 @@ if [ "$(ps -C "mono" -o "cmd" --no-headers | grep "EmuHawk.exe")" ]; then
 	exit 0
 fi
 libpath=""
+winepath=""
 if [ "$(command -v lsb_release)" ]; then
 	case "$(lsb_release -i | cut -c17- | tr -d "\n")" in
-		"Arch"|"ManjaroLinux") libpath="/usr/lib/wine";;
-		"Debian"|"LinuxMint"|"Ubuntu") libpath="/usr/lib/x86_64-linux-gnu/wine"; export MONO_WINFORMS_XIM_STYLE=disabled;; # see https://bugzilla.xamarin.com/show_bug.cgi?id=28047#c9
+		"Arch"|"ManjaroLinux") libpath="/usr/lib";;
+		"Debian"|"LinuxMint"|"Ubuntu") libpath="/usr/lib/x86_64-linux-gnu"; export MONO_WINFORMS_XIM_STYLE=disabled;; # see https://bugzilla.xamarin.com/show_bug.cgi?id=28047#c9
 	esac
 else
 	printf "Distro does not provide LSB release info API! (You've met with a terrible fate, haven't you?)\n"
 fi
 if [ -z "$libpath" ]; then
-	printf "%s\n" "Unknown distro, assuming WINE library location is /usr/lib/wine..."
-	libpath="/usr/lib/wine"
+	printf "%s\n" "Unknown distro, assuming system-wide libraries are in /usr/lib..."
+	libpath="/usr/lib"
 fi
-export LD_LIBRARY_PATH="$PWD:$libpath"
+if [ -z "$winepath" ]; then winepath="$libpath/wine"; fi
+export LD_LIBRARY_PATH="$PWD/dll:$PWD:$winepath:$libpath"
+export BIZHAWK_INT_SYSLIB_PATH="$libpath"
 if [ "$1" = "--mono-no-redirect" ]; then
 	shift
 	printf "(received --mono-no-redirect, stdout was not captured)\n" >EmuHawkMono_laststdout.txt

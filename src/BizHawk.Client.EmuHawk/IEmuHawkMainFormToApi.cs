@@ -36,9 +36,6 @@ namespace BizHawk.Client.EmuHawk
 		/// <remarks>only referenced from <see cref="EmuClientApi"/></remarks>
 		bool PauseAvi { set; }
 
-		/// <remarks>only referenced from <see cref="EmuClientApi"/></remarks>
-		PresentationPanel PresentationPanel { get; }
-
 		void AddOnScreenMessage(string message);
 
 		/// <remarks>only referenced from <see cref="EmuClientApi"/></remarks>

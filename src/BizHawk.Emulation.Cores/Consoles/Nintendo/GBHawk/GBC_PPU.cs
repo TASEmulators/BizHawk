@@ -158,8 +158,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					scroll_x = value;
 					break; 
 				case 0xFF44: // LY
-					LY = 0; /*reset*/
-					LY_read = 0;
+					// writing to LY has no effect on GBC (zen intergalactic ninja does this on initialization)
+					//LY = 0; /*reset*/
+					//LY_read = 0;
 					break;
 				case 0xFF45:  // LYC
 					// tests indicate that latching writes to LYC should take place 4 cycles after the write

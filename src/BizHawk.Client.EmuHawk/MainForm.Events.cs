@@ -2473,6 +2473,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (result == DialogResult.No)
 			{
+				UpdateChecker.GlobalConfig = Config;
 				UpdateChecker.IgnoreNewVersion();
 				UpdateChecker.BeginCheck(skipCheck: true); // Trigger event to hide new version notification
 			}

@@ -151,6 +151,7 @@ namespace BizHawk.Client.EmuHawk
 
 				this.BeginInvoke(() => { UpdateNotification.Visible = UpdateChecker.IsNewVersionAvailable; });
 			};
+			UpdateChecker.GlobalConfig = Config;
 			UpdateChecker.BeginCheck(); // Won't actually check unless enabled by user
 		}
 
@@ -1551,7 +1552,7 @@ namespace BizHawk.Client.EmuHawk
 		// input state which has been destined for client hotkey consumption are colesced here
 		private readonly InputCoalescer _hotkeyCoalescer = new InputCoalescer();
 
-		public PresentationPanel PresentationPanel { get; }
+		private readonly PresentationPanel PresentationPanel;
 
 		// countdown for saveram autoflushing
 		public int AutoFlushSaveRamIn { get; set; }
@@ -2772,7 +2773,7 @@ namespace BizHawk.Client.EmuHawk
 			_throttle.signal_frameAdvance = _runloopFrameAdvance;
 			_throttle.signal_continuousFrameAdvancing = _runloopFrameProgress;
 
-			_throttle.Step(true, -1);
+			_throttle.Step(Config, Sound, allowSleep: true, forceFrameSkip: -1);
 		}
 
 		public void FrameAdvance()
