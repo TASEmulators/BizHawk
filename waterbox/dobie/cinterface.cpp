@@ -108,6 +108,9 @@ void hacky_enqueue_audio(stereo_sample s)
 	*audio_pos++ = s.right;
 }
 
+bool hacky_lag_flag;
+void (*hacky_input_callback)();
+
 ECL_EXPORT void FrameAdvance(MyFrameInfo& f)
 {
 	for (auto i = 0; i < 16; i++)
@@ -126,7 +129,9 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo& f)
 		emu->update_joystick((JOYSTICK)(i >> 1), (JOYSTICK_AXIS)(i & 1), f.Axes >> (i * 8));
 	}
 	audio_pos = f.SoundBuffer;
+	hacky_lag_flag = true;
 	emu->run();
+	f.Lagged = hacky_lag_flag;
 	emu->get_inner_resolution(f.Width, f.Height);
 	{
 		const uint32_t* src = emu->get_framebuffer();
@@ -172,4 +177,5 @@ ECL_EXPORT void GetMemoryAreas(MemoryArea *m)
 
 ECL_EXPORT void SetInputCallback(void (*callback)())
 {
+	hacky_input_callback = callback;
 }
