@@ -1,3 +1,3 @@
 #!/bin/sh
 if [ -z "$NUGET_PACKAGES" ]; then export NUGET_PACKAGES="$HOME/.nuget/packages"; fi
-cd "$(dirname "$0")/.." && dotnet build BizHawk.sln -c Debug -m "$@"
+cd "$(dirname "$0")/.." && dotnet build BizHawk.sln -c Debug -m -clp:NoSummary "$@"
