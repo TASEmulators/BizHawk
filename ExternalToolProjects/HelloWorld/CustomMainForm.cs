@@ -52,7 +52,7 @@ namespace HelloWorld
 			ClientApi.BeforeQuickSave += (sender, e) =>
 			{
 				if (e.Slot != 0) return; // only take effect on slot 0
-				var basePath = Path.Combine(Global.Config.PathEntries.SaveStateAbsolutePath(Global.Game.System), "Test");
+				var basePath = Path.Combine(GlobalWin.Config.PathEntries.SaveStateAbsolutePath(GlobalWin.Game.System), "Test");
 				if (!Directory.Exists(basePath)) Directory.CreateDirectory(basePath);
 				ClientApi.SaveState(Path.Combine(basePath, e.Name));
 				e.Handled = true;
@@ -60,7 +60,7 @@ namespace HelloWorld
 			ClientApi.BeforeQuickLoad += (sender, e) =>
 			{
 				if (e.Slot != 0) return; // only take effect on slot 0
-				var basePath = Path.Combine(Global.Config.PathEntries.SaveStateAbsolutePath(Global.Game.System), "Test");
+				var basePath = Path.Combine(GlobalWin.Config.PathEntries.SaveStateAbsolutePath(GlobalWin.Game.System), "Test");
 				ClientApi.LoadState(Path.Combine(basePath, e.Name));
 				e.Handled = true;
 			};
@@ -75,11 +75,11 @@ namespace HelloWorld
 			ClientApi.SetExtraPadding(50, 50);
 #endif
 
-			if (Global.Game.Name != "Null")
+			if (GlobalWin.Game.Name != "Null")
 			{
-				Watches.RefreshDomains(_memoryDomains, Global.Config.RamWatchDefinePrevious);
-				label_Game.Text = $"You're playing {Global.Game.Name}";
-				label_GameHash.Text = $"Hash: {Global.Game.Hash}";
+				Watches.RefreshDomains(_memoryDomains, GlobalWin.Config.RamWatchDefinePrevious);
+				label_Game.Text = $"You're playing {GlobalWin.Game.Name}";
+				label_GameHash.Text = $"Hash: {GlobalWin.Game.Hash}";
 			}
 			else
 			{
@@ -91,12 +91,12 @@ namespace HelloWorld
 		public void UpdateValues(ToolFormUpdateType type)
 		{
 			if (!(type == ToolFormUpdateType.PreFrame || type == ToolFormUpdateType.FastPreFrame)
-			    || Global.Game.Name == "Null"
+			    || GlobalWin.Game.Name == "Null"
 			    || Watches.Count < 3)
 			{
 				return;
 			}
-			Watches.UpdateValues(Global.Config.RamWatchDefinePrevious);
+			Watches.UpdateValues(GlobalWin.Config.RamWatchDefinePrevious);
 			label_Watch1.Text = $"First watch ({Watches[0].AddressString}) current value: {Watches[0].ValueString}";
 			label_Watch2.Text = $"Second watch ({Watches[1].AddressString}) current value: {Watches[1].ValueString}";
 			label_Watch3.Text = $"Third watch ({Watches[2].AddressString}) current value: {Watches[2].ValueString}";
@@ -129,7 +129,7 @@ namespace HelloWorld
 			ClientApi.SetInput(1, j);
 		}
 
-		private void label_GameHash_Click(object sender, EventArgs e) => Clipboard.SetText(Global.Game.Hash);
+		private void label_GameHash_Click(object sender, EventArgs e) => Clipboard.SetText(GlobalWin.Game.Hash);
 
 		private void loadstate_Click(object sender, EventArgs e)
 		{
