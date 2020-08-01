@@ -542,9 +542,6 @@
 		<Compile Update="tools/TAStudio/FramesPrompt.cs" SubType="Form" />
 		<Compile Update="tools/TAStudio/FramesPrompt.Designer.cs" DependentUpon="FramesPrompt.cs" />
 		<EmbeddedResource Update="tools/TAStudio/FramesPrompt.resx" DependentUpon="FramesPrompt.cs" />
-		<Compile Update="tools/TAStudio/GreenzoneSettings.cs" SubType="Form" />
-		<Compile Update="tools/TAStudio/GreenzoneSettings.Designer.cs" DependentUpon="GreenzoneSettings.cs" />
-		<EmbeddedResource Update="tools/TAStudio/GreenzoneSettings.resx" DependentUpon="GreenzoneSettings.cs" />
 		<Compile Update="tools/TAStudio/HeaderEditor.cs" SubType="Form" />
 		<Compile Update="tools/TAStudio/HeaderEditor.Designer.cs" DependentUpon="HeaderEditor.cs" />
 		<EmbeddedResource Update="tools/TAStudio/HeaderEditor.resx" DependentUpon="HeaderEditor.cs" />

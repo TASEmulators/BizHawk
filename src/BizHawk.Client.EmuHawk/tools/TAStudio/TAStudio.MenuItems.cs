@@ -999,12 +999,15 @@ namespace BizHawk.Client.EmuHawk
 
 		private void StateHistorySettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			new StateHistorySettingsForm(CurrentTasMovie.TasStateManager.Settings)
+			new DefaultGreenzoneSettings(
+				new TasStateManagerSettings(Config.Movies.DefaultTasStateManagerSettings),
+				s => { Config.Movies.DefaultTasStateManagerSettings = s; })
 			{
-				Owner = Owner,
 				Location = this.ChildPointToScreen(TasView),
-				Statable = StatableEmulator
+				Text = "Savestate History Settings",
+				Owner = Owner
 			}.ShowDialog();
+
 			CurrentTasMovie.TasStateManager.UpdateStateFrequency();
 			UpdateChangesIndicator();
 		}
@@ -1027,7 +1030,8 @@ namespace BizHawk.Client.EmuHawk
 				new TasStateManagerSettings(Config.Movies.DefaultTasStateManagerSettings),
 				s => { Config.Movies.DefaultTasStateManagerSettings = s; })
 			{
-				Location = this.ChildPointToScreen(TasView)
+				Location = this.ChildPointToScreen(TasView),
+				Owner = Owner
 			}.ShowDialog();
 		}
 
