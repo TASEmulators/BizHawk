@@ -121,10 +121,14 @@ namespace BizHawk.Client.EmuHawk
 						if (result1.IsOk())
 						{
 							_initializing = true; // Starting a new movie causes a core reboot
+							WantsToControlReboot = false;
+							_engaged = false;
 							MainForm.StartNewMovie(MovieSession.Get(ofd.FileName), false);
 							ConvertCurrentMovieToTasproj();
 							_initialized = false;
 							StartNewMovieWrapper(CurrentTasMovie);
+							_engaged = true;
+							WantsToControlReboot = true;
 							SetUpColumns();
 							SetTextProperty();
 						}
