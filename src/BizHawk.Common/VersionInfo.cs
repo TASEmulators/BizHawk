@@ -3,7 +3,7 @@ using System.Reflection;
 
 namespace BizHawk.Common
 {
-	public static class VersionInfo
+	public static partial class VersionInfo
 	{
 		// keep this updated at every major release
 		public const string MainVersion = "2.4.0"; // Use numbers only or the new version notification won't work
@@ -16,7 +16,7 @@ namespace BizHawk.Common
 		public static string GetEmuVersion()
 		{
 			return DeveloperBuild
-				? "GIT " + SubWCRev.GIT_BRANCH + "#" + SubWCRev.GIT_SHORTHASH
+				? "GIT " + GIT_BRANCH + "#" + GIT_SHORTHASH
 				: "Version " + MainVersion;
 		}
 

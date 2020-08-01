@@ -41,8 +41,8 @@ namespace BizHawk.Client.EmuHawk
 			DeveloperBuildLabel.Visible = VersionInfo.DeveloperBuild;
 
 			Text = VersionInfo.DeveloperBuild
-				? $" BizHawk  (GIT {SubWCRev.GIT_BRANCH}#{SubWCRev.GIT_SHORTHASH})"
-				: $"Version {mainVersion} (GIT {SubWCRev.GIT_BRANCH}#{SubWCRev.GIT_SHORTHASH})";
+				? $" BizHawk  (GIT {VersionInfo.GIT_BRANCH}#{VersionInfo.GIT_SHORTHASH})"
+				: $"Version {mainVersion} (GIT {VersionInfo.GIT_BRANCH}#{VersionInfo.GIT_SHORTHASH})";
 
 			VersionLabel.Text = $"Version {mainVersion}";
 			DateLabel.Text = VersionInfo.ReleaseDate;
@@ -64,17 +64,17 @@ namespace BizHawk.Client.EmuHawk
 				});
 			}
 
-			linkLabel2.Text = $"Commit # {SubWCRev.GIT_SHORTHASH}";
+			linkLabel2.Text = $"Commit # {VersionInfo.GIT_SHORTHASH}";
 		}
 
 		private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			Process.Start($"https://github.com/TASVideos/BizHawk/commit/{SubWCRev.GIT_SHORTHASH}");
+			Process.Start($"https://github.com/TASVideos/BizHawk/commit/{VersionInfo.GIT_SHORTHASH}");
 		}
 
 		private void btnCopyHash_Click(object sender, EventArgs e)
 		{
-			Clipboard.SetText(SubWCRev.GIT_SHORTHASH);
+			Clipboard.SetText(VersionInfo.GIT_SHORTHASH);
 		}
 
 		private void linkLabel3_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
