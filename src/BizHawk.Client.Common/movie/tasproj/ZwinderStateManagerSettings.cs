@@ -7,7 +7,21 @@
 
 		public ZwinderStateManagerSettings(ZwinderStateManagerSettings settings)
 		{
-			 // TODO
+			Current = new RewindConfig
+			{
+				UseCompression = settings.Current.UseCompression,
+				BufferSize = settings.Current.BufferSize,
+				TargetFrameLength = settings.Current.TargetFrameLength
+			};
+			Recent = new RewindConfig
+			{
+				UseCompression = settings.Recent.UseCompression,
+				BufferSize = settings.Recent.BufferSize,
+				TargetFrameLength = settings.Recent.TargetFrameLength
+			};
+
+			AncientStateInterval = settings.AncientStateInterval;
+			SaveStateHistory = settings.SaveStateHistory;
 		}
 
 		/// <summary>
