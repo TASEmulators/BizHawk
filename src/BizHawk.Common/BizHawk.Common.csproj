@@ -12,8 +12,6 @@
 		<PackageReference Include="Menees.Analyzers" Version="2.0.4" Condition=" '$(MachineRunAnalyzersDuringBuild)' != '' " />
 		<PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.0.0" Condition=" '$(MachineRunAnalyzersDuringBuild)' != '' " />
 		<PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.164" Condition=" '$(MachineRunAnalyzersDuringBuild)' != '' " />
-		<ProjectReference Include="$(ProjectDir)../BizHawk.Version/BizHawk.Version.csproj" />
-		<Compile Include="$(ProjectDir)../BizHawk.Version/svnrev.cs" />
-		<Compile Include="$(ProjectDir)../BizHawk.Version/VersionInfo.cs" />
+		<ProjectReference Include="$(ProjectDir)../BizHawk.Version/BizHawk.Version.csproj" /><!-- generates SubWCRev.cs -->
 	</ItemGroup>
 </Project>

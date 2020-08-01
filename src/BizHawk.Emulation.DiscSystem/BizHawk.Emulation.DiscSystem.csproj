@@ -6,7 +6,5 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Common/BizHawk.Common.csproj" />
-		<Compile Include="$(ProjectDir)../BizHawk.Version/svnrev.cs" />
-		<Compile Include="$(ProjectDir)../BizHawk.Version/VersionInfo.cs" />
 	</ItemGroup>
 </Project>

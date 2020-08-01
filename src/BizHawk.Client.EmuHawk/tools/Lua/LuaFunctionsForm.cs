@@ -5,6 +5,7 @@ using System.Text;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
+using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
 
 namespace BizHawk.Client.EmuHawk

@@ -3,6 +3,8 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using BizHawk.Common;
+
 namespace BizHawk.Client.Common
 {
 	public sealed class FilesystemFilter

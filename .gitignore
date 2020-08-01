@@ -1,7 +1,6 @@
 
 /snes9xgit
 
-svnrev.cs
 **/.vs/**
 **/bin/**
 **/obj/**
@@ -26,7 +25,7 @@ svnrev.cs
 /BizHawk.Client.EmuHawk/tools/TAStudio/HistoryBox.resx
 
 
-/BizHawk.Emulation.DiscSystem/Properties/svnrev.cs
+/src/BizHawk.Common/SubWCRev.cs
 
 
 
@@ -37,7 +36,6 @@ svnrev.cs
 /LuaInterface/LuaInterface/Properties
 /Version/bin
 /Version/obj
-/Version/svnrev.cs
 /attic/PsxHawk.API/Release
 /attic/PsxHawk.Core/Debug
 /attic/PsxHawk.Core/Release
