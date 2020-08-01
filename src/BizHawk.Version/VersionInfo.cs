@@ -3,9 +3,6 @@
 using System.IO;
 using System.Reflection;
 
-[assembly: AssemblyVersion(VersionInfo.MainVersion + "." + SubWCRev.SVN_REV)]
-[assembly: AssemblyFileVersion(VersionInfo.MainVersion + "." + SubWCRev.SVN_REV)]
-
 internal static class VersionInfo
 {
 	// keep this updated at every major release
