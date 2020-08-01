@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using BizHawk.Client.Common;
@@ -194,8 +195,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			Movie.LoadBranch(branch);
-			var stateInfo = new KeyValuePair<int, byte[]>(branch.Frame, branch.CoreData);
-			Tastudio.LoadState(new KeyValuePair<int, System.IO.Stream>(branch.Frame, new System.IO.MemoryStream(branch.CoreData, false)));
+			Tastudio.LoadState(new KeyValuePair<int, Stream>(branch.Frame, new MemoryStream(branch.CoreData, false)));
 			Movie.TasStateManager.Capture(Tastudio.Emulator.Frame, Tastudio.Emulator.AsStatable(), true);
 			QuickBmpFile.Copy(new BitmapBufferVideoProvider(branch.CoreFrameBuffer), Tastudio.VideoProvider);
 
