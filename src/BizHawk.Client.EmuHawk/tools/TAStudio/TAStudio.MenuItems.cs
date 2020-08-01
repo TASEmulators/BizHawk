@@ -1023,7 +1023,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DefaultStateSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			new DefaultGreenzoneSettings(Config.Movies)
+			new DefaultGreenzoneSettings(
+				new TasStateManagerSettings(Config.Movies.DefaultTasStateManagerSettings),
+				s => { Config.Movies.DefaultTasStateManagerSettings = s; })
 			{
 				Location = this.ChildPointToScreen(TasView)
 			}.ShowDialog();
