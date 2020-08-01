@@ -168,6 +168,14 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		[BizImport(CC)]
 		public abstract void SetFrontendSettingQuery(FrontendSettingQuery q);
 
+		public delegate void FrontendFirmwareNotify(string name);
+		/// <summary>
+		/// Set a callback to be called whenever the core calls MDFN_MakeFName for a firmware, so that we can load firmwares on demand
+		/// </summary>
+		/// <param name="cb"></param>
+		[BizImport(CC)]
+		public abstract void SetFrontendFirmwareNotify(FrontendFirmwareNotify cb);
+
 		[StructLayout(LayoutKind.Sequential)]
 		public class TOC
 		{

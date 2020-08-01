@@ -53,10 +53,30 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			_cdTocCallback = CDTOCCallback;
 			_cdSectorCallback = CDSectorCallback;
 
+			var filesToRemove = new List<string>();
+
+			var firmwareDelegate = new LibNymaCore.FrontendFirmwareNotify((name) =>
+			{
+				if (firmwares != null && firmwares.TryGetValue(name, out var info))
+				{
+					var data = CoreComm.CoreFileProvider.GetFirmware(info.SystemID, info.FirmwareID, true,
+						"Firmware files are usually required and may stop your game from loading");
+					if (data != null)
+					{
+						_exe.AddReadonlyFile(data, name);
+						filesToRemove.Add(name);
+					}
+				}
+				else
+				{
+					throw new InvalidOperationException($"Core asked for firmware `{name}`, but that was not understood by the system");
+				}
+			});
+
 			var t = PreInit<T>(new WaterboxOptions
 			{
 				Filename = wbxFilename,
-				// MemoryBlock understands reserve vs commit semantics, so nothing to be gained by making these precisely sized
+				// WaterboxHost only saves parts of memory that have changed, so not much to be gained by making these precisely sized
 				SbrkHeapSizeKB = 1024 * 16,
 				SealedHeapSizeKB = 1024 * 48,
 				InvisibleHeapSizeKB = 1024 * 48,
@@ -64,50 +84,17 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				MmapHeapSizeKB = 1024 * 48,
 				SkipCoreConsistencyCheck = CoreComm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
 				SkipMemoryConsistencyCheck = CoreComm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
-			}, new Delegate[] { _settingsQueryDelegate, _cdTocCallback, _cdSectorCallback });
+			}, new Delegate[] { _settingsQueryDelegate, _cdTocCallback, _cdSectorCallback, firmwareDelegate });
 			_nyma = t;
 
 			using (_exe.EnterExit())
 			{
 				_nyma.PreInit();
+				_nyma.SetFrontendFirmwareNotify(firmwareDelegate);
 				var portData = GetInputPortsData();
 				InitAllSettingsInfo(portData);
 				_nyma.SetFrontendSettingQuery(_settingsQueryDelegate);
 
-				var filesToRemove = new List<string>();
-				if (firmwares != null)
-				{
-					foreach (var kvp in firmwares)
-					{
-						var s = kvp.Key;
-						var tt = kvp.Value;
-						var data = CoreComm.CoreFileProvider.GetFirmware(tt.SystemID, tt.FirmwareID, false,
-							"Firmware files are usually required and may stop your game from loading");
-						if (data != null)
-						{
-							_exe.AddReadonlyFile(data, kvp.Key);
-							filesToRemove.Add(s);
-						}
-					}
-				}
-				// if (firmwares != null)
-				// {
-				// 	_exe.MissingFileCallback = s =>
-				// 	{
-				// 		if (firmwares.TryGetValue(s, out var tt))
-				// 		{
-				// 			var data = CoreComm.CoreFileProvider.GetFirmware(tt.SystemID, tt.FirmwareID, false,
-				// 				"Firmware files are usually required and may stop your game from loading");
-				// 			if (data != null)
-				// 			{
-				// 				_exe.AddReadonlyFile(data, s);
-				// 				filesToRemove.Add(s);
-				// 				return true;
-				// 			}
-				// 		}
-				// 		return false;
-				// 	};
-				// }
 				if (discs?.Length > 0)
 				{
 					_disks = discs;
@@ -135,14 +122,13 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 					_exe.RemoveReadonlyFile(fn);
 				}
-				// if (firmwares != null)
-				// {
-					foreach (var s in filesToRemove)
-					{
-						_exe.RemoveReadonlyFile(s);
-					}
-				// 	_exe.MissingFileCallback = null;
-				// }
+
+				foreach (var s in filesToRemove)
+				{
+					_exe.RemoveReadonlyFile(s);
+				}
+				// any later attempts to request a firmware will crash
+				_nyma.SetFrontendFirmwareNotify(null);
 
 				var info = *_nyma.GetSystemInfo();
 				_videoBuffer = new int[Math.Max(info.MaxWidth * info.MaxHeight, info.LcmWidth * info.LcmHeight)];
