@@ -19,8 +19,8 @@ namespace BizHawk.Emulation.Cores.Sony.PS2
 				MaxHeight = 480,
 				DefaultWidth = 640,
 				DefaultHeight = 480,
-				DefaultFpsNumerator = 60,
-				DefaultFpsDenominator = 1,
+				DefaultFpsNumerator = 294912000,
+				DefaultFpsDenominator = 4920115,
 				MaxSamples = 1024,
 				SystemId = "PS2"
 			})
@@ -64,6 +64,21 @@ namespace BizHawk.Emulation.Cores.Sony.PS2
 			_exe.RemoveReadonlyFile("MEMCARD0");
 
 			PostInit();
+
+			_resampler = new SpeexResampler((SpeexResampler.Quality)6, 480, 441, 48000, 44100, null, this);
+			_serviceProvider.Register<ISoundProvider>(_resampler);
+		}
+
+		private SpeexResampler _resampler;
+
+		public override void Dispose()
+		{
+			base.Dispose();
+			if (_resampler != null)
+			{
+				_resampler.Dispose();
+				_resampler = null;
+			}
 		}
 
 		private readonly LibDobieStation.CdCallback _cdCallback;
