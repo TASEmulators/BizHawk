@@ -3,6 +3,7 @@
 #![feature(try_trait)]
 #![feature(core_intrinsics)]
 #![feature(asm)]
+#![feature(map_first_last)]
 
 #![allow(dead_code)]
 
@@ -23,6 +24,7 @@ mod host;
 mod cinterface;
 mod gdb;
 mod context;
+mod threading;
 
 pub trait IStateable {
 	fn save_state(&mut self, stream: &mut dyn Write) -> anyhow::Result<()>;

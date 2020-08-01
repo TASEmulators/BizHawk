@@ -2,6 +2,7 @@ bits 64
 org 0x35f00000000
 
 struc Context
+	.thread_area resq 1
 	.host_rsp resq 1
 	.guest_rsp resq 1
 	.dispatch_syscall resq 1
@@ -51,6 +52,7 @@ times 0x80-($-$$) int3
 ; rax - syscall number
 ; regular arg registers are 0..6 args to the syscall
 guest_syscall:
+	push rbp ; this call might be suspended and cothreaded.  the guest knows to save nonvolatiles if it needs to, except rbp
 	mov r10, [gs:0x18]
 	mov [r10 + Context.guest_rsp], rsp
 	mov rsp, [r10 + Context.host_rsp]
@@ -76,6 +78,7 @@ guest_syscall:
 
 	mov r10, [gs:0x18]
 	mov rsp, [r10 + Context.guest_rsp]
+	pop rbp
 	ret
 
 times 0x100-($-$$) int3 ; CALL_GUEST_SIMPLE_ADDR
