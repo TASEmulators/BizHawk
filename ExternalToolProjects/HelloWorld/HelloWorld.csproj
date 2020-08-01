@@ -4,8 +4,4 @@
 	<ItemGroup>
 		<EmbeddedResource Include="icon_Hello.ico" />
 	</ItemGroup>
-	<ItemGroup>
-		<Compile Update="CustomMainForm.cs" SubType="Form" />
-		<Compile Update="CustomMainForm.Designer.cs" DependentUpon="CustomMainForm.cs" />
-	</ItemGroup>
 </Project>

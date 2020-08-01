@@ -14,6 +14,9 @@ namespace BizHawk.Experiment.AutoGenConfig
 	[ExternalTool("AutoGenConfig")]
 	public class AutoGenConfigForm : Form, IExternalToolForm
 	{
+		[RequiredApi]
+		private IEmulationApi? _emuAPI { get; set; }
+
 		private static readonly WeakReference<ConfigEditorCache> _cache = new WeakReference<ConfigEditorCache>(new ConfigEditorCache(typeof(Config)));
 
 		private static ConfigEditorCache Cache => _cache.TryGetTarget(out var c) ? c : new ConfigEditorCache(typeof(Config)).Also(_cache.SetTarget);
@@ -21,9 +24,6 @@ namespace BizHawk.Experiment.AutoGenConfig
 		private readonly IDictionary<string, Control> GroupUIs = new Dictionary<string, Control>();
 
 		private readonly ConfigEditorMetadata Metadata = new ConfigEditorMetadata(Cache);
-
-		[RequiredApi]
-		private IEmu? EmuHawkAPI { get; set; }
 
 		public override string Text => "AutoGenConfig";
 
@@ -128,7 +128,7 @@ namespace BizHawk.Experiment.AutoGenConfig
 						Text = fi.Name
 					});
 				}
-				var config = (EmuHawkAPI as EmuApi ?? throw new Exception("required API wasn't fulfilled")).ForbiddenConfigReference;
+				var config = (_emuAPI as EmulationApi ?? throw new Exception("required API wasn't fulfilled")).ForbiddenConfigReference;
 				var groupings = new Dictionary<string, object> { [string.Empty] = config };
 				void TraverseGroupings(object groupingObj, string parentNesting)
 				{

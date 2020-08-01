@@ -7,6 +7,7 @@ use elf::ElfLoader;
 use cinterface::MemoryLayoutTemplate;
 use goblin::elf::Elf;
 use context::{CALLBACK_SLOTS, Context, ExternalCallback, thunks::ThunkManager};
+use threading::GuestThreadSet;
 
 pub struct WaterboxHost {
 	fs: FileSystem,
@@ -19,6 +20,7 @@ pub struct WaterboxHost {
 	image_file: Vec<u8>,
 	context: Context,
 	thunks: ThunkManager,
+	threads: GuestThreadSet,
 }
 impl WaterboxHost {
 	pub fn new(image_file: Vec<u8>, module_name: &str, layout_template: &MemoryLayoutTemplate) -> anyhow::Result<Box<WaterboxHost>> {
@@ -42,6 +44,7 @@ impl WaterboxHost {
 			image_file,
 			context: Context::new(layout.main_thread.end(), syscall),
 			thunks,
+			threads: GuestThreadSet::new(),
 		});
 		res.activate();
 		println!("Calling _start()");
@@ -174,6 +177,7 @@ impl IStateable for WaterboxHost {
 		bin::write(stream, &self.program_break)?;
 		self.elf.save_state(stream)?;
 		self.memory_block.save_state(stream)?;
+		self.threads.save_state(&self.context, stream)?;
 		bin::write_magic(stream, SAVE_END_MAGIC)?;
 		Ok(())
 	}
@@ -184,6 +188,7 @@ impl IStateable for WaterboxHost {
 		bin::read(stream, &mut self.program_break)?;
 		self.elf.load_state(stream)?;
 		self.memory_block.load_state(stream)?;
+		self.threads.load_state(&mut self.context, stream)?;
 		bin::verify_magic(stream, SAVE_END_MAGIC)?;
 		Ok(())
 	}
@@ -235,7 +240,7 @@ fn arg_to_statbuff<'a>(arg: usize) -> &'a mut KStat {
 }
 
 extern "sysv64" fn syscall(
-	a1: usize, a2: usize, a3: usize, a4: usize, _a5: usize, _a6: usize,
+	a1: usize, a2: usize, a3: usize, a4: usize, a5: usize, _a6: usize,
 	nr: SyscallNumber, h: &mut WaterboxHost
 ) -> SyscallReturn {
 	match nr {
@@ -332,10 +337,6 @@ extern "sysv64" fn syscall(
 		NR_LSEEK => syscall_ret_i64(h.fs.seek(arg_to_fd(a1)?, a2 as i64, a3 as i32)),
 		NR_TRUNCATE => syscall_ret(h.fs.truncate(&arg_to_str(a1)?, a2 as i64)),
 		NR_FTRUNCATE => syscall_ret(h.fs.ftruncate(arg_to_fd(a1)?, a2 as i64)),
-		// TODO: 99% sure nothing calls this
-		NR_SET_THREAD_AREA => syscall_err(ENOSYS),
-		// TODO: What calls this?
-		NR_SET_TID_ADDRESS => syscall_ok(8675309),
 		NR_CLOCK_GETTIME => {
 			let ts = a2 as *mut TimeSpec;
 			unsafe {
@@ -367,6 +368,69 @@ extern "sysv64" fn syscall(
 			};
 			h.program_break = res;
 			syscall_ok(res)
+		},
+		NR_WBX_CLONE => {
+			syscall_ret_val(
+				h.threads
+					.spawn(
+						&mut h.memory_block, 
+						a1, 
+						a2, 
+						a3,
+						a4,
+						a5 as *mut u32,
+					)
+					.map(|tid| tid as usize)
+			)
+		},
+		NR_EXIT => {
+			h.threads.exit(&mut h.context)
+		},
+		NR_FUTEX => {
+			let op = a2 as i32 & !FUTEX_PRIVATE;
+			match op {
+				FUTEX_WAIT => {
+					h.threads.futex_wait(&mut h.context, a1, a3 as u32)
+				},
+				// int *uaddr, int futex_op, int val,
+				// const struct timespec *timeout,   /* or: uint32_t val2 */
+				// int *uaddr2, int val3
+				FUTEX_WAKE => {
+					syscall_ok(h.threads.futex_wake(a1, a3 as u32))
+				},
+				FUTEX_REQUEUE => {
+					syscall_ret_val(
+						h.threads.futex_requeue(
+							a1,
+							a5,
+							a3 as u32,
+							a4 as u32
+						)
+					)
+				},
+				FUTEX_UNLOCK_PI => {
+					h.threads.futex_unlock_pi(&mut h.context, a1)
+				},
+				FUTEX_LOCK_PI => {
+					h.threads.futex_lock_pi(&mut h.context, a1)
+				},
+				_ => syscall_err(ENOSYS),
+			}
+		},
+		NR_SET_THREAD_AREA => syscall_err(ENOSYS), // musl handles this in userspace
+		NR_SET_TID_ADDRESS => syscall_ok(h.threads.set_tid_address(a1) as usize),
+		NR_GETTID => syscall_ok(h.threads.get_tid() as usize),
+		NR_RT_SIGPROCMASK => {
+			// we don't (nor ever plan to?) deliver any signals to guests, so...
+			syscall_ok(0)
+		},
+		NR_SCHED_YIELD => {
+			h.threads.yield_any(&mut h.context)
+		},
+		NR_NANOSLEEP | NR_CLOCK_NANOSLEEP => {
+			// We'll never be interrupted by signals, and isolate guest time from real time,
+			// so don't need to examine the arguments here and can just treat this as another yield
+			h.threads.yield_any(&mut h.context)
 		},
 		_ => syscall_ret(unimp(nr)),
 	}

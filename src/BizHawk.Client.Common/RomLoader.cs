@@ -266,6 +266,9 @@ namespace BizHawk.Client.Common
 					case DiscType.SonyPSP:
 						game.System = "PSP";
 						break;
+					case DiscType.SonyPS2:
+						game.System = "PS2";
+						break;
 					case DiscType.MegaCD:
 						game.System = "GEN";
 						break;

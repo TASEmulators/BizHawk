@@ -58,7 +58,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 						ret = (byte)((portB_ret & 0x7F) | (PB7 ? 0x80 : 0x0));
 					}
 
-					if (!dir_ctrl.Bit(5)) { ret |= (byte)(!compare ? 0x0 : 0x20); }
+					if (!dir_ctrl.Bit(5)) { ret |= (byte)(compare ? 0x20 : 0x0); }
 
 					int_fl &= 0xE7;
 					update_int_fl();
@@ -216,26 +216,26 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 					{
 						if (sel1)
 						{
-							if (portA_ret >= joy2_UD) { compare = true; }
-							else { compare = false; }
+							if ((byte)(portA_ret ^ 0x80) >= joy2_UD) { compare = false; }
+							else { compare = true; }
 						}
 						else
 						{							
-							if (portA_ret >= joy1_UD) { compare = true; }
-							else { compare = false; }
+							if ((byte)(portA_ret ^ 0x80) >= joy1_UD) { compare = false; }
+							else { compare = true; }
 						}
 					}
 					else
 					{
 						if (sel1)
 						{
-							if (portA_ret >= joy2_LR) { compare = true; }
-							else { compare = false; }
+							if ((byte)(portA_ret ^ 0x80) >= joy2_LR) { compare = false; }
+							else { compare = true; }
 						}
 						else
 						{
-							if (portA_ret >= joy1_LR) { compare = true; }
-							else { compare = false; }
+							if ((byte)(portA_ret ^ 0x80) >= joy1_LR) { compare = false; }
+							else { compare = true; }
 						}
 					}
 
@@ -295,26 +295,26 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 					{
 						if (sel1)
 						{
-							if (portA_ret >= joy2_UD) { compare = true; }
-							else { compare = false; }
+							if ((byte)(portA_ret ^ 0x80) >= joy2_UD) { compare = false; }
+							else { compare = true; }
 						}
 						else
-						{								
-							if (portA_ret >= joy1_UD) { compare = true; }
-							else { compare = false; }
+						{
+							if ((byte)(portA_ret ^ 0x80) >= joy1_UD) { compare = false; }
+							else { compare = true; }
 						}
 					}
 					else
 					{
 						if (sel1)
 						{
-							if (portA_ret >= joy2_LR) { compare = true; }
-							else { compare = false; }
+							if ((byte)(portA_ret ^ 0x80) >= joy2_LR) { compare = false; }
+							else { compare = true; }
 						}
 						else
 						{
-							if (portA_ret >= joy1_LR) { compare = true; }
-							else { compare = false; }
+							if ((byte)(portA_ret ^ 0x80) >= joy1_LR) { compare = false; }
+							else { compare = true; }
 						}
 					}
 
@@ -457,6 +457,33 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 					{
 						ppu.x_vel = portA_ret;
 						ppu.new_draw_line();
+					}
+
+					if (sel0)
+					{
+						if (sel1)
+						{
+							if ((byte)(portA_ret ^ 0x80) >= joy2_UD) { compare = false; }
+							else { compare = true; }
+						}
+						else
+						{
+							if ((byte)(portA_ret ^ 0x80) >= joy1_UD) { compare = false; }
+							else { compare = true; }
+						}
+					}
+					else
+					{
+						if (sel1)
+						{
+							if ((byte)(portA_ret ^ 0x80) >= joy2_LR) { compare = false; }
+							else { compare = true; }
+						}
+						else
+						{
+							if ((byte)(portA_ret ^ 0x80) >= joy1_LR) { compare = false; }
+							else { compare = true; }
+						}
 					}
 
 					int_fl &= 0xFC;

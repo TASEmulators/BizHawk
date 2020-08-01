@@ -81,7 +81,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 			}
 		}
 
-
 		[BizImport(CC)]
 		public abstract bool Load(byte[] rom, int length, NativeSyncSettings settings);
 

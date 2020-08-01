@@ -84,7 +84,7 @@ impl FileObject for RegularFile {
 	fn seek(&mut self, offset: i64, whence: i32) -> Result<i64, SyscallError> {
 		let newpos = match whence {
 			SEEK_SET => {
-				0
+				offset
 			},
 			SEEK_CUR => {
 				self.position as i64 + offset

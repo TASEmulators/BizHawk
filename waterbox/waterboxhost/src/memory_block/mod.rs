@@ -11,7 +11,6 @@ use crate::syscall_defs::*;
 use itertools::Itertools;
 use std::sync::atomic::AtomicU32;
 use crate::bin;
-use sha2::{Sha256, Digest};
 
 /// Tracks one lock for each 4GB memory area
 mod lock_list {
@@ -285,6 +284,7 @@ impl MemoryBlock {
 			active_guard: None,
 			swapped_in: false,
 		});
+		println!("MemoryBlock created for address {:x}:{:x} with mirror {:x}:{:x}", addr.start, addr.end(), mirror.start, mirror.end());
 		// res.trace("new");
 		res
 	}
@@ -817,18 +817,23 @@ impl MemoryBlock {
 
 		self.refresh_all_protections();
 		self.sealed = true;
-		self.hash = {
-			let mut hasher = Sha256::new();
-			bin::write(&mut hasher, &self.addr).unwrap();
-			for p in self.pages.iter() {
-				match &p.snapshot {
-					Snapshot::None => bin::writeval(&mut hasher, 1).unwrap(),
-					Snapshot::ZeroFilled => bin::writeval(&mut hasher, 2).unwrap(),
-					Snapshot::Data(d) => { hasher.write(d.slice()).unwrap(); },
+		#[cfg(not(feature = "no-dirty-detection"))]
+		{
+			use sha2::{Sha256, Digest};
+
+			self.hash = {
+				let mut hasher = Sha256::new();
+				bin::write(&mut hasher, &self.addr).unwrap();
+				for p in self.pages.iter() {
+					match &p.snapshot {
+						Snapshot::None => bin::writeval(&mut hasher, 1).unwrap(),
+						Snapshot::ZeroFilled => bin::writeval(&mut hasher, 2).unwrap(),
+						Snapshot::Data(d) => { hasher.write(d.slice()).unwrap(); },
+					}
 				}
-			}
-			hasher.finalize()[..].to_owned()
-		};
+				hasher.finalize()[..].to_owned()
+			};
+		}
 
 		Ok(())
 	}

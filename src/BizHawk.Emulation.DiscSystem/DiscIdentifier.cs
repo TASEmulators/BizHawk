@@ -97,7 +97,12 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <summary>
 		/// Sega Dreamcast
 		/// </summary>
-		Dreamcast
+		Dreamcast,
+
+		/// <summary>
+		/// Yes, that one
+		/// </summary>
+		SonyPS2,
 	}
 
 	public class DiscIdentifier
@@ -215,6 +220,14 @@ namespace BizHawk.Emulation.DiscSystem
 					|| iso.Root.Children.Keys.Any(k => k.ToLowerInvariant().Contains("cd32")))
 				{
 					return DiscType.Amiga;
+				}
+
+				if (iso.Root.Children.TryGetValue("SYSTEM.CNF;1", out var cnf))
+				{
+					if (SectorContains("BOOT2", (int)cnf.Offset))
+						return DiscType.SonyPS2;
+					else if (SectorContains("BOOT", (int)cnf.Offset))
+						return DiscType.SonyPSX;
 				}
 
 				// NeoGeoCD Check

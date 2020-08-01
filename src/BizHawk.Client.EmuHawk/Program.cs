@@ -87,18 +87,19 @@ namespace BizHawk.Client.EmuHawk
 			// and there was a TypeLoadException before the first line of SubMain was reached (some static ColorType init?)
 			// zero 25-dec-2012 - only do for public builds. its annoying during development
 			// and don't bother when installed from a package manager i.e. not Windows --yoshi
-			if (!VersionInfo.DeveloperBuild && !OSTC.IsUnixHost)
-			{
-				var thisversion = typeof(Program).Assembly.GetName().Version;
-				var utilversion = Assembly.Load(new AssemblyName("BizHawk.Client.Common")).GetName().Version;
-				var emulversion = Assembly.Load(new AssemblyName("BizHawk.Emulation.Cores")).GetName().Version;
-
-				if (thisversion != utilversion || thisversion != emulversion)
-				{
-					MessageBox.Show("Conflicting revisions found!  Don't mix .dll versions!");
-					return -1;
-				}
-			}
+			// commenting this out until I get it generated properly --yoshi
+//			if (!VersionInfo.DeveloperBuild && !OSTC.IsUnixHost)
+//			{
+//				var thisversion = typeof(Program).Assembly.GetName().Version;
+//				var utilversion = Assembly.Load(new AssemblyName("BizHawk.Client.Common")).GetName().Version;
+//				var emulversion = Assembly.Load(new AssemblyName("BizHawk.Emulation.Cores")).GetName().Version;
+//
+//				if (thisversion != utilversion || thisversion != emulversion)
+//				{
+//					MessageBox.Show("Conflicting revisions found!  Don't mix .dll versions!");
+//					return -1;
+//				}
+//			}
 
 			TempFileManager.Start();
 

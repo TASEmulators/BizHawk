@@ -7,6 +7,7 @@ using System.Threading;
 
 using BizHawk.Client.Common;
 using BizHawk.Client.Common.cheats;
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 using NLua;

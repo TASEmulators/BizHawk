@@ -101,7 +101,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public int Length() => GlobalWin.MovieSession.Movie.FrameCount;
 
-		public string Mode() => GlobalWin.MovieSession.Movie.Mode.ToString().ToUpper();
+		public string Mode() => (GlobalWin.MovieSession.Movie?.Mode ?? MovieMode.Inactive).ToString().ToUpper();
 
 		public void SetReadOnly(bool readOnly) => GlobalWin.MovieSession.ReadOnly = readOnly;
 

@@ -36,6 +36,12 @@ CheatArea* FindCheatArea(uint32_t address)
 	}
 }
 
+static void (*FrontendFirmwareNotify)(const char* name);
+ECL_EXPORT void SetFrontendFirmwareNotify(void (*cb)(const char* name))
+{
+	FrontendFirmwareNotify = cb;
+}
+
 namespace Mednafen
 {
 	MDFNGI *MDFNGameInfo = NULL;
@@ -61,6 +67,8 @@ namespace Mednafen
 			default: ret += "UNKNOWN:"; break;
 		}
 		ret += cd1;
+		if (type == MDFNMKF_FIRMWARE)
+			FrontendFirmwareNotify(ret.c_str());
 		return ret;
 	}
 
