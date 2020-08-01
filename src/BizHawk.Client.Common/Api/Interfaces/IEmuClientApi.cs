@@ -7,8 +7,6 @@ namespace BizHawk.Client.Common
 {
 	public interface IEmuClientApi : IExternalApi
 	{
-		SystemInfo RunningSystem { get; }
-
 		/// <summary>
 		/// Occurs before a quickload is done (just after user has pressed the shortcut button
 		/// or has click on the item menu)

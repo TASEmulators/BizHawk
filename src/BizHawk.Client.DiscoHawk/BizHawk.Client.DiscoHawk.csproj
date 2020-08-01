@@ -65,8 +65,6 @@
 		<Reference Include="System.Web" />
 		<Reference Include="System.Windows.Forms" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Emulation.DiscSystem/BizHawk.Emulation.DiscSystem.csproj" />
-		<Compile Include="$(ProjectDir)../BizHawk.Version/svnrev.cs" />
-		<Compile Include="$(ProjectDir)../BizHawk.Version/VersionInfo.cs" />
 		<Content Include="discohawk.ico" />
 	</ItemGroup>
 	<ItemGroup>

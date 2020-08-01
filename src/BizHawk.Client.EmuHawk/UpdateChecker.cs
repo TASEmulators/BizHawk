@@ -4,6 +4,7 @@ using System.Net;
 using System.Threading;
 
 using BizHawk.Client.Common;
+using BizHawk.Common;
 
 using Newtonsoft.Json.Linq;
 
