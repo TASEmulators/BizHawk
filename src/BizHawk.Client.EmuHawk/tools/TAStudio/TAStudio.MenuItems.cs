@@ -121,10 +121,14 @@ namespace BizHawk.Client.EmuHawk
 						if (result1.IsOk())
 						{
 							_initializing = true; // Starting a new movie causes a core reboot
+							WantsToControlReboot = false;
+							_engaged = false;
 							MainForm.StartNewMovie(MovieSession.Get(ofd.FileName), false);
 							ConvertCurrentMovieToTasproj();
 							_initialized = false;
 							StartNewMovieWrapper(CurrentTasMovie);
+							_engaged = true;
+							WantsToControlReboot = true;
 							SetUpColumns();
 							SetTextProperty();
 						}
@@ -995,13 +999,15 @@ namespace BizHawk.Client.EmuHawk
 
 		private void StateHistorySettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			// TODO: Fix this up to work with new settings object
-			new StateHistorySettingsForm(null)
+			new DefaultGreenzoneSettings(
+				new ZwinderStateManagerSettings(Config.Movies.DefaultTasStateManagerSettings),
+				s => { Config.Movies.DefaultTasStateManagerSettings = s; })
 			{
-				Owner = Owner,
 				Location = this.ChildPointToScreen(TasView),
-				Statable = StatableEmulator
+				Text = "Savestate History Settings",
+				Owner = Owner
 			}.ShowDialog();
+
 			CurrentTasMovie.TasStateManager.UpdateStateFrequency();
 			UpdateChangesIndicator();
 		}
@@ -1020,9 +1026,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DefaultStateSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			new DefaultGreenzoneSettings(Config.Movies)
+			new DefaultGreenzoneSettings(
+				new ZwinderStateManagerSettings(Config.Movies.DefaultTasStateManagerSettings),
+				s => { Config.Movies.DefaultTasStateManagerSettings = s; })
 			{
-				Location = this.ChildPointToScreen(TasView)
+				Location = this.ChildPointToScreen(TasView),
+				Owner = Owner
 			}.ShowDialog();
 		}
 

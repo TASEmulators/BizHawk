@@ -3,6 +3,13 @@
 	// TODO: interface this?
 	public class ZwinderStateManagerSettings
 	{
+		public ZwinderStateManagerSettings() { }
+
+		public ZwinderStateManagerSettings(ZwinderStateManagerSettings settings)
+		{
+			 // TODO
+		}
+
 		/// <summary>
 		/// Buffer settings when navigating near now
 		/// </summary>

@@ -850,7 +850,7 @@
 			"P2 Y2": "Up, J1 POV1U, X1 DpadUp, X1 LStickUp",
 			"P2 Start": "Enter, J1 B10, X1 Start"
 		},
-		"PSX DualShock Controller": {
+		"PSX Front Panel": {
 			"P1 Up": "X1 DpadUp, Up",
 			"P1 Down": "X1 DpadDown, Down",
 			"P1 Left": "X1 DpadLeft, Left",
@@ -1176,7 +1176,7 @@
     },
     "WonderSwan Controller": {},
     "Lynx Controller": {},
-    "DualShock Controller": {
+    "PSX Front Panel": {
       "P1 LStick X": {
         "Value": "X1 LeftThumbX Axis",
         "Mult": 1.0,
