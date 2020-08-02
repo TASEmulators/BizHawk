@@ -8,15 +8,13 @@ namespace BizHawk.Client.EmuHawk
 {
 	public sealed class CommApi : ICommApi
 	{
-		private readonly (HttpCommunication HTTP, MemoryMappedFiles MMF, SocketServer Sockets, WebSocketClient WebSocketClient) _networkingHelpers;
+		private readonly (HttpCommunication HTTP, MemoryMappedFiles MMF, SocketServer Sockets) _networkingHelpers;
 
 		public HttpCommunication? HTTP => _networkingHelpers.HTTP;
 
 		public MemoryMappedFiles? MMF => _networkingHelpers.MMF;
 
 		public SocketServer? Sockets => _networkingHelpers.Sockets;
-
-		public WebSocketClient? WebSocketClient => _networkingHelpers.WebSocketClient;
 
 		public CommApi(Action<string> logCallback, DisplayManager displayManager, InputManager inputManager, IMainFormForApi mainForm)
 		{
