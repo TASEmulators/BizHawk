@@ -1000,8 +1000,8 @@ namespace BizHawk.Client.EmuHawk
 		private void StateHistorySettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			new DefaultGreenzoneSettings(
-				new TasStateManagerSettings(Config.Movies.DefaultTasStateManagerSettings),
-				s => { Config.Movies.DefaultTasStateManagerSettings = s; })
+				CurrentTasMovie.TasStateManager.Settings,
+				s => { CurrentTasMovie.TasStateManager.Settings = s; })
 			{
 				Location = this.ChildPointToScreen(TasView),
 				Text = "Savestate History Settings",
