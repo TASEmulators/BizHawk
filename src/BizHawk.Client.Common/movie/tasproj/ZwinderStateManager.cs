@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -12,12 +13,14 @@ namespace BizHawk.Client.Common
 		private byte[] _originalState;
 		private readonly ZwinderBuffer _current;
 		private readonly ZwinderBuffer _recent;
+		private readonly ZwinderBuffer _highPriority;
 		private readonly List<KeyValuePair<int, byte[]>> _ancient = new List<KeyValuePair<int, byte[]>>();
 		private readonly int _ancientInterval;
 
 		public ZwinderStateManager(ZwinderStateManagerSettings settings)
 		{
 			Settings = settings;
+
 			_current = new ZwinderBuffer(new RewindConfig
 			{
 				UseCompression = settings.CurrentUseCompression,
@@ -29,6 +32,13 @@ namespace BizHawk.Client.Common
 				UseCompression = settings.RecentUseCompression,
 				BufferSize = settings.RecentBufferSize,
 				TargetFrameLength = settings.RecentTargetFrameLength
+			});
+
+			_highPriority = new ZwinderBuffer(new RewindConfig
+			{
+				UseCompression = settings.PriorityUseCompression,
+				BufferSize = settings.PriorityBufferSize,
+				TargetFrameLength = settings.PriorityTargetFrameLength
 			});
 
 			_ancientInterval = settings.AncientStateInterval;
@@ -45,11 +55,12 @@ namespace BizHawk.Client.Common
 			_originalState = (byte[])frameZeroState.Clone();
 		}
 
-		private ZwinderStateManager(ZwinderBuffer current, ZwinderBuffer recent, byte[] frameZeroState, int ancientInterval)
+		private ZwinderStateManager(ZwinderBuffer current, ZwinderBuffer recent, ZwinderBuffer highPriority, byte[] frameZeroState, int ancientInterval)
 		{
 			_originalState = (byte[])frameZeroState.Clone();
 			_current = current;
 			_recent = recent;
+			_highPriority = highPriority;
 			_ancientInterval = ancientInterval;
 		}
 		
@@ -69,21 +80,102 @@ namespace BizHawk.Client.Common
 		// TODO: private set, refactor LoadTasprojExtras to hold onto a settings object and pass it in to Create() method
 		public ZwinderStateManagerSettings Settings { get; set; }
 
-		public int Count => _current.Count + _recent.Count + _ancient.Count + 1;
+		public int Count => _current.Count + _recent.Count + _highPriority.Count + _ancient.Count + 1;
 
-		public int Last
+		private class StateInfo
 		{
-			get
+			public int Frame { get; }
+			public Func<Stream> Read { get; }
+			public StateInfo(ZwinderBuffer.StateInformation si)
 			{
-				if (_current.Count > 0)
-					return _current.GetState(_current.Count - 1).Frame;
-				if (_recent.Count > 0)
-					return _recent.GetState(_current.Count - 1).Frame;
-				if (_ancient.Count > 0)
-					return _ancient[_ancient.Count - 1].Key;
-				return 0;
+				Frame = si.Frame;
+				Read = si.GetReadStream;
+			}
+			public StateInfo(KeyValuePair<int, byte[]> kvp)
+				:this(kvp.Key, kvp.Value)
+			{
+			}
+			public StateInfo(int frame, byte[] data)
+			{
+				Frame = frame;
+				Read = () => new MemoryStream(data, false);
 			}
 		}
+
+		/// <summary>
+		/// Enumerate all states, excepting high priority, in reverse order
+		/// </summary>
+		/// <returns></returns>
+		private IEnumerable<StateInfo> NormalStates()
+		{
+			for (var i = _current.Count - 1; i >= 0; i--)
+			{
+				yield return new StateInfo(_current.GetState(i));
+			}
+			for (var i = _recent.Count - 1; i >= 0; i--)
+			{
+				yield return new StateInfo(_recent.GetState(i));
+			}
+			for (var i = _ancient.Count - 1; i >= 0; i--)
+			{
+				yield return new StateInfo(_ancient[i]);
+			}
+			yield return new StateInfo(0, _originalState);
+		}
+
+		/// <summary>
+		/// Enumerate high priority states in reverse order
+		/// </summary>
+		/// <returns></returns>
+		private IEnumerable<StateInfo> HighPriorityStates()
+		{
+			for (var i = _highPriority.Count - 1; i >= 0; i--)
+			{
+				yield return new StateInfo(_highPriority.GetState(i));
+			}
+		}
+
+		/// <summary>
+		/// Enumerate all states in reverse order
+		/// </summary>
+		private IEnumerable<StateInfo> AllStates()
+		{
+			var l1 = NormalStates().GetEnumerator();
+			var l2 = HighPriorityStates().GetEnumerator();
+			var l1More = l1.MoveNext();
+			var l2More = l2.MoveNext();
+			while (l1More || l2More)
+			{
+				if (l1More)
+				{
+					if (l2More)
+					{
+						if (l1.Current.Frame > l2.Current.Frame)
+						{
+							yield return l1.Current;
+							l1More = l1.MoveNext();
+						}
+						else
+						{
+							yield return l2.Current;
+							l2More = l2.MoveNext();
+						}
+					}
+					else
+					{
+						yield return l1.Current;
+						l1More = l1.MoveNext();
+					}
+				}
+				else
+				{
+					yield return l2.Current;
+					l2More = l2.MoveNext();
+				}
+			}
+		}
+
+		public int Last => AllStates().First().Frame;
 
 		public void Capture(int frame, IBinaryStateable source, bool force = false)
 		{
@@ -114,10 +206,16 @@ namespace BizHawk.Client.Common
 				force);
 		}
 
+		public void CaptureHighPriority(int frame, IBinaryStateable source)
+		{
+			_highPriority.Capture(frame, s => source.SaveStateBinary(new BinaryWriter(s)));
+		}
+
 		public void Clear()
 		{
 			_current.InvalidateEnd(0);
 			_recent.InvalidateEnd(0);
+			_highPriority.InvalidateEnd(0);
 			_ancient.Clear();
 		}
 
@@ -126,54 +224,30 @@ namespace BizHawk.Client.Common
 			if (frame <= 0)
 				throw new ArgumentOutOfRangeException(nameof(frame));
 
-			for (var i = _current.Count - 1; i >= 0; i--)
-			{
-				var s = _current.GetState(i);
-				if (s.Frame < frame)
-					return new KeyValuePair<int, Stream>(s.Frame, s.GetReadStream());
-			}
-			for (var i = _recent.Count - 1; i >= 0; i--)
-			{
-				var s = _recent.GetState(i);
-				if (s.Frame < frame)
-					return new KeyValuePair<int, Stream>(s.Frame, s.GetReadStream());
-			}
-			for (var i = _ancient.Count - 1; i >= 0; i--)
-			{
-				if (_ancient[i].Key < frame)
-					return new KeyValuePair<int, Stream>(_ancient[i].Key, new MemoryStream(_ancient[i].Value, false));
-			}
-			return new KeyValuePair<int, Stream>(0, new MemoryStream(_originalState, false));
+			var si = AllStates().First(s => s.Frame < frame);
+			return new KeyValuePair<int, Stream>(si.Frame, si.Read());
 		}
 
 		public bool HasState(int frame)
 		{
-			if (frame == 0)
+			return AllStates().Any(s => s.Frame == frame);
+		}
+
+		private bool InvalidateHighPriority(int frame)
+		{
+			for (var i = 0; i < _highPriority.Count; i++)
 			{
-				return true;
-			}
-			for (var i = _current.Count - 1; i >= 0; i--)
-			{
-				if (_current.GetState(i).Frame == frame)
+				if (_highPriority.GetState(i).Frame >= frame)
+				{
+					_highPriority.InvalidateEnd(i);
 					return true;
-			}
-			for (var i = _recent.Count - 1; i >= 0; i--)
-			{
-				if (_recent.GetState(i).Frame == frame)
-					return true;
-			}
-			for (var i = _ancient.Count - 1; i >= 0; i--)
-			{
-				if (_ancient[i].Key == frame)
-					return true;
+				}
 			}
 			return false;
 		}
 
-		public bool Invalidate(int frame)
+		private bool InvalidateNormal(int frame)
 		{
-			if (frame <= 0)
-				throw new ArgumentOutOfRangeException(nameof(frame));
 			for (var i = 0; i < _ancient.Count; i++)
 			{
 				if (_ancient[i].Key >= frame)
@@ -206,16 +280,26 @@ namespace BizHawk.Client.Common
 
 		public void UpdateSettings(ZwinderStateManagerSettings settings) => Settings = settings;
 
+		public bool Invalidate(int frame)
+		{
+			if (frame <= 0)
+				throw new ArgumentOutOfRangeException(nameof(frame));
+			var b1 = InvalidateNormal(frame);
+			var b2 = InvalidateHighPriority(frame);
+			return b1 || b2;
+		}
+
 		public static ZwinderStateManager Create(BinaryReader br, ZwinderStateManagerSettings settings)
 		{
 			var current = ZwinderBuffer.Create(br);
 			var recent = ZwinderBuffer.Create(br);
+			var highPriority = ZwinderBuffer.Create(br);
 
 			var original = br.ReadBytes(br.ReadInt32());
 
 			var ancientInterval = br.ReadInt32();
 
-			var ret = new ZwinderStateManager(current, recent, original, ancientInterval)
+			var ret = new ZwinderStateManager(current, recent, highPriority, original, ancientInterval)
 			{
 				Settings = settings
 			};
@@ -236,6 +320,7 @@ namespace BizHawk.Client.Common
 		{
 			_current.SaveStateBinary(bw);
 			_recent.SaveStateBinary(bw);
+			_highPriority.SaveStateBinary(bw);
 
 			bw.Write(_originalState.Length);
 			bw.Write(_originalState);

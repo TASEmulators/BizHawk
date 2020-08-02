@@ -16,6 +16,10 @@ namespace BizHawk.Client.Common
 			RecentBufferSize = settings.RecentBufferSize;
 			RecentTargetFrameLength = settings.RecentTargetFrameLength;
 
+			PriorityUseCompression = settings.PriorityUseCompression;
+			PriorityBufferSize = settings.PriorityBufferSize;
+			PriorityTargetFrameLength = settings.PriorityTargetFrameLength;
+
 			AncientStateInterval = settings.AncientStateInterval;
 			SaveStateHistory = settings.SaveStateHistory;
 		}
@@ -37,7 +41,6 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Buffer settings when navigating directly before the Current buffer
 		/// </summary>
-		/// <value></value>
 		[DisplayName("Recent - Use Compression")]
 		public bool RecentUseCompression { get; set; }
 
@@ -48,6 +51,20 @@ namespace BizHawk.Client.Common
 		[DisplayName("Recent - Target Frame Length")]
 		[Description("Desired frame length (number of emulated frames you can go back before running out of buffer)")]
 		public int RecentTargetFrameLength { get; set; } = 10000;
+
+		/// <summary>
+		/// Priority States for special use cases
+		/// </summary>
+		[DisplayName("Priority - Use Compression")]
+		public bool PriorityUseCompression { get; set; }
+
+		[DisplayName("Priority - Buffer Size")]
+		[Description("Max amount of buffer space to use in MB")]
+		public int PriorityBufferSize { get; set; } = 64;
+
+		[DisplayName("Priority - Target Frame Length")]
+		[Description("Desired frame length (number of emulated frames you can go back before running out of buffer)")]
+		public int PriorityTargetFrameLength { get; set; } = 10000;
 
 		[DisplayName("Ancient State Interval")]
 		[Description("How often to maintain states when outside of Current and Recent intervals")]
