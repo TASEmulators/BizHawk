@@ -23,10 +23,8 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		void Capture(int frame, IBinaryStateable source, bool force = false);
 
-		/// <summary>
-		/// Make a fucking mess because TASStudio is garbage and 99% of what it does is undocumented junk
-		/// </summary>
-		void CaptureHighPriority(int frame, IBinaryStateable source);
+		// TODO: should this be used for markers?
+		//void CaptureHighPriority(int frame, IBinaryStateable source);
 
 		bool HasState(int frame);
 
