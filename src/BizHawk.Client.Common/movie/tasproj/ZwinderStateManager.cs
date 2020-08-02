@@ -18,11 +18,21 @@ namespace BizHawk.Client.Common
 		public ZwinderStateManager(ZwinderStateManagerSettings settings)
 		{
 			Settings = settings;
-			_current = new ZwinderBuffer(settings.Current);
-			_recent = new ZwinderBuffer(settings.Recent);
+			_current = new ZwinderBuffer(new RewindConfig
+			{
+				UseCompression = settings.CurrentUseCompression,
+				BufferSize = settings.CurrentBufferSize,
+				TargetFrameLength = settings.CurrentTargetFrameLength
+			});
+			_recent = new ZwinderBuffer(new RewindConfig
+			{
+				UseCompression = settings.RecentUseCompression,
+				BufferSize = settings.RecentBufferSize,
+				TargetFrameLength = settings.RecentTargetFrameLength
+			});
+
 			_ancientInterval = settings.AncientStateInterval;
 			_originalState = NonState;
-
 		}
 
 		public ZwinderStateManager()

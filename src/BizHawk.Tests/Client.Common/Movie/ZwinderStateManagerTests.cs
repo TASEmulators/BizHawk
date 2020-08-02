@@ -21,8 +21,8 @@ namespace BizHawk.Common.Tests.Client.Common.Movie
 
 			// TODO: we could assert more things here to be thorough
 			Assert.IsNotNull(zw2);
-			Assert.AreEqual(zw.Settings.Current.BufferSize, zw2.Settings.Current.BufferSize);
-			Assert.AreEqual(zw.Settings.Recent.BufferSize, zw2.Settings.Recent.BufferSize);
+			Assert.AreEqual(zw.Settings.CurrentBufferSize, zw2.Settings.CurrentBufferSize);
+			Assert.AreEqual(zw.Settings.RecentBufferSize, zw2.Settings.RecentBufferSize);
 		}
 
 		[TestMethod]
@@ -31,18 +31,14 @@ namespace BizHawk.Common.Tests.Client.Common.Movie
 			var ss = new StateSource { PaddingData = new byte[1000] };
 			var zw = new ZwinderStateManager(new ZwinderStateManagerSettings
 			{
-				Current = new RewindConfig
-				{
-					UseCompression = false,
-					BufferSize = 1,
-					TargetFrameLength = 10000,
-				},
-				Recent = new RewindConfig
-				{
-					UseCompression = false,
-					BufferSize = 1,
-					TargetFrameLength = 100000,
-				},
+				CurrentUseCompression = false,
+				CurrentBufferSize = 1,
+				CurrentTargetFrameLength = 10000,
+
+				RecentUseCompression = false,
+				RecentBufferSize = 1,
+				RecentTargetFrameLength = 100000,
+
 				AncientStateInterval = 50000
 			});
 			{
@@ -56,9 +52,9 @@ namespace BizHawk.Common.Tests.Client.Common.Movie
 				zw.Capture(frame, ss);
 			}
 			var kvp = zw.GetStateClosestToFrame(10440);
-			var frameActul = StateSource.GetFrameNumberInState(kvp.Value);
-			Assert.Equals(kvp.Key, frameActul);
-			Assert.IsTrue(frameActul < 10440);
+			var actual = StateSource.GetFrameNumberInState(kvp.Value);
+			Assert.AreEqual(kvp.Key, actual);
+			Assert.IsTrue(actual < 10440);
 		}
 
 		private class StateSource : IBinaryStateable

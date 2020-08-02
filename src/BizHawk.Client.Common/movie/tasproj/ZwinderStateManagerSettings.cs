@@ -1,24 +1,20 @@
-﻿namespace BizHawk.Client.Common
+﻿using System.ComponentModel;
+
+namespace BizHawk.Client.Common
 {
-	// TODO: interface this?
 	public class ZwinderStateManagerSettings
 	{
 		public ZwinderStateManagerSettings() { }
 
 		public ZwinderStateManagerSettings(ZwinderStateManagerSettings settings)
 		{
-			Current = new RewindConfig
-			{
-				UseCompression = settings.Current.UseCompression,
-				BufferSize = settings.Current.BufferSize,
-				TargetFrameLength = settings.Current.TargetFrameLength
-			};
-			Recent = new RewindConfig
-			{
-				UseCompression = settings.Recent.UseCompression,
-				BufferSize = settings.Recent.BufferSize,
-				TargetFrameLength = settings.Recent.TargetFrameLength
-			};
+			CurrentUseCompression = settings.CurrentUseCompression;
+			CurrentBufferSize = settings.CurrentBufferSize;
+			CurrentTargetFrameLength = settings.CurrentTargetFrameLength;
+
+			RecentUseCompression = settings.RecentUseCompression;
+			RecentBufferSize = settings.RecentBufferSize;
+			RecentTargetFrameLength = settings.RecentTargetFrameLength;
 
 			AncientStateInterval = settings.AncientStateInterval;
 			SaveStateHistory = settings.SaveStateHistory;
@@ -27,32 +23,38 @@
 		/// <summary>
 		/// Buffer settings when navigating near now
 		/// </summary>
-		public IRewindSettings Current { get; set; } = new RewindConfig
-		{
-			UseCompression = false,
-			BufferSize = 64,
-			TargetFrameLength = 1000,
-		};
+		[DisplayName("Current - Use Compression")]
+		public bool CurrentUseCompression { get; set; }
+
+		[DisplayName("Current - Buffer Size")]
+		[Description("Max amount of buffer space to use in MB")]
+		public int CurrentBufferSize { get; set; } = 64;
+
+		[DisplayName("Current - Target Frame Length")]
+		[Description("Desired frame length (number of emulated frames you can go back before running out of buffer)")]
+		public int CurrentTargetFrameLength { get; set; } = 1000;
+
 		/// <summary>
 		/// Buffer settings when navigating directly before the Current buffer
 		/// </summary>
 		/// <value></value>
-		public IRewindSettings Recent { get; set; } = new RewindConfig
-		{
-			UseCompression = false,
-			BufferSize = 64,
-			TargetFrameLength = 10000,
-		};
-		/// <summary>
-		/// How often to maintain states when outside of Current and Recent intervals
-		/// </summary>
-		/// <value></value>
+		[DisplayName("Recent - Use Compression")]
+		public bool RecentUseCompression { get; set; }
+
+		[DisplayName("Recent - Buffer Size")]
+		[Description("Max amount of buffer space to use in MB")]
+		public int RecentBufferSize { get; set; } = 64;
+
+		[DisplayName("Recent - Target Frame Length")]
+		[Description("Desired frame length (number of emulated frames you can go back before running out of buffer)")]
+		public int RecentTargetFrameLength { get; set; } = 10000;
+
+		[DisplayName("Ancient State Interval")]
+		[Description("How often to maintain states when outside of Current and Recent intervals")]
 		public int AncientStateInterval { get; set; } = 5000;
 
-		/// <summary>
-		/// TODO: NUKE THIS, it doesn't belong here, maybe?
-		/// </summary>
-		/// <value></value>
+		[DisplayName("Save Savestate History")]
+		[Description("Whether or not to save savestate history into .tasproj files")]
 		public bool SaveStateHistory { get; set; } = true;
 	}
 }
