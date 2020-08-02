@@ -3,26 +3,43 @@ image: mcr.microsoft.com/dotnet/core/sdk:3.1
 stages:
   - build
   - test
-  - archive
 
-build:
+build_master:
   artifacts:
-    expire_in: "30 minutes"
-    name: "BizHawk_tempbuild_$CI_COMMIT_REF_SLUG"
+    expire_in: "1 month"
+    name: "BizHawk_devbuild_$CI_COMMIT_REF_SLUG"
     paths:
       - output
       - test_output
+  rules:
+    - if: '$CI_COMMIT_REF_SLUG == "master"'
+      when: always
+  script:
+    - Dist/BuildRelease.sh
+  stage: build
+
+build_not_master:
+  artifacts:
+    expire_in: "30 minutes"
+    name: "BizHawk_devbuild_$CI_COMMIT_REF_SLUG"
+    paths:
+      - output
+      - test_output
+  rules:
+    - if: '$CI_COMMIT_REF_SLUG != "master"'
+      when: always
   script:
     - Dist/BuildRelease.sh
   stage: build
 
 check_style:
   allow_failure: true
+  dependencies: []
   rules:
     - if: '$BIZHAWKBUILD_USE_ANALYZERS != null'
       when: always
   script:
-    - Dist/BuildRelease.sh -p:MachineRunAnalyzersDuringBuild=true
+    - Dist/BuildRelease.sh -p:MachineRunAnalyzersDuringBuild=true || Dist/BuildRelease.sh -p:MachineRunAnalyzersDuringBuild=true
   stage: test
 
 run_tests:
@@ -32,25 +49,13 @@ run_tests:
     reports:
       junit:
         - test_output/*.coverage.xml
+  dependencies: []
   image: mcr.microsoft.com/dotnet/core/sdk:3.1
   script:
-    - Dist/BuildTestRelease.sh
+    - Dist/BuildTestRelease.sh || Dist/BuildTestRelease.sh
   stage: test
 
-create_archive:
-  artifacts:
-    expire_in: "1 month"
-    name: "BizHawk_devbuild_$CI_COMMIT_REF_SLUG"
-    paths:
-      - output
-  rules:
-    - if: '$CI_COMMIT_REF_SLUG == "master"'
-      when: always
-  script:
-    - ''
-  stage: archive
-
-cache:
-  key: "$CI_COMMIT_REF_SLUG"
-  paths:
-    - packages
+#cache:
+#  key: "$CI_COMMIT_REF_SLUG"
+#  paths:
+#    - $HOME/.nuget/packages # probably won't work; set NUGET_PACKAGES to `BizHawk_master/.nuget_packages` and cache that
