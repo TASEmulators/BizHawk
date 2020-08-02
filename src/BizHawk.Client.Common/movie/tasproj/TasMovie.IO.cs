@@ -82,7 +82,8 @@ namespace BizHawk.Client.Common
 				var json = tr.ReadToEnd();
 				try
 				{
-					TasStateManager.Settings = JsonConvert.DeserializeObject<ZwinderStateManagerSettings>(json);
+					var settings = JsonConvert.DeserializeObject<ZwinderStateManagerSettings>(json);
+					TasStateManager.UpdateSettings(settings);
 				}
 				catch
 				{

@@ -15,7 +15,7 @@ namespace BizHawk.Client.Common
 		/// <returns>A savestate for the given frame or an empty array if there isn't one</returns>
 		byte[] this[int frame] { get; }
 
-		ZwinderStateManagerSettings Settings { get; set; }
+		ZwinderStateManagerSettings Settings { get; }
 
 		/// <summary>
 		/// Requests that the current emulator state be captured 
@@ -54,14 +54,20 @@ namespace BizHawk.Client.Common
 		int Last { get; }
 
 		/// <summary>
-		/// Adjust internal state saving logic based on changes to Settings
+		/// Updates the internal state saving logic settings
 		/// </summary>
-		void UpdateStateFrequency();
+		void UpdateSettings(ZwinderStateManagerSettings settings);
 
-		// TODO: document
+		/// <summary>
+		/// Serializes the current state of the instance for persisting to disk
+		/// </summary>
 		void SaveStateHistory(BinaryWriter bw);
 
-		// TODO: document
+		/// <summary>
+		/// Enables the instance to be used. An instance of <see cref="IStateManager"/> should not
+		/// be useable until this method is called
+		/// </summary>
+		/// <param name="frameZeroState"></param>
 		void Engage(byte[] frameZeroState);
 	}
 }

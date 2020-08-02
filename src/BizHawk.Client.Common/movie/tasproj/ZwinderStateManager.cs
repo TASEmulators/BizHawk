@@ -194,10 +194,7 @@ namespace BizHawk.Client.Common
 			return false;
 		}
 
-		public void UpdateStateFrequency()
-		{
-			throw new NotImplementedException();
-		}
+		public void UpdateSettings(ZwinderStateManagerSettings settings) => Settings = settings;
 
 		public static ZwinderStateManager Create(BinaryReader br, ZwinderStateManagerSettings settings)
 		{
