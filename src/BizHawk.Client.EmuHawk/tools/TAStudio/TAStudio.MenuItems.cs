@@ -43,12 +43,7 @@ namespace BizHawk.Client.EmuHawk
 					Emulator.Frame, StatableEmulator.CloneSavestate());
 
 				MainForm.PauseEmulator();
-				// Create a new file, unless the original movie was "default" (i.e. never saved)
-				if (!CurrentTasMovie.Filename.Equals(DefaultTasProjName()))
-					newProject.Save();
-				else
-					newProject.Filename = DefaultTasProjName(); // ask for name when user saves
-				LoadMovie(newProject, 0);
+				PlayAndMaybeSaveConvertedMovie(newProject);
 			}
 		}
 
@@ -68,18 +63,35 @@ namespace BizHawk.Client.EmuHawk
 					var newProject = CurrentTasMovie.ConvertToSaveRamAnchoredMovie(
 						SaveRamEmulator.CloneSaveRam());
 					MainForm.PauseEmulator();
-					// Create a new file, unless the original movie was "default" (i.e. never saved)
-					if (!CurrentTasMovie.Filename.Equals(DefaultTasProjName()))
-						newProject.Save();
-					else
-						newProject.Filename = DefaultTasProjName(); // ask for name when user saves
-					LoadMovie(newProject, 0);
+					PlayAndMaybeSaveConvertedMovie(newProject);
 				}
 				else
 				{
 					throw new Exception("No SaveRam");
 				}
 			}
+		}
+
+		/// <summary>
+		/// We want to create a new file for the movie, unless the original movie was the default movie.
+		/// Cluttering up the user's movie folder with default 1.tasproj, default 2.tasproj, etc. isn't nice.
+		/// We also want to promt the user for a file name if we haven't saved a file here, so we use the default name.
+		/// Now, playing a movie loads the movie from the file; which would mean playing the new movie actually loads the default movie.
+		/// However if the movie's file doesn't exist, then it simply skips that loading process!
+		/// But I find it strange that it doesn't fail to play the movie without a file, so maybe this isn't an ideal solution?
+		/// </summary>
+		/// <param name="movie"></param>
+		private void PlayAndMaybeSaveConvertedMovie(ITasMovie movie)
+		{
+			bool save = !CurrentTasMovie.Filename.Equals(DefaultTasProjName());
+			if (save)
+				movie.Save();
+			else
+				movie.Filename = "."; // We need a name that FileInfo considers a "valid format".
+
+			LoadMovie(movie, 0);
+			if (!save)
+				movie.Filename = DefaultTasProjName();
 		}
 
 		private void RecentSubMenu_DropDownOpened(object sender, EventArgs e)
