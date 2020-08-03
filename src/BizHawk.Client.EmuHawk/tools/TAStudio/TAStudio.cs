@@ -218,7 +218,7 @@ namespace BizHawk.Client.EmuHawk
 			// Start Scenario 2: A tasproj is already active
 			else if (MovieSession.Movie.IsActive() && MovieSession.Movie is ITasMovie)
 			{
-				bool result = LoadFile(new FileInfo(CurrentTasMovie.Filename), gotoFrame: Emulator.Frame);
+				bool result = LoadFile(new FileInfo(CurrentTasMovie.Filename), Emulator.Frame);
 				if (!result)
 				{
 					TasView.AllColumns.Clear();
@@ -529,7 +529,7 @@ namespace BizHawk.Client.EmuHawk
 			MainForm.SetMainformMovieInfo();
 		}
 
-		private bool LoadFile(FileInfo file, bool startsFromSavestate = false, int gotoFrame = 0)
+		private bool LoadFile(FileInfo file, int gotoFrame = 0)
 		{
 			if (!file.Exists)
 			{
@@ -537,31 +537,24 @@ namespace BizHawk.Client.EmuHawk
 				return false;
 			}
 
+			return LoadMovie((ITasMovie)MovieSession.Get(file.FullName), gotoFrame);
+		}
+
+		private bool LoadMovie(ITasMovie newMovie, int gotoFrame)
+		{
+			if (newMovie == null) return false;
+
 			_engaged = false;
-			var newMovie = (ITasMovie)MovieSession.Get(file.FullName);
 			newMovie.BindMarkersToInput = Settings.BindMarkersToInput;
 			newMovie.TasStateManager.InvalidateCallback = GreenzoneInvalidated;
 
 			if (!HandleMovieLoadStuff(newMovie))
-			{
 				return false;
-			}
 
 			_engaged = true;
 			Settings.RecentTas.Add(newMovie.Filename); // only add if it did load
 
-			if (startsFromSavestate)
-			{
-				GoToFrame(0);
-			}
-			else if (gotoFrame > 0)
-			{
-				GoToFrame(gotoFrame);
-			}
-			else
-			{
-				GoToFrame(CurrentTasMovie.TasSession.CurrentFrame);
-			}
+			GoToFrame(gotoFrame);
 
 			// If we are loading an existing non-default movie, we will already have columns generated
 			// Only set up columns if needed
@@ -588,39 +581,18 @@ namespace BizHawk.Client.EmuHawk
 		private void StartNewTasMovie()
 		{
 			if (!AskSaveChanges())
-			{
 				return;
-			}
 
-			var filename = DefaultTasProjName(); // TODO don't do this, take over any mainform actions that can crash without a filename
-			var tasMovie = (ITasMovie)MovieSession.Get(filename);
-			tasMovie.BindMarkersToInput = Settings.BindMarkersToInput;
-			
+			string filename = DefaultTasProjName(); // TODO don't do this, take over any mainform actions that can crash without a filename
+			ITasMovie tasMovie = (ITasMovie)MovieSession.Get(filename);
 
-			tasMovie.TasStateManager.InvalidateCallback = GreenzoneInvalidated;
-			tasMovie.PropertyChanged += TasMovie_OnPropertyChanged;
-			
 			tasMovie.PopulateWithDefaultHeaderValues(
 				Emulator,
 				Game,
 				GlobalWin.FirmwareManager,
 				Config.DefaultAuthor);
 
-			SetTasMovieCallbacks(tasMovie);
-			tasMovie.ClearChanges(); // Don't ask to save changes here.
-			tasMovie.Save();
-			if (HandleMovieLoadStuff(tasMovie))
-			{
-				CurrentTasMovie.TasStateManager.Capture(); // Capture frame 0 always.
-			}
-
-			// clear all selections
-			TasView.DeselectAll();
-			BookMarkControl.Restart();
-			MarkerControl.Restart();
-			SetUpColumns();
-			RefreshDialog();
-			TasView.Refresh();
+			LoadMovie(tasMovie, 0);
 		}
 
 		private bool HandleMovieLoadStuff(ITasMovie movie)
@@ -685,7 +657,6 @@ namespace BizHawk.Client.EmuHawk
 				TasView.AllColumns.Clear();
 				WantsToControlReboot = false;
 				StartNewTasMovie();
-				_engaged = true;
 			}
 		}
 

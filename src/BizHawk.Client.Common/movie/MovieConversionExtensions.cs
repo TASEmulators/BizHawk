@@ -100,7 +100,9 @@ namespace BizHawk.Client.Common
 
 			// States can't be easily moved over, because they contain the frame number.
 			// TODO? I'm not sure how this would be done.
+			// Also TODO: Properly manage disposal of the old movie/TasStateManager instead of clearing it here.
 			old.TasStateManager.Clear();
+			old.ClearChanges(); // avoid issue with asking to save the cleared state log
 
 			// Lag Log
 			tas.LagLog.FromLagLog(old.LagLog);
@@ -138,6 +140,7 @@ namespace BizHawk.Client.Common
 			tas.TasStateManager.Settings = old.TasStateManager.Settings;
 
 			tas.Save();
+			tas.ClearChanges();
 			return tas;
 		}
 
@@ -179,6 +182,7 @@ namespace BizHawk.Client.Common
 			tas.TasStateManager.Settings = old.TasStateManager.Settings;
 
 			tas.Save();
+			tas.ClearChanges();
 			return tas;
 		}
 

@@ -43,7 +43,7 @@ namespace BizHawk.Client.EmuHawk
 					Emulator.Frame, StatableEmulator.CloneSavestate());
 
 				MainForm.PauseEmulator();
-				LoadFile(new FileInfo(newProject.Filename), true);
+				LoadFile(new FileInfo(newProject.Filename));
 			}
 		}
 
@@ -63,7 +63,7 @@ namespace BizHawk.Client.EmuHawk
 					var newProject = CurrentTasMovie.ConvertToSaveRamAnchoredMovie(
 						SaveRamEmulator.CloneSaveRam());
 					MainForm.PauseEmulator();
-					LoadFile(new FileInfo(newProject.Filename), true);
+					LoadFile(new FileInfo(newProject.Filename));
 				}
 				else
 				{
