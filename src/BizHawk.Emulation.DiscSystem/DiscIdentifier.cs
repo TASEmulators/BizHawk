@@ -190,6 +190,14 @@ namespace BizHawk.Emulation.DiscSystem
 			//its a cheap win for a lot of systems, but ONLY if the iso.Parse() method is quick running (might have to time it)
 			if (isIso)
 			{
+				if (iso.Root.Children.TryGetValue("SYSTEM.CNF;1", out var cnf))
+				{
+					if (SectorContains("BOOT2", (int)cnf.Offset))
+						return DiscType.SonyPS2;
+					else if (SectorContains("BOOT", (int)cnf.Offset))
+						return DiscType.SonyPSX;
+				}
+
 				var appId = Encoding.ASCII.GetString(iso.VolumeDescriptors[0].ApplicationIdentifier).TrimEnd('\0', ' ');
 				var sysId = Encoding.ASCII.GetString(iso.VolumeDescriptors[0].SystemIdentifier).TrimEnd('\0', ' ');
 
@@ -220,14 +228,6 @@ namespace BizHawk.Emulation.DiscSystem
 					|| iso.Root.Children.Keys.Any(k => k.ToLowerInvariant().Contains("cd32")))
 				{
 					return DiscType.Amiga;
-				}
-
-				if (iso.Root.Children.TryGetValue("SYSTEM.CNF;1", out var cnf))
-				{
-					if (SectorContains("BOOT2", (int)cnf.Offset))
-						return DiscType.SonyPS2;
-					else if (SectorContains("BOOT", (int)cnf.Offset))
-						return DiscType.SonyPSX;
 				}
 
 				// NeoGeoCD Check
