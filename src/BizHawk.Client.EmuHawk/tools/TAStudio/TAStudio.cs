@@ -552,7 +552,8 @@ namespace BizHawk.Client.EmuHawk
 				return false;
 
 			_engaged = true;
-			Settings.RecentTas.Add(newMovie.Filename); // only add if it did load
+			if (!newMovie.Filename.Equals(DefaultTasProjName()))
+				Settings.RecentTas.Add(newMovie.Filename); // only add if it did load
 
 			if (gotoFrame > -1)
 				GoToFrame(gotoFrame);

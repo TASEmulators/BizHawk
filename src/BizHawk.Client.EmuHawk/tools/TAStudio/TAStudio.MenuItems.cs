@@ -84,14 +84,28 @@ namespace BizHawk.Client.EmuHawk
 		private void PlayAndMaybeSaveConvertedMovie(ITasMovie movie)
 		{
 			bool save = !CurrentTasMovie.Filename.Equals(DefaultTasProjName());
+			bool wasMovieFrozen = false;
+			bool wasTasFrozen = false;
 			if (save)
 				movie.Save();
 			else
-				movie.Filename = "."; // We need a name that FileInfo considers a "valid format".
+			{
+				// We need a name that FileInfo considers a "valid format".
+				movie.Filename = ".";
+				 // don't put "." in the recents list!
+				wasMovieFrozen = Config.RecentMovies.Frozen;
+				wasTasFrozen = Settings.RecentTas.Frozen;
+				Config.RecentMovies.Frozen = true;
+				Settings.RecentTas.Frozen = true;
+			}
 
 			LoadMovie(movie, 0);
 			if (!save)
+			{
 				movie.Filename = DefaultTasProjName();
+				Config.RecentMovies.Frozen = wasMovieFrozen;
+				Settings.RecentTas.Frozen = wasTasFrozen;
+			}
 		}
 
 		private void RecentSubMenu_DropDownOpened(object sender, EventArgs e)
