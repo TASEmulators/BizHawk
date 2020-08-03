@@ -529,7 +529,7 @@ namespace BizHawk.Client.EmuHawk
 			MainForm.SetMainformMovieInfo();
 		}
 
-		private bool LoadFile(FileInfo file, int gotoFrame = 0)
+		private bool LoadFile(FileInfo file, int gotoFrame = -1)
 		{
 			if (!file.Exists)
 			{
@@ -554,7 +554,10 @@ namespace BizHawk.Client.EmuHawk
 			_engaged = true;
 			Settings.RecentTas.Add(newMovie.Filename); // only add if it did load
 
-			GoToFrame(gotoFrame);
+			if (gotoFrame > -1)
+				GoToFrame(gotoFrame);
+			else // Return to the current frame from when the movie was saved.
+				GoToFrame(CurrentTasMovie.TasSession.CurrentFrame);
 
 			// If we are loading an existing non-default movie, we will already have columns generated
 			// Only set up columns if needed
