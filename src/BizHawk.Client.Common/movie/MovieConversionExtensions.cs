@@ -139,7 +139,6 @@ namespace BizHawk.Client.Common
 
 			tas.TasStateManager.Settings = old.TasStateManager.Settings;
 
-			tas.Save();
 			tas.ClearChanges();
 			return tas;
 		}
@@ -181,7 +180,6 @@ namespace BizHawk.Client.Common
 
 			tas.TasStateManager.Settings = old.TasStateManager.Settings;
 
-			tas.Save();
 			tas.ClearChanges();
 			return tas;
 		}

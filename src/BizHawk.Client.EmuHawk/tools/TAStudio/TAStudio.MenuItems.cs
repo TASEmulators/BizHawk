@@ -43,7 +43,12 @@ namespace BizHawk.Client.EmuHawk
 					Emulator.Frame, StatableEmulator.CloneSavestate());
 
 				MainForm.PauseEmulator();
-				LoadFile(new FileInfo(newProject.Filename));
+				// Create a new file, unless the original movie was "default" (i.e. never saved)
+				if (!CurrentTasMovie.Filename.Equals(DefaultTasProjName()))
+					newProject.Save();
+				else
+					newProject.Filename = DefaultTasProjName(); // ask for name when user saves
+				LoadMovie(newProject, 0);
 			}
 		}
 
@@ -63,7 +68,12 @@ namespace BizHawk.Client.EmuHawk
 					var newProject = CurrentTasMovie.ConvertToSaveRamAnchoredMovie(
 						SaveRamEmulator.CloneSaveRam());
 					MainForm.PauseEmulator();
-					LoadFile(new FileInfo(newProject.Filename));
+					// Create a new file, unless the original movie was "default" (i.e. never saved)
+					if (!CurrentTasMovie.Filename.Equals(DefaultTasProjName()))
+						newProject.Save();
+					else
+						newProject.Filename = DefaultTasProjName(); // ask for name when user saves
+					LoadMovie(newProject, 0);
 				}
 				else
 				{
