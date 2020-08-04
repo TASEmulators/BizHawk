@@ -20,12 +20,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public byte OBJ_transfer_byte;
 
 		// HDMA is unique to GBC, do it as part of the PPU tick
+		public bool HDMA_can_start;
 		public byte HDMA_src_hi;
 		public byte HDMA_src_lo;
 		public byte HDMA_dest_hi;
 		public byte HDMA_dest_lo;
-		public int HDMA_tick;
 		public byte HDMA_byte;
+		public int HDMA_tick;
 
 		// the first read on GBA (and first two on GBC) encounter access glitches if the source address is VRAM
 		public byte HDMA_VRAM_access_glitch;
@@ -357,7 +358,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					{
 						// only transfer during mode 0, and only 16 bytes at a time
 						// cycle > 90 prevents triggering early when turning on LCD (presumably the real event is transition from mode 3 to 0.)
-						if (((STAT & 3) == 0) && (LY != last_HBL) && HBL_test && (LY_inc == 1) && (cycle > 90))
+						if (((STAT & 3) == 0) && (LY != last_HBL) && HBL_test && (LY_inc == 1) && (cycle > 90) && HDMA_can_start)
 						{
 							HBL_HDMA_go = true;
 							HBL_test = false;
@@ -798,6 +799,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				evaled_sprites = 0;
 				window_pre_render = false;
 				window_latch = LCDC.Bit(5);
+				HDMA_can_start = false;
 
 				total_counter = 0;
 
@@ -1310,7 +1312,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						read_case--;
 						break;
 					case 18:
+					case 19:
+					case 20:
+						read_case++;
+						break;
+					case 21:
+						// hardware tests indicate that HDMA starts at this point, not immediately after mode 3 ends
 						rendering_complete = true;
+						HDMA_can_start = true;
 						break;
 				}
 				internal_cycle++;
@@ -1687,6 +1696,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync(nameof(HDMA_tick), ref HDMA_tick);
 			ser.Sync(nameof(HDMA_byte), ref HDMA_byte);
 			ser.Sync(nameof(HDMA_VRAM_access_glitch), ref HDMA_VRAM_access_glitch);
+			ser.Sync(nameof(HDMA_can_start), ref HDMA_can_start);
 
 			ser.Sync(nameof(VRAM_sel), ref VRAM_sel);
 			ser.Sync(nameof(BG_V_flip), ref BG_V_flip);
