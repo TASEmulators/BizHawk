@@ -46,4 +46,11 @@
 #define INLINE static __inline__
 #endif /* INLINE */
 
+/* Alignment macros for cross compiler compatibility */
+#if defined(_MSC_VER)
+#define ALIGNED_(x) __declspec(align(x))
+#elif defined(__GNUC__)
+#define ALIGNED_(x) __attribute__ ((aligned(x)))
+#endif
+
 #endif /* _MACROS_H_ */

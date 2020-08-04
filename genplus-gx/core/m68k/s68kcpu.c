@@ -29,7 +29,7 @@ static unsigned char s68ki_cycles[0x10000];
 static int irq_latency;
 
 /* IRQ priority */
-static const uint8 irq_level[0x40] = 
+static const uint8 irq_level[0x40] =
 {
   0, 1, 2, 2, 3, 3, 3, 3,
   4, 4, 4, 4, 4, 4, 4, 4,
@@ -217,7 +217,7 @@ void s68k_update_irq(unsigned int mask)
 #endif
 }
 
-void s68k_run(unsigned int cycles) 
+void s68k_run(unsigned int cycles)
 {
   /* Make sure CPU is not already ahead */
   if (s68k.cycles >= cycles)
@@ -257,12 +257,18 @@ void s68k_run(unsigned int cycles)
     REG_IR = m68ki_read_imm_16();
 
     /* Execute instruction */
-	m68ki_instruction_jump_table[REG_IR]();
+    m68ki_instruction_jump_table[REG_IR]();
     USE_CYCLES(CYC_INSTRUCTION[REG_IR]);
 
     /* Trace m68k_exception, if necessary */
     m68ki_exception_if_trace(); /* auto-disable (see m68kcpu.h) */
   }
+}
+
+
+int s68k_cycles(void)
+{
+  return CYC_INSTRUCTION[REG_IR];
 }
 
 void s68k_init(void)

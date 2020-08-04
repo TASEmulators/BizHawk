@@ -303,7 +303,7 @@ void CDLog68k(uint addr, uint flags)
 	}
 }
 
-void m68k_run(unsigned int cycles) 
+void m68k_run(unsigned int cycles)
 {
   /* Make sure CPU is not already ahead */
   if (m68k.cycles >= cycles)
@@ -360,6 +360,11 @@ void m68k_run(unsigned int cycles)
     /* Trace m68k_exception, if necessary */
     m68ki_exception_if_trace(); /* auto-disable (see m68kcpu.h) */
   }
+}
+
+int m68k_cycles(void)
+{
+  return CYC_INSTRUCTION[REG_IR];
 }
 
 void m68k_init(void)

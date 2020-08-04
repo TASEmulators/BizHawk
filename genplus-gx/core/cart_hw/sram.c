@@ -2,7 +2,7 @@
  *  Genesis Plus
  *  Backup RAM support
  *
- *  Copyright (C) 2007-2013  Eke-Eke (Genesis Plus GX)
+ *  Copyright (C) 2007-2019  Eke-Eke (Genesis Plus GX)
  *
  *  Redistribution and use of this code or any derivative works are permitted
  *  provided that the following conditions are met:
@@ -52,8 +52,8 @@ T_SRAM sram;
  *  1B4h:   dc.l   RAM start address
  *  1B8h:   dc.l   RAM end address
  *   x 1 for BACKUP (not volatile), 0 for volatile RAM
- *   yz 10 if even address only 
- *      11 if odd address only 
+ *   yz 10 if even address only
+ *      11 if odd address only
  *      00 if both even and odd address
  *      01 others (serial EEPROM, RAM with 4-bit data bus, etc)
  *   abc 001 if SRAM
@@ -71,7 +71,17 @@ void sram_init()
   sram.sram = cart.rom + 0x800000;
 
   /* initialize Backup RAM */
-  memset(sram.sram, 0xFF, 0x10000);
+  if (strstr(rominfo.international,"Sonic 1 Remastered"))
+  {
+    /* Sonic 1 Remastered hack crashes if backup RAM is not initialized to zero */
+    memset(sram.sram, 0x00, 0x10000);
+  }
+  else
+  {
+    /* by default, assume backup RAM is initialized to 0xFF (Micro Machines 2, Dino Dini Soccer)  */
+    memset(sram.sram, 0xFF, 0x10000);
+  }
+
   //sram.crc = crc32(0, sram.sram, 0x10000);
 
   /* retrieve informations from header */
@@ -132,7 +142,7 @@ void sram_init()
       sram.start = 0x200001;
       sram.end = 0x203fff;
     }
-    else if (((rominfo.realchecksum == 0xaeaa) || (rominfo.realchecksum == 0x8dba)) && 
+    else if (((rominfo.realchecksum == 0xaeaa) || (rominfo.realchecksum == 0x8dba)) &&
              (rominfo.checksum ==  0x8104))
     {
       /* Xin Qigai Wangzi (use uncommon area) */
@@ -189,16 +199,14 @@ void sram_init()
       sram.on = 0;
     }
 
-    // by default, enable backup RAM for ROM smaller than 2MB
-	/*
+    /* by default, enable backup RAM for ROM smaller than 2MB */
     else if (cart.romsize <= 0x200000)
     {
-      // 64KB static RAM mapped to $200000-$20ffff
+      /* 64KB static RAM mapped to $200000-$20ffff */
       sram.start = 0x200000;
       sram.end = 0x20ffff;
       sram.on = 1;
     }
-	*/
   }
 }
 
@@ -209,8 +217,7 @@ unsigned int sram_read_byte(unsigned int address)
 
 unsigned int sram_read_word(unsigned int address)
 {
-  address &= 0xfffe;
-  return (sram.sram[address + 1] | (sram.sram[address] << 8));
+  return READ_WORD(sram.sram, address & 0xfffe);
 }
 
 void sram_write_byte(unsigned int address, unsigned int data)
@@ -220,78 +227,77 @@ void sram_write_byte(unsigned int address, unsigned int data)
 
 void sram_write_word(unsigned int address, unsigned int data)
 {
-  address &= 0xfffe;
-  sram.sram[address] = data >> 8;
-  sram.sram[address + 1] = data & 0xff;
+  WRITE_WORD(sram.sram, address & 0xfffe, data);
 }
+
 
 // the variables in SRAM_T are all part of "configuration", so we don't have to save those.
 // the only thing that needs to be saved is the SRAM itself and the SEEPROM struct (if applicable)
 
 int sram_context_save(uint8 *state)
 {
-	int bufferptr = 0;
-	if (!sram.on)
-		return 0;
-	save_param(sram.sram, sram_get_actual_size());
-	switch (sram.custom)
-	{
-	case 1:
-		save_param(&eeprom_i2c, sizeof(eeprom_i2c));
-		break;
-	case 2:
-		save_param(&spi_eeprom, sizeof(spi_eeprom));
-		break;
-	case 3:
-		save_param(&eeprom_93c, sizeof(eeprom_93c));
-		break;
-	}
-	return bufferptr;
+    int bufferptr = 0;
+    if (!sram.on)
+        return 0;
+    save_param(sram.sram, sram_get_actual_size());
+    switch (sram.custom)
+    {
+    case 1:
+        save_param(&eeprom_i2c, sizeof(eeprom_i2c));
+        break;
+    case 2:
+        save_param(&spi_eeprom, sizeof(spi_eeprom));
+        break;
+    case 3:
+        save_param(&eeprom_93c, sizeof(eeprom_93c));
+        break;
+    }
+    return bufferptr;
 }
 
 int sram_context_load(uint8 *state)
 {
-	int bufferptr = 0;
-	if (!sram.on)
-		return 0;
-	load_param(sram.sram, sram_get_actual_size());
-	switch (sram.custom)
-	{
-	case 1:
-		load_param(&eeprom_i2c, sizeof(eeprom_i2c));
-		break;
-	case 2:
-		load_param(&spi_eeprom, sizeof(spi_eeprom));
-		break;
-	case 3:
-		load_param(&eeprom_93c, sizeof(eeprom_93c));
-		break;
-	}
-	return bufferptr;
+    int bufferptr = 0;
+    if (!sram.on)
+        return 0;
+    load_param(sram.sram, sram_get_actual_size());
+    switch (sram.custom)
+    {
+    case 1:
+        load_param(&eeprom_i2c, sizeof(eeprom_i2c));
+        break;
+    case 2:
+        load_param(&spi_eeprom, sizeof(spi_eeprom));
+        break;
+    case 3:
+        load_param(&eeprom_93c, sizeof(eeprom_93c));
+        break;
+    }
+    return bufferptr;
 }
 
 int sram_get_actual_size()
 {
-	if (!sram.on)
-		return 0;
-	switch (sram.custom)
-	{
-	case 0: // plain bus access saveram
-		break;
-	case 1: // i2c
-		return eeprom_i2c.config.size_mask + 1;
-	case 2: // spi
-		return 0x10000; // it doesn't appear to mask anything internally
-	case 3: // 93c
-		return 0x10000; // SMS only and i don't have time to look into it
-	default:
-		return 0x10000; // who knows
-	}
-	// figure size for plain bus access saverams
-	{
-		int startaddr = sram.start / 8192;
-		int endaddr = sram.end / 8192 + 1;
-		int size = (endaddr - startaddr) * 8192;
-		return size;
-	}
+    if (!sram.on)
+        return 0;
+    switch (sram.custom)
+    {
+    case 0: // plain bus access saveram
+        break;
+    case 1: // i2c
+        return eeprom_i2c.config.size_mask + 1;
+    case 2: // spi
+        return 0x10000; // it doesn't appear to mask anything internally
+    case 3: // 93c
+        return 0x10000; // SMS only and i don't have time to look into it
+    default:
+        return 0x10000; // who knows
+    }
+    // figure size for plain bus access saverams
+    {
+        int startaddr = sram.start / 8192;
+        int endaddr = sram.end / 8192 + 1;
+        int size = (endaddr - startaddr) * 8192;
+        return size;
+    }
 }
