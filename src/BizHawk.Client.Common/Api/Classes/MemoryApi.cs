@@ -118,33 +118,18 @@ namespace BizHawk.Client.Common
 			var d = NamedDomainOrCurrent(domain);
 			if (addr < 0 || addr + size > d.Size)
 			{
-				LogCallback($"Warning: attempted write to {addr} outside the memory size of {d.Size}");
+				LogCallback($"Warning: attempted read of {addr} outside the memory size of {d.Size}");
 				return 0;
 			}
 
-			switch (size)
+			return size switch
 			{
-				case 1:
-					{
-						return d.PeekByte(addr);
-					}
-				case 2:
-					{
-						return d.PeekUshort(addr, _isBigEndian);
-					}
-				case 3:
-					{
-						if (_isBigEndian)
-							return ReadUnsignedBig(addr, 3, domain);
-						else
-							return ReadUnsignedLittle(addr, 3, domain);
-					}
-				case 4:
-					{
-						return d.PeekUint(addr, _isBigEndian);
-					}
-			}
-			return 0;
+				1 => d.PeekByte(addr),
+				2 => d.PeekUshort(addr, _isBigEndian),
+				3 => _isBigEndian ? ReadUnsignedBig(addr, 3, domain) : ReadUnsignedLittle(addr, 3, domain),
+				4 => d.PeekUint(addr, _isBigEndian),
+				_ => 0
+			};
 		}
 
 		private void WriteSigned(long addr, int value, int size, string domain = null) => WriteUnsigned(addr, (uint) value, size, domain);
