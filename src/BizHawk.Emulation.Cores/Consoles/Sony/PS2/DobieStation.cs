@@ -38,7 +38,7 @@ namespace BizHawk.Emulation.Cores.Sony.PS2
 			_core = PreInit<LibDobieStation>(new WaterboxOptions
 			{
 				Filename = "dobie.wbx",
-				SbrkHeapSizeKB = 4 * 1024,
+				SbrkHeapSizeKB = 64 * 1024,
 				SealedHeapSizeKB = 4 * 1024,
 				InvisibleHeapSizeKB = 4 * 1024,
 				PlainHeapSizeKB = 256,
