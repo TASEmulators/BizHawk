@@ -1,6 +1,4 @@
-using BizHawk.Client.Common;
-
-namespace BizHawk.Client.EmuHawk
+namespace BizHawk.Client.Common
 {
 	public class LoadRomArgs
 	{

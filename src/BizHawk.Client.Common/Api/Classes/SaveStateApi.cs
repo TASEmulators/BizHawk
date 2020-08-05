@@ -1,10 +1,9 @@
 ﻿using System;
 using System.IO;
 
-using BizHawk.Client.Common;
 using BizHawk.Common;
 
-namespace BizHawk.Client.EmuHawk
+namespace BizHawk.Client.Common
 {
 	public sealed class SaveStateApi : ISaveStateApi
 	{
