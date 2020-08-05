@@ -39,9 +39,17 @@ namespace BizHawk.Client.Common
 			}
 
 			_inputPollable = emulator.AsInputPollable();
-			var ms = new MemoryStream();
-			emulator.AsStatable().SaveStateBinary(new BinaryWriter(ms));
-			TasStateManager.Engage(ms.ToArray());
+
+			if (StartsFromSavestate)
+			{
+				TasStateManager.Engage(BinarySavestate);
+			}
+			else
+			{
+				var ms = new MemoryStream();
+				emulator.AsStatable().SaveStateBinary(new BinaryWriter(ms));
+				TasStateManager.Engage(ms.ToArray());
+			}
 
 			base.Attach(emulator);
 
