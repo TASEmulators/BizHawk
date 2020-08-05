@@ -9,14 +9,9 @@ namespace BizHawk.Client.EmuHawk
 {
 	public sealed class MovieApi : IMovieApi
 	{
-		public MovieApi(Action<string> logCallback)
-		{
-			LogCallback = logCallback;
-		}
-
-		public MovieApi() : this(Console.WriteLine) {}
-
 		private readonly Action<string> LogCallback;
+
+		public MovieApi(Action<string> logCallback) => LogCallback = logCallback;
 
 		public bool StartsFromSavestate() => GlobalWin.MovieSession.Movie.IsActive() && GlobalWin.MovieSession.Movie.StartsFromSavestate;
 

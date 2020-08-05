@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.Net.WebSockets;
 using System.Text;
 
 using NLua;
@@ -9,6 +12,8 @@ namespace BizHawk.Client.Common
 	[Description("A library for communicating with other programs")]
 	public sealed class CommLuaLibrary : DelegatingLuaLibrary
 	{
+		private readonly IDictionary<Guid, ClientWebSocketWrapper> _websockets = new Dictionary<Guid, ClientWebSocketWrapper>();
+
 		public CommLuaLibrary(Lua lua)
 			: base(lua) { }
 
@@ -243,6 +248,47 @@ namespace BizHawk.Client.Common
 			{
 				Log("HTTP was not initialized, please initialize it via the command line");
 			}
+		}
+
+		[LuaMethod("ws_open", "Opens a websocket and returns the id so that it can be retrieved later.")]
+		[LuaMethodExample("local ws_id = comm.ws_open(\"wss://echo.websocket.org\");")]
+		public string WebSocketOpen(string uri)
+		{
+			var wsServer = APIs.Comm.WebSockets;
+			if (wsServer == null)
+			{
+				Log("WebSocket server is somehow not available");
+				return null;
+			}
+			var guid = new Guid();
+			_websockets[guid] = wsServer.Open(new Uri(uri));
+			return guid.ToString();
+		}
+
+		[LuaMethod("ws_send", "Send a message to a certain websocket id (boolean flag endOfMessage)")]
+		[LuaMethodExample("local ws = comm.ws_send(ws_id, \"some message\", true);")]
+		public void WebSocketSend(string guid, string content, bool endOfMessage)
+		{
+			if (_websockets.TryGetValue(Guid.Parse(guid), out var wrapper)) wrapper.Send(content, endOfMessage);
+		}
+
+		[LuaMethod("ws_receive", "Receive a message from a certain websocket id and a maximum number of bytes to read")]
+		[LuaMethodExample("local ws = comm.ws_receive(ws_id, str_len);")]
+		public string WebSocketReceive(string guid, int bufferCap) => _websockets.TryGetValue(Guid.Parse(guid), out var wrapper)
+			? wrapper.Receive(bufferCap)
+			: null;
+
+		[LuaMethod("ws_get_status", "Get a websocket's status")]
+		[LuaMethodExample("local ws_status = comm.ws_get_status(ws_id);")]
+		public int? WebSocketGetStatus(string guid) => _websockets.TryGetValue(Guid.Parse(guid), out var wrapper)
+			? (int) wrapper.State
+			: (int?) null;
+
+		[LuaMethod("ws_close", "Close a websocket connection with a close status")]
+		[LuaMethodExample("local ws_status = comm.ws_close(ws_id, close_status);")]
+		public void WebSocketClose(string guid, WebSocketCloseStatus status, string closeMessage)
+		{
+			if (_websockets.TryGetValue(Guid.Parse(guid), out var wrapper)) wrapper.Close(status, closeMessage);
 		}
 	}
 }

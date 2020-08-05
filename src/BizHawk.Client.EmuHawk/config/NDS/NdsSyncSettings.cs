@@ -4,12 +4,12 @@ using BizHawk.Emulation.Cores.Consoles.Nintendo.NDS;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class NdsSettings : Form
+	public partial class NdsSyncSettings : Form
 	{
 		private readonly IMainFormForConfig _mainForm;
 		private readonly MelonDS.MelonSyncSettings _syncSettings;
 
-		public NdsSettings(
+		public NdsSyncSettings(
 			IMainFormForConfig mainForm,
 			MelonDS.MelonSyncSettings syncSettings)
 		{

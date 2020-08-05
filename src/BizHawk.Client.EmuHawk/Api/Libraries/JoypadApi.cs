@@ -7,14 +7,9 @@ namespace BizHawk.Client.EmuHawk
 {
 	public sealed class JoypadApi : IJoypadApi
 	{
-		public JoypadApi(Action<string> logCallback)
-		{
-			LogCallback = logCallback;
-		}
-
-		public JoypadApi() : this(Console.WriteLine) {}
-
 		private readonly Action<string> LogCallback;
+
+		public JoypadApi(Action<string> logCallback) => LogCallback = logCallback;
 
 		public IDictionary<string, object> Get(int? controller = null)
 		{

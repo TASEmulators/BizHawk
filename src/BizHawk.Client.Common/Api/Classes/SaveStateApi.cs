@@ -1,10 +1,9 @@
 ﻿using System;
 using System.IO;
 
-using BizHawk.Client.Common;
 using BizHawk.Common;
 
-namespace BizHawk.Client.EmuHawk
+namespace BizHawk.Client.Common
 {
 	public sealed class SaveStateApi : ISaveStateApi
 	{
@@ -12,7 +11,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly Action<string> LogCallback;
 
-		public SaveStateApi(Action<string> logCallback, DisplayManager displayManager, InputManager inputManager, IMainFormForApi mainForm)
+		public SaveStateApi(Action<string> logCallback, IMainFormForApi mainForm)
 		{
 			LogCallback = logCallback;
 			_mainForm = mainForm;

@@ -456,7 +456,7 @@ namespace BizHawk.Client.Common
 					startIndex = line.IndexOf('\t') + 1;
 					line = line.Substring(startIndex, line.Length - startIndex);   // Domain
 					temp = line.Substring(0, line.IndexOf('\t'));
-					memDomain = _memoryDomains[temp] ?? _memoryDomains.MainMemory;
+					memDomain = size == WatchSize.Separator ? null : _memoryDomains[temp] ?? _memoryDomains.MainMemory;
 				}
 
 				startIndex = line.IndexOf('\t') + 1;

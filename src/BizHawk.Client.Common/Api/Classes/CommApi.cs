@@ -2,12 +2,12 @@
 
 using System;
 
-using BizHawk.Client.Common;
-
-namespace BizHawk.Client.EmuHawk
+namespace BizHawk.Client.Common
 {
 	public sealed class CommApi : ICommApi
 	{
+		private static readonly WebSocketServer _wsServer = new WebSocketServer();
+
 		private readonly (HttpCommunication HTTP, MemoryMappedFiles MMF, SocketServer Sockets) _networkingHelpers;
 
 		public HttpCommunication? HTTP => _networkingHelpers.HTTP;
@@ -16,7 +16,9 @@ namespace BizHawk.Client.EmuHawk
 
 		public SocketServer? Sockets => _networkingHelpers.Sockets;
 
-		public CommApi(Action<string> logCallback, DisplayManager displayManager, InputManager inputManager, IMainFormForApi mainForm)
+		public WebSocketServer? WebSockets => _wsServer;
+
+		public CommApi(Action<string> logCallback, IMainFormForApi mainForm)
 		{
 			_networkingHelpers = mainForm.NetworkingHelpers;
 		}

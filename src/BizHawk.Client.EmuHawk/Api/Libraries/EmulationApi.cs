@@ -37,13 +37,6 @@ namespace BizHawk.Client.EmuHawk
 		[OptionalService]
 		private IRegionable RegionableCore { get; set; }
 
-		public EmulationApi(Action<string> logCallback)
-		{
-			LogCallback = logCallback;
-		}
-
-		public EmulationApi() : this(Console.WriteLine) {}
-
 		private readonly Action<string> LogCallback;
 
 		/// <summary>Using this property to get a reference to <see cref="GlobalWin.Config">GlobalWin.Config</see> is a terrible, horrible, no good, very bad idea. That's why it's not in the <see cref="IEmulationApi">interface</see>.</summary>
@@ -61,6 +54,8 @@ namespace BizHawk.Client.EmuHawk
 		public bool ForbiddenConfigReferenceUsed { get; private set; }
 
 		public Action YieldCallback { get; set; }
+
+		public EmulationApi(Action<string> logCallback) => LogCallback = logCallback;
 
 		public void DisplayVsync(bool enabled) => GlobalWin.Config.VSync = enabled;
 

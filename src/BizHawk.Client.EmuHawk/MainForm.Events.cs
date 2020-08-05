@@ -1582,7 +1582,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Emulator is MelonDS ds)
 			{
-				using var form = new NdsSettings(this, ds.GetSyncSettings().Clone());
+				using var form = new NdsSyncSettings(this, ds.GetSyncSettings().Clone());
 				form.ShowDialog();
 			}
 		}
