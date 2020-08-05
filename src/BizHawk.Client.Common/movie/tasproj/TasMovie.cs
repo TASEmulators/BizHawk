@@ -12,12 +12,14 @@ namespace BizHawk.Client.Common
 		public new const string Extension = "tasproj";
 		private IInputPollable _inputPollable;
 
+		public const double CurrentVersion = 1.1;
+
 		/// <exception cref="InvalidOperationException">loaded core does not implement <see cref="IStatable"/></exception>
 		internal TasMovie(IMovieSession session, string path) : base(session, path)
 		{
 			Branches = new TasBranchCollection(this);
 			ChangeLog = new TasMovieChangeLog(this);
-			Header[HeaderKeys.MovieVersion] = "BizHawk v2.0 Tasproj v1.0";
+			Header[HeaderKeys.MovieVersion] = $"BizHawk v2.0 Tasproj v{CurrentVersion}";
 			Markers = new TasMovieMarkerList(this);
 			Markers.CollectionChanged += Markers_CollectionChanged;
 			Markers.Add(0, "Power on");

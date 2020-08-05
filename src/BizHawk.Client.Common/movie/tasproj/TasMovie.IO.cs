@@ -64,9 +64,17 @@ namespace BizHawk.Client.Common
 		protected override void LoadFields(ZipStateLoader bl, bool preload)
 		{
 			LoadBk2Fields(bl, preload);
+
 			if (!preload)
 			{
-				LoadTasprojExtras(bl);
+				if (MovieService.IsCurrentTasVersion(Header[HeaderKeys.MovieVersion]))
+				{
+					LoadTasprojExtras(bl);
+				}
+				else
+				{
+					Session.PopupMessage("The current .tasproj is compatible with this version of BizHawk! .tasproj features failed to load.");
+				}
 			}
 		}
 		
