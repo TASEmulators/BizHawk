@@ -9,16 +9,11 @@ namespace BizHawk.Client.Common
 		[RequiredService]
 		private IStatable StatableCore { get; set; }
 
-		public MemorySaveStateApi(Action<string> logCallback)
-		{
-			LogCallback = logCallback;
-		}
-
-		public MemorySaveStateApi() : this(Console.WriteLine) {}
-
 		private readonly Action<string> LogCallback;
 
 		private readonly Dictionary<Guid, byte[]> _memorySavestates = new Dictionary<Guid, byte[]>();
+
+		public MemorySaveStateApi(Action<string> logCallback) => LogCallback = logCallback;
 
 		public string SaveCoreStateToMemory()
 		{

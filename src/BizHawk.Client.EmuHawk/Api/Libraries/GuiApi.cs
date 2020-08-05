@@ -17,13 +17,6 @@ namespace BizHawk.Client.EmuHawk
 		[RequiredService]
 		private IEmulator Emulator { get; set; }
 
-		public GuiApi(Action<string> logCallback)
-		{
-			LogCallback = logCallback;
-		}
-
-		public GuiApi() : this(Console.WriteLine) {}
-
 		private readonly Action<string> LogCallback;
 
 		private readonly Dictionary<string, Image> _imageCache = new Dictionary<string, Image>();
@@ -51,6 +44,8 @@ namespace BizHawk.Client.EmuHawk
 		private Padding _padding = new Padding(0);
 
 		public bool HasGUISurface => _GUISurface != null;
+
+		public GuiApi(Action<string> logCallback) => LogCallback = logCallback;
 
 		private SolidBrush GetBrush(Color color) => _solidBrushes.TryGetValue(color, out var b) ? b : (_solidBrushes[color] = new SolidBrush(color));
 

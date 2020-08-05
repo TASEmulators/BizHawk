@@ -86,7 +86,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public event StateSavedEventHandler StateSaved;
 
-		public EmuClientApi(Action<string> logCallback, DisplayManager displayManager, InputManager inputManager, IMainFormForApi mainForm, Config config, IEmulator emulator, GameInfo game)
+		public EmuClientApi(Action<string> logCallback, IMainFormForApi mainForm, DisplayManager displayManager, InputManager inputManager, Config config, IEmulator emulator, GameInfo game)
 		{
 			_config = config;
 			_displayManager = displayManager;

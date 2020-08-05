@@ -12,7 +12,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly Action<string> LogCallback;
 
-		public SaveStateApi(Action<string> logCallback, DisplayManager displayManager, InputManager inputManager, IMainFormForApi mainForm)
+		public SaveStateApi(Action<string> logCallback, IMainFormForApi mainForm)
 		{
 			LogCallback = logCallback;
 			_mainForm = mainForm;

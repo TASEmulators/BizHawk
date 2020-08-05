@@ -20,7 +20,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public WebSocketServer? WebSockets => _wsServer;
 
-		public CommApi(Action<string> logCallback, DisplayManager displayManager, InputManager inputManager, IMainFormForApi mainForm)
+		public CommApi(Action<string> logCallback, IMainFormForApi mainForm)
 		{
 			_networkingHelpers = mainForm.NetworkingHelpers;
 		}

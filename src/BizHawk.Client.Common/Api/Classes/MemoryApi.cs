@@ -17,13 +17,6 @@ namespace BizHawk.Client.Common
 		[OptionalService]
 		private IMemoryDomains MemoryDomainCore { get; set; }
 
-		public MemoryApi(Action<string> logCallback)
-		{
-			LogCallback = logCallback;
-		}
-
-		public MemoryApi() : this(Console.WriteLine) {}
-
 		private readonly Action<string> LogCallback;
 
 		private bool _isBigEndian;
@@ -62,6 +55,8 @@ namespace BizHawk.Client.Common
 				return MemoryDomainCore;
 			}
 		}
+
+		public MemoryApi(Action<string> logCallback) => LogCallback = logCallback;
 
 		private MemoryDomain NamedDomainOrCurrent(string name)
 		{
