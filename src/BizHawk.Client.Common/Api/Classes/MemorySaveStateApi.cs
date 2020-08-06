@@ -18,7 +18,7 @@ namespace BizHawk.Client.Common
 		public string SaveCoreStateToMemory()
 		{
 			var guid = Guid.NewGuid();
-			_memorySavestates.Add(guid, (byte[]) StatableCore.SaveStateBinary().Clone());
+			_memorySavestates.Add(guid, StatableCore.CloneSavestate());
 			return guid.ToString();
 		}
 
