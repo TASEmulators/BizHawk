@@ -68,7 +68,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 			{ "ss.slend", new SettingOverride { NonSync = true } },
 			{ "ss.h_overscan", new SettingOverride { NonSync = true } },
 			{ "ss.h_blend", new SettingOverride { NonSync = true } },
-			{ "ss.correct_aspect", new SettingOverride { NonSync = true } },
+			{ "ss.correct_aspect", new SettingOverride { NonSync = true, Default = "0" } },
 			{ "ss.slstartp", new SettingOverride { NonSync = true } },
 			{ "ss.slendp", new SettingOverride { NonSync = true } },
 		};
