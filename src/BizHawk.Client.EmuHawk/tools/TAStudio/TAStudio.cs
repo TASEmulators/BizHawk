@@ -994,11 +994,6 @@ namespace BizHawk.Client.EmuHawk
 			SplicerStatusLabel.Text = temp;
 		}
 
-		private void UpdateChangesIndicator()
-		{
-			// TODO
-		}
-
 		private void DoTriggeredAutoRestoreIfNeeded()
 		{
 			if (_triggerAutoRestore)

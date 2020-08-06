@@ -994,7 +994,6 @@ namespace BizHawk.Client.EmuHawk
 				Owner = Owner,
 				Location = this.ChildPointToScreen(TasView)
 			}.Show();
-			UpdateChangesIndicator();
 		}
 
 		private void UpdateStateSettings(ZwinderStateManagerSettings settings)
@@ -1013,8 +1012,6 @@ namespace BizHawk.Client.EmuHawk
 				Text = "Savestate History Settings",
 				Owner = Owner
 			}.ShowDialog();
-
-			UpdateChangesIndicator();
 		}
 
 		private void CommentsMenuItem_Click(object sender, EventArgs e)

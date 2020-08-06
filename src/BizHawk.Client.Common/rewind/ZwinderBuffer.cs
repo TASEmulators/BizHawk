@@ -41,8 +41,6 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public int Count => (_nextStateIndex - _firstStateIndex) & StateMask;
 
-		public float FullnessRatio => Used / (float)Size;
-
 		/// <summary>
 		/// total number of bytes used
 		/// </summary>
