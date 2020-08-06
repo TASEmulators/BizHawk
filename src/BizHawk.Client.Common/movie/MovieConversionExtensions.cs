@@ -30,6 +30,9 @@ namespace BizHawk.Client.Common
 				tas.HeaderEntries[kvp.Key] = kvp.Value;
 			}
 
+			// TODO: we have this version number string generated in multiple places
+			tas.HeaderEntries[HeaderKeys.MovieVersion] = $"BizHawk v2.0 Tasproj v{TasMovie.CurrentVersion}";
+
 			tas.SyncSettingsJson = old.SyncSettingsJson;
 
 			tas.Comments.Clear();
@@ -62,6 +65,9 @@ namespace BizHawk.Client.Common
 			{
 				bk2.HeaderEntries[kvp.Key] = kvp.Value;
 			}
+
+			// TODO: we have this version number string generated in multiple places
+			bk2.HeaderEntries[HeaderKeys.MovieVersion] = "BizHawk v2.0";
 
 			bk2.SyncSettingsJson = old.SyncSettingsJson;
 
