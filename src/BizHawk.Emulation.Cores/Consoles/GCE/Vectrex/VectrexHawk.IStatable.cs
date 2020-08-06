@@ -68,7 +68,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			ser.Sync(nameof(joy2_LR), ref joy2_LR);
 			ser.Sync(nameof(joy2_UD), ref joy2_UD);
 
-			// referesh the screen buffer 
+			// refresh the screen buffer 
 			if (ser.IsReader)
 			{
 				for (int i = 0; i < _framebuffer.Length; i++)

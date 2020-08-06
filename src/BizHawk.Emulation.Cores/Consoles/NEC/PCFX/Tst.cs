@@ -1,15 +1,7 @@
 ﻿using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Consoles.Sega.Saturn;
 using BizHawk.Emulation.Cores.Waterbox;
-using BizHawk.Emulation.DiscSystem;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.IO;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.NEC.PCFX
 {
