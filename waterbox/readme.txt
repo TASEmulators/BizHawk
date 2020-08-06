@@ -22,7 +22,12 @@ It consists of a modified musl libc, and build scripts to tie it all together.
 	PREPARE A LINUX WORKSTATION:
 	1. TODO. This should work, but no one has tested it yet
 
-2. Build libraries.
+2. Clone bizhawk sources
+	* Make sure git's core.autocrlf is set to false, as the alternatives cause git to modify the line endings in .sh-looking files which WILL break the build process, from the very first step.
+	* This is NOT git's default. You will need to change it!! Go ahead and set it false globally permanently, since do you really want git modifying files?
+	* Make sure you have updated the needed submodules in the waterbox directory (for example, /waterbox/llvm-project and /waterbox/musl, etc.)
+
+3. Build libraries.
 	cd musl
 	./configure-for-waterbox
 	make
@@ -35,10 +40,10 @@ It consists of a modified musl libc, and build scripts to tie it all together.
 	./do-everything.sh
 	cd ..
 
-3. Some additional preparation is required before all the cores can be built:
+4. Some additional preparation is required before all the cores can be built:
 	cd nyma && ./build-and-install-zlib.sh
 
-4. You are now ready to start building cores. Each supports `make` and `make install`, as well as `make debug` and `make install-debug` for local development.  From the root directory, the following should all be valid:
+5. You are now ready to start building cores. Each supports `make` and `make install`, as well as `make debug` and `make install-debug` for local development.  From the root directory, the following should all be valid:
 	cd gpgx && make install
 	cd libsnes && make install
 	cd nyma && make -f faust.mak install
