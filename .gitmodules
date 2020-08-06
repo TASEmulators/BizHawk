@@ -31,7 +31,7 @@
 	branch = bizhawk
 [submodule "waterbox/llvm-project"]
 	path = waterbox/llvm-project
-	url = git@github.com:llvm/llvm-project.git
+	url = https://github.com/llvm/llvm-project.git
 [submodule "waterbox/dobie/dobiestation"]
 	path = waterbox/dobie/dobiestation
-	url = git@github.com:nattthebear/DobieStation.git
+	url = https://github.com/nattthebear/DobieStation.git
