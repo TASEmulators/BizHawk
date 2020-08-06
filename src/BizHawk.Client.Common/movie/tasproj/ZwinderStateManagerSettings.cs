@@ -21,7 +21,6 @@ namespace BizHawk.Client.Common
 			PriorityTargetFrameLength = settings.PriorityTargetFrameLength;
 
 			AncientStateInterval = settings.AncientStateInterval;
-			SaveStateHistory = settings.SaveStateHistory;
 		}
 
 		/// <summary>
@@ -69,9 +68,5 @@ namespace BizHawk.Client.Common
 		[DisplayName("Ancient State Interval")]
 		[Description("How often to maintain states when outside of Current and Recent intervals")]
 		public int AncientStateInterval { get; set; } = 5000;
-
-		[DisplayName("Save Savestate History")]
-		[Description("Whether or not to save savestate history into .tasproj files")]
-		public bool SaveStateHistory { get; set; } = true;
 	}
 }

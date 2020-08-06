@@ -41,7 +41,7 @@ namespace BizHawk.Client.Common
 
 			bs.PutLump(BinaryStateLump.Session, tw => tw.WriteLine(JsonConvert.SerializeObject(TasSession)));
 
-			if (TasStateManager.Settings.SaveStateHistory && !isBackup)
+			if (!isBackup)
 			{
 				bs.PutLump(BinaryStateLump.StateHistory, bw => TasStateManager.SaveStateHistory(bw));
 			}
@@ -165,13 +165,10 @@ namespace BizHawk.Client.Common
 				}
 			});
 
-			if (TasStateManager.Settings.SaveStateHistory)
+			bl.GetLump(BinaryStateLump.StateHistory, false, delegate(BinaryReader br, long length)
 			{
-				bl.GetLump(BinaryStateLump.StateHistory, false, delegate(BinaryReader br, long length)
-				{
-					TasStateManager = ZwinderStateManager.Create(br, TasStateManager.Settings);
-				});
-			}
+				TasStateManager = ZwinderStateManager.Create(br, TasStateManager.Settings);
+			});
 		}
 	}
 }
