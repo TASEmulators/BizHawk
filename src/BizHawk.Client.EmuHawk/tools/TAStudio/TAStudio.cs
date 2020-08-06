@@ -525,6 +525,7 @@ namespace BizHawk.Client.EmuHawk
 		private void ConvertCurrentMovieToTasproj()
 		{
 			MovieSession.ConvertToTasProj();
+			CurrentTasMovie.GreenzoneInvalidated = GreenzoneInvalidated;
 			Settings.RecentTas.Add(MovieSession.Movie.Filename);
 			MainForm.SetMainformMovieInfo();
 		}
