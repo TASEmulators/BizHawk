@@ -150,8 +150,6 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo& f)
 	audio_pos = nullptr;
 }
 
-static uint8_t junkus[14];
-
 ECL_EXPORT void GetMemoryAreas(MemoryArea *m)
 {
 	m[0].Data = emu->RDRAM;
