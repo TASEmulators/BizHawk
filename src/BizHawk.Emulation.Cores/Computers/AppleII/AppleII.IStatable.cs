@@ -27,16 +27,6 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			SyncState(new AppleSerializer(reader));
 		}
 
-		public byte[] SaveStateBinary()
-		{
-			// our savestate array can be of varying sizes, so this can't be too clever
-			using var stream = new MemoryStream();
-			using var writer = new BinaryWriter(stream);
-			SaveStateBinary(writer);
-			writer.Flush();
-			return stream.ToArray();
-		}
-
 		private void SyncState(AppleSerializer ser)
 		{
 			int version = 2;

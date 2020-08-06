@@ -20,14 +20,5 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			LagCount = reader.ReadInt32();
 			Frame = reader.ReadInt32();
 		}
-
-		public byte[] SaveStateBinary()
-		{
-			using var ms = new MemoryStream();
-			using var bw = new BinaryWriter(ms);
-			SaveStateBinary(bw);
-			bw.Flush();
-			return ms.ToArray();
-		}
 	}
 }

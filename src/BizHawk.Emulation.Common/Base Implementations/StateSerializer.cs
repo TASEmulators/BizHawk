@@ -11,21 +11,13 @@ namespace BizHawk.Emulation.Common
 	public class StateSerializer : ITextStatable
 	{
 		private readonly Action<Serializer> _syncState;
-		private readonly bool _bufferStates;
-		private byte[] _stateBuffer;
 
 		/// <summary>
 		/// Instantiates a new instance of the <see cref="StateSerializer" /> class
 		/// </summary>
 		/// <param name="syncState">The callback that will be called on save and load methods </param>
-		/// <param name="bufferStates">
-		/// Whether or not to keep an allocated array for
-		/// the byte array version of the SaveStateBinary method,
-		/// should be true unless a core can have savestates of varying sizes per instance
-		/// </param>
-		public StateSerializer(Action<Serializer> syncState, bool bufferStates = true)
+		public StateSerializer(Action<Serializer> syncState)
 		{
-			_bufferStates = bufferStates;
 			_syncState = syncState;
 		}
 
@@ -54,27 +46,6 @@ namespace BizHawk.Emulation.Common
 		{
 			_syncState(Serializer.CreateBinaryReader(br));
 			LoadStateCallback?.Invoke();
-		}
-
-		public byte[] SaveStateBinary()
-		{
-			if (_bufferStates && _stateBuffer != null)
-			{
-				using var stream = new MemoryStream(_stateBuffer);
-				using var writer = new BinaryWriter(stream);
-				SaveStateBinary(writer);
-				writer.Flush();
-				writer.Close();
-				return _stateBuffer;
-			}
-
-			using var ms = new MemoryStream();
-			using var bw = new BinaryWriter(ms);
-			SaveStateBinary(bw);
-			bw.Flush();
-			_stateBuffer = ms.ToArray();
-			bw.Close();
-			return _stateBuffer;
 		}
 	}
 }

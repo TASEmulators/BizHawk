@@ -68,24 +68,8 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 			Frame = reader.ReadInt32();
 		}
 
-		public byte[] SaveStateBinary()
-		{
-			using var ms = new MemoryStream(_saveBuff2, true);
-			using var bw = new BinaryWriter(ms);
-			SaveStateBinary(bw);
-			bw.Flush();
-			if (ms.Position != _saveBuff2.Length)
-			{
-				throw new InvalidOperationException();
-			}
-
-			ms.Close();
-			return _saveBuff2;
-		}
-
 		private readonly JsonSerializer _ser = new JsonSerializer { Formatting = Formatting.Indented };
 		private readonly byte[] _saveBuff;
-		private readonly byte[] _saveBuff2;
 
 		private class TextStateData
 		{

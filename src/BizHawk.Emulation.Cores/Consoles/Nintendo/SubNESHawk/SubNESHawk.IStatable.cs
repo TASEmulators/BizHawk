@@ -23,15 +23,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 			SyncState(new Serializer(br));
 		}
 
-		public byte[] SaveStateBinary()
-		{
-			using var ms = new MemoryStream();
-			using var bw = new BinaryWriter(ms);
-			SaveStateBinary(bw);
-			bw.Flush();
-			return ms.ToArray();
-		}
-
 		private void SyncState(Serializer ser)
 		{
 			ser.Sync("Lag", ref _lagCount);

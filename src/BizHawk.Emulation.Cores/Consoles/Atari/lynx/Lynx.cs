@@ -92,7 +92,6 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 			try
 			{
 				_saveBuff = new byte[LibLynx.BinStateSize(Core)];
-				_saveBuff2 = new byte[_saveBuff.Length + 13];
 
 				int rot = game.OptionPresent("rotate") ? int.Parse(game.OptionValue("rotate")) : 0;
 				LibLynx.SetRotation(Core, rot);

@@ -177,7 +177,7 @@ namespace BizHawk.Client.Common
 
 		public int Last => AllStates().First().Frame;
 
-		public void Capture(int frame, IBinaryStateable source, bool force = false)
+		public void Capture(int frame, IStatable source, bool force = false)
 		{
 			if (frame <= Last)
 			{
@@ -206,7 +206,7 @@ namespace BizHawk.Client.Common
 				force);
 		}
 
-		public void CaptureHighPriority(int frame, IBinaryStateable source)
+		public void CaptureHighPriority(int frame, IStatable source)
 		{
 			_highPriority.Capture(frame, s => source.SaveStateBinary(new BinaryWriter(s)));
 		}

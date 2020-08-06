@@ -1093,7 +1093,6 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		//THIS IS STILL AWFUL
 
 		byte[] savebuff;
-		byte[] savebuff2;
 
 		void StudySaveBufferSize()
 		{
@@ -1101,7 +1100,6 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			transaction.transaction = OctoshockDll.eShockStateTransaction.BinarySize;
 			int size = OctoshockDll.shock_StateTransaction(psx, ref transaction);
 			savebuff = new byte[size];
-			savebuff2 = new byte[savebuff.Length + 4 + 4 + 4 + 1 + 1 + 4];
 		}
 
 		public void SaveStateBinary(BinaryWriter writer)
@@ -1157,19 +1155,6 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				CurrentDiscIndexMounted = reader.ReadInt32();
 				PokeDisc();
 			}
-		}
-
-		public byte[] SaveStateBinary()
-		{
-			//this are objectionable shenanigans, but theyre required to get the extra info in the stream. we need a better approach.
-			using var ms = new MemoryStream(savebuff2, true);
-			using var bw = new BinaryWriter(ms);
-			SaveStateBinary(bw);
-			bw.Flush();
-			if (ms.Position != savebuff2.Length)
-				throw new InvalidOperationException();
-			ms.Close();
-			return savebuff2;
 		}
 
 		Settings _Settings = new Settings();

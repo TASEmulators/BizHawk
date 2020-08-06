@@ -63,28 +63,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			IsCgb = reader.ReadBoolean();
 		}
 
-		public byte[] SaveStateBinary()
-		{
-			MemoryStream ms = new MemoryStream(_savebuff2);
-			BinaryWriter bw = new BinaryWriter(ms);
-			SaveStateBinary(bw);
-			bw.Flush();
-			if (ms.Position != _savebuff2.Length)
-			{
-				throw new InvalidOperationException();
-			}
-
-			ms.Close();
-			return _savebuff2;
-		}
-
 		private byte[] _savebuff;
-		private byte[] _savebuff2;
 
 		private void NewSaveCoreSetBuff()
 		{
 			_savebuff = new byte[LibGambatte.gambatte_newstatelen(GambatteState)];
-			_savebuff2 = new byte[_savebuff.Length + 4 + 21 + 1];
 		}
 
 		private readonly JsonSerializer ser = new JsonSerializer { Formatting = Formatting.Indented };

@@ -333,22 +333,6 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			IsLagFrame = reader.ReadBoolean();
 		}
 
-		public byte[] SaveStateBinary()
-		{
-			MemoryStream ms = new MemoryStream(_hawkSaveBuffer);
-			BinaryWriter bw = new BinaryWriter(ms);
-			SaveStateBinary(bw);
-			bw.Flush();
-
-			if (ms.Position != _hawkSaveBuffer.Length)
-			{
-				throw new InvalidOperationException();
-			}
-
-			ms.Close();
-			return _hawkSaveBuffer;
-		}
-
 		public SyncSettings GetSyncSettings()
 		{
 			return _syncSettings.Clone();

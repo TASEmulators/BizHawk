@@ -21,10 +21,10 @@ namespace BizHawk.Client.Common
 		/// Requests that the current emulator state be captured 
 		/// Unless force is true, the state may or may not be captured depending on the logic employed by "green-zone" management
 		/// </summary>
-		void Capture(int frame, IBinaryStateable source, bool force = false);
+		void Capture(int frame, IStatable source, bool force = false);
 
 		// TODO: should this be used for markers?
-		//void CaptureHighPriority(int frame, IBinaryStateable source);
+		//void CaptureHighPriority(int frame, IStatable source);
 
 		bool HasState(int frame);
 

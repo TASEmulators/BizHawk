@@ -28,15 +28,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 			SyncState(new Serializer(br));
 		}
 
-		public byte[] SaveStateBinary()
-		{
-			MemoryStream ms = new MemoryStream();
-			BinaryWriter bw = new BinaryWriter(ms);
-			SaveStateBinary(bw);
-			bw.Flush();
-			return ms.ToArray();
-		}
-
 		private void SyncState(Serializer ser)
 		{
 			ser.Sync("Lag", ref _lagcount);

@@ -199,7 +199,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			_tracer = new TraceBuffer { Header = cpu.TraceHeader };
 			ser.Register<ITraceable>(_tracer);
-			ser.Register<IStatable>(new StateSerializer(SyncState, false));
+			ser.Register<IStatable>(new StateSerializer(SyncState));
 			SetupMemoryDomains();
 			cpu.SetCallbacks(ReadMemory, PeekMemory, PeekMemory, WriteMemory);
 			HardReset();

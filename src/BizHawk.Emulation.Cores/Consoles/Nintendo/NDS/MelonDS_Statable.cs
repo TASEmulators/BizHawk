@@ -25,21 +25,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			}
 		}
 
-		public byte[] SaveStateBinary()
+		public void SaveStateBinary(BinaryWriter writer)
 		{
+			// TODO: can we do this without a making a copy of the byte buffer?
 			int len = GetSavestateSize();
-			byte[] ret = new byte[len];
-			fixed (byte* ptr = ret)
+			byte[] data = new byte[len];
+			fixed (byte* ptr = data)
 			{
 				GetSavestateData(ptr, len);
 			}
 
-			return ret;
-		}
-
-		public void SaveStateBinary(BinaryWriter writer)
-		{
-			byte[] data = SaveStateBinary();
 			writer.Write(data);
 		}
 

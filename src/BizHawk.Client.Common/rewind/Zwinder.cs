@@ -18,9 +18,9 @@ namespace BizHawk.Client.Common
 		*/
 
 		private readonly ZwinderBuffer _buffer;
-		private readonly IBinaryStateable _stateSource;
+		private readonly IStatable _stateSource;
 
-		public Zwinder(IBinaryStateable stateSource, IRewindSettings settings)
+		public Zwinder(IStatable stateSource, IRewindSettings settings)
 		{
 			_buffer = new ZwinderBuffer(settings);
 			_stateSource = stateSource;

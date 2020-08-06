@@ -57,7 +57,7 @@ namespace BizHawk.Common.Tests.Client.Common.Movie
 			Assert.IsTrue(actual < 10440);
 		}
 
-		private class StateSource : IBinaryStateable
+		private class StateSource : IStatable
 		{
 			public int Frame { get; set; }
 			public byte[] PaddingData { get; set; } = new byte[0];

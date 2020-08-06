@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		public abstract void PostLoadState();
 	}
 
-	public unsafe partial class LibsnesApi : IDisposable, IMonitor, IBinaryStateable
+	public unsafe partial class LibsnesApi : IDisposable, IMonitor, IStatable
 	{
 		static LibsnesApi()
 		{

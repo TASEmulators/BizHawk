@@ -36,31 +36,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			Frame = reader.ReadInt32();
 		}
 
-		public byte[] SaveStateBinary()
-		{
-			CheckDisposed();
-			var ms = new MemoryStream(_saveStateBuff2, true);
-			var bw = new BinaryWriter(ms);
-			SaveStateBinary(bw);
-			bw.Flush();
-			if (ms.Position != _saveStateBuff2.Length)
-			{
-				throw new InvalidOperationException("Unexpected savestate length!");
-			}
-
-			bw.Close();
-			return _saveStateBuff2;
-		}
-
 		private byte[] _saveStateBuff;
-		private byte[] _saveStateBuff2;
 
 		private void InitSaveStateBuff()
 		{
 			int size = 0;
 			LibQuickNES.ThrowStringError(QN.qn_state_size(Context, ref size));
 			_saveStateBuff = new byte[size];
-			_saveStateBuff2 = new byte[size + 13];
 		}
 	}
 }

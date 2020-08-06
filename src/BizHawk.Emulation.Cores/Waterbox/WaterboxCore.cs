@@ -298,16 +298,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			}
 		}
 
-		public byte[] SaveStateBinary()
-		{
-			using var ms = new MemoryStream();
-			using var bw = new BinaryWriter(ms);
-			SaveStateBinary(bw);
-			bw.Flush();
-			ms.Close();
-			return ms.ToArray();
-		}
-
 		/// <summary>
 		/// called after the base core saves state.  the core must save any other
 		/// variables that it needs to.

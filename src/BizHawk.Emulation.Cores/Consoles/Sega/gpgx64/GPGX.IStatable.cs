@@ -34,15 +34,5 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			writer.Write(_prevDiskPressed);
 			writer.Write(_nextDiskPressed);
 		}
-
-		public byte[] SaveStateBinary()
-		{
-			using var ms = new MemoryStream();
-			using var bw = new BinaryWriter(ms);
-			SaveStateBinary(bw);
-			bw.Flush();
-			ms.Close();
-			return ms.ToArray();
-		}
 	}
 }

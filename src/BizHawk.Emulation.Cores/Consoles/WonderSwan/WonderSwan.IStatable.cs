@@ -13,7 +13,6 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		private void InitIStatable()
 		{
 			savebuff = new byte[BizSwan.bizswan_binstatesize(Core)];
-			savebuff2 = new byte[savebuff.Length + 13];
 		}
 
 		JsonSerializer ser = new JsonSerializer { Formatting = Formatting.Indented };
@@ -59,7 +58,6 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		}
 
 		byte[] savebuff;
-		byte[] savebuff2;
 
 		public void SaveStateBinary(BinaryWriter writer)
 		{
@@ -84,18 +82,6 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 			var d = BinaryQuickSerializer.Create<TextStateData>(reader);
 			LoadTextStateData(d);
-		}
-
-		public byte[] SaveStateBinary()
-		{
-			using var ms = new MemoryStream(savebuff2, true);
-			using var bw = new BinaryWriter(ms);
-			SaveStateBinary(bw);
-			bw.Flush();
-			if (ms.Position != savebuff2.Length)
-				throw new InvalidOperationException();
-			ms.Close();
-			return savebuff2;
 		}
 	}
 }

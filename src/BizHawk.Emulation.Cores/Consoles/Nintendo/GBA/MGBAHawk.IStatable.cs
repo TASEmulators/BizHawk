@@ -8,9 +8,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 	public partial class MGBAHawk : IStatable
 	{
 		private byte[] _savebuff = new byte[0];
-		private byte[] _savebuff2 = new byte[13];
 
-		private void StartSaveStateBinaryInternal()
+		public void SaveStateBinary(BinaryWriter writer)
 		{
 			IntPtr p = IntPtr.Zero;
 			int size = 0;
@@ -22,14 +21,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			if (size != _savebuff.Length)
 			{
 				_savebuff = new byte[size];
-				_savebuff2 = new byte[size + 13];
 			}
 
 			LibmGBA.BizFinishGetState(p, _savebuff, size);
-		}
 
-		private void FinishSaveStateBinaryInternal(BinaryWriter writer)
-		{
 			writer.Write(_savebuff.Length);
 			writer.Write(_savebuff, 0, _savebuff.Length);
 
@@ -39,19 +34,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			writer.Write(Frame);
 		}
 
-		public void SaveStateBinary(BinaryWriter writer)
-		{
-			StartSaveStateBinaryInternal();
-			FinishSaveStateBinaryInternal(writer);
-		}
-
 		public void LoadStateBinary(BinaryReader reader)
 		{
 			int length = reader.ReadInt32();
 			if (length != _savebuff.Length)
 			{
 				_savebuff = new byte[length];
-				_savebuff2 = new byte[length + 13];
 			}
 
 			reader.Read(_savebuff, 0, length);
@@ -64,17 +52,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			IsLagFrame = reader.ReadBoolean();
 			LagCount = reader.ReadInt32();
 			Frame = reader.ReadInt32();
-		}
-
-		public byte[] SaveStateBinary()
-		{
-			StartSaveStateBinaryInternal();
-			using var ms = new MemoryStream(_savebuff2, true);
-			using var bw = new BinaryWriter(ms);
-			FinishSaveStateBinaryInternal(bw);
-			bw.Flush();
-			ms.Close();
-			return _savebuff2;
 		}
 	}
 }

@@ -29,7 +29,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		}
 		protected delegate void ControllerThunk(IController c, byte[] b);
 
-		protected class ControllerAdapter : IBinaryStateable
+		protected class ControllerAdapter : IStatable
 		{
 			/// <summary>
 			/// Device list suitable to pass back to the core
