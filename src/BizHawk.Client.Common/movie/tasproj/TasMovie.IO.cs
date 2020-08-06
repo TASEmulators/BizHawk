@@ -43,7 +43,7 @@ namespace BizHawk.Client.Common
 
 			if (TasStateManager.Settings.SaveStateHistory && !isBackup)
 			{
-				bs.PutLump(BinaryStateLump.StateHistory, bw => TasStateManager.Save(bw));
+				bs.PutLump(BinaryStateLump.StateHistory, bw => TasStateManager.SaveStateHistory(bw));
 			}
 		}
 
@@ -56,7 +56,7 @@ namespace BizHawk.Client.Common
 		private void ClearTasprojExtras()
 		{
 			LagLog.Clear();
-			TasStateManager.Clear();
+			TasStateManager?.Clear();
 			Markers.Clear();
 			ChangeLog.Clear();
 		}
@@ -64,9 +64,17 @@ namespace BizHawk.Client.Common
 		protected override void LoadFields(ZipStateLoader bl, bool preload)
 		{
 			LoadBk2Fields(bl, preload);
+
 			if (!preload)
 			{
-				LoadTasprojExtras(bl);
+				if (MovieService.IsCurrentTasVersion(Header[HeaderKeys.MovieVersion]))
+				{
+					LoadTasprojExtras(bl);
+				}
+				else
+				{
+					Session.PopupMessage("The current .tasproj is compatible with this version of BizHawk! .tasproj features failed to load.");
+				}
 			}
 		}
 		
@@ -82,7 +90,8 @@ namespace BizHawk.Client.Common
 				var json = tr.ReadToEnd();
 				try
 				{
-					TasStateManager.Settings = JsonConvert.DeserializeObject<TasStateManagerSettings>(json);
+					var settings = JsonConvert.DeserializeObject<ZwinderStateManagerSettings>(json);
+					TasStateManager.UpdateSettings(settings);
 				}
 				catch
 				{
@@ -160,7 +169,7 @@ namespace BizHawk.Client.Common
 			{
 				bl.GetLump(BinaryStateLump.StateHistory, false, delegate(BinaryReader br, long length)
 				{
-					TasStateManager.Load(br);
+					TasStateManager = ZwinderStateManager.Create(br, TasStateManager.Settings);
 				});
 			}
 		}

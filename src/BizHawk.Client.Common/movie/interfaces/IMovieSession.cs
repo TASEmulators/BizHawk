@@ -78,5 +78,7 @@ namespace BizHawk.Client.Common
 		IMovie Get(string path);
 
 		string BackupDirectory { get; set; }
+
+		void PopupMessage(string message);
 	}
 }

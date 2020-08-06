@@ -321,7 +321,7 @@ namespace BizHawk.Client.EmuHawk
 				&& (Clipboard.GetDataObject()?.GetDataPresent(DataFormats.StringFormat) ?? false);
 
 			ClearGreenzoneMenuItem.Enabled =
-				CurrentTasMovie != null && CurrentTasMovie.TasStateManager.Any();
+				CurrentTasMovie != null && CurrentTasMovie.TasStateManager.Count > 1;
 
 			GreenzoneICheckSeparator.Visible =
 				StateHistoryIntegrityCheckMenuItem.Visible =
@@ -997,18 +997,23 @@ namespace BizHawk.Client.EmuHawk
 			UpdateChangesIndicator();
 		}
 
+		private void UpdateStateSettings(ZwinderStateManagerSettings settings)
+		{
+			Config.Movies.DefaultTasStateManagerSettings = settings;
+			CurrentTasMovie.TasStateManager.UpdateSettings(settings);
+		}
+
 		private void StateHistorySettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			new DefaultGreenzoneSettings(
-				CurrentTasMovie.TasStateManager.Settings,
-				s => { CurrentTasMovie.TasStateManager.Settings = s; })
+				new ZwinderStateManagerSettings(Config.Movies.DefaultTasStateManagerSettings),
+				UpdateStateSettings)
 			{
 				Location = this.ChildPointToScreen(TasView),
 				Text = "Savestate History Settings",
 				Owner = Owner
 			}.ShowDialog();
 
-			CurrentTasMovie.TasStateManager.UpdateStateFrequency();
 			UpdateChangesIndicator();
 		}
 
@@ -1027,7 +1032,7 @@ namespace BizHawk.Client.EmuHawk
 		private void DefaultStateSettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			new DefaultGreenzoneSettings(
-				new TasStateManagerSettings(Config.Movies.DefaultTasStateManagerSettings),
+				new ZwinderStateManagerSettings(Config.Movies.DefaultTasStateManagerSettings),
 				s => { Config.Movies.DefaultTasStateManagerSettings = s; })
 			{
 				Location = this.ChildPointToScreen(TasView),

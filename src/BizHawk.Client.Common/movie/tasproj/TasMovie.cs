@@ -12,16 +12,18 @@ namespace BizHawk.Client.Common
 		public new const string Extension = "tasproj";
 		private IInputPollable _inputPollable;
 
+		public const double CurrentVersion = 1.1;
+
 		/// <exception cref="InvalidOperationException">loaded core does not implement <see cref="IStatable"/></exception>
 		internal TasMovie(IMovieSession session, string path) : base(session, path)
 		{
 			Branches = new TasBranchCollection(this);
 			ChangeLog = new TasMovieChangeLog(this);
-			TasStateManager = new TasStateManager(this, session.Settings.DefaultTasStateManagerSettings);
-			Header[HeaderKeys.MovieVersion] = "BizHawk v2.0 Tasproj v1.0";
+			Header[HeaderKeys.MovieVersion] = $"BizHawk v2.0 Tasproj v{CurrentVersion}";
 			Markers = new TasMovieMarkerList(this);
 			Markers.CollectionChanged += Markers_CollectionChanged;
 			Markers.Add(0, "Power on");
+			TasStateManager = new ZwinderStateManager();
 		}
 
 		public override void Attach(IEmulator emulator)
@@ -37,7 +39,17 @@ namespace BizHawk.Client.Common
 			}
 
 			_inputPollable = emulator.AsInputPollable();
-			TasStateManager.Attach(emulator);
+
+			if (StartsFromSavestate)
+			{
+				TasStateManager.Engage(BinarySavestate);
+			}
+			else
+			{
+				var ms = new MemoryStream();
+				emulator.AsStatable().SaveStateBinary(new BinaryWriter(ms));
+				TasStateManager.Engage(ms.ToArray());
+			}
 
 			base.Attach(emulator);
 
@@ -71,7 +83,9 @@ namespace BizHawk.Client.Common
 		public TasLagLog LagLog { get; } = new TasLagLog();
 
 		public override string PreferredExtension => Extension;
-		public IStateManager TasStateManager { get; }
+		public IStateManager TasStateManager { get; private set; }
+
+		public Action<int> GreenzoneInvalidated { get; set; }
 
 		public ITasMovieRecord this[int index]
 		{
@@ -111,6 +125,7 @@ namespace BizHawk.Client.Common
 		{
 			var anyLagInvalidated = LagLog.RemoveFrom(frame);
 			var anyStateInvalidated = TasStateManager.Invalidate(frame + 1);
+			GreenzoneInvalidated(frame + 1);
 			if (anyLagInvalidated || anyStateInvalidated)
 			{
 				Changes = true;
@@ -172,7 +187,7 @@ namespace BizHawk.Client.Common
 
 			if (!TasStateManager.HasState(Emulator.Frame))
 			{
-				TasStateManager.Capture(Emulator.Frame == LastEditedFrame - 1);
+				TasStateManager.Capture(Emulator.Frame, Emulator.AsStatable(), Emulator.Frame == LastEditedFrame - 1);
 			}
 		}
 
@@ -270,6 +285,7 @@ namespace BizHawk.Client.Common
 			{
 				LagLog.RemoveFrom(timelineBranchFrame.Value);
 				TasStateManager.Invalidate(timelineBranchFrame.Value);
+				GreenzoneInvalidated(timelineBranchFrame.Value);
 			}
 
 			return true;

@@ -7,7 +7,7 @@
 		public bool MoviesOnDisk { get; }
 		public int MovieCompressionLevel { get; }
 		public bool VBAStyleMovieLoadState { get; }
-		TasStateManagerSettings DefaultTasStateManagerSettings { get; }
+		ZwinderStateManagerSettings DefaultTasStateManagerSettings { get; }
 	}
 
 	public class MovieConfig : IMovieConfig
@@ -18,6 +18,6 @@
 		public int MovieCompressionLevel { get; set; } = 2;
 		public bool VBAStyleMovieLoadState { get; set; }
 
-		public TasStateManagerSettings DefaultTasStateManagerSettings { get; set; } = new TasStateManagerSettings();
+		public ZwinderStateManagerSettings DefaultTasStateManagerSettings { get; set; } = new ZwinderStateManagerSettings();
 	}
 }

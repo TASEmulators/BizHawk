@@ -27,6 +27,7 @@ namespace BizHawk.Client.Common
 			if (this.IsRecording())
 			{
 				TasStateManager.Invalidate(frame + 1);
+				GreenzoneInvalidated(frame + 1);
 			}
 
 			if (frame != 0)
@@ -49,6 +50,7 @@ namespace BizHawk.Client.Common
 
 			LagLog.RemoveFrom(frame);
 			TasStateManager.Invalidate(frame);
+			GreenzoneInvalidated(frame);
 			Markers.TruncateAt(frame);
 
 			ChangeLog.SetGeneralRedo();

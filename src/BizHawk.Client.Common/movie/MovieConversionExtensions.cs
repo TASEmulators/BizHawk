@@ -135,7 +135,7 @@ namespace BizHawk.Client.Common
 				}
 			}
 
-			tas.TasStateManager.Settings = old.TasStateManager.Settings;
+			tas.TasStateManager.UpdateSettings(old.TasStateManager.Settings);
 
 			tas.Save();
 			return tas;
@@ -176,7 +176,7 @@ namespace BizHawk.Client.Common
 				tas.Subtitles.Add(sub);
 			}
 
-			tas.TasStateManager.Settings = old.TasStateManager.Settings;
+			tas.TasStateManager.UpdateSettings(old.TasStateManager.Settings);
 
 			tas.Save();
 			return tas;

@@ -7,10 +7,10 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class DefaultGreenzoneSettings : Form
 	{
-		private readonly Action<TasStateManagerSettings> _saveSettings;
-		private TasStateManagerSettings _settings;
+		private readonly Action<ZwinderStateManagerSettings> _saveSettings;
+		private ZwinderStateManagerSettings _settings;
 
-		public DefaultGreenzoneSettings(TasStateManagerSettings settings, Action<TasStateManagerSettings> saveSettings)
+		public DefaultGreenzoneSettings(ZwinderStateManagerSettings settings, Action<ZwinderStateManagerSettings> saveSettings)
 		{
 			InitializeComponent();
 			Icon = Properties.Resources.TAStudioIcon;
@@ -33,7 +33,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DefaultsButton_Click(object sender, EventArgs e)
 		{
-			_settings = new TasStateManagerSettings();
+			_settings = new ZwinderStateManagerSettings();
 			SettingsPropertyGrid.SelectedObject = _settings;
 		}
 	}

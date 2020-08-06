@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Client.Common
 {
@@ -16,6 +18,41 @@ namespace BizHawk.Client.Common
 		public static bool IsValidMovieExtension(string ext)
 		{
 			return MovieExtensions.Contains(ext.ToLower().Replace(".", ""));
+		}
+
+		public static bool IsCurrentTasVersion(string movieVersion)
+		{
+			var actual = ParseTasMovieVersion(movieVersion);
+			return actual.HawkFloatEquality(TasMovie.CurrentVersion);
+		}
+
+		internal static double ParseTasMovieVersion(string movieVersion)
+		{
+			if (string.IsNullOrWhiteSpace(movieVersion))
+			{
+				return 1.0F;
+			}
+
+			var split = movieVersion
+				.ToLower()
+				.Split(new[] {"tasproj"}, StringSplitOptions.RemoveEmptyEntries);
+
+			if (split.Length == 1)
+			{
+				return 1.0F;
+			}
+
+			var versionStr = split[1]
+				.Trim()
+				.Replace("v", "");
+
+			var result = double.TryParse(versionStr, out double version);
+			if (result)
+			{
+				return version;
+			}
+
+			return 1.0F;
 		}
 	}
 }

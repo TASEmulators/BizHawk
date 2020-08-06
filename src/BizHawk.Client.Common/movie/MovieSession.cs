@@ -311,7 +311,7 @@ namespace BizHawk.Client.Common
 			return new Bk2Movie(this, path);
 		}
 
-		private void PopupMessage(string message)
+		public void PopupMessage(string message)
 		{
 			_popupCallback?.Invoke(message);
 		}
