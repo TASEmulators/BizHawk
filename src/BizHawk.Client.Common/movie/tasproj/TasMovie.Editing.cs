@@ -111,18 +111,18 @@ namespace BizHawk.Client.Common
 			{
 				// Separate the given frames into contiguous blocks
 				// and process each block independently
-				List<int> framesToDelete = frames.OrderBy(f => f).ToList();
+				List<int> framesToDelete = frames.OrderBy(fr => fr).ToList();
 				// f is the current index for framesToDelete
-				int startFrame, prevFrame, frame;
 				int f = 0;
 				int numDeleted = 0;
 				while (numDeleted != framesToDelete.Count)
 				{
-					prevFrame = startFrame = framesToDelete[f];
+					int startFrame;
+					var prevFrame = startFrame = framesToDelete[f];
 					f++;
 					for (; f < framesToDelete.Count; f++)
 					{
-						frame = framesToDelete[f];
+						var frame = framesToDelete[f];
 						if (frame - 1 != prevFrame)
 						{
 							f--;
@@ -183,8 +183,7 @@ namespace BizHawk.Client.Common
 
 		public void InsertInput(int frame, string inputState)
 		{
-			var inputLog = new List<string>();
-			inputLog.Add(inputState);
+			var inputLog = new List<string> { inputState };
 			InsertInput(frame, inputLog); // ChangeLog handled within
 		}
 

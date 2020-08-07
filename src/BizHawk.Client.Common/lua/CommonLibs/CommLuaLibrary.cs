@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Net.WebSockets;
 using System.Text;
 
@@ -48,7 +47,7 @@ namespace BizHawk.Client.Common
 		public string SocketServerScreenShotResponse()
 		{
 			CheckSocketServer();
-			return APIs.Comm.Sockets?.SendScreenshot(1000).ToString();
+			return APIs.Comm.Sockets?.SendScreenshot(1000);
 		}
 
 		[LuaMethod("socketServerSend", "sends a string to the Socket server")]
@@ -110,11 +109,9 @@ namespace BizHawk.Client.Common
 		[LuaMethod("socketServerGetInfo", "returns the IP and port of the Lua socket server")]
 		public string SocketServerGetInfo()
 		{
-			if (!CheckSocketServer())
-			{
-				return "";
-			}
-			return APIs.Comm.Sockets.GetInfo();
+			return CheckSocketServer()
+				? APIs.Comm.Sockets.GetInfo()
+				: "";
 		}
 
 		private bool CheckSocketServer()
@@ -160,7 +157,7 @@ namespace BizHawk.Client.Common
 		public string MmfRead(string mmf_filename, int expectedSize)
 		{
 			CheckMmf();
-			return APIs.Comm.MMF?.ReadFromFile(mmf_filename, expectedSize).ToString();
+			return APIs.Comm.MMF?.ReadFromFile(mmf_filename, expectedSize);
 		}
 
 		private void CheckMmf()

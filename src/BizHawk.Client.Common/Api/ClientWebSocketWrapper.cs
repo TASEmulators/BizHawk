@@ -12,7 +12,7 @@ namespace BizHawk.Client.Common
 	{
 		private ClientWebSocket? _w;
 
-		/// <summary>calls <see cref="ClientWebSocket.State"/> getter (unless closed/disposed, then <see cref="WebSocketState.Closed"/> is alwars returned)</summary>
+		/// <summary>calls <see cref="ClientWebSocket.State"/> getter (unless closed/disposed, then <see cref="WebSocketState.Closed"/> is always returned)</summary>
 		public WebSocketState State => _w?.State ?? WebSocketState.Closed;
 
 		public ClientWebSocketWrapper(Uri uri, CancellationToken? cancellationToken = null)
@@ -27,7 +27,7 @@ namespace BizHawk.Client.Common
 		{
 			if (_w == null) throw new ObjectDisposedException(nameof(_w));
 			var task = _w.CloseAsync(closeStatus, statusDescription, cancellationToken ?? CancellationToken.None);
-			_w?.Dispose();
+			_w.Dispose();
 			_w = null;
 			return task;
 		}

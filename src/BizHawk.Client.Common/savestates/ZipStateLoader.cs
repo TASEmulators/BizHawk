@@ -109,10 +109,8 @@ namespace BizHawk.Client.Common
 		{
 			if (_entriesByName.TryGetValue(lump.ReadName, out var e))
 			{
-				using (var zs = _zip.GetInputStream(e))
-				{
-					callback(zs, e.Size);
-				}
+				using var zs = _zip.GetInputStream(e);
+				callback(zs, e.Size);
 
 				return true;
 			}

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace BizHawk.Client.Common
+﻿namespace BizHawk.Client.Common
 {
 	public interface ICheatConfig
 	{

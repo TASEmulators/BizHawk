@@ -267,32 +267,23 @@ namespace BizHawk.Client.Common
 
 		protected byte GetByte()
 		{
-			if (!IsValid)
-			{
-				return 0;
-			}
-
-			return _domain.PeekByte(Address);
+			return IsValid
+				? _domain.PeekByte(Address)
+				: (byte) 0;
 		}
 
 		protected ushort GetWord()
 		{
-			if (!IsValid)
-			{
-				return 0;
-			}
-
-			return _domain.PeekUshort(Address, BigEndian);
+			return IsValid
+				? _domain.PeekUshort(Address, BigEndian)
+				: (ushort) 0;
 		}
 
 		protected uint GetDWord()
 		{
-			if (!IsValid)
-			{
-				return 0;
-			}
-
-			return _domain.PeekUint(Address, BigEndian);
+			return IsValid
+				? _domain.PeekUint(Address, BigEndian)
+				: 0;
 		}
 
 		protected void PokeByte(byte val)

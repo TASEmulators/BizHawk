@@ -1,5 +1,4 @@
 ﻿using BizHawk.Emulation.Common;
-using System;
 
 namespace BizHawk.Client.Common
 {
@@ -184,7 +183,7 @@ namespace BizHawk.Client.Common
 				{
 					if (Compare.HasValue)
 					{
-						_watch.Domain.SendCheatToCore((int)Address.Value, (byte)Value, Compare.Value, (int)ComparisonType);						
+						_watch.Domain.SendCheatToCore((int)Address.Value, (byte)Value, Compare.Value, (int)ComparisonType);
 					}
 					else
 					{

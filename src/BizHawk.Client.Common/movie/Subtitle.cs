@@ -53,8 +53,8 @@ namespace BizHawk.Client.Common
 			sb.Append("\r\n");
 
 			// Frame timing
-			double start = (double)Frame;
-			double end = (double)(Frame + Duration);
+			double start = Frame;
+			double end = Frame + Duration;
 
 			int startTime = (int)(start * 1000 / fps);
 			int endTime = (int)(end * 1000 / fps);

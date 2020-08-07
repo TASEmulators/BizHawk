@@ -649,7 +649,7 @@ namespace BizHawk.Client.Common
 		private readonly string _buttonName;
 		private readonly bool _isAxis = false;
 
-		public MovieActionPaint(int startFrame, int endFrame, string button, bool newS, ITasMovie movie)
+		public MovieActionPaint(int startFrame, int endFrame, string button, bool newS, IMovie movie)
 		{
 			_newState = newS ? 1 : 0;
 			FirstFrame = startFrame;
@@ -663,7 +663,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public MovieActionPaint(int startFrame, int endFrame, string button, int newS, ITasMovie movie)
+		public MovieActionPaint(int startFrame, int endFrame, string button, int newS, IMovie movie)
 		{
 			_newState = newS;
 			FirstFrame = startFrame;
@@ -740,7 +740,6 @@ namespace BizHawk.Client.Common
 		public void Undo(ITasMovie movie)
 		{
 			bool wasRecording = movie.ChangeLog.IsRecording;
-			bool wasBinding = movie.BindMarkersToInput;
 			movie.ChangeLog.IsRecording = false;
 			movie.BindMarkersToInput = _bindMarkers;
 
@@ -762,7 +761,6 @@ namespace BizHawk.Client.Common
 		public void Redo(ITasMovie movie)
 		{
 			bool wasRecording = movie.ChangeLog.IsRecording;
-			bool wasBinding = movie.BindMarkersToInput;
 			movie.ChangeLog.IsRecording = false;
 			movie.BindMarkersToInput = _bindMarkers;
 

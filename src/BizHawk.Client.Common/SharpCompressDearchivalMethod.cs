@@ -1,13 +1,9 @@
 #nullable enable
 
-using System;
 using System.IO;
 using System.Linq;
-
 using BizHawk.Common;
-
 using SharpCompress.Archives;
-using SharpCompress.Common;
 
 namespace BizHawk.Client.Common
 {

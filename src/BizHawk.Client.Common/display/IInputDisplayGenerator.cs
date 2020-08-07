@@ -39,7 +39,7 @@ namespace BizHawk.Client.Common
 					{
 						if (_source.Definition.Axes.TryGetValue(button, out var range))
 						{
-							var val = (int)_source.AxisValue(button);
+							var val = _source.AxisValue(button);
 
 							if (val == range.Mid)
 							{

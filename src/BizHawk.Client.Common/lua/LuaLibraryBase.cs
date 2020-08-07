@@ -64,7 +64,7 @@ namespace BizHawk.Client.Common
 				null => null,
 				double d => Color.FromArgb((int) (long) d),
 				string s => Color.FromName(s),
-				_ => (Color?) null
+				_ => null
 			};
 		}
 

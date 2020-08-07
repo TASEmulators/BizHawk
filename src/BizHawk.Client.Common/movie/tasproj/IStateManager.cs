@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using BizHawk.Emulation.Common;
 
@@ -22,9 +21,6 @@ namespace BizHawk.Client.Common
 		/// Unless force is true, the state may or may not be captured depending on the logic employed by "green-zone" management
 		/// </summary>
 		void Capture(int frame, IStatable source, bool force = false);
-
-		// TODO: should this be used for markers?
-		//void CaptureHighPriority(int frame, IStatable source);
 
 		bool HasState(int frame);
 

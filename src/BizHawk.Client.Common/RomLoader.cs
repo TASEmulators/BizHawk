@@ -497,7 +497,7 @@ namespace BizHawk.Client.Common
 						})
 						.ToList(),
 					Discs = xmlGame.AssetFullPaths
-						.Where(path => Disc.IsValidExtension(Path.GetExtension(path)))
+						.Where(p => Disc.IsValidExtension(Path.GetExtension(p)))
 						.Select(path => new
 						{
 							d = DiscExtensions.CreateAnyType(path, str => DoLoadErrorCallback(str, system, LoadErrorType.DiscError)),

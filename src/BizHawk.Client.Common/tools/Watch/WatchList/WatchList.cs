@@ -7,7 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
