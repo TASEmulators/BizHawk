@@ -4,7 +4,7 @@ using System.Linq;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace BizHawk.Common.Tests.Common.MultiPredicateSort
+namespace BizHawk.Tests.Common.MultiPredicateSort
 {
 	[TestClass]
 	public class MultiPredicateSortTests

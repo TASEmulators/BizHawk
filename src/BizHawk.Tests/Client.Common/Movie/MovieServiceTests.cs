@@ -1,7 +1,7 @@
 ﻿using BizHawk.Client.Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace BizHawk.Common.Tests.Client.Common.Movie
+namespace BizHawk.Tests.Client.Common.Movie
 {
 	[TestClass]
 	public class MovieServiceTests

@@ -3,7 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
 
-namespace BizHawk.Common.Tests.Client.Common.Movie
+namespace BizHawk.Tests.Client.Common.Movie
 {
 	[TestClass]
 	public class LogGeneratorTests
