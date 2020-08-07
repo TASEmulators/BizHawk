@@ -104,7 +104,7 @@ namespace BizHawk.Client.EmuHawk
 
 					if (palette.Exists)
 					{
-						var data = Palettes.Load_FCEUX_Palette(HawkFile.ReadAllBytes(palette.Name));
+						var data = Palettes.Load_FCEUX_Palette(palette.ReadAllBytes());
 						if (showMsg)
 						{
 							_mainForm.AddOnScreenMessage($"Palette file loaded: {palette.Name}");
