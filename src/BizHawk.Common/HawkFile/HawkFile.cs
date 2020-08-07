@@ -265,23 +265,9 @@ namespace BizHawk.Common
 
 		public static readonly IReadOnlyCollection<string> CommonNonArchiveExtensions = new[] { ".smc", ".sfc", ".dll" };
 
-		/// <summary>Utility: Uses full HawkFile processing to determine whether a file exists at the provided path</summary>
-		public static bool ExistsAt(string path)
-		{
-			using var file = new HawkFile(path);
-			return file.Exists;
-		}
-
 		[return: HawkFilePath]
 		private static string MakeCanonicalName(string root, string? member) => member == null ? root : $"{root}|{member}";
 
-		/// <summary>reads all the contents of the file at <paramref name="path"/></summary>
-		/// <exception cref="FileNotFoundException">could not find <paramref name="path"/></exception>
-		public static byte[] ReadAllBytes(string path)
-		{
-			using var file = new HawkFile(path);
-			return file.Exists ? file.ReadAllBytes() : throw new FileNotFoundException(path);
-		}
 
 		/// <returns>path / member path pair iff <paramref name="path"/> contains <c>'|'</c>, <see langword="null"/> otherwise</returns>
 		private static (string, string)? SplitArchiveMemberPath([HawkFilePath] string path)
