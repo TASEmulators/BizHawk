@@ -176,7 +176,7 @@
 			this.MarkerView.LagFramesToHide = 0;
 			this.MarkerView.LetKeysModifySelection = false;
 			this.MarkerView.Location = new System.Drawing.Point(6, 19);
-			this.MarkerView.MultiSelect = false;
+			this.MarkerView.MultiSelect = true;
 			this.MarkerView.Name = "MarkerView";
 			this.MarkerView.RowCount = 0;
 			this.MarkerView.ScrollSpeed = 1;
@@ -185,7 +185,6 @@
 			this.MarkerView.TabIndex = 0;
 			this.MarkerView.TabStop = false;
 			this.MarkerView.SelectedIndexChanged += new System.EventHandler(this.MarkerView_SelectedIndexChanged);
-			this.MarkerView.MouseClick += new System.Windows.Forms.MouseEventHandler(this.MarkerView_MouseClick);
 			this.MarkerView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.MarkerView_MouseDoubleClick);
 			// 
 			// MarkersGroupBox

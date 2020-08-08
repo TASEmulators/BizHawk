@@ -739,7 +739,7 @@ namespace BizHawk.Client.EmuHawk
 		private void RemoveMarkersMenuItem_Click(object sender, EventArgs e)
 		{
 			CurrentTasMovie.Markers.RemoveAll(m => TasView.SelectedRows.Contains(m.Frame));
-			MarkerControl.ShrinkSelection();
+			MarkerControl.UpdateMarkerCount();
 			RefreshDialog();
 		}
 

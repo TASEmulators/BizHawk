@@ -85,6 +85,10 @@ namespace BizHawk.Client.EmuHawk
 			SetStyle(ControlStyles.Opaque, true);
 			SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
 
+			// Deep in the bowels of winform documentation we discover these are necessary if you want your control to be able to have focus
+			SetStyle(ControlStyles.Selectable, true);
+			SetStyle(ControlStyles.UserMouse, true);
+
 			_renderer = new GdiPlusRenderer(Font);
 
 			UpdateCellSize();
