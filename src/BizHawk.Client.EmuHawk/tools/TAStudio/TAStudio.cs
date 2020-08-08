@@ -137,6 +137,7 @@ namespace BizHawk.Client.EmuHawk
 			BookMarkControl.LoadedCallback = BranchLoaded;
 			BookMarkControl.SavedCallback = BranchSaved;
 			BookMarkControl.RemovedCallback = BranchRemoved;
+			TasView.MouseLeave += TAStudio_MouseLeave;
 		}
 
 		private void Tastudio_Load(object sender, EventArgs e)
@@ -1007,7 +1008,8 @@ namespace BizHawk.Client.EmuHawk
 			
 			if (_playbackInterrupted)
 			{
-				MainForm.UnpauseEmulator(); 
+				MainForm.UnpauseEmulator();
+				_playbackInterrupted = false;
 			}
 		}
 
