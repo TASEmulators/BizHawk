@@ -527,7 +527,7 @@ GPGX_EX int gpgx_init(const char* feromextension,
 	tempsram = alloc_invisible(24 * 1024);
 	bg_pattern_cache = alloc_invisible(0x80000);
 
-	ext.md_cart.rom = alloc_sealed(32 * 1024 * 1024);
+	ext.md_cart.rom = alloc_plain(32 * 1024 * 1024);
 	SZHVC_add = alloc_sealed(131072);
 	SZHVC_sub = alloc_sealed(131072);
 	ym2612_lfo_pm_table = alloc_sealed(131072);
