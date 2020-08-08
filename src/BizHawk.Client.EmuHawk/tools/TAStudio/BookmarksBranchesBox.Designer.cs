@@ -157,7 +157,7 @@
 			this.BranchView.LagFramesToHide = 0;
 			this.BranchView.LetKeysModifySelection = false;
 			this.BranchView.Location = new System.Drawing.Point(6, 19);
-			this.BranchView.MultiSelect = false;
+			this.BranchView.MultiSelect = true;
 			this.BranchView.Name = "BranchView";
 			this.BranchView.RowCount = 0;
 			this.BranchView.ScrollSpeed = 13;

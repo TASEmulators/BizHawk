@@ -103,11 +103,6 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (index >= Branches.Count)
-			{
-				return;
-			}
-
 			text = column.Name switch
 			{
 				BranchNumberColumnName => index.ToString(),
@@ -317,7 +312,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void JumpToBranchToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (SelectedBranch == null)
+			if (!BranchView.AnyRowsSelected)
 			{
 				return;
 			}
@@ -329,39 +324,37 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RemoveBranchToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (SelectedBranch == null)
+			if (!BranchView.AnyRowsSelected)
 			{
 				return;
 			}
 
-			int index = BranchView.SelectedRows.First();
-			if (index == Branches.Current)
+			var indices = BranchView.SelectedRows.ToList();
+			var branches = Branches.ToList();
+			foreach (var index in indices)
 			{
-				Branches.Current = -1;
-			}
-			else if (index < Branches.Current)
-			{
-				Branches.Current--;
+				_backupBranch =  branches[index].Clone();
+				Branches.Remove(branches[index]);
+				RemovedCallback?.Invoke(index);
+				Tastudio.MainForm.AddOnScreenMessage($"Removed branch {index}");
+
+				if (index == Branches.Current)
+				{
+					Branches.Current = -1;
+				}
+				else if (index < Branches.Current)
+				{
+					Branches.Current--;
+				}
 			}
 
-			_backupBranch = SelectedBranch.Clone();
 			UndoBranchToolStripMenuItem.Enabled = UndoBranchButton.Enabled = true;
 			UndoBranchToolStripMenuItem.Text = "Undo Branch Removal";
 			toolTip1.SetToolTip(UndoBranchButton, "Undo Branch Removal");
 			_branchUndo = BranchUndo.Remove;
 
-			Branches.Remove(SelectedBranch);
 			BranchView.RowCount = Branches.Count;
-
-			if (index == Branches.Count)
-			{
-				BranchView.DeselectAll();
-				Select(Branches.Count - 1, true);
-			}
-
-			RemovedCallback?.Invoke(index);
-			Tastudio.RefreshDialog();
-			Tastudio.MainForm.AddOnScreenMessage($"Removed branch {index}");
+			Tastudio.RefreshDialog(refreshBranches: false);
 			MainForm.UpdateStatusSlots();
 		}
 
@@ -597,7 +590,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BranchView_MouseDown(object sender, MouseEventArgs e)
 		{
-			BranchesContextMenu.Close();
 			UpdateButtons();
 
 			if (e.Button == MouseButtons.Left)
