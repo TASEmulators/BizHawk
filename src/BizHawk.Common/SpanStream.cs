@@ -9,8 +9,8 @@ namespace BizHawk.Common
 	/// </summary>
 	public interface ISpanStream
 	{
-		void Write (ReadOnlySpan<byte> buffer);
-		int Read (Span<byte> buffer);
+		void Write(ReadOnlySpan<byte> buffer);
+		int Read(Span<byte> buffer);
 	}
 	public static class SpanStream
 	{

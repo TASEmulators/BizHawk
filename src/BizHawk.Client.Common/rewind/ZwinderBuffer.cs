@@ -27,19 +27,19 @@ namespace BizHawk.Client.Common
 			_sizeMask = Size - 1;
 			_buffer = new byte[Size];
 			_targetFrameLength = settings.TargetFrameLength;
-			_states = new StateInfo[StateMask + 1];
+			_states = new StateInfo[STATEMASK + 1];
 			_useCompression = settings.UseCompression;
 		}
 
 		/// <summary>
 		/// Number of states that could be in the state ringbuffer, Mask for the state ringbuffer
 		/// </summary>
-		private const int StateMask = 16383;
+		private const int STATEMASK = 16383;
 
 		/// <summary>
 		/// How many states are actually in the state ringbuffer
 		/// </summary>
-		public int Count => (_nextStateIndex - _firstStateIndex) & StateMask;
+		public int Count => (_nextStateIndex - _firstStateIndex) & STATEMASK;
 
 		/// <summary>
 		/// total number of bytes used
@@ -73,7 +73,7 @@ namespace BizHawk.Client.Common
 		private readonly StateInfo[] _states;
 		private int _firstStateIndex;
 		private int _nextStateIndex;
-		private int HeadStateIndex => (_nextStateIndex - 1) & StateMask;
+		private int HeadStateIndex => (_nextStateIndex - 1) & STATEMASK;
 
 		private readonly bool _useCompression;
 
@@ -136,7 +136,7 @@ namespace BizHawk.Client.Common
 				if (Count == 0)
 					throw new IOException("A single state must not be larger than the buffer");
 				indexInvalidated?.Invoke(0);
-				_firstStateIndex = (_firstStateIndex + 1) & StateMask;
+				_firstStateIndex = (_firstStateIndex + 1) & STATEMASK;
 				return Count > 0
 					? (_states[_firstStateIndex].Start - start) & _sizeMask
 					: Size;
@@ -156,7 +156,7 @@ namespace BizHawk.Client.Common
 			_states[_nextStateIndex].Frame = frame;
 			_states[_nextStateIndex].Start = start;
 			_states[_nextStateIndex].Size = (int)stream.Length;
-			_nextStateIndex = (_nextStateIndex + 1) & StateMask;
+			_nextStateIndex = (_nextStateIndex + 1) & STATEMASK;
 
 			Util.DebugWriteLine($"Size: {Size >> 20}MiB, Used: {Used >> 20}MiB, States: {Count}");
 		}
@@ -196,7 +196,7 @@ namespace BizHawk.Client.Common
 		{
 			if ((uint)index >= (uint)Count)
 				throw new IndexOutOfRangeException();
-			return new StateInformation(this, (index + _firstStateIndex) & StateMask);
+			return new StateInformation(this, (index + _firstStateIndex) & STATEMASK);
 		}
 
 		/// <summary>
@@ -207,7 +207,7 @@ namespace BizHawk.Client.Common
 		{
 			if ((uint)index > (uint)Count)
 				throw new IndexOutOfRangeException();
-			_nextStateIndex = (index + _firstStateIndex) & StateMask;
+			_nextStateIndex = (index + _firstStateIndex) & STATEMASK;
 			Util.DebugWriteLine($"Size: {Size >> 20}MiB, Used: {Used >> 20}MiB, States: {Count}");
 		}
 
@@ -218,42 +218,43 @@ namespace BizHawk.Client.Common
 			writer.Write(_targetFrameLength);
 			writer.Write(_useCompression);
 
-			writer.Write(_buffer);
-			foreach (var s in _states)
-			{
-				writer.Write(s.Start);
-				writer.Write(s.Size);
-				writer.Write(s.Frame);
-			}
-			writer.Write(_firstStateIndex);
-			writer.Write(_nextStateIndex);
+			SaveStateBodyBinary(writer);
 		}
 
-		// public void LoadStateBinary(BinaryReader reader)
-		// {
-		// 	if (reader.ReadInt64() != Size)
-		// 		throw new InvalidOperationException("Bad format");
-		// 	if (reader.ReadInt64() != _sizeMask)
-		// 		throw new InvalidOperationException("Bad format");
-		// 	if (reader.ReadInt32() != _targetFrameLength)
-		// 		throw new InvalidOperationException("Bad format");
-		// 	if (reader.ReadBoolean() != _useCompression)
-		// 		throw new InvalidOperationException("Bad format");
-
-		// 	LoadStateBodyBinary(reader);
-		// }
+		private void SaveStateBodyBinary(BinaryWriter writer)
+		{
+			writer.Write(Count);
+			for (var i = _firstStateIndex; i != _nextStateIndex; i = (i + 1) & STATEMASK)
+			{
+				writer.Write(_states[i].Frame);
+				writer.Write(_states[i].Size);
+			}
+			if (Count != 0)
+			{
+				var startByte = _states[_firstStateIndex].Start;
+				var endByte = _states[HeadStateIndex].Start + _states[HeadStateIndex].Size;
+				if (startByte > endByte)
+				{
+					writer.BaseStream.Write(_buffer, (int)startByte, (int)(Size - startByte));
+					startByte = 0;
+				}
+				writer.BaseStream.Write(_buffer, (int)startByte, (int)(endByte - startByte));
+			}
+		}
 
 		private void LoadStateBodyBinary(BinaryReader reader)
 		{
-			reader.Read(_buffer, 0, _buffer.Length);
-			for (var i = 0; i < _states.Length; i++)
-			{
-				_states[i].Start = reader.ReadInt64();
-				_states[i].Size = reader.ReadInt32();
-				_states[i].Frame = reader.ReadInt32();
-			}
-			_firstStateIndex = reader.ReadInt32();
+			_firstStateIndex = 0;
 			_nextStateIndex = reader.ReadInt32();
+			long nextByte = 0;
+			for (var i = 0; i < _nextStateIndex; i++)
+			{
+				_states[i].Frame = reader.ReadInt32();
+				_states[i].Size = reader.ReadInt32();
+				_states[i].Start = nextByte;
+				nextByte += _states[i].Size;
+			}
+			reader.Read(_buffer, 0, (int)nextByte);
 		}
 
 		public static ZwinderBuffer Create(BinaryReader reader)
