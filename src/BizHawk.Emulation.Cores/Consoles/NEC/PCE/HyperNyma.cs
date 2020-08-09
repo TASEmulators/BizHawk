@@ -16,21 +16,16 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 
 		[CoreConstructor("PCE", Priority = CorePriority.Low)]
 		[CoreConstructor("SGX", Priority = CorePriority.Low)]
-		public HyperNyma(GameInfo game, byte[] rom, CoreComm comm, string extension,
-			NymaSettings settings, NymaSyncSettings syncSettings, bool deterministic)
-			: base(comm, "PCE", "PC Engine Controller", settings, syncSettings)
-		{
-			_hyperNyma = DoInit<LibHyperNyma>(game, rom, null, "hyper.wbx", extension, deterministic);
-		}
 		[CoreConstructor("PCECD", Priority = CorePriority.Low)]
 		public HyperNyma(CoreLoadParameters<NymaSettings, NymaSyncSettings> lp)
 			: base(lp.Comm, "PCE", "PC Engine Controller", lp.Settings, lp.SyncSettings)
 		{
-			var firmwares = new Dictionary<string, (string, string)>
+			var firmwares = new Dictionary<string, (string, string)>();
+			if (lp.Discs.Count > 0)
 			{
-				{ "FIRMWARE:syscard3.pce", ("PCECD", "Bios") },
-				// { "FIRMWARE:gecard.pce", ("PCECD", "GE-Bios") },
-			};
+				firmwares.Add("FIRMWARE:syscard3.pce", ("PCECD", "Bios"));
+			}
+
 			_hyperNyma = DoInit<LibHyperNyma>(lp, "hyper.wbx", firmwares);
 		}
 

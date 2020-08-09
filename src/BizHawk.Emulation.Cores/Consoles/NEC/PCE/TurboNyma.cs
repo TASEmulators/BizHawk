@@ -18,24 +18,25 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 
 		[CoreConstructor("PCE")]
 		[CoreConstructor("SGX")]
-		public TurboNyma(GameInfo game, byte[] rom, CoreComm comm, string extension,
-			NymaSettings settings, NymaSyncSettings syncSettings, bool deterministic)
-			: base(comm, "PCE", "PC Engine Controller", settings, syncSettings)
-		{
-			if (game["BRAM"])
-				SettingOverrides["pce.disable_bram_hucard"].Default = "0";
-			_turboNyma = DoInit<LibTurboNyma>(game, rom, null, "turbo.wbx", extension, deterministic);
-		}
 		[CoreConstructor("PCECD")]
 		public TurboNyma(CoreLoadParameters<NymaSettings, NymaSyncSettings> lp)
 			: base(lp.Comm, "PCE", "PC Engine Controller", lp.Settings, lp.SyncSettings)
 		{
-			var ids = lp.Discs.Select(dg => dg.DiscType).ToList();
 			var firmwares = new Dictionary<string, (string, string)>();
-			if (ids.Contains(DiscType.TurboCD))
-				firmwares.Add("FIRMWARE:syscard3.pce", ("PCECD", "Bios"));
-			if (ids.Contains(DiscType.TurboGECD))
-				firmwares.Add("FIRMWARE:gecard.pce", ("PCECD", "GE-Bios"));
+			if (lp.Discs.Count > 0)
+			{
+				var ids = lp.Discs.Select(dg => dg.DiscType).ToList();
+				if (ids.Contains(DiscType.TurboCD))
+					firmwares.Add("FIRMWARE:syscard3.pce", ("PCECD", "Bios"));
+				if (ids.Contains(DiscType.TurboGECD))
+					firmwares.Add("FIRMWARE:gecard.pce", ("PCECD", "GE-Bios"));
+			}
+			else if (lp.Roms.Count == 1)
+			{
+				if (lp.Game["BRAM"])
+					SettingOverrides["pce.disable_bram_hucard"].Default = "0";
+			}
+
 			_turboNyma = DoInit<LibTurboNyma>(lp, "turbo.wbx", firmwares);
 		}
 

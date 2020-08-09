@@ -21,95 +21,101 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		IDebuggable, ISettable<PCEngine.PCESettings, PCEngine.PCESyncSettings>, IDriveLight, ICodeDataLogger,
 		IPceGpuView
 	{
-		[CoreConstructor("PCE", Priority = CorePriority.Low)]
-		[CoreConstructor("SGX", Priority = CorePriority.Low)]
-		public PCEngine(GameInfo game, byte[] rom, PCEngine.PCESettings settings, PCEngine.PCESyncSettings syncSettings)
-		{
-			switch (game.System)
-			{
-				default:
-				case "PCE":
-					SystemId = "PCE";
-					Type = NecSystemType.TurboGrafx;
-					break;
-				case "SGX":
-					SystemId = "SGX";
-					Type = NecSystemType.SuperGrafx;
-					break;
-			}
-
-			Settings = (PCESettings)settings ?? new PCESettings();
-			_syncSettings = (PCESyncSettings)syncSettings ?? new PCESyncSettings();
-			Init(game, rom);
-
-			_controllerDeck = new PceControllerDeck(
-				_syncSettings.Port1,
-				_syncSettings.Port2,
-				_syncSettings.Port3,
-				_syncSettings.Port4,
-				_syncSettings.Port5);
-		}
-
 		int IVideoLogicalOffsets.ScreenX => 0;
 
 		int IVideoLogicalOffsets.ScreenY => Settings.TopLine;
 
+		[CoreConstructor("PCE", Priority = CorePriority.Low)]
+		[CoreConstructor("SGX", Priority = CorePriority.Low)]
 		[CoreConstructor("PCECD", Priority = CorePriority.Low)]
 		public PCEngine(CoreLoadParameters<PCESettings, PCESyncSettings> lp)
 		{
-			SystemId = "PCECD";
-			Type = NecSystemType.TurboCD;
-			this.disc = lp.Discs[0].DiscData;
-			Settings = (PCESettings)lp.Settings ?? new PCESettings();
-			_syncSettings = (PCESyncSettings)lp.SyncSettings ?? new PCESyncSettings();
-
-			byte[] rom = lp.Comm.CoreFileProvider.GetFirmwareWithGameInfo("PCECD", "Bios", true, out var biosInfo,
-				"PCE-CD System Card not found. Please check the BIOS settings in Config->Firmwares.");
-
-			if (biosInfo.Status == RomStatus.BadDump)
+			if (lp.Discs.Count == 1 && lp.Roms.Count == 0)
 			{
-				lp.Comm.ShowMessage(
-					"The PCE-CD System Card you have selected is known to be a bad dump. This may cause problems playing PCE-CD games.\n\n"
-					+ "It is recommended that you find a good dump of the system card. Sorry to be the bearer of bad news!");
+				SystemId = "PCECD";
+				Type = NecSystemType.TurboCD;
+				this.disc = lp.Discs[0].DiscData;
+				Settings = (PCESettings)lp.Settings ?? new PCESettings();
+				_syncSettings = (PCESyncSettings)lp.SyncSettings ?? new PCESyncSettings();
+
+				byte[] rom = lp.Comm.CoreFileProvider.GetFirmwareWithGameInfo("PCECD", "Bios", true, out var biosInfo,
+					"PCE-CD System Card not found. Please check the BIOS settings in Config->Firmwares.");
+
+				if (biosInfo.Status == RomStatus.BadDump)
+				{
+					lp.Comm.ShowMessage(
+						"The PCE-CD System Card you have selected is known to be a bad dump. This may cause problems playing PCE-CD games.\n\n"
+						+ "It is recommended that you find a good dump of the system card. Sorry to be the bearer of bad news!");
+				}
+				else if (biosInfo.NotInDatabase)
+				{
+					lp.Comm.ShowMessage(
+						"The PCE-CD System Card you have selected is not recognized in our database. That might mean it's a bad dump, or isn't the correct rom.");
+				}
+				else if (biosInfo["BIOS"] == false)
+				{
+					// zeromus says: someone please write a note about how this could possibly happen.
+					// it seems like this is a relic of using gameDB for storing whether something is a bios? firmwareDB should be handling it now.
+					lp.Comm.ShowMessage(
+						"The PCE-CD System Card you have selected is not a BIOS image. You may have selected the wrong rom. FYI-Please report this to developers, I don't think this error message should happen.");
+				}
+
+				if (biosInfo["SuperSysCard"])
+				{
+					lp.Game.AddOption("SuperSysCard", "");
+				}
+
+				if (lp.Game["NeedSuperSysCard"] && lp.Game["SuperSysCard"] == false)
+				{
+					lp.Comm.ShowMessage(
+						"This game requires a version 3.0 System card and won't run with the system card you've selected. Try selecting a 3.0 System Card in the firmware configuration.");
+					throw new Exception();
+				}
+
+				lp.Game.FirmwareHash = rom.HashSHA1();
+
+				Init(lp.Game, rom);
+
+				// the default RomStatusDetails don't do anything with Disc
+				RomDetails = $"{lp.Game.Name}\r\nDisk partial hash:{new DiscHasher(disc).OldHash()}";
+
+				_controllerDeck = new PceControllerDeck(
+					_syncSettings.Port1,
+					_syncSettings.Port2,
+					_syncSettings.Port3,
+					_syncSettings.Port4,
+					_syncSettings.Port5);
 			}
-			else if (biosInfo.NotInDatabase)
+			else if (lp.Discs.Count == 0 && lp.Roms.Count == 1)
 			{
-				lp.Comm.ShowMessage(
-					"The PCE-CD System Card you have selected is not recognized in our database. That might mean it's a bad dump, or isn't the correct rom.");
+				switch (lp.Game.System)
+				{
+					default:
+					case "PCE":
+						SystemId = "PCE";
+						Type = NecSystemType.TurboGrafx;
+						break;
+					case "SGX":
+						SystemId = "SGX";
+						Type = NecSystemType.SuperGrafx;
+						break;
+				}
+
+				Settings = (PCESettings)lp.Settings ?? new PCESettings();
+				_syncSettings = (PCESyncSettings)lp.SyncSettings ?? new PCESyncSettings();
+				Init(lp.Game, lp.Roms[0].RomData);
+
+				_controllerDeck = new PceControllerDeck(
+					_syncSettings.Port1,
+					_syncSettings.Port2,
+					_syncSettings.Port3,
+					_syncSettings.Port4,
+					_syncSettings.Port5);
 			}
-			else if (biosInfo["BIOS"] == false)
+			else
 			{
-				// zeromus says: someone please write a note about how this could possibly happen.
-				// it seems like this is a relic of using gameDB for storing whether something is a bios? firmwareDB should be handling it now.
-				lp.Comm.ShowMessage(
-					"The PCE-CD System Card you have selected is not a BIOS image. You may have selected the wrong rom. FYI-Please report this to developers, I don't think this error message should happen.");
+				throw new InvalidOperationException("PCEHawk can only load exactly one CD or exactly one ROM");
 			}
-
-			if (biosInfo["SuperSysCard"])
-			{
-				lp.Game.AddOption("SuperSysCard", "");
-			}
-
-			if (lp.Game["NeedSuperSysCard"] && lp.Game["SuperSysCard"] == false)
-			{
-				lp.Comm.ShowMessage(
-					"This game requires a version 3.0 System card and won't run with the system card you've selected. Try selecting a 3.0 System Card in the firmware configuration.");
-				throw new Exception();
-			}
-
-			lp.Game.FirmwareHash = rom.HashSHA1();
-
-			Init(lp.Game, rom);
-
-			// the default RomStatusDetails don't do anything with Disc
-			RomDetails = $"{lp.Game.Name}\r\nDisk partial hash:{new DiscHasher(disc).OldHash()}";
-
-			_controllerDeck = new PceControllerDeck(
-				_syncSettings.Port1,
-				_syncSettings.Port2,
-				_syncSettings.Port3,
-				_syncSettings.Port4,
-				_syncSettings.Port5);
 		}
 
 		public string RomDetails { get; }
