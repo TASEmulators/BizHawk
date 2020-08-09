@@ -7,6 +7,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 {
 	unsafe partial class MelonDS : IStatable
 	{
+		private byte[] _stateBuffer = new byte[0];
+
 		public void LoadStateBinary(BinaryReader reader)
 		{
 			var mStream = new MemoryStream();
@@ -27,15 +29,18 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		public void SaveStateBinary(BinaryWriter writer)
 		{
-			// TODO: can we do this without a making a copy of the byte buffer?
 			int len = GetSavestateSize();
-			byte[] data = new byte[len];
-			fixed (byte* ptr = data)
+			if (len > _stateBuffer.Length)
+			{
+				_stateBuffer = new byte[len];
+			}
+
+			fixed (byte* ptr = _stateBuffer)
 			{
 				GetSavestateData(ptr, len);
 			}
 
-			writer.Write(data);
+			writer.Write(_stateBuffer, 0, len);
 		}
 
 		[DllImport(dllPath)]
