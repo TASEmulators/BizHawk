@@ -333,23 +333,7 @@ namespace BizHawk.Client.Common
 
 		private IEmulator MakeCoreFromCoreInventory(CoreInventoryParameters cip)
 		{
-			var preferredSystem = cip.Game.System;
-			if (preferredSystem == "GBC")
-			{
-				preferredSystem = "GB";
-			}
-
-			if (preferredSystem.In("GG", "SG"))
-			{
-				preferredSystem = "SMS";
-			}
-
-			if (preferredSystem == "SGX")
-			{
-				preferredSystem = "PCE";
-			}
-
-			_config.PreferredCores.TryGetValue(preferredSystem, out var preferredCore);
+			_config.PreferredCores.TryGetValue(cip.Game.System, out var preferredCore);
 			var forcedCore = cip.Game.ForcedCore;
 			var cores = CoreInventory.Instance.GetCores(cip.Game.System)
 				.OrderBy(c =>
