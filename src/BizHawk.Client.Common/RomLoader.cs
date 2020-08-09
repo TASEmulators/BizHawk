@@ -278,7 +278,7 @@ namespace BizHawk.Client.Common
 
 					case DiscType.TurboGECD:
 					case DiscType.TurboCD:
-						game.System = "PCECD";
+						game.System = "PCE";
 						break;
 
 					case DiscType.Amiga:
