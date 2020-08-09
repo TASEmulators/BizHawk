@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
@@ -17,10 +18,6 @@ namespace BizHawk.Client.Common
 		private readonly Action<string> _popupCallback;
 
 		private IMovie _queuedMovie;
-
-		// Previous saved core preferences. Stored here so that when a movie
-		// overrides the values, they can be restored to user preferences 
-		private readonly IDictionary<string, string> _preferredCores = new Dictionary<string, string>();
 
 		public MovieSession(
 			IMovieConfig settings,
@@ -206,20 +203,15 @@ namespace BizHawk.Client.Common
 
 			if (!record)
 			{
-				if (preferredCores.ContainsKey(systemId))
+				if (string.IsNullOrWhiteSpace(movie.Core))
 				{
-					string movieCore = preferredCores[systemId];
-					if (string.IsNullOrWhiteSpace(movie.Core))
-					{
-						PopupMessage($"No core specified in the movie file, using the preferred core {preferredCores[systemId]} instead.");
-					}
-					else
-					{
-						movieCore = movie.Core;
-					}
-
-					_preferredCores[systemId] = preferredCores[systemId];
-					preferredCores[systemId] = movieCore;
+					PopupMessage($"No core specified in the movie file, using the preferred core {preferredCores[systemId]} instead.");
+				}
+				else
+				{
+					var keys = preferredCores.Keys.ToList();
+					foreach (var k in keys)
+						preferredCores[k] = movie.Core;
 				}
 			}
 
@@ -235,13 +227,9 @@ namespace BizHawk.Client.Common
 			_queuedMovie = movie;
 		}
 
-		public void RunQueuedMovie(bool recordMode, IEmulator emulator, IDictionary<string, string> preferredCores)
+		public void RunQueuedMovie(bool recordMode, IEmulator emulator)
 		{
 			MovieController = new Bk2Controller(emulator.ControllerDefinition);
-			foreach (var previousPref in _preferredCores)
-			{
-				preferredCores[previousPref.Key] = previousPref.Value;
-			}
 
 			Movie = _queuedMovie;
 			Movie.Attach(emulator);

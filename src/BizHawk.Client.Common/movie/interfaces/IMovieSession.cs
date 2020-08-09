@@ -66,7 +66,7 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Sets the Movie property with the QueuedMovie, clears the queued movie, and starts the new movie
 		/// </summary>
-		void RunQueuedMovie(bool recordMode, IEmulator emulator, IDictionary<string, string> preferredCores);
+		void RunQueuedMovie(bool recordMode, IEmulator emulator);
 
 		void StopMovie(bool saveChanges = true);
 

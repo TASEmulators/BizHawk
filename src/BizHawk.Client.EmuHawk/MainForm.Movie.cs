@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
@@ -15,25 +16,33 @@ namespace BizHawk.Client.EmuHawk
 				throw new ArgumentNullException($"{nameof(movie)} cannot be null.");
 			}
 
+			var oldPreferredCores = new Dictionary<string, string>(Config.PreferredCores);
 			try
 			{
-				MovieSession.QueueNewMovie(movie, record, Emulator.SystemId, Config.PreferredCores);
+				try
+				{
+					MovieSession.QueueNewMovie(movie, record, Emulator.SystemId, Config.PreferredCores);
+				}
+				catch (MoviePlatformMismatchException ex)
+				{
+					using var ownerForm = new Form { TopMost = true };
+					MessageBox.Show(ownerForm, ex.Message, "Movie/Platform Mismatch", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					return false;
+				}
+
+				if (!_isLoadingRom)
+				{
+					RebootCore();
+				}
+
+				Config.RecentMovies.Add(movie.Filename);
+
+				MovieSession.RunQueuedMovie(record, Emulator);
 			}
-			catch (MoviePlatformMismatchException ex)
+			finally
 			{
-				using var ownerForm = new Form { TopMost = true };
-				MessageBox.Show(ownerForm, ex.Message, "Movie/Platform Mismatch", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				return false;
+				Config.PreferredCores = oldPreferredCores;
 			}
-
-			if (!_isLoadingRom)
-			{
-				RebootCore();
-			}
-
-			Config.RecentMovies.Add(movie.Filename);
-
-			MovieSession.RunQueuedMovie(record, Emulator, Config.PreferredCores);
 
 			SetMainformMovieInfo();
 
