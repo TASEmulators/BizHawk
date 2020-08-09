@@ -368,7 +368,7 @@ namespace BizHawk.Client.Common
 			throw new AggregateException("No core could load the game", exceptions);
 		}
 
-		private void LoadOther(string path, CoreComm nextComm, HawkFile file, out IEmulator nextEmulator, out RomGame rom, out GameInfo game, out bool cancel)
+		private void LoadOther(CoreComm nextComm, HawkFile file, out IEmulator nextEmulator, out RomGame rom, out GameInfo game, out bool cancel)
 		{
 			cancel = false;
 			rom = new RomGame(file);
@@ -657,7 +657,7 @@ namespace BizHawk.Client.Common
 							}
 							else
 							{
-								LoadOther(path, nextComm, file, out nextEmulator, out rom, out game, out cancel); // must be called after LoadXML because of SNES hacks
+								LoadOther(nextComm, file, out nextEmulator, out rom, out game, out cancel); // must be called after LoadXML because of SNES hacks
 							}
 							break;
 					}
