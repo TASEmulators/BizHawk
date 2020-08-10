@@ -10,7 +10,7 @@
 		/// <summary>
 		/// Max amount of buffer space to use in MB
 		/// </summary>
-		int BufferSize { get; }
+		long BufferSize { get; }
 
 		/// <summary>
 		/// Desired frame length (number of emulated frames you can go back before running out of buffer)
@@ -22,7 +22,7 @@
 	{
 		public bool UseCompression { get; set; }
 		public bool Enabled { get; set; } = true;
-		public int BufferSize { get; set; } = 512; // in mb
+		public long BufferSize { get; set; } = 512; // in mb
 		public int TargetFrameLength { get; set; } = 600;
 	}
 }
