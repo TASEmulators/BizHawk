@@ -41,6 +41,8 @@
 			this.label6 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.FullnessLabel = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.groupBox4 = new System.Windows.Forms.GroupBox();
+			this.TargetFrameLengthNumeric = new System.Windows.Forms.NumericUpDown();
+			this.label2 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.EstTimeLabel = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.label11 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.ApproxFramesLabel = new BizHawk.WinForms.Controls.LocLabelEx();
@@ -66,16 +68,14 @@
 			this.label16 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.BackupSavestatesCheckbox = new System.Windows.Forms.CheckBox();
 			this.label12 = new BizHawk.WinForms.Controls.LocLabelEx();
-			this.label2 = new BizHawk.WinForms.Controls.LocLabelEx();
-			this.TargetFrameLengthNumeric = new System.Windows.Forms.NumericUpDown();
 			((System.ComponentModel.ISupportInitialize)(this.BufferSizeUpDown)).BeginInit();
 			this.groupBox4.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.TargetFrameLengthNumeric)).BeginInit();
 			this.groupBox6.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarCompression)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudCompression)).BeginInit();
 			this.groupBox7.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.BigScreenshotNumeric)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.TargetFrameLengthNumeric)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// OK
@@ -132,7 +132,7 @@
 			// 
 			this.BufferSizeUpDown.Location = new System.Drawing.Point(125, 110);
 			this.BufferSizeUpDown.Maximum = new decimal(new int[] {
-            2097512,
+            1024,
             0,
             0,
             0});
@@ -206,6 +206,34 @@
 			this.groupBox4.TabIndex = 2;
 			this.groupBox4.TabStop = false;
 			this.groupBox4.Text = "RewindSettings";
+			// 
+			// TargetFrameLengthNumeric
+			// 
+			this.TargetFrameLengthNumeric.Location = new System.Drawing.Point(125, 135);
+			this.TargetFrameLengthNumeric.Maximum = new decimal(new int[] {
+            16383,
+            0,
+            0,
+            0});
+			this.TargetFrameLengthNumeric.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+			this.TargetFrameLengthNumeric.Name = "TargetFrameLengthNumeric";
+			this.TargetFrameLengthNumeric.Size = new System.Drawing.Size(52, 20);
+			this.TargetFrameLengthNumeric.TabIndex = 21;
+			this.TargetFrameLengthNumeric.Value = new decimal(new int[] {
+            600,
+            0,
+            0,
+            0});
+			// 
+			// label2
+			// 
+			this.label2.Location = new System.Drawing.Point(12, 138);
+			this.label2.Name = "label2";
+			this.label2.Text = "Desired frame length:";
 			// 
 			// EstTimeLabel
 			// 
@@ -293,7 +321,7 @@
 			this.trackBarCompression.Location = new System.Drawing.Point(22, 37);
 			this.trackBarCompression.Maximum = 9;
 			this.trackBarCompression.Name = "trackBarCompression";
-			this.trackBarCompression.Size = new System.Drawing.Size(157, 45);
+			this.trackBarCompression.Size = new System.Drawing.Size(157, 42);
 			this.trackBarCompression.TabIndex = 1;
 			this.toolTip1.SetToolTip(this.trackBarCompression, "0 = None; 9 = Maximum");
 			this.trackBarCompression.Value = 1;
@@ -436,34 +464,6 @@
 			this.label12.Name = "label12";
 			this.label12.Text = "Compression Level";
 			// 
-			// label2
-			// 
-			this.label2.Location = new System.Drawing.Point(12, 138);
-			this.label2.Name = "label2";
-			this.label2.Text = "Desired frame length:";
-			// 
-			// TargetFrameLengthNumeric
-			// 
-			this.TargetFrameLengthNumeric.Location = new System.Drawing.Point(125, 135);
-			this.TargetFrameLengthNumeric.Maximum = new decimal(new int[] {
-            16383,
-            0,
-            0,
-            0});
-			this.TargetFrameLengthNumeric.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-			this.TargetFrameLengthNumeric.Name = "TargetFrameLengthNumeric";
-			this.TargetFrameLengthNumeric.Size = new System.Drawing.Size(52, 20);
-			this.TargetFrameLengthNumeric.TabIndex = 21;
-			this.TargetFrameLengthNumeric.Value = new decimal(new int[] {
-            600,
-            0,
-            0,
-            0});
-			// 
 			// RewindConfig
 			// 
 			this.AcceptButton = this.OK;
@@ -485,6 +485,7 @@
 			((System.ComponentModel.ISupportInitialize)(this.BufferSizeUpDown)).EndInit();
 			this.groupBox4.ResumeLayout(false);
 			this.groupBox4.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.TargetFrameLengthNumeric)).EndInit();
 			this.groupBox6.ResumeLayout(false);
 			this.groupBox6.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarCompression)).EndInit();
@@ -492,7 +493,6 @@
 			this.groupBox7.ResumeLayout(false);
 			this.groupBox7.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.BigScreenshotNumeric)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.TargetFrameLengthNumeric)).EndInit();
 			this.ResumeLayout(false);
 
 		}
