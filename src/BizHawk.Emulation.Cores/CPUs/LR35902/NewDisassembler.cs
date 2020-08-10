@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 			"DEC  C", // 0d
 			"LD   C,d8", // 0e
 			"RRCA", // 0f
-			"STOP 0", // 10
+			"STOP d8", // 10
 			"LD   DE,d16", // 11
 			"LD   (DE),A", // 12
 			"INC  DE", // 13
