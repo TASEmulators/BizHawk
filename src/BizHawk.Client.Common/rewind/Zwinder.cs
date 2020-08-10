@@ -85,5 +85,10 @@ namespace BizHawk.Client.Common
 		{
 			// this possess no resources to dispose of, but other IRewinder impls might
 		}
+
+		public void Clear()
+		{
+			_buffer.InvalidateEnd(0);
+		}
 	}
 }

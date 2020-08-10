@@ -19,5 +19,7 @@ namespace BizHawk.Client.Common
 
 		void Suspend();
 		void Resume();
+
+		void Clear();
 	}
 }
