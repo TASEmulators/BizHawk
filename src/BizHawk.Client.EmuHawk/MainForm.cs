@@ -888,16 +888,11 @@ namespace BizHawk.Client.EmuHawk
 
 		public void CreateRewinder()
 		{
-			RecreateRewinder();
-			AddOnScreenMessage(Rewinder?.Active == true ? "Rewind started" : "Rewind disabled");
-		}
-
-		void RecreateRewinder()
-		{
 			Rewinder?.Dispose();
 			Rewinder = Emulator.HasSavestates() && Config.Rewind.Enabled
 				? new Zwinder(Emulator.AsStatable(), Config.Rewind)
 				: null;
+			AddOnScreenMessage(Rewinder?.Active == true ? "Rewind started" : "Rewind disabled");
 		}
 
 		private FirmwareManager FirmwareManager => GlobalWin.FirmwareManager;
@@ -3992,7 +3987,7 @@ namespace BizHawk.Client.EmuHawk
 				//so purge rewind history when loading a state while doing a movie
 				if (!IsRewindSlave && MovieSession.Movie.IsActive())
 				{
-					RecreateRewinder();
+					Rewinder?.Clear();
 				}
 
 				if (!suppressOSD)
