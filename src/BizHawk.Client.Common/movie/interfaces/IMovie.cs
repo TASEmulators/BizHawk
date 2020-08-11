@@ -212,8 +212,7 @@ namespace BizHawk.Client.Common
 		void RecordFrame(int frame, IController source);
 
 		/// <summary>
-		/// Instructs the movie to remove all input from its input log after frame,
-		/// After truncating, frame will be the last frame of input in the movie's input log
+		/// Instructs the movie to remove all input from its input log starting with the input at frame.
 		/// </summary>
 		/// <param name="frame">The frame at which to truncate</param>
 		void Truncate(int frame);
