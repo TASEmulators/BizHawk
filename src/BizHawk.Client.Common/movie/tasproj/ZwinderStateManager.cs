@@ -237,7 +237,7 @@ namespace BizHawk.Client.Common
 		{
 			for (var i = 0; i < _highPriority.Count; i++)
 			{
-				if (_highPriority.GetState(i).Frame >= frame)
+				if (_highPriority.GetState(i).Frame > frame)
 				{
 					_highPriority.InvalidateEnd(i);
 					return true;
@@ -250,7 +250,7 @@ namespace BizHawk.Client.Common
 		{
 			for (var i = 0; i < _ancient.Count; i++)
 			{
-				if (_ancient[i].Key >= frame)
+				if (_ancient[i].Key > frame)
 				{
 					_ancient.RemoveRange(i, _ancient.Count - i);
 					_recent.InvalidateEnd(0);
@@ -260,7 +260,7 @@ namespace BizHawk.Client.Common
 			}
 			for (var i = 0; i < _recent.Count; i++)
 			{
-				if (_recent.GetState(i).Frame >= frame)
+				if (_recent.GetState(i).Frame > frame)
 				{
 					_recent.InvalidateEnd(i);
 					_current.InvalidateEnd(0);
@@ -269,7 +269,7 @@ namespace BizHawk.Client.Common
 			}
 			for (var i = 0; i < _current.Count; i++)
 			{
-				if (_current.GetState(i).Frame >= frame)
+				if (_current.GetState(i).Frame > frame)
 				{
 					_current.InvalidateEnd(i);
 					return true;
@@ -284,8 +284,8 @@ namespace BizHawk.Client.Common
 		{
 			if (frame < 0)
 				throw new ArgumentOutOfRangeException(nameof(frame));
-			var b1 = InvalidateNormal(frame + 1);
-			var b2 = InvalidateHighPriority(frame + 1);
+			var b1 = InvalidateNormal(frame);
+			var b2 = InvalidateHighPriority(frame);
 			return b1 || b2;
 		}
 
