@@ -313,7 +313,7 @@
 			this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.label3.Location = new System.Drawing.Point(161, 35);
 			this.label3.Name = "label3";
-			this.label3.Text = "Controls whether cores even generate audio.";
+			this.label3.Text = "Controls whether cores\neven generate audio.";
 			// 
 			// SoundConfig
 			// 
