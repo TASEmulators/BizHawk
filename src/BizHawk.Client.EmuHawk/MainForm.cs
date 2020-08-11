@@ -712,7 +712,7 @@ namespace BizHawk.Client.EmuHawk
 					Close();
 				}
 
-				if (_windowClosedAndSafeToExitProcess)
+				if (IsDisposed || _windowClosedAndSafeToExitProcess)
 				{
 					break;
 				}
