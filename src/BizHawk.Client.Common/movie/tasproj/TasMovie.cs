@@ -124,7 +124,7 @@ namespace BizHawk.Client.Common
 		private void InvalidateAfter(int frame)
 		{
 			var anyLagInvalidated = LagLog.RemoveFrom(frame);
-			var anyStateInvalidated = TasStateManager.Invalidate(frame + 1);
+			var anyStateInvalidated = TasStateManager.InvalidateAfter(frame);
 			GreenzoneInvalidated(frame + 1);
 			if (anyLagInvalidated || anyStateInvalidated)
 			{
@@ -284,7 +284,7 @@ namespace BizHawk.Client.Common
 			if (timelineBranchFrame.HasValue)
 			{
 				LagLog.RemoveFrom(timelineBranchFrame.Value);
-				TasStateManager.Invalidate(timelineBranchFrame.Value);
+				TasStateManager.InvalidateAfter(timelineBranchFrame.Value);
 				GreenzoneInvalidated(timelineBranchFrame.Value);
 			}
 

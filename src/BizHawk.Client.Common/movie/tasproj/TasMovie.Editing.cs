@@ -11,6 +11,9 @@ namespace BizHawk.Client.Common
 
 		public override void RecordFrame(int frame, IController source)
 		{
+			// RetroEdit: This check is questionable; recording at frame 0 is valid and should be reversible.
+			// Also, frame - 1, why?
+			// Is the precondition compensating for frame - 1 reindexing?
 			if (frame != 0)
 			{
 				ChangeLog.AddGeneralUndo(frame - 1, frame - 1, $"Record Frame: {frame}");
@@ -26,7 +29,7 @@ namespace BizHawk.Client.Common
 
 			if (this.IsRecording())
 			{
-				TasStateManager.Invalidate(frame + 1);
+				TasStateManager.InvalidateAfter(frame);
 				GreenzoneInvalidated(frame + 1);
 			}
 
@@ -49,7 +52,7 @@ namespace BizHawk.Client.Common
 			base.Truncate(frame);
 
 			LagLog.RemoveFrom(frame);
-			TasStateManager.Invalidate(frame);
+			TasStateManager.InvalidateAfter(frame);
 			GreenzoneInvalidated(frame);
 			Markers.TruncateAt(frame);
 

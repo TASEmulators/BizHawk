@@ -25,9 +25,9 @@ namespace BizHawk.Client.Common
 		bool HasState(int frame);
 
 		/// <summary>
-		/// Clears out all savestates after or at the given frame number
+		/// Clears out all savestates after the given frame number
 		/// </summary>
-		bool Invalidate(int frame);
+		bool InvalidateAfter(int frame);
 
 		// Remove all states, but not the frame 0 state
 		void Clear();

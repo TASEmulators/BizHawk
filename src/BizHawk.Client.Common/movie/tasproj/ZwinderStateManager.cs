@@ -280,12 +280,12 @@ namespace BizHawk.Client.Common
 
 		public void UpdateSettings(ZwinderStateManagerSettings settings) => Settings = settings;
 
-		public bool Invalidate(int frame)
+		public bool InvalidateAfter(int frame)
 		{
-			if (frame <= 0)
+			if (frame < 0)
 				throw new ArgumentOutOfRangeException(nameof(frame));
-			var b1 = InvalidateNormal(frame);
-			var b2 = InvalidateHighPriority(frame);
+			var b1 = InvalidateNormal(frame + 1);
+			var b2 = InvalidateHighPriority(frame + 1);
 			return b1 || b2;
 		}
 
