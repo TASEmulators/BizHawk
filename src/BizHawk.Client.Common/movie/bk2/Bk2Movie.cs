@@ -6,11 +6,11 @@ using BizHawk.Emulation.Cores;
 
 namespace BizHawk.Client.Common
 {
-	internal partial class Bk2Movie : IMovie
+	public partial class Bk2Movie : IMovie
 	{
 		private Bk2Controller _adapter;
 
-		internal Bk2Movie(IMovieSession session, string filename)
+		public Bk2Movie(IMovieSession session, string filename)
 		{
 			if (string.IsNullOrWhiteSpace(filename))
 			{
