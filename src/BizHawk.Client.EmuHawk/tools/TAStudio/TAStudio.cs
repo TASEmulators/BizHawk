@@ -902,7 +902,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		/// <summary>
-		/// Get a savestate prior to the previous frame so emulation can run and retrieve a framebuffer.
+		/// Get a savestate prior to the previous frame so code following the call can frame advance and have a framebuffer.
 		/// If frame is 0, return the initial state.
 		/// </summary>
 		private KeyValuePair<int,Stream> GetPriorStateForFramebuffer(int frame)
