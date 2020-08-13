@@ -105,9 +105,9 @@ namespace BizHawk.Client.Common
 					_defaultValues = new List<Binding>
 					{
 						Bind("General", "Frame Advance", "F"),
-						Bind("General", "Rewind", "Shift+R, J1 B7, X1 LeftTrigger"),
+						Bind("General", "Rewind", "Shift+R"),
 						Bind("General", "Pause", "Pause"),
-						Bind("General", "Fast Forward", "Tab, J1 B8, X1 RightTrigger"),
+						Bind("General", "Fast Forward", "Tab"),
 						Bind("General", "Turbo", "Shift+Tab"),
 						Bind("General", "Toggle Throttle"),
 						Bind("General", "Soft Reset"),
