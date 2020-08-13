@@ -131,6 +131,10 @@ namespace BizHawk.Client.Common
 				}
 			}
 
+			// RetroEdit: Wait, if this check is ostensibly to account for parsing errors,
+			// why is there a failure condition above for failing to parse the savestate number?
+			// Besides, stateFrame == 0 is a perfectly valid savestate;
+			// it's just a savestate at the beginning of the movie before any inputs.
 			if (stateFrame == 0)
 			{
 				stateFrame = newLog.Count;  // In case the frame count failed to parse, revert to using the entire state input log
@@ -138,8 +142,14 @@ namespace BizHawk.Client.Common
 
 			if (Log.Count < stateFrame)
 			{
+				// RetroEdit: This is questionable; why is loading a state in Finished mode only allowed if we're already in Finished mode?
+				// Loading a state in any case should be equally safe (after all, we're in ReadOnly mode either way).
+				// (CheckTimeLines is only called in ReadOnly mode).
+				// Also, the < is probably an off-by-one error, and should be <=.
+				// Savestate N for an N-length movie is after the last frame, which is input N-1
 				if (this.IsFinished())
 				{
+					// This is probably unreachable; if the movie is ReadOnly, we won't be in Finished mode (at least in current codebase).
 					return true;
 				}
 
@@ -160,6 +170,10 @@ namespace BizHawk.Client.Common
 
 			if (stateFrame > newLog.Count) // stateFrame is greater than state input log, so movie finished mode
 			{
+				// RetroEdit: The prior condition should be >=, not >.
+				// Savestate N for an N-length movie is after the last frame, which is input N-1
+				// Currently, this is unreachable,
+				// because an earlier check above prohibits logs greater than the movie length.
 				if (Mode == MovieMode.Play || Mode == MovieMode.Finished)
 				{
 					Mode = MovieMode.Finished;
@@ -169,6 +183,9 @@ namespace BizHawk.Client.Common
 				return false;
 			}
 
+			// RetroEdit: If the MovieMode was Finished before, there's probably a reason.
+			// It shouldn't just be reverted to Play mode without other checks.
+			// If this *is* even necessary, the logic should be made more explicit.
 			if (Mode == MovieMode.Finished)
 			{
 				Mode = MovieMode.Play;

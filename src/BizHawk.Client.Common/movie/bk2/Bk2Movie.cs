@@ -142,14 +142,15 @@ namespace BizHawk.Client.Common
 
 		public IMovieController GetInputState(int frame)
 		{
-			if (frame < FrameCount && frame >= 0)
+			if (frame >= FrameCount || frame < 0)
 			{
-				_adapter ??= new Bk2Controller(Session.MovieController.Definition);
-				_adapter.SetFromMnemonic(Log[frame]);
-				return _adapter;
+				// RetroEdit: We should consider erroring instead of returning null
+				// The caller should know a movie frame is available before calling.
+				return null;
 			}
-
-			return null;
+			_adapter ??= new Bk2Controller(Session.MovieController.Definition);
+			_adapter.SetFromMnemonic(Log[frame]);
+			return _adapter;
 		}
 
 		public virtual void PokeFrame(int frame, IController source)

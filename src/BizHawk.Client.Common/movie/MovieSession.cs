@@ -69,7 +69,17 @@ namespace BizHawk.Client.Common
 				if (Movie.Emulator.Frame < Movie.FrameCount) // This scenario can happen from rewinding (suddenly we are back in the movie, so hook back up to the movie
 				{
 					Movie.SwitchToPlay();
-					LatchInputToLog();
+					// RetroEdit: This was just copied out of the old LatchInputToLog
+					// The first condition is superfluous to above, and we probably have huge problems if somehow frame < 0
+					var frame = Movie.Emulator.Frame;
+					if (frame >= Movie.FrameCount || frame < 0)
+					{
+						HandleFrameAfter();
+					}
+					else
+					{
+						LatchInputToLog();
+					}
 				}
 				else
 				{
@@ -78,7 +88,15 @@ namespace BizHawk.Client.Common
 			}
 			else if (Movie.IsPlayingOrFinished())
 			{
-				LatchInputToLog();
+				var frame = Movie.Emulator.Frame;
+				if (frame >= Movie.FrameCount || frame < 0)
+				{
+					HandleFrameAfter();
+				}
+				else
+				{
+					LatchInputToLog();
+				}
 
 				if (Movie.IsRecording()) // The movie end situation can cause the switch to record mode, in that case we need to capture some input for this frame
 				{
@@ -147,16 +165,32 @@ namespace BizHawk.Client.Common
 
 			if (ReadOnly)
 			{
+				// RetroEdit: I'm not sure what the input latching immediately after loading a state is useful for.
+				// (It may be obsolete code that was more important in older versions of BizHawk).
+				// Also, movie mode switching logic should probably not be handled here.
+				// It should probably be moved to a reusable robust method, perhaps called UpdateMovieMode.
 				if (Movie.IsRecording())
 				{
 					Movie.SwitchToPlay();
 				}
 				else if (Movie.IsPlayingOrFinished())
 				{
-					LatchInputToLog();
+					var frame = Movie.Emulator.Frame;
+					if (frame >= Movie.FrameCount || frame < 0)
+					{
+						HandleFrameAfter();
+					}
+					else
+					{
+						LatchInputToLog();
+					}
 				}
 				else if (Movie.IsFinished())
 				{
+					// RetroEdit: This code is unreachable for two reasons:
+					// 1. Movies in ReadOnly mode will always load into Play mode, and never Finished mode.
+					// 2. Even if the movie was somehow in Finished and ReadOnly after loading a state,
+					// the prior condition above IsPlayingOrFinished will be taken.
 					LatchInputToUser();
 				}
 			}
@@ -318,12 +352,6 @@ namespace BizHawk.Client.Common
 		private void LatchInputToLog()
 		{
 			var input = Movie.GetInputState(Movie.Emulator.Frame);
-			if (input == null)
-			{
-				HandleFrameAfter();
-				return;
-			}
-
 			MovieController.SetFrom(input);
 			MovieOut.Source = MovieController;
 		}
