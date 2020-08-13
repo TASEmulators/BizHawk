@@ -141,6 +141,7 @@ impl GuestThreadSet {
 	) -> Result<u32, SyscallError> {
 		let tid = self.next_tid;
 
+		let adjusted_rsp;
 		unsafe {
 			// peek inside the pthread struct to find the full area we must mark as stack-protected
 			let pthread = std::slice::from_raw_parts(thread_area as *const usize, 14);
@@ -150,11 +151,7 @@ impl GuestThreadSet {
 			memory_block.mprotect(stack.align_expand(), Protection::RWStack)?;
 
 			// set up data on child_stack:  This thread will begin execution by way of a return from syscall_dispatch
-			// to guest_syscall with the specified value in rsp.  guest_syscall will then `pop rbp ; ret`, so arrange
-			// things for that
-			let child_stack = std::slice::from_raw_parts_mut((guest_rsp - 16) as *mut usize, 2);
-			child_stack[0] = 0; // initial RBP value
-			child_stack[1] = guest_rip; // `ret`
+			adjusted_rsp = context::setup_call_frame(guest_rsp, guest_rip);
 
 			// "return" tid value to caller
 			*parent_tid = tid;
@@ -165,7 +162,7 @@ impl GuestThreadSet {
 			tid,
 			state: ThreadState::Runnable,
 			rax: syscall_ok(0),
-			rsp: guest_rsp - 16,
+			rsp: adjusted_rsp,
 			thread_area,
 			tid_address: child_tid,
 		};

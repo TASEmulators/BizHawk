@@ -10,8 +10,9 @@ pub mod thunks;
 const ORG: usize = 0x35f00000000;
 
 const CALL_GUEST_IMPL_ADDR: usize = ORG;
-const CALL_GUEST_SIMPLE_ADDR: usize = ORG + 0x100;
-const EXTCALL_THUNK_ADDR: usize = ORG + 0x200;
+const SETUP_CALL_FRAME_ADDR: usize = ORG + 0x300;
+const CALL_GUEST_SIMPLE_ADDR: usize = ORG + 0x380;
+const EXTCALL_THUNK_ADDR: usize = ORG + 0x400;
 
 pub const CALLBACK_SLOTS: usize = 64;
 /// Retrieves a function pointer suitable for sending to the guest that will cause
@@ -49,8 +50,15 @@ union FuncCast<T: Copy> {
 const CALL_GUEST_SIMPLE: FuncCast<extern "sysv64" fn(entry_point: usize, context: &mut Context) -> usize> = FuncCast { p: CALL_GUEST_SIMPLE_ADDR };
 /// Enter waterbox code with a function that takes 0 arguments
 /// Returns the function's return value
-pub fn call_guest_simple(entry_point: usize, context: &mut Context) -> usize{
+pub fn call_guest_simple(entry_point: usize, context: &mut Context) -> usize {
 	unsafe { (CALL_GUEST_SIMPLE.f)(entry_point, context) }
+}
+
+const SETUP_CALL_FRAME: FuncCast<extern "sysv64" fn(guest_rsp: usize, entry_point: usize) -> usize> = FuncCast { p: SETUP_CALL_FRAME_ADDR };
+/// Set up a guest stack to be a valid return from syscall
+/// Returns the adjusted guest_rsp that should be placed in the context, so the guest will see the desired rsp when the syscall returns
+pub fn setup_call_frame(guest_rsp: usize, entry_point: usize) -> usize {
+	unsafe { (SETUP_CALL_FRAME.f)(guest_rsp, entry_point) }
 }
 
 /// Allowed type for callback functions that Waterbox cores can make back into the real world.
