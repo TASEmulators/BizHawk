@@ -7,30 +7,10 @@ namespace BizHawk.BizInvoke
 	/// </summary>
 	public interface IMemoryBlockPal : IDisposable
 	{
+		public ulong Start { get; }
 		/// <summary>
-		/// Map in the memory area at the predetermined address.  uncommitted space should be unreadable.
-		/// For all other space, there is no requirement on initial protection value;
-		/// correct protections will be applied via Protect() immediately after this call.
-		/// There is no assumption for the values of WriteStatus either, which will be supplied immediately
-		/// after this call
-		/// </summary>
-		void Activate();
-		/// <summary>
-		/// Unmap the memory area from memory.  All data needs to be preserved for next load.
-		/// </summary>
-		void Deactivate();
-		/// <summary>
-		/// Change protection on [start, start + size), guaranteed to be page aligned and in the committed area.
-		/// Will only be called when active.  Will not be called with RW_Invisible, which is a front end artifact.
+		/// Change protection on [start, start + size), guaranteed to be page aligned and in the allocated area
 		/// </summary>
 		void Protect(ulong start, ulong size, MemoryBlock.Protection prot);
-		/// <summary>
-		/// mark [Block.Start, Block.Start + length) as committed.  Always greater than a previous length;
-		/// no uncommitting is allowed.
-		/// Will only be called when active.
-		/// there is no requirement on initial protection value of any committed memory (newly or otherwise)
-		/// after this call; protections will be applied via Protect() immediately after this call.
-		/// </summary>
-		void Commit(ulong length);
 	}
 }

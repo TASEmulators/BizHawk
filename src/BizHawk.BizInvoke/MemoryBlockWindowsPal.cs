@@ -6,70 +6,24 @@ namespace BizHawk.BizInvoke
 {
 	internal sealed unsafe class MemoryBlockWindowsPal : IMemoryBlockPal
 	{
-		/// <summary>
-		/// handle returned by CreateFileMapping
-		/// </summary>
-		private IntPtr _handle;
-		private ulong _start;
-		private ulong _size;
-		private bool _active;
+		public ulong Start { get; }
+		private readonly ulong _size;
+		private bool _disposed;
 
-		/// <summary>
-		/// Reserve bytes to later be swapped in, but do not map them
-		/// </summary>
-		/// <param name="start">eventual mapped address</param>
-		/// <param name="size"></param>
-		public MemoryBlockWindowsPal(ulong start, ulong size)
+		public MemoryBlockWindowsPal(ulong size)
 		{
-			_start = start;
+			var ptr = (ulong)Kernel32.VirtualAlloc(
+				UIntPtr.Zero, Z.UU(size), Kernel32.AllocationType.MEM_RESERVE | Kernel32.AllocationType.MEM_COMMIT, Kernel32.MemoryProtection.NOACCESS);
+			if (ptr == 0)
+				throw new InvalidOperationException($"{nameof(Kernel32.VirtualAlloc)}() returned NULL");
+			Start = ptr;
 			_size = size;
-			_handle = Kernel32.CreateFileMapping(
-				Kernel32.INVALID_HANDLE_VALUE,
-				IntPtr.Zero,
-				Kernel32.FileMapProtection.PageExecuteReadWrite | Kernel32.FileMapProtection.SectionReserve,
-				(uint)(_size >> 32),
-				(uint)_size,
-				null
-			);
-			if (_handle == IntPtr.Zero)
-			{
-				throw new InvalidOperationException($"{nameof(Kernel32.CreateFileMapping)}() returned NULL");
-			}
-		}
-
-		public void Activate()
-		{
-			if (Kernel32.MapViewOfFileEx(
-					_handle,
-					Kernel32.FileMapAccessType.Read | Kernel32.FileMapAccessType.Write | Kernel32.FileMapAccessType.Execute,
-					0,
-					0,
-					Z.UU(_size),
-					Z.US(_start)
-				) != Z.US(_start))
-			{
-				throw new InvalidOperationException($"{nameof(Kernel32.MapViewOfFileEx)}() returned NULL");
-			}
-			_active = true;
-		}
-
-		public void Deactivate()
-		{
-			if (!Kernel32.UnmapViewOfFile(Z.US(_start)))
-				throw new InvalidOperationException($"{nameof(Kernel32.UnmapViewOfFile)}() returned NULL");
-			_active = false;
 		}
 
 		public void Protect(ulong start, ulong size, Protection prot)
 		{
 			if (!Kernel32.VirtualProtect(Z.UU(start), Z.UU(size), GetKernelMemoryProtectionValue(prot), out var old))
 				throw new InvalidOperationException($"{nameof(Kernel32.VirtualProtect)}() returned FALSE!");
-		}
-
-		public void Commit(ulong length)
-		{
-			if (Kernel32.VirtualAlloc(Z.UU(_start), Z.UU(length), Kernel32.AllocationType.MEM_COMMIT, Kernel32.MemoryProtection.READWRITE) != Z.UU(_start))
-				throw new InvalidOperationException($"{nameof(Kernel32.VirtualAlloc)}() returned NULL!");
 		}
 
 		private static Kernel32.MemoryProtection GetKernelMemoryProtectionValue(Protection prot)
@@ -88,21 +42,11 @@ namespace BizHawk.BizInvoke
 
 		public void Dispose()
 		{
-			if (_handle != IntPtr.Zero)
-			{
-				if (_active)
-				{
-					try
-					{
-						Deactivate();
-					}
-					catch
-					{}
-				}
-				Kernel32.CloseHandle(_handle);
-				_handle = IntPtr.Zero;
-				GC.SuppressFinalize(this);
-			}
+			if (_disposed)
+				return;
+			Kernel32.VirtualFree(Z.UU(Start), UIntPtr.Zero, Kernel32.FreeType.Release);
+			_disposed = true;
+			GC.SuppressFinalize(this);
 		}
 
 		~MemoryBlockWindowsPal()
@@ -222,6 +166,16 @@ namespace BizHawk.BizInvoke
 
 			[DllImport("kernel32.dll")]
 			public static extern UIntPtr VirtualQuery(UIntPtr lpAddress, MEMORY_BASIC_INFORMATION* lpBuffer, UIntPtr dwLength);
+
+			[Flags]
+			public enum FreeType
+			{
+				Decommit = 0x4000,
+				Release = 0x8000,
+			}
+
+			[DllImport("kernel32.dll")]
+			public static extern bool VirtualFree(UIntPtr lpAddress, UIntPtr dwSize, FreeType dwFreeType);
 		}
 	}
 }

@@ -277,8 +277,7 @@ namespace BizHawk.BizInvoke
 			public MsHostSysVGuest()
 			{
 				int size = 4 * 1024 * 1024;
-				_memory = MemoryBlock.Create(0x36a00000000, (ulong)size);
-				_memory.Activate();
+				_memory = new MemoryBlock((ulong)size);
 				_refs = new WeakReference[size / BlockSize];
 			}
 

@@ -7,102 +7,38 @@ namespace BizHawk.BizInvoke
 {
 	internal sealed unsafe class MemoryBlockLinuxPal : IMemoryBlockPal
 	{
-		/*
-		Differences compared with MemoryBlockWindowsPal:
-			1) Commit is handled by only mapping up to the commit size, and then expanding commit is handled by unmap + truncate + remap.
-				So all unmanaged structures (including LinGuard) are always looking at the committed size, not total size.
-			2) Because of sigaltstack, RW_Stack is not needed and is made to behave the same as regular write guarding.
-		*/
-
-		/// <summary>handle returned by <see cref="memfd_create"/></summary>
-		private int _fd = -1;
-		private ulong _start;
-		private ulong _size;
-		private ulong _committedSize;
-		private bool _active;
+		public ulong Start { get; }
+		private readonly ulong _size;
+		private bool _disposed;
 
 		/// <summary>
-		/// Reserve bytes to later be swapped in, but do not map them
+		/// Map some bytes
 		/// </summary>
-		/// <param name="start">eventual mapped address</param>
 		/// <param name="size"></param>
 		/// <exception cref="InvalidOperationException">
-		/// failed to get file descriptor
+		/// failed to mmap
 		/// </exception>
-		public MemoryBlockLinuxPal(ulong start, ulong size)
+		public MemoryBlockLinuxPal(ulong size)
 		{
-			_start = start;
+			var ptr = (ulong)mmap(IntPtr.Zero, Z.UU(size), MemoryProtection.None, 0x22 /* MAP_PRIVATE | MAP_ANON */, -1, IntPtr.Zero);
+			if (ptr == ulong.MaxValue)
+				throw new InvalidOperationException($"{nameof(mmap)}() failed with error {Marshal.GetLastWin32Error()}");
 			_size = size;
-			_fd = memfd_create("MemoryBlockUnix", 1 /*MFD_CLOEXEC*/);
-			if (_fd == -1)
-				throw new InvalidOperationException($"{nameof(memfd_create)}() failed with error {Marshal.GetLastWin32Error()}");
+			Start = ptr;
 		}
 
 		public void Dispose()
 		{
-			if (_fd == -1)
+			if (_disposed)
 				return;
-			if (_active)
-			{
-				try
-				{
-					Deactivate();
-				}
-				catch
-				{}
-			}
-			close(_fd);
-			_fd = -1;
+			munmap(Z.US(Start), Z.UU(_size));
+			_disposed = true;
 			GC.SuppressFinalize(this);
 		}
 
 		~MemoryBlockLinuxPal()
 		{
 			Dispose();
-		}
-
-		public void Activate()
-		{
-			if (_committedSize > 0)
-			{
-				var ptr = mmap(Z.US(_start), Z.UU(_committedSize),
-					MemoryProtection.Read | MemoryProtection.Write | MemoryProtection.Execute,
-					17, // MAP_SHARED | MAP_FIXED
-					_fd, IntPtr.Zero);
-				if (ptr != Z.US(_start))
-				{
-					throw new InvalidOperationException($"{nameof(mmap)}() failed with error {Marshal.GetLastWin32Error()}");
-				}
-			}
-			_active = true;
-		}
-
-		public void Deactivate()
-		{
-			if (_committedSize > 0)
-			{
-				var errorCode = munmap(Z.US(_start), Z.UU(_committedSize));
-				if (errorCode != 0)
-					throw new InvalidOperationException($"{nameof(munmap)}() failed with error {Marshal.GetLastWin32Error()}");
-			}
-			_active = false;
-		}
-
-		public void Commit(ulong newCommittedSize)
-		{
-			var errorCode = ftruncate(_fd, Z.US(newCommittedSize));
-			if (errorCode != 0)
-				throw new InvalidOperationException($"{nameof(ftruncate)}() failed with error {Marshal.GetLastWin32Error()}");
-			// map in the previously unmapped portions contiguously
-			var ptr = mmap(Z.US(_start + _committedSize), Z.UU(newCommittedSize - _committedSize),
-				MemoryProtection.Read | MemoryProtection.Write | MemoryProtection.Execute,
-				17, // MAP_SHARED | MAP_FIXED
-				_fd, Z.US(_committedSize));
-			if (ptr != Z.US(_start + _committedSize))
-			{
-				throw new InvalidOperationException($"{nameof(mmap)}() failed with error {Marshal.GetLastWin32Error()}");
-			}
-			_committedSize = newCommittedSize;
 		}
 
 		private static MemoryProtection ToMemoryProtection(Protection prot)
