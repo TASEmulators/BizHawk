@@ -211,7 +211,7 @@
 			// 
 			this.TargetFrameLengthNumeric.Location = new System.Drawing.Point(125, 135);
 			this.TargetFrameLengthNumeric.Maximum = new decimal(new int[] {
-            16383,
+            500000,
             0,
             0,
             0});
