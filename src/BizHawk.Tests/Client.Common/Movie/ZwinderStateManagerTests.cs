@@ -62,7 +62,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 		}
 
 		[TestMethod]
-		public void SomethingSomething()
+		public void StateBeforeFrame()
 		{
 			var ss = new StateSource { PaddingData = new byte[1000] };
 			var zw = new ZwinderStateManager(new ZwinderStateManagerSettings
@@ -90,7 +90,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 			var kvp = zw.GetStateClosestToFrame(10440);
 			var actual = StateSource.GetFrameNumberInState(kvp.Value);
 			Assert.AreEqual(kvp.Key, actual);
-			Assert.IsTrue(actual < 10440);
+			Assert.IsTrue(actual <= 10440);
 		}
 
 		private class StateSource : IStatable

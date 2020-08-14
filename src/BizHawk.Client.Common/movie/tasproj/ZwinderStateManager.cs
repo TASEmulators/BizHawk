@@ -68,7 +68,7 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				var kvp = GetStateClosestToFrame(frame + 1);
+				var kvp = GetStateClosestToFrame(frame);
 				if (kvp.Key != frame)
 					return NonState;
 				var ms = new MemoryStream();
@@ -221,10 +221,10 @@ namespace BizHawk.Client.Common
 
 		public KeyValuePair<int, Stream> GetStateClosestToFrame(int frame)
 		{
-			if (frame <= 0)
+			if (frame < 0)
 				throw new ArgumentOutOfRangeException(nameof(frame));
 
-			var si = AllStates().First(s => s.Frame < frame);
+			var si = AllStates().First(s => s.Frame <= frame);
 			return new KeyValuePair<int, Stream>(si.Frame, si.Read());
 		}
 

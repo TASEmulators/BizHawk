@@ -33,7 +33,7 @@ namespace BizHawk.Client.Common
 		void Clear();
 
 		/// <summary>
-		/// Get a nearby state.  The returned frame must be less (but not equal to???) the passed frame.
+		/// Get a nearby state.  The returned frame must be less than or equal to the passed frame.
 		/// This may not fail; the StateManager strongly holds a frame 0 state to ensure there's always a possible result.
 		/// </summary>
 		/// <param name="frame"></param>

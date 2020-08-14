@@ -601,7 +601,7 @@ namespace BizHawk.Client.EmuHawk
 
 			tasMovie.GreenzoneInvalidated = GreenzoneInvalidated;
 			tasMovie.PropertyChanged += TasMovie_OnPropertyChanged;
-			
+
 			tasMovie.PopulateWithDefaultHeaderValues(
 				Emulator,
 				Game,
@@ -901,6 +901,15 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		/// <summary>
+		/// Get a savestate prior to the previous frame so code following the call can frame advance and have a framebuffer.
+		/// If frame is 0, return the initial state.
+		/// </summary>
+		private KeyValuePair<int,Stream> GetPriorStateForFramebuffer(int frame)
+		{
+			return CurrentTasMovie.TasStateManager.GetStateClosestToFrame(frame > 0 ? frame - 1 : 0);
+		}
+
 		private void StartAtNearestFrameAndEmulate(int frame, bool fromLua, bool fromRewinding)
 		{
 			if (frame == Emulator.Frame)
@@ -910,7 +919,7 @@ namespace BizHawk.Client.EmuHawk
 
 			_unpauseAfterSeeking = (fromRewinding || WasRecording) && !MainForm.EmulatorPaused;
 			TastudioPlayMode();
-			var closestState = CurrentTasMovie.TasStateManager.GetStateClosestToFrame(frame <= 0 ? 1 : frame);
+			var closestState = GetPriorStateForFramebuffer(frame);
 			if (closestState.Value.Length > 0 && (frame < Emulator.Frame || closestState.Key > Emulator.Frame))
 			{
 				LoadState(closestState);
