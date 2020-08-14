@@ -271,8 +271,10 @@ namespace BizHawk.Client.EmuHawk
 
 			if (GlobalWin.Config.DisplayInput)
 			{
-				if (GlobalWin.MovieSession.Movie.IsPlaying()
-					|| (GlobalWin.MovieSession.Movie.IsFinished() && GlobalWin.Emulator.Frame == GlobalWin.MovieSession.Movie.InputLogLength)) // Account for the last frame of the movie, the movie state is immediately "Finished" here but we still want to show the input
+				var moviePlaying = GlobalWin.MovieSession.Movie.IsPlaying();
+				// After the last frame of the movie, we want both the last movie input and the current inputs.
+				var atMovieEnd = (GlobalWin.MovieSession.Movie.IsFinished() && GlobalWin.Emulator.Frame == GlobalWin.MovieSession.Movie.InputLogLength);
+				if (moviePlaying || atMovieEnd)
 				{
 					var input = InputStrMovie();
 					var point = GetCoordinates(g, GlobalWin.Config.InputDisplay, input);
@@ -280,7 +282,7 @@ namespace BizHawk.Client.EmuHawk
 					g.DrawString(input, MessageFont, c, point.X, point.Y);
 				}
 
-				else // TODO: message config -- allow setting of "mixed", and "auto"
+				if (!moviePlaying) // TODO: message config -- allow setting of "mixed", and "auto"
 				{
 					var previousColor = Color.FromArgb(GlobalWin.Config.LastInputColor);
 					Color immediateColor = Color.FromArgb(GlobalWin.Config.MessagesColor);
