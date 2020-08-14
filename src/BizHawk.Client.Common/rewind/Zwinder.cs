@@ -83,7 +83,7 @@ namespace BizHawk.Client.Common
 
 		public void Dispose()
 		{
-			// this possess no resources to dispose of, but other IRewinder impls might
+			_buffer.Dispose();
 		}
 
 		public void Clear()

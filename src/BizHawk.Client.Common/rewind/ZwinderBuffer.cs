@@ -7,7 +7,7 @@ using BizHawk.Common;
 
 namespace BizHawk.Client.Common
 {
-	public class ZwinderBuffer
+	public class ZwinderBuffer : IDisposable
 	{
 		/*
 		Main goals:
@@ -33,6 +33,12 @@ namespace BizHawk.Client.Common
 			_states = new StateInfo[STATEMASK + 1];
 			_useCompression = settings.UseCompression;
 		}
+
+		public void Dispose()
+		{
+			_buffer.Dispose();
+		}
+
 
 		/// <summary>
 		/// Number of states that could be in the state ringbuffer, Mask for the state ringbuffer
