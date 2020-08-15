@@ -141,12 +141,11 @@ namespace BizHawk.Client.EmuHawk
 			_config.PreferredCores["NES"] = CoreNames.QuickNes;
 
 			// GB
-			{
-				var s = GetSyncSettings<Gameboy, Gameboy.GambatteSyncSettings>();
-				s.EnableBIOS = false;
-				// TODO: Do we want to set anything else here?
-				PutSyncSettings<Gameboy>(s);
-			}
+			_config.PreferredCores["GB"] = CoreNames.Gambatte;
+			_config.PreferredCores["GBC"] = CoreNames.Gambatte;
+			var s = GetSyncSettings<Gameboy, Gameboy.GambatteSyncSettings>();
+			s.EnableBIOS = false;
+			PutSyncSettings<Gameboy>(s);
 		}
 
 		private void SetLongPlay()
@@ -170,6 +169,13 @@ namespace BizHawk.Client.EmuHawk
 
 			// NES
 			_config.PreferredCores["NES"] = CoreNames.NesHawk;
+
+			// GB
+			_config.PreferredCores["GB"] = CoreNames.Gambatte;
+			_config.PreferredCores["GBC"] = CoreNames.Gambatte;
+			var s = GetSyncSettings<Gameboy, Gameboy.GambatteSyncSettings>();
+			s.EnableBIOS = true;
+			PutSyncSettings<Gameboy>(s);
 		}
 
 		private void SetTas()
@@ -214,12 +220,13 @@ namespace BizHawk.Client.EmuHawk
 			_config.PreferredCores["NES"] = CoreNames.NesHawk;
 
 			// GB
-			{
-				var s = GetSyncSettings<Gameboy, Gameboy.GambatteSyncSettings>();
-				s.EnableBIOS = true;
-				// TODO: Do we want to set anything else here?
-				PutSyncSettings<Gameboy>(s);
-			}
+			_config.PreferredCores["GB"] = CoreNames.Gambatte;
+			_config.PreferredCores["GBC"] = CoreNames.Gambatte;
+			var s = GetSyncSettings<Gameboy, Gameboy.GambatteSyncSettings>();
+			s.EnableBIOS = true;
+			s.GBACGB = true;
+			PutSyncSettings<Gameboy>(s);
+			
 		}
 
 		private void SetN64Tas()
