@@ -74,7 +74,7 @@ namespace BizHawk.Client.EmuHawk
 			Input.Instance.ClearEvents();
 		}
 
-		private delegate Control PanelCreator<T>(Dictionary<string, T> settings, List<string> buttons, Size size);
+		private delegate Control PanelCreator<TBindValue>(Dictionary<string, TBindValue> settings, List<string> buttons, Size size);
 
 		private Control CreateNormalPanel(Dictionary<string, string> settings, List<string> buttons, Size size)
 		{
@@ -90,11 +90,19 @@ namespace BizHawk.Client.EmuHawk
 
 		private static readonly Regex ButtonMatchesPlayer = new Regex("^P(\\d+)\\s");
 
-		private void LoadToPanel<T>(Control dest, string controllerName, IReadOnlyCollection<string> controllerButtons, Dictionary<string,string> categoryLabels, IDictionary<string, Dictionary<string, T>> settingsBlock, T defaultValue, PanelCreator<T> createPanel)
+		private void LoadToPanel<TBindValue>(
+			Control dest,
+			string controllerName,
+			IReadOnlyCollection<string> controllerButtons,
+			Dictionary<string,string> categoryLabels,
+			IDictionary<string, Dictionary<string, TBindValue>> settingsBlock,
+			TBindValue defaultValue,
+			PanelCreator<TBindValue> createPanel
+		)
 		{
 			if (!settingsBlock.TryGetValue(controllerName, out var settings))
 			{
-				settings = new Dictionary<string, T>();
+				settings = new Dictionary<string, TBindValue>();
 				settingsBlock[controllerName] = settings;
 			}
 
@@ -123,7 +131,7 @@ namespace BizHawk.Client.EmuHawk
 			foreach (var button in controllerButtons)
 			{
 				Match m;
-				string categoryLabel; // = "Console"; // anything that wants not console can set it in the categorylabels
+				string categoryLabel;
 				if (categoryLabels.ContainsKey(button))
 				{
 					categoryLabel = categoryLabels[button];
@@ -191,9 +199,33 @@ namespace BizHawk.Client.EmuHawk
 			IDictionary<string, Dictionary<string, string>> autofire,
 			IDictionary<string, Dictionary<string, AnalogBind>> analog)
 		{
-			LoadToPanel(NormalControlsTab, _emulator.ControllerDefinition.Name, _emulator.ControllerDefinition.BoolButtons, _emulator.ControllerDefinition.CategoryLabels, normal, "", CreateNormalPanel);
-			LoadToPanel(AutofireControlsTab, _emulator.ControllerDefinition.Name, _emulator.ControllerDefinition.BoolButtons, _emulator.ControllerDefinition.CategoryLabels, autofire, "", CreateNormalPanel);
-			LoadToPanel(AnalogControlsTab, _emulator.ControllerDefinition.Name, _emulator.ControllerDefinition.Axes.Keys.ToList(), _emulator.ControllerDefinition.CategoryLabels, analog, new AnalogBind("", 1.0f, 0.1f), CreateAnalogPanel);
+			LoadToPanel(
+				NormalControlsTab,
+				_emulator.ControllerDefinition.Name,
+				_emulator.ControllerDefinition.BoolButtons,
+				_emulator.ControllerDefinition.CategoryLabels,
+				normal,
+				"",
+				CreateNormalPanel
+			);
+			LoadToPanel(
+				AutofireControlsTab,
+				_emulator.ControllerDefinition.Name,
+				_emulator.ControllerDefinition.BoolButtons,
+				_emulator.ControllerDefinition.CategoryLabels,
+				autofire,
+				"",
+				CreateNormalPanel
+			);
+			LoadToPanel(
+				AnalogControlsTab,
+				_emulator.ControllerDefinition.Name,
+				_emulator.ControllerDefinition.Axes.Keys.ToList(),
+				_emulator.ControllerDefinition.CategoryLabels,
+				analog,
+				new AnalogBind("", 1.0f, 0.1f),
+				CreateAnalogPanel
+			);
 
 			if (AnalogControlsTab.Controls.Count == 0)
 			{
