@@ -15,6 +15,7 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 	public class TurboNyma : NymaCore, IRegionable, IPceGpuView
 	{
 		private readonly LibTurboNyma _turboNyma;
+		private readonly bool _hasCds;
 
 		[CoreConstructor("PCE")]
 		[CoreConstructor("SGX")]
@@ -25,6 +26,7 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 			var firmwares = new Dictionary<string, (string, string)>();
 			if (lp.Discs.Count > 0)
 			{
+				_hasCds = true;
 				var ids = lp.Discs.Select(dg => dg.DiscType).ToList();
 				if (ids.Contains(DiscType.TurboCD))
 					firmwares.Add("FIRMWARE:syscard3.pce", ("PCECD", "Bios"));
@@ -40,7 +42,9 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 			_turboNyma = DoInit<LibTurboNyma>(lp, "turbo.wbx", firmwares);
 		}
 
-		public override string SystemId => IsSgx ? "SGX" : "PCE";
+		public override string SystemId => IsSgx
+			? _hasCds ? "SGXCD" : "SGX"
+			: _hasCds ? "PCECD" : "PCE";
 
 		protected override IDictionary<string, SettingOverride> SettingOverrides { get; } = new Dictionary<string, SettingOverride>
 		{

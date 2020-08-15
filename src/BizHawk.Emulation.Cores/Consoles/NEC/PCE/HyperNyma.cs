@@ -13,6 +13,7 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 	public class HyperNyma : NymaCore, IRegionable, IPceGpuView
 	{
 		private readonly LibHyperNyma _hyperNyma;
+		private readonly bool _hasCds;
 
 		[CoreConstructor("PCE", Priority = CorePriority.Low)]
 		[CoreConstructor("SGX", Priority = CorePriority.Low)]
@@ -23,13 +24,16 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 			var firmwares = new Dictionary<string, (string, string)>();
 			if (lp.Discs.Count > 0)
 			{
+				_hasCds = true;
 				firmwares.Add("FIRMWARE:syscard3.pce", ("PCECD", "Bios"));
 			}
 
 			_hyperNyma = DoInit<LibHyperNyma>(lp, "hyper.wbx", firmwares);
 		}
 
-		public override string SystemId => IsSgx ? "SGX" : "PCE";
+		public override string SystemId => IsSgx
+			? _hasCds ? "SGXCD" : "SGX"
+			: _hasCds ? "PCECD" : "PCE";
 
 		protected override IDictionary<string, SettingOverride> SettingOverrides { get; } = new Dictionary<string, SettingOverride>
 		{
