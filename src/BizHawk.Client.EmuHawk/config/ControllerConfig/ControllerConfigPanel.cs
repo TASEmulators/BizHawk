@@ -55,7 +55,11 @@ namespace BizHawk.Client.EmuHawk
 				var bindings = _inputs[button].Bindings;
 				if (!string.IsNullOrWhiteSpace(bindings))
 				{
-					saveTo[_buttons[button]] = bindings;
+					saveTo[_buttons[button]] = _inputs[button].Bindings;
+				}
+				else
+				{
+					saveTo.Remove(_buttons[button]);
 				}
 			}
 		}
