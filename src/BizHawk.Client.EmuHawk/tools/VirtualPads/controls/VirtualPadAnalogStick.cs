@@ -20,6 +20,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool _updatingFromXY;
 
+		private readonly Func<int, int, (short X, short Y)> PolarToRectHelper;
+
+		private readonly Func<int, int, (uint R, uint Θ)> RectToPolarHelper;
+
 		public VirtualPadAnalogStick(
 			InputManager inputManager,
 			string name,
@@ -31,9 +35,47 @@ namespace BizHawk.Client.EmuHawk
 			Name = name;
 			RangeX = rangeX;
 			RangeY = rangeY;
+			if (RangeX.Min >= -128 && RangeX.Max <= 127 && RangeY.Min >= -128 && RangeY.Max <= 127)
+			{
+				// LUT
+				//TODO ditch this on move to .NET Core
+				PolarToRectHelper = (r, θ) =>
+				{
+					var (x, y) = PolarRectConversion.PolarToRectLookup((ushort) r, (ushort) θ);
+					var x1 = (RangeX.IsReversed ? RangeX.Mid - x : RangeX.Mid + x).ConstrainWithin(RangeX.Range);
+					var y1 = (RangeY.IsReversed ? RangeY.Mid - y : RangeY.Mid + y).ConstrainWithin(RangeY.Range);
+					return ((short) x1, (short) y1);
+				};
+				RectToPolarHelper = (x, y) => PolarRectConversion.RectToPolarLookup(
+					(sbyte) (RangeX.IsReversed ? RangeX.Mid - x : x - RangeX.Mid),
+					(sbyte) (RangeY.IsReversed ? RangeY.Mid - y : y - RangeY.Mid)
+				);
+			}
+			else
+			{
+				// float math
+				const double DEG_TO_RAD_FACTOR = Math.PI / 180;
+				const double RAD_TO_DEG_FACTOR = 180 / Math.PI;
+				PolarToRectHelper = (r, θ) =>
+				{
+					var x = (short) (r * Math.Cos(θ * DEG_TO_RAD_FACTOR));
+					var y = (short) (r * Math.Sin(θ * DEG_TO_RAD_FACTOR));
+					var x1 = (RangeX.IsReversed ? RangeX.Mid - x : RangeX.Mid + x).ConstrainWithin(RangeX.Range);
+					var y1 = (RangeY.IsReversed ? RangeY.Mid - y : RangeY.Mid + y).ConstrainWithin(RangeY.Range);
+					return ((short) x1, (short) y1);
+				};
+				RectToPolarHelper = (x, y) =>
+				{
+					double x1 = RangeX.IsReversed ? RangeX.Mid - x : x - RangeX.Mid;
+					double y1 = RangeY.IsReversed ? RangeY.Mid - y : y - RangeY.Mid;
+					var θ = Math.Atan2(y1, x1) * RAD_TO_DEG_FACTOR;
+					return ((uint) Math.Sqrt(x1 * x1 + y1 * y1), (uint) (θ < 0 ? 360.0 + θ : θ));
+				};
+			}
 
 			InitializeComponent();
 			AnalogStick.ClearCallback = ClearCallback;
+			manualR.Maximum = Math.Max(RectToPolarHelper(RangeX.Max, RangeY.Max).R, RectToPolarHelper(RangeX.Min, RangeY.Min).R);
 
 			ManualX.ValueChanged += ManualXY_ValueChanged;
 			ManualY.ValueChanged += ManualXY_ValueChanged;
@@ -137,11 +179,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SetPrevious(IController previous) => AnalogStick.SetPrevious(previous);
 
-		private (ushort R, ushort Θ) RectToPolarHelper(int x, int y) => PolarRectConversion.RectToPolarLookup(
-			(sbyte) (RangeX.IsReversed ? RangeX.Mid - x : x - RangeX.Mid),
-			(sbyte) (RangeY.IsReversed ? RangeY.Mid - y : y - RangeY.Mid)
-		);
-
 		private void ManualXY_ValueChanged(object sender, EventArgs e)
 		{
 			if (_updatingFromAnalog || _updatingFromPolar) return;
@@ -164,11 +201,9 @@ namespace BizHawk.Client.EmuHawk
 			if (_updatingFromAnalog || _updatingFromXY) return;
 			_updatingFromPolar = true;
 
-			var (x, y) = PolarRectConversion.PolarToRectLookup((ushort) manualR.Value, (ushort) manualTheta.Value);
-			var x1 = (RangeX.IsReversed ? RangeX.Mid - x : RangeX.Mid + x).ConstrainWithin(RangeX.Range);
-			var y1 = (RangeY.IsReversed ? RangeY.Mid - y : RangeY.Mid + y).ConstrainWithin(RangeY.Range);
-			SetAnalog(x1, y1);
-			SetXY(x1, y1);
+			var (x, y) = PolarToRectHelper((int) manualR.Value, (int) manualTheta.Value);
+			SetAnalog(x, y);
+			SetXY(x, y);
 
 			_updatingFromPolar = false;
 		}
