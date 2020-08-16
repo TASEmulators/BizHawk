@@ -21,9 +21,19 @@ namespace BizHawk.Client.EmuHawk
 		private int? _overrideX;
 		private int? _overrideY;
 
-		public VirtualPadTargetScreen(StickyXorAdapter stickyXorAdapter)
+		public VirtualPadTargetScreen(
+			StickyXorAdapter stickyXorAdapter,
+			string nameX,
+			string nameY,
+			int rangeX,
+			int rangeY)
 		{
 			_stickyXorAdapter = stickyXorAdapter;
+			Name = XName = nameX;
+			YName = nameY;
+			RangeX = rangeX;
+			RangeY = rangeY;
+
 			InitializeComponent();
 		}
 
@@ -112,8 +122,8 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		// These are the value that a maximum x or y actually represent, used to translate from control X,Y to values the core expects
-		public int RangeX { get; set; }
-		public int RangeY { get; set; }
+		private readonly int RangeX;
+		private readonly int RangeY;
 
 		public float MultiplierX
 		{
@@ -156,8 +166,8 @@ namespace BizHawk.Client.EmuHawk
 			Refresh();
 		}
 
-		public string XName { get; set; }
-		public string YName { get; set; }
+		private readonly string XName;
+		private readonly string YName;
 
 		public int X
 		{

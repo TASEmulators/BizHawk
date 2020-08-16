@@ -170,7 +170,6 @@
 			this.Controls.Add(this.AnalogStick);
 			this.Name = "VirtualPadAnalogStick";
 			this.Size = new System.Drawing.Size(253, 172);
-			this.Load += new System.EventHandler(this.VirtualPadAnalogStick_Load);
 			((System.ComponentModel.ISupportInitialize)(this.ManualX)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.ManualY)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.MaxXNumeric)).EndInit();

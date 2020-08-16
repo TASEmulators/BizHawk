@@ -9,8 +9,6 @@ namespace BizHawk.Client.EmuHawk
 	public partial class VirtualPadAnalogButton : UserControl, IVirtualPadControl
 	{
 		private readonly StickyXorAdapter _stickyXorAdapter;
-		private string _displayName = "";
-		private int _maxValue, _minValue;
 		private bool _programmaticallyChangingValue;
 		private bool _readonly;
 
@@ -25,10 +23,46 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public VirtualPadAnalogButton(StickyXorAdapter stickyXorAdapter)
+		public VirtualPadAnalogButton(
+			StickyXorAdapter stickyXorAdapter,
+			string name,
+			string displayName,
+			int minValue,
+			int maxValue,
+			Orientation orientation)
 		{
 			_stickyXorAdapter = stickyXorAdapter;
+			Name = name;
+
 			InitializeComponent();
+			// AnalogTrackBar, DisplayNameLabel, and ValueLabel are now assigned
+
+			var trackbarWidth = Size.Width - 15;
+			int trackbarHeight;
+			if ((AnalogTrackBar.Orientation = orientation) == Orientation.Vertical)
+			{
+				AnalogTrackBar.Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Bottom;
+				trackbarHeight = Size.Height - 30;
+				ValueLabel.Top = Size.Height / 2;
+			}
+			else
+			{
+				AnalogTrackBar.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
+				trackbarHeight = Size.Height - 15;
+			}
+			AnalogTrackBar.Size = new Size(trackbarWidth, trackbarHeight);
+
+			AnalogTrackBar.Minimum = minValue;
+			AnalogTrackBar.Maximum = maxValue;
+
+			// try to base it on the width, lets make a tick every 10 pixels at the minimum
+			// yo none of this makes any sense --yoshi
+			var range = maxValue - minValue + 1;
+			var canDoTicks = Math.Min(Math.Max(2, trackbarWidth / 10), range);
+			AnalogTrackBar.TickFrequency = range / Math.Max(1, canDoTicks);
+
+			DisplayNameLabel.Text = displayName ?? string.Empty;
+			ValueLabel.Text = AnalogTrackBar.Value.ToString();
 		}
 
 		public void UpdateValues()
@@ -80,105 +114,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				CurrentValue += x.Value;
 			}
-		}
-
-		private void VirtualPadAnalogButton_Load(object sender, EventArgs e)
-		{
-			DisplayNameLabel.Text = DisplayName;
-			ValueLabel.Text = AnalogTrackBar.Value.ToString();
-			
-		}
-
-		public string DisplayName
-		{
-			get => _displayName;
-			set
-			{
-				_displayName = value ?? "";
-				if (DisplayNameLabel != null)
-				{
-					DisplayNameLabel.Text = _displayName;
-				}
-			}
-		}
-
-		public int MaxValue
-		{
-			get => _maxValue;
-
-			set
-			{
-				_maxValue = value;
-				if (AnalogTrackBar != null)
-				{
-					AnalogTrackBar.Maximum = _maxValue;
-					UpdateTickFrequency();
-				}
-			}
-		}
-
-		public int MinValue
-		{
-			get => _minValue;
-
-			set
-			{
-				_minValue = value;
-				if (AnalogTrackBar != null)
-				{
-					AnalogTrackBar.Minimum = _minValue;
-					UpdateTickFrequency();
-				}
-			}
-		}
-
-		public Orientation Orientation
-		{
-			get => AnalogTrackBar.Orientation;
-
-			set
-			{
-				AnalogTrackBar.Orientation = value;
-				if (value == Orientation.Horizontal)
-				{
-					AnalogTrackBar.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
-					AnalogTrackBar.Size = new Size(Size.Width - 15, Size.Height - 15);
-				}
-				else if (value == Orientation.Vertical)
-				{
-					AnalogTrackBar.Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Bottom;
-					AnalogTrackBar.Size = new Size(Size.Width - 15, Size.Height - 30);
-					ValueLabel.Top = Size.Height / 2;
-				}
-			}
-		}
-
-		private void UpdateTickFrequency()
-		{
-			if (AnalogTrackBar == null)
-			{
-				return;
-			}
-
-			// try to base it on the width, lets make a tick every 10 pixels at the minimum
-			int canDoTicks = AnalogTrackBar.Width / 10;
-			if (canDoTicks < 2)
-			{
-				canDoTicks = 2;
-			}
-
-			int range = _maxValue - _minValue + 1;
-			if (range < canDoTicks)
-			{
-				canDoTicks = range;
-			}
-
-			if (canDoTicks <= 0)
-			{
-				canDoTicks = 1;
-			}
-
-			AnalogTrackBar.TickFrequency = range / canDoTicks;
 		}
 
 		public int CurrentValue

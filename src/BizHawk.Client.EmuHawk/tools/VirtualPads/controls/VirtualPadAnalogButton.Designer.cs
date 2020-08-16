@@ -67,7 +67,6 @@
             this.Controls.Add(this.AnalogTrackBar);
             this.Name = "VirtualPadAnalogButton";
             this.Size = new System.Drawing.Size(297, 74);
-            this.Load += new System.EventHandler(this.VirtualPadAnalogButton_Load);
             ((System.ComponentModel.ISupportInitialize)(this.AnalogTrackBar)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

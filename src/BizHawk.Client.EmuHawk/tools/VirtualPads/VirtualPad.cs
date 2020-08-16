@@ -83,40 +83,49 @@ namespace BizHawk.Client.EmuHawk
 				PadBox.Controls.Add(controlSchema switch
 				{
 					ButtonSchema button => GenVirtualPadButton(button),
-					SingleAxisSchema singleAxis => new VirtualPadAnalogButton(_inputManager.StickyXorAdapter)
+					SingleAxisSchema singleAxis => new VirtualPadAnalogButton(
+						_inputManager.StickyXorAdapter,
+						singleAxis.Name,
+						singleAxis.DisplayName,
+						singleAxis.MinValue,
+						singleAxis.MaxValue,
+						singleAxis.Orientation
+					)
 					{
-						Name = singleAxis.Name,
-						DisplayName = singleAxis.DisplayName,
 						Location = UIHelper.Scale(singleAxis.Location),
-						Size = UIHelper.Scale(singleAxis.TargetSize),
-						MinValue = singleAxis.MinValue,
-						MaxValue = singleAxis.MaxValue,
-						Orientation = singleAxis.Orientation
+						Size = UIHelper.Scale(singleAxis.TargetSize)
 					},
-					AnalogSchema analog => new VirtualPadAnalogStick(_inputManager)
+					AnalogSchema analog => new VirtualPadAnalogStick(
+						_inputManager,
+						analog.Name,
+						analog.SecondaryName,
+						analog.Spec,
+						analog.SecondarySpec
+					)
 					{
-						Name = analog.Name,
-						SecondaryName = analog.SecondaryName,
 						Location = UIHelper.Scale(analog.Location),
-						Size = UIHelper.Scale(new Size(180 + 79, 200 + 9)),
-						RangeX = analog.Spec,
-						RangeY = analog.SecondarySpec
+						Size = UIHelper.Scale(new Size(180 + 79, 200 + 9))
 					},
-					TargetedPairSchema targetedPair => new VirtualPadTargetScreen(_inputManager.StickyXorAdapter)
+					TargetedPairSchema targetedPair => new VirtualPadTargetScreen(
+						_inputManager.StickyXorAdapter,
+						targetedPair.Name,
+						targetedPair.SecondaryName,
+						targetedPair.MaxValue,
+						targetedPair.MaxValue // TODO split into MaxX and MaxY, and rename VirtualPadTargetScreen.RangeX/RangeY
+					)
 					{
-						Name = targetedPair.Name,
 						Location = UIHelper.Scale(targetedPair.Location),
 						TargetSize = targetedPair.TargetSize,
-						XName = targetedPair.Name,
-						YName = targetedPair.SecondaryName,
-						RangeX = targetedPair.MaxValue,
-						RangeY = targetedPair.MaxValue // TODO split into MaxX and MaxY, and rename VirtualPadTargetScreen.RangeX/RangeY
 					},
-					DiscManagerSchema discManager => new VirtualPadDiscManager(_inputManager.StickyXorAdapter, discManager.SecondaryNames) {
-						Name = discManager.Name,
+					DiscManagerSchema discManager => new VirtualPadDiscManager(
+						_inputManager.StickyXorAdapter,
+						discManager.OwnerEmulator,
+						discManager.Name,
+						discManager.SecondaryNames
+					)
+					{
 						Location = UIHelper.Scale(discManager.Location),
-						Size = UIHelper.Scale(discManager.TargetSize),
-						OwnerEmulator = discManager.OwnerEmulator
+						Size = UIHelper.Scale(discManager.TargetSize)
 					},
 					_ => throw new InvalidOperationException()
 				});

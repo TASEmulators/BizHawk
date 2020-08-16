@@ -20,9 +20,18 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool _updatingFromXY;
 
-		public VirtualPadAnalogStick(InputManager inputManager)
+		public VirtualPadAnalogStick(
+			InputManager inputManager,
+			string name,
+			string secondaryName,
+			AxisSpec rangeX,
+			AxisSpec rangeY)
 		{
 			_inputManager = inputManager;
+			Name = name;
+			RangeX = rangeX;
+			RangeY = rangeY;
+
 			InitializeComponent();
 			AnalogStick.ClearCallback = ClearCallback;
 
@@ -30,21 +39,12 @@ namespace BizHawk.Client.EmuHawk
 			ManualY.ValueChanged += ManualXY_ValueChanged;
 			manualR.ValueChanged += PolarNumeric_Changed;
 			manualTheta.ValueChanged += PolarNumeric_Changed;
-		}
 
-		public AxisSpec RangeX { get; set; }
-
-		public AxisSpec RangeY { get; set; }
-
-		public string? SecondaryName { get; set; }
-
-		private void VirtualPadAnalogStick_Load(object sender, EventArgs e)
-		{
 			AnalogStick.Init(
 				_inputManager.StickyXorAdapter,
 				Name,
 				RangeX,
-				!string.IsNullOrEmpty(SecondaryName) ? SecondaryName : Name.Replace("X", "Y"),
+				!string.IsNullOrEmpty(secondaryName) ? secondaryName : Name.Replace("X", "Y"),
 				RangeY
 			);
 
@@ -61,6 +61,10 @@ namespace BizHawk.Client.EmuHawk
 			MaxXNumeric.Value = 100;
 			MaxYNumeric.Value = 100;
 		}
+
+		private readonly AxisSpec RangeX;
+
+		private readonly AxisSpec RangeY;
 
 		public void UpdateValues()
 		{

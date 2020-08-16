@@ -11,15 +11,21 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private readonly StickyXorAdapter _stickyXorAdapter;
 
-		public VirtualPadDiscManager(StickyXorAdapter stickyXorAdapter, IReadOnlyList<string> buttonNames)
+		public VirtualPadDiscManager(
+			StickyXorAdapter stickyXorAdapter,
+			IEmulator ownerEmulator,
+			string name,
+			IReadOnlyList<string> buttonNames)
 		{
 			_stickyXorAdapter = stickyXorAdapter;
+			Name = name;
 			InitializeComponent();
 			btnOpen.Name = buttonNames[0];
 			btnClose.Name = buttonNames[1];
 			_discSelectName = buttonNames[2];
 
 			UpdateCoreAssociation();
+			OwnerEmulator = ownerEmulator;
 		}
 
 		private readonly string _discSelectName;
