@@ -60,16 +60,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			WireMemoryDomainPointers();
 		}
 
-		private void WireMemoryDomainPointers_SaveRam()
-		{
-			var s = new LibmGBA.MemoryAreas();
-			LibmGBA.BizGetMemoryAreas(Core, s);
-
-			_sram.Data = s.sram;
-			if (s.sram == IntPtr.Zero) s.sram_size = 0;
-			_sram.SetSize(s.sram_size);
-		}
-
 		private void WireMemoryDomainPointers()
 		{
 			var s = new LibmGBA.MemoryAreas();
@@ -83,7 +73,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			_oam.Data = s.oam;
 			_rom.Data = s.rom;
 			_sram.Data = s.sram;
-			if (s.sram == IntPtr.Zero) s.sram_size = 0;
 			_sram.SetSize(s.sram_size);
 
 			// special combined ram memory domain
