@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
@@ -129,6 +130,16 @@ namespace BizHawk.Client.EmuHawk
 		protected bool IsOnScreen(Point topLeft)
 		{
 			return Tools.IsOnScreen(topLeft);
+		}
+
+		protected override void OnLoad(EventArgs e)
+		{
+			if (MainMenuStrip != null)
+			{
+				MainMenuStrip.MenuActivate += (sender, args) => MainForm.MaybePauseFromMenuOpened();
+				MainMenuStrip.MenuDeactivate += (sender, args) => MainForm.MaybeUnpauseFromMenuClosed();
+			}
+			base.OnLoad(e);
 		}
 	}
 }

@@ -69,6 +69,10 @@ namespace BizHawk.Client.EmuHawk
 		/// <remarks>only referenced from <see cref="BookmarksBranchesBox"/></remarks>
 		BitmapBuffer MakeScreenshotImage();
 
+		void MaybePauseFromMenuOpened();
+
+		void MaybeUnpauseFromMenuClosed();
+
 		void PauseEmulator();
 
 		/// <remarks>only referenced from <see cref="TAStudio"/></remarks>

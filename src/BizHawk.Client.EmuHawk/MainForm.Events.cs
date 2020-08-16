@@ -2554,6 +2554,11 @@ namespace BizHawk.Client.EmuHawk
 		private void MainformMenu_MenuActivate(object sender, EventArgs e)
 		{
 			HandlePlatformMenus();
+			MaybePauseFromMenuOpened();
+		}
+
+		public void MaybePauseFromMenuOpened()
+		{
 			if (Config.PauseWhenMenuActivated)
 			{
 				_wasPaused = EmulatorPaused;
@@ -2562,7 +2567,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void MainformMenu_MenuDeactivate(object sender, EventArgs e)
+		private void MainformMenu_MenuDeactivate(object sender, EventArgs e) => MaybeUnpauseFromMenuClosed();
+
+		public void MaybeUnpauseFromMenuClosed()
 		{
 			if (!_wasPaused)
 			{
