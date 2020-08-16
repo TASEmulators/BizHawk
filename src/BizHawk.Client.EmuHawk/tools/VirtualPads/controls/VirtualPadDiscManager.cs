@@ -18,40 +18,24 @@ namespace BizHawk.Client.EmuHawk
 			IReadOnlyList<string> buttonNames)
 		{
 			_stickyXorAdapter = stickyXorAdapter;
+			_ownerEmulator = ownerEmulator;
 			Name = name;
 			InitializeComponent();
 			btnOpen.Name = buttonNames[0];
 			btnClose.Name = buttonNames[1];
 			_discSelectName = buttonNames[2];
 
+			// these need to follow InitializeComponent call
 			UpdateCoreAssociation();
-			OwnerEmulator = ownerEmulator;
+			UpdateValues();
 		}
 
 		private readonly string _discSelectName;
-		private object _lastCoreOwner;
-		private object _ownerEmulator;
-
-		public object OwnerEmulator
-		{
-			get => _ownerEmulator;
-			set
-			{
-				_ownerEmulator = value;
-				UpdateValues();
-			}
-		}
+		private readonly object _ownerEmulator;
 
 		private void UpdateCoreAssociation()
 		{
-			if (_lastCoreOwner == OwnerEmulator)
-			{
-				return;
-			}
-
-			_lastCoreOwner = OwnerEmulator;
-
-			if (!(OwnerEmulator is Octoshock psx))
+			if (!(_ownerEmulator is Octoshock psx))
 			{
 				return;
 			}
@@ -78,8 +62,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateValues()
 		{
-			UpdateCoreAssociation();
-			if (OwnerEmulator is Octoshock psx)
+			if (_ownerEmulator is Octoshock psx)
 			{
 				bool eject = psx.CurrentTrayOpen;
 				bool enableDiscs = eject;
