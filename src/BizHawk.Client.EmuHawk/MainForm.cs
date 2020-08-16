@@ -771,6 +771,7 @@ namespace BizHawk.Client.EmuHawk
 		public LoadRomArgs CurrentlyOpenRomArgs { get; private set; }
 		public bool PauseAvi { get; set; }
 		public bool PressFrameAdvance { get; set; }
+		public bool FrameInch { get; set; }
 		public bool HoldFrameAdvance { get; set; } // necessary for tastudio > button
 		public bool PressRewind { get; set; } // necessary for tastudio < button
 		public bool FastForward { get; set; }
@@ -2802,8 +2803,25 @@ namespace BizHawk.Client.EmuHawk
 				runFrame = true;
 			}
 
-			if (InputManager.ClientControls["Frame Advance"] || PressFrameAdvance || HoldFrameAdvance)
+
+			bool oldFrameAdvanceCondition = InputManager.ClientControls["Frame Advance"] || PressFrameAdvance || HoldFrameAdvance;
+			if (FrameInch)
 			{
+				FrameInch = false;
+				if (EmulatorPaused || oldFrameAdvanceCondition)
+				{
+					oldFrameAdvanceCondition = true;
+				}
+				else
+				{
+					PauseEmulator();
+					oldFrameAdvanceCondition = false;
+				}
+			}
+
+			if (oldFrameAdvanceCondition || FrameInch)
+			{
+				FrameInch = false;
 				_runloopFrameAdvance = true;
 
 				// handle the initial trigger of a frame advance

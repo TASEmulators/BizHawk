@@ -19,6 +19,10 @@ namespace BizHawk.Client.EmuHawk
 				case "Pause":
 					TogglePause();
 					break;
+				case "Frame Inch":
+					//special! allow this key to get handled as Frame Advance, too
+					FrameInch = true;
+					return false;
 				case "Toggle Throttle":
 					_unthrottled ^= true;
 					ThrottleMessage();
