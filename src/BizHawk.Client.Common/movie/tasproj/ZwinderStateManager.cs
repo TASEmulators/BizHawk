@@ -13,7 +13,7 @@ namespace BizHawk.Client.Common
 		private byte[] _originalState;
 		private readonly ZwinderBuffer _current;
 		private readonly ZwinderBuffer _recent;
-		private readonly ZwinderBuffer _highPriority;
+		private readonly ZwinderBuffer _reGreenZone; // Used to re-fill gaps when still replaying input, but in a non-current area, also needed when switching branches
 		private readonly List<KeyValuePair<int, byte[]>> _ancient = new List<KeyValuePair<int, byte[]>>();
 		private readonly int _ancientInterval;
 
@@ -34,7 +34,7 @@ namespace BizHawk.Client.Common
 				TargetFrameLength = settings.RecentTargetFrameLength
 			});
 
-			_highPriority = new ZwinderBuffer(new RewindConfig
+			_reGreenZone = new ZwinderBuffer(new RewindConfig
 			{
 				UseCompression = settings.PriorityUseCompression,
 				BufferSize = settings.PriorityBufferSize,
@@ -55,12 +55,12 @@ namespace BizHawk.Client.Common
 			_originalState = (byte[])frameZeroState.Clone();
 		}
 
-		private ZwinderStateManager(ZwinderBuffer current, ZwinderBuffer recent, ZwinderBuffer highPriority, byte[] frameZeroState, int ancientInterval)
+		private ZwinderStateManager(ZwinderBuffer current, ZwinderBuffer recent, ZwinderBuffer reGreenZone, byte[] frameZeroState, int ancientInterval)
 		{
 			_originalState = (byte[])frameZeroState.Clone();
 			_current = current;
 			_recent = recent;
-			_highPriority = highPriority;
+			_reGreenZone = reGreenZone;
 			_ancientInterval = ancientInterval;
 		}
 		
@@ -80,7 +80,7 @@ namespace BizHawk.Client.Common
 		// TODO: private set, refactor LoadTasprojExtras to hold onto a settings object and pass it in to Create() method
 		public ZwinderStateManagerSettings Settings { get; set; }
 
-		public int Count => _current.Count + _recent.Count + _highPriority.Count + _ancient.Count + 1;
+		public int Count => _current.Count + _recent.Count + _reGreenZone.Count + _ancient.Count + 1;
 
 		private class StateInfo
 		{
@@ -103,9 +103,8 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <summary>
-		/// Enumerate all states, excepting high priority, in reverse order
+		/// Enumerate all states, excepting ReGreenZone , in reverse order
 		/// </summary>
-		/// <returns></returns>
 		private IEnumerable<StateInfo> NormalStates()
 		{
 			for (var i = _current.Count - 1; i >= 0; i--)
@@ -123,15 +122,11 @@ namespace BizHawk.Client.Common
 			yield return new StateInfo(0, _originalState);
 		}
 
-		/// <summary>
-		/// Enumerate high priority states in reverse order
-		/// </summary>
-		/// <returns></returns>
-		private IEnumerable<StateInfo> HighPriorityStates()
+		private IEnumerable<StateInfo> ReGreenZoneStates()
 		{
-			for (var i = _highPriority.Count - 1; i >= 0; i--)
+			for (var i = _reGreenZone.Count - 1; i >= 0; i--)
 			{
-				yield return new StateInfo(_highPriority.GetState(i));
+				yield return new StateInfo(_reGreenZone.GetState(i));
 			}
 		}
 
@@ -141,7 +136,7 @@ namespace BizHawk.Client.Common
 		private IEnumerable<StateInfo> AllStates()
 		{
 			var l1 = NormalStates().GetEnumerator();
-			var l2 = HighPriorityStates().GetEnumerator();
+			var l2 = ReGreenZoneStates().GetEnumerator();
 			var l1More = l1.MoveNext();
 			var l2More = l2.MoveNext();
 			while (l1More || l2More)
@@ -181,7 +176,7 @@ namespace BizHawk.Client.Common
 		{
 			if (frame <= Last)
 			{
-				CaptureHighPriority(frame, source);
+				CaptureReGreenZone(frame, source);
 				return;
 			}
 
@@ -207,16 +202,16 @@ namespace BizHawk.Client.Common
 				force);
 		}
 
-		public void CaptureHighPriority(int frame, IStatable source)
+		public void CaptureReGreenZone(int frame, IStatable source)
 		{
-			_highPriority.Capture(frame, s => source.SaveStateBinary(new BinaryWriter(s)));
+			_reGreenZone.Capture(frame, s => source.SaveStateBinary(new BinaryWriter(s)));
 		}
 
 		public void Clear()
 		{
 			_current.InvalidateEnd(0);
 			_recent.InvalidateEnd(0);
-			_highPriority.InvalidateEnd(0);
+			_reGreenZone.InvalidateEnd(0);
 			_ancient.Clear();
 		}
 
@@ -234,13 +229,13 @@ namespace BizHawk.Client.Common
 			return AllStates().Any(s => s.Frame == frame);
 		}
 
-		private bool InvalidateHighPriority(int frame)
+		private bool InvalidateReGreenZone(int frame)
 		{
-			for (var i = 0; i < _highPriority.Count; i++)
+			for (var i = 0; i < _reGreenZone.Count; i++)
 			{
-				if (_highPriority.GetState(i).Frame > frame)
+				if (_reGreenZone.GetState(i).Frame > frame)
 				{
-					_highPriority.InvalidateEnd(i);
+					_reGreenZone.InvalidateEnd(i);
 					return true;
 				}
 			}
@@ -286,7 +281,7 @@ namespace BizHawk.Client.Common
 			if (frame < 0)
 				throw new ArgumentOutOfRangeException(nameof(frame));
 			var b1 = InvalidateNormal(frame);
-			var b2 = InvalidateHighPriority(frame);
+			var b2 = InvalidateReGreenZone(frame);
 			return b1 || b2;
 		}
 
@@ -294,13 +289,13 @@ namespace BizHawk.Client.Common
 		{
 			var current = ZwinderBuffer.Create(br);
 			var recent = ZwinderBuffer.Create(br);
-			var highPriority = ZwinderBuffer.Create(br);
+			var reGreenZone = ZwinderBuffer.Create(br);
 
 			var original = br.ReadBytes(br.ReadInt32());
 
 			var ancientInterval = br.ReadInt32();
 
-			var ret = new ZwinderStateManager(current, recent, highPriority, original, ancientInterval)
+			var ret = new ZwinderStateManager(current, recent, reGreenZone, original, ancientInterval)
 			{
 				Settings = settings
 			};
@@ -321,7 +316,7 @@ namespace BizHawk.Client.Common
 		{
 			_current.SaveStateBinary(bw);
 			_recent.SaveStateBinary(bw);
-			_highPriority.SaveStateBinary(bw);
+			_reGreenZone.SaveStateBinary(bw);
 
 			bw.Write(_originalState.Length);
 			bw.Write(_originalState);
