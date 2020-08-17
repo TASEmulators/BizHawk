@@ -16,9 +16,9 @@ namespace BizHawk.Client.Common
 			RecentBufferSize = settings.RecentBufferSize;
 			RecentTargetFrameLength = settings.RecentTargetFrameLength;
 
-			PriorityUseCompression = settings.PriorityUseCompression;
-			PriorityBufferSize = settings.PriorityBufferSize;
-			PriorityTargetFrameLength = settings.PriorityTargetFrameLength;
+			GapsUseCompression = settings.GapsUseCompression;
+			GapsBufferSize = settings.GapsBufferSize;
+			GapsTargetFrameLength = settings.GapsTargetFrameLength;
 
 			AncientStateInterval = settings.AncientStateInterval;
 		}
