@@ -8,6 +8,8 @@ namespace BizHawk.Client.Common
 {
 	public class ZwinderStateManager : IStateManager
 	{
+		private static readonly byte[] NonState = new byte[0];
+
 		private readonly ZwinderBuffer _current;
 		private readonly ZwinderBuffer _recent;
 		private readonly ZwinderBuffer _gapFiller; // Used to re-fill gaps when still replaying input, but in a non-current area, also needed when switching branches
@@ -66,7 +68,7 @@ namespace BizHawk.Client.Common
 				var kvp = GetStateClosestToFrame(frame);
 				if (kvp.Key != frame)
 				{
-					return new byte[0];
+					return NonState;
 				}
 
 				var ms = new MemoryStream();
