@@ -330,6 +330,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public void SetIntRegs(byte r)
 		{
+			if (((REG_FF0F & 4) == 4) && ((r & 4) == 0)) { timer.IRQ_block = true; }
 			REG_FF0F = r;
 		}
 
