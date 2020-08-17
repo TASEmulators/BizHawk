@@ -8,9 +8,6 @@ namespace BizHawk.Client.Common
 {
 	public class ZwinderStateManager : IStateManager
 	{
-		private static readonly byte[] NonState = new byte[0];
-
-		private byte[] _originalState;
 		private readonly ZwinderBuffer _current;
 		private readonly ZwinderBuffer _recent;
 		private readonly ZwinderBuffer _gapFiller; // Used to re-fill gaps when still replaying input, but in a non-current area, also needed when switching branches
@@ -42,7 +39,6 @@ namespace BizHawk.Client.Common
 			});
 
 			_ancientInterval = settings.AncientStateInterval;
-			_originalState = NonState;
 		}
 
 		public ZwinderStateManager()
@@ -52,12 +48,11 @@ namespace BizHawk.Client.Common
 
 		public void Engage(byte[] frameZeroState)
 		{
-			_originalState = (byte[])frameZeroState.Clone();
+			_ancient.Add(new KeyValuePair<int, byte[]>(0, (byte[])frameZeroState.Clone()));
 		}
 
-		private ZwinderStateManager(ZwinderBuffer current, ZwinderBuffer recent, ZwinderBuffer gapFiller, byte[] frameZeroState, int ancientInterval)
+		private ZwinderStateManager(ZwinderBuffer current, ZwinderBuffer recent, ZwinderBuffer gapFiller, int ancientInterval)
 		{
-			_originalState = (byte[])frameZeroState.Clone();
 			_current = current;
 			_recent = recent;
 			_gapFiller = gapFiller;
@@ -70,7 +65,10 @@ namespace BizHawk.Client.Common
 			{
 				var kvp = GetStateClosestToFrame(frame);
 				if (kvp.Key != frame)
-					return NonState;
+				{
+					return new byte[0];
+				}
+
 				var ms = new MemoryStream();
 				kvp.Value.CopyTo(ms);
 				return ms.ToArray();
@@ -119,7 +117,6 @@ namespace BizHawk.Client.Common
 			{
 				yield return new StateInfo(_ancient[i]);
 			}
-			yield return new StateInfo(0, _originalState);
 		}
 
 		private IEnumerable<StateInfo> GapStates()
@@ -291,11 +288,9 @@ namespace BizHawk.Client.Common
 			var recent = ZwinderBuffer.Create(br);
 			var gaps = ZwinderBuffer.Create(br);
 
-			var original = br.ReadBytes(br.ReadInt32());
-
 			var ancientInterval = br.ReadInt32();
 
-			var ret = new ZwinderStateManager(current, recent, gaps, original, ancientInterval)
+			var ret = new ZwinderStateManager(current, recent, gaps, ancientInterval)
 			{
 				Settings = settings
 			};
@@ -317,9 +312,6 @@ namespace BizHawk.Client.Common
 			_current.SaveStateBinary(bw);
 			_recent.SaveStateBinary(bw);
 			_gapFiller.SaveStateBinary(bw);
-
-			bw.Write(_originalState.Length);
-			bw.Write(_originalState);
 
 			bw.Write(_ancientInterval);
 
