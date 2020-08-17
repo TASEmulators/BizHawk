@@ -13,7 +13,7 @@ namespace BizHawk.Client.Common
 		private byte[] _originalState;
 		private readonly ZwinderBuffer _current;
 		private readonly ZwinderBuffer _recent;
-		private readonly ZwinderBuffer _reGreenZone; // Used to re-fill gaps when still replaying input, but in a non-current area, also needed when switching branches
+		private readonly ZwinderBuffer _gapFiller; // Used to re-fill gaps when still replaying input, but in a non-current area, also needed when switching branches
 		private readonly List<KeyValuePair<int, byte[]>> _ancient = new List<KeyValuePair<int, byte[]>>();
 		private readonly int _ancientInterval;
 
@@ -34,11 +34,11 @@ namespace BizHawk.Client.Common
 				TargetFrameLength = settings.RecentTargetFrameLength
 			});
 
-			_reGreenZone = new ZwinderBuffer(new RewindConfig
+			_gapFiller = new ZwinderBuffer(new RewindConfig
 			{
-				UseCompression = settings.PriorityUseCompression,
-				BufferSize = settings.PriorityBufferSize,
-				TargetFrameLength = settings.PriorityTargetFrameLength
+				UseCompression = settings.GapsUseCompression,
+				BufferSize = settings.GapsBufferSize,
+				TargetFrameLength = settings.GapsTargetFrameLength
 			});
 
 			_ancientInterval = settings.AncientStateInterval;
@@ -55,12 +55,12 @@ namespace BizHawk.Client.Common
 			_originalState = (byte[])frameZeroState.Clone();
 		}
 
-		private ZwinderStateManager(ZwinderBuffer current, ZwinderBuffer recent, ZwinderBuffer reGreenZone, byte[] frameZeroState, int ancientInterval)
+		private ZwinderStateManager(ZwinderBuffer current, ZwinderBuffer recent, ZwinderBuffer gapFiller, byte[] frameZeroState, int ancientInterval)
 		{
 			_originalState = (byte[])frameZeroState.Clone();
 			_current = current;
 			_recent = recent;
-			_reGreenZone = reGreenZone;
+			_gapFiller = gapFiller;
 			_ancientInterval = ancientInterval;
 		}
 		
@@ -80,7 +80,7 @@ namespace BizHawk.Client.Common
 		// TODO: private set, refactor LoadTasprojExtras to hold onto a settings object and pass it in to Create() method
 		public ZwinderStateManagerSettings Settings { get; set; }
 
-		public int Count => _current.Count + _recent.Count + _reGreenZone.Count + _ancient.Count + 1;
+		public int Count => _current.Count + _recent.Count + _gapFiller.Count + _ancient.Count + 1;
 
 		private class StateInfo
 		{
@@ -103,7 +103,7 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <summary>
-		/// Enumerate all states, excepting ReGreenZone , in reverse order
+		/// Enumerate all states, excepting GapFiller , in reverse order
 		/// </summary>
 		private IEnumerable<StateInfo> NormalStates()
 		{
@@ -122,11 +122,11 @@ namespace BizHawk.Client.Common
 			yield return new StateInfo(0, _originalState);
 		}
 
-		private IEnumerable<StateInfo> ReGreenZoneStates()
+		private IEnumerable<StateInfo> GapStates()
 		{
-			for (var i = _reGreenZone.Count - 1; i >= 0; i--)
+			for (var i = _gapFiller.Count - 1; i >= 0; i--)
 			{
-				yield return new StateInfo(_reGreenZone.GetState(i));
+				yield return new StateInfo(_gapFiller.GetState(i));
 			}
 		}
 
@@ -136,7 +136,7 @@ namespace BizHawk.Client.Common
 		private IEnumerable<StateInfo> AllStates()
 		{
 			var l1 = NormalStates().GetEnumerator();
-			var l2 = ReGreenZoneStates().GetEnumerator();
+			var l2 = GapStates().GetEnumerator();
 			var l1More = l1.MoveNext();
 			var l2More = l2.MoveNext();
 			while (l1More || l2More)
@@ -176,7 +176,7 @@ namespace BizHawk.Client.Common
 		{
 			if (frame <= Last)
 			{
-				CaptureReGreenZone(frame, source);
+				CaptureGap(frame, source);
 				return;
 			}
 
@@ -202,16 +202,16 @@ namespace BizHawk.Client.Common
 				force);
 		}
 
-		public void CaptureReGreenZone(int frame, IStatable source)
+		public void CaptureGap(int frame, IStatable source)
 		{
-			_reGreenZone.Capture(frame, s => source.SaveStateBinary(new BinaryWriter(s)));
+			_gapFiller.Capture(frame, s => source.SaveStateBinary(new BinaryWriter(s)));
 		}
 
 		public void Clear()
 		{
 			_current.InvalidateEnd(0);
 			_recent.InvalidateEnd(0);
-			_reGreenZone.InvalidateEnd(0);
+			_gapFiller.InvalidateEnd(0);
 			_ancient.Clear();
 		}
 
@@ -229,13 +229,13 @@ namespace BizHawk.Client.Common
 			return AllStates().Any(s => s.Frame == frame);
 		}
 
-		private bool InvalidateReGreenZone(int frame)
+		private bool InvalidateGaps(int frame)
 		{
-			for (var i = 0; i < _reGreenZone.Count; i++)
+			for (var i = 0; i < _gapFiller.Count; i++)
 			{
-				if (_reGreenZone.GetState(i).Frame > frame)
+				if (_gapFiller.GetState(i).Frame > frame)
 				{
-					_reGreenZone.InvalidateEnd(i);
+					_gapFiller.InvalidateEnd(i);
 					return true;
 				}
 			}
@@ -281,7 +281,7 @@ namespace BizHawk.Client.Common
 			if (frame < 0)
 				throw new ArgumentOutOfRangeException(nameof(frame));
 			var b1 = InvalidateNormal(frame);
-			var b2 = InvalidateReGreenZone(frame);
+			var b2 = InvalidateGaps(frame);
 			return b1 || b2;
 		}
 
@@ -289,13 +289,13 @@ namespace BizHawk.Client.Common
 		{
 			var current = ZwinderBuffer.Create(br);
 			var recent = ZwinderBuffer.Create(br);
-			var reGreenZone = ZwinderBuffer.Create(br);
+			var gaps = ZwinderBuffer.Create(br);
 
 			var original = br.ReadBytes(br.ReadInt32());
 
 			var ancientInterval = br.ReadInt32();
 
-			var ret = new ZwinderStateManager(current, recent, reGreenZone, original, ancientInterval)
+			var ret = new ZwinderStateManager(current, recent, gaps, original, ancientInterval)
 			{
 				Settings = settings
 			};
@@ -316,7 +316,7 @@ namespace BizHawk.Client.Common
 		{
 			_current.SaveStateBinary(bw);
 			_recent.SaveStateBinary(bw);
-			_reGreenZone.SaveStateBinary(bw);
+			_gapFiller.SaveStateBinary(bw);
 
 			bw.Write(_originalState.Length);
 			bw.Write(_originalState);

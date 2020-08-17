@@ -54,16 +54,16 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Priority States for special use cases
 		/// </summary>
-		[DisplayName("Priority - Use Compression")]
-		public bool PriorityUseCompression { get; set; }
+		[DisplayName("Gaps - Use Compression")]
+		public bool GapsUseCompression { get; set; }
 
-		[DisplayName("Priority - Buffer Size")]
+		[DisplayName("Gaps - Buffer Size")]
 		[Description("Max amount of buffer space to use in MB")]
-		public int PriorityBufferSize { get; set; } = 64;
+		public int GapsBufferSize { get; set; } = 64;
 
-		[DisplayName("Priority - Target Frame Length")]
+		[DisplayName("Gaps - Target Frame Length")]
 		[Description("Desired frame length (number of emulated frames you can go back before running out of buffer)")]
-		public int PriorityTargetFrameLength { get; set; } = 10000;
+		public int GapsTargetFrameLength { get; set; } = 1000;
 
 		[DisplayName("Ancient State Interval")]
 		[Description("How often to maintain states when outside of Current and Recent intervals")]
