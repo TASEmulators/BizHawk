@@ -81,32 +81,49 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 				// TAC (Timer Control)
 				case 0xFF07:
+					byte timer_control_old = timer_control;
 
-					bool was_off = (timer_control & 4) == 0;
-					//Console.WriteLine("tac: " + timer_control + " " + value + " " + timer + " " + divider_reg);
+					// Console.WriteLine("tac: " + timer_control + " " + value + " " + timer + " " + divider_reg);
 					timer_control = (byte)((timer_control & 0xf8) | (value & 0x7)); // only bottom 3 bits function
-					/*
-					if (was_off && ((timer_control & 4) > 0) && Core.is_GBC)
+					
+					if (!timer_control_old.Bit(2) && timer_control.Bit(2) && Core.is_GBC && Core._syncSettings.GBACGB)
 					{
+						bool temp_check_old = false;
 						bool temp_check = false;
+
+						switch (timer_control_old & 3)
+						{
+							case 0:
+								temp_check_old = divider_reg.Bit(9);
+								break;
+							case 1:
+								temp_check_old = divider_reg.Bit(3);
+								break;
+							case 2:
+								temp_check_old = divider_reg.Bit(5);
+								break;
+							case 3:
+								temp_check_old = divider_reg.Bit(7);
+								break;
+						}
 
 						switch (timer_control & 3)
 						{
 							case 0:
-								temp_check = (divider_reg & 0x1FF) == 0x1FF;
+								temp_check = divider_reg.Bit(9);
 								break;
 							case 1:
-								temp_check = (divider_reg & 0x7) == 0x7;
+								temp_check = divider_reg.Bit(3);
 								break;
 							case 2:
-								temp_check = (divider_reg & 0x1F) == 0x1F;
+								temp_check = divider_reg.Bit(5);
 								break;
 							case 3:
-								temp_check = (divider_reg & 0x7F) == 0x7F;
+								temp_check = divider_reg.Bit(7);
 								break;
 						}
 
-						if (temp_check)
+						if (temp_check_old && !temp_check)
 						{
 							timer_old = timer;
 							timer++;
@@ -114,21 +131,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							// if overflow happens, set the interrupt flag and reload the timer (if applicable)
 							if (timer < timer_old)
 							{
-								if (timer_control.Bit(2))
-								{
-									pending_reload = 4;
-									reload_block = false;
-								}
-								else
-								{
-									//TODO: Check if timer still gets reloaded if TAC diabled causes overflow
-									if (Core.REG_FFFF.Bit(2)) { Core.cpu.FlagI = true; }
-									Core.REG_FF0F |= 0x04;
-								}
+								pending_reload = 4;
+								reload_block = false;
 							}
 						}
 					}
-					*/
+					
 					break;
 			}
 		}
