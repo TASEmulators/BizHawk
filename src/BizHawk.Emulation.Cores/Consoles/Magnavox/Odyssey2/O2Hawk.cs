@@ -44,7 +44,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 		public bool is_G7400;
 
 		[CoreConstructor("O2")]
-		public O2Hawk(CoreComm comm, GameInfo game, byte[] rom, /*string gameDbFn,*/ O2Settings settings, O2SyncSettings syncSettings)
+		public O2Hawk(CoreComm comm, GameInfo game, byte[] rom, O2Settings settings, O2SyncSettings syncSettings)
 		{
 			var ser = new BasicServiceProvider(this);
 
@@ -59,8 +59,8 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 				OnExecFetch = ExecFetch,
 			};
 
-			_settings = (O2Settings)settings ?? new O2Settings();
-			_syncSettings = (O2SyncSettings)syncSettings ?? new O2SyncSettings();
+			_settings = settings ?? new O2Settings();
+			_syncSettings = syncSettings ?? new O2SyncSettings();
 
 			is_G7400 = _syncSettings.G7400_Enable;
 
@@ -88,9 +88,6 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 			ser.Register<IVideoProvider>(this);
 			ServiceProvider = ser;
-
-			_settings = (O2Settings)settings ?? new O2Settings();
-			_syncSettings = (O2SyncSettings)syncSettings ?? new O2SyncSettings();
 
 			_tracer = new TraceBuffer { Header = cpu.TraceHeader };
 			ser.Register(_tracer);
