@@ -182,6 +182,7 @@ namespace BizHawk.Client.Common
 			if (frame <= Last)
 			{
 				CaptureHighPriority(frame, source);
+				return;
 			}
 
 			_current.Capture(frame,
