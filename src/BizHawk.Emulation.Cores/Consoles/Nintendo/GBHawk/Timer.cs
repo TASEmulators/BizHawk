@@ -7,9 +7,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 	// Timer Emulation
 	// NOTES: 
 	//
-	// For GB, it looks like divider reg should start at 0 on reset. however in this case, in order to pass Gambatte timer tests, 
-	// reads from timer when timer is about to rollover need to return the next value
-	// for GBC, a starting value of 0xFFFF passes all tests. GBA is not explicotlu tested but for now is set to 0xFFFF as well.
+	// For GB, it looks like divider reg should start at 1 on reset.
+	// for GBC, a starting value of 0xFFFF passes all tests. GBA is not explicitly tested but for now is set to 0xFFFF as well.
 	//
 	// Some additional glitches happen on GBC, but they are non-deterministic and not emulated here
 	//
@@ -30,7 +29,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public byte timer_old;
 		public byte timer_control;
 		public byte pending_reload;
-		public bool IRQ_block; // if the timer IRQ happens on the same cycle as a previous one was cleared, the IRQ is blocked
+		public bool IRQ_block; // if the timer IRQ happens on the same cycle as a previous one was cleared, the IRQ is blocked, only on GBC
 		public bool old_state;
 		public bool state;
 		public bool reload_block;
@@ -84,7 +83,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				case 0xFF07:
 
 					bool was_off = (timer_control & 4) == 0;
-					//Console.WriteLine(timer_control + " " + value + " " + timer + " " + divider_reg);
+					//Console.WriteLine("tac: " + timer_control + " " + value + " " + timer + " " + divider_reg);
 					timer_control = (byte)((timer_control & 0xf8) | (value & 0x7)); // only bottom 3 bits function
 					/*
 					if (was_off && ((timer_control & 4) > 0) && Core.is_GBC)
@@ -207,7 +206,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public void Reset()
 		{
-			divider_reg = (ushort)(Core.is_GBC ? 0xFFFF : 0);
+			divider_reg = (ushort)(Core.is_GBC ? 0xFFFF : 0x1);
 			timer_reload = 0;
 			timer = 0;
 			timer_old = 0;
