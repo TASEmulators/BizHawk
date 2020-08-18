@@ -55,6 +55,19 @@ namespace BizHawk.Client.Common
 		public virtual bool Changes { get; protected set; }
 		public bool IsCountingRerecords { get; set; } = true;
 
+		// TODO: Eventually, this should be moved to Bk2HeaderApi
+		private MovieStartType _startType;
+		public MovieStartType StartType
+		{
+			get => _startType;
+			set
+			{
+				_startType = value;
+				StartsFromSaveRam = _startType == MovieStartType.SaveRam;
+				StartsFromSavestate = _startType == MovieStartType.Savestate;
+			}
+		}
+
 		public ILogEntryGenerator LogGeneratorInstance(IController source)
 		{
 			return new Bk2LogEntryGenerator(Emulator.SystemId, source);

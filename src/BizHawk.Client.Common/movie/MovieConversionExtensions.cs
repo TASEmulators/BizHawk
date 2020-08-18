@@ -188,6 +188,43 @@ namespace BizHawk.Client.Common
 			return tas;
 		}
 
+		// TODO: Perhaps this shouldn't go here
+		public static void StartTypeSetup(
+			this IMovie movie,
+			MovieStartType startType,
+			IEmulator emulator,
+			SaveStateType savestateType)
+		{
+			movie.StartType = startType;
+			if (startType == MovieStartType.SaveRam && emulator.HasSaveRam())
+			{
+				var core = emulator.AsSaveRam();
+				movie.SaveRam = core.CloneSaveRam();
+			}
+			else if (startType == MovieStartType.Savestate && emulator.HasSavestates())
+			{
+				var core = emulator.AsStatable();
+
+				if (savestateType == SaveStateType.Binary)
+				{
+					movie.BinarySavestate = core.CloneSavestate();
+				}
+				else
+				{
+					using var sw = new StringWriter();
+					core.SaveStateText(sw);
+					movie.TextSavestate = sw.ToString();
+				}
+
+				// TODO: do we want to support optionally not saving this?
+				movie.SavestateFramebuffer = new int[0];
+				if (emulator.HasVideoProvider())
+				{
+					movie.SavestateFramebuffer = (int[])emulator.AsVideoProvider().GetVideoBuffer().Clone();
+				}
+			}
+		}
+
 		// TODO: This doesn't really belong here, but not sure where to put it
 		public static void PopulateWithDefaultHeaderValues(
 			this IMovie movie,

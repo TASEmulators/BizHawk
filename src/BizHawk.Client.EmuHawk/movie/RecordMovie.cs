@@ -84,77 +84,56 @@ namespace BizHawk.Client.EmuHawk
 		private void Ok_Click(object sender, EventArgs e)
 		{
 			var path = MakePath();
-			if (!string.IsNullOrWhiteSpace(path))
+			if (string.IsNullOrWhiteSpace(path))
 			{
-				var test = new FileInfo(path);
-				if (test.Exists)
+				MessageBox.Show("Please select a movie to record", "File selection error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
+			}
+			
+			var fileInfo = new FileInfo(path);
+			if (fileInfo.Exists)
+			{
+				var result = MessageBox.Show($"{path} already exists, overwrite?", "Confirm overwrite", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+				if (result == DialogResult.Cancel)
 				{
-					var result = MessageBox.Show($"{path} already exists, overwrite?", "Confirm overwrite", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
-					if (result == DialogResult.Cancel)
-					{
-						return;
-					}
+					return;
 				}
-
-				var movieToRecord = _movieSession.Get(path);
-
-				var fileInfo = new FileInfo(path);
-				if (!fileInfo.Exists)
-				{
-					Directory.CreateDirectory(fileInfo.DirectoryName);
-				}
-
-				if (StartFromCombo.SelectedItem.ToString() == "Now" && _emulator.HasSavestates())
-				{
-					var core = _emulator.AsStatable();
-
-					movieToRecord.StartsFromSavestate = true;
-
-					if (_config.Savestates.Type == SaveStateType.Binary)
-					{
-						movieToRecord.BinarySavestate = core.CloneSavestate();
-					}
-					else
-					{
-						using var sw = new StringWriter();
-						core.SaveStateText(sw);
-						movieToRecord.TextSavestate = sw.ToString();
-					}
-
-					// TODO: do we want to support optionally not saving this?
-					movieToRecord.SavestateFramebuffer = new int[0];
-					if (_emulator.HasVideoProvider())
-					{
-						movieToRecord.SavestateFramebuffer = (int[])_emulator.AsVideoProvider().GetVideoBuffer().Clone();
-					}
-				}
-				else if (StartFromCombo.SelectedItem.ToString() == "SaveRam"  && _emulator.HasSaveRam())
-				{
-					var core = _emulator.AsSaveRam();
-					movieToRecord.StartsFromSaveRam = true;
-					movieToRecord.SaveRam = core.CloneSaveRam();
-				}
-
-				movieToRecord.PopulateWithDefaultHeaderValues(
-					_emulator,
-					_game,
-					_firmwareManager,
-					AuthorBox.Text ?? _config.DefaultAuthor);
-				movieToRecord.Save();
-				_mainForm.StartNewMovie(movieToRecord, true);
-
-				_config.UseDefaultAuthor = DefaultAuthorCheckBox.Checked;
-				if (DefaultAuthorCheckBox.Checked)
-				{
-					_config.DefaultAuthor = AuthorBox.Text;
-				}
-
-				Close();
 			}
 			else
 			{
-				MessageBox.Show("Please select a movie to record", "File selection error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				Directory.CreateDirectory(fileInfo.DirectoryName);
 			}
+			
+			var startType = MovieStartType.PowerOn;
+			if (StartFromCombo.SelectedItem.ToString() == "Now")
+			{
+				startType = MovieStartType.Savestate;
+			}
+			else if (StartFromCombo.SelectedItem.ToString() == "SaveRam")
+			{
+				startType = MovieStartType.SaveRam;
+			}
+
+			var movieToRecord = _movieSession.Get(path);
+			movieToRecord.StartTypeSetup(
+				startType,
+				_emulator,
+				_config.Savestates.Type);
+			movieToRecord.PopulateWithDefaultHeaderValues(
+				_emulator,
+				_game,
+				_firmwareManager,
+				AuthorBox.Text);
+			movieToRecord.Save();
+			_mainForm.StartNewMovie(movieToRecord, true);
+
+			_config.UseDefaultAuthor = DefaultAuthorCheckBox.Checked;
+			if (DefaultAuthorCheckBox.Checked)
+			{
+				_config.DefaultAuthor = AuthorBox.Text;
+			}
+
+			Close();
 		}
 
 		private void Cancel_Click(object sender, EventArgs e)

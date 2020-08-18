@@ -28,6 +28,24 @@ namespace BizHawk.Client.Common
 		Finished
 	}
 
+	public enum MovieStartType
+	{
+		/// <summary>
+		/// Movies begins on power on with no save (default)
+		/// </summary>
+		PowerOn,
+
+		/// <summary>
+		/// Movie begins on power on with a save
+		/// </summary>
+		SaveRam,
+
+		/// <summary>
+		/// Movies begins from a savestate
+		/// </summary>
+		Savestate
+	}
+
 	// TODO: message callback / event handler
 	// TODO: consider other event handlers, switching modes?
 	public interface IMovie
@@ -86,6 +104,10 @@ namespace BizHawk.Client.Common
 		byte[] SaveRam { get; set; }
 
 		ulong Rerecords { get; set; }
+		// TODO: Eventually remove the StartsFrom bools entirely
+		// (handle movie header deserialization for back compatibility if necessary)
+		// Might also consider private set, since it should probably only be set during creation.
+		MovieStartType StartType { get; set; }
 		bool StartsFromSavestate { get; set; }
 		bool StartsFromSaveRam { get; set; }
 		string GameName { get; set; }
