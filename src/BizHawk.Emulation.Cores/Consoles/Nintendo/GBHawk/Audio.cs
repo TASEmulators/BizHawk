@@ -896,25 +896,29 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					}
 				}
 			}
+
 			timer_bit_old = Core.double_speed ? Core.timer.divider_reg.Bit(13) : Core.timer.divider_reg.Bit(12);
 
 			if (sequencer_reset_cd > 0)
 			{
 				sequencer_reset_cd--;
-								
+							
 				if (sequencer_reset_cd == 0)
 				{
+					// seems to be off by one issues here, hard to tell since the write takes place in the cpu loop
+					// but the effect takes place in the sound loop 
 					if (Core.double_speed)
 					{
-						sequencer_len = Core.timer.divider_reg.Bit(13) ? 0 : 1;
-						sequencer_vol = Core.timer.divider_reg.Bit(13) ? 0 : 1;
-						sequencer_swp = Core.timer.divider_reg.Bit(13) ? 0 : 1;
+						
+						sequencer_len = (Core.timer.divider_reg - 1).Bit(13) ? 0 : 1;
+						sequencer_vol = (Core.timer.divider_reg - 1).Bit(13) ? 0 : 1;
+						sequencer_swp = (Core.timer.divider_reg - 1).Bit(13) ? 0 : 1;
 					}
 					else
 					{
-						sequencer_len = Core.timer.divider_reg.Bit(12) ? 0 : 1;
-						sequencer_vol = Core.timer.divider_reg.Bit(12) ? 0 : 1;
-						sequencer_swp = Core.timer.divider_reg.Bit(12) ? 0 : 1;
+						sequencer_len = (Core.timer.divider_reg + 1).Bit(12) ? 0 : 1;
+						sequencer_vol = (Core.timer.divider_reg + 1).Bit(12) ? 0 : 1;
+						sequencer_swp = (Core.timer.divider_reg + 1).Bit(12) ? 0 : 1;
 					}				
 				}
 			}

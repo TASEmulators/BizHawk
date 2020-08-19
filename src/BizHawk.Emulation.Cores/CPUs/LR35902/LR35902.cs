@@ -462,7 +462,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 							break;
 						}
 
-						if (stop_time == (32768 - 2))
+						if (stop_time == (32769))
 						{
 							SpeedFunc(1);
 						}
