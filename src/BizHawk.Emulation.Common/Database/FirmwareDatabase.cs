@@ -265,6 +265,7 @@ namespace BizHawk.Emulation.Common
 
 			FirmwareAndOption("4ED31EC6B0B175BB109C0EB5FD3D193DA823339F", 256, "GB", "World", "GB_boot_ROM.gb", "Game Boy BIOS");
 			FirmwareAndOption("1293D68BF9643BC4F36954C1E80E38F39864528D", 2304, "GBC", "World", "GBC_boot_ROM.gb", "Game Boy Color BIOS");
+			FirmwareAndOption("1ecafa77ab3172193f3305486a857f443e28ebd9", 2304, "GBC", "AGB", "GBC_boot_ROM_AGB.gb", "Game Boy Color BIOS (AGB)");
 
 			//FirmwareAndOption("A4A9208B798621D28327138DA024722DF03598C6", 2304, "GBC", "World", "GBC_boot_ROM.gb", "Game Boy Color BIOS");
 

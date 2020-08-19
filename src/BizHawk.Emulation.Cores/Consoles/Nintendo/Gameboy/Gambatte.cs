@@ -86,42 +86,33 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				}
 
 				byte[] bios;
-				string biosName;
+				string biosSystemId;
+				string biosId;
 				if ((flags & LibGambatte.LoadFlags.FORCE_DMG) == LibGambatte.LoadFlags.FORCE_DMG)
 				{
-					biosName = "GB";
+					biosSystemId = "GB";
+					biosId = "World";
 					IsCgb = false;
 				}
 				else
 				{
-					// TODO: Fix AGB bios mode stuff
-					// biosName = _syncSettings.GBACGB ? "AGB" : "GBC";
-					biosName = "GBC";
+					biosSystemId = "GBC";
+					biosId = _syncSettings.GBACGB ? "AGB" : "World";
 					IsCgb = true;
 				}
 
 				if (_syncSettings.EnableBIOS)
 				{
-					bios = comm.CoreFileProvider.GetFirmware(biosName, "World", true, "BIOS Not Found, Cannot Load.  Change SyncSettings to run without BIOS.");
+					bios = comm.CoreFileProvider.GetFirmware(biosSystemId, biosId, true, "BIOS Not Found, Cannot Load.  Change SyncSettings to run without BIOS.");
 				}
 				else
 				{
-					Lazy<byte[]> builtinBios;
-					switch (biosName)
-					{
-						case "GB":
-							builtinBios = Resources.SameboyDmgBoot;
-							break;
-						case "GBC":
-							builtinBios = Resources.SameboyCgbBoot;
-							break;
-						// TODO: This doesn't work; locks up before leaving the bios screen
-						// case "AGB":
-						// 	builtinBios = Resources.SameboyAgbBoot;
-						// 	break;
-						default:
-							throw new Exception("Internal GB Error (BIOS??)");
-					}
+					var builtinBios = (biosSystemId, biosId) switch {
+						("GB", "World") => Resources.SameboyDmgBoot,
+						("GBC", "World") => Resources.SameboyCgbBoot,
+						("GBC", "AGB") => Resources.SameboyAgbBoot,
+						(_, _) => throw new Exception("Internal GB Error (BIOS??)"),
+					};
 					bios = BizHawk.Common.Util.DecompressGzipFile(new MemoryStream(builtinBios.Value, false));
 				}
 
