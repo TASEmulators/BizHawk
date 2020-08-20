@@ -12,8 +12,17 @@ namespace BizHawk.Client.Common
 
 		private readonly ZwinderBuffer _current;
 		private readonly ZwinderBuffer _recent;
-		private readonly ZwinderBuffer _gapFiller; // Used to re-fill gaps when still replaying input, but in a non-current area, also needed when switching branches
-		private readonly List<KeyValuePair<int, byte[]>> _ancient = new List<KeyValuePair<int, byte[]>>();
+
+		// Used to re-fill gaps when still replaying input, but in a non-current area, also needed when switching branches
+		private readonly ZwinderBuffer _gapFiller;
+
+		// These never decay, but can be invalidated, but can be invalidated, they are for reserved states
+		// such as markers and branches, but also we naturally evict states from recent to hear, based
+		// on _ancientInterval
+		private readonly List<KeyValuePair<int, byte[]>> _reserved = new List<KeyValuePair<int, byte[]>>();
+
+		// When recent states are evicted this interval is used to determine if we need to reserve the state
+		// We always want to keep some states throughout the movie
 		private readonly int _ancientInterval;
 
 		public ZwinderStateManager(ZwinderStateManagerSettings settings)
@@ -50,7 +59,7 @@ namespace BizHawk.Client.Common
 
 		public void Engage(byte[] frameZeroState)
 		{
-			_ancient.Add(new KeyValuePair<int, byte[]>(0, (byte[])frameZeroState.Clone()));
+			_reserved.Add(new KeyValuePair<int, byte[]>(0, (byte[])frameZeroState.Clone()));
 		}
 
 		private ZwinderStateManager(ZwinderBuffer current, ZwinderBuffer recent, ZwinderBuffer gapFiller, int ancientInterval)
@@ -80,7 +89,7 @@ namespace BizHawk.Client.Common
 		// TODO: private set, refactor LoadTasprojExtras to hold onto a settings object and pass it in to Create() method
 		public ZwinderStateManagerSettings Settings { get; set; }
 
-		public int Count => _current.Count + _recent.Count + _gapFiller.Count + _ancient.Count + 1;
+		public int Count => _current.Count + _recent.Count + _gapFiller.Count + _reserved.Count + 1;
 
 		private class StateInfo
 		{
@@ -115,9 +124,9 @@ namespace BizHawk.Client.Common
 			{
 				yield return new StateInfo(_recent.GetState(i));
 			}
-			for (var i = _ancient.Count - 1; i >= 0; i--)
+			for (var i = _reserved.Count - 1; i >= 0; i--)
 			{
-				yield return new StateInfo(_ancient[i]);
+				yield return new StateInfo(_reserved[i]);
 			}
 		}
 
@@ -189,12 +198,12 @@ namespace BizHawk.Client.Common
 						index2 => 
 						{
 							var state2 = _recent.GetState(index2);
-							var from = _ancient.Count > 0 ? _ancient[_ancient.Count - 1].Key : 0;
+							var from = _reserved.Count > 0 ? _reserved[_reserved.Count - 1].Key : 0;
 							if (state2.Frame - from >= _ancientInterval) 
 							{
 								var ms = new MemoryStream();
 								state2.GetReadStream().CopyTo(ms);
-								_ancient.Add(new KeyValuePair<int, byte[]>(state2.Frame, ms.ToArray()));
+								_reserved.Add(new KeyValuePair<int, byte[]>(state2.Frame, ms.ToArray()));
 							}
 						});
 				},
@@ -211,7 +220,7 @@ namespace BizHawk.Client.Common
 			_current.InvalidateEnd(0);
 			_recent.InvalidateEnd(0);
 			_gapFiller.InvalidateEnd(0);
-			_ancient.Clear();
+			_reserved.Clear();
 		}
 
 		public KeyValuePair<int, Stream> GetStateClosestToFrame(int frame)
@@ -243,11 +252,11 @@ namespace BizHawk.Client.Common
 
 		private bool InvalidateNormal(int frame)
 		{
-			for (var i = 0; i < _ancient.Count; i++)
+			for (var i = 0; i < _reserved.Count; i++)
 			{
-				if (_ancient[i].Key > frame)
+				if (_reserved[i].Key > frame)
 				{
-					_ancient.RemoveRange(i, _ancient.Count - i);
+					_reserved.RemoveRange(i, _reserved.Count - i);
 					_recent.InvalidateEnd(0);
 					_current.InvalidateEnd(0);
 					return true;
@@ -303,7 +312,7 @@ namespace BizHawk.Client.Common
 				var key = br.ReadInt32();
 				var length = br.ReadInt32();
 				var data = br.ReadBytes(length);
-				ret._ancient.Add(new KeyValuePair<int, byte[]>(key, data));
+				ret._reserved.Add(new KeyValuePair<int, byte[]>(key, data));
 			}
 
 			return ret;
@@ -317,8 +326,8 @@ namespace BizHawk.Client.Common
 
 			bw.Write(_ancientInterval);
 
-			bw.Write(_ancient.Count);
-			foreach (var s in _ancient)
+			bw.Write(_reserved.Count);
+			foreach (var s in _reserved)
 			{
 				bw.Write(s.Key);
 				bw.Write(s.Value.Length);
