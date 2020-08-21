@@ -214,6 +214,11 @@ namespace BizHawk.Client.Common
 
 		public void EvictReserved(int frame)
 		{
+			if (frame == 0)
+			{
+				throw new InvalidOperationException("Frame 0 can not be evicted.");
+			}
+
 			_reserved.RemoveAll(r => r.Key == frame);
 		}
 
