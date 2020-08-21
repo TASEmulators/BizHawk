@@ -197,6 +197,11 @@ namespace BizHawk.Client.Common
 
 		public void CaptureReserved(int frame, IStatable source)
 		{
+			if (_reserved.Any(r => r.Key == frame))
+			{
+				return;
+			}
+
 			var ms = new MemoryStream();
 			source.SaveStateBinary(new BinaryWriter(ms));
 			_reserved.Add(new KeyValuePair<int, byte[]>(frame, ms.ToArray()));
@@ -209,6 +214,12 @@ namespace BizHawk.Client.Common
 			if (frame <= LastRing)
 			{
 				CaptureGap(frame, source);
+				return;
+			}
+
+			// We already have this state, no need to capture
+			if (_reserved.Any(r => r.Key == frame))
+			{
 				return;
 			}
 
