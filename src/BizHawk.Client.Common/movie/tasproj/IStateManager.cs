@@ -28,6 +28,11 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		void CaptureReserved(int frame, IStatable source);
 
+		/// <summary>
+		/// Commands the state manager to remove a reserved state for the given frame, if it is exists
+		/// </summary>
+		void EvictReserved(int frame);
+
 		bool HasState(int frame);
 
 		/// <summary>

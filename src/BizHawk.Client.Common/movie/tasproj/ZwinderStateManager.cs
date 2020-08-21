@@ -212,6 +212,11 @@ namespace BizHawk.Client.Common
 			_reserved.Add(new KeyValuePair<int, byte[]>(frame, ms.ToArray()));
 		}
 
+		public void EvictReserved(int frame)
+		{
+			_reserved.RemoveAll(r => r.Key == frame);
+		}
+
 		private void AddToReserved(ZwinderBuffer.StateInformation state)
 		{
 			if (_reserved.Any(r => r.Key == state.Frame))
