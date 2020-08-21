@@ -130,6 +130,19 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		// Only considers Current and Recent
+		private IEnumerable<StateInfo> RingStates()
+		{
+			for (var i = _current.Count - 1; i >= 0; i--)
+			{
+				yield return new StateInfo(_current.GetState(i));
+			}
+			for (var i = _recent.Count - 1; i >= 0; i--)
+			{
+				yield return new StateInfo(_recent.GetState(i));
+			}
+		}
+
 		private IEnumerable<StateInfo> GapStates()
 		{
 			for (var i = _gapFiller.Count - 1; i >= 0; i--)
@@ -180,9 +193,20 @@ namespace BizHawk.Client.Common
 
 		public int Last => AllStates().First().Frame;
 
+		private int LastRing => RingStates().FirstOrDefault()?.Frame ?? 0;
+
+		public void CaptureReserved(int frame, IStatable source)
+		{
+			var ms = new MemoryStream();
+			source.SaveStateBinary(new BinaryWriter(ms));
+			_reserved.Add(new KeyValuePair<int, byte[]>(frame, ms.ToArray()));
+		}
+
 		public void Capture(int frame, IStatable source, bool force = false)
 		{
-			if (frame <= Last)
+			// We do not want to consider reserved states for a notion of Last
+			// reserved states can include future states in the case of branch states
+			if (frame <= LastRing)
 			{
 				CaptureGap(frame, source);
 				return;
