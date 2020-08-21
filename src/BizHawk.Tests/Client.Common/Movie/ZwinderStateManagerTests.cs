@@ -238,6 +238,48 @@ namespace BizHawk.Tests.Client.Common.Movie
 			Assert.AreEqual(totalCurrentFrames - 1, actual.Key);
 		}
 
+		[TestMethod]
+		public void InvalidateAfter_Correct_WhenReservedGreaterThanCurrent()
+		{
+			const int futureReservedFrame = 1000;
+			var ss = new StateSource { PaddingData = new byte[1000] };
+			var zw = new ZwinderStateManager(new ZwinderStateManagerSettings());
+			
+			var ms = new MemoryStream();
+			ss.SaveStateBinary(new BinaryWriter(ms));
+			zw.Engage(ms.ToArray());
+
+			zw.CaptureReserved(futureReservedFrame, ss);
+			for (int i = 1; i < 10; i++)
+			{
+				zw.Capture(i, ss);
+			}
+
+			zw.InvalidateAfter(futureReservedFrame - 1);
+			Assert.IsFalse(zw.HasState(futureReservedFrame));
+		}
+
+		[TestMethod]
+		public void InvalidateAfter_Correct_WhenCurrentIsLast()
+		{
+			const int totalCurrentFrames = 10;
+			var ss = new StateSource { PaddingData = new byte[1000] };
+			var zw = new ZwinderStateManager(new ZwinderStateManagerSettings());
+			
+			var ms = new MemoryStream();
+			ss.SaveStateBinary(new BinaryWriter(ms));
+			zw.Engage(ms.ToArray());
+
+			for (int i = 1; i < totalCurrentFrames; i++)
+			{
+				zw.Capture(i, ss);
+			}
+
+			zw.InvalidateAfter(totalCurrentFrames - 1);
+
+			Assert.IsFalse(zw.HasState(totalCurrentFrames));
+		}
+
 		private class StateSource : IStatable
 		{
 			public int Frame { get; set; }

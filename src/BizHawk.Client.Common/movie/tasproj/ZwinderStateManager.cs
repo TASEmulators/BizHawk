@@ -286,16 +286,6 @@ namespace BizHawk.Client.Common
 
 		private bool InvalidateNormal(int frame)
 		{
-			for (var i = 0; i < _reserved.Count; i++)
-			{
-				if (_reserved[i].Key > frame)
-				{
-					_reserved.RemoveRange(i, _reserved.Count - i);
-					_recent.InvalidateEnd(0);
-					_current.InvalidateEnd(0);
-					return true;
-				}
-			}
 			for (var i = 0; i < _recent.Count; i++)
 			{
 				if (_recent.GetState(i).Frame > frame)
@@ -305,6 +295,7 @@ namespace BizHawk.Client.Common
 					return true;
 				}
 			}
+
 			for (var i = 0; i < _current.Count; i++)
 			{
 				if (_current.GetState(i).Frame > frame)
@@ -324,7 +315,8 @@ namespace BizHawk.Client.Common
 				throw new ArgumentOutOfRangeException(nameof(frame));
 			var b1 = InvalidateNormal(frame);
 			var b2 = InvalidateGaps(frame);
-			return b1 || b2;
+			var b3 = _reserved.RemoveAll(r => r.Key > frame) > 0;
+			return b1 || b2 || b3;
 		}
 
 		public static ZwinderStateManager Create(BinaryReader br, ZwinderStateManagerSettings settings, Func<int, bool> reserveCallback)
