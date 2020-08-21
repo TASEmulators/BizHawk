@@ -136,7 +136,7 @@ namespace BizHawk.Client.Common
 		}
 
 		// Only considers Current and Recent
-		private IEnumerable<StateInfo> RecentAndCurrentStates()
+		private IEnumerable<StateInfo> RingStates()
 		{
 			for (var i = _current.Count - 1; i >= 0; i--)
 			{
@@ -159,7 +159,7 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Enumerate all states in reverse order
 		/// </summary>
-		private IEnumerable<StateInfo> AllRingStates()
+		private IEnumerable<StateInfo> AllStates()
 		{
 			var l1 = NormalStates().GetEnumerator();
 			var l2 = GapStates().GetEnumerator();
@@ -196,9 +196,9 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public int Last => Math.Max(AllRingStates().First().Frame, _reserved.Max(r => r.Key));
+		public int Last => AllStates().First().Frame;
 
-		private int LastRing => RecentAndCurrentStates().FirstOrDefault()?.Frame ?? 0;
+		private int LastRing => RingStates().FirstOrDefault()?.Frame ?? 0;
 
 		public void CaptureReserved(int frame, IStatable source)
 		{
@@ -300,13 +300,13 @@ namespace BizHawk.Client.Common
 			if (frame < 0)
 				throw new ArgumentOutOfRangeException(nameof(frame));
 
-			var si = AllRingStates().First(s => s.Frame <= frame);
+			var si = AllStates().First(s => s.Frame <= frame);
 			return new KeyValuePair<int, Stream>(si.Frame, si.Read());
 		}
 
 		public bool HasState(int frame)
 		{
-			return AllRingStates().Any(s => s.Frame == frame);
+			return AllStates().Any(s => s.Frame == frame);
 		}
 
 		private bool InvalidateGaps(int frame)
