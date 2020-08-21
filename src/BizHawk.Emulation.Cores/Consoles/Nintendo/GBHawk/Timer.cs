@@ -41,7 +41,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			switch (addr)
 			{
-				case 0xFF04: ret = (byte)(divider_reg >> 8);		break; // DIV register
+				case 0xFF04: ret = (byte)(divider_reg >> 8); 		break; // DIV register
 				case 0xFF05: ret = timer;							break; // TIMA (Timer Counter)
 				case 0xFF06: ret = timer_reload;					break; // TMA (Timer Modulo)
 				case 0xFF07: ret = timer_control;					break; // TAC (Timer Control)
@@ -56,6 +56,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			{
 				// DIV register
 				case 0xFF04:
+					// NOTE: even though there is an automatic increment directly after the CPU loop, 
+					// it is still expected that 0 is written here
 					divider_reg = 0;
 					break;
 
@@ -143,8 +145,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public void tick()
 		{
-			divider_reg++;
-
+			IRQ_block = false;
+			
 			// pick a bit to test based on the current value of timer control
 			switch (timer_control & 3)
 			{
@@ -201,20 +203,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					next_free_cycle = 4 + Core.cpu.TotalExecutedCycles;
 
 					// set interrupts
-					if (!IRQ_block)
-					{
-						if (Core.REG_FFFF.Bit(2)) { Core.cpu.FlagI = true; }
-						Core.REG_FF0F |= 0x04;
-					}
+					if (Core.REG_FFFF.Bit(2)) { Core.cpu.FlagI = true; }
+					Core.REG_FF0F |= 0x04;
+					IRQ_block = true;
 				}
 			}
-
-			IRQ_block = false;
 		}
 
 		public void Reset()
 		{
-			divider_reg = (ushort)(Core.is_GBC ? 0xFFFF : 0x1);
+			divider_reg = (ushort)(Core.is_GBC ?  0xFFFE : 0xFFFE);
 			timer_reload = 0;
 			timer = 0;
 			timer_old = 0;

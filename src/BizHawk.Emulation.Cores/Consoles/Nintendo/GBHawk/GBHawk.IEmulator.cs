@@ -108,28 +108,34 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					{
 						if (ppu.DMA_start && !cpu.halted && !cpu.stopped) { ppu.DMA_tick(); }
 						serialport.serial_transfer_tick();
-						cpu.ExecuteOne();
 						timer.tick();
+						cpu.ExecuteOne();
+						timer.divider_reg++;
 						if (delays_to_process) { process_delays(); }
 					}
 				
 					if (ppu.DMA_start && !cpu.halted && !cpu.stopped) { ppu.DMA_tick(); }
 					serialport.serial_transfer_tick();
-					cpu.ExecuteOne();
 					timer.tick();
+					cpu.ExecuteOne();
+					timer.divider_reg++;
+
 					if (delays_to_process) { process_delays(); }
 				}
 				else
 				{
 					if (double_speed)
 					{
-						cpu.TotalExecutedCycles++;
 						timer.tick();
+						cpu.TotalExecutedCycles++;
+						timer.divider_reg++;
 						if (delays_to_process) { process_delays(); }
 					}
 
-					cpu.TotalExecutedCycles++;
 					timer.tick();
+					cpu.TotalExecutedCycles++;
+					timer.divider_reg++;
+
 					if (delays_to_process) { process_delays(); }
 				}
 
@@ -190,29 +196,37 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				// These things all tick twice as fast in GBC double speed mode
 				if (ppu.DMA_start && !cpu.halted && !cpu.stopped) { ppu.DMA_tick(); }
 				serialport.serial_transfer_tick();
-				cpu.ExecuteOne();
 				timer.tick();
+				cpu.ExecuteOne();
+				timer.divider_reg++;
+
 				if (delays_to_process) { process_delays(); }
 
 				if (double_speed)
 				{
 					if (ppu.DMA_start && !cpu.halted && !cpu.stopped) { ppu.DMA_tick(); }
 					serialport.serial_transfer_tick();
-					cpu.ExecuteOne();
 					timer.tick();
+					cpu.ExecuteOne();
+					timer.divider_reg++;
+
 					if (delays_to_process) { process_delays(); }
 				}
 			}
 			else
 			{
-				cpu.TotalExecutedCycles++;
 				timer.tick();
+				cpu.TotalExecutedCycles++;
+				timer.divider_reg++;
+
 				if (delays_to_process) { process_delays(); }
 
 				if (double_speed)
 				{
-					cpu.TotalExecutedCycles++;
 					timer.tick();
+					cpu.TotalExecutedCycles++;
+					timer.divider_reg++;
+
 					if (delays_to_process) { process_delays(); }
 				}
 			}
@@ -286,9 +300,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						speed_switch = false;
 						Console.WriteLine("Speed Switch: " + cpu.TotalExecutedCycles);
 
-						// reset the divider (only way for speed_change_timing_fine.gbc and speed_change_cancel.gbc to both work)
-						timer.divider_reg = 0;
-
 						int ret = double_speed ? 32769 : 32769; // actual time needs checking
 						return ret;
 					}
@@ -302,6 +313,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 			else
 			{
+				// reset the divider (only way for speed_change_timing_fine.gbc and speed_change_cancel.gbc to both work)
+				timer.divider_reg = 1;
 				double_speed = !double_speed;
 				return 0;
 			}
@@ -330,7 +343,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public void SetIntRegs(byte r)
 		{
-			if (((REG_FF0F & 4) == 4) && ((r & 4) == 0) && is_GBC) { timer.IRQ_block = true; }
+			if (((REG_FF0F & 4) == 4) && ((r & 4) == 0) && timer.IRQ_block && !is_GBC) { r |= 4; }
 			REG_FF0F = r;
 		}
 
