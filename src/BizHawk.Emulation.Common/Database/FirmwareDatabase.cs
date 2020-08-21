@@ -263,10 +263,18 @@ namespace BizHawk.Emulation.Common
 			FirmwareAndOption("a6120aed50831c9c0d95dbdf707820f601d9452e", 1024, "O2", "BIOS-C52", "O2_PhillipsC52.bin", "Phillips C52 Bios");
 			FirmwareAndOption("5130243429B40B01A14E1304D0394B8459A6FBAE", 1024, "G7400", "BIOS", "G7400_bios.bin", "G7400 Bios");
 
-			FirmwareAndOption("4ED31EC6B0B175BB109C0EB5FD3D193DA823339F", 256, "GB", "World", "GB_boot_ROM.gb", "Game Boy BIOS");
-			FirmwareAndOption("1293D68BF9643BC4F36954C1E80E38F39864528D", 2304, "GBC", "World", "GBC_boot_ROM.gb", "Game Boy Color BIOS");
+			Firmware("GB", "World", "Game Boy Boot Rom");
+			Option("GB", "World", File("4ed31ec6b0b175bb109c0eb5fd3d193da823339f", 256, "dmg.bin", "Game Boy Boot Rom"), FirmwareOptionStatus.Ideal);
+			Option("GB", "World", File("8bd501e31921e9601788316dbd3ce9833a97bcbc", 256, "dmg0.bin", "Game Boy Boot Rom (Early J Revision)"), FirmwareOptionStatus.Acceptable);
+			Option("GB", "World", File("4e68f9da03c310e84c523654b9026e51f26ce7f0", 256, "mgb.bin", "Game Boy Boot Rom (Pocket)"), FirmwareOptionStatus.Acceptable);
 
-			//FirmwareAndOption("A4A9208B798621D28327138DA024722DF03598C6", 2304, "GBC", "World", "GBC_boot_ROM.gb", "Game Boy Color BIOS");
+			Firmware("GBC", "World", "Game Boy Color Boot Rom");
+			Option("GBC", "World", File("1293d68bf9643bc4f36954c1e80e38f39864528d", 2304, "cgb.bin", "Game Boy Color Boot Rom"), FirmwareOptionStatus.Ideal);
+			Option("GBC", "World", File("df5a0d2d49de38fbd31cc2aab8e62c8550e655c0", 2304, "cgb0.bin", "Game Boy Color Boot Rom (Early Revision)"), FirmwareOptionStatus.Acceptable);
+
+			Firmware("GBC", "AGB", "Game Boy Color Boot Rom (GBA)");
+			Option("GBC", "AGB", File("fa5287e24b0fa533b3b5ef2b28a81245346c1a0f", 2304, "agb.bin", "Game Boy Color Boot Rom (GBA)"), FirmwareOptionStatus.Ideal);
+			Option("GBC", "AGB", File("1ecafa77ab3172193f3305486a857f443e28ebd9", 2304, "agb_gambatte.bin", "Game Boy Color Boot Rom (GBA, Gambatte RE)"), FirmwareOptionStatus.Bad);
 
 			Firmware("PCFX", "BIOS", "PCFX bios");
 			var pcfxbios = File("1A77FD83E337F906AECAB27A1604DB064CF10074", 1024 * 1024, "PCFX_bios.bin", "PCFX BIOS 1.00");
