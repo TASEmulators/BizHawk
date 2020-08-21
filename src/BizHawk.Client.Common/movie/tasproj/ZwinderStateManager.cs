@@ -116,27 +116,8 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		/// <summary>
-		/// Enumerate all states, excepting GapFiller , in reverse order
-		/// </summary>
-		private IEnumerable<StateInfo> NormalStates()
-		{
-			for (var i = _current.Count - 1; i >= 0; i--)
-			{
-				yield return new StateInfo(_current.GetState(i));
-			}
-			for (var i = _recent.Count - 1; i >= 0; i--)
-			{
-				yield return new StateInfo(_recent.GetState(i));
-			}
-			for (var i = _reserved.Count - 1; i >= 0; i--)
-			{
-				yield return new StateInfo(_reserved[i]);
-			}
-		}
-
-		// Only considers Current and Recent
-		private IEnumerable<StateInfo> RingStates()
+		// Enumerate all current and recent states in reverse order
+		private IEnumerable<StateInfo> CurrentAndRecentStates()
 		{
 			for (var i = _current.Count - 1; i >= 0; i--)
 			{
@@ -148,6 +129,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		// Enumerate all gap states in reverse order
 		private IEnumerable<StateInfo> GapStates()
 		{
 			for (var i = _gapFiller.Count - 1; i >= 0; i--)
@@ -156,49 +138,29 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		// Enumerate all reserved states in reverse order
+		private IEnumerable<StateInfo> ReservedStates()
+		{
+			for (var i = _reserved.Count - 1; i >= 0; i--)
+			{
+				yield return new StateInfo(_reserved[i]);
+			}
+		}
+
 		/// <summary>
 		/// Enumerate all states in reverse order
 		/// </summary>
 		private IEnumerable<StateInfo> AllStates()
 		{
-			var l1 = NormalStates().GetEnumerator();
-			var l2 = GapStates().GetEnumerator();
-			var l1More = l1.MoveNext();
-			var l2More = l2.MoveNext();
-			while (l1More || l2More)
-			{
-				if (l1More)
-				{
-					if (l2More)
-					{
-						if (l1.Current.Frame > l2.Current.Frame)
-						{
-							yield return l1.Current;
-							l1More = l1.MoveNext();
-						}
-						else
-						{
-							yield return l2.Current;
-							l2More = l2.MoveNext();
-						}
-					}
-					else
-					{
-						yield return l1.Current;
-						l1More = l1.MoveNext();
-					}
-				}
-				else
-				{
-					yield return l2.Current;
-					l2More = l2.MoveNext();
-				}
-			}
+			return CurrentAndRecentStates()
+				.Concat(GapStates())
+				.Concat(ReservedStates())
+				.OrderByDescending(s => s.Frame);
 		}
 
 		public int Last => AllStates().First().Frame;
 
-		private int LastRing => RingStates().FirstOrDefault()?.Frame ?? 0;
+		private int LastRing => CurrentAndRecentStates().FirstOrDefault()?.Frame ?? 0;
 
 		public void CaptureReserved(int frame, IStatable source)
 		{

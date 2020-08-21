@@ -114,6 +114,130 @@ namespace BizHawk.Tests.Client.Common.Movie
 			Assert.IsTrue(actual <= 10440);
 		}
 
+		[TestMethod]
+		public void Last_Correct_WhenReservedGreaterThanCurrent()
+		{
+			const int futureReservedFrame = 1000;
+			var ss = new StateSource { PaddingData = new byte[1000] };
+			var zw = new ZwinderStateManager(new ZwinderStateManagerSettings());
+			
+			var ms = new MemoryStream();
+			ss.SaveStateBinary(new BinaryWriter(ms));
+			zw.Engage(ms.ToArray());
+
+			zw.CaptureReserved(futureReservedFrame, ss);
+			for (int i = 1; i < 10; i++)
+			{
+				zw.Capture(i, ss);
+			}
+
+			Assert.AreEqual(futureReservedFrame, zw.Last);
+		}
+
+		[TestMethod]
+		public void Last_Correct_WhenCurrentIsLast()
+		{
+			const int totalCurrentFrames = 10;
+			var ss = new StateSource { PaddingData = new byte[1000] };
+			var zw = new ZwinderStateManager(new ZwinderStateManagerSettings());
+			
+			var ms = new MemoryStream();
+			ss.SaveStateBinary(new BinaryWriter(ms));
+			zw.Engage(ms.ToArray());
+
+			for (int i = 1; i < totalCurrentFrames; i++)
+			{
+				zw.Capture(i, ss);
+			}
+
+			Assert.AreEqual(totalCurrentFrames - 1, zw.Last);
+		}
+
+		[TestMethod]
+		public void HasState_Correct_WhenReservedGreaterThanCurrent()
+		{
+			const int futureReservedFrame = 1000;
+			var ss = new StateSource { PaddingData = new byte[1000] };
+			var zw = new ZwinderStateManager(new ZwinderStateManagerSettings());
+			
+			var ms = new MemoryStream();
+			ss.SaveStateBinary(new BinaryWriter(ms));
+			zw.Engage(ms.ToArray());
+
+			zw.CaptureReserved(futureReservedFrame, ss);
+			for (int i = 1; i < 10; i++)
+			{
+				zw.Capture(i, ss);
+			}
+
+			var actual = zw.HasState(futureReservedFrame);
+			Assert.IsTrue(actual);
+		}
+
+		[TestMethod]
+		public void HasState_Correct_WhenCurrentIsLast()
+		{
+			const int totalCurrentFrames = 10;
+			var ss = new StateSource { PaddingData = new byte[1000] };
+			var zw = new ZwinderStateManager(new ZwinderStateManagerSettings());
+			
+			var ms = new MemoryStream();
+			ss.SaveStateBinary(new BinaryWriter(ms));
+			zw.Engage(ms.ToArray());
+
+			for (int i = 1; i < totalCurrentFrames; i++)
+			{
+				zw.Capture(i, ss);
+			}
+
+			var actual = zw.HasState(totalCurrentFrames - 1);
+			Assert.IsTrue(actual);
+		}
+
+		[TestMethod]
+		public void GetStateClosestToFrame_Correct_WhenReservedGreaterThanCurrent()
+		{
+			const int futureReservedFrame = 1000;
+			var ss = new StateSource { PaddingData = new byte[1000] };
+			var zw = new ZwinderStateManager(new ZwinderStateManagerSettings());
+			
+			var ms = new MemoryStream();
+			ss.SaveStateBinary(new BinaryWriter(ms));
+			zw.Engage(ms.ToArray());
+
+			zw.CaptureReserved(futureReservedFrame, ss);
+			for (int i = 1; i < 10; i++)
+			{
+				zw.Capture(i, ss);
+			}
+
+			var actual = zw.GetStateClosestToFrame(futureReservedFrame + 1);
+
+			Assert.IsNotNull(actual);
+			Assert.AreEqual(futureReservedFrame, actual.Key);
+		}
+
+		[TestMethod]
+		public void GetStateClosestToFrame_Correct_WhenCurrentIsLast()
+		{
+			const int totalCurrentFrames = 10;
+			var ss = new StateSource { PaddingData = new byte[1000] };
+			var zw = new ZwinderStateManager(new ZwinderStateManagerSettings());
+			
+			var ms = new MemoryStream();
+			ss.SaveStateBinary(new BinaryWriter(ms));
+			zw.Engage(ms.ToArray());
+
+			for (int i = 1; i < totalCurrentFrames; i++)
+			{
+				zw.Capture(i, ss);
+			}
+
+			var actual = zw.GetStateClosestToFrame(totalCurrentFrames);
+
+			Assert.AreEqual(totalCurrentFrames - 1, actual.Key);
+		}
+
 		private class StateSource : IStatable
 		{
 			public int Frame { get; set; }
