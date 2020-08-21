@@ -167,7 +167,7 @@ namespace BizHawk.Client.Common
 
 			bl.GetLump(BinaryStateLump.StateHistory, false, delegate(BinaryReader br, long length)
 			{
-				TasStateManager = ZwinderStateManager.Create(br, TasStateManager.Settings);
+				TasStateManager = ZwinderStateManager.Create(br, TasStateManager.Settings, IsReserved);
 			});
 		}
 	}

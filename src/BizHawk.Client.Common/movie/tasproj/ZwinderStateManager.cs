@@ -10,6 +10,8 @@ namespace BizHawk.Client.Common
 	{
 		private static readonly byte[] NonState = new byte[0];
 
+		private readonly Func<int, bool> _reserveCallback;
+
 		private readonly ZwinderBuffer _current;
 		private readonly ZwinderBuffer _recent;
 
@@ -25,7 +27,7 @@ namespace BizHawk.Client.Common
 		// We always want to keep some states throughout the movie
 		private readonly int _ancientInterval;
 
-		public ZwinderStateManager(ZwinderStateManagerSettings settings)
+		internal ZwinderStateManager(ZwinderStateManagerSettings settings)
 		{
 			Settings = settings;
 
@@ -52,9 +54,11 @@ namespace BizHawk.Client.Common
 			_ancientInterval = settings.AncientStateInterval;
 		}
 
-		public ZwinderStateManager()
-			:this(new ZwinderStateManagerSettings())
+		/// <param name="reserveCallback">Called when deciding to evict a state for the given frame, if true is returned, the state will be reserved</param>
+		public ZwinderStateManager(Func<int, bool> reserveCallback)
+			: this(new ZwinderStateManagerSettings())
 		{
+			_reserveCallback = reserveCallback;
 		}
 
 		public void Engage(byte[] frameZeroState)
@@ -62,12 +66,13 @@ namespace BizHawk.Client.Common
 			_reserved.Add(new KeyValuePair<int, byte[]>(0, (byte[])frameZeroState.Clone()));
 		}
 
-		private ZwinderStateManager(ZwinderBuffer current, ZwinderBuffer recent, ZwinderBuffer gapFiller, int ancientInterval)
+		private ZwinderStateManager(ZwinderBuffer current, ZwinderBuffer recent, ZwinderBuffer gapFiller, int ancientInterval, Func<int, bool> reserveCallback)
 		{
 			_current = current;
 			_recent = recent;
 			_gapFiller = gapFiller;
 			_ancientInterval = ancientInterval;
+			_reserveCallback = reserveCallback;
 		}
 		
 		public byte[] this[int frame]
@@ -207,6 +212,18 @@ namespace BizHawk.Client.Common
 			_reserved.Add(new KeyValuePair<int, byte[]>(frame, ms.ToArray()));
 		}
 
+		private void AddToReserved(ZwinderBuffer.StateInformation state)
+		{
+			if (_reserved.Any(r => r.Key == state.Frame))
+			{
+				return;
+			}
+
+			var ms = new MemoryStream();
+			state.GetReadStream().CopyTo(ms);
+			_reserved.Add(new KeyValuePair<int, byte[]>(state.Frame, ms.ToArray()));
+		}
+
 		public void Capture(int frame, IStatable source, bool force = false)
 		{
 			// We do not want to consider reserved states for a notion of Last
@@ -228,17 +245,27 @@ namespace BizHawk.Client.Common
 				index =>
 				{
 					var state = _current.GetState(index);
+
+					// If this is a reserved state, go ahead and reserve instead of potentially trying to force it into recent, for further eviction logic later
+					if (_reserveCallback(state.Frame))
+					{
+						AddToReserved(state);
+						return;
+					}
+
 					_recent.Capture(state.Frame,
 						s => state.GetReadStream().CopyTo(s),
 						index2 => 
 						{
 							var state2 = _recent.GetState(index2);
 							var from = _reserved.Count > 0 ? _reserved[_reserved.Count - 1].Key : 0;
-							if (state2.Frame - from >= _ancientInterval) 
+
+							var isReserved = _reserveCallback(state2.Frame);
+
+							// Add to reserved if reserved, or if it matches an "ancient" state consideration
+							if (isReserved || state2.Frame - from >= _ancientInterval)
 							{
-								var ms = new MemoryStream();
-								state2.GetReadStream().CopyTo(ms);
-								_reserved.Add(new KeyValuePair<int, byte[]>(state2.Frame, ms.ToArray()));
+								AddToReserved(state);
 							}
 						});
 				},
@@ -328,7 +355,7 @@ namespace BizHawk.Client.Common
 			return b1 || b2;
 		}
 
-		public static ZwinderStateManager Create(BinaryReader br, ZwinderStateManagerSettings settings)
+		public static ZwinderStateManager Create(BinaryReader br, ZwinderStateManagerSettings settings, Func<int, bool> reserveCallback)
 		{
 			var current = ZwinderBuffer.Create(br);
 			var recent = ZwinderBuffer.Create(br);
@@ -336,7 +363,7 @@ namespace BizHawk.Client.Common
 
 			var ancientInterval = br.ReadInt32();
 
-			var ret = new ZwinderStateManager(current, recent, gaps, ancientInterval)
+			var ret = new ZwinderStateManager(current, recent, gaps, ancientInterval, reserveCallback)
 			{
 				Settings = settings
 			};

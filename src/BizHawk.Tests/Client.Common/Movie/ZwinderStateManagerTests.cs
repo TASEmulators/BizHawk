@@ -12,12 +12,12 @@ namespace BizHawk.Tests.Client.Common.Movie
 		public void SaveCreateRoundTrip()
 		{
 			var ms = new MemoryStream();
-			var zw = new ZwinderStateManager();
+			var zw = new ZwinderStateManager(f => false);
 			zw.SaveStateHistory(new BinaryWriter(ms));
 			var buff = ms.ToArray();
 			var rms = new MemoryStream(buff, false);
 
-			var zw2 = ZwinderStateManager.Create(new BinaryReader(rms), new ZwinderStateManagerSettings());
+			var zw2 = ZwinderStateManager.Create(new BinaryReader(rms), new ZwinderStateManagerSettings(), f => false);
 
 			// TODO: we could assert more things here to be thorough
 			Assert.IsNotNull(zw2);

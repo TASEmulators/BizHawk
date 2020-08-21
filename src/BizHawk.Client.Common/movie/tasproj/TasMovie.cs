@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
-
+using System.Linq;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -23,7 +23,7 @@ namespace BizHawk.Client.Common
 			Markers = new TasMovieMarkerList(this);
 			Markers.CollectionChanged += Markers_CollectionChanged;
 			Markers.Add(0, "Power on");
-			TasStateManager = new ZwinderStateManager();
+			TasStateManager = new ZwinderStateManager(IsReserved);
 		}
 
 		public override void Attach(IEmulator emulator)
@@ -338,5 +338,12 @@ namespace BizHawk.Client.Common
 
 		public void ClearChanges() => Changes = false;
 		public void FlagChanges() => Changes = true;
+
+		private bool IsReserved(int frame)
+		{
+			// Branches should already be in the reserved list, but it doesn't hurt to check
+			return Markers.Any(m => m.Frame == frame)
+				|| Branches.Any(b => b.Frame == frame);
+		}
 	}
 }
