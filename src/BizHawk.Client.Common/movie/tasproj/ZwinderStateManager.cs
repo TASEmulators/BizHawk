@@ -290,7 +290,7 @@ namespace BizHawk.Client.Common
 		{
 			var result = false;
 
-			var cache = StateCache.Contains(frame);
+			var cache = _stateCache.Contains(frame);
 
 			if (_reserved.ContainsKey(frame))
 			{
