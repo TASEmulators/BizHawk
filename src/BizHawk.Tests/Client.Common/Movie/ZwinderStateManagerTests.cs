@@ -1,4 +1,5 @@
 using System.IO;
+using System.Linq;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -355,7 +356,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 		}
 
 		[TestMethod]
-		public void DeleteMe()
+		public void StateCache()
 		{
 			var ss = CreateStateSource();
 			var zw = new ZwinderStateManager(new ZwinderStateManagerSettings
@@ -384,11 +385,15 @@ namespace BizHawk.Tests.Client.Common.Movie
 
 			zw.Capture(101, ss);
 
+			var allStates = zw.AllStates()
+				.Select(s => s.Frame)
+				.ToList();
+
 			for (int i = 0; i < 10000; i++)
 			{
-				var hasState = zw.HasState(i);
-				var hasCache = zw.StateCache.Contains(i);
-				Assert.AreEqual(hasState, hasCache);
+				var actual = zw.HasState(i);
+				var expected = allStates.Contains(i);
+				Assert.AreEqual(expected, actual);
 			}
 		}
 

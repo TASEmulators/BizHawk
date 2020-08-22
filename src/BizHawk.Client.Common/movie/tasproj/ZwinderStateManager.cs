@@ -97,7 +97,7 @@ namespace BizHawk.Client.Common
 
 		public int Count => _current.Count + _recent.Count + _gapFiller.Count + _reserved.Count;
 
-		private class StateInfo
+		internal class StateInfo
 		{
 			public int Frame { get; }
 			public Func<Stream> Read { get; }
@@ -148,7 +148,7 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Enumerate all states in reverse order
 		/// </summary>
-		private IEnumerable<StateInfo> AllStates()
+		internal IEnumerable<StateInfo> AllStates()
 		{
 			return CurrentAndRecentStates()
 				.Concat(GapStates())
@@ -288,31 +288,7 @@ namespace BizHawk.Client.Common
 
 		public bool HasState(int frame)
 		{
-			var result = false;
-
-			var cache = StateCache.Contains(frame);
-
-			if (_reserved.ContainsKey(frame))
-			{
-				result = true;
-			}
-
-			else if (CurrentAndRecentStates().Any(si => si.Frame == frame))
-			{
-				result = true;
-			}
-
-			else if (GapStates().Any(si => si.Frame == frame))
-			{
-				result = true;
-			}
-
-			if (result != cache)
-			{
-				int zzz = 0;
-			}
-
-			return result;
+			return StateCache.Contains(frame);
 		}
 
 		private bool InvalidateGaps(int frame)
