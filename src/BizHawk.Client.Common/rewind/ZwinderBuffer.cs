@@ -136,6 +136,12 @@ namespace BizHawk.Client.Common
 			if (!force && !ShouldCapture(frame))
 				return;
 
+			if (Count == STATEMASK)
+			{
+				indexInvalidated?.Invoke(0);
+				_firstStateIndex = (_firstStateIndex + 1) & STATEMASK;
+			}
+
 			var start = (_states[HeadStateIndex].Start + _states[HeadStateIndex].Size) & _sizeMask;
 			var initialMaxSize = Count > 0
 					? (_states[_firstStateIndex].Start - start) & _sizeMask

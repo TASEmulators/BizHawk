@@ -26,6 +26,27 @@ namespace BizHawk.Tests.Client.Common.Movie
 		}
 
 		[TestMethod]
+		public void CountEvictWorks()
+		{
+			using var zb = new ZwinderBuffer(new RewindConfig
+			{
+				BufferSize = 1,
+				TargetFrameLength = 1
+			});
+			var ss = new StateSource
+			{
+				PaddingData = new byte[10]
+			};
+			var stateCount = 0;
+			for (int i = 0; i < 1000000; i++)
+			{
+				zb.Capture(i, s => ss.SaveStateBinary(new BinaryWriter(s)), j => stateCount--, true);
+				stateCount++;
+			}
+			Assert.AreEqual(zb.Count, stateCount);
+		}
+
+		[TestMethod]
 		public void SaveCreateBufferRoundTrip()
 		{
 			var buff = new ZwinderBuffer(new RewindConfig
