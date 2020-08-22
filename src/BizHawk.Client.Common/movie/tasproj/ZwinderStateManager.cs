@@ -274,7 +274,9 @@ namespace BizHawk.Client.Common
 			_gapFiller.InvalidateEnd(0);
 			StateCache.Clear();
 			StateCache.Add(0);
-			_reserved.Clear();
+			_reserved = _reserved
+				.Where(kvp => kvp.Key == 0)
+				.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 		}
 
 		public KeyValuePair<int, Stream> GetStateClosestToFrame(int frame)

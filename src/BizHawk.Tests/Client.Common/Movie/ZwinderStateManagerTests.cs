@@ -397,6 +397,27 @@ namespace BizHawk.Tests.Client.Common.Movie
 			}
 		}
 
+		[TestMethod]
+		public void Clear_KeepsZeroState()
+		{
+			// Arrange
+			var ss = CreateStateSource();
+			using var zw = CreateSmallZwinder(ss);
+
+			zw.CaptureReserved(1000, ss);
+			for (int i = 1; i < 10; i++)
+			{
+				zw.Capture(i, ss);
+			}
+
+			// Act
+			zw.Clear();
+
+			// Assert
+			Assert.AreEqual(1, zw.AllStates().Count());
+			Assert.AreEqual(0, zw.AllStates().Single().Frame);
+		}
+
 		private class StateSource : IStatable
 		{
 			public int Frame { get; set; }
