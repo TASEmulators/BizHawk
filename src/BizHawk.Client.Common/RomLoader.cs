@@ -25,7 +25,7 @@ namespace BizHawk.Client.Common
 			public Disc DiscData { get; set; }
 			public DiscType DiscType { get; set; }
 			public string DiscName { get; set; }
-		}	
+		}
 		private class RomAsset : IRomAsset
 		{
 			public byte[] RomData { get; set; }
@@ -312,7 +312,7 @@ namespace BizHawk.Client.Common
 			{
 				Comm = nextComm,
 				Game = game,
-					Discs =
+				Discs =
 					{
 						new DiscAsset
 						{
@@ -677,34 +677,7 @@ namespace BizHawk.Client.Common
 			{
 				var system = game?.System;
 
-				// all of the specific exceptions we're trying to catch here aren't expected to have inner exceptions,
-				// so drill down in case we got a TargetInvocationException or something like that
-				while (ex.InnerException != null)
-					ex = ex.InnerException;
-
-				// Specific hack here, as we get more cores of the same system, this isn't scalable
-				if (ex is MissingFirmwareException)
-				{
-					DoLoadErrorCallback(ex.Message, system, path, Deterministic, LoadErrorType.MissingFirmware);
-				}
-				else if (ex is CGBNotSupportedException)
-				{
-					// failed to load SGB bios or game does not support SGB mode. 
-					// To avoid catch-22, disable SGB mode
-					_config.GbAsSgb = false;
-					DoMessageCallback("Failed to load a GB rom in SGB mode.  Disabling SGB Mode.");
-					return LoadRom(path, nextComm, launchLibretroCore, recursiveCount + 1);
-				}
-				else if (ex is NoAvailableCoreException)
-				{
-					// handle exceptions thrown by the new detected systems that BizHawk does not have cores for
-					DoLoadErrorCallback($"{ex.Message}\n\n{ex}", system);
-				}
-				else
-				{
-					DoLoadErrorCallback($"A core accepted the rom, but threw an exception while loading it:\n\n{ex}", system);
-				}
-
+				DispatchErrorMessage(ex, system);
 				return false;
 			}
 
@@ -712,6 +685,48 @@ namespace BizHawk.Client.Common
 			LoadedEmulator = nextEmulator;
 			Game = game;
 			return true;
+		}
+
+		private void DispatchErrorMessage(Exception ex, string system)
+		{
+			if (ex is AggregateException agg)
+			{
+				// all cores failed to load a game, so tell the user everything that went wrong and maybe they can fix it
+				if (agg.InnerExceptions.Count > 1)
+				{
+					DoLoadErrorCallback("Multiple cores failed to load the rom:", system);
+				}
+				foreach (Exception e in agg.InnerExceptions)
+				{
+					DispatchErrorMessage(e, system);
+				}
+
+				return;
+			}
+
+			// all of the specific exceptions we're trying to catch here aren't expected to have inner exceptions,
+			// so drill down in case we got a TargetInvocationException or something like that
+			while (ex.InnerException != null)
+				ex = ex.InnerException;
+
+			if (ex is MissingFirmwareException)
+			{
+				DoLoadErrorCallback(ex.Message, system, LoadErrorType.MissingFirmware);
+			}
+			else if (ex is CGBNotSupportedException)
+			{
+				// failed to load SGB bios or game does not support SGB mode.
+				DoLoadErrorCallback("Failed to load a GB rom in SGB mode.  You might try disabling SGB Mode.", system);
+			}
+			else if (ex is NoAvailableCoreException)
+			{
+				// handle exceptions thrown by the new detected systems that BizHawk does not have cores for
+				DoLoadErrorCallback($"{ex.Message}\n\n{ex}", system);
+			}
+			else
+			{
+				DoLoadErrorCallback($"A core accepted the rom, but threw an exception while loading it:\n\n{ex}", system);
+			}
 		}
 
 		/// <remarks>TODO add and handle <see cref="FilesystemFilter.LuaScripts"/> (you can drag-and-drop scripts and there are already non-rom things in this list, so why not?)</remarks>
