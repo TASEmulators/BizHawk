@@ -273,13 +273,12 @@ namespace BizHawk.Client.Common
 				return true;
 			}
 
-			if (CurrentAndRecentStates().Any())
+			if (CurrentAndRecentStates().Any(si => si.Frame == frame))
 			{
 				return true;
 			}
 
-			if (GapStates()
-				.Any())
+			if (GapStates().Any(si => si.Frame == frame))
 			{
 				return true;
 			}
