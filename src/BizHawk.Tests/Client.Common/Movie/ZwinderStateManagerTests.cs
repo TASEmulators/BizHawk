@@ -19,7 +19,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 				RecentTargetFrameLength = 100000,
 
 				AncientStateInterval = 50000
-			});
+			}, f => false);
 
 			var ms = new MemoryStream();
 			ss.SaveStateBinary(new BinaryWriter(ms));
@@ -42,7 +42,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 				RecentTargetFrameLength = 100000,
 
 				AncientStateInterval = 50000
-			});
+			}, f => false);
 			zw.SaveStateHistory(new BinaryWriter(ms));
 			var buff = ms.ToArray();
 			var rms = new MemoryStream(buff, false);
@@ -124,7 +124,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 				RecentTargetFrameLength = 100000,
 
 				AncientStateInterval = 50000
-			});
+			}, f => false);
 			{
 				var ms = new MemoryStream();
 				ss.SaveStateBinary(new BinaryWriter(ms));
@@ -358,33 +358,36 @@ namespace BizHawk.Tests.Client.Common.Movie
 		public void DeleteMe()
 		{
 			var ss = CreateStateSource();
-			var zw = new ZwinderStateManager(f => false);
+			var zw = new ZwinderStateManager(new ZwinderStateManagerSettings
+			{
+				CurrentBufferSize = 2,
+				CurrentTargetFrameLength = 1000,
+				RecentBufferSize = 2,
+				RecentTargetFrameLength = 1000,
+				AncientStateInterval = 100
+			}, f => false);
 
-			for (int i = 0; i < 10000; i += 200)
+			for (int i = 0; i < 1000; i += 200)
 			{
 				zw.CaptureReserved(i, ss);
 			}
 
-			for (int i = 400; i < 10000; i += 400)
+			for (int i = 400; i < 1000; i += 400)
 			{
 				zw.EvictReserved(i);
 			}
 
-			for (int i = 0; i < 100000; i++)
+			for (int i = 0; i < 10000; i++)
 			{
 				zw.Capture(i, ss);
 			}
 
-			for (int i = 31183; i < 100000; i++)
+			zw.Capture(101, ss);
+
+			for (int i = 0; i < 10000; i++)
 			{
 				var hasState = zw.HasState(i);
-				var hasCache = zw._stateCache.Contains(i);
-
-				if (hasState != hasCache)
-				{
-					int zzz = 0;
-				}
-
+				var hasCache = zw.StateCache.Contains(i);
 				Assert.AreEqual(hasState, hasCache);
 			}
 		}
