@@ -21,7 +21,7 @@ namespace BizHawk.Client.Common
 		// These never decay, but can be invalidated, but can be invalidated, they are for reserved states
 		// such as markers and branches, but also we naturally evict states from recent to hear, based
 		// on _ancientInterval
-		private readonly Dictionary<int, byte[]> _reserved = new Dictionary<int, byte[]>();
+		private Dictionary<int, byte[]> _reserved = new Dictionary<int, byte[]>();
 
 		// When recent states are evicted this interval is used to determine if we need to reserve the state
 		// We always want to keep some states throughout the movie
@@ -138,9 +138,9 @@ namespace BizHawk.Client.Common
 		// Enumerate all reserved states in reverse order
 		private IEnumerable<StateInfo> ReservedStates()
 		{
-			for (var i = _reserved.Count - 1; i >= 0; i--)
+			foreach (var key in _reserved.Keys.OrderByDescending(k => k))
 			{
-				yield return new StateInfo(i, _reserved[i]);
+				yield return new StateInfo(key, _reserved[key]);
 			}
 		}
 
@@ -319,6 +319,16 @@ namespace BizHawk.Client.Common
 			return false;
 		}
 
+		private bool InvalidateReserved(int frame)
+		{
+			var origCount = _reserved.Count;
+			_reserved = _reserved
+				.Where(kvp => kvp.Key <= frame)
+				.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+
+			return _reserved.Count < origCount;
+		}
+
 		public void UpdateSettings(ZwinderStateManagerSettings settings) => Settings = settings;
 
 		public bool InvalidateAfter(int frame)
@@ -327,7 +337,7 @@ namespace BizHawk.Client.Common
 				throw new ArgumentOutOfRangeException(nameof(frame));
 			var b1 = InvalidateNormal(frame);
 			var b2 = InvalidateGaps(frame);
-			var b3 = _reserved.Remove(frame);
+			var b3 = InvalidateReserved(frame);
 			return b1 || b2 || b3;
 		}
 
