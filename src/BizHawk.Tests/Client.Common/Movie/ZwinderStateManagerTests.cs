@@ -375,10 +375,10 @@ namespace BizHawk.Tests.Client.Common.Movie
 				zw.Capture(i, ss);
 			}
 
-			for (int i = 0; i < 100000; i++)
+			for (int i = 31183; i < 100000; i++)
 			{
 				var hasState = zw.HasState(i);
-				var hasCache = zw.StateCache.Contains(i);
+				var hasCache = zw._stateCache.Contains(i);
 
 				if (hasState != hasCache)
 				{
