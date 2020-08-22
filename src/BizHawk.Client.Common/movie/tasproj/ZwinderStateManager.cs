@@ -94,7 +94,7 @@ namespace BizHawk.Client.Common
 		// TODO: private set, refactor LoadTasprojExtras to hold onto a settings object and pass it in to Create() method
 		public ZwinderStateManagerSettings Settings { get; set; }
 
-		public int Count => _current.Count + _recent.Count + _gapFiller.Count + _reserved.Count + 1;
+		public int Count => _current.Count + _recent.Count + _gapFiller.Count + _reserved.Count;
 
 		private class StateInfo
 		{
