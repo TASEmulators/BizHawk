@@ -21,7 +21,7 @@ namespace BizHawk.Client.Common
 		// These never decay, but can be invalidated, but can be invalidated, they are for reserved states
 		// such as markers and branches, but also we naturally evict states from recent to hear, based
 		// on _ancientInterval
-		private readonly List<KeyValuePair<int, byte[]>> _reserved = new List<KeyValuePair<int, byte[]>>();
+		private readonly Dictionary<int, byte[]> _reserved = new Dictionary<int, byte[]>();
 
 		// When recent states are evicted this interval is used to determine if we need to reserve the state
 		// We always want to keep some states throughout the movie
@@ -63,7 +63,7 @@ namespace BizHawk.Client.Common
 
 		public void Engage(byte[] frameZeroState)
 		{
-			_reserved.Add(new KeyValuePair<int, byte[]>(0, (byte[])frameZeroState.Clone()));
+			_reserved.Add(0, frameZeroState);
 		}
 
 		private ZwinderStateManager(ZwinderBuffer current, ZwinderBuffer recent, ZwinderBuffer gapFiller, int ancientInterval, Func<int, bool> reserveCallback)
@@ -105,10 +105,7 @@ namespace BizHawk.Client.Common
 				Frame = si.Frame;
 				Read = si.GetReadStream;
 			}
-			public StateInfo(KeyValuePair<int, byte[]> kvp)
-				:this(kvp.Key, kvp.Value)
-			{
-			}
+
 			public StateInfo(int frame, byte[] data)
 			{
 				Frame = frame;
@@ -143,7 +140,7 @@ namespace BizHawk.Client.Common
 		{
 			for (var i = _reserved.Count - 1; i >= 0; i--)
 			{
-				yield return new StateInfo(_reserved[i]);
+				yield return new StateInfo(i, _reserved[i]);
 			}
 		}
 
@@ -171,7 +168,7 @@ namespace BizHawk.Client.Common
 
 			var ms = new MemoryStream();
 			source.SaveStateBinary(new BinaryWriter(ms));
-			_reserved.Add(new KeyValuePair<int, byte[]>(frame, ms.ToArray()));
+			_reserved.Add(frame, ms.ToArray());
 		}
 
 		public void EvictReserved(int frame)
@@ -181,19 +178,19 @@ namespace BizHawk.Client.Common
 				throw new InvalidOperationException("Frame 0 can not be evicted.");
 			}
 
-			_reserved.RemoveAll(r => r.Key == frame);
+			_reserved.Remove(frame);
 		}
 
 		private void AddToReserved(ZwinderBuffer.StateInformation state)
 		{
-			if (_reserved.Any(r => r.Key == state.Frame))
+			if (_reserved.ContainsKey(state.Frame))
 			{
 				return;
 			}
 
 			var ms = new MemoryStream();
 			state.GetReadStream().CopyTo(ms);
-			_reserved.Add(new KeyValuePair<int, byte[]>(state.Frame, ms.ToArray()));
+			_reserved.Add(state.Frame, ms.ToArray());
 		}
 
 		public void Capture(int frame, IStatable source, bool force = false)
@@ -207,7 +204,7 @@ namespace BizHawk.Client.Common
 			}
 
 			// We already have this state, no need to capture
-			if (_reserved.Any(r => r.Key == frame))
+			if (_reserved.ContainsKey(frame))
 			{
 				return;
 			}
@@ -230,7 +227,7 @@ namespace BizHawk.Client.Common
 						index2 => 
 						{
 							var state2 = _recent.GetState(index2);
-							var from = _reserved.Count > 0 ? _reserved[_reserved.Count - 1].Key : 0;
+							var from = _reserved.Count > 0 ? _reserved.Max(kvp => kvp.Key) : 0;
 
 							var isReserved = _reserveCallback(state2.Frame);
 
@@ -268,7 +265,7 @@ namespace BizHawk.Client.Common
 
 		public bool HasState(int frame)
 		{
-			if (_reserved.Any(r => r.Key == frame))
+			if (_reserved.ContainsKey(frame))
 			{
 				return true;
 			}
@@ -330,7 +327,7 @@ namespace BizHawk.Client.Common
 				throw new ArgumentOutOfRangeException(nameof(frame));
 			var b1 = InvalidateNormal(frame);
 			var b2 = InvalidateGaps(frame);
-			var b3 = _reserved.RemoveAll(r => r.Key > frame) > 0;
+			var b3 = _reserved.Remove(frame);
 			return b1 || b2 || b3;
 		}
 
@@ -353,7 +350,7 @@ namespace BizHawk.Client.Common
 				var key = br.ReadInt32();
 				var length = br.ReadInt32();
 				var data = br.ReadBytes(length);
-				ret._reserved.Add(new KeyValuePair<int, byte[]>(key, data));
+				ret._reserved.Add(key, data);
 			}
 
 			return ret;
