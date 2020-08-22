@@ -108,9 +108,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				else
 				{
 					var builtinBios = (biosSystemId, biosId) switch {
-						("GB", "World") => Resources.SameboyDmgBoot,
-						("GBC", "World") => Resources.SameboyCgbBoot,
-						("GBC", "AGB") => Resources.SameboyAgbBoot,
+						("GB", "World") => Resources.FastDmgBoot,
+						("GBC", "World") => Resources.FastCgbBoot,
+						("GBC", "AGB") => Resources.FastAgbBoot,
 						(_, _) => throw new Exception("Internal GB Error (BIOS??)"),
 					};
 					bios = BizHawk.Common.Util.DecompressGzipFile(new MemoryStream(builtinBios.Value, false));
