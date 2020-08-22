@@ -309,6 +309,51 @@ namespace BizHawk.Tests.Client.Common.Movie
 			Assert.IsFalse(zw.HasState(totalCurrentFrames));
 		}
 
+		[TestMethod]
+		public void Count_NoReserved()
+		{
+			// Arrange
+			const int totalCurrentFrames = 20;
+			const int expectedFrameGap = 10;
+			var ss = CreateStateSource();
+			using var zw = CreateSmallZwinder(ss);
+
+			for (int i = 1; i < totalCurrentFrames; i++)
+			{
+				zw.Capture(i, ss);
+			}
+
+			// Act
+			var actual = zw.Count;
+
+			// Assert
+			var expected = (totalCurrentFrames / expectedFrameGap) + 1;
+			Assert.AreEqual(expected, actual);
+		}
+
+		[TestMethod]
+		public void Count_WithReserved()
+		{
+			// Arrange
+			const int totalCurrentFrames = 20;
+			const int expectedFrameGap = 10;
+			var ss = CreateStateSource();
+			using var zw = CreateSmallZwinder(ss);
+
+			zw.CaptureReserved(1000, ss);
+			for (int i = 1; i < totalCurrentFrames; i++)
+			{
+				zw.Capture(i, ss);
+			}
+
+			// Act
+			var actual = zw.Count;
+
+			// Assert
+			var expected = (totalCurrentFrames / expectedFrameGap) + 2;
+			Assert.AreEqual(expected, actual);
+		}
+
 		private class StateSource : IStatable
 		{
 			public int Frame { get; set; }
