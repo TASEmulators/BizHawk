@@ -268,7 +268,23 @@ namespace BizHawk.Client.Common
 
 		public bool HasState(int frame)
 		{
-			return AllStates().Any(s => s.Frame == frame);
+			if (_reserved.Any(r => r.Key == frame))
+			{
+				return true;
+			}
+
+			if (CurrentAndRecentStates().Any())
+			{
+				return true;
+			}
+
+			if (GapStates()
+				.Any())
+			{
+				return true;
+			}
+
+			return false;
 		}
 
 		private bool InvalidateGaps(int frame)
