@@ -63,8 +63,11 @@ namespace BizHawk.Client.Common
 
 		public void Engage(byte[] frameZeroState)
 		{
-			_reserved.Add(0, frameZeroState);
-			StateCache.Add(0);
+			if (!_reserved.ContainsKey(0))
+			{
+				_reserved.Add(0, frameZeroState);
+				StateCache.Add(0);
+			}
 		}
 
 		private ZwinderStateManager(ZwinderBuffer current, ZwinderBuffer recent, ZwinderBuffer gapFiller, int ancientInterval, Func<int, bool> reserveCallback)
@@ -160,7 +163,7 @@ namespace BizHawk.Client.Common
 
 		private int LastRing => CurrentAndRecentStates().FirstOrDefault()?.Frame ?? 0;
 
-		public void CaptureReserved(int frame, IStatable source)
+		internal void CaptureReserved(int frame, IStatable source)
 		{
 			if (_reserved.ContainsKey(frame))
 			{
@@ -202,6 +205,12 @@ namespace BizHawk.Client.Common
 			// We already have this state, no need to capture
 			if (StateCache.Contains(frame))
 			{
+				return;
+			}
+
+			if (_reserveCallback(frame))
+			{
+				CaptureReserved(frame, source);
 				return;
 			}
 

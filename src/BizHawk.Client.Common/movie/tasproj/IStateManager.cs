@@ -23,12 +23,6 @@ namespace BizHawk.Client.Common
 		void Capture(int frame, IStatable source, bool force = false);
 
 		/// <summary>
-		/// Guarantee's a state will be captured and "reserved" for future use
-		/// Reserved states do not get evicted from memory when decay logic is applied
-		/// </summary>
-		void CaptureReserved(int frame, IStatable source);
-
-		/// <summary>
 		/// Commands the state manager to remove a reserved state for the given frame, if it is exists
 		/// </summary>
 		void EvictReserved(int frame);
