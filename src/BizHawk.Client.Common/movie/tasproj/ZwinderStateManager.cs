@@ -199,17 +199,17 @@ namespace BizHawk.Client.Common
 
 		public void Capture(int frame, IStatable source, bool force = false)
 		{
+			// We already have this state, no need to capture
+			if (StateCache.Contains(frame))
+			{
+				return;
+			}
+
 			// We do not want to consider reserved states for a notion of Last
 			// reserved states can include future states in the case of branch states
 			if (frame <= LastRing)
 			{
 				CaptureGap(frame, source);
-				return;
-			}
-
-			// We already have this state, no need to capture
-			if (_reserved.ContainsKey(frame))
-			{
 				return;
 			}
 
