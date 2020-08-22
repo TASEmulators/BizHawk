@@ -11,7 +11,7 @@ namespace BizHawk.Client.Common
 		private static readonly byte[] NonState = new byte[0];
 
 		private readonly Func<int, bool> _reserveCallback;
-
+		private readonly SortedSet<int> _stateCache = new SortedSet<int>();
 		private ZwinderBuffer _current;
 		private ZwinderBuffer _recent;
 
@@ -54,6 +54,8 @@ namespace BizHawk.Client.Common
 			_ancientInterval = settings.AncientStateInterval;
 		}
 
+		internal SortedSet<int> StateCache => _stateCache;
+
 		/// <param name="reserveCallback">Called when deciding to evict a state for the given frame, if true is returned, the state will be reserved</param>
 		public ZwinderStateManager(Func<int, bool> reserveCallback)
 			: this(new ZwinderStateManagerSettings())
@@ -64,6 +66,7 @@ namespace BizHawk.Client.Common
 		public void Engage(byte[] frameZeroState)
 		{
 			_reserved.Add(0, frameZeroState);
+			_stateCache.Add(0);
 		}
 
 		private ZwinderStateManager(ZwinderBuffer current, ZwinderBuffer recent, ZwinderBuffer gapFiller, int ancientInterval, Func<int, bool> reserveCallback)
@@ -169,16 +172,7 @@ namespace BizHawk.Client.Common
 			var ms = new MemoryStream();
 			source.SaveStateBinary(new BinaryWriter(ms));
 			_reserved.Add(frame, ms.ToArray());
-		}
-
-		public void EvictReserved(int frame)
-		{
-			if (frame == 0)
-			{
-				throw new InvalidOperationException("Frame 0 can not be evicted.");
-			}
-
-			_reserved.Remove(frame);
+			_stateCache.Add(frame);
 		}
 
 		private void AddToReserved(ZwinderBuffer.StateInformation state)
@@ -191,6 +185,18 @@ namespace BizHawk.Client.Common
 			var ms = new MemoryStream();
 			state.GetReadStream().CopyTo(ms);
 			_reserved.Add(state.Frame, ms.ToArray());
+			_stateCache.Add(state.Frame);
+		}
+
+		public void EvictReserved(int frame)
+		{
+			if (frame == 0)
+			{
+				throw new InvalidOperationException("Frame 0 can not be evicted.");
+			}
+
+			_reserved.Remove(frame);
+			_stateCache.Remove(frame);
 		}
 
 		public void Capture(int frame, IStatable source, bool force = false)
@@ -209,11 +215,21 @@ namespace BizHawk.Client.Common
 				return;
 			}
 
+			if (frame == 16409)
+			{
+				int zzz = 0;
+			}
+
 			_current.Capture(frame,
-				s => source.SaveStateBinary(new BinaryWriter(s)),
+				s =>
+				{
+					source.SaveStateBinary(new BinaryWriter(s));
+					_stateCache.Add(frame);
+				},
 				index =>
 				{
 					var state = _current.GetState(index);
+					_stateCache.Remove(state.Frame);
 
 					// If this is a reserved state, go ahead and reserve instead of potentially trying to force it into recent, for further eviction logic later
 					if (_reserveCallback(state.Frame))
@@ -223,10 +239,16 @@ namespace BizHawk.Client.Common
 					}
 
 					_recent.Capture(state.Frame,
-						s => state.GetReadStream().CopyTo(s),
+						s =>
+						{
+							state.GetReadStream().CopyTo(s);
+							_stateCache.Add(state.Frame);
+						},
 						index2 => 
 						{
 							var state2 = _recent.GetState(index2);
+							_stateCache.Remove(state2.Frame);
+
 							var from = _reserved.Count > 0 ? _reserved.Max(kvp => kvp.Key) : 0;
 
 							var isReserved = _reserveCallback(state2.Frame);
@@ -239,11 +261,28 @@ namespace BizHawk.Client.Common
 						});
 				},
 				force);
+
+			var currentHas = Enumerable
+				.Range(0, _current.Count)
+				.Select(i => _current.GetState(i))
+				.Any(s => s.Frame == frame);
+			var hasState = HasState(frame);
+			var hasCache = StateCache.Contains(frame);
+			if (hasState != hasCache)
+			{
+				int zzz = 0;
+			}
 		}
 
 		private void CaptureGap(int frame, IStatable source)
 		{
-			_gapFiller.Capture(frame, s => source.SaveStateBinary(new BinaryWriter(s)));
+			_gapFiller.Capture(
+				frame, s =>
+				{
+					_stateCache.Add(frame);
+					source.SaveStateBinary(new BinaryWriter(s));
+				},
+				index => _stateCache.Remove(index));
 		}
 
 		public void Clear()
@@ -251,6 +290,8 @@ namespace BizHawk.Client.Common
 			_current.InvalidateEnd(0);
 			_recent.InvalidateEnd(0);
 			_gapFiller.InvalidateEnd(0);
+			_stateCache.Clear();
+			_stateCache.Add(0);
 			_reserved.Clear();
 		}
 
@@ -265,22 +306,31 @@ namespace BizHawk.Client.Common
 
 		public bool HasState(int frame)
 		{
+			var result = false;
+
+			var cache = StateCache.Contains(frame);
+
 			if (_reserved.ContainsKey(frame))
 			{
-				return true;
+				result = true;
 			}
 
 			if (CurrentAndRecentStates().Any(si => si.Frame == frame))
 			{
-				return true;
+				result = true;
 			}
 
 			if (GapStates().Any(si => si.Frame == frame))
 			{
-				return true;
+				result = true;
 			}
 
-			return false;
+			if (result != cache)
+			{
+				int zzz = 0;
+			}
+
+			return result;
 		}
 
 		private bool InvalidateGaps(int frame)
@@ -338,6 +388,7 @@ namespace BizHawk.Client.Common
 			var b1 = InvalidateNormal(frame);
 			var b2 = InvalidateGaps(frame);
 			var b3 = InvalidateReserved(frame);
+			_stateCache.RemoveWhere(s => s > frame);
 			return b1 || b2 || b3;
 		}
 

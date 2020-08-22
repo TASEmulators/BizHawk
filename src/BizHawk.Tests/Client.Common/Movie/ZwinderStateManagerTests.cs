@@ -354,6 +354,41 @@ namespace BizHawk.Tests.Client.Common.Movie
 			Assert.AreEqual(expected, actual);
 		}
 
+		[TestMethod]
+		public void DeleteMe()
+		{
+			var ss = CreateStateSource();
+			var zw = new ZwinderStateManager(f => false);
+
+			for (int i = 0; i < 10000; i += 200)
+			{
+				zw.CaptureReserved(i, ss);
+			}
+
+			for (int i = 400; i < 10000; i += 400)
+			{
+				zw.EvictReserved(i);
+			}
+
+			for (int i = 0; i < 100000; i++)
+			{
+				zw.Capture(i, ss);
+			}
+
+			for (int i = 0; i < 100000; i++)
+			{
+				var hasState = zw.HasState(i);
+				var hasCache = zw.StateCache.Contains(i);
+
+				if (hasState != hasCache)
+				{
+					int zzz = 0;
+				}
+
+				Assert.AreEqual(hasState, hasCache);
+			}
+		}
+
 		private class StateSource : IStatable
 		{
 			public int Frame { get; set; }
