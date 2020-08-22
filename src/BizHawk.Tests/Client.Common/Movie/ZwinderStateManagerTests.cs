@@ -33,12 +33,21 @@ namespace BizHawk.Tests.Client.Common.Movie
 		public void SaveCreateRoundTrip()
 		{
 			var ms = new MemoryStream();
-			var zw = new ZwinderStateManager(f => false);
+			var zw = new ZwinderStateManager(new ZwinderStateManagerSettings
+			{
+				CurrentBufferSize = 16,
+				CurrentTargetFrameLength = 10000,
+
+				RecentBufferSize = 16,
+				RecentTargetFrameLength = 100000,
+
+				AncientStateInterval = 50000
+			});
 			zw.SaveStateHistory(new BinaryWriter(ms));
 			var buff = ms.ToArray();
 			var rms = new MemoryStream(buff, false);
 
-			var zw2 = ZwinderStateManager.Create(new BinaryReader(rms), new ZwinderStateManagerSettings(), f => false);
+			var zw2 = ZwinderStateManager.Create(new BinaryReader(rms), zw.Settings, f => false);
 
 			// TODO: we could assert more things here to be thorough
 			Assert.IsNotNull(zw2);
