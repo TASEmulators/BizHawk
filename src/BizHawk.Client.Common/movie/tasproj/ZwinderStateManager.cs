@@ -161,7 +161,7 @@ namespace BizHawk.Client.Common
 
 		public void CaptureReserved(int frame, IStatable source)
 		{
-			if (_reserved.Any(r => r.Key == frame))
+			if (_reserved.ContainsKey(frame))
 			{
 				return;
 			}
@@ -241,7 +241,7 @@ namespace BizHawk.Client.Common
 				force);
 		}
 
-		public void CaptureGap(int frame, IStatable source)
+		private void CaptureGap(int frame, IStatable source)
 		{
 			_gapFiller.Capture(frame, s => source.SaveStateBinary(new BinaryWriter(s)));
 		}
