@@ -6,17 +6,17 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
-	public class ZwinderStateManager : IStateManager
+	public class ZwinderStateManager : IStateManager, IDisposable
 	{
 		private static readonly byte[] NonState = new byte[0];
 
 		private readonly Func<int, bool> _reserveCallback;
 
-		private readonly ZwinderBuffer _current;
-		private readonly ZwinderBuffer _recent;
+		private ZwinderBuffer _current;
+		private ZwinderBuffer _recent;
 
 		// Used to re-fill gaps when still replaying input, but in a non-current area, also needed when switching branches
-		private readonly ZwinderBuffer _gapFiller;
+		private ZwinderBuffer _gapFiller;
 
 		// These never decay, but can be invalidated, but can be invalidated, they are for reserved states
 		// such as markers and branches, but also we naturally evict states from recent to hear, based
@@ -381,6 +381,18 @@ namespace BizHawk.Client.Common
 				bw.Write(s.Value.Length);
 				bw.Write(s.Value);
 			}
+		}
+
+		public void Dispose()
+		{
+			_current?.Dispose();
+			_current = null;
+
+			_recent?.Dispose();
+			_recent = null;
+
+			_gapFiller?.Dispose();
+			_gapFiller = null;
 		}
 	}
 }

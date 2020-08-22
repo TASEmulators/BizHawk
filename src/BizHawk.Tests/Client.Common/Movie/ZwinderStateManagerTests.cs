@@ -138,7 +138,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 			// Arrange
 			const int futureReservedFrame = 1000;
 			var ss = CreateStateSource();
-			var zw = CreateSmallZwinder(ss);
+			using var zw = CreateSmallZwinder(ss);
 			
 			zw.CaptureReserved(futureReservedFrame, ss);
 			for (int i = 1; i < 20; i++)
@@ -160,7 +160,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 			const int totalCurrentFrames = 20;
 			const int expectedFrameGap = 9;
 			var ss = CreateStateSource();
-			var zw = CreateSmallZwinder(ss);
+			using var zw = CreateSmallZwinder(ss);
 
 			for (int i = 1; i < totalCurrentFrames; i++)
 			{
@@ -180,7 +180,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 			// Arrange
 			const int futureReservedFrame = 1000;
 			var ss = CreateStateSource();
-			var zw = CreateSmallZwinder(ss);
+			using var zw = CreateSmallZwinder(ss);
 
 			zw.CaptureReserved(futureReservedFrame, ss);
 			for (int i = 1; i < 20; i++)
@@ -202,7 +202,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 			const int totalCurrentFrames = 20;
 			const int expectedFrameGap = 9;
 			var ss = CreateStateSource();
-			var zw = CreateSmallZwinder(ss);
+			using var zw = CreateSmallZwinder(ss);
 
 			for (int i = 1; i < totalCurrentFrames; i++)
 			{
@@ -222,7 +222,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 			// Arrange
 			const int futureReservedFrame = 1000;
 			var ss = CreateStateSource();
-			var zw = CreateSmallZwinder(ss);
+			using var zw = CreateSmallZwinder(ss);
 
 			zw.CaptureReserved(futureReservedFrame, ss);
 			for (int i = 1; i < 10; i++)
@@ -245,7 +245,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 			const int totalCurrentFrames = 20;
 			const int expectedFrameGap = 9;
 			var ss = CreateStateSource();
-			var zw = CreateSmallZwinder(ss);
+			using var zw = CreateSmallZwinder(ss);
 
 			for (int i = 1; i < totalCurrentFrames; i++)
 			{
@@ -265,7 +265,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 			// Arrange
 			const int futureReservedFrame = 1000;
 			var ss = CreateStateSource();
-			var zw = CreateSmallZwinder(ss);
+			using var zw = CreateSmallZwinder(ss);
 
 			zw.CaptureReserved(futureReservedFrame, ss);
 			for (int i = 1; i < 10; i++)
@@ -286,7 +286,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 			// Arrange
 			const int totalCurrentFrames = 10;
 			var ss = CreateStateSource();
-			var zw = CreateSmallZwinder(ss);
+			using var zw = CreateSmallZwinder(ss);
 
 			for (int i = 1; i < totalCurrentFrames; i++)
 			{
