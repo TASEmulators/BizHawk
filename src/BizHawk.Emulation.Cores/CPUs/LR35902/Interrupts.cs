@@ -67,6 +67,8 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 		public bool skip_once;
 		public bool Halt_bug_2;
 		public bool Halt_bug_3;
+		public bool Halt_bug_4;
+		public bool Halt_bug_5;
 
 		private void ResetInterrupts()
 		{
@@ -74,6 +76,8 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 			skip_once = false;
 			Halt_bug_2 = false;
 			Halt_bug_3 = false;
+			Halt_bug_4 = false;
+			Halt_bug_5 = false;
 			interrupts_enabled = false;
 
 			int_src = 5;

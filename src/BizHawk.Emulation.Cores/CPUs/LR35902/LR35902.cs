@@ -55,9 +55,10 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 		public const ushort EI_RETI = 43; // reti has no delay in interrupt enable
 		public const ushort INT_GET = 44;
 		public const ushort HALT_CHK = 45; // when in halt mode, actually check I Flag here
-		public const ushort IRQ_CLEAR = 46;
-		public const ushort COND_CHECK = 47;
-		public const ushort HALT_FUNC = 48;
+		public const ushort HALT_CHK_2 = 46; // too late for an interrupt, but can still un-halt
+		public const ushort IRQ_CLEAR = 47;
+		public const ushort COND_CHECK = 48;
+		public const ushort HALT_FUNC = 49;
 
 		// test conditions
 		public const ushort ALWAYS_T = 0;
@@ -319,7 +320,42 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 					}
 
 					// if the I flag is asserted at the time of halt, don't halt
-					if (temp && interrupts_enabled && !CB_prefix && !jammed)
+					if (Halt_bug_5)
+					{
+						Halt_bug_5 = Halt_bug_3 = halted = skip_once = false;
+
+						if (interrupts_enabled)
+						{
+							interrupts_enabled = false;
+
+							TraceCallback?.Invoke(new TraceInfo
+							{
+								Disassembly = "====IRQ====",
+								RegisterInfo = ""
+							});
+
+							RegPC--;
+
+							// TODO: If interrupt priotrity is checked differently in GBC, then this is incorrect
+							// a new interrupt vector would be needed
+							instr_pntr = 256 * 60 * 2 + 60 * 6; // point to Interrupt
+						}
+						else
+						{
+							TraceCallback?.Invoke(new TraceInfo
+							{
+								Disassembly = "====un-halted====",
+								RegisterInfo = ""
+							});
+
+							OnExecFetch?.Invoke(RegPC);
+							if (TraceCallback != null && !CB_prefix) TraceCallback(State());
+							CDLCallback?.Invoke(RegPC, eCDLogMemFlags.FetchFirst);
+
+							FetchInstruction(ReadMemory(RegPC));
+						}
+					}
+					else if (temp && interrupts_enabled)
 					{
 						interrupts_enabled = false;
 
@@ -330,7 +366,17 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 						});
 						halted = false;
 						
-						if (is_GBC)
+						if (Halt_bug_4)
+						{
+							// TODO: If interrupt priotrity is checked differently in GBC, then this is incorrect
+							// a new interrupt vector would be needed
+							DEC16_Func(PCl, PCh);
+							instr_pntr = 256 * 60 * 2 + 60 * 6; // point to Interrupt
+							Halt_bug_4 = false;
+							skip_once = false;
+							Halt_bug_3 = false;
+						}
+						else if (is_GBC)
 						{
 							// call the interrupt processor after 4 extra cycles
 							if (!Halt_bug_3)
@@ -339,6 +385,8 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 							}
 							else
 							{
+								// TODO: If interrupt priotrity is checked differently in GBC, then this is incorrect
+								// a new interrupt vector would be needed
 								instr_pntr = 256 * 60 * 2 + 60 * 6; // point to Interrupt
 								Halt_bug_3 = false;
 								//Console.WriteLine("Hit INT");
@@ -580,6 +628,9 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 					
 					Halt_bug_2 = false;
 					break;
+				case HALT_CHK_2:
+					if (FlagI && !I_use) { Halt_bug_5 = true; }
+					break;
 				case IRQ_CLEAR:
 					interrupt_src_reg = GetIntRegs(0);
 					interrupt_enable_reg = GetIntRegs(1);
@@ -666,6 +717,12 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 						// when they are disabled, it reads the next byte twice
 						if (!was_FlagI || (was_FlagI && !interrupts_enabled)) { Halt_bug_2 = true; }
 
+						// If the I flag was set right before hitting this point, then there is no extra cycle for the halt
+						// also there is a glitched increment to the program counter
+						if (was_FlagI && interrupts_enabled)
+						{
+							Halt_bug_4 = true;
+						}
 					}
 					break;
 			}
@@ -730,6 +787,8 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 			ser.Sync(nameof(skip_once), ref skip_once);
 			ser.Sync(nameof(Halt_bug_2), ref Halt_bug_2);
 			ser.Sync(nameof(Halt_bug_3), ref Halt_bug_3);
+			ser.Sync(nameof(Halt_bug_4), ref Halt_bug_4);
+			ser.Sync(nameof(Halt_bug_5), ref Halt_bug_5);
 			ser.Sync(nameof(halted), ref halted);
 			ser.Sync(nameof(TotalExecutedCycles), ref TotalExecutedCycles);
 			ser.Sync(nameof(EI_pending), ref EI_pending);

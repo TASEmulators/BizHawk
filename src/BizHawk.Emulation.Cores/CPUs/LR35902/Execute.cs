@@ -282,7 +282,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 					case 0xFB: EI_();									break; // EI
 					case 0xFC: JAM_();									break; // JAM
 					case 0xFD: JAM_();									break; // JAM
-					case 0xFE: REG_OP_IND_INC(CP8, A, PCl, PCh);		break; // XOR A, n
+					case 0xFE: REG_OP_IND_INC(CP8, A, PCl, PCh);		break; // CP A, n
 					case 0xFF: RST_(0x38);								break; // RST 0x38
 				}
 

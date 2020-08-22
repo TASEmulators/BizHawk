@@ -79,7 +79,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 						IDLE,
 						OP_G,
 						HALT_CHK,
-						IDLE,
+						HALT_CHK_2,
 						HALT, 0};
 		}
 
