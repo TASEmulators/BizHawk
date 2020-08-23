@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
-
+using System.Linq;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -23,7 +23,7 @@ namespace BizHawk.Client.Common
 			Markers = new TasMovieMarkerList(this);
 			Markers.CollectionChanged += Markers_CollectionChanged;
 			Markers.Add(0, "Power on");
-			TasStateManager = new ZwinderStateManager();
+			TasStateManager = new ZwinderStateManager(IsReserved);
 		}
 
 		public override void Attach(IEmulator emulator)
@@ -338,5 +338,15 @@ namespace BizHawk.Client.Common
 
 		public void ClearChanges() => Changes = false;
 		public void FlagChanges() => Changes = true;
+
+		private bool IsReserved(int frame)
+		{
+			
+			// Why the frame before?
+			// because we always navigate to the frame before and emulate 1 frame so that we ensure a proper frame buffer on the screen
+			// users want instant navigation to markers, so to do this, we need to reserve the frame before the marker, not the marker itself
+			return Markers.Any(m => m.Frame - 1 == frame)
+				|| Branches.Any(b => b.Frame == frame); // Branches should already be in the reserved list, but it doesn't hurt to check
+		}
 	}
 }

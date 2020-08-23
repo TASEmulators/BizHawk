@@ -6,18 +6,28 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
-	public class ZwinderStateManager : IStateManager
+	public class ZwinderStateManager : IStateManager, IDisposable
 	{
 		private static readonly byte[] NonState = new byte[0];
 
-		private byte[] _originalState;
-		private readonly ZwinderBuffer _current;
-		private readonly ZwinderBuffer _recent;
-		private readonly ZwinderBuffer _highPriority;
-		private readonly List<KeyValuePair<int, byte[]>> _ancient = new List<KeyValuePair<int, byte[]>>();
+		private readonly Func<int, bool> _reserveCallback;
+		internal readonly SortedSet<int> StateCache = new SortedSet<int>();
+		private ZwinderBuffer _current;
+		private ZwinderBuffer _recent;
+
+		// Used to re-fill gaps when still replaying input, but in a non-current area, also needed when switching branches
+		private ZwinderBuffer _gapFiller;
+
+		// These never decay, but can be invalidated, they are for reserved states
+		// such as markers and branches, but also we naturally evict states from recent to reserved, based
+		// on _ancientInterval
+		private Dictionary<int, byte[]> _reserved = new Dictionary<int, byte[]>();
+
+		// When recent states are evicted this interval is used to determine if we need to reserve the state
+		// We always want to keep some states throughout the movie
 		private readonly int _ancientInterval;
 
-		public ZwinderStateManager(ZwinderStateManagerSettings settings)
+		internal ZwinderStateManager(ZwinderStateManagerSettings settings, Func<int, bool> reserveCallback)
 		{
 			Settings = settings;
 
@@ -34,34 +44,39 @@ namespace BizHawk.Client.Common
 				TargetFrameLength = settings.RecentTargetFrameLength
 			});
 
-			_highPriority = new ZwinderBuffer(new RewindConfig
+			_gapFiller = new ZwinderBuffer(new RewindConfig
 			{
-				UseCompression = settings.PriorityUseCompression,
-				BufferSize = settings.PriorityBufferSize,
-				TargetFrameLength = settings.PriorityTargetFrameLength
+				UseCompression = settings.GapsUseCompression,
+				BufferSize = settings.GapsBufferSize,
+				TargetFrameLength = settings.GapsTargetFrameLength
 			});
 
 			_ancientInterval = settings.AncientStateInterval;
-			_originalState = NonState;
+			_reserveCallback = reserveCallback;
 		}
 
-		public ZwinderStateManager()
-			:this(new ZwinderStateManagerSettings())
+		/// <param name="reserveCallback">Called when deciding to evict a state for the given frame, if true is returned, the state will be reserved</param>
+		public ZwinderStateManager(Func<int, bool> reserveCallback)
+			: this(new ZwinderStateManagerSettings(), reserveCallback)
 		{
 		}
 
 		public void Engage(byte[] frameZeroState)
 		{
-			_originalState = (byte[])frameZeroState.Clone();
+			if (!_reserved.ContainsKey(0))
+			{
+				_reserved.Add(0, frameZeroState);
+				StateCache.Add(0);
+			}
 		}
 
-		private ZwinderStateManager(ZwinderBuffer current, ZwinderBuffer recent, ZwinderBuffer highPriority, byte[] frameZeroState, int ancientInterval)
+		private ZwinderStateManager(ZwinderBuffer current, ZwinderBuffer recent, ZwinderBuffer gapFiller, int ancientInterval, Func<int, bool> reserveCallback)
 		{
-			_originalState = (byte[])frameZeroState.Clone();
 			_current = current;
 			_recent = recent;
-			_highPriority = highPriority;
+			_gapFiller = gapFiller;
 			_ancientInterval = ancientInterval;
+			_reserveCallback = reserveCallback;
 		}
 		
 		public byte[] this[int frame]
@@ -70,7 +85,10 @@ namespace BizHawk.Client.Common
 			{
 				var kvp = GetStateClosestToFrame(frame);
 				if (kvp.Key != frame)
+				{
 					return NonState;
+				}
+
 				var ms = new MemoryStream();
 				kvp.Value.CopyTo(ms);
 				return ms.ToArray();
@@ -80,9 +98,9 @@ namespace BizHawk.Client.Common
 		// TODO: private set, refactor LoadTasprojExtras to hold onto a settings object and pass it in to Create() method
 		public ZwinderStateManagerSettings Settings { get; set; }
 
-		public int Count => _current.Count + _recent.Count + _highPriority.Count + _ancient.Count + 1;
+		public int Count => _current.Count + _recent.Count + _gapFiller.Count + _reserved.Count;
 
-		private class StateInfo
+		internal class StateInfo
 		{
 			public int Frame { get; }
 			public Func<Stream> Read { get; }
@@ -91,10 +109,7 @@ namespace BizHawk.Client.Common
 				Frame = si.Frame;
 				Read = si.GetReadStream;
 			}
-			public StateInfo(KeyValuePair<int, byte[]> kvp)
-				:this(kvp.Key, kvp.Value)
-			{
-			}
+
 			public StateInfo(int frame, byte[] data)
 			{
 				Frame = frame;
@@ -102,11 +117,8 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		/// <summary>
-		/// Enumerate all states, excepting high priority, in reverse order
-		/// </summary>
-		/// <returns></returns>
-		private IEnumerable<StateInfo> NormalStates()
+		// Enumerate all current and recent states in reverse order
+		private IEnumerable<StateInfo> CurrentAndRecentStates()
 		{
 			for (var i = _current.Count - 1; i >= 0; i--)
 			{
@@ -116,108 +128,165 @@ namespace BizHawk.Client.Common
 			{
 				yield return new StateInfo(_recent.GetState(i));
 			}
-			for (var i = _ancient.Count - 1; i >= 0; i--)
-			{
-				yield return new StateInfo(_ancient[i]);
-			}
-			yield return new StateInfo(0, _originalState);
 		}
 
-		/// <summary>
-		/// Enumerate high priority states in reverse order
-		/// </summary>
-		/// <returns></returns>
-		private IEnumerable<StateInfo> HighPriorityStates()
+		// Enumerate all gap states in reverse order
+		private IEnumerable<StateInfo> GapStates()
 		{
-			for (var i = _highPriority.Count - 1; i >= 0; i--)
+			for (var i = _gapFiller.Count - 1; i >= 0; i--)
 			{
-				yield return new StateInfo(_highPriority.GetState(i));
+				yield return new StateInfo(_gapFiller.GetState(i));
+			}
+		}
+
+		// Enumerate all reserved states in reverse order
+		private IEnumerable<StateInfo> ReservedStates()
+		{
+			foreach (var key in _reserved.Keys.OrderByDescending(k => k))
+			{
+				yield return new StateInfo(key, _reserved[key]);
 			}
 		}
 
 		/// <summary>
 		/// Enumerate all states in reverse order
 		/// </summary>
-		private IEnumerable<StateInfo> AllStates()
+		internal IEnumerable<StateInfo> AllStates()
 		{
-			var l1 = NormalStates().GetEnumerator();
-			var l2 = HighPriorityStates().GetEnumerator();
-			var l1More = l1.MoveNext();
-			var l2More = l2.MoveNext();
-			while (l1More || l2More)
-			{
-				if (l1More)
-				{
-					if (l2More)
-					{
-						if (l1.Current.Frame > l2.Current.Frame)
-						{
-							yield return l1.Current;
-							l1More = l1.MoveNext();
-						}
-						else
-						{
-							yield return l2.Current;
-							l2More = l2.MoveNext();
-						}
-					}
-					else
-					{
-						yield return l1.Current;
-						l1More = l1.MoveNext();
-					}
-				}
-				else
-				{
-					yield return l2.Current;
-					l2More = l2.MoveNext();
-				}
-			}
+			return CurrentAndRecentStates()
+				.Concat(GapStates())
+				.Concat(ReservedStates())
+				.OrderByDescending(s => s.Frame);
 		}
 
 		public int Last => AllStates().First().Frame;
 
+		private int LastRing => CurrentAndRecentStates().FirstOrDefault()?.Frame ?? 0;
+
+		internal void CaptureReserved(int frame, IStatable source)
+		{
+			if (_reserved.ContainsKey(frame))
+			{
+				return;
+			}
+
+			var ms = new MemoryStream();
+			source.SaveStateBinary(new BinaryWriter(ms));
+			_reserved.Add(frame, ms.ToArray());
+			StateCache.Add(frame);
+		}
+
+		private void AddToReserved(ZwinderBuffer.StateInformation state)
+		{
+			if (_reserved.ContainsKey(state.Frame))
+			{
+				return;
+			}
+
+			var bb = new byte[state.Size];
+			var ms = new MemoryStream(bb);
+			state.GetReadStream().CopyTo(ms);
+			_reserved.Add(state.Frame, bb);
+			StateCache.Add(state.Frame);
+		}
+
+		public void EvictReserved(int frame)
+		{
+			if (frame == 0)
+			{
+				throw new InvalidOperationException("Frame 0 can not be evicted.");
+			}
+
+			_reserved.Remove(frame);
+			StateCache.Remove(frame);
+		}
+
 		public void Capture(int frame, IStatable source, bool force = false)
 		{
-			if (frame <= Last)
+			// We already have this state, no need to capture
+			if (StateCache.Contains(frame))
 			{
-				CaptureHighPriority(frame, source);
+				return;
+			}
+
+			if (_reserveCallback(frame))
+			{
+				CaptureReserved(frame, source);
+				return;
+			}
+
+			// We do not want to consider reserved states for a notion of Last
+			// reserved states can include future states in the case of branch states
+			if (frame <= LastRing)
+			{
+				CaptureGap(frame, source);
 				return;
 			}
 
 			_current.Capture(frame,
-				s => source.SaveStateBinary(new BinaryWriter(s)),
+				s =>
+				{
+					source.SaveStateBinary(new BinaryWriter(s));
+					StateCache.Add(frame);
+				},
 				index =>
 				{
 					var state = _current.GetState(index);
+					StateCache.Remove(state.Frame);
+
+					// If this is a reserved state, go ahead and reserve instead of potentially trying to force it into recent, for further eviction logic later
+					if (_reserveCallback(state.Frame))
+					{
+						AddToReserved(state);
+						return;
+					}
+
 					_recent.Capture(state.Frame,
-						s => state.GetReadStream().CopyTo(s),
+						s =>
+						{
+							state.GetReadStream().CopyTo(s);
+							StateCache.Add(state.Frame);
+						},
 						index2 => 
 						{
 							var state2 = _recent.GetState(index2);
-							var from = _ancient.Count > 0 ? _ancient[_ancient.Count - 1].Key : 0;
-							if (state2.Frame - from >= _ancientInterval) 
+							StateCache.Remove(state2.Frame);
+
+							var from = _reserved.Count > 0 ? _reserved.Max(kvp => kvp.Key) : 0;
+
+							var isReserved = _reserveCallback(state2.Frame);
+
+							// Add to reserved if reserved, or if it matches an "ancient" state consideration
+							if (isReserved || state2.Frame - from >= _ancientInterval)
 							{
-								var ms = new MemoryStream();
-								state2.GetReadStream().CopyTo(ms);
-								_ancient.Add(new KeyValuePair<int, byte[]>(state2.Frame, ms.ToArray()));
+								AddToReserved(state2);
 							}
 						});
 				},
 				force);
 		}
 
-		public void CaptureHighPriority(int frame, IStatable source)
+		private void CaptureGap(int frame, IStatable source)
 		{
-			_highPriority.Capture(frame, s => source.SaveStateBinary(new BinaryWriter(s)));
+			_gapFiller.Capture(
+				frame, s =>
+				{
+					StateCache.Add(frame);
+					source.SaveStateBinary(new BinaryWriter(s));
+				},
+				index => StateCache.Remove(index));
 		}
 
 		public void Clear()
 		{
 			_current.InvalidateEnd(0);
 			_recent.InvalidateEnd(0);
-			_highPriority.InvalidateEnd(0);
-			_ancient.Clear();
+			_gapFiller.InvalidateEnd(0);
+			StateCache.Clear();
+			StateCache.Add(0);
+			_reserved = _reserved
+				.Where(kvp => kvp.Key == 0)
+				.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 		}
 
 		public KeyValuePair<int, Stream> GetStateClosestToFrame(int frame)
@@ -231,16 +300,16 @@ namespace BizHawk.Client.Common
 
 		public bool HasState(int frame)
 		{
-			return AllStates().Any(s => s.Frame == frame);
+			return StateCache.Contains(frame);
 		}
 
-		private bool InvalidateHighPriority(int frame)
+		private bool InvalidateGaps(int frame)
 		{
-			for (var i = 0; i < _highPriority.Count; i++)
+			for (var i = 0; i < _gapFiller.Count; i++)
 			{
-				if (_highPriority.GetState(i).Frame > frame)
+				if (_gapFiller.GetState(i).Frame > frame)
 				{
-					_highPriority.InvalidateEnd(i);
+					_gapFiller.InvalidateEnd(i);
 					return true;
 				}
 			}
@@ -249,16 +318,6 @@ namespace BizHawk.Client.Common
 
 		private bool InvalidateNormal(int frame)
 		{
-			for (var i = 0; i < _ancient.Count; i++)
-			{
-				if (_ancient[i].Key > frame)
-				{
-					_ancient.RemoveRange(i, _ancient.Count - i);
-					_recent.InvalidateEnd(0);
-					_current.InvalidateEnd(0);
-					return true;
-				}
-			}
 			for (var i = 0; i < _recent.Count; i++)
 			{
 				if (_recent.GetState(i).Frame > frame)
@@ -268,6 +327,7 @@ namespace BizHawk.Client.Common
 					return true;
 				}
 			}
+
 			for (var i = 0; i < _current.Count; i++)
 			{
 				if (_current.GetState(i).Frame > frame)
@@ -279,6 +339,16 @@ namespace BizHawk.Client.Common
 			return false;
 		}
 
+		private bool InvalidateReserved(int frame)
+		{
+			var origCount = _reserved.Count;
+			_reserved = _reserved
+				.Where(kvp => kvp.Key <= frame)
+				.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+
+			return _reserved.Count < origCount;
+		}
+
 		public void UpdateSettings(ZwinderStateManagerSettings settings) => Settings = settings;
 
 		public bool InvalidateAfter(int frame)
@@ -286,21 +356,21 @@ namespace BizHawk.Client.Common
 			if (frame < 0)
 				throw new ArgumentOutOfRangeException(nameof(frame));
 			var b1 = InvalidateNormal(frame);
-			var b2 = InvalidateHighPriority(frame);
-			return b1 || b2;
+			var b2 = InvalidateGaps(frame);
+			var b3 = InvalidateReserved(frame);
+			StateCache.RemoveWhere(s => s > frame);
+			return b1 || b2 || b3;
 		}
 
-		public static ZwinderStateManager Create(BinaryReader br, ZwinderStateManagerSettings settings)
+		public static ZwinderStateManager Create(BinaryReader br, ZwinderStateManagerSettings settings, Func<int, bool> reserveCallback)
 		{
 			var current = ZwinderBuffer.Create(br);
 			var recent = ZwinderBuffer.Create(br);
-			var highPriority = ZwinderBuffer.Create(br);
-
-			var original = br.ReadBytes(br.ReadInt32());
+			var gaps = ZwinderBuffer.Create(br);
 
 			var ancientInterval = br.ReadInt32();
 
-			var ret = new ZwinderStateManager(current, recent, highPriority, original, ancientInterval)
+			var ret = new ZwinderStateManager(current, recent, gaps, ancientInterval, reserveCallback)
 			{
 				Settings = settings
 			};
@@ -311,7 +381,13 @@ namespace BizHawk.Client.Common
 				var key = br.ReadInt32();
 				var length = br.ReadInt32();
 				var data = br.ReadBytes(length);
-				ret._ancient.Add(new KeyValuePair<int, byte[]>(key, data));
+				ret._reserved.Add(key, data);
+			}
+
+			var allStates = ret.AllStates().ToList();
+			foreach (var state in allStates)
+			{
+				ret.StateCache.Add(state.Frame);
 			}
 
 			return ret;
@@ -321,20 +397,29 @@ namespace BizHawk.Client.Common
 		{
 			_current.SaveStateBinary(bw);
 			_recent.SaveStateBinary(bw);
-			_highPriority.SaveStateBinary(bw);
-
-			bw.Write(_originalState.Length);
-			bw.Write(_originalState);
+			_gapFiller.SaveStateBinary(bw);
 
 			bw.Write(_ancientInterval);
 
-			bw.Write(_ancient.Count);
-			foreach (var s in _ancient)
+			bw.Write(_reserved.Count);
+			foreach (var s in _reserved)
 			{
 				bw.Write(s.Key);
 				bw.Write(s.Value.Length);
 				bw.Write(s.Value);
 			}
+		}
+
+		public void Dispose()
+		{
+			_current?.Dispose();
+			_current = null;
+
+			_recent?.Dispose();
+			_recent = null;
+
+			_gapFiller?.Dispose();
+			_gapFiller = null;
 		}
 	}
 }

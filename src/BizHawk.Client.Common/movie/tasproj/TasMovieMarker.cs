@@ -206,6 +206,7 @@ namespace BizHawk.Client.Common
 				return;
 			}
 
+			_movie.TasStateManager.EvictReserved(item.Frame);
 			_movie.ChangeLog.AddMarkerChange(null, item.Frame, item.Message);
 
 			base.Remove(item);
@@ -220,6 +221,7 @@ namespace BizHawk.Client.Common
 				if (match.Invoke(m))
 				{
 					_movie.ChangeLog.AddMarkerChange(null, m.Frame, m.Message);
+					_movie.TasStateManager.EvictReserved(m.Frame);
 				}
 			}
 
