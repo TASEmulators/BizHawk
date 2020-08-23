@@ -183,9 +183,10 @@ namespace BizHawk.Client.Common
 				return;
 			}
 
-			var ms = new MemoryStream();
+			var bb = new byte[state.Size];
+			var ms = new MemoryStream(bb);
 			state.GetReadStream().CopyTo(ms);
-			_reserved.Add(state.Frame, ms.ToArray());
+			_reserved.Add(state.Frame, bb);
 			StateCache.Add(state.Frame);
 		}
 
