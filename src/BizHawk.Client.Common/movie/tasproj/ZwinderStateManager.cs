@@ -384,6 +384,12 @@ namespace BizHawk.Client.Common
 				ret._reserved.Add(key, data);
 			}
 
+			var allStates = ret.AllStates().ToList();
+			foreach (var state in allStates)
+			{
+				ret.StateCache.Add(state.Frame);
+			}
+
 			return ret;
 		}
 
