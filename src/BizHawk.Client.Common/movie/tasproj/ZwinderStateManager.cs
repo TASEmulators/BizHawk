@@ -159,7 +159,7 @@ namespace BizHawk.Client.Common
 				.OrderByDescending(s => s.Frame);
 		}
 
-		public int Last => AllStates().First().Frame;
+		public int Last => StateCache.Max();
 
 		private int LastRing => CurrentAndRecentStates().FirstOrDefault()?.Frame ?? 0;
 
