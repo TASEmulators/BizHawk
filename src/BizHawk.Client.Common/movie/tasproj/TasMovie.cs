@@ -23,7 +23,9 @@ namespace BizHawk.Client.Common
 			Markers = new TasMovieMarkerList(this);
 			Markers.CollectionChanged += Markers_CollectionChanged;
 			Markers.Add(0, "Power on");
-			TasStateManager = new ZwinderStateManager(IsReserved);
+			TasStateManager = new ZwinderStateManager(
+				session.Settings.DefaultTasStateManagerSettings,
+				IsReserved);
 		}
 
 		public override void Attach(IEmulator emulator)
