@@ -18,8 +18,8 @@ namespace BizHawk.Client.Common
 		// Used to re-fill gaps when still replaying input, but in a non-current area, also needed when switching branches
 		private ZwinderBuffer _gapFiller;
 
-		// These never decay, but can be invalidated, but can be invalidated, they are for reserved states
-		// such as markers and branches, but also we naturally evict states from recent to hear, based
+		// These never decay, but can be invalidated, they are for reserved states
+		// such as markers and branches, but also we naturally evict states from recent to reserved, based
 		// on _ancientInterval
 		private Dictionary<int, byte[]> _reserved = new Dictionary<int, byte[]>();
 
