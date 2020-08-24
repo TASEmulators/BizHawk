@@ -63,7 +63,7 @@ namespace BizHawk.Client.Common
 
 		[DisplayName("Gaps - Target Frame Length")]
 		[Description("Desired frame length (number of emulated frames you can go back before running out of buffer)")]
-		public int GapsTargetFrameLength { get; set; } = 1000;
+		public int GapsTargetFrameLength { get; set; } = 125;
 
 		[DisplayName("Ancient State Interval")]
 		[Description("How often to maintain states when outside of Current and Recent intervals")]
