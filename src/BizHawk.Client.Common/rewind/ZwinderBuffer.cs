@@ -20,23 +20,22 @@ namespace BizHawk.Client.Common
 		public ZwinderBuffer(IRewindSettings settings)
 		{
 			long targetSize = settings.BufferSize * 1024 * 1024;
-			if (settings.TargetFrameLength < 1)
-			{
-				throw new ArgumentOutOfRangeException(nameof(settings.TargetFrameLength));
-			}
 
 			Size = 1L << (int)Math.Floor(Math.Log(targetSize, 2));
 			_sizeMask = Size - 1;
-			_buffer = new MemoryBlock((ulong)Size);
-			_buffer.Protect(_buffer.Start, _buffer.Size, MemoryBlock.Protection.RW);
 			_targetFrameLength = settings.TargetFrameLength;
-			_states = new StateInfo[STATEMASK + 1];
 			_useCompression = settings.UseCompression;
+			if (Size > 1)
+			{
+				_buffer = new MemoryBlock((ulong)Size);
+				_buffer.Protect(_buffer.Start, _buffer.Size, MemoryBlock.Protection.RW);
+				_states = new StateInfo[STATEMASK + 1];
+			}
 		}
 
 		public void Dispose()
 		{
-			_buffer.Dispose();
+			_buffer?.Dispose();
 		}
 
 
@@ -142,7 +141,7 @@ namespace BizHawk.Client.Common
 		/// </param>
 		public void Capture(int frame, Action<Stream> callback, Action<int> indexInvalidated = null, bool force = false)
 		{
-			if (!force && !ShouldCapture(frame))
+			if ((!force && !ShouldCapture(frame)) || _buffer == null)
 				return;
 
 			if (Count == STATEMASK)
@@ -286,8 +285,11 @@ namespace BizHawk.Client.Common
 				nextByte += _states[i].Size;
 			}
 			// TODO: Use spans to avoid this extra copy in .net core
-			var dest = _buffer.GetStream(_buffer.Start, (ulong)nextByte, true);
-			WaterboxUtils.CopySome(reader.BaseStream, dest, nextByte);
+			if (nextByte > 0)
+			{
+				var dest = _buffer.GetStream(_buffer.Start, (ulong)nextByte, true);
+				WaterboxUtils.CopySome(reader.BaseStream, dest, nextByte);
+			}
 		}
 
 		public static ZwinderBuffer Create(BinaryReader reader)
