@@ -932,7 +932,7 @@ namespace BizHawk.Client.EmuHawk
 						else
 						{
 							ClearLeftMouseStates();
-							MarkerControl.AddMarker(false, TasView.CurrentCell.RowIndex.Value);
+							MarkerControl.AddMarker(TasView.CurrentCell.RowIndex.Value, false);
 						}
 					}
 				}

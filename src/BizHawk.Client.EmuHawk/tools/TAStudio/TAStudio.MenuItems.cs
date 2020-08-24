@@ -727,13 +727,13 @@ namespace BizHawk.Client.EmuHawk
 
 			foreach (var index in TasView.SelectedRows)
 			{
-				MarkerControl.AddMarker(false, index);
+				MarkerControl.AddMarker(index, false);
 			}
 		}
 
 		private void SetMarkerWithTextMenuItem_Click(object sender, EventArgs e)
 		{
-			MarkerControl.AddMarker(true, TasView.SelectedRows.FirstOrDefault());
+			MarkerControl.AddMarker(TasView.SelectedRows.FirstOrDefault(), true);
 		}
 
 		private void RemoveMarkersMenuItem_Click(object sender, EventArgs e)

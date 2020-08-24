@@ -152,13 +152,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AddMarkerToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			AddMarker();
+			AddMarker(Tastudio.Emulator.Frame);
 			MarkerView_SelectedIndexChanged(null, null);
 		}
 
 		private void AddMarkerWithTextToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			AddMarker(editText: true);
+			AddMarker(Tastudio.Emulator.Frame, true);
 			MarkerView_SelectedIndexChanged(null, null);
 		}
 
@@ -177,21 +177,18 @@ namespace BizHawk.Client.EmuHawk
 			MarkerView.RowCount = Markers.Count;
 		}
 
-		public void AddMarker(bool editText = false, int? frame = null)
+		public void AddMarker(int frame, bool editText = false)
 		{
-			// feos: we specify the selected frame if we call this from TasView, otherwise marker should be added to the emulated frame
-			var markerFrame = frame ?? Tastudio.Emulator.Frame;
-
 			if (editText)
 			{
 				var i = new InputPrompt
 				{
-					Text = $"Marker for frame {markerFrame}",
+					Text = $"Marker for frame {frame}",
 					TextInputType = InputPrompt.InputType.Text,
 					Message = "Enter a message",
 					InitialValue =
-						Markers.IsMarker(markerFrame) ?
-						Markers.PreviousOrCurrent(markerFrame).Message :
+						Markers.IsMarker(frame) ?
+						Markers.PreviousOrCurrent(frame).Message :
 						""
 				};
 
@@ -199,16 +196,16 @@ namespace BizHawk.Client.EmuHawk
 				point.Offset(i.Width / -2, i.Height / -2);
 
 				var result = i.ShowHawkDialog(position: point);
-				if (result == DialogResult.OK)
+				if (result.IsOk())
 				{
-					Markers.Add(new TasMovieMarker(markerFrame, i.PromptText));
+					Markers.Add(new TasMovieMarker(frame, i.PromptText));
 					UpdateTextColumnWidth();
 					UpdateValues();
 				}
 			}
 			else
 			{
-				Markers.Add(new TasMovieMarker(markerFrame));
+				Markers.Add(new TasMovieMarker(frame));
 				UpdateValues();
 			}
 
