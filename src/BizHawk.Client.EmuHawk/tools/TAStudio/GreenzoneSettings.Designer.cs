@@ -1,6 +1,6 @@
 ﻿namespace BizHawk.Client.EmuHawk
 {
-	partial class DefaultGreenzoneSettings
+	partial class GreenzoneSettings
 	{
 		/// <summary>
 		/// Required designer variable.

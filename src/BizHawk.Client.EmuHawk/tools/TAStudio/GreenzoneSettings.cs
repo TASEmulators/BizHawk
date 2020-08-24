@@ -5,24 +5,31 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class DefaultGreenzoneSettings : Form
+	public partial class GreenzoneSettings : Form
 	{
-		private readonly Action<ZwinderStateManagerSettings> _saveSettings;
+		private readonly Action<ZwinderStateManagerSettings, bool> _saveSettings;
 		private ZwinderStateManagerSettings _settings;
+		private readonly bool _isDefault;
 
-		public DefaultGreenzoneSettings(ZwinderStateManagerSettings settings, Action<ZwinderStateManagerSettings> saveSettings)
+		public GreenzoneSettings(ZwinderStateManagerSettings settings, Action<ZwinderStateManagerSettings, bool> saveSettings, bool isDefault)
 		{
 			InitializeComponent();
 			Icon = Properties.Resources.TAStudioIcon;
 
 			_saveSettings = saveSettings;
 			_settings = settings;
+			_isDefault = isDefault;
+			if (!isDefault)
+				Text = "Savestate History Settings";
 			SettingsPropertyGrid.SelectedObject = _settings;
 		}
 
 		private void OkBtn_Click(object sender, EventArgs e)
 		{
-			_saveSettings(_settings);
+			bool keep = false;
+			if (!_isDefault)
+				keep = (MessageBox.Show("Attempt to keep old states?", "Keep old states?", MessageBoxButtons.YesNo) == DialogResult.Yes);
+			_saveSettings(_settings, keep);
 			Close();
 		}
 
