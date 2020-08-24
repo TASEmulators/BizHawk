@@ -49,52 +49,37 @@ namespace BizHawk.Client.Common
 				.SelectMany(kvp => kvp.Value)
 				.Any(boundButton => boundButton == button);
 
-		public void NormalizeAxes(IController controller)
+		public void NormalizeAxes()
 		{
 			foreach (var kvp in _axisBindings)
 			{
-				var input = (float) _axes[kvp.Key];
-				string outKey = kvp.Key;
-				float multiplier = kvp.Value.Mult;
-				float deadZone = kvp.Value.Deadzone;
-				if (_axisRanges.TryGetValue(outKey, out var range))
-				{
-					// input range is assumed to be -10000,0,10000
+				if (!_axisRanges.TryGetValue(kvp.Key, out var range)) continue; //TODO throw (or use indexer instead of TryGetValue)? this `continue` should never be hit --yoshi
 
-					// first, modify for deadZone
-					float absInput = Math.Abs(input);
-					float zeroPoint = deadZone * 10000.0f;
-					if (absInput < zeroPoint)
-					{
-						input = 0.0f;
-					}
-					else
-					{
-						absInput -= zeroPoint;
-						absInput *= 10000.0f;
-						absInput /= 10000.0f - zeroPoint;
-						input = absInput * Math.Sign(input);
-					}
+				// values of _axes are ints in -10000..10000 (or 0..10000), so scale to -1..1, using floats to keep fractional part
+				var value = _axes[kvp.Key] / 10000.0f;
 
-					// zero 09-mar-2015 - not sure if adding + 1 here is correct.. but... maybe?
-					float output;
+				// apply deadzone (and scale diminished range back up to -1..1)
+				var deadzone = kvp.Value.Deadzone;
+				if (value < -deadzone) value += deadzone;
+				else if (value < deadzone) value = 0.0f;
+				else value -= deadzone;
+				value /= 1.0f - deadzone;
 
-					if (range.IsReversed)
-					{
-						output = (((input * multiplier) + 10000.0f) * (range.Min - range.Max + 1) / 20000.0f) + range.Max;
-					}
-					else
-					{
-						output = (((input * multiplier) + 10000.0f) * (range.Max - range.Min + 1) / 20000.0f) + range.Min;
-					}
+				// scale by user-set multiplier (which is 0..1, i.e. value can only shrink and is therefore still in -1..1)
+				value *= kvp.Value.Mult;
 
-					// zero 09-mar-2015 - at this point, we should only have integers, since that's all 100% of consoles ever see
-					// if this becomes a problem we can add flags to the range and update GUIs to be able to display floats
+				// -1..1 -> 0..1
+				value = (value + 1.0f) / 2.0f;
 
-					// fixed maybe? --yoshi
+				// 0..1 -> range
+				value = range.IsReversed
+					? range.Max + value * (2 - range.Range.Count()) // this is equivalent to the old code
+					: range.Min + value * range.Range.Count();
 
-					_axes[outKey] = (int) output.ConstrainWithin(range.FloatRange);
-				}
+				// finally, constrain to range again in case the original value was unexpectedly large, or the deadzone and scale made it so
+				value = value.ConstrainWithin(range.FloatRange);
+
+				_axes[kvp.Key] = (int) value;
 			}
 		}
 
@@ -129,7 +114,7 @@ namespace BizHawk.Client.Common
 			}
 
 			// it's not sure where this should happen, so for backwards compatibility.. do it every time
-			NormalizeAxes(controller);
+			NormalizeAxes();
 		}
 
 		public void ApplyAxisConstraints(string constraintClass)
