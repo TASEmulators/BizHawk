@@ -60,7 +60,7 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Updates the internal state saving logic settings
 		/// </summary>
-		void UpdateSettings(ZwinderStateManagerSettings settings);
+		void UpdateSettings(ZwinderStateManagerSettings settings, bool keepOldStates = false);
 
 		/// <summary>
 		/// Serializes the current state of the instance for persisting to disk

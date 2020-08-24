@@ -996,17 +996,11 @@ namespace BizHawk.Client.EmuHawk
 			}.Show();
 		}
 
-		private void UpdateStateSettings(ZwinderStateManagerSettings settings)
-		{
-			Config.Movies.DefaultTasStateManagerSettings = settings;
-			CurrentTasMovie.TasStateManager.UpdateSettings(settings);
-		}
-
 		private void StateHistorySettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			new DefaultGreenzoneSettings(
-				new ZwinderStateManagerSettings(Config.Movies.DefaultTasStateManagerSettings),
-				UpdateStateSettings)
+				new ZwinderStateManagerSettings(CurrentTasMovie.TasStateManager.Settings),
+				s => { CurrentTasMovie.TasStateManager.UpdateSettings(s, true); })
 			{
 				Location = this.ChildPointToScreen(TasView),
 				Text = "Savestate History Settings",

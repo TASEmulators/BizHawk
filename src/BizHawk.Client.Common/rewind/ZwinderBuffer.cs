@@ -106,6 +106,14 @@ namespace BizHawk.Client.Common
 			return Math.Max(idealInterval, 1);
 		}
 
+		public bool MatchesSettings(RewindConfig settings)
+		{
+			long size = 1L << (int)Math.Floor(Math.Log(settings.BufferSize, 2));
+			return Size == size &&
+				_useCompression == settings.UseCompression &&
+				_targetFrameLength == settings.TargetFrameLength;
+		}
+
 		private bool ShouldCapture(int frame)
 		{
 			if (Count == 0)

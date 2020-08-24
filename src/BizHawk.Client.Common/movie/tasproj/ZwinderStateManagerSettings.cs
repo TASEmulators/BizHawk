@@ -68,5 +68,34 @@ namespace BizHawk.Client.Common
 		[DisplayName("Ancient State Interval")]
 		[Description("How often to maintain states when outside of Current and Recent intervals")]
 		public int AncientStateInterval { get; set; } = 5000;
+
+		// Just to simplify some other code.
+		public RewindConfig Current()
+		{
+			return new RewindConfig()
+			{
+				UseCompression = CurrentUseCompression,
+				BufferSize = CurrentBufferSize,
+				TargetFrameLength = CurrentTargetFrameLength
+			};
+		}
+		public RewindConfig Recent()
+		{
+			return new RewindConfig()
+			{
+				UseCompression = RecentUseCompression,
+				BufferSize = RecentBufferSize,
+				TargetFrameLength = RecentTargetFrameLength
+			};
+		}
+		public RewindConfig GapFiller()
+		{
+			return new RewindConfig()
+			{
+				UseCompression = GapsUseCompression,
+				BufferSize = GapsBufferSize,
+				TargetFrameLength = GapsTargetFrameLength
+			};
+		}
 	}
 }

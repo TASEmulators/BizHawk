@@ -25,33 +25,12 @@ namespace BizHawk.Client.Common
 
 		// When recent states are evicted this interval is used to determine if we need to reserve the state
 		// We always want to keep some states throughout the movie
-		private readonly int _ancientInterval;
+		private int _ancientInterval;
 
 		internal ZwinderStateManager(ZwinderStateManagerSettings settings, Func<int, bool> reserveCallback)
 		{
-			Settings = settings;
+			UpdateSettings(settings, false);
 
-			_current = new ZwinderBuffer(new RewindConfig
-			{
-				UseCompression = settings.CurrentUseCompression,
-				BufferSize = settings.CurrentBufferSize,
-				TargetFrameLength = settings.CurrentTargetFrameLength
-			});
-			_recent = new ZwinderBuffer(new RewindConfig
-			{
-				UseCompression = settings.RecentUseCompression,
-				BufferSize = settings.RecentBufferSize,
-				TargetFrameLength = settings.RecentTargetFrameLength
-			});
-
-			_gapFiller = new ZwinderBuffer(new RewindConfig
-			{
-				UseCompression = settings.GapsUseCompression,
-				BufferSize = settings.GapsBufferSize,
-				TargetFrameLength = settings.GapsTargetFrameLength
-			});
-
-			_ancientInterval = settings.AncientStateInterval;
 			_reserveCallback = reserveCallback;
 		}
 
@@ -95,8 +74,83 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		// TODO: private set, refactor LoadTasprojExtras to hold onto a settings object and pass it in to Create() method
-		public ZwinderStateManagerSettings Settings { get; set; }
+		public ZwinderStateManagerSettings Settings { get; private set; }
+
+		public void UpdateSettings(ZwinderStateManagerSettings settings, bool keepOldStates = false)
+		{
+			Settings = settings;
+
+			_current = UpdateBuffer(_current, settings.Current(), keepOldStates);
+			_recent = UpdateBuffer(_recent, settings.Recent(), keepOldStates);
+			_gapFiller = UpdateBuffer(_gapFiller, settings.GapFiller(), keepOldStates);
+
+			if (keepOldStates)
+			{
+				// For ancients ... lets just make sure we aren't keeping states with a gap below the new interval
+				if (settings.AncientStateInterval > _ancientInterval)
+				{
+					int lastReserved = 0;
+					List<int> framesToRemove = new List<int>();
+					foreach (int f in _reserved.Keys)
+					{
+						if (!_reserveCallback(f) && f - lastReserved < settings.AncientStateInterval)
+							framesToRemove.Add(f);
+						else
+							lastReserved = f;
+					}
+					foreach (int f in framesToRemove)
+						EvictReserved(f);
+				}
+			}
+			else
+			{
+				foreach (int f in _reserved.Keys)
+				{
+					if (f != 0 && !_reserveCallback(f))
+						EvictReserved(f);
+				}
+			}
+
+			_ancientInterval = settings.AncientStateInterval;
+			RebuildStateCache();
+		}
+		private ZwinderBuffer UpdateBuffer(ZwinderBuffer buffer, RewindConfig newConfig, bool keepOldStates)
+		{
+			if (buffer == null) // just make a new one, plain and simple
+				buffer = new ZwinderBuffer(newConfig);
+			else if (!buffer.MatchesSettings(newConfig)) // no need to do anything if these settings are already in use
+			{
+				if (keepOldStates)
+				{
+					// force capture all the old states, let the buffer handle decay if they don't all fit
+					ZwinderBuffer old = buffer;
+					buffer = new ZwinderBuffer(newConfig);
+					for (int i = 0; i < old.Count; i++)
+					{
+						ZwinderBuffer.StateInformation si = old.GetState(i);
+						// don't allow states that should be reserved to decay here, where we don't attempt re-capture
+						if (_reserveCallback(si.Frame))
+							AddToReserved(si);
+						else
+							buffer.Capture(si.Frame, s => si.GetReadStream().CopyTo(s), null, true);
+					}
+					old.Dispose();
+				}
+				else
+				{
+					buffer.Dispose();
+					buffer = new ZwinderBuffer(newConfig);
+				}
+			}
+			return buffer;
+		}
+
+		private void RebuildStateCache()
+		{
+			StateCache.Clear();
+			foreach (StateInfo state in AllStates())
+				StateCache.Add(state.Frame);
+		}
 
 		public int Count => _current.Count + _recent.Count + _gapFiller.Count + _reserved.Count;
 
@@ -383,8 +437,6 @@ namespace BizHawk.Client.Common
 			return _reserved.Count < origCount;
 		}
 
-		public void UpdateSettings(ZwinderStateManagerSettings settings) => Settings = settings;
-
 		public bool InvalidateAfter(int frame)
 		{
 			if (frame < 0)
@@ -418,11 +470,7 @@ namespace BizHawk.Client.Common
 				ret._reserved.Add(key, data);
 			}
 
-			var allStates = ret.AllStates().ToList();
-			foreach (var state in allStates)
-			{
-				ret.StateCache.Add(state.Frame);
-			}
+			ret.RebuildStateCache();
 
 			return ret;
 		}
