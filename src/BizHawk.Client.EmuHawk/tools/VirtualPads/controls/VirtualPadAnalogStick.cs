@@ -42,13 +42,13 @@ namespace BizHawk.Client.EmuHawk
 				PolarToRectHelper = (r, θ) =>
 				{
 					var (x, y) = PolarRectConversion.PolarToRectLookup((ushort) r, (ushort) θ);
-					var x1 = (RangeX.IsReversed ? RangeX.Mid - x : RangeX.Mid + x).ConstrainWithin(RangeX.Range);
-					var y1 = (RangeY.IsReversed ? RangeY.Mid - y : RangeY.Mid + y).ConstrainWithin(RangeY.Range);
+					var x1 = (RangeX.IsReversed ? RangeX.RestingValue - x : RangeX.RestingValue + x).ConstrainWithin(RangeX.Range);
+					var y1 = (RangeY.IsReversed ? RangeY.RestingValue - y : RangeY.RestingValue + y).ConstrainWithin(RangeY.Range);
 					return ((short) x1, (short) y1);
 				};
 				RectToPolarHelper = (x, y) => PolarRectConversion.RectToPolarLookup(
-					(sbyte) (RangeX.IsReversed ? RangeX.Mid - x : x - RangeX.Mid),
-					(sbyte) (RangeY.IsReversed ? RangeY.Mid - y : y - RangeY.Mid)
+					(sbyte) (RangeX.IsReversed ? RangeX.RestingValue - x : x - RangeX.RestingValue),
+					(sbyte) (RangeY.IsReversed ? RangeY.RestingValue - y : y - RangeY.RestingValue)
 				);
 			}
 			else
@@ -60,14 +60,14 @@ namespace BizHawk.Client.EmuHawk
 				{
 					var x = (short) (r * Math.Cos(θ * DEG_TO_RAD_FACTOR));
 					var y = (short) (r * Math.Sin(θ * DEG_TO_RAD_FACTOR));
-					var x1 = (RangeX.IsReversed ? RangeX.Mid - x : RangeX.Mid + x).ConstrainWithin(RangeX.Range);
-					var y1 = (RangeY.IsReversed ? RangeY.Mid - y : RangeY.Mid + y).ConstrainWithin(RangeY.Range);
+					var x1 = (RangeX.IsReversed ? RangeX.RestingValue - x : RangeX.RestingValue + x).ConstrainWithin(RangeX.Range);
+					var y1 = (RangeY.IsReversed ? RangeY.RestingValue - y : RangeY.RestingValue + y).ConstrainWithin(RangeY.Range);
 					return ((short) x1, (short) y1);
 				};
 				RectToPolarHelper = (x, y) =>
 				{
-					double x1 = RangeX.IsReversed ? RangeX.Mid - x : x - RangeX.Mid;
-					double y1 = RangeY.IsReversed ? RangeY.Mid - y : y - RangeY.Mid;
+					double x1 = RangeX.IsReversed ? RangeX.RestingValue - x : x - RangeX.RestingValue;
+					double y1 = RangeY.IsReversed ? RangeY.RestingValue - y : y - RangeY.RestingValue;
 					var θ = Math.Atan2(y1, x1) * RAD_TO_DEG_FACTOR;
 					return ((uint) Math.Sqrt(x1 * x1 + y1 * y1), (uint) (θ < 0 ? 360.0 + θ : θ));
 				};

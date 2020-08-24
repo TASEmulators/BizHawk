@@ -405,9 +405,9 @@ namespace BizHawk.Emulation.Common
 		/// </summary>
 		/// <param name="constraint">pass only for one axis in a pair, by convention the X axis</param>
 		/// <returns>identical reference to <paramref name="def"/>; the object is mutated</returns>
-		public static ControllerDefinition AddAxis(this ControllerDefinition def, string name, Range<int> range, int mid, bool isReversed = false, AxisConstraint constraint = null)
+		public static ControllerDefinition AddAxis(this ControllerDefinition def, string name, Range<int> range, int resting, bool isReversed = false, AxisConstraint constraint = null)
 		{
-			def.Axes.Add(name, new AxisSpec(range, mid, isReversed, constraint));
+			def.Axes.Add(name, new AxisSpec(range, resting, isReversed, constraint));
 			return def;
 		}
 
@@ -445,6 +445,6 @@ namespace BizHawk.Emulation.Common
 				.AddAxis(string.Format(nameFormat, "Y"), rangeAll, midAll)
 				.AddAxis(string.Format(nameFormat, "Z"), rangeAll, midAll);
 
-		public static AxisSpec With(this in AxisSpec spec, Range<int> range, int mid) => new AxisSpec(range, mid, spec.IsReversed, spec.Constraint);
+		public static AxisSpec With(this in AxisSpec spec, Range<int> range, int resting) => new AxisSpec(range, resting, spec.IsReversed, spec.Constraint);
 	}
 }

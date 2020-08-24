@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.Common
 		/// <remarks>does not include the extra char needed for a minus sign</remarks>
 		public int MaxDigits => Math.Max(Math.Abs(Min).ToString().Length, Math.Abs(Max).ToString().Length);
 
-		public readonly int Mid;
+		public readonly int RestingValue;
 
 		public int Min => Range.Start;
 
@@ -33,11 +33,11 @@ namespace BizHawk.Emulation.Common
 
 		public readonly Range<int> Range;
 
-		public AxisSpec(Range<int> range, int mid, bool isReversed = false, AxisConstraint? constraint = null)
+		public AxisSpec(Range<int> range, int resting, bool isReversed = false, AxisConstraint? constraint = null)
 		{
 			Constraint = constraint;
 			IsReversed = isReversed;
-			Mid = mid;
+			RestingValue = resting;
 			Range = range;
 		}
 	}

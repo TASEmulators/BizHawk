@@ -359,7 +359,7 @@ namespace BizHawk.Client.EmuHawk
 						if (column.Type == ColumnType.Axis)
 						{
 							// feos: this could be cached, but I don't notice any slowdown this way either
-							if (text == ((float) ControllerType.Axes[columnName].Mid).ToString())
+							if (text == ((float) ControllerType.Axes[columnName].RestingValue).ToString())
 							{
 								text = "";
 							}

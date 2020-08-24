@@ -296,7 +296,7 @@ namespace BizHawk.Client.EmuHawk
 			foreach (string name in latching.Definition.Axes.Keys)
 			{
 				var axisValue = source.AxisValue(name);
-				if (axisValue == source.Definition.Axes[name].Mid)
+				if (axisValue == source.Definition.Axes[name].RestingValue)
 				{
 					latching.SetAxis(name, axisValue);
 				}

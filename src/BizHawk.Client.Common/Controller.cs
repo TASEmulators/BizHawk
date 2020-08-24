@@ -14,7 +14,7 @@ namespace BizHawk.Client.Common
 			Definition = definition;
 			foreach (var kvp in Definition.Axes)
 			{
-				_axes[kvp.Key] = kvp.Value.Mid;
+				_axes[kvp.Key] = kvp.Value.RestingValue;
 				_axisRanges[kvp.Key] = kvp.Value;
 			}
 		}

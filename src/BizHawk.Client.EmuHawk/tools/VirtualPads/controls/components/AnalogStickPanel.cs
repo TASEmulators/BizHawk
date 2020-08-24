@@ -90,10 +90,10 @@ namespace BizHawk.Client.EmuHawk
 			_reverseX = _fullRangeX.IsReversed ^ _userRangePercentageX < 0;
 			_reverseY = _fullRangeY.IsReversed ^ _userRangePercentageY < 0;
 
-			_rangeX = (_fullRangeX.Mid - (_fullRangeX.Mid - _fullRangeX.Min) * _userRangePercentageX / 100)
-				.RangeTo(_fullRangeX.Mid + (_fullRangeX.Max - _fullRangeX.Mid) * _userRangePercentageX / 100);
-			_rangeY = (_fullRangeY.Mid - (_fullRangeY.Mid - _fullRangeY.Min) * _userRangePercentageY / 100)
-				.RangeTo(_fullRangeY.Mid + (_fullRangeY.Max - _fullRangeY.Mid) * _userRangePercentageY / 100);
+			_rangeX = (_fullRangeX.RestingValue - (_fullRangeX.RestingValue - _fullRangeX.Min) * _userRangePercentageX / 100)
+				.RangeTo(_fullRangeX.RestingValue + (_fullRangeX.Max - _fullRangeX.RestingValue) * _userRangePercentageX / 100);
+			_rangeY = (_fullRangeY.RestingValue - (_fullRangeY.RestingValue - _fullRangeY.Min) * _userRangePercentageY / 100)
+				.RangeTo(_fullRangeY.RestingValue + (_fullRangeY.Max - _fullRangeY.RestingValue) * _userRangePercentageY / 100);
 
 			_x = _x.ConstrainWithin(_rangeX);
 			_y = _y.ConstrainWithin(_rangeY);
