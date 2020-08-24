@@ -72,23 +72,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			public enum ControllerType
 			{
-				Default,
 				Tilt
 			}
 
 			[JsonIgnore]
 			private ControllerType _GBController;
 
-			[DisplayName("Controller")]
-			[Description("Select Controller Type")]
-			[DefaultValue(ControllerType.Default)]
+			[DisplayName("Tilt Controls")]
+			[Description("Choose Tilt Control mode, when Applicable (MBC7 games)")]
+			[DefaultValue(ControllerType.Tilt)]
 			public ControllerType GBController
 			{
 				get => _GBController;
 				set
 				{
-					if (value == ControllerType.Default) { Port1 = GBHawkControllerDeck.DefaultControllerName; }
-					else { Port1 = "Gameboy Controller + Tilt"; }
+					if (value == ControllerType.Tilt) { Port1 = "Gameboy Controller + Tilt"; }
 
 					_GBController = value;
 				}

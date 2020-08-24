@@ -117,7 +117,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			_settings = (GBSettings)settings ?? new GBSettings();
 			_syncSettings = (GBSyncSettings)syncSettings ?? new GBSyncSettings();
-			_controllerDeck = new GBHawkControllerDeck(_syncSettings.Port1);
 
 			byte[] Bios = null;
 
@@ -182,8 +181,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			Console.WriteLine("MD5: " + rom.HashMD5(0, rom.Length));
 			Console.WriteLine("SHA1: " + rom.HashSHA1(0, rom.Length));
 			_rom = rom;
-			Setup_Mapper();
+			string mppr = Setup_Mapper();
 			if (cart_RAM != null) { cart_RAM_vbls = new byte[cart_RAM.Length]; }
+
+			if (mppr == "MBC7")
+			{
+				_controllerDeck = new GBHawkControllerDeck(_syncSettings.Port1);
+			}
+			else
+			{
+				_controllerDeck = new GBHawkControllerDeck(GBHawkControllerDeck.DefaultControllerName);
+			}
+			
+
 
 			timer.Core = this;
 			audio.Core = this;
@@ -323,7 +333,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 		}
 
-		private void Setup_Mapper()
+		public string Setup_Mapper()
 		{
 			// setup up mapper based on header entry
 			string mppr;
@@ -548,6 +558,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				// currently no date / time input for TAMA5
 
 			}
+
+			return mppr;
 		}
 	}
 }
