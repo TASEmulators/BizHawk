@@ -11,6 +11,7 @@ using Microsoft.VisualBasic.ApplicationServices;
 using BizHawk.Common;
 using BizHawk.Common.PathExtensions;
 using BizHawk.Client.Common;
+using BizHawk.Client.EmuHawk.CustomControls;
 
 using OSTC = EXE_PROJECT.OSTailoredCode;
 
@@ -110,12 +111,20 @@ namespace BizHawk.Client.EmuHawk
 
 			try
 			{
+				if (!VersionInfo.DeveloperBuild && !ConfigService.IsFromSameVersion(Config.DefaultIniPath, out var msg))
+				{
+					new MsgBox(msg, "Mismatched version in config file", MessageBoxIcon.Warning).ShowDialog();
+				}
 				GlobalWin.Config = ConfigService.Load<Config>(Config.DefaultIniPath);
 			}
 			catch (Exception e)
 			{
-				new ExceptionBox(e).ShowDialog();
-				new ExceptionBox("Since your config file is corrupted or from a different BizHawk version, we're going to recreate it. Back it up before proceeding if you want to investigate further.").ShowDialog();
+				new ExceptionBox(string.Join("\n",
+					"It appears your config file (config.ini) is corrupted; an exception was thrown while loading it.",
+					"On closing this warning, EmuHawk will delete your config file and generate a new one. You can go make a backup now if you'd like to look into diffs.",
+					"The caught exception was:",
+					e.ToString()
+				)).ShowDialog();
 				File.Delete(Config.DefaultIniPath);
 				GlobalWin.Config = ConfigService.Load<Config>(Config.DefaultIniPath);
 			}

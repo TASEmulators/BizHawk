@@ -2783,6 +2783,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoadConfigFile(string iniPath)
 		{
+			if (!VersionInfo.DeveloperBuild && !ConfigService.IsFromSameVersion(iniPath, out var msg))
+			{
+				new MsgBox(msg, "Mismatched version in config file", MessageBoxIcon.Warning).ShowDialog();
+			}
 			Config = ConfigService.Load<Config>(iniPath);
 			Config.ResolveDefaults();
 			InitControls(); // rebind hotkeys
