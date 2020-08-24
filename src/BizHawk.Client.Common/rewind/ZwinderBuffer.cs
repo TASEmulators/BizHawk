@@ -108,7 +108,8 @@ namespace BizHawk.Client.Common
 
 		public bool MatchesSettings(RewindConfig settings)
 		{
-			long size = 1L << (int)Math.Floor(Math.Log(settings.BufferSize, 2));
+			long targetSize = settings.BufferSize * 1024 * 1024;
+			long size = 1L << (int)Math.Floor(Math.Log(targetSize, 2));
 			return Size == size &&
 				_useCompression == settings.UseCompression &&
 				_targetFrameLength == settings.TargetFrameLength;
