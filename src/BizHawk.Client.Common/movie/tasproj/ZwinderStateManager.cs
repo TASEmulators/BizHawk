@@ -219,7 +219,11 @@ namespace BizHawk.Client.Common
 			// reserved states can include future states in the case of branch states
 			if (frame <= LastRing)
 			{
-				CaptureGap(frame, source);
+				if (NeedsGap(frame))
+				{
+					CaptureGap(frame, source);
+				}
+
 				return;
 			}
 
@@ -286,6 +290,14 @@ namespace BizHawk.Client.Common
 			}
 
 			return false;
+		}
+
+		private bool NeedsGap(int frame)
+		{
+			// When starting to fill gaps we won't actually know the true frequency, so fall back to current
+			// Current may very well not be the same as gap, but it's a reasonable behavior to have a current sized gap before seeing filler sized gaps
+			var frequency = _gapFiller.Count == 0 ? _current.RewindFrequency : _gapFiller.RewindFrequency;
+			return !StateCache.Any(sc => sc < frame && sc > frame - frequency);
 		}
 
 		private void CaptureGap(int frame, IStatable source)
