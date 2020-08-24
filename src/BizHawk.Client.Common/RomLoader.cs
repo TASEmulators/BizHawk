@@ -362,6 +362,8 @@ namespace BizHawk.Client.Common
 				}
 				catch (Exception e)
 				{
+					if (e is MissingFirmwareException || e.InnerException is MissingFirmwareException)
+						throw;
 					exceptions.Add(e);
 				}
 			}
