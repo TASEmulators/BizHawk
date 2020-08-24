@@ -252,18 +252,40 @@ namespace BizHawk.Client.Common
 							var state2 = _recent.GetState(index2);
 							StateCache.Remove(state2.Frame);
 
-							var from = _reserved.Count > 0 ? _reserved.Max(kvp => kvp.Key) : 0;
-
 							var isReserved = _reserveCallback(state2.Frame);
 
 							// Add to reserved if reserved, or if it matches an "ancient" state consideration
-							if (isReserved || state2.Frame - from >= _ancientInterval)
+							if (isReserved || !HasNearByReserved(state2.Frame))
 							{
 								AddToReserved(state2);
 							}
 						});
 				},
 				force);
+		}
+
+		// Returns whether or not a frame has a reserved state within the frame interval on either side of it
+		private bool HasNearByReserved(int frame)
+		{
+			// An easy optimization, we know frame 0 always exists
+			if (frame < _ancientInterval)
+			{
+				return true;
+			}
+
+			// Has nearby before
+			if (_reserved.Any(kvp => kvp.Key < frame && kvp.Key > frame - _ancientInterval))
+			{
+				return true;
+			}
+
+			// Has nearby after
+			if (_reserved.Any(kvp => kvp.Key > frame && kvp.Key < frame + _ancientInterval))
+			{
+				return true;
+			}
+
+			return false;
 		}
 
 		private void CaptureGap(int frame, IStatable source)
