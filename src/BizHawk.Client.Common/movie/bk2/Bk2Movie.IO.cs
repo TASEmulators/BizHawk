@@ -52,7 +52,7 @@ namespace BizHawk.Client.Common
 
 		protected virtual void Write(string fn, bool isBackup = false)
 		{
-			SetCycleValues(); // We are pretending these only need to be set on save
+			SetCycleValues();
 			// EmulatorVersion used to store the unchanging original emulator version.
 			if (!Header.ContainsKey(HeaderKeys.OriginalEmulatorVersion))
 			{
@@ -72,17 +72,26 @@ namespace BizHawk.Client.Common
 
 		private void SetCycleValues()
 		{
-			if (Emulator is Emulation.Cores.Nintendo.SubNESHawk.SubNESHawk subNes)
-			{
-				Header[HeaderKeys.VBlankCount] = subNes.VblankCount.ToString();
+			// The saved cycle value will only be valid if the end of the movie has been emulated.
+			if (this.IsAtEnd())
+			{ 
+				if (Emulator is Emulation.Cores.Nintendo.SubNESHawk.SubNESHawk subNes)
+				{
+					Header[HeaderKeys.VBlankCount] = subNes.VblankCount.ToString();
+				}
+				else if (Emulator is Emulation.Cores.Nintendo.Gameboy.Gameboy gameboy)
+				{
+					Header[HeaderKeys.CycleCount] = gameboy.CycleCount.ToString();
+				}
+				else if (Emulator is Emulation.Cores.Nintendo.SubGBHawk.SubGBHawk subGb)
+				{
+					Header[HeaderKeys.CycleCount] = subGb.CycleCount.ToString();
+				}
 			}
-			else if (Emulator is Emulation.Cores.Nintendo.Gameboy.Gameboy gameboy)
+			else
 			{
-				Header[HeaderKeys.CycleCount] = gameboy.CycleCount.ToString();
-			}
-			else if (Emulator is Emulation.Cores.Nintendo.SubGBHawk.SubGBHawk subGb)
-			{
-				Header[HeaderKeys.CycleCount] = subGb.CycleCount.ToString();
+				Header.Remove(HeaderKeys.CycleCount);
+				Header.Remove(HeaderKeys.VBlankCount);
 			}
 		}
 

@@ -329,13 +329,16 @@ namespace BizHawk.Client.Common
 
 		private void HandlePlaybackEnd()
 		{
-			if (Movie.Core ==  CoreNames.Gambatte)
+			if (Movie.Core == CoreNames.Gambatte)
 			{
-				var movieCycles = Convert.ToUInt64(Movie.HeaderEntries[HeaderKeys.CycleCount]);
 				var coreCycles = ((Gameboy)Movie.Emulator).CycleCount;
-				if (movieCycles != (ulong)coreCycles)
+				if (Movie.HeaderEntries.ContainsKey(HeaderKeys.CycleCount))
 				{
-					PopupMessage($"Cycle count in the movie ({movieCycles}) doesn't match the emulated value ({coreCycles}).");
+					var movieCycles = Convert.ToUInt64(Movie.HeaderEntries[HeaderKeys.CycleCount]);
+					if (movieCycles != (ulong)coreCycles)
+					{
+						PopupMessage($"Cycle count in the movie ({movieCycles}) doesn't match the emulated value ({coreCycles}).");
+					}
 				}
 			}
 
