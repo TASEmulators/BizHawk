@@ -207,7 +207,7 @@ namespace BizHawk.Client.EmuHawk
 				DialogResult result;
 				if (MovieSession.Movie.Changes)
 				{
-					result = MessageBox.Show(convertMessage + "\nThe current movie has unsaved changes, would you like to save?", "Convert movie", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+					result = MessageBox.Show(convertMessage + "\n\nThe current movie has unsaved changes, would you like to save?", "Convert movie", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
 					if (result.Equals(DialogResult.Yes))
 					{
 						MovieSession.Movie.Save();

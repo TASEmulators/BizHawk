@@ -329,16 +329,21 @@ namespace BizHawk.Client.Common
 
 		private void HandlePlaybackEnd()
 		{
-			if (Movie.Core == CoreNames.Gambatte)
+			if (Movie.IsAtEnd() && Movie.Core == CoreNames.Gambatte)
 			{
-				var coreCycles = ((Gameboy)Movie.Emulator).CycleCount;
-				if (Movie.HeaderEntries.ContainsKey(HeaderKeys.CycleCount))
+				var coreCycles = (ulong) ((Gameboy)Movie.Emulator).CycleCount;
+				var cyclesSaved = Movie.HeaderEntries.ContainsKey(HeaderKeys.CycleCount);
+				ulong previousCycles = 0;
+				if (cyclesSaved)
 				{
-					var movieCycles = Convert.ToUInt64(Movie.HeaderEntries[HeaderKeys.CycleCount]);
-					if (movieCycles != (ulong)coreCycles)
-					{
-						PopupMessage($"Cycle count in the movie ({movieCycles}) doesn't match the emulated value ({coreCycles}).");
-					}
+					previousCycles = Convert.ToUInt64(Movie.HeaderEntries[HeaderKeys.CycleCount]);
+				}
+				var cyclesMatch = previousCycles == coreCycles;
+				if (!cyclesSaved || !cyclesMatch)
+				{
+					var previousState = !cyclesSaved ? "The saved movie is currently missing a cycle count." : $"The previous cycle count ({previousCycles}) doesn't match.";
+					// TODO: Ideally, this would be a Yes/No MessageBox that saves when "Yes" is pressed.
+					PopupMessage($"The end of the movie has been reached.\n\n{previousState}\n\nSave to update to the new cycle count ({coreCycles}).");
 				}
 			}
 
