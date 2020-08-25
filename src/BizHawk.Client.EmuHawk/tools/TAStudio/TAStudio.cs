@@ -203,21 +203,21 @@ namespace BizHawk.Client.EmuHawk
 			// Start Scenario 1: A regular movie is active
 			if (MovieSession.Movie.IsActive() && !(MovieSession.Movie is ITasMovie))
 			{
-				var convertMessage = "TAStudio will create a new project file from the current movie.";
-				DialogResult result;
+				var changesString = "Would you like to save the current movie before closing it?";
 				if (MovieSession.Movie.Changes)
 				{
-					result = MessageBox.Show(convertMessage + "\n\nThe current movie has unsaved changes, would you like to save?", "Convert movie", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
-					if (result.Equals(DialogResult.Yes))
-					{
-						MovieSession.Movie.Save();
-					}
+					changesString = "The current movie has unsaved changes. Would you like to save before closing it?";
 				}
-				else
+				var result = MessageBox.Show(
+					"TAStudio will create a new project file from the current movie.\n\n" + changesString,
+					"Convert movie",
+					MessageBoxButtons.YesNoCancel,
+					MessageBoxIcon.Question);
+				if (result.Equals(DialogResult.Yes))
 				{
-					result = MessageBox.Show(convertMessage, "Convert movie", MessageBoxButtons.OKCancel, MessageBoxIcon.Information);
+					MovieSession.Movie.Save();
 				}
-				if (result.Equals(DialogResult.Cancel))
+				else if (result.Equals(DialogResult.Cancel))
 				{
 					return false;
 				}
