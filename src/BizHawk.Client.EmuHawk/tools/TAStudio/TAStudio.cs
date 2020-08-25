@@ -203,17 +203,28 @@ namespace BizHawk.Client.EmuHawk
 			// Start Scenario 1: A regular movie is active
 			if (MovieSession.Movie.IsActive() && !(MovieSession.Movie is ITasMovie))
 			{
-				var result = MessageBox.Show("In order to use Tastudio, a new project must be created from the current movie\nThe current movie will be saved and closed, and a new project file will be created\nProceed?", "Convert movie", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
-				if (result.IsOk())
+				var convertMessage = "TAStudio will create a new project file from the current movie.";
+				DialogResult result;
+				if (MovieSession.Movie.Changes)
 				{
-					ConvertCurrentMovieToTasproj();
-					StartNewMovieWrapper(CurrentTasMovie);
-					SetUpColumns();
+					result = MessageBox.Show(convertMessage + "\nThe current movie has unsaved changes, would you like to save?", "Convert movie", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+					if (result.Equals(DialogResult.Yes))
+					{
+						MovieSession.Movie.Save();
+					}
 				}
 				else
 				{
+					result = MessageBox.Show(convertMessage, "Convert movie", MessageBoxButtons.OKCancel, MessageBoxIcon.Information);
+				}
+				if (result.Equals(DialogResult.Cancel))
+				{
 					return false;
 				}
+
+				ConvertCurrentMovieToTasproj();
+				StartNewMovieWrapper(CurrentTasMovie);
+				SetUpColumns();
 			}
 
 			// Start Scenario 2: A tasproj is already active

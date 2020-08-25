@@ -282,7 +282,6 @@ namespace BizHawk.Client.Common
 
 		public void ConvertToTasProj()
 		{
-			Movie.Save();
 			Movie = Movie.ToTasMovie();
 			Movie.Save();
 			Movie.SwitchToPlay();
