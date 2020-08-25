@@ -73,9 +73,7 @@ namespace BizHawk.Client.Common
 				value *= Math.Max(range.Mid - range.Min, range.Max - range.Mid);
 
 				// finally, constrain to range again in case the original value was unexpectedly large, or the deadzone and scale made it so, or the axis is lopsided
-				value = value.ConstrainWithin(range.FloatRange);
-
-				_axes[kvp.Key] = (int) value;
+				_axes[kvp.Key] = ((int) value).ConstrainWithin(range.Range);
 			}
 		}
 

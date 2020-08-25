@@ -1267,7 +1267,8 @@ namespace BizHawk.Client.EmuHawk
 			string prevTyped = _axisTypedValue;
 
 			var range = ControllerType.Axes[_axisEditColumn];
-			var (rMin, rMax) = range.FloatRange;
+			float rMin = range.Min;
+			float rMax = range.Max;
 
 			// feos: typing past max digits overwrites existing value, not touching the sign
 			// but doesn't handle situations where the range is like -50 through 100, where minimum is negative and has less digits

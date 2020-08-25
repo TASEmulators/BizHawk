@@ -15,8 +15,6 @@ namespace BizHawk.Emulation.Common
 		/// </summary>
 		public readonly AxisConstraint? Constraint;
 
-		public Range<float> FloatRange => ((float) Min).RangeTo(Max);
-
 		public readonly bool IsReversed;
 
 		public int Max => Range.EndInclusive;
