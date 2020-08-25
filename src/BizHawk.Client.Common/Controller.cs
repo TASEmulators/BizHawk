@@ -68,15 +68,11 @@ namespace BizHawk.Client.Common
 				// scale by user-set multiplier (which is 0..1, i.e. value can only shrink and is therefore still in -1..1)
 				value *= kvp.Value.Mult;
 
-				// -1..1 -> 0..1
-				value = (value + 1.0f) / 2.0f;
+				// -1..1 -> range
+				value += range.Mid;
+				value *= Math.Max(range.Mid - range.Min, range.Max - range.Mid);
 
-				// 0..1 -> range
-				value = range.IsReversed
-					? range.Max + value * (2 - range.Range.Count()) // this is equivalent to the old code
-					: range.Min + value * range.Range.Count();
-
-				// finally, constrain to range again in case the original value was unexpectedly large, or the deadzone and scale made it so
+				// finally, constrain to range again in case the original value was unexpectedly large, or the deadzone and scale made it so, or the axis is lopsided
 				value = value.ConstrainWithin(range.FloatRange);
 
 				_axes[kvp.Key] = (int) value;
