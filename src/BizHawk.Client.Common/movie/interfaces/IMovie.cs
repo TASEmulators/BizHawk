@@ -90,6 +90,11 @@ namespace BizHawk.Client.Common
 		bool StartsFromSaveRam { get; set; }
 		string GameName { get; set; }
 		string SystemID { get; set; }
+		// TODO: This should be further defined in some manner
+		// It's presented as a SHA-1 hash internally according to Movie.HeaderApi,
+		// but the movie Hash is copied from the game Hash,
+		// and the game Hash uses whatever happens to match the rom database.
+		// (the game Hash can potentially be CRC32, MD5, or SHA-1)
 		string Hash { get; set; }
 		string Author { get; set; }
 		string Core { get; set; }

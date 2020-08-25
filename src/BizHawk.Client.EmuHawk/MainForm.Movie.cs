@@ -46,9 +46,11 @@ namespace BizHawk.Client.EmuHawk
 
 			SetMainformMovieInfo();
 
+			// TODO: This comparison is not great because it doesn't check if the hashes are the same type
+			// Either the hash type should be compared, or they should be renamed to an explicit hash type (e.g. SHA1)
 			if (MovieSession.Movie.Hash != Game.Hash)
 			{
-				AddOnScreenMessage("Warning: Movie hash does not match the ROM");
+				MessageBox.Show("Movie hash does not match the ROM hash", "Hash mismatch", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 			}
 
 			return !Emulator.IsNull();

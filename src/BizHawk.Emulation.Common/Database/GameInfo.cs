@@ -9,6 +9,9 @@ namespace BizHawk.Emulation.Common
 	{
 		string Name { get; }
 		string System { get; }
+		// TODO: This should be made more explicit;
+		// without an explicit hash type, it can't be consistently compared with movie hash values.
+		// (It can potentially be CRC32, MD5, or SHA-1)
 		string Hash { get; }
 		string Region { get; }
 		RomStatus Status { get; }
