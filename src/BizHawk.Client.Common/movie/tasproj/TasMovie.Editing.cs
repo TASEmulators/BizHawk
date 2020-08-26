@@ -114,7 +114,8 @@ namespace BizHawk.Client.Common
 			{
 				// Separate the given frames into contiguous blocks
 				// and process each block independently
-				List<int> framesToDelete = frames.OrderBy(fr => fr).ToList();
+				List<int> framesToDelete = frames.Where(fr => fr >= 0 && fr < InputLogLength)
+					.OrderBy(fr => fr).ToList();
 				// f is the current index for framesToDelete
 				int f = 0;
 				int numDeleted = 0;
