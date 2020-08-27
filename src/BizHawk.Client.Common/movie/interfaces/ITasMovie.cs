@@ -6,7 +6,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
-	public interface ITasMovie : IMovie, INotifyPropertyChanged
+	public interface ITasMovie : IMovie, INotifyPropertyChanged, IDisposable
 	{
 		bool BindMarkersToInput { get; set; }
 		bool LastPositionStable { get; set; }

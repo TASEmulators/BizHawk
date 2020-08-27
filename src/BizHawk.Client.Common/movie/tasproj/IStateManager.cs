@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
-	public interface IStateManager
+	public interface IStateManager : IDisposable
 	{
 		/// <summary>
 		/// Retrieves the savestate for the given frame,

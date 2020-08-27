@@ -277,6 +277,11 @@ namespace BizHawk.Client.Common
 				_modeChangedCallback();
 			}
 
+			if (Movie is IDisposable d)
+			{
+				d.Dispose();
+			}
+
 			Movie = null;
 		}
 

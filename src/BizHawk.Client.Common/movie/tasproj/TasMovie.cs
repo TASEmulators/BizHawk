@@ -350,5 +350,11 @@ namespace BizHawk.Client.Common
 			return Markers.Any(m => m.Frame - 1 == frame)
 				|| Branches.Any(b => b.Frame == frame); // Branches should already be in the reserved list, but it doesn't hurt to check
 		}
+
+		public void Dispose()
+		{
+			TasStateManager?.Dispose();
+			TasStateManager = null;
+		}
 	}
 }
