@@ -39,6 +39,7 @@ namespace BizHawk.Client.EmuHawk
 		public HttpCommunication httpCommunication = null;
 		public SocketServer socketServer = null;
 		public MemoryMappedFiles memoryMappedFiles = null;
+		public string openExtToolDll;
 
 		/// <exception cref="ArgParserException"><c>--socket_ip</c> passed without specifying <c>--socket_port</c> or vice-versa</exception>
 		public void ParseArguments(string[] args, Func<byte[]> takeScreenshotCallback)
@@ -145,6 +146,13 @@ namespace BizHawk.Client.EmuHawk
 				else if (arg.StartsWith("--audiosync="))
 				{
 					audiosync = arg.Substring(arg.IndexOf('=') + 1) == "true";
+				}
+				else if (arg.StartsWith("--open-ext-tool-dll="))
+				{
+					// the first ext. tool from ExternalToolManager.ToolStripMenu which satisfies both of these will be opened:
+					// - available (no load errors, correct system/rom, etc.)
+					// - dll path matches given string; or dll filename matches given string with or without `.dll`
+					openExtToolDll = args[i].Substring(20);
 				}
 				else
 				{

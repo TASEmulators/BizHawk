@@ -153,6 +153,26 @@ namespace BizHawk.Client.EmuHawk
 			};
 			UpdateChecker.GlobalConfig = Config;
 			UpdateChecker.BeginCheck(); // Won't actually check unless enabled by user
+
+			// open requested ext. tool
+			var requestedExtToolDll = _argParser.openExtToolDll;
+			if (requestedExtToolDll != null)
+			{
+				var enabled = ExternalToolManager.ToolStripMenu.Where(item => item.Enabled)
+					.Select(item => (ValueTuple<string, string>) item.Tag)
+					.ToList();
+				try
+				{
+					var found = enabled.First(tuple => tuple.Item1 == requestedExtToolDll
+						|| Path.GetFileName(tuple.Item1) == requestedExtToolDll
+						|| Path.GetFileNameWithoutExtension(tuple.Item1) == requestedExtToolDll);
+					Tools.LoadExternalToolForm(found.Item1, found.Item2);
+				}
+				catch (Exception)
+				{
+					Console.WriteLine($"requested ext. tool dll {requestedExtToolDll} could not be loaded");
+				}
+			}
 		}
 
 		static MainForm()
@@ -1551,6 +1571,8 @@ namespace BizHawk.Client.EmuHawk
 		// public static ControllerInputCoalescer ControllerInputCoalescer = new ControllerInputCoalescer();
 		// input state which has been destined for client hotkey consumption are colesced here
 		private readonly InputCoalescer _hotkeyCoalescer = new InputCoalescer();
+
+		private readonly (string, string)? _loadExtToolForm;
 
 		private readonly PresentationPanel PresentationPanel;
 
