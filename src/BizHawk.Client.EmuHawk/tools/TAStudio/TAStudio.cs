@@ -1018,6 +1018,7 @@ namespace BizHawk.Client.EmuHawk
 			if (_playbackInterrupted)
 			{
 				MainForm.UnpauseEmulator();
+				MainForm.PauseOnFrame = null;
 				_playbackInterrupted = false;
 			}
 		}
