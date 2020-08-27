@@ -212,13 +212,15 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					using var mf = new MainForm(args);
+					var mf = new MainForm(args);
 					var title = mf.Text;
 					mf.Show();
 					mf.Text = title;
 					try
 					{
 						GlobalWin.ExitCode = mf.ProgramRunLoop();
+						if (!mf.IsDisposed)
+							mf.Dispose();
 					}
 					catch (Exception e) when (GlobalWin.MovieSession.Movie.IsActive() && !(Debugger.IsAttached || VersionInfo.DeveloperBuild))
 					{
