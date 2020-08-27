@@ -45,7 +45,7 @@ namespace BizHawk.Client.Common
 
 		[DisplayName("Recent - Buffer Size")]
 		[Description("Max amount of buffer space to use in MB")]
-		public int RecentBufferSize { get; set; } = 192;
+		public int RecentBufferSize { get; set; } = 128;
 
 		[DisplayName("Recent - Target Frame Length")]
 		[Description("Desired frame length (number of emulated frames you can go back before running out of buffer)")]
