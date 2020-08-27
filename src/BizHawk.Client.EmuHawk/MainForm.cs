@@ -2347,6 +2347,9 @@ namespace BizHawk.Client.EmuHawk
 				Config.MainWndy = -1;
 			}
 
+			Config.LastWrittenFrom = VersionInfo.MainVersion;
+			Config.LastWrittenFromDetailed = VersionInfo.GetEmuVersion();
+
 			if (string.IsNullOrEmpty(path))
 			{
 				path = Config.DefaultIniPath;
