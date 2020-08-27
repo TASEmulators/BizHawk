@@ -1572,8 +1572,6 @@ namespace BizHawk.Client.EmuHawk
 		// input state which has been destined for client hotkey consumption are colesced here
 		private readonly InputCoalescer _hotkeyCoalescer = new InputCoalescer();
 
-		private readonly (string, string)? _loadExtToolForm;
-
 		private readonly PresentationPanel PresentationPanel;
 
 		// countdown for saveram autoflushing
