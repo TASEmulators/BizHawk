@@ -182,7 +182,7 @@ namespace BizHawk.Client.Common
 			_states[_nextStateIndex].Size = (int)stream.Length;
 			_nextStateIndex = (_nextStateIndex + 1) & STATEMASK;
 
-			Util.DebugWriteLine($"Size: {Size >> 20}MiB, Used: {Used >> 20}MiB, States: {Count}");
+			//Util.DebugWriteLine($"Size: {Size >> 20}MiB, Used: {Used >> 20}MiB, States: {Count}");
 		}
 
 		private Stream MakeLoadStream(int index)
@@ -232,7 +232,7 @@ namespace BizHawk.Client.Common
 			if ((uint)index > (uint)Count)
 				throw new IndexOutOfRangeException();
 			_nextStateIndex = (index + _firstStateIndex) & STATEMASK;
-			Util.DebugWriteLine($"Size: {Size >> 20}MiB, Used: {Used >> 20}MiB, States: {Count}");
+			//Util.DebugWriteLine($"Size: {Size >> 20}MiB, Used: {Used >> 20}MiB, States: {Count}");
 		}
 
 		public void SaveStateBinary(BinaryWriter writer)
