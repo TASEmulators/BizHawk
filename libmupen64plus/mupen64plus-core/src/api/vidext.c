@@ -331,7 +331,8 @@ EXPORT m64p_error CALL VidExt_SetCaption(const char *Title)
     if (!SDL_WasInit(SDL_INIT_VIDEO))
         return M64ERR_NOT_INIT;
 
-    SDL_WM_SetCaption(Title, "M64+ Video");
+		//breaks bizhawk
+    //SDL_WM_SetCaption(Title, "M64+ Video");
 
     return M64ERR_SUCCESS;
 }
