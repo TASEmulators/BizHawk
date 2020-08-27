@@ -144,7 +144,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		/// <summary>Loads the external tool's entry form.</summary>
-		public IExternalToolForm LoadExternalToolForm(string toolPath, string customFormTypeName, bool focus = true)
+		public IExternalToolForm LoadExternalToolForm(string toolPath, string customFormTypeName, bool focus = true, bool skipExtToolWarning = false)
 		{
 			var existingTool = _tools.OfType<IExternalToolForm>().FirstOrDefault(t => t.GetType().Assembly.Location == toolPath);
 			if (existingTool != null)
@@ -161,7 +161,7 @@ namespace BizHawk.Client.EmuHawk
 				_tools.Remove(existingTool);
 			}
 
-			var newTool = (IExternalToolForm) CreateInstance(typeof(IExternalToolForm), toolPath, customFormTypeName);
+			var newTool = (IExternalToolForm) CreateInstance(typeof(IExternalToolForm), toolPath, customFormTypeName, skipExtToolWarning: skipExtToolWarning);
 			if (newTool == null) return null;
 			if (newTool is Form form) form.Owner = _owner;
 			ApiInjector.UpdateApis(_apiProvider, newTool);
@@ -603,7 +603,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <param name="dllPath">Path dll for an external tool</param>
 		/// <param name="toolTypeName">For external tools, <see cref="Type.FullName"/> of the entry form's type (<paramref name="toolType"/> will be <see cref="IExternalToolForm"/>)</param>
 		/// <returns>New instance of an IToolForm</returns>
-		private IToolForm CreateInstance(Type toolType, string dllPath, string toolTypeName = null)
+		private IToolForm CreateInstance(Type toolType, string dllPath, string toolTypeName = null, bool skipExtToolWarning = false)
 		{
 			IToolForm tool;
 
@@ -612,7 +612,7 @@ namespace BizHawk.Client.EmuHawk
 			// Hard stuff as we need a proxy object that inherit from MarshalByRefObject.
 			if (toolType == typeof(IExternalToolForm))
 			{
-				if (MessageBox.Show(
+				if (skipExtToolWarning || MessageBox.Show(
 					"Are you sure want to load this external tool?\r\nAccept ONLY if you trust the source and if you know what you're doing. In any other case, choose no.",
 					"Confirm loading", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
 				{

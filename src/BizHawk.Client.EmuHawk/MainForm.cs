@@ -166,7 +166,7 @@ namespace BizHawk.Client.EmuHawk
 					var found = enabled.First(tuple => tuple.Item1 == requestedExtToolDll
 						|| Path.GetFileName(tuple.Item1) == requestedExtToolDll
 						|| Path.GetFileNameWithoutExtension(tuple.Item1) == requestedExtToolDll);
-					Tools.LoadExternalToolForm(found.Item1, found.Item2);
+					Tools.LoadExternalToolForm(found.Item1, found.Item2, skipExtToolWarning: true);
 				}
 				catch (Exception)
 				{
