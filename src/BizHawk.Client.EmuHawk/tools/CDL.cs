@@ -110,11 +110,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private string[][] _listContents = new string[0][];
 
-		private void UpdateDisplay(bool force)
+		private unsafe void UpdateDisplay(bool force)
 		{
 			if (!tsbViewUpdate.Checked && !force)
 				return;
 
+			int* map = stackalloc int[256];
 
 			if (_cdl == null)
 			{
@@ -129,35 +130,32 @@ namespace BizHawk.Client.EmuHawk
 			{
 				int[] totals = new int[8];
 				int total = 0;
-				unsafe
+				
+				for (int i = 0; i < 256; i++)
+					map[i] = 0;
+
+				fixed (byte* data = kvp.Value)
 				{
-					int* map = stackalloc int[256];
-					for (int i = 0; i < 256; i++)
-						map[i] = 0;
-
-					fixed (byte* data = kvp.Value)
+					byte* src = data;
+					byte* end = data + kvp.Value.Length;
+					while (src < end)
 					{
-						byte* src = data;
-						byte* end = data + kvp.Value.Length;
-						while (src < end)
-						{
-							byte s = *src++;
-							map[s]++;
-						}
+						byte s = *src++;
+						map[s]++;
 					}
+				}
 
-					for (int i = 0; i < 256; i++)
-					{
-						if(i!=0) total += map[i];
-						if ((i & 0x01) != 0) totals[0] += map[i];
-						if ((i & 0x02) != 0) totals[1] += map[i];
-						if ((i & 0x04) != 0) totals[2] += map[i];
-						if ((i & 0x08) != 0) totals[3] += map[i];
-						if ((i & 0x10) != 0) totals[4] += map[i];
-						if ((i & 0x20) != 0) totals[5] += map[i];
-						if ((i & 0x40) != 0) totals[6] += map[i];
-						if ((i & 0x80) != 0) totals[7] += map[i];
-					}
+				for (int i = 0; i < 256; i++)
+				{
+					if(i!=0) total += map[i];
+					if ((i & 0x01) != 0) totals[0] += map[i];
+					if ((i & 0x02) != 0) totals[1] += map[i];
+					if ((i & 0x04) != 0) totals[2] += map[i];
+					if ((i & 0x08) != 0) totals[3] += map[i];
+					if ((i & 0x10) != 0) totals[4] += map[i];
+					if ((i & 0x20) != 0) totals[5] += map[i];
+					if ((i & 0x40) != 0) totals[6] += map[i];
+					if ((i & 0x80) != 0) totals[7] += map[i];
 				}
 
 				var bm = _cdl.GetBlockMap();
