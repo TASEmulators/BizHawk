@@ -122,6 +122,9 @@
 		<!-- Do not prefix enum values with type name -->
 		<Rule Id="CA1712" Action="Hidden" />
 
+		<!-- Events should not have 'Before' or 'After' prefix -->
+		<Rule Id="CA1713" Action="Hidden" />
+
 		<!-- Flags enums should have plural names -->
 		<Rule Id="CA1714" Action="Hidden" />
 
@@ -148,6 +151,9 @@
 
 		<!-- Use literals where appropriate -->
 		<Rule Id="CA1802" Action="Hidden" />
+
+		<!-- Do not initialize unnecessarily -->
+		<Rule Id="CA1805" Action="Hidden" />
 
 		<!-- Do not ignore method results -->
 		<Rule Id="CA1806" Action="Hidden" />
@@ -190,6 +196,9 @@
 
 		<!-- Do not lock on objects with weak identity -->
 		<Rule Id="CA2002" Action="Hidden" />
+
+		<!-- Do not use stackalloc in loops -->
+		<Rule Id="CA2014" Action="Hidden" />
 
 		<!-- Review SQL queries for security vulnerabilities -->
 		<Rule Id="CA2100" Action="Hidden" />

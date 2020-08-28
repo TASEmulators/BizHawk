@@ -1,5 +1,6 @@
 <Project>
 	<PropertyGroup>
+		<AnalysisLevel>5</AnalysisLevel>
 		<ErrorReport>prompt</ErrorReport>
 		<LangVersion>8.0</LangVersion>
 		<PlatformTarget>AnyCPU</PlatformTarget>
