@@ -50,6 +50,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		void SyncState(Serializer ser);
 		bool IrqSignal { get; }
 
+		NES.CDLog_MapResults MapMemory(ushort addr, bool write);
+
 		//mixes the board's custom audio into the supplied sample buffer
 		void ApplyCustomAudio(short[] samples);
 

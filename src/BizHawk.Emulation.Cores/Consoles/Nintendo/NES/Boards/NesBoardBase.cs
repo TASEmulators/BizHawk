@@ -38,6 +38,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//this is set to true when SyncState is called, so that we know the base class SyncState was used
 		public bool SyncStateFlag;
 
+		public virtual NES.CDLog_MapResults MapMemory(ushort addr, bool write)
+		{
+			NES.CDLog_MapResults ret = new NES.CDLog_MapResults();
+			ret.Type = NES.CDLog_AddrType.None;
+
+			if (addr < 0x2000)
+			{
+				ret.Type = NES.CDLog_AddrType.MainRAM;
+				ret.Address = addr & 0x7FF;
+			}
+
+			return ret;
+		}
+
 		public virtual void SyncState(Serializer ser)
 		{
 			ser.Sync(nameof(_vram), ref _vram, true);

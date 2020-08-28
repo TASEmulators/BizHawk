@@ -40,16 +40,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		}
 
-		private enum CDLog_AddrType
+		public enum CDLog_AddrType
 		{
 			None,
-			ROM, 
-			MainRAM, 
+			ROM,
+			MainRAM,
 			SaveRAM,
 		}
 
 		[Flags]
-		private enum CDLog_Flags
+		public enum CDLog_Flags
 		{
 			ExecFirst = 0x01,
 			ExecOperand = 0x02,
@@ -57,28 +57,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 
 #pragma warning disable CS0649
-		private struct CDLog_MapResults
+		public struct CDLog_MapResults
 		{
 			public CDLog_AddrType Type;
 			public int Address;
 		}
 
-		private delegate CDLog_MapResults MapMemoryDelegate(ushort addr, bool write);
-		private MapMemoryDelegate MapMemory;
+		private delegate CDLog_MapResults MpMemoryDelegate(ushort addr, bool write);
 #pragma warning restore CS0649
 		private ICodeDataLog CDL;
 
 		private void RunCDL(ushort address, CDLog_Flags flags)
 		{
-			if (MapMemory != null)
+			
+			CDLog_MapResults results = Board.MapMemory(address, false);
+			switch (results.Type)
 			{
-				CDLog_MapResults results = MapMemory(address, false);
-				switch (results.Type)
-				{
-					case CDLog_AddrType.None: break;
-					case CDLog_AddrType.MainRAM: CDL["Main RAM"][results.Address] |= (byte)flags; break;
-					case CDLog_AddrType.SaveRAM: CDL["Save RAM"][results.Address] |= (byte)flags; break;
-				}
+				case CDLog_AddrType.None: break;
+				case CDLog_AddrType.MainRAM: CDL["RAM"][results.Address] |= (byte)flags; break;
+				case CDLog_AddrType.SaveRAM: CDL["Save RAM"][results.Address] |= (byte)flags; break;
 			}
 		}
 
