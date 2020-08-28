@@ -43,7 +43,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			ToolBoxStrip.Items.Clear();
 
-			var tools = Assembly.GetAssembly(GetType()).GetTypes()
+			var tools = Assembly.GetAssembly(GetType()).GetTypesWithoutLoadErrors()
 				.Where(t => typeof(IToolForm).IsAssignableFrom(t))
 				.Where(t => typeof(Form).IsAssignableFrom(t))
 				.Where(t => !typeof(ToolBox).IsAssignableFrom(t))

@@ -46,7 +46,7 @@ namespace BizHawk.Client.EmuHawk
 
 			// Register lua libraries
 			foreach (var lib in Assembly.Load("BizHawk.Client.Common").GetTypes()
-				.Concat(Assembly.GetAssembly(typeof(Win32LuaLibraries)).GetTypes())
+				.Concat(Assembly.GetAssembly(typeof(Win32LuaLibraries)).GetTypesWithoutLoadErrors())
 				.Where(t => typeof(LuaLibraryBase).IsAssignableFrom(t) && t.IsSealed && ServiceInjector.IsAvailable(serviceProvider, t)))
 			{
 				bool addLibrary = true;

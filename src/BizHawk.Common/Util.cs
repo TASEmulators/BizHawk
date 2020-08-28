@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 
 namespace BizHawk.Common
@@ -79,7 +80,20 @@ namespace BizHawk.Common
 		/// <returns>all <see cref="Type">Types</see> with the name <paramref name="className"/></returns>
 		/// <remarks>adapted from https://stackoverflow.com/a/13727044/7467292</remarks>
 		public static IList<Type> GetTypeByName(string className) => AppDomain.CurrentDomain.GetAssemblies()
-			.SelectMany(asm => asm.GetTypes().Where(type => className.Equals(type.Name, StringComparison.InvariantCultureIgnoreCase))).ToList();
+			.SelectMany(asm => asm.GetTypesWithoutLoadErrors().Where(type => className.Equals(type.Name, StringComparison.InvariantCultureIgnoreCase))).ToList();
+
+		/// <remarks>TODO replace this with GetTypes (i.e. the try block) when VB.NET dep is properly removed</remarks>
+		public static IEnumerable<Type> GetTypesWithoutLoadErrors(this Assembly assembly)
+		{
+			try
+			{
+				return assembly.GetTypes();
+			}
+			catch (ReflectionTypeLoadException e)
+			{
+				return e.Types.Where(t => t != null);
+			}
+		}
 
 		/// <exception cref="ArgumentException"><paramref name="str"/> has an odd number of chars or contains a char not in <c>[0-9A-Fa-f]</c></exception>
 		public static byte[] HexStringToBytes(this string str)

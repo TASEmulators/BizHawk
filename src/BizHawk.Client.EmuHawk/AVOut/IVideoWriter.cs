@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -143,7 +145,7 @@ namespace BizHawk.Client.EmuHawk
 
 		static VideoWriterInventory()
 		{
-			foreach (Type t in typeof(VideoWriterInventory).Assembly.GetTypes())
+			foreach (Type t in typeof(VideoWriterInventory).Assembly.GetTypesWithoutLoadErrors())
 			{
 				if (!t.IsInterface
 					&& typeof(IVideoWriter).IsAssignableFrom(t)

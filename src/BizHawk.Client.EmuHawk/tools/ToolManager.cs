@@ -9,6 +9,7 @@ using System.ComponentModel;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
+using BizHawk.Common;
 using BizHawk.Common.ReflectionExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.WinForms.Controls;
@@ -465,7 +466,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public IEnumerable<Type> AvailableTools => Assembly
 			.GetAssembly(typeof(ToolManager))
-			.GetTypes()
+			.GetTypesWithoutLoadErrors()
 			.Where(t => typeof(IToolForm).IsAssignableFrom(t))
 			.Where(t => !t.IsInterface)
 			.Where(IsAvailable);
@@ -701,7 +702,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static readonly Lazy<List<string>> LazyAsmTypes = new Lazy<List<string>>(() =>
 			Assembly.GetAssembly(typeof(ToolManager)) // Confining the search to only EmuHawk, for now at least, we may want to broaden for external tools one day
-				.GetTypes()
+				.GetTypesWithoutLoadErrors()
 				.Select(t => t.AssemblyQualifiedName)
 				.ToList());
 
