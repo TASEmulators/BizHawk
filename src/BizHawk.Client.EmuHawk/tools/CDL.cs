@@ -48,8 +48,21 @@ namespace BizHawk.Client.EmuHawk
 		[RequiredService]
 		private IMemoryDomains MemoryDomains { get; set; }
 
+		ICodeDataLogger _icdlogger;
+
 		[RequiredService]
-		private ICodeDataLogger CodeDataLogger { get; set; }
+		private ICodeDataLogger CodeDataLogger
+		{
+			get
+			{
+				return _icdlogger;
+			}
+			set
+			{
+				_icdlogger?.SetCDL(null);
+				_icdlogger = value;
+			}
+		}
 
 		private string _currentFilename;
 		private CodeDataLog _cdl;
@@ -450,7 +463,7 @@ namespace BizHawk.Client.EmuHawk
 		void ShutdownCDL()
 		{
 			_cdl = null;
-			CodeDataLogger.SetCDL(null);
+			CodeDataLogger?.SetCDL(null);
 		}
 
 		protected override void OnClosing(System.ComponentModel.CancelEventArgs e)

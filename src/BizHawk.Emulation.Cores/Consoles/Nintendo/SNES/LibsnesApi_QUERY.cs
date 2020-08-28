@@ -153,6 +153,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public void QUERY_set_cdl(ICodeDataLog cdl)
 		{
+			if (_exe == null)
+				return;
+
 			using (_exe.EnterExit())
 			{
 				for (int i = 0; i < 8; i++)
