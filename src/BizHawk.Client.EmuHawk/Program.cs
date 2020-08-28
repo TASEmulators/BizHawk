@@ -208,7 +208,7 @@ namespace BizHawk.Client.EmuHawk
 
 			try
 			{
-				if (GlobalWin.Config.SingleInstanceMode)
+				if (!OSTC.IsUnixHost && GlobalWin.Config.SingleInstanceMode)
 				{
 					try
 					{

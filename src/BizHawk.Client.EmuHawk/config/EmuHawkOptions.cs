@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using BizHawk.Client.Common;
+using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -71,6 +72,7 @@ namespace BizHawk.Client.EmuHawk
 			HandleAlternateKeyboardLayoutsCheckBox.Checked = _config.HandleAlternateKeyboardLayouts;
 			NeverAskSaveCheckbox.Checked = _config.SuppressAskSave;
 			SingleInstanceModeCheckbox.Checked = _config.SingleInstanceMode;
+			SingleInstanceModeCheckbox.Enabled = !OSTailoredCode.IsUnixHost;
 
 			BackupSRamCheckbox.Checked = _config.BackupSaveram;
 			AutosaveSRAMCheckbox.Checked = _config.AutosaveSaveRAM;
