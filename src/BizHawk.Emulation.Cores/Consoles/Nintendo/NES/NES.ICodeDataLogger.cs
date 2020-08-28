@@ -56,6 +56,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			Data = 0x04
 		}
 
+#pragma warning disable CS0649
 		private struct CDLog_MapResults
 		{
 			public CDLog_AddrType Type;
@@ -64,6 +65,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		private delegate CDLog_MapResults MapMemoryDelegate(ushort addr, bool write);
 		private MapMemoryDelegate MapMemory;
+#pragma warning restore CS0649
 		private ICodeDataLog CDL;
 
 		private void RunCDL(ushort address, CDLog_Flags flags)

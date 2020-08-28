@@ -401,13 +401,13 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 					{
 						if (!snip)
 						{
-							str.Append("-");
+							str.Append('-');
 							snip = true;
 						}
 					}
 					else
 					{
-						if (count > 0 && !snip) str.Append(",");
+						if (count > 0 && !snip) str.Append(',');
 						str.Append("D" + i);
 						snip = false;
 					}
@@ -424,13 +424,13 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 					{
 						if (!snip)
 						{
-							str.Append("-");
+							str.Append('-');
 							snip = true;
 						}
 					}
 					else
 					{
-						if (count > 0 && !snip) str.Append(",");
+						if (count > 0 && !snip) str.Append(',');
 						str.Append("A" + i);
 						snip = false;
 					}
@@ -456,13 +456,13 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 					{
 						if (!snip)
 						{
-							str.Append("-");
+							str.Append('-');
 							snip = true;
 						}
 					}
 					else
 					{
-						if (count > 0 && !snip) str.Append(",");
+						if (count > 0 && !snip) str.Append(',');
 						str.Append("D" + i);
 						snip = false;
 					}
@@ -479,13 +479,13 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 					{
 						if (!snip)
 						{
-							str.Append("-");
+							str.Append('-');
 							snip = true;
 						}
 					}
 					else
 					{
-						if (count > 0 && !snip) str.Append(",");
+						if (count > 0 && !snip) str.Append(',');
 						str.Append("A" + i);
 						snip = false;
 					}

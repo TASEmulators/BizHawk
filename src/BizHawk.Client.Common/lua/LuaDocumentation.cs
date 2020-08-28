@@ -121,21 +121,21 @@ __Types and notation__
 						sb
 							.Append("${")
 							.Append(i + 1)
-							.Append(":");
+							.Append(':');
 
 						sb.Append(parameters[i].IsOptional
 							? $"[{parameters[i].Name}]"
 							: parameters[i].Name);
 
-						sb.Append("}");
+						sb.Append('}');
 
 						if (i < parameters.Count - 1)
 						{
-							sb.Append(",");
+							sb.Append(',');
 						}
 					}
 
-					sb.Append(")");
+					sb.Append(')');
 				}
 				else
 				{

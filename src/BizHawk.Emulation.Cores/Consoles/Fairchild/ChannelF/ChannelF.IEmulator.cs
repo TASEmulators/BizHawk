@@ -53,8 +53,10 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		}
 
 		private int _frame;
+#pragma warning disable CS0414
 		private int _lagcount;
 		private bool _islag;
+#pragma warning restore CS0414
 
 		public void ResetCounters()
 		{

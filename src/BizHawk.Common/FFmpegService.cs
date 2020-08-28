@@ -10,7 +10,7 @@ namespace BizHawk.Common
 {
 	public class FFmpegService
 	{
-		public static string FFmpegPath;
+		public static string FFmpegPath = string.Empty; // always updated in DiscoHawk.Program/EmuHawk.Program
 
 		//could return a different version for different operating systems.. shouldnt be hard.
 		public static readonly string Version = "N-92462-g529debc987";

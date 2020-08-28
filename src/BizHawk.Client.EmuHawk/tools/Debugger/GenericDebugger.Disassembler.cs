@@ -233,7 +233,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					blob.Append(_disassemblyLines[index].Address.ToHexString(_pcRegisterSize))
-						.Append(" ")
+						.Append(' ')
 						.Append(_disassemblyLines[index].Mnemonic);
 				}
 

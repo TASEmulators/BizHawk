@@ -10,8 +10,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		private int _reg;
 		private bool IsPrg16Mode => _reg.Bit(7);
 
+#pragma warning disable CS0649
 		[MapperProp]
 		public int Mapper60_DipSwitch;
+#pragma warning restore CS0169
 
 		private const int DipSwitchMask = 3;
 

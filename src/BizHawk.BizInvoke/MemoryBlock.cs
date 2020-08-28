@@ -8,8 +8,8 @@ namespace BizHawk.BizInvoke
 {
 	public class MemoryBlock : IDisposable /*, IBinaryStateable */
 	{
-		/// <summary>allocate <paramref name="size"/> bytes starting at a particular address <paramref name="start"/></summary>
-		/// <exception cref="ArgumentOutOfRangeException"><paramref name="start"/> is not aligned or <paramref name="size"/> is <c>0</c></exception>
+		/// <summary>allocate <paramref name="size"/> bytes</summary>
+		/// <exception cref="ArgumentOutOfRangeException"><paramref name="size"/> is not aligned or is <c>0</c></exception>
 		public MemoryBlock(ulong size)
 		{
 			if (!WaterboxUtils.Aligned(size))

@@ -1733,7 +1733,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                         sb.Append(type + ": ");
                         sb.Append(fileName + " ");
                         sb.Append(GetWordValue(blockdata, 14));
-                        sb.Append(":");
+                        sb.Append(':');
                         sb.Append(GetWordValue(blockdata, 12));
                         description = sb.ToString();
                     }

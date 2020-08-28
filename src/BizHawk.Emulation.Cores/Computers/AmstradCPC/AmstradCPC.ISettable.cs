@@ -226,11 +226,11 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 					for (int i = 0; i < makeup; i++)
 					{
 						if (tLen > 4)
-							sb.Append("\t");
+							sb.Append('\t');
 						else
 						{
 							makeup--;
-							sb.Append("\t");
+							sb.Append('\t');
 						}
 					}
 
@@ -258,8 +258,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 					{
 						if (i != 0)
 						{
-							sb.Append("\t");
-							sb.Append("\t");
+							sb.Append('\t');
+							sb.Append('\t');
 						}
 
 						sb.Append(builder[i]);
@@ -279,38 +279,38 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				StringBuilder sb = new StringBuilder();
 
 				sb.Append(m.Name);
-				sb.Append("\n");
+				sb.AppendLine();
 				sb.Append("-----------------------------------------------------------------\n");
 				// Release
 				sb.Append("Released:");
-				sb.Append(" ");
+				sb.Append(' ');
 				sb.Append(m.Released);
-				sb.Append("\n");
+				sb.AppendLine();
 				// CPU
 				sb.Append("CPU:");
 				sb.Append("      ");
 				sb.Append(m.CPU);
-				sb.Append("\n");
+				sb.AppendLine();
 				// Memory
 				sb.Append("Memory:");
 				sb.Append("   ");
 				sb.Append(m.Memory);
-				sb.Append("\n");
+				sb.AppendLine();
 				// Video
 				sb.Append("Video:");
 				sb.Append("    ");
 				sb.Append(m.Video);
-				sb.Append("\n");
+				sb.AppendLine();
 				// Audio
 				sb.Append("Audio:");
 				sb.Append("    ");
 				sb.Append(m.Audio);
-				sb.Append("\n");
+				sb.AppendLine();
 				// Audio
 				sb.Append("Media:");
 				sb.Append("    ");
 				sb.Append(m.Media);
-				sb.Append("\n");
+				sb.AppendLine();
 
 				sb.Append("-----------------------------------------------------------------\n");
 				// description

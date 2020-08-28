@@ -260,10 +260,12 @@ namespace BizHawk.Client.Common
 
 		public void InsertEmptyFrame(int frame, int count = 1)
 		{
+#pragma warning disable CA1829 //TODO check StreamStringLog.Count is counting the same things as its enumerator
 			if (frame > Log.Count())
 			{
 				frame = Log.Count();
 			}
+#pragma warning restore CA1829
 
 			var lg = LogGeneratorInstance(Session.MovieController);
 			Log.InsertRange(frame, Enumerable.Repeat(lg.EmptyEntry, count).ToList());

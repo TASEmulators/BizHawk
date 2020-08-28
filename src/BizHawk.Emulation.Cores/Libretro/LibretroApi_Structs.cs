@@ -23,7 +23,9 @@ namespace BizHawk.Emulation.Cores.Libretro
 			public sbyte* valid_extensions;
 			public bool need_fullpath;
 			public bool block_extract;
+#pragma warning disable CS0169
 			short _pad;
+#pragma warning restore CS0169
 		}
 
 		public struct retro_system_timing

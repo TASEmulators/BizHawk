@@ -159,7 +159,7 @@ namespace BizHawk.Client.EmuHawk
 			if (requestedExtToolDll != null)
 			{
 				var enabled = ExternalToolManager.ToolStripMenu.Where(item => item.Enabled)
-					.Select(item => (ValueTuple<string, string>) item.Tag)
+					.Select(item => ((string, string)) item.Tag)
 					.ToList();
 				try
 				{

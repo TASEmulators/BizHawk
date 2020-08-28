@@ -304,7 +304,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			var bl = _dataBlocks[targetBlockId];
 
 			StringBuilder sbd = new StringBuilder();
-			sbd.Append("(");
+			sbd.Append('(');
 			sbd.Append((targetBlockId + 1) + " of " + _dataBlocks.Count);
 			sbd.Append(") : ");
 			//sbd.Append("ID" + bl.BlockID.ToString("X2") + " - ");
@@ -313,7 +313,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			{
 				sbd.Append(" - ");
 				sbd.Append(bl.MetaData.First().Key + ": " + bl.MetaData.First().Value);
-				//sbd.Append("\n");
+				//sbd.AppendLine();
 				//sbd.Append(bl.MetaData.Skip(1).First().Key + ": " + bl.MetaData.Skip(1).First().Value);
 			}
 
@@ -485,7 +485,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 					var bl = _dataBlocks[_currentDataBlockIndex];
 
 					StringBuilder sbd = new StringBuilder();
-					sbd.Append("(");
+					sbd.Append('(');
 					sbd.Append((_currentDataBlockIndex + 1) + " of " + _dataBlocks.Count);
 					sbd.Append(") : ");
 					//sbd.Append("ID" + bl.BlockID.ToString("X2") + " - ");
@@ -511,7 +511,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 						// notify about the current block (we are skipping it because its empty)
 						var bl = _dataBlocks[_currentDataBlockIndex];
 						StringBuilder sbd = new StringBuilder();
-						sbd.Append("(");
+						sbd.Append('(');
 						sbd.Append((_currentDataBlockIndex + 1) + " of " + _dataBlocks.Count);
 						sbd.Append(") : ");
 						//sbd.Append("ID" + bl.BlockID.ToString("X2") + " - ");

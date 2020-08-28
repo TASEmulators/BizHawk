@@ -35,11 +35,11 @@ namespace BizHawk.Client.Common
 		{
 			var sb = new StringBuilder("subtitle ");
 			sb
-				.Append(Frame).Append(" ")
-				.Append(X).Append(" ")
-				.Append(Y).Append(" ")
-				.Append(Duration).Append(" ")
-				.Append($"{Color:X8}").Append(" ")
+				.Append(Frame).Append(' ')
+				.Append(X).Append(' ')
+				.Append(Y).Append(' ')
+				.Append(Duration).Append(' ')
+				.Append($"{Color:X8}").Append(' ')
 				.Append(Message);
 
 			return sb.ToString();
@@ -49,7 +49,7 @@ namespace BizHawk.Client.Common
 		{
 			var sb = new StringBuilder();
 
-			sb.Append(index.ToString());
+			sb.Append(index);
 			sb.Append("\r\n");
 
 			// Frame timing

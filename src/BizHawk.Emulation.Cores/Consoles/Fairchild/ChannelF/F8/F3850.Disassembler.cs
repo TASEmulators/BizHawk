@@ -298,7 +298,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		public string Disassemble(ushort addr, Func<ushort, byte> read, out int size)
 		{
 			ushort start_addr = addr;
-			ushort extra_inc = 0;
+//			ushort extra_inc = 0;
 			byte A = read(addr++);
 			string format;
 			format = mnemonics[A];

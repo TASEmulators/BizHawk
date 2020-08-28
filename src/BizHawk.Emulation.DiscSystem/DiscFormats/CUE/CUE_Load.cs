@@ -56,7 +56,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 		//not sure if we need this...
 		private class TrackInfo
 		{
-			public int Length;
+//			public int Length;
 
 			public CompiledCueTrack CompiledCueTrack;
 		}

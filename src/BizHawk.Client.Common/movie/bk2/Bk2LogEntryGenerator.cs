@@ -30,7 +30,7 @@ namespace BizHawk.Client.Common
 
 			foreach (var group in _source.Definition.ControlsOrdered.Where(c => c.Any()))
 			{
-				sb.Append("#");
+				sb.Append('#');
 				foreach (var button in group)
 				{
 					sb.Append(button).Append('|');

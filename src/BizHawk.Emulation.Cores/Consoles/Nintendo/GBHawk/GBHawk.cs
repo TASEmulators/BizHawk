@@ -288,7 +288,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 		}
 
+#pragma warning disable CS0414
 		private PrinterCallback _printerCallback = null;
+#pragma warning restore CS0414
 
 		public void SetPrinterCallback(PrinterCallback callback)
 		{

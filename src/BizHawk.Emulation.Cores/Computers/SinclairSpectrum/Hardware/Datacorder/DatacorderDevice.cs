@@ -275,7 +275,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			var bl = _dataBlocks[targetBlockId];
 
 			StringBuilder sbd = new StringBuilder();
-			sbd.Append("(");
+			sbd.Append('(');
 			sbd.Append((targetBlockId + 1) + " of " + _dataBlocks.Count);
 			sbd.Append(") : ");
 			sbd.Append(bl.BlockDescription);
@@ -491,7 +491,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 					var bl = _dataBlocks[_currentDataBlockIndex];
 
 					StringBuilder sbd = new StringBuilder();
-					sbd.Append("(");
+					sbd.Append('(');
 					sbd.Append((_currentDataBlockIndex + 1) + " of " + _dataBlocks.Count);
 					sbd.Append(") : ");
 					sbd.Append(bl.BlockDescription);
@@ -514,7 +514,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 						// notify about the current block (we are skipping it because its empty)
 						var bl = _dataBlocks[_currentDataBlockIndex];
 						StringBuilder sbd = new StringBuilder();
-						sbd.Append("(");
+						sbd.Append('(');
 						sbd.Append((_currentDataBlockIndex + 1) + " of " + _dataBlocks.Count);
 						sbd.Append(") : ");
 						sbd.Append(bl.BlockDescription);

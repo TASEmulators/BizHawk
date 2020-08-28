@@ -17,11 +17,13 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		private int tone = 0;
 
 		private double[] tone_freqs = { 0, 1000, 500, 120 };
+#pragma warning disable CS0414
 		private double amplitude = 0;
 		private double decay = 0.998;
 		private double time = 0;
 		private double cycles = 0;
 		private int samplePos = 0;
+#pragma warning restore CS0414
 		private int lastCycle = 0;
 
 		private BlipBuffer _blip;

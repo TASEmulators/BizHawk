@@ -369,11 +369,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				for (int i = 0; i < makeup; i++)
 				{
 					if (tLen > 4)
-						sb.Append("\t");
+						sb.Append('\t');
 					else
 					{
 						makeup--;
-						sb.Append("\t");
+						sb.Append('\t');
 					}
 				}
 
@@ -402,8 +402,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				{
 					if (i != 0)
 					{
-						sb.Append("\t");
-						sb.Append("\t");
+						sb.Append('\t');
+						sb.Append('\t');
 					}
 
 					sb.Append(builder[i]);

@@ -163,8 +163,8 @@ namespace BizHawk.Client.EmuHawk
 		private class ShaderWrapper
 		{
 			public int sid;
-			public Dictionary<string, string> MapCodeToNative;
-			public Dictionary<string, string> MapNativeToCode;
+//			public Dictionary<string, string> MapCodeToNative;
+//			public Dictionary<string, string> MapNativeToCode;
 		}
 
 		private class PipelineWrapper

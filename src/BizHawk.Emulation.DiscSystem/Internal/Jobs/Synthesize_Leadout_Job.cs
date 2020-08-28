@@ -11,8 +11,14 @@ namespace BizHawk.Emulation.DiscSystem
 	/// </summary>
 	internal class Synthesize_LeadoutJob
 	{
-		public int Length;
-		public Disc Disc;
+		private readonly int Length;
+		private readonly Disc Disc;
+
+		public Synthesize_LeadoutJob(int length, Disc disc)
+		{
+			Length = length;
+			Disc = disc;
+		}
 
 		public void Run()
 		{
