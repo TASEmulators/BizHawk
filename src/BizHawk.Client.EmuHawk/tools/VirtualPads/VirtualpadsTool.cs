@@ -73,7 +73,7 @@ namespace BizHawk.Client.EmuHawk
 
 			var schemaType = Assembly
 				.GetExecutingAssembly()
-				.GetTypes()
+				.GetTypesWithoutLoadErrors()
 				.Where(t => typeof(IVirtualPadSchema)
 					.IsAssignableFrom(t) && t.GetCustomAttributes(false)
 					.OfType<SchemaAttribute>()
