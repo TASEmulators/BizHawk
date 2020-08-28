@@ -71,8 +71,8 @@ namespace BizHawk.Tests.Client.Common.Movie
 			var stateCount = 0;
 			for (int i = 0; i < 1000000; i++)
 			{
-				zb.Capture(i, s => ss.SaveStateBinary(new BinaryWriter(s)), j => stateCount--, true);
-				stateCount++;
+				if (zb.Capture(i, s => ss.SaveStateBinary(new BinaryWriter(s)), j => stateCount--, true))
+					stateCount++;
 			}
 			Assert.AreEqual(zb.Count, stateCount);
 		}

@@ -134,15 +134,16 @@ namespace BizHawk.Client.Common
 		/// Maybe captures a state, if the conditions are favorable
 		/// </summary>
 		/// <param name="frame">frame number to capture</param>
-		/// <param name="callback">will be called with the stream if capture is to be performed</param>
+		/// <param name="callback">will be called with the stream if capture is to be attempted</param>
 		/// <param name="indexInvalidated">
-		/// If provided, will be called with the index of states that are about to be removed.  This will happen during
+		/// If provided, will be called with the index of states that are about to be removed. This will happen during
 		/// calls to Write() inside `callback`, and any reuse of the old state will have to happen immediately
 		/// </param>
-		public void Capture(int frame, Action<Stream> callback, Action<int> indexInvalidated = null, bool force = false)
+		/// <returns>Returns true if the state was sucesfully captured; otherwise false.</returns>
+		public bool Capture(int frame, Action<Stream> callback, Action<int> indexInvalidated = null, bool force = false)
 		{
 			if ((!force && !ShouldCapture(frame)) || _buffer == null)
-				return;
+				return false;
 
 			if (Count == STATEMASK)
 			{
@@ -157,7 +158,7 @@ namespace BizHawk.Client.Common
 			Func<long> notifySizeReached = () =>
 			{
 				if (Count == 0)
-					throw new IOException("A single state must not be larger than the buffer");
+					return 0;
 				indexInvalidated?.Invoke(0);
 				_firstStateIndex = (_firstStateIndex + 1) & STATEMASK;
 				return Count > 0
@@ -176,12 +177,19 @@ namespace BizHawk.Client.Common
 				callback(stream);
 			}
 
+			if (stream.Length > Size)
+			{
+				Util.DebugWriteLine("Failed to capture; state size exceeds buffer size.");
+				return false;
+			}
+
 			_states[_nextStateIndex].Frame = frame;
 			_states[_nextStateIndex].Start = start;
 			_states[_nextStateIndex].Size = (int)stream.Length;
 			_nextStateIndex = (_nextStateIndex + 1) & STATEMASK;
 
 			//Util.DebugWriteLine($"Size: {Size >> 20}MiB, Used: {Used >> 20}MiB, States: {Count}");
+			return true;
 		}
 
 		private Stream MakeLoadStream(int index)
@@ -368,7 +376,16 @@ namespace BizHawk.Client.Common
 			{
 				long requestedSize = _position + buffer.Length;
 				while (requestedSize > _notifySize)
+				{
 					_notifySize = _notifySizeReached();
+					// 0 means abort, because the buffer is too small
+					if (_notifySize == 0)
+					{
+						// we set _position so that we can check later if the attempted write length was larger than the available buffer size
+						_position += buffer.Length;
+						return;
+					}
+				}
 				long n = buffer.Length;
 				if (n > 0)
 				{
