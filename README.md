@@ -3,8 +3,9 @@
 A multi-system emulator written in C#. As well as quality-of-life features for casual players, it also has recording/playback and debugging tools, making it the first choice for TASers (Tool-Assisted Speedrunners).
 
 [![(latest) release | GitHub](https://img.shields.io/github/release/TASVideos/BizHawk.svg?logo=github&logoColor=333333&style=popout)](https://github.com/TASVideos/BizHawk/releases/latest)
-[![latest dev build | AppVeyor](https://img.shields.io/badge/latest_dev_build-AppVeyor-orange.svg?logo=appveyor&logoColor=333333&style=popout)](https://ci.appveyor.com/project/zeromus/bizhawk-udexo/build/artifacts)
-[![latest dev build | GitLab CI](https://img.shields.io/badge/latest_dev_build-GitLab_CI-orange.svg?logo=gitlab&logoColor=333333&style=popout)](https://gitlab.com/TASVideos/BizHawk/pipelines/master/latest)
+[![recent dev builds | AppVeyor](https://img.shields.io/badge/recent_dev_builds-AppVeyor-orange.svg?logo=appveyor&logoColor=333333&style=popout)](https://ci.appveyor.com/project/zeromus/bizhawk-udexo/history)
+[![recent dev builds | GitLab CI](https://img.shields.io/badge/recent_dev_builds-GitLab_CI-orange.svg?logo=gitlab&logoColor=333333&style=popout)](https://gitlab.com/TASVideos/BizHawk/pipelines)
+[![latest build of master | GitLab CI](https://img.shields.io/badge/latest_build_of_master-GitLab_CI-orange.svg?logo=gitlab&logoColor=333333&style=popout)](https://gitlab.com/TASVideos/BizHawk/pipelines/master/latest)
 [![GitHub open issues counter](https://img.shields.io/github/issues-raw/TASVideos/BizHawk.svg?logo=github&logoColor=333333&style=popout)](https://github.com/TASVideos/BizHawk/issues)
 
 ---
@@ -24,7 +25,7 @@ Jump to:
 * [Contributing](#contributing)
 	* [EmuHawk development](#emuhawk-development)
 	* [Core development](#core-development)
-	* [Testing/QA](#testing-qa)
+	* [Testing/QA](#testingqa)
 	* [Localization](#localization)
 	* [License](#license)
 * [Related projects](#related-projects)
@@ -111,24 +112,24 @@ A "backport" release, [1.13.2](https://github.com/TASVideos/BizHawk/releases/tag
 
 Install the listed package with your package manager (some buttons are links to the relevant package). The changelog can be found [on TASVideos](http://tasvideos.org/Bizhawk/ReleaseHistory.html).
 
-![none yet | :(](https://img.shields.io/badge/none%20yet-%3A(-yellow)
+[![Manjaro | bizhawk-monort (AUR)](https://img.shields.io/badge/Manjaro-bizhawk_(AUR)-%2335BF5C.svg?logo=manjaro&style=popout)](https://aur.archlinux.org/packages/bizhawk-monort)
 
-No package for your distro? Grab the latest release here on GitHub (it's the same as the Windows version). If you download BizHawk this way, **don't mix different versions**, keep each version in its own folder.
+No package for your distro? Grab the latest release here on GitHub (it's the same as the Windows version):
 
 [![Misc. Linux | bizhawk-portable](https://img.shields.io/badge/Misc._Linux-bizhawk--portable-%23FCC624.svg?logo=linux&logoColor=black&style=popout)](https://github.com/TASVideos/BizHawk/releases/latest)
 
-The runtime dependencies are glibc, Mono "complete", Mono VB.NET, OpenAL, and `lsb_release`. .NET Core is **not** a runtime dependency, only Mono.
+If you download BizHawk this way, **don't mix different versions**, keep each version in its own folder. The runtime dependencies are glibc, Mono "complete", OpenAL, and `lsb_release`. .NET Core is **not** a runtime dependency, only Mono. WINE is also **not** a runtime dependency.
 
-Run `EmuHawkMono.sh` to start EmuHawk—you can run it from anywhere, so creating a .desktop file to wrap the script is fine.
+Run `EmuHawkMono.sh` to start EmuHawk—you can run it from anywhere, so creating a .desktop file to wrap the script is fine. The shell script should print an error if it fails, otherwise it's safe to ignore console output. There are some command-line options which aren't well-documented; you might be able to figure them out from [the code](https://github.com/TASVideos/BizHawk/blob/e128cb82f211dade27d04a21737e073374098f49/src/BizHawk.Client.EmuHawk/ArgParser.cs). They're the same on Windows, with one exception: passing `--mono-no-redirect` *as the first argument* prints stdout to the console. *Not* passing it will redirect stdout to a file.
 
-Most features and cores work, notable omissions being Lua support, Mupen64Plus, and Octoshock (PSX). See [#1430](https://github.com/TASVideos/BizHawk/issues/1430) for details.
+Most features and cores work, notable omissions being Lua support, Mupen64Plus (N64), and Octoshock (PSX). See [#1430](https://github.com/TASVideos/BizHawk/issues/1430) for details.
 
 [to top](#bizhawk)
 
 #### macOS (legacy BizHawk)
 
 EmuHawk depends on certain libraries for graphics, and these don't work on macOS. Users on macOS have three options:
-* Use another machine with Windows or Linux, or install either in a VM (WINE is not a VM and probably won't work).
+* Use another machine with Windows or Linux, or install either in a VM (WINE is not a VM).
 * Use an older 1.x release which was ported to macOS by @Sappharad (with replacements for the missing libraries). Links and more details are in [this TASVideos forum thread](http://tasvideos.org/forum/viewtopic.php?t=12659) (jump to last page for latest binaries).
 * For the technically-minded, download the [source](https://github.com/Sappharad/BizHawk/tree/MacUnixMonoCompat) of an older 2.x release. @Sappharad put a lot of work into it but ultimately decided to stop.
 
@@ -136,18 +137,17 @@ EmuHawk depends on certain libraries for graphics, and these don't work on macOS
 
 ### Development builds
 
-Development builds are made automatically whenever someone contributes. Because of this, they're not suitable for work that requires stability (such as TASing). They take the version number of the *next* release, though for technical reasons `Help` > `About` gives the *most recent* release.
+Development builds are made automatically whenever someone contributes. Because of this, we recommend using a release for work that requires stability (such as TASing), and only switching to a dev build if there's a specific change or addition you need.
 
 [![recent dev builds | AppVeyor](https://img.shields.io/badge/recent_dev_builds-AppVeyor-orange.svg?logo=appveyor&logoColor=333333&style=popout)](https://ci.appveyor.com/project/zeromus/bizhawk-udexo/history)
-[![latest dev build | AppVeyor](https://img.shields.io/badge/latest_dev_build-AppVeyor-orange.svg?logo=appveyor&logoColor=333333&style=popout)](https://ci.appveyor.com/project/zeromus/bizhawk-udexo/build/artifacts)
 [![recent dev builds | GitLab CI](https://img.shields.io/badge/recent_dev_builds-GitLab_CI-orange.svg?logo=gitlab&logoColor=333333&style=popout)](https://gitlab.com/TASVideos/BizHawk/pipelines)
-[![latest dev build | GitLab CI](https://img.shields.io/badge/latest_dev_build-GitLab_CI-orange.svg?logo=gitlab&logoColor=333333&style=popout)](https://gitlab.com/TASVideos/BizHawk/pipelines/master/latest)
+[![latest build of master | GitLab CI](https://img.shields.io/badge/latest_build_of_master-GitLab_CI-orange.svg?logo=gitlab&logoColor=333333&style=popout)](https://gitlab.com/TASVideos/BizHawk/pipelines/master/latest)
 
 Click one of the buttons above to download a dev build (they're also at the top of this readme). AppVeyor uses Windows and GitLab CI uses Linux, but they work all the same.
-* On AppVeyor, click "Artifacts", then `BizHawk_Developer-<datetime>-#<long hexadecimal>.zip`.
-* On GitLab CI, click "Jobs", then the download button at the end of the entry with the name `build_master`/`build_not_master`.
+* On the AppVeyor page for a Build, click "Artifacts", then `BizHawk_Developer-<datetime>-#<long hexadecimal>.zip`.
+* On the GitLab CI page for a Pipeline, click "Jobs", then the download button at the end of the entry with the name `build_master`/`build_not_master`. (On the Pipelines list page, there's also a download button on each Pipeline.)
 
-To get a dev build for a specific commit, you can click the green checkmark next to it (in the [commit history](https://github.com/TASVideos/BizHawk/commits/master), for example) for a dropdown. Click either "Details" link to go to AppVeyor/GitLab.
+To find the dev builds for a specific commit, you can click the green checkmark next to it (in the [commit history](https://github.com/TASVideos/BizHawk/commits/master), for example) for a dropdown, then click either "Details" link to go to AppVeyor/GitLab.
 
 ## Building
 
@@ -174,9 +174,9 @@ git clone https://github.com/TASVideos/BizHawk.git BizHawk_master
 BizHawk_master/Dist/BuildRelease.sh
 ```
 
-The assemblies are put in `BizHawk_master/output`, so if you have the runtime dependencies (see [*Installing*](#unix)) you can call `BizHawk_master/output/EmuHawkMono.sh`. The shell script may yell at you, it should be safe to ignore. stdout is redirected to `BizHawk_master/output/EmuHawkMono_laststdout.txt` by default, pass `--mono-no-redirect` **as the first flag** to disable this.
+The assemblies are put in `BizHawk_master/output`, so if you have the runtime dependencies (see [*Installing*](#unix)) you can call `BizHawk_master/output/EmuHawkMono.sh`. Reminder that stdout is redirected to `BizHawk_master/output/EmuHawkMono_laststdout.txt` unless `--mono-no-redirect` is the first command-line argument.
 
-VS 2019 isn't available on Linux for obvious reasons, but Rider and VS Code are. You can always code from the command line...
+VS 2019 isn't available on Linux, but Rider and VS Code are. You can always code from the command line...
 
 [to top](#bizhawk)
 
