@@ -69,8 +69,8 @@ namespace BizHawk.Client.Common
 				value *= kvp.Value.Mult;
 
 				// -1..1 -> range
-				value += range.Mid;
 				value *= Math.Max(range.Mid - range.Min, range.Max - range.Mid);
+				value += range.Mid;
 
 				// finally, constrain to range again in case the original value was unexpectedly large, or the deadzone and scale made it so, or the axis is lopsided
 				_axes[kvp.Key] = ((int) value).ConstrainWithin(range.Range);
