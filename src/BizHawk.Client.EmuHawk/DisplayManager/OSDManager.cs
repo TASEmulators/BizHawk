@@ -273,7 +273,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var moviePlaying = GlobalWin.MovieSession.Movie.IsPlaying();
 				// After the last frame of the movie, we want both the last movie input and the current inputs.
-				var atMovieEnd = (GlobalWin.MovieSession.Movie.IsFinished() && GlobalWin.Emulator.Frame == GlobalWin.MovieSession.Movie.InputLogLength);
+				var atMovieEnd = GlobalWin.MovieSession.Movie.IsFinished() && GlobalWin.MovieSession.Movie.IsAtEnd();
 				if (moviePlaying || atMovieEnd)
 				{
 					var input = InputStrMovie();
