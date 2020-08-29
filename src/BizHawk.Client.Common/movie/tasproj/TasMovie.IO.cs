@@ -85,20 +85,6 @@ namespace BizHawk.Client.Common
 				LagLog.Load(tr);
 			});
 
-			bl.GetLump(BinaryStateLump.StateHistorySettings, false, delegate(TextReader tr)
-			{
-				var json = tr.ReadToEnd();
-				try
-				{
-					var settings = JsonConvert.DeserializeObject<ZwinderStateManagerSettings>(json);
-					TasStateManager.UpdateSettings(settings);
-				}
-				catch
-				{
-					// Do nothing, and use default settings instead
-				}
-			});
-
 			bl.GetLump(BinaryStateLump.Markers, false, delegate(TextReader tr)
 			{
 				string line;
@@ -165,10 +151,24 @@ namespace BizHawk.Client.Common
 				}
 			});
 
+			ZwinderStateManagerSettings settings = new ZwinderStateManagerSettings();
+			bl.GetLump(BinaryStateLump.StateHistorySettings, false, delegate(TextReader tr)
+			{
+				var json = tr.ReadToEnd();
+				try
+				{
+					settings = JsonConvert.DeserializeObject<ZwinderStateManagerSettings>(json);
+				}
+				catch
+				{
+					// Do nothing, and use default settings instead
+				}
+			});
+
 			bl.GetLump(BinaryStateLump.StateHistory, false, delegate(BinaryReader br, long length)
 			{
 				TasStateManager?.Dispose();
-				TasStateManager = ZwinderStateManager.Create(br, TasStateManager.Settings, IsReserved);
+				TasStateManager = ZwinderStateManager.Create(br, settings, IsReserved);
 			});
 		}
 	}
