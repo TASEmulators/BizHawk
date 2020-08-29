@@ -26,7 +26,7 @@ namespace BizHawk.Client.EmuHawk
 			return new PadSchema
 			{
 				DisplayName = "Tilt Controls",
-				Size = new Size(256, 240),
+				Size = new Size(256, 340),
 				Buttons = new[]
 				{
 					Tilt(10, 15, "X"),
