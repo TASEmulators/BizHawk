@@ -277,7 +277,8 @@ namespace BizHawk.Client.Common
 				_modeChangedCallback();
 			}
 
-			if (Movie is IDisposable d)
+			if (Movie is IDisposable d
+				&& Movie != _queuedMovie) // Uberhack, remove this and Loading Tastudio with a bk2 already loaded breaks, probably other TAStudio scenarios as well
 			{
 				d.Dispose();
 			}
