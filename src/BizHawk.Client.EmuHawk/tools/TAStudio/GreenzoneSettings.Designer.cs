@@ -80,7 +80,7 @@
 			this.SettingsPropertyGrid.TabIndex = 5;
 			this.SettingsPropertyGrid.ToolbarVisible = false;
 			// 
-			// DefaultGreenzoneSettings
+			// GreenzoneSettings
 			// 
 			this.AcceptButton = this.OkBtn;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -91,7 +91,7 @@
 			this.Controls.Add(this.DefaultsButton);
 			this.Controls.Add(this.OkBtn);
 			this.Controls.Add(this.CancelBtn);
-			this.Name = "DefaultGreenzoneSettings";
+			this.Name = "GreenzoneSettings";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
 			this.Text = "Default Savestate History Settings";
 			this.ResumeLayout(false);
