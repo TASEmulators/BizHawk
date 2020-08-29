@@ -26,7 +26,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GreenzoneSettings_Load(object sender, EventArgs e)
 		{
-			SettingsPropertyGrid.SetDescriptionRowHeight(9);
+			SettingsPropertyGrid.AdjustDescriptionHeightToFit();
 		}
 
 		private void OkBtn_Click(object sender, EventArgs e)

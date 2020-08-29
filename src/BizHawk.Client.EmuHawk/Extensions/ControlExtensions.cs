@@ -335,34 +335,41 @@ namespace BizHawk.Client.EmuHawk
 		public static bool IsCtrlShift(this KeyEventArgs e, Keys key)
 			=> !e.Alt && e.Control && e.Shift && e.KeyCode == key;
 
-		// For inexplicable reasons, property grid does not expose a way to do this
-		// https://www.codeproject.com/Articles/28193/Change-the-height-of-a-PropertyGrid-s-description?msg=3379905#xx3379905xx
-		public static void SetDescriptionRowHeight(this PropertyGrid grid, int numRows)
+		/// <summary>
+		/// Changes the description heigh area to match the rows needed for the largest description in the list
+		/// </summary>
+		public static void AdjustDescriptionHeightToFit(this PropertyGrid grid)
 		{
 			try
 			{
-				var controlsProp = grid.GetType().GetProperty("Controls");
-				var controlsCollection = (Control.ControlCollection)controlsProp.GetValue(grid, null);
+				int maxLength = 0;
+				string desc = "";
 
-				foreach(Control c in controlsCollection)
+				foreach (PropertyDescriptor property in TypeDescriptor.GetProperties(grid.SelectedObject))
 				{
-					Type ct = c.GetType();
-					string sName = ct.Name;
-
-					if (sName == "DocComment")
+					if (property.Description?.Length > maxLength)
 					{
-						var controlsProp2 = ct.GetProperty("Lines");
-						controlsProp2.SetValue(c, numRows, null);
-
-						FieldInfo fi = ct.BaseType.GetField("userSized", BindingFlags.Instance | BindingFlags.NonPublic);
-						fi.SetValue(c, true);
+						maxLength = property.Description.Length;
+						desc = property.Description;
 					}
 				}
-			 }
-			 catch (Exception ex)
-			 {
+
+				foreach (Control control in grid.Controls)
+				{
+					if (control.GetType().Name == "DocComment")
+					{
+						FieldInfo field = control.GetType().GetField("userSized", BindingFlags.Instance | BindingFlags.NonPublic);
+						field?.SetValue(control, true);
+						int height = (int)Graphics.FromHwnd(control.Handle).MeasureString(desc, control.Font, grid.Width).Height;
+						control.Height = Math.Max(20, height) + 16; // magic for now
+						return;
+					}
+				}
+			}
+			catch
+			{
 				// Eat it
-			 }
+			}
 		}
 	}
 }

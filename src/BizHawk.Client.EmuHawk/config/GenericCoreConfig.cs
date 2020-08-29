@@ -35,7 +35,7 @@ namespace BizHawk.Client.EmuHawk
 			if (_s != null)
 			{
 				propertyGrid1.SelectedObject = _s;
-				ChangeDescriptionHeight(propertyGrid1);
+				propertyGrid1.AdjustDescriptionHeightToFit();
 			}
 			else
 			{
@@ -45,7 +45,7 @@ namespace BizHawk.Client.EmuHawk
 			if (_ss != null)
 			{
 				propertyGrid2.SelectedObject = _ss;
-				ChangeDescriptionHeight(propertyGrid2);
+				propertyGrid2.AdjustDescriptionHeightToFit();
 			}
 			else
 			{
@@ -55,38 +55,6 @@ namespace BizHawk.Client.EmuHawk
 			if (_mainForm.MovieSession.Movie.IsActive())
 			{
 				propertyGrid2.Enabled = false; // disable changes to sync setting when movie, so as not to confuse user
-			}
-		}
-
-		private static void ChangeDescriptionHeight(PropertyGrid grid)
-		{
-			if (grid == null)
-			{
-				throw new ArgumentNullException(nameof(grid));
-			}
-
-			int maxLength = 0;
-			string desc = "";
-
-			foreach (PropertyDescriptor property in TypeDescriptor.GetProperties(grid.SelectedObject))
-			{
-				if (property.Description?.Length > maxLength)
-				{
-					maxLength = property.Description.Length;
-					desc = property.Description;
-				}
-			}
-
-			foreach (Control control in grid.Controls)
-			{
-				if (control.GetType().Name == "DocComment")
-				{
-					FieldInfo field = control.GetType().GetField("userSized", BindingFlags.Instance | BindingFlags.NonPublic);
-					field?.SetValue(control, true);
-					int height = (int)System.Drawing.Graphics.FromHwnd(control.Handle).MeasureString(desc, control.Font, grid.Width).Height;
-					control.Height = Math.Max(20, height) + 16; // magic for now
-					return;
-				}
 			}
 		}
 
