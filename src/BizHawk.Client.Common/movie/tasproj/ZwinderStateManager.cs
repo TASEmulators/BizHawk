@@ -281,10 +281,11 @@ namespace BizHawk.Client.Common
 				return;
 			}
 
-			bool currentCaptured =_current.Capture(frame,
+			_current.Capture(frame,
 				s =>
 				{
 					source.SaveStateBinary(new BinaryWriter(s));
+					StateCache.Add(frame);
 				},
 				index =>
 				{
@@ -298,10 +299,11 @@ namespace BizHawk.Client.Common
 						return;
 					}
 
-					bool recentCaptured = _recent.Capture(state.Frame,
+					_recent.Capture(state.Frame,
 						s =>
 						{
 							state.GetReadStream().CopyTo(s);
+							StateCache.Add(state.Frame);
 						},
 						index2 => 
 						{
@@ -316,12 +318,8 @@ namespace BizHawk.Client.Common
 								AddToReserved(state2);
 							}
 						});
-					if (recentCaptured)
-						StateCache.Add(state.Frame);
 				},
 				force);
-			if (currentCaptured)
-				StateCache.Add(frame);
 		}
 
 		// Returns whether or not a frame has a reserved state within the frame interval on either side of it
@@ -358,14 +356,13 @@ namespace BizHawk.Client.Common
 
 		private void CaptureGap(int frame, IStatable source)
 		{
-			bool captured = _gapFiller.Capture(
+			_gapFiller.Capture(
 				frame, s =>
 				{
+					StateCache.Add(frame);
 					source.SaveStateBinary(new BinaryWriter(s));
 				},
 				index => StateCache.Remove(index));
-			if (captured)
-				StateCache.Add(frame);
 		}
 
 		public void Clear()
