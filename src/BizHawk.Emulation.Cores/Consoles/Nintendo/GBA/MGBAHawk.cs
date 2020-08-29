@@ -139,10 +139,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				(short)controller.AxisValue("Tilt Z"),
 				(byte)(255 - controller.AxisValue("Light Sensor")));
 
-			//autodetection may have progressed.
-			//this isn't a great time to do it, but we have to do it some time. maybe it's the best time.
-			WireMemoryDomainPointers_SaveRam();
-
 			if (IsLagFrame)
 			{
 				LagCount++;

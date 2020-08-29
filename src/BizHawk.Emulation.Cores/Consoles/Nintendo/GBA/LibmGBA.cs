@@ -111,7 +111,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			public IntPtr oam;
 			public IntPtr rom;
 			public IntPtr sram;
-			public int sram_size;
 		}
 
 		[BizImport(cc, Compatibility = true)]
