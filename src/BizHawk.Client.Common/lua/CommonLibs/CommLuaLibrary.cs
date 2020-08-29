@@ -247,6 +247,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+#if ENABLE_WEBSOCKETS
 		[LuaMethod("ws_open", "Opens a websocket and returns the id so that it can be retrieved later.")]
 		[LuaMethodExample("local ws_id = comm.ws_open(\"wss://echo.websocket.org\");")]
 		public string WebSocketOpen(string uri)
@@ -287,5 +288,6 @@ namespace BizHawk.Client.Common
 		{
 			if (_websockets.TryGetValue(Guid.Parse(guid), out var wrapper)) wrapper.Close(status, closeMessage);
 		}
+#endif
 	}
 }
