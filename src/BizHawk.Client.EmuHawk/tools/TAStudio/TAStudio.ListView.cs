@@ -224,7 +224,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TasView_QueryItemBkColor(int index, RollColumn column, ref Color color)
 		{
-			if (!_engaged)
+			if (!_engaged || _initializing)
 			{
 				return;
 			}
@@ -271,7 +271,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TasView_QueryRowBkColor(int index, ref Color color)
 		{
-			if (!_engaged)
+			if (!_engaged || _initializing)
 			{
 				return;
 			}
@@ -315,7 +315,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TasView_QueryItemText(int index, RollColumn column, out string text, ref int offsetX, ref int offsetY)
 		{
-			if (!_engaged)
+			if (!_engaged || _initializing)
 			{
 				text = "";
 				return;
