@@ -334,5 +334,35 @@ namespace BizHawk.Client.EmuHawk
 
 		public static bool IsCtrlShift(this KeyEventArgs e, Keys key)
 			=> !e.Alt && e.Control && e.Shift && e.KeyCode == key;
+
+		// For inexplicable reasons, property grid does not expose a way to do this
+		// https://www.codeproject.com/Articles/28193/Change-the-height-of-a-PropertyGrid-s-description?msg=3379905#xx3379905xx
+		public static void SetDescriptionRowHeight(this PropertyGrid grid, int numRows)
+		{
+			try
+			{
+				var controlsProp = grid.GetType().GetProperty("Controls");
+				var controlsCollection = (Control.ControlCollection)controlsProp.GetValue(grid, null);
+
+				foreach(Control c in controlsCollection)
+				{
+					Type ct = c.GetType();
+					string sName = ct.Name;
+
+					if (sName == "DocComment")
+					{
+						var controlsProp2 = ct.GetProperty("Lines");
+						controlsProp2.SetValue(c, numRows, null);
+
+						FieldInfo fi = ct.BaseType.GetField("userSized", BindingFlags.Instance | BindingFlags.NonPublic);
+						fi.SetValue(c, true);
+					}
+				}
+			 }
+			 catch (Exception ex)
+			 {
+				// Eat it
+			 }
+		}
 	}
 }

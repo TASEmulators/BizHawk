@@ -24,6 +24,11 @@ namespace BizHawk.Client.EmuHawk
 			SettingsPropertyGrid.SelectedObject = _settings;
 		}
 
+		private void GreenzoneSettings_Load(object sender, EventArgs e)
+		{
+			SettingsPropertyGrid.SetDescriptionRowHeight(9);
+		}
+
 		private void OkBtn_Click(object sender, EventArgs e)
 		{
 			bool keep = false;

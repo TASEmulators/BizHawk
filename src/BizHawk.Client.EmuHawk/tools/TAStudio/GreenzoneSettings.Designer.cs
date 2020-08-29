@@ -37,7 +37,7 @@
 			// OkBtn
 			// 
 			this.OkBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.OkBtn.Location = new System.Drawing.Point(227, 266);
+			this.OkBtn.Location = new System.Drawing.Point(227, 333);
 			this.OkBtn.Name = "OkBtn";
 			this.OkBtn.Size = new System.Drawing.Size(60, 23);
 			this.OkBtn.TabIndex = 3;
@@ -49,7 +49,7 @@
 			// 
 			this.CancelBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.CancelBtn.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.CancelBtn.Location = new System.Drawing.Point(293, 266);
+			this.CancelBtn.Location = new System.Drawing.Point(293, 333);
 			this.CancelBtn.Name = "CancelBtn";
 			this.CancelBtn.Size = new System.Drawing.Size(60, 23);
 			this.CancelBtn.TabIndex = 2;
@@ -60,7 +60,7 @@
 			// DefaultsButton
 			// 
 			this.DefaultsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.DefaultsButton.Location = new System.Drawing.Point(12, 266);
+			this.DefaultsButton.Location = new System.Drawing.Point(12, 333);
 			this.DefaultsButton.Name = "DefaultsButton";
 			this.DefaultsButton.Size = new System.Drawing.Size(101, 23);
 			this.DefaultsButton.TabIndex = 4;
@@ -76,7 +76,7 @@
 			this.SettingsPropertyGrid.Location = new System.Drawing.Point(12, 8);
 			this.SettingsPropertyGrid.Name = "SettingsPropertyGrid";
 			this.SettingsPropertyGrid.PropertySort = System.Windows.Forms.PropertySort.NoSort;
-			this.SettingsPropertyGrid.Size = new System.Drawing.Size(341, 252);
+			this.SettingsPropertyGrid.Size = new System.Drawing.Size(341, 319);
 			this.SettingsPropertyGrid.TabIndex = 5;
 			this.SettingsPropertyGrid.ToolbarVisible = false;
 			// 
@@ -86,7 +86,7 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.CancelBtn;
-			this.ClientSize = new System.Drawing.Size(400, 301);
+			this.ClientSize = new System.Drawing.Size(400, 368);
 			this.Controls.Add(this.SettingsPropertyGrid);
 			this.Controls.Add(this.DefaultsButton);
 			this.Controls.Add(this.OkBtn);
@@ -94,6 +94,7 @@
 			this.Name = "GreenzoneSettings";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
 			this.Text = "Default Savestate History Settings";
+			this.Load += new System.EventHandler(this.GreenzoneSettings_Load);
 			this.ResumeLayout(false);
 
 		}
