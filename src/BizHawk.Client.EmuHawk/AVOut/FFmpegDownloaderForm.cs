@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -18,6 +19,8 @@ namespace BizHawk.Client.EmuHawk
 
 			txtLocation.Text = FFmpegService.FFmpegPath;
 			txtUrl.Text = FFmpegService.Url;
+
+			if (OSTailoredCode.IsUnixHost) textBox1.Text = string.Join("\n", textBox1.Text.Split('\n').Take(3)) + $"\n\n(Linux user: Create a symlink with the below filename pointing to the ffmpeg binary with version {FFmpegService.Version}.)";
 		}
 
 		int pct = 0;

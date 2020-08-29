@@ -130,7 +130,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			GlobalWin.Config.ResolveDefaults();
-			FFmpegService.FFmpegPath = Path.Combine(PathUtils.DllDirectoryPath, "ffmpeg.exe");
+			FFmpegService.FFmpegPath = Path.Combine(PathUtils.DllDirectoryPath, OSTC.IsUnixHost ? "ffmpeg" : "ffmpeg.exe");
 
 			StringLogUtil.DefaultToDisk = GlobalWin.Config.Movies.MoviesOnDisk;
 
