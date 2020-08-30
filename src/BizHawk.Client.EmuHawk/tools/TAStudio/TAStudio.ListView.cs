@@ -843,7 +843,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						// If painting up, we have altered frames without loading states (for smoothness)
 						// So now we have to ensure that all the edited frames are invalidated
-						if (CurrentTasMovie.LastEditedFrame < Emulator.Frame)
+						if (_paintingMinFrame < Emulator.Frame)
 						{
 							GoToFrame(_paintingMinFrame);
 						}
