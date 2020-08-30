@@ -3,9 +3,8 @@
 A multi-system emulator written in C#. As well as quality-of-life features for casual players, it also has recording/playback and debugging tools, making it the first choice for TASers (Tool-Assisted Speedrunners).
 
 [![(latest) release | GitHub](https://img.shields.io/github/release/TASVideos/BizHawk.svg?logo=github&logoColor=333333&style=popout)](https://github.com/TASVideos/BizHawk/releases/latest)
-[![recent dev builds | AppVeyor](https://img.shields.io/badge/recent_dev_builds-AppVeyor-orange.svg?logo=appveyor&logoColor=333333&style=popout)](https://ci.appveyor.com/project/zeromus/bizhawk-udexo/history)
-[![recent dev builds | GitLab CI](https://img.shields.io/badge/recent_dev_builds-GitLab_CI-orange.svg?logo=gitlab&logoColor=333333&style=popout)](https://gitlab.com/TASVideos/BizHawk/pipelines)
-[![latest build of master | GitLab CI](https://img.shields.io/badge/latest_build_of_master-GitLab_CI-orange.svg?logo=gitlab&logoColor=333333&style=popout)](https://gitlab.com/TASVideos/BizHawk/pipelines/master/latest)
+[![latest dev build | AppVeyor](https://img.shields.io/badge/latest_dev_build-AppVeyor-orange.svg?logo=appveyor&logoColor=333333&style=popout)](https://ci.appveyor.com/project/zeromus/bizhawk-udexo/build/artifaces)
+[![latest dev build | GitLab CI](https://img.shields.io/badge/latest_dev_build-GitLab_CI-orange.svg?logo=gitlab&style=popout)](https://gitlab.com/TASVideos/BizHawk/pipelines/master/latest)
 [![GitHub open issues counter](https://img.shields.io/github/issues-raw/TASVideos/BizHawk.svg?logo=github&logoColor=333333&style=popout)](https://github.com/TASVideos/BizHawk/issues)
 
 ---
@@ -140,8 +139,9 @@ EmuHawk depends on certain libraries for graphics, and these don't work on macOS
 Development builds are made automatically whenever someone contributes. Because of this, we recommend using a release for work that requires stability (such as TASing), and only switching to a dev build if there's a specific change or addition you need.
 
 [![recent dev builds | AppVeyor](https://img.shields.io/badge/recent_dev_builds-AppVeyor-orange.svg?logo=appveyor&logoColor=333333&style=popout)](https://ci.appveyor.com/project/zeromus/bizhawk-udexo/history)
-[![recent dev builds | GitLab CI](https://img.shields.io/badge/recent_dev_builds-GitLab_CI-orange.svg?logo=gitlab&logoColor=333333&style=popout)](https://gitlab.com/TASVideos/BizHawk/pipelines)
-[![latest build of master | GitLab CI](https://img.shields.io/badge/latest_build_of_master-GitLab_CI-orange.svg?logo=gitlab&logoColor=333333&style=popout)](https://gitlab.com/TASVideos/BizHawk/pipelines/master/latest)
+[![recent dev builds | GitLab CI](https://img.shields.io/badge/recent_dev_builds-GitLab_CI-orange.svg?logo=gitlab&style=popout)](https://gitlab.com/TASVideos/BizHawk/pipelines)
+[![latest dev build | AppVeyor](https://img.shields.io/badge/latest_dev_build-AppVeyor-orange.svg?logo=appveyor&logoColor=333333&style=popout)](https://ci.appveyor.com/project/zeromus/bizhawk-udexo/build/artifaces)
+[![latest dev build | GitLab CI](https://img.shields.io/badge/latest_dev_build-GitLab_CI-orange.svg?logo=gitlab&style=popout)](https://gitlab.com/TASVideos/BizHawk/pipelines/master/latest)
 
 Click one of the buttons above to download a dev build (they're also at the top of this readme). AppVeyor uses Windows and GitLab CI uses Linux, but they work all the same.
 * On the AppVeyor page for a Build, click "Artifacts", then `BizHawk_Developer-<datetime>-#<long hexadecimal>.zip`.
