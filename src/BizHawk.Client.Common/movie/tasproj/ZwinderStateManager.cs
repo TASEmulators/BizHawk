@@ -356,6 +356,16 @@ namespace BizHawk.Client.Common
 
 		private void CaptureGap(int frame, IStatable source)
 		{
+			// We need to do this here for the following scenario
+			// We are currently far enough in the game that there is a large "ancient interval" section
+			// The user navigates to a frame after ancient interval 2, replay happens and we start filling gaps
+			// Then the user, still without having made an edit, navigates to a frame before ancient interval 2, but after ancient interval 1
+			// Without this logic, we end up with out of order states
+			if (_gapFiller.Count > 0 && frame < GapStates().First().Frame)
+			{
+				InvalidateGaps(frame);
+			}
+
 			_gapFiller.Capture(
 				frame, s =>
 				{
@@ -395,8 +405,12 @@ namespace BizHawk.Client.Common
 		{
 			for (var i = 0; i < _gapFiller.Count; i++)
 			{
-				if (_gapFiller.GetState(i).Frame > frame)
+				var state = _gapFiller.GetState(i);
+				if (state.Frame > frame)
 				{
+					var last = GapStates().First();
+					StateCache.RemoveWhere(s => s >= state.Frame && s <= last.Frame); // TODO: be consistent, other invalidate methods do not touch cache and it is addressed in the public InvalidateAfter
+
 					_gapFiller.InvalidateEnd(i);
 					return true;
 				}
