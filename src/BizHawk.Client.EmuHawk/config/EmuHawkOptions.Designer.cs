@@ -33,6 +33,25 @@
             this.CancelBtn = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.HandleAlternateKeyboardLayoutsCheckBox = new System.Windows.Forms.CheckBox();
+            this.NeverAskSaveCheckbox = new System.Windows.Forms.CheckBox();
+            this.label2 = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.AcceptBackgroundInputCheckbox = new System.Windows.Forms.CheckBox();
+            this.AcceptBackgroundInputControllerOnlyCheckBox = new System.Windows.Forms.CheckBox();
+            this.label1 = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.RunInBackgroundCheckbox = new System.Windows.Forms.CheckBox();
+            this.SaveWindowPositionCheckbox = new System.Windows.Forms.CheckBox();
+            this.EnableContextMenuCheckbox = new System.Windows.Forms.CheckBox();
+            this.PauseWhenMenuActivatedCheckbox = new System.Windows.Forms.CheckBox();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.rbInputMethodOpenTK = new System.Windows.Forms.RadioButton();
+            this.rbInputMethodDirectInput = new System.Windows.Forms.RadioButton();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.StartPausedCheckbox = new System.Windows.Forms.CheckBox();
+            this.label14 = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.StartFullScreenCheckbox = new System.Windows.Forms.CheckBox();
+            this.label3 = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.SingleInstanceModeCheckbox = new System.Windows.Forms.CheckBox();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.label10 = new BizHawk.WinForms.Controls.LocLabelEx();
@@ -57,33 +76,15 @@
             this.FrameAdvSkipLagCheckbox = new System.Windows.Forms.CheckBox();
             this.BackupSRamCheckbox = new System.Windows.Forms.CheckBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.rbInputMethodOpenTK = new System.Windows.Forms.RadioButton();
-            this.rbInputMethodDirectInput = new System.Windows.Forms.RadioButton();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.StartPausedCheckbox = new System.Windows.Forms.CheckBox();
-            this.label14 = new BizHawk.WinForms.Controls.LocLabelEx();
-            this.StartFullScreenCheckbox = new System.Windows.Forms.CheckBox();
-            this.label3 = new BizHawk.WinForms.Controls.LocLabelEx();
-            this.SingleInstanceModeCheckbox = new System.Windows.Forms.CheckBox();
-            this.HandleAlternateKeyboardLayoutsCheckBox = new System.Windows.Forms.CheckBox();
-            this.NeverAskSaveCheckbox = new System.Windows.Forms.CheckBox();
-            this.label2 = new BizHawk.WinForms.Controls.LocLabelEx();
-            this.AcceptBackgroundInputCheckbox = new System.Windows.Forms.CheckBox();
-            this.AcceptBackgroundInputControllerOnlyCheckBox = new System.Windows.Forms.CheckBox();
-            this.label1 = new BizHawk.WinForms.Controls.LocLabelEx();
-            this.RunInBackgroundCheckbox = new System.Windows.Forms.CheckBox();
-            this.SaveWindowPositionCheckbox = new System.Windows.Forms.CheckBox();
-            this.EnableContextMenuCheckbox = new System.Windows.Forms.CheckBox();
-            this.PauseWhenMenuActivatedCheckbox = new System.Windows.Forms.CheckBox();
+            this.EnableRPC = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            this.groupBox3.SuspendLayout();
+            this.groupBox1.SuspendLayout();
             this.tabPage3.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.AutosaveSRAMtextBox)).BeginInit();
             this.panel1.SuspendLayout();
-            this.groupBox3.SuspendLayout();
-            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // OkBtn
@@ -124,6 +125,7 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.EnableRPC);
             this.tabPage1.Controls.Add(this.HandleAlternateKeyboardLayoutsCheckBox);
             this.tabPage1.Controls.Add(this.NeverAskSaveCheckbox);
             this.tabPage1.Controls.Add(this.label2);
@@ -143,6 +145,188 @@
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "General";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // HandleAlternateKeyboardLayoutsCheckBox
+            // 
+            this.HandleAlternateKeyboardLayoutsCheckBox.AutoSize = true;
+            this.HandleAlternateKeyboardLayoutsCheckBox.Location = new System.Drawing.Point(7, 147);
+            this.HandleAlternateKeyboardLayoutsCheckBox.Name = "HandleAlternateKeyboardLayoutsCheckBox";
+            this.HandleAlternateKeyboardLayoutsCheckBox.Size = new System.Drawing.Size(320, 17);
+            this.HandleAlternateKeyboardLayoutsCheckBox.TabIndex = 26;
+            this.HandleAlternateKeyboardLayoutsCheckBox.Text = "Handle alternate keyboard layouts (e.g. Dvorak) [experimental]";
+            this.HandleAlternateKeyboardLayoutsCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // NeverAskSaveCheckbox
+            // 
+            this.NeverAskSaveCheckbox.AutoSize = true;
+            this.NeverAskSaveCheckbox.Location = new System.Drawing.Point(6, 29);
+            this.NeverAskSaveCheckbox.Name = "NeverAskSaveCheckbox";
+            this.NeverAskSaveCheckbox.Size = new System.Drawing.Size(184, 17);
+            this.NeverAskSaveCheckbox.TabIndex = 20;
+            this.NeverAskSaveCheckbox.Text = "Never be asked to save changes";
+            this.NeverAskSaveCheckbox.UseVisualStyleBackColor = true;
+            // 
+            // label2
+            // 
+            this.label2.Location = new System.Drawing.Point(26, 112);
+            this.label2.Name = "label2";
+            this.label2.Text = "When this is set, the client will receive user input even when focus is lost";
+            // 
+            // AcceptBackgroundInputCheckbox
+            // 
+            this.AcceptBackgroundInputCheckbox.AutoSize = true;
+            this.AcceptBackgroundInputCheckbox.Location = new System.Drawing.Point(6, 92);
+            this.AcceptBackgroundInputCheckbox.Name = "AcceptBackgroundInputCheckbox";
+            this.AcceptBackgroundInputCheckbox.Size = new System.Drawing.Size(146, 17);
+            this.AcceptBackgroundInputCheckbox.TabIndex = 23;
+            this.AcceptBackgroundInputCheckbox.Text = "Accept background input";
+            this.AcceptBackgroundInputCheckbox.UseVisualStyleBackColor = true;
+            // 
+            // AcceptBackgroundInputControllerOnlyCheckBox
+            // 
+            this.AcceptBackgroundInputControllerOnlyCheckBox.AutoSize = true;
+            this.AcceptBackgroundInputControllerOnlyCheckBox.Enabled = false;
+            this.AcceptBackgroundInputControllerOnlyCheckBox.Location = new System.Drawing.Point(156, 92);
+            this.AcceptBackgroundInputControllerOnlyCheckBox.Name = "AcceptBackgroundInputControllerOnlyCheckBox";
+            this.AcceptBackgroundInputControllerOnlyCheckBox.Size = new System.Drawing.Size(117, 17);
+            this.AcceptBackgroundInputControllerOnlyCheckBox.TabIndex = 24;
+            this.AcceptBackgroundInputControllerOnlyCheckBox.Text = "From controller only";
+            this.AcceptBackgroundInputControllerOnlyCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // label1
+            // 
+            this.label1.Location = new System.Drawing.Point(26, 72);
+            this.label1.Name = "label1";
+            this.label1.Text = "When this is set, the client will continue to run when it loses focus";
+            // 
+            // RunInBackgroundCheckbox
+            // 
+            this.RunInBackgroundCheckbox.AutoSize = true;
+            this.RunInBackgroundCheckbox.Location = new System.Drawing.Point(6, 52);
+            this.RunInBackgroundCheckbox.Name = "RunInBackgroundCheckbox";
+            this.RunInBackgroundCheckbox.Size = new System.Drawing.Size(117, 17);
+            this.RunInBackgroundCheckbox.TabIndex = 21;
+            this.RunInBackgroundCheckbox.Text = "Run in background";
+            this.RunInBackgroundCheckbox.UseVisualStyleBackColor = true;
+            // 
+            // SaveWindowPositionCheckbox
+            // 
+            this.SaveWindowPositionCheckbox.AutoSize = true;
+            this.SaveWindowPositionCheckbox.Location = new System.Drawing.Point(196, 29);
+            this.SaveWindowPositionCheckbox.Name = "SaveWindowPositionCheckbox";
+            this.SaveWindowPositionCheckbox.Size = new System.Drawing.Size(133, 17);
+            this.SaveWindowPositionCheckbox.TabIndex = 19;
+            this.SaveWindowPositionCheckbox.Text = "Save Window Position";
+            this.SaveWindowPositionCheckbox.UseVisualStyleBackColor = true;
+            // 
+            // EnableContextMenuCheckbox
+            // 
+            this.EnableContextMenuCheckbox.AutoSize = true;
+            this.EnableContextMenuCheckbox.Location = new System.Drawing.Point(196, 6);
+            this.EnableContextMenuCheckbox.Name = "EnableContextMenuCheckbox";
+            this.EnableContextMenuCheckbox.Size = new System.Drawing.Size(128, 17);
+            this.EnableContextMenuCheckbox.TabIndex = 18;
+            this.EnableContextMenuCheckbox.Text = "Enable Context Menu";
+            this.EnableContextMenuCheckbox.UseVisualStyleBackColor = true;
+            // 
+            // PauseWhenMenuActivatedCheckbox
+            // 
+            this.PauseWhenMenuActivatedCheckbox.AutoSize = true;
+            this.PauseWhenMenuActivatedCheckbox.Location = new System.Drawing.Point(6, 6);
+            this.PauseWhenMenuActivatedCheckbox.Name = "PauseWhenMenuActivatedCheckbox";
+            this.PauseWhenMenuActivatedCheckbox.Size = new System.Drawing.Size(161, 17);
+            this.PauseWhenMenuActivatedCheckbox.TabIndex = 17;
+            this.PauseWhenMenuActivatedCheckbox.Text = "Pause when menu activated";
+            this.PauseWhenMenuActivatedCheckbox.UseVisualStyleBackColor = true;
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.rbInputMethodOpenTK);
+            this.groupBox3.Controls.Add(this.rbInputMethodDirectInput);
+            this.groupBox3.Location = new System.Drawing.Point(6, 170);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(369, 48);
+            this.groupBox3.TabIndex = 16;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Input Method (requires restart)";
+            // 
+            // rbInputMethodOpenTK
+            // 
+            this.rbInputMethodOpenTK.AutoSize = true;
+            this.rbInputMethodOpenTK.Location = new System.Drawing.Point(136, 19);
+            this.rbInputMethodOpenTK.Name = "rbInputMethodOpenTK";
+            this.rbInputMethodOpenTK.Size = new System.Drawing.Size(65, 17);
+            this.rbInputMethodOpenTK.TabIndex = 1;
+            this.rbInputMethodOpenTK.TabStop = true;
+            this.rbInputMethodOpenTK.Text = "OpenTK";
+            this.rbInputMethodOpenTK.UseVisualStyleBackColor = true;
+            // 
+            // rbInputMethodDirectInput
+            // 
+            this.rbInputMethodDirectInput.AutoSize = true;
+            this.rbInputMethodDirectInput.Location = new System.Drawing.Point(7, 20);
+            this.rbInputMethodDirectInput.Name = "rbInputMethodDirectInput";
+            this.rbInputMethodDirectInput.Size = new System.Drawing.Size(114, 17);
+            this.rbInputMethodDirectInput.TabIndex = 0;
+            this.rbInputMethodDirectInput.TabStop = true;
+            this.rbInputMethodDirectInput.Text = "DirectInput+XInput";
+            this.rbInputMethodDirectInput.UseVisualStyleBackColor = true;
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.StartPausedCheckbox);
+            this.groupBox1.Controls.Add(this.label14);
+            this.groupBox1.Controls.Add(this.StartFullScreenCheckbox);
+            this.groupBox1.Controls.Add(this.label3);
+            this.groupBox1.Controls.Add(this.SingleInstanceModeCheckbox);
+            this.groupBox1.Location = new System.Drawing.Point(6, 224);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(369, 121);
+            this.groupBox1.TabIndex = 15;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Startup Options";
+            // 
+            // StartPausedCheckbox
+            // 
+            this.StartPausedCheckbox.AutoSize = true;
+            this.StartPausedCheckbox.Location = new System.Drawing.Point(6, 19);
+            this.StartPausedCheckbox.Name = "StartPausedCheckbox";
+            this.StartPausedCheckbox.Size = new System.Drawing.Size(86, 17);
+            this.StartPausedCheckbox.TabIndex = 2;
+            this.StartPausedCheckbox.Text = "Start paused";
+            this.StartPausedCheckbox.UseVisualStyleBackColor = true;
+            // 
+            // label14
+            // 
+            this.label14.Location = new System.Drawing.Point(26, 99);
+            this.label14.Name = "label14";
+            this.label14.Text = "Note: Requires closing and reopening EmuHawk to take effect.";
+            // 
+            // StartFullScreenCheckbox
+            // 
+            this.StartFullScreenCheckbox.AutoSize = true;
+            this.StartFullScreenCheckbox.Location = new System.Drawing.Point(6, 42);
+            this.StartFullScreenCheckbox.Name = "StartFullScreenCheckbox";
+            this.StartFullScreenCheckbox.Size = new System.Drawing.Size(110, 17);
+            this.StartFullScreenCheckbox.TabIndex = 3;
+            this.StartFullScreenCheckbox.Text = "Start in Fullscreen";
+            this.StartFullScreenCheckbox.UseVisualStyleBackColor = true;
+            // 
+            // label3
+            // 
+            this.label3.Location = new System.Drawing.Point(26, 85);
+            this.label3.Name = "label3";
+            this.label3.Text = "Enable to force only one instance of EmuHawk at a time.";
+            // 
+            // SingleInstanceModeCheckbox
+            // 
+            this.SingleInstanceModeCheckbox.AutoSize = true;
+            this.SingleInstanceModeCheckbox.Location = new System.Drawing.Point(6, 65);
+            this.SingleInstanceModeCheckbox.Name = "SingleInstanceModeCheckbox";
+            this.SingleInstanceModeCheckbox.Size = new System.Drawing.Size(127, 17);
+            this.SingleInstanceModeCheckbox.TabIndex = 10;
+            this.SingleInstanceModeCheckbox.Text = "Single instance mode";
+            this.SingleInstanceModeCheckbox.UseVisualStyleBackColor = true;
             // 
             // tabPage3
             // 
@@ -369,187 +553,15 @@
             this.BackupSRamCheckbox.Text = "Backup SaveRAM to .SaveRAM.bak";
             this.BackupSRamCheckbox.UseVisualStyleBackColor = true;
             // 
-            // groupBox3
+            // EnableRPC
             // 
-            this.groupBox3.Controls.Add(this.rbInputMethodOpenTK);
-            this.groupBox3.Controls.Add(this.rbInputMethodDirectInput);
-            this.groupBox3.Location = new System.Drawing.Point(6, 151);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(369, 48);
-            this.groupBox3.TabIndex = 16;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Input Method (requires restart)";
-            // 
-            // rbInputMethodOpenTK
-            // 
-            this.rbInputMethodOpenTK.AutoSize = true;
-            this.rbInputMethodOpenTK.Location = new System.Drawing.Point(136, 19);
-            this.rbInputMethodOpenTK.Name = "rbInputMethodOpenTK";
-            this.rbInputMethodOpenTK.Size = new System.Drawing.Size(65, 17);
-            this.rbInputMethodOpenTK.TabIndex = 1;
-            this.rbInputMethodOpenTK.TabStop = true;
-            this.rbInputMethodOpenTK.Text = "OpenTK";
-            this.rbInputMethodOpenTK.UseVisualStyleBackColor = true;
-            // 
-            // rbInputMethodDirectInput
-            // 
-            this.rbInputMethodDirectInput.AutoSize = true;
-            this.rbInputMethodDirectInput.Location = new System.Drawing.Point(7, 20);
-            this.rbInputMethodDirectInput.Name = "rbInputMethodDirectInput";
-            this.rbInputMethodDirectInput.Size = new System.Drawing.Size(114, 17);
-            this.rbInputMethodDirectInput.TabIndex = 0;
-            this.rbInputMethodDirectInput.TabStop = true;
-            this.rbInputMethodDirectInput.Text = "DirectInput+XInput";
-            this.rbInputMethodDirectInput.UseVisualStyleBackColor = true;
-            // 
-            // groupBox1
-            // 
-            this.groupBox1.Controls.Add(this.StartPausedCheckbox);
-            this.groupBox1.Controls.Add(this.label14);
-            this.groupBox1.Controls.Add(this.StartFullScreenCheckbox);
-            this.groupBox1.Controls.Add(this.label3);
-            this.groupBox1.Controls.Add(this.SingleInstanceModeCheckbox);
-            this.groupBox1.Location = new System.Drawing.Point(6, 205);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(369, 121);
-            this.groupBox1.TabIndex = 15;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Startup Options";
-            // 
-            // StartPausedCheckbox
-            // 
-            this.StartPausedCheckbox.AutoSize = true;
-            this.StartPausedCheckbox.Location = new System.Drawing.Point(6, 19);
-            this.StartPausedCheckbox.Name = "StartPausedCheckbox";
-            this.StartPausedCheckbox.Size = new System.Drawing.Size(86, 17);
-            this.StartPausedCheckbox.TabIndex = 2;
-            this.StartPausedCheckbox.Text = "Start paused";
-            this.StartPausedCheckbox.UseVisualStyleBackColor = true;
-            // 
-            // label14
-            // 
-            this.label14.Location = new System.Drawing.Point(26, 99);
-            this.label14.Name = "label14";
-            this.label14.Text = "Note: Requires closing and reopening EmuHawk to take effect.";
-            // 
-            // StartFullScreenCheckbox
-            // 
-            this.StartFullScreenCheckbox.AutoSize = true;
-            this.StartFullScreenCheckbox.Location = new System.Drawing.Point(6, 42);
-            this.StartFullScreenCheckbox.Name = "StartFullScreenCheckbox";
-            this.StartFullScreenCheckbox.Size = new System.Drawing.Size(110, 17);
-            this.StartFullScreenCheckbox.TabIndex = 3;
-            this.StartFullScreenCheckbox.Text = "Start in Fullscreen";
-            this.StartFullScreenCheckbox.UseVisualStyleBackColor = true;
-            // 
-            // label3
-            // 
-            this.label3.Location = new System.Drawing.Point(26, 85);
-            this.label3.Name = "label3";
-            this.label3.Text = "Enable to force only one instance of EmuHawk at a time.";
-            // 
-            // SingleInstanceModeCheckbox
-            // 
-            this.SingleInstanceModeCheckbox.AutoSize = true;
-            this.SingleInstanceModeCheckbox.Location = new System.Drawing.Point(6, 65);
-            this.SingleInstanceModeCheckbox.Name = "SingleInstanceModeCheckbox";
-            this.SingleInstanceModeCheckbox.Size = new System.Drawing.Size(127, 17);
-            this.SingleInstanceModeCheckbox.TabIndex = 10;
-            this.SingleInstanceModeCheckbox.Text = "Single instance mode";
-            this.SingleInstanceModeCheckbox.UseVisualStyleBackColor = true;
-            // 
-            // HandleAlternateKeyboardLayoutsCheckBox
-            // 
-            this.HandleAlternateKeyboardLayoutsCheckBox.AutoSize = true;
-            this.HandleAlternateKeyboardLayoutsCheckBox.Location = new System.Drawing.Point(7, 128);
-            this.HandleAlternateKeyboardLayoutsCheckBox.Name = "HandleAlternateKeyboardLayoutsCheckBox";
-            this.HandleAlternateKeyboardLayoutsCheckBox.Size = new System.Drawing.Size(320, 17);
-            this.HandleAlternateKeyboardLayoutsCheckBox.TabIndex = 26;
-            this.HandleAlternateKeyboardLayoutsCheckBox.Text = "Handle alternate keyboard layouts (e.g. Dvorak) [experimental]";
-            this.HandleAlternateKeyboardLayoutsCheckBox.UseVisualStyleBackColor = true;
-            // 
-            // NeverAskSaveCheckbox
-            // 
-            this.NeverAskSaveCheckbox.AutoSize = true;
-            this.NeverAskSaveCheckbox.Location = new System.Drawing.Point(6, 29);
-            this.NeverAskSaveCheckbox.Name = "NeverAskSaveCheckbox";
-            this.NeverAskSaveCheckbox.Size = new System.Drawing.Size(184, 17);
-            this.NeverAskSaveCheckbox.TabIndex = 20;
-            this.NeverAskSaveCheckbox.Text = "Never be asked to save changes";
-            this.NeverAskSaveCheckbox.UseVisualStyleBackColor = true;
-            // 
-            // label2
-            // 
-            this.label2.Location = new System.Drawing.Point(26, 112);
-            this.label2.Name = "label2";
-            this.label2.Text = "When this is set, the client will receive user input even when focus is lost";
-            // 
-            // AcceptBackgroundInputCheckbox
-            // 
-            this.AcceptBackgroundInputCheckbox.AutoSize = true;
-            this.AcceptBackgroundInputCheckbox.Location = new System.Drawing.Point(6, 92);
-            this.AcceptBackgroundInputCheckbox.Name = "AcceptBackgroundInputCheckbox";
-            this.AcceptBackgroundInputCheckbox.Size = new System.Drawing.Size(146, 17);
-            this.AcceptBackgroundInputCheckbox.TabIndex = 23;
-            this.AcceptBackgroundInputCheckbox.Text = "Accept background input";
-            this.AcceptBackgroundInputCheckbox.UseVisualStyleBackColor = true;
-            // 
-            // AcceptBackgroundInputControllerOnlyCheckBox
-            // 
-            this.AcceptBackgroundInputControllerOnlyCheckBox.AutoSize = true;
-            this.AcceptBackgroundInputControllerOnlyCheckBox.Enabled = false;
-            this.AcceptBackgroundInputControllerOnlyCheckBox.Location = new System.Drawing.Point(156, 92);
-            this.AcceptBackgroundInputControllerOnlyCheckBox.Name = "AcceptBackgroundInputControllerOnlyCheckBox";
-            this.AcceptBackgroundInputControllerOnlyCheckBox.Size = new System.Drawing.Size(117, 17);
-            this.AcceptBackgroundInputControllerOnlyCheckBox.TabIndex = 24;
-            this.AcceptBackgroundInputControllerOnlyCheckBox.Text = "From controller only";
-            this.AcceptBackgroundInputControllerOnlyCheckBox.UseVisualStyleBackColor = true;
-            // 
-            // label1
-            // 
-            this.label1.Location = new System.Drawing.Point(26, 72);
-            this.label1.Name = "label1";
-            this.label1.Text = "When this is set, the client will continue to run when it loses focus";
-            // 
-            // RunInBackgroundCheckbox
-            // 
-            this.RunInBackgroundCheckbox.AutoSize = true;
-            this.RunInBackgroundCheckbox.Location = new System.Drawing.Point(6, 52);
-            this.RunInBackgroundCheckbox.Name = "RunInBackgroundCheckbox";
-            this.RunInBackgroundCheckbox.Size = new System.Drawing.Size(117, 17);
-            this.RunInBackgroundCheckbox.TabIndex = 21;
-            this.RunInBackgroundCheckbox.Text = "Run in background";
-            this.RunInBackgroundCheckbox.UseVisualStyleBackColor = true;
-            // 
-            // SaveWindowPositionCheckbox
-            // 
-            this.SaveWindowPositionCheckbox.AutoSize = true;
-            this.SaveWindowPositionCheckbox.Location = new System.Drawing.Point(196, 29);
-            this.SaveWindowPositionCheckbox.Name = "SaveWindowPositionCheckbox";
-            this.SaveWindowPositionCheckbox.Size = new System.Drawing.Size(133, 17);
-            this.SaveWindowPositionCheckbox.TabIndex = 19;
-            this.SaveWindowPositionCheckbox.Text = "Save Window Position";
-            this.SaveWindowPositionCheckbox.UseVisualStyleBackColor = true;
-            // 
-            // EnableContextMenuCheckbox
-            // 
-            this.EnableContextMenuCheckbox.AutoSize = true;
-            this.EnableContextMenuCheckbox.Location = new System.Drawing.Point(196, 6);
-            this.EnableContextMenuCheckbox.Name = "EnableContextMenuCheckbox";
-            this.EnableContextMenuCheckbox.Size = new System.Drawing.Size(128, 17);
-            this.EnableContextMenuCheckbox.TabIndex = 18;
-            this.EnableContextMenuCheckbox.Text = "Enable Context Menu";
-            this.EnableContextMenuCheckbox.UseVisualStyleBackColor = true;
-            // 
-            // PauseWhenMenuActivatedCheckbox
-            // 
-            this.PauseWhenMenuActivatedCheckbox.AutoSize = true;
-            this.PauseWhenMenuActivatedCheckbox.Location = new System.Drawing.Point(6, 6);
-            this.PauseWhenMenuActivatedCheckbox.Name = "PauseWhenMenuActivatedCheckbox";
-            this.PauseWhenMenuActivatedCheckbox.Size = new System.Drawing.Size(161, 17);
-            this.PauseWhenMenuActivatedCheckbox.TabIndex = 17;
-            this.PauseWhenMenuActivatedCheckbox.Text = "Pause when menu activated";
-            this.PauseWhenMenuActivatedCheckbox.UseVisualStyleBackColor = true;
+            this.EnableRPC.AutoSize = true;
+            this.EnableRPC.Location = new System.Drawing.Point(7, 128);
+            this.EnableRPC.Name = "EnableRPC";
+            this.EnableRPC.Size = new System.Drawing.Size(171, 17);
+            this.EnableRPC.TabIndex = 29;
+            this.EnableRPC.Text = "Enable Discord Rich Presence";
+            this.EnableRPC.UseVisualStyleBackColor = true;
             // 
             // EmuHawkOptions
             // 
@@ -569,6 +581,10 @@
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
+            this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.tabPage3.ResumeLayout(false);
             this.tabPage3.PerformLayout();
             this.groupBox2.ResumeLayout(false);
@@ -576,10 +592,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.AutosaveSRAMtextBox)).EndInit();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
-            this.groupBox3.ResumeLayout(false);
-            this.groupBox3.PerformLayout();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
 
 		}
@@ -633,5 +645,6 @@
 		private System.Windows.Forms.CheckBox StartFullScreenCheckbox;
 		private BizHawk.WinForms.Controls.LocLabelEx label3;
 		private System.Windows.Forms.CheckBox SingleInstanceModeCheckbox;
+		private System.Windows.Forms.CheckBox EnableRPC;
 	}
 }
