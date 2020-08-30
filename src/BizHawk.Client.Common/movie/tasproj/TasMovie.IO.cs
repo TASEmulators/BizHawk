@@ -73,7 +73,7 @@ namespace BizHawk.Client.Common
 				}
 				else
 				{
-					Session.PopupMessage("The current .tasproj is compatible with this version of BizHawk! .tasproj features failed to load.");
+					Session.PopupMessage("The current .tasproj is not compatible with this version of BizHawk! .tasproj features failed to load.");
 				}
 			}
 		}
