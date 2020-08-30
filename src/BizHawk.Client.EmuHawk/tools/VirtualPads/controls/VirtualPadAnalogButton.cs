@@ -32,11 +32,12 @@ namespace BizHawk.Client.EmuHawk
 			Orientation orientation)
 		{
 			_stickyXorAdapter = stickyXorAdapter;
-			Name = name;
+			
 
 			InitializeComponent();
-			// AnalogTrackBar, DisplayNameLabel, and ValueLabel are now assigned
 
+			// Name, AnalogTrackBar, DisplayNameLabel, and ValueLabel are now assigned
+			Name = name;
 			var trackbarWidth = Size.Width - 15;
 			int trackbarHeight;
 			if ((AnalogTrackBar.Orientation = orientation) == Orientation.Vertical)
