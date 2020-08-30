@@ -32,12 +32,12 @@ namespace BizHawk.Client.Common
 		public bool CurrentUseCompression { get; set; }
 
 		[DisplayName("Current - Buffer Size")]
-		[Description("Max amount of buffer space to use in MB. \n\nThe Current buffer is the primary buffer used near the last edited frame. This should be the largest buffer to ensure minimal gaps during editing.")]
+		[Description("Max amount of buffer space to use in MB.\n\nThe Current buffer is the primary buffer used near the last edited frame. This should be the largest buffer to ensure minimal gaps during editing.")]
 		[TypeConverter(typeof(IntConverter)), Range(64, 32768)]
 		public int CurrentBufferSize { get; set; } = 256;
 
 		[DisplayName("Current - Target Frame Length")]
-		[Description("Desired frame length (number of emulated frames you can go back before running out of buffer) \n\nThe Current buffer is the primary buffer used near the last edited frame. This should be the largest buffer to ensure minimal gaps during editing.")]
+		[Description("Desired frame length (number of emulated frames you can go back before running out of buffer)\n\nThe Current buffer is the primary buffer used near the last edited frame. This should be the largest buffer to ensure minimal gaps during editing.")]
 		[TypeConverter(typeof(IntConverter)), Range(1, int.MaxValue)]
 		public int CurrentTargetFrameLength { get; set; } = 500;
 
@@ -45,16 +45,16 @@ namespace BizHawk.Client.Common
 		/// Buffer settings when navigating directly before the Current buffer
 		/// </summary>
 		[DisplayName("Recent - Use Compression")]
-		[Description("The Recent buffer is the where current frames decay too as the buffer fills up. The goal of this buffer is maximize the amount of movie that can be fairly quickly navigated to.  Therefore, a high target frame length is ideal here.")]
+		[Description("The Recent buffer is where the current frames decay as the buffer fills up. The goal of this buffer is to maximize the amount of movie that can be fairly quickly navigated to. Therefore, a high target frame length is ideal here.")]
 		public bool RecentUseCompression { get; set; }
 
 		[DisplayName("Recent - Buffer Size")]
-		[Description("Max amount of buffer space to use in MB.\n\nThe Recent buffer is the where current frames decay too as the buffer fills up. The goal of this buffer is maximize the amount of movie that can be fairly quickly navigated to.  Therefore, a high target frame length is ideal here.")]
+		[Description("Max amount of buffer space to use in MB.\n\nThe Recent buffer is where the current frames decay as the buffer fills up. The goal of this buffer is to maximize the amount of movie that can be fairly quickly navigated to. Therefore, a high target frame length is ideal here.")]
 		[TypeConverter(typeof(IntConverter)), Range(64, 32768)]
 		public int RecentBufferSize { get; set; } = 128;
 
 		[DisplayName("Recent - Target Frame Length")]
-		[Description("Desired frame length (number of emulated frames you can go back before running out of buffer). The Recent buffer is the where current frames decay too as the buffer fills up. The goal of this buffer is maximize the amount of movie that can be fairly quickly navigated to. Therefore, a high target frame length is ideal here.")]
+		[Description("Desired frame length (number of emulated frames you can go back before running out of buffer).\n\nThe Recent buffer is where the current frames decay as the buffer fills up. The goal of this buffer is to maximize the amount of movie that can be fairly quickly navigated to. Therefore, a high target frame length is ideal here.")]
 		[TypeConverter(typeof(IntConverter)), Range(1, int.MaxValue)]
 		public int RecentTargetFrameLength { get; set; } = 2000;
 
