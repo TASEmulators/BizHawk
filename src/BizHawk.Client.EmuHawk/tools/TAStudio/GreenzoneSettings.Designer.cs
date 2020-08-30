@@ -37,7 +37,7 @@
 			// OkBtn
 			// 
 			this.OkBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.OkBtn.Location = new System.Drawing.Point(227, 333);
+			this.OkBtn.Location = new System.Drawing.Point(263, 333);
 			this.OkBtn.Name = "OkBtn";
 			this.OkBtn.Size = new System.Drawing.Size(60, 23);
 			this.OkBtn.TabIndex = 3;
@@ -49,7 +49,7 @@
 			// 
 			this.CancelBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.CancelBtn.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.CancelBtn.Location = new System.Drawing.Point(293, 333);
+			this.CancelBtn.Location = new System.Drawing.Point(329, 333);
 			this.CancelBtn.Name = "CancelBtn";
 			this.CancelBtn.Size = new System.Drawing.Size(60, 23);
 			this.CancelBtn.TabIndex = 2;
@@ -76,7 +76,7 @@
 			this.SettingsPropertyGrid.Location = new System.Drawing.Point(12, 8);
 			this.SettingsPropertyGrid.Name = "SettingsPropertyGrid";
 			this.SettingsPropertyGrid.PropertySort = System.Windows.Forms.PropertySort.NoSort;
-			this.SettingsPropertyGrid.Size = new System.Drawing.Size(341, 319);
+			this.SettingsPropertyGrid.Size = new System.Drawing.Size(376, 319);
 			this.SettingsPropertyGrid.TabIndex = 5;
 			this.SettingsPropertyGrid.ToolbarVisible = false;
 			// 
