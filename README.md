@@ -2,8 +2,9 @@
 
 A multi-system emulator written in C#. As well as quality-of-life features for casual players, it also has recording/playback and debugging tools, making it the first choice for TASers (Tool-Assisted Speedrunners).
 
-[![GitHub latest release](https://img.shields.io/github/release/TASVideos/BizHawk.svg?logo=github&logoColor=333333&style=popout)](https://github.com/TASVideos/BizHawk/releases/latest)
-[![dev builds | AppVeyor](https://img.shields.io/badge/dev_builds-AppVeyor-orange.svg?logo=appveyor&logoColor=333333&style=popout)](https://ci.appveyor.com/project/zeromus/bizhawk-udexo/history)
+[![(latest) release | GitHub](https://img.shields.io/github/release/TASVideos/BizHawk.svg?logo=github&logoColor=333333&style=popout)](https://github.com/TASVideos/BizHawk/releases/latest)
+[![latest dev build | AppVeyor](https://img.shields.io/badge/latest_dev_build-AppVeyor-orange.svg?logo=appveyor&logoColor=333333&style=popout)](https://ci.appveyor.com/project/zeromus/bizhawk-udexo/build/artifaces)
+[![latest dev build | GitLab CI](https://img.shields.io/badge/latest_dev_build-GitLab_CI-orange.svg?logo=gitlab&style=popout)](https://gitlab.com/TASVideos/BizHawk/pipelines/master/latest)
 [![GitHub open issues counter](https://img.shields.io/github/issues-raw/TASVideos/BizHawk.svg?logo=github&logoColor=333333&style=popout)](https://github.com/TASVideos/BizHawk/issues)
 
 ---
@@ -12,15 +13,20 @@ Jump to:
 * Installing
 	* [Windows](#windows)
 	* [Unix](#unix)
+	* [Development builds](#development-builds)
 * Building
 	* [Windows](#windows-1)
 	* [Unix](#unix-1)
 * [Usage](#usage)
 	* [TASing](#tasing)
-	* [Testing](#testing)
 	* [Cores](#cores)
 * [Support and troubleshooting](#support-and-troubleshooting)
 * [Contributing](#contributing)
+	* [EmuHawk development](#emuhawk-development)
+	* [Core development](#core-development)
+	* [Testing/QA](#testingqa)
+	* [Localization](#localization)
+	* [License](#license)
 * [Related projects](#related-projects)
 * [License](#license)
 
@@ -67,14 +73,13 @@ Supported consoles and computers:
 	* Game Gear
 	* Genesis + 32X + CD
 	* Master System
-	* Pico
 	* Saturn
 	* SG-1000
 * Sinclair ZX Spectrum
 * Sony Playstation (PSX)
 * Texas Instruments TI-83
 * Uzebox
-* [More](http://tasvideos.org/Bizhawk/CoreRoadMap.html) coming soon..?
+* more coming soon..?
 
 See [*Usage*](#usage) below for info on basic config needed to play games.
 
@@ -88,7 +93,9 @@ Released binaries can be found right here on GitHub (also linked at the top of t
 
 [![Windows | binaries](https://img.shields.io/badge/Windows-binaries-%230078D6.svg?logo=windows&logoColor=0078D6&style=popout)](https://github.com/TASVideos/BizHawk/releases/latest)
 
-Click `BizHawk-<version>.zip` to download it. Also note the changelog, the full version of which is [here at TASVideos](http://tasvideos.org/Bizhawk/ReleaseHistory.html). Extract it anywhere, but **don't mix different versions** of BizHawk, keep each version in its own folder. Run `EmuHawk.exe` to start. You may move or rename the folder containing `EmuHawk.exe`, even to another drive — as long as you keep all the files together, and the prerequisites are installed when you go to run it.
+Click `BizHawk-<version>.zip` to download it. Also note the changelog, the full version of which is [here at TASVideos](http://tasvideos.org/Bizhawk/ReleaseHistory.html). Extract it anywhere, but **don't mix different versions** of BizHawk, keep each version in its own folder. You may move or rename the folder containing `EmuHawk.exe`, even to another drive — as long as you keep all the files together, and the prerequisites are installed when you go to run it.
+
+Run `EmuHawk.exe` to start. If startup is blocked by a Windows SmartScreen dialog, click "More Info" to reveal the override button. Third-party antivirus may also block startup.
 
 EmuHawk does have some prerequisites which it can't work without (it will let you know if they're missing). The list is [here](https://github.com/TASVideos/BizHawk-Prereqs/blob/master/README), and we've made an all-in-one installer which you can get [here](https://github.com/TASVideos/BizHawk-Prereqs/releases/latest). You should only have to run this once per machine, unless the changelog says we need something extra.
 
@@ -100,15 +107,47 @@ A "backport" release, [1.13.2](https://github.com/TASVideos/BizHawk/releases/tag
 
 ### Unix
 
-**IMPORTANT**: Unix support is a work-in-progress! It is *not* complete, does *not* look very nice, and is *not* ready for anything that needs accuracy.
+**Note**: There's only one dev working on Linux (@YoshiRulz)! Please have patience, and try not to bother everyone else.
 
-You'll need to either build BizHawk yourself (see [*Building*](#unix-1) below), or download a dev build (see [*Testing*](#testing) below; please note some features are broken in dev builds for unknown reasons).
+Install the listed package with your package manager (some buttons are links to the relevant package). The changelog can be found [on TASVideos](http://tasvideos.org/Bizhawk/ReleaseHistory.html).
 
-The runtime dependencies are: Mono "complete", Mono VB.NET, ~~`libwine`~~, glibc, OpenAL, NVIDIA's `cgc` utility, and your distro's LSB implementation (you do *not* need .NET Core at runtime, only Mono). Run `EmuHawkMono.sh` to start Mono with the right env. vars—you can run it from anywhere, so creating a .desktop file to wrap the script is fine.
+[![Manjaro | bizhawk-monort (AUR)](https://img.shields.io/badge/Manjaro-bizhawk--monort_(AUR)-%2335BF5C.svg?logo=manjaro&style=popout)](https://aur.archlinux.org/packages/bizhawk-monort)
 
-The systems that currently work are: GB + GBC (GBHawk), NES (NesHawk), SMS, Atari 7800, and some classic home computers. See [#1430](https://github.com/TASVideos/BizHawk/issues/1430) for progress.
+No package for your distro? Grab the latest release here on GitHub (it's the same as the Windows version):
+
+[![Misc. Linux | bizhawk-monort](https://img.shields.io/badge/Misc._Linux-bizhawk--monort-%23FCC624.svg?logo=linux&logoColor=black&style=popout)](https://github.com/TASVideos/BizHawk/releases/latest)
+
+If you download BizHawk this way, **don't mix different versions**, keep each version in its own folder. The runtime dependencies are glibc, Mono "complete", OpenAL, and `lsb_release`. .NET Core is **not** a runtime dependency, only Mono. WINE is also **not** a runtime dependency.
+
+Run `EmuHawkMono.sh` to start EmuHawk—you can run it from anywhere, so creating a .desktop file to wrap the script is fine. The shell script should print an error if it fails, otherwise it's safe to ignore console output. There are some command-line options which aren't well-documented; you might be able to figure them out from [the code](https://github.com/TASVideos/BizHawk/blob/e128cb82f211dade27d04a21737e073374098f49/src/BizHawk.Client.EmuHawk/ArgParser.cs). They're the same on Windows, with one exception: passing `--mono-no-redirect` *as the first argument* prints stdout to the console. *Not* passing it will redirect stdout to a file.
+
+Most features and cores work, notable omissions being Lua support, Mupen64Plus (N64), and Octoshock (PSX). See [#1430](https://github.com/TASVideos/BizHawk/issues/1430) for details.
 
 [to top](#bizhawk)
+
+#### macOS (legacy BizHawk)
+
+EmuHawk depends on certain libraries for graphics, and these don't work on macOS. Users on macOS have three options:
+* Use another machine with Windows or Linux, or install either in a VM (WINE is not a VM).
+* Use an older 1.x release which was ported to macOS by @Sappharad (with replacements for the missing libraries). Links and more details are in [this TASVideos forum thread](http://tasvideos.org/forum/viewtopic.php?t=12659) (jump to last page for latest binaries).
+* For the technically-minded, download the [source](https://github.com/Sappharad/BizHawk/tree/MacUnixMonoCompat) of an older 2.x release. @Sappharad put a lot of work into it but ultimately decided to stop.
+
+[to top](#bizhawk)
+
+### Development builds
+
+Development builds are made automatically whenever someone contributes. Because of this, we recommend using a release for work that requires stability (such as TASing), and only switching to a dev build if there's a specific change or addition you need.
+
+[![recent dev builds | AppVeyor](https://img.shields.io/badge/recent_dev_builds-AppVeyor-orange.svg?logo=appveyor&logoColor=333333&style=popout)](https://ci.appveyor.com/project/zeromus/bizhawk-udexo/history)
+[![recent dev builds | GitLab CI](https://img.shields.io/badge/recent_dev_builds-GitLab_CI-orange.svg?logo=gitlab&style=popout)](https://gitlab.com/TASVideos/BizHawk/pipelines)
+[![latest dev build | AppVeyor](https://img.shields.io/badge/latest_dev_build-AppVeyor-orange.svg?logo=appveyor&logoColor=333333&style=popout)](https://ci.appveyor.com/project/zeromus/bizhawk-udexo/build/artifaces)
+[![latest dev build | GitLab CI](https://img.shields.io/badge/latest_dev_build-GitLab_CI-orange.svg?logo=gitlab&style=popout)](https://gitlab.com/TASVideos/BizHawk/pipelines/master/latest)
+
+Click one of the buttons above to download a dev build (they're also at the top of this readme). AppVeyor uses Windows and GitLab CI uses Linux, but they work all the same.
+* On the AppVeyor page for a Build, click "Artifacts", then `BizHawk_Developer-<datetime>-#<long hexadecimal>.zip`.
+* On the GitLab CI page for a Pipeline, click "Jobs", then the download button at the end of the entry with the name `build_master`/`build_not_master`. (On the Pipelines list page, there's also a download button on each Pipeline.)
+
+To find the dev builds for a specific commit, you can click the green checkmark next to it (in the [commit history](https://github.com/TASVideos/BizHawk/commits/master), for example) for a dropdown, then click either "Details" link to go to AppVeyor/GitLab.
 
 ## Building
 
@@ -122,7 +161,7 @@ git clone https://github.com/TASVideos/BizHawk.git BizHawk_master
 
 Once it's downloaded and extracted, go into the repo's `Dist` folder and run `BuildAndPackage_Release.bat`. This is the same process used by AppVeyor.
 
-For anything more complicated than just building, you'll need an IDE like [VS Community 2019](https://visualstudio.microsoft.com/vs/community), currently the best free C# IDE (you may prefer Rider, MonoDevelop, or something else). To build with VS, open `BizHawk.sln` and use the toolbar to choose `Release | Any CPU | BizHawk.Client.EmuHawk` and click the Start button. See [*Compiling* at TASVideos](http://tasvideos.org/Bizhawk/Compiling.html) for more detailed instructions (warning: somewhat outdated).
+For anything more complicated than just building, you'll need an IDE like [VS Community 2019](https://visualstudio.microsoft.com/vs/community), currently the best free C# IDE (you may prefer Rider, VS Code, or something else). To build with VS, open `BizHawk.sln` and use the toolbar to choose `Release | Any CPU | BizHawk.Client.EmuHawk` and click the Start button. See [*Compiling* at TASVideos](http://tasvideos.org/Bizhawk/Compiling.html) for more detailed instructions (warning: somewhat outdated).
 
 [to top](#bizhawk)
 
@@ -135,7 +174,9 @@ git clone https://github.com/TASVideos/BizHawk.git BizHawk_master
 BizHawk_master/Dist/BuildRelease.sh
 ```
 
-The assemblies are put in `BizHawk_master/output`, so if you have the runtime dependencies (see [*Installing*](#unix)) you can call `BizHawk_master/output/EmuHawkMono.sh`. The shell script may yell at you, it should be safe to ignore. stdout is redirected to `BizHawk_master/output/EmuHawkMono_laststdout.txt` by default, pass `--mono-no-redirect` **as the first flag** to disable this.
+The assemblies are put in `BizHawk_master/output`, so if you have the runtime dependencies (see [*Installing*](#unix)) you can call `BizHawk_master/output/EmuHawkMono.sh`. Reminder that stdout is redirected to `BizHawk_master/output/EmuHawkMono_laststdout.txt` unless `--mono-no-redirect` is the first command-line argument.
+
+VS 2019 isn't available on Linux, but Rider and VS Code are. You can always code from the command line...
 
 [to top](#bizhawk)
 
@@ -212,23 +253,19 @@ For now, the best way to learn how to TAS is to browse pages like [BasicTools](h
 
 [to top](#bizhawk)
 
-### Testing
+### External tools
 
-* [Latest development build](https://ci.appveyor.com/project/zeromus/bizhawk-udexo/build/artifacts)
+Creating a GUI with Lua scripts is fiddly. If you know some C# (or another .NET language), you can replace your Lua script with an *external tool*. See the [ext. tools wiki](https://github.com/TASVideos/BizHawk-ExternalTools/wiki) for more details.
 
-Testing bugfixes or new features can be just as helpful as making them! If code's more your thing, see [*Contributing*](#contributing) below.
-
-Dev builds are automated with AppVeyor, every green checkmark in the [commit history](https://github.com/TASVideos/BizHawk/commits/master) is a successful build. Clicking a checkmark and then "Details" in the box that appears takes you straight to the build page. The full list is [here](https://ci.appveyor.com/project/zeromus/bizhawk-udexo/history), in future use the "dev builds" button at the top of this readme.
-
-Once you're on the build page, click "Artifacts" and download `BizHawk_Developer-<datetime>-#<long hexadecimal>.zip`.
-
-[to top](#bizhawk)
+We're looking to create [a catalog](https://github.com/TASVideos/BizHawk-ExternalTools/wiki/Catalog) of tools made by the community, share yours on IRC/Discord (links [below](#support-and-troubleshooting)).
 
 ### Cores
 
 A *core* is what we call the smaller bits of software that emulate just one system or family of systems, e.g. NES/Famicom. For the most part, there's a "best" core for each system, based on accuracy, but there are a few alternative cores which are *faster and less accurate*.
 
-System | Core | Alt. Core
+*Hawk* cores are part of the BizHawk project. All other cores are ported, mainly from the Mednafen project.
+
+System | Core | Alt. Cores
 --:|:--|:--
 Apple II | Virtu |
 Atari 2600 | Atari2600Hawk |
@@ -237,78 +274,111 @@ Atari Lynx | Handy |
 Commodore 64 | C64Hawk |
 ColecoVision | ColecoHawk |
 Game Boy / Color | GBHawk | Gambatte
-Game Boy Advance | mGBA | VBA-Next
+Game Boy Advance | mGBA |
 Intellivision | IntelliHawk |
 N64 | Mupen64Plus |
-Neo Geo Pocket / Color | NeoPop |
+Neo Geo Pocket | NeoPop |
 NES | NesHawk | QuickNes |
 Odyssey² | O2Hawk |
 PC-FX | T.S.T. |
 Playstation (PSX) | Octoshock |
+Sega 32X | PicoDrive |
 Sega Game Gear | SMSHawk |
 Sega Genesis | Genplus-gx |
 Sega Master System | SMSHawk |
 Sega Saturn | Saturnus |
-Sega Pico | PicoDrive |
-SNES | BSNES | Snes9x
+SNES | BSNES | Faust, Snes9x
 Super Game Boy | BSNES | SameBoy
 TI-83 | TI83Hawk |
-TurboGrafx / SuperGrafx | PCEHawk |
+TurboGrafx | TurboNyma | HyperNyma, PCEHawk
 Uzebox | Uzem |
 Vectrex | VectrexHawk |
 Virtual Boy | Virtual Boyee |
 WonderSwan / Color | Cygne |
 ZX Spectrum | ZXHawk |
 
-Amstrad CPC, Fairchild Channel F, MSX, and Nintendo DS via [melonDS](https://github.com/Arisotura/melonDS) are works-in-progress, as well as a front-end for MAME, and there is **no ETA** for any of them so don't ask. Cores for other systems are only conceptual. If you're willing and able to work on one of these, ask on IRC (see below).
+There are also works-in-progress for:
+* Amstrad CPC (home-grown core)
+* Fairchild Channel F (home-grown core)
+* [MAME](https://mamedev.org)
+* MSX (home-grown core)
+* Nintendo DS via [melonDS](http://melonds.kuribo64.net)
+* Playstation 2 via [Dobiestation](https://github.com/PSI-Rockin/DobieStation)
+* others maybe ([candidates](https://gitlab.com/TASVideos/BizHawk/snippets/1890492))
+
+Please don't bother core devs about these WIPs unless you're looking to contribute in some way.
 
 [to top](#bizhawk)
 
 ## Support and troubleshooting
 
-A short [FAQ](http://tasvideos.org/Bizhawk/FAQ.html) is provided on the [BizHawk wiki](http://tasvideos.org/Bizhawk.html).
+A short [FAQ](http://tasvideos.org/Bizhawk/FAQ.html) is provided on the [BizHawk wiki](http://tasvideos.org/Bizhawk.html). If your problem is one of the many not answered there, and you can't find it in the [issue tracker search](https://github.com/TASVideos/BizHawk/issues?q=is%3Aissue+PUT_ISSUE_KEYWORDS_HERE), you can try:
+* `#bizhawk` on freenode IRC ([via web browser](https://webchat.freenode.net/#bizhawk); via HexChat/Irssi: `chat.freenode.net:6697`; [via Matrix](https://matrix.to/#/#freenode_#bizhawk:matrix.org))
+* `#emulation` (TASers: `#tas-production`) on [the TASVideos Discord](https://discordapp.com/invite/GySG2b6)
+* The TASVideos [forum for BizHawk](http://tasvideos.org/forum/viewforum.php?f=64)
 
-If your problem is one of the many not answered there, and you can't find it in the [issue tracker search](https://github.com/TASVideos/BizHawk/issues?q=is%3Aissue+ISSUE_KEYWORDS), check the [BizHawk forum](http://tasvideos.org/forum/viewforum.php?f=64) at TASVideos, or ask on IRC:
-* with an IRC client, join channel `#bizhawk` on `chat.freenode.net:6697`
-* with a Matrix client, connect to [#freenode_#bizhawk:matrix.org](https://matrix.to/#/#freenode_#bizhawk:matrix.org) (via matrix.org's IRC bridge)
-* use freenode's [web-based IRC client](https://webchat.freenode.net/#bizhawk)
-
-If there's no easy solution, what you've got is a bug. Or maybe a feature request. Either way, [open a new issue](https://github.com/TASVideos/BizHawk/issues/new) (you'll need a GitHub account, signup is very fast).
+You can [open a new issue](https://github.com/TASVideos/BizHawk/issues/new) at any time if you're logged in to GitHub.
 
 [to top](#bizhawk)
 
 ## Contributing
 
-BizHawk is Open Source Software, so you're free to modify it however you please, and if you do, we invite you to share! Under the permissive *MIT License*, this is optional, just be careful with reusing cores as some have copyleft licenses.
+### EmuHawk development
 
-Not a programmer? Something as simple as reproducing bugs with different software versions is still very helpful! See [*Testing*](#testing) above to learn about dev builds if you'd rather help us get the next release out.
+Do you want your name next to [these fine people](https://github.com/TASVideos/BizHawk/graphs/contributors)? Fork the repo and work on one of our [many open issues](https://github.com/TASVideos/BizHawk/issues). If you ask on IRC/Discord (see above), you might get more info about the problem—or you might find someone else is also working on it. It's especially important to ask about adding new features.
 
-If you'd like to fix bugs, check the [issue tracker](https://github.com/TASVideos/BizHawk/issues) here on GitHub.
+All the source code for EmuHawk is in `/src`. The project file, `/src/BizHawk.Client.EmuHawk/BizHawk.Client.EmuHawk.csproj`, includes the other projects [in a tree](https://gitlab.com/TASVideos/BizHawk/snippets/1886666).
 
-It's a good idea to check if anyone is already working on an issue by asking on IRC (see [*Support*](#support-and-troubleshooting) above).
+When opening a PR:
+* Consider making changes over multiple commits instead of one large commit. Bonus points if each commit is a working build.
+* Rebase instead of merging when pulling changes.
+* Don't use the `master` branch of your fork! Using another branch makes rebasing so much easier.
+* Our test suite is small, but it's still worth running. Build the executable project `BizHawk.Tests`.
+	* If you fork on GitLab, the tests will run in CI.
+* For the time being, code style is checked manually. Please use CRLF, tabs, and [Allman braces](https://en.wikipedia.org/wiki/Indentation_style#Allman_style) in new files.
+	* Static code analysis is configured but disabled—build with `-p:MachineRunAnalyzersDuringBuild=true`.
+		* If you fork on GitLab, the Analyzers will run in CI if you use `git push -o ci.variable="BIZHAWKBUILD_USE_ANALYZERS=true"` (or otherwise set that env. var).
 
-If you'd like to add a feature, first search the issue tracker for it. If it's a new idea, make your own feature request issue before you start coding.
+[to top](#bizhawk)
 
-For the time being, style is not enforced in PRs, only build success is. Please use CRLF, tabs, and [Allman braces](https://en.wikipedia.org/wiki/Indentation_style#Allman_style) in new files.
+### Core development
 
-Past contrbutors to the frontend and custom-built cores are listed [here](https://github.com/TASVideos/BizHawk/graphs/contributors). See the wiki for core authors.
+We're not particularly interested in PRs adding cores out-of-the-blue, but if you have experience in emulator development please get in touch on IRC/Discord.
+
+[to top](#bizhawk)
+
+### Testing/QA
+
+Not a programmer? You can still be helpful by grabbing a recent [dev build](#development-builds) and reproducing old bugs, i.e. checking if they've been fixed or not.
+
+[to top](#bizhawk)
+
+### Localization
+
+ping YoshiRulz on IRC or Discord (`YoshiRulz#4472`)
+
+[to top](#bizhawk)
+
+### License
+
+EmuHawk and DiscoHawk can be used by anyone for any purpose allowed by the permissive *MIT License* (Expat). The [full text](https://github.com/TASVideos/BizHawk/blob/master/LICENSE) is very short.
+
+Any developers looking to re-use code from BizHawk in their own work should understand which files the license applies to. It's included in the text, but tl;dr: anything outside `/src` isn't ours and we can't give you permission to share, use, or sell it. That means not all the files included with BizHawk *releases or dev builds* are free to share, either.
+
+Disclaimer time! Can't have emulation software without a disclaimer...
+> Following the terms of our license does not make you immune from other contracts or laws.
+> Some or all of the following may be illegal where you live: creating a copy of non-free software for backup purposes ("dumping" or "ripping"); distributing copies of non-free software; soliciting pirated copies of software; knowingly posessing pirated copies of software; importing software from the USA (GitHub and TASVideos are American entities); using a backup copy of non-free software without the original.
+> For obvious reasons, **we cannot and will not distribute dumped games or firmware that is under copyright**.
 
 [to top](#bizhawk)
 
 ## Related projects
 
-* [DeSmuME](https://desmume.org) for DS/Lite — cross-platform
-* [Dolphin](https://dolphin-emu.org) for GameCube and (original) Wii — cross-platform
-* [FCEUX](http://www.fceux.com/web/home.html) for NES/Famicom — TASing is Windows-only, but it should run cross-platform
-* [libTAS](https://github.com/clementgallet/libTAS) for Linux ELF — GNU+Linux-only, also emulates other emulators
+* [Dolphin](https://dolphin-emu.org) for GameCube and Wii — cross-platform
+* [FCEUX](http://www.fceux.com/web/home.html) for NES/Famicom — cross-platform; TASing is Windows-only
+* [libTAS](https://github.com/clementgallet/libTAS) for ELF (Linux desktop apps) — requires GNU+Linux host; also emulates other emulators
 * [lsnes](http://tasvideos.org/Lsnes.html) for GB and SNES — cross-platform
-* [openMSX](https://openmsx.org) for MSX — cross-platform
 
 Emulators for other systems can be found on the [EmulatorResources page](http://tasvideos.org/EmulatorResources.html) at TASVideos. The [TASVideos GitHub page](https://github.com/TASVideos) also holds copies of other emulators and plugins where development happens sometimes, their upstreams may be of use.
 
-## License
-
-From the [full text](https://github.com/TASVideos/BizHawk/blob/master/LICENSE):
-> This repository contains original work chiefly in c# by the BizHawk team (which is all provided under the MIT License), embedded submodules from other authors with their own licenses clearly provided, other embedded submodules from other authors WITHOUT their own licenses clearly provided, customizations by the BizHawk team to many of those submodules (which is provided under the MIT license), and compiled binary executable modules from other authors without their licenses OR their origins clearly indicated.
-
-In short, the frontend is MIT (Expat), beyond that you're on your own.
+[to top](#bizhawk)
