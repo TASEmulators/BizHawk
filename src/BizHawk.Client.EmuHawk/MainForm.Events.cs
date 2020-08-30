@@ -27,6 +27,9 @@ using BizHawk.Emulation.Cores.Nintendo.SubNESHawk;
 using BizHawk.Emulation.Cores.Sony.PSX;
 using BizHawk.WinForms.Controls;
 
+using DiscordRPC;
+using DiscordRPC.Exceptions;
+
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class MainForm
@@ -2589,6 +2592,53 @@ namespace BizHawk.Client.EmuHawk
 			finally
 			{
 				Sound.StartSound();
+			}
+		}
+
+		private static DiscordRpcClient Client = new DiscordRpcClient("749686424248385716");
+
+		private void RPCTimer_Tick(object sender, EventArgs e)
+		{
+			if (!Config.EnableRPC) // slight hack to stop it from still doing stuff if the user turns off the setting
+			{
+				RPCTimer.Enabled = false;
+				return;
+			}
+
+			if (!Client.IsInitialized)
+			{
+				Client.Initialize();
+				return;
+			}
+
+			if (RPCTimer.Interval == 100)
+				RPCTimer.Interval = 15000;
+
+			try
+			{
+				Client.SetPresence(
+					new RichPresence
+					{
+						Assets = new Assets { LargeImageKey = "corphawk" },
+						Details = Text
+					});
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine($"\nError in setting Rich Presence:\n{ex}");
+			}
+		}
+
+		private void MainForm_Closing(object sender, FormClosingEventArgs e)
+		{
+			try
+			{ 
+				Client.ClearPresence();
+				Client.Dispose();
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine($"Exception thrown in MainForm_Closing, probably from the RPC setting being off\n{ex}");
 			}
 		}
 	}
