@@ -85,6 +85,7 @@
 	</ItemGroup>
 -->
 	<ItemGroup>
+		<PackageReference Include="DiscordRichPresence" Version="1.0.150" />
 		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="all" />
 		<PackageReference Include="Microsoft.VisualBasic" Version="10.3.0" />
 		<PackageReference Include="System.Net.Http" Version="4.3.4" />
