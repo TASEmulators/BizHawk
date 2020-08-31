@@ -106,17 +106,27 @@ namespace BizHawk.Client.EmuHawk
 	/// <summary>An (X, Y) pair intended to be a screen coordinate (for zappers, mouse, stylus, etc.)</summary>
 	public sealed class TargetedPairSchema : PadSchemaControl
 	{
-		public int MaxValue { get; }
+		public int MaxX { get; }
+
+		public int MaxY { get; }
 
 		public string SecondaryName { get; set; }
 
 		public Size TargetSize { get; set; }
 
-		public TargetedPairSchema(int x, int y, string nameX, int maxValue = default)
+		/// <remarks>Using this ctor, the valid ranges for the X and Y axes are taken to be <c>(0..TargetSize.Width)</c> and <c>(0..TargetSize.Height)</c>.</remarks>
+		public TargetedPairSchema(int x, int y, string nameX)
 			: base(new Point(x, y), nameX)
 		{
-			MaxValue = maxValue;
 			SecondaryName = nameX.Replace("X", "Y");
+		}
+
+		/// <remarks>Using this ctor, the valid ranges for the X and Y axes are taken to be <c>(0..maxX)</c> and <c>(0..maxY)</c>.</remarks>
+		public TargetedPairSchema(int x, int y, string nameX, int maxX, int maxY)
+			: this(x, y, nameX)
+		{
+			MaxX = maxX;
+			MaxY = maxY;
 		}
 	}
 

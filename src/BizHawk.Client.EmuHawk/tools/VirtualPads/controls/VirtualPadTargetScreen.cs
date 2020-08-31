@@ -25,14 +25,14 @@ namespace BizHawk.Client.EmuHawk
 			StickyXorAdapter stickyXorAdapter,
 			string nameX,
 			string nameY,
-			int rangeX,
-			int rangeY)
+			int maxX,
+			int maxY)
 		{
 			_stickyXorAdapter = stickyXorAdapter;
 			Name = XName = nameX;
 			YName = nameY;
-			RangeX = rangeX;
-			RangeY = rangeY;
+			MaxX = maxX;
+			MaxY = maxY;
 
 			InitializeComponent();
 		}
@@ -122,16 +122,16 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		// These are the value that a maximum x or y actually represent, used to translate from control X,Y to values the core expects
-		private readonly int RangeX;
-		private readonly int RangeY;
+		private readonly int MaxX;
+		private readonly int MaxY;
 
 		public float MultiplierX
 		{
 			get
 			{
-				if (RangeX > 0)
+				if (MaxX > 0)
 				{
-					return RangeX / (float)TargetPanel.Width;
+					return MaxX / (float)TargetPanel.Width;
 				}
 
 				return 1;
@@ -142,9 +142,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				if (RangeY > 0)
+				if (MaxY > 0)
 				{
-					return RangeY / (float)TargetPanel.Height;
+					return MaxY / (float)TargetPanel.Height;
 				}
 
 				return 1;

@@ -132,7 +132,7 @@ namespace BizHawk.Client.EmuHawk
 				Size = new Size(375, 320),
 				Buttons = new PadSchemaControl[]
 				{
-					new TargetedPairSchema(14, 17, $"P{controller} Motion Left / Right", AxisRange.Max)
+					new TargetedPairSchema(14, 17, $"P{controller} Motion Left / Right", AxisRange.Max, AxisRange.Max) //TODO (0xFFFF, 0xFFFF) matches previous behaviour - what was intended here?
 					{
 						SecondaryName = $"P{controller} Motion Up / Down",
 						TargetSize = new Size(256, 256)
@@ -264,7 +264,7 @@ namespace BizHawk.Client.EmuHawk
 				Size = new Size(375, 320),
 				Buttons = new PadSchemaControl[]
 				{
-					new TargetedPairSchema(14, 17, $"P{controller} X Axis", AxisRange.Max)
+					new TargetedPairSchema(14, 17, $"P{controller} X Axis", AxisRange.Max, AxisRange.Max) //TODO (0xFFFF, 0xFFFF) matches previous behaviour - what was intended here?
 					{
 						SecondaryName = $"P{controller} Y Axis",
 						TargetSize = new Size(256, 256)

@@ -113,7 +113,7 @@ namespace BizHawk.Client.EmuHawk
 				Size = new Size(356, 300),
 				Buttons = new PadSchemaControl[]
 				{
-					new TargetedPairSchema(14, 17, $"P{controller} Lightgun X", 10000)
+					new TargetedPairSchema(14, 17, $"P{controller} Lightgun X", 10000, 10000) //TODO (10000, 10000) matches previous behaviour - what was intended here?
 					{
 						TargetSize = new Size(320, 240)
 					},

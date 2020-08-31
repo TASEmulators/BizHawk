@@ -110,8 +110,8 @@ namespace BizHawk.Client.EmuHawk
 						_inputManager.StickyXorAdapter,
 						targetedPair.Name,
 						targetedPair.SecondaryName,
-						targetedPair.MaxValue,
-						targetedPair.MaxValue // TODO split into MaxX and MaxY, and rename VirtualPadTargetScreen.RangeX/RangeY
+						targetedPair.MaxX,
+						targetedPair.MaxY
 					)
 					{
 						Location = UIHelper.Scale(targetedPair.Location),
