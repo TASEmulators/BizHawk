@@ -6,19 +6,14 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class ExceptionBox : Form
 	{
-		public ExceptionBox(Exception ex)
-		{
-			InitializeComponent();
-			txtException.Text = ex.ToString();
-			timer1.Start();
-		}
-
 		public ExceptionBox(string str)
 		{
 			InitializeComponent();
 			txtException.Text = str;
 			timer1.Start();
 		}
+
+		public ExceptionBox(Exception ex): this(ex.ToString()) {}
 
 		private void btnCopy_Click(object sender, EventArgs e)
 		{
