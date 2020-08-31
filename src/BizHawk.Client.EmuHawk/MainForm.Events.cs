@@ -27,6 +27,8 @@ using BizHawk.Emulation.Cores.Nintendo.SubNESHawk;
 using BizHawk.Emulation.Cores.Sony.PSX;
 using BizHawk.WinForms.Controls;
 
+using DiscordRPC.Exceptions;
+
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class MainForm
@@ -950,7 +952,25 @@ namespace BizHawk.Client.EmuHawk
 		private void CustomizeMenuItem_Click(object sender, EventArgs e)
 		{
 			using var form = new EmuHawkOptions(BumpAutoFlushSaveRamTimer, Config, this.AddOnScreenMessage);
+
+			bool prevDiscord = Config.DiscordRPC;
 			form.ShowDialog();
+
+			if (prevDiscord != Config.DiscordRPC)
+			{
+				if (Config.DiscordRPC)
+				{
+					SetupPresence();
+				}
+				else
+				{
+					try
+					{
+						Client.ClearPresence();
+					}
+					catch (UninitializedException) { } // just eat the error, this happens if discord isnt open when they close it
+				}
+			}
 		}
 
 		private void ProfilesMenuItem_Click(object sender, EventArgs e)

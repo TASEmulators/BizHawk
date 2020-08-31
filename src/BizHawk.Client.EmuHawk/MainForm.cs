@@ -1637,26 +1637,12 @@ namespace BizHawk.Client.EmuHawk
 
 			Text = str;
 
-			if (Config.DiscordRPC && Process.GetProcessesByName("Discord").Length > 0) // check to make sure discord is actually open
+			if (Config.DiscordRPC)
 			{
-				try
-				{
-					if (!Client.IsInitialized)
-						Client.Initialize();
-
-					UpdatePresence(
-						Emulator.IsNull() ? "No ROM loaded"
-						:
-						Emulator.System().DisplayName,
-
-						Emulator.IsNull() ? ""
-						:
-						Game.Name);
-				}
-				catch (Exception ex)
-				{
-					Console.WriteLine($"\nError in setting Rich Presence:\n{ex}");
-				}
+				if (Client != null)
+					UpdatePresence();
+				else
+					SetupPresence();
 			}
 		}
 
@@ -4487,14 +4473,34 @@ namespace BizHawk.Client.EmuHawk
 			return isRewinding;
 		}
 
-		private void UpdatePresence(string console, string game)
+		private void UpdatePresence()
 		{
 			Client.SetPresence(
 				new RichPresence
 				{
 					Assets = new Assets { LargeImageKey = "corphawk" },
-					Details = string.IsNullOrEmpty(game) ? console : $"{Client.CurrentUser.Username} is playing {game} for the {console}"
+					Details = Emulator.IsNull() ? "No ROM loaded"
+					:
+					$"{Client.CurrentUser.Username} is playing {Game.Name} for the {Emulator.System().DisplayName}"
 				});
+		}
+
+		private void SetupPresence()
+		{
+			if (Process.GetProcessesByName("Discord").Length == 0) // check to make sure discord is actually open
+				return;
+
+			try
+			{
+				if (!Client.IsInitialized)
+					Client.Initialize();
+
+				UpdatePresence();
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine($"Error in setting Rich Presence:\n{ex}");
+			}
 		}
 
 		public DialogResult ShowDialogAsChild(Form dialog) => dialog.ShowDialog(this);
