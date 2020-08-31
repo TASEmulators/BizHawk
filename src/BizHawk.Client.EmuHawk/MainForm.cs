@@ -36,6 +36,8 @@ using BizHawk.Emulation.Cores.Consoles.SNK;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.Faust;
 
+using DiscordRPC;
+
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class MainForm : Form, IMainFormForApi, IMainFormForConfig, IMainFormForTools
@@ -48,6 +50,8 @@ namespace BizHawk.Client.EmuHawk
 			(new[] { "GB", "GBC" }, new[] { CoreNames.Gambatte, CoreNames.GbHawk, CoreNames.SubGbHawk }),
 			(new[] { "PCE", "PCECD", "SGX" }, new[] { CoreNames.HyperNyma, CoreNames.PceHawk, CoreNames.TurboNyma })
 		};
+
+		private static DiscordRpcClient Client = new DiscordRpcClient("749686424248385716");
 
 		private void MainForm_Load(object sender, EventArgs e)
 		{
@@ -173,9 +177,6 @@ namespace BizHawk.Client.EmuHawk
 					Console.WriteLine($"requested ext. tool dll {requestedExtToolDll} could not be loaded");
 				}
 			}
-
-			if (Config.EnableRPC)
-				RPCTimer.Enabled = true;
 		}
 
 		static MainForm()
@@ -1635,6 +1636,28 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			Text = str;
+
+			if (Config.DiscordRPC && Process.GetProcessesByName("Discord").Length > 0) // check to make sure discord is actually open
+			{
+				try
+				{
+					if (!Client.IsInitialized)
+						Client.Initialize();
+
+					UpdatePresence(
+						Emulator.IsNull() ? "No ROM loaded"
+						:
+						Emulator.System().DisplayName,
+
+						Emulator.IsNull() ? ""
+						:
+						Game.Name);
+				}
+				catch (Exception ex)
+				{
+					Console.WriteLine($"\nError in setting Rich Presence:\n{ex}");
+				}
+			}
 		}
 
 		private void ClearAutohold()
@@ -4462,6 +4485,16 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			return isRewinding;
+		}
+
+		private void UpdatePresence(string console, string game)
+		{
+			Client.SetPresence(
+				new RichPresence
+				{
+					Assets = new Assets { LargeImageKey = "corphawk" },
+					Details = string.IsNullOrEmpty(game) ? console : $"{Client.CurrentUser.Username} is playing {game} for the {console}"
+				});
 		}
 
 		public DialogResult ShowDialogAsChild(Form dialog) => dialog.ShowDialog(this);
