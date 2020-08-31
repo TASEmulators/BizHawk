@@ -11,7 +11,7 @@ namespace BizHawk.Client.Common
 
 		/// <summary>
 		/// Latches to the given <see cref="IStickyAdapter" />
-		/// For buttons it latches autohold state, for analogs it latches mid value.
+		/// For buttons it latches autohold state, for axes it latches neutral value.
 		/// </summary>
 		void SetFromSticky(IStickyAdapter controller);
 

@@ -359,7 +359,7 @@ namespace BizHawk.Client.EmuHawk
 						if (column.Type == ColumnType.Axis)
 						{
 							// feos: this could be cached, but I don't notice any slowdown this way either
-							if (text == ((float) ControllerType.Axes[columnName].Mid).ToString())
+							if (text == ((float) ControllerType.Axes[columnName].Neutral).ToString())
 							{
 								text = "";
 							}
@@ -423,7 +423,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else
 					{
-						// feos: there's no default value other than mid, and we can't go arbitrary here, so do nothing for now
+						// feos: there's no default value other than neutral, and we can't go arbitrary here, so do nothing for now
 						// autohold is ignored for axes too for the same reasons: lack of demand + ambiguity
 					}
 

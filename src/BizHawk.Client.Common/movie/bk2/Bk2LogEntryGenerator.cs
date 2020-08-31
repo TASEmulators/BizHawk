@@ -75,7 +75,7 @@ namespace BizHawk.Client.Common
 					{
 						if (_source.Definition.Axes.TryGetValue(button, out var range))
 						{
-							var val = createEmpty ? range.Mid : _source.AxisValue(button);
+							var val = createEmpty ? range.Neutral : _source.AxisValue(button);
 
 							sb.Append(val.ToString().PadLeft(5, ' ')).Append(',');
 						}
