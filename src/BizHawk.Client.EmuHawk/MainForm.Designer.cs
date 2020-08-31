@@ -374,7 +374,6 @@ namespace BizHawk.Client.EmuHawk
             this.ShowMenuContextMenuSeparator = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
             this.ShowMenuContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
             this.timerMouseIdle = new System.Windows.Forms.Timer(this.components);
-            this.RPCTimer = new System.Windows.Forms.Timer(this.components);
             this.MainformMenu.SuspendLayout();
             this.MainStatusBar.SuspendLayout();
             this.MainFormContextMenu.SuspendLayout();
@@ -2396,10 +2395,6 @@ namespace BizHawk.Client.EmuHawk
             this.timerMouseIdle.Interval = 2000;
             this.timerMouseIdle.Tick += new System.EventHandler(this.TimerMouseIdle_Tick);
             // 
-            // RPCTimer
-            // 
-            this.RPCTimer.Tick += new System.EventHandler(this.RPCTimer_Tick);
-            // 
             // MainForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -2412,8 +2407,7 @@ namespace BizHawk.Client.EmuHawk
             this.Text = "BizHawk";
             this.Activated += new System.EventHandler(this.MainForm_Activated);
             this.Deactivate += new System.EventHandler(this.MainForm_Deactivate);
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_Closing);
-            this.Load += new System.EventHandler(this.MainForm_Load);
+			this.Load += new System.EventHandler(this.MainForm_Load);
             this.Shown += new System.EventHandler(this.MainForm_Shown);
             this.Enter += new System.EventHandler(this.MainForm_Enter);
             this.Resize += new System.EventHandler(this.MainForm_Resize);
@@ -2785,6 +2779,5 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx NdsSyncSettingsMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx NdsSettingsMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator8;
-		private System.Windows.Forms.Timer RPCTimer;
 	}
 }

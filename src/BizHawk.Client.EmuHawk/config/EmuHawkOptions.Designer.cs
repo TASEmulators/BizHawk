@@ -76,7 +76,7 @@
             this.FrameAdvSkipLagCheckbox = new System.Windows.Forms.CheckBox();
             this.BackupSRamCheckbox = new System.Windows.Forms.CheckBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.EnableRPC = new System.Windows.Forms.CheckBox();
+            this.DiscordRPC = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -125,7 +125,7 @@
             // 
             // tabPage1
             // 
-            this.tabPage1.Controls.Add(this.EnableRPC);
+            this.tabPage1.Controls.Add(this.DiscordRPC);
             this.tabPage1.Controls.Add(this.HandleAlternateKeyboardLayoutsCheckBox);
             this.tabPage1.Controls.Add(this.NeverAskSaveCheckbox);
             this.tabPage1.Controls.Add(this.label2);
@@ -553,15 +553,15 @@
             this.BackupSRamCheckbox.Text = "Backup SaveRAM to .SaveRAM.bak";
             this.BackupSRamCheckbox.UseVisualStyleBackColor = true;
             // 
-            // EnableRPC
+            // DiscordRPC
             // 
-            this.EnableRPC.AutoSize = true;
-            this.EnableRPC.Location = new System.Drawing.Point(7, 128);
-            this.EnableRPC.Name = "EnableRPC";
-            this.EnableRPC.Size = new System.Drawing.Size(171, 17);
-            this.EnableRPC.TabIndex = 29;
-            this.EnableRPC.Text = "Enable Discord Rich Presence";
-            this.EnableRPC.UseVisualStyleBackColor = true;
+            this.DiscordRPC.AutoSize = true;
+            this.DiscordRPC.Location = new System.Drawing.Point(7, 128);
+            this.DiscordRPC.Name = "DiscordRPC";
+            this.DiscordRPC.Size = new System.Drawing.Size(171, 17);
+            this.DiscordRPC.TabIndex = 29;
+            this.DiscordRPC.Text = "Enable Discord Rich Presence";
+            this.DiscordRPC.UseVisualStyleBackColor = true;
             // 
             // EmuHawkOptions
             // 
@@ -645,6 +645,6 @@
 		private System.Windows.Forms.CheckBox StartFullScreenCheckbox;
 		private BizHawk.WinForms.Controls.LocLabelEx label3;
 		private System.Windows.Forms.CheckBox SingleInstanceModeCheckbox;
-		private System.Windows.Forms.CheckBox EnableRPC;
+		private System.Windows.Forms.CheckBox DiscordRPC;
 	}
 }

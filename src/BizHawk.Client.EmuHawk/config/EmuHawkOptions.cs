@@ -69,7 +69,7 @@ namespace BizHawk.Client.EmuHawk
 			RunInBackgroundCheckbox.Checked = _config.RunInBackground;
 			AcceptBackgroundInputCheckbox.Checked = _config.AcceptBackgroundInput;
 			AcceptBackgroundInputControllerOnlyCheckBox.Checked = _config.AcceptBackgroundInputControllerOnly;
-			EnableRPC.Checked = _config.EnableRPC;
+			DiscordRPC.Checked = _config.DiscordRPC;
 			HandleAlternateKeyboardLayoutsCheckBox.Checked = _config.HandleAlternateKeyboardLayouts;
 			NeverAskSaveCheckbox.Checked = _config.SuppressAskSave;
 			SingleInstanceModeCheckbox.Checked = _config.SingleInstanceMode;
@@ -119,7 +119,6 @@ namespace BizHawk.Client.EmuHawk
 			_config.RunInBackground = RunInBackgroundCheckbox.Checked;
 			_config.AcceptBackgroundInput = AcceptBackgroundInputCheckbox.Checked;
 			_config.AcceptBackgroundInputControllerOnly = AcceptBackgroundInputControllerOnlyCheckBox.Checked;
-			_config.EnableRPC = EnableRPC.Checked;
 			_config.HandleAlternateKeyboardLayouts = HandleAlternateKeyboardLayoutsCheckBox.Checked;
 			_config.SuppressAskSave = NeverAskSaveCheckbox.Checked;
 			_config.SingleInstanceMode = SingleInstanceModeCheckbox.Checked;
@@ -150,6 +149,12 @@ namespace BizHawk.Client.EmuHawk
 			if (prevLuaEngine != _config.LuaEngine)
 			{
 				_osdMessageCallback("Restart emulator for Lua change to take effect");
+			}
+
+			if (_config.DiscordRPC != DiscordRPC.Checked)
+			{
+				_config.DiscordRPC = DiscordRPC.Checked;
+				_osdMessageCallback("Restart emulator for Discord RPC change to take effect");
 			}
 
 			Close();

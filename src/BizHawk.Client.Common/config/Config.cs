@@ -75,7 +75,7 @@ namespace BizHawk.Client.Common
 		public bool RunInBackground { get; set; } = true;
 		public bool AcceptBackgroundInput { get; set; }
 		public bool AcceptBackgroundInputControllerOnly { get; set; }
-		public bool EnableRPC { get; set; }
+		public bool DiscordRPC { get; set; }
 		public bool HandleAlternateKeyboardLayouts { get; set; }
 		public bool SingleInstanceMode { get; set; }
 		public bool AllowUdlr { get; set; }
