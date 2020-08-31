@@ -117,7 +117,7 @@ No package for your distro? Grab the latest release here on GitHub (it's the sam
 
 [![Misc. Linux | bizhawk-monort](https://img.shields.io/badge/Misc._Linux-bizhawk--monort-%23FCC624.svg?logo=linux&logoColor=black&style=popout)](https://github.com/TASVideos/BizHawk/releases/latest)
 
-If you download BizHawk this way, **don't mix different versions**, keep each version in its own folder. The runtime dependencies are glibc, Mono "complete", OpenAL, and `lsb_release`. .NET Core is **not** a runtime dependency, only Mono. WINE is also **not** a runtime dependency.
+If you download BizHawk this way, **don't mix different versions**, keep each version in its own folder. The runtime dependencies are glibc, Mono "complete", VB.NET, OpenAL, and `lsb_release`. .NET Core is **not** a runtime dependency, only Mono. WINE is also **not** a runtime dependency.
 
 Run `EmuHawkMono.sh` to start EmuHawk—you can run it from anywhere, so creating a .desktop file to wrap the script is fine. The shell script should print an error if it fails, otherwise it's safe to ignore console output. There are some command-line options which aren't well-documented; you might be able to figure them out from [the code](https://github.com/TASVideos/BizHawk/blob/e128cb82f211dade27d04a21737e073374098f49/src/BizHawk.Client.EmuHawk/ArgParser.cs). They're the same on Windows, with one exception: passing `--mono-no-redirect` *as the first argument* prints stdout to the console. *Not* passing it will redirect stdout to a file.
 
