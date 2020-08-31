@@ -159,10 +159,10 @@ namespace BizHawk.Emulation.Cores.Sony.PS2
 			},
 			Axes =
 			{
-				{ "RIGHT X", new AxisSpec(RangeExtensions.MutableRangeTo(0, 255), 128) },
-				{ "RIGHT Y", new AxisSpec(RangeExtensions.MutableRangeTo(0, 255), 128) },
-				{ "LEFT X", new AxisSpec(RangeExtensions.MutableRangeTo(0, 255), 128) },
-				{ "LEFT Y", new AxisSpec(RangeExtensions.MutableRangeTo(0, 255), 128) },
+				{ "RIGHT X", new AxisSpec(0.RangeTo(255), 128) },
+				{ "RIGHT Y", new AxisSpec(0.RangeTo(255), 128) },
+				{ "LEFT X", new AxisSpec(0.RangeTo(255), 128) },
+				{ "LEFT Y", new AxisSpec(0.RangeTo(255), 128) },
 			}
 		};
 
