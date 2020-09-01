@@ -12,6 +12,18 @@ namespace BizHawk.Common.StringExtensions
 			options.Any(opt => string.Equals(opt, str, StringComparison.InvariantCultureIgnoreCase));
 
 		/// <returns>
+		/// <paramref name="str"/> with the first char removed, or
+		/// the original <paramref name="str"/> if the first char of <paramref name="str"/> is not <paramref name="prefix"/>
+		/// </returns>
+		public static string RemovePrefix(this string str, char prefix) => str.RemovePrefix(prefix, notFoundValue: str);
+
+		/// <returns>
+		/// <paramref name="str"/> with the first char removed, or
+		/// <paramref name="notFoundValue"/> if the first char of <paramref name="str"/> is not <paramref name="prefix"/>
+		/// </returns>
+		public static string RemovePrefix(this string str, char prefix, string notFoundValue) => str.Length != 0 && str[0] == prefix ? str.Substring(1, str.Length - 1) : notFoundValue;
+
+		/// <returns>
 		/// <paramref name="str"/> with the last char removed, or
 		/// the original <paramref name="str"/> if the last char of <paramref name="str"/> is not <paramref name="suffix"/>
 		/// </returns>

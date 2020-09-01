@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -29,6 +28,7 @@ using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Client.EmuHawk.CoreExtensions;
 using BizHawk.Client.EmuHawk.CustomControls;
 using BizHawk.Common.PathExtensions;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common.Base_Implementations;
 using BizHawk.Emulation.Cores.Consoles.NEC.PCE;
 using BizHawk.Emulation.Cores.Nintendo.SNES9X;
@@ -628,30 +628,21 @@ namespace BizHawk.Client.EmuHawk
 
 			if (!OSTailoredCode.IsUnixHost && !Config.SkipOutdatedOsCheck)
 			{
-				static string GetRegValue(string key)
+				var (winVersion, win10Release) = OSTailoredCode.HostWindowsVersion.Value;
+				var message = winVersion switch
 				{
-					using var proc = OSTailoredCode.ConstructSubshell("REG", $@"QUERY ""HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion"" /V {key}");
-					proc.Start();
-					return proc.StandardOutput.ReadToEnd().Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries)[1].Split(new[] { '\t', ' ' }, StringSplitOptions.RemoveEmptyEntries)[2];
-				}
-				var winVer = float.Parse(GetRegValue("CurrentVersion"), NumberFormatInfo.InvariantInfo);
-				if (winVer < 6.3f)
+					OSTailoredCode.WindowsVersion._10 when win10Release < 1809 => $"Quick reminder: version {win10Release} of Windows 10 is no longer supported by Microsoft. EmuHawk will continue to work, but please update to at least 1809 \"Redstone 5\" for increased security.",
+					OSTailoredCode.WindowsVersion._10 => null,
+					OSTailoredCode.WindowsVersion._8_1 => null, // still CBB
+					_ => $"Quick reminder: Windows {winVersion.ToString().RemovePrefix('_').Replace("_", ".")} is no longer supported by Microsoft. EmuHawk will continue to work, but please get a new operating system for increased security (either Windows 8.1, Windows 10, or a GNU+Linux distro)."
+				};
+#if false
+				if (message != null)
 				{
-					// less than is just easier than equals
-					string message = ($"Quick reminder: Windows {(winVer < 6.2f ? winVer < 6.1f ? winVer < 6.0f ? "XP" : "Vista" : "7" : "8")} is no longer supported by Microsoft. EmuHawk will continue to work, but please get a new operating system for increased security (either Windows 8.1, Windows 10, or a GNU+Linux distro).");
+					using var box = new ExceptionBox(message);
+					box.ShowDialog();
 				}
-				else if (GetRegValue("ProductName").Contains("Windows 10"))
-				{
-					var win10version = int.Parse(GetRegValue("ReleaseId"));
-					if (win10version < 1809)
-					{
-						string message = ($"Quick reminder: version {win10version} of Windows 10 is no longer supported by Microsoft. EmuHawk will continue to work, but please update to at least 1809 \"Redstone 5\" for increased security.");
-					}
-				}
-				else
-				{
-					// 8.1: can't be bothered writing code for KB installed check, not that I have a Win8.1 machine to test on anyway, so it gets a free pass --yoshi
-				}
+#endif
 			}
 		}
 

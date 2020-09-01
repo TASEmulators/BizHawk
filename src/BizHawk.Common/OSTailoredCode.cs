@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.Runtime.InteropServices;
 
 #if EXE_PROJECT
@@ -14,6 +15,36 @@ namespace BizHawk.Common
 		public static readonly DistinctOS CurrentOS = Environment.OSVersion.Platform == PlatformID.Unix
 			? SimpleSubshell("uname", "-s", "Can't determine OS") == "Darwin" ? DistinctOS.macOS : DistinctOS.Linux
 			: DistinctOS.Windows;
+
+		private static readonly Lazy<(WindowsVersion, int?)?> _HostWindowsVersion = new Lazy<(WindowsVersion, int?)?>(() =>
+		{
+			static string GetRegValue(string key)
+			{
+				using var proc = ConstructSubshell("REG", $@"QUERY ""HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion"" /V {key}");
+				proc.Start();
+				return proc.StandardOutput.ReadToEnd().Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries)[1].Split(new[] { '\t', ' ' }, StringSplitOptions.RemoveEmptyEntries)[2];
+			}
+			if (CurrentOS != DistinctOS.Windows) return null;
+			var rawWinVer = float.Parse(GetRegValue("CurrentVersion"), NumberFormatInfo.InvariantInfo); // contains '.' even when system-wide decimal separator is ','
+			WindowsVersion winVer; // sorry if this elif chain is confusing, I couldn't be bothered writing and testing float equality --yoshi
+			if (rawWinVer < 6.0f) winVer = WindowsVersion.XP;
+			else if (rawWinVer < 6.1f) winVer = WindowsVersion.Vista;
+			else if (rawWinVer < 6.2f) winVer = WindowsVersion._7;
+			else if (rawWinVer < 6.3f) winVer = WindowsVersion._8;
+			else
+			{
+				// 8.1 and 10 are both version 6.3
+				if (GetRegValue("ProductName").Contains("Windows 10"))
+				{
+					return (WindowsVersion._10, int.Parse(GetRegValue("ReleaseId")));
+				}
+				// ...else we're on 8.1. Can't be bothered writing code for KB installed check, not that I have a Win8.1 machine to test on anyway, so it gets a free pass --yoshi
+				winVer = WindowsVersion._8_1;
+			}
+			return (winVer, null);
+		});
+
+		public static (WindowsVersion Version, int? Win10Release)? HostWindowsVersion => _HostWindowsVersion.Value;
 
 		public static readonly bool IsUnixHost = CurrentOS != DistinctOS.Windows;
 
@@ -121,6 +152,16 @@ namespace BizHawk.Common
 			Linux,
 			macOS,
 			Windows
+		}
+
+		public enum WindowsVersion
+		{
+			XP,
+			Vista,
+			_7,
+			_8,
+			_8_1,
+			_10
 		}
 
 		/// <param name="cmd">POSIX <c>$0</c></param>
