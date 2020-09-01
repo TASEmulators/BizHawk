@@ -312,6 +312,6 @@ namespace BizHawk.Client.Common
 		// ReSharper disable once UnusedMember.Global
 		public string LastWrittenFromDetailed { get; set; } = VersionInfo.GetEmuVersion();
 
-		public EHostInputMethod HostInputMethod { get; set; } = EHostInputMethod.OpenTK;
+		public EHostInputMethod HostInputMethod { get; set; } = OSTailoredCode.IsUnixHost ? EHostInputMethod.OpenTK : EHostInputMethod.DirectInput;
 	}
 }
