@@ -40,8 +40,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			var settings = lp.Settings ?? new ZXSpectrumSettings();
 			var syncSettings = lp.SyncSettings ?? new ZXSpectrumSyncSettings();
 
-			PutSyncSettings(lp.SyncSettings);
-			PutSettings(lp.Settings);
+			PutSyncSettings(syncSettings);
+			PutSettings(settings);
 
 			var joysticks = new List<JoystickType>
 			{
