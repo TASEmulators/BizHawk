@@ -48,8 +48,8 @@ namespace BizHawk.Client.Common
 		[LuaMethod("setanalog", "sets the given analog controls to their provided values for the current frame. Note that unlike set() there is only the logic of overriding with the given value.")]
 		public void SetAnalog(LuaTable controls, object controller = null)
 		{
-			var dict = new Dictionary<string, float>();
-			foreach (var k in controls.Keys) dict[k.ToString()] = Convert.ToSingle(controls[k]);
+			var dict = new Dictionary<string, int?>();
+			foreach (var k in controls.Keys) dict[k.ToString()] = (int) Convert.ToSingle(controls[k]);
 			APIs.Joypad.SetAnalog(dict, controller);
 		}
 	}
