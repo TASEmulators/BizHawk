@@ -44,12 +44,12 @@ namespace BizHawk.Client.Common
 			APIs.Joypad.Set(dict, controller);
 		}
 
-		[LuaMethodExample("joypad.setanalog( { [ \"Tilt X\" ] = true, [ \"Tilt Y\" ] = false } );")]
+		[LuaMethodExample("joypad.setanalog( { [ \"Tilt X\" ] = -63, [ \"Tilt Y\" ] = 127 } );")]
 		[LuaMethod("setanalog", "sets the given analog controls to their provided values for the current frame. Note that unlike set() there is only the logic of overriding with the given value.")]
 		public void SetAnalog(LuaTable controls, object controller = null)
 		{
 			var dict = new Dictionary<string, int?>();
-			foreach (var k in controls.Keys) dict[k.ToString()] = (int) Convert.ToSingle(controls[k]);
+			foreach (var k in controls.Keys) dict[k.ToString()] = double.TryParse(controls[k].ToString(), out var d) ? (int) d : (int?) null;
 			APIs.Joypad.SetAnalog(dict, controller);
 		}
 	}
