@@ -37,7 +37,7 @@ namespace BizHawk.Client.EmuHawk
 			foreach (var axis in controller.Definition.Axes.Keys) GlobalWin.InputManager.ButtonOverrideAdapter.SetAxis(axis, controller.AxisValue(axis));
 		}
 
-		public void Set(Dictionary<string, bool> buttons, int? controller = null)
+		public void Set(IDictionary<string, bool> buttons, int? controller = null)
 		{
 			// If a controller is specified, we need to iterate over unique button names. If not, we iterate over
 			// ALL button names with P{controller} prefixes
@@ -62,16 +62,16 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void SetAnalog(Dictionary<string, float> controls, object controller = null)
+		public void SetAnalog(IDictionary<string, int?> controls, object controller = null)
 		{
 			foreach (var kvp in controls) SetAnalog(kvp.Key, kvp.Value, controller);
 		}
 
-		public void SetAnalog(string control, float? value = null, object controller = null)
+		public void SetAnalog(string control, int? value = null, object controller = null)
 		{
 			try
 			{
-				GlobalWin.InputManager.StickyXorAdapter.SetAxis(controller == null ? control : $"P{controller} {control}", value == null ? (int?) null : (int) value.Value); // the time for changing the API will come --yoshi
+				GlobalWin.InputManager.StickyXorAdapter.SetAxis(controller == null ? control : $"P{controller} {control}", value);
 			}
 			catch
 			{
