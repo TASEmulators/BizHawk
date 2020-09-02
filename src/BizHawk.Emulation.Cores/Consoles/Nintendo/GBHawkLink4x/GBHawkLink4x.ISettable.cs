@@ -171,7 +171,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 			}
 
 			[DisplayName("Use Existing SaveRAM")]
-			[Description("When true, existing SaveRAM will be loaded at boot up")]
+			[Description("(Intended for development, for regular use leave as true.) When true, existing SaveRAM will be loaded at boot up.")]
 			[DefaultValue(true)]
 			public bool Use_SRAM { get; set; }
 
