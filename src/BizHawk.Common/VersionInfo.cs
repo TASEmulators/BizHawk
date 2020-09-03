@@ -9,7 +9,7 @@ namespace BizHawk.Common
 		public const string MainVersion = "2.5.0"; // Use numbers only or the new version notification won't work
 		public const string ReleaseDate = "August 30, 2020";
 		public const string HomePage = "http://tasvideos.org/BizHawk.html";
-		public static readonly bool DeveloperBuild = true;
+		public static readonly bool DeveloperBuild = false;
 
 		public static readonly string? CustomBuildString;
 
