@@ -219,6 +219,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			else if (addr < 0xA0)
 			{
 				Sprite_Shapes[addr - 0x80] = value;
+				//Console.WriteLine("spr: " + addr + " " + value + " " + Core.cpu.TotalExecutedCycles);
 			}
 			else if (addr == 0xA0)
 			{

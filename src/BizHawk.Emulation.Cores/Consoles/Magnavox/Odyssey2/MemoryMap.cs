@@ -76,14 +76,19 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 					return 0;
 				}
 
-				if (ppu_en)
+				if (ppu_en && !copy_en)
 				{
 					return ppu.ReadReg(addr_latch);
 				}
 
-				if (vpp_en)
+				if (vpp_en && is_G7400)
 				{
 					return ppu.ReadRegVPP(addr_latch);
+				}
+
+				if (cart_b1 && is_XROM)
+				{
+					return _rom[((kb_byte & 3) << 8) + addr_latch];
 				}
 
 				// if neither RAM or PPU is enabled, then a RD pulse from instruction IN A,BUS will latch controller
@@ -91,18 +96,18 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 				if (kybrd_en)
 				{
 					_islag = false;
-					if ((kb_byte & 7) == 1)
+					if ((kb_byte & 1) == 1)
 					{
 						return controller_state_1;
 					}
-					if ((kb_byte & 7) == 0)
+					if ((kb_byte & 1) == 0)
 					{
 						return controller_state_2;
 					}
 				}
 
-				Console.WriteLine(cpu.TotalExecutedCycles);
 				// not sure what happens if this case is reached, probably whatever the last value on the bus is
+				// Console.WriteLine("Bad read: " + addr_latch + " " + cpu.TotalExecutedCycles);
 				return 0;
 			}
 
@@ -175,6 +180,9 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 				rom_bank = (ushort)(cart_b0 ? 1 : 0);
 				rom_bank |= (ushort)(cart_b1 ? 2 : 0);
 				//rom_bank = (ushort)(rom_bank << 12);
+				
+				// XROM uses cart_b1 for read enable, not bank switch
+				if (is_XROM) { rom_bank = 0; }
 
 				ppu.bg_brightness = !ppu.lum_en ? 8 : 0;
 				ppu.grid_brightness = (!ppu.lum_en | ppu.VDC_color.Bit(6)) ? 8 : 0;

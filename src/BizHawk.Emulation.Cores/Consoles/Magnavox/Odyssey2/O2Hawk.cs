@@ -43,6 +43,8 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 		public bool is_pal;
 		public bool is_G7400;
 
+		public bool is_XROM;
+
 		[CoreConstructor("O2")]
 		public O2Hawk(CoreComm comm, GameInfo game, byte[] rom, O2Settings settings, O2SyncSettings syncSettings)
 		{
@@ -82,6 +84,8 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			Console.WriteLine("MD5: " + rom.HashMD5(0, rom.Length));
 			Console.WriteLine("SHA1: " + rom.HashSHA1(0, rom.Length));
 			_rom = rom;
+
+			if (game["XROM"]) { is_XROM = true; }
 			Setup_Mapper();
 
 			_frameHz = 60;
@@ -167,10 +171,20 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 		private void Setup_Mapper()
 		{
-			mapper = new MapperDefault
+			if (is_XROM)
 			{
-				Core = this
-			};
+				mapper = new MapperXROM
+				{
+					Core = this
+				};
+			}
+			else
+			{
+				mapper = new MapperDefault
+				{
+					Core = this
+				};
+			}
 
 			mapper.Initialize();
 

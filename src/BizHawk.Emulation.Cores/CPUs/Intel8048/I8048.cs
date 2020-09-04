@@ -327,7 +327,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 					Regs[reg_d_ad] = (ushort)((Regs[reg_d_ad] + 1) & 0xFF);
 					break;
 				case RES_TF:
-					TF = false;
+					if (test_pass) { TF = false; }				
 					break;
 				case SET_ADDR_M3:
 					Regs[ALU] &= 0xFF;
@@ -423,7 +423,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 				case TEST_COND:
 					reg_d_ad = cur_instr[instr_pntr++];
 
-					bool test_pass = true;
+					test_pass = true;
 					if ((reg_d_ad == 0) && !TF) { test_pass = false; }
 					if ((reg_d_ad == 1) && T0) { test_pass = false; }
 					if ((reg_d_ad == 2) && !T0) { test_pass = false; }
@@ -488,7 +488,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 						if (TimIntEn)
 						{
 							TIRQPending = true;
-							//Console.WriteLine("Timer: " + TotalExecutedCycles);
+							// Console.WriteLine("Timer: " + LY + " " + TotalExecutedCycles);
 						}
 					}
 					Regs[TIM] = (ushort)((Regs[TIM] + 1) & 0xFF);
@@ -506,7 +506,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 						if (TimIntEn)
 						{
 							TIRQPending = true;
-							//Console.WriteLine("Counter: " + TotalExecutedCycles);
+							// Console.WriteLine("Counter: " + LY + " " + TotalExecutedCycles);
 						}
 					}
 					Regs[TIM] = (ushort)((Regs[TIM] + 1) & 0xFF);
@@ -584,6 +584,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 			ser.Sync(nameof(IRQPending), ref IRQPending);
 			ser.Sync(nameof(TIRQPending), ref TIRQPending);
 			ser.Sync(nameof(INT_MSTR), ref INT_MSTR);
+			ser.Sync(nameof(test_pass), ref test_pass);
 
 			ser.Sync(nameof(instr_pntr), ref instr_pntr);
 			ser.Sync(nameof(cur_instr), ref cur_instr, false);
