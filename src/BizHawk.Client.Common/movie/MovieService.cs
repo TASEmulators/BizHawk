@@ -53,7 +53,7 @@ namespace BizHawk.Client.Common
 			}
 
 			// Accept .tasproj files written from <= 2.5 where the host culture settings used ','
-			if (double.TryParse(versionStr, NumberStyles.Float, CultureInfo.InvariantCulture, out var parsedWithComma))
+			if (double.TryParse(versionStr.Replace(',', '.'), NumberStyles.Float, CultureInfo.InvariantCulture, out var parsedWithComma))
 			{
 				return parsedWithComma;
 			}
