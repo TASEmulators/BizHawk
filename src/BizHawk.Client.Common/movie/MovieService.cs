@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using BizHawk.Common.NumberExtensions;
 
@@ -46,10 +47,15 @@ namespace BizHawk.Client.Common
 				.Trim()
 				.Replace("v", "");
 
-			var result = double.TryParse(versionStr, out double version);
-			if (result)
+			if (double.TryParse(versionStr, NumberStyles.Float, CultureInfo.InvariantCulture, out var parsedWithPeriod))
 			{
-				return version;
+				return parsedWithPeriod;
+			}
+
+			// Accept .tasproj files written from <= 2.5 where the host culture settings used ','
+			if (double.TryParse(versionStr, NumberStyles.Float, CultureInfo.InvariantCulture, out var parsedWithComma))
+			{
+				return parsedWithComma;
 			}
 
 			return 1.0F;
