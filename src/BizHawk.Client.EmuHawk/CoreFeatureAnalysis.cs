@@ -108,6 +108,8 @@ namespace BizHawk.Client.EmuHawk
 		[RequiredService]
 		IEmulator Emulator { get; set; }
 
+		protected override string WindowTitleStatic => "Core Features";
+
 		public CoreFeatureAnalysis()
 		{
 			InitializeComponent();

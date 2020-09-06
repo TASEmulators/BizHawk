@@ -40,9 +40,10 @@ namespace BizHawk.Client.EmuHawk
 		private void SetCurrentFilename(string fname)
 		{
 			_currentFilename = fname;
-			Text = _currentFilename == null
-				? "Code Data Logger"
-				: $"Code Data Logger - {fname}";
+			_windowTitle = _currentFilename == null
+				? WindowTitleStatic
+				: $"{WindowTitleStatic} - {fname}";
+			UpdateWindowTitle();
 		}
 
 		[RequiredService]
@@ -66,6 +67,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private string _currentFilename;
 		private CodeDataLog _cdl;
+
+		private string _windowTitle = "Code Data Logger";
+
+		protected override string WindowTitle => _windowTitle;
+
+		protected override string WindowTitleStatic => "Code Data Logger";
 
 		public CDL()
 		{

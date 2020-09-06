@@ -27,6 +27,8 @@ namespace BizHawk.Client.EmuHawk
 		// the entire bitmap
 		private Bitmap _printerHistory;
 
+		protected override string WindowTitleStatic => "Printer Viewer";
+
 		public GBPrinterView()
 		{
 			InitializeComponent();

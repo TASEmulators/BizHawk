@@ -115,7 +115,6 @@
             this.MaximizeBox = false;
             this.Name = "GBPrinterView";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Printer Viewer";
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
 			this.FormClosed += GBPrinterView_FormClosed;

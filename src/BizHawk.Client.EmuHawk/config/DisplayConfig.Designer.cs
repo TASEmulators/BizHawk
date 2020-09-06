@@ -87,6 +87,9 @@
 			this.label7 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.rbGDIPlus = new System.Windows.Forms.RadioButton();
 			this.tpMisc = new System.Windows.Forms.TabPage();
+			this.flpStaticWindowTitles = new BizHawk.WinForms.Controls.LocSzSingleColumnFLP();
+			this.cbStaticWindowTitles = new BizHawk.WinForms.Controls.CheckBoxEx();
+			this.lblStaticWindowTitles = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.groupBox5 = new System.Windows.Forms.GroupBox();
 			this.rbDisplayAbsoluteZero = new System.Windows.Forms.RadioButton();
 			this.rbDisplayMinimal = new System.Windows.Forms.RadioButton();
@@ -119,6 +122,7 @@
 			this.tpDispMethod.SuspendLayout();
 			this.groupBox3.SuspendLayout();
 			this.tpMisc.SuspendLayout();
+			this.flpStaticWindowTitles.SuspendLayout();
 			this.groupBox5.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.groupBox4.SuspendLayout();
@@ -696,6 +700,7 @@
 			// 
 			// tpMisc
 			// 
+			this.tpMisc.Controls.Add(this.flpStaticWindowTitles);
 			this.tpMisc.Controls.Add(this.groupBox5);
 			this.tpMisc.Location = new System.Drawing.Point(4, 22);
 			this.tpMisc.Name = "tpMisc";
@@ -703,6 +708,27 @@
 			this.tpMisc.TabIndex = 3;
 			this.tpMisc.Text = "Misc";
 			this.tpMisc.UseVisualStyleBackColor = true;
+			// 
+			// flpStaticWindowTitles
+			// 
+			this.flpStaticWindowTitles.Controls.Add(this.cbStaticWindowTitles);
+			this.flpStaticWindowTitles.Controls.Add(this.lblStaticWindowTitles);
+			this.flpStaticWindowTitles.Location = new System.Drawing.Point(6, 109);
+			this.flpStaticWindowTitles.Name = "flpStaticWindowTitles";
+			this.flpStaticWindowTitles.Size = new System.Drawing.Size(490, 52);
+			// 
+			// cbStaticWindowTitles
+			// 
+			this.cbStaticWindowTitles.Name = "cbStaticWindowTitles";
+			this.cbStaticWindowTitles.Text = "Keep window titles static";
+			// 
+			// lblStaticWindowTitles
+			// 
+			this.lblStaticWindowTitles.Location = new System.Drawing.Point(19, 23);
+			this.lblStaticWindowTitles.Margin = new System.Windows.Forms.Padding(19, 0, 3, 0);
+			this.lblStaticWindowTitles.Name = "lblStaticWindowTitles";
+			this.lblStaticWindowTitles.Text = "Some tools put filenames, status, etc. in their window titles.\nChecking this disa" +
+    "bles those features, but may fix problems with window capture (i.e. in OBS).";
 			// 
 			// groupBox5
 			// 
@@ -946,6 +972,8 @@
 			this.groupBox3.PerformLayout();
 			this.tpMisc.ResumeLayout(false);
 			this.tpMisc.PerformLayout();
+			this.flpStaticWindowTitles.ResumeLayout(false);
+			this.flpStaticWindowTitles.PerformLayout();
 			this.groupBox5.ResumeLayout(false);
 			this.groupBox5.PerformLayout();
 			this.tabPage1.ResumeLayout(false);
@@ -1040,5 +1068,8 @@
 		private System.Windows.Forms.TextBox txtCropTop;
 		private BizHawk.WinForms.Controls.LocLabelEx label14;
 		private System.Windows.Forms.TextBox txtCropLeft;
+		private WinForms.Controls.LocSzSingleColumnFLP flpStaticWindowTitles;
+		private WinForms.Controls.CheckBoxEx cbStaticWindowTitles;
+		private WinForms.Controls.LocLabelEx lblStaticWindowTitles;
 	}
 }

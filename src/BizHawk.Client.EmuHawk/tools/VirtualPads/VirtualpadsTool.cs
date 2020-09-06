@@ -38,6 +38,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		protected override string WindowTitleStatic => "Virtual Pads";
+
 		public VirtualpadTool()
 		{
 			StickyPads = true;

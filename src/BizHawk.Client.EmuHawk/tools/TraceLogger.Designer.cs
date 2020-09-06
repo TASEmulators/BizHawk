@@ -280,7 +280,6 @@ namespace BizHawk.Client.EmuHawk
 			this.MinimumSize = new System.Drawing.Size(400, 230);
 			this.Name = "TraceLogger";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "Trace Logger";
 			this.Load += new System.EventHandler(this.TraceLogger_Load);
 			this.TracerBox.ResumeLayout(false);
 			this.TraceContextMenu.ResumeLayout(false);

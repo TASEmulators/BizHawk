@@ -261,7 +261,6 @@ namespace BizHawk.Client.EmuHawk
 			this.MainMenuStrip = this.SoundMenuStrip;
 			this.Name = "PCESoundDebugger";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "Sound Debugger";
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox2.ResumeLayout(false);
 			this.groupBox3.ResumeLayout(false);

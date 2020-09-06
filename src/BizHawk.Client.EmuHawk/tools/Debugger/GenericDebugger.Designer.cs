@@ -329,7 +329,6 @@ namespace BizHawk.Client.EmuHawk
 			this.MainMenuStrip = this.menuStrip1;
 			this.Name = "GenericDebugger";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "Debugger";
 			this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.GenericDebugger_MouseMove);
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();

@@ -27,6 +27,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private int _vdcType;
 
+		protected override string WindowTitleStatic => "Background Viewer";
+
 		public PceBgViewer()
 		{
 			InitializeComponent();

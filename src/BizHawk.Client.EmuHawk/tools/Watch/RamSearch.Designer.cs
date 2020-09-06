@@ -1041,7 +1041,6 @@ namespace BizHawk.Client.EmuHawk
 			this.MinimumSize = new System.Drawing.Size(290, 399);
 			this.Name = "RamSearch";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "RAM Search";
 			this.Activated += new System.EventHandler(this.NewRamSearch_Activated);
 			this.Load += new System.EventHandler(this.RamSearch_Load);
 			this.DragDrop += new System.Windows.Forms.DragEventHandler(this.NewRamSearch_DragDrop);

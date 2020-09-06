@@ -27,6 +27,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private int _scanline;
 
+		protected override string WindowTitleStatic => "Nametable Viewer";
+
 		public NESNameTableViewer()
 		{
 			InitializeComponent();

@@ -471,7 +471,6 @@
 			this.MainMenuStrip = this.menuStrip1;
 			this.Name = "GbGpuView";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "GPU Viewer";
 			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.GbGpuView_FormClosed);
 			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.GbGpuView_KeyDown);
 			this.groupBox1.ResumeLayout(false);

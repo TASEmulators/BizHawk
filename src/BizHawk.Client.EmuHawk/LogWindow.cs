@@ -23,6 +23,12 @@ namespace BizHawk.Client.EmuHawk
 		[RequiredService]
 		private IEmulator Emulator { get; set; }
 
+		private string _windowTitle = "Log Window";
+
+		protected override string WindowTitle => _windowTitle;
+
+		protected override string WindowTitleStatic => "Log Window";
+
 		public LogWindow()
 		{
 			InitializeComponent();
@@ -66,7 +72,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			virtualListView1.VirtualListSize = ss.Length;
-			Text = title;
+			_windowTitle = title;
+			UpdateWindowTitle();
 			btnClear.Visible = false;
 		}
 

@@ -132,7 +132,6 @@
 			this.MainMenuStrip = this.menuStrip1;
 			this.Name = "CoreFeatureAnalysis";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "Core Features";
 			this.tabControl1.ResumeLayout(false);
 			this.tabPage1.ResumeLayout(false);
 			this.tabPage2.ResumeLayout(false);

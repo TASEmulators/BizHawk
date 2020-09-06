@@ -1190,7 +1190,6 @@ namespace BizHawk.Client.EmuHawk
 			this.MinimumSize = new System.Drawing.Size(200, 148);
 			this.Name = "TAStudio";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "TAStudio";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Tastudio_Closing);
 			this.Load += new System.EventHandler(this.Tastudio_Load);
 			this.DragDrop += new System.Windows.Forms.DragEventHandler(this.TAStudio_DragDrop);

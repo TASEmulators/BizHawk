@@ -228,7 +228,6 @@ namespace BizHawk.Client.EmuHawk
 			this.MinimumSize = new System.Drawing.Size(150, 130);
 			this.Name = "CDL";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "Code Data Logger";
 			this.Load += new System.EventHandler(this.CDL_Load);
 			this.DragDrop += new System.Windows.Forms.DragEventHandler(this.CDL_DragDrop);
 			this.DragEnter += new System.Windows.Forms.DragEventHandler(this.CDL_DragEnter);

@@ -57,6 +57,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 		}
 
+		protected override string WindowTitleStatic => "Graphics Debugger";
+
 		public SNESGraphicsDebugger()
 		{
 			InitializeComponent();

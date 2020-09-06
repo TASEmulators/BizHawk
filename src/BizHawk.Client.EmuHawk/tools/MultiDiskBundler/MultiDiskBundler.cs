@@ -22,6 +22,8 @@ namespace BizHawk.Client.EmuHawk
 		[RequiredService]
 		public IEmulator Emulator { get; set; }
 
+		protected override string WindowTitleStatic => "Multi-disk Bundler";
+
 		public MultiDiskBundler()
 		{
 			InitializeComponent();

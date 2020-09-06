@@ -130,7 +130,7 @@ namespace BizHawk.Client.EmuHawk
 							_engaged = true;
 							WantsToControlReboot = true;
 							SetUpColumns();
-							SetTextProperty();
+							UpdateWindowTitle();
 						}
 					}
 					else

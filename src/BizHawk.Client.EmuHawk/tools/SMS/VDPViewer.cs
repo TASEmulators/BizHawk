@@ -17,6 +17,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private int _palIndex;
 
+		protected override string WindowTitleStatic => "VDP Viewer";
+
 		public SmsVdpViewer()
 		{
 			InitializeComponent();

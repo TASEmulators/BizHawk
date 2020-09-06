@@ -214,7 +214,6 @@ namespace BizHawk.Client.EmuHawk
 			this.MainMenuStrip = this.PceBgViewerMenu;
 			this.Name = "PceBgViewer";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "Background Viewer";
 			this.PceBgViewerMenu.ResumeLayout(false);
 			this.PceBgViewerMenu.PerformLayout();
 			this.groupBox1.ResumeLayout(false);

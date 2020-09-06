@@ -146,7 +146,6 @@ namespace BizHawk.Client.EmuHawk
 			this.Controls.Add(this.ControllerBox);
 			this.Controls.Add(this.PadMenu);
 			this.Name = "VirtualpadTool";
-			this.Text = "Virtual Pads";
 			this.Load += new System.EventHandler(this.VirtualpadTool_Load);
 			this.ControllerBox.ResumeLayout(false);
 			this.PadBoxContextMenu.ResumeLayout(false);

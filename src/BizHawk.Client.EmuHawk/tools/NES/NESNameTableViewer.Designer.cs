@@ -366,7 +366,6 @@ namespace BizHawk.Client.EmuHawk
 			this.MinimumSize = new System.Drawing.Size(687, 588);
 			this.Name = "NESNameTableViewer";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "Nametable Viewer";
 			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.NESNameTableViewer_FormClosed);
 			this.Load += new System.EventHandler(this.NESNameTableViewer_Load);
 			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.NesNameTableViewer_KeyDown);

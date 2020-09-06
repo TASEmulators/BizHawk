@@ -245,7 +245,6 @@
 			this.MainMenuStrip = this.MacroMenu;
 			this.Name = "MacroInputTool";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "Macro Input";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MacroInputTool_FormClosing);
 			this.Load += new System.EventHandler(this.MacroInputTool_Load);
 			this.Resize += new System.EventHandler(this.MacroInputTool_Resize);

@@ -85,7 +85,6 @@
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.textBox1);
 			this.Name = "BarcodeEntry";
-			this.Text = "Barcode Entry";
 			this.ResumeLayout(false);
 			this.PerformLayout();
 

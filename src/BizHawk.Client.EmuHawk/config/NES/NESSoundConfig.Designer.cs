@@ -98,7 +98,6 @@
 			this.Name = "NESSoundConfig";
 			this.ShowIcon = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "NES Sound Channels";
 			this.Load += new System.EventHandler(this.NESSoundConfig_Load);
 			((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
 			this.ResumeLayout(false);

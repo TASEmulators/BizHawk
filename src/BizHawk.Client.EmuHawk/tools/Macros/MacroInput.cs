@@ -27,6 +27,9 @@ namespace BizHawk.Client.EmuHawk
 		// have options only available for TasMovie
 
 		private bool _initializing;
+
+		protected override string WindowTitleStatic => "Macro Input";
+
 		public MacroInputTool()
 		{
 			_initializing = true;

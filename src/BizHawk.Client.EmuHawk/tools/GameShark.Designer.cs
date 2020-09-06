@@ -116,7 +116,6 @@
 			this.MinimumSize = new System.Drawing.Size(230, 155);
 			this.Name = "GameShark";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "Cheat Code Converter";
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}

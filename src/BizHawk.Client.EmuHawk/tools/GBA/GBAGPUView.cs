@@ -30,6 +30,8 @@ namespace BizHawk.Client.EmuHawk
 
 		// MobileDetailView memory;
 
+		protected override string WindowTitleStatic => "GBA GPU Viewer";
+
 		public GbaGpuView()
 		{
 			InitializeComponent();

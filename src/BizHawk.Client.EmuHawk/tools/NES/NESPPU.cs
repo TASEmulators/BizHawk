@@ -44,6 +44,8 @@ namespace BizHawk.Client.EmuHawk
 			set { _chrRomView = value; CalculateFormSize(); }
 		}
 
+		protected override string WindowTitleStatic => "PPU Viewer";
+
 		public NesPPU()
 		{
 			InitializeComponent();

@@ -211,7 +211,6 @@ namespace BizHawk.Client.EmuHawk
 			this.MainMenuStrip = this.menuStrip1;
 			this.Name = "GenVdpViewer";
 			this.ShowIcon = false;
-			this.Text = "VDP Viewer";
 			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.VDPViewer_KeyDown);
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox2.ResumeLayout(false);

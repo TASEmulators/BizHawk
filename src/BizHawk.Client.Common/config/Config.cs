@@ -313,5 +313,7 @@ namespace BizHawk.Client.Common
 		public string LastWrittenFromDetailed { get; set; } = VersionInfo.GetEmuVersion();
 
 		public EHostInputMethod HostInputMethod { get; set; } = OSTailoredCode.IsUnixHost ? EHostInputMethod.OpenTK : EHostInputMethod.DirectInput;
+
+		public bool UseStaticWindowTitles { get; set; }
 	}
 }

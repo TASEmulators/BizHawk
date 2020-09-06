@@ -152,7 +152,6 @@ namespace BizHawk.Client.EmuHawk
 			this.KeyPreview = true;
 			this.MainMenuStrip = this.menuStrip1;
 			this.Name = "SmsVdpViewer";
-			this.Text = "VDP Viewer";
 			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.VDPViewer_KeyDown);
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox2.ResumeLayout(false);
