@@ -193,8 +193,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				_controllerDeck = new GBHawkControllerDeck(GBHawkControllerDeck.DefaultControllerName);
 			}
 			
-
-
 			timer.Core = this;
 			audio.Core = this;
 			ppu.Core = this;
@@ -323,6 +321,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			
 			vid_buffer = new uint[VirtualWidth * VirtualHeight];
 			frame_buffer = new int[VirtualWidth * VirtualHeight];
+
+			uint startup_color = (!is_GBC && (_settings.Palette == GBSettings.PaletteType.Gr)) ? 0xFFA4C505 : 0xFFFFFFFF;
+			for (int i = 0; i < vid_buffer.Length; i++)
+			{
+				vid_buffer[i] = startup_color;
+				frame_buffer[i] = (int)vid_buffer[i];
+			}
 		}
 
 		// TODO: move callbacks to cpu to avoid having to make a non-inlinable 
