@@ -678,7 +678,6 @@ namespace BizHawk.Client.EmuHawk
 			this.MinimumSize = new System.Drawing.Size(400, 180);
 			this.Name = "LuaConsole";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "Lua Console";
 			this.Load += new System.EventHandler(this.LuaConsole_Load);
 			this.DragDrop += new System.Windows.Forms.DragEventHandler(this.LuaConsole_DragDrop);
 			this.DragEnter += new System.Windows.Forms.DragEventHandler(this.DragEnterWrapper);

@@ -705,7 +705,6 @@ namespace BizHawk.Client.EmuHawk
 			this.MinimumSize = new System.Drawing.Size(767, 445);
 			this.Name = "NesPPU";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "PPU Viewer";
 			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.NesPPU_FormClosed);
 			this.Load += new System.EventHandler(this.NesPPU_Load);
 			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.NesPPU_KeyDown);

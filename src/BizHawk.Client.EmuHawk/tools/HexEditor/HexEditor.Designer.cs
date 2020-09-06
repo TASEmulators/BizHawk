@@ -473,7 +473,6 @@ namespace BizHawk.Client.EmuHawk
 			this.MinimumSize = new System.Drawing.Size(360, 180);
 			this.Name = "HexEditor";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "Hex Editor";
 			this.Load += new System.EventHandler(this.HexEditor_Load);
 			this.ResizeEnd += new System.EventHandler(this.HexEditor_ResizeEnd);
 			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.HexEditor_KeyDown);

@@ -190,7 +190,6 @@
             this.MainMenuStrip = this.MultiDiskMenuStrip;
             this.Name = "MultiDiskBundler";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Multi-disk Bundler";
             this.Load += new System.EventHandler(this.MultiGameCreator_Load);
             this.grpName.ResumeLayout(false);
             this.grpName.PerformLayout();

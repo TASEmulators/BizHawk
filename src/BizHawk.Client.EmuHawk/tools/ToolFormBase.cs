@@ -9,10 +9,16 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public class ToolFormBase : Form
+	public abstract class ToolFormBase : FormBase
 	{
 		public ToolManager Tools { get; set; }
-		public Config Config { get; set; }
+
+		public new Config Config
+		{
+			get => base.Config;
+			set => base.Config = value; //TODO used once in ToolManager (for init) and twice in dumb ways
+		}
+
 		public InputManager InputManager { get; set; }
 		public IMainFormForTools MainForm { get; set; }
 

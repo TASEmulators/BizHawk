@@ -6,6 +6,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -38,7 +39,7 @@ using BizHawk.Emulation.Cores.Consoles.Nintendo.Faust;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class MainForm : Form, IMainFormForApi, IMainFormForConfig, IMainFormForTools
+	public partial class MainForm : FormBase, IMainFormForApi, IMainFormForConfig, IMainFormForTools
 	{
 		/// <remarks><c>AppliesTo[0]</c> is used as the group label, and <c>Config.PreferredCores[AppliesTo[0]]</c> determines the currently selected option</remarks>
 		private static readonly IReadOnlyCollection<(string[] AppliesTo, string[] CoreNames)> CoreData = new List<(string[], string[])> {
@@ -301,6 +302,8 @@ namespace BizHawk.Client.EmuHawk
 			//do this threaded stuff early so it has plenty of time to run in background
 			Database.InitializeDatabase(Path.Combine(PathUtils.ExeDirectoryPath, "gamedb", "gamedb.txt"));
 			BootGodDb.Initialize(Path.Combine(PathUtils.ExeDirectoryPath, "gamedb"));
+
+			base.Config = Config;
 
 			InputManager.ControllerInputCoalescer = new ControllerInputCoalescer();
 			GlobalWin.FirmwareManager = new FirmwareManager();
@@ -874,10 +877,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private ISoundProvider _currentSoundProvider = new NullSound(44100 / 60); // Reasonable default until we have a core instance
 
-		private Config Config
+		private new Config Config
 		{
 			get => GlobalWin.Config;
-			set => GlobalWin.Config = value;
+			set => GlobalWin.Config = base.Config = value;
 		}
 
 		private ToolManager Tools => GlobalWin.Tools;
@@ -1578,52 +1581,64 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void SetWindowText()
+		protected override string WindowTitle
 		{
-			string str = "";
-
-			if (_inResizeLoop)
+			get
 			{
-				var size = PresentationPanel.NativeSize;
-				float ar = (float)size.Width / size.Height;
-				str += $"({size.Width}x{size.Height})={ar} - ";
-			}
+				if (!Config.DispChromeCaptionWindowed || _argParser._chromeless) return string.Empty; //TODO why would you want this? was this a previous attempt at static window titles?
 
-			// we need to display FPS somewhere, in this case
-			if (Config.DispSpeedupFeatures == 0)
-			{
-				str += $"({_lastFps:0} fps) - ";
-			}
+				var sb = new StringBuilder();
 
-			if (!string.IsNullOrEmpty(VersionInfo.CustomBuildString))
-			{
-				str += $"{VersionInfo.CustomBuildString} ";
-			}
-
-			str += Emulator.IsNull() ? "BizHawk" : Emulator.System().DisplayName;
-
-			if (VersionInfo.DeveloperBuild)
-			{
-				str += " (interim)";
-			}
-
-			if (!Emulator.IsNull())
-			{
-				str += $" - {Game.Name}";
-
-				if (MovieSession.Movie.IsActive())
+				if (_inResizeLoop)
 				{
-					str += $" - {Path.GetFileName(MovieSession.Movie.Filename)}";
+					var size = PresentationPanel.NativeSize;
+					sb.Append($"({size.Width}x{size.Height})={(float) size.Width / size.Height} - ");
 				}
-			}
 
-			if (!Config.DispChromeCaptionWindowed || _argParser._chromeless)
-			{
-				str = "";
-			}
+				if (Config.DispSpeedupFeatures == 0)
+				{
+					// we need to display FPS somewhere, in this case
+					sb.Append($"({_lastFps:0} fps) - ");
+				}
 
-			Text = str;
+				if (!string.IsNullOrEmpty(VersionInfo.CustomBuildString))
+				{
+					sb.Append($"{VersionInfo.CustomBuildString} ");
+				}
+
+				sb.Append(Emulator.IsNull() ? "BizHawk" : Emulator.System().DisplayName);
+
+				if (VersionInfo.DeveloperBuild)
+				{
+					sb.Append(" (interim)");
+				}
+
+				if (!Emulator.IsNull())
+				{
+					sb.Append($" - {Game.Name}");
+					if (MovieSession.Movie.IsActive())
+					{
+						sb.Append($" - {Path.GetFileName(MovieSession.Movie.Filename)}");
+					}
+				}
+
+				return sb.ToString();
+			}
 		}
+
+		protected override string WindowTitleStatic
+		{
+			get
+			{
+				var sb = new StringBuilder();
+				if (!string.IsNullOrEmpty(VersionInfo.CustomBuildString)) sb.Append($"{VersionInfo.CustomBuildString} ");
+				sb.Append("BizHawk");
+				if (VersionInfo.DeveloperBuild) sb.Append(" (interim)");
+				return sb.ToString();
+			}
+		}
+
+		public void SetWindowText() => UpdateWindowTitle();
 
 		private void ClearAutohold()
 		{

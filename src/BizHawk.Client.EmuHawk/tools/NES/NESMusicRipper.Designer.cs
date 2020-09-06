@@ -159,7 +159,6 @@ namespace BizHawk.Client.EmuHawk
 			this.Controls.Add(this.menuStrip1);
 			this.Name = "NESMusicRipper";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "Music Ripper";
 			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.NESMusicRipper_FormClosed);
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();

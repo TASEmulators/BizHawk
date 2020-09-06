@@ -13,6 +13,8 @@ namespace BizHawk.Client.EmuHawk
 		private const string AddressColumnName = "Address";
 		private const string InstructionColumnName = "Instruction";
 
+		protected override string WindowTitleStatic => "Debugger";
+
 		public GenericDebugger()
 		{
 			InitializeComponent();

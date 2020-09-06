@@ -106,6 +106,12 @@ namespace BizHawk.Client.EmuHawk
 		private SolidBrush _highlightBrush;
 		private SolidBrush _secondaryHighlightBrush;
 
+		private string _windowTitle = "Hex Editor";
+
+		protected override string WindowTitle => _windowTitle;
+
+		protected override string WindowTitleStatic => "Hex Editor";
+
 		public HexEditor()
 		{
 			_hexFind = new HexFind(this);
@@ -729,15 +735,21 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UpdateFormText()
 		{
-			Text = "Hex Editor";
-			if (_highlightedAddress.HasValue)
+			if (!_highlightedAddress.HasValue)
 			{
-				Text += " - Editing Address 0x" + string.Format(_numDigitsStr, _highlightedAddress);
+				_windowTitle = WindowTitleStatic;
+			}
+			else
+			{
+				var newTitle = "Hex Editor";
+				newTitle += " - Editing Address 0x" + string.Format(_numDigitsStr, _highlightedAddress);
 				if (_secondaryHighlightedAddresses.Any())
 				{
-					Text += $" (Selected 0x{_secondaryHighlightedAddresses.Count + (_secondaryHighlightedAddresses.Contains(_highlightedAddress.Value) ? 0 : 1):X})";
+					newTitle += $" (Selected 0x{_secondaryHighlightedAddresses.Count + (_secondaryHighlightedAddresses.Contains(_highlightedAddress.Value) ? 0 : 1):X})";
 				}
+				_windowTitle = newTitle;
 			}
+			UpdateWindowTitle();
 		}
 
 		private bool IsVisible(long address) => ((long) HexScrollBar.Value).RangeToExclusive(HexScrollBar.Value + _rowsVisible).Contains(address >> 4);

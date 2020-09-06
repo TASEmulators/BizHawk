@@ -16,8 +16,6 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class BasicBot : ToolFormBase, IToolFormAutoConfig
 	{
-		private const string DialogTitle = "Basic Bot";
-
 		private string _currentFileName = "";
 
 		private string CurrentFileName
@@ -27,9 +25,10 @@ namespace BizHawk.Client.EmuHawk
 			{
 				_currentFileName = value;
 
-				Text = !string.IsNullOrWhiteSpace(_currentFileName)
-					? $"{DialogTitle} - {Path.GetFileNameWithoutExtension(_currentFileName)}"
-					: DialogTitle;
+				_windowTitle = !string.IsNullOrWhiteSpace(_currentFileName)
+					? $"{WindowTitleStatic} - {Path.GetFileNameWithoutExtension(_currentFileName)}"
+					: WindowTitleStatic;
+				UpdateWindowTitle();
 			}
 
 		}
@@ -79,6 +78,12 @@ namespace BizHawk.Client.EmuHawk
 			public bool InvisibleEmulation { get; set; }
 		}
 
+		private string _windowTitle = "Basic Bot";
+
+		protected override string WindowTitle => _windowTitle;
+
+		protected override string WindowTitleStatic => "Basic Bot";
+
 		public BasicBot()
 		{
 			InitializeComponent();
@@ -93,7 +98,6 @@ namespace BizHawk.Client.EmuHawk
 			PlayBestButton.Image = Resources.Play;
 			ClearBestButton.Image = Resources.Close;
 			StopBtn.Image = Resources.Stop;
-			Text = DialogTitle;
 			Settings = new BasicBotSettings();
 
 			_comparisonBotAttempt = new BotAttempt();

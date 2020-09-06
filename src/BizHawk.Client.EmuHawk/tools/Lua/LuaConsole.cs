@@ -67,6 +67,8 @@ namespace BizHawk.Client.EmuHawk
 		[ConfigPersist]
 		public LuaConsoleSettings Settings { get; set; }
 
+		protected override string WindowTitleStatic => "Lua Console";
+
 		public LuaConsole()
 		{
 			Settings = new LuaConsoleSettings();

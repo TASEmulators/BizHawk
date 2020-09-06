@@ -29,6 +29,8 @@ namespace BizHawk.Client.EmuHawk
 		private string _sortedColumn;
 		private bool _sortReverse;
 
+		protected override string WindowTitleStatic => "Cheats";
+
 		public Cheats()
 		{
 			InitializeComponent();

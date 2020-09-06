@@ -1638,7 +1638,6 @@ namespace BizHawk.Client.EmuHawk
 			this.Name = "TI83KeyPad";
 			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "TI-83 Virtual KeyPad";
 			this.Load += new System.EventHandler(this.TI83KeyPad_Load);
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();

@@ -264,7 +264,7 @@ namespace BizHawk.Client.EmuHawk
 
 			MainForm.AddOnScreenMessage("TAStudio engaged");
 			SetTasMovieCallbacks(CurrentTasMovie);
-			SetTextProperty();
+			UpdateWindowTitle();
 			MainForm.RelinquishControl(this);
 			_originalEndAction = Config.Movies.MovieEndAction;
 			MainForm.DisableRewind();
@@ -652,7 +652,7 @@ namespace BizHawk.Client.EmuHawk
 			CurrentTasMovie.ChangeLog.Clear();
 			CurrentTasMovie.ClearChanges();
 
-			SetTextProperty();
+			UpdateWindowTitle();
 			MessageStatusLabel.Text = $"{Path.GetFileName(CurrentTasMovie.Filename)} loaded.";
 
 			return true;
@@ -811,7 +811,7 @@ namespace BizHawk.Client.EmuHawk
 				Update();
 				CurrentTasMovie.Save();
 				Settings.RecentTas.Add(CurrentTasMovie.Filename);
-				SetTextProperty();
+				UpdateWindowTitle();
 				MessageStatusLabel.Text = "File saved.";
 				Cursor = Cursors.Default;
 			}
@@ -826,23 +826,14 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.Sound.StartSound();
 		}
 
-		private void SetTextProperty()
-		{
-			var text = "TAStudio";
-			if (CurrentTasMovie != null)
-			{
-				text += $" - {CurrentTasMovie.Name}{(CurrentTasMovie.Changes ? "*" : "")}";
-			}
+		protected override string WindowTitle
+			=> CurrentTasMovie == null
+				? "TAStudio"
+				: CurrentTasMovie.Changes
+					? $"TAStudio - {CurrentTasMovie.Name}*"
+					: $"TAStudio - {CurrentTasMovie.Name}";
 
-			if (InvokeRequired)
-			{
-				this.Invoke(() => Text = text);
-			}
-			else
-			{
-				Text = text;
-			}
-		}
+		protected override string WindowTitleStatic => "TAStudio";
 
 		public IEnumerable<int> GetSelection() => TasView.SelectedRows;
 
@@ -1133,7 +1124,7 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		private void TasMovie_OnPropertyChanged(object sender, PropertyChangedEventArgs e)
 		{
-			SetTextProperty();
+			UpdateWindowTitle();
 		}
 
 		private void TAStudio_DragDrop(object sender, DragEventArgs e)

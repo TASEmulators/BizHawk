@@ -10,6 +10,8 @@ namespace BizHawk.Client.EmuHawk
 		[RequiredService]
 		private DatachBarcode Reader { get; set; }
 
+		protected override string WindowTitleStatic => "Barcode Entry";
+
 		public BarcodeEntry()
 		{
 			InitializeComponent();

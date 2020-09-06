@@ -20,6 +20,8 @@ namespace BizHawk.Client.EmuHawk
 		[RequiredService]
 		private NES Nes { get; set; }
 
+		protected override string WindowTitleStatic => "Music Ripper";
+
 		public NESMusicRipper()
 		{
 			InitializeComponent();

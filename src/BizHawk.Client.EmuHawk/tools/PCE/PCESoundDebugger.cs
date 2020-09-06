@@ -18,6 +18,8 @@ namespace BizHawk.Client.EmuHawk
 		[RequiredService]
 		private PCEngine PCE { get; set; }
 
+		protected override string WindowTitleStatic => "Sound Debugger";
+
 		public PCESoundDebugger()
 		{
 			InitializeComponent();

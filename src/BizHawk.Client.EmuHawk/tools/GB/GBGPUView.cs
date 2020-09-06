@@ -54,6 +54,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		protected override string WindowTitleStatic => "GPU Viewer";
+
 		public GbGpuView()
 		{
 			InitializeComponent();

@@ -643,7 +643,6 @@ namespace BizHawk.Client.EmuHawk
             this.Controls.Add(this.WatchListView);
             this.Name = "RamWatch";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = " RAM Watch";
             this.Load += new System.EventHandler(this.RamWatch_Load);
             this.DragDrop += new System.Windows.Forms.DragEventHandler(this.RamWatch_DragDrop);
             this.DragEnter += new System.Windows.Forms.DragEventHandler(this.DragEnterWrapper);

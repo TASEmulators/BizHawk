@@ -155,7 +155,6 @@ namespace BizHawk.Client.EmuHawk
 			this.Name = "LogWindow";
 			this.ShowIcon = true;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "Log Window";
 			this.Load += new System.EventHandler(this.LogWindow_Load);
 			this.tableLayoutPanel1.ResumeLayout(false);
 			this.ResumeLayout(false);

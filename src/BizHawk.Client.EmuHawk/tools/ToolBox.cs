@@ -16,6 +16,8 @@ namespace BizHawk.Client.EmuHawk
 		[RequiredService]
 		private IEmulator Emulator { get; set; }
 
+		protected override string WindowTitleStatic => string.Empty;
+
 		public ToolBox()
 		{
 			InitializeComponent();

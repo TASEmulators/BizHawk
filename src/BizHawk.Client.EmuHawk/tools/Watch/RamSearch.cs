@@ -39,6 +39,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool _dropdownDontfire; // Used as a hack to get around lame .net dropdowns, there's no way to set their index without firing the SelectedIndexChanged event!
 
+		protected override string WindowTitleStatic => "RAM Search";
+
 		public RamSearch()
 		{
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);

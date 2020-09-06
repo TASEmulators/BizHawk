@@ -18,6 +18,8 @@ namespace BizHawk.Client.EmuHawk
 			NESSoundConfig_Load(null, null);
 		}
 
+		protected override string WindowTitleStatic => "NES Sound Channels";
+
 		public NESSoundConfig()
 		{
 			InitializeComponent();

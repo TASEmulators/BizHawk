@@ -19,6 +19,8 @@ namespace BizHawk.Client.EmuHawk
 		private int _bgPalNum;
 		private int _spPalNum;
 
+		protected override string WindowTitleStatic => "Tile Viewer";
+
 		public PceTileViewer()
 		{
 			InitializeComponent();

@@ -2457,7 +2457,6 @@ namespace BizHawk.Client.EmuHawk
 			this.Name = "SNESGraphicsDebugger";
 			this.ShowIcon = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "Graphics Debugger";
 			this.Load += new System.EventHandler(this.SNESGraphicsDebugger_Load);
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();

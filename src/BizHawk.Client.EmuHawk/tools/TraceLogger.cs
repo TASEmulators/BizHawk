@@ -59,6 +59,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private const string DisasmColumnName = "Disasm";
 		private const string RegistersColumnName = "Registers";
+
+		protected override string WindowTitleStatic => "Trace Logger";
+
 		public TraceLogger()
 		{
 			InitializeComponent();

@@ -31,6 +31,8 @@ namespace BizHawk.Client.EmuHawk
 		[OptionalService]
 		private IDebuggable Debuggable { get; set; }
 
+		protected override string WindowTitleStatic => "RAM Watch";
+
 		public RamWatch()
 		{
 			InitializeComponent();
