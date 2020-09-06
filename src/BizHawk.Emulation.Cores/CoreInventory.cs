@@ -168,7 +168,7 @@ namespace BizHawk.Emulation.Cores
 			}
 		}
 
-		public static readonly CoreInventory Instance = new CoreInventory(new[] { typeof(CoreInventory).Assembly });
+		public static readonly CoreInventory Instance = new CoreInventory(new[] { Emulation.Cores.ReflectionCache.Asm });
 	}
 
 	public enum CorePriority

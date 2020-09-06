@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Windows.Forms;
 
 using BizHawk.Common;
@@ -73,9 +72,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			ControllerPanel.Controls.Clear();
 
-			var schemaType = Assembly
-				.GetExecutingAssembly()
-				.GetTypesWithoutLoadErrors()
+			var schemaType = EmuHawk.ReflectionCache.Types
 				.Where(t => typeof(IVirtualPadSchema)
 					.IsAssignableFrom(t) && t.GetCustomAttributes(false)
 					.OfType<SchemaAttribute>()

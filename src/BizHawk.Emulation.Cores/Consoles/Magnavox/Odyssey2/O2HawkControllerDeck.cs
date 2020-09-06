@@ -102,8 +102,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			{
 				if (_controllerTypes == null)
 				{
-					_controllerTypes = typeof(O2HawkControllerDeck).Assembly
-						.GetTypes()
+					_controllerTypes = Emulation.Cores.ReflectionCache.Types
 						.Where(t => typeof(IPort).IsAssignableFrom(t))
 						.Where(t => !t.IsAbstract && !t.IsInterface)
 						.ToDictionary(tkey => tkey.DisplayName());

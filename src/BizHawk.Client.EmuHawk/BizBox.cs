@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
 using System.Windows.Forms;
 using BizHawk.Client.EmuHawk.Properties;
 using BizHawk.Common;
@@ -47,9 +46,7 @@ namespace BizHawk.Client.EmuHawk
 			VersionLabel.Text = $"Version {mainVersion}";
 			DateLabel.Text = VersionInfo.ReleaseDate;
 
-			var cores = Assembly
-				.Load("BizHawk.Emulation.Cores")
-				.GetTypes()
+			var cores = Emulation.Cores.ReflectionCache.Types
 				.Where(t => typeof(IEmulator).IsAssignableFrom(t))
 				.Select(t => t.GetCustomAttributes(false).OfType<CoreAttribute>().FirstOrDefault())
 				.Where(a => a != null)

@@ -69,8 +69,7 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 			{
 				if (_controllerTypes == null)
 				{
-					_controllerTypes = typeof(GGHawkLinkControllerDeck).Assembly
-						.GetTypes()
+					_controllerTypes = Emulation.Cores.ReflectionCache.Types
 						.Where(t => typeof(IPort).IsAssignableFrom(t))
 						.Where(t => !t.IsAbstract && !t.IsInterface)
 						.ToDictionary(tkey => tkey.DisplayName());

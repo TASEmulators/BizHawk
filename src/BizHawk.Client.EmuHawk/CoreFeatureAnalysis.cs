@@ -153,8 +153,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 
-			var knownServices = Assembly.GetAssembly(typeof(IEmulator))
-				.GetTypes()
+			var knownServices = Emulation.Common.ReflectionCache.Types
 				.Where(t => typeof(IEmulatorService).IsAssignableFrom(t))
 				.Where(t => t != typeof(IEmulatorService))
 				.Where(t => t != typeof(ITextStatable)) // Hack for now, eventually we can get rid of this interface in favor of a default implementation
@@ -202,10 +201,7 @@ namespace BizHawk.Client.EmuHawk
 			CoreTree.ImageList.Images.Add("Bad", Properties.Resources.ExclamationRed);
 			CoreTree.ImageList.Images.Add("Unknown", Properties.Resources.RetroQuestion);
 
-			var possibleCoreTypes =
-				Assembly
-				.Load("BizHawk.Emulation.Cores")
-				.GetTypes()
+			var possibleCoreTypes = Emulation.Cores.ReflectionCache.Types
 				.Where(t => typeof(IEmulator).IsAssignableFrom(t) && !t.IsAbstract)
 				.Select(t => new
 				{

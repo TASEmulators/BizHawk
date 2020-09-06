@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Reflection;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
@@ -45,7 +44,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			ToolBoxStrip.Items.Clear();
 
-			var tools = Assembly.GetAssembly(GetType()).GetTypesWithoutLoadErrors()
+			var tools = EmuHawk.ReflectionCache.Types
 				.Where(t => typeof(IToolForm).IsAssignableFrom(t))
 				.Where(t => typeof(Form).IsAssignableFrom(t))
 				.Where(t => !typeof(ToolBox).IsAssignableFrom(t))

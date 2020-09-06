@@ -464,9 +464,7 @@ namespace BizHawk.Client.EmuHawk
 			return Load<T>(false);
 		}
 
-		public IEnumerable<Type> AvailableTools => Assembly
-			.GetAssembly(typeof(ToolManager))
-			.GetTypesWithoutLoadErrors()
+		public IEnumerable<Type> AvailableTools => EmuHawk.ReflectionCache.Types
 			.Where(t => typeof(IToolForm).IsAssignableFrom(t))
 			.Where(t => !t.IsInterface)
 			.Where(IsAvailable);
@@ -701,8 +699,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private static readonly Lazy<List<string>> LazyAsmTypes = new Lazy<List<string>>(() =>
-			Assembly.GetAssembly(typeof(ToolManager)) // Confining the search to only EmuHawk, for now at least, we may want to broaden for external tools one day
-				.GetTypesWithoutLoadErrors()
+			EmuHawk.ReflectionCache.Types // Confining the search to only EmuHawk, for now at least, we may want to broaden for external tools one day
 				.Select(t => t.AssemblyQualifiedName)
 				.ToList());
 

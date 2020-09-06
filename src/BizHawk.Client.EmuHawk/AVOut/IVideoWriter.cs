@@ -145,7 +145,7 @@ namespace BizHawk.Client.EmuHawk
 
 		static VideoWriterInventory()
 		{
-			foreach (Type t in typeof(VideoWriterInventory).Assembly.GetTypesWithoutLoadErrors())
+			foreach (var t in EmuHawk.ReflectionCache.Types)
 			{
 				if (!t.IsInterface
 					&& typeof(IVideoWriter).IsAssignableFrom(t)

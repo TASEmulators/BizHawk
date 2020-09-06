@@ -1114,15 +1114,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		static readonly Dictionary<string, Type> FamicomExpansions;
 		static readonly Dictionary<string, Type> NesPortDevices;
 
-		static Dictionary<string, Type> Implementors<T>()
-		{
-			var assy = typeof(NESControlSettings).Assembly;
-			var types = assy.GetTypes().Where(c => typeof(T).IsAssignableFrom(c) && !c.IsAbstract && !c.IsInterface);
-			var ret = new Dictionary<string, Type>();
-			foreach (Type t in types)
-				ret[t.Name] = t;
-			return ret;
-		}
+		static Dictionary<string, Type> Implementors<T>() => Emulation.Cores.ReflectionCache.Types
+			.Where(c => typeof(T).IsAssignableFrom(c) && !c.IsAbstract && !c.IsInterface)
+			.ToDictionary(t => t.Name, t => t);
 
 		static NESControlSettings()
 		{

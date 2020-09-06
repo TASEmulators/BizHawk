@@ -63,8 +63,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			{
 				if (_controllerTypes == null)
 				{
-					_controllerTypes = typeof(GBHawkControllerDeck).Assembly
-						.GetTypes()
+					_controllerTypes = Emulation.Cores.ReflectionCache.Types
 						.Where(t => typeof(IPort).IsAssignableFrom(t))
 						.Where(t => !t.IsAbstract && !t.IsInterface)
 						.ToDictionary(tkey => tkey.DisplayName());

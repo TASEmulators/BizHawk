@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Reflection;
 
 using BizHawk.Common.IOExtensions;
 
 namespace BizHawk.Emulation.Cores.Properties {
 	internal static class Resources {
-		private static readonly Assembly Asm = typeof(Resources).Assembly;
-
 		/// <param name="embedPath">Dir separator is '<c>.</c>'. Path is relative to <c>&lt;NS></c>.</param>
-		private static byte[] ReadEmbeddedByteArray(string embedPath) => Asm.GetManifestResourceStream($"BizHawk.Emulation.Cores.Resources.{embedPath}").ReadAllBytes();
+		private static byte[] ReadEmbeddedByteArray(string embedPath) => Emulation.Cores.ReflectionCache.Asm.GetManifestResourceStream($"BizHawk.Emulation.Cores.Resources.{embedPath}").ReadAllBytes();
 
 		internal static readonly Lazy<byte[]> CPC_AMSDOS_0_5_ROM = new Lazy<byte[]>(() => ReadEmbeddedByteArray("CPC_AMSDOS_0.5.ROM.gz"));
 		internal static readonly Lazy<byte[]> CPC_BASIC_1_0_ROM = new Lazy<byte[]>(() => ReadEmbeddedByteArray("CPC_BASIC_1.0.ROM.gz"));

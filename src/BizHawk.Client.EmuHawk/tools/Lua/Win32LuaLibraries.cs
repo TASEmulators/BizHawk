@@ -2,7 +2,6 @@
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Threading;
 
 using NLua;
@@ -45,8 +44,7 @@ namespace BizHawk.Client.EmuHawk
 			Docs.Clear();
 
 			// Register lua libraries
-			foreach (var lib in Assembly.Load("BizHawk.Client.Common").GetTypes()
-				.Concat(Assembly.GetAssembly(typeof(Win32LuaLibraries)).GetTypesWithoutLoadErrors())
+			foreach (var lib in Client.Common.ReflectionCache.Types.Concat(EmuHawk.ReflectionCache.Types)
 				.Where(t => typeof(LuaLibraryBase).IsAssignableFrom(t) && t.IsSealed && ServiceInjector.IsAvailable(serviceProvider, t)))
 			{
 				bool addLibrary = true;

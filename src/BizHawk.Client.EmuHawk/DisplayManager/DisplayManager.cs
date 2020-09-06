@@ -66,20 +66,20 @@ namespace BizHawk.Client.EmuHawk
 				ShaderChainFrugalizers[i] = new RenderTargetFrugalizer(GL);
 			}
 
-			using (var xml = typeof(Program).Assembly.GetManifestResourceStream("BizHawk.Client.EmuHawk.Resources.courier16px.fnt"))
+			using (var xml = EmuHawk.ReflectionCache.Asm.GetManifestResourceStream("BizHawk.Client.EmuHawk.Resources.courier16px.fnt"))
 			{
-				using var tex = typeof(Program).Assembly.GetManifestResourceStream("BizHawk.Client.EmuHawk.Resources.courier16px_0.png");
+				using var tex = EmuHawk.ReflectionCache.Asm.GetManifestResourceStream("BizHawk.Client.EmuHawk.Resources.courier16px_0.png");
 				TheOneFont = new StringRenderer(GL, xml, tex);
 			}
 
 			using (var gens =
-				typeof(Program).Assembly.GetManifestResourceStream("BizHawk.Client.EmuHawk.Resources.gens.ttf"))
+				EmuHawk.ReflectionCache.Asm.GetManifestResourceStream("BizHawk.Client.EmuHawk.Resources.gens.ttf"))
 			{
 				LoadCustomFont(gens);
 			}
 
 			using (var fceux =
-				typeof(Program).Assembly.GetManifestResourceStream("BizHawk.Client.EmuHawk.Resources.fceux.ttf"))
+				EmuHawk.ReflectionCache.Asm.GetManifestResourceStream("BizHawk.Client.EmuHawk.Resources.fceux.ttf"))
 			{
 				LoadCustomFont(fceux);
 			}

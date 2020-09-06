@@ -1955,9 +1955,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private static readonly IList<Type> _specializedTools = Assembly
-			.GetAssembly(typeof(MainForm))
-			.GetTypesWithoutLoadErrors()
+		private static readonly IList<Type> _specializedTools = EmuHawk.ReflectionCache.Types
 			.Where(t => typeof(IToolForm).IsAssignableFrom(t) && !t.IsAbstract)
 			.Where(t => t.GetCustomAttribute<SpecializedToolAttribute>() != null)
 			.ToList();
