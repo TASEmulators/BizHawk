@@ -143,11 +143,11 @@ namespace BizHawk.Emulation.Cores
 		/// <summary>
 		/// create a core inventory, collecting all IEmulators from some assemblies
 		/// </summary>
-		public CoreInventory(IEnumerable<Assembly> assys)
+		public CoreInventory(IEnumerable<IEnumerable<Type>> assys)
 		{
 			foreach (var assy in assys)
 			{
-				foreach (var typ in assy.GetTypes())
+				foreach (var typ in assy)
 				{
 					if (!typ.IsAbstract && typ.GetInterfaces().Contains(typeof(IEmulator)))
 					{
@@ -168,7 +168,7 @@ namespace BizHawk.Emulation.Cores
 			}
 		}
 
-		public static readonly CoreInventory Instance = new CoreInventory(new[] { Emulation.Cores.ReflectionCache.Asm });
+		public static readonly CoreInventory Instance = new CoreInventory(new[] { Emulation.Cores.ReflectionCache.Types });
 	}
 
 	public enum CorePriority
