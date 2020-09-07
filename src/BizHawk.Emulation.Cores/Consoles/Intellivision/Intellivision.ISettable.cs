@@ -53,7 +53,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 				get => _port1;
 				set
 				{
-					if (!IntellivisionControllerDeck.ValidControllerTypes.ContainsKey(value))
+					if (!IntellivisionControllerDeck.ControllerCtors.ContainsKey(value))
 					{
 						throw new InvalidOperationException("Invalid controller type: " + value);
 					}
@@ -68,7 +68,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 				get => _port2;
 				set
 				{
-					if (!IntellivisionControllerDeck.ValidControllerTypes.ContainsKey(value))
+					if (!IntellivisionControllerDeck.ControllerCtors.ContainsKey(value))
 					{
 						throw new InvalidOperationException("Invalid controller type: " + value);
 					}

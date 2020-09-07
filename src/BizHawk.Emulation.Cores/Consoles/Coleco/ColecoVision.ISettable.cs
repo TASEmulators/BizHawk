@@ -57,7 +57,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 				get => _port1;
 				set
 				{
-					if (!ColecoVisionControllerDeck.ValidControllerTypes.ContainsKey(value))
+					if (!ColecoVisionControllerDeck.ControllerCtors.ContainsKey(value))
 					{
 						throw new InvalidOperationException("Invalid controller type: " + value);
 					}
@@ -72,7 +72,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 				get => _port2;
 				set
 				{
-					if (!ColecoVisionControllerDeck.ValidControllerTypes.ContainsKey(value))
+					if (!ColecoVisionControllerDeck.ControllerCtors.ContainsKey(value))
 					{
 						throw new InvalidOperationException("Invalid controller type: " + value);
 					}

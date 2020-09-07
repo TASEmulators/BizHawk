@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Windows.Forms;
 using BizHawk.Emulation.Cores.ColecoVision;
 
@@ -22,9 +21,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ColecoControllerSettings_Load(object sender, EventArgs e)
 		{
-			var possibleControllers = ColecoVisionControllerDeck.ValidControllerTypes.Select(t => t.Key);
-
-			foreach (var val in possibleControllers)
+			foreach (var val in ColecoVisionControllerDeck.ControllerCtors.Keys)
 			{
 				Port1ComboBox.Items.Add(val);
 				Port2ComboBox.Items.Add(val);

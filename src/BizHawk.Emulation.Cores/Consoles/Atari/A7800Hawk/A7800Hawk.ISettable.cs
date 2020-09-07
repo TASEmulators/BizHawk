@@ -66,7 +66,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				get => _port1;
 				set
 				{
-					if (!A7800HawkControllerDeck.ValidControllerTypes.ContainsKey(value))
+					if (!A7800HawkControllerDeck.ControllerCtors.ContainsKey(value))
 					{
 						throw new InvalidOperationException("Invalid controller type: " + value);
 					}
@@ -81,7 +81,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				get => _port2;
 				set
 				{
-					if (!A7800HawkControllerDeck.ValidControllerTypes.ContainsKey(value))
+					if (!A7800HawkControllerDeck.ControllerCtors.ContainsKey(value))
 					{
 						throw new InvalidOperationException("Invalid controller type: " + value);
 					}
