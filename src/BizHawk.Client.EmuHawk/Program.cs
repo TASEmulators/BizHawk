@@ -212,7 +212,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					try
 					{
-						new SingleInstanceController(args).Run();
+						InitAndRunSingleInstance(args);
 					}
 					catch (ObjectDisposedException)
 					{
@@ -351,5 +351,7 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.ExitCode = ((MainForm)MainForm).ProgramRunLoop();
 			}
 		}
+
+		private static void InitAndRunSingleInstance(string[] args) => new SingleInstanceController(args).Run();
 	}
 }
