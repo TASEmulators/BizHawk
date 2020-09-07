@@ -66,20 +66,20 @@ namespace BizHawk.Client.EmuHawk
 				ShaderChainFrugalizers[i] = new RenderTargetFrugalizer(GL);
 			}
 
-			using (var xml = EmuHawk.ReflectionCache.Asm.GetManifestResourceStream("BizHawk.Client.EmuHawk.Resources.courier16px.fnt"))
+			using (var xml = EmuHawk.ReflectionCache.EmbeddedResourceStream("Resources.courier16px.fnt"))
 			{
-				using var tex = EmuHawk.ReflectionCache.Asm.GetManifestResourceStream("BizHawk.Client.EmuHawk.Resources.courier16px_0.png");
+				using var tex = EmuHawk.ReflectionCache.EmbeddedResourceStream("Resources.courier16px_0.png");
 				TheOneFont = new StringRenderer(GL, xml, tex);
 			}
 
 			using (var gens =
-				EmuHawk.ReflectionCache.Asm.GetManifestResourceStream("BizHawk.Client.EmuHawk.Resources.gens.ttf"))
+				EmuHawk.ReflectionCache.EmbeddedResourceStream("Resources.gens.ttf"))
 			{
 				LoadCustomFont(gens);
 			}
 
 			using (var fceux =
-				EmuHawk.ReflectionCache.Asm.GetManifestResourceStream("BizHawk.Client.EmuHawk.Resources.fceux.ttf"))
+				EmuHawk.ReflectionCache.EmbeddedResourceStream("Resources.fceux.ttf"))
 			{
 				LoadCustomFont(fceux);
 			}

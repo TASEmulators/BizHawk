@@ -7,14 +7,14 @@ namespace BizHawk.Client.EmuHawk.Properties
 	internal static class Resources
 	{
 		/// <param name="embedPath">Dir separator is '<c>.</c>'. Path is relative to <c>&lt;NS></c>.</param>
-		private static Bitmap ReadEmbeddedBitmapAt(string embedPath) => new Bitmap(EmuHawk.ReflectionCache.Asm.GetManifestResourceStream($"BizHawk.Client.EmuHawk.{embedPath}"));
+		private static Bitmap ReadEmbeddedBitmapAt(string embedPath) => new Bitmap(EmuHawk.ReflectionCache.EmbeddedResourceStream(embedPath));
 
 		/// <param name="filename">Dir separator is '<c>.</c>'. Filename is relative to <c>&lt;NS>/images</c> and omits <c>.png</c> extension.</param>
 		/// <remarks>For other file extensions or paths use <see cref="ReadEmbeddedBitmapAt"/>.</remarks>
 		private static Bitmap ReadEmbeddedBitmap(string filename) => ReadEmbeddedBitmapAt($"images.{filename}.png");
 
 		/// <param name="filename">Dir separator is '<c>.</c>'. Filename is relative to <c>&lt;NS>/images</c> and omits <c>.ico</c> extension.</param>
-		private static Icon ReadEmbeddedIcon(string filename) => new Icon(EmuHawk.ReflectionCache.Asm.GetManifestResourceStream($"BizHawk.Client.EmuHawk.images.{filename}.ico"));
+		private static Icon ReadEmbeddedIcon(string filename) => new Icon(EmuHawk.ReflectionCache.EmbeddedResourceStream($"images.{filename}.ico"));
 
 		internal static readonly Lazy<Bitmap> A78Joystick = new Lazy<Bitmap>(() => ReadEmbeddedBitmap("ControllerImages.A78Joystick"));
 		internal static readonly Lazy<Bitmap> AppleIIKeyboard = new Lazy<Bitmap>(() => ReadEmbeddedBitmap("ControllerImages.AppleIIKeyboard"));
@@ -53,7 +53,7 @@ namespace BizHawk.Client.EmuHawk.Properties
 		internal static readonly Bitmap BackMore = ReadEmbeddedBitmap("BackMore");
 		internal static readonly Icon BasicBot = ReadEmbeddedIcon("basicbot");
 		internal static readonly Bitmap Blank = ReadEmbeddedBitmap("Blank");
-		internal static readonly Cursor BlankCursor = new Cursor(EmuHawk.ReflectionCache.Asm.GetManifestResourceStream("BizHawk.Client.EmuHawk.images.BlankCursor.cur"));
+		internal static readonly Cursor BlankCursor = new Cursor(EmuHawk.ReflectionCache.EmbeddedResourceStream("images.BlankCursor.cur"));
 		internal static readonly Bitmap BlueDown = ReadEmbeddedBitmap("BlueDown");
 		internal static readonly Bitmap BlueUp = ReadEmbeddedBitmap("BlueUp");
 		internal static readonly Bitmap Both = ReadEmbeddedBitmap("Both");

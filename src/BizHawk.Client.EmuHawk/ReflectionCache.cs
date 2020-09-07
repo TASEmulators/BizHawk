@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 
@@ -13,5 +14,7 @@ namespace BizHawk.Client.EmuHawk
 		public static readonly Assembly Asm = typeof(ReflectionCache).Assembly;
 
 		public static Type[] Types => _types.Value;
+
+		public static Stream EmbeddedResourceStream(string embedPath) => Asm.GetManifestResourceStream($"BizHawk.Client.EmuHawk.{embedPath}");
 	}
 }
