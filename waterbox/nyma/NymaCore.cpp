@@ -45,13 +45,14 @@ static void Setup()
 	);
 	EES = new EmulateSpecStruct();
 	EES->surface = Surf;
-	EES->VideoFormatChanged = true;
 	EES->LineWidths = new int32_t[Game->fb_height];
 	memset(EES->LineWidths, 0xff, Game->fb_height * sizeof(int32_t));
 	EES->SoundBuf = samples;
 	EES->SoundBufMaxSize = 22050;
-	EES->SoundFormatChanged = true;
 	EES->SoundRate = 44100;
+
+	if (Game->FormatsChanged)
+		Game->FormatsChanged(EES);
 }
 
 ECL_EXPORT bool InitRom(const InitData& data)
@@ -141,8 +142,6 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo& frame)
 		Game->TransformInput();
 	Game->Emulate(EES);
 
-	EES->VideoFormatChanged = false;
-	EES->SoundFormatChanged = false;
 	frame.Cycles = EES->MasterCycles;
 	frame.Lagged = LagFlag;
 	if (!(frame.BizhawkFlags & BizhawkFlags::SkipSoundening))
