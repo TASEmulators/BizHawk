@@ -11,7 +11,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private static readonly Lazy<Type[]> _types = new Lazy<Type[]>(() => Asm.GetTypesWithoutLoadErrors().ToArray());
 
-		public static readonly Assembly Asm = typeof(ReflectionCache).Assembly;
+		private static readonly Assembly Asm = typeof(ReflectionCache).Assembly;
 
 		public static Type[] Types => _types.Value;
 
