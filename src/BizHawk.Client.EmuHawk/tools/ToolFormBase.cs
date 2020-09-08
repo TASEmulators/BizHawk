@@ -9,7 +9,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public abstract class ToolFormBase : FormBase
+	public class ToolFormBase : FormBase
 	{
 		public ToolManager Tools { get; set; }
 
