@@ -177,10 +177,10 @@ namespace BizHawk.Client.Common
 		/// <param name="watches"><see cref="IEnumerable{Watch}"/> of watch to merge</param>
 		public void AddRange(IEnumerable<Watch> watches)
 		{
-			Parallel.ForEach(watches, watch =>
+			foreach(var watch in watches)
 			{
 				_watchList.Add(watch);
-			});
+			}
 			Changes = true;
 		}
 
@@ -189,7 +189,7 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public void ClearChangeCounts()
 		{
-			Parallel.ForEach(_watchList, watch => watch.ClearChangeCount());
+			foreach(var watch in _watchList) watch.ClearChangeCount();
 		}
 
 		/// <summary>
@@ -232,7 +232,7 @@ namespace BizHawk.Client.Common
 		public void RefreshDomains(IMemoryDomains core, PreviousType previousType)
 		{
 			_memoryDomains = core;
-			Parallel.ForEach(_watchList, watch =>
+			foreach(var watch in _watchList)
 			{
 				if (watch.IsSeparator)
 				{
@@ -243,7 +243,7 @@ namespace BizHawk.Client.Common
 				watch.ResetPrevious();
 				watch.Update(previousType);
 				watch.ClearChangeCount();
-			});
+			}
 		}
 
 		/// <summary>
@@ -251,10 +251,10 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public void UpdateValues(PreviousType previousType)
 		{
-			Parallel.ForEach(_watchList, watch =>
+			foreach(var watch in _watchList)
 			{
 				watch.Update(previousType);
-			});
+			};
 		}
 
 		/// <summary>
