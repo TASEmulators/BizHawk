@@ -20,7 +20,7 @@ namespace BizHawk.Bizware.BizwareGL
 		public bool Available { get; private set; }
 		public string Errors { get; set; }
 
-		int RefCount;
+		private int RefCount;
 
 		public void Release()
 		{

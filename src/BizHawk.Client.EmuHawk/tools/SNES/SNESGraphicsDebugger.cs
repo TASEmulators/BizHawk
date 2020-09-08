@@ -38,7 +38,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public unsafe partial class SNESGraphicsDebugger : ToolFormBase, IToolFormAutoConfig
 	{
-		readonly List<DisplayTypeItem> displayTypeItems = new List<DisplayTypeItem>();
+		private readonly List<DisplayTypeItem> displayTypeItems = new List<DisplayTypeItem>();
 
 		[RequiredService]
 		private LibsnesCore Emulator { get; set; }
@@ -122,7 +122,7 @@ namespace BizHawk.Client.EmuHawk
 			return bpp == 0 ? "---" : bpp.ToString();
 		}
 
-		string FormatVramAddress(int address)
+		private string FormatVramAddress(int address)
 		{
 			int excess = address & 1023;
 			return excess != 0
@@ -169,7 +169,7 @@ namespace BizHawk.Client.EmuHawk
 			suppression = false;
 		}
 
-		void SyncCore()
+		private void SyncCore()
 		{
 			if (currentSnesCore != Emulator)
 			{
@@ -334,7 +334,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		eDisplayType CurrDisplaySelection => (comboDisplayType.SelectedValue as eDisplayType?).Value;
+		private eDisplayType CurrDisplaySelection => (comboDisplayType.SelectedValue as eDisplayType?).Value;
 
 		//todo - something smarter to cycle through bitmaps without repeatedly trashing them (use the dispose callback on the viewer)
 		private void RenderView()
@@ -479,15 +479,17 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		enum eDisplayType
+		private enum eDisplayType
 		{
 			BG1 = 1, BG2 = 2, BG3 = 3, BG4 = 4, OBJTiles0, OBJTiles1, Tiles2bpp, Tiles4bpp, Tiles8bpp, TilesMode7, TilesMode7Ext, TilesMode7DC, Sprites, OBJ,
 			BG1Screen = 101, BG2Screen = 102, BG3Screen = 103, BG4Screen = 104
 		}
-		static bool IsDisplayTypeBG(eDisplayType type) { return type == eDisplayType.BG1 || type == eDisplayType.BG2 || type == eDisplayType.BG3 || type == eDisplayType.BG4; }
-		static bool IsDisplayTypeOBJ(eDisplayType type) { return type == eDisplayType.OBJTiles0 || type == eDisplayType.OBJTiles1; }
-		static int DisplayTypeBGNum(eDisplayType type) { if(IsDisplayTypeBG(type)) return (int)type; else return -1; }
-		static SNESGraphicsDecoder.BGMode BGModeForDisplayType(eDisplayType type)
+
+		private static bool IsDisplayTypeBG(eDisplayType type) { return type == eDisplayType.BG1 || type == eDisplayType.BG2 || type == eDisplayType.BG3 || type == eDisplayType.BG4; }
+		private static bool IsDisplayTypeOBJ(eDisplayType type) { return type == eDisplayType.OBJTiles0 || type == eDisplayType.OBJTiles1; }
+		private static int DisplayTypeBGNum(eDisplayType type) { if(IsDisplayTypeBG(type)) return (int)type; else return -1; }
+
+		private static SNESGraphicsDecoder.BGMode BGModeForDisplayType(eDisplayType type)
 		{
 			switch (type)
 			{
@@ -548,7 +550,7 @@ namespace BizHawk.Client.EmuHawk
 			UpdateToolsLoadstate();
 		}
 
-		bool suppression = false;
+		private bool suppression = false;
 		private void rbBGX_CheckedChanged(object sender, EventArgs e)
 		{
 			if (suppression) return;
@@ -599,13 +601,13 @@ namespace BizHawk.Client.EmuHawk
 			return ret;
 		}
 
-		Rectangle GetPaletteRegion(SNESGraphicsDecoder.PaletteSelection sel)
+		private Rectangle GetPaletteRegion(SNESGraphicsDecoder.PaletteSelection sel)
 		{
 			int start = sel.start, num = sel.size;
 			return GetPaletteRegion(start, num);
 		}
 
-		void DrawPaletteRegion(Graphics g, Color color, Rectangle region)
+		private void DrawPaletteRegion(Graphics g, Color color, Rectangle region)
 		{
 			int cellTotalSize = (paletteCellSize + paletteCellSpacing);
 
@@ -827,7 +829,7 @@ namespace BizHawk.Client.EmuHawk
 			//cd.ShowDialog(this);
 		}
 
-		void SyncViewerSize()
+		private void SyncViewerSize()
 		{
 			viewer.Size = check2x.Checked ? new Size(1024, 1024) : new Size(512, 512);
 		}
@@ -1011,7 +1013,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		void HandleTileViewMouseOver(int pxacross, int pxtall, int bpp, int tx, int ty)
+		private void HandleTileViewMouseOver(int pxacross, int pxtall, int bpp, int tx, int ty)
 		{
 			int tileStride = pxacross / 8;
 			int tilesTall = pxtall / 8;
@@ -1072,7 +1074,7 @@ namespace BizHawk.Client.EmuHawk
 			SetTab(tpOBJ);
 		}
 
-		void SetTab(TabPage tpSet)
+		private void SetTab(TabPage tpSet)
 		{
 			//doesnt work well
 			//foreach (var tp in tabctrlDetails.TabPages)
@@ -1084,7 +1086,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		void UpdateViewerMouseover(Point loc)
+		private void UpdateViewerMouseover(Point loc)
 		{
 			using (gd.EnterExit())
 			{
@@ -1279,7 +1281,7 @@ namespace BizHawk.Client.EmuHawk
 			RenderTileView();
 		}
 
-		void RefreshBGENCheckStatesFromConfig()
+		private void RefreshBGENCheckStatesFromConfig()
 		{
 			var s = Emulator.GetSettings();
 			checkEN0_BG1.Checked = s.ShowBG1_0;

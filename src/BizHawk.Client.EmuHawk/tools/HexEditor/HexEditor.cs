@@ -1386,7 +1386,7 @@ namespace BizHawk.Client.EmuHawk
 			FindNextMenuItem.Enabled = !string.IsNullOrWhiteSpace(_findStr);
 		}
 
-		string MakeCopyExportString(bool export)
+		private string MakeCopyExportString(bool export)
 		{
 			// make room for an array with _secondaryHighlightedAddresses and optionally HighlightedAddress
 			long[] addresses = new long[_secondaryHighlightedAddresses.Count + (_highlightedAddress.HasValue ? 1 : 0)];

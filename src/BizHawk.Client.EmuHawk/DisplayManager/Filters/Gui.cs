@@ -177,22 +177,22 @@ namespace BizHawk.Client.EmuHawk.Filters
 		public IGL GL;
 		public IGuiRenderer GuiRenderer;
 
-		MelonDS nds;
+		private MelonDS nds;
 
 		//TODO: actually use this
-		bool nop = false;
+		private bool nop = false;
 
 		//matrices used for transforming screens
-		Matrix4 matTop, matBot;
-		Matrix4 matTopInvert, matBotInvert;
+		private Matrix4 matTop, matBot;
+		private Matrix4 matTopInvert, matBotInvert;
 		
 		//final output area size
-		Size outputSize;
+		private Size outputSize;
 
-		static float Round(float f) { return (float)Math.Round(f); }
+		private static float Round(float f) { return (float)Math.Round(f); }
 
 		//TODO: put somewhere in extension methods useful for fixing deficiencies in opentk matrix types
-		static Vector2 Transform(Matrix4 m, Vector2 v)
+		private static Vector2 Transform(Matrix4 m, Vector2 v)
 		{
 			var r = new Vector4(v.X,v.Y,0,1) * m;
 			return new Vector2(r.X, r.Y);
@@ -210,7 +210,7 @@ namespace BizHawk.Client.EmuHawk.Filters
 			DeclareInput(SurfaceDisposition.Texture);
 		}
 
-		void CrunchNumbers()
+		private void CrunchNumbers()
 		{
 			MatrixStack top = new MatrixStack(), bot = new MatrixStack();
 

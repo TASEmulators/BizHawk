@@ -82,7 +82,7 @@ namespace BizHawk.Client.EmuHawk
 			bv.Refresh();
 		}
 
-		unsafe void DrawPalettes(int* pal)
+		private unsafe void DrawPalettes(int* pal)
 		{
 			var lockData = bmpViewPal.Bmp.LockBits(new Rectangle(0, 0, 16, 4), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 			int pitch = lockData.Stride / sizeof(int);
@@ -98,7 +98,7 @@ namespace BizHawk.Client.EmuHawk
 			bmpViewPal.Refresh();
 		}
 
-		unsafe void DrawTiles()
+		private unsafe void DrawTiles()
 		{
 			var lockData = bmpViewTiles.Bmp.LockBits(new Rectangle(0, 0, 512, 256), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 			int pitch = lockData.Stride / sizeof(int);

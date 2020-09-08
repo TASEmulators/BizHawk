@@ -24,7 +24,7 @@ namespace BizHawk.Bizware.BizwareGL
 		public object Opaque { get; }
 		public IGL Owner { get; }
 
-		int RefCount;
+		private int RefCount;
 
 		public void Release()
 		{
@@ -78,7 +78,7 @@ namespace BizHawk.Bizware.BizwareGL
 		}
 
 		public MyDictionary Items { get; }
-		bool Closed = false;
+		private bool Closed = false;
 
 	}
 }

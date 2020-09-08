@@ -10,7 +10,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 	/// <summary>
 	/// A customizable Dialog box with 3 buttons, custom icon, and checkbox.
 	/// </summary>
-	partial class MsgBox : Form
+	internal partial class MsgBox : Form
 	{
 		private readonly Icon _msgIcon;
 		private static readonly int FormYMargin = UIHelper.ScaleY(10);

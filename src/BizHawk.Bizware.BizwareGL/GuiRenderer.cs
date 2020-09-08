@@ -50,7 +50,7 @@ namespace BizHawk.Bizware.BizwareGL
 			CurrPipeline = DefaultPipeline = Owner.CreatePipeline(VertexLayout, vs, ps, true, "xgui");
 		}
 
-		readonly OpenTK.Graphics.Color4[] CornerColors = new OpenTK.Graphics.Color4[4] {
+		private readonly OpenTK.Graphics.Color4[] CornerColors = new OpenTK.Graphics.Color4[4] {
 			new OpenTK.Graphics.Color4(1.0f,1.0f,1.0f,1.0f),new OpenTK.Graphics.Color4(1.0f,1.0f,1.0f,1.0f),new OpenTK.Graphics.Color4(1.0f,1.0f,1.0f,1.0f),new OpenTK.Graphics.Color4(1.0f,1.0f,1.0f,1.0f)
 		};
 
@@ -114,7 +114,7 @@ namespace BizHawk.Bizware.BizwareGL
 			Owner.SetBlendState(rsBlend);
 		}
 
-		MatrixStack _Projection, _Modelview;
+		private MatrixStack _Projection, _Modelview;
 		public MatrixStack Projection
 		{
 			get => _Projection;
@@ -221,7 +221,7 @@ namespace BizHawk.Bizware.BizwareGL
 			DrawInternal(art, x, y, width, height);
 		}
 
-		unsafe void DrawInternal(Texture2d tex, float x, float y, float w, float h)
+		private unsafe void DrawInternal(Texture2d tex, float x, float y, float w, float h)
 		{
 			Art art = new Art((ArtManager)null);
 			art.Width = w;
@@ -232,7 +232,7 @@ namespace BizHawk.Bizware.BizwareGL
 			DrawInternal(art, x, y, w, h, false, tex.IsUpsideDown);
 		}
 
-		unsafe void DrawInternal(Art art, float x, float y, float w, float h, bool fx, bool fy)
+		private unsafe void DrawInternal(Art art, float x, float y, float w, float h, bool fx, bool fy)
 		{
 			//TEST: d3d shouldn't ever use this, it was a gl hack. maybe we can handle it some other way in gl (fix the projection? take a render-to-texture arg to the gui view transforms?)
 			fy = false;
@@ -261,7 +261,7 @@ namespace BizHawk.Bizware.BizwareGL
 			}
 		}
 
-		unsafe void PrepDrawSubrectInternal(Texture2d tex)
+		private unsafe void PrepDrawSubrectInternal(Texture2d tex)
 		{
 			if (sTexture != tex)
 			{
@@ -289,7 +289,7 @@ namespace BizHawk.Bizware.BizwareGL
 			}
 		}
 
-		unsafe void EmitRectangleInternal(float x, float y, float w, float h, float u0, float v0, float u1, float v1)
+		private unsafe void EmitRectangleInternal(float x, float y, float w, float h, float u0, float v0, float u1, float v1)
 		{
 			float* pData = stackalloc float[32];
 			pData[0] = x;
@@ -333,7 +333,7 @@ namespace BizHawk.Bizware.BizwareGL
 #endif
 		}
 
-		unsafe void DrawSubrectInternal(Texture2d tex, float x, float y, float w, float h, float u0, float v0, float u1, float v1)
+		private unsafe void DrawSubrectInternal(Texture2d tex, float x, float y, float w, float h, float u0, float v0, float u1, float v1)
 		{
 			PrepDrawSubrectInternal(tex);
 			EmitRectangleInternal(x, y, w, h, u0, v0, u1, v1);
@@ -342,14 +342,14 @@ namespace BizHawk.Bizware.BizwareGL
 		public bool IsActive { get; private set; }
 		public IGL Owner { get; }
 
-		readonly VertexLayout VertexLayout;
-		Pipeline CurrPipeline;
-		readonly Pipeline DefaultPipeline;
+		private readonly VertexLayout VertexLayout;
+		private Pipeline CurrPipeline;
+		private readonly Pipeline DefaultPipeline;
 
 		//state cache
-		Texture2d sTexture;
+		private Texture2d sTexture;
 #if DEBUG
-		bool BlendStateSet;
+		private bool BlendStateSet;
 #endif
 
 //shaders are hand-coded for each platform to make sure they stay as fast as possible

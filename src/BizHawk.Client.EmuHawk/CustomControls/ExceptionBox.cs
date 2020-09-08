@@ -20,7 +20,7 @@ namespace BizHawk.Client.EmuHawk
 			DoCopy();
 		}
 
-		void DoCopy()
+		private void DoCopy()
 		{
 			string txt = txtException.Text;
 			Clipboard.SetText(txt);
@@ -67,7 +67,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		//http://stackoverflow.com/questions/2636065/alpha-in-forecolor
-		class MyLabel : Label
+		private class MyLabel : Label
 		{
 			protected override void OnPaint(PaintEventArgs e)
 			{

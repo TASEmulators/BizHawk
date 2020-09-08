@@ -48,7 +48,7 @@ namespace BizHawk.Bizware.BizwareGL
 			return LoadArtInternal(new BitmapBuffer(path, new BitmapLoadOptions()));
 		}
 
-		Art LoadArtInternal(BitmapBuffer tex)
+		private Art LoadArtInternal(BitmapBuffer tex)
 		{
 			AssertIsOpen(true);
 
@@ -150,16 +150,16 @@ namespace BizHawk.Bizware.BizwareGL
 		/// <summary>
 		/// This is used to remember the original bitmap sources for art files. Once the ArtManager is closed forever, this will be purged
 		/// </summary>
-		readonly Dictionary<Art, BitmapBuffer> ArtLooseTextureAssociation = new Dictionary<Art, BitmapBuffer>();
+		private readonly Dictionary<Art, BitmapBuffer> ArtLooseTextureAssociation = new Dictionary<Art, BitmapBuffer>();
 
 		/// <summary>
 		/// Physical texture resources, which exist after this ArtManager has been closed
 		/// </summary>
-		readonly List<Texture2d> ManagedTextures = new List<Texture2d>();
+		private readonly List<Texture2d> ManagedTextures = new List<Texture2d>();
 
 		/// <summary>
 		/// All the Arts managed by this instance
 		/// </summary>
-		readonly List<Art> ManagedArts = new List<Art>();
+		private readonly List<Art> ManagedArts = new List<Art>();
 	}
 }

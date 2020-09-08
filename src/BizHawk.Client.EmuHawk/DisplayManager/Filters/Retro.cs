@@ -17,7 +17,8 @@ namespace BizHawk.Client.EmuHawk.Filters
 	public class RetroShaderChain : IDisposable
 	{
 		private static readonly Regex RxInclude = new Regex(@"^(\s)?\#include(\s)+(""|<)(.*)?(""|>)", RegexOptions.Multiline | RegexOptions.IgnoreCase);
-		static string ResolveIncludes(string content, string baseDirectory)
+
+		private static string ResolveIncludes(string content, string baseDirectory)
 		{
 			for (; ; )
 			{

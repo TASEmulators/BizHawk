@@ -12,9 +12,9 @@ namespace BizHawk.Client.EmuHawk
 	/// </summary>
 	public class RetainedViewportPanel : Control
 	{
-		Thread threadPaint;
-		EventWaitHandle ewh;
-		volatile bool killSignal;
+		private Thread threadPaint;
+		private EventWaitHandle ewh;
+		private volatile bool killSignal;
 
 		public Func<Bitmap,bool> ReleaseCallback;
 
@@ -57,7 +57,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool ScaleImage = true;
 
-		void DoPaint()
+		private void DoPaint()
 		{
 			if (bmp != null)
 			{
@@ -86,7 +86,7 @@ namespace BizHawk.Client.EmuHawk
 			CleanupDisposeQueue();
 		}
 
-		void PaintProc()
+		private void PaintProc()
 		{
 			for (; ; )
 			{
@@ -101,7 +101,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		void CleanupDisposeQueue()
+		private void CleanupDisposeQueue()
 		{
 			lock (this)
 			{
@@ -116,9 +116,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		Queue<Bitmap> DisposeQueue = new Queue<Bitmap>();
+		private Queue<Bitmap> DisposeQueue = new Queue<Bitmap>();
 
-		void SignalPaint()
+		private void SignalPaint()
 		{
 			if (threadPaint == null)
 				DoPaint();
@@ -139,7 +139,7 @@ namespace BizHawk.Client.EmuHawk
 			SignalPaint();
 		}
 
-		Bitmap bmp;
+		private Bitmap bmp;
 
 		/// <summary>bit of a hack; use at your own risk</summary>
 		/// <returns>you probably shouldn't modify this?</returns>

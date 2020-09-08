@@ -110,7 +110,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <param name="dest">top left origin on 32bit bitmap</param>
 		/// <param name="pitch">pitch of bitmap in 4 byte units</param>
 		/// <param name="pal">4 palette colors</param>
-		static unsafe void DrawTile(byte* tile, int* dest, int pitch, int* pal)
+		private static unsafe void DrawTile(byte* tile, int* dest, int pitch, int* pal)
 		{
 			for (int y = 0; y < 8; y++)
 			{
@@ -139,7 +139,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <param name="pal">4 palette colors</param>
 		/// <param name="hFlip">true to flip horizontally</param>
 		/// <param name="vFlip">true to flip vertically</param>
-		static unsafe void DrawTileHv(byte* tile, int* dest, int pitch, int* pal, bool hFlip, bool vFlip)
+		private static unsafe void DrawTileHv(byte* tile, int* dest, int pitch, int* pal, bool hFlip, bool vFlip)
 		{
 			if (vFlip)
 				dest += pitch * 7;
@@ -180,7 +180,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <param name="tiles">base tiledata location. second bank tiledata assumed to be @+8k</param>
 		/// <param name="wrap">true if tileindexes are s8 (not u8)</param>
 		/// <param name="_pal">8 palettes (4 colors each)</param>
-		static unsafe void DrawBgCgb(Bitmap b, IntPtr _map, IntPtr tiles, bool wrap, IntPtr _pal)
+		private static unsafe void DrawBgCgb(Bitmap b, IntPtr _map, IntPtr tiles, bool wrap, IntPtr _pal)
 		{
 			var lockData = b.LockBits(new Rectangle(0, 0, 256, 256), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 			byte* map = (byte*)_map;
@@ -335,7 +335,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <param name="b">bitmap to draw to.  should be numpals x 4</param>
 		/// <param name="_pal">start of palettes</param>
 		/// <param name="numpals">number of palettes (not colors)</param>
-		static unsafe void DrawPal(Bitmap b, IntPtr _pal, int numpals)
+		private static unsafe void DrawPal(Bitmap b, IntPtr _pal, int numpals)
 		{
 			var lockData = b.LockBits(new Rectangle(0, 0, numpals, 4), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 			int* dest = (int*)lockData.Scan0;
@@ -355,7 +355,7 @@ namespace BizHawk.Client.EmuHawk
 			b.UnlockBits(lockData);
 		}
 
-		void ScanlineCallback(byte lcdc)
+		private void ScanlineCallback(byte lcdc)
 		{
 			using (_memory.EnterExit())
 			{
@@ -486,7 +486,7 @@ namespace BizHawk.Client.EmuHawk
 		private void radioButtonRefreshScanline_CheckedChanged(object sender, EventArgs e) { ComputeRefreshValues(); }
 		private void radioButtonRefreshManual_CheckedChanged(object sender, EventArgs e) { ComputeRefreshValues(); }
 
-		void ComputeRefreshValues()
+		private void ComputeRefreshValues()
 		{
 			if (radioButtonRefreshFrame.Checked)
 			{
@@ -642,7 +642,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		unsafe void TileMouseover(int x, int y, bool secondBank)
+		private unsafe void TileMouseover(int x, int y, bool secondBank)
 		{
 			using (_memory.EnterExit())
 			{
@@ -669,7 +669,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		unsafe void TileMapMouseover(int x, int y, bool win)
+		private unsafe void TileMapMouseover(int x, int y, bool win)
 		{
 			using (_memory.EnterExit())
 			{
@@ -714,7 +714,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		unsafe void SpriteMouseover(int x, int y)
+		private unsafe void SpriteMouseover(int x, int y)
 		{
 			using (_memory.EnterExit())
 			{

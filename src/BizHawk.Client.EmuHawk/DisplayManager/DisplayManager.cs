@@ -460,7 +460,7 @@ namespace BizHawk.Client.EmuHawk
 			UpdateSourceInternal(job);
 		}
 
-		Filters.BaseFilter CreateCoreScreenControl()
+		private Filters.BaseFilter CreateCoreScreenControl()
 		{
 			if (GlobalWin.Emulator is MelonDS nds)
 			{
@@ -529,7 +529,7 @@ namespace BizHawk.Client.EmuHawk
 			public int VsyncDenominator => throw new InvalidOperationException();
 		}
 
-		void FixRatio(float x, float y, int inw, int inh, out int outW, out int outH)
+		private void FixRatio(float x, float y, int inw, int inh, out int outW, out int outH)
 		{
 			float ratio = x / y;
 			if (ratio <= 1)

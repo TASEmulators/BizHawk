@@ -133,7 +133,7 @@ namespace BizHawk.Bizware.BizwareGL
 
 		public IGL Owner { get; }
 
-		readonly VertexLayout VertexLayout;
+		private readonly VertexLayout VertexLayout;
 		public Pipeline Pipeline;
 	}
 }

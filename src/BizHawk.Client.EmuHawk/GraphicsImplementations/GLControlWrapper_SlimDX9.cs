@@ -22,7 +22,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool Vsync;
 
-		void GLControlWrapper_SlimDX_Resize(object sender, EventArgs e)
+		private void GLControlWrapper_SlimDX_Resize(object sender, EventArgs e)
 		{
 			_sdx.RefreshControlSwapChain(this);
 		}

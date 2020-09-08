@@ -38,14 +38,14 @@ namespace BizHawk.Bizware.BizwareGL
 		/// Allows us to create PipelineUniforms on the fly, in case a non-existing one has been requested.
 		/// Shader compilers will optimize out unused uniforms, and we wont have a record of it in the uniforms population loop
 		/// </summary>
-		class SpecialWorkingDictionary : Dictionary<string, PipelineUniform>
+		private class SpecialWorkingDictionary : Dictionary<string, PipelineUniform>
 		{
 			public SpecialWorkingDictionary(Pipeline owner)
 			{
 				Owner = owner;
 			}
 
-			Pipeline Owner;
+			private Pipeline Owner;
 			public new PipelineUniform this[string key]
 			{
 				get
@@ -63,8 +63,8 @@ namespace BizHawk.Bizware.BizwareGL
 			}
 		}
 
-		readonly SpecialWorkingDictionary UniformsDictionary;
-		IDictionary<string, PipelineUniform> Uniforms => UniformsDictionary;
+		private readonly SpecialWorkingDictionary UniformsDictionary;
+		private IDictionary<string, PipelineUniform> Uniforms => UniformsDictionary;
 
 		public IEnumerable<PipelineUniform> GetUniforms() => Uniforms.Values;
 

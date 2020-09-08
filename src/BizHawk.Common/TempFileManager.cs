@@ -61,7 +61,7 @@ namespace BizHawk.Common
 			}
 		}
 
-		static void ThreadProc()
+		private static void ThreadProc()
 		{
 			// squirrely logic, trying not to create garbage
 			var knownTempDirs = new HashSet<string>();
@@ -120,7 +120,7 @@ namespace BizHawk.Common
 		{
 		}
 
-		static Thread thread;
+		private static Thread thread;
 
 		public static void HelperSetTempPath(string path)
 		{

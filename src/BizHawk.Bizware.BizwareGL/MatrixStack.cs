@@ -29,7 +29,7 @@ namespace BizHawk.Bizware.BizwareGL
 
 		public bool IsDirty;
 
-		readonly Stack<Matrix4> stack = new Stack<Matrix4>();
+		private readonly Stack<Matrix4> stack = new Stack<Matrix4>();
 
 		/// <summary>
 		/// This is made public for performance reasons, to avoid lame copies of the matrix when necessary. Don't mess it up!

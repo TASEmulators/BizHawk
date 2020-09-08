@@ -17,7 +17,7 @@ namespace BizHawk.Bizware.BizwareGL
 			Owner = gl;
 		}
 
-		readonly OpenTK.Graphics.Color4[] CornerColors =
+		private readonly OpenTK.Graphics.Color4[] CornerColors =
 		{
 			new OpenTK.Graphics.Color4(1.0f,1.0f,1.0f,1.0f),
 			new OpenTK.Graphics.Color4(1.0f,1.0f,1.0f,1.0f),
@@ -57,7 +57,7 @@ namespace BizHawk.Bizware.BizwareGL
 			SetModulateColor(sd.Color.White);
 		}
 
-		ImageAttributes CurrentImageAttributes;
+		private ImageAttributes CurrentImageAttributes;
 		public void SetModulateColor(sd.Color color)
 		{
 			//white is really no color at all
@@ -86,15 +86,15 @@ namespace BizHawk.Bizware.BizwareGL
 			CurrentImageAttributes.SetColorMatrix(colorMatrix,ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
 		}
 
-		sd.Color CurrentModulateColor = sd.Color.White;
+		private sd.Color CurrentModulateColor = sd.Color.White;
 
-		IBlendState CurrentBlendState;
+		private IBlendState CurrentBlendState;
 		public void SetBlendState(IBlendState rsBlend)
 		{
 			CurrentBlendState = rsBlend;
 		}
 
-		MatrixStack _Projection, _Modelview;
+		private MatrixStack _Projection, _Modelview;
 		public MatrixStack Projection
 		{
 			get => _Projection;
@@ -194,7 +194,7 @@ namespace BizHawk.Bizware.BizwareGL
 			DrawInternal(art, x, y, width, height);
 		}
 
-		void PrepDraw(sd.Graphics g, Texture2d tex)
+		private void PrepDraw(sd.Graphics g, Texture2d tex)
 		{
 			var tw = tex.Opaque as GDIPTextureWrapper;
 			//TODO - we can support bicubic for the final presentation..
@@ -237,17 +237,17 @@ namespace BizHawk.Bizware.BizwareGL
 			g.Transform = new sd.Drawing2D.Matrix(mat.M11, mat.M12, mat.M21, mat.M22, mat.M41, mat.M42);
 		}
 
-		unsafe void DrawInternal(Art art, float x, float y, float w, float h)
+		private unsafe void DrawInternal(Art art, float x, float y, float w, float h)
 		{
 			DrawInternal(art.BaseTexture, x, y, w, h, art.u0, art.v0, art.u1, art.v1);
 		}
 
-		unsafe void DrawInternal(Texture2d tex, float x, float y, float w, float h)
+		private unsafe void DrawInternal(Texture2d tex, float x, float y, float w, float h)
 		{
 			DrawInternal(tex, x, y, w, h, 0, 0, 1, 1);
 		}
 
-		unsafe void DrawInternal(Texture2d tex, float x, float y, float w, float h, float u0, float v0, float u1, float v1)
+		private unsafe void DrawInternal(Texture2d tex, float x, float y, float w, float h, float u0, float v0, float u1, float v1)
 		{
 			var g = ((dynamic) Gdi).GetCurrentGraphics() as sd.Graphics;
 			PrepDraw(g, tex);
@@ -273,7 +273,7 @@ namespace BizHawk.Bizware.BizwareGL
 			g.Transform = new sd.Drawing2D.Matrix(); //.Reset() doesn't work ? ?
 		}
 
-		unsafe void DrawInternal(Art art, float x, float y, float w, float h, bool fx, bool fy)
+		private unsafe void DrawInternal(Art art, float x, float y, float w, float h, bool fx, bool fy)
 		{
 		}
 

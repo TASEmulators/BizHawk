@@ -15,7 +15,7 @@ namespace BizHawk.Client.EmuHawk
 		private static readonly List<GamePad360> Devices = new List<GamePad360>();
 		private static readonly bool IsAvailable;
 
-		delegate uint XInputGetStateExProcDelegate(uint dwUserIndex, out XINPUT_STATE state);
+		private delegate uint XInputGetStateExProcDelegate(uint dwUserIndex, out XINPUT_STATE state);
 
 		private static readonly XInputGetStateExProcDelegate XInputGetStateExProc;
 
@@ -123,7 +123,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public int PlayerNumber => (int)_index0 + 1;
 
-		GamePad360(uint index0, Controller c)
+		private GamePad360(uint index0, Controller c)
 		{
 			this._index0 = index0;
 			_controller = c;

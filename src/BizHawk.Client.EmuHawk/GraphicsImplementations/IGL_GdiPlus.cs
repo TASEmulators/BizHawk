@@ -67,8 +67,9 @@ namespace BizHawk.Client.EmuHawk
 			//TODO for real
 		}
 
-		class MyBlendState : IBlendState { }
-		static readonly MyBlendState _rsBlendNoneVerbatim = new MyBlendState(), _rsBlendNoneOpaque = new MyBlendState(), _rsBlendNormal = new MyBlendState();
+		private class MyBlendState : IBlendState { }
+
+		private static readonly MyBlendState _rsBlendNoneVerbatim = new MyBlendState(), _rsBlendNoneOpaque = new MyBlendState(), _rsBlendNormal = new MyBlendState();
 
 		public IBlendState BlendNoneCopy => _rsBlendNoneVerbatim;
 		public IBlendState BlendNoneOpaque => _rsBlendNoneOpaque;
@@ -268,7 +269,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 			}
 
-			IGL_GdiPlus Gdi;
+			private IGL_GdiPlus Gdi;
 
 			/// <summary>
 			/// the control associated with this render target (if any)
@@ -388,7 +389,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		Graphics _CurrentOffscreenGraphics;
+		private Graphics _CurrentOffscreenGraphics;
 
 		public Graphics GetCurrentGraphics()
 		{

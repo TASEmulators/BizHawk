@@ -24,7 +24,7 @@ namespace BizHawk.Bizware.BizwareGL
 		}
 
 		public IEnumerable<UniformInfo> UniformInfos => _UniformInfos;
-		readonly List<UniformInfo> _UniformInfos = new List<UniformInfo>();
+		private readonly List<UniformInfo> _UniformInfos = new List<UniformInfo>();
 
 		/// <returns>the first and only <see cref="UniformInfo"/></returns>
 		/// <exception cref="InvalidOperationException">more than one <see cref="UniformInfo"/> exists</exception>

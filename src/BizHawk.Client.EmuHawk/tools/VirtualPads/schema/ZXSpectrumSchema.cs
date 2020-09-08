@@ -7,7 +7,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	[Schema("ZXSpectrum")]
 	// ReSharper disable once UnusedMember.Global
-	class ZxSpectrumSchema : IVirtualPadSchema
+	internal class ZxSpectrumSchema : IVirtualPadSchema
 	{
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
 		{

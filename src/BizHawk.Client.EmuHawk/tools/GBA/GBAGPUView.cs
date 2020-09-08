@@ -121,7 +121,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		unsafe void DrawTextNameTable16(int* dest, int pitch, ushort* nametable, byte* tiles)
+		private unsafe void DrawTextNameTable16(int* dest, int pitch, ushort* nametable, byte* tiles)
 		{
 			for (int ty = 0; ty < 32; ty++)
 			{
@@ -136,7 +136,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		unsafe void DrawTextNameTable256(int* dest, int pitch, ushort* nametable, byte* tiles)
+		private unsafe void DrawTextNameTable256(int* dest, int pitch, ushort* nametable, byte* tiles)
 		{
 			for (int ty = 0; ty < 32; ty++)
 			{
@@ -151,7 +151,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		unsafe void DrawTextNameTable(int* dest, int pitch, ushort* nametable, byte* tiles, bool eightbit)
+		private unsafe void DrawTextNameTable(int* dest, int pitch, ushort* nametable, byte* tiles, bool eightbit)
 		{
 			if (eightbit)
 				DrawTextNameTable256(dest, pitch, nametable, tiles);
@@ -159,7 +159,7 @@ namespace BizHawk.Client.EmuHawk
 				DrawTextNameTable16(dest, pitch, nametable, tiles);
 		}
 
-		unsafe void DrawTextBG(int n, MobileBmpView mbv)
+		private unsafe void DrawTextBG(int n, MobileBmpView mbv)
 		{
 			ushort bgcnt = ((ushort*)_mmio)[4 + n];
 			int ssize = bgcnt >> 14;
@@ -218,7 +218,7 @@ namespace BizHawk.Client.EmuHawk
 			mbv.BmpView.Refresh();
 		}
 
-		unsafe void DrawAffineBG(int n, MobileBmpView mbv)
+		private unsafe void DrawAffineBG(int n, MobileBmpView mbv)
 		{
 			ushort bgcnt = ((ushort*)_mmio)[4 + n];
 			int ssize = bgcnt >> 14;
@@ -254,7 +254,7 @@ namespace BizHawk.Client.EmuHawk
 			mbv.BmpView.Refresh();
 		}
 
-		unsafe void DrawM3BG(MobileBmpView mbv)
+		private unsafe void DrawM3BG(MobileBmpView mbv)
 		{
 			mbv.ChangeAllSizes(240, 160);
 			Bitmap bmp = mbv.BmpView.Bmp;
@@ -280,7 +280,7 @@ namespace BizHawk.Client.EmuHawk
 			mbv.BmpView.Refresh();
 		}
 
-		unsafe void DrawM4BG(MobileBmpView mbv, bool secondFrame)
+		private unsafe void DrawM4BG(MobileBmpView mbv, bool secondFrame)
 		{
 			mbv.ChangeAllSizes(240, 160);
 			Bitmap bmp = mbv.BmpView.Bmp;
@@ -307,7 +307,7 @@ namespace BizHawk.Client.EmuHawk
 			mbv.BmpView.Refresh();
 		}
 
-		unsafe void DrawM5BG(MobileBmpView mbv, bool secondFrame)
+		private unsafe void DrawM5BG(MobileBmpView mbv, bool secondFrame)
 		{
 			mbv.ChangeAllSizes(160, 128);
 			Bitmap bmp = mbv.BmpView.Bmp;
@@ -332,7 +332,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static readonly int[, ,] SpriteSizes = { { { 1, 1 }, { 2, 2 }, { 4, 4 }, { 8, 8 } }, { { 2, 1 }, { 4, 1 }, { 4, 2 }, { 8, 4 } }, { { 1, 2 }, { 1, 4 }, { 2, 4 }, { 4, 8 } } };
 
-		unsafe void DrawSprite(int* dest, int pitch, ushort* sprite, byte* tiles, bool twodee)
+		private unsafe void DrawSprite(int* dest, int pitch, ushort* sprite, byte* tiles, bool twodee)
 		{
 			ushort attr0 = sprite[0];
 			ushort attr1 = sprite[1];
@@ -409,7 +409,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		unsafe void DrawSprites(MobileBmpView mbv)
+		private unsafe void DrawSprites(MobileBmpView mbv)
 		{
 			mbv.BmpView.ChangeBitmapSize(1024, 512);
 			Bitmap bmp = mbv.BmpView.Bmp;
@@ -442,7 +442,7 @@ namespace BizHawk.Client.EmuHawk
 			mbv.BmpView.Refresh();
 		}
 
-		unsafe void DrawPalette(MobileBmpView mbv, bool sprite)
+		private unsafe void DrawPalette(MobileBmpView mbv, bool sprite)
 		{
 			mbv.BmpView.ChangeBitmapSize(16, 16);
 			Bitmap bmp = mbv.BmpView.Bmp;
@@ -465,7 +465,7 @@ namespace BizHawk.Client.EmuHawk
 			mbv.BmpView.Refresh();
 		}
 
-		unsafe void DrawTileRange(int* dest, int pitch, byte* tiles, ushort* palette, int tw, int th, bool eightbit)
+		private unsafe void DrawTileRange(int* dest, int pitch, byte* tiles, ushort* palette, int tw, int th, bool eightbit)
 		{
 			for (int ty = 0; ty < th; ty++)
 			{
@@ -489,7 +489,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		unsafe void DrawSpriteTiles(MobileBmpView mbv, bool tophalfonly, bool eightbit)
+		private unsafe void DrawSpriteTiles(MobileBmpView mbv, bool tophalfonly, bool eightbit)
 		{
 			int tw = eightbit ? 16 : 32;
 			int th = tophalfonly ? 16 : 32;
@@ -516,7 +516,7 @@ namespace BizHawk.Client.EmuHawk
 			mbv.BmpView.Refresh();
 		}
 
-		unsafe void DrawBGTiles(MobileBmpView mbv, bool eightbit)
+		private unsafe void DrawBGTiles(MobileBmpView mbv, bool eightbit)
 		{
 			int tw = eightbit ? 32 : 64;
 			int th = 32;

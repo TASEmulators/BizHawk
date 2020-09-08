@@ -45,7 +45,7 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public bool MainWindow;
 
-		void GraphicsControl_Paint(object sender, PaintEventArgs e)
+		private void GraphicsControl_Paint(object sender, PaintEventArgs e)
 		{
 			OnPaint(e);
 		}
@@ -53,7 +53,7 @@ namespace BizHawk.Client.EmuHawk
 		public readonly IGL IGL;
 
 		private readonly IGraphicsControl _igc;
-		readonly Control _managed;
+		private readonly Control _managed;
 
 		public virtual void SetVsync(bool state) { _igc.SetVsync(state); }
 		public virtual void SwapBuffers() { _igc.SwapBuffers(); }

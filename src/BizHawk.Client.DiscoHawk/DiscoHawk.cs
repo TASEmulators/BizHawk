@@ -18,7 +18,7 @@ using BizHawk.Emulation.DiscSystem;
 
 namespace BizHawk.Client.DiscoHawk
 {
-	static class Program
+	internal static class Program
 	{
 		static Program()
 		{
@@ -39,7 +39,7 @@ namespace BizHawk.Client.DiscoHawk
 		}
 
 		[STAThread]
-		static void Main(string[] args)
+		private static void Main(string[] args)
 		{
 			SubMain(args);
 		}
@@ -58,7 +58,7 @@ namespace BizHawk.Client.DiscoHawk
 			public static extern bool FreeLibrary(IntPtr hModule);
 		}
 
-		static void SubMain(string[] args)
+		private static void SubMain(string[] args)
 		{
 			// MICROSOFT BROKE DRAG AND DROP IN WINDOWS 7. IT DOESN'T WORK ANYMORE
 			// WELL, OBVIOUSLY IT DOES SOMETIMES. I DON'T REMEMBER THE DETAILS OR WHY WE HAD TO DO THIS SHIT
@@ -114,16 +114,17 @@ namespace BizHawk.Client.DiscoHawk
 		//declared here instead of a more usual place to avoid dependencies on the more usual place
 #if WINDOWS
 		[DllImport("kernel32.dll", SetLastError = true)]
-		static extern bool SetDllDirectory(string lpPathName);
+		private static extern bool SetDllDirectory(string lpPathName);
 
 		[DllImport("kernel32.dll", EntryPoint = "DeleteFileW", SetLastError = true, CharSet = CharSet.Unicode, ExactSpelling = true)]
-		static extern bool DeleteFileW([MarshalAs(UnmanagedType.LPWStr)]string lpFileName);
-		static void RemoveMOTW(string path)
+		private static extern bool DeleteFileW([MarshalAs(UnmanagedType.LPWStr)]string lpFileName);
+
+		private static void RemoveMOTW(string path)
 		{
 			DeleteFileW($"{path}:Zone.Identifier");
 		}
 
-		static void WhackAllMOTW(string dllDir)
+		private static void WhackAllMOTW(string dllDir)
 		{
 			var todo = new Queue<DirectoryInfo>(new[] { new DirectoryInfo(dllDir) });
 			while (todo.Count > 0)

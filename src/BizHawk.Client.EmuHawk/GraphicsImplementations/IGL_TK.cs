@@ -635,13 +635,13 @@ namespace BizHawk.Client.EmuHawk
 
 		//------------------
 
-		INativeWindow OffscreenNativeWindow;
-		IGraphicsContext GraphicsContext;
+		private INativeWindow OffscreenNativeWindow;
+		private IGraphicsContext GraphicsContext;
 
 		//---------------
 		//my utility methods
 
-		GLControl CastControl(swf.Control swfControl)
+		private GLControl CastControl(swf.Control swfControl)
 		{
 			GLControl glc = swfControl as GLControl;
 			if (glc == null)
@@ -649,7 +649,7 @@ namespace BizHawk.Client.EmuHawk
 			return glc;
 		}
 
-		Shader CreateShader(ShaderType type, string source, string entry, bool required)
+		private Shader CreateShader(ShaderType type, string source, string entry, bool required)
 		{
 			var sw = new ShaderWrapper();
 			string info = "";
@@ -670,7 +670,7 @@ namespace BizHawk.Client.EmuHawk
 			return ret;
 		}
 
-		bool CompileShaderSimple(int sid, string source, bool required)
+		private bool CompileShaderSimple(int sid, string source, bool required)
 		{
 			bool success = true;
 			ErrorCode errcode;
@@ -716,7 +716,7 @@ namespace BizHawk.Client.EmuHawk
 			return success;
 		}
 	
-		void UnbindVertexAttributes()
+		private void UnbindVertexAttributes()
 		{
 			//HAMNUTS:
 			//its not clear how many bindings we'll have to disable before we can enable the ones we need..
@@ -727,7 +727,7 @@ namespace BizHawk.Client.EmuHawk
 			currBindings.Clear();
 		}
 
-		unsafe void MyBindArrayData(VertexLayout layout, void* pData)
+		private unsafe void MyBindArrayData(VertexLayout layout, void* pData)
 		{
 			UnbindVertexAttributes();
 
@@ -798,7 +798,7 @@ namespace BizHawk.Client.EmuHawk
 			PurgeStateCache();
 		}
 
-		void CreateRenderStates()
+		private void CreateRenderStates()
 		{
 			_rsBlendNoneVerbatim = new CacheBlendState(
 				false, 
@@ -816,14 +816,15 @@ namespace BizHawk.Client.EmuHawk
 				BlendingFactorSrc.One, BlendEquationMode.FuncAdd, BlendingFactorDest.Zero);
 		}
 
-		CacheBlendState _rsBlendNoneVerbatim, _rsBlendNoneOpaque, _rsBlendNormal;
+		private CacheBlendState _rsBlendNoneVerbatim, _rsBlendNoneOpaque, _rsBlendNormal;
 
 		//state caches
-		int sActiveTexture;
-		VertexLayout sStateCurrentVertexLayout;
-		VertexLayout sStatePendingVertexLayout;
-		HashSet<int> sVertexAttribEnables = new HashSet<int>();
-		void PurgeStateCache()
+		private int sActiveTexture;
+		private VertexLayout sStateCurrentVertexLayout;
+		private VertexLayout sStatePendingVertexLayout;
+		private HashSet<int> sVertexAttribEnables = new HashSet<int>();
+
+		private void PurgeStateCache()
 		{
 			sStateCurrentVertexLayout = null;
 			sStatePendingVertexLayout = null;

@@ -44,7 +44,7 @@ namespace BizHawk.Client.EmuHawk
 			bmpViewSPPal.Refresh();
 		}
 
-		static unsafe void Draw16x16(byte* src, int* dest, int pitch, int* pal)
+		private static unsafe void Draw16x16(byte* src, int* dest, int pitch, int* pal)
 		{
 			int inc = pitch - 16;
 			dest -= inc;
@@ -56,7 +56,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		static unsafe void Draw8x8(byte* src, int* dest, int pitch, int* pal)
+		private static unsafe void Draw8x8(byte* src, int* dest, int pitch, int* pal)
 		{
 			int inc = pitch - 8;
 			dest -= inc;
@@ -68,7 +68,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		unsafe void DrawSprites()
+		private unsafe void DrawSprites()
 		{
 			Viewer.GetGpuData(checkBoxVDC2.Checked ? 1 : 0, view =>
 			{
@@ -90,7 +90,7 @@ namespace BizHawk.Client.EmuHawk
 			});
 		}
 
-		unsafe void DrawBacks()
+		private unsafe void DrawBacks()
 		{
 			Viewer.GetGpuData(checkBoxVDC2.Checked ? 1 : 0, view =>
 			{
@@ -112,7 +112,7 @@ namespace BizHawk.Client.EmuHawk
 			});
 		}
 
-		unsafe void DrawPalettes()
+		private unsafe void DrawPalettes()
 		{
 			Viewer.GetGpuData(checkBoxVDC2.Checked ? 1 : 0, view =>
 			{
@@ -122,7 +122,7 @@ namespace BizHawk.Client.EmuHawk
 			});
 		}
 
-		static unsafe void DrawPalette(Bitmap bmp, int* pal)
+		private static unsafe void DrawPalette(Bitmap bmp, int* pal)
 		{
 			var lockData = bmp.LockBits(new Rectangle(0, 0, 256, 256), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 

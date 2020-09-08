@@ -107,7 +107,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// variable length value, unsigned
 		/// </summary>
-		static void WriteVarU(int v, Stream stream)
+		private static void WriteVarU(int v, Stream stream)
 		{
 			if (v < 0)
 			{
@@ -141,7 +141,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// arbitrary sequence of bytes with length prepended
 		/// </summary>
-		static void WriteBytes(byte[] b, Stream stream)
+		private static void WriteBytes(byte[] b, Stream stream)
 		{
 			WriteVarU(b.Length, stream);
 			stream.Write(b, 0, b.Length);
@@ -338,7 +338,7 @@ namespace BizHawk.Client.EmuHawk
 		// audio packets waiting to be written
 		private readonly Queue<NutFrame> _audioQueue;
 
-		readonly ReusableBufferPool<byte> _bufferPool = new ReusableBufferPool<byte>(12);
+		private readonly ReusableBufferPool<byte> _bufferPool = new ReusableBufferPool<byte>(12);
 
 		/// <summary>
 		/// write out the main header

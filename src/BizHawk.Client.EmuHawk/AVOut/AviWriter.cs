@@ -68,8 +68,8 @@ namespace BizHawk.Client.EmuHawk
 		// thread communication
 		// synchronized queue with custom messages
 		// it seems like there are 99999 ways to do everything in C#, so i'm sure this is not the best
-		System.Collections.Concurrent.BlockingCollection<object> threadQ;
-		System.Threading.Thread workerT;
+		private System.Collections.Concurrent.BlockingCollection<object> threadQ;
+		private System.Threading.Thread workerT;
 
 		private void threadproc()
 		{
@@ -562,7 +562,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 		}
 
-		unsafe class AviWriterSegment : IDisposable
+		private unsafe class AviWriterSegment : IDisposable
 		{
 			static AviWriterSegment()
 			{
@@ -627,7 +627,7 @@ namespace BizHawk.Client.EmuHawk
 
 			private static bool FAILED(int hr) => hr < 0;
 
-			static unsafe int AVISaveOptions(IntPtr stream, ref AVIWriterImports.AVICOMPRESSOPTIONS opts, IntPtr owner)
+			private static unsafe int AVISaveOptions(IntPtr stream, ref AVIWriterImports.AVICOMPRESSOPTIONS opts, IntPtr owner)
 			{
 				fixed (AVIWriterImports.AVICOMPRESSOPTIONS* _popts = &opts)
 				{
@@ -638,7 +638,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			Parameters parameters;
+			private Parameters parameters;
 
 			/// <exception cref="InvalidOperationException">unmanaged call failed</exception>
 			public void OpenFile(string destPath, Parameters parameters, CodecToken videoCodecToken)
@@ -861,7 +861,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			unsafe void FlushBufferedAudio()
+			private unsafe void FlushBufferedAudio()
 			{
 				int todo = outStatus.audio_buffered_shorts;
 				int todo_realsamples = todo / 2;

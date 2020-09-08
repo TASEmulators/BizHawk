@@ -23,17 +23,17 @@ namespace BizHawk.Client.EmuHawk
 			if (OSTailoredCode.IsUnixHost) textBox1.Text = string.Join("\n", textBox1.Text.Split('\n').Take(3)) + $"\n\n(Linux user: Create a symlink with the below filename pointing to the ffmpeg binary with version {FFmpegService.Version}.)";
 		}
 
-		int pct = 0;
-		bool exiting = false;
-		bool succeeded = false;
-		bool failed = false;
+		private int pct = 0;
+		private bool exiting = false;
+		private bool succeeded = false;
+		private bool failed = false;
 
-		void ThreadProc()
+		private void ThreadProc()
 		{
 			Download();
 		}
 
-		void Download()
+		private void Download()
 		{
 			//the temp file is owned by this thread
 			var fn = TempFileManager.GetTempFilename("ffmpeg_download", ".7z", false);

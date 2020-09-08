@@ -100,7 +100,7 @@ namespace BizHawk.BizInvoke
 			public IntPtr GetProcAddrOrThrow(string entryPoint) => EntryPoints.TryGetValue(entryPoint, out var ret) ? ret : throw new InvalidOperationException($"could not find {entryPoint} in exports");
 		}
 
-		static readonly Dictionary<Type, DelegateStorage> Impls = new Dictionary<Type, DelegateStorage>();
+		private static readonly Dictionary<Type, DelegateStorage> Impls = new Dictionary<Type, DelegateStorage>();
 
 
 		public static IImportResolver GetExvoker(object o, ICallingConventionAdapter a)

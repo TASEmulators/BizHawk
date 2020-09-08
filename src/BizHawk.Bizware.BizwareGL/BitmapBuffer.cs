@@ -288,7 +288,7 @@ namespace BizHawk.Bizware.BizwareGL
 			HasAlpha = false;
 		}
 
-		void LoadInternal(Stream stream, Bitmap bitmap, BitmapLoadOptions options)
+		private void LoadInternal(Stream stream, Bitmap bitmap, BitmapLoadOptions options)
 		{
 			bool cleanup = options.CleanupAlpha0;
 			bool needsPad = true;
@@ -475,7 +475,7 @@ namespace BizHawk.Bizware.BizwareGL
 			}
 		}
 
-		void InitSize(int width, int height)
+		private void InitSize(int width, int height)
 		{
 			Pixels = new int[width * height];
 			Width = width;

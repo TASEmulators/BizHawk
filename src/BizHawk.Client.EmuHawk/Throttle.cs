@@ -11,9 +11,9 @@ namespace BizHawk.Client.EmuHawk
 {
 	public class Throttle
 	{
-		int lastSkipRate;
-		int framesToSkip;
-		int framesSkipped;
+		private int lastSkipRate;
+		private int framesToSkip;
+		private int framesSkipped;
 		public bool skipNextFrame;
 
 		//if the emulator is paused then we don't need to behave as if unthrottled
@@ -129,7 +129,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		static ulong GetCurTime()
+		private static ulong GetCurTime()
 		{
 			if (tmethod == 1)
 				return (ulong)Stopwatch.GetTimestamp();
@@ -137,13 +137,13 @@ namespace BizHawk.Client.EmuHawk
 				return (ulong)Environment.TickCount;
 		}
 
-		static readonly Func<uint, uint> TimeBeginPeriod = OSTailoredCode.IsUnixHost
+		private static readonly Func<uint, uint> TimeBeginPeriod = OSTailoredCode.IsUnixHost
 			? u => u
 			: (Func<uint, uint>) Win32Imports.timeBeginPeriod;
 
-		static readonly int tmethod;
-		static readonly ulong afsfreq;
-		static readonly ulong tfreq;
+		private static readonly int tmethod;
+		private static readonly ulong afsfreq;
+		private static readonly ulong tfreq;
 
 		static Throttle()
 		{
@@ -170,7 +170,7 @@ namespace BizHawk.Client.EmuHawk
 			SetSpeedPercent(target_pct);
 		}
 
-		int pct = -1;
+		private int pct = -1;
 		public void SetSpeedPercent(int percent)
 		{
 			//Console.WriteLine($"throttle set percent {percent}");
@@ -183,17 +183,17 @@ namespace BizHawk.Client.EmuHawk
 			AutoFrameSkip_IgnorePreviousDelay();
 		}
 
-		ulong core_desiredfps;
-		ulong desiredfps;
-		float desiredspf;
+		private ulong core_desiredfps;
+		private ulong desiredfps;
+		private float desiredspf;
 
-		ulong ltime;
-		ulong beginticks, endticks, preThrottleEndticks;
-		float fSkipFrames;
-		float fSkipFramesError;
-		int lastSkip;
-		float lastError;
-		float integral;
+		private ulong ltime;
+		private ulong beginticks, endticks, preThrottleEndticks;
+		private float fSkipFrames;
+		private float fSkipFramesError;
+		private int lastSkip;
+		private float lastError;
+		private float integral;
 
 		public void AutoFrameSkip_IgnorePreviousDelay()
 		{
@@ -205,12 +205,12 @@ namespace BizHawk.Client.EmuHawk
 			fSkipFrames *= 0.5f;
 		}
 
-		void AutoFrameSkip_BeforeThrottle()
+		private void AutoFrameSkip_BeforeThrottle()
 		{
 			preThrottleEndticks = GetCurTime();
 		}
 
-		void AutoFrameSkip_NextFrame()
+		private void AutoFrameSkip_NextFrame()
 		{
 			endticks = GetCurTime();
 
@@ -264,7 +264,7 @@ namespace BizHawk.Client.EmuHawk
 			beginticks = GetCurTime();
 		}
 
-		int AutoFrameSkip_GetSkipAmount(int min, int max)
+		private int AutoFrameSkip_GetSkipAmount(int min, int max)
 		{
 			int rv = (int)fSkipFrames;
 			fSkipFramesError += fSkipFrames - rv;
@@ -306,7 +306,7 @@ namespace BizHawk.Client.EmuHawk
 			return rv;
 		}
 
-		void SpeedThrottle(Sound sound, bool paused)
+		private void SpeedThrottle(Sound sound, bool paused)
 		{
 			AutoFrameSkip_BeforeThrottle();
 

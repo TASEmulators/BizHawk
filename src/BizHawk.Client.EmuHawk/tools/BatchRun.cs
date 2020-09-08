@@ -100,7 +100,7 @@ namespace BizHawk.Client.EmuHawk
 			this.Invoke(() => _thread = null);
 		}
 
-		void br_OnProgress(object sender, BatchRunner.ProgressEventArgs e)
+		private void br_OnProgress(object sender, BatchRunner.ProgressEventArgs e)
 		{
 			this.Invoke(() => ProgressUpdate(e.Completed, e.Total));
 			e.ShouldCancel = false;

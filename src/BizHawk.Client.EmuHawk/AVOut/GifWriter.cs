@@ -141,12 +141,12 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// precooked gif header
 		/// </summary>
-		static byte[] GifAnimation = { 33, 255, 11, 78, 69, 84, 83, 67, 65, 80, 69, 50, 46, 48, 3, 1, 0, 0, 0 };
+		private static byte[] GifAnimation = { 33, 255, 11, 78, 69, 84, 83, 67, 65, 80, 69, 50, 46, 48, 3, 1, 0, 0, 0 };
 
 		/// <summary>
 		/// little endian frame length in 10ms units
 		/// </summary>
-		byte[] Delay = {100, 0};
+		private byte[] Delay = {100, 0};
 
 		public void AddFrame(IVideoProvider source)
 		{

@@ -92,7 +92,7 @@ namespace BizHawk.Client.EmuHawk
 		private readonly Joystick _joystick;
 		private JoystickState _state = new JoystickState();
 
-		GamePad(Joystick joystick, int index)
+		private GamePad(Joystick joystick, int index)
 		{
 			_joystick = joystick;
 			PlayerNumber = index + 1;

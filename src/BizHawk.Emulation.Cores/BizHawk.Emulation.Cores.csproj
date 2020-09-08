@@ -2,6 +2,7 @@
 	<Import Project="../MainSlnCommon.props" />
 	<PropertyGroup>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<NoWarn>$(NoWarn);SA1400</NoWarn>
 		<TargetFramework>netstandard2.0</TargetFramework>
 	</PropertyGroup>
 	<ItemGroup>

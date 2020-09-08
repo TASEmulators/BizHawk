@@ -18,14 +18,14 @@ namespace BizHawk.Client.EmuHawk
 
 	public class CustomCheckBox : CheckBox
 	{
-		Color _checkBackColor = SystemColors.Control;
+		private Color _checkBackColor = SystemColors.Control;
 		public Color CheckBackColor
 		{
 			get => _checkBackColor;
 			set { _checkBackColor = value; Refresh(); }
 		}
 
-		bool? _forceChecked;
+		private bool? _forceChecked;
 		public bool? ForceChecked
 		{
 			get => _forceChecked;

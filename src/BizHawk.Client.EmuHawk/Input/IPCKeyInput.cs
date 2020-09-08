@@ -19,7 +19,7 @@ namespace BizHawk.Client.EmuHawk
 		private static readonly List<KeyEvent> PendingEventList = new List<KeyEvent>();
 		private static readonly List<KeyEvent> EventList = new List<KeyEvent>();
 
-		static void IPCThread()
+		private static void IPCThread()
 		{
 			string pipeName = $"bizhawk-pid-{System.Diagnostics.Process.GetCurrentProcess().Id}-IPCKeyInput";
 

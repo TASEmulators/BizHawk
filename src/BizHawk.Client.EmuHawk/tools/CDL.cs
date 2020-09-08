@@ -49,7 +49,7 @@ namespace BizHawk.Client.EmuHawk
 		[RequiredService]
 		private IMemoryDomains MemoryDomains { get; set; }
 
-		ICodeDataLogger _icdlogger;
+		private ICodeDataLogger _icdlogger;
 
 		[RequiredService]
 		private ICodeDataLogger CodeDataLogger
@@ -306,7 +306,7 @@ namespace BizHawk.Client.EmuHawk
 			RecentSubMenu.DropDownItems.AddRange(_recent.RecentMenu(LoadFile, "Session"));
 		}
 
-		void NewFileLogic()
+		private void NewFileLogic()
 		{
 			_cdl = new CodeDataLog();
 			CodeDataLogger.NewCDL(_cdl);
@@ -355,7 +355,7 @@ namespace BizHawk.Client.EmuHawk
 			LoadFile(file.FullName);
 		}
 
-		void RunSave()
+		private void RunSave()
 		{
 			_recent.Add(_currentFilename);
 			using var fs = new FileStream(_currentFilename, FileMode.Create, FileAccess.Write);
@@ -382,7 +382,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// returns false if the operation was canceled
 		/// </summary>
-		bool RunSaveAs()
+		private bool RunSaveAs()
 		{
 			var file = SaveFileDialog(
 				_currentFilename,
@@ -467,7 +467,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		void ShutdownCDL()
+		private void ShutdownCDL()
 		{
 			_cdl = null;
 			CodeDataLogger?.SetCDL(null);

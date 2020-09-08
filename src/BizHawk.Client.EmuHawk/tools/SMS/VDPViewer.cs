@@ -31,7 +31,7 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void GeneralUpdate() => UpdateBefore();
 
-		static unsafe void Draw8x8(byte* src, int* dest, int pitch, int* pal)
+		private static unsafe void Draw8x8(byte* src, int* dest, int pitch, int* pal)
 		{
 			int inc = pitch - 8;
 			dest -= inc;
@@ -43,7 +43,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		static unsafe void Draw8x8hv(byte* src, int* dest, int pitch, int* pal, bool hflip, bool vflip)
+		private static unsafe void Draw8x8hv(byte* src, int* dest, int pitch, int* pal, bool hflip, bool vflip)
 		{
 			int incX = hflip ? -1 : 1;
 			int incY = vflip ? -pitch : pitch;
@@ -63,7 +63,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		unsafe void DrawTiles(int *pal)
+		private unsafe void DrawTiles(int *pal)
 		{
 			var lockData = bmpViewTiles.Bmp.LockBits(new Rectangle(0, 0, 256, 128), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 			int* dest = (int*)lockData.Scan0;
@@ -84,7 +84,7 @@ namespace BizHawk.Client.EmuHawk
 			bmpViewTiles.Refresh();
 		}
 
-		unsafe void DrawBG(int* pal)
+		private unsafe void DrawBG(int* pal)
 		{
 			int bgHeight = Vdp.FrameHeight == 192 ? 224 : 256;
 			int maxTile = bgHeight * 4;
@@ -120,7 +120,7 @@ namespace BizHawk.Client.EmuHawk
 			bmpViewBG.Refresh();
 		}
 
-		unsafe void DrawPal(int* pal)
+		private unsafe void DrawPal(int* pal)
 		{
 			var lockData = bmpViewPalette.Bmp.LockBits(new Rectangle(0, 0, 16, 2), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 			int* dest = (int*)lockData.Scan0;

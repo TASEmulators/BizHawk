@@ -210,7 +210,7 @@ namespace BizHawk.Bizware.BizwareGL
 			}
 
 			/// <summary>Computes the ratio of used surface area.</summary>
-			float Occupancy()
+			private float Occupancy()
 			{
 				int totalSurfaceArea = binWidth * binHeight;
 				int usedSurfaceArea = UsedSurfaceArea(root);

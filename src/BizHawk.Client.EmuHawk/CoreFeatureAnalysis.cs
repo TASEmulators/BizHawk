@@ -106,7 +106,7 @@ namespace BizHawk.Client.EmuHawk
 
 		// ReSharper disable once UnusedAutoPropertyAccessor.Local
 		[RequiredService]
-		IEmulator Emulator { get; set; }
+		private IEmulator Emulator { get; set; }
 
 		protected override string WindowTitleStatic => "Core Features";
 
