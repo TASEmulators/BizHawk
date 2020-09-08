@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	}
 
 	/// <summary>
-	/// Represents a controller plugged into a controller port on the Colecovision
+	/// Represents a controller plugged into a controller port on the 2600
 	/// </summary>
 	public interface IPort
 	{

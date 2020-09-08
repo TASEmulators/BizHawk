@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				ser.SyncEnum(nameof(_machineType), ref _machineType);
 
 				_cpu.SyncState(ser);
-				ser.BeginSection(nameof(ZXSpectrum));
+				ser.BeginSection(nameof(ChannelF));
 				_machine.SyncState(ser);
 				ser.Sync("Frame", ref _machine.FrameCount);
 				ser.Sync("LagCount", ref _lagCount);
@@ -56,7 +56,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				else
 				{
 					_cpu.SyncState(ser);
-					ser.BeginSection(nameof(ZXSpectrum));
+					ser.BeginSection(nameof(ChannelF));
 					_machine.SyncState(ser);
 					ser.Sync("Frame", ref _machine.FrameCount);
 					ser.Sync("LagCount", ref _lagCount);

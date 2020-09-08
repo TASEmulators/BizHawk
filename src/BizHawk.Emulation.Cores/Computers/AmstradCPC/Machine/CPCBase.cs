@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 	public abstract partial class CPCBase
 	{
 		/// <summary>
-		/// The calling ZXSpectrum class (piped in via constructor)
+		/// The calling AmstradCPC class (piped in via constructor)
 		/// </summary>
 		public AmstradCPC CPC { get; set; }
 

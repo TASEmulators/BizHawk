@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 	public abstract partial class CPCBase
 	{
 		/// <summary>
-		/// The tape or disk image(s) that are passed in from the main ZXSpectrum class
+		/// The tape or disk image(s) that are passed in from the main AmstradCPC class
 		/// </summary>
 		protected List<byte[]> mediaImages { get; set; }
 

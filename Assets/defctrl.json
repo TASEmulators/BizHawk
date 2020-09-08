@@ -243,6 +243,20 @@
 			"P2 Right": "Keypad6, J1 Z+, X1 RStickRight",
 			"P2 Button": "Keypad1, J1 B2, X1 A"
 		},
+		"Atari 7800 Basic Controller": {
+			"Reset": "D, J1 B9, X1 Back",
+			"Select": "S, J1 B10, X1 Start",
+			"P1 Up": "Up, J1 POV1U, X1 DpadUp, X1 LStickUp",
+			"P1 Down": "Down, J1 POV1D, X1 DpadDown, X1 LStickDown",
+			"P1 Left": "Left, J1 POV1L, X1 DpadLeft, X1 LStickLeft",
+			"P1 Right": "Right, J1 POV1R, X1 DpadRight, X1 LStickRight",
+			"P1 Button": "Z, J1 B1, X1 X",
+			"P2 Up": "Keypad8, J1 RotationZ-, X1 RStickUp",
+			"P2 Down": "Keypad2, J1 RotationZ+, X1 RStickDown",
+			"P2 Left": "Keypad4, J1 Z-, X1 RStickLeft",
+			"P2 Right": "Keypad6, J1 Z+, X1 RStickRight",
+			"P2 Button": "Keypad1, J1 B2, X1 A"
+		},
 		"Atari 7800 ProLine Joystick Controller": {
 			"Reset": "D, J1 B9, X1 Back",
 			"Select": "S, J1 B10, X1 Start",
@@ -1020,6 +1034,10 @@
 			"A": "S"
 		},
 		"Atari 2600 Basic Controller": {
+			"P1 Button": "A",
+			"P2 Button": "S"
+		},
+		"Atari 7800 Basic Controller": {
 			"P1 Button": "A",
 			"P2 Button": "S"
 		},

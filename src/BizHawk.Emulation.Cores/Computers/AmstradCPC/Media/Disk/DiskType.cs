@@ -2,7 +2,7 @@
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 {
 	/// <summary>
-	/// The different disk formats ZXHawk currently supports
+	/// The different disk formats CPCHawk currently supports
 	/// </summary>
 	public enum DiskType
 	{

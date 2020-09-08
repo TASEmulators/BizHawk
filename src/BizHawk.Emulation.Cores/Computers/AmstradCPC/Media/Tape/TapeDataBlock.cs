@@ -228,7 +228,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		BRWS,
 		PAUS,
 
-		// zxhawk proprietry
+		// CPCHawk proprietary
 		PAUSE_BLOCK,
 
 		WAV_Recording

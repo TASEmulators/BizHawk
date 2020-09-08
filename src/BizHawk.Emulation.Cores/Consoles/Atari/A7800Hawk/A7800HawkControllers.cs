@@ -93,7 +93,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			PortNum = portNum;
 			Definition = new ControllerDefinition
 			{
-				Name = "Atari 2600 Basic Controller",
+				Name = "Atari 7800 Basic Controller",
 				BoolButtons = BaseDefinition
 				.Select(b => "P" + PortNum + " " + b)
 				.ToList()

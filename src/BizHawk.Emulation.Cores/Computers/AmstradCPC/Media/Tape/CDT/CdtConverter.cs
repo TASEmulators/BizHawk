@@ -1264,7 +1264,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				If you do not obey these rules, emulators may display your message in any way they like.        */
 		private void ProcessBlockID31(byte[] data)
 		{
-			// currently not implemented properly in ZXHawk
+			// currently not implemented properly in CPCHawk
 			var t = new TapeDataBlock
 			{
 				BlockID = 0x31,
@@ -1428,7 +1428,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				The list of hardware types and IDs is somewhat large, and may be found at the end of the format description.              */
 		private void ProcessBlockID33(byte[] data)
 		{
-			// currently not implemented properly in ZXHawk
+			// currently not implemented properly in CPCHawk
 
 			TapeDataBlock t = new TapeDataBlock
 			{
@@ -1531,11 +1531,11 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			_position += 4;
 		}
 
-		// These mostly should be ignored by ZXHawk - here for completeness
+		// These mostly should be ignored by CPCHawk - here for completeness
 
 		private void ProcessBlockID16(byte[] data)
 		{
-			// zxhawk will not implement this block. it will however handle it so subsequent blocks can be parsed
+			// CPCHawk will not implement this block. it will however handle it so subsequent blocks can be parsed
 			TapeDataBlock t = new TapeDataBlock
 			{
 				BlockID = 0x16,
@@ -1554,7 +1554,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 		private void ProcessBlockID17(byte[] data)
 		{
-			// zxhawk will not implement this block. it will however handle it so subsequent blocks can be parsed
+			// CPCHawk will not implement this block. it will however handle it so subsequent blocks can be parsed
 			var t = new TapeDataBlock
 			{
 				BlockID = 0x17,
@@ -1573,7 +1573,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 		private void ProcessBlockID34(byte[] data)
 		{
-			// currently not implemented properly in ZXHawk
+			// currently not implemented properly in CPCHawk
 			var t = new TapeDataBlock
 			{
 				BlockID = 0x34,
@@ -1602,7 +1602,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                 And when an emulator encounters the snapshot block it should load it and then continue with the next block.               */
 		private void ProcessBlockID40(byte[] data)
 		{
-			// currently not implemented properly in ZXHawk
+			// currently not implemented properly in CPCHawk
 
 			TapeDataBlock t = new TapeDataBlock
 			{
