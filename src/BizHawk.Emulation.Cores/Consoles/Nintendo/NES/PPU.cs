@@ -17,8 +17,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		Region _region;
 		public Region region
 		{
-			set { _region = value; SyncRegion(); }
 			get => _region;
+			set { _region = value; SyncRegion(); }
 		}
 		void SyncRegion()
 		{

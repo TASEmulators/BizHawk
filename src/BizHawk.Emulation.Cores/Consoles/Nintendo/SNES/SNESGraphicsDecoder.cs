@@ -271,44 +271,44 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			public ModeInfo Mode = new ModeInfo();
 
-			public bool Mode1_BG3_Priority { private set; get; }
+			public bool Mode1_BG3_Priority { get; private set; }
 
-			public bool SETINI_Mode7ExtBG { private set; get; }
-			public bool SETINI_HiRes { private set; get; }
-			public bool SETINI_Overscan { private set; get; }
-			public bool SETINI_ObjInterlace { private set; get; }
-			public bool SETINI_ScreenInterlace { private set; get; }
+			public bool SETINI_Mode7ExtBG { get; private set; }
+			public bool SETINI_HiRes { get; private set; }
+			public bool SETINI_Overscan { get; private set; }
+			public bool SETINI_ObjInterlace { get; private set; }
+			public bool SETINI_ScreenInterlace { get; private set; }
 
-			public int CGWSEL_ColorMask { private set; get; }
-			public int CGWSEL_ColorSubMask { private set; get; }
-			public int CGWSEL_AddSubMode { private set; get; }
-			public bool CGWSEL_DirectColor { private set; get; }
-			public int CGADSUB_AddSub { private set; get; }
-			public bool CGADSUB_Half { private set; get; }
+			public int CGWSEL_ColorMask { get; private set; }
+			public int CGWSEL_ColorSubMask { get; private set; }
+			public int CGWSEL_AddSubMode { get; private set; }
+			public bool CGWSEL_DirectColor { get; private set; }
+			public int CGADSUB_AddSub { get; private set; }
+			public bool CGADSUB_Half { get; private set; }
 
-			public int OBSEL_Size { private set; get; }
-			public int OBSEL_NameSel { private set; get; }
-			public int OBSEL_NameBase { private set; get; }
+			public int OBSEL_Size { get; private set; }
+			public int OBSEL_NameSel { get; private set; }
+			public int OBSEL_NameBase { get; private set; }
 
-			public int OBJTable0Addr { private set; get; }
-			public int OBJTable1Addr { private set; get; }
+			public int OBJTable0Addr { get; private set; }
+			public int OBJTable1Addr { get; private set; }
 
-			public bool OBJ_MainEnabled { private set; get; }
-			public bool OBJ_SubEnabled { private set; get; }
-			public bool OBJ_MathEnabled { private set; get; }
-			public bool BK_MathEnabled { private set; get; }
+			public bool OBJ_MainEnabled { get; private set; }
+			public bool OBJ_SubEnabled { get; private set; }
+			public bool OBJ_MathEnabled { get; private set; }
+			public bool BK_MathEnabled { get; private set; }
 
-			public int M7HOFS { private set; get; }
-			public int M7VOFS { private set; get; }
-			public int M7A { private set; get; }
-			public int M7B { private set; get; }
-			public int M7C { private set; get; }
-			public int M7D { private set; get; }
-			public int M7X { private set; get; }
-			public int M7Y { private set; get; }
-			public int M7SEL_REPEAT { private set; get; }
-			public bool M7SEL_HFLIP { private set; get; }
-			public bool M7SEL_VFLIP { private set; get; }
+			public int M7HOFS { get; private set; }
+			public int M7VOFS { get; private set; }
+			public int M7A { get; private set; }
+			public int M7B { get; private set; }
+			public int M7C { get; private set; }
+			public int M7D { get; private set; }
+			public int M7X { get; private set; }
+			public int M7Y { get; private set; }
+			public int M7SEL_REPEAT { get; private set; }
+			public bool M7SEL_HFLIP { get; private set; }
+			public bool M7SEL_VFLIP { get; private set; }
 
 			public static ScreenInfo GetScreenInfo(LibsnesApi api)
 			{

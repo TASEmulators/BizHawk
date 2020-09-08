@@ -38,8 +38,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		public byte Port180A
 		{
-			set { WritePending = true; WriteTimer = 24; WriteBuffer = value; }
 			get { ReadPending = true; ReadTimer = 24; return ReadBuffer; }
+			set { WritePending = true; WriteTimer = 24; WriteBuffer = value; }
 		}
 
 		public byte Port180B;
