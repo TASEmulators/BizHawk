@@ -392,9 +392,6 @@
 		<!-- Static elements should appear before instance elements -->
 		<Rule Id="SA1204" Action="Hidden" />
 
-		<!-- Partial elements should declare access -->
-		<Rule Id="SA1205" Action="Hidden" />
-
 		<!-- System using directives should be placed before other using directives -->
 		<Rule Id="SA1208" Action="Hidden" />
 

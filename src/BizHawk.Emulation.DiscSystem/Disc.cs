@@ -16,7 +16,7 @@ using System.Collections.Generic;
 
 namespace BizHawk.Emulation.DiscSystem
 {
-	public partial class Disc : IDisposable
+	public sealed partial class Disc : IDisposable
 	{
 		/// <summary>
 		/// Automagically loads a disc, without any fine-tuned control at all

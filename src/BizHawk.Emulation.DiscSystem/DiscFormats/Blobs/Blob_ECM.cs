@@ -32,7 +32,7 @@ using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.DiscSystem
 {
-	sealed partial class Disc
+	public sealed partial class Disc
 	{
 		internal class Blob_ECM : IBlob
 		{

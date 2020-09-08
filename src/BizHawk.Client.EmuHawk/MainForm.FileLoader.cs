@@ -10,7 +10,7 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	partial class MainForm
+	public partial class MainForm
 	{
 		private enum LoadOrdering
 		{

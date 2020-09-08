@@ -7,7 +7,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	partial class MainForm
+	public partial class MainForm
 	{
 		public bool StartNewMovie(IMovie movie, bool record)
 		{

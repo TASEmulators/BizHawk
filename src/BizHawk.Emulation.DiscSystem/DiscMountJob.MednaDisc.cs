@@ -1,6 +1,6 @@
 ﻿namespace BizHawk.Emulation.DiscSystem
 {
-	partial class DiscMountJob
+	public partial class DiscMountJob
 	{
 		private class SS_MednaDisc : ISectorSynthJob2448
 		{

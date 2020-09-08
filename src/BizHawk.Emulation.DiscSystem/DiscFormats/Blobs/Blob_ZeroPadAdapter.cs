@@ -4,7 +4,7 @@ using System;
 
 namespace BizHawk.Emulation.DiscSystem
 {
-	public partial class Disc : IDisposable
+	public sealed partial class Disc : IDisposable
 	{
 		internal sealed class Blob_ZeroPadAdapter : IBlob
 		{

@@ -4,7 +4,7 @@ using System.IO;
 
 namespace BizHawk.Emulation.DiscSystem
 {
-	partial class Disc
+	public sealed partial class Disc
 	{
 		/// <summary>
 		/// TODO - double-check that riffmaster is not filling memory at load-time but reading through to the disk

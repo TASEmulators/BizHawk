@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.DiscSystem
 {
-	partial class Disc
+	public sealed partial class Disc
 	{
 		internal class Blob_RawFile : IBlob
 		{
