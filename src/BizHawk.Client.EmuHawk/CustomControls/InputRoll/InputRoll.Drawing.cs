@@ -14,31 +14,28 @@ namespace BizHawk.Client.EmuHawk
 			using (_renderer.LockGraphics(e.Graphics))
 			{
 				// White Background
-				_renderer.SetBrush(Color.Red);
+				_renderer.SetBrush(Color.White);
 				_renderer.SetSolidPen(Color.White);
 				_renderer.FillRectangle(e.ClipRectangle);
 
 				// Lag frame calculations
 				SetLagFramesArray();
 
-				List<RollColumn> dirtyColumns = new List<RollColumn>();
+				List<RollColumn> visibleColumns;
 
 				if (HorizontalOrientation)
 				{
 					CalculateHorizontalColumnPositions(VisibleColumns.ToList());
-					dirtyColumns = VisibleColumns
+					visibleColumns = VisibleColumns
 						.Take(_horizontalColumnTops.Count(c => c < e.ClipRectangle.Height))
 						.ToList();
 				}
 				else
 				{
-					foreach (var c in _columns.VisibleColumns)
-					{
-						int vizLeft = c.Left - _hBar.Value;
-						int vizRight = c.Right - _hBar.Value;
-						if (vizLeft < e.ClipRectangle.Right && vizRight >= e.ClipRectangle.Left)
-							dirtyColumns.Add(c);
-					}
+					visibleColumns = _columns.VisibleColumns
+						.Where(c => c.Right > _hBar.Value)
+						.Where(c => c.Left - _hBar.Value < e.ClipRectangle.Width)
+						.ToList();
 				}
 
 				var firstVisibleRow = Math.Max(FirstVisibleRow, 0);
@@ -48,21 +45,21 @@ namespace BizHawk.Client.EmuHawk
 
 				var lastVisibleRow = firstVisibleRow + visibleRows;
 
-				var needsColumnRedraw = HorizontalOrientation || e.ClipRectangle.Y >= ColumnHeight;
-				if (dirtyColumns.Any() && needsColumnRedraw)
+				var needsColumnRedraw = HorizontalOrientation || e.ClipRectangle.Y < ColumnHeight;
+				if (visibleColumns.Any() && needsColumnRedraw)
 				{
-					DrawColumnBg(dirtyColumns, e.ClipRectangle);
-					DrawColumnText(dirtyColumns);
+					DrawColumnBg(visibleColumns, e.ClipRectangle);
+					DrawColumnText(visibleColumns);
 				}
 
 				// Background
-				DrawBg(dirtyColumns, e.ClipRectangle, firstVisibleRow, lastVisibleRow);
+				DrawBg(visibleColumns, e.ClipRectangle, firstVisibleRow, lastVisibleRow);
 
 				// Foreground
-				DrawData(dirtyColumns, firstVisibleRow, lastVisibleRow);
+				DrawData(visibleColumns, firstVisibleRow, lastVisibleRow);
 
-				DrawColumnDrag(dirtyColumns);
-				DrawCellDrag(dirtyColumns);
+				DrawColumnDrag(visibleColumns);
+				DrawCellDrag(visibleColumns);
 			}
 		}
 
