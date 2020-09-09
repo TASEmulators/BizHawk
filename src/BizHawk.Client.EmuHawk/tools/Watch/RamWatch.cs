@@ -12,6 +12,7 @@ using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.Properties;
 using BizHawk.Client.EmuHawk.ToolExtensions;
+using BizHawk.Client.EmuHawk.Filters;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -311,6 +312,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Config.DisplayRamWatch)
 			{
+				GlobalWin.OSD.ClearRamWatches();
 				for (var i = 0; i < _watches.Count; i++)
 				{
 					var frozen = !_watches[i].IsSeparator && MainForm.CheatList.IsActive(_watches[i].Domain, _watches[i].Address);
