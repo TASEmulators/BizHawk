@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
@@ -170,12 +171,16 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		private class MyTypeConverter : TypeConverter
 		{
 			public SettingT Setting { get; set; }
+			// Mednafen includes extra fallback aliases of enums that are nameless, just one way value aliases.
+			// They confuse our code and are not needed here.
+			private IEnumerable<EnumValueT> ValidSettingEnums => Setting.SettingEnums
+				.Where(e => e.Name != null);
 
 			public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType) => sourceType == typeof(string);
 			public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType) => destinationType == typeof(string);
 			public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
 			{
-				return Setting.SettingEnums
+				return ValidSettingEnums
 					.SingleOrDefault(d => d.Name == (string)value)
 					?.Value
 					?? Setting.DefaultValue;
@@ -183,16 +188,16 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			}
 			public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
 			{
-				return Setting.SettingEnums
+				return ValidSettingEnums
 					.SingleOrDefault(d => d.Value == (string)value)
 					?.Name
-					?? Setting.SettingEnums
+					?? ValidSettingEnums
 					.Single(d => d.Value == Setting.DefaultValue)
 					.Name;
 			}
 
 			public override StandardValuesCollection GetStandardValues(ITypeDescriptorContext context) => new StandardValuesCollection(
-				Setting.SettingEnums.Select(e => e.Value).ToList()
+				ValidSettingEnums.Select(e => e.Value).ToList()
 			);
 
 			public override bool GetStandardValuesExclusive(ITypeDescriptorContext context) => true;

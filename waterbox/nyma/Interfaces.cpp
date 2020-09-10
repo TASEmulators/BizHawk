@@ -176,9 +176,7 @@ namespace Mednafen
 	}
 	bool MDFN_GetSettingB(const char *name)
 	{
-		char tmp[SETTING_VALUE_MAX_LENGTH];
-		FrontendSettingQuery(name, tmp);
-		return strtol(tmp, nullptr, 10) != 0;
+		return (bool)MDFN_GetSettingUI(name);
 	}
 	std::string MDFN_GetSettingS(const char *name)
 	{

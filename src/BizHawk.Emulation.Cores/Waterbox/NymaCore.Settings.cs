@@ -289,7 +289,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			{
 				s.AllOverrides[kvp.Key] = kvp.Value;
 			}
-			foreach (var setting in GetSettingsData().Concat(ExtraSettings))
+			var originalSettings = GetSettingsData();
+			foreach (var setting in originalSettings.Concat(ExtraSettings))
 			{
 				s.AllSettingsByKey.Add(setting.SettingsKey, setting);
 				s.AllSettings.Add(setting);
