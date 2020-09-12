@@ -830,7 +830,8 @@ namespace BizHawk.Client.EmuHawk
 					return (_drawWidth - MaxColumnWidth) / CellWidth;
 				}
 
-				return (_drawHeight - ColumnHeight - 3) / CellHeight; // Minus three makes it work
+				var result = (_drawHeight - ColumnHeight - 3) / CellHeight; // Minus three makes it work
+				return result < 0 ? 0 : result;
 			}
 		}
 
