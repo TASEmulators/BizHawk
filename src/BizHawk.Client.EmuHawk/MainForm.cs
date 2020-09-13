@@ -2770,6 +2770,11 @@ namespace BizHawk.Client.EmuHawk
 				Config.InputHotkeyOverrideOptions = 0;
 			}
 
+			if (Config.NoMixedInputHokeyOverride && Config.InputHotkeyOverrideOptions == 0)
+			{
+				Config.InputHotkeyOverrideOptions = 1;
+			}
+
 			UpdateKeyPriorityIcon();
 			switch (Config.InputHotkeyOverrideOptions)
 			{

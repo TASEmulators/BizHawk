@@ -82,6 +82,7 @@ namespace BizHawk.Client.EmuHawk
 			LuaDuringTurboCheckbox.Checked = _config.RunLuaDuringTurbo;
 			cbMoviesOnDisk.Checked = _config.Movies.MoviesOnDisk;
 			cbSkipWaterboxIntegrityChecks.Checked = _config.SkipWaterboxIntegrityChecks;
+			NoMixedKeyPriorityCheckBox.Checked = _config.NoMixedInputHokeyOverride;
 
 			switch (_config.HostInputMethod)
 			{
@@ -133,6 +134,7 @@ namespace BizHawk.Client.EmuHawk
 			_config.RunLuaDuringTurbo = LuaDuringTurboCheckbox.Checked;
 			_config.Movies.MoviesOnDisk = cbMoviesOnDisk.Checked;
 			_config.SkipWaterboxIntegrityChecks = cbSkipWaterboxIntegrityChecks.Checked;
+			_config.NoMixedInputHokeyOverride = NoMixedKeyPriorityCheckBox.Checked;
 
 			var prevLuaEngine = _config.LuaEngine;
 			if (LuaInterfaceRadio.Checked)

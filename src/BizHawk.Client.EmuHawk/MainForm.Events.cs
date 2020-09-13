@@ -2419,7 +2419,7 @@ namespace BizHawk.Client.EmuHawk
 					Config.InputHotkeyOverrideOptions = 2;
 					break;
 				case 2:
-					Config.InputHotkeyOverrideOptions = 0;
+					Config.InputHotkeyOverrideOptions = Config.NoMixedInputHokeyOverride ? 1 : 0;
 					break;
 			}
 

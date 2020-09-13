@@ -56,6 +56,8 @@ namespace BizHawk.Client.Common
 
 		// General Client Settings
 		public int InputHotkeyOverrideOptions { get; set; }
+		public bool NoMixedInputHokeyOverride { get; set; }
+
 		public bool StackOSDMessages { get; set; } = true;
 
 		public ZoomFactors TargetZoomFactors { get; set; } = new ZoomFactors();
