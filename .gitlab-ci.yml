@@ -3,31 +3,15 @@ image: mcr.microsoft.com/dotnet/core/sdk:3.1
 stages:
   - build
   - test
+  - package
 
-build_master:
-  artifacts:
-    expire_in: "1 month"
-    name: "BizHawk_devbuild_$CI_COMMIT_REF_SLUG"
-    paths:
-      - output
-      - test_output
-  rules:
-    - if: '$CI_COMMIT_REF_SLUG == "master"'
-      when: always
-  script:
-    - Dist/BuildRelease.sh
-  stage: build
-
-build_not_master:
+build:
   artifacts:
     expire_in: "30 minutes"
-    name: "BizHawk_devbuild_$CI_COMMIT_REF_SLUG"
+    name: "BizHawk_tempbuild_${CI_COMMIT_REF_SLUG}_$CI_COMMIT_SHORT_SHA"
     paths:
       - output
       - test_output
-  rules:
-    - if: '$CI_COMMIT_REF_SLUG != "master"'
-      when: always
   script:
     - Dist/BuildRelease.sh
   stage: build
@@ -41,6 +25,19 @@ check_style:
   script:
     - Dist/BuildRelease.sh -p:MachineRunAnalyzersDuringBuild=true || Dist/BuildRelease.sh -p:MachineRunAnalyzersDuringBuild=true
   stage: test
+
+package:
+  artifacts:
+    expire_in: "1 month"
+    name: "BizHawk_devbuild_${CI_COMMIT_REF_SLUG}_$CI_COMMIT_SHORT_SHA"
+    paths:
+      - packaged_output/*
+  rules:
+    - if: '$CI_COMMIT_REF_SLUG == "master"'
+      when: always
+  script:
+    - Dist/Package.sh
+  stage: package
 
 run_tests:
   artifacts:
