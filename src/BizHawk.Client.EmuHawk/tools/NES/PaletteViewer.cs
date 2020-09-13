@@ -5,6 +5,9 @@ namespace BizHawk.Client.EmuHawk
 {
 	public sealed class PaletteViewer : Control
 	{
+		private readonly SolidBrush BgPalettesBrush = new SolidBrush(Color.Black);
+		private readonly SolidBrush SpritePalettesBrush = new SolidBrush(Color.Black);
+
 		public class Palette
 		{
 			public int Address { get; }
@@ -49,8 +52,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			for (int x = 0; x < 16; x++)
 			{
-				e.Graphics.FillRectangle(new SolidBrush(BgPalettes[x].Color), new Rectangle(x * 16, 0, 16, 16));
-				e.Graphics.FillRectangle(new SolidBrush(SpritePalettes[x].Color), new Rectangle(x * 16, 16, 16, 16));
+				BgPalettesBrush.Color = BgPalettes[x].Color;
+				SpritePalettesBrush.Color = SpritePalettes[x].Color;
+				e.Graphics.FillRectangle(BgPalettesBrush, new Rectangle(x * 16, 0, 16, 16));
+				e.Graphics.FillRectangle(SpritePalettesBrush, new Rectangle(x * 16, 16, 16, 16));
 			}
 		}
 
