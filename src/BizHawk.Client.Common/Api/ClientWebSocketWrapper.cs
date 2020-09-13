@@ -23,10 +23,10 @@ namespace BizHawk.Client.Common
 
 		/// <summary>calls <see cref="ClientWebSocket.CloseAsync"/></summary>
 		/// <remarks>also calls <see cref="ClientWebSocket.Dispose"/> (wrapper property <see cref="State"/> will continue to work, method calls will throw <see cref="ObjectDisposedException"/>)</remarks>
-		public Task Close(WebSocketCloseStatus closeStatus, string statusDescription, CancellationToken? cancellationToken = null)
+		public Task Close(WebSocketCloseStatus closeStatus, string statusDescription)
 		{
 			if (_w == null) throw new ObjectDisposedException(nameof(_w));
-			var task = _w.CloseAsync(closeStatus, statusDescription, cancellationToken ?? CancellationToken.None);
+			var task = _w.CloseAsync(closeStatus, statusDescription, CancellationToken.None);
 			_w.Dispose();
 			_w = null;
 			return task;
@@ -45,6 +45,9 @@ namespace BizHawk.Client.Common
 			var result = Receive(new ArraySegment<byte>(buffer), cancellationToken ?? CancellationToken.None).Result;
 			return Encoding.UTF8.GetString(buffer, 0, result.Count);
 		}
+
+		/// <summary>calls <see cref="ClientWebSocket.ReceiveAsync"/></summary>
+		public string Receive(int bufferCap, TimeSpan delay) => Receive(bufferCap, new CancellationTokenSource(delay).Token);
 
 		/// <summary>calls <see cref="ClientWebSocket.SendAsync"/></summary>
 		public Task Send(ArraySegment<byte> buffer, WebSocketMessageType messageType, bool endOfMessage, CancellationToken? cancellationToken = null)
