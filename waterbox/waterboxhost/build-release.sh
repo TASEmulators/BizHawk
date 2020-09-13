@@ -1,4 +1,4 @@
 #!/bin/sh
 cargo b --release
-cp target/release/libwaterboxhost.so ../../Assets
-cp target/release/libwaterboxhost.so ../../output
+cp target/release/libwaterboxhost.so ../../Assets/dll
+cp target/release/libwaterboxhost.so ../../output/dll
