@@ -125,7 +125,7 @@ namespace BizHawk.Client.EmuHawk
 							_engaged = false;
 							MainForm.StartNewMovie(MovieSession.Get(ofd.FileName), false);
 							ConvertCurrentMovieToTasproj();
-							_initialized = false;
+							_initializing = false;
 							StartNewMovieWrapper(CurrentTasMovie);
 							_engaged = true;
 							WantsToControlReboot = true;
