@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using BizHawk.Emulation.Cores.Libretro;
 using BizHawk.Client.Common;
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 // these match strings from OpenAdvance. should we make them constants in there?
@@ -141,7 +142,8 @@ namespace BizHawk.Client.EmuHawk
 			if (e.Data.GetDataPresent(DataFormats.FileDrop))
 			{
 				var filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
-				if (Path.GetExtension(filePaths[0]).ToUpper() == ".DLL")
+				var ext = Path.GetExtension(filePaths[0]).ToUpperInvariant();
+				if (OSTailoredCode.IsUnixHost ? ext == ".SO" : ext == ".DLL")
 				{
 					e.Effect = DragDropEffects.Copy;
 					return;
