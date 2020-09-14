@@ -632,11 +632,11 @@ namespace BizHawk.Client.EmuHawk
 						if (!prohibit)
 						{
 							var result = LuaImp.ResumeScript(lf);
-							DetachRegisteredFunctions(lf);
 							if (result.Terminated)
 							{
 								LuaImp.CallExitEvent(lf);
 								lf.Stop();
+								DetachRegisteredFunctions(lf);
 								UpdateDialog();
 							}
 
