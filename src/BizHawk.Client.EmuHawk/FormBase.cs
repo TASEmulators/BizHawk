@@ -24,7 +24,9 @@ namespace BizHawk.Client.EmuHawk
 		protected virtual string WindowTitle => WindowTitleStatic;
 
 		/// <remarks>To enforce the "static title" semantics for implementations, this getter will be called once and cached.</remarks>
-		protected virtual string WindowTitleStatic => GetType().Name;
+		protected virtual string WindowTitleStatic => DesignMode
+			? $"(will take value from WindowTitle/WindowTitleStatic)"
+			: throw new NotImplementedException("you have to implement this; the Designer prevents this from being an abstract method");
 
 		protected override void OnLoad(EventArgs e)
 		{
