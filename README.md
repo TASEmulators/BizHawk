@@ -159,7 +159,7 @@ git clone https://github.com/TASVideos/BizHawk.git BizHawk_master
 # or ssh: git clone git@github.com:TASVideos/BizHawk.git BizHawk_master
 ```
 
-Once it's downloaded and extracted, go into the repo's `Dist` folder and run `BuildAndPackage_Release.bat`. This is the same process used by AppVeyor.
+Once it's downloaded and extracted, go into the repo's `Dist` folder and run `QuickTestBuildAndPackage_Release.bat`. This is the same process used by AppVeyor.
 
 For anything more complicated than just building, you'll need an IDE like [VS Community 2019](https://visualstudio.microsoft.com/vs/community), currently the best free C# IDE (you may prefer Rider, VS Code, or something else). To build with VS, open `BizHawk.sln` and use the toolbar to choose `Release | Any CPU | BizHawk.Client.EmuHawk` and click the Start button. See [*Compiling* at TASVideos](http://tasvideos.org/Bizhawk/Compiling.html) for more detailed instructions (warning: somewhat outdated).
 

@@ -15,12 +15,12 @@ cd %WORKDIR%
 git clone --depth=1 --single-branch --branch release http://github.com/TASVideos/BizHawk.git .
 
 rem use updated build scripts
-copy /y ..\BuildAndPackage_Release.bat dist
-copy /y ..\BuildAndPackage.bat dist
+copy /y ..\QuickTestBuildAndPackage_Release.bat dist
+copy /y ..\QuickTestBuildAndPackage.bat dist
 
 rem build the branch
 cd dist
-call BuildAndPackage_Release.bat
+call QuickTestBuildAndPackage_Release.bat
 
 rem make sure we save the output!
 move BizHawk.zip ..\..\%OUTFILE%
