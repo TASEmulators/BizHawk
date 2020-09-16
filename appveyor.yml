@@ -23,7 +23,7 @@ build_script:
 
     cd dist
 
-    call BuildAndPackage_Developer.bat
+    call QuickTestBuildAndPackage_Developer.bat
 
 
     move BizHawk-Developer.zip ..\%BUILDFILE%
