@@ -9,7 +9,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public class ToolFormBase : FormBase
+	public class ToolFormBase : FormBase, IToolForm
 	{
 		public ToolManager Tools { get; set; }
 
@@ -20,6 +20,8 @@ namespace BizHawk.Client.EmuHawk
 		public IGameInfo Game { get; set; }
 
 		public virtual bool AskSaveChanges() => true;
+
+		public virtual void Restart() {}
 
 		public virtual void UpdateValues(ToolFormUpdateType type)
 		{

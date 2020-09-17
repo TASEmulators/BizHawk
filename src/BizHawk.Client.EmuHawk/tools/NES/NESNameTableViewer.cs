@@ -40,7 +40,7 @@ namespace BizHawk.Client.EmuHawk
 			Generate(true);
 		}
 
-		public void Restart()
+		public override void Restart()
 		{
 			Generate(true);
 		}

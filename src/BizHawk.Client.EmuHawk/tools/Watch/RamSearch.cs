@@ -306,7 +306,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void Restart()
+		public override void Restart()
 		{
 			_settings = new SearchEngineSettings(MemoryDomains);
 			_searches = new RamSearchEngine(_settings, MemoryDomains);

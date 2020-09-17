@@ -205,7 +205,7 @@ namespace BizHawk.Client.EmuHawk
 			Settings.SplitDistance = splitContainer1.SplitterDistance;
 		}
 
-		public void Restart()
+		public override void Restart()
 		{
 			var runningScripts = new List<LuaFile>();
 

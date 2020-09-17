@@ -143,7 +143,7 @@ namespace BizHawk.Client.EmuHawk
 			bmp.UnlockBits(lockData);
 		}
 
-		public void Restart()
+		public override void Restart()
 		{
 			if (Viewer.IsSgx)
 			{

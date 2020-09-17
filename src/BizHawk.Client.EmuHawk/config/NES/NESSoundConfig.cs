@@ -5,7 +5,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class NESSoundConfig : ToolFormBase, IToolForm
+	public partial class NESSoundConfig : ToolFormBase
 	{
 		[RequiredService]
 		private NES NES { get; set; }
@@ -13,7 +13,7 @@ namespace BizHawk.Client.EmuHawk
 		private NES.NESSettings _oldSettings;
 		private NES.NESSettings _settings;
 
-		public void Restart()
+		public override void Restart()
 		{
 			NESSoundConfig_Load(null, null);
 		}

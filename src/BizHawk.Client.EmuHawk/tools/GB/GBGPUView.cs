@@ -81,7 +81,7 @@ namespace BizHawk.Client.EmuHawk
 			Spriteback = Color.Lime; // will be overridden from config after construct
 		}
 
-		public void Restart()
+		public override void Restart()
 		{
 			_cgb = Gb.IsCGBMode();
 			_lcdc = 0;

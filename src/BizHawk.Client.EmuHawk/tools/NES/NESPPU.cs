@@ -65,7 +65,7 @@ namespace BizHawk.Client.EmuHawk
 			_ppu.InstallCallback2(() => Generate(), _scanline);
 		}
 
-		public void Restart()
+		public override void Restart()
 		{
 			Generate(true);
 			ChrRomViewReload();

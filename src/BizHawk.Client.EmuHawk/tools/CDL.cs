@@ -113,7 +113,7 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void UpdateAfter() => UpdateDisplay(false);
 
-		public void Restart()
+		public override void Restart()
 		{
 			//don't try to recover the current CDL!
 			//even though it seems like it might be nice, it might get mixed up between games. even if we use CheckCDL. Switching games with the same memory map will be bad.

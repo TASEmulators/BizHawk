@@ -30,10 +30,6 @@ namespace BizHawk.Client.EmuHawk
 			Icon = Properties.Resources.SharkIcon;
 		}
 
-		public void Restart()
-		{
-		}
-
 		private void Go_Click(object sender, EventArgs e)
 		{
 			foreach (var l in txtCheat.Lines)

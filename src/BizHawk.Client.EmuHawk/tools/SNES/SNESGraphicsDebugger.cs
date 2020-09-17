@@ -52,11 +52,6 @@ namespace BizHawk.Client.EmuHawk
 		[ConfigPersist]
 		public int UserBackdropColor { get; set; }
 
-
-		public void Restart()
-		{
-		}
-
 		protected override string WindowTitleStatic => "Graphics Debugger";
 
 		public SNESGraphicsDebugger()

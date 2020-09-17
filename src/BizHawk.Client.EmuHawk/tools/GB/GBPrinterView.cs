@@ -55,7 +55,7 @@ namespace BizHawk.Client.EmuHawk
 			Gb?.SetPrinterCallback(null);
 		}
 
-		public void Restart()
+		public override void Restart()
 		{
 			// Really, there's not necessarily a reason to clear it at all,
 			// since the paper would still be there,

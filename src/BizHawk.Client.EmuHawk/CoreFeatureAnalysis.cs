@@ -248,7 +248,7 @@ namespace BizHawk.Client.EmuHawk
 			CoreTree.EndUpdate();
 		}
 
-		public void Restart()
+		public override void Restart()
 		{
 			var ci = new CoreInfo(Emulator);
 			KnownCores[ci.CoreName] = ci;

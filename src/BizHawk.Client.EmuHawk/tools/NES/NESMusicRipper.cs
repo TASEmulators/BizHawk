@@ -29,10 +29,6 @@ namespace BizHawk.Client.EmuHawk
 			SyncContents();
 		}
 
-		public void Restart()
-		{
-		}
-
 		private bool _isRunning;
 
 		// http://www.phy.mtu.edu/~suits/notefreqs.html

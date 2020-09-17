@@ -40,11 +40,6 @@ namespace BizHawk.Client.EmuHawk
 			InputManager.ClickyVirtualPadController.Click(name);
 		}
 
-		public void Restart()
-		{
-			// Do nothing
-		}
-
 		private void SetToolTips()
 		{
 			// Set button hotkey mapping into tooltips

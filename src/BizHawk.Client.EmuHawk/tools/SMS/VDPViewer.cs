@@ -153,7 +153,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void Restart()
+		public override void Restart()
 		{
 			GeneralUpdate();
 		}

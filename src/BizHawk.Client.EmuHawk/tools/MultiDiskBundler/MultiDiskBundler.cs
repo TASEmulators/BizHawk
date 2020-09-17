@@ -32,7 +32,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MultiGameCreator_Load(object sender, EventArgs e) => Restart();
 
-		public void Restart()
+		public override void Restart()
 		{
 			FileSelectorPanel.Controls.Clear();
 			AddButton_Click(null, null);

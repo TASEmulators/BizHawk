@@ -5,7 +5,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class BarcodeEntry : ToolFormBase, IToolForm
+	public partial class BarcodeEntry : ToolFormBase
 	{
 		[RequiredService]
 		private DatachBarcode Reader { get; set; }
@@ -18,7 +18,7 @@ namespace BizHawk.Client.EmuHawk
 			Icon = Properties.Resources.NesControllerIcon;
 		}
 
-		public void Restart()
+		public override void Restart()
 		{
 			textBox1_TextChanged(null, null);
 		}

@@ -10,7 +10,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class ToolBox : ToolFormBase, IToolForm
+	public partial class ToolBox : ToolFormBase
 	{
 		[RequiredService]
 		private IEmulator Emulator { get; set; }
@@ -31,7 +31,7 @@ namespace BizHawk.Client.EmuHawk
 			);
 		}
 
-		public void Restart()
+		public override void Restart()
 		{
 			SetTools();
 			SetSize();

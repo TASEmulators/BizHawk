@@ -697,7 +697,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void Restart()
+		public override void Restart()
 		{
 			var mem = GBA.GetMemoryAreas();
 			_vram = mem.vram;

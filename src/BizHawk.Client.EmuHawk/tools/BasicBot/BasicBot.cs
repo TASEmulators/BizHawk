@@ -264,7 +264,7 @@ namespace BizHawk.Client.EmuHawk
 		protected override void UpdateBefore() => Update(fast: false);
 		protected override void FastUpdateBefore() => Update(fast: true);
 
-		public void Restart()
+		public override void Restart()
 		{
 			if (_currentDomain == null
 				|| MemoryDomains.Contains(_currentDomain))

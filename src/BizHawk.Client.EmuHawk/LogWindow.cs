@@ -42,8 +42,6 @@ namespace BizHawk.Client.EmuHawk
 			Attach();
 		}
 
-		public void Restart() { }
-
 		private void Attach()
 		{
 			_logStream = new LogStream();
