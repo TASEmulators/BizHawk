@@ -1653,8 +1653,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync(nameof(LY_read), ref LY_read);
 			ser.Sync(nameof(LYC_cd), ref LYC_cd);
 
-			ser.Sync(nameof(hbl_countdown), ref hbl_countdown);
-
 			base.SyncState(ser);
 		}
 

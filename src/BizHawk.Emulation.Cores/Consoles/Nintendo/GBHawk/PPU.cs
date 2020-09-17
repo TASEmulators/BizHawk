@@ -247,6 +247,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync(nameof(latch_new_data), ref latch_new_data);
 			ser.Sync(nameof(render_counter), ref render_counter);
 			ser.Sync(nameof(render_offset), ref render_offset);
+			ser.Sync(nameof(scroll_offset), ref scroll_offset);
 			ser.Sync(nameof(pixel_counter), ref pixel_counter);
 			ser.Sync(nameof(pixel), ref pixel);
 			ser.Sync(nameof(sprite_data), ref sprite_data, false);
