@@ -76,19 +76,22 @@ namespace BizHawk.Client.EmuHawk
 				{
 					Name = BranchNumberColumnName,
 					Text = "#",
-					UnscaledWidth = 30
+					UnscaledWidth = 30,
+					Type = ColumnType.Text
 				},
 				new RollColumn
 				{
 					Name = FrameColumnName,
 					Text = "Frame",
-					UnscaledWidth = 64
+					UnscaledWidth = 64,
+					Type = ColumnType.Text
 				},
 				new RollColumn
 				{
 					Name = UserTextColumnName,
 					Text = "UserText",
-					UnscaledWidth = 90
+					UnscaledWidth = 90,
+					Type = ColumnType.Text
 				}
 			});
 		}
