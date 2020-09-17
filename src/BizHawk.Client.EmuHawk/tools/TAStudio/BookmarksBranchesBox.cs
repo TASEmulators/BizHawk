@@ -146,6 +146,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		/// <summary>
+		/// Add a new branch.
+		/// </summary>
 		public void Branch()
 		{
 			var branch = CreateBranch();
@@ -155,6 +158,7 @@ namespace BizHawk.Client.EmuHawk
 			Branches.Current = Branches.Count - 1;
 			Movie.TasSession.UpdateValues(Tastudio.Emulator.Frame, Branches.Current);
 			BranchView.ScrollToIndex(Branches.Current);
+			BranchView.DeselectAll();
 			Select(Branches.Current, true);
 			BranchView.Refresh();
 			Tastudio.RefreshDialog();
@@ -402,8 +406,6 @@ namespace BizHawk.Client.EmuHawk
 		public void AddBranchExternal()
 		{
 			AddBranchToolStripMenuItem_Click(null, null);
-			Select(Branches.Current, true);
-			BranchView.Refresh();
 		}
 
 		public void LoadBranchExternal(int slot = -1)
