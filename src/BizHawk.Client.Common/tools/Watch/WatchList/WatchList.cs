@@ -254,7 +254,7 @@ namespace BizHawk.Client.Common
 			foreach(var watch in _watchList)
 			{
 				watch.Update(previousType);
-			};
+			}
 		}
 
 		/// <summary>
