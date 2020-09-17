@@ -205,7 +205,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveSelectionToMacroMenuItem_Click(object sender, EventArgs e)
 		{
-			if (!TasView.AnyRowsSelected)
+			if (!TasView.SelectionFocused)
 			{
 				return;
 			}
@@ -230,7 +230,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PlaceMacroAtSelectionMenuItem_Click(object sender, EventArgs e)
 		{
-			if (!TasView.AnyRowsSelected)
+			if (!TasView.SelectionFocused)
 			{
 				return;
 			}
@@ -392,7 +392,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SelectBetweenMarkersMenuItem_Click(object sender, EventArgs e)
 		{
-			if (TasView.AnyRowsSelected)
+			if (TasView.SelectionFocused)
 			{
 				var prevMarker = CurrentTasMovie.Markers.PreviousOrCurrent(TasView.LastSelectedIndex ?? 0);
 				var nextMarker = CurrentTasMovie.Markers.Next(TasView.LastSelectedIndex ?? 0);
@@ -424,7 +424,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CopyMenuItem_Click(object sender, EventArgs e)
 		{
-			if (TasView.AnyRowsSelected)
+			if (TasView.SelectionFocused)
 			{
 				_tasClipboard.Clear();
 				var list = TasView.SelectedRows.ToArray();
@@ -450,7 +450,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PasteMenuItem_Click(object sender, EventArgs e)
 		{
-			if (TasView.AnyRowsSelected)
+			if (TasView.SelectionFocused)
 			{
 				// TODO: if highlighting 2 rows and pasting 3, only paste 2 of them
 				// FCEUX Taseditor doesn't do this, but I think it is the expected behavior in editor programs
@@ -493,7 +493,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PasteInsertMenuItem_Click(object sender, EventArgs e)
 		{
-			if (TasView.AnyRowsSelected)
+			if (TasView.SelectionFocused)
 			{
 				// copy paste from PasteMenuItem_Click!
 				IDataObject data = Clipboard.GetDataObject();
@@ -534,7 +534,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CutMenuItem_Click(object sender, EventArgs e)
 		{
-			if (TasView.AnyRowsSelected)
+			if (TasView.SelectionFocused)
 			{
 				var needsToRollback = TasView.FirstSelectedIndex < Emulator.Frame;
 				var rollBackFrame = TasView.FirstSelectedIndex ?? 0;
@@ -572,7 +572,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ClearFramesMenuItem_Click(object sender, EventArgs e)
 		{
-			if (TasView.AnyRowsSelected)
+			if (TasView.SelectionFocused)
 			{
 				var firstWithInput = FirstNonEmptySelectedFrame;
 				bool needsToRollback = firstWithInput.HasValue && firstWithInput < Emulator.Frame;
@@ -598,7 +598,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DeleteFramesMenuItem_Click(object sender, EventArgs e)
 		{
-			if (TasView.AnyRowsSelected)
+			if (TasView.SelectionFocused)
 			{
 				var needsToRollback = TasView.FirstSelectedIndex < Emulator.Frame;
 				var rollBackFrame = TasView.FirstSelectedIndex ?? 0;
@@ -640,7 +640,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			for (int i = 0; i < timesToClone; i++)
 			{
-				if (TasView.AnyRowsSelected)
+				if (TasView.SelectionFocused)
 				{
 					var framesToInsert = TasView.SelectedRows;
 					var insertionFrame = Math.Min((TasView.LastSelectedIndex ?? 0) + 1, CurrentTasMovie.InputLogLength);
@@ -665,7 +665,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void InsertFrameMenuItem_Click(object sender, EventArgs e)
 		{
-			if (TasView.AnyRowsSelected)
+			if (TasView.SelectionFocused)
 			{
 				var insertionFrame = TasView.FirstSelectedIndex ?? 0;
 				var needsToRollback = TasView.FirstSelectedIndex < Emulator.Frame;
@@ -684,7 +684,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void InsertNumFramesMenuItem_Click(object sender, EventArgs e)
 		{
-			if (TasView.AnyRowsSelected)
+			if (TasView.SelectionFocused)
 			{
 				int insertionFrame = TasView.FirstSelectedIndex ?? 0;
 				using var framesPrompt = new FramesPrompt();
@@ -697,7 +697,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TruncateMenuItem_Click(object sender, EventArgs e)
 		{
-			if (TasView.AnyRowsSelected)
+			if (TasView.SelectionFocused)
 			{
 				var rollbackFrame = TasView.LastSelectedIndex ?? 0;
 				var needsToRollback = TasView.FirstSelectedIndex < Emulator.Frame;

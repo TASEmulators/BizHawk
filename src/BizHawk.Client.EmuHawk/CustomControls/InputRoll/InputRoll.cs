@@ -944,6 +944,11 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool AnyRowsSelected => _selectedItems.Any(cell => cell.RowIndex.HasValue);
 
+		/// <summary>
+		/// Rows are selected and the selection is in focus.
+		/// </summary>
+		public bool SelectionFocused => AnyRowsSelected && Focused;
+
 		public IEnumerable<ToolStripItem> GenerateContextMenuItems()
 		{
 			if (Rotatable)

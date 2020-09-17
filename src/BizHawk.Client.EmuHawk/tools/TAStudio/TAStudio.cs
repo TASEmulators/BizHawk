@@ -702,7 +702,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DummyLoadMacro(string path)
 		{
-			if (!TasView.AnyRowsSelected)
+			if (!TasView.SelectionFocused)
 			{
 				return;
 			}
