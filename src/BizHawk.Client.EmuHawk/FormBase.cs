@@ -12,7 +12,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private string? _windowTitleStatic;
 
-		public Config? Config { get; protected set; }
+		public Config? Config { get; set; }
 
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public override string Text
