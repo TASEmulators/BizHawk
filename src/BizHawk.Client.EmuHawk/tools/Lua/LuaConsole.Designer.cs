@@ -644,6 +644,7 @@ namespace BizHawk.Client.EmuHawk
 			this.LuaListView.ColumnClick += new BizHawk.Client.EmuHawk.InputRoll.ColumnClickEventHandler(this.LuaListView_ColumnClick);
 			this.LuaListView.DoubleClick += new System.EventHandler(this.LuaListView_DoubleClick);
 			this.LuaListView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.LuaListView_KeyDown);
+			this.LuaListView.MultiSelect = true;
 			// 
 			// splitContainer1
 			// 

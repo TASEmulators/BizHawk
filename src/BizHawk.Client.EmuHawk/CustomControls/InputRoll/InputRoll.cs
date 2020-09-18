@@ -597,12 +597,14 @@ namespace BizHawk.Client.EmuHawk
 
 			FullRowSelect = oldFullRowVal;
 			_lastSelectedRow = RowCount;
+			Refresh();
 		}
 
 		public void DeselectAll()
 		{
 			_lastSelectedRow = null;
 			_selectedItems.Clear();
+			Refresh();
 		}
 
 		public void TruncateSelection(int index)
