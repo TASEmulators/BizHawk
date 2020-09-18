@@ -43,13 +43,15 @@ namespace BizHawk.Client.EmuHawk
 				{
 					Name = "FrameColumn",
 					Text = "Frame",
-					UnscaledWidth = 52
+					UnscaledWidth = 52,
+					Type = ColumnType.Text
 				},
 				new RollColumn
 				{
 					Name = "LabelColumn",
 					Text = "",
-					UnscaledWidth = 125
+					UnscaledWidth = 125,
+					Type = ColumnType.Text
 				}
 			});
 		}

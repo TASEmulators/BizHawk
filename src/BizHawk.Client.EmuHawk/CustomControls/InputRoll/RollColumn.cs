@@ -8,7 +8,9 @@
 		public int Right { get; set; }
 		public string Name { get; set; }
 		public string Text { get; set; }
-		public ColumnType Type { get; set; }
+		
+		// Is this the default we want? ColumnType.Text is the most common.
+		public ColumnType Type { get; set; } = ColumnType.Boolean;
 		public bool Visible { get; set; } = true;
 
 		/// <summary>
