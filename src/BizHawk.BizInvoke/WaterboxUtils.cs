@@ -15,6 +15,8 @@ namespace BizHawk.BizInvoke
 			while (len > 0)
 			{
 				int r = src.Read(buff, 0, (int)Math.Min(len, 65536));
+				if (r == 0)
+					throw new InvalidOperationException($"End of source stream was reached with {len} bytes left to copy!");
 				dst.Write(buff, 0, r);
 				len -= r;
 			}
