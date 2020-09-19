@@ -6,6 +6,7 @@
 **/obj/**
 /output/**
 /output64/**
+/packaged_output
 /test_output
 **/Release/**
 **/Debug/**

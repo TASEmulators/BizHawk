@@ -145,7 +145,7 @@ Development builds are made automatically whenever someone contributes. Because 
 
 Click one of the buttons above to download a dev build (they're also at the top of this readme). AppVeyor uses Windows and GitLab CI uses Linux, but they work all the same.
 * On the AppVeyor page for a Build, click "Artifacts", then `BizHawk_Developer-<datetime>-#<long hexadecimal>.zip`.
-* On the GitLab CI page for a Pipeline, click "Jobs", then the download button at the end of the entry with the name `build_master`/`build_not_master`. (On the Pipelines list page, there's also a download button on each Pipeline.)
+* On the GitLab CI page for a Pipeline, click "Jobs", then the download button on the right under the heading "Package". (On the Pipelines list page, there's also a download button on each Pipeline—choose `package:archive` there.)
 
 To find the dev builds for a specific commit, you can click the green checkmark next to it (in the [commit history](https://github.com/TASVideos/BizHawk/commits/master), for example) for a dropdown, then click either "Details" link to go to AppVeyor/GitLab.
 
