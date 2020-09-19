@@ -1129,20 +1129,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TAStudio_DragDrop(object sender, DragEventArgs e)
 		{
-			if (!AskSaveChanges())
-			{
-				return;
-			}
-
+			// TODO: Maybe this should call Mainform's DragDrop method, 
+			// since that can file types that are not movies,
+			// and it can process multiple files sequentially
 			var filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
-			if (Path.GetExtension(filePaths[0]) == $".{MovieService.TasMovieExtension}")
-			{
-				FileInfo file = new FileInfo(filePaths[0]);
-				if (file.Exists)
-				{
-					LoadFile(file);
-				}
-			}
+			LoadMovieFile(filePaths[0]);
 		}
 
 		private void TAStudio_MouseLeave(object sender, EventArgs e)

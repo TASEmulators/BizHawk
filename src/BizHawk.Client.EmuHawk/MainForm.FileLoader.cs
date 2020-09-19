@@ -95,14 +95,20 @@ namespace BizHawk.Client.EmuHawk
 			if (Emulator.IsNull())
 			{
 				OpenRom();
+				if (Emulator.IsNull())
+				{
+					return;
+				}
 			}
 
-			if (Emulator.IsNull())
+			if (GlobalWin.Tools.IsLoaded<TAStudio>())
 			{
-				return;
+				Tools.TAStudio.LoadMovieFile(filename);
 			}
-
-			StartNewMovie(MovieSession.Get(filename), false);
+			else
+			{
+				StartNewMovie(MovieSession.Get(filename), false);
+			}
 		}
 
 		private void LoadRom(string filename, string archive = null)

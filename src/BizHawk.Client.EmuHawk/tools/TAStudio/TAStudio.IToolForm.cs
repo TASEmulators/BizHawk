@@ -92,6 +92,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		/// <summary>
+		/// Ask whether changes should be saved. Returns false if cancelled, else true.
+		/// </summary>
 		public override bool AskSaveChanges()
 		{
 			if (_suppressAskSave)

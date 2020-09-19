@@ -111,33 +111,46 @@ namespace BizHawk.Client.EmuHawk
 				var result = ofd.ShowHawkDialog();
 				if (result.IsOk())
 				{
-					if (ofd.FileName.EndsWith(MovieService.TasMovieExtension))
-					{
-						LoadFileWithFallback(ofd.FileName);
-					}
-					else if (ofd.FileName.EndsWith(MovieService.StandardMovieExtension))
-					{
-						var result1 = MessageBox.Show("This is a regular movie, a new project must be created from it, in order to use in TAStudio\nProceed?", "Convert movie", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
-						if (result1.IsOk())
-						{
-							_initializing = true; // Starting a new movie causes a core reboot
-							WantsToControlReboot = false;
-							_engaged = false;
-							MainForm.StartNewMovie(MovieSession.Get(ofd.FileName), false);
-							ConvertCurrentMovieToTasproj();
-							_initializing = false;
-							StartNewMovieWrapper(CurrentTasMovie);
-							_engaged = true;
-							WantsToControlReboot = true;
-							SetUpColumns();
-							UpdateWindowTitle();
-						}
-					}
-					else
-					{
-						MessageBox.Show("This is not a BizHawk movie!", "Movie load error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-					}
+					LoadMovieFile(ofd.FileName, false);
 				}
+			}
+		}
+
+		/// <summary>
+		/// Load the movie with the given filename within TAStudio.
+		/// </summary>
+		public void LoadMovieFile(string filename, bool askToSave = true)
+		{
+			if (askToSave && !AskSaveChanges())
+			{
+				return;
+			}
+			
+			if (filename.EndsWith(MovieService.TasMovieExtension))
+			{
+				LoadFileWithFallback(filename);
+			}
+			else if (filename.EndsWith(MovieService.StandardMovieExtension))
+			{
+				var result1 = MessageBox.Show("This is a regular movie, a new project must be created from it to use in TAStudio\nProceed?", "Convert movie", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+				if (result1.IsOk())
+				{
+					_initializing = true; // Starting a new movie causes a core reboot
+					WantsToControlReboot = false;
+					_engaged = false;
+					MainForm.StartNewMovie(MovieSession.Get(filename), false);
+					ConvertCurrentMovieToTasproj();
+					_initializing = false;
+					StartNewMovieWrapper(CurrentTasMovie);
+					_engaged = true;
+					WantsToControlReboot = true;
+					SetUpColumns();
+					UpdateWindowTitle();
+				}
+			}
+			else
+			{
+				MessageBox.Show("This is not a BizHawk movie!", "Movie load error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 		}
 
