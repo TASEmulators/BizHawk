@@ -2,11 +2,12 @@
 using System.Text;
 using System.Runtime.InteropServices;
 
+using BizHawk.BizInvoke;
+
 namespace BizHawk.Emulation.Cores.Components.ARM
 {
-	public static class Darm
+	public abstract class Darm
 	{
-		public const string dllname = "libdarm.dll";
 		public const CallingConvention cc = CallingConvention.Cdecl;
 
 		[StructLayout(LayoutKind.Sequential)]
@@ -76,20 +77,20 @@ namespace BizHawk.Emulation.Cores.Components.ARM
 			[MarshalAs(UnmanagedType.ByValArray, SizeConst = 12)]
 			public byte[] mnemonic = new byte[12];
 			[MarshalAs(UnmanagedType.ByValArray, SizeConst = 6 * 32)]
-			public byte[,] arg = new byte[6, 32];
+			public byte[] arg = new byte[6 * 32];
 			[MarshalAs(UnmanagedType.ByValArray, SizeConst = 12)]
 			public byte[] shift = new byte[12];
 			[MarshalAs(UnmanagedType.ByValArray, SizeConst = 64)]
 			public byte[] total = new byte[64];
 		}
 
-		[DllImport(dllname, CallingConvention = cc, EntryPoint = "darm_disasm")]
-		public static extern bool Disassemble([Out] Darm_T d, ushort w, ushort w2, uint addr);
+		[BizImport(cc, Compatibility = true, EntryPoint = "darm_disasm")]
+		public abstract bool Disassemble([Out] Darm_T d, ushort w, ushort w2, uint addr);
 
-		[DllImport(dllname, CallingConvention = cc, EntryPoint = "darm_str2")]
-		public static extern bool Str([In] [Out]Darm_T d, [Out]Darm_Str_T s, bool lowercase);
+		[BizImport(cc, Compatibility = true, EntryPoint = "darm_str2")]
+		public abstract bool Str([In] [Out]Darm_T d, [Out]Darm_Str_T s, bool lowercase);
 
-		public static string DisassembleStuff(uint addr, uint opcode)
+		public string DisassembleStuff(uint addr, uint opcode)
 		{
 			var d = new Darm_T();
 			var s = new Darm_Str_T();
