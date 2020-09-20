@@ -62,7 +62,7 @@ namespace BizHawk.Client.Common
 			CreateDirectoryIfNotExists(fn);
 
 			using var bs = new ZipStateSaver(fn, Session.Settings.MovieCompressionLevel);
-			AddLumps(bs);
+			AddLumps(bs, isBackup);
 
 			if (!isBackup)
 			{
@@ -74,7 +74,7 @@ namespace BizHawk.Client.Common
 		{
 			// The saved cycle value will only be valid if the end of the movie has been emulated.
 			if (this.IsAtEnd())
-			{ 
+			{
 				if (Emulator is Emulation.Cores.Nintendo.SubNESHawk.SubNESHawk subNes)
 				{
 					Header[HeaderKeys.VBlankCount] = subNes.VblankCount.ToString();
@@ -143,7 +143,7 @@ namespace BizHawk.Client.Common
 		{
 			ClearBk2Fields();
 		}
-		
+
 		protected void ClearBk2Fields()
 		{
 			Header.Clear();
@@ -154,12 +154,12 @@ namespace BizHawk.Client.Common
 			TextSavestate = null;
 			BinarySavestate = null;
 		}
-		
+
 		protected virtual void LoadFields(ZipStateLoader bl, bool preload)
 		{
 			LoadBk2Fields(bl, preload);
 		}
-		
+
 		protected void LoadBk2Fields(ZipStateLoader bl, bool preload)
 		{
 			bl.GetLump(BinaryStateLump.Movieheader, true, delegate(TextReader tr)
