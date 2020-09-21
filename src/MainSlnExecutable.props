@@ -1,6 +1,5 @@
 <Project>
 	<PropertyGroup>
-		<OutputPath>$(ProjectDir)../../output</OutputPath>
 		<TargetName>$(MSBuildProjectName.Substring($([MSBuild]::Add($(MSBuildProjectName.LastIndexOf('.')), 1))))</TargetName>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -9,4 +8,8 @@
 	<PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
 		<OutputType>WinExe</OutputType>
 	</PropertyGroup>
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Move SourceFiles="$(OutputPath)$(TargetName).exe" DestinationFiles="$(OutputPath)../$(TargetName).exe" />
+		<Move SourceFiles="$(OutputPath)$(TargetName).exe.config" DestinationFiles="$(OutputPath)../$(TargetName).exe.config" />
+	</Target>
 </Project>
