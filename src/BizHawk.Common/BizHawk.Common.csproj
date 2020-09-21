@@ -17,4 +17,10 @@
 	<ItemGroup>
 		<Compile Update="VersionInfo.gen.cs" DependentUpon="VersionInfo.cs" />
 	</ItemGroup>
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<ItemGroup>
+			<AssetFiles Include="$(ProjectDir)../../Assets/**/*.*" />
+		</ItemGroup>
+		<Copy SourceFiles="@(AssetFiles)" DestinationFolder="$(OutputPath)../%(RecursiveDir)" SkipUnchangedFiles="true" />
+	</Target>
 </Project>
