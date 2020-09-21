@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<Import Project="../MainSlnCommon.props" />
 	<PropertyGroup>
-		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<ApplicationIcon>discohawk.ico</ApplicationIcon>
 		<DefineConstants>$(DefineConstants);WINDOWS</DefineConstants>
 		<OutputPath>$(ProjectDir)../../output</OutputPath>

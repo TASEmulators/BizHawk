@@ -2,7 +2,6 @@
 	<Import Project="../MainSlnCommon.props" />
 	<Import Project="../../CommonNullable.props" />
 	<PropertyGroup>
-		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<OutputPath>$(ProjectDir)../../test_output</OutputPath>
 		<TargetFramework>netcoreapp3.1</TargetFramework>
 	</PropertyGroup>
