@@ -73,7 +73,7 @@ namespace BizHawk.Client.EmuHawk
 			};
 			string hawkPath = "";
 
-			var result = ofd.ShowHawkDialog();
+			var result = ofd.ShowHawkDialog(this);
 			if (result == DialogResult.OK)
 			{
 				hawkPath = ofd.FileName;

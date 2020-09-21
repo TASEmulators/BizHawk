@@ -946,7 +946,7 @@ namespace BizHawk.Client.EmuHawk
 						: Game.FilesystemSafeName()
 			};
 
-			var result = sfd.ShowHawkDialog();
+			var result = sfd.ShowHawkDialog(this);
 			return result == DialogResult.OK ? sfd.FileName : "";
 		}
 
@@ -962,7 +962,7 @@ namespace BizHawk.Client.EmuHawk
 				RestoreDirectory = true
 			};
 
-			var result = sfd.ShowHawkDialog();
+			var result = sfd.ShowHawkDialog(this);
 			return result == DialogResult.OK ? sfd.FileName : "";
 		}
 
@@ -1284,7 +1284,7 @@ namespace BizHawk.Client.EmuHawk
 				RestoreDirectory = true
 			};
 
-			var result = sfd.ShowHawkDialog();
+			var result = sfd.ShowHawkDialog(this);
 			if (result != DialogResult.OK)
 			{
 				return;
@@ -1338,7 +1338,7 @@ namespace BizHawk.Client.EmuHawk
 				RestoreDirectory = false
 			};
 
-			var result = ofd.ShowHawkDialog();
+			var result = ofd.ShowHawkDialog(this);
 
 			if (result == DialogResult.OK)
 			{
@@ -1605,7 +1605,7 @@ namespace BizHawk.Client.EmuHawk
 				Message = "Enter a hexadecimal value"
 			};
 
-			var result = inputPrompt.ShowHawkDialog();
+			var result = inputPrompt.ShowHawkDialog(this);
 
 			if (result == DialogResult.OK && inputPrompt.PromptText.IsHex())
 			{
@@ -1694,7 +1694,7 @@ namespace BizHawk.Client.EmuHawk
 					ParentTool = this
 				};
 
-				poke.ShowHawkDialog();
+				poke.ShowHawkDialog(this);
 				GeneralUpdate();
 			}
 		}
@@ -1702,7 +1702,7 @@ namespace BizHawk.Client.EmuHawk
 		private void SetColorsMenuItem_Click(object sender, EventArgs e)
 		{
 			using var form = new HexColorsForm(this);
-			form.ShowHawkDialog();
+			form.ShowHawkDialog(this);
 		}
 
 		private void ResetColorsToDefaultMenuItem_Click(object sender, EventArgs e)

@@ -801,7 +801,9 @@ namespace BizHawk.Client.EmuHawk
 				filename,
 				Config.PathEntries.MovieAbsolutePath(),
 				"Tas Project Files",
-				"tasproj");
+				"tasproj",
+				this
+				);
 
 			if (file != null)
 			{

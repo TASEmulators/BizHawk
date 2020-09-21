@@ -302,7 +302,7 @@ namespace BizHawk.Client.EmuHawk
 				FilesystemFilter.TextFiles
 			).ToString();
 			sfd.RestoreDirectory = true;
-			var result = sfd.ShowHawkDialog();
+			var result = sfd.ShowHawkDialog(this);
 			return result.IsOk() ? new FileInfo(sfd.FileName) : null;
 		}
 
@@ -351,7 +351,7 @@ namespace BizHawk.Client.EmuHawk
 				InitialValue = MaxLines.ToString()
 			};
 
-			var result = prompt.ShowHawkDialog();
+			var result = prompt.ShowHawkDialog(this);
 			if (result == DialogResult.OK)
 			{
 				var max = int.Parse(prompt.PromptText);
@@ -372,7 +372,7 @@ namespace BizHawk.Client.EmuHawk
 				InitialValue = FileSizeCap.ToString()
 			};
 
-			var result = prompt.ShowHawkDialog();
+			var result = prompt.ShowHawkDialog(this);
 			if (result == DialogResult.OK)
 			{
 				FileSizeCap = int.Parse(prompt.PromptText);

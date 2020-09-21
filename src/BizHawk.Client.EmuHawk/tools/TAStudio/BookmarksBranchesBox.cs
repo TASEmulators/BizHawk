@@ -581,7 +581,7 @@ namespace BizHawk.Client.EmuHawk
 			var point = Cursor.Position;
 			point.Offset(i.Width / -2, i.Height / -2);
 
-			var result = i.ShowHawkDialog(position: point);
+			var result = i.ShowHawkDialog(this, position: point);
 			if (result.IsOk())
 			{
 				branch.UserText = i.PromptText;

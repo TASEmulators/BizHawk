@@ -164,11 +164,14 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// Handles EmuHawk specific issues before showing a modal dialog
 		/// </summary>
-		public static DialogResult ShowHawkDialog(this CommonDialog form)
+		public static DialogResult ShowHawkDialog(this CommonDialog form, IWin32Window owner)
 		{
 			GlobalWin.Sound.StopSound();
-			using var tempForm = new Form();
-			var result = form.ShowDialog(tempForm);
+			DialogResult result;
+			if(owner != null)
+				result = form.ShowDialog(owner);
+			else 
+				result = form.ShowDialog();
 			GlobalWin.Sound.StartSound();
 			return result;
 		}
@@ -272,7 +275,7 @@ namespace BizHawk.Client.EmuHawk
 			Clipboard.SetImage(img);
 		}
 
-		public static void SaveAsFile(this Bitmap bitmap, IGameInfo game, string suffix, string systemId, PathEntryCollection paths)
+		public static void SaveAsFile(this Bitmap bitmap, IGameInfo game, string suffix, string systemId, PathEntryCollection paths, IWin32Window owner)
 		{
 			using var sfd = new SaveFileDialog
 			{
@@ -282,7 +285,7 @@ namespace BizHawk.Client.EmuHawk
 				RestoreDirectory = true
 			};
 
-			var result = sfd.ShowHawkDialog();
+			var result = sfd.ShowHawkDialog(owner);
 			if (result != DialogResult.OK)
 			{
 				return;

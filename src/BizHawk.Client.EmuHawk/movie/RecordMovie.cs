@@ -194,7 +194,7 @@ namespace BizHawk.Client.EmuHawk
 				Filter = new FilesystemFilterSet(new FilesystemFilter("Movie Files", new[] { preferredExt })).ToString()
 			};
 
-			var result = sfd.ShowHawkDialog();
+			var result = sfd.ShowHawkDialog(this);
 			if (result == DialogResult.OK
 				&& !string.IsNullOrWhiteSpace(sfd.FileName))
 			{

@@ -84,7 +84,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SaveFile()
 		{
-			Bmp.SaveAsFile(GlobalWin.Game, "Palettes", GlobalWin.Emulator.SystemId, GlobalWin.Config.PathEntries);
+			Bmp.SaveAsFile(GlobalWin.Game, "Palettes", GlobalWin.Emulator.SystemId, GlobalWin.Config.PathEntries, this);
 		}
 	}
 }

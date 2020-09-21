@@ -236,7 +236,7 @@ namespace BizHawk.Client.EmuHawk
 				Filter = new FilesystemFilterSet(new FilesystemFilter("XML Files", new[] { "xml" })).ToString()
 			};
 
-			var result = sfd.ShowHawkDialog();
+			var result = sfd.ShowHawkDialog(this);
 			if (result != DialogResult.Cancel)
 			{
 				NameBox.Text = sfd.FileName;
