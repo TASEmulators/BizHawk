@@ -1,12 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<Import Project="../MainSlnCommon.props" />
+	<Import Project="../MainSlnExecutable.props" />
 	<PropertyGroup>
 		<ApplicationIcon>discohawk.ico</ApplicationIcon>
 		<DefineConstants>$(DefineConstants);WINDOWS</DefineConstants>
-		<OutputPath>$(ProjectDir)../../output</OutputPath>
-		<OutputType>Exe</OutputType>
 		<TargetFramework>net48</TargetFramework>
-		<TargetName>DiscoHawk</TargetName>
 	</PropertyGroup>
 <!--
 	<PropertyGroup>

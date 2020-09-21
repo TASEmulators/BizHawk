@@ -1,0 +1,12 @@
+<Project>
+	<PropertyGroup>
+		<OutputPath>$(ProjectDir)../../output</OutputPath>
+		<TargetName>$(MSBuildProjectName.Substring($([MSBuild]::Add($(MSBuildProjectName.LastIndexOf('.')), 1))))</TargetName>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+		<OutputType>Exe</OutputType>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+		<OutputType>WinExe</OutputType>
+	</PropertyGroup>
+</Project>

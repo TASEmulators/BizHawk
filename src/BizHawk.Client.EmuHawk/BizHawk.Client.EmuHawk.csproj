@@ -1,20 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<Import Project="../MainSlnCommon.props" />
+	<Import Project="../MainSlnExecutable.props" />
 	<PropertyGroup>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<ApplicationIcon>images/logo.ico</ApplicationIcon>
 		<ApplicationManifest>app.manifest</ApplicationManifest>
 		<DefineConstants>$(DefineConstants);EXE_PROJECT</DefineConstants>
-		<OutputPath>$(ProjectDir)../../output</OutputPath>
 		<TargetFramework>net48</TargetFramework>
-		<TargetName>EmuHawk</TargetName>
 		<ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
-	</PropertyGroup>
-	<PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-		<OutputType>Exe</OutputType>
-	</PropertyGroup>
-	<PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-		<OutputType>WinExe</OutputType>
 	</PropertyGroup>
 <!--
 	<PropertyGroup>
