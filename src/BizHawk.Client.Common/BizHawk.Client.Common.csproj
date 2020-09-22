@@ -1,8 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework><!-- some NuGet packages aren't for Standard, and are only loaded at runtime because EmuHawk is still Framework. More work will be required to move to Core. -->
+	</PropertyGroup>
 	<Import Project="../MainSlnCommon.props" />
 	<PropertyGroup>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<TargetFramework>netstandard2.0</TargetFramework><!-- some NuGet packages aren't for Standard, and are only loaded at runtime because EmuHawk is still Framework. More work will be required to move to Core. -->
 	</PropertyGroup>
 	<ItemGroup>
 		<Reference Include="System.Data.SQLite, Version=1.0.105.2, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=AMD64" SpecificVersion="False" HintPath="$(ProjectDir)../../References/x64/SQLite/System.Data.SQLite.dll" />

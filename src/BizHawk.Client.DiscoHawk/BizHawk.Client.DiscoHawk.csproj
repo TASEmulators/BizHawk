@@ -1,9 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net48</TargetFramework>
+	</PropertyGroup>
 	<Import Project="../MainSlnExecutable.props" />
 	<PropertyGroup>
 		<ApplicationIcon>discohawk.ico</ApplicationIcon>
 		<DefineConstants>$(DefineConstants);WINDOWS</DefineConstants>
-		<TargetFramework>net48</TargetFramework>
 	</PropertyGroup>
 <!--
 	<PropertyGroup>
@@ -57,7 +59,6 @@
 	</ItemGroup>
 -->
 	<ItemGroup>
-		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="all" />
 		<Reference Include="System.Web" />
 		<Reference Include="System.Windows.Forms" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Emulation.DiscSystem/BizHawk.Emulation.DiscSystem.csproj" />

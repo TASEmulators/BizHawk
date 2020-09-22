@@ -10,7 +10,6 @@
 		<OutputType>WinExe</OutputType>
 	</PropertyGroup>
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-		<Move SourceFiles="$(OutputPath)$(TargetName).exe" DestinationFiles="$(OutputPath)../$(TargetName).exe" />
-		<Move SourceFiles="$(OutputPath)$(TargetName).exe.config" DestinationFiles="$(OutputPath)../$(TargetName).exe.config" />
+		<Move Condition=" $(IsTargetingNetFramework) " SourceFiles="$(OutputPath)$(TargetName).exe;$(OutputPath)$(TargetName).exe.config" DestinationFolder="$(OutputPath)../" />
 	</Target>
 </Project>

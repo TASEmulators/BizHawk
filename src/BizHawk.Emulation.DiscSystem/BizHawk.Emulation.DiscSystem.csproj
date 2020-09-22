@@ -1,8 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+	</PropertyGroup>
 	<Import Project="../MainSlnCommon.props" />
 	<PropertyGroup>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<TargetFramework>netstandard2.0</TargetFramework>
 	</PropertyGroup>
 	<ItemGroup>
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Common/BizHawk.Common.csproj" />

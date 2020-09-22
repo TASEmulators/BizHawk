@@ -1,11 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-	<Import Project="../MainSlnCommon.props" />
-	<Import Project="../../CommonNullable.props" />
 	<PropertyGroup>
 		<TargetFramework>net48</TargetFramework>
 	</PropertyGroup>
+	<Import Project="../MainSlnCommon.props" />
+	<Import Project="../../CommonNullable.props" />
 	<ItemGroup>
-		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="all" />
 		<Reference Include="System.Windows.Forms" />
 	</ItemGroup>
 </Project>
