@@ -11,5 +11,8 @@
 	</PropertyGroup>
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
 		<Move Condition=" $(IsTargetingNetFramework) " SourceFiles="$(OutputPath)$(TargetName).exe;$(OutputPath)$(TargetName).exe.config" DestinationFolder="$(OutputPath)../" />
+		<Move Condition=" !$(IsTargetingNetFramework) " SourceFiles="$(OutputPath)$(TargetName).dll" DestinationFolder="$(OutputPath)../" />
+		<Move Condition=" !$(IsTargetingNetFramework) " SourceFiles="$(OutputPath)$(MSBuildProjectName).runtimeconfig.json" DestinationFiles="$(OutputPath)../$(TargetName).runtimeconfig.json" />
+		<!-- TODO shell script to copy $(OutputPath)$(MSBuildProjectName).deps.json beside .dll and patch filenames -->
 	</Target>
 </Project>
