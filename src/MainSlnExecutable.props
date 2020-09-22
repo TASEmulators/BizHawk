@@ -1,4 +1,5 @@
 <Project>
+	<Import Project="MainSlnCommon.props" />
 	<PropertyGroup>
 		<TargetName>$(MSBuildProjectName.Substring($([MSBuild]::Add($(MSBuildProjectName.LastIndexOf('.')), 1))))</TargetName>
 	</PropertyGroup>
