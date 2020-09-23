@@ -54,16 +54,18 @@ namespace BizHawk.Client.EmuHawk
 		{
 			SetWindowText();
 
-			ToolStripMenuItem GenSubmenuForSystem((string[] AppliesTo, string[] CoreNames) systemData, EventHandler onclick = null, EventHandler onmouseover = null)
+			ToolStripMenuItem GenSubmenuForSystem((string[] AppliesTo, string[] CoreNames) systemData)
 			{
 				var (appliesTo, coreNames) = systemData;
 				var groupLabel = appliesTo[0];
 				var submenu = new ToolStripMenuItem { Text = groupLabel };
-				onclick ??= (clickSender, clickArgs) =>
+				EventHandler onclick = (clickSender, clickArgs) =>
 				{
-					var coreName = (string) ((ToolStripMenuItem) clickSender).Tag;
-					foreach (var system in appliesTo) Config.PreferredCores[system] = coreName;
-					if (appliesTo.Contains(Emulator.SystemId)) FlagNeedsReboot(); //TODO don't alert if the loaded core was the one selected
+					var coreName = (string)((ToolStripMenuItem)clickSender).Tag;
+					foreach (var system in appliesTo)
+						Config.PreferredCores[system] = coreName;
+					if (appliesTo.Contains(Emulator.SystemId))
+						FlagNeedsReboot(); //TODO don't alert if the loaded core was the one selected
 				};
 				submenu.DropDownItems.AddRange(coreNames.Select(coreName => {
 					var entry = new ToolStripMenuItem
@@ -74,32 +76,17 @@ namespace BizHawk.Client.EmuHawk
 					entry.Click += onclick;
 					return (ToolStripItem) entry;
 				}).ToArray());
-				submenu.DropDownOpened += onmouseover ?? ((openedSender, openedArgs) => {
+				submenu.DropDownOpened += ((openedSender, openedArgs) => {
 					foreach (ToolStripMenuItem entry in ((ToolStripMenuItem) openedSender).DropDownItems)
 					{
-						entry.Checked = (string) entry.Tag == Config.PreferredCores[groupLabel];
+						Config.PreferredCores.TryGetValue(groupLabel, out var pcval);
+						entry.Checked = (string)entry.Tag == pcval;
 					}
 				});
 				return submenu;
 			}
 			CoresSubMenu.DropDownItems.AddRange(CoreData.Select(systemData =>
-				systemData.AppliesTo[0] == "SGB"
-					? GenSubmenuForSystem(
-						systemData,
-						(clickSender, clickArgs) =>
-						{
-							Config.SgbUseBsnes = (string) ((ToolStripMenuItem) clickSender).Tag == CoreNames.Bsnes;
-							if (Emulator.SystemId == "GB" || Emulator.SystemId == "GBC") FlagNeedsReboot(); //TODO don't alert if the loaded core was the one selected
-						},
-						(openedSender, openedArgs) =>
-						{
-							//TODO use Config.PreferredCores for SGB, then this custom EventHandler can go away
-							var entries = ((ToolStripMenuItem) openedSender).DropDownItems.Cast<ToolStripMenuItem>().ToList();
-							entries[0].Checked = Config.SgbUseBsnes;
-							entries[1].Checked = !Config.SgbUseBsnes;
-						}
-					)
-					: (ToolStripItem) GenSubmenuForSystem(systemData)
+				(ToolStripItem) GenSubmenuForSystem(systemData)
 			).ToArray());
 
 			var GBInSGBMenuItem = new ToolStripMenuItem { Text = "GB in SGB" };
