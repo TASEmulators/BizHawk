@@ -217,16 +217,16 @@ namespace BizHawk.Experiment.AutoGenConfig
 
 			protected virtual string SerializeTValue(TValue v) => v?.ToString() ?? NULL_SERIALIZATION;
 
-#pragma warning disable CS8601
+#pragma warning disable CS8604
 			string IConfigPropEditorUIGen.SerializeTValue(object? v) => SerializeTValue((TValue) v);
-#pragma warning restore CS8601
+#pragma warning restore CS8604
 
 			/// <inheritdoc cref="IConfigPropEditorUIGen.TValueEquality"/>
 			protected abstract bool TValueEquality(TValue a, TValue b);
 
-#pragma warning disable CS8601
+#pragma warning disable CS8604
 			bool IConfigPropEditorUIGen.TValueEquality(object? a, object? b) => TValueEquality((TValue) a, (TValue) b);
-#pragma warning restore CS8601
+#pragma warning restore CS8604
 
 			protected const string NULL_SERIALIZATION = "(null)";
 

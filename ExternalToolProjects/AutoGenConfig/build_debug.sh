@@ -1,1 +1,1 @@
-../.build_net48_from_cwd_debug.sh
+../.build_debug.sh

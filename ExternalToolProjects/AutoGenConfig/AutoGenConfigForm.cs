@@ -76,7 +76,12 @@ namespace BizHawk.Experiment.AutoGenConfig
 								tuple.Generator != null // Already iterating nested-config groupboxes as GroupUIs.Values; maybe this can be changed to iterate recursively starting with `GroupUIs[""]`?
 									&& !tuple.Generator.MatchesBaseline(tuple.c, Metadata)
 							)
-							.Select(tuple => (tuple.c.Name, tuple.Generator, Baseline: Metadata.BaselineValues[tuple.c.Name], Current: tuple.Generator.GetTValue(tuple.c)))
+							.Select(tuple => (
+								tuple.c.Name,
+								tuple.Generator ?? throw new Exception("never hit"),
+								Baseline: Metadata.BaselineValues[tuple.c.Name],
+								Current: tuple.Generator.GetTValue(tuple.c)
+							))
 							.Where(tuple => tuple.Baseline != tuple.Current)
 							.ToList();
 						if (state.Count == 0) {
