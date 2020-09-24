@@ -290,11 +290,8 @@ namespace BizHawk.Client.Common
 		public Dictionary<string, Dictionary<string, string>> AllTrollersAutoFire { get; set; } = new Dictionary<string, Dictionary<string, string>>();
 		public Dictionary<string, Dictionary<string, AnalogBind>> AllTrollersAnalog { get; set; } = new Dictionary<string, Dictionary<string, AnalogBind>>();
 
-		// Core Pick
-		// as this setting spans multiple cores and doesn't actually affect the behavior of any core,
-		// it hasn't been absorbed into the new system
+		/// <remarks>as this setting spans multiple cores and doesn't actually affect the behavior of any core, it hasn't been absorbed into the new system</remarks>
 		public bool GbAsSgb { get; set; }
-		public bool SgbUseBsnes { get; set; }
 		public string LibretroCore { get; set; }
 
 		public Dictionary<string, string> PreferredCores = new Dictionary<string, string>
