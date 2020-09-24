@@ -256,7 +256,7 @@ namespace BizHawk.Client.Common
 			if (Count != 0)
 			{
 				var startByte = _states[_firstStateIndex].Start;
-				var endByte = _states[HeadStateIndex].Start + _states[HeadStateIndex].Size;
+				var endByte = (_states[HeadStateIndex].Start + _states[HeadStateIndex].Size) & _sizeMask;
 				// TODO: Use spans to avoid these extra copies in .net core
 				if (startByte > endByte)
 				{

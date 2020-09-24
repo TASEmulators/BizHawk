@@ -418,6 +418,30 @@ namespace BizHawk.Tests.Client.Common.Movie
 			Assert.AreEqual(0, zw.AllStates().Single().Frame);
 		}
 
+		[TestMethod]
+		public void WhatIfTheHeadStateWrapsAround()
+		{
+			var ss = new StateSource
+			{
+				PaddingData = new byte[400 * 1000]
+			};
+			using var zw = new ZwinderBuffer(new RewindConfig
+			{
+				BufferSize = 1,
+				TargetFrameLength = 1
+			});
+
+			// Need to get data in the zwinderbuffer so that the last state, and the last state in particular, wraps around
+			ss.Frame = 1;
+			zw.Capture(1, s => ss.SaveStateBinary(new BinaryWriter(s)), null, true);
+			ss.Frame = 2;
+			zw.Capture(2, s => ss.SaveStateBinary(new BinaryWriter(s)), null, true);
+			ss.Frame = 3;
+			zw.Capture(3, s => ss.SaveStateBinary(new BinaryWriter(s)), null, true);
+
+			zw.SaveStateBinary(new BinaryWriter(new MemoryStream()));
+		}
+
 		private class StateSource : IStatable
 		{
 			public int Frame { get; set; }
