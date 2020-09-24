@@ -45,62 +45,37 @@ namespace BizHawk.Client.EmuHawk
 		private static readonly IReadOnlyCollection<(string[] AppliesTo, string[] CoreNames)> CoreData = new List<(string[], string[])> {
 			(new[] { "NES" }, new[] { CoreNames.QuickNes, CoreNames.NesHawk, CoreNames.SubNesHawk }),
 			(new[] { "SNES" }, new[] { CoreNames.Faust, CoreNames.Snes9X, CoreNames.Bsnes }),
-			(new[] { "SGB" }, new[] { CoreNames.Bsnes, CoreNames.SameBoy }),
+			(new[] { "SGB" }, new[] { CoreNames.SameBoy, CoreNames.Bsnes }),
 			(new[] { "GB", "GBC" }, new[] { CoreNames.Gambatte, CoreNames.GbHawk, CoreNames.SubGbHawk }),
-			(new[] { "PCE", "PCECD", "SGX" }, new[] { CoreNames.HyperNyma, CoreNames.PceHawk, CoreNames.TurboNyma })
+			(new[] { "PCE", "PCECD", "SGX" }, new[] { CoreNames.TurboNyma, CoreNames.HyperNyma, CoreNames.PceHawk })
 		};
 
 		private void MainForm_Load(object sender, EventArgs e)
 		{
 			SetWindowText();
 
-			ToolStripMenuItem GenSubmenuForSystem((string[] AppliesTo, string[] CoreNames) systemData, EventHandler onclick = null, EventHandler onmouseover = null)
+			foreach (var (appliesTo, coreNames) in CoreData)
 			{
-				var (appliesTo, coreNames) = systemData;
 				var groupLabel = appliesTo[0];
 				var submenu = new ToolStripMenuItem { Text = groupLabel };
-				onclick ??= (clickSender, clickArgs) =>
+				void ClickHandler(object clickSender, EventArgs clickArgs)
 				{
-					var coreName = (string) ((ToolStripMenuItem) clickSender).Tag;
+					var coreName = ((ToolStripMenuItem) clickSender).Text;
 					foreach (var system in appliesTo) Config.PreferredCores[system] = coreName;
 					if (appliesTo.Contains(Emulator.SystemId)) FlagNeedsReboot(); //TODO don't alert if the loaded core was the one selected
-				};
+				}
 				submenu.DropDownItems.AddRange(coreNames.Select(coreName => {
-					var entry = new ToolStripMenuItem
-					{
-						Tag = coreName,
-						Text = coreName.StartsWith("Sub") ? $"{coreName} (Experimental)" : coreName //TODO if we ditch this "Experimental" thing, we can use Text instead of Tag
-					};
-					entry.Click += onclick;
+					var entry = new ToolStripMenuItem { Text = coreName };
+					entry.Click += ClickHandler;
 					return (ToolStripItem) entry;
 				}).ToArray());
-				submenu.DropDownOpened += onmouseover ?? ((openedSender, openedArgs) => {
-					foreach (ToolStripMenuItem entry in ((ToolStripMenuItem) openedSender).DropDownItems)
-					{
-						entry.Checked = (string) entry.Tag == Config.PreferredCores[groupLabel];
-					}
-				});
-				return submenu;
+				submenu.DropDownOpened += (openedSender, openedArgs) =>
+				{
+					Config.PreferredCores.TryGetValue(groupLabel, out var preferred);
+					foreach (ToolStripMenuItem entry in ((ToolStripMenuItem) openedSender).DropDownItems) entry.Checked = entry.Text == preferred;
+				};
+				CoresSubMenu.DropDownItems.Add(submenu);
 			}
-			CoresSubMenu.DropDownItems.AddRange(CoreData.Select(systemData =>
-				systemData.AppliesTo[0] == "SGB"
-					? GenSubmenuForSystem(
-						systemData,
-						(clickSender, clickArgs) =>
-						{
-							Config.SgbUseBsnes = (string) ((ToolStripMenuItem) clickSender).Tag == CoreNames.Bsnes;
-							if (Emulator.SystemId == "GB" || Emulator.SystemId == "GBC") FlagNeedsReboot(); //TODO don't alert if the loaded core was the one selected
-						},
-						(openedSender, openedArgs) =>
-						{
-							//TODO use Config.PreferredCores for SGB, then this custom EventHandler can go away
-							var entries = ((ToolStripMenuItem) openedSender).DropDownItems.Cast<ToolStripMenuItem>().ToList();
-							entries[0].Checked = Config.SgbUseBsnes;
-							entries[1].Checked = !Config.SgbUseBsnes;
-						}
-					)
-					: (ToolStripItem) GenSubmenuForSystem(systemData)
-			).ToArray());
 
 			var GBInSGBMenuItem = new ToolStripMenuItem { Text = "GB in SGB" };
 			GBInSGBMenuItem.Click += (clickSender, clickArgs) =>
