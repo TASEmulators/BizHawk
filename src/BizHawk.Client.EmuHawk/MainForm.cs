@@ -45,49 +45,37 @@ namespace BizHawk.Client.EmuHawk
 		private static readonly IReadOnlyCollection<(string[] AppliesTo, string[] CoreNames)> CoreData = new List<(string[], string[])> {
 			(new[] { "NES" }, new[] { CoreNames.QuickNes, CoreNames.NesHawk, CoreNames.SubNesHawk }),
 			(new[] { "SNES" }, new[] { CoreNames.Faust, CoreNames.Snes9X, CoreNames.Bsnes }),
-			(new[] { "SGB" }, new[] { CoreNames.Bsnes, CoreNames.SameBoy }),
+			(new[] { "SGB" }, new[] { CoreNames.SameBoy, CoreNames.Bsnes }),
 			(new[] { "GB", "GBC" }, new[] { CoreNames.Gambatte, CoreNames.GbHawk, CoreNames.SubGbHawk }),
-			(new[] { "PCE", "PCECD", "SGX" }, new[] { CoreNames.HyperNyma, CoreNames.PceHawk, CoreNames.TurboNyma })
+			(new[] { "PCE", "PCECD", "SGX" }, new[] { CoreNames.TurboNyma, CoreNames.HyperNyma, CoreNames.PceHawk })
 		};
 
 		private void MainForm_Load(object sender, EventArgs e)
 		{
 			SetWindowText();
 
-			ToolStripMenuItem GenSubmenuForSystem((string[] AppliesTo, string[] CoreNames) systemData)
+			foreach (var (appliesTo, coreNames) in CoreData)
 			{
-				var (appliesTo, coreNames) = systemData;
 				var groupLabel = appliesTo[0];
 				var submenu = new ToolStripMenuItem { Text = groupLabel };
-				EventHandler onclick = (clickSender, clickArgs) =>
+				void ClickHandler(object clickSender, EventArgs clickArgs)
 				{
-					var coreName = (string)((ToolStripMenuItem)clickSender).Tag;
-					foreach (var system in appliesTo)
-						Config.PreferredCores[system] = coreName;
-					if (appliesTo.Contains(Emulator.SystemId))
-						FlagNeedsReboot(); //TODO don't alert if the loaded core was the one selected
-				};
+					var coreName = ((ToolStripMenuItem) clickSender).Text;
+					foreach (var system in appliesTo) Config.PreferredCores[system] = coreName;
+					if (appliesTo.Contains(Emulator.SystemId)) FlagNeedsReboot(); //TODO don't alert if the loaded core was the one selected
+				}
 				submenu.DropDownItems.AddRange(coreNames.Select(coreName => {
-					var entry = new ToolStripMenuItem
-					{
-						Tag = coreName,
-						Text = coreName.StartsWith("Sub") ? $"{coreName} (Experimental)" : coreName //TODO if we ditch this "Experimental" thing, we can use Text instead of Tag
-					};
-					entry.Click += onclick;
+					var entry = new ToolStripMenuItem { Text = coreName };
+					entry.Click += ClickHandler;
 					return (ToolStripItem) entry;
 				}).ToArray());
-				submenu.DropDownOpened += ((openedSender, openedArgs) => {
-					foreach (ToolStripMenuItem entry in ((ToolStripMenuItem) openedSender).DropDownItems)
-					{
-						Config.PreferredCores.TryGetValue(groupLabel, out var pcval);
-						entry.Checked = (string)entry.Tag == pcval;
-					}
-				});
-				return submenu;
+				submenu.DropDownOpened += (openedSender, openedArgs) =>
+				{
+					Config.PreferredCores.TryGetValue(groupLabel, out var preferred);
+					foreach (ToolStripMenuItem entry in ((ToolStripMenuItem) openedSender).DropDownItems) entry.Checked = entry.Text == preferred;
+				};
+				CoresSubMenu.DropDownItems.Add(submenu);
 			}
-			CoresSubMenu.DropDownItems.AddRange(CoreData.Select(systemData =>
-				(ToolStripItem) GenSubmenuForSystem(systemData)
-			).ToArray());
 
 			var GBInSGBMenuItem = new ToolStripMenuItem { Text = "GB in SGB" };
 			GBInSGBMenuItem.Click += (clickSender, clickArgs) =>
