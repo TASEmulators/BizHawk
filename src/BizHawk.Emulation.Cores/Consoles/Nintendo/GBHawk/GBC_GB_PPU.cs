@@ -891,7 +891,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						}
 						else
 						{
-							pixel = 0;
+							pixel = BGP & 3;
 						}
 					}
 

@@ -558,7 +558,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					}
 					else
 					{
-						pixel = 0;
+						pixel = BGP & 3;
 					}
 						
 					// now we have the BG pixel, we next need the sprite pixel
