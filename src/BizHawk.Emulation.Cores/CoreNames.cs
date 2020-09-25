@@ -24,5 +24,7 @@ namespace BizHawk.Emulation.Cores
 		public const string TurboNyma = "TurboNyma";
 		public const string HyperNyma = "HyperNyma";
 		public const string Faust = "Faust";
+		public const string DualGambatte = "DualGambatte";
+		public const string GBHawkLink = "GBHawkLink";
 	}
 }
