@@ -605,16 +605,17 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 					interrupt_src_reg = GetIntRegs(0);
 					interrupt_enable_reg = GetIntRegs(1);
 
-					if (interrupt_src_reg.Bit(bit_check) && interrupt_enable_reg.Bit(bit_check)) { int_src = bit_check; int_clear = (byte)(1 << bit_check); }
-					/*
-					if (interrupt_src.Bit(0) && interrupt_enable.Bit(0)) { int_src = 0; int_clear = 1; }
-					else if (interrupt_src.Bit(1) && interrupt_enable.Bit(1)) { int_src = 1; int_clear = 2; }
-					else if (interrupt_src.Bit(2) && interrupt_enable.Bit(2)) { int_src = 2; int_clear = 4; }
-					else if (interrupt_src.Bit(3) && interrupt_enable.Bit(3)) { int_src = 3; int_clear = 8; }
-					else if (interrupt_src.Bit(4) && interrupt_enable.Bit(4)) { int_src = 4; int_clear = 16; }
+					//if (interrupt_src_reg.Bit(bit_check) && interrupt_enable_reg.Bit(bit_check)) { int_src = bit_check; int_clear = (byte)(1 << bit_check); }
+					
+					if (interrupt_src_reg.Bit(0) && interrupt_enable_reg.Bit(0)) { int_src = 0; int_clear = 1; }
+					else if (interrupt_src_reg.Bit(1) && interrupt_enable_reg.Bit(1)) { int_src = 1; int_clear = 2; }
+					else if (interrupt_src_reg.Bit(2) && interrupt_enable_reg.Bit(2)) { int_src = 2; int_clear = 4; }
+					else if (interrupt_src_reg.Bit(3) && interrupt_enable_reg.Bit(3)) { int_src = 3; int_clear = 8; }
+					else if (interrupt_src_reg.Bit(4) && interrupt_enable_reg.Bit(4)) { int_src = 4; int_clear = 16; }
 					else { int_src = 5; int_clear = 0; }
-					*/
+					
 					Regs[instr_table[instr_pntr++]] = INT_vectors[int_src];
+
 					break;
 				case HALT_CHK:
 					I_use = FlagI;
@@ -640,7 +641,6 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 					SetIntRegs(interrupt_src_reg);
 
 					if ((interrupt_src_reg & interrupt_enable_reg) == 0) { FlagI = false; }
-
 					// reset back to default state
 					int_src = 5;
 					int_clear = 0;
