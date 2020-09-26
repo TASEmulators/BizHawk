@@ -33,8 +33,10 @@ void operator delete(void *p)
 
 #ifdef _MSC_VER
 #define EXPORT extern "C" __declspec(dllexport)
-#else
+#elif __MINGW32__
 #define EXPORT extern "C" __declspec(dllexport) __attribute__((force_align_arg_pointer))
+#else
+#define EXPORT extern "C" __attribute__((force_align_arg_pointer))
 #endif
 
 EXPORT void qn_setup_mappers()
