@@ -103,19 +103,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 				if (_syncSettings.EnableBIOS)
 				{
-					try {
-						bios = comm.CoreFileProvider.GetFirmware(biosSystemId, biosId, true, "BIOS Not Found, Cannot Load.  Change SyncSettings to run without BIOS.");
-					} catch (MissingFirmwareException) {
-						if (_syncSettings.GBACGB && IsCgb) {
-							bios = comm.CoreFileProvider.GetFirmware(biosSystemId, "World", true, "BIOS Not Found, Cannot Load.  Change SyncSettings to run without BIOS.");
-							byte[] agbOverride = { 0xFF, 0x00, 0xCD, 0x03, 0x35, 0xAA, 0x31, 0x90, 0x94, 0x00, 0x00, 0x00, 0x00 };
-							for (int i = 0xF3; i < 0x100; i++) {
-								bios[i] = (byte)((agbOverride[i - 0xF3] + bios[i]) & 0xFF);
-							}
-						} else {
-							bios = comm.CoreFileProvider.GetFirmware(biosSystemId, biosId, true, "BIOS Not Found, Cannot Load.  Change SyncSettings to run without BIOS.");
-						}
-					}
+					bios = comm.CoreFileProvider.GetFirmware(biosSystemId, biosId, true, "BIOS Not Found, Cannot Load.  Change SyncSettings to run without BIOS.");
 				}
 				else
 				{
