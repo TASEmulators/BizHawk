@@ -9,7 +9,4 @@
 	<PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
 		<OutputType>WinExe</OutputType>
 	</PropertyGroup>
-	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-		<Move Condition=" $(IsTargetingNetFramework) " SourceFiles="$(OutputPath)$(TargetName).exe;$(OutputPath)$(TargetName).exe.config" DestinationFolder="$(OutputPath)../" />
-	</Target>
 </Project>
