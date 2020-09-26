@@ -30,6 +30,7 @@ melonds: ??
 waterbox:  See separate document waterbox/readme.txt
 
 libdarm: stock build from https://github.com/jbremer/darm.git   71a027e0ffb2171d01213c6ecc6da1c49e158398 ????
+* Assuming this is the right commit for the Windows binary we have, the submodule and Linux binary are 4 commits ahead (at cadffa77bf15e4ac3f8051e60c1ccefcc836e62b). None of those commits actually changed the C source code.
 
 ----------------------------------
 BUILDING .SO FOR LINUX
