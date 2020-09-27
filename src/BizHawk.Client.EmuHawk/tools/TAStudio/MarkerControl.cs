@@ -179,6 +179,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void AddMarker(int frame, bool editText = false)
 		{
+			TasMovieMarker marker;
 			if (editText)
 			{
 				var i = new InputPrompt
@@ -196,20 +197,23 @@ namespace BizHawk.Client.EmuHawk
 				point.Offset(i.Width / -2, i.Height / -2);
 
 				var result = i.ShowHawkDialog(this, position: point);
-				if (result.IsOk())
+				if (!result.IsOk())
 				{
-					Markers.Add(new TasMovieMarker(frame, i.PromptText));
-					UpdateTextColumnWidth();
-					UpdateValues();
+					return;
 				}
+
+				UpdateTextColumnWidth();
+				marker = new TasMovieMarker(frame, i.PromptText);
 			}
 			else
 			{
-				Markers.Add(new TasMovieMarker(frame));
-				UpdateValues();
+				marker = new TasMovieMarker(frame);
 			}
 
-			MarkerView.ScrollToIndex(Markers.Count - 1);
+			UpdateValues();
+			Markers.Add(marker);
+			var index = Markers.IndexOf(marker);
+			MarkerView.MakeIndexVisible(index);
 			Tastudio.RefreshDialog();
 		}
 
