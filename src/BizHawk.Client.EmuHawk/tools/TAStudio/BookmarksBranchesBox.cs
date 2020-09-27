@@ -595,8 +595,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BranchView_MouseDown(object sender, MouseEventArgs e)
 		{
-			UpdateButtons();
-
 			if (e.Button == MouseButtons.Left)
 			{
 				if (BranchView.CurrentCell.IsDataCell()
@@ -689,6 +687,11 @@ namespace BizHawk.Client.EmuHawk
 			{
 				_screenshot.FadeOut();
 			}
+		}
+
+		private void BranchView_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			UpdateButtons();
 		}
 	}
 }

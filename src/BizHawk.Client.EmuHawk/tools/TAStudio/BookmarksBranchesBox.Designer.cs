@@ -140,24 +140,22 @@
 			// 
 			// BranchView
 			// 
-			this.BranchView.CellWidthPadding = 3;
-			this.BranchView.GridLines = true;
 			this.BranchView.AllowColumnReorder = false;
 			this.BranchView.AllowColumnResize = false;
+			this.BranchView.AllowMassNavigationShortcuts = true;
+			this.BranchView.AllowRightClickSelection = true;
 			this.BranchView.AlwaysScroll = false;
 			this.BranchView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.BranchView.CellHeightPadding = 0;
+			this.BranchView.ChangeSelectionWhenPaging = true;
 			this.BranchView.ContextMenuStrip = this.BranchesContextMenu;
 			this.BranchView.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.BranchView.FullRowSelect = true;
-			this.BranchView.HideWasLagFrames = false;
 			this.BranchView.HorizontalOrientation = false;
-			this.BranchView.LagFramesToHide = 0;
 			this.BranchView.LetKeysModifySelection = false;
 			this.BranchView.Location = new System.Drawing.Point(6, 19);
-			this.BranchView.MultiSelect = true;
 			this.BranchView.Name = "BranchView";
 			this.BranchView.RowCount = 0;
 			this.BranchView.ScrollSpeed = 13;
@@ -165,6 +163,7 @@
 			this.BranchView.Size = new System.Drawing.Size(186, 224);
 			this.BranchView.TabIndex = 0;
 			this.BranchView.PointedCellChanged += new BizHawk.Client.EmuHawk.InputRoll.CellChangeEventHandler(this.BranchView_PointedCellChanged);
+			this.BranchView.SelectedIndexChanged += new System.EventHandler(this.BranchView_SelectedIndexChanged);
 			this.BranchView.CellDropped += new BizHawk.Client.EmuHawk.InputRoll.CellDroppedEvent(this.BranchView_CellDropped);
 			this.BranchView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.BranchView_MouseDoubleClick);
 			this.BranchView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.BranchView_MouseDown);
