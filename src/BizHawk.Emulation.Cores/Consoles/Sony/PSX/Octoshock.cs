@@ -1177,12 +1177,13 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 			public SyncSettings()
 			{
-				//initialize with historical default settings
+				//initialize with single controller and memcard
 				var user = new OctoshockFIOConfigUser();
-				user.Memcards[0] = user.Memcards[1] = true;
+				user.Memcards[0] = true;
+				user.Memcards[1] = false;
 				user.Multitaps[0] = user.Multitaps[0] = false;
 				user.Devices8[0] = OctoshockDll.ePeripheralType.DualShock;
-				user.Devices8[4] = OctoshockDll.ePeripheralType.DualShock;
+				user.Devices8[4] = OctoshockDll.ePeripheralType.None;
 				FIOConfig = user;
 			}
 
