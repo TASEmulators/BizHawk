@@ -1,6 +1,7 @@
 <Project>
 	<Import Project="MainSlnCommon.props" />
 	<PropertyGroup>
+		<OutputPath>$(ProjectDir)../../output</OutputPath>
 		<TargetName>$(MSBuildProjectName.Substring($([MSBuild]::Add($(MSBuildProjectName.LastIndexOf('.')), 1))))</TargetName>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -9,4 +10,13 @@
 	<PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
 		<OutputType>WinExe</OutputType>
 	</PropertyGroup>
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<ItemGroup>
+			<NotExecFilesFromExecProj Include="$(OutputPath)*.deps.json" />
+			<NotExecFilesFromExecProj Include="$(OutputPath)*.dll" />
+			<NotExecFilesFromExecProj Include="$(OutputPath)*.pdb" />
+			<NotExecFilesFromExecProj Include="$(OutputPath)*.xml" />
+		</ItemGroup>
+		<Move Condition=" $(IsTargetingNetFramework) " SourceFiles="@(NotExecFilesFromExecProj)" DestinationFolder="$(OutputPath)dll/" />
+	</Target>
 </Project>
