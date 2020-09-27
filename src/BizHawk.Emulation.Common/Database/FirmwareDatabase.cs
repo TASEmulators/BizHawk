@@ -267,7 +267,7 @@ namespace BizHawk.Emulation.Common
 			Option("GB", "World", File("4ed31ec6b0b175bb109c0eb5fd3d193da823339f", 256, "dmg.bin", "Game Boy Boot Rom"), FirmwareOptionStatus.Ideal);
 			// Early revisions of GB/C boot ROMs are not well-supported because the corresponding CPU differences are not emulated.
 			Option("GB", "World", File("8bd501e31921e9601788316dbd3ce9833a97bcbc", 256, "dmg0.bin", "Game Boy Boot Rom (Early J Revision)"), FirmwareOptionStatus.Unacceptable);
-			Option("GB", "World", File("4e68f9da03c310e84c523654b9026e51f26ce7f0", 256, "mgb.bin", "Game Boy Boot Rom (Pocket)"), FirmwareOptionStatus.Unacceptable);
+			Option("GB", "World", File("4e68f9da03c310e84c523654b9026e51f26ce7f0", 256, "mgb.bin", "Game Boy Boot Rom (Pocket)"), FirmwareOptionStatus.Acceptable);
 
 			Firmware("GBC", "World", "Game Boy Color Boot Rom");
 			Option("GBC", "World", File("1293d68bf9643bc4f36954c1e80e38f39864528d", 2304, "cgb.bin", "Game Boy Color Boot Rom"), FirmwareOptionStatus.Ideal);
