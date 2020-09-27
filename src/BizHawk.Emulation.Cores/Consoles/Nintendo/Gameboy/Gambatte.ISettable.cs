@@ -97,18 +97,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			{
 				Auto,
 				GB,
-				GBC
+				GBC,
+				GBA
 			}
 
 			[DisplayName("Console Mode")]
-			[Description("Pick which console to run, 'Auto' chooses from ROM header, 'GB' and 'GBC' chooses the respective system")]
+			[Description("Pick which console to run, 'Auto' chooses from ROM header; 'GB', 'GBC', and 'GBA' chooses the respective system")]
 			[DefaultValue(ConsoleModeType.Auto)]
 			public ConsoleModeType ConsoleMode { get; set; }
-
-			[DisplayName("CGB in GBA")]
-			[Description("Emulate GBA hardware running a CGB game, instead of CGB hardware.  Relevant only for titles that detect the presense of a GBA, such as Shantae.")]
-			[DefaultValue(false)]
-			public bool GBACGB { get; set; }
 
 			[DisplayName("Multicart Compatibility")]
 			[Description("Use special compatibility hacks for certain multicart games.  Relevant only for specific multicarts.")]
