@@ -604,6 +604,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_lastSelectedRow = null;
 			_selectedItems.Clear();
+			SelectedIndexChanged?.Invoke(this, new EventArgs());
 			Refresh();
 		}
 
