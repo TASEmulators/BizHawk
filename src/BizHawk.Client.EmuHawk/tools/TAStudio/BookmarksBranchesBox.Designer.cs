@@ -148,14 +148,17 @@
 			this.BranchView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.BranchView.CellWidthPadding = 3;
 			this.BranchView.CellHeightPadding = 0;
-			this.BranchView.ChangeSelectionWhenPaging = true;
+			this.BranchView.ChangeSelectionWhenPaging = false;
 			this.BranchView.ContextMenuStrip = this.BranchesContextMenu;
 			this.BranchView.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.BranchView.FullRowSelect = true;
+			this.BranchView.GridLines = true;
 			this.BranchView.HorizontalOrientation = false;
 			this.BranchView.LetKeysModifySelection = false;
 			this.BranchView.Location = new System.Drawing.Point(6, 19);
+			this.BranchView.MultiSelect = true;
 			this.BranchView.Name = "BranchView";
 			this.BranchView.RowCount = 0;
 			this.BranchView.ScrollSpeed = 13;

@@ -208,12 +208,6 @@ namespace BizHawk.Client.EmuHawk
 			Tastudio.RefreshDialog();
 		}
 
-		private void UpdateBranch(TasBranch branch)
-		{
-			Branches.Replace(branch, CreateBranch());
-			Tastudio.RefreshDialog();
-		}
-
 		private void LoadSelectedBranch()
 		{
 			if (SelectedBranch != null)
@@ -290,7 +284,8 @@ namespace BizHawk.Client.EmuHawk
 			toolTip1.SetToolTip(UndoBranchButton, "Undo Branch Update");
 			_branchUndo = BranchUndo.Update;
 
-			UpdateBranch(SelectedBranch);
+			Branches.Replace(SelectedBranch, CreateBranch());
+			Tastudio.RefreshDialog();
 			SavedCallback?.Invoke(Branches.Current);
 			Tastudio.MainForm.AddOnScreenMessage($"Saved branch {Branches.Current}");
 		}
