@@ -346,7 +346,7 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		[Category("Behavior")]
 		[DefaultValue(true)]
-		public bool MultiSelect { get; set; }
+		public bool MultiSelect { get; set; } = true;
 
 		/// <summary>
 		/// Gets or sets a value indicating whether the control is in input painting mode
