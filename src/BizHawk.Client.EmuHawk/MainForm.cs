@@ -2019,9 +2019,10 @@ namespace BizHawk.Client.EmuHawk
 			// if(ioa is this or that) - for more complex behaviour
 			string romPath = ioa.SimplePath;
 
-			if (!LoadRom(romPath, args))
+			if (!LoadRom(romPath, args, out var failureIsFromAskSave))
 			{
-				Config.RecentRoms.HandleLoadError(romPath, rom);
+				if (failureIsFromAskSave) OSD.AddMessage("ROM loading cancelled; a tool had unsaved changes");
+				else Config.RecentRoms.HandleLoadError(romPath, rom);
 			}
 		}
 
@@ -3507,9 +3508,11 @@ namespace BizHawk.Client.EmuHawk
 		private LoadRomArgs _currentLoadRomArgs;
 		private bool _isLoadingRom;
 
-		public bool LoadRom(string path, LoadRomArgs args)
+		public bool LoadRom(string path, LoadRomArgs args) => LoadRom(path, args, out _);
+
+		public bool LoadRom(string path, LoadRomArgs args, out bool failureIsFromAskSave)
 		{
-			if (!LoadRomInternal(path, args))
+			if (!LoadRomInternal(path, args, out failureIsFromAskSave))
 				return false;
 
 			// what's the meaning of the last rom path when opening an archive? based on the archive file location
@@ -3523,8 +3526,9 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		// Still needs a good bit of refactoring
-		private bool LoadRomInternal(string path, LoadRomArgs args)
+		private bool LoadRomInternal(string path, LoadRomArgs args, out bool failureIsFromAskSave)
 		{
+			failureIsFromAskSave = false;
 			if (path == null)
 				throw new ArgumentNullException(nameof(path));
 			if (args == null)
@@ -3554,6 +3558,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (!Tools.AskSave())
 				{
+					failureIsFromAskSave = true;
 					return false;
 				}
 
