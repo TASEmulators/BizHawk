@@ -707,7 +707,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			var loadZone = new MovieZone(path, Emulator, Tools)
+			var loadZone = new MovieZone(path, Emulator, MovieSession, Tools)
 			{
 				Start = TasView.FirstSelectedIndex ?? 0
 			};

@@ -211,7 +211,7 @@ namespace BizHawk.Client.EmuHawk
 			File.AppendAllLines(fileName, _log);
 		}
 
-		public MovieZone(string fileName, IEmulator emulator, ToolManager tools)
+		public MovieZone(string fileName, IEmulator emulator, IMovieSession movieSession, ToolManager tools)
 		{
 			if (!File.Exists(fileName))
 			{
@@ -220,6 +220,7 @@ namespace BizHawk.Client.EmuHawk
 
 			_emulator = emulator;
 			_tools = tools;
+			_movieSession = movieSession;
 
 			string[] readText = File.ReadAllLines(fileName);
 
