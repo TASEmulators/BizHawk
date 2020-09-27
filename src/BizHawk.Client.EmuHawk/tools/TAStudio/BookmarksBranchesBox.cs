@@ -228,12 +228,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BranchesContextMenu_Opening(object sender, CancelEventArgs e)
 		{
+			RemoveBranchContextMenuItem.Enabled = SelectedBranch != null;
+
 			UpdateBranchContextMenuItem.Enabled =
-			RemoveBranchContextMenuItem.Enabled =
 			LoadBranchContextMenuItem.Enabled =
 			EditBranchTextContextMenuItem.Enabled =
 			JumpToBranchContextMenuItem.Enabled = 
-				SelectedBranch != null;
+				BranchView.SelectedRows.Count() == 1;
 		}
 
 		private void AddBranchToolStripMenuItem_Click(object sender, EventArgs e)
@@ -516,7 +517,7 @@ namespace BizHawk.Client.EmuHawk
 			UpdateBranchButton.Enabled =
 			LoadBranchButton.Enabled =
 			JumpToBranchButton.Enabled =
-				SelectedBranch != null;
+				BranchView.SelectedRows.Count() == 1;
 		}
 
 		private void Select(int index, bool value)
