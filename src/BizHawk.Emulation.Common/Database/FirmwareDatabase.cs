@@ -265,12 +265,13 @@ namespace BizHawk.Emulation.Common
 
 			Firmware("GB", "World", "Game Boy Boot Rom");
 			Option("GB", "World", File("4ed31ec6b0b175bb109c0eb5fd3d193da823339f", 256, "dmg.bin", "Game Boy Boot Rom"), FirmwareOptionStatus.Ideal);
-			Option("GB", "World", File("8bd501e31921e9601788316dbd3ce9833a97bcbc", 256, "dmg0.bin", "Game Boy Boot Rom (Early J Revision)"), FirmwareOptionStatus.Acceptable);
-			Option("GB", "World", File("4e68f9da03c310e84c523654b9026e51f26ce7f0", 256, "mgb.bin", "Game Boy Boot Rom (Pocket)"), FirmwareOptionStatus.Acceptable);
+			// Early revisions of GB/C boot ROMs are not well-supported because the corresponding CPU differences are not emulated.
+			Option("GB", "World", File("8bd501e31921e9601788316dbd3ce9833a97bcbc", 256, "dmg0.bin", "Game Boy Boot Rom (Early J Revision)"), FirmwareOptionStatus.Unacceptable);
+			Option("GB", "World", File("4e68f9da03c310e84c523654b9026e51f26ce7f0", 256, "mgb.bin", "Game Boy Boot Rom (Pocket)"), FirmwareOptionStatus.Unacceptable);
 
 			Firmware("GBC", "World", "Game Boy Color Boot Rom");
 			Option("GBC", "World", File("1293d68bf9643bc4f36954c1e80e38f39864528d", 2304, "cgb.bin", "Game Boy Color Boot Rom"), FirmwareOptionStatus.Ideal);
-			Option("GBC", "World", File("df5a0d2d49de38fbd31cc2aab8e62c8550e655c0", 2304, "cgb0.bin", "Game Boy Color Boot Rom (Early Revision)"), FirmwareOptionStatus.Acceptable);
+			Option("GBC", "World", File("df5a0d2d49de38fbd31cc2aab8e62c8550e655c0", 2304, "cgb0.bin", "Game Boy Color Boot Rom (Early Revision)"), FirmwareOptionStatus.Unacceptable);
 
 			Firmware("GBC", "AGB", "Game Boy Color Boot Rom (GBA)");
 			Option("GBC", "AGB", File("fa5287e24b0fa533b3b5ef2b28a81245346c1a0f", 2304, "agb.bin", "Game Boy Color Boot Rom (GBA)"), FirmwareOptionStatus.Ideal);
@@ -280,7 +281,7 @@ namespace BizHawk.Emulation.Common
 			var pcfxbios = File("1A77FD83E337F906AECAB27A1604DB064CF10074", 1024 * 1024, "PCFX_bios.bin", "PCFX BIOS 1.00");
 			var pcfxv101 = File("8B662F7548078BE52A871565E19511CCCA28C5C8", 1024 * 1024, "PCFX_v101.bin", "PCFX BIOS 1.01");
 			Option("PCFX", "BIOS", pcfxbios, FirmwareOptionStatus.Ideal);
-			Option("PCFX", "BIOS", pcfxbios, FirmwareOptionStatus.Acceptable);
+			Option("PCFX", "BIOS", pcfxv101, FirmwareOptionStatus.Acceptable);
 
 			Firmware("PCFX", "SCSIROM", "fx-scsi.rom");
 			var fxscsi = File("65482A23AC5C10A6095AEE1DB5824CCA54EAD6E5", 512 * 1024, "PCFX_fx-scsi.rom", "PCFX SCSI ROM");
@@ -403,18 +404,16 @@ namespace BizHawk.Emulation.Common
 
 		public enum FirmwareOptionStatus
 		{
-			// This is what we want you to use to get checkmarks, and for TASing
+			/// <summary>Preferred to get checkmarks, and for TASing</summary>
 			Ideal,
 
-			// This will work with our core
+			/// <summary>Works with our core, but not preferred for TASing</summary>
 			Acceptable,
 
-			// This is a good file, but it doesn't work with our core
+			/// <summary>A good file, but it doesn't work with our core</summary>
 			Unacceptable,
 
-			//I know this is weird, you'd think the file is bad
-			//But bad files are definitely not ideal, acceptable, or unacceptable options.
-			//Really the only alternative to this is leaving it off as an option entirely--and we do want it here as an option, to categorize it as a BAD option.
+			/// <summary>Nonlegitimate files that are notable enough to be worth detecting, even if mainly to categorize as a BAD option</summary>
 			Bad
 		}
 
