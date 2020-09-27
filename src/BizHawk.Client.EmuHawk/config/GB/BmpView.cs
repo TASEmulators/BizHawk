@@ -1,4 +1,6 @@
-﻿using System;
+﻿//TODO - this is redundant with RetainedViewportPanel. Someone needs to reconcile the two.
+
+using System;
 using System.ComponentModel;
 using System.Drawing.Imaging;
 using System.Drawing;
@@ -14,6 +16,19 @@ namespace BizHawk.Client.EmuHawk
 		public Bitmap Bmp { get; private set; }
 
 		private bool _scaled;
+
+		protected override void ScaleControl(SizeF factor, BoundsSpecified specified)
+		{
+			int x = Location.X;
+			int y = Location.Y;
+			if (specified.HasFlag(BoundsSpecified.X))
+				x = (int)(x * factor.Width);
+			if (specified.HasFlag(BoundsSpecified.Y))
+				y = (int)(y * factor.Height);
+			var pt = new Point(x, y);
+			if (pt != Location)
+				Location = pt;
+		}
 
 		public BmpView()
 		{
