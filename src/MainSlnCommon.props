@@ -6,7 +6,7 @@
 		<DocumentationFile>$(ProjectDir)bin/doc_comments.xml</DocumentationFile>
 		<MSBuildWarningsAsMessages>NU1702</MSBuildWarningsAsMessages>
 		<NoWarn>CS1573;CS1591;NU1701</NoWarn>
-		<OutputPath>$(ProjectDir)../../output/dll</OutputPath>
+		<OutputPath>$(ProjectDir)../../output</OutputPath>
 	</PropertyGroup>
 	<ItemGroup>
 		<AdditionalFiles Include="$(ProjectDir)../../.stylecop.json" />
