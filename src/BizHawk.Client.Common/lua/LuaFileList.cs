@@ -110,7 +110,7 @@ namespace BizHawk.Client.Common
 					sb
 						.Append(file.Enabled ? "1" : "0")
 						.Append(' ')
-						.Append(path)
+						.Append(file.Path)
 						.AppendLine();
 				}
 			}
