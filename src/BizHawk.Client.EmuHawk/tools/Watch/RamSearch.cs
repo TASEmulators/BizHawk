@@ -144,7 +144,7 @@ namespace BizHawk.Client.EmuHawk
 
 			RamSearchMenu.Items.Add(WatchListView.ToColumnsMenu(ColumnToggleCallback));
 
-			_settings = new SearchEngineSettings(MemoryDomains);
+			_settings = new SearchEngineSettings(MemoryDomains, Settings.UseUndoHistory);
 			_searches = new RamSearchEngine(_settings, MemoryDomains);
 
 			ErrorIconButton.Visible = false;
@@ -308,7 +308,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public override void Restart()
 		{
-			_settings = new SearchEngineSettings(MemoryDomains);
+			_settings = new SearchEngineSettings(MemoryDomains, Settings.UseUndoHistory);
 			_searches = new RamSearchEngine(_settings, MemoryDomains);
 			MessageLabel.Text = "Search restarted";
 			DoDomainSizeCheck();
@@ -944,12 +944,14 @@ namespace BizHawk.Client.EmuHawk
 				PreviewMode = true;
 				RecentSearches = new RecentFiles(8);
 				AutoSearchTakeLagFramesIntoAccount = true;
+
 			}
 
 			public List<RollColumn> Columns { get; set; }
 			public bool PreviewMode { get; set; }
 			public bool AlwaysExcludeRamWatch { get; set; }
 			public bool AutoSearchTakeLagFramesIntoAccount { get; set; }
+			public bool UseUndoHistory { get; set; } = true;
 
 			public RecentFiles RecentSearches { get; set; }
 		}
@@ -1270,7 +1272,7 @@ namespace BizHawk.Client.EmuHawk
 		private void SettingsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			ExcludeRamWatchMenuItem.Checked = Settings.AlwaysExcludeRamWatch;
-			UseUndoHistoryMenuItem.Checked = _searches.UndoEnabled;
+			UseUndoHistoryMenuItem.Checked = Settings.UseUndoHistory;
 			PreviewModeMenuItem.Checked = Settings.PreviewMode;
 			AutoSearchMenuItem.Checked = _autoSearch;
 			AutoSearchAccountForLagMenuItem.Checked = Settings.AutoSearchTakeLagFramesIntoAccount;
@@ -1307,6 +1309,7 @@ namespace BizHawk.Client.EmuHawk
 		private void UseUndoHistoryMenuItem_Click(object sender, EventArgs e)
 		{
 			_searches.UndoEnabled ^= true;
+			Settings.UseUndoHistory = _searches.UndoEnabled;
 		}
 
 		[RestoreDefaults]
@@ -1323,7 +1326,7 @@ namespace BizHawk.Client.EmuHawk
 
 			RamSearchMenu.Items.Add(WatchListView.ToColumnsMenu(ColumnToggleCallback));
 
-			_settings = new SearchEngineSettings(MemoryDomains);
+			_settings = new SearchEngineSettings(MemoryDomains, Settings.UseUndoHistory);
 			if (_settings.IsFastMode())
 			{
 				SetToFastMode();

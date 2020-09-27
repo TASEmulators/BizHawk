@@ -4,7 +4,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 {
 	public class SearchEngineSettings
 	{
-		public SearchEngineSettings(IMemoryDomains memoryDomains)
+		public SearchEngineSettings(IMemoryDomains memoryDomains, bool useUndoHistory)
 		{
 			BigEndian = memoryDomains.MainMemory.EndianType == MemoryDomain.Endian.Big;
 			Size = (WatchSize)memoryDomains.MainMemory.WordSize;
@@ -16,6 +16,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 			Domain = memoryDomains.MainMemory;
 			CheckMisAligned = false;
 			PreviousType = PreviousType.LastSearch;
+			UseUndoHistory = useUndoHistory;
 		}
 
 		/*Require restart*/
@@ -28,6 +29,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 		public DisplayType Type { get; set; }
 		public bool BigEndian { get; set; }
 		public PreviousType PreviousType { get; set; }
+		public bool UseUndoHistory { get; set; }
 	}
 
 	public static class SearchEngineSettingsExtensions

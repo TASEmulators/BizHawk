@@ -21,7 +21,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 
 		public RamSearchEngine(SearchEngineSettings settings, IMemoryDomains memoryDomains)
 		{
-			_settings = new SearchEngineSettings(memoryDomains)
+			_settings = new SearchEngineSettings(memoryDomains, settings.UseUndoHistory)
 			{
 				Mode = settings.Mode,
 				Domain = settings.Domain,
@@ -29,7 +29,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 				CheckMisAligned = settings.CheckMisAligned,
 				Type = settings.Type,
 				BigEndian = settings.BigEndian,
-				PreviousType = settings.PreviousType
+				PreviousType = settings.PreviousType,
 			};
 		}
 
@@ -316,7 +316,11 @@ namespace BizHawk.Client.Common.RamSearchEngine
 			}
 		}
 
-		public bool UndoEnabled { get; set; }
+		public bool UndoEnabled
+		{
+			get => _settings.UseUndoHistory;
+			set => _settings.UseUndoHistory = value;
+		}
 		
 		public bool CanUndo => UndoEnabled && _history.CanUndo;
 
