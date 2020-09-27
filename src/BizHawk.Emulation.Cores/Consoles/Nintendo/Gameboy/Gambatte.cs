@@ -64,15 +64,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 						break;
 					case GambatteSyncSettings.ConsoleModeType.GBC:
 						break;
+					case GambatteSyncSettings.ConsoleModeType.GBA:
+						flags |= LibGambatte.LoadFlags.GBA_CGB;
+						break;
 					default:
 						if (game.System == "GB")
 							flags |= LibGambatte.LoadFlags.FORCE_DMG;
 						break;
-				}
-
-				if (_syncSettings.GBACGB)
-				{
-					flags |= LibGambatte.LoadFlags.GBA_CGB;
 				}
 
 				if (_syncSettings.MulticartCompat)
@@ -97,7 +95,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				else
 				{
 					biosSystemId = "GBC";
-					biosId = _syncSettings.GBACGB ? "AGB" : "World";
+					biosId = _syncSettings.ConsoleMode == GambatteSyncSettings.ConsoleModeType.GBA ? "AGB" : "World";
 					IsCgb = true;
 				}
 

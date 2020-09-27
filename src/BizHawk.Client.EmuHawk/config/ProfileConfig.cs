@@ -224,7 +224,6 @@ namespace BizHawk.Client.EmuHawk
 			_config.PreferredCores["GBC"] = CoreNames.Gambatte;
 			var s = GetSyncSettings<Gameboy, Gameboy.GambatteSyncSettings>();
 			s.EnableBIOS = true;
-			s.GBACGB = false;
 			PutSyncSettings<Gameboy>(s);
 			
 		}
