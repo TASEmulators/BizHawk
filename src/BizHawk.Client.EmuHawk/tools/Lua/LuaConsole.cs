@@ -559,7 +559,7 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void UpdateBefore()
 		{
-			if (LuaImp.SuppressLua)
+			if (LuaImp.IsUpdateSupressed)
 			{
 				return;
 			}
@@ -570,7 +570,7 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void UpdateAfter()
 		{
-			if (LuaImp.SuppressLua)
+			if (LuaImp.IsUpdateSupressed)
 			{
 				return;
 			}
@@ -607,7 +607,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (LuaImp.SuppressLua)
+			if (LuaImp.IsUpdateSupressed)
 			{
 				return;
 			}

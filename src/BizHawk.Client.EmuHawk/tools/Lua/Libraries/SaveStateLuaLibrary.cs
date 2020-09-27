@@ -21,18 +21,11 @@ namespace BizHawk.Client.EmuHawk
 		public void Load(string path, bool suppressOSD = false)
 		{
 			// TODO: find a non-global way to access LuaImp from Lua libraries!
-			var luaImp = GlobalWin.Tools.LuaConsole?.LuaImp;
-			if (luaImp != null)
-			{
-				luaImp.SuppressLua = true;
-			}
+			GlobalWin.Tools.LuaConsole?.LuaImp.SupressUpdate();
 
 			APIs.SaveState.Load(path, suppressOSD);
 			
-			if (luaImp != null)
-			{
-				luaImp.SuppressLua = false;
-			}
+			GlobalWin.Tools.LuaConsole?.LuaImp.EnableUpdate();
 		}
 
 		[LuaMethodExample("savestate.loadslot( 7 );")]
@@ -40,18 +33,11 @@ namespace BizHawk.Client.EmuHawk
 		public void LoadSlot(int slotNum, bool suppressOSD = false)
 		{
 			// TODO: find a non-global way to access LuaImp from Lua libraries!
-			var luaImp = GlobalWin.Tools.LuaConsole?.LuaImp;
-			if (luaImp != null)
-			{
-				luaImp.SuppressLua = true;
-			}
+			GlobalWin.Tools.LuaConsole?.LuaImp.SupressUpdate();
 
 			APIs.SaveState.LoadSlot(slotNum, suppressOSD);
 			
-			if (luaImp != null)
-			{
-				luaImp.SuppressLua = false;
-			}
+			GlobalWin.Tools.LuaConsole?.LuaImp.EnableUpdate();
 		}
 
 		[LuaMethodExample("savestate.save( \"C:\\state.bin\" );")]

@@ -104,13 +104,13 @@ namespace BizHawk.Client.EmuHawk
 			bool wasPaused = MainForm.EmulatorPaused;
 
 			// can't re-enter lua while doing this
-			GlobalWin.Tools.LuaConsole.LuaImp.SuppressLua = true;
+			GlobalWin.Tools.LuaConsole?.LuaImp.SupressUpdate();
 			while (Emulator.Frame != frame)
 			{
 				MainForm.SeekFrameAdvance();
 			}
 
-			GlobalWin.Tools.LuaConsole.LuaImp.SuppressLua = false;
+			GlobalWin.Tools.LuaConsole?.LuaImp.EnableUpdate();
 
 			if (!wasPaused)
 			{

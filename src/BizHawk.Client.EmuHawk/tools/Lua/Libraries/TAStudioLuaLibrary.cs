@@ -137,6 +137,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Engaged())
 			{
+				// TODO: find a non-global way to access LuaImp from Lua libraries!
+				GlobalWin.Tools.LuaConsole?.LuaImp.SupressUpdate();
+
 				int f;
 				if (frame is double frameNumber)
 				{
@@ -157,6 +160,8 @@ namespace BizHawk.Client.EmuHawk
 				{
 					Tastudio.GoToFrame(f, true);
 				}
+
+				GlobalWin.Tools.LuaConsole?.LuaImp.EnableUpdate();
 			}
 		}
 
@@ -289,6 +294,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Engaged())
 			{
+				// TODO: find a non-global way to access LuaImp from Lua libraries!
+				GlobalWin.Tools.LuaConsole?.LuaImp.SupressUpdate();
+
 				if (_changeList.Count > 0)
 				{
 					int size = _changeList.Count;
@@ -324,6 +332,8 @@ namespace BizHawk.Client.EmuHawk
 					Tastudio.JumpToGreenzone();
 					Tastudio.DoAutoRestore();
 				}
+
+				GlobalWin.Tools.LuaConsole?.LuaImp.EnableUpdate();
 			}
 		}
 
@@ -418,7 +428,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Engaged())
 			{
+				// TODO: find a non-global way to access LuaImp from Lua libraries!
+				GlobalWin.Tools.LuaConsole?.LuaImp.SupressUpdate();
+
 				Tastudio.LoadBranchByIndex(index);
+
+				GlobalWin.Tools.LuaConsole?.LuaImp.EnableUpdate();
 			}
 		}
 
