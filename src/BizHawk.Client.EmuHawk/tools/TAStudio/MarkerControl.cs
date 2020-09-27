@@ -155,13 +155,11 @@ namespace BizHawk.Client.EmuHawk
 		private void AddMarkerToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			AddMarker(Tastudio.Emulator.Frame);
-			MarkerView_SelectedIndexChanged(null, null);
 		}
 
 		private void AddMarkerWithTextToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			AddMarker(Tastudio.Emulator.Frame, true);
-			MarkerView_SelectedIndexChanged(null, null);
 		}
 
 		private void RemoveMarkerToolStripMenuItem_Click(object sender, EventArgs e)
