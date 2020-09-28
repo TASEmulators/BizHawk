@@ -36,6 +36,54 @@ namespace BizHawk.Common
 		public IEnumerator<KeyValuePair<TKey, List<TValue>>> GetKVPEnumerator() => dictionary.GetEnumerator();
 	}
 
+	public class SortedList<T> : ICollection<T>
+		where T : IComparable<T>
+	{
+		private readonly List<T> _list;
+
+		public int Count => _list.Count;
+
+		public bool IsReadOnly { get; } = false;
+
+		public SortedList() => _list = new List<T>();
+
+		public SortedList(IEnumerable<T> collection)
+		{
+			_list = new List<T>(collection);
+			_list.Sort();
+		}
+
+		public T this[int index] => _list[index];
+
+		public void Add(T item)
+		{
+			var i = _list.BinarySearch(item);
+			_list.Insert(i < 0 ? ~i : i, item);
+		}
+
+		public void Clear() => _list.Clear();
+
+		public bool Contains(T item) => _list.BinarySearch(item) >= 0; // can't use `!= -1`, BinarySearch can return multiple negative values
+
+		public void CopyTo(T[] array, int arrayIndex) => _list.CopyTo(array, arrayIndex);
+
+		public IEnumerator<T> GetEnumerator() => _list.GetEnumerator();
+
+		public bool Remove(T item)
+		{
+#if true
+			var i = _list.BinarySearch(item);
+			if (i < 0) return false;
+			_list.RemoveAt(i);
+			return true;
+#else //TODO is this any slower?
+			return _list.Remove(item);
+#endif
+		}
+
+		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+	}
+
 	/// <summary>A dictionary whose index getter creates an entry if the requested key isn't part of the collection, making it always safe to use the returned value. The new entry's value will be the result of the default constructor of <typeparamref name="TValue"/>.</summary>
 	[Serializable]
 	public class WorkingDictionary<TKey, TValue> : Dictionary<TKey, TValue>
