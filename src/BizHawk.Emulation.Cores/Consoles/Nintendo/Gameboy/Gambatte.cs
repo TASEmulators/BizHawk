@@ -101,28 +101,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 				if (_syncSettings.EnableBIOS)
 				{
-					try
-					{
-						bios = comm.CoreFileProvider.GetFirmware(biosSystemId, biosId, true, "BIOS Not Found, Cannot Load.  Change SyncSettings to run without BIOS.");
-					}
-					catch (MissingFirmwareException)
-					{
-						//If we're missing GBA firmware, create gambatte's reverse engineered firmware from a real GBC BIOS
-						if (_syncSettings.ConsoleMode == GambatteSyncSettings.ConsoleModeType.GBA)
-						{
-							bios = comm.CoreFileProvider.GetFirmware(biosSystemId, "World", true, "BIOS Not Found, Cannot Load.  Change SyncSettings to run without BIOS.");
-							byte[] agbOverride = { 0xFF, 0x00, 0xCD, 0x03, 0x35, 0xAA, 0x31, 0x90, 0x94, 0x00, 0x00, 0x00, 0x00 };
-							for (int i = 0xF3; i < 0x100; i++)
-							{
-								bios[i] = (byte)((agbOverride[i - 0xF3] + bios[i]) & 0xFF);
-							}
-							File.WriteAllBytes("Firmware/agb_gambatte.bin", bios);
-						}
-						else
-						{
-							bios = comm.CoreFileProvider.GetFirmware(biosSystemId, biosId, true, "BIOS Not Found, Cannot Load.  Change SyncSettings to run without BIOS.");
-						}
-					}
+					bios = comm.CoreFileProvider.GetFirmware(biosSystemId, biosId, true, "BIOS Not Found, Cannot Load.  Change SyncSettings to run without BIOS.");
 				}
 				else
 				{

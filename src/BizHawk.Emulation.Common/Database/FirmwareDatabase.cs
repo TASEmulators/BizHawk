@@ -275,7 +275,7 @@ namespace BizHawk.Emulation.Common
 
 			Firmware("GBC", "AGB", "Game Boy Color Boot Rom (GBA)");
 			Option("GBC", "AGB", File("fa5287e24b0fa533b3b5ef2b28a81245346c1a0f", 2304, "agb.bin", "Game Boy Color Boot Rom (GBA)"), FirmwareOptionStatus.Ideal);
-			Option("GBC", "AGB", File("1ecafa77ab3172193f3305486a857f443e28ebd9", 2304, "agb_gambatte.bin", "Game Boy Color Boot Rom (GBA, Gambatte RE)"), FirmwareOptionStatus.Acceptable);
+			Option("GBC", "AGB", File("1ecafa77ab3172193f3305486a857f443e28ebd9", 2304, "agb_gambatte.bin", "Game Boy Color Boot Rom (GBA, Gambatte RE)"), FirmwareOptionStatus.Bad);
 
 			Firmware("PCFX", "BIOS", "PCFX bios");
 			var pcfxbios = File("1A77FD83E337F906AECAB27A1604DB064CF10074", 1024 * 1024, "PCFX_bios.bin", "PCFX BIOS 1.00");
