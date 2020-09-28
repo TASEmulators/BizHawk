@@ -41,27 +41,18 @@ namespace BizHawk.Client.Common
 			public string FirmwareId { get; set; }
 		}
 
+		
+		// purpose of forbidScan: sometimes this is called from a loop in Scan(). we don't want to repeatedly DoScanAndResolve in that case, its already been done.
 		public ResolutionInfo Resolve(PathEntryCollection pathEntries, IDictionary<string, string> userSpecifications, FirmwareDatabase.FirmwareRecord record, bool forbidScan = false)
 		{
-			// purpose of forbidScan: sometimes this is called from a loop in Scan(). we don't want to repeatedly DoScanAndResolve in that case, its already been done.
-			bool first = true;
-
-		RETRY:
 			_resolutionDictionary.TryGetValue(record, out var resolved);
-
 			// couldn't find it! do a scan and resolve to try harder
-			// NOTE: this could result in bad performance in some cases if the scanning happens repeatedly..
-			if (resolved == null && first)
+			// NOTE: this could result in bad performance in some cases if the scanning happens repeatedly...
+			if (resolved == null && !forbidScan)
 			{
-				if (!forbidScan)
-				{
-					DoScanAndResolve(pathEntries, userSpecifications);
-				}
-
-				first = false;
-				goto RETRY;
+				DoScanAndResolve(pathEntries, userSpecifications);
+				_resolutionDictionary.TryGetValue(record, out resolved);
 			}
-
 			return resolved;
 		}
 
@@ -207,11 +198,9 @@ namespace BizHawk.Client.Common
 							Size = fo.Size
 						};
 						_resolutionDictionary[fr] = ri;
-						goto DONE_FIRMWARE;
+						break;
 					}
 				}
-
-				DONE_FIRMWARE: ;
 			}
 
 			// apply user overrides
