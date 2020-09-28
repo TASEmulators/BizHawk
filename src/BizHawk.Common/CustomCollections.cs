@@ -39,11 +39,11 @@ namespace BizHawk.Common
 	public class SortedList<T> : ICollection<T>
 		where T : IComparable<T>
 	{
-		private readonly List<T> _list;
+		protected readonly List<T> _list;
 
-		public int Count => _list.Count;
+		public virtual int Count => _list.Count;
 
-		public bool IsReadOnly { get; } = false;
+		public virtual bool IsReadOnly { get; } = false;
 
 		public SortedList() => _list = new List<T>();
 
@@ -53,23 +53,31 @@ namespace BizHawk.Common
 			_list.Sort();
 		}
 
-		public T this[int index] => _list[index];
+		public virtual T this[int index] => _list[index];
 
-		public void Add(T item)
+		public virtual void Add(T item)
 		{
 			var i = _list.BinarySearch(item);
 			_list.Insert(i < 0 ? ~i : i, item);
 		}
 
-		public void Clear() => _list.Clear();
+		public virtual int BinarySearch(T item) => _list.BinarySearch(item);
 
-		public bool Contains(T item) => _list.BinarySearch(item) >= 0; // can't use `!= -1`, BinarySearch can return multiple negative values
+		public virtual void Clear() => _list.Clear();
 
-		public void CopyTo(T[] array, int arrayIndex) => _list.CopyTo(array, arrayIndex);
+		public virtual bool Contains(T item) => !(_list.BinarySearch(item) < 0); // can't use `!= -1`, BinarySearch can return multiple negative values
 
-		public IEnumerator<T> GetEnumerator() => _list.GetEnumerator();
+		public virtual void CopyTo(T[] array, int arrayIndex) => _list.CopyTo(array, arrayIndex);
 
-		public bool Remove(T item)
+		public virtual IEnumerator<T> GetEnumerator() => _list.GetEnumerator();
+
+		public virtual int IndexOf(T item)
+		{
+			var i = _list.BinarySearch(item);
+			return i < 0 ? -1 : i;
+		}
+
+		public virtual bool Remove(T item)
 		{
 #if true
 			var i = _list.BinarySearch(item);
@@ -80,6 +88,10 @@ namespace BizHawk.Common
 			return _list.Remove(item);
 #endif
 		}
+
+		public virtual int RemoveAll(Predicate<T> match) => _list.RemoveAll(match);
+
+		public virtual void RemoveAt(int index) => _list.RemoveAt(index);
 
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 	}
