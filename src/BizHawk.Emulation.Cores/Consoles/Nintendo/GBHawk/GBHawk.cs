@@ -8,6 +8,8 @@ using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
 using System.Runtime.InteropServices;
 
 // TODO: mode1_disableint_gbc.gbc behaves differently between GBC and GBA, why?
+// TODO: oam_dma_start.gb does not behave as expected but test still passes through lucky coincidences / test deficiency
+// TODO: LYC interrupt behaves differently in GBC and GB compat mode
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {

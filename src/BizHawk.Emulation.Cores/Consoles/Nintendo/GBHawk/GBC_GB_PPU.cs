@@ -163,9 +163,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					scroll_x = value;
 					break; 
 				case 0xFF44: // LY
-					// writing to LY has no effect on GBC (zen intergalactic ninja does this on initialization)
-					//LY = 0; /*reset*/
-					//LY_read = 0;
+					// writing to LY has no effect, confirmed by gambatte test roms
 					break;
 				case 0xFF45:  // LYC
 					// tests indicate that latching writes to LYC should take place 4 cycles after the write
@@ -597,15 +595,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						}
 						else if (!rendering_complete)
 						{
-							if (cycle == 85)
-							{
-								// x-scroll is expected to be latched one cycle later 
-								// this is fine since nothing has started in the rendering until the second cycle
-								// calculate the column number of the tile to start with
-								x_tile = scroll_x >> 3;
-								render_offset = scroll_offset = scroll_x % 8;
-							}
-
 							// render the screen and handle hblank
 							render(cycle - 85);
 						}
@@ -658,12 +647,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								OAM_access_write = false;
 								VRAM_access_read = false;
 								VRAM_access_write = false;
-
-								// x-scroll is expected to be latched one cycle later 
-								// this is fine since nothing has started in the rendering until the second cycle
-								// calculate the column number of the tile to start with
-								x_tile = scroll_x >> 3;
-								render_offset = scroll_offset = scroll_x % 8;
 							}
 
 							// render the screen and handle hblank
@@ -1119,7 +1102,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							{
 								// here we set up rendering
 								pre_render = false;
-								
+
+								// x scroll is latched here
+								x_tile = scroll_x >> 3;
+								render_offset = scroll_offset = scroll_x % 8;
+
 								render_counter = 0;
 								latch_counter = 0;
 								read_case = 0;

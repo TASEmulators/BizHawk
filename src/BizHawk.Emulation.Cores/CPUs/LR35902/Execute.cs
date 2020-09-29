@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 		public ulong TotalExecutedCycles;
 
 		private int EI_pending;
-		private bool interrupts_enabled;
+		public bool interrupts_enabled;
 
 		// variables for executing instructions
 		public int instr_pntr = 0;

@@ -54,6 +54,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				case 0xFF41: // STAT
 					// writing to STAT during mode 0 or 1 causes a STAT IRQ
 					// this appears to be a glitchy LYC compare
+					if (!value.Bit(6)) { LYC_INT = false; }
+
 					if (LCDC.Bit(7))
 					{
 						if (((STAT & 3) == 0) || ((STAT & 3) == 1))
@@ -73,7 +75,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					}
 					STAT = (byte)((value & 0xF8) | (STAT & 7) | 0x80);
 
-					//if (!STAT.Bit(6)) { LYC_INT = false; }
 					if (!STAT.Bit(4)) { VBL_INT = false; }
 					break;
 				case 0xFF42: // SCY
@@ -83,8 +84,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					scroll_x = value;
 					break;
 				case 0xFF44: // LY
-					// writing to LY has no effect on GBC, not sure about GB (zen intergalactic ninja does this on initialization)
-					LY = 0; /*reset*/
+					// writing to LY has no effect, confirmed by gambatte test roms
 					break;
 				case 0xFF45:  // LYC
 					LYC = value;
@@ -298,15 +298,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						}
 						else if (!rendering_complete)
 						{
-							if (cycle == 85)
-							{
-								// x-scroll is expected to be latched one cycle later 
-								// this is fine since nothing has started in the rendering until the second cycle
-								// calculate the column number of the tile to start with
-								x_tile = scroll_x >> 3;
-								render_offset = scroll_offset = scroll_x % 8;
-							}
-
 							// render the screen and handle hblank
 							render(cycle - 85);
 						}
@@ -361,12 +352,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								OAM_INT = false;
 								OAM_access_write = false;
 								VRAM_access_write = false;
-
-								// x-scroll is expected to be latched one cycle later 
-								// this is fine since nothing has started in the rendering until the second cycle
-								// calculate the column number of the tile to start with
-								x_tile = scroll_x >> 3;
-								render_offset = scroll_offset = scroll_x % 8;
 							}
 
 							// render the screen and handle hblank
@@ -733,7 +718,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							{
 								// here we set up rendering
 								pre_render = false;
-								
+
+								// x scroll is latched here
+								x_tile = scroll_x >> 3;
+								render_offset = scroll_offset = scroll_x % 8;
+
 								render_counter = 0;
 								latch_counter = 0;
 								read_case = 0;
