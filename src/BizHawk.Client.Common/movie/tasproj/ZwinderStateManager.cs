@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using  BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -11,7 +12,7 @@ namespace BizHawk.Client.Common
 		private static readonly byte[] NonState = new byte[0];
 
 		private readonly Func<int, bool> _reserveCallback;
-		internal readonly List<int> StateCache = new List<int>();
+		internal readonly SortedList<int> StateCache = new SortedList<int>();
 		private ZwinderBuffer _current;
 		private ZwinderBuffer _recent;
 
