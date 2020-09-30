@@ -28,25 +28,12 @@ namespace BizHawk.Tests.Common.CustomCollections
 			Assert.IsTrue(list.Contains(11)); // `Contains` when `BinarySearch` returns non-negative
 		}
 
-		[TestMethod]
-		public void TestSortedListRemoveAfter_Between()
-		{
-			RemoveAfterTestcase(new[] {1, 5, 9, 10, 11, 12}, new[] {1, 5, 9}, 9);
-		}
 
 		[TestMethod]
-		public void TestSortedListRemoveAfter_None()
-		{
-			RemoveAfterTestcase(new[] { 2, 3 }, new[] { 2, 3 }, 5);
-		}
-
-		[TestMethod]
-		public void TestSortedListRemoveAfter_All()
-		{
-			RemoveAfterTestcase(new[] { 4, 7 }, new int[] { }, 0);
-		}
-
-		private void RemoveAfterTestcase(int[] before, int[] after, int removeItem)
+		[DataRow(new[] {1, 5, 9, 10, 11, 12}, new[] {1, 5, 9}, 9)]
+		[DataRow(new[] { 2, 3 }, new[] { 2, 3 }, 5)]
+		[DataRow(new[] { 4, 7 }, new int[] { }, 0)]
+		public void TestSortedListRemoveAfter(int[] before, int[] after, int removeItem)
 		{
 			var sortlist = new SortedList<int>(before);
 			sortlist.RemoveAfter(removeItem);
