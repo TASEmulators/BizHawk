@@ -89,9 +89,32 @@ namespace BizHawk.Common
 #endif
 		}
 
+
 		public virtual int RemoveAll(Predicate<T> match) => _list.RemoveAll(match);
 
 		public virtual void RemoveAt(int index) => _list.RemoveAt(index);
+
+		/// <summary>Remove all items after the specific item (but not the given item).</summary>
+		public virtual void RemoveAfter(T item)
+		{
+			var startIndex = _list.BinarySearch(item);
+			if (startIndex < 0)
+			{
+				// If BinarySearch doesn't find the item, 
+				// it returns the bitwise complement of the index of the next element
+				// that is larger than item
+				startIndex = ~startIndex;
+			}
+			else
+			{
+				// All items *after* the item
+				startIndex = startIndex + 1;
+			}
+			if (startIndex < _list.Count)
+			{
+				_list.RemoveRange(startIndex, _list.Count - startIndex);
+			}
+		}
 
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 	}

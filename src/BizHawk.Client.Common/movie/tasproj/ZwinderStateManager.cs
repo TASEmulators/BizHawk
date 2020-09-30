@@ -469,7 +469,7 @@ namespace BizHawk.Client.Common
 			var b1 = InvalidateNormal(frame);
 			var b2 = InvalidateGaps(frame);
 			var b3 = InvalidateReserved(frame);
-			StateCache.RemoveAll(s => s > frame);
+			StateCache.RemoveAfter(frame);
 			return b1 || b2 || b3;
 		}
 
