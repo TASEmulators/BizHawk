@@ -47,14 +47,15 @@ namespace BizHawk.Common.PathExtensions
 			return false;
 		}
 
-	/// <exception cref="ArgumentException">running on Windows host, and unmanaged call failed</exception>
+		/// <exception cref="ArgumentException">running on Windows host, and unmanaged call failed</exception>
 		/// <exception cref="FileNotFoundException">running on Windows host, and either path is not a regular file or directory</exception>
 		/// <remarks>Algorithm for Windows taken from https://stackoverflow.com/a/485516/7467292</remarks>
-		public static string GetRelativePath(string fromPath, string toPath)
+		public static string? GetRelativePath(string? fromPath, string? toPath)
 		{
+			if (fromPath == null || toPath == null) return null;
 			if (OSTailoredCode.IsUnixHost) return fromPath.MakeRelativeTo(toPath);
 
-			//TODO merge this with the Windows implementation in PathExtensions.MakeRelativeTo
+			//TODO merge this with the Windows implementation in MakeRelativeTo
 			static FileAttributes GetPathAttribute(string path1)
 			{
 				var di = new DirectoryInfo(path1.Split('|').First());
