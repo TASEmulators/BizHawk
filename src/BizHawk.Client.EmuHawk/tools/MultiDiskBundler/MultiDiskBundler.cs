@@ -74,28 +74,45 @@ namespace BizHawk.Client.EmuHawk
 			Close();
 		}
 
+		bool DoSave(out FileInfo fileInfo)
+		{
+			fileInfo = null;
+
+			if (!Recalculate())
+				return false;
+
+			fileInfo = new FileInfo(NameBox.Text);
+			if (fileInfo.Exists)
+			{
+				var result = MessageBox.Show(this, "File already exists, overwrite?", "File exists", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+				if (result != DialogResult.OK)
+				{
+					return false;
+				}
+			}
+
+			File.WriteAllText(fileInfo.FullName, _currentXml.ToString());
+			return true;
+		}
+
+		private void SaveButton_Click(object sender, EventArgs e)
+		{
+			FileInfo dummy;
+			DoSave(out dummy);
+		}
+
 		private void SaveRunButton_Click(object sender, EventArgs e)
 		{
-			if (Recalculate())
-			{
-				var fileInfo = new FileInfo(NameBox.Text);
-				if (fileInfo.Exists)
-				{
-					var result = MessageBox.Show(this, "File already exists, overwrite?", "File exists", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
-					if (result != DialogResult.OK)
-					{
-						return;
-					}
-				}
+			FileInfo fileInfo;
 
-				File.WriteAllText(fileInfo.FullName, _currentXml.ToString());
+			if (!DoSave(out fileInfo))
+				return;
 
-				DialogResult = DialogResult.OK;
-				Close();
+			DialogResult = DialogResult.OK;
+			Close();
 
-				var lra = new LoadRomArgs { OpenAdvanced = new OpenAdvanced_OpenRom { Path = fileInfo.FullName } };
-				MainForm.LoadRom(fileInfo.FullName, lra);
-			}
+			var lra = new LoadRomArgs { OpenAdvanced = new OpenAdvanced_OpenRom { Path = fileInfo.FullName } };
+			MainForm.LoadRom(fileInfo.FullName, lra);
 		}
 
 		private void AddButton_Click(object sender, EventArgs e)
@@ -141,6 +158,8 @@ namespace BizHawk.Client.EmuHawk
 				//One to our looper
 				i++;
 			}
+
+			Recalculate();
 		}
 
 		private void FileSelector_NameChanged(object sender, EventArgs e)
@@ -158,6 +177,9 @@ namespace BizHawk.Client.EmuHawk
 			try
 			{
 				var names = FileSelectors.Select(f => f.Path).ToList();
+
+				if (names.Count == 0)
+					goto BAIL;
 
 				var name = NameBox.Text;
 
@@ -194,18 +216,23 @@ namespace BizHawk.Client.EmuHawk
 							"Asset",
 							new XAttribute("FileName", GetRelativePath(basePath, n))
 						))
-					) 
+					)
 				);
 
 				SaveRunButton.Enabled = true;
+				SaveButton.Enabled = true;
 				return true;
 			}
 			catch (Exception)
 			{
-				_currentXml = null;
-				SaveRunButton.Enabled = false;
-				return false;
+				//swallow exceptions, since this is just validation logic
 			}
+
+			BAIL:
+			_currentXml = null;
+			SaveRunButton.Enabled = false;
+			SaveButton.Enabled = false;
+			return false;
 		}
 
 		private void NameBox_TextChanged(object sender, EventArgs e)
@@ -297,5 +324,6 @@ namespace BizHawk.Client.EmuHawk
 			AddButton_Click(null, null);
 			AddButton_Click(null, null);
 		}
+
 	}
 }
