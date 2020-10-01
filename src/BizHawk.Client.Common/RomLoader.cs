@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Xml.Linq;
 
 using BizHawk.Common;
 using BizHawk.Common.StringExtensions;
-using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
 using BizHawk.Emulation.Cores.Libretro;
@@ -239,7 +237,7 @@ namespace BizHawk.Client.Common
 
 		private bool LoadDisc(string path, CoreComm nextComm, HawkFile file, string ext, out IEmulator nextEmulator, out GameInfo game)
 		{
-			var disc = Disc.CreateAnyType(path, str => DoLoadErrorCallback(str, "???", LoadErrorType.DiscError));
+			var disc = DiscExtensions.CreateAnyType(path, str => DoLoadErrorCallback(str, "???", LoadErrorType.DiscError));
 			if (disc == null)
 			{
 				game = null;
@@ -328,64 +326,9 @@ namespace BizHawk.Client.Common
 			return true;
 		}
 
-		private void LoadM3U(string path, CoreComm nextComm, HawkFile file, out IEmulator nextEmulator, out RomGame rom, out GameInfo game)
+		private void LoadM3U(string path, CoreComm nextComm, HawkFile file, out IEmulator nextEmulator, out GameInfo game)
 		{
-			using var sr = new StreamReader(path);
-			var m3u = M3U_File.Read(sr);
-			if (m3u.Entries.Count == 0) throw new InvalidOperationException("Can't load an empty M3U");
-
-			
-			m3u.Rebase(Path.GetDirectoryName(path));
-
-			// load discs for all the m3u
-
-			//we need to try to determine a system type for the m3u.
-			//to do this we will load discs one by one until we find one that we recognize
-			string sysid = null;
-			foreach (var e in m3u.Entries)
-			{
-				var disc = Disc.Create(null, e.Path, str => { });
-				if (disc == null) continue;
-
-				var discType = new DiscIdentifier(disc).DetectDiscType();
-
-				//we know how to handle any of these
-				if (discType == DiscType.SonyPSX)
-				{
-					sysid = "PSX";
-					break;
-				}
-			}
-
-			if (sysid == "")
-				throw new InvalidOperationException("Could not auto-detect which system to use for this M3U");
-
-			//produce an BizHawk-XMLGame payload
-			string friendlyName = Path.GetFileNameWithoutExtension(path);
-			var xml = new XElement("BizHawk-XMLGame",
-					new XAttribute("System", sysid),
-					new XAttribute("Name", friendlyName),
-					new XElement("LoadAssets",
-						m3u.Entries.Select(e => new XElement(
-							"Asset",
-							new XAttribute("FileName", e.Path)
-						))
-					)
-				);
-
-			//dump it to disk as a temp file and then load it
-			var tmppath = TempFileManager.GetTempFilename("m3u-" + friendlyName, ".xml", false);
-			File.WriteAllText(tmppath, xml.ToString());
-			var hf = new HawkFile(tmppath);
-			try
-			{
-				LoadXML(tmppath, nextComm, hf, out nextEmulator, out rom, out game);
-			}
-			finally
-			{
-				hf.Dispose();
-				File.Delete(tmppath);
-			}
+			throw new NotImplementedException("M3U not supported!");
 		}
 
 		private IEmulator MakeCoreFromCoreInventory(CoreInventoryParameters cip)
@@ -559,7 +502,7 @@ namespace BizHawk.Client.Common
 						.Where(p => Disc.IsValidExtension(Path.GetExtension(p)))
 						.Select(path => new
 						{
-							d = Disc.CreateAnyType(path, str => DoLoadErrorCallback(str, system, LoadErrorType.DiscError)),
+							d = DiscExtensions.CreateAnyType(path, str => DoLoadErrorCallback(str, system, LoadErrorType.DiscError)),
 							p = path,
 						})
 						.Where(a => a.d != null)
@@ -696,7 +639,7 @@ namespace BizHawk.Client.Common
 					switch (ext)
 					{
 						case ".m3u":
-							LoadM3U(path, nextComm, file, out nextEmulator, out rom, out game);
+							LoadM3U(path, nextComm, file, out nextEmulator, out game);
 							break;
 						case ".xml":
 							if (!LoadXML(path, nextComm, file, out nextEmulator, out rom, out game))
