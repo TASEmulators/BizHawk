@@ -178,57 +178,56 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var names = FileSelectors.Select(f => f.Path).ToList();
 
-				if (names.Count == 0)
-					goto BAIL;
-
-				var name = NameBox.Text;
-
-				if (string.IsNullOrWhiteSpace(name))
+				if (names.Count != 0)
 				{
-					throw new Exception("Xml Filename can not be blank");
+					var name = NameBox.Text;
+
+					if (string.IsNullOrWhiteSpace(name))
+					{
+						throw new Exception("Xml Filename can not be blank");
+					}
+
+					if (names.Any(string.IsNullOrWhiteSpace))
+					{
+						throw new Exception("Rom Names can not be blank");
+					}
+
+					var system = SystemDropDown.SelectedItem?.ToString();
+
+					if (string.IsNullOrWhiteSpace(system))
+					{
+						throw new Exception("System Id can not be blank");
+					}
+
+					var basePath = Path.GetDirectoryName(name.Split('|').First());
+
+					if (string.IsNullOrEmpty(basePath))
+					{
+						var fileInfo = new FileInfo(name);
+						basePath = Path.GetDirectoryName(fileInfo.FullName);
+					}
+
+					_currentXml = new XElement("BizHawk-XMLGame",
+						new XAttribute("System", system),
+						new XAttribute("Name", Path.GetFileNameWithoutExtension(name)),
+						new XElement("LoadAssets",
+							names.Select(n => new XElement(
+								"Asset",
+								new XAttribute("FileName", PathExtensions.GetRelativePath(basePath, n))
+							))
+						)
+					);
+
+					SaveRunButton.Enabled = true;
+					SaveButton.Enabled = true;
+					return true;
 				}
-
-				if (names.Any(string.IsNullOrWhiteSpace))
-				{
-					throw new Exception("Rom Names can not be blank");
-				}
-
-				var system = SystemDropDown.SelectedItem?.ToString();
-
-				if (string.IsNullOrWhiteSpace(system))
-				{
-					throw new Exception("System Id can not be blank");
-				}
-
-				var basePath = Path.GetDirectoryName(name.Split('|').First());
-
-				if (string.IsNullOrEmpty(basePath))
-				{
-					var fileInfo = new FileInfo(name);
-					basePath = Path.GetDirectoryName(fileInfo.FullName);
-				}
-
-				_currentXml = new XElement("BizHawk-XMLGame",
-					new XAttribute("System", system),
-					new XAttribute("Name", Path.GetFileNameWithoutExtension(name)),
-					new XElement("LoadAssets",
-						names.Select(n => new XElement(
-							"Asset",
-							new XAttribute("FileName", PathExtensions.GetRelativePath(basePath, n))
-						))
-					)
-				);
-
-				SaveRunButton.Enabled = true;
-				SaveButton.Enabled = true;
-				return true;
 			}
 			catch (Exception)
 			{
 				//swallow exceptions, since this is just validation logic
 			}
 
-			BAIL:
 			_currentXml = null;
 			SaveRunButton.Enabled = false;
 			SaveButton.Enabled = false;
