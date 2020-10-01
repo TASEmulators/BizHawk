@@ -448,6 +448,9 @@
 		<!-- Statement should not use unnecessary parenthesis -->
 		<Rule Id="SA1119" Action="Hidden" />
 
+		<!-- Access modifier should be declared -->
+		<Rule Id="SA1400" Action="Error" />
+
 		<!-- Fields should be private -->
 		<Rule Id="SA1401" Action="Hidden" />
 
