@@ -74,7 +74,7 @@ namespace BizHawk.Client.EmuHawk
 			Close();
 		}
 
-		bool DoSave(out FileInfo fileInfo)
+		private bool DoSave(out FileInfo fileInfo)
 		{
 			fileInfo = null;
 
