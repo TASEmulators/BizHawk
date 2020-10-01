@@ -214,7 +214,7 @@ namespace BizHawk.Client.EmuHawk
 					new XElement("LoadAssets",
 						names.Select(n => new XElement(
 							"Asset",
-							new XAttribute("FileName", GetRelativePath(basePath, n))
+							new XAttribute("FileName", PathExtensions.GetRelativePath(basePath, n))
 						))
 					)
 				);
@@ -268,36 +268,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				NameBox.Text = sfd.FileName;
 			}
-		}
-
-		/// <exception cref="ArgumentException">running on Windows host, and unmanaged call failed</exception>
-		/// <exception cref="FileNotFoundException">running on Windows host, and either path is not a regular file or directory</exception>
-		/// <remarks>Algorithm for Windows taken from https://stackoverflow.com/a/485516/7467292</remarks>
-		public static string GetRelativePath(string fromPath, string toPath)
-		{
-			if (OSTailoredCode.IsUnixHost) return fromPath.MakeRelativeTo(toPath);
-
-			//TODO merge this with the Windows implementation in PathExtensions.MakeRelativeTo
-			static FileAttributes GetPathAttribute(string path1)
-			{
-				var di = new DirectoryInfo(path1.Split('|').First());
-				if (di.Exists)
-				{
-					return FileAttributes.Directory;
-				}
-
-				var fi = new FileInfo(path1.Split('|').First());
-				if (fi.Exists)
-				{
-					return FileAttributes.Normal;
-				}
-
-				throw new FileNotFoundException();
-			}
-			var path = new StringBuilder(260 /* = MAX_PATH */);
-			return Win32Imports.PathRelativePathTo(path, fromPath, GetPathAttribute(fromPath), toPath, GetPathAttribute(toPath))
-				? path.ToString()
-				: throw new ArgumentException("Paths must have a common prefix");
 		}
 
 		private void SystemDropDown_SelectedIndexChanged(object sender, EventArgs e)

@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Text;
 using System.IO;
 using System.Reflection;
+using System.Linq;
 
 using BizHawk.Common.StringExtensions;
 
@@ -43,6 +45,36 @@ namespace BizHawk.Common.PathExtensions
 				if (new Uri(childUri.FullName) == parentUri) return true;
 			}
 			return false;
+		}
+
+	/// <exception cref="ArgumentException">running on Windows host, and unmanaged call failed</exception>
+		/// <exception cref="FileNotFoundException">running on Windows host, and either path is not a regular file or directory</exception>
+		/// <remarks>Algorithm for Windows taken from https://stackoverflow.com/a/485516/7467292</remarks>
+		public static string GetRelativePath(string fromPath, string toPath)
+		{
+			if (OSTailoredCode.IsUnixHost) return fromPath.MakeRelativeTo(toPath);
+
+			//TODO merge this with the Windows implementation in PathExtensions.MakeRelativeTo
+			static FileAttributes GetPathAttribute(string path1)
+			{
+				var di = new DirectoryInfo(path1.Split('|').First());
+				if (di.Exists)
+				{
+					return FileAttributes.Directory;
+				}
+
+				var fi = new FileInfo(path1.Split('|').First());
+				if (fi.Exists)
+				{
+					return FileAttributes.Normal;
+				}
+
+				throw new FileNotFoundException();
+			}
+			var path = new StringBuilder(260 /* = MAX_PATH */);
+			return Win32Imports.PathRelativePathTo(path, fromPath, GetPathAttribute(fromPath), toPath, GetPathAttribute(toPath))
+				? path.ToString()
+				: throw new ArgumentException("Paths must have a common prefix");
 		}
 
 		/// <returns>the absolute path equivalent to <paramref name="path"/> which contains <c>%exe%</c> (expanded) as a prefix</returns>
