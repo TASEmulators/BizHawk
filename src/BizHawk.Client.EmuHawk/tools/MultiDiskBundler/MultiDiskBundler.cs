@@ -179,9 +179,7 @@ namespace BizHawk.Client.EmuHawk
 				var names = FileSelectors.Select(f => f.Path).ToList();
 
 				if (names.Count == 0)
-				{
-					throw new Exception("No selectors");
-				}
+					goto BAIL;
 
 				var name = NameBox.Text;
 
@@ -230,6 +228,7 @@ namespace BizHawk.Client.EmuHawk
 				//swallow exceptions, since this is just validation logic
 			}
 
+			BAIL:
 			_currentXml = null;
 			SaveRunButton.Enabled = false;
 			SaveButton.Enabled = false;
