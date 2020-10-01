@@ -17,10 +17,10 @@ namespace BizHawk.Common
 	{
 		// TODO - manage paths other than %temp%, make not static, or allow adding multiple paths to static instance
 
-		public static string GetTempFilename(string friendlyName, string extension = null, bool delete = true)
+		public static string GetTempFilename(string friendlyName, string dotAndExtension = null, bool delete = true)
 		{
 			string guidPart = Guid.NewGuid().ToString();
-			var fname = $"biz-{System.Diagnostics.Process.GetCurrentProcess().Id}-{friendlyName}-{guidPart}{extension ?? ""}";
+			var fname = $"biz-{System.Diagnostics.Process.GetCurrentProcess().Id}-{friendlyName}-{guidPart}{dotAndExtension ?? ""}";
 			if (delete)
 			{
 				fname = RenameTempFilenameForDelete(fname);
