@@ -220,6 +220,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			iptr3 = Marshal.AllocHGlobal(ppu.color_palette.Length * 8 * 8 + 1);
 
 			_scanlineCallback = null;
+
+			/*
+			for (int i = 0; i < ZP_RAM.Length; i++)
+			{
+				ZP_RAM[i] = 0xFF;
+			}
+
+			for (int i = 0; i < RAM.Length; i++)
+			{
+				RAM[i] = 0xFF;
+			}
+			*/
 		}
 
 		public bool IsCGBMode() => is_GBC;

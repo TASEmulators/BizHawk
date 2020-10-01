@@ -25,6 +25,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
 	public partial class GBHawk
 	{
+		//public byte[] RAM_read = new byte[0x8000];
+		//public byte[] ZP_RAM_read = new byte[0x80];
+
 		public byte ReadMemory(ushort addr)
 		{
 			if (MemoryCallbacks.HasReads)
@@ -61,6 +64,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 				if (addr >= 0xF000 && addr < 0xFE00)
 				{
+					//if (RAM_read[(RAM_Bank * 0x1000) + (addr - 0xF000)] == 0) { Console.WriteLine("RAM: " + addr + " " + cpu.TotalExecutedCycles); }
 					return RAM[(RAM_Bank * 0x1000) + (addr - 0xF000)];
 				}
 
@@ -85,6 +89,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				{
 					if (addr != 0xFFFF)
 					{
+						//if (ZP_RAM_read[addr - 0xFF80] == 0) { Console.WriteLine("ZP: " + (addr - 0xFF80) + " " + cpu.TotalExecutedCycles); }
 						return ZP_RAM[addr - 0xFF80];
 					}
 					else
@@ -158,6 +163,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			if (addr < 0xFE00)
 			{
 				addr = (ushort)(RAM_Bank * (addr & 0x1000) + (addr & 0xFFF));
+				//if (RAM_read[addr] == 0) { Console.WriteLine("RAM: " + addr + " " + cpu.TotalExecutedCycles); }
 				return RAM[addr];
 			}
 
@@ -215,6 +221,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			if (addr < 0xFFFF)
 			{
+				//if (ZP_RAM_read[addr - 0xFF80] == 0) { Console.WriteLine("ZP: " + (addr - 0xFF80) + " " + cpu.TotalExecutedCycles); }
 				return ZP_RAM[addr - 0xFF80];
 			}
 
@@ -234,7 +241,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			if (ppu.DMA_start)
 			{
 				// some of gekkio's tests require this to be accessible during DMA
-
 				if (addr >= 0xA000 && addr < 0xC000 && is_GBC)
 				{
 					// on GBC only, cart is accessible during DMA
@@ -243,10 +249,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 				if (addr >= 0xE000 && addr < 0xF000)
 				{
+					//RAM_read[addr - 0xE000] = 1;
 					RAM[addr - 0xE000] = value;
 				}
 				else if (addr >= 0xF000 && addr < 0xFE00)
 				{
+					//RAM_read[RAM_Bank * 0x1000 + (addr - 0xF000)] = 1;
 					RAM[RAM_Bank * 0x1000 + (addr - 0xF000)] = value;
 				}
 				else if (addr >= 0xFE00 && addr < 0xFEA0 && ppu.DMA_OAM_access)
@@ -261,6 +269,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				{
 					if (addr != 0xFFFF)
 					{
+						//ZP_RAM_read[addr - 0xFF80] = 1;
 						ZP_RAM[addr - 0xFF80] = value;
 					}
 					else
@@ -281,6 +290,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				}
 				else if (addr < 0xFFFF)
 				{
+					//ZP_RAM_read[addr - 0xFF80] = 1;
 					ZP_RAM[addr - 0xFF80] = value;
 				}
 				else
@@ -294,7 +304,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				{
 					if (ppu.OAM_access_write) { OAM[addr - 0xFE00] = value; }
 				}
-				// unmapped memory writes depend on console
+				// unmapped memory writes depend on console		
 				else
 				{
 					if (is_GBC)
@@ -318,6 +328,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			else if (addr >= 0xC000)
 			{
 				addr = (ushort)(RAM_Bank * (addr & 0x1000) + (addr & 0xFFF));
+				//RAM_read[addr] = 1;
 				RAM[addr] = value;
 			}
 			else if (addr >= 0xA000)
@@ -326,7 +337,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 			else if (addr >= 0x8000)
 			{
-				if (ppu.VRAM_access_write) { VRAM[(VRAM_Bank * 0x2000) + (addr - 0x8000)] = value; }				
+				if (ppu.VRAM_access_write) 
+				{ 
+					VRAM[(VRAM_Bank * 0x2000) + (addr - 0x8000)] = value; 
+				}
 			}
 			else
 			{

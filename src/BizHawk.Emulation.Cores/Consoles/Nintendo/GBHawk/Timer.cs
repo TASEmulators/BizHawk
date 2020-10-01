@@ -204,6 +204,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 					// set interrupts
 					if (Core.REG_FFFF.Bit(2)) { Core.cpu.FlagI = true; }
+					//Console.WriteLine("timer " + Core.cpu.TotalExecutedCycles);
 					Core.REG_FF0F |= 0x04;
 					IRQ_block = true;
 				}

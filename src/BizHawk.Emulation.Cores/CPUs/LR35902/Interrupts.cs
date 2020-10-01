@@ -21,8 +21,8 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 						DEC16, SPl, SPh,
 						INT_GET, 1, W,
 						WR, SPl, SPh, PCl,
-						IRQ_CLEAR,
 						IDLE,
+						IRQ_CLEAR,
 						TR, PCl, W,
 						OP };
 		}
@@ -50,8 +50,8 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 						DEC16, SPl, SPh,
 						INT_GET, 1, W,
 						WR, SPl, SPh, PCl,
-						IRQ_CLEAR,
 						IDLE,
+						IRQ_CLEAR,
 						TR, PCl, W,
 						OP };
 		}

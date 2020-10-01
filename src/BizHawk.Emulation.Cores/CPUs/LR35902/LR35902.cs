@@ -600,7 +600,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 					// interrupt src = 5 sets the PC to zero as observed
 					// also the triggering interrupt seems like it is held low (i.e. cannot trigger I flag) until the interrupt is serviced
 					ushort bit_check = instr_table[instr_pntr++];
-					//Console.WriteLine(interrupt_src + " " + interrupt_enable + " " + TotalExecutedCycles);
+					//Console.WriteLine("int " + TotalExecutedCycles);
 
 					interrupt_src_reg = GetIntRegs(0);
 					interrupt_enable_reg = GetIntRegs(1);

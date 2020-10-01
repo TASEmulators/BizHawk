@@ -50,6 +50,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						blank_frame = true;
 					}				
 					LCDC = value;
+					//Console.WriteLine(LY + " " + cycle);
 					break; 
 				case 0xFF41: // STAT
 					// writing to STAT during mode 0 or 1 causes a STAT IRQ
