@@ -32,10 +32,12 @@ package:
     name: "BizHawk_devbuild_${CI_COMMIT_REF_SLUG}_$CI_COMMIT_SHORT_SHA"
     paths:
       - packaged_output/*
+  image: ubuntu:focal
   rules:
     - if: '$CI_COMMIT_REF_SLUG == "master"'
       when: always
   script:
+    - su -c "apt-get update && apt-get -y install p7zip-full"
     - Dist/Package.sh
   stage: package
 
