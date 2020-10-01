@@ -31,7 +31,7 @@ package:
     expire_in: "1 month"
     name: "BizHawk_devbuild_${CI_COMMIT_REF_SLUG}_$CI_COMMIT_SHORT_SHA"
     paths:
-      - packaged_output/*
+      - ./*
   image: ubuntu:focal
   rules:
     - if: '$CI_COMMIT_REF_SLUG == "master"'
@@ -39,6 +39,11 @@ package:
   script:
     - su -c "apt-get update && apt-get -y install p7zip-full"
     - Dist/Package.sh
+      # now we replace $CI_PROJECT_DIR with $CI_PROJECT_DIR/packaged_output, so that the archival step will put everything at the top level
+    - mv packaged_output ..
+    - cd ..
+    - rm -fr $CI_PROJECT_DIR
+    - mv packaged_output $CI_PROJECT_DIR
   stage: package
 
 run_tests:
