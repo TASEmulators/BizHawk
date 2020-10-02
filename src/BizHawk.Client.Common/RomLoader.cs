@@ -235,16 +235,9 @@ namespace BizHawk.Client.Common
 			return true;
 		}
 
-		private bool LoadDisc(string path, CoreComm nextComm, HawkFile file, string ext, out IEmulator nextEmulator, out GameInfo game)
+		private GameInfo MakeGameFromDisc(Disc disc, string ext, string name)
 		{
-			var disc = DiscExtensions.CreateAnyType(path, str => DoLoadErrorCallback(str, "???", LoadErrorType.DiscError));
-			if (disc == null)
-			{
-				game = null;
-				nextEmulator = null;
-				return false;
-			}
-
+			GameInfo game;
 			// TODO - use more sophisticated IDer
 			var discType = new DiscIdentifier(disc).DetectDiscType();
 			var discHasher = new DiscHasher(disc);
@@ -256,7 +249,7 @@ namespace BizHawk.Client.Common
 			if (game == null)
 			{
 				// try to use our wizard methods
-				game = new GameInfo { Name = Path.GetFileNameWithoutExtension(file.Name), Hash = discHash };
+				game = new GameInfo { Name = name, Hash = discHash };
 
 				switch (discType)
 				{
@@ -307,6 +300,20 @@ namespace BizHawk.Client.Common
 						break;
 				}
 			}
+			return game;
+		}
+
+		private bool LoadDisc(string path, CoreComm nextComm, HawkFile file, string ext, out IEmulator nextEmulator, out GameInfo game)
+		{
+			var disc = DiscExtensions.CreateAnyType(path, str => DoLoadErrorCallback(str, "???", LoadErrorType.DiscError));
+			if (disc == null)
+			{
+				game = null;
+				nextEmulator = null;
+				return false;
+			}
+
+			game = MakeGameFromDisc(disc, ext, Path.GetFileNameWithoutExtension(file.Name));
 
 			var cip = new CoreInventoryParameters(this)
 			{
@@ -328,7 +335,40 @@ namespace BizHawk.Client.Common
 
 		private void LoadM3U(string path, CoreComm nextComm, HawkFile file, out IEmulator nextEmulator, out GameInfo game)
 		{
-			throw new NotImplementedException("M3U not supported!");
+			M3U_File m3u;
+			using (var sr = new StreamReader(path))
+				m3u = M3U_File.Read(sr);
+			if (m3u.Entries.Count == 0)
+				throw new InvalidOperationException("Can't load an empty M3U");
+			m3u.Rebase(Path.GetDirectoryName(path));
+
+			var discs = m3u.Entries
+				.Select(e => e.Path)
+				.Where(p => Disc.IsValidExtension(Path.GetExtension(p)))
+				.Select(path => new
+				{
+					d = DiscExtensions.CreateAnyType(path, str => DoLoadErrorCallback(str, "???", LoadErrorType.DiscError)),
+					p = path,
+				})
+				.Where(a => a.d != null)
+				.Select(a => (IDiscAsset)new DiscAsset
+				{
+					DiscData = a.d,
+					DiscType = new DiscIdentifier(a.d).DetectDiscType(),
+					DiscName = Path.GetFileNameWithoutExtension(a.p)
+				})
+				.ToList();
+			if (m3u.Entries.Count == 0)
+				throw new InvalidOperationException("Couldn't load any contents of the M3U as discs");
+
+			game = MakeGameFromDisc(discs[0].DiscData, Path.GetExtension(m3u.Entries[0].Path), discs[0].DiscName);
+			var cip = new CoreInventoryParameters(this)
+			{
+				Comm = nextComm,
+				Game = game,
+				Discs = discs
+			};
+			nextEmulator = MakeCoreFromCoreInventory(cip);
 		}
 
 		private IEmulator MakeCoreFromCoreInventory(CoreInventoryParameters cip)
