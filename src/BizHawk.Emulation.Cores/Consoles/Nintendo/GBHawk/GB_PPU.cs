@@ -445,9 +445,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			// i.e. just keeping track of the lowest x-value sprite
 			if (render_cycle == 0)
 			{
-				// window X is latched for the scanline, mid-line changes have no effect
-				window_x_latch = window_x;
-
 				OAM_scan_index = 0;
 				read_case = 0;
 				internal_cycle = 0;
@@ -642,6 +639,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						{
 							// calculate the row number of the tiles to be fetched
 							y_tile = (((int)scroll_y + LY) >> 3) % 32;
+							x_tile = scroll_x >> 3;
 
 							temp_fetch = y_tile * 32 + (x_tile + tile_inc) % 32;
 
@@ -720,8 +718,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								// here we set up rendering
 								pre_render = false;
 
+								// window X is latched for the scanline, mid-line changes have no effect
+								window_x_latch = window_x;
+
 								// x scroll is latched here
-								x_tile = scroll_x >> 3;
 								render_offset = scroll_offset = scroll_x % 8;
 
 								render_counter = 0;
