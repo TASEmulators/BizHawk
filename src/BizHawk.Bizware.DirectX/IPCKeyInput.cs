@@ -8,9 +8,9 @@ using BizHawk.Client.Common;
 using SlimDX.DirectInput;
 
 // this is not a very safe or pretty protocol, I'm not proud of it
-namespace BizHawk.Client.EmuHawk
+namespace BizHawk.Bizware.DirectX
 {
-	public static class IPCKeyInput
+	internal static class IPCKeyInput
 	{
 		public static void Initialize()
 		{

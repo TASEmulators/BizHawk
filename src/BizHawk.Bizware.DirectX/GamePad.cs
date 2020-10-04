@@ -6,9 +6,9 @@ using BizHawk.Common;
 using SlimDX;
 using SlimDX.DirectInput;
 
-namespace BizHawk.Client.EmuHawk
+namespace BizHawk.Bizware.DirectX
 {
-	public class GamePad
+	internal sealed class GamePad
 	{
 		private static readonly object SyncObj = new object();
 		private static readonly List<GamePad> Devices = new List<GamePad>();

@@ -8,9 +8,9 @@ using SlimDX;
 using SlimDX.Multimedia;
 using SlimDX.XAudio2;
 
-namespace BizHawk.Client.EmuHawk
+namespace BizHawk.Bizware.DirectX
 {
-	public class XAudio2SoundOutput : ISoundOutput
+	public sealed class XAudio2SoundOutput : ISoundOutput
 	{
 		private bool _disposed;
 		private readonly IHostAudioManager _sound;

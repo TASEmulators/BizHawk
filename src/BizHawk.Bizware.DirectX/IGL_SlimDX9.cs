@@ -13,9 +13,9 @@ using sdi = System.Drawing.Imaging;
 using swf = System.Windows.Forms;
 
 // todo - do a better job selecting shader model? base on caps somehow? try several and catch compilation exceptions (yuck, exceptions)
-namespace BizHawk.Client.EmuHawk
+namespace BizHawk.Bizware.DirectX
 {
-	public class IGL_SlimDX9 : IGL
+	public sealed class IGL_SlimDX9 : IGL
 	{
 		private const int D3DERR_DEVICELOST = -2005530520;
 		private const int D3DERR_DEVICENOTRESET = -2005530519;

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Windows.Forms;
 
+using BizHawk.Bizware.DirectX;
 using BizHawk.Common;
 using BizHawk.Client.Common;
 

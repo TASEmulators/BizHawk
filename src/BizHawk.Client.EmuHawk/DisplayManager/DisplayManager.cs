@@ -12,6 +12,7 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 using BizHawk.Bizware.BizwareGL;
+using BizHawk.Bizware.DirectX;
 using BizHawk.Client.Common;
 using BizHawk.Client.Common.Filters;
 using BizHawk.Client.Common.FilterManager;
