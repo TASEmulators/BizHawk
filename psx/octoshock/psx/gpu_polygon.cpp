@@ -508,7 +508,7 @@ template<int numvertices, bool goraud, bool textured, int BlendMode, bool TexMul
 static void Command_DrawPolygon(const uint32 *cb)
 {
  const unsigned cb0 = cb[0];
- tri_vertex vertices[3];
+ tri_vertex vertices[3] = {0}; //zero 04-oct-2020 - zero initialize for more deterministic results (sometimes UV arent set)
  unsigned sv = 0;
  //uint32 tpage = 0;
 

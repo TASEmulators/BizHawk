@@ -26,6 +26,9 @@ NewStateExternalBuffer::NewStateExternalBuffer(char *buffer, long maxlength)
 
 void NewStateExternalBuffer::Save(const void *ptr, size_t size, const char *name)
 {
+	if(length <= 0x30a907 && length + size > 0x30a907)
+	{
+	}
 	if (maxlength - length >= (long)size)
 	{
 		std::memcpy(buffer + length, ptr, size);

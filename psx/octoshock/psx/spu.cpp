@@ -1229,7 +1229,8 @@ SYNCFUNC(PS_SPU)
 {
 	NSS(Voices);
 
-  NSS(NoiseCounter);
+	NSS(NoiseDivider);
+	NSS(NoiseCounter);
   NSS(LFSR);
 
   NSS(FM_Mode);

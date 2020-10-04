@@ -1658,7 +1658,7 @@ SYNCFUNC(PS_GPU)
 
 	if(isReader)
 	{
-		//BIZHAWK: not needed
+		//BIZHAWK: not needed, since we can sync TexCache directly
 		//for(unsigned i = 0; i < 256; i++)
 		//{
 		//	TexCache[i].Tag = TexCache_Tag[i];
