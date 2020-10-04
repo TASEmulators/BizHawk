@@ -3,7 +3,7 @@ using System.Linq;
 using System.Windows.Forms;
 using SlimDX.DirectInput;
 
-namespace BizHawk.Client.EmuHawk
+namespace BizHawk.Bizware.DirectX
 {
 	internal static class KeyboardMapping
 	{

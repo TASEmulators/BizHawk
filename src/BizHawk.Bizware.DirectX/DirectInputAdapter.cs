@@ -6,9 +6,9 @@ using System.Linq;
 
 using BizHawk.Client.Common;
 
-namespace BizHawk.Client.EmuHawk
+namespace BizHawk.Bizware.DirectX
 {
-	internal sealed class DirectInputAdapter : HostInputAdapter
+	public sealed class DirectInputAdapter : HostInputAdapter
 	{
 		private Config? _config;
 
@@ -56,33 +56,5 @@ namespace BizHawk.Client.EmuHawk
 		public IEnumerable<KeyEvent> ProcessHostKeyboards() => KeyInput.Update(_config).Concat(IPCKeyInput.Update());
 
 		public void UpdateConfig(Config config) => _config = config;
-	}
-
-	internal sealed class OpenTKInputAdapter : HostInputAdapter
-	{
-		public void DeInitAll() {}
-
-		public void FirstInitAll(IntPtr mainFormHandle)
-		{
-			OTK_Keyboard.Initialize();
-			OTK_GamePad.Initialize();
-		}
-
-		public void ReInitGamepads(IntPtr mainFormHandle) {}
-
-		public void PreprocessHostGamepads() => OTK_GamePad.UpdateAll();
-
-		public void ProcessHostGamepads(Action<string?, bool, ClientInputFocus> handleButton, Action<string?, int> handleAxis)
-		{
-			foreach (var pad in OTK_GamePad.EnumerateDevices())
-			{
-				foreach (var but in pad.buttonObjects) handleButton(pad.InputNamePrefix + but.ButtonName, but.ButtonAction(), ClientInputFocus.Pad);
-				foreach (var (axisID, f) in pad.GetAxes()) handleAxis($"{pad.InputNamePrefix}{axisID} Axis", (int) f);
-			}
-		}
-
-		public IEnumerable<KeyEvent> ProcessHostKeyboards() => OTK_Keyboard.Update();
-
-		public void UpdateConfig(Config config) {}
 	}
 }

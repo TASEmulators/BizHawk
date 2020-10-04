@@ -86,10 +86,9 @@
 		<Reference Include="GongShell" HintPath="$(ProjectDir)../../References/GongShell.dll" Private="true" />
 		<Reference Include="NLua, Version=1.3.2.0, Culture=neutral, processorArchitecture=MSIL" HintPath="$(ProjectDir)../../output/dll/nlua/NLua.dll" Private="true" SpecificVersion="false" />
 		<PackageReference Include="OpenTK.GLControl" Version="3.0.1" PrivateAssets="all" />
-		<Reference Include="SlimDX" HintPath="$(ProjectDir)../../References/x64/SlimDX.dll" Private="true" />
 	</ItemGroup>
 	<ItemGroup>
-		<ProjectReference Include="$(ProjectDir)../BizHawk.Client.Common/BizHawk.Client.Common.csproj" />
+		<ProjectReference Include="$(ProjectDir)../BizHawk.Bizware.DirectX/BizHawk.Bizware.DirectX.csproj" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.WinForms.Controls/BizHawk.WinForms.Controls.csproj" />
 		<Compile Include="$(ProjectDir)../BizHawk.Common/OSTailoredCode.cs" />
 		<Compile Remove="Properties/Settings.Designer.cs" />

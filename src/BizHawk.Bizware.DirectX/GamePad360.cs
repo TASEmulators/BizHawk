@@ -5,9 +5,9 @@ using System.Runtime.InteropServices;
 using BizHawk.Common;
 using SlimDX.XInput;
 
-namespace BizHawk.Client.EmuHawk
+namespace BizHawk.Bizware.DirectX
 {
-	public class GamePad360
+	internal sealed class GamePad360
 	{
 		// ********************************** Static interface **********************************
 

@@ -1,6 +1,6 @@
-﻿namespace BizHawk.Bizware.BizwareGL
+﻿namespace BizHawk.Bizware.DirectX
 {
-	public static class Extensions
+	internal static class Extensions
 	{
 		public static global::SlimDX.Matrix ToSlimDXMatrix(this OpenTK.Matrix4 m, bool transpose)
 		{

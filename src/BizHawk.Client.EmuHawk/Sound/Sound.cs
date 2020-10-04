@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 
+using BizHawk.Bizware.DirectX;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 using BizHawk.Common;

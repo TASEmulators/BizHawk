@@ -6,9 +6,9 @@ using BizHawk.Client.Common;
 using SlimDX;
 using SlimDX.DirectInput;
 
-namespace BizHawk.Client.EmuHawk
+namespace BizHawk.Bizware.DirectX
 {
-	public static class KeyInput
+	internal static class KeyInput
 	{
 		private static readonly object SyncObj = new object();
 		private static readonly List<KeyEvent> EventList = new List<KeyEvent>();
