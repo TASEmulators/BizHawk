@@ -13,7 +13,8 @@ using System.Windows.Forms;
 
 using BizHawk.Bizware.BizwareGL;
 using BizHawk.Client.Common;
-using BizHawk.Client.EmuHawk.FilterManager;
+using BizHawk.Client.Common.Filters;
+using BizHawk.Client.Common.FilterManager;
 using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Sony.PSX;
@@ -90,13 +91,13 @@ namespace BizHawk.Client.EmuHawk
 				if (fiHq2x.Exists)
 				{
 					using var stream = fiHq2x.OpenRead();
-					ShaderChain_hq2x = new Filters.RetroShaderChain(GL, new Filters.RetroShaderPreset(stream), Path.Combine(PathUtils.ExeDirectoryPath, "Shaders/BizHawk"));
+					ShaderChain_hq2x = new RetroShaderChain(GL, new RetroShaderPreset(stream), Path.Combine(PathUtils.ExeDirectoryPath, "Shaders/BizHawk"));
 				}
 				var fiScanlines = new FileInfo(Path.Combine(PathUtils.ExeDirectoryPath, "Shaders/BizHawk/BizScanlines.cgp"));
 				if (fiScanlines.Exists)
 				{
 					using var stream = fiScanlines.OpenRead();
-					ShaderChain_scanlines = new Filters.RetroShaderChain(GL, new Filters.RetroShaderPreset(stream), Path.Combine(PathUtils.ExeDirectoryPath, "Shaders/BizHawk"));
+					ShaderChain_scanlines = new RetroShaderChain(GL, new RetroShaderPreset(stream), Path.Combine(PathUtils.ExeDirectoryPath, "Shaders/BizHawk"));
 				}
 
 				string bicubicPath = "Shaders/BizHawk/bicubic-fast.cgp";
@@ -108,7 +109,7 @@ namespace BizHawk.Client.EmuHawk
 				if (fiBicubic.Exists)
 				{
 					using var stream = fiBicubic.Open(FileMode.Open, FileAccess.Read, FileShare.Read);
-					ShaderChain_bicubic = new Filters.RetroShaderChain(GL, new Filters.RetroShaderPreset(stream), Path.Combine(PathUtils.ExeDirectoryPath, "Shaders/BizHawk"));
+					ShaderChain_bicubic = new RetroShaderChain(GL, new RetroShaderPreset(stream), Path.Combine(PathUtils.ExeDirectoryPath, "Shaders/BizHawk"));
 				}
 			}
 
@@ -182,8 +183,8 @@ namespace BizHawk.Client.EmuHawk
 		private readonly TextureFrugalizer VideoTextureFrugalizer;
 		private readonly Dictionary<string, TextureFrugalizer> LuaSurfaceFrugalizers = new Dictionary<string, TextureFrugalizer>();
 		private readonly RenderTargetFrugalizer[] ShaderChainFrugalizers;
-		private readonly Filters.RetroShaderChain ShaderChain_hq2x, ShaderChain_scanlines, ShaderChain_bicubic;
-		private Filters.RetroShaderChain ShaderChain_user;
+		private readonly RetroShaderChain ShaderChain_hq2x, ShaderChain_scanlines, ShaderChain_bicubic;
+		private RetroShaderChain ShaderChain_user;
 
 		public void RefreshUserShader()
 		{
@@ -192,7 +193,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var fi = new FileInfo(GlobalWin.Config.DispUserFilterPath);
 				using var stream = fi.OpenRead();
-				ShaderChain_user = new Filters.RetroShaderChain(GL, new Filters.RetroShaderPreset(stream), Path.GetDirectoryName(GlobalWin.Config.DispUserFilterPath));
+				ShaderChain_user = new RetroShaderChain(GL, new RetroShaderPreset(stream), Path.GetDirectoryName(GlobalWin.Config.DispUserFilterPath));
 			}
 		}
 
@@ -229,7 +230,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			// select user special FX shader chain
 			var selectedChainProperties = new Dictionary<string, object>();
-			Filters.RetroShaderChain selectedChain = null;
+			RetroShaderChain selectedChain = null;
 			if (GlobalWin.Config.TargetDisplayFilter == 1 && ShaderChain_hq2x != null && ShaderChain_hq2x.Available)
 			{
 				selectedChain = ShaderChain_hq2x;
@@ -249,11 +250,11 @@ namespace BizHawk.Client.EmuHawk
 			if (!includeUserFilters)
 				selectedChain = null;
 
-			Filters.BaseFilter fCoreScreenControl = CreateCoreScreenControl();
+			BaseFilter fCoreScreenControl = CreateCoreScreenControl();
 
-			var fPresent = new Filters.FinalPresentation(chainOutSize);
-			var fInput = new Filters.SourceImage(chainInSize);
-			var fOSD = new Filters.OSD();
+			var fPresent = new FinalPresentation(chainOutSize);
+			var fInput = new SourceImage(chainInSize);
+			var fOSD = new OSD();
 			fOSD.RenderCallback = () =>
 			{
 				if (!includeOSD)
@@ -294,12 +295,12 @@ namespace BizHawk.Client.EmuHawk
 				Size size = chainInSize;
 				size.Width += padding.Horizontal;
 				size.Height += padding.Vertical;
-				Filters.FinalPresentation fPadding = new Filters.FinalPresentation(size);
+				FinalPresentation fPadding = new FinalPresentation(size);
 				chain.AddFilter(fPadding, "padding");
 				fPadding.GuiRenderer = Renderer;
 				fPadding.GL = GL;
 				fPadding.Config_PadOnly = true;
-				fPadding.Padding = padding;
+				fPadding.Padding = (padding.Left, padding.Top, padding.Right, padding.Bottom);
 			}
 
 			//add lua layer 'emu'
@@ -308,7 +309,7 @@ namespace BizHawk.Client.EmuHawk
 			if(includeUserFilters)
 				if (GlobalWin.Config.DispPrescale != 1)
 				{
-					var fPrescale = new Filters.PrescaleFilter() { Scale = GlobalWin.Config.DispPrescale };
+					var fPrescale = new PrescaleFilter() { Scale = GlobalWin.Config.DispPrescale };
 					chain.AddFilter(fPrescale, "user_prescale");
 				}
 
@@ -317,37 +318,37 @@ namespace BizHawk.Client.EmuHawk
 				AppendRetroShaderChain(chain, "retroShader", selectedChain, selectedChainProperties);
 
 			// AutoPrescale makes no sense for a None final filter
-			if (GlobalWin.Config.DispAutoPrescale && GlobalWin.Config.DispFinalFilter != (int)Filters.FinalPresentation.eFilterOption.None)
+			if (GlobalWin.Config.DispAutoPrescale && GlobalWin.Config.DispFinalFilter != (int)FinalPresentation.eFilterOption.None)
 			{
-				var apf = new Filters.AutoPrescaleFilter();
+				var apf = new AutoPrescaleFilter();
 				chain.AddFilter(apf, "auto_prescale");
 			}
 
 			//choose final filter
-			var finalFilter = Filters.FinalPresentation.eFilterOption.None;
+			var finalFilter = FinalPresentation.eFilterOption.None;
 			if (GlobalWin.Config.DispFinalFilter == 1)
 			{
-				finalFilter = Filters.FinalPresentation.eFilterOption.Bilinear;
+				finalFilter = FinalPresentation.eFilterOption.Bilinear;
 			}
 
 			if (GlobalWin.Config.DispFinalFilter == 2)
 			{
-				finalFilter = Filters.FinalPresentation.eFilterOption.Bicubic;
+				finalFilter = FinalPresentation.eFilterOption.Bicubic;
 			}
 
 			//if bicubic is selected and unavailable, don't use it. use bilinear instead I guess
-			if (finalFilter == Filters.FinalPresentation.eFilterOption.Bicubic)
+			if (finalFilter == FinalPresentation.eFilterOption.Bicubic)
 			{
 				if (ShaderChain_bicubic == null || !ShaderChain_bicubic.Available)
 				{
-					finalFilter = Filters.FinalPresentation.eFilterOption.Bilinear;
+					finalFilter = FinalPresentation.eFilterOption.Bilinear;
 				}
 			}
 
 			fPresent.FilterOption = finalFilter;
 
 			// now if bicubic is chosen, insert it
-			if (finalFilter == Filters.FinalPresentation.eFilterOption.Bicubic)
+			if (finalFilter == FinalPresentation.eFilterOption.Bicubic)
 			{
 				AppendRetroShaderChain(chain, "bicubic", ShaderChain_bicubic, null);
 			}
@@ -368,12 +369,12 @@ namespace BizHawk.Client.EmuHawk
 			return chain;
 		}
 
-		private void AppendRetroShaderChain(FilterProgram program, string name, Filters.RetroShaderChain retroChain, Dictionary<string, object> properties)
+		private void AppendRetroShaderChain(FilterProgram program, string name, RetroShaderChain retroChain, Dictionary<string, object> properties)
 		{
 			for (int i = 0; i < retroChain.Passes.Length; i++)
 			{
 				var pass = retroChain.Passes[i];
-				var rsp = new Filters.RetroShaderPass(retroChain, i);
+				var rsp = new RetroShaderPass(retroChain, i);
 				string fname = $"{name}[{i}]";
 				program.AddFilter(rsp, fname);
 				rsp.Parameters = properties;
@@ -389,7 +390,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			Texture2d luaNativeTexture = LuaSurfaceFrugalizers[name].Get(luaNativeSurface);
-			var fLuaLayer = new Filters.LuaLayer();
+			var fLuaLayer = new LuaLayer();
 			fLuaLayer.SetTexture(luaNativeTexture);
 			chain.AddFilter(fLuaLayer, name);
 		}
@@ -460,12 +461,12 @@ namespace BizHawk.Client.EmuHawk
 			UpdateSourceInternal(job);
 		}
 
-		private Filters.BaseFilter CreateCoreScreenControl()
+		private BaseFilter CreateCoreScreenControl()
 		{
 			if (GlobalWin.Emulator is MelonDS nds)
 			{
 				//TODO: need to pipe layout settings into here now
-				var filter = new Filters.ScreenControlNDS(nds);
+				var filter = new ScreenControlNDS(nds);
 				return filter;
 			}
 
@@ -848,11 +849,11 @@ namespace BizHawk.Client.EmuHawk
 			filterProgram.GL = GL;
 
 			//setup the source image filter
-			Filters.SourceImage fInput = filterProgram["input"] as Filters.SourceImage;
+			SourceImage fInput = filterProgram["input"] as SourceImage;
 			fInput.Texture = videoTexture;
 
 			//setup the final presentation filter
-			Filters.FinalPresentation fPresent = filterProgram["presentation"] as Filters.FinalPresentation;
+			FinalPresentation fPresent = filterProgram["presentation"] as FinalPresentation;
 			if (fPresent != null)
 			{
 				fPresent.VirtualTextureSize = new Size(vw, vh);
@@ -862,14 +863,14 @@ namespace BizHawk.Client.EmuHawk
 				fPresent.Flip = isGlTextureId;
 				fPresent.Config_FixAspectRatio = GlobalWin.Config.DispFixAspectRatio;
 				fPresent.Config_FixScaleInteger = GlobalWin.Config.DispFixScaleInteger;
-				fPresent.Padding = ClientExtraPadding;
+				fPresent.Padding = (ClientExtraPadding.Left, ClientExtraPadding.Top, ClientExtraPadding.Right, ClientExtraPadding.Bottom);
 				fPresent.AutoPrescale = GlobalWin.Config.DispAutoPrescale;
 
 				fPresent.GL = GL;
 			}
 
 			//POOPY. why are we delivering the GL context this way? such bad
-			Filters.ScreenControlNDS fNDS = filterProgram["CoreScreenControl"] as Filters.ScreenControlNDS;
+			ScreenControlNDS fNDS = filterProgram["CoreScreenControl"] as ScreenControlNDS;
 			if (fNDS != null)
 			{
 				fNDS.GuiRenderer = Renderer;

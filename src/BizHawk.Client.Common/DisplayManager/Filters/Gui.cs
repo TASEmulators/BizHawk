@@ -1,12 +1,12 @@
 using System;
 using System.Drawing;
-using BizHawk.Client.EmuHawk.FilterManager;
+using BizHawk.Client.Common.FilterManager;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.NDS;
 
 using BizHawk.Bizware.BizwareGL;
 using OpenTK;
 
-namespace BizHawk.Client.EmuHawk.Filters
+namespace BizHawk.Client.Common.Filters
 {
 	/// <summary>
 	/// applies letterboxing logic to figure out how to fit the source dimensions into the target dimensions.
@@ -444,7 +444,7 @@ namespace BizHawk.Client.EmuHawk.Filters
 		/// <summary>
 		/// only use with Config_PadOnly
 		/// </summary>
-		public System.Windows.Forms.Padding Padding;
+		public (int Left, int Top, int Right, int Bottom) Padding;
 
 		public override void Initialize()
 		{
@@ -522,8 +522,8 @@ namespace BizHawk.Client.EmuHawk.Filters
 			{
 				int ow = OutputSize.Width;
 				int oh = OutputSize.Height;
-				ow -= Padding.Horizontal;
-				oh -= Padding.Vertical;
+				ow -= Padding.Left + Padding.Right;
+				oh -= Padding.Top + Padding.Bottom;
 				LL = new LetterboxingLogic(Config_FixAspectRatio, Config_FixScaleInteger, ow, oh, InputSize.Width, InputSize.Height, TextureSize, VirtualTextureSize);
 				LL.vx += Padding.Left;
 				LL.vy += Padding.Top;
