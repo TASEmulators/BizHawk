@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using BizHawk.Bizware.BizwareGL;
 
-namespace BizHawk.Client.EmuHawk
+namespace BizHawk.Client.Common
 {
 	/// <summary>
 	/// Recycles a pair of temporary textures (in case double-buffering helps any) to contain a BitmapBuffer's or DisplaySurface's contents, as long as the dimensions match.

@@ -7,12 +7,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Drawing;
-using BizHawk.Client.EmuHawk.FilterManager;
+using BizHawk.Client.Common.FilterManager;
 
 using BizHawk.Bizware.BizwareGL;
 using OpenTK;
 
-namespace BizHawk.Client.EmuHawk.Filters
+namespace BizHawk.Client.Common.Filters
 {
 	public class RetroShaderChain : IDisposable
 	{

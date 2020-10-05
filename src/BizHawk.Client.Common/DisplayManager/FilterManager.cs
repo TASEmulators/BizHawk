@@ -1,12 +1,12 @@
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Drawing;
-using BizHawk.Client.EmuHawk.Filters;
+using BizHawk.Client.Common.Filters;
 
 using BizHawk.Bizware.BizwareGL;
 using OpenTK;
 
-namespace BizHawk.Client.EmuHawk.FilterManager
+namespace BizHawk.Client.Common.FilterManager
 {
 	public enum SurfaceDisposition
 	{

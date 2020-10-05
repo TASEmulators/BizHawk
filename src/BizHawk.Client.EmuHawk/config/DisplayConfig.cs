@@ -2,7 +2,7 @@
 using System.IO;
 using System.Windows.Forms;
 using BizHawk.Client.Common;
-using BizHawk.Client.EmuHawk.Filters;
+using BizHawk.Client.Common.Filters;
 using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk

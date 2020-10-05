@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Drawing;
-using BizHawk.Client.EmuHawk.FilterManager;
+using BizHawk.Client.Common.FilterManager;
 
 using BizHawk.Bizware.BizwareGL;
 using OpenTK;
@@ -15,7 +15,7 @@ using OpenTK;
 // 4. In SetInputFormat(), use DeclareOutput to set the output based on your desires, or the provided input format.
 // 5. In Run(), the render target is already set. If using a texture, use InputTexture
 // 6. In Run(), if supplying an output texture, use YieldOutput
-namespace BizHawk.Client.EmuHawk.Filters
+namespace BizHawk.Client.Common.Filters
 {
 	public class BaseFilter
 	{

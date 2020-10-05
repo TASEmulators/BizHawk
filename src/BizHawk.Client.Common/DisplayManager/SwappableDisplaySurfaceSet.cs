@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace BizHawk.Client.EmuHawk
+namespace BizHawk.Client.Common
 {
 	/// <summary>
 	/// encapsulates thread-safe concept of pending/current display surfaces, reusing buffers where matching 
