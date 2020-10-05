@@ -97,40 +97,45 @@ namespace BizHawk.Emulation.DiscSystem
 			return new Timestamp(str).Valid;
 		}
 
+		public readonly byte MIN;
+
+		public readonly byte SEC;
+
+		public readonly byte FRAC;
+
+		public readonly bool Valid;
+
+		public readonly bool Negative;
+
 		/// <summary>
 		/// creates a timestamp from a string in the form mm:ss:ff
 		/// </summary>
 		public Timestamp(string str)
 		{
-			if (str.Length != 8) goto BOGUS;
-			if (str[0] < '0' || str[0] > '9') goto BOGUS;
-			if (str[1] < '0' || str[1] > '9') goto BOGUS;
-			if (str[2] != ':') goto BOGUS;
-			if (str[3] < '0' || str[3] > '9') goto BOGUS;
-			if (str[4] < '0' || str[4] > '9') goto BOGUS;
-			if (str[5] != ':') goto BOGUS;
-			if (str[6] < '0' || str[6] > '9') goto BOGUS;
-			if (str[7] < '0' || str[7] > '9') goto BOGUS;
+			MIN = SEC = FRAC = 0;
+			Negative = false;
+
+			Valid = false;
+			if (str.Length != 8) return;
+			if (str[0] < '0' || str[0] > '9') return;
+			if (str[1] < '0' || str[1] > '9') return;
+			if (str[2] != ':') return;
+			if (str[3] < '0' || str[3] > '9') return;
+			if (str[4] < '0' || str[4] > '9') return;
+			if (str[5] != ':') return;
+			if (str[6] < '0' || str[6] > '9') return;
+			if (str[7] < '0' || str[7] > '9') return;
+			Valid = true;
+
 			MIN = (byte)((str[0] - '0') * 10 + (str[1] - '0'));
 			SEC = (byte)((str[3] - '0') * 10 + (str[4] - '0'));
 			FRAC = (byte)((str[6] - '0') * 10 + (str[7] - '0'));
-			Valid = true;
-			Negative = false;
-			return;
-		BOGUS:
-			MIN = SEC = FRAC = 0;
-			Valid = false;
-			Negative = false;
-			return;
 		}
 
 		/// <summary>
 		/// The string representation of the MSF
 		/// </summary>
 		public string Value => !Valid ? "--:--:--" : $"{(Negative ? '-' : '+')}{MIN:D2}:{SEC:D2}:{FRAC:D2}";
-
-		public readonly byte MIN, SEC, FRAC;
-		public readonly bool Valid, Negative;
 
 		/// <summary>
 		/// The fully multiplied out flat-address Sector number
