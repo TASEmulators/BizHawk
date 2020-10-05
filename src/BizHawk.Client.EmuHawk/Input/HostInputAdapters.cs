@@ -10,6 +10,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	internal sealed class DirectInputAdapter : HostInputAdapter
 	{
+		private Config? _config;
+
 		public void DeInitAll()
 		{
 			KeyInput.Cleanup();
@@ -51,7 +53,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public IEnumerable<KeyEvent> ProcessHostKeyboards() => KeyInput.Update().Concat(IPCKeyInput.Update());
+		public IEnumerable<KeyEvent> ProcessHostKeyboards() => KeyInput.Update(_config).Concat(IPCKeyInput.Update());
+
+		public void UpdateConfig(Config config) => _config = config;
 	}
 
 	internal sealed class OpenTKInputAdapter : HostInputAdapter
@@ -78,5 +82,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		public IEnumerable<KeyEvent> ProcessHostKeyboards() => OTK_Keyboard.Update();
+
+		public void UpdateConfig(Config config) {}
 	}
 }

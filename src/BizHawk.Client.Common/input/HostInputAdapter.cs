@@ -19,5 +19,7 @@ namespace BizHawk.Client.Common
 		void ProcessHostGamepads(Action<string?, bool, ClientInputFocus> handleButton, Action<string?, int> handleAxis);
 
 		IEnumerable<KeyEvent> ProcessHostKeyboards();
+
+		void UpdateConfig(Config config);
 	}
 }
