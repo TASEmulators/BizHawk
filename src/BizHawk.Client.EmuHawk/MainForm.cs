@@ -891,12 +891,12 @@ namespace BizHawk.Client.EmuHawk
 		protected override void OnActivated(EventArgs e)
 		{
 			base.OnActivated(e);
-			Input.Instance.ControlInputFocus(this, Input.InputFocus.Mouse, true);
+			Input.Instance.ControlInputFocus(this, ClientInputFocus.Mouse, true);
 		}
 
 		protected override void OnDeactivate(EventArgs e)
 		{
-			Input.Instance.ControlInputFocus(this, Input.InputFocus.Mouse, false);
+			Input.Instance.ControlInputFocus(this, ClientInputFocus.Mouse, false);
 			base.OnDeactivate(e);
 		}
 

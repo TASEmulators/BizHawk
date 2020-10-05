@@ -2,6 +2,9 @@
 using System.IO;
 using System.Threading;
 using System.IO.Pipes;
+
+using BizHawk.Client.Common;
+
 using SlimDX.DirectInput;
 
 // this is not a very safe or pretty protocol, I'm not proud of it

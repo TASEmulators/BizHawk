@@ -1,4 +1,7 @@
 using System.Collections.Generic;
+
+using BizHawk.Client.Common;
+
 using OpenTK.Input;
 
 namespace BizHawk.Client.EmuHawk
@@ -101,11 +104,5 @@ namespace BizHawk.Client.EmuHawk
 					return false;
 			}
 		}
-	}
-
-	public struct KeyEvent
-	{
-		public Key Key;
-		public bool Pressed;
 	}
 }

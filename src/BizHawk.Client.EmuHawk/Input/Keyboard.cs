@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using BizHawk.Client.Common;
+
 using SlimDX;
 using SlimDX.DirectInput;
 
