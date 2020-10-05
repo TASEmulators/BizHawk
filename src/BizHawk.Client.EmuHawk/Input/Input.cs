@@ -120,6 +120,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private Input()
 		{
+			Adapter.UpdateConfig(GlobalWin.Config);
 			UpdateThread = new Thread(UpdateThreadProc)
 			{
 				IsBackground = true, 
@@ -331,6 +332,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			while (true)
 			{
+				Adapter.UpdateConfig(GlobalWin.Config);
+
 				var keyEvents = Adapter.ProcessHostKeyboards();
 				Adapter.PreprocessHostGamepads();
 

@@ -66,8 +66,10 @@ namespace BizHawk.Client.EmuHawk
 			{Key.NumberPad0, OpenTK.Input.Key.Keypad0}, {Key.NumberPad1, OpenTK.Input.Key.Keypad1}, {Key.NumberPad2, OpenTK.Input.Key.Keypad2}, {Key.NumberPad3, OpenTK.Input.Key.Keypad3}, {Key.NumberPad4, OpenTK.Input.Key.Keypad4}, {Key.NumberPad5, OpenTK.Input.Key.Keypad5}, {Key.NumberPad6, OpenTK.Input.Key.Keypad6}, {Key.NumberPad7, OpenTK.Input.Key.Keypad7}, {Key.NumberPad8, OpenTK.Input.Key.Keypad8}, {Key.NumberPad9, OpenTK.Input.Key.Keypad9}, {Key.NumberPadPlus, OpenTK.Input.Key.KeypadAdd}, {Key.NumberPadPeriod, OpenTK.Input.Key.KeypadDecimal}, {Key.NumberPadSlash, OpenTK.Input.Key.KeypadDivide}, {Key.NumberPadEnter, OpenTK.Input.Key.KeypadEnter}, {Key.NumberPadStar, OpenTK.Input.Key.KeypadMultiply}, {Key.NumberPadMinus, OpenTK.Input.Key.KeypadSubtract}
 		};
 
-		public static IEnumerable<KeyEvent> Update()
+		public static IEnumerable<KeyEvent> Update(Config config)
 		{
+			OpenTK.Input.Key Mapped(Key k) => KeyEnumMap[config.HandleAlternateKeyboardLayouts ? KeyboardMapping.Handle(k) : k];
+
 			lock (SyncObj)
 			{
 				EventList.Clear();
@@ -83,9 +85,9 @@ namespace BizHawk.Client.EmuHawk
 					foreach (var e in events)
 					{
 						foreach (var k in e.PressedKeys)
-							EventList.Add(new KeyEvent { Key = KeyEnumMap[KeyboardMapping.Handle(k)], Pressed = true });
+							EventList.Add(new KeyEvent { Key = Mapped(k), Pressed = true });
 						foreach (var k in e.ReleasedKeys)
-							EventList.Add(new KeyEvent { Key = KeyEnumMap[KeyboardMapping.Handle(k)], Pressed = false });
+							EventList.Add(new KeyEvent { Key = Mapped(k), Pressed = false });
 					}
 				}
 
