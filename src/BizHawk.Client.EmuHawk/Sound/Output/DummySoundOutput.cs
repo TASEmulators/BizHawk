@@ -30,7 +30,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void StartSound()
 		{
-			BufferSizeSamples = _sound.MillisecondsToSamples(GlobalWin.Config.SoundBufferSizeMs);
+			BufferSizeSamples = _sound.MillisecondsToSamples(_sound.ConfigBufferSizeMs);
 			MaxSamplesDeficit = BufferSizeSamples;
 
 			_lastWriteTime = 0;

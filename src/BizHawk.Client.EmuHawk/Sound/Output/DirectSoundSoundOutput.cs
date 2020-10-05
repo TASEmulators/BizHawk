@@ -136,7 +136,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void StartSound()
 		{
-			BufferSizeSamples = _sound.MillisecondsToSamples(GlobalWin.Config.SoundBufferSizeMs);
+			BufferSizeSamples = _sound.MillisecondsToSamples(_sound.ConfigBufferSizeMs);
 
 			// 35 to 65 milliseconds depending on how big the buffer is. This is a trade-off
 			// between more frequent but less severe glitches (i.e. catching underruns before
@@ -144,7 +144,7 @@ namespace BizHawk.Client.EmuHawk
 			// severe glitches. At least on my Windows 8 machines, the distance between the
 			// play and write cursors can be up to 30 milliseconds, so that would be the
 			// absolute minimum we could use here.
-			int minBufferFullnessMs = Math.Min(35 + ((GlobalWin.Config.SoundBufferSizeMs - 60) / 2), 65);
+			int minBufferFullnessMs = Math.Min(35 + ((_sound.ConfigBufferSizeMs - 60) / 2), 65);
 			MaxSamplesDeficit = BufferSizeSamples - _sound.MillisecondsToSamples(minBufferFullnessMs);
 
 			StartPlaying();
