@@ -24,6 +24,10 @@ namespace BizHawk.Client.EmuHawk
 		private readonly BufferedAsync _bufferedAsync = new BufferedAsync(); // Buffer for Async sources
 		private IBufferedSoundProvider _bufferedProvider; // One of the preceding buffers, or null if no source is set
 
+		public int ConfigBufferSizeMs => GlobalWin.Config.SoundBufferSizeMs;
+
+		public string ConfigDevice => GlobalWin.Config.SoundDevice;
+
 		public Sound(IntPtr mainWindowHandle)
 		{
 			BlockAlign = BytesPerSample * ChannelCount;
