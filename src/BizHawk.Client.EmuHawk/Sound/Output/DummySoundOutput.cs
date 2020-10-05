@@ -7,11 +7,11 @@ namespace BizHawk.Client.EmuHawk
 {
 	public class DummySoundOutput : ISoundOutput
 	{
-		private Sound _sound;
+		private readonly IHostAudioManager _sound;
 		private int _remainingSamples;
 		private long _lastWriteTime;
 
-		public DummySoundOutput(Sound sound)
+		public DummySoundOutput(IHostAudioManager sound)
 		{
 			_sound = sound;
 		}
@@ -30,7 +30,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void StartSound()
 		{
-			BufferSizeSamples = Sound.MillisecondsToSamples(GlobalWin.Config.SoundBufferSizeMs);
+			BufferSizeSamples = _sound.MillisecondsToSamples(GlobalWin.Config.SoundBufferSizeMs);
 			MaxSamplesDeficit = BufferSizeSamples;
 
 			_lastWriteTime = 0;
@@ -52,7 +52,7 @@ namespace BizHawk.Client.EmuHawk
 				// Due to rounding errors this doesn't work well in audio throttle mode unless enough time has passed
 				if (elapsedSeconds >= 0.001)
 				{
-					_remainingSamples -= (int)Math.Round(elapsedSeconds * Sound.SampleRate);
+					_remainingSamples -= (int) Math.Round(elapsedSeconds * _sound.SampleRate);
 					if (_remainingSamples < 0)
 					{
 						_remainingSamples = 0;

@@ -13,14 +13,14 @@ namespace BizHawk.Client.EmuHawk
 	public class XAudio2SoundOutput : ISoundOutput
 	{
 		private bool _disposed;
-		private Sound _sound;
+		private readonly IHostAudioManager _sound;
 		private XAudio2 _device;
 		private MasteringVoice _masteringVoice;
 		private SourceVoice _sourceVoice;
 		private BufferPool _bufferPool;
 		private long _runningSamplesQueued;
 
-		public XAudio2SoundOutput(Sound sound)
+		public XAudio2SoundOutput(IHostAudioManager sound)
 		{
 			_sound = sound;
 			_device = new XAudio2();
@@ -28,8 +28,8 @@ namespace BizHawk.Client.EmuHawk
 				.Select(n => (int?)n)
 				.FirstOrDefault(n => _device.GetDeviceDetails(n.Value).DisplayName == GlobalWin.Config.SoundDevice);
 			_masteringVoice = deviceIndex == null ?
-				new MasteringVoice(_device, Sound.ChannelCount, Sound.SampleRate) :
-				new MasteringVoice(_device, Sound.ChannelCount, Sound.SampleRate, deviceIndex.Value);
+				new MasteringVoice(_device, _sound.ChannelCount, _sound.SampleRate) :
+				new MasteringVoice(_device, _sound.ChannelCount, _sound.SampleRate, deviceIndex.Value);
 		}
 
 		public void Dispose()
@@ -64,17 +64,17 @@ namespace BizHawk.Client.EmuHawk
 
 		public void StartSound()
 		{
-			BufferSizeSamples = Sound.MillisecondsToSamples(GlobalWin.Config.SoundBufferSizeMs);
+			BufferSizeSamples = _sound.MillisecondsToSamples(GlobalWin.Config.SoundBufferSizeMs);
 			MaxSamplesDeficit = BufferSizeSamples;
 
 			var format = new WaveFormat
 				{
-					SamplesPerSecond = Sound.SampleRate,
-					BitsPerSample = Sound.BytesPerSample * 8,
-					Channels = Sound.ChannelCount,
+					SamplesPerSecond = _sound.SampleRate,
+					BitsPerSample = (short) (_sound.BytesPerSample * 8),
+					Channels = (short) _sound.ChannelCount,
 					FormatTag = WaveFormatTag.Pcm,
-					BlockAlignment = Sound.BlockAlign,
-					AverageBytesPerSecond = Sound.SampleRate * Sound.BlockAlign
+					BlockAlignment = (short) _sound.BlockAlign,
+					AverageBytesPerSecond = _sound.SampleRate * _sound.BlockAlign
 				};
 
 			_sourceVoice = new SourceVoice(_device, format);
@@ -114,9 +114,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (sampleCount == 0) return;
 			_bufferPool.Release(_sourceVoice.State.BuffersQueued);
-			int byteCount = sampleCount * Sound.BlockAlign;
+			int byteCount = sampleCount * _sound.BlockAlign;
 			var item = _bufferPool.Obtain(byteCount);
-			Buffer.BlockCopy(samples, sampleOffset * Sound.BlockAlign, item.Bytes, 0, byteCount);
+			Buffer.BlockCopy(samples, sampleOffset * _sound.BlockAlign, item.Bytes, 0, byteCount);
 			item.AudioBuffer.AudioBytes = byteCount;
 			_sourceVoice.SubmitSourceBuffer(item.AudioBuffer);
 			_runningSamplesQueued += sampleCount;

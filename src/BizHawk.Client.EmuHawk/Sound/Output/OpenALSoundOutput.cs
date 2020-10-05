@@ -12,18 +12,18 @@ namespace BizHawk.Client.EmuHawk
 	public class OpenALSoundOutput : ISoundOutput
 	{
 		private bool _disposed;
-		private Sound _sound;
+		private readonly IHostAudioManager _sound;
 		private AudioContext _context;
 		private int _sourceID;
 		private BufferPool _bufferPool;
 		private int _currentSamplesQueued;
 		private short[] _tempSampleBuffer;
 
-		public OpenALSoundOutput(Sound sound)
+		public OpenALSoundOutput(IHostAudioManager sound)
 		{
 			_sound = sound;
 			string deviceName = GetDeviceNames().FirstOrDefault(n => n == GlobalWin.Config.SoundDevice);
-			_context = new AudioContext(deviceName, Sound.SampleRate);
+			_context = new AudioContext(deviceName, _sound.SampleRate);
 		}
 
 		public void Dispose()
@@ -54,7 +54,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void StartSound()
 		{
-			BufferSizeSamples = Sound.MillisecondsToSamples(GlobalWin.Config.SoundBufferSizeMs);
+			BufferSizeSamples = _sound.MillisecondsToSamples(GlobalWin.Config.SoundBufferSizeMs);
 			MaxSamplesDeficit = BufferSizeSamples;
 
 			_sourceID = AL.GenSource();
@@ -100,15 +100,15 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (sampleCount == 0) return;
 			UnqueueProcessedBuffers();
-			int byteCount = sampleCount * Sound.BlockAlign;
+			int byteCount = sampleCount * _sound.BlockAlign;
 			if (sampleOffset != 0)
 			{
 				AllocateTempSampleBuffer(sampleCount);
-				Buffer.BlockCopy(samples, sampleOffset * Sound.BlockAlign, _tempSampleBuffer, 0, byteCount);
+				Buffer.BlockCopy(samples, sampleOffset * _sound.BlockAlign, _tempSampleBuffer, 0, byteCount);
 				samples = _tempSampleBuffer;
 			}
 			var buffer = _bufferPool.Obtain(byteCount);
-			AL.BufferData(buffer.BufferID, ALFormat.Stereo16, samples, byteCount, Sound.SampleRate);
+			AL.BufferData(buffer.BufferID, ALFormat.Stereo16, samples, byteCount, _sound.SampleRate);
 			AL.SourceQueueBuffer(_sourceID, buffer.BufferID);
 			_currentSamplesQueued += sampleCount;
 			if (AL.GetSourceState(_sourceID) != ALSourceState.Playing)
@@ -124,7 +124,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				AL.SourceUnqueueBuffer(_sourceID);
 				var releasedBuffer = _bufferPool.ReleaseOne();
-				_currentSamplesQueued -= releasedBuffer.Length / Sound.BlockAlign;
+				_currentSamplesQueued -= releasedBuffer.Length / _sound.BlockAlign;
 			}
 		}
 
@@ -136,7 +136,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AllocateTempSampleBuffer(int sampleCount)
 		{
-			int length = sampleCount * Sound.ChannelCount;
+			int length = sampleCount * _sound.ChannelCount;
 			if (_tempSampleBuffer == null || _tempSampleBuffer.Length < length)
 			{
 				_tempSampleBuffer = new short[length];
