@@ -12,7 +12,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public class DirectSoundSoundOutput : ISoundOutput
 	{
-		private readonly Sound _sound;
+		private readonly IHostAudioManager _sound;
 		private bool _disposed;
 		private DirectSound _device;
 		private SecondarySoundBuffer _deviceBuffer;
@@ -22,7 +22,7 @@ namespace BizHawk.Client.EmuHawk
 		private int _lastWriteCursor;
 		private int _retryCounter;
 
-		public DirectSoundSoundOutput(Sound sound, IntPtr mainWindowHandle, string soundDevice)
+		public DirectSoundSoundOutput(IHostAudioManager sound, IntPtr mainWindowHandle, string soundDevice)
 		{
 			_sound = sound;
 			_retryCounter = 5;
@@ -49,7 +49,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private int BufferSizeSamples { get; set; }
 
-		private int BufferSizeBytes => BufferSizeSamples * Sound.BlockAlign;
+		private int BufferSizeBytes => BufferSizeSamples * _sound.BlockAlign;
 
 		public int MaxSamplesDeficit { get; private set; }
 
@@ -71,12 +71,12 @@ namespace BizHawk.Client.EmuHawk
 					{
 						var format = new WaveFormat
 						{
-							SamplesPerSecond = Sound.SampleRate,
-							BitsPerSample = Sound.BytesPerSample * 8,
-							Channels = Sound.ChannelCount,
+							SamplesPerSecond = _sound.SampleRate,
+							BitsPerSample = (short) (_sound.BytesPerSample * 8),
+							Channels = (short) _sound.ChannelCount,
 							FormatTag = WaveFormatTag.Pcm,
-							BlockAlignment = Sound.BlockAlign,
-							AverageBytesPerSecond = Sound.SampleRate * Sound.BlockAlign
+							BlockAlignment = (short) _sound.BlockAlign,
+							AverageBytesPerSecond = _sound.SampleRate * _sound.BlockAlign
 						};
 
 						var desc = new SoundBufferDescription
@@ -136,7 +136,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void StartSound()
 		{
-			BufferSizeSamples = Sound.MillisecondsToSamples(GlobalWin.Config.SoundBufferSizeMs);
+			BufferSizeSamples = _sound.MillisecondsToSamples(GlobalWin.Config.SoundBufferSizeMs);
 
 			// 35 to 65 milliseconds depending on how big the buffer is. This is a trade-off
 			// between more frequent but less severe glitches (i.e. catching underruns before
@@ -145,7 +145,7 @@ namespace BizHawk.Client.EmuHawk
 			// play and write cursors can be up to 30 milliseconds, so that would be the
 			// absolute minimum we could use here.
 			int minBufferFullnessMs = Math.Min(35 + ((GlobalWin.Config.SoundBufferSizeMs - 60) / 2), 65);
-			MaxSamplesDeficit = BufferSizeSamples - Sound.MillisecondsToSamples(minBufferFullnessMs);
+			MaxSamplesDeficit = BufferSizeSamples - _sound.MillisecondsToSamples(minBufferFullnessMs);
 
 			StartPlaying();
 		}
@@ -182,9 +182,9 @@ namespace BizHawk.Client.EmuHawk
 					if (!isInitializing)
 					{
 						double elapsedSeconds = (currentWriteTime - _lastWriteTime) / (double)Stopwatch.Frequency;
-						double bufferSizeSeconds = (double)BufferSizeSamples / Sound.SampleRate;
+						double bufferSizeSeconds = (double) BufferSizeSamples / _sound.SampleRate;
 						int cursorDelta = CircularDistance(_lastWriteCursor, writeCursor, BufferSizeBytes);
-						cursorDelta += BufferSizeBytes * (int)Math.Round((elapsedSeconds - (cursorDelta / (double)(Sound.SampleRate * Sound.BlockAlign))) / bufferSizeSeconds);
+						cursorDelta += BufferSizeBytes * (int) Math.Round((elapsedSeconds - (cursorDelta / (double) (_sound.SampleRate * _sound.BlockAlign))) / bufferSizeSeconds);
 						_filledBufferSizeBytes -= cursorDelta;
 						detectedUnderrun = _filledBufferSizeBytes < 0;
 					}
@@ -193,7 +193,7 @@ namespace BizHawk.Client.EmuHawk
 						_actualWriteOffsetBytes = writeCursor;
 						_filledBufferSizeBytes = 0;
 					}
-					samplesNeeded = CircularDistance(_actualWriteOffsetBytes, playCursor, BufferSizeBytes) / Sound.BlockAlign;
+					samplesNeeded = CircularDistance(_actualWriteOffsetBytes, playCursor, BufferSizeBytes) / _sound.BlockAlign;
 					if (isInitializing || detectedUnderrun)
 					{
 						_sound.HandleInitializationOrUnderrun(detectedUnderrun, ref samplesNeeded);
@@ -223,9 +223,9 @@ namespace BizHawk.Client.EmuHawk
 				if (sampleCount == 0) return;
 				try
 				{
-					_deviceBuffer.Write(samples, sampleOffset * Sound.ChannelCount, sampleCount * Sound.ChannelCount, _actualWriteOffsetBytes, LockFlags.None);
-					_actualWriteOffsetBytes = (_actualWriteOffsetBytes + (sampleCount * Sound.BlockAlign)) % BufferSizeBytes;
-					_filledBufferSizeBytes += sampleCount * Sound.BlockAlign;
+					_deviceBuffer.Write(samples, sampleOffset * _sound.ChannelCount, sampleCount * _sound.ChannelCount, _actualWriteOffsetBytes, LockFlags.None);
+					_actualWriteOffsetBytes = (_actualWriteOffsetBytes + (sampleCount * _sound.BlockAlign)) % BufferSizeBytes;
+					_filledBufferSizeBytes += sampleCount * _sound.BlockAlign;
 				}
 				catch (DirectSoundException)
 				{
