@@ -464,17 +464,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 				total_counter = 0;
 
-				// TODO: If Window is turned on midscanline what happens? When is this check done exactly?
-				if ((window_started && window_latch) || (window_is_reset && !window_latch && (LY > window_y_latch)))
-				{
-					window_y_tile_inc++;
-					if (window_y_tile_inc==8)
-					{
-						window_y_tile_inc = 0;
-						window_y_tile++;
-						window_y_tile %= 32;
-					}
-				}
 				window_started = false;
 
 				if (SL_sprites_index == 0) { no_sprites = true; }
@@ -496,17 +485,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				Console.Write(" ");
 				Console.WriteLine(pixel_counter);
 				*/
+
 				if (window_x_latch == 0)
 				{
 					// if the window starts at zero, we still do the first access to the BG
 					// but then restart all over again at the window
-					if ((scroll_offset % 7) <= 6)
+					if ((scroll_offset % 8) == 0)
 					{
-						read_case = 9;
+						read_case = 4;
 					}
 					else
 					{
-						read_case = 10;
+						read_case = 9;
 					}
 				}
 				else
@@ -879,6 +869,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								STAT |= 0x00;
 
 								if (STAT.Bit(3)) { HBL_INT = true; }
+
+								// TODO: If Window is turned on midscanline what happens? When is this check done exactly?
+								if ((window_started && window_latch) || (window_is_reset && !window_latch && (LY > window_y_latch)))
+								{
+									window_y_tile_inc++;
+									if (window_y_tile_inc == 8)
+									{
+										window_y_tile_inc = 0;
+										window_y_tile++;
+										window_y_tile %= 32;
+									}
+								}
 							}
 						}
 						break;
@@ -954,9 +956,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						consecutive_sprite = (int)Math.Floor((double)(last_eval + scroll_offset) / 8) * 8 + 8 - scroll_offset;
 
 						// special case exists here for sprites at zero with non-zero x-scroll. Not sure exactly the reason for it.
-						if (last_eval == 0 && scroll_offset != 0)
+						if (last_eval == 0)
 						{
-							sprite_fetch_counter += scroll_offset;
+							if (scroll_offset <= 5)
+							{
+								sprite_fetch_counter += scroll_offset;
+							}
+							else
+							{
+								sprite_fetch_counter += 5;
+							}
 						}
 					}
 
