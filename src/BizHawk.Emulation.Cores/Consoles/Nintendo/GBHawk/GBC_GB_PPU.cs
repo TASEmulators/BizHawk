@@ -1096,6 +1096,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								// x scroll is latched here, only the lower 3 bits are latched though
 								render_offset = scroll_offset = scroll_x % 8;
 
+								// sprite scroll offset could change depending on window usage
+								sprite_scroll_offset = scroll_offset;
+
 								render_counter = 0;
 								latch_counter = 0;
 								read_case = 0;
@@ -1216,12 +1219,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 									render_counter = 8 - scroll_offset;
 
 									render_offset = 7 - window_x_latch;
+
+									sprite_scroll_offset = 8 - (window_x_latch + 8 - 7) % 8;
 								}
 								else
 								{
 									render_offset = 0;
 									read_case = 4;
 									render_counter = 8;
+
+									sprite_scroll_offset = 8 - (window_x_latch - 7) % 8;
 								}
 
 								latch_counter = 0;
@@ -1349,23 +1356,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					// there is no penalty if the next sprites to be fetched are within the currentfetch block (8 pixels)
 					if (first_fetch || (last_eval >= consecutive_sprite))
 					{
-						if (((last_eval + scroll_offset) % 8) == 0) { sprite_fetch_counter += 5; }
-						else if (((last_eval + scroll_offset) % 8) == 1) { sprite_fetch_counter += 4; }
-						else if (((last_eval + scroll_offset) % 8) == 2) { sprite_fetch_counter += 3; }
-						else if (((last_eval + scroll_offset) % 8) == 3) { sprite_fetch_counter += 2; }
-						else if (((last_eval + scroll_offset) % 8) == 4) { sprite_fetch_counter += 1; }
-						else if (((last_eval + scroll_offset) % 8) == 5) { sprite_fetch_counter += 0; }
-						else if (((last_eval + scroll_offset) % 8) == 6) { sprite_fetch_counter += 0; }
-						else if (((last_eval + scroll_offset) % 8) == 7) { sprite_fetch_counter += 0; }
+						if (((last_eval + sprite_scroll_offset) % 8) == 0) { sprite_fetch_counter += 5; }
+						else if (((last_eval + sprite_scroll_offset) % 8) == 1) { sprite_fetch_counter += 4; }
+						else if (((last_eval + sprite_scroll_offset) % 8) == 2) { sprite_fetch_counter += 3; }
+						else if (((last_eval + sprite_scroll_offset) % 8) == 3) { sprite_fetch_counter += 2; }
+						else if (((last_eval + sprite_scroll_offset) % 8) == 4) { sprite_fetch_counter += 1; }
+						else if (((last_eval + sprite_scroll_offset) % 8) == 5) { sprite_fetch_counter += 0; }
+						else if (((last_eval + sprite_scroll_offset) % 8) == 6) { sprite_fetch_counter += 0; }
+						else if (((last_eval + sprite_scroll_offset) % 8) == 7) { sprite_fetch_counter += 0; }
 
-						consecutive_sprite = (int)Math.Floor((double)(last_eval + scroll_offset) / 8) * 8 + 8 - scroll_offset;
+						consecutive_sprite = (int)Math.Floor((double)(last_eval + sprite_scroll_offset) / 8) * 8 + 8 - sprite_scroll_offset;
 
 						// special case exists here for sprites at zero with non-zero x-scroll. Not sure exactly the reason for it.
 						if (last_eval == 0)
 						{
-							if (scroll_offset <= 5)
+							if (sprite_scroll_offset <= 5)
 							{
-								sprite_fetch_counter += scroll_offset;
+								sprite_fetch_counter += sprite_scroll_offset;
 							}
 							else
 							{

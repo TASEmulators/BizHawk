@@ -113,6 +113,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public int window_y_latch;
 
 		public int hbl_countdown;
+		public int sprite_scroll_offset;
 
 		public virtual byte ReadReg(int addr)
 		{
@@ -274,6 +275,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync(nameof(window_y_latch), ref window_y_latch);
 
 			ser.Sync(nameof(hbl_countdown), ref hbl_countdown);
+			ser.Sync(nameof(sprite_scroll_offset), ref sprite_scroll_offset);
 		}
 	}
 }
