@@ -13,6 +13,7 @@ build:
       - output
       - test_output
   script:
+    - if [ "$CI_COMMIT_REF_SLUG" == "release" ]; then Dist/UpdateVersionInfoForRelease.sh; fi
     - Dist/BuildRelease.sh
   stage: build
 
@@ -34,7 +35,7 @@ package:
       - ./*
   image: ubuntu:focal
   rules:
-    - if: '$CI_COMMIT_REF_SLUG == "master"'
+    - if: '$CI_COMMIT_REF_SLUG == "master" || $CI_COMMIT_REF_SLUG == "release"'
       when: always
   script:
     - su -c "apt-get update && apt-get -y install p7zip-full"
