@@ -1185,7 +1185,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			Famicom = false;
 			FamicomExpPort = typeof(UnpluggedFam).Name;
 			NesLeftPort = typeof(ControllerNES).Name;
-			NesRightPort = typeof(ControllerNES).Name;
+			NesRightPort = typeof(UnpluggedNES).Name;
 		}
 
 		public static bool NeedsReboot(NESControlSettings x, NESControlSettings y)
