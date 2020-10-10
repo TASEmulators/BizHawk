@@ -1,4 +1,6 @@
-image: mcr.microsoft.com/dotnet/core/sdk:3.1
+variables:
+  CI_HAWK_ARTIFACT_NAME: "BizHawk_devbuild_${CI_COMMIT_REF_SLUG}_${CI_COMMIT_SHORT_SHA}"
+  CI_HAWK_TMPARTIFACT_NAME: "BizHawk_tempbuild_${CI_COMMIT_REF_SLUG}_${CI_COMMIT_SHORT_SHA}"
 
 stages:
   - build
@@ -8,32 +10,71 @@ stages:
 build:
   artifacts:
     expire_in: "30 minutes"
-    name: "BizHawk_tempbuild_${CI_COMMIT_REF_SLUG}_$CI_COMMIT_SHORT_SHA"
+    name: "$CI_HAWK_TMPARTIFACT_NAME"
     paths:
       - output
-      - test_output
+  image: mcr.microsoft.com/dotnet/core/sdk:3.1
   script:
     - if [ "$CI_COMMIT_REF_SLUG" == "release" ]; then Dist/UpdateVersionInfoForRelease.sh; fi
     - Dist/BuildRelease.sh
   stage: build
 
-check_style:
+build_ext_tools:
   allow_failure: true
-  dependencies: []
+  image: mcr.microsoft.com/dotnet/core/sdk:3.1
+  needs:
+    - build
   rules:
-    - if: '$BIZHAWKBUILD_USE_ANALYZERS != null'
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
       when: always
+  script:
+    - for d in $CI_PROJECT_DIR/ExternalToolProjects/*; do if [ -d "$d" ]; then cd "$d" && ./build_release.sh; fi; done
+  stage: test
+
+check_style:
+  image: mcr.microsoft.com/dotnet/core/sdk:3.1
+  needs:
+    - job: build
+      artifacts: false
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+      when: always
+      allow_failure: true
+    - if: $BIZHAWKBUILD_USE_ANALYZERS != null
+      when: always
+      allow_failure: false
   script:
     - Dist/BuildRelease.sh -p:MachineRunAnalyzersDuringBuild=true || Dist/BuildRelease.sh -p:MachineRunAnalyzersDuringBuild=true
   stage: test
 
-package:
+package_linux:
   artifacts:
     expire_in: "1 month"
-    name: "BizHawk_devbuild_${CI_COMMIT_REF_SLUG}_$CI_COMMIT_SHORT_SHA"
+    name: "$CI_HAWK_ARTIFACT_NAME.tar"
+    paths:
+      - "$CI_HAWK_ARTIFACT_NAME.tar"
+  image: debian:buster-slim
+  needs:
+    - build
+  rules:
+    - if: '$CI_COMMIT_REF_SLUG == "master" || $CI_COMMIT_REF_SLUG == "release"'
+      when: always
+  script:
+    - su -c "apt-get update && apt-get -y install p7zip-full"
+    - Dist/Package.sh
+    - cd packaged_output
+    - tar -cf "../$CI_HAWK_ARTIFACT_NAME.tar" *
+  stage: package
+
+package_windows:
+  artifacts:
+    expire_in: "1 month"
+    name: "$CI_HAWK_ARTIFACT_NAME"
     paths:
       - ./*
-  image: ubuntu:focal
+  image: debian:buster-slim
+  needs:
+    - build
   rules:
     - if: '$CI_COMMIT_REF_SLUG == "master" || $CI_COMMIT_REF_SLUG == "release"'
       when: always
@@ -54,8 +95,10 @@ run_tests:
     reports:
       junit:
         - test_output/*.coverage.xml
-  dependencies: []
   image: mcr.microsoft.com/dotnet/core/sdk:3.1
+  needs:
+    - job: build
+      artifacts: false
   script:
     - Dist/BuildTestRelease.sh || Dist/BuildTestRelease.sh
   stage: test

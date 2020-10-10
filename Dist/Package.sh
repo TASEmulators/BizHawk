@@ -6,5 +6,4 @@ find "output" -type f \( -wholename "output/EmuHawk.exe" -o -wholename "output/D
 find "packaged_output/dll" -type f -name "*.xml" -exec rm "{}" \;
 mkdir "packaged_output/Firmware"
 cd "packaged_output/gamedb" && 7za a -t7z -mx9 "NesCarts.7z" "NesCarts.xml" && rm "NesCarts.xml" && cd "../.."
-find "packaged_output" -type d -exec touch {} \; # no idea why, but some of the access timestamps are in the far future, and Mono crashes when enumerating the exe dir
 find "packaged_output" -type f -name "*.sh" -exec chmod +x {} \; # installed with -m644 but needs to be 755
