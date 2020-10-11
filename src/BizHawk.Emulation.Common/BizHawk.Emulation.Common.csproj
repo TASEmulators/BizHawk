@@ -8,7 +8,7 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-		<ProjectReference Include="$(ProjectDir)../BizHawk.Common/BizHawk.Common.csproj" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.BizInvoke/BizHawk.BizInvoke.csproj" />
+		<ProjectReference Include="$(ProjectDir)../BizHawk.Common/BizHawk.Common.csproj" />
 	</ItemGroup>
 </Project>

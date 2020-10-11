@@ -12,10 +12,8 @@
 		<PackageReference Include="System.Memory" Version="4.5.4" />
 		<Reference Include="FlatBuffers.Core" HintPath="$(ProjectDir)../../References/FlatBuffers.Core.dll" Private="true" />
 		<Reference Include="Virtu" HintPath="$(ProjectDir)../../References/Virtu.dll" Private="true" />
-		<ProjectReference Include="$(ProjectDir)../BizHawk.BizInvoke/BizHawk.BizInvoke.csproj" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Emulation.Common/BizHawk.Emulation.Common.csproj" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Emulation.DiscSystem/BizHawk.Emulation.DiscSystem.csproj" />
-		<ProjectReference Include="..\BizHawk.Common\BizHawk.Common.csproj" />
 		<EmbeddedResource Include="Resources/**/*" />
 	</ItemGroup>
 	<ItemGroup>
