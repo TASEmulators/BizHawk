@@ -1080,16 +1080,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			sound_update_needed = true;
 		}
 
-		public void update_sound()
-		{
-			if (sound_update_needed)
-			{
-
-
-				
-			}
-		}
-
 		public void SyncState(Serializer ser)
 		{
 			ser.Sync(nameof(Audio_Regs), ref Audio_Regs, false);

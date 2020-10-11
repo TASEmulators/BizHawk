@@ -10,13 +10,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public byte serial_control;
 		public byte serial_data;
-		public bool can_pulse;
 		public int serial_clock;
 		public int serial_bits;
 		public int clk_rate;
 		public byte going_out;
 		public byte coming_in;
-		public int serial_bits_old;
+		public bool can_pulse;
 		public bool IRQ_block;
 
 		public byte ReadReg(int addr)
@@ -75,12 +74,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					}
 					else
 					{
-						serial_bits_old = serial_bits;
 						serial_bits = 8;
 						clk_rate = -1;
 						serial_clock = clk_rate;
-						can_pulse = false;
-						
+						can_pulse = false;					
 					}
 
 					if (Core.GBC_compat)
@@ -142,6 +139,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			going_out = 0;
 			coming_in = 1;		
 			can_pulse = false;
+			IRQ_block = false;
 		}
 
 		public void SyncState(Serializer ser)

@@ -9,8 +9,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public uint[] BG_palette = new uint[32];
 		public uint[] OBJ_palette = new uint[32];
 
-		public uint[] color_palette = new uint[4];
-
 		public bool HDMA_active;
 		public bool clear_screen;
 
@@ -44,18 +42,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public bool HBL_INT;
 		public bool VBL_INT;
 		public bool OAM_INT;
-		public bool LCD_was_off;
 		public bool stat_line;
 		public bool stat_line_old;
+		public bool LCD_was_off;
 		// OAM scan
-		public bool DMA_OAM_access;
-		public bool OAM_access_read;
-		public bool OAM_access_write;
 		public int OAM_scan_index;
 		public int SL_sprites_index;
 		public int[] SL_sprites = new int[40];
 		public int write_sprite;
 		public bool no_scan;
+		public bool DMA_OAM_access;
+		public bool OAM_access_read;
+		public bool OAM_access_write;
 		// render
 		public bool VRAM_access_read;
 		public bool VRAM_access_write;
@@ -66,7 +64,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public int x_tile;
 		public int x_scroll_offset;
 		public int tile_byte;
-		public int sprite_fetch_cycles;
 		public bool fetch_sprite;
 		public bool going_to_fetch;
 		public bool first_fetch;
@@ -99,7 +96,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public int consecutive_sprite;
 		public int last_eval;
 
-		public int total_counter;
 		// windowing state
 		public int window_counter;
 		public bool window_pre_render;
@@ -114,6 +110,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public int hbl_countdown;
 		public int sprite_scroll_offset;
+
+		// variables not in state
+		public int total_counter;
+		public uint[] color_palette = new uint[4];
 
 		public virtual byte ReadReg(int addr)
 		{
@@ -163,11 +163,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		}
 
-		public virtual void Reg_Copy(GBC_PPU ppu2)
-		{
-
-		}
-
 		// order sprites according to x coordinate
 		// note that for sprites of equal x coordinate, priority goes to first on the list
 		public virtual void reorder_and_assemble_sprites()
@@ -210,19 +205,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync(nameof(OAM_INT), ref OAM_INT);
 			ser.Sync(nameof(stat_line), ref stat_line);
 			ser.Sync(nameof(stat_line_old), ref stat_line_old);
-			ser.Sync(nameof(LCD_was_off), ref LCD_was_off);		
+			ser.Sync(nameof(LCD_was_off), ref LCD_was_off);
+			
 			ser.Sync(nameof(OAM_scan_index), ref OAM_scan_index);
 			ser.Sync(nameof(SL_sprites_index), ref SL_sprites_index);
 			ser.Sync(nameof(SL_sprites), ref SL_sprites, false);
 			ser.Sync(nameof(write_sprite), ref write_sprite);
 			ser.Sync(nameof(no_scan), ref no_scan);
-
 			ser.Sync(nameof(DMA_OAM_access), ref DMA_OAM_access);
 			ser.Sync(nameof(OAM_access_read), ref OAM_access_read);
 			ser.Sync(nameof(OAM_access_write), ref OAM_access_write);
+
 			ser.Sync(nameof(VRAM_access_read), ref VRAM_access_read);
 			ser.Sync(nameof(VRAM_access_write), ref VRAM_access_write);
-
 			ser.Sync(nameof(read_case), ref read_case);
 			ser.Sync(nameof(internal_cycle), ref internal_cycle);
 			ser.Sync(nameof(y_tile), ref y_tile);
@@ -230,7 +225,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync(nameof(x_tile), ref x_tile);
 			ser.Sync(nameof(x_scroll_offset), ref x_scroll_offset);
 			ser.Sync(nameof(tile_byte), ref tile_byte);
-			ser.Sync(nameof(sprite_fetch_cycles), ref sprite_fetch_cycles);
 			ser.Sync(nameof(fetch_sprite), ref fetch_sprite);
 			ser.Sync(nameof(going_to_fetch), ref going_to_fetch);
 			ser.Sync(nameof(first_fetch), ref first_fetch);
@@ -252,11 +246,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync(nameof(pixel_counter), ref pixel_counter);
 			ser.Sync(nameof(pixel), ref pixel);
 			ser.Sync(nameof(sprite_data), ref sprite_data, false);
-			ser.Sync(nameof(sl_use_index), ref sl_use_index);
 			ser.Sync(nameof(sprite_sel), ref sprite_sel, false);
+			ser.Sync(nameof(sl_use_index), ref sl_use_index);
 			ser.Sync(nameof(no_sprites), ref no_sprites);
-			ser.Sync(nameof(evaled_sprites), ref evaled_sprites);
 			ser.Sync(nameof(SL_sprites_ordered), ref SL_sprites_ordered, false);
+			ser.Sync(nameof(evaled_sprites), ref evaled_sprites);
 			ser.Sync(nameof(sprite_ordered_index), ref sprite_ordered_index);
 			ser.Sync(nameof(blank_frame), ref blank_frame);
 			ser.Sync(nameof(window_latch), ref window_latch);

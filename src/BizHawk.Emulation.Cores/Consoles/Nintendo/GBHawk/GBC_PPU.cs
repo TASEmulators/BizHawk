@@ -215,6 +215,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					cur_DMA_dest = (ushort)((cur_DMA_dest & 0xFF00) | (HDMA_dest_lo & 0xF0));
 					break;
 				case 0xFF55: // HDMA5
+					//Console.WriteLine("hdma " + Core.cpu.TotalExecutedCycles);
 					if (!HDMA_active)
 					{
 						HDMA_mode = value.Bit(7);

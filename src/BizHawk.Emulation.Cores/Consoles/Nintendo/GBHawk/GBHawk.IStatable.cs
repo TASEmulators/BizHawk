@@ -7,14 +7,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 	{
 		private void SyncState(Serializer ser)
 		{
-			byte[] core = null;
-			if (ser.IsWriter)
-			{
-				using var ms = new MemoryStream();
-				ms.Close();
-				core = ms.ToArray();
-			}
-
 			ser.BeginSection("Gameboy");
 			cpu.SyncState(ser);
 			mapper.SyncState(ser);
@@ -23,7 +15,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			serialport.SyncState(ser);
 			audio.SyncState(ser);
 
-			ser.Sync(nameof(core), ref core, false);
 			ser.Sync("Lag", ref _lagcount);
 			ser.Sync("Frame", ref _frame);
 			ser.Sync("IsLag", ref _islag);

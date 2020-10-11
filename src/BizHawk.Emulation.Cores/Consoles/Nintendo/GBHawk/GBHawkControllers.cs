@@ -181,7 +181,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			// They vary widely based on physical hand movements, but this roughly matches what I observe in a real GBP
 			float temp2 = (float)((phi - 2 * phi_prev + phi_prev_2) * 59.7275 * 59.7275 * 0.1);
 
-
 			return (ushort)(0x8370 - Math.Floor(temp * 216) - temp2);
 		}
 

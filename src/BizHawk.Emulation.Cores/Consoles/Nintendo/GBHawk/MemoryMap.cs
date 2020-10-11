@@ -1,7 +1,6 @@
 ﻿using BizHawk.Emulation.Common;
 using System;
 
-
 /*
 	$FFFF          Interrupt Enable Flag
 	$FF80-$FFFE    Zero Page - 127 bytes

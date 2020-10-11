@@ -10,6 +10,7 @@ using System.Runtime.InteropServices;
 // TODO: mode1_disableint_gbc.gbc behaves differently between GBC and GBA, why?
 // TODO: oam_dma_start.gb does not behave as expected but test still passes through lucky coincidences / test deficiency
 // TODO: LYC interrupt behaves differently in GBC and GB compat mode
+// TODO: Window Position A6 behaves differently
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
@@ -31,8 +32,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public byte REG_FFFF;
 		// The unused bits in this register (interrupt flags) are always set
 		public byte REG_FF0F = 0xE0;
-		// Updating reg FF0F seemsto be delayed by one cycle
-		// tests 
+		// Updating reg FF0F seems to be delayed by one cycle,needs more testing
 		public byte REG_FF0F_OLD = 0xE0;
 
 		// memory domains
@@ -135,8 +135,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					Bios = comm.CoreFileProvider.GetFirmware("GBC", "World", true, "BIOS Not Found, Cannot Load");
 					ppu = new GBC_PPU();
 					is_GBC = true;
-				}
-				
+				}			
 			}
 			else if (_syncSettings.ConsoleMode == GBSyncSettings.ConsoleModeType.GB)
 			{

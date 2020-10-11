@@ -10,7 +10,6 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 		byte a_d;
 		bool imm;
 
-
 		public void Read_Func(ushort dest, ushort src_l, ushort src_h)
 		{
 			ushort addr = (ushort)(Regs[src_l] | (Regs[src_h]) << 8);

@@ -38,7 +38,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public byte HDMA_ctrl => (byte)(((HDMA_active ? 0 : 1) << 7) | ((HDMA_length >> 4) - 1));
 
-
 		// controls for tile attributes
 		public int VRAM_sel;
 		public bool BG_V_flip;
@@ -227,11 +226,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						HDMA_tick = 0;
 						if (value.Bit(7))
 						{
-							// HDMA during HBlank only
+							// HDMA during HBlank only, but only if screen is on, otherwise DMA immediately one block of data
+							// worms armaggedon requires HDMA to fire in hblank mode even if the screen is off.
 							HDMA_active = true;
 							HBL_HDMA_count = 0x10;
 
-							// TODO: DOES HDMA start if triggered in mode 0 immediately? (for now assume no)
 							last_HBL = LY - 1;
 
 							HBL_test = true;
@@ -1797,191 +1796,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			for (int i = 0; i < BG_bytes.Length; i++) { BG_bytes[i] = 0xFF; }
 			for (int i = 0; i < OBJ_bytes.Length; i++) { OBJ_bytes[i] = 0xFF; }
-		}
-
-		public override void Reg_Copy(GBC_PPU ppu2)
-		{
-			BG_transfer_byte = ppu2.BG_transfer_byte;
-			OBJ_transfer_byte = ppu2.OBJ_transfer_byte;
-			HDMA_src_hi = ppu2.HDMA_src_hi;
-			HDMA_src_lo = ppu2.HDMA_src_lo;
-			HDMA_dest_hi = ppu2.HDMA_dest_hi;
-			HDMA_dest_lo = ppu2.HDMA_dest_lo;
-			HDMA_tick = ppu2.HDMA_tick;
-			HDMA_byte = ppu2.HDMA_byte;
-
-			VRAM_sel = ppu2.VRAM_sel;
-			BG_V_flip = ppu2.BG_V_flip;
-			HDMA_mode = ppu2.HDMA_mode;
-			cur_DMA_src = ppu2.cur_DMA_src;
-			cur_DMA_dest = ppu2.cur_DMA_dest;
-			HDMA_length = ppu2.HDMA_length;
-			HDMA_countdown = ppu2.HDMA_countdown;
-			HBL_HDMA_count = ppu2.HBL_HDMA_count;
-			last_HBL = ppu2.last_HBL;
-			HBL_HDMA_go = ppu2.HBL_HDMA_go;
-			HBL_test = ppu2.HBL_test;
-
-			for (int i = 0; i < BG_bytes.Length; i++)
-			{
-				BG_bytes[i] = ppu2.BG_bytes[i];
-			}
-
-			for (int i = 0; i < OBJ_bytes.Length; i++)
-			{
-				OBJ_bytes[i] = ppu2.OBJ_bytes[i];
-			}
-
-			BG_bytes_inc = ppu2.BG_bytes_inc;
-			OBJ_bytes_inc = ppu2.OBJ_bytes_inc;
-			BG_bytes_index = ppu2.BG_bytes_index;
-			OBJ_bytes_index = ppu2.OBJ_bytes_index;
-
-			LYC_t = ppu2.LYC_t;
-			LYC_cd = ppu2.LYC_cd;
-
-			for (int i = 0; i < BG_palette.Length; i++)
-			{
-				BG_palette[i] = ppu2.BG_palette[i];
-			}
-
-			for (int i = 0; i < OBJ_palette.Length; i++)
-			{
-				OBJ_palette[i] = ppu2.OBJ_palette[i];
-			}
-
-			HDMA_active = ppu2.HDMA_active;
-
-			LCDC = ppu2.LCDC;
-			STAT = ppu2.STAT;
-			scroll_y = ppu2.scroll_y;
-			scroll_x = ppu2.scroll_x;
-			LY = ppu2.LY;
-			LY_actual = ppu2.LY_actual;
-			LY_inc = ppu2.LY_inc;
-			LYC = ppu2.LYC;
-			DMA_addr = ppu2.DMA_addr;
-			BGP = ppu2.BGP;
-			obj_pal_0 = ppu2.obj_pal_0;
-			obj_pal_1 = ppu2.obj_pal_1;
-			window_y = ppu2.window_y;
-			window_y_latch = ppu2.window_y_latch;
-			window_x = ppu2.window_x;
-			DMA_start = ppu2.DMA_start;
-			DMA_clock = ppu2.DMA_clock;
-			DMA_inc = ppu2.DMA_inc;
-			DMA_byte = ppu2.DMA_byte;
-
-			cycle = ppu2.cycle;
-			LYC_INT = ppu2.LYC_INT;
-			HBL_INT = ppu2.HBL_INT;
-			VBL_INT = ppu2.VBL_INT;
-			OAM_INT = ppu2.OAM_INT;
-			stat_line = ppu2.stat_line;
-			stat_line_old = ppu2.stat_line_old;
-			LCD_was_off = ppu2.LCD_was_off;
-			OAM_scan_index = ppu2.OAM_scan_index;
-			SL_sprites_index = ppu2.SL_sprites_index;
-
-			for (int i = 0; i < SL_sprites.Length; i++)
-			{
-				SL_sprites[i] = ppu2.SL_sprites[i];
-			}
-
-			write_sprite = ppu2.write_sprite;
-			no_scan = ppu2.no_scan;
-
-			DMA_OAM_access = ppu2.DMA_OAM_access;
-			OAM_access_read = ppu2.OAM_access_read;
-			OAM_access_write = ppu2.OAM_access_write;
-			VRAM_access_read = ppu2.VRAM_access_read;
-			VRAM_access_write = ppu2.VRAM_access_write;
-
-			read_case = ppu2.read_case;
-			internal_cycle = ppu2.internal_cycle;
-			y_tile = ppu2.y_tile;
-			y_scroll_offset = ppu2.y_scroll_offset;
-			x_tile = ppu2.x_tile;
-			x_scroll_offset = ppu2.x_scroll_offset;
-			tile_byte = ppu2.tile_byte;
-			sprite_fetch_cycles = ppu2.sprite_fetch_cycles;
-			fetch_sprite = ppu2.fetch_sprite;
-			going_to_fetch = ppu2.going_to_fetch;
-			first_fetch = ppu2.first_fetch;
-			sprite_fetch_counter = ppu2.sprite_fetch_counter;
-
-			for (int i = 0; i < sprite_attr_list.Length; i++)
-			{
-				sprite_attr_list[i] = ppu2.sprite_attr_list[i];
-			}
-
-			for (int i = 0; i < sprite_pixel_list.Length; i++)
-			{
-				sprite_pixel_list[i] = ppu2.sprite_pixel_list[i];
-			}
-
-			for (int i = 0; i < sprite_present_list.Length; i++)
-			{
-				sprite_present_list[i] = ppu2.sprite_present_list[i];
-			}
-
-			temp_fetch = ppu2.temp_fetch;
-			tile_inc = ppu2.tile_inc;
-			pre_render = ppu2.pre_render;
-			pre_render_2 = ppu2.pre_render_2;
-
-			for (int i = 0; i < tile_data.Length; i++)
-			{
-				tile_data[i] = ppu2.tile_data[i];
-			}
-
-			for (int i = 0; i < tile_data_latch.Length; i++)
-			{
-				tile_data_latch[i] = ppu2.tile_data_latch[i];
-			}
-
-			latch_counter = ppu2.latch_counter;
-			latch_new_data = ppu2.latch_new_data;
-			render_counter = ppu2.render_counter;
-			render_offset = ppu2.render_offset;
-			pixel_counter = ppu2.pixel_counter;
-			pixel = ppu2.pixel;
-
-			for (int i = 0; i < sprite_data.Length; i++)
-			{
-				sprite_data[i] = ppu2.sprite_data[i];
-			}
-
-			sl_use_index = ppu2.sl_use_index;
-
-			for (int i = 0; i < sprite_sel.Length; i++)
-			{
-				sprite_sel[i] = ppu2.sprite_sel[i];
-			}
-
-			no_sprites = ppu2.no_sprites;
-			evaled_sprites = ppu2.evaled_sprites;
-
-			for (int i = 0; i < SL_sprites_ordered.Length; i++)
-			{
-				SL_sprites_ordered[i] = ppu2.SL_sprites_ordered[i];
-			}
-
-			sprite_ordered_index = ppu2.sprite_ordered_index;
-			blank_frame = ppu2.blank_frame;
-			window_latch = ppu2.window_latch;
-			consecutive_sprite = ppu2.consecutive_sprite;
-			last_eval = ppu2.last_eval;
-
-			window_counter = ppu2.window_counter;
-			window_pre_render = ppu2.window_pre_render;
-			window_started = ppu2.window_started;
-			window_is_reset = ppu2.window_is_reset;
-			window_tile_inc = ppu2.window_tile_inc;
-			window_y_tile = ppu2.window_y_tile;
-			window_x_tile = ppu2.window_x_tile;
-			window_y_tile_inc = ppu2.window_y_tile_inc;
-			window_x_latch = ppu2.window_x_latch;
 		}
 	}
 }

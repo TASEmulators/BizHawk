@@ -764,8 +764,6 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 
 		void FetchInstruction(int op)
 		{
-			opcode = op;
-			
 			instr_pntr = 0;
 			
 			if (CB_prefix) { instr_pntr += 256 * 60; }
@@ -801,7 +799,6 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 			ser.Sync(nameof(instr_pntr), ref instr_pntr);
 			ser.Sync(nameof(CB_prefix), ref CB_prefix);
 			ser.Sync(nameof(stopped), ref stopped);
-			ser.Sync(nameof(opcode), ref opcode);
 			ser.Sync(nameof(jammed), ref jammed);
 			ser.Sync(nameof(LY), ref LY);
 			ser.Sync(nameof(FlagI), ref FlagI);
