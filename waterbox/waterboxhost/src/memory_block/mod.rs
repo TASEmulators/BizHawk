@@ -817,13 +817,14 @@ impl MemoryBlock {
 
 		self.refresh_all_protections();
 		self.sealed = true;
-		#[cfg(not(feature = "no-dirty-detection"))]
-		{
-			use sha2::{Sha256, Digest};
 
-			self.hash = {
-				let mut hasher = Sha256::new();
-				bin::write(&mut hasher, &self.addr).unwrap();
+		use sha2::{Sha256, Digest};
+		self.hash = {
+			let mut hasher = Sha256::new();
+			bin::write(&mut hasher, &self.addr).unwrap();
+
+			#[cfg(not(feature = "no-dirty-detection"))]
+			{
 				for p in self.pages.iter() {
 					match &p.snapshot {
 						Snapshot::None => bin::writeval(&mut hasher, 1).unwrap(),
@@ -831,9 +832,10 @@ impl MemoryBlock {
 						Snapshot::Data(d) => { hasher.write(d.slice()).unwrap(); },
 					}
 				}
-				hasher.finalize()[..].to_owned()
-			};
-		}
+			}
+
+			hasher.finalize()[..].to_owned()
+		};
 
 		Ok(())
 	}

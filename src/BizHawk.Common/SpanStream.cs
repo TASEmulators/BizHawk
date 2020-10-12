@@ -34,6 +34,9 @@ namespace BizHawk.Common
 			private readonly Stream _stream;
 			public unsafe int Read(Span<byte> buffer)
 			{
+				if (buffer.Length == 0)
+					return 0;
+
 				if (buffer.Length > _buffer.Length)
 				{
 					_buffer = new byte[buffer.Length];
@@ -48,6 +51,9 @@ namespace BizHawk.Common
 
 			public unsafe void Write(ReadOnlySpan<byte> buffer)
 			{
+				if (buffer.Length == 0)
+					return;
+
 				if (buffer.Length > _buffer.Length)
 				{
 					_buffer = new byte[buffer.Length];
