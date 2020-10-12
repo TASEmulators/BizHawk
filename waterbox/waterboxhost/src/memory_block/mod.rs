@@ -739,12 +739,16 @@ impl MemoryBlock {
 
 	/// release pages, assuming the range has been fully validated already
 	fn free_pages_impl(range: &mut PageRange, advise_only: bool) {
-		// we do not save the current state of unmapped pages, and if they are later remapped,
-		// the expectation is that they will start out as zero filled.  accordingly, the most
-		// sensible way to do this is to zero them now
 		unsafe {
-			let addr = range.mirror_addr();
-			addr.zero();
+			// We do not save the current state of unmapped pages, and if they are later remapped,
+			// the expectation is that they will start out as zero filled.  Accordingly, the most
+			// sensible way to do this is to zero them now.
+			// Since this will mutate the current memory, if they have no snapshot stored we must store one now.
+			for (maddr, p) in range.iter_mut_with_mirror_addr() {
+				p.maybe_snapshot(maddr.start);
+			}
+			range.mirror_addr().zero();
+
 			// simple state size optimization: we can undirty pages in this case depending on the initial state
 			#[cfg(not(feature = "no-dirty-detection"))]
 			for p in range.iter_mut() {
@@ -800,10 +804,18 @@ impl MemoryBlock {
 		}
 		self.get_stack_dirty();
 
-		for p in self.pages.iter_mut() {
+		for (maddr, p) in self.page_range().iter_mut_with_mirror_addr() {
 			if p.dirty && !p.invisible {
 				p.dirty = false;
 				p.snapshot = Snapshot::None;
+
+				// Just as we needed to precapture RWStack snapshots when allocating on Windows, we also do when sealing
+				#[cfg(windows)]
+				if p.status == PageAllocation::Allocated(Protection::RWStack) {
+					unsafe {
+						p.maybe_snapshot(maddr.start)
+					}
+				}
 			}
 		}
 

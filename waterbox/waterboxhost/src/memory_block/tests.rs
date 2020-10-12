@@ -423,6 +423,64 @@ fn test_state_invisible() -> TestResult {
 	}
 }
 
+// Snapshot loss in normal memory:
+// If memory was allocated and had non-zero values in it when originally sealed, but then was deallocated
+// without ever being written to, that deallocation has to store the old state in the snapshot.  This used
+// to work but was broken when mirror addresses were added.
+#[test]
+fn test_state_snapshot_loss_norm() -> TestResult {
+	unsafe {
+		let addr = AddressRange { start: 0x36a00000000, size: 0x10000 };
+		let mut b = MemoryBlock::new(addr);
+		b.activate();
+		let ptr = b.addr.slice_mut();
+		b.mmap_fixed(addr, Protection::RW, true)?;
+		ptr[0xfff2] = 2;
+
+		b.seal()?;
+
+		let mut state0 = Vec::new();
+		b.save_state(&mut state0)?;
+
+		b.munmap(addr)?;
+
+		b.load_state(&mut state0.as_slice())?;
+		assert_eq!(ptr[0xfff2], 2);
+
+		Ok(())
+	}
+}
+
+// Snapshot loss in stack memory (windows only):
+// On Windows, we must pregrab snapshots for all stack area when it is allocated, because we can't reliably
+// handler it.  But this also has to rehappen when we seal the memory and potentially wipe the old snapshot.
+#[test]
+fn test_state_snapshot_loss_stack() -> TestResult {
+	unsafe {
+		let addr = AddressRange { start: 0x36d00000000, size: 0x10000 };
+		let mut b = MemoryBlock::new(addr);
+		b.activate();
+		let ptr = b.addr.slice_mut();
+		b.mmap_fixed(addr, Protection::RWStack, true)?;
+		ptr[0xfff2] = 2;
+
+		b.seal()?;
+
+		let mut state0 = Vec::new();
+		b.save_state(&mut state0)?;
+		// no pages should be in the state
+		assert!(state0.len() < 0x1000);
+
+		ptr[0xfff3] = 3;
+
+		b.load_state(&mut state0.as_slice())?;
+		assert_eq!(ptr[0xfff2], 2);
+		assert_eq!(ptr[0xfff3], 0);
+
+		Ok(())
+	}
+}
+
 #[test]
 fn test_dontneed() -> TestResult {
 	unsafe {
