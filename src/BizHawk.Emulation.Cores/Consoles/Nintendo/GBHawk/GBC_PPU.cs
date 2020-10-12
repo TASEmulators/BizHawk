@@ -1157,6 +1157,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								// unlike for the normal background case, there is no pre-render period for the window
 								// so start shifting in data to the screen right away
 								pre_render_2 = false;
+								first_fetch = true;
 
 								if (window_x_latch <= 7)
 								{
