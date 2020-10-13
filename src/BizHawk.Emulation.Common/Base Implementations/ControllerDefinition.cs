@@ -41,27 +41,7 @@ namespace BizHawk.Emulation.Common
 		/// This is a default implementation that should work most of the time
 		/// </summary>
 		public virtual IEnumerable<IEnumerable<string>> ControlsOrdered
-		{
-			get
-			{
-				var list = new List<string>(Axes.Keys);
-				list.AddRange(BoolButtons);
-
-				// starts with console buttons, then each player's buttons individually
-				var ret = new List<string>[PlayerCount + 1];
-				for (int i = 0; i < ret.Length; i++)
-				{
-					ret[i] = new List<string>();
-				}
-
-				foreach (string btn in list)
-				{
-					ret[PlayerNumber(btn)].Add(btn);
-				}
-
-				return ret;
-			}
-		}
+			=> Axes.Keys.Concat(BoolButtons).GroupBy(PlayerNumber).OrderBy(grouping => grouping.Key);
 
 		public int PlayerNumber(string buttonName)
 		{

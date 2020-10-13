@@ -33,29 +33,26 @@ namespace BizHawk.Client.Common
 
 			foreach (var group in _source.Definition.ControlsOrdered)
 			{
-				if (group.Any())
+				foreach (var button in group)
 				{
-					foreach (var button in group)
+					if (_source.Definition.Axes.TryGetValue(button, out var range))
 					{
-						if (_source.Definition.Axes.TryGetValue(button, out var range))
-						{
-							var val = _source.AxisValue(button);
+						var val = _source.AxisValue(button);
 
-							if (val == range.Neutral)
-							{
-								sb.Append("      ");
-							}
-							else
-							{
-								sb.Append(val.ToString().PadLeft(5, ' ')).Append(',');
-							}
-						}
-						else if (_source.Definition.BoolButtons.Contains(button))
+						if (val == range.Neutral)
 						{
-							sb.Append(_source.IsPressed(button)
-								? Bk2MnemonicLookup.Lookup(button, _systemId)
-								: ' ');
+							sb.Append("      ");
 						}
+						else
+						{
+							sb.Append(val.ToString().PadLeft(5, ' ')).Append(',');
+						}
+					}
+					else if (_source.Definition.BoolButtons.Contains(button))
+					{
+						sb.Append(_source.IsPressed(button)
+							? Bk2MnemonicLookup.Lookup(button, _systemId)
+							: ' ');
 					}
 				}
 			}
