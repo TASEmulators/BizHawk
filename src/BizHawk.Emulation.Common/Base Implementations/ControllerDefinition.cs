@@ -36,24 +36,6 @@ namespace BizHawk.Emulation.Common
 		/// </summary>
 		public Dictionary<string, string> CategoryLabels { get; } = new Dictionary<string, string>();
 
-		public void ApplyAxisConstraints(string constraintClass, IDictionary<string, int> axes)
-		{
-			if (!Axes.HasContraints) return;
-			foreach (var kvp in Axes)
-			{
-				var constraint = kvp.Value.Constraint;
-				if (constraint == null || constraint.Class != constraintClass) continue;
-				switch (constraint)
-				{
-					case CircularAxisConstraint circular:
-						var xAxis = kvp.Key;
-						var yAxis = circular.PairedAxis;
-						(axes[xAxis], axes[yAxis]) = circular.ApplyTo(axes[xAxis], axes[yAxis]);
-						break;
-				}
-			}
-		}
-
 		/// <summary>
 		/// Gets a list of controls put in a logical order such as by controller number,
 		/// This is a default implementation that should work most of the time
@@ -109,11 +91,6 @@ namespace BizHawk.Emulation.Common
 				// Hack for things like gameboy/ti-83 as opposed to genesis with no controllers plugged in
 				return allNames.Any(b => b.StartsWith("Up")) ? 1 : 0;
 			}
-		}
-
-		public bool Any()
-		{
-			return BoolButtons.Any() || Axes.Any();
 		}
 	}
 }

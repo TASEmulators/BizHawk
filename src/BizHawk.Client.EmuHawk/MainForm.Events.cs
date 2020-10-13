@@ -763,7 +763,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ConfigSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			ControllersMenuItem.Enabled = Emulator.ControllerDefinition.Any();
+			ControllersMenuItem.Enabled = !Emulator.ControllerDefinition.IsEmpty();
 			RewindOptionsMenuItem.Enabled = Emulator.HasSavestates();
 		}
 
@@ -1169,7 +1169,7 @@ namespace BizHawk.Client.EmuHawk
 
 			GameSharkConverterMenuItem.Enabled = Tools.IsAvailable<GameShark>();
 			MacroToolMenuItem.Enabled = MovieSession.Movie.IsActive() && Tools.IsAvailable<MacroInputTool>();
-			VirtualPadMenuItem.Enabled = Emulator.ControllerDefinition.Any();
+			VirtualPadMenuItem.Enabled = !Emulator.ControllerDefinition.IsEmpty();
 		}
 
 		private void ExternalToolMenuItem_DropDownOpening(object sender, EventArgs e)
