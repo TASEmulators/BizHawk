@@ -7,7 +7,7 @@ namespace BizHawk.Client.Common
 	/// </summary>
 	public class CopyControllerAdapter : IInputAdapter
 	{
-		public ControllerDefinition Definition => Curr.Definition;
+		public IVGamepadDef Definition => Curr.Definition;
 
 		public bool IsPressed(string button) => Curr.IsPressed(button);
 

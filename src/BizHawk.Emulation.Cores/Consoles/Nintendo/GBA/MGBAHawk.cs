@@ -85,7 +85,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		public IEmulatorServiceProvider ServiceProvider { get; }
 
-		public ControllerDefinition ControllerDefinition => GBAController;
+		public IVGamepadDef ControllerDefinition => GBAController;
 
 		private ITraceable Tracer { get; }
 

@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 	{
 		public IEmulatorServiceProvider ServiceProvider { get; }
 
-		public ControllerDefinition ControllerDefinition => _controllerDeck.Definition;
+		public IVGamepadDef ControllerDefinition => _controllerDeck.Definition;
 
 		public bool FrameAdvance(IController controller, bool render, bool renderSound)
 		{

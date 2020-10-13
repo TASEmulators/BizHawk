@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 	{
 		public IEmulatorServiceProvider ServiceProvider { get; }
 
-		public ControllerDefinition ControllerDefinition => C64ControllerDefinition;
+		public IVGamepadDef ControllerDefinition => C64ControllerDefinition;
 
 		public bool FrameAdvance(IController controller, bool render, bool renderSound)
 		{

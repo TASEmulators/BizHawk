@@ -4,7 +4,7 @@ namespace BizHawk.Client.Common
 {
 	public class AndAdapter : IInputAdapter
 	{
-		public ControllerDefinition Definition => Source.Definition;
+		public IVGamepadDef Definition => Source.Definition;
 
 		public bool IsPressed(string button)
 		{
@@ -26,7 +26,7 @@ namespace BizHawk.Client.Common
 
 	public class XorAdapter : IInputAdapter
 	{
-		public ControllerDefinition Definition => Source.Definition;
+		public IVGamepadDef Definition => Source.Definition;
 
 		public bool IsPressed(string button)
 		{
@@ -48,7 +48,7 @@ namespace BizHawk.Client.Common
 
 	public class ORAdapter : IInputAdapter
 	{
-		public ControllerDefinition Definition => Source.Definition;
+		public IVGamepadDef Definition => Source.Definition;
 
 		public bool IsPressed(string button)
 		{

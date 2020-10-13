@@ -12,7 +12,7 @@ namespace BizHawk.Client.Common
 	{
 		private readonly HashSet<string> _pressed = new HashSet<string>();
 
-		public ControllerDefinition Definition { get; set; }
+		public IVGamepadDef Definition { get; set; }
 
 		public bool IsPressed(string button) => _pressed.Contains(button);
 

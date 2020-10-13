@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 	{
 		public IEmulatorServiceProvider ServiceProvider { get; }
 
-		public ControllerDefinition ControllerDefinition => _controllerDeck.Definition;
+		public IVGamepadDef ControllerDefinition => _controllerDeck.Definition;
 
 		public byte controller_state;
 		public ushort Acc_X_state;

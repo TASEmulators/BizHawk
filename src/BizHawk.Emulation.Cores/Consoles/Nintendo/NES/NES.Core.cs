@@ -1,6 +1,7 @@
 // NOTE: to match Mesen timings, set idleSynch to true at power on, and set start_up_offset to -3
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 using BizHawk.Common;
@@ -135,32 +136,34 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			// set controller definition first time only
 			if (ControllerDefinition == null)
 			{
-				ControllerDefinition = new ControllerDefinition(ControllerDeck.GetDefinition());
+				var buttons = new List<string>();
 
 				// controls other than the deck
-				ControllerDefinition.BoolButtons.Add("Power");
-				ControllerDefinition.BoolButtons.Add("Reset");
+				buttons.Add("Power");
+				buttons.Add("Reset");
 				if (Board is FDS b)
 				{
-					ControllerDefinition.BoolButtons.Add("FDS Eject");
+					buttons.Add("FDS Eject");
 					for (int i = 0; i < b.NumSides; i++)
 					{
-						ControllerDefinition.BoolButtons.Add("FDS Insert " + i);
+						buttons.Add("FDS Insert " + i);
 					}
 				}
 
 				if (_isVS)
 				{
-					ControllerDefinition.BoolButtons.Add("Insert Coin P1");
-					ControllerDefinition.BoolButtons.Add("Insert Coin P2");
-					ControllerDefinition.BoolButtons.Add("Service Switch");
+					buttons.Add("Insert Coin P1");
+					buttons.Add("Insert Coin P2");
+					buttons.Add("Service Switch");
 				}
+
+				ControllerDefinition = new ControllerDefinition(ControllerDeck.GetDefinition()) { BoolButtons = buttons };
 			}
 
 			// Add in the reset timing axis for subneshawk
 			if (using_reset_timing && ControllerDefinition.Axes.Count == 0)
 			{
-				ControllerDefinition.AddAxis("Reset Cycle", 0.RangeTo(500000), 0);
+				((ControllerDefinition) ControllerDefinition).AddAxis("Reset Cycle", 0.RangeTo(500000), 0);
 			}
 
 			// don't replace the magicSoundProvider on reset, as it's not needed

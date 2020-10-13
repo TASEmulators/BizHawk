@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Common
 		/// By design this should not change during the lifetime of the instance of the core
 		/// To change the definition, a new instance should be created
 		/// </summary>
-		ControllerDefinition ControllerDefinition { get; }
+		IVGamepadDef ControllerDefinition { get; }
 
 		/// <summary>
 		/// Runs the emulator core for 1 frame

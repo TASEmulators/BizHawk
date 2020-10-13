@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 	{
 		public IEmulatorServiceProvider ServiceProvider { get; }
 
-		public ControllerDefinition ControllerDefinition => DualGbController;
+		public IVGamepadDef ControllerDefinition => DualGbController;
 
 		public bool FrameAdvance(IController controller, bool render, bool rendersound = true)
 		{

@@ -232,7 +232,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 		}
 
 		private ControllerDefinition _controllerDefinition;
-		public override ControllerDefinition ControllerDefinition => _controllerDefinition;
+		public override IVGamepadDef ControllerDefinition => _controllerDefinition;
 
 		public DisplayType Region { get; }
 

@@ -27,7 +27,7 @@ namespace BizHawk.Client.Common
 		public int On { get; set; }
 		public int Off { get; set; }
 
-		public ControllerDefinition Definition => _emulator.ControllerDefinition;
+		public IVGamepadDef Definition => _emulator.ControllerDefinition;
 
 		public bool IsPressed(string button)
 		{

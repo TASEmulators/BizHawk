@@ -108,7 +108,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 
 		private static readonly ControllerDefinition _gbDefinition;
 		private static readonly ControllerDefinition _sgbDefinition;
-		public override ControllerDefinition ControllerDefinition => _sgb ? _sgbDefinition : _gbDefinition;
+		public override IVGamepadDef ControllerDefinition => _sgb ? _sgbDefinition : _gbDefinition;
 
 		private static ControllerDefinition CreateControllerDefinition(int p)
 		{

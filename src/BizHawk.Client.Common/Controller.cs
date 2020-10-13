@@ -9,7 +9,7 @@ namespace BizHawk.Client.Common
 {
 	public class Controller : IController
 	{
-		public Controller(ControllerDefinition definition)
+		public Controller(IVGamepadDef definition)
 		{
 			Definition = definition;
 			foreach (var kvp in Definition.Axes)
@@ -19,7 +19,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public ControllerDefinition Definition { get; private set; }
+		public IVGamepadDef Definition { get; private set; }
 
 		public bool IsPressed(string button) => _buttons[button];
 

@@ -62,7 +62,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 				{ "P2 A", "Rotated" },
 			}
 		};
-		public ControllerDefinition ControllerDefinition => WonderSwanController;
+		public IVGamepadDef ControllerDefinition => WonderSwanController;
 
 		BizSwan.Buttons GetButtons(IController controller)
 		{

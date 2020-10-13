@@ -278,7 +278,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 			return definition;
 		}
 
-		public ControllerDefinition ControllerDefinition { get; }
+		public IVGamepadDef ControllerDefinition { get; }
 
 		int timeFrameCounter;
 		public int Frame

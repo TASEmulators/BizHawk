@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 	{
 		public IEmulatorServiceProvider ServiceProvider { get; }
 
-		public ControllerDefinition ControllerDefinition => _controllerDeck.Definition;
+		public IVGamepadDef ControllerDefinition => _controllerDeck.Definition;
 
 		public int L_NMI_CD, R_NMI_CD;
 

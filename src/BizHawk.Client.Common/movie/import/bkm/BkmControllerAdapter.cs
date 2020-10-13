@@ -1,11 +1,13 @@
-﻿using BizHawk.Common;
+﻿using System.Linq;
+
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
 	internal class BkmControllerAdapter : IController
 	{
-		public BkmControllerAdapter(ControllerDefinition definition, string systemId)
+		public BkmControllerAdapter(IVGamepadDef definition, string systemId)
 		{
 			Definition = new ControllerDefinition(
 				source: definition,
@@ -32,7 +34,7 @@ namespace BizHawk.Client.Common
 			);
 		}
 
-		public ControllerDefinition Definition { get; set; }
+		public IVGamepadDef Definition { get; set; }
 
 		public bool IsPressed(string button)
 		{

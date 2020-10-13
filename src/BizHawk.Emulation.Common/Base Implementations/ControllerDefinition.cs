@@ -14,12 +14,13 @@ namespace BizHawk.Emulation.Common
 
 		public ControllerDefinition(string name) : this() => Name = name;
 
-		public ControllerDefinition(ControllerDefinition source, string name = null)
+		public ControllerDefinition(IVGamepadDef source, string name = null)
 			: this(name ?? source.Name)
 		{
 			BoolButtons.AddRange(source.BoolButtons);
 			foreach (var kvp in source.Axes) Axes.Add(kvp);
-			CategoryLabels = source.CategoryLabels;
+			CategoryLabels = source.CategoryLabels as Dictionary<string, string>
+				?? source.CategoryLabels.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 		}
 
 		public string Name { get; }

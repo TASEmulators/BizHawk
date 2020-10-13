@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Common
 		/// <summary>
 		/// merge some controller definitions for different ports, and such.  i promise to fully document this tomorrow
 		/// </summary>
-		public static ControllerDefinition GetMerged(IEnumerable<ControllerDefinition> controllers, string mergedName, out List<ControlDefUnMerger> unmergers)
+		public static ControllerDefinition GetMerged(IEnumerable<IVGamepadDef> controllers, string mergedName, out List<ControlDefUnMerger> unmergers)
 		{
 			var ret = new ControllerDefinition(mergedName);
 			unmergers = new List<ControlDefUnMerger>();
@@ -71,7 +71,7 @@ namespace BizHawk.Emulation.Common
 			}
 
 			/// <exception cref="NotImplementedException">always</exception>
-			public ControllerDefinition Definition => throw new NotImplementedException();
+			public IVGamepadDef Definition => throw new NotImplementedException();
 
 			public bool IsPressed(string button)
 			{

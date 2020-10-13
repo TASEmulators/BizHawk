@@ -113,7 +113,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 				.ToList()
 		};
 
-		public override ControllerDefinition ControllerDefinition => VirtualBoyController;
+		public override IVGamepadDef ControllerDefinition => VirtualBoyController;
 
 		public class SyncSettings
 		{

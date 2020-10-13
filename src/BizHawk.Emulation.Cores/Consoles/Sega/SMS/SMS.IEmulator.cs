@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 	{
 		public IEmulatorServiceProvider ServiceProvider { get; }
 
-		public ControllerDefinition ControllerDefinition
+		public IVGamepadDef ControllerDefinition
 		{
 			get
 			{

@@ -47,7 +47,7 @@ namespace BizHawk.Client.Common
 		/// current <see cref="MovieController" /> button definition
 		/// will be used
 		/// </summary>
-		IMovieController GenerateMovieController(ControllerDefinition definition = null);
+		IMovieController GenerateMovieController(IVGamepadDef definition = null);
 
 		void HandleFrameBefore();
 		void HandleFrameAfter();

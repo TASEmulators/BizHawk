@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 	{
 		public IEmulatorServiceProvider ServiceProvider { get; }
 
-		public ControllerDefinition ControllerDefinition { get; private set; }
+		public IVGamepadDef ControllerDefinition { get; private set; }
 
 		public bool FrameAdvance(IController controller, bool render, bool renderSound = true)
 		{

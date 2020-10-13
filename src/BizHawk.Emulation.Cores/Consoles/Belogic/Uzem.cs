@@ -108,7 +108,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Belogic
 			return ret;
 		}
 
-		public override ControllerDefinition ControllerDefinition => _mouseEnabled ? Mouse : TwoPads;
+		public override IVGamepadDef ControllerDefinition => _mouseEnabled ? Mouse : TwoPads;
 
 		protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
 		{

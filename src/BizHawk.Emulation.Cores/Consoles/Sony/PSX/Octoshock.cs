@@ -905,7 +905,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			return true;
 		}
 
-		public ControllerDefinition ControllerDefinition { get; private set; }
+		public IVGamepadDef ControllerDefinition { get; private set; }
 
 		public int Frame { get; private set; }
 		public int LagCount { get; set; }

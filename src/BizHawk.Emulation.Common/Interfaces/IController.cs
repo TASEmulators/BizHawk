@@ -5,7 +5,7 @@
 		/// <summary>
 		/// Gets a definition of the controller schema, including all currently available buttons and their types
 		/// </summary>
-		ControllerDefinition Definition { get; }
+		IVGamepadDef Definition { get; }
 
 		/// <summary>
 		/// Returns the current state of a boolean control

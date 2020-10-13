@@ -82,7 +82,7 @@ namespace BizHawk.Client.Common
 			AutofireStickyXorAdapter.MassToggleStickyState(ActiveController.PressedButtons);
 		}
 
-		private static Controller BindToDefinition(ControllerDefinition def, IDictionary<string, Dictionary<string, string>> allBinds, IDictionary<string, Dictionary<string, AnalogBind>> analogBinds)
+		private static Controller BindToDefinition(IVGamepadDef def, IDictionary<string, Dictionary<string, string>> allBinds, IDictionary<string, Dictionary<string, AnalogBind>> analogBinds)
 		{
 			var ret = new Controller(def);
 			if (allBinds.TryGetValue(def.Name, out var binds))

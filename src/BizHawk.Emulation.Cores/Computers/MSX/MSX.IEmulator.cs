@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 	{
 		public IEmulatorServiceProvider ServiceProvider { get; }
 
-		public ControllerDefinition ControllerDefinition => current_controller;
+		public IVGamepadDef ControllerDefinition => current_controller;
 
 		public bool FrameAdvance(IController controller, bool render, bool rendersound)
 		{

@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 	{
 		public IEmulatorServiceProvider ServiceProvider { get; }
 
-		public ControllerDefinition ControllerDefinition => AppleIIController;
+		public IVGamepadDef ControllerDefinition => AppleIIController;
 
 		private int _frame;
 		public int Frame { get => _frame; set => _frame = value; }

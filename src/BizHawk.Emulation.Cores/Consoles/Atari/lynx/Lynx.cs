@@ -164,7 +164,7 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 			BoolButtons = { "Up", "Down", "Left", "Right", "A", "B", "Option 1", "Option 2", "Pause", "Power" },
 		};
 
-		public ControllerDefinition ControllerDefinition => LynxTroller;
+		public IVGamepadDef ControllerDefinition => LynxTroller;
 
 		private LibLynx.Buttons GetButtons(IController controller)
 		{

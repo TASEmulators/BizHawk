@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 	{
 		public IEmulatorServiceProvider ServiceProvider { get; }
 
-		public ControllerDefinition ControllerDefinition => _controllerDeck.Definition;
+		public IVGamepadDef ControllerDefinition => _controllerDeck.Definition;
 
 		byte joy1_LR, joy2_LR, joy1_UD, joy2_UD;
 

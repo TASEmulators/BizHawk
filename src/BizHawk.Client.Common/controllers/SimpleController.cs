@@ -10,7 +10,7 @@ namespace BizHawk.Client.Common
 	/// </summary>
 	public class SimpleController : IController
 	{
-		public ControllerDefinition Definition { get; set; }
+		public IVGamepadDef Definition { get; set; }
 
 		protected WorkingDictionary<string, bool> Buttons { get; private set; } = new WorkingDictionary<string, bool>();
 		protected WorkingDictionary<string, int> Axes { get; private set; } = new WorkingDictionary<string, int>();

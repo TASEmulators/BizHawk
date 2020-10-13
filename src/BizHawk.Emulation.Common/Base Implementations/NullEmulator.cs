@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.Common
 
 		public IEmulatorServiceProvider ServiceProvider { get; }
 
-		public ControllerDefinition ControllerDefinition => NullController.Instance.Definition;
+		public IVGamepadDef ControllerDefinition => NullController.Instance.Definition;
 
 		public bool FrameAdvance(IController controller, bool render, bool renderSound)
 		{
