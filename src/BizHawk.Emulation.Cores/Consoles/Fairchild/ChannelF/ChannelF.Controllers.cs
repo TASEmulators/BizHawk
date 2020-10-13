@@ -123,10 +123,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		{
 			get
 			{
-				ControllerDefinition definition = new ControllerDefinition
-				{
-					Name = "ChannelF Controller"
-				};
+				var definition = new ControllerDefinition("ChannelF Controller");
 
 				string pre = "P1 ";
 

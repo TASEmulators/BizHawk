@@ -26,9 +26,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 		public StandardControls(int portNum)
 		{
 			PortNum = portNum;
-			Definition = new ControllerDefinition
+			Definition = new ControllerDefinition("Vectrex Digital Controller")
 			{
-				Name = "Vectrex Digital Controller",
 				BoolButtons = BaseDefinition
 				.Select(b => "P" + PortNum + " " + b)
 				.ToList(),
@@ -75,9 +74,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 		public AnalogControls(int portNum)
 		{
 			PortNum = portNum;
-			Definition = new ControllerDefinition
+			Definition = new ControllerDefinition("Vectrex Analog Controller")
 			{
-				Name = "Vectrex Analog Controller",
 				BoolButtons = BaseDefinition.Select(b => $"P{PortNum} {b}").ToList()
 			}.AddXYPair($"P{PortNum} Stick {{0}}", AxisPairOrientation.RightAndUp, (-128).RangeTo(127), 0);
 		}

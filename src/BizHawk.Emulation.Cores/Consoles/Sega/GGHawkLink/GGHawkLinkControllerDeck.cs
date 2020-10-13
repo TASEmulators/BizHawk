@@ -19,9 +19,8 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 				? ctor2(2)
 				: throw new InvalidOperationException($"Invalid controller type: {controller2Name}");
 
-			Definition = new ControllerDefinition
+			Definition = new ControllerDefinition(Port1.Definition.Name)
 			{
-				Name = Port1.Definition.Name,
 				BoolButtons = Port1.Definition.BoolButtons
 					.Concat(Port2.Definition.BoolButtons)
 					.Concat(new[] { "Toggle Cable" } )

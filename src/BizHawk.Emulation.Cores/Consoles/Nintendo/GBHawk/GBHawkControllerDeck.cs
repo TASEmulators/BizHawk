@@ -16,9 +16,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				? ctor1(1)
 				: throw new InvalidOperationException($"Invalid controller type: {controller1Name}");
 
-			Definition = new ControllerDefinition
+			Definition = new ControllerDefinition(Port1.Definition.Name)
 			{
-				Name = Port1.Definition.Name,
 				BoolButtons = Port1.Definition.BoolButtons
 					.ToList()
 			};

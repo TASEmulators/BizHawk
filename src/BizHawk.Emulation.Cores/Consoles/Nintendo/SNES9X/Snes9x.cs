@@ -109,12 +109,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 			}
 
 			_controllerDefinition = ControllerDefinitionMerger.GetMerged(
-				_controllers.Select(c => c.Definition), out _cdums);
+				_controllers.Select(c => c.Definition),
+				"SNES Controller",
+				out _cdums
+			);
 
 			// add buttons that the core itself will handle
 			_controllerDefinition.BoolButtons.Add("Reset");
 			_controllerDefinition.BoolButtons.Add("Power");
-			_controllerDefinition.Name = "SNES Controller";
 		}
 
 		private void UpdateControls(IController c)

@@ -159,9 +159,8 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 			}
 		}
 
-		private static readonly ControllerDefinition LynxTroller = new ControllerDefinition
+		private static readonly ControllerDefinition LynxTroller = new ControllerDefinition("Lynx Controller")
 		{
-			Name = "Lynx Controller",
 			BoolButtons = { "Up", "Down", "Left", "Right", "A", "B", "Option 1", "Option 2", "Pause", "Power" },
 		};
 

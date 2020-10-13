@@ -8,9 +8,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 {
 	public partial class SMS
 	{
-		public static readonly ControllerDefinition SmsController = new ControllerDefinition
+		public static readonly ControllerDefinition SmsController = new ControllerDefinition("SMS Controller")
 		{
-			Name = "SMS Controller",
 			BoolButtons =
 				{
 					"Reset", "Pause",
@@ -19,9 +18,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				}
 		};
 
-		public static readonly ControllerDefinition GGController = new ControllerDefinition
+		public static readonly ControllerDefinition GGController = new ControllerDefinition("GG Controller")
 		{
-			Name = "GG Controller",
 			BoolButtons =
 				{
 					"Reset",
@@ -29,9 +27,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				}
 		};
 
-		public static readonly ControllerDefinition SMSPaddleController = new ControllerDefinition
+		public static readonly ControllerDefinition SMSPaddleController = new ControllerDefinition("SMS Paddle Controller")
 		{
-			Name = "SMS Paddle Controller",
 			BoolButtons =
 			{
 				"Reset", "Pause",
@@ -41,9 +38,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		}.AddAxis("P1 Paddle", 0.RangeTo(255), 128)
 			.AddAxis("P2 Paddle", 0.RangeTo(255), 128);
 
-		public static readonly ControllerDefinition SMSLightPhaserController = new ControllerDefinition
+		public static readonly ControllerDefinition SMSLightPhaserController = new ControllerDefinition("SMS Light Phaser Controller")
 		{
-			Name = "SMS Light Phaser Controller",
 			BoolButtons =
 			{
 				"Reset", "Pause",
@@ -51,9 +47,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			}
 		}.AddXYPair("P1 {0}", AxisPairOrientation.RightAndUp, 0.RangeTo(127), 64, 0.RangeTo(1000), 500); //TODO verify direction against hardware
 
-		public static readonly ControllerDefinition SMSSportsPadController = new ControllerDefinition
+		public static readonly ControllerDefinition SMSSportsPadController = new ControllerDefinition("SMS Sports Pad Controller")
 		{
-			Name = "SMS Sports Pad Controller",
 			BoolButtons =
 			{
 				"Reset", "Pause",
@@ -63,9 +58,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		}.AddXYPair("P1 {0}", AxisPairOrientation.RightAndUp, (-64).RangeTo(63), 0) //TODO verify direction against hardware
 			.AddXYPair("P2 {0}", AxisPairOrientation.RightAndUp, (-64).RangeTo(63), 0); //TODO ditto
 
-		public static readonly ControllerDefinition SMSKeyboardController = new ControllerDefinition
+		public static readonly ControllerDefinition SMSKeyboardController = new ControllerDefinition("SMS Keyboard Controller")
 		{
-			Name = "SMS Keyboard Controller",
 			BoolButtons =
 			{
 				"Key 1", "Key 2", "Key 3", "Key 4", "Key 5", "Key 6", "Key 7", "Key 8", "Key 9", "Key 0", "Key Minus", "Key Caret", "Key Yen", "Key Break",

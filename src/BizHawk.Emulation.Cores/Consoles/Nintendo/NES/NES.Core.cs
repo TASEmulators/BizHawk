@@ -135,10 +135,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			// set controller definition first time only
 			if (ControllerDefinition == null)
 			{
-				ControllerDefinition = new ControllerDefinition(ControllerDeck.GetDefinition())
-				{
-					Name = "NES Controller"
-				};
+				ControllerDefinition = new ControllerDefinition(ControllerDeck.GetDefinition());
 
 				// controls other than the deck
 				ControllerDefinition.BoolButtons.Add("Power");

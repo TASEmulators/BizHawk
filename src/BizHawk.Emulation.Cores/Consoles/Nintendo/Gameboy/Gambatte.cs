@@ -204,9 +204,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public long CycleCount => (long)_cycleCount;
 		public double ClockRate => TICKSPERSECOND;
 
-		public static readonly ControllerDefinition GbController = new ControllerDefinition
+		public static readonly ControllerDefinition GbController = new ControllerDefinition("Gameboy Controller")
 		{
-			Name = "Gameboy Controller",
 			BoolButtons =
 			{
 				"Up", "Down", "Left", "Right", "Start", "Select", "B", "A", "Power"

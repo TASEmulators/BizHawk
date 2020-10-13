@@ -83,9 +83,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			return right ? R.IsCGBMode() : L.IsCGBMode();
 		}
 
-		private static readonly ControllerDefinition DualGbController = new ControllerDefinition
+		private static readonly ControllerDefinition DualGbController = new ControllerDefinition("Dual Gameboy Controller")
 		{
-			Name = "Dual Gameboy Controller",
 			BoolButtons =
 			{
 				"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 A", "P1 B", "P1 Select", "P1 Start", "P1 Power",

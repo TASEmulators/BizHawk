@@ -26,9 +26,8 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 		public StandardControls(int portNum)
 		{
 			PortNum = portNum;
-			Definition = new ControllerDefinition
+			Definition = new ControllerDefinition("O2 Joystick")
 			{
-				Name = "O2 Joystick",
 				BoolButtons = BaseDefinition
 				.Select(b => "P" + PortNum + " " + b)
 				.ToList()

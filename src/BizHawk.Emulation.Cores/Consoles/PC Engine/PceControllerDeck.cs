@@ -33,9 +33,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			_port4 = (IPort)Activator.CreateInstance(Implementors[(int)controller4], 4);
 			_port5 = (IPort)Activator.CreateInstance(Implementors[(int)controller5], 5);
 
-			Definition = new ControllerDefinition
+			Definition = new ControllerDefinition("PC Engine Controller")
 			{
-				Name = "PC Engine Controller",
 				BoolButtons = _port1.Definition.BoolButtons
 					.Concat(_port2.Definition.BoolButtons)
 					.Concat(_port3.Definition.BoolButtons)

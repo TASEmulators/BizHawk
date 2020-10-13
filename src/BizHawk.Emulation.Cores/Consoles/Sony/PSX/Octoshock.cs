@@ -288,7 +288,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		public static ControllerDefinition CreateControllerDefinition(SyncSettings syncSettings)
 		{
-			var definition = new ControllerDefinition { Name = "PSX Front Panel" };
+			var definition = new ControllerDefinition("PSX Front Panel");
 
 			var cfg = syncSettings.FIOConfig.ToLogical();
 

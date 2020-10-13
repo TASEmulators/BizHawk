@@ -16,10 +16,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		{
 			get
 			{
-				var definition = new ControllerDefinition
-				{
-					Name = "AmstradCPC Controller"
-				};
+				var definition = new ControllerDefinition("AmstradCPC Controller");
 
 				// joysticks
 				var joys1 = new List<string>

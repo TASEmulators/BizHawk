@@ -21,9 +21,8 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 			if (is_G7400)
 			{
-				Definition = new ControllerDefinition
+				Definition = new ControllerDefinition(Port1.Definition.Name)
 				{
-					Name = Port1.Definition.Name,
 					BoolButtons = Port1.Definition.BoolButtons
 					.Concat(Port2.Definition.BoolButtons)
 					.Concat(new[]
@@ -42,9 +41,8 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			}
 			else
 			{
-				Definition = new ControllerDefinition
+				Definition = new ControllerDefinition(Port1.Definition.Name)
 				{
-					Name = Port1.Definition.Name,
 					BoolButtons = Port1.Definition.BoolButtons
 					.Concat(Port2.Definition.BoolButtons)
 					.Concat(new[]

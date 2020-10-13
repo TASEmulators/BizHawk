@@ -19,9 +19,8 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 				? ctor2(2)
 				: throw new InvalidOperationException($"Invalid controller type: {controller2Name}");
 
-			Definition = new ControllerDefinition
+			Definition = new ControllerDefinition("ColecoVision Basic Controller")
 			{
-				Name = "ColecoVision Basic Controller",
 				BoolButtons = Port1.Definition.BoolButtons
 					.Concat(Port2.Definition.BoolButtons)
 					.Concat(new[]

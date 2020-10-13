@@ -701,9 +701,8 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			}
 		}
 
-		public static ControllerDefinition MAMEController = new ControllerDefinition
+		public static ControllerDefinition MAMEController = new ControllerDefinition("MAME Controller")
 		{
-			Name = "MAME Controller",
 			BoolButtons = new List<string>()
 		};
 

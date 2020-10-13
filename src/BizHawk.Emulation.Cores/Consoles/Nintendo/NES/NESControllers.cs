@@ -134,7 +134,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			this.Left = Left;
 			this.Right = Right;
-			Definition = ControllerDefinitionMerger.GetMerged(new[] { Left.GetDefinition(), Right.GetDefinition() }, out var cdum);
+			Definition = ControllerDefinitionMerger.GetMerged(
+				new[] { Left.GetDefinition(), Right.GetDefinition() },
+				"NES Controller",
+				out var cdum
+			);
 			LeftU = cdum[0];
 			RightU = cdum[1];
 
@@ -675,7 +679,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			Player3 = ExpSlot;
 			Definition = ControllerDefinitionMerger.GetMerged(
-				new[] { Player1.GetDefinition(), Player2.GetDefinition(), Player3.GetDefinition() }, out var cdum);
+				new[] { Player1.GetDefinition(), Player2.GetDefinition(), Player3.GetDefinition() },
+				"NES Controller",
+				out var cdum
+			);
 			Definition.BoolButtons.Add("P2 Microphone");
 			Player1U = cdum[0];
 			Player2U = cdum[1];

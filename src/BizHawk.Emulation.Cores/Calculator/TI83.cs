@@ -82,9 +82,8 @@ namespace BizHawk.Emulation.Cores.Calculators
 		internal int LinkState => (_linkOutput | LinkInput) ^ 3;
 
 		private static readonly ControllerDefinition TI83Controller =
-			new ControllerDefinition
+			new ControllerDefinition("TI83 Controller")
 			{
-				Name = "TI83 Controller",
 				BoolButtons =
 				{
 					"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "DOT",

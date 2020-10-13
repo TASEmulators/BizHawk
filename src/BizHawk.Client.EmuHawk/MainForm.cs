@@ -1975,9 +1975,8 @@ namespace BizHawk.Client.EmuHawk
 		private void InitControls()
 		{
 			var controls = new Controller(
-				new ControllerDefinition
+				new ControllerDefinition("Emulator Frontend Controls")
 				{
-					Name = "Emulator Frontend Controls",
 					BoolButtons = Config.HotkeyBindings.Select(x => x.DisplayName).ToList()
 				});
 

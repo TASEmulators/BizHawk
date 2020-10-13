@@ -81,7 +81,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		public MelonDS(byte[] file, CoreComm comm, MelonSettings settings, MelonSyncSettings syncSettings)
 		{
 			_serviceProvider = new BasicServiceProvider(this);
-			ControllerDefinition = new ControllerDefinition { Name = "NDS Controller" };
+			ControllerDefinition = new ControllerDefinition("NDS Controller");
 			ControllerDefinition.BoolButtons.Add("Left");
 			ControllerDefinition.BoolButtons.Add("Right");
 			ControllerDefinition.BoolButtons.Add("Up");
