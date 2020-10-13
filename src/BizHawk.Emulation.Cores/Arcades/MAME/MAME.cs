@@ -140,7 +140,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		}
 
 		public IEmulatorServiceProvider ServiceProvider { get; }
-		public ControllerDefinition ControllerDefinition => MAMEController;
+		public IVGamepadDef ControllerDefinition => MAMEController;
 		public object GetSettings() => null;
 		public PutSettingsDirtyBits PutSettings(object o) => PutSettingsDirtyBits.None;
 		public string SystemId => "MAME";
@@ -701,9 +701,8 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			}
 		}
 
-		public static ControllerDefinition MAMEController = new ControllerDefinition
+		public static ControllerDefinition MAMEController = new ControllerDefinition("MAME Controller")
 		{
-			Name = "MAME Controller",
 			BoolButtons = new List<string>()
 		};
 

@@ -102,9 +102,8 @@ namespace BizHawk.Client.Common.movie.import
 			// Yabause only supported 1 controller
 			var controllers = new SimpleController
 			{
-				Definition = new ControllerDefinition
+				Definition = new ControllerDefinition("Saturn Controller")
 				{
-					Name = "Saturn Controller",
 					BoolButtons = new List<string>
 					{
 						"Reset", "Power", "Previous Disk", "Next Disk", "P1 Left", "P1 Right", "P1 Up", "P1 Down", "P1 Start", "P1 A", "P1 B", "P1 C", "P1 X", "P1 Y", "P1 Z", "P1 L", "P1 R"

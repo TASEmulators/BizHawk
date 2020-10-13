@@ -13,7 +13,7 @@ namespace BizHawk.Client.Common
 
 	public class StickyXorAdapter : IStickyAdapter
 	{
-		public ControllerDefinition Definition => Source.Definition;
+		public IVGamepadDef Definition => Source.Definition;
 
 		public bool IsPressed(string button)
 		{
@@ -109,7 +109,7 @@ namespace BizHawk.Client.Common
 
 	public class AutoFireStickyXorAdapter : IStickyAdapter, IInputAdapter
 	{
-		public ControllerDefinition Definition => Source.Definition;
+		public IVGamepadDef Definition => Source.Definition;
 
 		public bool IsPressed(string button)
 		{

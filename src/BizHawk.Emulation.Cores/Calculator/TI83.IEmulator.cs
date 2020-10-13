@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 	{
 		public IEmulatorServiceProvider ServiceProvider { get; }
 
-		public ControllerDefinition ControllerDefinition => TI83Controller;
+		public IVGamepadDef ControllerDefinition => TI83Controller;
 
 		public bool FrameAdvance(IController controller, bool render, bool renderSound)
 		{

@@ -11,7 +11,7 @@ namespace BizHawk.Client.Common
 	{
 		public IController Source { get; set; }
 
-		public ControllerDefinition Definition => Source.Definition;
+		public IVGamepadDef Definition => Source.Definition;
 
 		public bool AllowUdlr { get; set; }
 

@@ -26,9 +26,8 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 		public StandardControls(int portNum)
 		{
 			PortNum = portNum;
-			Definition = new ControllerDefinition
+			Definition = new ControllerDefinition("GG Controller")
 			{
-				Name = "GG Controller",
 				BoolButtons = BaseDefinition
 				.Select(b => "P" + PortNum + " " + b)
 				.ToList()

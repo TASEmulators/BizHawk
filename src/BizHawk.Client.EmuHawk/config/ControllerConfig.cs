@@ -94,7 +94,7 @@ namespace BizHawk.Client.EmuHawk
 			Control dest,
 			string controllerName,
 			IReadOnlyCollection<string> controllerButtons,
-			Dictionary<string,string> categoryLabels,
+			IReadOnlyDictionary<string, string> categoryLabels,
 			IDictionary<string, Dictionary<string, TBindValue>> settingsBlock,
 			TBindValue defaultValue,
 			PanelCreator<TBindValue> createPanel

@@ -8,41 +8,36 @@ namespace BizHawk.Emulation.Common
 	// with it without knowing what else is connected
 	public static class ControllerDefinitionMerger
 	{
-		private static string Allocate(string input, ref int plr, ref int playerNext)
-		{
-			int offset = int.Parse(input.Substring(0, 1));
-			int currentPlayer = plr + offset;
-			if (currentPlayer >= playerNext)
-			{
-				playerNext = currentPlayer + 1;
-			}
-
-			return $"P{currentPlayer} {input.Substring(1)}";
-		}
-
 		/// <summary>
 		/// merge some controller definitions for different ports, and such.  i promise to fully document this tomorrow
 		/// </summary>
-		public static ControllerDefinition GetMerged(IEnumerable<ControllerDefinition> controllers, out List<ControlDefUnMerger> unmergers)
+		public static ControllerDefinition GetMerged(IEnumerable<IVGamepadDef> controllers, string mergedName, out List<ControlDefUnMerger> unmergers)
 		{
-			ControllerDefinition ret = new ControllerDefinition();
+			var ret = new ControllerDefinition(mergedName);
 			unmergers = new List<ControlDefUnMerger>();
 			int plr = 1;
 			int playerNext = 1;
+			string Allocate(string input)
+			{
+				var currentPlayer = plr + int.Parse(input.Substring(0, 1));
+				if (currentPlayer >= playerNext) playerNext = currentPlayer + 1;
+				return $"P{currentPlayer} {input.Substring(1)}";
+			}
+
 			foreach (var def in controllers)
 			{
 				var remaps = new Dictionary<string, string>();
 
 				foreach (string s in def.BoolButtons)
 				{
-					string r = Allocate(s, ref plr, ref playerNext);
+					var r = Allocate(s);
 					ret.BoolButtons.Add(r);
 					remaps[s] = r;
 				}
 
 				foreach (var kvp in def.Axes)
 				{
-					string r = Allocate(kvp.Key, ref plr, ref playerNext);
+					var r = Allocate(kvp.Key);
 					ret.Axes.Add(r, kvp.Value);
 					remaps[kvp.Key] = r;
 				}
@@ -76,7 +71,7 @@ namespace BizHawk.Emulation.Common
 			}
 
 			/// <exception cref="NotImplementedException">always</exception>
-			public ControllerDefinition Definition => throw new NotImplementedException();
+			public IVGamepadDef Definition => throw new NotImplementedException();
 
 			public bool IsPressed(string button)
 			{

@@ -13,7 +13,7 @@ namespace BizHawk.Client.Common
 		public bool Loaded { get; private set; }
 		public int InputLogLength => Loaded ? _log.Count : 0;
 
-		public BkmControllerAdapter GetInputState(int frame, ControllerDefinition definition, string sytemId)
+		public BkmControllerAdapter GetInputState(int frame, IVGamepadDef definition, string sytemId)
 		{
 			if (frame < InputLogLength && frame >= 0)
 			{

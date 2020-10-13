@@ -105,16 +105,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 			["Start"] = 14
 		};
 
-		private static readonly ControllerDefinition VirtualBoyController = new ControllerDefinition
+		private static readonly ControllerDefinition VirtualBoyController = new ControllerDefinition("VirtualBoy Controller")
 		{
-			Name = "VirtualBoy Controller",
 			BoolButtons = CoreButtons
 				.OrderBy(b => _buttonOrdinals[b])
 				.Concat(new[] { "Power" })
 				.ToList()
 		};
 
-		public override ControllerDefinition ControllerDefinition => VirtualBoyController;
+		public override IVGamepadDef ControllerDefinition => VirtualBoyController;
 
 		public class SyncSettings
 		{

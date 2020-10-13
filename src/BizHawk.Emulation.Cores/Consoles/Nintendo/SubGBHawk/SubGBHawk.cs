@@ -44,7 +44,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubGBHawk
 			_tracer = new TraceBuffer { Header = _GBCore.cpu.TraceHeader };
 			ser.Register(_tracer);
 
-			_GBCore.ControllerDefinition.AddAxis("Input Cycle", 0.RangeTo(70224), 70224);
+			((ControllerDefinition) _GBCore.ControllerDefinition).AddAxis("Input Cycle", 0.RangeTo(70224), 70224);
 		}
 
 		public GBHawk.GBHawk _GBCore;

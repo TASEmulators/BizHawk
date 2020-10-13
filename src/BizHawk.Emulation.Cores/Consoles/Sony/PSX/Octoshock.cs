@@ -288,7 +288,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		public static ControllerDefinition CreateControllerDefinition(SyncSettings syncSettings)
 		{
-			var definition = new ControllerDefinition { Name = "PSX Front Panel" };
+			var definition = new ControllerDefinition("PSX Front Panel");
 
 			var cfg = syncSettings.FIOConfig.ToLogical();
 
@@ -905,7 +905,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			return true;
 		}
 
-		public ControllerDefinition ControllerDefinition { get; private set; }
+		public IVGamepadDef ControllerDefinition { get; private set; }
 
 		public int Frame { get; private set; }
 		public int LagCount { get; set; }

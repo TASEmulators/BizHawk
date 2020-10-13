@@ -245,8 +245,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 
 		public static ControllerDefinition CreateControllerDefinition(SyncSettings syncSettings)
 		{
-			ControllerDefinition definition = new ControllerDefinition();
-			definition.Name = "LibRetro Controls"; // <-- for compatibility
+			var definition = new ControllerDefinition("LibRetro Controls" /* for compatibility */);
 
 			foreach(var item in new[] {
 					"P1 {0} Up", "P1 {0} Down", "P1 {0} Left", "P1 {0} Right", "P1 {0} Select", "P1 {0} Start", "P1 {0} Y", "P1 {0} B", "P1 {0} X", "P1 {0} A", "P1 {0} L", "P1 {0} R",
@@ -279,7 +278,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 			return definition;
 		}
 
-		public ControllerDefinition ControllerDefinition { get; }
+		public IVGamepadDef ControllerDefinition { get; }
 
 		int timeFrameCounter;
 		public int Frame

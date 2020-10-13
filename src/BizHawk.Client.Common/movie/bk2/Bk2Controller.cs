@@ -15,7 +15,7 @@ namespace BizHawk.Client.Common
 		private readonly Bk2ControllerDefinition _type;
 		private readonly List<ControlMap> _controlsOrdered;
 
-		public Bk2Controller(string key, ControllerDefinition definition) : this(definition)
+		public Bk2Controller(string key, IVGamepadDef definition) : this(definition)
 		{
 			if (!string.IsNullOrEmpty(key))
 			{
@@ -27,7 +27,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public Bk2Controller(ControllerDefinition definition)
+		public Bk2Controller(IVGamepadDef definition)
 		{
 			_type = new Bk2ControllerDefinition(definition);
 			_controlsOrdered =  Definition.ControlsOrdered
@@ -41,7 +41,7 @@ namespace BizHawk.Client.Common
 				.ToList();
 		}
 
-		public ControllerDefinition Definition => _type;
+		public IVGamepadDef Definition => _type;
 
 		public bool IsPressed(string button) => _myBoolButtons[button];
 		public int AxisValue(string name) => _myAxisControls[name];
@@ -119,7 +119,7 @@ namespace BizHawk.Client.Common
 
 		private class Bk2ControllerDefinition : ControllerDefinition
 		{
-			public Bk2ControllerDefinition(ControllerDefinition source)
+			public Bk2ControllerDefinition(IVGamepadDef source)
 				: base(source)
 			{
 			}

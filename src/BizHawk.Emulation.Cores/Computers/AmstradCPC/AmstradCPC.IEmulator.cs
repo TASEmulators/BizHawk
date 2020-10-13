@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 	{
 		public IEmulatorServiceProvider ServiceProvider { get; }
 
-		public ControllerDefinition ControllerDefinition { get; set; }
+		public IVGamepadDef ControllerDefinition { get; set; }
 
 		public bool FrameAdvance(IController controller, bool render, bool renderSound)
 		{

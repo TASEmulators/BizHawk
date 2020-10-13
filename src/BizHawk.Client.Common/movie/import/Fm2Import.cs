@@ -2,6 +2,7 @@
 
 using BizHawk.Common;
 using BizHawk.Common.BufferExtensions;
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 
@@ -217,15 +218,16 @@ namespace BizHawk.Client.Common
 
 		private void AddDeckControlButtons()
 		{
+			var def = _deck.GetDefinition();
 			var controllers = new SimpleController
 			{
-				Definition = _deck.GetDefinition()
+				Definition = def
 			};
 
 			// TODO: FDS
 			// Yes, this adds them to the deck definition too
-			controllers.Definition.BoolButtons.Add("Reset");
-			controllers.Definition.BoolButtons.Add("Power");
+			def.BoolButtons.Add("Reset");
+			def.BoolButtons.Add("Power");
 		}
 
 		private static string ImportTextSubtitle(string line)

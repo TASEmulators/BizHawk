@@ -9,7 +9,7 @@ namespace BizHawk.Client.Common
 {
 	public class Controller : IController
 	{
-		public Controller(ControllerDefinition definition)
+		public Controller(IVGamepadDef definition)
 		{
 			Definition = definition;
 			foreach (var kvp in Definition.Axes)
@@ -19,7 +19,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public ControllerDefinition Definition { get; private set; }
+		public IVGamepadDef Definition { get; private set; }
 
 		public bool IsPressed(string button) => _buttons[button];
 
@@ -112,7 +112,22 @@ namespace BizHawk.Client.Common
 		}
 
 		public void ApplyAxisConstraints(string constraintClass)
-			=> Definition.ApplyAxisConstraints(constraintClass, _axes);
+		{
+			if (!Definition.Axes.HasContraints) return;
+			foreach (var kvp in Definition.Axes)
+			{
+				var constraint = kvp.Value.Constraint;
+				if (constraint == null || constraint.Class != constraintClass) continue;
+				switch (constraint)
+				{
+					case CircularAxisConstraint circular:
+						var xAxis = kvp.Key;
+						var yAxis = circular.PairedAxis;
+						(_axes[xAxis], _axes[yAxis]) = circular.ApplyTo(_axes[xAxis], _axes[yAxis]);
+						break;
+				}
+			}
+		}
 
 		/// <summary>
 		/// merges pressed logical buttons from the supplied controller, effectively ORing it with the current state

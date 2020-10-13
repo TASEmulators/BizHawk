@@ -108,11 +108,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 
 		private static readonly ControllerDefinition _gbDefinition;
 		private static readonly ControllerDefinition _sgbDefinition;
-		public override ControllerDefinition ControllerDefinition => _sgb ? _sgbDefinition : _gbDefinition;
+		public override IVGamepadDef ControllerDefinition => _sgb ? _sgbDefinition : _gbDefinition;
 
 		private static ControllerDefinition CreateControllerDefinition(int p)
 		{
-			var ret = new ControllerDefinition { Name = "Gameboy Controller" };
+			var ret = new ControllerDefinition("Gameboy Controller");
 			for (int i = 0; i < p; i++)
 			{
 				ret.BoolButtons.AddRange(

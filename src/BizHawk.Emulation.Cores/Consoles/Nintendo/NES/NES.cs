@@ -255,16 +255,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		[Obsolete] // with the changes to both nes and quicknes cores, nothing uses this anymore
 		public static readonly ControllerDefinition NESController =
-			new ControllerDefinition
+			new ControllerDefinition("NES Controller")
 			{
-				Name = "NES Controller",
 				BoolButtons = {
 					"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 Start", "P1 Select", "P1 B", "P1 A", "Reset", "Power",
 					"P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 Start", "P2 Select", "P2 B", "P2 A"
 				}
 			};
 
-		public ControllerDefinition ControllerDefinition { get; private set; }
+		public IVGamepadDef ControllerDefinition { get; private set; }
 
 		private int _frame;
 		public int Frame { get => _frame;

@@ -1,39 +1,40 @@
-﻿using BizHawk.Common;
+﻿using System.Linq;
+
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
 	internal class BkmControllerAdapter : IController
 	{
-		public BkmControllerAdapter(ControllerDefinition definition, string systemId)
+		public BkmControllerAdapter(IVGamepadDef definition, string systemId)
 		{
-			Definition = definition;
-
-			// We do need to map the definition name to the legacy
-			// controller names that were used back in the bkm days
-			Definition.Name = systemId switch
-			{
-				"Lynx" => "Lynx Controller",
-				"SNES" => "SNES Controller",
-				"C64" => "Commodore 64 Controller",
-				"GBA" => "GBA Controller",
-				"A78" => "Atari 7800 ProLine Joystick Controller",
-				"DGB" => "Dual Gameboy Controller",
-				"WSWAN" => "WonderSwan Controller",
-				"N64" => "Nintendo 64 Controller",
-				"SAT" => "Saturn Controller",
-				"GEN" => "GPGX Genesis Controller",
-				"NES" => "NES Controller",
-				"GB" => "Gameboy Controller",
-				"A26" => "Atari 2600 Basic Controller",
-				"TI83" => "TI83 Controller",
-				"Coleco" => "ColecoVision Basic Controller",
-				"SMS Controller" => "SMS",
-				_ => "Null Controller",
-			};
+			Definition = new ControllerDefinition(
+				source: definition,
+				name: systemId switch // We need to map the definition name to the legacy controller names that were used back in the bkm days
+				{
+					"Lynx" => "Lynx Controller",
+					"SNES" => "SNES Controller",
+					"C64" => "Commodore 64 Controller",
+					"GBA" => "GBA Controller",
+					"A78" => "Atari 7800 ProLine Joystick Controller",
+					"DGB" => "Dual Gameboy Controller",
+					"WSWAN" => "WonderSwan Controller",
+					"N64" => "Nintendo 64 Controller",
+					"SAT" => "Saturn Controller",
+					"GEN" => "GPGX Genesis Controller",
+					"NES" => "NES Controller",
+					"GB" => "Gameboy Controller",
+					"A26" => "Atari 2600 Basic Controller",
+					"TI83" => "TI83 Controller",
+					"Coleco" => "ColecoVision Basic Controller",
+					"SMS Controller" => "SMS",
+					_ => "Null Controller"
+				}
+			);
 		}
 
-		public ControllerDefinition Definition { get; set; }
+		public IVGamepadDef Definition { get; set; }
 
 		public bool IsPressed(string button)
 		{

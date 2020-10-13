@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubGBHawk
 	{
 		public IEmulatorServiceProvider ServiceProvider { get; }
 
-		public ControllerDefinition ControllerDefinition => _GBCore.ControllerDefinition;
+		public IVGamepadDef ControllerDefinition => _GBCore.ControllerDefinition;
 
 		public bool FrameAdvance(IController controller, bool render, bool renderSound)
 		{

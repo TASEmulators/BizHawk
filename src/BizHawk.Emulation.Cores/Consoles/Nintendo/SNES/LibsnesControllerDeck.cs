@@ -60,13 +60,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				Factory(ss.RightPort, ss)
 			};
 
-			Definition = ControllerDefinitionMerger.GetMerged(_ports.Select(p => p.Definition), out var tmp);
+			Definition = ControllerDefinitionMerger.GetMerged(
+				_ports.Select(p => p.Definition),
+				"SNES Controller",
+				out var tmp
+			);
 			_mergers = tmp.ToArray();
 
 			// add buttons that the core itself will handle
 			Definition.BoolButtons.Add("Reset");
 			Definition.BoolButtons.Add("Power");
-			Definition.Name = "SNES Controller";
 		}
 
 		public void NativeInit(LibsnesApi api)

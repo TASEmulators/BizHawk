@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 	{
 		static AppleII()
 		{
-			AppleIIController = new ControllerDefinition { Name = "Apple IIe Keyboard" };
+			AppleIIController = new ControllerDefinition("Apple IIe Keyboard");
 			AppleIIController.BoolButtons.AddRange(RealButtons);
 			AppleIIController.BoolButtons.AddRange(ExtraButtons);
 		}

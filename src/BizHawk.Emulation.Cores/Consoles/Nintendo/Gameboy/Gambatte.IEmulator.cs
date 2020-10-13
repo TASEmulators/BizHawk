@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 	{
 		public IEmulatorServiceProvider ServiceProvider { get; }
 
-		public ControllerDefinition ControllerDefinition => GbController;
+		public IVGamepadDef ControllerDefinition => GbController;
 
 		public bool FrameAdvance(IController controller, bool render, bool rendersound)
 		{

@@ -8,6 +8,7 @@ using BizHawk.Emulation.Common;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Client.Common;
 using BizHawk.Common;
+using BizHawk.Common.CollectionExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -61,7 +62,7 @@ namespace BizHawk.Client.EmuHawk
 		private int? _seekStartFrame;
 		private bool _unpauseAfterSeeking;
 
-		private ControllerDefinition ControllerType => MovieSession.MovieController.Definition;
+		private IVGamepadDef ControllerType => MovieSession.MovieController.Definition;
 
 		public bool WasRecording { get; set; }
 		public AutoPatternBool[] BoolPatterns;

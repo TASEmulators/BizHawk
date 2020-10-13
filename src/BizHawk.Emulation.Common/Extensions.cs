@@ -445,6 +445,8 @@ namespace BizHawk.Emulation.Common
 				.AddAxis(string.Format(nameFormat, "Y"), rangeAll, neutralAll)
 				.AddAxis(string.Format(nameFormat, "Z"), rangeAll, neutralAll);
 
+		public static bool IsEmpty(this IVGamepadDef def) => def.BoolButtons.Count == 0 && def.Axes.Count == 0;
+
 		public static AxisSpec With(this in AxisSpec spec, Range<int> range, int neutral) => new AxisSpec(range, neutral, spec.IsReversed, spec.Constraint);
 	}
 }

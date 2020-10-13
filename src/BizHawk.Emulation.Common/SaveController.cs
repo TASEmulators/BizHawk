@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Common
 			Definition = null;
 		}
 
-		public SaveController(ControllerDefinition def)
+		public SaveController(IVGamepadDef def)
 		{
 			Definition = def;
 		}
@@ -27,7 +27,7 @@ namespace BizHawk.Emulation.Common
 		/// Gets the current definition.
 		/// Invalid until CopyFrom has been called
 		/// </summary>
-		public ControllerDefinition Definition { get; private set; }
+		public IVGamepadDef Definition { get; private set; }
 
 		public void Serialize(BinaryWriter b)
 		{

@@ -34,9 +34,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		public UnpluggedController(int portNum)
 		{
 			PortNum = portNum;
-			Definition = new ControllerDefinition
+			Definition = new ControllerDefinition("Unplugged Controller")
 			{
-				Name = "Unplugged Controller",
 				BoolButtons = BaseDefinition
 				.Select(b => "P" + PortNum + " " + b)
 				.ToList()
@@ -91,9 +90,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		public StandardController(int portNum)
 		{
 			PortNum = portNum;
-			Definition = new ControllerDefinition
+			Definition = new ControllerDefinition("Atari 7800 Basic Controller")
 			{
-				Name = "Atari 7800 Basic Controller",
 				BoolButtons = BaseDefinition
 				.Select(b => "P" + PortNum + " " + b)
 				.ToList()
@@ -175,9 +173,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		public ProLineController(int portNum)
 		{
 			PortNum = portNum;
-			Definition = new ControllerDefinition
+			Definition = new ControllerDefinition("Atari 7800 ProLine Joystick Controller")
 			{
-				Name = "Atari 7800 ProLine Joystick Controller",
 				BoolButtons = BaseDefinition
 				.Select(b => "P" + PortNum + " " + b)
 				.ToList()
@@ -269,9 +266,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		public LightGunController(int portNum)
 		{
 			PortNum = portNum;
-			Definition = new ControllerDefinition
+			Definition = new ControllerDefinition("Light Gun Controller")
 			{
-				Name = "Light Gun Controller",
 				BoolButtons = BaseDefinition.Select(b => $"P{PortNum} {b}").ToList()
 			}.AddXYPair($"P{PortNum} {{0}}", AxisPairOrientation.RightAndUp, 1.RangeTo(320), 160, 1.RangeTo(242), 121); //TODO verify direction against hardware
 		}

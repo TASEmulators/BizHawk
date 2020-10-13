@@ -52,7 +52,7 @@ namespace BizHawk.Client.Common
 
 		public IMovieController MovieController { get; private set; } = new Bk2Controller("", NullController.Instance.Definition);
 
-		public IMovieController GenerateMovieController(ControllerDefinition definition = null)
+		public IMovieController GenerateMovieController(IVGamepadDef definition = null)
 		{
 			// TODO: expose Movie.LogKey and pass in here
 			return new Bk2Controller("", definition ?? MovieController.Definition);

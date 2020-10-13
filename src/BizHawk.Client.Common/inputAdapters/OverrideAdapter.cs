@@ -11,7 +11,7 @@ namespace BizHawk.Client.Common
 	/// </summary>
 	public class OverrideAdapter : IController
 	{
-		public ControllerDefinition Definition { get; private set; }
+		public IVGamepadDef Definition { get; private set; }
 
 		private readonly Dictionary<string, bool> _overrides = new Dictionary<string, bool>();
 		private readonly Dictionary<string, int> _axisOverrides = new Dictionary<string, int>();

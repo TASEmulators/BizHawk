@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 	{
 		public IEmulatorServiceProvider ServiceProvider { get; }
 
-		public ControllerDefinition ControllerDefinition { get; set; }
+		public IVGamepadDef ControllerDefinition { get; set; }
 
 		public string SystemId => "ChannelF";
 

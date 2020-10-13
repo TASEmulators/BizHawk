@@ -123,12 +123,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 		IFPCtrl FP;
 
-		public ControllerDefinition ControllerDefinition { get; private set; }
+		public IVGamepadDef ControllerDefinition { get; private set; }
 
 		void SetControllerDefinition()
 		{
-			var def = new ControllerDefinition();
-			def.Name = "NES Controller";
+			var def = new ControllerDefinition("NES Controller");
 			if (_syncSettings.LeftPortConnected || _syncSettings.RightPortConnected)
 				def.BoolButtons.AddRange(PadP1.Select(p => p.Name));
 			if (_syncSettings.LeftPortConnected && _syncSettings.RightPortConnected)

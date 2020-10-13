@@ -104,5 +104,14 @@ namespace BizHawk.Common.CollectionExtensions
 
 			throw new InvalidOperationException("Item not found");
 		}
+
+		/// <remarks><see cref="IReadOnlyList{T}"/> couldn't include <see cref="IList{T}.IndexOf"/> because of the type param variance...</remarks>
+		public static int IndexOf<T>(this IReadOnlyList<T> list, T item)
+			where T : notnull
+		{
+			if (list is IList<T> realList) return realList.IndexOf(item);
+			for (int i = 0, l = list.Count; i < l; i++) if (item.Equals(list[i])) return i;
+			return -1;
+		}
 	}
 }

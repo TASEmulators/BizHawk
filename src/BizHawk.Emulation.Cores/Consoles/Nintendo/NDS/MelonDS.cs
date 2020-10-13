@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		private readonly BasicServiceProvider _serviceProvider;
 		public IEmulatorServiceProvider ServiceProvider => _serviceProvider;
 
-		public ControllerDefinition ControllerDefinition { get; }
+		public IVGamepadDef ControllerDefinition { get; }
 
 		public int Frame => GetFrameCount();
 
@@ -81,26 +81,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		public MelonDS(byte[] file, CoreComm comm, MelonSettings settings, MelonSyncSettings syncSettings)
 		{
 			_serviceProvider = new BasicServiceProvider(this);
-			ControllerDefinition = new ControllerDefinition { Name = "NDS Controller" };
-			ControllerDefinition.BoolButtons.Add("Left");
-			ControllerDefinition.BoolButtons.Add("Right");
-			ControllerDefinition.BoolButtons.Add("Up");
-			ControllerDefinition.BoolButtons.Add("Down");
-			ControllerDefinition.BoolButtons.Add("A");
-			ControllerDefinition.BoolButtons.Add("B");
-			ControllerDefinition.BoolButtons.Add("X");
-			ControllerDefinition.BoolButtons.Add("Y");
-			ControllerDefinition.BoolButtons.Add("L");
-			ControllerDefinition.BoolButtons.Add("R");
-			ControllerDefinition.BoolButtons.Add("Start");
-			ControllerDefinition.BoolButtons.Add("Select");
-
-			ControllerDefinition.BoolButtons.Add("LidOpen");
-			ControllerDefinition.BoolButtons.Add("LidClose");
-			ControllerDefinition.BoolButtons.Add("Power");
-
-			ControllerDefinition.BoolButtons.Add("Touch");
-			ControllerDefinition.AddXYPair("Touch{0}", AxisPairOrientation.RightAndUp, 0.RangeTo(255), 128, 0.RangeTo(191), 96); //TODO verify direction against hardware
+			ControllerDefinition = new ControllerDefinition("NDS Controller")
+			{
+				BoolButtons =
+				{
+					"Left", "Right", "Up", "Down", "A", "B", "X", "Y", "L", "R", "Start", "Select",
+					"LidOpen", "LidClose", "Power",
+					"Touch"
+				}
+			}.AddXYPair("Touch{0}", AxisPairOrientation.RightAndUp, 0.RangeTo(255), 128, 0.RangeTo(191), 96); //TODO verify direction against hardware
 
 			CoreComm = comm;
 			_resampler = new SpeexResampler(SpeexResampler.Quality.QUALITY_DEFAULT, 32768, 44100, 32768, 44100);

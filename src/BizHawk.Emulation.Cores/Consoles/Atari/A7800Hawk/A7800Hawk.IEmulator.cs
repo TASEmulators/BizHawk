@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 	{
 		public IEmulatorServiceProvider ServiceProvider { get; }
 
-		public ControllerDefinition ControllerDefinition => _controllerDeck.Definition;
+		public IVGamepadDef ControllerDefinition => _controllerDeck.Definition;
 
 		//Maria related variables
 		public int cycle;

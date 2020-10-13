@@ -31,9 +31,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public StandardControls(int portNum)
 		{
 			PortNum = portNum;
-			Definition = new ControllerDefinition
+			Definition = new ControllerDefinition("Gameboy Controller H")
 			{
-				Name = "Gameboy Controller H",
 				BoolButtons = BaseDefinition
 				.Select(b => "P" + PortNum + " " + b)
 				.ToList()
@@ -111,9 +110,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public StandardTilt(int portNum)
 		{
 			PortNum = portNum;
-			Definition = new ControllerDefinition
+			Definition = new ControllerDefinition("Gameboy Controller + Tilt")
 			{
-				Name = "Gameboy Controller + Tilt",
 				BoolButtons = BaseDefinition.Select(b => $"P{PortNum} {b}").ToList()
 			}.AddXYPair($"P{PortNum} Tilt {{0}}", AxisPairOrientation.RightAndUp, (-90).RangeTo(90), 0); //TODO verify direction against hardware
 		}

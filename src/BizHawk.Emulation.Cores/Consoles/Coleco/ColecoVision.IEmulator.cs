@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 	{
 		public IEmulatorServiceProvider ServiceProvider { get; }
 
-		public ControllerDefinition ControllerDefinition => ControllerDeck.Definition;
+		public IVGamepadDef ControllerDefinition => ControllerDeck.Definition;
 
 		public bool FrameAdvance(IController controller, bool render, bool renderSound)
 		{

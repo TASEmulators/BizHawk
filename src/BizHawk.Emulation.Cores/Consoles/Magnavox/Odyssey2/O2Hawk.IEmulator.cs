@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 	{
 		public IEmulatorServiceProvider ServiceProvider { get; }
 
-		public ControllerDefinition ControllerDefinition => _controllerDeck.Definition;
+		public IVGamepadDef ControllerDefinition => _controllerDeck.Definition;
 
 		public byte controller_state_1, controller_state_2, kb_state_row, kb_state_col;
 		public bool in_vblank_old;
