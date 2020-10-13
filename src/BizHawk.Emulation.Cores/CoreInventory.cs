@@ -13,6 +13,8 @@ namespace BizHawk.Emulation.Cores
 	{
 		private readonly Dictionary<string, List<Core>> _systems = new Dictionary<string, List<Core>>();
 
+		public readonly IReadOnlyCollection<Core> SystemsFlat;
+
 		public class Core
 		{
 			private class RomGameFake : IRomAsset
@@ -135,6 +137,7 @@ namespace BizHawk.Emulation.Cores
 		/// </summary>
 		public CoreInventory(IEnumerable<IEnumerable<Type>> assys)
 		{
+			var systemsFlat = new Dictionary<Type, Core>();
 			void ProcessConstructor(Type type, CoreConstructorAttribute consAttr, CoreAttribute coreAttr, ConstructorInfo cons)
 			{
 				var core = new Core(type, consAttr, coreAttr, cons);
@@ -145,6 +148,7 @@ namespace BizHawk.Emulation.Cores
 				}
 
 				ss.Add(core);
+				systemsFlat[type] = core;
 			}
 			foreach (var assy in assys)
 			{
@@ -167,6 +171,7 @@ namespace BizHawk.Emulation.Cores
 					}
 				}
 			}
+			SystemsFlat = systemsFlat.Values;
 		}
 
 		public static readonly CoreInventory Instance = new CoreInventory(new[] { Emulation.Cores.ReflectionCache.Types });

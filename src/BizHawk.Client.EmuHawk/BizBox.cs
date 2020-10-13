@@ -4,7 +4,7 @@ using System.Linq;
 using System.Windows.Forms;
 using BizHawk.Client.EmuHawk.Properties;
 using BizHawk.Common;
-using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -46,16 +46,10 @@ namespace BizHawk.Client.EmuHawk
 			VersionLabel.Text = $"Version {mainVersion}";
 			DateLabel.Text = VersionInfo.ReleaseDate;
 
-			var cores = Emulation.Cores.ReflectionCache.Types
-				.Where(t => typeof(IEmulator).IsAssignableFrom(t))
-				.Select(t => t.GetCustomAttributes(false).OfType<CoreAttribute>().FirstOrDefault())
-				.Where(a => a != null)
-				.Where(a => a.Released)
-				.OrderByDescending(a => a.CoreName.ToLower());
-
-			foreach (var core in cores)
+			foreach (var core in CoreInventory.Instance.SystemsFlat.Where(core => core.CoreAttr.Released)
+				.OrderByDescending(core => core.Name.ToLowerInvariant()))
 			{
-				CoreInfoPanel.Controls.Add(new BizBoxInfoControl(core)
+				CoreInfoPanel.Controls.Add(new BizBoxInfoControl(core.CoreAttr)
 				{
 					Dock = DockStyle.Top
 				});

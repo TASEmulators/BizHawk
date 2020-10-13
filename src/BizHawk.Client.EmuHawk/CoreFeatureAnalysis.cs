@@ -7,6 +7,7 @@ using System.Reflection;
 
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -201,15 +202,9 @@ namespace BizHawk.Client.EmuHawk
 			CoreTree.ImageList.Images.Add("Bad", Properties.Resources.ExclamationRed);
 			CoreTree.ImageList.Images.Add("Unknown", Properties.Resources.RetroQuestion);
 
-			var possibleCoreTypes = Emulation.Cores.ReflectionCache.Types
-				.Where(t => typeof(IEmulator).IsAssignableFrom(t) && !t.IsAbstract)
-				.Select(t => new
-				{
-					Type = t,
-					CoreAttributes = (CoreAttribute)t.GetCustomAttributes(typeof(CoreAttribute), false).First()
-				})
-				.OrderByDescending(t => t.CoreAttributes.Released)
-				.ThenBy(t => t.CoreAttributes.CoreName)
+			var possibleCoreTypes = CoreInventory.Instance.SystemsFlat
+				.OrderByDescending(core => core.CoreAttr.Released)
+				.ThenBy(core => core.Name)
 				.ToList();
 
 			toolStripStatusLabel1.Text = $"Total: {possibleCoreTypes.Count} Released: {KnownCores.Values.Count(c => c.Released)} Profiled: {KnownCores.Count}";
@@ -228,15 +223,15 @@ namespace BizHawk.Client.EmuHawk
 				CoreTree.Nodes.Add(coreNode);
 			}
 
-			foreach (var t in possibleCoreTypes)
+			foreach (var core in possibleCoreTypes)
 			{
-				if (!KnownCores.ContainsKey(t.CoreAttributes.CoreName))
+				if (!KnownCores.ContainsKey(core.Name))
 				{
 					string img = "Unknown";
 					var coreNode = new TreeNode
 					{
-						Text = t.CoreAttributes.CoreName + (t.CoreAttributes.Released ? "" : " (UNRELEASED)"),
-						ForeColor = t.CoreAttributes.Released ? Color.Black : Color.DarkGray,
+						Text = core.Name + (core.CoreAttr.Released ? "" : " (UNRELEASED)"),
+						ForeColor = core.CoreAttr.Released ? Color.Black : Color.DarkGray,
 						ImageKey = img,
 						SelectedImageKey = img,
 						StateImageKey = img
