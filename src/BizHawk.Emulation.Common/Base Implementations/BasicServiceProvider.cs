@@ -27,7 +27,7 @@ namespace BizHawk.Emulation.Common
 
 			var services = coreType.GetInterfaces()
 				.Where(t => typeof(IEmulatorService).IsAssignableFrom(t))
-				.Where(t => t != typeof(IEmulatorService));
+				.Where(t => t != typeof(IEmulatorService) && t != typeof(ISpecializedEmulatorService));
 
 			foreach (Type service in services)
 			{

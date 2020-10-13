@@ -156,7 +156,7 @@ namespace BizHawk.Client.EmuHawk
 
 			var knownServices = Emulation.Common.ReflectionCache.Types
 				.Where(t => typeof(IEmulatorService).IsAssignableFrom(t))
-				.Where(t => t != typeof(IEmulatorService) && t != typeof(ISpecializedEmulatorService))
+				.Where(t => t != typeof(IEmulatorService))
 				.Where(t => t != typeof(ITextStatable)) // Hack for now, eventually we can get rid of this interface in favor of a default implementation
 				.Where(t => t.IsInterface);
 
