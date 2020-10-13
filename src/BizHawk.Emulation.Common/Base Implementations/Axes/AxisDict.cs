@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Common
 {
-	public sealed class AxisDict : IReadOnlyDictionary<string, AxisSpec>
+	public sealed class AxisDict : IAxisDict
 	{
 		private readonly IList<string> _keys = new List<string>();
 

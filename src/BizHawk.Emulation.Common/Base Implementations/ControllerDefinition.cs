@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Common
 	/// Defines the schema for all the currently available controls for an IEmulator instance
 	/// </summary>
 	/// <seealso cref="IEmulator" /> 
-	public class ControllerDefinition
+	public class ControllerDefinition : IVGamepadDef
 	{
 		public ControllerDefinition() {}
 
@@ -24,22 +24,18 @@ namespace BizHawk.Emulation.Common
 
 		public string Name { get; }
 
-		/// <summary>
-		/// Gets or sets a list of all button types that have a boolean (on/off) value
-		/// </summary>
 		public List<string> BoolButtons { get; set; } = new List<string>();
 
-		public readonly AxisDict Axes = new AxisDict();
+		IReadOnlyList<string> IVGamepadDef.BoolButtons => BoolButtons;
 
-		/// <summary>
-		/// Gets the category labels. These labels provide a means of categorizing controls in various controller display and config screens
-		/// </summary>
+		public AxisDict Axes { get; } = new AxisDict();
+
+		IAxisDict IVGamepadDef.Axes => Axes;
+
 		public Dictionary<string, string> CategoryLabels { get; } = new Dictionary<string, string>();
 
-		/// <summary>
-		/// Gets a list of controls put in a logical order such as by controller number,
-		/// This is a default implementation that should work most of the time
-		/// </summary>
+		IReadOnlyDictionary<string, string> IVGamepadDef.CategoryLabels => CategoryLabels;
+
 		public virtual IEnumerable<IEnumerable<string>> ControlsOrdered
 			=> Axes.Keys.Concat(BoolButtons).GroupBy(PlayerNumber).OrderBy(grouping => grouping.Key);
 
