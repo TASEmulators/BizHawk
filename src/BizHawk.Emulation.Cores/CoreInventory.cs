@@ -28,12 +28,13 @@ namespace BizHawk.Emulation.Cores
 			// If true, this is a new style constructor that takes a CoreLoadParameters object
 			private readonly bool _useCoreLoadParameters;
 
-			public Core(string name, Type type, ConstructorInfo ctor, CorePriority priority)
+			public Core(Type type, CoreConstructorAttribute consAttr, CoreAttribute coreAttr, ConstructorInfo ctor)
 			{
-				Name = name;
+				Name = coreAttr.CoreName;
 				Type = type;
 				CTor = ctor;
-				Priority = priority;
+				Priority = consAttr.Priority;
+				CoreAttr = coreAttr;
 
 				var pp = CTor.GetParameters();
 				if (pp.Length == 1
@@ -74,6 +75,7 @@ namespace BizHawk.Emulation.Cores
 			public Type Type { get; }
 			public ConstructorInfo CTor { get; }
 			public CorePriority Priority { get; }
+			public CoreAttribute CoreAttr { get; }
 			public Type SettingsType { get; } = typeof(object);
 			public Type SyncSettingsType { get; } = typeof(object);
 
@@ -122,18 +124,6 @@ namespace BizHawk.Emulation.Cores
 			}
 		}
 
-		private void ProcessConstructor(Type type, CoreConstructorAttribute consAttr, CoreAttribute coreAttr, ConstructorInfo cons)
-		{
-			Core core = new Core(coreAttr.CoreName, type, cons, consAttr.Priority);
-			if (!_systems.TryGetValue(consAttr.System, out var ss))
-			{
-				ss = new List<Core>();
-				_systems.Add(consAttr.System, ss);
-			}
-
-			ss.Add(core);
-		}
-
 		public IEnumerable<Core> GetCores(string system)
 		{
 			_systems.TryGetValue(system, out var cores);
@@ -145,6 +135,17 @@ namespace BizHawk.Emulation.Cores
 		/// </summary>
 		public CoreInventory(IEnumerable<IEnumerable<Type>> assys)
 		{
+			void ProcessConstructor(Type type, CoreConstructorAttribute consAttr, CoreAttribute coreAttr, ConstructorInfo cons)
+			{
+				var core = new Core(type, consAttr, coreAttr, cons);
+				if (!_systems.TryGetValue(consAttr.System, out var ss))
+				{
+					ss = new List<Core>();
+					_systems.Add(consAttr.System, ss);
+				}
+
+				ss.Add(core);
+			}
 			foreach (var assy in assys)
 			{
 				foreach (var typ in assy)
