@@ -833,6 +833,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				window_is_reset = false;
 
 				// don't evaluate sprites until pre-render for window is over
+				pre_render = true;
 				pre_render_2 = true;
 			}
 
@@ -1199,6 +1200,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								// here we set up rendering
 								// unlike for the normal background case, there is no pre-render period for the window
 								// so start shifting in data to the screen right away
+								pre_render = false;
 								pre_render_2 = false;
 								first_fetch = true;
 
