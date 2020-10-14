@@ -414,7 +414,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			// special case for multi cart mappers
 			if ((_rom.HashMD5(0, _rom.Length) == "97122B9B183AAB4079C8D36A4CE6E9C1") ||
 				(_rom.HashMD5(0, _rom.Length) == "9FB9C42CF52DCFDCFBAD5E61AE1B5777") ||
-				(_rom.HashMD5(0, _rom.Length) == "CF1F58AB72112716D3C615A553B2F481")				
+				(_rom.HashMD5(0, _rom.Length) == "CF1F58AB72112716D3C615A553B2F481") ||
+				(_rom.HashMD5(0, _rom.Length) == "D0C6FFC3602D91C0B2B1B0461553DE33")	// Bomberman Selection
 				)
 			{
 				Console.WriteLine("Using Multi-Cart Mapper");
