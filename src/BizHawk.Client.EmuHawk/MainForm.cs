@@ -3900,6 +3900,7 @@ namespace BizHawk.Client.EmuHawk
 				Tools.Restart(Emulator, Game);
 				RewireSound();
 				ClearHolds();
+				InputManager.SyncControls(Emulator, MovieSession, Config);
 				Tools.UpdateCheatRelatedTools(null, null);
 				PauseOnFrame = null;
 				CurrentlyOpenRom = null;

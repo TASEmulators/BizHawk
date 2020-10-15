@@ -57,7 +57,6 @@ namespace BizHawk.Client.Common
 			ClickyVirtualPadController.Definition = new ControllerDefinition(def);
 
 			// Wire up input chain
-			ControllerInputCoalescer.Clear();
 			ControllerInputCoalescer.Definition = ActiveController.Definition;
 
 			UdLRControllerAdapter.Source = ActiveController.Or(AutoFireController);
