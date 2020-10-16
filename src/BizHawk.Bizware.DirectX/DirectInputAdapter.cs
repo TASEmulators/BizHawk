@@ -53,7 +53,8 @@ namespace BizHawk.Bizware.DirectX
 			}
 		}
 
-		public IEnumerable<KeyEvent> ProcessHostKeyboards() => KeyInput.Update(_config).Concat(IPCKeyInput.Update());
+		public IEnumerable<KeyEvent> ProcessHostKeyboards() => KeyInput.Update(_config ?? throw new NullReferenceException("o noes"))
+			.Concat(IPCKeyInput.Update());
 
 		public void UpdateConfig(Config config) => _config = config;
 	}
