@@ -1,7 +1,7 @@
 while true do
 	if (movie.isloaded()) then
 		fps = movie.getfps();
-		frames = movie.length();
+		frames = emu.framecount();
 		tseconds = (frames / fps)
 		secondsraw = tseconds % 60;
 		shift = 10 ^ 2;
@@ -23,7 +23,7 @@ while true do
 		if (hours > 0) then
 			time = "0" .. hours .. ":" .. time;
 		end
-		gui.text(0, 0, time, null, null, 1);
+		gui.text(0, 0, time, null, 1);
 	end
 	emu.frameadvance();
 end
