@@ -27,7 +27,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public bool _irq_apu; //various irq signals that get merged to the cpu irq pin
 		
-		/// <summary>clock speed of the main cpu in hz</summary>
+		/// <summary>
+		/// Clock speed of the main cpu in hz.  Used to time audio synthesis, which runs off the cpu clock.
+		/// </summary>
 		public int cpuclockrate { get; private set; }
 
 		//user configuration 
@@ -175,9 +177,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case DisplayType.PAL:
 					apu = new APU(this, apu, true);
 					ppu.region = PPU.Region.PAL;
-					VsyncNum = 50;
-					VsyncDen = 1;
 					cpuclockrate = 1662607;
+					VsyncNum = cpuclockrate * 2;
+					VsyncDen = 66495;
 					cpu_sequence = cpu_sequence_PAL;
 					_display_type = DisplayType.PAL;
 					ClockRate = 5320342.5;
@@ -185,9 +187,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case DisplayType.NTSC:
 					apu = new APU(this, apu, false);
 					ppu.region = PPU.Region.NTSC;
-					VsyncNum = 39375000;
-					VsyncDen = 655171;
 					cpuclockrate = 1789773;
+					VsyncNum = cpuclockrate * 2;
+					VsyncDen = 59561;
 					cpu_sequence = cpu_sequence_NTSC;
 					ClockRate = 5369318.1818181818181818181818182;
 					break;
@@ -195,9 +197,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case DisplayType.Dendy:
 					apu = new APU(this, apu, false);
 					ppu.region = PPU.Region.Dendy;
-					VsyncNum = 50;
-					VsyncDen = 1;
 					cpuclockrate = 1773448;
+					VsyncNum = cpuclockrate;
+					VsyncDen = 35464;
 					cpu_sequence = cpu_sequence_NTSC;
 					_display_type = DisplayType.Dendy;
 					ClockRate = 5320342.5;
