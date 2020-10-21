@@ -9,6 +9,8 @@ namespace BizHawk.Client.EmuHawk
 	public static class OTK_Keyboard
 	{
 		private static readonly Key[] KeyList = {
+			Key.Unknown,
+
 			// A-Z
 			Key.A, Key.B, Key.C, Key.D, Key.E, Key.F, Key.G, Key.H, Key.I, Key.J, Key.K, Key.L, Key.M, Key.N, Key.O, Key.P, Key.Q, Key.R, Key.S, Key.T, Key.U, Key.V, Key.W, Key.X, Key.Y, Key.Z,
 			// 0-9
@@ -16,7 +18,7 @@ namespace BizHawk.Client.EmuHawk
 			// misc. printables (ASCII order)
 			Key.Space, Key.Quote, Key.Comma, Key.Minus, Key.Period, Key.Slash, Key.Semicolon, Key.Plus, Key.BracketLeft, Key.BackSlash, Key.BracketRight, Key.Tilde,
 			// misc. (alphabetically)
-			Key.BackSpace, Key.CapsLock, Key.Delete, Key.Down, Key.End, Key.Enter, Key.Escape, Key.Home, Key.Insert, Key.Left, Key.NumLock, Key.PageDown, Key.PageUp, Key.Pause, Key.PrintScreen, Key.Right, Key.ScrollLock, Key.Tab, Key.Up,
+			Key.BackSpace, Key.CapsLock, Key.Delete, Key.Down, Key.End, Key.Enter, Key.Escape, Key.Home, Key.Insert, Key.Left, Key.Menu, Key.NonUSBackSlash, Key.NumLock, Key.PageDown, Key.PageUp, Key.Pause, Key.PrintScreen, Key.Right, Key.ScrollLock, Key.Tab, Key.Up,
 			// modifier
 			Key.WinLeft, Key.WinRight, Key.ControlLeft, Key.ControlRight, Key.AltLeft, Key.AltRight, Key.ShiftLeft, Key.ShiftRight,
 

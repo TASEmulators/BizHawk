@@ -382,6 +382,8 @@ namespace BizHawk.Bizware.DirectX
 
 		internal static readonly Dictionary<DInputKey, OpenTKKey> KeyEnumMap = new Dictionary<DInputKey, OpenTKKey>
 		{
+			{DInputKey.Unknown, OpenTKKey.Unknown},
+
 			// A-Z
 			{DInputKey.A, OpenTKKey.A}, {DInputKey.B, OpenTKKey.B}, {DInputKey.C, OpenTKKey.C}, {DInputKey.D, OpenTKKey.D}, {DInputKey.E, OpenTKKey.E}, {DInputKey.F, OpenTKKey.F}, {DInputKey.G, OpenTKKey.G}, {DInputKey.H, OpenTKKey.H}, {DInputKey.I, OpenTKKey.I}, {DInputKey.J, OpenTKKey.J}, {DInputKey.K, OpenTKKey.K}, {DInputKey.L, OpenTKKey.L}, {DInputKey.M, OpenTKKey.M}, {DInputKey.N, OpenTKKey.N}, {DInputKey.O, OpenTKKey.O}, {DInputKey.P, OpenTKKey.P}, {DInputKey.Q, OpenTKKey.Q}, {DInputKey.R, OpenTKKey.R}, {DInputKey.S, OpenTKKey.S}, {DInputKey.T, OpenTKKey.T}, {DInputKey.U, OpenTKKey.U}, {DInputKey.V, OpenTKKey.V}, {DInputKey.W, OpenTKKey.W}, {DInputKey.X, OpenTKKey.X}, {DInputKey.Y, OpenTKKey.Y}, {DInputKey.Z, OpenTKKey.Z},
 			// 0-9
@@ -389,7 +391,7 @@ namespace BizHawk.Bizware.DirectX
 			// misc. printables (ASCII order)
 			{DInputKey.Space, OpenTKKey.Space}, {DInputKey.Apostrophe, OpenTKKey.Quote}, {DInputKey.Comma, OpenTKKey.Comma}, {DInputKey.Minus, OpenTKKey.Minus}, {DInputKey.Period, OpenTKKey.Period}, {DInputKey.Slash, OpenTKKey.Slash}, {DInputKey.Semicolon, OpenTKKey.Semicolon}, {DInputKey.Equals, OpenTKKey.Plus}, {DInputKey.LeftBracket, OpenTKKey.BracketLeft}, {DInputKey.Backslash, OpenTKKey.BackSlash}, {DInputKey.RightBracket, OpenTKKey.BracketRight}, {DInputKey.Grave, OpenTKKey.Tilde},
 			// misc. (alphabetically)
-			{DInputKey.Backspace, OpenTKKey.BackSpace}, {DInputKey.CapsLock, OpenTKKey.CapsLock}, {DInputKey.Delete, OpenTKKey.Delete}, {DInputKey.DownArrow, OpenTKKey.Down}, {DInputKey.End, OpenTKKey.End}, {DInputKey.Return, OpenTKKey.Enter}, {DInputKey.Escape, OpenTKKey.Escape}, {DInputKey.Home, OpenTKKey.Home}, {DInputKey.Insert, OpenTKKey.Insert}, {DInputKey.LeftArrow, OpenTKKey.Left}, {DInputKey.Oem102, OpenTKKey.NonUSBackSlash}, {DInputKey.NumberLock, OpenTKKey.NumLock}, {DInputKey.PageDown, OpenTKKey.PageDown}, {DInputKey.PageUp, OpenTKKey.PageUp}, {DInputKey.Pause, OpenTKKey.Pause}, {DInputKey.PrintScreen, OpenTKKey.PrintScreen}, {DInputKey.RightArrow, OpenTKKey.Right}, {DInputKey.ScrollLock, OpenTKKey.ScrollLock}, {DInputKey.Tab, OpenTKKey.Tab}, {DInputKey.UpArrow, OpenTKKey.Up},
+			{DInputKey.Backspace, OpenTKKey.BackSpace}, {DInputKey.CapsLock, OpenTKKey.CapsLock}, {DInputKey.Delete, OpenTKKey.Delete}, {DInputKey.DownArrow, OpenTKKey.Down}, {DInputKey.End, OpenTKKey.End}, {DInputKey.Return, OpenTKKey.Enter}, {DInputKey.Escape, OpenTKKey.Escape}, {DInputKey.Home, OpenTKKey.Home}, {DInputKey.Insert, OpenTKKey.Insert}, {DInputKey.LeftArrow, OpenTKKey.Left}, {DInputKey.Applications, OpenTKKey.Menu}, {DInputKey.Oem102, OpenTKKey.NonUSBackSlash}, {DInputKey.NumberLock, OpenTKKey.NumLock}, {DInputKey.PageDown, OpenTKKey.PageDown}, {DInputKey.PageUp, OpenTKKey.PageUp}, {DInputKey.Pause, OpenTKKey.Pause}, {DInputKey.PrintScreen, OpenTKKey.PrintScreen}, {DInputKey.RightArrow, OpenTKKey.Right}, {DInputKey.ScrollLock, OpenTKKey.ScrollLock}, {DInputKey.Tab, OpenTKKey.Tab}, {DInputKey.UpArrow, OpenTKKey.Up},
 			// modifier
 			{DInputKey.LeftWindowsKey, OpenTKKey.WinLeft}, {DInputKey.RightWindowsKey, OpenTKKey.WinRight}, {DInputKey.LeftControl, OpenTKKey.ControlLeft}, {DInputKey.RightControl, OpenTKKey.ControlRight}, {DInputKey.LeftAlt, OpenTKKey.AltLeft}, {DInputKey.RightAlt, OpenTKKey.AltRight}, {DInputKey.LeftShift, OpenTKKey.ShiftLeft}, {DInputKey.RightShift, OpenTKKey.ShiftRight},
 
