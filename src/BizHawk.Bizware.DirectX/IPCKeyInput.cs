@@ -41,7 +41,7 @@ namespace BizHawk.Bizware.DirectX
 						int e = br.ReadInt32();
 						bool pressed = (e & 0x80000000) != 0;
 						lock (PendingEventList)
-							PendingEventList.Add(new KeyEvent { Key = KeyInput.KeyEnumMap[(Key)(e & 0x7FFFFFFF)], Pressed = pressed });
+							PendingEventList.Add(new KeyEvent(KeyInput.KeyEnumMap[(Key) (e & 0x7FFFFFFF)], pressed));
 					}
 				}
 				catch { }

@@ -4,10 +4,16 @@ using OpenTK.Input;
 
 namespace BizHawk.Client.Common
 {
-	public struct KeyEvent
+	public readonly struct KeyEvent
 	{
-		public Key Key;
+		public readonly Key Key;
 
-		public bool Pressed;
+		public readonly bool Pressed;
+
+		public KeyEvent(Key key, bool pressed)
+		{
+			Key = key;
+			Pressed = pressed;
+		}
 	}
 }

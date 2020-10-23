@@ -66,8 +66,8 @@ namespace BizHawk.Bizware.DirectX
 
 					foreach (var e in events)
 					{
-						foreach (var k in e.PressedKeys) eventList.Add(new KeyEvent { Key = Mapped(k), Pressed = true });
-						foreach (var k in e.ReleasedKeys) eventList.Add(new KeyEvent { Key = Mapped(k), Pressed = false });
+						foreach (var k in e.PressedKeys) eventList.Add(new KeyEvent(Mapped(k), pressed: true));
+						foreach (var k in e.ReleasedKeys) eventList.Add(new KeyEvent(Mapped(k), pressed: false));
 					}
 				}
 			}

@@ -46,9 +46,9 @@ namespace BizHawk.Client.EmuHawk
 				foreach (var key in KeyList)
 				{
 					if (lastState.IsKeyUp(key) && _kbState.IsKeyDown(key))
-						EventList.Add(new KeyEvent { Key = key, Pressed = true });
+						EventList.Add(new KeyEvent(key, pressed: true));
 					else if (lastState.IsKeyDown(key) && _kbState.IsKeyUp(key))
-						EventList.Add(new KeyEvent { Key = key, Pressed = false });
+						EventList.Add(new KeyEvent(key, pressed: false));
 				}
 			}
 			catch
