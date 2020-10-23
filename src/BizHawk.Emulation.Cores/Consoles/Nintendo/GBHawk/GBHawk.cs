@@ -109,6 +109,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				DummyReadMemory = ReadMemory,
 				OnExecFetch = ExecFetch,
 				SpeedFunc = SpeedFunc,
+				GetButtons = GetButtons,
 				GetIntRegs = GetIntRegs,
 				SetIntRegs = SetIntRegs
 			};

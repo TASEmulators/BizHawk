@@ -119,7 +119,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 					if (ppu.DMA_start && !cpu.halted && !cpu.stopped) { ppu.DMA_tick(); }
 					serialport.serial_transfer_tick();
-					timer.tick();
+					timer.tick();	
 					cpu.ExecuteOne();
 					timer.divider_reg++;
 
@@ -342,6 +342,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			Acc_X_state = _controllerDeck.ReadAccX1(controller);
 			Acc_Y_state = _controllerDeck.ReadAccY1(controller);
+		}
+
+		public byte GetButtons(ushort r)
+		{
+			return input_register;
 		}
 
 		public byte GetIntRegs(ushort r)

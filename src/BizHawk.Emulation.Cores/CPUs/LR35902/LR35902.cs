@@ -92,7 +92,8 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 		public Func<ushort, byte> PeekMemory;
 		public Func<ushort, byte> DummyReadMemory;
 
-		// Get external interrupt registers
+		// Get external interrupt registers and button presses
+		public Func<ushort, byte> GetButtons;
 		public Func<ushort, byte> GetIntRegs;
 		public Action<byte> SetIntRegs;
 
@@ -477,11 +478,11 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 						stop_check = true;
 					}
 
-					interrupt_src_reg = GetIntRegs(0);
+					buttons_pressed = GetButtons(0);
 
 					if (stop_time > 0)
 					{
-						// Timer interrupts can prematurely terminate a speedchange, nt sure about other sources
+						// Timer interrupts can prematurely terminate a speedchange, not sure about other sources
 						// NOTE: some testing around the edge case of where the speed actually changes is needed						
 						if (I_use && interrupts_enabled)
 						{
@@ -536,7 +537,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 						}
 
 						// If a button is pressed during speed change, the processor will jam
-						if (interrupt_src_reg.Bit(4))
+						if ((buttons_pressed & 0xF) != 0xF)
 						{
 							stop_time++;
 							break;
@@ -544,7 +545,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 					}
 					
 					// Button press will exit stop loop even if speed change in progress, even without interrupts enabled
-					if (interrupt_src_reg.Bit(4))
+					if ((buttons_pressed & 0xF) != 0xF)
 					{
 						// TODO: On a gameboy, you can only un-STOP once, needs further testing
 						TraceCallback?.Invoke(new TraceInfo
