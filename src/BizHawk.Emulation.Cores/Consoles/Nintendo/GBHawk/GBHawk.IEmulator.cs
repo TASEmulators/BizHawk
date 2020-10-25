@@ -364,9 +364,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public void SetIntRegs(byte r)
 		{
 			// For timer interrupts or serial interrupts that occur on the same cycle as the IRQ clear
-			// the clear wins on GB but the set wins on GBC
-			if (((REG_FF0F & 4) == 4) && ((r & 4) == 0) && timer.IRQ_block && !is_GBC) { r |= 4; }
-			if (((REG_FF0F & 8) == 8) && ((r & 8) == 0) && serialport.IRQ_block && !is_GBC) { r |= 8; }
+			// the cear wins on GB and GBA (tested on GBP.) Assuming true for GBC E too. 
+			if (((REG_FF0F & 4) == 4) && ((r & 4) == 0) && timer.IRQ_block) { r |= 4; }
+			if (((REG_FF0F & 8) == 8) && ((r & 8) == 0) && serialport.IRQ_block) { r |= 8; }
 			REG_FF0F = r;
 		}
 

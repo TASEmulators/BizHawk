@@ -7,8 +7,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 	// Timer Emulation
 	// NOTES: 
 	//
-	// For GB, it looks like divider reg should start at 1 on reset.
-	// for GBC, a starting value of 0xFFFF passes all tests. GBA is not explicitly tested but for now is set to 0xFFFF as well.
+	// Currently, a starting value of 0xFFFE passes all tests. GBA is not explicitly tested but for now is set to 0xFFFE as well.
 	//
 	// Some additional glitches happen on GBC, but they are non-deterministic and not emulated here
 	//
@@ -29,7 +28,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public byte timer_old;
 		public byte timer_control;
 		public byte pending_reload;
-		public bool IRQ_block; // if the timer IRQ happens on the same cycle as a previous one was cleared, the IRQ is blocked, only on GBC
+		public bool IRQ_block; // if the timer IRQ happens on the same cycle as a previous one was cleared, the IRQ is set
 		public bool old_state;
 		public bool state;
 		public bool reload_block;
