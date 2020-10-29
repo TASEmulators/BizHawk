@@ -143,9 +143,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				{
 					if (ppu.pixel_counter == 160)
 					{
+						//Console.WriteLine("VRAM Glitch " + cpu.TotalExecutedCycles + " " + ppu.bus_address + " " +
+						//VRAM[ppu.bus_address] + " " + ppu.read_case_prev + " " + (ppu.internal_cycle & 1) + " " +
+						//(VRAM_Bank * 0x2000 + (addr - 0x8000)) + " " + VRAM[VRAM_Bank * 0x2000 + (addr - 0x8000)]);
+
+						// This is a complicated case because the PPU is accessing 2 areas of VRAM at the same time.
+						if (is_GBC && ((ppu.read_case_prev == 0) || (ppu.read_case_prev == 4)))
+						{
+							//if ((VRAM_Bank * 0x2000 + (addr - 0x8000)) < 0x3800)
+							//{
+							//	return VRAM[VRAM_Bank * 0x2000 + (addr - 0x8000)];
+							//}
+							return VRAM[ppu.bus_address];
+						}
+
+						// What is returned when the ppu isn't accessing VRAM?
+						if ((ppu.read_case_prev == 3) || (ppu.read_case_prev == 7))
+						{
+							return VRAM[VRAM_Bank * 0x2000 + (addr - 0x8000)];
+						}
 						return VRAM[ppu.bus_address];
 					}
-
 					return 0xFF;
 				}
 				else

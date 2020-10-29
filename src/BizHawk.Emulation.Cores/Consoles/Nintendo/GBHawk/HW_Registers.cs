@@ -407,6 +407,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					if (GB_bios_register == 0)
 					{
 						GB_bios_register = value;
+						if (!GBC_compat) { ppu.pal_change_blocked = true; }
 					}			
 					break;
 
@@ -502,7 +503,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					break;
 
 				default:
-					Console.WriteLine(addr + " " + value);
+					//Console.WriteLine(addr + " " + value);
 					break;
 			}
 		}

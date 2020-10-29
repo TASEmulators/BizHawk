@@ -759,6 +759,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				read_case = 0;
 				internal_cycle = 0;
 				pre_render = true;
+				was_pre_render = true;
 				pre_render_2 = true;
 				tile_inc = 0;
 				pixel_counter = -8;
@@ -830,6 +831,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 				// don't evaluate sprites until pre-render for window is over
 				pre_render = true;
+				was_pre_render = true;
 				pre_render_2 = true;
 			}
 
@@ -848,107 +850,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				}
 			}
 
-			if (!pre_render && !fetch_sprite)
-			{
-				// start shifting data into the LCD
-				if (render_counter >= (render_offset + 8))
-				{
-					if (tile_data_latch[2].Bit(5))
-					{
-						pixel = tile_data_latch[0].Bit(render_counter % 8) ? 1 : 0;
-						pixel |= tile_data_latch[1].Bit(render_counter % 8) ? 2 : 0;
-					}
-					else
-					{
-						pixel = tile_data_latch[0].Bit(7 - (render_counter % 8)) ? 1 : 0;
-						pixel |= tile_data_latch[1].Bit(7 - (render_counter % 8)) ? 2 : 0;
-					}
-
-					int ref_pixel = pixel;
-
-					int pal_num = tile_data_latch[2] & 0x7;
-
-					bool use_sprite = false;
-
-					int s_pixel = 0;
-
-					// now we have the BG pixel, we next need the sprite pixel
-					if (!no_sprites)
-					{
-						bool have_sprite = false;					
-						int sprite_attr = 0;
-
-						if (sprite_present_list[pixel_counter] == 1)
-						{
-							have_sprite = true;
-							s_pixel = sprite_pixel_list[pixel_counter];
-							sprite_attr = sprite_attr_list[pixel_counter];
-						}
-
-						if (have_sprite)
-						{
-							if (LCDC.Bit(1))
-							{
-								if (!sprite_attr.Bit(7))
-								{
-									use_sprite = true;
-								}
-								else if (ref_pixel == 0)
-								{
-									use_sprite = true;
-								}
-
-								if (!LCDC.Bit(0))
-								{
-									use_sprite = true;
-								}
-
-								// There is another priority bit in GBC, that can still override sprite priority
-								if (LCDC.Bit(0) && tile_data_latch[2].Bit(7) && (ref_pixel != 0))
-								{
-									use_sprite = false;
-								}
-							}
-
-							if (use_sprite)
-							{
-								pal_num = sprite_attr & 7;					
-							}						
-						}						
-					}
-					
-					// based on sprite priority and pixel values, pick a final pixel color
-					if (use_sprite)
-					{
-						Core.vid_buffer[LY * 160 + pixel_counter] = OBJ_palette[pal_num * 4 + s_pixel];
-					}
-					else
-					{
-						Core.vid_buffer[LY * 160 + pixel_counter] = BG_palette[pal_num * 4 + pixel];
-					}
-					
-					pixel_counter++;
-
-					if (pixel_counter == 160)
-					{
-						read_case = 8;
-						hbl_countdown = 2;
-					}
-				}
-				else if (pixel_counter < 0)
-				{
-					pixel_counter++;
-				}
-				render_counter++;
-			}
-			
 			if (!fetch_sprite)
-			{				
+			{
 				switch (read_case)
 				{
 					case 0: // read a background tile
-						if ((internal_cycle % 2) == 1)
+						if ((internal_cycle % 2) == 0)
 						{
+							read_case_prev = 0;
+							
 							// calculate the row number of the tiles to be fetched
 							y_tile = (((int)scroll_y + LY) >> 3) % 32;
 							x_tile = scroll_x >> 3;
@@ -962,18 +872,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							VRAM_sel = tile_data[2].Bit(3) ? 1 : 0;
 
 							BG_V_flip = tile_data[2].Bit(6);
-
+						}
+						else
+						{
 							read_case = 1;
 							if (!pre_render)
 							{
 								tile_inc++;
-							}						
+							}
 						}
 						break;
 
 					case 1: // read from tile graphics (0)
-						if ((internal_cycle % 2) == 1)
+						if ((internal_cycle % 2) == 0)
 						{
+							read_case_prev = 1;
+
 							y_scroll_offset = (scroll_y + LY) % 8;
 
 							if (BG_V_flip)
@@ -997,14 +911,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								bus_address = (VRAM_sel * 0x2000) + 0x1000 + tile_byte * 16 + y_scroll_offset * 2;
 								tile_data[0] = Core.VRAM[bus_address];
 							}
-
+						}
+						else
+						{
 							read_case = 2;
 						}
 						break;
 
 					case 2: // read from tile graphics (1)
-						if ((internal_cycle % 2) == 1)
+						if ((internal_cycle % 2) == 0)
 						{
+							read_case_prev = 2;
+
 							y_scroll_offset = (scroll_y + LY) % 8;
 
 							if (BG_V_flip)
@@ -1034,7 +952,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								bus_address = (VRAM_sel * 0x2000) + 0x1000 + tile_byte * 16 + y_scroll_offset * 2 + 1;
 								tile_data[1] = Core.VRAM[bus_address];
 							}
-
+						}
+						else
+						{
 							if (pre_render)
 							{
 								// here we set up rendering
@@ -1062,7 +982,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						break;
 
 					case 3: // read from tile data
-						if ((internal_cycle % 2) == 1)
+						if ((internal_cycle % 2) == 0)
+						{
+							read_case_prev = 3;
+							// What's on the bus?
+						}
+						else
 						{
 							read_case = 0;
 							latch_new_data = true;
@@ -1070,8 +995,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						break;
 
 					case 4: // read from window data
-						if ((window_counter % 2) == 1)
-						{						
+						if ((window_counter % 2) == 0)
+						{
+							read_case_prev = 4;
+
 							temp_fetch = window_y_tile * 32 + (window_x_tile + window_tile_inc) % 32;
 							tile_byte = Core.VRAM[0x1800 + (LCDC.Bit(6) ? 1 : 0) * 0x400 + temp_fetch];
 
@@ -1082,14 +1009,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							BG_V_flip = tile_data[2].Bit(6);
 
 							window_tile_inc++;
+						}
+						else
+						{
 							read_case = 5;
 						}
 						window_counter++;
 						break;
 
 					case 5: // read from tile graphics (for the window)
-						if ((window_counter % 2) == 1)
+						if ((window_counter % 2) == 0)
 						{
+							read_case_prev = 5;
+
 							y_scroll_offset = window_y_tile_inc % 8;
 
 							if (BG_V_flip)
@@ -1113,15 +1045,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								bus_address = (VRAM_sel * 0x2000) + 0x1000 + tile_byte * 16 + y_scroll_offset * 2;
 								tile_data[0] = Core.VRAM[bus_address];
 							}
-
+						}
+						else
+						{
 							read_case = 6;
 						}
 						window_counter++;
 						break;
 
 					case 6: // read from tile graphics (for the window)
-						if ((window_counter % 2) == 1)
+						if ((window_counter % 2) == 0)
 						{
+							read_case_prev = 6;
+
 							y_scroll_offset = window_y_tile_inc % 8;
 
 							if (BG_V_flip)
@@ -1151,7 +1087,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								bus_address = (VRAM_sel * 0x2000) + 0x1000 + tile_byte * 16 + y_scroll_offset * 2 + 1;
 								tile_data[1] = Core.VRAM[bus_address];
 							}
-
+						}
+						else
+						{
 							if (window_pre_render)
 							{
 								// here we set up rendering
@@ -1188,7 +1126,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 								latch_counter = 0;
 								latch_new_data = true;
-								window_pre_render = false;								
+								window_pre_render = false;
 							}
 							else
 							{
@@ -1199,59 +1137,35 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						break;
 
 					case 7: // read from tile data (window)
-						if ((window_counter % 2) == 1)
+						if ((window_counter % 2) == 0)
+						{
+							read_case_prev = 7;
+							// What's on the bus?
+						}
+						else
 						{
 							read_case = 4;
 							latch_new_data = true;
 						}
-						window_counter++; 
+						window_counter++;
 						break;
 
 					case 8: // done reading, we are now in phase 0
 						pre_render = true;
+						was_pre_render = true;
 
-						if (hbl_countdown > 0)
+						OAM_access_read = true;
+						OAM_access_write = true;
+						VRAM_access_read = true;
+						VRAM_access_write = true;
+						read_case = 18;
+
+						if (Core.double_speed)
 						{
-							hbl_countdown--;
-
-							if (hbl_countdown == 0)
-							{
-								OAM_access_read = true;
-								OAM_access_write = true;
-								VRAM_access_read = true;
-								VRAM_access_write = true;
-								read_case = 18;
-
-								if (Core.double_speed)
-								{
-									STAT &= 0xFC;
-									STAT |= 0x00;
-									if (STAT.Bit(3)) { HBL_INT = true; }
-									// the CPU has to be able to see the transition from mode 3 to mode 0 to start HDMA
-								}
-							}
-							else
-							{
-								if (!Core.double_speed)
-								{
-									STAT &= 0xFC;
-									STAT |= 0x00;
-									if (STAT.Bit(3)) { HBL_INT = true; }
-									// the CPU has to be able to see the transition from mode 3 to mode 0 to start HDMA
-								}
-
-								// TODO: If Window is turned on midscanline what happens? When is this check done exactly?
-								if ((window_started && window_latch) || (window_is_reset && !window_latch && (LY > window_y_latch)))
-								{
-									window_y_tile_inc++;
-									if (window_y_tile_inc == 8)
-									{
-										window_y_tile_inc = 0;
-										window_y_tile++;
-										window_y_tile %= 32;
-									}
-								}
-							}
+							STAT &= 0xFC;
+							STAT |= 0x00;
+							if (STAT.Bit(3)) { HBL_INT = true; }
+							// the CPU has to be able to see the transition from mode 3 to mode 0 to start HDMA
 						}
 						break;
 
@@ -1275,7 +1189,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					case 18:
 					case 19:
 					case 20:
-						read_case++;				
+						read_case++;
 						break;
 					case 21:
 						// hardware tests indicate that HDMA starts at this point, not immediately after mode 3 ends
@@ -1283,6 +1197,121 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						HDMA_can_start = true;
 						break;
 				}
+
+				if (!was_pre_render)
+				{
+					// start shifting data into the LCD
+					if (render_counter >= (render_offset + 8))
+					{
+						if (tile_data_latch[2].Bit(5))
+						{
+							pixel = tile_data_latch[0].Bit(render_counter % 8) ? 1 : 0;
+							pixel |= tile_data_latch[1].Bit(render_counter % 8) ? 2 : 0;
+						}
+						else
+						{
+							pixel = tile_data_latch[0].Bit(7 - (render_counter % 8)) ? 1 : 0;
+							pixel |= tile_data_latch[1].Bit(7 - (render_counter % 8)) ? 2 : 0;
+						}
+
+						int ref_pixel = pixel;
+
+						int pal_num = tile_data_latch[2] & 0x7;
+
+						bool use_sprite = false;
+
+						int s_pixel = 0;
+
+						// now we have the BG pixel, we next need the sprite pixel
+						if (!no_sprites)
+						{
+							bool have_sprite = false;					
+							int sprite_attr = 0;
+
+							if (sprite_present_list[pixel_counter] == 1)
+							{
+								have_sprite = true;
+								s_pixel = sprite_pixel_list[pixel_counter];
+								sprite_attr = sprite_attr_list[pixel_counter];
+							}
+
+							if (have_sprite)
+							{
+								if (LCDC.Bit(1))
+								{
+									if (!sprite_attr.Bit(7))
+									{
+										use_sprite = true;
+									}
+									else if (ref_pixel == 0)
+									{
+										use_sprite = true;
+									}
+
+									if (!LCDC.Bit(0))
+									{
+										use_sprite = true;
+									}
+
+									// There is another priority bit in GBC, that can still override sprite priority
+									if (LCDC.Bit(0) && tile_data_latch[2].Bit(7) && (ref_pixel != 0))
+									{
+										use_sprite = false;
+									}
+								}
+
+								if (use_sprite)
+								{
+									pal_num = sprite_attr & 7;					
+								}						
+							}						
+						}
+					
+						// based on sprite priority and pixel values, pick a final pixel color
+						if (use_sprite)
+						{
+							Core.vid_buffer[LY * 160 + pixel_counter] = OBJ_palette[pal_num * 4 + s_pixel];
+						}
+						else
+						{
+							Core.vid_buffer[LY * 160 + pixel_counter] = BG_palette[pal_num * 4 + pixel];
+						}
+					
+						pixel_counter++;
+
+						if (pixel_counter == 160)
+						{
+							read_case = 8;
+							// hbl_countdown = 1;
+
+							if (!Core.double_speed)
+							{
+								STAT &= 0xFC;
+								STAT |= 0x00;
+								if (STAT.Bit(3)) { HBL_INT = true; }
+								// the CPU has to be able to see the transition from mode 3 to mode 0 to start HDMA
+							}
+
+							// TODO: If Window is turned on midscanline what happens? When is this check done exactly?
+							if ((window_started && window_latch) || (window_is_reset && !window_latch && (LY > window_y_latch)))
+							{
+								window_y_tile_inc++;
+								if (window_y_tile_inc == 8)
+								{
+									window_y_tile_inc = 0;
+									window_y_tile++;
+									window_y_tile %= 32;
+								}
+							}
+						}
+					}
+					else if (pixel_counter < 0)
+					{
+						pixel_counter++;
+					}
+					render_counter++;
+				}
+			
 				internal_cycle++;
 				
 				if (latch_new_data)
@@ -1292,6 +1321,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					tile_data_latch[1] = tile_data[1];
 					tile_data_latch[2] = tile_data[2];
 				}
+
+				was_pre_render = pre_render;
 			}
 			
 			// every in range sprite takes 6 cycles to process

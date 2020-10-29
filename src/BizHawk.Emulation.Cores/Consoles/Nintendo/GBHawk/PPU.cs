@@ -110,6 +110,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public int hbl_countdown;
 		public int sprite_scroll_offset;
+		public bool was_pre_render;
+		public int read_case_prev;
+		public bool pal_change_blocked; // in compatability mode, you can change palette values but not displayed color
 
 		// variables not in state
 		public int total_counter;
@@ -270,6 +273,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			ser.Sync(nameof(hbl_countdown), ref hbl_countdown);
 			ser.Sync(nameof(sprite_scroll_offset), ref sprite_scroll_offset);
+			ser.Sync(nameof(was_pre_render), ref was_pre_render);
+			ser.Sync(nameof(read_case_prev), ref read_case_prev);
+			ser.Sync(nameof(pal_change_blocked), ref pal_change_blocked);
 		}
 	}
 }

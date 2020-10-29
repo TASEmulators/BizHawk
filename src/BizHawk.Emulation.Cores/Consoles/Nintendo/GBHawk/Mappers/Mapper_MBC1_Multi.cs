@@ -64,7 +64,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 			else
 			{
-				return 0;
+				return 0xFF;
 			}
 		}
 
