@@ -543,7 +543,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				switch (read_case)
 				{
 					case 0: // read a background tile
-						if ((internal_cycle % 2) == 0)
+						if ((internal_cycle % 2) == 1)
 						{
 							read_case_prev = 0;
 
@@ -555,9 +555,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 							bus_address = 0x1800 + (LCDC.Bit(3) ? 1 : 0) * 0x400 + temp_fetch;
 							tile_byte = Core.VRAM[bus_address];
-						}
-						else
-						{
+
 							read_case = 1;
 
 							if (!pre_render)
@@ -568,7 +566,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						break;
 
 					case 1: // read from tile graphics (0)
-						if ((internal_cycle % 2) == 0)
+						if ((internal_cycle % 2) == 1)
 						{
 							read_case_prev = 1;
 
@@ -590,15 +588,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								bus_address = 0x1000 + tile_byte * 16 + y_scroll_offset * 2;
 								tile_data[0] = Core.VRAM[bus_address];
 							}
-						}
-						else
-						{
+
 							read_case = 2;
 						}
 						break;
 
 					case 2: // read from tile graphics (1)
-						if ((internal_cycle % 2) == 0)
+						if ((internal_cycle % 2) == 1)
 						{
 							read_case_prev = 2;
 
@@ -626,9 +622,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								bus_address = 0x1000 + tile_byte * 16 + y_scroll_offset * 2 + 1;
 								tile_data[1] = Core.VRAM[bus_address];
 							}
-						}
-						else
-						{
+
 							if (pre_render)
 							{
 								// here we set up rendering
@@ -656,20 +650,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						break;
 
 					case 3: // read from tile data
-						if ((internal_cycle % 2) == 0)
+						if ((internal_cycle % 2) == 1)
 						{
 							read_case_prev = 3;
 							// What's on the bus?
-						}
-						else
-						{
 							read_case = 0;
 							latch_new_data = true;
 						}
 						break;
 
 					case 4: // read from window data
-						if ((window_counter % 2) == 0)
+						if ((window_counter % 2) == 1)
 						{
 							read_case_prev = 4;
 
@@ -679,16 +670,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							tile_byte = Core.VRAM[bus_address];
 
 							window_tile_inc++;
-						}
-						else
-						{
+
 							read_case = 5;
 						}
 						window_counter++;
 						break;
 
 					case 5: // read from tile graphics (for the window)
-						if ((window_counter % 2) == 0)
+						if ((window_counter % 2) == 1)
 						{
 							read_case_prev = 5;
 
@@ -710,16 +699,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								bus_address = 0x1000 + tile_byte * 16 + y_scroll_offset * 2;
 								tile_data[0] = Core.VRAM[bus_address];
 							}
-						}
-						else
-						{
+
 							read_case = 6;
 						}
 						window_counter++;
 						break;
 
 					case 6: // read from tile graphics (for the window)
-						if ((window_counter % 2) == 0)
+						if ((window_counter % 2) == 1)
 						{
 							read_case_prev = 6;
 
@@ -746,9 +733,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								bus_address = 0x1000 + tile_byte * 16 + y_scroll_offset * 2 + 1;
 								tile_data[1] = Core.VRAM[bus_address];
 							}
-						}
-						else
-						{
+
 							if (window_pre_render)
 							{
 								// here we set up rendering
@@ -796,13 +781,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						break;
 
 					case 7: // read from tile data (window)
-						if ((window_counter % 2) == 0)
+						if ((window_counter % 2) == 1)
 						{
 							read_case_prev = 7;
 							// What's on the bus?
-						}
-						else
-						{
 							read_case = 4;
 							latch_new_data = true;
 						}
@@ -1045,13 +1027,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				{
 					Core.OAM[DMA_inc] = DMA_byte;
 
-					if (DMA_inc < (0xA0 - 1)) { DMA_inc++; }
+					if (DMA_inc < 0x9F) { DMA_inc++; }
+					else { DMA_clock = -6; }
 				}
 			}
 
 			DMA_clock++;
 
-			if (DMA_clock == 648)
+			if (DMA_clock == -1)
 			{
 				DMA_start = false;
 				DMA_OAM_access = true;

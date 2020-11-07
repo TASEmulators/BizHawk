@@ -57,6 +57,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		// render
 		public bool VRAM_access_read;
 		public bool VRAM_access_write;
+		public bool VRAM_access_read_PPU;
+		public bool VRAM_access_write_PPU;
 		public int read_case;
 		public int internal_cycle;
 		public int y_tile;
@@ -221,6 +223,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			ser.Sync(nameof(VRAM_access_read), ref VRAM_access_read);
 			ser.Sync(nameof(VRAM_access_write), ref VRAM_access_write);
+			ser.Sync(nameof(VRAM_access_read_PPU), ref VRAM_access_read_PPU);
+			ser.Sync(nameof(VRAM_access_write_PPU), ref VRAM_access_write_PPU);
 			ser.Sync(nameof(read_case), ref read_case);
 			ser.Sync(nameof(internal_cycle), ref internal_cycle);
 			ser.Sync(nameof(y_tile), ref y_tile);

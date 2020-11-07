@@ -59,6 +59,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 		public const ushort IRQ_CLEAR = 47;
 		public const ushort COND_CHECK = 48;
 		public const ushort HALT_FUNC = 49;
+		public const ushort WAIT = 50; // set cpu to wait state during HDMA
 
 		// test conditions
 		public const ushort ALWAYS_T = 0;
@@ -725,6 +726,9 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 							Halt_bug_4 = true;
 						}
 					}
+					break;
+				case WAIT:
+					instr_pntr--;
 					break;
 			}
 			TotalExecutedCycles++;

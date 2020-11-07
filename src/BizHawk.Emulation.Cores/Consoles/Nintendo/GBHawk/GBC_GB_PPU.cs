@@ -20,6 +20,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public byte OBJ_transfer_byte;
 
 		// HDMA is unique to GBC, do it as part of the PPU tick
+		public bool VRAM_access_read_HDMA;
+		public bool VRAM_access_write_HDMA;
 		public bool HDMA_can_start;
 		public byte HDMA_src_hi;
 		public byte HDMA_src_lo;
@@ -91,7 +93,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public byte BG_PAL_read()
 		{
-			if (VRAM_access_read)
+			if (VRAM_access_read_PPU)
 			{
 				return BG_bytes[BG_bytes_index];
 			}
@@ -103,7 +105,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public byte OBJ_PAL_read()
 		{
-			if (VRAM_access_read && Core.GBC_compat)
+			if (VRAM_access_read_PPU && Core.GBC_compat)
 			{
 				return OBJ_bytes[OBJ_bytes_index];
 			}
@@ -120,8 +122,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				case 0xFF40: // LCDC
 					if (LCDC.Bit(7) && !value.Bit(7))
 					{
-						VRAM_access_read = true;
-						VRAM_access_write = true;
+						VRAM_access_read_PPU = true;
+						VRAM_access_read = VRAM_access_read_PPU & VRAM_access_read_HDMA;
+						VRAM_access_write_PPU = true;
+						VRAM_access_write = VRAM_access_write_PPU & VRAM_access_write_HDMA;
 						OAM_access_read = true;
 						OAM_access_write = true;
 
@@ -219,9 +223,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				case 0xFF55: // HDMA5
 					if (!HDMA_active)
 					{
+						HDMA_countdown = 8;  // run one cpu cycle, then wait another cycle to start transfer
 						HDMA_mode = value.Bit(7);
-						HDMA_countdown = 4;
 						HDMA_tick = 0;
+
 						if (value.Bit(7))
 						{
 							// HDMA during HBlank only, but only if screen is on, otherwise DMA immediately one block of data
@@ -241,14 +246,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						{
 							// HDMA immediately
 							HDMA_active = true;
-							Core.HDMA_transfer = true;
-							VRAM_access_read = false;
 						}
-						//Console.WriteLine(cur_DMA_src + " " + cur_DMA_dest + " " + Core.cpu.TotalExecutedCycles);
 
 						HDMA_length = ((value & 0x7F) + 1) * 16;
 
-						if (!LCDC.Bit(7))
+						if (!LCDC.Bit(7) && (cur_DMA_src >= 0x8000) && (cur_DMA_src < 0xA000))
 						{
 							// NOTE: GBA SP apparently only has one glitched access, not sure what gameboy player is
 							HDMA_VRAM_access_glitch = 2;
@@ -264,7 +266,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						if (!value.Bit(7))
 						{
 							HDMA_active = false;
-							Core.HDMA_transfer = false;
 						}
 
 						// always update length
@@ -277,7 +278,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					BG_bytes_inc = ((value & 0x80) == 0x80);
 					break;
 				case 0xFF69: // BGPD
-					if (VRAM_access_write)
+					if (VRAM_access_write_PPU)
 					{
 						BG_transfer_byte = value;
 						BG_bytes[BG_bytes_index] = value;
@@ -293,7 +294,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					OBJ_bytes_inc = ((value & 0x80) == 0x80);
 					break;
 				case 0xFF6B: // OBPD
-					if (VRAM_access_write/* && Core.GBC_compat*/)
+					if (VRAM_access_write_PPU/* && Core.GBC_compat*/)
 					{
 						OBJ_transfer_byte = value;
 						OBJ_bytes[OBJ_bytes_index] = value;
@@ -319,6 +320,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						if (HDMA_countdown > 0)
 						{
 							HDMA_countdown--;
+
+							if (HDMA_countdown == 3)
+							{
+								if (!Core.HDMA_transfer) { Core.HDMA_start_stop(true); }
+								VRAM_access_read_HDMA = false;
+								VRAM_access_read = VRAM_access_read_PPU & VRAM_access_read_HDMA;
+								VRAM_access_write_HDMA = false;
+								VRAM_access_write = VRAM_access_write_PPU & VRAM_access_write_HDMA;
+							}
 						}
 						else
 						{
@@ -358,23 +368,28 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						{
 							HBL_HDMA_go = true;
 							HBL_test = false;
-							VRAM_access_read = false;
 						}
 						else if (HDMA_run_once)
 						{
 							HBL_HDMA_go = true;
 							HBL_test = false;
 							HDMA_run_once = false;
-							VRAM_access_read = false;
 						}
 
 						if (HBL_HDMA_go && (HBL_HDMA_count > 0))
 						{
-							Core.HDMA_transfer = true;
-
 							if (HDMA_countdown > 0)
 							{
 								HDMA_countdown--;
+
+								if (HDMA_countdown == 3)
+								{
+									if (!Core.HDMA_transfer) { Core.HDMA_start_stop(true); }
+									VRAM_access_read_HDMA = false;
+									VRAM_access_read = VRAM_access_read_PPU & VRAM_access_read_HDMA;
+									VRAM_access_write_HDMA = false;
+									VRAM_access_write = VRAM_access_write_PPU & VRAM_access_write_HDMA;
+								}
 							}
 							else
 							{
@@ -411,7 +426,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 									else { last_HBL = 0xFF; }
 									HBL_HDMA_count = 0x10;
 									HBL_HDMA_go = false;
-									HDMA_countdown = Core.double_speed ? 2 : 4;
+									HDMA_countdown = 8;
 								}
 
 								HDMA_tick++;
@@ -419,16 +434,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						}
 						else
 						{
-							Core.HDMA_transfer = false;
-							VRAM_access_read = true;
+							if (Core.HDMA_transfer) { Core.HDMA_start_stop(false); }
+							VRAM_access_read_HDMA = true;
+							VRAM_access_read = VRAM_access_read_PPU & VRAM_access_read_HDMA;
+							VRAM_access_write_HDMA = true;
+							VRAM_access_write = VRAM_access_write_PPU & VRAM_access_write_HDMA;
 						}
 					}
 				}
 				else
 				{
 					HDMA_active = false;
-					Core.HDMA_transfer = false;
-					VRAM_access_read = true;
+					if (Core.HDMA_transfer) { Core.HDMA_start_stop(false); }
+					VRAM_access_read_HDMA = true;
+					VRAM_access_read = VRAM_access_read_PPU & VRAM_access_read_HDMA;
+					VRAM_access_write_HDMA = true;
+					VRAM_access_write = VRAM_access_write_PPU & VRAM_access_write_HDMA;
 				}
 			}
 
@@ -473,8 +494,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 					// Automatically restore access to VRAM at this time (force end drawing)
 					// Who Framed Roger Rabbit seems to run into this.
-					VRAM_access_write = true;
-					VRAM_access_read = true;
+					VRAM_access_read_PPU = true;
+					VRAM_access_read = VRAM_access_read_PPU & VRAM_access_read_HDMA;
+					VRAM_access_write_PPU = true;
+					VRAM_access_write = VRAM_access_write_PPU & VRAM_access_write_HDMA;
 
 					if (LY == 144)
 					{
@@ -586,8 +609,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 								OAM_access_read = false;
 								OAM_access_write = false;
-								VRAM_access_read = false;
-								VRAM_access_write = false;
+								VRAM_access_read_PPU = false;
+								VRAM_access_read = VRAM_access_read_PPU & VRAM_access_read_HDMA;
+								VRAM_access_write_PPU = false;
+								VRAM_access_write = VRAM_access_write_PPU & VRAM_access_write_HDMA;
 								rendering_complete = false;
 							}
 						}
@@ -643,8 +668,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								STAT |= 0x03;
 								OAM_INT = false;
 								OAM_access_write = false;
-								VRAM_access_read = false;
-								VRAM_access_write = false;
+								VRAM_access_read_PPU = false;
+								VRAM_access_read = VRAM_access_read_PPU & VRAM_access_read_HDMA;
+								VRAM_access_write_PPU = false;
+								VRAM_access_write = VRAM_access_write_PPU & VRAM_access_write_HDMA;
 							}
 
 							// render the screen and handle hblank
@@ -858,7 +885,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				switch (read_case)
 				{
 					case 0: // read a background tile
-						if ((internal_cycle % 2) == 0)
+						if ((internal_cycle % 2) == 1)
 						{
 							read_case_prev = 0;
 
@@ -876,9 +903,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							VRAM_sel = tile_data[2].Bit(3) ? 1 : 0;
 
 							BG_V_flip = tile_data[2].Bit(6) & Core.GBC_compat;
-						}
-						else
-						{
+
 							read_case = 1;
 							if (!pre_render)
 							{
@@ -888,7 +913,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						break;
 
 					case 1: // read from tile graphics (0)
-						if ((internal_cycle % 2) == 0)
+						if ((internal_cycle % 2) == 1)
 						{
 							read_case_prev = 1;
 
@@ -914,15 +939,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								bus_address = (VRAM_sel * 0x2000) + 0x1000 + tile_byte * 16 + y_scroll_offset * 2;
 								tile_data[0] = Core.VRAM[bus_address];
 							}
-						}
-						else
-						{
+
 							read_case = 2;
 						}
 						break;
 
 					case 2: // read from tile graphics (1)
-						if ((internal_cycle % 2) == 0)
+						if ((internal_cycle % 2) == 1)
 						{
 							read_case_prev = 2;
 
@@ -954,10 +977,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 								bus_address = (VRAM_sel * 0x2000) + 0x1000 + tile_byte * 16 + y_scroll_offset * 2 + 1;
 								tile_data[1] = Core.VRAM[bus_address];
-							}						
-						}
-						else
-						{
+							}
+
 							if (pre_render)
 							{
 								// here we set up rendering
@@ -985,20 +1006,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						break;
 
 					case 3: // read from tile data
-						if ((internal_cycle % 2) == 0)
+						if ((internal_cycle % 2) == 1)
 						{
 							read_case_prev = 3;
 							// What's on the bus?
-						}
-						else
-						{
 							read_case = 0;
 							latch_new_data = true;
 						}
 						break;
 
 					case 4: // read from window data
-						if ((window_counter % 2) == 0)
+						if ((window_counter % 2) == 1)
 						{
 							read_case_prev = 4;
 
@@ -1011,17 +1029,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							VRAM_sel = tile_data[2].Bit(3) ? 1 : 0;
 							BG_V_flip = tile_data[2].Bit(6) & Core.GBC_compat;
 
-							window_tile_inc++;						
-						}
-						else
-						{
+							window_tile_inc++;
+
 							read_case = 5;
 						}
 						window_counter++;
 						break;
 
 					case 5: // read from tile graphics (for the window)
-						if ((window_counter % 2) == 0)
+						if ((window_counter % 2) == 1)
 						{
 							read_case_prev = 5;
 
@@ -1047,17 +1063,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 								bus_address = (VRAM_sel * 0x2000) + 0x1000 + tile_byte * 16 + y_scroll_offset * 2;
 								tile_data[0] = Core.VRAM[bus_address];
-							}	
-						}
-						else
-						{
+							}
+
 							read_case = 6;
 						}
 						window_counter++;
 						break;
 
 					case 6: // read from tile graphics (for the window)
-						if ((window_counter % 2) == 0)
+						if ((window_counter % 2) == 1)
 						{
 							read_case_prev = 6;
 
@@ -1090,9 +1104,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								bus_address = (VRAM_sel * 0x2000) + 0x1000 + tile_byte * 16 + y_scroll_offset * 2 + 1;
 								tile_data[1] = Core.VRAM[bus_address];
 							}
-						}
-						else
-						{
+
 							if (window_pre_render)
 							{
 								// here we set up rendering
@@ -1140,13 +1152,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						break;
 
 					case 7: // read from tile data (window)
-						if ((window_counter % 2) == 0)
+						if ((window_counter % 2) == 1)
 						{
 							read_case_prev = 7;
 							// What's on the bus?
-						}
-						else
-						{
 							read_case = 4;
 							latch_new_data = true;
 						}
@@ -1159,9 +1168,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 						OAM_access_read = true;
 						OAM_access_write = true;
-						VRAM_access_read = true;
-						VRAM_access_write = true;
+						VRAM_access_read_PPU = true;
+						VRAM_access_read = VRAM_access_read_PPU & VRAM_access_read_HDMA;
+						VRAM_access_write_PPU = true;
+						VRAM_access_write = VRAM_access_write_PPU & VRAM_access_write_HDMA;
 
+						HDMA_can_start = true;
 						read_case = 18;
 						break;
 
@@ -1183,14 +1195,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						read_case--;
 						break;
 					case 18:
-					case 19:
-					case 20:
-						read_case++;
-						break;
-					case 21:
-						// hardware tests indicate that HDMA starts at this point, not immediately after mode 3 ends
 						rendering_complete = true;
-						HDMA_can_start = true;
 						break;
 				}
 
@@ -1447,15 +1452,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				}
 				else if ((DMA_clock % 4) == 3)
 				{
-					Core.OAM[DMA_inc] = DMA_byte;
+					if (!HDMA_active)
+					{
+						Core.OAM[DMA_inc] = DMA_byte;
+					}
+					else
+					{
+						// TODO: timing is off by one, maybe HDMA is aligned with CPU cycles
+						if (((cur_DMA_dest - 1) & 0xFF) <= 0x9F)
+						{
+							Core.OAM[(cur_DMA_dest - 1) & 0xFF] = HDMA_byte;
+						}
+					}
 
-					if (DMA_inc < (0xA0 - 1)) { DMA_inc++; }
+					if (DMA_inc < 0x9F) { DMA_inc++; }
+					else { DMA_clock = -6; }
 				}
 			}
 
 			DMA_clock++;
 
-			if (DMA_clock == 648)
+			if (DMA_clock == -1)
 			{
 				DMA_start = false;
 				DMA_OAM_access = true;
@@ -1729,6 +1746,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync(nameof(HDMA_dest_lo), ref HDMA_dest_lo);
 			ser.Sync(nameof(HDMA_tick), ref HDMA_tick);
 			ser.Sync(nameof(HDMA_byte), ref HDMA_byte);
+			ser.Sync(nameof(VRAM_access_read_HDMA), ref VRAM_access_read_HDMA);
+			ser.Sync(nameof(VRAM_access_write_HDMA), ref VRAM_access_write_HDMA);
 			ser.Sync(nameof(HDMA_VRAM_access_glitch), ref HDMA_VRAM_access_glitch);
 			ser.Sync(nameof(HDMA_can_start), ref HDMA_can_start);
 
@@ -1780,8 +1799,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			no_scan = false;
 			OAM_access_read = true;
 			VRAM_access_read = true;
+			VRAM_access_read_PPU = true;
+			VRAM_access_read_HDMA = true;
 			OAM_access_write = true;
 			VRAM_access_write = true;
+			VRAM_access_write_PPU = true;
+			VRAM_access_write_HDMA = true;
 			DMA_OAM_access = true;
 
 			cycle = 0;

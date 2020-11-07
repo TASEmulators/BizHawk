@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 		// variables for executing instructions
 		public int instr_pntr = 0;
 		public ushort[] cur_instr = new ushort [60];
-		public ushort[] instr_table = new ushort[256 * 2 * 60 + 60 * 8];
+		public ushort[] instr_table = new ushort[256 * 2 * 60 + 60 * 9];
 		public bool CB_prefix;
 		public bool halted;
 		public bool stopped;
@@ -620,6 +620,8 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 				instr_table[256 * 60 * 2 + 60 * 7 + i] = cur_instr[i];
 			}
 
+			// wait state during HDMA
+			instr_table[256 * 60 * 2 + 60 * 8] = WAIT;
 		}
 	}
 }

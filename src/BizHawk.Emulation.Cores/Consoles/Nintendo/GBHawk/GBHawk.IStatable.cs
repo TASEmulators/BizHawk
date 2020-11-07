@@ -31,6 +31,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync(nameof(input_register), ref input_register);
 			ser.Sync(nameof(delays_to_process), ref delays_to_process);
 			ser.Sync(nameof(controller_delay_cd), ref controller_delay_cd);
+			ser.Sync(nameof(cpu_state_hold), ref cpu_state_hold);
 
 			ser.Sync(nameof(REG_FFFF), ref REG_FFFF);
 			ser.Sync(nameof(REG_FF0F), ref REG_FF0F);

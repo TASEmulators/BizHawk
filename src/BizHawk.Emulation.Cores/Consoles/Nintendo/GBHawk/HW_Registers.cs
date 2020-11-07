@@ -377,9 +377,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					if ((value != 0xC0) && (value != 0x80) && (GB_bios_register == 0))// && (value != 0xFF) && (value != 0x04))
 					{
 						GBC_compat = false;
-
-						// cpu operation is a function of hardware only
-						//cpu.is_GBC = GBC_compat;
 					}
 					Console.Write("GBC Compatibility? ");
 					Console.WriteLine(value);
@@ -407,7 +404,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					if (GB_bios_register == 0)
 					{
 						GB_bios_register = value;
-						if (!GBC_compat) { ppu.pal_change_blocked = true; }
+						if (!GBC_compat) { ppu.pal_change_blocked = true; RAM_Bank = 1; }
 					}			
 					break;
 
