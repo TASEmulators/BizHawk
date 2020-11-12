@@ -205,7 +205,14 @@ namespace BizHawk.Client.Common
 			{
 				if (string.IsNullOrWhiteSpace(movie.Core))
 				{
-					PopupMessage($"No core specified in the movie file, using the preferred core {preferredCores[systemId]} instead.");
+					if (preferredCores.TryGetValue(systemId, out var coreName))
+					{
+						PopupMessage($"No core specified in the movie file, using the preferred core {preferredCores[systemId]} instead.");
+					}
+					else
+					{
+						PopupMessage($"No core specified in the movie file, using the default core instead.");
+					}
 				}
 				else
 				{
