@@ -178,12 +178,25 @@ namespace BizHawk.Emulation.DiscSystem
 					LoadCue(Path.GetDirectoryName(IN_FromPath), File.ReadAllText(IN_FromPath));
 					break;
 				case ".iso":
-					// make a fake .cue file to represent this .iso and mount that
-					LoadCue(Path.GetDirectoryName(IN_FromPath), $@"
-					FILE ""{Path.GetFileName(IN_FromPath)}"" BINARY
-						TRACK 01 MODE1/2048
-							INDEX 01 00:00:00");
-					break;
+					{
+						// make a fake .cue file to represent this .iso and mount that
+						//however... to save many users from a stupid mistake, check if the size is NOT a multiple of 2048 (but IS a multiple of 2352) and in that case consider it a mode2 disc
+						//TODO - try it both ways and check the disc type to use whichever one succeeds in identifying a disc type
+						var len = new FileInfo(IN_FromPath).Length;
+						string mode1cue = $@"
+						FILE ""{Path.GetFileName(IN_FromPath)}"" BINARY
+							TRACK 01 MODE1/2048
+								INDEX 01 00:00:00";
+						string mode2cue = $@"
+						FILE ""{Path.GetFileName(IN_FromPath)}"" BINARY
+							TRACK 01 MODE2/2352
+								INDEX 01 00:00:00";
+						if (len % 2048 != 0 && len % 2352 == 0)
+							LoadCue(Path.GetDirectoryName(IN_FromPath), mode2cue);
+						else 
+							LoadCue(Path.GetDirectoryName(IN_FromPath), mode1cue);
+						break;
+					}
 				case ".mds":
 					OUT_Disc = new MDS_Format().LoadMDSToDisc(IN_FromPath, IN_DiscMountPolicy);
 					break;
