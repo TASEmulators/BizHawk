@@ -243,7 +243,6 @@ namespace BizHawk.Client.Common
 			_queuedMovie = null;
 
 			Movie.ProcessSavestate(Movie.Emulator);
-			Movie.ProcessSram(Movie.Emulator);
 
 			if (recordMode)
 			{
