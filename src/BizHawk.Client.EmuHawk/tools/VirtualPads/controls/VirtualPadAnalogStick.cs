@@ -32,7 +32,7 @@ namespace BizHawk.Client.EmuHawk
 			AxisSpec rangeY)
 		{
 			_inputManager = inputManager;
-			Name = name;
+
 			RangeX = rangeX;
 			RangeY = rangeY;
 			if (RangeX.Min >= -128 && RangeX.Max <= 127 && RangeY.Min >= -128 && RangeY.Max <= 127)
@@ -84,7 +84,7 @@ namespace BizHawk.Client.EmuHawk
 
 			AnalogStick.Init(
 				_inputManager.StickyXorAdapter,
-				Name,
+				name,
 				RangeX,
 				!string.IsNullOrEmpty(secondaryName) ? secondaryName : Name.Replace("X", "Y"),
 				RangeY

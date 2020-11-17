@@ -66,7 +66,7 @@ namespace BizHawk.Client.EmuHawk
 
 			var scaleBase = Math.Min(Size.Width, Size.Height) - 10.0; // be circular when control is stretched
 
-			Name = XName = nameX;
+			XName = nameX;
 			_fullRangeX = rangeX;
 			ScaleX = scaleBase / rangeX.Range.Count();
 
