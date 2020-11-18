@@ -195,7 +195,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.label1.Location = new System.Drawing.Point(6, 23);
 			this.label1.Name = "label1";
-			this.label1.Text = "Cpu:";
+			this.label1.Text = "Cpu:  Use '[' or ']' to change address, hold 'shift' for speed.";
 			// 
 			// DisassemblerView
 			// 

@@ -1617,7 +1617,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (_horizontalOrientation)
 			{
-				ColumnScroll?.Invoke(_vBar, e);
+				ColumnScroll?.Invoke(_hBar, e);
 			}
 			else
 			{
