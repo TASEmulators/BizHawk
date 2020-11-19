@@ -248,6 +248,8 @@ namespace BizHawk.Client.Common
 			{
 				Movie.StartNewRecording();
 				ReadOnly = false;
+				// If we are starting a movie recording while another one is playing, we need to switch back to user input
+				LatchInputToUser();
 			}
 			else
 			{
