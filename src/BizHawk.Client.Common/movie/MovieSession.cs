@@ -162,6 +162,14 @@ namespace BizHawk.Client.Common
 			}
 			else
 			{
+				// Don't enter recording mode if state load fails
+				var result = Movie.ExtractInputLog(reader, out var errorMsg);
+				if (!result)
+				{
+					Output(errorMsg);
+					return false;
+				}
+
 				if (Movie.IsFinished())
 				{
 					Movie.StartNewRecording();
@@ -172,13 +180,6 @@ namespace BizHawk.Client.Common
 				}
 
 				LatchInputToUser();
-
-				var result = Movie.ExtractInputLog(reader, out var errorMsg);
-				if (!result)
-				{
-					Output(errorMsg);
-					return false;
-				}
 			}
 
 			return true;
