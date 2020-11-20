@@ -170,11 +170,7 @@ namespace BizHawk.Client.Common
 					return false;
 				}
 
-				if (Movie.IsFinished())
-				{
-					Movie.StartNewRecording();
-				}
-				else if (Movie.IsPlayingOrFinished())
+				if (Movie.IsPlayingOrFinished())
 				{
 					Movie.SwitchToRecord();
 				}
