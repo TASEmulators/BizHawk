@@ -31,11 +31,10 @@ System.InvalidOperationException: o noes
 
 ### Host env.
 [//]: # "List the computers you've found the bug with. If there's a version that doesn't have the bug, please put that in too. Here are some examples:"
-- BizHawk 2.3.2; Win10 Pro 1903; Intel/AMD
-- BizHawk dev build at 92847b1d1; Win10 Home 1809; AMD/NVIDIA
-- BizHawk 2.3.2; Fedora 30; AMD/AMD
-- BizHawk 2.3.2; macOS 10.15; Intel/AMD
-- BizHawk 1.13.2; Win7 SP1; Intel/NVIDIA
+- BizHawk 2.5.2; Win10 Pro 1903; AMD/AMD
+- BizHawk 2.4.2; Win8.1; Intel/NVIDIA
+- BizHawk dev build at 370996875; Win10 Home 1809; Intel/AMD
+- BizHawk 2.5; Fedora 31; AMD/NVIDIA
 
 [//]: # "(screenshots, if applicable)"
 
