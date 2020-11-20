@@ -171,6 +171,8 @@ namespace BizHawk.Client.Common
 					Movie.SwitchToRecord();
 				}
 
+				LatchInputToUser();
+
 				var result = Movie.ExtractInputLog(reader, out var errorMsg);
 				if (!result)
 				{
