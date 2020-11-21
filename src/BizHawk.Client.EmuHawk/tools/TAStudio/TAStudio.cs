@@ -15,6 +15,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class TAStudio : ToolFormBase, IToolFormAutoConfig, IControlMainform
 	{
+		public override bool BlocksInputWhenFocused => IsInMenuLoop;
+
 		// TODO: UI flow that conveniently allows to start from savestate
 		public ITasMovie CurrentTasMovie => MovieSession.Movie as ITasMovie;
 

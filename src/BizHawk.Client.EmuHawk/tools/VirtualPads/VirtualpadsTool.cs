@@ -22,6 +22,8 @@ namespace BizHawk.Client.EmuHawk
 		
 		private bool _readOnly;
 
+		public override bool BlocksInputWhenFocused { get; } = false;
+
 		private List<VirtualPad> Pads =>
 			ControllerPanel.Controls
 				.OfType<VirtualPad>()
