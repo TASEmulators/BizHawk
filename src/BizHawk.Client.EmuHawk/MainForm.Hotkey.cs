@@ -710,7 +710,7 @@ namespace BizHawk.Client.EmuHawk
 						var s = gb2.GetSettings();
 						s.DisplayOBJ ^= true;
 						gb2.PutSettings(s);
-						AddOnScreenMessage($"OBJ toggled {(s.DisplayBG ? "on" : "off")}");
+						AddOnScreenMessage($"OBJ toggled {(s.DisplayOBJ ? "on" : "off")}");
 					}
 
 					break;
