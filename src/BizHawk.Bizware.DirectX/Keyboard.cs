@@ -12,7 +12,6 @@ using SlimDX.DirectInput;
 using static BizHawk.Common.Win32Imports;
 
 using DInputKey = SlimDX.DirectInput.Key;
-using OpenTKKey = OpenTK.Input.Key;
 using WinFormsKey = System.Windows.Forms.Keys;
 
 namespace BizHawk.Bizware.DirectX
@@ -52,7 +51,7 @@ namespace BizHawk.Bizware.DirectX
 
 		public static IEnumerable<KeyEvent> Update(Config config)
 		{
-			OpenTKKey Mapped(DInputKey k) => KeyEnumMap[config.HandleAlternateKeyboardLayouts ? MapToRealKeyViaScanCode(k) : k];
+			DistinctKey Mapped(DInputKey k) => KeyEnumMap[(int) (config.HandleAlternateKeyboardLayouts ? MapToRealKeyViaScanCode(k) : k)];
 
 			lock (_lockObj)
 			{
@@ -380,31 +379,153 @@ namespace BizHawk.Bizware.DirectX
 			};
 		}
 
-		internal static readonly Dictionary<DInputKey, OpenTKKey> KeyEnumMap = new Dictionary<DInputKey, OpenTKKey>
+		internal static readonly IReadOnlyList<DistinctKey> KeyEnumMap = new List<DistinctKey>
 		{
-			{DInputKey.Unknown, OpenTKKey.Unknown},
-
-			// A-Z
-			{DInputKey.A, OpenTKKey.A}, {DInputKey.B, OpenTKKey.B}, {DInputKey.C, OpenTKKey.C}, {DInputKey.D, OpenTKKey.D}, {DInputKey.E, OpenTKKey.E}, {DInputKey.F, OpenTKKey.F}, {DInputKey.G, OpenTKKey.G}, {DInputKey.H, OpenTKKey.H}, {DInputKey.I, OpenTKKey.I}, {DInputKey.J, OpenTKKey.J}, {DInputKey.K, OpenTKKey.K}, {DInputKey.L, OpenTKKey.L}, {DInputKey.M, OpenTKKey.M}, {DInputKey.N, OpenTKKey.N}, {DInputKey.O, OpenTKKey.O}, {DInputKey.P, OpenTKKey.P}, {DInputKey.Q, OpenTKKey.Q}, {DInputKey.R, OpenTKKey.R}, {DInputKey.S, OpenTKKey.S}, {DInputKey.T, OpenTKKey.T}, {DInputKey.U, OpenTKKey.U}, {DInputKey.V, OpenTKKey.V}, {DInputKey.W, OpenTKKey.W}, {DInputKey.X, OpenTKKey.X}, {DInputKey.Y, OpenTKKey.Y}, {DInputKey.Z, OpenTKKey.Z},
-			// 0-9
-			{DInputKey.D1, OpenTKKey.Number1}, {DInputKey.D2, OpenTKKey.Number2}, {DInputKey.D3, OpenTKKey.Number3}, {DInputKey.D4, OpenTKKey.Number4}, {DInputKey.D5, OpenTKKey.Number5}, {DInputKey.D6, OpenTKKey.Number6}, {DInputKey.D7, OpenTKKey.Number7}, {DInputKey.D8, OpenTKKey.Number8}, {DInputKey.D9, OpenTKKey.Number9}, {DInputKey.D0, OpenTKKey.Number0},
-			// misc. printables (ASCII order)
-			{DInputKey.Space, OpenTKKey.Space}, {DInputKey.Apostrophe, OpenTKKey.Quote}, {DInputKey.Comma, OpenTKKey.Comma}, {DInputKey.Minus, OpenTKKey.Minus}, {DInputKey.Period, OpenTKKey.Period}, {DInputKey.Slash, OpenTKKey.Slash}, {DInputKey.Semicolon, OpenTKKey.Semicolon}, {DInputKey.Equals, OpenTKKey.Plus}, {DInputKey.LeftBracket, OpenTKKey.BracketLeft}, {DInputKey.Backslash, OpenTKKey.BackSlash}, {DInputKey.RightBracket, OpenTKKey.BracketRight}, {DInputKey.Grave, OpenTKKey.Tilde},
-			// misc. (alphabetically)
-			{DInputKey.Backspace, OpenTKKey.BackSpace}, {DInputKey.CapsLock, OpenTKKey.CapsLock}, {DInputKey.Delete, OpenTKKey.Delete}, {DInputKey.DownArrow, OpenTKKey.Down}, {DInputKey.End, OpenTKKey.End}, {DInputKey.Return, OpenTKKey.Enter}, {DInputKey.Escape, OpenTKKey.Escape}, {DInputKey.Home, OpenTKKey.Home}, {DInputKey.Insert, OpenTKKey.Insert}, {DInputKey.LeftArrow, OpenTKKey.Left}, {DInputKey.Applications, OpenTKKey.Menu}, {DInputKey.Oem102, OpenTKKey.NonUSBackSlash}, {DInputKey.NumberLock, OpenTKKey.NumLock}, {DInputKey.PageDown, OpenTKKey.PageDown}, {DInputKey.PageUp, OpenTKKey.PageUp}, {DInputKey.Pause, OpenTKKey.Pause}, {DInputKey.PrintScreen, OpenTKKey.PrintScreen}, {DInputKey.RightArrow, OpenTKKey.Right}, {DInputKey.ScrollLock, OpenTKKey.ScrollLock}, {DInputKey.Tab, OpenTKKey.Tab}, {DInputKey.UpArrow, OpenTKKey.Up},
-			// modifier
-			{DInputKey.LeftWindowsKey, OpenTKKey.WinLeft}, {DInputKey.RightWindowsKey, OpenTKKey.WinRight}, {DInputKey.LeftControl, OpenTKKey.ControlLeft}, {DInputKey.RightControl, OpenTKKey.ControlRight}, {DInputKey.LeftAlt, OpenTKKey.AltLeft}, {DInputKey.RightAlt, OpenTKKey.AltRight}, {DInputKey.LeftShift, OpenTKKey.ShiftLeft}, {DInputKey.RightShift, OpenTKKey.ShiftRight},
-
-			// function
-			{DInputKey.F1, OpenTKKey.F1}, {DInputKey.F2, OpenTKKey.F2}, {DInputKey.F3, OpenTKKey.F3}, {DInputKey.F4, OpenTKKey.F4}, {DInputKey.F5, OpenTKKey.F5}, {DInputKey.F6, OpenTKKey.F6}, {DInputKey.F7, OpenTKKey.F7}, {DInputKey.F8, OpenTKKey.F8}, {DInputKey.F9, OpenTKKey.F9}, {DInputKey.F10, OpenTKKey.F10}, {DInputKey.F11, OpenTKKey.F11}, {DInputKey.F12, OpenTKKey.F12},
-			// keypad (alphabetically)
-			{DInputKey.NumberPad0, OpenTKKey.Keypad0}, {DInputKey.NumberPad1, OpenTKKey.Keypad1}, {DInputKey.NumberPad2, OpenTKKey.Keypad2}, {DInputKey.NumberPad3, OpenTKKey.Keypad3}, {DInputKey.NumberPad4, OpenTKKey.Keypad4}, {DInputKey.NumberPad5, OpenTKKey.Keypad5}, {DInputKey.NumberPad6, OpenTKKey.Keypad6}, {DInputKey.NumberPad7, OpenTKKey.Keypad7}, {DInputKey.NumberPad8, OpenTKKey.Keypad8}, {DInputKey.NumberPad9, OpenTKKey.Keypad9}, {DInputKey.NumberPadPlus, OpenTKKey.KeypadAdd}, {DInputKey.NumberPadPeriod, OpenTKKey.KeypadDecimal}, {DInputKey.NumberPadSlash, OpenTKKey.KeypadDivide}, {DInputKey.NumberPadEnter, OpenTKKey.KeypadEnter}, {DInputKey.NumberPadStar, OpenTKKey.KeypadMultiply}, {DInputKey.NumberPadMinus, OpenTKKey.KeypadSubtract},
-
-			// misc. available in DInput alt. mode but not in OpenTK
-			// I have some of the media keys on my keyboard but SlimDX didn't seem to pick them up --yoshi
-			{DInputKey.Convert, OpenTKKey.Unknown}, {DInputKey.Mail, OpenTKKey.Unknown}, {DInputKey.MediaSelect, OpenTKKey.Unknown}, {DInputKey.MediaStop, OpenTKKey.Unknown}, {DInputKey.Mute, OpenTKKey.Unknown}, {DInputKey.NextTrack, OpenTKKey.Unknown}, {DInputKey.PlayPause, OpenTKKey.Unknown}, {DInputKey.PreviousTrack, OpenTKKey.Unknown}, {DInputKey.Sleep, OpenTKKey.Unknown}, {DInputKey.VolumeDown, OpenTKKey.Unknown}, {DInputKey.VolumeUp, OpenTKKey.Unknown}, {DInputKey.WebBack, OpenTKKey.Unknown}, {DInputKey.WebFavorites, OpenTKKey.Unknown}, {DInputKey.WebForward, OpenTKKey.Unknown}, {DInputKey.WebHome, OpenTKKey.Unknown}, {DInputKey.WebRefresh, OpenTKKey.Unknown}, {DInputKey.WebSearch, OpenTKKey.Unknown}, {DInputKey.WebStop, OpenTKKey.Unknown},
-			// misc. not available in DInput alt. mode
-			{DInputKey.AbntC1, OpenTKKey.Unknown}, {DInputKey.AbntC2, OpenTKKey.Unknown}, {DInputKey.AT, OpenTKKey.Unknown}, {DInputKey.AX, OpenTKKey.Unknown}, {DInputKey.Calculator, OpenTKKey.Unknown}, {DInputKey.Colon, OpenTKKey.Unknown}, {DInputKey.Kana, OpenTKKey.Unknown}, {DInputKey.Kanji, OpenTKKey.Unknown}, {DInputKey.MyComputer, OpenTKKey.Unknown}, {DInputKey.NoConvert, OpenTKKey.Unknown}, {DInputKey.NumberPadComma, OpenTKKey.Unknown}, {DInputKey.NumberPadEquals, OpenTKKey.Unknown}, {DInputKey.Power, OpenTKKey.Unknown}, {DInputKey.Stop, OpenTKKey.Unknown}, {DInputKey.Underline, OpenTKKey.Unknown}, {DInputKey.Unlabeled, OpenTKKey.Unknown}, {DInputKey.Wake, OpenTKKey.Unknown}, {DInputKey.Yen, OpenTKKey.Unknown},
+			DistinctKey.D0,
+			DistinctKey.D1,
+			DistinctKey.D2,
+			DistinctKey.D3,
+			DistinctKey.D4,
+			DistinctKey.D5,
+			DistinctKey.D6,
+			DistinctKey.D7,
+			DistinctKey.D8,
+			DistinctKey.D9,
+			DistinctKey.A,
+			DistinctKey.B,
+			DistinctKey.C,
+			DistinctKey.D,
+			DistinctKey.E,
+			DistinctKey.F,
+			DistinctKey.G,
+			DistinctKey.H,
+			DistinctKey.I,
+			DistinctKey.J,
+			DistinctKey.K,
+			DistinctKey.L,
+			DistinctKey.M,
+			DistinctKey.N,
+			DistinctKey.O,
+			DistinctKey.P,
+			DistinctKey.Q,
+			DistinctKey.R,
+			DistinctKey.S,
+			DistinctKey.T,
+			DistinctKey.U,
+			DistinctKey.V,
+			DistinctKey.W,
+			DistinctKey.X,
+			DistinctKey.Y,
+			DistinctKey.Z,
+			DistinctKey.AbntC1,
+			DistinctKey.AbntC2,
+			DistinctKey.OemQuotes,
+			DistinctKey.Apps,
+			DistinctKey.Unknown, // AT
+			DistinctKey.Unknown, // AX
+			DistinctKey.Back,
+			DistinctKey.OemPipe, // Backslash
+			DistinctKey.Unknown, // Calculator
+			DistinctKey.CapsLock,
+			DistinctKey.Unknown, // Colon
+			DistinctKey.OemComma,
+			DistinctKey.ImeConvert,
+			DistinctKey.Delete,
+			DistinctKey.Down,
+			DistinctKey.End,
+			DistinctKey.OemPlus,
+			DistinctKey.Escape,
+			DistinctKey.F1,
+			DistinctKey.F2,
+			DistinctKey.F3,
+			DistinctKey.F4,
+			DistinctKey.F5,
+			DistinctKey.F6,
+			DistinctKey.F7,
+			DistinctKey.F8,
+			DistinctKey.F9,
+			DistinctKey.F10,
+			DistinctKey.F11,
+			DistinctKey.F12,
+			DistinctKey.F13,
+			DistinctKey.F14,
+			DistinctKey.F15,
+			DistinctKey.OemTilde,
+			DistinctKey.Home,
+			DistinctKey.Insert,
+			DistinctKey.KanaMode,
+			DistinctKey.KanjiMode,
+			DistinctKey.OemOpenBrackets,
+			DistinctKey.LeftCtrl,
+			DistinctKey.Left,
+			DistinctKey.LeftAlt,
+			DistinctKey.LeftShift,
+			DistinctKey.LWin,
+			DistinctKey.LaunchMail,
+			DistinctKey.SelectMedia,
+			DistinctKey.MediaStop,
+			DistinctKey.OemMinus,
+			DistinctKey.VolumeMute,
+			DistinctKey.Unknown, // MyComputer
+			DistinctKey.MediaNextTrack,
+			DistinctKey.ImeNonConvert,
+			DistinctKey.NumLock,
+			DistinctKey.NumPad0,
+			DistinctKey.NumPad1,
+			DistinctKey.NumPad2,
+			DistinctKey.NumPad3,
+			DistinctKey.NumPad4,
+			DistinctKey.NumPad5,
+			DistinctKey.NumPad6,
+			DistinctKey.NumPad7,
+			DistinctKey.NumPad8,
+			DistinctKey.NumPad9,
+			DistinctKey.Separator,
+			DistinctKey.NumPadEnter,
+			DistinctKey.OemPlus, // NumberPadEquals
+			DistinctKey.Subtract,
+			DistinctKey.Decimal,
+			DistinctKey.Add,
+			DistinctKey.Divide,
+			DistinctKey.Multiply,
+			DistinctKey.OemBackslash, // Oem102
+			DistinctKey.PageDown,
+			DistinctKey.PageUp,
+			DistinctKey.Pause,
+			DistinctKey.OemPeriod,
+			DistinctKey.MediaPlayPause,
+			DistinctKey.Unknown, // Power
+			DistinctKey.MediaPreviousTrack,
+			DistinctKey.OemCloseBrackets,
+			DistinctKey.RightCtrl,
+			DistinctKey.Return,
+			DistinctKey.Right,
+			DistinctKey.RightAlt,
+			DistinctKey.RightShift,
+			DistinctKey.RWin,
+			DistinctKey.Scroll,
+			DistinctKey.OemSemicolon,
+			DistinctKey.OemQuestion, // Slash
+			DistinctKey.Sleep,
+			DistinctKey.Space,
+			DistinctKey.MediaStop,
+			DistinctKey.PrintScreen,
+			DistinctKey.Tab,
+			DistinctKey.Unknown, // Underline
+			DistinctKey.Unknown, // Unlabeled
+			DistinctKey.Up,
+			DistinctKey.VolumeDown,
+			DistinctKey.VolumeUp,
+			DistinctKey.Sleep, // Wake
+			DistinctKey.BrowserBack,
+			DistinctKey.BrowserFavorites,
+			DistinctKey.BrowserForward,
+			DistinctKey.BrowserHome,
+			DistinctKey.BrowserRefresh,
+			DistinctKey.BrowserSearch,
+			DistinctKey.BrowserStop,
+			DistinctKey.Unknown, // Yen
+			DistinctKey.Unknown // Unknown
 		};
 	}
 }

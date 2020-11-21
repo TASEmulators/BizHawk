@@ -200,7 +200,18 @@ namespace BizHawk.Client.EmuHawk
 
 		private void HandleButton(string button, bool newState, ClientInputFocus source)
 		{
-			ModifierKey currentModifier = ButtonToModifierKey(button);
+			var currentModifier = button switch
+			{
+//				"LeftWin" => ModifierKey.Win,
+//				"RightWin" => ModifierKey.Win,
+				"LeftShift" => ModifierKey.Shift,
+				"RightShift" => ModifierKey.Shift,
+				"LeftCtrl" => ModifierKey.Control,
+				"RightCtrl" => ModifierKey.Control,
+				"LeftAlt" => ModifierKey.Alt,
+				"RightAlt" => ModifierKey.Alt,
+				_ => ModifierKey.None
+			};
 			if (EnableIgnoreModifiers && currentModifier != ModifierKey.None) return;
 			if (_lastState[button] == newState) return;
 
@@ -268,23 +279,6 @@ namespace BizHawk.Client.EmuHawk
 			_axisValues[axis] = newValue;
 		}
 
-		private static ModifierKey ButtonToModifierKey(string button) => button switch
-		{
-			"LeftShift" => ModifierKey.Shift,
-			"ShiftLeft" => ModifierKey.Shift,
-			"RightShift" => ModifierKey.Shift,
-			"ShiftRight" => ModifierKey.Shift,
-			"LeftControl" => ModifierKey.Control,
-			"ControlLeft" => ModifierKey.Control,
-			"RightControl" => ModifierKey.Control,
-			"RControl" => ModifierKey.Control, // no idea why this is different
-			"LeftAlt" => ModifierKey.Alt,
-			"LAlt" => ModifierKey.Alt,
-			"RightAlt" => ModifierKey.Alt,
-			"RAlt" => ModifierKey.Alt,
-			_ => ModifierKey.None
-		};
-
 		private ModifierKey _modifiers;
 		private readonly List<InputEvent> _newEvents = new List<InputEvent>();
 
@@ -331,6 +325,56 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UpdateThreadProc()
 		{
+			static string KeyName(DistinctKey k) => k switch
+			{
+				DistinctKey.Back => "Backspace",
+				DistinctKey.Enter => "Enter",
+				DistinctKey.CapsLock => "CapsLock",
+				DistinctKey.PageDown => "PageDown",
+				DistinctKey.D0 => "Number0",
+				DistinctKey.D1 => "Number1",
+				DistinctKey.D2 => "Number2",
+				DistinctKey.D3 => "Number3",
+				DistinctKey.D4 => "Number4",
+				DistinctKey.D5 => "Number5",
+				DistinctKey.D6 => "Number6",
+				DistinctKey.D7 => "Number7",
+				DistinctKey.D8 => "Number8",
+				DistinctKey.D9 => "Number9",
+				DistinctKey.LWin => "LeftWin",
+				DistinctKey.RWin => "RightWin",
+				DistinctKey.NumPad0 => "Keypad0",
+				DistinctKey.NumPad1 => "Keypad1",
+				DistinctKey.NumPad2 => "Keypad2",
+				DistinctKey.NumPad3 => "Keypad3",
+				DistinctKey.NumPad4 => "Keypad4",
+				DistinctKey.NumPad5 => "Keypad5",
+				DistinctKey.NumPad6 => "Keypad6",
+				DistinctKey.NumPad7 => "Keypad7",
+				DistinctKey.NumPad8 => "Keypad8",
+				DistinctKey.NumPad9 => "Keypad9",
+				DistinctKey.Multiply => "KeypadMultiply",
+				DistinctKey.Add => "KeypadAdd",
+				DistinctKey.Separator => "KeypadComma",
+				DistinctKey.Subtract => "KeypadSubtract",
+				DistinctKey.Decimal => "KeypadDecimal",
+				DistinctKey.Divide => "KeypadDivide",
+				DistinctKey.Scroll => "ScrollLock",
+				DistinctKey.OemSemicolon => "Semicolon",
+				DistinctKey.OemPlus => "Equals",
+				DistinctKey.OemComma => "Comma",
+				DistinctKey.OemMinus => "Minus",
+				DistinctKey.OemPeriod => "Period",
+				DistinctKey.OemQuestion => "Slash",
+				DistinctKey.OemTilde => "Backtick",
+				DistinctKey.OemOpenBrackets => "LeftBracket",
+				DistinctKey.OemPipe => "Backslash",
+				DistinctKey.OemCloseBrackets => "RightBracket",
+				DistinctKey.OemQuotes => "Apostrophe",
+				DistinctKey.OemBackslash => "OEM102",
+				DistinctKey.NumPadEnter => "KeypadEnter",
+				_ => k.ToString()
+			};
 			while (true)
 			{
 				Adapter.UpdateConfig(GlobalWin.Config);
@@ -345,7 +389,7 @@ namespace BizHawk.Client.EmuHawk
 
 					//analyze keys
 					foreach (var ke in keyEvents)
-						HandleButton(ke.Key.ToString(), ke.Pressed, ClientInputFocus.Keyboard);
+						HandleButton(KeyName(ke.Key), ke.Pressed, ClientInputFocus.Keyboard);
 
 					lock (_axisValues)
 					{

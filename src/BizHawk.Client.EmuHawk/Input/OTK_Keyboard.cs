@@ -28,6 +28,141 @@ namespace BizHawk.Client.EmuHawk
 			Key.Keypad0, Key.Keypad1, Key.Keypad2, Key.Keypad3, Key.Keypad4, Key.Keypad5, Key.Keypad6, Key.Keypad7, Key.Keypad8, Key.Keypad9, Key.KeypadAdd, Key.KeypadDecimal, Key.KeypadDivide, Key.KeypadEnter, Key.KeypadMultiply, Key.KeypadSubtract
 		};
 
+		private static readonly IReadOnlyList<DistinctKey> KeyEnumMap = new List<DistinctKey>
+		{
+			DistinctKey.Unknown, // Unknown
+			DistinctKey.LeftShift,
+			DistinctKey.RightShift,
+			DistinctKey.LeftCtrl,
+			DistinctKey.RightCtrl,
+			DistinctKey.LeftAlt,
+			DistinctKey.RightAlt,
+			DistinctKey.LWin,
+			DistinctKey.RWin,
+			DistinctKey.Apps,
+			DistinctKey.F1,
+			DistinctKey.F2,
+			DistinctKey.F3,
+			DistinctKey.F4,
+			DistinctKey.F5,
+			DistinctKey.F6,
+			DistinctKey.F7,
+			DistinctKey.F8,
+			DistinctKey.F9,
+			DistinctKey.F10,
+			DistinctKey.F11,
+			DistinctKey.F12,
+			DistinctKey.F13,
+			DistinctKey.F14,
+			DistinctKey.F15,
+			DistinctKey.F16,
+			DistinctKey.F17,
+			DistinctKey.F18,
+			DistinctKey.F19,
+			DistinctKey.F20,
+			DistinctKey.F21,
+			DistinctKey.F22,
+			DistinctKey.F23,
+			DistinctKey.F24,
+			DistinctKey.Unknown, // F25
+			DistinctKey.Unknown, // F26
+			DistinctKey.Unknown, // F27
+			DistinctKey.Unknown, // F28
+			DistinctKey.Unknown, // F29
+			DistinctKey.Unknown, // F30
+			DistinctKey.Unknown, // F31
+			DistinctKey.Unknown, // F32
+			DistinctKey.Unknown, // F33
+			DistinctKey.Unknown, // F34
+			DistinctKey.Unknown, // F35
+			DistinctKey.Up,
+			DistinctKey.Down,
+			DistinctKey.Left,
+			DistinctKey.Right,
+			DistinctKey.Return,
+			DistinctKey.Escape,
+			DistinctKey.Space,
+			DistinctKey.Tab,
+			DistinctKey.Back,
+			DistinctKey.Insert,
+			DistinctKey.Delete,
+			DistinctKey.PageUp,
+			DistinctKey.PageDown,
+			DistinctKey.Home,
+			DistinctKey.End,
+			DistinctKey.CapsLock,
+			DistinctKey.Scroll, // ScrollLock; my Scroll Lock key is only recognised by OpenTK as Pause tho --yoshi
+			DistinctKey.PrintScreen,
+			DistinctKey.Pause,
+			DistinctKey.NumLock,
+			DistinctKey.Clear,
+			DistinctKey.Sleep,
+			DistinctKey.NumPad0,
+			DistinctKey.NumPad1,
+			DistinctKey.NumPad2,
+			DistinctKey.NumPad3,
+			DistinctKey.NumPad4,
+			DistinctKey.NumPad5,
+			DistinctKey.NumPad6,
+			DistinctKey.NumPad7,
+			DistinctKey.NumPad8,
+			DistinctKey.NumPad9,
+			DistinctKey.Divide,
+			DistinctKey.Multiply,
+			DistinctKey.Subtract,
+			DistinctKey.Add,
+			DistinctKey.Decimal,
+			DistinctKey.NumPadEnter,
+			DistinctKey.A,
+			DistinctKey.B,
+			DistinctKey.C,
+			DistinctKey.D,
+			DistinctKey.E,
+			DistinctKey.F,
+			DistinctKey.G,
+			DistinctKey.H,
+			DistinctKey.I,
+			DistinctKey.J,
+			DistinctKey.K,
+			DistinctKey.L,
+			DistinctKey.M,
+			DistinctKey.N,
+			DistinctKey.O,
+			DistinctKey.P,
+			DistinctKey.Q,
+			DistinctKey.R,
+			DistinctKey.S,
+			DistinctKey.T,
+			DistinctKey.U,
+			DistinctKey.V,
+			DistinctKey.W,
+			DistinctKey.X,
+			DistinctKey.Y,
+			DistinctKey.Z,
+			DistinctKey.D0,
+			DistinctKey.D1,
+			DistinctKey.D2,
+			DistinctKey.D3,
+			DistinctKey.D4,
+			DistinctKey.D5,
+			DistinctKey.D6,
+			DistinctKey.D7,
+			DistinctKey.D8,
+			DistinctKey.D9,
+			DistinctKey.OemTilde,
+			DistinctKey.OemMinus,
+			DistinctKey.OemPlus,
+			DistinctKey.OemOpenBrackets,
+			DistinctKey.OemCloseBrackets,
+			DistinctKey.OemSemicolon,
+			DistinctKey.OemQuotes,
+			DistinctKey.OemComma,
+			DistinctKey.OemPeriod,
+			DistinctKey.OemQuestion, // Slash
+			DistinctKey.OemPipe, // BackSlash
+			DistinctKey.OemBackslash, // NonUSBackSlash
+		};
+
 		private static readonly List<KeyEvent> EventList = new List<KeyEvent>();
 		private static KeyboardState _kbState;
 
@@ -46,9 +181,9 @@ namespace BizHawk.Client.EmuHawk
 				foreach (var key in KeyList)
 				{
 					if (lastState.IsKeyUp(key) && _kbState.IsKeyDown(key))
-						EventList.Add(new KeyEvent(key, pressed: true));
+						EventList.Add(new KeyEvent(KeyEnumMap[(int) key], pressed: true));
 					else if (lastState.IsKeyDown(key) && _kbState.IsKeyUp(key))
-						EventList.Add(new KeyEvent(key, pressed: false));
+						EventList.Add(new KeyEvent(KeyEnumMap[(int) key], pressed: false));
 				}
 			}
 			catch

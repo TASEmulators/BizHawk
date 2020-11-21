@@ -5,8 +5,6 @@ using System.IO.Pipes;
 
 using BizHawk.Client.Common;
 
-using SlimDX.DirectInput;
-
 // this is not a very safe or pretty protocol, I'm not proud of it
 namespace BizHawk.Bizware.DirectX
 {
@@ -41,7 +39,7 @@ namespace BizHawk.Bizware.DirectX
 						int e = br.ReadInt32();
 						bool pressed = (e & 0x80000000) != 0;
 						lock (PendingEventList)
-							PendingEventList.Add(new KeyEvent(KeyInput.KeyEnumMap[(Key) (e & 0x7FFFFFFF)], pressed));
+							PendingEventList.Add(new KeyEvent(KeyInput.KeyEnumMap[e & 0x7FFFFFFF], pressed));
 					}
 				}
 				catch { }
