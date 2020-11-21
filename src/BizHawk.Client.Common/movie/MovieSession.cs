@@ -162,17 +162,20 @@ namespace BizHawk.Client.Common
 			}
 			else
 			{
-				// Don't enter recording mode if state load fails
+				if (Movie.IsFinished())
+				{
+					Movie.StartNewRecording();
+				}
+				else if (Movie.IsPlayingOrFinished())
+				{
+					Movie.SwitchToRecord();
+				}
+
 				var result = Movie.ExtractInputLog(reader, out var errorMsg);
 				if (!result)
 				{
 					Output(errorMsg);
 					return false;
-				}
-
-				if (Movie.IsPlayingOrFinished())
-				{
-					Movie.SwitchToRecord();
 				}
 
 				LatchInputToUser();
