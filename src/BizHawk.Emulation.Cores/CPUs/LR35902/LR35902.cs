@@ -60,6 +60,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 		public const ushort COND_CHECK = 48;
 		public const ushort HALT_FUNC = 49;
 		public const ushort WAIT = 50; // set cpu to wait state during HDMA
+		public const ushort DIV_RST = 51; // change speed mode
 
 		// test conditions
 		public const ushort ALWAYS_T = 0;
@@ -512,9 +513,13 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 							break;
 						}
 
-						if (stop_time == (32769))
+						if (stop_time == 32770)
 						{
+							// point to speed cange loop
 							SpeedFunc(1);
+							instr_pntr = 256 * 60 * 2 + 60 * 9;
+							stop_time--;
+							break;
 						}
 
 						stop_time--;
@@ -729,6 +734,9 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 					break;
 				case WAIT:
 					instr_pntr--;
+					break;
+				case DIV_RST:
+					SpeedFunc(2);
 					break;
 			}
 			TotalExecutedCycles++;

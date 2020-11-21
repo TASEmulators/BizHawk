@@ -287,7 +287,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						speed_switch = false;
 						Console.WriteLine("Speed Switch: " + cpu.TotalExecutedCycles);
 
-						int ret = double_speed ? 32769 : 32769; // actual time needs checking
+						int ret = double_speed ? 32770 : 32770; // actual time needs checking
 						return ret;
 					}
 
@@ -298,16 +298,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				// if we are in GB mode, return 0, cannot switch speed
 				return 0;
 			}
+			else if (temp == 1)
+			{
+				double_speed = !double_speed;
+				return 0;
+			}
 			else
 			{
 				// reset the divider (only way for speed_change_timing_fine.gbc and speed_change_cancel.gbc to both work)
-				//Console.WriteLine("at stop " + timer.divider_reg);
-				timer.divider_reg = 0x1;
+				// Console.WriteLine("at stop " + timer.divider_reg + " " + timer.timer_control);
 
-				// TODO: resetting the divider causes an increment, but exact timing unclear
-				//timer.tick();
+				// only if the timer mode is 1, an extra tick of the timer is counted before the reset
+				// this varies between console revisions
+				if ((timer.timer_control & 3) == 1)
+				{
+					if((timer.divider_reg & 0x7) == 7)
+					{
+						timer.old_state = true;
+					}
+				}
 
-				double_speed = !double_speed;
+				timer.divider_reg = 0xFFFF;
 				return 0;
 			}
 		}
@@ -341,9 +352,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public void SetIntRegs(byte r)
 		{
 			// For timer interrupts or serial interrupts that occur on the same cycle as the IRQ clear
-			// the cear wins on GB and GBA (tested on GBP.) Assuming true for GBC E too. 
-			if (((REG_FF0F & 4) == 4) && ((r & 4) == 0) && timer.IRQ_block) { r |= 4; }
-			if (((REG_FF0F & 8) == 8) && ((r & 8) == 0) && serialport.IRQ_block) { r |= 8; }
+			// the clear wins on GB and GBA (tested on GBP.) Assuming true for GBC E too.
+			// but only in single speed
+			if (((REG_FF0F & 4) == 4) && ((r & 4) == 0) && timer.IRQ_block && !double_speed) { r |= 4; }
+			if (((REG_FF0F & 8) == 8) && ((r & 8) == 0) && serialport.IRQ_block && !double_speed) { r |= 8; }
 			REG_FF0F = r;
 		}
 
