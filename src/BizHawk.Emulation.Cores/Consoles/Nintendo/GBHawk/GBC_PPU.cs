@@ -63,7 +63,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			switch (addr)
 			{
 				case 0xFF40: ret = LCDC;							break; // LCDC
-				case 0xFF41: ret = STAT;							break; // STAT
+				case 0xFF41: ret = STAT; 							break; // STAT
 				case 0xFF42: ret = scroll_y;						break; // SCY
 				case 0xFF43: ret = scroll_x;						break; // SCX
 				case 0xFF44: ret = LY_read;							break; // LY
@@ -1176,13 +1176,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						HDMA_can_start = true;
 						read_case = 18;
 
-						if (Core.double_speed)
-						{
-							STAT &= 0xFC;
-							STAT |= 0x00;
-							if (STAT.Bit(3)) { HBL_INT = true; }
-							// the CPU has to be able to see the transition from mode 3 to mode 0 to start HDMA
-						}
 						break;
 
 					case 9:
@@ -1293,14 +1286,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							read_case = 8;
 							// hbl_countdown = 1;
 
-							if (!Core.double_speed)
-							{
-								STAT &= 0xFC;
-								STAT |= 0x00;
-								if (STAT.Bit(3)) { HBL_INT = true; }
-								// the CPU has to be able to see the transition from mode 3 to mode 0 to start HDMA
-							}
-
+							STAT &= 0xFC;
+							STAT |= 0x00;
+							if (STAT.Bit(3)) { HBL_INT = true; }
+							// the CPU has to be able to see the transition from mode 3 to mode 0 to start HDMA
+						
 							// TODO: If Window is turned on midscanline what happens? When is this check done exactly?
 							if ((window_started && window_latch) || (window_is_reset && !window_latch && (LY > window_y_latch)))
 							{

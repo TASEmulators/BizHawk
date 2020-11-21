@@ -300,25 +300,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 			else if (temp == 1)
 			{
-				double_speed = !double_speed;
-				return 0;
-			}
-			else
-			{
 				// reset the divider (only way for speed_change_timing_fine.gbc and speed_change_cancel.gbc to both work)
 				// Console.WriteLine("at stop " + timer.divider_reg + " " + timer.timer_control);
 
 				// only if the timer mode is 1, an extra tick of the timer is counted before the reset
 				// this varies between console revisions
-				if ((timer.timer_control & 3) == 1)
+				if ((timer.timer_control & 7) == 5)
 				{
-					if((timer.divider_reg & 0x7) == 7)
+					if ((timer.divider_reg & 0x7) == 7)
 					{
 						timer.old_state = true;
 					}
 				}
 
 				timer.divider_reg = 0xFFFF;
+
+				double_speed = !double_speed;
+				return 0;
+			}
+			else
+			{
+
 				return 0;
 			}
 		}
