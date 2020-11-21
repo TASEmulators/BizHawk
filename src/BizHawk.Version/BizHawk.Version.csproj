@@ -5,7 +5,7 @@
 	<Import Project="../MainSlnCommon.props" />
 	<PropertyGroup>
 		<EnableDefaultCompileItems>false</EnableDefaultCompileItems>
-		<NoWarn>CS2008</NoWarn>
+		<NoWarn>$(NoWarn);CS2008</NoWarn>
 	</PropertyGroup>
 	<Target Name="PreBuild" AfterTargets="PreBuildEvent">
 		<Exec Condition=" '$(OS)' == 'Windows_NT' " Command='"$(ProjectDir)..\..\Build\BizHawk.Build.Tool.exe" GIT_REV --wc "$(ProjectDir).." --template "$(ProjectDir)VersionInfo.gen_template.cs" --out "$(ProjectDir)..\BizHawk.Common\VersionInfo.gen.cs"' />
