@@ -116,6 +116,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public int read_case_prev;
 		public bool pal_change_blocked; // in compatability mode, you can change palette values but not displayed color
 		public int LYC_offset; // in double speed mode it appears timing changes for LYC int
+		public bool glitch_state; // writing to STAT to enable HBL interrupt won't trigger it if the ppu just turned on
 
 		// variables not in state
 		public int total_counter;
@@ -282,6 +283,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync(nameof(read_case_prev), ref read_case_prev);
 			ser.Sync(nameof(pal_change_blocked), ref pal_change_blocked);
 			ser.Sync(nameof(LYC_offset), ref LYC_offset);
+			ser.Sync(nameof(glitch_state), ref glitch_state);
 		}
 	}
 }

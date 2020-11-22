@@ -144,7 +144,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					// note that their is no stat interrupt bug in GBC
 					STAT = (byte)((value & 0xF8) | (STAT & 7) | 0x80);
 
-					if (((STAT & 3) == 0) && STAT.Bit(3)) { HBL_INT = true; } else { HBL_INT = false; }
+					if (((STAT & 3) == 0) && STAT.Bit(3) && !glitch_state) { HBL_INT = true; } else { HBL_INT = false; }
 					if (((STAT & 3) == 1) && STAT.Bit(4)) { VBL_INT = true; } else { VBL_INT = false; }
 					// OAM not triggered?
 					// if (((STAT & 3) == 2) && STAT.Bit(5)) { OAM_INT = true; } else { OAM_INT = false; }
@@ -510,6 +510,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					// we exit vblank into mode 0 for 4 cycles 
 					// but no hblank interrupt, presumably this only happens transitioning from mode 3 to 0
 					STAT &= 0xFC;
+					glitch_state = true;
+					LY_inc = 1;
 
 					// also the LCD doesn't turn on right away
 					// also, the LCD does not enter mode 2 on scanline 0 when first turned on
@@ -604,6 +606,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								STAT &= 0xFC;
 								STAT |= 0x03;
 								OAM_INT = false;
+								glitch_state = false;
 
 								OAM_access_read = false;
 								OAM_access_write = false;
@@ -1291,7 +1294,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							STAT &= 0xFC;
 							STAT |= 0x00;
 							if (STAT.Bit(3)) { HBL_INT = true; }
-
 							// the CPU has to be able to see the transition from mode 3 to mode 0 to start HDMA
 
 							// TODO: If Window is turned on midscanline what happens? When is this check done exactly?
@@ -1792,7 +1794,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			for (int i = 0; i < BG_bytes.Length; i++) { BG_bytes[i] = 0xFF; }
 			for (int i = 0; i < OBJ_bytes.Length; i++) { OBJ_bytes[i] = 0xFF; }
 
-			LYC_offset = 1;
+			LYC_offset = 2;
+
+			glitch_state = false;
 		}
 	}
 }

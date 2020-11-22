@@ -197,9 +197,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					// we exit vblank into mode 0 for 4 cycles 
 					// but no hblank interrupt, presumably this only happens transitioning from mode 3 to 0
 					STAT &= 0xFC;
+					glitch_state = true;
+					LY_inc = 1;
 
 					// also the LCD doesn't turn on right away
-
 					// also, the LCD does not enter mode 2 on scanline 0 when first turned on
 					no_scan = true;
 					cycle = 8;
@@ -289,6 +290,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								STAT &= 0xFC;
 								STAT |= 0x03;
 								OAM_INT = false;
+								glitch_state = false;
 
 								OAM_access_read = false;
 								OAM_access_write = false;
@@ -1268,6 +1270,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			window_y_tile = 0;
 			window_x_tile = 0;
 			window_y_tile_inc = 0;
+
+			glitch_state = false;
 		}
 	}
 }
