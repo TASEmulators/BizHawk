@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 
+using BizHawk.Bizware.DirectX;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.CustomControls;
 using BizHawk.Client.EmuHawk.ToolExtensions;
@@ -899,7 +901,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SoundMenuItem_Click(object sender, EventArgs e)
 		{
-			using var form = new SoundConfig(Config) { Owner = this };
+			static IEnumerable<string> GetDeviceNamesCallback(ESoundOutputMethod outputMethod) => outputMethod switch
+			{
+				ESoundOutputMethod.DirectSound => DirectSoundSoundOutput.GetDeviceNames(),
+				ESoundOutputMethod.XAudio2 => XAudio2SoundOutput.GetDeviceNames(),
+				ESoundOutputMethod.OpenAL => OpenALSoundOutput.GetDeviceNames(),
+				_ => Enumerable.Empty<string>()
+			};
+			using var form = new SoundConfig(Config, GetDeviceNamesCallback) { Owner = this };
 			if (form.ShowDialog().IsOk())
 			{
 				Sound.StartSound();
