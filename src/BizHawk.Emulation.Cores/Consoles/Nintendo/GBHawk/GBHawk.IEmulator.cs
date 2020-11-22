@@ -316,6 +316,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				timer.divider_reg = 0xFFFF;
 
 				double_speed = !double_speed;
+
+				ppu.LYC_offset = double_speed ? 1 : 2;
+
 				return 0;
 			}
 			else

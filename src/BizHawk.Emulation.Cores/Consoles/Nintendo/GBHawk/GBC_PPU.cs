@@ -63,7 +63,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			switch (addr)
 			{
 				case 0xFF40: ret = LCDC;							break; // LCDC
-				case 0xFF41: ret = STAT; 							break; // STAT
+				case 0xFF41: ret = STAT;							break; // STAT
 				case 0xFF42: ret = scroll_y;						break; // SCY
 				case 0xFF43: ret = scroll_x;						break; // SCX
 				case 0xFF44: ret = LY_read;							break; // LY
@@ -514,7 +514,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					// also the LCD doesn't turn on right away
 					// also, the LCD does not enter mode 2 on scanline 0 when first turned on
 					no_scan = true;
-					cycle = 8;
+
+					// turning on the ppu seems to take one cycle longer in double speed mode, maybe because the 8 MHz clock is too fast
+					cycle = Core.double_speed ? 7 : 8;
+					//cycle = 8;
 				}
 
 				// the VBL stat is continuously asserted
@@ -682,12 +685,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					{
 						LY_read = LY;
 					}
-					else if (cycle == 12)
+					else if (cycle == (10 + 1 * LYC_offset))
 					{
 						LYC_INT = false;
 						STAT &= 0xFB;
 					}
-					else if (cycle == 14)
+					else if (cycle == (10 + 2 * LYC_offset))
 					{
 						// Special case of LY = LYC
 						if ((LY == LYC) && !STAT.Bit(2))
@@ -704,7 +707,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				{
 					LY_read = LY;
 				}
-				else if ((cycle == 4) && (LY != 0))
+				else if ((cycle == (2 + 1 * LYC_offset)) && (LY != 0))
 				{
 					if (LY_inc == 1)
 					{
@@ -712,7 +715,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						STAT &= 0xFB;
 					}
 				}
-				else if ((cycle == 6) && (LY != 0))
+				else if ((cycle == (2 + 2 * LYC_offset)) && (LY != 0))
 				{
 					if ((LY == LYC) && !STAT.Bit(2))
 					{
@@ -1285,12 +1288,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						{
 							read_case = 8;
 							// hbl_countdown = 1;
-
 							STAT &= 0xFC;
 							STAT |= 0x00;
 							if (STAT.Bit(3)) { HBL_INT = true; }
+
 							// the CPU has to be able to see the transition from mode 3 to mode 0 to start HDMA
-						
+
 							// TODO: If Window is turned on midscanline what happens? When is this check done exactly?
 							if ((window_started && window_latch) || (window_is_reset && !window_latch && (LY > window_y_latch)))
 							{
@@ -1788,6 +1791,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			for (int i = 0; i < BG_bytes.Length; i++) { BG_bytes[i] = 0xFF; }
 			for (int i = 0; i < OBJ_bytes.Length; i++) { OBJ_bytes[i] = 0xFF; }
+
+			LYC_offset = 1;
 		}
 	}
 }
