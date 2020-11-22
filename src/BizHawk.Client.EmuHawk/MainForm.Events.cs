@@ -908,17 +908,26 @@ namespace BizHawk.Client.EmuHawk
 				ESoundOutputMethod.OpenAL => OpenALSoundOutput.GetDeviceNames(),
 				_ => Enumerable.Empty<string>()
 			};
-			using var form = new SoundConfig(Config, GetDeviceNamesCallback) { Owner = this };
-			if (form.ShowDialog().IsOk())
+			using var form = new SoundConfig(Config, GetDeviceNamesCallback);
+			if (!form.ShowDialog().IsOk())
 			{
+				AddOnScreenMessage("Sound config aborted");
+				return;
+			}
+
+			AddOnScreenMessage("Sound settings saved");
+			if (form.ApplyNewSoundDevice)
+			{
+				Sound.Dispose();
+				Sound = new Sound(Handle);
 				Sound.StartSound();
-				AddOnScreenMessage("Sound settings saved");
-				RewireSound();
 			}
 			else
 			{
-				AddOnScreenMessage("Sound config aborted");
+				Sound.StopSound();
+				Sound.StartSound();
 			}
+			RewireSound();
 		}
 
 		private void AutofireMenuItem_Click(object sender, EventArgs e)

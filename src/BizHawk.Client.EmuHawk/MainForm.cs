@@ -851,7 +851,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private GameInfo Game => GlobalWin.Game;
 
-		private Sound Sound => GlobalWin.Sound;
+		private Sound Sound
+		{
+			get => GlobalWin.Sound;
+			set => GlobalWin.Sound = value;
+		}
+
 		public CheatCollection CheatList { get; }
 
 		public (HttpCommunication HTTP, MemoryMappedFiles MMF, SocketServer Sockets) NetworkingHelpers { get; }

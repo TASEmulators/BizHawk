@@ -15,6 +15,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool _programmaticallyChangingValue;
 
+		public bool ApplyNewSoundDevice { get; private set; }
+
 		public SoundConfig(Config config, Func<ESoundOutputMethod, IEnumerable<string>> getDeviceNamesCallback)
 		{
 			_config = config;
@@ -80,14 +82,7 @@ namespace BizHawk.Client.EmuHawk
 			_config.SoundVolume = tbNormal.Value;
 			_config.SoundVolumeRWFF = tbRWFF.Value;
 			_config.SoundDevice = (string)listBoxSoundDevices.SelectedItem ?? "<default>";
-			GlobalWin.Sound.StopSound();
-			if (_config.SoundOutputMethod != oldOutputMethod
-				|| _config.SoundDevice != oldDevice)
-			{
-				GlobalWin.Sound.Dispose();
-				GlobalWin.Sound = new Sound(Owner.Handle);
-			}
-
+			ApplyNewSoundDevice = _config.SoundOutputMethod != oldOutputMethod || _config.SoundDevice != oldDevice; // read in MainForm at ShowDialog() callsite
 			DialogResult = DialogResult.OK;
 		}
 
