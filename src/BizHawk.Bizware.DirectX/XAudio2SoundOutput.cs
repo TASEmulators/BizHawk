@@ -20,16 +20,19 @@ namespace BizHawk.Bizware.DirectX
 		private BufferPool _bufferPool;
 		private long _runningSamplesQueued;
 
-		public XAudio2SoundOutput(IHostAudioManager sound)
+		public XAudio2SoundOutput(IHostAudioManager sound, string chosenDeviceName)
 		{
 			_sound = sound;
 			_device = new XAudio2();
-			int? deviceIndex = Enumerable.Range(0, _device.DeviceCount)
-				.Select(n => (int?)n)
-				.FirstOrDefault(n => _device.GetDeviceDetails(n.Value).DisplayName == _sound.ConfigDevice);
-			_masteringVoice = deviceIndex == null ?
-				new MasteringVoice(_device, _sound.ChannelCount, _sound.SampleRate) :
-				new MasteringVoice(_device, _sound.ChannelCount, _sound.SampleRate, deviceIndex.Value);
+			for (int i = 0, l = _device.DeviceCount; i < l; i++)
+			{
+				if (_device.GetDeviceDetails(i).DisplayName == chosenDeviceName)
+				{
+					_masteringVoice = new MasteringVoice(_device, _sound.ChannelCount, _sound.SampleRate, i);
+					return;
+				}
+			}
+			_masteringVoice = new MasteringVoice(_device, _sound.ChannelCount, _sound.SampleRate);
 		}
 
 		public void Dispose()

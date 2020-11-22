@@ -10,8 +10,6 @@ namespace BizHawk.Client.Common
 
 		int ConfigBufferSizeMs { get; }
 
-		string ConfigDevice { get; }
-
 		int SampleRate { get; }
 
 		void HandleInitializationOrUnderrun(bool isUnderrun, ref int samplesNeeded);

@@ -19,11 +19,13 @@ namespace BizHawk.Client.EmuHawk
 		private int _currentSamplesQueued;
 		private short[] _tempSampleBuffer;
 
-		public OpenALSoundOutput(IHostAudioManager sound)
+		public OpenALSoundOutput(IHostAudioManager sound, string chosenDeviceName)
 		{
 			_sound = sound;
-			string deviceName = GetDeviceNames().FirstOrDefault(n => n == _sound.ConfigDevice);
-			_context = new AudioContext(deviceName, _sound.SampleRate);
+			_context = new AudioContext(
+				GetDeviceNames().Contains(chosenDeviceName) ? chosenDeviceName : null,
+				_sound.SampleRate
+			);
 		}
 
 		public void Dispose()

@@ -27,8 +27,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public int ConfigBufferSizeMs => GlobalWin.Config.SoundBufferSizeMs;
 
-		public string ConfigDevice => GlobalWin.Config.SoundDevice;
-
 		public Sound(IntPtr mainWindowHandle)
 		{
 			BlockAlign = BytesPerSample * ChannelCount;
@@ -38,15 +36,15 @@ namespace BizHawk.Client.EmuHawk
 				// if DirectSound or XAudio is chosen, use OpenAL, otherwise comply with the user's choice
 				_outputDevice = GlobalWin.Config.SoundOutputMethod == ESoundOutputMethod.Dummy
 					? (ISoundOutput) new DummySoundOutput(this)
-					: new OpenALSoundOutput(this);
+					: new OpenALSoundOutput(this, GlobalWin.Config.SoundDevice);
 			}
 			else
 			{
 				_outputDevice = GlobalWin.Config.SoundOutputMethod switch
 				{
 					ESoundOutputMethod.DirectSound => new DirectSoundSoundOutput(this, mainWindowHandle, GlobalWin.Config.SoundDevice),
-					ESoundOutputMethod.XAudio2 => new XAudio2SoundOutput(this),
-					ESoundOutputMethod.OpenAL => new OpenALSoundOutput(this),
+					ESoundOutputMethod.XAudio2 => new XAudio2SoundOutput(this, GlobalWin.Config.SoundDevice),
+					ESoundOutputMethod.OpenAL => new OpenALSoundOutput(this, GlobalWin.Config.SoundDevice),
 					_ => new DummySoundOutput(this)
 				};
 			}
