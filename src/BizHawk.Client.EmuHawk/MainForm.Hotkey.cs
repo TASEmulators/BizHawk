@@ -714,6 +714,16 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					break;
+				case "GB Toggle Window":
+					if (Emulator is Gameboy gb3)
+					{
+						var s = gb3.GetSettings();
+						s.DisplayWindow ^= true;
+						gb3.PutSettings(s);
+						AddOnScreenMessage($"WIN toggled {(s.DisplayWindow ? "on" : "off")}");
+					}
+
+					break;
 
 				// Analog
 				case "Y Up Small":
