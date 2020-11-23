@@ -13,7 +13,7 @@ build:
     name: "$CI_HAWK_TMPARTIFACT_NAME"
     paths:
       - output
-  image: mcr.microsoft.com/dotnet/core/sdk:3.1
+  image: mcr.microsoft.com/dotnet/sdk:5.0
   script:
     - if [ "$CI_COMMIT_REF_SLUG" == "release" ]; then Dist/UpdateVersionInfoForRelease.sh; fi
     - Dist/BuildRelease.sh
@@ -21,7 +21,7 @@ build:
 
 build_ext_tools:
   allow_failure: true
-  image: mcr.microsoft.com/dotnet/core/sdk:3.1
+  image: mcr.microsoft.com/dotnet/sdk:5.0
   needs:
     - build
   rules:
@@ -32,7 +32,7 @@ build_ext_tools:
   stage: test
 
 check_style:
-  image: mcr.microsoft.com/dotnet/core/sdk:3.1
+  image: mcr.microsoft.com/dotnet/sdk:5.0
   needs:
     - job: build
       artifacts: false
@@ -95,7 +95,7 @@ run_tests:
     reports:
       junit:
         - test_output/*.coverage.xml
-  image: mcr.microsoft.com/dotnet/core/sdk:3.1
+  image: mcr.microsoft.com/dotnet/sdk:5.0
   needs:
     - job: build
       artifacts: false
