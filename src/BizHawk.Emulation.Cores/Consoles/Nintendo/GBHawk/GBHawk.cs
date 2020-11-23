@@ -11,6 +11,7 @@ using System.Runtime.InteropServices;
 // TODO: oam_dma_start.gb does not behave as expected but test still passes through lucky coincidences / test deficiency
 // TODO: LYC interrupt behaves differently in GBC and GB compat mode
 // TODO: Window Position A6 behaves differently
+// TODO: Verify open bus behaviour for bad SRAM accesses for other MBCs
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {

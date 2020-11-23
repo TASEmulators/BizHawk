@@ -59,12 +59,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				}
 				else
 				{
-					return 0xFF;
+					return Core.cpu.bus_value;
 				}
 			}
 			else
 			{
-				return 0xFF;
+				return Core.cpu.bus_value;
 			}
 		}
 
