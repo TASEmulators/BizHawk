@@ -18,21 +18,20 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 				if (src_l == PCl) CDLCallback(addr, eCDLogMemFlags.FetchOperand);
 				else CDLCallback(addr, eCDLogMemFlags.Data);
 			}
-			Regs[dest] = bus_value = ReadMemory(addr);
+			Regs[dest] = ReadMemory(addr);
 		}
 
 		// special read for POP AF that always clears the lower 4 bits of F 
 		public void Read_Func_F(ushort dest, ushort src_l, ushort src_h)
 		{
-			Regs[dest] = bus_value = (byte)(ReadMemory((ushort)(Regs[src_l] | (Regs[src_h]) << 8)) & 0xF0);
+			Regs[dest] = (byte)(ReadMemory((ushort)(Regs[src_l] | (Regs[src_h]) << 8)) & 0xF0);
 		}
 
 		public void Write_Func(ushort dest_l, ushort dest_h, ushort src)
 		{
 			ushort addr = (ushort)(Regs[dest_l] | (Regs[dest_h]) << 8);
 			CDLCallback?.Invoke(addr, eCDLogMemFlags.Write | eCDLogMemFlags.Data);
-			bus_value = (byte)Regs[src];
-			WriteMemory(addr, bus_value);
+			WriteMemory(addr, (byte)Regs[src]);
 		}
 
 		public void TR_Func(ushort dest, ushort src)

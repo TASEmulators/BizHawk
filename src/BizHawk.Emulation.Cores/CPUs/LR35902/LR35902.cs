@@ -815,7 +815,6 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 			ser.Sync(nameof(LY), ref LY);
 			ser.Sync(nameof(FlagI), ref FlagI);
 			ser.Sync(nameof(was_FlagI), ref was_FlagI);
-			ser.Sync(nameof(bus_value), ref bus_value);
 
 			ser.EndSection();
 		}

@@ -7,9 +7,6 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 		private int EI_pending;
 		public bool interrupts_enabled;
 
-		// we need the last value on the bus for proper emulation of blocked SRAM
-		public byte bus_value;
-
 		// variables for executing instructions
 		public int instr_pntr = 0;
 		public ushort[] cur_instr = new ushort [60];

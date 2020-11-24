@@ -65,6 +65,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public bool double_speed;
 		public bool speed_switch;
 		public bool HDMA_transfer; // stalls CPU when in progress
+		public byte bus_value; // we need the last value on the bus for proper emulation of blocked SRAM
+		public ulong bus_access_time; // also need to keep track of the time of the access since it doesn't last very long
 		public byte IR_reg, IR_mask, IR_signal, IR_receive, IR_self;
 		public int IR_write;
 

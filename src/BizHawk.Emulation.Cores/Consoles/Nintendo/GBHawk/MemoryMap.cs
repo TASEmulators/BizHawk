@@ -47,13 +47,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						return 0xFF;
 					}
 
-					return mapper.ReadMemoryLow(addr);
+					bus_value = mapper.ReadMemoryLow(addr);
+					bus_access_time = cpu.TotalExecutedCycles;
+					return bus_value;
 				}
 
 				if (addr >= 0xA000 && addr < 0xC000 && is_GBC)
 				{
 					// on GBC only, cart is accessible during DMA
-					return mapper.ReadMemoryHigh(addr);
+					bus_value = mapper.ReadMemoryHigh(addr);
+					bus_access_time = cpu.TotalExecutedCycles;
+					return bus_value;
 				}
 
 				if (addr >= 0xE000 && addr < 0xF000)
@@ -104,7 +108,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			{
 				if (addr >= 0x900)
 				{
-					return mapper.ReadMemoryLow(addr);
+					bus_value = mapper.ReadMemoryLow(addr);
+					bus_access_time = cpu.TotalExecutedCycles;
+					return bus_value;
 				}
 
 				if (addr < 0x100)
@@ -115,7 +121,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						return _bios[addr]; // Return BIOS
 					}
 
-					return mapper.ReadMemoryLow(addr);
+					bus_value = mapper.ReadMemoryLow(addr);
+					bus_access_time = cpu.TotalExecutedCycles;
+					return bus_value;
 				}
 
 				if (addr >= 0x200)
@@ -126,10 +134,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						return _bios[addr]; // Return BIOS
 					}
 
-					return mapper.ReadMemoryLow(addr);
+					bus_value = mapper.ReadMemoryLow(addr);
+					bus_access_time = cpu.TotalExecutedCycles;
+					return bus_value;
 				}
 
-				return mapper.ReadMemoryLow(addr);
+				bus_value = mapper.ReadMemoryLow(addr);
+				bus_access_time = cpu.TotalExecutedCycles;
+				return bus_value;
 			}
 
 			if (addr < 0xA000)
@@ -174,7 +186,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			if (addr < 0xC000)
 			{
-				return mapper.ReadMemoryHigh(addr);
+				bus_value = mapper.ReadMemoryHigh(addr);
+				bus_access_time = cpu.TotalExecutedCycles;
+				return bus_value;
 			}
 
 			if (addr < 0xFE00)
@@ -261,6 +275,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				if (addr >= 0xA000 && addr < 0xC000 && is_GBC)
 				{
 					// on GBC only, cart is accessible during DMA
+					bus_value = value;
+					bus_access_time = cpu.TotalExecutedCycles;
 					mapper.WriteMemory(addr, value);
 				}
 
@@ -350,6 +366,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 			else if (addr >= 0xA000)
 			{
+				bus_value = value;
+				bus_access_time = cpu.TotalExecutedCycles;
 				mapper.WriteMemory(addr, value);
 			}
 			else if (addr >= 0x8000)
@@ -363,6 +381,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			{
 				if (addr >= 0x900)
 				{
+					bus_value = value;
+					bus_access_time = cpu.TotalExecutedCycles;
 					mapper.WriteMemory(addr, value);
 				}
 				else
@@ -375,6 +395,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						}
 						else
 						{
+							bus_value = value;
+							bus_access_time = cpu.TotalExecutedCycles;
 							mapper.WriteMemory(addr, value);
 						}
 					}
@@ -386,11 +408,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						}
 						else
 						{
+							bus_value = value;
+							bus_access_time = cpu.TotalExecutedCycles;
 							mapper.WriteMemory(addr, value);
 						}
 					}
 					else
 					{
+						bus_value = value;
+						bus_access_time = cpu.TotalExecutedCycles;
 						mapper.WriteMemory(addr, value);
 					}
 				}

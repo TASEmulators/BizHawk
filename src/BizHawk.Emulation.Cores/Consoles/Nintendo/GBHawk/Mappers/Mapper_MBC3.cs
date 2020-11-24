@@ -70,7 +70,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					}
 					else
 					{
-						return 0xFF;
+						return Core.cpu.TotalExecutedCycles > (Core.bus_access_time + 8) ? 0xFF : Core.bus_value;
 					}
 				}
 
@@ -86,7 +86,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 			else
 			{
-				return 0xFF;
+				return Core.cpu.TotalExecutedCycles > (Core.bus_access_time + 8) ? 0xFF : Core.bus_value;
 			}
 		}
 
