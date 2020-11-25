@@ -287,20 +287,26 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 							if (cycle == 84)
 							{
-								STAT &= 0xFC;
-								STAT |= 0x03;
-								OAM_INT = false;
-								glitch_state = false;
-
 								OAM_access_read = false;
-								OAM_access_write = false;
-								VRAM_access_read = false;
-								VRAM_access_write = false;
+
 								rendering_complete = false;
 							}
 						}
 						else if (!rendering_complete)
 						{
+							if (cycle == 86)
+							{
+								STAT &= 0xFC;
+								STAT |= 0x03;
+								OAM_INT = false;
+								glitch_state = false;
+
+								OAM_access_write = false;
+								VRAM_access_read = false;
+								VRAM_access_write = false;
+								rendering_complete = false;
+							}
+
 							// render the screen and handle hblank
 							render(cycle - 85);
 						}

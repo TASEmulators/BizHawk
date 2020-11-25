@@ -3,6 +3,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 	public partial class LR35902
 	{
 		public ulong TotalExecutedCycles;
+		public ulong instruction_start;
 
 		private int EI_pending;
 		public bool interrupts_enabled;

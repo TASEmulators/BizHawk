@@ -223,7 +223,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				case 0xFF55: // HDMA5
 					if (!HDMA_active)
 					{
-						HDMA_countdown = 8;  // run one cpu cycle, then wait another cycle to start transfer
+						HDMA_countdown = 4;  // run one cpu cycle, then wait another cycle to start transfer
 						HDMA_mode = value.Bit(7);
 						HDMA_tick = 0;
 
@@ -320,14 +320,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						if (HDMA_countdown > 0)
 						{
 							HDMA_countdown--;
-
-							if (HDMA_countdown == 3)
+							if ((Core.cpu.TotalExecutedCycles - Core.cpu.instruction_start) == 0)
 							{
-								if (!Core.HDMA_transfer) { Core.HDMA_start_stop(true); }
-								VRAM_access_read_HDMA = false;
-								VRAM_access_read = VRAM_access_read_PPU & VRAM_access_read_HDMA;
-								VRAM_access_write_HDMA = false;
-								VRAM_access_write = VRAM_access_write_PPU & VRAM_access_write_HDMA;
+								if (HDMA_countdown == 3)
+								{
+									if (!Core.HDMA_transfer) { Core.HDMA_start_stop(true); }
+									VRAM_access_read_HDMA = false;
+									VRAM_access_read = VRAM_access_read_PPU & VRAM_access_read_HDMA;
+									VRAM_access_write_HDMA = false;
+									VRAM_access_write = VRAM_access_write_PPU & VRAM_access_write_HDMA;
+								}
+							}
+							else
+							{
+								HDMA_countdown++;
 							}
 						}
 						else
@@ -384,11 +390,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 								if (HDMA_countdown == 3)
 								{
-									if (!Core.HDMA_transfer) { Core.HDMA_start_stop(true); }
-									VRAM_access_read_HDMA = false;
-									VRAM_access_read = VRAM_access_read_PPU & VRAM_access_read_HDMA;
-									VRAM_access_write_HDMA = false;
-									VRAM_access_write = VRAM_access_write_PPU & VRAM_access_write_HDMA;
+									if ((Core.cpu.TotalExecutedCycles - Core.cpu.instruction_start) == 0)
+									{
+										if (!Core.HDMA_transfer) { Core.HDMA_start_stop(true); }
+										VRAM_access_read_HDMA = false;
+										VRAM_access_read = VRAM_access_read_PPU & VRAM_access_read_HDMA;
+										VRAM_access_write_HDMA = false;
+										VRAM_access_write = VRAM_access_write_PPU & VRAM_access_write_HDMA;
+
+										if (LCDC.Bit(7)) { last_HBL = LY; }
+										else { last_HBL = 0xFF; }
+									}
+									else
+									{
+										HDMA_countdown++;
+									}
 								}
 							}
 							else
@@ -422,11 +438,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								{
 
 									HBL_test = true;
-									if (LCDC.Bit(7)) { last_HBL = LY; }
-									else { last_HBL = 0xFF; }
 									HBL_HDMA_count = 0x10;
 									HBL_HDMA_go = false;
-									HDMA_countdown = 8;
+									HDMA_countdown = 4;
 								}
 
 								HDMA_tick++;
@@ -605,22 +619,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 							if (cycle == 84)
 							{
-								STAT &= 0xFC;
-								STAT |= 0x03;
-								OAM_INT = false;
-								glitch_state = false;
-
 								OAM_access_read = false;
-								OAM_access_write = false;
-								VRAM_access_read_PPU = false;
-								VRAM_access_read = VRAM_access_read_PPU & VRAM_access_read_HDMA;
-								VRAM_access_write_PPU = false;
-								VRAM_access_write = VRAM_access_write_PPU & VRAM_access_write_HDMA;
+
 								rendering_complete = false;
 							}
 						}
 						else if (!rendering_complete)
 						{
+							if (cycle == 86)
+							{
+								STAT &= 0xFC;
+								STAT |= 0x03;
+								OAM_INT = false;
+								glitch_state = false;
+
+								OAM_access_write = false;
+								VRAM_access_read_PPU = false;
+								VRAM_access_read = VRAM_access_read_PPU & VRAM_access_read_HDMA;
+								VRAM_access_write_PPU = false;
+								VRAM_access_write = VRAM_access_write_PPU & VRAM_access_write_HDMA;
+							}
+
 							// render the screen and handle hblank
 							render(cycle - 85);
 						}
@@ -1176,7 +1195,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						VRAM_access_write_PPU = true;
 						VRAM_access_write = VRAM_access_write_PPU & VRAM_access_write_HDMA;
 
-						HDMA_can_start = true;
+						//HDMA_can_start = true;
 						read_case = 18;
 						break;
 
@@ -1332,7 +1351,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							STAT |= 0x00;
 
 							if (STAT.Bit(3)) { HBL_INT = true; }
-
+							HDMA_can_start = true;
 							// TODO: If Window is turned on midscanline what happens? When is this check done exactly?
 							if ((window_started && window_latch) || (window_is_reset && !window_latch && (LY > window_y_latch)))
 							{

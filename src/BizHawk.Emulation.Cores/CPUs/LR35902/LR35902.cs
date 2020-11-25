@@ -180,6 +180,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 						CDLCallback?.Invoke(RegPC, eCDLogMemFlags.FetchFirst);
 						FetchInstruction(ReadMemory(RegPC++));
 					}
+					instruction_start = TotalExecutedCycles + 1;
 					I_use = false;
 					break;
 				case RD:
@@ -801,6 +802,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 			ser.Sync(nameof(Halt_bug_5), ref Halt_bug_5);
 			ser.Sync(nameof(halted), ref halted);
 			ser.Sync(nameof(TotalExecutedCycles), ref TotalExecutedCycles);
+			ser.Sync(nameof(instruction_start), ref instruction_start);
 			ser.Sync(nameof(EI_pending), ref EI_pending);
 			ser.Sync(nameof(int_src), ref int_src);
 			ser.Sync(nameof(int_clear), ref int_clear);
