@@ -21,9 +21,6 @@ namespace BizHawk.Client.Common
 		[OptionalService]
 		private IMemoryDomains MemoryDomains { get; set; }
 
-		public NESLuaLibrary(Lua lua)
-			: base(lua) { }
-
 		public NESLuaLibrary(Lua lua, Action<string> logOutputCallback)
 			: base(lua, logOutputCallback) { }
 

@@ -8,9 +8,6 @@ namespace BizHawk.Client.Common
 {
 	public sealed class JoypadLuaLibrary : DelegatingLuaLibrary
 	{
-		public JoypadLuaLibrary(Lua lua)
-			: base(lua) { }
-
 		public JoypadLuaLibrary(Lua lua, Action<string> logOutputCallback)
 			: base(lua, logOutputCallback) { }
 

@@ -8,15 +8,10 @@ namespace BizHawk.Client.Common
 {
 	public abstract class LuaLibraryBase
 	{
-		protected LuaLibraryBase(Lua lua)
-		{
-			Lua = lua;
-		}
-
 		protected LuaLibraryBase(Lua lua, Action<string> logOutputCallback)
-			: this(lua)
 		{
 			LogOutputCallback = logOutputCallback;
+			Lua = lua;
 		}
 
 		protected static LuaFile CurrentFile { get; private set; }
@@ -25,7 +20,9 @@ namespace BizHawk.Client.Common
 		private static readonly object ThreadMutex = new object();
 
 		public abstract string Name { get; }
-		public Action<string> LogOutputCallback { protected get; set; }
+
+		protected readonly Action<string> LogOutputCallback;
+
 		public Lua Lua { get; }
 
 		public static void ClearCurrentThread()

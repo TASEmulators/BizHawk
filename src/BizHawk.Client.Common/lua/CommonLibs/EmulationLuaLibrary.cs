@@ -13,9 +13,6 @@ namespace BizHawk.Client.Common
 		public Action FrameAdvanceCallback { get; set; }
 		public Action YieldCallback { get; set; }
 
-		public EmulationLuaLibrary(Lua lua)
-			: base(lua) { }
-
 		public EmulationLuaLibrary(Lua lua, Action<string> logOutputCallback)
 			: base(lua, logOutputCallback) { }
 

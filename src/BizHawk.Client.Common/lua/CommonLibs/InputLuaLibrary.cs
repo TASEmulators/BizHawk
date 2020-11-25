@@ -6,9 +6,6 @@ namespace BizHawk.Client.Common
 {
 	public sealed class InputLuaLibrary : DelegatingLuaLibrary
 	{
-		public InputLuaLibrary(Lua lua)
-			: base(lua) { }
-
 		public InputLuaLibrary(Lua lua, Action<string> logOutputCallback)
 			: base(lua, logOutputCallback) { }
 

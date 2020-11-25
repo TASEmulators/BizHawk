@@ -13,9 +13,6 @@ namespace BizHawk.Client.Common
 	{
 		private readonly IDictionary<Guid, ClientWebSocketWrapper> _websockets = new Dictionary<Guid, ClientWebSocketWrapper>();
 
-		public CommLuaLibrary(Lua lua)
-			: base(lua) { }
-
 		public CommLuaLibrary(Lua lua, Action<string> logOutputCallback)
 			: base(lua, logOutputCallback) { }
 

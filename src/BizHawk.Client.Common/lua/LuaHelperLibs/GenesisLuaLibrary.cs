@@ -11,9 +11,6 @@ namespace BizHawk.Client.Common
 	[Description("Functions specific to GenesisHawk (functions may not run when an Genesis game is not loaded)")]
 	public sealed class GenesisLuaLibrary : DelegatingLuaLibrary
 	{
-		public GenesisLuaLibrary(Lua lua)
-			: base(lua) { }
-
 		public GenesisLuaLibrary(Lua lua, Action<string> logOutputCallback)
 			: base(lua, logOutputCallback) { }
 

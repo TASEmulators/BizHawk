@@ -7,9 +7,6 @@ namespace BizHawk.Client.Common
 {
 	public sealed class GameInfoLuaLibrary : DelegatingLuaLibrary
 	{
-		public GameInfoLuaLibrary(Lua lua)
-			: base(lua) { }
-
 		public GameInfoLuaLibrary(Lua lua, Action<string> logOutputCallback)
 			: base(lua, logOutputCallback) { }
 

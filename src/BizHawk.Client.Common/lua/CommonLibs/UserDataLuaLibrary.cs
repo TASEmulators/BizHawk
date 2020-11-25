@@ -8,9 +8,6 @@ namespace BizHawk.Client.Common
 	[Description("A library for setting and retrieving dynamic data that will be saved and loaded with savestates")]
 	public sealed class UserDataLuaLibrary : DelegatingLuaLibrary
 	{
-		public UserDataLuaLibrary(Lua lua)
-			: base(lua) { }
-
 		public UserDataLuaLibrary(Lua lua, Action<string> logOutputCallback)
 			: base(lua, logOutputCallback) { }
 

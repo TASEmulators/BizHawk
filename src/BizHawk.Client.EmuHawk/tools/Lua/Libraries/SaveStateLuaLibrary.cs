@@ -8,9 +8,6 @@ namespace BizHawk.Client.EmuHawk
 {
 	public sealed class SaveStateLuaLibrary : DelegatingLuaLibrary
 	{
-		public SaveStateLuaLibrary(Lua lua)
-			: base(lua) { }
-
 		public SaveStateLuaLibrary(Lua lua, Action<string> logOutputCallback)
 			: base(lua, logOutputCallback) { }
 

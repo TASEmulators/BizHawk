@@ -27,9 +27,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public IMainFormForApi MainForm { get; set; }
 
-		public ClientLuaLibrary(Lua lua)
-			: base(lua) { }
-
 		public ClientLuaLibrary(Lua lua, Action<string> logOutputCallback)
 			: base(lua, logOutputCallback) { }
 

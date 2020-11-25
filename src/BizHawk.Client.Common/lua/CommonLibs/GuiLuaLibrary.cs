@@ -9,9 +9,6 @@ namespace BizHawk.Client.Common
 	{
 		public Func<int, int, int?, int?, LuaTable> CreateLuaCanvasCallback { get; set; }
 
-		public GuiLuaLibrary(Lua lua)
-			: base(lua) { }
-
 		public GuiLuaLibrary(Lua lua, Action<string> logOutputCallback)
 			: base(lua, logOutputCallback) { }
 

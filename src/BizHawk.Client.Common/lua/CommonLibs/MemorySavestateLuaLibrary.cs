@@ -7,9 +7,6 @@ namespace BizHawk.Client.Common
 {
 	public sealed class MemorySavestateLuaLibrary : DelegatingLuaLibrary
 	{
-		public MemorySavestateLuaLibrary(Lua lua)
-			: base(lua) { }
-
 		public MemorySavestateLuaLibrary(Lua lua, Action<string> logOutputCallback)
 			: base(lua, logOutputCallback) { }
 

@@ -11,9 +11,6 @@ namespace BizHawk.Client.Common
 	{
 		public override string Name => "bizstring";
 
-		public StringLuaLibrary(Lua lua)
-			: base(lua) { }
-
 		public StringLuaLibrary(Lua lua, Action<string> logOutputCallback)
 			: base(lua, logOutputCallback) { }
 

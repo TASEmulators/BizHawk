@@ -16,9 +16,6 @@ namespace BizHawk.Client.EmuHawk
 	[LuaLibrary(released: true)]
 	public sealed class TAStudioLuaLibrary : LuaLibraryBase
 	{
-		public TAStudioLuaLibrary(Lua lua)
-			: base(lua) { }
-
 		public TAStudioLuaLibrary(Lua lua, Action<string> logOutputCallback)
 			: base(lua, logOutputCallback) { }
 
