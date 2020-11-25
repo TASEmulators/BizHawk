@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
-using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
 
-namespace BizHawk.Client.EmuHawk
+namespace BizHawk.Client.Common
 {
 	public abstract class LuaLibraries
 	{
@@ -18,7 +17,7 @@ namespace BizHawk.Client.EmuHawk
 		public readonly LuaFileList ScriptList = new LuaFileList();
 
 		public bool IsRebootingCore { get; set; } // pretty hacky.. we don't want a lua script to be able to restart itself by rebooting the core
-		
+
 		public bool IsUpdateSupressed { get; private set;}
 
 		public void SupressUpdate()
