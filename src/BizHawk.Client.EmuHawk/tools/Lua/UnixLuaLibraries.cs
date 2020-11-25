@@ -40,11 +40,9 @@ namespace BizHawk.Client.EmuHawk
 		public override void Restart(IEmulatorServiceProvider newServiceProvider)
 		{
 		}
-		private static readonly Win32LuaLibraries.ResumeResult EmptyResumeResult = new Win32LuaLibraries.ResumeResult();
-		public override Win32LuaLibraries.ResumeResult ResumeScript(LuaFile lf)
-		{
-			return EmptyResumeResult;
-		}
+
+		public override (bool WaitForFrame, bool Terminated) ResumeScript(LuaFile lf) => (false, false);
+
 		public override void SpawnAndSetFileThread(string pathToLoad, LuaFile lf)
 		{
 		}

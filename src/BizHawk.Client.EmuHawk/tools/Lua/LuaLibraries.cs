@@ -42,7 +42,7 @@ namespace BizHawk.Client.EmuHawk
 		public abstract void EndLuaDrawing();
 		public abstract void ExecuteString(string command);
 		public abstract void Restart(IEmulatorServiceProvider newServiceProvider);
-		public abstract Win32LuaLibraries.ResumeResult ResumeScript(LuaFile lf);
+		public abstract (bool WaitForFrame, bool Terminated) ResumeScript(LuaFile lf);
 		public abstract void SpawnAndSetFileThread(string pathToLoad, LuaFile lf);
 		public abstract void StartLuaDrawing();
 		public abstract void WindowClosed(IntPtr handle);

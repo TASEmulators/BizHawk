@@ -198,7 +198,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public override void RunScheduledDisposes() => _lua.RunScheduledDisposes();
 
-		public override ResumeResult ResumeScript(LuaFile lf)
+		public override (bool WaitForFrame, bool Terminated) ResumeScript(LuaFile lf)
 		{
 			_currThread = lf.Thread;
 
@@ -214,17 +214,9 @@ namespace BizHawk.Client.EmuHawk
 				_currThread.RunScheduledDisposes();
 
 				_currThread = null;
-				var result = new ResumeResult();
-				if (execResult == 0)
-				{
-					// terminated
-					result.Terminated = true;
-				}
-				else
-				{
-					// yielded
-					result.WaitForFrame = FrameAdvanceRequested;
-				}
+				var result = execResult == 0
+					? (WaitForFrame: false, Terminated: true) // terminated
+					: (WaitForFrame: FrameAdvanceRequested, Terminated: false); // yielded
 
 				FrameAdvanceRequested = false;
 				return result;
@@ -249,12 +241,6 @@ namespace BizHawk.Client.EmuHawk
 		private void EmuYield()
 		{
 			_currThread.Yield(0);
-		}
-
-		public class ResumeResult
-		{
-			public bool WaitForFrame { get; set; }
-			public bool Terminated { get; set; }
 		}
 	}
 }
