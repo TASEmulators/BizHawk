@@ -42,6 +42,7 @@ namespace BizHawk.Client.EmuHawk
 
 			LuaWait = new AutoResetEvent(false);
 			Docs.Clear();
+			var apiContainer = ApiManager.RestartLua(mainForm, serviceProvider, ConsoleLuaLibrary.LogOutput);
 
 			// Register lua libraries
 			foreach (var lib in Client.Common.ReflectionCache.Types.Concat(EmuHawk.ReflectionCache.Types)
@@ -67,8 +68,7 @@ namespace BizHawk.Client.EmuHawk
 						clientLib.MainForm = mainForm;
 					}
 
-					ApiContainerInstance = ApiManager.RestartLua(mainForm, serviceProvider, ConsoleLuaLibrary.LogOutput);
-					if (instance is DelegatingLuaLibrary dlgInstance) dlgInstance.APIs = ApiContainerInstance;
+					if (instance is DelegatingLuaLibrary dlgInstance) dlgInstance.APIs = apiContainer;
 
 					EnumerateLuaFunctions(instance.Name, lib, instance);
 					Libraries.Add(lib, instance);
@@ -82,9 +82,6 @@ namespace BizHawk.Client.EmuHawk
 
 			EnumerateLuaFunctions(nameof(LuaCanvas), typeof(LuaCanvas), null); // add LuaCanvas to Lua function reference table
 		}
-
-		/// <remarks>lazily instantiated</remarks>
-		private static ApiContainer ApiContainerInstance;
 
 		private Lua _lua = new Lua();
 		private Lua _currThread;
