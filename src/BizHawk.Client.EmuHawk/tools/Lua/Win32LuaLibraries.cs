@@ -67,6 +67,15 @@ namespace BizHawk.Client.EmuHawk
 					{
 						clientLib.MainForm = mainForm;
 					}
+					else if (instance is GuiLuaLibrary guiLib)
+					{
+						guiLib.CreateLuaCanvasCallback = (width, height, x, y) =>
+						{
+							var canvas = new LuaCanvas(width, height, x, y);
+							canvas.Show();
+							return _lua.TableFromObject(canvas);
+						};
+					}
 
 					if (instance is DelegatingLuaLibrary dlgInstance) dlgInstance.APIs = apiContainer;
 

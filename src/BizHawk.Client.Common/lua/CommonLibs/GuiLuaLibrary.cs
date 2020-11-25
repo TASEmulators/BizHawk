@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Drawing;
-using NLua;
-using BizHawk.Client.Common;
 
-namespace BizHawk.Client.EmuHawk
+using NLua;
+
+namespace BizHawk.Client.Common
 {
 	public sealed class GuiLuaLibrary : DelegatingLuaLibrary, IDisposable
 	{
+		public Func<int, int, int?, int?, LuaTable> CreateLuaCanvasCallback { get; set; }
+
 		public GuiLuaLibrary(Lua lua)
 			: base(lua) { }
 
@@ -176,12 +178,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodExample("local nlguicre = gui.createcanvas( 77, 99, 2, 48 );")]
 		[LuaMethod("createcanvas", "Creates a canvas of the given size and, if specified, the given coordinates.")]
-		public LuaTable Text(int width, int height, int? x = null, int? y = null)
-		{
-			var canvas = new LuaCanvas(width, height, x, y);
-			canvas.Show();
-			return Lua.TableFromObject(canvas);
-		}
+		public LuaTable Text(int width, int height, int? x = null, int? y = null) => CreateLuaCanvasCallback(width, height, x, y);
 
 		public void Dispose() => APIs.Gui.Dispose();
 	}
