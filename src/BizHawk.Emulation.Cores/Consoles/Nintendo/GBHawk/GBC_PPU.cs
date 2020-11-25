@@ -80,7 +80,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				case 0xFF52: ret = 0xFF;							break; // HDMA2 (src_lo)
 				case 0xFF53: ret = 0xFF;							break; // HDMA3 (dest_hi)
 				case 0xFF54: ret = 0xFF;							break; // HDMA4 (dest_lo)
-				case 0xFF55: ret = HDMA_ctrl;Console.WriteLine("read");						break; // HDMA5
+				case 0xFF55: ret = HDMA_ctrl;						break; // HDMA5
 				case 0xFF68: ret = BG_pal_ret;						break; // BGPI
 				case 0xFF69: ret = BG_PAL_read();					break; // BGPD
 				case 0xFF6A: ret = OBJ_pal_ret;						break; // OBPI
