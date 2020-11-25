@@ -26,10 +26,10 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodExample("local stconget = console.getluafunctionslist( );")]
 		[LuaMethod("getluafunctionslist", "returns a list of implemented functions")]
-		public static string GetLuaFunctionsList()
+		public string GetLuaFunctionsList()
 		{
 			var list = new StringBuilder();
-			foreach (var function in GlobalWin.Tools.LuaConsole.LuaImp.Docs)
+			foreach (var function in _luaLibsImpl.Docs)
 			{
 				list.AppendLine(function.Name);
 			}

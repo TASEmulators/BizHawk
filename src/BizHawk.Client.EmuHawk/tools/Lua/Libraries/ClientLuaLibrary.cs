@@ -101,13 +101,13 @@ namespace BizHawk.Client.EmuHawk
 			bool wasPaused = MainForm.EmulatorPaused;
 
 			// can't re-enter lua while doing this
-			GlobalWin.Tools.LuaConsole?.LuaImp.SupressUpdate();
+			_luaLibsImpl.SupressUpdate();
 			while (Emulator.Frame != frame)
 			{
 				MainForm.SeekFrameAdvance();
 			}
 
-			GlobalWin.Tools.LuaConsole?.LuaImp.EnableUpdate();
+			_luaLibsImpl.EnableUpdate();
 
 			if (!wasPaused)
 			{
@@ -199,9 +199,9 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod("reboot_core", "Reboots the currently loaded core")]
 		public void RebootCore()
 		{
-			((LuaConsole)GlobalWin.Tools.Get<LuaConsole>()).LuaImp.IsRebootingCore = true;
+			_luaLibsImpl.IsRebootingCore = true;
 			APIs.EmuClient.RebootCore();
-			((LuaConsole)GlobalWin.Tools.Get<LuaConsole>()).LuaImp.IsRebootingCore = false;
+			_luaLibsImpl.IsRebootingCore = false;
 		}
 
 		[LuaMethodExample("local incliscr = client.screenheight( );")]
