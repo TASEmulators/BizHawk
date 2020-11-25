@@ -9,8 +9,8 @@ namespace BizHawk.Client.Common
 	{
 		public Func<int, int, int?, int?, LuaTable> CreateLuaCanvasCallback { get; set; }
 
-		public GuiLuaLibrary(Lua lua, Action<string> logOutputCallback)
-			: base(lua, logOutputCallback) { }
+		public GuiLuaLibrary(LuaLibraries luaLibsImpl, Lua lua, Action<string> logOutputCallback)
+			: base(luaLibsImpl, lua, logOutputCallback) {}
 
 		public override string Name => "gui";
 

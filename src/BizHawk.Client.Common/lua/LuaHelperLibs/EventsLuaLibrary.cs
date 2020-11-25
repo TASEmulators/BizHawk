@@ -24,8 +24,8 @@ namespace BizHawk.Client.Common
 		[OptionalService]
 		private IMemoryDomains Domains { get; set; }
 
-		public EventsLuaLibrary(Lua lua, Action<string> logOutputCallback)
-			: base(lua, logOutputCallback) { }
+		public EventsLuaLibrary(LuaLibraries luaLibsImpl, Lua lua, Action<string> logOutputCallback)
+			: base(luaLibsImpl, lua, logOutputCallback) {}
 
 		public override string Name => "event";
 

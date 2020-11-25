@@ -17,8 +17,8 @@ namespace BizHawk.Client.Common
 		[OptionalService]
 		private IMemoryDomains MemoryDomainCore { get; set; }
 
-		public MainMemoryLuaLibrary(Lua lua, Action<string> logOutputCallback)
-			: base(lua, logOutputCallback) { }
+		public MainMemoryLuaLibrary(LuaLibraries luaLibsImpl, Lua lua, Action<string> logOutputCallback)
+			: base(luaLibsImpl, lua, logOutputCallback) {}
 
 		public override string Name => "mainmemory";
 

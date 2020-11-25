@@ -11,8 +11,8 @@ namespace BizHawk.Client.Common
 	[Description("Functions specific to GenesisHawk (functions may not run when an Genesis game is not loaded)")]
 	public sealed class GenesisLuaLibrary : DelegatingLuaLibrary
 	{
-		public GenesisLuaLibrary(Lua lua, Action<string> logOutputCallback)
-			: base(lua, logOutputCallback) { }
+		public GenesisLuaLibrary(LuaLibraries luaLibsImpl, Lua lua, Action<string> logOutputCallback)
+			: base(luaLibsImpl, lua, logOutputCallback) {}
 
 		public override string Name => "genesis";
 

@@ -11,8 +11,8 @@ namespace BizHawk.Client.Common
 	{
 		public override string Name => "bizstring";
 
-		public StringLuaLibrary(Lua lua, Action<string> logOutputCallback)
-			: base(lua, logOutputCallback) { }
+		public StringLuaLibrary(LuaLibraries luaLibsImpl, Lua lua, Action<string> logOutputCallback)
+			: base(luaLibsImpl, lua, logOutputCallback) {}
 
 		[LuaMethodExample("local stbizhex = bizstring.hex( -12345 );")]
 		[LuaMethod("hex", "Converts the number to a string representation of the hexadecimal value of the given number")]

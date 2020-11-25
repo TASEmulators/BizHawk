@@ -8,10 +8,11 @@ namespace BizHawk.Client.Common
 {
 	public abstract class LuaLibraryBase
 	{
-		protected LuaLibraryBase(Lua lua, Action<string> logOutputCallback)
+		protected LuaLibraryBase(LuaLibraries luaLibsImpl, Lua lua, Action<string> logOutputCallback)
 		{
 			LogOutputCallback = logOutputCallback;
 			Lua = lua;
+			_luaLibsImpl = luaLibsImpl;
 		}
 
 		protected static LuaFile CurrentFile { get; private set; }
@@ -24,6 +25,8 @@ namespace BizHawk.Client.Common
 		protected readonly Action<string> LogOutputCallback;
 
 		public Lua Lua { get; }
+
+		protected readonly LuaLibraries _luaLibsImpl;
 
 		public static void ClearCurrentThread()
 		{

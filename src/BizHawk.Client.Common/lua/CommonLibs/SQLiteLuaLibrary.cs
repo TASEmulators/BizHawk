@@ -10,8 +10,8 @@ namespace BizHawk.Client.Common
 	[Description("A library for performing SQLite operations.")]
 	public sealed class SQLiteLuaLibrary : DelegatingLuaLibrary
 	{
-		public SQLiteLuaLibrary(Lua lua, Action<string> logOutputCallback)
-			: base(lua, logOutputCallback) { }
+		public SQLiteLuaLibrary(LuaLibraries luaLibsImpl, Lua lua, Action<string> logOutputCallback)
+			: base(luaLibsImpl, lua, logOutputCallback) {}
 
 		public override string Name => "SQL";
 

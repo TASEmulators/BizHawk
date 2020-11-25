@@ -10,8 +10,8 @@ namespace BizHawk.Client.Common
 	[Description("Functions specific to SNESHawk (functions may not run when an SNES game is not loaded)")]
 	public sealed class SNESLuaLibrary : DelegatingLuaLibrary
 	{
-		public SNESLuaLibrary(Lua lua, Action<string> logOutputCallback)
-			: base(lua, logOutputCallback) { }
+		public SNESLuaLibrary(LuaLibraries luaLibsImpl, Lua lua, Action<string> logOutputCallback)
+			: base(luaLibsImpl, lua, logOutputCallback) {}
 
 		public override string Name => "snes";
 

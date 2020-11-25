@@ -8,8 +8,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public sealed class SaveStateLuaLibrary : DelegatingLuaLibrary
 	{
-		public SaveStateLuaLibrary(Lua lua, Action<string> logOutputCallback)
-			: base(lua, logOutputCallback) { }
+		public SaveStateLuaLibrary(LuaLibraries luaLibsImpl, Lua lua, Action<string> logOutputCallback)
+			: base(luaLibsImpl, lua, logOutputCallback) {}
 
 		public override string Name => "savestate";
 

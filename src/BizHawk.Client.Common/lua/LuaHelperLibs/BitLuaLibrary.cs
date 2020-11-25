@@ -9,8 +9,8 @@ namespace BizHawk.Client.Common
 	[Description("A library for performing standard bitwise operations.")]
 	public sealed class BitLuaLibrary : LuaLibraryBase
 	{
-		public BitLuaLibrary(Lua lua, Action<string> logOutputCallback)
-			: base(lua, logOutputCallback) { }
+		public BitLuaLibrary(LuaLibraries luaLibsImpl, Lua lua, Action<string> logOutputCallback)
+			: base(luaLibsImpl, lua, logOutputCallback) {}
 
 		public override string Name => "bit";
 

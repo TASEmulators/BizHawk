@@ -7,8 +7,8 @@ namespace BizHawk.Client.Common
 {
 	public sealed class MemorySavestateLuaLibrary : DelegatingLuaLibrary
 	{
-		public MemorySavestateLuaLibrary(Lua lua, Action<string> logOutputCallback)
-			: base(lua, logOutputCallback) { }
+		public MemorySavestateLuaLibrary(LuaLibraries luaLibsImpl, Lua lua, Action<string> logOutputCallback)
+			: base(luaLibsImpl, lua, logOutputCallback) {}
 
 		public override string Name => "memorysavestate";
 

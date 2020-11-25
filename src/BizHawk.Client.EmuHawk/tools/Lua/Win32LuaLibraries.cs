@@ -57,7 +57,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (addLibrary)
 				{
-					var instance = (LuaLibraryBase) Activator.CreateInstance(lib, _lua, (Action<string>) ConsoleLuaLibrary.LogOutput);
+					var instance = (LuaLibraryBase) Activator.CreateInstance(lib, this, _lua, (Action<string>) ConsoleLuaLibrary.LogOutput);
 					ServiceInjector.UpdateServices(serviceProvider, instance);
 
 					// TODO: make EmuHawk libraries have a base class with common properties such as this

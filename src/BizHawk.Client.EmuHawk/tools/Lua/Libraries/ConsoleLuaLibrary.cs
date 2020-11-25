@@ -9,8 +9,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public sealed class ConsoleLuaLibrary : LuaLibraryBase
 	{
-		public ConsoleLuaLibrary(Lua lua, Action<string> logOutputCallback)
-			: base(lua, logOutputCallback) { }
+		public ConsoleLuaLibrary(LuaLibraries luaLibsImpl, Lua lua, Action<string> logOutputCallback)
+			: base(luaLibsImpl, lua, logOutputCallback) {}
 
 		public override string Name => "console";
 

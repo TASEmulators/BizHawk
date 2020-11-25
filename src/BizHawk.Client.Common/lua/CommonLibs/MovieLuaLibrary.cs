@@ -7,8 +7,8 @@ namespace BizHawk.Client.Common
 {
 	public sealed class MovieLuaLibrary : DelegatingLuaLibrary
 	{
-		public MovieLuaLibrary(Lua lua, Action<string> logOutputCallback)
-			: base(lua, logOutputCallback) { }
+		public MovieLuaLibrary(LuaLibraries luaLibsImpl, Lua lua, Action<string> logOutputCallback)
+			: base(luaLibsImpl, lua, logOutputCallback) {}
 
 		public override string Name => "movie";
 
