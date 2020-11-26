@@ -26,8 +26,6 @@ namespace BizHawk.Client.EmuHawk
 		public static readonly OSDManager OSD = new OSDManager();
 		public static DisplayManager DisplayManager;
 
-		public static int ExitCode;
-
 		public static Dictionary<string, object> UserBag { get; set; } = new Dictionary<string, object>();
 
 		public static Config Config { get; set; }

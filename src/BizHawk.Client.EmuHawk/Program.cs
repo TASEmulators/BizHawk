@@ -204,13 +204,14 @@ namespace BizHawk.Client.EmuHawk
 				SetDllDirectory(dllDir);
 			}
 
+			var exitCode = 0;
 			try
 			{
 				if (!OSTC.IsUnixHost && GlobalWin.Config.SingleInstanceMode)
 				{
 					try
 					{
-						InitAndRunSingleInstance(args);
+						InitAndRunSingleInstance(i => exitCode = i, args);
 					}
 					catch (ObjectDisposedException)
 					{
@@ -225,7 +226,7 @@ namespace BizHawk.Client.EmuHawk
 //					mf.Text = title;
 					try
 					{
-						GlobalWin.ExitCode = mf.ProgramRunLoop();
+						exitCode = mf.ProgramRunLoop();
 						if (!mf.IsDisposed)
 							mf.Dispose();
 					}
@@ -266,7 +267,7 @@ namespace BizHawk.Client.EmuHawk
 			//((IDisposable)GlobalWin.IGL_GL).Dispose();
 
 			//return 0 assuming things have gone well, non-zero values could be used as error codes or for scripting purposes
-			return GlobalWin.ExitCode;
+			return exitCode;
 		} //SubMain
 
 		//declared here instead of a more usual place to avoid dependencies on the more usual place
@@ -323,10 +324,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private class SingleInstanceController : WindowsFormsApplicationBase
 		{
+			private readonly Action<int> _setExitCode;
+
 			private readonly string[] cmdArgs;
 
-			public SingleInstanceController(string[] args)
+			public SingleInstanceController(Action<int> setExitCode, string[] args)
 			{
+				_setExitCode = setExitCode;
 				cmdArgs = args;
 				IsSingleInstance = true;
 				StartupNextInstance += this_StartupNextInstance;
@@ -346,10 +350,10 @@ namespace BizHawk.Client.EmuHawk
 				var title = MainForm.Text;
 				MainForm.Show();
 				MainForm.Text = title;
-				GlobalWin.ExitCode = ((MainForm)MainForm).ProgramRunLoop();
+				_setExitCode(((MainForm) MainForm).ProgramRunLoop());
 			}
 		}
 
-		private static void InitAndRunSingleInstance(string[] args) => new SingleInstanceController(args).Run();
+		private static void InitAndRunSingleInstance(Action<int> setExitCode, string[] args) => new SingleInstanceController(setExitCode, args).Run();
 	}
 }
