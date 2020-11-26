@@ -34,15 +34,6 @@ namespace BizHawk.Client.EmuHawk
 		private Pipeline _currPipeline;
 		private RenderTarget _currRenderTarget;
 
-		static IGL_TK()
-		{
-			//make sure OpenTK initializes without getting wrecked on the SDL check and throwing an exception to annoy our MDA's
-			var toolkitOptions = global::OpenTK.ToolkitOptions.Default;
-			toolkitOptions.Backend = PlatformBackend.PreferNative;
-			global::OpenTK.Toolkit.Init(toolkitOptions);
-			//NOTE: this throws EGL exceptions anyway. I'm going to ignore it and whine about it later
-		}
-
 		public string API => "OPENGL";
 
 		public int Version
@@ -66,6 +57,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public IGL_TK(int majorVersion, int minorVersion, bool forwardCompatible)
 		{
+			OpenTKConfigurator.EnsureConfigurated();
+
 			//make an 'offscreen context' so we can at least do things without having to create a window
 			OffscreenNativeWindow = new NativeWindow { ClientSize = new sd.Size(8, 8) };
 			GraphicsContext = new GraphicsContext(GraphicsMode.Default, OffscreenNativeWindow.WindowInfo, majorVersion, minorVersion, forwardCompatible ? GraphicsContextFlags.ForwardCompatible : GraphicsContextFlags.Default);
