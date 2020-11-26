@@ -17,7 +17,6 @@ namespace BizHawk.Client.EmuHawk
 		public FormsLuaLibrary(LuaLibraries luaLibsImpl, Lua lua, Action<string> logOutputCallback)
 			: base(luaLibsImpl, lua, logOutputCallback) {}
 
-		// TODO: replace references to ConsoleLuaLibrary.Log with a callback that is passed in
 		public override string Name => "forms";
 
 		private readonly List<LuaWinform> _luaForms = new List<LuaWinform>();
@@ -237,7 +236,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception ex)
 			{
-				ConsoleLuaLibrary.Log(ex.Message);
+				LogOutputCallback(ex.Message);
 			}
 
 			return "";
@@ -273,7 +272,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception ex)
 			{
-				ConsoleLuaLibrary.Log(ex.Message);
+				LogOutputCallback(ex.Message);
 			}
 
 			return "";
@@ -454,7 +453,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (form.Handle == ptr)
 					{
-						ConsoleLuaLibrary.Log("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
+						LogOutputCallback("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
 						return;
 					}
 
@@ -469,7 +468,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception ex)
 			{
-				ConsoleLuaLibrary.Log(ex.Message);
+				LogOutputCallback(ex.Message);
 			}
 		}
 
@@ -486,7 +485,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (form.Handle == ptr)
 					{
-						ConsoleLuaLibrary.Log("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
+						LogOutputCallback("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
 						return;
 					}
 
@@ -501,7 +500,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception ex)
 			{
-				ConsoleLuaLibrary.Log(ex.Message);
+				LogOutputCallback(ex.Message);
 			}
 		}
 
@@ -518,7 +517,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (form.Handle == ptr)
 					{
-						ConsoleLuaLibrary.Log("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
+						LogOutputCallback("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
 						return;
 					}
 
@@ -533,7 +532,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception ex)
 			{
-				ConsoleLuaLibrary.Log(ex.Message);
+				LogOutputCallback(ex.Message);
 			}
 		}
 
@@ -550,7 +549,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (form.Handle == ptr)
 					{
-						ConsoleLuaLibrary.Log("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
+						LogOutputCallback("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
 						return;
 					}
 
@@ -565,7 +564,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception ex)
 			{
-				ConsoleLuaLibrary.Log(ex.Message);
+				LogOutputCallback(ex.Message);
 			}
 		}
 
@@ -582,7 +581,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (form.Handle == ptr)
 					{
-						ConsoleLuaLibrary.Log("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
+						LogOutputCallback("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
 						return;
 					}
 
@@ -597,7 +596,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception ex)
 			{
-				ConsoleLuaLibrary.Log(ex.Message);
+				LogOutputCallback(ex.Message);
 			}
 		}
 
@@ -614,7 +613,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (form.Handle == ptr)
 					{
-						ConsoleLuaLibrary.Log("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
+						LogOutputCallback("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
 						return;
 					}
 
@@ -629,7 +628,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception ex)
 			{
-				ConsoleLuaLibrary.Log(ex.Message);
+				LogOutputCallback(ex.Message);
 			}
 		}
 
@@ -646,7 +645,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (form.Handle == ptr)
 					{
-						ConsoleLuaLibrary.Log("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
+						LogOutputCallback("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
 						return;
 					}
 
@@ -661,7 +660,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception ex)
 			{
-				ConsoleLuaLibrary.Log(ex.Message);
+				LogOutputCallback(ex.Message);
 			}
 		}
 
@@ -678,7 +677,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (form.Handle == ptr)
 					{
-						ConsoleLuaLibrary.Log("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
+						LogOutputCallback("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
 						return;
 					}
 
@@ -693,7 +692,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception ex)
 			{
-				ConsoleLuaLibrary.Log(ex.Message);
+				LogOutputCallback(ex.Message);
 			}
 		}
 
@@ -710,7 +709,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (form.Handle == ptr)
 					{
-						ConsoleLuaLibrary.Log("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
+						LogOutputCallback("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
 						return;
 					}
 
@@ -725,7 +724,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception ex)
 			{
-				ConsoleLuaLibrary.Log(ex.Message);
+				LogOutputCallback(ex.Message);
 			}
 		}
 
@@ -737,7 +736,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!File.Exists(path))
 			{
-				ConsoleLuaLibrary.Log($"File not found: {path}\nScript Terminated");
+				LogOutputCallback($"File not found: {path}\nScript Terminated");
 				return;
 			}
 			try
@@ -747,7 +746,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (form.Handle == ptr)
 					{
-						ConsoleLuaLibrary.Log("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
+						LogOutputCallback("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
 						return;
 					}
 
@@ -762,7 +761,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception ex)
 			{
-				ConsoleLuaLibrary.Log(ex.Message);
+				LogOutputCallback(ex.Message);
 			}
 		}
 
@@ -779,7 +778,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (form.Handle == ptr)
 					{
-						ConsoleLuaLibrary.Log("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
+						LogOutputCallback("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
 						return;
 					}
 
@@ -794,7 +793,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception ex)
 			{
-				ConsoleLuaLibrary.Log(ex.Message);
+				LogOutputCallback(ex.Message);
 			}
 		}
 
@@ -806,7 +805,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!File.Exists(path))
 			{
-				ConsoleLuaLibrary.Log($"File not found: {path}\nScript Terminated");
+				LogOutputCallback($"File not found: {path}\nScript Terminated");
 				return;
 			}
 			try
@@ -816,7 +815,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (form.Handle == ptr)
 					{
-						ConsoleLuaLibrary.Log("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
+						LogOutputCallback("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
 						return;
 					}
 
@@ -831,7 +830,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception ex)
 			{
-				ConsoleLuaLibrary.Log(ex.Message);
+				LogOutputCallback(ex.Message);
 			}
 		}
 
@@ -848,7 +847,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (form.Handle == ptr)
 					{
-						ConsoleLuaLibrary.Log("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
+						LogOutputCallback("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
 						return;
 					}
 
@@ -863,7 +862,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception ex)
 			{
-				ConsoleLuaLibrary.Log(ex.Message);
+				LogOutputCallback(ex.Message);
 			}
 		}
 
@@ -880,7 +879,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (form.Handle == ptr)
 					{
-						ConsoleLuaLibrary.Log("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
+						LogOutputCallback("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
 						return;
 					}
 
@@ -895,7 +894,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception ex)
 			{
-				ConsoleLuaLibrary.Log(ex.Message);
+				LogOutputCallback(ex.Message);
 			}
 		}
 
@@ -913,7 +912,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (form.Handle == ptr)
 					{
-						ConsoleLuaLibrary.Log("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
+						LogOutputCallback("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
 						return;
 					}
 
@@ -928,7 +927,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception ex)
 			{
-				ConsoleLuaLibrary.Log(ex.Message);
+				LogOutputCallback(ex.Message);
 			}
 		}
 
@@ -954,7 +953,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (form.Handle == ptr)
 					{
-						ConsoleLuaLibrary.Log("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
+						LogOutputCallback("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
 						return;
 					}
 
@@ -969,7 +968,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception ex)
 			{
-				ConsoleLuaLibrary.Log(ex.Message);
+				LogOutputCallback(ex.Message);
 			}
 		}
 
@@ -986,7 +985,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (form.Handle == ptr)
 					{
-						ConsoleLuaLibrary.Log("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
+						LogOutputCallback("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
 						return;
 					}
 
@@ -1001,7 +1000,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception ex)
 			{
-				ConsoleLuaLibrary.Log(ex.Message);
+				LogOutputCallback(ex.Message);
 			}
 		}
 
@@ -1018,7 +1017,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (form.Handle == ptr)
 					{
-						ConsoleLuaLibrary.Log("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
+						LogOutputCallback("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
 						return;
 					}
 
@@ -1033,7 +1032,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception ex)
 			{
-				ConsoleLuaLibrary.Log(ex.Message);
+				LogOutputCallback(ex.Message);
 			}
 		}
 
@@ -1051,7 +1050,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (form.Handle == ptr)
 					{
-						ConsoleLuaLibrary.Log("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
+						LogOutputCallback("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
 						return;
 					}
 
@@ -1066,7 +1065,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception ex)
 			{
-				ConsoleLuaLibrary.Log(ex.Message);
+				LogOutputCallback(ex.Message);
 			}
 		}
 
@@ -1094,7 +1093,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (form.Handle == ptr)
 					{
-						ConsoleLuaLibrary.Log("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
+						LogOutputCallback("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
 						return;
 					}
 
@@ -1109,7 +1108,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception ex)
 			{
-				ConsoleLuaLibrary.Log(ex.Message);
+				LogOutputCallback(ex.Message);
 			}
 		}
 
@@ -1137,7 +1136,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (form.Handle == ptr)
 					{
-						ConsoleLuaLibrary.Log("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
+						LogOutputCallback("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
 						return;
 					}
 
@@ -1152,7 +1151,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception ex)
 			{
-				ConsoleLuaLibrary.Log(ex.Message);
+				LogOutputCallback(ex.Message);
 			}
 		}
 
@@ -1170,7 +1169,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (form.Handle == ptr)
 					{
-						ConsoleLuaLibrary.Log("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
+						LogOutputCallback("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
 						return 0;
 					}
 
@@ -1186,7 +1185,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception ex)
 			{
-				ConsoleLuaLibrary.Log(ex.Message);
+				LogOutputCallback(ex.Message);
 			}
 
 			return 0;
@@ -1205,7 +1204,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (form.Handle == ptr)
 					{
-						ConsoleLuaLibrary.Log("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
+						LogOutputCallback("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
 						return 0;
 					}
 
@@ -1221,7 +1220,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception ex)
 			{
-				ConsoleLuaLibrary.Log(ex.Message);
+				LogOutputCallback(ex.Message);
 			}
 
 			return 0;
