@@ -101,7 +101,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			if (GlobalWin.Tools.IsLoaded<TAStudio>())
+			if (Tools.IsLoaded<TAStudio>())
 			{
 				Tools.TAStudio.LoadMovieFile(filename);
 			}
