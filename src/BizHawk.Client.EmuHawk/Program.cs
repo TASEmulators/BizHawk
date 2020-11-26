@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
+using BizHawk.Bizware.BizwareGL;
 using BizHawk.Bizware.DirectX;
 
 using Microsoft.VisualBasic.ApplicationServices;
@@ -136,62 +137,61 @@ namespace BizHawk.Client.EmuHawk
 
 			StringLogUtil.DefaultToDisk = GlobalWin.Config.Movies.MoviesOnDisk;
 
+			IGL TryInitIGL(EDispMethod dispMethod)
+			{
+				IGL CheckRenderer(IGL gl)
+				{
+					try
+					{
+						using (gl.CreateRenderer()) return gl;
+					}
+					catch (Exception ex)
+					{
+						new ExceptionBox(new Exception("Initialization of Display Method failed; falling back to GDI+", ex)).ShowDialog();
+						return TryInitIGL(GlobalWin.Config.DispMethod = EDispMethod.GdiPlus);
+					}
+				}
+				switch (dispMethod)
+				{
+					case EDispMethod.SlimDX9:
+						if (OSTailoredCode.CurrentOS != OSTailoredCode.DistinctOS.Windows)
+						{
+							// possibly sharing config w/ Windows, assume the user wants the not-slow method (but don't change the config)
+							return TryInitIGL(EDispMethod.OpenGL);
+						}
+						IGL_SlimDX9 glSlimDX;
+						try
+						{
+							glSlimDX = new IGL_SlimDX9();
+						}
+						catch (Exception ex)
+						{
+							new ExceptionBox(new Exception("Initialization of Direct3d 9 Display Method failed; falling back to GDI+", ex)).ShowDialog();
+							return TryInitIGL(GlobalWin.Config.DispMethod = EDispMethod.GdiPlus);
+						}
+						return CheckRenderer(glSlimDX);
+					case EDispMethod.OpenGL:
+						var glOpenTK = new IGL_TK(2, 0, false);
+						if (glOpenTK.Version < 200)
+						{
+							// too old to use, GDI+ will be better
+							((IDisposable) glOpenTK).Dispose();
+							return TryInitIGL(GlobalWin.Config.DispMethod = EDispMethod.GdiPlus);
+						}
+						return CheckRenderer(glOpenTK);
+					default:
+					case EDispMethod.GdiPlus:
+						return new IGL_GdiPlus();
+				}
+			}
+
 			// super hacky! this needs to be done first. still not worth the trouble to make this system fully proper
 			if (Array.Exists(args, arg => arg.StartsWith("--gdi", StringComparison.InvariantCultureIgnoreCase)))
 			{
 				GlobalWin.Config.DispMethod = EDispMethod.GdiPlus;
 			}
 
-		REDO_DISPMETHOD:
-			if (GlobalWin.Config.DispMethod == EDispMethod.GdiPlus)
-			{
-				GlobalWin.GL = new IGL_GdiPlus();
-			}
-			else if (OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows && GlobalWin.Config.DispMethod == EDispMethod.SlimDX9)
-			{
-				try
-				{
-					GlobalWin.GL = new IGL_SlimDX9();
-				}
-				catch(Exception ex)
-				{
-					new ExceptionBox(new Exception("Initialization of Direct3d 9 Display Method failed; falling back to GDI+", ex)).ShowDialog();
-
-					// fallback
-					GlobalWin.Config.DispMethod = EDispMethod.GdiPlus;
-					goto REDO_DISPMETHOD;
-				}
-			}
-			else
-			{
-				var glOpenTK = new IGL_TK(2, 0, false);
-
-				// check the opengl version and don't even try to boot this crap up if its too old
-				if (glOpenTK.Version < 200)
-				{
-					((IDisposable) glOpenTK).Dispose();
-
-					// fallback
-					GlobalWin.Config.DispMethod = EDispMethod.GdiPlus;
-					goto REDO_DISPMETHOD;
-				}
-
-				GlobalWin.GL = glOpenTK;
-			}
-
-			// try creating a GUI Renderer. If that doesn't succeed. we fallback
-			try
-			{
-				using (GlobalWin.GL.CreateRenderer()) { }
-			}
-			catch(Exception ex)
-			{
-				new ExceptionBox(new Exception("Initialization of Display Method failed; falling back to GDI+", ex)).ShowDialog();
-
-				//fallback
-				GlobalWin.Config.DispMethod = EDispMethod.GdiPlus;
-				goto REDO_DISPMETHOD;
-			}
+			GlobalWin.GL = TryInitIGL(GlobalWin.Config.DispMethod);
 
 			if (!OSTC.IsUnixHost)
 			{
