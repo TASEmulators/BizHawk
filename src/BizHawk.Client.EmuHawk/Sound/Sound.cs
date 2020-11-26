@@ -143,7 +143,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void UpdateSound(float atten)
+		public void UpdateSound(float atten, bool isSecondaryThrottlingDisabled)
 		{
 			if (!GlobalWin.Config.SoundEnabled || !IsStarted || _bufferedProvider == null || _disposed)
 			{
@@ -175,7 +175,7 @@ namespace BizHawk.Client.EmuHawk
 					_outputProvider.BaseSoundProvider.GetSamplesSync(out samples, out sampleCount);
 					sampleOffset = 0;
 
-					if (GlobalWin.DisableSecondaryThrottling && sampleCount > samplesNeeded)
+					if (isSecondaryThrottlingDisabled && sampleCount > samplesNeeded)
 					{
 						return;
 					}
@@ -203,7 +203,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					if (GlobalWin.DisableSecondaryThrottling) // This indicates rewind or fast-forward
+					if (isSecondaryThrottlingDisabled) // This indicates rewind or fast-forward
 					{
 						_outputProvider.OnVolatility();
 					}

@@ -47,14 +47,17 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private readonly Func<bool> _getIsSecondaryThrottlingDisabled;
+
 		private readonly OSDManager _osdManager;
 
 		private Config GlobalConfig => GlobalWin.Config;
 
 		private IEmulator GlobalEmulator => GlobalWin.Emulator;
 
-		public DisplayManager(OSDManager osdManager, IGL gl, PresentationPanel presentationPanel)
+		public DisplayManager(OSDManager osdManager, IGL gl, PresentationPanel presentationPanel, Func<bool> getIsSecondaryThrottlingDisabled)
 		{
+			_getIsSecondaryThrottlingDisabled = getIsSecondaryThrottlingDisabled;
 			_osdManager = osdManager;
 			GL = gl;
 
@@ -934,7 +937,7 @@ namespace BizHawk.Client.EmuHawk
 				//this makes sense... but we don't have the infrastructure to support it now (we'd have to enable triple buffering or something like that)
 				//so what we're gonna do is disable vsync no matter what if throttling is off, and maybe nobody will notice.
 				//update 26-mar-2016: this upsets me. When fast-forwarding and skipping frames, vsync should still work. But I'm not changing it yet
-				if (GlobalWin.DisableSecondaryThrottling)
+				if (_getIsSecondaryThrottlingDisabled())
 					vsync = false;
 
 				//for now, it's assumed that the presentation panel is the main window, but that may not always be true

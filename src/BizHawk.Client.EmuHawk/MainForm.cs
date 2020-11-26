@@ -340,7 +340,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				GraphicsControl = { MainWindow = true }
 			};
-			GlobalWin.DisplayManager = new DisplayManager(OSD, GlobalWin.GL, PresentationPanel);
+			GlobalWin.DisplayManager = new DisplayManager(OSD, GlobalWin.GL, PresentationPanel, () => DisableSecondaryThrottling);
 			Controls.Add(PresentationPanel);
 			Controls.SetChildIndex(PresentationPanel, 0);
 
@@ -792,6 +792,11 @@ namespace BizHawk.Client.EmuHawk
 		public bool IsSeeking => PauseOnFrame.HasValue;
 		private bool IsTurboSeeking => PauseOnFrame.HasValue && Config.TurboSeek;
 		public bool IsTurboing => InputManager.ClientControls["Turbo"] || IsTurboSeeking;
+
+		/// <summary>
+		/// Used to disable secondary throttling (e.g. vsync, audio) for unthrottled modes or when the primary (clock) throttle is taking over (e.g. during fast forward/rewind).
+		/// </summary>
+		public static bool DisableSecondaryThrottling { get; set; }
 
 		public void AddOnScreenMessage(string message) => OSD.AddMessage(message);
 
@@ -2063,7 +2068,7 @@ namespace BizHawk.Client.EmuHawk
 				speedPercent = Math.Max(speedPercent / Rewinder.RewindFrequency, 5);
 			}
 
-			GlobalWin.DisableSecondaryThrottling = _unthrottled || turbo || fastForward || rewind;
+			DisableSecondaryThrottling = _unthrottled || turbo || fastForward || rewind;
 
 			// realtime throttle is never going to be so exact that using a double here is wrong
 			_throttle.SetCoreFps(Emulator.VsyncRate());
@@ -3019,7 +3024,7 @@ namespace BizHawk.Client.EmuHawk
 				UpdateToolsAfter();
 			}
 
-			Sound.UpdateSound(atten);
+			Sound.UpdateSound(atten, DisableSecondaryThrottling);
 		}
 
 		private void UpdateFpsDisplay(long currentTimestamp, bool isRewinding, bool isFastForwarding)

@@ -28,11 +28,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public static int ExitCode;
 
-		/// <summary>
-		/// Used to disable secondary throttling (e.g. vsync, audio) for unthrottled modes or when the primary (clock) throttle is taking over (e.g. during fast forward/rewind).
-		/// </summary>
-		public static bool DisableSecondaryThrottling { get; set; }
-
 		public static Dictionary<string, object> UserBag { get; set; } = new Dictionary<string, object>();
 
 		public static Config Config { get; set; }
