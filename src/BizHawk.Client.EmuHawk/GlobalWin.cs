@@ -16,11 +16,6 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public static IGL GL;
 
-		/// <summary>
-		/// The IGL_TK to be used for specifically opengl operations (accessing textures from opengl-based cores)
-		/// </summary>
-		public static IGL_TK IGL_GL;
-
 		public static Sound Sound;
 
 		public static Config Config { get; set; }

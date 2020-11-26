@@ -142,10 +142,6 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.Config.DispMethod = EDispMethod.GdiPlus;
 			}
 
-			// create IGL context. we do this whether or not the user has selected OpenGL, so that we can run opengl-based emulator cores
-			GlobalWin.IGL_GL = new IGL_TK(2, 0, false);
-
-			//now create the "GL" context for the display method. we can reuse the IGL_TK context if opengl display method is chosen
 		REDO_DISPMETHOD:
 			if (GlobalWin.Config.DispMethod == EDispMethod.GdiPlus)
 			{
@@ -168,15 +164,19 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				GlobalWin.GL = GlobalWin.IGL_GL;
+				var glOpenTK = new IGL_TK(2, 0, false);
 
 				// check the opengl version and don't even try to boot this crap up if its too old
-				if (GlobalWin.IGL_GL.Version < 200)
+				if (glOpenTK.Version < 200)
 				{
+					((IDisposable) glOpenTK).Dispose();
+
 					// fallback
 					GlobalWin.Config.DispMethod = EDispMethod.GdiPlus;
 					goto REDO_DISPMETHOD;
 				}
+
+				GlobalWin.GL = glOpenTK;
 			}
 
 			// try creating a GUI Renderer. If that doesn't succeed. we fallback
