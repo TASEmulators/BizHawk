@@ -1,2 +1,2 @@
 #!/bin/sh
-CscToolExe="$(which csc)" dotnet build -c Release -m
+dotnet build -c Release -m
