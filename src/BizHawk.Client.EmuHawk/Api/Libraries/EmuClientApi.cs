@@ -72,7 +72,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		internal readonly BizHawkSystemIdToEnumConverter SystemIdConverter = new BizHawkSystemIdToEnumConverter();
+		internal static readonly BizHawkSystemIdToEnumConverter SystemIdConverter = new BizHawkSystemIdToEnumConverter();
 
 		private IVideoProvider VideoProvider { get; set; }
 
