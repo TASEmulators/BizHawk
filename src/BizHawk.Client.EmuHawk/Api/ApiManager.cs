@@ -26,6 +26,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private static readonly Type[] _ctorParamTypesC = { typeof(Action<string>), typeof(IMainFormForApi), typeof(DisplayManager), typeof(InputManager), typeof(Config), typeof(IEmulator), typeof(IGameInfo) };
 
+		private static readonly Type[] _ctorParamTypesTools = { typeof(ToolManager) };
+
 		/// <remarks>TODO do we need to keep references to these because of GC weirdness? --yoshi</remarks>
 		private static ApiContainer? _container;
 
@@ -37,6 +39,7 @@ namespace BizHawk.Client.EmuHawk
 			IMainFormForApi mainForm,
 			DisplayManager displayManager,
 			InputManager inputManager,
+			ToolManager toolManager,
 			Config config,
 			IEmulator emulator,
 			IGameInfo game)
@@ -48,6 +51,7 @@ namespace BizHawk.Client.EmuHawk
 						t.GetConstructor(_ctorParamTypesC)?.Invoke(new object[] { logCallback, mainForm, displayManager, inputManager, config, emulator, game })
 							?? t.GetConstructor(_ctorParamTypesB)?.Invoke(new object[] { logCallback, mainForm })
 							?? t.GetConstructor(_ctorParamTypesA)?.Invoke(new object[] { logCallback })
+							?? t.GetConstructor(_ctorParamTypesTools)?.Invoke(new object[] { toolManager })
 							?? Activator.CreateInstance(t)
 					)
 				);
@@ -60,11 +64,12 @@ namespace BizHawk.Client.EmuHawk
 			IMainFormForApi mainForm,
 			DisplayManager displayManager,
 			InputManager inputManager,
+			ToolManager toolManager,
 			Config config,
 			IEmulator emulator,
 			IGameInfo game)
 		{
-			_container = Register(serviceProvider, Console.WriteLine, mainForm, displayManager, inputManager, config, emulator, game);
+			_container = Register(serviceProvider, Console.WriteLine, mainForm, displayManager, inputManager, toolManager, config, emulator, game);
 			ClientApi.EmuClient = _container.EmuClient;
 			return new BasicApiProvider(_container);
 		}
@@ -75,9 +80,10 @@ namespace BizHawk.Client.EmuHawk
 			IMainFormForApi mainForm,
 			DisplayManager displayManager,
 			InputManager inputManager,
+			ToolManager toolManager,
 			Config config,
 			IEmulator emulator,
 			IGameInfo game
-		) => _luaContainer = Register(serviceProvider, logCallback, mainForm, displayManager, inputManager, config, emulator, game);
+		) => _luaContainer = Register(serviceProvider, logCallback, mainForm, displayManager, inputManager, toolManager, config, emulator, game);
 	}
 }

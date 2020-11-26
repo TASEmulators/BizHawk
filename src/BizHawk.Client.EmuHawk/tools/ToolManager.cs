@@ -54,7 +54,7 @@ namespace BizHawk.Client.EmuHawk
 			_emulator = emulator;
 			_movieSession = movieSession;
 			_game = game;
-			ApiProvider = ApiManager.Restart(_emulator.ServiceProvider, _owner, GlobalWin.DisplayManager, _inputManager, _config, _emulator, _game);
+			ApiProvider = ApiManager.Restart(_emulator.ServiceProvider, _owner, GlobalWin.DisplayManager, _inputManager, this, _config, _emulator, _game);
 		}
 
 		/// <summary>
@@ -505,7 +505,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_emulator = emulator;
 			_game = game;
-			ApiProvider = ApiManager.Restart(_emulator.ServiceProvider, _owner, GlobalWin.DisplayManager, _inputManager, _config, _emulator, _game);
+			ApiProvider = ApiManager.Restart(_emulator.ServiceProvider, _owner, GlobalWin.DisplayManager, _inputManager, this, _config, _emulator, _game);
 			// If Cheat tool is loaded, restarting will restart the list too anyway
 			if (!Has<Cheats>())
 			{

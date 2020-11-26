@@ -49,7 +49,7 @@ namespace BizHawk.Client.EmuHawk
 
 			LuaWait = new AutoResetEvent(false);
 			Docs.Clear();
-			var apiContainer = ApiManager.RestartLua(serviceProvider, LogToLuaConsole, mainForm, displayManager, inputManager, config, emulator, game);
+			var apiContainer = ApiManager.RestartLua(serviceProvider, LogToLuaConsole, mainForm, displayManager, inputManager, GlobalWin.Tools, config, emulator, game);
 
 			// Register lua libraries
 			foreach (var lib in Client.Common.ReflectionCache.Types.Concat(EmuHawk.ReflectionCache.Types)
