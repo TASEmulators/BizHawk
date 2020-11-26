@@ -320,9 +320,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						if (HDMA_countdown > 0)
 						{
 							HDMA_countdown--;
-							if ((Core.cpu.TotalExecutedCycles - Core.cpu.instruction_start) == 0)
+
+							if (HDMA_countdown == 3)
 							{
-								if (HDMA_countdown == 3)
+								if ((Core.cpu.TotalExecutedCycles - Core.cpu.instruction_start) == 0)
 								{
 									if (!Core.HDMA_transfer) { Core.HDMA_start_stop(true); }
 									VRAM_access_read_HDMA = false;
@@ -330,10 +331,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 									VRAM_access_write_HDMA = false;
 									VRAM_access_write = VRAM_access_write_PPU & VRAM_access_write_HDMA;
 								}
-							}
-							else
-							{
-								HDMA_countdown++;
+								else
+								{
+									HDMA_countdown++;
+								}
 							}
 						}
 						else
