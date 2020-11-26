@@ -162,7 +162,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var cfp = new CoreFileProvider(
 				ShowMessageCoreComm,
-				GlobalWin.FirmwareManager,
+				FirmwareManager,
 				Config.PathEntries,
 				Config.FirmwareUserSpecifications);
 			var prefs = CoreComm.CorePreferencesFlags.None;
@@ -282,7 +282,7 @@ namespace BizHawk.Client.EmuHawk
 			base.Config = Config;
 
 			InputManager.ControllerInputCoalescer = new ControllerInputCoalescer();
-			GlobalWin.FirmwareManager = new FirmwareManager();
+			FirmwareManager = new FirmwareManager();
 			MovieSession = new MovieSession(
 				Config.Movies,
 				Config.PathEntries.MovieBackupsAbsolutePath(),
@@ -874,7 +874,7 @@ namespace BizHawk.Client.EmuHawk
 			AddOnScreenMessage(Rewinder?.Active == true ? "Rewind started" : "Rewind disabled");
 		}
 
-		private FirmwareManager FirmwareManager => GlobalWin.FirmwareManager;
+		public FirmwareManager FirmwareManager { get; }
 
 		protected override void OnActivated(EventArgs e)
 		{
@@ -3558,7 +3558,7 @@ namespace BizHawk.Client.EmuHawk
 					MessageCallback = OSD.AddMessage,
 					OpenAdvanced = args.OpenAdvanced
 				};
-				GlobalWin.FirmwareManager.RecentlyServed.Clear();
+				FirmwareManager.RecentlyServed.Clear();
 
 				loader.OnLoadError += ShowLoadError;
 				loader.OnLoadSettings += CoreSettings;
