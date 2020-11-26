@@ -38,6 +38,8 @@ namespace BizHawk.Bizware.DirectX
 				_d3d = new Direct3D();
 			}
 
+			OpenTKConfigurator.EnsureConfigurated();
+
 			// make an 'offscreen context' so we can at least do things without having to create a window
 			_offscreenNativeWindow = new NativeWindow { ClientSize = new Size(8, 8) };
 
