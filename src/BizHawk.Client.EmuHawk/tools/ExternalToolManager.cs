@@ -38,15 +38,13 @@ namespace BizHawk.Client.EmuHawk
 			DirectoryMonitor.Created += DirectoryMonitor_Created;
 			DirectoryMonitor.EnableRaisingEvents = true;
 
-			ClientApi.RomLoaded += (sender, e) => BuildToolStrip();
-
 			BuildToolStrip();
 		}
 
 		/// <summary>
 		/// Build the ToolStrip menu
 		/// </summary>
-		private static void BuildToolStrip()
+		internal static void BuildToolStrip()
 		{
 			MenuItems.Clear();
 			if (Directory.Exists(DirectoryMonitor.Path))

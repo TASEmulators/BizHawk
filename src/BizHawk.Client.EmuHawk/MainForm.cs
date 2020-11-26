@@ -3764,6 +3764,8 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}
 
+					ExternalToolManager.BuildToolStrip();
+
 					EmuClient.OnRomLoaded(Emulator);
 					return true;
 				}
