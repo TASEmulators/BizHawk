@@ -16,7 +16,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly IMainFormForApi _mainForm;
 
-		public InputApi(Action<string> logCallback, IMainFormForApi mainForm, DisplayManager displayManager, InputManager inputManager, Config config, IEmulator emulator, GameInfo game)
+		public InputApi(Action<string> logCallback, IMainFormForApi mainForm, DisplayManager displayManager, InputManager inputManager, Config config, IEmulator emulator, IGameInfo game)
 		{
 			_displayManager = displayManager;
 			_inputManager = inputManager;

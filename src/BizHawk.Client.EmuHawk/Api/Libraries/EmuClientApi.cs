@@ -33,7 +33,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public IEmulator Emulator;
 
-		public GameInfo Game;
+		public IGameInfo Game;
 
 		private readonly IReadOnlyCollection<JoypadButton> JoypadButtonsArray = Enum.GetValues(typeof(JoypadButton)).Cast<JoypadButton>().ToList(); //TODO can the return of GetValues be cast to JoypadButton[]? --yoshi
 
@@ -86,7 +86,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public event StateSavedEventHandler StateSaved;
 
-		public EmuClientApi(Action<string> logCallback, IMainFormForApi mainForm, DisplayManager displayManager, InputManager inputManager, Config config, IEmulator emulator, GameInfo game)
+		public EmuClientApi(Action<string> logCallback, IMainFormForApi mainForm, DisplayManager displayManager, InputManager inputManager, Config config, IEmulator emulator, IGameInfo game)
 		{
 			_config = config;
 			_displayManager = displayManager;

@@ -24,7 +24,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static readonly Type[] _ctorParamTypesB = { typeof(Action<string>), typeof(IMainFormForApi) };
 
-		private static readonly Type[] _ctorParamTypesC = { typeof(Action<string>), typeof(IMainFormForApi), typeof(DisplayManager), typeof(InputManager), typeof(Config), typeof(IEmulator), typeof(GameInfo) };
+		private static readonly Type[] _ctorParamTypesC = { typeof(Action<string>), typeof(IMainFormForApi), typeof(DisplayManager), typeof(InputManager), typeof(Config), typeof(IEmulator), typeof(IGameInfo) };
 
 		/// <remarks>TODO do we need to keep references to these because of GC weirdness? --yoshi</remarks>
 		private static ApiContainer? _container;
