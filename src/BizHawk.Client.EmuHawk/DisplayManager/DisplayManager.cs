@@ -53,11 +53,15 @@ namespace BizHawk.Client.EmuHawk
 
 		private IEmulator GlobalEmulator => GlobalWin.Emulator;
 
-		public DisplayManager(OSDManager osdManager, IGL gl, GLManager glManager, PresentationPanel presentationPanel)
+		public DisplayManager(OSDManager osdManager, IGL gl, PresentationPanel presentationPanel)
 		{
 			_osdManager = osdManager;
 			GL = gl;
-			GLManager = glManager;
+
+			// setup the GL context manager, needed for coping with multiple opengl cores vs opengl display method
+			// but is it tho? --yoshi
+			GLManager = GLManager.Instance;
+
 			this.presentationPanel = presentationPanel;
 			GraphicsControl = this.presentationPanel.GraphicsControl;
 			CR_GraphicsControl = GLManager.GetContextForGraphicsControl(GraphicsControl);

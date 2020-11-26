@@ -25,7 +25,6 @@ namespace BizHawk.Client.EmuHawk
 		public static Sound Sound;
 		public static readonly OSDManager OSD = new OSDManager();
 		public static DisplayManager DisplayManager;
-		public static GLManager GLManager;
 
 		public static int ExitCode;
 

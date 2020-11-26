@@ -145,10 +145,6 @@ namespace BizHawk.Client.EmuHawk
 			// create IGL context. we do this whether or not the user has selected OpenGL, so that we can run opengl-based emulator cores
 			GlobalWin.IGL_GL = new IGL_TK(2, 0, false);
 
-			// setup the GL context manager, needed for coping with multiple opengl cores vs opengl display method
-			GLManager.CreateInstance();
-			GlobalWin.GLManager = GLManager.Instance;
-
 			//now create the "GL" context for the display method. we can reuse the IGL_TK context if opengl display method is chosen
 		REDO_DISPMETHOD:
 			if (GlobalWin.Config.DispMethod == EDispMethod.GdiPlus)
