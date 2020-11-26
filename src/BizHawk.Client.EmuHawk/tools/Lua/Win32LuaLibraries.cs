@@ -20,8 +20,15 @@ namespace BizHawk.Client.EmuHawk
 				_lua["keepalives"] = _lua.NewTable();
 		}
 
-		public Win32LuaLibraries(IMainFormForApi mainForm, IEmulatorServiceProvider serviceProvider)
-			: this()
+		public Win32LuaLibraries(
+			IEmulatorServiceProvider serviceProvider,
+			IMainFormForApi mainForm,
+			DisplayManager displayManager,
+			InputManager inputManager,
+			Config config,
+			IEmulator emulator,
+			IGameInfo game
+		) : this()
 		{
 			void EnumerateLuaFunctions(string name, Type type, LuaLibraryBase instance)
 			{
@@ -42,7 +49,7 @@ namespace BizHawk.Client.EmuHawk
 
 			LuaWait = new AutoResetEvent(false);
 			Docs.Clear();
-			var apiContainer = ApiManager.RestartLua(mainForm, serviceProvider, ConsoleLuaLibrary.LogOutput);
+			var apiContainer = ApiManager.RestartLua(serviceProvider, ConsoleLuaLibrary.LogOutput, mainForm, displayManager, inputManager, config, emulator, game);
 
 			// Register lua libraries
 			foreach (var lib in Client.Common.ReflectionCache.Types.Concat(EmuHawk.ReflectionCache.Types)

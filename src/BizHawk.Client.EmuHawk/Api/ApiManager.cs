@@ -32,15 +32,20 @@ namespace BizHawk.Client.EmuHawk
 		private static ApiContainer? _luaContainer;
 
 		private static ApiContainer Register(
-			IMainFormForApi mainForm,
 			IEmulatorServiceProvider serviceProvider,
-			Action<string> logCallback)
+			Action<string> logCallback,
+			IMainFormForApi mainForm,
+			DisplayManager displayManager,
+			InputManager inputManager,
+			Config config,
+			IEmulator emulator,
+			IGameInfo game)
 		{
 			var libDict = _apiTypes.Keys.Where(t => ServiceInjector.IsAvailable(serviceProvider, t))
 				.ToDictionary(
 					t => _apiTypes[t],
 					t => (IExternalApi) (
-						t.GetConstructor(_ctorParamTypesC)?.Invoke(new object[] { logCallback, mainForm, GlobalWin.DisplayManager, GlobalWin.InputManager, GlobalWin.Config, GlobalWin.Emulator, GlobalWin.Game })
+						t.GetConstructor(_ctorParamTypesC)?.Invoke(new object[] { logCallback, mainForm, displayManager, inputManager, config, emulator, game })
 							?? t.GetConstructor(_ctorParamTypesB)?.Invoke(new object[] { logCallback, mainForm })
 							?? t.GetConstructor(_ctorParamTypesA)?.Invoke(new object[] { logCallback })
 							?? Activator.CreateInstance(t)
@@ -50,15 +55,30 @@ namespace BizHawk.Client.EmuHawk
 			return new ApiContainer(libDict);
 		}
 
-		public static IExternalApiProvider Restart(IMainFormForApi mainForm, IEmulatorServiceProvider newServiceProvider)
+		public static IExternalApiProvider Restart(
+			IEmulatorServiceProvider serviceProvider,
+			IMainFormForApi mainForm,
+			DisplayManager displayManager,
+			InputManager inputManager,
+			Config config,
+			IEmulator emulator,
+			IGameInfo game)
 		{
 			GlobalWin.ClientApi = null;
-			_container = Register(mainForm, newServiceProvider, Console.WriteLine);
+			_container = Register(serviceProvider, Console.WriteLine, mainForm, displayManager, inputManager, config, emulator, game);
 			GlobalWin.ClientApi = _container.EmuClient as EmuClientApi;
 			return new BasicApiProvider(_container);
 		}
 
-		public static ApiContainer RestartLua(IMainFormForApi mainForm, IEmulatorServiceProvider newServiceProvider, Action<string> logCallback)
-			=> _luaContainer = Register(mainForm, newServiceProvider, logCallback);
+		public static ApiContainer RestartLua(
+			IEmulatorServiceProvider serviceProvider,
+			Action<string> logCallback,
+			IMainFormForApi mainForm,
+			DisplayManager displayManager,
+			InputManager inputManager,
+			Config config,
+			IEmulator emulator,
+			IGameInfo game
+		) => _luaContainer = Register(serviceProvider, logCallback, mainForm, displayManager, inputManager, config, emulator, game);
 	}
 }
