@@ -31,6 +31,12 @@ namespace BizHawk.Client.EmuHawk
 		// Also a UsesRam, and similar method
 		private readonly List<IToolForm> _tools = new List<IToolForm>();
 
+		private IExternalApiProvider ApiProvider
+		{
+			get => _apiProvider;
+			set => _owner.EmuClient = (EmuClientApi) (_apiProvider = value).GetApi<IEmuClientApi>();
+		}
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ToolManager"/> class.
 		/// </summary>
@@ -48,7 +54,7 @@ namespace BizHawk.Client.EmuHawk
 			_emulator = emulator;
 			_movieSession = movieSession;
 			_game = game;
-			_apiProvider = ApiManager.Restart(_emulator.ServiceProvider, _owner, GlobalWin.DisplayManager, _inputManager, _config, _emulator, _game);
+			ApiProvider = ApiManager.Restart(_emulator.ServiceProvider, _owner, GlobalWin.DisplayManager, _inputManager, _config, _emulator, _game);
 		}
 
 		/// <summary>
@@ -165,7 +171,7 @@ namespace BizHawk.Client.EmuHawk
 			var newTool = (IExternalToolForm) CreateInstance(typeof(IExternalToolForm), toolPath, customFormTypeName, skipExtToolWarning: skipExtToolWarning);
 			if (newTool == null) return null;
 			if (newTool is Form form) form.Owner = _owner;
-			ApiInjector.UpdateApis(_apiProvider, newTool);
+			ApiInjector.UpdateApis(ApiProvider, newTool);
 			ServiceInjector.UpdateServices(_emulator.ServiceProvider, newTool);
 			SetBaseProperties(newTool);
 			// auto settings
@@ -499,7 +505,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_emulator = emulator;
 			_game = game;
-			_apiProvider = ApiManager.Restart(_emulator.ServiceProvider, _owner, GlobalWin.DisplayManager, _inputManager, _config, _emulator, _game);
+			ApiProvider = ApiManager.Restart(_emulator.ServiceProvider, _owner, GlobalWin.DisplayManager, _inputManager, _config, _emulator, _game);
 			// If Cheat tool is loaded, restarting will restart the list too anyway
 			if (!Has<Cheats>())
 			{
@@ -518,7 +524,7 @@ namespace BizHawk.Client.EmuHawk
 					if ((tool.IsHandleCreated && !tool.IsDisposed) || tool is RamWatch) // Hack for RAM Watch - in display watches mode it wants to keep running even closed, it will handle disposed logic
 					{
 						if (tool is IExternalToolForm)
-							ApiInjector.UpdateApis(_apiProvider, tool);
+							ApiInjector.UpdateApis(ApiProvider, tool);
 						tool.Restart();
 					}
 				}

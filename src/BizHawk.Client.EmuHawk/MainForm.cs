@@ -821,11 +821,13 @@ namespace BizHawk.Client.EmuHawk
 			private set
 			{
 				GlobalWin.Emulator = value;
-				if (GlobalWin.ClientApi != null) GlobalWin.ClientApi.Emulator = value; // first call to this setter is in the ctor, before the APIs have been registered by the ToolManager ctor
+				if (EmuClient != null) EmuClient.Emulator = value; // first call to this setter is in the ctor, before the APIs have been registered by the ToolManager ctor
 				_currentVideoProvider = GlobalWin.Emulator.AsVideoProviderOrDefault();
 				_currentSoundProvider = GlobalWin.Emulator.AsSoundProviderOrDefault();
 			}
 		}
+
+		public EmuClientApi EmuClient { get; set; }
 
 		private InputManager InputManager => GlobalWin.InputManager;
 		private OSDManager OSD => GlobalWin.OSD;
@@ -3602,7 +3604,7 @@ namespace BizHawk.Client.EmuHawk
 				var oldGame = GlobalWin.Game;
 				var result = loader.LoadRom(path, nextComm, ioaRetro?.CorePath);
 
-				GlobalWin.ClientApi.Game = GlobalWin.Game = result ? loader.Game : oldGame;
+				EmuClient.Game = GlobalWin.Game = result ? loader.Game : oldGame;
 
 				// we need to replace the path in the OpenAdvanced with the canonical one the user chose.
 				// It can't be done until loader.LoadRom happens (for CanonicalFullPath)
@@ -3762,20 +3764,20 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}
 
-					ClientApi.OnRomLoaded(Emulator);
+					EmuClient.OnRomLoaded(Emulator);
 					return true;
 				}
 				else if (Emulator.IsNull())
 				{
 					// This shows up if there's a problem
-					ClientApi.UpdateEmulatorAndVP(Emulator);
+					EmuClient.UpdateEmulatorAndVP(Emulator);
 					OnRomChanged();
 					return false;
 				}
 				else
 				{
 					// The ROM has been loaded by a recursive invocation of the LoadROM method.
-					ClientApi.OnRomLoaded(Emulator);
+					EmuClient.OnRomLoaded(Emulator);
 					return true;
 				}
 			}
@@ -3863,7 +3865,7 @@ namespace BizHawk.Client.EmuHawk
 			CheatList.SaveOnClose();
 			Emulator.Dispose();
 			Emulator = new NullEmulator();
-			ClientApi.UpdateEmulatorAndVP(Emulator);
+			EmuClient.UpdateEmulatorAndVP(Emulator);
 			InputManager.ActiveController = new Controller(NullController.Instance.Definition);
 			InputManager.AutoFireController = _autofireNullControls;
 			RewireSound();
@@ -3881,7 +3883,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				CloseGame(clearSram);
 				Emulator = new NullEmulator();
-				GlobalWin.ClientApi.Game = GlobalWin.Game = GameInfo.NullInstance;
+				EmuClient.Game = GlobalWin.Game = GameInfo.NullInstance;
 				CreateRewinder();
 				Tools.Restart(Emulator, Game);
 				RewireSound();
@@ -3992,7 +3994,7 @@ namespace BizHawk.Client.EmuHawk
 			if (new SavestateFile(Emulator, MovieSession, GlobalWin.UserBag).Load(path))
 			{
 				OSD.ClearGuiText();
-				ClientApi.OnStateLoaded(this, userFriendlyStateName);
+				EmuClient.OnStateLoaded(this, userFriendlyStateName);
 
 				if (Tools.Has<LuaConsole>())
 				{
@@ -4030,7 +4032,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			ClientApi.OnBeforeQuickLoad(this, quickSlotName, out var handled);
+			EmuClient.OnBeforeQuickLoad(this, quickSlotName, out var handled);
 			if (handled)
 			{
 				return;
@@ -4070,7 +4072,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				new SavestateFile(Emulator, MovieSession, GlobalWin.UserBag).Create(path, Config.Savestates);
 
-				ClientApi.OnStateSaved(this, userFriendlyStateName);
+				EmuClient.OnStateSaved(this, userFriendlyStateName);
 
 				if (!suppressOSD)
 				{
@@ -4096,7 +4098,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			ClientApi.OnBeforeQuickSave(this, quickSlotName, out var handled);
+			EmuClient.OnBeforeQuickSave(this, quickSlotName, out var handled);
 			if (handled)
 			{
 				return;
