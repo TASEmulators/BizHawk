@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 using BizHawk.Client.Common;
@@ -8,6 +9,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public sealed class ToolApi : IToolApi
 	{
+		public IEnumerable<Type> AvailableTools => GlobalWin.Tools.AvailableTools.ToList(); // defensive copy in case ToolManager's implementation changes
+
 		public Type GetTool(string name)
 		{
 			var toolType = Util.GetTypeByName(name).FirstOrDefault(x => typeof(IToolForm).IsAssignableFrom(x) && !x.IsInterface);
