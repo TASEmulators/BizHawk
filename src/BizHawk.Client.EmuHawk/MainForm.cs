@@ -311,7 +311,7 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.Game = GameInfo.NullInstance;
 			_throttle = new Throttle();
 			Emulator = new NullEmulator();
-			GlobalWin.Tools = Tools = new ToolManager(this, Config, InputManager, Emulator, MovieSession, Game);
+			Tools = new ToolManager(this, Config, InputManager, Emulator, MovieSession, Game);
 
 			UpdateStatusSlots();
 			UpdateKeyPriorityIcon();
@@ -847,7 +847,7 @@ namespace BizHawk.Client.EmuHawk
 			set => GlobalWin.Config = base.Config = value;
 		}
 
-		private readonly ToolManager Tools;
+		public readonly ToolManager Tools;
 
 		private DisplayManager DisplayManager => GlobalWin.DisplayManager;
 

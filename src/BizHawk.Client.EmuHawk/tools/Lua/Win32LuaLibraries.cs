@@ -22,7 +22,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public Win32LuaLibraries(
 			IEmulatorServiceProvider serviceProvider,
-			IMainFormForApi mainForm,
+			MainForm mainForm,
 			DisplayManager displayManager,
 			InputManager inputManager,
 			Config config,
@@ -49,7 +49,7 @@ namespace BizHawk.Client.EmuHawk
 
 			LuaWait = new AutoResetEvent(false);
 			Docs.Clear();
-			var apiContainer = ApiManager.RestartLua(serviceProvider, LogToLuaConsole, mainForm, displayManager, inputManager, GlobalWin.Tools, config, emulator, game);
+			var apiContainer = ApiManager.RestartLua(serviceProvider, LogToLuaConsole, mainForm, displayManager, inputManager, mainForm.Tools, config, emulator, game);
 
 			// Register lua libraries
 			foreach (var lib in Client.Common.ReflectionCache.Types.Concat(EmuHawk.ReflectionCache.Types)
@@ -75,7 +75,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else if (instance is ConsoleLuaLibrary consoleLib)
 					{
-						consoleLib.Tools = GlobalWin.Tools;
+						consoleLib.Tools = mainForm.Tools;
 						_logToLuaConsoleCallback = consoleLib.Log;
 					}
 					else if (instance is GuiLuaLibrary guiLib)
@@ -89,7 +89,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else if (instance is TAStudioLuaLibrary tastudioLib)
 					{
-						tastudioLib.Tools = GlobalWin.Tools;
+						tastudioLib.Tools = mainForm.Tools;
 					}
 
 					if (instance is DelegatingLuaLibrary dlgInstance) dlgInstance.APIs = apiContainer;
