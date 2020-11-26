@@ -64,9 +64,8 @@ namespace BizHawk.Client.EmuHawk
 			IEmulator emulator,
 			IGameInfo game)
 		{
-			GlobalWin.ClientApi = null;
 			_container = Register(serviceProvider, Console.WriteLine, mainForm, displayManager, inputManager, config, emulator, game);
-			GlobalWin.ClientApi = _container.EmuClient as EmuClientApi;
+			ClientApi.EmuClient = _container.EmuClient;
 			return new BasicApiProvider(_container);
 		}
 
