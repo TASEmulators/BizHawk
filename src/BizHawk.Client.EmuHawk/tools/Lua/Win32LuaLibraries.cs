@@ -73,6 +73,10 @@ namespace BizHawk.Client.EmuHawk
 					{
 						clientLib.MainForm = mainForm;
 					}
+					else if (instance is ConsoleLuaLibrary consoleLib)
+					{
+						_logToLuaConsoleCallback = consoleLib.Log;
+					}
 					else if (instance is GuiLuaLibrary guiLib)
 					{
 						guiLib.CreateLuaCanvasCallback = (width, height, x, y) =>
@@ -101,7 +105,7 @@ namespace BizHawk.Client.EmuHawk
 		private Lua _lua = new Lua();
 		private Lua _currThread;
 
-		private static readonly Action<object[]> _logToLuaConsoleCallback = ConsoleLuaLibrary.Log;
+		private static Action<object[]> _logToLuaConsoleCallback = a => Console.WriteLine("a Lua lib is logging during init and the console lib hasn't been initialised yet");
 
 		private FormsLuaLibrary FormsLibrary => (FormsLuaLibrary)Libraries[typeof(FormsLuaLibrary)];
 

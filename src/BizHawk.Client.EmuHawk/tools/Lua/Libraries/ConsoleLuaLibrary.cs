@@ -16,7 +16,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodExample("console.clear( );")]
 		[LuaMethod("clear", "clears the output box of the Lua Console window")]
-		public static void Clear()
+		public void Clear()
 		{
 			if (GlobalWin.Tools.Has<LuaConsole>())
 			{
@@ -39,27 +39,27 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodExample("console.log( \"New log.\" );")]
 		[LuaMethod("log", "Outputs the given object to the output box on the Lua Console dialog. Note: Can accept a LuaTable")]
-		public static void Log(params object[] outputs)
+		public void Log(params object[] outputs)
 		{
 			LogWithSeparator("\t", "\n", outputs);
 		}
 
 		[LuaMethodExample("console.writeline( \"New log line.\" );")]
 		[LuaMethod("writeline", "Outputs the given object to the output box on the Lua Console dialog. Note: Can accept a LuaTable")]
-		public static void WriteLine(params object[] outputs)
+		public void WriteLine(params object[] outputs)
 		{
 			LogWithSeparator("\n", "\n", outputs);
 		}
 
 		[LuaMethodExample("console.write( \"New log message.\" );")]
 		[LuaMethod("write", "Outputs the given object to the output box on the Lua Console dialog. Note: Can accept a LuaTable")]
-		public static void Write(params object[] outputs)
+		public void Write(params object[] outputs)
 		{
 			LogWithSeparator("", "", outputs);
 		}
 
 		// Outputs the given object to the output box on the Lua Console dialog. Note: Can accept a LuaTable
-		private static void LogWithSeparator(string separator, string terminator, params object[] outputs)
+		private void LogWithSeparator(string separator, string terminator, params object[] outputs)
 		{
 			static string SerializeTable(LuaTable lti)
 			{
