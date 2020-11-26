@@ -75,6 +75,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else if (instance is ConsoleLuaLibrary consoleLib)
 					{
+						consoleLib.Tools = GlobalWin.Tools;
 						_logToLuaConsoleCallback = consoleLib.Log;
 					}
 					else if (instance is GuiLuaLibrary guiLib)
@@ -85,6 +86,10 @@ namespace BizHawk.Client.EmuHawk
 							canvas.Show();
 							return _lua.TableFromObject(canvas);
 						};
+					}
+					else if (instance is TAStudioLuaLibrary tastudioLib)
+					{
+						tastudioLib.Tools = GlobalWin.Tools;
 					}
 
 					if (instance is DelegatingLuaLibrary dlgInstance) dlgInstance.APIs = apiContainer;

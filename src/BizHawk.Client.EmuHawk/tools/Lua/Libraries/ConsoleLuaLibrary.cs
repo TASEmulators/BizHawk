@@ -9,6 +9,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public sealed class ConsoleLuaLibrary : LuaLibraryBase
 	{
+		public ToolManager Tools { get; set; }
+
 		public ConsoleLuaLibrary(LuaLibraries luaLibsImpl, Lua lua, Action<string> logOutputCallback)
 			: base(luaLibsImpl, lua, logOutputCallback) {}
 
@@ -18,9 +20,9 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod("clear", "clears the output box of the Lua Console window")]
 		public void Clear()
 		{
-			if (GlobalWin.Tools.Has<LuaConsole>())
+			if (Tools.Has<LuaConsole>())
 			{
-				GlobalWin.Tools.LuaConsole.ClearOutputWindow();
+				Tools.LuaConsole.ClearOutputWindow();
 			}
 		}
 
@@ -83,7 +85,7 @@ namespace BizHawk.Client.EmuHawk
 				);
 			}
 
-			if (!GlobalWin.Tools.Has<LuaConsole>())
+			if (!Tools.Has<LuaConsole>())
 			{
 				return;
 			}
@@ -114,7 +116,7 @@ namespace BizHawk.Client.EmuHawk
 				sb.Append(terminator);
 			}
 
-			GlobalWin.Tools.LuaConsole.WriteToOutputWindow(sb.ToString());
+			Tools.LuaConsole.WriteToOutputWindow(sb.ToString());
 		}
 	}
 }

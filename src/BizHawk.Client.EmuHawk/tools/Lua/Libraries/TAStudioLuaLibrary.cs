@@ -16,12 +16,14 @@ namespace BizHawk.Client.EmuHawk
 	[LuaLibrary(released: true)]
 	public sealed class TAStudioLuaLibrary : LuaLibraryBase
 	{
+		public ToolManager Tools { get; set; }
+
 		public TAStudioLuaLibrary(LuaLibraries luaLibsImpl, Lua lua, Action<string> logOutputCallback)
 			: base(luaLibsImpl, lua, logOutputCallback) {}
 
 		public override string Name => "tastudio";
 
-		private TAStudio Tastudio => GlobalWin.Tools.Get<TAStudio>() as TAStudio;
+		private TAStudio Tastudio => Tools.Get<TAStudio>() as TAStudio;
 
 		private struct PendingChanges
 		{
@@ -61,7 +63,7 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod("engaged", "returns whether or not tastudio is currently engaged (active)")]
 		public bool Engaged()
 		{
-			return GlobalWin.Tools.Has<TAStudio>(); // TODO: eventually tastudio should have an engaged flag
+			return Tools.Has<TAStudio>(); // TODO: eventually tastudio should have an engaged flag
 		}
 
 		[LuaMethodExample("if ( tastudio.getrecording( ) ) then\r\n\tconsole.log( \"returns whether or not TAStudio is in recording mode\" );\r\nend;")]
