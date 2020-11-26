@@ -13,8 +13,11 @@ namespace BizHawk.Client.EmuHawk
 	[Description("Represents a canvas object returned by the gui.createcanvas() method")]
 	public partial class LuaCanvas : Form
 	{
-		public LuaCanvas(int width, int height, int? x = null, int? y = null)
+		private readonly Action<string> LogOutputCallback;
+
+		public LuaCanvas(int width, int height, int? x, int? y, Action<string> logOutputCallback)
 		{
+			LogOutputCallback = logOutputCallback;
 			InitializeComponent();
 			luaPictureBox.Image = Properties.Resources.LuaPictureBox;
 			luaPictureBox.Width = width;
@@ -117,7 +120,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception ex)
 			{
-				ConsoleLuaLibrary.Log(ex.Message);
+				LogOutputCallback(ex.Message);
 			}
 		}
 
@@ -134,7 +137,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception ex)
 			{
-				ConsoleLuaLibrary.Log(ex.Message);
+				LogOutputCallback(ex.Message);
 			}
 		}
 
@@ -151,7 +154,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception ex)
 			{
-				ConsoleLuaLibrary.Log(ex.Message);
+				LogOutputCallback(ex.Message);
 			}
 		}
 
@@ -168,7 +171,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception ex)
 			{
-				ConsoleLuaLibrary.Log(ex.Message);
+				LogOutputCallback(ex.Message);
 			}
 		}
 
@@ -181,7 +184,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!File.Exists(path))
 			{
-				ConsoleLuaLibrary.Log($"File not found: {path}\nScript Terminated");
+				LogOutputCallback($"File not found: {path}\nScript Terminated");
 				return;
 			}
 
@@ -207,7 +210,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!File.Exists(path))
 			{
-				ConsoleLuaLibrary.Log($"File not found: {path}\nScript Terminated");
+				LogOutputCallback($"File not found: {path}\nScript Terminated");
 				return;
 			}
 
@@ -276,7 +279,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception ex)
 			{
-				ConsoleLuaLibrary.Log(ex.Message);
+				LogOutputCallback(ex.Message);
 			}
 		}
 
@@ -293,7 +296,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception ex)
 			{
-				ConsoleLuaLibrary.Log(ex.Message);
+				LogOutputCallback(ex.Message);
 			}
 		}
 
