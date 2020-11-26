@@ -340,7 +340,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				GraphicsControl = { MainWindow = true }
 			};
-			GlobalWin.DisplayManager = new DisplayManager(PresentationPanel);
+			GlobalWin.DisplayManager = new DisplayManager(OSD, GlobalWin.GL, GlobalWin.GLManager, PresentationPanel);
 			Controls.Add(PresentationPanel);
 			Controls.SetChildIndex(PresentationPanel, 0);
 
