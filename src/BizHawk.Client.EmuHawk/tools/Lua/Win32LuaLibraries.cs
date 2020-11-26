@@ -49,7 +49,7 @@ namespace BizHawk.Client.EmuHawk
 
 			LuaWait = new AutoResetEvent(false);
 			Docs.Clear();
-			var apiContainer = ApiManager.RestartLua(serviceProvider, ConsoleLuaLibrary.LogOutput, mainForm, displayManager, inputManager, config, emulator, game);
+			var apiContainer = ApiManager.RestartLua(serviceProvider, LogToLuaConsole, mainForm, displayManager, inputManager, config, emulator, game);
 
 			// Register lua libraries
 			foreach (var lib in Client.Common.ReflectionCache.Types.Concat(EmuHawk.ReflectionCache.Types)
@@ -64,7 +64,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (addLibrary)
 				{
-					var instance = (LuaLibraryBase) Activator.CreateInstance(lib, this, _lua, (Action<string>) ConsoleLuaLibrary.LogOutput);
+					var instance = (LuaLibraryBase) Activator.CreateInstance(lib, this, _lua, (Action<string>) LogToLuaConsole);
 					ServiceInjector.UpdateServices(serviceProvider, instance);
 
 					// TODO: make EmuHawk libraries have a base class with common properties such as this
@@ -101,6 +101,8 @@ namespace BizHawk.Client.EmuHawk
 		private Lua _lua = new Lua();
 		private Lua _currThread;
 
+		private static readonly Action<object[]> _logToLuaConsoleCallback = ConsoleLuaLibrary.Log;
+
 		private FormsLuaLibrary FormsLibrary => (FormsLuaLibrary)Libraries[typeof(FormsLuaLibrary)];
 
 		private EventsLuaLibrary EventsLibrary => (EventsLuaLibrary)Libraries[typeof(EventsLuaLibrary)];
@@ -108,6 +110,8 @@ namespace BizHawk.Client.EmuHawk
 		private EmulationLuaLibrary EmulationLuaLibrary => (EmulationLuaLibrary)Libraries[typeof(EmulationLuaLibrary)];
 
 		public override GuiLuaLibrary GuiLibrary => (GuiLuaLibrary) Libraries[typeof(GuiLuaLibrary)];
+
+		private static void LogToLuaConsole(object outputs) => _logToLuaConsoleCallback(new[] { outputs });
 
 		public override void Restart(IEmulatorServiceProvider newServiceProvider)
 		{
@@ -244,7 +248,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public static void Print(params object[] outputs)
 		{
-			ConsoleLuaLibrary.Log(outputs);
+			_logToLuaConsoleCallback(outputs);
 		}
 
 		private void Frameadvance()
