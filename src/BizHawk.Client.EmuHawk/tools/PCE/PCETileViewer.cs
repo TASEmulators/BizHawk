@@ -16,6 +16,9 @@ namespace BizHawk.Client.EmuHawk
 		[RequiredService]
 		public IPceGpuView Viewer { get; private set; }
 
+		[RequiredService]
+		public IEmulator Emulator { get; set; }
+
 		private int _bgPalNum;
 		private int _spPalNum;
 
@@ -200,14 +203,19 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void SaveAsFile(Bitmap bmp, string suffix)
+		{
+			bmp.SaveAsFile(Game, suffix, Emulator.SystemId, Config.PathEntries, this);
+		}
+
 		private void SaveBackgroundScreenshotMenuItem_Click(object sender, EventArgs e)
 		{
-			bmpViewBG.SaveFile();
+			SaveAsFile(bmpViewBG.Bmp, "BG");
 		}
 
 		private void SaveSpriteScreenshotMenuItem_Click(object sender, EventArgs e)
 		{
-			bmpViewSP.SaveFile();
+			SaveAsFile(bmpViewBG.Bmp, "Sprites");
 		}
 	}
 }

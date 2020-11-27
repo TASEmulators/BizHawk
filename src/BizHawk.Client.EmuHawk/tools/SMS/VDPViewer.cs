@@ -15,6 +15,9 @@ namespace BizHawk.Client.EmuHawk
 		[RequiredService]
 		private ISmsGpuView Vdp { get; set; }
 
+		[RequiredService]
+		private IEmulator Emulator { get; set; }
+
 		private int _palIndex;
 
 		protected override string WindowTitleStatic => "VDP Viewer";
@@ -192,19 +195,24 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void SaveAsFile(Bitmap bmp, string suffix)
+		{
+			bmp.SaveAsFile(Game, suffix, Emulator.SystemId, Config.PathEntries, this);
+		}
+
 		private void saveTilesScreenshotToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			bmpViewTiles.SaveFile();
+			SaveAsFile(bmpViewTiles.Bmp, "Tiles");
 		}
 
 		private void SavePalettesScreenshotMenuItem_Click(object sender, EventArgs e)
 		{
-			bmpViewPalette.SaveFile();
+			SaveAsFile(bmpViewPalette.Bmp, "Palette");
 		}
 
 		private void SaveBgScreenshotMenuItem_Click(object sender, EventArgs e)
 		{
-			bmpViewBG.SaveFile();
+			SaveAsFile(bmpViewBG.Bmp, "BG");
 		}
 	}
 }

@@ -21,6 +21,9 @@ namespace BizHawk.Client.EmuHawk
 		[RequiredService]
 		public IGameboyCommon Gb { get; private set; }
 
+		[RequiredService]
+		public IEmulator Emulator { get; set; }
+
 		// If we've connected the printer yet
 		private bool _connected;
 
@@ -183,7 +186,8 @@ namespace BizHawk.Client.EmuHawk
 				g.DrawImage(_printerHistory, Point.Empty);
 				g.Flush();
 			}
-			toSave.SaveFile();
+
+			toSave.Bmp.SaveAsFile(Game, "Print", Emulator.SystemId, Config.PathEntries, this);
 		}
 
 		private void copyToolStripMenuItem_Click(object sender, EventArgs e)

@@ -96,10 +96,5 @@ namespace BizHawk.Client.EmuHawk
 			Bmp.UnlockBits(lockBits);
 			Refresh();
 		}
-
-		public void SaveFile()
-		{
-			Bmp.SaveAsFile(GlobalWin.Game, "Palettes", GlobalWin.Emulator.SystemId, GlobalWin.Config.PathEntries, this);
-		}
 	}
 }
