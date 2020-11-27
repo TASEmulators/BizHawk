@@ -148,7 +148,7 @@ namespace BizHawk.Client.EmuHawk
 			GeneralUpdate();
 		}
 
-		private void bmpViewPal_MouseClick(object sender, MouseEventArgs e)
+		private void BmpViewPal_MouseClick(object sender, MouseEventArgs e)
 		{
 			int idx = e.Y / 16;
 			idx = Math.Min(3, Math.Max(idx, 0));

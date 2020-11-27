@@ -31,7 +31,7 @@ namespace BizHawk.Client.EmuHawk
 		private const int BaseSampleRateMaxHistoryLength = 300;
 		private const int MinResamplingDistanceSamples = 3;
 
-		private Queue<short> _buffer = new Queue<short>();
+		private readonly Queue<short> _buffer = new Queue<short>();
 		private readonly bool _standaloneMode;
 		private readonly int _targetExtraSamples;
 		private int _maxSamplesDeficit;

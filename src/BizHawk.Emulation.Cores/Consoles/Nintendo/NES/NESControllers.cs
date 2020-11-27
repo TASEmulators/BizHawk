@@ -52,16 +52,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// </summary>
 		public readonly int OUT2old;
 
-		/// <param name="oldvalue">the old latched $4016 byte</param>
-		/// <param name="newvalue">the new latched $4016 byte</param>
-		public StrobeInfo(byte oldvalue, byte newvalue)
+		/// <param name="oldValue">the old latched $4016 byte</param>
+		/// <param name="newValue">the new latched $4016 byte</param>
+		public StrobeInfo(byte oldValue, byte newValue)
 		{
-			OUT0old = oldvalue & 1;
-			OUT1old = oldvalue >> 1 & 1;
-			OUT2old = oldvalue >> 2 & 1;
-			OUT0 = newvalue & 1;
-			OUT1 = newvalue >> 1 & 1;
-			OUT2 = newvalue >> 2 & 1;
+			OUT0old = oldValue & 1;
+			OUT1old = oldValue >> 1 & 1;
+			OUT2old = oldValue >> 2 & 1;
+			OUT0 = newValue & 1;
+			OUT1 = newValue >> 1 & 1;
+			OUT2 = newValue >> 2 & 1;
 		}
 	}
 
@@ -124,61 +124,61 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	/// </summary>
 	public class NesDeck : IControllerDeck
 	{
-		INesPort Left;
-		INesPort Right;
-		ControlDefUnMerger LeftU;
-		ControlDefUnMerger RightU;
-		ControllerDefinition Definition;
+		private readonly INesPort _left;
+		private readonly INesPort _right;
+		private readonly ControlDefUnMerger _leftU;
+		private readonly ControlDefUnMerger _rightU;
+		private readonly ControllerDefinition _definition;
 
-		public NesDeck(INesPort Left, INesPort Right, LightgunDelegate PPUCallback)
+		public NesDeck(INesPort left, INesPort right, LightgunDelegate ppuCallback)
 		{
-			this.Left = Left;
-			this.Right = Right;
-			Definition = ControllerDefinitionMerger.GetMerged(new[] { Left.GetDefinition(), Right.GetDefinition() }, out var cdum);
-			LeftU = cdum[0];
-			RightU = cdum[1];
+			_left = left;
+			_right = right;
+			_definition = ControllerDefinitionMerger.GetMerged(new[] { left.GetDefinition(), right.GetDefinition() }, out var cdum);
+			_leftU = cdum[0];
+			_rightU = cdum[1];
 
 			// apply hacks
 			// if this list gets very long, then something should be changed
 			// if it stays short, then no problem
-			if (Left is FourScore)
-				(Left as FourScore).RightPort = false;
-			if (Right is FourScore)
-				(Right as FourScore).RightPort = true;
-			if (Left is IZapper)
-				(Left as IZapper).PPUCallback = PPUCallback;
-			if (Right is IZapper)
-				(Right as IZapper).PPUCallback = PPUCallback;
+			if (left is FourScore leftScore)
+				leftScore.RightPort = false;
+			if (right is FourScore rightScore)
+				rightScore.RightPort = true;
+			if (left is IZapper leftZapper)
+				leftZapper.PPUCallback = ppuCallback;
+			if (right is IZapper rightZapper)
+				rightZapper.PPUCallback = ppuCallback;
 		}
 
 		public void Strobe(StrobeInfo s, IController c)
 		{
-			Left.Strobe(s, LeftU.UnMerge(c));
-			Right.Strobe(s, RightU.UnMerge(c));
+			_left.Strobe(s, _leftU.UnMerge(c));
+			_right.Strobe(s, _rightU.UnMerge(c));
 		}
 
 		public byte ReadA(IController c)
 		{
-			return (byte)(Left.Read(LeftU.UnMerge(c)) & 0x19);
+			return (byte)(_left.Read(_leftU.UnMerge(c)) & 0x19);
 		}
 
 		public byte ReadB(IController c)
 		{
-			return (byte)(Right.Read(RightU.UnMerge(c)) & 0x19);
+			return (byte)(_right.Read(_rightU.UnMerge(c)) & 0x19);
 		}
 
 		public ControllerDefinition GetDefinition()
 		{
-			return Definition;
+			return _definition;
 		}
 
 		public void SyncState(Serializer ser)
 		{
-			ser.BeginSection(nameof(Left));
-			Left.SyncState(ser);
+			ser.BeginSection(nameof(_left));
+			_left.SyncState(ser);
 			ser.EndSection();
-			ser.BeginSection(nameof(Right));
-			Right.SyncState(ser);
+			ser.BeginSection(nameof(_right));
+			_right.SyncState(ser);
 			ser.EndSection();
 		}
 	}
@@ -209,34 +209,35 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	/// </summary>
 	public class ControllerNES : INesPort
 	{
-		bool resetting = false;
-		int latchedvalue = 0;
+		private bool _resetting;
+		private int _latchedValue;
 
-		static string[] Buttons =
+		private static readonly string[] Buttons =
 		{
 			"0A", "0B", "0Select", "0Start", "0Up", "0Down", "0Left", "0Right"
 		};
-		static string[] FamicomP2Buttons =
+
+		private static readonly string[] FamicomP2Buttons =
 		{
 			"0A", "0B", null, null, "0Up", "0Down", "0Left", "0Right"
 		};
 
-		bool FamicomP2Hack;
+		private readonly bool _famicomP2Hack;
 
-		ControllerDefinition Definition;
+		private readonly ControllerDefinition _definition;
 
 		public ControllerNES()
 		{
-			Definition = new ControllerDefinition
+			_definition = new ControllerDefinition
 			{
 				BoolButtons = Buttons
-					.OrderBy(x => ButtonOrdinals[x])
+					.OrderBy(x => _buttonOrdinals[x])
 					.ToList()
 			};
 		}
 
 
-		Dictionary<string, int> ButtonOrdinals = new Dictionary<string, int>
+		private readonly Dictionary<string, int> _buttonOrdinals = new Dictionary<string, int>
 		{
 			{ "0Up", 1 },
 			{ "0Down", 2 },
@@ -252,63 +253,63 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			if (famicomP2)
 			{
-				Definition = new ControllerDefinition
+				_definition = new ControllerDefinition
 				{
 					BoolButtons = FamicomP2Buttons
 					.Where((s) => s != null)
-					.OrderBy(x => ButtonOrdinals[x])
+					.OrderBy(x => _buttonOrdinals[x])
 					.ToList()
 				};
 			}
 			else
 			{
-				Definition = new ControllerDefinition
+				_definition = new ControllerDefinition
 				{
 					BoolButtons = Buttons
-					.OrderBy(x => ButtonOrdinals[x])
+					.OrderBy(x => _buttonOrdinals[x])
 					.ToList()
 				};
 			}
 
-			FamicomP2Hack = famicomP2;
+			_famicomP2Hack = famicomP2;
 		}
 
 		// reset is not edge triggered; so long as it's high, the latch is continuously reloading
 		// so we need to latch in two places:
 		// 1. when OUT0 goes low, to get the last set
-		// 2. wheneven reading with OUT0 high, since new data for controller is always loading
+		// 2. when even reading with OUT0 high, since new data for controller is always loading
 
-		void Latch(IController c)
+		private void Latch(IController c)
 		{
-			latchedvalue = SerialUtil.Latch(FamicomP2Hack ? FamicomP2Buttons : Buttons, c);
+			_latchedValue = SerialUtil.Latch(_famicomP2Hack ? FamicomP2Buttons : Buttons, c);
 		}
 
 		public void Strobe(StrobeInfo s, IController c)
 		{
-			resetting = s.OUT0 != 0;
+			_resetting = s.OUT0 != 0;
 			if (s.OUT0 < s.OUT0old)
 				Latch(c);
 		}
 
 		public byte Read(IController c)
 		{
-			if (resetting)
+			if (_resetting)
 				Latch(c);
-			byte ret = (byte)(latchedvalue & 1);
-			if (!resetting)
-				latchedvalue >>= 1; // ASR not LSR, so endless stream of 1s after data
+			byte ret = (byte)(_latchedValue & 1);
+			if (!_resetting)
+				_latchedValue >>= 1; // ASR not LSR, so endless stream of 1s after data
 			return ret;
 		}
 
 		public ControllerDefinition GetDefinition()
 		{
-			return Definition;
+			return _definition;
 		}
 
 		public void SyncState(Serializer ser)
 		{
-			ser.Sync(nameof(resetting), ref resetting);
-			ser.Sync(nameof(latchedvalue), ref latchedvalue);
+			ser.Sync(nameof(_resetting), ref _resetting);
+			ser.Sync(nameof(_latchedValue), ref _latchedValue);
 		}
 	}
 
@@ -317,20 +318,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	/// </summary>
 	public class ControllerSNES : INesPort
 	{
-		bool resetting = false;
-		int latchedvalue = 0;
+		private bool _resetting;
+		private int _latchedValue;
 
-		static readonly string[] Buttons =
+		private static readonly string[] Buttons =
 		{
 			"0B", "0Y", "0Select", "0Start", "0Up", "0Down", "0Left", "0Right",
 			"0A", "0X", "0L", "0R", null, null, null, null // 4 0s at end
 		};
 
-		ControllerDefinition Definition;
+		private readonly ControllerDefinition _definition;
 
 		public ControllerSNES()
 		{
-			Definition = new ControllerDefinition
+			_definition = new ControllerDefinition
 			{
 				BoolButtons = Buttons.Where(s => s != null).ToList()
 			};
@@ -339,39 +340,39 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		// reset is not edge triggered; so long as it's high, the latch is continuously reloading
 		// so we need to latch in two places:
 		// 1. when OUT0 goes low, to get the last set
-		// 2. wheneven reading with OUT0 high, since new data for controller is always loading
+		// 2. when even reading with OUT0 high, since new data for controller is always loading
 
-		void Latch(IController c)
+		private void Latch(IController c)
 		{
-			latchedvalue = SerialUtil.Latch(Buttons, c);
+			_latchedValue = SerialUtil.Latch(Buttons, c);
 		}
 
 		public void Strobe(StrobeInfo s, IController c)
 		{
-			resetting = s.OUT0 != 0;
+			_resetting = s.OUT0 != 0;
 			if (s.OUT0 < s.OUT0old)
 				Latch(c);
 		}
 
 		public byte Read(IController c)
 		{
-			if (resetting)
+			if (_resetting)
 				Latch(c);
-			byte ret = (byte)(latchedvalue & 1);
-			if (!resetting)
-				latchedvalue >>= 1; // ASR not LSR, so endless stream of 1s after data
+			byte ret = (byte)(_latchedValue & 1);
+			if (!_resetting)
+				_latchedValue >>= 1; // ASR not LSR, so endless stream of 1s after data
 			return ret;
 		}
 
 		public ControllerDefinition GetDefinition()
 		{
-			return Definition;
+			return _definition;
 		}
 
 		public void SyncState(Serializer ser)
 		{
-			ser.Sync(nameof(resetting), ref resetting);
-			ser.Sync(nameof(latchedvalue), ref latchedvalue);
+			ser.Sync(nameof(_resetting), ref _resetting);
+			ser.Sync(nameof(_latchedValue), ref _latchedValue);
 		}
 	}
 
@@ -380,9 +381,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	/// </summary>
 	public class ArkanoidNES : INesPort
 	{
-		int shiftidx = 0;
-		bool resetting = false;
-		byte latchedvalue = 0x54 ^ 0xff;
+		private int _shiftidx;
+		private bool _resetting;
+		private byte _latchedValue = 0x54 ^ 0xff;
 
 		private static readonly ControllerDefinition Definition
 			= new ControllerDefinition { BoolButtons = { "0Fire" } }
@@ -390,26 +391,26 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public void Strobe(StrobeInfo s, IController c)
 		{
-			resetting = s.OUT0 != 0;
-			if (resetting)
-				shiftidx = 0;
+			_resetting = s.OUT0 != 0;
+			if (_resetting)
+				_shiftidx = 0;
 			if (s.OUT0 > s.OUT0old)
 			{
-				latchedvalue = (byte)(0x54 + (int)c.AxisValue("0Paddle"));
-				latchedvalue ^= 0xff;
+				_latchedValue = (byte)(0x54 + c.AxisValue("0Paddle"));
+				_latchedValue ^= 0xff;
 			}
 		}
 
 		public byte Read(IController c)
 		{
 			byte ret = c.IsPressed("0Fire") ? (byte)0x08 : (byte)0x00;
-			if (resetting)
+			if (_resetting)
 				return ret;
 
-			byte value = latchedvalue;
-			value <<= shiftidx;
+			byte value = _latchedValue;
+			value <<= _shiftidx;
 			ret |= (byte)(value >> 3 & 0x10);
-			shiftidx++;
+			_shiftidx++;
 			return ret;
 		}
 
@@ -420,9 +421,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public void SyncState(Serializer ser)
 		{
-			ser.Sync(nameof(shiftidx), ref shiftidx);
-			ser.Sync(nameof(resetting), ref resetting);
-			ser.Sync(nameof(latchedvalue), ref latchedvalue);
+			ser.Sync(nameof(_shiftidx), ref _shiftidx);
+			ser.Sync(nameof(_resetting), ref _resetting);
+			ser.Sync(nameof(_latchedValue), ref _latchedValue);
 		}
 	}
 
@@ -431,43 +432,44 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		// fourscore is actually one two port thing
 		// we emulate it as two separate halves
 		// each one behaves slightly differently
-		public bool RightPort = false;
+		public bool RightPort;
 
-		static string[] Buttons =
+		private static readonly string[] Buttons =
 		{
 			"0A", "0B", "0Select", "0Start", "0Up", "0Down", "0Left", "0Right",
 			"1A", "1B", "1Select", "1Start", "1Up", "1Down", "1Left", "1Right",
 		};
-		static ControllerDefinition Definition = new ControllerDefinition { BoolButtons = new List<string>(Buttons) };
 
-		bool resetting = false;
-		int latchedvalue = 0;
+		private static readonly ControllerDefinition Definition = new ControllerDefinition { BoolButtons = new List<string>(Buttons) };
 
-		void Latch(IController c)
+		private bool _resetting;
+		private int _latchedValue;
+
+		private void Latch(IController c)
 		{
-			latchedvalue = SerialUtil.Latch(Buttons, c);
+			_latchedValue = SerialUtil.Latch(Buttons, c);
 			// set signatures
-			latchedvalue &= ~0xff0000;
+			_latchedValue &= ~0xff0000;
 			if (RightPort) // signatures
-				latchedvalue |= 0x040000;
+				_latchedValue |= 0x040000;
 			else
-				latchedvalue |= 0x080000;
+				_latchedValue |= 0x080000;
 		}
 
 		public void Strobe(StrobeInfo s, IController c)
 		{
-			resetting = s.OUT0 != 0;
+			_resetting = s.OUT0 != 0;
 			if (s.OUT0 < s.OUT0old)
 				Latch(c);
 		}
 
 		public byte Read(IController c)
 		{
-			if (resetting)
+			if (_resetting)
 				Latch(c);
-			byte ret = (byte)(latchedvalue & 1);
-			if (!resetting)
-				latchedvalue >>= 1; // ASR not LSR, so endless stream of 1s after data
+			byte ret = (byte)(_latchedValue & 1);
+			if (!_resetting)
+				_latchedValue >>= 1; // ASR not LSR, so endless stream of 1s after data
 			return ret;
 		}
 
@@ -478,44 +480,44 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public void SyncState(Serializer ser)
 		{
-			ser.Sync(nameof(resetting), ref resetting);
-			ser.Sync(nameof(latchedvalue), ref latchedvalue);
+			ser.Sync(nameof(_resetting), ref _resetting);
+			ser.Sync(nameof(_latchedValue), ref _latchedValue);
 		}
 	}
 
 	public class PowerPad : INesPort
 	{
-		static string[] D3Buttons = { "0PP2", "0PP1", "0PP5", "0PP9", "0PP6", "0PP10", "0PP11", "0PP7" };
-		static string[] D4Buttons = { "0PP4", "0PP3", "0PP12", "0PP8" };
-		static ControllerDefinition Definition = new ControllerDefinition { BoolButtons = new List<string>(D3Buttons.Concat(D4Buttons)) };
+		private static readonly string[] D3Buttons = { "0PP2", "0PP1", "0PP5", "0PP9", "0PP6", "0PP10", "0PP11", "0PP7" };
+		private static readonly string[] D4Buttons = { "0PP4", "0PP3", "0PP12", "0PP8" };
+		private static readonly ControllerDefinition Definition = new ControllerDefinition { BoolButtons = new List<string>(D3Buttons.Concat(D4Buttons)) };
 
-		bool resetting = false;
-		int latched3 = 0;
-		int latched4 = 0;
+		private bool _resetting;
+		private int _latched3;
+		private int _latched4;
 
-		void Latch(IController c)
+		private void Latch(IController c)
 		{
-			latched3 = SerialUtil.Latch(D3Buttons, c);
-			latched4 = SerialUtil.Latch(D4Buttons, c);
+			_latched3 = SerialUtil.Latch(D3Buttons, c);
+			_latched4 = SerialUtil.Latch(D4Buttons, c);
 		}
 
 		public void Strobe(StrobeInfo s, IController c)
 		{
-			resetting = s.OUT0 != 0;
+			_resetting = s.OUT0 != 0;
 			if (s.OUT0 < s.OUT0old)
 				Latch(c);
 		}
 
 		public byte Read(IController c)
 		{
-			if (resetting)
+			if (_resetting)
 				Latch(c);
-			int d3 = latched3 & 1;
-			int d4 = latched4 & 1;
-			if (!resetting)
+			int d3 = _latched3 & 1;
+			int d4 = _latched4 & 1;
+			if (!_resetting)
 			{
-				latched3 >>= 1; // ASR not LSR, so endless stream of 1s after data
-				latched4 >>= 1;
+				_latched3 >>= 1; // ASR not LSR, so endless stream of 1s after data
+				_latched4 >>= 1;
 			}
 			return (byte)(d3 << 3 | d4 << 4);
 		}
@@ -527,9 +529,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public void SyncState(Serializer ser)
 		{
-			ser.Sync(nameof(resetting), ref resetting);
-			ser.Sync(nameof(latched3), ref latched3);
-			ser.Sync(nameof(latched4), ref latched4);
+			ser.Sync(nameof(_resetting), ref _resetting);
+			ser.Sync(nameof(_latched3), ref _latched3);
+			ser.Sync(nameof(_latched4), ref _latched4);
 		}
 	}
 
@@ -565,7 +567,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			byte ret = 0;
 			if (c.IsPressed("0Fire"))
 				ret |= 0x10;
-			if (!PPUCallback((int)c.AxisValue("0Zapper X"), (int)c.AxisValue("0Zapper Y")))
+			if (!PPUCallback(c.AxisValue("0Zapper X"), c.AxisValue("0Zapper Y")))
 				ret |= 0x08;
 			return ret;
 		}
@@ -598,28 +600,28 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// </summary>
 		public LightgunDelegate PPUCallback { get; set; }
 
-		bool resetting = false;
-		uint latchedvalue = 0;
+		private bool _resetting;
+		private uint _latchedValue;
 
 		private static readonly ControllerDefinition Definition
 			= new ControllerDefinition { BoolButtons = { "0Fire" } }.AddZapper("0Zapper {0}");
 
-		void Latch(IController c)
+		private void Latch(IController c)
 		{
 			byte ret = 0;
 			if (c.IsPressed("0Fire"))
 				ret |= 0x80;
-			if (PPUCallback((int)c.AxisValue("0Zapper X"), (int)c.AxisValue("0Zapper Y")))
+			if (PPUCallback(c.AxisValue("0Zapper X"), c.AxisValue("0Zapper Y")))
 				ret |= 0x40;
 
 			ret |= 0x10; // always 1
-			latchedvalue = ret;
-			latchedvalue |= 0xFFFFFF00;
+			_latchedValue = ret;
+			_latchedValue |= 0xFFFFFF00;
 		}
 
 		public void Strobe(StrobeInfo s, IController c)
 		{
-			resetting = s.OUT0 != 0;
+			_resetting = s.OUT0 != 0;
 			if (s.OUT0 < s.OUT0old)
 				Latch(c);
 		}
@@ -627,11 +629,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		// NES controller port interface
 		public byte Read(IController c)
 		{
-			if (resetting)
+			if (_resetting)
 				Latch(c);
-			byte ret = (byte)(latchedvalue & 1);
-			if (!resetting)
-				latchedvalue >>= 1; // ASR not LSR, so endless stream of 1s after data
+			byte ret = (byte)(_latchedValue & 1);
+			if (!_resetting)
+				_latchedValue >>= 1; // ASR not LSR, so endless stream of 1s after data
 			return ret;
 		}
 
@@ -642,8 +644,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public void SyncState(Serializer ser)
 		{
-			ser.Sync(nameof(resetting), ref resetting);
-			ser.Sync(nameof(latchedvalue), ref latchedvalue);
+			ser.Sync(nameof(_resetting), ref _resetting);
+			ser.Sync(nameof(_latchedValue), ref _latchedValue);
 		}
 
 		// famicom expansion hookups
@@ -661,43 +663,43 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	public class FamicomDeck : IControllerDeck
 	{
 		// two NES controllers are maintained internally
-		INesPort Player1 = new ControllerNES(false);
-		INesPort Player2 = new ControllerNES(true);
-		IFamicomExpansion Player3;
+		private readonly INesPort _player1 = new ControllerNES(false);
+		private readonly INesPort _player2 = new ControllerNES(true);
+		private readonly IFamicomExpansion _player3;
 
-		ControlDefUnMerger Player1U;
-		ControlDefUnMerger Player2U;
-		ControlDefUnMerger Player3U;
+		private readonly ControlDefUnMerger _player1U;
+		private readonly ControlDefUnMerger _player2U;
+		private readonly ControlDefUnMerger _player3U;
 
-		ControllerDefinition Definition;
+		private readonly ControllerDefinition _definition;
 
-		public FamicomDeck(IFamicomExpansion ExpSlot, LightgunDelegate PPUCallback)
+		public FamicomDeck(IFamicomExpansion expSlot, LightgunDelegate ppuCallback)
 		{
-			Player3 = ExpSlot;
-			Definition = ControllerDefinitionMerger.GetMerged(
-				new[] { Player1.GetDefinition(), Player2.GetDefinition(), Player3.GetDefinition() }, out var cdum);
-			Definition.BoolButtons.Add("P2 Microphone");
-			Player1U = cdum[0];
-			Player2U = cdum[1];
-			Player3U = cdum[2];
+			_player3 = expSlot;
+			_definition = ControllerDefinitionMerger.GetMerged(
+				new[] { _player1.GetDefinition(), _player2.GetDefinition(), _player3.GetDefinition() }, out var cdum);
+			_definition.BoolButtons.Add("P2 Microphone");
+			_player1U = cdum[0];
+			_player2U = cdum[1];
+			_player3U = cdum[2];
 
 			// hack
-			if (Player3 is Zapper)
-				(Player3 as Zapper).PPUCallback = PPUCallback;
+			if (_player3 is Zapper zapper)
+				zapper.PPUCallback = ppuCallback;
 		}
 
 		public void Strobe(StrobeInfo s, IController c)
 		{
-			Player1.Strobe(s, Player1U.UnMerge(c));
-			Player2.Strobe(s, Player2U.UnMerge(c));
-			Player3.Strobe(s, Player3U.UnMerge(c));
+			_player1.Strobe(s, _player1U.UnMerge(c));
+			_player2.Strobe(s, _player2U.UnMerge(c));
+			_player3.Strobe(s, _player3U.UnMerge(c));
 		}
 
 		public byte ReadA(IController c)
 		{
 			byte ret = 0;
-			ret |= (byte)(Player1.Read(Player1U.UnMerge(c)) & 1);
-			ret |= (byte)(Player3.ReadA(Player3U.UnMerge(c)) & 2);
+			ret |= (byte)(_player1.Read(_player1U.UnMerge(c)) & 1);
+			ret |= (byte)(_player3.ReadA(_player3U.UnMerge(c)) & 2);
 			if (c.IsPressed("P2 Microphone"))
 				ret |= 4;
 			return ret;
@@ -706,26 +708,26 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public byte ReadB(IController c)
 		{
 			byte ret = 0;
-			ret |= (byte)(Player2.Read(Player2U.UnMerge(c)) & 1);
-			ret |= (byte)(Player3.ReadB(Player3U.UnMerge(c)) & 30);
+			ret |= (byte)(_player2.Read(_player2U.UnMerge(c)) & 1);
+			ret |= (byte)(_player3.ReadB(_player3U.UnMerge(c)) & 30);
 			return ret;
 		}
 
 		public ControllerDefinition GetDefinition()
 		{
-			return Definition;
+			return _definition;
 		}
 
 		public void SyncState(Serializer ser)
 		{
 			ser.BeginSection("Left");
-			Player1.SyncState(ser);
+			_player1.SyncState(ser);
 			ser.EndSection();
 			ser.BeginSection("Right");
-			Player2.SyncState(ser);
+			_player2.SyncState(ser);
 			ser.EndSection();
 			ser.BeginSection("Expansion");
-			Player3.SyncState(ser);
+			_player3.SyncState(ser);
 			ser.EndSection();
 		}
 	}
@@ -735,9 +737,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	/// </summary>
 	public class ArkanoidFam : IFamicomExpansion
 	{
-		int shiftidx = 0;
-		bool resetting = false;
-		byte latchedvalue = 0x54 ^ 0xff;
+		private int _shiftidx;
+		private bool _resetting;
+		private byte _latchedValue = 0x54 ^ 0xff;
 
 		private static readonly ControllerDefinition Definition
 			= new ControllerDefinition { BoolButtons = { "0Fire" } }
@@ -745,13 +747,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public void Strobe(StrobeInfo s, IController c)
 		{
-			resetting = s.OUT0 != 0;
-			if (resetting)
-				shiftidx = 0;
+			_resetting = s.OUT0 != 0;
+			if (_resetting)
+				_shiftidx = 0;
 			if (s.OUT0 > s.OUT0old)
 			{
-				latchedvalue = (byte)(0x54 + (int)c.AxisValue("0Paddle"));
-				latchedvalue ^= 0xff;
+				_latchedValue = (byte)(0x54 + c.AxisValue("0Paddle"));
+				_latchedValue ^= 0xff;
 			}
 		}
 
@@ -763,13 +765,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public byte ReadB(IController c)
 		{
 			byte ret = 0;
-			if (resetting)
+			if (_resetting)
 				return ret;
 
-			byte value = latchedvalue;
-			value <<= shiftidx;
+			byte value = _latchedValue;
+			value <<= _shiftidx;
 			ret |= (byte)(value >> 6 & 0x02);
-			shiftidx++;
+			_shiftidx++;
 			return ret;
 		}
 
@@ -780,15 +782,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public void SyncState(Serializer ser)
 		{
-			ser.Sync(nameof(shiftidx), ref shiftidx);
-			ser.Sync(nameof(resetting), ref resetting);
-			ser.Sync(nameof(latchedvalue), ref latchedvalue);
+			ser.Sync(nameof(_shiftidx), ref _shiftidx);
+			ser.Sync(nameof(_resetting), ref _resetting);
+			ser.Sync(nameof(_latchedValue), ref _latchedValue);
 		}
 	}
 
 	public class FamilyBasicKeyboard : IFamicomExpansion
 	{
-		static string[] Buttons =
+		private static readonly string[] Buttons =
 		{
 			"0]",
 			"0[",
@@ -873,24 +875,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		};
 
-		static ControllerDefinition Definition = new ControllerDefinition { BoolButtons = new List<string>(Buttons) };
+		private static readonly ControllerDefinition Definition = new ControllerDefinition { BoolButtons = new List<string>(Buttons) };
 
-		bool active;
-		int column;
-		int row;
+		private bool _active;
+		private int _column;
+		private int _row;
 
 		public void Strobe(StrobeInfo s, IController c)
 		{
-			active = s.OUT2 != 0;
-			column = s.OUT1;
+			_active = s.OUT2 != 0;
+			_column = s.OUT1;
 			if (s.OUT1 < s.OUT1old)
 			{
-				row++;
-				if (row == 10)
-					row = 0;
+				_row++;
+				if (_row == 10)
+					_row = 0;
 			}
 			if (s.OUT0 != 0)
-				row = 0;
+				_row = 0;
 		}
 
 		public byte ReadA(IController c)
@@ -900,11 +902,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public byte ReadB(IController c)
 		{
-			if (!active)
+			if (!_active)
 				return 0;
-			if (row == 9) // empty last row
+			if (_row == 9) // empty last row
 				return 0;
-			int idx = row * 8 + column * 4;
+			int idx = _row * 8 + _column * 4;
 
 			byte ret = 0x1E;
 
@@ -924,58 +926,60 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public void SyncState(Serializer ser)
 		{
-			ser.Sync(nameof(active), ref active);
-			ser.Sync(nameof(column), ref column);
-			ser.Sync(nameof(row), ref row);
+			ser.Sync(nameof(_active), ref _active);
+			ser.Sync(nameof(_column), ref _column);
+			ser.Sync(nameof(_row), ref _row);
 		}
 	}
 
 	public class Famicom4P : IFamicomExpansion
 	{
-		static string[] P1Buttons =
+		private static readonly string[] P1Buttons =
 		{
 			"0A", "0B", "0Select", "0Start", "0Up", "0Down", "0Left", "0Right"
 		};
-		static string[] P2Buttons =
+
+		private static readonly string[] P2Buttons =
 		{
 			"1A", "1B", "1Select", "1Start", "1Up", "1Down", "1Left", "1Right",
 		};
-		static ControllerDefinition Definition = new ControllerDefinition { BoolButtons = new List<string>(P1Buttons.Concat(P2Buttons)) };
 
-		bool resetting = false;
-		int latchedp1 = 0;
-		int latchedp2 = 0;
+		private static readonly ControllerDefinition Definition = new ControllerDefinition { BoolButtons = new List<string>(P1Buttons.Concat(P2Buttons)) };
 
-		void Latch(IController c)
+		private bool _resetting;
+		private int _latchedP1;
+		private int _latchedP2;
+
+		private void Latch(IController c)
 		{
-			latchedp1 = SerialUtil.Latch(P1Buttons, c);
-			latchedp2 = SerialUtil.Latch(P2Buttons, c);
+			_latchedP1 = SerialUtil.Latch(P1Buttons, c);
+			_latchedP2 = SerialUtil.Latch(P2Buttons, c);
 		}
 
 		public void Strobe(StrobeInfo s, IController c)
 		{
-			resetting = s.OUT0 != 0;
+			_resetting = s.OUT0 != 0;
 			if (s.OUT0 < s.OUT0old)
 				Latch(c);
 		}
 
 		public byte ReadA(IController c)
 		{
-			if (resetting)
+			if (_resetting)
 				Latch(c);
-			byte ret = (byte)(latchedp1 << 1 & 2);
-			if (!resetting)
-				latchedp1 >>= 1;
+			byte ret = (byte)(_latchedP1 << 1 & 2);
+			if (!_resetting)
+				_latchedP1 >>= 1;
 			return ret;
 		}
 
 		public byte ReadB(IController c)
 		{
-			if (resetting)
+			if (_resetting)
 				Latch(c);
-			byte ret = (byte)(latchedp2 << 1 & 2);
-			if (!resetting)
-				latchedp2 >>= 1;
+			byte ret = (byte)(_latchedP2 << 1 & 2);
+			if (!_resetting)
+				_latchedP2 >>= 1;
 			return ret;
 		}
 
@@ -986,9 +990,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public void SyncState(Serializer ser)
 		{
-			ser.Sync(nameof(resetting), ref resetting);
-			ser.Sync(nameof(latchedp1), ref latchedp1);
-			ser.Sync(nameof(latchedp2), ref latchedp2);
+			ser.Sync(nameof(_resetting), ref _resetting);
+			ser.Sync(nameof(_latchedP1), ref _latchedP1);
+			ser.Sync(nameof(_latchedP2), ref _latchedP2);
 		}
 	}
 
@@ -998,17 +1002,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			= new ControllerDefinition { BoolButtons = { "0Click", "0Touch" } }
 				.AddZapper("0Pen {0}"); // why would a tablet have the same resolution as a CRT monitor? --yoshi
 
-		bool resetting;
-		int shiftidx;
-		int latchedvalue = 0;
+		private bool _resetting;
+		private int _shiftidx;
+		private int _latchedValue;
 
 		public void Strobe(StrobeInfo s, IController c)
 		{
-			resetting = s.OUT0 == 0;
+			_resetting = s.OUT0 == 0;
 			if (s.OUT0 < s.OUT0old) // H->L: latch
 			{
-				int x = (int)c.AxisValue("0Pen X");
-				int y = (int)c.AxisValue("0Pen Y");
+				int x = c.AxisValue("0Pen X");
+				int y = c.AxisValue("0Pen Y");
 				// http://forums.nesdev.com/viewtopic.php?p=19454#19454
 				// it almost feels like the hardware guys got the request for 
 				// a tablet that returned x in [0, 255] and y in [0, 239] and then
@@ -1017,16 +1021,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				y = (y - 14) * 256 / 240;
 				x &= 255;
 				y &= 255;
-				latchedvalue = x << 10 | y << 2;
+				_latchedValue = x << 10 | y << 2;
 				if (c.IsPressed("0Touch"))
-					latchedvalue |= 2;
+					_latchedValue |= 2;
 				if (c.IsPressed("0Click"))
-					latchedvalue |= 1;
+					_latchedValue |= 1;
 			}
 			if (s.OUT0 > s.OUT0old) // L->H: reset shift
-				shiftidx = 0;
+				_shiftidx = 0;
 			if (s.OUT1 > s.OUT1old) // L->H: increment shift
-				shiftidx++;
+				_shiftidx++;
 		}
 
 		public byte ReadA(IController c)
@@ -1036,12 +1040,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public byte ReadB(IController c)
 		{
-			byte ret = (byte)(resetting ? 2 : 0);
-			if (resetting)
+			byte ret = (byte)(_resetting ? 2 : 0);
+			if (_resetting)
 				return ret;
 
 			// the shiftidx = 0 read is one off the end
-			int bit = latchedvalue >> (16 - shiftidx);
+			int bit = _latchedValue >> (16 - _shiftidx);
 			bit &= 4;
 			bit ^= 4; // inverted data
 			ret |= (byte)(bit);
@@ -1055,9 +1059,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public void SyncState(Serializer ser)
 		{
-			ser.Sync(nameof(resetting), ref resetting);
-			ser.Sync(nameof(shiftidx), ref shiftidx);
-			ser.Sync(nameof(latchedvalue), ref latchedvalue);
+			ser.Sync(nameof(_resetting), ref _resetting);
+			ser.Sync(nameof(_shiftidx), ref _shiftidx);
+			ser.Sync(nameof(_latchedValue), ref _latchedValue);
 		}
 	}
 
@@ -1111,10 +1115,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 	public class NESControlSettings
 	{
-		static readonly Dictionary<string, Type> FamicomExpansions;
-		static readonly Dictionary<string, Type> NesPortDevices;
+		private static readonly Dictionary<string, Type> FamicomExpansions;
+		private static readonly Dictionary<string, Type> NesPortDevices;
 
-		static Dictionary<string, Type> Implementors<T>() => Emulation.Cores.ReflectionCache.Types
+		private static Dictionary<string, Type> Implementors<T>() => ReflectionCache.Types
 			.Where(c => typeof(T).IsAssignableFrom(c) && !c.IsAbstract && !c.IsInterface)
 			.ToDictionary(t => t.Name, t => t);
 
@@ -1183,9 +1187,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public NESControlSettings()
 		{
 			Famicom = false;
-			FamicomExpPort = typeof(UnpluggedFam).Name;
-			NesLeftPort = typeof(ControllerNES).Name;
-			NesRightPort = typeof(UnpluggedNES).Name;
+			FamicomExpPort = nameof(UnpluggedFam);
+			NesLeftPort = nameof(ControllerNES);
+			NesRightPort = nameof(UnpluggedNES);
 		}
 
 		public static bool NeedsReboot(NESControlSettings x, NESControlSettings y)
@@ -1198,19 +1202,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return (NESControlSettings)MemberwiseClone();
 		}
 
-		public IControllerDeck Instantiate(LightgunDelegate PPUCallback)
+		public IControllerDeck Instantiate(LightgunDelegate ppuCallback)
 		{
 			if (Famicom)
 			{
 				IFamicomExpansion exp = (IFamicomExpansion)Activator.CreateInstance(FamicomExpansions[FamicomExpPort]);
-				IControllerDeck ret = new FamicomDeck(exp, PPUCallback);
+				IControllerDeck ret = new FamicomDeck(exp, ppuCallback);
 				return ret;
 			}
 			else
 			{
 				INesPort left = (INesPort)Activator.CreateInstance(NesPortDevices[NesLeftPort]);
 				INesPort right = (INesPort)Activator.CreateInstance(NesPortDevices[NesRightPort]);
-				IControllerDeck ret = new NesDeck(left, right, PPUCallback);
+				IControllerDeck ret = new NesDeck(left, right, ppuCallback);
 				return ret;
 			}
 		}

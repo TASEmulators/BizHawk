@@ -1007,7 +1007,7 @@ namespace BizHawk.Client.EmuHawk
 				Config.VSyncThrottle = false;
 				if (old)
 				{
-					PresentationPanel.Resized = true;
+					_presentationPanel.Resized = true;
 				}
 			}
 
@@ -1025,7 +1025,7 @@ namespace BizHawk.Client.EmuHawk
 				Config.VSyncThrottle = false;
 				if (old)
 				{
-					PresentationPanel.Resized = true;
+					_presentationPanel.Resized = true;
 				}
 			}
 
@@ -1035,7 +1035,7 @@ namespace BizHawk.Client.EmuHawk
 		private void VsyncThrottleMenuItem_Click(object sender, EventArgs e)
 		{
 			Config.VSyncThrottle ^= true;
-			PresentationPanel.Resized = true;
+			_presentationPanel.Resized = true;
 			if (Config.VSyncThrottle)
 			{
 				Config.ClockThrottle = false;
@@ -1061,7 +1061,7 @@ namespace BizHawk.Client.EmuHawk
 			Config.VSync ^= true;
 			if (!Config.VSyncThrottle) // when vsync throttle is on, vsync is forced to on, so no change to make here
 			{
-				PresentationPanel.Resized = true;
+				_presentationPanel.Resized = true;
 			}
 
 			VsyncMessage();
@@ -2064,10 +2064,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AmstradCpcMediaMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			if (Emulator is AmstradCPC)
+			if (Emulator is AmstradCPC cpc)
 			{
-				AmstradCPCTapesSubMenu.Enabled = ((AmstradCPC)Emulator)._tapeInfo.Count > 0;
-				AmstradCPCDisksSubMenu.Enabled = ((AmstradCPC)Emulator)._diskInfo.Count > 0;
+				AmstradCPCTapesSubMenu.Enabled = cpc._tapeInfo.Count > 0;
+				AmstradCPCDisksSubMenu.Enabled = cpc._diskInfo.Count > 0;
 			}
 		}
 
@@ -2429,20 +2429,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void KeyPriorityStatusLabel_Click(object sender, EventArgs e)
 		{
-			switch (Config.InputHotkeyOverrideOptions)
+			Config.InputHotkeyOverrideOptions = Config.InputHotkeyOverrideOptions switch
 			{
-				default:
-				case 0:
-					Config.InputHotkeyOverrideOptions = 1;
-					break;
-				case 1:
-					Config.InputHotkeyOverrideOptions = 2;
-					break;
-				case 2:
-					Config.InputHotkeyOverrideOptions = Config.NoMixedInputHokeyOverride ? 1 : 0;
-					break;
-			}
-
+				1 => 2,
+				2 => Config.NoMixedInputHokeyOverride ? 1 : 0,
+				_ => 1,
+			};
 			UpdateKeyPriorityIcon();
 		}
 
@@ -2540,7 +2532,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MainForm_Resize(object sender, EventArgs e)
 		{
-			PresentationPanel.Resized = true;
+			_presentationPanel.Resized = true;
 		}
 
 		private void MainForm_Shown(object sender, EventArgs e)

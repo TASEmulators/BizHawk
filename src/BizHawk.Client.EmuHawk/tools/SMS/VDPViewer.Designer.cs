@@ -83,7 +83,7 @@ namespace BizHawk.Client.EmuHawk
 			this.bmpViewPalette.Size = new System.Drawing.Size(256, 32);
 			this.bmpViewPalette.TabIndex = 3;
 			this.bmpViewPalette.Text = "bmpViewPalette";
-			this.bmpViewPalette.MouseClick += new System.Windows.Forms.MouseEventHandler(this.bmpViewPalette_MouseClick);
+			this.bmpViewPalette.MouseClick += new System.Windows.Forms.MouseEventHandler(this.BmpViewPalette_MouseClick);
 			// 
 			// groupBox3
 			// 
@@ -126,7 +126,7 @@ namespace BizHawk.Client.EmuHawk
 			// saveTilesScreenshotToolStripMenuItem
 			// 
 			this.saveTilesScreenshotToolStripMenuItem.Text = "Save Tiles Screenshot...";
-			this.saveTilesScreenshotToolStripMenuItem.Click += new System.EventHandler(this.saveTilesScreenshotToolStripMenuItem_Click);
+			this.saveTilesScreenshotToolStripMenuItem.Click += new System.EventHandler(this.SaveTilesScreenshotToolStripMenuItem_Click);
 			// 
 			// savePalettesScrenshotToolStripMenuItem
 			// 

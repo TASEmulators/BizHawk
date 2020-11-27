@@ -175,7 +175,7 @@ namespace BizHawk.Client.EmuHawk
 			paperView.Refresh();
 		}
 
-		private void saveImageToolStripMenuItem_Click(object sender, EventArgs e)
+		private void SaveImageToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			// slight hack to use the nice SaveFile() feature of a BmpView
 
@@ -190,7 +190,7 @@ namespace BizHawk.Client.EmuHawk
 			toSave.Bmp.SaveAsFile(Game, "Print", Emulator.SystemId, Config.PathEntries, this);
 		}
 
-		private void copyToolStripMenuItem_Click(object sender, EventArgs e)
+		private void CopyToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Clipboard.SetImage(_printerHistory);
 		}

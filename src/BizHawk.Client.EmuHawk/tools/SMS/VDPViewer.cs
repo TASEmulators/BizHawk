@@ -161,7 +161,7 @@ namespace BizHawk.Client.EmuHawk
 			GeneralUpdate();
 		}
 
-		private void bmpViewPalette_MouseClick(object sender, MouseEventArgs e)
+		private void BmpViewPalette_MouseClick(object sender, MouseEventArgs e)
 		{
 			int p = Math.Min(Math.Max(e.Y / 16, 0), 1);
 			_palIndex = p;
@@ -200,7 +200,7 @@ namespace BizHawk.Client.EmuHawk
 			bmp.SaveAsFile(Game, suffix, Emulator.SystemId, Config.PathEntries, this);
 		}
 
-		private void saveTilesScreenshotToolStripMenuItem_Click(object sender, EventArgs e)
+		private void SaveTilesScreenshotToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			SaveAsFile(bmpViewTiles.Bmp, "Tiles");
 		}

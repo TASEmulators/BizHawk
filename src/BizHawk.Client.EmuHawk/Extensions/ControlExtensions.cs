@@ -148,10 +148,10 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// Handles EmuHawk specific issues before showing a modal dialog
 		/// </summary>
-		public static DialogResult ShowHawkDialog(this Form form, IWin32Window owner = null, Point position = default(Point))
+		public static DialogResult ShowHawkDialog(this Form form, IWin32Window owner = null, Point position = default)
 		{
 			GlobalWin.Sound.StopSound();
-			if (position != default(Point))
+			if (position != default)
 			{
 				form.StartPosition = FormStartPosition.Manual;
 				form.Location = position;
@@ -292,19 +292,12 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var file = new FileInfo(sfd.FileName);
-			ImageFormat i;
 			string extension = file.Extension.ToUpper();
-			switch (extension)
+			ImageFormat i = extension switch
 			{
-				default:
-				case ".PNG":
-					i = ImageFormat.Png;
-					break;
-				case ".BMP":
-					i = ImageFormat.Bmp;
-					break;
-			}
-
+				".BMP" => ImageFormat.Bmp,
+				_ => ImageFormat.Png,
+			};
 			bitmap.Save(file.FullName, i);
 		}
 

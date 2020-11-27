@@ -330,7 +330,7 @@ namespace BizHawk.Client.EmuHawk
 
 			// TODO GL - a lot of disorganized wiring-up here
 			// installed separately on Unix (via package manager or from https://developer.nvidia.com/cg-toolkit-download), look in $PATH
-			PresentationPanel = new PresentationPanel(
+			_presentationPanel = new PresentationPanel(
 				Config,
 				GlobalWin.GL,
 				ToggleFullscreen,
@@ -340,9 +340,9 @@ namespace BizHawk.Client.EmuHawk
 			{
 				GraphicsControl = { MainWindow = true }
 			};
-			GlobalWin.DisplayManager = new DisplayManager(OSD, GlobalWin.GL, PresentationPanel, () => DisableSecondaryThrottling);
-			Controls.Add(PresentationPanel);
-			Controls.SetChildIndex(PresentationPanel, 0);
+			GlobalWin.DisplayManager = new DisplayManager(OSD, GlobalWin.GL, _presentationPanel, () => DisableSecondaryThrottling);
+			Controls.Add(_presentationPanel);
+			Controls.SetChildIndex(_presentationPanel, 0);
 
 			// TODO GL - move these event handlers somewhere less obnoxious line in the On* overrides
 			Load += (o, e) =>
@@ -384,9 +384,9 @@ namespace BizHawk.Client.EmuHawk
 				_inResizeLoop = false;
 				SetWindowText();
 
-				if (PresentationPanel != null)
+				if (_presentationPanel != null)
 				{
-					PresentationPanel.Resized = true;
+					_presentationPanel.Resized = true;
 				}
 
 				Sound?.StartSound();
@@ -579,7 +579,7 @@ namespace BizHawk.Client.EmuHawk
 
 			SynchChrome();
 
-			PresentationPanel.Control.Paint += (o, e) =>
+			_presentationPanel.Control.Paint += (o, e) =>
 			{
 				// I would like to trigger a repaint here, but this isn't done yet
 			};
@@ -1135,8 +1135,8 @@ namespace BizHawk.Client.EmuHawk
 				int zoom = Config.TargetZoomFactors[Emulator.SystemId];
 				var area = Screen.FromControl(this).WorkingArea;
 
-				int borderWidth = Size.Width - PresentationPanel.Control.Size.Width;
-				int borderHeight = Size.Height - PresentationPanel.Control.Size.Height;
+				int borderWidth = Size.Width - _presentationPanel.Control.Size.Width;
+				int borderHeight = Size.Height - _presentationPanel.Control.Size.Height;
 
 				// start at target zoom and work way down until we find acceptable zoom
 				Size lastComputedSize = new Size(1, 1);
@@ -1158,7 +1158,7 @@ namespace BizHawk.Client.EmuHawk
 				// Change size
 				Size = new Size(lastComputedSize.Width + borderWidth, lastComputedSize.Height + borderHeight);
 				PerformLayout();
-				PresentationPanel.Resized = true;
+				_presentationPanel.Resized = true;
 
 				// Is window off the screen at this size?
 				if (!area.Contains(Bounds))
@@ -1250,7 +1250,7 @@ namespace BizHawk.Client.EmuHawk
 				WindowState = FormWindowState.Maximized; // be sure to do this after setting the chrome, otherwise it wont work fully
 				ResumeLayout();
 
-				PresentationPanel.Resized = true;
+				_presentationPanel.Resized = true;
 			}
 			else
 			{
@@ -1536,7 +1536,7 @@ namespace BizHawk.Client.EmuHawk
 		// input state which has been destined for client hotkey consumption are colesced here
 		private readonly InputCoalescer _hotkeyCoalescer = new InputCoalescer();
 
-		private readonly PresentationPanel PresentationPanel;
+		private readonly PresentationPanel _presentationPanel;
 
 		// countdown for saveram autoflushing
 		public int AutoFlushSaveRamIn { get; set; }
@@ -1561,7 +1561,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (_inResizeLoop)
 				{
-					var size = PresentationPanel.NativeSize;
+					var size = _presentationPanel.NativeSize;
 					sb.Append($"({size.Width}x{size.Height})={(float) size.Width / size.Height} - ");
 				}
 
@@ -1872,9 +1872,9 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case "SNES":
 				case "SGB":
-					if (Emulator is LibsnesCore)
+					if (Emulator is LibsnesCore bsnes)
 					{
-						SNESSubMenu.Text = ((LibsnesCore)Emulator).IsSGB ? "&SGB" : "&SNES";
+						SNESSubMenu.Text = bsnes.IsSGB ? "&SGB" : "&SNES";
 						SNESSubMenu.Visible = true;
 					}
 					else if (Emulator is Snes9x || Emulator is Faust)
@@ -1925,7 +1925,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private static readonly IList<Type> _specializedTools = EmuHawk.ReflectionCache.Types
+		private static readonly IList<Type> SpecializedTools = ReflectionCache.Types
 			.Where(t => typeof(IToolForm).IsAssignableFrom(t) && !t.IsAbstract)
 			.Where(t => t.GetCustomAttribute<SpecializedToolAttribute>() != null)
 			.ToList();
@@ -1940,7 +1940,7 @@ namespace BizHawk.Client.EmuHawk
 			settingsMenuItem.Click += GenericCoreSettingsMenuItem_Click;
 			GenericCoreSubMenu.DropDownItems.Add(settingsMenuItem);
 
-			var specializedTools = _specializedTools
+			var specializedTools = SpecializedTools
 				.Where(t => Tools.IsAvailable(t))
 				.OrderBy(t => t.Name)
 				.ToList();
@@ -2117,12 +2117,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (hide && !_cursorHidden)
 			{
-				PresentationPanel.Control.Cursor = Properties.Resources.BlankCursor;
+				_presentationPanel.Control.Cursor = Properties.Resources.BlankCursor;
 				_cursorHidden = true;
 			}
 			else if (!hide && _cursorHidden)
 			{
-				PresentationPanel.Control.Cursor = Cursors.Default;
+				_presentationPanel.Control.Cursor = Cursors.Default;
 				timerMouseIdle.Stop();
 				timerMouseIdle.Start();
 				_cursorHidden = false;

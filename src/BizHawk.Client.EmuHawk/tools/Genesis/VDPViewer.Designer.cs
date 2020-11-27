@@ -91,7 +91,7 @@ namespace BizHawk.Client.EmuHawk
 			this.bmpViewPal.Size = new System.Drawing.Size(256, 64);
 			this.bmpViewPal.TabIndex = 4;
 			this.bmpViewPal.Text = "bmpView1";
-			this.bmpViewPal.MouseClick += new System.Windows.Forms.MouseEventHandler(this.bmpViewPal_MouseClick);
+			this.bmpViewPal.MouseClick += new System.Windows.Forms.MouseEventHandler(this.BmpViewPal_MouseClick);
 			// 
 			// groupBox3
 			// 

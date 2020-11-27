@@ -12,9 +12,9 @@ namespace BizHawk.Client.EmuHawk
 	/// </summary>
 	public class RetainedViewportPanel : Control
 	{
-		private Thread threadPaint;
-		private EventWaitHandle ewh;
-		private volatile bool killSignal;
+		private Thread _threadPaint;
+		private EventWaitHandle _ewh;
+		private volatile bool _killSignal;
 
 		public Func<Bitmap,bool> ReleaseCallback;
 
@@ -24,9 +24,9 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public void ActivateThreaded()
 		{
-			ewh = new EventWaitHandle(false, EventResetMode.AutoReset);
-			threadPaint = new Thread(PaintProc) { IsBackground = true };
-			threadPaint.Start();
+			_ewh = new EventWaitHandle(false, EventResetMode.AutoReset);
+			_threadPaint = new Thread(PaintProc) { IsBackground = true };
+			_threadPaint.Start();
 		}
 
 		public RetainedViewportPanel(bool doubleBuffer = false)
@@ -46,11 +46,11 @@ namespace BizHawk.Client.EmuHawk
 		protected override void Dispose(bool disposing)
 		{
 			base.Dispose(disposing);
-			if (threadPaint != null)
+			if (_threadPaint != null)
 			{
-				killSignal = true;
-				ewh.Set();
-				ewh.WaitOne();
+				_killSignal = true;
+				_ewh.Set();
+				_ewh.WaitOne();
 			}
 			CleanupDisposeQueue();
 		}
@@ -59,7 +59,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DoPaint()
 		{
-			if (bmp != null)
+			if (_bmp != null)
 			{
 				using Graphics g = CreateGraphics();
 				g.PixelOffsetMode = PixelOffsetMode.HighSpeed;
@@ -70,16 +70,16 @@ namespace BizHawk.Client.EmuHawk
 				{
 					g.InterpolationMode = InterpolationMode.NearestNeighbor;
 					g.PixelOffsetMode = PixelOffsetMode.Half;
-					g.DrawImage(bmp, 0, 0, Width, Height);
+					g.DrawImage(_bmp, 0, 0, Width, Height);
 				}
 				else
 				{
 					using (var sb = new SolidBrush(Color.Black))
 					{
-						g.FillRectangle(sb, bmp.Width, 0, Width - bmp.Width, Height);
-						g.FillRectangle(sb, 0, bmp.Height, bmp.Width, Height - bmp.Height);
+						g.FillRectangle(sb, _bmp.Width, 0, Width - _bmp.Width, Height);
+						g.FillRectangle(sb, 0, _bmp.Height, _bmp.Width, Height - _bmp.Height);
 					}
-					g.DrawImageUnscaled(bmp, 0, 0);
+					g.DrawImageUnscaled(_bmp, 0, 0);
 				}
 			}
 
@@ -90,10 +90,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			for (; ; )
 			{
-				ewh.WaitOne();
-				if (killSignal)
+				_ewh.WaitOne();
+				if (_killSignal)
 				{
-					ewh.Set();
+					_ewh.Set();
 					return;
 				}
 
@@ -105,9 +105,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			lock (this)
 			{
-				while (DisposeQueue.Count > 0)
+				while (_disposeQueue.Count > 0)
 				{
-					var bmp = DisposeQueue.Dequeue();
+					var bmp = _disposeQueue.Dequeue();
 					bool dispose = true;
 					if(ReleaseCallback != null)
 						dispose = ReleaseCallback(bmp);
@@ -116,36 +116,36 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private Queue<Bitmap> DisposeQueue = new Queue<Bitmap>();
+		private readonly Queue<Bitmap> _disposeQueue = new Queue<Bitmap>();
 
 		private void SignalPaint()
 		{
-			if (threadPaint == null)
+			if (_threadPaint == null)
 				DoPaint();
 			else
-				ewh.Set();
+				_ewh.Set();
 		}
 
 		/// <summary>
 		/// Takes ownership of the provided bitmap and will use it for future painting
 		/// </summary>
-		public void SetBitmap(Bitmap newbmp)
+		public void SetBitmap(Bitmap newBmp)
 		{
 			lock (this)
 			{
-				if(bmp != null) DisposeQueue.Enqueue(bmp);
-				bmp = newbmp;
+				if(_bmp != null) _disposeQueue.Enqueue(_bmp);
+				_bmp = newBmp;
 			}
 			SignalPaint();
 		}
 
-		private Bitmap bmp;
+		private Bitmap _bmp;
 
 		/// <summary>bit of a hack; use at your own risk</summary>
 		/// <returns>you probably shouldn't modify this?</returns>
 		public Bitmap GetBitmap()
 		{
-			return bmp;
+			return _bmp;
 		}
 
 		protected override void OnPaintBackground(PaintEventArgs pevent)
