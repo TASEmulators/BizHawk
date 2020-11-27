@@ -8,10 +8,12 @@ namespace BizHawk.Client.EmuHawk
 	public partial class MovieHeaderEditor : Form
 	{
 		private readonly IMovie _movie;
+		private readonly Config _config;
 
-		public MovieHeaderEditor(IMovie movie)
+		public MovieHeaderEditor(IMovie movie, Config config)
 		{
 			_movie = movie;
+			_config = config;
 			InitializeComponent();
 			Icon = Properties.Resources.TAStudioIcon;
 		}
@@ -30,7 +32,7 @@ namespace BizHawk.Client.EmuHawk
 			_movie.Author = AuthorTextBox.Text;
 			if (MakeDefaultCheckbox.Checked)
 			{
-				GlobalWin.Config.DefaultAuthor = AuthorTextBox.Text;
+				_config.DefaultAuthor = AuthorTextBox.Text;
 			}
 
 			_movie.EmulatorVersion = EmulatorVersionTextBox.Text;
@@ -50,7 +52,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DefaultAuthorButton_Click(object sender, EventArgs e)
 		{
-			AuthorTextBox.Text = GlobalWin.Config.DefaultAuthor;
+			AuthorTextBox.Text = _config.DefaultAuthor;
 		}
 	}
 }

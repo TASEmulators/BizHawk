@@ -1012,7 +1012,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void HeaderMenuItem_Click(object sender, EventArgs e)
 		{
-			new MovieHeaderEditor(CurrentTasMovie)
+			new MovieHeaderEditor(CurrentTasMovie, Config)
 			{
 				Owner = Owner,
 				Location = this.ChildPointToScreen(TasView)
