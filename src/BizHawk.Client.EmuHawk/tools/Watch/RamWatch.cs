@@ -525,9 +525,16 @@ namespace BizHawk.Client.EmuHawk
 			WatchListView.Refresh();
 		}
 
+		private string CurrentFileName()
+		{
+			return !string.IsNullOrWhiteSpace(_watches.CurrentFileName)
+				? _watches.CurrentFileName
+				: Game.FilesystemSafeName();
+		}
+
 		private void SaveAs()
 		{
-			var result = _watches.SaveAs(GetWatchSaveFileFromUser(_watches.CurrentFileName));
+			var result = _watches.SaveAs(GetWatchSaveFileFromUser(CurrentFileName()));
 			if (result)
 			{
 				UpdateStatusBar(saved: true);

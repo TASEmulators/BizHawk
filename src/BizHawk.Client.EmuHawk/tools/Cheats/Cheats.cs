@@ -139,8 +139,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool SaveAs()
 		{
+			var fileName = MainForm.CheatList.CurrentFileName;
+			if (string.IsNullOrWhiteSpace(fileName))
+			{
+				fileName = Game.FilesystemSafeName();
+			}
+
 			var file = SaveFileDialog(
-				MainForm.CheatList.CurrentFileName,
+				fileName,
 				Config.PathEntries.CheatsAbsolutePath(Game.System),
 				"Cheat Files",
 				"cht",

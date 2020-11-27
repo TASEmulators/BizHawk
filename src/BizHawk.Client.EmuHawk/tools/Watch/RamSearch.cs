@@ -975,6 +975,13 @@ namespace BizHawk.Client.EmuHawk
 				sender == TruncateFromFileMenuItem);
 		}
 
+		private string CurrentFileName()
+		{
+			return !string.IsNullOrWhiteSpace(_currentFileName)
+				? _currentFileName
+				: Game.FilesystemSafeName();
+		}
+
 		private void SaveMenuItem_Click(object sender, EventArgs e)
 		{
 			if (!string.IsNullOrWhiteSpace(_currentFileName))
@@ -996,7 +1003,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					var result = watches.SaveAs(GetWatchSaveFileFromUser(watches.CurrentFileName));
+					var result = watches.SaveAs(GetWatchSaveFileFromUser(CurrentFileName()));
 					if (result)
 					{
 						MessageLabel.Text = $"{Path.GetFileName(_currentFileName)} saved";
@@ -1014,7 +1021,7 @@ namespace BizHawk.Client.EmuHawk
 				watches.Add(_searches[i]);
 			}
 
-			if (watches.SaveAs(GetWatchSaveFileFromUser(watches.CurrentFileName)))
+			if (watches.SaveAs(GetWatchSaveFileFromUser(CurrentFileName())))
 			{
 				_currentFileName = watches.CurrentFileName;
 				MessageLabel.Text = $"{Path.GetFileName(_currentFileName)} saved";

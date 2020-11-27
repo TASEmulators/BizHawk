@@ -86,9 +86,7 @@ namespace BizHawk.Client.EmuHawk
 
 			using var sfd = new SaveFileDialog
 			{
-				FileName = !string.IsNullOrWhiteSpace(currentFile)
-					? Path.GetFileName(currentFile)
-					: $"{GlobalWin.Game.FilesystemSafeName()}.{fileExt}",
+				FileName = Path.GetFileName(currentFile),
 				InitialDirectory = path,
 				Filter = new FilesystemFilterSet(new FilesystemFilter(fileType, new[] { fileExt })).ToString(),
 				RestoreDirectory = true

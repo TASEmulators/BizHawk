@@ -359,8 +359,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveAsMenuItem_Click(object sender, EventArgs e)
 		{
+			var fileName = CurrentFileName;
+			if (string.IsNullOrWhiteSpace(fileName))
+			{
+				fileName = Game.FilesystemSafeName();
+			}
+
 			var file = SaveFileDialog(
-					CurrentFileName,
+					fileName,
 					Config.PathEntries.ToolsAbsolutePath(),
 					"Bot files",
 					"bot",

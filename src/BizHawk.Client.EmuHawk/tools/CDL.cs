@@ -384,8 +384,14 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		private bool RunSaveAs()
 		{
+			var fileName = _currentFilename;
+			if (string.IsNullOrWhiteSpace(fileName))
+			{
+				fileName = Game.FilesystemSafeName();
+			}
+
 			var file = SaveFileDialog(
-				_currentFilename,
+				fileName,
 				Config.PathEntries.LogAbsolutePath(),
 				"Code Data Logger Files",
 				"cdl",
