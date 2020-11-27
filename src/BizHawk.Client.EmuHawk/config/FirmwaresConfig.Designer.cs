@@ -101,10 +101,10 @@ namespace BizHawk.Client.EmuHawk
 			this.lvFirmwares.UseCompatibleStateImageBehavior = false;
 			this.lvFirmwares.View = System.Windows.Forms.View.Details;
 			this.lvFirmwares.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.lvFirmwares_ColumnClick);
-			this.lvFirmwares.DragDrop += new System.Windows.Forms.DragEventHandler(this.lvFirmwares_DragDrop);
-			this.lvFirmwares.DragEnter += new System.Windows.Forms.DragEventHandler(this.lvFirmwares_DragEnter);
-			this.lvFirmwares.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lvFirmwares_KeyDown);
-			this.lvFirmwares.MouseClick += new System.Windows.Forms.MouseEventHandler(this.lvFirmwares_MouseClick);
+			this.lvFirmwares.DragDrop += new System.Windows.Forms.DragEventHandler(this.LvFirmwares_DragDrop);
+			this.lvFirmwares.DragEnter += new System.Windows.Forms.DragEventHandler(this.LvFirmwares_DragEnter);
+			this.lvFirmwares.KeyDown += new System.Windows.Forms.KeyEventHandler(this.LvFirmwares_KeyDown);
+			this.lvFirmwares.MouseClick += new System.Windows.Forms.MouseEventHandler(this.LvFirmwares_MouseClick);
 			// 
 			// columnHeader5
 			// 
@@ -152,27 +152,27 @@ namespace BizHawk.Client.EmuHawk
             this.tsmiCopy});
 			this.lvFirmwaresContextMenuStrip.Name = "lvFirmwaresContextMenuStrip";
 			this.lvFirmwaresContextMenuStrip.Size = new System.Drawing.Size(182, 92);
-			this.lvFirmwaresContextMenuStrip.Opening += new System.ComponentModel.CancelEventHandler(this.lvFirmwaresContextMenuStrip_Opening);
+			this.lvFirmwaresContextMenuStrip.Opening += new System.ComponentModel.CancelEventHandler(this.LvFirmwaresContextMenuStrip_Opening);
 			// 
 			// tsmiSetCustomization
 			// 
 			this.tsmiSetCustomization.Text = "&Set Customization";
-			this.tsmiSetCustomization.Click += new System.EventHandler(this.tsmiSetCustomization_Click);
+			this.tsmiSetCustomization.Click += new System.EventHandler(this.TsmiSetCustomization_Click);
 			// 
 			// tsmiClearCustomization
 			// 
 			this.tsmiClearCustomization.Text = "C&lear Customization";
-			this.tsmiClearCustomization.Click += new System.EventHandler(this.tsmiClearCustomization_Click);
+			this.tsmiClearCustomization.Click += new System.EventHandler(this.TsmiClearCustomization_Click);
 			// 
 			// tsmiInfo
 			// 
 			this.tsmiInfo.Text = "&Info";
-			this.tsmiInfo.Click += new System.EventHandler(this.tsmiInfo_Click);
+			this.tsmiInfo.Click += new System.EventHandler(this.TsmiInfo_Click);
 			// 
 			// tsmiCopy
 			// 
 			this.tsmiCopy.Text = "&Copy";
-			this.tsmiCopy.Click += new System.EventHandler(this.tsmiCopy_Click);
+			this.tsmiCopy.Click += new System.EventHandler(this.TsmiCopy_Click);
 			// 
 			// panel1
 			// 
@@ -210,7 +210,7 @@ namespace BizHawk.Client.EmuHawk
 			this.tbbGroup.Name = "tbbGroup";
 			this.tbbGroup.Size = new System.Drawing.Size(44, 22);
 			this.tbbGroup.Text = "Group";
-			this.tbbGroup.Click += new System.EventHandler(this.tbbGroup_Click);
+			this.tbbGroup.Click += new System.EventHandler(this.TbbGroup_Click);
 			// 
 			// tbbScan
 			// 
@@ -219,7 +219,7 @@ namespace BizHawk.Client.EmuHawk
 			this.tbbScan.Name = "tbbScan";
 			this.tbbScan.Size = new System.Drawing.Size(36, 22);
 			this.tbbScan.Text = "Scan";
-			this.tbbScan.Click += new System.EventHandler(this.tbbScan_Click);
+			this.tbbScan.Click += new System.EventHandler(this.TbbScan_Click);
 			// 
 			// tbbOrganize
 			// 
@@ -228,7 +228,7 @@ namespace BizHawk.Client.EmuHawk
 			this.tbbOrganize.Name = "tbbOrganize";
 			this.tbbOrganize.Size = new System.Drawing.Size(58, 22);
 			this.tbbOrganize.Text = "Organize";
-			this.tbbOrganize.Click += new System.EventHandler(this.tbbOrganize_Click);
+			this.tbbOrganize.Click += new System.EventHandler(this.TbbOrganize_Click);
 			// 
 			// tbbImport
 			// 
@@ -237,7 +237,7 @@ namespace BizHawk.Client.EmuHawk
 			this.tbbImport.Name = "tbbImport";
 			this.tbbImport.Size = new System.Drawing.Size(47, 22);
 			this.tbbImport.Text = "Import";
-			this.tbbImport.Click += new System.EventHandler(this.tbbImport_Click);
+			this.tbbImport.Click += new System.EventHandler(this.TbbImport_Click);
 			// 
 			// tbbClose
 			// 
@@ -248,7 +248,7 @@ namespace BizHawk.Client.EmuHawk
 			this.tbbClose.Name = "tbbClose";
 			this.tbbClose.Size = new System.Drawing.Size(40, 22);
 			this.tbbClose.Text = "Close";
-			this.tbbClose.Click += new System.EventHandler(this.tbbClose_Click);
+			this.tbbClose.Click += new System.EventHandler(this.TbbClose_Click);
 			this.toolStripSeparator1.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
 			this.toolStripSeparator1.Visible = false;
 			// 
@@ -263,7 +263,7 @@ namespace BizHawk.Client.EmuHawk
 			this.tbbCloseReload.Text = "Close and reload ROM";
 			this.tbbCloseReload.ToolTipText = "Close and reload ROM";
 			this.tbbCloseReload.Visible = false;
-			this.tbbCloseReload.Click += new System.EventHandler(this.tbbCloseReload_Click);
+			this.tbbCloseReload.Click += new System.EventHandler(this.TbbCloseReload_Click);
 			// 
 			// tbbOpenFolder
 			// 
@@ -272,7 +272,7 @@ namespace BizHawk.Client.EmuHawk
 			this.tbbOpenFolder.Name = "tbbOpenFolder";
 			this.tbbOpenFolder.Size = new System.Drawing.Size(128, 22);
 			this.tbbOpenFolder.Text = "Open Firmware Folder";
-			this.tbbOpenFolder.Click += new System.EventHandler(this.tbbOpenFolder_Click);
+			this.tbbOpenFolder.Click += new System.EventHandler(this.TbbOpenFolder_Click);
 			// 
 			// tableLayoutPanel1
 			// 
@@ -313,7 +313,7 @@ namespace BizHawk.Client.EmuHawk
 			this.linkBasePath.TabIndex = 27;
 			this.linkBasePath.TabStop = true;
 			this.linkBasePath.Text = "linkLabel1";
-			this.linkBasePath.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkBasePath_LinkClicked);
+			this.linkBasePath.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkBasePath_LinkClicked);
 			// 
 			// label1
 			// 

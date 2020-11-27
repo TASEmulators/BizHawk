@@ -207,14 +207,13 @@ namespace BizHawk.Client.EmuHawk
 			toolStrip1.Items.Add(host);
 		}
 
-
-		private void tbbClose_Click(object sender, EventArgs e)
+		private void TbbClose_Click(object sender, EventArgs e)
 		{
 			this.Close();
 			DialogResult = DialogResult.Cancel;
 		}
 
-		private void tbbCloseReload_Click(object sender, EventArgs e)
+		private void TbbCloseReload_Click(object sender, EventArgs e)
 		{
 			this.Close();
 			DialogResult = DialogResult.Retry;
@@ -227,7 +226,7 @@ namespace BizHawk.Client.EmuHawk
 			_boldFixedFont.Dispose();
 		}
 
-		private void tbbGroup_Click(object sender, EventArgs e)
+		private void TbbGroup_Click(object sender, EventArgs e)
 		{
 			// toggle the grouping state
 			lvFirmwares.ShowGroups = !lvFirmwares.ShowGroups;
@@ -246,7 +245,7 @@ namespace BizHawk.Client.EmuHawk
 			lvFirmwares.Sort();
 		}
 
-		private void tbbScan_Click(object sender, EventArgs e)
+		private void TbbScan_Click(object sender, EventArgs e)
 		{
 			// user-initiated scan
 			DoScan();
@@ -308,12 +307,12 @@ namespace BizHawk.Client.EmuHawk
 					// bolden the item if necessary
 					if (bolden)
 					{
-						foreach (ListViewItem.ListViewSubItem lvsi in lvi.SubItems) lvsi.Font = _boldFont;
+						foreach (ListViewItem.ListViewSubItem subItem in lvi.SubItems) subItem.Font = _boldFont;
 						lvi.SubItems[6].Font = _boldFixedFont;
 					}
 					else
 					{
-						foreach (ListViewItem.ListViewSubItem lvsi in lvi.SubItems) lvsi.Font = lvFirmwares.Font;
+						foreach (ListViewItem.ListViewSubItem subItem in lvi.SubItems) subItem.Font = lvFirmwares.Font;
 						lvi.SubItems[6].Font = _fixedFont;
 					}
 
@@ -345,7 +344,7 @@ namespace BizHawk.Client.EmuHawk
 			lvFirmwares.EndUpdate();
 		}
 
-		private void tbbOrganize_Click(object sender, EventArgs e)
+		private void TbbOrganize_Click(object sender, EventArgs e)
 		{
 			if (MessageBox.Show(this, "This is going to move/rename every automatically-selected firmware file under your configured firmwares directory to match our recommended organizational scheme (which is not super great right now). Proceed?", "Firmwares Organization Confirm", MessageBoxButtons.OKCancel) == DialogResult.Cancel)
 			{
@@ -379,7 +378,7 @@ namespace BizHawk.Client.EmuHawk
 			DoScan();
 		}
 
-		private void tbbOpenFolder_Click(object sender, EventArgs e)
+		private void TbbOpenFolder_Click(object sender, EventArgs e)
 		{
 			var frmWares =  _config.PathEntries.FirmwareAbsolutePath();
 			if (!Directory.Exists(frmWares))
@@ -390,7 +389,7 @@ namespace BizHawk.Client.EmuHawk
 			System.Diagnostics.Process.Start(frmWares);
 		}
 
-		private void lvFirmwares_KeyDown(object sender, KeyEventArgs e)
+		private void LvFirmwares_KeyDown(object sender, KeyEventArgs e)
 		{
 			if (e.IsCtrl(Keys.C))
 			{
@@ -404,13 +403,13 @@ namespace BizHawk.Client.EmuHawk
 			if (str.Length > 0) Clipboard.SetDataObject(str);
 		}
 
-		private void lvFirmwares_MouseClick(object sender, MouseEventArgs e)
+		private void LvFirmwares_MouseClick(object sender, MouseEventArgs e)
 		{
 			if (e.Button == MouseButtons.Right && lvFirmwares.GetItemAt(e.X, e.Y) != null)
 				lvFirmwaresContextMenuStrip.Show(lvFirmwares, e.Location);
 		}
 
-		private void tsmiSetCustomization_Click(object sender, EventArgs e)
+		private void TsmiSetCustomization_Click(object sender, EventArgs e)
 		{
 			using var ofd = new OpenFileDialog
 			{
@@ -493,7 +492,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void tsmiClearCustomization_Click(object sender, EventArgs e)
+		private void TsmiClearCustomization_Click(object sender, EventArgs e)
 		{
 			// for each selected item, clear the user choice
 			foreach (ListViewItem lvi in lvFirmwares.SelectedItems)
@@ -505,7 +504,7 @@ namespace BizHawk.Client.EmuHawk
 			DoScan();
 		}
 
-		private void tsmiInfo_Click(object sender, EventArgs e)
+		private void TsmiInfo_Click(object sender, EventArgs e)
 		{
 			var lvi = lvFirmwares.SelectedItems[0];
 			var fr = (FirmwareDatabase.FirmwareRecord)lvi.Tag;
@@ -573,19 +572,19 @@ namespace BizHawk.Client.EmuHawk
 			fciDialog.ShowDialog(this);
 		}
 
-		private void lvFirmwaresContextMenuStrip_Opening(object sender, CancelEventArgs e)
+		private void LvFirmwaresContextMenuStrip_Opening(object sender, CancelEventArgs e)
 		{
 			// hide menu items that aren't appropriate for multi-select
 			tsmiSetCustomization.Visible = lvFirmwares.SelectedItems.Count == 1;
 			tsmiInfo.Visible = lvFirmwares.SelectedItems.Count == 1;
 		}
 
-		private void tsmiCopy_Click(object sender, EventArgs e)
+		private void TsmiCopy_Click(object sender, EventArgs e)
 		{
 			PerformListCopy();
 		}
 
-		private void linkBasePath_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		private void LinkBasePath_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
 			if (Owner is PathConfig)
 			{
@@ -608,7 +607,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void tbbImport_Click(object sender, EventArgs e)
+		private void TbbImport_Click(object sender, EventArgs e)
 		{
 			using var ofd = new OpenFileDialog { Multiselect = true };
 			if (ofd.ShowDialog() != DialogResult.OK)
@@ -732,12 +731,12 @@ namespace BizHawk.Client.EmuHawk
 			return base.ProcessCmdKey(ref msg, keyData);
 		}
 
-		private void lvFirmwares_DragEnter(object sender, DragEventArgs e)
+		private void LvFirmwares_DragEnter(object sender, DragEventArgs e)
 		{
 			e.Set(DragDropEffects.Copy);
 		}
 
-		private void lvFirmwares_DragDrop(object sender, DragEventArgs e)
+		private void LvFirmwares_DragDrop(object sender, DragEventArgs e)
 		{
 			if (e.Data.GetDataPresent(DataFormats.FileDrop))
 			{
