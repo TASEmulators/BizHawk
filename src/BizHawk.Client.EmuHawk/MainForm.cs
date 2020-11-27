@@ -413,7 +413,7 @@ namespace BizHawk.Client.EmuHawk
 			InputManager.AutofireStickyXorAdapter.SetOnOffPatternFromConfig(Config.AutofireOn, Config.AutofireOff);
 			try
 			{
-				GlobalWin.Sound = new Sound(Handle);
+				GlobalWin.Sound = new Sound(Handle, Config.SoundOutputMethod, Config.SoundDevice);
 			}
 			catch
 			{
@@ -426,7 +426,7 @@ namespace BizHawk.Client.EmuHawk
 				MessageBox.Show(message, "Initialization Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
 				Config.SoundOutputMethod = ESoundOutputMethod.Dummy;
-				GlobalWin.Sound = new Sound(Handle);
+				GlobalWin.Sound = new Sound(Handle, Config.SoundOutputMethod, Config.SoundDevice);
 			}
 
 			Sound.StartSound();
