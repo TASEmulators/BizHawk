@@ -122,16 +122,6 @@ namespace BizHawk.Client.EmuHawk
 			e.Set(DragDropEffects.Copy);
 		}
 
-		protected void RefreshFloatingWindowControl(bool floatingWindow)
-		{
-			Owner = floatingWindow ? null : (MainForm) MainForm;
-		}
-
-		protected bool IsOnScreen(Point topLeft)
-		{
-			return Tools.IsOnScreen(topLeft);
-		}
-
 		protected override void OnLoad(EventArgs e)
 		{
 			if (MainMenuStrip != null)
