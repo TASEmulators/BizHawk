@@ -279,6 +279,8 @@ namespace BizHawk.Client.EmuHawk
 			Database.InitializeDatabase(Path.Combine(PathUtils.ExeDirectoryPath, "gamedb", "gamedb.txt"));
 			BootGodDb.Initialize(Path.Combine(PathUtils.ExeDirectoryPath, "gamedb"));
 
+			GlobalWin._mainForm = this;
+
 			_config = config; // skips assignment to GlobalWin.Config as Program already did that
 
 			InputManager.ControllerInputCoalescer = new ControllerInputCoalescer();
@@ -308,7 +310,7 @@ namespace BizHawk.Client.EmuHawk
 			Icon = Properties.Resources.Logo;
 			SetImages();
 
-			GlobalWin.Game = GameInfo.NullInstance;
+			Game = GameInfo.NullInstance;
 			_throttle = new Throttle();
 			Emulator = new NullEmulator();
 
@@ -827,18 +829,19 @@ namespace BizHawk.Client.EmuHawk
 			AddOnScreenMessage("Core reboot needed for this setting");
 		}
 
-		// TODO: make these actual properties
-		// This is a quick hack to reduce the dependency on Globals
+		/// <remarks>don't use this, use <see cref="Emulator"/></remarks>
+		private IEmulator _emulator;
+
 		public IEmulator Emulator
 		{
-			get => GlobalWin.Emulator;
+			get => _emulator;
 
 			private set
 			{
-				GlobalWin.Emulator = value;
+				_emulator = value;
 				if (EmuClient != null) EmuClient.Emulator = value; // first call to this setter is in the ctor, before the APIs have been registered by the ToolManager ctor
-				_currentVideoProvider = GlobalWin.Emulator.AsVideoProviderOrDefault();
-				_currentSoundProvider = GlobalWin.Emulator.AsSoundProviderOrDefault();
+				_currentVideoProvider = value.AsVideoProviderOrDefault();
+				_currentSoundProvider = value.AsSoundProviderOrDefault();
 			}
 		}
 
@@ -865,13 +868,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private OSDManager OSD => DisplayManager.OSD;
 
-		public IMovieSession MovieSession
-		{
-			get => GlobalWin.MovieSession;
-			private set => GlobalWin.MovieSession = value;
-		}
+		public IMovieSession MovieSession { get; }
 
-		private GameInfo Game => GlobalWin.Game;
+		public GameInfo Game { get; private set; }
 
 		private Sound Sound
 		{
@@ -3624,10 +3623,10 @@ namespace BizHawk.Client.EmuHawk
 					//path = ioa_openrom.Path;
 				}
 
-				var oldGame = GlobalWin.Game;
+				var oldGame = Game;
 				var result = loader.LoadRom(path, nextComm, ioaRetro?.CorePath);
 
-				EmuClient.Game = GlobalWin.Game = result ? loader.Game : oldGame;
+				EmuClient.Game = Game = result ? loader.Game : oldGame;
 
 				// we need to replace the path in the OpenAdvanced with the canonical one the user chose.
 				// It can't be done until loader.LoadRom happens (for CanonicalFullPath)
@@ -3908,7 +3907,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				CloseGame(clearSram);
 				Emulator = new NullEmulator();
-				EmuClient.Game = GlobalWin.Game = GameInfo.NullInstance;
+				EmuClient.Game = Game = GameInfo.NullInstance;
 				CreateRewinder();
 				Tools.Restart(Config, Emulator, Game);
 				RewireSound();
