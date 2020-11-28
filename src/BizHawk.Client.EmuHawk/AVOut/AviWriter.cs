@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using BizHawk.Client.Common;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
@@ -257,7 +258,7 @@ namespace BizHawk.Client.EmuHawk
 		/// Acquires a video codec configuration from the user. you may save it for future use, but you must dispose of it when you're done with it.
 		/// returns null if the user canceled the dialog
 		/// </summary>
-		public IDisposable AcquireVideoCodecToken(IWin32Window hwnd)
+		public IDisposable AcquireVideoCodecToken(IWin32Window hwnd, Config config)
 		{
 			var tempParams = new Parameters
 			{
@@ -274,7 +275,9 @@ namespace BizHawk.Client.EmuHawk
 			File.Delete(tempfile);
 			tempfile = Path.ChangeExtension(tempfile, "avi");
 			temp.OpenFile(tempfile, tempParams, null);
-			CodecToken token = (CodecToken)temp.AcquireVideoCodecToken(hwnd.Handle, _currVideoCodecToken);
+			var ret = temp.AcquireVideoCodecToken(hwnd.Handle, _currVideoCodecToken);
+			CodecToken token = (CodecToken)ret;
+			config.AviCodecToken = token?.Serialize();
 			temp.CloseFile();
 			File.Delete(tempfile);
 			return token;
@@ -733,8 +736,6 @@ namespace BizHawk.Client.EmuHawk
 
 				if (result)
 				{
-					// save to config and return it
-					GlobalWin.Config.AviCodecToken = ret.Serialize();
 					return ret;
 				}
 
@@ -963,15 +964,10 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		/// <exception cref="Exception">no default codec token in config</exception>
-		public void SetDefaultVideoCodecToken()
+		public void SetDefaultVideoCodecToken(Config config)
 		{
-			CodecToken ct = CodecToken.DeSerialize(GlobalWin.Config.AviCodecToken);
-			if (ct == null)
-			{
-				throw new Exception($"No default {nameof(GlobalWin.Config.AviCodecToken)} in config!");
-			}
-
-			_currVideoCodecToken = ct;
+			var ct = CodecToken.DeSerialize(config.AviCodecToken);
+			_currVideoCodecToken = ct ?? throw new Exception($"No default {nameof(config.AviCodecToken)} in config!");
 		}
 
 		public string DesiredExtension()

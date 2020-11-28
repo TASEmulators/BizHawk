@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
+using System.Windows.Forms;
 
+using BizHawk.Client.Common;
 using BizHawk.Common.IOExtensions;
 using BizHawk.Emulation.Common;
 
@@ -227,7 +229,7 @@ namespace BizHawk.Client.EmuHawk
 			public void Dispose() { }
 		}
 
-		public IDisposable AcquireVideoCodecToken(System.Windows.Forms.IWin32Window hwnd)
+		public IDisposable AcquireVideoCodecToken(IWin32Window hwnd, Config config)
 		{
 			// don't care
 			return new WavWriterVToken();
@@ -236,8 +238,8 @@ namespace BizHawk.Client.EmuHawk
 		/// <exception cref="ArgumentOutOfRangeException"><paramref name="bits"/> is not <c>16</c></exception>
 		public void SetAudioParameters(int sampleRate, int channels, int bits)
 		{
-			this._sampleRate = sampleRate;
-			this._channels = channels;
+			_sampleRate = sampleRate;
+			_channels = channels;
 			if (bits != 16)
 			{
 				throw new ArgumentException("Only support 16bit audio!");
@@ -294,7 +296,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public string DesiredExtension() => "wav";
 
-		public void SetDefaultVideoCodecToken()
+		public void SetDefaultVideoCodecToken(Config config)
 		{
 			// don't use codec tokens, so don't care
 		}

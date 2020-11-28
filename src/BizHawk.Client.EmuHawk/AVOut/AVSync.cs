@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
-
+using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -213,9 +213,9 @@ namespace BizHawk.Client.EmuHawk
 			W.SetVideoCodecToken(token);
 		}
 
-		public void SetDefaultVideoCodecToken()
+		public void SetDefaultVideoCodecToken(Config config)
 		{
-			W.SetDefaultVideoCodecToken();
+			W.SetDefaultVideoCodecToken(config);
 		}
 
 		public void OpenFile(string baseName)
@@ -243,9 +243,9 @@ namespace BizHawk.Client.EmuHawk
 			W.AddSamples(samples);
 		}
 
-		public IDisposable AcquireVideoCodecToken(IWin32Window hwnd)
+		public IDisposable AcquireVideoCodecToken(IWin32Window hwnd, Config config)
 		{
-			return W.AcquireVideoCodecToken(hwnd);
+			return W.AcquireVideoCodecToken(hwnd, config);
 		}
 
 		public void SetMovieParameters(int fpsNum, int fpsDen)

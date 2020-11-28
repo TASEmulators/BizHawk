@@ -540,7 +540,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SynclessRecordingMenuItem_Click(object sender, EventArgs e)
 		{
-			new SynclessRecordingTools(Game, Config.PathEntries.AvAbsolutePath()).Run();
+			new SynclessRecordingTools(Config, Game).Run();
 		}
 
 		private void CaptureOSDMenuItem_Click(object sender, EventArgs e)

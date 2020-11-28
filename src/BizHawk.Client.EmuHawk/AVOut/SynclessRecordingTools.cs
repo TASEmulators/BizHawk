@@ -13,16 +13,16 @@ namespace BizHawk.Client.EmuHawk
 	public partial class SynclessRecordingTools : Form
 	{
 		private readonly List<FrameInfo> _mFrameInfos = new List<FrameInfo>();
+		private readonly Config _config;
 		private readonly IGameInfo _game;
-		private readonly string _avAbsolutePath;
 
 		private string _mSynclessConfigFile;
 		private string _mFramesDirectory;
 
-		public SynclessRecordingTools(IGameInfo game, string avAbsolutePath)
+		public SynclessRecordingTools(Config config, IGameInfo game)
 		{
+			_config = config;
 			_game = game;
-			_avAbsolutePath = avAbsolutePath;
 			InitializeComponent();
 		}
 
@@ -31,7 +31,7 @@ namespace BizHawk.Client.EmuHawk
 			var ofd = new OpenFileDialog
 			{
 				FileName = $"{_game.FilesystemSafeName()}.syncless.txt",
-				InitialDirectory = _avAbsolutePath
+				InitialDirectory = _config.PathEntries.AvAbsolutePath()
 			};
 
 			if (ofd.ShowDialog() == DialogResult.Cancel)
@@ -123,7 +123,7 @@ namespace BizHawk.Client.EmuHawk
 			avw.SetAudioParameters(44100, 2, 16); // hacky
 			avw.SetMovieParameters(60, 1); // hacky
 			avw.SetVideoParameters(width, height);
-			var token = avw.AcquireVideoCodecToken(this);
+			var token = avw.AcquireVideoCodecToken(this, _config);
 			avw.SetVideoCodecToken(token);
 			avw.OpenFile(sfd.FileName);
 			foreach (var fi in _mFrameInfos)

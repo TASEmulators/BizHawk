@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -10,22 +11,22 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 		}
 
-		public static GifWriter.GifToken DoTokenForm(IWin32Window parent)
+		public static GifWriter.GifToken DoTokenForm(IWin32Window parent, Config config)
 		{
 			using var dlg = new GifWriterForm
 			{
-				numericUpDown1 = { Value = GlobalWin.Config.GifWriterFrameskip },
-				numericUpDown2 = { Value = GlobalWin.Config.GifWriterDelay }
+				numericUpDown1 = { Value = config.GifWriterFrameskip },
+				numericUpDown2 = { Value = config.GifWriterDelay }
 			};
 			dlg.NumericUpDown2_ValueChanged(null, null);
 
 			var result = dlg.ShowDialog(parent);
 			if (result.IsOk())
 			{
-				GlobalWin.Config.GifWriterFrameskip = (int)dlg.numericUpDown1.Value;
-				GlobalWin.Config.GifWriterDelay = (int)dlg.numericUpDown2.Value;
+				config.GifWriterFrameskip = (int)dlg.numericUpDown1.Value;
+				config.GifWriterDelay = (int)dlg.numericUpDown2.Value;
 
-				return GifWriter.GifToken.LoadFromConfig();
+				return GifWriter.GifToken.LoadFromConfig(config);
 			}
 
 			return null;

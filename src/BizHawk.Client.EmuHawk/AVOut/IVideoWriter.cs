@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-
-using BizHawk.Common;
+using System.Windows.Forms;
+using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -16,7 +16,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// sets to a default video codec token without calling any UI - for automated dumping
 		/// </summary>
-		void SetDefaultVideoCodecToken();
+		void SetDefaultVideoCodecToken(Config config);
 
 		/// <summary>
 		/// Returns whether this VideoWriter dumps audio
@@ -64,7 +64,7 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		/// <param name="hwnd">hwnd to attach to if the user is shown config dialog</param>
 		/// <returns>codec token, dispose of it when you're done with it</returns>
-		IDisposable AcquireVideoCodecToken(System.Windows.Forms.IWin32Window hwnd);
+		IDisposable AcquireVideoCodecToken(IWin32Window hwnd, Config config);
 
 		/// <summary>
 		/// set framerate to fpsNum/fpsDen (assumed to be unchanging over the life of the stream)

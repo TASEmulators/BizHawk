@@ -5,7 +5,7 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
-
+using BizHawk.Client.Common;
 using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
 using ICSharpCode.SharpZipLib.Zip.Compression;
 
@@ -529,20 +529,20 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		/// <param name="hwnd">hwnd to attach to if the user is shown config dialog</param>
 		/// <returns>codec token, dispose of it when you're done with it</returns>
-		public IDisposable AcquireVideoCodecToken(IWin32Window hwnd)
+		public IDisposable AcquireVideoCodecToken(IWin32Window hwnd, Config config)
 		{
 			var ret = new CodecToken();
 
 			// load from config and sanitize
-			int t = Math.Min(Math.Max(GlobalWin.Config.JmdThreads, 1), 6);
+			int t = Math.Min(Math.Max(config.JmdThreads, 1), 6);
 
-			int c = Math.Min(Math.Max(GlobalWin.Config.JmdCompression, Deflater.NO_COMPRESSION), Deflater.BEST_COMPRESSION);
+			int c = Math.Min(Math.Max(config.JmdCompression, Deflater.NO_COMPRESSION), Deflater.BEST_COMPRESSION);
 
 			if (!JmdForm.DoCompressionDlg(ref t, ref c, 1, 6, Deflater.NO_COMPRESSION, Deflater.BEST_COMPRESSION, hwnd))
 				return null;
 
-			GlobalWin.Config.JmdThreads = ret.NumThreads = t;
-			GlobalWin.Config.JmdCompression = ret.CompressionLevel = c;
+			config.JmdThreads = ret.NumThreads = t;
+			config.JmdCompression = ret.CompressionLevel = c;
 
 			return ret;
 		}
@@ -778,14 +778,14 @@ namespace BizHawk.Client.EmuHawk
 
 		public string DesiredExtension() => "jmd";
 
-		public void SetDefaultVideoCodecToken()
+		public void SetDefaultVideoCodecToken(Config config)
 		{
 			CodecToken ct = new CodecToken();
 
 			// load from config and sanitize
-			int t = Math.Min(Math.Max(GlobalWin.Config.JmdThreads, 1), 6);
+			int t = Math.Min(Math.Max(config.JmdThreads, 1), 6);
 
-			int c = Math.Min(Math.Max(GlobalWin.Config.JmdCompression, Deflater.NO_COMPRESSION), Deflater.BEST_COMPRESSION);
+			int c = Math.Min(Math.Max(config.JmdCompression, Deflater.NO_COMPRESSION), Deflater.BEST_COMPRESSION);
 
 			ct.CompressionLevel = c;
 			ct.NumThreads = t;

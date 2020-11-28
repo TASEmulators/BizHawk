@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -75,13 +76,13 @@ namespace BizHawk.Client.EmuHawk
 			/// <summary>
 			/// get the default format preset (from config files)
 			/// </summary>
-			public static FormatPreset GetDefaultPreset()
+			public static FormatPreset GetDefaultPreset(string ffmpegFormat)
 			{
 				FormatPreset[] fps = GetPresets();
 
 				foreach (var fp in fps)
 				{
-					if (fp.ToString() == GlobalWin.Config.FFmpegFormat)
+					if (fp.ToString() == ffmpegFormat)
 					{
 						if (fp.Custom)
 						{
@@ -148,12 +149,12 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// return a FormatPreset corresponding to the user's choice
 		/// </summary>
-		public static FormatPreset DoFFmpegWriterDlg(IWin32Window owner)
+		public static FormatPreset DoFFmpegWriterDlg(IWin32Window owner, Config config)
 		{
 			FFmpegWriterForm dlg = new FFmpegWriterForm();
 			dlg.listBox1.Items.AddRange(FormatPreset.GetPresets());
 
-			int i = dlg.listBox1.FindStringExact(GlobalWin.Config.FFmpegFormat);
+			int i = dlg.listBox1.FindStringExact(config.FFmpegFormat);
 			if (i != ListBox.NoMatches)
 			{
 				dlg.listBox1.SelectedIndex = i;
@@ -169,11 +170,11 @@ namespace BizHawk.Client.EmuHawk
 			else
 			{
 				ret = (FormatPreset)dlg.listBox1.SelectedItem;
-				GlobalWin.Config.FFmpegFormat = ret.ToString();
+				config.FFmpegFormat = ret.ToString();
 				if (ret.Custom)
 				{
 					ret.Commandline = 
-						GlobalWin.Config.FFmpegCustomCommand =
+						config.FFmpegCustomCommand =
 						dlg.textBox1.Text;
 
 					ret.DeduceFormat(ret.Commandline);

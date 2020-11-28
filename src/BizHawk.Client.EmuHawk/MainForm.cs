@@ -3183,7 +3183,7 @@ namespace BizHawk.Client.EmuHawk
 				// do this before save dialog because ffmpeg won't know what extension it wants until it's been configured
 				if (unattended && !string.IsNullOrEmpty(filename))
 				{
-					aw.SetDefaultVideoCodecToken();
+					aw.SetDefaultVideoCodecToken(Config);
 				}
 				else
 				{
@@ -3191,10 +3191,10 @@ namespace BizHawk.Client.EmuHawk
 					// PLEASE REDO ME TO NOT CARE WHICH AVWRITER IS USED!
 					if (usingAvi && !string.IsNullOrEmpty(Config.AviCodecToken))
 					{
-						aw.SetDefaultVideoCodecToken();
+						aw.SetDefaultVideoCodecToken(Config);
 					}
 
-					var token = aw.AcquireVideoCodecToken(this);
+					var token = aw.AcquireVideoCodecToken(this, Config);
 					if (token == null)
 					{
 						AddOnScreenMessage("A/V capture canceled.");

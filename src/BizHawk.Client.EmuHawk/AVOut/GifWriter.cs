@@ -1,6 +1,9 @@
 ﻿using System;
 using System.IO;
 using System.Drawing;
+using System.Windows.Forms;
+
+using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -58,12 +61,12 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			public static GifToken LoadFromConfig()
+			public static GifToken LoadFromConfig(Config config)
 			{
 				return new GifToken(0, 0)
 				{
-					Frameskip = GlobalWin.Config.GifWriterFrameskip,
-					FrameDelay = GlobalWin.Config.GifWriterDelay
+					Frameskip = config.GifWriterFrameskip,
+					FrameDelay = config.GifWriterDelay
 				};
 			}
 
@@ -94,9 +97,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void SetDefaultVideoCodecToken()
+		public void SetDefaultVideoCodecToken(Config config)
 		{
-			_token = GifToken.LoadFromConfig();
+			_token = GifToken.LoadFromConfig(config);
 			CalcDelay();
 		}
 
@@ -192,9 +195,9 @@ namespace BizHawk.Client.EmuHawk
 			// ignored
 		}
 
-		public IDisposable AcquireVideoCodecToken(System.Windows.Forms.IWin32Window hwnd)
+		public IDisposable AcquireVideoCodecToken(IWin32Window hwnd, Config config)
 		{
-			return GifWriterForm.DoTokenForm(hwnd);
+			return GifWriterForm.DoTokenForm(hwnd, config);
 		}
 
 		private void CalcDelay()

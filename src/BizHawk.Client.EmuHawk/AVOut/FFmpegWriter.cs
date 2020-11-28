@@ -4,6 +4,7 @@ using System.IO;
 using System.Text;
 using System.Diagnostics;
 using System.Windows.Forms;
+using BizHawk.Client.Common;
 using BizHawk.Common;
 using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
@@ -206,16 +207,19 @@ namespace BizHawk.Client.EmuHawk
 			//ffmpeg.StandardInput.BaseStream.Write(b, 0, b.Length);
 		}
 
-		public IDisposable AcquireVideoCodecToken(IWin32Window hwnd)
+		public IDisposable AcquireVideoCodecToken(IWin32Window hwnd, Config config)
 		{
 			if (new FFmpegService().QueryServiceAvailable())
-				return FFmpegWriterForm.DoFFmpegWriterDlg(hwnd);
-			else
 			{
-				FFmpegDownloaderForm.Run(hwnd);
-				if (new FFmpegService().QueryServiceAvailable())
-					return FFmpegWriterForm.DoFFmpegWriterDlg(hwnd);
+				return FFmpegWriterForm.DoFFmpegWriterDlg(hwnd, config);
 			}
+
+			FFmpegDownloaderForm.Run(hwnd);
+			if (new FFmpegService().QueryServiceAvailable())
+			{
+				return FFmpegWriterForm.DoFFmpegWriterDlg(hwnd, config);
+			}
+
 			return null;
 		}
 
@@ -317,9 +321,9 @@ namespace BizHawk.Client.EmuHawk
 			return _token.Extension;
 		}
 
-		public void SetDefaultVideoCodecToken()
+		public void SetDefaultVideoCodecToken(Config config)
 		{
-			_token = FFmpegWriterForm.FormatPreset.GetDefaultPreset();
+			_token = FFmpegWriterForm.FormatPreset.GetDefaultPreset(config.FFmpegFormat);
 		}
 
 		public bool UsesAudio => true;

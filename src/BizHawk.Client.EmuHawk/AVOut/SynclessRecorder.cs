@@ -7,6 +7,7 @@ using System.Windows.Forms;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Bizware.BizwareGL;
+using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -21,7 +22,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 		}
 
-		public void SetDefaultVideoCodecToken()
+		public void SetDefaultVideoCodecToken(Config config)
 		{
 		}
 
@@ -82,7 +83,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public IDisposable AcquireVideoCodecToken(IWin32Window hwnd)
+		public IDisposable AcquireVideoCodecToken(IWin32Window hwnd, Config config)
 		{
 			return new DummyDisposable();
 		}

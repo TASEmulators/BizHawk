@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Windows.Forms;
-
+using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -29,7 +29,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			// ignored
 		}
-		public IDisposable AcquireVideoCodecToken(IWin32Window hwnd)
+		public IDisposable AcquireVideoCodecToken(IWin32Window hwnd, Config config)
 		{
 			return new NutWriterToken();
 		}
@@ -137,7 +137,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public string DesiredExtension() => "nut";
 
-		public void SetDefaultVideoCodecToken()
+		public void SetDefaultVideoCodecToken(Config config)
 		{
 			// ignored
 		}
