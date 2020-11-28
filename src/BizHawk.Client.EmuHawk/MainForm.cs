@@ -318,7 +318,8 @@ namespace BizHawk.Client.EmuHawk
 
 			try
 			{
-				_argParser.ParseArguments(
+				ArgParser.ParseArguments(
+					out _argParser,
 					args,
 					() => (byte[]) new ImageConverter().ConvertTo(MakeScreenshotImage().ToSysdrawingBitmap(), typeof(byte[]))
 				);
@@ -1523,7 +1524,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private int _lastOpenRomFilter;
 
-		private readonly ArgParser _argParser = new ArgParser();
+		private ParsedCLIFlags _argParser;
 
 		// Resources
 		private Bitmap _statusBarDiskLightOnImage;

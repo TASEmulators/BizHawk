@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
@@ -7,188 +9,304 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public class ArgParser
-	//parses command line arguments and adds the values to a class attribute
-	//default values are null for strings and false for boolean
-	//the last value will overwrite previously set values
-	//unrecognized parameters are simply ignored or in the worst case assumed to be a ROM name [cmdRom]
+	/// <summary>
+	/// Parses command line flags from a string array into various instance fields.
+	/// </summary>
+	/// <remarks>
+	/// If a flag is given multiple times, the last is taken.<br/>
+	/// If a flag that isn't recognised is given, it is parsed as a filename. As noted above, the last filename is taken.
+	/// </remarks>
+	public static class ArgParser
 	{
-		public string cmdRom = null;
-		public string cmdLoadSlot = null;
-		public string cmdLoadState = null;
-		public string cmdConfigPath = null;
-		public string cmdConfigFile = null;
-		public string cmdMovie = null;
-		public string cmdDumpType = null;
-		public string cmdDumpName = null;
-		public HashSet<int> _currAviWriterFrameList;
-		public int _autoDumpLength;
-		public bool _autoCloseOnDump = false;
-		// chrome is never shown, even in windowed mode
-		public bool _chromeless = false;
-		public bool startFullscreen = false;
-		public string luaScript = null;
-		public bool luaConsole = false;
-		public bool printVersion = false;
-		public int socket_port = 0;
-		public string socket_ip = null;
-		public string mmf_filename = null;
-		public string URL_get = null;
-		public string URL_post = null;
-		public bool? audiosync = null;
-		public HttpCommunication httpCommunication = null;
-		public SocketServer socketServer = null;
-		public MemoryMappedFiles memoryMappedFiles = null;
-		public string openExtToolDll;
-
 		/// <exception cref="ArgParserException"><c>--socket_ip</c> passed without specifying <c>--socket_port</c> or vice-versa</exception>
-		public void ParseArguments(string[] args, Func<byte[]> takeScreenshotCallback)
+		public static void ParseArguments(out ParsedCLIFlags parsed, string[] args, Func<byte[]> takeScreenshotCallback)
 		{
-			for (int i = 0; i < args.Length; i++)
+			string? cmdLoadSlot = null;
+			string? cmdLoadState = null;
+			string? cmdConfigPath = null;
+			string? cmdConfigFile = null;
+			string? cmdMovie = null;
+			string? cmdDumpType = null;
+			HashSet<int>? currAviWriterFrameList = null;
+			int? autoDumpLength = null;
+			bool? printVersion = null;
+			string? cmdDumpName = null;
+			bool? autoCloseOnDump = null;
+			bool? chromeless = null;
+			bool? startFullscreen = null;
+			string? luaScript = null;
+			bool? luaConsole = null;
+			int? socketPort = null;
+			string? socketIP = null;
+			string? mmfFilename = null;
+			string? urlGet = null;
+			string? urlPost = null;
+			bool? audiosync = null;
+			string? openExtToolDll = null;
+			string? cmdRom = null;
+
+			for (var i = 0; i < args.Length; i++)
 			{
-				// For some reason sometimes visual studio will pass this to us on the commandline. it makes no sense.
-				if (args[i] == ">")
+				var arg = args[i];
+
+				if (arg == ">")
 				{
-					i++;
-					var stdout = args[i];
+					// For some reason sometimes visual studio will pass this to us on the commandline. it makes no sense.
+					var stdout = args[++i];
 					Console.SetOut(new StreamWriter(stdout));
 					continue;
 				}
 
-				var arg = args[i].ToLower();
-				if (arg.StartsWith("--load-slot="))
+				var argDowncased = arg.ToLower();
+				if (argDowncased.StartsWith("--load-slot="))
 				{
-					cmdLoadSlot = arg.Substring(arg.IndexOf('=') + 1);
+					cmdLoadSlot = argDowncased.Substring(argDowncased.IndexOf('=') + 1);
 				}
-
-				if (arg.StartsWith("--load-state="))
+				else if (argDowncased.StartsWith("--load-state="))
 				{
-					cmdLoadState = args[i].Substring(args[i].IndexOf('=') + 1);
+					cmdLoadState = arg.Substring(arg.IndexOf('=') + 1);
 				}
-				if (arg.StartsWith("--config="))
+				else if (argDowncased.StartsWith("--config="))
 				{
-					cmdConfigFile = args[i].Substring(args[i].IndexOf('=') + 1);
+					cmdConfigFile = arg.Substring(arg.IndexOf('=') + 1);
 				}
-				else if (arg.StartsWith("--movie="))
+				else if (argDowncased.StartsWith("--movie="))
 				{
-					cmdMovie = args[i].Substring(args[i].IndexOf('=') + 1);
+					cmdMovie = arg.Substring(arg.IndexOf('=') + 1);
 				}
-				else if (arg.StartsWith("--dump-type="))
+				else if (argDowncased.StartsWith("--dump-type="))
 				{
-					cmdDumpType = arg.Substring(arg.IndexOf('=') + 1);
+					cmdDumpType = argDowncased.Substring(argDowncased.IndexOf('=') + 1);
 				}
-				else if (arg.StartsWith("--dump-frames="))
+				else if (argDowncased.StartsWith("--dump-frames="))
 				{
-					string list = arg.Substring(arg.IndexOf('=') + 1);
+					string list = argDowncased.Substring(argDowncased.IndexOf('=') + 1);
 					string[] items = list.Split(',');
-					_currAviWriterFrameList = new HashSet<int>();
+					currAviWriterFrameList = new HashSet<int>();
 					foreach (string item in items)
 					{
-						_currAviWriterFrameList.Add(int.Parse(item));
+						currAviWriterFrameList.Add(int.Parse(item));
 					}
 
 					// automatically set dump length to maximum frame
-					_autoDumpLength = _currAviWriterFrameList.OrderBy(x => x).Last();
+					autoDumpLength = currAviWriterFrameList.OrderBy(x => x).Last();
 				}
-				else if (arg.StartsWith("--version"))
+				else if (argDowncased.StartsWith("--version"))
 				{
 					printVersion = true;
 				}
-				else if (arg.StartsWith("--dump-name="))
+				else if (argDowncased.StartsWith("--dump-name="))
 				{
-					cmdDumpName = args[i].Substring(args[i].IndexOf('=') + 1);
+					cmdDumpName = arg.Substring(arg.IndexOf('=') + 1);
 				}
-				else if (arg.StartsWith("--dump-length="))
+				else if (argDowncased.StartsWith("--dump-length="))
 				{
-					int.TryParse(arg.Substring(arg.IndexOf('=') + 1), out _autoDumpLength);
+					int.TryParse(argDowncased.Substring(argDowncased.IndexOf('=') + 1), out var len);
+					autoDumpLength = len;
 				}
-				else if (arg.StartsWith("--dump-close"))
+				else if (argDowncased.StartsWith("--dump-close"))
 				{
-					_autoCloseOnDump = true;
+					autoCloseOnDump = true;
 				}
-				else if (arg.StartsWith("--chromeless"))
+				else if (argDowncased.StartsWith("--chromeless"))
 				{
-					_chromeless = true;
+					// chrome is never shown, even in windowed mode
+					chromeless = true;
 				}
-				else if (arg.StartsWith("--fullscreen"))
+				else if (argDowncased.StartsWith("--fullscreen"))
 				{
 					startFullscreen = true;
 				}
-				else if (arg.StartsWith("--lua="))
+				else if (argDowncased.StartsWith("--lua="))
 				{
-					luaScript = args[i].Substring(args[i].IndexOf('=') + 1);
+					luaScript = arg.Substring(arg.IndexOf('=') + 1);
 					luaConsole = true;
 				}
-				else if (arg.StartsWith("--luaconsole"))
+				else if (argDowncased.StartsWith("--luaconsole"))
 				{
 					luaConsole = true;
 				}
-				else if (arg.StartsWith("--socket_port="))
+				else if (argDowncased.StartsWith("--socket_port="))
 				{
-					int.TryParse(arg.Substring(arg.IndexOf('=') + 1), out socket_port);
+					int.TryParse(argDowncased.Substring(argDowncased.IndexOf('=') + 1), out var port);
+					if (port > 0) socketPort = port;
 				}
-				else if (arg.StartsWith("--socket_ip="))
+				else if (argDowncased.StartsWith("--socket_ip="))
 				{
-					socket_ip = arg.Substring(arg.IndexOf('=') + 1);
+					socketIP = argDowncased.Substring(argDowncased.IndexOf('=') + 1);
 				}
-				else if (arg.StartsWith("--mmf="))
+				else if (argDowncased.StartsWith("--mmf="))
 				{
-					mmf_filename = args[i].Substring(args[i].IndexOf('=') + 1);
+					mmfFilename = arg.Substring(arg.IndexOf('=') + 1);
 				}
-				else if (arg.StartsWith("--url_get="))
+				else if (argDowncased.StartsWith("--url_get="))
 				{
-					URL_get = args[i].Substring(args[i].IndexOf('=') + 1);
+					urlGet = arg.Substring(arg.IndexOf('=') + 1);
 				}
-				else if (arg.StartsWith("--url_post="))
+				else if (argDowncased.StartsWith("--url_post="))
 				{
-					URL_post = args[i].Substring(args[i].IndexOf('=') + 1);
+					urlPost = arg.Substring(arg.IndexOf('=') + 1);
 				}
-				else if (arg.StartsWith("--audiosync="))
+				else if (argDowncased.StartsWith("--audiosync="))
 				{
-					audiosync = arg.Substring(arg.IndexOf('=') + 1) == "true";
+					audiosync = argDowncased.Substring(argDowncased.IndexOf('=') + 1) == "true";
 				}
-				else if (arg.StartsWith("--open-ext-tool-dll="))
+				else if (argDowncased.StartsWith("--open-ext-tool-dll="))
 				{
 					// the first ext. tool from ExternalToolManager.ToolStripMenu which satisfies both of these will be opened:
 					// - available (no load errors, correct system/rom, etc.)
 					// - dll path matches given string; or dll filename matches given string with or without `.dll`
-					openExtToolDll = args[i].Substring(20);
+					openExtToolDll = arg.Substring(20);
 				}
 				else
 				{
-					cmdRom = args[i];
+					cmdRom = arg;
 				}
 			}
 
-			httpCommunication = URL_get == null && URL_post == null
+			var httpCommunication = urlGet == null && urlPost == null
 				? null // don't bother
-				: new HttpCommunication(takeScreenshotCallback, URL_get, URL_post);
-			memoryMappedFiles = mmf_filename == null
+				: new HttpCommunication(takeScreenshotCallback, urlGet, urlPost);
+			var memoryMappedFiles = mmfFilename == null
 				? null // don't bother
-				: new MemoryMappedFiles(takeScreenshotCallback, mmf_filename);
-			if (socket_ip == null && socket_port <= 0)
+				: new MemoryMappedFiles(takeScreenshotCallback, mmfFilename);
+			SocketServer? socketServer;
+			if (socketIP == null && socketPort == null)
 			{
 				socketServer = null; // don't bother
 			}
-			else if (socket_ip == null || socket_port <= 0)
+			else if (socketIP == null || socketPort == null)
 			{
 				throw new ArgParserException("Socket server needs both --socket_ip and --socket_port. Socket server was not started");
 			}
 			else
 			{
-				socketServer = new SocketServer(takeScreenshotCallback, socket_ip, socket_port);
+				socketServer = new SocketServer(takeScreenshotCallback, socketIP, socketPort.Value);
 			}
+
+			parsed = new ParsedCLIFlags(
+				cmdLoadSlot: cmdLoadSlot,
+				cmdLoadState: cmdLoadState,
+				cmdConfigPath: cmdConfigPath,
+				cmdConfigFile: cmdConfigFile,
+				cmdMovie: cmdMovie,
+				cmdDumpType: cmdDumpType,
+				currAviWriterFrameList: currAviWriterFrameList,
+				autoDumpLength: autoDumpLength ?? 0,
+				printVersion: printVersion ?? false,
+				cmdDumpName: cmdDumpName,
+				autoCloseOnDump: autoCloseOnDump ?? false,
+				chromeless: chromeless ?? false,
+				startFullscreen: startFullscreen ?? false,
+				luaScript: luaScript,
+				luaConsole: luaConsole ?? false,
+				socketServer: socketServer,
+				memoryMappedFiles: memoryMappedFiles,
+				httpCommunication: httpCommunication,
+				audiosync: audiosync,
+				openExtToolDll: openExtToolDll,
+				cmdRom: cmdRom
+			);
 		}
 
-		public static string GetCmdConfigFile(string[] args)
+		public static string? GetCmdConfigFile(string[] args)
 		{
 			return args.FirstOrDefault(arg => arg.StartsWith("--config=", StringComparison.InvariantCultureIgnoreCase))?.Substring(9);
 		}
 	}
-	public class ArgParserException : Exception
+
+	public sealed class ArgParserException : Exception
 	{
-		public ArgParserException(string message) : base(message)
+		public ArgParserException(string message) : base(message) {}
+	}
+
+	public /*readonly*/ struct ParsedCLIFlags
+	{
+		public readonly string? cmdLoadSlot;
+
+		public readonly string? cmdLoadState;
+
+		public readonly string? cmdConfigPath;
+
+		public readonly string? cmdConfigFile;
+
+		public readonly string? cmdMovie;
+
+		public readonly string? cmdDumpType;
+
+		public readonly HashSet<int>? _currAviWriterFrameList;
+
+		public /*readonly*/ int _autoDumpLength;
+
+		public readonly bool printVersion;
+
+		public readonly string? cmdDumpName;
+
+		public readonly bool _autoCloseOnDump;
+
+		public readonly bool _chromeless;
+
+		public readonly bool startFullscreen;
+
+		public readonly string? luaScript;
+
+		public readonly bool luaConsole;
+
+		public readonly SocketServer? socketServer;
+
+		public readonly MemoryMappedFiles? memoryMappedFiles;
+
+		public readonly HttpCommunication? httpCommunication;
+
+		public readonly bool? audiosync;
+
+		public readonly string? openExtToolDll;
+
+		public readonly string? cmdRom;
+
+		public ParsedCLIFlags(string? cmdLoadSlot,
+			string? cmdLoadState,
+			string? cmdConfigPath,
+			string? cmdConfigFile,
+			string? cmdMovie,
+			string? cmdDumpType,
+			HashSet<int>? currAviWriterFrameList,
+			int autoDumpLength,
+			bool printVersion,
+			string? cmdDumpName,
+			bool autoCloseOnDump,
+			bool chromeless,
+			bool startFullscreen,
+			string? luaScript,
+			bool luaConsole,
+			SocketServer? socketServer,
+			MemoryMappedFiles? memoryMappedFiles,
+			HttpCommunication? httpCommunication,
+			bool? audiosync,
+			string? openExtToolDll,
+			string? cmdRom)
 		{
+			this.cmdLoadSlot = cmdLoadSlot;
+			this.cmdLoadState = cmdLoadState;
+			this.cmdConfigPath = cmdConfigPath;
+			this.cmdConfigFile = cmdConfigFile;
+			this.cmdMovie = cmdMovie;
+			this.cmdDumpType = cmdDumpType;
+			_currAviWriterFrameList = currAviWriterFrameList;
+			_autoDumpLength = autoDumpLength;
+			this.printVersion = printVersion;
+			this.cmdDumpName = cmdDumpName;
+			_autoCloseOnDump = autoCloseOnDump;
+			_chromeless = chromeless;
+			this.startFullscreen = startFullscreen;
+			this.luaScript = luaScript;
+			this.luaConsole = luaConsole;
+			this.socketServer = socketServer;
+			this.memoryMappedFiles = memoryMappedFiles;
+			this.httpCommunication = httpCommunication;
+			this.audiosync = audiosync;
+			this.openExtToolDll = openExtToolDll;
+			this.cmdRom = cmdRom;
 		}
 	}
 }
