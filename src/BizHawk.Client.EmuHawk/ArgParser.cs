@@ -220,7 +220,7 @@ namespace BizHawk.Client.EmuHawk
 		public ArgParserException(string message) : base(message) {}
 	}
 
-	public /*readonly*/ struct ParsedCLIFlags
+	public readonly struct ParsedCLIFlags
 	{
 		public readonly string? cmdLoadSlot;
 
@@ -236,7 +236,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public readonly HashSet<int>? _currAviWriterFrameList;
 
-		public /*readonly*/ int _autoDumpLength;
+		public readonly int _autoDumpLength;
 
 		public readonly bool printVersion;
 

@@ -472,6 +472,7 @@ namespace BizHawk.Client.EmuHawk
 				Config.VideoWriterAudioSync = _argParser.audiosync.Value;
 			}
 
+			_autoDumpLength = _argParser._autoDumpLength;
 			if (_argParser.cmdMovie != null)
 			{
 				_suppressSyncSettingsWarning = true; // We don't want to be nagged if we are attempting to automate
@@ -487,9 +488,9 @@ namespace BizHawk.Client.EmuHawk
 					MovieSession.ReadOnly = true;
 
 					// if user is dumping and didn't supply dump length, make it as long as the loaded movie
-					if (_argParser._autoDumpLength == 0)
+					if (_autoDumpLength == 0)
 					{
-						_argParser._autoDumpLength = movie.InputLogLength;
+						_autoDumpLength = movie.InputLogLength;
 					}
 
 					// Copy pasta from drag & drop
@@ -1524,7 +1525,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private int _lastOpenRomFilter;
 
-		private ParsedCLIFlags _argParser;
+		private readonly ParsedCLIFlags _argParser;
+
+		private int _autoDumpLength;
 
 		// Resources
 		private Bitmap _statusBarDiskLightOnImage;
@@ -3405,10 +3408,10 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			if (_argParser._autoDumpLength > 0)
+			if (_autoDumpLength > 0) //TODO this is probably not necessary because of the call to StopAv --yoshi
 			{
-				_argParser._autoDumpLength--;
-				if (_argParser._autoDumpLength == 0) // finish
+				_autoDumpLength--;
+				if (_autoDumpLength == 0) // finish
 				{
 					StopAv();
 					if (_argParser._autoCloseOnDump)
