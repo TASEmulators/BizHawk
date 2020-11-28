@@ -17,9 +17,9 @@ namespace BizHawk.Client.Common
 		private readonly IStatable _statable;
 		private readonly IVideoProvider _videoProvider;
 		private readonly IMovieSession _movieSession;
-		private readonly Dictionary<string, object> _userBag;
+		private readonly IDictionary<string, object> _userBag;
 
-		public SavestateFile(IEmulator emulator, IMovieSession movieSession, Dictionary<string, object> userBag)
+		public SavestateFile(IEmulator emulator, IMovieSession movieSession, IDictionary<string, object> userBag)
 		{
 			if (!emulator.HasSavestates())
 			{

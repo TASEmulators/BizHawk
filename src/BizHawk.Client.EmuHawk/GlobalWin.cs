@@ -1,7 +1,6 @@
 ﻿using BizHawk.Bizware.BizwareGL;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
-using System.Collections.Generic;
 
 // ReSharper disable StyleCop.SA1401
 namespace BizHawk.Client.EmuHawk
@@ -21,8 +20,6 @@ namespace BizHawk.Client.EmuHawk
 		public static IGL_TK IGL_GL;
 
 		public static Sound Sound;
-
-		public static Dictionary<string, object> UserBag { get; set; } = new Dictionary<string, object>();
 
 		public static Config Config { get; set; }
 		public static GameInfo Game { get; set; }

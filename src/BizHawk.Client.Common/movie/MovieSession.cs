@@ -46,6 +46,8 @@ namespace BizHawk.Client.Common
 		public bool NewMovieQueued => _queuedMovie != null;
 		public string QueuedSyncSettings => _queuedMovie.SyncSettingsJson;
 
+		public IDictionary<string, object> UserBag { get; set; } = new Dictionary<string, object>();
+
 		public IInputAdapter MovieIn { private get; set; }
 		public IInputAdapter MovieOut { get; } = new CopyControllerAdapter();
 		public IStickyAdapter StickySource { get; set; }

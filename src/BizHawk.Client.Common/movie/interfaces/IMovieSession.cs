@@ -20,6 +20,8 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		string QueuedSyncSettings { get; }
 
+		IDictionary<string, object> UserBag { get; set; }
+
 		IMovieController MovieController { get; }
 
 		/// <summary>
