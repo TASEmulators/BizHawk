@@ -24,7 +24,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private static readonly Type[] _ctorParamTypesB = { typeof(Action<string>), typeof(IMainFormForApi) };
 
-		private static readonly Type[] _ctorParamTypesC = { typeof(Action<string>), typeof(IMainFormForApi), typeof(DisplayManager), typeof(InputManager), typeof(Config), typeof(IEmulator), typeof(IGameInfo) };
+		private static readonly Type[] _ctorParamTypesC = { typeof(Action<string>), typeof(IMovieSession) };
+
+		private static readonly Type[] _ctorParamTypesD = { typeof(Action<string>), typeof(IMainFormForApi), typeof(DisplayManager), typeof(InputManager), typeof(Config), typeof(IEmulator), typeof(IGameInfo) };
 
 		private static readonly Type[] _ctorParamTypesTools = { typeof(ToolManager) };
 
@@ -39,6 +41,7 @@ namespace BizHawk.Client.EmuHawk
 			IMainFormForApi mainForm,
 			DisplayManager displayManager,
 			InputManager inputManager,
+			IMovieSession movieSession,
 			ToolManager toolManager,
 			Config config,
 			IEmulator emulator,
@@ -48,7 +51,8 @@ namespace BizHawk.Client.EmuHawk
 				.ToDictionary(
 					t => _apiTypes[t],
 					t => (IExternalApi) (
-						t.GetConstructor(_ctorParamTypesC)?.Invoke(new object[] { logCallback, mainForm, displayManager, inputManager, config, emulator, game })
+						t.GetConstructor(_ctorParamTypesD)?.Invoke(new object[] { logCallback, mainForm, displayManager, inputManager, config, emulator, game })
+						?? t.GetConstructor(_ctorParamTypesC)?.Invoke(new object[] { logCallback, movieSession })
 							?? t.GetConstructor(_ctorParamTypesB)?.Invoke(new object[] { logCallback, mainForm })
 							?? t.GetConstructor(_ctorParamTypesA)?.Invoke(new object[] { logCallback })
 							?? t.GetConstructor(_ctorParamTypesTools)?.Invoke(new object[] { toolManager })
@@ -64,12 +68,13 @@ namespace BizHawk.Client.EmuHawk
 			IMainFormForApi mainForm,
 			DisplayManager displayManager,
 			InputManager inputManager,
+			IMovieSession movieSession,
 			ToolManager toolManager,
 			Config config,
 			IEmulator emulator,
 			IGameInfo game)
 		{
-			_container = Register(serviceProvider, Console.WriteLine, mainForm, displayManager, inputManager, toolManager, config, emulator, game);
+			_container = Register(serviceProvider, Console.WriteLine, mainForm, displayManager, inputManager, movieSession, toolManager, config, emulator, game);
 			ClientApi.EmuClient = _container.EmuClient;
 			return new BasicApiProvider(_container);
 		}
@@ -80,10 +85,11 @@ namespace BizHawk.Client.EmuHawk
 			IMainFormForApi mainForm,
 			DisplayManager displayManager,
 			InputManager inputManager,
+			IMovieSession movieSession,
 			ToolManager toolManager,
 			Config config,
 			IEmulator emulator,
 			IGameInfo game
-		) => _luaContainer = Register(serviceProvider, logCallback, mainForm, displayManager, inputManager, toolManager, config, emulator, game);
+		) => _luaContainer = Register(serviceProvider, logCallback, mainForm, displayManager, inputManager, movieSession, toolManager, config, emulator, game);
 	}
 }

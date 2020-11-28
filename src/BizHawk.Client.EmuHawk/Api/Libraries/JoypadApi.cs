@@ -7,9 +7,15 @@ namespace BizHawk.Client.EmuHawk
 {
 	public sealed class JoypadApi : IJoypadApi
 	{
+		private readonly IMovieSession _movieSession;
+
 		private readonly Action<string> LogCallback;
 
-		public JoypadApi(Action<string> logCallback) => LogCallback = logCallback;
+		public JoypadApi(Action<string> logCallback, IMovieSession movieSession)
+		{
+			LogCallback = logCallback;
+			_movieSession = movieSession;
+		}
 
 		public IDictionary<string, object> Get(int? controller = null)
 		{
@@ -23,7 +29,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SetFromMnemonicStr(string inputLogEntry)
 		{
-			var controller = GlobalWin.MovieSession.GenerateMovieController();
+			var controller = _movieSession.GenerateMovieController();
 			try
 			{
 				controller.SetFromMnemonic(inputLogEntry);
