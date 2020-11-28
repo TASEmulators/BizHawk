@@ -6,14 +6,15 @@ using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Common;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class PathConfig : Form
 	{
 		private readonly Config _config;
+		private readonly IGameInfo _game;
 		private readonly IMainFormForConfig _mainForm;
-		private readonly string _currentSystemId;
 
 		// All path text boxes should do some kind of error checking
 		// Config path under base, config will default to %exe%
@@ -42,11 +43,11 @@ namespace BizHawk.Client.EmuHawk
 			"..\\"
 		};
 
-		public PathConfig(IMainFormForConfig mainForm, Config config, string currentSystemId)
+		public PathConfig(IMainFormForConfig mainForm, Config config, IGameInfo game)
 		{
 			_mainForm = mainForm;
 			_config = config;
-			_currentSystemId = currentSystemId;
+			_game = game;
 			InitializeComponent();
 			SpecialCommandsBtn.Image = Properties.Resources.Help;
 		}
@@ -62,7 +63,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetDefaultFocusedTab()
 		{
-			var tab = FindTabByName(_currentSystemId);
+			var tab = FindTabByName(_game.System);
 			if (tab != null)
 			{
 				PathTabControl.SelectTab(tab);
@@ -178,7 +179,7 @@ namespace BizHawk.Client.EmuHawk
 								return;
 							}
 
-							using var f = new FirmwaresConfig(_mainForm, _config) { TargetSystem = "Global" };
+							using var f = new FirmwaresConfig(_mainForm, _config, _game) { TargetSystem = "Global" };
 							f.ShowDialog(this);
 						};
 

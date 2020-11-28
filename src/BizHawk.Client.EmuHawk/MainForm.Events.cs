@@ -873,13 +873,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (e is RomLoader.RomErrorArgs args)
 			{
-				using var configForm = new FirmwaresConfig(this, Config, true, args.RomPath);
+				using var configForm = new FirmwaresConfig(this, Config, Game, true, args.RomPath);
 				var result = configForm.ShowDialog();
 				args.Retry = result == DialogResult.Retry;
 			}
 			else
 			{
-				using var configForm = new FirmwaresConfig(this, Config);
+				using var configForm = new FirmwaresConfig(this, Config, Game);
 				configForm.ShowDialog();
 			}
 		}
@@ -895,7 +895,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PathsMenuItem_Click(object sender, EventArgs e)
 		{
-			using var form = new PathConfig(this, Config, Game.System);
+			using var form = new PathConfig(this, Config, Game);
 			form.ShowDialog();
 		}
 
@@ -1787,7 +1787,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Emulator is GambatteLink gambatte)
 			{
-				DGBPrefs.DoDGBPrefsDialog(this, Config, Game, gambatte);
+				DGBPrefs.DoDGBPrefsDialog(this, Config, Game, MovieSession, gambatte);
 			}
 		}
 

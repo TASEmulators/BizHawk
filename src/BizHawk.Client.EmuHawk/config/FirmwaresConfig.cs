@@ -30,6 +30,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private readonly IMainFormForConfig _mainForm;
 		private readonly Config _config;
+		private readonly IGameInfo _game;
 
 		// friendlier names than the system Ids
 		// Redundant with SystemLookup? Not so fast. That data drives things. This is one step abstracted. Don't be such a smart guy. Keep this redundant list up to date.
@@ -94,10 +95,11 @@ namespace BizHawk.Client.EmuHawk
 		private string _currSelectorDir;
 		private readonly ListViewSorter _listViewSorter;
 
-		public FirmwaresConfig(IMainFormForConfig mainForm, Config config, bool retryLoadRom = false, string reloadRomPath = null)
+		public FirmwaresConfig(IMainFormForConfig mainForm, Config config, IGameInfo game, bool retryLoadRom = false, string reloadRomPath = null)
 		{
 			_mainForm = mainForm;
 			_config = config;
+			_game = game;
 			InitializeComponent();
 
 			tbbGroup.Image
@@ -592,7 +594,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			using var pathConfig = new PathConfig(_mainForm, _config, GlobalWin.Game.System);
+			using var pathConfig = new PathConfig(_mainForm, _config, _game);
 			pathConfig.ShowDialog(this);
 			RefreshBasePath();
 		}

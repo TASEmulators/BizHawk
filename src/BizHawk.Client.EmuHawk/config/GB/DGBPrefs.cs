@@ -11,10 +11,11 @@ namespace BizHawk.Client.EmuHawk
 		private readonly IGameInfo _game;
 		private readonly IMovieSession _movieSession;
 
-		private DGBPrefs(Config config, IGameInfo game)
+		private DGBPrefs(Config config, IGameInfo game, IMovieSession movieSession)
 		{
 			_config = config;
 			_game = game;
+			_movieSession = movieSession;
 			InitializeComponent();
 			Icon = Properties.Resources.DualIcon;
 		}
@@ -36,12 +37,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool SyncSettingsChanged => gbPrefControl1.SyncSettingsChanged || gbPrefControl2.SyncSettingsChanged;
 
-		public static void DoDGBPrefsDialog(IMainFormForConfig mainForm, Config config, IGameInfo game, GambatteLink gambatte)
+		public static void DoDGBPrefsDialog(IMainFormForConfig mainForm, Config config, IGameInfo game, IMovieSession movieSession, GambatteLink gambatte)
 		{
 			var s = gambatte.GetSettings();
 			var ss = gambatte.GetSyncSettings();
 
-			using var dlg = new DGBPrefs(config, game);
+			using var dlg = new DGBPrefs(config, game, movieSession);
 			dlg.PutSettings(s, ss);
 
 			dlg.gbPrefControl1.ColorGameBoy = gambatte.IsCGBMode(false);
