@@ -120,17 +120,17 @@ namespace BizHawk.Client.EmuHawk
 				{
 					Settings.Columns = LuaListView.AllColumns;
 					
-					GlobalWin.DisplayManager.ClearLuaSurfaces();
+					DisplayManager.ClearLuaSurfaces();
 
-					if (GlobalWin.DisplayManager.ClientExtraPadding != Padding.Empty)
+					if (DisplayManager.ClientExtraPadding != Padding.Empty)
 					{
-						GlobalWin.DisplayManager.ClientExtraPadding = new Padding(0);
+						DisplayManager.ClientExtraPadding = new Padding(0);
 						MainForm.FrameBufferResized();
 					}
 
-					if (GlobalWin.DisplayManager.GameExtraPadding != Padding.Empty)
+					if (DisplayManager.GameExtraPadding != Padding.Empty)
 					{
-						GlobalWin.DisplayManager.GameExtraPadding = new Padding(0);
+						DisplayManager.GameExtraPadding = new Padding(0);
 						MainForm.FrameBufferResized();
 					}
 
@@ -236,7 +236,7 @@ namespace BizHawk.Client.EmuHawk
 			var currentScripts = LuaImp?.ScriptList; // Temp fix for now
 			LuaImp = OSTailoredCode.IsUnixHost
 				? new UnixLuaLibraries()
-				: new Win32LuaLibraries(Emulator.ServiceProvider, (MainForm) MainForm, GlobalWin.DisplayManager, InputManager, Config, Emulator, Game);
+				: new Win32LuaLibraries(Emulator.ServiceProvider, (MainForm) MainForm, DisplayManager, InputManager, Config, Emulator, Game);
 			LuaImp.ScriptList.AddRange(currentScripts ?? Enumerable.Empty<LuaFile>());
 
 			InputBox.AutoCompleteCustomSource.AddRange(LuaImp.Docs.Select(a => $"{a.Library}.{a.Name}").ToArray());
@@ -1533,7 +1533,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void EraseToolbarItem_Click(object sender, EventArgs e)
 		{
-			GlobalWin.DisplayManager.ClearLuaSurfaces();
+			DisplayManager.ClearLuaSurfaces();
 		}
 
 		// Stupid designer

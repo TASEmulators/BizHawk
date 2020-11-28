@@ -22,7 +22,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public static Sound Sound;
 		public static readonly OSDManager OSD = new OSDManager();
-		public static DisplayManager DisplayManager;
 
 		public static Dictionary<string, object> UserBag { get; set; } = new Dictionary<string, object>();
 

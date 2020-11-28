@@ -311,7 +311,6 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.Game = GameInfo.NullInstance;
 			_throttle = new Throttle();
 			Emulator = new NullEmulator();
-			Tools = new ToolManager(this, Config, InputManager, Emulator, MovieSession, Game);
 
 			UpdateStatusSlots();
 			UpdateKeyPriorityIcon();
@@ -337,9 +336,11 @@ namespace BizHawk.Client.EmuHawk
 			{
 				GraphicsControl = { MainWindow = true }
 			};
-			GlobalWin.DisplayManager = new DisplayManager(OSD, GlobalWin.GL, _presentationPanel, () => DisableSecondaryThrottling);
+			DisplayManager = new DisplayManager(OSD, GlobalWin.GL, _presentationPanel, () => DisableSecondaryThrottling);
 			Controls.Add(_presentationPanel);
 			Controls.SetChildIndex(_presentationPanel, 0);
+
+			Tools = new ToolManager(this, Config, DisplayManager, InputManager, Emulator, MovieSession, Game);
 
 			// TODO GL - move these event handlers somewhere less obnoxious line in the On* overrides
 			Load += (o, e) =>
@@ -717,7 +718,7 @@ namespace BizHawk.Client.EmuHawk
 			if (DisplayManager != null)
 			{
 				DisplayManager.Dispose();
-				GlobalWin.DisplayManager = null;
+				DisplayManager = null;
 			}
 
 			if (disposing)
@@ -858,7 +859,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public readonly ToolManager Tools;
 
-		private DisplayManager DisplayManager => GlobalWin.DisplayManager;
+		private DisplayManager DisplayManager;
 
 		public IMovieSession MovieSession
 		{

@@ -13,6 +13,8 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public ToolManager Tools { get; set; }
 
+		public DisplayManager DisplayManager { get; set; }
+
 		public InputManager InputManager { get; set; }
 		public IMainFormForTools MainForm { get; set; }
 

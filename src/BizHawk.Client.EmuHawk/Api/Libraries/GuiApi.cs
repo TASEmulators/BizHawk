@@ -19,6 +19,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly Action<string> LogCallback;
 
+		private readonly DisplayManager _displayManager;
+
 		private readonly Dictionary<string, Image> _imageCache = new Dictionary<string, Image>();
 
 		private readonly Bitmap _nullGraphicsBitmap = new Bitmap(1, 1);
@@ -45,7 +47,11 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool HasGUISurface => _GUISurface != null;
 
-		public GuiApi(Action<string> logCallback) => LogCallback = logCallback;
+		public GuiApi(Action<string> logCallback, IMainFormForApi mainForm, DisplayManager displayManager, InputManager inputManager, Config config, IEmulator emulator, IGameInfo game)
+		{
+			LogCallback = logCallback;
+			_displayManager = displayManager;
+		}
 
 		private SolidBrush GetBrush(Color color) => _solidBrushes.TryGetValue(color, out var b) ? b : (_solidBrushes[color] = new SolidBrush(color));
 
@@ -76,7 +82,7 @@ namespace BizHawk.Client.EmuHawk
 			try
 			{
 				DrawFinish();
-				_GUISurface = GlobalWin.DisplayManager.LockLuaSurface(name, clear);
+				_GUISurface = _displayManager.LockLuaSurface(name, clear);
 			}
 			catch (InvalidOperationException ex)
 			{
@@ -86,7 +92,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void DrawFinish()
 		{
-			if (_GUISurface != null) GlobalWin.DisplayManager.UnlockLuaSurface(_GUISurface);
+			if (_GUISurface != null) _displayManager.UnlockLuaSurface(_GUISurface);
 			_GUISurface = null;
 		}
 
@@ -476,7 +482,7 @@ namespace BizHawk.Client.EmuHawk
 						break;
 				}
 				using var g = GetGraphics();
-				var font = new Font(GlobalWin.DisplayManager.CustomFonts.Families[index], 8, FontStyle.Regular, GraphicsUnit.Pixel);
+				var font = new Font(_displayManager.CustomFonts.Families[index], 8, FontStyle.Regular, GraphicsUnit.Pixel);
 				var sizeOfText = g.MeasureString(
 					message,
 					font,

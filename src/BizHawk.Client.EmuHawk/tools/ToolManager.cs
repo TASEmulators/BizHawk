@@ -20,6 +20,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private readonly MainForm _owner;
 		private readonly Config _config;
+		private readonly DisplayManager _displayManager;
 		private readonly InputManager _inputManager;
 		private IExternalApiProvider _apiProvider;
 		private IEmulator _emulator;
@@ -43,6 +44,7 @@ namespace BizHawk.Client.EmuHawk
 		public ToolManager(
 			MainForm owner,
 			Config config,
+			DisplayManager displayManager,
 			InputManager inputManager,
 			IEmulator emulator,
 			IMovieSession movieSession,
@@ -50,11 +52,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_owner = owner;
 			_config = config;
+			_displayManager = displayManager;
 			_inputManager = inputManager;
 			_emulator = emulator;
 			_movieSession = movieSession;
 			_game = game;
-			ApiProvider = ApiManager.Restart(_emulator.ServiceProvider, _owner, GlobalWin.DisplayManager, _inputManager, this, _config, _emulator, _game);
+			ApiProvider = ApiManager.Restart(_emulator.ServiceProvider, _owner, _displayManager, _inputManager, this, _config, _emulator, _game);
 		}
 
 		/// <summary>
@@ -84,6 +87,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				tool.Tools = this;
 				tool.Config = _config;
+				tool.DisplayManager = _displayManager;
 				tool.InputManager = _inputManager;
 				tool.MainForm = _owner;
 				tool.MovieSession = _movieSession;
@@ -505,7 +509,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_emulator = emulator;
 			_game = game;
-			ApiProvider = ApiManager.Restart(_emulator.ServiceProvider, _owner, GlobalWin.DisplayManager, _inputManager, this, _config, _emulator, _game);
+			ApiProvider = ApiManager.Restart(_emulator.ServiceProvider, _owner, _displayManager, _inputManager, this, _config, _emulator, _game);
 			// If Cheat tool is loaded, restarting will restart the list too anyway
 			if (!Has<Cheats>())
 			{
