@@ -319,6 +319,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 				ppu.LYC_offset = double_speed ? 1 : 2;
 
+				ppu.LY_153_change = double_speed ? 8 : 10;
+
 				return 0;
 			}
 			else

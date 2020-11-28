@@ -328,6 +328,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 									VRAM_access_read = VRAM_access_read_PPU & VRAM_access_read_HDMA;
 									VRAM_access_write_HDMA = false;
 									VRAM_access_write = VRAM_access_write_PPU & VRAM_access_write_HDMA;
+
+									// reading from open bus still returns 0xFF on DMA access, see dma_hiram_read_result_cgb04c_out1.gbc
+									Core.bus_value = 0xFF;
 								}
 								else
 								{
@@ -355,6 +358,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								Core.VRAM[(Core.VRAM_Bank * 0x2000) + cur_DMA_dest] = HDMA_byte;
 								cur_DMA_dest = (ushort)((cur_DMA_dest + 1) & 0x1FFF);
 								cur_DMA_src = (ushort)((cur_DMA_src + 1) & 0xFFFF);
+
+								// similar to normal DMA, except HDMA transfers when A14 is high always access SRAM
 								if (cur_DMA_src >= 0xE000) { cur_DMA_src &= 0xBFFF; }
 
 								HDMA_length--;
@@ -395,6 +400,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 										VRAM_access_write_HDMA = false;
 										VRAM_access_write = VRAM_access_write_PPU & VRAM_access_write_HDMA;
 
+										// reading from open bus still returns 0xFF on DMA access, see dma_hiram_read_result_cgb04c_out1.gbc
+										Core.bus_value = 0xFF;
+
 										if (LCDC.Bit(7)) { last_HBL = LY; }
 										else { last_HBL = 0xFF; }
 									}
@@ -423,6 +431,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 									Core.VRAM[(Core.VRAM_Bank * 0x2000) + cur_DMA_dest] = HDMA_byte;
 									cur_DMA_dest = (ushort)((cur_DMA_dest + 1) & 0x1FFF);
 									cur_DMA_src = (ushort)((cur_DMA_src + 1) & 0xFFFF);
+
+									// similar to normal DMA, except HDMA transfers when A14 is high always access SRAM
 									if (cur_DMA_src >= 0xE000) { cur_DMA_src &= 0xBFFF; }
 
 									HDMA_length--;
@@ -704,7 +714,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 				if (LY_inc == 0)
 				{
-					if (cycle == 10)
+					if (cycle == LY_153_change)
 					{
 						LY_read = LY;
 					}
@@ -1817,6 +1827,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			LYC_offset = 2;
 
 			glitch_state = false;
+
+			LY_153_change = 10;
 		}
 	}
 }

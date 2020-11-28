@@ -330,6 +330,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 									VRAM_access_read = VRAM_access_read_PPU & VRAM_access_read_HDMA;
 									VRAM_access_write_HDMA = false;
 									VRAM_access_write = VRAM_access_write_PPU & VRAM_access_write_HDMA;
+
+									// reading from open bus still returns 0xFF on DMA access, see dma_hiram_read_result_cgb04c_out1.gbc
+									Core.bus_value = 0xFF;
 								}
 								else
 								{
@@ -398,6 +401,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 										VRAM_access_read = VRAM_access_read_PPU & VRAM_access_read_HDMA;
 										VRAM_access_write_HDMA = false;
 										VRAM_access_write = VRAM_access_write_PPU & VRAM_access_write_HDMA;
+
+										// reading from open bus still returns 0xFF on DMA access, see dma_hiram_read_result_cgb04c_out1.gbc
+										Core.bus_value = 0xFF;
 
 										if (LCDC.Bit(7)) { last_HBL = LY; }
 										else { last_HBL = 0xFF; }
