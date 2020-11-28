@@ -1333,13 +1333,11 @@ namespace BizHawk.Client.EmuHawk
 				FDSControlsMenuItem.DropDownItems.RemoveAt(1);
 			}
 
-			for (int i = 0; i < 16; i++)
+			string button;
+			for (int i = 0; Emulator.ControllerDefinition.BoolButtons.Contains(button = $"FDS Insert {i}"); i++)
 			{
-				var str = $"FDS Insert {i}";
-				if (Emulator.ControllerDefinition.BoolButtons.Contains(str))
-				{
-					FdsInsertDiskMenuAdd($"Insert Disk {i}", str, $"FDS Disk {i} inserted.");
-				}
+				var name = $"Disk {i / 2 + 1} Side {(char)(i % 2 + 'A')}";
+				FdsInsertDiskMenuAdd($"Insert {name}", button, $"FDS {name} inserted.");
 			}
 		}
 
