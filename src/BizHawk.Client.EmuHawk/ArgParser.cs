@@ -5,8 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 
-using BizHawk.Client.Common;
-
 namespace BizHawk.Client.EmuHawk
 {
 	/// <summary>
@@ -19,7 +17,7 @@ namespace BizHawk.Client.EmuHawk
 	public static class ArgParser
 	{
 		/// <exception cref="ArgParserException"><c>--socket_ip</c> passed without specifying <c>--socket_port</c> or vice-versa</exception>
-		public static void ParseArguments(out ParsedCLIFlags parsed, string[] args, Func<byte[]> takeScreenshotCallback)
+		public static void ParseArguments(out ParsedCLIFlags parsed, string[] args)
 		{
 			string? cmdLoadSlot = null;
 			string? cmdLoadState = null;
@@ -164,16 +162,13 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			var httpCommunication = urlGet == null && urlPost == null
-				? null // don't bother
-				: new HttpCommunication(takeScreenshotCallback, urlGet, urlPost);
-			var memoryMappedFiles = mmfFilename == null
-				? null // don't bother
-				: new MemoryMappedFiles(takeScreenshotCallback, mmfFilename);
-			SocketServer? socketServer;
+			var httpAddresses = urlGet == null && urlPost == null
+				? ((string?, string?)?) null // don't bother
+				: (urlGet, urlPost);
+			(string, int)? socketAddress;
 			if (socketIP == null && socketPort == null)
 			{
-				socketServer = null; // don't bother
+				socketAddress = null; // don't bother
 			}
 			else if (socketIP == null || socketPort == null)
 			{
@@ -181,7 +176,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				socketServer = new SocketServer(takeScreenshotCallback, socketIP, socketPort.Value);
+				socketAddress = (socketIP, socketPort.Value);
 			}
 
 			parsed = new ParsedCLIFlags(
@@ -200,9 +195,9 @@ namespace BizHawk.Client.EmuHawk
 				startFullscreen: startFullscreen ?? false,
 				luaScript: luaScript,
 				luaConsole: luaConsole ?? false,
-				socketServer: socketServer,
-				memoryMappedFiles: memoryMappedFiles,
-				httpCommunication: httpCommunication,
+				socketAddress: socketAddress,
+				mmfFilename: mmfFilename,
+				httpAddresses: httpAddresses,
 				audiosync: audiosync,
 				openExtToolDll: openExtToolDll,
 				cmdRom: cmdRom
@@ -252,11 +247,11 @@ namespace BizHawk.Client.EmuHawk
 
 		public readonly bool luaConsole;
 
-		public readonly SocketServer? socketServer;
+		public readonly (string IP, int Port)? SocketAddress;
 
-		public readonly MemoryMappedFiles? memoryMappedFiles;
+		public readonly string? MMFFilename;
 
-		public readonly HttpCommunication? httpCommunication;
+		public readonly (string? UrlGet, string? UrlPost)? HTTPAddresses;
 
 		public readonly bool? audiosync;
 
@@ -279,9 +274,9 @@ namespace BizHawk.Client.EmuHawk
 			bool startFullscreen,
 			string? luaScript,
 			bool luaConsole,
-			SocketServer? socketServer,
-			MemoryMappedFiles? memoryMappedFiles,
-			HttpCommunication? httpCommunication,
+			(string IP, int Port)? socketAddress,
+			string? mmfFilename,
+			(string? UrlGet, string? UrlPost)? httpAddresses,
 			bool? audiosync,
 			string? openExtToolDll,
 			string? cmdRom)
@@ -301,9 +296,9 @@ namespace BizHawk.Client.EmuHawk
 			this.startFullscreen = startFullscreen;
 			this.luaScript = luaScript;
 			this.luaConsole = luaConsole;
-			this.socketServer = socketServer;
-			this.memoryMappedFiles = memoryMappedFiles;
-			this.httpCommunication = httpCommunication;
+			SocketAddress = socketAddress;
+			MMFFilename = mmfFilename;
+			HTTPAddresses = httpAddresses;
 			this.audiosync = audiosync;
 			this.openExtToolDll = openExtToolDll;
 			this.cmdRom = cmdRom;

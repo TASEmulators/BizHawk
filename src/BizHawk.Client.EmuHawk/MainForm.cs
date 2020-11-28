@@ -318,11 +318,7 @@ namespace BizHawk.Client.EmuHawk
 
 			try
 			{
-				ArgParser.ParseArguments(
-					out _argParser,
-					args,
-					() => (byte[]) new ImageConverter().ConvertTo(MakeScreenshotImage().ToSysdrawingBitmap(), typeof(byte[]))
-				);
+				ArgParser.ParseArguments(out _argParser, args);
 			}
 			catch (ArgParserException e)
 			{
@@ -550,7 +546,18 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// set up networking before Lua
-			NetworkingHelpers = (_argParser.httpCommunication, _argParser.memoryMappedFiles, _argParser.socketServer);
+			byte[] NetworkingTakeScreenshot() => (byte[]) new ImageConverter().ConvertTo(MakeScreenshotImage().ToSysdrawingBitmap(), typeof(byte[]));
+			NetworkingHelpers = (
+				_argParser.HTTPAddresses == null
+					? null
+					: new HttpCommunication(NetworkingTakeScreenshot, _argParser.HTTPAddresses.Value.UrlGet, _argParser.HTTPAddresses.Value.UrlPost),
+				_argParser.MMFFilename == null
+					? null
+					: new MemoryMappedFiles(NetworkingTakeScreenshot, _argParser.MMFFilename),
+				_argParser.SocketAddress == null
+					? null
+					: new SocketServer(NetworkingTakeScreenshot, _argParser.SocketAddress.Value.IP, _argParser.SocketAddress.Value.Port)
+			);
 
 			//start Lua Console if requested in the command line arguments
 			if (_argParser.luaConsole)
