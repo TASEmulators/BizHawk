@@ -1,21 +1,28 @@
 ﻿using System.Windows.Forms;
-
+using BizHawk.Client.Common;
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class DGBPrefs : Form
 	{
-		private DGBPrefs()
+		private readonly Config _config;
+		private readonly IGameInfo _game;
+		private readonly IMovieSession _movieSession;
+
+		private DGBPrefs(Config config, IGameInfo game)
 		{
+			_config = config;
+			_game = game;
 			InitializeComponent();
 			Icon = Properties.Resources.DualIcon;
 		}
 
 		private void PutSettings(GambatteLink.GambatteLinkSettings s, GambatteLink.GambatteLinkSyncSettings ss)
 		{
-			gbPrefControl1.PutSettings(s.L, ss.L);
-			gbPrefControl2.PutSettings(s.R, ss.R);
+			gbPrefControl1.PutSettings(_config, _game, _movieSession, s.L, ss.L);
+			gbPrefControl2.PutSettings(_config, _game, _movieSession, s.R, ss.R);
 		}
 
 		private void GetSettings(out GambatteLink.GambatteLinkSettings s, out GambatteLink.GambatteLinkSyncSettings ss)
@@ -29,12 +36,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool SyncSettingsChanged => gbPrefControl1.SyncSettingsChanged || gbPrefControl2.SyncSettingsChanged;
 
-		public static void DoDGBPrefsDialog(IMainFormForConfig mainForm, GambatteLink gambatte)
+		public static void DoDGBPrefsDialog(IMainFormForConfig mainForm, Config config, IGameInfo game, GambatteLink gambatte)
 		{
 			var s = gambatte.GetSettings();
 			var ss = gambatte.GetSyncSettings();
 
-			using var dlg = new DGBPrefs();
+			using var dlg = new DGBPrefs(config, game);
 			dlg.PutSettings(s, ss);
 
 			dlg.gbPrefControl1.ColorGameBoy = gambatte.IsCGBMode(false);

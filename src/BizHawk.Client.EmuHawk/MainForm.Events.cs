@@ -1569,7 +1569,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Emulator is Gameboy gb)
 			{
-				GBPrefs.DoGBPrefsDialog(this, gb);
+				GBPrefs.DoGBPrefsDialog(this, Config, Game, MovieSession, gb);
 			}
 			else // SameBoy
 			{
@@ -1787,7 +1787,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Emulator is GambatteLink gambatte)
 			{
-				DGBPrefs.DoDGBPrefsDialog(this, gambatte);
+				DGBPrefs.DoDGBPrefsDialog(this, Config, Game, gambatte);
 			}
 		}
 

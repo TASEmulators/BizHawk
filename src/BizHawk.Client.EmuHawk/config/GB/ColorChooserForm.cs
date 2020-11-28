@@ -5,14 +5,20 @@ using System.Windows.Forms;
 using System.IO;
 
 using BizHawk.Client.Common;
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class ColorChooserForm : Form
 	{
-		private ColorChooserForm()
+		private readonly Config _config;
+		private readonly IGameInfo _game;
+
+		private ColorChooserForm(Config config, IGameInfo game)
 		{
+			_config = config;
+			_game = game;
 			InitializeComponent();
 			Icon = Properties.Resources.GambatteIcon;
 		}
@@ -230,9 +236,9 @@ namespace BizHawk.Client.EmuHawk
 			RefreshAllBackdrops();
 		}
 
-		public static void DoColorChooserFormDialog(IWin32Window parent, Gameboy.GambatteSettings s)
+		public static void DoColorChooserFormDialog(IWin32Window parent, Config config, IGameInfo game, Gameboy.GambatteSettings s)
 		{
-			using var dlg = new ColorChooserForm();
+			using var dlg = new ColorChooserForm(config, game);
 
 			dlg.SetAllColors(s.GBPalette);
 
@@ -295,13 +301,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			using var ofd = new OpenFileDialog
 			{
-				InitialDirectory = GlobalWin.Config.PathEntries.ScreenshotAbsolutePathFor("GB"),
+				InitialDirectory = _config.PathEntries.ScreenshotAbsolutePathFor("GB"),
 				Filter = new FilesystemFilterSet(FilesystemFilter.Palettes).ToString(),
 				RestoreDirectory = true
 			};
 
 			var result = ofd.ShowDialog(this);
-			if (result == DialogResult.OK)
+			if (result.IsOk())
 			{
 				LoadColorFile(ofd.FileName, true);
 			}
@@ -331,8 +337,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			using var sfd = new SaveFileDialog
 			{
-				InitialDirectory = GlobalWin.Config.PathEntries.PalettesAbsolutePathFor("GB"),
-				FileName = $"{GlobalWin.Game.Name}.pal",
+				InitialDirectory = _config.PathEntries.PalettesAbsolutePathFor("GB"),
+				FileName = $"{_game.Name}.pal",
 				Filter = new FilesystemFilterSet(FilesystemFilter.Palettes).ToString(),
 				RestoreDirectory = true
 			};
