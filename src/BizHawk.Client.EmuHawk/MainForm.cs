@@ -273,13 +273,13 @@ namespace BizHawk.Client.EmuHawk
 			CloseRomContextMenuItem.Image = Properties.Resources.Close;
 		}
 
-		public MainForm(string[] args)
+		public MainForm(Config config, string[] args)
 		{
 			//do this threaded stuff early so it has plenty of time to run in background
 			Database.InitializeDatabase(Path.Combine(PathUtils.ExeDirectoryPath, "gamedb", "gamedb.txt"));
 			BootGodDb.Initialize(Path.Combine(PathUtils.ExeDirectoryPath, "gamedb"));
 
-			base.Config = Config;
+			_config = config; // skips assignment to GlobalWin.Config as Program already did that
 
 			InputManager.ControllerInputCoalescer = new ControllerInputCoalescer();
 			FirmwareManager = new FirmwareManager();
@@ -850,10 +850,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private ISoundProvider _currentSoundProvider = new NullSound(44100 / 60); // Reasonable default until we have a core instance
 
+		/// <remarks>don't use this, use <see cref="Config"/></remarks>
+		private Config _config;
+
 		private new Config Config
 		{
-			get => GlobalWin.Config;
-			set => GlobalWin.Config = base.Config = value;
+			get => _config;
+			set => GlobalWin.Config = base.Config = _config = value;
 		}
 
 		public readonly ToolManager Tools;
@@ -2784,6 +2787,7 @@ namespace BizHawk.Client.EmuHawk
 			Config.ResolveDefaults();
 			InitControls(); // rebind hotkeys
 			InputManager.SyncControls(Emulator, MovieSession, Config);
+			Tools.Restart(Config, Emulator, Game);
 			AddOnScreenMessage($"Config file loaded: {iniPath}");
 		}
 
@@ -3742,7 +3746,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}
 
-					Tools.Restart(Emulator, Game);
+					Tools.Restart(Config, Emulator, Game);
 
 					if (Config.Cheats.LoadFileByGame && Emulator.HasMemoryDomains())
 					{
@@ -3906,7 +3910,7 @@ namespace BizHawk.Client.EmuHawk
 				Emulator = new NullEmulator();
 				EmuClient.Game = GlobalWin.Game = GameInfo.NullInstance;
 				CreateRewinder();
-				Tools.Restart(Emulator, Game);
+				Tools.Restart(Config, Emulator, Game);
 				RewireSound();
 				ClearHolds();
 				InputManager.SyncControls(Emulator, MovieSession, Config);

@@ -220,7 +220,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					var mf = new MainForm(args);
+					var mf = new MainForm(GlobalWin.Config, args);
 //					var title = mf.Text;
 					mf.Show();
 //					mf.Text = title;
@@ -346,7 +346,7 @@ namespace BizHawk.Client.EmuHawk
 
 			protected override void OnCreateMainForm()
 			{
-				MainForm = new MainForm(cmdArgs);
+				MainForm = new MainForm(GlobalWin.Config, cmdArgs);
 				var title = MainForm.Text;
 				MainForm.Show();
 				MainForm.Text = title;

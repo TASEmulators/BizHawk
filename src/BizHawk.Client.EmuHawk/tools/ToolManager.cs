@@ -19,7 +19,7 @@ namespace BizHawk.Client.EmuHawk
 	public class ToolManager
 	{
 		private readonly MainForm _owner;
-		private readonly Config _config;
+		private Config _config;
 		private readonly DisplayManager _displayManager;
 		private readonly InputManager _inputManager;
 		private IExternalApiProvider _apiProvider;
@@ -83,16 +83,17 @@ namespace BizHawk.Client.EmuHawk
 		// If the form inherits ToolFormBase, it will set base properties such as Tools, Config, etc
 		private void SetBaseProperties(IToolForm form)
 		{
-			if (form is ToolFormBase tool)
-			{
-				tool.Tools = this;
-				tool.Config = _config;
-				tool.DisplayManager = _displayManager;
-				tool.InputManager = _inputManager;
-				tool.MainForm = _owner;
-				tool.MovieSession = _movieSession;
-				tool.Game = _game;
-			}
+			if (!(form is FormBase f)) return;
+
+			f.Config = _config;
+			if (!(form is ToolFormBase tool)) return;
+
+			tool.Tools = this;
+			tool.DisplayManager = _displayManager;
+			tool.InputManager = _inputManager;
+			tool.MainForm = _owner;
+			tool.MovieSession = _movieSession;
+			tool.Game = _game;
 		}
 
 		/// <summary>
@@ -505,8 +506,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void Restart(IEmulator emulator, IGameInfo game)
+		public void Restart(Config config, IEmulator emulator, IGameInfo game)
 		{
+			_config = config;
 			_emulator = emulator;
 			_game = game;
 			ApiProvider = ApiManager.Restart(_emulator.ServiceProvider, _owner, _displayManager, _inputManager, _movieSession, this, _config, _emulator, _game);
