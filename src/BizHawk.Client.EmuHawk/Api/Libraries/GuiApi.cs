@@ -104,7 +104,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public (int Left, int Top, int Right, int Bottom) GetPadding() => (_padding.Left, _padding.Top, _padding.Right, _padding.Bottom);
 
-		public void AddMessage(string message) => GlobalWin.OSD.AddMessage(message);
+		public void AddMessage(string message) => _displayManager.OSD.AddMessage(message);
 
 		public void ClearGraphics()
 		{
@@ -112,7 +112,7 @@ namespace BizHawk.Client.EmuHawk
 			DrawFinish();
 		}
 
-		public void ClearText() => GlobalWin.OSD.ClearGuiText();
+		public void ClearText() => _displayManager.OSD.ClearGuiText();
 
 		public void SetDefaultForegroundColor(Color color) => _defaultForeground = color;
 
@@ -525,7 +525,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var pos = new MessagePosition{ X = x, Y = y, Anchor = (MessagePosition.AnchorType)a };
-			GlobalWin.OSD.AddGuiText(message,  pos, Color.Black, forecolor ?? Color.White);
+			_displayManager.OSD.AddGuiText(message,  pos, Color.Black, forecolor ?? Color.White);
 		}
 
 		public void Dispose()

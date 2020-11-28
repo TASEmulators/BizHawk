@@ -294,7 +294,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			GlobalWin.OSD.ClearRamWatches();
+			DisplayManager.OSD.ClearRamWatches();
 			if (_watches.Any())
 			{
 				_watches.UpdateValues(Config.RamWatchDefinePrevious);
@@ -313,11 +313,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Config.DisplayRamWatch)
 			{
-				GlobalWin.OSD.ClearRamWatches();
+				DisplayManager.OSD.ClearRamWatches();
 				for (var i = 0; i < _watches.Count; i++)
 				{
 					var frozen = !_watches[i].IsSeparator && MainForm.CheatList.IsActive(_watches[i].Domain, _watches[i].Address);
-					GlobalWin.OSD.AddRamWatch(
+					DisplayManager.OSD.AddRamWatch(
 						_watches[i].ToDisplayString(),
 						new MessagePosition
 						{
@@ -976,7 +976,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (!Config.DisplayRamWatch)
 			{
-				GlobalWin.OSD.ClearRamWatches();
+				DisplayManager.OSD.ClearRamWatches();
 			}
 			else
 			{

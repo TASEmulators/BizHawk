@@ -136,7 +136,7 @@ namespace BizHawk.Client.EmuHawk
 
 					LuaImp.GuiLibrary?.DrawFinish();
 					LuaImp?.Close();
-					GlobalWin.OSD.ClearGuiText();
+					DisplayManager.OSD.ClearGuiText();
 				}
 				else
 				{
@@ -973,7 +973,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			// Shenanigans
 			// We want any gui.text messages from a script to immediately update even when paused
-			GlobalWin.OSD.ClearGuiText();
+			DisplayManager.OSD.ClearGuiText();
 			Tools.UpdateToolsAfter();
 			LuaImp.EndLuaDrawing();
 			LuaImp.StartLuaDrawing();

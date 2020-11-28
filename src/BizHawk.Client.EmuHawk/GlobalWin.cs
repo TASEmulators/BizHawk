@@ -21,7 +21,6 @@ namespace BizHawk.Client.EmuHawk
 		public static IGL_TK IGL_GL;
 
 		public static Sound Sound;
-		public static readonly OSDManager OSD = new OSDManager();
 
 		public static Dictionary<string, object> UserBag { get; set; } = new Dictionary<string, object>();
 

@@ -336,7 +336,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				GraphicsControl = { MainWindow = true }
 			};
-			DisplayManager = new DisplayManager(OSD, GlobalWin.GL, _presentationPanel, () => DisableSecondaryThrottling);
+			DisplayManager = new DisplayManager(GlobalWin.GL, _presentationPanel, () => DisableSecondaryThrottling);
 			Controls.Add(_presentationPanel);
 			Controls.SetChildIndex(_presentationPanel, 0);
 
@@ -845,7 +845,6 @@ namespace BizHawk.Client.EmuHawk
 		public EmuClientApi EmuClient { get; set; }
 
 		private InputManager InputManager => GlobalWin.InputManager;
-		private OSDManager OSD => GlobalWin.OSD;
 
 		private IVideoProvider _currentVideoProvider = NullVideo.Instance;
 
@@ -860,6 +859,8 @@ namespace BizHawk.Client.EmuHawk
 		public readonly ToolManager Tools;
 
 		private DisplayManager DisplayManager;
+
+		private OSDManager OSD => DisplayManager.OSD;
 
 		public IMovieSession MovieSession
 		{

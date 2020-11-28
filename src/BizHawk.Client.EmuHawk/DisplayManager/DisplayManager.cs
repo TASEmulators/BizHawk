@@ -49,16 +49,15 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly Func<bool> _getIsSecondaryThrottlingDisabled;
 
-		private readonly OSDManager _osdManager;
+		public readonly OSDManager OSD = new OSDManager();
 
 		private Config GlobalConfig => GlobalWin.Config;
 
 		private IEmulator GlobalEmulator => GlobalWin.Emulator;
 
-		public DisplayManager(OSDManager osdManager, IGL gl, PresentationPanel presentationPanel, Func<bool> getIsSecondaryThrottlingDisabled)
+		public DisplayManager(IGL gl, PresentationPanel presentationPanel, Func<bool> getIsSecondaryThrottlingDisabled)
 		{
 			_getIsSecondaryThrottlingDisabled = getIsSecondaryThrottlingDisabled;
-			_osdManager = osdManager;
 			GL = gl;
 
 			// setup the GL context manager, needed for coping with multiple opengl cores vs opengl display method
@@ -284,9 +283,9 @@ namespace BizHawk.Client.EmuHawk
 					ClipBounds = new Rectangle(0, 0, size.Width, size.Height)
 				};
 				Renderer.SetBlendState(GL.BlendNormal);
-				_osdManager.Begin(myBlitter);
-				_osdManager.DrawScreenInfo(myBlitter);
-				_osdManager.DrawMessages(myBlitter);
+				OSD.Begin(myBlitter);
+				OSD.DrawScreenInfo(myBlitter);
+				OSD.DrawMessages(myBlitter);
 				Renderer.End();
 			};
 
