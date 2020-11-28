@@ -405,17 +405,17 @@ namespace BizHawk.Client.EmuHawk
 			_4ByteMenuItem.Checked = _dataSize == 4;
 		}
 
-		private void _1ByteMenuItem_Click(object sender, EventArgs e)
+		private void OneByteMenuItem_Click(object sender, EventArgs e)
 		{
 			_dataSize = 1;
 		}
 
-		private void _2ByteMenuItem_Click(object sender, EventArgs e)
+		private void TwoByteMenuItem_Click(object sender, EventArgs e)
 		{
 			_dataSize = 2;
 		}
 
-		private void _4ByteMenuItem_Click(object sender, EventArgs e)
+		private void FourByteMenuItem_Click(object sender, EventArgs e)
 		{
 			_dataSize = 4;
 		}
@@ -1182,7 +1182,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		// Copy to Clipboard
-		private void btnCopyBestInput_Click(object sender, EventArgs e)
+		private void BtnCopyBestInput_Click(object sender, EventArgs e)
 		{
 			Clipboard.SetText(BestAttemptLogLabel.Text);
 		}

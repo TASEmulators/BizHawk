@@ -222,17 +222,17 @@ namespace BizHawk.Client.EmuHawk
 			// _1ByteMenuItem
 			// 
 			this._1ByteMenuItem.Text = "1 Byte";
-			this._1ByteMenuItem.Click += new System.EventHandler(this._1ByteMenuItem_Click);
+			this._1ByteMenuItem.Click += new System.EventHandler(this.OneByteMenuItem_Click);
 			// 
 			// _2ByteMenuItem
 			// 
 			this._2ByteMenuItem.Text = "2 Bytes";
-			this._2ByteMenuItem.Click += new System.EventHandler(this._2ByteMenuItem_Click);
+			this._2ByteMenuItem.Click += new System.EventHandler(this.TwoByteMenuItem_Click);
 			// 
 			// _4ByteMenuItem
 			// 
 			this._4ByteMenuItem.Text = "4 Bytes";
-			this._4ByteMenuItem.Click += new System.EventHandler(this._4ByteMenuItem_Click);
+			this._4ByteMenuItem.Click += new System.EventHandler(this.FourByteMenuItem_Click);
 			// 
 			// BigEndianMenuItem
 			// 
@@ -342,7 +342,7 @@ namespace BizHawk.Client.EmuHawk
 			this.toolTip1.SetToolTip(this.btnCopyBestInput, "\"Copy to Clipboard.  Then possible to paste to text file or directly into TasStud" +
 					"io.");
 			this.btnCopyBestInput.UseVisualStyleBackColor = true;
-			this.btnCopyBestInput.Click += new System.EventHandler(this.btnCopyBestInput_Click);
+			this.btnCopyBestInput.Click += new System.EventHandler(this.BtnCopyBestInput_Click);
 			// 
 			// PlayBestButton
 			// 

@@ -54,10 +54,7 @@ namespace BizHawk.Client.EmuHawk
 		[RequiredService]
 		private ICodeDataLogger CodeDataLogger
 		{
-			get
-			{
-				return _icdlogger;
-			}
+			get => _icdlogger;
 			set
 			{
 				_icdlogger?.SetCDL(null);
@@ -556,16 +553,16 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void tsbViewStyle_SelectedIndexChanged(object sender, EventArgs e)
+		private void TsbViewStyle_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			UpdateDisplay(true);
 		}
 
-		private void tsbLoggingActive_CheckedChanged(object sender, EventArgs e)
+		private void TsbLoggingActive_CheckedChanged(object sender, EventArgs e)
 		{
 			if (tsbLoggingActive.Checked && _cdl == null)
 			{
-				//implicitly create a new file
+				// implicitly create a new file
 				NewFileLogic();
 			}
 
@@ -575,13 +572,13 @@ namespace BizHawk.Client.EmuHawk
 				CodeDataLogger.SetCDL(null);
 		}
 
-		private void lvCDL_QueryItemText(int index, RollColumn column, out string text, ref int offsetX, ref int offsetY)
+		private void LvCDL_QueryItemText(int index, RollColumn column, out string text, ref int offsetX, ref int offsetY)
 		{
 			var subItem = lvCDL.AllColumns.IndexOf(column);
 			text = _listContents[index][subItem];
 		}
 
-		private void tsbExportText_Click(object sender, EventArgs e)
+		private void TsbExportText_Click(object sender, EventArgs e)
 		{
 			using var sw = new StringWriter();
 			foreach(var line in _listContents)
@@ -593,17 +590,17 @@ namespace BizHawk.Client.EmuHawk
 			Clipboard.SetText(sw.ToString());
 		}
 
-		private void miAutoSave_Click(object sender, EventArgs e)
+		private void MiAutoSave_Click(object sender, EventArgs e)
 		{
 			CDLAutoSave ^= true;
 		}
 
-		private void miAutoStart_Click(object sender, EventArgs e)
+		private void MiAutoStart_Click(object sender, EventArgs e)
 		{
 			CDLAutoStart ^= true;
 		}
 
-		private void miAutoResume_Click(object sender, EventArgs e)
+		private void MiAutoResume_Click(object sender, EventArgs e)
 		{
 			CDLAutoResume ^= true;
 		}

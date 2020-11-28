@@ -88,14 +88,14 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void btnClear_Click(object sender, EventArgs e)
+		private void BtnClear_Click(object sender, EventArgs e)
 		{
 			_lines.Clear();
 			virtualListView1.VirtualListSize = 0;
 			virtualListView1.SelectedIndices.Clear();
 		}
 
-		private void btnClose_Click(object sender, EventArgs e)
+		private void BtnClose_Click(object sender, EventArgs e)
 		{
 			Close();
 		}

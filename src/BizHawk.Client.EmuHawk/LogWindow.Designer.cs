@@ -51,7 +51,7 @@ namespace BizHawk.Client.EmuHawk
 			this.btnClose.TabIndex = 2;
 			this.btnClose.Text = "Close";
 			this.btnClose.UseVisualStyleBackColor = true;
-			this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
+			this.btnClose.Click += new System.EventHandler(this.BtnClose_Click);
 			// 
 			// btnClear
 			// 
@@ -61,7 +61,7 @@ namespace BizHawk.Client.EmuHawk
 			this.btnClear.TabIndex = 1;
 			this.btnClear.Text = "&Clear";
 			this.btnClear.UseVisualStyleBackColor = true;
-			this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
+			this.btnClear.Click += new System.EventHandler(this.BtnClear_Click);
 			// 
 			// tableLayoutPanel1
 			// 

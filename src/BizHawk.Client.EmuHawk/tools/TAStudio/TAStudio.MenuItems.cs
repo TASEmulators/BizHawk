@@ -788,9 +788,8 @@ namespace BizHawk.Client.EmuHawk
 					{
 						if (MessageBox.Show($"Bad data between frames {lastState} and {Emulator.Frame}. Save the relevant state (raw data)?", "Integrity Failed!", MessageBoxButtons.YesNo) == DialogResult.Yes)
 						{
-							var sfd = new SaveFileDialog();
-							sfd.FileName = "integrity.fresh";
-							if (sfd.ShowDialog() == DialogResult.OK)
+							var sfd = new SaveFileDialog { FileName = "integrity.fresh" };
+							if (sfd.ShowDialog().IsOk())
 							{
 								File.WriteAllBytes(sfd.FileName, state);
 								var path = Path.ChangeExtension(sfd.FileName, ".greenzoned");

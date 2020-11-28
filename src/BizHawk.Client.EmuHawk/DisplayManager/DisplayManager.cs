@@ -58,33 +58,33 @@ namespace BizHawk.Client.EmuHawk
 		public DisplayManager(IGL gl, PresentationPanel presentationPanel, Func<bool> getIsSecondaryThrottlingDisabled)
 		{
 			_getIsSecondaryThrottlingDisabled = getIsSecondaryThrottlingDisabled;
-			GL = gl;
+			_gl = gl;
 
 			// setup the GL context manager, needed for coping with multiple opengl cores vs opengl display method
 			// but is it tho? --yoshi
-			GLManager = GLManager.Instance;
+			_glManager = GLManager.Instance;
 
-			this.presentationPanel = presentationPanel;
-			GraphicsControl = this.presentationPanel.GraphicsControl;
-			CR_GraphicsControl = GLManager.GetContextForGraphicsControl(GraphicsControl);
+			this._presentationPanel = presentationPanel;
+			_graphicsControl = this._presentationPanel.GraphicsControl;
+			_crGraphicsControl = _glManager.GetContextForGraphicsControl(_graphicsControl);
 
 			// it's sort of important for these to be initialized to something nonzero
-			currEmuWidth = currEmuHeight = 1;
+			_currEmuWidth = _currEmuHeight = 1;
 
-			Renderer = GL.CreateRenderer();
+			_renderer = _gl.CreateRenderer();
 
-			VideoTextureFrugalizer = new TextureFrugalizer(GL);
+			_videoTextureFrugalizer = new TextureFrugalizer(_gl);
 
-			ShaderChainFrugalizers = new RenderTargetFrugalizer[16]; // hacky hardcoded limit.. need some other way to manage these
+			_shaderChainFrugalizers = new RenderTargetFrugalizer[16]; // hacky hardcoded limit.. need some other way to manage these
 			for (int i = 0; i < 16; i++)
 			{
-				ShaderChainFrugalizers[i] = new RenderTargetFrugalizer(GL);
+				_shaderChainFrugalizers[i] = new RenderTargetFrugalizer(_gl);
 			}
 
 			using (var xml = EmuHawk.ReflectionCache.EmbeddedResourceStream("Resources.courier16px.fnt"))
 			{
 				using var tex = EmuHawk.ReflectionCache.EmbeddedResourceStream("Resources.courier16px_0.png");
-				TheOneFont = new StringRenderer(GL, xml, tex);
+				_theOneFont = new StringRenderer(_gl, xml, tex);
 			}
 
 			using (var gens =
@@ -99,23 +99,23 @@ namespace BizHawk.Client.EmuHawk
 				LoadCustomFont(fceux);
 			}
 
-			if (GL is IGL_TK || GL is IGL_SlimDX9)
+			if (_gl is IGL_TK || _gl is IGL_SlimDX9)
 			{
 				var fiHq2x = new FileInfo(Path.Combine(PathUtils.ExeDirectoryPath, "Shaders/BizHawk/hq2x.cgp"));
 				if (fiHq2x.Exists)
 				{
 					using var stream = fiHq2x.OpenRead();
-					ShaderChain_hq2x = new RetroShaderChain(GL, new RetroShaderPreset(stream), Path.Combine(PathUtils.ExeDirectoryPath, "Shaders/BizHawk"));
+					_shaderChainHq2X = new RetroShaderChain(_gl, new RetroShaderPreset(stream), Path.Combine(PathUtils.ExeDirectoryPath, "Shaders/BizHawk"));
 				}
 				var fiScanlines = new FileInfo(Path.Combine(PathUtils.ExeDirectoryPath, "Shaders/BizHawk/BizScanlines.cgp"));
 				if (fiScanlines.Exists)
 				{
 					using var stream = fiScanlines.OpenRead();
-					ShaderChain_scanlines = new RetroShaderChain(GL, new RetroShaderPreset(stream), Path.Combine(PathUtils.ExeDirectoryPath, "Shaders/BizHawk"));
+					_shaderChainScanlines = new RetroShaderChain(_gl, new RetroShaderPreset(stream), Path.Combine(PathUtils.ExeDirectoryPath, "Shaders/BizHawk"));
 				}
 
 				string bicubicPath = "Shaders/BizHawk/bicubic-fast.cgp";
-				if (GL is IGL_SlimDX9)
+				if (_gl is IGL_SlimDX9)
 				{
 					bicubicPath = "Shaders/BizHawk/bicubic-normal.cgp";
 				}
@@ -123,14 +123,14 @@ namespace BizHawk.Client.EmuHawk
 				if (fiBicubic.Exists)
 				{
 					using var stream = fiBicubic.Open(FileMode.Open, FileAccess.Read, FileShare.Read);
-					ShaderChain_bicubic = new RetroShaderChain(GL, new RetroShaderPreset(stream), Path.Combine(PathUtils.ExeDirectoryPath, "Shaders/BizHawk"));
+					_shaderChainBicubic = new RetroShaderChain(_gl, new RetroShaderPreset(stream), Path.Combine(PathUtils.ExeDirectoryPath, "Shaders/BizHawk"));
 				}
 			}
 
-			LuaSurfaceSets["emu"] = new SwappableDisplaySurfaceSet();
-			LuaSurfaceSets["native"] = new SwappableDisplaySurfaceSet();
-			LuaSurfaceFrugalizers["emu"] = new TextureFrugalizer(GL);
-			LuaSurfaceFrugalizers["native"] = new TextureFrugalizer(GL);
+			_luaSurfaceSets["emu"] = new SwappableDisplaySurfaceSet();
+			_luaSurfaceSets["native"] = new SwappableDisplaySurfaceSet();
+			_luaSurfaceFrugalizers["emu"] = new TextureFrugalizer(_gl);
+			_luaSurfaceFrugalizers["native"] = new TextureFrugalizer(_gl);
 
 			RefreshUserShader();
 		}
@@ -141,43 +141,43 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Disposed) return;
 			Disposed = true;
-			VideoTextureFrugalizer.Dispose();
-			foreach (var f in LuaSurfaceFrugalizers.Values)
+			_videoTextureFrugalizer.Dispose();
+			foreach (var f in _luaSurfaceFrugalizers.Values)
 			{
 				f.Dispose();
 			}
 
-			foreach (var f in ShaderChainFrugalizers)
+			foreach (var f in _shaderChainFrugalizers)
 			{
 				f?.Dispose();
 			}
 
-			foreach (var s in new[] { ShaderChain_hq2x, ShaderChain_scanlines, ShaderChain_bicubic, ShaderChain_user })
+			foreach (var s in new[] { _shaderChainHq2X, _shaderChainScanlines, _shaderChainBicubic, _shaderChainUser })
 			{
 				s?.Dispose();
 			}
 
-			TheOneFont.Dispose();
-			Renderer.Dispose();
+			_theOneFont.Dispose();
+			_renderer.Dispose();
 		}
 
 		// rendering resources:
-		private readonly IGL GL;
-		private readonly GLManager GLManager;
-		private readonly StringRenderer TheOneFont;
-		private readonly IGuiRenderer Renderer;
+		private readonly IGL _gl;
+		private readonly GLManager _glManager;
+		private readonly StringRenderer _theOneFont;
+		private readonly IGuiRenderer _renderer;
 
 		// layer resources
-		private readonly PresentationPanel presentationPanel; // well, its the final layer's target, at least
-		private readonly GraphicsControl GraphicsControl; // well, its the final layer's target, at least
-		private readonly GLManager.ContextRef CR_GraphicsControl;
+		private readonly PresentationPanel _presentationPanel; // well, its the final layer's target, at least
+		private readonly GraphicsControl _graphicsControl; // well, its the final layer's target, at least
+		private readonly GLManager.ContextRef _crGraphicsControl;
 		private FilterProgram _currentFilterProgram;
 
 		/// <summary>
 		/// these variables will track the dimensions of the last frame's (or the next frame? this is confusing) emulator native output size
 		/// THIS IS OLD JUNK. I should get rid of it, I think. complex results from the last filter ingestion should be saved instead.
 		/// </summary>
-		private int currEmuWidth, currEmuHeight;
+		private int _currEmuWidth, _currEmuHeight;
 
 		/// <summary>
 		/// additional pixels added at the unscaled level for the use of lua drawing. essentially increases the input video provider dimensions
@@ -194,20 +194,20 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public PrivateFontCollection CustomFonts = new PrivateFontCollection();
 
-		private readonly TextureFrugalizer VideoTextureFrugalizer;
-		private readonly Dictionary<string, TextureFrugalizer> LuaSurfaceFrugalizers = new Dictionary<string, TextureFrugalizer>();
-		private readonly RenderTargetFrugalizer[] ShaderChainFrugalizers;
-		private readonly RetroShaderChain ShaderChain_hq2x, ShaderChain_scanlines, ShaderChain_bicubic;
-		private RetroShaderChain ShaderChain_user;
+		private readonly TextureFrugalizer _videoTextureFrugalizer;
+		private readonly Dictionary<string, TextureFrugalizer> _luaSurfaceFrugalizers = new Dictionary<string, TextureFrugalizer>();
+		private readonly RenderTargetFrugalizer[] _shaderChainFrugalizers;
+		private readonly RetroShaderChain _shaderChainHq2X, _shaderChainScanlines, _shaderChainBicubic;
+		private RetroShaderChain _shaderChainUser;
 
 		public void RefreshUserShader()
 		{
-			ShaderChain_user?.Dispose();
+			_shaderChainUser?.Dispose();
 			if (File.Exists(GlobalConfig.DispUserFilterPath))
 			{
 				var fi = new FileInfo(GlobalConfig.DispUserFilterPath);
 				using var stream = fi.OpenRead();
-				ShaderChain_user = new RetroShaderChain(GL, new RetroShaderPreset(stream), Path.GetDirectoryName(GlobalConfig.DispUserFilterPath));
+				_shaderChainUser = new RetroShaderChain(_gl, new RetroShaderPreset(stream), Path.GetDirectoryName(GlobalConfig.DispUserFilterPath));
 			}
 		}
 
@@ -245,20 +245,20 @@ namespace BizHawk.Client.EmuHawk
 			// select user special FX shader chain
 			var selectedChainProperties = new Dictionary<string, object>();
 			RetroShaderChain selectedChain = null;
-			if (GlobalConfig.TargetDisplayFilter == 1 && ShaderChain_hq2x != null && ShaderChain_hq2x.Available)
+			if (GlobalConfig.TargetDisplayFilter == 1 && _shaderChainHq2X != null && _shaderChainHq2X.Available)
 			{
-				selectedChain = ShaderChain_hq2x;
+				selectedChain = _shaderChainHq2X;
 			}
 
-			if (GlobalConfig.TargetDisplayFilter == 2 && ShaderChain_scanlines != null && ShaderChain_scanlines.Available)
+			if (GlobalConfig.TargetDisplayFilter == 2 && _shaderChainScanlines != null && _shaderChainScanlines.Available)
 			{
-				selectedChain = ShaderChain_scanlines;
+				selectedChain = _shaderChainScanlines;
 				selectedChainProperties["uIntensity"] = 1.0f - GlobalConfig.TargetScanlineFilterIntensity / 256.0f;
 			}
 
-			if (GlobalConfig.TargetDisplayFilter == 3 && ShaderChain_user != null && ShaderChain_user.Available)
+			if (GlobalConfig.TargetDisplayFilter == 3 && _shaderChainUser != null && _shaderChainUser.Available)
 			{
-				selectedChain = ShaderChain_user;
+				selectedChain = _shaderChainUser;
 			}
 
 			if (!includeUserFilters)
@@ -277,16 +277,16 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				var size = fOSD.FindInput().SurfaceFormat.Size;
-				Renderer.Begin(size.Width, size.Height);
+				_renderer.Begin(size.Width, size.Height);
 				var myBlitter = new MyBlitter(this)
 				{
 					ClipBounds = new Rectangle(0, 0, size.Width, size.Height)
 				};
-				Renderer.SetBlendState(GL.BlendNormal);
+				_renderer.SetBlendState(_gl.BlendNormal);
 				OSD.Begin(myBlitter);
 				OSD.DrawScreenInfo(myBlitter);
 				OSD.DrawMessages(myBlitter);
-				Renderer.End();
+				_renderer.End();
 			};
 
 			var chain = new FilterProgram();
@@ -311,8 +311,8 @@ namespace BizHawk.Client.EmuHawk
 				size.Height += padding.Vertical;
 				FinalPresentation fPadding = new FinalPresentation(size);
 				chain.AddFilter(fPadding, "padding");
-				fPadding.GuiRenderer = Renderer;
-				fPadding.GL = GL;
+				fPadding.GuiRenderer = _renderer;
+				fPadding.GL = _gl;
 				fPadding.Config_PadOnly = true;
 				fPadding.Padding = (padding.Left, padding.Top, padding.Right, padding.Bottom);
 			}
@@ -353,7 +353,7 @@ namespace BizHawk.Client.EmuHawk
 			//if bicubic is selected and unavailable, don't use it. use bilinear instead I guess
 			if (finalFilter == FinalPresentation.eFilterOption.Bicubic)
 			{
-				if (ShaderChain_bicubic == null || !ShaderChain_bicubic.Available)
+				if (_shaderChainBicubic == null || !_shaderChainBicubic.Available)
 				{
 					finalFilter = FinalPresentation.eFilterOption.Bilinear;
 				}
@@ -364,7 +364,7 @@ namespace BizHawk.Client.EmuHawk
 			// now if bicubic is chosen, insert it
 			if (finalFilter == FinalPresentation.eFilterOption.Bicubic)
 			{
-				AppendRetroShaderChain(chain, "bicubic", ShaderChain_bicubic, null);
+				AppendRetroShaderChain(chain, "bicubic", _shaderChainBicubic, null);
 			}
 
 			// add final presentation
@@ -397,13 +397,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AppendLuaLayer(FilterProgram chain, string name)
 		{
-			var luaNativeSurface = LuaSurfaceSets[name].GetCurrent();
+			var luaNativeSurface = _luaSurfaceSets[name].GetCurrent();
 			if (luaNativeSurface == null)
 			{
 				return;
 			}
 
-			Texture2d luaNativeTexture = LuaSurfaceFrugalizers[name].Get(luaNativeSurface);
+			Texture2d luaNativeTexture = _luaSurfaceFrugalizers[name].Get(luaNativeSurface);
 			var fLuaLayer = new LuaLayer();
 			fLuaLayer.SetTexture(luaNativeTexture);
 			chain.AddFilter(fLuaLayer, name);
@@ -415,7 +415,7 @@ namespace BizHawk.Client.EmuHawk
 		public Point UntransformPoint(Point p)
 		{
 			// first, turn it into a window coordinate
-			p = presentationPanel.Control.PointToClient(p);
+			p = _presentationPanel.Control.PointToClient(p);
 
 			// now, if there's no filter program active, just give up
 			if (_currentFilterProgram == null) return p;
@@ -452,7 +452,7 @@ namespace BizHawk.Client.EmuHawk
 			return new Point((int)v.X, (int)v.Y);
 		}
 
-		internal Size GetPanelNativeSize() => presentationPanel.NativeSize;
+		internal Size GetPanelNativeSize() => _presentationPanel.NativeSize;
 
 		/// <summary>
 		/// This will receive an emulated output frame from an IVideoProvider and run it through the complete frame processing pipeline
@@ -468,7 +468,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				VideoProvider = videoProvider,
 				Simulate = displayNothing,
-				ChainOutsize = GraphicsControl.Size,
+				ChainOutsize = _graphicsControl.Size,
 				IncludeOSD = true,
 				IncludeUserFilters = true
 			};
@@ -517,7 +517,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				VideoProvider = videoProvider,
 				Simulate = false,
-				ChainOutsize = GraphicsControl.Size,
+				ChainOutsize = _graphicsControl.Size,
 				Offscreen = true,
 				IncludeOSD = includeOSD,
 				IncludeUserFilters = true,
@@ -757,7 +757,7 @@ namespace BizHawk.Client.EmuHawk
 			//no drawing actually happens. it's important not to begin drawing on a control
 			if (!job.Simulate && !job.Offscreen)
 			{
-				GLManager.Activate(CR_GraphicsControl);
+				_glManager.Activate(_crGraphicsControl);
 
 				if (job.ChainOutsize.Width == 0 || job.ChainOutsize.Height == 0)
 				{
@@ -835,7 +835,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					//FYI: this is a million years from happening on n64, since it's all geriatric non-FBO code
 					//is it workable for saturn?
-					videoTexture = GL.WrapGLTexture2d(new IntPtr(videoBuffer[0]), bufferWidth, bufferHeight);
+					videoTexture = _gl.WrapGLTexture2d(new IntPtr(videoBuffer[0]), bufferWidth, bufferHeight);
 				}
 				else
 				{
@@ -844,7 +844,7 @@ namespace BizHawk.Client.EmuHawk
 					bb.DiscardAlpha();
 
 					//now, acquire the data sent from the videoProvider into a texture
-					videoTexture = VideoTextureFrugalizer.Get(bb);
+					videoTexture = _videoTextureFrugalizer.Get(bb);
 
 					// lets not use this. lets define BizwareGL to make clamp by default (TBD: check opengl)
 					//GL.SetTextureWrapMode(videoTexture, true);
@@ -852,15 +852,15 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// record the size of what we received, since lua and stuff is gonna want to draw onto it
-			currEmuWidth = bufferWidth;
-			currEmuHeight = bufferHeight;
+			_currEmuWidth = bufferWidth;
+			_currEmuHeight = bufferHeight;
 
 			//build the default filter chain and set it up with services filters will need
 			Size chainInsize = new Size(bufferWidth, bufferHeight);
 
 			var filterProgram = BuildDefaultChain(chainInsize, chainOutsize, job.IncludeOSD, job.IncludeUserFilters);
-			filterProgram.GuiRenderer = Renderer;
-			filterProgram.GL = GL;
+			filterProgram.GuiRenderer = _renderer;
+			filterProgram.GL = _gl;
 
 			//setup the source image filter
 			SourceImage fInput = filterProgram["input"] as SourceImage;
@@ -873,22 +873,22 @@ namespace BizHawk.Client.EmuHawk
 				fPresent.VirtualTextureSize = new Size(vw, vh);
 				fPresent.TextureSize = new Size(presenterTextureWidth, presenterTextureHeight);
 				fPresent.BackgroundColor = videoProvider.BackgroundColor;
-				fPresent.GuiRenderer = Renderer;
+				fPresent.GuiRenderer = _renderer;
 				fPresent.Flip = isGlTextureId;
 				fPresent.Config_FixAspectRatio = GlobalConfig.DispFixAspectRatio;
 				fPresent.Config_FixScaleInteger = GlobalConfig.DispFixScaleInteger;
 				fPresent.Padding = (ClientExtraPadding.Left, ClientExtraPadding.Top, ClientExtraPadding.Right, ClientExtraPadding.Bottom);
 				fPresent.AutoPrescale = GlobalConfig.DispAutoPrescale;
 
-				fPresent.GL = GL;
+				fPresent.GL = _gl;
 			}
 
 			//POOPY. why are we delivering the GL context this way? such bad
 			ScreenControlNDS fNDS = filterProgram["CoreScreenControl"] as ScreenControlNDS;
 			if (fNDS != null)
 			{
-				fNDS.GuiRenderer = Renderer;
-				fNDS.GL = GL;
+				fNDS.GuiRenderer = _renderer;
+				fNDS.GL = _gl;
 			}
 
 			filterProgram.Compile("default", chainInsize, chainOutsize, !job.Offscreen);
@@ -910,13 +910,13 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Blank()
 		{
-			GLManager.Activate(CR_GraphicsControl);
-			GL.BeginScene();
-			GL.BindRenderTarget(null);
-			GL.SetClearColor(Color.Black);
-			GL.Clear(OpenTK.Graphics.OpenGL.ClearBufferMask.ColorBufferBit);
-			GL.EndScene();
-			presentationPanel.GraphicsControl.SwapBuffers();
+			_glManager.Activate(_crGraphicsControl);
+			_gl.BeginScene();
+			_gl.BindRenderTarget(null);
+			_gl.SetClearColor(Color.Black);
+			_gl.Clear(OpenTK.Graphics.OpenGL.ClearBufferMask.ColorBufferBit);
+			_gl.EndScene();
+			_presentationPanel.GraphicsControl.SwapBuffers();
 		}
 
 		private void UpdateSourceDrawingWork(JobInfo job)
@@ -942,7 +942,7 @@ namespace BizHawk.Client.EmuHawk
 				//for now, it's assumed that the presentation panel is the main window, but that may not always be true
 				if (vsync && GlobalConfig.DispAlternateVsync && GlobalConfig.VSyncThrottle)
 				{
-					dx9 = GL as IGL_SlimDX9;
+					dx9 = _gl as IGL_SlimDX9;
 					if (dx9 != null)
 					{
 						alternateVsync = true;
@@ -954,16 +954,16 @@ namespace BizHawk.Client.EmuHawk
 				//TODO - whats so hard about triple buffering anyway? just enable it always, and change api to SetVsync(enable,throttle)
 				//maybe even SetVsync(enable,throttlemethod) or just SetVsync(enable,throttle,advanced)
 
-				if (LastVsyncSetting != vsync || LastVsyncSettingGraphicsControl != presentationPanel.GraphicsControl)
+				if (_lastVsyncSetting != vsync || _lastVsyncSettingGraphicsControl != _presentationPanel.GraphicsControl)
 				{
-					if (LastVsyncSetting == null && vsync)
+					if (_lastVsyncSetting == null && vsync)
 					{
 						// Workaround for vsync not taking effect at startup (Intel graphics related?)
-						presentationPanel.GraphicsControl.SetVsync(false);
+						_presentationPanel.GraphicsControl.SetVsync(false);
 					}
-					presentationPanel.GraphicsControl.SetVsync(vsync);
-					LastVsyncSettingGraphicsControl = presentationPanel.GraphicsControl;
-					LastVsyncSetting = vsync;
+					_presentationPanel.GraphicsControl.SetVsync(vsync);
+					_lastVsyncSettingGraphicsControl = _presentationPanel.GraphicsControl;
+					_lastVsyncSetting = vsync;
 				}
 			}
 
@@ -975,9 +975,9 @@ namespace BizHawk.Client.EmuHawk
 			//TODO - auto-create and age these (and dispose when old)
 			int rtCounter = 0;
 
-			_currentFilterProgram.RenderTargetProvider = new DisplayManagerRenderTargetProvider(size => ShaderChainFrugalizers[rtCounter++].Get(size));
+			_currentFilterProgram.RenderTargetProvider = new DisplayManagerRenderTargetProvider(size => _shaderChainFrugalizers[rtCounter++].Get(size));
 
-			GL.BeginScene();
+			_gl.BeginScene();
 
 			// run filter chain
 			Texture2d texCurr = null;
@@ -1007,7 +1007,7 @@ namespace BizHawk.Client.EmuHawk
 					case FilterProgram.ProgramStepType.NewTarget:
 						{
 							var size = (Size)step.Args;
-							rtCurr = ShaderChainFrugalizers[rtCounter++].Get(size);
+							rtCurr = _shaderChainFrugalizers[rtCounter++].Get(size);
 							rtCurr.Bind();
 							_currentFilterProgram.CurrRenderTarget = rtCurr;
 							break;
@@ -1017,13 +1017,13 @@ namespace BizHawk.Client.EmuHawk
 							inFinalTarget = true;
 							rtCurr = null;
 							_currentFilterProgram.CurrRenderTarget = null;
-							GL.BindRenderTarget(null);
+							_gl.BindRenderTarget(null);
 							break;
 						}
 				}
 			}
 
-			GL.EndScene();
+			_gl.EndScene();
 
 			if (job.Offscreen)
 			{
@@ -1038,7 +1038,7 @@ namespace BizHawk.Client.EmuHawk
 				if (alternateVsync) dx9.AlternateVsyncPass(0);
 
 				// present and conclude drawing
-				presentationPanel.GraphicsControl.SwapBuffers();
+				_presentationPanel.GraphicsControl.SwapBuffers();
 
 				// wait for vsync to end
 				if (alternateVsync) dx9.AlternateVsyncPass(1);
@@ -1059,20 +1059,20 @@ namespace BizHawk.Client.EmuHawk
 			Marshal.FreeCoTaskMem(data);
 		}
 
-		private bool? LastVsyncSetting;
-		private GraphicsControl LastVsyncSettingGraphicsControl;
+		private bool? _lastVsyncSetting;
+		private GraphicsControl _lastVsyncSettingGraphicsControl;
 
-		private readonly Dictionary<string, DisplaySurface> MapNameToLuaSurface = new Dictionary<string,DisplaySurface>();
-		private readonly Dictionary<DisplaySurface, string> MapLuaSurfaceToName = new Dictionary<DisplaySurface, string>();
-		private readonly Dictionary<string, SwappableDisplaySurfaceSet> LuaSurfaceSets = new Dictionary<string, SwappableDisplaySurfaceSet>();
+		private readonly Dictionary<string, DisplaySurface> _mapNameToLuaSurface = new Dictionary<string,DisplaySurface>();
+		private readonly Dictionary<DisplaySurface, string> _mapLuaSurfaceToName = new Dictionary<DisplaySurface, string>();
+		private readonly Dictionary<string, SwappableDisplaySurfaceSet> _luaSurfaceSets = new Dictionary<string, SwappableDisplaySurfaceSet>();
 
 		/// <summary>
 		/// Peeks a locked lua surface, or returns null if it isn't locked
 		/// </summary>
 		public DisplaySurface PeekLockedLuaSurface(string name)
 		{
-			if (MapNameToLuaSurface.ContainsKey(name))
-				return MapNameToLuaSurface[name];
+			if (_mapNameToLuaSurface.ContainsKey(name))
+				return _mapNameToLuaSurface[name];
 			return null;
 		}
 
@@ -1080,20 +1080,20 @@ namespace BizHawk.Client.EmuHawk
 		/// <exception cref="InvalidOperationException">already locked, or unknown surface</exception>
 		public DisplaySurface LockLuaSurface(string name, bool clear=true)
 		{
-			if (MapNameToLuaSurface.ContainsKey(name))
+			if (_mapNameToLuaSurface.ContainsKey(name))
 			{
 				throw new InvalidOperationException($"Lua surface is already locked: {name}");
 			}
 
-			if (!LuaSurfaceSets.TryGetValue(name, out var sdss))
+			if (!_luaSurfaceSets.TryGetValue(name, out var sdss))
 			{
 				sdss = new SwappableDisplaySurfaceSet();
-				LuaSurfaceSets.Add(name, sdss);
+				_luaSurfaceSets.Add(name, sdss);
 			}
 
 			// placeholder logic for more abstracted surface definitions from filter chain
-			int currNativeWidth = presentationPanel.NativeSize.Width;
-			int currNativeHeight = presentationPanel.NativeSize.Height;
+			int currNativeWidth = _presentationPanel.NativeSize.Width;
+			int currNativeHeight = _presentationPanel.NativeSize.Height;
 
 			currNativeWidth += ClientExtraPadding.Horizontal;
 			currNativeHeight += ClientExtraPadding.Vertical;
@@ -1101,8 +1101,8 @@ namespace BizHawk.Client.EmuHawk
 			int width,height;
 			if (name == "emu")
 			{
-				width = currEmuWidth;
-				height = currEmuHeight;
+				width = _currEmuWidth;
+				height = _currEmuHeight;
 				width += GameExtraPadding.Horizontal;
 				height += GameExtraPadding.Vertical;
 			}
@@ -1113,14 +1113,14 @@ namespace BizHawk.Client.EmuHawk
 			else throw new InvalidOperationException($"Unknown lua surface name: {name}");
 
 			DisplaySurface ret = sdss.AllocateSurface(width, height, clear);
-			MapNameToLuaSurface[name] = ret;
-			MapLuaSurfaceToName[ret] = name;
+			_mapNameToLuaSurface[name] = ret;
+			_mapLuaSurfaceToName[ret] = name;
 			return ret;
 		}
 
 		public void ClearLuaSurfaces()
 		{
-			foreach (var kvp in LuaSurfaceSets)
+			foreach (var kvp in _luaSurfaceSets)
 			{
 				try
 				{
@@ -1136,7 +1136,7 @@ namespace BizHawk.Client.EmuHawk
 						UnlockLuaSurface(surfLocked);
 					}
 
-					LuaSurfaceSets[kvp.Key].SetPending(null);
+					_luaSurfaceSets[kvp.Key].SetPending(null);
 				}
 				catch (InvalidOperationException)
 				{
@@ -1148,15 +1148,15 @@ namespace BizHawk.Client.EmuHawk
 		/// <exception cref="InvalidOperationException">already unlocked</exception>
 		public void UnlockLuaSurface(DisplaySurface surface)
 		{
-			if (!MapLuaSurfaceToName.ContainsKey(surface))
+			if (!_mapLuaSurfaceToName.ContainsKey(surface))
 			{
 				throw new InvalidOperationException("Surface was not locked as a lua surface");
 			}
 
-			string name = MapLuaSurfaceToName[surface];
-			MapLuaSurfaceToName.Remove(surface);
-			MapNameToLuaSurface.Remove(name);
-			LuaSurfaceSets[name].SetPending(surface);
+			string name = _mapLuaSurfaceToName[surface];
+			_mapLuaSurfaceToName.Remove(surface);
+			_mapNameToLuaSurface.Remove(name);
+			_luaSurfaceSets[name].SetPending(surface);
 		}
 
 		// helper classes:
@@ -1181,15 +1181,15 @@ namespace BizHawk.Client.EmuHawk
 
 			IBlitterFont IBlitter.GetFontType(string fontType)
 			{
-				return new FontWrapper(_owner.TheOneFont);
+				return new FontWrapper(_owner._theOneFont);
 			}
 
 			void IBlitter.DrawString(string s, IBlitterFont font, Color color, float x, float y)
 			{
 				var stringRenderer = ((FontWrapper)font).Font;
-				_owner.Renderer.SetModulateColor(color);
-				stringRenderer.RenderString(_owner.Renderer, x, y, s);
-				_owner.Renderer.SetModulateColorWhite();
+				_owner._renderer.SetModulateColor(color);
+				stringRenderer.RenderString(_owner._renderer, x, y, s);
+				_owner._renderer.SetModulateColorWhite();
 			}
 
 			SizeF IBlitter.MeasureString(string s, IBlitterFont font)

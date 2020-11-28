@@ -234,7 +234,7 @@ namespace BizHawk.Client.EmuHawk
 			lvFirmwares.ShowGroups = !lvFirmwares.ShowGroups;
 		}
 
-		private void lvFirmwares_ColumnClick(object sender, ColumnClickEventArgs e)
+		private void LvFirmwares_ColumnClick(object sender, ColumnClickEventArgs e)
 		{
 			if (_listViewSorter.Column != e.Column)
 			{

@@ -95,7 +95,7 @@ namespace BizHawk.Client.EmuHawk
 			public string PngPath { get; set; }
 		}
 
-		private void btnExport_Click(object sender, EventArgs e)
+		private void BtnExport_Click(object sender, EventArgs e)
 		{
 			if (_mFrameInfos.Count == 0)
 			{

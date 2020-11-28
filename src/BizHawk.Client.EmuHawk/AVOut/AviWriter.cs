@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Windows.Forms;
+
 using BizHawk.Client.Common;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
@@ -30,12 +33,12 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		/// <summary>sets the codec token to be used for video compression</summary>
-		/// <exception cref="ArgumentException"><paramref name="token"/> does not inherit <see cref="AviWriter.CodecToken"/></exception>
+		/// <exception cref="ArgumentException"><paramref name="token"/> does not inherit <see cref="CodecToken"/></exception>
 		public void SetVideoCodecToken(IDisposable token)
 		{
-			if (token is CodecToken)
+			if (token is CodecToken cToken)
 			{
-				_currVideoCodecToken = (CodecToken)token;
+				_currVideoCodecToken = cToken;
 			}
 			else
 			{
@@ -69,23 +72,23 @@ namespace BizHawk.Client.EmuHawk
 		// thread communication
 		// synchronized queue with custom messages
 		// it seems like there are 99999 ways to do everything in C#, so i'm sure this is not the best
-		private System.Collections.Concurrent.BlockingCollection<object> threadQ;
-		private System.Threading.Thread workerT;
+		private BlockingCollection<object> _threadQ;
+		private Thread _workerT;
 
-		private void threadproc()
+		private void ThreadProc()
 		{
 			try
 			{
 				while (true)
 				{
-					object o = threadQ.Take();
-					if (o is IVideoProvider)
+					object o = _threadQ.Take();
+					if (o is IVideoProvider provider)
 					{
-						AddFrameEx((IVideoProvider)o);
+						AddFrameEx(provider);
 					}
-					else if (o is short[])
+					else if (o is short[] arr)
 					{
-						AddSamplesEx((short[])o);
+						AddSamplesEx(arr);
 					}
 					else
 					{
@@ -141,15 +144,15 @@ namespace BizHawk.Client.EmuHawk
 				throw new InvalidOperationException("Tried to start recording an AVI with no video codec token set");
 			}
 
-			threadQ = new System.Collections.Concurrent.BlockingCollection<object>(30);
-			workerT = new System.Threading.Thread(new System.Threading.ThreadStart(threadproc));
-			workerT.Start();
+			_threadQ = new System.Collections.Concurrent.BlockingCollection<object>(30);
+			_workerT = new System.Threading.Thread(new System.Threading.ThreadStart(ThreadProc));
+			_workerT.Start();
 		}
 
 		public void CloseFile()
 		{
-			threadQ.Add(new object()); // acts as stop message
-			workerT.Join();
+			_threadQ.Add(new object()); // acts as stop message
+			_workerT.Join();
 			_currSegment?.Dispose();
 			_currSegment = null;
 		}
@@ -157,9 +160,9 @@ namespace BizHawk.Client.EmuHawk
 		/// <exception cref="Exception">worker thrread died</exception>
 		public void AddFrame(IVideoProvider source)
 		{
-			while (!threadQ.TryAdd(new VideoCopy(source), 1000))
+			while (!_threadQ.TryAdd(new VideoCopy(source), 1000))
 			{
-				if (!workerT.IsAlive)
+				if (!_workerT.IsAlive)
 				{
 					throw new Exception("AVI Worker thread died!");
 				}
@@ -183,9 +186,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			// as MainForm.cs is written now, samples is all ours (nothing else will use it for anything)
 			// but that's a bad assumption to make and could change in the future, so copy it since we're passing to another thread
-			while (!threadQ.TryAdd((short[])samples.Clone(), 1000))
+			while (!_threadQ.TryAdd((short[])samples.Clone(), 1000))
 			{
-				if (!workerT.IsAlive)
+				if (!_workerT.IsAlive)
 				{
 					throw new Exception("AVI Worker thread died!");
 				}
@@ -243,7 +246,7 @@ namespace BizHawk.Client.EmuHawk
 
 			_currSegment = new AviWriterSegment();
 			_nameProvider.MoveNext();
-			_currSegment.OpenFile(_nameProvider.Current, parameters, _currVideoCodecToken);
+			_currSegment.OpenFile(_nameProvider.Current, _parameters, _currVideoCodecToken);
 			try
 			{
 				_currSegment.OpenStreams();
@@ -340,7 +343,7 @@ namespace BizHawk.Client.EmuHawk
 			public int fps, fps_scale;
 		}
 
-		private readonly Parameters parameters = new Parameters();
+		private readonly Parameters _parameters = new Parameters();
 
 
 		/// <summary>
@@ -350,11 +353,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			bool change = false;
 
-			change |= fpsNum != parameters.fps;
-			parameters.fps = fpsNum;
+			change |= fpsNum != _parameters.fps;
+			_parameters.fps = fpsNum;
 
-			change |= parameters.fps_scale != fpsDen;
-			parameters.fps_scale = fpsDen;
+			change |= _parameters.fps_scale != fpsDen;
+			_parameters.fps_scale = fpsDen;
 
 			if (change)
 			{
@@ -369,11 +372,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			bool change = false;
 
-			change |= parameters.width != width;
-			parameters.width = width;
+			change |= _parameters.width != width;
+			_parameters.width = width;
 
-			change |= parameters.height != height;
-			parameters.height = height;
+			change |= _parameters.height != height;
+			_parameters.height = height;
 
 			if (change)
 			{
@@ -388,17 +391,17 @@ namespace BizHawk.Client.EmuHawk
 		{
 			bool change = false;
 
-			change |= parameters.a_samplerate != sampleRate;
-			parameters.a_samplerate = sampleRate;
+			change |= _parameters.a_samplerate != sampleRate;
+			_parameters.a_samplerate = sampleRate;
 
-			change |= parameters.a_channels != channels;
-			parameters.a_channels = channels;
+			change |= _parameters.a_channels != channels;
+			_parameters.a_channels = channels;
 
-			change |= parameters.a_bits != bits;
-			parameters.a_bits = bits;
+			change |= _parameters.a_bits != bits;
+			_parameters.a_bits = bits;
 
-			change |= parameters.has_audio != true;
-			parameters.has_audio = true;
+			change |= _parameters.has_audio != true;
+			_parameters.has_audio = true;
 
 			if (change)
 			{
@@ -410,12 +413,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			public void Dispose() { }
 			private CodecToken() { }
-			private AVIWriterImports.AVICOMPRESSOPTIONS comprOptions;
+			private AVIWriterImports.AVICOMPRESSOPTIONS _comprOptions;
 			public string codec;
 			public byte[] Format = new byte[0];
 			public byte[] Parms = new byte[0];
 
-			private static string decode_mmioFOURCC(int code)
+			private static string Decode_mmioFOURCC(int code)
 			{
 				char[] chs = new char[4];
 
@@ -432,8 +435,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var ret = new CodecToken
 				{
-					comprOptions = opts,
-					codec = decode_mmioFOURCC(opts.fccHandler),
+					_comprOptions = opts,
+					codec = Decode_mmioFOURCC(opts.fccHandler),
 					Format = new byte[opts.cbFormat],
 					Parms = new byte[opts.cbParms]
 				};
@@ -463,7 +466,7 @@ namespace BizHawk.Client.EmuHawk
 
 			public void AllocateToAVICOMPRESSOPTIONS(ref AVIWriterImports.AVICOMPRESSOPTIONS opts)
 			{
-				opts = comprOptions;
+				opts = _comprOptions;
 				if (opts.cbParms != 0)
 				{
 					opts.lpParms = Win32Imports.HeapAlloc(Win32Imports.GetProcessHeap(), 0, opts.cbParms);
@@ -481,17 +484,17 @@ namespace BizHawk.Client.EmuHawk
 				var m = new MemoryStream();
 				var b = new BinaryWriter(m);
 
-				b.Write(comprOptions.fccType);
-				b.Write(comprOptions.fccHandler);
-				b.Write(comprOptions.dwKeyFrameEvery);
-				b.Write(comprOptions.dwQuality);
-				b.Write(comprOptions.dwBytesPerSecond);
-				b.Write(comprOptions.dwFlags);
+				b.Write(_comprOptions.fccType);
+				b.Write(_comprOptions.fccHandler);
+				b.Write(_comprOptions.dwKeyFrameEvery);
+				b.Write(_comprOptions.dwQuality);
+				b.Write(_comprOptions.dwBytesPerSecond);
+				b.Write(_comprOptions.dwFlags);
 				//b.Write(comprOptions.lpFormat);
-				b.Write(comprOptions.cbFormat);
+				b.Write(_comprOptions.cbFormat);
 				//b.Write(comprOptions.lpParms);
-				b.Write(comprOptions.cbParms);
-				b.Write(comprOptions.dwInterleaveEvery);
+				b.Write(_comprOptions.cbParms);
+				b.Write(_comprOptions.dwInterleaveEvery);
 				b.Write(Format);
 				b.Write(Parms);
 				b.Close();
@@ -538,10 +541,10 @@ namespace BizHawk.Client.EmuHawk
 
 				var ret = new CodecToken
 				{
-					comprOptions = comprOptions,
+					_comprOptions = comprOptions,
 					Format = Format,
 					Parms = Parms,
-					codec = decode_mmioFOURCC(comprOptions.fccHandler)
+					codec = Decode_mmioFOURCC(comprOptions.fccHandler)
 				};
 				return ret;
 			}
@@ -581,34 +584,33 @@ namespace BizHawk.Client.EmuHawk
 				CloseFile();
 			}
 
-			private CodecToken currVideoCodecToken = null;
-			private bool IsOpen;
-			private IntPtr pAviFile, pAviRawVideoStream, pAviRawAudioStream, pAviCompressedVideoStream;
-			private IntPtr pGlobalBuf;
-			private int pGlobalBuf_size;
+			private CodecToken _currVideoCodecToken;
+			private bool _isOpen;
+			private IntPtr _pAviFile, _pAviRawVideoStream, _pAviRawAudioStream, _pAviCompressedVideoStream;
+			private IntPtr _pGlobalBuf;
+			private int _pGlobalBuffSize;
 
 			// are we sending 32 bit RGB to avi or 24?
-			private bool bit32 = false;
+			private bool _bit32;
 
 			/// <summary>
 			/// there is just ony global buf. this gets it and makes sure its big enough. don't get all re-entrant on it!
 			/// </summary>
 			private IntPtr GetStaticGlobalBuf(int amount)
 			{
-				if (amount > pGlobalBuf_size)
+				if (amount > _pGlobalBuffSize)
 				{
-					if (pGlobalBuf != IntPtr.Zero)
+					if (_pGlobalBuf != IntPtr.Zero)
 					{
-						Marshal.FreeHGlobal(pGlobalBuf);
+						Marshal.FreeHGlobal(_pGlobalBuf);
 					}
 
-					pGlobalBuf_size = amount;
-					pGlobalBuf = Marshal.AllocHGlobal(pGlobalBuf_size);
+					_pGlobalBuffSize = amount;
+					_pGlobalBuf = Marshal.AllocHGlobal(_pGlobalBuffSize);
 				}
 
-				return pGlobalBuf;
+				return _pGlobalBuf;
 			}
-
 
 			private class OutputStatus
 			{
@@ -618,14 +620,14 @@ namespace BizHawk.Client.EmuHawk
 				public int audio_samples;
 				public int audio_buffered_shorts;
 				public const int AUDIO_SEGMENT_SIZE = 44100 * 2;
-				public short[] BufferedShorts = new short[AUDIO_SEGMENT_SIZE];
+				public readonly short[] BufferedShorts = new short[AUDIO_SEGMENT_SIZE];
 			}
 
-			private OutputStatus outStatus;
+			private OutputStatus _outStatus;
 
 			public long GetLengthApproximation()
 			{
-				return outStatus.video_bytes + outStatus.audio_bytes;
+				return _outStatus.video_bytes + _outStatus.audio_bytes;
 			}
 
 			private static bool FAILED(int hr) => hr < 0;
@@ -641,7 +643,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			private Parameters parameters;
+			private Parameters _parameters;
 
 			/// <exception cref="InvalidOperationException">unmanaged call failed</exception>
 			public void OpenFile(string destPath, Parameters parameters, CodecToken videoCodecToken)
@@ -653,8 +655,8 @@ namespace BizHawk.Client.EmuHawk
 					| ((int)(byte)(str[3]) << 24)
 				);
 
-				this.parameters = parameters;
-				this.currVideoCodecToken = videoCodecToken;
+				this._parameters = parameters;
+				this._currVideoCodecToken = videoCodecToken;
 
 				// TODO - try creating the file once first before we let vfw botch it up?
 
@@ -664,7 +666,7 @@ namespace BizHawk.Client.EmuHawk
 					File.Delete(destPath);
 				}
 
-				if (FAILED(AVIWriterImports.AVIFileOpenW(ref pAviFile, destPath, AVIWriterImports.OpenFileStyle.OF_CREATE | AVIWriterImports.OpenFileStyle.OF_WRITE, 0)))
+				if (FAILED(AVIWriterImports.AVIFileOpenW(ref _pAviFile, destPath, AVIWriterImports.OpenFileStyle.OF_CREATE | AVIWriterImports.OpenFileStyle.OF_WRITE, 0)))
 				{
 					throw new InvalidOperationException($"Couldnt open dest path for avi file: {destPath}");
 				}
@@ -677,7 +679,7 @@ namespace BizHawk.Client.EmuHawk
 				vidstream_header.dwRate = parameters.fps;
 				vidstream_header.dwScale = parameters.fps_scale;
 				vidstream_header.dwSuggestedBufferSize = (int)bmih.biSizeImage;
-				if (FAILED(AVIWriterImports.AVIFileCreateStreamW(pAviFile, out pAviRawVideoStream, ref vidstream_header)))
+				if (FAILED(AVIWriterImports.AVIFileCreateStreamW(_pAviFile, out _pAviRawVideoStream, ref vidstream_header)))
 				{
 					CloseFile();
 					throw new InvalidOperationException("Failed opening raw video stream. Not sure how this could happen");
@@ -693,14 +695,14 @@ namespace BizHawk.Client.EmuHawk
 				audstream_header.dwRate = (int)wfex.nAvgBytesPerSec;
 				audstream_header.dwSampleSize = wfex.nBlockAlign;
 				audstream_header.dwInitialFrames = 1; // ??? optimal value?
-				if (FAILED(AVIWriterImports.AVIFileCreateStreamW(pAviFile, out pAviRawAudioStream, ref audstream_header)))
+				if (FAILED(AVIWriterImports.AVIFileCreateStreamW(_pAviFile, out _pAviRawAudioStream, ref audstream_header)))
 				{
 					CloseFile();
 					throw new InvalidOperationException("Failed opening raw audio stream. Not sure how this could happen");
 				}
 
-				outStatus = new OutputStatus();
-				IsOpen = true;
+				_outStatus = new OutputStatus();
+				_isOpen = true;
 			}
 
 
@@ -708,21 +710,21 @@ namespace BizHawk.Client.EmuHawk
 			/// <exception cref="InvalidOperationException">no file open (need to call <see cref="OpenFile"/>)</exception>
 			public IDisposable AcquireVideoCodecToken(IntPtr hwnd, CodecToken lastCodecToken)
 			{
-				if (!IsOpen)
+				if (!_isOpen)
 				{
 					throw new InvalidOperationException("File must be opened before acquiring a codec token (or else the stream formats wouldnt be known)");
 				}
 
 				if (lastCodecToken != null)
 				{
-					currVideoCodecToken = lastCodecToken;
+					_currVideoCodecToken = lastCodecToken;
 				}
 
 				// encoder params
 				AVIWriterImports.AVICOMPRESSOPTIONS comprOptions = new AVIWriterImports.AVICOMPRESSOPTIONS();
-				currVideoCodecToken?.AllocateToAVICOMPRESSOPTIONS(ref comprOptions);
+				_currVideoCodecToken?.AllocateToAVICOMPRESSOPTIONS(ref comprOptions);
 
-				bool result = AVISaveOptions(pAviRawVideoStream, ref comprOptions, hwnd) != 0;
+				bool result = AVISaveOptions(_pAviRawVideoStream, ref comprOptions, hwnd) != 0;
 				CodecToken ret = CodecToken.CreateFromAVICOMPRESSOPTIONS(ref comprOptions);
 
 				// so, AVISaveOptions may have changed some of the pointers
@@ -746,15 +748,15 @@ namespace BizHawk.Client.EmuHawk
 			/// <exception cref="InvalidOperationException">no video codec token set (need to call <see cref="OpenFile"/>), or unmanaged call failed</exception>
 			public void OpenStreams()
 			{
-				if (currVideoCodecToken == null)
+				if (_currVideoCodecToken == null)
 				{
 					throw new InvalidOperationException("set a video codec token before opening the streams!");
 				}
 
 				// open compressed video stream
 				AVIWriterImports.AVICOMPRESSOPTIONS opts = new AVIWriterImports.AVICOMPRESSOPTIONS();
-				currVideoCodecToken.AllocateToAVICOMPRESSOPTIONS(ref opts);
-				bool failed = FAILED(AVIWriterImports.AVIMakeCompressedStream(out pAviCompressedVideoStream, pAviRawVideoStream, ref opts, IntPtr.Zero));
+				_currVideoCodecToken.AllocateToAVICOMPRESSOPTIONS(ref opts);
+				bool failed = FAILED(AVIWriterImports.AVIMakeCompressedStream(out _pAviCompressedVideoStream, _pAviRawVideoStream, ref opts, IntPtr.Zero));
 				CodecToken.DeallocateAVICOMPRESSOPTIONS(ref opts);
 				
 				if (failed)
@@ -765,26 +767,26 @@ namespace BizHawk.Client.EmuHawk
 
 				// set the compressed video stream input format
 				AVIWriterImports.BITMAPINFOHEADER bmih = new AVIWriterImports.BITMAPINFOHEADER();
-				if (bit32)
+				if (_bit32)
 				{
-					parameters.PopulateBITMAPINFOHEADER32(ref bmih);
+					_parameters.PopulateBITMAPINFOHEADER32(ref bmih);
 				}
 				else
 				{
-					parameters.PopulateBITMAPINFOHEADER24(ref bmih);
+					_parameters.PopulateBITMAPINFOHEADER24(ref bmih);
 				}
 
-				if (FAILED(AVIWriterImports.AVIStreamSetFormat(pAviCompressedVideoStream, 0, ref bmih, Marshal.SizeOf(bmih))))
+				if (FAILED(AVIWriterImports.AVIStreamSetFormat(_pAviCompressedVideoStream, 0, ref bmih, Marshal.SizeOf(bmih))))
 				{
-					bit32 = true; // we'll try again
+					_bit32 = true; // we'll try again
 					CloseStreams();
 					throw new InvalidOperationException("Failed setting compressed video stream input format");
 				}
 
 				// set audio stream input format
 				AVIWriterImports.WAVEFORMATEX wfex = new AVIWriterImports.WAVEFORMATEX();
-				parameters.PopulateWAVEFORMATEX(ref wfex);
-				if (FAILED(AVIWriterImports.AVIStreamSetFormat(pAviRawAudioStream, 0, ref wfex, Marshal.SizeOf(wfex))))
+				_parameters.PopulateWAVEFORMATEX(ref wfex);
+				if (FAILED(AVIWriterImports.AVIStreamSetFormat(_pAviRawAudioStream, 0, ref wfex, Marshal.SizeOf(wfex))))
 				{
 					CloseStreams();
 					throw new InvalidOperationException("Failed setting raw audio stream input format");
@@ -797,29 +799,29 @@ namespace BizHawk.Client.EmuHawk
 			public void CloseFile()
 			{
 				CloseStreams();
-				if (pAviRawAudioStream != IntPtr.Zero)
+				if (_pAviRawAudioStream != IntPtr.Zero)
 				{
-					AVIWriterImports.AVIStreamRelease(pAviRawAudioStream);
-					pAviRawAudioStream = IntPtr.Zero;
+					AVIWriterImports.AVIStreamRelease(_pAviRawAudioStream);
+					_pAviRawAudioStream = IntPtr.Zero;
 				}
 
-				if (pAviRawVideoStream != IntPtr.Zero)
+				if (_pAviRawVideoStream != IntPtr.Zero)
 				{
-					AVIWriterImports.AVIStreamRelease(pAviRawVideoStream);
-					pAviRawVideoStream = IntPtr.Zero;
+					AVIWriterImports.AVIStreamRelease(_pAviRawVideoStream);
+					_pAviRawVideoStream = IntPtr.Zero;
 				}
 
-				if (pAviFile != IntPtr.Zero)
+				if (_pAviFile != IntPtr.Zero)
 				{
-					AVIWriterImports.AVIFileRelease(pAviFile);
-					pAviFile = IntPtr.Zero;
+					AVIWriterImports.AVIFileRelease(_pAviFile);
+					_pAviFile = IntPtr.Zero;
 				}
 
-				if (pGlobalBuf != IntPtr.Zero)
+				if (_pGlobalBuf != IntPtr.Zero)
 				{
-					Marshal.FreeHGlobal(pGlobalBuf);
-					pGlobalBuf = IntPtr.Zero;
-					pGlobalBuf_size = 0;
+					Marshal.FreeHGlobal(_pGlobalBuf);
+					_pGlobalBuf = IntPtr.Zero;
+					_pGlobalBuffSize = 0;
 				}
 			}
 
@@ -828,15 +830,15 @@ namespace BizHawk.Client.EmuHawk
 			/// </summary>
 			public void CloseStreams()
 			{
-				if (pAviRawAudioStream != IntPtr.Zero)
+				if (_pAviRawAudioStream != IntPtr.Zero)
 				{
 					FlushBufferedAudio();
 				}
 
-				if (pAviCompressedVideoStream != IntPtr.Zero)
+				if (_pAviCompressedVideoStream != IntPtr.Zero)
 				{
-					AVIWriterImports.AVIStreamRelease(pAviCompressedVideoStream);
-					pAviCompressedVideoStream = IntPtr.Zero;
+					AVIWriterImports.AVIStreamRelease(_pAviCompressedVideoStream);
+					_pAviCompressedVideoStream = IntPtr.Zero;
 				}
 			}
 
@@ -847,15 +849,15 @@ namespace BizHawk.Client.EmuHawk
 				int idx = 0;
 				while (todo > 0)
 				{
-					int remain = OutputStatus.AUDIO_SEGMENT_SIZE - outStatus.audio_buffered_shorts;
+					int remain = OutputStatus.AUDIO_SEGMENT_SIZE - _outStatus.audio_buffered_shorts;
 					int chunk = Math.Min(remain, todo);
 					for (int i = 0; i < chunk; i++)
 					{
-						outStatus.BufferedShorts[outStatus.audio_buffered_shorts++] = samples[idx++];
+						_outStatus.BufferedShorts[_outStatus.audio_buffered_shorts++] = samples[idx++];
 					}
 					todo -= chunk;
 
-					if (outStatus.audio_buffered_shorts == OutputStatus.AUDIO_SEGMENT_SIZE)
+					if (_outStatus.audio_buffered_shorts == OutputStatus.AUDIO_SEGMENT_SIZE)
 					{
 						FlushBufferedAudio();
 					}
@@ -864,21 +866,21 @@ namespace BizHawk.Client.EmuHawk
 
 			private unsafe void FlushBufferedAudio()
 			{
-				int todo = outStatus.audio_buffered_shorts;
+				int todo = _outStatus.audio_buffered_shorts;
 				int todo_realsamples = todo / 2;
 				IntPtr buf = GetStaticGlobalBuf(todo * 2);
 
 				short* sptr = (short*)buf.ToPointer();
 				for (int i = 0; i < todo; i++)
 				{
-					sptr[i] = outStatus.BufferedShorts[i];
+					sptr[i] = _outStatus.BufferedShorts[i];
 				}
 
 				// (TODO - inefficient- build directly in a buffer)
-				AVIWriterImports.AVIStreamWrite(pAviRawAudioStream, outStatus.audio_samples, todo_realsamples, buf, todo_realsamples * 4, 0, IntPtr.Zero, out var bytes_written);
-				outStatus.audio_samples += todo_realsamples;
-				outStatus.audio_bytes += bytes_written;
-				outStatus.audio_buffered_shorts = 0;
+				AVIWriterImports.AVIStreamWrite(_pAviRawAudioStream, _outStatus.audio_samples, todo_realsamples, buf, todo_realsamples * 4, 0, IntPtr.Zero, out var bytes_written);
+				_outStatus.audio_samples += todo_realsamples;
+				_outStatus.audio_bytes += bytes_written;
+				_outStatus.audio_buffered_shorts = 0;
 			}
 
 			/// <exception cref="InvalidOperationException">attempted frame resize during encoding</exception>
@@ -886,17 +888,17 @@ namespace BizHawk.Client.EmuHawk
 			{
 				const int AVIIF_KEYFRAME = 0x00000010;
 
-				if (parameters.width != source.BufferWidth
-					|| parameters.height != source.BufferHeight)
+				if (_parameters.width != source.BufferWidth
+					|| _parameters.height != source.BufferHeight)
 					throw new InvalidOperationException("video buffer changed between start and now");
 
-				int pitch_add = parameters.pitch_add;
+				int pitch_add = _parameters.pitch_add;
 
-				int todo = parameters.pitch * parameters.height;
+				int todo = _parameters.pitch * _parameters.height;
 				int w = source.BufferWidth;
 				int h = source.BufferHeight;
 
-				if (!bit32)
+				if (!_bit32)
 				{
 					IntPtr buf = GetStaticGlobalBuf(todo);
 
@@ -923,9 +925,9 @@ namespace BizHawk.Client.EmuHawk
 								bp += pitch_add;
 							}
 
-							int ret = AVIWriterImports.AVIStreamWrite(pAviCompressedVideoStream, outStatus.video_frames, 1, new IntPtr(bytes_ptr), todo, AVIIF_KEYFRAME, IntPtr.Zero, out var bytes_written);
-							outStatus.video_bytes += bytes_written;
-							outStatus.video_frames++;
+							int ret = AVIWriterImports.AVIStreamWrite(_pAviCompressedVideoStream, _outStatus.video_frames, 1, new IntPtr(bytes_ptr), todo, AVIIF_KEYFRAME, IntPtr.Zero, out var bytes_written);
+							_outStatus.video_bytes += bytes_written;
+							_outStatus.video_frames++;
 						}
 					}
 				}
@@ -954,9 +956,9 @@ namespace BizHawk.Client.EmuHawk
 								idx -= w * 2;
 							}
 
-							int ret = AVIWriterImports.AVIStreamWrite(pAviCompressedVideoStream, outStatus.video_frames, 1, new IntPtr(bytes_ptr), todo * 3, AVIIF_KEYFRAME, IntPtr.Zero, out var bytes_written);
-							outStatus.video_bytes += bytes_written;
-							outStatus.video_frames++;
+							int ret = AVIWriterImports.AVIStreamWrite(_pAviCompressedVideoStream, _outStatus.video_frames, 1, new IntPtr(bytes_ptr), todo * 3, AVIIF_KEYFRAME, IntPtr.Zero, out var bytes_written);
+							_outStatus.video_bytes += bytes_written;
+							_outStatus.video_frames++;
 						}
 					}
 				}
@@ -975,7 +977,7 @@ namespace BizHawk.Client.EmuHawk
 			return "avi";
 		}
 
-		public bool UsesAudio => parameters.has_audio;
+		public bool UsesAudio => _parameters.has_audio;
 
 		public bool UsesVideo => true;
 

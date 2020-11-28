@@ -591,7 +591,7 @@ namespace BizHawk.Client.EmuHawk
 			string ext = Path.GetExtension(baseName);
 			if (ext == null || ext.ToLower() != ".jmd")
 			{
-				baseName = baseName + ".jmd";
+				baseName += ".jmd";
 			}
 
 			_jmdFile = new JmdFile(File.Open(baseName, FileMode.Create), _fpsNum, _fpsDen, _audioSampleRate, _audioChannels == 2);

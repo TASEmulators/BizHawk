@@ -22,7 +22,7 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 		}
 
-		private void listBox1_DragEnter(object sender, DragEventArgs e)
+		private void ListBox1_DragEnter(object sender, DragEventArgs e)
 		{
 			e.Set(DragDropEffects.Link);
 		}
@@ -32,7 +32,7 @@ namespace BizHawk.Client.EmuHawk
 			label2.Text = $"Number of files: {listBox1.Items.Count}";
 		}
 
-		private void listBox1_DragDrop(object sender, DragEventArgs e)
+		private void ListBox1_DragDrop(object sender, DragEventArgs e)
 		{
 			if (e.Data.GetDataPresent(DataFormats.FileDrop))
 			{
@@ -42,13 +42,13 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void buttonClear_Click(object sender, EventArgs e)
+		private void ButtonClear_Click(object sender, EventArgs e)
 		{
 			listBox1.Items.Clear();
 			SetCount();
 		}
 
-		private void buttonGo_Click(object sender, EventArgs e)
+		private void ButtonGo_Click(object sender, EventArgs e)
 		{
 			if (_thread != null)
 			{
@@ -64,7 +64,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					label3.Text = "Status: Running...";
 					int numFrames = (int)numericUpDownFrames.Value;
-					List<string> files = new List<string>(listBox1.Items.Count);
+					var files = new List<string>(listBox1.Items.Count);
 					foreach (string s in listBox1.Items)
 					{
 						files.Add(s);
@@ -88,7 +88,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var pp = (Tuple<int, List<string>>)o;
 				BatchRunner br = new BatchRunner(_createCoreComm(), pp.Item2, pp.Item1);
-				br.OnProgress += br_OnProgress;
+				br.OnProgress += BrOnProgress;
 				var results = br.Run();
 				this.Invoke(() => { label3.Text = "Status: Finished!"; _mostRecentResults = results; });
 			}
@@ -100,7 +100,7 @@ namespace BizHawk.Client.EmuHawk
 			this.Invoke(() => _thread = null);
 		}
 
-		private void br_OnProgress(object sender, BatchRunner.ProgressEventArgs e)
+		private void BrOnProgress(object sender, BatchRunner.ProgressEventArgs e)
 		{
 			this.Invoke(() => ProgressUpdate(e.Completed, e.Total));
 			e.ShouldCancel = false;
@@ -115,7 +115,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void buttonDump_Click(object sender, EventArgs e)
+		private void ButtonDump_Click(object sender, EventArgs e)
 		{
 			if (_mostRecentResults != null)
 			{

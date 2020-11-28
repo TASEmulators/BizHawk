@@ -55,8 +55,8 @@
 			this.listBox1.Name = "listBox1";
 			this.listBox1.Size = new System.Drawing.Size(268, 147);
 			this.listBox1.TabIndex = 2;
-			this.listBox1.DragDrop += new System.Windows.Forms.DragEventHandler(this.listBox1_DragDrop);
-			this.listBox1.DragEnter += new System.Windows.Forms.DragEventHandler(this.listBox1_DragEnter);
+			this.listBox1.DragDrop += new System.Windows.Forms.DragEventHandler(this.ListBox1_DragDrop);
+			this.listBox1.DragEnter += new System.Windows.Forms.DragEventHandler(this.ListBox1_DragEnter);
 			// 
 			// label2
 			// 
@@ -72,7 +72,7 @@
 			this.buttonClear.TabIndex = 4;
 			this.buttonClear.Text = "Clear!";
 			this.buttonClear.UseVisualStyleBackColor = true;
-			this.buttonClear.Click += new System.EventHandler(this.buttonClear_Click);
+			this.buttonClear.Click += new System.EventHandler(this.ButtonClear_Click);
 			// 
 			// buttonGo
 			// 
@@ -82,7 +82,7 @@
 			this.buttonGo.TabIndex = 5;
 			this.buttonGo.Text = "Go!";
 			this.buttonGo.UseVisualStyleBackColor = true;
-			this.buttonGo.Click += new System.EventHandler(this.buttonGo_Click);
+			this.buttonGo.Click += new System.EventHandler(this.ButtonGo_Click);
 			// 
 			// label3
 			// 
@@ -123,7 +123,7 @@
 			this.buttonDump.TabIndex = 10;
 			this.buttonDump.Text = "Dump...";
 			this.buttonDump.UseVisualStyleBackColor = true;
-			this.buttonDump.Click += new System.EventHandler(this.buttonDump_Click);
+			this.buttonDump.Click += new System.EventHandler(this.ButtonDump_Click);
 			// 
 			// BatchRun
 			// 

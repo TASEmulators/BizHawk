@@ -150,7 +150,7 @@
 			this.btnOk.TabIndex = 4;
 			this.btnOk.Text = "OK";
 			this.btnOk.UseVisualStyleBackColor = true;
-			this.btnOk.Click += new System.EventHandler(this.btnOk_Click);
+			this.btnOk.Click += new System.EventHandler(this.BtnOk_Click);
 			// 
 			// groupBox1
 			// 
@@ -190,7 +190,7 @@
 			this.btnSelectUserFilter.TabIndex = 5;
 			this.btnSelectUserFilter.Text = "Select";
 			this.btnSelectUserFilter.UseVisualStyleBackColor = true;
-			this.btnSelectUserFilter.Click += new System.EventHandler(this.btnSelectUserFilter_Click);
+			this.btnSelectUserFilter.Click += new System.EventHandler(this.BtnSelectUserFilter_Click);
 			// 
 			// rbUser
 			// 
@@ -213,8 +213,8 @@
 			this.tbScanlineIntensity.TabIndex = 3;
 			this.tbScanlineIntensity.TickFrequency = 32;
 			this.tbScanlineIntensity.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
-			this.tbScanlineIntensity.Scroll += new System.EventHandler(this.tbScanlineIntensity_Scroll);
-			this.tbScanlineIntensity.ValueChanged += new System.EventHandler(this.tbScanlineIntensity_Scroll);
+			this.tbScanlineIntensity.Scroll += new System.EventHandler(this.TbScanlineIntensity_Scroll);
+			this.tbScanlineIntensity.ValueChanged += new System.EventHandler(this.TbScanlineIntensity_Scroll);
 			// 
 			// rbNone
 			// 
@@ -258,7 +258,7 @@
 			this.checkLetterbox.TabIndex = 8;
 			this.checkLetterbox.Text = "Maintain aspect ratio (letterbox)";
 			this.checkLetterbox.UseVisualStyleBackColor = true;
-			this.checkLetterbox.CheckedChanged += new System.EventHandler(this.checkLetterbox_CheckedChanged);
+			this.checkLetterbox.CheckedChanged += new System.EventHandler(this.CheckLetterbox_CheckedChanged);
 			// 
 			// checkPadInteger
 			// 
@@ -269,7 +269,7 @@
 			this.checkPadInteger.TabIndex = 9;
 			this.checkPadInteger.Text = "Expand pixels by integers only (e.g. no 1.3333x)";
 			this.checkPadInteger.UseVisualStyleBackColor = true;
-			this.checkPadInteger.CheckedChanged += new System.EventHandler(this.checkPadInteger_CheckedChanged);
+			this.checkPadInteger.CheckedChanged += new System.EventHandler(this.CheckPadInteger_CheckedChanged);
 			// 
 			// grpFinalFilter
 			// 
@@ -326,7 +326,7 @@
 			this.rbUseRaw.TabStop = true;
 			this.rbUseRaw.Text = "Use 1:1 pixel size (for crispness or debugging)";
 			this.rbUseRaw.UseVisualStyleBackColor = true;
-			this.rbUseRaw.CheckedChanged += new System.EventHandler(this.rbUseRaw_CheckedChanged);
+			this.rbUseRaw.CheckedChanged += new System.EventHandler(this.RbUseRaw_CheckedChanged);
 			// 
 			// rbUseSystem
 			// 
@@ -338,7 +338,7 @@
 			this.rbUseSystem.TabStop = true;
 			this.rbUseSystem.Text = "Use system\'s recommendation";
 			this.rbUseSystem.UseVisualStyleBackColor = true;
-			this.rbUseSystem.CheckedChanged += new System.EventHandler(this.rbUseSystem_CheckedChanged);
+			this.rbUseSystem.CheckedChanged += new System.EventHandler(this.RbUseSystem_CheckedChanged);
 			// 
 			// grpARSelection
 			// 
@@ -565,7 +565,7 @@
 			this.btnDefaults.Text = "Defaults";
 			this.toolTip1.SetToolTip(this.btnDefaults, "Unless I forgot to update the button\'s code when I changed a default");
 			this.btnDefaults.UseVisualStyleBackColor = true;
-			this.btnDefaults.Click += new System.EventHandler(this.btnDefaults_Click);
+			this.btnDefaults.Click += new System.EventHandler(this.BtnDefaults_Click);
 			// 
 			// cbAutoPrescale
 			// 
@@ -649,8 +649,8 @@
 			this.label13.Location = new System.Drawing.Point(45, 60);
 			this.label13.Name = "label13";
 			this.label13.Text = resources.GetString("label13.Text");
-			this.label13.Click += new System.EventHandler(this.label13_Click);
-			this.label13.DoubleClick += new System.EventHandler(this.label13_Click);
+			this.label13.Click += new System.EventHandler(this.Label13_Click);
+			this.label13.DoubleClick += new System.EventHandler(this.Label13_Click);
 			// 
 			// cbAlternateVsync
 			// 
@@ -937,7 +937,7 @@
 			this.linkLabel1.TabIndex = 18;
 			this.linkLabel1.TabStop = true;
 			this.linkLabel1.Text = "Documentation";
-			this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
+			this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabel1_LinkClicked);
 			// 
 			// DisplayConfigLite
 			// 

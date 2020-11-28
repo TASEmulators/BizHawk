@@ -99,7 +99,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void btnOk_Click(object sender, EventArgs e)
+		private void BtnOk_Click(object sender, EventArgs e)
 		{
 			if (rbNone.Checked)
 				_config.TargetDisplayFilter = 0;
@@ -243,7 +243,7 @@ namespace BizHawk.Client.EmuHawk
 			lblUserFilterName.Text = Path.GetFileNameWithoutExtension(_pathSelection);
 		}
 
-		private void btnSelectUserFilter_Click(object sender, EventArgs e)
+		private void BtnSelectUserFilter_Click(object sender, EventArgs e)
 		{
 			using var ofd = new OpenFileDialog
 			{
@@ -283,22 +283,22 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void checkLetterbox_CheckedChanged(object sender, EventArgs e)
+		private void CheckLetterbox_CheckedChanged(object sender, EventArgs e)
 		{
 			RefreshAspectRatioOptions();
 		}
 
-		private void checkPadInteger_CheckedChanged(object sender, EventArgs e)
+		private void CheckPadInteger_CheckedChanged(object sender, EventArgs e)
 		{
 			RefreshAspectRatioOptions();
 		}
 
-		private void rbUseRaw_CheckedChanged(object sender, EventArgs e)
+		private void RbUseRaw_CheckedChanged(object sender, EventArgs e)
 		{
 			RefreshAspectRatioOptions();
 		}
 
-		private void rbUseSystem_CheckedChanged(object sender, EventArgs e)
+		private void RbUseSystem_CheckedChanged(object sender, EventArgs e)
 		{
 			RefreshAspectRatioOptions();
 		}
@@ -309,7 +309,7 @@ namespace BizHawk.Client.EmuHawk
 			checkPadInteger.Enabled = checkLetterbox.Checked;
 		}
 
-		public void tbScanlineIntensity_Scroll(object sender, EventArgs e)
+		public void TbScanlineIntensity_Scroll(object sender, EventArgs e)
 		{
 			_config.TargetScanlineFilterIntensity = tbScanlineIntensity.Value;
 			int scanlines = _config.TargetScanlineFilterIntensity;
@@ -340,17 +340,17 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		private void LinkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
 			System.Diagnostics.Process.Start("http://tasvideos.org/Bizhawk/DisplayConfig.html");
 		}
 
-		private void label13_Click(object sender, EventArgs e)
+		private void Label13_Click(object sender, EventArgs e)
 		{
 			cbAlternateVsync.Checked ^= true;
 		}
 
-		private void btnDefaults_Click(object sender, EventArgs e)
+		private void BtnDefaults_Click(object sender, EventArgs e)
 		{
 			nudPrescale.Value = 1;
 			rbNone.Checked = true;

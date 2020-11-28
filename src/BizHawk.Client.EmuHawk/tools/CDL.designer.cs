@@ -125,12 +125,12 @@ namespace BizHawk.Client.EmuHawk
 			// miAutoStart
 			// 
 			this.miAutoStart.Text = "Auto-Start";
-			this.miAutoStart.Click += new System.EventHandler(this.miAutoStart_Click);
+			this.miAutoStart.Click += new System.EventHandler(this.MiAutoStart_Click);
 			// 
 			// miAutoSave
 			// 
 			this.miAutoSave.Text = "Auto-Save";
-			this.miAutoSave.Click += new System.EventHandler(this.miAutoSave_Click);
+			this.miAutoSave.Click += new System.EventHandler(this.MiAutoSave_Click);
 			// 
 			// ClearMenuItem
 			// 
@@ -163,7 +163,7 @@ namespace BizHawk.Client.EmuHawk
 			this.tsbLoggingActive.Name = "tsbLoggingActive";
 			this.tsbLoggingActive.Size = new System.Drawing.Size(41, 22);
 			this.tsbLoggingActive.Text = "Active";
-			this.tsbLoggingActive.CheckedChanged += new System.EventHandler(this.tsbLoggingActive_CheckedChanged);
+			this.tsbLoggingActive.CheckedChanged += new System.EventHandler(this.TsbLoggingActive_CheckedChanged);
 			// 
 			// tsbViewUpdate
 			// 
@@ -185,7 +185,7 @@ namespace BizHawk.Client.EmuHawk
             "Show KBytes"});
 			this.tsbViewStyle.Name = "tsbViewStyle";
 			this.tsbViewStyle.Size = new System.Drawing.Size(121, 25);
-			this.tsbViewStyle.SelectedIndexChanged += new System.EventHandler(this.tsbViewStyle_SelectedIndexChanged);
+			this.tsbViewStyle.SelectedIndexChanged += new System.EventHandler(this.TsbViewStyle_SelectedIndexChanged);
 			// 
 			// tsbExportText
 			// 
@@ -193,7 +193,7 @@ namespace BizHawk.Client.EmuHawk
 			this.tsbExportText.Name = "tsbExportText";
 			this.tsbExportText.Size = new System.Drawing.Size(87, 22);
 			this.tsbExportText.Text = "To Clipboard";
-			this.tsbExportText.Click += new System.EventHandler(this.tsbExportText_Click);
+			this.tsbExportText.Click += new System.EventHandler(this.TsbExportText_Click);
 			// 
 			// lvCDL
 			// 
@@ -208,12 +208,12 @@ namespace BizHawk.Client.EmuHawk
 			this.lvCDL.TabIndex = 9;
 			this.lvCDL.AllowColumnReorder = false;
 			this.lvCDL.AllowColumnResize = true;
-			this.lvCDL.QueryItemText += new InputRoll.QueryItemTextHandler(this.lvCDL_QueryItemText);
+			this.lvCDL.QueryItemText += new InputRoll.QueryItemTextHandler(this.LvCDL_QueryItemText);
 			// 
 			// miAutoResume
 			// 
 			this.miAutoResume.Text = "Auto-Resume";
-			this.miAutoResume.Click += new System.EventHandler(this.miAutoResume_Click);
+			this.miAutoResume.Click += new System.EventHandler(this.MiAutoResume_Click);
 			// 
 			// CDL
 			// 

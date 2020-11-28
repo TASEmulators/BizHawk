@@ -110,7 +110,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public static Input Instance => _instance.Value;
 
-		private readonly Thread UpdateThread;
+		private readonly Thread _updateThread;
 
 		public readonly HostInputAdapter Adapter = GlobalWin.Config.HostInputMethod switch
 		{
@@ -122,12 +122,12 @@ namespace BizHawk.Client.EmuHawk
 		private Input()
 		{
 			Adapter.UpdateConfig(GlobalWin.Config);
-			UpdateThread = new Thread(UpdateThreadProc)
+			_updateThread = new Thread(UpdateThreadProc)
 			{
 				IsBackground = true, 
 				Priority = ThreadPriority.AboveNormal // why not? this thread shouldn't be very heavy duty, and we want it to be responsive
 			};
-			UpdateThread.Start();
+			_updateThread.Start();
 		}
 
 		public enum InputEventType

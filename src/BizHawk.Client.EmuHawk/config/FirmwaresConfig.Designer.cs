@@ -100,7 +100,7 @@ namespace BizHawk.Client.EmuHawk
 			this.lvFirmwares.TabIndex = 24;
 			this.lvFirmwares.UseCompatibleStateImageBehavior = false;
 			this.lvFirmwares.View = System.Windows.Forms.View.Details;
-			this.lvFirmwares.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.lvFirmwares_ColumnClick);
+			this.lvFirmwares.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.LvFirmwares_ColumnClick);
 			this.lvFirmwares.DragDrop += new System.Windows.Forms.DragEventHandler(this.LvFirmwares_DragDrop);
 			this.lvFirmwares.DragEnter += new System.Windows.Forms.DragEventHandler(this.LvFirmwares_DragEnter);
 			this.lvFirmwares.KeyDown += new System.Windows.Forms.KeyEventHandler(this.LvFirmwares_KeyDown);

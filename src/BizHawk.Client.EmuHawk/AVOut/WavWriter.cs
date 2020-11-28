@@ -29,12 +29,12 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// samplerate in HZ
 		/// </summary>
-		private int _sampleRate;
+		private readonly int _sampleRate;
 
 		/// <summary>
 		/// number of audio channels
 		/// </summary>
-		private int _numChannels;
+		private readonly int _numChannels;
 
 		/// <summary>
 		/// number of bytes of PCM data written to current file
