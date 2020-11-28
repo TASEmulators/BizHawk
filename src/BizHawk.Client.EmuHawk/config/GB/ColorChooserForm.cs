@@ -89,32 +89,32 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Panel12_DoubleClick(object sender, EventArgs e)
 		{
-			Panel psender = (Panel)sender;
+			Panel panel = (Panel)sender;
 
 			int i;
-			if (psender == panel1)
+			if (panel == panel1)
 				i = 0;
-			else if (psender == panel2)
+			else if (panel == panel2)
 				i = 1;
-			else if (psender == panel3)
+			else if (panel == panel3)
 				i = 2;
-			else if (psender == panel4)
+			else if (panel == panel4)
 				i = 3;
-			else if (psender == panel5)
+			else if (panel == panel5)
 				i = 4;
-			else if (psender == panel6)
+			else if (panel == panel6)
 				i = 5;
-			else if (psender == panel7)
+			else if (panel == panel7)
 				i = 6;
-			else if (psender == panel8)
+			else if (panel == panel8)
 				i = 7;
-			else if (psender == panel9)
+			else if (panel == panel9)
 				i = 8;
-			else if (psender == panel10)
+			else if (panel == panel10)
 				i = 9;
-			else if (psender == panel11)
+			else if (panel == panel11)
 				i = 10;
-			else if (psender == panel12)
+			else if (panel == panel12)
 				i = 11;
 			else
 				return; // i = -1;
@@ -145,7 +145,7 @@ namespace BizHawk.Client.EmuHawk
 				if (_colors[i] != dlg.Color)
 				{
 					_colors[i] = dlg.Color;
-					psender.BackColor = _colors[i];
+					panel.BackColor = _colors[i];
 				}
 			}
 		}
@@ -342,10 +342,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				SaveColorFile(sfd.FileName);
 			}
-		}
-
-		private void Ok_Click(object sender, EventArgs e)
-		{
 		}
 
 		private void DefaultButton_Click(object sender, EventArgs e)
