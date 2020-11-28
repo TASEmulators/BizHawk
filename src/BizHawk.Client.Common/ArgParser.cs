@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 
-namespace BizHawk.Client.EmuHawk
+namespace BizHawk.Client.Common
 {
 	/// <summary>
 	/// Parses command line flags from a string array into various instance fields.
@@ -208,100 +208,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return args.FirstOrDefault(arg => arg.StartsWith("--config=", StringComparison.InvariantCultureIgnoreCase))?.Substring(9);
 		}
-	}
 
-	public sealed class ArgParserException : Exception
-	{
-		public ArgParserException(string message) : base(message) {}
-	}
-
-	public readonly struct ParsedCLIFlags
-	{
-		public readonly string? cmdLoadSlot;
-
-		public readonly string? cmdLoadState;
-
-		public readonly string? cmdConfigPath;
-
-		public readonly string? cmdConfigFile;
-
-		public readonly string? cmdMovie;
-
-		public readonly string? cmdDumpType;
-
-		public readonly HashSet<int>? _currAviWriterFrameList;
-
-		public readonly int _autoDumpLength;
-
-		public readonly bool printVersion;
-
-		public readonly string? cmdDumpName;
-
-		public readonly bool _autoCloseOnDump;
-
-		public readonly bool _chromeless;
-
-		public readonly bool startFullscreen;
-
-		public readonly string? luaScript;
-
-		public readonly bool luaConsole;
-
-		public readonly (string IP, int Port)? SocketAddress;
-
-		public readonly string? MMFFilename;
-
-		public readonly (string? UrlGet, string? UrlPost)? HTTPAddresses;
-
-		public readonly bool? audiosync;
-
-		public readonly string? openExtToolDll;
-
-		public readonly string? cmdRom;
-
-		public ParsedCLIFlags(string? cmdLoadSlot,
-			string? cmdLoadState,
-			string? cmdConfigPath,
-			string? cmdConfigFile,
-			string? cmdMovie,
-			string? cmdDumpType,
-			HashSet<int>? currAviWriterFrameList,
-			int autoDumpLength,
-			bool printVersion,
-			string? cmdDumpName,
-			bool autoCloseOnDump,
-			bool chromeless,
-			bool startFullscreen,
-			string? luaScript,
-			bool luaConsole,
-			(string IP, int Port)? socketAddress,
-			string? mmfFilename,
-			(string? UrlGet, string? UrlPost)? httpAddresses,
-			bool? audiosync,
-			string? openExtToolDll,
-			string? cmdRom)
+		public sealed class ArgParserException : Exception
 		{
-			this.cmdLoadSlot = cmdLoadSlot;
-			this.cmdLoadState = cmdLoadState;
-			this.cmdConfigPath = cmdConfigPath;
-			this.cmdConfigFile = cmdConfigFile;
-			this.cmdMovie = cmdMovie;
-			this.cmdDumpType = cmdDumpType;
-			_currAviWriterFrameList = currAviWriterFrameList;
-			_autoDumpLength = autoDumpLength;
-			this.printVersion = printVersion;
-			this.cmdDumpName = cmdDumpName;
-			_autoCloseOnDump = autoCloseOnDump;
-			_chromeless = chromeless;
-			this.startFullscreen = startFullscreen;
-			this.luaScript = luaScript;
-			this.luaConsole = luaConsole;
-			SocketAddress = socketAddress;
-			MMFFilename = mmfFilename;
-			HTTPAddresses = httpAddresses;
-			this.audiosync = audiosync;
-			this.openExtToolDll = openExtToolDll;
-			this.cmdRom = cmdRom;
+			public ArgParserException(string message) : base(message) {}
 		}
 	}
 }

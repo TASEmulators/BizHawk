@@ -320,7 +320,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				ArgParser.ParseArguments(out _argParser, args);
 			}
-			catch (ArgParserException e)
+			catch (ArgParser.ArgParserException e)
 			{
 				MessageBox.Show(e.Message);
 			}
