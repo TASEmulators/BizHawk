@@ -273,7 +273,7 @@ namespace BizHawk.Client.EmuHawk
 			CloseRomContextMenuItem.Image = Properties.Resources.Close;
 		}
 
-		public MainForm(Config config, string[] args)
+		public MainForm(Config config, IGL gl, string[] args)
 		{
 			//do this threaded stuff early so it has plenty of time to run in background
 			Database.InitializeDatabase(Path.Combine(PathUtils.ExeDirectoryPath, "gamedb", "gamedb.txt"));
@@ -282,6 +282,7 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin._mainForm = this;
 
 			_config = config; // skips assignment to GlobalWin.Config as Program already did that
+			GL = gl;
 
 			InputManager.ControllerInputCoalescer = new ControllerInputCoalescer();
 			FirmwareManager = new FirmwareManager();
@@ -330,7 +331,7 @@ namespace BizHawk.Client.EmuHawk
 			// installed separately on Unix (via package manager or from https://developer.nvidia.com/cg-toolkit-download), look in $PATH
 			_presentationPanel = new PresentationPanel(
 				Config,
-				GlobalWin.GL,
+				GL,
 				ToggleFullscreen,
 				MainForm_MouseClick,
 				MainForm_MouseMove,
@@ -338,7 +339,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				GraphicsControl = { MainWindow = true }
 			};
-			DisplayManager = new DisplayManager(GlobalWin.GL, _presentationPanel, () => DisableSecondaryThrottling);
+			DisplayManager = new DisplayManager(GL, _presentationPanel, () => DisableSecondaryThrottling);
 			Controls.Add(_presentationPanel);
 			Controls.SetChildIndex(_presentationPanel, 0);
 
@@ -861,6 +862,8 @@ namespace BizHawk.Client.EmuHawk
 			get => _config;
 			set => GlobalWin.Config = base.Config = _config = value;
 		}
+
+		private readonly IGL GL;
 
 		public readonly ToolManager Tools;
 

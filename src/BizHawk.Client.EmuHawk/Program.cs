@@ -191,7 +191,7 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.Config.DispMethod = EDispMethod.GdiPlus;
 			}
 
-			GlobalWin.GL = TryInitIGL(GlobalWin.Config.DispMethod);
+			var workingGL = TryInitIGL(GlobalWin.Config.DispMethod);
 
 			if (!OSTC.IsUnixHost)
 			{
@@ -211,7 +211,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					try
 					{
-						InitAndRunSingleInstance(GlobalWin.Config, i => exitCode = i, args);
+						InitAndRunSingleInstance(GlobalWin.Config, workingGL, i => exitCode = i, args);
 					}
 					catch (ObjectDisposedException)
 					{
@@ -220,7 +220,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					var mf = new MainForm(GlobalWin.Config, args);
+					var mf = new MainForm(GlobalWin.Config, workingGL, args);
 //					var title = mf.Text;
 					mf.Show();
 //					mf.Text = title;
@@ -253,7 +253,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				GlobalWin.Sound?.Dispose();
 				GlobalWin.Sound = null;
-				GlobalWin.GL.Dispose();
+				workingGL.Dispose();
 				Input.Instance.Adapter.DeInitAll();
 			}
 
@@ -326,13 +326,16 @@ namespace BizHawk.Client.EmuHawk
 		{
 			private readonly Config _config;
 
+			private readonly IGL _gl;
+
 			private readonly Action<int> _setExitCode;
 
 			private readonly string[] cmdArgs;
 
-			public SingleInstanceController(Config config, Action<int> setExitCode, string[] args)
+			public SingleInstanceController(Config config, IGL gl, Action<int> setExitCode, string[] args)
 			{
 				_config = config;
+				_gl = gl;
 				_setExitCode = setExitCode;
 				cmdArgs = args;
 				IsSingleInstance = true;
@@ -349,7 +352,7 @@ namespace BizHawk.Client.EmuHawk
 
 			protected override void OnCreateMainForm()
 			{
-				MainForm = new MainForm(_config, cmdArgs);
+				MainForm = new MainForm(_config, _gl, cmdArgs);
 				var title = MainForm.Text;
 				MainForm.Show();
 				MainForm.Text = title;
@@ -357,7 +360,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private static void InitAndRunSingleInstance(Config config, Action<int> setExitCode, string[] args)
-			=> new SingleInstanceController(config, setExitCode, args).Run();
+		private static void InitAndRunSingleInstance(Config config, IGL gl, Action<int> setExitCode, string[] args)
+			=> new SingleInstanceController(config, gl, setExitCode, args).Run();
 	}
 }

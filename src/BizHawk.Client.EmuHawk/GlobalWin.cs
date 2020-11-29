@@ -1,4 +1,3 @@
-﻿using BizHawk.Bizware.BizwareGL;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
 
@@ -10,11 +9,6 @@ namespace BizHawk.Client.EmuHawk
 		public static MainForm _mainForm { get; set; }
 
 		public static IEmulator Emulator => _mainForm.Emulator;
-
-		/// <summary>
-		/// the IGL to be used for rendering
-		/// </summary>
-		public static IGL GL;
 
 		public static Sound Sound;
 

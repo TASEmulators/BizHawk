@@ -2283,7 +2283,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DisplayConfigMenuItem_Click(object sender, EventArgs e)
 		{
-			using var window = new DisplayConfig(Config, GlobalWin.GL);
+			using var window = new DisplayConfig(Config, GL);
 			if (window.ShowDialog().IsOk())
 			{
 				DisplayManager.RefreshUserShader();
