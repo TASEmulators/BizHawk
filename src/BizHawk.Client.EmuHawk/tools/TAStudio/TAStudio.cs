@@ -351,6 +351,10 @@ namespace BizHawk.Client.EmuHawk
 					{
 						progress = 0;
 					}
+					else if (progress > 100)
+					{
+						progress = 100;
+					}
 
 					_seekBackgroundWorker.ReportProgress((int)progress);
 					System.Threading.Thread.Sleep(1);
