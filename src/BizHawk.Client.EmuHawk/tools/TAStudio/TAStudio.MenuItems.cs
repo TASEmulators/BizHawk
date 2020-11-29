@@ -254,7 +254,7 @@ namespace BizHawk.Client.EmuHawk
 			if (macro != null)
 			{
 				macro.Start = TasView.FirstSelectedIndex ?? 0;
-				macro.PlaceZone(CurrentTasMovie);
+				macro.PlaceZone(CurrentTasMovie, Config);
 			}
 		}
 

@@ -124,7 +124,7 @@ namespace BizHawk.Client.EmuHawk
 			_controller = newController;
 		}
 
-		public void PlaceZone(IMovie movie)
+		public void PlaceZone(IMovie movie, Config config)
 		{
 			if (movie is ITasMovie tasMovie)
 			{
@@ -192,7 +192,7 @@ namespace BizHawk.Client.EmuHawk
 			if (movie.InputLogLength >= _emulator.Frame)
 			{
 				movie.SwitchToPlay();
-				GlobalWin.Config.Movies.MovieEndAction = MovieEndAction.Record;
+				config.Movies.MovieEndAction = MovieEndAction.Record; // TODO: this is a bad place to do this, and introduces a config dependency
 			}
 		}
 

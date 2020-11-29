@@ -210,7 +210,7 @@ namespace BizHawk.Client.EmuHawk
 				SelectedZone.Start = Emulator.Frame;
 			}
 
-			SelectedZone.PlaceZone(CurrentMovie);
+			SelectedZone.PlaceZone(CurrentMovie, Config);
 		}
 
 		private void SaveAsToolStripMenuItem_Click(object sender, EventArgs e)

@@ -713,7 +713,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Start = TasView.FirstSelectedIndex ?? 0
 			};
-			loadZone.PlaceZone(CurrentTasMovie);
+			loadZone.PlaceZone(CurrentTasMovie, Config);
 		}
 
 		private void TastudioPlayMode()
