@@ -53,7 +53,7 @@ namespace BizHawk.Client.EmuHawk
 		private StreamWriter _streamWriter;
 		private bool _splitFile;
 		private string _baseName;
-		private string _extension = ".log";
+		private readonly string _extension = ".log";
 		private int _segmentCount;
 		private ulong _currentSize;
 

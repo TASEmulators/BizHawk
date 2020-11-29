@@ -57,8 +57,8 @@ namespace BizHawk.Client.EmuHawk
 			return File.Exists(exePath);
 		}
 
-		private string SublimeLuaPath = @"Sublime Text 2\Packages\Lua";
-		private string SublimeCompletionsFilename = "bizhawk.lua.sublime-completions";
+		private readonly string SublimeLuaPath = @"Sublime Text 2\Packages\Lua";
+		private readonly string SublimeCompletionsFilename = "bizhawk.lua.sublime-completions";
 
 		private bool IsBizLuaSublimeInstalled()
 		{
@@ -66,8 +66,8 @@ namespace BizHawk.Client.EmuHawk
 			return File.Exists(bizCompletions);
 		}
 
-		private string NotepadPath = "TODO";
-		private string NotepadAutoCompleteFileName = "TODO";
+		private readonly string NotepadPath = "TODO";
+		private readonly string NotepadAutoCompleteFileName = "TODO";
 
 		private bool IsBizLuaNotepadInstalled()
 		{

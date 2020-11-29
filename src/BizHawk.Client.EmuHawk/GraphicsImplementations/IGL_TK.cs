@@ -714,7 +714,7 @@ namespace BizHawk.Client.EmuHawk
 			//HAMNUTS:
 			//its not clear how many bindings we'll have to disable before we can enable the ones we need..
 			//so lets just disable the ones we remember we have bound
-			var currBindings = sVertexAttribEnables;
+			var currBindings = _sVertexAttribEnables;
 			foreach (var index in currBindings)
 				GL.DisableVertexAttribArray(index);
 			currBindings.Clear();
@@ -725,7 +725,7 @@ namespace BizHawk.Client.EmuHawk
 			UnbindVertexAttributes();
 
 			//HAMNUTS (continued)
-			var currBindings = sVertexAttribEnables;
+			var currBindings = _sVertexAttribEnables;
 			sStateCurrentVertexLayout = sStatePendingVertexLayout;
 
 			if (layout == null) return;
@@ -815,13 +815,13 @@ namespace BizHawk.Client.EmuHawk
 		private int sActiveTexture;
 		private VertexLayout sStateCurrentVertexLayout;
 		private VertexLayout sStatePendingVertexLayout;
-		private HashSet<int> sVertexAttribEnables = new HashSet<int>();
+		private readonly HashSet<int> _sVertexAttribEnables = new HashSet<int>();
 
 		private void PurgeStateCache()
 		{
 			sStateCurrentVertexLayout = null;
 			sStatePendingVertexLayout = null;
-			sVertexAttribEnables.Clear();
+			_sVertexAttribEnables.Clear();
 			sActiveTexture = -1;
 		}
 	

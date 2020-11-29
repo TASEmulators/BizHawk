@@ -9,7 +9,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class FileExtensionPreferencesPicker : UserControl
 	{
-		private IDictionary<string, string> _preferredPlatformsForExtensions;
+		private readonly IDictionary<string, string> _preferredPlatformsForExtensions;
 
 		public FileExtensionPreferencesPicker(IDictionary<string, string> preferredPlatformsForExtensions)
 		{

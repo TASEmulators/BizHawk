@@ -147,8 +147,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private class BufferPool : IDisposable
 		{
-			private Stack<BufferPoolItem> _availableItems = new Stack<BufferPoolItem>();
-			private Queue<BufferPoolItem> _obtainedItems = new Queue<BufferPoolItem>();
+			private readonly Stack<BufferPoolItem> _availableItems = new Stack<BufferPoolItem>();
+			private readonly Queue<BufferPoolItem> _obtainedItems = new Queue<BufferPoolItem>();
 
 			public void Dispose()
 			{

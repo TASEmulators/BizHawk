@@ -203,7 +203,7 @@ namespace BizHawk.Client.EmuHawk
 		private SNESGraphicsDecoder gd;
 		private SNESGraphicsDecoder.ScreenInfo si;
 		private SNESGraphicsDecoder.TileEntry[] map;
-		private byte[,] spriteMap = new byte[256, 224];
+		private readonly byte[,] spriteMap = new byte[256, 224];
 		private SNESGraphicsDecoder.BGMode viewBgMode;
 
 		private void RegenerateData()

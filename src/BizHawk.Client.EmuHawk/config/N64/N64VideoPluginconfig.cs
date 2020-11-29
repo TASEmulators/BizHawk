@@ -38,7 +38,7 @@ namespace BizHawk.Client.EmuHawk
 			CustomResItemName
 		};
 
-		private bool _programmaticallyChangingPluginComboBox = false;
+		private readonly bool _programmaticallyChangingPluginComboBox = false;
 
 		public N64VideoPluginConfig(
 			IMainFormForConfig mainForm,

@@ -22,7 +22,7 @@ namespace BizHawk.Client.EmuHawk
 	public sealed class FolderBrowserEx : Component
 	{
 		/// <remarks>is this supposed to be public? we're obviously not using it at callsites at the moment --yoshi</remarks>
-		private Win32Imports.BROWSEINFO.FLAGS publicOptions = Win32Imports.BROWSEINFO.FLAGS.RestrictToFilesystem | Win32Imports.BROWSEINFO.FLAGS.RestrictToDomain;
+		private readonly Win32Imports.BROWSEINFO.FLAGS publicOptions = Win32Imports.BROWSEINFO.FLAGS.RestrictToFilesystem | Win32Imports.BROWSEINFO.FLAGS.RestrictToDomain;
 
 		public string Description = "Please select a folder below:";
 

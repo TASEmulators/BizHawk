@@ -269,7 +269,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 			}
 
-			private IGL_GdiPlus Gdi;
+			private readonly IGL_GdiPlus Gdi;
 
 			/// <summary>
 			/// the control associated with this render target (if any)
