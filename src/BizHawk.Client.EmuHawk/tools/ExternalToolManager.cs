@@ -13,20 +13,26 @@ namespace BizHawk.Client.EmuHawk
 {
 	public sealed class ExternalToolManager
 	{
+		private readonly Func<(CoreSystem System, string Hash)> _getLoadedRomInfoCallback;
+
 		private FileSystemWatcher DirectoryMonitor;
 
 		private readonly List<ToolStripMenuItem> MenuItems = new List<ToolStripMenuItem>();
 
-		public ExternalToolManager() => Restart();
+		public ExternalToolManager(PathEntryCollection paths, Func<(CoreSystem System, string Hash)> getLoadedRomInfoCallback)
+		{
+			_getLoadedRomInfoCallback = getLoadedRomInfoCallback;
+			Restart(paths);
+		}
 
-		public void Restart()
+		public void Restart(PathEntryCollection paths)
 		{
 			if (DirectoryMonitor != null)
 			{
 				DirectoryMonitor.Created -= DirectoryMonitor_Created;
 				DirectoryMonitor.Dispose();
 			}
-			var extToolsDir = GlobalWin.Config.PathEntries["Global", "External Tools"].Path;
+			var extToolsDir = paths["Global", "External Tools"].Path;
 			if (!Directory.Exists(extToolsDir)) Directory.CreateDirectory(extToolsDir);
 			DirectoryMonitor = new FileSystemWatcher(extToolsDir, "*.dll")
 			{
@@ -91,7 +97,7 @@ namespace BizHawk.Client.EmuHawk
 				item.Tag = (externalToolFile.Location, entryPoint.FullName); // Tag set => no errors (show custom icon even when disabled)
 				if (applicabilityAttrs.Count == 1)
 				{
-					var system = EmuClientApi.SystemIdConverter.Convert(GlobalWin.Emulator.SystemId);
+					var (system, loadedRomHash) = _getLoadedRomInfoCallback();
 					if (applicabilityAttrs[0].NotApplicableTo(system))
 					{
 						item.ToolTipText = system == CoreSystem.Null
@@ -99,7 +105,7 @@ namespace BizHawk.Client.EmuHawk
 							: "This tool doesn't work with this system";
 						return item;
 					}
-					if (applicabilityAttrs[0].NotApplicableTo(GlobalWin.Game.Hash, system))
+					if (applicabilityAttrs[0].NotApplicableTo(loadedRomHash, system))
 					{
 						item.ToolTipText = "This tool doesn't work with this game";
 						return item;

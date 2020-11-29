@@ -344,7 +344,7 @@ namespace BizHawk.Client.EmuHawk
 			Controls.SetChildIndex(_presentationPanel, 0);
 
 			Tools = new ToolManager(this, Config, DisplayManager, InputManager, Emulator, MovieSession, Game);
-			ExtToolManager = new ExternalToolManager();
+			ExtToolManager = new ExternalToolManager(Config.PathEntries, () => (EmuClientApi.SystemIdConverter.Convert(Emulator.SystemId), Game.Hash));
 
 			// TODO GL - move these event handlers somewhere less obnoxious line in the On* overrides
 			Load += (o, e) =>
@@ -2793,7 +2793,7 @@ namespace BizHawk.Client.EmuHawk
 			InitControls(); // rebind hotkeys
 			InputManager.SyncControls(Emulator, MovieSession, Config);
 			Tools.Restart(Config, Emulator, Game);
-			ExtToolManager.Restart();
+			ExtToolManager.Restart(Config.PathEntries);
 			AddOnScreenMessage($"Config file loaded: {iniPath}");
 		}
 
