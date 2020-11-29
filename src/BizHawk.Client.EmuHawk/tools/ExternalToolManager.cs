@@ -13,26 +13,29 @@ namespace BizHawk.Client.EmuHawk
 {
 	public sealed class ExternalToolManager
 	{
-		private readonly FileSystemWatcher DirectoryMonitor;
+		private FileSystemWatcher DirectoryMonitor;
 
 		private readonly List<ToolStripMenuItem> MenuItems = new List<ToolStripMenuItem>();
 
-		public ExternalToolManager()
-		{
-			if(!Directory.Exists(GlobalWin.Config.PathEntries["Global", "External Tools"].Path))
-			{
-				Directory.CreateDirectory(GlobalWin.Config.PathEntries["Global", "External Tools"].Path);
-			}
+		public ExternalToolManager() => Restart();
 
-			DirectoryMonitor = new FileSystemWatcher(GlobalWin.Config.PathEntries["Global", "External Tools"].Path, "*.dll")
+		public void Restart()
+		{
+			if (DirectoryMonitor != null)
 			{
-				IncludeSubdirectories = false
-				, NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite | NotifyFilters.FileName
-				, Filter = "*.dll"
+				DirectoryMonitor.Created -= DirectoryMonitor_Created;
+				DirectoryMonitor.Dispose();
+			}
+			var extToolsDir = GlobalWin.Config.PathEntries["Global", "External Tools"].Path;
+			if (!Directory.Exists(extToolsDir)) Directory.CreateDirectory(extToolsDir);
+			DirectoryMonitor = new FileSystemWatcher(extToolsDir, "*.dll")
+			{
+				IncludeSubdirectories = false,
+				NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite | NotifyFilters.FileName,
+				Filter = "*.dll"
 			};
 			DirectoryMonitor.Created += DirectoryMonitor_Created;
 			DirectoryMonitor.EnableRaisingEvents = true;
-
 			BuildToolStrip();
 		}
 

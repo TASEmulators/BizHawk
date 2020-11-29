@@ -2793,6 +2793,7 @@ namespace BizHawk.Client.EmuHawk
 			InitControls(); // rebind hotkeys
 			InputManager.SyncControls(Emulator, MovieSession, Config);
 			Tools.Restart(Config, Emulator, Game);
+			ExtToolManager.Restart();
 			AddOnScreenMessage($"Config file loaded: {iniPath}");
 		}
 
