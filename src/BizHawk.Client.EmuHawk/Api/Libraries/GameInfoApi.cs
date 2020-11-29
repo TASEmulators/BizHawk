@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
 
@@ -12,8 +12,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly IGameInfo _game;
 
-		public GameInfoApi(Action<string> logCallback, IMainFormForApi mainForm, DisplayManager displayManager, InputManager inputManager, Config config, IEmulator emulator, IGameInfo game)
-			=> _game = game;
+		public GameInfoApi(IGameInfo game) => _game = game;
 
 		public string GetRomName() => _game?.Name ?? "";
 

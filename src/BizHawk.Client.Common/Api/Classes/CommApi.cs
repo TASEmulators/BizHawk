@@ -1,7 +1,5 @@
 ﻿#nullable enable
 
-using System;
-
 namespace BizHawk.Client.Common
 {
 	public sealed class CommApi : ICommApi
@@ -18,10 +16,7 @@ namespace BizHawk.Client.Common
 
 		public WebSocketServer? WebSockets => _wsServer;
 
-		public CommApi(Action<string> logCallback, IMainFormForApi mainForm)
-		{
-			_networkingHelpers = mainForm.NetworkingHelpers;
-		}
+		public CommApi(IMainFormForApi mainForm) => _networkingHelpers = mainForm.NetworkingHelpers;
 
 		public string? HttpTest() => HTTP == null ? null : string.Join("\n", HttpTestGet(), HTTP.SendScreenshot(), "done testing");
 

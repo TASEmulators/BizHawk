@@ -47,7 +47,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool HasGUISurface => _GUISurface != null;
 
-		public GuiApi(Action<string> logCallback, IMainFormForApi mainForm, DisplayManager displayManager, InputManager inputManager, Config config, IEmulator emulator, IGameInfo game)
+		public GuiApi(Action<string> logCallback, DisplayManager displayManager)
 		{
 			LogCallback = logCallback;
 			_displayManager = displayManager;

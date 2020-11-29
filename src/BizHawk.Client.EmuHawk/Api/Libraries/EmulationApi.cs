@@ -59,7 +59,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public Action YieldCallback { get; set; }
 
-		public EmulationApi(Action<string> logCallback, IMainFormForApi mainForm, DisplayManager displayManager, InputManager inputManager, Config config, IEmulator emulator, IGameInfo game)
+		public EmulationApi(Action<string> logCallback, Config config, IGameInfo game)
 		{
 			_config = config;
 			_game = game;

@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
-using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -16,7 +14,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly IMainFormForApi _mainForm;
 
-		public InputApi(Action<string> logCallback, IMainFormForApi mainForm, DisplayManager displayManager, InputManager inputManager, Config config, IEmulator emulator, IGameInfo game)
+		public InputApi(IMainFormForApi mainForm, DisplayManager displayManager, InputManager inputManager)
 		{
 			_displayManager = displayManager;
 			_inputManager = inputManager;

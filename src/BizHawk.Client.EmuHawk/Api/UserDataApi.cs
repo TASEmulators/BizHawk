@@ -7,10 +7,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private readonly IMovieSession _movieSession;
 
-		public UserDataApi(Action<string> logCallback, InputManager inputManager, IMovieSession movieSession)
-		{
-			_movieSession = movieSession;
-		}
+		public UserDataApi(IMovieSession movieSession) => _movieSession = movieSession;
 
 		/// <exception cref="InvalidOperationException">type of <paramref name="value"/> cannot be used in userdata</exception>
 		public void Set(string name, object value)

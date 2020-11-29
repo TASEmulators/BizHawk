@@ -3,32 +3,30 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 using BizHawk.Client.Common;
-using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public static class ApiManager
 	{
-		/// <remarks>keys are impl., values are interface</remarks>
-		private static readonly IReadOnlyDictionary<Type, Type> _apiTypes
-			= Client.Common.ReflectionCache.Types.Concat(EmuHawk.ReflectionCache.Types)
-				.Where(t => /*t.IsClass &&*/t.IsSealed) // small optimisation; api impl. types are all sealed classes
-				.Select(t => (t, t.GetInterfaces().FirstOrDefault(t1 => typeof(IExternalApi).IsAssignableFrom(t1) && t1 != typeof(IExternalApi)))) // grab interface from impl. type...
-				.Where(tuple => tuple.Item2 != null) // ...if we couldn't determine what it's implementing, then it's not an api impl. type
-				.ToDictionary(tuple => tuple.Item1, tuple => tuple.Item2);
+		private static readonly IReadOnlyList<(Type ImplType, Type InterfaceType, ConstructorInfo Ctor, Type[] CtorTypes)> _apiTypes;
 
-		private static readonly Type[] _ctorParamTypesA = { typeof(Action<string>) };
-
-		private static readonly Type[] _ctorParamTypesB = { typeof(Action<string>), typeof(IMainFormForApi) };
-
-		private static readonly Type[] _ctorParamTypesC = { typeof(Action<string>), typeof(InputManager), typeof(IMovieSession) };
-
-		private static readonly Type[] _ctorParamTypesD = { typeof(Action<string>), typeof(IMainFormForApi), typeof(DisplayManager), typeof(InputManager), typeof(Config), typeof(IEmulator), typeof(IGameInfo) };
-
-		private static readonly Type[] _ctorParamTypesTools = { typeof(ToolManager) };
+		static ApiManager()
+		{
+			var list = new List<(Type, Type, ConstructorInfo, Type[])>();
+			foreach (var implType in Common.ReflectionCache.Types.Concat(ReflectionCache.Types)
+				.Where(t => /*t.IsClass &&*/t.IsSealed)) // small optimisation; api impl. types are all sealed classes
+			{
+				var interfaceType = implType.GetInterfaces().FirstOrDefault(t => typeof(IExternalApi).IsAssignableFrom(t) && t != typeof(IExternalApi));
+				if (interfaceType == null) continue; // if we couldn't determine what it's implementing, then it's not an api impl. type
+				var ctor = implType.GetConstructors().Single();
+				list.Add((implType, interfaceType, ctor, ctor.GetParameters().Select(pi => pi.ParameterType).ToArray()));
+			}
+			_apiTypes = list.ToArray();
+		}
 
 		/// <remarks>TODO do we need to keep references to these because of GC weirdness? --yoshi</remarks>
 		private static ApiContainer? _container;
@@ -47,20 +45,27 @@ namespace BizHawk.Client.EmuHawk
 			IEmulator emulator,
 			IGameInfo game)
 		{
-			var libDict = _apiTypes.Keys.Where(t => ServiceInjector.IsAvailable(serviceProvider, t))
+			var avail = new Dictionary<Type, object>
+			{
+				[typeof(Action<string>)] = logCallback,
+				[typeof(IMainFormForApi)] = mainForm,
+				[typeof(DisplayManager)] = displayManager,
+				[typeof(InputManager)] = inputManager,
+				[typeof(IMovieSession)] = movieSession,
+				[typeof(ToolManager)] = toolManager,
+				[typeof(Config)] = config,
+				[typeof(IEmulator)] = emulator,
+				[typeof(IGameInfo)] = game,
+			};
+			return new ApiContainer(_apiTypes.Where(tuple => ServiceInjector.IsAvailable(serviceProvider, tuple.ImplType))
 				.ToDictionary(
-					t => _apiTypes[t],
-					t => (IExternalApi) (
-						t.GetConstructor(_ctorParamTypesD)?.Invoke(new object[] { logCallback, mainForm, displayManager, inputManager, config, emulator, game })
-						?? t.GetConstructor(_ctorParamTypesC)?.Invoke(new object[] { logCallback, inputManager, movieSession })
-							?? t.GetConstructor(_ctorParamTypesB)?.Invoke(new object[] { logCallback, mainForm })
-							?? t.GetConstructor(_ctorParamTypesA)?.Invoke(new object[] { logCallback })
-							?? t.GetConstructor(_ctorParamTypesTools)?.Invoke(new object[] { toolManager })
-							?? Activator.CreateInstance(t)
-					)
-				);
-			foreach (var instance in libDict.Values) ServiceInjector.UpdateServices(serviceProvider, instance);
-			return new ApiContainer(libDict);
+					tuple => tuple.InterfaceType,
+					tuple =>
+					{
+						var instance = tuple.Ctor.Invoke(tuple.CtorTypes.Select(t => avail[t]).ToArray());
+						ServiceInjector.UpdateServices(serviceProvider, instance);
+						return (IExternalApi) instance;
+					}));
 		}
 
 		public static IExternalApiProvider Restart(
