@@ -481,7 +481,7 @@ namespace BizHawk.Client.EmuHawk
 							_tasClipboard.Clear();
 							for (int i = 0; i < lines.Length - 1; i++)
 							{
-								var line = TasClipboardEntry.SetFromMnemonicStr(lines[i]);
+								var line = ControllerFromMnemonicStr(lines[i]);
 								if (line == null)
 								{
 									return;
@@ -521,7 +521,7 @@ namespace BizHawk.Client.EmuHawk
 							_tasClipboard.Clear();
 							for (int i = 0; i < lines.Length - 1; i++)
 							{
-								var line = TasClipboardEntry.SetFromMnemonicStr(lines[i]);
+								var line = ControllerFromMnemonicStr(lines[i]);
 								if (line == null)
 								{
 									return;

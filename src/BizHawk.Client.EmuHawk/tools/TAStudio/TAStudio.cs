@@ -1262,5 +1262,21 @@ namespace BizHawk.Client.EmuHawk
 				TasView.Refresh();
 			}
 		}
+
+		private IMovieController ControllerFromMnemonicStr(string inputLogEntry)
+		{
+			try
+			{
+				var controller = MovieSession.GenerateMovieController();
+				controller.SetFromMnemonic(inputLogEntry);
+
+				return controller;
+			}
+			catch (Exception)
+			{
+				MessageBox.Show($"Invalid mnemonic string: {inputLogEntry}", "Paste Input failed!");
+				return null;
+			}
+		}
 	}
 }
