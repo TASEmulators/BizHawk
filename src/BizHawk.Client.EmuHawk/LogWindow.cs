@@ -154,10 +154,9 @@ namespace BizHawk.Client.EmuHawk
 			if (result.IsOk())
 			{
 				var gameDbEntry = Emulator.AsGameDBEntryGenerator().GenerateGameDbEntry();
-				var userDb = Path.Combine(PathUtils.ExeDirectoryPath, "gamedb", "gamedb_user.txt");
-				GlobalWin.Game.Status = gameDbEntry.Status = picker.PickedStatus;
-				Database.SaveDatabaseEntry(userDb, gameDbEntry);
-				MainForm.UpdateDumpIcon();
+				gameDbEntry.Status = picker.PickedStatus;
+				Database.SaveDatabaseEntry(Path.Combine(PathUtils.ExeDirectoryPath, "gamedb", "gamedb_user.txt"), gameDbEntry);
+				MainForm.UpdateDumpInfo(gameDbEntry.Status);
 				HideShowGameDbButton();
 			}
 		}

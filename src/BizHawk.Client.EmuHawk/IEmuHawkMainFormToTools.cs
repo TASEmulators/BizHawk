@@ -3,6 +3,7 @@ using System.Windows.Forms;
 
 using BizHawk.Bizware.BizwareGL;
 using BizHawk.Client.Common;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -109,7 +110,7 @@ namespace BizHawk.Client.EmuHawk
 		void Unthrottle();
 
 		/// <remarks>only referenced from <see cref="LogWindow"/></remarks>
-		void UpdateDumpIcon();
+		void UpdateDumpInfo(RomStatus? newStatus = null);
 
 		/// <remarks>only referenced from <see cref="BookmarksBranchesBox"/></remarks>
 		void UpdateStatusSlots();

@@ -1651,7 +1651,7 @@ namespace BizHawk.Client.EmuHawk
 			HandleToggleLightAndLink();
 		}
 
-		public void UpdateDumpIcon()
+		public void UpdateDumpInfo(RomStatus? newStatus = null)
 		{
 			DumpStatusButton.Image = Properties.Resources.Blank;
 			DumpStatusButton.ToolTipText = "";
@@ -1661,7 +1661,9 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			var status = Game.Status;
+			var status = newStatus == null
+				? Game.Status
+				: (Game.Status = newStatus.Value);
 			if (status == RomStatus.BadDump)
 			{
 				DumpStatusButton.Image = Properties.Resources.ExclamationRed;
@@ -3830,7 +3832,7 @@ namespace BizHawk.Client.EmuHawk
 			_stateSlots.ClearRedoList();
 			UpdateStatusSlots();
 			UpdateCoreStatusBarButton();
-			UpdateDumpIcon();
+			UpdateDumpInfo();
 			SetMainformMovieInfo();
 		}
 

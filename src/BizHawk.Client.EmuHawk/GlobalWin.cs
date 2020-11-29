@@ -14,8 +14,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public static Config Config { get; set; }
 
-		public static GameInfo Game => _mainForm.Game;
-
 		public static IMovieSession MovieSession => _mainForm.MovieSession;
 
 		public static InputManager InputManager { get; } = new InputManager();
