@@ -1,7 +1,6 @@
 ﻿using System;
-using BizHawk.Client.Common;
 
-namespace BizHawk.Client.EmuHawk
+namespace BizHawk.Client.Common
 {
 	public sealed class UserDataApi : IUserDataApi
 	{
