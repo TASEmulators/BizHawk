@@ -211,7 +211,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					try
 					{
-						InitAndRunSingleInstance(i => exitCode = i, args);
+						InitAndRunSingleInstance(GlobalWin.Config, i => exitCode = i, args);
 					}
 					catch (ObjectDisposedException)
 					{
@@ -324,12 +324,15 @@ namespace BizHawk.Client.EmuHawk
 
 		private class SingleInstanceController : WindowsFormsApplicationBase
 		{
+			private readonly Config _config;
+
 			private readonly Action<int> _setExitCode;
 
 			private readonly string[] cmdArgs;
 
-			public SingleInstanceController(Action<int> setExitCode, string[] args)
+			public SingleInstanceController(Config config, Action<int> setExitCode, string[] args)
 			{
+				_config = config;
 				_setExitCode = setExitCode;
 				cmdArgs = args;
 				IsSingleInstance = true;
@@ -346,7 +349,7 @@ namespace BizHawk.Client.EmuHawk
 
 			protected override void OnCreateMainForm()
 			{
-				MainForm = new MainForm(GlobalWin.Config, cmdArgs);
+				MainForm = new MainForm(_config, cmdArgs);
 				var title = MainForm.Text;
 				MainForm.Show();
 				MainForm.Text = title;
@@ -354,6 +357,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private static void InitAndRunSingleInstance(Action<int> setExitCode, string[] args) => new SingleInstanceController(setExitCode, args).Run();
+		private static void InitAndRunSingleInstance(Config config, Action<int> setExitCode, string[] args)
+			=> new SingleInstanceController(config, setExitCode, args).Run();
 	}
 }
