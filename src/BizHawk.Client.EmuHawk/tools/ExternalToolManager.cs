@@ -11,18 +11,13 @@ using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	/// <summary>
-	/// This static class handle all ExternalTools
-	/// </summary>
-	public static class ExternalToolManager
+	public sealed class ExternalToolManager
 	{
-		private static readonly FileSystemWatcher DirectoryMonitor;
-		private static readonly List<ToolStripMenuItem> MenuItems = new List<ToolStripMenuItem>();
+		private readonly FileSystemWatcher DirectoryMonitor;
 
-		/// <summary>
-		/// Initialization
-		/// </summary>
-		static ExternalToolManager()
+		private readonly List<ToolStripMenuItem> MenuItems = new List<ToolStripMenuItem>();
+
+		public ExternalToolManager()
 		{
 			if(!Directory.Exists(GlobalWin.Config.PathEntries["Global", "External Tools"].Path))
 			{
@@ -41,10 +36,7 @@ namespace BizHawk.Client.EmuHawk
 			BuildToolStrip();
 		}
 
-		/// <summary>
-		/// Build the ToolStrip menu
-		/// </summary>
-		internal static void BuildToolStrip()
+		internal void BuildToolStrip()
 		{
 			MenuItems.Clear();
 			if (Directory.Exists(DirectoryMonitor.Path))
@@ -63,7 +55,7 @@ namespace BizHawk.Client.EmuHawk
 		/// a <see cref="ToolStripMenuItem"/> with its <see cref="ToolStripItem.Tag"/> containing a <c>(string, string)</c>;
 		/// the first is the assembly path (<paramref name="fileName"/>) and the second is the <see cref="Type.FullName"/> of the entry point form's type
 		/// </returns>
-		private static ToolStripMenuItem GenerateToolTipFromFileName(string fileName)
+		private ToolStripMenuItem GenerateToolTipFromFileName(string fileName)
 		{
 			if (fileName == null) throw new Exception();
 			var item = new ToolStripMenuItem(Path.GetFileName(fileName)) { Enabled = false };
@@ -144,7 +136,7 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		/// <param name="sender">Object that raised the event</param>
 		/// <param name="e">Event arguments</param>
-		private static void DirectoryMonitor_Created(object sender, FileSystemEventArgs e)
+		private void DirectoryMonitor_Created(object sender, FileSystemEventArgs e)
 		{
 			MenuItems.Add(GenerateToolTipFromFileName(e.FullPath));
 		}
@@ -153,6 +145,6 @@ namespace BizHawk.Client.EmuHawk
 		/// Gets a prebuild <see cref="ToolStripMenuItem"/>
 		/// This list auto-updated by the <see cref="ExternalToolManager"/> itself
 		/// </summary>
-		public static IEnumerable<ToolStripMenuItem> ToolStripMenu => MenuItems;
+		public IEnumerable<ToolStripMenuItem> ToolStripMenu => MenuItems;
 	}
 }

@@ -1194,7 +1194,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			ExternalToolMenuItem.DropDownItems.Clear();
 
-			foreach (var item in ExternalToolManager.ToolStripMenu)
+			foreach (var item in ExtToolManager.ToolStripMenu)
 			{
 				if (item.Tag is ValueTuple<string, string> tuple)
 				{

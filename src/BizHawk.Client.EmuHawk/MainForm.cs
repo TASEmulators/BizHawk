@@ -135,7 +135,7 @@ namespace BizHawk.Client.EmuHawk
 			var requestedExtToolDll = _argParser.openExtToolDll;
 			if (requestedExtToolDll != null)
 			{
-				var enabled = ExternalToolManager.ToolStripMenu.Where(item => item.Enabled)
+				var enabled = ExtToolManager.ToolStripMenu.Where(item => item.Enabled)
 					.Select(item => ((string, string)) item.Tag)
 					.ToList();
 				try
@@ -344,6 +344,7 @@ namespace BizHawk.Client.EmuHawk
 			Controls.SetChildIndex(_presentationPanel, 0);
 
 			Tools = new ToolManager(this, Config, DisplayManager, InputManager, Emulator, MovieSession, Game);
+			ExtToolManager = new ExternalToolManager();
 
 			// TODO GL - move these event handlers somewhere less obnoxious line in the On* overrides
 			Load += (o, e) =>
@@ -864,6 +865,8 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private readonly IGL GL;
+
+		private readonly ExternalToolManager ExtToolManager;
 
 		public readonly ToolManager Tools;
 
@@ -3789,7 +3792,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}
 
-					ExternalToolManager.BuildToolStrip();
+					ExtToolManager.BuildToolStrip();
 
 					EmuClient.OnRomLoaded(Emulator);
 					return true;
