@@ -366,7 +366,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				this.Invoke(() => SavingProgressBar.Visible = false);
 				this.Invoke(() => MessageStatusLabel.Text = "");
-				InitializeSeekWorker(); // Required, or it will error when trying to report progress again.
 			};
 		}
 
