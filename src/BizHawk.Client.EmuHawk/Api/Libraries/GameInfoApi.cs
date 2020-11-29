@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
 
@@ -9,23 +10,28 @@ namespace BizHawk.Client.EmuHawk
 		[OptionalService]
 		private IBoardInfo BoardInfo { get; set; }
 
-		public string GetRomName() => GlobalWin.Game?.Name ?? "";
+		private readonly IGameInfo _game;
 
-		public string GetRomHash() => GlobalWin.Game?.Hash ?? "";
+		public GameInfoApi(Action<string> logCallback, IMainFormForApi mainForm, DisplayManager displayManager, InputManager inputManager, Config config, IEmulator emulator, IGameInfo game)
+			=> _game = game;
 
-		public bool InDatabase() => GlobalWin.Game?.NotInDatabase == false;
+		public string GetRomName() => _game?.Name ?? "";
 
-		public string GetStatus() => GlobalWin.Game?.Status.ToString();
+		public string GetRomHash() => _game?.Hash ?? "";
 
-		public bool IsStatusBad() => GlobalWin.Game?.IsRomStatusBad() != false;
+		public bool InDatabase() => _game?.NotInDatabase == false;
+
+		public string GetStatus() => _game?.Status.ToString();
+
+		public bool IsStatusBad() => _game?.IsRomStatusBad() != false;
 
 		public string GetBoardType() => BoardInfo?.BoardName ?? "";
 
 		public Dictionary<string, string> GetOptions()
 		{
 			var options = new Dictionary<string, string>();
-			if (GlobalWin.Game == null) return options;
-			foreach (var option in GlobalWin.Game.GetOptions()) options[option.Key] = option.Value;
+			if (_game == null) return options;
+			foreach (var option in ((GameInfo) _game).GetOptions()) options[option.Key] = option.Value;
 			return options;
 		}
 	}

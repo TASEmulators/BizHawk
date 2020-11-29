@@ -37,15 +37,19 @@ namespace BizHawk.Client.EmuHawk
 		[OptionalService]
 		private IRegionable RegionableCore { get; set; }
 
+		private readonly Config _config;
+
+		private readonly IGameInfo _game;
+
 		private readonly Action<string> LogCallback;
 
-		/// <summary>Using this property to get a reference to <see cref="GlobalWin.Config">GlobalWin.Config</see> is a terrible, horrible, no good, very bad idea. That's why it's not in the <see cref="IEmulationApi">interface</see>.</summary>
+		/// <summary>Using this property to get a reference to the global <see cref="Config"/> instance is a terrible, horrible, no good, very bad idea. That's why it's not in the <see cref="IEmulationApi">interface</see>.</summary>
 		public Config ForbiddenConfigReference
 		{
 			get
 			{
 				ForbiddenConfigReferenceUsed = true;
-				return GlobalWin.Config;
+				return _config;
 			}
 		}
 
@@ -55,9 +59,14 @@ namespace BizHawk.Client.EmuHawk
 
 		public Action YieldCallback { get; set; }
 
-		public EmulationApi(Action<string> logCallback) => LogCallback = logCallback;
+		public EmulationApi(Action<string> logCallback, IMainFormForApi mainForm, DisplayManager displayManager, InputManager inputManager, Config config, IEmulator emulator, IGameInfo game)
+		{
+			_config = config;
+			_game = game;
+			LogCallback = logCallback;
+		}
 
-		public void DisplayVsync(bool enabled) => GlobalWin.Config.VSync = enabled;
+		public void DisplayVsync(bool enabled) => _config.VSync = enabled;
 
 		public void FrameAdvance() => FrameAdvanceCallback();
 
@@ -140,7 +149,7 @@ namespace BizHawk.Client.EmuHawk
 			return default;
 		}
 
-		public string GetSystemId() => GlobalWin.Game.System;
+		public string GetSystemId() => _game.System;
 
 		public bool IsLagged()
 		{
@@ -168,9 +177,9 @@ namespace BizHawk.Client.EmuHawk
 			else LogCallback($"Can not set lag information, {Emulator.Attributes().CoreName} does not implement {nameof(IInputPollable)}");
 		}
 
-		public void LimitFramerate(bool enabled) => GlobalWin.Config.ClockThrottle = enabled;
+		public void LimitFramerate(bool enabled) => _config.ClockThrottle = enabled;
 
-		public void MinimizeFrameskip(bool enabled) => GlobalWin.Config.AutoMinimizeSkipping = enabled;
+		public void MinimizeFrameskip(bool enabled) => _config.AutoMinimizeSkipping = enabled;
 
 		public void Yield() => YieldCallback();
 
