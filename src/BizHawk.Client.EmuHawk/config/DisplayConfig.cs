@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Windows.Forms;
+
+using BizHawk.Bizware.BizwareGL;
 using BizHawk.Client.Common;
 using BizHawk.Client.Common.Filters;
 using BizHawk.Common;
@@ -11,13 +13,17 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private readonly Config _config;
 
+		private readonly IGL _gl;
+
 		private string _pathSelection;
 
 		public bool NeedReset { get; set; }
 
-		public DisplayConfig(Config config)
+		public DisplayConfig(Config config, IGL gl)
 		{
 			_config = config;
+			_gl = gl;
+
 			InitializeComponent();
 
 			rbNone.Checked = _config.TargetDisplayFilter == 0;
@@ -265,7 +271,7 @@ namespace BizHawk.Client.EmuHawk
 					string errors = "";
 					try 
 					{
-						var filter = new RetroShaderChain(GlobalWin.GL, cgp, Path.GetDirectoryName(choice));
+						var filter = new RetroShaderChain(_gl, cgp, Path.GetDirectoryName(choice));
 						ok = filter.Available;
 						errors = filter.Errors;
 					}
