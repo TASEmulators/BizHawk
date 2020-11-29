@@ -398,12 +398,9 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Engaged())
 			{
-				var branch = Tastudio.CurrentTasMovie.Branches.FirstOrDefault(b => b.Uuid.ToString() == branchId);
-				if (branch != null && frame < branch.InputLog.Count)
+				var controller = Tastudio.GetBranchInput(branchId, frame);
+				if (controller != null)
 				{
-					var controller = GlobalWin.MovieSession.GenerateMovieController();
-					controller.SetFromMnemonic(branch.InputLog[frame]);
-
 					foreach (var button in controller.Definition.BoolButtons)
 					{
 						table[button] = controller.IsPressed(button);

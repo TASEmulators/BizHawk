@@ -518,6 +518,19 @@ namespace BizHawk.Client.EmuHawk
 		public void SelectAllExternal() => SelectAllMenuItem_Click(null, null);
 		public void ReselectClipboardExternal() => ReselectClipboardMenuItem_Click(null, null);
 
+		public IMovieController GetBranchInput(string branchId, int frame)
+		{
+			var branch = CurrentTasMovie.Branches.FirstOrDefault(b => b.Uuid.ToString() == branchId);
+			if (branch == null || frame >= branch.InputLog.Count)
+			{
+				return null;
+			}
+
+			var controller = MovieSession.GenerateMovieController();
+			controller.SetFromMnemonic(branch.InputLog[frame]);
+			return controller;
+		}
+
 		private int? FirstNonEmptySelectedFrame
 		{
 			get
