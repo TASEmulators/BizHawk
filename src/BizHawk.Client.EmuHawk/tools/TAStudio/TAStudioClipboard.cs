@@ -17,12 +17,6 @@ namespace BizHawk.Client.EmuHawk
 		public int Frame { get; }
 		public IController ControllerState { get; }
 
-		public override string ToString()
-		{
-			var lg = GlobalWin.MovieSession.Movie.LogGeneratorInstance(ControllerState);
-			return lg.GenerateLogEntry();
-		}
-
 		public static IMovieController SetFromMnemonicStr(string inputLogEntry)
 		{
 			try
