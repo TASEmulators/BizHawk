@@ -13,7 +13,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly Action<string> LogCallback;
 
-		public MovieApi(Action<string> logCallback, IMovieSession movieSession)
+		public MovieApi(Action<string> logCallback, InputManager inputManager, IMovieSession movieSession)
 		{
 			LogCallback = logCallback;
 			_movieSession = movieSession;

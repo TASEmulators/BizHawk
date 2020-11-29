@@ -24,7 +24,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static readonly Type[] _ctorParamTypesB = { typeof(Action<string>), typeof(IMainFormForApi) };
 
-		private static readonly Type[] _ctorParamTypesC = { typeof(Action<string>), typeof(IMovieSession) };
+		private static readonly Type[] _ctorParamTypesC = { typeof(Action<string>), typeof(InputManager), typeof(IMovieSession) };
 
 		private static readonly Type[] _ctorParamTypesD = { typeof(Action<string>), typeof(IMainFormForApi), typeof(DisplayManager), typeof(InputManager), typeof(Config), typeof(IEmulator), typeof(IGameInfo) };
 
@@ -52,7 +52,7 @@ namespace BizHawk.Client.EmuHawk
 					t => _apiTypes[t],
 					t => (IExternalApi) (
 						t.GetConstructor(_ctorParamTypesD)?.Invoke(new object[] { logCallback, mainForm, displayManager, inputManager, config, emulator, game })
-						?? t.GetConstructor(_ctorParamTypesC)?.Invoke(new object[] { logCallback, movieSession })
+						?? t.GetConstructor(_ctorParamTypesC)?.Invoke(new object[] { logCallback, inputManager, movieSession })
 							?? t.GetConstructor(_ctorParamTypesB)?.Invoke(new object[] { logCallback, mainForm })
 							?? t.GetConstructor(_ctorParamTypesA)?.Invoke(new object[] { logCallback })
 							?? t.GetConstructor(_ctorParamTypesTools)?.Invoke(new object[] { toolManager })

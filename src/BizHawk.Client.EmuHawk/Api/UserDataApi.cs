@@ -7,7 +7,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private readonly IMovieSession _movieSession;
 
-		public UserDataApi(Action<string> logCallback, IMovieSession movieSession)
+		public UserDataApi(Action<string> logCallback, InputManager inputManager, IMovieSession movieSession)
 		{
 			_movieSession = movieSession;
 		}
