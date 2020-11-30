@@ -351,9 +351,7 @@ namespace BizHawk.Client.EmuHawk
 				InitialValue = MaxLines.ToString()
 			};
 
-			MainForm.StopSound();
-			var result = prompt.ShowHawkDialog(this);
-			MainForm.StartSound();
+			var result = MainForm.DoWithTempMute(() => prompt.ShowHawkDialog(this));
 			if (result == DialogResult.OK)
 			{
 				var max = int.Parse(prompt.PromptText);
@@ -374,9 +372,7 @@ namespace BizHawk.Client.EmuHawk
 				InitialValue = FileSizeCap.ToString()
 			};
 
-			MainForm.StopSound();
-			var result = prompt.ShowHawkDialog(this);
-			MainForm.StartSound();
+			var result = MainForm.DoWithTempMute(() => prompt.ShowHawkDialog(this));
 			if (result == DialogResult.OK)
 			{
 				FileSizeCap = int.Parse(prompt.PromptText);

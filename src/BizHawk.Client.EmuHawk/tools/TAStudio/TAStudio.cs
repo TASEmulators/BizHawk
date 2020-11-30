@@ -791,63 +791,65 @@ namespace BizHawk.Client.EmuHawk
 			else
 			{
 				_autosaveTimer?.Stop();
-				MainForm.StopSound();
-				MessageStatusLabel.Text = "Saving...";
-				Cursor = Cursors.WaitCursor;
-				Update();
-				CurrentTasMovie.Save();
-				if (Settings.AutosaveInterval > 0)
+				MainForm.DoWithTempMute(() =>
 				{
-					_autosaveTimer?.Start();
-				}
+					MessageStatusLabel.Text = "Saving...";
+					Cursor = Cursors.WaitCursor;
+					Update();
+					CurrentTasMovie.Save();
+					if (Settings.AutosaveInterval > 0)
+					{
+						_autosaveTimer?.Start();
+					}
 
-				MessageStatusLabel.Text = "File saved.";
-				Settings.RecentTas.Add(CurrentTasMovie.Filename);
-				Cursor = Cursors.Default;
-				MainForm.StartSound();
+					MessageStatusLabel.Text = "File saved.";
+					Settings.RecentTas.Add(CurrentTasMovie.Filename);
+					Cursor = Cursors.Default;
+				});
 			}
 		}
 
 		private void SaveAsTas()
 		{
 			_autosaveTimer.Stop();
-			MainForm.StopSound();
-			ClearLeftMouseStates();
-			var filename = CurrentTasMovie.Filename;
-			if (string.IsNullOrWhiteSpace(filename) || filename == DefaultTasProjName())
+			MainForm.DoWithTempMute(() =>
 			{
-				filename = SuggestedTasProjName();
-			}
+				ClearLeftMouseStates();
+				var filename = CurrentTasMovie.Filename;
+				if (string.IsNullOrWhiteSpace(filename) || filename == DefaultTasProjName())
+				{
+					filename = SuggestedTasProjName();
+				}
 
-			var file = SaveFileDialog(
-				filename,
-				Config.PathEntries.MovieAbsolutePath(),
-				"Tas Project Files",
-				"tasproj",
-				this
+				var file = SaveFileDialog(
+					filename,
+					Config.PathEntries.MovieAbsolutePath(),
+					"Tas Project Files",
+					"tasproj",
+					this
 				);
 
-			if (file != null)
-			{
-				CurrentTasMovie.Filename = file.FullName;
-				MessageStatusLabel.Text = "Saving...";
-				Cursor = Cursors.WaitCursor;
-				Update();
-				CurrentTasMovie.Save();
-				Settings.RecentTas.Add(CurrentTasMovie.Filename);
-				UpdateWindowTitle();
-				MessageStatusLabel.Text = "File saved.";
-				Cursor = Cursors.Default;
-			}
+				if (file != null)
+				{
+					CurrentTasMovie.Filename = file.FullName;
+					MessageStatusLabel.Text = "Saving...";
+					Cursor = Cursors.WaitCursor;
+					Update();
+					CurrentTasMovie.Save();
+					Settings.RecentTas.Add(CurrentTasMovie.Filename);
+					UpdateWindowTitle();
+					MessageStatusLabel.Text = "File saved.";
+					Cursor = Cursors.Default;
+				}
 
-			// keep insisting
-			if (Settings.AutosaveInterval > 0)
-			{
-				_autosaveTimer.Start();
-			}
+				// keep insisting
+				if (Settings.AutosaveInterval > 0)
+				{
+					_autosaveTimer.Start();
+				}
 
-			MainForm.SetWindowText();
-			MainForm.StartSound();
+				MainForm.SetWindowText();
+			});
 		}
 
 		protected override string WindowTitle

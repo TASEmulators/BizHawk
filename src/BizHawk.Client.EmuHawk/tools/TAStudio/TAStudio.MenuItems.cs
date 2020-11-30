@@ -182,20 +182,21 @@ namespace BizHawk.Client.EmuHawk
 			else
 			{
 				_autosaveTimer.Stop();
-				MainForm.StopSound();
-				MessageStatusLabel.Text = "Saving...";
-				Cursor = Cursors.WaitCursor;
-				Update();
-				CurrentTasMovie.SaveBackup();
-				if (Settings.AutosaveInterval > 0)
+				MainForm.DoWithTempMute(() =>
 				{
-					_autosaveTimer.Start();
-				}
+					MessageStatusLabel.Text = "Saving...";
+					Cursor = Cursors.WaitCursor;
+					Update();
+					CurrentTasMovie.SaveBackup();
+					if (Settings.AutosaveInterval > 0)
+					{
+						_autosaveTimer.Start();
+					}
 
-				MessageStatusLabel.Text = "Backup .tasproj saved to \"Movie backups\" path.";
-				Settings.RecentTas.Add(CurrentTasMovie.Filename);
-				Cursor = Cursors.Default;
-				MainForm.StartSound();
+					MessageStatusLabel.Text = "Backup .tasproj saved to \"Movie backups\" path.";
+					Settings.RecentTas.Add(CurrentTasMovie.Filename);
+					Cursor = Cursors.Default;
+				});
 			}
 		}
 
@@ -283,15 +284,12 @@ namespace BizHawk.Client.EmuHawk
 			var file = new FileInfo(bk2.Filename);
 			if (file.Exists)
 			{
-				MainForm.StopSound();
-				var result = MessageBox.Show(
+				var result = MainForm.DoWithTempMute(() => MessageBox.Show(
 					"Overwrite Existing File?",
 					"Tastudio",
 					MessageBoxButtons.YesNoCancel,
 					MessageBoxIcon.Question,
-					MessageBoxDefaultButton.Button3);
-
-				MainForm.StartSound();
+					MessageBoxDefaultButton.Button3));
 				if (result == DialogResult.Yes)
 				{
 					bk2.Save();
@@ -829,9 +827,7 @@ namespace BizHawk.Client.EmuHawk
 				InitialValue = CurrentTasMovie.ChangeLog.MaxSteps.ToString()
 			};
 
-			MainForm.StopSound();
-			var result = prompt.ShowDialog();
-			MainForm.StartSound();
+			var result = MainForm.DoWithTempMute(() => prompt.ShowDialog());
 			if (result.IsOk())
 			{
 				int val = 0;
@@ -860,9 +856,7 @@ namespace BizHawk.Client.EmuHawk
 				InitialValue = Settings.BranchCellHoverInterval.ToString()
 			};
 
-			MainForm.StopSound();
-			var result = prompt.ShowDialog();
-			MainForm.StartSound();
+			var result = MainForm.DoWithTempMute(() => prompt.ShowDialog());
 			if (result.IsOk())
 			{
 				int val = int.Parse(prompt.PromptText);
@@ -883,9 +877,7 @@ namespace BizHawk.Client.EmuHawk
 				InitialValue = Settings.SeekingCutoffInterval.ToString()
 			};
 
-			MainForm.StopSound();
-			var result = prompt.ShowDialog();
-			MainForm.StartSound();
+			var result = MainForm.DoWithTempMute(() => prompt.ShowDialog());
 			if (result.IsOk())
 			{
 				int val = int.Parse(prompt.PromptText);
@@ -906,9 +898,7 @@ namespace BizHawk.Client.EmuHawk
 				InitialValue = (Settings.AutosaveInterval / 1000).ToString()
 			};
 
-			MainForm.StopSound();
-			var result = prompt.ShowDialog();
-			MainForm.StartSound();
+			var result = MainForm.DoWithTempMute(() => prompt.ShowDialog());
 			if (result.IsOk())
 			{
 				uint val = uint.Parse(prompt.PromptText) * 1000;
@@ -1188,9 +1178,7 @@ namespace BizHawk.Client.EmuHawk
 				Message = "Frames per tick:",
 				InitialValue = TasView.ScrollSpeed.ToString()
 			};
-			MainForm.StopSound();
-			var result = inputPrompt.ShowDialog();
-			MainForm.StartSound();
+			var result = MainForm.DoWithTempMute(() => inputPrompt.ShowDialog());
 			if (result == DialogResult.OK)
 			{
 				TasView.ScrollSpeed = int.Parse(inputPrompt.PromptText);

@@ -175,6 +175,21 @@ namespace BizHawk.Client.EmuHawk
 			Sound.Instance.StartSound();
 			return result;
 		}
+
+		public static void DoWithTempMute(this IDialogController dialogController, Action action)
+		{
+			dialogController.StopSound();
+			action();
+			dialogController.StartSound();
+		}
+
+		public static T DoWithTempMute<T>(this IDialogController dialogController, Func<T> action)
+		{
+			dialogController.StopSound();
+			var ret = action();
+			dialogController.StartSound();
+			return ret;
+		}
 	}
 
 	public static class ListViewExtensions

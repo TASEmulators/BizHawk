@@ -153,9 +153,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_watches.Changes)
 			{
-				MainForm.StopSound();
-				var result = MessageBox.Show("Save Changes?", "RAM Watch", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button3);
-				MainForm.StartSound();
+				var result = MainForm.DoWithTempMute(() => MessageBox.Show("Save Changes?", "RAM Watch", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button3));
 				if (result == DialogResult.Yes)
 				{
 					if (string.IsNullOrWhiteSpace(_watches.CurrentFileName))
@@ -428,9 +426,7 @@ namespace BizHawk.Client.EmuHawk
 					TextInputType = InputPrompt.InputType.Text
 				};
 
-				MainForm.StopSound();
-				var result = inputPrompt.ShowHawkDialog();
-				MainForm.StartSound();
+				var result = MainForm.DoWithTempMute(() => inputPrompt.ShowHawkDialog());
 
 				if (result == DialogResult.OK)
 				{
