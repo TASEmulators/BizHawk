@@ -7,7 +7,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public interface IMainFormForTools
+	public interface IMainFormForTools : IDialogController
 	{
 		CheatCollection CheatList { get; }
 
@@ -90,9 +90,6 @@ namespace BizHawk.Client.EmuHawk
 		/// <remarks>only referenced from <see cref="TAStudio"/></remarks>
 		void SetWindowText();
 
-		/// <remarks>only referenced from <see cref="VideoWriterChooserForm"/></remarks>
-		DialogResult ShowDialogAsChild(Form dialog);
-
 		bool StartNewMovie(IMovie movie, bool record);
 
 		/// <remarks>only referenced from <see cref="TAStudio"/></remarks>
@@ -114,8 +111,5 @@ namespace BizHawk.Client.EmuHawk
 
 		/// <remarks>only referenced from <see cref="BookmarksBranchesBox"/></remarks>
 		void UpdateStatusSlots();
-
-		void StartSound();
-		void StopSound();
 	}
 }
