@@ -114,5 +114,8 @@ namespace BizHawk.Client.EmuHawk
 
 		/// <remarks>only referenced from <see cref="BookmarksBranchesBox"/></remarks>
 		void UpdateStatusSlots();
+
+		void StartSound();
+		void StopSound();
 	}
 }

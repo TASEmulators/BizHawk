@@ -182,7 +182,7 @@ namespace BizHawk.Client.EmuHawk
 			else
 			{
 				_autosaveTimer.Stop();
-				GlobalWin.Sound.StopSound();
+				MainForm.StopSound();
 				MessageStatusLabel.Text = "Saving...";
 				Cursor = Cursors.WaitCursor;
 				Update();
@@ -195,7 +195,7 @@ namespace BizHawk.Client.EmuHawk
 				MessageStatusLabel.Text = "Backup .tasproj saved to \"Movie backups\" path.";
 				Settings.RecentTas.Add(CurrentTasMovie.Filename);
 				Cursor = Cursors.Default;
-				GlobalWin.Sound.StartSound();
+				MainForm.StartSound();
 			}
 		}
 
@@ -283,7 +283,7 @@ namespace BizHawk.Client.EmuHawk
 			var file = new FileInfo(bk2.Filename);
 			if (file.Exists)
 			{
-				GlobalWin.Sound.StopSound();
+				MainForm.StopSound();
 				var result = MessageBox.Show(
 					"Overwrite Existing File?",
 					"Tastudio",
@@ -291,7 +291,7 @@ namespace BizHawk.Client.EmuHawk
 					MessageBoxIcon.Question,
 					MessageBoxDefaultButton.Button3);
 
-				GlobalWin.Sound.StartSound();
+				MainForm.StartSound();
 				if (result == DialogResult.Yes)
 				{
 					bk2.Save();

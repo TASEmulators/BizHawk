@@ -787,7 +787,7 @@ namespace BizHawk.Client.EmuHawk
 			else
 			{
 				_autosaveTimer?.Stop();
-				GlobalWin.Sound.StopSound();
+				MainForm.StopSound();
 				MessageStatusLabel.Text = "Saving...";
 				Cursor = Cursors.WaitCursor;
 				Update();
@@ -800,14 +800,14 @@ namespace BizHawk.Client.EmuHawk
 				MessageStatusLabel.Text = "File saved.";
 				Settings.RecentTas.Add(CurrentTasMovie.Filename);
 				Cursor = Cursors.Default;
-				GlobalWin.Sound.StartSound();
+				MainForm.StartSound();
 			}
 		}
 
 		private void SaveAsTas()
 		{
 			_autosaveTimer.Stop();
-			GlobalWin.Sound.StopSound();
+			MainForm.StopSound();
 			ClearLeftMouseStates();
 			var filename = CurrentTasMovie.Filename;
 			if (string.IsNullOrWhiteSpace(filename) || filename == DefaultTasProjName())
@@ -843,7 +843,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			MainForm.SetWindowText();
-			GlobalWin.Sound.StartSound();
+			MainForm.StartSound();
 		}
 
 		protected override string WindowTitle

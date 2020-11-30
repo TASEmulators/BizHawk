@@ -106,7 +106,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (CurrentTasMovie != null && CurrentTasMovie.Changes)
 			{
-				GlobalWin.Sound.StopSound();
+				MainForm.StopSound();
 				var result = MessageBox.Show(
 					"Save Changes?",
 					"Tastudio",
@@ -114,7 +114,7 @@ namespace BizHawk.Client.EmuHawk
 					MessageBoxIcon.Question,
 					MessageBoxDefaultButton.Button3);
 
-				GlobalWin.Sound.StartSound();
+				MainForm.StartSound();
 				if (result == DialogResult.Yes)
 				{
 					_exiting = true; // Asking to save changes should only ever be called when closing something

@@ -738,9 +738,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (LuaImp.ScriptList.Changes && !string.IsNullOrEmpty(LuaImp.ScriptList.Filename))
 			{
-				GlobalWin.Sound.StopSound();
+				MainForm.StopSound();
 				var result = MessageBox.Show("Save changes to session?", "Lua Console", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button3);
-				GlobalWin.Sound.StartSound();
+				MainForm.StartSound();
 				if (result == DialogResult.Yes)
 				{
 					SaveOrSaveAs();

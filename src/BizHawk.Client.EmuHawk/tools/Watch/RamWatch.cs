@@ -153,9 +153,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_watches.Changes)
 			{
-				GlobalWin.Sound.StopSound();
+				MainForm.StopSound();
 				var result = MessageBox.Show("Save Changes?", "RAM Watch", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button3);
-				GlobalWin.Sound.StartSound();
+				MainForm.StartSound();
 				if (result == DialogResult.Yes)
 				{
 					if (string.IsNullOrWhiteSpace(_watches.CurrentFileName))

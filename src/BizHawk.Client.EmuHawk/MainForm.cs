@@ -4474,5 +4474,8 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		public DialogResult ShowDialogAsChild(Form dialog) => dialog.ShowDialog(this);
+
+		public void StartSound() => Sound.StartSound();
+		public void StopSound() => Sound.StopSound();
 	}
 }
