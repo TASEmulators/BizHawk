@@ -11,7 +11,7 @@ using BizHawk.Client.EmuHawk.Properties;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class BookmarksBranchesBox : UserControl
+	public partial class BookmarksBranchesBox : UserControl, IDialogParent
 	{
 		private const string BranchNumberColumnName = "BranchNumberColumn";
 		private const string FrameColumnName = "FrameColumn";
@@ -44,6 +44,10 @@ namespace BizHawk.Client.EmuHawk
 			get => BranchView.HoverInterval;
 			set => BranchView.HoverInterval = value;
 		}
+
+		public IDialogController DialogController => Tastudio.MainForm;
+
+		public IWin32Window SelfAsHandle => this;
 
 		public BookmarksBranchesBox()
 		{

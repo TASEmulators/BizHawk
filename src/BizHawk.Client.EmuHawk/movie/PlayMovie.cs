@@ -14,7 +14,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class PlayMovie : Form
+	public partial class PlayMovie : Form, IDialogParent
 	{
 		private readonly IMainFormForTools _mainForm;
 		private readonly Config _config;
@@ -28,6 +28,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool _sortDetailsReverse;
 		private string _sortedDetailsCol;
+
+		public IDialogController DialogController => _mainForm;
+
+		public IWin32Window SelfAsHandle => this;
 
 		public PlayMovie(
 			IMainFormForTools mainForm,

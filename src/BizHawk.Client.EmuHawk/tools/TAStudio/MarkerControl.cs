@@ -10,10 +10,14 @@ using BizHawk.Client.EmuHawk.Properties;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class MarkerControl : UserControl
+	public partial class MarkerControl : UserControl, IDialogParent
 	{
 		public TAStudio Tastudio { get; set; }
 		public TasMovieMarkerList Markers => Tastudio.CurrentTasMovie.Markers;
+
+		public IDialogController DialogController => Tastudio.MainForm;
+
+		public IWin32Window SelfAsHandle => this;
 
 		public MarkerControl()
 		{
