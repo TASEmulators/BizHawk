@@ -109,11 +109,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodExample("local incliget = client.getwindowsize( );")]
 		[LuaMethod("getwindowsize", "Gets the main window's size Possible values are 1, 2, 3, 4, 5, and 10")]
-		public int GetWindowSize()
-		{
-			//TODO delegate to APIs.EmuClient (impl's copy of Emulator is weird)
-			return GlobalWin.Config.TargetZoomFactors[Emulator.SystemId];
-		}
+		public int GetWindowSize() => APIs.EmuClient.GetWindowSize();
 
 		[LuaMethodExample("client.SetGameExtraPadding( 5, 10, 15, 20 );")]
 		[LuaMethod("SetGameExtraPadding", "Sets the extra padding added to the 'emu' surface so that you can draw HUD elements in predictable placements")]
@@ -218,20 +214,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodExample("client.setwindowsize( 100 );")]
 		[LuaMethod("setwindowsize", "Sets the main window's size to the give value. Accepted values are 1, 2, 3, 4, 5, and 10")]
-		public void SetWindowSize(int size)
-		{
-			//TODO delegate to APIs.EmuClient (impl's copy of Emulator is weird)
-			if (size == 1 || size == 2 || size == 3 || size == 4 || size == 5 || size == 10)
-			{
-				GlobalWin.Config.TargetZoomFactors[Emulator.SystemId] = size;
-				MainForm.FrameBufferResized();
-				MainForm.AddOnScreenMessage($"Window size set to {size}x");
-			}
-			else
-			{
-				Log("Invalid window size");
-			}
-		}
+		public void SetWindowSize(int size) => APIs.EmuClient.SetWindowSize(size);
 
 		[LuaMethodExample("client.speedmode( 75 );")]
 		[LuaMethod("speedmode", "Sets the speed of the emulator (in terms of percent)")]
