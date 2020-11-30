@@ -8,10 +8,13 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class LuaRegisteredFunctionsList : Form
 	{
+		private readonly IMainFormForApi _mainForm;
+
 		private readonly LuaFunctionList _registeredFunctions;
 
-		public LuaRegisteredFunctionsList(LuaFunctionList registeredFunctions)
+		public LuaRegisteredFunctionsList(IMainFormForApi mainForm, LuaFunctionList registeredFunctions)
 		{
+			_mainForm = mainForm;
 			_registeredFunctions = registeredFunctions;
 			InitializeComponent();
 			Icon = Properties.Resources.TextDocIcon;
@@ -89,7 +92,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					var guid = FunctionView.Items[index].SubItems[2].Text;
 					var nlf = _registeredFunctions[guid];
-					_registeredFunctions.Remove(nlf, GlobalWin.Emulator); // TODO: don't use Global
+					_registeredFunctions.Remove(nlf, _mainForm.Emulator);
 				}
 
 				PopulateListView();
@@ -108,7 +111,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RemoveAllBtn_Click(object sender, EventArgs e)
 		{
-			_registeredFunctions.Clear(GlobalWin.Emulator); // TODO: don't use Global
+			_registeredFunctions.Clear(_mainForm.Emulator);
 			PopulateListView();
 		}
 

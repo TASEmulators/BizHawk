@@ -47,9 +47,10 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
+			_mainForm = mainForm;
 			LuaWait = new AutoResetEvent(false);
 			Docs.Clear();
-			var apiContainer = ApiManager.RestartLua(serviceProvider, LogToLuaConsole, mainForm, displayManager, inputManager, mainForm.MovieSession, mainForm.Tools, config, emulator, game);
+			var apiContainer = ApiManager.RestartLua(serviceProvider, LogToLuaConsole, _mainForm, displayManager, inputManager, _mainForm.MovieSession, _mainForm.Tools, config, emulator, game);
 
 			// Register lua libraries
 			foreach (var lib in Client.Common.ReflectionCache.Types.Concat(EmuHawk.ReflectionCache.Types)
@@ -71,11 +72,11 @@ namespace BizHawk.Client.EmuHawk
 					// and inject them here
 					if (instance is ClientLuaLibrary clientLib)
 					{
-						clientLib.MainForm = mainForm;
+						clientLib.MainForm = _mainForm;
 					}
 					else if (instance is ConsoleLuaLibrary consoleLib)
 					{
-						consoleLib.Tools = mainForm.Tools;
+						consoleLib.Tools = _mainForm.Tools;
 						_logToLuaConsoleCallback = consoleLib.Log;
 					}
 					else if (instance is GuiLuaLibrary guiLib)
@@ -89,7 +90,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else if (instance is TAStudioLuaLibrary tastudioLib)
 					{
-						tastudioLib.Tools = mainForm.Tools;
+						tastudioLib.Tools = _mainForm.Tools;
 					}
 
 					if (instance is DelegatingLuaLibrary dlgInstance) dlgInstance.APIs = apiContainer;
@@ -106,6 +107,8 @@ namespace BizHawk.Client.EmuHawk
 
 			EnumerateLuaFunctions(nameof(LuaCanvas), typeof(LuaCanvas), null); // add LuaCanvas to Lua function reference table
 		}
+
+		private readonly MainForm _mainForm;
 
 		private Lua _lua = new Lua();
 		private Lua _currThread;
@@ -188,7 +191,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public override void Close()
 		{
-			RegisteredFunctions.Clear(GlobalWin.Emulator); // TODO: don't use globals
+			RegisteredFunctions.Clear(_mainForm.Emulator);
 			ScriptList.Clear();
 			FormsLibrary.DestroyAll();
 			_lua.Close();

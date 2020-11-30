@@ -1155,7 +1155,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (!alreadyOpen)
 				{
-					new LuaRegisteredFunctionsList(LuaImp.RegisteredFunctions)
+					new LuaRegisteredFunctionsList((MainForm) MainForm, LuaImp.RegisteredFunctions)
 					{
 						StartLocation = this.ChildPointToScreen(LuaListView)
 					}.Show();
