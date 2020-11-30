@@ -3464,7 +3464,7 @@ namespace BizHawk.Client.EmuHawk
 		private int? LoadArchiveChooser(HawkFile file)
 		{
 			using var ac = new ArchiveChooser(file);
-			if (ShowDialogAsChild(ac).IsOk())
+			if (this.ShowDialogAsChild(ac).IsOk())
 			{
 				return ac.SelectedMemberIndex;
 			}
@@ -4494,8 +4494,6 @@ namespace BizHawk.Client.EmuHawk
 		public IDialogController DialogController => this;
 
 		public IWin32Window SelfAsHandle => this;
-
-		public DialogResult ShowDialogAsChild(Form dialog) => dialog.ShowDialog(this);
 
 		public void StartSound() => Sound.StartSound();
 		public void StopSound() => Sound.StopSound();
