@@ -130,15 +130,14 @@ namespace BizHawk.Client.EmuHawk
 
 		public void FrameSkip(int numFrames)
 		{
-			if (numFrames > 0)
-			{
-				_config.FrameSkip = numFrames;
-				_mainForm.FrameSkipMessage();
-			}
-			else
+			if (numFrames < 0)
 			{
 				_logCallback("Invalid frame skip value");
+				return;
 			}
+
+			_config.FrameSkip = numFrames;
+			_mainForm.FrameSkipMessage();
 		}
 
 		private void GetAllInputs()

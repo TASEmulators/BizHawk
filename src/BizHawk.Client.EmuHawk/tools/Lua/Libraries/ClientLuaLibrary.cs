@@ -76,19 +76,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodExample("client.frameskip( 8 );")]
 		[LuaMethod("frameskip", "Sets the frame skip value of the client UI (use 0 to disable)")]
-		public void FrameSkip(int numFrames)
-		{
-			//TODO delegate to APIs.EmuClient (impl uses `> 0` instead of `>= 0`)
-			if (numFrames >= 0)
-			{
-				GlobalWin.Config.FrameSkip = numFrames;
-				MainForm.FrameSkipMessage();
-			}
-			else
-			{
-				Log("Invalid frame skip value");
-			}
-		}
+		public void FrameSkip(int numFrames) => APIs.EmuClient.FrameSkip(numFrames);
 
 		[LuaMethodExample("client.invisibleemulation( true );")]
 		[LuaMethod("invisibleemulation", "Disables and enables emulator updates")]
