@@ -17,6 +17,10 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public override bool BlocksInputWhenFocused => IsInMenuLoop;
 
+		public new IMainFormForTools MainForm => base.MainForm;
+
+		public new IMovieSession MovieSession => base.MovieSession;
+
 		// TODO: UI flow that conveniently allows to start from savestate
 		public ITasMovie CurrentTasMovie => MovieSession.Movie as ITasMovie;
 

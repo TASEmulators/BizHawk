@@ -9,6 +9,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class MultiDiskFileSelector : UserControl
 	{
+		private readonly Func<string> _getLoadedRomNameCallback;
+
 		private readonly ToolFormBase _parent;
 
 		public string SystemString { get; set; } = "";
@@ -26,8 +28,9 @@ namespace BizHawk.Client.EmuHawk
 			OnNameChanged(EventArgs.Empty);
 		}
 
-		public MultiDiskFileSelector(ToolFormBase parent)
+		public MultiDiskFileSelector(ToolFormBase parent, Func<string> getLoadedRomNameCallback)
 		{
+			_getLoadedRomNameCallback = getLoadedRomNameCallback;
 			_parent = parent;
 			InitializeComponent();
 			PathBox.TextChanged += HandleLabelTextChanged;
@@ -123,7 +126,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UseCurrentRomButton_Click(object sender, EventArgs e)
 		{
-			PathBox.Text = _parent.MainForm.CurrentlyOpenRom;
+			PathBox.Text = _getLoadedRomNameCallback();
 		}
 
 		private void DualGBFileSelector_Load(object sender, EventArgs e)
@@ -133,9 +136,10 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateValues()
 		{
+			var loadedRomName = _getLoadedRomNameCallback();
 			UseCurrentRomButton.Enabled =
-				!string.IsNullOrEmpty(_parent.MainForm.CurrentlyOpenRom)
-				&& !_parent.MainForm.CurrentlyOpenRom.Contains(".xml"); // Can't already be an xml
+				!string.IsNullOrEmpty(loadedRomName)
+				&& !loadedRomName.Contains(".xml"); // Can't already be an xml
 		}
 
 		private void PathBox_TextChanged(object sender, EventArgs e)

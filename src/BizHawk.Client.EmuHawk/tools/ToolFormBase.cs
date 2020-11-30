@@ -10,15 +10,17 @@ namespace BizHawk.Client.EmuHawk
 {
 	public class ToolFormBase : FormBase, IToolForm
 	{
-		public ToolManager Tools { get; set; }
+		public ToolManager Tools { protected get; set; }
 
-		public DisplayManager DisplayManager { get; set; }
+		public DisplayManager DisplayManager { protected get; set; }
 
-		public InputManager InputManager { get; set; }
-		public IMainFormForTools MainForm { get; set; }
+		public InputManager InputManager { protected get; set; }
 
-		public IMovieSession MovieSession { get; set; }
-		public IGameInfo Game { get; set; }
+		public IMainFormForTools MainForm { protected get; set; }
+
+		public IMovieSession MovieSession { protected get; set; }
+
+		public IGameInfo Game { protected get; set; }
 
 		public virtual bool AskSaveChanges() => true;
 
