@@ -4,20 +4,24 @@ using System.Windows.Forms;
 using System.Threading;
 using System.IO;
 
+using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class BatchRun : Form
 	{
+		private readonly Config _config;
+
 		private readonly Func<CoreComm> _createCoreComm;
 
 		private List<BatchRunner.Result> _mostRecentResults;
 
 		private Thread _thread;
 
-		public BatchRun(Func<CoreComm> createCoreComm)
+		public BatchRun(Config config, Func<CoreComm> createCoreComm)
 		{
+			_config = config;
 			_createCoreComm = createCoreComm;
 			InitializeComponent();
 		}
@@ -87,7 +91,7 @@ namespace BizHawk.Client.EmuHawk
 			try
 			{
 				var pp = (Tuple<int, List<string>>)o;
-				BatchRunner br = new BatchRunner(_createCoreComm(), pp.Item2, pp.Item1);
+				BatchRunner br = new BatchRunner(_config, _createCoreComm(), pp.Item2, pp.Item1);
 				br.OnProgress += BrOnProgress;
 				var results = br.Run();
 				this.Invoke(() => { label3.Text = "Status: Finished!"; _mostRecentResults = results; });

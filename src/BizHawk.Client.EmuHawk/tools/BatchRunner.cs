@@ -64,12 +64,12 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public BatchRunner(CoreComm comm, IEnumerable<string> files, int numFrames)
+		public BatchRunner(Config config, CoreComm comm, IEnumerable<string> files, int numFrames)
 		{
 			_files = new List<string>(files);
 			_numFrames = numFrames;
 
-			_ldr = new RomLoader(GlobalWin.Config);
+			_ldr = new RomLoader(config);
 			_ldr.OnLoadError += OnLoadError;
 			_ldr.ChooseArchive = ChooseArchive;
 			_comm = comm;
