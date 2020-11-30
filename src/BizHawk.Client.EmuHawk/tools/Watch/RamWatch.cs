@@ -426,7 +426,7 @@ namespace BizHawk.Client.EmuHawk
 					TextInputType = InputPrompt.InputType.Text
 				};
 
-				var result = MainForm.DoWithTempMute(() => inputPrompt.ShowHawkDialog());
+				var result = MainForm.DoWithTempMute(() => inputPrompt.ShowHawkDialog(this));
 
 				if (result == DialogResult.OK)
 				{
