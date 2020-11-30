@@ -17,7 +17,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public sealed class EmuClientApi : IEmuClientApi
 	{
-		private List<Joypad> _allJoyPads;
+		private readonly List<Joypad> _allJoyPads;
 
 		private readonly Config _config;
 
@@ -29,11 +29,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly Action<string> _logCallback;
 
-		private IEmulator _maybeEmulator;
+		private readonly IEmulator Emulator;
 
-		public IEmulator Emulator;
-
-		public IGameInfo Game;
+		private readonly IGameInfo Game;
 
 		private readonly IReadOnlyCollection<JoypadButton> JoypadButtonsArray = Enum.GetValues(typeof(JoypadButton)).Cast<JoypadButton>().ToList(); //TODO can the return of GetValues be cast to JoypadButton[]? --yoshi
 
@@ -74,7 +72,7 @@ namespace BizHawk.Client.EmuHawk
 
 		internal static readonly BizHawkSystemIdToEnumConverter SystemIdConverter = new BizHawkSystemIdToEnumConverter();
 
-		private IVideoProvider VideoProvider { get; set; }
+		private readonly IVideoProvider VideoProvider;
 
 		public event BeforeQuickLoadEventHandler BeforeQuickLoad;
 
@@ -95,6 +93,19 @@ namespace BizHawk.Client.EmuHawk
 			_inputManager = inputManager;
 			_logCallback = logCallback;
 			_mainForm = mainForm;
+
+			try
+			{
+				_allJoyPads = new List<Joypad>(RunningSystem.MaxControllers);
+				for (var i = 1; i <= RunningSystem.MaxControllers; i++)
+					_allJoyPads.Add(new Joypad(RunningSystem, i));
+			}
+			catch (Exception e)
+			{
+				Console.Error.WriteLine("Apihawk is garbage and may not work this session.");
+				Console.Error.WriteLine(e);
+			}
+			VideoProvider = Emulator.AsVideoProviderOrDefault();
 		}
 
 		public int BorderHeight() => _displayManager.TransformPoint(new Point(0, 0)).Y;
@@ -176,7 +187,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public int GetTargetScanlineIntensity() => _config.TargetScanlineFilterIntensity;
 
-		public int GetWindowSize() => _config.TargetZoomFactors[_maybeEmulator.SystemId];
+		public int GetWindowSize() => _config.TargetZoomFactors[Emulator.SystemId];
 
 		public void InvisibleEmulation(bool invisible) => _mainForm.InvisibleEmulation = invisible;
 
@@ -212,23 +223,9 @@ namespace BizHawk.Client.EmuHawk
 			eventHandled = e.Handled;
 		}
 
-		public void OnRomLoaded(IEmulator emu)
+		public void OnRomLoaded()
 		{
-			_maybeEmulator = emu;
-			VideoProvider = emu.AsVideoProviderOrDefault();
 			RomLoaded?.Invoke(null, EventArgs.Empty);
-
-			try
-			{
-				_allJoyPads = new List<Joypad>(RunningSystem.MaxControllers);
-				for (var i = 1; i <= RunningSystem.MaxControllers; i++)
-					_allJoyPads.Add(new Joypad(RunningSystem, i));
-			}
-			catch (Exception e)
-			{
-				Console.Error.WriteLine("Apihawk is garbage and may not work this session.");
-				Console.Error.WriteLine(e);
-			}
 		}
 
 		public void OnStateLoaded(object sender, string stateName) => StateLoaded?.Invoke(sender, new StateLoadedEventArgs(stateName));
@@ -262,7 +259,7 @@ namespace BizHawk.Client.EmuHawk
 		public void SeekFrame(int frame)
 		{
 			var wasPaused = _mainForm.EmulatorPaused;
-			while (_maybeEmulator.Frame != frame) _mainForm.SeekFrameAdvance();
+			while (Emulator.Frame != frame) _mainForm.SeekFrameAdvance();
 			if (!wasPaused) _mainForm.UnpauseEmulator();
 		}
 
@@ -324,7 +321,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (size == 1 || size == 2 || size == 3 || size == 4 || size == 5 || size == 10)
 			{
-				_config.TargetZoomFactors[_maybeEmulator.SystemId] = size;
+				_config.TargetZoomFactors[Emulator.SystemId] = size;
 				_mainForm.FrameBufferResized();
 				_mainForm.AddOnScreenMessage($"Window size set to {size}x");
 			}
@@ -347,12 +344,6 @@ namespace BizHawk.Client.EmuHawk
 		public void Unpause() => _mainForm.UnpauseEmulator();
 
 		public void UnpauseAv() => _mainForm.PauseAvi = false;
-
-		public void UpdateEmulatorAndVP(IEmulator emu)
-		{
-			_maybeEmulator = emu;
-			VideoProvider = emu.AsVideoProviderOrDefault();
-		}
 
 		public int Xpos() => _mainForm.DesktopLocation.X;
 

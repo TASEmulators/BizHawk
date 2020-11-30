@@ -117,8 +117,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <inheritdoc cref="IEmuClientApi.OnBeforeQuickSave"/>
 		public static void OnBeforeQuickSave(object sender, string quickSaveSlotName, out bool eventHandled) => EmuClient.OnBeforeQuickSave(sender, quickSaveSlotName, out eventHandled);
 
-		/// <inheritdoc cref="IEmuClientApi.OnRomLoaded"/>
-		public static void OnRomLoaded(IEmulator emu) => EmuClient.OnRomLoaded(emu);
+		public static void OnRomLoaded(IEmulator emu) {}
 
 		/// <inheritdoc cref="IEmuClientApi.OnStateLoaded"/>
 		public static void OnStateLoaded(object sender, string stateName) => EmuClient.OnStateLoaded(sender, stateName);
@@ -198,8 +197,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <inheritdoc cref="Unpause"/>
 		public static void UnpauseEmulation() => Unpause();
 
-		/// <inheritdoc cref="IEmuClientApi.UpdateEmulatorAndVP"/>
-		public static void UpdateEmulatorAndVP(IEmulator emu = null) => EmuClient.UpdateEmulatorAndVP(emu);
+		public static void UpdateEmulatorAndVP(IEmulator emu = null) {}
 
 		/// <inheritdoc cref="IEmuClientApi.Xpos"/>
 		public static int Xpos() => EmuClient.Xpos();

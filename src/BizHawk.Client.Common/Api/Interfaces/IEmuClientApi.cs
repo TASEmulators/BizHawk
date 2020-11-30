@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Drawing;
 
-using BizHawk.Emulation.Common;
-
 namespace BizHawk.Client.Common
 {
 	public interface IEmuClientApi : IExternalApi
@@ -116,7 +114,7 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Raise when a rom is successfully Loaded
 		/// </summary>
-		void OnRomLoaded(IEmulator emu);
+		void OnRomLoaded();
 
 		/// <summary>
 		/// Raise when a state is loaded
@@ -206,8 +204,6 @@ namespace BizHawk.Client.Common
 		void Unpause();
 
 		void UnpauseAv();
-
-		void UpdateEmulatorAndVP(IEmulator emu = null);
 
 		int Xpos();
 

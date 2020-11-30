@@ -842,7 +842,6 @@ namespace BizHawk.Client.EmuHawk
 			private set
 			{
 				_emulator = value;
-				if (EmuClient != null) EmuClient.Emulator = value; // first call to this setter is in the ctor, before the APIs have been registered by the ToolManager ctor
 				_currentVideoProvider = value.AsVideoProviderOrDefault();
 				_currentSoundProvider = value.AsSoundProviderOrDefault();
 			}
@@ -3637,7 +3636,7 @@ namespace BizHawk.Client.EmuHawk
 				var oldGame = Game;
 				var result = loader.LoadRom(path, nextComm, ioaRetro?.CorePath);
 
-				EmuClient.Game = Game = result ? loader.Game : oldGame;
+				Game = result ? loader.Game : oldGame;
 
 				// we need to replace the path in the OpenAdvanced with the canonical one the user chose.
 				// It can't be done until loader.LoadRom happens (for CanonicalFullPath)
@@ -3800,20 +3799,19 @@ namespace BizHawk.Client.EmuHawk
 
 					ExtToolManager.BuildToolStrip();
 
-					EmuClient.OnRomLoaded(Emulator);
+					EmuClient.OnRomLoaded();
 					return true;
 				}
 				else if (Emulator.IsNull())
 				{
 					// This shows up if there's a problem
-					EmuClient.UpdateEmulatorAndVP(Emulator);
 					OnRomChanged();
 					return false;
 				}
 				else
 				{
 					// The ROM has been loaded by a recursive invocation of the LoadROM method.
-					EmuClient.OnRomLoaded(Emulator);
+					EmuClient.OnRomLoaded();
 					return true;
 				}
 			}
@@ -3901,7 +3899,6 @@ namespace BizHawk.Client.EmuHawk
 			CheatList.SaveOnClose();
 			Emulator.Dispose();
 			Emulator = new NullEmulator();
-			EmuClient.UpdateEmulatorAndVP(Emulator);
 			InputManager.ActiveController = new Controller(NullController.Instance.Definition);
 			InputManager.AutoFireController = _autofireNullControls;
 			RewireSound();
@@ -3919,7 +3916,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				CloseGame(clearSram);
 				Emulator = new NullEmulator();
-				EmuClient.Game = Game = GameInfo.NullInstance;
+				Game = GameInfo.NullInstance;
 				CreateRewinder();
 				Tools.Restart(Config, Emulator, Game);
 				RewireSound();
