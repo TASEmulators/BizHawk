@@ -38,6 +38,28 @@ namespace BizHawk.Client.EmuHawk
 
 	public class OSDManager
 	{
+		private Config _config;
+
+		private IEmulator _emulator;
+
+		private readonly InputManager _inputManager;
+
+		private readonly IMovieSession _movieSession;
+
+		public OSDManager(Config config, IEmulator emulator, InputManager inputManager, IMovieSession movieSession)
+		{
+			_config = config;
+			_emulator = emulator;
+			_inputManager = inputManager;
+			_movieSession = movieSession;
+		}
+
+		public void UpdateGlobals(Config config, IEmulator emulator)
+		{
+			_config = config;
+			_emulator = emulator;
+		}
+
 		public string Fps { get; set; }
 		public IBlitterFont MessageFont;
 
@@ -46,8 +68,8 @@ namespace BizHawk.Client.EmuHawk
 			MessageFont = blitter.GetFontType(nameof(MessageFont));
 		}
 
-		public Color FixedMessagesColor => Color.FromArgb(GlobalWin.Config.MessagesColor);
-		public Color FixedAlertMessageColor => Color.FromArgb(GlobalWin.Config.AlertMessageColor);
+		public Color FixedMessagesColor => Color.FromArgb(_config.MessagesColor);
+		public Color FixedAlertMessageColor => Color.FromArgb(_config.AlertMessageColor);
 
 		private PointF GetCoordinates(IBlitter g, MessagePosition position, string message)
 		{
@@ -66,29 +88,29 @@ namespace BizHawk.Client.EmuHawk
 
 		private string MakeFrameCounter()
 		{
-			if (GlobalWin.MovieSession.Movie.IsFinished())
+			if (_movieSession.Movie.IsFinished())
 			{
 				var sb = new StringBuilder();
 				sb
-					.Append(GlobalWin.Emulator.Frame)
+					.Append(_emulator.Frame)
 					.Append('/')
-					.Append(GlobalWin.MovieSession.Movie.FrameCount)
+					.Append(_movieSession.Movie.FrameCount)
 					.Append(" (Finished)");
 				return sb.ToString();
 			}
 
-			if (GlobalWin.MovieSession.Movie.IsPlayingOrFinished())
+			if (_movieSession.Movie.IsPlayingOrFinished())
 			{
 				var sb = new StringBuilder();
 				sb
-					.Append(GlobalWin.Emulator.Frame)
+					.Append(_emulator.Frame)
 					.Append('/')
-					.Append(GlobalWin.MovieSession.Movie.FrameCount);
+					.Append(_movieSession.Movie.FrameCount);
 
 				return sb.ToString();
 			}
 			
-			return GlobalWin.Emulator.Frame.ToString();
+			return _emulator.Frame.ToString();
 		}
 
 		private readonly List<UIMessage> _messages = new List<UIMessage>(5);
@@ -134,14 +156,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DrawMessage(IBlitter g, UIMessage message, int yOffset)
 		{
-			var point = GetCoordinates(g, GlobalWin.Config.Messages, message.Message);
+			var point = GetCoordinates(g, _config.Messages, message.Message);
 			var y = point.Y + yOffset; // TODO: clean me up
 			g.DrawString(message.Message, MessageFont, FixedMessagesColor, point.X, y);
 		}
 
 		public void DrawMessages(IBlitter g)
 		{
-			if (!GlobalWin.Config.DisplayMessages)
+			if (!_config.DisplayMessages)
 			{
 				return;
 			}
@@ -150,13 +172,13 @@ namespace BizHawk.Client.EmuHawk
 
 			if (_messages.Any())
 			{
-				if (GlobalWin.Config.StackOSDMessages)
+				if (_config.StackOSDMessages)
 				{
 					int line = 1;
 					for (int i = _messages.Count - 1; i >= 0; i--, line++)
 					{
 						int yOffset = (line - 1) * 18;
-						if (!GlobalWin.Config.Messages.Anchor.IsTop())
+						if (!_config.Messages.Anchor.IsTop())
 						{
 							yOffset = 0 - yOffset;
 						}
@@ -187,19 +209,19 @@ namespace BizHawk.Client.EmuHawk
 
 		public string InputStrMovie()
 		{
-			return MakeStringFor(GlobalWin.MovieSession.MovieController);
+			return MakeStringFor(_movieSession.MovieController);
 		}
 
 		public string InputStrImmediate()
 		{
-			return MakeStringFor(GlobalWin.InputManager.AutofireStickyXorAdapter);
+			return MakeStringFor(_inputManager.AutofireStickyXorAdapter);
 		}
 
 		public string InputPrevious()
 		{
-			if (GlobalWin.MovieSession.Movie.IsPlayingOrRecording())
+			if (_movieSession.Movie.IsPlayingOrRecording())
 			{
-				var state = GlobalWin.MovieSession.Movie.GetInputState(GlobalWin.Emulator.Frame - 1);
+				var state = _movieSession.Movie.GetInputState(_emulator.Frame - 1);
 				if (state != null)
 				{
 					return MakeStringFor(state);
@@ -211,11 +233,11 @@ namespace BizHawk.Client.EmuHawk
 
 		public string InputStrOrAll()
 		{
-			IController m = GlobalWin.InputManager.AutofireStickyXorAdapter;
+			IController m = _inputManager.AutofireStickyXorAdapter;
 
-			if (GlobalWin.MovieSession.Movie.IsPlayingOrRecording() && GlobalWin.Emulator.Frame > 0)
+			if (_movieSession.Movie.IsPlayingOrRecording() && _emulator.Frame > 0)
 			{
-				m = m.Or(GlobalWin.MovieSession.Movie.GetInputState(GlobalWin.Emulator.Frame - 1));
+				m = m.Or(_movieSession.Movie.GetInputState(_emulator.Frame - 1));
 			}
 
 			return MakeStringFor(m);
@@ -223,18 +245,18 @@ namespace BizHawk.Client.EmuHawk
 
 		private string MakeStringFor(IController controller)
 		{
-			return new Bk2InputDisplayGenerator(GlobalWin.Emulator.SystemId, controller).Generate();
+			return new Bk2InputDisplayGenerator(_emulator.SystemId, controller).Generate();
 		}
 
 		public string MakeIntersectImmediatePrevious()
 		{
-			if (GlobalWin.MovieSession.Movie.IsActive())
+			if (_movieSession.Movie.IsActive())
 			{
-				var m = GlobalWin.MovieSession.Movie.IsPlayingOrRecording()
-					? GlobalWin.MovieSession.Movie.GetInputState(GlobalWin.Emulator.Frame - 1)
-					: GlobalWin.MovieSession.MovieController;
+				var m = _movieSession.Movie.IsPlayingOrRecording()
+					? _movieSession.Movie.GetInputState(_emulator.Frame - 1)
+					: _movieSession.MovieController;
 
-				return MakeStringFor(GlobalWin.InputManager.AutofireStickyXorAdapter.And(m));
+				return MakeStringFor(_inputManager.AutofireStickyXorAdapter.And(m));
 			}
 
 			return "";
@@ -242,8 +264,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public string MakeRerecordCount()
 		{
-			return GlobalWin.MovieSession.Movie.IsActive()
-				? GlobalWin.MovieSession.Movie.Rerecords.ToString()
+			return _movieSession.Movie.IsActive()
+				? _movieSession.Movie.Rerecords.ToString()
 				: "";
 		}
 
@@ -257,41 +279,41 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public void DrawScreenInfo(IBlitter g)
 		{
-			if (GlobalWin.Config.DisplayFrameCounter && !GlobalWin.Emulator.IsNull())
+			if (_config.DisplayFrameCounter && !_emulator.IsNull())
 			{
 				string message = MakeFrameCounter();
-				var point = GetCoordinates(g, GlobalWin.Config.FrameCounter, message);
-				DrawOsdMessage(g, message, Color.FromArgb(GlobalWin.Config.MessagesColor), point.X, point.Y);
+				var point = GetCoordinates(g, _config.FrameCounter, message);
+				DrawOsdMessage(g, message, Color.FromArgb(_config.MessagesColor), point.X, point.Y);
 
-				if (GlobalWin.Emulator.CanPollInput() && GlobalWin.Emulator.AsInputPollable().IsLagFrame)
+				if (_emulator.CanPollInput() && _emulator.AsInputPollable().IsLagFrame)
 				{
-					DrawOsdMessage(g, GlobalWin.Emulator.Frame.ToString(), FixedAlertMessageColor, point.X, point.Y);
+					DrawOsdMessage(g, _emulator.Frame.ToString(), FixedAlertMessageColor, point.X, point.Y);
 				}
 			}
 
-			if (GlobalWin.Config.DisplayInput)
+			if (_config.DisplayInput)
 			{
-				var moviePlaying = GlobalWin.MovieSession.Movie.IsPlaying();
+				var moviePlaying = _movieSession.Movie.IsPlaying();
 				// After the last frame of the movie, we want both the last movie input and the current inputs.
-				var atMovieEnd = GlobalWin.MovieSession.Movie.IsFinished() && GlobalWin.MovieSession.Movie.IsAtEnd();
+				var atMovieEnd = _movieSession.Movie.IsFinished() && _movieSession.Movie.IsAtEnd();
 				if (moviePlaying || atMovieEnd)
 				{
 					var input = InputStrMovie();
-					var point = GetCoordinates(g, GlobalWin.Config.InputDisplay, input);
-					Color c = Color.FromArgb(GlobalWin.Config.MovieInput);
+					var point = GetCoordinates(g, _config.InputDisplay, input);
+					Color c = Color.FromArgb(_config.MovieInput);
 					g.DrawString(input, MessageFont, c, point.X, point.Y);
 				}
 
 				if (!moviePlaying) // TODO: message config -- allow setting of "mixed", and "auto"
 				{
-					var previousColor = Color.FromArgb(GlobalWin.Config.LastInputColor);
-					Color immediateColor = Color.FromArgb(GlobalWin.Config.MessagesColor);
+					var previousColor = Color.FromArgb(_config.LastInputColor);
+					Color immediateColor = Color.FromArgb(_config.MessagesColor);
 					var autoColor = Color.Pink;
 					var changedColor = Color.PeachPuff;
 
 					//we need some kind of string for calculating position when right-anchoring, of something like that
 					var bgStr = InputStrOrAll();
-					var point = GetCoordinates(g, GlobalWin.Config.InputDisplay, bgStr);
+					var point = GetCoordinates(g, _config.InputDisplay, bgStr);
 
 					// now, we're going to render these repeatedly, with higher-priority things overriding
 
@@ -312,7 +334,7 @@ namespace BizHawk.Client.EmuHawk
 					// basically we're tinting whatever is pressed because it's sticky specially
 					// in order to achieve this we want to avoid drawing anything pink that isn't actually held down right now
 					// so we make an AND adapter and combine it using immediate & sticky
-					var autoString = MakeStringFor(GlobalWin.InputManager.StickyXorAdapter.Source.Xor(GlobalWin.InputManager.AutofireStickyXorAdapter).And(GlobalWin.InputManager.AutofireStickyXorAdapter));
+					var autoString = MakeStringFor(_inputManager.StickyXorAdapter.Source.Xor(_inputManager.AutofireStickyXorAdapter).And(_inputManager.AutofireStickyXorAdapter));
 					g.DrawString(autoString, MessageFont, autoColor, point.X, point.Y);
 
 					//recolor everything that's changed from the previous input
@@ -321,36 +343,36 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			if (GlobalWin.Config.DisplayFps && Fps != null)
+			if (_config.DisplayFps && Fps != null)
 			{
-				var point = GetCoordinates(g, GlobalWin.Config.Fps, Fps);
+				var point = GetCoordinates(g, _config.Fps, Fps);
 				DrawOsdMessage(g, Fps, FixedMessagesColor, point.X, point.Y);
 			}
 
-			if (GlobalWin.Config.DisplayLagCounter && GlobalWin.Emulator.CanPollInput())
+			if (_config.DisplayLagCounter && _emulator.CanPollInput())
 			{
-				var counter = GlobalWin.Emulator.AsInputPollable().LagCount.ToString();
-				var point = GetCoordinates(g, GlobalWin.Config.LagCounter, counter);
+				var counter = _emulator.AsInputPollable().LagCount.ToString();
+				var point = GetCoordinates(g, _config.LagCounter, counter);
 				DrawOsdMessage(g, counter, FixedAlertMessageColor, point.X, point.Y);
 			}
 
-			if (GlobalWin.Config.DisplayRerecordCount)
+			if (_config.DisplayRerecordCount)
 			{
 				string rerecordCount = MakeRerecordCount();
-				var point = GetCoordinates(g, GlobalWin.Config.ReRecordCounter, rerecordCount);
+				var point = GetCoordinates(g, _config.ReRecordCounter, rerecordCount);
 				DrawOsdMessage(g, rerecordCount, FixedMessagesColor, point.X, point.Y);
 			}
 
-			if (GlobalWin.InputManager.ClientControls["Autohold"] || GlobalWin.InputManager.ClientControls["Autofire"])
+			if (_inputManager.ClientControls["Autohold"] || _inputManager.ClientControls["Autofire"])
 			{
 				var sb = new StringBuilder("Held: ");
 
-				foreach (string sticky in GlobalWin.InputManager.StickyXorAdapter.CurrentStickies)
+				foreach (string sticky in _inputManager.StickyXorAdapter.CurrentStickies)
 				{
 					sb.Append(sticky).Append(' ');
 				}
 
-				foreach (string autoSticky in GlobalWin.InputManager.AutofireStickyXorAdapter.CurrentStickies)
+				foreach (string autoSticky in _inputManager.AutofireStickyXorAdapter.CurrentStickies)
 				{
 					sb
 						.Append("Auto-")
@@ -359,13 +381,13 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				var message = sb.ToString();
-				var point = GetCoordinates(g, GlobalWin.Config.Autohold, message);
+				var point = GetCoordinates(g, _config.Autohold, message);
 				g.DrawString(message, MessageFont, Color.White, point.X, point.Y);
 			}
 
-			if (GlobalWin.MovieSession.Movie.IsActive() && GlobalWin.Config.DisplaySubtitles)
+			if (_movieSession.Movie.IsActive() && _config.DisplaySubtitles)
 			{
-				var subList = GlobalWin.MovieSession.Movie.Subtitles.GetSubtitles(GlobalWin.Emulator.Frame);
+				var subList = _movieSession.Movie.Subtitles.GetSubtitles(_emulator.Frame);
 
 				foreach (var sub in subList)
 				{

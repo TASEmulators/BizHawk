@@ -339,7 +339,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				GraphicsControl = { MainWindow = true }
 			};
-			DisplayManager = new DisplayManager(GL, _presentationPanel, () => DisableSecondaryThrottling);
+			DisplayManager = new DisplayManager(new OSDManager(Config, Emulator, InputManager, MovieSession), GL, _presentationPanel, () => DisableSecondaryThrottling);
 			Controls.Add(_presentationPanel);
 			Controls.SetChildIndex(_presentationPanel, 0);
 
@@ -2796,6 +2796,7 @@ namespace BizHawk.Client.EmuHawk
 			InputManager.SyncControls(Emulator, MovieSession, Config);
 			Tools.Restart(Config, Emulator, Game);
 			ExtToolManager.Restart(Config.PathEntries);
+			OSD.UpdateGlobals(Config, Emulator);
 			AddOnScreenMessage($"Config file loaded: {iniPath}");
 		}
 
@@ -3772,6 +3773,7 @@ namespace BizHawk.Client.EmuHawk
 					CurrentlyOpenRom = oaOpenrom?.Path ?? openAdvancedArgs;
 					CurrentlyOpenRomArgs = args;
 					OnRomChanged();
+					OSD.UpdateGlobals(Config, Emulator);
 					DisplayManager.Blank();
 					CreateRewinder();
 
@@ -3921,6 +3923,7 @@ namespace BizHawk.Client.EmuHawk
 				Tools.Restart(Config, Emulator, Game);
 				RewireSound();
 				ClearHolds();
+				OSD.UpdateGlobals(Config, Emulator);
 				InputManager.SyncControls(Emulator, MovieSession, Config);
 				Tools.UpdateCheatRelatedTools(null, null);
 				PauseOnFrame = null;

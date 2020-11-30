@@ -49,14 +49,15 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly Func<bool> _getIsSecondaryThrottlingDisabled;
 
-		public readonly OSDManager OSD = new OSDManager();
+		public readonly OSDManager OSD;
 
 		private Config GlobalConfig => GlobalWin.Config;
 
 		private IEmulator GlobalEmulator => GlobalWin.Emulator;
 
-		public DisplayManager(IGL gl, PresentationPanel presentationPanel, Func<bool> getIsSecondaryThrottlingDisabled)
+		public DisplayManager(OSDManager osd, IGL gl, PresentationPanel presentationPanel, Func<bool> getIsSecondaryThrottlingDisabled)
 		{
+			OSD = osd;
 			_getIsSecondaryThrottlingDisabled = getIsSecondaryThrottlingDisabled;
 			_gl = gl;
 
