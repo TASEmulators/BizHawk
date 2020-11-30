@@ -5,7 +5,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public interface IMainFormForConfig
+	public interface IMainFormForConfig : IDialogController
 	{
 		/// <remarks>only referenced from <see cref="GenericCoreConfig"/></remarks>
 		IEmulator Emulator { get; }
@@ -20,7 +20,5 @@ namespace BizHawk.Client.EmuHawk
 		void PutCoreSettings(object o);
 
 		void PutCoreSyncSettings(object o);
-
-		DialogResult ShowDialogAsChild(Form dialog);
 	}
 }
