@@ -255,7 +255,7 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.Sound?.Dispose();
 				GlobalWin.Sound = null;
 				workingGL.Dispose();
-				Input.Instance.Adapter.DeInitAll();
+				Input.Instance?.Adapter?.DeInitAll();
 			}
 
 			//cleanup:

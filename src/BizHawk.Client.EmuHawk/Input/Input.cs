@@ -106,9 +106,7 @@ namespace BizHawk.Client.EmuHawk
 			Alt = 262144
 		}
 
-		private static readonly Lazy<Input> _instance = new Lazy<Input>(() => new Input(() => GlobalWin.Config));
-
-		public static Input Instance => _instance.Value;
+		public static Input Instance;
 
 		private readonly Thread _updateThread;
 
@@ -116,9 +114,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly Func<Config> _getConfigCallback;
 
-		private Input(Func<Config> getConfigCallback)
+		internal Input(IntPtr mainFormHandle, Func<Config> getConfigCallback, Func<bool, AllowInput> mainFormInputAllowedCallback)
 		{
 			_getConfigCallback = getConfigCallback;
+			MainFormInputAllowedCallback = mainFormInputAllowedCallback;
 
 			var config = _getConfigCallback();
 			Adapter = config.HostInputMethod switch
@@ -128,6 +127,7 @@ namespace BizHawk.Client.EmuHawk
 				_ => throw new Exception()
 			};
 			Adapter.UpdateConfig(config);
+			Adapter.FirstInitAll(mainFormHandle);
 			_updateThread = new Thread(UpdateThreadProc)
 			{
 				IsBackground = true, 
@@ -327,7 +327,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// Controls whether MainForm generates input events. should be turned off for most modal dialogs
 		/// </summary>
-		public Func<bool, AllowInput> MainFormInputAllowedCallback;
+		public readonly Func<bool, AllowInput> MainFormInputAllowedCallback;
 
 		private void UpdateThreadProc()
 		{

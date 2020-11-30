@@ -392,20 +392,23 @@ namespace BizHawk.Client.EmuHawk
 				Sound?.StartSound();
 			};
 
-			Input.Instance.MainFormInputAllowedCallback = yieldAlt => ActiveForm switch
-			{
-				null => Config.AcceptBackgroundInput // none of our forms are focused, check the background input config
-					? Config.AcceptBackgroundInputControllerOnly
-						? Input.AllowInput.OnlyController
-						: Input.AllowInput.All
-					: Input.AllowInput.None,
-				TAStudio _ when yieldAlt => Input.AllowInput.None,
-				FormBase f when !f.BlocksInputWhenFocused => Input.AllowInput.All,
-				ControllerConfig _ => Input.AllowInput.All,
-				HotkeyConfig _ => Input.AllowInput.All,
-				_ => Input.AllowInput.None
-			};
-			Input.Instance.Adapter.FirstInitAll(Handle);
+			Input.Instance = new Input(
+				Handle,
+				() => Config,
+				yieldAlt => ActiveForm switch
+				{
+					null => Config.AcceptBackgroundInput // none of our forms are focused, check the background input config
+						? Config.AcceptBackgroundInputControllerOnly
+							? Input.AllowInput.OnlyController
+							: Input.AllowInput.All
+						: Input.AllowInput.None,
+					TAStudio _ when yieldAlt => Input.AllowInput.None,
+					FormBase f when !f.BlocksInputWhenFocused => Input.AllowInput.All,
+					ControllerConfig _ => Input.AllowInput.All,
+					HotkeyConfig _ => Input.AllowInput.All,
+					_ => Input.AllowInput.None
+				}
+			);
 			InitControls();
 
 			InputManager.ActiveController = new Controller(NullController.Instance.Definition);
