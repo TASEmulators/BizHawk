@@ -416,7 +416,7 @@ namespace BizHawk.Client.EmuHawk
 			InputManager.AutofireStickyXorAdapter.SetOnOffPatternFromConfig(Config.AutofireOn, Config.AutofireOff);
 			try
 			{
-				GlobalWin.Sound = new Sound(Handle, Config.SoundOutputMethod, Config.SoundDevice, Emulator.VsyncRate);
+				GlobalWin.Sound = new Sound(Handle, Config, Emulator.VsyncRate);
 			}
 			catch
 			{
@@ -429,7 +429,7 @@ namespace BizHawk.Client.EmuHawk
 				MessageBox.Show(message, "Initialization Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
 				Config.SoundOutputMethod = ESoundOutputMethod.Dummy;
-				GlobalWin.Sound = new Sound(Handle, Config.SoundOutputMethod, Config.SoundDevice, Emulator.VsyncRate);
+				GlobalWin.Sound = new Sound(Handle, Config, Emulator.VsyncRate);
 			}
 
 			Sound.StartSound();
@@ -861,7 +861,7 @@ namespace BizHawk.Client.EmuHawk
 		private new Config Config
 		{
 			get => _config;
-			set => GlobalWin.Config = base.Config = _config = value;
+			set => base.Config = _config = value;
 		}
 
 		private readonly IGL GL;
@@ -2796,6 +2796,7 @@ namespace BizHawk.Client.EmuHawk
 			InputManager.SyncControls(Emulator, MovieSession, Config);
 			Tools.Restart(Config, Emulator, Game);
 			ExtToolManager.Restart(Config.PathEntries);
+			Sound.Config = Config;
 			DisplayManager.UpdateGlobals(Config, Emulator);
 			AddOnScreenMessage($"Config file loaded: {iniPath}");
 		}

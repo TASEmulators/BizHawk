@@ -919,7 +919,7 @@ namespace BizHawk.Client.EmuHawk
 			if (form.ApplyNewSoundDevice)
 			{
 				Sound.Dispose();
-				Sound = new Sound(Handle, Config.SoundOutputMethod, Config.SoundDevice, Emulator.VsyncRate);
+				Sound = new Sound(Handle, Config, Emulator.VsyncRate);
 				Sound.StartSound();
 			}
 			else

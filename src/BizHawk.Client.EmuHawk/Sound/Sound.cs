@@ -27,29 +27,32 @@ namespace BizHawk.Client.EmuHawk
 		private readonly BufferedAsync _bufferedAsync = new BufferedAsync(); // Buffer for Async sources
 		private IBufferedSoundProvider _bufferedProvider; // One of the preceding buffers, or null if no source is set
 
-		public int ConfigBufferSizeMs => GlobalWin.Config.SoundBufferSizeMs;
+		public Config Config;
 
-		public Sound(IntPtr mainWindowHandle, ESoundOutputMethod soundOutputMethod, string soundDevice, Func<double> getCoreVsyncRateCallback)
+		public int ConfigBufferSizeMs => Config.SoundBufferSizeMs;
+
+		public Sound(IntPtr mainWindowHandle, Config config, Func<double> getCoreVsyncRateCallback)
 		{
 			BlockAlign = BytesPerSample * ChannelCount;
 
 			_getCoreVsyncRateCallback = getCoreVsyncRateCallback;
 			_outputProvider = new SoundOutputProvider(_getCoreVsyncRateCallback);
+			Config = config;
 
 			if (OSTailoredCode.IsUnixHost)
 			{
 				// if DirectSound or XAudio is chosen, use OpenAL, otherwise comply with the user's choice
-				_outputDevice = soundOutputMethod == ESoundOutputMethod.Dummy
+				_outputDevice = config.SoundOutputMethod == ESoundOutputMethod.Dummy
 					? (ISoundOutput) new DummySoundOutput(this)
-					: new OpenALSoundOutput(this, soundDevice);
+					: new OpenALSoundOutput(this, config.SoundDevice);
 			}
 			else
 			{
-				_outputDevice = soundOutputMethod switch
+				_outputDevice = config.SoundOutputMethod switch
 				{
-					ESoundOutputMethod.DirectSound => new DirectSoundSoundOutput(this, mainWindowHandle, soundDevice),
-					ESoundOutputMethod.XAudio2 => new XAudio2SoundOutput(this, soundDevice),
-					ESoundOutputMethod.OpenAL => new OpenALSoundOutput(this, soundDevice),
+					ESoundOutputMethod.DirectSound => new DirectSoundSoundOutput(this, mainWindowHandle, config.SoundDevice),
+					ESoundOutputMethod.XAudio2 => new XAudio2SoundOutput(this, config.SoundDevice),
+					ESoundOutputMethod.OpenAL => new OpenALSoundOutput(this, config.SoundDevice),
 					_ => new DummySoundOutput(this)
 				};
 			}
@@ -76,7 +79,7 @@ namespace BizHawk.Client.EmuHawk
 		public void StartSound()
 		{
 			if (_disposed) return;
-			if (!GlobalWin.Config.SoundEnabled) return;
+			if (!Config.SoundEnabled) return;
 			if (IsStarted) return;
 
 			_outputDevice.StartSound();
@@ -150,7 +153,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateSound(float atten, bool isSecondaryThrottlingDisabled)
 		{
-			if (!GlobalWin.Config.SoundEnabled || !IsStarted || _bufferedProvider == null || _disposed)
+			if (!Config.SoundEnabled || !IsStarted || _bufferedProvider == null || _disposed)
 			{
 				_bufferedProvider?.DiscardSamples();
 				return;
@@ -175,7 +178,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (_bufferedProvider == _outputProvider)
 			{
-				if (GlobalWin.Config.SoundThrottle)
+				if (Config.SoundThrottle)
 				{
 					_outputProvider.BaseSoundProvider.GetSamplesSync(out samples, out sampleCount);
 					sampleOffset = 0;
