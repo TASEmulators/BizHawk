@@ -279,8 +279,6 @@ namespace BizHawk.Client.EmuHawk
 			Database.InitializeDatabase(Path.Combine(PathUtils.ExeDirectoryPath, "gamedb", "gamedb.txt"));
 			BootGodDb.Initialize(Path.Combine(PathUtils.ExeDirectoryPath, "gamedb"));
 
-			GlobalWin._mainForm = this;
-
 			_config = config; // skips assignment to GlobalWin.Config as Program already did that
 			GL = gl;
 
@@ -339,7 +337,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				GraphicsControl = { MainWindow = true }
 			};
-			DisplayManager = new DisplayManager(new OSDManager(Config, Emulator, InputManager, MovieSession), GL, _presentationPanel, () => DisableSecondaryThrottling);
+			DisplayManager = new DisplayManager(Config, Emulator, InputManager, MovieSession, GL, _presentationPanel, () => DisableSecondaryThrottling);
 			Controls.Add(_presentationPanel);
 			Controls.SetChildIndex(_presentationPanel, 0);
 
@@ -2796,7 +2794,7 @@ namespace BizHawk.Client.EmuHawk
 			InputManager.SyncControls(Emulator, MovieSession, Config);
 			Tools.Restart(Config, Emulator, Game);
 			ExtToolManager.Restart(Config.PathEntries);
-			OSD.UpdateGlobals(Config, Emulator);
+			DisplayManager.UpdateGlobals(Config, Emulator);
 			AddOnScreenMessage($"Config file loaded: {iniPath}");
 		}
 
@@ -3773,7 +3771,7 @@ namespace BizHawk.Client.EmuHawk
 					CurrentlyOpenRom = oaOpenrom?.Path ?? openAdvancedArgs;
 					CurrentlyOpenRomArgs = args;
 					OnRomChanged();
-					OSD.UpdateGlobals(Config, Emulator);
+					DisplayManager.UpdateGlobals(Config, Emulator);
 					DisplayManager.Blank();
 					CreateRewinder();
 
@@ -3923,7 +3921,7 @@ namespace BizHawk.Client.EmuHawk
 				Tools.Restart(Config, Emulator, Game);
 				RewireSound();
 				ClearHolds();
-				OSD.UpdateGlobals(Config, Emulator);
+				DisplayManager.UpdateGlobals(Config, Emulator);
 				InputManager.SyncControls(Emulator, MovieSession, Config);
 				Tools.UpdateCheatRelatedTools(null, null);
 				PauseOnFrame = null;

@@ -51,13 +51,15 @@ namespace BizHawk.Client.EmuHawk
 
 		public readonly OSDManager OSD;
 
-		private Config GlobalConfig => GlobalWin.Config;
+		private Config GlobalConfig;
 
-		private IEmulator GlobalEmulator => GlobalWin.Emulator;
+		private IEmulator GlobalEmulator;
 
-		public DisplayManager(OSDManager osd, IGL gl, PresentationPanel presentationPanel, Func<bool> getIsSecondaryThrottlingDisabled)
+		public DisplayManager(Config config, IEmulator emulator, InputManager inputManager, IMovieSession movieSession, IGL gl, PresentationPanel presentationPanel, Func<bool> getIsSecondaryThrottlingDisabled)
 		{
-			OSD = osd;
+			GlobalConfig = config;
+			GlobalEmulator = emulator;
+			OSD = new OSDManager(config, emulator, inputManager, movieSession);
 			_getIsSecondaryThrottlingDisabled = getIsSecondaryThrottlingDisabled;
 			_gl = gl;
 
@@ -134,6 +136,13 @@ namespace BizHawk.Client.EmuHawk
 			_luaSurfaceFrugalizers["native"] = new TextureFrugalizer(_gl);
 
 			RefreshUserShader();
+		}
+
+		public void UpdateGlobals(Config config, IEmulator emulator)
+		{
+			GlobalConfig = config;
+			GlobalEmulator = emulator;
+			OSD.UpdateGlobals(config, emulator);
 		}
 
 		public bool Disposed { get; private set; }
