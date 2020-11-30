@@ -246,7 +246,7 @@ namespace BizHawk.Client.EmuHawk
 		private void OpenAdvancedMenuItem_Click(object sender, EventArgs e)
 		{
 			using var oac = new OpenAdvancedChooser(Config, CreateCoreComm, Game, RunLibretroCoreChooser);
-			if (oac.ShowHawkDialog(this, this) == DialogResult.Cancel)
+			if (this.DoWithTempMute(() => oac.ShowDialog(this)) == DialogResult.Cancel)
 			{
 				return;
 			}
@@ -295,7 +295,7 @@ namespace BizHawk.Client.EmuHawk
 				Title = "Open Advanced"
 			};
 
-			var result = ofd.ShowHawkDialog(this, this);
+			var result = this.DoWithTempMute(() => ofd.ShowDialog(this));
 			if (!result.IsOk())
 			{
 				return;
@@ -444,7 +444,7 @@ namespace BizHawk.Client.EmuHawk
 				RestoreDirectory = false
 			};
 
-			if (ofd.ShowHawkDialog(this, this).IsOk())
+			if (this.DoWithTempMute(() => ofd.ShowDialog(this)).IsOk())
 			{
 				foreach (var fn in ofd.FileNames)
 				{
@@ -564,7 +564,7 @@ namespace BizHawk.Client.EmuHawk
 				Filter = FilesystemFilter.PNGs.ToString()
 			};
 
-			if (sfd.ShowHawkDialog(this, this).IsOk())
+			if (this.DoWithTempMute(() => sfd.ShowDialog(this)).IsOk())
 			{
 				TakeScreenshot(sfd.FileName);
 			}
@@ -1130,7 +1130,7 @@ namespace BizHawk.Client.EmuHawk
 				Filter = ConfigFileFSFilterString
 			};
 
-			if (sfd.ShowHawkDialog(this, this).IsOk())
+			if (this.DoWithTempMute(() => sfd.ShowDialog(this)).IsOk())
 			{
 				SaveConfig(sfd.FileName);
 				AddOnScreenMessage("Copied settings");
@@ -1152,7 +1152,7 @@ namespace BizHawk.Client.EmuHawk
 				Filter = ConfigFileFSFilterString
 			};
 
-			if (ofd.ShowHawkDialog(this, this).IsOk())
+			if (this.DoWithTempMute(() => ofd.ShowDialog(this)).IsOk())
 			{
 				LoadConfigFile(ofd.FileName);
 			}
@@ -1385,12 +1385,12 @@ namespace BizHawk.Client.EmuHawk
 			if (Emulator is NES nes && nes.IsVS)
 			{
 				using var form = new NesVsSettings(this, nes.GetSyncSettings().Clone());
-				form.ShowHawkDialog(this, this);
+				this.DoWithTempMute(() => form.ShowDialog(this));
 			}
 			else if (Emulator is SubNESHawk sub && sub.IsVs)
 			{
 				using var form = new NesVsSettings(this, sub.GetSyncSettings().Clone());
-				form.ShowHawkDialog(this, this);
+				this.DoWithTempMute(() => form.ShowDialog(this));
 			}
 		}
 

@@ -71,7 +71,7 @@ namespace BizHawk.Client.EmuHawk
 				RestoreDirectory = true
 			};
 
-			var result = ofd.ShowHawkDialog(MainForm, this);
+			var result = MainForm.DoWithTempMute(() => ofd.ShowDialog(this));
 			if (result != DialogResult.OK)
 			{
 				return null;
@@ -95,7 +95,7 @@ namespace BizHawk.Client.EmuHawk
 				RestoreDirectory = true
 			};
 
-			var result = sfd.ShowHawkDialog(dialogController, owner);
+			var result = dialogController.DoWithTempMute(() => sfd.ShowDialog(owner));
 			if (result != DialogResult.OK)
 			{
 				return null;

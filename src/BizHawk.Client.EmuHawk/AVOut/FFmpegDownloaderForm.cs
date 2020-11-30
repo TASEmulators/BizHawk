@@ -113,7 +113,7 @@ namespace BizHawk.Client.EmuHawk
 		public static void Run(IDialogController dialogController, IWin32Window hwnd)
 		{
 			var form = new FFmpegDownloaderForm();
-			form.ShowHawkDialog(dialogController, hwnd);
+			dialogController.DoWithTempMute(() => form.ShowDialog(hwnd));
 		}
 
 		private void btnDownload_Click(object sender, EventArgs e)

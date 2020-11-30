@@ -144,7 +144,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var b = CreateAddBreakpointDialog(BreakpointOperation.Add);
 
-			if (b.ShowHawkDialog(MainForm, this).IsOk())
+			if (MainForm.DoWithTempMute(() => b.ShowDialog(this)).IsOk())
 			{
 				_breakpoints.Add(Core, MemoryDomains.SystemBus.Name, b.Address, b.AddressMask, b.BreakType);
 			}
@@ -265,7 +265,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var b = CreateAddBreakpointDialog(BreakpointOperation.Duplicate, breakpoint.Type, breakpoint.Address, breakpoint.AddressMask);
 
-				if (b.ShowHawkDialog(MainForm, this) == DialogResult.OK)
+				if (MainForm.DoWithTempMute(() => b.ShowDialog(this)) == DialogResult.OK)
 				{
 					_breakpoints.Add(new Breakpoint(Core, MemoryDomains.SystemBus.Name, breakpoint.Callback, b.Address, b.AddressMask, b.BreakType, breakpoint.Active));
 				}
@@ -284,7 +284,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var b = CreateAddBreakpointDialog(BreakpointOperation.Edit, breakpoint.Type, breakpoint.Address, breakpoint.AddressMask);
 
-				if (b.ShowHawkDialog(MainForm, this) == DialogResult.OK)
+				if (MainForm.DoWithTempMute(() => b.ShowDialog(this)) == DialogResult.OK)
 				{
 					breakpoint.Type = b.BreakType;
 					breakpoint.Address = b.Address;

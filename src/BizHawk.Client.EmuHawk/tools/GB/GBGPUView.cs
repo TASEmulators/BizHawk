@@ -942,7 +942,7 @@ namespace BizHawk.Client.EmuHawk
 				Color = Spriteback
 			};
 
-			var result = dlg.ShowHawkDialog(MainForm, this);
+			var result = MainForm.DoWithTempMute(() => dlg.ShowDialog(this));
 			if (result.IsOk())
 			{
 				Spriteback = dlg.Color;

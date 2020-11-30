@@ -145,27 +145,6 @@ namespace BizHawk.Client.EmuHawk
 
 	public static class FormExtensions
 	{
-		/// <summary>
-		/// Handles EmuHawk specific issues before showing a modal dialog
-		/// </summary>
-		public static DialogResult ShowHawkDialog(this Form form, IDialogController dialogController, IWin32Window owner, Point position = default)
-		{
-			if (position != default)
-			{
-				form.StartPosition = FormStartPosition.Manual;
-				form.Location = position;
-			}
-			return dialogController.DoWithTempMute(() => form.ShowDialog(owner));
-		}
-
-		/// <summary>
-		/// Handles EmuHawk specific issues before showing a modal dialog
-		/// </summary>
-		public static DialogResult ShowHawkDialog(this CommonDialog form, IDialogController dialogController, IWin32Window owner)
-		{
-			return dialogController.DoWithTempMute(() => form.ShowDialog(owner));
-		}
-
 		public static void DoWithTempMute(this IDialogController dialogController, Action action)
 		{
 			dialogController.StopSound();
@@ -290,7 +269,7 @@ namespace BizHawk.Client.EmuHawk
 				RestoreDirectory = true
 			};
 
-			var result = sfd.ShowHawkDialog(dialogController, owner);
+			var result = dialogController.DoWithTempMute(() => sfd.ShowDialog(owner));
 			if (result != DialogResult.OK)
 			{
 				return;

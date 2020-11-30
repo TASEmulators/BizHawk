@@ -79,7 +79,7 @@ namespace BizHawk.Client.EmuHawk
 			};
 			string hawkPath = "";
 
-			var result = ofd.ShowHawkDialog(_dialogController, this);
+			var result = _dialogController.DoWithTempMute(() => ofd.ShowDialog(this));
 			if (result == DialogResult.OK)
 			{
 				hawkPath = ofd.FileName;
