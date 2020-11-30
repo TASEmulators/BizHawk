@@ -279,7 +279,7 @@ namespace BizHawk.Client.EmuHawk
 				create = true;
 			}
 
-			DialogResult result = dialog.ShowHawkDialog(MainForm, this);
+			DialogResult result = MainForm.DoWithTempMute(() => dialog.ShowDialog(this));
 			if (result != DialogResult.OK)
 			{
 				if (create)
@@ -304,7 +304,7 @@ namespace BizHawk.Client.EmuHawk
 				Filter = MacrosFSFilterSet.ToString()
 			};
 			
-			DialogResult result = dialog.ShowHawkDialog(MainForm, this);
+			DialogResult result = MainForm.DoWithTempMute(() => dialog.ShowDialog(this));
 			if (result != DialogResult.OK)
 			{
 				return null;

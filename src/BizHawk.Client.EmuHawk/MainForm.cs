@@ -2258,7 +2258,7 @@ namespace BizHawk.Client.EmuHawk
 				FilterIndex = _lastOpenRomFilter
 			};
 
-			var result = ofd.ShowHawkDialog(this, this);
+			var result = this.DoWithTempMute(() => ofd.ShowDialog(this));
 			if (result != DialogResult.OK)
 			{
 				return;
@@ -3270,7 +3270,7 @@ namespace BizHawk.Client.EmuHawk
 
 						sfd.Filter = new FilesystemFilterSet(new FilesystemFilter(ext, new[] { ext })).ToString();
 
-						var result = sfd.ShowHawkDialog(this, this);
+						var result = this.DoWithTempMute(() => sfd.ShowDialog(this));
 						if (result == DialogResult.Cancel)
 						{
 							aw.Dispose();
@@ -4257,7 +4257,7 @@ namespace BizHawk.Client.EmuHawk
 				FileName = $"{SaveStatePrefix()}.QuickSave0.State"
 			};
 
-			var result = sfd.ShowHawkDialog(this, this);
+			var result = this.DoWithTempMute(() => sfd.ShowDialog(this));
 			if (result == DialogResult.OK)
 			{
 				SaveState(sfd.FileName, sfd.FileName);
@@ -4289,7 +4289,7 @@ namespace BizHawk.Client.EmuHawk
 				RestoreDirectory = true
 			};
 
-			var result = ofd.ShowHawkDialog(this, this);
+			var result = this.DoWithTempMute(() => ofd.ShowDialog(this));
 			if (result != DialogResult.OK)
 			{
 				return;

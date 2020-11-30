@@ -195,8 +195,10 @@ namespace BizHawk.Client.EmuHawk
 
 				var point = Cursor.Position;
 				point.Offset(i.Width / -2, i.Height / -2);
+				i.StartPosition = FormStartPosition.Manual;
+				i.Location = point;
 
-				var result = Tastudio.MainForm.DoWithTempMute(() => i.ShowHawkDialog(Tastudio.MainForm, this, position: point));
+				var result = Tastudio.MainForm.DoWithTempMute(() => i.ShowDialog(this));
 				if (!result.IsOk())
 				{
 					return;
@@ -233,7 +235,6 @@ namespace BizHawk.Client.EmuHawk
 		public void EditMarkerPopUp(TasMovieMarker marker, bool followCursor = false)
 		{
 			var markerFrame = marker.Frame;
-			var point = default(Point);
 			var i = new InputPrompt
 			{
 				Text = $"Marker for frame {markerFrame}",
@@ -247,11 +248,13 @@ namespace BizHawk.Client.EmuHawk
 
 			if (followCursor)
 			{
-				point = Cursor.Position;
+				var point = Cursor.Position;
 				point.Offset(i.Width / -2, i.Height / -2);
+				i.StartPosition = FormStartPosition.Manual;
+				i.Location = point;
 			}
 
-			var result = Tastudio.MainForm.DoWithTempMute(() => i.ShowHawkDialog(Tastudio.MainForm, this, position: point));
+			var result = Tastudio.MainForm.DoWithTempMute(() => i.ShowDialog(this));
 
 			if (result == DialogResult.OK)
 			{
