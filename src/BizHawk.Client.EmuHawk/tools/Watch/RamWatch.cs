@@ -420,7 +420,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (SelectedSeparators.Any() && !duplicate)
 			{
-				var inputPrompt = new InputPrompt(MainForm)
+				var inputPrompt = new InputPrompt
 				{
 					Text = "Edit Separator",
 					StartLocation = this.ChildPointToScreen(WatchListView),
@@ -428,7 +428,9 @@ namespace BizHawk.Client.EmuHawk
 					TextInputType = InputPrompt.InputType.Text
 				};
 
+				MainForm.StopSound();
 				var result = inputPrompt.ShowHawkDialog();
+				MainForm.StartSound();
 
 				if (result == DialogResult.OK)
 				{

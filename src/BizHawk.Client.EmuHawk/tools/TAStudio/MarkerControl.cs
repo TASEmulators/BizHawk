@@ -182,7 +182,7 @@ namespace BizHawk.Client.EmuHawk
 			TasMovieMarker marker;
 			if (editText)
 			{
-				var i = new InputPrompt(Tastudio.MainForm)
+				var i = new InputPrompt
 				{
 					Text = $"Marker for frame {frame}",
 					TextInputType = InputPrompt.InputType.Text,
@@ -196,7 +196,9 @@ namespace BizHawk.Client.EmuHawk
 				var point = Cursor.Position;
 				point.Offset(i.Width / -2, i.Height / -2);
 
+				Tastudio.MainForm.StopSound();
 				var result = i.ShowHawkDialog(this, position: point);
+				Tastudio.MainForm.StartSound();
 				if (!result.IsOk())
 				{
 					return;
@@ -234,7 +236,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var markerFrame = marker.Frame;
 			var point = default(Point);
-			var i = new InputPrompt(Tastudio.MainForm)
+			var i = new InputPrompt
 			{
 				Text = $"Marker for frame {markerFrame}",
 				TextInputType = InputPrompt.InputType.Text,
@@ -251,7 +253,9 @@ namespace BizHawk.Client.EmuHawk
 				point.Offset(i.Width / -2, i.Height / -2);
 			}
 
+			Tastudio.MainForm.StopSound();
 			var result = i.ShowHawkDialog(this, position: point);
+			Tastudio.MainForm.StartSound();
 
 			if (result == DialogResult.OK)
 			{

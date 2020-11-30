@@ -566,7 +566,7 @@ namespace BizHawk.Client.EmuHawk
 				return false;
 			}
 
-			var i = new InputPrompt(MainForm)
+			var i = new InputPrompt
 			{
 				Text = $"Text for branch {index}",
 				TextInputType = InputPrompt.InputType.Text,
@@ -577,7 +577,9 @@ namespace BizHawk.Client.EmuHawk
 			var point = Cursor.Position;
 			point.Offset(i.Width / -2, i.Height / -2);
 
+			MainForm.StopSound();
 			var result = i.ShowHawkDialog(this, position: point);
+			MainForm.StartSound();
 			if (result.IsOk())
 			{
 				branch.UserText = i.PromptText;

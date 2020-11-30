@@ -822,14 +822,17 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetMaxUndoLevelsMenuItem_Click(object sender, EventArgs e)
 		{
-			using var prompt = new InputPrompt(MainForm)
+			using var prompt = new InputPrompt
 			{
 				TextInputType = InputPrompt.InputType.Unsigned,
 				Message = "Number of Undo Levels to keep",
 				InitialValue = CurrentTasMovie.ChangeLog.MaxSteps.ToString()
 			};
 
-			if (prompt.ShowDialog().IsOk())
+			MainForm.StopSound();
+			var result = prompt.ShowDialog();
+			MainForm.StartSound();
+			if (result.IsOk())
 			{
 				int val = 0;
 				try
@@ -850,14 +853,17 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetBranchCellHoverIntervalMenuItem_Click(object sender, EventArgs e)
 		{
-			using var prompt = new InputPrompt(MainForm)
+			using var prompt = new InputPrompt
 			{
 				TextInputType = InputPrompt.InputType.Unsigned,
 				Message = "ScreenshotPopUp Delay",
 				InitialValue = Settings.BranchCellHoverInterval.ToString()
 			};
 
-			if (prompt.ShowDialog().IsOk())
+			MainForm.StopSound();
+			var result = prompt.ShowDialog();
+			MainForm.StartSound();
+			if (result.IsOk())
 			{
 				int val = int.Parse(prompt.PromptText);
 				if (val > 0)
@@ -870,14 +876,17 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetSeekingCutoffIntervalMenuItem_Click(object sender, EventArgs e)
 		{
-			using var prompt = new InputPrompt(MainForm)
+			using var prompt = new InputPrompt
 			{
 				TextInputType = InputPrompt.InputType.Unsigned,
 				Message = "Seeking Cutoff Interval",
 				InitialValue = Settings.SeekingCutoffInterval.ToString()
 			};
 
-			if (prompt.ShowDialog().IsOk())
+			MainForm.StopSound();
+			var result = prompt.ShowDialog();
+			MainForm.StartSound();
+			if (result.IsOk())
 			{
 				int val = int.Parse(prompt.PromptText);
 				if (val > 0)
@@ -890,14 +899,17 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetAutosaveIntervalMenuItem_Click(object sender, EventArgs e)
 		{
-			using var prompt = new InputPrompt(MainForm)
+			using var prompt = new InputPrompt
 			{
 				TextInputType = InputPrompt.InputType.Unsigned,
 				Message = "Autosave Interval in seconds\nSet to 0 to disable",
 				InitialValue = (Settings.AutosaveInterval / 1000).ToString()
 			};
 
-			if (prompt.ShowDialog().IsOk())
+			MainForm.StopSound();
+			var result = prompt.ShowDialog();
+			MainForm.StartSound();
+			if (result.IsOk())
 			{
 				uint val = uint.Parse(prompt.PromptText) * 1000;
 				Settings.AutosaveInterval = val;
@@ -1170,13 +1182,16 @@ namespace BizHawk.Client.EmuHawk
 
 		private void WheelScrollSpeedMenuItem_Click(object sender, EventArgs e)
 		{
-			var inputPrompt = new InputPrompt(MainForm)
+			var inputPrompt = new InputPrompt
 			{
 				TextInputType = InputPrompt.InputType.Unsigned,
 				Message = "Frames per tick:",
 				InitialValue = TasView.ScrollSpeed.ToString()
 			};
-			if (inputPrompt.ShowDialog() == DialogResult.OK)
+			MainForm.StopSound();
+			var result = inputPrompt.ShowDialog();
+			MainForm.StartSound();
+			if (result == DialogResult.OK)
 			{
 				TasView.ScrollSpeed = int.Parse(inputPrompt.PromptText);
 				Settings.ScrollSpeed = TasView.ScrollSpeed;

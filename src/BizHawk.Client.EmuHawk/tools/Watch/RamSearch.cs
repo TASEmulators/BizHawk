@@ -891,14 +891,17 @@ namespace BizHawk.Client.EmuHawk
 		private void GoToSpecifiedAddress()
 		{
 			WatchListView.DeselectAll();
-			var prompt = new InputPrompt(MainForm)
+			var prompt = new InputPrompt
 			{
 				Text = "Go to Address",
 				StartLocation = this.ChildPointToScreen(WatchListView),
 				Message = "Enter a hexadecimal value"
 			};
 
-			while (prompt.ShowHawkDialog(this).IsOk())
+			MainForm.StopSound();
+			var result = prompt.ShowHawkDialog(this);
+			MainForm.StartSound();
+			while (result.IsOk())
 			{
 				try
 				{
