@@ -39,7 +39,7 @@ namespace BizHawk.Client.EmuHawk
 			if (OSTailoredCode.IsUnixHost)
 			{
 				// if DirectSound or XAudio is chosen, use OpenAL, otherwise comply with the user's choice
-				_outputDevice = GlobalWin.Config.SoundOutputMethod == ESoundOutputMethod.Dummy
+				_outputDevice = soundOutputMethod == ESoundOutputMethod.Dummy
 					? (ISoundOutput) new DummySoundOutput(this)
 					: new OpenALSoundOutput(this, soundDevice);
 			}
