@@ -399,7 +399,7 @@
 		<Rule Id="SA1210" Action="Hidden" />
 
 		<!-- Using alias directives should be ordered alphabetically by alias name -->
-		<Rule Id="SA1211" Action="Hidden" />
+		<Rule Id="SA1211" Action="Error" />
 
 		<!-- Readonly fields should appear before non-readonly fields -->
 		<Rule Id="SA1214" Action="Hidden" />
