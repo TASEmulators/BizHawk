@@ -106,22 +106,28 @@ namespace BizHawk.Client.EmuHawk
 			Alt = 262144
 		}
 
-		private static readonly Lazy<Input> _instance = new Lazy<Input>(() => new Input());
+		private static readonly Lazy<Input> _instance = new Lazy<Input>(() => new Input(() => GlobalWin.Config));
 
 		public static Input Instance => _instance.Value;
 
 		private readonly Thread _updateThread;
 
-		public readonly HostInputAdapter Adapter = GlobalWin.Config.HostInputMethod switch
-		{
-			EHostInputMethod.OpenTK => new OpenTKInputAdapter(),
-			EHostInputMethod.DirectInput => new DirectInputAdapter(),
-			_ => throw new Exception()
-		};
+		public readonly HostInputAdapter Adapter;
 
-		private Input()
+		private readonly Func<Config> _getConfigCallback;
+
+		private Input(Func<Config> getConfigCallback)
 		{
-			Adapter.UpdateConfig(GlobalWin.Config);
+			_getConfigCallback = getConfigCallback;
+
+			var config = _getConfigCallback();
+			Adapter = config.HostInputMethod switch
+			{
+				EHostInputMethod.OpenTK => new OpenTKInputAdapter(),
+				EHostInputMethod.DirectInput => new DirectInputAdapter(),
+				_ => throw new Exception()
+			};
+			Adapter.UpdateConfig(config);
 			_updateThread = new Thread(UpdateThreadProc)
 			{
 				IsBackground = true, 
@@ -377,7 +383,7 @@ namespace BizHawk.Client.EmuHawk
 			};
 			while (true)
 			{
-				Adapter.UpdateConfig(GlobalWin.Config);
+				Adapter.UpdateConfig(_getConfigCallback());
 
 				var keyEvents = Adapter.ProcessHostKeyboards();
 				Adapter.PreprocessHostGamepads();
