@@ -150,14 +150,14 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public static DialogResult ShowHawkDialog(this Form form, IWin32Window owner = null, Point position = default)
 		{
-			GlobalWin.Sound.StopSound();
+			Sound.Instance.StopSound();
 			if (position != default)
 			{
 				form.StartPosition = FormStartPosition.Manual;
 				form.Location = position;
 			}
 			var result = (owner == null ? form.ShowDialog(new Form { TopMost = true }) : form.ShowDialog(owner));
-			GlobalWin.Sound.StartSound();
+			Sound.Instance.StartSound();
 			return result;
 		}
 
@@ -166,13 +166,13 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public static DialogResult ShowHawkDialog(this CommonDialog form, IWin32Window owner)
 		{
-			GlobalWin.Sound.StopSound();
+			Sound.Instance.StopSound();
 			DialogResult result;
 			if(owner != null)
 				result = form.ShowDialog(owner);
 			else 
 				result = form.ShowDialog();
-			GlobalWin.Sound.StartSound();
+			Sound.Instance.StartSound();
 			return result;
 		}
 	}

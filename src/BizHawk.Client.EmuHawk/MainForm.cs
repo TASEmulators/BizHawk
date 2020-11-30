@@ -416,7 +416,7 @@ namespace BizHawk.Client.EmuHawk
 			InputManager.AutofireStickyXorAdapter.SetOnOffPatternFromConfig(Config.AutofireOn, Config.AutofireOff);
 			try
 			{
-				GlobalWin.Sound = new Sound(Handle, Config, Emulator.VsyncRate);
+				Sound = new Sound(Handle, Config, Emulator.VsyncRate);
 			}
 			catch
 			{
@@ -429,7 +429,7 @@ namespace BizHawk.Client.EmuHawk
 				MessageBox.Show(message, "Initialization Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
 				Config.SoundOutputMethod = ESoundOutputMethod.Dummy;
-				GlobalWin.Sound = new Sound(Handle, Config, Emulator.VsyncRate);
+				Sound = new Sound(Handle, Config, Emulator.VsyncRate);
 			}
 
 			Sound.StartSound();
@@ -880,8 +880,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private Sound Sound
 		{
-			get => GlobalWin.Sound;
-			set => GlobalWin.Sound = value;
+			get => Sound.Instance;
+			set => Sound.Instance = value;
 		}
 
 		public CheatCollection CheatList { get; }
