@@ -1,7 +1,8 @@
-﻿using BizHawk.Client.Common;
-using System;
+﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+
+using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {

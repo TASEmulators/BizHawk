@@ -393,7 +393,7 @@
 		<Rule Id="SA1204" Action="Hidden" />
 
 		<!-- System using directives should be placed before other using directives -->
-		<Rule Id="SA1208" Action="Hidden" />
+		<Rule Id="SA1208" Action="Error" />
 
 		<!-- Using directives should be ordered alphabetically by namespace -->
 		<Rule Id="SA1210" Action="Hidden" />

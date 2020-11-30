@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using NLua;
-using System.IO;
 
 namespace BizHawk.Client.EmuHawk
 {

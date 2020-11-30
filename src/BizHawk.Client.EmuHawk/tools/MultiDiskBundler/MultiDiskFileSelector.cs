@@ -1,9 +1,9 @@
 ﻿using System;
+using System.IO;
 using System.Windows.Forms;
 
 using BizHawk.Common;
 using BizHawk.Client.Common;
-using System.IO;
 
 namespace BizHawk.Client.EmuHawk
 {

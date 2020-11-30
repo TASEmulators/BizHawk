@@ -1,6 +1,7 @@
-﻿using BizHawk.Common;
-using System;
+﻿using System;
 using System.Runtime.InteropServices;
+
+using BizHawk.Common;
 
 namespace BizHawk.Emulation.Common
 {

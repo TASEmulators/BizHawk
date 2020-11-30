@@ -1,9 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
 using NLua;
-using System.Collections.Generic;
 
 namespace BizHawk.Client.EmuHawk
 {
