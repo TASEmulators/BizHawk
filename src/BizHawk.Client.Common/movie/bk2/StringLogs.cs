@@ -71,7 +71,7 @@ namespace BizHawk.Client.Common
 	{
 		public IStringLog Clone()
 		{
-			 var ret = new ListStringLog();
+			var ret = new ListStringLog();
 			ret.AddRange(this);
 			return ret;
 		}

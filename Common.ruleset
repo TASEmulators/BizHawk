@@ -376,7 +376,7 @@
 		<Rule Id="SA1136" Action="Hidden" />
 
 		<!-- Elements should have the same indentation -->
-		<Rule Id="SA1137" Action="Hidden" />
+		<Rule Id="SA1137" Action="Error" />
 	</Rules>
 
 	<Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers.OrderingRules">

@@ -387,8 +387,7 @@ namespace BizHawk.Client.EmuHawk
 			// and OSD goes on top of that
 			// TODO - things break if this isn't present (the final presentation filter gets messed up when used with prescaling)
 			// so, always include it (we'll handle this flag in the callback to do no rendering)
-			//if (includeOSD)
-				chain.AddFilter(fOSD, "osd");
+			if (true /*includeOSD*/) chain.AddFilter(fOSD, "osd");
 
 			return chain;
 		}

@@ -16,8 +16,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public Win32LuaLibraries()
 		{
-//			if (NLua.Lua.WhichLua == "NLua")
-				_lua["keepalives"] = _lua.NewTable();
+			if (true /*NLua.Lua.WhichLua == "NLua"*/) _lua["keepalives"] = _lua.NewTable();
 		}
 
 		public Win32LuaLibraries(
@@ -205,7 +204,7 @@ namespace BizHawk.Client.EmuHawk
 			var content = File.ReadAllText(file);
 			var main = lua.LoadString(content, "main");
 			lua.Push(main); // push main function on to stack for subsequent resuming
-			//if (NLua.Lua.WhichLua == "NLua")
+			if (true /*NLua.Lua.WhichLua == "NLua"*/)
 			{
 				_lua.GetTable("keepalives")[lua] = 1;
 				//this not being run is the origin of a memory leak if you restart scripts too many times
@@ -223,8 +222,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_currThread = _lua.NewThread();
 			_currThread.DoString(command);
-			//if (NLua.Lua.WhichLua == "NLua")
-				_lua.Pop();
+			if (true /*NLua.Lua.WhichLua == "NLua"*/) _lua.Pop();
 		}
 
 		public override void RunScheduledDisposes() => _lua.RunScheduledDisposes();

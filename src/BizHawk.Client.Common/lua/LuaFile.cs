@@ -54,8 +54,7 @@
 			}
 
 			State = RunState.Disabled;
-			//if(NLua.Lua.WhichLua == "NLua")
-				Thread.GetTable("keepalives")[Thread] = null;
+			if (true /*NLua.Lua.WhichLua == "NLua"*/) Thread.GetTable("keepalives")[Thread] = null;
 			Thread = null;
 		}
 

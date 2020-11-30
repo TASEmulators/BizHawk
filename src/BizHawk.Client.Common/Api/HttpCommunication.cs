@@ -11,7 +11,7 @@ namespace BizHawk.Client.Common
 	{
 		private readonly HttpClient _client = new HttpClient();
 
-        private readonly Func<byte[]> _takeScreenshotCallback;
+		private readonly Func<byte[]> _takeScreenshotCallback;
 
 		public int DefaultTimeout { get; set; } = 500;
 
