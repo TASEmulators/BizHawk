@@ -42,7 +42,7 @@ namespace BizHawk.Client.EmuHawk
 			/// <summary>
 			/// get a list of canned presets
 			/// </summary>
-			public static FormatPreset[] GetPresets()
+			public static FormatPreset[] GetPresets(string customCommand)
 			{
 				return new[]
 				{
@@ -69,20 +69,20 @@ namespace BizHawk.Client.EmuHawk
 					new FormatPreset("FLV", "AVC video and AAC audio in a Flash Video container.",
 						"-c:a aac -c:v libx264 -f flv", false, "flv"),
 					new FormatPreset("[Custom]", "Write your own ffmpeg command. For advanced users only.",
-						"-c:a foo -c:v bar -f baz", true, "foobar")
+						customCommand, true, "foobar")
 				};
 			}
 
 			/// <summary>
 			/// get the default format preset (from config files)
 			/// </summary>
-			public static FormatPreset GetDefaultPreset(string ffmpegFormat)
+			public static FormatPreset GetDefaultPreset(Config config)
 			{
-				FormatPreset[] fps = GetPresets();
+				FormatPreset[] fps = GetPresets(config.FFmpegCustomCommand);
 
 				foreach (var fp in fps)
 				{
-					if (fp.ToString() == ffmpegFormat)
+					if (fp.ToString() == config.FFmpegFormat)
 					{
 						if (fp.Custom)
 						{
@@ -120,11 +120,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Name = name;
 				Desc = desc;
+				Commandline = commandline;
 				Custom = custom;
-
-				Commandline = Custom
-					? GlobalWin.Config.FFmpegCustomCommand
-					: commandline;
 
 				DeduceFormat(Commandline);
 			}
@@ -152,7 +149,7 @@ namespace BizHawk.Client.EmuHawk
 		public static FormatPreset DoFFmpegWriterDlg(IWin32Window owner, Config config)
 		{
 			FFmpegWriterForm dlg = new FFmpegWriterForm();
-			dlg.listBox1.Items.AddRange(FormatPreset.GetPresets());
+			dlg.listBox1.Items.AddRange(FormatPreset.GetPresets(config.FFmpegCustomCommand));
 
 			int i = dlg.listBox1.FindStringExact(config.FFmpegFormat);
 			if (i != ListBox.NoMatches)

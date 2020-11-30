@@ -323,7 +323,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SetDefaultVideoCodecToken(Config config)
 		{
-			_token = FFmpegWriterForm.FormatPreset.GetDefaultPreset(config.FFmpegFormat);
+			_token = FFmpegWriterForm.FormatPreset.GetDefaultPreset(config);
 		}
 
 		public bool UsesAudio => true;
