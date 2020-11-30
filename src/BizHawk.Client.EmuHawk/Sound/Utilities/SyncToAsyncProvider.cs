@@ -6,11 +6,14 @@ namespace BizHawk.Client.EmuHawk
 {
 	public class SyncToAsyncProvider : ISoundProvider
 	{
-		private readonly SoundOutputProvider _outputProvider = new SoundOutputProvider(standaloneMode: true);
+		private readonly SoundOutputProvider _outputProvider;
 
-		public SyncToAsyncProvider(ISoundProvider baseProvider)
+		public SyncToAsyncProvider(Func<double> getCoreVsyncRateCallback, ISoundProvider baseProvider)
 		{
-			_outputProvider.BaseSoundProvider = baseProvider;
+			_outputProvider = new SoundOutputProvider(getCoreVsyncRateCallback, standaloneMode: true)
+			{
+				BaseSoundProvider = baseProvider
+			};
 		}
 
 		public void DiscardSamples()

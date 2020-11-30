@@ -31,6 +31,8 @@ namespace BizHawk.Client.EmuHawk
 		private const int BaseSampleRateMaxHistoryLength = 300;
 		private const int MinResamplingDistanceSamples = 3;
 
+		private readonly Func<double> _getCoreVsyncRateCallback;
+
 		private readonly Queue<short> _buffer = new Queue<short>();
 		private readonly bool _standaloneMode;
 		private readonly int _targetExtraSamples;
@@ -51,8 +53,9 @@ namespace BizHawk.Client.EmuHawk
 		private short[] _resampleBuffer = new short[0];
 		private double _resampleLengthRoundingError;
 
-		public SoundOutputProvider(bool standaloneMode = false)
+		public SoundOutputProvider(Func<double> getCoreVsyncRateCallback, bool standaloneMode = false)
 		{
+			_getCoreVsyncRateCallback = getCoreVsyncRateCallback;
 			_standaloneMode = standaloneMode;
 			if (_standaloneMode)
 			{
@@ -114,7 +117,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool LogDebug { get; set; }
 
-		private double AdvertisedSamplesPerFrame => SampleRate / GlobalWin.Emulator.VsyncRate();
+		private double AdvertisedSamplesPerFrame => SampleRate / _getCoreVsyncRateCallback();
 
 		/// <exception cref="InvalidOperationException">not constructed in standalone mode</exception>
 		public void GetSamples(short[] samples)

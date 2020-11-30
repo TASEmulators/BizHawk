@@ -19,17 +19,22 @@ namespace BizHawk.Client.EmuHawk
 
 		public int BlockAlign { get; }
 
+		private readonly Func<double> _getCoreVsyncRateCallback;
+
 		private bool _disposed;
 		private readonly ISoundOutput _outputDevice;
-		private readonly SoundOutputProvider _outputProvider = new SoundOutputProvider(); // Buffer for Sync sources
+		private readonly SoundOutputProvider _outputProvider; // Buffer for Sync sources
 		private readonly BufferedAsync _bufferedAsync = new BufferedAsync(); // Buffer for Async sources
 		private IBufferedSoundProvider _bufferedProvider; // One of the preceding buffers, or null if no source is set
 
 		public int ConfigBufferSizeMs => GlobalWin.Config.SoundBufferSizeMs;
 
-		public Sound(IntPtr mainWindowHandle, ESoundOutputMethod soundOutputMethod, string soundDevice)
+		public Sound(IntPtr mainWindowHandle, ESoundOutputMethod soundOutputMethod, string soundDevice, Func<double> getCoreVsyncRateCallback)
 		{
 			BlockAlign = BytesPerSample * ChannelCount;
+
+			_getCoreVsyncRateCallback = getCoreVsyncRateCallback;
+			_outputProvider = new SoundOutputProvider(_getCoreVsyncRateCallback);
 
 			if (OSTailoredCode.IsUnixHost)
 			{
@@ -118,7 +123,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (source.SyncMode == SyncSoundMode.Async)
 			{
-				_bufferedAsync.RecalculateMagic(GlobalWin.Emulator.VsyncRate());
+				_bufferedAsync.RecalculateMagic(_getCoreVsyncRateCallback());
 				_bufferedProvider = _bufferedAsync;
 			}
 			else throw new InvalidOperationException("Unsupported sync mode.");
@@ -131,7 +136,7 @@ namespace BizHawk.Client.EmuHawk
 		public void HandleInitializationOrUnderrun(bool isUnderrun, ref int samplesNeeded)
 		{
 			// Fill device buffer with silence but leave enough room for one frame
-			int samplesPerFrame = (int)Math.Round(SampleRate / (double)GlobalWin.Emulator.VsyncRate());
+			int samplesPerFrame = (int)Math.Round(SampleRate / _getCoreVsyncRateCallback());
 			int silenceSamples = Math.Max(samplesNeeded - samplesPerFrame, 0);
 			_outputDevice.WriteSamples(new short[silenceSamples * 2], 0, silenceSamples);
 			samplesNeeded -= silenceSamples;
