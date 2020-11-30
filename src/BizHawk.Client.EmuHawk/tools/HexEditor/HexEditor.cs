@@ -1605,9 +1605,7 @@ namespace BizHawk.Client.EmuHawk
 				Message = "Enter a hexadecimal value"
 			};
 
-			MainForm.StopSound();
-			var result = inputPrompt.ShowHawkDialog(this);
-			MainForm.StartSound();
+			var result = MainForm.DoWithTempMute(() => inputPrompt.ShowHawkDialog(this));
 
 			if (result == DialogResult.OK && inputPrompt.PromptText.IsHex())
 			{
