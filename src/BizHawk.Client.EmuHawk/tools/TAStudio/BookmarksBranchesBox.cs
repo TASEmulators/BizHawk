@@ -583,8 +583,7 @@ namespace BizHawk.Client.EmuHawk
 			i.StartPosition = FormStartPosition.Manual;
 			i.Location = point;
 
-			var result = MainForm.DoWithTempMute(() => i.ShowDialog(this));
-			if (result.IsOk())
+			if (this.ShowDialogWithTempMute(i).IsOk())
 			{
 				branch.UserText = i.PromptText;
 				UpdateTextColumnWidth();

@@ -1022,8 +1022,7 @@ namespace BizHawk.Client.EmuHawk
 				Color = Spriteback
 			};
 
-			var result = MainForm.DoWithTempMute(() => dlg.ShowDialog(this));
-			if (result.IsOk())
+			if (this.ShowDialogWithTempMute(dlg).IsOk())
 			{
 				Spriteback = dlg.Color;
 			}

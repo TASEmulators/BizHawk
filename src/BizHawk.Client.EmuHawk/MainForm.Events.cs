@@ -246,10 +246,7 @@ namespace BizHawk.Client.EmuHawk
 		private void OpenAdvancedMenuItem_Click(object sender, EventArgs e)
 		{
 			using var oac = new OpenAdvancedChooser(Config, CreateCoreComm, Game, RunLibretroCoreChooser);
-			if (this.DoWithTempMute(() => oac.ShowDialog(this)) == DialogResult.Cancel)
-			{
-				return;
-			}
+			if (this.ShowDialogWithTempMute(oac) == DialogResult.Cancel) return;
 
 			if (oac.Result == AdvancedRomLoaderType.LibretroLaunchNoGame)
 			{
@@ -295,11 +292,7 @@ namespace BizHawk.Client.EmuHawk
 				Title = "Open Advanced"
 			};
 
-			var result = this.DoWithTempMute(() => ofd.ShowDialog(this));
-			if (!result.IsOk())
-			{
-				return;
-			}
+			if (!this.ShowDialogWithTempMute(ofd).IsOk()) return;
 
 			var file = new FileInfo(ofd.FileName);
 			Config.PathEntries.LastRomPath = file.DirectoryName;
@@ -444,7 +437,7 @@ namespace BizHawk.Client.EmuHawk
 				RestoreDirectory = false
 			};
 
-			if (this.DoWithTempMute(() => ofd.ShowDialog(this)).IsOk())
+			if (this.ShowDialogWithTempMute(ofd).IsOk())
 			{
 				foreach (var fn in ofd.FileNames)
 				{
@@ -563,7 +556,7 @@ namespace BizHawk.Client.EmuHawk
 				Filter = FilesystemFilter.PNGs.ToString()
 			};
 
-			if (this.DoWithTempMute(() => sfd.ShowDialog(this)).IsOk())
+			if (this.ShowDialogWithTempMute(sfd).IsOk())
 			{
 				TakeScreenshot(sfd.FileName);
 			}
@@ -1129,7 +1122,7 @@ namespace BizHawk.Client.EmuHawk
 				Filter = ConfigFileFSFilterString
 			};
 
-			if (this.DoWithTempMute(() => sfd.ShowDialog(this)).IsOk())
+			if (this.ShowDialogWithTempMute(sfd).IsOk())
 			{
 				SaveConfig(sfd.FileName);
 				AddOnScreenMessage("Copied settings");
@@ -1151,7 +1144,7 @@ namespace BizHawk.Client.EmuHawk
 				Filter = ConfigFileFSFilterString
 			};
 
-			if (this.DoWithTempMute(() => ofd.ShowDialog(this)).IsOk())
+			if (this.ShowDialogWithTempMute(ofd).IsOk())
 			{
 				LoadConfigFile(ofd.FileName);
 			}
@@ -1384,12 +1377,12 @@ namespace BizHawk.Client.EmuHawk
 			if (Emulator is NES nes && nes.IsVS)
 			{
 				using var form = new NesVsSettings(this, nes.GetSyncSettings().Clone());
-				this.DoWithTempMute(() => form.ShowDialog(this));
+				this.ShowDialogWithTempMute(form);
 			}
 			else if (Emulator is SubNESHawk sub && sub.IsVs)
 			{
 				using var form = new NesVsSettings(this, sub.GetSyncSettings().Clone());
-				this.DoWithTempMute(() => form.ShowDialog(this));
+				this.ShowDialogWithTempMute(form);
 			}
 		}
 

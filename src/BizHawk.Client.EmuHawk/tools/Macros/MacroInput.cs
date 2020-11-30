@@ -279,8 +279,7 @@ namespace BizHawk.Client.EmuHawk
 				create = true;
 			}
 
-			DialogResult result = MainForm.DoWithTempMute(() => dialog.ShowDialog(this));
-			if (result != DialogResult.OK)
+			if (this.ShowDialogWithTempMute(dialog) != DialogResult.OK)
 			{
 				if (create)
 				{
@@ -303,12 +302,8 @@ namespace BizHawk.Client.EmuHawk
 				InitialDirectory = SuggestedFolder(),
 				Filter = MacrosFSFilterSet.ToString()
 			};
-			
-			DialogResult result = MainForm.DoWithTempMute(() => dialog.ShowDialog(this));
-			if (result != DialogResult.OK)
-			{
-				return null;
-			}
+
+			if (this.ShowDialogWithTempMute(dialog) != DialogResult.OK) return null;
 
 			Config.RecentMacros.Add(dialog.FileName);
 			return new MovieZone(dialog.FileName, emulator ?? Emulator, MovieSession, tools ?? Tools);

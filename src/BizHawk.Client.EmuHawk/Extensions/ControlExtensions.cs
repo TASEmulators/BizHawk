@@ -160,8 +160,17 @@ namespace BizHawk.Client.EmuHawk
 			return ret;
 		}
 
+		public static DialogResult ShowDialogAsChild(this IDialogParent dialogParent, CommonDialog dialog)
+			=> dialog.ShowDialog(dialogParent.SelfAsHandle);
+
 		public static DialogResult ShowDialogAsChild(this IDialogParent dialogParent, Form dialog)
 			=> dialog.ShowDialog(dialogParent.SelfAsHandle);
+
+		public static DialogResult ShowDialogWithTempMute(this IDialogParent dialogParent, CommonDialog dialog)
+			=> dialogParent.DialogController.DoWithTempMute(() => dialog.ShowDialog(dialogParent.SelfAsHandle));
+
+		public static DialogResult ShowDialogWithTempMute(this IDialogParent dialogParent, Form dialog)
+			=> dialogParent.DialogController.DoWithTempMute(() => dialog.ShowDialog(dialogParent.SelfAsHandle));
 	}
 
 	public static class ListViewExtensions
@@ -272,11 +281,7 @@ namespace BizHawk.Client.EmuHawk
 				RestoreDirectory = true
 			};
 
-			var result = parent.DialogController.DoWithTempMute(() => sfd.ShowDialog(parent.SelfAsHandle));
-			if (result != DialogResult.OK)
-			{
-				return;
-			}
+			if (parent.ShowDialogWithTempMute(sfd) != DialogResult.OK) return;
 
 			var file = new FileInfo(sfd.FileName);
 			string extension = file.Extension.ToUpper();

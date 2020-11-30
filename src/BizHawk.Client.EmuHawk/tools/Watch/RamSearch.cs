@@ -868,7 +868,7 @@ namespace BizHawk.Client.EmuHawk
 					InitialLocation = this.ChildPointToScreen(WatchListView)
 				};
 
-				MainForm.DoWithTempMute(() => poke.ShowDialog(this));
+				this.ShowDialogWithTempMute(poke);
 				UpdateList();
 			}
 		}
@@ -898,7 +898,7 @@ namespace BizHawk.Client.EmuHawk
 				Message = "Enter a hexadecimal value"
 			};
 
-			var result = MainForm.DoWithTempMute(() => prompt.ShowDialog(this));
+			var result = this.ShowDialogWithTempMute(prompt);
 			while (result.IsOk())
 			{
 				try

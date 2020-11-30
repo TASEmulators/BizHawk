@@ -79,17 +79,10 @@ namespace BizHawk.Client.EmuHawk
 				Filter = RomLoader.RomFilter,
 				RestoreDirectory = true
 			};
-			string hawkPath = "";
 
-			var result = DialogController.DoWithTempMute(() => ofd.ShowDialog(this));
-			if (result == DialogResult.OK)
-			{
-				hawkPath = ofd.FileName;
-			}
-			else
-			{
-				return;
-			}
+			if (this.ShowDialogWithTempMute(ofd) != DialogResult.OK) return;
+
+			var hawkPath = ofd.FileName;
 
 			try
 			{
