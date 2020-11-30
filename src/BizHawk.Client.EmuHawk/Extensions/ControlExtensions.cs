@@ -159,6 +159,9 @@ namespace BizHawk.Client.EmuHawk
 			dialogController.StartSound();
 			return ret;
 		}
+
+		public static DialogResult ShowDialogAsChild(this IDialogParent dialogParent, Form dialog)
+			=> dialog.ShowDialog(dialogParent.SelfAsHandle);
 	}
 
 	public static class ListViewExtensions
