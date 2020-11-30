@@ -273,7 +273,7 @@ namespace BizHawk.Client.EmuHawk
 			CloseRomContextMenuItem.Image = Properties.Resources.Close;
 		}
 
-		public MainForm(Config config, IGL gl, string[] args)
+		public MainForm(Config config, IGL gl, string[] args, out IMovieSession movieSession)
 		{
 			//do this threaded stuff early so it has plenty of time to run in background
 			Database.InitializeDatabase(Path.Combine(PathUtils.ExeDirectoryPath, "gamedb", "gamedb.txt"));
@@ -286,7 +286,7 @@ namespace BizHawk.Client.EmuHawk
 
 			InputManager = new InputManager { ControllerInputCoalescer = new ControllerInputCoalescer() };
 			FirmwareManager = new FirmwareManager();
-			MovieSession = new MovieSession(
+			movieSession = MovieSession = new MovieSession(
 				Config.Movies,
 				Config.PathEntries.MovieBackupsAbsolutePath(),
 				AddOnScreenMessage,

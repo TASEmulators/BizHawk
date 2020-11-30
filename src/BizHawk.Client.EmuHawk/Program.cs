@@ -220,7 +220,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					var mf = new MainForm(GlobalWin.Config, workingGL, args);
+					var mf = new MainForm(GlobalWin.Config, workingGL, args, out var movieSession);
 //					var title = mf.Text;
 					mf.Show();
 //					mf.Text = title;
@@ -230,7 +230,7 @@ namespace BizHawk.Client.EmuHawk
 						if (!mf.IsDisposed)
 							mf.Dispose();
 					}
-					catch (Exception e) when (GlobalWin.MovieSession.Movie.IsActive() && !(Debugger.IsAttached || VersionInfo.DeveloperBuild))
+					catch (Exception e) when (movieSession.Movie.IsActive() && !(Debugger.IsAttached || VersionInfo.DeveloperBuild))
 					{
 						var result = MessageBox.Show(
 							"EmuHawk has thrown a fatal exception and is about to close.\nA movie has been detected. Would you like to try to save?\n(Note: Depending on what caused this error, this may or may not succeed)",
@@ -240,7 +240,7 @@ namespace BizHawk.Client.EmuHawk
 						);
 						if (result == DialogResult.Yes)
 						{
-							GlobalWin.MovieSession.Movie.Save();
+							movieSession.Movie.Save();
 						}
 					}
 				}
@@ -352,7 +352,7 @@ namespace BizHawk.Client.EmuHawk
 
 			protected override void OnCreateMainForm()
 			{
-				MainForm = new MainForm(_config, _gl, cmdArgs);
+				MainForm = new MainForm(_config, _gl, cmdArgs, out _);
 				var title = MainForm.Text;
 				MainForm.Show();
 				MainForm.Text = title;

@@ -13,7 +13,5 @@ namespace BizHawk.Client.EmuHawk
 		public static Sound Sound;
 
 		public static Config Config { get; set; }
-
-		public static IMovieSession MovieSession => _mainForm.MovieSession;
 	}
 }
