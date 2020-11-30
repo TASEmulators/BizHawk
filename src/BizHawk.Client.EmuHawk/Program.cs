@@ -258,15 +258,6 @@ namespace BizHawk.Client.EmuHawk
 				Input.Instance?.Adapter?.DeInitAll();
 			}
 
-			//cleanup:
-			//cleanup IGL stuff so we can get better refcounts when exiting process, for debugging
-			//DOESNT WORK FOR SOME REASON
-			//GlobalWin.IGL_GL = new IGL_TK();
-			//GLManager.Instance.Dispose();
-			//if (GlobalWin.IGL_GL != GlobalWin.GL)
-			//  GlobalWin.GL.Dispose();
-			//((IDisposable)GlobalWin.IGL_GL).Dispose();
-
 			//return 0 assuming things have gone well, non-zero values could be used as error codes or for scripting purposes
 			return exitCode;
 		} //SubMain

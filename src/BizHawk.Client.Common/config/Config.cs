@@ -190,7 +190,6 @@ namespace BizHawk.Client.Common
 			return true;
 		}
 
-		/// <remarks>warning: we don't even want to deal with changing this at runtime. but we want it changed here for config purposes. so don't check this variable. check in GlobalWin or something like that.</remarks>
 		public EDispMethod DispMethod { get; set; } = DetectDirectX() ? EDispMethod.SlimDX9 : EDispMethod.OpenGL;
 
 		public int DispChromeFrameWindowed { get; set; } = 2;
