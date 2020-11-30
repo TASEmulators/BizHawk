@@ -343,7 +343,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MaxLinesMenuItem_Click(object sender, EventArgs e)
 		{
-			using var prompt = new InputPrompt(MainForm)
+			using var prompt = new InputPrompt
 			{
 				StartLocation = this.ChildPointToScreen(TraceView),
 				TextInputType = InputPrompt.InputType.Unsigned,
@@ -351,7 +351,9 @@ namespace BizHawk.Client.EmuHawk
 				InitialValue = MaxLines.ToString()
 			};
 
+			MainForm.StopSound();
 			var result = prompt.ShowHawkDialog(this);
+			MainForm.StartSound();
 			if (result == DialogResult.OK)
 			{
 				var max = int.Parse(prompt.PromptText);
@@ -364,7 +366,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SegmentSizeMenuItem_Click(object sender, EventArgs e)
 		{
-			using var prompt = new InputPrompt(MainForm)
+			using var prompt = new InputPrompt
 			{
 				StartLocation = this.ChildPointToScreen(TraceView),
 				TextInputType = InputPrompt.InputType.Unsigned,
@@ -372,7 +374,9 @@ namespace BizHawk.Client.EmuHawk
 				InitialValue = FileSizeCap.ToString()
 			};
 
+			MainForm.StopSound();
 			var result = prompt.ShowHawkDialog(this);
+			MainForm.StartSound();
 			if (result == DialogResult.OK)
 			{
 				FileSizeCap = int.Parse(prompt.PromptText);

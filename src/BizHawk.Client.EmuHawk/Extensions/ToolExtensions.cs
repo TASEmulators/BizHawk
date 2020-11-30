@@ -193,13 +193,15 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 			var settingsItem = new ToolStripMenuItem { Text = "&Recent Settings..." };
 			settingsItem.Click += (o, ev) =>
 			{
-				using var prompt = new InputPrompt(mainForm)
+				using var prompt = new InputPrompt
 				{
 					TextInputType = InputPrompt.InputType.Unsigned,
 					Message = "Number of recent files to track",
 					InitialValue = recent.MAX_RECENT_FILES.ToString()
 				};
+				mainForm.StopSound();
 				var result = prompt.ShowDialog();
+				mainForm.StartSound();
 				if (result == DialogResult.OK)
 				{
 					int val = int.Parse(prompt.PromptText);

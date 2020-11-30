@@ -1598,14 +1598,16 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GoToAddressMenuItem_Click(object sender, EventArgs e)
 		{
-			using var inputPrompt = new InputPrompt(MainForm)
+			using var inputPrompt = new InputPrompt
 			{
 				Text = "Go to Address",
 				StartLocation = this.ChildPointToScreen(MemoryViewerBox),
 				Message = "Enter a hexadecimal value"
 			};
 
+			MainForm.StopSound();
 			var result = inputPrompt.ShowHawkDialog(this);
+			MainForm.StartSound();
 
 			if (result == DialogResult.OK && inputPrompt.PromptText.IsHex())
 			{

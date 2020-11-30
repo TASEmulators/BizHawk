@@ -13,12 +13,8 @@ namespace BizHawk.Client.EmuHawk
 	/// </summary>
 	public partial class InputPrompt : Form
 	{
-		private readonly IMainFormForTools _mainForm;
-
-		public InputPrompt(IMainFormForTools mainForm)
+		public InputPrompt()
 		{
-			_mainForm = mainForm;
-			_mainForm.StopSound();
 			InitializeComponent();
 			StartLocation = new Point(-1, -1);
 		}
@@ -58,14 +54,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			DialogResult = DialogResult.OK;
 			Close();
-			_mainForm.StartSound();
 		}
 
 		private void Cancel_Click(object sender, EventArgs e)
 		{
 			DialogResult = DialogResult.Cancel;
 			Close();
-			_mainForm.StartSound();
 		}
 
 		private void PromptBox_KeyPress(object sender, KeyPressEventArgs e)
