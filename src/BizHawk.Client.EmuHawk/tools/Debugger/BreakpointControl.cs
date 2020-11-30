@@ -10,7 +10,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class BreakpointControl : UserControl
+	public partial class BreakpointControl : UserControl, IDialogParent
 	{
 		public IMainFormForTools MainForm { get; set; }
 		public IDebuggable Core { get; set; }
@@ -19,6 +19,10 @@ namespace BizHawk.Client.EmuHawk
 		public IMemoryDomains MemoryDomains { get; set; }
 
 		private readonly BreakpointList _breakpoints = new BreakpointList();
+
+		public IDialogController DialogController => MainForm;
+
+		public IWin32Window SelfAsHandle => this;
 
 		public BreakpointControl()
 		{

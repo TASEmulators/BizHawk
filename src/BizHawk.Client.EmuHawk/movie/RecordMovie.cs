@@ -9,7 +9,7 @@ using BizHawk.Client.Common;
 namespace BizHawk.Client.EmuHawk
 {
 	// TODO - Allow relative paths in record TextBox
-	public partial class RecordMovie : Form
+	public partial class RecordMovie : Form, IDialogParent
 	{
 		private readonly IMainFormForTools _mainForm;
 		private readonly Config _config;
@@ -17,6 +17,10 @@ namespace BizHawk.Client.EmuHawk
 		private readonly IEmulator _emulator;
 		private readonly IMovieSession _movieSession;
 		private readonly FirmwareManager _firmwareManager;
+
+		public IDialogController DialogController => _mainForm;
+
+		public IWin32Window SelfAsHandle => this;
 
 		public RecordMovie(
 			IMainFormForTools mainForm,

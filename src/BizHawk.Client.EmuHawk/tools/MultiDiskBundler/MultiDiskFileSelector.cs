@@ -7,13 +7,15 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class MultiDiskFileSelector : UserControl
+	public partial class MultiDiskFileSelector : UserControl, IDialogParent
 	{
-		private readonly IDialogController _dialogController;
-
 		private readonly Func<string> _getLoadedRomNameCallback;
 
 		private readonly ToolFormBase _parent;
+
+		public IDialogController DialogController { get; }
+
+		public IWin32Window SelfAsHandle => this;
 
 		public string SystemString { get; set; } = "";
 
@@ -32,7 +34,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public MultiDiskFileSelector(ToolFormBase parent, IDialogController dialogController, Func<string> getLoadedRomNameCallback)
 		{
-			_dialogController = dialogController;
+			DialogController = dialogController;
 			_getLoadedRomNameCallback = getLoadedRomNameCallback;
 			_parent = parent;
 			InitializeComponent();
@@ -79,7 +81,7 @@ namespace BizHawk.Client.EmuHawk
 			};
 			string hawkPath = "";
 
-			var result = _dialogController.DoWithTempMute(() => ofd.ShowDialog(this));
+			var result = DialogController.DoWithTempMute(() => ofd.ShowDialog(this));
 			if (result == DialogResult.OK)
 			{
 				hawkPath = ofd.FileName;
