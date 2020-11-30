@@ -150,7 +150,7 @@ namespace BizHawk.Client.EmuHawk
 				Config.PathEntries.CheatsAbsolutePath(Game.System),
 				"Cheat Files",
 				"cht",
-				Owner);
+				Owner ?? this);
 
 			return file != null && MainForm.CheatList.SaveFile(file.FullName);
 		}

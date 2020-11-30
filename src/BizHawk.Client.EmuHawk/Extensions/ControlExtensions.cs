@@ -148,7 +148,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// Handles EmuHawk specific issues before showing a modal dialog
 		/// </summary>
-		public static DialogResult ShowHawkDialog(this Form form, IWin32Window owner = null, Point position = default)
+		public static DialogResult ShowHawkDialog(this Form form, IWin32Window owner, Point position = default)
 		{
 			Sound.Instance.StopSound();
 			if (position != default)
@@ -156,7 +156,7 @@ namespace BizHawk.Client.EmuHawk
 				form.StartPosition = FormStartPosition.Manual;
 				form.Location = position;
 			}
-			var result = (owner == null ? form.ShowDialog(new Form { TopMost = true }) : form.ShowDialog(owner));
+			var result = form.ShowDialog(owner);
 			Sound.Instance.StartSound();
 			return result;
 		}
@@ -167,11 +167,7 @@ namespace BizHawk.Client.EmuHawk
 		public static DialogResult ShowHawkDialog(this CommonDialog form, IWin32Window owner)
 		{
 			Sound.Instance.StopSound();
-			DialogResult result;
-			if(owner != null)
-				result = form.ShowDialog(owner);
-			else 
-				result = form.ShowDialog();
+			var result = form.ShowDialog(owner);
 			Sound.Instance.StartSound();
 			return result;
 		}
