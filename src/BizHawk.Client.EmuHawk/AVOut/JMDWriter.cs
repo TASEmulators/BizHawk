@@ -524,12 +524,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		/// <summary>
-		/// obtain a set of recording compression parameters
-		/// </summary>
-		/// <param name="hwnd">hwnd to attach to if the user is shown config dialog</param>
-		/// <returns>codec token, dispose of it when you're done with it</returns>
-		public IDisposable AcquireVideoCodecToken(IDialogController dialogController, IWin32Window hwnd, Config config)
+		public IDisposable AcquireVideoCodecToken(IDialogParent parent, Config config)
 		{
 			var ret = new CodecToken();
 
@@ -538,7 +533,7 @@ namespace BizHawk.Client.EmuHawk
 
 			int c = Math.Min(Math.Max(config.JmdCompression, Deflater.NO_COMPRESSION), Deflater.BEST_COMPRESSION);
 
-			if (!JmdForm.DoCompressionDlg(ref t, ref c, 1, 6, Deflater.NO_COMPRESSION, Deflater.BEST_COMPRESSION, hwnd))
+			if (!JmdForm.DoCompressionDlg(ref t, ref c, 1, 6, Deflater.NO_COMPRESSION, Deflater.BEST_COMPRESSION, parent.SelfAsHandle))
 				return null;
 
 			config.JmdThreads = ret.NumThreads = t;

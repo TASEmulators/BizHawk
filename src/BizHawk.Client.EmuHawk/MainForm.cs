@@ -39,7 +39,7 @@ using BizHawk.Emulation.Cores.Consoles.Nintendo.Faust;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class MainForm : FormBase, IMainFormForApi, IMainFormForConfig, IMainFormForTools
+	public partial class MainForm : FormBase, IDialogParent, IMainFormForApi, IMainFormForConfig, IMainFormForTools
 	{
 		/// <remarks><c>AppliesTo[0]</c> is used as the group label, and <c>Config.PreferredCores[AppliesTo[0]]</c> determines the currently selected option</remarks>
 		private static readonly IReadOnlyCollection<(string[] AppliesTo, string[] CoreNames)> CoreData = new List<(string[], string[])> {
@@ -3221,7 +3221,7 @@ namespace BizHawk.Client.EmuHawk
 						aw.SetDefaultVideoCodecToken(Config);
 					}
 
-					var token = aw.AcquireVideoCodecToken(this, this, Config);
+					var token = aw.AcquireVideoCodecToken(this, Config);
 					if (token == null)
 					{
 						AddOnScreenMessage("A/V capture canceled.");
@@ -4490,6 +4490,10 @@ namespace BizHawk.Client.EmuHawk
 
 			return isRewinding;
 		}
+
+		public IDialogController DialogController => this;
+
+		public IWin32Window SelfAsHandle => this;
 
 		public DialogResult ShowDialogAsChild(Form dialog) => dialog.ShowDialog(this);
 

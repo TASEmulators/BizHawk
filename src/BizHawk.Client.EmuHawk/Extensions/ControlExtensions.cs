@@ -259,7 +259,7 @@ namespace BizHawk.Client.EmuHawk
 			Clipboard.SetImage(img);
 		}
 
-		public static void SaveAsFile(this Bitmap bitmap, IGameInfo game, string suffix, string systemId, PathEntryCollection paths, IDialogController dialogController, IWin32Window owner)
+		public static void SaveAsFile(this Bitmap bitmap, IGameInfo game, string suffix, string systemId, PathEntryCollection paths, IDialogParent parent)
 		{
 			using var sfd = new SaveFileDialog
 			{
@@ -269,7 +269,7 @@ namespace BizHawk.Client.EmuHawk
 				RestoreDirectory = true
 			};
 
-			var result = dialogController.DoWithTempMute(() => sfd.ShowDialog(owner));
+			var result = parent.DialogController.DoWithTempMute(() => sfd.ShowDialog(parent.SelfAsHandle));
 			if (result != DialogResult.OK)
 			{
 				return;

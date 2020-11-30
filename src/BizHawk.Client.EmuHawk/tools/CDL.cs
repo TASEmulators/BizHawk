@@ -392,7 +392,6 @@ namespace BizHawk.Client.EmuHawk
 				Config.PathEntries.LogAbsolutePath(),
 				"Code Data Logger Files",
 				"cdl",
-				MainForm,
 				this);
 
 			if (file == null)

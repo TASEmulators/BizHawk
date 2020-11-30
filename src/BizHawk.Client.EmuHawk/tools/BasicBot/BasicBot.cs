@@ -370,7 +370,6 @@ namespace BizHawk.Client.EmuHawk
 				Config.PathEntries.ToolsAbsolutePath(),
 				"Bot files",
 				"bot",
-				MainForm,
 				this);
 
 			if (file != null)

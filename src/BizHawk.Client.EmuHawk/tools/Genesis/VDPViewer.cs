@@ -179,7 +179,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveAsFile(Bitmap bitmap, string suffix)
 		{
-			bitmap.SaveAsFile(Game, suffix, Emu.SystemId, Config.PathEntries, MainForm, this);
+			bitmap.SaveAsFile(Game, suffix, Emu.SystemId, Config.PathEntries, this);
 		}
 
 		private void SaveBGAScreenshotToolStripMenuItem_Click(object sender, EventArgs e)

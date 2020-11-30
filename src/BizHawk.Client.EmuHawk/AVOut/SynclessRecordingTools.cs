@@ -10,21 +10,23 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class SynclessRecordingTools : Form
+	public partial class SynclessRecordingTools : Form, IDialogParent
 	{
 		private readonly List<FrameInfo> _mFrameInfos = new List<FrameInfo>();
 		private readonly Config _config;
 		private readonly IGameInfo _game;
 
-		private readonly IDialogController _dialogController;
-
 		private string _mSynclessConfigFile;
 		private string _mFramesDirectory;
+
+		public IDialogController DialogController { get; }
+
+		public IWin32Window SelfAsHandle => this;
 
 		public SynclessRecordingTools(Config config, IGameInfo game, IDialogController dialogController)
 		{
 			_config = config;
-			_dialogController = dialogController;
+			DialogController = dialogController;
 			_game = game;
 			InitializeComponent();
 		}
@@ -126,7 +128,7 @@ namespace BizHawk.Client.EmuHawk
 			avw.SetAudioParameters(44100, 2, 16); // hacky
 			avw.SetMovieParameters(60, 1); // hacky
 			avw.SetVideoParameters(width, height);
-			var token = avw.AcquireVideoCodecToken(_dialogController, this, _config);
+			var token = avw.AcquireVideoCodecToken(this, _config);
 			avw.SetVideoCodecToken(token);
 			avw.OpenFile(sfd.FileName);
 			foreach (var fi in _mFrameInfos)

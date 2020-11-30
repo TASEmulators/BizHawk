@@ -8,7 +8,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public class ToolFormBase : FormBase, IToolForm
+	public class ToolFormBase : FormBase, IToolForm, IDialogParent
 	{
 		public ToolManager Tools { protected get; set; }
 
@@ -21,6 +21,10 @@ namespace BizHawk.Client.EmuHawk
 		public IMovieSession MovieSession { protected get; set; }
 
 		public IGameInfo Game { protected get; set; }
+
+		public IDialogController DialogController => MainForm;
+
+		public virtual IWin32Window SelfAsHandle => this;
 
 		public virtual bool AskSaveChanges() => true;
 
@@ -80,7 +84,7 @@ namespace BizHawk.Client.EmuHawk
 			return new FileInfo(ofd.FileName);
 		}
 
-		public static FileInfo SaveFileDialog(string currentFile, string path, string fileType, string fileExt, IDialogController dialogController, IWin32Window owner)
+		public static FileInfo SaveFileDialog(string currentFile, string path, string fileType, string fileExt, IDialogParent parent)
 		{
 			if (!Directory.Exists(path))
 			{
@@ -95,7 +99,7 @@ namespace BizHawk.Client.EmuHawk
 				RestoreDirectory = true
 			};
 
-			var result = dialogController.DoWithTempMute(() => sfd.ShowDialog(owner));
+			var result = parent.DialogController.DoWithTempMute(() => sfd.ShowDialog(parent.SelfAsHandle));
 			if (result != DialogResult.OK)
 			{
 				return null;
@@ -111,7 +115,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public FileInfo GetWatchSaveFileFromUser(string currentFile)
 		{
-			return SaveFileDialog(currentFile, Config.PathEntries.WatchAbsolutePath(), "Watch Files", "wch", MainForm, this);
+			return SaveFileDialog(currentFile, Config.PathEntries.WatchAbsolutePath(), "Watch Files", "wch", this);
 		}
 
 		public void ViewInHexEditor(MemoryDomain domain, IEnumerable<long> addresses, WatchSize size)

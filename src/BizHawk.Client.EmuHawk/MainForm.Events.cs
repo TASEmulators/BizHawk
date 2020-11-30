@@ -471,7 +471,6 @@ namespace BizHawk.Client.EmuHawk
 				Config.PathEntries.MovieAbsolutePath(),
 				"Movie Files",
 				MovieSession.Movie.PreferredExtension,
-				this,
 				this);
 
 			if (file != null)
