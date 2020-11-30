@@ -64,7 +64,7 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		/// <param name="hwnd">hwnd to attach to if the user is shown config dialog</param>
 		/// <returns>codec token, dispose of it when you're done with it</returns>
-		IDisposable AcquireVideoCodecToken(IWin32Window hwnd, Config config);
+		IDisposable AcquireVideoCodecToken(IDialogController dialogController, IWin32Window hwnd, Config config);
 
 		/// <summary>
 		/// set framerate to fpsNum/fpsDen (assumed to be unchanging over the life of the stream)

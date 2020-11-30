@@ -204,7 +204,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveAsFile(Bitmap bmp, string suffix)
 		{
-			bmp.SaveAsFile(Game, suffix, Emulator.SystemId, Config.PathEntries, this);
+			bmp.SaveAsFile(Game, suffix, Emulator.SystemId, Config.PathEntries, MainForm, this);
 		}
 
 		private void SaveBackgroundScreenshotMenuItem_Click(object sender, EventArgs e)

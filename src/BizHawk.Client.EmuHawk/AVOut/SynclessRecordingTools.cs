@@ -16,12 +16,15 @@ namespace BizHawk.Client.EmuHawk
 		private readonly Config _config;
 		private readonly IGameInfo _game;
 
+		private readonly IDialogController _dialogController;
+
 		private string _mSynclessConfigFile;
 		private string _mFramesDirectory;
 
-		public SynclessRecordingTools(Config config, IGameInfo game)
+		public SynclessRecordingTools(Config config, IGameInfo game, IDialogController dialogController)
 		{
 			_config = config;
+			_dialogController = dialogController;
 			_game = game;
 			InitializeComponent();
 		}
@@ -123,7 +126,7 @@ namespace BizHawk.Client.EmuHawk
 			avw.SetAudioParameters(44100, 2, 16); // hacky
 			avw.SetMovieParameters(60, 1); // hacky
 			avw.SetVideoParameters(width, height);
-			var token = avw.AcquireVideoCodecToken(this, _config);
+			var token = avw.AcquireVideoCodecToken(_dialogController, this, _config);
 			avw.SetVideoCodecToken(token);
 			avw.OpenFile(sfd.FileName);
 			foreach (var fi in _mFrameInfos)

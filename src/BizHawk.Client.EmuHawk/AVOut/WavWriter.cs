@@ -229,7 +229,7 @@ namespace BizHawk.Client.EmuHawk
 			public void Dispose() { }
 		}
 
-		public IDisposable AcquireVideoCodecToken(IWin32Window hwnd, Config config)
+		public IDisposable AcquireVideoCodecToken(IDialogController dialogController, IWin32Window hwnd, Config config)
 		{
 			// don't care
 			return new WavWriterVToken();

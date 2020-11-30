@@ -246,7 +246,7 @@ namespace BizHawk.Client.EmuHawk
 		private void OpenAdvancedMenuItem_Click(object sender, EventArgs e)
 		{
 			using var oac = new OpenAdvancedChooser(Config, CreateCoreComm, Game, RunLibretroCoreChooser);
-			if (oac.ShowHawkDialog(this) == DialogResult.Cancel)
+			if (oac.ShowHawkDialog(this, this) == DialogResult.Cancel)
 			{
 				return;
 			}
@@ -295,7 +295,7 @@ namespace BizHawk.Client.EmuHawk
 				Title = "Open Advanced"
 			};
 
-			var result = ofd.ShowHawkDialog(this);
+			var result = ofd.ShowHawkDialog(this, this);
 			if (!result.IsOk())
 			{
 				return;
@@ -444,7 +444,7 @@ namespace BizHawk.Client.EmuHawk
 				RestoreDirectory = false
 			};
 
-			if (ofd.ShowHawkDialog(this).IsOk())
+			if (ofd.ShowHawkDialog(this, this).IsOk())
 			{
 				foreach (var fn in ofd.FileNames)
 				{
@@ -471,8 +471,8 @@ namespace BizHawk.Client.EmuHawk
 				Config.PathEntries.MovieAbsolutePath(),
 				"Movie Files",
 				MovieSession.Movie.PreferredExtension,
-				this
-				);
+				this,
+				this);
 
 			if (file != null)
 			{
@@ -540,7 +540,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SynclessRecordingMenuItem_Click(object sender, EventArgs e)
 		{
-			new SynclessRecordingTools(Config, Game).Run();
+			new SynclessRecordingTools(Config, Game, this).Run();
 		}
 
 		private void CaptureOSDMenuItem_Click(object sender, EventArgs e)
@@ -564,7 +564,7 @@ namespace BizHawk.Client.EmuHawk
 				Filter = FilesystemFilter.PNGs.ToString()
 			};
 
-			if (sfd.ShowHawkDialog(this).IsOk())
+			if (sfd.ShowHawkDialog(this, this).IsOk())
 			{
 				TakeScreenshot(sfd.FileName);
 			}
@@ -1130,7 +1130,7 @@ namespace BizHawk.Client.EmuHawk
 				Filter = ConfigFileFSFilterString
 			};
 
-			if (sfd.ShowHawkDialog(this).IsOk())
+			if (sfd.ShowHawkDialog(this, this).IsOk())
 			{
 				SaveConfig(sfd.FileName);
 				AddOnScreenMessage("Copied settings");
@@ -1152,7 +1152,7 @@ namespace BizHawk.Client.EmuHawk
 				Filter = ConfigFileFSFilterString
 			};
 
-			if (ofd.ShowHawkDialog(this).IsOk())
+			if (ofd.ShowHawkDialog(this, this).IsOk())
 			{
 				LoadConfigFile(ofd.FileName);
 			}
@@ -1385,12 +1385,12 @@ namespace BizHawk.Client.EmuHawk
 			if (Emulator is NES nes && nes.IsVS)
 			{
 				using var form = new NesVsSettings(this, nes.GetSyncSettings().Clone());
-				form.ShowHawkDialog(this);
+				form.ShowHawkDialog(this, this);
 			}
 			else if (Emulator is SubNESHawk sub && sub.IsVs)
 			{
 				using var form = new NesVsSettings(this, sub.GetSyncSettings().Clone());
-				form.ShowHawkDialog(this);
+				form.ShowHawkDialog(this, this);
 			}
 		}
 

@@ -2242,7 +2242,7 @@ namespace BizHawk.Client.EmuHawk
 				FilterIndex = _lastOpenRomFilter
 			};
 
-			var result = ofd.ShowHawkDialog(this);
+			var result = ofd.ShowHawkDialog(this, this);
 			if (result != DialogResult.OK)
 			{
 				return;
@@ -3205,7 +3205,7 @@ namespace BizHawk.Client.EmuHawk
 						aw.SetDefaultVideoCodecToken(Config);
 					}
 
-					var token = aw.AcquireVideoCodecToken(this, Config);
+					var token = aw.AcquireVideoCodecToken(this, this, Config);
 					if (token == null)
 					{
 						AddOnScreenMessage("A/V capture canceled.");
@@ -3254,7 +3254,7 @@ namespace BizHawk.Client.EmuHawk
 
 						sfd.Filter = new FilesystemFilterSet(new FilesystemFilter(ext, new[] { ext })).ToString();
 
-						var result = sfd.ShowHawkDialog(this);
+						var result = sfd.ShowHawkDialog(this, this);
 						if (result == DialogResult.Cancel)
 						{
 							aw.Dispose();
@@ -4241,7 +4241,7 @@ namespace BizHawk.Client.EmuHawk
 				FileName = $"{SaveStatePrefix()}.QuickSave0.State"
 			};
 
-			var result = sfd.ShowHawkDialog(this);
+			var result = sfd.ShowHawkDialog(this, this);
 			if (result == DialogResult.OK)
 			{
 				SaveState(sfd.FileName, sfd.FileName);
@@ -4273,7 +4273,7 @@ namespace BizHawk.Client.EmuHawk
 				RestoreDirectory = true
 			};
 
-			var result = ofd.ShowHawkDialog(this);
+			var result = ofd.ShowHawkDialog(this, this);
 			if (result != DialogResult.OK)
 			{
 				return;

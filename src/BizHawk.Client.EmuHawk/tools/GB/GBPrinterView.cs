@@ -187,7 +187,7 @@ namespace BizHawk.Client.EmuHawk
 				g.Flush();
 			}
 
-			toSave.Bmp.SaveAsFile(Game, "Print", Emulator.SystemId, Config.PathEntries, this);
+			toSave.Bmp.SaveAsFile(Game, "Print", Emulator.SystemId, Config.PathEntries, MainForm, this);
 		}
 
 		private void CopyToolStripMenuItem_Click(object sender, EventArgs e)

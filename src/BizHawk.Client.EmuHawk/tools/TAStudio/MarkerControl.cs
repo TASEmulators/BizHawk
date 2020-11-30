@@ -196,7 +196,7 @@ namespace BizHawk.Client.EmuHawk
 				var point = Cursor.Position;
 				point.Offset(i.Width / -2, i.Height / -2);
 
-				var result = Tastudio.MainForm.DoWithTempMute(() => i.ShowHawkDialog(this, position: point));
+				var result = Tastudio.MainForm.DoWithTempMute(() => i.ShowHawkDialog(Tastudio.MainForm, this, position: point));
 				if (!result.IsOk())
 				{
 					return;
@@ -251,7 +251,7 @@ namespace BizHawk.Client.EmuHawk
 				point.Offset(i.Width / -2, i.Height / -2);
 			}
 
-			var result = Tastudio.MainForm.DoWithTempMute(() => i.ShowHawkDialog(this, position: point));
+			var result = Tastudio.MainForm.DoWithTempMute(() => i.ShowHawkDialog(Tastudio.MainForm, this, position: point));
 
 			if (result == DialogResult.OK)
 			{

@@ -395,7 +395,7 @@ namespace BizHawk.Client.EmuHawk
 
 				we.SetWatch(SelectedWatches.First().Domain, SelectedWatches, duplicate ? WatchEditor.Mode.Duplicate : WatchEditor.Mode.Edit);
 
-				var result = we.ShowHawkDialog(this);
+				var result = we.ShowHawkDialog(MainForm, this);
 				if (result == DialogResult.OK)
 				{
 					if (duplicate)
@@ -426,7 +426,7 @@ namespace BizHawk.Client.EmuHawk
 					TextInputType = InputPrompt.InputType.Text
 				};
 
-				var result = MainForm.DoWithTempMute(() => inputPrompt.ShowHawkDialog(this));
+				var result = MainForm.DoWithTempMute(() => inputPrompt.ShowHawkDialog(MainForm, this));
 
 				if (result == DialogResult.OK)
 				{
@@ -732,7 +732,7 @@ namespace BizHawk.Client.EmuHawk
 				MemoryDomains = MemoryDomains
 			};
 			we.SetWatch(CurrentDomain);
-			we.ShowHawkDialog(this);
+			we.ShowHawkDialog(MainForm, this);
 			if (we.DialogResult == DialogResult.OK)
 			{
 				_watches.Add(we.Watches[0]);
@@ -779,7 +779,7 @@ namespace BizHawk.Client.EmuHawk
 					InitialLocation = this.ChildPointToScreen(WatchListView)
 				};
 
-				if (poke.ShowHawkDialog(this).IsOk())
+				if (poke.ShowHawkDialog(MainForm, this).IsOk())
 				{
 					GeneralUpdate();
 				}
