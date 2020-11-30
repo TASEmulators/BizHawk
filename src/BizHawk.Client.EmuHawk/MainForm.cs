@@ -2242,11 +2242,7 @@ namespace BizHawk.Client.EmuHawk
 				FilterIndex = _lastOpenRomFilter
 			};
 
-			var result = this.DoWithTempMute(() => ofd.ShowDialog(this));
-			if (result != DialogResult.OK)
-			{
-				return;
-			}
+			if (this.ShowDialogWithTempMute(ofd) != DialogResult.OK) return;
 
 			var file = new FileInfo(ofd.FileName);
 			_lastOpenRomFilter = ofd.FilterIndex;
@@ -3254,8 +3250,7 @@ namespace BizHawk.Client.EmuHawk
 
 						sfd.Filter = new FilesystemFilterSet(new FilesystemFilter(ext, new[] { ext })).ToString();
 
-						var result = this.DoWithTempMute(() => sfd.ShowDialog(this));
-						if (result == DialogResult.Cancel)
+						if (this.ShowDialogWithTempMute(sfd) == DialogResult.Cancel)
 						{
 							aw.Dispose();
 							return;
@@ -4241,8 +4236,7 @@ namespace BizHawk.Client.EmuHawk
 				FileName = $"{SaveStatePrefix()}.QuickSave0.State"
 			};
 
-			var result = this.DoWithTempMute(() => sfd.ShowDialog(this));
-			if (result == DialogResult.OK)
+			if (this.ShowDialogWithTempMute(sfd) == DialogResult.OK)
 			{
 				SaveState(sfd.FileName, sfd.FileName);
 			}
@@ -4273,11 +4267,7 @@ namespace BizHawk.Client.EmuHawk
 				RestoreDirectory = true
 			};
 
-			var result = this.DoWithTempMute(() => ofd.ShowDialog(this));
-			if (result != DialogResult.OK)
-			{
-				return;
-			}
+			if (this.ShowDialogWithTempMute(ofd) != DialogResult.OK) return;
 
 			if (!File.Exists(ofd.FileName))
 			{

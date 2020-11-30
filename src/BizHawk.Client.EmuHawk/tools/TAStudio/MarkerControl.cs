@@ -202,11 +202,7 @@ namespace BizHawk.Client.EmuHawk
 				i.StartPosition = FormStartPosition.Manual;
 				i.Location = point;
 
-				var result = Tastudio.MainForm.DoWithTempMute(() => i.ShowDialog(this));
-				if (!result.IsOk())
-				{
-					return;
-				}
+				if (!this.ShowDialogWithTempMute(i).IsOk()) return;
 
 				UpdateTextColumnWidth();
 				marker = new TasMovieMarker(frame, i.PromptText);
@@ -258,9 +254,7 @@ namespace BizHawk.Client.EmuHawk
 				i.Location = point;
 			}
 
-			var result = Tastudio.MainForm.DoWithTempMute(() => i.ShowDialog(this));
-
-			if (result == DialogResult.OK)
+			if (this.ShowDialogWithTempMute(i) == DialogResult.OK)
 			{
 				marker.Message = i.PromptText;
 				UpdateTextColumnWidth();

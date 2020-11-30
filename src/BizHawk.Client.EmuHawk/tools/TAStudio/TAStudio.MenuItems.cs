@@ -108,8 +108,7 @@ namespace BizHawk.Client.EmuHawk
 					).ToString()
 				};
 
-				var result = MainForm.DoWithTempMute(() => ofd.ShowDialog(this));
-				if (result.IsOk())
+				if (this.ShowDialogWithTempMute(ofd).IsOk())
 				{
 					LoadMovieFile(ofd.FileName, false);
 				}

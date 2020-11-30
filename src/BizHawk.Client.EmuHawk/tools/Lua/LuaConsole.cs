@@ -696,7 +696,7 @@ namespace BizHawk.Client.EmuHawk
 
 			sfd.Filter = SessionsFSFilterSet.ToString();
 			sfd.RestoreDirectory = true;
-			var result = MainForm.DoWithTempMute(() => sfd.ShowDialog(this));
+			var result = this.ShowDialogWithTempMute(sfd);
 			return result.IsOk() ? new FileInfo(sfd.FileName) : null;
 		}
 
@@ -826,7 +826,7 @@ namespace BizHawk.Client.EmuHawk
 				Directory.CreateDirectory(ofd.InitialDirectory);
 			}
 
-			var result = MainForm.DoWithTempMute(() => ofd.ShowDialog(this));
+			var result = this.ShowDialogWithTempMute(ofd);
 			if (result.IsOk() && !string.IsNullOrWhiteSpace(ofd.FileName))
 			{
 				LoadLuaSession(ofd.FileName);
@@ -880,7 +880,7 @@ namespace BizHawk.Client.EmuHawk
 				Filter = new FilesystemFilterSet(FilesystemFilter.LuaScripts).ToString()
 			};
 
-			var result = MainForm.DoWithTempMute(() => sfd.ShowDialog(this));
+			var result = this.ShowDialogWithTempMute(sfd);
 			if (result.IsOk() && !string.IsNullOrWhiteSpace(sfd.FileName))
 			{
 				string defaultTemplate = "while true do\n\temu.frameadvance();\nend";
@@ -912,7 +912,7 @@ namespace BizHawk.Client.EmuHawk
 				Directory.CreateDirectory(ofd.InitialDirectory);
 			}
 
-			var result = MainForm.DoWithTempMute(() => ofd.ShowDialog(this));
+			var result = this.ShowDialogWithTempMute(ofd);
 			if (result.IsOk() && ofd.FileNames != null)
 			{
 				foreach (var file in ofd.FileNames)

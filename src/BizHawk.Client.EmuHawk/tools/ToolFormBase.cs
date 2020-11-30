@@ -75,13 +75,8 @@ namespace BizHawk.Client.EmuHawk
 				RestoreDirectory = true
 			};
 
-			var result = MainForm.DoWithTempMute(() => ofd.ShowDialog(this));
-			if (result != DialogResult.OK)
-			{
-				return null;
-			}
-
-			return new FileInfo(ofd.FileName);
+			var result = this.ShowDialogWithTempMute(ofd);
+			return result.IsOk() ? new FileInfo(ofd.FileName) : null;
 		}
 
 		public static FileInfo SaveFileDialog(string currentFile, string path, string fileType, string fileExt, IDialogParent parent)
@@ -99,13 +94,8 @@ namespace BizHawk.Client.EmuHawk
 				RestoreDirectory = true
 			};
 
-			var result = parent.DialogController.DoWithTempMute(() => sfd.ShowDialog(parent.SelfAsHandle));
-			if (result != DialogResult.OK)
-			{
-				return null;
-			}
-
-			return new FileInfo(sfd.FileName);
+			var result = parent.ShowDialogWithTempMute(sfd);
+			return result.IsOk() ? new FileInfo(sfd.FileName) : null;
 		}
 
 		public FileInfo GetWatchFileFromUser(string currentFile)

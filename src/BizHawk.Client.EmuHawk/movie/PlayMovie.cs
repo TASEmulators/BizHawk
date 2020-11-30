@@ -517,7 +517,7 @@ namespace BizHawk.Client.EmuHawk
 				InitialDirectory = _config.PathEntries.MovieAbsolutePath()
 			};
 
-			var result = _mainForm.DoWithTempMute(() => ofd.ShowDialog(this));
+			var result = this.ShowDialogWithTempMute(ofd);
 			if (result == DialogResult.OK)
 			{
 				var file = new FileInfo(ofd.FileName);

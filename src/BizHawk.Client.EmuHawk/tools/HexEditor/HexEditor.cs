@@ -946,7 +946,7 @@ namespace BizHawk.Client.EmuHawk
 						: Game.FilesystemSafeName()
 			};
 
-			var result = MainForm.DoWithTempMute(() => sfd.ShowDialog(this));
+			var result = this.ShowDialogWithTempMute(sfd);
 			return result == DialogResult.OK ? sfd.FileName : "";
 		}
 
@@ -962,7 +962,7 @@ namespace BizHawk.Client.EmuHawk
 				RestoreDirectory = true
 			};
 
-			var result = MainForm.DoWithTempMute(() => sfd.ShowDialog(this));
+			var result = this.ShowDialogWithTempMute(sfd);
 			return result == DialogResult.OK ? sfd.FileName : "";
 		}
 
@@ -1284,12 +1284,8 @@ namespace BizHawk.Client.EmuHawk
 				RestoreDirectory = true
 			};
 
-			var result = MainForm.DoWithTempMute(() => sfd.ShowDialog(this));
-			if (result != DialogResult.OK)
-			{
-				return;
-			}
-			
+			if (this.ShowDialogWithTempMute(sfd) != DialogResult.OK) return;
+
 			var path = sfd.FileName;
 
 			using var inf = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.Read);
@@ -1338,9 +1334,7 @@ namespace BizHawk.Client.EmuHawk
 				RestoreDirectory = false
 			};
 
-			var result = MainForm.DoWithTempMute(() => ofd.ShowDialog(this));
-
-			if (result == DialogResult.OK)
+			if (this.ShowDialogWithTempMute(ofd) == DialogResult.OK)
 			{
 				LoadTable(ofd.FileName);
 				RecentTables.Add(ofd.FileName);
@@ -1605,7 +1599,7 @@ namespace BizHawk.Client.EmuHawk
 				Message = "Enter a hexadecimal value"
 			};
 
-			var result = MainForm.DoWithTempMute(() => inputPrompt.ShowDialog(this));
+			var result = this.ShowDialogWithTempMute(inputPrompt);
 
 			if (result == DialogResult.OK && inputPrompt.PromptText.IsHex())
 			{
@@ -1694,7 +1688,7 @@ namespace BizHawk.Client.EmuHawk
 					ParentTool = this
 				};
 
-				MainForm.DoWithTempMute(() => poke.ShowDialog(this));
+				this.ShowDialogWithTempMute(poke);
 				GeneralUpdate();
 			}
 		}
@@ -1702,7 +1696,7 @@ namespace BizHawk.Client.EmuHawk
 		private void SetColorsMenuItem_Click(object sender, EventArgs e)
 		{
 			using var form = new HexColorsForm(this);
-			MainForm.DoWithTempMute(() => form.ShowDialog(this));
+			this.ShowDialogWithTempMute(form);
 		}
 
 		private void ResetColorsToDefaultMenuItem_Click(object sender, EventArgs e)

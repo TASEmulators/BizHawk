@@ -302,7 +302,7 @@ namespace BizHawk.Client.EmuHawk
 				FilesystemFilter.TextFiles
 			).ToString();
 			sfd.RestoreDirectory = true;
-			var result = MainForm.DoWithTempMute(() => sfd.ShowDialog(this));
+			var result = this.ShowDialogWithTempMute(sfd);
 			return result.IsOk() ? new FileInfo(sfd.FileName) : null;
 		}
 
@@ -351,8 +351,7 @@ namespace BizHawk.Client.EmuHawk
 				InitialValue = MaxLines.ToString()
 			};
 
-			var result = MainForm.DoWithTempMute(() => prompt.ShowDialog(this));
-			if (result == DialogResult.OK)
+			if (this.ShowDialogWithTempMute(prompt) == DialogResult.OK)
 			{
 				var max = int.Parse(prompt.PromptText);
 				if (max > 0)
@@ -372,8 +371,7 @@ namespace BizHawk.Client.EmuHawk
 				InitialValue = FileSizeCap.ToString()
 			};
 
-			var result = MainForm.DoWithTempMute(() => prompt.ShowDialog(this));
-			if (result == DialogResult.OK)
+			if (this.ShowDialogWithTempMute(prompt) == DialogResult.OK)
 			{
 				FileSizeCap = int.Parse(prompt.PromptText);
 				_splitFile = FileSizeCap != 0;
