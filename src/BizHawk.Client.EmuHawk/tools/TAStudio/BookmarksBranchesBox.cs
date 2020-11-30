@@ -577,7 +577,7 @@ namespace BizHawk.Client.EmuHawk
 			var point = Cursor.Position;
 			point.Offset(i.Width / -2, i.Height / -2);
 
-			var result = MainForm.DoWithTempMute(() => i.ShowHawkDialog(this, position: point));
+			var result = MainForm.DoWithTempMute(() => i.ShowHawkDialog(Tastudio.MainForm, this, position: point));
 			if (result.IsOk())
 			{
 				branch.UserText = i.PromptText;

@@ -148,28 +148,22 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// Handles EmuHawk specific issues before showing a modal dialog
 		/// </summary>
-		public static DialogResult ShowHawkDialog(this Form form, IWin32Window owner, Point position = default)
+		public static DialogResult ShowHawkDialog(this Form form, IDialogController dialogController, IWin32Window owner, Point position = default)
 		{
-			Sound.Instance.StopSound();
 			if (position != default)
 			{
 				form.StartPosition = FormStartPosition.Manual;
 				form.Location = position;
 			}
-			var result = form.ShowDialog(owner);
-			Sound.Instance.StartSound();
-			return result;
+			return dialogController.DoWithTempMute(() => form.ShowDialog(owner));
 		}
 
 		/// <summary>
 		/// Handles EmuHawk specific issues before showing a modal dialog
 		/// </summary>
-		public static DialogResult ShowHawkDialog(this CommonDialog form, IWin32Window owner)
+		public static DialogResult ShowHawkDialog(this CommonDialog form, IDialogController dialogController, IWin32Window owner)
 		{
-			Sound.Instance.StopSound();
-			var result = form.ShowDialog(owner);
-			Sound.Instance.StartSound();
-			return result;
+			return dialogController.DoWithTempMute(() => form.ShowDialog(owner));
 		}
 
 		public static void DoWithTempMute(this IDialogController dialogController, Action action)
@@ -286,7 +280,7 @@ namespace BizHawk.Client.EmuHawk
 			Clipboard.SetImage(img);
 		}
 
-		public static void SaveAsFile(this Bitmap bitmap, IGameInfo game, string suffix, string systemId, PathEntryCollection paths, IWin32Window owner)
+		public static void SaveAsFile(this Bitmap bitmap, IGameInfo game, string suffix, string systemId, PathEntryCollection paths, IDialogController dialogController, IWin32Window owner)
 		{
 			using var sfd = new SaveFileDialog
 			{
@@ -296,7 +290,7 @@ namespace BizHawk.Client.EmuHawk
 				RestoreDirectory = true
 			};
 
-			var result = sfd.ShowHawkDialog(owner);
+			var result = sfd.ShowHawkDialog(dialogController, owner);
 			if (result != DialogResult.OK)
 			{
 				return;

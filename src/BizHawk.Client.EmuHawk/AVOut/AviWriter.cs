@@ -261,7 +261,7 @@ namespace BizHawk.Client.EmuHawk
 		/// Acquires a video codec configuration from the user. you may save it for future use, but you must dispose of it when you're done with it.
 		/// returns null if the user canceled the dialog
 		/// </summary>
-		public IDisposable AcquireVideoCodecToken(IWin32Window hwnd, Config config)
+		public IDisposable AcquireVideoCodecToken(IDialogController dialogController, IWin32Window hwnd, Config config)
 		{
 			var tempParams = new Parameters
 			{

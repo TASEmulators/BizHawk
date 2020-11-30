@@ -108,7 +108,7 @@ namespace BizHawk.Client.EmuHawk
 					).ToString()
 				};
 
-				var result = ofd.ShowHawkDialog(this);
+				var result = ofd.ShowHawkDialog(MainForm, this);
 				if (result.IsOk())
 				{
 					LoadMovieFile(ofd.FileName, false);

@@ -826,6 +826,7 @@ namespace BizHawk.Client.EmuHawk
 					Config.PathEntries.MovieAbsolutePath(),
 					"Tas Project Files",
 					"tasproj",
+					MainForm,
 					this
 				);
 

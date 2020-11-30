@@ -513,7 +513,7 @@ namespace BizHawk.Client.EmuHawk
 				InitialDirectory = _config.PathEntries.MovieAbsolutePath()
 			};
 
-			var result = ofd.ShowHawkDialog(this);
+			var result = ofd.ShowHawkDialog(_mainForm, this);
 			if (result == DialogResult.OK)
 			{
 				var file = new FileInfo(ofd.FileName);

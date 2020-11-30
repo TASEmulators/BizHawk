@@ -195,7 +195,7 @@ namespace BizHawk.Client.EmuHawk
 			// ignored
 		}
 
-		public IDisposable AcquireVideoCodecToken(IWin32Window hwnd, Config config)
+		public IDisposable AcquireVideoCodecToken(IDialogController dialogController, IWin32Window hwnd, Config config)
 		{
 			return GifWriterForm.DoTokenForm(hwnd, config);
 		}

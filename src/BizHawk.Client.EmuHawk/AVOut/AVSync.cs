@@ -243,9 +243,9 @@ namespace BizHawk.Client.EmuHawk
 			W.AddSamples(samples);
 		}
 
-		public IDisposable AcquireVideoCodecToken(IWin32Window hwnd, Config config)
+		public IDisposable AcquireVideoCodecToken(IDialogController dialogController, IWin32Window hwnd, Config config)
 		{
-			return W.AcquireVideoCodecToken(hwnd, config);
+			return W.AcquireVideoCodecToken(dialogController, hwnd, config);
 		}
 
 		public void SetMovieParameters(int fpsNum, int fpsDen)

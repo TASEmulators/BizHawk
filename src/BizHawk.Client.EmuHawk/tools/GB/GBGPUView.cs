@@ -1022,7 +1022,7 @@ namespace BizHawk.Client.EmuHawk
 				Color = Spriteback
 			};
 
-			var result = dlg.ShowHawkDialog(this);
+			var result = dlg.ShowHawkDialog(MainForm, this);
 			if (result.IsOk())
 			{
 				Spriteback = dlg.Color;

@@ -127,7 +127,7 @@ namespace BizHawk.Client.EmuHawk
 				Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top
 			};
 
-			var mdf = new MultiDiskFileSelector(this, () => MainForm.CurrentlyOpenRom)
+			var mdf = new MultiDiskFileSelector(this, MainForm, () => MainForm.CurrentlyOpenRom)
 			{
 				Location = UIHelper.Scale(new Point(7, 12)),
 				Width = groupBox.ClientSize.Width - UIHelper.ScaleX(13),
@@ -262,7 +262,7 @@ namespace BizHawk.Client.EmuHawk
 				Filter = new FilesystemFilterSet(new FilesystemFilter("XML Files", new[] { "xml" })).ToString()
 			};
 
-			var result = sfd.ShowHawkDialog(this);
+			var result = sfd.ShowHawkDialog(MainForm, this);
 			if (result != DialogResult.Cancel)
 			{
 				NameBox.Text = sfd.FileName;

@@ -366,11 +366,12 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var file = SaveFileDialog(
-					fileName,
-					Config.PathEntries.ToolsAbsolutePath(),
-					"Bot files",
-					"bot",
-					this);
+				fileName,
+				Config.PathEntries.ToolsAbsolutePath(),
+				"Bot files",
+				"bot",
+				MainForm,
+				this);
 
 			if (file != null)
 			{
