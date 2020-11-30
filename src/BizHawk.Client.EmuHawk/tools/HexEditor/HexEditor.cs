@@ -1359,7 +1359,7 @@ namespace BizHawk.Client.EmuHawk
 			var result = LoadTable(path);
 			if (!result)
 			{
-				RecentTables.HandleLoadError(path);
+				RecentTables.HandleLoadError(MainForm, path);
 			}
 			else
 			{
@@ -1371,7 +1371,7 @@ namespace BizHawk.Client.EmuHawk
 		private void RecentTablesSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			RecentTablesSubMenu.DropDownItems.Clear();
-			RecentTablesSubMenu.DropDownItems.AddRange(RecentTables.RecentMenu(LoadFileFromRecent, "Session"));
+			RecentTablesSubMenu.DropDownItems.AddRange(RecentTables.RecentMenu(MainForm, LoadFileFromRecent, "Session"));
 		}
 
 		private void EditMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -1598,7 +1598,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GoToAddressMenuItem_Click(object sender, EventArgs e)
 		{
-			using var inputPrompt = new InputPrompt
+			using var inputPrompt = new InputPrompt(MainForm)
 			{
 				Text = "Go to Address",
 				StartLocation = this.ChildPointToScreen(MemoryViewerBox),

@@ -195,7 +195,7 @@ namespace BizHawk.Client.EmuHawk
 				var loadResult = _watches.Load(path, append: false);
 				if (!loadResult)
 				{
-					Config.RecentWatches.HandleLoadError(path);
+					Config.RecentWatches.HandleLoadError(MainForm, path);
 				}
 				else
 				{
@@ -420,7 +420,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (SelectedSeparators.Any() && !duplicate)
 			{
-				var inputPrompt = new InputPrompt
+				var inputPrompt = new InputPrompt(MainForm)
 				{
 					Text = "Edit Separator",
 					StartLocation = this.ChildPointToScreen(WatchListView),
@@ -690,7 +690,7 @@ namespace BizHawk.Client.EmuHawk
 		private void RecentSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			RecentSubMenu.DropDownItems.Clear();
-			RecentSubMenu.DropDownItems.AddRange(Config.RecentWatches.RecentMenu(LoadFileFromRecent, "Watches"));
+			RecentSubMenu.DropDownItems.AddRange(Config.RecentWatches.RecentMenu(MainForm, LoadFileFromRecent, "Watches"));
 		}
 
 		private void WatchesSubMenu_DropDownOpened(object sender, EventArgs e)

@@ -566,7 +566,7 @@ namespace BizHawk.Client.EmuHawk
 				return false;
 			}
 
-			var i = new InputPrompt
+			var i = new InputPrompt(MainForm)
 			{
 				Text = $"Text for branch {index}",
 				TextInputType = InputPrompt.InputType.Text,

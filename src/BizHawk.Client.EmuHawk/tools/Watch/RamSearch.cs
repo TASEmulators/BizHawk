@@ -567,7 +567,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (!file.Exists)
 			{
-				Settings.RecentSearches.HandleLoadError(path);
+				Settings.RecentSearches.HandleLoadError(MainForm, path);
 			}
 			else
 			{
@@ -891,7 +891,7 @@ namespace BizHawk.Client.EmuHawk
 		private void GoToSpecifiedAddress()
 		{
 			WatchListView.DeselectAll();
-			var prompt = new InputPrompt
+			var prompt = new InputPrompt(MainForm)
 			{
 				Text = "Go to Address",
 				StartLocation = this.ChildPointToScreen(WatchListView),
@@ -964,7 +964,7 @@ namespace BizHawk.Client.EmuHawk
 		private void RecentSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			RecentSubMenu.DropDownItems.Clear();
-			RecentSubMenu.DropDownItems.AddRange(Settings.RecentSearches.RecentMenu(LoadFileFromRecent, "Search", noAutoload: true));
+			RecentSubMenu.DropDownItems.AddRange(Settings.RecentSearches.RecentMenu(MainForm, LoadFileFromRecent, "Search", noAutoload: true));
 		}
 
 		private void OpenMenuItem_Click(object sender, EventArgs e)

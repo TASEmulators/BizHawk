@@ -12,7 +12,7 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 {
 	public static class ToolExtensions
 	{
-		public static ToolStripItem[] RecentMenu(this RecentFiles recent, Action<string> loadFileCallback, string entrySemantic, bool noAutoload = false, bool romLoading = false)
+		public static ToolStripItem[] RecentMenu(this RecentFiles recent, IMainFormForTools mainForm, Action<string> loadFileCallback, string entrySemantic, bool noAutoload = false, bool romLoading = false)
 		{
 			var items = new List<ToolStripItem>();
 
@@ -193,7 +193,7 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 			var settingsItem = new ToolStripMenuItem { Text = "&Recent Settings..." };
 			settingsItem.Click += (o, ev) =>
 			{
-				using var prompt = new InputPrompt
+				using var prompt = new InputPrompt(mainForm)
 				{
 					TextInputType = InputPrompt.InputType.Unsigned,
 					Message = "Number of recent files to track",
@@ -212,9 +212,9 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 			return items.ToArray();
 		}
 
-		public static void HandleLoadError(this RecentFiles recent, string path, string encodedPath = null)
+		public static void HandleLoadError(this RecentFiles recent, IMainFormForTools mainForm, string path, string encodedPath = null)
 		{
-			GlobalWin.Sound.StopSound();
+			mainForm.StopSound();
 			if (recent.Frozen)
 			{
 				MessageBox.Show($"Could not open {path}", "File not found", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -229,7 +229,7 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 				}
 			}
 
-			GlobalWin.Sound.StartSound();
+			mainForm.StartSound();
 		}
 
 		public static IEnumerable<ToolStripItem> MenuItems(this IMemoryDomains domains, Action<string> setCallback, string selected = "", int? maxSize = null)

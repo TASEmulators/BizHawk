@@ -524,7 +524,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else
 					{
-						Config.RecentMovies.HandleLoadError(Config.RecentMovies.MostRecent);
+						Config.RecentMovies.HandleLoadError(this, Config.RecentMovies.MostRecent);
 					}
 				}
 			}
@@ -2020,7 +2020,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				Config.RecentMovies.HandleLoadError(path);
+				Config.RecentMovies.HandleLoadError(this, path);
 			}
 		}
 
@@ -2039,7 +2039,7 @@ namespace BizHawk.Client.EmuHawk
 			if (!LoadRom(romPath, args, out var failureIsFromAskSave))
 			{
 				if (failureIsFromAskSave) OSD.AddMessage("ROM loading cancelled; a tool had unsaved changes");
-				else Config.RecentRoms.HandleLoadError(romPath, rom);
+				else Config.RecentRoms.HandleLoadError(this, romPath, rom);
 			}
 		}
 

@@ -343,7 +343,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MaxLinesMenuItem_Click(object sender, EventArgs e)
 		{
-			using var prompt = new InputPrompt
+			using var prompt = new InputPrompt(MainForm)
 			{
 				StartLocation = this.ChildPointToScreen(TraceView),
 				TextInputType = InputPrompt.InputType.Unsigned,
@@ -364,7 +364,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SegmentSizeMenuItem_Click(object sender, EventArgs e)
 		{
-			using var prompt = new InputPrompt
+			using var prompt = new InputPrompt(MainForm)
 			{
 				StartLocation = this.ChildPointToScreen(TraceView),
 				TextInputType = InputPrompt.InputType.Unsigned,

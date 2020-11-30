@@ -182,7 +182,7 @@ namespace BizHawk.Client.EmuHawk
 			TasMovieMarker marker;
 			if (editText)
 			{
-				var i = new InputPrompt
+				var i = new InputPrompt(Tastudio.MainForm)
 				{
 					Text = $"Marker for frame {frame}",
 					TextInputType = InputPrompt.InputType.Text,
@@ -234,7 +234,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var markerFrame = marker.Frame;
 			var point = default(Point);
-			var i = new InputPrompt
+			var i = new InputPrompt(Tastudio.MainForm)
 			{
 				Text = $"Marker for frame {markerFrame}",
 				TextInputType = InputPrompt.InputType.Text,

@@ -99,7 +99,7 @@ namespace BizHawk.Client.EmuHawk
 				var loadResult = MainForm.CheatList.Load(Core, path, append: false);
 				if (!loadResult)
 				{
-					Config.Cheats.Recent.HandleLoadError(path);
+					Config.Cheats.Recent.HandleLoadError(MainForm, path);
 				}
 				else
 				{
@@ -336,7 +336,7 @@ namespace BizHawk.Client.EmuHawk
 		private void RecentSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			RecentSubMenu.DropDownItems.Clear();
-			RecentSubMenu.DropDownItems.AddRange(Config.Cheats.Recent.RecentMenu(LoadFileFromRecent, "Cheats"));
+			RecentSubMenu.DropDownItems.AddRange(Config.Cheats.Recent.RecentMenu(MainForm, LoadFileFromRecent, "Cheats"));
 		}
 
 		private void NewMenuItem_Click(object sender, EventArgs e)

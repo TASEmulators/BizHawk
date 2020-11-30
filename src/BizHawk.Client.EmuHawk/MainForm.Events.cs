@@ -61,7 +61,7 @@ namespace BizHawk.Client.EmuHawk
 		private void RecentRomMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
 			RecentRomSubMenu.DropDownItems.Clear();
-			RecentRomSubMenu.DropDownItems.AddRange(Config.RecentRoms.RecentMenu(LoadRomFromRecent, "ROM", romLoading: true));
+			RecentRomSubMenu.DropDownItems.AddRange(Config.RecentRoms.RecentMenu(this, LoadRomFromRecent, "ROM", romLoading: true));
 		}
 
 		private bool HasSlot(int slot) => _stateSlots.HasSlot(Emulator, MovieSession.Movie, slot, SaveStatePrefix());
@@ -192,7 +192,7 @@ namespace BizHawk.Client.EmuHawk
 		private void RecentMovieSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			RecentMovieSubMenu.DropDownItems.Clear();
-			RecentMovieSubMenu.DropDownItems.AddRange(Config.RecentMovies.RecentMenu(LoadMoviesFromRecent, "Movie"));
+			RecentMovieSubMenu.DropDownItems.AddRange(Config.RecentMovies.RecentMenu(this, LoadMoviesFromRecent, "Movie"));
 		}
 
 		private void MovieEndSubMenu_DropDownOpened(object sender, EventArgs e)
