@@ -284,7 +284,7 @@ namespace BizHawk.Client.EmuHawk
 			_config = config; // skips assignment to GlobalWin.Config as Program already did that
 			GL = gl;
 
-			InputManager.ControllerInputCoalescer = new ControllerInputCoalescer();
+			InputManager = new InputManager { ControllerInputCoalescer = new ControllerInputCoalescer() };
 			FirmwareManager = new FirmwareManager();
 			MovieSession = new MovieSession(
 				Config.Movies,
@@ -849,7 +849,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public EmuClientApi EmuClient { get; set; }
 
-		private InputManager InputManager => GlobalWin.InputManager;
+		private readonly InputManager InputManager;
 
 		private IVideoProvider _currentVideoProvider = NullVideo.Instance;
 
