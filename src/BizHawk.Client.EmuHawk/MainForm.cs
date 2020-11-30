@@ -279,7 +279,7 @@ namespace BizHawk.Client.EmuHawk
 			Database.InitializeDatabase(Path.Combine(PathUtils.ExeDirectoryPath, "gamedb", "gamedb.txt"));
 			BootGodDb.Initialize(Path.Combine(PathUtils.ExeDirectoryPath, "gamedb"));
 
-			_config = config; // skips assignment to GlobalWin.Config as Program already did that
+			Config = config;
 			GL = gl;
 
 			InputManager = new InputManager { ControllerInputCoalescer = new ControllerInputCoalescer() };

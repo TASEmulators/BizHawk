@@ -112,13 +112,14 @@ namespace BizHawk.Client.EmuHawk
 			string cmdConfigFile = ArgParser.GetCmdConfigFile(args);
 			if (cmdConfigFile != null) Config.SetDefaultIniPath(cmdConfigFile);
 
+			Config initialConfig;
 			try
 			{
 				if (!VersionInfo.DeveloperBuild && !ConfigService.IsFromSameVersion(Config.DefaultIniPath, out var msg))
 				{
 					new MsgBox(msg, "Mismatched version in config file", MessageBoxIcon.Warning).ShowDialog();
 				}
-				GlobalWin.Config = ConfigService.Load<Config>(Config.DefaultIniPath);
+				initialConfig = ConfigService.Load<Config>(Config.DefaultIniPath);
 			}
 			catch (Exception e)
 			{
@@ -129,13 +130,13 @@ namespace BizHawk.Client.EmuHawk
 					e.ToString()
 				)).ShowDialog();
 				File.Delete(Config.DefaultIniPath);
-				GlobalWin.Config = ConfigService.Load<Config>(Config.DefaultIniPath);
+				initialConfig = ConfigService.Load<Config>(Config.DefaultIniPath);
 			}
 
-			GlobalWin.Config.ResolveDefaults();
+			initialConfig.ResolveDefaults();
 			FFmpegService.FFmpegPath = Path.Combine(PathUtils.DllDirectoryPath, OSTC.IsUnixHost ? "ffmpeg" : "ffmpeg.exe");
 
-			StringLogUtil.DefaultToDisk = GlobalWin.Config.Movies.MoviesOnDisk;
+			StringLogUtil.DefaultToDisk = initialConfig.Movies.MoviesOnDisk;
 
 			IGL TryInitIGL(EDispMethod dispMethod)
 			{
@@ -148,7 +149,7 @@ namespace BizHawk.Client.EmuHawk
 					catch (Exception ex)
 					{
 						new ExceptionBox(new Exception("Initialization of Display Method failed; falling back to GDI+", ex)).ShowDialog();
-						return TryInitIGL(GlobalWin.Config.DispMethod = EDispMethod.GdiPlus);
+						return TryInitIGL(initialConfig.DispMethod = EDispMethod.GdiPlus);
 					}
 				}
 				switch (dispMethod)
@@ -167,7 +168,7 @@ namespace BizHawk.Client.EmuHawk
 						catch (Exception ex)
 						{
 							new ExceptionBox(new Exception("Initialization of Direct3d 9 Display Method failed; falling back to GDI+", ex)).ShowDialog();
-							return TryInitIGL(GlobalWin.Config.DispMethod = EDispMethod.GdiPlus);
+							return TryInitIGL(initialConfig.DispMethod = EDispMethod.GdiPlus);
 						}
 						return CheckRenderer(glSlimDX);
 					case EDispMethod.OpenGL:
@@ -176,7 +177,7 @@ namespace BizHawk.Client.EmuHawk
 						{
 							// too old to use, GDI+ will be better
 							((IDisposable) glOpenTK).Dispose();
-							return TryInitIGL(GlobalWin.Config.DispMethod = EDispMethod.GdiPlus);
+							return TryInitIGL(initialConfig.DispMethod = EDispMethod.GdiPlus);
 						}
 						return CheckRenderer(glOpenTK);
 					default:
@@ -188,10 +189,10 @@ namespace BizHawk.Client.EmuHawk
 			// super hacky! this needs to be done first. still not worth the trouble to make this system fully proper
 			if (Array.Exists(args, arg => arg.StartsWith("--gdi", StringComparison.InvariantCultureIgnoreCase)))
 			{
-				GlobalWin.Config.DispMethod = EDispMethod.GdiPlus;
+				initialConfig.DispMethod = EDispMethod.GdiPlus;
 			}
 
-			var workingGL = TryInitIGL(GlobalWin.Config.DispMethod);
+			var workingGL = TryInitIGL(initialConfig.DispMethod);
 
 			if (!OSTC.IsUnixHost)
 			{
@@ -207,11 +208,11 @@ namespace BizHawk.Client.EmuHawk
 			var exitCode = 0;
 			try
 			{
-				if (!OSTC.IsUnixHost && GlobalWin.Config.SingleInstanceMode)
+				if (!OSTC.IsUnixHost && initialConfig.SingleInstanceMode)
 				{
 					try
 					{
-						InitAndRunSingleInstance(GlobalWin.Config, workingGL, i => exitCode = i, args);
+						InitAndRunSingleInstance(initialConfig, workingGL, i => exitCode = i, args);
 					}
 					catch (ObjectDisposedException)
 					{
@@ -220,7 +221,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					var mf = new MainForm(GlobalWin.Config, workingGL, args, out var movieSession);
+					var mf = new MainForm(initialConfig, workingGL, args, out var movieSession);
 //					var title = mf.Text;
 					mf.Show();
 //					mf.Text = title;
@@ -293,7 +294,7 @@ namespace BizHawk.Client.EmuHawk
 			//    later, we look for NLua or KopiLua assembly names and redirect them to files located in the output/DLL/nlua directory
 			if (new AssemblyName(requested).Name == "NLua")
 			{
-				//this method referencing GlobalWin.Config makes assemblies get loaded, which isnt smart from the assembly resolver.
+				// if this method referenced the global config, assemblies would need to be loaded, which isn't smart to do from the assembly resolver.
 				//so.. we're going to resort to something really bad.
 				//avert your eyes.
 				var configPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "config.ini");
