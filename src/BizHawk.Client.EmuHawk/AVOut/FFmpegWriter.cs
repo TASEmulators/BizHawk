@@ -207,17 +207,17 @@ namespace BizHawk.Client.EmuHawk
 			//ffmpeg.StandardInput.BaseStream.Write(b, 0, b.Length);
 		}
 
-		public IDisposable AcquireVideoCodecToken(IDialogController dialogController, IWin32Window hwnd, Config config)
+		public IDisposable AcquireVideoCodecToken(IDialogParent parent, Config config)
 		{
 			if (new FFmpegService().QueryServiceAvailable())
 			{
-				return FFmpegWriterForm.DoFFmpegWriterDlg(hwnd, config);
+				return FFmpegWriterForm.DoFFmpegWriterDlg(parent.SelfAsHandle, config);
 			}
 
-			FFmpegDownloaderForm.Run(dialogController, hwnd);
+			FFmpegDownloaderForm.Run(parent);
 			if (new FFmpegService().QueryServiceAvailable())
 			{
-				return FFmpegWriterForm.DoFFmpegWriterDlg(hwnd, config);
+				return FFmpegWriterForm.DoFFmpegWriterDlg(parent.SelfAsHandle, config);
 			}
 
 			return null;

@@ -314,7 +314,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Screenshot(Bitmap b, string suffix)
 		{
-			b.SaveAsFile(Game, suffix, "NES", Config.PathEntries, MainForm, this);
+			b.SaveAsFile(Game, suffix, "NES", Config.PathEntries, this);
 		}
 
 		private void SavePaletteScreenshotMenuItem_Click(object sender, EventArgs e)

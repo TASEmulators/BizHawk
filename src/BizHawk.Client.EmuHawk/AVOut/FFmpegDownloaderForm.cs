@@ -110,10 +110,10 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public static void Run(IDialogController dialogController, IWin32Window hwnd)
+		public static void Run(IDialogParent parent)
 		{
 			var form = new FFmpegDownloaderForm();
-			dialogController.DoWithTempMute(() => form.ShowDialog(hwnd));
+			parent.DialogController.DoWithTempMute(() => form.ShowDialog(parent.SelfAsHandle));
 		}
 
 		private void btnDownload_Click(object sender, EventArgs e)

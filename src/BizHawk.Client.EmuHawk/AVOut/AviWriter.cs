@@ -261,7 +261,7 @@ namespace BizHawk.Client.EmuHawk
 		/// Acquires a video codec configuration from the user. you may save it for future use, but you must dispose of it when you're done with it.
 		/// returns null if the user canceled the dialog
 		/// </summary>
-		public IDisposable AcquireVideoCodecToken(IDialogController dialogController, IWin32Window hwnd, Config config)
+		public IDisposable AcquireVideoCodecToken(IDialogParent parent, Config config)
 		{
 			var tempParams = new Parameters
 			{
@@ -278,7 +278,7 @@ namespace BizHawk.Client.EmuHawk
 			File.Delete(tempfile);
 			tempfile = Path.ChangeExtension(tempfile, "avi");
 			temp.OpenFile(tempfile, tempParams, null);
-			var ret = temp.AcquireVideoCodecToken(hwnd.Handle, _currVideoCodecToken);
+			var ret = temp.AcquireVideoCodecToken(parent.SelfAsHandle.Handle, _currVideoCodecToken);
 			CodecToken token = (CodecToken)ret;
 			config.AviCodecToken = token?.Serialize();
 			temp.CloseFile();

@@ -83,7 +83,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public IDisposable AcquireVideoCodecToken(IDialogController dialogController, IWin32Window hwnd, Config config)
+		public IDisposable AcquireVideoCodecToken(IDialogParent parent, Config config)
 		{
 			return new DummyDisposable();
 		}
