@@ -51,10 +51,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void VirtualPadControl_Load(object sender, EventArgs e)
 		{
-			static VirtualPadButton GenVirtualPadButton(ButtonSchema button)
+			static VirtualPadButton GenVirtualPadButton(InputManager inputManager, ButtonSchema button)
 			{
 				var buttonControl = new VirtualPadButton
 				{
+					InputManager = inputManager,
 					Name = button.Name,
 					Text = button.Icon != null ? null : button.DisplayName,
 					Location = UIHelper.Scale(button.Location),
@@ -82,7 +83,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				PadBox.Controls.Add(controlSchema switch
 				{
-					ButtonSchema button => GenVirtualPadButton(button),
+					ButtonSchema button => GenVirtualPadButton(_inputManager, button),
 					SingleAxisSchema singleAxis => new VirtualPadAnalogButton(
 						_inputManager.StickyXorAdapter,
 						singleAxis.Name,
@@ -118,7 +119,7 @@ namespace BizHawk.Client.EmuHawk
 						TargetSize = targetedPair.TargetSize,
 					},
 					DiscManagerSchema discManager => new VirtualPadDiscManager(
-						_inputManager.StickyXorAdapter,
+						_inputManager,
 						discManager.OwnerEmulator,
 						discManager.Name,
 						discManager.SecondaryNames

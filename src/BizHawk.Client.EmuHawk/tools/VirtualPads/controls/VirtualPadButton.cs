@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Windows.Forms;
 using System.Drawing;
+
+using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -9,6 +11,8 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private bool _rightClicked;
 		private bool _readonly;
+
+		public InputManager InputManager;
 
 		public VirtualPadButton()
 		{
@@ -28,8 +32,8 @@ namespace BizHawk.Client.EmuHawk
 				RightClicked = false;
 				Checked = false;
 				//HOOMOO
-				GlobalWin.InputManager.AutofireStickyXorAdapter.SetSticky(Name, false);
-				GlobalWin.InputManager.StickyXorAdapter.SetSticky(Name, false);
+				InputManager.AutofireStickyXorAdapter.SetSticky(Name, false);
+				InputManager.StickyXorAdapter.SetSticky(Name, false);
 			}
 		}
 
@@ -130,7 +134,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (RightClicked)
 			{
-				GlobalWin.InputManager.AutofireStickyXorAdapter.SetSticky(Name, Checked);
+				InputManager.AutofireStickyXorAdapter.SetSticky(Name, Checked);
 
 				if (Checked == false)
 				{
@@ -139,7 +143,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				GlobalWin.InputManager.StickyXorAdapter.SetSticky(Name, Checked);
+				InputManager.StickyXorAdapter.SetSticky(Name, Checked);
 
 				if (Checked == false)
 				{

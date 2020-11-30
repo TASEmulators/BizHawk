@@ -9,18 +9,20 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class VirtualPadDiscManager : UserControl, IVirtualPadControl
 	{
-		private readonly StickyXorAdapter _stickyXorAdapter;
+		private readonly InputManager _inputManager;
 
 		public VirtualPadDiscManager(
-			StickyXorAdapter stickyXorAdapter,
+			InputManager inputManager,
 			IEmulator ownerEmulator,
 			string name,
 			IReadOnlyList<string> buttonNames)
 		{
-			_stickyXorAdapter = stickyXorAdapter;
+			_inputManager = inputManager;
 			_ownerEmulator = ownerEmulator;
 			Name = name;
 			InitializeComponent();
+			btnOpen.InputManager = _inputManager;
+			btnClose.InputManager = _inputManager;
 			btnOpen.Name = buttonNames[0];
 			btnClose.Name = buttonNames[1];
 			_discSelectName = buttonNames[2];
@@ -124,7 +126,7 @@ namespace BizHawk.Client.EmuHawk
 		private void lvDiscs_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			// emergency measure: if no selection, set no disc
-			_stickyXorAdapter.SetAxis(_discSelectName, lvDiscs.SelectedIndices.Count == 0 ? 0 : lvDiscs.SelectedIndices[0]);
+			_inputManager.StickyXorAdapter.SetAxis(_discSelectName, lvDiscs.SelectedIndices.Count == 0 ? 0 : lvDiscs.SelectedIndices[0]);
 		}
 
 		private void btnClose_Click(object sender, EventArgs e)
