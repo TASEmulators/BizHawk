@@ -222,10 +222,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodExample("local curSpeed = client.getconfig().SpeedPercent")]
 		[LuaMethod("getconfig", "gets the current config settings object")]
-		public object GetConfig()
-		{
-			return GlobalWin.Config;
-		}
+		public object GetConfig() => ((EmulationApi) APIs.Emulation).ForbiddenConfigReference;
 
 		[LuaMethodExample("client.togglepause( );")]
 		[LuaMethod("togglepause", "Toggles the current pause state")]
