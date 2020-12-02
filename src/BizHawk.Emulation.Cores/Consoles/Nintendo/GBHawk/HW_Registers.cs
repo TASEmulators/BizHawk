@@ -37,7 +37,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 				// Interrupt flags
 				case 0xFF0F:
-					// TODO: Maybe some PPU bits are immediately visible, see 10spritesPrLine_10xposA7_m0irq_2_dmg08_cgb04c_out2.gbc
 					//Console.WriteLine("FF0F " + cpu.TotalExecutedCycles);
 					ret = REG_FF0F_OLD;
 					break;

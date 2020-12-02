@@ -212,7 +212,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					break;
 				case 0xFF53: // HDMA3
 					HDMA_dest_hi = value;
-					cur_DMA_dest = (ushort)(((HDMA_dest_hi & 0x1F) << 8) | (cur_DMA_dest & 0xF0));
+					cur_DMA_dest = (ushort)(((HDMA_dest_hi & 0xFF) << 8) | (cur_DMA_dest & 0xF0));
 					break;
 				case 0xFF54: // HDMA4
 					HDMA_dest_lo = value;
@@ -260,10 +260,29 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					}
 					else
 					{
-						//terminate the transfer if disabling
+						// terminate the transfer if disabling
 						if (!value.Bit(7))
 						{
-							HDMA_active = false;
+							if (HDMA_active && HDMA_mode && HDMA_can_start)
+							{
+								// too late to stop the next trnasfer, so make it the last one instead
+								if (((STAT & 3) == 0) && (LY != last_HBL) && HBL_test && (LY_inc == 1) && (cycle > 90))
+								{
+									HDMA_length = 1;
+								}
+								else if (HBL_HDMA_go)
+								{
+									HDMA_length = 1;
+								}
+								else
+								{
+									HDMA_active = false;
+								}
+							}
+							else
+							{
+								HDMA_active = false;
+							}						
 						}
 
 						// always update length
@@ -355,14 +374,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							}
 							else
 							{
-								Core.VRAM[(Core.VRAM_Bank * 0x2000) + cur_DMA_dest] = HDMA_byte;
-								cur_DMA_dest = (ushort)((cur_DMA_dest + 1) & 0x1FFF);
-								cur_DMA_src = (ushort)((cur_DMA_src + 1) & 0xFFFF);
+								Core.VRAM[(Core.VRAM_Bank * 0x2000) + (cur_DMA_dest & 0x1FFF)] = HDMA_byte;
 
-								// similar to normal DMA, except HDMA transfers when A14 is high always access SRAM
-								if (cur_DMA_src >= 0xE000) { cur_DMA_src &= 0xBFFF; }
+								// DMA destination address does not wrap and terminates DMA
+								if (cur_DMA_dest == 0xFFFF)
+								{
+									HDMA_length = 0;
+								}
+								else
+								{
+									cur_DMA_dest = (ushort)((cur_DMA_dest + 1) & 0xFFFF);
+									cur_DMA_src = (ushort)((cur_DMA_src + 1) & 0xFFFF);
 
-								HDMA_length--;
+									// similar to normal DMA, except HDMA transfers when A14 is high always access SRAM
+									if (cur_DMA_src >= 0xE000) { cur_DMA_src &= 0xBFFF; }
+
+									HDMA_length--;
+								}
 							}
 
 							HDMA_tick++;
@@ -428,15 +456,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								}
 								else
 								{
-									Core.VRAM[(Core.VRAM_Bank * 0x2000) + cur_DMA_dest] = HDMA_byte;
-									cur_DMA_dest = (ushort)((cur_DMA_dest + 1) & 0x1FFF);
-									cur_DMA_src = (ushort)((cur_DMA_src + 1) & 0xFFFF);
+									Core.VRAM[(Core.VRAM_Bank * 0x2000) + (cur_DMA_dest & 0x1FFF)] = HDMA_byte;
 
-									// similar to normal DMA, except HDMA transfers when A14 is high always access SRAM
-									if (cur_DMA_src >= 0xE000) { cur_DMA_src &= 0xBFFF; }
+									// DMA destination address does not wrap and terminates DMA
+									if (cur_DMA_dest == 0xFFFF)
+									{
+										HDMA_length = 0;
+									}
+									else
+									{
+										cur_DMA_dest = (ushort)((cur_DMA_dest + 1) & 0xFFFF);
+										cur_DMA_src = (ushort)((cur_DMA_src + 1) & 0xFFFF);
 
-									HDMA_length--;
-									HBL_HDMA_count--;
+										// similar to normal DMA, except HDMA transfers when A14 is high always access SRAM
+										if (cur_DMA_src >= 0xE000) { cur_DMA_src &= 0xBFFF; }
+
+										HDMA_length--;
+										HBL_HDMA_count--;
+									}
 								}
 
 								if ((HBL_HDMA_count == 0) && (HDMA_length != 0))
@@ -1210,6 +1247,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						VRAM_access_write = VRAM_access_write_PPU & VRAM_access_write_HDMA;
 
 						if (Core.double_speed) { HDMA_can_start = true; }
+						
 						read_case = 18;
 
 						break;
@@ -1232,6 +1270,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						read_case--;
 						break;
 					case 18:
+						if (!Core.double_speed) { HDMA_can_start = true; }
 						rendering_complete = true;
 						break;
 				}
@@ -1325,7 +1364,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							STAT |= 0x00;
 							if (STAT.Bit(3)) { HBL_INT = true; }
 							// the CPU has to be able to see the transition from mode 3 to mode 0 to start HDMA
-							if (!Core.double_speed) { HDMA_can_start = true; }
 							// TODO: If Window is turned on midscanline what happens? When is this check done exactly?
 							if ((window_started && window_latch) || (window_is_reset && !window_latch && (LY > window_y_latch)))
 							{

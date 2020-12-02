@@ -9,9 +9,10 @@ using System.Runtime.InteropServices;
 
 // TODO: mode1_disableint_gbc.gbc behaves differently between GBC and GBA, why?
 // TODO: oam_dma_start.gb does not behave as expected but test still passes through lucky coincidences / test deficiency
-// TODO: LYC interrupt behaves differently in GBC and GB compat mode
 // TODO: Window Position A6 behaves differently
 // TODO: Verify open bus behaviour for bad SRAM accesses for other MBCs
+// TODO: Apparently sprites at x=A7 do not stop the trigger for FF0F bit flip, but still do not dispatch interrupt or
+// mode 3 change, see 10spritesPrLine_10xposA7_m0irq_2_dmg08_cgb04c_out2.gbc
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
