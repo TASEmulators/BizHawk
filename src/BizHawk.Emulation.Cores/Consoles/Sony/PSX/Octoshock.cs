@@ -972,7 +972,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			var mmd = new List<MemoryDomain>();
 
 			OctoshockDll.shock_GetMemData(psx, out var ptr, out var size, OctoshockDll.eMemType.MainRAM);
-			mmd.Add(new MemoryDomainIntPtr("MainRAM", MemoryDomain.Endian.Little, ptr, size, true, 4));
+			var mainRamDomain = new MemoryDomainIntPtr("MainRAM", MemoryDomain.Endian.Little, ptr, size, true, 4);
+			mmd.Add(mainRamDomain);
 
 			OctoshockDll.shock_GetMemData(psx, out ptr, out size, OctoshockDll.eMemType.GPURAM);
 			mmd.Add(new MemoryDomainIntPtr("GPURAM", MemoryDomain.Endian.Little, ptr, size, true, 4));
@@ -981,16 +982,159 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			mmd.Add(new MemoryDomainIntPtr("SPURAM", MemoryDomain.Endian.Little, ptr, size, true, 4));
 
 			OctoshockDll.shock_GetMemData(psx, out ptr, out size, OctoshockDll.eMemType.BiosROM);
-			mmd.Add(new MemoryDomainIntPtr("BiosROM", MemoryDomain.Endian.Little, ptr, size, true, 4));
+			var biosRomDomain = new MemoryDomainIntPtr("BiosROM", MemoryDomain.Endian.Little, ptr, size, true, 4);
+			mmd.Add(biosRomDomain);
 
 			OctoshockDll.shock_GetMemData(psx, out ptr, out size, OctoshockDll.eMemType.PIOMem);
 			mmd.Add(new MemoryDomainIntPtr("PIOMem", MemoryDomain.Endian.Little, ptr, size, true, 4));
 
 			OctoshockDll.shock_GetMemData(psx, out ptr, out size, OctoshockDll.eMemType.DCache);
-			mmd.Add(new MemoryDomainIntPtr("DCache", MemoryDomain.Endian.Little, ptr, size, true, 4));
+			var cacheDomain = new MemoryDomainIntPtr("DCache", MemoryDomain.Endian.Little, ptr, size, true, 4);
+			mmd.Add(cacheDomain);
+
+			mmd.Add(new MemoryDomainDelegate("System Bus", 0x1_0000_0000, MemoryDomain.Endian.Little, SystemBusPeek, SystemBusPoke, 4));
 
 			MemoryDomains = new MemoryDomainList(mmd);
 			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(MemoryDomains);
+
+			byte SystemBusPeek(long address)
+			{
+				if (address >= 0xC000_0000) // KSEG2 only has I/O registers
+				{
+					return 0; //not going to even try, per #1809
+				}
+				if (address >= 0x2000_0000 && address < 0x8000_0000) //no-mans land in KUSEG
+				{
+					return 0; //should throw a bus error but that's not supported
+				}
+
+				bool isKSEG1 = (address & 0xE000_0000) == 0xA000_0000;
+				address = address & 0x1FFF_FFFF; // with one exception, KUSEG, KSEG0, and KSEG1 are all mirrors
+
+				if (address < 0x0080_0000) // main RAM
+				{
+					address = address & 0x001F_FFFF; // mirrors enabled by default
+					return mainRamDomain.PeekByte(address);
+				}
+
+				if (address < 0x1F00_0000) // no-man's land
+				{
+					return 0;
+				}
+
+				if (address < 0x1F80_0000) // Expansion Region 1 -- I *think* PIOMem goes here?
+				{
+					return 0;
+				}
+
+				if(address < 0x1F80_1000) // Scratchpad
+				{
+					if (!isKSEG1)
+					{
+						return cacheDomain.PeekByte(address - 0x1F80_0000);
+					}
+					else // KSEG1 has caching turned off, so the scratchpad isn't available there.
+					{
+						return 0;
+					}
+				}
+
+				if(address < 0x1F80_4000) // I/O ports, Expansion Region 2
+				{
+					return 0;
+				}
+
+				if(address < 0x1FA0_0000) // no man's land
+				{
+					return 0;
+				}
+
+				if(address < 0x1FC0_0000) // Expansion Region 3 -- PIOMem *might* go here?
+				{
+					return 0;
+				}
+
+				if(address < 0x1FC8_0000) // First copy of ROM
+				{
+					return biosRomDomain.PeekByte(address - 0x1FC0_0000);
+				}
+
+				else // remaining mirrors of ROM, disabled by default
+				{
+					return 0;
+				}
+			}
+
+			void SystemBusPoke(long address, byte val)
+			{
+				if (address >= 0xC000_0000) // KSEG2 only has I/O registers
+				{
+					return; //not going to even try, per #1809
+				}
+				if (address >= 0x2000_0000 && address < 0x8000_0000) //no-mans land in KUSEG
+				{
+					return; //should throw a bus error but that's not supported
+				}
+
+				bool isKSEG1 = (address & 0xE000_0000) == 0xA000_0000;
+				address = address & 0x1FFF_FFFF; // with one exception, KUSEG, KSEG0, and KSEG1 are all mirrors
+
+				if (address < 0x0080_0000) // main RAM
+				{
+					address = address & 0x001F_FFFF; // mirrors enabled by default
+					mainRamDomain.PokeByte(address, val);
+					return;
+				}
+
+				if (address < 0x1F00_0000) // no-man's land
+				{
+					return;
+				}
+
+				if (address < 0x1F80_0000) // Expansion Region 1 -- I *think* PIOMem goes here?
+				{
+					return;
+				}
+
+				if (address < 0x1F80_1000) // Scratchpad
+				{
+					if (!isKSEG1)
+					{
+						cacheDomain.PokeByte(address - 0x1F80_0000, val);
+						return;
+					}
+					else // KSEG1 has caching turned off, so the scratchpad isn't available there.
+					{
+						return;
+					}
+				}
+
+				if (address < 0x1F80_4000) // I/O ports, Expansion Region 2
+				{
+					return;
+				}
+
+				if (address < 0x1FA0_0000) // no man's land
+				{
+					return;
+				}
+
+				if (address < 0x1FC0_0000) // Expansion Region 3 -- PIOMem *might* go here?
+				{
+					return;
+				}
+
+				if (address < 0x1FC8_0000) // First copy of ROM
+				{
+					biosRomDomain.PokeByte(address - 0x1FC0_0000, val);
+					return;
+				}
+
+				else // remaining mirrors of ROM, disabled by default
+				{
+					return;
+				}
+			}
 		}
 
 		private IMemoryDomains MemoryDomains;
