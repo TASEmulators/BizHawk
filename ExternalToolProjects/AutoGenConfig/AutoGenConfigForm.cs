@@ -5,7 +5,6 @@ using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
-using BizHawk.Client.EmuHawk;
 
 using static BizHawk.Experiment.AutoGenConfig.ConfigEditorUIGenerators;
 
@@ -14,8 +13,9 @@ namespace BizHawk.Experiment.AutoGenConfig
 	[ExternalTool("AutoGenConfig")]
 	public class AutoGenConfigForm : Form, IExternalToolForm
 	{
-		[RequiredApi]
-		private IEmulationApi? _emuAPI { get; set; }
+		public ApiContainer? _apiContainer { get; set; }
+
+		private ApiContainer APIs => _apiContainer ?? throw new NullReferenceException();
 
 		private static readonly WeakReference<ConfigEditorCache> _cache = new WeakReference<ConfigEditorCache>(new ConfigEditorCache(typeof(Config)));
 
@@ -133,7 +133,7 @@ namespace BizHawk.Experiment.AutoGenConfig
 						Text = fi.Name
 					});
 				}
-				var config = (_emuAPI as EmulationApi ?? throw new Exception("required API wasn't fulfilled")).ForbiddenConfigReference;
+				var config = (APIs.Emulation as EmulationApi ?? throw new Exception("required API wasn't fulfilled")).ForbiddenConfigReference;
 				var groupings = new Dictionary<string, object> { [string.Empty] = config };
 				void TraverseGroupings(object groupingObj, string parentNesting)
 				{

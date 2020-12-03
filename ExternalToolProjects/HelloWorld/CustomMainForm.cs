@@ -16,12 +16,34 @@ namespace HelloWorld
 	[ExternalToolEmbeddedIcon("HelloWorld.icon_Hello.ico")]
 	public partial class CustomMainForm : Form, IExternalToolForm
 	{
-		/// <remarks><see cref="RequiredServiceAttribute">RequiredServices</see> are populated by EmuHawk at runtime.</remarks>
+		/// <remarks>
+		/// <see cref="RequiredServiceAttribute">RequiredServices</see> are populated by EmuHawk at runtime.
+		/// These remain supported, but you should only use them when there is no API that does what you want.
+		/// </remarks>
 		[RequiredService]
 		private IEmulator? _emu { get; set; }
 
 		[RequiredService]
 		private IMemoryDomains? _memoryDomains { get; set; }
+
+		/// <remarks>
+		/// <see cref="RequiredApiAttribute">RequiredApis</see> are populated by EmuHawk at runtime.
+		/// You can have props for any subset of the available APIs, or use an <see cref="ApiContainer"/> to get them all at once.
+		/// </remarks>
+		[RequiredApi]
+		private IEmulationApi? _emuApi { get; set; }
+
+		/// <remarks>
+		/// <see cref="ApiContainer"/> can be used as a shorthand for accessing the various APIs, more like the Lua syntax.
+		/// </remarks>
+		public ApiContainer? _apiContainer { get; set; }
+
+		private ApiContainer APIs => _apiContainer ?? throw new NullReferenceException();
+
+		/// <remarks>
+		/// An example of a hack. Hacks should be your last resort because they're prone to break with new releases.
+		/// </remarks>
+		private Config GlobalConfig => (_emuApi as EmulationApi ?? throw new Exception("required API wasn't fulfilled")).ForbiddenConfigReference;
 
 		private WatchList? _watches;
 
@@ -48,11 +70,12 @@ namespace HelloWorld
 		{
 			InitializeComponent();
 			label_GameHash.Click += label_GameHash_Click;
+			Closing += (sender, args) => APIs.EmuClient.SetClientExtraPadding(0, 0, 0, 0);
 
 			ClientApi.BeforeQuickSave += (sender, e) =>
 			{
 				if (e.Slot != 0) return; // only take effect on slot 0
-				var basePath = Path.Combine(GlobalWin.Config.PathEntries.SaveStateAbsolutePath(GlobalWin.Game.System), "Test");
+				var basePath = Path.Combine(GlobalConfig.PathEntries.SaveStateAbsolutePath(APIs.Emulation.GetSystemId()), "Test");
 				if (!Directory.Exists(basePath)) Directory.CreateDirectory(basePath);
 				ClientApi.SaveState(Path.Combine(basePath, e.Name));
 				e.Handled = true;
@@ -60,7 +83,7 @@ namespace HelloWorld
 			ClientApi.BeforeQuickLoad += (sender, e) =>
 			{
 				if (e.Slot != 0) return; // only take effect on slot 0
-				var basePath = Path.Combine(GlobalWin.Config.PathEntries.SaveStateAbsolutePath(GlobalWin.Game.System), "Test");
+				var basePath = Path.Combine(GlobalConfig.PathEntries.SaveStateAbsolutePath(APIs.Emulation.GetSystemId()), "Test");
 				ClientApi.LoadState(Path.Combine(basePath, e.Name));
 				e.Handled = true;
 			};
@@ -71,15 +94,13 @@ namespace HelloWorld
 		/// <remarks>This is called once when the form is opened, and every time a new movie session starts.</remarks>
 		public void Restart()
 		{
-#if false
-			ClientApi.SetExtraPadding(50, 50);
-#endif
+			APIs.EmuClient.SetClientExtraPadding(50, 50);
 
-			if (GlobalWin.Game.Name != "Null")
+			if (APIs.GameInfo.GetRomName() != "Null")
 			{
-				Watches.RefreshDomains(_memoryDomains, GlobalWin.Config.RamWatchDefinePrevious);
-				label_Game.Text = $"You're playing {GlobalWin.Game.Name}";
-				label_GameHash.Text = $"Hash: {GlobalWin.Game.Hash}";
+				Watches.RefreshDomains(_memoryDomains, GlobalConfig.RamWatchDefinePrevious);
+				label_Game.Text = $"You're playing {APIs.GameInfo.GetRomName()}";
+				label_GameHash.Text = $"Hash: {APIs.GameInfo.GetRomHash()}";
 			}
 			else
 			{
@@ -91,12 +112,12 @@ namespace HelloWorld
 		public void UpdateValues(ToolFormUpdateType type)
 		{
 			if (!(type == ToolFormUpdateType.PreFrame || type == ToolFormUpdateType.FastPreFrame)
-			    || GlobalWin.Game.Name == "Null"
+			    || APIs.GameInfo.GetRomName() == "Null"
 			    || Watches.Count < 3)
 			{
 				return;
 			}
-			Watches.UpdateValues(GlobalWin.Config.RamWatchDefinePrevious);
+			Watches.UpdateValues(GlobalConfig.RamWatchDefinePrevious);
 			label_Watch1.Text = $"First watch ({Watches[0].AddressString}) current value: {Watches[0].ValueString}";
 			label_Watch2.Text = $"Second watch ({Watches[1].AddressString}) current value: {Watches[1].ValueString}";
 			label_Watch3.Text = $"Third watch ({Watches[2].AddressString}) current value: {Watches[2].ValueString}";
@@ -129,7 +150,7 @@ namespace HelloWorld
 			ClientApi.SetInput(1, j);
 		}
 
-		private void label_GameHash_Click(object sender, EventArgs e) => Clipboard.SetText(GlobalWin.Game.Hash);
+		private void label_GameHash_Click(object sender, EventArgs e) => Clipboard.SetText(APIs.GameInfo.GetRomHash());
 
 		private void loadstate_Click(object sender, EventArgs e)
 		{
