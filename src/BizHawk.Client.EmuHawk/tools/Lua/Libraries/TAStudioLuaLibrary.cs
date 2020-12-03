@@ -388,23 +388,21 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod("getbranchinput", "Gets the controller state of the given frame with the given branch identifier")]
 		public LuaTable GetBranchInput(string branchId, int frame)
 		{
-			var table = _th.CreateTable();
-			if (!Engaged()) return table;
+			if (!Engaged()) return _th.CreateTable();
 
 			var controller = Tastudio.GetBranchInput(branchId, frame);
-			if (controller == null) return table;
+			if (controller == null) return _th.CreateTable();
 
+			var dict = new Dictionary<string, object>();
 			foreach (var button in controller.Definition.BoolButtons)
 			{
-				table[button] = controller.IsPressed(button);
+				dict[button] = controller.IsPressed(button);
 			}
-
 			foreach (var button in controller.Definition.Axes.Keys)
 			{
-				table[button] = controller.AxisValue(button);
+				dict[button] = controller.AxisValue(button);
 			}
-
-			return table;
+			return _th.DictToTable(dict);
 		}
 
 		[LuaMethodExample("tastudio.loadbranch(0)")]

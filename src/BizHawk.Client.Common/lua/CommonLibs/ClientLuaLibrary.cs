@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
@@ -234,10 +235,7 @@ namespace BizHawk.Client.Common
 		[LuaMethod("transformPoint", "Transforms a point (x, y) in emulator space to a point in client space")]
 		public LuaTable TransformPoint(int x, int y) {
 			var transformed = APIs.EmuClient.TransformPoint(new Point(x, y));
-			var table = _th.CreateTable();
-			table["x"] = transformed.X;
-			table["y"] = transformed.Y;
-			return table;
+			return _th.DictToTable(new Dictionary<string, int> { ["x"] = transformed.X, ["y"] = transformed.Y });
 		}
 
 		[LuaMethodExample("client.unpause( );")]

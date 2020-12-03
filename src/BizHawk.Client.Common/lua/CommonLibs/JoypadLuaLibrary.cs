@@ -17,11 +17,11 @@ namespace BizHawk.Client.Common
 		[LuaMethod("get", "returns a lua table of the controller buttons pressed. If supplied, it will only return a table of buttons for the given controller")]
 		public LuaTable Get(int? controller = null)
 		{
-			var table = _th.DictToTable(APIs.Joypad.Get(controller));
-			table["clear"] = null;
-			table["getluafunctionslist"] = null;
-			table["output"] = null;
-			return table;
+			var dict = APIs.Joypad.Get(controller);
+			dict["clear"] = null; // are these here for a reason? --yoshi
+			dict["getluafunctionslist"] = null;
+			dict["output"] = null;
+			return _th.DictToTable(dict);
 		}
 
 		[LuaMethodExample("local nljoyget = joypad.getimmediate( );")]
