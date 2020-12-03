@@ -290,6 +290,7 @@ namespace BizHawk.Client.EmuHawk
 					var b = Control.MouseButtons;
 					return (
 						Control.MousePosition,
+						MouseWheelTracker,
 						(b & MouseButtons.Left) != 0,
 						(b & MouseButtons.Middle) != 0,
 						(b & MouseButtons.Right) != 0,
@@ -799,7 +800,7 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public bool InvisibleEmulation { get; set; }
 
-		public long MouseWheelTracker { get; private set; }
+		private long MouseWheelTracker;
 
 		private int? _pauseOnFrame;
 		public int? PauseOnFrame // If set, upon completion of this frame, the client wil pause

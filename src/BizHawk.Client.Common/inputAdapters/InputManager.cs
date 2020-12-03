@@ -47,7 +47,7 @@ namespace BizHawk.Client.Common
 
 		public Controller ClientControls { get; set; }
 
-		public Func<(Point Pos, bool LMB, bool MMB, bool RMB, bool X1MB, bool X2MB)> GetMainFormMouseInfo { get; set; }
+		public Func<(Point Pos, long Scroll, bool LMB, bool MMB, bool RMB, bool X1MB, bool X2MB)> GetMainFormMouseInfo { get; set; }
 
 		public void SyncControls(IEmulator emulator, IMovieSession session, Config config)
 		{

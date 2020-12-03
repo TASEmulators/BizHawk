@@ -9,13 +9,10 @@ namespace BizHawk.Client.Common
 
 		private readonly InputManager _inputManager;
 
-		private readonly IMainFormForApi _mainForm;
-
-		public InputApi(IMainFormForApi mainForm, IWindowCoordsTransformer displayManager, InputManager inputManager)
+		public InputApi(IWindowCoordsTransformer displayManager, InputManager inputManager)
 		{
 			_displayManager = displayManager;
 			_inputManager = inputManager;
-			_mainForm = mainForm;
 		}
 
 		public Dictionary<string, bool> Get()
@@ -27,7 +24,7 @@ namespace BizHawk.Client.Common
 
 		public Dictionary<string, object> GetMouse()
 		{
-			var (pos, lmb, mmb, rmb, x1mb, x2mb) = _inputManager.GetMainFormMouseInfo();
+			var (pos, scroll, lmb, mmb, rmb, x1mb, x2mb) = _inputManager.GetMainFormMouseInfo();
 			// TODO - need to specify whether in "emu" or "native" coordinate space.
 			var p = _displayManager.UntransformPoint(pos);
 			return new Dictionary<string, object>
@@ -39,7 +36,7 @@ namespace BizHawk.Client.Common
 				["Right"] = rmb,
 				["XButton1"] = x1mb,
 				["XButton2"] = x2mb,
-				["Wheel"] = _mainForm.MouseWheelTracker
+				["Wheel"] = scroll
 			};
 		}
 	}
