@@ -14,11 +14,6 @@ namespace BizHawk.Client.EmuHawk
 {
 	public class Win32LuaLibraries : LuaLibraries
 	{
-		public Win32LuaLibraries()
-		{
-			if (true /*NLua.Lua.WhichLua == "NLua"*/) _lua["keepalives"] = _lua.NewTable();
-		}
-
 		public Win32LuaLibraries(
 			IEmulatorServiceProvider serviceProvider,
 			MainForm mainForm,
@@ -26,17 +21,16 @@ namespace BizHawk.Client.EmuHawk
 			InputManager inputManager,
 			Config config,
 			IEmulator emulator,
-			IGameInfo game
-		) : this()
+			IGameInfo game)
 		{
 			void EnumerateLuaFunctions(string name, Type type, LuaLibraryBase instance)
 			{
-				instance?.Lua?.NewTable(name);
+				if (instance != null) _lua.NewTable(name);
 				foreach (var method in type.GetMethods())
 				{
 					var foundAttrs = method.GetCustomAttributes(typeof(LuaMethodAttribute), false);
 					if (foundAttrs.Length == 0) continue;
-					instance?.Lua?.RegisterFunction($"{name}.{((LuaMethodAttribute) foundAttrs[0]).Name}", instance, method);
+					if (instance != null) _lua.RegisterFunction($"{name}.{((LuaMethodAttribute) foundAttrs[0]).Name}", instance, method);
 					Docs.Add(new LibraryFunction(
 						name,
 						type.GetCustomAttributes(typeof(DescriptionAttribute), false).Cast<DescriptionAttribute>()
@@ -46,6 +40,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
+			if (true /*NLua.Lua.WhichLua == "NLua"*/) _lua["keepalives"] = _lua.NewTable();
 			_mainForm = mainForm;
 			LuaWait = new AutoResetEvent(false);
 			Docs.Clear();
