@@ -14,8 +14,8 @@ namespace BizHawk.Client.EmuHawk
 	[Description("A library for creating and managing custom dialogs")]
 	public sealed class FormsLuaLibrary : LuaLibraryBase
 	{
-		public FormsLuaLibrary(LuaLibraries luaLibsImpl, ApiContainer apiContainer, Lua lua, Action<string> logOutputCallback)
-			: base(luaLibsImpl, apiContainer, lua, logOutputCallback) {}
+		public FormsLuaLibrary(LuaLibraries luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
+			: base(luaLibsImpl, apiContainer, logOutputCallback) {}
 
 		public override string Name => "forms";
 
@@ -192,7 +192,7 @@ namespace BizHawk.Client.EmuHawk
 				return 0;
 			}
 
-			var dropdownItems = items.Values.Cast<string>().ToList();
+			var dropdownItems = _th.EnumerateValues<string>(items).ToList();
 			dropdownItems.Sort();
 
 			var dropdown = new LuaDropDown(dropdownItems);
@@ -1246,7 +1246,7 @@ namespace BizHawk.Client.EmuHawk
 						{
 							if (control is LuaDropDown)
 							{
-								var dropdownItems = items.Values.Cast<string>().ToList();
+								var dropdownItems = _th.EnumerateValues<string>(items).ToList();
 								dropdownItems.Sort();
 								(control as LuaDropDown).SetItems(dropdownItems);
 							}

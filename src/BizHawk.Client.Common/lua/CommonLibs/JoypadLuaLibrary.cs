@@ -8,8 +8,8 @@ namespace BizHawk.Client.Common
 {
 	public sealed class JoypadLuaLibrary : LuaLibraryBase
 	{
-		public JoypadLuaLibrary(LuaLibraries luaLibsImpl, ApiContainer apiContainer, Lua lua, Action<string> logOutputCallback)
-			: base(luaLibsImpl, apiContainer, lua, logOutputCallback) {}
+		public JoypadLuaLibrary(LuaLibraries luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
+			: base(luaLibsImpl, apiContainer, logOutputCallback) {}
 
 		public override string Name => "joypad";
 
@@ -17,7 +17,7 @@ namespace BizHawk.Client.Common
 		[LuaMethod("get", "returns a lua table of the controller buttons pressed. If supplied, it will only return a table of buttons for the given controller")]
 		public LuaTable Get(int? controller = null)
 		{
-			var table = APIs.Joypad.Get(controller).ToLuaTable(Lua);
+			var table = _th.DictToTable(APIs.Joypad.Get(controller));
 			table["clear"] = null;
 			table["getluafunctionslist"] = null;
 			table["output"] = null;
@@ -26,7 +26,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local nljoyget = joypad.getimmediate( );")]
 		[LuaMethod("getimmediate", "returns a lua table of any controller buttons currently pressed by the user")]
-		public LuaTable GetImmediate(int? controller = null) => APIs.Joypad.GetImmediate(controller).ToLuaTable(Lua);
+		public LuaTable GetImmediate(int? controller = null) => _th.DictToTable(APIs.Joypad.GetImmediate(controller));
 
 		[LuaMethodExample("joypad.setfrommnemonicstr( \"|    0,    0,    0,  100,...R..B....|\" );")]
 		[LuaMethod("setfrommnemonicstr", "sets the given buttons to their provided values for the current frame, string will be interpreted the same way an entry from a movie input log would be")]
@@ -37,7 +37,10 @@ namespace BizHawk.Client.Common
 		public void Set(LuaTable buttons, int? controller = null)
 		{
 			var dict = new Dictionary<string, bool>();
-			foreach (var k in buttons.Keys) dict[k.ToString()] = Convert.ToBoolean(buttons[k]); // Accepts 1/0 or true/false
+			foreach (var (k, v) in _th.EnumerateEntries<object, object>(buttons))
+			{
+				dict[k.ToString()] = Convert.ToBoolean(v); // Accepts 1/0 or true/false
+			}
 			APIs.Joypad.Set(dict, controller);
 		}
 
@@ -46,7 +49,10 @@ namespace BizHawk.Client.Common
 		public void SetAnalog(LuaTable controls, object controller = null)
 		{
 			var dict = new Dictionary<string, int?>();
-			foreach (var k in controls.Keys) dict[k.ToString()] = double.TryParse(controls[k].ToString(), out var d) ? (int) d : (int?) null;
+			foreach (var (k, v) in _th.EnumerateEntries<object, object>(controls))
+			{
+				dict[k.ToString()] = double.TryParse(v.ToString(), out var d) ? (int) d : (int?) null;
+			}
 			APIs.Joypad.SetAnalog(dict, controller);
 		}
 	}

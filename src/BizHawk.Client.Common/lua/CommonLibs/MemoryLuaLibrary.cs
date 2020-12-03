@@ -9,19 +9,14 @@ namespace BizHawk.Client.Common
 	[Description("These functions behavior identically to the mainmemory functions but the user can set the memory domain to read and write from. The default domain is the system bus. Use getcurrentmemorydomain(), and usememorydomain() to control which domain is used. Each core has its own set of valid memory domains. Use getmemorydomainlist() to get a list of memory domains for the current core loaded.")]
 	public sealed class MemoryLuaLibrary : LuaLibraryBase
 	{
-		public MemoryLuaLibrary(LuaLibraries luaLibsImpl, ApiContainer apiContainer, Lua lua, Action<string> logOutputCallback)
-			: base(luaLibsImpl, apiContainer, lua, logOutputCallback) {}
+		public MemoryLuaLibrary(LuaLibraries luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
+			: base(luaLibsImpl, apiContainer, logOutputCallback) {}
 
 		public override string Name => "memory";
 
 		[LuaMethodExample("local nlmemget = memory.getmemorydomainlist();")]
 		[LuaMethod("getmemorydomainlist", "Returns a string of the memory domains for the loaded platform core. List will be a single string delimited by line feeds")]
-		public LuaTable GetMemoryDomainList()
-		{
-			return APIs.Memory
-				.GetMemoryDomainList()
-				.ToLuaTable(Lua);
-		}
+		public LuaTable GetMemoryDomainList() => _th.ListToTable(APIs.Memory.GetMemoryDomainList());
 
 		[LuaMethodExample("local uimemget = memory.getmemorydomainsize( mainmemory.getname( ) );")]
 		[LuaMethod("getmemorydomainsize", "Returns the number of bytes of the specified memory domain. If no domain is specified, or the specified domain doesn't exist, returns the current domain size")]
@@ -53,12 +48,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local nlmemrea = memory.readbyterange( 0x100, 30, mainmemory.getname( ) );")]
 		[LuaMethod("readbyterange", "Reads the address range that starts from address, and is length long. Returns the result into a table of key value pairs (where the address is the key).")]
-		public LuaTable ReadByteRange(int addr, int length, string domain = null)
-		{
-			return APIs.Memory
-				.ReadByteRange(addr, length, domain)
-				.ToLuaTable(Lua);
-		}
+		public LuaTable ReadByteRange(int addr, int length, string domain = null) => _th.ListToTable(APIs.Memory.ReadByteRange(addr, length, domain));
 
 		/// <remarks>TODO C# version requires a contiguous address range</remarks>
 		[LuaMethodExample("")]
@@ -66,17 +56,20 @@ namespace BizHawk.Client.Common
 		public void WriteByteRange(LuaTable memoryblock, string domain = null)
 		{
 #if true
-			foreach (var addr in memoryblock.Keys) APIs.Memory.WriteByte(LuaInt(addr), (uint) memoryblock[addr], domain);
+			foreach (var (addr, v) in _th.EnumerateEntries<double, double>(memoryblock))
+			{
+				APIs.Memory.WriteByte(LuaInt(addr), (uint) v, domain);
+			}
 #else
 			var d = string.IsNullOrEmpty(domain) ? Domain : DomainList[VerifyMemoryDomain(domain)];
 			if (d.CanPoke())
 			{
-				foreach (var address in memoryblock.Keys)
+				foreach (var (address, v) in _th.EnumerateEntries<double, double>(memoryblock))
 				{
 					var addr = LuaInt(address);
 					if (addr < d.Size)
 					{
-						d.PokeByte(addr, (byte)LuaInt(memoryblock[address]));
+						d.PokeByte(addr, (byte) LuaInt(v));
 					}
 					else
 					{

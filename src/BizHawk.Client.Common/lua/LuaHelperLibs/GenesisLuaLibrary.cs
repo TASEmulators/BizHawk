@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
 
-using NLua;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 
 // ReSharper disable UnusedMember.Global
@@ -11,8 +10,8 @@ namespace BizHawk.Client.Common
 	[Description("Functions specific to GenesisHawk (functions may not run when an Genesis game is not loaded)")]
 	public sealed class GenesisLuaLibrary : LuaLibraryBase
 	{
-		public GenesisLuaLibrary(LuaLibraries luaLibsImpl, ApiContainer apiContainer, Lua lua, Action<string> logOutputCallback)
-			: base(luaLibsImpl, apiContainer, lua, logOutputCallback) {}
+		public GenesisLuaLibrary(LuaLibraries luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
+			: base(luaLibsImpl, apiContainer, logOutputCallback) {}
 
 		public override string Name => "genesis";
 

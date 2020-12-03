@@ -2,16 +2,14 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 
-using NLua;
-
 // ReSharper disable UnusedMember.Global
 namespace BizHawk.Client.Common
 {
 	[Description("A library for performing SQLite operations.")]
 	public sealed class SQLiteLuaLibrary : LuaLibraryBase
 	{
-		public SQLiteLuaLibrary(LuaLibraries luaLibsImpl, ApiContainer apiContainer, Lua lua, Action<string> logOutputCallback)
-			: base(luaLibsImpl, apiContainer, lua, logOutputCallback) {}
+		public SQLiteLuaLibrary(LuaLibraries luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
+			: base(luaLibsImpl, apiContainer, logOutputCallback) {}
 
 		public override string Name => "SQL";
 
@@ -34,7 +32,7 @@ namespace BizHawk.Client.Common
 		public object ReadCommand(string query = "")
 		{
 			var result = APIs.SQLite.ReadCommand(query);
-			return result is Dictionary<string, object> dict ? dict.ToLuaTable(Lua) : result;
+			return result is Dictionary<string, object> dict ? _th.DictToTable(dict) : result;
 		}
 	}
 }

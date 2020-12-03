@@ -17,8 +17,8 @@ namespace BizHawk.Client.Common
 		[OptionalService]
 		private IMemoryDomains MemoryDomainCore { get; set; }
 
-		public MainMemoryLuaLibrary(LuaLibraries luaLibsImpl, ApiContainer apiContainer, Lua lua, Action<string> logOutputCallback)
-			: base(luaLibsImpl, apiContainer, lua, logOutputCallback) {}
+		public MainMemoryLuaLibrary(LuaLibraries luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
+			: base(luaLibsImpl, apiContainer, logOutputCallback) {}
 
 		public override string Name => "mainmemory";
 
@@ -63,9 +63,7 @@ namespace BizHawk.Client.Common
 		[LuaMethod("readbyterange", "Reads the address range that starts from address, and is length long. Returns the result into a table of key value pairs (where the address is the key).")]
 		public LuaTable ReadByteRange(int addr, int length)
 		{
-			return APIs.Memory
-				.ReadByteRange(addr, length, Domain.Name)
-				.ToLuaTable(Lua);
+			return _th.ListToTable(APIs.Memory.ReadByteRange(addr, length, Domain.Name));
 		}
 
 		/// <remarks>TODO C# version requires a contiguous address range</remarks>
@@ -74,17 +72,20 @@ namespace BizHawk.Client.Common
 		public void WriteByteRange(LuaTable memoryblock)
 		{
 #if true
-			foreach (var addr in memoryblock.Keys) APIs.Memory.WriteByte(LuaInt(addr), (uint) memoryblock[addr], Domain.Name);
+			foreach (var (addr, v) in _th.EnumerateEntries<double, double>(memoryblock))
+			{
+				APIs.Memory.WriteByte(LuaInt(addr), (uint) v, Domain.Name);
+			}
 #else
 			var d = Domain;
 			if (d.CanPoke())
 			{
-				foreach (var address in memoryblock.Keys)
+				foreach (var (address, v) in _th.EnumerateEntries<double, double>(memoryblock))
 				{
 					var addr = LuaInt(address);
 					if (addr < d.Size)
 					{
-						d.PokeByte(addr, (byte)LuaInt(memoryblock[address]));
+						d.PokeByte(addr, (byte) LuaInt(v));
 					}
 					else
 					{

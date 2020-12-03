@@ -4,8 +4,6 @@ using System.ComponentModel;
 using System.Net.WebSockets;
 using System.Text;
 
-using NLua;
-
 namespace BizHawk.Client.Common
 {
 	[Description("A library for communicating with other programs")]
@@ -13,8 +11,8 @@ namespace BizHawk.Client.Common
 	{
 		private readonly IDictionary<Guid, ClientWebSocketWrapper> _websockets = new Dictionary<Guid, ClientWebSocketWrapper>();
 
-		public CommLuaLibrary(LuaLibraries luaLibsImpl, ApiContainer apiContainer, Lua lua, Action<string> logOutputCallback)
-			: base(luaLibsImpl, apiContainer, lua, logOutputCallback) {}
+		public CommLuaLibrary(LuaLibraries luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
+			: base(luaLibsImpl, apiContainer, logOutputCallback) {}
 
 		public override string Name => "comm";
 

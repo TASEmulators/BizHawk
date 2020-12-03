@@ -19,41 +19,6 @@ namespace BizHawk.Client.Common
 		/// <exception cref="ArithmeticException"><paramref name="d"/> ≥ 2^53 or <paramref name="d"/> ≤ -2^53</exception>
 		public static long AsInteger(this double d) => PrecisionLimits.Contains(d) ? (long) d : throw new ArithmeticException("integer value exceeds the precision of Lua's integer-as-double");
 
-		public static LuaTable EnumerateToLuaTable<T>(this IEnumerable<T> list, Lua lua) => list.ToList().ToLuaTable(lua);
-
-		public static LuaTable ToLuaTable<T>(this IList<T> list, Lua lua, int indexFrom = 0)
-		{
-			var table = lua.NewTable();
-			for (int i = 0, l = list.Count; i != l; i++) table[indexFrom + i] = list[i];
-			return table;
-		}
-
-		public static LuaTable ToLuaTable<T>(this IDictionary<string, T> dictionary, Lua lua)
-		{
-			var table = lua.NewTable();
-
-			foreach (var kvp in dictionary)
-			{
-				table[kvp.Key] = kvp.Value;
-			}
-
-			return table;
-		}
-
-		public static LuaTable TableFromObject(this Lua lua, object obj)
-		{
-			var table = lua.NewTable();
-			foreach (var method in obj.GetType().GetMethods())
-			{
-				if (!method.IsPublic) continue;
-				var foundAttrs = method.GetCustomAttributes(typeof(LuaMethodAttribute), false);
-				table[method.Name] = lua.RegisterFunction(
-					foundAttrs.Length == 0 ? string.Empty : ((LuaMethodAttribute) foundAttrs[0]).Name, // empty string will default to the actual method name
-					obj,
-					method
-				);
-			}
-			return table;
-		}
+		public static LuaTable EnumerateToLuaTable<T>(this NLuaTableHelper tableHelper, IEnumerable<T> list) => tableHelper.ListToTable(list.ToList());
 	}
 }

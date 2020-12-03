@@ -26,8 +26,8 @@ namespace BizHawk.Client.Common
 
 		public IMainFormForApi MainForm { get; set; }
 
-		public ClientLuaLibrary(LuaLibraries luaLibsImpl, ApiContainer apiContainer, Lua lua, Action<string> logOutputCallback)
-			: base(luaLibsImpl, apiContainer, lua, logOutputCallback) {}
+		public ClientLuaLibrary(LuaLibraries luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
+			: base(luaLibsImpl, apiContainer, logOutputCallback) {}
 
 		public override string Name => "client";
 
@@ -231,7 +231,7 @@ namespace BizHawk.Client.Common
 		[LuaMethod("transformPoint", "Transforms a point (x, y) in emulator space to a point in client space")]
 		public LuaTable TransformPoint(int x, int y) {
 			var transformed = APIs.EmuClient.TransformPoint(new Point(x, y));
-			var table = Lua.NewTable();
+			var table = _th.CreateTable();
 			table["x"] = transformed.X;
 			table["y"] = transformed.Y;
 			return table;
@@ -262,14 +262,14 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local nlcliget = client.getavailabletools( );")]
 		[LuaMethod("getavailabletools", "Returns a list of the tools currently open")]
-		public LuaTable GetAvailableTools() => APIs.Tool.AvailableTools.Select(tool => tool.Name.ToLower()).EnumerateToLuaTable(Lua);
+		public LuaTable GetAvailableTools() => _th.EnumerateToLuaTable(APIs.Tool.AvailableTools.Select(tool => tool.Name.ToLower()));
 
 		[LuaMethodExample("local nlcliget = client.gettool( \"Tool name\" );")]
 		[LuaMethod("gettool", "Returns an object that represents a tool of the given name (not case sensitive). If the tool is not open, it will be loaded if available. Use gettools to get a list of names")]
 		public LuaTable GetTool(string name)
 		{
 			var selectedTool = APIs.Tool.GetTool(name);
-			return selectedTool == null ? null : Lua.TableFromObject(selectedTool);
+			return selectedTool == null ? null : _th.ObjectToTable(selectedTool);
 		}
 
 		[LuaMethodExample("local nlclicre = client.createinstance( \"objectname\" );")]
@@ -277,7 +277,7 @@ namespace BizHawk.Client.Common
 		public LuaTable CreateInstance(string name)
 		{
 			var instance = APIs.Tool.GetTool(name);
-			return instance == null ? null : Lua.TableFromObject(instance);
+			return instance == null ? null : _th.ObjectToTable(instance);
 		}
 
 		[LuaMethodExample("client.displaymessages( true );")]

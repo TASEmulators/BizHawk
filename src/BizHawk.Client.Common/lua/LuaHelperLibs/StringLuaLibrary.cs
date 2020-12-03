@@ -11,8 +11,8 @@ namespace BizHawk.Client.Common
 	{
 		public override string Name => "bizstring";
 
-		public StringLuaLibrary(LuaLibraries luaLibsImpl, ApiContainer apiContainer, Lua lua, Action<string> logOutputCallback)
-			: base(luaLibsImpl, apiContainer, lua, logOutputCallback) {}
+		public StringLuaLibrary(LuaLibraries luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
+			: base(luaLibsImpl, apiContainer, logOutputCallback) {}
 
 		[LuaMethodExample("local stbizhex = bizstring.hex( -12345 );")]
 		[LuaMethod("hex", "Converts the number to a string representation of the hexadecimal value of the given number")]
@@ -125,8 +125,7 @@ namespace BizHawk.Client.Common
 		[LuaMethodExample("local nlbizspl = bizstring.split( \"Some, string\", \", \" );")]
 		[LuaMethod("split", "Splits str into a Lua-style array using the given separator (consecutive separators in str will NOT create empty entries in the array). If the separator is not a string exactly one char long, ',' will be used.")]
 		public LuaTable Split(string str, string separator) => string.IsNullOrEmpty(str)
-			? Lua.NewTable()
-			: str.Split(new[] { separator?.Length == 1 ? separator[0] : ',' }, StringSplitOptions.RemoveEmptyEntries)
-				.ToLuaTable(Lua, 1);
+			? _th.CreateTable()
+			: _th.ListToTable(str.Split(new[] { separator?.Length == 1 ? separator[0] : ',' }, StringSplitOptions.RemoveEmptyEntries), indexFrom: 1);
 	}
 }

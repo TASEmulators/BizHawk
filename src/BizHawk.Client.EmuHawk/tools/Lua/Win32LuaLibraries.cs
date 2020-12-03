@@ -41,6 +41,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			if (true /*NLua.Lua.WhichLua == "NLua"*/) _lua["keepalives"] = _lua.NewTable();
+			_th = new NLuaTableHelper(_lua);
 			_mainForm = mainForm;
 			LuaWait = new AutoResetEvent(false);
 			Docs.Clear();
@@ -59,7 +60,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (addLibrary)
 				{
-					var instance = (LuaLibraryBase) Activator.CreateInstance(lib, this, apiContainer, _lua, (Action<string>) LogToLuaConsole);
+					var instance = (LuaLibraryBase) Activator.CreateInstance(lib, this, apiContainer, (Action<string>) LogToLuaConsole);
 					ServiceInjector.UpdateServices(serviceProvider, instance);
 
 					// TODO: make EmuHawk libraries have a base class with common properties such as this
@@ -79,7 +80,7 @@ namespace BizHawk.Client.EmuHawk
 						{
 							var canvas = new LuaCanvas(width, height, x, y, LogToLuaConsole);
 							canvas.Show();
-							return _lua.TableFromObject(canvas);
+							return _th.ObjectToTable(canvas);
 						};
 					}
 					else if (instance is TAStudioLuaLibrary tastudioLib)
@@ -105,6 +106,8 @@ namespace BizHawk.Client.EmuHawk
 		private Lua _lua = new Lua();
 		private Lua _currThread;
 
+		private readonly NLuaTableHelper _th;
+
 		private static Action<object[]> _logToLuaConsoleCallback = a => Console.WriteLine("a Lua lib is logging during init and the console lib hasn't been initialised yet");
 
 		private FormsLuaLibrary FormsLibrary => (FormsLuaLibrary)Libraries[typeof(FormsLuaLibrary)];
@@ -116,6 +119,8 @@ namespace BizHawk.Client.EmuHawk
 		public override GuiLuaLibrary GuiLibrary => (GuiLuaLibrary) Libraries[typeof(GuiLuaLibrary)];
 
 		private static void LogToLuaConsole(object outputs) => _logToLuaConsoleCallback(new[] { outputs });
+
+		public override NLuaTableHelper GetTableHelper() => _th;
 
 		public override void Restart(IEmulatorServiceProvider newServiceProvider)
 		{

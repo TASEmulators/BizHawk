@@ -40,6 +40,9 @@ namespace BizHawk.Client.Common
 		public abstract void Close();
 		public abstract void EndLuaDrawing();
 		public abstract void ExecuteString(string command);
+
+		public abstract NLuaTableHelper GetTableHelper();
+
 		public abstract void Restart(IEmulatorServiceProvider newServiceProvider);
 		public abstract (bool WaitForFrame, bool Terminated) ResumeScript(LuaFile lf);
 		public abstract void SpawnAndSetFileThread(string pathToLoad, LuaFile lf);

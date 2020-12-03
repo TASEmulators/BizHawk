@@ -34,6 +34,9 @@ namespace BizHawk.Client.EmuHawk
 		public override void ExecuteString(string command)
 		{
 		}
+
+		public override NLuaTableHelper GetTableHelper() => null;
+
 		private static readonly LuaFunctionList EmptyLuaFunList = new LuaFunctionList();
 		public override LuaFunctionList RegisteredFunctions => EmptyLuaFunList;
 		public override GuiLuaLibrary GuiLibrary => null;

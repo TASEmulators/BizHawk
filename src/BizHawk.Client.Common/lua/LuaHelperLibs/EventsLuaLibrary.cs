@@ -24,8 +24,8 @@ namespace BizHawk.Client.Common
 		[OptionalService]
 		private IMemoryDomains Domains { get; set; }
 
-		public EventsLuaLibrary(LuaLibraries luaLibsImpl, ApiContainer apiContainer, Lua lua, Action<string> logOutputCallback)
-			: base(luaLibsImpl, apiContainer, lua, logOutputCallback) {}
+		public EventsLuaLibrary(LuaLibraries luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
+			: base(luaLibsImpl, apiContainer, logOutputCallback) {}
 
 		public override string Name => "event";
 
@@ -360,8 +360,8 @@ namespace BizHawk.Client.Common
 		public LuaTable AvailableScopes()
 		{
 			return DebuggableCore?.MemoryCallbacksAvailable() == true
-				? DebuggableCore.MemoryCallbacks.AvailableScopes.ToLuaTable(Lua)
-				: Lua.NewTable();
+				? _th.ListToTable(DebuggableCore.MemoryCallbacks.AvailableScopes)
+				: _th.CreateTable();
 		}
 
 		private string ProcessScope(string scope)

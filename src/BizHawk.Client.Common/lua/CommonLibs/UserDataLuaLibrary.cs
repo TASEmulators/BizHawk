@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using NLua;
 
 // ReSharper disable UnusedMember.Global
 namespace BizHawk.Client.Common
@@ -8,8 +7,8 @@ namespace BizHawk.Client.Common
 	[Description("A library for setting and retrieving dynamic data that will be saved and loaded with savestates")]
 	public sealed class UserDataLuaLibrary : LuaLibraryBase
 	{
-		public UserDataLuaLibrary(LuaLibraries luaLibsImpl, ApiContainer apiContainer, Lua lua, Action<string> logOutputCallback)
-			: base(luaLibsImpl, apiContainer, lua, logOutputCallback) {}
+		public UserDataLuaLibrary(LuaLibraries luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
+			: base(luaLibsImpl, apiContainer, logOutputCallback) {}
 
 		public override string Name => "userdata";
 

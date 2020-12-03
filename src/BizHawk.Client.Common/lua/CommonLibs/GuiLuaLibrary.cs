@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Linq;
 
 using NLua;
 
@@ -9,8 +10,8 @@ namespace BizHawk.Client.Common
 	{
 		public Func<int, int, int?, int?, LuaTable> CreateLuaCanvasCallback { get; set; }
 
-		public GuiLuaLibrary(LuaLibraries luaLibsImpl, ApiContainer apiContainer, Lua lua, Action<string> logOutputCallback)
-			: base(luaLibsImpl, apiContainer, lua, logOutputCallback) {}
+		public GuiLuaLibrary(LuaLibraries luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
+			: base(luaLibsImpl, apiContainer, logOutputCallback) {}
 
 		public override string Name => "gui";
 
@@ -62,7 +63,7 @@ namespace BizHawk.Client.Common
 			{
 				var pointsArr = new Point[4];
 				var i = 0;
-				foreach (LuaTable point in points.Values)
+				foreach (var point in _th.EnumerateValues<LuaTable>(points))
 				{
 					pointsArr[i] = new Point(LuaInt(point[1]), LuaInt(point[2]));
 					i++;
@@ -123,11 +124,12 @@ namespace BizHawk.Client.Common
 		[LuaMethod("drawPolygon", "Draws a polygon using the table of coordinates specified in points. This should be a table of tables(each of size 2). If x or y is passed, the polygon will be translated by the passed coordinate pair. Line is the color of the polygon. Background is the optional fill color")]
 		public void DrawPolygon(LuaTable points, int? offsetX = null, int? offsetY = null, Color? line = null, Color? background = null)
 		{
+			var pointsList = _th.EnumerateValues<LuaTable>(points).ToList();
 			try
 			{
-				var pointsArr = new Point[points.Values.Count];
+				var pointsArr = new Point[pointsList.Count];
 				var i = 0;
-				foreach (LuaTable point in points.Values)
+				foreach (var point in pointsList)
 				{
 					pointsArr[i] = new Point(LuaInt(point[1]) + (offsetX ?? 0), LuaInt(point[2]) + (offsetY ?? 0));
 					i++;

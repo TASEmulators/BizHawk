@@ -13,8 +13,8 @@ namespace BizHawk.Client.Common
 		public Action FrameAdvanceCallback { get; set; }
 		public Action YieldCallback { get; set; }
 
-		public EmulationLuaLibrary(LuaLibraries luaLibsImpl, ApiContainer apiContainer, Lua lua, Action<string> logOutputCallback)
-			: base(luaLibsImpl, apiContainer, lua, logOutputCallback) {}
+		public EmulationLuaLibrary(LuaLibraries luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
+			: base(luaLibsImpl, apiContainer, logOutputCallback) {}
 
 		public override string Name => "emu";
 
@@ -44,12 +44,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local nlemuget = emu.getregisters( );")]
 		[LuaMethod("getregisters", "returns the complete set of available flags and registers for a given core")]
-		public LuaTable GetRegisters()
-		{
-			return APIs.Emulation
-				.GetRegisters()
-				.ToLuaTable(Lua);
-		}
+		public LuaTable GetRegisters() => _th.DictToTable(APIs.Emulation.GetRegisters());
 
 		[LuaMethodExample("emu.setregister( emu.getregisters( )[ 0 ], -1000 );")]
 		[LuaMethod("setregister", "sets the given register name to the given value")]

@@ -2,17 +2,15 @@
 using System.Drawing;
 using System.Threading;
 
-using NLua;
-
 namespace BizHawk.Client.Common
 {
 	public abstract class LuaLibraryBase
 	{
-		protected LuaLibraryBase(LuaLibraries luaLibsImpl, ApiContainer apiContainer, Lua lua, Action<string> logOutputCallback)
+		protected LuaLibraryBase(LuaLibraries luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
 		{
 			LogOutputCallback = logOutputCallback;
-			Lua = lua;
 			_luaLibsImpl = luaLibsImpl;
+			_th = _luaLibsImpl.GetTableHelper();
 			APIs = apiContainer;
 		}
 
@@ -27,9 +25,9 @@ namespace BizHawk.Client.Common
 
 		protected readonly Action<string> LogOutputCallback;
 
-		public Lua Lua { get; }
-
 		protected readonly LuaLibraries _luaLibsImpl;
+
+		protected readonly NLuaTableHelper _th;
 
 		public static void ClearCurrentThread()
 		{

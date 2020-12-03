@@ -18,8 +18,8 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public ToolManager Tools { get; set; }
 
-		public TAStudioLuaLibrary(LuaLibraries luaLibsImpl, ApiContainer apiContainer, Lua lua, Action<string> logOutputCallback)
-			: base(luaLibsImpl, apiContainer, lua, logOutputCallback) {}
+		public TAStudioLuaLibrary(LuaLibraries luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
+			: base(luaLibsImpl, apiContainer, logOutputCallback) {}
 
 		public override string Name => "tastudio";
 
@@ -165,7 +165,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodExample("local nltasget = tastudio.getselection( );")]
 		[LuaMethod("getselection", "gets the currently selected frames")]
-		public LuaTable GetSelection() => Engaged() ? Tastudio.GetSelection().EnumerateToLuaTable(Lua) : Lua.NewTable();
+		public LuaTable GetSelection() => Engaged() ? _th.EnumerateToLuaTable(Tastudio.GetSelection()) : _th.CreateTable();
 
 		[LuaMethodExample("")]
 		[LuaMethod("submitinputchange", "")]
@@ -375,42 +375,33 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod("getbranches", "Returns a list of the current tastudio branches.  Each entry will have the Id, Frame, and Text properties of the branch")]
 		public LuaTable GetBranches()
 		{
-			if (Engaged())
+			if (!Engaged()) return _th.CreateTable();
+			return _th.EnumerateToLuaTable(Tastudio.CurrentTasMovie.Branches.Select(b => new
 			{
-				return Tastudio.CurrentTasMovie.Branches
-					.Select(b => new
-					{
-						Id = b.Uuid.ToString(),
-						b.Frame,
-						Text = b.UserText
-					})
-					.EnumerateToLuaTable(Lua);
-			}
-
-			return Lua.NewTable();
+				Id = b.Uuid.ToString(),
+				b.Frame,
+				Text = b.UserText
+			}));
 		}
 
 		[LuaMethodExample("local nltasget = tastudio.getbranchinput( \"97021544-2454-4483-824f-47f75e7fcb6a\", 500 );")]
 		[LuaMethod("getbranchinput", "Gets the controller state of the given frame with the given branch identifier")]
 		public LuaTable GetBranchInput(string branchId, int frame)
 		{
-			var table = Lua.NewTable();
+			var table = _th.CreateTable();
+			if (!Engaged()) return table;
 
-			if (Engaged())
+			var controller = Tastudio.GetBranchInput(branchId, frame);
+			if (controller == null) return table;
+
+			foreach (var button in controller.Definition.BoolButtons)
 			{
-				var controller = Tastudio.GetBranchInput(branchId, frame);
-				if (controller != null)
-				{
-					foreach (var button in controller.Definition.BoolButtons)
-					{
-						table[button] = controller.IsPressed(button);
-					}
+				table[button] = controller.IsPressed(button);
+			}
 
-					foreach (var button in controller.Definition.Axes.Keys)
-					{
-						table[button] = controller.AxisValue(button);
-					}
-				}
+			foreach (var button in controller.Definition.Axes.Keys)
+			{
+				table[button] = controller.AxisValue(button);
 			}
 
 			return table;
