@@ -30,7 +30,7 @@ namespace BizHawk.Client.EmuHawk
 	/// Its job is to receive OSD and emulator outputs, and produce one single buffer (BitmapBuffer? Texture2d?) for display by the PresentationPanel.
 	/// Details TBD
 	/// </summary>
-	public class DisplayManager : IDisposable
+	public class DisplayManager : IWindowCoordsTransformer, IDisposable
 	{
 		private class DisplayManagerRenderTargetProvider : IRenderTargetProvider
 		{
@@ -189,15 +189,27 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		private int _currEmuWidth, _currEmuHeight;
 
+		private Padding _clientExtraPadding;
+
+		private Padding _gameExtraPadding;
+
 		/// <summary>
 		/// additional pixels added at the unscaled level for the use of lua drawing. essentially increases the input video provider dimensions
 		/// </summary>
-		public Padding GameExtraPadding { get; set; }
+		public (int Left, int Top, int Right, int Bottom) GameExtraPadding
+		{
+			get => (_gameExtraPadding.Left, _gameExtraPadding.Top, _gameExtraPadding.Right, _gameExtraPadding.Bottom);
+			set => _gameExtraPadding = new Padding(value.Left, value.Top, value.Right, value.Bottom);
+		}
 
 		/// <summary>
 		/// additional pixels added at the native level for the use of lua drawing. essentially just gets tacked onto the final calculated window sizes.
 		/// </summary>
-		public Padding ClientExtraPadding { get; set; }
+		public (int Left, int Top, int Right, int Bottom) ClientExtraPadding
+		{
+			get => (_clientExtraPadding.Left, _clientExtraPadding.Top, _clientExtraPadding.Right, _clientExtraPadding.Bottom);
+			set => _clientExtraPadding = new Padding(value.Left, value.Top, value.Right, value.Bottom);
+		}
 
 		/// <summary>
 		/// custom fonts that don't need to be installed on the user side
@@ -227,7 +239,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (user)
 			{
-				padding += GameExtraPadding;
+				padding += _gameExtraPadding;
 			}
 
 			// an experimental feature
@@ -461,7 +473,7 @@ namespace BizHawk.Client.EmuHawk
 			return new Point((int)v.X, (int)v.Y);
 		}
 
-		internal Size GetPanelNativeSize() => _presentationPanel.NativeSize;
+		public Size GetPanelNativeSize() => _presentationPanel.NativeSize;
 
 		/// <summary>
 		/// This will receive an emulated output frame from an IVideoProvider and run it through the complete frame processing pipeline
@@ -719,8 +731,8 @@ namespace BizHawk.Client.EmuHawk
 				chainOutsize = new Size(bufferWidth * zoom, bufferHeight * zoom);
 			}
 
-			chainOutsize.Width += ClientExtraPadding.Horizontal;
-			chainOutsize.Height += ClientExtraPadding.Vertical;
+			chainOutsize.Width += _clientExtraPadding.Horizontal;
+			chainOutsize.Height += _clientExtraPadding.Vertical;
 
 			var job = new JobInfo
 			{
@@ -1104,16 +1116,16 @@ namespace BizHawk.Client.EmuHawk
 			int currNativeWidth = _presentationPanel.NativeSize.Width;
 			int currNativeHeight = _presentationPanel.NativeSize.Height;
 
-			currNativeWidth += ClientExtraPadding.Horizontal;
-			currNativeHeight += ClientExtraPadding.Vertical;
+			currNativeWidth += _clientExtraPadding.Horizontal;
+			currNativeHeight += _clientExtraPadding.Vertical;
 
 			int width,height;
 			if (name == "emu")
 			{
 				width = _currEmuWidth;
 				height = _currEmuHeight;
-				width += GameExtraPadding.Horizontal;
-				height += GameExtraPadding.Vertical;
+				width += _gameExtraPadding.Horizontal;
+				height += _gameExtraPadding.Vertical;
 			}
 			else if (name == "native")
 			{

@@ -4,7 +4,6 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Common;
@@ -265,13 +264,13 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SetClientExtraPadding(int left, int top, int right, int bottom)
 		{
-			_displayManager.ClientExtraPadding = new Padding(left, top, right, bottom);
+			_displayManager.ClientExtraPadding = (left, top, right, bottom);
 			_mainForm.FrameBufferResized();
 		}
 
 		public void SetGameExtraPadding(int left, int top, int right, int bottom)
 		{
-			_displayManager.GameExtraPadding = new Padding(left, top, right, bottom);
+			_displayManager.GameExtraPadding = (left, top, right, bottom);
 			_mainForm.FrameBufferResized();
 		}
 

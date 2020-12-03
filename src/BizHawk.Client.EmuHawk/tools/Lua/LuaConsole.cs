@@ -122,15 +122,15 @@ namespace BizHawk.Client.EmuHawk
 					
 					DisplayManager.ClearLuaSurfaces();
 
-					if (DisplayManager.ClientExtraPadding != Padding.Empty)
+					if (DisplayManager.ClientExtraPadding != (0, 0, 0, 0))
 					{
-						DisplayManager.ClientExtraPadding = new Padding(0);
+						DisplayManager.ClientExtraPadding = (0, 0, 0, 0);
 						MainForm.FrameBufferResized();
 					}
 
-					if (DisplayManager.GameExtraPadding != Padding.Empty)
+					if (DisplayManager.GameExtraPadding != (0, 0, 0, 0))
 					{
-						DisplayManager.GameExtraPadding = new Padding(0);
+						DisplayManager.GameExtraPadding = (0, 0, 0, 0);
 						MainForm.FrameBufferResized();
 					}
 
