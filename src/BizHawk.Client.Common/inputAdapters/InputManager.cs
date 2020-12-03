@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
+
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -43,6 +46,8 @@ namespace BizHawk.Client.Common
 		public SimpleController ControllerInputCoalescer { get; set; }
 
 		public Controller ClientControls { get; set; }
+
+		public Func<(Point Pos, bool LMB, bool MMB, bool RMB, bool X1MB, bool X2MB)> GetMainFormMouseInfo { get; set; }
 
 		public void SyncControls(IEmulator emulator, IMovieSession session, Config config)
 		{

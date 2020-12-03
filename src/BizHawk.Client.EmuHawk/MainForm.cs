@@ -282,7 +282,22 @@ namespace BizHawk.Client.EmuHawk
 			Config = config;
 			GL = gl;
 
-			InputManager = new InputManager { ControllerInputCoalescer = new ControllerInputCoalescer() };
+			InputManager = new InputManager
+			{
+				ControllerInputCoalescer = new ControllerInputCoalescer(),
+				GetMainFormMouseInfo = () =>
+				{
+					var b = Control.MouseButtons;
+					return (
+						Control.MousePosition,
+						(b & MouseButtons.Left) != 0,
+						(b & MouseButtons.Middle) != 0,
+						(b & MouseButtons.Right) != 0,
+						(b & MouseButtons.XButton1) != 0,
+						(b & MouseButtons.XButton2) != 0
+					);
+				}
+			};
 			FirmwareManager = new FirmwareManager();
 			movieSession = MovieSession = new MovieSession(
 				Config.Movies,

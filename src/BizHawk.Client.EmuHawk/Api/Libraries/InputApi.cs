@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 
@@ -30,18 +29,20 @@ namespace BizHawk.Client.EmuHawk
 
 		public Dictionary<string, object> GetMouse()
 		{
-			var buttons = new Dictionary<string, object>();
+			var (pos, lmb, mmb, rmb, x1mb, x2mb) = _inputManager.GetMainFormMouseInfo();
 			// TODO - need to specify whether in "emu" or "native" coordinate space.
-			var p = _displayManager.UntransformPoint(Control.MousePosition);
-			buttons["X"] = p.X;
-			buttons["Y"] = p.Y;
-			buttons[MouseButtons.Left.ToString()] = (Control.MouseButtons & MouseButtons.Left) != 0;
-			buttons[MouseButtons.Middle.ToString()] = (Control.MouseButtons & MouseButtons.Middle) != 0;
-			buttons[MouseButtons.Right.ToString()] = (Control.MouseButtons & MouseButtons.Right) != 0;
-			buttons[MouseButtons.XButton1.ToString()] = (Control.MouseButtons & MouseButtons.XButton1) != 0;
-			buttons[MouseButtons.XButton2.ToString()] = (Control.MouseButtons & MouseButtons.XButton2) != 0;
-			buttons["Wheel"] = _mainForm.MouseWheelTracker;
-			return buttons;
+			var p = _displayManager.UntransformPoint(pos);
+			return new Dictionary<string, object>
+			{
+				["X"] = p.X,
+				["Y"] = p.Y,
+				["Left"] = lmb,
+				["Middle"] = mmb,
+				["Right"] = rmb,
+				["XButton1"] = x1mb,
+				["XButton2"] = x2mb,
+				["Wheel"] = _mainForm.MouseWheelTracker
+			};
 		}
 	}
 }
