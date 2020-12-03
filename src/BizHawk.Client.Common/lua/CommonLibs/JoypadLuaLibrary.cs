@@ -6,10 +6,10 @@ using NLua;
 // ReSharper disable UnusedMember.Global
 namespace BizHawk.Client.Common
 {
-	public sealed class JoypadLuaLibrary : DelegatingLuaLibrary
+	public sealed class JoypadLuaLibrary : LuaLibraryBase
 	{
-		public JoypadLuaLibrary(LuaLibraries luaLibsImpl, Lua lua, Action<string> logOutputCallback)
-			: base(luaLibsImpl, lua, logOutputCallback) {}
+		public JoypadLuaLibrary(LuaLibraries luaLibsImpl, ApiContainer apiContainer, Lua lua, Action<string> logOutputCallback)
+			: base(luaLibsImpl, apiContainer, lua, logOutputCallback) {}
 
 		public override string Name => "joypad";
 

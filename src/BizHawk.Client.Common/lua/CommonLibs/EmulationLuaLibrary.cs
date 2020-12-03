@@ -8,13 +8,13 @@ using NLua;
 namespace BizHawk.Client.Common
 {
 	[Description("A library for interacting with the currently loaded emulator core")]
-	public sealed class EmulationLuaLibrary : DelegatingLuaLibrary
+	public sealed class EmulationLuaLibrary : LuaLibraryBase
 	{
 		public Action FrameAdvanceCallback { get; set; }
 		public Action YieldCallback { get; set; }
 
-		public EmulationLuaLibrary(LuaLibraries luaLibsImpl, Lua lua, Action<string> logOutputCallback)
-			: base(luaLibsImpl, lua, logOutputCallback) {}
+		public EmulationLuaLibrary(LuaLibraries luaLibsImpl, ApiContainer apiContainer, Lua lua, Action<string> logOutputCallback)
+			: base(luaLibsImpl, apiContainer, lua, logOutputCallback) {}
 
 		public override string Name => "emu";
 

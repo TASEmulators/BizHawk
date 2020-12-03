@@ -6,10 +6,10 @@ using NLua;
 namespace BizHawk.Client.Common
 {
 	[Description("A library for setting and retrieving dynamic data that will be saved and loaded with savestates")]
-	public sealed class UserDataLuaLibrary : DelegatingLuaLibrary
+	public sealed class UserDataLuaLibrary : LuaLibraryBase
 	{
-		public UserDataLuaLibrary(LuaLibraries luaLibsImpl, Lua lua, Action<string> logOutputCallback)
-			: base(luaLibsImpl, lua, logOutputCallback) {}
+		public UserDataLuaLibrary(LuaLibraries luaLibsImpl, ApiContainer apiContainer, Lua lua, Action<string> logOutputCallback)
+			: base(luaLibsImpl, apiContainer, lua, logOutputCallback) {}
 
 		public override string Name => "userdata";
 

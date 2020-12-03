@@ -14,8 +14,8 @@ namespace BizHawk.Client.EmuHawk
 	[Description("A library for creating and managing custom dialogs")]
 	public sealed class FormsLuaLibrary : LuaLibraryBase
 	{
-		public FormsLuaLibrary(LuaLibraries luaLibsImpl, Lua lua, Action<string> logOutputCallback)
-			: base(luaLibsImpl, lua, logOutputCallback) {}
+		public FormsLuaLibrary(LuaLibraries luaLibsImpl, ApiContainer apiContainer, Lua lua, Action<string> logOutputCallback)
+			: base(luaLibsImpl, apiContainer, lua, logOutputCallback) {}
 
 		public override string Name => "forms";
 

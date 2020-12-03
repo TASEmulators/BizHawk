@@ -4,10 +4,10 @@ using NLua;
 
 namespace BizHawk.Client.Common
 {
-	public sealed class InputLuaLibrary : DelegatingLuaLibrary
+	public sealed class InputLuaLibrary : LuaLibraryBase
 	{
-		public InputLuaLibrary(LuaLibraries luaLibsImpl, Lua lua, Action<string> logOutputCallback)
-			: base(luaLibsImpl, lua, logOutputCallback) {}
+		public InputLuaLibrary(LuaLibraries luaLibsImpl, ApiContainer apiContainer, Lua lua, Action<string> logOutputCallback)
+			: base(luaLibsImpl, apiContainer, lua, logOutputCallback) {}
 
 		public override string Name => "input";
 

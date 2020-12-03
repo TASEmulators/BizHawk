@@ -12,7 +12,7 @@ using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 namespace BizHawk.Client.Common
 {
 	[Description("Functions related specifically to Nes Cores")]
-	public sealed class NESLuaLibrary : DelegatingLuaLibrary
+	public sealed class NESLuaLibrary : LuaLibraryBase
 	{
 		// TODO:  
 		// perhaps with the new core config system, one could
@@ -21,8 +21,8 @@ namespace BizHawk.Client.Common
 		[OptionalService]
 		private IMemoryDomains MemoryDomains { get; set; }
 
-		public NESLuaLibrary(LuaLibraries luaLibsImpl, Lua lua, Action<string> logOutputCallback)
-			: base(luaLibsImpl, lua, logOutputCallback) {}
+		public NESLuaLibrary(LuaLibraries luaLibsImpl, ApiContainer apiContainer, Lua lua, Action<string> logOutputCallback)
+			: base(luaLibsImpl, apiContainer, lua, logOutputCallback) {}
 
 		public override string Name => "nes";
 

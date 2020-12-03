@@ -64,7 +64,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (addLibrary)
 				{
-					var instance = (LuaLibraryBase) Activator.CreateInstance(lib, this, _lua, (Action<string>) LogToLuaConsole);
+					var instance = (LuaLibraryBase) Activator.CreateInstance(lib, this, apiContainer, _lua, (Action<string>) LogToLuaConsole);
 					ServiceInjector.UpdateServices(serviceProvider, instance);
 
 					// TODO: make EmuHawk libraries have a base class with common properties such as this
@@ -91,8 +91,6 @@ namespace BizHawk.Client.EmuHawk
 					{
 						tastudioLib.Tools = _mainForm.Tools;
 					}
-
-					if (instance is DelegatingLuaLibrary dlgInstance) dlgInstance.APIs = apiContainer;
 
 					EnumerateLuaFunctions(instance.Name, lib, instance);
 					Libraries.Add(lib, instance);

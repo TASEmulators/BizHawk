@@ -5,10 +5,10 @@ using NLua;
 // ReSharper disable UnusedAutoPropertyAccessor.Local
 namespace BizHawk.Client.Common
 {
-	public sealed class GameInfoLuaLibrary : DelegatingLuaLibrary
+	public sealed class GameInfoLuaLibrary : LuaLibraryBase
 	{
-		public GameInfoLuaLibrary(LuaLibraries luaLibsImpl, Lua lua, Action<string> logOutputCallback)
-			: base(luaLibsImpl, lua, logOutputCallback) {}
+		public GameInfoLuaLibrary(LuaLibraries luaLibsImpl, ApiContainer apiContainer, Lua lua, Action<string> logOutputCallback)
+			: base(luaLibsImpl, apiContainer, lua, logOutputCallback) {}
 
 		public override string Name => "gameinfo";
 

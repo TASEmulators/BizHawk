@@ -9,7 +9,7 @@ using NLua;
 namespace BizHawk.Client.Common
 {
 	[Description("Main memory library reads and writes from the Main memory domain (the default memory domain set by any given core)")]
-	public sealed class MainMemoryLuaLibrary : DelegatingLuaLibrary
+	public sealed class MainMemoryLuaLibrary : LuaLibraryBase
 	{
 		[RequiredService]
 		private IEmulator Emulator { get; set; }
@@ -17,8 +17,8 @@ namespace BizHawk.Client.Common
 		[OptionalService]
 		private IMemoryDomains MemoryDomainCore { get; set; }
 
-		public MainMemoryLuaLibrary(LuaLibraries luaLibsImpl, Lua lua, Action<string> logOutputCallback)
-			: base(luaLibsImpl, lua, logOutputCallback) {}
+		public MainMemoryLuaLibrary(LuaLibraries luaLibsImpl, ApiContainer apiContainer, Lua lua, Action<string> logOutputCallback)
+			: base(luaLibsImpl, apiContainer, lua, logOutputCallback) {}
 
 		public override string Name => "mainmemory";
 

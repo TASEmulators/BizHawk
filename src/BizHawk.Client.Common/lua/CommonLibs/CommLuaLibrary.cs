@@ -9,12 +9,12 @@ using NLua;
 namespace BizHawk.Client.Common
 {
 	[Description("A library for communicating with other programs")]
-	public sealed class CommLuaLibrary : DelegatingLuaLibrary
+	public sealed class CommLuaLibrary : LuaLibraryBase
 	{
 		private readonly IDictionary<Guid, ClientWebSocketWrapper> _websockets = new Dictionary<Guid, ClientWebSocketWrapper>();
 
-		public CommLuaLibrary(LuaLibraries luaLibsImpl, Lua lua, Action<string> logOutputCallback)
-			: base(luaLibsImpl, lua, logOutputCallback) {}
+		public CommLuaLibrary(LuaLibraries luaLibsImpl, ApiContainer apiContainer, Lua lua, Action<string> logOutputCallback)
+			: base(luaLibsImpl, apiContainer, lua, logOutputCallback) {}
 
 		public override string Name => "comm";
 

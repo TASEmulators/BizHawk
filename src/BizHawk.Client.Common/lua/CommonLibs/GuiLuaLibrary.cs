@@ -5,12 +5,12 @@ using NLua;
 
 namespace BizHawk.Client.Common
 {
-	public sealed class GuiLuaLibrary : DelegatingLuaLibrary, IDisposable
+	public sealed class GuiLuaLibrary : LuaLibraryBase, IDisposable
 	{
 		public Func<int, int, int?, int?, LuaTable> CreateLuaCanvasCallback { get; set; }
 
-		public GuiLuaLibrary(LuaLibraries luaLibsImpl, Lua lua, Action<string> logOutputCallback)
-			: base(luaLibsImpl, lua, logOutputCallback) {}
+		public GuiLuaLibrary(LuaLibraries luaLibsImpl, ApiContainer apiContainer, Lua lua, Action<string> logOutputCallback)
+			: base(luaLibsImpl, apiContainer, lua, logOutputCallback) {}
 
 		public override string Name => "gui";
 

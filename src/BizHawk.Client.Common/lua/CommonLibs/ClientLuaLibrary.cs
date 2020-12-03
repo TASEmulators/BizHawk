@@ -16,7 +16,7 @@ using NLua;
 namespace BizHawk.Client.Common
 {
 	[Description("A library for manipulating the EmuHawk client UI")]
-	public sealed class ClientLuaLibrary : DelegatingLuaLibrary
+	public sealed class ClientLuaLibrary : LuaLibraryBase
 	{
 		[RequiredService]
 		private IEmulator Emulator { get; set; }
@@ -26,8 +26,8 @@ namespace BizHawk.Client.Common
 
 		public IMainFormForApi MainForm { get; set; }
 
-		public ClientLuaLibrary(LuaLibraries luaLibsImpl, Lua lua, Action<string> logOutputCallback)
-			: base(luaLibsImpl, lua, logOutputCallback) {}
+		public ClientLuaLibrary(LuaLibraries luaLibsImpl, ApiContainer apiContainer, Lua lua, Action<string> logOutputCallback)
+			: base(luaLibsImpl, apiContainer, lua, logOutputCallback) {}
 
 		public override string Name => "client";
 

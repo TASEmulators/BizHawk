@@ -8,10 +8,10 @@ using NLua;
 namespace BizHawk.Client.Common
 {
 	[Description("A library for performing SQLite operations.")]
-	public sealed class SQLiteLuaLibrary : DelegatingLuaLibrary
+	public sealed class SQLiteLuaLibrary : LuaLibraryBase
 	{
-		public SQLiteLuaLibrary(LuaLibraries luaLibsImpl, Lua lua, Action<string> logOutputCallback)
-			: base(luaLibsImpl, lua, logOutputCallback) {}
+		public SQLiteLuaLibrary(LuaLibraries luaLibsImpl, ApiContainer apiContainer, Lua lua, Action<string> logOutputCallback)
+			: base(luaLibsImpl, apiContainer, lua, logOutputCallback) {}
 
 		public override string Name => "SQL";
 

@@ -18,8 +18,8 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public ToolManager Tools { get; set; }
 
-		public TAStudioLuaLibrary(LuaLibraries luaLibsImpl, Lua lua, Action<string> logOutputCallback)
-			: base(luaLibsImpl, lua, logOutputCallback) {}
+		public TAStudioLuaLibrary(LuaLibraries luaLibsImpl, ApiContainer apiContainer, Lua lua, Action<string> logOutputCallback)
+			: base(luaLibsImpl, apiContainer, lua, logOutputCallback) {}
 
 		public override string Name => "tastudio";
 

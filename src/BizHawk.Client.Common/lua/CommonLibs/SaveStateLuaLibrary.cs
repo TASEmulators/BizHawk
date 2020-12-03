@@ -4,10 +4,10 @@ using NLua;
 
 namespace BizHawk.Client.Common
 {
-	public sealed class SaveStateLuaLibrary : DelegatingLuaLibrary
+	public sealed class SaveStateLuaLibrary : LuaLibraryBase
 	{
-		public SaveStateLuaLibrary(LuaLibraries luaLibsImpl, Lua lua, Action<string> logOutputCallback)
-			: base(luaLibsImpl, lua, logOutputCallback) {}
+		public SaveStateLuaLibrary(LuaLibraries luaLibsImpl, ApiContainer apiContainer, Lua lua, Action<string> logOutputCallback)
+			: base(luaLibsImpl, apiContainer, lua, logOutputCallback) {}
 
 		public override string Name => "savestate";
 
