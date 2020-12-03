@@ -5,14 +5,13 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-using BizHawk.Client.Common;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.PCEngine;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
 
-namespace BizHawk.Client.EmuHawk
+namespace BizHawk.Client.Common
 {
 	public sealed class EmuClientApi : IEmuClientApi
 	{
@@ -69,7 +68,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		internal static readonly BizHawkSystemIdToEnumConverter SystemIdConverter = new BizHawkSystemIdToEnumConverter();
+		public static readonly BizHawkSystemIdToEnumConverter SystemIdConverter = new BizHawkSystemIdToEnumConverter();
 
 		private readonly IVideoProvider VideoProvider;
 
