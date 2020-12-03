@@ -422,6 +422,9 @@ INLINE void PS_CPU::WriteMemory(pscpu_timestamp_t &timestamp, uint32 address, ui
 //
 INLINE uint32 PS_CPU::ReadInstruction(pscpu_timestamp_t &timestamp, uint32 address)
 {
+ if (g_ShockMemCallback && (g_ShockMemCbType & eShockMemCb_Execute))
+  g_ShockMemCallback(address, eShockMemCb_Execute, 32, 0);
+	
  uint32 instr;
 
  instr = ICache[(address & 0xFFC) >> 2].Data;
