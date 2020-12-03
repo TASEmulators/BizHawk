@@ -8,14 +8,14 @@ namespace BizHawk.Client.Common
 {
 	public class BasicApiProvider : IExternalApiProvider
 	{
-		private readonly IReadOnlyDictionary<Type, IExternalApi> _libs;
+		public IReadOnlyCollection<Type> AvailableApis => Container.Libraries.Keys.ToList();
 
-		public IReadOnlyCollection<Type> AvailableApis => _libs.Keys.ToList();
+		public ApiContainer Container { get; }
 
-		public BasicApiProvider(ApiContainer apiContainer) => _libs = apiContainer.Libraries;
+		public BasicApiProvider(ApiContainer apiContainer) => Container = apiContainer;
 
-		public object? GetApi(Type t) => _libs.TryGetValue(t, out var api) ? api : null;
+		public object? GetApi(Type t) => Container.Libraries.TryGetValue(t, out var api) ? api : null;
 
-		public bool HasApi(Type t) => _libs.ContainsKey(t);
+		public bool HasApi(Type t) => Container.Libraries.ContainsKey(t);
 	}
 }

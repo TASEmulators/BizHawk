@@ -10,6 +10,8 @@ namespace BizHawk.Client.Common
 		/// <returns>a list of all currently registered <see cref="IExternalApi">APIs</see> that are available</returns>
 		IReadOnlyCollection<Type> AvailableApis { get; }
 
+		ApiContainer Container { get; }
+
 		/// <returns>an instance of the <see cref="IExternalApi"/> <paramref name="t"/> iff available else <see langword="null"/></returns>
 		object? GetApi(Type t);
 
