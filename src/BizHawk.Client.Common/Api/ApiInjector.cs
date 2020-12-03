@@ -35,6 +35,9 @@ namespace BizHawk.Client.Common
 			Type targetType = target.GetType();
 			object[] tmp = new object[1];
 
+			targetType.GetProperties().FirstOrDefault(pi => pi.PropertyType == typeof(ApiContainer))
+				?.SetValue(target, source.Container);
+
 			foreach (var propinfo in targetType.GetPropertiesWithAttrib(typeof(RequiredApiAttribute)))
 			{
 				tmp[0] = source.GetApi(propinfo.PropertyType);
