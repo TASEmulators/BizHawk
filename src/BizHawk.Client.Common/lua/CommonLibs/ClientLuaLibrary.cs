@@ -5,7 +5,6 @@ using System.Drawing;
 using System.Linq;
 using System.Threading;
 
-using BizHawk.Client.Common;
 using BizHawk.Client.Common.cheats;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
@@ -14,7 +13,7 @@ using NLua;
 
 // ReSharper disable StringLiteralTypo
 // ReSharper disable UnusedMember.Global
-namespace BizHawk.Client.EmuHawk
+namespace BizHawk.Client.Common
 {
 	[Description("A library for manipulating the EmuHawk client UI")]
 	public sealed class ClientLuaLibrary : DelegatingLuaLibrary
