@@ -1,7 +1,7 @@
 version: 0.0.0.{build}
 branches:
   only:
-  - appveyor-plz
+  - master
 image: Visual Studio 2019
 assembly_info:
   patch: true
