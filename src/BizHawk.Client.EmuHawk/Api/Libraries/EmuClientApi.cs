@@ -20,7 +20,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly Config _config;
 
-		private readonly DisplayManager _displayManager;
+		private readonly IWindowCoordsTransformer _displayManager;
 
 		private readonly InputManager _inputManager;
 
@@ -83,7 +83,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public event StateSavedEventHandler StateSaved;
 
-		public EmuClientApi(Action<string> logCallback, IMainFormForApi mainForm, DisplayManager displayManager, InputManager inputManager, Config config, IEmulator emulator, IGameInfo game)
+		public EmuClientApi(Action<string> logCallback, IMainFormForApi mainForm, IWindowCoordsTransformer displayManager, InputManager inputManager, Config config, IEmulator emulator, IGameInfo game)
 		{
 			_config = config;
 			_displayManager = displayManager;

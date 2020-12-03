@@ -8,13 +8,13 @@ namespace BizHawk.Client.EmuHawk
 {
 	public sealed class InputApi : IInputApi
 	{
-		private readonly DisplayManager _displayManager;
+		private readonly IWindowCoordsTransformer _displayManager;
 
 		private readonly InputManager _inputManager;
 
 		private readonly IMainFormForApi _mainForm;
 
-		public InputApi(IMainFormForApi mainForm, DisplayManager displayManager, InputManager inputManager)
+		public InputApi(IMainFormForApi mainForm, IWindowCoordsTransformer displayManager, InputManager inputManager)
 		{
 			_displayManager = displayManager;
 			_inputManager = inputManager;

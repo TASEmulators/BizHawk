@@ -50,6 +50,7 @@ namespace BizHawk.Client.EmuHawk
 				[typeof(Action<string>)] = logCallback,
 				[typeof(IMainFormForApi)] = mainForm,
 				[typeof(DisplayManager)] = displayManager,
+				[typeof(IWindowCoordsTransformer)] = displayManager,
 				[typeof(InputManager)] = inputManager,
 				[typeof(IMovieSession)] = movieSession,
 				[typeof(ToolManager)] = toolManager,
