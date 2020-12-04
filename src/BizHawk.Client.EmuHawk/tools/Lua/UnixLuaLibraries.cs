@@ -52,9 +52,6 @@ namespace BizHawk.Client.EmuHawk
 		public override void StartLuaDrawing()
 		{
 		}
-		public override void WindowClosed(IntPtr handle)
-		{
-		}
 
 		public override void RunScheduledDisposes()
 		{

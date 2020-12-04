@@ -10,18 +10,16 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public List<LuaEvent> ControlEvents { get; } = new List<LuaEvent>();
 
-		private readonly LuaLibraries _luaImp;
 		private readonly string _currentDirectory = Environment.CurrentDirectory;
 		private readonly LuaFile _ownerFile;
 
-		public LuaWinform(LuaFile ownerFile, LuaLibraries luaImp)
+		public LuaWinform(LuaFile ownerFile, Action<IntPtr> formsWindowClosedCallback)
 		{
 			_ownerFile = ownerFile;
-			_luaImp = luaImp;
 			InitializeComponent();
 			Icon = Properties.Resources.TextDocIcon;
 			StartPosition = FormStartPosition.CenterParent;
-			Closing += (o, e) => { _luaImp.WindowClosed(Handle); };
+			Closing += (o, e) => formsWindowClosedCallback(Handle);
 		}
 
 		public void DoLuaEvent(IntPtr handle)

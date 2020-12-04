@@ -47,7 +47,6 @@ namespace BizHawk.Client.Common
 		public abstract (bool WaitForFrame, bool Terminated) ResumeScript(LuaFile lf);
 		public abstract void SpawnAndSetFileThread(string pathToLoad, LuaFile lf);
 		public abstract void StartLuaDrawing();
-		public abstract void WindowClosed(IntPtr handle);
 
 		public abstract void RunScheduledDisposes();
 	}

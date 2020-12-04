@@ -150,11 +150,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public override LuaFunctionList RegisteredFunctions => EventsLibrary.RegisteredFunctions;
 
-		public override void WindowClosed(IntPtr handle)
-		{
-			FormsLibrary.WindowClosed(handle);
-		}
-
 		public override void CallSaveStateEvent(string name)
 		{
 			EventsLibrary.CallSaveStateEvent(name);
