@@ -223,7 +223,7 @@ namespace BizHawk.Client.EmuHawk
 					LuaImp.GuiLibrary.DrawFinish();
 				}
 
-				runningScripts = LuaImp.RunningScripts.ToList();
+				runningScripts = LuaImp.ScriptList.Where(lf => lf.Enabled).ToList();
 
 				foreach (var file in runningScripts)
 				{

@@ -18,7 +18,6 @@ namespace BizHawk.Client.Common
 		public abstract LuaFunctionList RegisteredFunctions { get; }
 		public abstract GuiLuaLibrary GuiLibrary { get; }
 		protected readonly Dictionary<Type, LuaLibraryBase> Libraries = new Dictionary<Type, LuaLibraryBase>();
-		public IEnumerable<LuaFile> RunningScripts => ScriptList.Where(lf => lf.Enabled);
 		public readonly LuaFileList ScriptList = new LuaFileList();
 
 		public bool IsRebootingCore { get; set; } // pretty hacky.. we don't want a lua script to be able to restart itself by rebooting the core
