@@ -29,8 +29,6 @@ namespace BizHawk.Client.Common
 
 		public override string Name => "event";
 
-		public LuaFunctionList RegisteredFunctions { get; } = new LuaFunctionList();
-
 		private void LogMemoryCallbacksNotImplemented()
 		{
 			Log($"{Emulator.Attributes().CoreName} does not implement memory callbacks");

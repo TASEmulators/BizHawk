@@ -150,7 +150,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool FrameAdvanceRequested { get; private set; }
 
-		public override LuaFunctionList RegisteredFunctions => EventsLibrary.RegisteredFunctions;
+		public override LuaFunctionList RegisteredFunctions { get; } = new LuaFunctionList();
 
 		public override void CallSaveStateEvent(string name)
 		{
