@@ -38,6 +38,8 @@
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
 			this.label7 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label8 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label9 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.groupBox4 = new System.Windows.Forms.GroupBox();
 			this.groupBox5 = new System.Windows.Forms.GroupBox();
 			this.hScrollBarScanline = new System.Windows.Forms.HScrollBar();
@@ -60,6 +62,7 @@
 			this.bmpViewMemory = new BizHawk.Client.EmuHawk.BmpView();
 			this.bmpViewDetails = new BizHawk.Client.EmuHawk.BmpView();
 			this.bmpViewOAM = new BizHawk.Client.EmuHawk.BmpView();
+			this.bmpViewOBJ = new BizHawk.Client.EmuHawk.BmpView();
 			this.bmpViewBGPal = new BizHawk.Client.EmuHawk.BmpView();
 			this.bmpViewSPPal = new BizHawk.Client.EmuHawk.BmpView();
 			this.bmpViewTiles1 = new BizHawk.Client.EmuHawk.BmpView();
@@ -159,15 +162,30 @@
 			this.label7.Name = "label7";
 			this.label7.Text = "Left-click a palette to use it for drawing the tiles display.";
 			// 
+			// label8
+			// 
+			this.label8.Location = new System.Drawing.Point(3, 16);
+			this.label8.Name = "label8";
+			this.label8.Text = "Sprites";
+			// 
+			// label9
+			// 
+			this.label9.Location = new System.Drawing.Point(3, 52);
+			this.label9.Name = "label9";
+			this.label9.Text = "Objects";
+			// 
 			// groupBox4
 			// 
 			this.groupBox4.Controls.Add(this.bmpViewOAM);
+			this.groupBox4.Controls.Add(this.bmpViewOBJ);
+			this.groupBox4.Controls.Add(this.label8);
+			this.groupBox4.Controls.Add(this.label9);
 			this.groupBox4.Location = new System.Drawing.Point(12, 327);
 			this.groupBox4.Name = "groupBox4";
-			this.groupBox4.Size = new System.Drawing.Size(332, 41);
+			this.groupBox4.Size = new System.Drawing.Size(332, 331);
 			this.groupBox4.TabIndex = 19;
 			this.groupBox4.TabStop = false;
-			this.groupBox4.Text = "Sprites";
+			this.groupBox4.Text = "OAM";
 			// 
 			// groupBox5
 			// 
@@ -250,9 +268,9 @@
 			// 
 			this.groupBoxDetails.Controls.Add(this.labelDetails);
 			this.groupBoxDetails.Controls.Add(this.bmpViewDetails);
-			this.groupBoxDetails.Location = new System.Drawing.Point(12, 374);
+			this.groupBoxDetails.Location = new System.Drawing.Point(350, 327);
 			this.groupBoxDetails.Name = "groupBoxDetails";
-			this.groupBoxDetails.Size = new System.Drawing.Size(262, 153);
+			this.groupBoxDetails.Size = new System.Drawing.Size(192, 153);
 			this.groupBoxDetails.TabIndex = 21;
 			this.groupBoxDetails.TabStop = false;
 			this.groupBoxDetails.Text = "Details";
@@ -260,7 +278,7 @@
 			// labelDetails
 			// 
 			this.labelDetails.Location = new System.Drawing.Point(76, 16);
-			this.labelDetails.MaximumSize = new System.Drawing.Size(150, 0);
+			this.labelDetails.MaximumSize = new System.Drawing.Size(115, 0);
 			this.labelDetails.Name = "labelDetails";
 			this.labelDetails.Text = "Mouse over an item to see details about it.";
 			// 
@@ -268,9 +286,9 @@
 			// 
 			this.groupBoxMemory.Controls.Add(this.bmpViewMemory);
 			this.groupBoxMemory.Controls.Add(this.labelMemory);
-			this.groupBoxMemory.Location = new System.Drawing.Point(280, 374);
+			this.groupBoxMemory.Location = new System.Drawing.Point(350, 486);
 			this.groupBoxMemory.Name = "groupBoxMemory";
-			this.groupBoxMemory.Size = new System.Drawing.Size(262, 153);
+			this.groupBoxMemory.Size = new System.Drawing.Size(192, 153);
 			this.groupBoxMemory.TabIndex = 22;
 			this.groupBoxMemory.TabStop = false;
 			this.groupBoxMemory.Text = "Details - Memory";
@@ -278,7 +296,7 @@
 			// labelMemory
 			// 
 			this.labelMemory.Location = new System.Drawing.Point(76, 16);
-			this.labelMemory.MaximumSize = new System.Drawing.Size(150, 0);
+			this.labelMemory.MaximumSize = new System.Drawing.Size(115, 0);
 			this.labelMemory.Name = "labelMemory";
 			this.labelMemory.Text = "Right-click an item to display it here.";
 			// 
@@ -314,7 +332,7 @@
 			// 
 			this.labelSpriteBackColor.Location = new System.Drawing.Point(67, 24);
 			this.labelSpriteBackColor.Name = "labelSpriteBackColor";
-			this.labelSpriteBackColor.Text = "label8";
+			this.labelSpriteBackColor.Text = "label10";
 			// 
 			// buttonChangeColor
 			// 
@@ -364,7 +382,7 @@
 			// bmpViewOAM
 			// 
 			this.bmpViewOAM.BackColor = System.Drawing.Color.Black;
-			this.bmpViewOAM.Location = new System.Drawing.Point(6, 19);
+			this.bmpViewOAM.Location = new System.Drawing.Point(6, 32);
 			this.bmpViewOAM.Name = "bmpViewOAM";
 			this.bmpViewOAM.Size = new System.Drawing.Size(320, 16);
 			this.bmpViewOAM.TabIndex = 14;
@@ -373,6 +391,19 @@
 			this.bmpViewOAM.MouseEnter += new System.EventHandler(this.bmpViewOAM_MouseEnter);
 			this.bmpViewOAM.MouseLeave += new System.EventHandler(this.bmpViewOAM_MouseLeave);
 			this.bmpViewOAM.MouseMove += new System.Windows.Forms.MouseEventHandler(this.bmpViewOAM_MouseMove);
+			// 
+			// bmpViewOBJ
+			// 
+			this.bmpViewOBJ.BackColor = System.Drawing.Color.Black;
+			this.bmpViewOBJ.Location = new System.Drawing.Point(6, 67);
+			this.bmpViewOBJ.Name = "bmpViewOBJ";
+			this.bmpViewOBJ.Size = new System.Drawing.Size(256, 256);
+			this.bmpViewOBJ.TabIndex = 15;
+			this.bmpViewOBJ.Text = "Objects";
+			this.bmpViewOBJ.MouseClick += new System.Windows.Forms.MouseEventHandler(this.bmpView_MouseClick);
+			this.bmpViewOBJ.MouseEnter += new System.EventHandler(this.bmpViewOBJ_MouseEnter);
+			this.bmpViewOBJ.MouseLeave += new System.EventHandler(this.bmpViewOBJ_MouseLeave);
+			this.bmpViewOBJ.MouseMove += new System.Windows.Forms.MouseEventHandler(this.bmpViewOBJ_MouseMove);
 			// 
 			// bmpViewBGPal
 			// 
@@ -456,7 +487,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(834, 593);
+			this.ClientSize = new System.Drawing.Size(834, 664);
 			this.Controls.Add(this.groupBox8);
 			this.Controls.Add(this.groupBox6);
 			this.Controls.Add(this.groupBoxMemory);
@@ -480,6 +511,7 @@
 			this.groupBox3.ResumeLayout(false);
 			this.groupBox3.PerformLayout();
 			this.groupBox4.ResumeLayout(false);
+			this.groupBox4.PerformLayout();
 			this.groupBox5.ResumeLayout(false);
 			this.groupBox5.PerformLayout();
 			this.groupBoxDetails.ResumeLayout(false);
@@ -510,6 +542,7 @@
 		private BizHawk.WinForms.Controls.LocLabelEx label5;
 		private BizHawk.WinForms.Controls.LocLabelEx label6;
 		private BmpView bmpViewOAM;
+		private BmpView bmpViewOBJ;
 		private System.Windows.Forms.GroupBox groupBox1;
 		private System.Windows.Forms.GroupBox groupBox2;
 		private System.Windows.Forms.GroupBox groupBox3;
@@ -528,6 +561,8 @@
 		private BizHawk.WinForms.Controls.LocLabelEx labelMemory;
 		private BmpView bmpViewMemory;
 		private BizHawk.WinForms.Controls.LocLabelEx label7;
+		private BizHawk.WinForms.Controls.LocLabelEx label8;
+		private BizHawk.WinForms.Controls.LocLabelEx label9;
 		private System.Windows.Forms.GroupBox groupBox6;
 		private BizHawk.WinForms.Controls.LocLabelEx labelClipboard;
 		private System.Windows.Forms.GroupBox groupBox8;

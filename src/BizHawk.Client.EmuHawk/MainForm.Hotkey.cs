@@ -710,7 +710,17 @@ namespace BizHawk.Client.EmuHawk
 						var s = gb2.GetSettings();
 						s.DisplayOBJ ^= true;
 						gb2.PutSettings(s);
-						AddOnScreenMessage($"OBJ toggled {(s.DisplayBG ? "on" : "off")}");
+						AddOnScreenMessage($"OBJ toggled {(s.DisplayOBJ ? "on" : "off")}");
+					}
+
+					break;
+				case "GB Toggle Window":
+					if (Emulator is Gameboy gb3)
+					{
+						var s = gb3.GetSettings();
+						s.DisplayWindow ^= true;
+						gb3.PutSettings(s);
+						AddOnScreenMessage($"WIN toggled {(s.DisplayWindow ? "on" : "off")}");
 					}
 
 					break;

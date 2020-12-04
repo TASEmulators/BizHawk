@@ -67,6 +67,7 @@ namespace BizHawk.Client.EmuHawk
 			bmpViewBGPal.ChangeBitmapSize(8, 4);
 			bmpViewSPPal.ChangeBitmapSize(8, 4);
 			bmpViewOAM.ChangeBitmapSize(320, 16);
+			bmpViewOBJ.ChangeBitmapSize(256, 256);
 			bmpViewDetails.ChangeBitmapSize(8, 16);
 			bmpViewMemory.ChangeBitmapSize(8, 16);
 
@@ -97,6 +98,7 @@ namespace BizHawk.Client.EmuHawk
 			bmpViewBGPal.Clear();
 			bmpViewSPPal.Clear();
 			bmpViewOAM.Clear();
+			bmpViewOBJ.Clear();
 			bmpViewDetails.Clear();
 			bmpViewMemory.Clear();
 			_cbScanlineEmu = -4; // force refresh
@@ -330,6 +332,63 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		/// <summary>
+		/// draw objects from oam data
+		/// </summary>
+		/// <param name="b">bitmap to draw to.  should be 320x8 (!tall), 320x16 (tall)</param>
+		/// <param name="_oam">oam data, 4 * 40 bytes</param>
+		/// <param name="_tiles">base tiledata location. cgb: second bank tiledata assumed to be @+8k</param>
+		/// <param name="_pal">2 (dmg) or 8 (cgb) palettes</param>
+		/// <param name="tall">true for 8x16 sprites; else 8x8</param>
+		/// <param name="cgb">true for cgb (more palettes, second bank tiles)</param>
+		private static unsafe void DrawObj(Bitmap b, IntPtr _oam, IntPtr _tiles, IntPtr _pal, bool tall, bool cgb)
+		{
+			var lockData = b.LockBits(new Rectangle(0, 0, 256, 256), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+			int* dest = (int*)lockData.Scan0;
+			int pitch = lockData.Stride / sizeof(int);
+			int* pal = (int*)_pal;
+			byte* oam = (byte*)_oam;
+
+			for (int s = 0; s < 40; s++)
+			{
+				int yPos = *oam++;
+				int xPos = *oam++;
+				dest += xPos + yPos * pitch;
+				int tileIndex = *oam++;
+				int flags = *oam++;
+				bool vFlip = flags.Bit(6);
+				bool hFlip = flags.Bit(5);
+				if (tall)
+				{
+					// i assume 8x16 vFlip flips the whole thing, not just each tile?
+					if (vFlip)
+					{
+						tileIndex |= 1;
+					}
+					else
+					{
+						tileIndex &= 0xfe;
+					}
+				}
+
+				byte* tile = (byte*)(_tiles + tileIndex * 16);
+				int* thisPal = pal + 4 * (cgb ? flags & 7 : flags >> 4 & 1);
+				if (cgb && flags.Bit(3))
+					tile += 8192;
+
+				DrawTileHv(tile, dest, pitch, thisPal, hFlip, vFlip);
+
+				if (tall)
+				{
+					DrawTileHv(tile + 16, dest + pitch * 8, pitch, thisPal, hFlip, vFlip);
+				}
+
+				dest -= xPos + yPos * pitch;
+			}
+
+			b.UnlockBits(lockData);
+		}
+
+		/// <summary>
 		/// draw a palette directly
 		/// </summary>
 		/// <param name="b">bitmap to draw to.  should be numpals x 4</param>
@@ -455,7 +514,7 @@ namespace BizHawk.Client.EmuHawk
 				bmpViewBGPal.Refresh();
 				bmpViewSPPal.Refresh();
 
-				// oam
+				// oam (sprites)
 				if (lcdc.Bit(2)) // 8x16
 				{
 					bmpViewOAM.ChangeBitmapSize(320, 16);
@@ -470,6 +529,11 @@ namespace BizHawk.Client.EmuHawk
 				}
 				DrawOam(bmpViewOAM.Bmp, oam, vram, spPal, lcdc.Bit(2), _cgb);
 				bmpViewOAM.Refresh();
+
+				// oam (objects)
+				bmpViewOBJ.Clear();
+				DrawObj(bmpViewOBJ.Bmp, oam, vram, spPal, lcdc.Bit(2), _cgb);
+				bmpViewOBJ.Refresh();
 			}
 			// try to run the current mouseover, to refresh if the mouse is being held over a pane while the emulator runs
 			// this doesn't really work well; the update rate seems to be throttled
@@ -883,6 +947,22 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void bmpViewOAM_MouseMove(object sender, MouseEventArgs e)
+		{
+			SpriteMouseover(e.X, e.Y);
+		}
+
+		private void bmpViewOBJ_MouseEnter(object sender, EventArgs e)
+		{
+			SaveDetails();
+			groupBoxDetails.Text = "Details - Objects";
+		}
+
+		private void bmpViewOBJ_MouseLeave(object sender, EventArgs e)
+		{
+			LoadDetails();
+		}
+
+		private void bmpViewOBJ_MouseMove(object sender, MouseEventArgs e)
 		{
 			SpriteMouseover(e.X, e.Y);
 		}
