@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -118,13 +119,17 @@ namespace BizHawk.Client.EmuHawk
 
 		public override string EngineName => Lua.WhichLua;
 
-		public override GuiLuaLibrary GuiLibrary => (GuiLuaLibrary) Libraries[typeof(GuiLuaLibrary)];
+		public GuiLuaLibrary GuiLibrary => (GuiLuaLibrary) Libraries[typeof(GuiLuaLibrary)];
+
+		private readonly IDictionary<Type, LuaLibraryBase> Libraries = new Dictionary<Type, LuaLibraryBase>();
+
+		private EventWaitHandle LuaWait;
 
 		private static void LogToLuaConsole(object outputs) => _logToLuaConsoleCallback(new[] { outputs });
 
 		public override NLuaTableHelper GetTableHelper() => _th;
 
-		public override void Restart(IEmulatorServiceProvider newServiceProvider)
+		public void Restart(IEmulatorServiceProvider newServiceProvider)
 		{
 			foreach (var lib in Libraries)
 			{
@@ -132,7 +137,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public override void StartLuaDrawing()
+		public void StartLuaDrawing()
 		{
 			if (ScriptList.Count != 0 && GuiLibrary.SurfaceIsNull && !IsUpdateSupressed)
 			{
@@ -140,7 +145,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public override void EndLuaDrawing()
+		public void EndLuaDrawing()
 		{
 			if (ScriptList.Count != 0 && !IsUpdateSupressed)
 			{
@@ -182,7 +187,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public override void CallFrameBeforeEvent()
+		public void CallFrameBeforeEvent()
 		{
 			if (IsUpdateSupressed) return;
 			try
@@ -198,7 +203,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public override void CallFrameAfterEvent()
+		public void CallFrameAfterEvent()
 		{
 			if (IsUpdateSupressed) return;
 			try
@@ -214,7 +219,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public override void CallExitEvent(LuaFile lf)
+		public void CallExitEvent(LuaFile lf)
 		{
 			foreach (var exitCallback in RegisteredFunctions.ForFile(lf).ForEvent("OnExit"))
 			{
@@ -222,7 +227,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public override void Close()
+		public void Close()
 		{
 			RegisteredFunctions.Clear(_mainForm.Emulator);
 			ScriptList.Clear();
@@ -267,16 +272,16 @@ namespace BizHawk.Client.EmuHawk
 			lf.Thread = SpawnCoroutine(pathToLoad);
 		}
 
-		public override void ExecuteString(string command)
+		public void ExecuteString(string command)
 		{
 			_currThread = _lua.NewThread();
 			_currThread.DoString(command);
 			if (true /*NLua.Lua.WhichLua == "NLua"*/) _lua.Pop();
 		}
 
-		public override void RunScheduledDisposes() => _lua.RunScheduledDisposes();
+		public void RunScheduledDisposes() => _lua.RunScheduledDisposes();
 
-		public override (bool WaitForFrame, bool Terminated) ResumeScript(LuaFile lf)
+		public (bool WaitForFrame, bool Terminated) ResumeScript(LuaFile lf)
 		{
 			_currThread = lf.Thread;
 
