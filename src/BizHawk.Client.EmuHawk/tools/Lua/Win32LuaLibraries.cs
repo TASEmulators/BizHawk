@@ -245,7 +245,12 @@ namespace BizHawk.Client.EmuHawk
 			GuiLibrary.Dispose();
 		}
 
-		public INamedLuaFunction CreateAndRegisterNamedFunction(LuaFunction function, string theEvent, Action<string> logCallback, LuaFile luaFile, string name = null)
+		public INamedLuaFunction CreateAndRegisterNamedFunction(
+			Func<IReadOnlyList<object>, IReadOnlyList<object>> function,
+			string theEvent,
+			Action<string> logCallback,
+			LuaFile luaFile,
+			string name = null)
 		{
 			var nlf = new NamedLuaFunction(function, theEvent, logCallback, luaFile, name);
 			RegisteredFunctions.Add(nlf);
@@ -333,5 +338,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_currThread.Yield(0);
 		}
+
+		public Func<IReadOnlyList<object>, IReadOnlyList<object>> WrapFunction(object luaFunction)
+			=> args => ((LuaFunction) luaFunction).Call(args);
 	}
 }

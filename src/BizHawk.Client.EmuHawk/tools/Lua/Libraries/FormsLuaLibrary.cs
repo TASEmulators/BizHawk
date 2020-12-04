@@ -50,7 +50,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodExample("forms.addclick( 332, function()\r\n\tconsole.log( \"adds the given lua function as a click event to the given control\" );\r\nend );")]
 		[LuaMethod("addclick", "adds the given lua function as a click event to the given control")]
-		public void AddClick(int handle, LuaFunction clickEvent)
+		public void AddClick(int handle, object clickEvent)
 		{
 			var ptr = new IntPtr(handle);
 			foreach (var form in _luaForms)
@@ -59,7 +59,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (control.Handle == ptr)
 					{
-						form.ControlEvents.Add(new LuaWinform.LuaEvent(control.Handle, clickEvent));
+						form.ControlEvents.Add(new LuaWinform.LuaEvent(control.Handle, _luaLibsImpl.WrapFunction(clickEvent)));
 					}
 				}
 			}
@@ -71,7 +71,7 @@ namespace BizHawk.Client.EmuHawk
 		public int Button(
 			int formHandle,
 			string caption,
-			LuaFunction clickEvent,
+			object clickEvent,
 			int? x = null,
 			int? y = null,
 			int? width = null,
@@ -86,7 +86,7 @@ namespace BizHawk.Client.EmuHawk
 			var button = new LuaButton();
 			SetText(button, caption);
 			form.Controls.Add(button);
-			form.ControlEvents.Add(new LuaWinform.LuaEvent(button.Handle, clickEvent));
+			form.ControlEvents.Add(new LuaWinform.LuaEvent(button.Handle, _luaLibsImpl.WrapFunction(clickEvent)));
 
 			if (x.HasValue && y.HasValue)
 			{
@@ -344,7 +344,7 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethodExample("local infornew = forms.newform( 18, 24, \"Title\", function()\r\n\tconsole.log( \"creates a new default dialog, if both width and height are specified it will create a dialog of the specified size. If title is specified it will be the caption of the dialog, else the dialog caption will be 'Lua Dialog'. The function will return an int representing the handle of the dialog created.\" );\r\nend );")]
 		[LuaMethod(
 			"newform", "creates a new default dialog, if both width and height are specified it will create a dialog of the specified size. If title is specified it will be the caption of the dialog, else the dialog caption will be 'Lua Dialog'. The function will return an int representing the handle of the dialog created.")]
-		public int NewForm(int? width = null, int? height = null, string title = null, LuaFunction onClose = null)
+		public int NewForm(int? width = null, int? height = null, string title = null, object onClose = null)
 		{
 			var form = new LuaWinform(CurrentFile, WindowClosed);
 			_luaForms.Add(form);
@@ -359,20 +359,21 @@ namespace BizHawk.Client.EmuHawk
 			form.Icon = SystemIcons.Application;
 			form.Show();
 
-			form.FormClosed += (o, e) =>
+			if (onClose != null)
 			{
-				if (onClose != null)
+				var wrappedOnCloseFunc = _luaLibsImpl.WrapFunction(onClose);
+				form.FormClosed += (o, e) =>
 				{
 					try
 					{
-						onClose.Call();
+						wrappedOnCloseFunc(Array.Empty<object>());
 					}
 					catch (Exception ex)
 					{
 						Log(ex.ToString());
 					}
-				}
-			};
+				};
+			}
 
 			return (int)form.Handle;
 		}

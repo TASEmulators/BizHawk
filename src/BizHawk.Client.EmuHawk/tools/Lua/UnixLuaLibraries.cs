@@ -1,8 +1,7 @@
 using System;
+using System.Collections.Generic;
 
 using BizHawk.Client.Common;
-
-using NLua;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -29,12 +28,21 @@ namespace BizHawk.Client.EmuHawk
 
 		public void CallSaveStateEvent(string name) {}
 
-		public INamedLuaFunction CreateAndRegisterNamedFunction(LuaFunction function, string theEvent, Action<string> logCallback, LuaFile luaFile, string name = null) => null;
+		public INamedLuaFunction CreateAndRegisterNamedFunction(
+			Func<IReadOnlyList<object>, IReadOnlyList<object>> function,
+			string theEvent,
+			Action<string> logCallback,
+			LuaFile luaFile,
+			string name = null)
+				=> null;
 
 		public NLuaTableHelper GetTableHelper() => null;
 
 		public bool RemoveNamedFunctionMatching(Func<INamedLuaFunction, bool> predicate) => false;
 
 		public void SpawnAndSetFileThread(string pathToLoad, LuaFile lf) {}
+
+		public Func<IReadOnlyList<object>, IReadOnlyList<object>> WrapFunction(object luaFunction)
+			=> args => Array.Empty<object>();
 	}
 }

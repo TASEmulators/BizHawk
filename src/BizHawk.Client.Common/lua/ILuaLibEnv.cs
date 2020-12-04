@@ -1,6 +1,5 @@
 using System;
-
-using NLua;
+using System.Collections.Generic;
 
 namespace BizHawk.Client.Common
 {
@@ -15,10 +14,12 @@ namespace BizHawk.Client.Common
 
 		bool IsUpdateSupressed { get; set; }
 
-		INamedLuaFunction CreateAndRegisterNamedFunction(LuaFunction function, string theEvent, Action<string> logCallback, LuaFile luaFile, string name = null);
+		INamedLuaFunction CreateAndRegisterNamedFunction(Func<IReadOnlyList<object>, IReadOnlyList<object>> function, string theEvent, Action<string> logCallback, LuaFile luaFile, string name = null);
 
 		NLuaTableHelper GetTableHelper();
 
 		bool RemoveNamedFunctionMatching(Func<INamedLuaFunction, bool> predicate);
+
+		Func<IReadOnlyList<object>, IReadOnlyList<object>> WrapFunction(object luaFunction);
 	}
 }
