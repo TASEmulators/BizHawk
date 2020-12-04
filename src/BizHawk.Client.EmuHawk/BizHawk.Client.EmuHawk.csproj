@@ -460,8 +460,6 @@
 		<EmbeddedResource Update="tools/InputPrompt.resx" DependentUpon="InputPrompt.cs" SubType="Designer" />
 		<Compile Update="tools/Lua/LuaButton.cs" SubType="Component" />
 		<Compile Update="tools/Lua/LuaCanvas.cs" SubType="Form" />
-		<Compile Update="tools/Lua/LuaCanvas.Designer.cs" DependentUpon="LuaCanvas.cs" />
-		<EmbeddedResource Update="tools/Lua/LuaCanvas.resx" DependentUpon="LuaCanvas.cs" />
 		<Compile Update="tools/Lua/LuaCheckbox.cs" SubType="Component" />
 		<Compile Update="tools/Lua/LuaConsole.cs" SubType="Form" />
 		<Compile Update="tools/Lua/LuaConsole.Designer.cs" DependentUpon="LuaConsole.cs" />

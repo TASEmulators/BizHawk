@@ -11,19 +11,26 @@ using NLua;
 namespace BizHawk.Client.EmuHawk
 {
 	[Description("Represents a canvas object returned by the gui.createcanvas() method")]
-	public partial class LuaCanvas : Form
+	public sealed class LuaCanvas : Form
 	{
 		private readonly Action<string> LogOutputCallback;
+
+		private readonly LuaPictureBox luaPictureBox;
 
 		public LuaCanvas(int width, int height, int? x, int? y, NLuaTableHelper tableHelper, Action<string> logOutputCallback)
 		{
 			LogOutputCallback = logOutputCallback;
-			InitializeComponent();
-			luaPictureBox.TableHelper = tableHelper;
-			luaPictureBox.Image = Properties.Resources.LuaPictureBox;
-			luaPictureBox.Width = width;
-			luaPictureBox.Height = height;
-			luaPictureBox.Image = new Bitmap(width, height);
+
+			SuspendLayout();
+
+			AutoScaleDimensions = new SizeF(6F, 13F);
+			AutoScaleMode = AutoScaleMode.Font;
+			AutoSize = true;
+			AutoSizeMode = AutoSizeMode.GrowAndShrink;
+			ClientSize = new Size(284, 261);
+			FormBorderStyle = FormBorderStyle.FixedSingle;
+			Name = "LuaCanvas";
+			Text = "LuaCanvas";
 
 			if (x.HasValue)
 			{
@@ -34,6 +41,28 @@ namespace BizHawk.Client.EmuHawk
 					Top = (int)y;
 				}
 			}
+
+			luaPictureBox = new LuaPictureBox
+			{
+				Image = Properties.Resources.LuaPictureBox,
+				Location = new Point(0, 0),
+				Margin = new Padding(0),
+				Name = "luaPictureBox",
+				Size = new Size(100, 50),
+				SizeMode = PictureBoxSizeMode.AutoSize,
+				TabIndex = 0,
+				TableHelper = tableHelper,
+				TabStop = false
+			};
+			Controls.Add(luaPictureBox);
+
+			ResumeLayout();
+
+			// was this done after reflow for a reason? --yoshi
+			luaPictureBox.Width = width;
+			luaPictureBox.Height = height;
+			luaPictureBox.Image = new Bitmap(width, height);
+			PerformLayout();
 		}
 
 		[LuaMethodExample(
