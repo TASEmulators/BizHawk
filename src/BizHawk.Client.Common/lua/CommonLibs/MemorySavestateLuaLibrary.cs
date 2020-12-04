@@ -6,7 +6,7 @@ namespace BizHawk.Client.Common
 {
 	public sealed class MemorySavestateLuaLibrary : LuaLibraryBase
 	{
-		public MemorySavestateLuaLibrary(LuaLibraries luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
+		public MemorySavestateLuaLibrary(IPlatformLuaLibEnv luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
 			: base(luaLibsImpl, apiContainer, logOutputCallback) {}
 
 		public override string Name => "memorysavestate";

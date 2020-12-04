@@ -13,7 +13,7 @@ namespace BizHawk.Client.Common
 		public Action FrameAdvanceCallback { get; set; }
 		public Action YieldCallback { get; set; }
 
-		public EmulationLuaLibrary(LuaLibraries luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
+		public EmulationLuaLibrary(IPlatformLuaLibEnv luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
 			: base(luaLibsImpl, apiContainer, logOutputCallback) {}
 
 		public override string Name => "emu";

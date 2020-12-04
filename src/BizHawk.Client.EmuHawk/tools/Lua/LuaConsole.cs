@@ -156,7 +156,7 @@ namespace BizHawk.Client.EmuHawk
 			_defaultSplitDistance = splitContainer1.SplitterDistance;
 		}
 
-		public LuaLibraries LuaImp { get; private set; }
+		public IPlatformLuaLibEnv LuaImp { get; private set; }
 
 		private IEnumerable<LuaFile> SelectedItems =>  LuaListView.SelectedRows.Select(index => LuaImp.ScriptList[index]);
 

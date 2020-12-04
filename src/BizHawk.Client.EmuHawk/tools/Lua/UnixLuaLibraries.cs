@@ -9,28 +9,32 @@ namespace BizHawk.Client.EmuHawk
 	/// <summary>
 	/// Methods intentionally blank.
 	/// </summary>
-	public sealed class UnixLuaLibraries : LuaLibraries
+	public sealed class UnixLuaLibraries : IPlatformLuaLibEnv
 	{
-		public override string EngineName => null;
-
-		public override void CallLoadStateEvent(string name)
-		{
-		}
-		public override void CallSaveStateEvent(string name)
-		{
-		}
-
-		public override INamedLuaFunction CreateAndRegisterNamedFunction(LuaFunction function, string theEvent, Action<string> logCallback, LuaFile luaFile, string name = null) => null;
-
-		public override NLuaTableHelper GetTableHelper() => null;
-
 		private static readonly LuaFunctionList EmptyLuaFunList = new LuaFunctionList();
-		public override LuaFunctionList RegisteredFunctions => EmptyLuaFunList;
 
-		public override bool RemoveNamedFunctionMatching(Func<INamedLuaFunction, bool> predicate) => false;
+		public LuaDocumentation Docs { get; } = new LuaDocumentation();
 
-		public override void SpawnAndSetFileThread(string pathToLoad, LuaFile lf)
-		{
-		}
+		public string EngineName => null;
+
+		public bool IsRebootingCore { get; set; }
+
+		public bool IsUpdateSupressed { get; set; }
+
+		public LuaFunctionList RegisteredFunctions => EmptyLuaFunList;
+
+		public LuaFileList ScriptList { get; } = new LuaFileList();
+
+		public void CallLoadStateEvent(string name) {}
+
+		public void CallSaveStateEvent(string name) {}
+
+		public INamedLuaFunction CreateAndRegisterNamedFunction(LuaFunction function, string theEvent, Action<string> logCallback, LuaFile luaFile, string name = null) => null;
+
+		public NLuaTableHelper GetTableHelper() => null;
+
+		public bool RemoveNamedFunctionMatching(Func<INamedLuaFunction, bool> predicate) => false;
+
+		public void SpawnAndSetFileThread(string pathToLoad, LuaFile lf) {}
 	}
 }

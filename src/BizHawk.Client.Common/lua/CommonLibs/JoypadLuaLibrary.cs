@@ -8,7 +8,7 @@ namespace BizHawk.Client.Common
 {
 	public sealed class JoypadLuaLibrary : LuaLibraryBase
 	{
-		public JoypadLuaLibrary(LuaLibraries luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
+		public JoypadLuaLibrary(IPlatformLuaLibEnv luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
 			: base(luaLibsImpl, apiContainer, logOutputCallback) {}
 
 		public override string Name => "joypad";

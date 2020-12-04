@@ -13,7 +13,7 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public class Win32LuaLibraries : LuaLibraries
+	public class Win32LuaLibraries : IPlatformLuaLibEnv
 	{
 		public Win32LuaLibraries(
 			IEmulatorServiceProvider serviceProvider,
@@ -115,19 +115,27 @@ namespace BizHawk.Client.EmuHawk
 
 		private EventsLuaLibrary EventsLibrary => (EventsLuaLibrary)Libraries[typeof(EventsLuaLibrary)];
 
+		public LuaDocumentation Docs { get; } = new LuaDocumentation();
+
 		private EmulationLuaLibrary EmulationLuaLibrary => (EmulationLuaLibrary)Libraries[typeof(EmulationLuaLibrary)];
 
-		public override string EngineName => Lua.WhichLua;
+		public string EngineName => Lua.WhichLua;
 
 		public GuiLuaLibrary GuiLibrary => (GuiLuaLibrary) Libraries[typeof(GuiLuaLibrary)];
+
+		public bool IsRebootingCore { get; set; }
+
+		public bool IsUpdateSupressed { get; set; }
 
 		private readonly IDictionary<Type, LuaLibraryBase> Libraries = new Dictionary<Type, LuaLibraryBase>();
 
 		private EventWaitHandle LuaWait;
 
+		public LuaFileList ScriptList { get; } = new LuaFileList();
+
 		private static void LogToLuaConsole(object outputs) => _logToLuaConsoleCallback(new[] { outputs });
 
-		public override NLuaTableHelper GetTableHelper() => _th;
+		public NLuaTableHelper GetTableHelper() => _th;
 
 		public void Restart(IEmulatorServiceProvider newServiceProvider)
 		{
@@ -155,9 +163,9 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool FrameAdvanceRequested { get; private set; }
 
-		public override LuaFunctionList RegisteredFunctions { get; } = new LuaFunctionList();
+		public LuaFunctionList RegisteredFunctions { get; } = new LuaFunctionList();
 
-		public override void CallSaveStateEvent(string name)
+		public void CallSaveStateEvent(string name)
 		{
 			try
 			{
@@ -172,7 +180,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public override void CallLoadStateEvent(string name)
+		public void CallLoadStateEvent(string name)
 		{
 			try
 			{
@@ -237,14 +245,14 @@ namespace BizHawk.Client.EmuHawk
 			GuiLibrary.Dispose();
 		}
 
-		public override INamedLuaFunction CreateAndRegisterNamedFunction(LuaFunction function, string theEvent, Action<string> logCallback, LuaFile luaFile, string name = null)
+		public INamedLuaFunction CreateAndRegisterNamedFunction(LuaFunction function, string theEvent, Action<string> logCallback, LuaFile luaFile, string name = null)
 		{
 			var nlf = new NamedLuaFunction(function, theEvent, logCallback, luaFile, name);
 			RegisteredFunctions.Add(nlf);
 			return nlf;
 		}
 
-		public override bool RemoveNamedFunctionMatching(Func<INamedLuaFunction, bool> predicate)
+		public bool RemoveNamedFunctionMatching(Func<INamedLuaFunction, bool> predicate)
 		{
 			var nlf = (NamedLuaFunction) RegisteredFunctions.FirstOrDefault(predicate);
 			if (nlf == null) return false;
@@ -267,7 +275,7 @@ namespace BizHawk.Client.EmuHawk
 			return lua;
 		}
 
-		public override void SpawnAndSetFileThread(string pathToLoad, LuaFile lf)
+		public void SpawnAndSetFileThread(string pathToLoad, LuaFile lf)
 		{
 			lf.Thread = SpawnCoroutine(pathToLoad);
 		}

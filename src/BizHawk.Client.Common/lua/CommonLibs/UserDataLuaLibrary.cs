@@ -7,7 +7,7 @@ namespace BizHawk.Client.Common
 	[Description("A library for setting and retrieving dynamic data that will be saved and loaded with savestates")]
 	public sealed class UserDataLuaLibrary : LuaLibraryBase
 	{
-		public UserDataLuaLibrary(LuaLibraries luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
+		public UserDataLuaLibrary(IPlatformLuaLibEnv luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
 			: base(luaLibsImpl, apiContainer, logOutputCallback) {}
 
 		public override string Name => "userdata";
