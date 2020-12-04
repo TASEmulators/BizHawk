@@ -78,7 +78,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						guiLib.CreateLuaCanvasCallback = (width, height, x, y) =>
 						{
-							var canvas = new LuaCanvas(width, height, x, y, LogToLuaConsole);
+							var canvas = new LuaCanvas(width, height, x, y, _th, LogToLuaConsole);
 							canvas.Show();
 							return _th.ObjectToTable(canvas);
 						};

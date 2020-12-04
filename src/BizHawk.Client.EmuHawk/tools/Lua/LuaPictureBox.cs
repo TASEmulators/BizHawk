@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
+
+using BizHawk.Client.Common;
 
 using NLua;
 
@@ -13,6 +16,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly Dictionary<Color, SolidBrush> _solidBrushes = new Dictionary<Color, SolidBrush>();
 		private readonly Dictionary<Color, Pen> _pens = new Dictionary<Color, Pen>();
+
+		internal NLuaTableHelper TableHelper { private get; set; }
 
 		private SolidBrush GetBrush(Color color)
 		{
@@ -78,9 +83,10 @@ namespace BizHawk.Client.EmuHawk
 			var pointsArr = new Point[4];
 
 			var i = 0;
-			foreach (LuaTable point in points.Values)
+			foreach (var point in TableHelper.EnumerateValues<LuaTable>(points)
+				.Select(table => TableHelper.EnumerateValues<double>(table).ToList()))
 			{
-				pointsArr[i] = new Point((int)(double)(point[1]), (int)(double)(point[2]));
+				pointsArr[i] = new Point((int) point[0], (int) point[1]);
 				i++;
 				if (i >= 4)
 				{
@@ -252,11 +258,13 @@ namespace BizHawk.Client.EmuHawk
 
 		public void DrawPolygon(LuaTable points, int? x = null, int? y = null, Color? line = null, Color? background = null)
 		{
-			var pointsArr = new Point[points.Values.Count];
+			var pointsList = TableHelper.EnumerateValues<LuaTable>(points)
+				.Select(table => TableHelper.EnumerateValues<double>(table).ToList()).ToList();
+			var pointsArr = new Point[pointsList.Count];
 			var i = 0;
-			foreach (LuaTable point in points.Values)
+			foreach (var point in pointsList)
 			{
-				pointsArr[i] = new Point((int)(double)(point[1]) + x ?? 0, (int)(double)(point[2]) + y ?? 0);
+				pointsArr[i] = new Point((int) point[0] + x ?? 0, (int) point[1] + y ?? 0);
 				i++;
 			}
 

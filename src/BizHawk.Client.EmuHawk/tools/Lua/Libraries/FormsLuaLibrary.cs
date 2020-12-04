@@ -422,7 +422,7 @@ namespace BizHawk.Client.EmuHawk
 				return 0;
 			}
 
-			var pictureBox = new LuaPictureBox();
+			var pictureBox = new LuaPictureBox { TableHelper = _th };
 			form.Controls.Add(pictureBox);
 
 			if (x.HasValue && y.HasValue)

@@ -63,9 +63,10 @@ namespace BizHawk.Client.Common
 			{
 				var pointsArr = new Point[4];
 				var i = 0;
-				foreach (var point in _th.EnumerateValues<LuaTable>(points))
+				foreach (var point in _th.EnumerateValues<LuaTable>(points)
+					.Select(table => _th.EnumerateValues<double>(table).ToList()))
 				{
-					pointsArr[i] = new Point(LuaInt(point[1]), LuaInt(point[2]));
+					pointsArr[i] = new Point(LuaInt(point[0]), LuaInt(point[1]));
 					i++;
 					if (i >= 4)
 					{
@@ -124,14 +125,15 @@ namespace BizHawk.Client.Common
 		[LuaMethod("drawPolygon", "Draws a polygon using the table of coordinates specified in points. This should be a table of tables(each of size 2). If x or y is passed, the polygon will be translated by the passed coordinate pair. Line is the color of the polygon. Background is the optional fill color")]
 		public void DrawPolygon(LuaTable points, int? offsetX = null, int? offsetY = null, Color? line = null, Color? background = null)
 		{
-			var pointsList = _th.EnumerateValues<LuaTable>(points).ToList();
+			var pointsList = _th.EnumerateValues<LuaTable>(points)
+				.Select(table => _th.EnumerateValues<double>(table).ToList()).ToList();
 			try
 			{
 				var pointsArr = new Point[pointsList.Count];
 				var i = 0;
 				foreach (var point in pointsList)
 				{
-					pointsArr[i] = new Point(LuaInt(point[1]) + (offsetX ?? 0), LuaInt(point[2]) + (offsetY ?? 0));
+					pointsArr[i] = new Point(LuaInt(point[0]) + (offsetX ?? 0), LuaInt(point[1]) + (offsetY ?? 0));
 					i++;
 				}
 				APIs.Gui.DrawPolygon(pointsArr, line, background);

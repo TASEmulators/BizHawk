@@ -15,10 +15,11 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private readonly Action<string> LogOutputCallback;
 
-		public LuaCanvas(int width, int height, int? x, int? y, Action<string> logOutputCallback)
+		public LuaCanvas(int width, int height, int? x, int? y, NLuaTableHelper tableHelper, Action<string> logOutputCallback)
 		{
 			LogOutputCallback = logOutputCallback;
 			InitializeComponent();
+			luaPictureBox.TableHelper = tableHelper;
 			luaPictureBox.Image = Properties.Resources.LuaPictureBox;
 			luaPictureBox.Width = width;
 			luaPictureBox.Height = height;
