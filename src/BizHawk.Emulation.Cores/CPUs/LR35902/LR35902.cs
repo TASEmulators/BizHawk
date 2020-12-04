@@ -61,6 +61,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 		public const ushort HALT_FUNC = 49;
 		public const ushort WAIT = 50; // set cpu to wait state during HDMA
 		public const ushort DIV_RST = 51; // change speed mode and reset divider
+		public const ushort HDMA_UPD = 52; // hdma can occur in between halt and IRQ in GBC
 
 		// test conditions
 		public const ushort ALWAYS_T = 0;
@@ -369,7 +370,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 							RegisterInfo = ""
 						});
 						halted = false;
-						
+
 						if (Halt_bug_4)
 						{
 							// TODO: If interrupt priotrity is checked differently in GBC, then this is incorrect
@@ -737,6 +738,9 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 					break;
 				case DIV_RST:
 					SpeedFunc(1);
+					break;
+				case HDMA_UPD:
+					instruction_start = TotalExecutedCycles + 1;
 					break;
 			}
 			TotalExecutedCycles++;

@@ -234,7 +234,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							HDMA_active = true;
 							HBL_HDMA_count = 0x10;
 
-							last_HBL = LY - 1;
+							last_HBL = LY_read - 1;
 
 							HBL_test = true;
 							HBL_HDMA_go = false;
@@ -266,7 +266,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						if (HDMA_active && HDMA_mode && HDMA_can_start)
 						{
 							// too late to stop the next trnasfer, so make it the last one instead
-							if (((STAT & 3) == 0) && (LY != last_HBL) && HBL_test && (LY_inc == 1) && (cycle > 90))
+							if (((STAT & 3) == 0) && (LY_read != last_HBL) && HBL_test && (LY_inc == 1) && !glitch_state)
 							{
 								HDMA_length = 1;
 							}
@@ -398,8 +398,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					else
 					{
 						// only transfer during mode 0, and only 16 bytes at a time
-						// cycle > 90 prevents triggering early when turning on LCD (presumably the real event is transition from mode 3 to 0.)
-						if (((STAT & 3) == 0) && (LY != last_HBL) && HBL_test && (LY_inc == 1) && (cycle > 90) && HDMA_can_start)
+						// NOTE: state when first enabling ppu does not count as mode 0
+						if (((STAT & 3) == 0) && (LY_read != last_HBL) && HBL_test && (LY_inc == 1) && !glitch_state && HDMA_can_start)
 						{
 							HBL_HDMA_go = true;
 							HBL_test = false;
@@ -430,7 +430,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 										// reading from open bus still returns 0xFF on DMA access, see dma_hiram_read_result_cgb04c_out1.gbc
 										Core.bus_value = 0xFF;
 
-										if (LCDC.Bit(7)) { last_HBL = LY; }
+										if (LCDC.Bit(7)) { last_HBL = LY_read; }
 										else { last_HBL = 0xFF; }
 									}
 									else
@@ -767,9 +767,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				}
 
 				// here LY=LYC will be asserted or cleared (but only if LY isnt 0 as that's a special case)
+				// it is also the boundary where HDMA can no longe start if triggered by a write
 				if ((cycle == 2) && (LY != 0))
 				{
 					LY_read = LY;
+					HDMA_can_start = false;
 				}
 				else if ((cycle == 4) && (LY != 0))
 				{
@@ -868,7 +870,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				evaled_sprites = 0;
 				window_pre_render = false;
 				window_latch = LCDC.Bit(5);
-				HDMA_can_start = false;
 
 				total_counter = 0;
 

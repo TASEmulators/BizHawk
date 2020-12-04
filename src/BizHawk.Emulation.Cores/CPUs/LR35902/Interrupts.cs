@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 						{IDLE,
 						IDLE,
 						IDLE,
-						IDLE,
+						HDMA_UPD,
 						IDLE,
 						IDLE,
 						IDLE,

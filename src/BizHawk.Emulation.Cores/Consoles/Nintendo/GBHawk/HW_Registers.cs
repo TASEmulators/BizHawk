@@ -213,12 +213,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					break;
 
 				case 0xFF76:
-					if (is_GBC) { ret = undoc_76; }
+					byte ret1 = audio.SQ1_output >= Audio.DAC_OFST ? (byte)(audio.SQ1_output - Audio.DAC_OFST) : 0;
+					byte ret2 = audio.SQ2_output >= Audio.DAC_OFST ? (byte)(audio.SQ2_output - Audio.DAC_OFST) : 0;
+					if (is_GBC) { ret = (byte)(ret1 | (ret2 << 4)); }
 					else { ret = 0xFF; }
 					break;
 
 				case 0xFF77:
-					if (is_GBC) { ret = undoc_77; }
+					byte retN = audio.NOISE_output >= Audio.DAC_OFST ? (byte)(audio.NOISE_output - Audio.DAC_OFST) : 0;
+					byte retW = audio.WAVE_output >= Audio.DAC_OFST ? (byte)(audio.WAVE_output - Audio.DAC_OFST) : 0;
+					if (is_GBC) { ret = (byte)(retN | (retW << 4)); }
 					else { ret = 0xFF; }
 					break;
 
