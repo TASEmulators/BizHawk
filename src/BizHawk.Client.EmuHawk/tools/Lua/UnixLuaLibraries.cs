@@ -3,6 +3,8 @@ using System;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
 
+using NLua;
+
 namespace BizHawk.Client.EmuHawk
 {
 	/// <summary>
@@ -30,6 +32,9 @@ namespace BizHawk.Client.EmuHawk
 		public override void Close()
 		{
 		}
+
+		public override NamedLuaFunction CreateAndRegisterNamedFunction(LuaFunction function, string theEvent, Action<string> logCallback, LuaFile luaFile, string name = null) => null;
+
 		public override void EndLuaDrawing()
 		{
 		}
@@ -42,6 +47,9 @@ namespace BizHawk.Client.EmuHawk
 		private static readonly LuaFunctionList EmptyLuaFunList = new LuaFunctionList();
 		public override LuaFunctionList RegisteredFunctions => EmptyLuaFunList;
 		public override GuiLuaLibrary GuiLibrary => null;
+
+		public override bool RemoveNamedFunctionMatching(Func<NamedLuaFunction, bool> predicate) => false;
+
 		public override void Restart(IEmulatorServiceProvider newServiceProvider)
 		{
 		}

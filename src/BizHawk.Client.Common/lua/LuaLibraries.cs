@@ -5,6 +5,8 @@ using System.Threading;
 
 using BizHawk.Emulation.Common;
 
+using NLua;
+
 namespace BizHawk.Client.Common
 {
 	public abstract class LuaLibraries
@@ -41,10 +43,15 @@ namespace BizHawk.Client.Common
 		public abstract void CallLoadStateEvent(string name);
 		public abstract void CallSaveStateEvent(string name);
 		public abstract void Close();
+
+		public abstract NamedLuaFunction CreateAndRegisterNamedFunction(LuaFunction function, string theEvent, Action<string> logCallback, LuaFile luaFile, string name = null);
+
 		public abstract void EndLuaDrawing();
 		public abstract void ExecuteString(string command);
 
 		public abstract NLuaTableHelper GetTableHelper();
+
+		public abstract bool RemoveNamedFunctionMatching(Func<NamedLuaFunction, bool> predicate);
 
 		public abstract void Restart(IEmulatorServiceProvider newServiceProvider);
 		public abstract (bool WaitForFrame, bool Terminated) ResumeScript(LuaFile lf);

@@ -50,27 +50,21 @@ namespace BizHawk.Client.Common
 		[LuaMethodExample("local steveonf = event.onframeend(\r\n\tfunction()\r\n\t\tconsole.log( \"Calls the given lua function at the end of each frame, after all emulation and drawing has completed. Note: this is the default behavior of lua scripts\" );\r\n\tend\r\n\t, \"Frame name\" );")]
 		[LuaMethod("onframeend", "Calls the given lua function at the end of each frame, after all emulation and drawing has completed. Note: this is the default behavior of lua scripts")]
 		public string OnFrameEnd(LuaFunction luaf, string name = null)
-		{
-			var nlf = new NamedLuaFunction(luaf, "OnFrameEnd", LogOutputCallback, CurrentFile, name);
-			RegisteredFunctions.Add(nlf);
-			return nlf.Guid.ToString();
-		}
+			=> _luaLibsImpl.CreateAndRegisterNamedFunction(luaf, "OnFrameEnd", LogOutputCallback, CurrentFile, name)
+				.Guid.ToString();
 
 		[LuaMethodExample("local steveonf = event.onframestart(\r\n\tfunction()\r\n\t\tconsole.log( \"Calls the given lua function at the beginning of each frame before any emulation and drawing occurs\" );\r\n\tend\r\n\t, \"Frame name\" );")]
 		[LuaMethod("onframestart", "Calls the given lua function at the beginning of each frame before any emulation and drawing occurs")]
 		public string OnFrameStart(LuaFunction luaf, string name = null)
-		{
-			var nlf = new NamedLuaFunction(luaf, "OnFrameStart", LogOutputCallback, CurrentFile, name);
-			RegisteredFunctions.Add(nlf);
-			return nlf.Guid.ToString();
-		}
+			=> _luaLibsImpl.CreateAndRegisterNamedFunction(luaf, "OnFrameStart", LogOutputCallback, CurrentFile, name)
+				.Guid.ToString();
 
 		[LuaMethodExample("local steveoni = event.oninputpoll(\r\n\tfunction()\r\n\t\tconsole.log( \"Calls the given lua function after each time the emulator core polls for input\" );\r\n\tend\r\n\t, \"Frame name\" );")]
 		[LuaMethod("oninputpoll", "Calls the given lua function after each time the emulator core polls for input")]
 		public string OnInputPoll(LuaFunction luaf, string name = null)
 		{
-			var nlf = new NamedLuaFunction(luaf, "OnInputPoll", LogOutputCallback, CurrentFile, name);
-			RegisteredFunctions.Add(nlf);
+			var nlf = _luaLibsImpl.CreateAndRegisterNamedFunction(luaf, "OnInputPoll", LogOutputCallback, CurrentFile, name);
+			//TODO should we bother registering the function if the service isn't supported? none of the other events work this way --yoshi
 
 			if (InputPollableCore != null)
 			{
@@ -98,11 +92,8 @@ namespace BizHawk.Client.Common
 		[LuaMethodExample("local steveonl = event.onloadstate(\r\n\tfunction()\r\n\tconsole.log( \"Fires after a state is loaded. Receives a lua function name, and registers it to the event immediately following a successful savestate event\" );\r\nend\", \"Frame name\" );")]
 		[LuaMethod("onloadstate", "Fires after a state is loaded. Receives a lua function name, and registers it to the event immediately following a successful savestate event")]
 		public string OnLoadState(LuaFunction luaf, string name = null)
-		{
-			var nlf = new NamedLuaFunction(luaf, "OnSavestateLoad", LogOutputCallback, CurrentFile, name);
-			RegisteredFunctions.Add(nlf);
-			return nlf.Guid.ToString();
-		}
+			=> _luaLibsImpl.CreateAndRegisterNamedFunction(luaf, "OnSavestateLoad", LogOutputCallback, CurrentFile, name)
+				.Guid.ToString();
 
 		[LuaMethodExample("local steveonm = event.onmemoryexecute(\r\n\tfunction()\r\n\t\tconsole.log( \"Fires after the given address is executed by the core\" );\r\n\tend\r\n\t, 0x200, \"Frame name\", \"System Bus\" );")]
 		[LuaMethod("onmemoryexecute", "Fires after the given address is executed by the core")]
@@ -119,8 +110,7 @@ namespace BizHawk.Client.Common
 						return Guid.Empty.ToString();
 					}
 
-					var nlf = new NamedLuaFunction(luaf, "OnMemoryExecute", LogOutputCallback, CurrentFile, name);
-					RegisteredFunctions.Add(nlf);
+					var nlf = _luaLibsImpl.CreateAndRegisterNamedFunction(luaf, "OnMemoryExecute", LogOutputCallback, CurrentFile, name);
 					DebuggableCore.MemoryCallbacks.Add(
 						new MemoryCallback(ProcessScope(scope), MemoryCallbackType.Execute, "Lua Hook", nlf.MemCallback, address, null));
 					return nlf.Guid.ToString();
@@ -151,8 +141,7 @@ namespace BizHawk.Client.Common
 						return Guid.Empty.ToString();
 					}
 
-					var nlf = new NamedLuaFunction(luaf, "OnMemoryExecuteAny", LogOutputCallback, CurrentFile, name);
-					RegisteredFunctions.Add(nlf);
+					var nlf = _luaLibsImpl.CreateAndRegisterNamedFunction(luaf, "OnMemoryExecuteAny", LogOutputCallback, CurrentFile, name);
 					DebuggableCore.MemoryCallbacks.Add(new MemoryCallback(
 						ProcessScope(scope),
 						MemoryCallbackType.Execute,
@@ -187,8 +176,7 @@ namespace BizHawk.Client.Common
 						return Guid.Empty.ToString();
 					}
 
-					var nlf = new NamedLuaFunction(luaf, "OnMemoryRead", LogOutputCallback, CurrentFile, name);
-					RegisteredFunctions.Add(nlf);
+					var nlf = _luaLibsImpl.CreateAndRegisterNamedFunction(luaf, "OnMemoryRead", LogOutputCallback, CurrentFile, name);
 					DebuggableCore.MemoryCallbacks.Add(
 						new MemoryCallback(ProcessScope(scope), MemoryCallbackType.Read, "Lua Hook", nlf.MemCallback, address, null));
 					return nlf.Guid.ToString();
@@ -218,8 +206,7 @@ namespace BizHawk.Client.Common
 						return Guid.Empty.ToString();
 					}
 
-					var nlf = new NamedLuaFunction(luaf, "OnMemoryWrite", LogOutputCallback, CurrentFile, name);
-					RegisteredFunctions.Add(nlf);
+					var nlf = _luaLibsImpl.CreateAndRegisterNamedFunction(luaf, "OnMemoryWrite", LogOutputCallback, CurrentFile, name);
 					DebuggableCore.MemoryCallbacks.Add(
 						new MemoryCallback(ProcessScope(scope), MemoryCallbackType.Write, "Lua Hook", nlf.MemCallback, address, null));
 					return nlf.Guid.ToString();
@@ -238,46 +225,22 @@ namespace BizHawk.Client.Common
 		[LuaMethodExample("local steveons = event.onsavestate(\r\n\tfunction()\r\n\t\tconsole.log( \"Fires after a state is saved\" );\r\n\tend\r\n\t, \"Frame name\" );")]
 		[LuaMethod("onsavestate", "Fires after a state is saved")]
 		public string OnSaveState(LuaFunction luaf, string name = null)
-		{
-			var nlf = new NamedLuaFunction(luaf, "OnSavestateSave", LogOutputCallback, CurrentFile, name);
-			RegisteredFunctions.Add(nlf);
-			return nlf.Guid.ToString();
-		}
+			=> _luaLibsImpl.CreateAndRegisterNamedFunction(luaf, "OnSavestateSave", LogOutputCallback, CurrentFile, name)
+				.Guid.ToString();
 
 		[LuaMethodExample("local steveone = event.onexit(\r\n\tfunction()\r\n\t\tconsole.log( \"Fires after the calling script has stopped\" );\r\n\tend\r\n\t, \"Frame name\" );")]
 		[LuaMethod("onexit", "Fires after the calling script has stopped")]
 		public string OnExit(LuaFunction luaf, string name = null)
-		{
-			var nlf = new NamedLuaFunction(luaf, "OnExit", LogOutputCallback, CurrentFile, name);
-			RegisteredFunctions.Add(nlf);
-			return nlf.Guid.ToString();
-		}
+			=> _luaLibsImpl.CreateAndRegisterNamedFunction(luaf, "OnExit", LogOutputCallback, CurrentFile, name)
+				.Guid.ToString();
 
 		[LuaMethodExample("if ( event.unregisterbyid( \"4d1810b7 - 0d28 - 4acb - 9d8b - d87721641551\" ) ) then\r\n\tconsole.log( \"Removes the registered function that matches the guid.If a function is found and remove the function will return true.If unable to find a match, the function will return false.\" );\r\nend;")]
 		[LuaMethod("unregisterbyid", "Removes the registered function that matches the guid. If a function is found and remove the function will return true. If unable to find a match, the function will return false.")]
-		public bool UnregisterById(string guid)
-		{
-			foreach (var nlf in RegisteredFunctions.Where(nlf => nlf.Guid.ToString() == guid))
-			{
-				RegisteredFunctions.Remove(nlf, Emulator);
-				return true;
-			}
-
-			return false;
-		}
+		public bool UnregisterById(string guid) => _luaLibsImpl.RemoveNamedFunctionMatching(nlf => nlf.Guid.ToString() == guid);
 
 		[LuaMethodExample("if ( event.unregisterbyname( \"Function name\" ) ) then\r\n\tconsole.log( \"Removes the first registered function that matches Name.If a function is found and remove the function will return true.If unable to find a match, the function will return false.\" );\r\nend;")]
 		[LuaMethod("unregisterbyname", "Removes the first registered function that matches Name. If a function is found and remove the function will return true. If unable to find a match, the function will return false.")]
-		public bool UnregisterByName(string name)
-		{
-			foreach (var nlf in RegisteredFunctions.Where(nlf => nlf.Name == name))
-			{
-				RegisteredFunctions.Remove(nlf, Emulator);
-				return true;
-			}
-
-			return false;
-		}
+		public bool UnregisterByName(string name) => _luaLibsImpl.RemoveNamedFunctionMatching(nlf => nlf.Name == name);
 
 		[LuaMethodExample("local scopes = event.availableScopes();")]
 		[LuaMethod("availableScopes", "Lists the available scopes that can be passed into memory events")]
