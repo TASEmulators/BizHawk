@@ -19,6 +19,9 @@ dotnet build ..\BizHawk.sln -c Release --no-incremental
 rem -p:Platform="Any CPU"
 rem -p:MachineRunAnalyzersDuringBuild=true
 
+rem we have to do this twice right now
+dotnet build ..\BizHawk.sln -c Release
+
 @if errorlevel 1 goto MSBUILDFAILED
 
 rmdir /s /q temp
