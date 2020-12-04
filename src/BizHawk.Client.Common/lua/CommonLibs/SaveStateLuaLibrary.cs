@@ -13,22 +13,22 @@ namespace BizHawk.Client.Common
 		[LuaMethod("load", "Loads a savestate with the given path. If EmuHawk is deferring quicksaves, to TAStudio for example, that form will do what it likes (and the path is ignored).")]
 		public void Load(string path, bool suppressOSD = false)
 		{
-			_luaLibsImpl.SupressUpdate();
+			_luaLibsImpl.IsUpdateSupressed = true;
 
 			APIs.SaveState.Load(path, suppressOSD);
 			
-			_luaLibsImpl.EnableUpdate();
+			_luaLibsImpl.IsUpdateSupressed = false;
 		}
 
 		[LuaMethodExample("savestate.loadslot( 7 );")]
 		[LuaMethod("loadslot", "Loads the savestate at the given slot number (must be an integer between 0 and 9). If EmuHawk is deferring quicksaves, to TAStudio for example, that form will do what it likes with the slot number.")]
 		public void LoadSlot(int slotNum, bool suppressOSD = false)
 		{
-			_luaLibsImpl.SupressUpdate();
+			_luaLibsImpl.IsUpdateSupressed = true;
 
 			APIs.SaveState.LoadSlot(slotNum, suppressOSD);
 			
-			_luaLibsImpl.EnableUpdate();
+			_luaLibsImpl.IsUpdateSupressed = false;
 		}
 
 		[LuaMethodExample("savestate.save( \"C:\\state.bin\" );")]

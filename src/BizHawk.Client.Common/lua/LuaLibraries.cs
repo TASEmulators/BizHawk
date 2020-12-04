@@ -23,17 +23,7 @@ namespace BizHawk.Client.Common
 
 		public bool IsRebootingCore { get; set; } // pretty hacky.. we don't want a lua script to be able to restart itself by rebooting the core
 
-		public bool IsUpdateSupressed { get; private set;}
-
-		public void SupressUpdate()
-		{
-			IsUpdateSupressed = true;
-		}
-
-		public void EnableUpdate()
-		{
-			IsUpdateSupressed = false;
-		}
+		public bool IsUpdateSupressed { get; set; }
 
 		public EventWaitHandle LuaWait { get; protected set; }
 

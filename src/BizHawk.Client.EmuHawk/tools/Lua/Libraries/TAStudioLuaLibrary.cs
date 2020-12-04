@@ -136,7 +136,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Engaged())
 			{
-				_luaLibsImpl.SupressUpdate();
+				_luaLibsImpl.IsUpdateSupressed = true;
 
 				int f;
 				if (frame is double frameNumber)
@@ -159,7 +159,7 @@ namespace BizHawk.Client.EmuHawk
 					Tastudio.GoToFrame(f, true);
 				}
 
-				_luaLibsImpl.EnableUpdate();
+				_luaLibsImpl.IsUpdateSupressed = false;
 			}
 		}
 
@@ -292,7 +292,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Engaged())
 			{
-				_luaLibsImpl.SupressUpdate();
+				_luaLibsImpl.IsUpdateSupressed = true;
 
 				if (_changeList.Count > 0)
 				{
@@ -330,7 +330,7 @@ namespace BizHawk.Client.EmuHawk
 					Tastudio.DoAutoRestore();
 				}
 
-				_luaLibsImpl.EnableUpdate();
+				_luaLibsImpl.IsUpdateSupressed = false;
 			}
 		}
 
@@ -413,11 +413,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Engaged())
 			{
-				_luaLibsImpl.SupressUpdate();
+				_luaLibsImpl.IsUpdateSupressed = true;
 
 				Tastudio.LoadBranchByIndex(index);
 
-				_luaLibsImpl.EnableUpdate();
+				_luaLibsImpl.IsUpdateSupressed = false;
 			}
 		}
 

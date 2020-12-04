@@ -91,13 +91,13 @@ namespace BizHawk.Client.Common
 			bool wasPaused = MainForm.EmulatorPaused;
 
 			// can't re-enter lua while doing this
-			_luaLibsImpl.SupressUpdate();
+			_luaLibsImpl.IsUpdateSupressed = true;
 			while (Emulator.Frame != frame)
 			{
 				MainForm.SeekFrameAdvance();
 			}
 
-			_luaLibsImpl.EnableUpdate();
+			_luaLibsImpl.IsUpdateSupressed = false;
 
 			if (!wasPaused)
 			{
