@@ -10,6 +10,9 @@ namespace BizHawk.Client.Common
 	public abstract class LuaLibraries
 	{
 		public readonly LuaDocumentation Docs = new LuaDocumentation();
+
+		public abstract string EngineName { get; }
+
 		public abstract LuaFunctionList RegisteredFunctions { get; }
 		public abstract GuiLuaLibrary GuiLibrary { get; }
 		protected readonly Dictionary<Type, LuaLibraryBase> Libraries = new Dictionary<Type, LuaLibraryBase>();

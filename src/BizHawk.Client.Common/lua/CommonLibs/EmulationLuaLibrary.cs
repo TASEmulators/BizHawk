@@ -102,9 +102,6 @@ namespace BizHawk.Client.Common
 		public string GetBoardName() => APIs.Emulation.GetBoardName();
 
 		[LuaMethod("getluacore", "returns the name of the Lua core currently in use")]
-		public string GetLuaBackend()
-		{
-			return Lua.WhichLua;
-		}
+		public string GetLuaBackend() => _luaLibsImpl.EngineName;
 	}
 }

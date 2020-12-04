@@ -10,6 +10,8 @@ namespace BizHawk.Client.EmuHawk
 	/// </summary>
 	public sealed class UnixLuaLibraries : LuaLibraries
 	{
+		public override string EngineName => null;
+
 		public override void CallExitEvent(LuaFile lf)
 		{
 		}
