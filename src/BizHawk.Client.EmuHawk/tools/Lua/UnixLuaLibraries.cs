@@ -3,6 +3,8 @@ using System.Collections.Generic;
 
 using BizHawk.Client.Common;
 
+using NLua;
+
 namespace BizHawk.Client.EmuHawk
 {
 	/// <summary>
@@ -36,7 +38,7 @@ namespace BizHawk.Client.EmuHawk
 			string name = null)
 				=> null;
 
-		public NLuaTableHelper GetTableHelper() => null;
+		public ILuaTableHelper<LuaTable> GetTableHelper() => null;
 
 		public bool RemoveNamedFunctionMatching(Func<INamedLuaFunction, bool> predicate) => false;
 

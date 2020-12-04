@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 
-using NLua;
 using BizHawk.Client.Common;
 using BizHawk.Common;
 
@@ -14,11 +13,11 @@ namespace BizHawk.Client.EmuHawk
 {
 	[Description("A library for manipulating the Tastudio dialog of the EmuHawk client")]
 	[LuaLibrary(released: true)]
-	public sealed class TAStudioLuaLibrary : LuaLibraryBase
+	public sealed class TAStudioLuaLibrary<TTable> : LuaLibraryBase<TTable>
 	{
 		public ToolManager Tools { get; set; }
 
-		public TAStudioLuaLibrary(ILuaLibEnv luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
+		public TAStudioLuaLibrary(ILuaLibEnv<TTable> luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
 			: base(luaLibsImpl, apiContainer, logOutputCallback) {}
 
 		public override string Name => "tastudio";
@@ -165,7 +164,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodExample("local nltasget = tastudio.getselection( );")]
 		[LuaMethod("getselection", "gets the currently selected frames")]
-		public LuaTable GetSelection() => Engaged() ? _th.EnumerateToLuaTable(Tastudio.GetSelection()) : _th.CreateTable();
+		public TTable GetSelection() => Engaged() ? _th.EnumerateToLuaTable(Tastudio.GetSelection()) : _th.CreateTable();
 
 		[LuaMethodExample("")]
 		[LuaMethod("submitinputchange", "")]
@@ -373,7 +372,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodExample("local nltasget = tastudio.getbranches( );")]
 		[LuaMethod("getbranches", "Returns a list of the current tastudio branches.  Each entry will have the Id, Frame, and Text properties of the branch")]
-		public LuaTable GetBranches()
+		public TTable GetBranches()
 		{
 			if (!Engaged()) return _th.CreateTable();
 			return _th.EnumerateToLuaTable(Tastudio.CurrentTasMovie.Branches.Select(b => new
@@ -386,7 +385,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodExample("local nltasget = tastudio.getbranchinput( \"97021544-2454-4483-824f-47f75e7fcb6a\", 500 );")]
 		[LuaMethod("getbranchinput", "Gets the controller state of the given frame with the given branch identifier")]
-		public LuaTable GetBranchInput(string branchId, int frame)
+		public TTable GetBranchInput(string branchId, int frame)
 		{
 			if (!Engaged()) return _th.CreateTable();
 

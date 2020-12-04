@@ -1,6 +1,8 @@
+using NLua;
+
 namespace BizHawk.Client.Common
 {
-	public interface IPlatformLuaLibEnv : ILuaLibEnv
+	public interface IPlatformLuaLibEnv : ILuaLibEnv<LuaTable>
 	{
 		LuaFunctionList RegisteredFunctions { get; }
 

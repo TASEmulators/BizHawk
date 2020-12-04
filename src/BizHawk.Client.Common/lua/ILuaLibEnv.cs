@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace BizHawk.Client.Common
 {
-	public interface ILuaLibEnv
+	public interface ILuaLibEnv<TTable>
 	{
 		LuaDocumentation Docs { get; }
 
@@ -16,7 +16,7 @@ namespace BizHawk.Client.Common
 
 		INamedLuaFunction CreateAndRegisterNamedFunction(Func<IReadOnlyList<object>, IReadOnlyList<object>> function, string theEvent, Action<string> logCallback, LuaFile luaFile, string name = null);
 
-		NLuaTableHelper GetTableHelper();
+		ILuaTableHelper<TTable> GetTableHelper();
 
 		bool RemoveNamedFunctionMatching(Func<INamedLuaFunction, bool> predicate);
 

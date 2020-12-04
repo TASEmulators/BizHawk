@@ -7,14 +7,13 @@ using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
-using NLua;
 
 namespace BizHawk.Client.EmuHawk
 {
 	[Description("A library for creating and managing custom dialogs")]
-	public sealed class FormsLuaLibrary : LuaLibraryBase
+	public sealed class FormsLuaLibrary<TTable> : LuaLibraryBase<TTable>
 	{
-		public FormsLuaLibrary(ILuaLibEnv luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
+		public FormsLuaLibrary(ILuaLibEnv<TTable> luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
 			: base(luaLibsImpl, apiContainer, logOutputCallback) {}
 
 		public override string Name => "forms";
@@ -174,7 +173,7 @@ namespace BizHawk.Client.EmuHawk
 			"dropdown", "Creates a dropdown (with a ComboBoxStyle of DropDownList) control on the given form. Dropdown items are passed via a lua table. Only the values will be pulled for the dropdown items, the keys are irrelevant. Items will be sorted alphabetically. x and y are the optional location parameters, and width and height are the optional size parameters.")]
 		public int Dropdown(
 			int formHandle,
-			LuaTable items,
+			TTable items,
 			int? x = null,
 			int? y = null,
 			int? width = null,
@@ -417,7 +416,7 @@ namespace BizHawk.Client.EmuHawk
 				return 0;
 			}
 
-			var pictureBox = new LuaPictureBox { TableHelper = _th };
+			var pictureBox = new LuaPictureBox<TTable> { TableHelper = _th };
 			form.Controls.Add(pictureBox);
 
 			if (x.HasValue && y.HasValue)
@@ -452,7 +451,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 
-					foreach (var control in form.Controls.OfType<LuaPictureBox>())
+					foreach (var control in form.Controls.OfType<LuaPictureBox<TTable>>())
 					{
 						control.Clear(color);
 					}
@@ -481,7 +480,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 
-					foreach (var control in form.Controls.OfType<LuaPictureBox>())
+					foreach (var control in form.Controls.OfType<LuaPictureBox<TTable>>())
 					{
 						control.Refresh();
 					}
@@ -510,7 +509,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 
-					foreach (var control in form.Controls.OfType<LuaPictureBox>())
+					foreach (var control in form.Controls.OfType<LuaPictureBox<TTable>>())
 					{
 						control.SetDefaultForegroundColor(color);
 					}
@@ -539,7 +538,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 
-					foreach (var control in form.Controls.OfType<LuaPictureBox>())
+					foreach (var control in form.Controls.OfType<LuaPictureBox<TTable>>())
 					{
 						control.SetDefaultBackgroundColor(color);
 					}
@@ -568,7 +567,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 
-					foreach (var control in form.Controls.OfType<LuaPictureBox>())
+					foreach (var control in form.Controls.OfType<LuaPictureBox<TTable>>())
 					{
 						control.SetDefaultTextBackground(color);
 					}
@@ -584,7 +583,7 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod(
 			"drawBezier",
 			"Draws a Bezier curve using the table of coordinates provided in the given color")]
-		public void DrawBezier(int componentHandle, LuaTable points, Color color)
+		public void DrawBezier(int componentHandle, TTable points, Color color)
 		{
 			try
 			{
@@ -597,7 +596,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 
-					foreach (var control in form.Controls.OfType<LuaPictureBox>())
+					foreach (var control in form.Controls.OfType<LuaPictureBox<TTable>>())
 					{
 						control.DrawBezier(points, color);
 					}
@@ -626,7 +625,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 
-					foreach (var control in form.Controls.OfType<LuaPictureBox>())
+					foreach (var control in form.Controls.OfType<LuaPictureBox<TTable>>())
 					{
 						control.DrawBox(x, y, x2, y2, line, background);
 					}
@@ -655,7 +654,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 
-					foreach (var control in form.Controls.OfType<LuaPictureBox>())
+					foreach (var control in form.Controls.OfType<LuaPictureBox<TTable>>())
 					{
 						control.DrawEllipse(x, y, width, height, line, background);
 					}
@@ -684,7 +683,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 
-					foreach (var control in form.Controls.OfType<LuaPictureBox>())
+					foreach (var control in form.Controls.OfType<LuaPictureBox<TTable>>())
 					{
 						control.DrawIcon(path, x, y, width, height);
 					}
@@ -718,7 +717,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 
-					foreach (var control in form.Controls.OfType<LuaPictureBox>())
+					foreach (var control in form.Controls.OfType<LuaPictureBox<TTable>>())
 					{
 						control.DrawImage(path, x, y, width, height, cache);
 					}
@@ -747,7 +746,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 
-					foreach (var control in form.Controls.OfType<LuaPictureBox>())
+					foreach (var control in form.Controls.OfType<LuaPictureBox<TTable>>())
 					{
 						control.ClearImageCache();
 					}
@@ -781,7 +780,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 
-					foreach (var control in form.Controls.OfType<LuaPictureBox>())
+					foreach (var control in form.Controls.OfType<LuaPictureBox<TTable>>())
 					{
 						control.DrawImageRegion(path, source_x, source_y, source_width, source_height, dest_x, dest_y, dest_width, dest_height);
 					}
@@ -810,7 +809,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 
-					foreach (var control in form.Controls.OfType<LuaPictureBox>())
+					foreach (var control in form.Controls.OfType<LuaPictureBox<TTable>>())
 					{
 						control.DrawLine(x1, y1, x2, y2, color);
 					}
@@ -839,7 +838,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 
-					foreach (var control in form.Controls.OfType<LuaPictureBox>())
+					foreach (var control in form.Controls.OfType<LuaPictureBox<TTable>>())
 					{
 						control.DrawAxis(x, y, size, color);
 					}
@@ -869,7 +868,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 
-					foreach (var control in form.Controls.OfType<LuaPictureBox>())
+					foreach (var control in form.Controls.OfType<LuaPictureBox<TTable>>())
 					{
 						control.DrawArc(x, y, width, height, startangle, sweepangle, line);
 					}
@@ -907,7 +906,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 
-					foreach (var control in form.Controls.OfType<LuaPictureBox>())
+					foreach (var control in form.Controls.OfType<LuaPictureBox<TTable>>())
 					{
 						control.DrawPie(x, y, width, height, startangle, sweepangle, line, background);
 					}
@@ -936,7 +935,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 
-					foreach (var control in form.Controls.OfType<LuaPictureBox>())
+					foreach (var control in form.Controls.OfType<LuaPictureBox<TTable>>())
 					{
 						control.DrawPixel(x, y, color);
 					}
@@ -952,7 +951,7 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod(
 			"drawPolygon",
 			"Draws a polygon using the table of coordinates specified in points. This should be a table of tables(each of size 2). If x or y is passed, the polygon will be translated by the passed coordinate pair. Line is the color of the polygon. Background is the optional fill color")]
-		public void DrawPolygon(int componentHandle, LuaTable points, int? x = null, int? y = null, Color? line = null, Color? background = null)
+		public void DrawPolygon(int componentHandle, TTable points, int? x = null, int? y = null, Color? line = null, Color? background = null)
 		{
 			try
 			{
@@ -965,7 +964,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 
-					foreach (var control in form.Controls.OfType<LuaPictureBox>())
+					foreach (var control in form.Controls.OfType<LuaPictureBox<TTable>>())
 					{
 						control.DrawPolygon(points, x, y, line, background);
 					}
@@ -995,7 +994,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 
-					foreach (var control in form.Controls.OfType<LuaPictureBox>())
+					foreach (var control in form.Controls.OfType<LuaPictureBox<TTable>>())
 					{
 						control.DrawRectangle(x, y, width, height, line, background);
 					}
@@ -1035,7 +1034,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 
-					foreach (var control in form.Controls.OfType<LuaPictureBox>())
+					foreach (var control in form.Controls.OfType<LuaPictureBox<TTable>>())
 					{
 						control.DrawText(x, y, message, forecolor, backcolor, fontsize, fontfamily, fontstyle, horizalign, vertalign);
 					}
@@ -1075,7 +1074,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 
-					foreach (var control in form.Controls.OfType<LuaPictureBox>())
+					foreach (var control in form.Controls.OfType<LuaPictureBox<TTable>>())
 					{
 						control.DrawText(x, y, message, forecolor, backcolor, fontsize, fontfamily, fontstyle, horizalign, vertalign);
 					}
@@ -1087,7 +1086,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		// It'd be great if these were simplified into 1 function, but I cannot figure out how to return a LuaTable from this class
+		// It'd be great if these were simplified into 1 function, but I cannot figure out how to return a TTable from this class
 		[LuaMethodExample("local inforget = forms.getMouseX( 334 );")]
 		[LuaMethod(
 			"getMouseX",
@@ -1105,7 +1104,7 @@ namespace BizHawk.Client.EmuHawk
 						return 0;
 					}
 
-					foreach (var control in form.Controls.OfType<LuaPictureBox>())
+					foreach (var control in form.Controls.OfType<LuaPictureBox<TTable>>())
 					{
 						return control.GetMouse().X;
 					}
@@ -1136,7 +1135,7 @@ namespace BizHawk.Client.EmuHawk
 						return 0;
 					}
 
-					foreach (var control in form.Controls.OfType<LuaPictureBox>())
+					foreach (var control in form.Controls.OfType<LuaPictureBox<TTable>>())
 					{
 						return control.GetMouse().Y;
 					}
@@ -1152,7 +1151,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodExample("forms.setdropdownitems( 332, { \"item1\", \"item2\" } );")]
 		[LuaMethod("setdropdownitems", "Sets the items for a given dropdown box")]
-		public void SetDropdownItems(int handle, LuaTable items)
+		public void SetDropdownItems(int handle, TTable items)
 		{
 			try
 			{

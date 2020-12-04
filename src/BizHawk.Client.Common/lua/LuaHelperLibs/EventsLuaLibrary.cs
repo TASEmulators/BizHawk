@@ -2,7 +2,6 @@
 using System.Linq;
 using System.ComponentModel;
 
-using NLua;
 using BizHawk.Emulation.Common;
 
 // ReSharper disable UnusedMember.Global
@@ -10,7 +9,7 @@ using BizHawk.Emulation.Common;
 namespace BizHawk.Client.Common
 {
 	[Description("A library for registering lua functions to emulator events.\n All events support multiple registered methods.\nAll registered event methods can be named and return a Guid when registered")]
-	public sealed class EventsLuaLibrary : LuaLibraryBase
+	public sealed class EventsLuaLibrary<TTable> : LuaLibraryBase<TTable>
 	{
 		[OptionalService]
 		private IInputPollable InputPollableCore { get; set; }
@@ -24,7 +23,7 @@ namespace BizHawk.Client.Common
 		[OptionalService]
 		private IMemoryDomains Domains { get; set; }
 
-		public EventsLuaLibrary(ILuaLibEnv luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
+		public EventsLuaLibrary(ILuaLibEnv<TTable> luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
 			: base(luaLibsImpl, apiContainer, logOutputCallback) {}
 
 		public override string Name => "event";
@@ -242,7 +241,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local scopes = event.availableScopes();")]
 		[LuaMethod("availableScopes", "Lists the available scopes that can be passed into memory events")]
-		public LuaTable AvailableScopes()
+		public TTable AvailableScopes()
 		{
 			return DebuggableCore?.MemoryCallbacksAvailable() == true
 				? _th.ListToTable(DebuggableCore.MemoryCallbacks.AvailableScopes)
