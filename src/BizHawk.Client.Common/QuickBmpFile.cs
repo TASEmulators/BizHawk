@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
+// ReSharper disable FieldCanBeMadeReadOnly.Local
 // ReSharper disable InconsistentNaming
 // ReSharper disable StyleCop.SA1304
 // ReSharper disable StyleCop.SA1307

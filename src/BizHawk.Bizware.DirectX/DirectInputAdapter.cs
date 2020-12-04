@@ -8,7 +8,7 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Bizware.DirectX
 {
-	public sealed class DirectInputAdapter : HostInputAdapter
+	public sealed class DirectInputAdapter : IHostInputAdapter
 	{
 		private Config? _config;
 

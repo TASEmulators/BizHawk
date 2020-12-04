@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using System.IO.Compression;
-using System.Runtime.InteropServices;
 using BizHawk.BizInvoke;
 using BizHawk.Common;
 

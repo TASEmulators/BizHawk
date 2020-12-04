@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Net.WebSockets;
 using System.Text;
 
 namespace BizHawk.Client.Common

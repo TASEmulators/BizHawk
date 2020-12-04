@@ -196,7 +196,7 @@ namespace BizHawk.Client.Common
 			QuickNES quickNes => quickNes.GetSettings(),
 			SMS sms => sms.GetSettings(),
 			WonderSwan ws => ws.GetSettings(),
-			_ => (object) null
+			_ => null
 		};
 
 		public PutSettingsDirtyBits PutSettings(object settings) => Emulator switch
@@ -214,7 +214,7 @@ namespace BizHawk.Client.Common
 		public void SetRenderPlanes(params bool[] args)
 		{
 			static bool GetSetting(bool[] settings, int index) => index >= settings.Length || settings[index];
-			void SetBSNES(LibsnesCore core)
+			void SetBsnes(LibsnesCore core)
 			{
 				var s = core.GetSettings();
 				s.ShowBG1_0 = s.ShowBG1_1 = GetSetting(args, 0);
@@ -273,7 +273,7 @@ namespace BizHawk.Client.Common
 				else if (!showSp && s.NumSprites > 0) s.NumSprites = 0;
 				quicknes.PutSettings(s);
 			}
-			void SetSMSHawk(SMS sms)
+			void SetSmsHawk(SMS sms)
 			{
 				var s = sms.GetSettings();
 				s.DispOBJ = GetSetting(args, 0);
@@ -286,7 +286,7 @@ namespace BizHawk.Client.Common
 					SetGPGX(gpgx);
 					break;
 				case LibsnesCore snes:
-					SetBSNES(snes);
+					SetBsnes(snes);
 					break;
 				case NES nes:
 					SetNesHawk(nes);
@@ -298,7 +298,7 @@ namespace BizHawk.Client.Common
 					SetQuickNES(quicknes);
 					break;
 				case SMS sms:
-					SetSMSHawk(sms);
+					SetSmsHawk(sms);
 					break;
 				case WonderSwan ws:
 					SetCygne(ws);

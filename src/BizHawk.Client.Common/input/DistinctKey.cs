@@ -1,5 +1,8 @@
 #nullable enable
 
+// ReSharper disable CommentTypo
+// ReSharper disable IdentifierTypo
+// ReSharper disable UnusedMember.Global
 namespace BizHawk.Client.Common
 {
 	/// <summary>values are one-to-one with <c>System.Windows.Input.Key</c> except <see cref="NumPadEnter"/> and <see cref="Unknown"/> which were added for this project</summary>

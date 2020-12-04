@@ -153,7 +153,7 @@ namespace BizHawk.Client.Common.Filters
 				Passes.Add(sp);
 
 				sp.InputFilterLinear = FetchBool(dict, $"filter_linear{i}", false); //Should this value not be defined, the filtering option is implementation defined.
-				sp.OuputFloat = FetchBool(dict, $"float_framebuffer{i}", false);
+				sp.OutputFloat = FetchBool(dict, $"float_framebuffer{i}", false);
 				sp.FrameCountMod = FetchInt(dict, $"frame_count_mod{i}", 1);
 				sp.ShaderPath = FetchString(dict, $"shader{i}", "?"); //todo - change extension to .cg for better compatibility? just change .cg to .glsl transparently at last second?
 
@@ -191,24 +191,24 @@ namespace BizHawk.Client.Common.Filters
 			public int Index;
 			public string ShaderPath;
 			public bool InputFilterLinear;
-			public bool OuputFloat;
+			public bool OutputFloat;
 			public int FrameCountMod;
 			public ScaleType ScaleTypeX;
 			public ScaleType ScaleTypeY;
 			public Vector2 Scale;
 		}
 
-		private string FetchString(IDictionary<string, string> dict, string key, string @default)
+		private static string FetchString(IDictionary<string, string> dict, string key, string @default)
 		{
 			return dict.TryGetValue(key, out var str) ? str : @default;
 		}
 
-		private int FetchInt(IDictionary<string, string> dict, string key, int @default)
+		private static int FetchInt(IDictionary<string, string> dict, string key, int @default)
 		{
 			return dict.TryGetValue(key, out var str) ? int.Parse(str) : @default;
 		}
 
-		private float FetchFloat(IDictionary<string, string> dict, string key, float @default)
+		private static float FetchFloat(IDictionary<string, string> dict, string key, float @default)
 		{
 			return dict.TryGetValue(key, out var str) ? float.Parse(str) : @default;
 		}

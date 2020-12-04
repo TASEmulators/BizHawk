@@ -98,11 +98,6 @@ namespace BizHawk.Client.Common
 		// For not throwing errors but simply outputting information to the screen
 		public Action<string> MessageCallback { get; set; }
 
-		private void DoMessageCallback(string message)
-		{
-			MessageCallback?.Invoke(message);
-		}
-
 		// TODO: reconsider the need for exposing these;
 		public IEmulator LoadedEmulator { get; private set; }
 		public GameInfo Game { get; private set; }
@@ -237,7 +232,6 @@ namespace BizHawk.Client.Common
 
 		private GameInfo MakeGameFromDisc(Disc disc, string ext, string name)
 		{
-			GameInfo game;
 			// TODO - use more sophisticated IDer
 			var discType = new DiscIdentifier(disc).DetectDiscType();
 			var discHasher = new DiscHasher(disc);
@@ -245,7 +239,7 @@ namespace BizHawk.Client.Common
 				? discHasher.Calculate_PSX_BizIDHash().ToString("X8")
 				: discHasher.OldHash();
 
-			game = Database.CheckDatabase(discHash);
+			var game = Database.CheckDatabase(discHash);
 			if (game == null)
 			{
 				// try to use our wizard methods

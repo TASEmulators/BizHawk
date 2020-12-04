@@ -110,7 +110,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly Thread _updateThread;
 
-		public readonly HostInputAdapter Adapter;
+		public readonly IHostInputAdapter Adapter;
 
 		private readonly Func<Config> _getConfigCallback;
 

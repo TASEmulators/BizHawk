@@ -40,8 +40,8 @@ namespace BizHawk.Client.Common.Filters
 			//zero 02-jun-2014 - we passed these in, but ignored them. kind of weird..
 			int oldSourceWidth = sourceWidth;
 			int oldSourceHeight = sourceHeight;
-			sourceWidth = (int)virtualWidth;
-			sourceHeight = (int)virtualHeight;
+			sourceWidth = virtualWidth;
+			sourceHeight = virtualHeight;
 
 			// this doesn't make sense
 			if (!maintainAspect)
@@ -83,7 +83,7 @@ namespace BizHawk.Client.Common.Filters
 						PS + new Vector2(1, 1)
 					};
 
-					bool[] trialsLimited = new bool[3] { false,false,false};
+					bool[] trialsLimited = new bool[] { false, false, false};
 					int bestIndex = -1;
 					float bestValue = 1000.0f;
 					for (int t = 0; t < trials.Length; t++)
@@ -177,7 +177,7 @@ namespace BizHawk.Client.Common.Filters
 		public IGL GL;
 		public IGuiRenderer GuiRenderer;
 
-		private MelonDS nds;
+		private readonly MelonDS nds;
 
 		//TODO: actually use this
 		private bool nop = false;
@@ -344,7 +344,7 @@ namespace BizHawk.Client.Common.Filters
 		{
 			point = Transform(matBotInvert, point);
 
-			//hack to accomodate input tracking system's float-point sense (based on the core's videobuffer height)
+			//hack to accomodate input tracking system's float-point sense (based on the core's VideoBuffer height)
 			//actually, this is needed for a reason similar to the "TouchScreenStart" that I removed.
 			//So, something like that needs readding if we're to get rid of this hack.
 			//(should redo it as a mouse coordinate offset or something.. but the key is to pipe it to the point where this is needed.. that is where MainForm does DisplayManager.UntransformPoint()
@@ -425,7 +425,7 @@ namespace BizHawk.Client.Common.Filters
 
 		public FinalPresentation(Size size)
 		{
-			this.OutputSize = size;
+			OutputSize = size;
 		}
 
 		private Size OutputSize, InputSize;
@@ -489,13 +489,7 @@ namespace BizHawk.Client.Common.Filters
 
 		public override void SetInputFormat(string channel, SurfaceState state)
 		{
-			bool need = false;
-			if (state.SurfaceFormat.Size != OutputSize)
-				need = true;
-			if (FilterOption != eFilterOption.None)
-				need = true;
-			if (Flip)
-				need = true;
+			bool need = state.SurfaceFormat.Size != OutputSize || FilterOption != eFilterOption.None || Flip;
 
 			if (!need)
 			{

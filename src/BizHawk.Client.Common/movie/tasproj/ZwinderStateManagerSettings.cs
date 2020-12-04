@@ -83,7 +83,7 @@ namespace BizHawk.Client.Common
 		// Just to simplify some other code.
 		public RewindConfig Current()
 		{
-			return new RewindConfig()
+			return new RewindConfig
 			{
 				UseCompression = CurrentUseCompression,
 				BufferSize = CurrentBufferSize,
@@ -92,7 +92,7 @@ namespace BizHawk.Client.Common
 		}
 		public RewindConfig Recent()
 		{
-			return new RewindConfig()
+			return new RewindConfig
 			{
 				UseCompression = RecentUseCompression,
 				BufferSize = RecentBufferSize,
@@ -101,7 +101,7 @@ namespace BizHawk.Client.Common
 		}
 		public RewindConfig GapFiller()
 		{
-			return new RewindConfig()
+			return new RewindConfig
 			{
 				UseCompression = GapsUseCompression,
 				BufferSize = GapsBufferSize,

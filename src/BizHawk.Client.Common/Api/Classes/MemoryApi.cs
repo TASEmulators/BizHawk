@@ -165,7 +165,7 @@ namespace BizHawk.Client.Common
 					}
 				case 4:
 					{
-						d.PokeUint(addr, (uint)value, _isBigEndian);
+						d.PokeUint(addr, value, _isBigEndian);
 						break;
 					}
 			}

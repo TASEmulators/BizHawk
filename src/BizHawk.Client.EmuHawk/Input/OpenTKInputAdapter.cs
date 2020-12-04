@@ -7,7 +7,7 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public sealed class OpenTKInputAdapter : HostInputAdapter
+	public sealed class OpenTKInputAdapter : IHostInputAdapter
 	{
 		public void DeInitAll() {}
 

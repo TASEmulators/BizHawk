@@ -95,7 +95,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		private void CreateDirectoryIfNotExists(string fn)
+		private static void CreateDirectoryIfNotExists(string fn)
 		{
 			var file = new FileInfo(fn);
 			if (file.Directory != null && !file.Directory.Exists)

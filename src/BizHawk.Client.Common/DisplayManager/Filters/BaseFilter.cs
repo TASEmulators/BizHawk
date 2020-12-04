@@ -36,8 +36,8 @@ namespace BizHawk.Client.Common.Filters
 			var output = FindOutput(channel);
 			if (input != null && output != null)
 			{
-				point.X *= ((float)input.SurfaceFormat.Size.Width) / (float)output.SurfaceFormat.Size.Width;
-				point.Y *= ((float)input.SurfaceFormat.Size.Height) / (float)output.SurfaceFormat.Size.Height;
+				point.X *= input.SurfaceFormat.Size.Width / (float)output.SurfaceFormat.Size.Width;
+				point.Y *= input.SurfaceFormat.Size.Height / (float)output.SurfaceFormat.Size.Height;
 			}
 			return point;
 		}
@@ -49,8 +49,8 @@ namespace BizHawk.Client.Common.Filters
 			var output = FindOutput(channel);
 			if (input != null && output != null)
 			{
-				point.X *= ((float)output.SurfaceFormat.Size.Width) / (float)input.SurfaceFormat.Size.Width;
-				point.Y *= ((float)output.SurfaceFormat.Size.Height) / (float)input.SurfaceFormat.Size.Height;
+				point.X *= output.SurfaceFormat.Size.Width / (float)input.SurfaceFormat.Size.Width;
+				point.Y *= output.SurfaceFormat.Size.Height / (float)input.SurfaceFormat.Size.Height;
 			}
 			return point;
 		}

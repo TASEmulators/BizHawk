@@ -47,7 +47,7 @@ namespace BizHawk.Client.Common.cheats
 
 		};
 
-		private IDecodeResult GameBoy(string code)
+		private static IDecodeResult GameBoy(string code)
 		{
 			// Game Genie
 			if (code.LastIndexOf("-") == 7 && code.IndexOf("-") == 3)
@@ -65,7 +65,7 @@ namespace BizHawk.Client.Common.cheats
 			return new InvalidCheatCode($"Unknown code type: {code}");
 		}
 
-		private IDecodeResult Gba(string code)
+		private static IDecodeResult Gba(string code)
 		{
 			if (code.Length == 12)
 			{
@@ -75,7 +75,7 @@ namespace BizHawk.Client.Common.cheats
 			return GbaGameSharkDecoder.Decode(code);
 		}
 
-		private IDecodeResult Gen(string code)
+		private static IDecodeResult Gen(string code)
 		{
 			// Game Genie only
 			if (code.Length == 9 && code.Contains("-"))
@@ -99,15 +99,15 @@ namespace BizHawk.Client.Common.cheats
 			return new InvalidCheatCode($"Unknown code type: {code}");
 		}
 
-		private IDecodeResult N64(string code) => N64GameSharkDecoder.Decode(code);
+		private static IDecodeResult N64(string code) => N64GameSharkDecoder.Decode(code);
 
-		private IDecodeResult Nes(string code) => NesGameGenieDecoder.Decode(code);
+		private static IDecodeResult Nes(string code) => NesGameGenieDecoder.Decode(code);
 
-		private IDecodeResult Psx(string code) => PsxGameSharkDecoder.Decode(code);
+		private static IDecodeResult Psx(string code) => PsxGameSharkDecoder.Decode(code);
 
-		private IDecodeResult Saturn(string code) => SaturnGameSharkDecoder.Decode(code);
+		private static IDecodeResult Saturn(string code) => SaturnGameSharkDecoder.Decode(code);
 
-		private IDecodeResult Sms(string code)
+		private static IDecodeResult Sms(string code)
 		{
 			// Game Genie
 			if (code.LastIndexOf("-") == 7 && code.IndexOf("-") == 3)
@@ -124,7 +124,7 @@ namespace BizHawk.Client.Common.cheats
 			return new InvalidCheatCode($"Unknown code type: {code}");
 		}
 
-		private IDecodeResult Snes(string code)
+		private static IDecodeResult Snes(string code)
 		{
 			if (code.Contains("-") && code.Length == 9)
 			{

@@ -48,7 +48,7 @@ namespace BizHawk.Client.Common
 		public void SetDefaultBackgroundColor(Color color) => APIs.Gui.SetDefaultBackgroundColor(color);
 
 		[LuaMethodExample("gui.defaultTextBackground( 0x000000FF );")]
-		[LuaMethod("defaultTextBackground", "Sets the default backgroiund color to use in text drawing methods, half-transparent black by default")]
+		[LuaMethod("defaultTextBackground", "Sets the default background color to use in text drawing methods, half-transparent black by default")]
 		public void SetDefaultTextBackground(Color color) => APIs.Gui.SetDefaultTextBackground(color);
 
 		[LuaMethodExample("gui.defaultPixelFont( \"Arial Narrow\");")]

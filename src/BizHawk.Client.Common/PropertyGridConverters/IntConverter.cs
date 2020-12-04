@@ -14,7 +14,7 @@ namespace BizHawk.Client.Common
 	{
 		public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
 		{
-			return ((sourceType == typeof(string)) || base.CanConvertFrom(context, sourceType));
+			return sourceType == typeof(string) || base.CanConvertFrom(context, sourceType);
 		}
 
 		public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
@@ -44,7 +44,7 @@ namespace BizHawk.Client.Common
 		{
 			if (destinationType == null)
 			{
-				throw new ArgumentNullException("destinationType");
+				throw new ArgumentNullException(nameof(destinationType));
 			}
 
 			if (destinationType == typeof(string))

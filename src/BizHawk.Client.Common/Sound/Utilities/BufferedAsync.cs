@@ -21,7 +21,7 @@ namespace BizHawk.Client.Common
 	 * Why use this, when each core has it's own Async sound output?
 	 * 
 	 * It is true that each emulation core provides its own async sound output, either through directly
-	 * rendering to arbitrary buffers (pce not turbocd, sms), or using one of the metaspus (nes, turbocd).
+	 * rendering to arbitrary buffers (pce not TurboCD, sms), or using one of the metaspus (nes, TurboCD).
 	 * 
 	 * Unfortunately, the vecna metaspu is not perfect, and for maintaining near-realtime playback (the usual
 	 * situation which we want to optimize for), it simply sounds better with a BufferedAsync on top of it.
