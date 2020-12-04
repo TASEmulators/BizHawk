@@ -101,7 +101,12 @@ namespace BizHawk.Client.Common
 		[LuaMethod("getboardname", "returns (if available) the board name of the loaded ROM")]
 		public string GetBoardName() => APIs.Emulation.GetBoardName();
 
+		[LuaDeprecatedMethod]
 		[LuaMethod("getluacore", "returns the name of the Lua core currently in use")]
-		public string GetLuaBackend() => _luaLibsImpl.EngineName;
+		public string GetLuaBackend()
+		{
+			Log("Deprecated function emu.getluacore() used, replace the call with client.get_lua_engine().");
+			return _luaLibsImpl.EngineName;
+		}
 	}
 }
