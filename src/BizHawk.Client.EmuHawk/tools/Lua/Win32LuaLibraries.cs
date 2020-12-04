@@ -154,33 +154,72 @@ namespace BizHawk.Client.EmuHawk
 
 		public override void CallSaveStateEvent(string name)
 		{
-			EventsLibrary.CallSaveStateEvent(name);
+			try
+			{
+				foreach (var lf in RegisteredFunctions.Where(l => l.Event == "OnSavestateSave"))
+				{
+					lf.Call(name);
+				}
+			}
+			catch (Exception e)
+			{
+				LogToLuaConsole($"error running function attached by lua function event.onsavestate\nError message: {e.Message}");
+			}
 		}
 
 		public override void CallLoadStateEvent(string name)
 		{
-			EventsLibrary.CallLoadStateEvent(name);
+			try
+			{
+				foreach (var lf in RegisteredFunctions.Where(l => l.Event == "OnSavestateLoad"))
+				{
+					lf.Call(name);
+				}
+			}
+			catch (Exception e)
+			{
+				LogToLuaConsole($"error running function attached by lua function event.onloadstate\nError message: {e.Message}");
+			}
 		}
 
 		public override void CallFrameBeforeEvent()
 		{
-			if (!IsUpdateSupressed)
+			if (IsUpdateSupressed) return;
+			try
 			{
-				EventsLibrary.CallFrameBeforeEvent();
+				foreach (var lf in RegisteredFunctions.Where(l => l.Event == "OnFrameStart"))
+				{
+					lf.Call();
+				}
+			}
+			catch (Exception e)
+			{
+				LogToLuaConsole($"error running function attached by lua function event.onframestart\nError message: {e.Message}");
 			}
 		}
 
 		public override void CallFrameAfterEvent()
 		{
-			if (!IsUpdateSupressed)
+			if (IsUpdateSupressed) return;
+			try
 			{
-				EventsLibrary.CallFrameAfterEvent();
+				foreach (var lf in RegisteredFunctions.Where(l => l.Event == "OnFrameEnd"))
+				{
+					lf.Call();
+				}
+			}
+			catch (Exception e)
+			{
+				LogToLuaConsole($"error running function attached by lua function event.onframeend\nError message: {e.Message}");
 			}
 		}
 
 		public override void CallExitEvent(LuaFile lf)
 		{
-			EventsLibrary.CallExitEvent(lf);
+			foreach (var exitCallback in RegisteredFunctions.ForFile(lf).ForEvent("OnExit"))
+			{
+				exitCallback.Call();
+			}
 		}
 
 		public override void Close()
