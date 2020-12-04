@@ -232,16 +232,16 @@ namespace BizHawk.Client.EmuHawk
 			GuiLibrary.Dispose();
 		}
 
-		public override NamedLuaFunction CreateAndRegisterNamedFunction(LuaFunction function, string theEvent, Action<string> logCallback, LuaFile luaFile, string name = null)
+		public override INamedLuaFunction CreateAndRegisterNamedFunction(LuaFunction function, string theEvent, Action<string> logCallback, LuaFile luaFile, string name = null)
 		{
 			var nlf = new NamedLuaFunction(function, theEvent, logCallback, luaFile, name);
 			RegisteredFunctions.Add(nlf);
 			return nlf;
 		}
 
-		public override bool RemoveNamedFunctionMatching(Func<NamedLuaFunction, bool> predicate)
+		public override bool RemoveNamedFunctionMatching(Func<INamedLuaFunction, bool> predicate)
 		{
-			var nlf = RegisteredFunctions.FirstOrDefault(predicate);
+			var nlf = (NamedLuaFunction) RegisteredFunctions.FirstOrDefault(predicate);
 			if (nlf == null) return false;
 			RegisteredFunctions.Remove(nlf, _mainForm.Emulator);
 			return true;

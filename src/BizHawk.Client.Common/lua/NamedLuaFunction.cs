@@ -5,7 +5,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
-	public class NamedLuaFunction
+	public sealed class NamedLuaFunction : INamedLuaFunction
 	{
 		private readonly LuaFunction _function;
 

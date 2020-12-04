@@ -33,7 +33,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 		}
 
-		public override NamedLuaFunction CreateAndRegisterNamedFunction(LuaFunction function, string theEvent, Action<string> logCallback, LuaFile luaFile, string name = null) => null;
+		public override INamedLuaFunction CreateAndRegisterNamedFunction(LuaFunction function, string theEvent, Action<string> logCallback, LuaFile luaFile, string name = null) => null;
 
 		public override void EndLuaDrawing()
 		{
@@ -48,7 +48,7 @@ namespace BizHawk.Client.EmuHawk
 		public override LuaFunctionList RegisteredFunctions => EmptyLuaFunList;
 		public override GuiLuaLibrary GuiLibrary => null;
 
-		public override bool RemoveNamedFunctionMatching(Func<NamedLuaFunction, bool> predicate) => false;
+		public override bool RemoveNamedFunctionMatching(Func<INamedLuaFunction, bool> predicate) => false;
 
 		public override void Restart(IEmulatorServiceProvider newServiceProvider)
 		{
