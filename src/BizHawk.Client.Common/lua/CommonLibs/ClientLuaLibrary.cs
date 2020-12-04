@@ -27,7 +27,7 @@ namespace BizHawk.Client.Common
 
 		public IMainFormForApi MainForm { get; set; }
 
-		public ClientLuaLibrary(IPlatformLuaLibEnv luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
+		public ClientLuaLibrary(ILuaLibEnv luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
 			: base(luaLibsImpl, apiContainer, logOutputCallback) {}
 
 		public override string Name => "client";

@@ -4,7 +4,7 @@ namespace BizHawk.Client.Common
 {
 	public sealed class SaveStateLuaLibrary : LuaLibraryBase
 	{
-		public SaveStateLuaLibrary(IPlatformLuaLibEnv luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
+		public SaveStateLuaLibrary(ILuaLibEnv luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
 			: base(luaLibsImpl, apiContainer, logOutputCallback) {}
 
 		public override string Name => "savestate";

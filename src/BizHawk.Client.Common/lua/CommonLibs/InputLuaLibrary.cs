@@ -6,7 +6,7 @@ namespace BizHawk.Client.Common
 {
 	public sealed class InputLuaLibrary : LuaLibraryBase
 	{
-		public InputLuaLibrary(IPlatformLuaLibEnv luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
+		public InputLuaLibrary(ILuaLibEnv luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
 			: base(luaLibsImpl, apiContainer, logOutputCallback) {}
 
 		public override string Name => "input";

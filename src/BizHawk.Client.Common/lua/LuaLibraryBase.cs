@@ -6,7 +6,7 @@ namespace BizHawk.Client.Common
 {
 	public abstract class LuaLibraryBase
 	{
-		protected LuaLibraryBase(IPlatformLuaLibEnv luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
+		protected LuaLibraryBase(ILuaLibEnv luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
 		{
 			LogOutputCallback = logOutputCallback;
 			_luaLibsImpl = luaLibsImpl;
@@ -25,7 +25,7 @@ namespace BizHawk.Client.Common
 
 		protected readonly Action<string> LogOutputCallback;
 
-		protected readonly IPlatformLuaLibEnv _luaLibsImpl;
+		protected readonly ILuaLibEnv _luaLibsImpl;
 
 		protected readonly NLuaTableHelper _th;
 

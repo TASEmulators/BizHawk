@@ -10,7 +10,7 @@ namespace BizHawk.Client.Common
 	{
 		public Func<int, int, int?, int?, LuaTable> CreateLuaCanvasCallback { get; set; }
 
-		public GuiLuaLibrary(IPlatformLuaLibEnv luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
+		public GuiLuaLibrary(ILuaLibEnv luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
 			: base(luaLibsImpl, apiContainer, logOutputCallback) {}
 
 		public override string Name => "gui";
