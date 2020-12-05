@@ -6,9 +6,9 @@ namespace BizHawk.Common
 	public static partial class VersionInfo
 	{
 		// keep this updated at every major release
-		public const string MainVersion = "2.5.3"; // Use numbers only or the new version notification won't work
-		public const string ReleaseDate = "September 12, 2020";
-		public const string HomePage = "http://tasvideos.org/BizHawk.html";
+		public static readonly string MainVersion = "2.5.3"; // Use numbers only or the new version notification won't work
+		public static readonly string ReleaseDate = "September 12, 2020";
+		public static readonly string HomePage = "http://tasvideos.org/BizHawk.html";
 		public static readonly bool DeveloperBuild = true;
 
 		public static readonly string? CustomBuildString;
