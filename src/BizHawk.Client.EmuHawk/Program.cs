@@ -194,6 +194,8 @@ namespace BizHawk.Client.EmuHawk
 
 			var workingGL = TryInitIGL(initialConfig.DispMethod);
 
+			Sound globalSound = null;
+
 			if (!OSTC.IsUnixHost)
 			{
 				//WHY do we have to do this? some intel graphics drivers (ig7icd64.dll 10.18.10.3304 on an unknown chip on win8.1) are calling SetDllDirectory() for the process, which ruins stuff.
@@ -212,7 +214,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					try
 					{
-						InitAndRunSingleInstance(initialConfig, workingGL, i => exitCode = i, args);
+						InitAndRunSingleInstance(initialConfig, workingGL, newSound => globalSound = newSound, i => exitCode = i, args);
 					}
 					catch (ObjectDisposedException)
 					{
@@ -221,7 +223,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					var mf = new MainForm(initialConfig, workingGL, args, out var movieSession);
+					var mf = new MainForm(initialConfig, workingGL, newSound => globalSound = newSound, args, out var movieSession);
 //					var title = mf.Text;
 					mf.Show();
 //					mf.Text = title;
@@ -252,8 +254,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			finally
 			{
-				Sound.Instance?.Dispose();
-				Sound.Instance = null;
+				globalSound?.Dispose();
 				workingGL.Dispose();
 				Input.Instance?.Adapter?.DeInitAll();
 			}
@@ -322,13 +323,16 @@ namespace BizHawk.Client.EmuHawk
 
 			private readonly Action<int> _setExitCode;
 
+			private readonly Action<Sound> _updateGlobalSound;
+
 			private readonly string[] cmdArgs;
 
-			public SingleInstanceController(Config config, IGL gl, Action<int> setExitCode, string[] args)
+			public SingleInstanceController(Config config, IGL gl, Action<Sound> updateGlobalSound, Action<int> setExitCode, string[] args)
 			{
 				_config = config;
 				_gl = gl;
 				_setExitCode = setExitCode;
+				_updateGlobalSound = updateGlobalSound;
 				cmdArgs = args;
 				IsSingleInstance = true;
 				StartupNextInstance += this_StartupNextInstance;
@@ -344,7 +348,7 @@ namespace BizHawk.Client.EmuHawk
 
 			protected override void OnCreateMainForm()
 			{
-				MainForm = new MainForm(_config, _gl, cmdArgs, out _);
+				MainForm = new MainForm(_config, _gl, _updateGlobalSound, cmdArgs, out _);
 				var title = MainForm.Text;
 				MainForm.Show();
 				MainForm.Text = title;
@@ -352,7 +356,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private static void InitAndRunSingleInstance(Config config, IGL gl, Action<int> setExitCode, string[] args)
-			=> new SingleInstanceController(config, gl, setExitCode, args).Run();
+		private static void InitAndRunSingleInstance(Config config, IGL gl, Action<Sound> updateGlobalSound, Action<int> setExitCode, string[] args)
+			=> new SingleInstanceController(config, gl, updateGlobalSound, setExitCode, args).Run();
 	}
 }

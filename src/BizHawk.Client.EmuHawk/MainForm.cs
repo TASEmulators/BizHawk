@@ -273,7 +273,7 @@ namespace BizHawk.Client.EmuHawk
 			CloseRomContextMenuItem.Image = Properties.Resources.Close;
 		}
 
-		public MainForm(Config config, IGL gl, string[] args, out IMovieSession movieSession)
+		public MainForm(Config config, IGL gl, Action<Sound> updateGlobalSound, string[] args, out IMovieSession movieSession)
 		{
 			//do this threaded stuff early so it has plenty of time to run in background
 			Database.InitializeDatabase(Path.Combine(PathUtils.ExeDirectoryPath, "gamedb", "gamedb.txt"));
@@ -281,6 +281,7 @@ namespace BizHawk.Client.EmuHawk
 
 			Config = config;
 			GL = gl;
+			_updateGlobalSound = updateGlobalSound;
 
 			InputManager = new InputManager
 			{
@@ -894,10 +895,15 @@ namespace BizHawk.Client.EmuHawk
 
 		public GameInfo Game { get; private set; }
 
+		/// <remarks>don't use this, use <see cref="Sound"/></remarks>
+		private Sound _sound;
+
+		private readonly Action<Sound> _updateGlobalSound;
+
 		private Sound Sound
 		{
-			get => Sound.Instance;
-			set => Sound.Instance = value;
+			get => _sound;
+			set => _updateGlobalSound(_sound = value);
 		}
 
 		public CheatCollection CheatList { get; }
