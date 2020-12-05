@@ -621,7 +621,7 @@ namespace BizHawk.Client.EmuHawk
 				var (winVersion, win10Release) = OSTailoredCode.HostWindowsVersion.Value;
 				var message = winVersion switch
 				{
-					OSTailoredCode.WindowsVersion._10 when win10Release < 1809 => $"Quick reminder: version {win10Release} of Windows 10 is no longer supported by Microsoft. EmuHawk will continue to work, but please update to at least 1809 \"Redstone 5\" for increased security.",
+					OSTailoredCode.WindowsVersion._10 when win10Release < 1909 => $"Quick reminder: version {win10Release} of Windows 10 is no longer supported by Microsoft. EmuHawk will continue to work, but please update to at least 1909 for increased security.",
 					OSTailoredCode.WindowsVersion._10 => null,
 					OSTailoredCode.WindowsVersion._8_1 => null, // still CBB
 					_ => $"Quick reminder: Windows {winVersion.ToString().RemovePrefix('_').Replace("_", ".")} is no longer supported by Microsoft. EmuHawk will continue to work, but please get a new operating system for increased security (either Windows 8.1, Windows 10, or a GNU+Linux distro)."
