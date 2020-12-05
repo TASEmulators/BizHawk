@@ -1,29 +1,33 @@
 using System.IO;
 using System.Reflection;
 
+using BizHawk.Common.StringExtensions;
+
 namespace BizHawk.Common
 {
 	public static partial class VersionInfo
 	{
-		// keep this updated at every major release
-		public static readonly string MainVersion = "2.5.3"; // Use numbers only or the new version notification won't work
+		/// <remarks>
+		/// Bump this immediately after release.
+		/// Only use '0'..'9' and '.' or it will fail to parse and the new version notification won't work.
+		/// </remarks>
+		public static readonly string MainVersion = "2.5.3";
+
 		public static readonly string ReleaseDate = "September 12, 2020";
+
 		public static readonly string HomePage = "http://tasvideos.org/BizHawk.html";
+
 		public static readonly bool DeveloperBuild = true;
 
 		public static readonly string? CustomBuildString;
 
-		public static string GetEmuVersion()
-		{
-			return DeveloperBuild
-				? "GIT " + GIT_BRANCH + "#" + GIT_SHORTHASH
-				: "Version " + MainVersion;
-		}
-
 		static VersionInfo()
 		{
-			string path = Path.Combine(GetExeDirectoryAbsolute(), "dll");
-			path = Path.Combine(path, "custombuild.txt");
+			var path = Path.Combine(
+				Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location)?.RemoveSuffix(Path.DirectorySeparatorChar) ?? string.Empty,
+				"dll",
+				"custombuild.txt"
+			);
 			if (File.Exists(path))
 			{
 				var lines = File.ReadAllLines(path);
@@ -33,6 +37,9 @@ namespace BizHawk.Common
 				}
 			}
 		}
+
+		public static string GetEmuVersion()
+			=> DeveloperBuild ? $"GIT {GIT_BRANCH}#{GIT_SHORTHASH}" : $"Version {MainVersion}";
 
 		/// <summary>"2.5.1" => 0x02050100</summary>
 		public static int VersionStrToInt(string s)
@@ -47,18 +54,6 @@ namespace BizHawk.Common
 				i++;
 			}
 			return v;
-		}
-
-		// code copied to avoid depending on code in other projects
-		private static string GetExeDirectoryAbsolute()
-		{
-			var path = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) ?? "";
-			if (path.EndsWith(Path.DirectorySeparatorChar.ToString()))
-			{
-				path = path.Remove(path.Length - 1, 1);
-			}
-
-			return path;
 		}
 	}
 }
