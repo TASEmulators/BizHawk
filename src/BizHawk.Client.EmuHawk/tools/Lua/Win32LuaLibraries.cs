@@ -43,10 +43,12 @@ namespace BizHawk.Client.EmuHawk
 
 			if (true /*NLua.Lua.WhichLua == "NLua"*/) _lua["keepalives"] = _lua.NewTable();
 			_th = new NLuaTableHelper(_lua);
+			_displayManager = displayManager;
+			_inputManager = inputManager;
 			_mainForm = mainForm;
 			LuaWait = new AutoResetEvent(false);
 			Docs.Clear();
-			var apiContainer = ApiManager.RestartLua(serviceProvider, LogToLuaConsole, _mainForm, displayManager, inputManager, _mainForm.MovieSession, _mainForm.Tools, config, emulator, game);
+			var apiContainer = ApiManager.RestartLua(serviceProvider, LogToLuaConsole, _mainForm, _displayManager, _inputManager, _mainForm.MovieSession, _mainForm.Tools, config, emulator, game);
 
 			// Register lua libraries
 			foreach (var lib in Client.Common.ReflectionCache.Types.Concat(EmuHawk.ReflectionCache.Types)
@@ -102,6 +104,10 @@ namespace BizHawk.Client.EmuHawk
 			EnumerateLuaFunctions(nameof(LuaCanvas), typeof(LuaCanvas), null); // add LuaCanvas to Lua function reference table
 		}
 
+		private readonly DisplayManager _displayManager;
+
+		private readonly InputManager _inputManager;
+
 		private readonly MainForm _mainForm;
 
 		private Lua _lua = new Lua();
@@ -135,11 +141,17 @@ namespace BizHawk.Client.EmuHawk
 
 		public NLuaTableHelper GetTableHelper() => _th;
 
-		public void Restart(IEmulatorServiceProvider newServiceProvider)
+		public void Restart(
+			IEmulatorServiceProvider newServiceProvider,
+			Config config,
+			IEmulator emulator,
+			IGameInfo game)
 		{
-			foreach (var lib in Libraries)
+			var apiContainer = ApiManager.RestartLua(newServiceProvider, LogToLuaConsole, _mainForm, _displayManager, _inputManager, _mainForm.MovieSession, _mainForm.Tools, config, emulator, game);
+			foreach (var lib in Libraries.Values)
 			{
-				ServiceInjector.UpdateServices(newServiceProvider, lib.Value);
+				lib.APIs = apiContainer;
+				ServiceInjector.UpdateServices(newServiceProvider, lib);
 			}
 		}
 

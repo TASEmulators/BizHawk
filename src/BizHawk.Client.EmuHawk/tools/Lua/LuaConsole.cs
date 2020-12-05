@@ -217,7 +217,7 @@ namespace BizHawk.Client.EmuHawk
 				if (luaLibsImpl.IsRebootingCore)
 				{
 					// Even if the lua console is self-rebooting from client.reboot_core() we still want to re-inject dependencies
-					luaLibsImpl.Restart(Emulator.ServiceProvider);
+					luaLibsImpl.Restart(Emulator.ServiceProvider, Config, Emulator, Game);
 					return;
 				}
 
