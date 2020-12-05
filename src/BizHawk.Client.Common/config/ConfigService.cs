@@ -36,20 +36,6 @@ namespace BizHawk.Client.Common
 
 		public static bool IsFromSameVersion(string filepath, out string msg)
 		{
-			// "2.5.1" => 0x02050100
-			static int VersionStrToInt(string s)
-			{
-				var a = s.Split('.');
-				var v = 0;
-				var i = 0;
-				while (i < 4)
-				{
-					v <<= 8;
-					if (i < a.Length) v += byte.TryParse(a[i], out var b) ? b : 0;
-					i++;
-				}
-				return v;
-			}
 			const string MSGFMT_NEWER = "Your config file ({0}) is from a newer version of EmuHawk, {2} (this is {1}). It may fail to load.";
 			const string MSGFMT_OLDER = "Your config file ({0}) is from an older version of EmuHawk, {2} (this is {1}). It may fail to load.";
 			const string MSGFMT_PRE_2_3_3 = "Your config file ({0}) is corrupted, or is from an older version of EmuHawk, predating 2.3.3 (this is {1}). It may fail to load.";
@@ -81,14 +67,14 @@ namespace BizHawk.Client.Common
 			}
 			else
 			{
-				var cfgVersion = VersionStrToInt(cfgVersionStr);
+				var cfgVersion = VersionInfo.VersionStrToInt(cfgVersionStr);
 				if (cfgVersion < 0x02050000)
 				{
 					fmt = MSGFMT_PRE_2_5;
 				}
 				else
 				{
-					var thisVersion = VersionStrToInt(VersionInfo.MainVersion);
+					var thisVersion = VersionInfo.VersionStrToInt(VersionInfo.MainVersion);
 					fmt = cfgVersion < thisVersion ? MSGFMT_OLDER : MSGFMT_NEWER;
 				}
 			}

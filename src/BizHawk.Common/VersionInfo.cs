@@ -34,6 +34,21 @@ namespace BizHawk.Common
 			}
 		}
 
+		/// <summary>"2.5.1" => 0x02050100</summary>
+		public static int VersionStrToInt(string s)
+		{
+			var a = s.Split('.');
+			var v = 0;
+			var i = 0;
+			while (i < 4)
+			{
+				v <<= 8;
+				v += (i < a.Length && byte.TryParse(a[i], out var b)) ? b : 0;
+				i++;
+			}
+			return v;
+		}
+
 		// code copied to avoid depending on code in other projects
 		private static string GetExeDirectoryAbsolute()
 		{
