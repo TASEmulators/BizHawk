@@ -55,8 +55,8 @@ namespace BizHawk.Client.EmuHawk
 		public static bool IsNewVersionAvailable =>
 			AutoCheckEnabled
 			&& LatestVersion != IgnoreVersion
-			&& ParseVersion(VersionInfo.MainVersion) != 0 // Avoid notifying if current version string is invalid
-			&& ParseVersion(LatestVersion) > ParseVersion(VersionInfo.MainVersion);
+			&& VersionInfo.VersionStrToInt(VersionInfo.MainVersion) != 0U // Avoid notifying if current version string is invalid
+			&& VersionInfo.VersionStrToInt(LatestVersion) > VersionInfo.VersionStrToInt(VersionInfo.MainVersion);
 
 		public static void IgnoreNewVersion()
 		{
@@ -100,26 +100,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static string ValidateVersionNumberString(string versionNumber)
 		{
-			return versionNumber != null && ParseVersion(versionNumber) != 0 ? versionNumber : "";
-		}
-
-		// Major version goes in the first 16 bits, and so on, up to 4 parts
-		private static ulong ParseVersion(string str)
-		{
-			string[] split = str.Split('.');
-			if (split.Length > 4) return 0;
-			ulong version = 0;
-			for (int i = 0; i < split.Length; i++)
-			{
-				if (!ushort.TryParse(split[i], out var versionPart))
-				{
-					return 0;
-				}
-
-				version |= (ulong)versionPart << (48 - (i * 16));
-			}
-
-			return version;
+			return versionNumber != null && VersionInfo.VersionStrToInt(versionNumber) != 0U ? versionNumber : "";
 		}
 
 		private static void OnCheckComplete()

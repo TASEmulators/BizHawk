@@ -68,7 +68,7 @@ namespace BizHawk.Client.Common
 			else
 			{
 				var cfgVersion = VersionInfo.VersionStrToInt(cfgVersionStr);
-				if (cfgVersion < 0x02050000)
+				if (cfgVersion < 0x02050000U)
 				{
 					fmt = MSGFMT_PRE_2_5;
 				}
