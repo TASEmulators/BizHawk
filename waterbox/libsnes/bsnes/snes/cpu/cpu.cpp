@@ -134,7 +134,7 @@ void CPU::power() {
 
 	//zero 01-dec-2012
 	//gotta clear these to something, sometime
-	aa.d = rd.d = sp = dp = 0;
+	rd.d = sp = dp = 0;
 }
 
 void CPU::reset() {

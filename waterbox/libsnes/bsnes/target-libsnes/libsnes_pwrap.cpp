@@ -109,10 +109,8 @@ enum eStatus : int32
 #endif
 struct CPURegsComm {
 	u32 pc;
-	u16 a, x, y, s, d, vector; //7x
-	u8 p, nothing;
-	u32 aa, rd;
-	u8 sp, dp, db, mdr;
+	u16 a, x, y, s, d, vector; //6x
+	u8 p, db, nothing, nothing2;
 	u16 v, h;
 }
 #ifndef _MSC_VER
@@ -174,6 +172,7 @@ struct CommStruct
 	//static configuration-type information which can be grabbed off the core at any time without even needing a QUERY command
 	uint32 region;
 	uint32 mapper;
+	uint32 BLANKO;
 
 	//===========================================================
 
@@ -527,15 +526,11 @@ void QUERY_peek_cpu_regs() {
 	comm.cpuregs.y = SNES::cpu.regs.y;
 	comm.cpuregs.s = SNES::cpu.regs.s;
 	comm.cpuregs.d = SNES::cpu.regs.d;
-	//comm.cpuregs.aa = (u32)SNES::cpu.aa;
-	comm.cpuregs.rd = (u32)SNES::cpu.rd;
-	comm.cpuregs.sp = SNES::cpu.sp;
-	comm.cpuregs.dp = SNES::cpu.dp;
 	comm.cpuregs.db = SNES::cpu.regs.db;
-	comm.cpuregs.mdr = SNES::cpu.regs.mdr;
 	comm.cpuregs.vector = SNES::cpu.regs.vector;
 	comm.cpuregs.p = SNES::cpu.regs.p;
 	comm.cpuregs.nothing = 0;
+	comm.cpuregs.nothing2 = 0;
 	comm.cpuregs.v = SNES::cpu.vcounter();
 	comm.cpuregs.h = SNES::cpu.hdot();
 }
@@ -625,11 +620,12 @@ EXPORT void* DllInit()
 	T(cdl_ptr, 128);
 	T(cdl_size, 256);
 	T(cpuregs, 320);
-	T(layerEnables, 356);
-	T(region, 368);
-	T(mapper, 372);
+	T(layerEnables, 344);
+	T(region, 356);
+	T(mapper, 360);
+	T(BLANKO, 364);
 	// start of private stuff
-	T(privbuf, 376);
+	T(privbuf, 368);
 	#undef T
 
 	memset(&comm, 0, sizeof(comm));

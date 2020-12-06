@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 	{
 		static LibsnesApi()
 		{
-			if (sizeof(CommStruct) != 376)
+			if (sizeof(CommStruct) != 368)
 			{
 				throw new InvalidOperationException("sizeof(comm)");
 			}
@@ -208,10 +208,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		public struct CPURegs
 		{
 			public uint pc;
-			public ushort a, x, y, z, s, d, vector; //7x
-			public byte p, nothing;
-			public uint aa, rd;
-			public byte sp, dp, db, mdr;
+			public ushort a, x, y, s, d, vector; //7x
+			public byte p, db, nothing, nothing2;
 			public ushort v, h;
 		}
 
@@ -346,14 +344,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			[FieldOffset(320)]
 			public CPURegs cpuregs;
-			[FieldOffset(356)]
+			[FieldOffset(344)]
 			public LayerEnables layerEnables;
 
-			[FieldOffset(368)]
+			[FieldOffset(356)]
 			//static configuration-type information which can be grabbed off the core at any time without even needing a QUERY command
 			public SNES_REGION region;
-			[FieldOffset(372)]
+			[FieldOffset(360)]
 			public SNES_MAPPER mapper;
+
+			[FieldOffset(364)]
+			uint BLANK0;
+
 
 			//utilities
 			//TODO: make internal, wrap on the API instead of the comm
