@@ -118,6 +118,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public int LYC_offset; // in double speed mode it appears timing changes for LYC int
 		public bool glitch_state; // writing to STAT to enable HBL interrupt won't trigger it if the ppu just turned on
 		public int LY_153_change; // the timing of LYC chaning to 153 looks like it varies with speed mode
+		public bool in_vbl; // writes to turn on mode 2 stat interrupts can trigger vbl stat at the start of vbl
 
 		// variables not in state
 		public int total_counter;
@@ -286,6 +287,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync(nameof(LYC_offset), ref LYC_offset);
 			ser.Sync(nameof(glitch_state), ref glitch_state);
 			ser.Sync(nameof(LY_153_change), ref LY_153_change);
+			ser.Sync(nameof(in_vbl), ref in_vbl);
 		}
 	}
 }

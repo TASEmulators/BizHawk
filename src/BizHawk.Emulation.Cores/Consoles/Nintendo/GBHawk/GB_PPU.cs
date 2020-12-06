@@ -162,6 +162,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					if (LY == 0 && LY_inc == 0)
 					{
 						LY_inc = 1;
+						in_vbl = false;
 						Core.in_vblank = false;
 
 						STAT &= 0xFC;
@@ -183,6 +184,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 					if (LY == 144)
 					{
+						in_vbl = true;
 						Core.in_vblank = true;
 					}
 				}
@@ -191,6 +193,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				if (LCD_was_off)
 				{
 					//VBL_INT = false;
+					in_vbl = false;
 					Core.in_vblank = false;
 					LCD_was_off = false;
 
@@ -206,22 +209,31 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					cycle = 8;
 				}
 
+				// Timing note: LYC=143 does not by itself block mode1 stat int. But, the glitchy mode 2 stat check combined with 
+				// LYC=143 does block it
+
 				// the VBL stat is continuously asserted
-				if (LY >= 144)
+				if (in_vbl)
 				{
+					if ((cycle <= 4) && (LY == 144))
+					{
+						if (!STAT.Bit(5)) { VBL_INT = false; }
+						if ((cycle == 4) && !STAT.Bit(4)) { VBL_INT = false; }
+					}
+
 					if (STAT.Bit(4))
 					{
-						if ((cycle >= 4) && (LY == 144))
+						if (LY == 144)
 						{
-							VBL_INT = true;
+							if (cycle >= 4) { VBL_INT = true; }
 						}
-						else if (LY > 144)
+						else
 						{
 							VBL_INT = true;
 						}
 					}
 
-					if ((cycle == 2) && (LY == 144))
+					if ((cycle >= 2) && (cycle < 4) && (LY == 144))
 					{
 						// there is an edge case where a VBL INT is triggered if STAT bit 5 is set
 						if (STAT.Bit(5)) { VBL_INT = true; }
@@ -239,11 +251,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						Core.REG_FF0F |= 0x01;
 					}
 
-					if ((cycle == 4) && (LY == 144))
-					{
-						if (STAT.Bit(5)) { VBL_INT = false; }
-					}
-
 					if ((cycle == 6) && (LY == 153))
 					{
 						LY = 0;
@@ -251,8 +258,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						Core.cpu.LY = LY;
 					}
 				}
-
-				if (!Core.in_vblank)
+				else
 				{
 					if (no_scan)
 					{
@@ -315,27 +321,34 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					{
 						if (cycle < 83)
 						{
-							if (cycle == 2)
-							{							
-								if (LY != 0)
+							if (cycle <= 4)
+							{
+								if ((cycle == 2) && (LY != 0))
 								{
 									HBL_INT = false;
+
 									if (STAT.Bit(5)) { OAM_INT = true; }
-								}								
-							}
-							else if (cycle == 4)
-							{
-								// apparently, writes can make it to OAM one cycle longer then reads
-								OAM_access_write = false;
+								}
 
-								// here mode 2 will be set to true and interrupts fired if enabled
-								STAT &= 0xFC;
-								STAT |= 0x2;
-
-								if (LY == 0)
+								// the last few cycles of mode 1 still trigger mode 1 int
+								if (cycle < 4)
 								{
-									VBL_INT = false;
-									if (STAT.Bit(5)) { OAM_INT = true; }
+									if (STAT.Bit(4) && ((STAT & 3) == 1)) { VBL_INT = true; }
+								}
+								else
+								{
+									// apparently, writes can make it to OAM one cycle longer then reads
+									OAM_access_write = false;
+
+									// here mode 2 will be set to true and interrupts fired if enabled
+									STAT &= 0xFC;
+									STAT |= 0x2;
+
+									if (LY == 0)
+									{
+										VBL_INT = false;
+										if (STAT.Bit(5)) { OAM_INT = true; }
+									}
 								}
 							}
 
@@ -415,7 +428,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 				VBL_INT = LYC_INT = HBL_INT = OAM_INT = false;
 
-				Core.in_vblank = true;
+				in_vbl = true;
+				Core.in_vblank = true;			
 
 				LCD_was_off = true;
 
@@ -1242,7 +1256,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			scroll_y = 0;
 			scroll_x = 0;
 			LY = 0;
-			LYC = 0;
+			LYC = 0xFF;
 			DMA_addr = 0xFF;
 			BGP = 0xFF;
 			obj_pal_0 = 0xFF;
@@ -1278,6 +1292,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			window_y_tile_inc = 0;
 
 			glitch_state = false;
+			in_vbl = true;
 		}
 	}
 }
