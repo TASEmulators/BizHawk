@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 	{
 		static LibsnesApi()
 		{
-			if (sizeof(CommStruct) != 280)
+			if (sizeof(CommStruct) != 376)
 			{
 				throw new InvalidOperationException("sizeof(comm)");
 			}
@@ -340,19 +340,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			[FieldOffset(128)]
 			//bleck. this is a long so that it can be a 32/64bit pointer
-			public fixed long cdl_ptr[8];
-			[FieldOffset(192)]
-			public fixed int cdl_size[8];
+			public fixed long cdl_ptr[16];
+			[FieldOffset(256)]
+			public fixed int cdl_size[16];
 
-			[FieldOffset(224)]
+			[FieldOffset(320)]
 			public CPURegs cpuregs;
-			[FieldOffset(260)]
+			[FieldOffset(356)]
 			public LayerEnables layerEnables;
 
-			[FieldOffset(272)]
+			[FieldOffset(368)]
 			//static configuration-type information which can be grabbed off the core at any time without even needing a QUERY command
 			public SNES_REGION region;
-			[FieldOffset(276)]
+			[FieldOffset(372)]
 			public SNES_MAPPER mapper;
 
 			//utilities

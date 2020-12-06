@@ -56,7 +56,7 @@ template<typename R, typename... P> struct hook<R (P...)> {
 
 enum eCDLog_AddrType
 {
-	eCDLog_AddrType_CARTROM, eCDLog_AddrType_CARTRAM, eCDLog_AddrType_WRAM, eCDLog_AddrType_APURAM,
+	eCDLog_AddrType_CARTROM, eCDLog_AddrType_CARTROM_DB, eCDLog_AddrType_CARTROM_D, eCDLog_AddrType_CARTRAM, eCDLog_AddrType_WRAM, eCDLog_AddrType_APURAM,
 	eCDLog_AddrType_SGB_CARTROM, eCDLog_AddrType_SGB_CARTRAM, eCDLog_AddrType_SGB_WRAM, eCDLog_AddrType_SGB_HRAM,
 	eCDLog_AddrType_NUM
 };
@@ -76,15 +76,20 @@ enum eCDLog_Flags
 struct CDLInfo
 {
 	eCDLog_Flags currFlags;
-	uint8_t* blocks[eCDLog_AddrType_NUM]; //[0]==nullptr -> disabled
-	uint32_t blockSizes[eCDLog_AddrType_NUM];
+	uint8_t* blocks[16]; //[0]==nullptr -> disabled
+	uint32_t blockSizes[16];
 	void set(eCDLog_AddrType addrType, uint32_t addr)
 	{
 		if(!blocks[0]) return;
 		if(addr >= blockSizes[addrType])
 			return;
 		blocks[addrType][addr] |= currFlags;
+		if(addrType == eCDLog_AddrType_CARTROM)
+		{
+			dorom(addr);
+		}
 	}
+	void dorom(uint32_t addr);
 };
 
 extern CDLInfo cdlInfo;

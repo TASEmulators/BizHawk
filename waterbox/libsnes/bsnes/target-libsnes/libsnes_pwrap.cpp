@@ -109,7 +109,7 @@ enum eStatus : int32
 #endif
 struct CPURegsComm {
 	u32 pc;
-	u16 a, x, y, z, s, d, vector; //7x
+	u16 a, x, y, s, d, vector; //7x
 	u8 p, nothing;
 	u32 aa, rd;
 	u8 sp, dp, db, mdr;
@@ -165,8 +165,8 @@ struct CommStruct
 
 	int32 padding3;
 
-	int64 cdl_ptr[8];
-	int32 cdl_size[8];
+	int64 cdl_ptr[16];
+	int32 cdl_size[16];
 
 	CPURegsComm cpuregs;
 	LayerEnablesComm layerEnables;
@@ -525,10 +525,9 @@ void QUERY_peek_cpu_regs() {
 	comm.cpuregs.a = SNES::cpu.regs.a;
 	comm.cpuregs.x = SNES::cpu.regs.x;
 	comm.cpuregs.y = SNES::cpu.regs.y;
-	comm.cpuregs.z = SNES::cpu.regs.z;
 	comm.cpuregs.s = SNES::cpu.regs.s;
 	comm.cpuregs.d = SNES::cpu.regs.d;
-	comm.cpuregs.aa = (u32)SNES::cpu.aa;
+	//comm.cpuregs.aa = (u32)SNES::cpu.aa;
 	comm.cpuregs.rd = (u32)SNES::cpu.rd;
 	comm.cpuregs.sp = SNES::cpu.sp;
 	comm.cpuregs.dp = SNES::cpu.dp;
@@ -541,7 +540,7 @@ void QUERY_peek_cpu_regs() {
 	comm.cpuregs.h = SNES::cpu.hdot();
 }
 void QUERY_peek_set_cdl() {
-	for (int i = 0; i<eCDLog_AddrType_NUM; i++)
+	for (int i = 0; i<16; i++)
 	{
 		cdlInfo.blocks[i] = (uint8*)comm.cdl_ptr[i];
 		cdlInfo.blockSizes[i] = comm.cdl_size[i];
@@ -624,13 +623,13 @@ EXPORT void* DllInit()
 	T(buf, 88);
 	T(buf_size, 112);
 	T(cdl_ptr, 128);
-	T(cdl_size, 192);
-	T(cpuregs, 224);
-	T(layerEnables, 260);
-	T(region, 272);
-	T(mapper, 276);
+	T(cdl_size, 256);
+	T(cpuregs, 320);
+	T(layerEnables, 356);
+	T(region, 368);
+	T(mapper, 372);
 	// start of private stuff
-	T(privbuf, 280);
+	T(privbuf, 376);
 	#undef T
 
 	memset(&comm, 0, sizeof(comm));

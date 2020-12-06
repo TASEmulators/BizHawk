@@ -158,7 +158,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			using (_exe.EnterExit())
 			{
-				for (int i = 0; i < 8; i++)
+				for (int i = 0; i < 16; i++)
 				{
 					_comm->cdl_ptr[i] = 0;
 					_comm->cdl_size[i] = 0;
@@ -166,37 +166,57 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 				if (cdl != null)
 				{
-					_comm->cdl_ptr[0] = cdl.GetPin("CARTROM").ToInt64();
-					_comm->cdl_size[0] = cdl["CARTROM"].Length;
+					int zz = 0;
+
+					_comm->cdl_ptr[zz] = cdl.GetPin("CARTROM").ToInt64();
+					_comm->cdl_size[zz] = cdl["CARTROM"].Length;
+					zz++;
+
+					_comm->cdl_ptr[zz] = cdl.GetPin("CARTROM-DB").ToInt64();
+					_comm->cdl_size[zz] = cdl["CARTROM"].Length;
+					zz++;
+
+					_comm->cdl_ptr[zz] = cdl.GetPin("CARTROM-D").ToInt64();
+					_comm->cdl_size[zz] = cdl["CARTROM"].Length;
+					zz++;
+
 					if (cdl.Has("CARTRAM"))
 					{
-						_comm->cdl_ptr[1] = cdl.GetPin("CARTRAM").ToInt64();
-						_comm->cdl_size[1] = cdl["CARTRAM"].Length;
+						_comm->cdl_ptr[zz] = cdl.GetPin("CARTRAM").ToInt64();
+						_comm->cdl_size[zz] = cdl["CARTRAM"].Length;
 					}
+					zz++;
 
-					_comm->cdl_ptr[2] = cdl.GetPin("WRAM").ToInt64();
-					_comm->cdl_size[2] = cdl["WRAM"].Length;
+					_comm->cdl_ptr[zz] = cdl.GetPin("WRAM").ToInt64();
+					_comm->cdl_size[zz] = cdl["WRAM"].Length;
+					zz++;
 
-					_comm->cdl_ptr[3] = cdl.GetPin("APURAM").ToInt64();
-					_comm->cdl_size[3] = cdl["APURAM"].Length;
+					_comm->cdl_ptr[zz] = cdl.GetPin("APURAM").ToInt64();
+					_comm->cdl_size[zz] = cdl["APURAM"].Length;
+					zz++;
 
 					if (cdl.Has("SGB_CARTROM"))
 					{
-						_comm->cdl_ptr[4] = cdl.GetPin("SGB_CARTROM").ToInt64();
-						_comm->cdl_size[4] = cdl["SGB_CARTROM"].Length;
+						_comm->cdl_ptr[zz] = cdl.GetPin("SGB_CARTROM").ToInt64();
+						_comm->cdl_size[zz] = cdl["SGB_CARTROM"].Length;
+						zz++;
 
 						if (cdl.Has("SGB_CARTRAM"))
 						{
-							_comm->cdl_ptr[5] = cdl.GetPin("SGB_CARTRAM").ToInt64();
-							_comm->cdl_size[5] = cdl["SGB_CARTRAM"].Length;
+							_comm->cdl_ptr[zz] = cdl.GetPin("SGB_CARTRAM").ToInt64();
+							_comm->cdl_size[zz] = cdl["SGB_CARTRAM"].Length;
 						}
+						zz++;
 
-						_comm->cdl_ptr[6] = cdl.GetPin("SGB_WRAM").ToInt64();
-						_comm->cdl_size[6] = cdl["SGB_WRAM"].Length;
+						_comm->cdl_ptr[zz] = cdl.GetPin("SGB_WRAM").ToInt64();
+						_comm->cdl_size[zz] = cdl["SGB_WRAM"].Length;
+						zz++;
 
-						_comm->cdl_ptr[7] = cdl.GetPin("SGB_HRAM").ToInt64();
-						_comm->cdl_size[7] = cdl["SGB_HRAM"].Length;
+						_comm->cdl_ptr[zz] = cdl.GetPin("SGB_HRAM").ToInt64();
+						_comm->cdl_size[zz] = cdl["SGB_HRAM"].Length;
+						zz++;
 					}
+					else zz += 4;
 				}
 
 				_core.Message(eMessage.eMessage_QUERY_set_cdl);
