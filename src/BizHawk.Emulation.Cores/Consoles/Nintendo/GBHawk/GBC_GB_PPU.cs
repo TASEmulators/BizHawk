@@ -584,7 +584,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				{
 					if (STAT.Bit(4))
 					{
-						if ((cycle >= 4) && (LY == 144))
+						if ((cycle >= 5) && (LY == 144))
 						{
 							VBL_INT = true;
 						}
