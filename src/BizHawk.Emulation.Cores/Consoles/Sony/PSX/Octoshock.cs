@@ -372,7 +372,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		//so we'll track the current one here and detach the previous one whenever a new one is booted up.
 		static Octoshock CurrOctoshockCore;
 
-		OctoshockDll.PsxHandle psx;
+		IntPtr psx;
 
 		bool disposed = false;
 		public void Dispose()
@@ -382,7 +382,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			disposed = true;
 
 			//discs arent bound to shock core instances, but they may be mounted. kill the core instance first to effectively dereference the disc
-			psx.Dispose();
+			OctoshockDll.shock_Destroy(psx);
+			psx = IntPtr.Zero;
 
 			//destroy all discs we're managing (and the unmanaged octoshock resources)
 			foreach (var di in discInterfaces)
@@ -412,11 +413,12 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			Action<DiscInterface> cbActivity;
 
 			public Disc Disc;
-			public OctoshockDll.DiscHandle OctoshockHandle;
+			public IntPtr OctoshockHandle;
 
 			public void Dispose()
 			{
-				OctoshockHandle.Dispose();
+				OctoshockDll.shock_DestroyDisc(OctoshockHandle);
+				OctoshockHandle = IntPtr.Zero;
 			}
 
 			int ShockDisc_ReadTOC(IntPtr opaque, OctoshockDll.ShockTOC* read_target, OctoshockDll.ShockTOCTrack* tracks101)
@@ -732,7 +734,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			if (CurrentDiscIndexMounted == 0)
 			{
 				currentDiscInterface = null;
-				OctoshockDll.shock_PokeDisc(psx, OctoshockDll.DiscHandle.NoDisc);
+				OctoshockDll.shock_PokeDisc(psx, IntPtr.Zero);
 			}
 			else
 			{
@@ -773,7 +775,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				if (CurrentDiscIndexMounted == 0 || discInterfaces.Count == 0)
 				{
 					currentDiscInterface = null;
-					OctoshockDll.shock_SetDisc(psx, OctoshockDll.DiscHandle.NoDisc);
+					OctoshockDll.shock_SetDisc(psx, IntPtr.Zero);
 				}
 				else
 				{
