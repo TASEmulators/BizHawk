@@ -477,9 +477,6 @@ INLINE uint32 PS_CPU::ReadInstruction(pscpu_timestamp_t &timestamp, uint32 addre
   }
  }
 
- if (g_ShockMemCallback && (g_ShockMemCbType & eShockMemCb_Execute))
-  g_ShockMemCallback(address, eShockMemCb_Execute, 32, instr);
-
  return instr;
 }
 
@@ -637,6 +634,10 @@ pscpu_timestamp_t PS_CPU::RunReal(pscpu_timestamp_t timestamp_in)
 	shock_Util_DisassembleMIPS(PC, instr, disasm_buf, ARRAY_SIZE(disasm_buf));
     g_ShockTraceCallback(NULL, PC, instr, disasm_buf);
    }
+
+   if (g_ShockMemCallback && (g_ShockMemCbType & eShockMemCb_Execute))
+	   g_ShockMemCallback(PC, eShockMemCb_Execute, 32, instr);
+
 
    opf = instr & 0x3F;
 
