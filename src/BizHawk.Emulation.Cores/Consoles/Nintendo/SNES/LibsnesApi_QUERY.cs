@@ -177,7 +177,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 					zz++;
 
 					_comm->cdl_ptr[zz] = cdl.GetPin("CARTROM-D").ToInt64();
-					_comm->cdl_size[zz] = cdl["CARTROM"].Length;
+					_comm->cdl_size[zz] = cdl["CARTROM"].Length * 2;
 					zz++;
 
 					if (cdl.Has("CARTRAM"))
