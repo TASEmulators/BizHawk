@@ -10,6 +10,38 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 {
 	public static unsafe class OctoshockDll
 	{
+		public class PsxHandle : SafeHandle
+		{
+			private PsxHandle() :base(IntPtr.Zero, true) { }
+
+			public override bool IsInvalid => handle == IntPtr.Zero;
+
+			protected override bool ReleaseHandle()
+			{
+				return shock_Destroy(handle) == SHOCK_OK;
+			}
+
+			[DllImport(dd, CallingConvention = cc)]
+			private static extern int shock_Destroy(IntPtr psx);
+		}
+
+		public class DiscHandle : SafeHandle
+		{
+			public static DiscHandle NoDisc => new DiscHandle(true);
+			private DiscHandle() : base(IntPtr.Zero, true) { }
+			private DiscHandle(bool isNoDisc) :base(IntPtr.Zero, false) { SetHandle(IntPtr.Zero); }
+
+			public override bool IsInvalid => handle == IntPtr.Zero;
+
+			protected override bool ReleaseHandle()
+			{
+				return shock_DestroyDisc(handle) == SHOCK_OK;
+			}
+
+			[DllImport(dd, CallingConvention = cc)]
+			private static extern int shock_DestroyDisc(IntPtr disc);
+		}
+	
 		const CallingConvention cc = CallingConvention.Cdecl;
 		const string dd = "octoshock.dll";
 
@@ -184,7 +216,6 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			public TextStateFPtrs ff;
 		}
 
-
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate void ShockCallback_Trace(IntPtr opaque, uint PC, uint inst, string dis);
 
@@ -201,102 +232,96 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		public static extern int shock_Util_DisassembleMIPS(uint PC, uint instr, StringBuilder outbuf, int buflen);
 
 		[DllImport(dd, CallingConvention = cc)]
-		public static extern int shock_CreateDisc(out IntPtr outDisc, IntPtr Opaque, int lbaCount, ShockDisc_ReadTOC ReadTOC, ShockDisc_ReadLBA ReadLBA2448, bool suppliesDeinterleavedSubcode);
+		public static extern int shock_CreateDisc(out DiscHandle outDisc, IntPtr Opaque, int lbaCount, ShockDisc_ReadTOC ReadTOC, ShockDisc_ReadLBA ReadLBA2448, bool suppliesDeinterleavedSubcode);
 
 		[DllImport(dd, CallingConvention = cc)]
-		public static extern int shock_DestroyDisc(IntPtr disc);
+		public static extern int shock_AnalyzeDisc(DiscHandle disc, out ShockDiscInfo info);
 
 		[DllImport(dd, CallingConvention = cc)]
-		public static extern int shock_AnalyzeDisc(IntPtr disc, out ShockDiscInfo info);
-
-		[DllImport(dd, CallingConvention = cc)]
-		public static extern int shock_Create(out IntPtr psx, eRegion region, void* firmware512k);
-
-		[DllImport(dd, CallingConvention = cc)]
-		public static extern int shock_Destroy(IntPtr psx);
+		public static extern int shock_Create(out PsxHandle psx, eRegion region, void* firmware512k);
 
 		[DllImport(dd, CallingConvention = cc)]
 		public static extern int shock_Peripheral_Connect(
-			IntPtr psx,
+			PsxHandle psx,
 			int address,
 			[MarshalAs(UnmanagedType.I4)] ePeripheralType type
 			);
 
 		[DllImport(dd, CallingConvention = cc)]
-		public static extern int shock_Peripheral_SetPadInput(IntPtr psx, int address, uint buttons, byte left_x, byte left_y, byte right_x, byte right_y);
+		public static extern int shock_Peripheral_SetPadInput(PsxHandle psx, int address, uint buttons, byte left_x, byte left_y, byte right_x, byte right_y);
 
 		[DllImport(dd, CallingConvention = cc)]
-		public static extern int shock_Peripheral_SetNegconInput(IntPtr psx, int address, uint buttons, byte twist, byte analog1, byte analog2, byte analogL);
+		public static extern int shock_Peripheral_SetNegconInput(PsxHandle psx, int address, uint buttons, byte twist, byte analog1, byte analog2, byte analogL);
 
 		[DllImport(dd, CallingConvention = cc)]
-		public static extern int shock_Peripheral_MemcardTransact(IntPtr psx, int address, ref ShockMemcardTransaction transaction);
+		public static extern int shock_Peripheral_MemcardTransact(PsxHandle psx, int address, ref ShockMemcardTransaction transaction);
 
 		[DllImport(dd, CallingConvention = cc)]
-		public static extern int shock_Peripheral_PollActive(IntPtr psx, int address, bool clear);
+		public static extern int shock_Peripheral_PollActive(PsxHandle psx, int address, bool clear);
 
 		[DllImport(dd, CallingConvention = cc)]
-		public static extern int shock_MountEXE(IntPtr psx, void* exebuf, int size, bool ignore_pcsp);
+		public static extern int shock_MountEXE(PsxHandle psx, void* exebuf, int size, bool ignore_pcsp);
 
 		[DllImport(dd, CallingConvention = cc)]
-		public static extern int shock_PowerOn(IntPtr psx);
+		public static extern int shock_PowerOn(PsxHandle psx);
 
 		[DllImport(dd, CallingConvention = cc)]
-		public static extern int shock_SoftReset(IntPtr psx);
+		public static extern int shock_SoftReset(PsxHandle psx);
 
 		[DllImport(dd, CallingConvention = cc)]
-		public static extern int shock_PowerOff(IntPtr psx);
+		public static extern int shock_PowerOff(PsxHandle psx);
 
 		[DllImport(dd, CallingConvention = cc)]
-		public static extern int shock_OpenTray(IntPtr psx);
+		public static extern int shock_OpenTray(PsxHandle psx);
 
 		[DllImport(dd, CallingConvention = cc)]
-		public static extern int shock_SetDisc(IntPtr psx, IntPtr disc);
+		public static extern int shock_SetDisc(PsxHandle psx, DiscHandle disc);
 
 		[DllImport(dd, CallingConvention = cc)]
-		public static extern int shock_PokeDisc(IntPtr psx, IntPtr disc);
+		public static extern int shock_PokeDisc(PsxHandle psx, DiscHandle disc);
 
 		[DllImport(dd, CallingConvention = cc)]
-		public static extern int shock_CloseTray(IntPtr psx);
+		public static extern int shock_CloseTray(PsxHandle psx);
 
 		[DllImport(dd, CallingConvention = cc)]
-		public static extern int shock_SetRenderOptions(IntPtr psx, ref ShockRenderOptions opts);
+		public static extern int shock_SetRenderOptions(PsxHandle psx, ref ShockRenderOptions opts);
 
 		[DllImport(dd, CallingConvention = cc)]
-		public static extern int shock_Step(IntPtr psx, eShockStep step);
+		public static extern int shock_Step(PsxHandle psx, eShockStep step);
 
 		[DllImport(dd, CallingConvention = cc)]
-		public static extern int shock_GetFramebuffer(IntPtr psx, ref ShockFramebufferInfo fb);
+		public static extern int shock_GetFramebuffer(PsxHandle psx, ref ShockFramebufferInfo fb);
 
 		[DllImport(dd, CallingConvention = cc)]
-		public static extern int shock_GetSamples(IntPtr psx, void* buffer);
+		public static extern int shock_GetSamples(PsxHandle psx, void* buffer);
 
 		[DllImport(dd, CallingConvention = cc)]
 		public static extern int shock_GetMemData(
-			IntPtr psx,
+			PsxHandle psx,
 			out IntPtr ptr,
 			out int size,
 			[MarshalAs(UnmanagedType.I4)] eMemType memType
 			);
 
 		[DllImport(dd, CallingConvention = cc)]
-		public static extern int shock_StateTransaction(IntPtr psx, ref ShockStateTransaction transaction);
+		public static extern int shock_StateTransaction(PsxHandle psx, ref ShockStateTransaction transaction);
 
 		[DllImport(dd, CallingConvention = cc)]
-		public static extern int shock_GetRegisters_CPU(IntPtr psx, ref ShockRegisters_CPU buffer);
+		public static extern int shock_GetRegisters_CPU(PsxHandle psx, ref ShockRegisters_CPU buffer);
 
 		[DllImport(dd, CallingConvention = cc)]
-		public static extern int shock_SetRegister_CPU(IntPtr psx, int index, uint value);
+		public static extern int shock_SetRegister_CPU(PsxHandle psx, int index, uint value);
 
 		[DllImport(dd, CallingConvention = cc)]
-		public static extern int shock_SetTraceCallback(IntPtr psx, IntPtr opaque, ShockCallback_Trace callback);
+		public static extern int shock_SetTraceCallback(PsxHandle psx, IntPtr opaque, ShockCallback_Trace callback);
 
 		[DllImport(dd, CallingConvention = cc)]
-		public static extern int shock_SetMemCb(IntPtr psx, ShockCallback_Mem cb, eShockMemCb cbMask);
+		public static extern int shock_SetMemCb(PsxHandle psx, ShockCallback_Mem cb, eShockMemCb cbMask);
 
 		[DllImport(dd, CallingConvention = cc)]
-		public static extern int shock_SetLEC(IntPtr psx, bool enable);
+		public static extern int shock_SetLEC(PsxHandle psx, bool enable);
 
 		[DllImport(dd, CallingConvention = cc)]
-		public static extern int shock_GetGPUUnlagged(IntPtr psx);
+		public static extern int shock_GetGPUUnlagged(PsxHandle psx);
 	}
 }

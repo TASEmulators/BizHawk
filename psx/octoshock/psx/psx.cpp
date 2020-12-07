@@ -1425,6 +1425,9 @@ EW_EXPORT s32 shock_Create(void** psx, s32 region, void* firmware512k)
 
 	//do we need to do anything particualr with the CDC disc/tray state? survey says... no.
 
+	//Return a non-zero value so callers know something's alive, even if we only support one core.
+	*psx = CPU;
+
 	return SHOCK_OK;
 }
 
