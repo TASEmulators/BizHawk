@@ -55,6 +55,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				case 0xFF41: // STAT
 					// writing to STAT during mode 0 or 1 causes a STAT IRQ
 					// this appears to be a glitchy LYC compare
+					//Console.WriteLine("stat " + " " + STAT + " " + value + " " + LY + " " + cycle + " " + Core.REG_FF0F);
+
 					if (!value.Bit(6)) { LYC_INT = false; }
 
 					if (LCDC.Bit(7))
@@ -77,6 +79,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					STAT = (byte)((value & 0xF8) | (STAT & 7) | 0x80);
 
 					if (!STAT.Bit(4)) { VBL_INT = false; }
+					if (!STAT.Bit(3)) { HBL_INT = false; }
 					break;
 				case 0xFF42: // SCY
 					scroll_y = value;
@@ -215,28 +218,31 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				// the VBL stat is continuously asserted
 				if (in_vbl)
 				{
-					if ((cycle <= 4) && (LY == 144))
+					// glitchy check of mode 2
+					if (LY == 144)
 					{
-						if (!STAT.Bit(5)) { VBL_INT = false; }
-						if ((cycle == 4) && !STAT.Bit(4)) { VBL_INT = false; }
-					}
-
-					if (STAT.Bit(4))
-					{
-						if (LY == 144)
+						if (cycle <= 4)
 						{
-							if (cycle >= 4) { VBL_INT = true; }
+							if (!STAT.Bit(5)) { VBL_INT = false; }
 						}
-						else
+
+						if ((cycle >= 2) && (cycle < 4))
 						{
-							VBL_INT = true;
+							// there is an edge case where a VBL INT is triggered if STAT bit 5 is set
+							if (STAT.Bit(5)) { VBL_INT = true; }
+						}
+
+						if (cycle >= 4)
+						{
+							if (STAT.Bit(4)) { VBL_INT = true; }
+							else { VBL_INT = false; }
 						}
 					}
-
-					if ((cycle >= 2) && (cycle < 4) && (LY == 144))
+					else
 					{
-						// there is an edge case where a VBL INT is triggered if STAT bit 5 is set
-						if (STAT.Bit(5)) { VBL_INT = true; }
+						// mode 1 is asserted continuously
+						if (STAT.Bit(4)) { VBL_INT = true; }
+						else { VBL_INT = false; }
 					}
 
 					if ((cycle == 4) && (LY == 144))
@@ -334,6 +340,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								if (cycle < 4)
 								{
 									if (STAT.Bit(4) && ((STAT & 3) == 1)) { VBL_INT = true; }
+									else { VBL_INT = false; }
 								}
 								else
 								{

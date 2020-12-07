@@ -142,13 +142,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					break; 
 				case 0xFF41: // STAT
 					// note that their is no stat interrupt bug in GBC
-					Console.WriteLine("stat " + " " + STAT + " " + value + " " + LY + " " + cycle + " " + Core.REG_FF0F);
+					//Console.WriteLine("stat " + " " + STAT + " " + value + " " + LY + " " + cycle + " " + Core.REG_FF0F);
 					STAT = (byte)((value & 0xF8) | (STAT & 7) | 0x80);
 
 					if (((STAT & 3) == 0) && STAT.Bit(3) && !glitch_state) { HBL_INT = true; } else { HBL_INT = false; }
-					//if (((STAT & 3) == 1) && STAT.Bit(4)) { VBL_INT = true; } else if ((STAT & 3) == 1) { VBL_INT = false; }
-					// OAM not triggered?
-					// if (((STAT & 3) == 2) && STAT.Bit(5)) { OAM_INT = true; } else { OAM_INT = false; }
 
 					if (value.Bit(6) && LCDC.Bit(7))
 					{
@@ -595,7 +592,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						stat_line_old = VBL_INT | HBL_INT | OAM_INT;
 
 						if (LY == 144) { HBL_INT = false; }
-
 					}
 
 					// glitchy check of mode 2
@@ -604,7 +600,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						if (cycle <= 4)
 						{
 							if (!STAT.Bit(5)) { VBL_INT = false; }
-							if ((cycle == 4) && !STAT.Bit(4)) { VBL_INT = false; }
 						}
 
 						if ((cycle >= 2) && (cycle < 4))
@@ -612,19 +607,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							// there is an edge case where a VBL INT is triggered if STAT bit 5 is set
 							if (STAT.Bit(5)) { VBL_INT = true; }
 						}
-					}
 
-					// mode 1 starts here, is asserted continuously
-					if (STAT.Bit(4))
+						if (cycle >= 4) 
+						{ 
+							if (STAT.Bit(4)) { VBL_INT = true; }
+							else { VBL_INT = false; }
+						}
+					}
+					else
 					{
-						if (LY == 144)
-						{
-							if (cycle >= 4) { VBL_INT = true; }
-						}
-						else
-						{
-							VBL_INT = true;
-						}
+						// mode 1 is asserted continuously
+						if (STAT.Bit(4)) { VBL_INT = true; }
+						else { VBL_INT = false; }
 					}
 
 					if ((cycle == 4) && (LY == 144))
@@ -721,7 +715,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								// the last few cycles of mode 1 still trigger mode 1 int
 								if (cycle < 4)
 								{
-									if (STAT.Bit(4) && ((STAT & 3) == 1)) { VBL_INT = true; }
+									if (STAT.Bit(4) && ((STAT & 3) == 1)) { VBL_INT = true; } 
+									else { VBL_INT = false; }
 								}
 								else
 								{
