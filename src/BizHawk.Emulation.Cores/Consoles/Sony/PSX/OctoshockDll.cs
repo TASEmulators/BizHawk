@@ -323,5 +323,11 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		[DllImport(dd, CallingConvention = cc)]
 		public static extern int shock_GetGPUUnlagged(PsxHandle psx);
+		
+		[DllImport(dd, CallingConvention = cc)]
+		public static extern int shock_PeekMemory(PsxHandle psx, uint address, out byte value);
+		
+		[DllImport(dd, CallingConvention = cc)]
+		public static extern int shock_PokeMemory(PsxHandle psx, uint address, byte value);
 	}
 }

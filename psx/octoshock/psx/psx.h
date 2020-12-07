@@ -454,3 +454,7 @@ EW_EXPORT s32 shock_SetLEC(void* psx, bool enabled);
 //whether "determine lag from GPU frames" signal is set (GPU did something considered non-lag)
 //returns SHOCK_TRUE or SHOCK_FALSE
 EW_EXPORT s32 shock_GetGPUUnlagged(void* psx);
+
+EW_EXPORT s32 shock_PeekMemory(void* psx, u32 address, u8* value);
+
+EW_EXPORT s32 shock_PokeMemory(void* psx, u32 address, u8 value);
