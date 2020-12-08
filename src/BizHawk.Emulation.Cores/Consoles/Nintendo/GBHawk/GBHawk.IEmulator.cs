@@ -22,7 +22,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public bool delays_to_process;
 		public int controller_delay_cd;
 		public int cpu_state_hold;
-		//public long CycleCount;
+		public int clear_counter;
+		public long CycleCount;
 
 		public bool FrameAdvance(IController controller, bool render, bool rendersound)
 		{
