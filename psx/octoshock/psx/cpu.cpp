@@ -253,8 +253,6 @@ INLINE T PS_CPU::ReadMemory(pscpu_timestamp_t &timestamp, uint32 address, bool D
  ReadAbsorb[ReadAbsorbWhich] = 0;
  ReadAbsorbWhich = 0;
 
- if (g_ShockMemCallback && (g_ShockMemCbType & eShockMemCb_Read))
-	 g_ShockMemCallback(address, eShockMemCb_Read, DS24 ? 24 : 32, 0);
 #if 0
  if(MDFN_UNLIKELY(CP0.SR & 0x10000))
  {
@@ -302,9 +300,13 @@ INLINE T PS_CPU::ReadMemory(pscpu_timestamp_t &timestamp, uint32 address, bool D
   LDAbsorb = 0;
 
   if(DS24)
-   return ScratchRAM.ReadU24(address & 0x3FF);
+   ret = ScratchRAM.ReadU24(address & 0x3FF);
   else
-   return ScratchRAM.Read<T>(address & 0x3FF);
+   ret = ScratchRAM.Read<T>(address & 0x3FF);
+
+  if (g_ShockMemCallback && (g_ShockMemCbType & eShockMemCb_Read))
+   g_ShockMemCallback(address, eShockMemCb_Read, DS24 ? 24 : sizeof(T) * 8, ret);
+  return(ret);
  }
 
  timestamp += (ReadFudge >> 4) & 2;
@@ -333,6 +335,8 @@ INLINE T PS_CPU::ReadMemory(pscpu_timestamp_t &timestamp, uint32 address, bool D
  LDAbsorb = (lts - timestamp);
  timestamp = lts;
 
+ if (g_ShockMemCallback && (g_ShockMemCbType & eShockMemCb_Read))
+  g_ShockMemCallback(address, eShockMemCb_Read, DS24 ? 24 : sizeof(T) * 8, ret);
  return(ret);
 }
 
@@ -340,7 +344,7 @@ template<typename T>
 INLINE void PS_CPU::WriteMemory(pscpu_timestamp_t &timestamp, uint32 address, uint32 value, bool DS24)
 {
 	if (g_ShockMemCallback && (g_ShockMemCbType & eShockMemCb_Write))
-		g_ShockMemCallback(address, eShockMemCb_Write, DS24 ? 24 : 32, value);
+		g_ShockMemCallback(address, eShockMemCb_Write, DS24 ? 24 : sizeof(T) * 8, value);
 
  if(MDFN_LIKELY(!(CP0.SR & 0x10000)))
  {
@@ -630,6 +634,10 @@ pscpu_timestamp_t PS_CPU::RunReal(pscpu_timestamp_t timestamp_in)
 	shock_Util_DisassembleMIPS(PC, instr, disasm_buf, ARRAY_SIZE(disasm_buf));
     g_ShockTraceCallback(NULL, PC, instr, disasm_buf);
    }
+
+   if (g_ShockMemCallback && (g_ShockMemCbType & eShockMemCb_Execute))
+	   g_ShockMemCallback(PC, eShockMemCb_Execute, 32, instr);
+
 
    opf = instr & 0x3F;
 

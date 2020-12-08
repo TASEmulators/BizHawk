@@ -87,5 +87,74 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		[FeatureNotImplemented]
 		public long TotalExecutedCycles => throw new NotImplementedException();
+
+		OctoshockDll.ShockCallback_Mem mem_cb;
+
+		void ShockMemCallback(uint address, OctoshockDll.eShockMemCb type, uint size, uint value)
+		{
+			MemoryCallbackFlags flags = 0;
+			switch (type)
+			{
+				case OctoshockDll.eShockMemCb.Read:
+					flags |= MemoryCallbackFlags.AccessRead;
+					break;
+				case OctoshockDll.eShockMemCb.Write:
+					flags |= MemoryCallbackFlags.AccessWrite;
+					break;
+				case OctoshockDll.eShockMemCb.Execute:
+					flags |= MemoryCallbackFlags.AccessExecute;
+					break;
+			}
+
+			MemoryCallbacks.CallMemoryCallbacks(address, value, (uint)flags, "System Bus");
+		}
+
+		void InitMemCallbacks()
+		{
+			mem_cb = new OctoshockDll.ShockCallback_Mem(ShockMemCallback);
+			_memoryCallbacks.ActiveChanged += RefreshMemCallbacks;
+		}
+
+		void RefreshMemCallbacks()
+		{
+			OctoshockDll.eShockMemCb mask = OctoshockDll.eShockMemCb.None;
+			if (MemoryCallbacks.HasReads) mask |= OctoshockDll.eShockMemCb.Read;
+			if (MemoryCallbacks.HasWrites) mask |= OctoshockDll.eShockMemCb.Write;
+			if (MemoryCallbacks.HasExecutes) mask |= OctoshockDll.eShockMemCb.Execute;
+			OctoshockDll.shock_SetMemCb(psx, mem_cb, mask);
+		}
+
+		unsafe void SetMemoryDomains()
+		{
+			var mmd = new List<MemoryDomain>();
+
+			OctoshockDll.shock_GetMemData(psx, out var ptr, out var size, OctoshockDll.eMemType.MainRAM);
+			mmd.Add(new MemoryDomainIntPtr("MainRAM", MemoryDomain.Endian.Little, ptr, size, true, 4));
+
+			OctoshockDll.shock_GetMemData(psx, out ptr, out size, OctoshockDll.eMemType.GPURAM);
+			mmd.Add(new MemoryDomainIntPtr("GPURAM", MemoryDomain.Endian.Little, ptr, size, true, 4));
+
+			OctoshockDll.shock_GetMemData(psx, out ptr, out size, OctoshockDll.eMemType.SPURAM);
+			mmd.Add(new MemoryDomainIntPtr("SPURAM", MemoryDomain.Endian.Little, ptr, size, true, 4));
+
+			OctoshockDll.shock_GetMemData(psx, out ptr, out size, OctoshockDll.eMemType.BiosROM);
+			mmd.Add(new MemoryDomainIntPtr("BiosROM", MemoryDomain.Endian.Little, ptr, size, true, 4));
+
+			OctoshockDll.shock_GetMemData(psx, out ptr, out size, OctoshockDll.eMemType.PIOMem);
+			mmd.Add(new MemoryDomainIntPtr("PIOMem", MemoryDomain.Endian.Little, ptr, size, true, 4));
+
+			OctoshockDll.shock_GetMemData(psx, out ptr, out size, OctoshockDll.eMemType.DCache);
+			mmd.Add(new MemoryDomainIntPtr("DCache", MemoryDomain.Endian.Little, ptr, size, true, 4));
+
+			mmd.Add(new MemoryDomainDelegate("System Bus", 0x1_0000_0000, MemoryDomain.Endian.Little,
+				(a) => { byte v; OctoshockDll.shock_PeekMemory(psx, (uint)a, out v); return v; },
+				(a, v) => { OctoshockDll.shock_PokeMemory(psx, (uint)a, v); },
+				4));
+
+			MemoryDomains = new MemoryDomainList(mmd);
+			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(MemoryDomains);
+		}
+
+		private IMemoryDomains MemoryDomains;
 	}
 }

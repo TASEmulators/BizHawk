@@ -2,6 +2,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using System.Text;
 
 using BizHawk.Emulation.Common;
 
@@ -197,7 +198,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		public delegate void ShockCallback_Mem(uint address, eShockMemCb type, uint size, uint value);
 
 		[DllImport(dd, CallingConvention = cc)]
-		public static extern int shock_Util_DisassembleMIPS(uint PC, uint instr, IntPtr outbuf, int buflen);
+		public static extern int shock_Util_DisassembleMIPS(uint PC, uint instr, StringBuilder outbuf, int buflen);
 
 		[DllImport(dd, CallingConvention = cc)]
 		public static extern int shock_CreateDisc(out IntPtr outDisc, IntPtr Opaque, int lbaCount, ShockDisc_ReadTOC ReadTOC, ShockDisc_ReadLBA ReadLBA2448, bool suppliesDeinterleavedSubcode);
@@ -297,5 +298,11 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		[DllImport(dd, CallingConvention = cc)]
 		public static extern int shock_GetGPUUnlagged(IntPtr psx);
+		
+		[DllImport(dd, CallingConvention = cc)]
+		public static extern int shock_PeekMemory(IntPtr psx, uint address, out byte value);
+		
+		[DllImport(dd, CallingConvention = cc)]
+		public static extern int shock_PokeMemory(IntPtr psx, uint address, byte value);
 	}
 }
