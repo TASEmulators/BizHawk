@@ -163,12 +163,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			// turn off the screen so the image doesnt persist
 			// but don't turn off blank_frame yet, it still needs to be true until the next VBL
-			// this doesn't run for GBC, some games, ex MIB the series 2, rely on the screens persistence while off to make video look smooth.
-			// But some GB gams, ex Battletoads, turn off the screen for a long time from the middle of the frame, so need to be cleared.
+			// GBC games need to clear slow enough that games that turn the screen off briefly for cinematics still look smooth
 			if (ppu.clear_screen)
 			{
-				for (int j = 0; j < frame_buffer.Length; j++) { frame_buffer[j] = (int)ppu.color_palette[0]; }
-				ppu.clear_screen = false;
+				if (is_GBC)
+				{
+					for (int j = 0; j < frame_buffer.Length; j++) { frame_buffer[j] = (int)(frame_buffer[j] | (0x30303 << (clear_counter * 2))); }
+
+					clear_counter++;
+					if (clear_counter == 4)
+					{
+						ppu.clear_screen = false;
+					}				
+				}
+				else
+				{
+					for (int j = 0; j < frame_buffer.Length; j++) { frame_buffer[j] = (int)ppu.color_palette[0]; }
+					ppu.clear_screen = false;
+				}
 			}
 		}
 

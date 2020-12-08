@@ -328,6 +328,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			RAM_Bank = 1; // RAM bank always starts as 1 (even writing zero still sets 1)
 			delays_to_process = false;
 			controller_delay_cd = 0;
+			clear_counter = 0;
 
 			Register_Reset();
 			timer.Reset();

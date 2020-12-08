@@ -130,6 +130,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						OAM_access_write = true;
 
 						clear_screen = true;
+						Core.clear_counter = 0;
 
 						// turing off the screen causes HDMA to run for one cycle
 						HDMA_run_once = true;
@@ -139,6 +140,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					{
 						// don't draw for one frame after turning on
 						blank_frame = true;
+						clear_screen = false;
 					}
 					LCDC = value;
 					break; 

@@ -130,12 +130,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 						// turing off the screen causes HDMA to run for one cycle
 						HDMA_run_once = true;
+
+						clear_screen = true;
+						Core.clear_counter = 0;
 					}
 
 					if (!LCDC.Bit(7) && value.Bit(7))
 					{
 						// don't draw for one frame after turning on
 						blank_frame = true;
+						clear_screen = false;
 					}
 
 					LCDC = value;
