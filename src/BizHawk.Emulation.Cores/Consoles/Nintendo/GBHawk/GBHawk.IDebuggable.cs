@@ -19,7 +19,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		[FeatureNotImplemented]
 		public void Step(StepType type) => throw new NotImplementedException();
 
-		public long TotalExecutedCycles => (long)cpu.TotalExecutedCycles;
-		//public long TotalExecutedCycles => CycleCount;
+		public long TotalExecutedCycles => _settings.cycle_return_setting == GBSettings.Cycle_Return.CPU ? (long)cpu.TotalExecutedCycles : CycleCount;
 	}
 }

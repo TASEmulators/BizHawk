@@ -44,6 +44,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				Gr
 			}
 
+			public enum Cycle_Return
+			{
+				CPU,
+				GBI
+			}
+
 			[DisplayName("Color Mode")]
 			[Description("Pick Between Green scale and Grey scale colors")]
 			[DefaultValue(PaletteType.BW)]
@@ -53,6 +59,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			[Description("When true, memory domains are only updated on VBlank. More consistent for LUA. NOTE: Does not work for system bus, does not apply to writes.")]
 			[DefaultValue(false)]
 			public bool VBL_sync { get; set; }
+
+			[DisplayName("TotalExecutedCycles Return Value")]
+			[Description("CPU returns the actual CPU cycles executed, GBI returns the values needed for console verification")]
+			[DefaultValue(Cycle_Return.CPU)]
+			public Cycle_Return cycle_return_setting { get; set; }
 
 			public GBSettings Clone()
 			{

@@ -60,6 +60,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public byte[] OAM_vbls = new byte[0xA0];
 
 		public int RAM_Bank;
+		public int RAM_Bank_ret;
 		public byte VRAM_Bank;
 		internal bool is_GBC;
 		public bool GBC_compat; // compatibility mode for GB games played on GBC
@@ -224,18 +225,55 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			iptr3 = Marshal.AllocHGlobal(ppu.color_palette.Length * 8 * 8 + 1);
 
 			_scanlineCallback = null;
-
-			/*
+	
 			for (int i = 0; i < ZP_RAM.Length; i++)
 			{
 				ZP_RAM[i] = 0xFF;
 			}
 
-			for (int i = 0; i < RAM.Length; i++)
+			for (int i = 0; i < 0x800; i++)
 			{
-				RAM[i] = 0xFF;
+				if ((i & 0xF) < 8) 
+				{ 
+					RAM[i] = 0xFF; 
+					RAM[i + 0x1000] = 0xFF;
+					RAM[i + 0x2000] = 0xFF;
+					RAM[i + 0x3000] = 0xFF;
+					RAM[i + 0x4000] = 0xFF;
+					RAM[i + 0x5000] = 0xFF;
+					RAM[i + 0x6000] = 0xFF;
+					RAM[i + 0x7000] = 0xFF;
+
+					RAM[i + 0x800] = 0;
+					RAM[i + 0x1800] = 0;
+					RAM[i + 0x2800] = 0;
+					RAM[i + 0x3800] = 0;
+					RAM[i + 0x4800] = 0;
+					RAM[i + 0x5800] = 0;
+					RAM[i + 0x6800] = 0;
+					RAM[i + 0x7800] = 0;
+				}
+				else 
+				{ 
+					RAM[i] = 0; 
+					RAM[i + 0x1000] = 0;
+					RAM[i + 0x2000] = 0;
+					RAM[i + 0x3000] = 0;
+					RAM[i + 0x4000] = 0;
+					RAM[i + 0x5000] = 0;
+					RAM[i + 0x6000] = 0;
+					RAM[i + 0x7000] = 0;
+
+					RAM[i + 0x800] = 0xFF;
+					RAM[i + 0x1800] = 0xFF;
+					RAM[i + 0x2800] = 0xFF;
+					RAM[i + 0x3800] = 0xFF;
+					RAM[i + 0x4800] = 0xFF;
+					RAM[i + 0x5800] = 0xFF;
+					RAM[i + 0x6800] = 0xFF;
+					RAM[i + 0x7800] = 0xFF;
+				}
 			}
-			*/
 		}
 
 		public bool IsCGBMode() => is_GBC;
@@ -326,6 +364,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			double_speed = false;
 			VRAM_Bank = 0;
 			RAM_Bank = 1; // RAM bank always starts as 1 (even writing zero still sets 1)
+			RAM_Bank_ret = 0; // return value can still be zero even though the bank itself cannot be
 			delays_to_process = false;
 			controller_delay_cd = 0;
 			clear_counter = 0;

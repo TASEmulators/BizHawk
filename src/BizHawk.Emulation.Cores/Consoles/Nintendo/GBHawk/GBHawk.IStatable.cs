@@ -33,6 +33,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync(nameof(controller_delay_cd), ref controller_delay_cd);
 			ser.Sync(nameof(cpu_state_hold), ref cpu_state_hold);
 			ser.Sync(nameof(clear_counter), ref clear_counter);
+			ser.Sync(nameof(CycleCount), ref CycleCount);
 
 			ser.Sync(nameof(REG_FFFF), ref REG_FFFF);
 			ser.Sync(nameof(REG_FF0F), ref REG_FF0F);
@@ -47,6 +48,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync(nameof(_bios), ref _bios, false);
 
 			ser.Sync(nameof(RAM_Bank), ref RAM_Bank);
+			ser.Sync(nameof(RAM_Bank_ret), ref RAM_Bank_ret);
 			ser.Sync(nameof(VRAM_Bank), ref VRAM_Bank);
 			ser.Sync(nameof(is_GBC), ref is_GBC);
 			ser.Sync(nameof(GBC_compat), ref GBC_compat);

@@ -179,7 +179,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				case 0xFF70:
 					if (GBC_compat)
 					{
-						ret = (byte)RAM_Bank;
+						ret = (byte)(0xF8 | RAM_Bank_ret);
 					}
 					else
 					{
@@ -407,7 +407,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					if (GB_bios_register == 0)
 					{
 						GB_bios_register = value;
-						if (!GBC_compat) { ppu.pal_change_blocked = true; RAM_Bank = 1; }
+						if (!GBC_compat) { ppu.pal_change_blocked = true; RAM_Bank = 1; RAM_Bank_ret = 0; }
 					}			
 					break;
 
@@ -453,6 +453,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					if (GBC_compat)
 					{
 						RAM_Bank = value & 7;
+						RAM_Bank_ret = RAM_Bank;
 						if (RAM_Bank == 0) { RAM_Bank = 1; }
 					}
 					break;

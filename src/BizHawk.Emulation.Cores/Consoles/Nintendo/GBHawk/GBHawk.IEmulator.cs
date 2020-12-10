@@ -126,7 +126,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 				if (delays_to_process) { process_delays(); }
 
-				//CycleCount++;
+				CycleCount++;
 
 				if (in_vblank && !in_vblank_old)
 				{
