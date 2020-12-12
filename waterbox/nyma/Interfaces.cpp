@@ -164,9 +164,27 @@ namespace Mednafen
 	}
 	int64 MDFN_GetSettingI(const char *name)
 	{
+		auto s = GetSetting(name);
 		char tmp[SETTING_VALUE_MAX_LENGTH];
 		FrontendSettingQuery(name, tmp);
-		return strtol(tmp, nullptr, 10);
+		if (s && s->type == MDFNST_ENUM)
+		{
+			for (int i = 0; s->enum_list[i].string; i++)
+			{
+				if (strcmp(s->enum_list[i].string, tmp) == 0)
+					return s->enum_list[i].number;
+			}
+			for (int i = 0; s->enum_list[i].string; i++)
+			{
+				if (strcmp(s->enum_list[i].string, s->default_value) == 0)
+					return s->enum_list[i].number;
+			}
+			return 0;
+		}
+		else
+		{
+			return strtol(tmp, nullptr, 10);
+		}
 	}
 	double MDFN_GetSettingF(const char *name)
 	{
