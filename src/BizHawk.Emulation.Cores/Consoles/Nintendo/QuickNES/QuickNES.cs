@@ -154,14 +154,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			return PadNames.Zip(PadMasks, (s, i) => new PadEnt(prefix + s, i)).ToArray();
 		}
 
-		private static string[] PadNames = new[]
-			{
-				"Up", "Down", "Left", "Right", "Start", "Select", "B", "A"
-			};
-		private static int[] PadMasks = new[]
-			{
-				16, 32, 64, 128, 8, 4, 2, 1
-			};
+		private static string[] PadNames =
+		{
+			"Up", "Down", "Left", "Right", "Start", "Select", "B", "A"
+		};
+		private static int[] PadMasks =
+		{
+			16, 32, 64, 128, 8, 4, 2, 1
+		};
 
 		private static PadEnt[] PadP1 = GetPadList(1);
 		private static PadEnt[] PadP2 = GetPadList(2);

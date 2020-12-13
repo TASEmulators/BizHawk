@@ -83,7 +83,7 @@ namespace BizHawk.Client.Common.Filters
 						PS + new Vector2(1, 1)
 					};
 
-					bool[] trialsLimited = new bool[] { false, false, false};
+					bool[] trialsLimited = { false, false, false };
 					int bestIndex = -1;
 					float bestValue = 1000.0f;
 					for (int t = 0; t < trials.Length; t++)

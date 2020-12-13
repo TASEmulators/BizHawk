@@ -35,7 +35,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		}
 
 
-		static readonly string[] mnemonics = new string[]
+		static readonly string[] mnemonics =
 		{
 			"LR A, KU",			// 0x00
 			"LR A, KL",			// 0x01

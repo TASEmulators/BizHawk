@@ -404,7 +404,7 @@ namespace BizHawk.Emulation.Cores.Components
 		static void makeDphaseTable()
 		{
 			uint fnum, block, ML;
-			uint[] mltable = new uint[] { 1, 1 * 2, 2 * 2, 3 * 2, 4 * 2, 5 * 2, 6 * 2, 7 * 2, 8 * 2, 9 * 2, 10 * 2, 10 * 2, 12 * 2, 12 * 2, 15 * 2, 15 * 2 };
+			uint[] mltable = { 1, 1 * 2, 2 * 2, 3 * 2, 4 * 2, 5 * 2, 6 * 2, 7 * 2, 8 * 2, 9 * 2, 10 * 2, 10 * 2, 12 * 2, 12 * 2, 15 * 2, 15 * 2 };
 
 			for (fnum = 0; fnum < 512; fnum++)
 				for (block = 0; block < 8; block++)

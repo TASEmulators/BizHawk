@@ -52,7 +52,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 
 		const int SHIFT = 2;
-		public static byte[,] FCEUX_Standard = new byte[,]
+		public static byte[,] FCEUX_Standard =
 		{
 			{ 0x1D<<SHIFT, 0x1D<<SHIFT, 0x1D<<SHIFT }, /* Value 0 */
 			{ 0x09<<SHIFT, 0x06<<SHIFT, 0x23<<SHIFT }, /* Value 1 */

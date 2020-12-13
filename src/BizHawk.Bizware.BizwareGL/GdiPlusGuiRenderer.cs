@@ -170,7 +170,7 @@ namespace BizHawk.Bizware.BizwareGL
 			float x1 = u1 * tex.Width;
 			float y1 = v1 * tex.Height;
 
-			sd.PointF[] destPoints = new sd.PointF[] {
+			sd.PointF[] destPoints = {
 				new sd.PointF(x,y),
 				new sd.PointF(x+w,y),
 				new sd.PointF(x,y+h),
@@ -254,7 +254,7 @@ namespace BizHawk.Bizware.BizwareGL
 
 			SetupMatrix(g);
 
-			sd.PointF[] destPoints = new sd.PointF[] {
+			sd.PointF[] destPoints = {
 				new sd.PointF(x,y),
 				new sd.PointF(x+w,y),
 				new sd.PointF(x,y+h),

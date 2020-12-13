@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 {
 	public partial class VDP
 	{
-		int[] PaletteTMS9918 = new int[] 
+		int[] PaletteTMS9918 =
 		{
 			unchecked((int)0xFF000000),
 			unchecked((int)0xFF000000),

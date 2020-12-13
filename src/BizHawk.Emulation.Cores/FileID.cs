@@ -291,7 +291,7 @@ namespace BizHawk.Emulation.Cores
 			public static SimpleMagicRecord FLAC = new SimpleMagicRecord { Key = "fLaC" };
 			public static SimpleMagicRecord MPC = new SimpleMagicRecord { Key = "MP+", ExtraCheck = (s) => { s.Position += 3; return s.ReadByte() >= 7; } };
 			public static SimpleMagicRecord APE = new SimpleMagicRecord { Key = "MAC " };
-			public static SimpleMagicRecord[] WAV = new SimpleMagicRecord[] {
+			public static SimpleMagicRecord[] WAV = {
 				new SimpleMagicRecord { Offset = 0, Key = "RIFF" },
 				new SimpleMagicRecord { Offset = 8, Key = "WAVEfmt " }
 			};
@@ -383,7 +383,7 @@ namespace BizHawk.Emulation.Cores
 
 		delegate FileIDResult FormatTester(IdentifyJob job);
 
-		static int[] no_offsets = new int[] { 0 };
+		static int[] no_offsets = { 0 };
 
 		/// <summary>
 		/// checks for the magic string (bytewise ASCII check) at the given address

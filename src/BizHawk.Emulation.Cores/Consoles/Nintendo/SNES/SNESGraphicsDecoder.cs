@@ -497,7 +497,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			}
 		}
 
-		static int[,] ModeBpps = new[,] {
+		static int[,] ModeBpps = {
 				{2,2,2,2},
 				{4,4,2,0},
 				{4,4,0,0},

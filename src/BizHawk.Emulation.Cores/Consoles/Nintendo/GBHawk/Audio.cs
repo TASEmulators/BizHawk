@@ -15,13 +15,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		private BlipBuffer _blip_L = new BlipBuffer(15000);
 		private BlipBuffer _blip_R = new BlipBuffer(15000);
 
-		public static bool[] DUTY_CYCLES = new bool[] {false, false, false, false, false, false, false, true,
+		public static bool[] DUTY_CYCLES = { false, false, false, false, false, false, false, true,
 													 true, false, false, false, false, false, false, true,
 													 true, false, false, false, false, true, true, true,
-													 false, true, true, true, true, true, true, false};
+													 false, true, true, true, true, true, true, false };
 
-		public static int[] DIVISOR = new int[] { 8, 16, 32, 48, 64, 80, 96, 112 };
-
+		public static int[] DIVISOR = { 8, 16, 32, 48, 64, 80, 96, 112 };
 
 		public const int NR10 = 0;
 		public const int NR11 = 1;
@@ -45,7 +44,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public const int NR51 = 19;
 		public const int NR52 = 20;
 
-		public static int[] unused_bits = new int[] { 0x80, 0x3F, 0x00, 0xFF, 0xBF,
+		public static int[] unused_bits = { 0x80, 0x3F, 0x00, 0xFF, 0xBF,
 															0x3F, 0x00, 0xFF, 0xBF,
 													  0x7F, 0xFF, 0x9F, 0xFF, 0xBF,
 															0xFF, 0x00, 0x00, 0xBF,
@@ -169,7 +168,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					if (WAVE_enable)
 					{
 						if (WAVE_can_get || Core.is_GBC) { ret = Wave_RAM[WAVE_wave_cntr >> 1]; }
-						else { ret = 0xFF; }						
+						else { ret = 0xFF; }
 					}
 					else { ret = Wave_RAM[addr & 0x0F]; }
 					
@@ -303,7 +302,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						SQ2_per = (byte)(value & 7);
 
 						// several glitchy effects happen when writing to NRx2 during audio playing
-						if (((Audio_Regs[NR22] & 7) == 0) && !SQ2_vol_done) { SQ2_vol_state++; }						
+						if (((Audio_Regs[NR22] & 7) == 0) && !SQ2_vol_done) { SQ2_vol_state++; }
 						else if ((Audio_Regs[NR22] & 8) == 0) { SQ2_vol_state += 2; }
 							
 						if (((Audio_Regs[NR22] ^ value) & 8) > 0) { SQ2_vol_state = (byte)(0x10 - SQ2_vol_state); }

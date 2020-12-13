@@ -540,7 +540,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// Volume table to be used
 		/// </summary>
-		private static uint[] AYVolumes = new uint[]
+		private static uint[] AYVolumes =
 		{
 			0x0000,0x0000,0x0340,0x0340,0x04C0,0x04C0,0x06F2,0x06F2,
 			0x0A44,0x0A44,0x0F13,0x0F13,0x1510,0x1510,0x227E,0x227E,

@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		static byte[] Masks = new byte[16 * 16]; // what is the resulting 8 bit chr reg value ANDed with?
 		static byte[] A10s = new byte[16 * 16]; // and then what is it ORed with?
 
-		static byte[] PTables = new byte[]
+		static byte[] PTables = 
 		{
 			0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07,
 			0x80,0xc0,0x81,0xc1,0x82,0xc2,0x83,0xc3,
