@@ -396,10 +396,6 @@ namespace BizHawk.Client.Common
 				}
 				catch (Exception e)
 				{
-					if (e.GetType().ToString() == "SDFSDF")
-					{
-						Console.WriteLine("Wowza!");
-					}
 					if (e is MissingFirmwareException || e.InnerException is MissingFirmwareException)
 						throw;
 					exceptions.Add(e);

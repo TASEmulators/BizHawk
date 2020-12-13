@@ -27,8 +27,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			_controllerDeckName = controllerDeckName;
 		}
 
-		private object GGREF;
-
 		private LibNymaCore _nyma;
 		protected T DoInit<T>(
 			CoreLoadParameters<NymaSettings, NymaSyncSettings> lp,
@@ -75,8 +73,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				}
 			});
 
-			GGREF = firmwareDelegate;
-
 			var t = PreInit<T>(new WaterboxOptions
 			{
 				Filename = wbxFilename,
@@ -98,8 +94,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				var portData = GetInputPortsData();
 				InitAllSettingsInfo(portData);
 				_nyma.SetFrontendSettingQuery(_settingsQueryDelegate);
-
-				// throw new Exception("My life will now end.");
 
 				if (discs?.Length > 0)
 				{
