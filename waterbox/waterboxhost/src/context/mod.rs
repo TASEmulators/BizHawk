@@ -12,6 +12,7 @@ const ORG: usize = 0x35f00000000;
 const CALL_GUEST_IMPL_ADDR: usize = ORG;
 const CALL_GUEST_SIMPLE_ADDR: usize = ORG + 0x100;
 const EXTCALL_THUNK_ADDR: usize = ORG + 0x200;
+const RUNTIME_TABLE_ADDR: usize = ORG + 0x700;
 
 pub const CALLBACK_SLOTS: usize = 64;
 /// Retrieves a function pointer suitable for sending to the guest that will cause
@@ -29,6 +30,15 @@ fn init_interop_area() -> AddressRange {
 			Protection::RW).unwrap();
 		addr.slice_mut()[0..bytes.len()].copy_from_slice(bytes);
 		pal::protect(addr, Protection::RX).unwrap();
+
+		#[cfg(windows)]
+		{
+			let res = winapi::um::winnt::RtlAddFunctionTable(RUNTIME_TABLE_ADDR as *mut _, 2, ORG as u64);
+			if res == 0 {
+				panic!("RtlAddFunctionTable() failed");
+			}
+		}
+
 		addr
 	}
 }
