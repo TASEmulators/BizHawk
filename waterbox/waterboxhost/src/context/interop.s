@@ -168,7 +168,7 @@ guest_syscall_unwind:
 	db 0
 
 	db 5 ; fake prolog offset
-	db 0x42 ; 40 bytes of stack
+	db 0x42 ; 40 bytes of stack (remember to count the 16 in call_guest_impl)
 	dw 0 ; unused entry
 guest_extcall_impl_unwind:
 	db 1
@@ -177,5 +177,5 @@ guest_extcall_impl_unwind:
 	db 0
 
 	db 5 ; fake prolog offset
-	db 0x22 ; 24 bytes of stack ;; WAS 0x22
+	db 0x22 ; 24 bytes of stack (remember to count the 16 in call_guest_impl)
 	dw 0 ; unused entry

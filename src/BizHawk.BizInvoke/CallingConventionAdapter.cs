@@ -228,14 +228,21 @@ namespace BizHawk.BizInvoke
 			}
 		}
 
+		/// <summary>
+		/// Calling Convention Adapter for where host code expects msabi and guest code is sysv.
+		/// Does not handle anything Waterbox specific.
+		/// </summary>
 		private class MsHostSysVGuest : ICallingConventionAdapter
 		{
+			// This is implemented by using thunks defined in the waterbox native code, and putting stubs on top of them that close over the
+			// function pointer parameter.
+
 			private const int BlockSize = 32;
 			private static readonly IImportResolver ThunkDll;
 
 			static MsHostSysVGuest()
 			{
-				// If needed, these can be split out from waterboxhost.dll
+				// If needed, these can be split out from waterboxhost.dll; they're not directly related to anything waterbox does.
 				ThunkDll = new DynamicLibraryImportResolver(OSTailoredCode.IsUnixHost ? "libwaterboxhost.so" : "waterboxhost.dll", hasLimitedLifetime: false);
 			}
 
@@ -294,19 +301,23 @@ namespace BizHawk.BizInvoke
 				return ret;
 			}
 
-			private void WriteThunk(IntPtr thunk, IntPtr fp, int index)
+			private void WriteThunk(IntPtr thunkFunctionAddress, IntPtr calleeAddress, int index)
 			{
 				_memory.Protect(_memory.Start, _memory.Size, MemoryBlock.Protection.RW);
 				var ss = _memory.GetStream(_memory.Start + (ulong)index * BlockSize, BlockSize, true);
 				var bw = new BinaryWriter(ss);
-				// mov r10, thunk
+
+				// The thunks all take the expected parameters in the expected places, but additionally take the parameter
+				// of the function to call as a hidden extra parameter in rax.
+
+				// mov r10, thunkFunctionAddress
 				bw.Write((byte)0x49);
 				bw.Write((byte)0xba);
-				bw.Write((long)thunk);
-				// mov rax, fp
+				bw.Write((long)thunkFunctionAddress);
+				// mov rax, calleeAddress
 				bw.Write((byte)0x48);
 				bw.Write((byte)0xb8);
-				bw.Write((long)fp);
+				bw.Write((long)calleeAddress);
 				// jmp r10
 				bw.Write((byte)0x41);
 				bw.Write((byte)0xff);
