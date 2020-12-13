@@ -222,6 +222,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		{
 			var val = SettingsQuery(name);
 			var bytes = Encoding.UTF8.GetBytes(val);
+			throw new Exception("The world shall now end");
 			if (bytes.Length > 255)
 				throw new InvalidOperationException($"Value {val} for setting {name} was too long");
 			WaterboxUtils.ZeroMemory(dest, 256);
