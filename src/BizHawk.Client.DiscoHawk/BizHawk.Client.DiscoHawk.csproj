@@ -5,7 +5,7 @@
 	<Import Project="../MainSlnExecutable.props" />
 	<PropertyGroup>
 		<ApplicationIcon>discohawk.ico</ApplicationIcon>
-		<DefineConstants>$(DefineConstants);WINDOWS</DefineConstants>
+		<DefineConstants>$(DefineConstants);EXE_PROJECT</DefineConstants>
 	</PropertyGroup>
 <!--
 	<PropertyGroup>
@@ -62,6 +62,7 @@
 		<Reference Include="System.Web" />
 		<Reference Include="System.Windows.Forms" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Emulation.DiscSystem/BizHawk.Emulation.DiscSystem.csproj" />
+		<Compile Include="$(ProjectDir)../BizHawk.Common/OSTailoredCode.cs" />
 		<Content Include="discohawk.ico" />
 	</ItemGroup>
 	<ItemGroup>

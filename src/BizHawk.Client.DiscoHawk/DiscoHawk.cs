@@ -9,6 +9,8 @@ using System.IO;
 using BizHawk.Common;
 using BizHawk.Emulation.DiscSystem;
 
+using OSTC = EXE_PROJECT.OSTailoredCode;
+
 // cue format preferences notes
 
 // PCEjin -
@@ -22,7 +24,8 @@ namespace BizHawk.Client.DiscoHawk
 	{
 		static Program()
 		{
-#if WINDOWS
+			if (OSTC.IsUnixHost) return;
+
 			// http://www.codeproject.com/Articles/310675/AppDomain-AssemblyResolve-Event-Tips
 			// this will look in subdirectory "dll" to load pinvoked stuff
 			string dllDir = Path.Combine(GetExeDirectoryAbsolute(), "dll");
@@ -34,8 +37,15 @@ namespace BizHawk.Client.DiscoHawk
 			// but before we even try doing that, whack the MOTW from everything in that directory (that's a dll)
 			// otherwise, some people will have crashes at boot-up due to .net security disliking MOTW.
 			// some people are getting MOTW through a combination of browser used to download BizHawk, and program used to dearchive it
-			WhackAllMOTW(dllDir);
-#endif
+			static void RemoveMOTW(string path) => DeleteFileW($"{path}:Zone.Identifier");
+			var todo = new Queue<DirectoryInfo>(new[] { new DirectoryInfo(dllDir) });
+			while (todo.Count != 0)
+			{
+				var di = todo.Dequeue();
+				foreach (var diSub in di.GetDirectories()) todo.Enqueue(diSub);
+				foreach (var fi in di.GetFiles("*.dll")) RemoveMOTW(fi.FullName);
+				foreach (var fi in di.GetFiles("*.exe")) RemoveMOTW(fi.FullName);
+			}
 		}
 
 		[STAThread]
@@ -48,33 +58,24 @@ namespace BizHawk.Client.DiscoHawk
 		[DllImport("user32.dll", SetLastError = true)]
 		public static extern bool ChangeWindowMessageFilterEx(IntPtr hWnd, uint msg, ChangeWindowMessageFilterExAction action, ref CHANGEFILTERSTRUCT changeInfo);
 
-		private static class Win32
-		{
-			[DllImport("kernel32.dll")]
-			public static extern IntPtr LoadLibrary(string dllToLoad);
-			[DllImport("kernel32.dll")]
-			public static extern IntPtr GetProcAddress(IntPtr hModule, string procedureName);
-			[DllImport("kernel32.dll")]
-			public static extern bool FreeLibrary(IntPtr hModule);
-		}
-
 		private static void SubMain(string[] args)
 		{
-			// MICROSOFT BROKE DRAG AND DROP IN WINDOWS 7. IT DOESN'T WORK ANYMORE
-			// WELL, OBVIOUSLY IT DOES SOMETIMES. I DON'T REMEMBER THE DETAILS OR WHY WE HAD TO DO THIS SHIT
-#if WINDOWS
-			// BUT THE FUNCTION WE NEED DOESN'T EXIST UNTIL WINDOWS 7, CONVENIENTLY
-			// SO CHECK FOR IT
-			IntPtr lib = Win32.LoadLibrary("user32.dll");
-			IntPtr proc = Win32.GetProcAddress(lib, "ChangeWindowMessageFilterEx");
-			if (proc != IntPtr.Zero)
+			if (!OSTC.IsUnixHost)
 			{
-				ChangeWindowMessageFilter(WM_DROPFILES, ChangeWindowMessageFilterFlags.Add);
-				ChangeWindowMessageFilter(WM_COPYDATA, ChangeWindowMessageFilterFlags.Add);
-				ChangeWindowMessageFilter(0x0049, ChangeWindowMessageFilterFlags.Add);
+				// MICROSOFT BROKE DRAG AND DROP IN WINDOWS 7. IT DOESN'T WORK ANYMORE
+				// WELL, OBVIOUSLY IT DOES SOMETIMES. I DON'T REMEMBER THE DETAILS OR WHY WE HAD TO DO THIS SHIT
+				// BUT THE FUNCTION WE NEED DOESN'T EXIST UNTIL WINDOWS 7, CONVENIENTLY
+				// SO CHECK FOR IT
+				IntPtr lib = OSTC.LinkedLibManager.LoadOrThrow("user32.dll");
+				IntPtr proc = OSTC.LinkedLibManager.GetProcAddrOrZero(lib, "ChangeWindowMessageFilterEx");
+				if (proc != IntPtr.Zero)
+				{
+					ChangeWindowMessageFilter(WM_DROPFILES, ChangeWindowMessageFilterFlags.Add);
+					ChangeWindowMessageFilter(WM_COPYDATA, ChangeWindowMessageFilterFlags.Add);
+					ChangeWindowMessageFilter(0x0049, ChangeWindowMessageFilterFlags.Add);
+				}
+				OSTC.LinkedLibManager.FreeByPtr(lib);
 			}
-			Win32.FreeLibrary(lib);
-#endif
 
 			var ffmpegPath = Path.Combine(GetExeDirectoryAbsolute(), "ffmpeg.exe");
 			if (!File.Exists(ffmpegPath))
@@ -112,33 +113,11 @@ namespace BizHawk.Client.DiscoHawk
 		}
 
 		//declared here instead of a more usual place to avoid dependencies on the more usual place
-#if WINDOWS
 		[DllImport("kernel32.dll", SetLastError = true)]
 		private static extern bool SetDllDirectory(string lpPathName);
 
 		[DllImport("kernel32.dll", EntryPoint = "DeleteFileW", SetLastError = true, CharSet = CharSet.Unicode, ExactSpelling = true)]
 		private static extern bool DeleteFileW([MarshalAs(UnmanagedType.LPWStr)]string lpFileName);
-
-		private static void RemoveMOTW(string path)
-		{
-			DeleteFileW($"{path}:Zone.Identifier");
-		}
-
-		private static void WhackAllMOTW(string dllDir)
-		{
-			var todo = new Queue<DirectoryInfo>(new[] { new DirectoryInfo(dllDir) });
-			while (todo.Count > 0)
-			{
-				var di = todo.Dequeue();
-				foreach (var diSub in di.GetDirectories()) todo.Enqueue(diSub);
-				foreach (var fi in di.GetFiles("*.dll"))
-					RemoveMOTW(fi.FullName);
-				foreach (var fi in di.GetFiles("*.exe"))
-					RemoveMOTW(fi.FullName);
-			}
-
-		}
-#endif
 
 		private const uint WM_DROPFILES = 0x0233;
 		private const uint WM_COPYDATA = 0x004A;
