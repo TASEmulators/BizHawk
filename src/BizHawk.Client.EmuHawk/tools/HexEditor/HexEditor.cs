@@ -196,14 +196,9 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 			
-			if (MemoryDomains.Any(x => x.Name == _domain.Name))
-			{
-				_domain = MemoryDomains[_domain.Name];
-			}
-			else
-			{
-				_domain = MemoryDomains.MainMemory;
-			}
+			_domain = MemoryDomains.Any(x => x.Name == _domain.Name)
+				? MemoryDomains[_domain.Name]
+				: MemoryDomains.MainMemory;
 
 			BigEndian = _domain.EndianType == MemoryDomain.Endian.Big;
 
@@ -494,9 +489,9 @@ namespace BizHawk.Client.EmuHawk
 
 			for (var i = 0; i < _rowsVisible; i++)
 			{
-				long _row = i + HexScrollBar.Value;
-				long _addr = _row << 4;
-				if (_addr >= _domain.Size)
+				long row = i + HexScrollBar.Value;
+				long addr = row << 4;
+				if (addr >= _domain.Size)
 				{
 					break;
 				}
@@ -510,7 +505,7 @@ namespace BizHawk.Client.EmuHawk
 					addrStr.Append("  ");
 				}
 
-				addrStr.AppendLine($"{_addr.ToHexString(_numDigits)} |");
+				addrStr.AppendLine($"{addr.ToHexString(_numDigits)} |");
 			}
 
 			return addrStr.ToString();
@@ -523,18 +518,18 @@ namespace BizHawk.Client.EmuHawk
 			var charValues = MakeValues(1);
 			for (var i = 0; i < _rowsVisible; i++)
 			{
-				long _row = i + HexScrollBar.Value;
-				long _addr = _row << 4;
-				if (_addr >= _domain.Size)
+				long row = i + HexScrollBar.Value;
+				long addr = row << 4;
+				if (addr >= _domain.Size)
 				{
 					break;
 				}
 
 				for (var j = 0; j < 16; j += DataSize)
 				{
-					if (_addr + j + DataSize <= _domain.Size)
+					if (addr + j + DataSize <= _domain.Size)
 					{
-						var addressVal = hexValues[_addr + j];
+						var addressVal = hexValues[addr + j];
 						rowStr.AppendFormat(_digitFormatString, addressVal);
 					}
 					else
@@ -551,13 +546,14 @@ namespace BizHawk.Client.EmuHawk
 				rowStr.Append("| ");
 				for (var k = 0; k < 16; k++)
 				{
-					if (_addr + k < _domain.Size)
+					if (addr + k < _domain.Size)
 					{
 						
-						byte b = (byte)charValues[_addr + k];
+						byte b = (byte)charValues[addr + k];
 						char c = Remap(b);
 						rowStr.Append(c);
-						//winforms will be using these as escape codes for hotkeys
+
+						// winforms will be using these as escape codes for hotkeys
 						if (forWindow) if (c == '&') rowStr.Append('&');
 					}
 				}
@@ -1219,17 +1215,12 @@ namespace BizHawk.Client.EmuHawk
 				return false;
 			}
 
-			using (var sr = file.OpenText())
+			using var sr = file.OpenText();
+			string line;
+			while ((line = sr.ReadLine()) != null)
 			{
-				string line;
-
-				while ((line = sr.ReadLine()) != null)
-				{
-					var parts = line.Split('=');
-					_textTable.Add(
-						int.Parse(parts[0],
-						NumberStyles.HexNumber), parts[1].First());
-				}
+				var parts = line.Split('=');
+				_textTable.Add(int.Parse(parts[0], NumberStyles.HexNumber), parts[1].First());
 			}
 
 			return true;
