@@ -155,7 +155,7 @@ namespace BizHawk.Client.EmuHawk
 				switch (dispMethod)
 				{
 					case EDispMethod.SlimDX9:
-						if (OSTailoredCode.CurrentOS != OSTailoredCode.DistinctOS.Windows)
+						if (OSTC.CurrentOS != OSTC.DistinctOS.Windows)
 						{
 							// possibly sharing config w/ Windows, assume the user wants the not-slow method (but don't change the config)
 							return TryInitIGL(EDispMethod.OpenGL);
