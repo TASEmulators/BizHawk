@@ -64,7 +64,11 @@ guest_syscall:
 	mov r11, [rsp + 8]
 	mov [gs:0x08], r11
 
-	sub rsp, 8 ; align
+	; save and then null out SubSystemTib
+	push r10
+	xor r11, r11
+	mov [gs:0x18], r11
+
 	mov r11, [r10 + Context.host_ptr]
 	push r11 ; arg 8 to dispatch_syscall: host
 	push rax ; arg 7 to dispatch_syscall: nr
@@ -77,7 +81,10 @@ guest_syscall:
 	sub r10, 1
 	mov [gs:0x08], r10
 
-	mov r10, [gs:0x18]
+	; Restore SubSystemTib (aka context ptr)
+	mov r10, [rsp + 16]
+	mov [gs:0x18], r10
+
 	mov rsp, [r10 + Context.guest_rsp]
 	pop rbp
 	ret
@@ -121,8 +128,12 @@ guest_extcall_impl:
 	mov r11, [rsp + 8]
 	mov [gs:0x08], r11
 
+	; save and then null out SubSystemTib
+	push r10
+	xor r11, r11
+	mov [gs:0x18], r11
+
 	mov r11, [r10 + Context.extcall_slots + rax * 8] ; get slot ptr
-	sub rsp, 8 ; align
 	call r11
 
 	; set guest TIB data
@@ -131,7 +142,10 @@ guest_extcall_impl:
 	sub r10, 1
 	mov [gs:0x08], r10
 
-	mov r10, [gs:0x18]
+	; Restore SubSystemTib (aka context ptr)
+	mov r10, [rsp]
+	mov [gs:0x18], r10
+
 	mov rsp, [r10 + Context.guest_rsp]
 	ret
 guest_extcall_impl_end:
