@@ -297,10 +297,7 @@ void* snes_allocSharedMemory(const char* memtype, size_t amt)
 
 	void* ret;
 
-	if (strcmp(memtype, "CARTRIDGE_ROM") == 0)
-		ret = alloc_sealed(amt);
-	else
-		ret = alloc_plain(amt);
+	ret = alloc_plain(amt);
 
 	comm.str = (char*)memtype;
 	comm.size = amt;
