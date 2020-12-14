@@ -1,5 +1,6 @@
 bits 64
 org 0x35f00000000
+%define RVA(addr) (addr - 0x35f00000000)
 
 struc Context
 	.thread_area resq 1
@@ -63,7 +64,11 @@ guest_syscall:
 	mov r11, [rsp + 8]
 	mov [gs:0x08], r11
 
-	sub rsp, 8 ; align
+	; save and then null out SubSystemTib
+	push r10
+	xor r11, r11
+	mov [gs:0x18], r11
+
 	mov r11, [r10 + Context.host_ptr]
 	push r11 ; arg 8 to dispatch_syscall: host
 	push rax ; arg 7 to dispatch_syscall: nr
@@ -76,10 +81,14 @@ guest_syscall:
 	sub r10, 1
 	mov [gs:0x08], r10
 
-	mov r10, [gs:0x18]
+	; Restore SubSystemTib (aka context ptr)
+	mov r10, [rsp + 16]
+	mov [gs:0x18], r10
+
 	mov rsp, [r10 + Context.guest_rsp]
 	pop rbp
 	ret
+guest_syscall_end:
 
 times 0x100-($-$$) int3 ; CALL_GUEST_SIMPLE_ADDR
 ; alternative to guest call thunks for functions with 0 args
@@ -119,8 +128,12 @@ guest_extcall_impl:
 	mov r11, [rsp + 8]
 	mov [gs:0x08], r11
 
+	; save and then null out SubSystemTib
+	push r10
+	xor r11, r11
+	mov [gs:0x18], r11
+
 	mov r11, [r10 + Context.extcall_slots + rax * 8] ; get slot ptr
-	sub rsp, 8 ; align
 	call r11
 
 	; set guest TIB data
@@ -129,6 +142,40 @@ guest_extcall_impl:
 	sub r10, 1
 	mov [gs:0x08], r10
 
-	mov r10, [gs:0x18]
+	; Restore SubSystemTib (aka context ptr)
+	mov r10, [rsp]
+	mov [gs:0x18], r10
+
 	mov rsp, [r10 + Context.guest_rsp]
 	ret
+guest_extcall_impl_end:
+
+times 0x700-($-$$) int3 ; RUNTIME_TABLE_ADDR
+runtime_function_table:
+	; https://docs.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-runtime_function
+	dd RVA(guest_syscall)
+	dd RVA(guest_syscall_end)
+	dd RVA(guest_syscall_unwind)
+
+	dd RVA(guest_extcall_impl)
+	dd RVA(guest_extcall_impl_end)
+	dd RVA(guest_extcall_impl_unwind)
+guest_syscall_unwind:
+	; https://docs.microsoft.com/en-us/cpp/build/exception-handling-x64
+	db 1
+	db 5 ; fake prolog
+	db 1
+	db 0
+
+	db 5 ; fake prolog offset
+	db 0x42 ; 40 bytes of stack (remember to count the 16 in call_guest_impl)
+	dw 0 ; unused entry
+guest_extcall_impl_unwind:
+	db 1
+	db 5 ; fake prolog
+	db 1
+	db 0
+
+	db 5 ; fake prolog offset
+	db 0x22 ; 24 bytes of stack (remember to count the 16 in call_guest_impl)
+	dw 0 ; unused entry

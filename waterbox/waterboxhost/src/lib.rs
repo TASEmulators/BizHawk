@@ -25,6 +25,7 @@ mod cinterface;
 mod gdb;
 mod context;
 mod threading;
+mod calling_convention_adapters;
 
 pub trait IStateable {
 	fn save_state(&mut self, stream: &mut dyn Write) -> anyhow::Result<()>;
