@@ -167,21 +167,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			// GBC games need to clear slow enough that games that turn the screen off briefly for cinematics still look smooth
 			if (ppu.clear_screen)
 			{
-				if (is_GBC)
-				{
-					for (int j = 0; j < frame_buffer.Length; j++) { frame_buffer[j] = (int)(frame_buffer[j] | (0x30303 << (clear_counter * 2))); }
-
-					clear_counter++;
-					if (clear_counter == 4)
-					{
-						ppu.clear_screen = false;
-					}				
-				}
-				else
-				{
-					for (int j = 0; j < frame_buffer.Length; j++) { frame_buffer[j] = (int)ppu.color_palette[0]; }
-					ppu.clear_screen = false;
-				}
+				clear_screen_func();
 			}
 		}
 
@@ -366,6 +352,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			else
 			{
 				return REG_FFFF;
+			}
+		}
+
+		public void clear_screen_func()
+		{
+			if (is_GBC)
+			{
+				for (int j = 0; j < frame_buffer.Length; j++) { frame_buffer[j] = (int)(frame_buffer[j] | (0x30303 << (clear_counter * 2))); }
+
+				clear_counter++;
+				if (clear_counter == 4)
+				{
+					ppu.clear_screen = false;
+				}
+			}
+			else
+			{
+				for (int j = 0; j < frame_buffer.Length; j++) { frame_buffer[j] = (int)ppu.color_palette[0]; }
+				ppu.clear_screen = false;
 			}
 		}
 

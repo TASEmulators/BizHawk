@@ -960,7 +960,32 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 					D.vblank_rise = false;
 					do_frame_fill = true;
 				}
-			}			
+			}
+
+			// clear the screens as needed
+			if (A.ppu.clear_screen)
+			{
+				A.clear_screen_func();
+				do_frame_fill = true;
+			}
+
+			if (B.ppu.clear_screen)
+			{
+				B.clear_screen_func();
+				do_frame_fill = true;
+			}
+
+			if (C.ppu.clear_screen)
+			{
+				C.clear_screen_func();
+				do_frame_fill = true;
+			}
+
+			if (D.ppu.clear_screen)
+			{
+				D.clear_screen_func();
+				do_frame_fill = true;
+			}
 		}
 
 		public void GetControllerState(IController controller)

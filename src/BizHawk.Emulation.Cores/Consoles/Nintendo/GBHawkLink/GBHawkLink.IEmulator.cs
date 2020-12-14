@@ -84,7 +84,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 				FillVideoBuffer();
 			}
 
-
 			_islag = L._islag & R._islag;
 
 			if (_islag)
@@ -201,6 +200,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 					R.vblank_rise = false;
 					do_frame_fill = true;
 				}
+			}
+
+			// clear the screens as needed
+			if (L.ppu.clear_screen)
+			{
+				L.clear_screen_func();
+				do_frame_fill = true;
+			}
+
+			if (R.ppu.clear_screen)
+			{
+				R.clear_screen_func();
+				do_frame_fill = true;
 			}
 		}
 

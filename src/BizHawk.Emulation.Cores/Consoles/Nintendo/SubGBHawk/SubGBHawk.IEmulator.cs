@@ -60,7 +60,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubGBHawk
 
 			bool ret = pass_a_frame;
 
-			if (pass_a_frame) { frame_cycle = 0; }
+			if (pass_a_frame) 
+			{
+				// clear the screen as needed
+				if (_GBCore.ppu.clear_screen)
+				{
+					_GBCore.clear_screen_func();
+				}
+
+				// reset the frame cycle counter
+				frame_cycle = 0; 
+			}
 			current_cycle = 0;
 			
 			_isLag = pass_a_frame;
