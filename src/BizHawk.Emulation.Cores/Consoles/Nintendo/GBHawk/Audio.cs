@@ -758,7 +758,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					if (SQ2_len_en && SQ2_len_cntr > 0)
 					{
 						SQ2_len_cntr--;
-						if (SQ2_len_cntr == 0) { SQ2_enable = false; calculate_bias_gain_2(); Console.WriteLine("ch2: " + Core.cpu.TotalExecutedCycles + " " + SQ2_enable); }
+						if (SQ2_len_cntr == 0) { SQ2_enable = false; calculate_bias_gain_2(); }
 					}
 					if (WAVE_len_en && WAVE_len_cntr > 0)
 					{
@@ -1186,8 +1186,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public byte Read_NR52()
 		{
-			Console.WriteLine("read: " + Core.cpu.TotalExecutedCycles);
-
 			return (byte)(
 				((AUD_CTRL_power ? 1 : 0) << 7) |
 				(SQ1_enable ? 1 : 0) |
