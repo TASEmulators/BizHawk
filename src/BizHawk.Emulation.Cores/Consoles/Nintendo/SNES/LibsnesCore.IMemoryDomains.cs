@@ -11,6 +11,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		private readonly List<MemoryDomain> _memoryDomainList = new List<MemoryDomain>();
 		private IMemoryDomains _memoryDomains;
 		private LibsnesApi.SNES_MAPPER? _mapper;
+		private LibsnesApi.SNES_REGION? _region;
 
 		// works for WRAM, garbage for anything else
 		private static int? FakeBusMap(int addr)

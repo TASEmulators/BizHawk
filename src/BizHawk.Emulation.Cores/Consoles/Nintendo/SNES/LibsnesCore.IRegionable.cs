@@ -4,7 +4,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 {
 	public partial class LibsnesCore : IRegionable
 	{
-		public DisplayType Region => Api.Region == LibsnesApi.SNES_REGION.NTSC
+		public DisplayType Region => _region == LibsnesApi.SNES_REGION.NTSC
 			? DisplayType.NTSC
 			: DisplayType.PAL;
 	}

@@ -173,7 +173,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				}
 			}
 
-			if (Api.Region == LibsnesApi.SNES_REGION.NTSC)
+			if (_region == LibsnesApi.SNES_REGION.NTSC)
 			{
 				// similar to what aviout reports from snes9x and seems logical from bsnes first principles. bsnes uses that numerator (ntsc master clockrate) for sure.
 				VsyncNumerator = 21477272;
@@ -484,6 +484,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				: Api.CMD_load_cartridge_super_game_boy(_currLoadParams.rom_xml, _currLoadParams.rom_data, _currLoadParams.rom_size, _currLoadParams.dmg_data);
 
 			_mapper = Api.Mapper;
+			_region = Api.Region;
 
 			return result;
 		}
