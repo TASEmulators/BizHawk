@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 	{
 		// this isn't all done
 
-		struct CName
+		private struct CName
 		{
 			public readonly string Name;
 			public readonly LibGPGX.INPUT_KEYS Key;
@@ -102,7 +102,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		public ControllerDefinition ControllerDef { get; }
 
-		void AddToController(int idx, int player, IEnumerable<CName> buttons)
+		private void AddToController(int idx, int player, IEnumerable<CName> buttons)
 		{
 			foreach (var button in buttons)
 			{

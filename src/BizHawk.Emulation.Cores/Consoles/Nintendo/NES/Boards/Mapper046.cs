@@ -17,10 +17,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		 */
 		
 		//configuration
-		int prg_bank_mask_32k, chr_bank_mask_8k;
+		private int prg_bank_mask_32k, chr_bank_mask_8k;
 
 		//state
-		int prg_bank_32k_H, prg_bank_32k_L,
+		private int prg_bank_32k_H, prg_bank_32k_L,
 			chr_bank_8k_H, chr_bank_8k_L;
 
 		public override void WriteWram(int addr, byte value)

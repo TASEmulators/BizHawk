@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		// The SuperGrafx has 32K of RAM and a different port configuration to allow
 		// I/O access to VDC1, VDC2, and the VPC.
 
-		byte ReadMemorySGX(int addr)
+		private byte ReadMemorySGX(int addr)
 		{
 			if (addr < 0xFFFFF) // read ROM
 				return RomData[addr % RomLength];

@@ -33,8 +33,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(chr_block_or), ref chr_block_or);
 		}
 
-		bool prg_mode_mapper;
-		int prg_page, chr_block_or;
+		private bool prg_mode_mapper;
+		private int prg_page, chr_block_or;
 
 		public override void WriteWram(int addr, byte value)
 		{

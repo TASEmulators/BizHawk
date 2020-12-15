@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 {
 	public sealed partial class I8048
 	{
-		static readonly string[] table =
+		private static readonly string[] table =
 		{
 			"NOP", // 00
 			"???", // 01

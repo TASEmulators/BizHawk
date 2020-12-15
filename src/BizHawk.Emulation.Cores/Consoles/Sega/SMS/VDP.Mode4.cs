@@ -272,10 +272,10 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		}
 
 		internal int OverscanFrameWidth, OverscanFrameHeight;
-		int overscanTop;
-		int overscanBottom;
-		int overscanLeft;
-		int overscanRight;
+		private int overscanTop;
+		private int overscanBottom;
+		private int overscanLeft;
+		private int overscanRight;
 
 		internal void ProcessOverscan()
 		{

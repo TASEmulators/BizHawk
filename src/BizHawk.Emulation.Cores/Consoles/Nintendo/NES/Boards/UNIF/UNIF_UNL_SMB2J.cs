@@ -4,11 +4,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	internal sealed class UNIF_UNL_SMB2J : NesBoardBase
 	{
-		int prg = 0;
-		int prg_count;
-		int irqcnt = 0;
-		bool irqenable = false;
-		bool swap;
+		private int prg = 0;
+		private int prg_count;
+		private int irqcnt = 0;
+		private bool irqenable = false;
+		private bool swap;
 
 		public override bool Configure(EDetectionOrigin origin)
 		{

@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 {
 	unsafe partial class MelonDS : IMemoryDomains
 	{
-		SortedList<string, MemoryDomain> domains;
+		private SortedList<string, MemoryDomain> domains;
 
 		private void InitMemoryDomains()
 		{

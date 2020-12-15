@@ -7,10 +7,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	// http://kevtris.org/mappers/tengen/800008.html
 	internal sealed class TENGEN_800008 : NesBoardBase
 	{
-		int prg_mask;
-		int chr_mask;
-		int prg;
-		int chr;
+		private int prg_mask;
+		private int chr_mask;
+		private int prg;
+		private int chr;
 
 		public override bool Configure(EDetectionOrigin origin)
 		{

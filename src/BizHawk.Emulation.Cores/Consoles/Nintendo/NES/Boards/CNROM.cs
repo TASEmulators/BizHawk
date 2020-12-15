@@ -15,14 +15,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	internal sealed class CNROM : NesBoardBase
 	{
 		//configuration
-		int prg_byte_mask, chr_mask;
-		bool copyprotection = false;
-		bool bus_conflict;
-		bool seicross;
+		private int prg_byte_mask, chr_mask;
+		private bool copyprotection = false;
+		private bool bus_conflict;
+		private bool seicross;
 
 		//state
-		int chr;
-		bool chr_enabled = true;
+		private int chr;
+		private bool chr_enabled = true;
 
 		public override bool Configure(EDetectionOrigin origin)
 		{

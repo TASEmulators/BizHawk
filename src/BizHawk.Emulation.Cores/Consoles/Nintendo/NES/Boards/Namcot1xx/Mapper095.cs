@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		int RewireNametable(int addr, int bitsel)
+		private int RewireNametable(int addr, int bitsel)
 		{
 			int bank_1k = mapper.Get_CHRBank_1K(addr & 0x1FFF);
 			int nt = (bank_1k >> bitsel) & 1;

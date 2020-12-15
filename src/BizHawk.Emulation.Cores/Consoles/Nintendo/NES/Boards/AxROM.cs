@@ -8,11 +8,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	internal sealed class AxROM : NesBoardBase
 	{
 		//configuration
-		bool bus_conflict;
-		int prg_mask_32k;
+		private bool bus_conflict;
+		private int prg_mask_32k;
 
 		//state
-		int prg;
+		private int prg;
 
 		public override bool Configure(EDetectionOrigin origin)
 		{

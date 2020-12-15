@@ -81,14 +81,14 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 			CodeOperand = 0x80
 		}
 
-		void Mark(ushort addr, CDLUsage flag)
+		private void Mark(ushort addr, CDLUsage flag)
 		{
 			var m = Mappings[MPR[addr >> 13]];
 			CDL[m.Name][addr & 0x1fff | m.Offs] |= (byte)flag;
 		}
 
 		// mark addr as having been fetched for execute
-		void MarkCode(int addr_, int n)
+		private void MarkCode(int addr_, int n)
 		{
 			for (int i = 0; i < n; i++)
 			{
@@ -98,28 +98,28 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 		}
 
 		// mark addr as having been seen as data
-		void MarkAddr(int addr_)
+		private void MarkAddr(int addr_)
 		{
 			ushort addr = (ushort)addr_;
 			Mark(addr, CDLUsage.Data);
 		}
 
 		// convert address to zero-page, then mark as data
-		void MarkZP(int addr_)
+		private void MarkZP(int addr_)
 		{
 			ushort addr = (ushort)(addr_ & 0xff | 0x2000);
 			Mark(addr, CDLUsage.Data);
 		}
 
 		// convert address to zero-page, then return the pointer stored there
-		ushort GetIndirect(int addr_)
+		private ushort GetIndirect(int addr_)
 		{
 			ushort addr = (ushort)(addr_ & 0xff | 0x2000);
 			return ReadWordPageWrap(addr);
 		}
 
 		// convert address to zero-page, then mark as pointer (two bytes)
-		void MarkZPPtr(int addr_)
+		private void MarkZPPtr(int addr_)
 		{
 			ushort addr = (ushort)(addr_ & 0xff | 0x2000);
 			ushort addr2 = (ushort)(addr & 0xff00 | (addr + 1) & 0x00ff);
@@ -128,14 +128,14 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 		}
 
 		// mark address as destination data of an indirect pointer
-		void MarkIndirect(int addr_)
+		private void MarkIndirect(int addr_)
 		{
 			ushort addr = (ushort)addr_;
 			Mark(addr, CDLUsage.IndirectData);
 		}
 
 		// mark stack space
-		void MarkPush(int n)
+		private void MarkPush(int n)
 		{
 			for (int i = 0; i < n; i++)
 			{
@@ -144,7 +144,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 			}
 		}
 
-		void MarkPop(int n)
+		private void MarkPop(int n)
 		{
 			for (int i = 0; i < n; i++)
 			{
@@ -154,7 +154,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 		}
 
 		// mark addr as function pointer (2 bytes)
-		void MarkFptr(int addr_)
+		private void MarkFptr(int addr_)
 		{
 			ushort addr = (ushort)addr_;
 			ushort addr2 = (ushort)(addr & 0xff00 | (addr + 1) & 0x00ff);
@@ -163,14 +163,14 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 		}
 
 		// block transfer "from"
-		void MarkBTFrom(int addr_)
+		private void MarkBTFrom(int addr_)
 		{
 			ushort addr = (ushort)addr_;
 			Mark(addr, CDLUsage.BlockXFer);
 		}
 
 		// block transfer "to"
-		void MarkBTTo(int addr_)
+		private void MarkBTTo(int addr_)
 		{
 			ushort addr = (ushort)addr_;
 			Mark(addr, CDLUsage.BlockXFer);

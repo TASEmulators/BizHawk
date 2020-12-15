@@ -9,10 +9,10 @@ namespace BizHawk.Emulation.Cores.Components
 	{
 		// http://wiki.nesdev.com/w/index.php/VRC6_audio
 
-		readonly Pulse pulse1, pulse2;
-		readonly Saw saw;
+		private readonly Pulse pulse1, pulse2;
+		private readonly Saw saw;
 
-		readonly Action<int> enqueuer;
+		private readonly Action<int> enqueuer;
 
 		/// <param name="enqueuer">a place to dump deltas to</param>
 		public VRC6Alt(Action<int> enqueuer)
@@ -25,18 +25,18 @@ namespace BizHawk.Emulation.Cores.Components
 
 		// the two pulse channels are about the same volume as 2a03 pulse channels.
 		// everything is flipped, though; but that's taken care of in the classes
-		void PulseAddDiff(int value)
+		private void PulseAddDiff(int value)
 		{
 			enqueuer(value * 360);
 		}
 		// saw ends up being not that loud because of differences in implementation
-		void SawAddDiff(int value)
+		private void SawAddDiff(int value)
 		{
 			enqueuer(value * 360);
 		}
 
 		// state
-		bool masterenable;
+		private bool masterenable;
 
 		public void SyncState(Serializer ser)
 		{
@@ -89,37 +89,37 @@ namespace BizHawk.Emulation.Cores.Components
 			}
 		}
 
-		class Saw
+		private class Saw
 		{
-			readonly Action<int> SendDiff;
+			private readonly Action<int> SendDiff;
 			public Saw(Action<int> SendDiff) { this.SendDiff = SendDiff; }
 
 			// set by regs
 			/// <summary>rate of increment for accumulator</summary>
-			byte A;
+			private byte A;
 			/// <summary>frequency.  actually a reload value</summary>
-			int F;
+			private int F;
 			/// <summary>enable</summary>
-			bool E;
+			private bool E;
 			/// <summary>reload shift, from $9003</summary>
-			int RSHIFT;
+			private int RSHIFT;
 
 			// internal state
 			/// <summary>frequency counter</summary>
-			int count;
+			private int count;
 			/// <summary>accumulator</summary>
-			byte accum;
+			private byte accum;
 			/// <summary>saw reset counter</summary>
-			int acount;
+			private int acount;
 			/// <summary>latched output, 0..31</summary>
-			int output;
+			private int output;
 
 			public void SetRSHIFT(int RSHIFT)
 			{
 				this.RSHIFT = RSHIFT;
 			}
 
-			void SendNew()
+			private void SendNew()
 			{
 				int newvalue = accum >> 3;
 				if (newvalue != output)
@@ -188,37 +188,37 @@ namespace BizHawk.Emulation.Cores.Components
 			}
 		}
 
-		class Pulse
+		private class Pulse
 		{
-			readonly Action<int> SendDiff;
+			private readonly Action<int> SendDiff;
 			public Pulse(Action<int> SendDiff) { this.SendDiff = SendDiff; }
 
 			// set by regs
 			/// <summary>volume, 0..15</summary>
-			int V;
+			private int V;
 			/// <summary>duty comparison.  forced to max when x000.7 == 1</summary>
-			int D;
+			private int D;
 			/// <summary>frequency.  actually a reload value</summary>
-			int F;
+			private int F;
 			/// <summary>enable</summary>
-			bool E;
+			private bool E;
 			/// <summary>reload shift, from $9003</summary>
-			int RSHIFT;
+			private int RSHIFT;
 
 			// internal state
 			/// <summary>frequency counter</summary>
-			int count;
+			private int count;
 			/// <summary>duty counter</summary>
-			int duty;
+			private int duty;
 			/// <summary>latched output, 0..15</summary>
-			int output;
+			private int output;
 
 			public void SetRSHIFT(int RSHIFT)
 			{
 				this.RSHIFT = RSHIFT;
 			}
 
-			void SendNew()
+			private void SendNew()
 			{
 				int newvalue;
 				if (duty <= D)
@@ -232,7 +232,7 @@ namespace BizHawk.Emulation.Cores.Components
 				}
 			}
 
-			void SendNewZero()
+			private void SendNewZero()
 			{
 				if (0 != output)
 				{

@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 	internal sealed class IREM_74_161_161_21_138 : NesBoardBase
 	{
-		int chr, prg;
+		private int chr, prg;
 		public override bool Configure(EDetectionOrigin origin)
 		{
 			//configure

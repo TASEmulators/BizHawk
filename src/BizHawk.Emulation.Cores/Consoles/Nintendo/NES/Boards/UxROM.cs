@@ -19,16 +19,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	internal sealed class UxROM : NesBoardBase
 	{
 		//configuration
-		int prg_mask;
-		int vram_byte_mask;
-		Func<int, int> adjust_prg;
+		private int prg_mask;
+		private int vram_byte_mask;
+		private Func<int, int> adjust_prg;
 
 		//state
-		int prg;
+		private int prg;
 
 		//the VS actually does have 2 KB of nametable address space
 		//let's make the extra space here, instead of in the main NES to avoid confusion
-		byte[] CIRAM_VS = new byte[0x800];
+		private byte[] CIRAM_VS = new byte[0x800];
 
 		public override bool Configure(EDetectionOrigin origin)
 		{

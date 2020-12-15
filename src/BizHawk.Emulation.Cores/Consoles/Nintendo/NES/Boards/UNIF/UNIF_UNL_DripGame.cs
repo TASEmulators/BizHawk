@@ -11,43 +11,43 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public bool DripGameDipSwitch;
 
 		// cycles the hardware takes to prep; exact value not known
-		const int WarmupTime = 1000000;
+		private const int WarmupTime = 1000000;
 
 		// hardware warmup clock
-		int warmupclock = WarmupTime;
+		private int warmupclock = WarmupTime;
 
 		// 16k prg bank
-		int[] prg = new int[2];
+		private int[] prg = new int[2];
 		// 2k chr bank
-		int[] chr = new int[4];
+		private int[] chr = new int[4];
 		// prg bank mask
-		int prgmask;
+		private int prgmask;
 		// chr bank mask
-		int chrmask;
+		private int chrmask;
 
 		// 4096 bits of attribute ram (only bottom two bits of each byte are valid)
-		byte[] exram = new byte[2048];
+		private byte[] exram = new byte[2048];
 
 		// nt mirroring (we track internally because we have to use it specially)
-		int[] nt = new int[4];
+		private int[] nt = new int[4];
 
 		// true if exattr is active
-		bool exattr; // 800a.2
+		private bool exattr; // 800a.2
 		// true if sram is writeable
-		bool sramwrite; // 800a.3
+		private bool sramwrite; // 800a.3
 
 		// 8 bit latch of value written to 8008
-		byte irqbuffer; // 8008
+		private byte irqbuffer; // 8008
 		// current irq timer value (15 bit)
-		int irqvalue;
+		private int irqvalue;
 
 		// last ppu read in 2xxx that was a nametable read, mapped for nt mirroring to 000:7ff
 		// internally, this might be implemented in a different way?
-		int lastntread;
+		private int lastntread;
 
 		// sound hardware
-		SoundChannel sound0;
-		SoundChannel sound1;
+		private SoundChannel sound0;
+		private SoundChannel sound1;
 
 		public override void SyncState(Serializer ser)
 		{
@@ -278,33 +278,33 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			// sound data fifo
-			byte[] fifo = new byte[256];
+			private byte[] fifo = new byte[256];
 			// true if channel is currently running
-			bool active = false;
+			private bool active = false;
 
 			// where the next byte will be written to
-			int writecursor;
+			private int writecursor;
 			// where the next byte will be read from
-			int readcursor;
+			private int readcursor;
 
 			// current phase clock
-			int timer;
+			private int timer;
 			// phase reload value
-			int period;
+			private int period;
 
 			// volume register
-			int volume;
+			private int volume;
 			// last read sample
-			byte sample;
+			private byte sample;
 			// latched output
-			int latched;
+			private int latched;
 
 			// communicate with APU
-			readonly Action<int> enqueuer;
+			private readonly Action<int> enqueuer;
 			// true if V has been written and we need to check to change something
-			bool volumeChangePending;
+			private bool volumeChangePending;
 
-			void CalcLatch()
+			private void CalcLatch()
 			{
 				int n = volume * sample * 9; // 9 is magic master volume level
 				if (n != latched)
@@ -314,8 +314,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 			}
 
-			bool Empty => writecursor == readcursor;
-			bool Full => readcursor + 256 == writecursor;
+			private bool Empty => writecursor == readcursor;
+			private bool Full => readcursor + 256 == writecursor;
 
 			public void Write(int addr, byte value)
 			{

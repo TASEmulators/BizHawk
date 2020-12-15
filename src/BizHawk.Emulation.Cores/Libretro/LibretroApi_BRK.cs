@@ -2,7 +2,7 @@
 {
 	unsafe partial class LibretroApi
 	{
-		bool Handle_BRK(eMessage msg)
+		private bool Handle_BRK(eMessage msg)
 		{
 			switch (msg)
 			{

@@ -57,7 +57,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		// debug path/build for easier testing
 		//const string dllPath = "../../MelonDS/build/libmelonDS.dll";
-		const string dllPath = "dll/libmelonDS.dll";
+		private const string dllPath = "dll/libmelonDS.dll";
 
 		[DllImport(dllPath)]
 		private static extern bool Init();

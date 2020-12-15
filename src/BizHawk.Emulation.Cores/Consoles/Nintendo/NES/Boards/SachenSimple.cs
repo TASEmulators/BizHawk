@@ -9,14 +9,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	// "Qi Wang - Chinese Chess (MGC-001) (Ch) [!]" and "Twin Eagle (Sachen) [!]" seem to have problems; the latter needs PAL
 	internal sealed class SachenSimple : NesBoardBase
 	{
-		Action<byte> ExpWrite = null;
-		Action<byte> PrgWrite = null;
+		private Action<byte> ExpWrite = null;
+		private Action<byte> PrgWrite = null;
 
-		int prg = 0;
-		int chr = 0;
-		int prg_mask;
-		int chr_mask;
-		int prg_addr_mask; // some carts have 16KB prg unswappable
+		private int prg = 0;
+		private int chr = 0;
+		private int prg_mask;
+		private int chr_mask;
+		private int prg_addr_mask; // some carts have 16KB prg unswappable
 
 		public override bool Configure(EDetectionOrigin origin)
 		{
@@ -62,20 +62,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		void SA0161M_Write(byte value)
+		private void SA0161M_Write(byte value)
 		{
 			prg = (value >> 3) & 1 & prg_mask;
 			chr = value & 7 & chr_mask;
 		}
-		void SA72007_Write(byte value)
+
+		private void SA72007_Write(byte value)
 		{
 			chr = (value >> 7) & 1 & chr_mask;
 		}
-		void SA009_Write(byte value)
+
+		private void SA009_Write(byte value)
 		{
 			chr = value & 1 & chr_mask;
 		}
-		void SA72008_Write(byte value)
+
+		private void SA72008_Write(byte value)
 		{
 			prg = (value >> 2) & 1 & prg_mask;
 			chr = value & 3 & chr_mask;

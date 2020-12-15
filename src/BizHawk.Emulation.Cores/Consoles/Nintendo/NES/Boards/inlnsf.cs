@@ -6,10 +6,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	{
 
 		// config
-		int prg_bank_mask_4k;
+		private int prg_bank_mask_4k;
 
 		// state
-		int[] prg = new int[8];
+		private int[] prg = new int[8];
 
 		public override void SyncState(Serializer ser)
 		{

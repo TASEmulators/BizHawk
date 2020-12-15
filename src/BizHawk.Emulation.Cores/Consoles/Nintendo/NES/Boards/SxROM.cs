@@ -71,7 +71,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public int prg_mode;
 		public int prg_slot; // complicated
 		public EMirrorType mirror;
-		static readonly EMirrorType[] _mirrorTypes =
+
+		private static readonly EMirrorType[] _mirrorTypes =
 		{
 			EMirrorType.OneScreenA,
 			EMirrorType.OneScreenB,
@@ -80,20 +81,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		};
 
 		//register 1,2:
-		int chr_0, chr_1;
+		private int chr_0, chr_1;
 
 		//register 3:
 		public bool wram_disable;
-		int prg;
+		private int prg;
 
 		//regenerable state
-		readonly int[] chr_banks_4k = new int[2];
-		readonly int[] prg_banks_16k = new int[2];
+		private readonly int[] chr_banks_4k = new int[2];
+		private readonly int[] prg_banks_16k = new int[2];
 
 		public class MMC1_SerialController
 		{
 			//state
-			int shift_count, shift_val;
+			private int shift_count, shift_val;
 
 			public void SyncState(Serializer ser)
 			{
@@ -134,7 +135,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		void SerialReset()
+		private void SerialReset()
 		{
 			prg_mode = 1;
 			prg_slot = 1;
@@ -184,7 +185,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			//board.NES.LogLine("mapping.. prg_mode={0}, prg_slot{1}, prg={2}", prg_mode, prg_slot, prg);
 		}
 
-		void SyncCHR()
+		private void SyncCHR()
 		{
 			if (chr_mode == 0)
 			{
@@ -198,7 +199,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		void SyncPRG()
+		private void SyncPRG()
 		{
 			if (prg_mode == 0)
 			{
@@ -241,13 +242,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//configuration
 		protected int prg_mask, chr_mask;
 		protected int vram_mask;
-		const int pputimeout = 4; // i don't know if this is right, but anything lower will not boot Bill & Ted
-		bool disablemirror = false; // mapper 171: mmc1 without mirroring control
+		private const int pputimeout = 4; // i don't know if this is right, but anything lower will not boot Bill & Ted
+		private bool disablemirror = false; // mapper 171: mmc1 without mirroring control
 
 
 		//the VS actually does have 2 KB of nametable address space
 		//let's make the extra space here, instead of in the main NES to avoid confusion
-		byte[] CIRAM_VS = new byte[0x800];
+		private byte[] CIRAM_VS = new byte[0x800];
 
 		//for snrom wram disable
 		public bool _is_snrom;
@@ -256,7 +257,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//state
 		public MMC1 mmc1;
 		/// <summary>number of cycles since last WritePRG()</summary>
-		uint ppuclock;
+		private uint ppuclock;
 
 		public override void ClockPpu()
 		{
@@ -298,7 +299,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return Rom[addr];
 		}
 
-		int Gen_CHR_Address(int addr)
+		private int Gen_CHR_Address(int addr)
 		{
 			int bank = mmc1.Get_CHRBank_4K(addr);
 			addr = ((bank & chr_mask) << 12) | (addr & 0x0FFF);
@@ -557,7 +558,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		int Map_WRAM(int addr)
+		private int Map_WRAM(int addr)
 		{
 			//$A000-BFFF:  [...R ...C]
 			//  R = PRG-RAM page select
@@ -580,7 +581,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 	}
 
-	class SXROM : SuROM
+	internal class SXROM : SuROM
 	{
 		//SXROM's PRG behaves similar to SuROM (and so inherits from it)
 		//it also has some WRAM select bits like SoROM
@@ -598,7 +599,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		int Map_WRAM(int addr)
+		private int Map_WRAM(int addr)
 		{
 			//$A000-BFFF:  [...P RR..]
 			//  P = PRG-ROM 256k block select (just like on SUROM)

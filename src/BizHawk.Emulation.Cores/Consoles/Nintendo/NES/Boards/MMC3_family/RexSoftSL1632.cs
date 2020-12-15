@@ -7,10 +7,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	internal sealed class RexSoftSL1632 : MMC3Board_Base
 	{
 		// state
-		byte exmode;
-		int[] exprg = new int[4];
-		int[] exchr = new int[8];
-		byte exnmt;
+		private byte exmode;
+		private int[] exprg = new int[4];
+		private int[] exchr = new int[8];
+		private byte exnmt;
 
 		public override bool Configure(EDetectionOrigin origin)
 		{
@@ -51,7 +51,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		void SinkMirror(bool flip)
+		private void SinkMirror(bool flip)
 		{
 			if (flip)
 				SetMirrorType(exnmt.Bit(0) ? EMirrorType.Vertical : EMirrorType.Horizontal);
@@ -59,7 +59,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				SetMirrorType(!exnmt.Bit(0) ? EMirrorType.Vertical : EMirrorType.Horizontal);
 		}
 
-		static readonly byte[] modes = { 5, 5, 3, 1 };
+		private static readonly byte[] modes = { 5, 5, 3, 1 };
 		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)

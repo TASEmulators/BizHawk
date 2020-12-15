@@ -15,26 +15,26 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		public byte[] Registers = { 0x06, 0x80, 0xFF, 0xFF, 0xFF, 0xFF, 0xFB, 0xF0, 0x00, 0x00, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x00 };
 		public byte StatusByte;
 
-		const int Command_VramRead = 0x00;
-		const int Command_VramWrite = 0x40;
-		const int Command_RegisterWrite = 0x80;
-		const int Command_CramWrite = 0xC0;
+		private const int Command_VramRead = 0x00;
+		private const int Command_VramWrite = 0x40;
+		private const int Command_RegisterWrite = 0x80;
+		private const int Command_CramWrite = 0xC0;
 
-		bool VdpWaitingForLatchByte = true;
-		byte VdpLatch;
-		byte VdpBuffer;
-		ushort VdpAddress;
-		byte VdpCommand;
-		int TmsMode = 4;
+		private bool VdpWaitingForLatchByte = true;
+		private byte VdpLatch;
+		private byte VdpBuffer;
+		private ushort VdpAddress;
+		private byte VdpCommand;
+		private int TmsMode = 4;
 
-		bool VIntPending;
-		bool HIntPending;
-		int lineIntLinesRemaining;
+		private bool VIntPending;
+		private bool HIntPending;
+		private int lineIntLinesRemaining;
 
-		readonly SMS Sms;
-		readonly VdpMode mode;
+		private readonly SMS Sms;
+		private readonly VdpMode mode;
 		public DisplayType DisplayType = DisplayType.NTSC;
-		readonly Z80A Cpu;
+		private readonly Z80A Cpu;
 
 		public bool SpriteLimit;
 		public int IPeriod = 228;
@@ -64,22 +64,22 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		public int SpriteTileBase => (Registers[6] & 4) > 0 ? 256 : 0;
 		public byte BackdropColor => (byte)(16 + (Registers[7] & 15));
 
-		int NameTableBase;
-		int ColorTableBase;
-		int PatternGeneratorBase;
-		int SpritePatternGeneratorBase;
-		int TmsPatternNameTableBase;
-		int TmsSpriteAttributeBase;
+		private int NameTableBase;
+		private int ColorTableBase;
+		private int PatternGeneratorBase;
+		private int SpritePatternGeneratorBase;
+		private int TmsPatternNameTableBase;
+		private int TmsSpriteAttributeBase;
 
 		// preprocessed state assist stuff.
 		public int[] Palette = new int[32];
 		public byte[] PatternBuffer = new byte[0x8000];
 
-		readonly byte[] ScanlinePriorityBuffer = new byte[256];
-		readonly byte[] SpriteCollisionBuffer = new byte[256];
+		private readonly byte[] ScanlinePriorityBuffer = new byte[256];
+		private readonly byte[] SpriteCollisionBuffer = new byte[256];
 
-		static readonly byte[] SMSPalXlatTable = { 0, 85, 170, 255 };
-		static readonly byte[] GGPalXlatTable = { 0, 17, 34, 51, 68, 85, 102, 119, 136, 153, 170, 187, 204, 221, 238, 255 };
+		private static readonly byte[] SMSPalXlatTable = { 0, 85, 170, 255 };
+		private static readonly byte[] GGPalXlatTable = { 0, 17, 34, 51, 68, 85, 102, 119, 136, 153, 170, 187, 204, 221, 238, 255 };
 
 		public VDP(SMS sms, Z80A cpu, VdpMode mode, DisplayType displayType)
 		{
@@ -223,7 +223,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			return (1024 * (Registers[2] & 0x0C)) + 0x0700;
 		}
 
-		void CheckVideoMode()
+		private void CheckVideoMode()
 		{
 			if (Mode4Bit == false) // check old TMS modes
 			{
@@ -278,7 +278,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			}
 		}
 
-		void WriteRegister(int reg, byte data)
+		private void WriteRegister(int reg, byte data)
 		{
 			Registers[reg] = data;
 
@@ -315,9 +315,9 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		}
 
-		static readonly byte[] pow2 = { 1, 2, 4, 8, 16, 32, 64, 128 };
+		private static readonly byte[] pow2 = { 1, 2, 4, 8, 16, 32, 64, 128 };
 
-		void UpdatePatternBuffer(ushort address, byte value)
+		private void UpdatePatternBuffer(ushort address, byte value)
 		{
 			// writing one byte affects 8 pixels due to stupid planar storage.
 			for (int i = 0; i < 8; i++)

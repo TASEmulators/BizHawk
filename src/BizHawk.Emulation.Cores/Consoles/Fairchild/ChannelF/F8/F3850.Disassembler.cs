@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 	/// </summary>
 	public sealed partial class F3850 : IDisassemblable
 	{
-		static string Result(string format, Func<ushort, byte> read, ref ushort addr)
+		private static string Result(string format, Func<ushort, byte> read, ref ushort addr)
 		{
 			//d immediately succeeds the opcode
 			//n immediate succeeds the opcode and the displacement (if present)
@@ -35,7 +35,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		}
 
 
-		static readonly string[] mnemonics =
+		private static readonly string[] mnemonics =
 		{
 			"LR A, KU",			// 0x00
 			"LR A, KL",			// 0x01

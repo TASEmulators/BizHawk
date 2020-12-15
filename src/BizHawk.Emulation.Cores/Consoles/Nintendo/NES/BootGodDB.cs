@@ -13,13 +13,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// <summary>
 		/// blocks until the DB is done loading
 		/// </summary>
-		static EventWaitHandle acquire;
+		private static EventWaitHandle acquire;
 
-		readonly bool validate = true;
+		private readonly bool validate = true;
 
 		private readonly Bag<string, CartInfo> _sha1Table = new Bag<string, CartInfo>();
 
-		static BootGodDb instance;
+		private static BootGodDb instance;
 
 		public static void Initialize(string basePath)
 		{

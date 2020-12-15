@@ -163,9 +163,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		private bool _disposed = false;
 
-		LibGPGX.load_archive_cb LoadCallback;
+		private LibGPGX.load_archive_cb LoadCallback;
 
-		readonly LibGPGX.InputData input = new LibGPGX.InputData();
+		private readonly LibGPGX.InputData input = new LibGPGX.InputData();
 
 		public enum ControlType
 		{
@@ -186,7 +186,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		/// <param name="buffer">buffer to load file to</param>
 		/// <param name="maxsize">maximum length buffer can hold</param>
 		/// <returns>actual size loaded, or 0 on failure</returns>
-		int load_archive(string filename, IntPtr buffer, int maxsize)
+		private int load_archive(string filename, IntPtr buffer, int maxsize)
 		{
 			byte[] srcdata = null;
 
@@ -280,7 +280,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		private CoreComm CoreComm { get; }
 
-		void CDRead(int lba, IntPtr dest, bool audio)
+		private void CDRead(int lba, IntPtr dest, bool audio)
 		{
 			if ((uint)_discIndex < _cds.Length)
 			{
@@ -309,7 +309,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			}
 		}
 
-		readonly LibGPGX.cd_read_cb cd_callback_handle;
+		private readonly LibGPGX.cd_read_cb cd_callback_handle;
 
 		public static LibGPGX.CDData GetCDDataStruct(Disc cd)
 		{
@@ -358,9 +358,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		/// <summary>
 		/// size of native input struct
 		/// </summary>
-		int inputsize;
+		private int inputsize;
 
-		GPGXControlConverter ControlConverter;
+		private GPGXControlConverter ControlConverter;
 
 		private void SetControllerDefinition()
 		{

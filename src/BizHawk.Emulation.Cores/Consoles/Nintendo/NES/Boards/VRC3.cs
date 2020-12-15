@@ -8,15 +8,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	internal sealed class VRC3 : NesBoardBase
 	{
 		//configuration
-		int prg_bank_mask_16k;
+		private int prg_bank_mask_16k;
 
 		//state
-		int[] prg_banks_16k = new int[2];
-		bool irq_mode;
-		bool irq_enabled, irq_pending, irq_autoen;
-		ushort irq_reload;
-		ushort irq_counter;
-		int irq_cycles;
+		private int[] prg_banks_16k = new int[2];
+		private bool irq_mode;
+		private bool irq_enabled, irq_pending, irq_autoen;
+		private ushort irq_reload;
+		private ushort irq_counter;
+		private int irq_cycles;
 
 		public override void SyncState(Serializer ser)
 		{
@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			SyncIRQ();
 		}
 
-		void SyncIRQ()
+		private void SyncIRQ()
 		{
 			IrqSignal = (irq_pending && irq_enabled);
 		}
@@ -67,7 +67,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return Rom[addr];
 		}
 
-		void WriteIrqReload(int bit, byte value)
+		private void WriteIrqReload(int bit, byte value)
 		{
 			int mask = 0xF << bit;
 			irq_reload = (ushort)((irq_reload & ~mask) | (value << bit));

@@ -4,10 +4,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	internal sealed class Mapper043 : NesBoardBase
 	{
-		int prg = 0;
-		int irqcnt = 0;
-		bool irqenable = false;
-		bool swap;
+		private int prg = 0;
+		private int irqcnt = 0;
+		private bool irqenable = false;
+		private bool swap;
 
 
 		private static readonly int[] lut = { 4, 3, 5, 3, 6, 3, 7, 3 };

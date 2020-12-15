@@ -44,7 +44,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			_cdl[type][cdladdr] |= (byte)flags;
 		}
 
-		void CDLCpuCallback(ushort addr, LR35902.eCDLogMemFlags flags)
+		private void CDLCpuCallback(ushort addr, LR35902.eCDLogMemFlags flags)
 		{
 			if (addr < 0x8000)
 			{

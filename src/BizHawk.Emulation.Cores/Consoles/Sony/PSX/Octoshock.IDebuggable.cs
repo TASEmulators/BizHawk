@@ -47,7 +47,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			return ret;
 		}
 
-		static readonly Dictionary<string, int> CpuRegisterIndices = new Dictionary<string, int>() {
+		private static readonly Dictionary<string, int> CpuRegisterIndices = new Dictionary<string, int>() {
 			{ "r1",   1 }, { "r2",   2 }, { "r3",   3 }, { "r4",   4 }, { "r5",   5 }, { "r6",   6 }, { "r7",   7 },
 			{ "r8",   8 }, { "r9",   9 }, { "r10", 10 }, { "r11", 11 }, { "r12", 12 }, { "r13", 13 }, { "r14", 14 }, { "r15", 15 },
 			{ "r16", 16 }, { "r17", 17 }, { "r18", 18 }, { "r19", 19 }, { "r20", 20 }, { "r21", 21 }, { "r22", 22 }, { "r23", 23 },
@@ -88,9 +88,9 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		[FeatureNotImplemented]
 		public long TotalExecutedCycles => throw new NotImplementedException();
 
-		OctoshockDll.ShockCallback_Mem mem_cb;
+		private OctoshockDll.ShockCallback_Mem mem_cb;
 
-		void ShockMemCallback(uint address, OctoshockDll.eShockMemCb type, uint size, uint value)
+		private void ShockMemCallback(uint address, OctoshockDll.eShockMemCb type, uint size, uint value)
 		{
 			MemoryCallbackFlags flags = 0;
 			switch (type)
@@ -109,13 +109,13 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			MemoryCallbacks.CallMemoryCallbacks(address, value, (uint)flags, "System Bus");
 		}
 
-		void InitMemCallbacks()
+		private void InitMemCallbacks()
 		{
 			mem_cb = new OctoshockDll.ShockCallback_Mem(ShockMemCallback);
 			_memoryCallbacks.ActiveChanged += RefreshMemCallbacks;
 		}
 
-		void RefreshMemCallbacks()
+		private void RefreshMemCallbacks()
 		{
 			OctoshockDll.eShockMemCb mask = OctoshockDll.eShockMemCb.None;
 			if (MemoryCallbacks.HasReads) mask |= OctoshockDll.eShockMemCb.Read;
@@ -124,7 +124,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			OctoshockDll.shock_SetMemCb(psx, mem_cb, mask);
 		}
 
-		unsafe void SetMemoryDomains()
+		private unsafe void SetMemoryDomains()
 		{
 			var mmd = new List<MemoryDomain>();
 

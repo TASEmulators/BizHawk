@@ -436,7 +436,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			}
 		}
 
-		GambattePrinter printer;
+		private GambattePrinter printer;
 
 		/// <summary>
 		/// set up Printer callback
@@ -462,8 +462,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			}
 		}
 
-		LibGambatte.ScanlineCallback scanlinecb;
-		ScanlineCallback endofframecallback;
+		private LibGambatte.ScanlineCallback scanlinecb;
+		private ScanlineCallback endofframecallback;
 
 		/// <summary>
 		/// update gambatte core's internal colors

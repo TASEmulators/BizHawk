@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	internal sealed class NES_QJ : MMC3Board_Base
 	{
 		//state
-		int block;
+		private int block;
 
 		public override void SyncState(Serializer ser)
 		{

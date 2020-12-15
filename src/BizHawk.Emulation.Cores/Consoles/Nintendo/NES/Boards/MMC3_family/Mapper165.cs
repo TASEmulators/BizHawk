@@ -7,9 +7,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	// seem to be some graphical glitches...
 	internal sealed class Mapper165 : MMC3Board_Base
 	{
-		bool latch0 = false;
-		bool latch1 = false;
-		int real_chr_mask;
+		private bool latch0 = false;
+		private bool latch1 = false;
+		private int real_chr_mask;
 
 		public override bool Configure(EDetectionOrigin origin)
 		{

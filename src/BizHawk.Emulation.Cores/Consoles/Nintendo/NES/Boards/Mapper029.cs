@@ -3,9 +3,9 @@
 	// what is this?
 	internal sealed class Mapper029 : NesBoardBase
 	{
-		int prg;
-		int chr;
-		int prg_bank_mask_16k;
+		private int prg;
+		private int chr;
+		private int prg_bank_mask_16k;
 
 		public override bool Configure(EDetectionOrigin origin)
 		{

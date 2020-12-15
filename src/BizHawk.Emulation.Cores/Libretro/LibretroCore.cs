@@ -62,7 +62,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 			ControllerDefinition = CreateControllerDefinition(_SyncSettings);
 		}
 
-		bool disposed = false;
+		private bool disposed = false;
 		public void Dispose()
 		{
 			if (disposed) return;
@@ -105,7 +105,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 			return ret;
 		}
 
-		void LoadHandler()
+		private void LoadHandler()
 		{
 			//this stuff can only happen after the game is loaded
 
@@ -157,9 +157,9 @@ namespace BizHawk.Emulation.Cores.Libretro
 			return true;
 		}
 
-		GCHandle vidBufferHandle;
-		int[] vidBuffer;
-		int vidWidth = -1, vidHeight = -1;
+		private GCHandle vidBufferHandle;
+		private int[] vidBuffer;
+		private int vidWidth = -1, vidHeight = -1;
 
 		private void SetVideoBuffer(int width, int height)
 		{
@@ -209,14 +209,14 @@ namespace BizHawk.Emulation.Cores.Libretro
 		public int VsyncNumerator { get; private set; }
 		public int VsyncDenominator { get; private set; }
 
-		SpeexResampler resampler;
+		private SpeexResampler resampler;
 
-		short[] sampbuff = new short[0];
+		private short[] sampbuff = new short[0];
 
 		// debug
-		int nsamprecv = 0;
+		private int nsamprecv = 0;
 
-		void SetupResampler(double fps, double sps)
+		private void SetupResampler(double fps, double sps)
 		{
 			Console.WriteLine("FPS {0} SPS {1}", fps, sps);
 
@@ -281,7 +281,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 
 		public ControllerDefinition ControllerDefinition { get; }
 
-		int timeFrameCounter;
+		private int timeFrameCounter;
 		public int Frame
 		{
 			get => timeFrameCounter;
@@ -294,7 +294,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 
 		//TODO - terrible things will happen if this changes at runtime
 
-		byte[] saverambuff = new byte[0];
+		private byte[] saverambuff = new byte[0];
 
 		public byte[] CloneSaveRam()
 		{

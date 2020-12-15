@@ -4,7 +4,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	internal sealed class NROM : NesBoardBase
 	{
 		//configuration
-		int prg_byte_mask;
+		private int prg_byte_mask;
 
 		//state
 		//(none)

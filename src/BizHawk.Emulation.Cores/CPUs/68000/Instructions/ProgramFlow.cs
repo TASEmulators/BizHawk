@@ -4,7 +4,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 {
 	partial class MC68000
 	{
-		bool TestCondition(int condition)
+		private bool TestCondition(int condition)
 		{
 			switch (condition)
 			{
@@ -29,7 +29,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			}
 		}
 
-		string DisassembleCondition(int condition)
+		private string DisassembleCondition(int condition)
 		{
 			switch (condition)
 			{
@@ -53,7 +53,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			}
 		}
 
-		void Bcc() // Branch on condition
+		private void Bcc() // Branch on condition
 		{
 			sbyte displacement8 = (sbyte)op;
 			int cond = (op >> 8) & 0x0F;
@@ -85,7 +85,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			}
 		}
 
-		void Bcc_Disasm(DisassemblyInfo info)
+		private void Bcc_Disasm(DisassemblyInfo info)
 		{
 			int pc = info.PC + 2;
 			sbyte displacement8 = (sbyte)op;
@@ -104,7 +104,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			info.Length = pc - info.PC;
 		}
 
-		void BRA()
+		private void BRA()
 		{
 			sbyte displacement8 = (sbyte)op;
 
@@ -115,7 +115,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			PendingCycles -= 10;
 		}
 
-		void BRA_Disasm(DisassemblyInfo info)
+		private void BRA_Disasm(DisassemblyInfo info)
 		{
 			int pc = info.PC + 2;
 			info.Mnemonic = "bra";
@@ -131,7 +131,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			info.Length = pc - info.PC;
 		}
 
-		void BSR()
+		private void BSR()
 		{
 			sbyte displacement8 = (sbyte)op;
 
@@ -151,7 +151,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			PendingCycles -= 18;
 		}
 
-		void BSR_Disasm(DisassemblyInfo info)
+		private void BSR_Disasm(DisassemblyInfo info)
 		{
 			int pc = info.PC + 2;
 			info.Mnemonic = "bsr";
@@ -167,7 +167,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			info.Length = pc - info.PC;
 		}
 
-		void DBcc()
+		private void DBcc()
 		{
 			if (TestCondition((op >> 8) & 0x0F) == true)
 			{
@@ -192,7 +192,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			}
 		}
 
-		void DBcc_Disasm(DisassemblyInfo info)
+		private void DBcc_Disasm(DisassemblyInfo info)
 		{
 			int cond = (op >> 8) & 0x0F;
 			if (cond == 1)
@@ -205,20 +205,20 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			info.Length = 4;
 		}
 
-		void RTS()
+		private void RTS()
 		{
 			PC = ReadLong(A[7].s32);
 			A[7].s32 += 4;
 			PendingCycles -= 16;
 		}
 
-		void RTS_Disasm(DisassemblyInfo info)
+		private void RTS_Disasm(DisassemblyInfo info)
 		{
 			info.Mnemonic = "rts";
 			info.Args = "";
 		}
 
-		void RTR()
+		private void RTR()
 		{
 			ushort sr = (ushort)ReadWord(A[7].s32);
 			A[7].s32 += 2;
@@ -233,13 +233,13 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			PendingCycles -= 20;
 		}
 
-		void RTR_Disasm(DisassemblyInfo info)
+		private void RTR_Disasm(DisassemblyInfo info)
 		{
 			info.Mnemonic = "rtr";
 			info.Args = "";
 		}
 
-		void RTE()
+		private void RTE()
 		{
 			short newSR = ReadWord(A[7].s32);
 			A[7].s32 += 2;
@@ -249,13 +249,13 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			PendingCycles -= 20;
 		}
 
-		void RTE_Disasm(DisassemblyInfo info)
+		private void RTE_Disasm(DisassemblyInfo info)
 		{
 			info.Mnemonic = "rte";
 			info.Args = "";
 		}
 
-		void TST()
+		private void TST()
 		{
 			int size = (op >> 6) & 3;
 			int mode = (op >> 3) & 7;
@@ -273,7 +273,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			Z = (value == 0);
 		}
 
-		void TST_Disasm(DisassemblyInfo info)
+		private void TST_Disasm(DisassemblyInfo info)
 		{
 			int pc = info.PC + 2;
 			int size = (op >> 6) & 3;
@@ -289,7 +289,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			info.Length = pc - info.PC;
 		}
 
-		void BTSTi()
+		private void BTSTi()
 		{
 			int bit = ReadWord(PC); PC += 2;
 			int mode = (op >> 3) & 7;
@@ -311,7 +311,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			}
 		}
 
-		void BTSTi_Disasm(DisassemblyInfo info)
+		private void BTSTi_Disasm(DisassemblyInfo info)
 		{
 			int pc = info.PC + 2;
 			int bit = ReadWord(pc); pc += 2;
@@ -323,7 +323,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			info.Length = pc - info.PC;
 		}
 
-		void BTSTr()
+		private void BTSTr()
 		{
 			int dReg = (op >> 9) & 7;
 			int mode = (op >> 3) & 7;
@@ -346,7 +346,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			}
 		}
 
-		void BTSTr_Disasm(DisassemblyInfo info)
+		private void BTSTr_Disasm(DisassemblyInfo info)
 		{
 			int pc = info.PC + 2;
 			int dReg = (op >> 9) & 7;
@@ -358,7 +358,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			info.Length = pc - info.PC;
 		}
 
-		void BCHGi()
+		private void BCHGi()
 		{
 			int bit = ReadWord(PC); PC += 2;
 			int mode = (op >> 3) & 7;
@@ -384,7 +384,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			}
 		}
 
-		void BCHGi_Disasm(DisassemblyInfo info)
+		private void BCHGi_Disasm(DisassemblyInfo info)
 		{
 			int pc = info.PC + 2;
 			int bit = ReadWord(pc); pc += 2;
@@ -396,7 +396,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			info.Length = pc - info.PC;
 		}
 
-		void BCHGr()
+		private void BCHGr()
 		{
 			int dReg = (op >> 9) & 7;
 			int mode = (op >> 3) & 7;
@@ -423,7 +423,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			}
 		}
 
-		void BCHGr_Disasm(DisassemblyInfo info)
+		private void BCHGr_Disasm(DisassemblyInfo info)
 		{
 			int pc = info.PC + 2;
 			int dReg = (op >> 9) & 7;
@@ -435,7 +435,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			info.Length = pc - info.PC;
 		}
 
-		void BCLRi()
+		private void BCLRi()
 		{
 			int bit = ReadWord(PC); PC += 2;
 			int mode = (op >> 3) & 7;
@@ -461,7 +461,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			}
 		}
 
-		void BCLRi_Disasm(DisassemblyInfo info)
+		private void BCLRi_Disasm(DisassemblyInfo info)
 		{
 			int pc = info.PC + 2;
 			int bit = ReadWord(pc); pc += 2;
@@ -473,7 +473,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			info.Length = pc - info.PC;
 		}
 
-		void BCLRr()
+		private void BCLRr()
 		{
 			int dReg = (op >> 9) & 7;
 			int mode = (op >> 3) & 7;
@@ -500,7 +500,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			}
 		}
 
-		void BCLRr_Disasm(DisassemblyInfo info)
+		private void BCLRr_Disasm(DisassemblyInfo info)
 		{
 			int pc = info.PC + 2;
 			int dReg = (op >> 9) & 7;
@@ -512,7 +512,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			info.Length = pc - info.PC;
 		}
 
-		void BSETi()
+		private void BSETi()
 		{
 			int bit = ReadWord(PC); PC += 2;
 			int mode = (op >> 3) & 7;
@@ -538,7 +538,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			}
 		}
 
-		void BSETi_Disasm(DisassemblyInfo info)
+		private void BSETi_Disasm(DisassemblyInfo info)
 		{
 			int pc = info.PC + 2;
 			int bit = ReadWord(pc); pc += 2;
@@ -550,7 +550,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			info.Length = pc - info.PC;
 		}
 
-		void BSETr()
+		private void BSETr()
 		{
 			int dReg = (op >> 9) & 7;
 			int mode = (op >> 3) & 7;
@@ -577,7 +577,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			}
 		}
 
-		void BSETr_Disasm(DisassemblyInfo info)
+		private void BSETr_Disasm(DisassemblyInfo info)
 		{
 			int pc = info.PC + 2;
 			int dReg = (op >> 9) & 7;
@@ -589,7 +589,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			info.Length = pc - info.PC;
 		}
 
-		void JMP()
+		private void JMP()
 		{
 			int mode = (op >> 3) & 7;
 			int reg = (op >> 0) & 7;
@@ -612,7 +612,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			}
 		}
 
-		void JMP_Disasm(DisassemblyInfo info)
+		private void JMP_Disasm(DisassemblyInfo info)
 		{
 			int pc = info.PC + 2;
 			int mode = (op >> 3) & 7;
@@ -622,7 +622,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			info.Length = pc - info.PC;
 		}
 
-		void JSR()
+		private void JSR()
 		{
 			int mode = (op >> 3) & 7;
 			int reg = (op >> 0) & 7;
@@ -649,7 +649,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			}
 		}
 
-		void JSR_Disasm(DisassemblyInfo info)
+		private void JSR_Disasm(DisassemblyInfo info)
 		{
 			int pc = info.PC + 2;
 			int mode = (op >> 3) & 7;
@@ -659,7 +659,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			info.Length = pc - info.PC;
 		}
 
-		void LINK()
+		private void LINK()
 		{
 			int reg = op & 7;
 			A[7].s32 -= 4;
@@ -670,7 +670,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			PendingCycles -= 16;
 		}
 
-		void LINK_Disasm(DisassemblyInfo info)
+		private void LINK_Disasm(DisassemblyInfo info)
 		{
 			int pc = info.PC + 2;
 			int reg = op & 7;
@@ -679,7 +679,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			info.Length = pc - info.PC;
 		}
 
-		void UNLK()
+		private void UNLK()
 		{
 			int reg = op & 7;
 			A[7].s32 = A[reg].s32;
@@ -688,7 +688,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			PendingCycles -= 12;
 		}
 
-		void UNLK_Disasm(DisassemblyInfo info)
+		private void UNLK_Disasm(DisassemblyInfo info)
 		{
 			int reg = op & 7;
 			info.Mnemonic = "unlk";
@@ -696,17 +696,17 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			info.Length = 2;
 		}
 
-		void NOP()
+		private void NOP()
 		{
 			PendingCycles -= 4;
 		}
 
-		void NOP_Disasm(DisassemblyInfo info)
+		private void NOP_Disasm(DisassemblyInfo info)
 		{
 			info.Mnemonic = "nop";
 		}
 
-		void Scc() // Set on condition
+		private void Scc() // Set on condition
 		{
 			int cond = (op >> 8) & 0x0F;
 			int mode = (op >> 3) & 7;
@@ -726,7 +726,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			}
 		}
 
-		void Scc_Disasm(DisassemblyInfo info)
+		private void Scc_Disasm(DisassemblyInfo info)
 		{
 			int pc = info.PC + 2;
 			int cond = (op >> 8) & 0x0F;

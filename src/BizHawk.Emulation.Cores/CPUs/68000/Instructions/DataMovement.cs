@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 {
 	partial class MC68000
 	{
-		void MOVE()
+		private void MOVE()
 		{
 			int size = ((op >> 12) & 0x03);
 			int dstMode = ((op >> 6) & 0x07);
@@ -41,7 +41,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			Z = (value == 0);
 		}
 
-		void MOVE_Disasm(DisassemblyInfo info)
+		private void MOVE_Disasm(DisassemblyInfo info)
 		{
 			int pc = info.PC + 2;
 			int size = ((op >> 12) & 0x03);
@@ -72,7 +72,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			info.Length = pc - info.PC;
 		}
 
-		void MOVEA()
+		private void MOVEA()
 		{
 			int size = ((op >> 12) & 0x03);
 			int dstReg = ((op >> 9) & 0x07);
@@ -131,7 +131,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			}
 		}
 
-		void MOVEA_Disasm(DisassemblyInfo info)
+		private void MOVEA_Disasm(DisassemblyInfo info)
 		{
 			int pc = info.PC + 2;
 			int size = ((op >> 12) & 0x03);
@@ -152,7 +152,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			info.Length = pc - info.PC;
 		}
 
-		void MOVEQ()
+		private void MOVEQ()
 		{
 			int value = (sbyte)op; // 8-bit data payload is sign-extended to 32-bits.
 			N = (value & 0x80) != 0;
@@ -163,13 +163,13 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			PendingCycles -= 4;
 		}
 
-		void MOVEQ_Disasm(DisassemblyInfo info)
+		private void MOVEQ_Disasm(DisassemblyInfo info)
 		{
 			info.Mnemonic = "moveq";
 			info.Args = $"#{(sbyte)op}, D{(op >> 9) & 7}";
 		}
 
-		void MOVEM0()
+		private void MOVEM0()
 		{
 			// Move register to memory
 			int size = (op >> 6) & 1;
@@ -302,7 +302,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			}
 		}
 
-		void MOVEM1()
+		private void MOVEM1()
 		{
 			// Move memory to register
 			int size = (op >> 6) & 1;
@@ -387,7 +387,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			}
 		}
 
-		static string DisassembleRegisterList0(uint registers)
+		private static string DisassembleRegisterList0(uint registers)
 		{
 			var str = new StringBuilder();
 			int count = 0;
@@ -442,7 +442,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			return str.ToString();
 		}
 
-		static string DisassembleRegisterList1(uint registers)
+		private static string DisassembleRegisterList1(uint registers)
 		{
 			var str = new StringBuilder();
 			int count = 0;
@@ -497,7 +497,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			return str.ToString();
 		}
 
-		void MOVEM0_Disasm(DisassemblyInfo info)
+		private void MOVEM0_Disasm(DisassemblyInfo info)
 		{
 			int pc = info.PC + 2;
 			int size = (op >> 6) & 1;
@@ -512,7 +512,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			info.Length = pc - info.PC;
 		}
 
-		void MOVEM1_Disasm(DisassemblyInfo info)
+		private void MOVEM1_Disasm(DisassemblyInfo info)
 		{
 			int pc = info.PC + 2;
 			int size = (op >> 6) & 1;
@@ -527,7 +527,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			info.Length = pc - info.PC;
 		}
 
-		void LEA()
+		private void LEA()
 		{
 			int mode = (op >> 3) & 7;
 			int sReg = (op >> 0) & 7;
@@ -551,7 +551,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			}
 		}
 
-		void LEA_Disasm(DisassemblyInfo info)
+		private void LEA_Disasm(DisassemblyInfo info)
 		{
 			int pc = info.PC + 2;
 			int mode = (op >> 3) & 7;
@@ -565,7 +565,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			info.Length = pc - info.PC;
 		}
 
-		void CLR()
+		private void CLR()
 		{
 			int size = (op >> 6) & 3;
 			int mode = (op >> 3) & 7;
@@ -582,7 +582,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			Z = true;
 		}
 
-		void CLR_Disasm(DisassemblyInfo info)
+		private void CLR_Disasm(DisassemblyInfo info)
 		{
 			int pc = info.PC + 2;
 			int size = (op >> 6) & 3;
@@ -598,7 +598,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			info.Length = pc - info.PC;
 		}
 
-		void EXT()
+		private void EXT()
 		{
 			int size = (op >> 6) & 1;
 			int reg = op & 7;
@@ -622,7 +622,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			PendingCycles -= 4;
 		}
 
-		void EXT_Disasm(DisassemblyInfo info)
+		private void EXT_Disasm(DisassemblyInfo info)
 		{
 			int size = (op >> 6) & 1;
 			int reg = op & 7;
@@ -634,7 +634,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			}
 		}
 
-		void PEA()
+		private void PEA()
 		{
 			int mode = (op >> 3) & 7;
 			int reg = (op >> 0) & 7;
@@ -660,7 +660,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			}
 		}
 
-		void PEA_Disasm(DisassemblyInfo info)
+		private void PEA_Disasm(DisassemblyInfo info)
 		{
 			int pc = info.PC + 2;
 			int mode = (op >> 3) & 7;

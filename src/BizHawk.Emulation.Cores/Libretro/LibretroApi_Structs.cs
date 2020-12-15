@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 			public bool need_fullpath;
 			public bool block_extract;
 #pragma warning disable CS0169
-			short _pad;
+			private short _pad;
 #pragma warning restore CS0169
 		}
 

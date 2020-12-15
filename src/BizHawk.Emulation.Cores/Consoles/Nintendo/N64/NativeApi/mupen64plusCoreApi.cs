@@ -15,18 +15,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		// Only left in because api needs to know the number of frames passed
 		// because of a bug
 		private readonly N64 bizhawkCore;
-		static mupen64plusApi AttachedCore = null;
+		private static mupen64plusApi AttachedCore = null;
 
-		bool disposed = false;
+		private bool disposed = false;
 
-		readonly Thread m64pEmulator;
+		private readonly Thread m64pEmulator;
 
-		readonly AutoResetEvent m64pEvent = new AutoResetEvent(false);
-		AutoResetEvent m64pContinueEvent = new AutoResetEvent(false);
-		readonly ManualResetEvent m64pStartupComplete = new ManualResetEvent(false);
+		private readonly AutoResetEvent m64pEvent = new AutoResetEvent(false);
+		private AutoResetEvent m64pContinueEvent = new AutoResetEvent(false);
+		private readonly ManualResetEvent m64pStartupComplete = new ManualResetEvent(false);
 
-		bool event_frameend = false;
-		bool event_breakpoint = false;
+		private bool event_frameend = false;
+		private bool event_breakpoint = false;
 
 		public enum m64p_error
 		{
@@ -181,15 +181,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		/// <param name="context2">Use ""</param>
 		/// <param name="dummy">Use IntPtr.Zero</param>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		delegate m64p_error CoreStartup(int APIVersion, string ConfigPath, string DataPath, string Context, DebugCallback DebugCallback, string context2, IntPtr dummy);
-		CoreStartup m64pCoreStartup;
+		private delegate m64p_error CoreStartup(int APIVersion, string ConfigPath, string DataPath, string Context, DebugCallback DebugCallback, string context2, IntPtr dummy);
+
+		private CoreStartup m64pCoreStartup;
 
 		/// <summary>
 		/// Cleans up the core
 		/// </summary>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		delegate m64p_error CoreShutdown();
-		CoreShutdown m64pCoreShutdown;
+		private delegate m64p_error CoreShutdown();
+
+		private CoreShutdown m64pCoreShutdown;
 
 		/// <summary>
 		/// Connects a plugin DLL to the core DLL
@@ -197,16 +199,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		/// <param name="PluginType">The type of plugin that is being connected</param>
 		/// <param name="PluginLibHandle">The DLL handle for the plugin</param>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		delegate m64p_error CoreAttachPlugin(m64p_plugin_type PluginType, IntPtr PluginLibHandle);
-		CoreAttachPlugin m64pCoreAttachPlugin;
+		private delegate m64p_error CoreAttachPlugin(m64p_plugin_type PluginType, IntPtr PluginLibHandle);
+
+		private CoreAttachPlugin m64pCoreAttachPlugin;
 
 		/// <summary>
 		/// Disconnects a plugin DLL from the core DLL
 		/// </summary>
 		/// <param name="PluginType">The type of plugin to be disconnected</param>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		delegate m64p_error CoreDetachPlugin(m64p_plugin_type PluginType);
-		CoreDetachPlugin m64pCoreDetachPlugin;
+		private delegate m64p_error CoreDetachPlugin(m64p_plugin_type PluginType);
+
+		private CoreDetachPlugin m64pCoreDetachPlugin;
 
 		/// <summary>
 		/// Opens a section in the global config system
@@ -214,8 +218,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		/// <param name="SectionName">The name of the section to open</param>
 		/// <param name="ConfigSectionHandle">A pointer to the pointer to use as the section handle</param>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		delegate m64p_error ConfigOpenSection(string SectionName, ref IntPtr ConfigSectionHandle);
-		ConfigOpenSection m64pConfigOpenSection;
+		private delegate m64p_error ConfigOpenSection(string SectionName, ref IntPtr ConfigSectionHandle);
+
+		private ConfigOpenSection m64pConfigOpenSection;
 
 		/// <summary>
 		/// Sets a parameter in the global config system
@@ -225,8 +230,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		/// <param name="ParamType">The type of the parameter</param>
 		/// <param name="ParamValue">A pointer to the value to use for the parameter (must be an int right now)</param>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		delegate m64p_error ConfigSetParameter(IntPtr ConfigSectionHandle, string ParamName, m64p_type ParamType, ref int ParamValue);
-		ConfigSetParameter m64pConfigSetParameter;
+		private delegate m64p_error ConfigSetParameter(IntPtr ConfigSectionHandle, string ParamName, m64p_type ParamType, ref int ParamValue);
+
+		private ConfigSetParameter m64pConfigSetParameter;
 
 		/// <summary>
 		/// Sets a parameter in the global config system
@@ -236,24 +242,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		/// <param name="ParamType">The type of the parameter</param>
 		/// <param name="ParamValue">A pointer to the value to use for the parameter (must be a string)</param>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		delegate m64p_error ConfigSetParameterStr(IntPtr ConfigSectionHandle, string ParamName, m64p_type ParamType, StringBuilder ParamValue);
-		ConfigSetParameterStr m64pConfigSetParameterStr;
+		private delegate m64p_error ConfigSetParameterStr(IntPtr ConfigSectionHandle, string ParamName, m64p_type ParamType, StringBuilder ParamValue);
+
+		private ConfigSetParameterStr m64pConfigSetParameterStr;
 
 		/// <summary>
 		/// Saves the mupen64plus state to the provided buffer
 		/// </summary>
 		/// <param name="buffer">A byte array to use to save the state. Must be at least 16788288 + 1024 bytes</param>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		delegate int savestates_save_bkm(byte[] buffer);
-		savestates_save_bkm m64pCoreSaveState;
+		private delegate int savestates_save_bkm(byte[] buffer);
+
+		private savestates_save_bkm m64pCoreSaveState;
 
 		/// <summary>
 		/// Loads the mupen64plus state from the provided buffer
 		/// </summary>
 		/// <param name="buffer">A byte array filled with the state to load. Must be at least 16788288 + 1024 bytes</param>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		delegate int savestates_load_bkm(byte[] buffer);
-		savestates_load_bkm m64pCoreLoadState;
+		private delegate int savestates_load_bkm(byte[] buffer);
+
+		private savestates_load_bkm m64pCoreLoadState;
 
 		/// <summary>
 		/// Gets a pointer to a section of the mupen64plus core
@@ -261,8 +270,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		/// <param name="mem_ptr_type">The section to get a pointer for</param>
 		/// <returns>A pointer to the section requested</returns>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		delegate IntPtr DebugMemGetPointer(N64_MEMORY mem_ptr_type);
-		DebugMemGetPointer m64pDebugMemGetPointer;
+		private delegate IntPtr DebugMemGetPointer(N64_MEMORY mem_ptr_type);
+
+		private DebugMemGetPointer m64pDebugMemGetPointer;
 
 		/// <summary>
 		/// Gets the size of the given memory area
@@ -270,51 +280,61 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		/// <param name="mem_ptr_type">The section to get the size of</param>
 		/// <returns>The size of the section requested</returns>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		delegate int MemGetSize(N64_MEMORY mem_ptr_type);
-		MemGetSize m64pMemGetSize;
+		private delegate int MemGetSize(N64_MEMORY mem_ptr_type);
+
+		private MemGetSize m64pMemGetSize;
 
 		/// <summary>
 		/// Initializes the saveram (eeprom and 4 mempacks)
 		/// </summary>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		delegate IntPtr init_saveram();
-		init_saveram m64pinit_saveram;
+		private delegate IntPtr init_saveram();
+
+		private init_saveram m64pinit_saveram;
 
 		/// <summary>
 		/// Pulls out the saveram for bizhawk to save
 		/// </summary>
 		/// <param name="dest">A byte array to save the saveram into</param>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		delegate IntPtr save_saveram(byte[] dest);
-		save_saveram m64psave_saveram;
+		private delegate IntPtr save_saveram(byte[] dest);
+
+		private save_saveram m64psave_saveram;
 
 		/// <summary>
 		/// Restores the saveram from bizhawk
 		/// </summary>
 		/// <param name="src">A byte array containing the saveram to restore</param>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		delegate IntPtr load_saveram(byte[] src);
-		load_saveram m64pload_saveram;
+		private delegate IntPtr load_saveram(byte[] src);
+
+		private load_saveram m64pload_saveram;
 
 		// The last parameter of CoreDoCommand is actually a void pointer, so instead we'll make a few delegates for the versions we want to use
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		delegate m64p_error CoreDoCommandByteArray(m64p_command Command, int ParamInt, byte[] ParamPtr);
-		CoreDoCommandByteArray m64pCoreDoCommandByteArray;
+		private delegate m64p_error CoreDoCommandByteArray(m64p_command Command, int ParamInt, byte[] ParamPtr);
+
+		private CoreDoCommandByteArray m64pCoreDoCommandByteArray;
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		delegate m64p_error CoreDoCommandPtr(m64p_command Command, int ParamInt, IntPtr ParamPtr);
-		CoreDoCommandPtr m64pCoreDoCommandPtr;
+		private delegate m64p_error CoreDoCommandPtr(m64p_command Command, int ParamInt, IntPtr ParamPtr);
+
+		private CoreDoCommandPtr m64pCoreDoCommandPtr;
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		delegate m64p_error CoreDoCommandRefInt(m64p_command Command, int ParamInt, ref int ParamPtr);
-		CoreDoCommandRefInt m64pCoreDoCommandRefInt;
+		private delegate m64p_error CoreDoCommandRefInt(m64p_command Command, int ParamInt, ref int ParamPtr);
+
+		private CoreDoCommandRefInt m64pCoreDoCommandRefInt;
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		delegate m64p_error CoreDoCommandFrameCallback(m64p_command Command, int ParamInt, FrameCallback ParamPtr);
-		CoreDoCommandFrameCallback m64pCoreDoCommandFrameCallback;
+		private delegate m64p_error CoreDoCommandFrameCallback(m64p_command Command, int ParamInt, FrameCallback ParamPtr);
+
+		private CoreDoCommandFrameCallback m64pCoreDoCommandFrameCallback;
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		delegate m64p_error CoreDoCommandVICallback(m64p_command Command, int ParamInt, VICallback ParamPtr);
-		CoreDoCommandVICallback m64pCoreDoCommandVICallback;
+		private delegate m64p_error CoreDoCommandVICallback(m64p_command Command, int ParamInt, VICallback ParamPtr);
+
+		private CoreDoCommandVICallback m64pCoreDoCommandVICallback;
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		delegate m64p_error CoreDoCommandRenderCallback(m64p_command Command, int ParamInt, RenderCallback ParamPtr);
-		CoreDoCommandRenderCallback m64pCoreDoCommandRenderCallback;
+		private delegate m64p_error CoreDoCommandRenderCallback(m64p_command Command, int ParamInt, RenderCallback ParamPtr);
+
+		private CoreDoCommandRenderCallback m64pCoreDoCommandRenderCallback;
 
 		//WARNING - RETURNS A STATIC BUFFER
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
@@ -366,21 +386,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		/// </summary>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate void FrameCallback();
-		FrameCallback m64pFrameCallback;
+
+		private FrameCallback m64pFrameCallback;
 
 		/// <summary>
 		/// This will be called every time a VI occurs
 		/// </summary>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate void VICallback();
-		VICallback m64pVICallback;
+
+		private VICallback m64pVICallback;
 
 		/// <summary>
 		/// This will be called every time before the screen is drawn
 		/// </summary>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate void RenderCallback();
-		RenderCallback m64pRenderCallback;
+
+		private RenderCallback m64pRenderCallback;
 
 		/// <summary>
 		/// This will be called after the emulator is setup and is ready to be used
@@ -399,28 +422,32 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		/// </summary>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate void SetTraceCallback(TraceCallback callback);
-		SetTraceCallback m64pSetTraceCallback;
+
+		private SetTraceCallback m64pSetTraceCallback;
 
 		/// <summary>
 		/// Gets the CPU registers
 		/// </summary>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate void GetRegisters(byte[] dest);
-		GetRegisters m64pGetRegisters;
+
+		private GetRegisters m64pGetRegisters;
 
 		/// <summary>
 		/// This will be called when the debugger is initialized
 		/// </summary>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate void DebugInitCallback();
-		DebugInitCallback m64pDebugInitCallback;
+
+		private DebugInitCallback m64pDebugInitCallback;
 
 		/// <summary>
 		/// This will be called when the debugger hits a breakpoint or executes one instruction in stepping mode
 		/// </summary>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate void DebugUpdateCallback(int bpt);
-		DebugUpdateCallback m64pDebugUpdateCallback;
+
+		private DebugUpdateCallback m64pDebugUpdateCallback;
 
 		/// <summary>
 		/// This will be called during each vertical interrupt
@@ -432,43 +459,49 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		///  Sets the debug callbacks
 		/// </summary>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		delegate m64p_error DebugSetCallbacks(DebugInitCallback initCallback, DebugUpdateCallback updateCallback, DebugVICallback viCallback);
-		DebugSetCallbacks m64pDebugSetCallbacks;
+		private delegate m64p_error DebugSetCallbacks(DebugInitCallback initCallback, DebugUpdateCallback updateCallback, DebugVICallback viCallback);
+
+		private DebugSetCallbacks m64pDebugSetCallbacks;
 
 		/// <summary>
 		/// This function searches through all current breakpoints in the debugger to find one that matches the given input parameters.
 		/// </summary>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		delegate int DebugBreakpointLookup(uint address, uint size, uint flags);
-		DebugBreakpointLookup m64pDebugBreakpointLookup;
+		private delegate int DebugBreakpointLookup(uint address, uint size, uint flags);
+
+		private DebugBreakpointLookup m64pDebugBreakpointLookup;
 
 		/// <summary>
 		/// This function is used to process common breakpoint commands, such as adding, removing, or searching the breakpoints
 		/// </summary>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		delegate int DebugBreakpointCommand(m64p_dbg_bkp_command command, uint index, ref m64p_breakpoint bkp);
-		DebugBreakpointCommand m64pDebugBreakpointCommand;
+		private delegate int DebugBreakpointCommand(m64p_dbg_bkp_command command, uint index, ref m64p_breakpoint bkp);
+
+		private DebugBreakpointCommand m64pDebugBreakpointCommand;
 
 		/// <summary>
 		/// Gets a debugger state variable
 		/// </summary>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		delegate int DebugGetState(m64p_dbg_state statenum);
-		DebugGetState m64pDebugGetState;
+		private delegate int DebugGetState(m64p_dbg_state statenum);
+
+		private DebugGetState m64pDebugGetState;
 
 		/// <summary>
 		/// Sets the runstate of the emulator
 		/// </summary>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		delegate m64p_error DebugSetRunState(m64p_dbg_runstate runstate);
-		DebugSetRunState m64pDebugSetRunState;
+		private delegate m64p_error DebugSetRunState(m64p_dbg_runstate runstate);
+
+		private DebugSetRunState m64pDebugSetRunState;
 
 		/// <summary>
 		/// Continues execution
 		/// </summary>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		delegate m64p_error DebugStep();
-		DebugStep m64pDebugStep;
+		private delegate m64p_error DebugStep();
+
+		private DebugStep m64pDebugStep;
 
 		private readonly DynamicLibraryImportResolver Library = new DynamicLibraryImportResolver(OSTailoredCode.IsUnixHost ? "libmupen64plus.so.2" : "mupen64plus.dll");
 
@@ -542,7 +575,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 			AttachedCore = this;
 		}
 
-		volatile bool emulator_running = false;
+		private volatile bool emulator_running = false;
 
 		public bool IsCrashed => !emulator_running;
 
@@ -577,7 +610,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		/// <summary>
 		/// Look up function pointers in the dlls
 		/// </summary>
-		void connectFunctionPointers()
+		private void connectFunctionPointers()
 		{
 			T GetCoreDelegate<T>(string proc) where T : Delegate => (T) Marshal.GetDelegateForFunctionPointer(Library.GetProcAddrOrThrow(proc), typeof(T));
 
@@ -835,7 +868,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 			m64pCoreLoadState(buffer);
 		}
 
-		byte[] saveram_backup;
+		private byte[] saveram_backup;
 
 		public void InitSaveram()
 		{
@@ -973,13 +1006,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 
 		private static readonly FieldInfo fiDLIRInternalPtr = typeof(DynamicLibraryImportResolver).GetField("_p", BindingFlags.Instance | BindingFlags.NonPublic);
 
-		struct AttachedPlugin
+		private struct AttachedPlugin
 		{
 			public DynamicLibraryImportResolver dllThinWrapper;
 			public PluginShutdown dllShutdown;
 		}
 
-		readonly Dictionary<m64p_plugin_type, AttachedPlugin> plugins = new Dictionary<m64p_plugin_type, AttachedPlugin>();
+		private readonly Dictionary<m64p_plugin_type, AttachedPlugin> plugins = new Dictionary<m64p_plugin_type, AttachedPlugin>();
 
 		public IntPtr AttachPlugin(m64p_plugin_type type, string PluginName)
 		{

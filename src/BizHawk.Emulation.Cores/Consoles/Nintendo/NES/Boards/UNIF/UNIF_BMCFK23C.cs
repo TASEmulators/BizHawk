@@ -83,7 +83,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(dip_switch_setting), ref dip_switch_setting);
 		}
 
-		void UpdateChr() 
+		private void UpdateChr() 
 		{
 			for (int i = 0; i < 8; i++)
 			{
@@ -93,7 +93,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		void UpdateChr_2()
+		private void UpdateChr_2()
 		{
 			if ((exRegs[0] & 0x40) > 0)
 			{
@@ -119,7 +119,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		void UpdatePrg()
+		private void UpdatePrg()
 		{
 			for (int i = 0; i < 4; i++)
 			{
@@ -137,7 +137,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		void UpdatePrg_2()
+		private void UpdatePrg_2()
 		{
 			if ((exRegs[0] & 0x7) == 4)
 			{

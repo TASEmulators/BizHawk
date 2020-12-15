@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 
 		// unsaved variables
 		public bool checker;
-		byte interrupt_src_reg, interrupt_enable_reg, buttons_pressed;
+		private byte interrupt_src_reg, interrupt_enable_reg, buttons_pressed;
 
 		public void BuildInstructionTable()
 		{

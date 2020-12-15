@@ -32,8 +32,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(mode), ref mode);
 		}
 
-		int block, prg;
-		bool mode;
+		private int block, prg;
+		private bool mode;
 
 		public override void WriteWram(int addr, byte value)
 		{

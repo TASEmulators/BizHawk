@@ -11,11 +11,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		// adding a 32K prg banking mode
 
 		// config
-		int prg_bank_mask_32k;
+		private int prg_bank_mask_32k;
 
 		// state
-		bool prgmode;
-		int prgreg;
+		private bool prgmode;
+		private int prgreg;
 
 		public override bool Configure(EDetectionOrigin origin)
 		{

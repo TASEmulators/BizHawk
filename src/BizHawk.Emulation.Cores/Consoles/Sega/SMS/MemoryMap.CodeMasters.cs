@@ -11,7 +11,7 @@
 		// System RAM is at $C000+ as in the Sega mapper.
 		// =======================================================================
 
-		byte ReadMemoryCM(ushort address)
+		private byte ReadMemoryCM(ushort address)
 		{
 			if (address < 0x4000) return RomData[(RomBank0 * BankSize) + address];
 			if (address < 0x8000) return RomData[(RomBank1 * BankSize) + (address & BankSizeMask)];
@@ -20,7 +20,7 @@
 			return SystemRam[address & RamSizeMask];
 		}
 
-		CDLog_MapResults MapMemoryCM(ushort address, bool write)
+		private CDLog_MapResults MapMemoryCM(ushort address, bool write)
 		{
 			if (address < 0x4000) return new CDLog_MapResults { Type = CDLog_AddrType.ROM, Address = address };
 			if (address < 0x8000) return new CDLog_MapResults { Type = CDLog_AddrType.ROM, Address = (RomBank1 * BankSize) + (address & BankSizeMask) };
@@ -28,7 +28,7 @@
 			return new CDLog_MapResults { Type = CDLog_AddrType.MainRAM, Address = address & RamSizeMask };
 		}
 
-		void WriteMemoryCM(ushort address, byte value)
+		private void WriteMemoryCM(ushort address, byte value)
 		{
 			if (address >= 0xC000)
 				SystemRam[address & RamSizeMask] = value;
@@ -38,7 +38,7 @@
 			else if (address == 0x8000) RomBank2 = (byte)(value % RomBanks);
 		}
 
-		void InitCodeMastersMapper()
+		private void InitCodeMastersMapper()
 		{
 			ReadMemoryMapper = ReadMemoryCM;
 			WriteMemoryMapper = WriteMemoryCM;
@@ -51,8 +51,8 @@
 		// =======================================================================
 		// CodeMasters with on-board volatile RAM
 		// =======================================================================
-		 
-		byte ReadMemoryCMRam(ushort address)
+
+		private byte ReadMemoryCMRam(ushort address)
 		{
 			if (address < 0x4000) 
 				return RomData[(RomBank0 * BankSize) + address];
@@ -72,7 +72,7 @@
 			return SystemRam[address & RamSizeMask];
 		}
 
-		CDLog_MapResults MapMemoryCMRam(ushort address, bool write)
+		private CDLog_MapResults MapMemoryCMRam(ushort address, bool write)
 		{
 			if (address < 0x4000) return new CDLog_MapResults { Type = CDLog_AddrType.ROM, Address = address };
 			if (address < 0x8000)
@@ -92,7 +92,7 @@
 			return new CDLog_MapResults { Type = CDLog_AddrType.MainRAM, Address = address & RamSizeMask };
 		}
 
-		void WriteMemoryCMRam(ushort address, byte value)
+		private void WriteMemoryCMRam(ushort address, byte value)
 		{
 			if (address >= 0xC000)
 				SystemRam[address & RamSizeMask] = value;
@@ -112,7 +112,7 @@
 				ExtRam[address & 0x1FFF] = value;
 		}
 
-		void InitCodeMastersMapperRam()
+		private void InitCodeMastersMapperRam()
 		{
 			ReadMemoryMapper = ReadMemoryCMRam;
 			WriteMemoryMapper = WriteMemoryCMRam;

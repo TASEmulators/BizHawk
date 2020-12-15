@@ -7,15 +7,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	{
 		//http://wiki.nesdev.com/w/index.php/INES_Mapper_234
 
-		bool mode = false;
-		int block_high = 0;
-		int block_low = 0;
-		byte prg_bank = 0;
-		byte chr_bank_high = 0;
-		byte chr_bank_low = 0;
-		int prg_bank_mask_32k = 0;
-		int chr_bank_mask_8k = 0;
-		bool reg_0_locked = false;
+		private bool mode = false;
+		private int block_high = 0;
+		private int block_low = 0;
+		private byte prg_bank = 0;
+		private byte chr_bank_high = 0;
+		private byte chr_bank_low = 0;
+		private int prg_bank_mask_32k = 0;
+		private int chr_bank_mask_8k = 0;
+		private bool reg_0_locked = false;
 		public override bool Configure(EDetectionOrigin origin)
 		{
 			switch (Cart.BoardType)

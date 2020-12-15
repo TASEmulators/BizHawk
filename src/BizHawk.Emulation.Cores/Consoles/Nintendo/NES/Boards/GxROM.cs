@@ -17,10 +17,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	internal sealed class GxROM : NesBoardBase
 	{
 		//configuraton
-		int prg_mask, chr_mask;
+		private int prg_mask, chr_mask;
 
 		//state
-		int prg, chr;
+		private int prg, chr;
 
 		public override bool Configure(EDetectionOrigin origin)
 		{

@@ -6,9 +6,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	// http://wiki.nesdev.com/w/index.php/Namco_163_audio
 	public sealed class Namco163Audio
 	{
-		byte[] ram = new byte[0x80];
-		int addr;
-		bool autoincrement;
+		private byte[] ram = new byte[0x80];
+		private int addr;
+		private bool autoincrement;
 
 		/// <summary>
 		/// F800:FFFF
@@ -49,10 +49,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// <summary>
 		/// last channel clocked
 		/// </summary>
-		int ch;
+		private int ch;
 
 		// output buffer; not savestated
-		int latchout = 0;
+		private int latchout = 0;
 
 		/// <summary>
 		/// 119318hz (CPU / 15)
@@ -71,7 +71,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			enqueuer(delta);
 		}
 
-		byte ClockChannel(int ch)
+		private byte ClockChannel(int ch)
 		{
 			// channel regs are at [b..b+7]
 			int b = ch * 8 + 56;
@@ -102,7 +102,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(ch), ref ch);
 		}
 
-		readonly Action<int> enqueuer;
+		private readonly Action<int> enqueuer;
 
 		public Namco163Audio(Action<int> enqueuer)
 		{

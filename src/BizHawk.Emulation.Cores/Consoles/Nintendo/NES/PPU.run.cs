@@ -8,13 +8,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	sealed partial class PPU
 	{
-		struct BGDataRecord
+		private struct BGDataRecord
 		{
 			public byte nt, at;
 			public byte pt_0, pt_1;
 		}
 
-		BGDataRecord[] bgdata = new BGDataRecord[34]; 
+		private BGDataRecord[] bgdata = new BGDataRecord[34]; 
 
 		public short[] xbuf = new short[256 * 240];
 
@@ -45,7 +45,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public bool show_bg_new; //Show background
 		public bool show_obj_new; //Show sprites
 
-		struct TempOAM
+		private struct TempOAM
 		{
 			public byte oam_y;
 			public byte oam_ind;
@@ -55,15 +55,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			public byte patterns_1;
 		}
 
-		readonly TempOAM[] t_oam = new TempOAM[64];
+		private readonly TempOAM[] t_oam = new TempOAM[64];
 
-		int ppu_addr_temp;
+		private int ppu_addr_temp;
 
 		// attempt to emulate graphics pipeline behaviour
 		// experimental
-		int pixelcolor_latch_1;
+		private int pixelcolor_latch_1;
 
-		void pipeline(int pixelcolor, int row_check)
+		private void pipeline(int pixelcolor, int row_check)
 		{
 			if (row_check > 0)
 			{
@@ -86,7 +86,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return (hi << 0xC) | (par << 0x4) | ppur.fv;
 		}
 
-		void Read_bgdata(int cycle, int i)
+		private void Read_bgdata(int cycle, int i)
 		{
 			switch (cycle)
 			{
@@ -129,24 +129,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public bool do_active_sl;
 		public bool do_pre_vbl;
 
-		bool nmi_destiny;
-		bool evenOddDestiny;
-		static readonly int start_up_offset = 2;
-		int NMI_offset;
-		int yp_shift;
-		int sprite_eval_cycle;
-		int xt;
-		int xp;
-		int xstart;
-		int rasterpos;
-		bool renderspritenow;
-		int s;
-		int ppu_aux_index;
-		bool junksprite;
-		int line;
-		int patternNumber;
-		int patternAddress;
-		int temp_addr;
+		private bool nmi_destiny;
+		private bool evenOddDestiny;
+		private static readonly int start_up_offset = 2;
+		private int NMI_offset;
+		private int yp_shift;
+		private int sprite_eval_cycle;
+		private int xt;
+		private int xp;
+		private int xstart;
+		private int rasterpos;
+		private bool renderspritenow;
+		private int s;
+		private int ppu_aux_index;
+		private bool junksprite;
+		private int line;
+		private int patternNumber;
+		private int patternAddress;
+		private int temp_addr;
 
 		public void ppu_init_frame()
 		{

@@ -13,7 +13,7 @@
 
 	internal sealed class Sunsoft1_Alt : NesBoardBase
 	{
-		int prg;
+		private int prg;
 
 		public override bool Configure(EDetectionOrigin origin)
 		{

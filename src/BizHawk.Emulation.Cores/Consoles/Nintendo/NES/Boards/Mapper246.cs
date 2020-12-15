@@ -5,11 +5,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	internal sealed class Mapper246 : NesBoardBase
 	{
-		int prg_bank_mask_8k;
-		byte[] prg_banks_8k = new byte[4];
+		private int prg_bank_mask_8k;
+		private byte[] prg_banks_8k = new byte[4];
 
-		int chr_bank_mask_2k;
-		byte[] chr_banks_2k = new byte[4];
+		private int chr_bank_mask_2k;
+		private byte[] chr_banks_2k = new byte[4];
 
 		public override bool Configure(EDetectionOrigin origin)
 		{

@@ -6,38 +6,38 @@
 	/// </summary>
 	public abstract partial class CPCBase
 	{
-		readonly string Play = "Play Tape";
-		readonly string Stop = "Stop Tape";
-		readonly string RTZ = "RTZ Tape";
-		readonly string Record = "Record Tape";
-		readonly string NextTape = "Insert Next Tape";
-		readonly string PrevTape = "Insert Previous Tape";
-		readonly string NextBlock = "Next Tape Block";
-		readonly string PrevBlock = "Prev Tape Block";
-		readonly string TapeStatus = "Get Tape Status";
+		private readonly string Play = "Play Tape";
+		private readonly string Stop = "Stop Tape";
+		private readonly string RTZ = "RTZ Tape";
+		private readonly string Record = "Record Tape";
+		private readonly string NextTape = "Insert Next Tape";
+		private readonly string PrevTape = "Insert Previous Tape";
+		private readonly string NextBlock = "Next Tape Block";
+		private readonly string PrevBlock = "Prev Tape Block";
+		private readonly string TapeStatus = "Get Tape Status";
 
-		readonly string NextDisk = "Insert Next Disk";
-		readonly string PrevDisk = "Insert Previous Disk";
-		readonly string EjectDisk = "Eject Current Disk";
-		readonly string DiskStatus = "Get Disk Status";
+		private readonly string NextDisk = "Insert Next Disk";
+		private readonly string PrevDisk = "Insert Previous Disk";
+		private readonly string EjectDisk = "Eject Current Disk";
+		private readonly string DiskStatus = "Get Disk Status";
 
-		readonly string HardResetStr = "Power";
-		readonly string SoftResetStr = "Reset";
+		private readonly string HardResetStr = "Power";
+		private readonly string SoftResetStr = "Reset";
 
-		bool pressed_Play = false;
-		bool pressed_Stop = false;
-		bool pressed_RTZ = false;
-		bool pressed_NextTape = false;
-		bool pressed_PrevTape = false;
-		bool pressed_NextBlock = false;
-		bool pressed_PrevBlock = false;
-		bool pressed_TapeStatus = false;
-		bool pressed_NextDisk = false;
-		bool pressed_PrevDisk = false;
-		bool pressed_EjectDisk = false;
-		bool pressed_DiskStatus = false;
-		bool pressed_HardReset = false;
-		bool pressed_SoftReset = false;
+		private bool pressed_Play = false;
+		private bool pressed_Stop = false;
+		private bool pressed_RTZ = false;
+		private bool pressed_NextTape = false;
+		private bool pressed_PrevTape = false;
+		private bool pressed_NextBlock = false;
+		private bool pressed_PrevBlock = false;
+		private bool pressed_TapeStatus = false;
+		private bool pressed_NextDisk = false;
+		private bool pressed_PrevDisk = false;
+		private bool pressed_EjectDisk = false;
+		private bool pressed_DiskStatus = false;
+		private bool pressed_HardReset = false;
+		private bool pressed_SoftReset = false;
 
 		/// <summary>
 		/// Cycles through all the input callbacks

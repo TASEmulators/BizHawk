@@ -235,7 +235,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			}
 		}
 
-		void RenderBackgroundM2(int scanLine)
+		private void RenderBackgroundM2(int scanLine)
 		{
 			if (DisplayOn == false)
 			{

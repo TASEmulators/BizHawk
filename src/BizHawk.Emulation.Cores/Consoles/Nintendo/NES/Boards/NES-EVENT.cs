@@ -9,23 +9,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	internal sealed class NES_EVENT : NesBoardBase
 	{
 		//configuration
-		int prg_bank_mask_16k;
+		private int prg_bank_mask_16k;
 
 		//regenerable state
-		int[] prg_banks_16k = new int[2];
+		private int[] prg_banks_16k = new int[2];
 
 		//state
-		MMC1.MMC1_SerialController scnt;
-		bool c000_swappable, prg_32k_mode;
-		bool irq_enable;
-		int prg_a, prg_b;
-		int init_sequence;
-		bool chip_select;
-		bool wram_disable;
+		private MMC1.MMC1_SerialController scnt;
+		private bool c000_swappable, prg_32k_mode;
+		private bool irq_enable;
+		private int prg_a, prg_b;
+		private int init_sequence;
+		private bool chip_select;
+		private bool wram_disable;
 
-		int irq_count;
-		int irq_destination;
-		bool irq_pending;
+		private int irq_count;
+		private int irq_destination;
+		private bool irq_pending;
 
 		[MapperProp]
 		public bool Dipswitch1 = false;
@@ -122,13 +122,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		void SerialReset()
+		private void SerialReset()
 		{
 			prg_32k_mode = true;
 			c000_swappable = true;
 		}
 
-		void Sync()
+		private void Sync()
 		{
 			SyncIRQDestination();
 			SyncIRQ();
@@ -177,7 +177,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			prg_banks_16k[1] &= prg_bank_mask_16k;
 		}
 
-		void SerialWriteRegister(int addr, int value)
+		private void SerialWriteRegister(int addr, int value)
 		{
 			switch (addr)
 			{

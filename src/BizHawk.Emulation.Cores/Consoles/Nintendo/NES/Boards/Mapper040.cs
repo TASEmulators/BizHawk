@@ -5,9 +5,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	// smb2j (us pirate)
 	internal sealed class Mapper040 : NesBoardBase
 	{
-		int prg = 0;
-		int irqcnt = 0;
-		bool irqactive = false;
+		private int prg = 0;
+		private int irqcnt = 0;
+		private bool irqactive = false;
 
 		public override bool Configure(EDetectionOrigin origin)
 		{

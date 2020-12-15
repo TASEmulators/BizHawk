@@ -131,7 +131,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		void PoweronState()
+		private void PoweronState()
 		{
 			//set all prg regs to use ROM
 			regs_prg[0] = 0x80;
@@ -145,7 +145,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			SetMirrorType(EMirrorType.Vertical);
 		}
 
-		int PRGGetBank(int addr, out bool ram)
+		private int PRGGetBank(int addr, out bool ram)
 		{
 			int bank_8k = addr >> 13;
 			bank_8k = _prgBanks8K[bank_8k];
@@ -166,7 +166,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		// 4) 32K wram: 1x 32K
 		//
 		// for iNES, we assume 64K wram
-		int? MaskWRAM(int bank)
+		private int? MaskWRAM(int bank)
 		{
 			bank &= 7;
 			switch (Cart.WramSize)
@@ -192,14 +192,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		void WriteWRAMActual(int bank, int offs, byte value)
+		private void WriteWRAMActual(int bank, int offs, byte value)
 		{
 			int? bbank = MaskWRAM(bank);
 			if (bbank.HasValue)
 				Wram[(int)bbank << 13 | offs] = value;
 		}
 
-		byte ReadWRAMActual(int bank, int offs)
+		private byte ReadWRAMActual(int bank, int offs)
 		{
 			int? bbank = MaskWRAM(bank);
 			return bbank.HasValue
@@ -223,7 +223,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//  return new TileCoord(tx, ty);
 		//}
 
-		int MapCHR(int addr)
+		private int MapCHR(int addr)
 		{
 			int bank_1k = addr >> 10;
 			int ofs = addr & ((1 << 10) - 1);
@@ -579,7 +579,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		void SyncMultiplier()
+		private void SyncMultiplier()
 		{
 			int result = multiplicand*multiplier;
 			product_low = (byte)(result&0xFF);
@@ -662,7 +662,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return ret;
 		}
 
-		void SyncIRQ()
+		private void SyncIRQ()
 		{
 			IrqSignal = (irq_pending && irq_enabled) || irq_audio;
 		}
@@ -709,7 +709,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			audio.Clock();
 		}
 
-		void SetBank(int[] target, int offset, int size, int value)
+		private void SetBank(int[] target, int offset, int size, int value)
 		{
 			value &= ~(size-1);
 			for (int i = 0; i < size; i++)
@@ -720,7 +720,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		void SyncPRGBanks()
+		private void SyncPRGBanks()
 		{
 			switch (prg_mode)
 			{
@@ -745,7 +745,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		void SyncCHRBanks()
+		private void SyncCHRBanks()
 		{
 			//MASTER LOGIC: something like this this might be enough to work, but i'll play with it later
 			//bank_1k >> (3 - chr_mode) << chr_mode | bank_1k & ( etc.etc.

@@ -6,19 +6,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	internal sealed class Mapper028 : NesBoardBase
 	{
 		// config
-		int chr_mask_8k;
-		int prg_mask_16k;
+		private int chr_mask_8k;
+		private int prg_mask_16k;
 
 		// state
-		int reg;
-		int chr;
-		int prg;
-		int mode;
-		int outer;
+		private int reg;
+		private int chr;
+		private int prg;
+		private int mode;
+		private int outer;
 
 		// regennable state
-		int prglo;
-		int prghi;
+		private int prglo;
+		private int prghi;
 
 		public override bool Configure(EDetectionOrigin origin)
 		{
@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		void Sync()
+		private void Sync()
 		{
 			int outb = outer << 1;
 			// this can probably be rolled up, but i have no motivation to do so
@@ -110,7 +110,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			prghi &= prg_mask_16k;
 		}
 
-		void Mirror(byte value)
+		private void Mirror(byte value)
 		{
 			if ((mode & 2) == 0)
 			{
@@ -120,7 +120,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			SyncMirror();
 		}
 
-		void SyncMirror()
+		private void SyncMirror()
 		{
 			switch (mode & 3)
 			{

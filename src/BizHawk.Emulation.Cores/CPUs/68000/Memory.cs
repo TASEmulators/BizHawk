@@ -4,7 +4,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 {
 	partial class MC68000
 	{
-		sbyte ReadValueB(int mode, int reg)
+		private sbyte ReadValueB(int mode, int reg)
 		{
 			sbyte value;
 			switch (mode)
@@ -53,7 +53,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			throw new Exception("Invalid addressing mode!");
 		}
 
-		short ReadValueW(int mode, int reg)
+		private short ReadValueW(int mode, int reg)
 		{
 			short value;
 			switch (mode)
@@ -102,7 +102,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			throw new Exception("Invalid addressing mode!");
 		}
 
-		int ReadValueL(int mode, int reg)
+		private int ReadValueL(int mode, int reg)
 		{
 			int value;
 			switch (mode)
@@ -151,7 +151,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			throw new Exception("Invalid addressing mode!");
 		}
 
-		sbyte PeekValueB(int mode, int reg)
+		private sbyte PeekValueB(int mode, int reg)
 		{
 			sbyte value;
 			switch (mode)
@@ -198,7 +198,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			throw new Exception("Invalid addressing mode!");
 		}
 
-		short PeekValueW(int mode, int reg)
+		private short PeekValueW(int mode, int reg)
 		{
 			short value;
 			switch (mode)
@@ -245,7 +245,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			throw new Exception("Invalid addressing mode!");
 		}
 
-		int PeekValueL(int mode, int reg)
+		private int PeekValueL(int mode, int reg)
 		{
 			int value;
 			switch (mode)
@@ -292,7 +292,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			throw new Exception("Invalid addressing mode!");
 		}
 
-		int ReadAddress(int mode, int reg)
+		private int ReadAddress(int mode, int reg)
 		{
 			int addr;
 			switch (mode)
@@ -318,7 +318,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			throw new Exception("Invalid addressing mode!");
 		}
 
-		string DisassembleValue(int mode, int reg, int size, ref int pc)
+		private string DisassembleValue(int mode, int reg, int size, ref int pc)
 		{
 			string value;
 			int addr;
@@ -352,7 +352,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			throw new Exception("Invalid addressing mode!");
 		}
 
-		string DisassembleImmediate(int size, ref int pc)
+		private string DisassembleImmediate(int size, ref int pc)
 		{
 			int immed;
 			switch (size)
@@ -370,7 +370,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			throw new ArgumentException("Invalid size");
 		}
 
-		string DisassembleAddress(int mode, int reg, ref int pc)
+		private string DisassembleAddress(int mode, int reg, ref int pc)
 		{
 			int addr;
 			switch (mode)
@@ -396,7 +396,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			throw new Exception("Invalid addressing mode!");
 		}
 
-		void WriteValueB(int mode, int reg, sbyte value)
+		private void WriteValueB(int mode, int reg, sbyte value)
 		{
 			switch (mode)
 			{
@@ -445,7 +445,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			}
 		}
 
-		void WriteValueW(int mode, int reg, short value)
+		private void WriteValueW(int mode, int reg, short value)
 		{
 			switch (mode)
 			{
@@ -494,7 +494,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			}
 		}
 
-		void WriteValueL(int mode, int reg, int value)
+		private void WriteValueL(int mode, int reg, int value)
 		{
 			switch (mode)
 			{
@@ -543,7 +543,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			}
 		}
 
-		int GetIndex()
+		private int GetIndex()
 		{
 			//Console.WriteLine("IN INDEX PORTION - NOT VERIFIED!!!");
 			// TODO kid chameleon triggers this in startup sequence
@@ -572,7 +572,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			return displacement + indexReg;
 		}
 
-		int PeekIndex()
+		private int PeekIndex()
 		{
 			//Console.WriteLine("IN INDEX PORTION - NOT VERIFIED!!!");
 
@@ -600,7 +600,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			return displacement + indexReg;
 		}
 
-		string DisassembleIndex(string baseRegister, short extension)
+		private string DisassembleIndex(string baseRegister, short extension)
 		{
 			int d_a = (extension >> 15) & 0x1;
 			int reg = (extension >> 12) & 0x7;

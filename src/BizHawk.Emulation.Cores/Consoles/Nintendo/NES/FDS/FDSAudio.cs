@@ -53,107 +53,107 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 
 		//4040:407f
-		byte[] waveram = new byte[64];
+		private byte[] waveram = new byte[64];
 		/// <summary>
 		/// playback position, clocked by main unit
 		/// </summary>
-		int waverampos;
+		private int waverampos;
 		//4080
 		/// <summary>
 		/// volume level or envelope speed, depending on r4080_7
 		/// </summary>
-		int volumespd;
+		private int volumespd;
 		/// <summary>
 		/// increase volume with envelope
 		/// </summary>
-		bool r4080_6;
+		private bool r4080_6;
 		/// <summary>
 		/// disable volume envelope
 		/// </summary>
-		bool r4080_7;
+		private bool r4080_7;
 		//4082:4083
 		/// <summary>
 		/// speed to clock main unit
 		/// </summary>
-		int frequency;
+		private int frequency;
 		/// <summary>
 		/// disable volume and sweep
 		/// </summary>
-		bool r4083_6;
+		private bool r4083_6;
 		/// <summary>
 		/// silence channel
 		/// </summary>
-		bool r4083_7;
+		private bool r4083_7;
 		//4084
 		/// <summary>
 		/// sweep gain or sweep speed, depending on r4084_7
 		/// </summary>
-		int sweepspd;
+		private int sweepspd;
 		/// <summary>
 		/// increase sweep with envelope
 		/// </summary>
-		bool r4084_6;
+		private bool r4084_6;
 		/// <summary>
 		/// disable sweep unit
 		/// </summary>
-		bool r4084_7;
+		private bool r4084_7;
 		//4085
 		/// <summary>
 		/// 7 bit signed
 		/// </summary>
-		int sweepbias;
+		private int sweepbias;
 		//4086:4087
 		/// <summary>
 		/// speed to clock modulation unit
 		/// </summary>
-		int modfreq;
+		private int modfreq;
 		/// <summary>
 		/// disable modulation unit
 		/// </summary>
-		bool r4087_7;
+		private bool r4087_7;
 		//4088
 		/// <summary>
 		/// ring buffer, only 32 entries on hardware
 		/// </summary>
-		byte[] modtable = new byte[64];
+		private byte[] modtable = new byte[64];
 		/// <summary>
 		/// playback position
 		/// </summary>
-		int modtablepos;
+		private int modtablepos;
 		//4089
-		int mastervol_num = 1;
-		int mastervol_den = 1;
+		private int mastervol_num = 1;
+		private int mastervol_den = 1;
 		/// <summary>
 		/// channel silenced and waveram writable
 		/// </summary>
-		bool waveram_writeenable;
+		private bool waveram_writeenable;
 		//408a
-		int envspeed;
+		private int envspeed;
 
-		int volumeclock;
-		int sweepclock;
-		int modclock;
-		int mainclock;
+		private int volumeclock;
+		private int sweepclock;
+		private int modclock;
+		private int mainclock;
 
-		int modoutput;
+		private int modoutput;
 
 		// read at 4090
-		int volumegain;
+		private int volumegain;
 		// read at 4092
-		int sweepgain;
+		private int sweepgain;
 
-		int waveramoutput;
+		private int waveramoutput;
 
-		int latchedoutput;
+		private int latchedoutput;
 
-		readonly Action<int> SendDiff;
+		private readonly Action<int> SendDiff;
 
 		public FDSAudio(Action<int> SendDiff)
 		{
 			this.SendDiff = SendDiff;
 		}
 
-		void CalcMod()
+		private void CalcMod()
 		{
 			// http://forums.nesdev.com/viewtopic.php?f=3&t=10233
 			int tmp = sweepbias * sweepgain;
@@ -182,7 +182,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			modoutput = tmp;
 		}
 
-		void CalcOut()
+		private void CalcOut()
 		{
 			int tmp = volumegain < 32 ? volumegain : 32;
 			tmp *= waveramoutput;

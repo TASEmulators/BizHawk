@@ -2,7 +2,7 @@
 {
 	unsafe partial class LibretroApi
 	{
-		bool Handle_SIG(eMessage msg)
+		private bool Handle_SIG(eMessage msg)
 		{
 			//I know, ive done this two completely different ways
 			//both ways are sloppy glue, anyway

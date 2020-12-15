@@ -18,8 +18,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public byte[] regs = new byte[8];
 
 		public byte mirror;
-		int a12_old;
-		byte irq_reload, irq_counter;
+		private int a12_old;
+		private byte irq_reload, irq_counter;
 		public bool irq_pending, irq_enable, irq_reload_flag;
 		public bool wram_enable, wram_write_protect;
 
@@ -27,8 +27,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//theres no sense in delaying the IRQ, so its logic must be tied to the separator.
 		//the hint, of course, is that the countdown value is the same.
 		//will someone else try to unify them?
-		int separator_counter;
-		int irq_countdown;
+		private int separator_counter;
+		private int irq_countdown;
 
 		//volatile state
 		public byte[] chr_regs_1k = new byte[8];
@@ -39,7 +39,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			None, MMC3A, MMC3BSharp, MMC3BNonSharp, MMC3C, MMC6
 		}
-		EMMC3Type _mmc3type = EMMC3Type.None;
+
+		private EMMC3Type _mmc3type = EMMC3Type.None;
 		public EMMC3Type MMC3Type
 		{
 			get => _mmc3type;
@@ -49,7 +50,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				oldIrqType = (_mmc3type == EMMC3Type.MMC3A || _mmc3type == EMMC3Type.MMC3BNonSharp || _mmc3type == EMMC3Type.MMC6);
 			}
 		}
-		bool oldIrqType;
+
+		private bool oldIrqType;
 
 		public EMirrorType MirrorType => mirror switch
 		{
@@ -208,7 +210,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		void IRQ_EQ_Pass()
+		private void IRQ_EQ_Pass()
 		{
 			if (irq_enable)
 			{
@@ -218,7 +220,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			SyncIRQ();
 		}
 
-		void ClockIRQ()
+		private void ClockIRQ()
 		{
 			int last_irq_counter = irq_counter;
 			if (irq_reload_flag || irq_counter == 0)

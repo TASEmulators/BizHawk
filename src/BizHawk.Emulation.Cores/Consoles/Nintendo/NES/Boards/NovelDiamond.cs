@@ -4,8 +4,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	internal sealed class NovelDiamond : NesBoardBase
 	{
-		int prg;
-		int chr;
+		private int prg;
+		private int chr;
 
 		public override bool Configure(EDetectionOrigin origin)
 		{

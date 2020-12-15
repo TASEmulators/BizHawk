@@ -127,7 +127,7 @@ namespace BizHawk.Emulation.Cores
 			public DiscSystem.Disc Disc;
 		}
 
-		class IdentifyJob
+		private class IdentifyJob
 		{
 			public Stream Stream;
 			public string Extension;
@@ -212,7 +212,7 @@ namespace BizHawk.Emulation.Cores
 			else return ret[0].FileIDType;
 		}
 
-		FileIDResults IdentifyDisc(IdentifyJob job)
+		private FileIDResults IdentifyDisc(IdentifyJob job)
 		{
 			var discIdentifier = new DiscSystem.DiscIdentifier(job.Disc);
 			//DiscSystem could use some newer approaches from this file (instead of parsing ISO filesystem... maybe?)
@@ -240,7 +240,7 @@ namespace BizHawk.Emulation.Cores
 			}
 		}
 
-		class SimpleMagicRecord
+		private class SimpleMagicRecord
 		{
 			public int Offset;
 			public string Key;
@@ -250,7 +250,7 @@ namespace BizHawk.Emulation.Cores
 
 		//some of these (NES, UNIF for instance) should be lower confidence probably...
 		//if you change some of the Length arguments for longer keys, please make notes about why
-		static class SimpleMagics
+		private static class SimpleMagics
 		{
 			public static readonly SimpleMagicRecord INES = new SimpleMagicRecord { Offset = 0, Key = "NES" };
 			public static readonly SimpleMagicRecord UNIF = new SimpleMagicRecord { Offset = 0, Key = "UNIF" };
@@ -297,7 +297,7 @@ namespace BizHawk.Emulation.Cores
 			};
 		}
 
-		class ExtensionInfo
+		private class ExtensionInfo
 		{
 			public ExtensionInfo(FileIDType defaultForExtension, FormatTester tester)
 			{
@@ -314,7 +314,7 @@ namespace BizHawk.Emulation.Cores
 		/// <summary>
 		/// testers to try for each extension, along with a default for the extension
 		/// </summary>
-		static readonly Dictionary<string, ExtensionInfo> ExtensionHandlers = new Dictionary<string, ExtensionInfo> {
+		private static readonly Dictionary<string, ExtensionInfo> ExtensionHandlers = new Dictionary<string, ExtensionInfo> {
 		  { "NES", new ExtensionInfo(FileIDType.INES, Test_INES ) },
 			{ "FDS", new ExtensionInfo(FileIDType.FDS, Test_FDS ) },
 			{ "GBA", new ExtensionInfo(FileIDType.GBA, (j)=>Test_Simple(j,FileIDType.GBA,SimpleMagics.GBA) ) },
@@ -381,14 +381,14 @@ namespace BizHawk.Emulation.Cores
 			{ "ECM", new ExtensionInfo(FileIDType.ECM, (j)=>Test_Simple(j,FileIDType.ECM,SimpleMagics.ECM) ) },
 		};
 
-		delegate FileIDResult FormatTester(IdentifyJob job);
+		private delegate FileIDResult FormatTester(IdentifyJob job);
 
-		static readonly int[] no_offsets = { 0 };
+		private static readonly int[] no_offsets = { 0 };
 
 		/// <summary>
 		/// checks for the magic string (bytewise ASCII check) at the given address
 		/// </summary>
-		static bool CheckMagic(Stream stream, IEnumerable<SimpleMagicRecord> recs, params int[] offsets)
+		private static bool CheckMagic(Stream stream, IEnumerable<SimpleMagicRecord> recs, params int[] offsets)
 		{
 			if (offsets.Length == 0)
 				offsets = no_offsets;
@@ -409,12 +409,12 @@ namespace BizHawk.Emulation.Cores
 			return false;
 		}
 
-		static bool CheckMagic(Stream stream, SimpleMagicRecord rec, params int[] offsets)
+		private static bool CheckMagic(Stream stream, SimpleMagicRecord rec, params int[] offsets)
 		{
 			return CheckMagic(stream, new SimpleMagicRecord[] { rec }, offsets);
 		}
 
-		static bool CheckMagicOne(Stream stream, SimpleMagicRecord rec, int offset)
+		private static bool CheckMagicOne(Stream stream, SimpleMagicRecord rec, int offset)
 		{
 			stream.Position = rec.Offset + offset;
 			string key = rec.Key;
@@ -436,13 +436,13 @@ namespace BizHawk.Emulation.Cores
 			else return true;
 		}
 
-		static int ReadByte(Stream stream, int ofs)
+		private static int ReadByte(Stream stream, int ofs)
 		{
 			stream.Position = ofs;
 			return stream.ReadByte();
 		}
 
-		static FileIDResult Test_INES(IdentifyJob job)
+		private static FileIDResult Test_INES(IdentifyJob job)
 		{
 			if (!CheckMagic(job.Stream, SimpleMagics.INES))
 				return new FileIDResult();
@@ -457,7 +457,7 @@ namespace BizHawk.Emulation.Cores
 			return ret;
 		}
 
-		static FileIDResult Test_FDS(IdentifyJob job)
+		private static FileIDResult Test_FDS(IdentifyJob job)
 		{
 			if (CheckMagic(job.Stream, SimpleMagics.FDS_HEADER))
 				return new FileIDResult(FileIDType.FDS, 90); //kind of a small header..
@@ -470,7 +470,7 @@ namespace BizHawk.Emulation.Cores
 		/// <summary>
 		/// all magics must pass
 		/// </summary>
-		static FileIDResult Test_Simple(IdentifyJob job, FileIDType type, SimpleMagicRecord[] magics)
+		private static FileIDResult Test_Simple(IdentifyJob job, FileIDType type, SimpleMagicRecord[] magics)
 		{
 			var ret = new FileIDResult(type);
 
@@ -480,7 +480,7 @@ namespace BizHawk.Emulation.Cores
 				return new FileIDResult();
 		}
 
-		static FileIDResult Test_Simple(IdentifyJob job, FileIDType type, SimpleMagicRecord magic)
+		private static FileIDResult Test_Simple(IdentifyJob job, FileIDType type, SimpleMagicRecord magic)
 		{
 			var ret = new FileIDResult(type);
 
@@ -490,7 +490,7 @@ namespace BizHawk.Emulation.Cores
 				return new FileIDResult();
 		}
 
-		static FileIDResult Test_UNIF(IdentifyJob job)
+		private static FileIDResult Test_UNIF(IdentifyJob job)
 		{
 			if (!CheckMagic(job.Stream, SimpleMagics.UNIF))
 				return new FileIDResult();
@@ -502,7 +502,7 @@ namespace BizHawk.Emulation.Cores
 			return ret;
 		}
 
-		static FileIDResult Test_GB_GBC(IdentifyJob job)
+		private static FileIDResult Test_GB_GBC(IdentifyJob job)
 		{
 			if (!CheckMagic(job.Stream, SimpleMagics.GB))
 				return new FileIDResult();
@@ -517,7 +517,7 @@ namespace BizHawk.Emulation.Cores
 			return ret;
 		}
 
-		static FileIDResult Test_SMS(IdentifyJob job)
+		private static FileIDResult Test_SMS(IdentifyJob job)
 		{
 			//http://www.smspower.org/Development/ROMHeader
 
@@ -525,7 +525,7 @@ namespace BizHawk.Emulation.Cores
 			return new FileIDResult();
 		}
 
-		static FileIDResult Test_N64(IdentifyJob job)
+		private static FileIDResult Test_N64(IdentifyJob job)
 		{
 			//  .Z64 = No swapping
 			//  .N64 = Word Swapped
@@ -538,7 +538,7 @@ namespace BizHawk.Emulation.Cores
 			return ret;
 		}
 
-		static FileIDResult Test_A78(IdentifyJob job)
+		private static FileIDResult Test_A78(IdentifyJob job)
 		{
 			int len = (int)job.Stream.Length;
 			
@@ -556,7 +556,7 @@ namespace BizHawk.Emulation.Cores
 			return new FileIDResult(0);
 		}
 
-		static FileIDResult Test_BIN_ISO(IdentifyJob job)
+		private static FileIDResult Test_BIN_ISO(IdentifyJob job)
 		{
 			//ok, this is complicated.
 			//there are lots of mislabeled bins/isos so lets just treat them the same (mostly)
@@ -615,7 +615,7 @@ namespace BizHawk.Emulation.Cores
 				return new FileIDResult(FileIDType.Multiple, 1);
 		}
 
-		static FileIDResult Test_JAD_JAC(IdentifyJob job)
+		private static FileIDResult Test_JAD_JAC(IdentifyJob job)
 		{
 			//TBD
 			//just mount it as a disc and send it through the disc checker?

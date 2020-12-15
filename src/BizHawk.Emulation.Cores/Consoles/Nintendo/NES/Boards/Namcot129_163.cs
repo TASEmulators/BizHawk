@@ -17,23 +17,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	internal sealed class Namcot129_163 : NesBoardBase
 	{
 		//configuration
-		int prg_bank_mask_8k;
-		int chr_bank_mask_1k;
+		private int prg_bank_mask_8k;
+		private int chr_bank_mask_1k;
 
 		//state
-		int[] prg_banks_8k = new int[4];
-		int[] chr_banks_1k = new int[12];
-		readonly bool[] vram_enable = new bool[3];
+		private int[] prg_banks_8k = new int[4];
+		private int[] chr_banks_1k = new int[12];
+		private readonly bool[] vram_enable = new bool[3];
 
-		int irq_counter;
-		bool irq_enabled;
-		bool irq_pending;
-		bool audio_disable = true;
+		private int irq_counter;
+		private bool irq_enabled;
+		private bool irq_pending;
+		private bool audio_disable = true;
 
-		Namco163Audio audio;
-		int audio_cycles;
+		private Namco163Audio audio;
+		private int audio_cycles;
 
-		byte prgram_write = 0;
+		private byte prgram_write = 0;
 
 		public override void SyncState(Serializer ser)
 		{
@@ -218,19 +218,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		void SyncIRQ()
+		private void SyncIRQ()
 		{
 			IrqSignal = (irq_pending && irq_enabled);
 		}
 
-		void TriggerIRQ()
+		private void TriggerIRQ()
 		{
 			//NES.LogLine("trigger irq");
 			irq_pending = true;
 			SyncIRQ();
 		}
 
-		void ClockIRQ()
+		private void ClockIRQ()
 		{
 			if (irq_counter == 0x7FFF)
 			{

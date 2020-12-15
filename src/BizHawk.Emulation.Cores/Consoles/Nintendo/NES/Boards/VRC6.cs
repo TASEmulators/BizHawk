@@ -13,18 +13,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		// what did i do in a previous life to deserve this?
 
 		// given the bottom four bits of $b003, and a 1K address region in PPU $0000:$3fff,
-		static readonly byte[] Banks = new byte[16 * 16]; // which of the 8 chr regs is used to determine the bank here?
-		static readonly byte[] Masks = new byte[16 * 16]; // what is the resulting 8 bit chr reg value ANDed with?
-		static readonly byte[] A10s = new byte[16 * 16]; // and then what is it ORed with?
+		private static readonly byte[] Banks = new byte[16 * 16]; // which of the 8 chr regs is used to determine the bank here?
+		private static readonly byte[] Masks = new byte[16 * 16]; // what is the resulting 8 bit chr reg value ANDed with?
+		private static readonly byte[] A10s = new byte[16 * 16]; // and then what is it ORed with?
 
-		static readonly byte[] PTables = 
+		private static readonly byte[] PTables = 
 		{
 			0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07,
 			0x80,0xc0,0x81,0xc1,0x82,0xc2,0x83,0xc3,
 			0x00,0x01,0x02,0x03,0x84,0xc4,0x85,0xc5,	
 		};
 
-		static void GetBankByte(int b003, int banknum, out byte bank, out byte mask, out byte a10)
+		private static void GetBankByte(int b003, int banknum, out byte bank, out byte mask, out byte a10)
 		{
 			if (banknum < 8) // pattern tables
 			{
@@ -105,25 +105,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 
 		//configuration
-		int prg_bank_mask_8k, chr_bank_mask_1k;
-		int chr_byte_mask;
-		bool newer_variant;
+		private int prg_bank_mask_8k, chr_bank_mask_1k;
+		private int chr_byte_mask;
+		private bool newer_variant;
 
-		VRC6Alt VRC6Sound;
+		private VRC6Alt VRC6Sound;
 
 		//state
-		int prg_bank_16k, prg_bank_8k;
-		readonly byte[] prg_banks_8k = new byte[4];
-		byte[] chr_banks_1k = new byte[8];
-		bool irq_mode;
-		bool irq_enabled, irq_pending, irq_autoen;
-		byte irq_reload;
-		byte irq_counter;
-		int irq_prescaler;
+		private int prg_bank_16k, prg_bank_8k;
+		private readonly byte[] prg_banks_8k = new byte[4];
+		private byte[] chr_banks_1k = new byte[8];
+		private bool irq_mode;
+		private bool irq_enabled, irq_pending, irq_autoen;
+		private byte irq_reload;
+		private byte irq_counter;
+		private int irq_prescaler;
 
-		bool chrA10replace;
-		bool NTROM;
-		int PPUBankingMode;
+		private bool chrA10replace;
+		private bool NTROM;
+		private int PPUBankingMode;
 
 		public override void SyncState(Serializer ser)
 		{
@@ -148,7 +148,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			SyncIRQ();
 		}
 
-		void SyncPRG()
+		private void SyncPRG()
 		{
 			prg_banks_8k[0] = (byte)(prg_bank_16k * 2);
 			prg_banks_8k[1] = (byte)(prg_bank_16k * 2 + 1);
@@ -156,7 +156,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			prg_banks_8k[3] = 0xFF;
 		}
 
-		void SyncIRQ()
+		private void SyncIRQ()
 		{
 			IrqSignal = (irq_pending && irq_enabled);
 		}
@@ -207,7 +207,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return Rom[addr];
 		}
 
-		int MapPPU(int addr)
+		private int MapPPU(int addr)
 		{
 			int lutidx = addr >> 10 | PPUBankingMode << 4;
 			int bank = chr_banks_1k[Banks[lutidx]];
@@ -345,7 +345,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		void ClockIRQ()
+		private void ClockIRQ()
 		{
 			if (irq_counter == 0xFF)
 			{

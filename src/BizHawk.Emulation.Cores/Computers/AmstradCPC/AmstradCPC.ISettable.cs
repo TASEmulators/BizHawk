@@ -158,7 +158,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			public string Media { get; set; }
 			public string OtherMisc { get; set; }
 
-			readonly Dictionary<string, string> Data = new Dictionary<string, string>();
+			private readonly Dictionary<string, string> Data = new Dictionary<string, string>();
 
 			public static CPCMachineMetaData GetMetaObject(MachineType type)
 			{

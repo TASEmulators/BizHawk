@@ -5,10 +5,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	// http://wiki.nesdev.com/w/index.php/INES_Mapper_096
 	internal sealed class BANDAI_74_161_02_74 : NesBoardBase
 	{
-		int chr_block;
-		int chr_pos = 0;
-		int prg_bank_mask_32k;
-		byte prg_bank_32k;
+		private int chr_block;
+		private int chr_pos = 0;
+		private int prg_bank_mask_32k;
+		private byte prg_bank_32k;
 
 		public override bool Configure(EDetectionOrigin origin)
 		{

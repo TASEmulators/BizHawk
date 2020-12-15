@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	internal sealed class Mapper249 : MMC3Board_Base
 	{
-		bool piratecrap = false;
+		private bool piratecrap = false;
 
 		// mmc3 with pirate crap bolt on
 		public override bool Configure(EDetectionOrigin origin)

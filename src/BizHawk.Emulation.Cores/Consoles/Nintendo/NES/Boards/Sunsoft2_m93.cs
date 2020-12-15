@@ -6,9 +6,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	//this is confusing. see docs/sunsoft.txt
 	internal sealed class Sunsoft2_Mapper93 : NesBoardBase
 	{
-		int prg_bank_mask_16k;
-		byte prg_bank_16k;
-		byte[] prg_banks_16k = new byte[2];
+		private int prg_bank_mask_16k;
+		private byte prg_bank_16k;
+		private byte[] prg_banks_16k = new byte[2];
 
 		public override bool Configure(EDetectionOrigin origin)
 		{
@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(prg_banks_16k), ref prg_banks_16k, false);
 		}
 
-		void SyncPRG()
+		private void SyncPRG()
 		{
 			prg_banks_16k[0] = prg_bank_16k;
 		}

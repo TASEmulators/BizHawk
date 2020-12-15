@@ -15,40 +15,47 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		// in addition, each variety has two other bits; a "low bit" and a "high bit"
 		// for vrc2b, low bit is A0 and high bit is A1, so it's represented by AddrA0A1
 		// other remaps are named similarly
-		int AddrA1A0(int addr)
+		private int AddrA1A0(int addr)
 		{
 			return addr & 0x7000 | (addr >> 1) & 1 | (addr << 1) & 2;
 		}
-		int AddrA0A1(int addr)
+
+		private int AddrA0A1(int addr)
 		{
 			return addr & 0x7003;
 		}
-		int AddrA1A2(int addr)
+
+		private int AddrA1A2(int addr)
 		{
 			return addr & 0x7000 | (addr >> 1) & 3;
 		}
-		int AddrA6A7(int addr)
+
+		private int AddrA6A7(int addr)
 		{
 			return addr & 0x7000 | (addr >> 6) & 3;
 		}
-		int AddrA2A3(int addr)
+
+		private int AddrA2A3(int addr)
 		{
 			return addr & 0x7000 | (addr >> 2) & 3;
 		}
-		int AddrA3A2(int addr)
+
+		private int AddrA3A2(int addr)
 		{
 			return addr & 0x7000 | (addr >> 3) & 1 | (addr >> 1) & 2;
 		}
 		// these composite mappings are what's needed for ines mappers
-		int AddrA1A2_A6A7(int addr)
+		private int AddrA1A2_A6A7(int addr)
 		{
 			return addr & 0x7000 | (addr >> 1) & 3 | (addr >> 6) & 3;
 		}
-		int AddrA0A1_A2A3(int addr)
+
+		private int AddrA0A1_A2A3(int addr)
 		{
 			return addr & 0x7003 | (addr >> 2) & 3;
 		}
-		int AddrA3A2_A1A0(int addr)
+
+		private int AddrA3A2_A1A0(int addr)
 		{
 			return addr & 0x7000 | (addr >> 3) & 1 | (addr >> 1) & 3 | (addr << 1) & 2;
 		}
@@ -107,7 +114,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync("isBMC", ref _isBMC);
 		}
 
-		void SyncPRG()
+		private void SyncPRG()
 		{
 			if (!_isBMC)
 			{
@@ -143,7 +150,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		void SyncIRQ()
+		private void SyncIRQ()
 		{
 			IrqSignal = (irq_pending && irq_enabled);
 		}
@@ -451,7 +458,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		void ClockIRQ()
+		private void ClockIRQ()
 		{
 			if (type == 2) return;
 			if (irq_counter == 0xFF)

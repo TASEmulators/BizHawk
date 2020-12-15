@@ -76,7 +76,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		static readonly bool USE_DATABASE = true;
+		private static readonly bool USE_DATABASE = true;
 		public RomStatus RomStatus;
 
 		public string RomDetails { get; private set; }
@@ -138,13 +138,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			//public int pal_bottom = 239;
 			public int left = 0;
 			public int right = 255;
-			readonly NES emu;
+			private readonly NES emu;
 			public MyVideoProvider(NES emu)
 			{
 				this.emu = emu;
 			}
 
-			readonly int[] pixels = new int[256 * 240];
+			private readonly int[] pixels = new int[256 * 240];
 			public int[] GetVideoBuffer()
 			{
 				return pixels;
@@ -285,22 +285,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public string GameName => game_name;
 
-		StringWriter LoadReport;
-		void LoadWriteLine(string format, params object[] arg)
+		private StringWriter LoadReport;
+
+		private void LoadWriteLine(string format, params object[] arg)
 		{
 			Console.WriteLine(format, arg);
 			LoadReport.WriteLine(format, arg);
 		}
-		void LoadWriteLine(object arg) { LoadWriteLine("{0}", arg); }
 
-		class MyWriter : StringWriter
+		private void LoadWriteLine(object arg) { LoadWriteLine("{0}", arg); }
+
+		private class MyWriter : StringWriter
 		{
 			public MyWriter(TextWriter _loadReport)
 			{
 				loadReport = _loadReport;
 			}
 
-			readonly TextWriter loadReport;
+			private readonly TextWriter loadReport;
 			public override void WriteLine(string format, params object[] arg)
 			{
 				Console.WriteLine(format, arg);
@@ -748,7 +750,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		static NESSyncSettings.Region DetectRegion(string system)
+		private static NESSyncSettings.Region DetectRegion(string system)
 		{
 			switch (system)
 			{

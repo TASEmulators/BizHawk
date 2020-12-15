@@ -42,12 +42,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	internal sealed class TAITO_X1_005 : NesBoardBase
 	{
 		// config
-		int prg_bank_mask, chr_bank_mask;
-		bool tlsrewire = false;
+		private int prg_bank_mask, chr_bank_mask;
+
+		private bool tlsrewire = false;
 		// state
-		byte[] chr_regs_1k = new byte[8];
-		byte[] prg_regs_8k = new byte[4];
-		bool wramenable = false;
+		private byte[] chr_regs_1k = new byte[8];
+		private byte[] prg_regs_8k = new byte[4];
+		private bool wramenable = false;
 
 		public override void SyncState(Serializer ser)
 		{

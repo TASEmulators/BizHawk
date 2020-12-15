@@ -33,24 +33,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	internal sealed class BANDAI_FCG_1 : NesBoardBase 
 	{
 		//configuration
-		int prg_bank_mask_16k, chr_bank_mask_1k;
+		private int prg_bank_mask_16k, chr_bank_mask_1k;
 
-		bool regs_prg_enable; // can the mapper regs be written to in 8000:ffff?
-		bool regs_wram_enable; // can the mapper regs be written to in 6000:7fff?
-		bool jump2 = false; // are we in special mode for the JUMP2 board?
-		bool vram = false; // is this a VRAM board?  (also set to true for JUMP2)
-		byte jump2_outer_bank; // needed to select between banks in 512K jump2 board
+		private bool regs_prg_enable; // can the mapper regs be written to in 8000:ffff?
+		private bool regs_wram_enable; // can the mapper regs be written to in 6000:7fff?
+		private bool jump2 = false; // are we in special mode for the JUMP2 board?
+		private bool vram = false; // is this a VRAM board?  (also set to true for JUMP2)
+		private byte jump2_outer_bank; // needed to select between banks in 512K jump2 board
 
 		//regenerable state
-		readonly int[] prg_banks_16k = new int[2];
+		private readonly int[] prg_banks_16k = new int[2];
 
 		//state
-		int prg_reg_16k;
-		byte[] regs = new byte[8];
-		bool irq_enabled;
-		ushort irq_counter;
-		ushort irq_latch;
-		SEEPROM eprom;
+		private int prg_reg_16k;
+		private byte[] regs = new byte[8];
+		private bool irq_enabled;
+		private ushort irq_counter;
+		private ushort irq_latch;
+		private SEEPROM eprom;
 		public DatachBarcode reader;
 
 		public override void SyncState(Serializer ser)
@@ -176,7 +176,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		void SyncPRG()
+		private void SyncPRG()
 		{
 			prg_banks_16k[0] = prg_reg_16k & prg_bank_mask_16k;
 			prg_banks_16k[1] = 0xFF & prg_bank_mask_16k;
@@ -197,7 +197,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			*/		
 		}
 
-		void WriteReg(int reg, byte value)
+		private void WriteReg(int reg, byte value)
 		{
 			//Console.WriteLine("reg {0:X2} = {1:X2}", reg, value);
 			switch (reg)
@@ -358,7 +358,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return Rom[addr];
 		}
 
-		int CalcPPUAddress(int addr)
+		private int CalcPPUAddress(int addr)
 		{
 			int bank_1k = addr >> 10;
 			int ofs = addr & ((1 << 10) - 1);

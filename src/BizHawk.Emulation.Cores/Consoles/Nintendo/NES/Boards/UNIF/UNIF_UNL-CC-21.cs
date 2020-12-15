@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	internal sealed class UNIF_UNL_CC_21 : NesBoardBase
 	{
-		int _reg;
+		private int _reg;
 		public override bool Configure(EDetectionOrigin origin)
 		{
 			switch (Cart.BoardType)

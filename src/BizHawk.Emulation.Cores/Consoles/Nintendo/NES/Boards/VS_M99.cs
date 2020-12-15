@@ -8,14 +8,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	internal sealed class MAPPER99 : NesBoardBase
 	{
 		//configuration
-		int prg_byte_mask, chr_mask;
+		private int prg_byte_mask, chr_mask;
 
 		//state
-		int chr;
+		private int chr;
 
 		//the VS actually does have 2 KB of nametable address space
 		//let's make the extra space here, instead of in the main NES to avoid confusion
-		byte[] CIRAM_VS = new byte[0x800];
+		private byte[] CIRAM_VS = new byte[0x800];
 
 		public override bool Configure(EDetectionOrigin origin)
 		{

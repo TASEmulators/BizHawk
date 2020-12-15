@@ -5,8 +5,8 @@
 	internal sealed class Mapper218 : NesBoardBase
 	{
 		//configuration
-		int prg_byte_mask;
-		int chr_addr_mask;
+		private int prg_byte_mask;
+		private int chr_addr_mask;
 
 		public override bool Configure(EDetectionOrigin origin)
 		{
@@ -53,7 +53,7 @@
 			return true;
 		}
 
-		int TransformPPU(int addr)
+		private int TransformPPU(int addr)
 		{
 			if ((addr & chr_addr_mask) != 0)
 				addr = addr & 0x3ff | 0x400;

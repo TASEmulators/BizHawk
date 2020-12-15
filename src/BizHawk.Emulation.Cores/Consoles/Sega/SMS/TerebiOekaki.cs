@@ -4,14 +4,15 @@
 	{
 		//This doesn't look functional. Illogical and nothing like http://www.smspower.org/Articles/TerebiOekaki
 
-		byte xCoord = 128;
-		byte yCoord = 100;
+		private byte xCoord = 128;
+		private byte yCoord = 100;
 
-		enum Axis { XAxis, YAxis }
-		Axis axis = Axis.XAxis;
+		private enum Axis { XAxis, YAxis }
+
+		private Axis axis = Axis.XAxis;
 
 
-		byte ReadMemoryTO(ushort address)
+		private byte ReadMemoryTO(ushort address)
 		{
 			if (address < 0x8000) return RomData[address & 0x1FFF];
 			if (address == 0x8000)
@@ -36,7 +37,7 @@
 			return SystemRam[address & RamSizeMask];
 		}
 
-		void WriteMemoryTO(ushort address, byte value)
+		private void WriteMemoryTO(ushort address, byte value)
 		{
 			if (address >= 0xC000)
 				SystemRam[address & RamSizeMask] = value;
@@ -44,7 +45,7 @@
 				axis = ((value & 1) == 0) ? Axis.XAxis : Axis.YAxis;
 		}
 
-		void InitTerebiOekaki()
+		private void InitTerebiOekaki()
 		{
 			ReadMemoryMapper = ReadMemoryTO;
 			WriteMemoryMapper = WriteMemoryTO;

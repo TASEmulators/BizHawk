@@ -17,18 +17,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	internal sealed class TAITO_TC0190FMC : NesBoardBase
 	{
 		//configuration
-		int prg_bank_mask, chr_bank_mask;
-		bool pal16;
+		private int prg_bank_mask, chr_bank_mask;
+		private bool pal16;
 
-		class MMC3Variant : MMC3
+		private class MMC3Variant : MMC3
 		{
 			public MMC3Variant(NesBoardBase board)
 			: base(board,0)
 			{
 			}
 
-			bool pending;
-			int delay;
+			private bool pending;
+			private int delay;
 
 			public override void SyncState(Serializer ser)
 			{
@@ -68,10 +68,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 
 		//state
-		byte[] prg_regs_8k = new byte[4];
-		byte[] chr_regs_1k = new byte[8];
-		int mirror_mode;
-		MMC3Variant mmc3;
+		private byte[] prg_regs_8k = new byte[4];
+		private byte[] chr_regs_1k = new byte[8];
+		private int mirror_mode;
+		private MMC3Variant mmc3;
 
 		public override void SyncState(Serializer ser)
 		{
@@ -121,7 +121,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		void SyncMirror()
+		private void SyncMirror()
 		{
 			SetMirrorType(mirror_mode == 0 ? EMirrorType.Vertical : EMirrorType.Horizontal);
 		}

@@ -10,13 +10,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	internal sealed class Sunsoft4 : NesBoardBase
 	{
 		//configuration
-		int prg_bank_mask, chr_bank_mask, nt_bank_mask;
+		private int prg_bank_mask, chr_bank_mask, nt_bank_mask;
 
 		//state
-		byte[] chr_regs_2k = new byte[4];
-		byte[] nt_regs = new byte[2];
-		byte[] prg_regs_16k = new byte[2];
-		bool flag_m, flag_r;
+		private byte[] chr_regs_2k = new byte[4];
+		private byte[] nt_regs = new byte[2];
+		private byte[] prg_regs_16k = new byte[2];
+		private bool flag_m, flag_r;
 
 		public override void SyncState(Serializer ser)
 		{

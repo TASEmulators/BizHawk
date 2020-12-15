@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		private readonly Dictionary<string, MemoryDomainByteArray> _byteArrayDomains = new Dictionary<string, MemoryDomainByteArray>();
 		private bool _memoryDomainsInit = false;
 
-		void SetupMemoryDomains()
+		private void SetupMemoryDomains()
 		{
 			var domains = new List<MemoryDomain>
 			{

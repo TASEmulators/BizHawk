@@ -12,12 +12,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	internal sealed class JALECO_JF_13 : NesBoardBase
 	{
 		//configuration
-		int prg_bank_mask_32k;
-		int chr_bank_mask_8k;
+		private int prg_bank_mask_32k;
+		private int chr_bank_mask_8k;
 
 		//state
-		int chr;
-		int prg;
+		private int chr;
+		private int prg;
 
 		public override bool Configure(EDetectionOrigin origin)
 		{

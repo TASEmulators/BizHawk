@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//generally mapper 13
 
 		//state
-		int chr;
+		private int chr;
 
 		public override bool Configure(EDetectionOrigin origin)
 		{

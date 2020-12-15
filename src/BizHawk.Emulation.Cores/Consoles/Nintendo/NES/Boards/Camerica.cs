@@ -8,11 +8,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	internal sealed class Camerica_Mapper071 : NesBoardBase
 	{
 		//configuration
-		int prg_bank_mask_16k;
-		bool mirror_control_enabled;
+		private int prg_bank_mask_16k;
+		private bool mirror_control_enabled;
 
 		//state
-		int[] prg_banks_16k = new int[2];
+		private int[] prg_banks_16k = new int[2];
 
 		public override void SyncState(Serializer ser)
 		{
@@ -87,14 +87,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	}
 
 	//AKA mapper 232
-	class Camerica_Mapper232 : NesBoardBase
+	internal class Camerica_Mapper232 : NesBoardBase
 	{
 		//configuration
-		int prg_bank_mask_16k;
+		private int prg_bank_mask_16k;
 
 		//state
-		int[] prg_banks_16k = new int[2];
-		int prg_block, prg_page;
+		private int[] prg_banks_16k = new int[2];
+		private int prg_block, prg_page;
 
 		public override void SyncState(Serializer ser)
 		{
@@ -144,7 +144,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		void SyncPRG()
+		private void SyncPRG()
 		{
 			prg_banks_16k[0] = (prg_block << 2) | prg_page;
 			prg_banks_16k[1] = (prg_block << 2) | 3;

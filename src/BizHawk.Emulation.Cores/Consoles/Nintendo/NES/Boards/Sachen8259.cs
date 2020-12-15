@@ -9,17 +9,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	internal sealed class Sachen8259ABC : NesBoardBase
 	{
 		// config
-		int prg_bank_mask_32k;
-		int chr_bank_mask_2k;
+		private int prg_bank_mask_32k;
+		private int chr_bank_mask_2k;
 
-		int shiftout; // reg lines are shifted on the PCB to increase capacity
-		int shiftmask;
+		private int shiftout; // reg lines are shifted on the PCB to increase capacity
+		private int shiftmask;
 
 		// state
-		int port; // register that gets written next
-		int prg; // 32K prg swap
-		int[] chr = new int[4]; // 6 bits of chr, 3 from an outer bank
-		bool simple; // when true, we're in some sort of "simplified" mode
+		private int port; // register that gets written next
+		private int prg; // 32K prg swap
+		private int[] chr = new int[4]; // 6 bits of chr, 3 from an outer bank
+		private bool simple; // when true, we're in some sort of "simplified" mode
 
 		public override bool Configure(EDetectionOrigin origin)
 		{
@@ -68,7 +68,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			Write(addr, value);
 		}
-		void Write(int addr, byte value)
+
+		private void Write(int addr, byte value)
 		{
 			addr &= 0x0101;
 			if (addr == 0x100)
@@ -176,13 +177,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	internal sealed class Sachen8259D : NesBoardBase
 	{
 		// config
-		int prg_bank_mask_32k;
-		int chr_bank_mask_1k;
+		private int prg_bank_mask_32k;
+		private int chr_bank_mask_1k;
 
 		// state
-		int port;
-		int prg;
-		int[] chr = new int[8];
+		private int port;
+		private int prg;
+		private int[] chr = new int[8];
 
 		public override bool Configure(EDetectionOrigin origin)
 		{
@@ -219,7 +220,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			Write(addr, value);
 		}
-		void Write(int addr, byte value)
+
+		private void Write(int addr, byte value)
 		{
 			addr &= 0x0101;
 			if (addr == 0x100)

@@ -6,11 +6,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	internal sealed class Mapper112 : NesBoardBase
 	{
 		//configuration
-		int prg_bank_mask_8k, chr_bank_mask_1k, chr_outer_reg;
+		private int prg_bank_mask_8k, chr_bank_mask_1k, chr_outer_reg;
 
 		//state
-		int reg_addr;
-		byte[] regs = new byte[8];
+		private int reg_addr;
+		private byte[] regs = new byte[8];
 
 		private int[] _chrRegs1K = new int[8];
 		private byte[] _prgRegs8K = new byte[4];
@@ -77,7 +77,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		void Sync()
+		private void Sync()
 		{
 			_prgRegs8K[0] = regs[0];
 			_prgRegs8K[1] = regs[1];
@@ -118,7 +118,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return bank_1k;
 		}
 
-		int RewireCHR(int addr)
+		private int RewireCHR(int addr)
 		{
 			int bank_1k = Get_CHRBank_1K(addr);
 			bank_1k &= chr_bank_mask_1k;

@@ -7,17 +7,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	internal sealed class VRC1 : NesBoardBase
 	{
 		//configuration
-		int prg_bank_mask_8k;
-		int chr_bank_mask_4k;
+		private int prg_bank_mask_8k;
+		private int chr_bank_mask_4k;
 
 		//state
-		int[] prg_banks_8k = new int[4];
-		int[] chr_banks_4k = new int[2];
-		readonly int[] chr_regs_4k = new int[2];
+		private int[] prg_banks_8k = new int[4];
+		private int[] chr_banks_4k = new int[2];
+		private readonly int[] chr_regs_4k = new int[2];
 
 		//the VS actually does have 2 KB of nametable address space
 		//let's make the extra space here, instead of in the main NES to avoid confusion
-		byte[] CIRAM_VS = new byte[0x800];
+		private byte[] CIRAM_VS = new byte[0x800];
 
 		public override void SyncState(Serializer ser)
 		{
@@ -143,7 +143,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				base.WritePpu(addr, value);
 		}
 
-		void SyncCHR()
+		private void SyncCHR()
 		{
 			chr_banks_4k[0] = chr_regs_4k[0] & chr_bank_mask_4k;
 			chr_banks_4k[1] = chr_regs_4k[1] & chr_bank_mask_4k;

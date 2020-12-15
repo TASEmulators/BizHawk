@@ -13,9 +13,9 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 		public int IRQS;
 		public int irq_pntr;
 
-		ushort reg_d_ad;
-		ushort reg_h_ad;
-		ushort reg_l_ad;
+		private ushort reg_d_ad;
+		private ushort reg_h_ad;
+		private ushort reg_l_ad;
 
 		public void FetchInstruction(byte opcode)
 		{

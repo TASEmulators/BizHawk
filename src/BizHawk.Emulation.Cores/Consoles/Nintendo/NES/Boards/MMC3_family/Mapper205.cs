@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	{
 		//Mapper 205 info: http://wiki.nesdev.com/w/index.php/INES_Mapper_205
 
-		int block;
+		private int block;
 
 		public override bool Configure(EDetectionOrigin origin)
 		{
@@ -65,7 +65,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return Rom[addr];
 		}
 
-		int MapCHR2(int addr)
+		private int MapCHR2(int addr)
 		{
 			int bank_1k = Get_CHRBank_1K(addr);
 			bank_1k &= chr_mask;

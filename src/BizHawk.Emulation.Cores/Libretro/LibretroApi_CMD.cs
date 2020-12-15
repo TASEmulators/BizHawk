@@ -2,7 +2,7 @@
 {
 	unsafe partial class LibretroApi
 	{
-		void WaitForCMD()
+		private void WaitForCMD()
 		{
 			for (; ; )
 			{

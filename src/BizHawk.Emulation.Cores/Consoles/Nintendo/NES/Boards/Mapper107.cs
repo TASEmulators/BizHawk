@@ -5,10 +5,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	internal sealed class Mapper107 : NesBoardBase
 	{
 		//configuration
-		int prg_bank_mask_32k, chr_bank_mask_8k;
+		private int prg_bank_mask_32k, chr_bank_mask_8k;
 
 		//state
-		int prg_bank_32k, chr_bank_8k;
+		private int prg_bank_32k, chr_bank_8k;
 
 		public override void SyncState(Serializer ser)
 		{

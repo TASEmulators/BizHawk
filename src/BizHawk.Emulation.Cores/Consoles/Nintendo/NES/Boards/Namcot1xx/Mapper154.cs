@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	internal sealed class Mapper154 : Namcot108Board_Base
 	{
 		//configuration
-		int chr_bank_mask_1k;
+		private int chr_bank_mask_1k;
 
 		public override bool Configure(EDetectionOrigin origin)
 		{
@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		int RewireCHR(int addr)
+		private int RewireCHR(int addr)
 		{
 			int bank_1k = mapper.Get_CHRBank_1K(addr);
 			bank_1k &= 0x3F;

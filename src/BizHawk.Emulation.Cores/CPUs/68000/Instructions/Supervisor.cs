@@ -4,7 +4,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 {
 	partial class MC68000
 	{
-		void MOVEtSR()
+		private void MOVEtSR()
 		{
 			if (S == false)
 				throw new Exception("Write to SR when not in supervisor mode. supposed to trap or something...");
@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			PendingCycles -= 12 + EACyclesBW[mode, reg];
 		}
 
-		void MOVEtSR_Disasm(DisassemblyInfo info)
+		private void MOVEtSR_Disasm(DisassemblyInfo info)
 		{
 			int pc = info.PC + 2;
 			int mode = (op >> 3) & 7;
@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			info.Length = pc - info.PC;
 		}
 
-		void MOVEfSR()
+		private void MOVEfSR()
 		{
 			int mode = (op >> 3) & 7;
 			int reg = (op >> 0) & 7;
@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			PendingCycles -= (mode == 0) ? 6 : 8 + EACyclesBW[mode, reg];
 		}
 
-		void MOVEfSR_Disasm(DisassemblyInfo info)
+		private void MOVEfSR_Disasm(DisassemblyInfo info)
 		{
 			int pc = info.PC + 2;
 			int mode = (op >> 3) & 7;
@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			info.Length = pc - info.PC;
 		}
 
-		void MOVEUSP()
+		private void MOVEUSP()
 		{
 			if (S == false)
 				throw new Exception("MOVE to USP when not supervisor. needs to trap");
@@ -57,7 +57,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			PendingCycles -= 4;
 		}
 
-		void MOVEUSP_Disasm(DisassemblyInfo info)
+		private void MOVEUSP_Disasm(DisassemblyInfo info)
 		{
 			int pc = info.PC + 2;
 			int dir = (op >> 3) & 1;
@@ -67,7 +67,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			info.Length = pc - info.PC;
 		}
 
-		void ANDI_SR()
+		private void ANDI_SR()
 		{
 			if (S == false)
 				throw new Exception("trap!");
@@ -75,7 +75,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			PendingCycles -= 20;
 		}
 
-		void ANDI_SR_Disasm(DisassemblyInfo info)
+		private void ANDI_SR_Disasm(DisassemblyInfo info)
 		{
 			int pc = info.PC + 2;
 			info.Mnemonic = "andi";
@@ -83,7 +83,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			info.Length = pc - info.PC;
 		}
 
-		void EORI_SR()
+		private void EORI_SR()
 		{
 			if (S == false)
 				throw new Exception("trap!");
@@ -91,7 +91,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			PendingCycles -= 20;
 		}
 
-		void EORI_SR_Disasm(DisassemblyInfo info)
+		private void EORI_SR_Disasm(DisassemblyInfo info)
 		{
 			int pc = info.PC + 2;
 			info.Mnemonic = "eori";
@@ -99,7 +99,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			info.Length = pc - info.PC;
 		}
 
-		void ORI_SR()
+		private void ORI_SR()
 		{
 			if (S == false)
 				throw new Exception("trap!");
@@ -107,7 +107,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			PendingCycles -= 20;
 		}
 
-		void ORI_SR_Disasm(DisassemblyInfo info)
+		private void ORI_SR_Disasm(DisassemblyInfo info)
 		{
 			int pc = info.PC + 2;
 			info.Mnemonic = "ori";
@@ -115,7 +115,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			info.Length = pc - info.PC;
 		}
 
-		void MOVECCR()
+		private void MOVECCR()
 		{
 			int mode = (op >> 3) & 7;
 			int reg = (op >> 0) & 7;
@@ -126,7 +126,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			PendingCycles -= 12 + EACyclesBW[mode, reg];
 		}
 
-		void MOVECCR_Disasm(DisassemblyInfo info)
+		private void MOVECCR_Disasm(DisassemblyInfo info)
 		{
 			int pc = info.PC + 2;
 			int mode = (op >> 3) & 7;
@@ -136,20 +136,20 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			info.Length = pc - info.PC;
 		}
 
-		void TRAP()
+		private void TRAP()
 		{
 			int vector = 32 + (op & 0x0F);
 			TrapVector(vector);
 			PendingCycles -= 26;
 		}
 
-		void TRAP_Disasm(DisassemblyInfo info)
+		private void TRAP_Disasm(DisassemblyInfo info)
 		{
 			info.Mnemonic = "trap";
 			info.Args = $"#${op & 0xF:X}";
 		}
 
-		void TrapVector(int vector)
+		private void TrapVector(int vector)
 		{
 			short sr = (short)SR;        // capture current SR.
 			S = true;                    // switch to supervisor mode, if not already in it.

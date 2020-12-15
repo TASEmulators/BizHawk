@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	/// </summary>
 	public class RamAdapter
 	{
-		static void WriteBlock(Stream dest, byte[] data, int pregap)
+		private static void WriteBlock(Stream dest, byte[] data, int pregap)
 		{
 			for (int i = 0; i < pregap - 1; i++)
 				dest.WriteByte(0);
@@ -26,7 +26,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			dest.WriteByte((byte)(crc >> 8)); 
 		}
 
-		static byte[] FixFDSSide(byte[] inputdisk)
+		private static byte[] FixFDSSide(byte[] inputdisk)
 		{
 			// the current circulating .fds dumps are horribly broken.  here we attempt to fix them up as best as possible.
 			// todo: implement CRC.  since the RamAdapter itself doesn't implement it, broken is not a problem
@@ -92,7 +92,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// <summary>
 		/// advance a 16 bit CRC register with 1 new input bit.  x.25 standard
 		/// </summary>
-		static ushort CCITT(ushort crc, int bit)
+		private static ushort CCITT(ushort crc, int bit)
 		{
 			int bitc = crc & 1;
 			crc >>= 1;
@@ -104,7 +104,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// <summary>
 		/// advance a 16 bit CRC register with 8 new input bits.  x.25 standard
 		/// </summary>
-		static ushort CCITT_8(ushort crc, byte b)
+		private static ushort CCITT_8(ushort crc, byte b)
 		{
 			for (int i = 0; i < 8; i++)
 			{
@@ -147,45 +147,45 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 
 		/// <summary>the original contents of this disk when it was loaded.  for virtual saveram diff</summary>
-		byte[] originaldisk = null;
+		private byte[] originaldisk = null;
 		/// <summary>currently loaded disk side (ca 65k bytes)</summary>
-		byte[] disk = null;
+		private byte[] disk = null;
 		/// <summary>current disk location in BITS, not bytes</summary>
-		int diskpos;
+		private int diskpos;
 		/// <summary>size of current disk in BITS, not bytes</summary>
-		int disksize;
+		private int disksize;
 		/// <summary>true if current disk is writeprotected</summary>
-		bool writeprotect = true;
+		private bool writeprotect = true;
 
 		/// <summary>ppu cycles until next action</summary>
-		int cycleswaiting = 0;
+		private int cycleswaiting = 0;
 		/// <summary>physical state of the drive</summary>
-		RamAdapterState state = RamAdapterState.IDLE;
+		private RamAdapterState state = RamAdapterState.IDLE;
 
 		/// <summary>cached 4025 write; can be modified internally by some things</summary>
-		byte cached4025;
+		private byte cached4025;
 		/// <summary>can be raised on byte transfer complete</summary>
 		public bool irq;
 		/// <summary>true if 4025.1 is set to true</summary>
-		bool transferreset = false;
+		private bool transferreset = false;
 
 		/// <summary>
 		/// 16 bit CRC register.  in normal operation, will become all 0 on finishing a read (see x.25 spec for more details)
 		/// </summary>
-		ushort crc = 0;
+		private ushort crc = 0;
 		/// <summary>true if data being written to disk is currently being computed in CRC</summary>
-		bool writecomputecrc; // this has to be latched because the "flush CRC" call comes in the middle of a byte, of course
+		private bool writecomputecrc; // this has to be latched because the "flush CRC" call comes in the middle of a byte, of course
 
 		// read and write shift regs, with bit positions and latched values for reload
-		byte readreg;
-		byte writereg;
-		int readregpos;
-		int writeregpos;
-		byte readreglatch;
-		byte writereglatch;
+		private byte readreg;
+		private byte writereg;
+		private int readregpos;
+		private int writeregpos;
+		private byte readreglatch;
+		private byte writereglatch;
 
-		bool bytetransferflag;
-		bool lookingforendofgap = false;
+		private bool bytetransferflag;
+		private bool lookingforendofgap = false;
 
 		public Action<bool> DriveLightCallback;
 
@@ -282,7 +282,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 
 		// all timings are in terms of PPU cycles (@5.37mhz)
-		enum RamAdapterState
+		private enum RamAdapterState
 		{
 			/// <summary>moving over the disk</summary>
 			RUNNING,
@@ -299,7 +299,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// <summary>
 		/// set cycleswaiting param after a state change
 		/// </summary>
-		void SetCycles()
+		private void SetCycles()
 		{
 			// these are mostly guesses
 			switch (state)
@@ -512,7 +512,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 
 
-		void Read()
+		private void Read()
 		{
 			int bit = disk[diskpos >> 3] >> (diskpos & 7) & 1;
 
@@ -562,7 +562,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		void Write()
+		private void Write()
 		{
 			if (writeprotect)
 			{
@@ -626,7 +626,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			diskpos++;
 		}
 
-		void MoveDummy()
+		private void MoveDummy()
 		{
 			// It seems that the real disk doesn't keep on running at normal speed to the end while restting
 			// Whoever told me that was mistaken...

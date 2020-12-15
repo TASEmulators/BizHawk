@@ -6,27 +6,27 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 	{
 		// just the color deemphasis routines from nes_ntsc
 
-		static void RGB_TO_YIQ(float r, float g, float b, out float y, out float i, out float q)
+		private static void RGB_TO_YIQ(float r, float g, float b, out float y, out float i, out float q)
 		{
 			y = (r) * 0.299f + (g) * 0.587f + (b) * 0.114f;
 			i = (r) * 0.596f - (g) * 0.275f - (b) * 0.321f;
 			q = (r) * 0.212f - (g) * 0.523f + (b) * 0.311f;
 		}
 
-		static readonly float[] to_rgb = { 0.956f, 0.621f, -0.272f, -0.647f, -1.105f, 1.702f };
+		private static readonly float[] to_rgb = { 0.956f, 0.621f, -0.272f, -0.647f, -1.105f, 1.702f };
 
-		static void YIQ_TO_RGB(float y, float i, float q, out float r, out float g, out float b)
+		private static void YIQ_TO_RGB(float y, float i, float q, out float r, out float g, out float b)
 		{
 			r = (float)(y + to_rgb[0] * i + to_rgb[1] * q);
 			g = (float)(y + to_rgb[2] * i + to_rgb[3] * q);
 			b = (float)(y + to_rgb[4] * i + to_rgb[5] * q);
 		}
 
-		static readonly float[] lo_levels = { -0.12f, 0.00f, 0.31f, 0.72f };
-		static readonly float[] hi_levels = { 0.40f, 0.68f, 1.00f, 1.00f };
-		static readonly byte[] tints = { 0, 6, 10, 8, 2, 4, 0, 0 };
+		private static readonly float[] lo_levels = { -0.12f, 0.00f, 0.31f, 0.72f };
+		private static readonly float[] hi_levels = { 0.40f, 0.68f, 1.00f, 1.00f };
+		private static readonly byte[] tints = { 0, 6, 10, 8, 2, 4, 0, 0 };
 
-		static readonly float[] phases =
+		private static readonly float[] phases =
 		{
 			-1.0f, -0.866025f, -0.5f, 0.0f,  0.5f,  0.866025f,
 			 1.0f,  0.866025f,  0.5f, 0.0f, -0.5f, -0.866025f,

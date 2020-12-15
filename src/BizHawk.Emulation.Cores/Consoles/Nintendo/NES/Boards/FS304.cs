@@ -4,8 +4,8 @@
 	{
 		// waixing?
 
-		int prg;
-		int prg_mask_32k;
+		private int prg;
+		private int prg_mask_32k;
 
 		public override bool Configure(EDetectionOrigin origin)
 		{

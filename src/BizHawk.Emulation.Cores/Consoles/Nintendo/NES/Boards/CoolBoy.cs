@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		// behavior directly from fceu-mm
 
 		// this could be broken down into more sensibly named variables
-		byte[] exp = new byte[4];
+		private byte[] exp = new byte[4];
 
 		public override bool Configure(EDetectionOrigin origin)
 		{

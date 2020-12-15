@@ -7,9 +7,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	//this is confusing. see docs/sunsoft.txt
 	internal sealed class Sunsoft1 : NesBoardBase
 	{
-		int chr_mask;
-		int left_piece = 0;
-		int right_piece = 3;
+		private int chr_mask;
+		private int left_piece = 0;
+		private int right_piece = 3;
 
 		public override bool Configure(EDetectionOrigin origin)
 		{

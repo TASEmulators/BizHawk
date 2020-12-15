@@ -7,8 +7,8 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 {
 	public static class BizSwan
 	{
-		const CallingConvention cc = CallingConvention.Cdecl;
-		const string dd = "bizswan.dll";
+		private const CallingConvention cc = CallingConvention.Cdecl;
+		private const string dd = "bizswan.dll";
 
 		/// <summary>
 		/// create new instance

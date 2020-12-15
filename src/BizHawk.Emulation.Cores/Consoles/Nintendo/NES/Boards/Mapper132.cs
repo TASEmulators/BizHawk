@@ -9,11 +9,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		private byte[] reg = new byte[4];
 
 		//configuraton
-		int prg_mask, chr_mask;
+		private int prg_mask, chr_mask;
 		//state
-		int prg, chr;
+		private int prg, chr;
 
-		bool is172, is173;
+		private bool is172, is173;
 
 		public override bool Configure(EDetectionOrigin origin)
 		{

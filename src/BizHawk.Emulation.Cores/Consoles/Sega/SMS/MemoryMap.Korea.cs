@@ -33,7 +33,7 @@
 			return SystemRam[address & RamSizeMask];
 		}
 
-		CDLog_MapResults MapMemoryKR(ushort address, bool write)
+		private CDLog_MapResults MapMemoryKR(ushort address, bool write)
 		{
 			if (address < 0x8000) return new CDLog_MapResults { Type = CDLog_AddrType.ROM, Address = address & 0x7FFF };
 			if (address < 0xC000) return new CDLog_MapResults { Type = CDLog_AddrType.ROM, Address = (RomBank2 * BankSize) + (address & BankSizeMask) };
@@ -53,7 +53,7 @@
 			}
 		}
 
-		void InitKoreaMapper()
+		private void InitKoreaMapper()
 		{
 			ReadMemoryMapper = ReadMemoryKR;
 			WriteMemoryMapper = WriteMemoryKR;
@@ -78,7 +78,7 @@
 			return SystemRam[address & RamSizeMask];
 		}
 
-		CDLog_MapResults MapMemoryMSX(ushort address, bool write)
+		private CDLog_MapResults MapMemoryMSX(ushort address, bool write)
 		{
 			if (address < 0x4000) return new CDLog_MapResults { Type = CDLog_AddrType.ROM, Address = address & 0x3FFF };
 			if (address < 0x6000) return new CDLog_MapResults { Type = CDLog_AddrType.ROM, Address = (RomBank0 * 0x2000) + (address & 0x1FFF) };
@@ -88,7 +88,7 @@
 			return new CDLog_MapResults { Type = CDLog_AddrType.MainRAM, Address = address & RamSizeMask };
 		}
 
-		byte ReadMemoryNemesis(ushort address)
+		private byte ReadMemoryNemesis(ushort address)
 		{
 			if (address < 0x2000) return RomData[(15 * 0x2000) + (address & 0x1FFF)];
 			if (address < 0x4000) return RomData[address & 0x3FFF];
@@ -99,7 +99,7 @@
 			return SystemRam[address & RamSizeMask];
 		}
 
-		CDLog_MapResults MapMemoryNemesis(ushort address, bool write)
+		private CDLog_MapResults MapMemoryNemesis(ushort address, bool write)
 		{
 			if (address < 0x2000) return new CDLog_MapResults { Type = CDLog_AddrType.ROM, Address = (15 * 0x2000) + (address & 0x1FFF) };
 			if (address < 0x4000) return new CDLog_MapResults { Type = CDLog_AddrType.ROM, Address = address & 0x3FFF };
@@ -110,7 +110,7 @@
 			return new CDLog_MapResults { Type = CDLog_AddrType.MainRAM, Address = address & RamSizeMask };
 		}
 
-		void WriteMemoryMSX(ushort address, byte value)
+		private void WriteMemoryMSX(ushort address, byte value)
 		{
 			if (address >= 0xC000)
 				SystemRam[address & RamSizeMask] = value;
@@ -125,7 +125,7 @@
 				RomBank1 = (byte)(value % (RomBanks * 2));
 		}
 
-		void InitMSXMapper()
+		private void InitMSXMapper()
 		{
 			ReadMemoryMapper = ReadMemoryMSX;
 			WriteMemoryMapper = WriteMemoryMSX;
@@ -136,7 +136,7 @@
 			RomBank3 = 0;
 		}
 
-		void InitNemesisMapper()
+		private void InitNemesisMapper()
 		{
 			InitMSXMapper();
 			ReadMemoryMapper = ReadMemoryNemesis;

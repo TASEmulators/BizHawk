@@ -6,8 +6,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	internal sealed class Mapper190 : NesBoardBase
 	{
 		//state
-		int prg_reg;
-		int[] chr_reg = new int[4];
+		private int prg_reg;
+		private int[] chr_reg = new int[4];
 
 		public override void SyncState(Serializer ser)
 		{

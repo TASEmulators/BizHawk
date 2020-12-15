@@ -5,13 +5,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	internal sealed class Mapper176 : NesBoardBase
 	{
 		//configuration
-		int prg_bank_mask_8k, chr_bank_mask_8k;
+		private int prg_bank_mask_8k, chr_bank_mask_8k;
 
 		//state
-		int mirror;
-		byte[] prg_banks_8k = new byte[4];
-		byte[] chr_banks_8k = new byte[1];
-		Bit sbw;
+		private int mirror;
+		private byte[] prg_banks_8k = new byte[4];
+		private byte[] chr_banks_8k = new byte[1];
+		private Bit sbw;
 
 		public override bool Configure(EDetectionOrigin origin)
 		{
@@ -46,8 +46,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		static readonly EMirrorType[] kMirrorTypes = {EMirrorType.Vertical,EMirrorType.Horizontal,EMirrorType.OneScreenA,EMirrorType.OneScreenB};
-		void SyncMirror()
+		private static readonly EMirrorType[] kMirrorTypes = {EMirrorType.Vertical,EMirrorType.Horizontal,EMirrorType.OneScreenA,EMirrorType.OneScreenB};
+
+		private void SyncMirror()
 		{
 			SetMirrorType(kMirrorTypes[mirror]);
 		}
@@ -82,7 +83,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			else return base.ReadPpu(addr);
 		}
 
-		void SetPrg32k(int value)
+		private void SetPrg32k(int value)
 		{
 			for(int i=0;i<4;i++)
 				prg_banks_8k[i] = (byte)(value * 4 + i);

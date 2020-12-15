@@ -7,10 +7,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//163 is for nanjing games
 
 		//configuration
-		int prg_bank_mask_32k;
+		private int prg_bank_mask_32k;
 
 		//state
-		byte[] prg_banks_32k = new byte[1];
+		private byte[] prg_banks_32k = new byte[1];
 
 		public override bool Configure(EDetectionOrigin origin)
 		{

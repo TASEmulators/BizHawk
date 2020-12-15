@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 	public class DatachBarcode : IEmulatorService
 	{
-		static readonly byte[,] prefixParityType = new byte[10, 6]
+		private static readonly byte[,] prefixParityType = new byte[10, 6]
 		{
 			{8,8,8,8,8,8}, {8,8,0,8,0,0},
 			{8,8,0,0,8,0}, {8,8,0,0,0,8},
@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{8,0,8,0,0,8}, {8,0,0,8,0,8}
 		};
 
-		static readonly byte[,] dataLeftOdd = new byte[10, 7]
+		private static readonly byte[,] dataLeftOdd = new byte[10, 7]
 		{
 			{8,8,8,0,0,8,0}, {8,8,0,0,8,8,0},
 			{8,8,0,8,8,0,0}, {8,0,0,0,0,8,0},
@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{8,0,0,8,0,0,0}, {8,8,8,0,8,0,0}
 		};
 
-		static readonly byte[,] dataLeftEven = new byte[10, 7]
+		private static readonly byte[,] dataLeftEven = new byte[10, 7]
 		{
 			{8,0,8,8,0,0,0}, {8,0,0,8,8,0,0},
 			{8,8,0,0,8,0,0}, {8,0,8,8,8,8,0},
@@ -37,7 +37,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{8,8,8,0,8,8,0}, {8,8,0,8,0,0,0}
 		};
 
-		static readonly byte[,] dataRight = new byte[10, 7]
+		private static readonly byte[,] dataRight = new byte[10, 7]
 		{
 			{0,0,0,8,8,0,8}, {0,0,8,8,0,0,8},
 			{0,0,8,0,0,8,8}, {0,8,8,8,8,0,8},
@@ -46,16 +46,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{0,8,8,0,8,8,8}, {0,0,0,8,0,8,8}
 		};
 
-		const int MIN_DIGITS = 8;
-		const int MAX_DIGITS = 13;
-		const int CC_INTERVAL = 1000;
+		private const int MIN_DIGITS = 8;
+		private const int MAX_DIGITS = 13;
+		private const int CC_INTERVAL = 1000;
 
-		int cycles;
-		byte output;
-		int stream_idx;
-		byte[] data = new byte[0];
+		private int cycles;
+		private byte output;
+		private int stream_idx;
+		private byte[] data = new byte[0];
 
-		byte streamoutput => data[stream_idx];
+		private byte streamoutput => data[stream_idx];
 
 		public void SyncState(Serializer ser)
 		{

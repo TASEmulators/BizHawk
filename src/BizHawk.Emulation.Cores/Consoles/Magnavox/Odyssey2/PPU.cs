@@ -53,11 +53,11 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 		public int LY_ret;
 
 		// local variables not stated
-		int current_pixel_offset;
-		int double_size;
-		int right_shift;
-		int right_shift_even;
-		int x_base;
+		private int current_pixel_offset;
+		private int double_size;
+		private int right_shift;
+		private int right_shift_even;
+		private int x_base;
 
 		public virtual byte ReadReg(int addr)
 		{

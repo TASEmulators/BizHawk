@@ -15,10 +15,10 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			savebuff = new byte[BizSwan.bizswan_binstatesize(Core)];
 		}
 
-		readonly JsonSerializer ser = new JsonSerializer { Formatting = Formatting.Indented };
+		private readonly JsonSerializer ser = new JsonSerializer { Formatting = Formatting.Indented };
 
 		[StructLayout(LayoutKind.Sequential)]
-		class TextStateData
+		private class TextStateData
 		{
 			public bool IsLagFrame;
 			public int LagCount;
@@ -57,7 +57,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			LoadTextStateData(s.ExtraData);
 		}
 
-		byte[] savebuff;
+		private byte[] savebuff;
 
 		public void SaveStateBinary(BinaryWriter writer)
 		{

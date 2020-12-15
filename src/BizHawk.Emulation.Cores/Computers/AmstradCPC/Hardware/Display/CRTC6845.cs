@@ -1094,30 +1094,30 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		}
 
 		/* persistent switch signals */
-		bool s_VS;
-		bool s_HDISP;
-		bool s_VDISP;
-		bool s_HSYNC;
+		private bool s_VS;
+		private bool s_HDISP;
+		private bool s_VDISP;
+		private bool s_HSYNC;
 
 		/* Other chip counters */
 		/// <summary>
 		/// Linear Address Generator counter latch
 		/// </summary>
-		int LAG_Counter_Latch;
+		private int LAG_Counter_Latch;
 
 		/// <summary>
 		/// Linear Address Generator row counter latch
 		/// </summary>
-		int LAG_Counter_RowLatch;
+		private int LAG_Counter_RowLatch;
 
 		/// <summary>
 		/// Linear Address Generator counter
 		/// </summary>
-		int LAG_Counter;
+		private int LAG_Counter;
 
-		int DISPTMG_Delay_Counter;
-		int CUDISP_Delay_Counter;
-		int CUR_Field_Counter;
+		private int DISPTMG_Delay_Counter;
+		private int CUDISP_Delay_Counter;
+		private int CUR_Field_Counter;
 
 		/// <summary>
 		/// Runs a generic CRTC cycle

@@ -10,9 +10,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//configuration
 
 		//state
-		bool wram_enabled;
-		bool wram_h_enabled, wram_l_enabled;
-		bool wram_h_enabled_write, wram_l_enabled_write;
+		private bool wram_enabled;
+		private bool wram_h_enabled, wram_l_enabled;
+		private bool wram_h_enabled_write, wram_l_enabled_write;
 
 		public override bool Configure(EDetectionOrigin origin)
 		{

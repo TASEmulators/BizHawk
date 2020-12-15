@@ -41,7 +41,7 @@
 			}
 		}
 
-		static readonly byte[] scramble_table = { 0, 3, 1, 5, 6, 7, 2, 4 };
+		private static readonly byte[] scramble_table = { 0, 3, 1, 5, 6, 7, 2, 4 };
 
 		private static int scramble_A000(byte val)
 		{

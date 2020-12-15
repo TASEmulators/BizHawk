@@ -44,7 +44,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			_cdl[type][cdladdr] |= (byte)flags;
 		}
 
-		void CDLCpuCallback(ushort addr, I8048.eCDLogMemFlags flags)
+		private void CDLCpuCallback(ushort addr, I8048.eCDLogMemFlags flags)
 		{
 
 			if (addr < 0x400)

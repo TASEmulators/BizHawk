@@ -8,10 +8,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//MHROM (mapper60) -like but wider regs (4 prg, 4 chr instead of 2 prg, 2 chr) and on EXP bus
 
 		//configuration
-		int prg_bank_mask_32k, chr_bank_mask_8k;
+		private int prg_bank_mask_32k, chr_bank_mask_8k;
 
 		//state
-		int prg_bank_32k, chr_bank_8k;
+		private int prg_bank_32k, chr_bank_8k;
 
 		public override bool Configure(EDetectionOrigin origin)
 		{

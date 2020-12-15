@@ -779,7 +779,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 			};
 		}
 
-		void FetchInstruction(int op)
+		private void FetchInstruction(int op)
 		{
 			instr_pntr = 0;
 			

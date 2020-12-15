@@ -12,12 +12,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	internal sealed class IC_74x377 : NesBoardBase
 	{
 		//configuration
-		int prg_bank_mask_32k, chr_bank_mask_8k;
-		bool bus_conflict = true;
-		bool bus_conflict_50282 = false;
+		private int prg_bank_mask_32k, chr_bank_mask_8k;
+		private bool bus_conflict = true;
+		private bool bus_conflict_50282 = false;
 
 		//state
-		int prg_bank_32k, chr_bank_8k;
+		private int prg_bank_32k, chr_bank_8k;
 
 		public override bool Configure(EDetectionOrigin origin)
 		{

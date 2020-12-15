@@ -12,14 +12,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	internal sealed class Irem_H3001 : NesBoardBase
 	{
 		//configuration
-		int prg_bank_mask, chr_bank_mask;
+		private int prg_bank_mask, chr_bank_mask;
 
 		//state
-		byte[] prg_regs_8k = new byte[4];
-		byte[] chr_regs_1k = new byte[8];
-		bool irq_counter_enabled, irq_asserted;
-		ushort irq_counter, irq_reload;
-		int clock_counter;
+		private byte[] prg_regs_8k = new byte[4];
+		private byte[] chr_regs_1k = new byte[8];
+		private bool irq_counter_enabled, irq_asserted;
+		private ushort irq_counter, irq_reload;
+		private int clock_counter;
 
 		public override void SyncState(Serializer ser)
 		{
@@ -79,7 +79,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			SyncIRQ();
 		}
 
-		void SyncIRQ()
+		private void SyncIRQ()
 		{
 			IrqSignal = irq_asserted;
 		}

@@ -68,7 +68,7 @@
 			eMessage_BRK_scanlineStart,
 		}
 
-		enum eStatus : int
+		private enum eStatus : int
 		{
 			eStatus_Idle,
 			eStatus_CMD,

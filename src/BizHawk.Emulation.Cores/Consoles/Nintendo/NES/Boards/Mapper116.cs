@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	internal sealed class Mapper116 : NesBoardBase
 	{
 		[NesBoardImplCancel]
-		class MMC3_CustomBoard : MMC3Board_Base
+		private class MMC3_CustomBoard : MMC3Board_Base
 		{
 			public override void WritePrg(int addr, byte value)
 			{
@@ -33,17 +33,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				master.SyncIRQ(flag);
 			}
 
-			readonly Mapper116 master;
+			private readonly Mapper116 master;
 
 		}
 
 		//configuration
 
 		//state
-		int mode;
-		SxROM mmc1;
-		MMC3_CustomBoard mmc3;
-		VRC2_4 vrc2;
+		private int mode;
+		private SxROM mmc1;
+		private MMC3_CustomBoard mmc3;
+		private VRC2_4 vrc2;
 
 		public override void SyncState(Serializer ser)
 		{
@@ -123,8 +123,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if(mode == 1)
 				base.SyncIRQ(flag);
 		}
-	
-		void SyncRoms()
+
+		private void SyncRoms()
 		{
 			foreach (var board in new NesBoardBase[] { mmc3, vrc2, mmc1 })
 			{
@@ -135,16 +135,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		void Sync()
+		private void Sync()
 		{
 		}
 
-		void mmc1_reset()
+		private void mmc1_reset()
 		{
 			mmc1.mmc1.StandardReset();
 		}
 
-		void WriteModeControl(int addr, byte value)
+		private void WriteModeControl(int addr, byte value)
 		{
 			if ((addr & 0x4100) != 0x4100)  return;
 			mode = value & 3;

@@ -17,9 +17,9 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 		public int PendingCycles;
 
 		// Status Registers
-		int InterruptMaskLevel;
-		bool s, m;
-		int usp, ssp;
+		private int InterruptMaskLevel;
+		private bool s, m;
+		private int usp, ssp;
 
 		/// <summary>Machine/Interrupt mode</summary>
 		/// <remarks>TODO probably have some switch logic maybe</remarks>

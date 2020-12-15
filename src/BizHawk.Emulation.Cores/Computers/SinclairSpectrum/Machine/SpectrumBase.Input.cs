@@ -9,38 +9,38 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 	/// </summary>
 	public abstract partial class SpectrumBase
 	{
-		readonly string Play = "Play Tape";
-		readonly string Stop = "Stop Tape";
-		readonly string RTZ = "RTZ Tape";
-		readonly string Record = "Record Tape";
-		readonly string NextTape = "Insert Next Tape";
-		readonly string PrevTape = "Insert Previous Tape";
-		readonly string NextBlock = "Next Tape Block";
-		readonly string PrevBlock = "Prev Tape Block";
-		readonly string TapeStatus = "Get Tape Status";
+		private readonly string Play = "Play Tape";
+		private readonly string Stop = "Stop Tape";
+		private readonly string RTZ = "RTZ Tape";
+		private readonly string Record = "Record Tape";
+		private readonly string NextTape = "Insert Next Tape";
+		private readonly string PrevTape = "Insert Previous Tape";
+		private readonly string NextBlock = "Next Tape Block";
+		private readonly string PrevBlock = "Prev Tape Block";
+		private readonly string TapeStatus = "Get Tape Status";
 
-		readonly string NextDisk = "Insert Next Disk";
-		readonly string PrevDisk = "Insert Previous Disk";
-		readonly string EjectDisk = "Eject Current Disk";
-		readonly string DiskStatus = "Get Disk Status";
+		private readonly string NextDisk = "Insert Next Disk";
+		private readonly string PrevDisk = "Insert Previous Disk";
+		private readonly string EjectDisk = "Eject Current Disk";
+		private readonly string DiskStatus = "Get Disk Status";
 
-		readonly string HardResetStr = "Power";
-		readonly string SoftResetStr = "Reset";
+		private readonly string HardResetStr = "Power";
+		private readonly string SoftResetStr = "Reset";
 
-		bool pressed_Play;
-		bool pressed_Stop;
-		bool pressed_RTZ;
-		bool pressed_NextTape;
-		bool pressed_PrevTape;
-		bool pressed_NextBlock;
-		bool pressed_PrevBlock;
-		bool pressed_TapeStatus;
-		bool pressed_NextDisk;
-		bool pressed_PrevDisk;
-		bool pressed_EjectDisk;
-		bool pressed_DiskStatus;
-		bool pressed_HardReset;
-		bool pressed_SoftReset;
+		private bool pressed_Play;
+		private bool pressed_Stop;
+		private bool pressed_RTZ;
+		private bool pressed_NextTape;
+		private bool pressed_PrevTape;
+		private bool pressed_NextBlock;
+		private bool pressed_PrevBlock;
+		private bool pressed_TapeStatus;
+		private bool pressed_NextDisk;
+		private bool pressed_PrevDisk;
+		private bool pressed_EjectDisk;
+		private bool pressed_DiskStatus;
+		private bool pressed_HardReset;
+		private bool pressed_SoftReset;
 
 		/// <summary>
 		/// Cycles through all the input callbacks

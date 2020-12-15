@@ -89,7 +89,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			OctoshockDll.shock_PowerOn(psx);
 		}
 
-		void Load(
+		private void Load(
 			CoreComm comm, List<Disc> discs, List<string> discNames, byte[] exe,
 			Octoshock.Settings settings, Octoshock.SyncSettings syncSettings, PSF psf, string romDetails)
 		{
@@ -370,11 +370,11 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		//we can only have one active core at a time, due to the lib being so static.
 		//so we'll track the current one here and detach the previous one whenever a new one is booted up.
-		static Octoshock CurrOctoshockCore;
+		private static Octoshock CurrOctoshockCore;
 
-		IntPtr psx;
+		private IntPtr psx;
 
-		bool disposed = false;
+		private bool disposed = false;
 		public void Dispose()
 		{
 			if (disposed) return;
@@ -397,7 +397,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		/// <summary>
 		/// Wraps the ShockDiscRef returned from the DLL and acts as a bridge between it and a DiscSystem disc
 		/// </summary>
-		class DiscInterface : IDisposable
+		private class DiscInterface : IDisposable
 		{
 			public DiscInterface(Disc disc, Action<DiscInterface> cbActivity)
 			{
@@ -408,9 +408,9 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				OctoshockDll.shock_CreateDisc(out OctoshockHandle, IntPtr.Zero, disc.Session1.LeadoutLBA, cbReadTOC, cbReadLBA, true);
 			}
 
-			OctoshockDll.ShockDisc_ReadTOC cbReadTOC;
-			OctoshockDll.ShockDisc_ReadLBA cbReadLBA;
-			readonly Action<DiscInterface> cbActivity;
+			private OctoshockDll.ShockDisc_ReadTOC cbReadTOC;
+			private OctoshockDll.ShockDisc_ReadLBA cbReadLBA;
+			private readonly Action<DiscInterface> cbActivity;
 
 			public readonly Disc Disc;
 			public IntPtr OctoshockHandle;
@@ -421,7 +421,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				OctoshockHandle = IntPtr.Zero;
 			}
 
-			int ShockDisc_ReadTOC(IntPtr opaque, OctoshockDll.ShockTOC* read_target, OctoshockDll.ShockTOCTrack* tracks101)
+			private int ShockDisc_ReadTOC(IntPtr opaque, OctoshockDll.ShockTOC* read_target, OctoshockDll.ShockTOCTrack* tracks101)
 			{
 				read_target->disc_type = (byte)Disc.TOC.Session1Format;
 				read_target->first_track = (byte)Disc.TOC.FirstRecordedTrackNumber; //i _think_ that's what is meant here
@@ -448,9 +448,9 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				return OctoshockDll.SHOCK_OK;
 			}
 
-			readonly byte[] SectorBuffer = new byte[2448];
+			private readonly byte[] SectorBuffer = new byte[2448];
 
-			int ShockDisc_ReadLBA2448(IntPtr opaque, int lba, void* dst)
+			private int ShockDisc_ReadLBA2448(IntPtr opaque, int lba, void* dst)
 			{
 				cbActivity(this);
 
@@ -468,8 +468,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		}
 
 		public List<Disc> Discs;
-		readonly List<DiscInterface> discInterfaces = new List<DiscInterface>();
-		DiscInterface currentDiscInterface;
+		private readonly List<DiscInterface> discInterfaces = new List<DiscInterface>();
+		private DiscInterface currentDiscInterface;
 
 		public DisplayType Region => SystemVidStandard == OctoshockDll.eVidStandard.PAL ? DisplayType.PAL : DisplayType.NTSC;
 
@@ -487,7 +487,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		public bool DriveLightEnabled { get; private set; }
 		public bool DriveLightOn { get; private set; }
 
-		void Attach()
+		private void Attach()
 		{
 			//attach this core as the current
 			CurrOctoshockCore?.Dispose();
@@ -524,7 +524,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			IsLagFrame = false;
 		}
 
-		void SetInput()
+		private void SetInput()
 		{
 			var fioCfg = _SyncSettings.FIOConfig.ToLogical();
 
@@ -729,7 +729,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			return ret;
 		}
 
-		void PokeDisc()
+		private void PokeDisc()
 		{
 			if (CurrentDiscIndexMounted == 0)
 			{
@@ -743,7 +743,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			}
 		}
 
-		void FrameAdvance_PrepDiscState()
+		private void FrameAdvance_PrepDiscState()
 		{
 			//reminder: if this is the beginning of time, we can begin with the disc ejected or inserted.
 
@@ -1028,9 +1028,9 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		//THIS IS STILL AWFUL
 
-		byte[] savebuff;
+		private byte[] savebuff;
 
-		void StudySaveBufferSize()
+		private void StudySaveBufferSize()
 		{
 			var transaction = new OctoshockDll.ShockStateTransaction();
 			transaction.transaction = OctoshockDll.eShockStateTransaction.BinarySize;
@@ -1093,8 +1093,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			}
 		}
 
-		Settings _Settings = new Settings();
-		SyncSettings _SyncSettings;
+		private Settings _Settings = new Settings();
+		private SyncSettings _SyncSettings;
 
 		public enum eResolutionMode
 		{

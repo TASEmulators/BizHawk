@@ -5,11 +5,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	internal sealed class Mapper078 : NesBoardBase 
 	{
-		bool holydiver;
-		int chr;
-		int prg_bank_mask_16k;
-		byte prg_bank_16k;
-		byte[] prg_banks_16k = new byte[2];
+		private bool holydiver;
+		private int chr;
+		private int prg_bank_mask_16k;
+		private byte prg_bank_16k;
+		private byte[] prg_banks_16k = new byte[2];
 
 		public override bool Configure(EDetectionOrigin origin)
 		{
@@ -44,7 +44,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(holydiver), ref holydiver);
 		}
 
-		void SyncPRG()
+		private void SyncPRG()
 		{
 			prg_banks_16k[0] = prg_bank_16k;
 		}

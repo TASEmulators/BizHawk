@@ -5,10 +5,10 @@
 		// http://forums.nesdev.com/viewtopic.php?f=9&t=11099
 
 		// state
-		int c; // clock bit for the second 74'161
-		int e; // /load for second 74'161. guaranteed to be 0 on powerup
-		int prginner;
-		int prgouter; // guaranteed to be 0 on powerup
+		private int c; // clock bit for the second 74'161
+		private int e; // /load for second 74'161. guaranteed to be 0 on powerup
+		private int prginner;
+		private int prgouter; // guaranteed to be 0 on powerup
 
 		public override bool Configure(EDetectionOrigin origin)
 		{

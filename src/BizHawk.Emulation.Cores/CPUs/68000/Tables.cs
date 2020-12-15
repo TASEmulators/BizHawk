@@ -2,7 +2,7 @@
 {
 	partial class MC68000
 	{
-		static readonly int[,] MoveCyclesBW = new int[12, 9]
+		private static readonly int[,] MoveCyclesBW = new int[12, 9]
 		{
 			{ 4, 4, 8, 8, 8, 12, 14, 12, 16 },
 			{ 4, 4, 8, 8, 8, 12, 14, 12, 16 },
@@ -18,7 +18,7 @@
 			{ 8, 8, 12, 12, 12, 16, 18, 16, 20 }
 		};
 
-		static readonly int[,] MoveCyclesL = new int[12, 9]
+		private static readonly int[,] MoveCyclesL = new int[12, 9]
 		{
 			{ 4, 4, 12, 12, 12, 16, 18, 16, 20 },
 			{ 4, 4, 12, 12, 12, 16, 18, 16, 20 },
@@ -34,7 +34,7 @@
 			{ 12, 12, 20, 20, 20, 24, 26, 24, 28 }
 		};
 
-		static readonly int[,] EACyclesBW = new int[8, 8]
+		private static readonly int[,] EACyclesBW = new int[8, 8]
 		{
 			{ 0, 0, 0, 0, 0, 0, 0, 0 },
 			{ 0, 0, 0, 0, 0, 0, 0, 0 },
@@ -46,7 +46,7 @@
 			{ 8, 12, 8, 10, 4, 99, 99, 99 }
 		};
 
-		static readonly int[,] EACyclesL = new int[8, 8]
+		private static readonly int[,] EACyclesL = new int[8, 8]
 		{
 			{ 0, 0, 0, 0, 0, 0, 0, 0 },
 			{ 0, 0, 0, 0, 0, 0, 0, 0 },

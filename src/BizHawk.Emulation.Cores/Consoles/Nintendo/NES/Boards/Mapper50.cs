@@ -7,12 +7,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	{
 		//http://wiki.nesdev.com/w/index.php/INES_Mapper_050
 
-		byte prg_bank;
-		int prg_bank_mask_8k;
-		bool irq_enable;
-		ushort irq_counter = 0;
-		bool irq_ready = false;
-		int ppu_cyclecount = 0;
+		private byte prg_bank;
+		private int prg_bank_mask_8k;
+		private bool irq_enable;
+		private ushort irq_counter = 0;
+		private bool irq_ready = false;
+		private int ppu_cyclecount = 0;
 		public override bool Configure(EDetectionOrigin origin)
 		{
 			//analyze board type

@@ -19,11 +19,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public APU apu;
 		public byte[] ram;
 		public byte[] CIRAM; //AKA nametables
-		string game_name = ""; //friendly name exposed to user and used as filename base
+		private string game_name = ""; //friendly name exposed to user and used as filename base
 		internal CartInfo cart; //the current cart prototype. should be moved into the board, perhaps
 		internal INesBoard Board; //the board hardware that is currently driving things
-		EDetectionOrigin origin = EDetectionOrigin.None;
-		int sprdma_countdown;
+		private EDetectionOrigin origin = EDetectionOrigin.None;
+		private int sprdma_countdown;
 
 		public bool _irq_apu; //various irq signals that get merged to the cpu irq pin
 		
@@ -58,17 +58,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public int num_cheats;
 
 		// new input system
-		readonly NESControlSettings ControllerSettings; // this is stored internally so that a new change of settings won't replace
-		IControllerDeck ControllerDeck;
-		byte latched4016;
+		private readonly NESControlSettings ControllerSettings; // this is stored internally so that a new change of settings won't replace
+		private IControllerDeck ControllerDeck;
+		private byte latched4016;
 
 		private DisplayType _display_type = DisplayType.NTSC;
 
 		//Sound config
 		public void SetVol1(int v) { apu.m_vol = v; }
 
-		BlipBuffer blip = new BlipBuffer(4096);
-		const int blipbuffsize = 4096;
+		private BlipBuffer blip = new BlipBuffer(4096);
+		private const int blipbuffsize = 4096;
 
 		public int old_s = 0;
 
@@ -280,8 +280,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		private IController _controller = NullController.Instance;
 
-		bool resetSignal;
-		bool hardResetSignal;
+		private bool resetSignal;
+		private bool hardResetSignal;
 		public bool FrameAdvance(IController controller, bool render, bool rendersound)
 		{
 			_controller = controller;
@@ -429,8 +429,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//NTSC:
 		//sequence of ppu clocks per cpu clock: 3
 		public byte[] cpu_sequence;
-		static readonly byte[] cpu_sequence_NTSC = { 3, 3, 3, 3, 3 };
-		static readonly byte[] cpu_sequence_PAL = { 3, 3, 3, 4, 3 };
+		private static readonly byte[] cpu_sequence_NTSC = { 3, 3, 3, 3, 3 };
+		private static readonly byte[] cpu_sequence_PAL = { 3, 3, 3, 4, 3 };
 		public int cpu_deadcounter;
 
 		public int oam_dma_index;
@@ -665,7 +665,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return 0xFF;
 		}
 
-		void WriteReg(int addr, byte val)
+		private void WriteReg(int addr, byte val)
 		{
 			switch (addr)
 			{
@@ -742,7 +742,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		void write_joyport(byte value)
+		private void write_joyport(byte value)
 		{
 			var si = new StrobeInfo(latched4016, value);
 			ControllerDeck.Strobe(si, _controller);
@@ -755,7 +755,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		byte read_joyport(int addr)
+		private byte read_joyport(int addr)
 		{
 			InputCallbacks.Call();
 			lagged = false;
@@ -775,7 +775,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return ret;
 		}
 
-		byte peek_joyport(int addr)
+		private byte peek_joyport(int addr)
 		{
 			// at the moment, the new system doesn't support peeks
 			return 0;

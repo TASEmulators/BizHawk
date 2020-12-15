@@ -73,17 +73,17 @@ namespace BizHawk.Emulation.Cores.Components
 		}
 
 		/* Mask */
-		static int OPLL_MASK_CH(int x) { return (1 << (x)); }
-		const int OPLL_MASK_HH = (1 << (9));
-		const int OPLL_MASK_CYM = (1 << (10));
-		const int OPLL_MASK_TOM = (1 << (11));
-		const int OPLL_MASK_SD = (1 << (12));
-		const int OPLL_MASK_BD = (1 << (13));
-		const int OPLL_MASK_RHYTHM = (OPLL_MASK_HH | OPLL_MASK_CYM | OPLL_MASK_TOM | OPLL_MASK_SD | OPLL_MASK_BD);
+		private static int OPLL_MASK_CH(int x) { return (1 << (x)); }
+		private const int OPLL_MASK_HH = (1 << (9));
+		private const int OPLL_MASK_CYM = (1 << (10));
+		private const int OPLL_MASK_TOM = (1 << (11));
+		private const int OPLL_MASK_SD = (1 << (12));
+		private const int OPLL_MASK_BD = (1 << (13));
+		private const int OPLL_MASK_RHYTHM = (OPLL_MASK_HH | OPLL_MASK_CYM | OPLL_MASK_TOM | OPLL_MASK_SD | OPLL_MASK_BD);
 
-		const int OPLL_TONE_NUM = 3;
+		private const int OPLL_TONE_NUM = 3;
 
-		static readonly byte[][] default_inst = new byte[3][] {
+		private static readonly byte[][] default_inst = new byte[3][] {
 				new byte[] {
 					0x49,0x4c,0x4c,0x32,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
 					0x61,0x61,0x1E,0x17,0xF0,0x7F,0x00,0x17,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
@@ -177,142 +177,142 @@ namespace BizHawk.Emulation.Cores.Components
 			};
 
 		/* Size of Sintable ( 8 -- 18 can be used. 9 recommended.) */
-		const int PG_BITS = 9;
-		const int PG_WIDTH = (1 << PG_BITS);
+		private const int PG_BITS = 9;
+		private const int PG_WIDTH = (1 << PG_BITS);
 
 		/* Phase increment counter */
-		const int DP_BITS = 18;
-		const int DP_WIDTH = (1 << DP_BITS);
-		const int DP_BASE_BITS = (DP_BITS - PG_BITS);
+		private const int DP_BITS = 18;
+		private const int DP_WIDTH = (1 << DP_BITS);
+		private const int DP_BASE_BITS = (DP_BITS - PG_BITS);
 
 		/* Dynamic range (Accuracy of sin table) */
-		const int DB_BITS = 8;
-		const double DB_STEP = (48.0 / (1 << DB_BITS));
-		const int DB_MUTE = (1 << DB_BITS);
+		private const int DB_BITS = 8;
+		private const double DB_STEP = (48.0 / (1 << DB_BITS));
+		private const int DB_MUTE = (1 << DB_BITS);
 
 		/* Dynamic range of envelope */
-		const double EG_STEP = 0.375;
-		const int EG_BITS = 7;
-		const int EG_MUTE = (1 << EG_BITS);
+		private const double EG_STEP = 0.375;
+		private const int EG_BITS = 7;
+		private const int EG_MUTE = (1 << EG_BITS);
 
 		/* Dynamic range of total level */
-		const double TL_STEP = 0.75;
-		const int TL_BITS = 6;
-		const int TL_MUTE = (1 << TL_BITS);
+		private const double TL_STEP = 0.75;
+		private const int TL_BITS = 6;
+		private const int TL_MUTE = (1 << TL_BITS);
 
 		/* Dynamic range of sustine level */
-		const double SL_STEP = 3.0;
-		const int SL_BITS = 4;
-		const int SL_MUTE = (1 << SL_BITS);
+		private const double SL_STEP = 3.0;
+		private const int SL_BITS = 4;
+		private const int SL_MUTE = (1 << SL_BITS);
 
-		static uint EG2DB(uint d) { return ((d) * unchecked((int)(EG_STEP / DB_STEP))); }
-		static uint TL2EG(uint d) { return ((d) * unchecked((int)(TL_STEP / EG_STEP))); }
-		static uint SL2EG(uint d) { return ((d) * unchecked((int)(SL_STEP / EG_STEP))); }
+		private static uint EG2DB(uint d) { return ((d) * unchecked((int)(EG_STEP / DB_STEP))); }
+		private static uint TL2EG(uint d) { return ((d) * unchecked((int)(TL_STEP / EG_STEP))); }
+		private static uint SL2EG(uint d) { return ((d) * unchecked((int)(SL_STEP / EG_STEP))); }
 
-		static uint DB_POS(double x) { return (uint)((x) / DB_STEP); }
-		static uint DB_NEG(double x) { return (uint)(DB_MUTE + DB_MUTE + (x) / DB_STEP); }
+		private static uint DB_POS(double x) { return (uint)((x) / DB_STEP); }
+		private static uint DB_NEG(double x) { return (uint)(DB_MUTE + DB_MUTE + (x) / DB_STEP); }
 
 		/* Bits for liner value */
-		const int DB2LIN_AMP_BITS = 8;
-		const int SLOT_AMP_BITS = (DB2LIN_AMP_BITS);
+		private const int DB2LIN_AMP_BITS = 8;
+		private const int SLOT_AMP_BITS = (DB2LIN_AMP_BITS);
 
 		/* Bits for envelope phase incremental counter */
-		const int EG_DP_BITS = 22;
-		const int EG_DP_WIDTH = (1 << EG_DP_BITS);
+		private const int EG_DP_BITS = 22;
+		private const int EG_DP_WIDTH = (1 << EG_DP_BITS);
 
 		/* Bits for Pitch and Amp modulator */
-		const int PM_PG_BITS = 8;
-		const int PM_PG_WIDTH = (1 << PM_PG_BITS);
-		const int PM_DP_BITS = 16;
-		const int PM_DP_WIDTH = (1 << PM_DP_BITS);
-		const int AM_PG_BITS = 8;
-		const int AM_PG_WIDTH = (1 << AM_PG_BITS);
-		const int AM_DP_BITS = 16;
-		const int AM_DP_WIDTH = (1 << AM_DP_BITS);
+		private const int PM_PG_BITS = 8;
+		private const int PM_PG_WIDTH = (1 << PM_PG_BITS);
+		private const int PM_DP_BITS = 16;
+		private const int PM_DP_WIDTH = (1 << PM_DP_BITS);
+		private const int AM_PG_BITS = 8;
+		private const int AM_PG_WIDTH = (1 << AM_PG_BITS);
+		private const int AM_DP_BITS = 16;
+		private const int AM_DP_WIDTH = (1 << AM_DP_BITS);
 
 		/* PM table is calcurated by PM_AMP * pow(2,PM_DEPTH*sin(x)/1200) */
-		const int PM_AMP_BITS = 8;
-		const int PM_AMP = (1 << PM_AMP_BITS);
+		private const int PM_AMP_BITS = 8;
+		private const int PM_AMP = (1 << PM_AMP_BITS);
 
 		/* PM speed(Hz) and depth(cent) */
-		const double PM_SPEED = 6.068835788302951;
-		const double PM_DEPTH = 13.75;
+		private const double PM_SPEED = 6.068835788302951;
+		private const double PM_DEPTH = 13.75;
 
 		/* AM speed(Hz) and depth(dB) */
-		const double AM_SPEED = 3.6413;
-		const double AM_DEPTH = 4.875;
+		private const double AM_SPEED = 3.6413;
+		private const double AM_DEPTH = 4.875;
 
 		/* Cut the lower b bit(s) off. */
-		static uint HIGHBITS(uint c, int b) { return ((c) >> (b)); }
+		private static uint HIGHBITS(uint c, int b) { return ((c) >> (b)); }
 
 		/* Leave the lower b bit(s). */
-		static int LOWBITS(int c, int b) { return ((c) & ((1 << (b)) - 1)); }
+		private static int LOWBITS(int c, int b) { return ((c) & ((1 << (b)) - 1)); }
 
 		/* Expand x which is s bits to d bits. */
-		static int EXPAND_BITS(int x, int s, int d) { return ((x) << ((d) - (s))); }
+		private static int EXPAND_BITS(int x, int s, int d) { return ((x) << ((d) - (s))); }
 
 		/* Expand x which is s bits to d bits and fill expanded bits '1' */
-		static int EXPAND_BITS_X(int x, int s, int d) { return (((x) << ((d) - (s))) | ((1 << ((d) - (s))) - 1)); }
+		private static int EXPAND_BITS_X(int x, int s, int d) { return (((x) << ((d) - (s))) | ((1 << ((d) - (s))) - 1)); }
 
 		/* Adjust envelope speed which depends on sampling rate. */
-		static uint RATE_ADJUST(double x) { return (rate == 49716 ? (uint)x : (uint)((double)(x) * clk / 72 / rate + 0.5)); }        /* added 0.5 to round the value*/
+		private static uint RATE_ADJUST(double x) { return (rate == 49716 ? (uint)x : (uint)((double)(x) * clk / 72 / rate + 0.5)); }        /* added 0.5 to round the value*/
 
-		static OPLL_SLOT MOD(OPLL o, int x) { return ((o).slot[(x) << 1]); }
-		static OPLL_SLOT CAR(OPLL o, int x) { return ((o).slot[((x) << 1) | 1]); }
+		private static OPLL_SLOT MOD(OPLL o, int x) { return ((o).slot[(x) << 1]); }
+		private static OPLL_SLOT CAR(OPLL o, int x) { return ((o).slot[((x) << 1) | 1]); }
 
-		static bool BIT(uint s, int b) { return (((s) >> (b)) & 1) != 0; }
-		static bool BIT(int s, int b) { return (((s) >> (b)) & 1) != 0; }
+		private static bool BIT(uint s, int b) { return (((s) >> (b)) & 1) != 0; }
+		private static bool BIT(int s, int b) { return (((s) >> (b)) & 1) != 0; }
 
 		/* Input clock */
-		static uint clk = 844451141;
+		private static uint clk = 844451141;
 		/* Sampling rate */
-		static uint rate = 3354932;
+		private static uint rate = 3354932;
 
 		/* WaveTable for each envelope amp */
-		static readonly short[] fullsintable = new short[PG_WIDTH];
-		static readonly short[] halfsintable = new short[PG_WIDTH];
+		private static readonly short[] fullsintable = new short[PG_WIDTH];
+		private static readonly short[] halfsintable = new short[PG_WIDTH];
 
 		/* LFO Table */
-		static readonly int[] pmtable = new int[PM_PG_WIDTH];
-		static readonly int[] amtable = new int[AM_PG_WIDTH];
+		private static readonly int[] pmtable = new int[PM_PG_WIDTH];
+		private static readonly int[] amtable = new int[AM_PG_WIDTH];
 
 		/* Phase delta for LFO */
-		static uint pm_dphase;
-		static uint am_dphase;
+		private static uint pm_dphase;
+		private static uint am_dphase;
 
 		/* dB to Liner table */
-		static readonly short[] DB2LIN_TABLE = new short[(DB_MUTE + DB_MUTE) * 2];
+		private static readonly short[] DB2LIN_TABLE = new short[(DB_MUTE + DB_MUTE) * 2];
 
 		/* Liner to Log curve conversion table (for Attack rate). */
-		static readonly short[] AR_ADJUST_TABLE = new short[1 << EG_BITS];
+		private static readonly short[] AR_ADJUST_TABLE = new short[1 << EG_BITS];
 
 		/* Empty voice data */
 		//static OPLL_PATCH null_patch = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
 		/* Basic voice Data */
-		static readonly OPLL_PATCH[,] default_patch = new OPLL_PATCH[OPLL_TONE_NUM, (16 + 3) * 2];
+		private static readonly OPLL_PATCH[,] default_patch = new OPLL_PATCH[OPLL_TONE_NUM, (16 + 3) * 2];
 
 		/* Definition of envelope mode */
 		public enum OPLL_EG_STATE { READY, ATTACK, DECAY, SUSHOLD, SUSTINE, RELEASE, SETTLE, FINISH }
 
 		/* Phase incr table for Attack */
-		static readonly uint[,] dphaseARTable = new uint[16, 16];
+		private static readonly uint[,] dphaseARTable = new uint[16, 16];
 		/* Phase incr table for Decay and Release */
-		static readonly uint[,] dphaseDRTable = new uint[16, 16];
+		private static readonly uint[,] dphaseDRTable = new uint[16, 16];
 
 		/* KSL + TL Table */
-		static readonly uint[, , ,] tllTable = new uint[16, 8, 1 << TL_BITS, 4];
-		static readonly int[, ,] rksTable = new int[2, 8, 2];
+		private static readonly uint[, , ,] tllTable = new uint[16, 8, 1 << TL_BITS, 4];
+		private static readonly int[, ,] rksTable = new int[2, 8, 2];
 
 		/* Phase incr table for PG */
-		static readonly uint[, ,] dphaseTable = new uint[512, 8, 16];
+		private static readonly uint[, ,] dphaseTable = new uint[512, 8, 16];
 
 		/***************************************************
  
 				  Create tables
  
 		****************************************************/
-		static int Min(int i, int j)
+		private static int Min(int i, int j)
 		{
 			if (i < j)
 				return i;
@@ -321,7 +321,7 @@ namespace BizHawk.Emulation.Cores.Components
 		}
 
 		/* Table for AR to LogCurve. */
-		static void makeAdjustTable()
+		private static void makeAdjustTable()
 		{
 			AR_ADJUST_TABLE[0] = (1 << EG_BITS) - 1;
 			for (int i = 1; i < (1 << EG_BITS); i++)
@@ -330,7 +330,7 @@ namespace BizHawk.Emulation.Cores.Components
 
 
 		/* Table for dB(0 -- (1<<DB_BITS)-1) to Liner(0 -- DB2LIN_AMP_WIDTH) */
-		static void makeDB2LinTable()
+		private static void makeDB2LinTable()
 		{
 			for (int i = 0; i < DB_MUTE + DB_MUTE; i++)
 			{
@@ -341,7 +341,7 @@ namespace BizHawk.Emulation.Cores.Components
 		}
 
 		/* Liner(+0.0 - +1.0) to dB((1<<DB_BITS) - 1 -- 0) */
-		static int lin2db(double d)
+		private static int lin2db(double d)
 		{
 			if (d == 0)
 				return (DB_MUTE - 1);
@@ -351,7 +351,7 @@ namespace BizHawk.Emulation.Cores.Components
 
 
 		/* Sin Table */
-		static void makeSinTable()
+		private static void makeSinTable()
 		{
 			int i;
 
@@ -376,7 +376,7 @@ namespace BizHawk.Emulation.Cores.Components
 				halfsintable[i] = fullsintable[0];
 		}
 
-		static double saw(double phase)
+		private static double saw(double phase)
 		{
 			if (phase <= Math.PI / 2)
 				return phase * 2 / Math.PI;
@@ -387,21 +387,21 @@ namespace BizHawk.Emulation.Cores.Components
 		}
 
 		/* Table for Pitch Modulator */
-		static void makePmTable()
+		private static void makePmTable()
 		{
 			for (int i = 0; i < PM_PG_WIDTH; i++)
 				pmtable[i] = (int)((double)PM_AMP * Math.Pow(2, (double)PM_DEPTH * saw(2.0 * Math.PI * i / PM_PG_WIDTH) / 1200));
 		}
 
 		/* Table for Amp Modulator */
-		static void makeAmTable()
+		private static void makeAmTable()
 		{
 			for (int i = 0; i < AM_PG_WIDTH; i++)
 				amtable[i] = (int)((double)AM_DEPTH / 2 / DB_STEP * (1.0 + saw(2.0 * Math.PI * i / PM_PG_WIDTH)));
 		}
 
 		/* Phase increment counter table */
-		static void makeDphaseTable()
+		private static void makeDphaseTable()
 		{
 			uint fnum, block, ML;
 			uint[] mltable = { 1, 1 * 2, 2 * 2, 3 * 2, 4 * 2, 5 * 2, 6 * 2, 7 * 2, 8 * 2, 9 * 2, 10 * 2, 10 * 2, 12 * 2, 12 * 2, 15 * 2, 15 * 2 };
@@ -412,9 +412,9 @@ namespace BizHawk.Emulation.Cores.Components
 						dphaseTable[fnum, block, ML] = RATE_ADJUST(((fnum * mltable[ML]) << (int)block) >> (20 - DP_BITS));
 		}
 
-		static double dB2(double x)=> x * 2;
+		private static double dB2(double x)=> x * 2;
 
-		static void makeTllTable()
+		private static void makeTllTable()
 		{
 			double[] kltable =
 			{
@@ -446,7 +446,7 @@ namespace BizHawk.Emulation.Cores.Components
 		}
 
 		/* Rate Table for Attack */
-		static void makeDphaseARTable()
+		private static void makeDphaseARTable()
 		{
 			int AR, Rks, RM, RL;
 
@@ -473,7 +473,7 @@ namespace BizHawk.Emulation.Cores.Components
 		}
 
 		/* Rate Table for Decay and Release */
-		static void makeDphaseDRTable()
+		private static void makeDphaseDRTable()
 		{
 			int DR, Rks, RM, RL;
 
@@ -496,7 +496,7 @@ namespace BizHawk.Emulation.Cores.Components
 				}
 		}
 
-		static void makeRksTable()
+		private static void makeRksTable()
 		{
 			int fnum8, block, KR;
 
@@ -511,7 +511,7 @@ namespace BizHawk.Emulation.Cores.Components
 					}
 		}
 
-		static void OPLL_dump2patch(byte[] dump, OPLL_PATCH[] patch)
+		private static void OPLL_dump2patch(byte[] dump, OPLL_PATCH[] patch)
 		{
 			patch[0].am = (uint)(dump[0] >> 7) & 1;
 			patch[1].am = (uint)(dump[1] >> 7) & 1;
@@ -539,7 +539,7 @@ namespace BizHawk.Emulation.Cores.Components
 			patch[1].rr = (uint)(dump[7]) & 15;
 		}
 
-		static void
+		private static void
 		OPLL_getDefaultPatch(int type, int num, OPLL_PATCH[] patch)
 		{
 			byte[] r = new byte[8];
@@ -547,7 +547,7 @@ namespace BizHawk.Emulation.Cores.Components
 			OPLL_dump2patch(r, patch);
 		}
 
-		static void makeDefaultPatch()
+		private static void makeDefaultPatch()
 		{
 			for (int i = 0; i < OPLL_TONE_NUM; i++)
 			{
@@ -566,7 +566,7 @@ namespace BizHawk.Emulation.Cores.Components
 
 		************************************************************/
 
-		static uint calc_eg_dphase(OPLL_SLOT slot)
+		private static uint calc_eg_dphase(OPLL_SLOT slot)
 		{
 			switch (slot.eg_mode)
 			{
@@ -607,15 +607,16 @@ namespace BizHawk.Emulation.Cores.Components
 
 		*************************************************************/
 
-		const int SLOT_BD1 = 12;
-		const int SLOT_BD2 = 13;
-		const int SLOT_HH = 14;
-		const int SLOT_SD = 15;
-		const int SLOT_TOM = 16;
-		const int SLOT_CYM = 17;
+		private const int SLOT_BD1 = 12;
+		private const int SLOT_BD2 = 13;
+		private const int SLOT_HH = 14;
+		private const int SLOT_SD = 15;
+		private const int SLOT_TOM = 16;
+		private const int SLOT_CYM = 17;
 
-		static void UPDATE_PG(OPLL_SLOT S) { (S).dphase = dphaseTable[(S).fnum, (S).block, (S).patch.ml]; }
-		static void UPDATE_TLL(OPLL_SLOT S)
+		private static void UPDATE_PG(OPLL_SLOT S) { (S).dphase = dphaseTable[(S).fnum, (S).block, (S).patch.ml]; }
+
+		private static void UPDATE_TLL(OPLL_SLOT S)
 		{
 			if (S.type == 0)
 			{
@@ -626,10 +627,12 @@ namespace BizHawk.Emulation.Cores.Components
 				(S).tll = tllTable[((S).fnum) >> 5, (S).block, (S).volume, (S).patch.kl];
 			}
 		}
-		static void UPDATE_RKS(OPLL_SLOT S) { (S).rks = (uint)rksTable[((S).fnum) >> 8, (S).block, (S).patch.kr]; }
-		static void UPDATE_WF(OPLL_SLOT S) { (S).sintbl = (S).patch.wf == 0 ? fullsintable : halfsintable; }
-		static void UPDATE_EG(OPLL_SLOT S) { (S).eg_dphase = calc_eg_dphase(S); }
-		static void UPDATE_ALL(OPLL_SLOT S)
+
+		private static void UPDATE_RKS(OPLL_SLOT S) { (S).rks = (uint)rksTable[((S).fnum) >> 8, (S).block, (S).patch.kr]; }
+		private static void UPDATE_WF(OPLL_SLOT S) { (S).sintbl = (S).patch.wf == 0 ? fullsintable : halfsintable; }
+		private static void UPDATE_EG(OPLL_SLOT S) { (S).eg_dphase = calc_eg_dphase(S); }
+
+		private static void UPDATE_ALL(OPLL_SLOT S)
 		{
 			UPDATE_PG(S);
 			UPDATE_TLL(S);
@@ -639,7 +642,7 @@ namespace BizHawk.Emulation.Cores.Components
 		}
 
 		/* Slot key on  */
-		static void slotOn(OPLL_SLOT slot)
+		private static void slotOn(OPLL_SLOT slot)
 		{
 			slot.eg_mode = OPLL_EG_STATE.ATTACK;
 			slot.eg_phase = 0;
@@ -648,7 +651,7 @@ namespace BizHawk.Emulation.Cores.Components
 		}
 
 		/* Slot key on without reseting the phase */
-		static void slotOn2(OPLL_SLOT slot)
+		private static void slotOn2(OPLL_SLOT slot)
 		{
 			slot.eg_mode = OPLL_EG_STATE.ATTACK;
 			slot.eg_phase = 0;
@@ -656,7 +659,7 @@ namespace BizHawk.Emulation.Cores.Components
 		}
 
 		/* Slot key off */
-		static void slotOff(OPLL_SLOT slot)
+		private static void slotOff(OPLL_SLOT slot)
 		{
 			if (slot.eg_mode == OPLL_EG_STATE.ATTACK)
 				slot.eg_phase = (uint)EXPAND_BITS(AR_ADJUST_TABLE[HIGHBITS(slot.eg_phase, EG_DP_BITS - EG_BITS)], EG_BITS, EG_DP_BITS);
@@ -665,7 +668,7 @@ namespace BizHawk.Emulation.Cores.Components
 		}
 
 		/* Channel key on */
-		static void keyOn(OPLL opll, int i)
+		private static void keyOn(OPLL opll, int i)
 		{
 			if (opll.slot_on_flag[i * 2] == 0)
 				slotOn(MOD(opll, i));
@@ -675,74 +678,74 @@ namespace BizHawk.Emulation.Cores.Components
 		}
 
 		/* Channel key off */
-		static void keyOff(OPLL opll, int i)
+		private static void keyOff(OPLL opll, int i)
 		{
 			if (opll.slot_on_flag[i * 2 + 1] != 0)
 				slotOff(CAR(opll, i));
 			opll.key_status[i] = 0;
 		}
 
-		static void keyOn_BD(OPLL opll)
+		private static void keyOn_BD(OPLL opll)
 		{
 			keyOn(opll, 6);
 		}
 
-		static void keyOn_SD(OPLL opll)
+		private static void keyOn_SD(OPLL opll)
 		{
 			if (opll.slot_on_flag[SLOT_SD] == 0)
 				slotOn(CAR(opll, 7));
 		}
 
-		static void keyOn_TOM(OPLL opll)
+		private static void keyOn_TOM(OPLL opll)
 		{
 			if (opll.slot_on_flag[SLOT_TOM] == 0)
 				slotOn(MOD(opll, 8));
 		}
 
-		static void keyOn_HH(OPLL opll)
+		private static void keyOn_HH(OPLL opll)
 		{
 			if (opll.slot_on_flag[SLOT_HH] == 0)
 				slotOn2(MOD(opll, 7));
 		}
 
-		static void keyOn_CYM(OPLL opll)
+		private static void keyOn_CYM(OPLL opll)
 		{
 			if (opll.slot_on_flag[SLOT_CYM] == 0)
 				slotOn2(CAR(opll, 8));
 		}
 
 		/* Drum key off */
-		static void keyOff_BD(OPLL opll)
+		private static void keyOff_BD(OPLL opll)
 		{
 			keyOff(opll, 6);
 		}
 
-		static void keyOff_SD(OPLL opll)
+		private static void keyOff_SD(OPLL opll)
 		{
 			if (opll.slot_on_flag[SLOT_SD] == 0)
 				slotOff(CAR(opll, 7));
 		}
 
-		static void keyOff_TOM(OPLL opll)
+		private static void keyOff_TOM(OPLL opll)
 		{
 			if (opll.slot_on_flag[SLOT_TOM] != 0)
 				slotOff(MOD(opll, 8));
 		}
 
-		static void keyOff_HH(OPLL opll)
+		private static void keyOff_HH(OPLL opll)
 		{
 			if (opll.slot_on_flag[SLOT_HH] != 0)
 				slotOff(MOD(opll, 7));
 		}
 
-		static void keyOff_CYM(OPLL opll)
+		private static void keyOff_CYM(OPLL opll)
 		{
 			if (opll.slot_on_flag[SLOT_CYM] != 0)
 				slotOff(CAR(opll, 8));
 		}
 
 		/* Change a voice */
-		static void setPatch(OPLL opll, int i, int num)
+		private static void setPatch(OPLL opll, int i, int num)
 		{
 			opll.patch_number[i] = num;
 			MOD(opll, i).patch = opll.patch[num * 2 + 0];
@@ -750,13 +753,13 @@ namespace BizHawk.Emulation.Cores.Components
 		}
 
 		/* Change a rhythm voice */
-		static void setSlotPatch(OPLL_SLOT slot, OPLL_PATCH patch)
+		private static void setSlotPatch(OPLL_SLOT slot, OPLL_PATCH patch)
 		{
 			slot.patch = patch;
 		}
 
 		/* Set sustine parameter */
-		static void setSustine(OPLL opll, int c, int sustine)
+		private static void setSustine(OPLL opll, int c, int sustine)
 		{
 			CAR(opll, c).sustine = sustine;
 			if (MOD(opll, c).type != 0)
@@ -764,32 +767,32 @@ namespace BizHawk.Emulation.Cores.Components
 		}
 
 		/* Volume : 6bit ( Volume register << 2 ) */
-		static void setVolume(OPLL opll, int c, int volume)
+		private static void setVolume(OPLL opll, int c, int volume)
 		{
 			CAR(opll, c).volume = volume;
 		}
 
-		static void setSlotVolume(OPLL_SLOT slot, int volume)
+		private static void setSlotVolume(OPLL_SLOT slot, int volume)
 		{
 			slot.volume = volume;
 		}
 
 		/* Set F-Number ( fnum : 9bit ) */
-		static void setFnumber(OPLL opll, int c, int fnum)
+		private static void setFnumber(OPLL opll, int c, int fnum)
 		{
 			CAR(opll, c).fnum = fnum;
 			MOD(opll, c).fnum = fnum;
 		}
 
 		/* Set Block data (block : 3bit ) */
-		static void setBlock(OPLL opll, int c, int block)
+		private static void setBlock(OPLL opll, int c, int block)
 		{
 			CAR(opll, c).block = block;
 			MOD(opll, c).block = block;
 		}
 
 		/* Change Rhythm Mode */
-		static void update_rhythm_mode(OPLL opll)
+		private static void update_rhythm_mode(OPLL opll)
 		{
 			if ((opll.patch_number[6] & 0x10) != 0)
 			{
@@ -850,7 +853,7 @@ namespace BizHawk.Emulation.Cores.Components
 			}
 		}
 
-		static void update_key_status(OPLL opll)
+		private static void update_key_status(OPLL opll)
 		{
 			int ch;
 
@@ -868,7 +871,7 @@ namespace BizHawk.Emulation.Cores.Components
 			}
 		}
 
-		void OPLL_copyPatch(OPLL opll, int num, OPLL_PATCH patch)
+		private void OPLL_copyPatch(OPLL opll, int num, OPLL_PATCH patch)
 		{
 			opll.patch[num] = (OPLL_PATCH)patch.Clone();
 		}
@@ -879,7 +882,7 @@ namespace BizHawk.Emulation.Cores.Components
 
 		***********************************************************/
 
-		static void OPLL_SLOT_reset(OPLL_SLOT slot, int type)
+		private static void OPLL_SLOT_reset(OPLL_SLOT slot, int type)
 		{
 			slot.type = type;
 			slot.sintbl = fullsintable;
@@ -902,7 +905,7 @@ namespace BizHawk.Emulation.Cores.Components
 			slot.patch = new OPLL_PATCH();
 		}
 
-		static void public_refresh()
+		private static void public_refresh()
 		{
 			makeDphaseTable();
 			makeDphaseARTable();
@@ -911,7 +914,7 @@ namespace BizHawk.Emulation.Cores.Components
 			am_dphase = (uint)RATE_ADJUST(AM_SPEED * AM_DP_WIDTH / (clk / 72));
 		}
 
-		static void maketables(uint c, uint r)
+		private static void maketables(uint c, uint r)
 		{
 			if (c != clk)
 			{
@@ -933,7 +936,7 @@ namespace BizHawk.Emulation.Cores.Components
 			}
 		}
 
-		OPLL OPLL_new(uint clk, uint rate, int type)
+		private OPLL OPLL_new(uint clk, uint rate, int type)
 		{
 			OPLL opll = new OPLL();
 			int i;
@@ -952,7 +955,7 @@ namespace BizHawk.Emulation.Cores.Components
 		}
 
 		/* Reset patch datas by system default. */
-		void OPLL_reset_patch(OPLL opll, int type)
+		private void OPLL_reset_patch(OPLL opll, int type)
 		{
 			int i;
 
@@ -961,7 +964,7 @@ namespace BizHawk.Emulation.Cores.Components
 		}
 
 		/* Reset whole of OPLL except patch datas. */
-		void OPLL_reset(OPLL opll)
+		private void OPLL_reset(OPLL opll)
 		{
 			int i;
 
@@ -997,7 +1000,7 @@ namespace BizHawk.Emulation.Cores.Components
 		}
 
 		/* Force Refresh (When external program changes some parameters). */
-		void OPLL_forceRefresh(OPLL opll)
+		private void OPLL_forceRefresh(OPLL opll)
 		{
 			int i;
 
@@ -1017,7 +1020,7 @@ namespace BizHawk.Emulation.Cores.Components
 			}
 		}
 
-		void OPLL_set_rate(OPLL opll, uint r)
+		private void OPLL_set_rate(OPLL opll, uint r)
 		{
 			if (opll.quality)
 				rate = 49716;
@@ -1027,7 +1030,7 @@ namespace BizHawk.Emulation.Cores.Components
 			rate = r;
 		}
 
-		void OPLL_set_quality(OPLL opll, bool q)
+		private void OPLL_set_quality(OPLL opll, bool q)
 		{
 			opll.quality = q;
 			OPLL_set_rate(opll, rate);
@@ -1040,7 +1043,7 @@ namespace BizHawk.Emulation.Cores.Components
 		*********************************************************/
 
 		/* Convert Amp(0 to EG_HEIGHT) to Phase(0 to 2PI). */
-		static int wave2_2pi(int e)
+		private static int wave2_2pi(int e)
 		{
 			return ((SLOT_AMP_BITS - PG_BITS) > 0) ?
 				((e) >> (SLOT_AMP_BITS - PG_BITS)) :
@@ -1048,7 +1051,7 @@ namespace BizHawk.Emulation.Cores.Components
 		}
 
 		/* Convert Amp(0 to EG_HEIGHT) to Phase(0 to 4PI). */
-		static int wave2_4pi(int e)
+		private static int wave2_4pi(int e)
 		{
 			return ((e) << (1 + PG_BITS - SLOT_AMP_BITS));
 			/*if ((SLOT_AMP_BITS - PG_BITS - 1) == 0) {
@@ -1060,7 +1063,7 @@ namespace BizHawk.Emulation.Cores.Components
 			}*/
 		}
 		/* Convert Amp(0 to EG_HEIGHT) to Phase(0 to 8PI). */
-		static int wave2_8pi(int e)
+		private static int wave2_8pi(int e)
 		{
 			return ((e) << (2 + PG_BITS - SLOT_AMP_BITS));
 			/*
@@ -1074,7 +1077,7 @@ namespace BizHawk.Emulation.Cores.Components
 			*/
 		}
 		/* Update AM, PM unit */
-		static void update_ampm(OPLL opll)
+		private static void update_ampm(OPLL opll)
 		{
 			opll.pm_phase = (uint)((opll.pm_phase + pm_dphase) & (PM_DP_WIDTH - 1));
 			opll.am_phase = (int)((opll.am_phase + am_dphase) & (AM_DP_WIDTH - 1));
@@ -1083,7 +1086,7 @@ namespace BizHawk.Emulation.Cores.Components
 		}
 
 		/* PG */
-		static void calc_phase(OPLL_SLOT slot, int lfo)
+		private static void calc_phase(OPLL_SLOT slot, int lfo)
 		{
 			if (slot.patch.pm != 0)
 				slot.phase += (uint)((slot.dphase * lfo) >> PM_AMP_BITS);
@@ -1096,21 +1099,22 @@ namespace BizHawk.Emulation.Cores.Components
 		}
 
 		/* Update Noise unit */
-		static void update_noise(OPLL opll)
+		private static void update_noise(OPLL opll)
 		{
 			if ((opll.noise_seed & 1) != 0) opll.noise_seed ^= 0x8003020;
 			opll.noise_seed >>= 1;
 		}
 
 		/* EG */
-		static uint S2E(double x) { return (SL2EG((uint)(x / SL_STEP)) << (EG_DP_BITS - EG_BITS)); }
-		static readonly uint[] SL =
+		private static uint S2E(double x) { return (SL2EG((uint)(x / SL_STEP)) << (EG_DP_BITS - EG_BITS)); }
+
+		private static readonly uint[] SL =
 		{
 			S2E (0.0), S2E (3.0), S2E (6.0), S2E (9.0), S2E (12.0), S2E (15.0), S2E (18.0), S2E (21.0),
 			S2E (24.0), S2E (27.0), S2E (30.0), S2E (33.0), S2E (36.0), S2E (39.0), S2E (42.0), S2E (48.0)
 		};
 
-		static void calc_envelope(OPLL_SLOT slot, int lfo)
+		private static void calc_envelope(OPLL_SLOT slot, int lfo)
 		{
 			uint egout;
 
@@ -1200,7 +1204,7 @@ namespace BizHawk.Emulation.Cores.Components
 		}
 
 		/* CARRIOR */
-		static int calc_slot_car(OPLL_SLOT slot, int fm)
+		private static int calc_slot_car(OPLL_SLOT slot, int fm)
 		{
 			if (slot.egout + 1 >= DB_MUTE)
 			{
@@ -1215,7 +1219,7 @@ namespace BizHawk.Emulation.Cores.Components
 		}
 
 		/* MODULATOR */
-		static int calc_slot_mod(OPLL_SLOT slot)
+		private static int calc_slot_mod(OPLL_SLOT slot)
 		{
 			int fm;
 
@@ -1241,7 +1245,7 @@ namespace BizHawk.Emulation.Cores.Components
 		}
 
 		/* TOM */
-		static int calc_slot_tom(OPLL_SLOT slot)
+		private static int calc_slot_tom(OPLL_SLOT slot)
 		{
 			if (slot.egout + 1 >= DB_MUTE)
 				return 0;
@@ -1250,7 +1254,7 @@ namespace BizHawk.Emulation.Cores.Components
 		}
 
 		/* SNARE */
-		static int calc_slot_snare(OPLL_SLOT slot, uint noise)
+		private static int calc_slot_snare(OPLL_SLOT slot, uint noise)
 		{
 			if (slot.egout + 1 >= DB_MUTE)
 				return 0;
@@ -1264,7 +1268,7 @@ namespace BizHawk.Emulation.Cores.Components
 		/* 
 		  TOP-CYM 
 		 */
-		static int calc_slot_cym(OPLL_SLOT slot, uint pgout_hh)
+		private static int calc_slot_cym(OPLL_SLOT slot, uint pgout_hh)
 		{
 			uint dbout;
 			if (slot.egout + 1 >= DB_MUTE)
@@ -1285,7 +1289,7 @@ namespace BizHawk.Emulation.Cores.Components
 		/* 
 		  HI-HAT 
 		*/
-		static int calc_slot_hat(OPLL_SLOT slot, int pgout_cym, uint noise)
+		private static int calc_slot_hat(OPLL_SLOT slot, int pgout_cym, uint noise)
 		{
 			uint dbout;
 
@@ -1314,7 +1318,7 @@ namespace BizHawk.Emulation.Cores.Components
 			return DB2LIN_TABLE[dbout + slot.egout];
 		}
 
-		static short calc(OPLL opll)
+		private static short calc(OPLL opll)
 		{
 			int inst = 0, perc = 0, output = 0;
 			int i;
@@ -1376,7 +1380,7 @@ namespace BizHawk.Emulation.Cores.Components
 			return (short)(output << 3);
 		}
 
-		short OPLL_calc(OPLL opll)
+		private short OPLL_calc(OPLL opll)
 		{
 			if (!opll.quality)
 				return calc(opll);
@@ -1394,7 +1398,7 @@ namespace BizHawk.Emulation.Cores.Components
 			return (short)opll.output;
 		}
 
-		uint OPLL_setMask(OPLL opll, uint mask)
+		private uint OPLL_setMask(OPLL opll, uint mask)
 		{
 			uint ret;
 
@@ -1408,7 +1412,7 @@ namespace BizHawk.Emulation.Cores.Components
 				return 0;
 		}
 
-		uint OPLL_toggleMask(OPLL opll, uint mask)
+		private uint OPLL_toggleMask(OPLL opll, uint mask)
 		{
 			uint ret;
 
@@ -1428,7 +1432,7 @@ namespace BizHawk.Emulation.Cores.Components
 
 		*****************************************************/
 
-		void OPLL_writeReg(OPLL opll, uint reg, uint data)
+		private void OPLL_writeReg(OPLL opll, uint reg, uint data)
 		{
 			int i, v, ch;
 
@@ -1664,7 +1668,7 @@ namespace BizHawk.Emulation.Cores.Components
 			}
 		}
 
-		void OPLL_writeIO(OPLL opll, uint adr, uint val)
+		private void OPLL_writeIO(OPLL opll, uint adr, uint val)
 		{
 			if ((adr & 1) != 0)
 				OPLL_writeReg(opll, opll.adr, val);
@@ -1673,12 +1677,12 @@ namespace BizHawk.Emulation.Cores.Components
 		}
 
 		/* STEREO MODE (OPT) */
-		void OPLL_set_pan(OPLL opll, uint ch, uint pan)
+		private void OPLL_set_pan(OPLL opll, uint ch, uint pan)
 		{
 			opll.pan[ch & 15] = pan & 3;
 		}
 
-		static void calc_stereo(OPLL opll, int[] output)
+		private static void calc_stereo(OPLL opll, int[] output)
 		{
 			int[] b = { 0, 0, 0, 0 };        /* Ignore, Right, Left, Center */
 			int[] r = { 0, 0, 0, 0 };        /* Ignore, Right, Left, Center */
@@ -1739,7 +1743,7 @@ namespace BizHawk.Emulation.Cores.Components
 			output[0] = (b[2] + b[3] + ((r[2] + r[3]) << 1)) << 3;
 		}
 
-		void OPLL_calc_stereo(OPLL opll, int[] output)
+		private void OPLL_calc_stereo(OPLL opll, int[] output)
 		{
 			if (!opll.quality)
 			{

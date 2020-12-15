@@ -3,7 +3,7 @@
 	partial class MC68000
 	{
 		// TODO, the timing on AND variants is wrong. IE, and.w w/ immediate should be 8 cycles, but I cant figure out how that should work.
-		void AND0() // AND <ea>, Dn
+		private void AND0() // AND <ea>, Dn
 		{
 			int dstReg = (op >> 9) & 0x07;
 			int size = (op >> 6) & 0x03;
@@ -36,7 +36,7 @@
 			}
 		}
 
-		void AND0_Disasm(DisassemblyInfo info)
+		private void AND0_Disasm(DisassemblyInfo info)
 		{
 			int dstReg = (op >> 9) & 0x07;
 			int size = (op >> 6) & 0x03;
@@ -64,7 +64,7 @@
 			info.Length = pc - info.PC;
 		}
 
-		void AND1() // AND Dn, <ea>
+		private void AND1() // AND Dn, <ea>
 		{
 			int srcReg = (op >> 9) & 0x07;
 			int size = (op >> 6) & 0x03;
@@ -109,7 +109,7 @@
 			}
 		}
 
-		void AND1_Disasm(DisassemblyInfo info)
+		private void AND1_Disasm(DisassemblyInfo info)
 		{
 			int srcReg = (op >> 9) & 0x07;
 			int size = (op >> 6) & 0x03;
@@ -137,7 +137,7 @@
 			info.Length = pc - info.PC;
 		}
 
-		void ANDI() // ANDI #<data>, <ea>
+		private void ANDI() // ANDI #<data>, <ea>
 		{
 			int size = (op >> 6) & 0x03;
 			int dstMode = (op >> 3) & 0x07;
@@ -184,7 +184,7 @@
 			}
 		}
 
-		void ANDI_Disasm(DisassemblyInfo info)
+		private void ANDI_Disasm(DisassemblyInfo info)
 		{
 			int size = ((op >> 6) & 0x03);
 			int dstMode = ((op >> 3) & 0x07);
@@ -223,7 +223,7 @@
 			info.Length = pc - info.PC;
 		}
 
-		void EOR() // EOR Dn, <ea>
+		private void EOR() // EOR Dn, <ea>
 		{
 			int srcReg = (op >> 9) & 0x07;
 			int size = (op >> 6) & 0x03;
@@ -268,7 +268,7 @@
 			}
 		}
 
-		void EOR_Disasm(DisassemblyInfo info)
+		private void EOR_Disasm(DisassemblyInfo info)
 		{
 			int srcReg = (op >> 9) & 0x07;
 			int size = (op >> 6) & 0x03;
@@ -296,7 +296,7 @@
 			info.Length = pc - info.PC;
 		}
 
-		void EORI()
+		private void EORI()
 		{
 			int size = (op >> 6) & 3;
 			int mode = (op >> 3) & 7;
@@ -340,7 +340,7 @@
 			}
 		}
 
-		void EORI_Disasm(DisassemblyInfo info)
+		private void EORI_Disasm(DisassemblyInfo info)
 		{
 			int pc = info.PC + 2;
 			int size = (op >> 6) & 3;
@@ -375,7 +375,7 @@
 			info.Length = pc - info.PC;
 		}
 
-		void OR0() // OR <ea>, Dn
+		private void OR0() // OR <ea>, Dn
 		{
 			int dstReg = (op >> 9) & 0x07;
 			int size = (op >> 6) & 0x03;
@@ -408,7 +408,7 @@
 			}
 		}
 
-		void OR0_Disasm(DisassemblyInfo info)
+		private void OR0_Disasm(DisassemblyInfo info)
 		{
 			int dstReg = (op >> 9) & 0x07;
 			int size = (op >> 6) & 0x03;
@@ -436,7 +436,7 @@
 			info.Length = pc - info.PC;
 		}
 
-		void OR1() // OR Dn, <ea>
+		private void OR1() // OR Dn, <ea>
 		{
 			int srcReg = (op >> 9) & 0x07;
 			int size = (op >> 6) & 0x03;
@@ -481,7 +481,7 @@
 			}
 		}
 
-		void OR1_Disasm(DisassemblyInfo info)
+		private void OR1_Disasm(DisassemblyInfo info)
 		{
 			int srcReg = (op >> 9) & 0x07;
 			int size = (op >> 6) & 0x03;
@@ -509,7 +509,7 @@
 			info.Length = pc - info.PC;
 		}
 
-		void ORI()
+		private void ORI()
 		{
 			int size = (op >> 6) & 3;
 			int mode = (op >> 3) & 7;
@@ -553,7 +553,7 @@
 			}
 		}
 
-		void ORI_Disasm(DisassemblyInfo info)
+		private void ORI_Disasm(DisassemblyInfo info)
 		{
 			int pc = info.PC + 2;
 			int size = (op >> 6) & 3;
@@ -588,7 +588,7 @@
 			info.Length = pc - info.PC;
 		}
 
-		void NOT()
+		private void NOT()
 		{
 			int size = (op >> 6) & 0x03;
 			int mode = (op >> 3) & 0x07;
@@ -632,7 +632,7 @@
 			}
 		}
 
-		void NOT_Disasm(DisassemblyInfo info)
+		private void NOT_Disasm(DisassemblyInfo info)
 		{
 			int size = (op >> 6) & 0x03;
 			int mode = (op >> 3) & 0x07;
@@ -659,7 +659,7 @@
 			info.Length = pc - info.PC;
 		}
 
-		void LSLd()
+		private void LSLd()
 		{
 			int rot = (op >> 9) & 7;
 			int size = (op >> 6) & 3;
@@ -707,7 +707,7 @@
 			}
 		}
 
-		void LSLd_Disasm(DisassemblyInfo info)
+		private void LSLd_Disasm(DisassemblyInfo info)
 		{
 			int pc = info.PC + 2;
 			int rot = (op >> 9) & 7;
@@ -729,7 +729,7 @@
 			info.Length = pc - info.PC;
 		}
 
-		void LSRd()
+		private void LSRd()
 		{
 			int rot = (op >> 9) & 7;
 			int size = (op >> 6) & 3;
@@ -777,7 +777,7 @@
 			}
 		}
 
-		void LSRd_Disasm(DisassemblyInfo info)
+		private void LSRd_Disasm(DisassemblyInfo info)
 		{
 			int pc = info.PC + 2;
 			int rot = (op >> 9) & 7;
@@ -799,7 +799,7 @@
 			info.Length = pc - info.PC;
 		}
 
-		void ASLd()
+		private void ASLd()
 		{
 			int rot = (op >> 9) & 7;
 			int size = (op >> 6) & 3;
@@ -853,7 +853,7 @@
 			}
 		}
 
-		void ASLd_Disasm(DisassemblyInfo info)
+		private void ASLd_Disasm(DisassemblyInfo info)
 		{
 			int pc = info.PC + 2;
 			int rot = (op >> 9) & 7;
@@ -875,7 +875,7 @@
 			info.Length = pc - info.PC;
 		}
 
-		void ASRd()
+		private void ASRd()
 		{
 			int rot = (op >> 9) & 7;
 			int size = (op >> 6) & 3;
@@ -929,7 +929,7 @@
 			}
 		}
 
-		void ASRd_Disasm(DisassemblyInfo info)
+		private void ASRd_Disasm(DisassemblyInfo info)
 		{
 			int pc = info.PC + 2;
 			int rot = (op >> 9) & 7;
@@ -951,7 +951,7 @@
 			info.Length = pc - info.PC;
 		}
 
-		void ROLd()
+		private void ROLd()
 		{
 			int rot = (op >> 9) & 7;
 			int size = (op >> 6) & 3;
@@ -999,7 +999,7 @@
 			}
 		}
 
-		void ROLd_Disasm(DisassemblyInfo info)
+		private void ROLd_Disasm(DisassemblyInfo info)
 		{
 			int pc = info.PC + 2;
 			int rot = (op >> 9) & 7;
@@ -1021,7 +1021,7 @@
 			info.Length = pc - info.PC;
 		}
 
-		void RORd()
+		private void RORd()
 		{
 			int rot = (op >> 9) & 7;
 			int size = (op >> 6) & 3;
@@ -1069,7 +1069,7 @@
 			}
 		}
 
-		void RORd_Disasm(DisassemblyInfo info)
+		private void RORd_Disasm(DisassemblyInfo info)
 		{
 			int pc = info.PC + 2;
 			int rot = (op >> 9) & 7;
@@ -1091,7 +1091,7 @@
 			info.Length = pc - info.PC;
 		}
 
-		void ROXLd()
+		private void ROXLd()
 		{
 			int rot = (op >> 9) & 7;
 			int size = (op >> 6) & 3;
@@ -1142,7 +1142,7 @@
 			}
 		}
 
-		void ROXLd_Disasm(DisassemblyInfo info)
+		private void ROXLd_Disasm(DisassemblyInfo info)
 		{
 			int pc = info.PC + 2;
 			int rot = (op >> 9) & 7;
@@ -1164,7 +1164,7 @@
 			info.Length = pc - info.PC;
 		}
 
-		void ROXRd()
+		private void ROXRd()
 		{
 			int rot = (op >> 9) & 7;
 			int size = (op >> 6) & 3;
@@ -1215,7 +1215,7 @@
 			}
 		}
 
-		void ROXRd_Disasm(DisassemblyInfo info)
+		private void ROXRd_Disasm(DisassemblyInfo info)
 		{
 			int pc = info.PC + 2;
 			int rot = (op >> 9) & 7;
@@ -1237,7 +1237,7 @@
 			info.Length = pc - info.PC;
 		}
 
-		void SWAP()
+		private void SWAP()
 		{
 			int reg = op & 7;
 			D[reg].u32 = (D[reg].u32 << 16) | (D[reg].u32 >> 16);
@@ -1247,7 +1247,7 @@
 			PendingCycles -= 4;
 		}
 
-		void SWAP_Disasm(DisassemblyInfo info)
+		private void SWAP_Disasm(DisassemblyInfo info)
 		{
 			int reg = op & 7;
 			info.Mnemonic = "swap";

@@ -23,7 +23,7 @@ Other chips used: Sunsoft-1
 
 	internal sealed class Jaleco_JF_11_14 : NesBoardBase
 	{
-		int chr, prg;
+		private int chr, prg;
 
 		public override bool Configure(EDetectionOrigin origin)
 		{

@@ -4,7 +4,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 	/// <summary>
 	/// 128K/+2 ULA
 	/// </summary>
-	class ScreenPentagon128 : ULA
+	internal class ScreenPentagon128 : ULA
 	{
 		public ScreenPentagon128(SpectrumBase machine)
 			: base(machine)

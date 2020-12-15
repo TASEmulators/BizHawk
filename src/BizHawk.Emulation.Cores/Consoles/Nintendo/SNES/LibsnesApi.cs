@@ -178,14 +178,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			BRR = 0x80,
 		}
 
-		snes_video_refresh_t video_refresh;
-		snes_input_poll_t input_poll;
-		snes_input_state_t input_state;
-		snes_input_notify_t input_notify;
-		snes_audio_sample_t audio_sample;
-		snes_scanlineStart_t scanlineStart;
-		snes_path_request_t pathRequest;
-		snes_trace_t traceCallback;
+		private snes_video_refresh_t video_refresh;
+		private snes_input_poll_t input_poll;
+		private snes_input_state_t input_state;
+		private snes_input_notify_t input_notify;
+		private snes_audio_sample_t audio_sample;
+		private snes_scanlineStart_t scanlineStart;
+		private snes_path_request_t pathRequest;
+		private snes_trace_t traceCallback;
 
 		public void QUERY_set_video_refresh(snes_video_refresh_t video_refresh) { this.video_refresh = video_refresh; }
 		// not used??
@@ -216,11 +216,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		[StructLayout(LayoutKind.Sequential)]
 		public struct LayerEnables
 		{
-			byte _BG1_Prio0, _BG1_Prio1;
-			byte _BG2_Prio0, _BG2_Prio1;
-			byte _BG3_Prio0, _BG3_Prio1;
-			byte _BG4_Prio0, _BG4_Prio1;
-			byte _Obj_Prio0, _Obj_Prio1, _Obj_Prio2, _Obj_Prio3;
+			private byte _BG1_Prio0, _BG1_Prio1;
+			private byte _BG2_Prio0, _BG2_Prio1;
+			private byte _BG3_Prio0, _BG3_Prio1;
+			private byte _BG4_Prio0, _BG4_Prio1;
+			private byte _Obj_Prio0, _Obj_Prio1, _Obj_Prio2, _Obj_Prio3;
 
 			public bool BG1_Prio0
 			{
@@ -286,7 +286,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		}
 
 		[StructLayout(LayoutKind.Explicit)]
-		struct CommStruct
+		private struct CommStruct
 		{
 			[FieldOffset(0)]
 			//the cmd being executed
@@ -353,8 +353,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			[FieldOffset(360)]
 			public SNES_MAPPER mapper;
 
-			[FieldOffset(364)]
-			uint BLANK0;
+			[FieldOffset(364)] private uint BLANK0;
 
 
 			//utilities

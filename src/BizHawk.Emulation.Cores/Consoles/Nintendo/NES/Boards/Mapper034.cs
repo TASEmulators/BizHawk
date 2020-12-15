@@ -7,11 +7,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		// zombie board that tries to handle both bxrom and ave-nina at once
 
 		//configuration
-		int prg_bank_mask_32k, chr_bank_mask_4k;
+		private int prg_bank_mask_32k, chr_bank_mask_4k;
 
 		//state
-		byte[] chr = new byte[2];
-		int prg;
+		private byte[] chr = new byte[2];
+		private int prg;
 
 
 		public override bool Configure(EDetectionOrigin origin)

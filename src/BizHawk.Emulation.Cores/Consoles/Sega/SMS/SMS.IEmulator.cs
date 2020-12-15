@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		}
 
 		// not savestated variables
-		int s_L, s_R;
+		private int s_L, s_R;
 
 		public bool FrameAdvance(IController controller, bool render, bool renderSound)
 		{

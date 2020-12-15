@@ -7,9 +7,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	{
 		// http://wiki.nesdev.com/w/index.php/INES_Mapper_057
 
-		bool prg_mode = false;
-		int chr_reg_low_0, chr_reg_low_1, chr_reg;
-		int prg_reg;
+		private bool prg_mode = false;
+		private int chr_reg_low_0, chr_reg_low_1, chr_reg;
+		private int prg_reg;
 
 		[MapperProp]
 		public int Mapper57_DipSwitch = 0;

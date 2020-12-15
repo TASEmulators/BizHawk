@@ -7,11 +7,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	{
 		//http://wiki.nesdev.com/w/index.php/INES_Mapper_045
 
-		int chr_bank_mask_2k;
-		int prg_bank_mask_8k;
-		int cur_reg = 0;
-		byte[] regs = new byte[4];
-		bool lock_regs = false;
+		private int chr_bank_mask_2k;
+		private int prg_bank_mask_8k;
+		private int cur_reg = 0;
+		private byte[] regs = new byte[4];
+		private bool lock_regs = false;
 
 		public override bool Configure(EDetectionOrigin origin)
 		{

@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Components
 {
 	public class MMC5Audio
 	{
-		class Pulse
+		private class Pulse
 		{
 			// regs
 			private int V;
@@ -27,7 +27,8 @@ namespace BizHawk.Emulation.Cores.Components
 				10,254, 20,  2, 40,  4, 80,  6, 160,  8, 60, 10, 14, 12, 26, 14,
 				12, 16, 24, 18, 48, 20, 96, 22, 192, 24, 72, 26, 16, 28, 32, 30
 			};
-			int length;
+
+			private int length;
 
 			// pulse
 			private int sequence;
@@ -233,7 +234,7 @@ namespace BizHawk.Emulation.Cores.Components
 				WritePCM(val);
 		}
 
-		void WritePCM(byte val)
+		private void WritePCM(byte val)
 		{
 			if (val == 0)
 			{
@@ -250,7 +251,7 @@ namespace BizHawk.Emulation.Cores.Components
 
 		private readonly Action<bool> RaiseIRQ;
 
-		const int framereload = 7458; // ???
+		private const int framereload = 7458; // ???
 		private int frame;
 		private bool PCMRead;
 		private bool PCMEnableIRQ;

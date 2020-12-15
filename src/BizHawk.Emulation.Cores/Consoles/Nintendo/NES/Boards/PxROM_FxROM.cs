@@ -8,14 +8,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	internal sealed class PxROM_FxROM : NesBoardBase
 	{
 		//configuration
-		int prg_bank_mask_8k, chr_bank_mask_4k;
-		bool mmc4;
+		private int prg_bank_mask_8k, chr_bank_mask_4k;
+		private bool mmc4;
 
 		//state
-		byte prg_reg;
-		readonly int[] prg_banks_8k = new int[4];
-		int[] chr_banks_4k = new int[4];
-		int[] chr_latches = new int[2];
+		private byte prg_reg;
+		private readonly int[] prg_banks_8k = new int[4];
+		private int[] chr_banks_4k = new int[4];
+		private int[] chr_latches = new int[2];
 
 		public override void SyncState(Serializer ser)
 		{
@@ -66,7 +66,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		void SyncPRG()
+		private void SyncPRG()
 		{
 			if (mmc4)
 			{

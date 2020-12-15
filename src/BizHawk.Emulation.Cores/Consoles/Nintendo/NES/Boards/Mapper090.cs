@@ -5,63 +5,63 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	internal sealed class Mapper090 : NesBoardBase
 	{
-		byte[] prg_regs = new byte[4];
-		int[] chr_regs = new int[8];
-		int[] nt_regs = new int[4];
+		private byte[] prg_regs = new byte[4];
+		private int[] chr_regs = new int[8];
+		private int[] nt_regs = new int[4];
 
-		int[] prg_banks = new int[4];
-		int[] chr_banks = new int[8];
-		int[] chr_latches = new int[2];
+		private int[] prg_banks = new int[4];
+		private int[] chr_banks = new int[8];
+		private int[] chr_latches = new int[2];
 
-		byte[] ram_bytes = new byte[5];
+		private byte[] ram_bytes = new byte[5];
 
 		[MapperProp]
 		public bool dipswitch_0;
 		[MapperProp]
 		public bool dipswitch_1;
 
-		int prg_bank_mask_8k;
-		int chr_bank_mask_1k;
+		private int prg_bank_mask_8k;
+		private int chr_bank_mask_1k;
 
-		byte prg_mode_select = 0;
-		byte chr_mode_select = 0;
-		bool sram_prg = false;
+		private byte prg_mode_select = 0;
+		private byte chr_mode_select = 0;
+		private bool sram_prg = false;
 
-		int ram_bank;
+		private int ram_bank;
 
-		bool mapper_090 = false;
-		bool mapper_209 = false;
-		bool mapper_211 = false;
-		bool mapper_035 = false;
+		private bool mapper_090 = false;
+		private bool mapper_209 = false;
+		private bool mapper_211 = false;
+		private bool mapper_035 = false;
 
-		bool nt_advanced_control = false;
-		bool nt_ram_disable = false;
+		private bool nt_advanced_control = false;
+		private bool nt_ram_disable = false;
 
-		bool nt_ram_select = false;
+		private bool nt_ram_select = false;
 
 
-		bool mirror_chr = false;
-		bool chr_block_mode = true;
-		int chr_block = 0;
-		int prg_block = 0;
+		private bool mirror_chr = false;
+		private bool chr_block_mode = true;
+		private int chr_block = 0;
+		private int prg_block = 0;
 
-		int multiplicator = 0;
-		int multiplicand = 0;
-		int multiplication_result = 0;
+		private int multiplicator = 0;
+		private int multiplicand = 0;
+		private int multiplication_result = 0;
 
-		bool irq_enable = false;
-		bool irq_pending = false;
+		private bool irq_enable = false;
+		private bool irq_pending = false;
 
-		bool irq_count_down = false;
-		bool irq_count_up = false;
-		int irq_prescaler_size;
-		byte irq_source = 0;
+		private bool irq_count_down = false;
+		private bool irq_count_up = false;
+		private int irq_prescaler_size;
+		private byte irq_source = 0;
 
-		byte prescaler;
-		byte irq_counter;
-		byte xor_reg;
+		private byte prescaler;
+		private byte irq_counter;
+		private byte xor_reg;
 
-		int a12_old;
+		private int a12_old;
 
 		public override bool Configure(EDetectionOrigin origin)
 		{

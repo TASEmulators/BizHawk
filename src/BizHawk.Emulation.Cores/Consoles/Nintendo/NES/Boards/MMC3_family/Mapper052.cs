@@ -7,11 +7,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	{
 		//http://wiki.nesdev.com/w/index.php/INES_Mapper_052
 
-		bool lock_regs = false;
-		bool prg_block_size = false;
-		bool chr_block_size = false;
-		int prg_or = 0;
-		int chr_or = 0;
+		private bool lock_regs = false;
+		private bool prg_block_size = false;
+		private bool chr_block_size = false;
+		private int prg_or = 0;
+		private int chr_or = 0;
 
 		public override bool Configure(EDetectionOrigin origin)
 		{

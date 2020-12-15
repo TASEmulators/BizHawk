@@ -4,7 +4,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 {
 	unsafe partial class LibsnesApi
 	{
-		void WaitForCMD()
+		private void WaitForCMD()
 		{
 			using (_exe.EnterExit())
 			{

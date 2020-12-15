@@ -17,15 +17,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		 */
 
 		// config
-		int prg_mask;
+		private int prg_mask;
 
 		// state
-		byte reg0 = 0;
-		byte reg1 = 0xff;
-		int prg = 0;
-		byte security = 0;
-		bool trigger = false;
-		bool strobe = true;
+		private byte reg0 = 0;
+		private byte reg1 = 0xff;
+		private int prg = 0;
+		private byte security = 0;
+		private bool trigger = false;
+		private bool strobe = true;
 
 
 		public override bool Configure(EDetectionOrigin origin)

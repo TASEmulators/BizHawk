@@ -7,10 +7,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	// this is probably two different boards, but they seem to work well enough the same
 	internal sealed class Mapper042 : NesBoardBase
 	{
-		int prg = 0;
-		int chr = 0;
-		int irqcnt = 0;
-		bool irqenable = false;
+		private int prg = 0;
+		private int chr = 0;
+		private int irqcnt = 0;
+		private bool irqenable = false;
 
 		public override bool Configure(EDetectionOrigin origin)
 		{

@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 	// this occurs when the Boot Rom is loading the nintendo logo into VRAM
 	// instead of tracking that in the main memory map where it will just slow things down for no reason
 	// we'll clear the 'locked' flag when the last byte of the logo is read
-	class MapperSachen2 : MapperBase
+	internal class MapperSachen2 : MapperBase
 	{
 		public int ROM_bank;
 		public bool locked, locked_GBC, finished;

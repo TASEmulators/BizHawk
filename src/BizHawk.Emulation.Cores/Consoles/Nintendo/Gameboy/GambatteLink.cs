@@ -73,7 +73,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		// if true, the link cable toggle signal is currently asserted
 		private bool _cablediscosignal = false;
 
-		const int SampPerFrame = 35112;
+		private const int SampPerFrame = 35112;
 
 		private readonly SaveController LCont = new SaveController(Gameboy.GbController);
 		private readonly SaveController RCont = new SaveController(Gameboy.GbController);

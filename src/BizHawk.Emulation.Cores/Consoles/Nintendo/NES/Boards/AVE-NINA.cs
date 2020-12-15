@@ -7,11 +7,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	internal sealed class AVE_NINA_001 : NesBoardBase
 	{
 		//configuration
-		int prg_bank_mask_32k, chr_bank_mask_4k;
+		private int prg_bank_mask_32k, chr_bank_mask_4k;
 
 		//state
-		int[] chr_banks_4k = new int[2];
-		int prg_bank_32k;
+		private int[] chr_banks_4k = new int[2];
+		private int prg_bank_32k;
 
 		public override void SyncState(Serializer ser)
 		{
@@ -88,14 +88,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	// according to the latest on nesdev:
 	// mapper 079: [.... PCCC] @ 4100
 	// mapper 113: [MCPP PCCC] @ 4100  (no games for this are in bootgod)
-	class AVE_NINA_006 : NesBoardBase
+	internal class AVE_NINA_006 : NesBoardBase
 	{
 		//configuration
-		int prg_bank_mask_32k, chr_bank_mask_8k;
-		bool mirror_control_enabled;
-		bool isMapper79 = false;
+		private int prg_bank_mask_32k, chr_bank_mask_8k;
+		private bool mirror_control_enabled;
+
+		private bool isMapper79 = false;
 		//state
-		int chr_bank_8k, prg_bank_32k;
+		private int chr_bank_8k, prg_bank_32k;
 
 		public override void SyncState(Serializer ser)
 		{

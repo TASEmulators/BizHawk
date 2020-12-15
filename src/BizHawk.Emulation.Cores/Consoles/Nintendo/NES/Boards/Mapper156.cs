@@ -11,10 +11,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	*/
 	internal sealed class Mapper156 : NesBoardBase
 	{
-		int prg_mask;
-		int chr_mask;
-		int prg;
-		readonly int[] chr = new int[8];
+		private int prg_mask;
+		private int chr_mask;
+		private int prg;
+		private readonly int[] chr = new int[8];
 
 		public override bool Configure(EDetectionOrigin origin)
 		{

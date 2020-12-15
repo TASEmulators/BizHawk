@@ -14,12 +14,12 @@
 		// $FFFE - Mapper slot 1 control
 		// $FFFF - Mapper slot 2 control
 
-		const ushort BankSizeMask = 0x3FFF;
-		const ushort RamSizeMask = 0x1FFF;
+		private const ushort BankSizeMask = 0x3FFF;
+		private const ushort RamSizeMask = 0x1FFF;
 
-		bool BiosMapped => (Port3E & 0x40) == 0x40;
+		private bool BiosMapped => (Port3E & 0x40) == 0x40;
 
-		byte ReadMemorySega(ushort address)
+		private byte ReadMemorySega(ushort address)
 		{
 			byte ret = 0xFF;
 
@@ -81,7 +81,7 @@
 			return ret;
 		}
 
-		CDLog_MapResults MapMemorySega(ushort address, bool write)
+		private CDLog_MapResults MapMemorySega(ushort address, bool write)
 		{
 			if (address < 0xC000)
 			{
@@ -117,7 +117,7 @@
 			}
 		}
 
-		void WriteMemorySega(ushort address, byte value)
+		private void WriteMemorySega(ushort address, byte value)
 		{
 			if (address >= 0xC000)
 				SystemRam[address & RamSizeMask] = value;
@@ -163,7 +163,7 @@
 			}
 		}
 
-		void InitSegaMapper()
+		private void InitSegaMapper()
 		{
 			ReadMemoryMapper = ReadMemorySega;
 			WriteMemoryMapper = WriteMemorySega;
@@ -177,7 +177,7 @@
 
 		// Mapper when loading a BIOS as a ROM (simulating no cart loaded)
 
-		byte ReadMemoryBIOS(ushort address)
+		private byte ReadMemoryBIOS(ushort address)
 		{
 			if ((Port3E & 0x08) != 0 && address < 0xC000)
 				return 0xFF;
@@ -194,7 +194,7 @@
 			return SystemRam[address & RamSizeMask];
 		}
 
-		void WriteMemoryBIOS(ushort address, byte value)
+		private void WriteMemoryBIOS(ushort address, byte value)
 		{
 			if (address >= 0xC000)
 				SystemRam[address & RamSizeMask] = value;
@@ -208,7 +208,7 @@
 			}
 		}
 
-		void InitBiosMapper()
+		private void InitBiosMapper()
 		{
 			ReadMemoryMapper = ReadMemoryBIOS;
 			WriteMemoryMapper = WriteMemoryBIOS;

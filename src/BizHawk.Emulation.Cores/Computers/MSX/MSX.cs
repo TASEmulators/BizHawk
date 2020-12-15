@@ -100,8 +100,8 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 
 		}
 
-		IntPtr MSX_Pntr { get; set; } = IntPtr.Zero;
-		byte[] MSX_core = new byte[0x20000];
+		private IntPtr MSX_Pntr { get; set; } = IntPtr.Zero;
+		private byte[] MSX_core = new byte[0x20000];
 		public static byte[] Bios = null;
 		public static byte[] Basic;
 

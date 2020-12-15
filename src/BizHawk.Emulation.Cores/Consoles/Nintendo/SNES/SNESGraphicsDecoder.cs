@@ -191,7 +191,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public class BGInfos
 		{
-			readonly BGInfo[] bgs = new BGInfo[4] { new BGInfo(1), new BGInfo(2), new BGInfo(3), new BGInfo(4) };
+			private readonly BGInfo[] bgs = new BGInfo[4] { new BGInfo(1), new BGInfo(2), new BGInfo(3), new BGInfo(4) };
 			public BGInfo BG1 => bgs[0];
 			public BGInfo BG2 => bgs[1];
 			public BGInfo BG3 => bgs[2];
@@ -497,7 +497,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			}
 		}
 
-		static readonly int[,] ModeBpps = {
+		private static readonly int[,] ModeBpps = {
 				{2,2,2,2},
 				{4,4,2,0},
 				{4,4,0,0},
@@ -516,7 +516,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		}
 
 		//the same basic color table that libsnes uses to convert from snes 555 to rgba32
-		static readonly int[] directColorTable = new int[256]; //8bpp gfx -> rgb555
+		private static readonly int[] directColorTable = new int[256]; //8bpp gfx -> rgb555
 		static SNESGraphicsDecoder()
 		{
 			//make directColorTable
@@ -533,11 +533,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			}
 		}
 
-		readonly int[] colortable;
+		private readonly int[] colortable;
 		public byte* vram, oam;
 		public ushort* cgram, vram16;
 
-		readonly LibsnesApi api;
+		private readonly LibsnesApi api;
 
 		public SNESGraphicsDecoder(LibsnesApi api, SnesColors.ColorType pal)
 		{
@@ -764,10 +764,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			}
 		}
 
-		readonly int[][] _tileCache = new int[18][];
+		private readonly int[][] _tileCache = new int[18][];
 
-		bool usingUserBackColor = false;
-		int userBackColor;
+		private bool usingUserBackColor = false;
+		private int userBackColor;
 
 		public void SetBackColor(int snescol)
 		{
@@ -820,7 +820,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			return ret;
 		}
 
-		void CacheTilesMode7ExtBg()
+		private void CacheTilesMode7ExtBg()
 		{
 			int numtiles = 256;
 			int[] tiles = new int[8 * 8 * numtiles];
@@ -836,7 +836,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		/// merges one type of tiles with another to create the higher-order bitdepth.
 		/// TODO - templateize this when we change it to c++
 		/// </summary>
-		void CacheTiles_Merge(int fromBpp)
+		private void CacheTiles_Merge(int fromBpp)
 		{
 			int toBpp = fromBpp * 2;
 			int shift = fromBpp;

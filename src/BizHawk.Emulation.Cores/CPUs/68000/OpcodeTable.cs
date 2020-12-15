@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 {
 	partial class MC68000
 	{
-		void BuildOpcodeTable()
+		private void BuildOpcodeTable()
 		{
 			// NOTE: Do not change the order of these assigns without testing. There is
 			// some overwriting of less-specific opcodes with more-specific opcodes.
@@ -96,7 +96,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			Assign("trap", TRAP, "010011100100", "Data4");
 		}
 
-		void Assign(string instr, Action exec, string root, params string[] bitfield)
+		private void Assign(string instr, Action exec, string root, params string[] bitfield)
 		{
 			List<string> opList = new List<string>();
 			opList.Add(root);
@@ -127,13 +127,13 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			}
 		}
 
-		void AppendConstant(List<string> ops, string constant)
+		private void AppendConstant(List<string> ops, string constant)
 		{
 			for (int i = 0; i < ops.Count; i++)
 				ops[i] = ops[i] + constant;
 		}
 
-		List<string> AppendPermutations(List<string> ops, string[] permutations)
+		private List<string> AppendPermutations(List<string> ops, string[] permutations)
 		{
 			List<string> output = new List<string>();
 
@@ -144,7 +144,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			return output;
 		}
 
-		List<string> AppendData(List<string> ops, int bits)
+		private List<string> AppendData(List<string> ops, int bits)
 		{
 			List<string> output = new List<string>();
 
@@ -155,7 +155,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			return output;
 		}
 
-		int BinaryExp(int bits)
+		private int BinaryExp(int bits)
 		{
 			int res = 1;
 			for (int i = 0; i < bits; i++)
@@ -163,12 +163,12 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			return res;
 		}
 
-		static readonly string[] Size2_0 = { "01", "11", "10" };
-		static readonly string[] Size2_1 = { "00", "01", "10" };
-		static readonly string[] Size1 = { "0", "1" };
-		static readonly string[] Xn3 = { "000", "001", "010", "011", "100", "101", "110", "111" };
+		private static readonly string[] Size2_0 = { "01", "11", "10" };
+		private static readonly string[] Size2_1 = { "00", "01", "10" };
+		private static readonly string[] Size1 = { "0", "1" };
+		private static readonly string[] Xn3 = { "000", "001", "010", "011", "100", "101", "110", "111" };
 
-		static readonly string[] Xn3Am3 = {
+		private static readonly string[] Xn3Am3 = {
 			"000000", // Dn   Data register
 			"001000",
 			"010000",
@@ -239,7 +239,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			"100111", // #imm          Immediate            
 		};
 
-		static readonly string[] Am3Xn3 = {
+		private static readonly string[] Am3Xn3 = {
 			"000000", // Dn   Data register
 			"000001",
 			"000010",
@@ -310,7 +310,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			"111100", // #imm          Immediate            
 		};
 
-		static readonly string[] ConditionMain = {
+		private static readonly string[] ConditionMain = {
 			"0010", // HI  Higher (unsigned)
 			"0011", // LS  Lower or Same (unsigned)
 			"0100", // CC  Carry Clear (aka Higher or Same, unsigned)
@@ -327,7 +327,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			"1111"  // LE  Less or Equal (signed)
 		};
 
-		static readonly string[] ConditionAll = {
+		private static readonly string[] ConditionAll = {
 			"0000", // T   True 
 			"0001", // F   False            
 			"0010", // HI  Higher (unsigned)

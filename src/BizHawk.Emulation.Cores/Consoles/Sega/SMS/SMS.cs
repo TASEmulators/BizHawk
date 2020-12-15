@@ -273,7 +273,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		private readonly ITraceable Tracer;
 
-		SmsSyncSettings.Regions DetermineRegion(string gameRegion)
+		private SmsSyncSettings.Regions DetermineRegion(string gameRegion)
 		{
 			if (gameRegion == null)
 				return SmsSyncSettings.Regions.Export;

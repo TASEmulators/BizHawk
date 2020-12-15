@@ -8,20 +8,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	internal sealed class Sunsoft3 : NesBoardBase
 	{
 		//configuration
-		int prg_bank_mask_16k, chr_bank_mask_2k;
+		private int prg_bank_mask_16k, chr_bank_mask_2k;
 
 		//state
-		bool toggle;
-		byte[] prg_banks_16k = new byte[2];
-		byte[] chr_banks_2k = new byte[4];
-		int irq_counter;
-		bool irq_enable;
-		bool irq_asserted;
-		int clock_counter;
+		private bool toggle;
+		private byte[] prg_banks_16k = new byte[2];
+		private byte[] chr_banks_2k = new byte[4];
+		private int irq_counter;
+		private bool irq_enable;
+		private bool irq_asserted;
+		private int clock_counter;
 
 		//the VS actually does have 2 KB of nametable address space
 		//let's make the extra space here, instead of in the main NES to avoid confusion
-		byte[] CIRAM_VS = new byte[0x800];
+		private byte[] CIRAM_VS = new byte[0x800];
 
 
 		public override void SyncState(Serializer ser)
@@ -79,13 +79,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		void SetCHR(int block, byte value)
+		private void SetCHR(int block, byte value)
 		{
 			chr_banks_2k[block] = value;
 			ApplyMemoryMapMask(chr_bank_mask_2k, chr_banks_2k);
 		}
 
-		void SyncIRQ()
+		private void SyncIRQ()
 		{
 			IrqSignal = irq_asserted;
 		}

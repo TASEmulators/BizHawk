@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 	internal sealed class Sunsoft_5 : Sunsoft_FME7
 	{
-		Sunsoft5BAudio audio;
+		private Sunsoft5BAudio audio;
 
 		public override bool Configure(EDetectionOrigin origin)
 		{
@@ -57,17 +57,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	internal class Sunsoft_FME7 : NesBoardBase
 	{
 		//configuration
-		int prg_bank_mask_8k, chr_bank_mask_1k, wram_bank_mask_8k;
+		private int prg_bank_mask_8k, chr_bank_mask_1k, wram_bank_mask_8k;
 
 		//state
-		int addr_reg;
-		byte[] regs = new byte[12];
-		byte[] prg_banks_8k = new byte[4];
-		int wram_bank;
-		bool wram_ram_selected, wram_ram_enabled;
-		ushort irq_counter;
-		bool irq_countdown, irq_enabled, irq_asserted;
-		int clock_counter;
+		private int addr_reg;
+		private byte[] regs = new byte[12];
+		private byte[] prg_banks_8k = new byte[4];
+		private int wram_bank;
+		private bool wram_ram_selected, wram_ram_enabled;
+		private ushort irq_counter;
+		private bool irq_countdown, irq_enabled, irq_asserted;
+		private int clock_counter;
 
 
 		public override void SyncState(Serializer ser)
@@ -127,7 +127,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			SetMirrorType(EMirrorType.Vertical);
 		}
 
-		void SyncPRG()
+		private void SyncPRG()
 		{
 			wram_ram_enabled = (regs[8] & 0x80) != 0;
 			wram_ram_selected = (regs[8]&0x40)!=0;
@@ -194,7 +194,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		void SyncIrq()
+		private void SyncIrq()
 		{
 			IrqSignal = irq_asserted;
 		}
@@ -231,7 +231,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return Rom[addr];
 		}
 
-		int CalcWRAMAddress(int addr, int bank_mask_8k)
+		private int CalcWRAMAddress(int addr, int bank_mask_8k)
 		{
 			int ofs = addr & ((1 << 13) - 1);
 			int bank_8k = wram_bank;
@@ -240,7 +240,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return addr;
 		}
 
-		int CalcPPUAddress(int addr)
+		private int CalcPPUAddress(int addr)
 		{
 			int bank_1k = addr >> 10;
 			int ofs = addr & ((1 << 10) - 1);

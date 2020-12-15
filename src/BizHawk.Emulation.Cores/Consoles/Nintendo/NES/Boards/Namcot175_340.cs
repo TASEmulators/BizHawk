@@ -27,14 +27,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		 */
 
 		// config
-		int prg_bank_mask_8k;
-		int chr_bank_mask_1k;
-		bool enablemirror;
+		private int prg_bank_mask_8k;
+		private int chr_bank_mask_1k;
+		private bool enablemirror;
 
 		// state
-		int[] prg = new int[4];
-		int[] chr = new int[8];
-		bool wramenable;
+		private int[] prg = new int[4];
+		private int[] chr = new int[8];
+		private bool wramenable;
 
 		public override bool Configure(EDetectionOrigin origin)
 		{
@@ -101,7 +101,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		void SyncMirror(byte value)
+		private void SyncMirror(byte value)
 		{
 			if (enablemirror)
 			{

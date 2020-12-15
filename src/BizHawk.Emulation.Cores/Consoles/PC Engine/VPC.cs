@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 	public sealed class VPC : IVideoProvider
 	{
-		readonly PCEngine PCE;
+		private readonly PCEngine PCE;
 		public VDC VDC1;
 		public VDC VDC2;
 		public VCE VCE;
@@ -94,17 +94,17 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		// And there are no homebrew SGX games I know of.
 		// Maybe we'll emulate it in the native-code version.
 
-		const int RCR = 6;
-		const int BXR = 7;
-		const int BYR = 8;
-		const int VDW = 13;
-		const int DCR = 15;
+		private const int RCR = 6;
+		private const int BXR = 7;
+		private const int BYR = 8;
+		private const int VDW = 13;
+		private const int DCR = 15;
 
-		int EffectivePriorityMode = 0;
+		private int EffectivePriorityMode = 0;
 
-		int FrameHeight;
-		int FrameWidth;
-		int[] FrameBuffer;
+		private int FrameHeight;
+		private int FrameWidth;
+		private int[] FrameBuffer;
 
 		private readonly byte[] PriorityBuffer = new byte[512];
 		private readonly byte[] InterSpritePriorityBuffer = new byte[512];

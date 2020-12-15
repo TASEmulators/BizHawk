@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			}
 		}
 
-		string QUERY_MemoryNameForId(SNES_MEMORY id)
+		private string QUERY_MemoryNameForId(SNES_MEMORY id)
 		{
 			using (_exe.EnterExit())
 			{

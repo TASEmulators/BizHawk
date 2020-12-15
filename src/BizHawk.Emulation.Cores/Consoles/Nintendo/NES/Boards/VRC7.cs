@@ -10,19 +10,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	internal sealed class VRC7 : NesBoardBase
 	{
 		//configuration
-		int prg_bank_mask_8k, chr_bank_mask_1k;
-		Func<int, int> remap;
+		private int prg_bank_mask_8k, chr_bank_mask_1k;
+		private Func<int, int> remap;
 
 		//state
-		YM2413 fm; //= new Sound.YM2413(Sound.YM2413.ChipType.VRC7);
+		private YM2413 fm; //= new Sound.YM2413(Sound.YM2413.ChipType.VRC7);
 
-		byte[] prg_banks_8k = new byte[4];
-		byte[] chr_banks_1k = new byte[8];
-		bool irq_mode;
-		bool irq_enabled, irq_pending, irq_autoen;
-		byte irq_reload;
-		byte irq_counter;
-		int irq_prescaler;
+		private byte[] prg_banks_8k = new byte[4];
+		private byte[] chr_banks_1k = new byte[8];
+		private bool irq_mode;
+		private bool irq_enabled, irq_pending, irq_autoen;
+		private byte irq_reload;
+		private byte irq_counter;
+		private int irq_prescaler;
 
 		public override void SyncState(Serializer ser)
 		{
@@ -40,13 +40,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			SyncIRQ();
 		}
 
-		void SyncIRQ()
+		private void SyncIRQ()
 		{
 			IrqSignal = (irq_pending && irq_enabled);
 		}
 
 
-		static int RemapM117(int addr)
+		private static int RemapM117(int addr)
 		{
 			//addr &= 0x7007; // i don't know all of which bits are decoded, but this breaks stuff
 			switch (addr)
@@ -137,7 +137,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return Rom[addr];
 		}
 
-		int Map_PPU(int addr)
+		private int Map_PPU(int addr)
 		{
 			int bank_1k = addr >> 10;
 			int ofs = addr & ((1 << 10) - 1);
@@ -279,7 +279,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		void ClockIRQ()
+		private void ClockIRQ()
 		{
 			if (irq_counter == 0xFF)
 			{

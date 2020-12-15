@@ -6,9 +6,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	internal sealed class Mapper62 : NesBoardBase
 	{
-		bool prg_mode = false;
-		int chr_reg;
-		int prg_reg; 
+		private bool prg_mode = false;
+		private int chr_reg;
+		private int prg_reg; 
 
 		public override bool Configure(EDetectionOrigin origin)
 		{

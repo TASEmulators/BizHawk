@@ -6,14 +6,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	{
 		//http://wiki.nesdev.com/w/index.php/INES_Mapper_018
 
-		byte[] prg_banks_8k = new byte[4];
-		byte[] chr_banks_1k = new byte[8];
-		int chr_bank_mask_1k, prg_bank_mask_8k;
-		int ppuclock;
-		int irqclock;
-		int irqreload;
-		int irqcountwidth;
-		bool irqcountpaused;
+		private byte[] prg_banks_8k = new byte[4];
+		private byte[] chr_banks_1k = new byte[8];
+		private int chr_bank_mask_1k, prg_bank_mask_8k;
+		private int ppuclock;
+		private int irqclock;
+		private int irqreload;
+		private int irqcountwidth;
+		private bool irqcountpaused;
 
 
 		public override bool Configure(EDetectionOrigin origin)
@@ -234,7 +234,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// <summary>
 		/// emulate underflow for the appropriate number of bits
 		/// </summary>
-		uint squeeze(int input)
+		private uint squeeze(int input)
 		{
 			unchecked
 			{

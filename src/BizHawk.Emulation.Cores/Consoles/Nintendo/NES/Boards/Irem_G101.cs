@@ -11,13 +11,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	internal sealed class Irem_G101 : NesBoardBase
 	{
 		//configuration
-		int prg_bank_mask, chr_bank_mask;
-		bool oneScreenHack;
+		private int prg_bank_mask, chr_bank_mask;
+		private bool oneScreenHack;
 
 		//state
-		byte[] prg_regs_8k = new byte[8];
-		byte[] chr_regs_1k = new byte[8];
-		int prg_mode, mirror_mode;
+		private byte[] prg_regs_8k = new byte[8];
+		private byte[] chr_regs_1k = new byte[8];
+		private int prg_mode, mirror_mode;
 
 		public override void SyncState(Serializer ser)
 		{
@@ -64,7 +64,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		void SyncMirror()
+		private void SyncMirror()
 		{
 			if (oneScreenHack)
 				SetMirrorType(EMirrorType.OneScreenA);

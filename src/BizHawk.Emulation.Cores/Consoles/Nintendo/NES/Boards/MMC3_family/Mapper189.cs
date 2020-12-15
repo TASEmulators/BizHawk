@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		int prg;
+		private int prg;
 
 		protected override int Get_PRGBank_8K(int addr)
 		{

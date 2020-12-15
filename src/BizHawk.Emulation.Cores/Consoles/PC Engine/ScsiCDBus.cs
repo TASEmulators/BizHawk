@@ -12,23 +12,23 @@ namespace BizHawk.Emulation.Cores.PCEngine
 	// which incidentally would allow us to put it back to an int from a long if we wanted to
 	public sealed class ScsiCDBus
 	{
-		const int STATUS_GOOD = 0;
-		const int STATUS_CHECK_CONDITION = 1;
-		const int STATUS_CONDITION_MET = 2;
-		const int STATUS_BUSY = 4;
-		const int STATUS_INTERMEDIATE = 8;
+		private const int STATUS_GOOD = 0;
+		private const int STATUS_CHECK_CONDITION = 1;
+		private const int STATUS_CONDITION_MET = 2;
+		private const int STATUS_BUSY = 4;
+		private const int STATUS_INTERMEDIATE = 8;
 
-		const int SCSI_TEST_UNIT_READY = 0x00;
-		const int SCSI_REQUEST_SENSE = 0x03;
-		const int SCSI_READ = 0x08;
-		const int SCSI_AUDIO_START_POS = 0xD8;
-		const int SCSI_AUDIO_END_POS = 0xD9;
-		const int SCSI_PAUSE = 0xDA;
-		const int SCSI_READ_SUBCODE_Q = 0xDD;
-		const int SCSI_READ_TOC = 0xDE;
+		private const int SCSI_TEST_UNIT_READY = 0x00;
+		private const int SCSI_REQUEST_SENSE = 0x03;
+		private const int SCSI_READ = 0x08;
+		private const int SCSI_AUDIO_START_POS = 0xD8;
+		private const int SCSI_AUDIO_END_POS = 0xD9;
+		private const int SCSI_PAUSE = 0xDA;
+		private const int SCSI_READ_SUBCODE_Q = 0xDD;
+		private const int SCSI_READ_TOC = 0xDE;
 
-		bool bsy, sel, cd, io, msg, req, ack, atn, rst;
-		bool signalsChanged;
+		private bool bsy, sel, cd, io, msg, req, ack, atn, rst;
+		private bool signalsChanged;
 
 		public bool BSY
 		{
@@ -122,22 +122,22 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		public byte DataBits;
 
-		const byte BusPhase_BusFree = 0;
-		const byte BusPhase_Command = 1;
-		const byte BusPhase_DataIn = 2;
-		const byte BusPhase_DataOut = 3;
-		const byte BusPhase_MessageIn = 4;
-		const byte BusPhase_MessageOut = 5;
-		const byte BusPhase_Status = 6;
+		private const byte BusPhase_BusFree = 0;
+		private const byte BusPhase_Command = 1;
+		private const byte BusPhase_DataIn = 2;
+		private const byte BusPhase_DataOut = 3;
+		private const byte BusPhase_MessageIn = 4;
+		private const byte BusPhase_MessageOut = 5;
+		private const byte BusPhase_Status = 6;
 
-		bool busPhaseChanged;
-		byte Phase = BusPhase_BusFree;
+		private bool busPhaseChanged;
+		private byte Phase = BusPhase_BusFree;
 
-		bool MessageCompleted;
-		bool StatusCompleted;
-		byte MessageValue;
+		private bool MessageCompleted;
+		private bool StatusCompleted;
+		private byte MessageValue;
 
-		readonly QuickList<byte> CommandBuffer = new QuickList<byte>(10); // 10 = biggest command
+		private readonly QuickList<byte> CommandBuffer = new QuickList<byte>(10); // 10 = biggest command
 		public QuickQueue<byte> DataIn = new QuickQueue<byte>(2048); // one data sector
 
 		// ******** Data Transfer / READ command support ********

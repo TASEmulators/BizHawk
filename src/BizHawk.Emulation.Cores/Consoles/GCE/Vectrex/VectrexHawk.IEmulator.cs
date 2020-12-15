@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 		public ControllerDefinition ControllerDefinition => _controllerDeck.Definition;
 
-		byte joy1_LR, joy2_LR, joy1_UD, joy2_UD;
+		private byte joy1_LR, joy2_LR, joy1_UD, joy2_UD;
 
 		public bool FrameAdvance(IController controller, bool render, bool rendersound)
 		{

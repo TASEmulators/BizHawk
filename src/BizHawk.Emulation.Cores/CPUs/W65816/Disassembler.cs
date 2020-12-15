@@ -17,11 +17,11 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Components.W65816
 {
-	class W65816_DisassemblerService : IDisassemblable
+	internal class W65816_DisassemblerService : IDisassemblable
 	{
 		public string Cpu { get; set; }
 
-		readonly W65816 disassemblerCpu = new W65816();
+		private readonly W65816 disassemblerCpu = new W65816();
 		
 		public IEnumerable<string> AvailableCpus
 		{
@@ -37,7 +37,7 @@ namespace BizHawk.Emulation.Cores.Components.W65816
 		}
 	}
 
-	class W65816
+	internal class W65816
 	{
 		//unsigned char *mem, unsigned long pos, unsigned char *flag, char *inst, unsigned char tsrc
 		//TODO - what ha ppens at the end of memory? make sure peek wraps around?

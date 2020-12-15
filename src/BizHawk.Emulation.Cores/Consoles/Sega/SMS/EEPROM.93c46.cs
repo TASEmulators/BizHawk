@@ -3,9 +3,9 @@ using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 {
-	class EEPROM93c46
+	internal class EEPROM93c46
 	{
-		enum EEPROMWriteMode
+		private enum EEPROMWriteMode
 		{
 			Instruction,
 			WriteData,
@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			Read
 		}
 
-		enum EEPROMReadMode
+		private enum EEPROMReadMode
 		{
 			ReadNew,
 			ReadOld,
@@ -21,21 +21,21 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		}
 
 		[Flags]
-		enum EEPROMFlags : byte
+		private enum EEPROMFlags : byte
 		{
 			Ready = 1,
 			Clock = 2,
 			ChipSelect = 4
 		}
 
-		ushort Address = 0;
-		ushort Value = 0;
-		int BitsWritten = 0;
-		int BitsRead = 0;
-		bool WriteEnable = false;
-		EEPROMWriteMode WriteMode = EEPROMWriteMode.Instruction;
-		EEPROMReadMode ReadMode = EEPROMReadMode.Hold;
-		EEPROMFlags Flags = 0;
+		private ushort Address = 0;
+		private ushort Value = 0;
+		private int BitsWritten = 0;
+		private int BitsRead = 0;
+		private bool WriteEnable = false;
+		private EEPROMWriteMode WriteMode = EEPROMWriteMode.Instruction;
+		private EEPROMReadMode ReadMode = EEPROMReadMode.Hold;
+		private EEPROMFlags Flags = 0;
 		
 		public byte Read(byte[] saveRAM)
 		{

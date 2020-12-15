@@ -16,37 +16,38 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// <summary>
 		/// true if 256byte
 		/// </summary>
-		readonly bool Big;
+		private readonly bool Big;
 
-		byte[] rom;
+		private byte[] rom;
 		/// <summary>aux circuitry? D7 of data byte</summary>
-		bool OutEnable = false;
+		private bool OutEnable = false;
 		/// <summary>asserted by master</summary>
-		bool SCK = false;
+		private bool SCK = false;
 		/// <summary>asserted by master</summary>
-		bool SDA = false;
+		private bool SDA = false;
 		/// <summary>true if the SEEPROM is trying to pull down the SDA line</summary>
-		bool PullDown = false;
+		private bool PullDown = false;
 
 
 		/// <summary>number of bits left to send\recv of current byte</summary>
-		int BitsLeft;
+		private int BitsLeft;
 		/// <summary>current data byte in progress</summary>
-		byte Data;
+		private byte Data;
 		/// <summary>current chip addr</summary>
-		byte Addr;
+		private byte Addr;
 
 
-		enum EState
+		private enum EState
 		{
 			Off, Select, Ignore, Address, Read, Write
 		}
-		EState State;
+
+		private EState State;
 
 		/// <summary>
 		/// called on the 9th bit of a write
 		/// </summary>
-		void ClockByteWrite()
+		private void ClockByteWrite()
 		{
 			if (State == EState.Write)
 			{
@@ -128,7 +129,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// called on rising edge of SCK.  output bit, if any, can be set by PullDown
 		/// </summary>
 		/// <param name="bit">input bit</param>
-		void ClockBit(bool bit)
+		private void ClockBit(bool bit)
 		{
 			switch (State)
 			{
@@ -170,13 +171,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					break;
 			}
 		}
-		void ClockStart()
+
+		private void ClockStart()
 		{
 			State = EState.Select;
 			BitsLeft = 8;
 			Console.WriteLine("STATE: SELECT");
 		}
-		void ClockStop()
+
+		private void ClockStop()
 		{
 			State = EState.Off;
 			Console.WriteLine("STATE: OFF");

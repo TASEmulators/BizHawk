@@ -20,31 +20,31 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// <summary>FDS bios image; should be 8192 bytes</summary>
 		public byte[] biosrom;
 		/// <summary>.FDS disk image</summary>
-		byte[] diskimage;
+		private byte[] diskimage;
 
-		RamAdapter diskdrive;
-		FDSAudio audio;
+		private RamAdapter diskdrive;
+		private FDSAudio audio;
 		/// <summary>currently loaded side of the .FDS image, 0 based</summary>
-		int? currentside = null;
+		private int? currentside = null;
 		/// <summary>collection of diffs (as provided by the RamAdapter) for each side in the .FDS image</summary>
-		byte[][] diskdiffs;
+		private byte[][] diskdiffs;
 
-		bool _diskirq;
-		bool _timerirq;
+		private bool _diskirq;
+		private bool _timerirq;
 
 		/// <summary>disk io ports enabled; see 4023.0</summary>
-		bool diskenable = false;
+		private bool diskenable = false;
 		/// <summary>sound io ports enabled; see 4023.1</summary>
-		bool soundenable = false;
+		private bool soundenable = false;
 		/// <summary>read on 4033, write on 4026</summary>
-		byte reg4026;
+		private byte reg4026;
 
 		/// <summary>timer reload</summary>
-		int timerlatch;
+		private int timerlatch;
 		/// <summary>timer current value</summary>
-		int timervalue;
+		private int timervalue;
 		/// <summary>4022.0,1</summary>
-		byte timerreg;
+		private byte timerreg;
 
 		public override void SyncState(Serializer ser)
 		{
@@ -223,22 +223,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return new MemoryDomainDelegate("FDS Side", diskdrive.NumBytes, MemoryDomain.Endian.Little, diskdrive.PeekData, null, 1);
 		}
 
-		void SetIRQ()
+		private void SetIRQ()
 		{
 			IrqSignal = _diskirq || _timerirq;
 		}
-		bool diskirq
+
+		private bool diskirq
 		{
 			get => _diskirq;
 			set { _diskirq = value; SetIRQ(); }
 		}
-		bool timerirq
+
+		private bool timerirq
 		{
 			get => _timerirq;
 			set { _timerirq = value; SetIRQ(); }
 		}
-		int timerirq_cd;
-		bool timer_irq_active;
+
+		private int timerirq_cd;
+		private bool timer_irq_active;
 
 		public override void WriteExp(int addr, byte value)
 		{

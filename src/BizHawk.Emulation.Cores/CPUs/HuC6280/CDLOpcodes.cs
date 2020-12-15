@@ -2,7 +2,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 {
 	public partial class HuC6280
 	{
-		void CDLOpcode()
+		private void CDLOpcode()
 		{
 			byte tmp8;
 			byte opcode = ReadMemory(PC);

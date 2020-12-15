@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 	internal sealed class GameGenie : NesBoardBase
 	{
-		static readonly byte[] PatternTables = new byte[256];
+		private static readonly byte[] PatternTables = new byte[256];
 
 		static GameGenie()
 		{

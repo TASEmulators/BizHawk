@@ -10,17 +10,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public bool HasClockPPU = false;
 
 		// this only handles region differences within the PPU
-		int preNMIlines;
-		int postNMIlines;
-		bool chopdot;
+		private int preNMIlines;
+		private int postNMIlines;
+		private bool chopdot;
 		public enum Region { NTSC, PAL, Dendy, RGB }
-		Region _region;
+
+		private Region _region;
 		public Region region
 		{
 			get => _region;
 			set { _region = value; SyncRegion(); }
 		}
-		void SyncRegion()
+
+		private void SyncRegion()
 		{
 			switch (region)
 			{
@@ -220,11 +222,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		//state
 		public int ppudead; //measured in frames
-		bool idleSynch;
-		int NMI_PendingInstructions;
-		byte PPUGenLatch;
-		bool vtoggle;
-		byte VRAMBuffer;
+		private bool idleSynch;
+		private int NMI_PendingInstructions;
+		private byte PPUGenLatch;
+		private bool vtoggle;
+		private byte VRAMBuffer;
 		public byte[] OAM;
 		public byte[] PALRAM;
 
@@ -356,7 +358,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			double_2007_read = 0;
 		}
 
-		void runppu()
+		private void runppu()
 		{
 			//run one ppu cycle at a time so we can interact with the ppu and clockPPU at high granularity			
 			if (install_2006 > 0)

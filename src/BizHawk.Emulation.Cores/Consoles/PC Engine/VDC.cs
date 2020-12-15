@@ -82,7 +82,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		public const byte StatusSpriteOverflow = 0x02;
 		public const byte StatusSprite0Collision = 0x01;
 
-		const int VramSize = 0x8000;
+		private const int VramSize = 0x8000;
 
 		private readonly PCEngine pce;
 		private readonly HuC6280 cpu;

@@ -26,10 +26,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 	public class GenDbgHlp : IDisposable
 	{
 		// config
-		const string modulename = "libgenplusgx.dll";
-		const string symbolname = @"D:\encodes\bizhawksrc\genplus-gx\libretro\msvc\Debug\vars.txt";
-		const int start = 0x0c7d8000 - 0x0c540000;
-		const int length = 0x01082000;
+		private const string modulename = "libgenplusgx.dll";
+		private const string symbolname = @"D:\encodes\bizhawksrc\genplus-gx\libretro\msvc\Debug\vars.txt";
+		private const int start = 0x0c7d8000 - 0x0c540000;
+		private const int length = 0x01082000;
 
 		private bool disposed => DllBase == IntPtr.Zero;
 
@@ -42,10 +42,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		private IntPtr DllBase;
 
-		readonly List<Symbol> SymbolsByAddr = new List<Symbol>();
-		Dictionary<string, Symbol> SymbolsByName = new Dictionary<string, Symbol>();
+		private readonly List<Symbol> SymbolsByAddr = new List<Symbol>();
+		private Dictionary<string, Symbol> SymbolsByName = new Dictionary<string, Symbol>();
 
-		readonly byte[][] data = new byte[10][];
+		private readonly byte[][] data = new byte[10][];
 
 		public void SaveState(int statenum)
 		{

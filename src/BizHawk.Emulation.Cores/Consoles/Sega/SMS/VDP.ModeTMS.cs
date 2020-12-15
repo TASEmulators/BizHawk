@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 {
 	public partial class VDP
 	{
-		readonly int[] PaletteTMS9918 =
+		private readonly int[] PaletteTMS9918 =
 		{
 			unchecked((int)0xFF000000),
 			unchecked((int)0xFF000000),
@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			unchecked((int)0xFFFFFFFF)
 		};
 
-		void RenderBackgroundM0(bool show)
+		private void RenderBackgroundM0(bool show)
 		{
 			if (ScanLine >= FrameHeight)
 				return;
@@ -63,7 +63,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			}
 		}
 
-		void RenderBackgroundM2(bool show)
+		private void RenderBackgroundM2(bool show)
 		{
 			if (ScanLine >= FrameHeight)
 				return;
@@ -102,8 +102,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				FrameBuffer[FrameBufferOffset++] = show ? (((pv & 0x01) > 0) ? fgColor : bgColor) : 0;
 			}
 		}
-		
-		void RenderTmsSprites(bool show)
+
+		private void RenderTmsSprites(bool show)
 		{
 			if (ScanLine >= FrameHeight || DisplayOn == false)
 				return;
@@ -114,7 +114,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				RenderTmsSpritesDouble(show);
 		}
 
-		void RenderTmsSpritesStandard(bool show)
+		private void RenderTmsSpritesStandard(bool show)
 		{
 			Array.Clear(ScanlinePriorityBuffer, 0, 256);
 			Array.Clear(SpriteCollisionBuffer, 0, 256);
@@ -180,7 +180,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			}
 		}
 
-		void RenderTmsSpritesDouble(bool show)
+		private void RenderTmsSpritesDouble(bool show)
 		{
 			Array.Clear(ScanlinePriorityBuffer, 0, 256);
 			Array.Clear(SpriteCollisionBuffer, 0, 256);

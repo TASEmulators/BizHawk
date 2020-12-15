@@ -6,8 +6,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	// "BTL 2708"
 	internal sealed class Mapper103 : NesBoardBase
 	{
-		int prg;
-		bool romenable;
+		private int prg;
+		private bool romenable;
 
 		public override bool Configure(EDetectionOrigin origin)
 		{

@@ -286,18 +286,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 
 
-		Bit Reg2002_objoverflow;  //Sprite overflow. The PPU can handle only eight sprites on one scanline and sets this bit if it starts drawing sprites.
-		Bit Reg2002_objhit; //Sprite 0 overlap.  Set when a nonzero pixel of sprite 0 is drawn overlapping a nonzero background pixel.  Used for raster timing.
-		Bit Reg2002_vblank_active;  //Vertical blank start (0: has not started; 1: has started)
-		bool Reg2002_vblank_active_pending; //set if Reg2002_vblank_active is pending
-		bool Reg2002_vblank_clear_pending; //ppu's clear of vblank flag is pending
+		private Bit Reg2002_objoverflow;  //Sprite overflow. The PPU can handle only eight sprites on one scanline and sets this bit if it starts drawing sprites.
+		private Bit Reg2002_objhit; //Sprite 0 overlap.  Set when a nonzero pixel of sprite 0 is drawn overlapping a nonzero background pixel.  Used for raster timing.
+		private Bit Reg2002_vblank_active;  //Vertical blank start (0: has not started; 1: has started)
+		private bool Reg2002_vblank_active_pending; //set if Reg2002_vblank_active is pending
+		private bool Reg2002_vblank_clear_pending; //ppu's clear of vblank flag is pending
 		public PPUREGS ppur;
 		public Reg_2000 reg_2000;
 		public Reg_2001 reg_2001;
-		byte reg_2003;
+		private byte reg_2003;
 		public byte reg_2006_2;
 
-		void regs_reset()
+		private void regs_reset()
 		{
 			//TODO - would like to reconstitute the entire PPU instead of all this..
 			ppur = new PPUREGS();
@@ -313,7 +313,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 
 		//PPU CONTROL (write)
-		void write_2000(byte value)
+		private void write_2000(byte value)
 		{
 			if (!reg_2000.vblank_nmi_gen & ((value & 0x80) != 0) && (Reg2002_vblank_active) && !Reg2002_vblank_clear_pending)
 			{
@@ -325,22 +325,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				reg_2000.Value = value;
 		}
 
-		byte read_2000() { return ppu_open_bus; }
-		byte peek_2000() { return ppu_open_bus; }
+		private byte read_2000() { return ppu_open_bus; }
+		private byte peek_2000() { return ppu_open_bus; }
 
 		//PPU MASK (write)
-		void write_2001(byte value)
+		private void write_2001(byte value)
 		{
 			//printf("%04x:$%02x, %d\n",A,V,scanline);
 			reg_2001.Value = value;
 			install_2001 = 2;
 		}
-		byte read_2001() {return ppu_open_bus; }
-		byte peek_2001() {return ppu_open_bus; }
+
+		private byte read_2001() {return ppu_open_bus; }
+		private byte peek_2001() {return ppu_open_bus; }
 
 		//PPU STATUS (read)
-		void write_2002(byte value) { }
-		byte read_2002()
+		private void write_2002(byte value) { }
+
+		private byte read_2002()
 		{
 			byte ret = peek_2002();
 
@@ -354,7 +356,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			PpuOpenBusDecay(DecayType.High);
 			return ret;
 		}
-		byte peek_2002()
+
+		private byte peek_2002()
 		{
 			//I'm not happy with this, but apparently this is how mighty bobm jack VS works.
 			//quite strange that is makes the sprite hit flag go high like this
@@ -384,7 +387,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 
 		//OAM ADDRESS (write)
-		void write_2003(int addr, byte value)
+		private void write_2003(int addr, byte value)
 		{
 			if (region == Region.NTSC)
 			{
@@ -407,11 +410,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				reg_2003 = value;
 			}
 		}
-		byte read_2003() { return ppu_open_bus; }
-		byte peek_2003() { return ppu_open_bus; }
+
+		private byte read_2003() { return ppu_open_bus; }
+		private byte peek_2003() { return ppu_open_bus; }
 
 		//OAM DATA (write)
-		void write_2004(byte value)
+		private void write_2004(byte value)
 		{
 			if ((reg_2003 & 3) == 2)
 			{
@@ -441,7 +445,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}	
 		}
 
-		byte read_2004()
+		private byte read_2004()
 		{
 			byte ret;
 			// Console.WriteLine("read 2004");
@@ -481,10 +485,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			PpuOpenBusDecay(DecayType.All);
 			return ret;
 		}
-		byte peek_2004() { return OAM[reg_2003]; }
+
+		private byte peek_2004() { return OAM[reg_2003]; }
 
 		//SCROLL (write)
-		void write_2005(byte value)
+		private void write_2005(byte value)
 		{
 			if (!vtoggle)
 			{
@@ -500,11 +505,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			vtoggle ^= true;
 		}
-		byte read_2005() { return ppu_open_bus; }
-		byte peek_2005() { return ppu_open_bus; }
+
+		private byte read_2005() { return ppu_open_bus; }
+		private byte peek_2005() { return ppu_open_bus; }
 
 		//VRAM address register (write)
-		void write_2006(byte value)
+		private void write_2006(byte value)
 		{
 
 			if (!vtoggle)
@@ -530,11 +536,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			vtoggle ^= true;
 		}
-		byte read_2006() { return ppu_open_bus; }
-		byte peek_2006() { return ppu_open_bus; }
+
+		private byte read_2006() { return ppu_open_bus; }
+		private byte peek_2006() { return ppu_open_bus; }
 
 		//VRAM data register (r/w)
-		void write_2007(byte value)
+		private void write_2007(byte value)
 		{
 			//does this take 4x longer? nestopia indicates so perhaps...
 
@@ -576,7 +583,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (ppur.status.sl >= 241 || !PPUON)
 				nes.Board.AddressPpu(ppur.get_2007access()); 
 		}
-		byte read_2007()
+
+		private byte read_2007()
 		{
 			int addr = ppur.get_2007access() & 0x3FFF;
 			int bus_case = 0;	
@@ -613,7 +621,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			return ret;
 		}
-		byte peek_2007()
+
+		private byte peek_2007()
 		{
 			int addr = ppur.get_2007access() & 0x3FFF;
 

@@ -10,8 +10,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 {
 	public static unsafe class OctoshockDll
 	{
-		const CallingConvention cc = CallingConvention.Cdecl;
-		const string dd = "octoshock.dll";
+		private const CallingConvention cc = CallingConvention.Cdecl;
+		private const string dd = "octoshock.dll";
 
 		public enum eRegion : int
 		{

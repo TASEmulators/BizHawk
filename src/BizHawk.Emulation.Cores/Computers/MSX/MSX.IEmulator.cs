@@ -170,7 +170,7 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 		public int[] Aud = new int [9000];
 		public uint num_samp;
 
-		const int blipbuffsize = 4500;
+		private const int blipbuffsize = 4500;
 
 		public bool CanProvideAsync => false;
 

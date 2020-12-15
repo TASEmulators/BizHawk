@@ -35,7 +35,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			return ret;
 		}
 
-		const CallingConvention cc = CallingConvention.Cdecl;
+		private const CallingConvention cc = CallingConvention.Cdecl;
 
 		public enum SaveType : int
 		{

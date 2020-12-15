@@ -26,7 +26,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public bool recalculate = false;
 
-		readonly NES nes;
+		private readonly NES nes;
 		public APU(NES nes, APU old, bool pal)
 		{
 			this.nes = nes;
@@ -43,25 +43,29 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		static readonly int[] DMC_RATE_NTSC = { 428, 380, 340, 320, 286, 254, 226, 214, 190, 160, 142, 128, 106, 84, 72, 54 };
-		static readonly int[] DMC_RATE_PAL = { 398, 354, 316, 298, 276, 236, 210, 198, 176, 148, 132, 118, 98, 78, 66, 50 };
-		static readonly int[] LENGTH_TABLE = { 10, 254, 20, 2, 40, 4, 80, 6, 160, 8, 60, 10, 14, 12, 26, 14, 12, 16, 24, 18, 48, 20, 96, 22, 192, 24, 72, 26, 16, 28, 32, 30 };
-		static readonly byte[,] PULSE_DUTY = {
+		private static readonly int[] DMC_RATE_NTSC = { 428, 380, 340, 320, 286, 254, 226, 214, 190, 160, 142, 128, 106, 84, 72, 54 };
+		private static readonly int[] DMC_RATE_PAL = { 398, 354, 316, 298, 276, 236, 210, 198, 176, 148, 132, 118, 98, 78, 66, 50 };
+		private static readonly int[] LENGTH_TABLE = { 10, 254, 20, 2, 40, 4, 80, 6, 160, 8, 60, 10, 14, 12, 26, 14, 12, 16, 24, 18, 48, 20, 96, 22, 192, 24, 72, 26, 16, 28, 32, 30 };
+
+		private static readonly byte[,] PULSE_DUTY = {
 			{0,1,0,0,0,0,0,0}, // (12.5%)
 			{0,1,1,0,0,0,0,0}, // (25%)
 			{0,1,1,1,1,0,0,0}, // (50%)
 			{1,0,0,1,1,1,1,1}, // (25% negated (75%))
 		};
-		static readonly byte[] TRIANGLE_TABLE =
+
+		private static readonly byte[] TRIANGLE_TABLE =
 		{
 			15, 14, 13, 12, 11, 10,  9,  8,  7,  6,  5,  4,  3,  2,  1,  0,
 			0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15
 		};
-		static readonly int[] NOISE_TABLE_NTSC =
+
+		private static readonly int[] NOISE_TABLE_NTSC =
 		{
 			4, 8, 16, 32, 64, 96, 128, 160, 202, 254, 380, 508, 762, 1016, 2034, 4068
 		};
-		static readonly int[] NOISE_TABLE_PAL =
+
+		private static readonly int[] NOISE_TABLE_PAL =
 		{
 			4, 7, 14, 30, 60, 88, 118, 148, 188, 236, 354, 472, 708,  944, 1890, 3778
 		};
@@ -70,20 +74,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			public PulseUnit(APU apu, int unit) { this.unit = unit; this.apu = apu; }
 			public int unit;
-			readonly APU apu;
+			private readonly APU apu;
 
 			// reg0
-			int duty_cnt, env_loop, env_constant, env_cnt_value;
+			private int duty_cnt, env_loop, env_constant, env_cnt_value;
 			public bool len_halt;
 			// reg1
-			int sweep_en, sweep_divider_cnt, sweep_negate, sweep_shiftcount;
-			bool sweep_reload;
+			private int sweep_en, sweep_divider_cnt, sweep_negate, sweep_shiftcount;
+
+			private bool sweep_reload;
 			// reg2/3
-			int len_cnt;
+			private int len_cnt;
 			public int timer_raw_reload_value, timer_reload_value;
 
 			// misc..
-			int lenctr_en;
+			private int lenctr_en;
 
 			public void SyncState(Serializer ser)
 			{
@@ -179,14 +184,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			// state
-			int swp_divider_counter;
-			bool swp_silence;
-			int duty_step;
-			int timer_counter;
+			private int swp_divider_counter;
+			private bool swp_silence;
+			private int duty_step;
+			private int timer_counter;
 			public int sample;
-			bool duty_value;
+			private bool duty_value;
 
-			int env_start_flag, env_divider, env_counter;
+			private int env_start_flag, env_divider, env_counter;
 			public int env_output;
 
 			public void clock_length_and_sweep()
@@ -309,29 +314,29 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public sealed class NoiseUnit
 		{
-			readonly APU apu;
+			private readonly APU apu;
 
 			// reg0 (sweep)
-			int env_cnt_value, env_loop, env_constant;
+			private int env_cnt_value, env_loop, env_constant;
 			public bool len_halt;
 
 			// reg2 (mode and period)
-			int mode_cnt, period_cnt;
+			private int mode_cnt, period_cnt;
 
 			// reg3 (length counter and envelop trigger)
-			int len_cnt;
+			private int len_cnt;
 
 			// set from apu:
-			int lenctr_en;
+			private int lenctr_en;
 
 			// state
-			int shift_register = 1;
-			int timer_counter;
+			private int shift_register = 1;
+			private int timer_counter;
 			public int sample;
-			int env_output, env_start_flag, env_divider, env_counter;
-			bool noise_bit = true;
+			private int env_output, env_start_flag, env_divider, env_counter;
+			private bool noise_bit = true;
 
-			readonly int[] NOISE_TABLE;
+			private readonly int[] NOISE_TABLE;
 
 			public NoiseUnit(APU apu, bool pal)
 			{
@@ -497,18 +502,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public sealed class TriangleUnit
 		{
 			// reg0
-			int linear_counter_reload, control_flag;
+			private int linear_counter_reload, control_flag;
 			// reg1 (n/a)
 			// reg2/3
-			int timer_cnt, reload_flag, len_cnt;
+			private int timer_cnt, reload_flag, len_cnt;
 			public bool halt_2;
 			// misc..
-			int lenctr_en;
-			int linear_counter, timer, timer_cnt_reload;
-			int seq = 0;
+			private int lenctr_en;
+			private int linear_counter, timer, timer_cnt_reload;
+			private int seq = 0;
 			public int sample;
 
-			readonly APU apu;
+			private readonly APU apu;
 			public TriangleUnit(APU apu) { this.apu = apu; }
 
 			public void SyncState(Serializer ser)
@@ -646,10 +651,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		} // class TriangleUnit
 
-		sealed class DMCUnit
+		private sealed class DMCUnit
 		{
-			readonly APU apu;
-			readonly int[] DMC_RATE;
+			private readonly APU apu;
+			private readonly int[] DMC_RATE;
 			public DMCUnit(APU apu, bool pal)
 			{
 				this.apu = apu;
@@ -664,22 +669,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				user_length = 1;
 			}
 
-			bool irq_enabled;
-			bool loop_flag;
-			int timer_reload;
+			private bool irq_enabled;
+			private bool loop_flag;
+			private int timer_reload;
 
 			// dmc delay per visual 2a03
-			int delay;
+			private int delay;
 
 			// this timer never stops, ever, so it is convenient to use for even/odd timing used elsewhere
 			public int timer;
-			int user_address;
+			private int user_address;
 			public uint user_length, sample_length;
-			int sample_address, sample_buffer;
-			bool sample_buffer_filled;
+			private int sample_address, sample_buffer;
+			private bool sample_buffer_filled;
 
-			int out_shift, out_bits_remaining, out_deltacounter;
-			bool out_silence;
+			private int out_shift, out_bits_remaining, out_deltacounter;
+			private bool out_silence;
 
 			public int sample => out_deltacounter /* - 64*/;
 
@@ -768,7 +773,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 			}
 
-			void Clock()
+			private void Clock()
 			{
 				// If the silence flag is clear, bit 0 of the shift register is applied to the counter as follows: 
 				// if bit 0 is clear and the delta-counter is greater than 1, the counter is decremented by 2; 
@@ -940,38 +945,38 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public PulseUnit[] pulse = new PulseUnit[2];
 		public TriangleUnit triangle;
 		public NoiseUnit noise;
-		readonly DMCUnit dmc;
+		private readonly DMCUnit dmc;
 
-		bool irq_pending;
-		bool dmc_irq;
-		int pending_reg = -1;
-		bool doing_tick_quarter = false;
-		byte pending_val = 0;
+		private bool irq_pending;
+		private bool dmc_irq;
+		private int pending_reg = -1;
+		private bool doing_tick_quarter = false;
+		private byte pending_val = 0;
 		public int seq_tick;
 		public byte seq_val;
 		public bool len_clock_active;
 
-		int sequencer_counter, sequencer_step, sequencer_mode, sequencer_irq_inhibit, sequencer_irq_assert;
-		bool sequencer_irq, sequence_reset_pending, sequencer_irq_clear_pending, sequencer_irq_flag;
+		private int sequencer_counter, sequencer_step, sequencer_mode, sequencer_irq_inhibit, sequencer_irq_assert;
+		private bool sequencer_irq, sequence_reset_pending, sequencer_irq_clear_pending, sequencer_irq_flag;
 
 		public void RunDMCFetch()
 		{
 			dmc.Fetch();
 		}
 
-		readonly int[][] sequencer_lut = new int[2][];
+		private readonly int[][] sequencer_lut = new int[2][];
 
-		static readonly int[][] sequencer_lut_ntsc = {
+		private static readonly int[][] sequencer_lut_ntsc = {
 			new[]{7457,14913,22371,29830},
 			new[]{7457,14913,22371,29830,37282}
 		};
 
-		static readonly int[][] sequencer_lut_pal = {
+		private static readonly int[][] sequencer_lut_pal = {
 			new[]{8313,16627,24939,33254},
 			new[]{8313,16627,24939,33254,41566}
 		};
 
-		void sequencer_write_tick(byte val)
+		private void sequencer_write_tick(byte val)
 		{
 			if (seq_tick>0)
 			{
@@ -1004,7 +1009,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		void sequencer_tick()
+		private void sequencer_tick()
 		{
 			sequencer_counter++;
 			if (sequencer_mode == 0 && sequencer_counter == sequencer_lut[0][3]-1)
@@ -1036,7 +1041,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			irq_pending = sequencer_irq | dmc_irq;
 		}
 
-		void sequencer_check()
+		private void sequencer_check()
 		{
 			// Console.WriteLine("sequencer mode {0} step {1}", sequencer_mode, sequencer_step);
 			bool quarter, half, reset;
@@ -1075,7 +1080,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (half) HalfFrame();
 		}
 
-		void HalfFrame()
+		private void HalfFrame()
 		{
 			doing_tick_quarter = true;
 			pulse[0].clock_length_and_sweep();
@@ -1084,7 +1089,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			noise.clock_length_and_sweep();
 		}
 
-		void QuarterFrame()
+		private void QuarterFrame()
 		{
 			doing_tick_quarter = true;
 			pulse[0].clock_env();
@@ -1124,7 +1129,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			pending_val = val;
 		}
 
-		void _WriteReg(int addr, byte val)
+		private void _WriteReg(int addr, byte val)
 		{
 			//Console.WriteLine("{0:X4} = {1:X2}", addr, val);
 			int index = addr - 0x4000;
@@ -1218,7 +1223,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public int DebugCallbackDivider;
 		public int DebugCallbackTimer;
 
-		int pending_length_change;
+		private int pending_length_change;
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void RunOneFirst()
@@ -1326,9 +1331,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public uint sampleclock = 0;
 
-		int oldmix = 0;
-		int cart_sound = 0;
-		int old_cart_sound = 0;
+		private int oldmix = 0;
+		private int cart_sound = 0;
+		private int old_cart_sound = 0;
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public int EmitSample()

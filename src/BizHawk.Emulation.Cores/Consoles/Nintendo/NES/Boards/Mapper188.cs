@@ -5,9 +5,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	internal sealed class Mapper188 : NesBoardBase
 	{
 		// config
-		int prg_16k_mask;
+		private int prg_16k_mask;
 		// state
-		int prg;
+		private int prg;
 
 		public override bool Configure(EDetectionOrigin origin)
 		{

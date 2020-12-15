@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 {
 	public static class D64
 	{
-		const int D64_DISK_ID_OFFSET = 0x165A2; // track 18, sector 0, 0xA2
+		private const int D64_DISK_ID_OFFSET = 0x165A2; // track 18, sector 0, 0xA2
 
 		private enum ErrorType
 		{

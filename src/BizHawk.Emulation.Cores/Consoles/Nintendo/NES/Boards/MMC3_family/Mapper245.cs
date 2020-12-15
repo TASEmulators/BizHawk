@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	internal sealed class Mapper245 : MMC3Board_Base
 	{
 		//http://wiki.nesdev.com/w/index.php/INES_Mapper_245
-		bool chr_mode;
+		private bool chr_mode;
 
 		public override bool Configure(EDetectionOrigin origin)
 		{

@@ -28,17 +28,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// <summary>
 		/// Whether the NSF is bankswitched
 		/// </summary>
-		bool BankSwitched;
+		private bool BankSwitched;
 
 		/// <summary>
 		/// the bankswitch values to be used before the INIT routine is called
 		/// </summary>
-		readonly byte[] InitBankSwitches = new byte[8];
+		private readonly byte[] InitBankSwitches = new byte[8];
 
 		/// <summary>
 		/// An image of the entire PRG space where the unmapped files are located
 		/// </summary>
-		readonly byte[] FakePRG = new byte[32768];
+		private readonly byte[] FakePRG = new byte[32768];
 
 		//------------------------------
 		//state
@@ -46,27 +46,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// <summary>
 		/// PRG bankswitching
 		/// </summary>
-		int[] prg_banks_4k = new int[8];
+		private int[] prg_banks_4k = new int[8];
 
 		/// <summary>
 		/// whether vectors are currently patched. they should not be patched when running init/play routines because data from the ends of banks might get used
 		/// </summary>
-		bool Patch_Vectors;
+		private bool Patch_Vectors;
 
 		/// <summary>
 		/// Current 1-indexed song number (1 is the first song)
 		/// </summary>
-		int CurrentSong;
+		private int CurrentSong;
 
 		/// <summary>
 		/// Whether the INIT routine needs to be called
 		/// </summary>
-		bool InitPending;
+		private bool InitPending;
 
 		/// <summary>
 		/// Previous button state for button press handling
 		/// </summary>
-		int ButtonState;
+		private int ButtonState;
 
 		public override bool Configure(EDetectionOrigin origin)
 		{
@@ -123,7 +123,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ReplayInit();
 		}
 
-		void ReplayInit()
+		private void ReplayInit()
 		{
 			Console.WriteLine("NSF: Playing track {0}/{1}", CurrentSong, nsf.TotalSongs-1);
 			InitPending = true;
@@ -230,8 +230,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			else return base.ReadReg2xxx(addr);
 		}
 
-		const ushort NMI_VECTOR = 0x3800;
-		const ushort RESET_VECTOR = 0x3820;
+		private const ushort NMI_VECTOR = 0x3800;
+		private const ushort RESET_VECTOR = 0x3820;
 
 		//readable registers
 		//3FF0 - InitPending (cleared on read)
@@ -240,7 +240,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//3FF3 - PatchVectors=false
 		//3FF4 - PatchVectors=true
 
-		readonly byte[] NSFROM = new byte[0x23]
+		private readonly byte[] NSFROM = new byte[0x23]
 		{
 			//@NMIVector
 			//Suspend vector patching

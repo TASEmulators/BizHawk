@@ -92,21 +92,21 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 B1", "P1 B2", "P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 B1", "P2 B2"
 		};
 
-		const int PaddleMin = 0;
-		const int PaddleMax = 255;
-		const int SportsPadMin = -64;
-		const int SportsPadMax = 63;
+		private const int PaddleMin = 0;
+		private const int PaddleMax = 255;
+		private const int SportsPadMin = -64;
+		private const int SportsPadMax = 63;
 
 		// The paddles and sports pads have data select states
-		bool Controller1SelectHigh = true;
-		bool Controller2SelectHigh = true;
+		private bool Controller1SelectHigh = true;
+		private bool Controller2SelectHigh = true;
 
-		bool LatchLightPhaser = false;
+		private bool LatchLightPhaser = false;
 
 		// further state value for sports pad, may be useful for other controllers in future
-		int Controller1State = 3;
-		int Controller2State = 3;
-		int ControllerTick = 0; // for timing in japan
+		private int Controller1State = 3;
+		private int Controller2State = 3;
+		private int ControllerTick = 0; // for timing in japan
 
 		private byte ReadControls1()
 		{
@@ -558,7 +558,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			}
 		}
 
-		byte ReadPort0()
+		private byte ReadPort0()
 		{
 			if (IsGameGear_C == false)
 			{

@@ -65,7 +65,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		};
 		public ControllerDefinition ControllerDefinition => WonderSwanController;
 
-		BizSwan.Buttons GetButtons(IController controller)
+		private BizSwan.Buttons GetButtons(IController controller)
 		{
 			BizSwan.Buttons ret = 0;
 			if (controller.IsPressed("P1 X1")) ret |= BizSwan.Buttons.X1;

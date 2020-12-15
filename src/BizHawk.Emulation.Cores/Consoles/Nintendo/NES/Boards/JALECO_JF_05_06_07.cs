@@ -16,9 +16,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	*/
 	internal sealed class JALECO_JF_05_06_07 : NesBoardBase
 	{
-		int prg_byte_mask;
-		int chr;
-		int chr_mask_8k;
+		private int prg_byte_mask;
+		private int chr;
+		private int chr_mask_8k;
 
 		public override bool Configure(EDetectionOrigin origin)
 		{

@@ -15,13 +15,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	internal sealed class JALECO_JF_19 : NesBoardBase
 	{
 		//configuration
-		int prg_bank_mask_16k;
-		int chr_bank_mask_8k;
+		private int prg_bank_mask_16k;
+		private int chr_bank_mask_8k;
 
 		//state
-		int latch;
-		byte[] prg_banks_16k = new byte[2];
-		byte[] chr_banks_8k = new byte[1];
+		private int latch;
+		private byte[] prg_banks_16k = new byte[2];
+		private byte[] chr_banks_8k = new byte[1];
 
 		public override bool Configure(EDetectionOrigin origin)
 		{
@@ -47,7 +47,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		void SyncMap()
+		private void SyncMap()
 		{
 			ApplyMemoryMapMask(prg_bank_mask_16k, prg_banks_16k);
 			ApplyMemoryMapMask(chr_bank_mask_8k, chr_banks_8k);

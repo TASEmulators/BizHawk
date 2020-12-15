@@ -7,8 +7,8 @@ namespace BizHawk.Emulation.Cores.Libretro
 
 	partial class LibretroCore
 	{
-		Settings _Settings = new Settings();
-		SyncSettings _SyncSettings;
+		private Settings _Settings = new Settings();
+		private SyncSettings _SyncSettings;
 
 		public class SyncSettings
 		{

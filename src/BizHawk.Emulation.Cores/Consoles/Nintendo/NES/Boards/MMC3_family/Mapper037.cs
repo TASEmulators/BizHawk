@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	// mmc3 multi, PAL, "Super Mario Bros. / Tetris / Nintendo World Cup"
 	internal sealed class Mapper037 : MMC3Board_Base
 	{
-		int exreg;
+		private int exreg;
 
 		public override bool Configure(EDetectionOrigin origin)
 		{

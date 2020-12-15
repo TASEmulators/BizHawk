@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 	{
 		public A7800Hawk Core { get; set; }
 
-		struct GFX_Object
+		private struct GFX_Object
 		{
 			public byte palette;
 			public byte width;
@@ -24,12 +24,12 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		// technically there is no limit on the number of graphics objects, but since dma is automatically killed
 		// at the end of a scanline, we have an effective limit
-		readonly GFX_Object[] GFX_Objects = new GFX_Object[128];
+		private readonly GFX_Object[] GFX_Objects = new GFX_Object[128];
 
 		public byte[,] line_ram = new byte[2, 320];
-		byte temp_check = 0;
+		private byte temp_check = 0;
 
-		int GFX_index = 0;
+		private int GFX_index = 0;
 
 		public int[] _palette;
 		public int[] scanline_buffer = new int[320];
@@ -77,14 +77,14 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		public bool zero_hole; // the first DMA hole does not save cycles
 
 		// variables for drawing a pixel
-		int color;
-		int local_GFX_index;
-		int temp_palette;
-		int temp_bit_0;
-		int temp_bit_1;
-		int disp_mode;
-		byte BG_latch_1;
-		int pixel;
+		private int color;
+		private int local_GFX_index;
+		private int temp_palette;
+		private int temp_bit_0;
+		private int temp_bit_1;
+		private int disp_mode;
+		private byte BG_latch_1;
+		private int pixel;
 
 		// each frame contains 263 scanlines
 		// each scanline consists of 113.5 CPU cycles (fast access) which equates to 454 Maria cycles

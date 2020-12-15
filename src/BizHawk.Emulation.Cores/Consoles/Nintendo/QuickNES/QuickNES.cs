@@ -81,7 +81,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			}
 		}
 
-		static readonly LibQuickNES QN;
+		private static readonly LibQuickNES QN;
 
 		public IEmulatorServiceProvider ServiceProvider { get; }
 
@@ -121,11 +121,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			public void Dispose() {}
 		}
 
-		readonly IFPCtrl FP;
+		private readonly IFPCtrl FP;
 
 		public ControllerDefinition ControllerDefinition { get; private set; }
 
-		void SetControllerDefinition()
+		private void SetControllerDefinition()
 		{
 			var def = new ControllerDefinition();
 			def.Name = "NES Controller";
@@ -177,7 +177,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			return ret;
 		}
 
-		void SetPads(IController controller, out int j1, out int j2)
+		private void SetPads(IController controller, out int j1, out int j2)
 		{
 			if (_syncSettings.LeftPortConnected)
 				j1 = GetPad(controller, PadP1) | unchecked((int)0xffffff00);
@@ -221,7 +221,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			}
 		}
 
-		IntPtr Context;
+		private IntPtr Context;
 		public int Frame { get; private set; }
 
 		public string SystemId => "NES";
@@ -238,7 +238,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		public RomStatus? BootGodStatus { get; private set; }
 		public string BootGodName { get; private set; }
 
-		void ComputeBootGod()
+		private void ComputeBootGod()
 		{
 			// inefficient, sloppy, etc etc
 			var chrrom = _memoryDomains["CHR VROM"];
@@ -296,7 +296,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			}
 		}
 
-		void CheckDisposed()
+		private void CheckDisposed()
 		{
 			if (Context == IntPtr.Zero)
 				throw new ObjectDisposedException(GetType().Name);
@@ -304,7 +304,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 		// Fix some incorrect ines header entries that QuickNES uses to load games.
 		// we need to do this from the raw file since QuickNES hasn't had time to process it yet.
-		byte[] FixInesHeader(byte[] file)
+		private byte[] FixInesHeader(byte[] file)
 		{
 			string sha1 = BufferExtensions.HashSHA1(file);
 			bool didSomething = false;

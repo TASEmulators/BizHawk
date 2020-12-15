@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	internal sealed class Mapper221 : NesBoardBase
 	{
-		int[] regs = new int[2];
+		private int[] regs = new int[2];
 
 		public override bool Configure(EDetectionOrigin origin)
 		{

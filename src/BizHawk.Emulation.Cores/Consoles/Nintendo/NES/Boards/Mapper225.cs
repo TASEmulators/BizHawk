@@ -6,11 +6,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	// http://wiki.nesdev.com/w/index.php/INES_Mapper_225
 	internal sealed class Mapper225 : NesBoardBase
 	{
-		bool prg_mode = false;
-		int chr_reg;
-		int prg_reg;
-		byte[] eRAM = new byte[4];
-		int chr_bank_mask_8k, prg_bank_mask_16k, prg_bank_mask_32k;
+		private bool prg_mode = false;
+		private int chr_reg;
+		private int prg_reg;
+		private byte[] eRAM = new byte[4];
+		private int chr_bank_mask_8k, prg_bank_mask_16k, prg_bank_mask_32k;
 
 		public override bool Configure(EDetectionOrigin origin)
 		{

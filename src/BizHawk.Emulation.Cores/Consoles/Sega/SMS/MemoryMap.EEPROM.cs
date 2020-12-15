@@ -17,9 +17,9 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		// $FFFE - Mapper slot 1 control
 		// $FFFF - Mapper slot 2 control
 
-		EEPROM93c46 EEPROM;
+		private EEPROM93c46 EEPROM;
 
-		byte ReadMemoryEEPROM(ushort address)
+		private byte ReadMemoryEEPROM(ushort address)
 		{
 			byte ret = 0xFF;
 
@@ -55,7 +55,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			return ret;
 		}
 
-		CDLog_MapResults MapMemoryEEPROM(ushort address, bool write)
+		private CDLog_MapResults MapMemoryEEPROM(ushort address, bool write)
 		{
 			if (address < 0xC000)
 			{
@@ -82,7 +82,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			return new CDLog_MapResults { Type = CDLog_AddrType.MainRAM, Address = address & RamSizeMask };
 		}
 
-		void WriteMemoryEEPROM(ushort address, byte value)
+		private void WriteMemoryEEPROM(ushort address, byte value)
 		{
 			if (address >= 0xC000)
 				SystemRam[address & RamSizeMask] = value;
@@ -115,7 +115,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			}
 		}
 
-		void InitEEPROMMapper()
+		private void InitEEPROMMapper()
 		{
 			ReadMemoryMapper = ReadMemoryEEPROM;
 			WriteMemoryMapper = WriteMemoryEEPROM;

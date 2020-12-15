@@ -9,10 +9,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//http://wiki.nesdev.com/w/index.php/INES_Mapper_091
 		*/
 
-		byte[] chr_regs_2k = new byte[4];
-		byte[] prg_regs_8k = new byte[4];
-		int chr_bank_mask_2k, prg_bank_mask_8k;
-		MMC3 mmc3;
+		private byte[] chr_regs_2k = new byte[4];
+		private byte[] prg_regs_8k = new byte[4];
+		private int chr_bank_mask_2k, prg_bank_mask_8k;
+		private MMC3 mmc3;
 
 		public override bool Configure(EDetectionOrigin origin)
 		{

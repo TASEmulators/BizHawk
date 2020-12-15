@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6800
 {
 	public sealed partial class MC6800
 	{
-		static readonly string[] table =
+		private static readonly string[] table =
 		{
 			"???", // 00
 			"NOP", // 01

@@ -6,9 +6,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	internal sealed class Mapper038 : NesBoardBase
 	{
 		//configuraton
-		int prg_mask, chr_mask;
+		private int prg_mask, chr_mask;
 		//state
-		int prg, chr;
+		private int prg, chr;
 		public override bool Configure(EDetectionOrigin origin)
 		{
 			switch (Cart.BoardType)
@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			else return base.ReadPpu(addr);
 		}
 
-		void writereg(byte value)
+		private void writereg(byte value)
 		{
 			prg = value & 3 & prg_mask;
 			chr = (value >> 2) & 3 & chr_mask;

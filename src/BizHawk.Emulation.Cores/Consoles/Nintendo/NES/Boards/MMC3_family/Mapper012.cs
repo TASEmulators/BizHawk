@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(block1), ref block1);
 		}
 
-		int block0, block1;
+		private int block0, block1;
 
 		public override void WriteExp(int addr, byte value)
 		{

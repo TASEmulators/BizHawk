@@ -10,9 +10,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	// todo: special controller, and IRQ is possibly wrong
 	internal sealed class Mapper168 : NesBoardBase
 	{
-		int prg = 0;
-		int chr = 0;
-		int irqclock = 2048;
+		private int prg = 0;
+		private int chr = 0;
+		private int irqclock = 2048;
 
 		public override bool Configure(EDetectionOrigin origin)
 		{
@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		// the chr reg on hardware is supposedly bitscrambled and then inverted from
 		// what would be expected.  since it doesn't make a difference and i don't know
 		// of any clear source on what it's actually supposed to be, ignore.
-		int Scramble(int chr)
+		private int Scramble(int chr)
 		{
 			return chr;
 		}

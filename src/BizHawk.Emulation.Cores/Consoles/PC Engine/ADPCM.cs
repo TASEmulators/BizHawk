@@ -45,7 +45,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		public byte Port180B;
 		public byte Port180D;
 
-		byte port180E;
+		private byte port180E;
 		public byte Port180E
 		{
 			get => port180E;
@@ -181,14 +181,14 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		//                              Playback Functions
 		// ***************************************************************************
 
-		float Playback44khzTimer;
-		int playingSample;
-		float nextSampleTimer;
-		float destSamplesPerSourceSample;
-		bool nibble;
-		int magnitude;
+		private float Playback44khzTimer;
+		private int playingSample;
+		private float nextSampleTimer;
+		private float destSamplesPerSourceSample;
+		private bool nibble;
+		private int magnitude;
 
-		static readonly int[] StepSize = 
+		private static readonly int[] StepSize = 
 		{
 			0x0002, 0x0006, 0x000A, 0x000E, 0x0012, 0x0016, 0x001A, 0x001E,
 			0x0002, 0x0006, 0x000A, 0x000E, 0x0013, 0x0017, 0x001B, 0x001F,
@@ -241,9 +241,9 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			0x00C2, 0x0246, 0x03CA, 0x054E, 0x06D2, 0x0856, 0x09DA, 0x0B5E
 		};
 
-		static readonly int[] StepFactor = { -1, -1, -1, -1, 2, 4, 6, 8 };
+		private static readonly int[] StepFactor = { -1, -1, -1, -1, 2, 4, 6, 8 };
 
-		int AddClamped(int num1, int num2, int min, int max)
+		private int AddClamped(int num1, int num2, int min, int max)
 		{
 			int result = num1 + num2;
 			if (result < min) return min;
@@ -251,7 +251,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			return result;
 		}
 
-		byte ReadNibble()
+		private byte ReadNibble()
 		{
 			byte value;
 			if (nibble == false)

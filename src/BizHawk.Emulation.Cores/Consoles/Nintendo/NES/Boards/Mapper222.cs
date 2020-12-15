@@ -8,14 +8,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	// irq doesn't work right; easily seen in any level but level 1
 	internal sealed class Mapper222 : NesBoardBase
 	{
-		int prg_bank_mask_8k;
-		int chr_bank_mask_1k;
+		private int prg_bank_mask_8k;
+		private int chr_bank_mask_1k;
 
-		int[] prg = new int[4];
-		int[] chr = new int[8];
+		private int[] prg = new int[4];
+		private int[] chr = new int[8];
 
-		int irq_time = 0;
-		bool irq_counting = false;
+		private int irq_time = 0;
+		private bool irq_counting = false;
 
 		public override bool Configure(EDetectionOrigin origin)
 		{

@@ -19,7 +19,7 @@ mirroring - both
 
 	internal sealed class Mapper242 : NesBoardBase
 	{
-		int prg;
+		private int prg;
 
 		public override bool Configure(EDetectionOrigin origin)
 		{

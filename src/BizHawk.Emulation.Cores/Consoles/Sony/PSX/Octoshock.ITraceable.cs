@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		public static string TraceHeader = "R3000A: PC, machine code, mnemonic, operands, registers (GPRs, lo, hi, sr, cause, epc)";
 
-		OctoshockDll.ShockCallback_Trace trace_cb;
+		private OctoshockDll.ShockCallback_Trace trace_cb;
 
 		public void ShockTraceCallback(IntPtr opaque, uint PC, uint inst, string dis)
 		{

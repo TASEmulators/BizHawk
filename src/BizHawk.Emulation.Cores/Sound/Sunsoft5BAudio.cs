@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Components
 	/// </summary>
 	public class Sunsoft5BAudio
 	{
-		class Pulse
+		private class Pulse
 		{
 			private readonly Action<int> SendDiff;
 			// regs
@@ -39,7 +39,7 @@ namespace BizHawk.Emulation.Cores.Components
 				this.SendDiff = SendDiff;
 			}
 
-			void CalcOut()
+			private void CalcOut()
 			{
 				int newout = 1;
 				if (!Disable)
@@ -87,8 +87,8 @@ namespace BizHawk.Emulation.Cores.Components
 			}
 		}
 
-		int RegNum;
-		readonly Pulse[] pulse = new Pulse[3];
+		private int RegNum;
+		private readonly Pulse[] pulse = new Pulse[3];
 
 		public void RegSelect(byte val)
 		{
