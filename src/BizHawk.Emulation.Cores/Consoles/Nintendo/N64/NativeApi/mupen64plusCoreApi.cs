@@ -19,11 +19,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 
 		bool disposed = false;
 
-		Thread m64pEmulator;
+		readonly Thread m64pEmulator;
 
-		AutoResetEvent m64pEvent = new AutoResetEvent(false);
+		readonly AutoResetEvent m64pEvent = new AutoResetEvent(false);
 		AutoResetEvent m64pContinueEvent = new AutoResetEvent(false);
-		ManualResetEvent m64pStartupComplete = new ManualResetEvent(false);
+		readonly ManualResetEvent m64pStartupComplete = new ManualResetEvent(false);
 
 		bool event_frameend = false;
 		bool event_breakpoint = false;
@@ -978,7 +978,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 			public DynamicLibraryImportResolver dllThinWrapper;
 			public PluginShutdown dllShutdown;
 		}
-		Dictionary<m64p_plugin_type, AttachedPlugin> plugins = new Dictionary<m64p_plugin_type, AttachedPlugin>();
+
+		readonly Dictionary<m64p_plugin_type, AttachedPlugin> plugins = new Dictionary<m64p_plugin_type, AttachedPlugin>();
 
 		public IntPtr AttachPlugin(m64p_plugin_type type, string PluginName)
 		{

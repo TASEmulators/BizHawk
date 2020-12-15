@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		private byte[] prg_regs_8k = new byte[4];
 		private byte[] chr_regs_1k = new byte[8];
 		private bool ChrMode;
-		private bool[] wramenable = new bool[3];
+		private readonly bool[] wramenable = new bool[3];
 
 		public override void SyncState(Serializer ser)
 		{

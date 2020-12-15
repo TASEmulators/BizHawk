@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.DiscSystem
 				private string physicalPath;
 				private long length;
 
-				public long Offset = 0;
+				public readonly long Offset = 0;
 
 				private BufferedStream fs;
 				public void Dispose()

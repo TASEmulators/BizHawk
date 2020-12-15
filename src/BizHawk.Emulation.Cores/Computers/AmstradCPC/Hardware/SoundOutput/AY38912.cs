@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// The emulated machine (passed in via constructor)
 		/// </summary>
-		private CPCBase _machine;
+		private readonly CPCBase _machine;
 		private IKeyboard _keyboard => _machine.KeyboardDevice;
 
 		private int _tStatesPerFrame;
@@ -409,7 +409,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// The frequency of the AY chip
 		/// </summary>
-		private static int _chipFrequency = 1000000; // 1773400;
+		private static readonly int _chipFrequency = 1000000; // 1773400;
 
 		/// <summary>
 		/// The rendering resolution of the chip
@@ -504,7 +504,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// Panning table list
 		/// </summary>
-		private static List<uint[]> PanTabs = new List<uint[]>
+		private static readonly List<uint[]> PanTabs = new List<uint[]>
 		{
             // MONO
             new uint[] { 50,50, 50,50, 50,50 },
@@ -540,7 +540,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// Volume table to be used
 		/// </summary>
-		private static uint[] AYVolumes =
+		private static readonly uint[] AYVolumes =
 		{
 			0x0000,0x0000,0x0340,0x0340,0x04C0,0x04C0,0x06F2,0x06F2,
 			0x0A44,0x0A44,0x0F13,0x0F13,0x1510,0x1510,0x227E,0x227E,

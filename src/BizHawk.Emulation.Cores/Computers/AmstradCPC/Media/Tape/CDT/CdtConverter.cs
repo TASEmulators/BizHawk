@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// The type of serializer
 		/// </summary>
-		private MediaConverterType _formatType = MediaConverterType.CDT;
+		private readonly MediaConverterType _formatType = MediaConverterType.CDT;
 		public override MediaConverterType FormatType => _formatType;
 
 		/// <summary>
@@ -39,9 +39,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// Object to keep track of loops - this assumes there is only one loop at a time
 		/// </summary>
-		private List<KeyValuePair<int, int>> _loopCounter = new List<KeyValuePair<int, int>>();
+		private readonly List<KeyValuePair<int, int>> _loopCounter = new List<KeyValuePair<int, int>>();
 
-		private DatacorderDevice _datacorder;
+		private readonly DatacorderDevice _datacorder;
 
 		public CdtConverter(DatacorderDevice _tapeDevice)
 		{

@@ -58,7 +58,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public int num_cheats;
 
 		// new input system
-		NESControlSettings ControllerSettings; // this is stored internally so that a new change of settings won't replace
+		readonly NESControlSettings ControllerSettings; // this is stored internally so that a new change of settings won't replace
 		IControllerDeck ControllerDeck;
 		byte latched4016;
 
@@ -429,8 +429,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//NTSC:
 		//sequence of ppu clocks per cpu clock: 3
 		public byte[] cpu_sequence;
-		static byte[] cpu_sequence_NTSC = { 3, 3, 3, 3, 3 };
-		static byte[] cpu_sequence_PAL = { 3, 3, 3, 4, 3 };
+		static readonly byte[] cpu_sequence_NTSC = { 3, 3, 3, 3, 3 };
+		static readonly byte[] cpu_sequence_PAL = { 3, 3, 3, 4, 3 };
 		public int cpu_deadcounter;
 
 		public int oam_dma_index;

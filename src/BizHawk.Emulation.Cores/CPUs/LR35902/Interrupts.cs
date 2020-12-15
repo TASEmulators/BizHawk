@@ -56,7 +56,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 						OP };
 		}
 
-		private static ushort[] INT_vectors = { 0x40, 0x48, 0x50, 0x58, 0x60, 0x00 };
+		private static readonly ushort[] INT_vectors = { 0x40, 0x48, 0x50, 0x58, 0x60, 0x00 };
 
 		public ushort int_src;
 		public byte int_clear;

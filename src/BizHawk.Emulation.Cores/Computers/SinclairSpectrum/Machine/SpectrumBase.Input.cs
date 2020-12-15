@@ -9,23 +9,23 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 	/// </summary>
 	public abstract partial class SpectrumBase
 	{
-		string Play = "Play Tape";
-		string Stop = "Stop Tape";
-		string RTZ = "RTZ Tape";
-		string Record = "Record Tape";
-		string NextTape = "Insert Next Tape";
-		string PrevTape = "Insert Previous Tape";
-		string NextBlock = "Next Tape Block";
-		string PrevBlock = "Prev Tape Block";
-		string TapeStatus = "Get Tape Status";
+		readonly string Play = "Play Tape";
+		readonly string Stop = "Stop Tape";
+		readonly string RTZ = "RTZ Tape";
+		readonly string Record = "Record Tape";
+		readonly string NextTape = "Insert Next Tape";
+		readonly string PrevTape = "Insert Previous Tape";
+		readonly string NextBlock = "Next Tape Block";
+		readonly string PrevBlock = "Prev Tape Block";
+		readonly string TapeStatus = "Get Tape Status";
 
-		string NextDisk = "Insert Next Disk";
-		string PrevDisk = "Insert Previous Disk";
-		string EjectDisk = "Eject Current Disk";
-		string DiskStatus = "Get Disk Status";
+		readonly string NextDisk = "Insert Next Disk";
+		readonly string PrevDisk = "Insert Previous Disk";
+		readonly string EjectDisk = "Eject Current Disk";
+		readonly string DiskStatus = "Get Disk Status";
 
-		string HardResetStr = "Power";
-		string SoftResetStr = "Reset";
+		readonly string HardResetStr = "Power";
+		readonly string SoftResetStr = "Reset";
 
 		bool pressed_Play;
 		bool pressed_Stop;

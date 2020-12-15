@@ -76,7 +76,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public byte undoc_6C, undoc_72, undoc_73, undoc_74, undoc_75, undoc_76, undoc_77;
 
 		public byte[] _bios;
-		public readonly byte[] _rom;		
+		public readonly byte[] _rom;
 		public readonly byte[] header = new byte[0x50];
 
 		public byte[] cart_RAM;
@@ -98,7 +98,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public Audio audio;
 		public SerialPort serialport;
 
-		private static byte[] GBA_override = { 0xFF, 0x00, 0xCD, 0x03, 0x35, 0xAA, 0x31, 0x90, 0x94, 0x00, 0x00, 0x00, 0x00 };
+		private static readonly byte[] GBA_override = { 0xFF, 0x00, 0xCD, 0x03, 0x35, 0xAA, 0x31, 0x90, 0x94, 0x00, 0x00, 0x00, 0x00 };
 
 		[CoreConstructor("GB")]
 		[CoreConstructor("GBC")]

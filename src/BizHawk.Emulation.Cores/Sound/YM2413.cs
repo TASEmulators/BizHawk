@@ -83,7 +83,7 @@ namespace BizHawk.Emulation.Cores.Components
 
 		const int OPLL_TONE_NUM = 3;
 
-		static byte[][] default_inst = new byte[3][] {
+		static readonly byte[][] default_inst = new byte[3][] {
 				new byte[] {
 					0x49,0x4c,0x4c,0x32,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
 					0x61,0x61,0x1E,0x17,0xF0,0x7F,0x00,0x17,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
@@ -269,43 +269,43 @@ namespace BizHawk.Emulation.Cores.Components
 		static uint rate = 3354932;
 
 		/* WaveTable for each envelope amp */
-		static short[] fullsintable = new short[PG_WIDTH];
-		static short[] halfsintable = new short[PG_WIDTH];
+		static readonly short[] fullsintable = new short[PG_WIDTH];
+		static readonly short[] halfsintable = new short[PG_WIDTH];
 
 		/* LFO Table */
-		static int[] pmtable = new int[PM_PG_WIDTH];
-		static int[] amtable = new int[AM_PG_WIDTH];
+		static readonly int[] pmtable = new int[PM_PG_WIDTH];
+		static readonly int[] amtable = new int[AM_PG_WIDTH];
 
 		/* Phase delta for LFO */
 		static uint pm_dphase;
 		static uint am_dphase;
 
 		/* dB to Liner table */
-		static short[] DB2LIN_TABLE = new short[(DB_MUTE + DB_MUTE) * 2];
+		static readonly short[] DB2LIN_TABLE = new short[(DB_MUTE + DB_MUTE) * 2];
 
 		/* Liner to Log curve conversion table (for Attack rate). */
-		static short[] AR_ADJUST_TABLE = new short[1 << EG_BITS];
+		static readonly short[] AR_ADJUST_TABLE = new short[1 << EG_BITS];
 
 		/* Empty voice data */
 		//static OPLL_PATCH null_patch = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
 		/* Basic voice Data */
-		static OPLL_PATCH[,] default_patch = new OPLL_PATCH[OPLL_TONE_NUM, (16 + 3) * 2];
+		static readonly OPLL_PATCH[,] default_patch = new OPLL_PATCH[OPLL_TONE_NUM, (16 + 3) * 2];
 
 		/* Definition of envelope mode */
 		public enum OPLL_EG_STATE { READY, ATTACK, DECAY, SUSHOLD, SUSTINE, RELEASE, SETTLE, FINISH }
 
 		/* Phase incr table for Attack */
-		static uint[,] dphaseARTable = new uint[16, 16];
+		static readonly uint[,] dphaseARTable = new uint[16, 16];
 		/* Phase incr table for Decay and Release */
-		static uint[,] dphaseDRTable = new uint[16, 16];
+		static readonly uint[,] dphaseDRTable = new uint[16, 16];
 
 		/* KSL + TL Table */
-		static uint[, , ,] tllTable = new uint[16, 8, 1 << TL_BITS, 4];
-		static int[, ,] rksTable = new int[2, 8, 2];
+		static readonly uint[, , ,] tllTable = new uint[16, 8, 1 << TL_BITS, 4];
+		static readonly int[, ,] rksTable = new int[2, 8, 2];
 
 		/* Phase incr table for PG */
-		static uint[, ,] dphaseTable = new uint[512, 8, 16];
+		static readonly uint[, ,] dphaseTable = new uint[512, 8, 16];
 
 		/***************************************************
  
@@ -1104,7 +1104,7 @@ namespace BizHawk.Emulation.Cores.Components
 
 		/* EG */
 		static uint S2E(double x) { return (SL2EG((uint)(x / SL_STEP)) << (EG_DP_BITS - EG_BITS)); }
-		static uint[] SL =
+		static readonly uint[] SL =
 		{
 			S2E (0.0), S2E (3.0), S2E (6.0), S2E (9.0), S2E (12.0), S2E (15.0), S2E (18.0), S2E (21.0),
 			S2E (24.0), S2E (27.0), S2E (30.0), S2E (33.0), S2E (36.0), S2E (39.0), S2E (42.0), S2E (48.0)

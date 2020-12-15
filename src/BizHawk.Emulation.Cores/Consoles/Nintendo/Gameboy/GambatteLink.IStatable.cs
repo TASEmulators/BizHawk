@@ -74,7 +74,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			_cablediscosignal = reader.ReadBoolean();
 		}
 
-		private JsonSerializer ser = new JsonSerializer { Formatting = Formatting.Indented };
+		private readonly JsonSerializer ser = new JsonSerializer { Formatting = Formatting.Indented };
 
 		private class DGBSerialized
 		{

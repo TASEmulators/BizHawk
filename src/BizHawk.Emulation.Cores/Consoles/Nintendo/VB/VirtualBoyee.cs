@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 		"https://mednafen.github.io/releases/", false, "VirtualBoy")]
 	public class VirtualBoyee : WaterboxCore, ISettable<VirtualBoyee.Settings, VirtualBoyee.SyncSettings>
 	{
-		private LibVirtualBoyee _boyee;
+		private readonly LibVirtualBoyee _boyee;
 
 		[CoreConstructor("VB")]
 		public VirtualBoyee(CoreComm comm, byte[] rom, Settings settings, SyncSettings syncSettings)

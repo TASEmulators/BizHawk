@@ -13,12 +13,12 @@ namespace BizHawk.Emulation.Common
 {
 	public static class Database
 	{
-		private static Dictionary<string, CompactGameInfo> DB = new Dictionary<string, CompactGameInfo>();
+		private static readonly Dictionary<string, CompactGameInfo> DB = new Dictionary<string, CompactGameInfo>();
 
 		/// <summary>
 		/// blocks until the DB is done loading
 		/// </summary>
-		private static EventWaitHandle acquire = new EventWaitHandle(false, EventResetMode.ManualReset);
+		private static readonly EventWaitHandle acquire = new EventWaitHandle(false, EventResetMode.ManualReset);
 
 		private static string RemoveHashType(string hash)
 		{

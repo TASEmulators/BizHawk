@@ -51,7 +51,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		private LibGPGX.mem_cb ExecCallback;
 		private LibGPGX.mem_cb ReadCallback;
 		private LibGPGX.mem_cb WriteCallback;
-		private LibGPGX.CDCallback CDCallback;
+		private readonly LibGPGX.CDCallback CDCallback;
 
 		private void InitMemCallbacks()
 		{

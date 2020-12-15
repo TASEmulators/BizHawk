@@ -146,7 +146,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		int latchedoutput;
 
-		Action<int> SendDiff;
+		readonly Action<int> SendDiff;
 
 		public FDSAudio(Action<int> SendDiff)
 		{

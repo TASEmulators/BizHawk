@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.DiscSystem
 			//leave the disc open until this is disposed so we can read sectors from it
 		}
 
-		private IntPtr handle;
+		private readonly IntPtr handle;
 
 		public MednadiscTOC TOC;
 		public MednadiscTOCTrack[] TOCTracks;

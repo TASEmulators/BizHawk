@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		private int _y;
 		private int _arm;
 
-		private int[] frameBuffer = new int[128 * 64];
+		private readonly int[] frameBuffer = new int[128 * 64];
 
 		private void BuildFrame()
 		{

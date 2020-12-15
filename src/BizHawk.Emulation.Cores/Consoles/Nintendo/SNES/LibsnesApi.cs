@@ -290,13 +290,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		{
 			[FieldOffset(0)]
 			//the cmd being executed
-			public eMessage cmd;
+			public readonly eMessage cmd;
 			[FieldOffset(4)]
 			//the status of the core
-			public eStatus status;
+			public readonly eStatus status;
 			[FieldOffset(8)]
 			//the SIG or BRK that the core is halted in
-			public eMessage reason;
+			public readonly eMessage reason;
 
 			//flexible in/out parameters
 			//these are all "overloaded" a little so it isn't clear what's used for what in for any particular message..

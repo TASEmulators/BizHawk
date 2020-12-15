@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 {
 	public unsafe partial class LibretroApi : IDisposable
 	{
-		InstanceDll instanceDll, instanceDllCore;
+		readonly InstanceDll instanceDll, instanceDllCore;
 		string InstanceName;
 
 		//YUCK
@@ -33,9 +33,9 @@ namespace BizHawk.Emulation.Cores.Libretro
 		//however -- i need to merge the API and the core. theyre too closely related
 		public CommStruct* comm;
 
-		MessageApi Message;
-		BufferApi _copyBuffer; //TODO: consider making private and wrapping
-		BufferApi _setBuffer; //TODO: consider making private and wrapping
+		readonly MessageApi Message;
+		readonly BufferApi _copyBuffer; //TODO: consider making private and wrapping
+		readonly BufferApi _setBuffer; //TODO: consider making private and wrapping
 		SetVariableApi SetVariable;
 
 		public LibretroApi(string dllPath, string corePath)

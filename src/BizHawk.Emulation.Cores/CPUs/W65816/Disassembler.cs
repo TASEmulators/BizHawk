@@ -21,7 +21,7 @@ namespace BizHawk.Emulation.Cores.Components.W65816
 	{
 		public string Cpu { get; set; }
 
-		W65816 disassemblerCpu = new W65816();
+		readonly W65816 disassemblerCpu = new W65816();
 		
 		public IEnumerable<string> AvailableCpus
 		{

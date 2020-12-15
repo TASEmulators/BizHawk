@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		/// <param name="inputCallback">The delegate to use</param>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		private delegate void SetInputCallback(InputCallback inputCallback);
-		SetInputCallback InpSetInputCallback;
+		readonly SetInputCallback InpSetInputCallback;
 
 		/// <summary>
 		/// Callback to use when mupen64plus wants input
@@ -41,7 +41,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		/// <param name="type">Type id according to (well documented... hurr hurr) mupen api</param>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate void SetControllerPakType(int controller, int type);
-		SetControllerPakType InpSetControllerPakType;
+		readonly SetControllerPakType InpSetControllerPakType;
 
 		/// <summary>
 		/// Connects and disconnects controllers
@@ -50,7 +50,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		/// <param name="connected">1 if controller should be connected, 0 if controller should be disconnected</param>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		delegate void SetControllerConnected(int controller, int connected);
-		SetControllerConnected InpSetControllerConnected;
+		readonly SetControllerConnected InpSetControllerConnected;
 
 		/// <summary>
 		/// Event fired when mupen changes rumble pak status

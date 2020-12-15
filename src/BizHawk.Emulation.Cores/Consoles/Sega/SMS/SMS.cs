@@ -228,8 +228,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		public byte[] RomData;
 		private byte RomBank0, RomBank1, RomBank2, RomBank3;
 		private byte Bios_bank;
-		private byte RomBanks;
-		private byte[] BiosRom;
+		private readonly byte RomBanks;
+		private readonly byte[] BiosRom;
 
 		// Machine resources
 		public Z80A Cpu;
@@ -241,7 +241,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		public bool IsGameGear_C { get; set; }
 		public bool IsSG1000 { get; set; }
 
-		private bool HasYM2413 = false;
+		private readonly bool HasYM2413 = false;
 		private bool disablePSG = false;
 		private bool PortDEEnabled = false;
 		private IController _controller = NullController.Instance;
@@ -257,8 +257,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		private byte Port3F = 0xFF;
 		private byte PortDE = 0x00;
 
-		private byte ForceStereoByte = 0xAD;
-		private bool IsGame3D = false;
+		private readonly byte ForceStereoByte = 0xAD;
+		private readonly bool IsGame3D = false;
 
 		// Linked Play Only
 		public bool start_pressed;

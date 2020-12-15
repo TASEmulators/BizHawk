@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			public bool Display;
 			public bool Dma;
 			public bool Enable;
-			public int Index;
+			public readonly int Index;
 			public int Loaded;
 			public int Mc;
 			public int Mcbase;

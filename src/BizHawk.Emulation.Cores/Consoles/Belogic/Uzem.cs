@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Belogic
 	public class Uzem : WaterboxCore
 	{
 		private LibUzem _uze;
-		private bool _mouseEnabled;
+		private readonly bool _mouseEnabled;
 
 		[CoreConstructor("UZE")]
 		public Uzem(CoreComm comm, byte[] rom)

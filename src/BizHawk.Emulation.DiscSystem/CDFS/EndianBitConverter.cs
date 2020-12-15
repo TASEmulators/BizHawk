@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <summary>
 		/// Keep track of whether we need to swap the bytes or not
 		/// </summary>
-		private bool swap;
+		private readonly bool swap;
 
 		/// <summary>
 		/// Create the converter with the given endian-ness.

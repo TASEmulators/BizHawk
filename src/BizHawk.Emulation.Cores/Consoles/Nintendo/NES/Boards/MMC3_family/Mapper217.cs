@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public byte[] prg_regs_8k = new byte[4];
 		private int prg_mask_8k, chr_mask_1k;
-		private byte[] regs_sec = { 0, 6, 3, 7, 5, 2, 4, 1 };
+		private readonly byte[] regs_sec = { 0, 6, 3, 7, 5, 2, 4, 1 };
 
 
 		public override bool Configure(EDetectionOrigin origin)

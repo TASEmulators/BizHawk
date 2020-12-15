@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 	public sealed class VPC : IVideoProvider
 	{
-		PCEngine PCE;
+		readonly PCEngine PCE;
 		public VDC VDC1;
 		public VDC VDC2;
 		public VCE VCE;

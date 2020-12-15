@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// </summary>
 		static EventWaitHandle acquire;
 
-		bool validate = true;
+		readonly bool validate = true;
 
 		private readonly Bag<string, CartInfo> _sha1Table = new Bag<string, CartInfo>();
 

@@ -31,10 +31,10 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		bool HIntPending;
 		int lineIntLinesRemaining;
 
-		SMS Sms;
-		VdpMode mode;
+		readonly SMS Sms;
+		readonly VdpMode mode;
 		public DisplayType DisplayType = DisplayType.NTSC;
-		Z80A Cpu;
+		readonly Z80A Cpu;
 
 		public bool SpriteLimit;
 		public int IPeriod = 228;
@@ -75,8 +75,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		public int[] Palette = new int[32];
 		public byte[] PatternBuffer = new byte[0x8000];
 
-		byte[] ScanlinePriorityBuffer = new byte[256];
-		byte[] SpriteCollisionBuffer = new byte[256];
+		readonly byte[] ScanlinePriorityBuffer = new byte[256];
+		readonly byte[] SpriteCollisionBuffer = new byte[256];
 
 		static readonly byte[] SMSPalXlatTable = { 0, 85, 170, 255 };
 		static readonly byte[] GGPalXlatTable = { 0, 17, 34, 51, 68, 85, 102, 119, 136, 153, 170, 187, 204, 221, 238, 255 };

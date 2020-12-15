@@ -137,7 +137,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		bool StatusCompleted;
 		byte MessageValue;
 
-		QuickList<byte> CommandBuffer = new QuickList<byte>(10); // 10 = biggest command
+		readonly QuickList<byte> CommandBuffer = new QuickList<byte>(10); // 10 = biggest command
 		public QuickQueue<byte> DataIn = new QuickQueue<byte>(2048); // one data sector
 
 		// ******** Data Transfer / READ command support ********
@@ -151,9 +151,9 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		// ******** Resources ********
 
-		private PCEngine pce;
+		private readonly PCEngine pce;
 		public Disc disc;
-		private DiscSectorReader DiscSectorReader;
+		private readonly DiscSectorReader DiscSectorReader;
 		private SubchannelQ subchannelQ;
 		private int audioStartLBA;
 		private int audioEndLBA;

@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 {
 	public partial class N64
 	{
-		private List<MemoryDomain> _memoryDomains = new List<MemoryDomain>();
+		private readonly List<MemoryDomain> _memoryDomains = new List<MemoryDomain>();
 
 		private IMemoryDomains MemoryDomains;
 

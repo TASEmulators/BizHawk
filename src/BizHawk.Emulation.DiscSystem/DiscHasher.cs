@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.DiscSystem
 			this.disc = disc;
 		}
 
-		private Disc disc;
+		private readonly Disc disc;
 
 		/// <summary>
 		/// calculates the hash for quick PSX Disc identification
@@ -147,7 +147,7 @@ namespace BizHawk.Emulation.DiscSystem
 					}
 			}
 
-			private byte[] smallbuf = new byte[8];
+			private readonly byte[] smallbuf = new byte[8];
 			public void Add(int data)
 			{
 				smallbuf[0] = (byte)((data) & 0xFF);

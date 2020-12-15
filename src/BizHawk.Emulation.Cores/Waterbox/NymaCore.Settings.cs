@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// <summary>
 		/// What this core was actually started with
 		/// </summary>
-		private NymaSyncSettings _syncSettingsActual;
+		private readonly NymaSyncSettings _syncSettingsActual;
 		public NymaSettings GetSettings()
 		{
 			var ret = _settings.Clone();
@@ -300,12 +300,12 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			SettingsInfo = s;
 		}
 
-		private static IReadOnlyDictionary<string, SettingOverride> ExtraOverrides = new Dictionary<string, SettingOverride>
+		private static readonly IReadOnlyDictionary<string, SettingOverride> ExtraOverrides = new Dictionary<string, SettingOverride>
 		{
 			{ "nyma.constantfb", new SettingOverride { NonSync = true, NoRestart = true } },
 		};
 
-		private static IReadOnlyCollection<SettingT> ExtraSettings = new List<SettingT>
+		private static readonly IReadOnlyCollection<SettingT> ExtraSettings = new List<SettingT>
 		{
 			new SettingT
 			{

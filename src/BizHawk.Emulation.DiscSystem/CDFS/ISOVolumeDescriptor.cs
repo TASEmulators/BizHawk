@@ -23,8 +23,8 @@ namespace BizHawk.Emulation.DiscSystem
 		private const int LENGTH_TIME = 17;
 		private const int LENGTH_RESERVED = 512;
 
-		private EndianBitConverter bc = EndianBitConverter.CreateForLittleEndian();
-		private EndianBitConverter bcBig = EndianBitConverter.CreateForBigEndian();
+		private readonly EndianBitConverter bc = EndianBitConverter.CreateForLittleEndian();
+		private readonly EndianBitConverter bcBig = EndianBitConverter.CreateForBigEndian();
 
 		/// <summary>
 		/// The type of this volume description, only 1 and 255 are supported

@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//state
 		int[] prg_banks_8k = new int[4];
 		int[] chr_banks_1k = new int[12];
-		bool[] vram_enable = new bool[3];
+		readonly bool[] vram_enable = new bool[3];
 
 		int irq_counter;
 		bool irq_enabled;

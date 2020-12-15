@@ -66,7 +66,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		private bool extrabig_chr = false;
 
 		//state
-		private int[] prg_bank_reg_8k = new int[2];
+		private readonly int[] prg_bank_reg_8k = new int[2];
 		public int[] chr_bank_reg_1k = new int[16];
 		private bool _prgMode;
 		public byte[] prg_banks_8k = new byte[4];

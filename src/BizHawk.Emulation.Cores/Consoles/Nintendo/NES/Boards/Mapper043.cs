@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		bool swap;
 
 
-		private static int[] lut = { 4, 3, 5, 3, 6, 3, 7, 3 };
+		private static readonly int[] lut = { 4, 3, 5, 3, 6, 3, 7, 3 };
 
 		public override bool Configure(EDetectionOrigin origin)
 		{

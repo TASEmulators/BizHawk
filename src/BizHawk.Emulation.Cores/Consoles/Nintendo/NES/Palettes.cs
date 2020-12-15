@@ -2,9 +2,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	public static class Palettes
 	{
-		static float[] rtmul = { 1.239f, 0.794f, 1.019f, 0.905f, 1.023f, 0.741f, 0.75f };
-		static float[] gtmul = { 0.915f, 1.086f, 0.98f, 1.026f, 0.908f, 0.987f, 0.75f };
-		static float[] btmul = { 0.743f, 0.882f, 0.653f, 1.277f, 0.979f, 0.101f, 0.75f };
+		static readonly float[] rtmul = { 1.239f, 0.794f, 1.019f, 0.905f, 1.023f, 0.741f, 0.75f };
+		static readonly float[] gtmul = { 0.915f, 1.086f, 0.98f, 1.026f, 0.908f, 0.987f, 0.75f };
+		static readonly float[] btmul = { 0.743f, 0.882f, 0.653f, 1.277f, 0.979f, 0.101f, 0.75f };
 
 		public static void ApplyDeemphasis(ref int r, ref int g, ref int b, int deemph_bits)
 		{

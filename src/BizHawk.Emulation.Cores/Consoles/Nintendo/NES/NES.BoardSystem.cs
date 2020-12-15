@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	partial class NES
 	{
-		static List<Type> INESBoardImplementors = new List<Type>();
+		static readonly List<Type> INESBoardImplementors = new List<Type>();
 
 		private static INesBoard CreateBoardInstance(Type boardType)
 		{

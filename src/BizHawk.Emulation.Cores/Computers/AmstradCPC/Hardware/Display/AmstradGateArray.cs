@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 	/// </summary>
 	public class AmstradGateArray : IPortIODevice, IVideoProvider
 	{
-		private CPCBase _machine;
+		private readonly CPCBase _machine;
 		private Z80A CPU => _machine.CPU;
 		private CRCT_6845 CRCT => _machine.CRCT;
 		//private CRTDevice CRT => _machine.CRT;
@@ -679,18 +679,18 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// The current character line we are working from
 		/// </summary>
-		private CharacterLine CurrentLine;
+		private readonly CharacterLine CurrentLine;
 
 		/// <summary>
 		/// List of screen lines as they are built up
 		/// </summary>
-		private List<CharacterLine> ScreenLines = new List<CharacterLine>();
+		private readonly List<CharacterLine> ScreenLines = new List<CharacterLine>();
 
 		/// <summary>
 		/// Pixel value lookups for every scanline byte value
 		/// Based on the lookup at https://github.com/gavinpugh/xnacpc
 		/// </summary>
-		private int[][] ByteLookup = new int[4][];
+		private readonly int[][] ByteLookup = new int[4][];
 		private void InitByteLookup()
 		{
 			int pix;

@@ -63,7 +63,7 @@ namespace BizHawk.Common
 		public static Stream HACK_LOG_STREAM;
 
 		private static readonly bool LogToConsole = false;
-		private static bool LogToFile = false;
+		private static readonly bool LogToFile = false;
 
 		private const string LogFilename = "bizhawk.txt";
 		private static StreamWriter writer;

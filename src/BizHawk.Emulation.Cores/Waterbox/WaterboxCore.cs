@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		private LibWaterboxCore _core;
 		protected WaterboxHost _exe;
 		protected LibWaterboxCore.MemoryArea[] _memoryAreas;
-		private LibWaterboxCore.EmptyCallback _inputCallback;
+		private readonly LibWaterboxCore.EmptyCallback _inputCallback;
 		protected CoreComm CoreComm { get; }
 
 		public class Configuration

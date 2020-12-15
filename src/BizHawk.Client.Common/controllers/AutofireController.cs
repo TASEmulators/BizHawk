@@ -22,7 +22,7 @@ namespace BizHawk.Client.Common
 		private readonly WorkingDictionary<string, bool> _buttons = new WorkingDictionary<string, bool>();
 		private readonly WorkingDictionary<string, int> _buttonStarts = new WorkingDictionary<string, int>();
 
-		private bool _autofire = true;
+		private readonly bool _autofire = true;
 
 		public int On { get; set; }
 		public int Off { get; set; }

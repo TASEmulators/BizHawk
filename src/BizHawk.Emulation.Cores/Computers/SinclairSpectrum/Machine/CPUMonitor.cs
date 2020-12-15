@@ -9,8 +9,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 	/// </summary>
 	public class CPUMonitor
 	{
-		private SpectrumBase _machine;
-		private Z80A _cpu;
+		private readonly SpectrumBase _machine;
+		private readonly Z80A _cpu;
 		public MachineType machineType = MachineType.ZXSpectrum48;
 
 		/// <summary>

@@ -59,7 +59,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		private readonly List<byte[]> _romSet = new List<byte[]>();
 		private readonly ITraceable _tracer;
 
-		private Components _machine;
+		private readonly Components _machine;
 		private byte[] _disk1;
 		private readonly byte[] _appleIIRom;
 		private readonly byte[] _diskIIRom;

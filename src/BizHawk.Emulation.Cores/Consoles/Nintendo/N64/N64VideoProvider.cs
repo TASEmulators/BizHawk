@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 	{
 		private int[] frameBuffer;
 		private mupen64plusVideoApi api;
-		private mupen64plusApi coreAPI;
+		private readonly mupen64plusApi coreAPI;
 
 		public bool IsVIFrame;
 

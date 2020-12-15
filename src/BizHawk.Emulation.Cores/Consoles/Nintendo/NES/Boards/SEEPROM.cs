@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// <summary>
 		/// true if 256byte
 		/// </summary>
-		bool Big;
+		readonly bool Big;
 
 		byte[] rom;
 		/// <summary>aux circuitry? D7 of data byte</summary>

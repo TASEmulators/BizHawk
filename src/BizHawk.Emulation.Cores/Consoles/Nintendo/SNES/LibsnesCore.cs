@@ -226,7 +226,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		private readonly LibsnesApi.snes_audio_sample_t _soundcb;
 
 		private IController _controller;
-		private LoadParams _currLoadParams;
+		private readonly LoadParams _currLoadParams;
 		private SpeexResampler _resampler;
 		private int _timeFrameCounter;
 		private bool _disposed;

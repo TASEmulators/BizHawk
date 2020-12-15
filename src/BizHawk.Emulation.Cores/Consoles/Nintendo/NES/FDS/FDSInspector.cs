@@ -13,8 +13,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 	public class FDSFile
 	{
-		static byte[] Check = FTXT.E.GetBytes("FDS\x1a");
-		static byte[] CheckAlt = FTXT.E.GetBytes("\x01*NIN");
+		static readonly byte[] Check = FTXT.E.GetBytes("FDS\x1a");
+		static readonly byte[] CheckAlt = FTXT.E.GetBytes("\x01*NIN");
 
 		public List<FDSDisk> Disks = new List<FDSDisk>();
 
@@ -61,7 +61,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 	public class FDSDisk
 	{
-		static byte[] Check = FTXT.E.GetBytes("*NINTENDO-HVC*");
+		static readonly byte[] Check = FTXT.E.GetBytes("*NINTENDO-HVC*");
 
 		public List<FDSChunk> Chunks = new List<FDSChunk>();
 

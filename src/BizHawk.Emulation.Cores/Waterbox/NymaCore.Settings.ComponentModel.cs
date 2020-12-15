@@ -81,7 +81,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 	public abstract class MednaPropertyDescriptor : PropertyDescriptor
 	{
 		public SettingT Setting { get; private set; }
-		private bool _isSyncSetting;
+		private readonly bool _isSyncSetting;
 		public MednaPropertyDescriptor(SettingT setting, bool isSyncSetting)
 			: base(setting.SettingsKey, new Attribute[0])
 		{

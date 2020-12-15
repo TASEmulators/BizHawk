@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	{
 		private byte[] EXPREGS = new byte[8];
 
-		private byte[] sec = { 0, 3, 1, 5, 6, 7, 2, 4 };
+		private readonly byte[] sec = { 0, 3, 1, 5, 6, 7, 2, 4 };
 
 		public override bool Configure(EDetectionOrigin origin)
 		{

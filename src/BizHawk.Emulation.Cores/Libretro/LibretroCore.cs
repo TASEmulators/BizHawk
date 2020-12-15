@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 	public unsafe partial class LibretroCore : IEmulator, ISettable<LibretroCore.Settings, LibretroCore.SyncSettings>,
 		ISaveRam, IStatable, IVideoProvider, IInputPollable
 	{
-		private LibretroApi api;
+		private readonly LibretroApi api;
 
 		// TODO: codepath just for introspection (lighter weight; no speex, no controls, etc.)
 		public LibretroCore(CoreComm nextComm, IGameInfo game, string corePath)

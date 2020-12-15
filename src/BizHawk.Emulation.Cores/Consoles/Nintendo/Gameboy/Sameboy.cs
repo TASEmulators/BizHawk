@@ -31,9 +31,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 		/// </summary>
 		private const int TICKSPERSECOND_SGB = 2147727;
 
-		private LibSameboy _core;
-		private bool _cgb;
-		private bool _sgb;
+		private readonly LibSameboy _core;
+		private readonly bool _cgb;
+		private readonly bool _sgb;
 
 		[CoreConstructor("SGB")]
 		public Sameboy(byte[] rom, CoreComm comm, Settings settings, SyncSettings syncSettings, bool deterministic)
@@ -304,7 +304,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 
 		public bool IsCGBMode() => _cgb;
 
-		private GPUMemoryAreas _gpuMemory;
+		private readonly GPUMemoryAreas _gpuMemory;
 
 		public GPUMemoryAreas GetGPU() => _gpuMemory;
 		private ScanlineCallback _scanlineCallback;

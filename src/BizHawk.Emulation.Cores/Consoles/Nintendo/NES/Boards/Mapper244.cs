@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		private List<List<byte>> prg_perm = new List<List<byte>>
+		private readonly List<List<byte>> prg_perm = new List<List<byte>>
 		{
 			new List<byte> { 0, 1, 2, 3, },
 			new List<byte> { 3, 2, 1, 0, },
@@ -26,7 +26,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			new List<byte> { 3, 1, 2, 0, },
 		};
 
-		private List<List<byte>> chr_perm = new List<List<byte>>
+		private readonly List<List<byte>> chr_perm = new List<List<byte>>
 		{
 			new List<byte> { 0, 1, 2, 3, 4, 5, 6, 7, },
 			new List<byte> { 0, 2, 1, 3, 4, 6, 5, 7, },

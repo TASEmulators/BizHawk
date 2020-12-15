@@ -154,11 +154,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 		private bool _pendingThreadTerminate;
 
-		private DisplayType _display_type = DisplayType.NTSC;
+		private readonly DisplayType _display_type = DisplayType.NTSC;
 
 		private Action _pendingThreadAction;
 
-		private bool _disableExpansionSlot = true;
+		private readonly bool _disableExpansionSlot = true;
 
 		public IEmulatorServiceProvider ServiceProvider { get; }
 

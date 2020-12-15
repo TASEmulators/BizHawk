@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 	// adapted from the information at http://www.pastraiser.com/cpu/gameboy/gameboy_opcodes.html
 	public sealed partial class LR35902
 	{
-		static string[] table =
+		static readonly string[] table =
 		{
 			"NOP", // 00
 			"LD   BC,d16", // 01

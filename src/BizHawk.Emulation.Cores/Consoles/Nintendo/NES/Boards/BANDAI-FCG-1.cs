@@ -42,7 +42,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		byte jump2_outer_bank; // needed to select between banks in 512K jump2 board
 
 		//regenerable state
-		int[] prg_banks_16k = new int[2];
+		readonly int[] prg_banks_16k = new int[2];
 
 		//state
 		int prg_reg_16k;

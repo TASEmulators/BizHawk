@@ -300,7 +300,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			int latched;
 
 			// communicate with APU
-			Action<int> enqueuer;
+			readonly Action<int> enqueuer;
 			// true if V has been written and we need to check to change something
 			bool volumeChangePending;
 

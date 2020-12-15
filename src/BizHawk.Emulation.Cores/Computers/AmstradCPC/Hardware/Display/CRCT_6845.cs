@@ -364,14 +364,14 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// http://www.cantrell.org.uk/david/tech/cpc/cpc-firmware/firmware.pdf
 		/// (The defaults values given here are those programmed by the firmware ROM after a cold/warm boot of the CPC/Plus)
 		/// </summary>
-		private byte[] RegDefaults = { 63, 40, 46, 112, 38, 0, 25, 30, 0, 7, 0, 0, 48, 0, 192, 7, 0, 0 };
+		private readonly byte[] RegDefaults = { 63, 40, 46, 112, 38, 0, 25, 30, 0, 7, 0, 0, 48, 0, 192, 7, 0, 0 };
 
 		/// <summary>
 		/// Register masks
 		/// 0 = WRITE
 		/// 1 = READ
 		/// </summary>
-		private byte[] CPCMask = { 255, 255, 255, 255, 127, 31, 127, 126, 3, 31, 31, 31, 63, 255, 63, 255, 63, 255 };
+		private readonly byte[] CPCMask = { 255, 255, 255, 255, 127, 31, 127, 126, 3, 31, 31, 31, 63, 255, 63, 255, 63, 255 };
 
 		/// <summary>
 		/// Horizontal Character Count

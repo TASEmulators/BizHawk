@@ -96,7 +96,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			"S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW",
 		};
 
-		private static byte[] HandControllerButtons =
+		private static readonly byte[] HandControllerButtons =
 		{
 			0x60, // OUTPUT_ACTION_BUTTON_BOTTOM_LEFT
 			0xC0, // OUTPUT_ACTION_BUTTON_BOTTOM_RIGHT
@@ -177,7 +177,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			"Key 6", "Key 7", "Key 8", "Key 9", "Enter", "Clear"
 		};
 
-		private static byte[] BoolControllerButtons =
+		private static readonly byte[] BoolControllerButtons =
 		{
 			0x60, // OUTPUT_ACTION_BUTTON_BOTTOM_LEFT
 			0xC0, // OUTPUT_ACTION_BUTTON_BOTTOM_RIGHT
@@ -217,7 +217,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 		private const int Deadzone = 50;
 
-		private static byte[] FloatControllerButtons =
+		private static readonly byte[] FloatControllerButtons =
 		{
 			0x02, // E
 			0x06, // ENE

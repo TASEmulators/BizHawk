@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// The type of serializer
 		/// </summary>
-		private MediaConverterType _formatType = MediaConverterType.WAV;
+		private readonly MediaConverterType _formatType = MediaConverterType.WAV;
 		public override MediaConverterType FormatType => _formatType;
 
 		/// <summary>
@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// Position counter
 		/// </summary>
 		//private int _position = 0;
-		private DatacorderDevice _datacorder;
+		private readonly DatacorderDevice _datacorder;
 
 		public WavConverter(DatacorderDevice _tapeDevice)
 		{

@@ -36,7 +36,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
          * MK flag
          * SK flag
          * */
-		private string[] workingArr = new string[3];
+		private readonly string[] workingArr = new string[3];
 
 		private void BuildCSVLine()
 		{

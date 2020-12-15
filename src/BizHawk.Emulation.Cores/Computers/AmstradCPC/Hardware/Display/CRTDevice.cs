@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 	/// </summary>
 	public class CRTDevice : IVideoProvider
 	{
-		private CPCBase _machine;
+		private readonly CPCBase _machine;
 		private CRCT_6845 CRCT => _machine.CRCT;
 		private AmstradGateArray GateArray => _machine.GateArray;
 
@@ -250,7 +250,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// The calling CRT device
 		/// </summary>
-		private CRTDevice CRT;
+		private readonly CRTDevice CRT;
 
 		public ScanLine(CRTDevice crt)
 		{

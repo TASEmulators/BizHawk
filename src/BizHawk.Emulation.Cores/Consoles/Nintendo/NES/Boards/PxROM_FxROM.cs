@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		//state
 		byte prg_reg;
-		int[] prg_banks_8k = new int[4];
+		readonly int[] prg_banks_8k = new int[4];
 		int[] chr_banks_4k = new int[4];
 		int[] chr_latches = new int[2];
 

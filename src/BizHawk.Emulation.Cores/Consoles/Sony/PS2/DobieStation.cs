@@ -82,7 +82,7 @@ namespace BizHawk.Emulation.Cores.Sony.PS2
 		}
 
 		private readonly LibDobieStation.CdCallback _cdCallback;
-		private DiscSectorReader _disc;
+		private readonly DiscSectorReader _disc;
 		private void ReadCd(ulong sector, byte* dest)
 		{
 			var tmp = new byte[2048];

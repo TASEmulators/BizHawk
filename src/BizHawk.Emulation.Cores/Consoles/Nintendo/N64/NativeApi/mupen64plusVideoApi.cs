@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		/// <param name="buffer">Which buffer to read: 0 = front, 1 = back</param>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		private delegate void ReadScreen2(int[] framebuffer, ref int width, ref int height, int buffer);
-		ReadScreen2 GFXReadScreen2;
+		readonly ReadScreen2 GFXReadScreen2;
 
 		/// <summary>
 		/// Gets the width and height of the mupen64plus framebuffer
@@ -29,9 +29,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		/// <param name="buffer">Which buffer to read: 0 = front, 1 = back</param>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		private delegate void ReadScreen2Res(IntPtr dummy, ref int width, ref int height, int buffer);
-		ReadScreen2Res GFXReadScreen2Res;
+		readonly ReadScreen2Res GFXReadScreen2Res;
 
-		
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		private delegate int GetScreenTextureID();
 		GetScreenTextureID GFXGetScreenTextureID;

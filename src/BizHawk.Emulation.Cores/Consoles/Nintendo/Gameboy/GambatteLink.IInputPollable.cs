@@ -10,6 +10,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public IInputCallbackSystem InputCallbacks => _inputCallbacks;
 
-		private InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
+		private readonly InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
 	}
 }

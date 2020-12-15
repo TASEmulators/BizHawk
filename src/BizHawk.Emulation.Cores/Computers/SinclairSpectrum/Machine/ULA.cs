@@ -253,7 +253,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			/// <summary>
 			/// The ULA device
 			/// </summary>
-			private ULA _ula;
+			private readonly ULA _ula;
 
 			/// <summary>
 			/// Array of rendercycle entries

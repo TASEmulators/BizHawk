@@ -191,7 +191,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public class BGInfos
 		{
-			BGInfo[] bgs = new BGInfo[4] { new BGInfo(1), new BGInfo(2), new BGInfo(3), new BGInfo(4) };
+			readonly BGInfo[] bgs = new BGInfo[4] { new BGInfo(1), new BGInfo(2), new BGInfo(3), new BGInfo(4) };
 			public BGInfo BG1 => bgs[0];
 			public BGInfo BG2 => bgs[1];
 			public BGInfo BG3 => bgs[2];
@@ -497,7 +497,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			}
 		}
 
-		static int[,] ModeBpps = {
+		static readonly int[,] ModeBpps = {
 				{2,2,2,2},
 				{4,4,2,0},
 				{4,4,0,0},
@@ -516,7 +516,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		}
 
 		//the same basic color table that libsnes uses to convert from snes 555 to rgba32
-		static int[] directColorTable = new int[256]; //8bpp gfx -> rgb555
+		static readonly int[] directColorTable = new int[256]; //8bpp gfx -> rgb555
 		static SNESGraphicsDecoder()
 		{
 			//make directColorTable
@@ -533,11 +533,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			}
 		}
 
-		int[] colortable;
+		readonly int[] colortable;
 		public byte* vram, oam;
 		public ushort* cgram, vram16;
-		
-		LibsnesApi api;
+
+		readonly LibsnesApi api;
 
 		public SNESGraphicsDecoder(LibsnesApi api, SnesColors.ColorType pal)
 		{
@@ -764,7 +764,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			}
 		}
 
-		int[][] _tileCache = new int[18][];
+		readonly int[][] _tileCache = new int[18][];
 
 		bool usingUserBackColor = false;
 		int userBackColor;

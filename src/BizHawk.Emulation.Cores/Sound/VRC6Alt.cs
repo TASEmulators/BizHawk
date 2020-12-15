@@ -9,10 +9,10 @@ namespace BizHawk.Emulation.Cores.Components
 	{
 		// http://wiki.nesdev.com/w/index.php/VRC6_audio
 
-		Pulse pulse1, pulse2;
-		Saw saw;
+		readonly Pulse pulse1, pulse2;
+		readonly Saw saw;
 
-		Action<int> enqueuer;
+		readonly Action<int> enqueuer;
 
 		/// <param name="enqueuer">a place to dump deltas to</param>
 		public VRC6Alt(Action<int> enqueuer)
@@ -91,7 +91,7 @@ namespace BizHawk.Emulation.Cores.Components
 
 		class Saw
 		{
-			Action<int> SendDiff;
+			readonly Action<int> SendDiff;
 			public Saw(Action<int> SendDiff) { this.SendDiff = SendDiff; }
 
 			// set by regs
@@ -190,7 +190,7 @@ namespace BizHawk.Emulation.Cores.Components
 
 		class Pulse
 		{
-			Action<int> SendDiff;
+			readonly Action<int> SendDiff;
 			public Pulse(Action<int> SendDiff) { this.SendDiff = SendDiff; }
 
 			// set by regs

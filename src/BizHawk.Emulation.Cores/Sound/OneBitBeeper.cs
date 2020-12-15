@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Sound
 		private int _sampleRate;
 		private int _clocksPerFrame;
 		private int _framesPerSecond;
-		private BlipBuffer _blip;
+		private readonly BlipBuffer _blip;
 		private readonly string _beeperId;
 
 		/// <summary>

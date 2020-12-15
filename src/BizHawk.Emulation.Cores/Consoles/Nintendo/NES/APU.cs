@@ -26,7 +26,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public bool recalculate = false;
 
-		NES nes;
+		readonly NES nes;
 		public APU(NES nes, APU old, bool pal)
 		{
 			this.nes = nes;
@@ -43,25 +43,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		static int[] DMC_RATE_NTSC = { 428, 380, 340, 320, 286, 254, 226, 214, 190, 160, 142, 128, 106, 84, 72, 54 };
-		static int[] DMC_RATE_PAL = { 398, 354, 316, 298, 276, 236, 210, 198, 176, 148, 132, 118, 98, 78, 66, 50 };
-		static int[] LENGTH_TABLE = { 10, 254, 20, 2, 40, 4, 80, 6, 160, 8, 60, 10, 14, 12, 26, 14, 12, 16, 24, 18, 48, 20, 96, 22, 192, 24, 72, 26, 16, 28, 32, 30 };
-		static byte[,] PULSE_DUTY = {
+		static readonly int[] DMC_RATE_NTSC = { 428, 380, 340, 320, 286, 254, 226, 214, 190, 160, 142, 128, 106, 84, 72, 54 };
+		static readonly int[] DMC_RATE_PAL = { 398, 354, 316, 298, 276, 236, 210, 198, 176, 148, 132, 118, 98, 78, 66, 50 };
+		static readonly int[] LENGTH_TABLE = { 10, 254, 20, 2, 40, 4, 80, 6, 160, 8, 60, 10, 14, 12, 26, 14, 12, 16, 24, 18, 48, 20, 96, 22, 192, 24, 72, 26, 16, 28, 32, 30 };
+		static readonly byte[,] PULSE_DUTY = {
 			{0,1,0,0,0,0,0,0}, // (12.5%)
 			{0,1,1,0,0,0,0,0}, // (25%)
 			{0,1,1,1,1,0,0,0}, // (50%)
 			{1,0,0,1,1,1,1,1}, // (25% negated (75%))
 		};
-		static byte[] TRIANGLE_TABLE =
+		static readonly byte[] TRIANGLE_TABLE =
 		{
 			15, 14, 13, 12, 11, 10,  9,  8,  7,  6,  5,  4,  3,  2,  1,  0,
 			0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15
 		};
-		static int[] NOISE_TABLE_NTSC =
+		static readonly int[] NOISE_TABLE_NTSC =
 		{
 			4, 8, 16, 32, 64, 96, 128, 160, 202, 254, 380, 508, 762, 1016, 2034, 4068
 		};
-		static int[] NOISE_TABLE_PAL =
+		static readonly int[] NOISE_TABLE_PAL =
 		{
 			4, 7, 14, 30, 60, 88, 118, 148, 188, 236, 354, 472, 708,  944, 1890, 3778
 		};
@@ -70,7 +70,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			public PulseUnit(APU apu, int unit) { this.unit = unit; this.apu = apu; }
 			public int unit;
-			APU apu;
+			readonly APU apu;
 
 			// reg0
 			int duty_cnt, env_loop, env_constant, env_cnt_value;
@@ -309,7 +309,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public sealed class NoiseUnit
 		{
-			APU apu;
+			readonly APU apu;
 
 			// reg0 (sweep)
 			int env_cnt_value, env_loop, env_constant;
@@ -331,7 +331,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			int env_output, env_start_flag, env_divider, env_counter;
 			bool noise_bit = true;
 
-			int[] NOISE_TABLE;
+			readonly int[] NOISE_TABLE;
 
 			public NoiseUnit(APU apu, bool pal)
 			{
@@ -508,7 +508,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			int seq = 0;
 			public int sample;
 
-			APU apu;
+			readonly APU apu;
 			public TriangleUnit(APU apu) { this.apu = apu; }
 
 			public void SyncState(Serializer ser)
@@ -648,8 +648,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		sealed class DMCUnit
 		{
-			APU apu;
-			int[] DMC_RATE;
+			readonly APU apu;
+			readonly int[] DMC_RATE;
 			public DMCUnit(APU apu, bool pal)
 			{
 				this.apu = apu;
@@ -940,7 +940,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public PulseUnit[] pulse = new PulseUnit[2];
 		public TriangleUnit triangle;
 		public NoiseUnit noise;
-		DMCUnit dmc;
+		readonly DMCUnit dmc;
 
 		bool irq_pending;
 		bool dmc_irq;
@@ -959,14 +959,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			dmc.Fetch();
 		}
 
-		int[][] sequencer_lut = new int[2][];
+		readonly int[][] sequencer_lut = new int[2][];
 
-		static int[][] sequencer_lut_ntsc = {
+		static readonly int[][] sequencer_lut_ntsc = {
 			new[]{7457,14913,22371,29830},
 			new[]{7457,14913,22371,29830,37282}
 		};
 
-		static int[][] sequencer_lut_pal = {
+		static readonly int[][] sequencer_lut_pal = {
 			new[]{8313,16627,24939,33254},
 			new[]{8313,16627,24939,33254,41566}
 		};

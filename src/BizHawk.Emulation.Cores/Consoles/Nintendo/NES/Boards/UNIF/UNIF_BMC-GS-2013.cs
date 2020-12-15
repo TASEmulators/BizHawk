@@ -11,11 +11,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		private int _reg = 0xFF;
 		private bool _isRom2 = true;
 
-		private int _prgMaskRom1 = 7;
-		private int _prgMaskRom2 = 1;
+		private readonly int _prgMaskRom1 = 7;
+		private readonly int _prgMaskRom2 = 1;
 
-		private int _wramPage = 0x3E000;
-		private int _rom2Offset = 0x40000;
+		private readonly int _wramPage = 0x3E000;
+		private readonly int _rom2Offset = 0x40000;
 
 		public override bool Configure(EDetectionOrigin origin)
 		{

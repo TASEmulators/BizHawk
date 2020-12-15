@@ -13,11 +13,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive
 		"0e352905c7aa80b166933970abbcecfce96ad64e", "https://github.com/notaz/picodrive", false)]
 	public class PicoDrive : WaterboxCore, IDriveLight, IRegionable, ISettable<object, PicoDrive.SyncSettings>
 	{
-		private LibPicoDrive _core;
-		private LibPicoDrive.CDReadCallback _cdcallback;
-		private Disc _cd;
-		private DiscSectorReader _cdReader;
-		private bool _isPal;
+		private readonly LibPicoDrive _core;
+		private readonly LibPicoDrive.CDReadCallback _cdcallback;
+		private readonly Disc _cd;
+		private readonly DiscSectorReader _cdReader;
+		private readonly bool _isPal;
 
 		[CoreConstructor("GEN", Priority = CorePriority.Low)]
 		[CoreConstructor("32X")]

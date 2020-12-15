@@ -58,7 +58,7 @@ namespace BizHawk.Emulation.Cores.Components
 		///		882 - 44100KHz - 50Hz
 		///		735 - 44100Khz - 60Hz
 		/// </summary>
-		private int? _targetSampleCount;
+		private readonly int? _targetSampleCount;
 
 		/// <summary>
 		/// Constructor

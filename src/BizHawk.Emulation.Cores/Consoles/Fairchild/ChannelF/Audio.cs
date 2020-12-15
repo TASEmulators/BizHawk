@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 	/// </summary>
 	public partial class ChannelF : ISoundProvider
 	{
-		private double SampleRate = 44100;
+		private readonly double SampleRate = 44100;
 		private int SamplesPerFrame;
 		private double Period;
 		private double CyclesPerSample;
@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 		private int tone = 0;
 
-		private double[] tone_freqs = { 0, 1000, 500, 120 };
+		private readonly double[] tone_freqs = { 0, 1000, 500, 120 };
 #pragma warning disable CS0414
 		private double amplitude = 0;
 		private double decay = 0.998;

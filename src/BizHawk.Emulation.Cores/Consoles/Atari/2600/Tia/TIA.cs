@@ -58,7 +58,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public int NominalNumScanlines => _pal ? 312 : 262;
 
-		private int[] _scanlinebuffer = new int[ScreenWidth * MaxScreenHeight];
+		private readonly int[] _scanlinebuffer = new int[ScreenWidth * MaxScreenHeight];
 
 		private int[] _palette;
 

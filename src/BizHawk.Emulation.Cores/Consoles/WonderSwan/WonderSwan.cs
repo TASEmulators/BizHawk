@@ -201,7 +201,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			}
 		}
 
-		private int[] vbuff = new int[224 * 144];
+		private readonly int[] vbuff = new int[224 * 144];
 
 		public int[] GetVideoBuffer() => vbuff;
 

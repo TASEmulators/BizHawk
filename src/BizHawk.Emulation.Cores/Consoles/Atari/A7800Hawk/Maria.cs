@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		// technically there is no limit on the number of graphics objects, but since dma is automatically killed
 		// at the end of a scanline, we have an effective limit
-		GFX_Object[] GFX_Objects = new GFX_Object[128];
+		readonly GFX_Object[] GFX_Objects = new GFX_Object[128];
 
 		public byte[,] line_ram = new byte[2, 320];
 		byte temp_check = 0;

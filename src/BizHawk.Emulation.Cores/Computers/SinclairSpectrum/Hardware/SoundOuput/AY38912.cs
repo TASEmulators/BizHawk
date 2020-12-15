@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// The emulated machine (passed in via constructor)
 		/// </summary>
-		private SpectrumBase _machine;
+		private readonly SpectrumBase _machine;
 
 		private int _tStatesPerFrame;
 		private int _sampleRate;
@@ -401,7 +401,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// The frequency of the AY chip
 		/// </summary>
-		private static int _chipFrequency = 1773400;
+		private static readonly int _chipFrequency = 1773400;
 
 		/// <summary>
 		/// The rendering resolution of the chip
@@ -496,7 +496,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// Panning table list
 		/// </summary>
-		private static List<uint[]> PanTabs = new List<uint[]>
+		private static readonly List<uint[]> PanTabs = new List<uint[]>
 		{
             // MONO
             new uint[] { 50,50, 50,50, 50,50 },
@@ -532,7 +532,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// Volume table to be used
 		/// </summary>
-		private static uint[] AYVolumes =
+		private static readonly uint[] AYVolumes =
 		{
 			0x0000,0x0000,0x0340,0x0340,0x04C0,0x04C0,0x06F2,0x06F2,
 			0x0A44,0x0A44,0x0F13,0x0F13,0x1510,0x1510,0x227E,0x227E,

@@ -168,12 +168,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 		public bool DiagRom = false;
 
-		private List<string> diagRoms = new List<string>
+		private readonly List<string> diagRoms = new List<string>
 		{
 			@"\DiagROM.v28",
 			@"\zx-diagnostics\testrom.bin"
 		};
-		private int diagIndex = 1;
+		private readonly int diagIndex = 1;
 
 		internal CoreComm CoreComm { get; }
 

@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 	public class CursorJoystick : IJoystick
 	{
 		//private int _joyLine;
-		private SpectrumBase _machine;
+		private readonly SpectrumBase _machine;
 
 		public CursorJoystick(SpectrumBase machine, int playerNumber)
 		{
@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			}.ToArray();
 		}
 
-		private List<string> btnLookups = new List<string>
+		private readonly List<string> btnLookups = new List<string>
 		{
 			"Key 5",    // left
             "Key 8",    // right

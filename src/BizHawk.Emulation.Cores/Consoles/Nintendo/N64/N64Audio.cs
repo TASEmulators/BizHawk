@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		/// </summary>
 		private mupen64plusAudioApi api;
 
-		private mupen64plusApi coreAPI;
+		private readonly mupen64plusApi coreAPI;
 
 		/// <summary>
 		/// Buffer for audio data

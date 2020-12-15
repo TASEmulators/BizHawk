@@ -62,7 +62,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 		}
 
 		private List<BlobInfo> BlobInfos;
-		private List<TrackInfo> TrackInfos = new List<TrackInfo>();
+		private readonly List<TrackInfo> TrackInfos = new List<TrackInfo>();
 
 
 		private void MountBlobs()

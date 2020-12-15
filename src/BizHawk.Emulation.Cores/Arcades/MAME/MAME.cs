@@ -163,12 +163,12 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		public IInputCallbackSystem InputCallbacks => throw new NotImplementedException();
 
 		private SyncSettings _syncSettings;
-		private Thread _mameThread;
-		private ManualResetEvent _mameStartupComplete = new ManualResetEvent(false);
-		private ManualResetEvent _mameFrameComplete = new ManualResetEvent(false);
-		private ManualResetEvent _memoryAccessComplete = new ManualResetEvent(false);
-		private AutoResetEvent _mamePeriodicComplete = new AutoResetEvent(false);
-		private SortedDictionary<string, string> _fieldsPorts = new SortedDictionary<string, string>();
+		private readonly Thread _mameThread;
+		private readonly ManualResetEvent _mameStartupComplete = new ManualResetEvent(false);
+		private readonly ManualResetEvent _mameFrameComplete = new ManualResetEvent(false);
+		private readonly ManualResetEvent _memoryAccessComplete = new ManualResetEvent(false);
+		private readonly AutoResetEvent _mamePeriodicComplete = new AutoResetEvent(false);
+		private readonly SortedDictionary<string, string> _fieldsPorts = new SortedDictionary<string, string>();
 		private SortedDictionary<string, string> _romHashes = new SortedDictionary<string, string>();
 		private IController _controller = NullController.Instance;
 		private IMemoryDomains _memoryDomains;
@@ -177,15 +177,15 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		private int _systemBusAddressShift = 0;
 		private bool _memAccess = false;
 		private int[] _frameBuffer = new int[0];
-		private Queue<short> _audioSamples = new Queue<short>();
+		private readonly Queue<short> _audioSamples = new Queue<short>();
 		private decimal _dAudioSamples = 0;
-		private int _sampleRate = 44100;
+		private readonly int _sampleRate = 44100;
 		private int _numSamples = 0;
 		private bool _paused = true;
 		private bool _exiting = false;
 		private bool _frameDone = true;
-		private string _gameDirectory;
-		private string _gameFilename;
+		private readonly string _gameDirectory;
+		private readonly string _gameFilename;
 		private string _gameName = "Arcade";
 		private string _loadFailure = "";
 		private LibMAME.PeriodicCallbackDelegate _periodicCallback;

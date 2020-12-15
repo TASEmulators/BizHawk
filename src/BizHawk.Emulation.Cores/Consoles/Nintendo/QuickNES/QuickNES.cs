@@ -121,7 +121,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			public void Dispose() {}
 		}
 
-		IFPCtrl FP;
+		readonly IFPCtrl FP;
 
 		public ControllerDefinition ControllerDefinition { get; private set; }
 
@@ -154,17 +154,17 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			return PadNames.Zip(PadMasks, (s, i) => new PadEnt(prefix + s, i)).ToArray();
 		}
 
-		private static string[] PadNames =
+		private static readonly string[] PadNames =
 		{
 			"Up", "Down", "Left", "Right", "Start", "Select", "B", "A"
 		};
-		private static int[] PadMasks =
+		private static readonly int[] PadMasks =
 		{
 			16, 32, 64, 128, 8, 4, 2, 1
 		};
 
-		private static PadEnt[] PadP1 = GetPadList(1);
-		private static PadEnt[] PadP2 = GetPadList(2);
+		private static readonly PadEnt[] PadP1 = GetPadList(1);
+		private static readonly PadEnt[] PadP2 = GetPadList(2);
 
 		private int GetPad(IController controller, IEnumerable<PadEnt> buttons)
 		{

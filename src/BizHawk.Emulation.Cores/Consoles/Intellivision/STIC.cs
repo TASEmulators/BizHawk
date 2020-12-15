@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		public Func<ushort, bool, ushort> ReadMemory;
 		public Func<ushort, ushort, bool, bool> WriteMemory;
 
-		private static int BORDER_OFFSET=176*8;
+		private static readonly int BORDER_OFFSET=176*8;
 
 		public int[] BGBuffer = new int[159 * 96];
 		public int[] FrameBuffer = new int[176 * 208];

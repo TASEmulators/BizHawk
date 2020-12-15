@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// The type of serializer
 		/// </summary>
-		private MediaConverterType _formatType = MediaConverterType.PZX;
+		private readonly MediaConverterType _formatType = MediaConverterType.PZX;
 		public override MediaConverterType FormatType => _formatType;
 
 		/// <summary>
@@ -42,7 +42,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		private List<KeyValuePair<int, int>> _loopCounter = new List<KeyValuePair<int, int>>();
 
-		private DatacorderDevice _datacorder;
+		private readonly DatacorderDevice _datacorder;
 
 		public PzxConverter(DatacorderDevice _tapeDevice)
 		{

@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			//    CompiledMicrocode[i] = (short)temp[i];
 		}
 
-		static Uop[][] Microcode =
+		static readonly Uop[][] Microcode =
 		{
 			//0x00
 			/*BRK [implied]*/ new Uop[] { Uop.Fetch2, Uop.PushPCH, Uop.PushPCL, Uop.PushP_BRK, Uop.FetchPCLVector, Uop.FetchPCHVector, Uop.End_SuppressInterrupt },

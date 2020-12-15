@@ -150,22 +150,22 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			}
 		}
 
-		private LibGPGX Core;
-		private WaterboxHost _elf;
+		private readonly LibGPGX Core;
+		private readonly WaterboxHost _elf;
 
-		private Disc[] _cds;
+		private readonly Disc[] _cds;
 		private int _discIndex;
-		private DiscSectorReader[] _cdReaders;
+		private readonly DiscSectorReader[] _cdReaders;
 		private bool _prevDiskPressed;
 		private bool _nextDiskPressed;
 
-		byte[] _romfile;
+		private readonly byte[] _romfile;
 
 		private bool _disposed = false;
 
 		LibGPGX.load_archive_cb LoadCallback;
 
-		LibGPGX.InputData input = new LibGPGX.InputData();
+		readonly LibGPGX.InputData input = new LibGPGX.InputData();
 
 		public enum ControlType
 		{
@@ -309,7 +309,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			}
 		}
 
-		LibGPGX.cd_read_cb cd_callback_handle;
+		readonly LibGPGX.cd_read_cb cd_callback_handle;
 
 		public static LibGPGX.CDData GetCDDataStruct(Disc cd)
 		{

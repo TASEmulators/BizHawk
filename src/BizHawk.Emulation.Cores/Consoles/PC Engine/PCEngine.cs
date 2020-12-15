@@ -123,7 +123,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		// ROM
 		private byte[] RomData;
 		private int RomLength;
-		private Disc disc;
+		private readonly Disc disc;
 
 		// Machine
 		public NecSystemType Type;

@@ -51,6 +51,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			Frame = reader.ReadInt32();
 		}
 
-		private byte[] SaveStatePrivateBuff = new byte[16788288 + 1024];
+		private readonly byte[] SaveStatePrivateBuff = new byte[16788288 + 1024];
 	}
 }

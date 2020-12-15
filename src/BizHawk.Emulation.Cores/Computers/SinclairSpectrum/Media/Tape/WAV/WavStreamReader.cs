@@ -8,8 +8,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 	/// </summary>
 	public class WavStreamReader
 	{
-		private Stream m_stream;
-		private WavHeader m_header = new WavHeader();
+		private readonly Stream m_stream;
+		private readonly WavHeader m_header = new WavHeader();
 
 		public WavStreamReader(Stream stream)
 		{

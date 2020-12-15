@@ -37,7 +37,7 @@ namespace BizHawk.Client.Common
 		private readonly Queue<short> buffer = new Queue<short>(MaxExcessSamples);
 
 		private int SamplesInOneFrame = 1470;
-		private int TargetExtraSamples = 882;
+		private readonly int TargetExtraSamples = 882;
 		private const int MaxExcessSamples = 4096;
 
 		/// <summary>

@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		/// <returns>The size of the mupen64plus audio buffer</returns>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		private delegate int GetBufferSize();
-		GetBufferSize dllGetBufferSize;
+		readonly GetBufferSize dllGetBufferSize;
 
 		/// <summary>
 		/// Gets the audio buffer from mupen64plus, and then clears it
@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		/// <param name="dest">The buffer to fill with samples</param>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		private delegate void ReadAudioBuffer(short[] dest);
-		ReadAudioBuffer dllReadAudioBuffer;
+		readonly ReadAudioBuffer dllReadAudioBuffer;
 
 		/// <summary>
 		/// Gets the current audio rate from mupen64plus
@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		/// <returns>The current audio rate</returns>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		private delegate int GetAudioRate();
-		GetAudioRate dllGetAudioRate;
+		readonly GetAudioRate dllGetAudioRate;
 
 		/// <summary>
 		/// Loads native functions and attaches itself to the core

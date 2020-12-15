@@ -33,12 +33,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// <summary>
 		/// the bankswitch values to be used before the INIT routine is called
 		/// </summary>
-		byte[] InitBankSwitches = new byte[8];
+		readonly byte[] InitBankSwitches = new byte[8];
 
 		/// <summary>
 		/// An image of the entire PRG space where the unmapped files are located
 		/// </summary>
-		byte[] FakePRG = new byte[32768];
+		readonly byte[] FakePRG = new byte[32768];
 
 		//------------------------------
 		//state
@@ -240,7 +240,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//3FF3 - PatchVectors=false
 		//3FF4 - PatchVectors=true
 
-		byte[] NSFROM = new byte[0x23]
+		readonly byte[] NSFROM = new byte[0x23]
 		{
 			//@NMIVector
 			//Suspend vector patching

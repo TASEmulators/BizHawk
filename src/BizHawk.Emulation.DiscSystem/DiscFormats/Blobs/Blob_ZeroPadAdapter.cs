@@ -8,8 +8,8 @@ namespace BizHawk.Emulation.DiscSystem
 	{
 		internal sealed class Blob_ZeroPadAdapter : IBlob
 		{
-			private IBlob srcBlob;
-			private long srcBlobLength;
+			private readonly IBlob srcBlob;
+			private readonly long srcBlobLength;
 			public Blob_ZeroPadAdapter(IBlob srcBlob, long srcBlobLength)
 			{
 				this.srcBlob = srcBlob;

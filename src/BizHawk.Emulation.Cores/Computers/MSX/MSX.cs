@@ -114,20 +114,20 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 		// Machine resources
 		private IController _controller = NullController.Instance;
 
-		private ControllerDefinition current_controller = null;
+		private readonly ControllerDefinition current_controller = null;
 
 		private int _frame = 0;
 
 		public DisplayType Region => DisplayType.NTSC;
 
-		private ITraceable Tracer;
+		private readonly ITraceable Tracer;
 
 		private LibMSX.TraceCallback tracecb;
 
 		// these will be constant values assigned during core construction
 		private int Header_Length;
-		private int Disasm_Length;
-		private int Reg_String_Length;
+		private readonly int Disasm_Length;
+		private readonly int Reg_String_Length;
 
 		private void MakeTrace(int t)
 		{
@@ -144,7 +144,7 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 			});
 		}
 
-		private MemoryCallbackSystem _memorycallbacks = new MemoryCallbackSystem(new[] { "System Bus" });
+		private readonly MemoryCallbackSystem _memorycallbacks = new MemoryCallbackSystem(new[] { "System Bus" });
 		public IMemoryCallbackSystem MemoryCallbacks => _memorycallbacks;
 	}
 }

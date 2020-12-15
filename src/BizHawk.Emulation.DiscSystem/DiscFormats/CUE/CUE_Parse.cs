@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 		private class CueLineParser
 		{
 			private int index;
-			private string str;
+			private readonly string str;
 			public bool EOF;
 			public CueLineParser(string line)
 			{

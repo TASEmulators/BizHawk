@@ -252,46 +252,46 @@ namespace BizHawk.Emulation.Cores
 		//if you change some of the Length arguments for longer keys, please make notes about why
 		static class SimpleMagics
 		{
-			public static SimpleMagicRecord INES = new SimpleMagicRecord { Offset = 0, Key = "NES" };
-			public static SimpleMagicRecord UNIF = new SimpleMagicRecord { Offset = 0, Key = "UNIF" };
+			public static readonly SimpleMagicRecord INES = new SimpleMagicRecord { Offset = 0, Key = "NES" };
+			public static readonly SimpleMagicRecord UNIF = new SimpleMagicRecord { Offset = 0, Key = "UNIF" };
 			public static SimpleMagicRecord NSF = new SimpleMagicRecord { Offset = 0, Key = "NESM\x1A" }; 
 
-			public static SimpleMagicRecord FDS_HEADERLESS = new SimpleMagicRecord { Offset = 0, Key = "\x01*NINTENDO-HVC*" };
-			public static SimpleMagicRecord FDS_HEADER = new SimpleMagicRecord { Offset = 0, Key = "FDS\x1A" };
+			public static readonly SimpleMagicRecord FDS_HEADERLESS = new SimpleMagicRecord { Offset = 0, Key = "\x01*NINTENDO-HVC*" };
+			public static readonly SimpleMagicRecord FDS_HEADER = new SimpleMagicRecord { Offset = 0, Key = "FDS\x1A" };
 
 			//the GBA nintendo logo.. we'll only use 16 bytes of it but theyre all here, for reference
 			//we cant expect these roms to be normally sized, but we may be able to find other features of the header to use for extra checks
-			public static SimpleMagicRecord GBA = new SimpleMagicRecord {  Offset = 4, Length = 16, Key = "\x24\xFF\xAE\x51\x69\x9A\xA2\x21\x3D\x84\x82\x0A\x84\xE4\x09\xAD\x11\x24\x8B\x98\xC0\x81\x7F\x21\xA3\x52\xBE\x19\x93\x09\xCE\x20\x10\x46\x4A\x4A\xF8\x27\x31\xEC\x58\xC7\xE8\x33\x82\xE3\xCE\xBF\x85\xF4\xDF\x94\xCE\x4B\x09\xC1\x94\x56\x8A\xC0\x13\x72\xA7\xFC\x9F\x84\x4D\x73\xA3\xCA\x9A\x61\x58\x97\xA3\x27\xFC\x03\x98\x76\x23\x1D\xC7\x61\x03\x04\xAE\x56\xBF\x38\x84\x00\x40\xA7\x0E\xFD\xFF\x52\xFE\x03\x6F\x95\x30\xF1\x97\xFB\xC0\x85\x60\xD6\x80\x25\xA9\x63\xBE\x03\x01\x4E\x38\xE2\xF9\xA2\x34\xFF\xBB\x3E\x03\x44\x78\x00\x90\xCB\x88\x11\x3A\x94\x65\xC0\x7C\x63\x87\xF0\x3C\xAF\xD6\x25\xE4\x8B\x38\x0A\xAC\x72\x21\xD4\xF8\x07" };
-			public static SimpleMagicRecord NDS = new SimpleMagicRecord { Offset = 0xC0, Length = 16, Key = "\x24\xFF\xAE\x51\x69\x9A\xA2\x21\x3D\x84\x82\x0A\x84\xE4\x09\xAD\x11\x24\x8B\x98\xC0\x81\x7F\x21\xA3\x52\xBE\x19\x93\x09\xCE\x20\x10\x46\x4A\x4A\xF8\x27\x31\xEC\x58\xC7\xE8\x33\x82\xE3\xCE\xBF\x85\xF4\xDF\x94\xCE\x4B\x09\xC1\x94\x56\x8A\xC0\x13\x72\xA7\xFC\x9F\x84\x4D\x73\xA3\xCA\x9A\x61\x58\x97\xA3\x27\xFC\x03\x98\x76\x23\x1D\xC7\x61\x03\x04\xAE\x56\xBF\x38\x84\x00\x40\xA7\x0E\xFD\xFF\x52\xFE\x03\x6F\x95\x30\xF1\x97\xFB\xC0\x85\x60\xD6\x80\x25\xA9\x63\xBE\x03\x01\x4E\x38\xE2\xF9\xA2\x34\xFF\xBB\x3E\x03\x44\x78\x00\x90\xCB\x88\x11\x3A\x94\x65\xC0\x7C\x63\x87\xF0\x3C\xAF\xD6\x25\xE4\x8B\x38\x0A\xAC\x72\x21\xD4\xF8\x07" };
+			public static readonly SimpleMagicRecord GBA = new SimpleMagicRecord {  Offset = 4, Length = 16, Key = "\x24\xFF\xAE\x51\x69\x9A\xA2\x21\x3D\x84\x82\x0A\x84\xE4\x09\xAD\x11\x24\x8B\x98\xC0\x81\x7F\x21\xA3\x52\xBE\x19\x93\x09\xCE\x20\x10\x46\x4A\x4A\xF8\x27\x31\xEC\x58\xC7\xE8\x33\x82\xE3\xCE\xBF\x85\xF4\xDF\x94\xCE\x4B\x09\xC1\x94\x56\x8A\xC0\x13\x72\xA7\xFC\x9F\x84\x4D\x73\xA3\xCA\x9A\x61\x58\x97\xA3\x27\xFC\x03\x98\x76\x23\x1D\xC7\x61\x03\x04\xAE\x56\xBF\x38\x84\x00\x40\xA7\x0E\xFD\xFF\x52\xFE\x03\x6F\x95\x30\xF1\x97\xFB\xC0\x85\x60\xD6\x80\x25\xA9\x63\xBE\x03\x01\x4E\x38\xE2\xF9\xA2\x34\xFF\xBB\x3E\x03\x44\x78\x00\x90\xCB\x88\x11\x3A\x94\x65\xC0\x7C\x63\x87\xF0\x3C\xAF\xD6\x25\xE4\x8B\x38\x0A\xAC\x72\x21\xD4\xF8\x07" };
+			public static readonly SimpleMagicRecord NDS = new SimpleMagicRecord { Offset = 0xC0, Length = 16, Key = "\x24\xFF\xAE\x51\x69\x9A\xA2\x21\x3D\x84\x82\x0A\x84\xE4\x09\xAD\x11\x24\x8B\x98\xC0\x81\x7F\x21\xA3\x52\xBE\x19\x93\x09\xCE\x20\x10\x46\x4A\x4A\xF8\x27\x31\xEC\x58\xC7\xE8\x33\x82\xE3\xCE\xBF\x85\xF4\xDF\x94\xCE\x4B\x09\xC1\x94\x56\x8A\xC0\x13\x72\xA7\xFC\x9F\x84\x4D\x73\xA3\xCA\x9A\x61\x58\x97\xA3\x27\xFC\x03\x98\x76\x23\x1D\xC7\x61\x03\x04\xAE\x56\xBF\x38\x84\x00\x40\xA7\x0E\xFD\xFF\x52\xFE\x03\x6F\x95\x30\xF1\x97\xFB\xC0\x85\x60\xD6\x80\x25\xA9\x63\xBE\x03\x01\x4E\x38\xE2\xF9\xA2\x34\xFF\xBB\x3E\x03\x44\x78\x00\x90\xCB\x88\x11\x3A\x94\x65\xC0\x7C\x63\x87\xF0\x3C\xAF\xD6\x25\xE4\x8B\x38\x0A\xAC\x72\x21\xD4\xF8\x07" };
 
-			public static SimpleMagicRecord GB = new SimpleMagicRecord {  Offset=0x104, Length = 16, Key = "\xCE\xED\x66\x66\xCC\x0D\x00\x0B\x03\x73\x00\x83\x00\x0C\x00\x0D\x00\x08\x11\x1F\x88\x89\x00\x0E\xDC\xCC\x6E\xE6\xDD\xDD\xD9\x99\xBB\xBB\x67\x63\x6E\x0E\xEC\xCC\xDD\xDC\x99\x9F\xBB\xB9\x33\x3E" };
+			public static readonly SimpleMagicRecord GB = new SimpleMagicRecord {  Offset=0x104, Length = 16, Key = "\xCE\xED\x66\x66\xCC\x0D\x00\x0B\x03\x73\x00\x83\x00\x0C\x00\x0D\x00\x08\x11\x1F\x88\x89\x00\x0E\xDC\xCC\x6E\xE6\xDD\xDD\xD9\x99\xBB\xBB\x67\x63\x6E\x0E\xEC\xCC\xDD\xDC\x99\x9F\xBB\xB9\x33\x3E" };
 
-			public static SimpleMagicRecord S32X = new SimpleMagicRecord { Offset = 0x100, Key = "SEGA 32X" };
+			public static readonly SimpleMagicRecord S32X = new SimpleMagicRecord { Offset = 0x100, Key = "SEGA 32X" };
 
-			public static SimpleMagicRecord SEGAGENESIS = new SimpleMagicRecord { Offset = 0x100, Key = "SEGA GENESIS" };
-			public static SimpleMagicRecord SEGAMEGADRIVE = new SimpleMagicRecord { Offset = 0x100, Key = "SEGA MEGA DRIVE" };
-			public static SimpleMagicRecord SEGASATURN = new SimpleMagicRecord { Offset = 0, Key = "SEGA SEGASATURN" };
-			public static SimpleMagicRecord SEGADISCSYSTEM = new SimpleMagicRecord { Offset = 0, Key = "SEGADISCSYSTEM" };
+			public static readonly SimpleMagicRecord SEGAGENESIS = new SimpleMagicRecord { Offset = 0x100, Key = "SEGA GENESIS" };
+			public static readonly SimpleMagicRecord SEGAMEGADRIVE = new SimpleMagicRecord { Offset = 0x100, Key = "SEGA MEGA DRIVE" };
+			public static readonly SimpleMagicRecord SEGASATURN = new SimpleMagicRecord { Offset = 0, Key = "SEGA SEGASATURN" };
+			public static readonly SimpleMagicRecord SEGADISCSYSTEM = new SimpleMagicRecord { Offset = 0, Key = "SEGADISCSYSTEM" };
 
-			public static SimpleMagicRecord PSX = new SimpleMagicRecord { Offset = 0x24E0, Key = "  Licensed  by          Sony Computer Entertainment" }; //there might be other ideas for checking in mednafen sources, if we need them
-			public static SimpleMagicRecord PSX_EXE = new SimpleMagicRecord { Key = "PS-X EXE\0" };
-			public static SimpleMagicRecord PSP = new SimpleMagicRecord { Offset = 0x8000, Key = "\x01CD001\x01\0x00PSP GAME" };
-			public static SimpleMagicRecord PSF = new SimpleMagicRecord { Offset = 0, Key = "PSF\x1" };
+			public static readonly SimpleMagicRecord PSX = new SimpleMagicRecord { Offset = 0x24E0, Key = "  Licensed  by          Sony Computer Entertainment" }; //there might be other ideas for checking in mednafen sources, if we need them
+			public static readonly SimpleMagicRecord PSX_EXE = new SimpleMagicRecord { Key = "PS-X EXE\0" };
+			public static readonly SimpleMagicRecord PSP = new SimpleMagicRecord { Offset = 0x8000, Key = "\x01CD001\x01\0x00PSP GAME" };
+			public static readonly SimpleMagicRecord PSF = new SimpleMagicRecord { Offset = 0, Key = "PSF\x1" };
 
 			//https://sites.google.com/site/atari7800wiki/a78-header
-			public static SimpleMagicRecord A78 = new SimpleMagicRecord { Offset = 0, Key = "\x01ATARI7800" };
+			public static readonly SimpleMagicRecord A78 = new SimpleMagicRecord { Offset = 0, Key = "\x01ATARI7800" };
 
 			//could be at various offsets?
 			public static SimpleMagicRecord TMR_SEGA = new SimpleMagicRecord { Offset = 0x7FF0, Key = "TMR SEGA" };
 
-			public static SimpleMagicRecord SBI = new SimpleMagicRecord { Key = "SBI\0" };
-			public static SimpleMagicRecord M3U = new SimpleMagicRecord { Key = "#EXTM3U" }; //note: M3U may not have this. EXTM3U only has it. We'll still catch it by extension though.
+			public static readonly SimpleMagicRecord SBI = new SimpleMagicRecord { Key = "SBI\0" };
+			public static readonly SimpleMagicRecord M3U = new SimpleMagicRecord { Key = "#EXTM3U" }; //note: M3U may not have this. EXTM3U only has it. We'll still catch it by extension though.
 
-			public static SimpleMagicRecord ECM = new SimpleMagicRecord { Key = "ECM\0" };
-			public static SimpleMagicRecord FLAC = new SimpleMagicRecord { Key = "fLaC" };
-			public static SimpleMagicRecord MPC = new SimpleMagicRecord { Key = "MP+", ExtraCheck = (s) => { s.Position += 3; return s.ReadByte() >= 7; } };
-			public static SimpleMagicRecord APE = new SimpleMagicRecord { Key = "MAC " };
-			public static SimpleMagicRecord[] WAV = {
+			public static readonly SimpleMagicRecord ECM = new SimpleMagicRecord { Key = "ECM\0" };
+			public static readonly SimpleMagicRecord FLAC = new SimpleMagicRecord { Key = "fLaC" };
+			public static readonly SimpleMagicRecord MPC = new SimpleMagicRecord { Key = "MP+", ExtraCheck = (s) => { s.Position += 3; return s.ReadByte() >= 7; } };
+			public static readonly SimpleMagicRecord APE = new SimpleMagicRecord { Key = "MAC " };
+			public static readonly SimpleMagicRecord[] WAV = {
 				new SimpleMagicRecord { Offset = 0, Key = "RIFF" },
 				new SimpleMagicRecord { Offset = 8, Key = "WAVEfmt " }
 			};
@@ -307,14 +307,14 @@ namespace BizHawk.Emulation.Cores
 				DefaultForExtension = defaultForExtension;
 			}
 
-			public FileIDType DefaultForExtension;
-			public List<FormatTester> Testers;
+			public readonly FileIDType DefaultForExtension;
+			public readonly List<FormatTester> Testers;
 		}
 
 		/// <summary>
 		/// testers to try for each extension, along with a default for the extension
 		/// </summary>
-		static Dictionary<string, ExtensionInfo> ExtensionHandlers = new Dictionary<string, ExtensionInfo> {
+		static readonly Dictionary<string, ExtensionInfo> ExtensionHandlers = new Dictionary<string, ExtensionInfo> {
 		  { "NES", new ExtensionInfo(FileIDType.INES, Test_INES ) },
 			{ "FDS", new ExtensionInfo(FileIDType.FDS, Test_FDS ) },
 			{ "GBA", new ExtensionInfo(FileIDType.GBA, (j)=>Test_Simple(j,FileIDType.GBA,SimpleMagics.GBA) ) },
@@ -383,7 +383,7 @@ namespace BizHawk.Emulation.Cores
 
 		delegate FileIDResult FormatTester(IdentifyJob job);
 
-		static int[] no_offsets = { 0 };
+		static readonly int[] no_offsets = { 0 };
 
 		/// <summary>
 		/// checks for the magic string (bytewise ASCII check) at the given address

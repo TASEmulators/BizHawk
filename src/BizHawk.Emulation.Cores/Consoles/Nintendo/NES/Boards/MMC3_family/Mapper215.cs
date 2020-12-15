@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		private int prg_mask_8k, chr_mask_1k;
 
-		private byte[] regs_sec = { 0, 2, 5, 3, 6, 1, 7, 4 }; 
+		private readonly byte[] regs_sec = { 0, 2, 5, 3, 6, 1, 7, 4 }; 
 
 		/*
 		 *  I'm not sure where these matrices originated from, but they don't seem to be needed

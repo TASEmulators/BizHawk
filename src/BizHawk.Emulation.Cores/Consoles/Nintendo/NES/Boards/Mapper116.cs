@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				master.SyncIRQ(flag);
 			}
 
-			Mapper116 master;
+			readonly Mapper116 master;
 
 		}
 

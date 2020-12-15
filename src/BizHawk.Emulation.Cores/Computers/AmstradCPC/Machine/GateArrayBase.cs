@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		public int Z80ClockSpeed = 4000000;
 		public int FrameLength = 79872;
 
-		private CPCBase _machine;
+		private readonly CPCBase _machine;
 		private Z80A CPU => _machine.CPU;
 		private CRCT_6845 CRCT => _machine.CRCT;
 		private IPSG PSG => _machine.AYDevice;
@@ -190,13 +190,13 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			}
 		}
 
-		private int[] PenColours;
+		private readonly int[] PenColours;
 		private int CurrentPen;
 		private int ScreenMode;
 		private int INTScanlineCnt;
 		//private int VSYNCDelyCnt;
 
-		private int[][] Lookup = new int[4][];
+		private readonly int[][] Lookup = new int[4][];
 
 		//private bool DoModeUpdate;
 

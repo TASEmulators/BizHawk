@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//state
 		int[] prg_banks_8k = new int[4];
 		int[] chr_banks_4k = new int[2];
-		int[] chr_regs_4k = new int[2];
+		readonly int[] chr_regs_4k = new int[2];
 
 		//the VS actually does have 2 KB of nametable address space
 		//let's make the extra space here, instead of in the main NES to avoid confusion

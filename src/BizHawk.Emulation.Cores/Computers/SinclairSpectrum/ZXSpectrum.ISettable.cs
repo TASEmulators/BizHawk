@@ -234,7 +234,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		public string Media { get; set; }
 		public string OtherMisc { get; set; }
 
-		private Dictionary<string, string> Data = new Dictionary<string, string>();
+		private readonly Dictionary<string, string> Data = new Dictionary<string, string>();
 
 		/// <summary>
 		/// Detailed info to be displayed within the settings UIs

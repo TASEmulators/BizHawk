@@ -410,9 +410,9 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 			OctoshockDll.ShockDisc_ReadTOC cbReadTOC;
 			OctoshockDll.ShockDisc_ReadLBA cbReadLBA;
-			Action<DiscInterface> cbActivity;
+			readonly Action<DiscInterface> cbActivity;
 
-			public Disc Disc;
+			public readonly Disc Disc;
 			public IntPtr OctoshockHandle;
 
 			public void Dispose()
@@ -448,7 +448,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				return OctoshockDll.SHOCK_OK;
 			}
 
-			byte[] SectorBuffer = new byte[2448];
+			readonly byte[] SectorBuffer = new byte[2448];
 
 			int ShockDisc_ReadLBA2448(IntPtr opaque, int lba, void* dst)
 			{
@@ -468,7 +468,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		}
 
 		public List<Disc> Discs;
-		List<DiscInterface> discInterfaces = new List<DiscInterface>();
+		readonly List<DiscInterface> discInterfaces = new List<DiscInterface>();
 		DiscInterface currentDiscInterface;
 
 		public DisplayType Region => SystemVidStandard == OctoshockDll.eVidStandard.PAL ? DisplayType.PAL : DisplayType.NTSC;
@@ -932,7 +932,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		public System.Drawing.Size VideoProvider_Padding { get; private set; }
 
 		//private short[] sbuff = new short[1454 * 2]; //this is the most ive ever seen.. don't know why. two frames worth i guess
-		private short[] sbuff = new short[1611 * 2]; //need this for pal
+		private readonly short[] sbuff = new short[1611 * 2]; //need this for pal
 		private int sbuffcontains = 0;
 
 		public void GetSamplesSync(out short[] samples, out int nsamp)

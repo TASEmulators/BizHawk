@@ -13,11 +13,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		// what did i do in a previous life to deserve this?
 
 		// given the bottom four bits of $b003, and a 1K address region in PPU $0000:$3fff,
-		static byte[] Banks = new byte[16 * 16]; // which of the 8 chr regs is used to determine the bank here?
-		static byte[] Masks = new byte[16 * 16]; // what is the resulting 8 bit chr reg value ANDed with?
-		static byte[] A10s = new byte[16 * 16]; // and then what is it ORed with?
+		static readonly byte[] Banks = new byte[16 * 16]; // which of the 8 chr regs is used to determine the bank here?
+		static readonly byte[] Masks = new byte[16 * 16]; // what is the resulting 8 bit chr reg value ANDed with?
+		static readonly byte[] A10s = new byte[16 * 16]; // and then what is it ORed with?
 
-		static byte[] PTables = 
+		static readonly byte[] PTables = 
 		{
 			0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07,
 			0x80,0xc0,0x81,0xc1,0x82,0xc2,0x83,0xc3,
@@ -113,7 +113,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		//state
 		int prg_bank_16k, prg_bank_8k;
-		byte[] prg_banks_8k = new byte[4];
+		readonly byte[] prg_banks_8k = new byte[4];
 		byte[] chr_banks_1k = new byte[8];
 		bool irq_mode;
 		bool irq_enabled, irq_pending, irq_autoen;

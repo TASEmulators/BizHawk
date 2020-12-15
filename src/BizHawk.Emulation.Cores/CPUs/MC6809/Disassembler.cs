@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 {
 	public sealed partial class MC6809
 	{
-		static string[] table =
+		static readonly string[] table =
 		{
 			"NEG   DP+i8", // 00
 			"???", // 01
@@ -266,7 +266,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 			"ST    U,ex16", // ff
 		};
 
-		static string[] table2 =
+		static readonly string[] table2 =
 		{
 			"???", // 00
 			"???", // 01
@@ -526,7 +526,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 			"ST    SP,ex16", // ff
 		};
 
-		static string[] table3 =
+		static readonly string[] table3 =
 		{
 			"???", // 00
 			"???", // 01

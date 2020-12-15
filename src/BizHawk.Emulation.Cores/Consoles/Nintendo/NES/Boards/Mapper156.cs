@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		int prg_mask;
 		int chr_mask;
 		int prg;
-		int[] chr = new int[8];
+		readonly int[] chr = new int[8];
 
 		public override bool Configure(EDetectionOrigin origin)
 		{

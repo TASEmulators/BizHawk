@@ -8,14 +8,14 @@ namespace BizHawk.Emulation.Cores.Sound
 	/// </summary>
 	public class DualSyncSound : ISoundProvider
 	{
-		private ISoundProvider _left;
-		private ISoundProvider _right;
+		private readonly ISoundProvider _left;
+		private readonly ISoundProvider _right;
 		private int _nsamp;
 		private short[] _samp = new short[0];
 
-		private short[] _leftOverflow = new short[32];
+		private readonly short[] _leftOverflow = new short[32];
 		private int _leftOverflowCount = 0;
-		private short[] _rightOverflow = new short[32];
+		private readonly short[] _rightOverflow = new short[32];
 		private int _rightOverflowCount = 0;
 
 

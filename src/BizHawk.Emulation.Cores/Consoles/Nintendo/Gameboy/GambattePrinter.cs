@@ -38,8 +38,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		const ushort SerialIRQAddress = 0x58;
 
-		Gameboy gb;
-		PrinterCallback callback;
+		readonly Gameboy gb;
+		readonly PrinterCallback callback;
 		LibGambatte.LinkCallback linkCallback;
 
 		CommandState command_state;
@@ -47,12 +47,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		bool compression;
 		ushort length_left;
-		byte[] command_data = new byte[GB_PRINTER_MAX_COMMAND_LENGTH];
+		readonly byte[] command_data = new byte[GB_PRINTER_MAX_COMMAND_LENGTH];
 		ushort command_length;
 		ushort checksum;
 		byte status;
 
-		byte[] image = new byte[160 * 200];
+		readonly byte[] image = new byte[160 * 200];
 		ushort image_offset;
 
 		byte compression_run_lenth;

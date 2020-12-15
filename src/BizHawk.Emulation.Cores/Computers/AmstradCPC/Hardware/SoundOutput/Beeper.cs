@@ -53,7 +53,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// The parent emulated machine
 		/// </summary>
-		private CPCBase _machine;
+		private readonly CPCBase _machine;
 
 		/// <summary>
 		/// The last pulse

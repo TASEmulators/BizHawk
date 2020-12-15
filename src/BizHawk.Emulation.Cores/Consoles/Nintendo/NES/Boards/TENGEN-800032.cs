@@ -6,18 +6,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	//AKA mapper 64
 	internal sealed class TENGEN_800032 : NesBoardBase
 	{
-		//configuration
+		// configuration
 		int prg_bank_mask_8k;
 		int chr_bank_mask_1k;
 
-		//regenerable state
-		int[] prg_banks_8k = new int[4];
-		int[] chr_banks_1k = new int[8];
-		//state
+		// regenerable state
+		readonly int[] prg_banks_8k = new int[4];
+		readonly int[] chr_banks_1k = new int[8];
+		
+		// state
 		int[] regs = new int[16];
 		int address;
 		bool chr_1k, chr_mode, prg_mode;
-		//irq
+		
+		// irq
 		int irq_countdown;
 		int a12_old;
 		int irq_reload, irq_counter;
@@ -191,7 +193,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return Rom[addr];
 		}
 
-
 		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
@@ -328,6 +329,5 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			a12_old = a12;
 		}
-
 	}
 }

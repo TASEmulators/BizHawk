@@ -102,7 +102,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(ch), ref ch);
 		}
 
-		Action<int> enqueuer;
+		readonly Action<int> enqueuer;
 
 		public Namco163Audio(Action<int> enqueuer)
 		{

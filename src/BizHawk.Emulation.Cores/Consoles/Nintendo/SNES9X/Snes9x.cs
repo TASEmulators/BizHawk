@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 	public class Snes9x : WaterboxCore, 
 		ISettable<Snes9x.Settings, Snes9x.SyncSettings>, IRegionable
 	{
-		private LibSnes9x _core;
+		private readonly LibSnes9x _core;
 
 		[CoreConstructor("SNES")]
 		public Snes9x(CoreComm comm, byte[] rom, Settings settings, SyncSettings syncSettings)

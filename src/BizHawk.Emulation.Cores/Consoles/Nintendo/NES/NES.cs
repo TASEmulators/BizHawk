@@ -138,14 +138,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			//public int pal_bottom = 239;
 			public int left = 0;
 			public int right = 255;
-
-			NES emu;
+			readonly NES emu;
 			public MyVideoProvider(NES emu)
 			{
 				this.emu = emu;
 			}
 
-			int[] pixels = new int[256 * 240];
+			readonly int[] pixels = new int[256 * 240];
 			public int[] GetVideoBuffer()
 			{
 				return pixels;
@@ -300,7 +299,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				loadReport = _loadReport;
 			}
-			TextWriter loadReport;
+
+			readonly TextWriter loadReport;
 			public override void WriteLine(string format, params object[] arg)
 			{
 				Console.WriteLine(format, arg);

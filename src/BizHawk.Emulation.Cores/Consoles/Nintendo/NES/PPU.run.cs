@@ -55,7 +55,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			public byte patterns_1;
 		}
 
-		TempOAM[] t_oam = new TempOAM[64];
+		readonly TempOAM[] t_oam = new TempOAM[64];
 
 		int ppu_addr_temp;
 
@@ -131,7 +131,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		bool nmi_destiny;
 		bool evenOddDestiny;
-		static int start_up_offset = 2;
+		static readonly int start_up_offset = 2;
 		int NMI_offset;
 		int yp_shift;
 		int sprite_eval_cycle;

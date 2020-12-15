@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		private int _reg;
 
-		private int DipswitchMask = 3;
+		private readonly int DipswitchMask = 3;
 
 		private bool Prg16kMode => _reg.Bit(7);
 

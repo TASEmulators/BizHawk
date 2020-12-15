@@ -270,7 +270,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				_switchPreviousFrame = switchPreviousFrame.ToArray();
 			}
 
-			private byte[] _switchPreviousFrame;
+			private readonly byte[] _switchPreviousFrame;
 
 			private readonly List<Action<IController, byte[]>> _thunks = new List<Action<IController, byte[]>>();
 

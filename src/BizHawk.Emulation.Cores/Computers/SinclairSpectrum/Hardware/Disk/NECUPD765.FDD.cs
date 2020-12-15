@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// Array that holds state information for each possible drive
 		/// </summary>
-		private DriveState[] DriveStates = new DriveState[4];
+		private readonly DriveState[] DriveStates = new DriveState[4];
 
 		/// <summary>
 		/// Initialization / reset of the floppy drive subsystem
@@ -283,7 +283,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			/// <summary>
 			/// The parent controller
 			/// </summary>
-			private NECUPD765 FDC;
+			private readonly NECUPD765 FDC;
 
 			/// <summary>
 			/// TRUE if we are on track 0

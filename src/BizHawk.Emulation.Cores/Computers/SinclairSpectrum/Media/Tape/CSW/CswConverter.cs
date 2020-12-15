@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// The type of serializer
 		/// </summary>
-		private MediaConverterType _formatType = MediaConverterType.CSW;
+		private readonly MediaConverterType _formatType = MediaConverterType.CSW;
 		public override MediaConverterType FormatType => _formatType;
 
 		/// <summary>
@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		public override bool IsWriter => false;
 
-		private DatacorderDevice _datacorder;
+		private readonly DatacorderDevice _datacorder;
 
 		public CswConverter(DatacorderDevice _tapeDevice)
 		{

@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 	public class EmptyPeripheralCard : IPeripheralCard
 	{
 		// TODO: make readonly once json isn't used
-		private Video _video;
+		private readonly Video _video;
 
 		// TODO: remove when json isn't used
 		public EmptyPeripheralCard() { }
