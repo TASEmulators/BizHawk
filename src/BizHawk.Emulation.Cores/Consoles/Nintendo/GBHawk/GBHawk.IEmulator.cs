@@ -20,6 +20,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public bool vblank_rise;
 		public bool controller_was_checked;
 		public bool delays_to_process;
+		public bool DIV_falling_edge, DIV_edge_old;
 		public int controller_delay_cd;
 		public int cpu_state_hold;
 		public int clear_counter;
@@ -110,9 +111,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				{
 					if (ppu.DMA_start && !cpu.halted && !cpu.stopped) { ppu.DMA_tick(); }
 					serialport.serial_transfer_tick();
+
+					// check state before changes from cpu writes
+					DIV_edge_old = (timer.divider_reg & 0x2000) == 0x2000;
+
 					timer.tick();
 					cpu.ExecuteOne();
 					timer.divider_reg++;
+
+					DIV_falling_edge |= DIV_edge_old & ((timer.divider_reg & 0x2000) == 0);
+
 					if (delays_to_process) { process_delays(); }
 
 					REG_FF0F_OLD = REG_FF0F;
@@ -120,9 +128,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 				if (ppu.DMA_start && !cpu.halted && !cpu.stopped) { ppu.DMA_tick(); }
 				serialport.serial_transfer_tick();
-				timer.tick();	
+
+				// check state before changes from cpu writes
+				DIV_edge_old = double_speed ? ((timer.divider_reg & 0x2000) == 0x2000) : ((timer.divider_reg & 0x1000) == 0x1000);
+
+				timer.tick();
 				cpu.ExecuteOne();
 				timer.divider_reg++;
+
+				DIV_falling_edge |= DIV_edge_old & (double_speed ? ((timer.divider_reg & 0x2000) == 0) : ((timer.divider_reg & 0x1000) == 0));
 
 				if (delays_to_process) { process_delays(); }
 
@@ -184,9 +198,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			{
 				if (ppu.DMA_start && !cpu.halted && !cpu.stopped) { ppu.DMA_tick(); }
 				serialport.serial_transfer_tick();
+
+				// check state before changes from cpu writes
+				DIV_edge_old = (timer.divider_reg & 0x2000) == 0x2000;
+
 				timer.tick();
 				cpu.ExecuteOne();
 				timer.divider_reg++;
+
+				DIV_falling_edge |= DIV_edge_old & ((timer.divider_reg & 0x2000) == 0);
+
 				if (delays_to_process) { process_delays(); }
 
 				REG_FF0F_OLD = REG_FF0F;
@@ -194,9 +215,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			if (ppu.DMA_start && !cpu.halted && !cpu.stopped) { ppu.DMA_tick(); }
 			serialport.serial_transfer_tick();
+
+			// check state before changes from cpu writes
+			DIV_edge_old = double_speed ? ((timer.divider_reg & 0x2000) == 0x2000) : ((timer.divider_reg & 0x1000) == 0x1000);
+
 			timer.tick();
 			cpu.ExecuteOne();
 			timer.divider_reg++;
+
+			DIV_falling_edge |= DIV_edge_old & (double_speed ? ((timer.divider_reg & 0x2000) == 0) : ((timer.divider_reg & 0x1000) == 0));
 
 			if (delays_to_process) { process_delays(); }
 

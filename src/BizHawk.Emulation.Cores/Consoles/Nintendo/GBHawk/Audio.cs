@@ -113,7 +113,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public byte AUD_CTRL_vol_R;
 
 		public int sequencer_len, sequencer_vol, sequencer_swp;
-		public bool timer_bit_old;
 		public int sequencer_reset_cd;
 
 		public byte sample;
@@ -741,9 +740,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			// frame sequencer ticks at a rate of 512 hz (or every time a 13 bit counter rolls over)
 			// the sequencer is actually the timer DIV register
 			// so if it's constantly written to, these values won't update
-			bool check = Core.double_speed ? Core.timer.divider_reg.Bit(13) : Core.timer.divider_reg.Bit(12);
 
-			if (!check && timer_bit_old && AUD_CTRL_power)
+			if (Core.DIV_falling_edge && AUD_CTRL_power)
 			{				
 				sequencer_vol++; sequencer_vol &= 0x7;
 				sequencer_len++; sequencer_len &= 0x7;
@@ -760,7 +758,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					if (SQ2_len_en && SQ2_len_cntr > 0)
 					{
 						SQ2_len_cntr--;
-						if (SQ2_len_cntr == 0) { SQ2_enable = false; calculate_bias_gain_2(); }
+						if (SQ2_len_cntr == 0) { SQ2_enable = false; calculate_bias_gain_2(); Console.WriteLine("ch2: " + Core.cpu.TotalExecutedCycles + " " + SQ2_enable); }
 					}
 					if (WAVE_len_en && WAVE_len_cntr > 0)
 					{
@@ -897,7 +895,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				}
 			}
 
-			timer_bit_old = Core.double_speed ? Core.timer.divider_reg.Bit(13) : Core.timer.divider_reg.Bit(12);
+			Core.DIV_falling_edge = false;
 
 			if (sequencer_reset_cd > 0)
 			{
@@ -1160,7 +1158,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync(nameof(sequencer_len), ref sequencer_len);
 			ser.Sync(nameof(sequencer_vol), ref sequencer_vol);
 			ser.Sync(nameof(sequencer_swp), ref sequencer_swp);
-			ser.Sync(nameof(timer_bit_old), ref timer_bit_old);
 			ser.Sync(nameof(sequencer_reset_cd), ref sequencer_reset_cd);
 			ser.Sync(nameof(WAVE_decay_counter), ref WAVE_decay_counter);
 			ser.Sync(nameof(WAVE_decay_done), ref WAVE_decay_done);
@@ -1189,6 +1186,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public byte Read_NR52()
 		{
+			Console.WriteLine("read: " + Core.cpu.TotalExecutedCycles);
+
 			return (byte)(
 				((AUD_CTRL_power ? 1 : 0) << 7) |
 				(SQ1_enable ? 1 : 0) |
