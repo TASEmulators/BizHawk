@@ -72,7 +72,7 @@ namespace BizHawk.Common.BufferExtensions
 			var fidx = 0;
 			int result = Array.FindIndex(array, 0, array.Length, (byte b) =>
 			{
-				fidx = (b == pattern[fidx]) ? fidx + 1 : 0;
+				fidx = b == pattern[fidx] ? fidx + 1 : 0;
 				return fidx == pattern.Length;
 			});
 

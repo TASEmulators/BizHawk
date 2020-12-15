@@ -134,8 +134,8 @@ namespace BizHawk.Common.PathExtensions
 		{
 			var dirPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
 			ExeDirectoryPath = OSTailoredCode.IsUnixHost
-				? (string.IsNullOrEmpty(dirPath) || dirPath == "/" ? string.Empty : dirPath)
-				: (string.IsNullOrEmpty(dirPath) ? throw new Exception("failed to get location of executable, very bad things must have happened") : dirPath.RemoveSuffix('\\'));
+				? string.IsNullOrEmpty(dirPath) || dirPath == "/" ? string.Empty : dirPath
+				: string.IsNullOrEmpty(dirPath) ? throw new Exception("failed to get location of executable, very bad things must have happened") : dirPath.RemoveSuffix('\\');
 			DllDirectoryPath = Path.Combine(OSTailoredCode.IsUnixHost && ExeDirectoryPath == string.Empty ? "/" : ExeDirectoryPath, "dll");
 			// yes, this is a lot of extra code to make sure BizHawk can run in `/` on Unix, but I've made up for it by caching these for the program lifecycle --yoshi
 		}

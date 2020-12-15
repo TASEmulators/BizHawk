@@ -78,7 +78,6 @@ namespace BizHawk.Common
 				: value;
 
 		/// <returns>true iff <paramref name="value"/> is contained in <paramref name="range"/> (<paramref name="value"/> is considered to be in the range if it's exactly equal to either bound)</returns>
-		/// <seealso cref="StrictlyBoundedBy"/>
 		public static bool Contains<T>(this Range<T> range, T value) where T : unmanaged, IComparable<T> => !(value.CompareTo(range.Start) < 0 || range.EndInclusive.CompareTo(value) < 0);
 
 		public static uint Count(this Range<byte> range) => (uint) (range.EndInclusive - range.Start + 1);
@@ -247,7 +246,6 @@ namespace BizHawk.Common
 		public static Range<ushort> RangeToExclusive(this ushort start, ushort endExclusive) => MutableRangeToExclusive(start, endExclusive);
 
 		/// <returns>true iff <paramref name="value"/> is strictly contained in <paramref name="range"/> (<paramref name="value"/> is considered to be OUTSIDE the range if it's exactly equal to either bound)</returns>
-		/// <seealso cref="Contains"/>
 		public static bool StrictlyBoundedBy<T>(this T value, Range<T> range) where T : unmanaged, IComparable<T> => range.Start.CompareTo(value) < 0 && value.CompareTo(range.EndInclusive) < 0;
 	}
 }

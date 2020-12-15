@@ -66,7 +66,7 @@ namespace BizHawk.Common
 		private static readonly bool LogToFile = false;
 
 		private const string LogFilename = "bizhawk.txt";
-		private static StreamWriter writer;
+		private static StreamWriter _writer;
 
 		private static void DefaultLogger(string message)
 		{
@@ -75,15 +75,15 @@ namespace BizHawk.Common
 				Console.WriteLine(message);
 			}
 
-			if (LogToFile && writer == null)
+			if (LogToFile && _writer == null)
 			{
-				writer = new StreamWriter(LogFilename);
+				_writer = new StreamWriter(LogFilename);
 			}
 
 			if (LogToFile)
 			{
-				writer.WriteLine(message);
-				writer.Flush();
+				_writer.WriteLine(message);
+				_writer.Flush();
 			}
 		}
 	}

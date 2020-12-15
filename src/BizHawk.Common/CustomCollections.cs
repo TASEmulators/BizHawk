@@ -134,7 +134,7 @@ namespace BizHawk.Common
 		{
 			get => TryGetValue(key, out var temp)
 				? temp
-				: (base[key] = new TValue());
+				: base[key] = new TValue();
 			set => base[key] = value;
 		}
 	}

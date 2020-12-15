@@ -135,7 +135,8 @@ namespace BizHawk.Common
 			{
 				throw new InvalidOperationException();
 			}
-			else if (_isText)
+			
+			if (_isText)
 			{
 				SyncEnumText(name, ref val);
 			}
@@ -1012,7 +1013,7 @@ namespace BizHawk.Common
 		{
 			if (Present(name))
 			{
-				val = int.Parse(this.Item(name));
+				val = int.Parse(Item(name));
 			}
 		}
 

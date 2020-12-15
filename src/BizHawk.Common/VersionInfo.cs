@@ -50,7 +50,7 @@ namespace BizHawk.Common
 			while (i < 4)
 			{
 				v <<= 8;
-				v += (i < a.Length && byte.TryParse(a[i], out var b)) ? b : 0U;
+				v += i < a.Length && byte.TryParse(a[i], out var b) ? b : 0U;
 				i++;
 			}
 			return v;
