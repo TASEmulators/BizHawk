@@ -61,10 +61,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 		public void Dispose()
 		{
-			if (_machine != null)
-			{
-				_machine = null;
-			}
+			_machine = null;
 		}
 	}
 }
