@@ -231,47 +231,121 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				ZP_RAM[i] = 0xFF;
 			}
 
-			for (int i = 0; i < 0x800; i++)
+			for (int i = 0; i < ZP_RAM.Length; i++)
 			{
-				if ((i & 0xF) < 8) 
-				{ 
-					RAM[i] = 0xFF; 
-					RAM[i + 0x1000] = 0xFF;
-					RAM[i + 0x2000] = 0xFF;
-					RAM[i + 0x3000] = 0xFF;
-					RAM[i + 0x4000] = 0xFF;
-					RAM[i + 0x5000] = 0xFF;
-					RAM[i + 0x6000] = 0xFF;
-					RAM[i + 0x7000] = 0xFF;
+				ZP_RAM[i] = 0xFF;
+			}
 
-					RAM[i + 0x800] = 0;
-					RAM[i + 0x1800] = 0;
-					RAM[i + 0x2800] = 0;
-					RAM[i + 0x3800] = 0;
-					RAM[i + 0x4800] = 0;
-					RAM[i + 0x5800] = 0;
-					RAM[i + 0x6800] = 0;
-					RAM[i + 0x7800] = 0;
+			if (is_GBC)
+			{
+				if (_syncSettings.GBACGB)
+				{
+					// on GBA, initial RAM is mostly random, choosing 0xFF as oracle of ages / seasons check for 0 which is unlikely to be true
+					for (int i = 0; i < RAM.Length; i++)
+					{
+						RAM[i] = 0xFF;
+					}
 				}
-				else 
-				{ 
-					RAM[i] = 0; 
-					RAM[i + 0x1000] = 0;
-					RAM[i + 0x2000] = 0;
-					RAM[i + 0x3000] = 0;
-					RAM[i + 0x4000] = 0;
-					RAM[i + 0x5000] = 0;
-					RAM[i + 0x6000] = 0;
-					RAM[i + 0x7000] = 0;
+				else
+				{
+					for (int i = 0; i < 0x800; i++)
+					{
+						if ((i & 0xF) < 8)
+						{
+							RAM[i] = 0xFF;
+							RAM[i + 0x1000] = 0xFF;
+							RAM[i + 0x2000] = 0xFF;
+							RAM[i + 0x3000] = 0xFF;
+							RAM[i + 0x4000] = 0xFF;
+							RAM[i + 0x5000] = 0xFF;
+							RAM[i + 0x6000] = 0xFF;
+							RAM[i + 0x7000] = 0xFF;
 
-					RAM[i + 0x800] = 0xFF;
-					RAM[i + 0x1800] = 0xFF;
-					RAM[i + 0x2800] = 0xFF;
-					RAM[i + 0x3800] = 0xFF;
-					RAM[i + 0x4800] = 0xFF;
-					RAM[i + 0x5800] = 0xFF;
-					RAM[i + 0x6800] = 0xFF;
-					RAM[i + 0x7800] = 0xFF;
+							RAM[i + 0x800] = 0;
+							RAM[i + 0x1800] = 0;
+							RAM[i + 0x2800] = 0;
+							RAM[i + 0x3800] = 0;
+							RAM[i + 0x4800] = 0;
+							RAM[i + 0x5800] = 0;
+							RAM[i + 0x6800] = 0;
+							RAM[i + 0x7800] = 0;
+						}
+						else
+						{
+							RAM[i] = 0;
+							RAM[i + 0x1000] = 0;
+							RAM[i + 0x2000] = 0;
+							RAM[i + 0x3000] = 0;
+							RAM[i + 0x4000] = 0;
+							RAM[i + 0x5000] = 0;
+							RAM[i + 0x6000] = 0;
+							RAM[i + 0x7000] = 0;
+
+							RAM[i + 0x800] = 0xFF;
+							RAM[i + 0x1800] = 0xFF;
+							RAM[i + 0x2800] = 0xFF;
+							RAM[i + 0x3800] = 0xFF;
+							RAM[i + 0x4800] = 0xFF;
+							RAM[i + 0x5800] = 0xFF;
+							RAM[i + 0x6800] = 0xFF;
+							RAM[i + 0x7800] = 0xFF;
+						}
+					}
+
+					// some bytes are like this is Gambatte, hardware anomoly? Is it consistent across versions?
+					/*
+					for (int i = 0; i < 16; i++)
+					{
+						RAM[0xE02 + (16 * i)] = 0;
+						RAM[0xE0A + (16 * i)] = 0xFF;
+
+						RAM[0x1E02 + (16 * i)] = 0;
+						RAM[0x1E0A + (16 * i)] = 0xFF;
+
+						RAM[0x2E02 + (16 * i)] = 0;
+						RAM[0x2E0A + (16 * i)] = 0xFF;
+
+						RAM[0x3E02 + (16 * i)] = 0;
+						RAM[0x3E0A + (16 * i)] = 0xFF;
+
+						RAM[0x4E02 + (16 * i)] = 0;
+						RAM[0x4E0A + (16 * i)] = 0xFF;
+
+						RAM[0x5E02 + (16 * i)] = 0;
+						RAM[0x5E0A + (16 * i)] = 0xFF;
+
+						RAM[0x6E02 + (16 * i)] = 0;
+						RAM[0x6E0A + (16 * i)] = 0xFF;
+
+						RAM[0x7E02 + (16 * i)] = 0;
+						RAM[0x7E0A + (16 * i)] = 0xFF;
+					}
+					*/
+				}
+			}
+			else
+			{
+				for (int j = 0; j < 2; j++)
+				{
+					for (int i = 0; i < 0x100; i++)
+					{
+						RAM[j * 0x1000 + i] = 0;
+						RAM[j * 0x1000 + i + 0x100] = 0xFF;
+						RAM[j * 0x1000 + i + 0x200] = 0;
+						RAM[j * 0x1000 + i + 0x300] = 0xFF;
+						RAM[j * 0x1000 + i + 0x400] = 0;
+						RAM[j * 0x1000 + i + 0x500] = 0xFF;
+						RAM[j * 0x1000 + i + 0x600] = 0;
+						RAM[j * 0x1000 + i + 0x700] = 0xFF;
+						RAM[j * 0x1000 + i + 0x800] = 0;
+						RAM[j * 0x1000 + i + 0x900] = 0xFF;
+						RAM[j * 0x1000 + i + 0xA00] = 0;
+						RAM[j * 0x1000 + i + 0xB00] = 0xFF;
+						RAM[j * 0x1000 + i + 0xC00] = 0;
+						RAM[j * 0x1000 + i + 0xD00] = 0xFF;
+						RAM[j * 0x1000 + i + 0xE00] = 0;
+						RAM[j * 0x1000 + i + 0xF00] = 0xFF;
+					}
 				}
 			}
 		}
