@@ -604,6 +604,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				SetUpColumns();
 			}
+			UpdateAutoFire();
 
 			SetUpToolStripColumns();
 
