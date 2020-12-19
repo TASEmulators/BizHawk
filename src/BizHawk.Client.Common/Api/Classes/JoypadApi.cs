@@ -25,6 +25,11 @@ namespace BizHawk.Client.Common
 			return _inputManager.AutofireStickyXorAdapter.ToDictionary(controller);
 		}
 
+		public IDictionary<string, object> GetWithMovie(int? controller = null)
+		{
+			return _inputManager.ControllerOutput.ToDictionary(controller);
+		}
+
 		public IDictionary<string, object> GetImmediate(int? controller = null)
 		{
 			return _inputManager.ActiveController.ToDictionary(controller);

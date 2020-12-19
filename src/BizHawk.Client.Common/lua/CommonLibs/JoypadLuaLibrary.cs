@@ -24,6 +24,17 @@ namespace BizHawk.Client.Common
 			return table;
 		}
 
+		[LuaMethodExample("local nljoyget = joypad.getwithmovie( 1 );")]
+		[LuaMethod("getwithmovie", "returns a lua table of the controller buttons pressed, including ones pressed by the current movie. If supplied, it will only return a table of buttons for the given controller")]
+		public LuaTable GetWithMovie(int? controller = null)
+		{
+			var table = _th.DictToTable(APIs.Joypad.GetWithMovie(controller));
+			table["clear"] = null;
+			table["getluafunctionslist"] = null;
+			table["output"] = null;
+			return table;
+		}
+
 		[LuaMethodExample("local nljoyget = joypad.getimmediate( );")]
 		[LuaMethod("getimmediate", "returns a lua table of any controller buttons currently pressed by the user")]
 		public LuaTable GetImmediate(int? controller = null) => _th.DictToTable(APIs.Joypad.GetImmediate(controller));
