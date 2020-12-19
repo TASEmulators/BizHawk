@@ -215,6 +215,7 @@ namespace BizHawk.Client.EmuHawk
 			ConfigAndRecordAVMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Record A/V"].Bindings;
 			StopAVIMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Stop A/V"].Bindings;
 			CaptureOSDMenuItem.Checked = Config.AviCaptureOsd;
+			CaptureLuaMenuItem.Checked = Config.AviCaptureOsd || Config.AviCaptureLua;
 
 			RecordAVMenuItem.Enabled = !string.IsNullOrEmpty(Config.VideoWriter) && _currAviWriter == null;
 
@@ -538,6 +539,15 @@ namespace BizHawk.Client.EmuHawk
 		private void CaptureOSDMenuItem_Click(object sender, EventArgs e)
 		{
 			Config.AviCaptureOsd ^= true;
+			if (Config.AviCaptureOsd)
+				Config.AviCaptureLua = true;
+		}
+
+		private void CaptureLuaMenuItem_Click(object sender, EventArgs e)
+		{
+			Config.AviCaptureLua = !CaptureLuaMenuItem.Checked;
+			if (!Config.AviCaptureLua)
+				Config.AviCaptureOsd = false;
 		}
 
 		private void ScreenshotMenuItem_Click(object sender, EventArgs e)

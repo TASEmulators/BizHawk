@@ -546,6 +546,23 @@ namespace BizHawk.Client.EmuHawk
 			UpdateSourceInternal(job);
 			return job.OffscreenBb;
 		}
+		/// <summary>
+		/// Does the display process to an offscreen buffer, suitable for a Lua-inclusive movie.
+		/// </summary>
+		public BitmapBuffer RenderOffscreenLua(IVideoProvider videoProvider)
+		{
+			var job = new JobInfo
+			{
+				VideoProvider = videoProvider,
+				Simulate = false,
+				ChainOutsize = new Size(videoProvider.BufferWidth, videoProvider.BufferHeight),
+				Offscreen = true,
+				IncludeOSD = false,
+				IncludeUserFilters = false,
+			};
+			UpdateSourceInternal(job);
+			return job.OffscreenBb;
+		}
 
 		private class FakeVideoProvider : IVideoProvider
 		{
