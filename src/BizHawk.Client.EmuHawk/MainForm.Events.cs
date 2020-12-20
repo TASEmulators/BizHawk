@@ -215,7 +215,7 @@ namespace BizHawk.Client.EmuHawk
 			ConfigAndRecordAVMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Record A/V"].Bindings;
 			StopAVIMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Stop A/V"].Bindings;
 			CaptureOSDMenuItem.Checked = Config.AviCaptureOsd;
-			CaptureLuaMenuItem.Checked = Config.AviCaptureOsd || Config.AviCaptureLua;
+			CaptureLuaMenuItem.Checked = Config.AviCaptureLua || Config.AviCaptureOsd; // or with osd is for better compatibility with old config files
 
 			RecordAVMenuItem.Enabled = !string.IsNullOrEmpty(Config.VideoWriter) && _currAviWriter == null;
 
@@ -538,15 +538,17 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CaptureOSDMenuItem_Click(object sender, EventArgs e)
 		{
-			Config.AviCaptureOsd ^= true;
-			if (Config.AviCaptureOsd)
+			bool c = ((ToolStripMenuItem)sender).Checked;
+			Config.AviCaptureOsd = c;
+			if (c) // Logic to capture OSD w/o Lua does not currently exist, so disallow that.
 				Config.AviCaptureLua = true;
 		}
 
 		private void CaptureLuaMenuItem_Click(object sender, EventArgs e)
 		{
-			Config.AviCaptureLua = !CaptureLuaMenuItem.Checked;
-			if (!Config.AviCaptureLua)
+			bool c = ((ToolStripMenuItem)sender).Checked;
+			Config.AviCaptureLua = c;
+			if (!c) // Logic to capture OSD w/o Lua does not currently exist, so disallow that.
 				Config.AviCaptureOsd = false;
 		}
 

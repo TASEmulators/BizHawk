@@ -852,11 +852,13 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// CaptureOSDMenuItem
 			// 
+			this.CaptureOSDMenuItem.CheckOnClick = true;
 			this.CaptureOSDMenuItem.Text = "Capture OSD";
 			this.CaptureOSDMenuItem.Click += new System.EventHandler(this.CaptureOSDMenuItem_Click);
 			// 
 			// CaptureLuaMenuItem
 			// 
+			this.CaptureLuaMenuItem.CheckOnClick = true;
 			this.CaptureLuaMenuItem.Name = "CaptureLuaMenuItem";
 			this.CaptureLuaMenuItem.Size = new System.Drawing.Size(225, 22);
 			this.CaptureLuaMenuItem.Text = "Capture Lua";
