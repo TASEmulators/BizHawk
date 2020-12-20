@@ -22,8 +22,6 @@ namespace BizHawk.Client.Common
 		private readonly WorkingDictionary<string, bool> _buttons = new WorkingDictionary<string, bool>();
 		private readonly WorkingDictionary<string, int> _buttonStarts = new WorkingDictionary<string, int>();
 
-		private readonly bool _autofire = true;
-
 		public int On { get; set; }
 		public int Off { get; set; }
 
@@ -31,13 +29,8 @@ namespace BizHawk.Client.Common
 
 		public bool IsPressed(string button)
 		{
-			if (_autofire)
-			{
-				var a = (_emulator.Frame - _buttonStarts[button]) % (On + Off);
-				return a < On && _buttons[button];
-			}
-
-			return _buttons[button];
+			var a = (_emulator.Frame - _buttonStarts[button]) % (On + Off);
+			return a < On && _buttons[button];
 		}
 
 		public void ClearStarts()
