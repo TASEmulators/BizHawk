@@ -39,7 +39,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000) return base.ReadPpu(addr);
-			return base.ReadPpu(RewireNametable(addr, 5));
+			else return base.ReadPpu(RewireNametable(addr, 5));
 		}
 		public override void WritePpu(int addr, byte value)
 		{

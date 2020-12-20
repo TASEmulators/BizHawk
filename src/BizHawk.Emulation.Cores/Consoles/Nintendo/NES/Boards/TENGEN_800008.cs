@@ -43,13 +43,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			return Rom[addr | prg << 15];
 		}
-		
 		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 				return Vrom[addr | chr << 13];
-
-			return base.ReadPpu(addr);
+			else
+				return base.ReadPpu(addr);
 		}
 
 		public override void SyncState(Serializer ser)

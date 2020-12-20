@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			switch (Cart.BoardType)
 			{
 				case "MAPPER225":
-				case "MAPPER255": // Duplicate of 225 according to: http://problemkaputt.de/everynes.htm
+				case "MAPPER255": // Duplicate of 225 accoring to: http://problemkaputt.de/everynes.htm
 					break;
 				default:
 					return false;
@@ -44,7 +44,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			addr += 0x8000;
 			prg_mode = addr.Bit(12);
-			SetMirrorType(addr.Bit(13) ? EMirrorType.Horizontal : EMirrorType.Vertical);
+			if (addr.Bit(13))
+			{
+				SetMirrorType(EMirrorType.Horizontal);
+			}
+			else
+			{
+				SetMirrorType(EMirrorType.Vertical);
+			}
 
 			int high = (addr & 0x4000) >> 8;
 			prg_reg = (addr >> 6) & 0x3F | high;
@@ -58,8 +65,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				int bank = (prg_reg >> 1) & prg_bank_mask_32k;
 				return Rom[(bank * 0x8000) + addr];
 			}
-
-			return Rom[((prg_reg & prg_bank_mask_16k) * 0x4000) + (addr & 0x3FFF)];
+			else
+			{
+				return Rom[((prg_reg & prg_bank_mask_16k) * 0x4000) + (addr & 0x3FFF)];
+			}
 		}
 
 		public override byte ReadPpu(int addr)

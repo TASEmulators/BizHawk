@@ -36,11 +36,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					addr &= 0x1FFF;
 					return Vram[addr];
 				}
-
-				return base.ReadPpu(addr);
+				else return base.ReadPpu(addr);
 			}
-
-			return base.ReadPpu(addr);
+			else
+				return base.ReadPpu(addr);
 		}
 
 		public override void WritePpu(int addr, byte value)
@@ -55,9 +54,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					addr &= 0x1FFF;
 					Vram[addr] = value;
 				}
+				//else
+					// if this address is mapped to chrrom and not chrram, the write just does nothing
+					//base.WritePPU(addr, value);					
 			}
 			else
 				base.WritePpu(addr, value);
 		}
+
 	}
+
+
 }

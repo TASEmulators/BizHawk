@@ -23,6 +23,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			prg_bank_mask_8 = Cart.PrgSize / 8 - 1;
 
+			//SetMirrorType(Cart.pad_h, Cart.pad_v);
 			SetMirrorType(EMirrorType.Vertical);
 			return true;
 		}
@@ -42,12 +43,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				return;
 			}
 
+
 			addr += 0x8000;
 			switch (addr & 0xE001)
 			{
 				case 0x8000: cmd = value & 7; break;
 				case 0x8001: reg[cmd] = value; break;
 			}
+
+
 		}
 
 		public override byte ReadWram(int addr)
@@ -57,7 +61,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override byte ReadPrg(int addr)
 		{
-			int bank;
+			int bank = 0;
 			if (addr < 0x2000)
 			{
 				bank = reg[6];

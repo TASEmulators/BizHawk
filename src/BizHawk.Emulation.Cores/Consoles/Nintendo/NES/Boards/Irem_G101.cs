@@ -2,10 +2,12 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	//AKA Mapper 032
-	// Image Fight
-	// Major League
-	// Kaiketsu Yanchamaru 2
+	//AKA mapper 032
+
+	//Image Fight
+	//Major League
+	//Kaiketsu Yanchamaru 2
+
 	internal sealed class Irem_G101 : NesBoardBase
 	{
 		//configuration
@@ -66,9 +68,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			if (oneScreenHack)
 				SetMirrorType(EMirrorType.OneScreenA);
-			else if (mirror_mode == 0)
-				SetMirrorType(EMirrorType.Vertical);
-			else SetMirrorType(EMirrorType.Horizontal);
+			else
+				if (mirror_mode == 0)
+					SetMirrorType(EMirrorType.Vertical);
+				else SetMirrorType(EMirrorType.Horizontal);
 		}
 
 		public override void WritePrg(int addr, byte value)
@@ -120,8 +123,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				addr = (bank_1k << 10) | ofs;
 				return Vrom[addr];
 			}
-
-			return base.ReadPpu(addr);
+			else
+				return base.ReadPpu(addr);
 		}
 
 		public override byte ReadPrg(int addr)

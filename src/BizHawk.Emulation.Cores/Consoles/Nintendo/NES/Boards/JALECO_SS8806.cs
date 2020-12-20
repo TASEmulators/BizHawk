@@ -2,9 +2,10 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	// http://wiki.nesdev.com/w/index.php/INES_Mapper_018
 	internal sealed class JALECO_SS8806 : NesBoardBase
 	{
+		//http://wiki.nesdev.com/w/index.php/INES_Mapper_018
+
 		private byte[] prg_banks_8k = new byte[4];
 		private byte[] chr_banks_1k = new byte[8];
 		private int chr_bank_mask_1k, prg_bank_mask_8k;
@@ -13,6 +14,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		private int irqreload;
 		private int irqcountwidth;
 		private bool irqcountpaused;
+
 
 		public override bool Configure(EDetectionOrigin origin)
 		{
@@ -205,10 +207,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					else
 						irqcountwidth = 16;
 					break;
+					
 				case 0xF003:
 				// sound chip µPD7756C
 					break;
 			}
+			
+			
 		}
 
 		public override void ClockCpu()
@@ -216,7 +221,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (!irqcountpaused)
 			{
 				int newclock = irqclock - 1;
-				if (Squeeze(newclock) > Squeeze(irqclock))
+				if (squeeze(newclock) > squeeze(irqclock))
 				{
 					IrqSignal = true;
 					irqclock = irqreload;
@@ -229,7 +234,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// <summary>
 		/// emulate underflow for the appropriate number of bits
 		/// </summary>
-		private uint Squeeze(int input)
+		private uint squeeze(int input)
 		{
 			unchecked
 			{
@@ -264,10 +269,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				addr = MapCHR(addr);
 				if (Vrom != null)
 					return Vrom[addr];
-				return Vram[addr];
+				else return Vram[addr];
 			}
-
-			return base.ReadPpu(addr);
+			else return base.ReadPpu(addr);
 		}
 	}
 }

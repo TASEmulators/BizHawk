@@ -54,13 +54,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				prg_reg = (value >> 5) & 0x07;
 				prg_mode = value.Bit(4);
-				chr_reg_low_1 = value & 0x07;
+				chr_reg_low_1 = (value & 0x07);
 
-				SetMirrorType(value.Bit(3) ? EMirrorType.Horizontal : EMirrorType.Vertical);
+				if (value.Bit(3))
+				{
+					SetMirrorType(EMirrorType.Horizontal);
+				}
+				else
+				{
+					SetMirrorType(EMirrorType.Vertical);
+				}
 			}
 			
 			chr_reg &= ~0x07;
 			chr_reg |= (chr_reg_low_0 | chr_reg_low_1);
+
+			//Console.WriteLine("chr page = {0}", chr_reg);
 		}
 
 		public override byte ReadPrg(int addr)
@@ -69,8 +78,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				return Rom[((prg_reg >> 1) * 0x8000) + addr];
 			}
-
-			return Rom[(prg_reg * 0x4000) + (addr & 0x3FFF)];
+			else
+			{
+				return Rom[(prg_reg * 0x4000) + (addr & 0x3FFF)];
+			}
 		}
 
 		public override byte ReadPpu(int addr)

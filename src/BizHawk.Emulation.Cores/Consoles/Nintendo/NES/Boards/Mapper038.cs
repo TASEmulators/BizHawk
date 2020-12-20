@@ -40,11 +40,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				return Vrom[addr + (chr << 13)];
 			}
-			
-			return base.ReadPpu(addr);
+			else return base.ReadPpu(addr);
 		}
 
-		private void WriteReg(byte value)
+		private void writereg(byte value)
 		{
 			prg = value & 3 & prg_mask;
 			chr = (value >> 2) & 3 & chr_mask;
@@ -55,13 +54,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override void WritePrg(int addr, byte value)
 		{
 			//if ((addr & 0x7000) == 0x7000)
-			//	WriteReg(value);
+			//	writereg(value);
 		}
 
 		public override void WriteWram(int addr, byte value)
 		{
 			if ((addr & 0x1000) == 0x1000)
-				WriteReg(value);
+				writereg(value);
 		}
 
 		public override void SyncState(Serializer ser)

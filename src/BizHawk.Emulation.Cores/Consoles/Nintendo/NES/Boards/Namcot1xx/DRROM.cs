@@ -22,31 +22,30 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		// the addressing logic for nametables is a bit speculative here
-		// how it is wired back to the NES and locally mirrored is unknown,
-		// but it probably doesnt matter in practice.
-		// still, purists could validate it.
+		//the addressing logic for nametables is a bit speculative here
+		//how it is wired back to the NES and locally mirrored is unknown,
+		//but it probably doesnt matter in practice.
+		//still, purists could validate it.
+
 		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
-				// read patterns from mapper controlled area
+				//read patterns from mapper controlled area
 				return base.ReadPpu(addr);
 			}
-
-			if (addr < 0x2800)
+			else if (addr < 0x2800)
 			{
 				return Vram[addr - 0x2000];
 			}
-
-			return base.ReadPpu(addr);
+			else return base.ReadPpu(addr);
 		}
 
 		public override void WritePpu(int addr, byte value)
 		{
 			if (addr < 0x2000)
 			{
-				// nothing wired here
+				//nothing wired here
 			}
 			else if (addr < 0x2800)
 			{

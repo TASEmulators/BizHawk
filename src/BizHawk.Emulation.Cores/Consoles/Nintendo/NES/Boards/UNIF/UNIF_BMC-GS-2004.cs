@@ -25,6 +25,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			// Last 8k of Prg goes into 6000-7FFF 
 			_wramOffset = ((Cart.PrgSize - 8) / 32) * 0x8000;
+
 			SetMirrorType(EMirrorType.Vertical);
 
 			return true;
@@ -40,6 +41,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			base.SyncState(ser);
 			ser.Sync("reg", ref _reg);
+
 		}
 
 		public override void WritePrg(int addr, byte value)

@@ -17,6 +17,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 
+
 			return true;
 		}
 

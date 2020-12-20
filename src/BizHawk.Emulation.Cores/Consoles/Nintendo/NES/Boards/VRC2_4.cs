@@ -296,12 +296,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				return Vrom[addr + extra_vrom];
 			}
-
-			return base.ReadPpu(addr);
+			else return base.ReadPpu(addr);
 		}
 
 		public override void WritePrg(int addr, byte value)
 		{
+			//Console.WriteLine("mapping {0:X4} = {1:X2}", addr + 0x8000, value);
 			addr = remap(addr);
 
 			int chr_value = value & 0xF;
@@ -316,14 +316,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					prg_banks_8k[_prgMode?1:0] = (byte)((prg_banks_8k[0] & 0x20) | (value & 0x1F));
 					return;
 				}
-
-				if (addr >= 0x2000 && addr < 0x3000)
+				else if (addr >= 0x2000 && addr < 0x3000)
 				{
 					prg_banks_8k[1] = (byte)((prg_banks_8k[0] & 0x20) | (value & 0x1F));
 					return;
 				}
-
-				if (addr >= 0x3000 && addr < 0x7000)
+				else if (addr >= 0x3000 && addr < 0x7000)
 				{
 					value = (byte)(value << 2 & 0x20);
 
@@ -506,9 +504,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			if (!latch6k_exists)
 				return base.ReadWram(addr);
-			if (addr >= 0x1000)
+			else if (addr >= 0x1000)
 				return NES.DB;
-			return (byte)(NES.DB & 0xfe | latch6k_value);
+			else
+				return (byte)(NES.DB & 0xfe | latch6k_value);
 		}
 
 		public override void WriteWram(int addr, byte value)

@@ -5,12 +5,42 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	internal sealed class Mapper215 : MMC3Board_Base
 	{
 		private byte[] exRegs = new byte[4];
+
 		public byte[] prg_regs_8k = new byte[4];
 
 		private bool is_mk3;
+
 		private int prg_mask_8k, chr_mask_1k;
 
 		private readonly byte[] regs_sec = { 0, 2, 5, 3, 6, 1, 7, 4 }; 
+
+		/*
+		 *  I'm not sure where these matrices originated from, but they don't seem to be needed
+		 *  so let's leave them as commented out in case a need arises
+		private readonly byte[,] regperm = new byte[,]
+		{
+			{ 0, 1, 2, 3, 4, 5, 6, 7 },
+			{ 0, 2, 6, 1, 7, 3, 4, 5 },
+			{ 0, 5, 4, 1, 7, 2, 6, 3 },   // unused
+			{ 0, 6, 3, 7, 5, 2, 4, 1 },
+			{ 0, 2, 5, 3, 6, 1, 7, 4 },   // only one actually used?
+			{ 0, 1, 2, 3, 4, 5, 6, 7 },   // empty
+			{ 0, 1, 2, 3, 4, 5, 6, 7 },   // empty
+			{ 0, 1, 2, 3, 4, 5, 6, 7 },   // empty
+		};
+
+		private readonly byte[,] adrperm = new byte[,]
+		{
+			{ 0, 1, 2, 3, 4, 5, 6, 7 },
+			{ 3, 2, 0, 4, 1, 5, 6, 7 },
+			{ 0, 1, 2, 3, 4, 5, 6, 7 },   // unused
+			{ 5, 0, 1, 2, 3, 7, 6, 4 },
+			{ 3, 1, 0, 5, 2, 4, 6, 7 },	  // only one actully used?
+			{ 0, 1, 2, 3, 4, 5, 6, 7 },   // empty
+			{ 0, 1, 2, 3, 4, 5, 6, 7 },   // empty
+			{ 0, 1, 2, 3, 4, 5, 6, 7 },   // empty
+		};
+		*/
 
 		public override bool Configure(EDetectionOrigin origin)
 		{
@@ -39,6 +69,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			prg_regs_8k[2] = (byte)(0xFE & prg_mask_8k);
 			prg_regs_8k[3] = (byte)(0xFF & prg_mask_8k);
 
+			
 			return true;
 		}
 
@@ -56,14 +87,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			if ((exRegs[0] & 0x80) == 0)
 			{
-				int temp = mmc3.prg_regs_8k[i];
+				int temp = 0;
+				//for (int i=0;i<4;i++)
+				//{
+					temp = mmc3.prg_regs_8k[i];
 
-				if ((exRegs[1] & 0x8) > 0)
-					temp = (temp & 0x1F) | 0x20;
-				else
-					temp = ((temp & 0x0F) | (exRegs[1] & 0x10));
+					if ((exRegs[1] & 0x8) > 0)
+						temp = (temp & 0x1F) | 0x20;
+					else
+						temp = ((temp & 0x0F) | (exRegs[1] & 0x10));
 
-				prg_regs_8k[i] = (byte)(temp & prg_mask_8k);
+					prg_regs_8k[i] = (byte)(temp & prg_mask_8k);
+				//}
 			}
 		}
 
@@ -161,7 +196,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					}
 					else
 					{
-						SetMirrorType(value == 0 ? EMirrorType.Vertical : EMirrorType.Horizontal);
+						if (value==0)
+						{
+							SetMirrorType(EMirrorType.Vertical);
+						}
+						else
+						{
+							SetMirrorType(EMirrorType.Horizontal);
+						}					
 					}
 					break;
 				case 0xA001:
@@ -169,7 +211,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					break;
 				case 0xC000:
 					if (exRegs[2]>0)
-						SetMirrorType((value >> 7 | value) == 0 ? EMirrorType.Vertical : EMirrorType.Horizontal);
+						if ((value >> 7 | value) == 0)
+						{
+							SetMirrorType(EMirrorType.Vertical);
+						}
+						else
+						{
+							SetMirrorType(EMirrorType.Horizontal);
+						}
 					else
 						base.WritePrg(0x4000, value);
 					break;
@@ -211,8 +260,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				addr = (bank_1k << 10) | (addr & 0x3FF);
 				return Vrom[addr];
 			}
-
-			return base.ReadPpu(addr);
+			else return base.ReadPpu(addr);
 		}
 
 		public override byte ReadPrg(int addr)

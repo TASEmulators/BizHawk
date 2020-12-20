@@ -43,6 +43,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				reg = (byte)(value << 1 & 0x80);
 			}
 
+
 			base.WriteWram(addr, value);
 		}
 

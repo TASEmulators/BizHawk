@@ -169,51 +169,51 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			if (addr < 0x3800)
 				return base.ReadReg2xxx(addr);
-			if (addr >= 0x3FF0)
+			else if (addr >= 0x3FF0)
 			{
 				switch (addr)
 				{
 					case 0x3FF0:
-					{
-						byte ret = 0;
-						if (InitPending) ret = 1;
-						InitPending = false;
-						return ret;
-					}
+						{
+							byte ret = 0;
+							if (InitPending) ret = 1;
+							InitPending = false;
+							return ret;
+						}
 					case 0x3FF1:
-					{
-						//kevtris's reset process seems not to work. dunno what all is going on in there
+						{
+							//kevtris's reset process seems not to work. dunno what all is going on in there
 
-						//our own innovation, should work OK.. 
-						NES.apu.NESSoftReset();
+							//our own innovation, should work OK.. 
+							NES.apu.NESSoftReset();
 
-						//mostly fceux's guidance
-						NES.WriteMemory(0x4015, 0);
-						for (int i = 0; i < 14; i++)
-							NES.WriteMemory((ushort)(0x4000 + i), 0);
-						NES.WriteMemory(0x4015, 0x0F);
+							//mostly fceux's guidance
+							NES.WriteMemory(0x4015, 0);
+							for (int i = 0; i < 14; i++)
+								NES.WriteMemory((ushort)(0x4000 + i), 0);
+							NES.WriteMemory(0x4015, 0x0F);
 
-						//clearing APU misc stuff, maybe not needed with soft reset above
-						//NES.WriteMemory(0x4017, 0xC0);
-						//NES.WriteMemory(0x4017, 0xC0);
-						//NES.WriteMemory(0x4017, 0x40);
+							//clearing APU misc stuff, maybe not needed with soft reset above
+							//NES.WriteMemory(0x4017, 0xC0);
+							//NES.WriteMemory(0x4017, 0xC0);
+							//NES.WriteMemory(0x4017, 0x40);
 
-						//important to NSF standard for ram to be cleared, otherwise replayers are confused on account of not initializing memory themselves
-						var ram = NES.ram;
-						var wram = this.Wram;
-						int wram_size = wram.Length;
-						for (int i = 0; i < 0x800; i++)
-							ram[i] = 0;
-						for (int i = 0; i < wram_size; i++)
-							wram[i] = 0;
+							//important to NSF standard for ram to be cleared, otherwise replayers are confused on account of not initializing memory themselves
+							var ram = NES.ram;
+							var wram = this.Wram;
+							int wram_size = wram.Length;
+							for (int i = 0; i < 0x800; i++)
+								ram[i] = 0;
+							for (int i = 0; i < wram_size; i++)
+								wram[i] = 0;
 
-						//store specified initial bank state
-						if (BankSwitched)
-							for (int i = 0; i < 8; i++)
-								WriteExp(0x5FF8 + i - 0x4000, InitBankSwitches[i]);
+							//store specified initial bank state
+							if (BankSwitched)
+								for (int i = 0; i < 8; i++)
+									WriteExp(0x5FF8 + i - 0x4000, InitBankSwitches[i]);
 
-						return (byte)(CurrentSong - 1);
-					}
+							return (byte)(CurrentSong - 1);
+						}
 					case 0x3FF2:
 						return 0; //always return NTSC for now
 					case 0x3FF3:
@@ -226,9 +226,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						return base.ReadReg2xxx(addr);
 				}
 			}
-
-			if (addr - 0x3800 < NSFROM.Length) return NSFROM[addr - 0x3800];
-			return base.ReadReg2xxx(addr);
+			else if (addr - 0x3800 < NSFROM.Length) return NSFROM[addr - 0x3800];
+			else return base.ReadReg2xxx(addr);
 		}
 
 		private const ushort NMI_VECTOR = 0x3800;
@@ -366,21 +365,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				else if (addr == 0x7FFD) { return (byte)((RESET_VECTOR >> 8) & 0xFF); }
 				return NES.DB;
 			}
-
-			if (BankSwitched)
+			else
 			{
-				int bank_4k = addr >> 12;
-				int ofs = addr & ((1 << 12) - 1);
-				bank_4k = prg_banks_4k[bank_4k];
-				addr = (bank_4k << 12) | ofs;
+				if (BankSwitched)
+				{
+					int bank_4k = addr >> 12;
+					int ofs = addr & ((1 << 12) - 1);
+					bank_4k = prg_banks_4k[bank_4k];
+					addr = (bank_4k << 12) | ofs;
 
-				//rom data began at 0x80 of the NSF file
-				addr += 0x80;
+					//rom data began at 0x80 of the NSF file
+					addr += 0x80;
 
-				return Rom[addr];
+					return Rom[addr];
+				}
+				else
+				{
+					return FakePRG[addr];
+				}
 			}
-
-			return FakePRG[addr];
 		}
 	}
 }

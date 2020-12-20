@@ -300,6 +300,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				a12_old = a12;
 			}
+			
 		}
 	}
 
@@ -308,6 +309,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//state
 		public MMC3 mmc3;
 		public int extra_vrom;
+
 
 		public override void AddressPpu(int addr)
 		{
@@ -353,7 +355,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (addr < 0x2000)
 			{
 				addr = MapCHR(addr);
-				return Vrom?[addr + extra_vrom] ?? Vram[addr];
+				if (Vrom != null)
+					return Vrom[addr + extra_vrom];
+				else return Vram[addr];
 			}
 
 			return base.ReadPpu(addr);

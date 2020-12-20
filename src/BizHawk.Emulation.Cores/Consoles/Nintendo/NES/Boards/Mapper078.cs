@@ -56,14 +56,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			if (value.Bit(3) == false)
 			{
-				SetMirrorType(holydiver ? EMirrorType.Horizontal : EMirrorType.OneScreenA);
+				if (holydiver)
+					SetMirrorType(EMirrorType.Horizontal);
+				else
+					SetMirrorType(EMirrorType.OneScreenA);
 			}
 			else
 			{
-				SetMirrorType(holydiver ? EMirrorType.Vertical : EMirrorType.OneScreenB);
+				if (holydiver)
+					SetMirrorType(EMirrorType.Vertical);
+				else
+					SetMirrorType(EMirrorType.OneScreenB);
 			}
 
-			chr = value >> 4;
+			chr = (value >> 4);
 		}
 
 		public override byte ReadPrg(int addr)

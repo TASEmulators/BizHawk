@@ -10,6 +10,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		private int prg_mask_8k, chr_mask_1k;
 		private readonly byte[] regs_sec = { 0, 6, 3, 7, 5, 2, 4, 1 };
 
+
 		public override bool Configure(EDetectionOrigin origin)
 		{
 			switch (Cart.BoardType)
@@ -49,16 +50,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public void sync_prg()
 		{
+			int temp = 0;
 			for (int i=0;i<4;i++)
 			{
-				int temp = mmc3.prg_regs_8k[i];
+				temp = mmc3.prg_regs_8k[i];
 
 				if ((exRegs[1] & 0x8) > 0)
 					temp = temp & 0x1F;
 				else
 					temp = ((temp & 0x0F) | (exRegs[1] & 0x10));
 
-				temp |= (exRegs[1] << 5 & 0x60);
+					temp |= (exRegs[1] << 5 & 0x60);
 				prg_regs_8k[i] = (byte)(temp & prg_mask_8k);
 			}
 		}
@@ -142,15 +144,28 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					}
 					else
 					{
-						SetMirrorType(value == 0 ? EMirrorType.Vertical : EMirrorType.Horizontal);
+						if (value == 0)
+						{
+							SetMirrorType(EMirrorType.Vertical);
+						}
+						else
+						{
+							SetMirrorType(EMirrorType.Horizontal);
+						}
 					}
 					break;
 				case 0xA001:
 					if (exRegs[2] > 0)
 					{
-						SetMirrorType(value == 0 ? EMirrorType.Vertical : EMirrorType.Horizontal);
-					}
-					else
+						if (value == 0)
+						{
+							SetMirrorType(EMirrorType.Vertical);
+						}
+						else
+						{
+							SetMirrorType(EMirrorType.Horizontal);
+						}
+					} else
 					{
 						base.WritePrg(0x2001, value);
 					}
@@ -175,9 +190,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				addr = (bank_1k << 10) | (addr & 0x3FF);
 				return Vrom[addr];
 			}
-
-			return base.ReadPpu(addr);
+			else return base.ReadPpu(addr);
 		}
+
 
 		public override byte ReadPrg(int addr)
 		{

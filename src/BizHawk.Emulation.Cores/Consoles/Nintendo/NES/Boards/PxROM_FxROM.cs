@@ -57,6 +57,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 
+			
 			prg_bank_mask_8k = Cart.PrgSize / 8 - 1;
 			chr_bank_mask_4k = Cart.ChrSize / 4 - 1;
 
@@ -122,8 +123,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				addr = (bank_4k << 12) | ofs;
 				return Vrom[addr];
 			}
-
-			return base.ReadPpu(addr);
+			else
+				return base.ReadPpu(addr);
 		}
 
 		public override byte ReadPpu(int addr)

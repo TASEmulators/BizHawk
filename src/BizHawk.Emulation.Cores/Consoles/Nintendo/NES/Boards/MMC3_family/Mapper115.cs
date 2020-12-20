@@ -55,22 +55,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			int bank_8k = mmc3.Get_PRGBank_8K(addr);
 			if (prg_mode_mapper == false) return bank_8k;
-			if (addr < 0x2000)
+			else if (addr < 0x2000)
 			{
 				return prg_page*4;
 			}
-
-			if (addr < 0x4000)
+			else if (addr < 0x4000)
 			{
 				return prg_page*4 + 1;
 			}
-
-			if (addr < 0x6000)
+			else if (addr < 0x6000)
 			{
 				return prg_page*4 + 2;
 			}
-
-			return prg_page*4 + 3;
+			else
+			{
+				return prg_page*4 + 3;
+			}
+			
 		}
 
 		protected override int Get_CHRBank_1K(int addr)

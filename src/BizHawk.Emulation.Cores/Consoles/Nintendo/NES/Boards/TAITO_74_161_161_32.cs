@@ -51,7 +51,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			prg_bank_16k = (byte)((value >> 4) & 7);
 			SyncPRG();
 
-			SetMirrorType(value.Bit(7) ? EMirrorType.OneScreenB : EMirrorType.OneScreenA);
+			if (value.Bit(7))
+				SetMirrorType(EMirrorType.OneScreenB);
+			else
+				SetMirrorType(EMirrorType.OneScreenA);
 		}
 
 		public override byte ReadPrg(int addr)
@@ -68,7 +71,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			if (addr < 0x2000)
 				return Vrom[(addr & 0x1FFF) + (chr * 0x2000)];
-			return base.ReadPpu(addr);
+			else
+				return base.ReadPpu(addr);
 		}
 	}
 }

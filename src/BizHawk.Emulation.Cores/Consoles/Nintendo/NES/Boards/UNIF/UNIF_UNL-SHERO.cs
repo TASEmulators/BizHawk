@@ -60,14 +60,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					return Vram[addr];
 				}
+				else
+				{
+					int bank_1k = Get_CHRBank_1K(addr);
+					addr = (bank_1k << 10) | (addr & 0x3FF);
 
-				int bank_1k = Get_CHRBank_1K(addr);
-				addr = (bank_1k << 10) | (addr & 0x3FF);
+					return Vrom[addr];
+				}
 
-				return Vrom[addr];
 			}
-
-			return Vram[addr];
+			else
+				return Vram[addr];
 		}
 
 		public override void WritePpu(int addr, byte value)
@@ -85,7 +88,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			}
 			else
-				Vram[addr] = value;
+				Vram[addr] = value;	
 		}
 
 		protected override int Get_CHRBank_1K(int addr)
@@ -94,18 +97,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				return base.Get_CHRBank_1K(addr) | ((reg & 8) << 5);
 			}
-
-			if (addr < 0x1000)
+			else if (addr < 0x1000)
 			{
 				return base.Get_CHRBank_1K(addr) | ((reg & 4) << 6);
 			}
-
-			if (addr < 0x1800)
+			else if (addr < 0x1800)
 			{
 				return base.Get_CHRBank_1K(addr) | ((reg & 1) << 8);
 			}
-
-			return base.Get_CHRBank_1K(addr) | ((reg & 2) << 7);
+			else
+			{
+				return base.Get_CHRBank_1K(addr) | ((reg & 2) << 7);
+			}
 		}
 	}
 }

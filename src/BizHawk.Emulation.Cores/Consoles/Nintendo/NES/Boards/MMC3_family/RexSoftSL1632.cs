@@ -42,11 +42,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				return base.ReadPrg(addr);
 			}
-
-			int b = addr >> 13;
-			b = exprg[b];
-			b &= prg_mask;
-			return Rom[addr & 0x1fff | b << 13];
+			else
+			{
+				int b = addr >> 13;
+				b = exprg[b];
+				b &= prg_mask;
+				return Rom[addr & 0x1fff | b << 13];
+			}
 		}
 
 		private void SinkMirror(bool flip)
@@ -76,14 +78,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				bank &= chr_mask;
 				return Vrom[addr & 0x3ff | bank << 10];
 			}
-
-			return base.ReadPpu(addr);
+			else
+			{
+				return base.ReadPpu(addr);
+			}
 		}
 
 
 		// this is stupid as hell
 		public override void WritePrg(int addr, byte value)
 		{
+			//Console.WriteLine("{0:x4}:{1:x2}", addr, value);
+
 			if ((addr & 0x2131) == 0x2131 && (exmode != value))
 			{
 				exmode = value;
@@ -125,5 +131,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 			}
 		}
+
+
+
 	}
 }

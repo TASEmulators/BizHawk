@@ -49,7 +49,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override byte ReadPrg(int addr)
 		{
-			addr |= prg_bank_32k << 15;
+			addr |= (prg_bank_32k << 15);
 			return Rom[addr];
 		}
 
@@ -68,11 +68,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					return Vram[addr];
 				}
-
-				return Vrom[addr | (chr_bank_8k << 13)];
+				else
+				{
+					return Vrom[addr | (chr_bank_8k << 13)];
+				}
 			}
-
-			return base.ReadPpu(addr);
+			else
+			{
+				return base.ReadPpu(addr);
+			}
 		}
+
 	}
 }

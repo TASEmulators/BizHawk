@@ -22,7 +22,7 @@
 
 		public override void WriteExp(int addr, byte value)
 		{
-			if (addr > 0x1000)
+			if (addr>0x1000)
 			{
 				Wram[addr + 0x4000 - (0x5000 - 0x2000)] = value;
 			}
@@ -36,8 +36,8 @@
 			{
 				return Wram[addr + 0x4000 - (0x5000 - 0x2000)];
 			}
-
-			return base.ReadExp(addr);
+			else
+				return base.ReadExp(addr);
 		}
 	}
 }

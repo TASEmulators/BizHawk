@@ -270,12 +270,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				addr = CalcWRAMAddress(addr, prg_bank_mask_8k);
 				return Rom[addr];
 			}
-
-			if (!wram_ram_enabled)
+			else if (!wram_ram_enabled)
 				return 0xFF; //empty bus
-
-			addr = CalcWRAMAddress(addr, wram_bank_mask_8k);
-			return Wram[addr];
+			else
+			{
+				addr = CalcWRAMAddress(addr, wram_bank_mask_8k);
+				return Wram[addr];
+			}
 		}
 
 		public override void WriteWram(int addr, byte value)

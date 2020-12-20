@@ -5,6 +5,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	internal sealed class MapperPocahontas : MMC3Board_Base
 	{
 		private byte[] exRegs = new byte[3];
+
 		public byte[] prg_regs_8k = new byte[4];
 
 		private int prg_mask_8k, chr_mask_1k;
@@ -34,6 +35,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			prg_regs_8k[2] = (byte)(0xFE & prg_mask_8k);
 			prg_regs_8k[3] = (byte)(0xFF & prg_mask_8k);
 
+			
 			return true;
 		}
 
@@ -60,7 +62,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			if (addr < 0xA000)
 			{
-				SetMirrorType(((value >> 7) | value) == 0 ? EMirrorType.Vertical : EMirrorType.Horizontal);
+				if (((value >> 7) | value)==0)
+				{
+					SetMirrorType(EMirrorType.Vertical);
+				}
+				else
+				{
+					SetMirrorType(EMirrorType.Horizontal);
+				}
 			}
 			else if (addr < 0xC000)
 			{
@@ -101,8 +110,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				addr = (bank_1k << 10) | (addr & 0x3FF);
 				return Vrom[addr];
 			}
-
-			return base.ReadPpu(addr);
+			else return base.ReadPpu(addr);
 		}
 
 		public override byte ReadPrg(int addr)
@@ -114,13 +122,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					return Rom[((bank >> 1) << 15) + (addr & 0x7FFF)];
 				}
-
-				return Rom[((bank) << 14) + (addr & 0x3FFF)];
+				else
+				{
+					return Rom[((bank) << 14) + (addr & 0x3FFF)];
+				}
 			}
 
-			bank = mmc3.Get_PRGBank_8K(addr);
-			bank &= prg_mask_8k;
-			return Rom[(bank << 13) + (addr & 0x1FFF)];
+			else
+			{
+				bank = mmc3.Get_PRGBank_8K(addr);
+				bank &= prg_mask_8k;
+				return Rom[(bank << 13) + (addr & 0x1FFF)];
+			}
+			
 		}
 	}
 }

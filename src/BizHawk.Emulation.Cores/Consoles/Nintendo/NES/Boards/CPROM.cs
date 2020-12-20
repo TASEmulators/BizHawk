@@ -20,15 +20,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					Cart.VramSize = 16;
 					Cart.WramSize = 0;
 					break;
+
 				case "NES-CPROM": //videomation
 					AssertPrg(32); AssertChr(0); AssertVram(16); AssertWram(0);
 					break;
+				
 				default:
 					return false;
 			}
 
 			//TODO - assert that mirror type is vertical?
 			//set it in the cart?
+
 			SetMirrorType(EMirrorType.Vertical);
 
 			return true;
@@ -44,9 +47,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			if (addr < 0x1000)
 				return Vram[addr];
-			if(addr < 0x2000)
+			else if(addr<0x2000)
 				return Vram[addr - 0x1000 + (chr << 12)];
-			return base.ReadPpu(addr);
+			else return base.ReadPpu(addr);
 		}
 
 		public override void WritePpu(int addr, byte value)

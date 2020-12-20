@@ -3,9 +3,11 @@ using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	// Mapper 011
-	// Crystal Mines
-	// Metal Fighter
+	//mapper 011
+
+	//Crystal Mines
+	//Metal Fighter
+
 	[NesBoardImplPriority]
 	internal sealed class IC_74x377 : NesBoardBase
 	{
@@ -62,8 +64,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				return Vrom[addr + (chr_bank_8k << 13)];
 			}
-
-			return base.ReadPpu(addr);
+			else return base.ReadPpu(addr);
 		}
 
 		public override void WritePrg(int addr, byte value)

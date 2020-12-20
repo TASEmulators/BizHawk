@@ -53,6 +53,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				chr_regs_1k_512[4 | i] = chr_right_upper | i;
 				chr_regs_1k_512[6 | i] = chr_right_lower | i;
 			}
+
 		}
 
 		public override void SyncState(Serializer ser)

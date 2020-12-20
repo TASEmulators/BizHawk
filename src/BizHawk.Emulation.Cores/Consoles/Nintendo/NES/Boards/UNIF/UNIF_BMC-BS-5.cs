@@ -83,13 +83,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				return Rom[((reg_prg[0] & _prgMask8k) * 0x2000) + (addr & 0x1FFF)];
 			}
-
-			if (addr < 0x4000)
+			else if (addr < 0x4000)
 			{
 				return Rom[((reg_prg[1] & _prgMask8k) * 0x2000) + (addr & 0x1FFF)];
 			}
-
-			if (addr < 0x6000)
+			else if (addr < 0x6000)
 			{
 				return Rom[((reg_prg[2] & _prgMask8k) * 0x2000) + (addr & 0x1FFF)];
 			}

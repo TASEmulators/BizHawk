@@ -4,6 +4,7 @@ using BizHawk.Common;
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//generally mapper2
+
 	//Mega Man
 	//Castlevania
 	//Contra
@@ -13,6 +14,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	//TODO - look for a mirror=H UNROM--maybe there are none? this may be fixed to the board type.
 
 	// why are there no bus conflicts in here???????
+
 	[NesBoardImplPriority]
 	internal sealed class UxROM : NesBoardBase
 	{
@@ -111,19 +113,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				return Vram[addr & vram_byte_mask];
 			}
-
-			if (NES._isVS)
+			else
 			{
-				addr -= 0x2000;
-				if (addr < 0x800)
+				if (NES._isVS)
 				{
-					return NES.CIRAM[addr];
+					addr = addr - 0x2000;
+					if (addr < 0x800)
+					{
+						return NES.CIRAM[addr];
+					}
+					else
+					{
+						return CIRAM_VS[addr - 0x800];
+					}
 				}
-
-				return CIRAM_VS[addr - 0x800];
+				else
+					return base.ReadPpu(addr);
 			}
-
-			return base.ReadPpu(addr);
 		}
 
 		public override void WritePpu(int addr, byte value)
@@ -137,7 +143,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				// The game VS Castlevania apparently scans for more CIRAM then actually exists, so we have to mask out nonsensical values 
 				addr &= 0x2FFF;
 
-				addr -= 0x2000;
+
+				addr = addr - 0x2000;
 				if (addr < 0x800)
 				{
 					NES.CIRAM[addr] = value;
@@ -159,7 +166,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (NES.IsVS)
 			{
 				ser.Sync("VS_CIRAM", ref CIRAM_VS, false);
-			}
+			}	
 		}
 	}
 }

@@ -52,6 +52,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if(origin == EDetectionOrigin.INES)
 				Console.WriteLine("Caution! This board (inferred from iNES) might have wrong mirr.type");
 
+
 			return true;
 		}
 		public override byte ReadPrg(int addr)
@@ -65,14 +66,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				return Vrom[addr + (chr << 13)];
 			}
-
-			return base.ReadPpu(addr);
+			else return base.ReadPpu(addr);
 		}
 
 		public override void WritePrg(int addr, byte value)
 		{
-			chr = (value & 7) & chr_mask;
-			prg = ((value>>4) & 3) & prg_mask;
+			chr = ((value & 7) & chr_mask);
+			prg = (((value>>4) & 3) & prg_mask);
 		}
 
 		public override void SyncState(Serializer ser)

@@ -48,7 +48,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				prg_page = value & 0x1F;
 				prg_mode = value.Bit(5);
 
-				SetMirrorType(value.Bit(6) ? EMirrorType.Vertical : EMirrorType.Horizontal);
+				if (value.Bit(6))
+				{
+					SetMirrorType(EMirrorType.Vertical);
+				}
+				else
+				{
+					SetMirrorType(EMirrorType.Horizontal);
+				}
 			}
 		}
 
@@ -60,17 +67,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					return Rom[((prg_page & chip0_prg_bank_mask_16k) * 0x4000) + addr];
 				}
-
-				return Rom[(7 * 0x4000) + (addr & 0x3FFF)];
+				else
+				{
+					return Rom[(7 * 0x4000) + (addr & 0x3FFF)];
+				}
 			}
-
-			if (prg_mode == false)
+			else
 			{
-				return Rom[((prg_page >> 1) * 0x8000) + addr + chip1_offset];
+				if (prg_mode == false)
+				{
+					return Rom[((prg_page >> 1) * 0x8000) + addr + chip1_offset];
+				}
+				else
+				{
+					int page = prg_page + 8;
+					return Rom[(page * 0x4000) + (addr & 0x03FFF)];
+				}
 			}
-
-			int page = prg_page + 8;
-			return Rom[(page * 0x4000) + (addr & 0x03FFF)];
 		}
 
 		public override void NesSoftReset()

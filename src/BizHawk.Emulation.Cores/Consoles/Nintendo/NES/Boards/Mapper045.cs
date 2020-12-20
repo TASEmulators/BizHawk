@@ -92,7 +92,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (regs[2]==0)
 			{
 				return 0xFF;
-			}
+			} 
 			return (0xFF >> ~((regs[2] & 0x0F)|0xF0));
 		}
 

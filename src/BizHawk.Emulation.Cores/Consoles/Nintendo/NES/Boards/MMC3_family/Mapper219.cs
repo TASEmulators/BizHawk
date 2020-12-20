@@ -103,7 +103,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						}
 						break;
 				}
-			}
+			}		
 			else 
 				base.WritePrg(addr, value);
 		}
@@ -128,8 +128,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 				return Vram[((bank_chr << 10) + (addr & 0x3FF))];
 			}
-
-			return base.ReadPpu(addr);
+			else
+				return base.ReadPpu(addr);
 		}
 
 		public override void WritePpu(int addr, byte value)

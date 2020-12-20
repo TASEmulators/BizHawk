@@ -35,7 +35,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override void WritePrg(int addr, byte value)
 		{
-			SetMirrorType(addr.Bit(7) ? EMirrorType.Horizontal : EMirrorType.Vertical);
+			if (addr.Bit(7))
+			{
+				SetMirrorType(EMirrorType.Horizontal);
+			}
+			else
+			{
+				SetMirrorType(EMirrorType.Vertical);
+			}
 
 			prg_mode = addr.Bit(4);
 			prg_page = ((addr & 0x0F) << 1) | ((addr & 0x20) >> 5);
@@ -47,8 +54,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				return Rom[(((prg_page >> 1) * 0x8000) + addr) & prg_byte_mask];
 			}
-
-			return Rom[((prg_page * 0x4000) + (addr & 0x03FFF)) & prg_byte_mask];
+			else
+			{
+				return Rom[((prg_page * 0x4000) + (addr & 0x03FFF)) & prg_byte_mask];
+			}
 		}
 	}
 }

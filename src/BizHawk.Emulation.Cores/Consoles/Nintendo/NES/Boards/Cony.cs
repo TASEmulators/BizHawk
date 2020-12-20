@@ -134,6 +134,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					bank &= 0xFF;
 					return Vrom[(bank << 10) + (addr & 0x3FF)];
 				}
+
 			}
 
 			return base.ReadPpu(addr);
@@ -187,9 +188,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			if (addr == 0x1000)
 				return (byte)((NES.DB & 0xFC) | 0);
-			if (addr >= 0x1100 && addr <= 0x1103)
+			else if (addr >= 0x1100 && addr <= 0x1103)
 				return _low[addr & 0x3];
-			return base.ReadExp(addr);
+			else
+				return base.ReadExp(addr);
 
 		}
 	}
@@ -216,6 +218,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						prg_bank_mask_16k = Cart.PrgSize / 16 - 1;
 						prg_bank_mask_8k = Cart.PrgSize / 8 - 1;
 						chr_bank_mask_2k = Cart.PrgSize / 2 - 1;
+
+						//prg_regs[1] = (byte)prg_bank_mask_16k;
+						//is_2k_bank = true;
 						return true;
 					}
 					return false;
@@ -308,14 +313,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						bank = chr_regs[7];
 
 					return Vrom[(bank << 11) + (addr & 0x7FF)];
-				}
-				else
+				} else
 				{
 					int index = (addr >> 10) & 0x7;
 					int bank = chr_regs[index];
 					bank |= ((bank & 0x30) << 4);
 					return Vrom[(bank << 10) + (addr & 0x3FF)];
 				}
+				
 			}
 
 			return base.ReadPpu(addr);
@@ -331,8 +336,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 
 				return Rom[(((bank & 0x30) | 0xF) << 14) + (addr & 0x3FFF)];
-			}
-			else
+			} else
 			{
 				int index = (addr >> 13) & 0x3;
 				int bank = prg_regs[index];
@@ -342,7 +346,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					bank = prg_bank_mask_8k;
 
 				return Rom[(bank << 13) + (addr & 0x1FFF)];
+
+
 			}
+			
 		}
 
 		public override void ClockCpu()
@@ -371,9 +378,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			if (addr == 0x1000)
 				return (byte)((NES.DB & 0xFC) | 0);
-			if (addr >= 0x1100 && addr <= 0x1103)
+			else if (addr >= 0x1100 && addr <= 0x1103)
 				return _low[addr & 0x3];
-			return base.ReadExp(addr);
+			else
+				return base.ReadExp(addr);
+
 		}
 	}
 
@@ -400,6 +409,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					if (Cart.PrgSize == 1024)
 					{
 						prg_bank_mask_16k = Cart.PrgSize / 16 - 1;
+
 						prg_regs[1] = (byte)prg_bank_mask_16k;
 						return true;
 					}

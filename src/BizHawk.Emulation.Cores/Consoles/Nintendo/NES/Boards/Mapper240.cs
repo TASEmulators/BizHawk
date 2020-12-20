@@ -34,6 +34,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
+
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
@@ -64,5 +65,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			prg_bank_32k &= prg_bank_mask_32k;
 			chr_bank_mask_8k &= chr_bank_mask_8k;
 		}
+
 	}
 }

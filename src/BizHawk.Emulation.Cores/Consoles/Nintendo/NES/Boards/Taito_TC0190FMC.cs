@@ -13,6 +13,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	//Insector X
 
 	//also mapper 048 (same as 33 but with an extra chip)
+
 	internal sealed class TAITO_TC0190FMC : NesBoardBase
 	{
 		//configuration
@@ -56,12 +57,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				if (delay > 0)
 				{
+					
 					delay--;
 					if(delay==0 && irq_pending)
 						board.IrqSignal = true;
+
 				}
 			}
 		}
+
 
 		//state
 		private byte[] prg_regs_8k = new byte[4];

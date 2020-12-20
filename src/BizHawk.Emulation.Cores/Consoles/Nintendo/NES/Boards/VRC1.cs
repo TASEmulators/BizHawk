@@ -94,19 +94,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				addr = (bank_4k << 12) | ofs;
 				return Vrom[addr];
 			}
-
-			if (NES._isVS)
+			else
 			{
-				addr -= 0x2000;
-				if (addr < 0x800)
+				if (NES._isVS)
 				{
-					return NES.CIRAM[addr];
-				}
-
-				return CIRAM_VS[addr - 0x800];
+					addr = addr - 0x2000;
+					if (addr < 0x800)
+					{
+						return NES.CIRAM[addr];
+					}
+					else
+					{
+						return CIRAM_VS[addr - 0x800];
+					}
+				}			
+				else
+					return base.ReadPpu(addr);
 			}
-
-			return base.ReadPpu(addr);
+			
 		}
 
 		public override void WritePpu(int addr, byte value)
@@ -153,13 +158,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case 0x4000: prg_banks_8k[2] = (value & 0xF) & prg_bank_mask_8k; break;
 
 				case 0x1000: //[.... .BAM]   Mirroring, CHR reg high bits
-					SetMirrorType(value.Bit(0) ? EMirrorType.Horizontal : EMirrorType.Vertical);
+					if(value.Bit(0))
+						SetMirrorType(EMirrorType.Horizontal);
+					else
+						SetMirrorType(EMirrorType.Vertical);
 					chr_regs_4k[0] &= 0x0F;
 					chr_regs_4k[1] &= 0x0F;
 					if (value.Bit(1)) chr_regs_4k[0] |= 0x10;
 					if (value.Bit(2)) chr_regs_4k[1] |= 0x10;
 					SyncCHR();
 					break;
+
 				case 0x6000:
 					chr_regs_4k[0] = (chr_regs_4k[0] & 0xF0) | (value & 0x0F);
 					SyncCHR();
@@ -168,7 +177,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					chr_regs_4k[1] = (chr_regs_4k[1] & 0xF0) | (value & 0x0F);
 					SyncCHR();
 					break;
+
 			}
 		}
+
+
 	}
 }

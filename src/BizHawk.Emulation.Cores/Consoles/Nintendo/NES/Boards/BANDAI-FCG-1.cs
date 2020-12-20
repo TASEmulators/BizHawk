@@ -29,6 +29,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	I have no idea what [6] does.
 	Every real instance of [1], [2], [3], [4] had 128K or 256K of each of chr and prg.
 	*/
+
 	internal sealed class BANDAI_FCG_1 : NesBoardBase 
 	{
 		//configuration
@@ -40,10 +41,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		private bool vram = false; // is this a VRAM board?  (also set to true for JUMP2)
 		private byte jump2_outer_bank; // needed to select between banks in 512K jump2 board
 
-		// regenerable state
+		//regenerable state
 		private readonly int[] prg_banks_16k = new int[2];
 
-		// state
+		//state
 		private int prg_reg_16k;
 		private byte[] regs = new byte[8];
 		private bool irq_enabled;
@@ -161,7 +162,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			prg_bank_mask_16k = (Cart.PrgSize / 16) - 1;
 
-			// for Jump2 boards, we only mask up to 256K, the outer bank is determined separately
+			// for Jump2 boards, we only mask up to 256K, the outer bank is determined seperately
 			if (jump2)
 				prg_bank_mask_16k = 256 / 16 - 1;
 
@@ -231,7 +232,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					irq_enabled = value.Bit(0);
 					if (jump2)
 						irq_counter = irq_latch;
-					// all write acknowledge
+					// all write acknolwedge
 					IrqSignal = false;
 					break;
 				case 0xB:
@@ -345,6 +346,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			reader?.Clock();
 		}
 
+
 		public override byte ReadPrg(int addr)
 		{
 			int bank_16k = addr >> 14;
@@ -369,7 +371,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			if (addr < 0x2000)
 			{
-				return vram ? Vram[addr] : Vrom[CalcPPUAddress(addr)];
+				if (vram)
+					return Vram[addr];
+				else
+					return Vrom[CalcPPUAddress(addr)];
 			}
 
 			return base.ReadPpu(addr);

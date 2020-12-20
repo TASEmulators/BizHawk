@@ -42,10 +42,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		private List<bool> Switches =>
 			new List<bool>
 			{
-				Dipswitch1,
-				Dipswitch2,
-				Dipswitch3,
-				Dipswitch4
+				{ Dipswitch1 },
+				{ Dipswitch2 },
+				{ Dipswitch3 },
+				{ Dipswitch4 }
 			};
 
 		public int IrqDestination
@@ -265,6 +265,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			scnt.Write(addr, value);
 		}
+
 
 		public override byte ReadPrg(int addr)
 		{

@@ -4,11 +4,13 @@ using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	// eldritch horror pirate multicart
-	// 32MB prg rom, no prg ram, no chr rom, 128KB chr ram
-	// behavior directly from fceu-mm
 	internal sealed class CoolBoy : MMC3Board_Base
 	{
+		// eldritch horror pirate multicart
+		// 32MB prg rom, no prg ram, no chr rom, 128KB chr ram
+
+		// behavior directly from fceu-mm
+
 		// this could be broken down into more sensibly named variables
 		private byte[] exp = new byte[4];
 
@@ -43,6 +45,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				if (!exp[3].Bit(7))
 				{
 					exp[addr & 3] = value;
+					/*
+					if (exp[3].Bit(7))
+					{
+						Console.WriteLine("EXP Write Protect Activated");
+					}
+					if (exp[3].Bit(4))
+					{
+						Console.WriteLine("Funky Mode Active");
+					}
+					*/
 				}
 			}
 		}
@@ -50,17 +62,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		protected override int Get_PRGBank_8K(int addr)
 		{
 			int mask = 0, shift = 0;
-			int baseAddr = exp[0] & 0x07 | (exp[1] & 0x10) >> 1 | (exp[1] & 0x0c) << 2 | (exp[0] & 0x30) << 2;
+			int baseaddr = exp[0] & 0x07 | (exp[1] & 0x10) >> 1 | (exp[1] & 0x0c) << 2 | (exp[0] & 0x30) << 2;
 
 			switch (exp[0] & 0xc0)
 			{
 				case 0x00:
-					baseAddr >>= 2;
+					baseaddr >>= 2;
 					mask = 0x3f;
 					shift = 6;
 					break;
 				case 0x80:
-					baseAddr >>= 1;
+					baseaddr >>= 1;
 					mask = 0x1f;
 					shift = 5;
 					break;
@@ -82,7 +94,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			int v = base.Get_PRGBank_8K(addr);
 
-			int ret = baseAddr << shift | v & mask;
+			int ret = baseaddr << shift | v & mask;
 			if (exp[3].Bit(4))
 			{
 				ret |= exp[3] & (0x0e ^ exp[1] & 2);
@@ -96,8 +108,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				return (exp[2] & 15) << 3 | addr >> 10 & 7;
 			}
-
-			return base.Get_CHRBank_1K(addr);
+			else
+			{
+				return base.Get_CHRBank_1K(addr);
+			}
 		}
 
 		public override void SyncState(Serializer ser)

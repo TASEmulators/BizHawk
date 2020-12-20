@@ -43,28 +43,32 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				if (open_bus)
 				{
-					return NES.DB;
+					return this.NES.DB;
 				}
-
-				return Rom[addr + prg0 * 0x2000];
+				else
+				{
+					return Rom[addr + prg0 * 0x2000];
+				}			
 			}
-
-			if (addr < 0x4000)
+			else if (addr < 0x4000)
 			{
 				if (open_bus)
 				{
-					return NES.DB;
+					return this.NES.DB;
 				}
-
-				return Rom[(addr - 0x2000) + prg1 * 0x2000];
+				else
+				{
+					return Rom[(addr - 0x2000) + prg1 * 0x2000];
+				}
 			}
-
-			if (addr < 0x6000)
+			else if (addr < 0x6000)
 			{
 				return Rom[(addr - 0x4000) + prg2 * 0x2000];
 			}
-
-			return Rom[(addr - 0x6000) + prg3 * 0x2000];
+			else
+			{
+				return Rom[(addr - 0x6000) + prg3 * 0x2000];
+			}
 		}
 
 		public override void SyncState(Serializer ser)

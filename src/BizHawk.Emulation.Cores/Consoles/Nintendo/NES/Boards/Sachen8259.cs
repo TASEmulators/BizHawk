@@ -145,8 +145,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				bank &= chr_bank_mask_2k;
 				return Vrom[addr & 0x7ff | bank << 11];
 			}
-
-			return base.ReadPpu(addr);
+			else
+			{
+				return base.ReadPpu(addr);
+			}
 		}
 
 		public override void SyncState(Serializer ser)
@@ -158,6 +160,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(simple), ref simple);
 		}
 	}
+
+
+
+
 
 	// similar in some ways to 8259ABC, but different
 	// fceumm combines the code to implement them; i think that's too messy
@@ -286,8 +292,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				int bank = chr[addr >> 10] & chr_bank_mask_1k;
 				return Vrom[addr & 0x3ff | bank << 10];
 			}
-
-			return base.ReadPpu(addr);
+			else
+			{
+				return base.ReadPpu(addr);
+			}
 		}
 
 		public override void SyncState(Serializer ser)
@@ -297,5 +305,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(prg), ref prg);
 			ser.Sync(nameof(chr), ref chr, false);
 		}
+
 	}
 }

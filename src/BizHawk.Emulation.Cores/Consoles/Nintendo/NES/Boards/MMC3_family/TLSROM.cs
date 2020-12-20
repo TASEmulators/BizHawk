@@ -97,16 +97,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override byte ReadPpu(int addr)
 		{
-			if (addr < 0x2000)
+			if (addr < 0x2000) return base.ReadPpu(addr);
+			else
 			{
+				int nt = ((addr - 0x2000) >> 10) & 0x3;
+				addr = 0x2000 + (addr & 0x3FF) + (nametables[nt] << 10);
 				return base.ReadPpu(addr);
-			}
-			
-			int nt = ((addr - 0x2000) >> 10) & 0x3;
-			addr = 0x2000 + (addr & 0x3FF) + (nametables[nt] << 10);
-			return base.ReadPpu(addr);
-		}
 
+			}
+		}
 		public override void WritePpu(int addr, byte value)
 		{
 			if (addr < 0x2000) base.WritePpu(addr, value);
@@ -116,6 +115,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				addr = 0x2000 + (addr & 0x3FF) + (nametables[nt] << 10);
 				base.WritePpu(addr, value);
 			}
+
 		}
 
 		public override void SyncState(Serializer ser)

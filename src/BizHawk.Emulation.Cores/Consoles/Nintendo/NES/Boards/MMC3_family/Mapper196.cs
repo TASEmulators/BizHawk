@@ -74,8 +74,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				return Rom[addr | prgreg << 15];
 			}
-
-			return base.ReadPrg(addr);
+			else
+			{
+				return base.ReadPrg(addr);
+			}
 		}
+
 	}
 }

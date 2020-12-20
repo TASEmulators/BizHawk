@@ -3,22 +3,24 @@
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	/*
-	Life Span: October 1986 - April 1987
-	PCB Class: Jaleco-JF-11
-			   Jaleco-JF-14
-	iNES Mapper 140
+	 * Life Span: October 1986 - April 1987
+PCB Class: Jaleco-JF-11
+		   Jaleco-JF-14
+iNES Mapper 140
 
-	JF-11
-	PRG-ROM: 128kb
-	CHR-ROM: 32kb
-	Battery is not available
-	Uses vertical mirroring
-	No CIC present
-	Other chips used: Sunsoft-1
-		Games:
-		Mississippi Satsujin Jiken (J)
-		Bio Senshi Dan - Increaser Tono Tatakai [allegedly; but it does not work]
-	*/
+JF-11
+PRG-ROM: 128kb
+CHR-ROM: 32kb
+Battery is not available
+Uses vertical mirroring
+No CIC present
+Other chips used: Sunsoft-1
+	 * 
+	 * Games:
+	 * Mississippi Satsujin Jiken (J)
+	 * Bio Senshi Dan - Increaser Tono Tatakai [allegedly; but it does not work]
+	 */
+
 	internal sealed class Jaleco_JF_11_14 : NesBoardBase
 	{
 		private int chr, prg;
@@ -45,14 +47,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			if (addr < 0x8000)
 				return Rom[addr + (prg * 0x8000)];
-			return base.ReadPrg(addr);
+			else
+				return base.ReadPrg(addr);
 		}
 
 		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 				return Vrom[(addr & 0x1FFF) + (chr * 0x2000)];
-			return base.ReadPpu(addr);
+			else
+				return base.ReadPpu(addr);
 		}
 
 		public override void WriteWram(int addr, byte value)

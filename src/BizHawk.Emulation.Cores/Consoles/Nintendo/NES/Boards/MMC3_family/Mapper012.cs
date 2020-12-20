@@ -45,5 +45,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			else bank_1k += (block1 << 8);
 			return bank_1k;
 		}
+
 	}
 }

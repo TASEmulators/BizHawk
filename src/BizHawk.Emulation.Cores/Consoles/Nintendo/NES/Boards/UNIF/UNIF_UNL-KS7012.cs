@@ -32,12 +32,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override void WritePrg(int addr, byte value)
 		{
 			addr += 0x8000;
-			reg = addr switch
+			switch (addr)
 			{
-				0xE0A0 => 0,
-				0xEE36 => 1,
-				_ => reg
-			};
+				case 0xE0A0:
+					reg = 0; break;
+				case 0xEE36:
+					reg = 1; break;
+			}
 		}
 
 		public override byte ReadPrg(int addr)

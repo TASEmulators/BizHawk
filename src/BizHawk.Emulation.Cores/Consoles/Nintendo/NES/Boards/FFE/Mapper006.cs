@@ -80,6 +80,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						_irqCount |= value << 8;
 						_irqEnable = true;
 						break;
+
 				}
 
 				SyncIRQ();

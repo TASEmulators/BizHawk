@@ -2,10 +2,13 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	//AKA Mapper 65
-	// Daiku no Gen San 2
-	// Spartan X 2
-	// NOTE - fceux support for this mapper has some kind of -4 cpu cycle delay built into the timer. not sure yet whether we need that
+	//AKA mapper 65
+
+	//Daiku no Gen San 2
+	//Spartan X 2
+
+	//NOTE - fceux support for this mapper has some kind of -4 cpu cycle delay built into the timer. not sure yet whether we need that
+
 	internal sealed class Irem_H3001 : NesBoardBase
 	{
 		//configuration
@@ -55,6 +58,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
+		/*
+		public override void ClockPPU()
+		{
+			clock_counter++;
+			if (clock_counter == 3)
+			{
+				ClockCPU();
+				clock_counter = 0;
+			}
+		}*/
+
 		public override void ClockCpu()
 		{
 			if (irq_counter == 0) return;
@@ -91,8 +105,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				addr = (bank_1k << 10) | ofs;
 				return Vrom[addr];
 			}
-
-			return base.ReadPpu(addr);
+			else
+				return base.ReadPpu(addr);
 		}
 
 		public override void WritePrg(int addr, byte value)

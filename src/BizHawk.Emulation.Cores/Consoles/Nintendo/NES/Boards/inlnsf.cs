@@ -4,6 +4,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	internal sealed class INLNSF : NesBoardBase
 	{
+
 		// config
 		private int prg_bank_mask_4k;
 

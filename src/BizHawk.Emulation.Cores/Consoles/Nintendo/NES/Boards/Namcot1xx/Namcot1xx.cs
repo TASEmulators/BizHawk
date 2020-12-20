@@ -210,46 +210,48 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				addr += 0x4000;
 				if (addr == 0x54FF)
-				{
 					return 0x05;
-				}
-
-				if (addr == 0x5678)
+				else if (addr == 0x5678)
 				{
-					return NES.cpu.X == 0x0C ? (byte)0 : (byte)1;
+					if (NES.cpu.X == 0x0C)
+						return 0;
+					else
+						return 1;
 				}
 
-				if (addr == 0x578F)
+				else if (addr == 0x578F)
 				{
-					return NES.cpu.X == 0x0C ? (byte)0xD1 : (byte)0x89;
+					if (NES.cpu.X == 0x0C)
+						return 0xD1;
+					else
+						return 0x89;
 				}
-
-				if (addr == 0x5567)
+				else if (addr == 0x5567)
 				{
-					return NES.cpu.X == 0x0C ? (byte)0x3E : (byte)0x37;
+					if (NES.cpu.X == 0x0C)
+						return 0x3E;
+					else
+						return 0x37;
 				}
 
-				return base.ReadExp(addr - 0x4000);
+				else
+					return base.ReadExp(addr - 0x4000);
 			}
-
-			if (Cart.VsSecurity==32)
+			else if (Cart.VsSecurity==32)
 			{
 				if (addr==0x1E00)
 				{
 					tko_security = 0;
 					return 0xAA; //not used??
 				}
-
 				if (addr == 0x1E01)
 				{
 					tko_security++;
 					return TKO[tko_security - 1];
 				}
-
 				return NES.DB;
 			}
-
-			if (Cart.VsSecurity == 48)
+			else if (Cart.VsSecurity == 48)
 			{
 				if (addr == 0x1E00)
 				{
@@ -271,8 +273,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 				return NES.DB;
 			}
-
-			return NES.DB;
+			else
+			{
+				return NES.DB;
+			}
 		}
 
 		protected virtual void BaseSetup()
@@ -287,5 +291,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (!NES._isVS)
 				SetMirrorType(EMirrorType.Vertical);
 		}
+
 	}
 }

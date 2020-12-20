@@ -27,6 +27,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		private bool trigger = false;
 		private bool strobe = true;
 
+
 		public override bool Configure(EDetectionOrigin origin)
 		{
 			switch (Cart.BoardType)
@@ -47,6 +48,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			return Rom[(prg << 15) | addr];
 		}
+		
+		/*
+		public override void WritePRG(int addr, byte value)
+		{
+		}*/
 
 		public override byte ReadExp(int addr)
 		{
@@ -65,8 +71,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						return 4;
 				}
 			}
-
-			return 0;
+			else
+				return 0;
 		}
 
 		public override void WriteExp(int addr, byte value)
@@ -101,6 +107,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
+		/*
+		public override byte ReadWRAM(int addr)
+		{
+			return base.ReadWRAM(addr);
+		}
+
+		public override void WriteWRAM(int addr, byte value)
+		{
+			base.WriteWRAM(addr, value);
+		}*/
+
 		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
@@ -112,11 +129,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					else
 						return Vram[(addr & 0xfff) + 0x1000];
 				}
-
-				return Vram[addr];
+				else
+					return Vram[addr];
 			}
-
-			return base.ReadPpu(addr);
+			else
+				return base.ReadPpu(addr);
 		}
 
 		public override void WritePpu(int addr, byte value)

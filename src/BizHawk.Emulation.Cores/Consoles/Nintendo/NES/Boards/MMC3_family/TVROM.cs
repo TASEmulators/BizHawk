@@ -29,9 +29,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		// nesdev wiki says that the nes CIRAM doesnt get used at all.
-		// and that even though 8KB is really here, only 4KB gets used.
-		// still, purists could validate it.
+		//nesdev wiki says that the nes CIRAM doesnt get used at all.
+		//and that even though 8KB is really here, only 4KB gets used.
+		//still, purists could validate it.
+
 		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
@@ -54,5 +55,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				Vram[addr & 0xFFF] = value;
 			}
 		}
+
 	}
 }

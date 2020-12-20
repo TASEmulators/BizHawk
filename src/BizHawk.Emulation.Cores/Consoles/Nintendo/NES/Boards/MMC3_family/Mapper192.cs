@@ -1,8 +1,9 @@
 ﻿namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	// http://wiki.nesdev.com/w/index.php/INES_Mapper_192
 	internal sealed class Mapper192 : MMC3Board_Base
 	{
+		//http://wiki.nesdev.com/w/index.php/INES_Mapper_192
+		
 		public override bool Configure(EDetectionOrigin origin)
 		{
 			//analyze board type
@@ -46,6 +47,7 @@
 			}
 		}
 
+
 		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
@@ -56,28 +58,26 @@
 					byte value = Vram[addr & 0x03FF];
 					return value;
 				}
-
-				if (bank == 0x09)
+				else if (bank == 0x09)
 				{
 					return Vram[(addr & 0x03FF) + 0x400];
 				}
-
-				if (bank == 0x0A)
+				else if (bank == 0x0A)
 				{
 					return Vram[(addr & 0x03FF) + 0x800];
 				}
-
-				if (bank == 0x0B)
+				else if (bank == 0x0B)
 				{
 					return Vram[(addr & 0x03FF) + 0xC00];
 				}
-
-				addr = MapCHR(addr);
-				return Vrom[addr + extra_vrom];
+				else
+				{
+					addr = MapCHR(addr);
+					return Vrom[addr + extra_vrom];
+				}
 
 			}
-
-			return base.ReadPpu(addr);
+			else return base.ReadPpu(addr);
 		}
 	}
 }

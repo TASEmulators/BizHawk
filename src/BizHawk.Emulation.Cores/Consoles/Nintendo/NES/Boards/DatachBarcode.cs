@@ -7,6 +7,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// mostly jacked from nestopia's NstBoardBandaiDatach.cpp
 	// very dirty, needs cleanup and such
+
 	public class DatachBarcode : IEmulatorService
 	{
 		private static readonly byte[,] prefixParityType = new byte[10, 6]
@@ -66,6 +67,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.EndSection();
 		}
 
+
 		public void Reset()
 		{
 			cycles = 0;
@@ -76,6 +78,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public bool IsTransferring()
 		{
 			return stream_idx < data.Length;
+		}
+		private static bool IsDigtsSupported(int count)
+		{
+			return count.In(MIN_DIGITS, MAX_DIGITS);
 		}
 
 		public static bool ValidString(string s, out string why)
@@ -171,6 +177,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				for (int i = 4; i < 7; i++)
 					for (int j = 0; j < 7; j++)
 						result.WriteByte(dataRight[code[i], j]);
+
 
 				for (int i = 0; i < 7; i++)
 					sum += code[i] * ((i & 1) != 0 ? 3 : 1);

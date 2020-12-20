@@ -48,5 +48,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			WriteWram(addr, value);
 		}
+
 	}
 }

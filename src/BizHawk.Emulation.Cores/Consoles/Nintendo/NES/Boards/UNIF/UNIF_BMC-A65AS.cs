@@ -62,18 +62,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				bank &= prgMask32k;
 				return Rom[(bank * 0x8000) + (addr & 0x7FFF)];
 			}
-
-			if (addr < 0x4000)
-			{
-				int bank = (_prgReg & 0x30) >> 1 | _prgReg & 7;
-				bank &= prgMask16k;
-				return Rom[(bank * 0x4000) + (addr & 0x3FFF)];
-			}
 			else
 			{
-				int bank = (_prgReg & 0x30) >> 1 | 7;
-				bank &= prgMask16k;
-				return Rom[(bank * 0x4000) + (addr & 0x3FFF)];
+				
+				if (addr < 0x4000)
+				{
+					int bank = (_prgReg & 0x30) >> 1 | _prgReg & 7;
+					bank &= prgMask16k;
+					return Rom[(bank * 0x4000) + (addr & 0x3FFF)];
+				}
+				else
+				{
+					int bank = (_prgReg & 0x30) >> 1 | 7;
+					bank &= prgMask16k;
+					return Rom[(bank * 0x4000) + (addr & 0x3FFF)];
+				}
 			}
 		}
 	}

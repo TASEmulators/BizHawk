@@ -43,6 +43,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override void WritePrg(int addr, byte value)
 		{
 			_reg = addr;
+
 			SetMirrorType(_reg.Bit(3) ? EMirrorType.Horizontal : EMirrorType.Vertical);
 		}
 

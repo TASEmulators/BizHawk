@@ -2,18 +2,19 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	// iNES Mapper 72
-	// Example Games:
-	// --------------------------
-	// Pinball Quest (J)
-	// Moero!! Pro Tennis
-	// Moero!! Juudou Warriors
+	//iNES Mapper 72
+	//Example Games:
+	//--------------------------
+	//Pinball Quest (J)
+	//Moero!! Pro Tennis
+	//Moero!! Juudou Warriors
 
-	// based on the chips on the pcb (3x 4bit registers and some OR gates) i'm gonna speculate something a little different about how this works.
-	// there isnt enough memory for 2 bank registers, a latched bank, and a latched command. so i think the bank isnt latched--the command is latched.
-	// when the top 2 bits are 0, then the low 4 bits are written to the register specified by the latch
-	// when the top 2 bits arent 0, theyre written to the latch
-	// interestingly, this works (for pinball quest) only when bus conflicts are applied, otherwise the game cant get past the title
+	//based on the chips on the pcb (3x 4bit registers and some OR gates) i'm gonna speculate something a little different about how this works.
+	//there isnt enough memory for 2 bank registers, a latched bank, and a latched command. so i think the bank isnt latched--the command is latched.
+	//when the top 2 bits are 0, then the low 4 bits are written to the register specified by the latch
+	//when the top 2 bits arent 0, theyre written to the latch
+	//interestingly, this works (for pinball quest) only when bus conflicts are applied, otherwise the game cant get past the title
+
 	internal sealed class JALECO_JF_17 : NesBoardBase
 	{
 		//configuration
@@ -65,6 +66,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override void WritePrg(int addr, byte value)
 		{
+			//Console.WriteLine("MAP {0:X4} = {1:X2}", addr, value);
+
 			value = HandleNormalPRGConflict(addr, value);
 
 			int command = value >> 6;
@@ -94,10 +97,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (addr < 0x2000)
 			{
 				addr = ApplyMemoryMap(13, chr_banks_8k, addr);
-				return ReadPPUChr(addr);
+				return base.ReadPPUChr(addr);
 			}
-
-			return base.ReadPpu(addr);
+			else return base.ReadPpu(addr);
 		}
 	}
 }

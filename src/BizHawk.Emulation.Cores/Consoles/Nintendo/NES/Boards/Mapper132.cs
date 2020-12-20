@@ -65,13 +65,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			if (addr <= 0x103 && addr >= 0x100)
 				reg[addr & 0x03] = value;
+					//reg[addr&0x03] = (byte)(value & 0x0f);
+
 		}
 
 		public override byte ReadExp(int addr)
 		{
-			if (addr == 0x100)
+
+			/*if ((addr & 0x100) != 0)
+				return (byte)((NES.DB & (is173 ? 0x01 : 0xf0)) | reg[2]);
+			else if ((addr & 0x1000) == 0)
+				return NES.DB;
+			else
+				return 0xff;
+				*/
+			if (addr==0x100)
 				return (byte)((reg[1] ^ reg[2]) | (0x40 | (is173 ? 0x01 : 0x00)));
-			return NES.DB;
+			else
+				return NES.DB;
 		}
 
 		public override byte ReadPrg(int addr)
@@ -81,8 +92,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				return Rom[addr & 0x3FFF];
 			}
-
-			return Rom[addr + ((prg & prg_mask) << 15)];
+			else
+			{
+				return Rom[addr + ((prg & prg_mask) << 15)];
+			}
 		}
 
 		public override byte ReadPpu(int addr)

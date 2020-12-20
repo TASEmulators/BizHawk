@@ -23,6 +23,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//let's make the extra space here, instead of in the main NES to avoid confusion
 		private byte[] CIRAM_VS = new byte[0x800];
 
+
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
@@ -134,6 +135,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
+
 		public override void ClockCpu()
 		{
 			if (!irq_enable) return;
@@ -159,21 +161,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (addr < 0x2000)
 			{
 				addr = ApplyMemoryMap(11, chr_banks_2k, addr);
-				return ReadPPUChr(addr);
+				return base.ReadPPUChr(addr);
 			}
-
-			if (NES._isVS)
+			else
 			{
-				addr = addr - 0x2000;
-				if (addr < 0x800)
+				if (NES._isVS)
 				{
-					return NES.CIRAM[addr];
+					addr = addr - 0x2000;
+					if (addr < 0x800)
+					{
+						return NES.CIRAM[addr];
+					}
+					else
+					{
+						return CIRAM_VS[addr - 0x800];
+					}
 				}
-
-				return CIRAM_VS[addr - 0x800];
+				else
+					return base.ReadPpu(addr);
 			}
-
-			return base.ReadPpu(addr);
 		}
 
 		public override void WritePpu(int addr, byte value)

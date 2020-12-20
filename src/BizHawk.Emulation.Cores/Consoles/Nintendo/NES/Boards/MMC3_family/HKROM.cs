@@ -7,6 +7,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	//for simplicity's sake, the behaviour of mmc6 is wrapped up into this board since it isnt used anywhere else
 	internal sealed class HKROM : MMC3Board_Base
 	{
+		//configuration
+
 		//state
 		private bool wram_enabled;
 		private bool wram_h_enabled, wram_l_enabled;
@@ -111,5 +113,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				return base.ReadWram(addr);
 			return 0;
 		}
+
 	}
 }

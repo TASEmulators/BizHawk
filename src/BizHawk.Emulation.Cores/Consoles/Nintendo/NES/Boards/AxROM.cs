@@ -52,6 +52,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					AssertPrg(256); AssertChr(0); AssertVram(8); AssertWram(0);
 					bus_conflict = true; // not enough chips on the pcb to disable bus conflicts?
 					break;
+
 				default:
 					return false;
 			}

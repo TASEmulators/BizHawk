@@ -67,12 +67,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					return Vram[(bank_1k << 10) + (addr & 0x3FF)];
 				}
-
-				bank_1k = bank_1k | (exRegs[2] << 3);
-				return Vrom[(bank_1k << 10) + (addr & 0x3FF)];
+				else
+				{
+					bank_1k = bank_1k | (exRegs[2] << 3);
+					return Vrom[(bank_1k << 10) + (addr & 0x3FF)];
+				}
 			}
-
-			return base.ReadPpu(addr);
+			else
+				return base.ReadPpu(addr);
 		}
 
 		public override void WritePpu(int addr, byte value)

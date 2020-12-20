@@ -3,8 +3,10 @@
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//AKA mapper 068 (and TENGEN-800042)
+
 	//After Burner & After Burner 2
 	//Maharaja
+
 	internal sealed class Sunsoft4 : NesBoardBase
 	{
 		//configuration
@@ -82,21 +84,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				addr = (bank_2k << 11) | ofs;
 				return Vrom[addr];
 			}
-
-			//nametable may come from "NT-ROM"
-			//which means from extra CHR data starting at bank 0x80
-			if (flag_r)
+			else
 			{
-				addr = ApplyMirroring(addr);
-				int bank_1k = (addr >> 10) & 3;
-				int ofs = addr & ((1 << 10) - 1);
-				bank_1k = nt_regs[bank_1k] + 0x80;
-				bank_1k &= nt_bank_mask;
-				addr = (bank_1k << 10) | ofs;
-				return Vrom[addr];
+				//nametable may come from "NT-ROM"
+				//which means from extra CHR data starting at bank 0x80
+				if (flag_r)
+				{
+					addr = ApplyMirroring(addr);
+					int bank_1k = (addr >> 10) & 3;
+					int ofs = addr & ((1 << 10) - 1);
+					bank_1k = nt_regs[bank_1k] + 0x80;
+					bank_1k &= nt_bank_mask;
+					addr = (bank_1k << 10) | ofs;
+					return Vrom[addr];
+				}
+				else return base.ReadPpu(addr);
 			}
-
-			return base.ReadPpu(addr);
 		}
 
 		public override void WritePrg(int addr, byte value)
@@ -125,7 +128,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case 0x6000: //$E000
 					flag_m = (value & 1) != 0;
 					flag_r = ((value >> 4) & 1) != 0;
-					SetMirrorType(flag_m ? EMirrorType.Horizontal : EMirrorType.Vertical);
+					if (flag_m) SetMirrorType(EMirrorType.Horizontal);
+					else SetMirrorType(EMirrorType.Vertical);
 					break;
 				case 0x7000: //$F000
 					prg_regs_16k[0] = value;

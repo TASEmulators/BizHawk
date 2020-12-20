@@ -2,15 +2,16 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	// Mapper 70
-	// Example Games:
-	// --------------------------
-	// Family Trainer - Manhattan Police
-	// Family Trainer - Meiro Daisakusen
-	// Kamen Rider Club
-	// Space Shadow
 	internal sealed class BANDAI_74_161_161_32 : NesBoardBase
 	{
+		//Mapper 70
+		//Example Games:
+		//--------------------------
+		//Family Trainer - Manhattan Police
+		//Family Trainer - Meiro Daisakusen
+		//Kamen Rider Club
+		//Space Shadow
+
 		private int chr;
 		private int prg_bank_mask_16k;
 		private byte prg_bank_16k;
@@ -68,7 +69,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			if (addr < 0x2000)
 				return Vrom[(addr & 0x1FFF) + (chr * 0x2000)];
-			return base.ReadPpu(addr);
+			else
+				return base.ReadPpu(addr);
 		}
 	}
 }

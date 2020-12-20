@@ -177,6 +177,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return Rom[addr];
 		}
 
+
 		public override void WritePpu(int addr, byte value)
 		{
 			int bank_1k = addr >> 10;
@@ -210,9 +211,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				bank_1k &= 1;
 				return NES.CIRAM[bank_1k << 10 | ofs];
 			}
-
-			bank_1k &= chr_bank_mask_1k;
-			return Vrom[bank_1k << 10 | ofs];
+			else
+			{
+				bank_1k &= chr_bank_mask_1k;
+				return Vrom[bank_1k << 10 | ofs];
+			}
 		}
 
 		private void SyncIRQ()
@@ -266,8 +269,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					else
 						return audio.GetSaveRam();
 				}
-
-				return null;
+				else
+				{
+					return null;
+				}
 			}
 		}
 

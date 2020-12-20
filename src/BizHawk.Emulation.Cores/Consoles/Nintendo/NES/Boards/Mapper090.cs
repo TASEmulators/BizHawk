@@ -396,7 +396,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					}
 					else
 					{
-						goto case 0x4002;
+						goto case 0x4002;						
 					}
 				case 0x4001:	//IRQ control
 					irq_count_down = value.Bit(7);
@@ -457,10 +457,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 							SetMirrorType(EMirrorType.Horizontal);
 							break;
 						case 2:
-							SetMirrorType(mapper_035 ? EMirrorType.OneScreenB : EMirrorType.OneScreenA);
+							if (mapper_035)
+							{
+								SetMirrorType(EMirrorType.OneScreenB);
+							}
+							else
+							{
+								SetMirrorType(EMirrorType.OneScreenA);
+							}		
 							break;
 						case 3:
-							SetMirrorType(mapper_035 ? EMirrorType.OneScreenA : EMirrorType.OneScreenB);
+							if (mapper_035)
+							{
+								SetMirrorType(EMirrorType.OneScreenA);
+							}
+							else
+							{
+								SetMirrorType(EMirrorType.OneScreenB);
+							}
 							break;
 					}
 					break;
@@ -625,8 +639,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				return Vrom[nt << 10 | offset];
 			}
-
-			return base.PeekPPU(addr);
+			else
+			{
+				return base.PeekPPU(addr);
+			}
 		}
 
 		public override byte ReadPpu(int addr)
@@ -674,8 +690,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				return Vrom[nt << 10 | offset];
 			}
-
-			return base.ReadPpu(addr);
+			else
+			{
+				return base.ReadPpu(addr);
+			}
 		}
 	}
 }

@@ -1,8 +1,9 @@
 ﻿namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	// http://forums.nesdev.com/viewtopic.php?f=9&t=11099
 	internal sealed class Farid_UNROM_8_in_1 : NesBoardBase
 	{
+		// http://forums.nesdev.com/viewtopic.php?f=9&t=11099
+
 		// state
 		private int c; // clock bit for the second 74'161
 		private int e; // /load for second 74'161. guaranteed to be 0 on powerup

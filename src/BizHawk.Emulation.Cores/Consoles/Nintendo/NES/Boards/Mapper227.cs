@@ -98,7 +98,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			_prgBanks16K[0] = (byte)(_prgBanks16K[0]&_prgBankMask16K);
 			_prgBanks16K[1] = (byte)(_prgBanks16K[1]&_prgBankMask16K);
 
-			SetMirrorType(M_horz ? EMirrorType.Horizontal : EMirrorType.Vertical);
+			if (M_horz) SetMirrorType(EMirrorType.Horizontal);
+			else SetMirrorType(EMirrorType.Vertical);
 		}
 
 		public override void WritePpu(int addr, byte value)

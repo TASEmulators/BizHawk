@@ -64,14 +64,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				return Vrom[(addr & 0x1FFF) + ((NES.VS_chr_reg & chr_mask) << 13)];
 			}
-
-			addr -= 0x2000;
-			if (addr<0x800)
+			else
 			{
-				return NES.CIRAM[addr];
+				addr = addr - 0x2000;
+				if (addr<0x800)
+				{
+					return NES.CIRAM[addr];
+				}
+				else
+				{
+					return CIRAM_VS[addr-0x800];
+				}
+				
 			}
-
-			return CIRAM_VS[addr-0x800];
 		}
 
 		public override void WritePpu(int addr, byte value)
@@ -83,7 +88,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			else
 			{
-				addr -= 0x2000;
+				addr = addr - 0x2000;
 				if (addr < 0x800)
 				{
 					NES.CIRAM[addr] = value;
@@ -109,12 +114,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				if (addr<0x2000)
 				{
 					return Rom[(addr & 0x1FFF) + ((NES.VS_prg_reg*4) << 13)];
-				}
-
+				} else
+					return Rom[addr];	
+			}
+			else
+			{
 				return Rom[addr];
 			}
-
-			return Rom[addr];
+			
 		}
 	}
 }

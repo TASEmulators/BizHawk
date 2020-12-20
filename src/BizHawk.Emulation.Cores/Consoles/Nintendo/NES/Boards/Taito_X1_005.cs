@@ -36,7 +36,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	 * 8k prg @ cpu $e000 is fixed to last 8k of rom.
 	 * in TLSROM-like mode (mapper 207), mirroring reg is ignored,
 	 *   and top bit of CHR regs (normally CHRROM A17) is used as CIRAM A10
+	 * 
 	 */
+
 	internal sealed class TAITO_X1_005 : NesBoardBase
 	{
 		// config
@@ -106,7 +108,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				case 0x1E76:
 				case 0x1E77:
-					SetMirrorType(value.Bit(0) ? EMirrorType.Vertical : EMirrorType.Horizontal);
+					if (value.Bit(0))
+						SetMirrorType(EMirrorType.Vertical);
+					else
+						SetMirrorType(EMirrorType.Horizontal);
 					break;
 
 				case 0x1E70:
@@ -155,7 +160,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			if (addr >= 0x1f00 && wramenable)
 				return Wram[addr & 0x7f];
-			return NES.DB;
+			else
+				return NES.DB;
 		}
 
 		public override byte ReadPrg(int addr)
@@ -179,8 +185,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				addr = (bank_1k << 10) | ofs;
 				return Vrom[addr];
 			}
-
-			if (tlsrewire)
+			else if (tlsrewire)
 			{
 				int bank_1k = addr >> 10;
 				int ofs = addr & ((1 << 10) - 1);
@@ -189,8 +194,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				addr = (bank_1k << 10) | ofs;
 				return NES.CIRAM[addr];
 			}
-
-			return base.ReadPpu(addr);
+			else
+			{
+				return base.ReadPpu(addr);
+			}
 		}
 
 		public override void WritePpu(int addr, byte value)

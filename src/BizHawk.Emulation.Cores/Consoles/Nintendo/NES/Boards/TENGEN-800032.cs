@@ -150,21 +150,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					chr_mode = value.Bit(7);
 					Sync();
 					break;
+
 				case 0x0001: //data port
 					regs[address] = value;
 					Sync();
 					break;
+
 				case 0x2000:
-					SetMirrorType(value.Bit(0) ? EMirrorType.Horizontal : EMirrorType.Vertical);
+					if (value.Bit(0)) SetMirrorType(EMirrorType.Horizontal);
+					else SetMirrorType(EMirrorType.Vertical);
 					break;
+
 				case 0x4000:
 					irq_reload = value;
 					break;
+
 				case 0x4001:
 					irq_mode = value.Bit(0);
 					if (irq_mode) irq_countdown = 4;
 					irq_reload_pending = true;
 					break;
+
 				case 0x6000:
 					irq_enable = false;
 					irq_pending = false;
@@ -197,8 +203,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				addr = (bank_1k << 10) | ofs;
 				return Vrom[addr];
 			}
-
-			return base.ReadPpu(addr);
+			else
+				return base.ReadPpu(addr);
 		}
 
 		private void SyncIRQ()
@@ -266,7 +272,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override void ClockCpu()
 		{
-			if (irq_mode)
+
+			if (irq_mode == true)
 			{
 				irq_countdown--;
 				if (irq_countdown == 0)
@@ -275,11 +282,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					irq_countdown = 4;
 				}
 			}
-			else if (clock_scanline_irq)
+			else
 			{
-				clock_scanline_irq = false;
-				ClockIRQ();
+				if (clock_scanline_irq)
+				{
+					clock_scanline_irq = false;
+					ClockIRQ();
+				}
 			}
+
 		}
 
 		public override void ClockPpu()
@@ -301,7 +312,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override void AddressPpu(int addr)
 		{
 			int a12 = (addr >> 12) & 1;
-			bool rising_edge = a12 == 1 && a12_old == 0;
+			bool rising_edge = (a12 == 1 && a12_old == 0);
 			if (rising_edge)
 			{
 				if (separator_counter > 0)
