@@ -30,13 +30,6 @@ namespace BizHawk.Client.Common
 			set => APIs.Emulation.PutSettings(value);
 		}
 
-		[LuaDeprecatedMethod]
-		[LuaMethod("addgamegenie", "Adds the specified game genie code. If an NES game is not currently loaded or the code is not a valid game genie code, this will have no effect")]
-		public void AddGameGenie(string code)
-		{
-			Log("Method no longer supported, use client.addcheat() instead");
-		}
-
 		/// <exception cref="InvalidOperationException">loaded core is not NESHawk or QuickNes</exception>
 		[LuaMethodExample("if ( nes.getallowmorethaneightsprites( ) ) then\r\n\tconsole.log( \"Gets the NES setting 'Allow more than 8 sprites per scanline' value\" );\r\nend;")]
 		[LuaMethod("getallowmorethaneightsprites", "Gets the NES setting 'Allow more than 8 sprites per scanline' value")]
@@ -96,13 +89,6 @@ namespace BizHawk.Client.Common
 			QuickNES.QuickNESSettings qns => qns.ClipTopAndBottom ? 8 : 0,
 			_ => throw new InvalidOperationException()
 		};
-
-		[LuaDeprecatedMethod]
-		[LuaMethod("removegamegenie", "Removes the specified game genie code. If an NES game is not currently loaded or the code is not a valid game genie code, this will have no effect")]
-		public void RemoveGameGenie(string code)
-		{
-			Log("Method no longer supported, use client.removecheat() instead");
-		}
 
 		/// <exception cref="InvalidOperationException">loaded core is not NESHawk or QuickNes</exception>
 		[LuaMethodExample("nes.setallowmorethaneightsprites( true );")]
