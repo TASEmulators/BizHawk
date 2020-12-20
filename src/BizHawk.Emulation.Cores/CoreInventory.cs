@@ -96,33 +96,31 @@ namespace BizHawk.Emulation.Cores
 			{
 				if (_useCoreLoadParameters)
 				{
-					var paramType = typeof(CoreLoadParameters<,>).MakeGenericType(new[] { SettingsType, SyncSettingsType });
+					var paramType = typeof(CoreLoadParameters<,>).MakeGenericType(SettingsType, SyncSettingsType);
 					// TODO: clean this up
 					dynamic param = Activator.CreateInstance(paramType);
 					param.Comm = cip.Comm;
 					param.Game = cip.Game;
-					param.Settings = (dynamic)cip.FetchSettings(Type, SettingsType);
-					param.SyncSettings = (dynamic)cip.FetchSyncSettings(Type, SyncSettingsType);
+					param.Settings = cip.FetchSettings(Type, SettingsType);
+					param.SyncSettings = cip.FetchSyncSettings(Type, SyncSettingsType);
 					param.Roms = cip.Roms;
 					param.Discs = cip.Discs;
 					param.DeterministicEmulationRequested = cip.DeterministicEmulationRequested;
 					return (IEmulator)CTor.Invoke(new object[] { param });
 				}
-				else
-				{
-					// cores using the old constructor parameters can only take a single rom, so assume that here
-					object[] o = new object[_paramMap.Count];
-					Bp(o, "comm", cip.Comm);
-					Bp(o, "game", cip.Game);
-					Bp(o, "rom", cip.Roms[0].RomData);
-					Bp(o, "file", cip.Roms[0].FileData);
-					Bp(o, "deterministic", cip.DeterministicEmulationRequested);
-					Bp(o, "settings", cip.FetchSettings(Type, SettingsType));
-					Bp(o, "syncsettings", cip.FetchSyncSettings(Type, SyncSettingsType));
-					Bp(o, "extension", cip.Roms[0].Extension);
 
-					return (IEmulator)CTor.Invoke(o);
-				}
+				// cores using the old constructor parameters can only take a single rom, so assume that here
+				object[] o = new object[_paramMap.Count];
+				Bp(o, "comm", cip.Comm);
+				Bp(o, "game", cip.Game);
+				Bp(o, "rom", cip.Roms[0].RomData);
+				Bp(o, "file", cip.Roms[0].FileData);
+				Bp(o, "deterministic", cip.DeterministicEmulationRequested);
+				Bp(o, "settings", cip.FetchSettings(Type, SettingsType));
+				Bp(o, "syncsettings", cip.FetchSyncSettings(Type, SyncSettingsType));
+				Bp(o, "extension", cip.Roms[0].Extension);
+
+				return (IEmulator)CTor.Invoke(o);
 			}
 		}
 
@@ -184,12 +182,12 @@ namespace BizHawk.Emulation.Cores
 		/// </summary>
 		GameDbPreference = -300,
 		/// <summary>
-		/// The user has indicated in preferences that this is their favourite core
+		/// The user has indicated in preferences that this is their favorite core
 		/// </summary>
 		UserPreference = -200,
 		
 		/// <summary>
-		/// A very good core that should be prefered over normal cores.  Don't use this?
+		/// A very good core that should be preferred over normal cores.  Don't use this?
 		/// </summary>
 		High = -100,
 
