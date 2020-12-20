@@ -2,11 +2,7 @@
 using BizHawk.BizInvoke;
 using BizHawk.Emulation.Common;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Threading;
 using static BizHawk.Emulation.Cores.Waterbox.WaterboxHostNative;
 
 namespace BizHawk.Emulation.Cores.Waterbox

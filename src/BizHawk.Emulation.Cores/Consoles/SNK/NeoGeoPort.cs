@@ -1,11 +1,7 @@
-﻿using BizHawk.Common;
-using BizHawk.Emulation.Common;
+﻿using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Waterbox;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Runtime.InteropServices;
 
 namespace BizHawk.Emulation.Cores.Consoles.SNK
 {

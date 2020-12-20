@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using BizHawk.BizInvoke;
-using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using NymaTypes;
 

@@ -1,5 +1,4 @@
 using System;
-using BizHawk.Emulation.Cores.Consoles.O2Hawk;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 

@@ -4,7 +4,6 @@ using BizHawk.Emulation.Common;
 using System;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Cores.Waterbox

@@ -1,6 +1,4 @@
-﻿using BizHawk.Common;
-using BizHawk.BizInvoke;
-using BizHawk.Emulation.Common;
+﻿using BizHawk.BizInvoke;
 using System;
 using System.Runtime.InteropServices;
 

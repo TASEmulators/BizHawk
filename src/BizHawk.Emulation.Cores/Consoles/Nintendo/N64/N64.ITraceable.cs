@@ -1,5 +1,4 @@
-﻿using System;
-using System.Text;
+﻿using System.Text;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.N64.NativeApi;
 

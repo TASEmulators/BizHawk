@@ -1,17 +1,7 @@
-﻿using BizHawk.Common;
-using BizHawk.Common.BufferExtensions;
-using BizHawk.Emulation.Common;
+﻿using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Waterbox;
-using BizHawk.Emulation.DiscSystem;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Security.Cryptography;
-using System.Text;
 
 namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 {

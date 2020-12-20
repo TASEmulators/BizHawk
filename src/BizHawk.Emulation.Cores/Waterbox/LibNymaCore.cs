@@ -1,8 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using BizHawk.BizInvoke;
-using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Waterbox
 {

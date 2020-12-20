@@ -1,5 +1,4 @@
-﻿using System.IO;
-using BizHawk.Common;
+﻿using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {

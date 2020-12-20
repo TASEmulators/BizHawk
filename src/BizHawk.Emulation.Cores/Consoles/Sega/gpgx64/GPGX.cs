@@ -6,7 +6,6 @@ using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Waterbox;
 using BizHawk.Common;
 using BizHawk.Emulation.DiscSystem;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
