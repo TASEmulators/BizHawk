@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.ExceptionServices;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores
@@ -89,26 +90,23 @@ namespace BizHawk.Emulation.Cores
 				}
 			}
 
-			/// <summary>
-			/// Instantiate an emulator core
-			/// </summary>
-			public IEmulator Create(ICoreInventoryParameters cip)
+			private IEmulator CreateUsingCoreLoadParameters(ICoreInventoryParameters cip)
 			{
-				if (_useCoreLoadParameters)
-				{
-					var paramType = typeof(CoreLoadParameters<,>).MakeGenericType(SettingsType, SyncSettingsType);
-					// TODO: clean this up
-					dynamic param = Activator.CreateInstance(paramType);
-					param.Comm = cip.Comm;
-					param.Game = cip.Game;
-					param.Settings = cip.FetchSettings(Type, SettingsType);
-					param.SyncSettings = cip.FetchSyncSettings(Type, SyncSettingsType);
-					param.Roms = cip.Roms;
-					param.Discs = cip.Discs;
-					param.DeterministicEmulationRequested = cip.DeterministicEmulationRequested;
-					return (IEmulator)CTor.Invoke(new object[] { param });
-				}
+				var paramType = typeof(CoreLoadParameters<,>).MakeGenericType(SettingsType, SyncSettingsType);
+				// TODO: clean this up
+				dynamic param = Activator.CreateInstance(paramType);
+				param.Comm = cip.Comm;
+				param.Game = cip.Game;
+				param.Settings = (dynamic)cip.FetchSettings(Type, SettingsType);
+				param.SyncSettings = (dynamic)cip.FetchSyncSettings(Type, SyncSettingsType);
+				param.Roms = cip.Roms;
+				param.Discs = cip.Discs;
+				param.DeterministicEmulationRequested = cip.DeterministicEmulationRequested;
+				return (IEmulator)CTor.Invoke(new object[] { param });				
+			}
 
+			private IEmulator CreateUsingLegacyConstructorParameters(ICoreInventoryParameters cip)
+			{
 				// cores using the old constructor parameters can only take a single rom, so assume that here
 				object[] o = new object[_paramMap.Count];
 				Bp(o, "comm", cip.Comm);
@@ -121,6 +119,27 @@ namespace BizHawk.Emulation.Cores
 				Bp(o, "extension", cip.Roms[0].Extension);
 
 				return (IEmulator)CTor.Invoke(o);
+			}
+
+			/// <summary>
+			/// Instantiate an emulator core
+			/// </summary>
+			public IEmulator Create(ICoreInventoryParameters cip)
+			{
+				try
+				{
+					return _useCoreLoadParameters
+						? CreateUsingCoreLoadParameters(cip)
+						: CreateUsingLegacyConstructorParameters(cip);
+				}
+				catch (TargetInvocationException e)
+				{
+					// When an exception occurs inside ConstructorInfo.Invoke,
+					// we always want to expose the exception the core actually threw,
+					// and not the implementation detail that reflected construction was used.
+					ExceptionDispatchInfo.Capture(e.InnerException).Throw();
+					throw; // Needed only for flow analysis -- CSC doesn't know that ExceptionDispatchInfo.Throw() never returns
+				}
 			}
 		}
 
