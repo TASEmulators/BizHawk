@@ -3,7 +3,6 @@
 	internal sealed class FS304 : NesBoardBase
 	{
 		// waixing?
-
 		private int prg;
 		private int prg_mask_32k;
 

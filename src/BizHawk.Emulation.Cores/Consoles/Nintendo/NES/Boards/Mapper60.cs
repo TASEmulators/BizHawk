@@ -47,9 +47,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override void WritePrg(int addr, byte value)
 		{
 			_reg = addr;
-
 			int mirr = ((_reg & 8) >> 3) ^ 1;
-
 			SetMirrorType(mirr > 0 ? EMirrorType.Vertical : EMirrorType.Horizontal);
 		}
 
@@ -76,7 +74,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			if (addr < 0x2000)
 			{
-
 				return Vrom[((_reg & 7) * 0x2000) + (addr & 0x1FFF)];
 			}
 

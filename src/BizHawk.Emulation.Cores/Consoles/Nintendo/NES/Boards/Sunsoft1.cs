@@ -18,7 +18,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				case "MAPPER184":
 					break;
-
 				case "SUNSOFT-1":
 					//this will catch fantasy zone, which isn't emulated the same as the other SUNSOFT-1 boards
 					if (Cart.Pcb == "SUNSOFT-4")
@@ -32,16 +31,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-
-
 		public override byte ReadPpu(int addr)
 		{
-
 			if (addr < 0x1000)
 			{
 				return Vrom[(addr & 0xFFF) + (left_piece * 0x1000)];
 			}
-			else if (addr < 0x2000)
+
+			if (addr < 0x2000)
 			{
 				return Vrom[(addr & 0xFFF) + (right_piece * 0x1000)];
 			}

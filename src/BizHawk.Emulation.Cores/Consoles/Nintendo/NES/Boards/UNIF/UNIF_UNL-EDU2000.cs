@@ -4,7 +4,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	internal sealed class UNIF_UNL_EDU2000 : NesBoardBase
 	{
 		private int _reg;
-
 		private int _prgMask32;
 
 		public override bool Configure(EDetectionOrigin origin)

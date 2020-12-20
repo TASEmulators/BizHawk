@@ -6,9 +6,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//configuration
 		private int prg_byte_mask;
 
-		//state
-		//(none)
-
 		public override bool Configure(EDetectionOrigin origin)
 		{
 			//configure.

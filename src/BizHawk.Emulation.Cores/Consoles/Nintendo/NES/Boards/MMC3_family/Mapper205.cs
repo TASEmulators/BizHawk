@@ -2,10 +2,9 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
+	// Mapper 205 info: http://wiki.nesdev.com/w/index.php/INES_Mapper_205
 	internal sealed class Mapper205 : MMC3Board_Base
 	{
-		//Mapper 205 info: http://wiki.nesdev.com/w/index.php/INES_Mapper_205
-
 		private int block;
 
 		public override bool Configure(EDetectionOrigin origin)
@@ -97,11 +96,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (addr < 0x2000)
 			{
 				addr = MapCHR2(addr);
-				if (Vrom != null)
-					return Vrom[addr + extra_vrom];
-				else return Vram[addr];
+				return Vrom?[addr + extra_vrom] ?? Vram[addr];
 			}
-			else return base.ReadPpu(addr);
+
+			return base.ReadPpu(addr);
 		}
 
 		public override void NesSoftReset()

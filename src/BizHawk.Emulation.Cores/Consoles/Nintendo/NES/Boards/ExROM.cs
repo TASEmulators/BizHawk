@@ -123,7 +123,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			else
 				chr_bank_mask_1k = Cart.VramSize - 1;
 
-			PoweronState();
+			PowerOnState();
 
 			if (NES.apu != null)
 				audio = new MMC5Audio(NES.apu.ExternalQueue, e => { irq_audio = e; SyncIRQ(); });
@@ -131,9 +131,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		private void PoweronState()
+		private void PowerOnState()
 		{
-			//set all prg regs to use ROM
+			// set all prg regs to use ROM
 			regs_prg[0] = 0x80;
 			regs_prg[1] = 0x80;
 			regs_prg[2] = 0x80;
@@ -265,7 +265,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		
 			bank_1k &= chr_bank_mask_1k;
-			addr = (bank_1k<<10)|ofs;
+			addr = (bank_1k << 10) | ofs;
 			return addr;
 		}
 
@@ -517,7 +517,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					nt_fill_attrib |= (byte)(nt_fill_attrib << 2);
 					nt_fill_attrib |= (byte)(nt_fill_attrib << 4);
 					break;
-				
 
 				case 0x1113: //$5113:  [.... .PPP]        (simplified, but technically inaccurate -- see below)
 					wram_bank = value & 7;
@@ -701,7 +700,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					SyncIRQ();
 				}
 			}
-
 		}
 
 		public override void ClockCpu()

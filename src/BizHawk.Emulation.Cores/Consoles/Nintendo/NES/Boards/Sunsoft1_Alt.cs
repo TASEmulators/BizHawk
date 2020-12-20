@@ -43,6 +43,5 @@
 			base.SyncState(ser);
 			ser.Sync(nameof(prg), ref prg);
 		}
-
 	}
 }

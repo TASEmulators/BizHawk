@@ -50,55 +50,39 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					{
 						return Rom[((basea + bank + 1) * 0x4000) + (addr & 0x3FFF)];
 					}
-					else
-					{
-						return Rom[((basea + bank + 0) * 0x4000) + (addr & 0x3FFF)];
-					}
+
+					return Rom[((basea + bank + 0) * 0x4000) + (addr & 0x3FFF)];
 				}
-				else
+
+				if (addr < 0x4000)
 				{
-					if (addr < 0x4000)
-					{
-						return Rom[((basea + bank + 0) * 0x4000) + (addr & 0x3FFF)];
-					}
-					else
-					{
-						return Rom[((basea + bank + 1) * 0x4000) + (addr & 0x3FFF)];
-					}
+					return Rom[((basea + bank + 0) * 0x4000) + (addr & 0x3FFF)];
 				}
+
+				return Rom[((basea + bank + 1) * 0x4000) + (addr & 0x3FFF)];
 			}
-			else
+
+			if ((regs[1] & 0x04) > 0)
 			{
-				if ((regs[1] & 0x04) > 0)
+				if (addr < 0x4000)
 				{
-					if (addr < 0x4000)
-					{
-						return Rom[(0x1F * 0x4000) + (addr & 0x3FFF)];
-					}
-					else
-					{
-						return Rom[((basea + bank) * 0x4000) + (addr & 0x3FFF)];
-					}
+					return Rom[(0x1F * 0x4000) + (addr & 0x3FFF)];
 				}
-				else
-				{
-					if (addr < 0x4000)
-					{
-						return Rom[((basea + bank) * 0x4000) + (addr & 0x3FFF)];
-					}
-					else
-					{
-						if (is167)
-						{
-							return Rom[(0x20 * 0x4000) + (addr & 0x3FFF)];
-						}
-						else
-						{
-							return Rom[(0x07 * 0x4000) + (addr & 0x3FFF)];
-						}
-					}
-				}
+
+				return Rom[((basea + bank) * 0x4000) + (addr & 0x3FFF)];
 			}
+
+			if (addr < 0x4000)
+			{
+				return Rom[((basea + bank) * 0x4000) + (addr & 0x3FFF)];
+			}
+
+			if (is167)
+			{
+				return Rom[(0x20 * 0x4000) + (addr & 0x3FFF)];
+			}
+
+			return Rom[(0x07 * 0x4000) + (addr & 0x3FFF)];
 		}
 	}
 }

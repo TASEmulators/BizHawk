@@ -247,7 +247,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				return Vrom[addr];
 			}
-			else return base.ReadPpu(addr);
+
+			return base.ReadPpu(addr);
 		}
 
 		public override byte ReadPrg(int addr)

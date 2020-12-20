@@ -51,9 +51,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			prg_bank_mask_16k = Cart.PrgSize / 16 - 1;
-
 			SetMirrorType(EMirrorType.Vertical);
-
 			prg_banks_16k[1] = (byte)(0xFF & prg_bank_mask_16k);
 
 			return true;
@@ -72,6 +70,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			int mask = 0xF << bit;
 			irq_reload = (ushort)((irq_reload & ~mask) | (value << bit));
 		}
+
 		public override void WritePrg(int addr, byte value)
 		{
 			switch (addr)
@@ -109,22 +108,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 					//acknowledge
 					irq_pending = false;
-
 					SyncIRQ();
-
 					break;
-
 				case 0x5000:
 					irq_pending = false;
 					irq_enabled = irq_autoen;
 					SyncIRQ();
 					break;
-
 				case 0x7000:
 					prg_banks_16k[0] = value & 0xF;
 					prg_banks_16k[0] &= prg_bank_mask_16k;
 					break;
-
 			}
 		}
 

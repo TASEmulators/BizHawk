@@ -31,14 +31,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override void WritePrg(int addr, byte value)
 		{
-			if (addr.Bit(7))
-			{
-				SetMirrorType(EMirrorType.Horizontal);
-			}
-			else
-			{
-				SetMirrorType(EMirrorType.Vertical);
-			}
+			SetMirrorType(addr.Bit(7) ? EMirrorType.Horizontal : EMirrorType.Vertical);
 
 			int prg_reg_P = (addr >> 1) & 0xF;
 			int prg_reg_L = (addr >> 5) & 1;

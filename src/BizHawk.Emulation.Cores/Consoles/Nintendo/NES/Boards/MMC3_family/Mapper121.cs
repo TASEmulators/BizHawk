@@ -35,10 +35,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				return exRegs[2];
 			}
-			else
-			{
-				return base.ReadExp(addr);
-			}
+
+			return base.ReadExp(addr);
 		}
 
 		public override void WriteExp(int addr, byte value)

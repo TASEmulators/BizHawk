@@ -73,14 +73,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				int type = ((_reg >> 13) & 1) ^ 1;
 
-				if (type == 0)
-				{
-					SetMirrorType(EMirrorType.Horizontal);
-				}
-				else
-				{
-					SetMirrorType(EMirrorType.Vertical);
-				}
+				SetMirrorType(type == 0 ? EMirrorType.Horizontal : EMirrorType.Vertical);
 			}
 		}
 	}

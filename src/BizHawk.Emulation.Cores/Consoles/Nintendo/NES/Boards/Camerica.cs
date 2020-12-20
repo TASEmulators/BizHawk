@@ -75,7 +75,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-
 		public override byte ReadPrg(int addr)
 		{
 			int bank_16k = addr >> 14;
@@ -86,7 +85,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 	}
 
-	//AKA mapper 232
+	// AKA mapper 232
 	internal class Camerica_Mapper232 : NesBoardBase
 	{
 		//configuration
@@ -124,7 +123,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			SetMirrorType(Cart.PadH, Cart.PadV);
 			SyncPRG();
 
-
 			return true;
 		}
 
@@ -161,5 +159,4 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return Rom[addr];
 		}
 	}
-
 }

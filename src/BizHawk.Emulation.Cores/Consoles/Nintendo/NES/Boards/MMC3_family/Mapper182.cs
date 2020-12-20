@@ -26,7 +26,7 @@
 				case 0x8000: break; //?
 				case 0x8001: base.WritePrg(0xA000,value); break;
 				case 0xA000:
-					value = (byte)scramble_A000(value);
+					value = (byte)ScrambleA000(value);
 					base.WritePrg(0x8000,value);
 					break;
 				case 0xA001: break; //?
@@ -43,7 +43,7 @@
 
 		private static readonly byte[] scramble_table = { 0, 3, 1, 5, 6, 7, 2, 4 };
 
-		private static int scramble_A000(byte val)
+		private static int ScrambleA000(byte val)
 		{
 			return (val & ~0x7) | scramble_table[val & 0x7];
 		}

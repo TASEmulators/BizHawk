@@ -2,9 +2,8 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	//iNES Mapper 97
-	//Kaiketsu Yanchamaru (Kid Niki 1)
-
+	// https://wiki.nesdev.com/w/index.php/INES_Mapper_097
+	// Kaiketsu Yanchamaru (Kid Niki 1)
 	internal sealed class IREM_TAM_S1 : NesBoardBase
 	{
 		private int prg_bank_mask_16k;

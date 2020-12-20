@@ -64,14 +64,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				prg_page |= ((value & 0x1F) + ((value & 0x80) >> 2));
 				prg_mode = value.Bit(5);
 
-				if (value.Bit(6))
-				{
-					SetMirrorType(EMirrorType.Vertical);
-				}
-				else
-				{
-					SetMirrorType(EMirrorType.Horizontal);
-				}
+				SetMirrorType(value.Bit(6) ? EMirrorType.Vertical : EMirrorType.Horizontal);
 			}
 			else if (addr == 1)
 			{

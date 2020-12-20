@@ -33,10 +33,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				return Wram[addr];
 			}
-			else
-			{
-				return (byte)(Wram[addr] ^ regs[1]);
-			}
+
+			return (byte)(Wram[addr] ^ regs[1]);
 		}
 
 		public override void WritePrg(int addr, byte value)

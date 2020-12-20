@@ -45,14 +45,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					break;
 			}
 
-			if ((_reg0 & 0x10) > 0)
-			{
-				SetMirrorType(EMirrorType.Horizontal);
-			}
-			else
-			{
-				SetMirrorType(EMirrorType.Vertical);
-			}
+			SetMirrorType((_reg0 & 0x10) > 0 ? EMirrorType.Horizontal : EMirrorType.Vertical);
 		}
 
 		public override byte ReadPrg(int addr)
@@ -61,11 +54,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				return Rom[((_reg0 & 0x07) * 0x4000) + (addr & 0x3FFF)];
 			}
-			else
-			{
-				return Rom[(((_reg0 & 0x6) >> 1) * 0x8000) + (addr & 0x7FFF)];
-			}
 
+			return Rom[(((_reg0 & 0x6) >> 1) * 0x8000) + (addr & 0x7FFF)];
 		}
 
 		public override byte ReadPpu(int addr)

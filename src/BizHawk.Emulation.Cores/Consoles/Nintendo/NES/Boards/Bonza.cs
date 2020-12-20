@@ -5,8 +5,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	// Bonza (R)
 	// Bonza is some kind of gambling game requiring an outside interface of some kind
 	// this is not implemented
-
-
 	// Magic Jewelry 2 (Unl)
 	internal sealed class Bonza : NesBoardBase
 	{

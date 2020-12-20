@@ -40,8 +40,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public virtual NES.CDLog_MapResults MapMemory(ushort addr, bool write)
 		{
-			NES.CDLog_MapResults ret = new NES.CDLog_MapResults();
-			ret.Type = NES.CDLog_AddrType.None;
+			var ret = new NES.CDLog_MapResults { Type = NES.CDLog_AddrType.None };
 
 			if (addr < 0x2000)
 			{

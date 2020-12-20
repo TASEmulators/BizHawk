@@ -3,9 +3,9 @@ using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
+	// http://wiki.nesdev.com/w/index.php/INES_Mapper_245
 	internal sealed class Mapper245 : MMC3Board_Base
 	{
-		//http://wiki.nesdev.com/w/index.php/INES_Mapper_245
 		private bool chr_mode;
 
 		public override bool Configure(EDetectionOrigin origin)
@@ -68,20 +68,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					{
 						return Vram[addr + 0x1000];
 					}
-					else
-					{
-						return Vram[addr - 0x1000];
-					}
+
+					return Vram[addr - 0x1000];
 				}
-				else
-				{
-					return Vram[addr];
-				}
+
+				return Vram[addr];
 			}
-			else
-			{
-				return base.ReadPpu(addr);
-			}
+
+			return base.ReadPpu(addr);
 		}
 
 		public override void WritePpu(int addr, byte value)

@@ -43,30 +43,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override byte ReadPrg(int addr)
 		{
+			int bank;
 			if ((regs[0] & 0x80) > 0)
 			{
 				if ((regs[1] & 0x80) > 0)
 				{
 					return Rom[((regs[1] & 0x1F) * 0x8000) + (addr & 0x7FFF)];
 				}
-				else
-				{
-					int bank = ((regs[1] & 0x1f) << 1) | ((regs[1] >> 6) & 1);
-					return Rom[(bank * 0x4000) + (addr & 0x3FFF)];
-				}
+
+				bank = ((regs[1] & 0x1f) << 1) | ((regs[1] >> 6) & 1);
+				return Rom[(bank * 0x4000) + (addr & 0x3FFF)];
 			}
-			else
+
+			if (addr < 0x4000)
 			{
-				if (addr < 0x4000)
-				{
-					return Rom[(addr & 0x3FFF)];
-				}
-				else
-				{
-					int bank = ((regs[1] & 0x1f) << 1) | ((regs[1] >> 6) & 1);
-					return Rom[(bank * 0x4000) + (addr & 0x3FFF)];
-				}
+				return Rom[(addr & 0x3FFF)];
 			}
+
+			bank = ((regs[1] & 0x1f) << 1) | ((regs[1] >> 6) & 1);
+			return Rom[(bank * 0x4000) + (addr & 0x3FFF)];
 		}
 
 		public override byte ReadPpu(int addr)

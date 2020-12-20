@@ -9,7 +9,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public bool _4in1Mode;
 
 		private int _cmdreg;
-
 		private int _prgMask16k;
 
 		public override bool Configure(EDetectionOrigin origin)
@@ -23,7 +22,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			_prgMask16k = Cart.PrgSize / 16 - 1;
-
 			AutoMapperProps.Apply(this);
 
 			return true;
@@ -49,7 +47,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				if (((_cmdreg & 0x100) > 0) && Cart.PrgSize < 1024)
 				{
-					addr = (addr & 0xFFF0) + (1);
+					addr = (addr & 0xFFF0) + 1;
 				}
 			}
 

@@ -41,7 +41,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(prgRegC), ref prgRegC);
 			ser.Sync(nameof(prgRegE), ref prgRegE);
 
-
 			base.SyncState(ser);
 		}
 
@@ -95,14 +94,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				return Rom[(prgReg8 << 14) + (addr & 0x3FFF)];
 			}
-			else if (addr < 0x6000)
+
+			if (addr < 0x6000)
 			{
 				return Rom[(prgRegC << 13) + (addr & 0x1FFF)];
 			}
-			else
-			{
-				return Rom[(prgRegE << 13) + (addr & 0x1FFF)];
-			}
+
+			return Rom[(prgRegE << 13) + (addr & 0x1FFF)];
 		}
 	}
 }

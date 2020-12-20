@@ -43,60 +43,49 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						if (mmc3.regs[0]<8)
 						{
 							return Vram[(mmc3.regs[0] << 10) + (addr & 0x3FF)];
-						} else
-						{
-							return Vrom[(mmc3.regs[0] << 10) + (addr & 0x3FF)];
 						}
+
+						return Vrom[(mmc3.regs[0] << 10) + (addr & 0x3FF)];
 					}
-					else if (addr<0x800)
+
+					if (addr<0x800)
 					{
 						if (exRegs[2] < 8)
 						{
 							return Vram[(exRegs[2] << 10) + (addr & 0x3FF)];
 						}
-						else
-						{
-							return Vrom[(exRegs[2] << 10) + (addr & 0x3FF)];
-						}
+
+						return Vrom[(exRegs[2] << 10) + (addr & 0x3FF)];
 					}
-					else if (addr < 0xC00)
+
+					if (addr < 0xC00)
 					{
 						if (mmc3.regs[1] < 8)
 						{
 							return Vram[(mmc3.regs[1] << 10) + (addr & 0x3FF)];
 						}
-						else
-						{
-							return Vrom[(mmc3.regs[1] << 10) + (addr & 0x3FF)];
-						}
+
+						return Vrom[(mmc3.regs[1] << 10) + (addr & 0x3FF)];
 					}
-					else
+
+					if (exRegs[3] < 8)
 					{
-						if (exRegs[3] < 8)
-						{
-							return Vram[(exRegs[3] << 10) + (addr & 0x3FF)];
-						}
-						else
-						{
-							return Vrom[(exRegs[3] << 10) + (addr & 0x3FF)];
-						}
+						return Vram[(exRegs[3] << 10) + (addr & 0x3FF)];
 					}
+
+					return Vrom[(exRegs[3] << 10) + (addr & 0x3FF)];
 				}
-				else
+
+				int bank_1k = Get_CHRBank_1K(addr);
+				if (bank_1k < 8)
 				{
-					int bank_1k = Get_CHRBank_1K(addr);
-					if (bank_1k < 8)
-					{
-						return Vram[(bank_1k << 10) + (addr & 0x3FF)];
-					}
-					else
-					{
-						return Vrom[(bank_1k << 10) + (addr & 0x3FF)];
-					}
+					return Vram[(bank_1k << 10) + (addr & 0x3FF)];
 				}
+
+				return Vrom[(bank_1k << 10) + (addr & 0x3FF)];
 			}
-			else
-				return base.ReadPpu(addr);
+
+			return base.ReadPpu(addr);
 		}
 
 		public override void WritePpu(int addr, byte value)
@@ -173,7 +162,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				return exRegs[0];
 			}
-			else if (addr >= 0x6000)
+
+			if (addr >= 0x6000)
 			{
 				return exRegs[1];
 			}

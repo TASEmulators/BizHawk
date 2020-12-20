@@ -26,8 +26,8 @@
 		{
 			if ((addr & 0x100) != 0)
 				return (byte)(NES.DB & 0xc0 | ~addr & 0x3f);
-			else
-				return NES.DB;
+
+			return NES.DB;
 		}
 
 		/* if this awful hack is uncommented, dancing blocks runs

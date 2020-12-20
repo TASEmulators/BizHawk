@@ -49,7 +49,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override void WritePrg(int addr, byte value)
 		{
-			
 			switch (addr & 0x6001)
 			{
 				case 0x0000: //$8000
@@ -60,19 +59,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					Sync();
 					break;
 				case 0x4000:
-					Console.WriteLine("{0:X4} = {1:X2}", addr, value);
 					chr_outer_reg = value;
 					Sync();
 					break;
 				case 0x6000:
-					if ((value & 1) == 0)
-					{
-						SetMirrorType(EMirrorType.Vertical);
-					}
-					else
-					{
-						SetMirrorType(EMirrorType.Horizontal);
-					}
+					SetMirrorType((value & 1) == 0 ? EMirrorType.Vertical : EMirrorType.Horizontal);
 					break;
 			}
 		}
@@ -130,7 +121,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000) return Vrom[RewireCHR(addr)];
-			else return base.ReadPpu(addr);
+			return base.ReadPpu(addr);
 		}
 		public override void WritePpu(int addr, byte value)
 		{

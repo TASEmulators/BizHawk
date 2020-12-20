@@ -10,7 +10,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	//Arkista's Ring
 	//Bump 'n' Jump
 	//Cybernoid
-
 	[NesBoardImplPriority]
 	internal sealed class CNROM : NesBoardBase
 	{
@@ -141,14 +140,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				return 0x12;
 			}
+
 			if (addr < 0x2000)
 			{
 				return Vrom[addr + (chr << 13)];
 			}
-			else
-			{
-				return base.ReadPpu(addr);
-			}
+
+			return base.ReadPpu(addr);
 		}
 
 		public override void SyncState(Serializer ser)

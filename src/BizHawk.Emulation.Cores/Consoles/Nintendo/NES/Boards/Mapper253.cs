@@ -123,7 +123,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				bank = _prgBankMask8K;
 			}
 
-
 			return Rom[(bank << 13) + (addr & 0x1FFF)];
 		}
 
@@ -141,11 +140,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					bank = chr & 1;
 					return Vram[(bank << 10) + (addr & 0x3FF)];
 				}
-				else
-				{
-					return Vrom[bank + (addr & 0x3FF)];
-				}
 
+				return Vrom[bank + (addr & 0x3FF)];
 			}
 
 			return base.ReadPpu(addr);

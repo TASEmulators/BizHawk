@@ -21,14 +21,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override void WritePrg(int addr, byte value)
 		{
-			if (addr == 0) // FCEUX says: another one many-in-1 mapper, there is a lot of similar carts with little different wirings
-			{
-				_reg = value;
-			}
-			else
-			{
-				_reg = addr;
-			}
+			// FCEUX says: another one many-in-1 mapper, there is a lot of similar carts with little different wirings
+			_reg = addr == 0 ? value : addr;
 
 			SetMirrorType(addr.Bit(0) ? EMirrorType.OneScreenB : EMirrorType.OneScreenA);
 		}
@@ -47,10 +41,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					return Vrom[((_reg & 1) * 0xFFF) + (addr & 0xFFF)];
 				}
-				else // Some bad, overdumped roms made by cah4e3
-				{
-					return Vrom[((_reg & 1) * 0x2000) + (addr & 0x1FFF)];
-				}
+
+				// Some bad, overdumped roms made by cah4e3
+				return Vrom[((_reg & 1) * 0x2000) + (addr & 0x1FFF)];
 			}
 
 			return base.ReadPpu(addr);

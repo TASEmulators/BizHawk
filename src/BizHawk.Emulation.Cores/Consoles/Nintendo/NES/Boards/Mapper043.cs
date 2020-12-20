@@ -78,10 +78,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				return Rom[addr];
 			}
-			else
-			{
-				return Rom[addr + 0x4000];
-			}
+
+			return Rom[addr + 0x4000];
 		}
 
 		public override byte ReadPrg(int addr)
@@ -90,25 +88,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				return Rom[addr + 0x2000];
 			}
-			else if (addr < 0x4000)
+
+			if (addr < 0x4000)
 			{
 				return Rom[addr - 0x2000];
 			}
-			else if (addr < 0x6000)
+
+			if (addr < 0x6000)
 			{
 				return Rom[(addr - 0x4000) + prg * 0x2000];
 			}
-			else
+
+			if (swap)
 			{
-				if (swap)
-				{
-					return Rom[(addr - 0x6000) + 8 * 0x2000];
-				}
-				else
-				{
-					return Rom[(addr - 0x6000) + 9 * 0x2000];
-				}
+				return Rom[(addr - 0x6000) + 8 * 0x2000];
 			}
+
+			return Rom[(addr - 0x6000) + 9 * 0x2000];
 		}
 
 		public override void ClockCpu()
@@ -121,7 +117,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					irqenable = false;
 					IrqSignal = true;
-				}				
+				}
 			}
 		}
 

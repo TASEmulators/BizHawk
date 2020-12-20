@@ -26,7 +26,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 	// TODO -- different MMC1 revisions handle wram_disable differently; on some it doesn't work at all; on others,
 	//         it works, but with different initial states possible.  we only emulate the first case
-
 	internal sealed class MMC1
 	{
 		public MMC1_SerialController scnt = new MMC1_SerialController();
@@ -245,7 +244,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		private const int pputimeout = 4; // i don't know if this is right, but anything lower will not boot Bill & Ted
 		private bool disablemirror = false; // mapper 171: mmc1 without mirroring control
 
-
 		//the VS actually does have 2 KB of nametable address space
 		//let's make the extra space here, instead of in the main NES to avoid confusion
 		private byte[] CIRAM_VS = new byte[0x800];
@@ -282,14 +280,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (_is_snrom)
 			{
 				if (!mmc1.wram_disable && chr_wram_enable)
-					return base.ReadWram(addr);	
-				else
-					return NES.DB;	
+					return base.ReadWram(addr);
+				return NES.DB;
 			}
-			else
-			{
-				return base.ReadWram(addr);
-			}	
+
+			return base.ReadWram(addr);
 		}
 
 		public override byte ReadPrg(int addr)
@@ -321,28 +316,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				addr = Gen_CHR_Address(addr);
 
-				if (Cart.VramSize != 0)
-					return Vram[addr & vram_mask];
-				else return Vrom[addr];
+				return Cart.VramSize != 0
+					? Vram[addr & vram_mask]
+					: Vrom[addr];
 			}
-			else
+
+			if (NES._isVS)
 			{
-				if (NES._isVS)
+				addr -= 0x2000;
+				if (addr < 0x800)
 				{
-					addr = addr - 0x2000;
-					if (addr < 0x800)
-					{
-						return NES.CIRAM[addr];
-					}
-					else
-					{
-						return CIRAM_VS[addr - 0x800];
-					}
+					return NES.CIRAM[addr];
 				}
-				else
-					return base.ReadPpu(addr);
-					
+
+				return CIRAM_VS[addr - 0x800];
 			}
+
+			return base.ReadPpu(addr);
 		}
 
 		public override void WritePpu(int addr, byte value)
@@ -372,10 +362,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				if (_is_snrom)
 				{
 					// WRAM enable is tied to ppu a12
-					if (Gen_CHR_Address(addr).Bit(16))
-						chr_wram_enable = false;
-					else
-						chr_wram_enable = true;
+					chr_wram_enable = !Gen_CHR_Address(addr).Bit(16);
 				}
 
 				if (Cart.VramSize != 0)
@@ -515,7 +502,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			BaseConfigure();
-
 			return true;
 		}
 
@@ -531,7 +517,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				chr_mask = (128 / 8 * 2) - 1;
 			}
-
 
 			if (!disablemirror)
 				SetMirrorType(mmc1.mirror);

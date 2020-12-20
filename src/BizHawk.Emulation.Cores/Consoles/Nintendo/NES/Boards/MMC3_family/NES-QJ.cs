@@ -55,6 +55,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			return (byte)block;
 		}
+
 		public override void WriteWram(int addr, byte value)
 		{
 			if (mmc3.wram_enable && !mmc3.wram_write_protect)
@@ -62,6 +63,5 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				block = value & 1;
 			}
 		}
-
 	}
 }

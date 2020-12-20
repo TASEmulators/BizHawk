@@ -96,11 +96,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					break;
 				case 0x4014:
 					// is this right??
-					if ((value & 1) != 0)
-						SetMirrorType(EMirrorType.Vertical);
-					else
-						SetMirrorType(EMirrorType.Horizontal);
-					break;				
+					SetMirrorType((value & 1) != 0 ? EMirrorType.Vertical : EMirrorType.Horizontal);
+					break;
 			}
 		}
 

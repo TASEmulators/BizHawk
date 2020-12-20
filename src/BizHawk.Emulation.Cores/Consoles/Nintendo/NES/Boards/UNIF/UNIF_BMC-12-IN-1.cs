@@ -57,15 +57,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			if (addr < 0x2000)
 			{
-				int basebank = (ctrl & 3) << 3;
-				int bank = 0;
+				int baseBank = (ctrl & 3) << 3;
+				int bank;
 				if (addr < 0x1000)
 				{
-					bank = regs[0] >> 3 | (basebank << 2);
+					bank = regs[0] >> 3 | (baseBank << 2);
 				}
 				else
 				{
-					bank = regs[1] >> 3 | (basebank << 2);
+					bank = regs[1] >> 3 | (baseBank << 2);
 				}
 
 				return Vrom[(bank << 12) + (addr & 0xFFF)];
@@ -76,30 +76,29 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override byte ReadPrg(int addr)
 		{
-			var basebank = (ctrl & 3) << 3;
-			int bank = 0;
-
+			var baseBank = (ctrl & 3) << 3;
+			int bank;
 			if (ctrl.Bit(3))
 			{
 				if (addr < 0x4000)
 				{
-					bank = basebank | (regs[0] & 6) | 0;
+					bank = baseBank | (regs[0] & 6) | 0;
 					
 				}
 				else
 				{
-					bank = basebank | (regs[0] & 6) | 1;
+					bank = baseBank | (regs[0] & 6) | 1;
 				}
 			}
 			else
 			{
 				if (addr < 0x4000)
 				{
-					bank = basebank | (regs[0] & 7);
+					bank = baseBank | (regs[0] & 7);
 				}
 				else
 				{
-					bank = basebank | 7;
+					bank = baseBank | 7;
 				}
 			}
 

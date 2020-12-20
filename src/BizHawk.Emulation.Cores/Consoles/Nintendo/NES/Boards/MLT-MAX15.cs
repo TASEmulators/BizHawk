@@ -3,10 +3,9 @@ using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
+	// http://wiki.nesdev.com/w/index.php/INES_Mapper_234
 	internal sealed class MLT_MAX15 : NesBoardBase
 	{
-		//http://wiki.nesdev.com/w/index.php/INES_Mapper_234
-
 		private bool mode = false;
 		private int block_high = 0;
 		private int block_low = 0;
@@ -126,7 +125,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			
 			return value;
-			
 		}
 
 		public override byte ReadPpu(int addr)

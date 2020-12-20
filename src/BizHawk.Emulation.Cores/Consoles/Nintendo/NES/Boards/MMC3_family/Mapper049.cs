@@ -44,7 +44,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.WriteWram(addr, value);
 		}
 
-
 		protected override int Get_PRGBank_8K(int addr)
 		{
 			if (mode) 

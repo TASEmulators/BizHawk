@@ -72,27 +72,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				return eRAM[(addr & 0x07)];
 			}
-			else
-			{
-				return base.ReadExp(addr);
-			}
+
+			return base.ReadExp(addr);
 		}
 
 		public override void WritePrg(int addr, byte value)
 		{
-			//$8000-FFFF:    [.... ..CC]   Low 2 bits of CHR
-			//A~[..MH HPPP PPO. CCCC]
-
+			// $8000-FFFF:    [.... ..CC]   Low 2 bits of CHR
+			// A~[..MH HPPP PPO. CCCC]
 			addr += 0x8000;
 
-			if (addr.Bit(13))
-			{
-				SetMirrorType(EMirrorType.Horizontal);
-			}
-			else
-			{
-				SetMirrorType(EMirrorType.Vertical);
-			}
+			SetMirrorType(addr.Bit(13) ? EMirrorType.Horizontal : EMirrorType.Vertical);
 
 			prg_mode = addr.Bit(5);
 			prg_reg = (addr >> 6) & 0x1F;
@@ -133,10 +123,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				int bank = (prg_reg >> 1) & prg_bank_mask_32k;
 				return Rom[(bank * 0x8000) + addr + chip_offset];
 			}
-			else
-			{
-				return Rom[((prg_reg & prg_bank_mask_16k) * 0x4000) + (addr & 0x3FFF) + chip_offset];
-			}
+
+			return Rom[((prg_reg & prg_bank_mask_16k) * 0x4000) + (addr & 0x3FFF) + chip_offset];
 		}
 	}
 }

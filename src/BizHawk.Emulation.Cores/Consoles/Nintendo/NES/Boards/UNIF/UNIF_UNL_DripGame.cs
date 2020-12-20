@@ -366,7 +366,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						if (Empty)
 						{
 							active = false;
-							//Console.WriteLine("Exhaust");
 						}
 						else
 						{
@@ -377,6 +376,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						}
 					}
 				}
+
 				if (volumeChangePending)
 				{
 					volumeChangePending = false;

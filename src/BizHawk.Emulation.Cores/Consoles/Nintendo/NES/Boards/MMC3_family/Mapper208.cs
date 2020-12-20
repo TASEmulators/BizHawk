@@ -79,7 +79,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					exRegs[addr & 3] = (byte)(value ^ lut[exRegs[4]]);
 				}
 			}
-
 			else
 			{
 				base.WriteExp(addr, value);

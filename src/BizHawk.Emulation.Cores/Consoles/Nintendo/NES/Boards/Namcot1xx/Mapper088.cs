@@ -12,7 +12,6 @@
 	For example, mask the CHR ROM 1K bank output from the mapper by $3F, and then OR it with $40 if the PPU address was >= $1000.
 	Consequently, CHR is split into two halves. $0xxx can only have CHR from the first 64K, $1xxx can only have CHR from the second 64K.
 	*/
-
 	internal sealed class Mapper088 : Namcot108Board_Base
 	{
 		//configuration
@@ -54,7 +53,7 @@
 		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000) return Vrom[RewireCHR(addr)];
-			else return base.ReadPpu(addr);
+			return base.ReadPpu(addr);
 		}
 		public override void WritePpu(int addr, byte value)
 		{

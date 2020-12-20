@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			new List<byte> { 0, 1, 2, 3, },
 			new List<byte> { 3, 2, 1, 0, },
 			new List<byte> { 0, 2, 1, 3, },
-			new List<byte> { 3, 1, 2, 0, },
+			new List<byte> { 3, 1, 2, 0, }
 		};
 
 		private readonly List<List<byte>> chr_perm = new List<List<byte>>

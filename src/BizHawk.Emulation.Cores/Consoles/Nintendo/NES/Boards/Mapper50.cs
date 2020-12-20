@@ -3,10 +3,9 @@ using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
+	// http://wiki.nesdev.com/w/index.php/INES_Mapper_050
 	internal sealed class Mapper50 : NesBoardBase
 	{
-		//http://wiki.nesdev.com/w/index.php/INES_Mapper_050
-
 		private byte prg_bank;
 		private int prg_bank_mask_8k;
 		private bool irq_enable;
@@ -63,19 +62,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				return Rom[(0x08 * 0x2000) + (addr & 0x1FFF)];
 			}
-			else if (addr < 0x4000)
+
+			if (addr < 0x4000)
 			{
 				return Rom[(0x09 * 0x2000) + (addr & 0x1FFF)];
 			}
-			else if (addr < 0x6000)
+
+			if (addr < 0x6000)
 			{
 				int bank = (prg_bank & prg_bank_mask_8k);
 				return Rom[(bank * 0x2000) + (addr & 0x1FFF)];
 			}
-			else
-			{
-				return Rom[(0x0B * 0x2000) + (addr & 0x1FFF)];
-			}
+
+			return Rom[(0x0B * 0x2000) + (addr & 0x1FFF)];
 		}
 
 		public override byte ReadWram(int addr)

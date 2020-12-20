@@ -57,27 +57,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					{
 						return Vram[(0x1000 * 3 * 2) + addr];
 					}
-					else
-					{
-						return Vram[(0x1000 * 3) + addr];
-					}
+
+					return Vram[(0x1000 * 3) + addr];
 				}
-				else
+
+				if (chr_block == 1)
 				{
-					if (chr_block == 1)
-					{
-						return Vram[(0x1000 * chr_pos * 2) + addr];
-					}
-					else
-					{
-						return Vram[(0x1000 * chr_pos * 2) + addr];
-					}
+					return Vram[(0x1000 * chr_pos * 2) + addr];
 				}
+
+				return Vram[(0x1000 * chr_pos * 2) + addr];
 			}
-			else
-			{
-				return base.ReadPpu(addr);
-			}
+
+			return base.ReadPpu(addr);
 		}
 
 		public override void WritePpu(int addr, byte value)
@@ -114,10 +106,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override void AddressPpu(int addr)
 		{
-			byte newpos;
 			if ((addr & 0x3000) != 0x2000) return;
 			if ((addr & 0x3FF) >= 0x3C0) return;
-			newpos = (byte)((addr >> 8) & 3);
+			var newpos = (byte)((addr >> 8) & 3);
 			if (chr_pos != newpos)
 			{
 				chr_pos = newpos;

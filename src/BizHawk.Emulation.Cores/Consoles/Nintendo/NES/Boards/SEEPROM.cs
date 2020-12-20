@@ -28,7 +28,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// <summary>true if the SEEPROM is trying to pull down the SDA line</summary>
 		private bool PullDown = false;
 
-
 		/// <summary>number of bits left to send\recv of current byte</summary>
 		private int BitsLeft;
 		/// <summary>current data byte in progress</summary>
@@ -186,7 +185,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			PullDown = false;
 		}
 
-		
 		public void WriteByte(byte val)
 		{
 			OutEnable = val.Bit(7);
@@ -233,7 +231,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return !PullDown;
 		}
 
-		public byte[] GetSaveRAM() { return rom; }
+		public byte[] GetSaveRAM() => rom;
 
 		/// <param name="Big">256 byte instead of 128 byte</param>
 		public SEEPROM(bool Big)

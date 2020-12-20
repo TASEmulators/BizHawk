@@ -2,13 +2,11 @@
 //27
 
 //TODO - could merge functionality with 192 somehow
-
+//http://wiki.nesdev.com/w/index.php/INES_Mapper_074
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	internal sealed class Mapper074 : MMC3Board_Base
 	{
-		//http://wiki.nesdev.com/w/index.php/INES_Mapper_074
-
 		public override bool Configure(EDetectionOrigin origin)
 		{
 			//analyze board type

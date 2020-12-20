@@ -223,8 +223,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			if (addr >= 0x2000 && !NTROM)
 				return NES.CIRAM[MapPPU(addr) & 0x7ff];
-			else
-				return Vrom[MapPPU(addr) & chr_byte_mask];
+			return Vrom[MapPPU(addr) & chr_byte_mask];
 		}
 
 		public override void WritePpu(int addr, byte value)
@@ -377,6 +376,5 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 			}
 		}
-
 	}
 }

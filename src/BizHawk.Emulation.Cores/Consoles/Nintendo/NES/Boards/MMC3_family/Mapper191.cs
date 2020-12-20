@@ -38,7 +38,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				//this is referencing chr ram
 				return Vram[addr & 0x7FF];
 			}
-			else return base.ReadPpu(addr);
+
+			return base.ReadPpu(addr);
 		}
 
 		public override void WritePpu(int addr, byte value)
@@ -57,6 +58,5 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			else base.WritePpu(addr, value);
 		}
-
 	}
 }

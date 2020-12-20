@@ -82,10 +82,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override void ClockPpu()
 		{
-			if ((NES.ppu.ppuphase != PPU.PPU_PHASE_VBL))// && IRQa)
+			if (NES.ppu.ppuphase != PPU.PPU_PHASE_VBL)
 			{
 				IRQpre--;
-				if (IRQpre==0)
+				if (IRQpre == 0)
 				{
 					IRQCount++;
 					IRQpre = 341;
@@ -93,8 +93,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					{
 						IrqSignal = IRQa;
 					}
+
 					if (IRQCount == 256)
+					{
 						IRQCount = 0;
+					}
 				}
 			}
 		}
@@ -102,7 +105,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override byte ReadPrg(int addr)
 		{
 			int bank;
-
 			if (addr < 0x2000)
 			{
 				if ((swap & 3) > 0)
@@ -134,7 +136,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				bank = prg_mask_8k;
 			}
 
-
 			return Rom[(bank << 13) + (addr & 0x1FFF)];
 		}
 
@@ -143,7 +144,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (addr < 0x2000)
 			{
 				int x = (addr >> 10) & 7;
-
 				return Vrom[(chr[x] << 10) + (addr & 0x3FF)];
 			}
 

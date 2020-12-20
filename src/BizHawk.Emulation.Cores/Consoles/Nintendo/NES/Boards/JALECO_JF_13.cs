@@ -2,13 +2,11 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	//Mapper 86
-	
-	//Example Games:
-	//--------------------------
-	//Moero!! Pro Yakyuu (Black)
-	//Moero!! Pro Yakyuu (Red)
-
+	// Mapper 86
+	// Example Games:
+	// --------------------------
+	// Moero!! Pro Yakyuu (Black)
+	// Moero!! Pro Yakyuu (Red)
 	internal sealed class JALECO_JF_13 : NesBoardBase
 	{
 		//configuration
@@ -43,16 +41,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			if (addr < 0x8000)
 				return Rom[addr + (prg * 0x8000)];
-			else
-				return base.ReadPrg(addr);
+			return base.ReadPrg(addr);
 		}
 
 		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 				return Vrom[(addr & 0x1FFF) + (chr * 0x2000)];
-			else
-				return base.ReadPpu(addr);
+			return base.ReadPpu(addr);
 		}
 
 		public override void WriteWram(int addr, byte value)

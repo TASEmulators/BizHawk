@@ -31,13 +31,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override void WriteExp(int addr, byte value)
 		{
 			addr += 0x4000;
-
 			switch (addr)
 			{
 				case 0x4022:
-					if (Rom.Length > 0x10000) { prg = (value & 0x01) << 2; }					
+					if (Rom.Length > 0x10000) { prg = (value & 0x01) << 2; }
 					break;
-
 				case 0x4122:
 					irqenable = (value & 3) > 0;
 					IrqSignal = false;
@@ -52,7 +50,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				return Rom[(addr - 0x1000) + (prg_count - 3) * 0x1000];
 			}
-			else return base.ReadExp(addr);
+
+			return base.ReadExp(addr);
 		}
 
 		public override byte ReadWram(int addr)
@@ -75,7 +74,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					irqenable = false;
 					IrqSignal = true;
-				}				
+				}
 			}
 		}
 

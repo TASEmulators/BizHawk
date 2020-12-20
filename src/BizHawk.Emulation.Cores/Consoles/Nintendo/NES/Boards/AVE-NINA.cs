@@ -51,7 +51,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				addr = (bank_4k << 12) | ofs;
 				return Vrom[addr];
 			}
-			else return base.ReadPpu(addr);
+
+			return base.ReadPpu(addr);
 		}
 
 		public override byte ReadPrg(int addr)
@@ -82,7 +83,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					break;
 			}
 		}
-
 	}
 
 	// according to the latest on nesdev:
@@ -127,7 +127,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						return false;
 					AssertPrg(32, 64); AssertChr(32, 64); AssertWram(0); AssertVram(0);
 					break;
-
 				default:
 					return false;
 			}
@@ -192,8 +191,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				addr |= ((chr_bank_8k & chr_bank_mask_8k) << 13);
 				return Vrom[addr];
 			}
-			else
-				return base.ReadPpu(addr);
+
+			return base.ReadPpu(addr);
 		}
 	}
 

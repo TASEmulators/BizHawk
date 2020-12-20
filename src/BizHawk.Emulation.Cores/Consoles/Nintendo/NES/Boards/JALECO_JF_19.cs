@@ -3,15 +3,13 @@ using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	//iNES Mapper 92
-	//Example Games:
-	//Example Games:
-	//--------------------------
-	//Moero!! Pro Soccer
-	//Moero!! Pro Yakyuu '88 - Ketteiban
-
-	//Near Identical to Jaleco JF 17, except for a slight PRG setup
-
+	// iNES Mapper 92
+	// Example Games:
+	// Example Games:
+	// --------------------------
+	// Moero!! Pro Soccer
+	// Moero!! Pro Yakyuu '88 - Ketteiban
+	// Near Identical to Jaleco JF 17, except for a slight PRG setup
 	internal sealed class JALECO_JF_19 : NesBoardBase
 	{
 		//configuration
@@ -63,25 +61,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override void WritePrg(int addr, byte value)
 		{
-			//Console.WriteLine("MAP {0:X4} = {1:X2}", addr, value);
-
 			value = HandleNormalPRGConflict(addr, value);
-			/*
-			int command = value >> 6;
-			switch (command)
-			{
-				case 0:
-					if (latch == 1)
-						chr_banks_8k[0] = (byte)(value & 0xF);
-					else if (latch == 2)
-						prg_banks_16k[1] = (byte)(value & 0xF);
-					SyncMap();
-					break;
-				default:
-					latch = command;
-					break;
-			}
-			*/
 
 			// the important change here is that the chr and prg bank latches get filled on the rising edge, not falling
 			if (value.Bit(6) && !latch.Bit(6))
@@ -103,9 +83,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (addr < 0x2000)
 			{
 				addr = ApplyMemoryMap(13, chr_banks_8k, addr);
-				return base.ReadPPUChr(addr);
+				return ReadPPUChr(addr);
 			}
-			else return base.ReadPpu(addr);
+
+			return base.ReadPpu(addr);
 		}
 	}
 }

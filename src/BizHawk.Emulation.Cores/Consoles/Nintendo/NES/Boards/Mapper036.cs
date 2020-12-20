@@ -77,7 +77,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						R++;
 						R &= 0x30;
 					}
-					
 
 					break;
 				case 0x102:

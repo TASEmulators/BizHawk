@@ -2,20 +2,9 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
+	// https://wiki.nesdev.com/w/index.php/INES_Mapper_046
 	internal sealed class Mapper046 : NesBoardBase
 	{
-		//Rumblestation 15-in-1 (Unl).nes
-
-		/*
-			Regs at $6000-7FFF means no PRG-RAM.
-
-			$6000-7FFF:  [CCCC PPPP]   High CHR, PRG bits
-			$8000-FFFF:  [.CCC ...P]   Low CHR, PRG bits
- 
-			'C' selects 8k CHR @ $0000
-			'P' select 32k PRG @ $8000
-		 */
-		
 		//configuration
 		private int prg_bank_mask_32k, chr_bank_mask_8k;
 

@@ -45,7 +45,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			IrqSignal = (irq_pending && irq_enabled);
 		}
 
-
 		private static int RemapM117(int addr)
 		{
 			//addr &= 0x7007; // i don't know all of which bits are decoded, but this breaks stuff
@@ -187,9 +186,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override void WritePrg(int addr, byte value)
 		{
-			//Console.WriteLine("    mapping {0:X4} = {1:X2}", addr, value);
 			addr = remap(addr);
-			//Console.WriteLine("- remapping {0:X4} = {1:X2}", addr, value);
 			switch (addr)
 			{
 				case 0x0000: prg_banks_8k[0] = (byte)(value & prg_bank_mask_8k); break;
@@ -303,7 +300,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (irq_mode)
 			{
 				ClockIRQ();
-				//throw new InvalidOperationException("needed a test case for this; you found one!");
 			}
 			else
 			{
