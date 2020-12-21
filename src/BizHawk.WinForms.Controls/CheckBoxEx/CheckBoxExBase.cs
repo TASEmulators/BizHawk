@@ -3,7 +3,7 @@ using System.Windows.Forms;
 
 namespace BizHawk.WinForms.Controls
 {
-	public abstract class CheckBoxExBase : CheckBox
+	public abstract class CheckBoxExBase : CheckBox, ICheckBoxOrRadioEx
 	{
 		[Browsable(false)]
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]

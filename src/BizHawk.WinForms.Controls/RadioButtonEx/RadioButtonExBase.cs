@@ -3,7 +3,7 @@ using System.Windows.Forms;
 
 namespace BizHawk.WinForms.Controls
 {
-	public abstract class RadioButtonExBase : RadioButton, ITrackedRadioButton
+	public abstract class RadioButtonExBase : RadioButton, ICheckBoxOrRadioEx, ITrackedRadioButton
 	{
 		/// <remarks>use to prevent recursion</remarks>
 		protected bool CheckedChangedCausedByTracker { get; private set; }
