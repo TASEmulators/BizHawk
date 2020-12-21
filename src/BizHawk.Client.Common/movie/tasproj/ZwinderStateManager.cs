@@ -389,7 +389,17 @@ namespace BizHawk.Client.Common
 					AddStateCache(frame);
 					source.SaveStateBinary(new BinaryWriter(s));
 				},
-				index => StateCache.Remove(index));
+				index =>
+				{
+					var state = _gapFiller.GetState(index);
+					StateCache.Remove(state.Frame);
+
+					if (_reserveCallback(state.Frame))
+					{
+						AddToReserved(state);
+						return;
+					}
+				});
 		}
 
 		public void Clear()
