@@ -137,7 +137,7 @@ namespace BizHawk.Client.Common
 		/// <param name="callback">will be called with the stream if capture is to be performed</param>
 		/// <param name="indexInvalidated">
 		/// If provided, will be called with the index of states that are about to be removed.  This will happen during
-		/// calls to Write() inside `callback`, and any reuse of the old state will have to happen immediately
+		/// calls to Write() inside `callback`, and any reading of the old state must be finished before this returns.
 		/// </param>
 		public void Capture(int frame, Action<Stream> callback, Action<int> indexInvalidated = null, bool force = false)
 		{
