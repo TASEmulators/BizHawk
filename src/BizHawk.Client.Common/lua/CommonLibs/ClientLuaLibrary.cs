@@ -279,7 +279,7 @@ namespace BizHawk.Client.Common
 		[LuaMethod("createinstance", "returns a default instance of the given type of object if it exists (not case sensitive). Note: This will only work on objects which have a parameterless constructor.  If no suitable type is found, or the type does not have a parameterless constructor, then nil is returned")]
 		public LuaTable CreateInstance(string name)
 		{
-			var instance = APIs.Tool.GetTool(name);
+			var instance = APIs.Tool.CreateInstance(name);
 			return instance == null ? null : _th.ObjectToTable(instance);
 		}
 
