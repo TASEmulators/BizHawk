@@ -77,7 +77,7 @@ namespace BizHawk.Client.EmuHawk
 			Type schemaType;
 			try
 			{
-				schemaType = EmuHawk.ReflectionCache.Types.Where(typeof(IVirtualPadSchema).IsAssignableFrom)
+				schemaType = Emulation.Cores.ReflectionCache.Types.Where(typeof(IVirtualPadSchema).IsAssignableFrom)
 					.Select(t => (SchemaType: t, Attr: t.GetCustomAttributes(false).OfType<SchemaAttribute>().FirstOrDefault()))
 					.First(tuple => tuple.Attr?.SystemId == Emulator.SystemId)
 					.SchemaType;
