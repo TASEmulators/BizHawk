@@ -74,16 +74,18 @@ namespace BizHawk.Client.EmuHawk
 		{
 			ControllerPanel.Controls.Clear();
 
-			var schemaType = EmuHawk.ReflectionCache.Types
-				.Where(t => typeof(IVirtualPadSchema)
-					.IsAssignableFrom(t) && t.GetCustomAttributes(false)
-					.OfType<SchemaAttribute>()
-					.Any())
-				.FirstOrDefault(t => t.GetCustomAttributes(false)
-					.OfType<SchemaAttribute>()
-					.First().SystemId == Emulator.SystemId);
-
-			if (schemaType == null) return;
+			Type schemaType;
+			try
+			{
+				schemaType = EmuHawk.ReflectionCache.Types.Where(typeof(IVirtualPadSchema).IsAssignableFrom)
+					.Select(t => (SchemaType: t, Attr: t.GetCustomAttributes(false).OfType<SchemaAttribute>().FirstOrDefault()))
+					.First(tuple => tuple.Attr?.SystemId == Emulator.SystemId)
+					.SchemaType;
+			}
+			catch (Exception)
+			{
+				return;
+			}
 
 			var padSchemata = ((IVirtualPadSchema) Activator.CreateInstance(schemaType))
 				.GetPadSchemas(Emulator, s => MessageBox.Show(s))
