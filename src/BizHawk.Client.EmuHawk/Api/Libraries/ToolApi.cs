@@ -15,11 +15,11 @@ namespace BizHawk.Client.EmuHawk
 
 		public ToolApi(ToolManager toolManager) => _toolManager = toolManager;
 
-		public Type GetTool(string name)
+		public IToolForm GetTool(string name)
 		{
 			var toolType = Util.GetTypeByName(name).FirstOrDefault(x => typeof(IToolForm).IsAssignableFrom(x) && !x.IsInterface);
-			if (toolType != null) _toolManager.Load(toolType);
-			return _toolManager.AvailableTools.FirstOrDefault(tool => tool.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase));
+			if (toolType == null) return null;
+			return _toolManager.Load(toolType);
 		}
 
 		public object CreateInstance(string name)
