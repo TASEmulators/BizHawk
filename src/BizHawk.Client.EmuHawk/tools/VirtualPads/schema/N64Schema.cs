@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 
 using BizHawk.Common;
@@ -11,7 +12,7 @@ namespace BizHawk.Client.EmuHawk
 	// ReSharper disable once UnusedMember.Global
 	public class N64Schema : IVirtualPadSchema
 	{
-		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
+		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core, Action<string> showMessageBox)
 		{
 			var ss = ((N64)core).GetSyncSettings();
 			for (var i = 0; i < 4; i++)

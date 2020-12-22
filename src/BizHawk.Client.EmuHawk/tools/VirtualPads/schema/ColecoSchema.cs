@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using BizHawk.Emulation.Common;
@@ -10,7 +11,7 @@ namespace BizHawk.Client.EmuHawk
 	// ReSharper disable once UnusedMember.Global
 	public class ColecoSchema : IVirtualPadSchema
 	{
-		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
+		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core, Action<string> showMessageBox)
 		{
 			var deck = ((ColecoVision)core).ControllerDeck;
 			var ports = new[] { deck.Port1.GetType(), deck.Port2.GetType() };

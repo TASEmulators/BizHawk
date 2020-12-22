@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 
 using BizHawk.Emulation.Common;
@@ -10,7 +11,7 @@ namespace BizHawk.Client.EmuHawk
 	// ReSharper disable once UnusedMember.Global
 	public class VecSchema : IVirtualPadSchema
 	{
-		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
+		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core, Action<string> showMessageBox)
 		{
 			var vecSyncSettings = ((VectrexHawk)core).GetSyncSettings().Clone();
 			var port1 = vecSyncSettings.Port1;

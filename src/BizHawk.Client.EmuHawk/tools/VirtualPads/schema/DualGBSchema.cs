@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 
 using BizHawk.Emulation.Common;
@@ -9,7 +10,7 @@ namespace BizHawk.Client.EmuHawk
 	// ReSharper disable once UnusedMember.Global
 	public class DualGbSchema : IVirtualPadSchema
 	{
-		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
+		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core, Action<string> showMessageBox)
 		{
 			yield return StandardController(1);
 			yield return StandardController(2);

@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Windows.Forms;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
@@ -13,13 +13,13 @@ namespace BizHawk.Client.EmuHawk
 	// ReSharper disable once UnusedMember.Global
 	public class PcfxSchema : IVirtualPadSchema
 	{
-		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
+		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core, Action<string> showMessageBox)
 		{
 			var nyma = (NymaCore) core;
-			return NymaSchemas(nyma);
+			return NymaSchemas(nyma, showMessageBox);
 		}
 
-		private static IEnumerable<PadSchema> NymaSchemas(NymaCore nyma)
+		private static IEnumerable<PadSchema> NymaSchemas(NymaCore nyma, Action<string> showMessageBox)
 		{
 			foreach (NymaCore.PortResult result in nyma.ActualPortData)
 			{
@@ -35,7 +35,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (device != "none")
 				{
-					MessageBox.Show($"Controller type {device} not supported yet.");
+					showMessageBox($"Controller type {device} not supported yet.");
 				}
 			}
 

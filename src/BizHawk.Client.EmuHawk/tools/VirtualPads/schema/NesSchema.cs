@@ -15,7 +15,7 @@ namespace BizHawk.Client.EmuHawk
 	public class NesSchema : IVirtualPadSchema
 	{
 		/// <exception cref="Exception">found <c>ControllerSNES</c></exception>
-		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
+		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core, Action<string> showMessageBox)
 		{
 			if (core is NES || core is SubNESHawk)
 			{

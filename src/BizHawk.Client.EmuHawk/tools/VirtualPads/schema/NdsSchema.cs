@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using BizHawk.Emulation.Common;
 
@@ -8,7 +9,7 @@ namespace BizHawk.Client.EmuHawk.tools.VirtualPads.schema
 	// ReSharper disable once UnusedMember.Global
 	public class NdsSchema : IVirtualPadSchema
 	{
-		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
+		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core, Action<string> showMessageBox)
 		{
 			yield return Controller();
 			yield return Console();

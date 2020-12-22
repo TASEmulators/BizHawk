@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Windows.Forms;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.Nintendo.SNES9X;
@@ -13,7 +13,7 @@ namespace BizHawk.Client.EmuHawk
 	// ReSharper disable once UnusedMember.Global
 	public class SnesSchema : IVirtualPadSchema
 	{
-		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
+		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core, Action<string> showMessageBox)
 		{
 			if (core is LibsnesCore bsnes)
 			{
@@ -22,7 +22,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (core is NymaCore nyma)
 			{
-				return GetFaustSchemas(nyma);
+				return GetFaustSchemas(nyma, showMessageBox);
 			}
 
 			return GetSnes9xPadSchemas((Snes9x)core);
@@ -115,7 +115,7 @@ namespace BizHawk.Client.EmuHawk
 			yield return ConsoleButtons();
 		}
 
-		private static IEnumerable<PadSchema> GetFaustSchemas(NymaCore nyma)
+		private static IEnumerable<PadSchema> GetFaustSchemas(NymaCore nyma, Action<string> showMessageBox)
 		{
 			foreach (NymaCore.PortResult result in nyma.ActualPortData)
 			{
@@ -127,7 +127,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (device != "none")
 				{
-					MessageBox.Show($"Controller type {device} not supported yet.");
+					showMessageBox($"Controller type {device} not supported yet.");
 				}
 			}
 

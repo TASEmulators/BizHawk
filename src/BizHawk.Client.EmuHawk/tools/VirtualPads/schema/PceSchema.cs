@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Windows.Forms;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
@@ -21,17 +21,17 @@ namespace BizHawk.Client.EmuHawk
 	[Schema("PCE")]
 	public class PceSchema : IVirtualPadSchema
 	{
-		public virtual IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
+		public virtual IEnumerable<PadSchema> GetPadSchemas(IEmulator core, Action<string> showMessageBox)
 		{
 			return core switch
 			{
-				PCEngine pce => PceHawkSchemas(pce),
-				NymaCore nyma => NymaSchemas(nyma),
+				PCEngine pce => PceHawkSchemas(pce, showMessageBox),
+				NymaCore nyma => NymaSchemas(nyma, showMessageBox),
 				_ => Enumerable.Empty<PadSchema>()
 			};
 		}
 
-		private static IEnumerable<PadSchema> PceHawkSchemas(PCEngine core)
+		private static IEnumerable<PadSchema> PceHawkSchemas(PCEngine core, Action<string> showMessageBox)
 		{
 			var ss = core.GetSyncSettings();
 
@@ -44,18 +44,18 @@ namespace BizHawk.Client.EmuHawk
 					ss.Port5
 				}
 				.Where(p => p != PceControllerType.Unplugged)
-				.Select((p, i) => PceHawkGenerateSchemaForPort(p, i + 1))
+				.Select((p, i) => PceHawkGenerateSchemaForPort(p, i + 1, showMessageBox))
 				.Where(s => s != null);
 
 			return padSchemas;
 		}
 
-		private static PadSchema PceHawkGenerateSchemaForPort(PceControllerType type, int controller)
+		private static PadSchema PceHawkGenerateSchemaForPort(PceControllerType type, int controller, Action<string> showMessageBox)
 		{
 			switch (type)
 			{
 				default:
-					MessageBox.Show($"{type} is not supported yet");
+					showMessageBox($"{type} is not supported yet");
 					return null;
 				case PceControllerType.Unplugged:
 					return null;
@@ -83,7 +83,7 @@ namespace BizHawk.Client.EmuHawk
 			};
 		}
 
-		private static IEnumerable<PadSchema> NymaSchemas(NymaCore nyma)
+		private static IEnumerable<PadSchema> NymaSchemas(NymaCore nyma, Action<string> showMessageBox)
 		{
 			foreach (NymaCore.PortResult result in nyma.ActualPortData)
 			{
@@ -99,7 +99,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (device != "none")
 				{
-					MessageBox.Show($"Controller type {device} not supported yet.");
+					showMessageBox($"Controller type {device} not supported yet.");
 				}
 			}
 

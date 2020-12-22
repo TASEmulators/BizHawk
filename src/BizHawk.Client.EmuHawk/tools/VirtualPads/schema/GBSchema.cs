@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 
 using BizHawk.Emulation.Common;
@@ -9,7 +10,7 @@ namespace BizHawk.Client.EmuHawk
 	// ReSharper disable once UnusedMember.Global
 	public class GbSchema : IVirtualPadSchema
 	{
-		public virtual IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
+		public virtual IEnumerable<PadSchema> GetPadSchemas(IEmulator core, Action<string> showMessageBox)
 		{
 			switch (core.ControllerDefinition.Name)
 			{
@@ -113,7 +114,7 @@ namespace BizHawk.Client.EmuHawk
 	[Schema("GB3x")]
 	public class Gb3XSchema : GbSchema
 	{
-		public override IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
+		public override IEnumerable<PadSchema> GetPadSchemas(IEmulator core, Action<string> showMessageBox)
 		{
 			yield return StandardControllerH(1);
 			yield return StandardControllerH(2);
@@ -125,7 +126,7 @@ namespace BizHawk.Client.EmuHawk
 	[Schema("GB4x")]
 	public class Gb4XSchema : GbSchema
 	{
-		public override IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
+		public override IEnumerable<PadSchema> GetPadSchemas(IEmulator core, Action<string> showMessageBox)
 		{
 			yield return StandardControllerH(1);
 			yield return StandardControllerH(2);

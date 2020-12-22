@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
@@ -15,7 +16,7 @@ namespace BizHawk.Client.EmuHawk
 		private string StandardControllerName => typeof(StandardController).DisplayName();
 		private string AnalogControllerName => typeof(FakeAnalogController).DisplayName();
 
-		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
+		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core, Action<string> showMessageBox)
 		{
 			var intvSyncSettings = ((Intellivision)core).GetSyncSettings().Clone();
 			var port1 = intvSyncSettings.Port1;

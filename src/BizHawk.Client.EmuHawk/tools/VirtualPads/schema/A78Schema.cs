@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using BizHawk.Emulation.Common;
 
@@ -15,7 +16,7 @@ namespace BizHawk.Client.EmuHawk
 		private static string ProLineControllerName => typeof(ProLineController).DisplayName();
 		private static string LightGunControllerName => typeof(LightGunController).DisplayName();
 
-		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
+		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core, Action<string> showMessageBox)
 		{
 			var ss = ((A7800Hawk)core).GetSyncSettings().Clone();
 

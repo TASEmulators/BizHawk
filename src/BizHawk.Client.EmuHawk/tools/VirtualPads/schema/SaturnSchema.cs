@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Windows.Forms;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Waterbox;
+
 namespace BizHawk.Client.EmuHawk
 {
 	[Schema("SAT")]
@@ -14,7 +15,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private static readonly AxisSpec AxisRange = new AxisSpec(0.RangeTo(0xffff), 0x8000);
 
-		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
+		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core, Action<string> showMessageBox)
 		{
 			var nyma = (NymaCore)core;
 			foreach (var result in nyma.ActualPortData
@@ -22,7 +23,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var num = int.Parse(result.Port.ShortName.Last().ToString());
 				var device = result.Device.ShortName;
-				var schema = GenerateSchemaForPort(device, num);
+				var schema = GenerateSchemaForPort(device, num, showMessageBox);
 				if (schema != null)
 				{
 					yield return schema;
@@ -32,12 +33,12 @@ namespace BizHawk.Client.EmuHawk
 			yield return ConsoleButtons();
 		}
 
-		private static PadSchema GenerateSchemaForPort(string device, int controllerNum)
+		private static PadSchema GenerateSchemaForPort(string device, int controllerNum, Action<string> showMessageBox)
 		{
 			switch (device)
 			{
 				default:
-					MessageBox.Show($"This peripheral `{device}` is not supported yet");
+					showMessageBox($"This peripheral `{device}` is not supported yet");
 					return null;
 				case "none":
 					return null;

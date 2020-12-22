@@ -86,7 +86,7 @@ namespace BizHawk.Client.EmuHawk
 			if (schemaType == null) return;
 
 			var padSchemata = ((IVirtualPadSchema) Activator.CreateInstance(schemaType))
-				.GetPadSchemas(Emulator)
+				.GetPadSchemas(Emulator, s => MessageBox.Show(s))
 				.ToList();
 
 			if (VersionInfo.DeveloperBuild)
