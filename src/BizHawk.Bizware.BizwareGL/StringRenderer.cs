@@ -14,7 +14,8 @@ namespace BizHawk.Bizware.BizwareGL
 		public StringRenderer(IGL owner, Stream xml, params Stream[] textures)
 		{
 			Owner = owner;
-			FontInfo = BitmapFontLoader.LoadFontFromXmlFile(xml);
+			FontInfo = new();
+			FontInfo.LoadXml(xml);
 			
 			// load textures
 			for(int i=0;i<FontInfo.Pages.Length;i++)

@@ -7,6 +7,7 @@
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
 	<ItemGroup>
+		<PackageReference Include="Cyotek.Drawing.BitmapFont" Version="1.0.2" PrivateAssets="all" NoWarn="NU1701" />
 		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" /><!-- for (extra?) dynamic type support -->
 		<PackageReference Include="System.Drawing.Common" Version="4.7.0" />
 		<PackageReference Include="OpenTK" Version="3.3.0" NoWarn="NU1701" />
