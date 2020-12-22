@@ -175,18 +175,9 @@ namespace BizHawk.Client.EmuHawk
 				Size = new Size(174, 74),
 				Buttons = new[]
 				{
-					new ButtonSchema(23, 22, "Play Tape")
-					{
-						Icon = Properties.Resources.Play
-					},
-					new ButtonSchema(53, 22, "Stop Tape")
-					{
-						Icon = Properties.Resources.Stop
-					},
-					new ButtonSchema(83, 22, "RTZ Tape")
-					{
-						Icon = Properties.Resources.BackMore
-					},
+					new ButtonSchema(23, 22, "Play Tape") { Icon = VGamepadButtonImage.Play },
+					new ButtonSchema(53, 22, "Stop Tape") { Icon = VGamepadButtonImage.Stop },
+					new ButtonSchema(83, 22, "RTZ Tape") { Icon = VGamepadButtonImage.SkipBack },
 					new ButtonSchema(23, 52, "Insert Next Tape")
 					{
 						DisplayName = "NEXT TAPE"

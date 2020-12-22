@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using BizHawk.Client.EmuHawk.Properties;
+
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 
@@ -166,14 +166,14 @@ namespace BizHawk.Client.EmuHawk
 				Size = new Size(110, 110),
 				Buttons = new[]
 				{
-					new ButtonSchema(15, 43, controller, "1U") { Icon = Resources.Back },
-					new ButtonSchema(22, 20, controller, "2U") { Icon = Resources.NW },
-					new ButtonSchema(47, 10, controller, "3U") { Icon = Resources.BlueUp },
-					new ButtonSchema(70, 20, controller, "4U") { Icon = Resources.NE },
-					new ButtonSchema(80, 43, controller, "5U") { Icon = Resources.Forward },
-					new ButtonSchema(70, 65, controller, "6U") { Icon = Resources.SE },
-					new ButtonSchema(47, 73, controller, "7U") { Icon = Resources.BlueDown },
-					new ButtonSchema(22, 65, controller, "8U") { Icon = Resources.SW }
+					new ButtonSchema(15, 43, controller, "1U") { Icon = VGamepadButtonImage.BlueArrW },
+					new ButtonSchema(22, 20, controller, "2U") { Icon = VGamepadButtonImage.BlueArrNW },
+					new ButtonSchema(47, 10, controller, "3U") { Icon = VGamepadButtonImage.BlueArrN },
+					new ButtonSchema(70, 20, controller, "4U") { Icon = VGamepadButtonImage.BlueArrNE },
+					new ButtonSchema(80, 43, controller, "5U") { Icon = VGamepadButtonImage.BlueArrE },
+					new ButtonSchema(70, 65, controller, "6U") { Icon = VGamepadButtonImage.BlueArrSE },
+					new ButtonSchema(47, 73, controller, "7U") { Icon = VGamepadButtonImage.BlueArrS },
+					new ButtonSchema(22, 65, controller, "8U") { Icon = VGamepadButtonImage.BlueArrSW }
 				}
 			};
 		}

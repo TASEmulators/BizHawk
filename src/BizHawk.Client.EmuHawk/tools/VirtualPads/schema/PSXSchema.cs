@@ -63,22 +63,10 @@ namespace BizHawk.Client.EmuHawk
 					new ButtonSchema(191, 10, controller, "R2"),
 					new ButtonSchema(72, 90, controller, "L3"),
 					new ButtonSchema(130, 90, controller, "R3"),
-					new ButtonSchema(148, 62, controller, "Square")
-					{
-						Icon = Properties.Resources.Square
-					},
-					new ButtonSchema(169, 50, controller, "Triangle")
-					{
-						Icon = Properties.Resources.Triangle
-					},
-					new ButtonSchema(190, 62, controller, "Circle")
-					{
-						Icon = Properties.Resources.Circle
-					},
-					new ButtonSchema(169, 71, controller, "Cross")
-					{
-						Icon = Properties.Resources.Cross
-					},
+					new ButtonSchema(148, 62, controller, "Square") { Icon = VGamepadButtonImage.Square },
+					new ButtonSchema(169, 50, controller, "Triangle") { Icon = VGamepadButtonImage.Triangle },
+					new ButtonSchema(190, 62, controller, "Circle") { Icon = VGamepadButtonImage.Circle },
+					new ButtonSchema(169, 71, controller, "Cross") { Icon = VGamepadButtonImage.Cross },
 					new ButtonSchema(112, 62, controller, "Start", "S"),
 					new ButtonSchema(90, 62, controller, "Select", "s"),
 					new AnalogSchema(3, 120, $"P{controller} LStick X")
@@ -111,22 +99,10 @@ namespace BizHawk.Client.EmuHawk
 					new ButtonSchema(196, 37, controller, "R1"),
 					new ButtonSchema(8, 15, controller, "L2"),
 					new ButtonSchema(196, 15, controller, "R2"),
-					new ButtonSchema(153, 67, controller, "Square")
-					{
-						Icon = Properties.Resources.Square
-					},
-					new ButtonSchema(174, 55, controller, "Triangle")
-					{
-						Icon = Properties.Resources.Triangle
-					},
-					new ButtonSchema(195, 67, controller, "Circle")
-					{
-						Icon = Properties.Resources.Circle
-					},
-					new ButtonSchema(174, 76, controller, "Cross")
-					{
-						Icon = Properties.Resources.Cross
-					},
+					new ButtonSchema(153, 67, controller, "Square") { Icon = VGamepadButtonImage.Square },
+					new ButtonSchema(174, 55, controller, "Triangle") { Icon = VGamepadButtonImage.Triangle },
+					new ButtonSchema(195, 67, controller, "Circle") { Icon = VGamepadButtonImage.Circle },
+					new ButtonSchema(174, 76, controller, "Cross") { Icon = VGamepadButtonImage.Cross },
 					new ButtonSchema(112, 67, controller, "Start", "S"),
 					new ButtonSchema(90, 67, controller, "Select", "s")
 				}

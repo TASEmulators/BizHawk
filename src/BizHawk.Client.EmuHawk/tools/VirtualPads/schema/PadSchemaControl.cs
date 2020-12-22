@@ -3,7 +3,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 
-using BizHawk.Client.EmuHawk.Properties;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -25,7 +24,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public string DisplayName { get; set; }
 
-		public Bitmap? Icon { get; set; }
+		public VGamepadButtonImage? Icon { get; set; }
 
 		public ButtonSchema(int x, int y, string name)
 			: base(new Point(x, y), name)
@@ -40,28 +39,28 @@ namespace BizHawk.Client.EmuHawk
 			=> DisplayName = displayName;
 
 		public static ButtonSchema Up(int x, int y, string? name = null)
-			=> new ButtonSchema(x, y, name ?? "Up") { Icon = Resources.BlueUp };
+			=> new ButtonSchema(x, y, name ?? "Up") { Icon = VGamepadButtonImage.BlueArrN };
 
 		public static ButtonSchema Up(int x, int y, int controller)
-			=> new ButtonSchema(x, y, controller, "Up") { Icon = Resources.BlueUp };
+			=> new ButtonSchema(x, y, controller, "Up") { Icon = VGamepadButtonImage.BlueArrN };
 
 		public static ButtonSchema Down(int x, int y, string? name = null)
-			=> new ButtonSchema(x, y, name ?? "Down") { Icon = Resources.BlueDown };
+			=> new ButtonSchema(x, y, name ?? "Down") { Icon = VGamepadButtonImage.BlueArrS };
 
 		public static ButtonSchema Down(int x, int y, int controller)
-			=> new ButtonSchema(x, y, controller, "Down") { Icon = Resources.BlueDown };
+			=> new ButtonSchema(x, y, controller, "Down") { Icon = VGamepadButtonImage.BlueArrS };
 
 		public static ButtonSchema Left(int x, int y, string? name = null)
-			=> new ButtonSchema(x, y, name ?? "Left") { Icon = Resources.Back };
+			=> new ButtonSchema(x, y, name ?? "Left") { Icon = VGamepadButtonImage.BlueArrW };
 
 		public static ButtonSchema Left(int x, int y, int controller)
-			=> new ButtonSchema(x, y, controller, "Left") { Icon = Resources.Back };
+			=> new ButtonSchema(x, y, controller, "Left") { Icon = VGamepadButtonImage.BlueArrW };
 
 		public static ButtonSchema Right(int x, int y, string? name = null)
-			=> new ButtonSchema(x, y, name ?? "Right") { Icon = Resources.Forward };
+			=> new ButtonSchema(x, y, name ?? "Right") { Icon = VGamepadButtonImage.BlueArrE };
 
 		public static ButtonSchema Right(int x, int y, int controller)
-			=> new ButtonSchema(x, y, controller, "Right") { Icon = Resources.Forward };
+			=> new ButtonSchema(x, y, controller, "Right") { Icon = VGamepadButtonImage.BlueArrE };
 	}
 
 	/// <summary>A single analog control (e.g. pressure sensitive button)</summary>

@@ -40,22 +40,10 @@ namespace BizHawk.Client.EmuHawk
 					new ButtonSchema(81, 246, controller, "Start", "S"),
 					new ButtonSchema(127, 246, controller, "B"),
 					new ButtonSchema(138, 269, controller, "A"),
-					new ButtonSchema(173, 210, controller, "C Up")
-					{
-						Icon = Properties.Resources.YellowUp
-					},
-					new ButtonSchema(173, 231, controller, "C Down")
-					{
-						Icon = Properties.Resources.YellowDown
-					},
-					new ButtonSchema(152, 221, controller, "C Left")
-					{
-						Icon = Properties.Resources.YellowLeft
-					},
-					new ButtonSchema(194, 221, controller, "C Right")
-					{
-						Icon = Properties.Resources.YellowRight
-					},
+					new ButtonSchema(173, 210, controller, "C Up") { Icon = VGamepadButtonImage.YellowArrN },
+					new ButtonSchema(173, 231, controller, "C Down") { Icon = VGamepadButtonImage.YellowArrS },
+					new ButtonSchema(152, 221, controller, "C Left") { Icon = VGamepadButtonImage.YellowArrW },
+					new ButtonSchema(194, 221, controller, "C Right") { Icon = VGamepadButtonImage.YellowArrE },
 					new AnalogSchema(6, 14, $"P{controller} X Axis")
 					{
 						Spec = new AxisSpec((-128).RangeTo(127), 0),
