@@ -2,7 +2,6 @@
 
 using System.Collections.Generic;
 using System.Drawing;
-using System.Windows.Forms;
 
 using BizHawk.Client.EmuHawk.Properties;
 using BizHawk.Emulation.Common;
@@ -70,11 +69,11 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public string DisplayName { get; set; }
 
+		public bool IsVertical { get; }
+
 		public int MaxValue { get; set; }
 
 		public int MinValue { get; set; }
-
-		public Orientation Orientation { get; }
 
 		public Size TargetSize { get; set; }
 
@@ -82,7 +81,7 @@ namespace BizHawk.Client.EmuHawk
 			: base(new Point(x, y), name)
 		{
 			DisplayName = name;
-			Orientation = isVertical ? Orientation.Vertical : Orientation.Horizontal;
+			IsVertical = isVertical;
 		}
 
 		public SingleAxisSchema(int x, int y, int controller, string name, bool isVertical = false)

@@ -90,7 +90,7 @@ namespace BizHawk.Client.EmuHawk
 						singleAxis.DisplayName,
 						singleAxis.MinValue,
 						singleAxis.MaxValue,
-						singleAxis.Orientation
+						singleAxis.IsVertical ? Orientation.Vertical : Orientation.Horizontal
 					)
 					{
 						Location = UIHelper.Scale(singleAxis.Location),
