@@ -14,19 +14,17 @@
 
 // Based on: http://msdn.microsoft.com/library/default.asp?url=/library/en-us/dnaspp/html/colorquant.asp
 
-//BizHawk says: adapted from https://github.com/inexorabletash/PcxFileType/blob/master/Quantize
-
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 
-namespace BizHawk.Client.EmuHawk
+namespace PcxFileTypePlugin.Quantize
 {
 	/// <summary>
 	/// Quantize using an Octree
 	/// </summary>
-	internal class OctreeQuantizer : Quantizer
+	public class OctreeQuantizer : Quantizer
 	{
 		/// <summary>
 		/// Stores the tree

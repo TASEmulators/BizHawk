@@ -14,14 +14,12 @@
 
 // Based on: http://msdn.microsoft.com/library/default.asp?url=/library/en-us/dnaspp/html/colorquant.asp
 
-//BizHawk says: adapted from https://github.com/inexorabletash/PcxFileType/blob/master/Quantize
-
 using System.Drawing;
 using System.Drawing.Imaging;
 
-namespace BizHawk.Client.EmuHawk
+namespace PcxFileTypePlugin.Quantize
 {
-	internal abstract unsafe class Quantizer
+	public abstract unsafe class Quantizer
 	{
 		/// <summary>
 		/// Flag used to indicate whether a single pass or two passes are needed for quantization.

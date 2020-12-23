@@ -12,11 +12,9 @@
 // Copyright (C) Joshua Bell
 /////////////////////////////////////////////////////////////////////////////////
 
-//BizHawk says: adapted from https://github.com/inexorabletash/PcxFileType/blob/master/Quantize
-
 using System.Drawing;
 
-namespace BizHawk.Client.EmuHawk
+namespace PcxFileTypePlugin.Quantize
 {
 	public sealed class PaletteTable
 	{
