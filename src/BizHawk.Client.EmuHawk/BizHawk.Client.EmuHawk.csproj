@@ -145,9 +145,6 @@
 		<Compile Update="AVOut/JMDForm.Designer.cs" DependentUpon="JMDForm.cs" />
 		<EmbeddedResource Update="AVOut/JMDForm.resx" DependentUpon="JMDForm.cs" />
 		<Compile Update="AVOut/NumericTextBox.cs" SubType="Component" />
-		<Compile Update="AVOut/Quantize/OctreeQuantizer.cs" SubType="Code" />
-		<Compile Update="AVOut/Quantize/PaletteTable.cs" SubType="Code" />
-		<Compile Update="AVOut/Quantize/Quantizer.cs" SubType="Code" />
 		<Compile Update="AVOut/SynclessRecordingTools.cs" SubType="Form" />
 		<Compile Update="AVOut/SynclessRecordingTools.Designer.cs" DependentUpon="SynclessRecordingTools.cs" />
 		<EmbeddedResource Update="AVOut/SynclessRecordingTools.resx" DependentUpon="SynclessRecordingTools.cs" />
