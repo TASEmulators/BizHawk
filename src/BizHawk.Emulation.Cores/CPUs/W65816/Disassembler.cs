@@ -1,15 +1,4 @@
-﻿//taken from:
-
-//https://raw.githubusercontent.com/pelrun/Dispel/master/65816.c
-//65816.c
-//65816/6502 module for DisPel
-//James Churchill
-//Created 230900
-//Last Modified 240900
-
-//license: assumed public domain
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -37,6 +26,11 @@ namespace BizHawk.Emulation.Cores.Components.W65816
 		}
 	}
 
+	/// <remarks>
+	/// Ported from C-lang project https://github.com/pelrun/Dispel at <c>cb38eeee0</c> (specifically, the file <c>65816.c</c>).<br/>
+	/// The DisPel software is unlicensed, and is thus assumed to be copyrighted without any transfer of rights.
+	/// This reproduction is made with the assumption that it cannot be infringing because every part of its structure is necessary for its function (in the US, scènes à faire).
+	/// </remarks>
 	internal class W65816
 	{
 		//unsigned char *mem, unsigned long pos, unsigned char *flag, char *inst, unsigned char tsrc
