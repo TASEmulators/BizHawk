@@ -2,14 +2,33 @@
 
 using System;
 using System.ComponentModel;
+using System.Drawing;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
+using BizHawk.Common;
+using BizHawk.WinForms.Controls;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public class FormBase : Form
 	{
+		/// <summary>
+		/// Under Mono, <see cref="SystemColors.Control">SystemColors.Control</see> returns an ugly beige.<br/>
+		/// This method recursively replaces the <see cref="Control.BackColor"/> of the given <paramref name="control"/> (can be a <see cref="Form"/>) with <see cref="Color.WhiteSmoke"/>
+		/// iff they have the default of <see cref="SystemColors.Control">SystemColors.Control</see>.<br/>
+		/// (Also adds a custom <see cref="ToolStrip.Renderer"/> to <see cref="ToolStrip">ToolStrips</see> to change their colors.)
+		/// </summary>
+		public static void FixBackColorOnControls(Control control)
+		{
+			if (control.BackColor == SystemColors.Control) control.BackColor = Color.WhiteSmoke;
+			foreach (Control c1 in control.Controls)
+			{
+				if (c1 is ToolStrip ts) ts.Renderer = new ToolStripProfessionalRenderer(new LinuxColorTable());
+				else FixBackColorOnControls(c1);
+			}
+		}
+
 		private string? _windowTitleStatic;
 
 		public virtual bool BlocksInputWhenFocused { get; } = true;
@@ -33,6 +52,7 @@ namespace BizHawk.Client.EmuHawk
 		protected override void OnLoad(EventArgs e)
 		{
 			base.OnLoad(e);
+			if (OSTailoredCode.IsUnixHost) FixBackColorOnControls(this);
 			UpdateWindowTitle();
 		}
 
