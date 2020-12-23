@@ -228,12 +228,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 	
 			for (int i = 0; i < ZP_RAM.Length; i++)
 			{
-				ZP_RAM[i] = 0xFF;
-			}
-
-			for (int i = 0; i < ZP_RAM.Length; i++)
-			{
-				ZP_RAM[i] = 0xFF;
+				ZP_RAM[i] = 0;
 			}
 
 			if (is_GBC)
