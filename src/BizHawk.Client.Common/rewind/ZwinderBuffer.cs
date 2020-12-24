@@ -28,6 +28,7 @@ namespace BizHawk.Client.Common
 
 			Size = 1L << (int)Math.Floor(Math.Log(targetSize, 2));
 			_sizeMask = Size - 1;
+			_backingStoreType = settings.BackingStore;
 			switch (settings.BackingStore)
 			{
 				case IRewindSettings.BackingStoreType.Memory:
@@ -104,6 +105,8 @@ namespace BizHawk.Client.Common
 		}
 
 		private readonly Stream _backingStore;
+		// this is only used to compare settings with a RewindConfig
+		private readonly IRewindSettings.BackingStoreType _backingStoreType;
 
 		private readonly StateInfo[] _states;
 		private int _firstStateIndex;
@@ -138,7 +141,8 @@ namespace BizHawk.Client.Common
 			long size = 1L << (int)Math.Floor(Math.Log(targetSize, 2));
 			return Size == size &&
 				_useCompression == settings.UseCompression &&
-				_targetFrameLength == settings.TargetFrameLength;
+				_targetFrameLength == settings.TargetFrameLength &&
+				_backingStoreType == settings.BackingStore;
 		}
 
 		private bool ShouldCapture(int frame)
