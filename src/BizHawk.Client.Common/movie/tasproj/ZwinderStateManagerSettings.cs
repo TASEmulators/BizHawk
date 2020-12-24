@@ -12,14 +12,17 @@ namespace BizHawk.Client.Common
 			CurrentUseCompression = settings.CurrentUseCompression;
 			CurrentBufferSize = settings.CurrentBufferSize;
 			CurrentTargetFrameLength = settings.CurrentTargetFrameLength;
+			CurrentUseDrive = settings.CurrentUseDrive;
 
 			RecentUseCompression = settings.RecentUseCompression;
 			RecentBufferSize = settings.RecentBufferSize;
 			RecentTargetFrameLength = settings.RecentTargetFrameLength;
+			RecentUseDrive = settings.RecentUseDrive;
 
 			GapsUseCompression = settings.GapsUseCompression;
 			GapsBufferSize = settings.GapsBufferSize;
 			GapsTargetFrameLength = settings.GapsTargetFrameLength;
+			GapsUseDrive = settings.GapsUseDrive;
 
 			AncientStateInterval = settings.AncientStateInterval;
 		}
@@ -41,6 +44,10 @@ namespace BizHawk.Client.Common
 		[TypeConverter(typeof(IntConverter)), Range(1, int.MaxValue)]
 		public int CurrentTargetFrameLength { get; set; } = 500;
 
+		[DisplayName("Current - Use Drive")]
+		[Description("True to use a file, false to use RAM.")]
+		public bool CurrentUseDrive { get; set; } = false;
+
 		/// <summary>
 		/// Buffer settings when navigating directly before the Current buffer
 		/// </summary>
@@ -57,6 +64,10 @@ namespace BizHawk.Client.Common
 		[Description("Desired frame length (number of emulated frames you can go back before running out of buffer).\n\nThe Recent buffer is where the current frames decay as the buffer fills up. The goal of this buffer is to maximize the amount of movie that can be fairly quickly navigated to. Therefore, a high target frame length is ideal here.")]
 		[TypeConverter(typeof(IntConverter)), Range(1, int.MaxValue)]
 		public int RecentTargetFrameLength { get; set; } = 2000;
+
+		[DisplayName("Recent - Use Drive")]
+		[Description("True to use a file, false to use RAM.")]
+		public bool RecentUseDrive { get; set; } = false;
 
 		/// <summary>
 		/// Priority States for special use cases
@@ -75,6 +86,10 @@ namespace BizHawk.Client.Common
 		[TypeConverter(typeof(IntConverter)), Range(1, int.MaxValue)]
 		public int GapsTargetFrameLength { get; set; } = 125;
 
+		[DisplayName("Gaps - Use Drive")]
+		[Description("True to use a file, false to use RAM.")]
+		public bool GapsUseDrive { get; set; } = false;
+
 		[DisplayName("Ancient State Interval")]
 		[Description("Once both the Current and Recent buffers have filled, some states are put into reserved to ensure there is always a state somewhat near a desired frame to navigate to. These states never decay but are invalidated. This number should be as high as possible without being overly cumbersome to replay this many frames.")]
 		[TypeConverter(typeof(IntConverter)), Range(1, int.MaxValue)]
@@ -87,7 +102,8 @@ namespace BizHawk.Client.Common
 			{
 				UseCompression = CurrentUseCompression,
 				BufferSize = CurrentBufferSize,
-				TargetFrameLength = CurrentTargetFrameLength
+				TargetFrameLength = CurrentTargetFrameLength,
+				UseDrive = CurrentUseDrive
 			};
 		}
 		public RewindConfig Recent()
@@ -96,7 +112,8 @@ namespace BizHawk.Client.Common
 			{
 				UseCompression = RecentUseCompression,
 				BufferSize = RecentBufferSize,
-				TargetFrameLength = RecentTargetFrameLength
+				TargetFrameLength = RecentTargetFrameLength,
+				UseDrive = RecentUseDrive
 			};
 		}
 		public RewindConfig GapFiller()
@@ -105,7 +122,8 @@ namespace BizHawk.Client.Common
 			{
 				UseCompression = GapsUseCompression,
 				BufferSize = GapsBufferSize,
-				TargetFrameLength = GapsTargetFrameLength
+				TargetFrameLength = GapsTargetFrameLength,
+				UseDrive = GapsUseDrive
 			};
 		}
 	}

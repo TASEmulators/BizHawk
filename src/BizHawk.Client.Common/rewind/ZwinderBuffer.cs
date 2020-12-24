@@ -16,8 +16,22 @@ namespace BizHawk.Client.Common
 		3. No delta compression.  Keep it simple.  If there are cores that benefit heavily from delta compression, we should
 			maintain a separate rewinder alongside this one that is customized for those cores.
 		*/
+
+		const string baseStatePath = "tastudiostates";
+		bool disposed = false;
+		static int count = 0;
+		int _id;
+
 		public ZwinderBuffer(IRewindSettings settings)
 		{
+			_id = count;
+			count++;
+
+			// delete any old files that may have not been properly deleted
+			if (_id == 0 && Directory.Exists(baseStatePath))
+				Directory.Delete(baseStatePath, true);
+			Directory.CreateDirectory(baseStatePath);
+
 			long targetSize = settings.BufferSize * 1024 * 1024;
 			if (settings.TargetFrameLength < 1)
 			{
@@ -26,16 +40,37 @@ namespace BizHawk.Client.Common
 
 			Size = 1L << (int)Math.Floor(Math.Log(targetSize, 2));
 			_sizeMask = Size - 1;
-			_buffer = new MemoryBlock((ulong)Size);
-			_buffer.Protect(_buffer.Start, _buffer.Size, MemoryBlock.Protection.RW);
+			if (settings.UseDrive)
+			{
+				_fStream = new FileStream(baseStatePath + "/" + _id, FileMode.CreateNew, FileAccess.ReadWrite, FileShare.ReadWrite);
+				_fStream.SetLength(Size);
+			}
+			else
+			{
+				_buffer = new MemoryBlock((ulong)Size);
+				_buffer.Protect(_buffer.Start, _buffer.Size, MemoryBlock.Protection.RW);
+			}
 			_targetFrameLength = settings.TargetFrameLength;
 			_states = new StateInfo[STATEMASK + 1];
 			_useCompression = settings.UseCompression;
 		}
 
+		~ZwinderBuffer()
+		{
+			Dispose();
+		}
 		public void Dispose()
 		{
-			_buffer.Dispose();
+			if (!disposed)
+			{
+				_fStream?.Dispose();
+				_buffer?.Dispose();
+
+				if (File.Exists(baseStatePath + "/" + _id))
+					File.Delete(baseStatePath + "/" + _id);
+
+				disposed = true;
+			}
 		}
 
 
@@ -68,6 +103,7 @@ namespace BizHawk.Client.Common
 
 		private readonly long _sizeMask;
 		private readonly MemoryBlock _buffer;
+		private readonly FileStream _fStream;
 
 		private readonly int _targetFrameLength;
 
@@ -111,7 +147,8 @@ namespace BizHawk.Client.Common
 			long size = 1L << (int)Math.Floor(Math.Log(targetSize, 2));
 			return Size == size &&
 				_useCompression == settings.UseCompression &&
-				_targetFrameLength == settings.TargetFrameLength;
+				_targetFrameLength == settings.TargetFrameLength &&
+				(_fStream != null) == settings.UseDrive;
 		}
 
 		private bool ShouldCapture(int frame)
@@ -164,7 +201,11 @@ namespace BizHawk.Client.Common
 					? (_states[_firstStateIndex].Start - start) & _sizeMask
 					: Size;
 			};
-			var stream = new SaveStateStream(_buffer, start, _sizeMask, initialMaxSize, notifySizeReached);
+			SaveStateStream stream;
+			if (_fStream == null)
+				stream = new SaveStateStream(_buffer, start, _sizeMask, initialMaxSize, notifySizeReached);
+			else
+				stream = new SaveStateStream(_fStream, start, _sizeMask, initialMaxSize, notifySizeReached);
 
 			if (_useCompression)
 			{
@@ -186,7 +227,12 @@ namespace BizHawk.Client.Common
 
 		private Stream MakeLoadStream(int index)
 		{
-			Stream stream = new LoadStateStream(_buffer, _states[index].Start, _states[index].Size, _sizeMask);
+			Stream stream;
+			if (_fStream == null)
+				stream = new LoadStateStream(_buffer, _states[index].Start, _states[index].Size, _sizeMask);
+			else
+				stream = new LoadStateStream(_fStream, _states[index].Start, _states[index].Size, _sizeMask);
+
 			if (_useCompression)
 				stream = new DeflateStream(stream, CompressionMode.Decompress, leaveOpen: true);
 			return stream;
@@ -333,8 +379,17 @@ namespace BizHawk.Client.Common
 				_notifySize = notifySize;
 				_notifySizeReached = notifySizeReached;
 			}
-			
+			public SaveStateStream(FileStream fileStream, long offset, long mask, long notifySize, Func<long> notifySizeReached)
+			{
+				_fStream = fileStream;
+				_offset = offset;
+				_mask = mask;
+				_notifySize = notifySize;
+				_notifySizeReached = notifySizeReached;
+			}
+
 			private readonly byte* _ptr;
+			private readonly FileStream _fStream;
 			private readonly long _offset;
 			private readonly long _mask;
 			private long _position;
@@ -358,11 +413,44 @@ namespace BizHawk.Client.Common
 
 			public override void Write(byte[] buffer, int offset, int count)
 			{
-				Write(new ReadOnlySpan<byte>(buffer, offset, count));
+				if (_fStream == null)
+				{
+					Write(new ReadOnlySpan<byte>(buffer, offset, count));
+					return;
+				}
+
+				long requestedSize = _position + buffer.Length;
+				while (requestedSize > _notifySize)
+					_notifySize = _notifySizeReached();
+				int n = Math.Min(buffer.Length - offset, count);
+				if (n > 0)
+				{
+					var start = (_position + _offset) & _mask;
+					_fStream.Seek(start, SeekOrigin.Begin);
+					var end = (start + n) & _mask;
+					if (end < start)
+					{
+						int m = (int)(BufferLength - start);
+
+						_fStream.Write(buffer, offset, m);
+						_fStream.Seek(0, SeekOrigin.Begin);
+						_fStream.Write(buffer, offset + m, n - m);
+					}
+					else
+						_fStream.Write(buffer, 0, n);
+
+					_position += n;
+				}
 			}
 
 			public void Write(ReadOnlySpan<byte> buffer)
 			{
+				if (_fStream != null)
+				{
+					Write(buffer.ToArray(), 0, buffer.Length);
+					return;
+				}
+
 				long requestedSize = _position + buffer.Length;
 				while (requestedSize > _notifySize)
 					_notifySize = _notifySizeReached();
@@ -377,17 +465,15 @@ namespace BizHawk.Client.Common
 
 						// Array.Copy(buffer, offset, _buffer, start, m);
 						buffer.Slice(0, (int)m).CopyTo(new Span<byte>(_ptr + start, (int)m));
+						start = 0;
 
-						// offset += (int)m;
 						buffer = buffer.Slice((int)m);
 
 						n -= m;
 						_position += m;
-						start = 0;
 					}
 					if (n > 0)
 					{
-						// Array.Copy(buffer, offset, _buffer, start, n);
 						buffer.CopyTo(new Span<byte>(_ptr + start, (int)n));
 
 						_position += n;
@@ -400,7 +486,15 @@ namespace BizHawk.Client.Common
 				long requestedSize = _position + 1;
 				while (requestedSize > _notifySize)
 					_notifySize = _notifySizeReached();
-				_ptr[(_position++ + _offset) & _mask] = value;
+				long index = (_position++ + _offset) & _mask;
+				if (_fStream == null)
+					_ptr[index] = value;
+				else
+				{
+					_fStream.Seek(index, SeekOrigin.Begin);
+					_fStream.WriteByte(value);
+					_position++;
+				}
 			}
 		}
 
@@ -413,8 +507,16 @@ namespace BizHawk.Client.Common
 				_size = size;
 				_mask = mask;
 			}
+			public LoadStateStream(FileStream fileStream, long offset, long size, long mask)
+			{
+				_fStream = fileStream;
+				_offset = offset;
+				_size = size;
+				_mask = mask;
+			}
 
 			private readonly byte* _ptr;
+			private readonly FileStream _fStream;
 			private readonly long _offset;
 			private readonly long _size;
 			private long _position;
@@ -435,26 +537,72 @@ namespace BizHawk.Client.Common
 
 			public override int Read(byte[] buffer, int offset, int count)
 			{
-				return Read(new Span<byte>(buffer, offset, count));
+				if (_fStream == null)
+					return Read(new Span<byte>(buffer, offset, count));
+
+				long n = Math.Min(_size - _position, buffer.Length);
+				int ret = (int)n;
+				if (n > 0)
+				{
+					var start = (_position + _offset) & _mask;
+					_fStream.Seek(start, SeekOrigin.Begin);
+					var end = (start + n) & _mask;
+					if (end < start)
+					{
+						int m = (int)(BufferLength - start);
+
+						_fStream.Read(buffer, offset, m);
+						_fStream.Seek(0, SeekOrigin.Begin);
+
+						n -= m;
+						_position += m;
+						offset += m;
+					}
+					if (n > 0)
+					{
+						_fStream.Read(buffer, offset, (int)n);
+
+						_position += n;
+					}
+				}
+				return ret;
 			}
 
 			public unsafe int Read(Span<byte> buffer)
 			{
-				long n = Math.Min(_size - _position, buffer.Length);
-				int ret = (int)n;
+				int n = (int)Math.Min(_size - _position, buffer.Length);
+
+				if (_fStream != null)
+				{
+					byte[] bytes = buffer.ToArray(); // Is this byte array the actual buffer?
+					byte original = bytes[0];
+					bytes[0] = (byte)(255 - bytes[0]); // guarantees a change
+					if (buffer[0] == bytes[0])
+					{ // yes
+						bytes[0] = original;
+						return Read(bytes, 0, n);
+					}
+					else
+					{ // no
+						bytes = new byte[n];
+						int bytesRead = Read(bytes, 0, n);
+						new Span<byte>(bytes).CopyTo(buffer);
+						return bytesRead;
+					}
+				}
+
+				int ret = n;
 				if (n > 0)
 				{
 					var start = (_position + _offset) & _mask;
 					var end = (start + n) & _mask;
 					if (end < start)
 					{
-						long m = BufferLength - start;
+						int m = (int)(BufferLength - start);
 
 						// Array.Copy(_buffer, start, buffer, offset, m);
-						new ReadOnlySpan<byte>(_ptr + start, (int)m).CopyTo(buffer);
-
-						// offset += (int)m;
-						buffer = buffer.Slice((int)m);
+						new ReadOnlySpan<byte>(_ptr + start, m).CopyTo(buffer);
+						buffer = buffer.Slice(m);
 	
 						n -= m;
 						_position += m;
@@ -462,8 +610,7 @@ namespace BizHawk.Client.Common
 					}
 					if (n > 0)
 					{
-						// Array.Copy(_buffer, start, buffer, offset, n);
-						new ReadOnlySpan<byte>(_ptr + start, (int)n).CopyTo(buffer);
+						new ReadOnlySpan<byte>(_ptr + start, n).CopyTo(buffer);
 						_position += n;
 					}
 				}
@@ -472,9 +619,20 @@ namespace BizHawk.Client.Common
 
 			public override int ReadByte()
 			{
-				return _position < _size
-					? _ptr[(_position++ + _offset) & _mask]
-					: -1;
+				if (_position < _size)
+				{
+					long index = (_position++ + _offset) & _mask;
+					if (_fStream == null)
+						return _ptr[index];
+					else
+					{
+						_fStream.Seek(index, SeekOrigin.Begin);
+						_position++;
+						return _fStream.ReadByte();
+					}
+				}
+				else
+					return -1;
 			}
 
 			public override long Seek(long offset, SeekOrigin origin) => throw new IOException();
