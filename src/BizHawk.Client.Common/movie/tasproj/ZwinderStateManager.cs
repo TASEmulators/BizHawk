@@ -9,6 +9,13 @@ namespace BizHawk.Client.Common
 {
 	public class ZwinderStateManager : IStateManager, IDisposable
 	{
+		public const string baseStatePath = "tastudiostates/";
+
+		private bool disposed = false;
+
+		private static int count = 0;
+		private int _id;
+
 		private static readonly byte[] NonState = new byte[0];
 
 		private readonly Func<int, bool> _reserveCallback;
@@ -30,6 +37,7 @@ namespace BizHawk.Client.Common
 
 		internal ZwinderStateManager(ZwinderStateManagerSettings settings, Func<int, bool> reserveCallback)
 		{
+			SetId();
 			UpdateSettings(settings, false);
 
 			_reserveCallback = reserveCallback;
@@ -41,17 +49,23 @@ namespace BizHawk.Client.Common
 		{
 		}
 
+		~ZwinderStateManager()
+		{
+			Dispose();
+		}
+
 		public void Engage(byte[] frameZeroState)
 		{
 			if (!_reserved.ContainsKey(0))
 			{
-				_reserved.Add(0, frameZeroState);
+				AddReserved(0, frameZeroState);
 				AddStateCache(0);
 			}
 		}
 
 		private ZwinderStateManager(ZwinderBuffer current, ZwinderBuffer recent, ZwinderBuffer gapFiller, int ancientInterval, Func<int, bool> reserveCallback)
 		{
+			SetId();
 			_current = current;
 			_recent = recent;
 			_gapFiller = gapFiller;
@@ -59,6 +73,17 @@ namespace BizHawk.Client.Common
 			_reserveCallback = reserveCallback;
 		}
 		
+		private void SetId()
+		{
+			_id = count;
+			count++;
+
+			// delete any old files that may have not been properly deleted
+			if (_id == 0 && Directory.Exists(baseStatePath))
+				Directory.Delete(baseStatePath, true);
+			Directory.CreateDirectory(baseStatePath);
+		}
+
 		public byte[] this[int frame]
 		{
 			get
@@ -75,10 +100,27 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		private byte[] GetReserved(int frame)
+		{
+			return _reserved[frame] ?? File.ReadAllBytes(baseStatePath + _id + "_" + frame);
+		}
+
+		private void AddReserved(int frame, byte[] state)
+		{
+			if (Settings.AncientUseDrive)
+			{
+				File.WriteAllBytes(baseStatePath + _id + "_" + frame, state);
+				_reserved.Add(frame, null);
+			}
+			else
+				_reserved.Add(frame, state);
+		}
+
 		public ZwinderStateManagerSettings Settings { get; private set; }
 
 		public void UpdateSettings(ZwinderStateManagerSettings settings, bool keepOldStates = false)
 		{
+			bool? wasUsingAncientDrive = Settings?.AncientUseDrive;
 			Settings = settings;
 
 			_current = UpdateBuffer(_current, settings.Current(), keepOldStates);
@@ -116,6 +158,18 @@ namespace BizHawk.Client.Common
 				}
 				foreach (int f in framesToRemove)
 					EvictReserved(f);
+			}
+
+			if (wasUsingAncientDrive.HasValue && Settings.AncientUseDrive != wasUsingAncientDrive.Value)
+			{
+				var oldReserved = _reserved;
+				_reserved = new Dictionary<int, byte[]>();
+				foreach (var state in oldReserved)
+				{
+					AddReserved(state.Key, state.Value ?? File.ReadAllBytes(baseStatePath + _id + "_" + state.Key));
+					if (!Settings.AncientUseDrive)
+						File.Delete(baseStatePath + _id + "_" + state.Key);
+				}
 			}
 
 			_ancientInterval = settings.AncientStateInterval;
@@ -207,7 +261,7 @@ namespace BizHawk.Client.Common
 		{
 			foreach (var key in _reserved.Keys.OrderByDescending(k => k))
 			{
-				yield return new StateInfo(key, _reserved[key]);
+				yield return new StateInfo(key, GetReserved(key));
 			}
 		}
 
@@ -235,7 +289,8 @@ namespace BizHawk.Client.Common
 
 			var ms = new MemoryStream();
 			source.SaveStateBinary(new BinaryWriter(ms));
-			_reserved.Add(frame, ms.ToArray());
+			AddReserved(frame, ms.ToArray());
+
 			AddStateCache(frame);
 		}
 
@@ -249,7 +304,8 @@ namespace BizHawk.Client.Common
 			var bb = new byte[state.Size];
 			var ms = new MemoryStream(bb);
 			state.GetReadStream().CopyTo(ms);
-			_reserved.Add(state.Frame, bb);
+			AddReserved(state.Frame, bb);
+
 			AddStateCache(state.Frame);
 		}
 
@@ -268,6 +324,8 @@ namespace BizHawk.Client.Common
 				throw new InvalidOperationException("Frame 0 can not be evicted.");
 			}
 
+			if (_reserved[frame] == null)
+				File.Delete(baseStatePath + _id + "_" + frame);
 			_reserved.Remove(frame);
 			StateCache.Remove(frame);
 		}
@@ -511,7 +569,7 @@ namespace BizHawk.Client.Common
 				var key = br.ReadInt32();
 				var length = br.ReadInt32();
 				var data = br.ReadBytes(length);
-				ret._reserved.Add(key, data);
+				ret.AddReserved(key, data);
 			}
 
 			ret.RebuildStateCache();
@@ -531,21 +589,33 @@ namespace BizHawk.Client.Common
 			foreach (var s in _reserved)
 			{
 				bw.Write(s.Key);
-				bw.Write(s.Value.Length);
-				bw.Write(s.Value);
+				byte[] state = GetReserved(s.Key);
+				bw.Write(state.Length);
+				bw.Write(state);
 			}
 		}
 
 		public void Dispose()
 		{
-			_current?.Dispose();
-			_current = null;
+			if (!disposed)
+			{
+				_current?.Dispose();
+				_current = null;
 
-			_recent?.Dispose();
-			_recent = null;
+				_recent?.Dispose();
+				_recent = null;
 
-			_gapFiller?.Dispose();
-			_gapFiller = null;
+				_gapFiller?.Dispose();
+				_gapFiller = null;
+
+				foreach (var state in _reserved)
+				{
+					if (state.Value == null)
+						File.Delete(baseStatePath + _id + "_" + state.Key);
+				}
+
+				disposed = true;
+			}
 		}
 	}
 }

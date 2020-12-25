@@ -16,21 +16,14 @@ namespace BizHawk.Client.Common
 		3. No delta compression.  Keep it simple.  If there are cores that benefit heavily from delta compression, we should
 			maintain a separate rewinder alongside this one that is customized for those cores.
 		*/
-
-		const string baseStatePath = "tastudiostates";
-		bool disposed = false;
-		static int count = 0;
-		int _id;
-
 		public ZwinderBuffer(IRewindSettings settings)
 		{
 			_id = count;
 			count++;
 
-			// delete any old files that may have not been properly deleted
-			if (_id == 0 && Directory.Exists(baseStatePath))
-				Directory.Delete(baseStatePath, true);
-			Directory.CreateDirectory(baseStatePath);
+			// just in case we ever make a ZwinderBuffer without a state manager
+			if (!Directory.Exists(Path))
+				Directory.CreateDirectory(Path);
 
 			long targetSize = settings.BufferSize * 1024 * 1024;
 			if (settings.TargetFrameLength < 1)
@@ -42,7 +35,7 @@ namespace BizHawk.Client.Common
 			_sizeMask = Size - 1;
 			if (settings.UseDrive)
 			{
-				_fStream = new FileStream(baseStatePath + "/" + _id, FileMode.CreateNew, FileAccess.ReadWrite, FileShare.ReadWrite);
+				_fStream = new FileStream(Path + _id, FileMode.CreateNew, FileAccess.ReadWrite, FileShare.ReadWrite);
 				_fStream.SetLength(Size);
 			}
 			else
@@ -66,13 +59,18 @@ namespace BizHawk.Client.Common
 				_fStream?.Dispose();
 				_buffer?.Dispose();
 
-				if (File.Exists(baseStatePath + "/" + _id))
-					File.Delete(baseStatePath + "/" + _id);
+				if (File.Exists(Path + _id))
+					File.Delete(Path + _id);
 
 				disposed = true;
 			}
 		}
 
+		private bool disposed = false;
+
+		private static int count = 0;
+		private int _id;
+		private string Path => ZwinderStateManager.baseStatePath;
 
 		/// <summary>
 		/// Number of states that could be in the state ringbuffer, Mask for the state ringbuffer

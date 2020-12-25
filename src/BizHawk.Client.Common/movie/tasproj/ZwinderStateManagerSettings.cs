@@ -25,6 +25,7 @@ namespace BizHawk.Client.Common
 			GapsUseDrive = settings.GapsUseDrive;
 
 			AncientStateInterval = settings.AncientStateInterval;
+			AncientUseDrive = settings.AncientUseDrive;
 		}
 
 		/// <summary>
@@ -94,6 +95,10 @@ namespace BizHawk.Client.Common
 		[Description("Once both the Current and Recent buffers have filled, some states are put into reserved to ensure there is always a state somewhat near a desired frame to navigate to. These states never decay but are invalidated. This number should be as high as possible without being overly cumbersome to replay this many frames.")]
 		[TypeConverter(typeof(IntConverter)), Range(1, int.MaxValue)]
 		public int AncientStateInterval { get; set; } = 5000;
+
+		[DisplayName("Ancient - Use Drive")]
+		[Description("True to use files, false to use RAM.")]
+		public bool AncientUseDrive { get; set; } = false;
 
 		// Just to simplify some other code.
 		public RewindConfig Current()
