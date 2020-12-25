@@ -100,16 +100,22 @@ namespace BizHawk.Client.Common
 							lastReserved = f;
 					}
 					foreach (int f in framesToRemove)
-						EvictReserved(f);
+					{
+						if (f != 0)
+							EvictReserved(f);
+					}
 				}
 			}
 			else
 			{
+				List<int> framesToRemove = new List<int>();
 				foreach (int f in _reserved.Keys)
 				{
 					if (f != 0 && !_reserveCallback(f))
-						EvictReserved(f);
+						framesToRemove.Add(f);
 				}
+				foreach (int f in framesToRemove)
+					EvictReserved(f);
 			}
 
 			_ancientInterval = settings.AncientStateInterval;
