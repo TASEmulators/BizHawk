@@ -18,8 +18,8 @@ namespace BizHawk.Client.Common
 		*/
 		public ZwinderBuffer(IRewindSettings settings)
 		{
-			_id = count;
-			count++;
+			
+			_id = System.Threading.Interlocked.Increment(ref count);
 
 			// just in case we ever make a ZwinderBuffer without a state manager
 			if (!Directory.Exists(Path))
