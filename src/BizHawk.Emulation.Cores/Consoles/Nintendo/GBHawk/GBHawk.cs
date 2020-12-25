@@ -235,10 +235,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			{
 				if (_syncSettings.GBACGB)
 				{
-					// on GBA, initial RAM is mostly random, choosing 0xFF as oracle of ages / seasons check for 0 which is unlikely to be true
+					// on GBA, initial RAM is mostly random, choosing 0 allows for stable clear and hotswap for games that encounter
+					// uninitialized RAM
 					for (int i = 0; i < RAM.Length; i++)
 					{
-						RAM[i] = 0xFF;
+						RAM[i] = 0;
 					}
 				}
 				else
