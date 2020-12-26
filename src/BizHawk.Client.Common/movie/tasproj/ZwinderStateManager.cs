@@ -78,7 +78,7 @@ namespace BizHawk.Client.Common
 			_id = System.Threading.Interlocked.Increment(ref count);
 
 			// delete any old files that may have not been properly deleted
-			if (_id == 0 && Directory.Exists(baseStatePath))
+			if (_id == 1 && Directory.Exists(baseStatePath))
 				Directory.Delete(baseStatePath, true);
 			Directory.CreateDirectory(baseStatePath);
 		}
