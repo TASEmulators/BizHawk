@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Diagnostics;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
@@ -9,7 +10,8 @@ namespace BizHawk.Client.Common
 {
 	public class ZwinderStateManager : IStateManager, IDisposable
 	{
-		public const string baseStatePath = "tastudiostates/";
+		private const string _path = "tastudiostates/";
+		public static string baseStatePath = _path;
 
 		private bool disposed = false;
 
@@ -77,10 +79,27 @@ namespace BizHawk.Client.Common
 		{
 			_id = System.Threading.Interlocked.Increment(ref count);
 
-			// delete any old files that may have not been properly deleted
-			if (_id == 1 && Directory.Exists(baseStatePath))
-				Directory.Delete(baseStatePath, true);
-			Directory.CreateDirectory(baseStatePath);
+			if (!Directory.Exists(_path))
+				Directory.CreateDirectory(_path);
+
+			// If this is the first instance, we'll need to set up a directory
+			if (_id == 1)
+			{
+				// If this is the only running process, delete any old files that may have not been properly deleted
+				string[] oldDirectories = Directory.GetDirectories(_path);
+				if (Process.GetProcessesByName(Process.GetCurrentProcess().ProcessName).Length == 1)
+				{
+					foreach (string dir in oldDirectories)
+						Directory.Delete(dir, true);
+					oldDirectories = new string[0];
+				}
+				// Find an unused directory name
+				int dirName = oldDirectories.Any() ? int.Parse(oldDirectories.Last().Substring(_path.Length)) + 1 : 0;
+				while (oldDirectories.Contains(_path + dirName.ToString()))
+					dirName++;
+				baseStatePath = _path + dirName.ToString() + "/";
+				Directory.CreateDirectory(baseStatePath);
+			}
 		}
 
 		public byte[] this[int frame]
