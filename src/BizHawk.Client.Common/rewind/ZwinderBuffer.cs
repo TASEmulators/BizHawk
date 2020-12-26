@@ -42,7 +42,7 @@ namespace BizHawk.Client.Common
 				case IRewindSettings.BackingStoreType.TempFile:
 				{
 					var filename = TempFileManager.GetTempFilename("ZwinderBuffer");
-					var filestream = new FileStream(filename, FileMode.Truncate, FileAccess.ReadWrite);
+					var filestream = new FileStream(filename, FileMode.Create, FileAccess.ReadWrite);
 					filestream.SetLength(Size);
 					_backingStore = filestream;
 					_disposables.Add(filestream);
