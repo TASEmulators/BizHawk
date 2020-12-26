@@ -505,9 +505,8 @@ namespace BizHawk.Client.Common
 				}
 				else
 				{ // no
-					bytes = new byte[n];
 					int bytesRead = Read(bytes, 0, n);
-					new Span<byte>(bytes).CopyTo(buffer);
+					new Span<byte>(bytes, 0, bytesRead).CopyTo(buffer);
 					return bytesRead;
 				}
 			}
