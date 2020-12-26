@@ -45,6 +45,21 @@ namespace BizHawk.BizInvoke
 		/// <paramref name="start"/> or end (= <paramref name="start"/> + <paramref name="length"/> - <c>1</c>)
 		/// are outside [<see cref="Start"/>, <see cref="EndExclusive"/>), the range of the block
 		/// </exception>
+		public Stream GetStream(ulong start, ulong length)
+		{
+			if (start < Start)
+				throw new ArgumentOutOfRangeException(nameof(start), start, "invalid address");
+			if (EndExclusive < start + length)
+				throw new ArgumentOutOfRangeException(nameof(length), length, "requested length implies invalid end address");
+			return new MemoryViewStream(true, true, (long)start, (long)length);
+		}
+		/// <summary>
+		/// Get a stream that can be used to read or write from part of the block. Does not check for or change <see cref="Protect"/>!
+		/// </summary>
+		/// <exception cref="ArgumentOutOfRangeException">
+		/// <paramref name="start"/> or end (= <paramref name="start"/> + <paramref name="length"/> - <c>1</c>)
+		/// are outside [<see cref="Start"/>, <see cref="EndExclusive"/>), the range of the block
+		/// </exception>
 		public Stream GetStream(ulong start, ulong length, bool writer)
 		{
 			if (start < Start)
