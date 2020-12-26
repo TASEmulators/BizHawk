@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using BizHawk.BizInvoke;
 using BizHawk.Common;
 
@@ -26,8 +28,29 @@ namespace BizHawk.Client.Common
 
 			Size = 1L << (int)Math.Floor(Math.Log(targetSize, 2));
 			_sizeMask = Size - 1;
-			_buffer = new MemoryBlock((ulong)Size);
-			_buffer.Protect(_buffer.Start, _buffer.Size, MemoryBlock.Protection.RW);
+			switch (settings.BackingStore)
+			{
+				case IRewindSettings.BackingStoreType.Memory:
+				{
+					var buffer = new MemoryBlock((ulong)Size);
+					buffer.Protect(buffer.Start, buffer.Size, MemoryBlock.Protection.RW);
+					_disposables.Add(buffer);
+					_backingStore = new MemoryViewStream(true, true, (long)buffer.Start, (long)buffer.Size);
+					_disposables.Add(_backingStore);
+					break;
+				}
+				case IRewindSettings.BackingStoreType.TempFile:
+				{
+					var filename = TempFileManager.GetTempFilename("ZwinderBuffer");
+					var filestream = new FileStream(filename, FileMode.Truncate, FileAccess.ReadWrite);
+					filestream.SetLength(Size);
+					_backingStore = filestream;
+					_disposables.Add(filestream);
+					break;
+				}
+				default:
+					throw new Exception();
+			}
 			_targetFrameLength = settings.TargetFrameLength;
 			_states = new StateInfo[STATEMASK + 1];
 			_useCompression = settings.UseCompression;
@@ -35,9 +58,12 @@ namespace BizHawk.Client.Common
 
 		public void Dispose()
 		{
-			_buffer.Dispose();
+			foreach (var d in (_disposables as IEnumerable<IDisposable>).Reverse())
+				d.Dispose();
+			_disposables.Clear();
 		}
 
+		private readonly List<IDisposable> _disposables = new List<IDisposable>();
 
 		/// <summary>
 		/// Number of states that could be in the state ringbuffer, Mask for the state ringbuffer
@@ -67,7 +93,6 @@ namespace BizHawk.Client.Common
 		public long Size { get; }
 
 		private readonly long _sizeMask;
-		private readonly MemoryBlock _buffer;
 
 		private readonly int _targetFrameLength;
 
@@ -77,6 +102,8 @@ namespace BizHawk.Client.Common
 			public int Size;
 			public int Frame;
 		}
+
+		private readonly Stream _backingStore;
 
 		private readonly StateInfo[] _states;
 		private int _firstStateIndex;
@@ -164,7 +191,7 @@ namespace BizHawk.Client.Common
 					? (_states[_firstStateIndex].Start - start) & _sizeMask
 					: Size;
 			};
-			var stream = new SaveStateStream(_buffer, start, _sizeMask, initialMaxSize, notifySizeReached);
+			var stream = new SaveStateStream(_backingStore, start, _sizeMask, initialMaxSize, notifySizeReached);
 
 			if (_useCompression)
 			{
@@ -186,7 +213,7 @@ namespace BizHawk.Client.Common
 
 		private Stream MakeLoadStream(int index)
 		{
-			Stream stream = new LoadStateStream(_buffer, _states[index].Start, _states[index].Size, _sizeMask);
+			Stream stream = new LoadStateStream(_backingStore, _states[index].Start, _states[index].Size, _sizeMask);
 			if (_useCompression)
 				stream = new DeflateStream(stream, CompressionMode.Decompress, leaveOpen: true);
 			return stream;
@@ -256,18 +283,16 @@ namespace BizHawk.Client.Common
 			{
 				var startByte = _states[_firstStateIndex].Start;
 				var endByte = (_states[HeadStateIndex].Start + _states[HeadStateIndex].Size) & _sizeMask;
-				// TODO: Use spans to avoid these extra copies in .net core
+				var destStream = SpanStream.GetOrBuild(writer.BaseStream);
 				if (startByte > endByte)
 				{
-					{
-						var stream = _buffer.GetStream(_buffer.Start + (ulong)startByte, (ulong)(Size - startByte), false);
-						stream.CopyTo(writer.BaseStream);
-					}
+					_backingStore.Position = startByte;
+					WaterboxUtils.CopySome(_backingStore, writer.BaseStream, Size - startByte);
 					startByte = 0;
 				}
 				{
-					var stream = _buffer.GetStream(_buffer.Start + (ulong)startByte, (ulong)(endByte - startByte), false);
-					stream.CopyTo(writer.BaseStream);
+					_backingStore.Position = startByte;
+					WaterboxUtils.CopySome(_backingStore, writer.BaseStream, endByte - startByte);
 				}
 			}
 		}
@@ -284,9 +309,8 @@ namespace BizHawk.Client.Common
 				_states[i].Start = nextByte;
 				nextByte += _states[i].Size;
 			}
-			// TODO: Use spans to avoid this extra copy in .net core
-			var dest = _buffer.GetStream(_buffer.Start, (ulong)nextByte, true);
-			WaterboxUtils.CopySome(reader.BaseStream, dest, nextByte);
+			_backingStore.Position = 0;
+			WaterboxUtils.CopySome(reader.BaseStream, _backingStore, nextByte);
 		}
 
 		public static ZwinderBuffer Create(BinaryReader reader)
@@ -314,7 +338,7 @@ namespace BizHawk.Client.Common
 			/// <summary>
 			/// 
 			/// </summary>
-			/// <param name="buffer">The ringbuffer to write into</param>
+			/// <param name="backingStore">The ringbuffer to write into</param>
 			/// <param name="offset">Offset into the buffer to start writing (and treat as position 0 in the stream)</param>
 			/// <param name="mask">Buffer size mask, used to wrap values in the ringbuffer correctly</param>
 			/// <param name="notifySize">
@@ -325,16 +349,18 @@ namespace BizHawk.Client.Common
 			/// or abort processing with an IOException.  This must fail if size is going to exceed buffer.Length, as nothing else
 			/// is preventing that case.
 			/// </param>
-			public SaveStateStream(MemoryBlock buffer, long offset, long mask, long notifySize, Func<long> notifySizeReached)
+			public SaveStateStream(Stream backingStore, long offset, long mask, long notifySize, Func<long> notifySizeReached)
 			{
-				_ptr = (byte*)Z.US(buffer.Start);
+				_backingStore = backingStore;
+				_backingStoreSS = SpanStream.GetOrBuild(backingStore);
 				_offset = offset;
 				_mask = mask;
 				_notifySize = notifySize;
 				_notifySizeReached = notifySizeReached;
 			}
-			
-			private readonly byte* _ptr;
+
+			private readonly Stream _backingStore;
+			private readonly ISpanStream _backingStoreSS;
 			private readonly long _offset;
 			private readonly long _mask;
 			private long _position;
@@ -371,25 +397,20 @@ namespace BizHawk.Client.Common
 				{
 					var start = (_position + _offset) & _mask;
 					var end = (start + n) & _mask;
+					_backingStore.Position = start;
 					if (end < start)
 					{
 						long m = BufferLength - start;
-
-						// Array.Copy(buffer, offset, _buffer, start, m);
-						buffer.Slice(0, (int)m).CopyTo(new Span<byte>(_ptr + start, (int)m));
-
-						// offset += (int)m;
+						_backingStoreSS.Write(buffer.Slice(0, (int)m));
 						buffer = buffer.Slice((int)m);
-
 						n -= m;
 						_position += m;
 						start = 0;
+						_backingStore.Position = start;
 					}
 					if (n > 0)
 					{
-						// Array.Copy(buffer, offset, _buffer, start, n);
-						buffer.CopyTo(new Span<byte>(_ptr + start, (int)n));
-
+						_backingStoreSS.Write(buffer);
 						_position += n;
 					}
 				}
@@ -400,21 +421,26 @@ namespace BizHawk.Client.Common
 				long requestedSize = _position + 1;
 				while (requestedSize > _notifySize)
 					_notifySize = _notifySizeReached();
-				_ptr[(_position++ + _offset) & _mask] = value;
+				_backingStore.WriteByte(value);
+				_position++;
+				if (_position + _offset == BufferLength)
+					_backingStore.Position = 0;
 			}
 		}
 
 		private unsafe class LoadStateStream : Stream, ISpanStream
 		{
-			public LoadStateStream(MemoryBlock buffer, long offset, long size, long mask)
+			public LoadStateStream(Stream backingStore, long offset, long size, long mask)
 			{
-				_ptr = (byte*)Z.US(buffer.Start);
+				_backingStore = backingStore;
+				_backingStoreSS = SpanStream.GetOrBuild(backingStore);
 				_offset = offset;
 				_size = size;
 				_mask = mask;
 			}
 
-			private readonly byte* _ptr;
+			private readonly Stream _backingStore;
+			private readonly ISpanStream _backingStoreSS;
 			private readonly long _offset;
 			private readonly long _size;
 			private long _position;
@@ -430,8 +456,7 @@ namespace BizHawk.Client.Common
 				get => _position;
 				set => throw new IOException();
 			}
-			public override void Flush()
-			{}
+			public override void Flush() {}
 
 			public override int Read(byte[] buffer, int offset, int count)
 			{
@@ -446,24 +471,22 @@ namespace BizHawk.Client.Common
 				{
 					var start = (_position + _offset) & _mask;
 					var end = (start + n) & _mask;
+					_backingStore.Position = start;
 					if (end < start)
 					{
 						long m = BufferLength - start;
-
-						// Array.Copy(_buffer, start, buffer, offset, m);
-						new ReadOnlySpan<byte>(_ptr + start, (int)m).CopyTo(buffer);
-
-						// offset += (int)m;
+						if (_backingStoreSS.Read(buffer.Slice(0, (int)m)) != (int)m)
+							throw new IOException("Unexpected end of underlying buffer");
 						buffer = buffer.Slice((int)m);
-	
 						n -= m;
 						_position += m;
 						start = 0;
+						_backingStore.Position = start;
 					}
 					if (n > 0)
 					{
-						// Array.Copy(_buffer, start, buffer, offset, n);
-						new ReadOnlySpan<byte>(_ptr + start, (int)n).CopyTo(buffer);
+						if (_backingStoreSS.Read(buffer.Slice(0, (int)n)) != (int)n)
+							throw new IOException("Unexpected end of underlying buffer");
 						_position += n;
 					}
 				}
@@ -472,9 +495,20 @@ namespace BizHawk.Client.Common
 
 			public override int ReadByte()
 			{
-				return _position < _size
-					? _ptr[(_position++ + _offset) & _mask]
-					: -1;
+				if (_position < _size)
+				{
+					var ret = _backingStore.ReadByte();
+					if (ret == -1)
+						throw new IOException("Unexpected end of underlying buffer");
+					_position++;
+					if (_position + _offset == BufferLength)
+						_backingStore.Position = 0;
+					return ret;
+				}
+				else
+				{
+					return -1;
+				}
 			}
 
 			public override long Seek(long offset, SeekOrigin origin) => throw new IOException();

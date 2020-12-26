@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
+using BizHawk.Common;
 
 namespace BizHawk.BizInvoke
 {
@@ -8,7 +9,7 @@ namespace BizHawk.BizInvoke
 	/// Create a stream that allows read/write over a set of unmanaged memory pointers
 	/// The validity and lifetime of those pointers is YOUR responsibility
 	/// </summary>
-	public class MemoryViewStream : Stream
+	public unsafe class MemoryViewStream : Stream, ISpanStream
 	{
 		public MemoryViewStream(bool readable, bool writable, long ptr, long length)
 		{
@@ -50,18 +51,36 @@ namespace BizHawk.BizInvoke
 
 		public override void Flush() {}
 
-		public override int Read(byte[] buffer, int offset, int count)
+		private byte* CurrentPointer() => (byte*)Z.SS(_ptr + _pos);
+
+		public int Read(Span<byte> buffer)
 		{
 			if (!_readable)
-				throw new InvalidOperationException();
-			if (count < 0 || offset + count > buffer.Length)
-				throw new ArgumentOutOfRangeException();
+				throw new IOException();
 			EnsureNotDisposed();
-
-			count = (int)Math.Min(count, _length - _pos);
-			Marshal.Copy(Z.SS(_ptr + _pos), buffer, offset, count);
+			var count = (int)Math.Min(buffer.Length, _length - _pos);
+			new ReadOnlySpan<byte>(CurrentPointer(), count).CopyTo(buffer);
 			_pos += count;
 			return count;
+		}
+
+		public override int Read(byte[] buffer, int offset, int count)
+		{
+			return Read(new Span<byte>(buffer, offset, count));
+		}
+
+		public override int ReadByte()
+		{
+			if (_pos < _length)
+			{
+				var ret = *CurrentPointer();
+				_pos++;
+				return ret;
+			}
+			else
+			{
+				return -1;
+			}
 		}
 
 		public override long Seek(long offset, SeekOrigin origin)
@@ -86,19 +105,36 @@ namespace BizHawk.BizInvoke
 
 		public override void SetLength(long value)
 		{
-			throw new InvalidOperationException();
+			throw new IOException();
+		}
+
+		public void Write(ReadOnlySpan<byte> buffer)
+		{
+			if (!_writable)
+				throw new IOException();
+			EnsureNotDisposed();
+			if (_pos + buffer.Length > _length)
+				throw new IOException("End of non-resizable stream");
+			buffer.CopyTo(new Span<byte>(CurrentPointer(), buffer.Length));
+			_pos += buffer.Length;
 		}
 
 		public override void Write(byte[] buffer, int offset, int count)
 		{
-			if (!_writable)
-				throw new InvalidOperationException();
-			if (count < 0 || _pos + count > _length || offset + count > buffer.Length)
-				throw new ArgumentOutOfRangeException();
-			EnsureNotDisposed();
+			Write(new ReadOnlySpan<byte>(buffer, offset, count));
+		}
 
-			Marshal.Copy(buffer, offset, Z.SS(_ptr + _pos), count);
-			_pos += count;
+		public override void WriteByte(byte value)
+		{
+			if (_pos < _length)
+			{
+				*CurrentPointer() = value;
+				_pos++;
+			}
+			else
+			{
+				throw new IOException("End of non-resizable stream");
+			}
 		}
 
 		protected override void Dispose(bool disposing)
