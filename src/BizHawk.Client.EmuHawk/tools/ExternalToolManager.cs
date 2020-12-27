@@ -126,12 +126,12 @@ namespace BizHawk.Client.EmuHawk
 #endif
 				item.ToolTipText = e switch
 				{
-					BadImageFormatException _ => "This assembly can't be loaded, probably because it's corrupt or targets an incompatible .NET runtime.",
-					ExternalToolApplicabilityAttributeBase.DuplicateException _ => "The IExternalToolForm has conflicting applicability attributes.",
+					BadImageFormatException => "This assembly can't be loaded, probably because it's corrupt or targets an incompatible .NET runtime.",
+					ExternalToolApplicabilityAttributeBase.DuplicateException => "The IExternalToolForm has conflicting applicability attributes.",
 					ExternalToolAttribute.MissingException e1 => e1.OldAttributeFound
 						? "The assembly doesn't contain a class implementing IExternalToolForm and annotated with [ExternalTool].\nHowever, the assembly itself is annotated with [BizHawkExternalTool], which is now deprecated. Has the tool been updated since BizHawk 2.4?"
 						: "The assembly doesn't contain a class implementing IExternalToolForm and annotated with [ExternalTool].",
-					ReflectionTypeLoadException _ => "Something went wrong while trying to load the assembly.",
+					ReflectionTypeLoadException => "Something went wrong while trying to load the assembly.",
 					_ => $"An exception of type {e.GetType().FullName} was thrown while trying to load the assembly and look for an IExternalToolForm:\n{e.Message}"
 				};
 			}

@@ -66,7 +66,7 @@ namespace BizHawk.Client.Common
 		public bool GetDisplayBackground() => Settings switch
 		{
 			NES.NESSettings nhs => nhs.DispBackground,
-			QuickNES.QuickNESSettings _ => true,
+			QuickNES.QuickNESSettings => true,
 			_ => throw new InvalidOperationException()
 		};
 

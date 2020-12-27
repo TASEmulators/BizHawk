@@ -419,10 +419,10 @@ namespace BizHawk.Client.EmuHawk
 							? Input.AllowInput.OnlyController
 							: Input.AllowInput.All
 						: Input.AllowInput.None,
-					TAStudio _ when yieldAlt => Input.AllowInput.None,
-					FormBase f when !f.BlocksInputWhenFocused => Input.AllowInput.All,
-					ControllerConfig _ => Input.AllowInput.All,
-					HotkeyConfig _ => Input.AllowInput.All,
+					TAStudio when yieldAlt => Input.AllowInput.None,
+					FormBase { BlocksInputWhenFocused: false } => Input.AllowInput.All,
+					ControllerConfig => Input.AllowInput.All,
+					HotkeyConfig => Input.AllowInput.All,
 					_ => Input.AllowInput.None
 				}
 			);
@@ -4220,9 +4220,9 @@ namespace BizHawk.Client.EmuHawk
 
 			return Emulator switch
 			{
-				Snes9x _ => PromptToSwitchCore(CoreNames.Snes9X, CoreNames.Bsnes, () => Config.PreferredCores["SNES"] = CoreNames.Bsnes),
-				QuickNES _ => PromptToSwitchCore(CoreNames.QuickNes, CoreNames.NesHawk, () => Config.PreferredCores["NES"] = CoreNames.NesHawk),
-				HyperNyma _ => PromptToSwitchCore(CoreNames.HyperNyma, CoreNames.TurboNyma, () => Config.PreferredCores["PCE"] = CoreNames.TurboNyma),
+				Snes9x => PromptToSwitchCore(CoreNames.Snes9X, CoreNames.Bsnes, () => Config.PreferredCores["SNES"] = CoreNames.Bsnes),
+				QuickNES => PromptToSwitchCore(CoreNames.QuickNes, CoreNames.NesHawk, () => Config.PreferredCores["NES"] = CoreNames.NesHawk),
+				HyperNyma => PromptToSwitchCore(CoreNames.HyperNyma, CoreNames.TurboNyma, () => Config.PreferredCores["PCE"] = CoreNames.TurboNyma),
 				_ => true
 			};
 		}

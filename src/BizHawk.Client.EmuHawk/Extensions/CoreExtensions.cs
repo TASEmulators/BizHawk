@@ -27,14 +27,14 @@ namespace BizHawk.Client.EmuHawk.CoreExtensions
 
 			return core switch
 			{
-				QuickNES _ => Properties.Resources.QuickNes,
-				LibsnesCore _ => Properties.Resources.Bsnes,
-				GPGX _ => Properties.Resources.GenPlus,
-				Gameboy _ => Properties.Resources.Gambatte,
-				Snes9x _ => Properties.Resources.Snes9X,
-				MAME _ => Properties.Resources.Mame,
-				MGBAHawk _ => Properties.Resources.Mgba,
-				MelonDS _ => Properties.Resources.MelonDS,
+				QuickNES => Properties.Resources.QuickNes,
+				LibsnesCore => Properties.Resources.Bsnes,
+				GPGX => Properties.Resources.GenPlus,
+				Gameboy => Properties.Resources.Gambatte,
+				Snes9x => Properties.Resources.Snes9X,
+				MAME => Properties.Resources.Mame,
+				MGBAHawk => Properties.Resources.Mgba,
+				MelonDS => Properties.Resources.MelonDS,
 				_ => null
 			};
 		}

@@ -99,8 +99,8 @@ namespace BizHawk.Client.EmuHawk
 				{
 					Predicate<string> searchSetContains = controlSchema switch
 					{
-						ButtonSchema _ => buttonControls.Contains,
-						DiscManagerSchema _ => s => buttonControls.Contains(s) || axisControls.ContainsKey(s),
+						ButtonSchema => buttonControls.Contains,
+						DiscManagerSchema => s => buttonControls.Contains(s) || axisControls.ContainsKey(s),
 						_ => axisControls.ContainsKey
 					};
 					if (!searchSetContains(controlSchema.Name))
