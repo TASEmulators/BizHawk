@@ -84,7 +84,7 @@ namespace BizHawk.Client.EmuHawk
 			fileInfo = new FileInfo(NameBox.Text);
 			if (fileInfo.Exists)
 			{
-				var result = MessageBox.Show(this, "File already exists, overwrite?", "File exists", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+				var result = this.ModalMessageBox("File already exists, overwrite?", "File exists", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
 				if (result != DialogResult.OK)
 				{
 					return false;

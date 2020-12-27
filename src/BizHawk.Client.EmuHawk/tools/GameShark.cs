@@ -50,12 +50,12 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else
 					{
-						MessageBox.Show(result.Error, "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+						DialogController.ShowMessageBox(result.Error, "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 					}
 				}
 				catch (Exception ex)
 				{
-					MessageBox.Show($"An Error occured: {ex.GetType()}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					DialogController.ShowMessageBox($"An Error occured: {ex.GetType()}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				}
 			}
 
@@ -66,7 +66,7 @@ namespace BizHawk.Client.EmuHawk
 		private void BtnClear_Click(object sender, EventArgs e)
 		{
 			// Clear old Inputs
-			var result = MessageBox.Show("Are you sure you want to clear this form?", "Clear Form", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+			var result = DialogController.ShowMessageBox("Are you sure you want to clear this form?", "Clear Form", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 			if (result == DialogResult.Yes)
 			{
 				txtDescription.Clear();

@@ -218,7 +218,7 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 			{
 				if (recent.Frozen)
 				{
-					MessageBox.Show($"Could not open {path}", "File not found", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					mainForm.ShowMessageBox($"Could not open {path}", "File not found", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				}
 				else
 				{

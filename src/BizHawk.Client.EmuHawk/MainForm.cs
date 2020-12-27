@@ -339,7 +339,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (ArgParser.ArgParserException e)
 			{
-				MessageBox.Show(e.Message);
+				ShowMessageBox(owner: null, e.Message);
 			}
 
 			// TODO GL - a lot of disorganized wiring-up here
@@ -443,7 +443,7 @@ namespace BizHawk.Client.EmuHawk
 					message = "Couldn't initialize DirectSound! Things may go poorly for you. Try changing your sound driver to 44.1khz instead of 48khz in mmsys.cpl.";
 				}
 
-				MessageBox.Show(message, "Initialization Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				ShowMessageBox(owner: null, message, "Initialization Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
 				Config.SoundOutputMethod = ESoundOutputMethod.Dummy;
 				Sound = new Sound(Handle, Config, Emulator.VsyncRate);
@@ -478,7 +478,7 @@ namespace BizHawk.Client.EmuHawk
 				LoadRom(_argParser.cmdRom, new LoadRomArgs { OpenAdvanced = ioa });
 				if (Game == null)
 				{
-					MessageBox.Show($"Failed to load {_argParser.cmdRom} specified on commandline");
+					ShowMessageBox(owner: null, $"Failed to load {_argParser.cmdRom} specified on commandline");
 				}
 			}
 			else if (Config.RecentRoms.AutoLoad && !Config.RecentRoms.Empty)
@@ -1771,7 +1771,7 @@ namespace BizHawk.Client.EmuHawk
 						{
 							// we're eating this one now. The possible negative consequence is that a user could lose
 							// their saveram and not know why
-							// MessageBox.Show("Error: tried to load saveram, but core would not accept it?");
+//							ShowMessageBox(owner: null, "Error: tried to load saveram, but core would not accept it?");
 							return;
 						}
 
@@ -2288,11 +2288,12 @@ namespace BizHawk.Client.EmuHawk
 					// Only show this nag if the core actually has sync settings, not all cores do
 					if (e.Settings != null && !_suppressSyncSettingsWarning)
 					{
-						MessageBox.Show(
-						"No sync settings found, using currently configured settings for this core.",
-						"No sync settings found",
-						MessageBoxButtons.OK,
-						MessageBoxIcon.Warning);
+						ShowMessageBox(
+							owner: null,
+							"No sync settings found, using currently configured settings for this core.",
+							"No sync settings found",
+							MessageBoxButtons.OK,
+							MessageBoxIcon.Warning);
 					}
 				}
 			}
@@ -3443,7 +3444,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				catch (Exception e)
 				{
-					MessageBox.Show($"Video dumping died:\n\n{e}");
+					ShowMessageBox(owner: null, $"Video dumping died:\n\n{e}");
 					AbortAv();
 				}
 			}
@@ -3496,14 +3497,15 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ShowMessageCoreComm(string message)
 		{
-			MessageBox.Show(this, message, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+			this.ModalMessageBox(message, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 		}
 
 		private void ShowLoadError(object sender, RomLoader.RomErrorArgs e)
 		{
 			if (e.Type == RomLoader.LoadErrorType.MissingFirmware)
 			{
-				var result = MessageBox.Show(
+				var result = ShowMessageBox(
+					owner: null,
 					"You are missing the needed firmware files to load this Rom\n\nWould you like to open the firmware manager now and configure your firmwares?",
 					e.Message,
 					MessageBoxButtons.YesNo,
@@ -3528,7 +3530,7 @@ namespace BizHawk.Client.EmuHawk
 					title = $"{e.AttemptedCoreLoad} load error";
 				}
 
-				MessageBox.Show(this, e.Message, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
+				this.ModalMessageBox(e.Message, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 		}
 
@@ -3893,8 +3895,12 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (!FlushSaveRAM())
 				{
-					var msgRes = MessageBox.Show("Failed flushing the game's Save RAM to your disk.\nClose without flushing Save RAM?",
-							"Directory IO Error", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
+					var msgRes = ShowMessageBox(
+						owner: null,
+						"Failed flushing the game's Save RAM to your disk.\nClose without flushing Save RAM?",
+						"Directory IO Error",
+						MessageBoxButtons.YesNo,
+						MessageBoxIcon.Error);
 
 					if (msgRes != DialogResult.Yes)
 					{
@@ -3955,7 +3961,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (result.Errors.Any())
 			{
-				MessageBox.Show(string.Join("\n", result.Errors), "Conversion error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				ShowMessageBox(owner: null, string.Join("\n", result.Errors), "Conversion error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 
 			if (result.Warnings.Any())
@@ -4490,6 +4496,19 @@ namespace BizHawk.Client.EmuHawk
 		public IDialogController DialogController => this;
 
 		public IWin32Window SelfAsHandle => this;
+
+		public DialogResult ShowMessageBox(
+			IDialogParent/*?*/ owner,
+			string text,
+			string/*?*/ caption = null,
+			MessageBoxButtons? buttons = null,
+			MessageBoxIcon? icon = null)
+				=> MessageBox.Show(
+					owner?.SelfAsHandle,
+					text,
+					caption ?? string.Empty,
+					buttons ?? MessageBoxButtons.OK,
+					icon ?? MessageBoxIcon.None);
 
 		public void StartSound() => Sound.StartSound();
 		public void StopSound() => Sound.StopSound();

@@ -95,7 +95,7 @@ namespace BizHawk.Client.EmuHawk
 					// archive - run the archive chooser
 					if (SystemString == "PSX" || SystemString == "PCFX" || SystemString == "SAT")
 					{
-						MessageBox.Show("Using archives with PSX, PCFX or SATURN is not currently recommended/supported.");
+						DialogController.ShowMessageBox("Using archives with PSX, PCFX or SATURN is not currently recommended/supported.");
 						return;
 					}
 

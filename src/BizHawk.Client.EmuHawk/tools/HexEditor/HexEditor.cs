@@ -1262,7 +1262,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if(!_domain.Writable)
 			{
-				MessageBox.Show("This Memory Domain can't be Poked; so importing can't work");
+				DialogController.ShowMessageBox("This Memory Domain can't be Poked; so importing can't work");
 				return;
 			}
 
@@ -2251,7 +2251,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 #if false // if needed
-			MessageBox.Show(new SlimDX.Matrix {
+			DialogController.ShowMessageBox(new SlimDX.Matrix {
 				M11 = matVals[0, 0], M12 = matVals[0, 1], M13 = matVals[0, 2], M14 = matVals[0, 3],
 				M21 = matVals[1, 0], M22 = matVals[1, 1], M23 = matVals[1, 2], M24 = matVals[1, 3],
 				M31 = matVals[2, 0], M32 = matVals[2, 1], M33 = matVals[2, 2], M34 = matVals[2, 3],
@@ -2266,7 +2266,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var str = sw.ToString();
-			MessageBox.Show(str);
+			DialogController.ShowMessageBox(str);
 		}
 	}
 } 

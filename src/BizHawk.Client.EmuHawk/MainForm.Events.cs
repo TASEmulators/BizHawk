@@ -391,12 +391,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!Emulator.Attributes().Released)
 			{
-				var result = MessageBox.Show(
-					this,
-					"Thanks for using BizHawk!  The emulation core you have selected " +
-					"is currently BETA-status.  We appreciate your help in testing BizHawk. " +
-					"You can record a movie on this core if you'd like to, but expect to " +
-					"encounter bugs and sync problems.  Continue?", "BizHawk", MessageBoxButtons.YesNo);
+				var result = this.ModalMessageBox(
+					"Thanks for using BizHawk!  The emulation core you have selected "
+						+ "is currently BETA-status.  We appreciate your help in testing BizHawk. "
+						+ "You can record a movie on this core if you'd like to, but expect to "
+						+ "encounter bugs and sync problems.  Continue?",
+					"BizHawk",
+					MessageBoxButtons.YesNo);
 
 				if (result != DialogResult.Yes)
 				{
@@ -1230,7 +1231,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!Emulator.CanPollInput())
 			{
-				MessageBox.Show("Current core does not support input polling. TAStudio can't be used.");
+				ShowMessageBox(owner: null, "Current core does not support input polling. TAStudio can't be used.");
 				return;
 			}
 
@@ -1509,8 +1510,13 @@ namespace BizHawk.Client.EmuHawk
 						var message =
 							$"Invalid file format. Reason: {ex.Message} \nForce transfer? This may cause the calculator to crash.";
 
-						if (MessageBox.Show(message, "Upload Failed", MessageBoxButtons.YesNoCancel,
-							MessageBoxIcon.Question) == DialogResult.Yes)
+						if (ShowMessageBox(
+							owner: null,
+							message,
+							"Upload Failed",
+							MessageBoxButtons.YesNoCancel,
+							MessageBoxIcon.Question)
+								== DialogResult.Yes)
 						{
 							ti83.LinkPort.SendFileToCalc(File.OpenRead(ofd.FileName), false);
 						}
@@ -2459,9 +2465,11 @@ namespace BizHawk.Client.EmuHawk
 		private void UpdateNotification_Click(object sender, EventArgs e)
 		{
 			Sound.StopSound();
-			DialogResult result = MessageBox.Show(this,
+			var result = this.ModalMessageBox(
 				$"Version {Config.UpdateLatestVersion} is now available. Would you like to open the BizHawk homepage?\r\n\r\nClick \"No\" to hide the update notification for this version.",
-				"New Version Available", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+				"New Version Available",
+				MessageBoxButtons.YesNoCancel,
+				MessageBoxIcon.Question);
 			Sound.StartSound();
 
 			if (result == DialogResult.Yes)
@@ -2593,7 +2601,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception ex)
 			{
-				MessageBox.Show($"Exception on drag and drop:\n{ex}");
+				ShowMessageBox(owner: null, $"Exception on drag and drop:\n{ex}");
 			}
 			finally
 			{

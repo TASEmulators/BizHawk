@@ -262,7 +262,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				catch (Exception ex)
 				{
-					MessageBox.Show(ex.ToString());
+					DialogController.ShowMessageBox(ex.ToString());
 				}
 			}
 
@@ -396,7 +396,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					catch (Exception e)
 					{
-						MessageBox.Show(e.ToString());
+						DialogController.ShowMessageBox(e.ToString());
 					}
 				}
 				else
@@ -651,7 +651,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				catch (Exception ex)
 				{
-					MessageBox.Show(ex.ToString());
+					DialogController.ShowMessageBox(ex.ToString());
 				}
 			}
 
@@ -963,7 +963,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception ex)
 			{
-				MessageBox.Show(ex.ToString());
+				DialogController.ShowMessageBox(ex.ToString());
 			}
 		}
 
@@ -1354,7 +1354,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception ex)
 			{
-				MessageBox.Show(ex.ToString());
+				DialogController.ShowMessageBox(ex.ToString());
 			}
 		}
 

@@ -143,6 +143,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 	}
 
+#nullable enable
 	public static class FormExtensions
 	{
 		public static void DoWithTempMute(this IDialogController dialogController, Action action)
@@ -160,6 +161,23 @@ namespace BizHawk.Client.EmuHawk
 			return ret;
 		}
 
+		/// <summary>
+		/// Creates a <see cref="MessageBox"/> with the receiver (<paramref name="dialogParent"/>) as its parent, with the given <paramref name="text"/>,
+		/// and with the given <paramref name="caption"/>, <paramref name="buttons"/>, and <paramref name="icon"/> if they're specified.
+		/// </summary>
+		public static DialogResult ModalMessageBox(
+			this IDialogParent dialogParent,
+			string text,
+			string? caption = null,
+			MessageBoxButtons? buttons = null,
+			MessageBoxIcon? icon = null)
+				=> dialogParent.DialogController.ShowMessageBox(
+					owner: dialogParent,
+					text: text,
+					caption: caption,
+					buttons: buttons,
+					icon: icon);
+
 		public static DialogResult ShowDialogAsChild(this IDialogParent dialogParent, CommonDialog dialog)
 			=> dialog.ShowDialog(dialogParent.SelfAsHandle);
 
@@ -171,7 +189,25 @@ namespace BizHawk.Client.EmuHawk
 
 		public static DialogResult ShowDialogWithTempMute(this IDialogParent dialogParent, Form dialog)
 			=> dialogParent.DialogController.DoWithTempMute(() => dialog.ShowDialog(dialogParent.SelfAsHandle));
+
+		/// <summary>
+		/// Creates a <see cref="MessageBox"/> without a parent, with the given <paramref name="text"/>,
+		/// and with the given <paramref name="caption"/>, <paramref name="buttons"/>, and <paramref name="icon"/> if they're specified.
+		/// </summary>
+		public static DialogResult ShowMessageBox(
+			this IDialogController dialogController,
+			string text,
+			string? caption = null,
+			MessageBoxButtons? buttons = null,
+			MessageBoxIcon? icon = null)
+				=> dialogController.ShowMessageBox(
+					owner: null,
+					text: text,
+					caption: caption,
+					buttons: buttons,
+					icon: icon);
 	}
+#nullable restore
 
 	public static class ListViewExtensions
 	{

@@ -43,7 +43,7 @@ namespace BizHawk.Client.EmuHawk
 			// which resets tools before the movie session becomes active)
 			if (!CurrentMovie.IsActive() && !Tools.IsLoaded<TAStudio>())
 			{
-				MessageBox.Show("In order to use this tool you must be recording a movie.");
+				DialogController.ShowMessageBox("In order to use this tool you must be recording a movie.");
 				Close();
 				DialogResult = DialogResult.Cancel;
 				return;
@@ -98,7 +98,7 @@ namespace BizHawk.Client.EmuHawk
 				return true;
 			}
 
-			DialogResult result = MessageBox.Show("You have unsaved macro(s). Do you wish to save them?", "Save?", MessageBoxButtons.YesNoCancel);
+			DialogResult result = DialogController.ShowMessageBox("You have unsaved macro(s). Do you wish to save them?", "Save?", MessageBoxButtons.YesNoCancel);
 			if (result == DialogResult.Cancel)
 			{
 				return false;
@@ -121,7 +121,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (StartNum.Value >= CurrentMovie.InputLogLength || EndNum.Value >= CurrentMovie.InputLogLength)
 			{
-				MessageBox.Show("Start and end frames must be inside the movie.");
+				DialogController.ShowMessageBox("Start and end frames must be inside the movie.");
 				return;
 			}
 
@@ -217,7 +217,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (SelectedZone == null)
 			{
-				MessageBox.Show("Please select a zone first.");
+				DialogController.ShowMessageBox("Please select a zone first.");
 				return;
 			}
 

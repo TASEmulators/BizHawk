@@ -214,7 +214,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					changesString = "The current movie has unsaved changes. Would you like to save before closing it?";
 				}
-				var result = MessageBox.Show(
+				var result = DialogController.ShowMessageBox(
 					"TAStudio will create a new project file from the current movie.\n\n" + changesString,
 					"Convert movie",
 					MessageBoxButtons.YesNoCancel,
@@ -1284,7 +1284,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception)
 			{
-				MessageBox.Show($"Invalid mnemonic string: {inputLogEntry}", "Paste Input failed!");
+				DialogController.ShowMessageBox($"Invalid mnemonic string: {inputLogEntry}", "Paste Input failed!");
 				return null;
 			}
 		}

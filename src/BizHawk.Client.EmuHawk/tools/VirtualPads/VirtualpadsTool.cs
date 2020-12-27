@@ -88,7 +88,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var padSchemata = ((IVirtualPadSchema) Activator.CreateInstance(schemaType))
-				.GetPadSchemas(Emulator, s => MessageBox.Show(s))
+				.GetPadSchemas(Emulator, s => DialogController.ShowMessageBox(s))
 				.ToList();
 
 			if (VersionInfo.DeveloperBuild)
@@ -105,7 +105,7 @@ namespace BizHawk.Client.EmuHawk
 					};
 					if (!searchSetContains(controlSchema.Name))
 					{
-						MessageBox.Show(this,
+						this.ModalMessageBox(
 							$"Schema warning: Schema entry '{schema.DisplayName}':'{controlSchema.Name}' will not correspond to any control in definition '{Emulator.ControllerDefinition.Name}'",
 							"Dev Warning");
 					}

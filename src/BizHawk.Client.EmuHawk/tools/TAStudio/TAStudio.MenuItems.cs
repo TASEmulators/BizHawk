@@ -131,7 +131,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (filename.EndsWith(MovieService.StandardMovieExtension))
 			{
-				var result1 = MessageBox.Show("This is a regular movie, a new project must be created from it to use in TAStudio\nProceed?", "Convert movie", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+				var result1 = DialogController.ShowMessageBox("This is a regular movie, a new project must be created from it to use in TAStudio\nProceed?", "Convert movie", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
 				if (result1.IsOk())
 				{
 					_initializing = true; // Starting a new movie causes a core reboot
@@ -149,7 +149,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				MessageBox.Show("This is not a BizHawk movie!", "Movie load error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				DialogController.ShowMessageBox("This is not a BizHawk movie!", "Movie load error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 		}
 
@@ -272,7 +272,7 @@ namespace BizHawk.Client.EmuHawk
 				|| Emulator is Emulation.Cores.Nintendo.Gameboy.Gameboy
 				|| Emulator is Emulation.Cores.Nintendo.SubGBHawk.SubGBHawk)
 			{
-				MessageBox.Show("This core requires emulation to be on the last frame when writing the movie, otherwise movie length will appear incorrect.\nTAStudio can't handle this, so Export BK2, play it to the end, and then Save Movie.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+				DialogController.ShowMessageBox("This core requires emulation to be on the last frame when writing the movie, otherwise movie length will appear incorrect.\nTAStudio can't handle this, so Export BK2, play it to the end, and then Save Movie.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 			}
 
 			var bk2 = CurrentTasMovie.ToBk2();
@@ -728,7 +728,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (TasView.SelectedRows.Count() > 50)
 			{
-				var result = MessageBox.Show("Are you sure you want to add more than 50 markers?", "Add markers", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+				var result = DialogController.ShowMessageBox("Are you sure you want to add more than 50 markers?", "Add markers", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
 				if (result != DialogResult.OK)
 				{
 					return;
@@ -763,7 +763,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!Emulator.DeterministicEmulation)
 			{
-				if (MessageBox.Show("The emulator is not deterministic. It might fail even if the difference isn't enough to cause a desync.\nContinue with check?", "Not Deterministic", MessageBoxButtons.YesNo) == DialogResult.No)
+				if (DialogController.ShowMessageBox("The emulator is not deterministic. It might fail even if the difference isn't enough to cause a desync.\nContinue with check?", "Not Deterministic", MessageBoxButtons.YesNo) == DialogResult.No)
 				{
 					return;
 				}
@@ -783,7 +783,7 @@ namespace BizHawk.Client.EmuHawk
 
 					if (!state.SequenceEqual(greenZone))
 					{
-						if (MessageBox.Show($"Bad data between frames {lastState} and {Emulator.Frame}. Save the relevant state (raw data)?", "Integrity Failed!", MessageBoxButtons.YesNo) == DialogResult.Yes)
+						if (DialogController.ShowMessageBox($"Bad data between frames {lastState} and {Emulator.Frame}. Save the relevant state (raw data)?", "Integrity Failed!", MessageBoxButtons.YesNo) == DialogResult.Yes)
 						{
 							var sfd = new SaveFileDialog { FileName = "integrity.fresh" };
 							if (sfd.ShowDialog().IsOk())
@@ -801,7 +801,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			while (Emulator.Frame < goToFrame);
 
-			MessageBox.Show("Integrity Check passed");
+			DialogController.ShowMessageBox("Integrity Check passed");
 		}
 
 		private void ConfigSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -836,7 +836,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				catch
 				{
-					MessageBox.Show("Invalid Entry.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					DialogController.ShowMessageBox("Invalid Entry.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				}
 
 				if (val > 0)

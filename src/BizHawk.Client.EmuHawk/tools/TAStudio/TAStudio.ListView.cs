@@ -370,7 +370,7 @@ namespace BizHawk.Client.EmuHawk
 			catch (Exception ex)
 			{
 				text = "";
-				MessageBox.Show($"oops\n{ex}");
+				DialogController.ShowMessageBox($"oops\n{ex}");
 			}
 		}
 

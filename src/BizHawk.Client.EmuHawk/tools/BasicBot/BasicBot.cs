@@ -907,7 +907,7 @@ namespace BizHawk.Client.EmuHawk
 			var message = CanStart();
 			if (!string.IsNullOrWhiteSpace(message))
 			{
-				MessageBox.Show(message);
+				DialogController.ShowMessageBox(message);
 				return;
 			}
 

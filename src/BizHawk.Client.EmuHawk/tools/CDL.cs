@@ -226,7 +226,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// TODO - I don't like this system. It's hard to figure out how to use it. It should be done in multiple passes.
-			var result = MessageBox.Show("Save changes to CDL session?", "CDL Auto Save", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+			var result = DialogController.ShowMessageBox("Save changes to CDL session?", "CDL Auto Save", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 			if (result == DialogResult.No)
 			{
 				ShutdownCDL();
@@ -264,7 +264,7 @@ namespace BizHawk.Client.EmuHawk
 				if (!newCDL.Check(testCDL))
 				{
 					if(!_autoloading)
-						MessageBox.Show(this, "CDL file does not match emulator's current memory map!");
+						this.ModalMessageBox("CDL file does not match emulator's current memory map!");
 					return;
 				}
 
@@ -322,7 +322,7 @@ namespace BizHawk.Client.EmuHawk
 			//take care not to clobber an existing CDL
 			if (_cdl != null)
 			{
-				var result = MessageBox.Show(this, "OK to create new CDL?", "Query", MessageBoxButtons.YesNo);
+				var result = this.ModalMessageBox("OK to create new CDL?", "Query", MessageBoxButtons.YesNo);
 				if (result != DialogResult.Yes)
 					return;
 			}
@@ -344,7 +344,7 @@ namespace BizHawk.Client.EmuHawk
 			//take care not to clobber an existing CDL
 			if (_cdl != null)
 			{
-				var result = MessageBox.Show(this, "OK to load new CDL?", "Query", MessageBoxButtons.YesNo);
+				var result = this.ModalMessageBox("OK to load new CDL?", "Query", MessageBoxButtons.YesNo);
 				if (result != DialogResult.Yes)
 					return;
 			}
@@ -363,7 +363,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_cdl == null)
 			{
-				MessageBox.Show(this, "Cannot save with no CDL loaded!", "Alert");
+				this.ModalMessageBox("Cannot save with no CDL loaded!", "Alert");
 				return;
 			}
 
@@ -411,7 +411,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_cdl == null)
 			{
-				MessageBox.Show(this, "Cannot append with no CDL loaded!", "Alert");
+				this.ModalMessageBox("Cannot append with no CDL loaded!", "Alert");
 			}
 			else
 			{
@@ -428,7 +428,7 @@ namespace BizHawk.Client.EmuHawk
 					newCDL.Load(fs);
 					if (!_cdl.Check(newCDL))
 					{
-						MessageBox.Show(this, "CDL file does not match emulator's current memory map!");
+						this.ModalMessageBox("CDL file does not match emulator's current memory map!");
 						return;
 					}
 					_cdl.LogicalOrFrom(newCDL);
@@ -441,11 +441,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_cdl == null)
 			{
-				MessageBox.Show(this, "Cannot clear with no CDL loaded!", "Alert");
+				this.ModalMessageBox("Cannot clear with no CDL loaded!", "Alert");
 			}
 			else
 			{
-				var result = MessageBox.Show(this, "OK to clear CDL?", "Query", MessageBoxButtons.YesNo);
+				var result = this.ModalMessageBox("OK to clear CDL?", "Query", MessageBoxButtons.YesNo);
 				if (result == DialogResult.Yes)
 				{
 					_cdl.ClearData();
@@ -458,7 +458,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_cdl == null)
 			{
-				MessageBox.Show(this, "Cannot disassemble with no CDL loaded!", "Alert");
+				this.ModalMessageBox("Cannot disassemble with no CDL loaded!", "Alert");
 				return;
 			}
 
