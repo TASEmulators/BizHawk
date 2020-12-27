@@ -8,7 +8,7 @@
 		bool UseCompression { get; }
 
 		/// <summary>
-		/// Max amount of buffer space to use in MB
+		/// Buffer space to use in MB
 		/// </summary>
 		long BufferSize { get; }
 
@@ -16,6 +16,14 @@
 		/// Desired frame length (number of emulated frames you can go back before running out of buffer)
 		/// </summary>
 		int TargetFrameLength { get; }
+
+		public enum BackingStoreType
+		{
+			Memory,
+			TempFile,
+		}
+
+		public BackingStoreType BackingStore { get; }
 	}
 
 	public class RewindConfig : IRewindSettings
@@ -24,5 +32,6 @@
 		public bool Enabled { get; set; } = true;
 		public long BufferSize { get; set; } = 512; // in mb
 		public int TargetFrameLength { get; set; } = 600;
+		public IRewindSettings.BackingStoreType BackingStore { get; set; } = IRewindSettings.BackingStoreType.Memory;
 	}
 }
