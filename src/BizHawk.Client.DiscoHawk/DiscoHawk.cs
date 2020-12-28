@@ -24,7 +24,12 @@ namespace BizHawk.Client.DiscoHawk
 	{
 		static Program()
 		{
-			if (OSTC.IsUnixHost) return;
+			if (OSTC.IsUnixHost)
+			{
+				// for Unix, skip everything else and just wire up the event handler
+				AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
+				return;
+			}
 
 			// http://www.codeproject.com/Articles/310675/AppDomain-AssemblyResolve-Event-Tips
 			// this will look in subdirectory "dll" to load pinvoked stuff
