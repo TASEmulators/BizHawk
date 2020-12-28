@@ -98,6 +98,8 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 	{
 		public MAME(string dir, string file, MAME.SyncSettings syncSettings, out string gamename)
 		{
+			OSTailoredCode.LinkedLibManager.FreeByPtr(OSTailoredCode.LinkedLibManager.LoadOrThrow(LibMAME.dll)); // don't bother if the library is missing
+
 			ServiceProvider = new BasicServiceProvider(this);
 
 			_gameDirectory = dir;
