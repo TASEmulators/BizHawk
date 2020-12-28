@@ -64,6 +64,7 @@
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Emulation.DiscSystem/BizHawk.Emulation.DiscSystem.csproj" />
 		<Compile Include="$(ProjectDir)../BizHawk.Common/OSTailoredCode.cs" />
 		<Content Include="discohawk.ico" />
+		<EmbeddedResource Include="discohawk.ico" />
 	</ItemGroup>
 	<ItemGroup>
 		<Compile Update="About.cs" SubType="Form" />
@@ -74,10 +75,6 @@
 		<EmbeddedResource Update="ComparisonResults.resx" DependentUpon="ComparisonResults.cs" />
 		<Compile Update="MainDiscoForm.cs" SubType="Form" />
 		<Compile Update="MainDiscoForm.Designer.cs" DependentUpon="MainDiscoForm.cs" />
-
-		<EmbeddedResource Remove="MainDiscoForm.resx" />
-<!-- TODO uses non-string
 		<EmbeddedResource Update="MainDiscoForm.resx" DependentUpon="MainDiscoForm.cs" SubType="Designer" />
--->
 	</ItemGroup>
 </Project>

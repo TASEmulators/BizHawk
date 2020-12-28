@@ -253,7 +253,6 @@
 			this.Controls.Add(this.lblMagicDragArea);
 			this.Controls.Add(this.ExitButton);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-//			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon"))); //TODO non-string in .resx
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "MainDiscoForm";

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Forms;
 using System.IO;
 using BizHawk.Common.StringExtensions;
@@ -17,6 +18,7 @@ namespace BizHawk.Client.DiscoHawk
 		public MainDiscoForm()
 		{
 			InitializeComponent();
+			Icon = new Icon(typeof(MainDiscoForm).Assembly.GetManifestResourceStream("BizHawk.Client.DiscoHawk.discohawk.ico") ?? throw new NullReferenceException());
 		}
 
 		private void MainDiscoForm_Load(object sender, EventArgs e)
