@@ -30,7 +30,7 @@ namespace BizHawk.Client.EmuHawk
 	/// Its job is to receive OSD and emulator outputs, and produce one single buffer (BitmapBuffer? Texture2d?) for display by the PresentationPanel.
 	/// Details TBD
 	/// </summary>
-	public class DisplayManager : IWindowCoordsTransformer, IDisposable
+	public class DisplayManager : IDisplayManagerForApi, IWindowCoordsTransformer, IDisposable
 	{
 		private class DisplayManagerRenderTargetProvider : IRenderTargetProvider
 		{
@@ -49,7 +49,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly Func<bool> _getIsSecondaryThrottlingDisabled;
 
-		public readonly OSDManager OSD;
+		public OSDManager OSD { get; }
 
 		private Config GlobalConfig;
 
@@ -214,7 +214,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// custom fonts that don't need to be installed on the user side
 		/// </summary>
-		public PrivateFontCollection CustomFonts = new PrivateFontCollection();
+		public PrivateFontCollection CustomFonts { get; } = new PrivateFontCollection();
 
 		private readonly TextureFrugalizer _videoTextureFrugalizer;
 		private readonly Dictionary<string, TextureFrugalizer> _luaSurfaceFrugalizers = new Dictionary<string, TextureFrugalizer>();

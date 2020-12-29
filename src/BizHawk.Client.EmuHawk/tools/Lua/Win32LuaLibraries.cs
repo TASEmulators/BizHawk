@@ -18,7 +18,7 @@ namespace BizHawk.Client.EmuHawk
 		public Win32LuaLibraries(
 			IEmulatorServiceProvider serviceProvider,
 			MainForm mainForm,
-			DisplayManager displayManager,
+			IDisplayManagerForApi displayManager,
 			InputManager inputManager,
 			Config config,
 			IEmulator emulator,
@@ -104,7 +104,7 @@ namespace BizHawk.Client.EmuHawk
 			EnumerateLuaFunctions(nameof(LuaCanvas), typeof(LuaCanvas), null); // add LuaCanvas to Lua function reference table
 		}
 
-		private readonly DisplayManager _displayManager;
+		private readonly IDisplayManagerForApi _displayManager;
 
 		private readonly InputManager _inputManager;
 

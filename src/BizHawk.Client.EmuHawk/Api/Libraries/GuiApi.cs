@@ -18,7 +18,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly Action<string> LogCallback;
 
-		private readonly DisplayManager _displayManager;
+		private readonly IDisplayManagerForApi _displayManager;
 
 		private readonly Dictionary<string, Image> _imageCache = new Dictionary<string, Image>();
 
@@ -46,7 +46,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool HasGUISurface => _GUISurface != null;
 
-		public GuiApi(Action<string> logCallback, DisplayManager displayManager)
+		public GuiApi(Action<string> logCallback, IDisplayManagerForApi displayManager)
 		{
 			LogCallback = logCallback;
 			_displayManager = displayManager;
