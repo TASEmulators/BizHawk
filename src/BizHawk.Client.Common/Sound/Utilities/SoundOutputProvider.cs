@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
 
-namespace BizHawk.Client.EmuHawk
+namespace BizHawk.Client.Common
 {
 	// This is intended to be a buffer between a synchronous sound provider and the
 	// output device (e.g. DirectSound). The idea is to take advantage of the samples
