@@ -26,8 +26,8 @@ namespace BizHawk.Client.EmuHawk
 			LimitAnalogChangeCheckBox.Checked = _syncSettings.LimitAnalogChangeSensitivity;
 
 			_suppressDropdownChangeEvents = true;
-			Port1ComboBox.PopulateFromEnum<LibsnesControllerDeck.ControllerType>(_syncSettings.LeftPort);
-			Port2ComboBox.PopulateFromEnum<LibsnesControllerDeck.ControllerType>(_syncSettings.RightPort);
+			Port1ComboBox.PopulateFromEnum(_syncSettings.LeftPort);
+			Port2ComboBox.PopulateFromEnum(_syncSettings.RightPort);
 			_suppressDropdownChangeEvents = false;
 		}
 

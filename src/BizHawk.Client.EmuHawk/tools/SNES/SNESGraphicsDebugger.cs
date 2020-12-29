@@ -866,10 +866,8 @@ namespace BizHawk.Client.EmuHawk
 			//clone the currently selected tab page into the destination
 			var oldControls = new ArrayList(pnGroupFreeze.Controls);
 			pnGroupFreeze.Controls.Clear();
-			foreach (var control in tp.Controls)
-				pnGroupFreeze.Controls.Add((control as Control).Clone());
-			foreach (var control in oldControls)
-				(control as Control).Dispose();
+			foreach (Control control in tp.Controls) pnGroupFreeze.Controls.Add(control.Clone());
+			foreach (Control control in oldControls) control.Dispose();
 
 			//set the freeze caption accordingly
 			if (tp == tpMapEntry) groupFreeze.Text = "Freeze - Map Entry";

@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -18,26 +20,21 @@ namespace BizHawk.Client.EmuHawk
 	public static class ControlExtensions
 	{
 		/// <exception cref="ArgumentException"><typeparamref name="T"/> does not inherit <see cref="Enum"/></exception>
-		public static void PopulateFromEnum<T>(this ComboBox box, object enumVal)
-			where T : struct, IConvertible
+		public static void PopulateFromEnum<T>(this ComboBox box, T enumVal)
+			where T : Enum
 		{
-			if (!typeof(T).IsEnum)
-			{
-				throw new ArgumentException("T must be an enumerated type");
-			}
-
 			box.Items.Clear();
 			box.Items.AddRange(typeof(T).GetEnumDescriptions().Cast<object>().ToArray());
 			box.SelectedItem = enumVal.GetDescription();
 		}
 
-		// extension method to make Control.Invoke easier to use
+		/// <summary>extension method to make <see cref="Control.Invoke(Delegate)"/> easier to use</summary>
 		public static object Invoke(this Control control, Action action)
 		{
 			return control.Invoke(action);
 		}
 
-		// extension method to make Control.BeginInvoke easier to use
+		/// <summary>extension method to make <see cref="Control.BeginInvoke(Delegate)"/> easier to use</summary>
 		public static IAsyncResult BeginInvoke(this Control control, Action action)
 		{
 			return control.BeginInvoke(action);
@@ -91,17 +88,22 @@ namespace BizHawk.Client.EmuHawk
 			return Color.FromArgb(col);
 		}
 
+		/// <remarks>
+		/// Due to the way this is written, using it in a foreach (as is done in SNESGraphicsDebugger)
+		/// passes <c>Control</c> as the type parameter, meaning only properties on <see cref="Control"/> (and <see cref="Component"/>, etc.)
+		/// will be processed. Why is there even a type param at all? I certainly don't know. --yoshi
+		/// </remarks>
 		public static T Clone<T>(this T controlToClone)
 			where T : Control
 		{
 			PropertyInfo[] controlProperties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
 			Type t = controlToClone.GetType();
-			T instance = Activator.CreateInstance(t) as T;
+			var instance = (T) Activator.CreateInstance(t);
 
 			t.GetProperty("AutoSize")?.SetValue(instance, false, null);
 
-			for (int i = 0; i < 3; i++)
+			for (int i = 0; i < 3; i++) // why 3 passes of this? --yoshi
 			{
 				foreach (var propInfo in controlProperties)
 				{
@@ -117,10 +119,9 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			if (instance is RetainedViewportPanel panel)
+			if (controlToClone is RetainedViewportPanel rvpToClone && instance is RetainedViewportPanel rvpCloned)
 			{
-				var cloneBmp = (controlToClone as RetainedViewportPanel).GetBitmap().Clone() as Bitmap;
-				panel.SetBitmap(cloneBmp);
+				rvpCloned.SetBitmap((Bitmap) rvpToClone.GetBitmap().Clone());
 			}
 
 			return instance;
@@ -130,10 +131,7 @@ namespace BizHawk.Client.EmuHawk
 		/// Converts the outdated IEnumerable Controls property to an <see cref="IEnumerable{T}"/> like .NET should have done a long time ago
 		/// </summary>
 		public static IEnumerable<Control> Controls(this Control control)
-		{
-			return control.Controls
-				.OfType<Control>();
-		}
+			=> control.Controls.Cast<Control>();
 
 		public static IEnumerable<TabPage> TabPages(this TabControl tabControl)
 		{
@@ -141,7 +139,6 @@ namespace BizHawk.Client.EmuHawk
 		}
 	}
 
-#nullable enable
 	public static class FormExtensions
 	{
 		public static void DoWithTempMute(this IDialogController dialogController, Action action)
@@ -205,7 +202,6 @@ namespace BizHawk.Client.EmuHawk
 					buttons: buttons,
 					icon: icon);
 	}
-#nullable restore
 
 	public static class ListViewExtensions
 	{
@@ -369,10 +365,11 @@ namespace BizHawk.Client.EmuHawk
 
 				foreach (PropertyDescriptor property in TypeDescriptor.GetProperties(grid.SelectedObject))
 				{
-					if (property.Description?.Length > maxLength)
+					var s = property.Description;
+					if (s != null && s.Length > maxLength)
 					{
-						maxLength = property.Description.Length;
-						desc = property.Description;
+						maxLength = s.Length;
+						desc = s;
 					}
 				}
 
@@ -380,7 +377,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (control.GetType().Name == "DocComment")
 					{
-						FieldInfo field = control.GetType().GetField("userSized", BindingFlags.Instance | BindingFlags.NonPublic);
+						var field = control.GetType().GetField("userSized", BindingFlags.Instance | BindingFlags.NonPublic);
 						field?.SetValue(control, true);
 						int height = (int)Graphics.FromHwnd(control.Handle).MeasureString(desc, control.Font, grid.Width).Height;
 						control.Height = Math.Max(20, height) + 16; // magic for now

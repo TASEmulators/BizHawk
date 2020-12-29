@@ -134,8 +134,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void N64VideoPluginConfig_Load(object sender, EventArgs e)
 		{
-			CoreTypeDropdown.PopulateFromEnum<N64SyncSettings.CoreType>(_ss.Core);
-			RspTypeDropdown.PopulateFromEnum<N64SyncSettings.RspType>(_ss.Rsp);
+			CoreTypeDropdown.PopulateFromEnum(_ss.Core);
+			RspTypeDropdown.PopulateFromEnum(_ss.Rsp);
 
 			switch (_ss.VideoPlugin)
 			{

@@ -446,27 +446,23 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ClearWidgetAndChildren(Control c)
 		{
-			if (c is InputCompositeWidget widget)
+			switch (c)
 			{
-				widget.Clear();
+				case InputCompositeWidget widget:
+					widget.Clear();
+					break;
+				case InputWidget inputWidget:
+					inputWidget.ClearAll();
+					break;
+				case AnalogBindControl control:
+					control.Unbind_Click(null, null);
+					break;
 			}
 
-			if (c is InputWidget inputWidget)
+			var children = c.Controls().ToList();
+			if (children.Count != 0)
 			{
-				inputWidget.ClearAll();
-			}
-
-			if (c is AnalogBindControl control)
-			{
-				control.Unbind_Click(null, null);
-			}
-
-			if (c.Controls().Any())
-			{
-				foreach (Control child in c.Controls())
-				{
-					ClearWidgetAndChildren(child);
-				}
+				foreach (var child in children) ClearWidgetAndChildren(child);
 			}
 		}
 
