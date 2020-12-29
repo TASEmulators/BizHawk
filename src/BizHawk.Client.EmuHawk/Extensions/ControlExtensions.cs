@@ -27,9 +27,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			box.Items.Clear();
-			box.Items.AddRange(
-				typeof(T).GetEnumDescriptions()
-				.ToArray());
+			box.Items.AddRange(typeof(T).GetEnumDescriptions().Cast<object>().ToArray());
 			box.SelectedItem = enumVal.GetDescription();
 		}
 

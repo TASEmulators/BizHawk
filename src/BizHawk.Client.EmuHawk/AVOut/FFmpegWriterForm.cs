@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Windows.Forms;
 using BizHawk.Client.Common;
 
@@ -149,7 +150,7 @@ namespace BizHawk.Client.EmuHawk
 		public static FormatPreset DoFFmpegWriterDlg(IWin32Window owner, Config config)
 		{
 			FFmpegWriterForm dlg = new FFmpegWriterForm();
-			dlg.listBox1.Items.AddRange(FormatPreset.GetPresets(config.FFmpegCustomCommand));
+			dlg.listBox1.Items.AddRange(FormatPreset.GetPresets(config.FFmpegCustomCommand).Cast<object>().ToArray());
 
 			int i = dlg.listBox1.FindStringExact(config.FFmpegFormat);
 			if (i != ListBox.NoMatches)

@@ -127,7 +127,7 @@ namespace BizHawk.Client.EmuHawk
 				= tbbOpenFolder.Image = Resources.Placeholder;
 
 			// prep ImageList for ListView with 3 item states for {idUnsure, idMissing, idOk}
-			imageList1.Images.AddRange(new[] { Resources.RetroQuestion, Resources.ExclamationRed, Resources.GreenCheck });
+			imageList1.Images.AddRange(new Image[] { Resources.RetroQuestion, Resources.ExclamationRed, Resources.GreenCheck });
 
 			_listViewSorter = new ListViewSorter(-1);
 

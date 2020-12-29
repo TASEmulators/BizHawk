@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Common.StringExtensions;
@@ -205,7 +206,7 @@ namespace BizHawk.Client.EmuHawk
 
 			// Change resolution list to the rest
 			VideoResolutionComboBox.Items.Clear();
-			VideoResolutionComboBox.Items.AddRange(ValidResolutions);
+			VideoResolutionComboBox.Items.AddRange(ValidResolutions.Cast<object>().ToArray());
 
 			// If the given resolution is in the table, pick it.
 			// Otherwise find a best fit

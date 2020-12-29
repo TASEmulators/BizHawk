@@ -43,7 +43,7 @@ namespace BizHawk.Client.EmuHawk
 			DomainDropDown.Items.Clear();
 			DomainDropDown.Items.AddRange(MemoryDomains
 				.Where(d => d.Writable)
-				.Select(d => d.ToString())
+				.Select(d => (object) d.ToString())
 				.ToArray());
 
 			DomainDropDown.SelectedItem = MemoryDomains.HasSystemBus

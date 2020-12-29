@@ -61,7 +61,7 @@ namespace BizHawk.Client.EmuHawk
 							DropDownStyle = ComboBoxStyle.DropDownList
 						};
 
-						c.Items.AddRange(Disassembler.AvailableCpus.ToArray());
+						c.Items.AddRange(Disassembler.AvailableCpus.Cast<object>().ToArray());
 						c.SelectedItem = Disassembler.Cpu;
 						c.SelectedIndexChanged += OnCpuDropDownIndexChanged;
 

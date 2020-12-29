@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Threading;
 using System.IO;
+using System.Linq;
 
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
@@ -41,7 +42,7 @@ namespace BizHawk.Client.EmuHawk
 			if (e.Data.GetDataPresent(DataFormats.FileDrop))
 			{
 				string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
-				listBox1.Items.AddRange(files);
+				listBox1.Items.AddRange(files.Cast<object>().ToArray());
 				SetCount();
 			}
 		}

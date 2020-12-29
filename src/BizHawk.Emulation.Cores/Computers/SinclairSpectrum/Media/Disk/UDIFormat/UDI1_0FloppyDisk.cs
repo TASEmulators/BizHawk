@@ -170,7 +170,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			{
 				get
 				{
-					List<UDIv1Sector> secs = new List<UDIv1Sector>();
+					List<Sector> secs = new();
 					var datas = TrackData.Skip(3).Take(TLEN).ToArray();
 					var clocks = new BitArray(TrackData.Skip(3 + TLEN).Take(CLEN).ToArray());
 

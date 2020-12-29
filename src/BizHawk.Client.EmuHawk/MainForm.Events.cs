@@ -1942,7 +1942,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			ZXSpectrumTapesSubMenu.DropDownItems.Clear();
 
-			var items = new List<ToolStripMenuItem>();
+			List<ToolStripItem> items = new();
 
 			if (Emulator is ZXSpectrum speccy)
 			{
@@ -1976,7 +1976,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			ZXSpectrumDisksSubMenu.DropDownItems.Clear();
 
-			var items = new List<ToolStripMenuItem>();
+			List<ToolStripItem> items = new();
 
 			if (Emulator is ZXSpectrum speccy)
 			{
@@ -2071,7 +2071,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			AmstradCPCTapesSubMenu.DropDownItems.Clear();
 
-			var items = new List<ToolStripMenuItem>();
+			List<ToolStripItem> items = new();
 
 			if (Emulator is AmstradCPC ams)
 			{
@@ -2105,7 +2105,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			AmstradCPCDisksSubMenu.DropDownItems.Clear();
 
-			var items = new List<ToolStripMenuItem>();
+			List<ToolStripItem> items = new();
 
 			if (Emulator is AmstradCPC ams)
 			{
