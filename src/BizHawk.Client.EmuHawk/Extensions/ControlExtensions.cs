@@ -245,6 +245,8 @@ namespace BizHawk.Client.EmuHawk
 		/// <exception cref="Win32Exception">unmanaged call failed</exception>
 		public static void SetSortIcon(this ListView listViewControl, int columnIndex, SortOrder order)
 		{
+			if (OSTailoredCode.IsUnixHost) return;
+
 			const int LVM_GETHEADER = 4127;
 			const int HDM_GETITEM = 4619;
 			const int HDM_SETITEM = 4620;
