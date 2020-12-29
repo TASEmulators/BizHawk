@@ -8,9 +8,6 @@ namespace BizHawk.Client.EmuHawk
 		/// <remarks>only referenced from <see cref="GenericCoreConfig"/></remarks>
 		IEmulator Emulator { get; }
 
-		/// <remarks>only referenced from <see cref="FirmwaresConfig"/></remarks>
-		FirmwareManager FirmwareManager { get; }
-
 		IMovieSession MovieSession { get; }
 
 		void AddOnScreenMessage(string message);

@@ -12,9 +12,15 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class PathConfig : Form
 	{
-		private readonly Config _config;
+		private readonly FirmwareManager _firmwareManager;
+
+		private readonly IDictionary<string, string> _firmwareUserSpecifications;
+
 		private readonly IGameInfo _game;
+
 		private readonly IMainFormForConfig _mainForm;
+
+		private readonly PathEntryCollection _pathEntries;
 
 		// All path text boxes should do some kind of error checking
 		// Config path under base, config will default to %exe%
@@ -43,20 +49,27 @@ namespace BizHawk.Client.EmuHawk
 			"..\\"
 		};
 
-		public PathConfig(IMainFormForConfig mainForm, Config config, IGameInfo game)
+		public PathConfig(
+			FirmwareManager firmwareManager,
+			IDictionary<string, string> firmwareUserSpecifications,
+			IGameInfo game,
+			IMainFormForConfig mainForm,
+			PathEntryCollection pathEntries)
 		{
-			_mainForm = mainForm;
-			_config = config;
+			_firmwareManager = firmwareManager;
+			_firmwareUserSpecifications = firmwareUserSpecifications;
 			_game = game;
+			_mainForm = mainForm;
+			_pathEntries = pathEntries;
 			InitializeComponent();
 			SpecialCommandsBtn.Image = Properties.Resources.Help;
 		}
 
 		private void LoadSettings()
 		{
-			RecentForROMs.Checked = _config.PathEntries.UseRecentForRoms;
+			RecentForROMs.Checked = _pathEntries.UseRecentForRoms;
 
-			DoTabs(_config.PathEntries.ToList());
+			DoTabs(_pathEntries.ToList());
 			SetDefaultFocusedTab();
 			DoRomToggle();
 		}
@@ -88,7 +101,7 @@ namespace BizHawk.Client.EmuHawk
 			PathTabControl.TabPages.Clear();
 
 			// Separate by system
-			var systems = _config.PathEntries
+			var systems = _pathEntries
 				.Select(s => s.SystemDisplayName)
 				.Distinct()
 				.ToList();
@@ -112,7 +125,7 @@ namespace BizHawk.Client.EmuHawk
 
 			foreach (var systemDisplayName in systems)
 			{
-				var systemId = _config.PathEntries.First(p => p.SystemDisplayName == systemDisplayName).System;
+				var systemId = _pathEntries.First(p => p.SystemDisplayName == systemDisplayName).System;
 				var t = new TabPage
 				{
 					Text = systemDisplayName,
@@ -179,7 +192,7 @@ namespace BizHawk.Client.EmuHawk
 								return;
 							}
 
-							using var f = new FirmwaresConfig(_mainForm, _config, _game) { TargetSystem = "Global" };
+							using var f = new FirmwaresConfig(_firmwareManager, _firmwareUserSpecifications, _game, _mainForm, _pathEntries) { TargetSystem = "Global" };
 							f.ShowDialog(this);
 						};
 
@@ -225,7 +238,7 @@ namespace BizHawk.Client.EmuHawk
 				using var f = new FolderBrowserDialog
 				{
 					Description = $"Set the directory for {name}",
-					SelectedPath = _config.PathEntries.AbsolutePathFor(box.Text, system)
+					SelectedPath = _pathEntries.AbsolutePathFor(box.Text, system)
 				};
 				result = f.ShowDialog();
 				selectedPath = f.SelectedPath;
@@ -235,28 +248,28 @@ namespace BizHawk.Client.EmuHawk
 				using var f = new FolderBrowserEx
 				{
 					Description = $"Set the directory for {name}",
-					SelectedPath = _config.PathEntries.AbsolutePathFor(box.Text, system)
+					SelectedPath = _pathEntries.AbsolutePathFor(box.Text, system)
 				};
 				result = f.ShowDialog();
 				selectedPath = f.SelectedPath;
 			}
 			if (result.IsOk())
 			{
-				box.Text = _config.PathEntries.TryMakeRelative(selectedPath, system);
+				box.Text = _pathEntries.TryMakeRelative(selectedPath, system);
 			}
 		}
 
 		private void SaveSettings()
 		{
-			_config.PathEntries.UseRecentForRoms = RecentForROMs.Checked;
+			_pathEntries.UseRecentForRoms = RecentForROMs.Checked;
 
 			foreach (var t in AllPathBoxes)
 			{
-				var pathEntry = _config.PathEntries.First(p => p.System == t.Parent.Name && p.Type == t.Name);
+				var pathEntry = _pathEntries.First(p => p.System == t.Parent.Name && p.Type == t.Name);
 				pathEntry.Path = t.Text;
 			}
 
-			_mainForm.MovieSession.BackupDirectory = _config.PathEntries.MovieBackupsAbsolutePath();
+			_mainForm.MovieSession.BackupDirectory = _pathEntries.MovieBackupsAbsolutePath();
 		}
 
 		private void DoRomToggle()
@@ -326,7 +339,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			SaveSettings();
 
-			_config.PathEntries.RefreshTempPath();
+			_pathEntries.RefreshTempPath();
 			_mainForm.AddOnScreenMessage("Path settings saved");
 			Close();
 		}
