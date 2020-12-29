@@ -5,7 +5,6 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Drawing.Text;
 using System.IO;
-using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
@@ -43,7 +42,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private DisplaySurface _GUISurface;
 
-		private Padding _padding = new Padding(0);
+		private (int Left, int Top, int Right, int Bottom) _padding = (0, 0, 0, 0);
 
 		public bool HasGUISurface => _GUISurface != null;
 
@@ -96,13 +95,13 @@ namespace BizHawk.Client.EmuHawk
 			_GUISurface = null;
 		}
 
-		public void SetPadding(int all) => _padding = new Padding(all);
+		public void SetPadding(int all) => _padding = (all, all, all, all);
 
-		public void SetPadding(int x, int y) => _padding = new Padding(x / 2, y / 2, x / 2 + x & 1, y / 2 + y & 1);
+		public void SetPadding(int x, int y) => _padding = (x / 2, y / 2, x / 2 + x & 1, y / 2 + y & 1);
 
-		public void SetPadding(int l, int t, int r, int b) => _padding = new Padding(l, t, r, b);
+		public void SetPadding(int l, int t, int r, int b) => _padding = (l, t, r, b);
 
-		public (int Left, int Top, int Right, int Bottom) GetPadding() => (_padding.Left, _padding.Top, _padding.Right, _padding.Bottom);
+		public (int Left, int Top, int Right, int Bottom) GetPadding() => _padding;
 
 		public void AddMessage(string message) => _displayManager.OSD.AddMessage(message);
 
