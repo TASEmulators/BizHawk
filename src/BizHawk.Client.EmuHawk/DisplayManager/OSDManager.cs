@@ -4,6 +4,7 @@ using System.Text;
 using System.Drawing;
 using System.Collections.Generic;
 
+using BizHawk.Bizware.BizwareGL;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 
@@ -16,9 +17,9 @@ namespace BizHawk.Client.EmuHawk
 	/// </summary>
 	public interface IBlitter
 	{
-		IBlitterFont GetFontType(string fontType);
-		void DrawString(string s, IBlitterFont font, Color color, float x, float y);
-		SizeF MeasureString(string s, IBlitterFont font);
+		StringRenderer GetFontType(string fontType);
+		void DrawString(string s, StringRenderer font, Color color, float x, float y);
+		SizeF MeasureString(string s, StringRenderer font);
 		Rectangle ClipBounds { get; set; }
 	}
 
@@ -61,7 +62,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		public string Fps { get; set; }
-		public IBlitterFont MessageFont;
+		public StringRenderer MessageFont;
 
 		public void Begin(IBlitter blitter)
 		{

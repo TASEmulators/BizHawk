@@ -1190,34 +1190,16 @@ namespace BizHawk.Client.EmuHawk
 				_owner = dispManager;
 			}
 
-			private class FontWrapper : IBlitterFont
-			{
-				public FontWrapper(StringRenderer font)
-				{
-					Font = font;
-				}
+			public StringRenderer GetFontType(string fontType) => _owner._theOneFont;
 
-				public readonly StringRenderer Font;
-			}
-
-			IBlitterFont IBlitter.GetFontType(string fontType)
+			public void DrawString(string s, StringRenderer font, Color color, float x, float y)
 			{
-				return new FontWrapper(_owner._theOneFont);
-			}
-
-			void IBlitter.DrawString(string s, IBlitterFont font, Color color, float x, float y)
-			{
-				var stringRenderer = ((FontWrapper)font).Font;
 				_owner._renderer.SetModulateColor(color);
-				stringRenderer.RenderString(_owner._renderer, x, y, s);
+				font.RenderString(_owner._renderer, x, y, s);
 				_owner._renderer.SetModulateColorWhite();
 			}
 
-			SizeF IBlitter.MeasureString(string s, IBlitterFont font)
-			{
-				var stringRenderer = ((FontWrapper)font).Font;
-				return stringRenderer.Measure(s);
-			}
+			public SizeF MeasureString(string s, StringRenderer font) => font.Measure(s);
 
 			public Rectangle ClipBounds { get; set; }
 		}
