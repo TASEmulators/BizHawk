@@ -6,10 +6,9 @@ using System.Drawing.Imaging;
 using System.Drawing.Text;
 using System.IO;
 
-using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
 
-namespace BizHawk.Client.EmuHawk
+namespace BizHawk.Client.Common
 {
 	public sealed class GuiApi : IGuiApi
 	{
