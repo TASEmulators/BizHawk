@@ -6,37 +6,9 @@ using System.Collections.Generic;
 
 using BizHawk.Bizware.BizwareGL;
 using BizHawk.Emulation.Common;
-using BizHawk.Client.Common;
 
-namespace BizHawk.Client.EmuHawk
+namespace BizHawk.Client.Common
 {
-	/// <summary>
-	/// This is an old abstracted rendering class that the OSD system is using to get its work done.
-	/// We should probably just use a GuiRenderer (it was designed to do that) although wrapping it with
-	/// more information for OSDRendering could be helpful I suppose
-	/// </summary>
-	public interface IBlitter
-	{
-		StringRenderer GetFontType(string fontType);
-		void DrawString(string s, StringRenderer font, Color color, float x, float y);
-		SizeF MeasureString(string s, StringRenderer font);
-		Rectangle ClipBounds { get; set; }
-	}
-
-	public class UIMessage
-	{
-		public string Message { get; set; }
-		public DateTime ExpireAt { get; set; }
-	}
-
-	public class UIDisplay
-	{
-		public string Message { get; set; }
-		public MessagePosition Position { get; set; }
-		public Color ForeColor { get; set; }
-		public Color BackGround { get; set; }
-	}
-
 	public class OSDManager
 	{
 		private Config _config;
