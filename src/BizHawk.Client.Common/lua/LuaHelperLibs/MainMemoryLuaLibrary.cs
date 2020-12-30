@@ -11,38 +11,22 @@ namespace BizHawk.Client.Common
 	[Description("Main memory library reads and writes from the Main memory domain (the default memory domain set by any given core)")]
 	public sealed class MainMemoryLuaLibrary : LuaLibraryBase
 	{
-		[RequiredService]
-		private IEmulator Emulator { get; set; }
-
-		[OptionalService]
-		private IMemoryDomains MemoryDomainCore { get; set; }
-
 		public MainMemoryLuaLibrary(IPlatformLuaLibEnv luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
 			: base(luaLibsImpl, apiContainer, logOutputCallback) {}
 
 		public override string Name => "mainmemory";
 
-		private MemoryDomain Domain
-		{
-			get
-			{
-				if (MemoryDomainCore != null)
-				{
-					return MemoryDomainCore.MainMemory;
-				}
+		private MemoryDomain _mainMemDomain;
 
-				var error = $"Error: {Emulator.Attributes().CoreName} does not implement memory domains";
-				Log(error);
-				throw new NotImplementedException(error);
-			}
-		}
+		private string _mainMemName;
+
+		private MemoryDomain Domain => _mainMemDomain ??= ((MemoryApi) APIs.Memory).DomainList[MainMemName];
+
+		private string MainMemName => _mainMemName ??= APIs.Memory.MainMemoryName;
 
 		[LuaMethodExample("local stmaiget = mainmemory.getname( );")]
 		[LuaMethod("getname", "returns the name of the domain defined as main memory for the given core")]
-		public string GetName()
-		{
-			return Domain.Name;
-		}
+		public string GetName() => MainMemName;
 
 		[LuaMethodExample("local uimaiget = mainmemory.getcurrentmemorydomainsize( );")]
 		[LuaMethod("getcurrentmemorydomainsize", "Returns the number of bytes of the domain defined as main memory")]
@@ -53,18 +37,15 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local uimairea = mainmemory.readbyte( 0x100 );")]
 		[LuaMethod("readbyte", "gets the value from the given address as an unsigned byte")]
-		public uint ReadByte(int addr) => APIs.Memory.ReadByte(addr, Domain.Name);
+		public uint ReadByte(int addr) => APIs.Memory.ReadByte(addr, MainMemName);
 
 		[LuaMethodExample("mainmemory.writebyte( 0x100, 1000 );")]
 		[LuaMethod("writebyte", "Writes the given value to the given address as an unsigned byte")]
-		public void WriteByte(int addr, uint value) => APIs.Memory.WriteByte(addr, value, Domain.Name);
+		public void WriteByte(int addr, uint value) => APIs.Memory.WriteByte(addr, value, MainMemName);
 
 		[LuaMethodExample("local nlmairea = mainmemory.readbyterange( 0x100, 64 );")]
 		[LuaMethod("readbyterange", "Reads the address range that starts from address, and is length long. Returns the result into a table of key value pairs (where the address is the key).")]
-		public LuaTable ReadByteRange(int addr, int length)
-		{
-			return _th.ListToTable(APIs.Memory.ReadByteRange(addr, length, Domain.Name));
-		}
+		public LuaTable ReadByteRange(int addr, int length) => _th.ListToTable(APIs.Memory.ReadByteRange(addr, length, MainMemName));
 
 		/// <remarks>TODO C# version requires a contiguous address range</remarks>
 		[LuaMethodExample("")]
@@ -74,7 +55,7 @@ namespace BizHawk.Client.Common
 #if true
 			foreach (var (addr, v) in _th.EnumerateEntries<double, double>(memoryblock))
 			{
-				APIs.Memory.WriteByte(LuaInt(addr), (uint) v, Domain.Name);
+				APIs.Memory.WriteByte(LuaInt(addr), (uint) v, MainMemName);
 			}
 #else
 			var d = Domain;
@@ -105,7 +86,7 @@ namespace BizHawk.Client.Common
 		public float ReadFloat(int addr, bool bigendian)
 		{
 			APIs.Memory.SetBigEndian(bigendian);
-			return APIs.Memory.ReadFloat(addr, Domain.Name);
+			return APIs.Memory.ReadFloat(addr, MainMemName);
 		}
 
 		[LuaMethodExample("mainmemory.writefloat( 0x100, 10.0, false );")]
@@ -113,31 +94,31 @@ namespace BizHawk.Client.Common
 		public void WriteFloat(int addr, double value, bool bigendian)
 		{
 			APIs.Memory.SetBigEndian(bigendian);
-			APIs.Memory.WriteFloat(addr, value, Domain.Name);
+			APIs.Memory.WriteFloat(addr, value, MainMemName);
 		}
 
 		[LuaMethodExample("local inmairea = mainmemory.read_s8( 0x100 );")]
 		[LuaMethod("read_s8", "read signed byte")]
-		public int ReadS8(int addr) => APIs.Memory.ReadS8(addr, Domain.Name);
+		public int ReadS8(int addr) => APIs.Memory.ReadS8(addr, MainMemName);
 
 		[LuaMethodExample("mainmemory.write_s8( 0x100, 1000 );")]
 		[LuaMethod("write_s8", "write signed byte")]
-		public void WriteS8(int addr, uint value) => APIs.Memory.WriteS8(addr, unchecked((int) value), Domain.Name);
+		public void WriteS8(int addr, uint value) => APIs.Memory.WriteS8(addr, unchecked((int) value), MainMemName);
 
 		[LuaMethodExample("local uimairea = mainmemory.read_u8( 0x100 );")]
 		[LuaMethod("read_u8", "read unsigned byte")]
-		public uint ReadU8(int addr) => APIs.Memory.ReadU8(addr, Domain.Name);
+		public uint ReadU8(int addr) => APIs.Memory.ReadU8(addr, MainMemName);
 
 		[LuaMethodExample("mainmemory.write_u8( 0x100, 1000 );")]
 		[LuaMethod("write_u8", "write unsigned byte")]
-		public void WriteU8(int addr, uint value) => APIs.Memory.WriteU8(addr, value, Domain.Name);
+		public void WriteU8(int addr, uint value) => APIs.Memory.WriteU8(addr, value, MainMemName);
 
 		[LuaMethodExample("local inmairea = mainmemory.read_s16_le( 0x100 );")]
 		[LuaMethod("read_s16_le", "read signed 2 byte value, little endian")]
 		public int ReadS16Little(int addr)
 		{
 			APIs.Memory.SetBigEndian(false);
-			return APIs.Memory.ReadS16(addr, Domain.Name);
+			return APIs.Memory.ReadS16(addr, MainMemName);
 		}
 
 		[LuaMethodExample("mainmemory.write_s16_le( 0x100, -1000 );")]
@@ -145,7 +126,7 @@ namespace BizHawk.Client.Common
 		public void WriteS16Little(int addr, int value)
 		{
 			APIs.Memory.SetBigEndian(false);
-			APIs.Memory.WriteS16(addr, value, Domain.Name);
+			APIs.Memory.WriteS16(addr, value, MainMemName);
 		}
 
 		[LuaMethodExample("local inmairea = mainmemory.read_s16_be( 0x100 );")]
@@ -153,7 +134,7 @@ namespace BizHawk.Client.Common
 		public int ReadS16Big(int addr)
 		{
 			APIs.Memory.SetBigEndian();
-			return APIs.Memory.ReadS16(addr, Domain.Name);
+			return APIs.Memory.ReadS16(addr, MainMemName);
 		}
 
 		[LuaMethodExample("mainmemory.write_s16_be( 0x100, -1000 );")]
@@ -161,7 +142,7 @@ namespace BizHawk.Client.Common
 		public void WriteS16Big(int addr, int value)
 		{
 			APIs.Memory.SetBigEndian();
-			APIs.Memory.WriteS16(addr, value, Domain.Name);
+			APIs.Memory.WriteS16(addr, value, MainMemName);
 		}
 
 		[LuaMethodExample("local uimairea = mainmemory.read_u16_le( 0x100 );")]
@@ -169,7 +150,7 @@ namespace BizHawk.Client.Common
 		public uint ReadU16Little(int addr)
 		{
 			APIs.Memory.SetBigEndian(false);
-			return APIs.Memory.ReadU16(addr, Domain.Name);
+			return APIs.Memory.ReadU16(addr, MainMemName);
 		}
 
 		[LuaMethodExample("mainmemory.write_u16_le( 0x100, 1000 );")]
@@ -177,7 +158,7 @@ namespace BizHawk.Client.Common
 		public void WriteU16Little(int addr, uint value)
 		{
 			APIs.Memory.SetBigEndian(false);
-			APIs.Memory.WriteU16(addr, value, Domain.Name);
+			APIs.Memory.WriteU16(addr, value, MainMemName);
 		}
 
 		[LuaMethodExample("local uimairea = mainmemory.read_u16_be( 0x100 );")]
@@ -185,7 +166,7 @@ namespace BizHawk.Client.Common
 		public uint ReadU16Big(int addr)
 		{
 			APIs.Memory.SetBigEndian();
-			return APIs.Memory.ReadU16(addr, Domain.Name);
+			return APIs.Memory.ReadU16(addr, MainMemName);
 		}
 
 		[LuaMethodExample("mainmemory.write_u16_be( 0x100, 1000 );")]
@@ -193,7 +174,7 @@ namespace BizHawk.Client.Common
 		public void WriteU16Big(int addr, uint value)
 		{
 			APIs.Memory.SetBigEndian();
-			APIs.Memory.WriteU16(addr, value, Domain.Name);
+			APIs.Memory.WriteU16(addr, value, MainMemName);
 		}
 
 		[LuaMethodExample("local inmairea = mainmemory.read_s24_le( 0x100 );")]
@@ -201,7 +182,7 @@ namespace BizHawk.Client.Common
 		public int ReadS24Little(int addr)
 		{
 			APIs.Memory.SetBigEndian(false);
-			return APIs.Memory.ReadS24(addr, Domain.Name);
+			return APIs.Memory.ReadS24(addr, MainMemName);
 		}
 
 		[LuaMethodExample("mainmemory.write_s24_le( 0x100, -1000 );")]
@@ -209,7 +190,7 @@ namespace BizHawk.Client.Common
 		public void WriteS24Little(int addr, int value)
 		{
 			APIs.Memory.SetBigEndian(false);
-			APIs.Memory.WriteS24(addr, value, Domain.Name);
+			APIs.Memory.WriteS24(addr, value, MainMemName);
 		}
 
 		[LuaMethodExample("local inmairea = mainmemory.read_s24_be( 0x100 );")]
@@ -217,7 +198,7 @@ namespace BizHawk.Client.Common
 		public int ReadS24Big(int addr)
 		{
 			APIs.Memory.SetBigEndian();
-			return APIs.Memory.ReadS24(addr, Domain.Name);
+			return APIs.Memory.ReadS24(addr, MainMemName);
 		}
 
 		[LuaMethodExample("mainmemory.write_s24_be( 0x100, -1000 );")]
@@ -225,7 +206,7 @@ namespace BizHawk.Client.Common
 		public void WriteS24Big(int addr, int value)
 		{
 			APIs.Memory.SetBigEndian();
-			APIs.Memory.WriteS24(addr, value, Domain.Name);
+			APIs.Memory.WriteS24(addr, value, MainMemName);
 		}
 
 		[LuaMethodExample("local uimairea = mainmemory.read_u24_le( 0x100 );")]
@@ -233,7 +214,7 @@ namespace BizHawk.Client.Common
 		public uint ReadU24Little(int addr)
 		{
 			APIs.Memory.SetBigEndian(false);
-			return APIs.Memory.ReadU24(addr, Domain.Name);
+			return APIs.Memory.ReadU24(addr, MainMemName);
 		}
 
 		[LuaMethodExample("mainmemory.write_u24_le( 0x100, 1000 );")]
@@ -241,7 +222,7 @@ namespace BizHawk.Client.Common
 		public void WriteU24Little(int addr, uint value)
 		{
 			APIs.Memory.SetBigEndian(false);
-			APIs.Memory.WriteU24(addr, value, Domain.Name);
+			APIs.Memory.WriteU24(addr, value, MainMemName);
 		}
 
 		[LuaMethodExample("local uimairea = mainmemory.read_u24_be( 0x100 );")]
@@ -249,7 +230,7 @@ namespace BizHawk.Client.Common
 		public uint ReadU24Big(int addr)
 		{
 			APIs.Memory.SetBigEndian();
-			return APIs.Memory.ReadU24(addr, Domain.Name);
+			return APIs.Memory.ReadU24(addr, MainMemName);
 		}
 
 		[LuaMethodExample("mainmemory.write_u24_be( 0x100, 1000 );")]
@@ -257,7 +238,7 @@ namespace BizHawk.Client.Common
 		public void WriteU24Big(int addr, uint value)
 		{
 			APIs.Memory.SetBigEndian();
-			APIs.Memory.WriteU24(addr, value, Domain.Name);
+			APIs.Memory.WriteU24(addr, value, MainMemName);
 		}
 
 		[LuaMethodExample("local inmairea = mainmemory.read_s32_le( 0x100 );")]
@@ -265,7 +246,7 @@ namespace BizHawk.Client.Common
 		public int ReadS32Little(int addr)
 		{
 			APIs.Memory.SetBigEndian(false);
-			return APIs.Memory.ReadS32(addr, Domain.Name);
+			return APIs.Memory.ReadS32(addr, MainMemName);
 		}
 
 		[LuaMethodExample("mainmemory.write_s32_le( 0x100, -1000 );")]
@@ -273,7 +254,7 @@ namespace BizHawk.Client.Common
 		public void WriteS32Little(int addr, int value)
 		{
 			APIs.Memory.SetBigEndian(false);
-			APIs.Memory.WriteS32(addr, value, Domain.Name);
+			APIs.Memory.WriteS32(addr, value, MainMemName);
 		}
 
 		[LuaMethodExample("local inmairea = mainmemory.read_s32_be( 0x100 );")]
@@ -281,7 +262,7 @@ namespace BizHawk.Client.Common
 		public int ReadS32Big(int addr)
 		{
 			APIs.Memory.SetBigEndian();
-			return APIs.Memory.ReadS32(addr, Domain.Name);
+			return APIs.Memory.ReadS32(addr, MainMemName);
 		}
 
 		[LuaMethodExample("mainmemory.write_s32_be( 0x100, -1000 );")]
@@ -289,7 +270,7 @@ namespace BizHawk.Client.Common
 		public void WriteS32Big(int addr, int value)
 		{
 			APIs.Memory.SetBigEndian();
-			APIs.Memory.WriteS32(addr, value, Domain.Name);
+			APIs.Memory.WriteS32(addr, value, MainMemName);
 		}
 
 		[LuaMethodExample("local uimairea = mainmemory.read_u32_le( 0x100 );")]
@@ -297,7 +278,7 @@ namespace BizHawk.Client.Common
 		public uint ReadU32Little(int addr)
 		{
 			APIs.Memory.SetBigEndian(false);
-			return APIs.Memory.ReadU32(addr, Domain.Name);
+			return APIs.Memory.ReadU32(addr, MainMemName);
 		}
 
 		[LuaMethodExample("mainmemory.write_u32_le( 0x100, 1000 );")]
@@ -305,7 +286,7 @@ namespace BizHawk.Client.Common
 		public void WriteU32Little(int addr, uint value)
 		{
 			APIs.Memory.SetBigEndian(false);
-			APIs.Memory.WriteU32(addr, value, Domain.Name);
+			APIs.Memory.WriteU32(addr, value, MainMemName);
 		}
 
 		[LuaMethodExample("local uimairea = mainmemory.read_u32_be( 0x100 );")]
@@ -313,7 +294,7 @@ namespace BizHawk.Client.Common
 		public uint ReadU32Big(int addr)
 		{
 			APIs.Memory.SetBigEndian();
-			return APIs.Memory.ReadU32(addr, Domain.Name);
+			return APIs.Memory.ReadU32(addr, MainMemName);
 		}
 
 		[LuaMethodExample("mainmemory.write_u32_be( 0x100, 1000 );")]
@@ -321,7 +302,7 @@ namespace BizHawk.Client.Common
 		public void WriteU32Big(int addr, uint value)
 		{
 			APIs.Memory.SetBigEndian();
-			APIs.Memory.WriteU32(addr, value, Domain.Name);
+			APIs.Memory.WriteU32(addr, value, MainMemName);
 		}
 	}
 }

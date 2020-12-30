@@ -42,7 +42,7 @@ namespace BizHawk.Client.Common
 			set => _currentMemoryDomain = value;
 		}
 
-		private IMemoryDomains DomainList
+		public IMemoryDomains DomainList
 		{
 			get
 			{
@@ -53,6 +53,20 @@ namespace BizHawk.Client.Common
 					throw new NotImplementedException(error);
 				}
 				return MemoryDomainCore;
+			}
+		}
+
+		public string MainMemoryName
+		{
+			get
+			{
+				if (MemoryDomainCore == null)
+				{
+					var error = $"Error: {Emulator.Attributes().CoreName} does not implement memory domains";
+					LogCallback(error);
+					throw new NotImplementedException(error);
+				}
+				return MemoryDomainCore.MainMemory.Name;
 			}
 		}
 

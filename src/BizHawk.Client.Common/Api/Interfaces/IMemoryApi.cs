@@ -4,6 +4,8 @@ namespace BizHawk.Client.Common
 {
 	public interface IMemoryApi : IExternalApi
 	{
+		string MainMemoryName { get; }
+
 		void SetBigEndian(bool enabled = true);
 
 		List<string> GetMemoryDomainList();
