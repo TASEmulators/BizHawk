@@ -22,7 +22,7 @@ namespace BizHawk.Client.Common
 		// These never decay, but can be invalidated, they are for reserved states
 		// such as markers and branches, but also we naturally evict states from recent to reserved, based
 		// on _ancientInterval
-		private Dictionary<int, byte[]> _reserved = new Dictionary<int, byte[]>();
+		private IDictionary<int, byte[]> _reserved;
 
 		// When recent states are evicted this interval is used to determine if we need to reserve the state
 		// We always want to keep some states throughout the movie
@@ -50,13 +50,16 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		private ZwinderStateManager(ZwinderBuffer current, ZwinderBuffer recent, ZwinderBuffer gapFiller, int ancientInterval, Func<int, bool> reserveCallback)
+		private ZwinderStateManager(ZwinderBuffer current, ZwinderBuffer recent, ZwinderBuffer gapFiller, Func<int, bool> reserveCallback, ZwinderStateManagerSettings settings)
 		{
 			_current = current;
 			_recent = recent;
 			_gapFiller = gapFiller;
-			_ancientInterval = ancientInterval;
 			_reserveCallback = reserveCallback;
+			Settings = settings;
+			_ancientInterval = settings.AncientStateInterval;
+			// init the reserved dictionary
+			RebuildReserved();
 		}
 		
 		public byte[] this[int frame]
@@ -79,6 +82,7 @@ namespace BizHawk.Client.Common
 
 		public void UpdateSettings(ZwinderStateManagerSettings settings, bool keepOldStates = false)
 		{
+			bool makeNewReserved = Settings?.AncientStoreType != settings.AncientStoreType;
 			Settings = settings;
 
 			_current = UpdateBuffer(_current, settings.Current(), keepOldStates);
@@ -108,19 +112,49 @@ namespace BizHawk.Client.Common
 			}
 			else
 			{
-				List<int> framesToRemove = new List<int>();
-				foreach (int f in _reserved.Keys)
+				if (_reserved != null)
 				{
-					if (f != 0 && !_reserveCallback(f))
-						framesToRemove.Add(f);
+					List<int> framesToRemove = new List<int>();
+					foreach (int f in _reserved.Keys)
+					{
+						if (f != 0 && !_reserveCallback(f))
+							framesToRemove.Add(f);
+					}
+					foreach (int f in framesToRemove)
+						EvictReserved(f);
 				}
-				foreach (int f in framesToRemove)
-					EvictReserved(f);
 			}
+
+			if (makeNewReserved)
+				RebuildReserved();
 
 			_ancientInterval = settings.AncientStateInterval;
 			RebuildStateCache();
 		}
+
+		private void RebuildReserved()
+		{
+			IDictionary<int, byte[]> newReserved;
+			switch (Settings.AncientStoreType)
+			{
+				case IRewindSettings.BackingStoreType.Memory:
+					newReserved = new Dictionary<int, byte[]>();
+					break;
+				case IRewindSettings.BackingStoreType.TempFile:
+					newReserved = new TempFileStateDictionary();
+					break;
+				default:
+					throw new ArgumentException("Unsupported store type for reserved states.");
+			}
+			if (_reserved != null)
+			{
+				foreach (var kvp in _reserved)
+					newReserved.Add(kvp.Key, kvp.Value);
+				(_reserved as TempFileStateDictionary)?.Dispose();
+			}
+			_reserved = newReserved;
+		}
+
 		private ZwinderBuffer UpdateBuffer(ZwinderBuffer buffer, RewindConfig newConfig, bool keepOldStates)
 		{
 			if (buffer == null) // just make a new one, plain and simple
@@ -498,12 +532,10 @@ namespace BizHawk.Client.Common
 			var recent = ZwinderBuffer.Create(br);
 			var gaps = ZwinderBuffer.Create(br);
 
+			// I don't know why we have this, given it is included in the settings object.
 			var ancientInterval = br.ReadInt32();
 
-			var ret = new ZwinderStateManager(current, recent, gaps, ancientInterval, reserveCallback)
-			{
-				Settings = settings
-			};
+			var ret = new ZwinderStateManager(current, recent, gaps, reserveCallback, settings);
 
 			var ancientCount = br.ReadInt32();
 			for (var i = 0; i < ancientCount; i++)

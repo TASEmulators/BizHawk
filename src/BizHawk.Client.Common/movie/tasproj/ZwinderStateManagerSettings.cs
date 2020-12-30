@@ -25,6 +25,7 @@ namespace BizHawk.Client.Common
 			GapsStoreType = settings.GapsStoreType;
 
 			AncientStateInterval = settings.AncientStateInterval;
+			AncientStoreType = settings.AncientStoreType;
 		}
 
 		/// <summary>
@@ -94,6 +95,10 @@ namespace BizHawk.Client.Common
 		[Description("Once both the Current and Recent buffers have filled, some states are put into reserved to ensure there is always a state somewhat near a desired frame to navigate to. These states never decay but are invalidated. This number should be as high as possible without being overly cumbersome to replay this many frames.")]
 		[TypeConverter(typeof(IntConverter)), Range(1, int.MaxValue)]
 		public int AncientStateInterval { get; set; } = 5000;
+
+		[DisplayName("Ancient - Storage Type")]
+		[Description("Where to keep the reserved states.")]
+		public IRewindSettings.BackingStoreType AncientStoreType { get; set; } = IRewindSettings.BackingStoreType.Memory;
 
 		// Just to simplify some other code.
 		public RewindConfig Current()
