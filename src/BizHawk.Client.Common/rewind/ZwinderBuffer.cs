@@ -20,6 +20,9 @@ namespace BizHawk.Client.Common
 		*/
 		public ZwinderBuffer(IRewindSettings settings)
 		{
+			if (settings == null)
+				throw new ArgumentException("ZwinderBuffer's settings cannot be null.");
+
 			long targetSize = settings.BufferSize * 1024 * 1024;
 			if (settings.TargetFrameLength < 1)
 			{
@@ -50,7 +53,7 @@ namespace BizHawk.Client.Common
 					break;
 				}
 				default:
-					throw new Exception();
+					throw new ArgumentException("Unsupported store type for ZwinderBuffer.");
 			}
 			_targetFrameLength = settings.TargetFrameLength;
 			_states = new StateInfo[STATEMASK + 1];
@@ -267,11 +270,8 @@ namespace BizHawk.Client.Common
 
 		public void SaveStateBinary(BinaryWriter writer)
 		{
-			writer.Write(Size);
-			writer.Write(_sizeMask);
-			writer.Write(_targetFrameLength);
-			writer.Write(_useCompression);
-
+			// version number
+			writer.Write((byte)1);
 			SaveStateBodyBinary(writer);
 		}
 
@@ -317,22 +317,36 @@ namespace BizHawk.Client.Common
 			WaterboxUtils.CopySome(reader.BaseStream, _backingStore, nextByte);
 		}
 
-		public static ZwinderBuffer Create(BinaryReader reader)
+		public static ZwinderBuffer Create(BinaryReader reader, RewindConfig rewindConfig, bool hackyV0 = false)
 		{
-			var size = reader.ReadInt64();
-			var sizeMask = reader.ReadInt64();
-			var targetFrameLength = reader.ReadInt32();
-			var useCompression = reader.ReadBoolean();
-			var ret = new ZwinderBuffer(new RewindConfig
+			ZwinderBuffer ret;
+
+			// Initial format had no version number, but I think it's a safe bet no valid file has buffer size 2^56 or more so this should work.
+			int version = hackyV0 ? 0 : reader.ReadByte();
+			if (version == 0)
 			{
-				BufferSize = (int)(size >> 20),
-				TargetFrameLength = targetFrameLength,
-				UseCompression = useCompression
-			});
-			if (ret.Size != size || ret._sizeMask != sizeMask)
-			{
-				throw new InvalidOperationException("Bad format");
+				byte[] sizeArr = new byte[8];
+				reader.Read(sizeArr, 1, 7);
+				var size = BitConverter.ToInt64(sizeArr, 0);
+				var sizeMask = reader.ReadInt64();
+				var targetFrameLength = reader.ReadInt32();
+				var useCompression = reader.ReadBoolean();
+				ret = new ZwinderBuffer(new RewindConfig
+				{
+					BufferSize = (int)(size >> 20),
+					TargetFrameLength = targetFrameLength,
+					UseCompression = useCompression
+				});
+				if (ret.Size != size || ret._sizeMask != sizeMask)
+				{
+					throw new InvalidOperationException("Bad format");
+				}
 			}
+			else if (version == 1)
+				ret = new ZwinderBuffer(rewindConfig);
+			else
+				throw new InvalidOperationException("Bad format");
+
 			ret.LoadStateBodyBinary(reader);
 			return ret;
 		}

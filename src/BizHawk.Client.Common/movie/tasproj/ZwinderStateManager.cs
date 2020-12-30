@@ -528,12 +528,15 @@ namespace BizHawk.Client.Common
 
 		public static ZwinderStateManager Create(BinaryReader br, ZwinderStateManagerSettings settings, Func<int, bool> reserveCallback)
 		{
-			var current = ZwinderBuffer.Create(br);
-			var recent = ZwinderBuffer.Create(br);
-			var gaps = ZwinderBuffer.Create(br);
+			// Initial format had no version number, but I think it's a safe bet no valid file has buffer size 2^56 or more so this should work.
+			int version = br.ReadByte();
 
-			// I don't know why we have this, given it is included in the settings object.
-			var ancientInterval = br.ReadInt32();
+			var current = ZwinderBuffer.Create(br, settings.Current(), version == 0);
+			var recent = ZwinderBuffer.Create(br, settings.Recent());
+			var gaps = ZwinderBuffer.Create(br, settings.GapFiller());
+
+			if (version == 0)
+				settings.AncientStateInterval = br.ReadInt32();
 
 			var ret = new ZwinderStateManager(current, recent, gaps, reserveCallback, settings);
 
@@ -553,11 +556,12 @@ namespace BizHawk.Client.Common
 
 		public void SaveStateHistory(BinaryWriter bw)
 		{
+			// version
+			bw.Write((byte)1);
+
 			_current.SaveStateBinary(bw);
 			_recent.SaveStateBinary(bw);
 			_gapFiller.SaveStateBinary(bw);
-
-			bw.Write(_ancientInterval);
 
 			bw.Write(_reserved.Count);
 			foreach (var s in _reserved)

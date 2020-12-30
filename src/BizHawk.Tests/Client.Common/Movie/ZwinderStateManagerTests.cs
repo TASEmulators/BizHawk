@@ -80,11 +80,12 @@ namespace BizHawk.Tests.Client.Common.Movie
 		[TestMethod]
 		public void SaveCreateBufferRoundTrip()
 		{
-			var buff = new ZwinderBuffer(new RewindConfig
+			RewindConfig config = new RewindConfig
 			{
 				BufferSize = 1,
 				TargetFrameLength = 10
-			});
+			};
+			var buff = new ZwinderBuffer(config);
 			var ss = new StateSource { PaddingData = new byte[500] };
 			for (var frame = 0; frame < 2090; frame++)
 			{
@@ -101,7 +102,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 			var ms = new MemoryStream();
 			buff.SaveStateBinary(new BinaryWriter(ms));
 			ms.Position = 0;
-			var buff2 = ZwinderBuffer.Create(new BinaryReader(ms));
+			var buff2 = ZwinderBuffer.Create(new BinaryReader(ms), config);
 
 			Assert.AreEqual(buff.Size, buff2.Size);
 			Assert.AreEqual(buff.Used, buff2.Used);
