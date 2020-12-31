@@ -225,10 +225,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					}
 					else
 					{
-						// in a normal gbc it returns something from the upper two rows of OAM, still needs work
+						// otherwise the return value is revision dependent. Assume CGB-E is same as GBA mode consoles for now
 						if (ppu.OAM_access_read)
 						{
-							return OAM[(addr & 0xF) | 0x80];
+							return (byte)((addr & 0xF0) | ((addr & 0xF0) >> 4));
 						}
 
 						return 0xFF;
@@ -348,8 +348,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						}
 						else
 						{
-							// in a normal gbc it writes the value to upper two rows of OAM, still needs work
-							if (ppu.OAM_access_write) { OAM[(addr & 0xF) | 0x80] = value; }
+							// otherwise it's revision dependent. Assume CGB-E is same as GBA mode consoles for now
 						}
 					}
 					else
@@ -566,10 +565,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					}
 					else
 					{
-						// in a normal gbc it returns something from the upper two rows of OAM, still needs work
+						// otherwise the return value is revision dependent. Assume CGB-E is same as GBA mode consoles for now
 						if (ppu.OAM_access_read)
 						{
-							return OAM[(addr & 0xF) | 0x80];
+							return (byte)((addr & 0xF0) | ((addr & 0xF0) >> 4));
 						}
 
 						return 0xFF;

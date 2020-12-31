@@ -13,6 +13,9 @@ using System.Runtime.InteropServices;
 // TODO: Verify open bus behaviour for bad SRAM accesses for other MBCs
 // TODO: Apparently sprites at x=A7 do not stop the trigger for FF0F bit flip, but still do not dispatch interrupt or
 // mode 3 change, see 10spritesPrLine_10xposA7_m0irq_2_dmg08_cgb04c_out2.gbc
+// TODO: there is a tile glitch when setting LCDC.Bit(4) in GBC that is not implemented yet, the version of the glitch for reset is implemented though
+// TODO: In some GBC models, apparently unmapped memory after OAM contains 48 bytes that are fully read/write'able
+// this is not implemented and which models it effects is not clear, see oam_echo_ram_read.gbc and oam_echo_ram_read_2.gbc
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {

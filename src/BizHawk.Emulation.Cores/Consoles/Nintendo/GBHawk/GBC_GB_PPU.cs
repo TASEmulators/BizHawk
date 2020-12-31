@@ -30,6 +30,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public byte HDMA_byte;
 		public int HDMA_tick;
 
+		// GBC specific glitch
+		public bool LCDC_Bit_4_glitch;
+
 		// the first read on GBA (and first two on GBC) encounter access glitches if the source address is VRAM
 		public byte HDMA_VRAM_access_glitch;
 
@@ -142,6 +145,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						blank_frame = true;
 						clear_screen = false;
 					}
+
+					// PPU glitch when changing VRAm bank for tiles
+					if (LCDC.Bit(7) && value.Bit(7) && LCDC.Bit(4) && !value.Bit(4))
+					{
+						LCDC_Bit_4_glitch = true;
+					}
+
 					LCDC = value;
 					break; 
 				case 0xFF41: // STAT
@@ -859,6 +869,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					}
 				}
 			}
+
+			LCDC_Bit_4_glitch = false;
 		}
 
 		// might be needed, not sure yet
@@ -1022,7 +1034,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 									tile_byte -= 256;
 								}
 								bus_address = (VRAM_sel * 0x2000) + 0x1000 + tile_byte * 16 + y_scroll_offset * 2;
-								tile_data[0] = Core.VRAM[bus_address];
+								
+								if (!LCDC_Bit_4_glitch) { tile_data[0] = Core.VRAM[bus_address]; }
+								else { tile_data[0] = (byte)tile_byte; }
 							}
 
 							read_case = 2;
@@ -1061,7 +1075,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								}
 
 								bus_address = (VRAM_sel * 0x2000) + 0x1000 + tile_byte * 16 + y_scroll_offset * 2 + 1;
-								tile_data[1] = Core.VRAM[bus_address];
+
+								if (!LCDC_Bit_4_glitch) { tile_data[1] = Core.VRAM[bus_address]; }
+								else { tile_data[1] = (byte)tile_byte; }
 							}
 
 							if (pre_render)
@@ -1147,7 +1163,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								}
 
 								bus_address = (VRAM_sel * 0x2000) + 0x1000 + tile_byte * 16 + y_scroll_offset * 2;
-								tile_data[0] = Core.VRAM[bus_address];
+
+								if (!LCDC_Bit_4_glitch) { tile_data[0] = Core.VRAM[bus_address]; }
+								else { tile_data[0] = (byte)tile_byte; }
 							}
 
 							read_case = 6;
@@ -1187,7 +1205,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								}
 
 								bus_address = (VRAM_sel * 0x2000) + 0x1000 + tile_byte * 16 + y_scroll_offset * 2 + 1;
-								tile_data[1] = Core.VRAM[bus_address];
+
+								if (!LCDC_Bit_4_glitch) { tile_data[1] = Core.VRAM[bus_address]; }
+								else { tile_data[1] = (byte)tile_byte; }
 							}
 
 							if (window_pre_render)
@@ -1835,6 +1855,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync(nameof(VRAM_access_write_HDMA), ref VRAM_access_write_HDMA);
 			ser.Sync(nameof(HDMA_VRAM_access_glitch), ref HDMA_VRAM_access_glitch);
 			ser.Sync(nameof(HDMA_can_start), ref HDMA_can_start);
+			ser.Sync(nameof(LCDC_Bit_4_glitch), ref LCDC_Bit_4_glitch);
 
 			ser.Sync(nameof(VRAM_sel), ref VRAM_sel);
 			ser.Sync(nameof(BG_V_flip), ref BG_V_flip);
@@ -1934,6 +1955,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			HBL_HDMA_go = false;
 			HBL_test = false;
 			HDMA_VRAM_access_glitch = 0;
+
+			LCDC_Bit_4_glitch = false;
 
 			for (int i = 0; i < BG_bytes.Length; i++) { BG_bytes[i] = 0xFF; }
 			for (int i = 0; i < OBJ_bytes.Length; i++) { OBJ_bytes[i] = 0xFF; }
