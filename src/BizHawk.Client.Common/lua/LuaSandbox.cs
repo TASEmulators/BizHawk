@@ -19,9 +19,16 @@ namespace BizHawk.Client.Common
 
 		private string _currentDirectory;
 
+		/// <summary>
+		/// Sets the OS's current working directory, with some speed hacks.
+		/// </summary>
+		/// <param name="path">The path which the current directory will be set to.</param>
+		/// <param name="currDirSpeedHack">This method will not set the current directory if it is already set to path.
+		/// If given, it will use this value instead of getting the current directory from the OS.</param>
+		/// <returns>True if the current directory was sucessfully set. Otherwise, false.</returns>
 		private bool CoolSetCurrentDirectory(string path, string currDirSpeedHack = null)
 		{
-			string target = $"{_currentDirectory}\\";
+			string target = $"{path}\\";
 
 			// first we'll bypass it with a general hack: don't do any setting if the value's already there (even at the OS level, setting the directory can be slow)
 			// yeah I know, not the smoothest move to compare strings here, in case path normalization is happening at some point
@@ -30,8 +37,8 @@ namespace BizHawk.Client.Common
 			if (currDirSpeedHack == path) return true;
 
 			if (!OSTailoredCode.IsUnixHost) return CWDHacks.Set(target);
-			if (!System.IO.Directory.Exists(_currentDirectory)) return false; //TODO is this necessary with Mono? Linux is fine with the CWD being nonexistent. also, is this necessary with .NET Core on Windows? --yoshi
-			Environment.CurrentDirectory = _currentDirectory;
+			if (!System.IO.Directory.Exists(path)) return false; //TODO is this necessary with Mono? Linux is fine with the CWD being nonexistent. also, is this necessary with .NET Core on Windows? --yoshi
+			Environment.CurrentDirectory = path;
 			return true;
 		}
 
