@@ -1,6 +1,4 @@
-﻿#nullable disable
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -32,7 +30,7 @@ namespace BizHawk.Common
 		/// <summary>
 		/// return all instance fields of a type
 		/// </summary>
-		public static IEnumerable<FieldInfo> GetAllFields(Type t)
+		public static IEnumerable<FieldInfo> GetAllFields(Type? t)
 		{
 			while (t != null)
 			{
@@ -49,17 +47,20 @@ namespace BizHawk.Common
 			}
 		}
 
-		private static readonly MethodInfo ArrayEqualsGeneric = typeof(DeepEquality).GetMethod("ArrayEquals", BindingFlags.NonPublic | BindingFlags.Static);
+		private static readonly MethodInfo ArrayEqualsGeneric
+			= typeof(DeepEquality).GetMethod("ArrayEquals", BindingFlags.NonPublic | BindingFlags.Static)
+				?? throw new NullReferenceException();
 
 		/// <summary>test if two objects <paramref name="o1"/> and <paramref name="o2"/> are equal, field-by-field (with deep inspection of each field)</summary>
 		/// <exception cref="InvalidOperationException"><paramref name="o1"/> is an array with rank > 1 or is a non-zero-indexed array</exception>
-		public static bool DeepEquals(object o1, object o2)
+		public static bool DeepEquals(object? o1, object? o2)
 		{
 			if (o1 == o2)
 			{
 				// reference equal, so nothing else to be done
 				return true;
 			}
+			if (o1 == null || o2 == null) return false; // not equal (above) and one is null
 
 			Type t1 = o1.GetType();
 			Type t2 = o2.GetType();

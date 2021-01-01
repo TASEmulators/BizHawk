@@ -1,6 +1,4 @@
-﻿#nullable disable
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -60,13 +58,13 @@ namespace BizHawk.Common
 		}
 
 		// ============== Default Logger Action ==============
-		public static Stream HACK_LOG_STREAM;
+		public static Stream? HACK_LOG_STREAM;
 
 		private static readonly bool LogToConsole = false;
 		private static readonly bool LogToFile = false;
 
 		private const string LogFilename = "bizhawk.txt";
-		private static StreamWriter _writer;
+		private static StreamWriter? _writer;
 
 		private static void DefaultLogger(string message)
 		{
@@ -75,13 +73,9 @@ namespace BizHawk.Common
 				Console.WriteLine(message);
 			}
 
-			if (LogToFile && _writer == null)
-			{
-				_writer = new StreamWriter(LogFilename);
-			}
-
 			if (LogToFile)
 			{
+				_writer ??= new StreamWriter(LogFilename);
 				_writer.WriteLine(message);
 				_writer.Flush();
 			}

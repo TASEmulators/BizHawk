@@ -1,25 +1,8 @@
-﻿#nullable disable
-
-namespace BizHawk.Common
+﻿namespace BizHawk.Common
 {
 	public static class BitReverse
 	{
 		static BitReverse()
-		{
-			MakeByte8();
-		}
-
-		public static byte[] Byte8;
-
-		public static uint Reverse32(uint v)
-		{
-			return (uint)((Byte8[v & 0xff] << 24) |
-					(Byte8[(v >> 8) & 0xff] << 16) |
-					(Byte8[(v >> 16) & 0xff] << 8) |
-					Byte8[(v >> 24) & 0xff]);
-		}
-
-		private static void MakeByte8()
 		{
 			int bits = 8;
 			const int n = 1 << 8;
@@ -42,5 +25,14 @@ namespace BizHawk.Common
 				}
 			}
 		}
+
+		public static readonly byte[] Byte8;
+
+		public static uint Reverse32(uint v) => (uint) (
+			(Byte8[v & 0xFF] << 24)
+				| (Byte8[(v >> 8) & 0xFF] << 16)
+				| (Byte8[(v >> 16) & 0xFF] << 8)
+				| Byte8[(v >> 24) & 0xFF]
+		);
 	}
 }
