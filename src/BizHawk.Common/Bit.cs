@@ -83,7 +83,7 @@ namespace BizHawk.Common
 
 		public override bool Equals(object? obj)
 		{
-			return this == (Bit) (obj ?? throw new NullReferenceException()); // this is probably wrong
+			return obj is Bit b && this == b;
 		}
 	}
 }
