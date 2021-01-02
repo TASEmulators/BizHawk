@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 
-namespace BizHawk.Emulation.DiscSystem
+namespace ISOParser
 {
 	/// <summary>
 	/// Representation of a directory in the file system.

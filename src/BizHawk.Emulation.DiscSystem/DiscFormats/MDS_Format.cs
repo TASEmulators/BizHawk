@@ -4,6 +4,8 @@ using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 
+using ISOParser;
+
 namespace BizHawk.Emulation.DiscSystem
 {
 	/// <summary>

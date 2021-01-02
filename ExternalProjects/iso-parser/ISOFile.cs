@@ -2,7 +2,7 @@
 using System.IO;
 using System.Linq;
 
-namespace BizHawk.Emulation.DiscSystem
+namespace ISOParser
 {
 	/// <summary>
 	/// This class is meant to parse disk images as specified by:

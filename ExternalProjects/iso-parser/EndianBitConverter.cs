@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace BizHawk.Emulation.DiscSystem
+namespace ISOParser
 {
 	/// <summary>
 	/// Helper class to convert big and little endian numbers from a byte

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using ISOParser;
+
 //disc type identification logic
 
 namespace BizHawk.Emulation.DiscSystem

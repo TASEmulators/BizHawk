@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using System.IO;
 
-namespace BizHawk.Emulation.DiscSystem
+namespace ISOParser
 {
 	/// <summary>
 	/// Class to represent the file/directory information read from the disk.

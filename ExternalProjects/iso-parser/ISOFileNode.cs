@@ -1,4 +1,4 @@
-﻿namespace BizHawk.Emulation.DiscSystem
+﻿namespace ISOParser
 {
 	/// <summary>
 	/// Representation of a file in the file system.

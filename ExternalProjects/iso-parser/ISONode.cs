@@ -1,4 +1,4 @@
-﻿namespace BizHawk.Emulation.DiscSystem
+﻿namespace ISOParser
 {
 	/// <summary>
 	/// Abstract class to represent a file/directory node 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 
-namespace BizHawk.Emulation.DiscSystem
+namespace ISOParser
 {
 	/// <summary>
 	/// Represents a volume descriptor for a disk image.
