@@ -497,9 +497,9 @@ namespace BizHawk.Emulation.DiscSystem
 				var ecmPath = Path.ChangeExtension(imgPath, ".img.ecm");
 				if (File.Exists(ecmPath))
 				{
-					if (Disc.Blob_ECM.IsECM(ecmPath))
+					if (Blob_ECM.IsECM(ecmPath))
 					{
-						var ecm = new Disc.Blob_ECM();
+						var ecm = new Blob_ECM();
 						ecm.Load(ecmPath);
 						imgBlob = ecm;
 						imgLen = ecm.Length;
@@ -509,7 +509,7 @@ namespace BizHawk.Emulation.DiscSystem
 			if (imgBlob == null)
 			{
 				if (!File.Exists(loadResults.ImgPath)) throw new CCDParseException("Malformed CCD format: nonexistent IMG file!");
-				var imgFile = new Disc.Blob_RawFile() { PhysicalPath = loadResults.ImgPath };
+				var imgFile = new Blob_RawFile() { PhysicalPath = loadResults.ImgPath };
 				imgLen = imgFile.Length;
 				imgBlob = imgFile;
 			}
@@ -517,7 +517,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 			//mount the SUB file
 			if (!File.Exists(loadResults.SubPath)) throw new CCDParseException("Malformed CCD format: nonexistent SUB file!");
-			var subFile = new Disc.Blob_RawFile() { PhysicalPath = loadResults.SubPath };
+			var subFile = new Blob_RawFile() { PhysicalPath = loadResults.SubPath };
 			subBlob = subFile;
 			disc.DisposableResources.Add(subBlob);
 			subLen = subFile.Length;

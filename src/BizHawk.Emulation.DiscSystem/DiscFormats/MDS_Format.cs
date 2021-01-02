@@ -626,7 +626,7 @@ namespace BizHawk.Emulation.DiscSystem
 					//mount the file			
 					if (mdfBlob == null)
 					{
-						var mdfFile = new Disc.Blob_RawFile() { PhysicalPath = file };
+						var mdfFile = new Blob_RawFile() { PhysicalPath = file };
 						mdfLen = mdfFile.Length;
 						mdfBlob = mdfFile;
 					}
@@ -813,12 +813,12 @@ namespace BizHawk.Emulation.DiscSystem
 						CUE.SS_Base sBase = null;
 
 						// get the current blob from the BlobIndex
-						Disc.Blob_RawFile currBlob = (Disc.Blob_RawFile) BlobIndex[currBlobIndex];
+						Blob_RawFile currBlob = (Blob_RawFile) BlobIndex[currBlobIndex];
 						long currBlobLength = currBlob.Length;
 						long currBlobPosition = sector;
 						if (currBlobPosition == currBlobLength)
 							currBlobIndex++;
-						mdfBlob = disc.DisposableResources[currBlobIndex] as Disc.Blob_RawFile;
+						mdfBlob = disc.DisposableResources[currBlobIndex] as Blob_RawFile;
 
 						//int userSector = 2048;
 						switch (track.SectorSize)

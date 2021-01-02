@@ -81,14 +81,14 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 					case CompiledCueFileType.Unknown:
 						{
 							//raw files:
-							var blob = new Disc.Blob_RawFile { PhysicalPath = ccf.FullPath };
+							var blob = new Blob_RawFile { PhysicalPath = ccf.FullPath };
 							OUT_Disc.DisposableResources.Add(file_blob = blob);
 							bi.Length = blob.Length;
 							break;
 						}
 					case CompiledCueFileType.ECM:
 						{
-							var blob = new Disc.Blob_ECM();
+							var blob = new Blob_ECM();
 							OUT_Disc.DisposableResources.Add(file_blob = blob);
 							blob.Load(ccf.FullPath);
 							bi.Length = blob.Length;
@@ -96,7 +96,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 						}
 					case CompiledCueFileType.WAVE:
 						{
-							var blob = new Disc.Blob_WaveFile();
+							var blob = new Blob_WaveFile();
 							OUT_Disc.DisposableResources.Add(file_blob = blob);
 							blob.Load(ccf.FullPath);
 							bi.Length = blob.Length;
@@ -111,7 +111,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 							}
 							AudioDecoder dec = new AudioDecoder();
 							byte[] buf = dec.AcquireWaveData(ccf.FullPath);
-							var blob = new Disc.Blob_WaveFile();
+							var blob = new Blob_WaveFile();
 							OUT_Disc.DisposableResources.Add(file_blob = blob);
 							blob.Load(new MemoryStream(buf));
 							bi.Length = buf.Length;
@@ -122,7 +122,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 				} //switch(file type)
 
 				//wrap all the blobs with zero padding
-				bi.Blob = new Disc.Blob_ZeroPadAdapter(file_blob, bi.Length);
+				bi.Blob = new Blob_ZeroPadAdapter(file_blob, bi.Length);
 			}
 		}
 

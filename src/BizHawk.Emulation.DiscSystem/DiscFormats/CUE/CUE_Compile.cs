@@ -254,7 +254,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 				//TODO - fix exception-throwing inside
 				//TODO - verify stream-disposing semantics
 				var fs = File.OpenRead(choice);
-				using var blob = new Disc.Blob_WaveFile();
+				using var blob = new Blob_WaveFile();
 				try
 				{
 					blob.Load(fs);
@@ -272,7 +272,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 			else if (blobPathExt == ".ECM")
 			{
 				cfi.Type = CompiledCueFileType.ECM;
-				if (!Disc.Blob_ECM.IsECM(choice))
+				if (!Blob_ECM.IsECM(choice))
 				{
 					Error($"an ECM file was specified or detected, but it isn't a valid ECM file: {Path.GetFileName(choice)}");
 					cfi.Type = CompiledCueFileType.Unknown;
