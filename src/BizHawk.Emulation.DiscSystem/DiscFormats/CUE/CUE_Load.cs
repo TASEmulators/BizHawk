@@ -53,12 +53,22 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 			public long Length;
 		}
 
-		//not sure if we need this...
-		private class TrackInfo
+		/// <remarks>not sure if we need this...</remarks>
+		private readonly struct TrackInfo
 		{
-//			public int Length;
+			public readonly CompiledCueTrack CompiledCueTrack;
 
-			public CompiledCueTrack CompiledCueTrack;
+#if true
+			public TrackInfo(CompiledCueTrack compiledCueTrack) => CompiledCueTrack = compiledCueTrack;
+#else
+			public readonly int Length;
+
+			public TrackInfo(CompiledCueTrack compiledCueTrack, int length)
+			{
+				CompiledCueTrack = compiledCueTrack;
+				Length = length;
+			}
+#endif
 		}
 
 		private List<BlobInfo> BlobInfos;
@@ -135,8 +145,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 			{
 				var cct = compiledTracks[t];
 
-				var ti = new TrackInfo() { CompiledCueTrack = cct };
-				TrackInfos.Add(ti);
+				TrackInfos.Add(new TrackInfo(cct));
 
 				//OH NO! CANT DO THIS!
 				//need to read sectors from file to reliably know its ending size.
