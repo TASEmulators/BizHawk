@@ -42,12 +42,23 @@ namespace BizHawk.Emulation.DiscSystem
 			stream = null;
 		}
 
-		private class IndexEntry
+		private readonly struct IndexEntry
 		{
-			public int Type;
-			public uint Number;
-			public long ECMOffset;
-			public long LogicalOffset;
+			public readonly long ECMOffset;
+
+			public readonly long LogicalOffset;
+
+			public readonly uint Number;
+
+			public readonly int Type;
+
+			public IndexEntry(int type, uint number, long ecmOffset, long logicalOffset)
+			{
+				Type = type;
+				Number = number;
+				ECMOffset = ecmOffset;
+				LogicalOffset = logicalOffset;
+			}
 		}
 
 		/// <summary>
@@ -100,15 +111,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 				uint todo = (uint)N + 1;
 
-				IndexEntry ie = new IndexEntry
-				{
-					Number = todo,
-					ECMOffset = stream.Position,
-					LogicalOffset = logOffset,
-					Type = T
-				};
-
-				Index.Add(ie);
+				Index.Add(new IndexEntry(type: T, number: todo, ecmOffset: stream.Position, logicalOffset: logOffset));
 
 				if (T == 0)
 				{
