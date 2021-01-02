@@ -17,19 +17,20 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 		public string ISRC;
 	}
 
-	internal class CompiledCueIndex
+	internal readonly struct CompiledCueIndex
 	{
-		public int Number;
+		/// <remarks>this is annoying, it should just be an integer</remarks>
+		public readonly Timestamp FileMSF;
 
-		/// <summary>
-		/// this is annoying, it should just be an integer
-		/// </summary>
-		public Timestamp FileMSF;
+		public readonly int Number;
 
-		public override string ToString()
+		public CompiledCueIndex(int number, Timestamp fileMSF)
 		{
-			return $"I#{Number:D2} {FileMSF}";
+			Number = number;
+			FileMSF = fileMSF;
 		}
+
+		public override readonly string ToString() => $"I#{Number:D2} {FileMSF}";
 	}
 
 	/// <summary>
@@ -108,13 +109,9 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 		public override string ToString()
 		{
 			var idx = Indexes.Find((i) => i.Number == 1);
-			if (idx == null)
-				return $"T#{Number:D2} NO INDEX 1";
-			else
-			{
-				var indexlist = string.Join("|", Indexes);
-				return $"T#{Number:D2} {BlobIndex}:{idx.FileMSF} ({indexlist})";
-			}
+			if (idx.Number != 1) return $"T#{Number:D2} NO INDEX 1";
+			var indexlist = string.Join("|", Indexes);
+			return $"T#{Number:D2} {BlobIndex}:{idx.FileMSF} ({indexlist})";
 		}
 	}
 
@@ -345,18 +342,14 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 			//normalize: if an index 0 is missing, add it here
 			if (curr_track.Indexes[0].Number != 0)
 			{
-				var index0 = new CompiledCueIndex();
-				var index1 = curr_track.Indexes[0];
-				index0.Number = 0;
-				index0.FileMSF = index1.FileMSF; //same MSF as index 1 will make it effectively nonexistent
-
 				//well now, if it's the first in the file, an implicit index will take its value from 00:00:00 in the file
 				//this is the kind of thing I sought to solve originally by 'interpreting' the file, but it seems easy enough to handle this way
 				//my carlin.cue tests this but test cases shouldn't be hard to find
-				if (curr_track.IsFirstInFile)
-					index0.FileMSF = new Timestamp(0);
+				var fileMSF = curr_track.IsFirstInFile
+					? new Timestamp(0)
+					: curr_track.Indexes[0].FileMSF; // else, same MSF as index 1 will make it effectively nonexistent
 
-				curr_track.Indexes.Insert(0, index0);
+				curr_track.Indexes.Insert(0, new CompiledCueIndex(0, fileMSF));
 			}
 
 			OUT_CompiledCueTracks.Add(curr_track);
@@ -395,11 +388,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 
 		private void AddIndex(CUE_File.Command.INDEX indexCommand)
 		{
-			curr_track.Indexes.Add(new CompiledCueIndex
-			{
-				FileMSF = indexCommand.Timestamp,
-				Number = indexCommand.Number
-			});
+			curr_track.Indexes.Add(new CompiledCueIndex(indexCommand.Number, indexCommand.Timestamp));
 		}
 
 		public override void Run()
