@@ -9,10 +9,10 @@
 		<OutputPath>$(ProjectDir)../../test_output</OutputPath>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.6.1" PrivateAssets="all" />
-		<PackageReference Include="MSTest.TestAdapter" Version="2.1.1" PrivateAssets="all" />
-		<PackageReference Include="MSTest.TestFramework" Version="2.1.1" PrivateAssets="all" />
-		<PackageReference Include="JunitXml.TestLogger" Version="2.1.32" PrivateAssets="all" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.8.3" PrivateAssets="all" />
+		<PackageReference Include="MSTest.TestAdapter" Version="2.1.2" PrivateAssets="all" />
+		<PackageReference Include="MSTest.TestFramework" Version="2.1.2" PrivateAssets="all" />
+		<PackageReference Include="JunitXml.TestLogger" Version="2.1.78" PrivateAssets="all" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Client.Common/BizHawk.Client.Common.csproj" />
 	</ItemGroup>
 </Project>

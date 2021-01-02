@@ -9,7 +9,7 @@
 	<ItemGroup>
 		<PackageReference Include="Cyotek.Drawing.BitmapFont" Version="1.0.2" NoWarn="NU1701" />
 		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" /><!-- for (extra?) dynamic type support -->
-		<PackageReference Include="System.Drawing.Common" Version="4.7.0" />
+		<PackageReference Include="System.Drawing.Common" Version="5.0.0" />
 		<PackageReference Include="OpenTK" Version="3.3.0" NoWarn="NU1701" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Common/BizHawk.Common.csproj" />
 	</ItemGroup>
