@@ -412,64 +412,54 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 			//global cd text will acquire the cdtext commands set before track commands
 			curr_cdtext  = OUT_GlobalCDText;
 
-			for (int i = 0; i < cue.Commands.Count; i++)
+			foreach (var cmd in cue.Commands) switch (cmd)
 			{
-				var cmd = cue.Commands[i];
-
-				//these commands get dealt with globally. nothing to be done here
-				//(but in the future we need to accumulate them into the compile pass output)
-				if (cmd is CUE_File.Command.CATALOG || cmd is CUE_File.Command.CDTEXTFILE) continue;
-
-				//nothing to be done for comments
-				if (cmd is CUE_File.Command.REM) continue;
-				if (cmd is CUE_File.Command.COMMENT) continue;
-
-				//CD-text and related
-				if (cmd is CUE_File.Command.PERFORMER performerCmd) curr_cdtext.Performer = performerCmd.Value;
-				if (cmd is CUE_File.Command.SONGWRITER songwriterCmd) curr_cdtext.Songwriter = songwriterCmd.Value;
-				if (cmd is CUE_File.Command.TITLE titleCmd) curr_cdtext.Title = titleCmd.Value;
-				if (cmd is CUE_File.Command.ISRC isrcCmd) curr_cdtext.ISRC = isrcCmd.Value;
-
-				//flags can only be set when a track command is running
-				if (cmd is CUE_File.Command.FLAGS flagsCmd)
-				{
-					if (curr_track == null)
-						Warn("Ignoring invalid flag commands outside of a track command");
-					else
-						//take care to |= it here, so the data flag doesn't get cleared
-						curr_track.Flags |= flagsCmd.Flags;
-				}
-
-				if (cmd is CUE_File.Command.TRACK trackCmd)
-				{
+				case CUE_File.Command.CATALOG:
+				case CUE_File.Command.CDTEXTFILE:
+					// these commands get dealt with globally. nothing to be done here
+					// (but in the future we need to accumulate them into the compile pass output)
+					continue;
+				case CUE_File.Command.REM:
+				case CUE_File.Command.COMMENT:
+					// nothing to be done for comments
+					continue;
+				case CUE_File.Command.PERFORMER performerCmd:
+					curr_cdtext.Performer = performerCmd.Value;
+					break;
+				case CUE_File.Command.SONGWRITER songwriterCmd:
+					curr_cdtext.Songwriter = songwriterCmd.Value;
+					break;
+				case CUE_File.Command.TITLE titleCmd:
+					curr_cdtext.Title = titleCmd.Value;
+					break;
+				case CUE_File.Command.ISRC isrcCmd:
+					curr_cdtext.ISRC = isrcCmd.Value;
+					break;
+				case CUE_File.Command.FLAGS flagsCmd:
+					// flags can only be set when a track command is running
+					if (curr_track == null) Warn("Ignoring invalid flag commands outside of a track command");
+					else curr_track.Flags |= flagsCmd.Flags; // take care to |= it here, so the data flag doesn't get cleared
+					break;
+				case CUE_File.Command.TRACK trackCmd:
 					CloseTrack();
 					OpenTrack(trackCmd);
-				}
-
-				if (cmd is CUE_File.Command.FILE fileCmd)
-				{
+					break;
+				case CUE_File.Command.FILE fileCmd:
 					CloseFile();
 					OpenFile(fileCmd);
-				}
-
-				if (cmd is CUE_File.Command.INDEX indexCmd)
-				{
-					//todo - validate no postgap specified
+					break;
+				case CUE_File.Command.INDEX indexCmd:
+					//TODO validate no postgap specified
 					AddIndex(indexCmd);
-				}
-
-				if (cmd is CUE_File.Command.PREGAP pregapCmd)
-				{
-					//validate track open
-					//validate no indexes
+					break;
+				case CUE_File.Command.PREGAP pregapCmd:
+					//TODO validate track open
+					//TODO validate no indexes
 					curr_track.PregapLength = pregapCmd.Length;
-				}
-
-				if (cmd is CUE_File.Command.POSTGAP postgapCmd)
-				{
+					break;
+				case CUE_File.Command.POSTGAP postgapCmd:
 					curr_track.PostgapLength = postgapCmd.Length;
-				}
-
+					break;
 			}
 
 			//it's a bit odd to close the file before closing the track, but...

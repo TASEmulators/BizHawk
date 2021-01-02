@@ -162,7 +162,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 				if (startsWithSemicolon)
 				{
 					clp.EOF = true;
-					OUT_CueFile.Commands.Add(new CUE_File.Command.COMMENT() { Value = line });
+					OUT_CueFile.Commands.Add(new CUE_File.Command.COMMENT(line));
 				}
 				else switch (key)
 				{
@@ -175,7 +175,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 							job.Warn("Multiple CATALOG commands detected. Subsequent ones are ignored.");
 						else if (clp.EOF)
 							job.Warn("Ignoring empty CATALOG command");
-						else OUT_CueFile.Commands.Add(OUT_CueFile.GlobalDiscInfo.Catalog = new CUE_File.Command.CATALOG() { Value = clp.ReadToken() });
+						else OUT_CueFile.Commands.Add(OUT_CueFile.GlobalDiscInfo.Catalog = new CUE_File.Command.CATALOG(clp.ReadToken()));
 						break;
 
 					case "CDTEXTFILE":
@@ -183,7 +183,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 							job.Warn("Multiple CDTEXTFILE commands detected. Subsequent ones are ignored.");
 						else if (clp.EOF)
 							job.Warn("Ignoring empty CDTEXTFILE command");
-						else OUT_CueFile.Commands.Add(OUT_CueFile.GlobalDiscInfo.CDTextFile = new CUE_File.Command.CDTEXTFILE() { Path = clp.ReadPath() });
+						else OUT_CueFile.Commands.Add(OUT_CueFile.GlobalDiscInfo.CDTextFile = new CUE_File.Command.CDTEXTFILE(clp.ReadPath()));
 						break;
 
 					case "FILE":
@@ -211,14 +211,13 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 									case "MP3": ft = CueFileType.MP3; break;
 								}
 							}
-							OUT_CueFile.Commands.Add(new CUE_File.Command.FILE() { Path = path, Type = ft });
+							OUT_CueFile.Commands.Add(new CUE_File.Command.FILE(path, ft));
 						}
 						break;
 
 					case "FLAGS":
 						{
-							var cmd = new CUE_File.Command.FLAGS();
-							OUT_CueFile.Commands.Add(cmd);
+							CueTrackFlags flags = default;
 							while (!clp.EOF)
 							{
 								var flag = clp.ReadToken().ToUpperInvariant();
@@ -228,14 +227,15 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 									default:
 										job.Warn($"Unknown FLAG: {flag}");
 										break;
-									case "DCP": cmd.Flags |= CueTrackFlags.DCP; break;
-									case "4CH": cmd.Flags |= CueTrackFlags._4CH; break;
-									case "PRE": cmd.Flags |= CueTrackFlags.PRE; break;
-									case "SCMS": cmd.Flags |= CueTrackFlags.SCMS; break;
+									case "DCP": flags |= CueTrackFlags.DCP; break;
+									case "4CH": flags |= CueTrackFlags._4CH; break;
+									case "PRE": flags |= CueTrackFlags.PRE; break;
+									case "SCMS": flags |= CueTrackFlags.SCMS; break;
 								}
 							}
-							if (cmd.Flags == CueTrackFlags.None)
+							if (flags == CueTrackFlags.None)
 								job.Warn("Empty FLAG command");
+							OUT_CueFile.Commands.Add(new CUE_File.Command.FLAGS(flags));
 						}
 						break;
 
@@ -266,7 +266,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 									job.Error($"Invalid INDEX timestamp: {str_timestamp}");
 								break;
 							}
-							OUT_CueFile.Commands.Add(new CUE_File.Command.INDEX() { Number = indexnum, Timestamp = ts });
+							OUT_CueFile.Commands.Add(new CUE_File.Command.INDEX(indexnum, ts));
 						}
 						break;
 
@@ -282,13 +282,13 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 								job.Warn($"Invalid ISRC code ignored: {isrc}");
 							else
 							{
-								OUT_CueFile.Commands.Add(OUT_CueFile.GlobalDiscInfo.ISRC = new CUE_File.Command.ISRC() { Value = isrc });
+								OUT_CueFile.Commands.Add(OUT_CueFile.GlobalDiscInfo.ISRC = new CUE_File.Command.ISRC(isrc));
 							}
 						}
 						break;
 
 					case "PERFORMER":
-						OUT_CueFile.Commands.Add(new CUE_File.Command.PERFORMER() { Value = clp.ReadPath() ?? "" });
+						OUT_CueFile.Commands.Add(new CUE_File.Command.PERFORMER(clp.ReadPath() ?? ""));
 						break;
 
 					case "POSTGAP":
@@ -301,23 +301,23 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 							else
 							{
 								if (key == "POSTGAP")
-									OUT_CueFile.Commands.Add(new CUE_File.Command.POSTGAP() { Length = msf });
+									OUT_CueFile.Commands.Add(new CUE_File.Command.POSTGAP(msf));
 								else
-									OUT_CueFile.Commands.Add(new CUE_File.Command.PREGAP() { Length = msf });
+									OUT_CueFile.Commands.Add(new CUE_File.Command.PREGAP(msf));
 							}
 						}
 						break;
 
 					case "REM":
-						OUT_CueFile.Commands.Add(new CUE_File.Command.REM() { Value = clp.ReadLine() });
+						OUT_CueFile.Commands.Add(new CUE_File.Command.REM(clp.ReadLine()));
 						break;
 
 					case "SONGWRITER":
-						OUT_CueFile.Commands.Add(new CUE_File.Command.SONGWRITER() { Value = clp.ReadPath() ?? "" });
+						OUT_CueFile.Commands.Add(new CUE_File.Command.SONGWRITER(clp.ReadPath() ?? ""));
 						break;
 
 					case "TITLE":
-						OUT_CueFile.Commands.Add(new CUE_File.Command.TITLE() { Value = clp.ReadPath() ?? "" });
+						OUT_CueFile.Commands.Add(new CUE_File.Command.TITLE(clp.ReadPath() ?? ""));
 						break;
 
 					case "TRACK":
@@ -355,7 +355,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 								case "CDI/2352": tt = CueTrackType.CDI_2352; break;
 							}
 
-							OUT_CueFile.Commands.Add(new CUE_File.Command.TRACK() { Number = tracknum, Type = tt });
+							OUT_CueFile.Commands.Add(new CUE_File.Command.TRACK(tracknum, tt));
 						}
 						break;
 				}
@@ -366,7 +366,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 					if (remainder.TrimStart().StartsWith(";"))
 					{
 						//add a comment
-						OUT_CueFile.Commands.Add(new CUE_File.Command.COMMENT() { Value = remainder });
+						OUT_CueFile.Commands.Add(new CUE_File.Command.COMMENT(remainder));
 					}
 					else job.Warn($"Unknown text at end of line after processing command: {key}");
 				}
