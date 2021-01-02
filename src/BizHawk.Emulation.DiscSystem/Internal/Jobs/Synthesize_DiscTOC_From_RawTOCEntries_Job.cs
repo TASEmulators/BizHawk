@@ -10,9 +10,15 @@ namespace BizHawk.Emulation.DiscSystem
 	/// </summary>
 	internal class Synthesize_DiscTOC_From_RawTOCEntries_Job
 	{
-		public IEnumerable<RawTOCEntry> Entries;
-		public List<string> Log = new List<string>();
-		public DiscTOC Result;
+		private readonly IReadOnlyList<RawTOCEntry> Entries;
+
+		public Synthesize_DiscTOC_From_RawTOCEntries_Job(IReadOnlyList<RawTOCEntry> entries) => Entries = entries;
+
+		public DiscTOC Result { get; private set; }
+
+		private readonly List<string> Log = new();
+
+		public IReadOnlyList<string> GetLog() => Log;
 
 		public void Run()
 		{

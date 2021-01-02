@@ -10,10 +10,10 @@ namespace BizHawk.Emulation.DiscSystem.SBI
 	/// </summary>
 	internal class LoadSBIJob : DiscJob
 	{
-		/// <summary>
-		/// The file to be loaded
-		/// </summary>
-		public string IN_Path { private get; set; }
+		private readonly string IN_Path;
+
+		/// <param name="path">The file to be loaded</param>
+		public LoadSBIJob(string path) => IN_Path = path;
 
 		/// <summary>
 		/// The resulting interpreted data

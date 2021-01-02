@@ -11,27 +11,43 @@ namespace BizHawk.Emulation.DiscSystem
 	/// </summary>
 	public partial class DiscMountJob : DiscJob
 	{
-		/// <summary>
-		/// The filename to be loaded
-		/// </summary>
-		public string IN_FromPath { private get; set; }
+		private readonly string IN_FromPath;
 
-		/// <summary>
-		/// Slow-loading cues won't finish loading if this threshold is exceeded.
-		/// Set to 10 to always load a cue
-		/// </summary>
-		public int IN_SlowLoadAbortThreshold { private get; set; } = 10;
+		private readonly DiscMountPolicy IN_DiscMountPolicy;
 
-		/// <summary>
-		/// Cryptic policies to be used when mounting the disc.
-		/// </summary>
-		public DiscMountPolicy IN_DiscMountPolicy { private get; set; } = new DiscMountPolicy();
+		private readonly DiscInterface IN_DiscInterface;
 
-		/// <summary>
+		private readonly int IN_SlowLoadAbortThreshold;
+
+		/// <param name="fromPath">The filename to be loaded</param>
+		/// <param name="discMountPolicy">Cryptic policies to be used when mounting the disc.</param>
+		/// <param name="discInterface">
 		/// The interface to be used for loading the disc.
 		/// Usually you'll want DiscInterface.BizHawk, but others can be used for A/B testing
-		/// </summary>
-		public DiscInterface IN_DiscInterface { private get; set; } = DiscInterface.BizHawk;
+		/// </param>
+		/// <param name="slowLoadAbortThreshold">
+		/// Slow-loading cues won't finish loading if this threshold is exceeded.
+		/// Set to 10 to always load a cue
+		/// </param>
+		public DiscMountJob(string fromPath, DiscMountPolicy discMountPolicy, DiscInterface discInterface = DiscInterface.BizHawk, int slowLoadAbortThreshold = 10)
+		{
+			IN_FromPath = fromPath;
+			IN_DiscMountPolicy = discMountPolicy;
+			IN_DiscInterface = discInterface;
+			IN_SlowLoadAbortThreshold = slowLoadAbortThreshold;
+		}
+
+		/// <param name="fromPath">The filename to be loaded</param>
+		/// <param name="discInterface">
+		/// The interface to be used for loading the disc.
+		/// Usually you'll want DiscInterface.BizHawk, but others can be used for A/B testing
+		/// </param>
+		/// <param name="slowLoadAbortThreshold">
+		/// Slow-loading cues won't finish loading if this threshold is exceeded.
+		/// Set to 10 to always load a cue
+		/// </param>
+		public DiscMountJob(string fromPath, DiscInterface discInterface = DiscInterface.BizHawk, int slowLoadAbortThreshold = 10)
+			: this(fromPath, new(), discInterface, slowLoadAbortThreshold) {}
 
 		/// <summary>
 		/// The resulting disc
@@ -64,11 +80,11 @@ namespace BizHawk.Emulation.DiscSystem
 
 				//generate toc and structure:
 				//1. TOCRaw from RawTOCEntries
-				var tocSynth = new Synthesize_DiscTOC_From_RawTOCEntries_Job { Entries = OUT_Disc.RawTOCEntries };
+				var tocSynth = new Synthesize_DiscTOC_From_RawTOCEntries_Job(OUT_Disc.RawTOCEntries);
 				tocSynth.Run();
 				OUT_Disc.TOC = tocSynth.Result;
 				//2. Structure from TOCRaw
-				var structureSynth = new Synthesize_DiscStructure_From_DiscTOC_Job { IN_Disc = OUT_Disc, TOCRaw = OUT_Disc.TOC };
+				var structureSynth = new Synthesize_DiscStructure_From_DiscTOC_Job(OUT_Disc, OUT_Disc.TOC);
 				structureSynth.Run();
 				OUT_Disc.Structure = structureSynth.Result;
 
@@ -89,7 +105,7 @@ namespace BizHawk.Emulation.DiscSystem
 				var sbiPath = Path.ChangeExtension(IN_FromPath, ".sbi");
 				if (File.Exists(sbiPath) && SBI.SBIFormat.QuickCheckISSBI(sbiPath))
 				{
-					var loadSbiJob = new SBI.LoadSBIJob() { IN_Path = sbiPath };
+					var loadSbiJob = new SBI.LoadSBIJob(sbiPath);
 					loadSbiJob.Run();
 					var applySbiJob = new ApplySBIJob();
 					applySbiJob.Run(OUT_Disc, loadSbiJob.OUT_Data, IN_DiscMountPolicy.SBI_As_Mednafen);
@@ -113,8 +129,7 @@ namespace BizHawk.Emulation.DiscSystem
 				if (!cfr.IsHardcodedResolve) cfr.SetBaseDirectory(cueDirPath);
 
 				// parse the cue file
-				var parseJob = new ParseCueJob();
-				parseJob.IN_CueString = cueContent;
+				var parseJob = new ParseCueJob(cueContent);
 				var okParse = true;
 				try
 				{
@@ -131,11 +146,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 				// compile the cue file
 				// includes resolving required bin files and finding out what would processing would need to happen in order to load the cue
-				var compileJob = new CompileCueJob
-				{
-					IN_CueContext = cueContext,
-					IN_CueFile = parseJob.OUT_CueFile
-				};
+				var compileJob = new CompileCueJob(parseJob.OUT_CueFile, cueContext);
 				var okCompile = true;
 				try
 				{
@@ -159,7 +170,7 @@ namespace BizHawk.Emulation.DiscSystem
 				}
 
 				// actually load it all up
-				var loadJob = new LoadCueJob { IN_CompileJob = compileJob };
+				var loadJob = new LoadCueJob(compileJob);
 				loadJob.Run();
 				//TODO need better handling of log output
 				if (!string.IsNullOrEmpty(loadJob.OUT_Log)) Console.WriteLine(loadJob.OUT_Log);

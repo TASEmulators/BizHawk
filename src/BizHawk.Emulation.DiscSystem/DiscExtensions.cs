@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.DiscSystem
 		private static Disc CreateImpl(DiscType? type, string path, Action<string> errorCallback)
 		{
 			//--- load the disc in a context which will let us abort if it's going to take too long
-			var discMountJob = new DiscMountJob { IN_FromPath = path, IN_SlowLoadAbortThreshold = 8 };
+			var discMountJob = new DiscMountJob(fromPath: path, slowLoadAbortThreshold: 8);
 			discMountJob.Run();
 			var disc = discMountJob.OUT_Disc ?? throw new InvalidOperationException($"Can't find the file specified: {path}");
 

@@ -14,21 +14,22 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 	/// </summary>
 	internal class ParseCueJob : DiscJob
 	{
-		/// <summary>
-		/// input: the cue string to parse
-		/// </summary>
-		public string IN_CueString { private get; set; }
+		private readonly string IN_CueString;
+
+		private readonly bool IN_Strict;
+
+		/// <param name="cueString">the cue string to parse</param>
+		/// <param name="strict">Indicates whether parsing will be strict or lenient</param>
+		public ParseCueJob(string cueString, bool strict = false)
+		{
+			IN_CueString = cueString;
+			IN_Strict = strict;
+		}
 
 		/// <summary>
 		/// output: the resulting minimally-processed cue file
 		/// </summary>
 		public CUE_File OUT_CueFile { get; private set; }
-
-		/// <summary>
-		/// Indicates whether parsing will be strict or lenient
-		/// </summary>
-		public bool IN_Strict { private get; set; } = false;
-
 
 		private class CueLineParser
 		{

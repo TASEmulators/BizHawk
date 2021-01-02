@@ -40,7 +40,7 @@ namespace BizHawk.Client.DiscoHawk
 				Cursor = Cursors.WaitCursor;
 				foreach (var file in files)
 				{
-					var job = new DiscMountJob { IN_FromPath = file };
+					var job = new DiscMountJob(fromPath: file);
 					job.Run();
 					var disc = job.OUT_Disc;
 					if (job.OUT_ErrorLevel)

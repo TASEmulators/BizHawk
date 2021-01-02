@@ -32,10 +32,10 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 	/// </summary>
 	internal class LoadCueJob : DiscJob
 	{
-		/// <summary>
-		/// The results of the compile job, a prerequisite for this
-		/// </summary>
-		public CompileCueJob IN_CompileJob { private get; set; }
+		private readonly CompileCueJob IN_CompileJob;
+
+		/// <param name="compileJob">The results of the compile job, a prerequisite for this</param>
+		public LoadCueJob(CompileCueJob compileJob) => IN_CompileJob = compileJob;
 
 		/// <summary>
 		/// The resulting disc
@@ -379,12 +379,11 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 
 
 			//add RawTOCEntries A0 A1 A2 to round out the TOC
-			var TOCMiscInfo = new Synthesize_A0A1A2_Job { 
-				IN_FirstRecordedTrackNumber = IN_CompileJob.OUT_CompiledDiscInfo.FirstRecordedTrackNumber,
-				IN_LastRecordedTrackNumber = IN_CompileJob.OUT_CompiledDiscInfo.LastRecordedTrackNumber,
-				IN_Session1Format = IN_CompileJob.OUT_CompiledDiscInfo.SessionFormat,
-				IN_LeadoutTimestamp = OUT_Disc._Sectors.Count
-			};
+			var TOCMiscInfo = new Synthesize_A0A1A2_Job(
+				firstRecordedTrackNumber: IN_CompileJob.OUT_CompiledDiscInfo.FirstRecordedTrackNumber,
+				lastRecordedTrackNumber: IN_CompileJob.OUT_CompiledDiscInfo.LastRecordedTrackNumber,
+				session1Format: IN_CompileJob.OUT_CompiledDiscInfo.SessionFormat,
+				leadoutTimestamp: OUT_Disc._Sectors.Count);
 			TOCMiscInfo.Run(OUT_Disc.RawTOCEntries);
 
 			//TODO - generate leadout, or delegates at least

@@ -120,16 +120,17 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 
 	internal class CompileCueJob : DiscJob
 	{
-		/// <summary>
-		/// input: the CueFile to analyze
-		/// </summary>
-		public CUE_File IN_CueFile { private get; set; }
+		private readonly CUE_File IN_CueFile;
 
-		/// <summary>
-		/// The context used for this compiling job
-		/// TODO - rename something like context
-		/// </summary>
-		public CUE_Context IN_CueContext { internal get; set; }
+		internal readonly CUE_Context IN_CueContext;
+
+		/// <param name="cueFile">the CueFile to analyze</param>
+		/// <param name="cueContext">The context used for this compiling job</param>
+		public CompileCueJob(CUE_File cueFile, CUE_Context cueContext)
+		{
+			IN_CueFile = cueFile;
+			IN_CueContext = cueContext;
+		}
 
 		/// <summary>
 		/// output: high level disc info

@@ -570,7 +570,7 @@ namespace BizHawk.Emulation.DiscSystem
 			}
 
 			//analyze the RAWTocEntries to figure out what type of track track 1 is
-			var tocSynth = new Synthesize_DiscTOC_From_RawTOCEntries_Job() { Entries = disc.RawTOCEntries };
+			var tocSynth = new Synthesize_DiscTOC_From_RawTOCEntries_Job(disc.RawTOCEntries);
 			tocSynth.Run();
 			
 			//Add sectors for the mandatory track 1 pregap, which isn't stored in the CCD file

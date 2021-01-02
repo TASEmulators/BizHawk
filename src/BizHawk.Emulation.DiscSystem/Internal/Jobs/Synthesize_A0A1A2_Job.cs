@@ -11,25 +11,29 @@ namespace BizHawk.Emulation.DiscSystem
 	/// </summary>
 	internal class Synthesize_A0A1A2_Job
 	{
-		/// <summary>
-		/// "First Recorded Track Number" value for TOC (usually 1)
-		/// </summary>
-		public int IN_FirstRecordedTrackNumber { private get; set; }
+		private readonly int IN_FirstRecordedTrackNumber;
 
-		/// <summary>
-		/// "Last Recorded Track Number" value for TOC
-		/// </summary>
-		public int IN_LastRecordedTrackNumber { private get; set; }
+		private readonly int IN_LastRecordedTrackNumber;
 
-		/// <summary>
-		/// The absolute timestamp of the lead-out track
-		/// </summary>
-		public int IN_LeadoutTimestamp { private get; set; }
+		private readonly SessionFormat IN_Session1Format;
 
-		/// <summary>
-		/// The session format for this TOC
-		/// </summary>
-		public SessionFormat IN_Session1Format { private get; set; }
+		private readonly int IN_LeadoutTimestamp;
+
+		/// <param name="firstRecordedTrackNumber">"First Recorded Track Number" value for TOC (usually 1)</param>
+		/// <param name="lastRecordedTrackNumber">"Last Recorded Track Number" value for TOC</param>
+		/// <param name="session1Format">The session format for this TOC</param>
+		/// <param name="leadoutTimestamp">The absolute timestamp of the lead-out track</param>
+		public Synthesize_A0A1A2_Job(
+			int firstRecordedTrackNumber,
+			int lastRecordedTrackNumber,
+			SessionFormat session1Format,
+			int leadoutTimestamp)
+		{
+			IN_FirstRecordedTrackNumber = firstRecordedTrackNumber;
+			IN_LastRecordedTrackNumber = lastRecordedTrackNumber;
+			IN_Session1Format = session1Format;
+			IN_LeadoutTimestamp = leadoutTimestamp;
+		}
 
 		/// <summary>appends the new entries to the provided list</summary>
 		/// <exception cref="InvalidOperationException"><see cref="IN_Session1Format"/> is <see cref="SessionFormat.None"/> or a non-member</exception>

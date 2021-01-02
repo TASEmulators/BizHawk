@@ -27,18 +27,14 @@ namespace BizHawk.Emulation.DiscSystem
 				sw.WriteLine("BEGIN COMPARE: {0}\nSRC {1} vs DST {2}", infile, loadDiscInterface, cmpif);
 
 				//reload the original disc, with new policies as needed
-				var dmj = new DiscMountJob
-				{
-					IN_DiscInterface = loadDiscInterface,
-					IN_DiscMountPolicy = new DiscMountPolicy { CUE_PregapContradictionModeA = cmpif != DiscInterface.MednaDisc },
-					IN_FromPath = infile
-				};
-
+				var dmj = new DiscMountJob(
+					fromPath: infile,
+					discMountPolicy: new DiscMountPolicy { CUE_PregapContradictionModeA = cmpif != DiscInterface.MednaDisc },
+					discInterface: loadDiscInterface);
 				dmj.Run();
-
 				srcDisc = dmj.OUT_Disc;
 
-				var dstDmj = new DiscMountJob { IN_DiscInterface = cmpif, IN_FromPath = infile };
+				var dstDmj = new DiscMountJob(fromPath: infile, discInterface: cmpif);
 				dstDmj.Run();
 				dstDisc = dstDmj.OUT_Disc;
 
@@ -283,7 +279,7 @@ namespace BizHawk.Emulation.DiscSystem
 				}
 
 				// TODO - write it out
-				var dmj = new DiscMountJob { IN_DiscInterface = loadDiscInterface, IN_FromPath = infile };
+				var dmj = new DiscMountJob(fromPath: infile, discInterface: loadDiscInterface);
 				dmj.Run();
 			}
 
