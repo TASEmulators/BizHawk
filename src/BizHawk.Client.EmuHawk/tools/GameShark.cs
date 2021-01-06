@@ -41,12 +41,12 @@ namespace BizHawk.Client.EmuHawk
 					var result = decoder.Decode(code);
 					var domain = decoder.CheatDomain();
 
-					if (result.IsValid)
+					if (result.IsValid(out var valid))
 					{
 						var description = !string.IsNullOrWhiteSpace(txtDescription.Text)
 							? txtDescription.Text
 							: code;
-						MainForm.CheatList.Add(result.ToCheat(domain, description));
+						MainForm.CheatList.Add(valid.ToCheat(domain, description));
 					}
 					else
 					{

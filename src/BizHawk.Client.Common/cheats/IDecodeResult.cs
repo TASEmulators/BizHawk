@@ -7,11 +7,6 @@ namespace BizHawk.Client.Common.cheats
 	/// </summary>
 	public interface IDecodeResult
 	{
-		int Address { get; }
-		int Value { get; }
-		int? Compare { get; }
-		WatchSize Size { get; }
-		bool IsValid { get; }
 		string Error { get; }
 	}
 
@@ -21,7 +16,6 @@ namespace BizHawk.Client.Common.cheats
 		public int Value { get; internal set; }
 		public int? Compare { get; internal set; }
 		public WatchSize Size { get; internal set; }
-		public bool IsValid => true;
 		public string Error => "";
 	}
 
@@ -32,17 +26,18 @@ namespace BizHawk.Client.Common.cheats
 			Error = error;
 		}
 
-		public int Address => int.MaxValue;
-		public int Value => int.MaxValue;
-		public int? Compare => null;
-		public WatchSize Size => WatchSize.Separator;
-		public bool IsValid => false;
 		public string Error { get; }
 	}
 
 	public static class DecodeResultExtensions
 	{
-		public static Cheat ToCheat(this IDecodeResult result, MemoryDomain domain, string description)
+		public static bool IsValid(this IDecodeResult result, out DecodeResult valid)
+		{
+			valid = result as DecodeResult;
+			return result is DecodeResult;
+		}
+
+		public static Cheat ToCheat(this DecodeResult result, MemoryDomain domain, string description)
 		{
 			var watch = Watch.GenerateWatch(
 				domain,

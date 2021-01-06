@@ -334,10 +334,10 @@ namespace BizHawk.Client.Common
 			var decoder = new GameSharkDecoder(MainForm.Emulator.AsMemoryDomains(), MainForm.Emulator.SystemId);
 			var result = decoder.Decode(code);
 			
-			if (result.IsValid)
+			if (result.IsValid(out var valid))
 			{
 				var domain = decoder.CheatDomain();
-				MainForm.CheatList.Add(result.ToCheat(domain, code));
+				MainForm.CheatList.Add(valid.ToCheat(domain, code));
 			}
 			else
 			{
@@ -363,10 +363,10 @@ namespace BizHawk.Client.Common
 			var decoder = new GameSharkDecoder(MainForm.Emulator.AsMemoryDomains(), MainForm.Emulator.SystemId);
 			var result = decoder.Decode(code);
 
-			if (result.IsValid)
+			if (result.IsValid(out var valid))
 			{
 				MainForm.CheatList.RemoveRange(
-					MainForm.CheatList.Where(c => c.Address == result.Address));
+					MainForm.CheatList.Where(c => c.Address == valid.Address));
 			}
 			else
 			{
