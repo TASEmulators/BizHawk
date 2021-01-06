@@ -2,6 +2,7 @@
 using System.Text;
 using System.IO;
 
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Atari.Lynx
@@ -32,8 +33,8 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 				int p0 = br.ReadUInt16();
 				int p1 = br.ReadUInt16();
 				int ver = br.ReadUInt16();
-				string cname = Encoding.ASCII.GetString(br.ReadBytes(32)).Trim();
-				string mname = Encoding.ASCII.GetString(br.ReadBytes(16)).Trim();
+				string cname = Encoding.ASCII.GetString(br.ReadBytes(32)).SubstringBefore('\0').Trim();
+				string mname = Encoding.ASCII.GetString(br.ReadBytes(16)).SubstringBefore('\0').Trim();
 				int rot = br.ReadByte();
 
 				ms.Position = 6;
