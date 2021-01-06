@@ -57,7 +57,7 @@ namespace BizHawk.Client.Common.cheats
 				code = Decrypt(code);
 			}
 
-			if (code.IndexOf(" ") != 9 || code.Length != 17)
+			if (code.IndexOf(" ") != 8 || code.Length != 17) // not a redundant length check, `code` was overwritten
 			{
 				return new InvalidCheatCode("All GBA GameShark Codes need to be 17 characters in length with a space after the first eight.");
 			}
@@ -76,7 +76,15 @@ namespace BizHawk.Client.Common.cheats
 			};
 
 			result.Address = int.Parse(GetLast(code, (int)result.Size), NumberStyles.HexNumber);
-			result.Value = int.Parse(code.Substring(1, 8));
+			result.Value = int.Parse(code.Substring(1, 7), NumberStyles.HexNumber);
+#if false // doing this at callsite (in unit test) for now, should we throw out the unused data here? probably affects other converters too --yoshi
+			result.Value = result.Size switch
+			{
+				WatchSize.Byte => result.Value & 0xFF,
+				WatchSize.Word => result.Value & 0xFFFF,
+				_ => result.Value
+			};
+#endif
 
 			return result;
 		}
