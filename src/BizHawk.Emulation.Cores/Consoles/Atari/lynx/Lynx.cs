@@ -38,7 +38,7 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 				int rot = br.ReadByte();
 
 				ms.Position = 6;
-				string bs93 = Encoding.ASCII.GetString(br.ReadBytes(6));
+				string bs93 = Encoding.ASCII.GetString(br.ReadBytes(4));
 				if (bs93 == "BS93")
 				{
 					throw new InvalidOperationException("Unsupported BS93 Lynx ram image");
