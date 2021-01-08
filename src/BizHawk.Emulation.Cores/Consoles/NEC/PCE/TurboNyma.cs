@@ -49,29 +49,29 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 		protected override IDictionary<string, SettingOverride> SettingOverrides { get; } = new Dictionary<string, SettingOverride>
 		{
 			// handled by hawk
-			{ "pce.cdbios", new SettingOverride { Hide = true } },
-			{ "pce.gecdbios", new SettingOverride { Hide = true } },
+			{ "pce.cdbios", new() { Hide = true } },
+			{ "pce.gecdbios", new() { Hide = true } },
 			// so fringe i don't want people bothering me about it
-			{ "pce.resamp_rate_error", new SettingOverride { Hide = true } },
-			{ "pce.vramsize", new SettingOverride { Hide = true } },
+			{ "pce.resamp_rate_error", new() { Hide = true } },
+			{ "pce.vramsize", new() { Hide = true } },
 			// match hawk behavior on BRAM, instead of giving every game BRAM
-			{ "pce.disable_bram_hucard", new SettingOverride { Hide = true, Default = "1" } },
+			{ "pce.disable_bram_hucard", new() { Hide = true, Default = "1" } },
 			// nyma settings that don't apply here
 			// TODO: not quite happy with how this works out
-			{ "nyma.rtcinitialtime", new SettingOverride { Hide = true } },
-			{ "nyma.rtcrealtime", new SettingOverride { Hide = true } },
+			{ "nyma.rtcinitialtime", new() { Hide = true } },
+			{ "nyma.rtcrealtime", new() { Hide = true } },
 			// these can be changed dynamically
-			{ "pce.slstart", new SettingOverride { NonSync = true, NoRestart = true } },
-			{ "pce.slend", new SettingOverride { NonSync = true, NoRestart = true } },
+			{ "pce.slstart", new() { NonSync = true, NoRestart = true } },
+			{ "pce.slend", new() { NonSync = true, NoRestart = true } },
 
-			{ "pce.h_overscan", new SettingOverride { NonSync = true } },
-			{ "pce.mouse_sensitivity", new SettingOverride { Hide = true } },
-			{ "pce.nospritelimit", new SettingOverride { NonSync = true } },
-			{ "pce.resamp_quality", new SettingOverride { NonSync = true } },
+			{ "pce.h_overscan", new() { NonSync = true } },
+			{ "pce.mouse_sensitivity", new() { Hide = true } },
+			{ "pce.nospritelimit", new() { NonSync = true } },
+			{ "pce.resamp_quality", new() { NonSync = true } },
 
-			{ "pce.cdpsgvolume", new SettingOverride { NonSync = true, NoRestart = true } },
-			{ "pce.cddavolume", new SettingOverride { NonSync = true, NoRestart = true } },
-			{ "pce.adpcmvolume", new SettingOverride { NonSync = true, NoRestart = true } },
+			{ "pce.cdpsgvolume", new() { NonSync = true, NoRestart = true } },
+			{ "pce.cddavolume", new() { NonSync = true, NoRestart = true } },
+			{ "pce.adpcmvolume", new() { NonSync = true, NoRestart = true } },
 		};
 
 		protected override HashSet<string> ComputeHiddenPorts()

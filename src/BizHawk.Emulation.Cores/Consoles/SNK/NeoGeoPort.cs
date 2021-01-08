@@ -50,7 +50,7 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 
 		protected override IDictionary<string, SettingOverride> SettingOverrides { get; } = new Dictionary<string, SettingOverride>
 		{
-			{ "nyma.constantfb", new SettingOverride { Hide = true } }, // TODO: Couldn't we just autodetect this whenever lcm == max == nominal?
+			{ "nyma.constantfb", new() { Hide = true } }, // TODO: Couldn't we just autodetect this whenever lcm == max == nominal?
 		};
 	}
 }

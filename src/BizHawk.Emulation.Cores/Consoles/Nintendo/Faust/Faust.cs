@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Faust
 		{
 			if (deterministic)
 				// force ST renderer
-				SettingOverrides.Add("snes_faust.renderer", new SettingOverride { Hide = true, Default = "0" });
+				SettingOverrides.Add("snes_faust.renderer", new() { Hide = true, Default = "0" });
 
 			DoInit<LibNymaCore>(game, rom, null, "faust.wbx", extension, deterministic);
 		}
@@ -37,24 +37,24 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Faust
 
 		protected override IDictionary<string, SettingOverride> SettingOverrides { get; } = new Dictionary<string, SettingOverride>
 		{
-			{ "snes_faust.affinity.ppu", new SettingOverride { Hide = true } },
-			{ "snes_faust.affinity.msu1.audio", new SettingOverride { Hide = true } },
-			{ "snes_faust.affinity.msu1.data", new SettingOverride { Hide = true } },
-			{ "snes_faust.frame_begin_vblank", new SettingOverride { Hide = true } },
-			{ "snes_faust.msu1.resamp_quality", new SettingOverride { Hide = true } },
-			{ "snes_faust.spex", new SettingOverride { Hide = true } },
-			{ "snes_faust.spex.sound", new SettingOverride { Hide = true } },
-			{ "nyma.rtcinitialtime", new SettingOverride { Hide = true } },
-			{ "nyma.rtcrealtime", new SettingOverride { Hide = true } },
+			{ "snes_faust.affinity.ppu", new() { Hide = true } },
+			{ "snes_faust.affinity.msu1.audio", new() { Hide = true } },
+			{ "snes_faust.affinity.msu1.data", new() { Hide = true } },
+			{ "snes_faust.frame_begin_vblank", new() { Hide = true } },
+			{ "snes_faust.msu1.resamp_quality", new() { Hide = true } },
+			{ "snes_faust.spex", new() { Hide = true } },
+			{ "snes_faust.spex.sound", new() { Hide = true } },
+			{ "nyma.rtcinitialtime", new() { Hide = true } },
+			{ "nyma.rtcrealtime", new() { Hide = true } },
 
-			{ "snes_faust.resamp_rate_error", new SettingOverride { Hide = true } },
-			{ "snes_faust.resamp_quality", new SettingOverride { NonSync = true } },
-			{ "snes_faust.correct_aspect", new SettingOverride { NonSync = true } },
-			{ "snes_faust.slstart", new SettingOverride { NonSync = true } },
-			{ "snes_faust.slend", new SettingOverride { NonSync = true } },
-			{ "snes_faust.slstartp", new SettingOverride { NonSync = true } },
-			{ "snes_faust.slendp", new SettingOverride { NonSync = true } },
-			{ "snes_faust.h_filter", new SettingOverride { NonSync = true } },
+			{ "snes_faust.resamp_rate_error", new() { Hide = true } },
+			{ "snes_faust.resamp_quality", new() { NonSync = true } },
+			{ "snes_faust.correct_aspect", new() { NonSync = true } },
+			{ "snes_faust.slstart", new() { NonSync = true } },
+			{ "snes_faust.slend", new() { NonSync = true } },
+			{ "snes_faust.slstartp", new() { NonSync = true } },
+			{ "snes_faust.slendp", new() { NonSync = true } },
+			{ "snes_faust.h_filter", new() { NonSync = true } },
 		};
 	}
 }

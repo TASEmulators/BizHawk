@@ -28,39 +28,39 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 
 		protected override IDictionary<string, SettingOverride> SettingOverrides { get; } = new Dictionary<string, SettingOverride>
 		{
-			{ "ss.bios_jp", new SettingOverride { Hide = true , Default = "$J" } }, // FIRMWARE:
-			{ "ss.bios_na_eu", new SettingOverride { Hide = true , Default = "$U" } }, // FIRMWARE:
-			{ "ss.cart.kof95_path", new SettingOverride { Hide = true , Default = "$KOF" } }, // FIRMWARE:
-			{ "ss.cart.ultraman_path", new SettingOverride { Hide = true , Default = "$ULTRA" } }, // FIRMWARE:
-			{ "ss.cart.satar4mp_path", new SettingOverride { Hide = true , Default = "$SATAR" } }, // FIRMWARE:
-			{ "ss.affinity.vdp2", new SettingOverride { Hide = true } },
-			{ "ss.dbg_exe_cdpath", new SettingOverride { Hide = true } },
-			{ "ss.dbg_exe_cem", new SettingOverride { Hide = true } },
-			{ "ss.dbg_exe_hh", new SettingOverride { Hide = true } },
+			{ "ss.bios_jp", new() { Hide = true , Default = "$J" } }, // FIRMWARE:
+			{ "ss.bios_na_eu", new() { Hide = true , Default = "$U" } }, // FIRMWARE:
+			{ "ss.cart.kof95_path", new() { Hide = true , Default = "$KOF" } }, // FIRMWARE:
+			{ "ss.cart.ultraman_path", new() { Hide = true , Default = "$ULTRA" } }, // FIRMWARE:
+			{ "ss.cart.satar4mp_path", new() { Hide = true , Default = "$SATAR" } }, // FIRMWARE:
+			{ "ss.affinity.vdp2", new() { Hide = true } },
+			{ "ss.dbg_exe_cdpath", new() { Hide = true } },
+			{ "ss.dbg_exe_cem", new() { Hide = true } },
+			{ "ss.dbg_exe_hh", new() { Hide = true } },
 
-			{ "ss.scsp.resamp_quality", new SettingOverride { NonSync = true } }, // Don't set NoRestart = true for this
-			{ "ss.input.mouse_sensitivity", new SettingOverride { Hide = true } },
+			{ "ss.scsp.resamp_quality", new() { NonSync = true } }, // Don't set NoRestart = true for this
+			{ "ss.input.mouse_sensitivity", new() { Hide = true } },
 
-			{ "ss.input.port1.gun_chairs", new SettingOverride { NonSync = true } },
-			{ "ss.input.port2.gun_chairs", new SettingOverride { NonSync = true } },
-			{ "ss.input.port3.gun_chairs", new SettingOverride { NonSync = true } },
-			{ "ss.input.port4.gun_chairs", new SettingOverride { NonSync = true } },
-			{ "ss.input.port5.gun_chairs", new SettingOverride { NonSync = true } },
-			{ "ss.input.port6.gun_chairs", new SettingOverride { NonSync = true } },
-			{ "ss.input.port7.gun_chairs", new SettingOverride { NonSync = true } },
-			{ "ss.input.port8.gun_chairs", new SettingOverride { NonSync = true } },
-			{ "ss.input.port9.gun_chairs", new SettingOverride { NonSync = true } },
-			{ "ss.input.port10.gun_chairs", new SettingOverride { NonSync = true } },
-			{ "ss.input.port11.gun_chairs", new SettingOverride { NonSync = true } },
-			{ "ss.input.port12.gun_chairs", new SettingOverride { NonSync = true } },
+			{ "ss.input.port1.gun_chairs", new() { NonSync = true } },
+			{ "ss.input.port2.gun_chairs", new() { NonSync = true } },
+			{ "ss.input.port3.gun_chairs", new() { NonSync = true } },
+			{ "ss.input.port4.gun_chairs", new() { NonSync = true } },
+			{ "ss.input.port5.gun_chairs", new() { NonSync = true } },
+			{ "ss.input.port6.gun_chairs", new() { NonSync = true } },
+			{ "ss.input.port7.gun_chairs", new() { NonSync = true } },
+			{ "ss.input.port8.gun_chairs", new() { NonSync = true } },
+			{ "ss.input.port9.gun_chairs", new() { NonSync = true } },
+			{ "ss.input.port10.gun_chairs", new() { NonSync = true } },
+			{ "ss.input.port11.gun_chairs", new() { NonSync = true } },
+			{ "ss.input.port12.gun_chairs", new() { NonSync = true } },
 
-			{ "ss.slstart", new SettingOverride { NonSync = true } },
-			{ "ss.slend", new SettingOverride { NonSync = true } },
-			{ "ss.h_overscan", new SettingOverride { NonSync = true } },
-			{ "ss.h_blend", new SettingOverride { NonSync = true } },
-			{ "ss.correct_aspect", new SettingOverride { NonSync = true, Default = "0" } },
-			{ "ss.slstartp", new SettingOverride { NonSync = true } },
-			{ "ss.slendp", new SettingOverride { NonSync = true } },
+			{ "ss.slstart", new() { NonSync = true } },
+			{ "ss.slend", new() { NonSync = true } },
+			{ "ss.h_overscan", new() { NonSync = true } },
+			{ "ss.h_blend", new() { NonSync = true } },
+			{ "ss.correct_aspect", new() { NonSync = true, Default = "0" } },
+			{ "ss.slstartp", new() { NonSync = true } },
+			{ "ss.slendp", new() { NonSync = true } },
 		};
 
 		protected override HashSet<string> ComputeHiddenPorts()

@@ -25,26 +25,26 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCFX
 
 		protected override IDictionary<string, SettingOverride> SettingOverrides { get; } = new Dictionary<string, SettingOverride>
 		{
-			{ "pcfx.input.port1.multitap", new SettingOverride { Hide = true } },
-			{ "pcfx.input.port2.multitap", new SettingOverride { Hide = true } },
-			{ "pcfx.bios", new SettingOverride { Hide = true } },
-			{ "pcfx.fxscsi", new SettingOverride { Hide = true } },
-			{ "nyma.rtcinitialtime", new SettingOverride { Hide = true } },
-			{ "nyma.rtcrealtime", new SettingOverride { Hide = true } },
+			{ "pcfx.input.port1.multitap", new() { Hide = true } },
+			{ "pcfx.input.port2.multitap", new() { Hide = true } },
+			{ "pcfx.bios", new() { Hide = true } },
+			{ "pcfx.fxscsi", new() { Hide = true } },
+			{ "nyma.rtcinitialtime", new() { Hide = true } },
+			{ "nyma.rtcrealtime", new() { Hide = true } },
 
-			{ "pcfx.slstart", new SettingOverride { NonSync = true, NoRestart = true } },
-			{ "pcfx.slend", new SettingOverride { NonSync = true, NoRestart = true } },
+			{ "pcfx.slstart", new() { NonSync = true, NoRestart = true } },
+			{ "pcfx.slend", new() { NonSync = true, NoRestart = true } },
 
-			{ "pcfx.mouse_sensitivity", new SettingOverride { Hide = true } },
-			{ "pcfx.nospritelimit", new SettingOverride { NonSync = true } },
-			{ "pcfx.high_dotclock_width", new SettingOverride { NonSync = true } },
-			{ "pcfx.rainbow.chromaip", new SettingOverride { NonSync = true } },
+			{ "pcfx.mouse_sensitivity", new() { Hide = true } },
+			{ "pcfx.nospritelimit", new() { NonSync = true } },
+			{ "pcfx.high_dotclock_width", new() { NonSync = true } },
+			{ "pcfx.rainbow.chromaip", new() { NonSync = true } },
 
-			{ "pcfx.adpcm.suppress_channel_reset_clicks", new SettingOverride { NonSync = true } },
-			{ "pcfx.adpcm.emulate_buggy_codec", new SettingOverride { NonSync = true } },
+			{ "pcfx.adpcm.suppress_channel_reset_clicks", new() { NonSync = true } },
+			{ "pcfx.adpcm.emulate_buggy_codec", new() { NonSync = true } },
 
-			{ "pcfx.resamp_quality", new SettingOverride { NonSync = true } },
-			{ "pcfx.resamp_rate_error", new SettingOverride { Hide = true } },
+			{ "pcfx.resamp_quality", new() { NonSync = true } },
+			{ "pcfx.resamp_rate_error", new() { Hide = true } },
 		};
 
 		protected override HashSet<string> ComputeHiddenPorts()

@@ -37,16 +37,16 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 
 		protected override IDictionary<string, SettingOverride> SettingOverrides { get; } = new Dictionary<string, SettingOverride>
 		{
-			{ "pce_fast.mouse_sensitivity", new SettingOverride { Hide = true } },
-			{ "pce_fast.disable_softreset", new SettingOverride { Hide = true } },
-			{ "pce_fast.cdbios", new SettingOverride { Hide = true } },
-			{ "nyma.rtcinitialtime", new SettingOverride { Hide = true } },
-			{ "nyma.rtcrealtime", new SettingOverride { Hide = true } },
-			{ "pce_fast.slstart", new SettingOverride { NonSync = true, NoRestart = true } },
-			{ "pce_fast.slend", new SettingOverride { NonSync = true, NoRestart = true } },
+			{ "pce_fast.mouse_sensitivity", new() { Hide = true } },
+			{ "pce_fast.disable_softreset", new() { Hide = true } },
+			{ "pce_fast.cdbios", new() { Hide = true } },
+			{ "nyma.rtcinitialtime", new() { Hide = true } },
+			{ "nyma.rtcrealtime", new() { Hide = true } },
+			{ "pce_fast.slstart", new() { NonSync = true, NoRestart = true } },
+			{ "pce_fast.slend", new() { NonSync = true, NoRestart = true } },
 
-			{ "pce_fast.correct_aspect", new SettingOverride { NonSync = true } },
-			{ "pce_fast.nospritelimit", new SettingOverride { NonSync = true } },
+			{ "pce_fast.correct_aspect", new() { NonSync = true } },
+			{ "pce_fast.nospritelimit", new() { NonSync = true } },
 		};
 
 		// pce always has two layers, sgx always has 4, and mednafen knows this

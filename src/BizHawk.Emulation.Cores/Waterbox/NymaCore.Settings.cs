@@ -300,7 +300,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		private static readonly IReadOnlyDictionary<string, SettingOverride> ExtraOverrides = new Dictionary<string, SettingOverride>
 		{
-			{ "nyma.constantfb", new SettingOverride { NonSync = true, NoRestart = true } },
+			{ "nyma.constantfb", new() { NonSync = true, NoRestart = true } },
 		};
 
 		private static readonly IReadOnlyCollection<SettingT> ExtraSettings = new List<SettingT>
