@@ -62,7 +62,7 @@ namespace BizHawk.Common.ReflectionExtensions
 		/// <returns>An enum value with the given description attribute, if no suitable description is found then a default value of the enum is returned</returns>
 		/// <remarks>implementation from https://stackoverflow.com/a/4367868/7467292</remarks>
 		public static T GetEnumFromDescription<T>(this string description)
-			where T : Enum
+			where T : struct, Enum
 		{
 			var type = typeof(T);
 
@@ -85,8 +85,7 @@ namespace BizHawk.Common.ReflectionExtensions
 				}
 			}
 
-			var def = default(T); // does anyone know why Roslyn thinks this can evaluate to null? --yoshi
-			return def ?? throw new NullReferenceException();
+			return default(T);
 		}
 
 		/// <summary>
