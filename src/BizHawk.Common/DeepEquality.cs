@@ -47,6 +47,27 @@ namespace BizHawk.Common
 			}
 		}
 
+		/// <summary>
+		/// test if two arrays are equal in contents; arrays should have same type
+		/// </summary>
+		private static bool ArrayEquals<T>(T[] o1, T[] o2)
+		{
+			if (o1.Length != o2.Length)
+			{
+				return false;
+			}
+
+			for (int i = 0; i < o1.Length; i++)
+			{
+				if (!DeepEquals(o1[i], o2[i]))
+				{
+					return false;
+				}
+			}
+
+			return true;
+		}
+
 		private static readonly MethodInfo ArrayEqualsGeneric
 			= typeof(DeepEquality).GetMethod("ArrayEquals", BindingFlags.NonPublic | BindingFlags.Static)
 				?? throw new NullReferenceException();
