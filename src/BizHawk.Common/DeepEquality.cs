@@ -16,7 +16,7 @@ namespace BizHawk.Common
 		/// <summary>
 		/// return true if an array type is not 0-based
 		/// </summary>
-		private static bool IsNonZeroBaedArray(Type t)
+		private static bool IsNonZeroBasedArray(Type t)
 		{
 			if (!t.IsArray)
 			{
@@ -69,7 +69,7 @@ namespace BizHawk.Common
 		}
 
 		private static readonly MethodInfo ArrayEqualsGeneric
-			= typeof(DeepEquality).GetMethod("ArrayEquals", BindingFlags.NonPublic | BindingFlags.Static)
+			= typeof(DeepEquality).GetMethod(nameof(ArrayEquals), BindingFlags.NonPublic | BindingFlags.Static)
 				?? throw new NullReferenceException();
 
 		/// <summary>test if two objects <paramref name="o1"/> and <paramref name="o2"/> are equal, field-by-field (with deep inspection of each field)</summary>
@@ -92,7 +92,7 @@ namespace BizHawk.Common
 			if (t1.IsArray)
 			{
 				// it's not too hard to support thesse if needed
-				if (t1.GetArrayRank() > 1 || IsNonZeroBaedArray(t1))
+				if (t1.GetArrayRank() > 1 || IsNonZeroBasedArray(t1))
 				{
 					throw new InvalidOperationException("Complex arrays not supported");
 				}
