@@ -18,7 +18,9 @@ namespace BizHawk.Client.DiscoHawk
 		public MainDiscoForm()
 		{
 			InitializeComponent();
-			Icon = new Icon(typeof(MainDiscoForm).Assembly.GetManifestResourceStream("BizHawk.Client.DiscoHawk.discohawk.ico") ?? throw new NullReferenceException());
+			var icoStream = typeof(MainDiscoForm).Assembly.GetManifestResourceStream("BizHawk.Client.DiscoHawk.discohawk.ico");
+			if (icoStream != null) Icon = new Icon(icoStream);
+			else Console.WriteLine("couldn't load .ico EmbeddedResource?");
 		}
 
 		private void MainDiscoForm_Load(object sender, EventArgs e)

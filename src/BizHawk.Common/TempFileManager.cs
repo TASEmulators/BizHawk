@@ -31,7 +31,7 @@ namespace BizHawk.Common
 		public static string RenameTempFilenameForDelete(string path)
 		{
 			string filename = Path.GetFileName(path);
-			var dir = Path.GetDirectoryName(path) ?? throw new NullReferenceException();
+			var dir = Path.GetDirectoryName(path) ?? throw new InvalidOperationException();
 			if (!filename.StartsWith("biz-"))
 			{
 				throw new InvalidOperationException();

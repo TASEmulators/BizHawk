@@ -53,7 +53,7 @@ namespace BizHawk.Bizware.DirectX
 			}
 		}
 
-		public IEnumerable<KeyEvent> ProcessHostKeyboards() => KeyInput.Update(_config ?? throw new NullReferenceException("o noes"))
+		public IEnumerable<KeyEvent> ProcessHostKeyboards() => KeyInput.Update(_config ?? throw new Exception(nameof(ProcessHostKeyboards) + " called before the global config was passed"))
 			.Concat(IPCKeyInput.Update());
 
 		public void UpdateConfig(Config config) => _config = config;
