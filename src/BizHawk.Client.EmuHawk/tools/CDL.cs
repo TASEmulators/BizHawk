@@ -49,18 +49,8 @@ namespace BizHawk.Client.EmuHawk
 		[RequiredService]
 		private IMemoryDomains MemoryDomains { get; set; }
 
-		private ICodeDataLogger _icdlogger;
-
 		[RequiredService]
-		private ICodeDataLogger CodeDataLogger
-		{
-			get => _icdlogger;
-			set
-			{
-				_icdlogger?.SetCDL(null);
-				_icdlogger = value;
-			}
-		}
+		private ICodeDataLogger CodeDataLogger { get; set; }
 
 		private string _currentFilename;
 		private CodeDataLog _cdl;
