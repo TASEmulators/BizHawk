@@ -3679,6 +3679,7 @@ namespace BizHawk.Client.EmuHawk
 				if (result)
 				{
 					string openAdvancedArgs = $"*{OpenAdvancedSerializer.Serialize(ioa)}";
+					Emulator.Dispose();
 					Emulator = loader.LoadedEmulator;
 					InputManager.SyncControls(Emulator, MovieSession, Config);
 
@@ -3939,6 +3940,7 @@ namespace BizHawk.Client.EmuHawk
 			if (Tools.AskSave())
 			{
 				CloseGame(clearSram);
+				Emulator.Dispose();
 				Emulator = new NullEmulator();
 				Game = GameInfo.NullInstance;
 				CreateRewinder();
