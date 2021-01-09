@@ -523,7 +523,7 @@ namespace BizHawk.Client.Common
 					Comm = nextComm,
 					Game = game,
 					Roms = xmlGame.Assets
-						.Where(kvp => !Disc.IsValidExtension(kvp.Key))
+						.Where(kvp => !Disc.IsValidExtension(Path.GetExtension(kvp.Key)))
 						.Select(kvp => (IRomAsset)new RomAsset
 						{
 							RomData = kvp.Value,
