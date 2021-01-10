@@ -563,7 +563,7 @@ namespace BizHawk.Client.EmuHawk
 				SelectAllMenuItem_Click(null, null);
 			}
 
-            DoSelectedIndexChange();
+			DoSelectedIndexChange();
 		}
 
 		private void CheatListView_SelectedIndexChanged(object sender, EventArgs e)
