@@ -54,7 +54,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void AddFrame(IVideoProvider source)
 		{
-			using var bb = new BitmapBuffer(source.BufferWidth, source.BufferHeight, source.GetVideoBuffer());
+            using var bb = new BitmapBuffer(source.BufferWidth, source.BufferHeight, source.GetVideoBuffer());
 			string subPath = GetAndCreatePathForFrameNum(_mCurrFrame);
 			string path = $"{subPath}.png";
 			bb.ToSysdrawingBitmap().Save(path, ImageFormat.Png);
@@ -153,9 +153,13 @@ namespace BizHawk.Client.EmuHawk
 
 		public static string GetPathFragmentForFrameNum(int index)
 		{
-			var chunks = StringChunkSplit(index.ToString(), 2);
+			// not sure of the original purpose here, but the subfolders it makes don't seem to work right, just return frame number for now
+            /*
+            var chunks = StringChunkSplit(index.ToString(), 2);
 			string subPath = string.Join("/", chunks);
 			return subPath;
+            */
+            return index.ToString();
 		}
 	}
 }

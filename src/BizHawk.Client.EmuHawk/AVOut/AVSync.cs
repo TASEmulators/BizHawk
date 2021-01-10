@@ -185,6 +185,12 @@ namespace BizHawk.Client.EmuHawk
 		public new virtual void SetFrame(int frame)
 		{
 			// this writer will never support this capability
+
+            // but it needs to for syncless recorder, otherwise it won't work at all
+            if (W is SynclessRecorder)
+			{
+                W.SetFrame(frame);
+			}
 		}
 
 		/// <exception cref="InvalidOperationException">always</exception>
