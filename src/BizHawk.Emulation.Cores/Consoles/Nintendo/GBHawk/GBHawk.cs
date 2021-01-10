@@ -6,6 +6,7 @@ using BizHawk.Emulation.Cores.Components.LR35902;
 
 using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
 using System.Runtime.InteropServices;
+using System.Collections.Generic;
 
 // TODO: mode1_disableint_gbc.gbc behaves differently between GBC and GBA, why?
 // TODO: oam_dma_start.gb does not behave as expected but test still passes through lucky coincidences / test deficiency
@@ -218,6 +219,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			_tracer = new TraceBuffer { Header = cpu.TraceHeader };
 			ser.Register<ITraceable>(_tracer);
 			ser.Register<IStatable>(new StateSerializer(SyncState));
+            ser.Register<IDisassemblable>(new GBHawkDisassembler());
 			SetupMemoryDomains();
 			cpu.SetCallbacks(ReadMemory, PeekMemory, PeekMemory, WriteMemory);
 			HardReset();
@@ -700,5 +702,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			return mppr;
 		}
+
+	    public class GBHawkDisassembler : VerifiedDisassembler
+	    {
+		    public override IEnumerable<string> AvailableCpus
+		    {
+			    get { yield return "LR35902"; }
+		    }
+
+		    public override string PCRegisterName => "PC";
+
+		    public override string Disassemble(MemoryDomain m, uint addr, out int length)
+		    {
+			    string ret = LR35902.Disassemble((ushort)addr, a => m.PeekByte(a), out var tmp);
+			    length = tmp;
+			    return ret;
+		    }
+	    }
 	}
 }
