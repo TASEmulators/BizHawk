@@ -167,7 +167,7 @@ For anything more complicated than just building, you'll need an IDE like [VS Co
 
 ### Unix
 
-Before you can build, you'll need the .NET Core SDK 3.1 (package name is usually `dotnet-sdk-3.1`, see [full instructions](https://docs.microsoft.com/en-gb/dotnet/core/install/sdk?pivots=os-linux)). You may need to uninstall MSBuild first. Once it's installed, run:
+Before you can build, you'll need the .NET 5 SDK or later (package name is usually `dotnet-sdk-5.0`, see [full instructions](https://docs.microsoft.com/en-gb/dotnet/core/install/linux)). You may need to uninstall MSBuild and/or the 3.1 SDK first. Once it's installed, run:
 ```sh
 git clone https://github.com/TASVideos/BizHawk.git BizHawk_master
 # or ssh: git clone git@github.com:TASVideos/BizHawk.git BizHawk_master
