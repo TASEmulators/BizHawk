@@ -84,14 +84,22 @@ namespace BizHawk.Client.Common
 		private object GetCoreSettings(Type t, Type settingsType)
 		{
 			var e = new SettingsLoadArgs(t, settingsType);
-			OnLoadSettings?.Invoke(this, e);
+			if (OnLoadSettings == null)
+				throw new InvalidOperationException("Frontend failed to provide a settings getter");
+			OnLoadSettings(this, e);
+			if (e.Settings != null && e.Settings.GetType() != settingsType)
+				throw new InvalidOperationException($"Frontend did not provide the requested settings type: Expected {settingsType}, got {e.Settings.GetType()}");
 			return e.Settings;
 		}
 
 		private object GetCoreSyncSettings(Type t, Type syncSettingsType)
 		{
 			var e = new SettingsLoadArgs(t, syncSettingsType);
-			OnLoadSyncSettings?.Invoke(this, e);
+			if (OnLoadSyncSettings == null)
+				throw new InvalidOperationException("Frontend failed to provide a sync settings getter");
+			OnLoadSyncSettings(this, e);
+			if (e.Settings != null && e.Settings.GetType() != syncSettingsType)
+				throw new InvalidOperationException($"Frontend did not provide the requested sync settings type: Expected {syncSettingsType}, got {e.Settings.GetType()}");
 			return e.Settings;
 		}
 
