@@ -78,6 +78,8 @@ namespace BizHawk.Client.EmuHawk
 
 		void PauseEmulator();
 
+		bool BlockFrameAdvance { get; set; }
+
 		/// <remarks>only referenced from <see cref="TAStudio"/></remarks>
 		void RelinquishControl(IControlMainform master);
 
