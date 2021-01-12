@@ -768,16 +768,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private bool _block_frame_advance;
-		public bool BlockFrameAdvance
-		{
-			get => _block_frame_advance;
-
-			set
-			{
-				_block_frame_advance = value;
-			}
-		}
+		public bool BlockFrameAdvance { get; set; }
 
 		public event Action<bool> OnPauseChanged;
 
