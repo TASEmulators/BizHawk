@@ -3657,7 +3657,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				var oldGame = Game;
-				var result = loader.LoadRom(path, nextComm, ioaRetro?.CorePath);
+				var result = loader.LoadRom(path, nextComm, ioaRetro?.CorePath, forcedCoreName: MovieSession.QueuedCoreName);
 
 				Game = result ? loader.Game : oldGame;
 

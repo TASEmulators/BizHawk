@@ -20,6 +20,9 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		string QueuedSyncSettings { get; }
 
+		/// <value>The Core header of the queued movie iff one is queued, else <see langword="null"/></value>
+		string QueuedCoreName { get; }
+
 		IDictionary<string, object> UserBag { get; set; }
 
 		IMovieController MovieController { get; }

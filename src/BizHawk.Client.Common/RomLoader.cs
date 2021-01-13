@@ -373,28 +373,36 @@ namespace BizHawk.Client.Common
 			nextEmulator = MakeCoreFromCoreInventory(cip);
 		}
 
-		private IEmulator MakeCoreFromCoreInventory(CoreInventoryParameters cip)
+		private IEmulator MakeCoreFromCoreInventory(CoreInventoryParameters cip, string forcedCoreName = null)
 		{
-			_config.PreferredCores.TryGetValue(cip.Game.System, out var preferredCore);
-			var forcedCore = cip.Game.ForcedCore;
-			var cores = CoreInventory.Instance.GetCores(cip.Game.System)
-				.OrderBy(c =>
-				{
-					if (c.Name == preferredCore)
+			IReadOnlyCollection<CoreInventory.Core> cores;
+			if (forcedCoreName != null)
+			{
+				var singleCore = CoreInventory.Instance.GetCores(cip.Game.System).SingleOrDefault(c => c.Name == forcedCoreName);
+				cores = singleCore != null ? new[] { singleCore } : Array.Empty<CoreInventory.Core>();
+			}
+			else
+			{
+				_config.PreferredCores.TryGetValue(cip.Game.System, out var preferredCore);
+				var dbForcedCoreName = cip.Game.ForcedCore;
+				cores = CoreInventory.Instance.GetCores(cip.Game.System)
+					.OrderBy(c =>
 					{
-						return (int)CorePriority.UserPreference;
-					}
+						if (c.Name == preferredCore)
+						{
+							return (int)CorePriority.UserPreference;
+						}
 
-					if (string.Equals(c.Name, forcedCore, StringComparison.InvariantCultureIgnoreCase))
-					{
-						return (int)CorePriority.GameDbPreference;
-					}
+						if (string.Equals(c.Name, dbForcedCoreName, StringComparison.InvariantCultureIgnoreCase))
+						{
+							return (int)CorePriority.GameDbPreference;
+						}
 
-					return (int)c.Priority;
-				})
-				.ToList();
-			if (cores.Count == 0)
-				throw new InvalidOperationException("No core was found to try on the game");
+						return (int)c.Priority;
+					})
+					.ToList();
+				if (cores.Count == 0) throw new InvalidOperationException("No core was found to try on the game");
+			}
 			var exceptions = new List<Exception>();
 			foreach (var core in cores)
 			{
@@ -412,7 +420,7 @@ namespace BizHawk.Client.Common
 			throw new AggregateException("No core could load the game", exceptions);
 		}
 
-		private void LoadOther(CoreComm nextComm, HawkFile file, out IEmulator nextEmulator, out RomGame rom, out GameInfo game, out bool cancel)
+		private void LoadOther(CoreComm nextComm, HawkFile file, string forcedCoreName, out IEmulator nextEmulator, out RomGame rom, out GameInfo game, out bool cancel)
 		{
 			cancel = false;
 			rom = new RomGame(file);
@@ -490,7 +498,7 @@ namespace BizHawk.Client.Common
 					}
 				},
 			};
-			nextEmulator = MakeCoreFromCoreInventory(cip);
+			nextEmulator = MakeCoreFromCoreInventory(cip, forcedCoreName);
 		}
 
 		private void LoadPSF(string path, CoreComm nextComm, HawkFile file, out IEmulator nextEmulator, out RomGame rom, out GameInfo game)
@@ -586,7 +594,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public bool LoadRom(string path, CoreComm nextComm, string launchLibretroCore, int recursiveCount = 0)
+		public bool LoadRom(string path, CoreComm nextComm, string launchLibretroCore, string forcedCoreName = null, int recursiveCount = 0)
 		{
 			if (path == null) return false;
 
@@ -701,7 +709,7 @@ namespace BizHawk.Client.Common
 							}
 							else
 							{
-								LoadOther(nextComm, file, out nextEmulator, out rom, out game, out cancel); // must be called after LoadXML because of SNES hacks
+								LoadOther(nextComm, file, forcedCoreName, out nextEmulator, out rom, out game, out cancel); // must be called after LoadXML because of SNES hacks
 							}
 							break;
 					}
