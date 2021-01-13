@@ -36,6 +36,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubGBHawk
 			ser.Sync(nameof(input_frame_length), ref input_frame_length);
 			ser.Sync(nameof(input_frame_length_int), ref input_frame_length_int);
 			ser.Sync(nameof(CycleCount), ref CycleCount);
+			ser.Sync(nameof(_GBCore.audio.master_audio_clock), ref _GBCore.audio.master_audio_clock);
 		}
 	}
 }

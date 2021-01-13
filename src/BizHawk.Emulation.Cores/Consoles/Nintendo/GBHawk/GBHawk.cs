@@ -230,7 +230,121 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			iptr3 = Marshal.AllocHGlobal(ppu.color_palette.Length * 8 * 8 + 1);
 
 			_scanlineCallback = null;
-	
+
+			DeterministicEmulation = true;
+		}
+
+		public bool IsCGBMode() => is_GBC;
+
+		public IntPtr iptr0 = IntPtr.Zero;
+		public IntPtr iptr1 = IntPtr.Zero;
+		public IntPtr iptr2 = IntPtr.Zero;
+		public IntPtr iptr3 = IntPtr.Zero;
+
+		private GPUMemoryAreas _gpuMemory
+		{
+			get
+			{
+				Marshal.Copy(VRAM, 0, iptr0, VRAM.Length);
+				Marshal.Copy(OAM, 0, iptr1, OAM.Length);
+
+				if (is_GBC)
+				{
+					int[] cp2 = new int[32];
+					int[] cp = new int[32];
+					for (int i = 0; i < 32; i++)
+					{
+						cp2[i] = (int)ppu.OBJ_palette[i];
+						cp[i] = (int)ppu.BG_palette[i];
+					}
+
+					Marshal.Copy(cp2, 0, iptr2, ppu.OBJ_palette.Length);
+					Marshal.Copy(cp, 0, iptr3, ppu.BG_palette.Length);
+				}
+				else
+				{
+					int[] cp2 = new int[8];
+					for (int i = 0; i < 4; i++)
+					{
+						cp2[i] = (int)ppu.color_palette[(ppu.obj_pal_0 >> (i * 2)) & 3];
+						cp2[i + 4] = (int)ppu.color_palette[(ppu.obj_pal_1 >> (i * 2)) & 3];
+					}
+					Marshal.Copy(cp2, 0, iptr2, cp2.Length);
+
+					int[] cp = new int[4];
+					for (int i = 0; i < 4; i++)
+					{
+						cp[i] = (int)ppu.color_palette[(ppu.BGP >> (i * 2)) & 3];
+					}
+					Marshal.Copy(cp, 0, iptr3, cp.Length);
+				}
+
+				return new GPUMemoryAreas(iptr0, iptr1, iptr2, iptr3);
+			}
+		} 
+
+		public GPUMemoryAreas GetGPU() => _gpuMemory;
+
+		public ScanlineCallback _scanlineCallback;
+		public int _scanlineCallbackLine = 0;
+
+		public void SetScanlineCallback(ScanlineCallback callback, int line)
+		{
+			_scanlineCallback = callback;
+			_scanlineCallbackLine = line;
+
+			if (line == -2)
+			{
+				GetGPU();
+				_scanlineCallback(ppu.LCDC);
+			}
+		}
+
+#pragma warning disable CS0414
+		private PrinterCallback _printerCallback = null;
+#pragma warning restore CS0414
+
+		public void SetPrinterCallback(PrinterCallback callback)
+		{
+			_printerCallback = null;
+		}
+
+		public DisplayType Region => DisplayType.NTSC;
+
+		private readonly GBHawkControllerDeck _controllerDeck;
+
+		public void HardReset()
+		{
+			GB_bios_register = 0; // bios enable
+			GBC_compat = is_GBC;
+			in_vblank = true; // we start off in vblank since the LCD is off
+			in_vblank_old = true;
+			double_speed = false;
+			VRAM_Bank = 0;
+			RAM_Bank = 1; // RAM bank always starts as 1 (even writing zero still sets 1)
+			RAM_Bank_ret = 0; // return value can still be zero even though the bank itself cannot be
+			delays_to_process = false;
+			controller_delay_cd = 0;
+			clear_counter = 0;
+
+			Register_Reset();
+			timer.Reset();
+			ppu.Reset();
+			audio.Reset();
+			serialport.Reset();
+			mapper.Reset();
+			cpu.Reset();
+			
+			vid_buffer = new uint[VirtualWidth * VirtualHeight];
+			frame_buffer = new int[VirtualWidth * VirtualHeight];
+
+			uint startup_color = (!is_GBC && (_settings.Palette == GBSettings.PaletteType.Gr)) ? 0xFFA4C505 : 0xFFFFFFFF;
+			for (int i = 0; i < vid_buffer.Length; i++)
+			{
+				vid_buffer[i] = startup_color;
+				frame_buffer[i] = (int)vid_buffer[i];
+			}
+
 			for (int i = 0; i < ZP_RAM.Length; i++)
 			{
 				ZP_RAM[i] = 0;
@@ -348,118 +462,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						RAM[j * 0x1000 + i + 0xF00] = 0xFF;
 					}
 				}
-			}
-		}
-
-		public bool IsCGBMode() => is_GBC;
-
-		public IntPtr iptr0 = IntPtr.Zero;
-		public IntPtr iptr1 = IntPtr.Zero;
-		public IntPtr iptr2 = IntPtr.Zero;
-		public IntPtr iptr3 = IntPtr.Zero;
-
-		private GPUMemoryAreas _gpuMemory
-		{
-			get
-			{
-				Marshal.Copy(VRAM, 0, iptr0, VRAM.Length);
-				Marshal.Copy(OAM, 0, iptr1, OAM.Length);
-
-				if (is_GBC)
-				{
-					int[] cp2 = new int[32];
-					int[] cp = new int[32];
-					for (int i = 0; i < 32; i++)
-					{
-						cp2[i] = (int)ppu.OBJ_palette[i];
-						cp[i] = (int)ppu.BG_palette[i];
-					}
-
-					Marshal.Copy(cp2, 0, iptr2, ppu.OBJ_palette.Length);
-					Marshal.Copy(cp, 0, iptr3, ppu.BG_palette.Length);
-				}
-				else
-				{
-					int[] cp2 = new int[8];
-					for (int i = 0; i < 4; i++)
-					{
-						cp2[i] = (int)ppu.color_palette[(ppu.obj_pal_0 >> (i * 2)) & 3];
-						cp2[i + 4] = (int)ppu.color_palette[(ppu.obj_pal_1 >> (i * 2)) & 3];
-					}
-					Marshal.Copy(cp2, 0, iptr2, cp2.Length);
-
-					int[] cp = new int[4];
-					for (int i = 0; i < 4; i++)
-					{
-						cp[i] = (int)ppu.color_palette[(ppu.BGP >> (i * 2)) & 3];
-					}
-					Marshal.Copy(cp, 0, iptr3, cp.Length);
-				}
-
-				return new GPUMemoryAreas(iptr0, iptr1, iptr2, iptr3);
-			}
-		} 
-
-		public GPUMemoryAreas GetGPU() => _gpuMemory;
-
-		public ScanlineCallback _scanlineCallback;
-		public int _scanlineCallbackLine = 0;
-
-		public void SetScanlineCallback(ScanlineCallback callback, int line)
-		{
-			_scanlineCallback = callback;
-			_scanlineCallbackLine = line;
-
-			if (line == -2)
-			{
-				GetGPU();
-				_scanlineCallback(ppu.LCDC);
-			}
-		}
-
-#pragma warning disable CS0414
-		private PrinterCallback _printerCallback = null;
-#pragma warning restore CS0414
-
-		public void SetPrinterCallback(PrinterCallback callback)
-		{
-			_printerCallback = null;
-		}
-
-		public DisplayType Region => DisplayType.NTSC;
-
-		private readonly GBHawkControllerDeck _controllerDeck;
-
-		public void HardReset()
-		{
-			GB_bios_register = 0; // bios enable
-			GBC_compat = is_GBC;
-			in_vblank = true; // we start off in vblank since the LCD is off
-			in_vblank_old = true;
-			double_speed = false;
-			VRAM_Bank = 0;
-			RAM_Bank = 1; // RAM bank always starts as 1 (even writing zero still sets 1)
-			RAM_Bank_ret = 0; // return value can still be zero even though the bank itself cannot be
-			delays_to_process = false;
-			controller_delay_cd = 0;
-			clear_counter = 0;
-
-			Register_Reset();
-			timer.Reset();
-			ppu.Reset();
-			audio.Reset();
-			serialport.Reset();
-			mapper.Reset();
-			cpu.Reset();
-			
-			vid_buffer = new uint[VirtualWidth * VirtualHeight];
-			frame_buffer = new int[VirtualWidth * VirtualHeight];
-
-			uint startup_color = (!is_GBC && (_settings.Palette == GBSettings.PaletteType.Gr)) ? 0xFFA4C505 : 0xFFFFFFFF;
-			for (int i = 0; i < vid_buffer.Length; i++)
-			{
-				vid_buffer[i] = startup_color;
-				frame_buffer[i] = (int)vid_buffer[i];
 			}
 		}
 
@@ -703,21 +705,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			return mppr;
 		}
 
-	    public class GBHawkDisassembler : VerifiedDisassembler
-	    {
-		    public override IEnumerable<string> AvailableCpus
-		    {
-			    get { yield return "LR35902"; }
-		    }
+		public class GBHawkDisassembler : VerifiedDisassembler
+		{
+			public override IEnumerable<string> AvailableCpus
+			{
+				get { yield return "LR35902"; }
+			}
 
-		    public override string PCRegisterName => "PC";
+			public override string PCRegisterName => "PC";
 
-		    public override string Disassemble(MemoryDomain m, uint addr, out int length)
-		    {
-			    string ret = LR35902.Disassemble((ushort)addr, a => m.PeekByte(a), out var tmp);
-			    length = tmp;
-			    return ret;
-		    }
-	    }
+			public override string Disassemble(MemoryDomain m, uint addr, out int length)
+			{
+				string ret = LR35902.Disassemble((ushort)addr, a => m.PeekByte(a), out var tmp);
+				length = tmp;
+				return ret;
+			}
+		}
 	}
 }

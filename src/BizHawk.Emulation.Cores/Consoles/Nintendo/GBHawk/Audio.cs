@@ -1162,7 +1162,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync(nameof(WAVE_decay_done), ref WAVE_decay_done);
 
 			ser.Sync(nameof(sound_update_needed), ref sound_update_needed);
-			ser.Sync(nameof(master_audio_clock), ref master_audio_clock);
 
 			ser.Sync(nameof(sample), ref sample);
 			ser.Sync(nameof(latched_sample_L), ref latched_sample_L);
