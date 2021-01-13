@@ -768,6 +768,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		public bool BlockFrameAdvance { get; set; }
+
 		public event Action<bool> OnPauseChanged;
 
 		public string CurrentlyOpenRom { get; private set; } // todo - delete me and use only args instead
@@ -2916,7 +2918,8 @@ namespace BizHawk.Client.EmuHawk
 
 			float atten = 0;
 
-			if (runFrame || force)
+			// BlockFrameAdvance (true when input it being editted in TAStudio) supercedes all other frame advance conditions
+			if ((runFrame || force) && !BlockFrameAdvance)
 			{
 				var isFastForwarding = InputManager.ClientControls["Fast Forward"] || IsTurboing || InvisibleEmulation;
 				var isFastForwardingOrRewinding = isFastForwarding || isRewinding || _unthrottled;

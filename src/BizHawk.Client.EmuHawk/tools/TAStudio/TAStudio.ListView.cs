@@ -619,6 +619,11 @@ namespace BizHawk.Client.EmuHawk
 					_playbackInterrupted = !MainForm.EmulatorPaused;
 					MainForm.PauseEmulator();
 
+					// Pausing the emulator is insufficient to actually stop frame advancing as the frame advance hotkey can
+					// still take effect. This can lead to desyncs by simultaneously changing input and frame advancing.
+					// So we want to block all frame advance operations while the user is changing input in the piano roll
+					MainForm.BlockFrameAdvance = true;
+
 					if (ControllerType.BoolButtons.Contains(buttonName))
 					{
 						_patternPaint = false;
@@ -810,6 +815,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				CurrentTasMovie.ChangeLog?.EndBatch();
 			}
+
+			MainForm.BlockFrameAdvance = false;
 		}
 
 		private void TasView_MouseUp(object sender, MouseEventArgs e)
