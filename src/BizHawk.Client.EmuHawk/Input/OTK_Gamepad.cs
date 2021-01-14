@@ -20,50 +20,61 @@ namespace BizHawk.Client.EmuHawk
 
 		private static readonly object _syncObj = new object();
 
-		private static readonly List<OTK_GamePad> Devices = new List<OTK_GamePad>();
+		private static readonly List<OTK_GamePad> Devices = new();
 
 		private static volatile bool initialized = false;
 
-		/// <remarks>Initialization is only called once when MainForm loads</remarks>
 		public static void Initialize()
 		{
-			var playerCount = 0;
-			for (var i = 0; i < MAX_GAMEPADS; i++)
-			{
-				if (OpenTKGamePad.GetState(i).IsConnected || Joystick.GetState(i).IsConnected)
-				{
-					Console.WriteLine($"OTK GamePad/Joystick index: {i}");
-					Devices.Add(new OTK_GamePad(i, ++playerCount));
-				}
-			}
+			for (var i = 0; i < MAX_GAMEPADS; i++) OpenTKGamePad.GetState(i); // not sure if this is important to do at this time, but the processing which used to be done here included calls to OpenTK, so I left this no-op just in case --yoshi
 			initialized = true;
 		}
 
 		public static IEnumerable<OTK_GamePad> EnumerateDevices()
 		{
+			if (!initialized) yield break;
 			lock (_syncObj)
 			{
-				if (initialized)
-					foreach (var device in Devices) yield return device;
-				
+				foreach (var device in Devices) yield return device;
 			}
 		}
 
 		public static void UpdateAll()
 		{
+			if (!initialized) return;
 			lock (_syncObj)
 			{
-				if (initialized)
-					foreach (var device in Devices) device.Update();
-			}
-		}
-
-		public static void CloseAll()
-		{
-			lock (_syncObj)
-			{
-				if (!initialized)
-					throw new InvalidOperationException("Well, however did this happen");
+				for (var tryIndex = 0; tryIndex < MAX_GAMEPADS; tryIndex++)
+				{
+					var isConnectedAtIndex = OpenTKGamePad.GetState(tryIndex).IsConnected || Joystick.GetState(tryIndex).IsConnected;
+					var knownAsIndex = Devices.FindIndex(dev => dev._deviceIndex == tryIndex);
+					if (knownAsIndex != -1)
+					{
+						if (isConnectedAtIndex)
+						{
+							Devices[knownAsIndex].Update();
+						}
+						else
+						{
+							var known = Devices[knownAsIndex];
+							Console.WriteLine($"Dropped gamepad #{knownAsIndex}, was port#{known._deviceIndex} ({known._name}) via OpenTK");
+							Devices.RemoveAt(knownAsIndex);
+						}
+					}
+					else
+					{
+						if (isConnectedAtIndex)
+						{
+							var newConn = new OTK_GamePad(tryIndex, Devices.Count);
+							Devices.Insert(tryIndex, newConn); // try and keep our indices in line with the OpenTK ones
+							Console.WriteLine($"Connected new gamepad #{tryIndex}, port#{newConn._deviceIndex} ({newConn._name}) via OpenTK");
+						}
+						else
+						{
+							// was and is disconnected, move along
+						}
+					}
+				}
 			}
 		}
 
