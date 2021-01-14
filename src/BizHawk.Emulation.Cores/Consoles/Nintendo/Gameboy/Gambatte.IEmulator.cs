@@ -99,11 +99,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				GambatteState = IntPtr.Zero;
 			}
 
-			_vram = IntPtr.Zero;
-			_oam = IntPtr.Zero;
-			_sppal = IntPtr.Zero;
-			_bgpal = IntPtr.Zero;
-
 			DisposeSound();
 		}
 	}

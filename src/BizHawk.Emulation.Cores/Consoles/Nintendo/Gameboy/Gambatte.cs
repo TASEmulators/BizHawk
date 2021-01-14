@@ -382,13 +382,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			}
 		}
 
-		public IntPtr _vram = IntPtr.Zero;
-		public IntPtr _bgpal = IntPtr.Zero;
-		public IntPtr _sppal = IntPtr.Zero;
-		public IntPtr _oam = IntPtr.Zero;
-
-		public GPUMemoryAreas GetGPU()
-		{		
+		public IGPUMemoryAreas LockGPU()
+		{
+			var _vram = IntPtr.Zero;
+			var _bgpal = IntPtr.Zero;
+			var _sppal = IntPtr.Zero;
+			var _oam = IntPtr.Zero;
 			int unused = 0;
 			if (!LibGambatte.gambatte_getmemoryarea(GambatteState, LibGambatte.MemoryAreas.vram, ref _vram, ref unused)
 				|| !LibGambatte.gambatte_getmemoryarea(GambatteState, LibGambatte.MemoryAreas.bgpal, ref _bgpal, ref unused)
@@ -397,7 +396,26 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			{
 				throw new InvalidOperationException("Unexpected error in gambatte_getmemoryarea");
 			}
-			return new GPUMemoryAreas(_vram, _oam, _sppal, _bgpal);
+			return new GPUMemoryAreas
+			{
+				Vram = _vram,
+				Oam = _oam,
+				Sppal = _sppal,
+				Bgpal = _bgpal,	
+			};
+		}
+
+		private class GPUMemoryAreas : IGPUMemoryAreas
+		{
+			public IntPtr Vram { get; init; }
+
+			public IntPtr Oam { get; init; }
+
+			public IntPtr Sppal { get; init; }
+
+			public IntPtr Bgpal { get; init; }
+
+			public void Dispose() {}
 		}
 
 		/// <summary>

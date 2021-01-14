@@ -17,7 +17,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 	public interface IGameboyCommon : ISpecializedEmulatorService
 	{
 		bool IsCGBMode();
-		GPUMemoryAreas GetGPU();
+
+		/// <summary>
+		/// Acquire GPU memory for inspection.  The returned object must be disposed as soon as the frontend
+		/// tool is done inspecting it, and the pointers become invalid once it is disposed.
+		/// </summary>
+		/// <returns></returns>
+		IGPUMemoryAreas LockGPU();
 
 		/// <summary>
 		/// set up callback
@@ -32,32 +38,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 		void SetPrinterCallback(PrinterCallback callback);
 	}
 
-	public class GPUMemoryAreas : IMonitor
+	public interface IGPUMemoryAreas : IDisposable
 	{
-		public IntPtr Vram { get; }
-		public IntPtr Oam { get; }
-		public IntPtr Sppal { get; }
-		public IntPtr Bgpal { get; }
-
-		private readonly IMonitor _monitor;
-
-		public GPUMemoryAreas(IntPtr vram, IntPtr oam, IntPtr sppal, IntPtr bgpal, IMonitor monitor = null)
-		{
-			Vram = vram;
-			Oam = oam;
-			Sppal = sppal;
-			Bgpal = bgpal;
-			_monitor = monitor;
-		}
-
-		public void Enter()
-		{
-			_monitor?.Enter();
-		}
-
-		public void Exit()
-		{
-			_monitor?.Exit();
-		}
+		IntPtr Vram { get; }
+		IntPtr Oam { get; }
+		IntPtr Sppal { get; }
+		IntPtr Bgpal { get; }
 	}
 }

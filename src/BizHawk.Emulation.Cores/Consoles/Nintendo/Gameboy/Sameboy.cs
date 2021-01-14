@@ -98,10 +98,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 
 			PostInit();
 
-			var scratch = new IntPtr[4];
-			_core.GetGpuMemory(scratch);
-			_gpuMemory = new GPUMemoryAreas(scratch[0], scratch[1], scratch[3], scratch[2], _exe);
-
 			DeterministicEmulation = deterministic || !_syncSettings.UseRealTime;
 			InitializeRtc(_syncSettings.InitialTime);
 		}
@@ -304,9 +300,51 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 
 		public bool IsCGBMode() => _cgb;
 
-		private readonly GPUMemoryAreas _gpuMemory;
+		public IGPUMemoryAreas LockGPU()
+		{
+			var scratch = new IntPtr[4];
+			_core.GetGpuMemory(scratch);
+			_exe.Enter();
+			try
+			{
+				return new GPUMemoryAreas(_exe)
+				{
+					Vram = scratch[0],
+					Oam = scratch[1],
+					Sppal = scratch[3],
+					Bgpal = scratch[2]
+				};
+			}
+			catch
+			{
+				_exe.Exit();
+				throw;
+			}
+		}
 
-		public GPUMemoryAreas GetGPU() => _gpuMemory;
+		private class GPUMemoryAreas : IGPUMemoryAreas
+		{
+			private IMonitor _monitor;
+			public IntPtr Vram { get; init; }
+
+			public IntPtr Oam { get; init; }
+
+			public IntPtr Sppal { get; init; }
+
+			public IntPtr Bgpal { get; init; }
+
+			public GPUMemoryAreas(IMonitor monitor)
+			{
+				_monitor = monitor;
+			}
+
+			public void Dispose()
+			{
+				_monitor?.Exit();
+				_monitor = null;
+			}
+		}
+
 		private ScanlineCallback _scanlineCallback;
 		private int _scanlineCallbackLine;
 

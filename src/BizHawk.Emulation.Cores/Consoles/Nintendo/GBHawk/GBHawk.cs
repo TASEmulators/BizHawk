@@ -224,11 +224,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			cpu.SetCallbacks(ReadMemory, PeekMemory, PeekMemory, WriteMemory);
 			HardReset();
 
-			iptr0 = Marshal.AllocHGlobal(VRAM.Length + 1);
-			iptr1 = Marshal.AllocHGlobal(OAM.Length + 1);
-			iptr2 = Marshal.AllocHGlobal(ppu.color_palette.Length * 8 * 8 + 1);
-			iptr3 = Marshal.AllocHGlobal(ppu.color_palette.Length * 8 * 8 + 1);
-
 			_scanlineCallback = null;
 
 			DeterministicEmulation = true;
@@ -236,54 +231,93 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public bool IsCGBMode() => is_GBC;
 
-		public IntPtr iptr0 = IntPtr.Zero;
-		public IntPtr iptr1 = IntPtr.Zero;
-		public IntPtr iptr2 = IntPtr.Zero;
-		public IntPtr iptr3 = IntPtr.Zero;
-
-		private GPUMemoryAreas _gpuMemory
+		/// <summary>
+		/// Produces a palette in the form that certain frontend inspection tools.
+		/// May or may not return a reference to the core's own palette, so please don't mutate.
+		/// </summary>
+		private uint[] SynthesizeFrontendBGPal()
 		{
-			get
+			if (is_GBC)
 			{
-				Marshal.Copy(VRAM, 0, iptr0, VRAM.Length);
-				Marshal.Copy(OAM, 0, iptr1, OAM.Length);
-
-				if (is_GBC)
-				{
-					int[] cp2 = new int[32];
-					int[] cp = new int[32];
-					for (int i = 0; i < 32; i++)
-					{
-						cp2[i] = (int)ppu.OBJ_palette[i];
-						cp[i] = (int)ppu.BG_palette[i];
-					}
-
-					Marshal.Copy(cp2, 0, iptr2, ppu.OBJ_palette.Length);
-					Marshal.Copy(cp, 0, iptr3, ppu.BG_palette.Length);
-				}
-				else
-				{
-					int[] cp2 = new int[8];
-					for (int i = 0; i < 4; i++)
-					{
-						cp2[i] = (int)ppu.color_palette[(ppu.obj_pal_0 >> (i * 2)) & 3];
-						cp2[i + 4] = (int)ppu.color_palette[(ppu.obj_pal_1 >> (i * 2)) & 3];
-					}
-					Marshal.Copy(cp2, 0, iptr2, cp2.Length);
-
-					int[] cp = new int[4];
-					for (int i = 0; i < 4; i++)
-					{
-						cp[i] = (int)ppu.color_palette[(ppu.BGP >> (i * 2)) & 3];
-					}
-					Marshal.Copy(cp, 0, iptr3, cp.Length);
-				}
-
-				return new GPUMemoryAreas(iptr0, iptr1, iptr2, iptr3);
+				return ppu.BG_palette;
 			}
-		} 
+			else
+			{
+				var scratch = new uint[4];
+				for (int i = 0; i < 4; i++)
+				{
+					scratch[i] = ppu.color_palette[(ppu.BGP >> (i * 2)) & 3];
+				}
+				return scratch;
+			}
+		}
 
-		public GPUMemoryAreas GetGPU() => _gpuMemory;
+		/// <summary>
+		/// Produces a palette in the form that certain frontend inspection tools.
+		/// May or may not return a reference to the core's own palette, so please don't mutate.
+		/// </summary>
+		private uint[] SynthesizeFrontendSPPal()
+		{
+			if (is_GBC)
+			{
+				return ppu.OBJ_palette;
+			}
+			else
+			{
+				var scratch = new uint[8];
+				for (int i = 0; i < 4; i++)
+				{
+					scratch[i] = ppu.color_palette[(ppu.obj_pal_0 >> (i * 2)) & 3];
+					scratch[i + 4] = ppu.color_palette[(ppu.obj_pal_1 >> (i * 2)) & 3];
+				}
+				return scratch;
+			}
+		}
+
+		public IGPUMemoryAreas LockGPU()
+		{
+			return new GPUMemoryAreas(
+				VRAM,
+				OAM,
+				SynthesizeFrontendSPPal(),
+				SynthesizeFrontendBGPal()
+			);
+		}
+
+		private class GPUMemoryAreas : IGPUMemoryAreas
+		{
+			public IntPtr Vram { get; }
+
+			public IntPtr Oam { get; init; }
+
+			public IntPtr Sppal { get; init; }
+
+			public IntPtr Bgpal { get; init; }
+
+			private readonly List<GCHandle> _handles = new();
+
+			public GPUMemoryAreas(byte[] vram, byte[] oam, uint[] sppal, uint[] bgpal)
+			{
+				Vram = AddHandle(vram);
+				Oam = AddHandle(oam);
+				Sppal = AddHandle(sppal);
+				Bgpal = AddHandle(bgpal);
+			}
+
+			private IntPtr AddHandle(object target)
+			{
+				var handle = GCHandle.Alloc(target, GCHandleType.Pinned);
+				_handles.Add(handle);
+				return handle.AddrOfPinnedObject();
+			}
+
+			public void Dispose()
+			{
+				foreach (var h in _handles)
+					h.Free();
+				_handles.Clear();
+			}
+		}
 
 		public ScanlineCallback _scanlineCallback;
 		public int _scanlineCallbackLine = 0;
@@ -295,7 +329,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			if (line == -2)
 			{
-				GetGPU();
+				LockGPU();
 				_scanlineCallback(ppu.LCDC);
 			}
 		}
