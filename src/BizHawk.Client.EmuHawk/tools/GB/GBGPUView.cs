@@ -375,11 +375,15 @@ namespace BizHawk.Client.EmuHawk
 				if (cgb && flags.Bit(3))
 					tile += 8192;
 
-				DrawTileHv(tile, dest, pitch, thisPal, hFlip, vFlip);
-
-				if (tall)
+				// only draw tiles that are completely in bounds so to avoid out of bounds accesses
+				if ((xPos <= 248) && (yPos <= 240))
 				{
-					DrawTileHv(tile + 16, dest + pitch * 8, pitch, thisPal, hFlip, vFlip);
+					DrawTileHv(tile, dest, pitch, thisPal, hFlip, vFlip);
+
+					if (tall)
+					{
+						DrawTileHv(tile + 16, dest + pitch * 8, pitch, thisPal, hFlip, vFlip);
+					}
 				}
 
 				dest -= xPos + yPos * pitch;
