@@ -57,7 +57,7 @@ namespace BizHawk.Client.Common
 
 		public ILogEntryGenerator LogGeneratorInstance(IController source)
 		{
-			return new Bk2LogEntryGenerator(Emulator.SystemId, source);
+			return new Bk2LogEntryGenerator(Emulator?.SystemId ?? SystemID, source);
 		}
 
 		public int FrameCount => Log.Count;
