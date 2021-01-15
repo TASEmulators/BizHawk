@@ -92,6 +92,7 @@ namespace BizHawk.Client.Common
 		public bool SkipLagFrame { get; set; }
 		public bool SuppressAskSave { get; set; }
 		public bool AviCaptureOsd { get; set; }
+		public bool AviCaptureLua { get; set; }
 		public bool ScreenshotCaptureOsd { get; set; }
 		public bool FirstBoot { get; set; } = true;
 		public bool UpdateAutoCheckEnabled { get; set; }

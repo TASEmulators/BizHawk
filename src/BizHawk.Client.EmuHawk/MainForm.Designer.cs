@@ -100,6 +100,7 @@ namespace BizHawk.Client.EmuHawk
 			this.StopAVIMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.toolStripSeparator19 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.CaptureOSDMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.CaptureLuaMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SynclessRecordingMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.ScreenshotSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.ScreenshotMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -829,6 +830,7 @@ namespace BizHawk.Client.EmuHawk
 			this.StopAVIMenuItem,
 			this.toolStripSeparator19,
 			this.CaptureOSDMenuItem,
+			this.CaptureLuaMenuItem,
 			this.SynclessRecordingMenuItem});
 			this.AVSubMenu.Text = "&AVI/WAV";
 			this.AVSubMenu.DropDownOpened += new System.EventHandler(this.AVSubMenu_DropDownOpened);
@@ -850,8 +852,17 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// CaptureOSDMenuItem
 			// 
+			this.CaptureOSDMenuItem.CheckOnClick = true;
 			this.CaptureOSDMenuItem.Text = "Capture OSD";
 			this.CaptureOSDMenuItem.Click += new System.EventHandler(this.CaptureOSDMenuItem_Click);
+			// 
+			// CaptureLuaMenuItem
+			// 
+			this.CaptureLuaMenuItem.CheckOnClick = true;
+			this.CaptureLuaMenuItem.Name = "CaptureLuaMenuItem";
+			this.CaptureLuaMenuItem.Size = new System.Drawing.Size(225, 22);
+			this.CaptureLuaMenuItem.Text = "Capture Lua";
+			this.CaptureLuaMenuItem.Click += new System.EventHandler(this.CaptureLuaMenuItem_Click);
 			// 
 			// SynclessRecordingMenuItem
 			// 
@@ -2778,5 +2789,6 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx NdsSyncSettingsMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx NdsSettingsMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator8;
+		private System.Windows.Forms.ToolStripMenuItem CaptureLuaMenuItem;
 	}
 }

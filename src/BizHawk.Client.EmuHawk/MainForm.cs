@@ -2510,6 +2510,12 @@ namespace BizHawk.Client.EmuHawk
 			bb.DiscardAlpha();
 			return bb;
 		}
+		public BitmapBuffer CaptureLua()
+		{
+			var bb = DisplayManager.RenderOffscreenLua(_currentVideoProvider);
+			bb.DiscardAlpha();
+			return bb;
+		}
 
 		private void IncreaseWindowSize()
 		{
@@ -3420,6 +3426,11 @@ namespace BizHawk.Client.EmuHawk
 						if (Config.AviCaptureOsd)
 						{
 							output = new BitmapBufferVideoProvider(CaptureOSD());
+							disposableOutput = (IDisposable) output;
+						}
+						else if (Config.AviCaptureLua)
+						{
+							output = new BitmapBufferVideoProvider(CaptureLua());
 							disposableOutput = (IDisposable) output;
 						}
 						else
