@@ -12,16 +12,20 @@ namespace BizHawk.Client.Common
 			CurrentUseCompression = settings.CurrentUseCompression;
 			CurrentBufferSize = settings.CurrentBufferSize;
 			CurrentTargetFrameLength = settings.CurrentTargetFrameLength;
+			CurrentStoreType = settings.CurrentStoreType;
 
 			RecentUseCompression = settings.RecentUseCompression;
 			RecentBufferSize = settings.RecentBufferSize;
 			RecentTargetFrameLength = settings.RecentTargetFrameLength;
+			RecentStoreType = settings.RecentStoreType;
 
 			GapsUseCompression = settings.GapsUseCompression;
 			GapsBufferSize = settings.GapsBufferSize;
 			GapsTargetFrameLength = settings.GapsTargetFrameLength;
+			GapsStoreType = settings.GapsStoreType;
 
 			AncientStateInterval = settings.AncientStateInterval;
+			AncientStoreType = settings.AncientStoreType;
 		}
 
 		/// <summary>
@@ -41,6 +45,10 @@ namespace BizHawk.Client.Common
 		[TypeConverter(typeof(IntConverter)), Range(1, int.MaxValue)]
 		public int CurrentTargetFrameLength { get; set; } = 500;
 
+		[DisplayName("Current - Storage Type")]
+		[Description("Where to keep the buffer.")]
+		public IRewindSettings.BackingStoreType CurrentStoreType { get; set; } = IRewindSettings.BackingStoreType.Memory;
+
 		/// <summary>
 		/// Buffer settings when navigating directly before the Current buffer
 		/// </summary>
@@ -57,6 +65,10 @@ namespace BizHawk.Client.Common
 		[Description("Desired frame length (number of emulated frames you can go back before running out of buffer).\n\nThe Recent buffer is where the current frames decay as the buffer fills up. The goal of this buffer is to maximize the amount of movie that can be fairly quickly navigated to. Therefore, a high target frame length is ideal here.")]
 		[TypeConverter(typeof(IntConverter)), Range(1, int.MaxValue)]
 		public int RecentTargetFrameLength { get; set; } = 2000;
+
+		[DisplayName("Recent - Storage Type")]
+		[Description("Where to keep the buffer.")]
+		public IRewindSettings.BackingStoreType RecentStoreType { get; set; } = IRewindSettings.BackingStoreType.Memory;
 
 		/// <summary>
 		/// Priority States for special use cases
@@ -75,10 +87,18 @@ namespace BizHawk.Client.Common
 		[TypeConverter(typeof(IntConverter)), Range(1, int.MaxValue)]
 		public int GapsTargetFrameLength { get; set; } = 125;
 
+		[DisplayName("Gaps - Storage Type")]
+		[Description("Where to keep the buffer.")]
+		public IRewindSettings.BackingStoreType GapsStoreType { get; set; } = IRewindSettings.BackingStoreType.Memory;
+
 		[DisplayName("Ancient State Interval")]
 		[Description("Once both the Current and Recent buffers have filled, some states are put into reserved to ensure there is always a state somewhat near a desired frame to navigate to. These states never decay but are invalidated. This number should be as high as possible without being overly cumbersome to replay this many frames.")]
 		[TypeConverter(typeof(IntConverter)), Range(1, int.MaxValue)]
 		public int AncientStateInterval { get; set; } = 5000;
+
+		[DisplayName("Ancient - Storage Type")]
+		[Description("Where to keep the reserved states.")]
+		public IRewindSettings.BackingStoreType AncientStoreType { get; set; } = IRewindSettings.BackingStoreType.Memory;
 
 		// Just to simplify some other code.
 		public RewindConfig Current()
@@ -87,7 +107,8 @@ namespace BizHawk.Client.Common
 			{
 				UseCompression = CurrentUseCompression,
 				BufferSize = CurrentBufferSize,
-				TargetFrameLength = CurrentTargetFrameLength
+				TargetFrameLength = CurrentTargetFrameLength,
+				BackingStore = CurrentStoreType
 			};
 		}
 		public RewindConfig Recent()
@@ -96,7 +117,8 @@ namespace BizHawk.Client.Common
 			{
 				UseCompression = RecentUseCompression,
 				BufferSize = RecentBufferSize,
-				TargetFrameLength = RecentTargetFrameLength
+				TargetFrameLength = RecentTargetFrameLength,
+				BackingStore = RecentStoreType
 			};
 		}
 		public RewindConfig GapFiller()
@@ -105,7 +127,8 @@ namespace BizHawk.Client.Common
 			{
 				UseCompression = GapsUseCompression,
 				BufferSize = GapsBufferSize,
-				TargetFrameLength = GapsTargetFrameLength
+				TargetFrameLength = GapsTargetFrameLength,
+				BackingStore = GapsStoreType
 			};
 		}
 	}
