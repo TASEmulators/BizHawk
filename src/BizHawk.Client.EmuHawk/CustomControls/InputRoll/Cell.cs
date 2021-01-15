@@ -71,7 +71,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					int row = c1.RowIndex.Value.CompareTo(c2.RowIndex.Value);
 					return row == 0
-						? c1.Column.Name.CompareTo(c2.Column.Name)
+						? string.Compare(c1.Column?.Name, c2.Column?.Name)
 						: row;
 				}
 					
