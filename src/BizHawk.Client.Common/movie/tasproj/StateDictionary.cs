@@ -7,7 +7,7 @@ using BizHawk.Common;
 
 namespace BizHawk.Client.Common
 {
-	class TempFileStateDictionary : IDictionary<int, byte[]>, IDisposable
+	internal class TempFileStateDictionary : IDictionary<int, byte[]>, IDisposable
 	{ 
 		private Dictionary<int, Stream> _streams = new Dictionary<int, Stream>();
 
