@@ -32,13 +32,24 @@ namespace BizHawk.Client.EmuHawk
 		// g' = 8.25g
 		// b' = 8.25b
 
-
-		private GPUMemoryAreas _memory;
-
 		private bool _cgb; // set once at start
 		private int _lcdc; // set at each callback
 
-		private IntPtr _tilesPal; // current palette to use on tiles
+		/// <summary>
+		/// Whether the tiles are being drawn with the sprite or bg palettes
+		/// </summary>
+		private bool _tilesPalIsSprite;
+		/// <summary>
+		/// How far (in bytes, I guess?) we should offset into the tiles palette
+		/// </summary>
+		private int _tilesPalOffset;
+
+		private IntPtr ComputeTilesPalFromMemory(IGPUMemoryAreas m)
+		{
+			var ret = _tilesPalIsSprite ? m.Sppal : m.Bgpal;
+			ret += _tilesPalOffset;
+			return ret;
+		}
 
 		private Color _spriteback;
 		
@@ -86,9 +97,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_cgb = Gb.IsCGBMode();
 			_lcdc = 0;
-			_memory = Gb.GetGPU();
-
-			_tilesPal = _memory.Bgpal;
 
 			label4.Enabled = _cgb;
 			bmpViewBG.Clear();
@@ -420,17 +428,19 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ScanlineCallback(byte lcdc)
 		{
-			using (_memory.EnterExit())
+			using (var memory = Gb.LockGPU())
 			{
-				var bgPal = _memory.Bgpal;
-				var spPal = _memory.Sppal;
-				var oam = _memory.Oam;
-				var vram = _memory.Vram;
+				var bgPal = memory.Bgpal;
+				var spPal = memory.Sppal;
+				var oam = memory.Oam;
+				var vram = memory.Vram;
+				var tilesPal = ComputeTilesPalFromMemory(memory);
 
 				_lcdc = lcdc;
 				// set alpha on all pixels
 #if false
-				// TODO: RE: Spriteback, you can't muck with Sameboy in this way due to how SGB reads stuff...?
+				// TODO: This probably shouldn't be done on any cores at all.  Let the tool make a separate copy of palettes if it needs alpha,
+				// or compel the cores to send data with alpha already set.  What was this actually solving?
 				unsafe
 				{
 					int* p = (int*)_bgpal;
@@ -484,11 +494,11 @@ namespace BizHawk.Client.EmuHawk
 				// tile display
 				// TODO: user selects palette to use, instead of fixed palette 0
 				// or possibly "smart" where, if a tile is in use, it's drawn with one of the palettes actually being used with it?
-				DrawTiles(bmpViewTiles1.Bmp, vram, _tilesPal);
+				DrawTiles(bmpViewTiles1.Bmp, vram, tilesPal);
 				bmpViewTiles1.Refresh();
 				if (_cgb)
 				{
-					DrawTiles(bmpViewTiles2.Bmp, vram + 0x2000, _tilesPal);
+					DrawTiles(bmpViewTiles2.Bmp, vram + 0x2000, tilesPal);
 					bmpViewTiles2.Refresh();
 				}
 
@@ -666,10 +676,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private unsafe void PaletteMouseover(int x, int y, bool sprite)
 		{
-			using (_memory.EnterExit())
+			using (var memory = Gb.LockGPU())
 			{
-				var bgPal = _memory.Bgpal;
-				var spPal = _memory.Sppal;
+				var bgPal = memory.Bgpal;
+				var spPal = memory.Sppal;
 
 				bmpViewDetails.ChangeBitmapSize(8, 10);
 				if (bmpViewDetails.Height != 80)
@@ -712,9 +722,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private unsafe void TileMouseover(int x, int y, bool secondBank)
 		{
-			using (_memory.EnterExit())
+			using (var memory = Gb.LockGPU())
 			{
-				var vram = _memory.Vram;
+				var vram = memory.Vram;
+				var tilesPal = ComputeTilesPalFromMemory(memory);
 
 				// todo: draw with a specific palette
 				bmpViewDetails.ChangeBitmapSize(8, 8);
@@ -730,7 +741,7 @@ namespace BizHawk.Client.EmuHawk
 					: $"Tile #{tileIndex} @{tileOffset + 0x8000:x4}");
 
 				var lockData = bmpViewDetails.Bmp.LockBits(new Rectangle(0, 0, 8, 8), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
-				DrawTile((byte*)vram + tileOffset + (secondBank ? 8192 : 0), (int*)lockData.Scan0, lockData.Stride / sizeof(int), (int*)_tilesPal);
+				DrawTile((byte*)vram + tileOffset + (secondBank ? 8192 : 0), (int*)lockData.Scan0, lockData.Stride / sizeof(int), (int*)tilesPal);
 				bmpViewDetails.Bmp.UnlockBits(lockData);
 				labelDetails.Text = sb.ToString();
 				bmpViewDetails.Refresh();
@@ -739,10 +750,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private unsafe void TileMapMouseover(int x, int y, bool win)
 		{
-			using (_memory.EnterExit())
+			using (var memory = Gb.LockGPU())
 			{
-				var _bgpal = _memory.Bgpal;
-				var _vram = _memory.Vram;
+				var _bgpal = memory.Bgpal;
+				var _vram = memory.Vram;
 
 				bmpViewDetails.ChangeBitmapSize(8, 8);
 				if (bmpViewDetails.Height != 64)
@@ -784,11 +795,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private unsafe void SpriteMouseover(int x, int y)
 		{
-			using (_memory.EnterExit())
+			using (var memory = Gb.LockGPU())
 			{
-				var spPal = _memory.Sppal;
-				var oam = _memory.Oam;
-				var vram = _memory.Vram;
+				var spPal = memory.Sppal;
+				var oam = memory.Oam;
+				var vram = memory.Vram;
 
 				bool tall = _lcdc.Bit(2);
 				x /= 8;
@@ -974,13 +985,21 @@ namespace BizHawk.Client.EmuHawk
 		private void bmpView_MouseClick(object sender, MouseEventArgs e)
 		{
 			if (e.Button == MouseButtons.Right)
+			{
 				SetFreeze();
+			}
 			else if (e.Button == MouseButtons.Left)
 			{
 				if (sender == bmpViewBGPal)
-					_tilesPal = _memory.Bgpal + e.X / 16 * 16;
+				{
+					_tilesPalIsSprite = false;
+					_tilesPalOffset = e.X / 16 * 16;
+				}
 				else if (sender == bmpViewSPPal)
-					_tilesPal = _memory.Sppal + e.X / 16 * 16;
+				{
+					_tilesPalIsSprite = true;
+					_tilesPalOffset =  e.X / 16 * 16;
+				}
 			}
 		}
 
