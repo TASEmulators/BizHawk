@@ -302,7 +302,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 		protected override void LoadStateBinaryInternal(BinaryReader reader)
 		{
 			UpdateCoreScanlineCallback(false);
-			_core.SetPrinterCallback(_corePrinterCallback);
+			UpdateCorePrinterCallback();
 		}
 
 		public bool IsCGBMode() => _cgb;
@@ -400,7 +400,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 		public void SetPrinterCallback(PrinterCallback callback)
 		{
 			_frontendPrinterCallback = callback;
-			_core.SetPrinterCallback(callback != null ? _corePrinterCallback : null);
+			UpdateCorePrinterCallback();
+		}
+
+		private void UpdateCorePrinterCallback()
+		{
+			_core.SetPrinterCallback(_frontendPrinterCallback != null ? _corePrinterCallback : null);
 		}
 	}
 }
