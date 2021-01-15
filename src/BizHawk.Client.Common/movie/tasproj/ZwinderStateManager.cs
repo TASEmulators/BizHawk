@@ -381,14 +381,18 @@ namespace BizHawk.Client.Common
 			// The user navigates to a frame after ancient interval 2, replay happens and we start filling gaps
 			// Then the user, still without having made an edit, navigates to a frame before ancient interval 2, but after ancient interval 1
 			// Without this logic, we end up with out of order states
-			// We cannot use InvalidateGaps because that does not address the state cache.
+			// We cannot use InvalidateGaps because that does not address the state cache or check for reserved states.
 			for (int i = _gapFiller.Count - 1; i >= 0; i--)
 			{
-				int lastGap = _gapFiller.GetState(i).Frame;
-				if (lastGap < frame)
+				var lastGap = _gapFiller.GetState(i);
+				if (lastGap.Frame < frame)
 					break;
 
-				StateCache.Remove(lastGap);
+				if (_reserveCallback(lastGap.Frame))
+					AddToReserved(lastGap);
+				else
+					StateCache.Remove(lastGap.Frame);
+
 				_gapFiller.InvalidateEnd(i);
 			}
 
