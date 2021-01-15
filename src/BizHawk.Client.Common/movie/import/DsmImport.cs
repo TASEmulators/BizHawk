@@ -75,9 +75,11 @@ namespace BizHawk.Client.Common
 
 				Result.Movie.SyncSettingsJson = ConfigService.SaveWithType(syncSettings);
 			}
+
+			Result.Movie.HeaderEntries[HeaderKeys.Core] = "MelonDS";
 		}
 
-		private readonly string[] _buttons = { "Right", "Left", "Down", "Up", "Start", "Select", "B", "A", "Y", "X", "L", "R" };
+		private readonly string[] _buttons = { "Left", "Right", "Up", "Down", "A", "B", "X", "Y", "L", "R", "Start", "Select" };
 
 		private void ImportInputFrame(string line)
 		{
@@ -87,14 +89,15 @@ namespace BizHawk.Client.Common
 				{
 					BoolButtons =
 					{
-						"Right", "Left", "Down", "Up", "Start", "Select",
-						"B", "A", "X", "Y", "L", "R", "LidOpen", "LidClose", "Touch"
+						"Left", "Right", "Up", "Down",
+						"A", "B", "X", "Y", "L", "R", "Start", "Select", "LidOpen", "LidClose", "Power", "Touch"
 					}
 				}.AddXYPair("Touch{0}", AxisPairOrientation.RightAndUp, 0.RangeTo(255), 128, 0.RangeTo(191), 96) //TODO verify direction against hardware
 			};
 
 			controller["LidOpen"] = false;
-			controller["LidOpen"] = false;
+			controller["LidClose"] = false;
+			controller["Power"] = false;
 
 			string[] sections = line.Split(new[] {'|'}, StringSplitOptions.RemoveEmptyEntries);
 			if (sections.Length > 0)
@@ -105,10 +108,19 @@ namespace BizHawk.Client.Common
 			if (sections.Length > 1)
 			{
 				var mnemonics = sections[1].Take(_buttons.Length).ToList();
-				for (var i = 0; i < mnemonics.Count; i++)
-				{
-					controller[_buttons[i]] = mnemonics[i] != '.';
-				}
+
+				controller["Left"] = mnemonics[1] != '.';
+				controller["Right"] = mnemonics[0] != '.';
+				controller["Up"] = mnemonics[3] != '.';
+				controller["Down"] = mnemonics[2] != '.';
+				controller["A"] = mnemonics[7] != '.';
+				controller["B"] = mnemonics[6] != '.';
+				controller["X"] = mnemonics[9] != '.';
+				controller["Y"] = mnemonics[8] != '.';
+				controller["L"] = mnemonics[10] != '.';
+				controller["R"] = mnemonics[11] != '.';
+				controller["Start"] = mnemonics[4] != '.';
+				controller["Select"] = mnemonics[5] != '.';
 
 				controller["Touch"] = sections[1].Substring(21, 1) != "0";
 
