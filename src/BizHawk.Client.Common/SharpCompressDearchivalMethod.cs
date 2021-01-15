@@ -17,8 +17,6 @@ namespace BizHawk.Client.Common
 			offset = 0;
 			isExecutable = false;
 
-			if (!ArchiveExtensions.Contains(Path.GetExtension(fileName).ToLowerInvariant())) return false;
-
 			try
 			{
 				using var arcTest = ArchiveFactory.Open(fileName);
@@ -31,9 +29,6 @@ namespace BizHawk.Client.Common
 		}
 
 		public SharpCompressArchiveFile Construct(string path) => new SharpCompressArchiveFile(path);
-
-		/// <remarks>whitelist as to avoid exceptions</remarks>
-		private static readonly string[] ArchiveExtensions = { ".zip", ".gz", ".gzip", ".tar", ".rar", ".7z" };
 
 		public static readonly SharpCompressDearchivalMethod Instance = new SharpCompressDearchivalMethod();
 	}
