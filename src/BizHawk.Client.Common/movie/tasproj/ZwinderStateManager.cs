@@ -268,8 +268,11 @@ namespace BizHawk.Client.Common
 				throw new InvalidOperationException("Frame 0 can not be evicted.");
 			}
 
-			_reserved.Remove(frame);
-			StateCache.Remove(frame);
+			if (_reserved.ContainsKey(frame))
+			{
+				_reserved.Remove(frame);
+				StateCache.Remove(frame);
+			}
 		}
 
 		public void Capture(int frame, IStatable source, bool force = false)
