@@ -30,6 +30,7 @@ namespace BizHawk.Client.Common
 			}
 
 			var newFileName = $"{SourceFile.FullName}.{Bk2Movie.Extension}";
+			session.SetControllerFrom(emulator);
 			Result.Movie = session.Get(newFileName);
 			Result.Movie.Attach(emulator);
 			RunImport();

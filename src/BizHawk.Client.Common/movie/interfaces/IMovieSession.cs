@@ -73,6 +73,8 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		void RunQueuedMovie(bool recordMode, IEmulator emulator);
 
+		void SetControllerFrom(IEmulator emulator);
+
 		void StopMovie(bool saveChanges = true);
 
 		/// <summary>
