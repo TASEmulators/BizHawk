@@ -81,7 +81,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			{
 				if (_scanlineCallbackLine == -1)
 				{
-					LockGPU();
 					_scanlineCallback(ppu.LCDC);
 				}
 			}
