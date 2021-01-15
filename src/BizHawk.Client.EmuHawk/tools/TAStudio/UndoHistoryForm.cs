@@ -75,13 +75,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UndoButton_Click(object sender, EventArgs e)
 		{
-			Log.Undo();
+			_tastudio.UndoExternal();
 			_tastudio.RefreshDialog();
 		}
 
 		private void RedoButton_Click(object sender, EventArgs e)
 		{
-			Log.Redo();
+			_tastudio.RedoExternal();
 			_tastudio.RefreshDialog();
 		}
 
@@ -89,20 +89,27 @@ namespace BizHawk.Client.EmuHawk
 			? HistoryView.SelectedRows.First()
 			: -1;
 
-		private void HistoryView_DoubleClick(object sender, EventArgs e)
+		private void UndoToHere(int index)
 		{
-			if (Log.UndoIndex <= SelectedItem)
+			int earliestFrame = int.MaxValue;
+			while (Log.UndoIndex > index)
 			{
-				return;
+				int frame = Log.Undo();
+				if (frame < earliestFrame)
+					earliestFrame = frame;
 			}
-
-			do
-			{
-				Log.Undo();
-			}
-			while (Log.UndoIndex > SelectedItem);
 
 			UpdateValues();
+
+			// potentially rewind, then update display for TAStudio
+			if (_tastudio.Emulator.Frame > earliestFrame)
+				_tastudio.GoToFrame(earliestFrame);
+			_tastudio.RefreshDialog();
+		}
+
+		private void HistoryView_DoubleClick(object sender, EventArgs e)
+		{
+			UndoToHere(SelectedItem);
 		}
 
 		private void HistoryView_MouseUp(object sender, MouseEventArgs e)
@@ -130,34 +137,25 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UndoHereMenuItem_Click(object sender, EventArgs e)
 		{
-			if (SelectedItem == -1 || Log.UndoIndex < SelectedItem)
-			{
-				return;
-			}
-
-			do
-			{
-				Log.Undo();
-			}
-			while (Log.UndoIndex >= SelectedItem);
-
-			UpdateValues();
+			UndoToHere(SelectedItem);
 		}
 
 		private void RedoHereMenuItem_Click(object sender, EventArgs e)
 		{
-			if (SelectedItem == -1 || Log.UndoIndex >= SelectedItem)
+			int earliestFrame = int.MaxValue;
+			while (Log.UndoIndex < SelectedItem)
 			{
-				return;
+				int frame = Log.Redo();
+				if (earliestFrame < frame)
+					earliestFrame = frame;
 			}
-
-			do
-			{
-				Log.Redo();
-			}
-			while (Log.UndoIndex < SelectedItem);
 
 			UpdateValues();
+
+			// potentially rewind, then update display for TAStudio
+			if (_tastudio.Emulator.Frame > earliestFrame)
+				_tastudio.GoToFrame(earliestFrame);
+			_tastudio.RefreshDialog();
 		}
 
 		private void ClearHistoryToHereMenuItem_Click(object sender, EventArgs e)
