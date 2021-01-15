@@ -1195,21 +1195,22 @@ namespace BizHawk.Client.EmuHawk
 
 			if (AllowRightClickSelection && e.Button == MouseButtons.Right)
 			{
-				if (!IsHoveringOnColumnCell && CurrentCell != null)
-				{
-					_currentX = e.X;
-					_currentY = e.Y;
-					Cell newCell = CalculatePointedCell(_currentX.Value, _currentY.Value);
-					newCell.RowIndex += FirstVisibleRow;
+				// In the case that we have a context menu already open, we must manually update the CurrentCell as MouseMove isn't triggered while it is open.
+				if (CurrentCell == null)
+					OnMouseMove(e);
 
+				if (!IsHoveringOnColumnCell)
+				{
 					// If this cell is not currently selected, clear and select
-					if (!_selectedItems.Contains(newCell))
+					if (!_selectedItems.Contains(CurrentCell))
 					{
 						_selectedItems.Clear();
 						SelectCell(CurrentCell);
+
+						Refresh();
+
+						SelectedIndexChanged?.Invoke(this, new EventArgs());
 					}
-					
-					CellChanged(newCell);
 				}
 			}
 
