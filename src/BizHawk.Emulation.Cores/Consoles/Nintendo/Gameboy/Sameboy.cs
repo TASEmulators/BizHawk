@@ -312,11 +312,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 			_exe.Enter();
 			try
 			{
-				return new GPUMemoryAreas(_exe,
-					vram: _cachedGpuPointers[0],
-					oam: _cachedGpuPointers[1],
-					sppal: _cachedGpuPointers[3],
-					bgpal: _cachedGpuPointers[2]);
+				return new GPUMemoryAreas(_exe)
+				{
+					Vram = _cachedGpuPointers[0],
+					Oam = _cachedGpuPointers[1],
+					Sppal = _cachedGpuPointers[3],
+					Bgpal = _cachedGpuPointers[2]
+				};
 			}
 			catch
 			{
@@ -328,21 +330,17 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 		private class GPUMemoryAreas : IGPUMemoryAreas
 		{
 			private IMonitor _monitor;
-			public IntPtr Vram { get; }
+			public IntPtr Vram { get; init; }
 
-			public IntPtr Oam { get; }
+			public IntPtr Oam { get; init; }
 
-			public IntPtr Sppal { get; }
+			public IntPtr Sppal { get; init; }
 
-			public IntPtr Bgpal { get; }
+			public IntPtr Bgpal { get; init; }
 
-			public GPUMemoryAreas(IMonitor monitor, IntPtr vram, IntPtr oam, IntPtr sppal, IntPtr bgpal)
+			public GPUMemoryAreas(IMonitor monitor)
 			{
 				_monitor = monitor;
-				Vram = vram;
-				Oam = oam;
-				Sppal = sppal;
-				Bgpal = bgpal;
 			}
 
 			public void Dispose()
