@@ -288,11 +288,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		{
 			public IntPtr Vram { get; }
 
-			public IntPtr Oam { get; init; }
+			public IntPtr Oam { get; }
 
-			public IntPtr Sppal { get; init; }
+			public IntPtr Sppal { get; }
 
-			public IntPtr Bgpal { get; init; }
+			public IntPtr Bgpal { get; }
 
 			private readonly List<GCHandle> _handles = new();
 

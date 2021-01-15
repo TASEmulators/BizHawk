@@ -396,24 +396,26 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			{
 				throw new InvalidOperationException("Unexpected error in gambatte_getmemoryarea");
 			}
-			return new GPUMemoryAreas
-			{
-				Vram = _vram,
-				Oam = _oam,
-				Sppal = _sppal,
-				Bgpal = _bgpal,	
-			};
+			return new GPUMemoryAreas(vram: _vram, oam: _oam, sppal: _sppal, bgpal: _bgpal);
 		}
 
 		private class GPUMemoryAreas : IGPUMemoryAreas
 		{
-			public IntPtr Vram { get; init; }
+			public IntPtr Vram { get; }
 
-			public IntPtr Oam { get; init; }
+			public IntPtr Oam { get; }
 
-			public IntPtr Sppal { get; init; }
+			public IntPtr Sppal { get; }
 
-			public IntPtr Bgpal { get; init; }
+			public IntPtr Bgpal { get; }
+
+			public GPUMemoryAreas(IntPtr vram, IntPtr oam, IntPtr sppal, IntPtr bgpal)
+			{
+				Vram = vram;
+				Oam = oam;
+				Sppal = sppal;
+				Bgpal = bgpal;
+			}
 
 			public void Dispose() {}
 		}
