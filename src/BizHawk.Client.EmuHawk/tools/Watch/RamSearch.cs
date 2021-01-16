@@ -187,7 +187,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ListView_QueryItemBkColor(int index, RollColumn column, ref Color color)
 		{
-			if (_searches.Count > 0)
+			if ((_searches.Count > 0) && (index < _searches.Count))
 			{
 				var nextColor = Color.White;
 
