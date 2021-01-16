@@ -726,14 +726,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DummyLoadMacro(string path)
 		{
-			if (!TasView.Focused && TasView.AnyRowsSelected)
+			if (!TasView.AnyRowsSelected)
 			{
 				return;
 			}
 
 			var loadZone = new MovieZone(path, Emulator, MovieSession, Tools)
 			{
-				Start = TasView.FirstSelectedIndex ?? 0
+				Start = TasView.FirstSelectedIndex.Value
 			};
 			loadZone.PlaceZone(CurrentTasMovie, Config);
 		}

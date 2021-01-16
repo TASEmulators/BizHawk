@@ -21,6 +21,7 @@ namespace BizHawk.Client.EmuHawk
 
 			saveSelectionToMacroToolStripMenuItem.Enabled =
 				placeMacroAtSelectionToolStripMenuItem.Enabled =
+				recentMacrosToolStripMenuItem.Enabled =
 				TasView.AnyRowsSelected;
 		}
 
@@ -265,14 +266,8 @@ namespace BizHawk.Client.EmuHawk
 
 			if (file != null)
 			{
-				var macro = new MovieZone(file.FullName, Emulator, MovieSession, Tools);
-				if (macro != null)
-				{
-					macro.Start = TasView.FirstSelectedIndex ?? 0;
-					macro.PlaceZone(CurrentTasMovie, Config);
-
-					Config.RecentMacros.Add(file.FullName);
-				}
+				DummyLoadMacro(file.FullName);
+				Config.RecentMacros.Add(file.FullName);
 			}
 		}
 
