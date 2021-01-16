@@ -59,7 +59,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				Name = "System Bus";
 				Size = 0x0B00_0000;
 				WordSize = 4;
-				EndianType = Endian.Big;
+				EndianType = Endian.Little;
 				Writable = true;
 			}
 
@@ -88,14 +88,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			public override uint PeekUint(long addr, bool bigEndian)
 			{
 				uint ret = ARM9Read32((uint)addr);
-				if (!bigEndian)
+				if (bigEndian)
 					ret = SwapEndianness(ret);
 				return ret;
 
 			}
 			public override void PokeUint(long addr, uint val, bool bigEndian)
 			{
-				if (!bigEndian)
+				if (bigEndian)
 					val = SwapEndianness(val);
 				ARM9Write32((uint)addr, val);
 			}
