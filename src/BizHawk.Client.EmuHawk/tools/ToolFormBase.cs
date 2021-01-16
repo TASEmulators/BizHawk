@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
@@ -60,6 +61,10 @@ namespace BizHawk.Client.EmuHawk
 
 		public FileInfo OpenFileDialog(string currentFile, string path, string fileType, string fileExt)
 		{
+			return OpenFileDialog(currentFile, path, new FilesystemFilterSet(new FilesystemFilter(fileType, new[] { fileExt })));
+		}
+		public FileInfo OpenFileDialog(string currentFile, string path, FilesystemFilterSet filterSet)
+		{
 			if (!Directory.Exists(path))
 			{
 				Directory.CreateDirectory(path);
@@ -69,9 +74,9 @@ namespace BizHawk.Client.EmuHawk
 			{
 				FileName = !string.IsNullOrWhiteSpace(currentFile)
 					? Path.GetFileName(currentFile)
-					: $"{Game.FilesystemSafeName()}.{fileExt}",
+					: $"{Game.FilesystemSafeName()}.{filterSet.Filters.FirstOrDefault()?.Extensions.FirstOrDefault()}",
 				InitialDirectory = path,
-				Filter = new FilesystemFilterSet(new FilesystemFilter(fileType, new[] { fileExt })).ToString(),
+				Filter = filterSet.ToString(),
 				RestoreDirectory = true
 			};
 
@@ -80,6 +85,10 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		public static FileInfo SaveFileDialog(string currentFile, string path, string fileType, string fileExt, IDialogParent parent)
+		{
+			return SaveFileDialog(currentFile, path, new FilesystemFilterSet(new FilesystemFilter(fileType, new[] { fileExt })), parent);
+		}
+		public static FileInfo SaveFileDialog(string currentFile, string path, FilesystemFilterSet filterSet, IDialogParent parent)
 		{
 			if (!Directory.Exists(path))
 			{
@@ -90,7 +99,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				FileName = Path.GetFileName(currentFile),
 				InitialDirectory = path,
-				Filter = new FilesystemFilterSet(new FilesystemFilter(fileType, new[] { fileExt })).ToString(),
+				Filter = filterSet.ToString(),
 				RestoreDirectory = true
 			};
 

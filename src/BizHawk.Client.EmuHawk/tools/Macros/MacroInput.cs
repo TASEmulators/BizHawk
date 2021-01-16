@@ -15,7 +15,7 @@ namespace BizHawk.Client.EmuHawk
 		[RequiredService]
 		private IEmulator Emulator { get; set; }
 
-		private static readonly FilesystemFilterSet MacrosFSFilterSet = new FilesystemFilterSet(new FilesystemFilter("Movie Macros", new[] { "bk2m" }));
+		public static readonly FilesystemFilterSet MacrosFSFilterSet = new FilesystemFilterSet(new FilesystemFilter("Movie Macros", new[] { "bk2m" }));
 
 		private readonly List<MovieZone> _zones = new List<MovieZone>();
 		private readonly List<int> _unsavedZones = new List<int>();
@@ -255,27 +255,28 @@ namespace BizHawk.Client.EmuHawk
 			ZonesList.Items.Add($"{loadZone.Name} - length: {loadZone.Length}");
 		}
 
-		private string SuggestedFolder()
+		public static string SuggestedFolder(Config config, IGameInfo game = null)
 		{
-			return Config.PathEntries.AbsolutePathFor(Path.Combine(
-				Config.PathEntries["Global", "Macros"].Path,
-				Game.FilesystemSafeName()), null);
+			return config.PathEntries.AbsolutePathFor(Path.Combine(
+				config.PathEntries["Global", "Macros"].Path,
+				game?.FilesystemSafeName()), null);
 		}
 
-		public bool SaveMacroAs(MovieZone macro)
+		private bool SaveMacroAs(MovieZone macro)
 		{
+			string suggestedFolder = SuggestedFolder(Config, Game);
 			using var dialog = new SaveFileDialog
 			{
-				InitialDirectory = SuggestedFolder(),
+				InitialDirectory = suggestedFolder,
 				FileName = macro.Name,
 				Filter = MacrosFSFilterSet.ToString()
 			};
 
 			// Create directory?
 			bool create = false;
-			if (!Directory.Exists(SuggestedFolder()))
+			if (!Directory.Exists(suggestedFolder))
 			{
-				Directory.CreateDirectory(SuggestedFolder());
+				Directory.CreateDirectory(suggestedFolder);
 				create = true;
 			}
 
@@ -295,11 +296,11 @@ namespace BizHawk.Client.EmuHawk
 			return true;
 		}
 
-		public MovieZone LoadMacro(IEmulator emulator = null, ToolManager tools = null)
+		private MovieZone LoadMacro(IEmulator emulator = null, ToolManager tools = null)
 		{
 			using var dialog = new OpenFileDialog
 			{
-				InitialDirectory = SuggestedFolder(),
+				InitialDirectory = SuggestedFolder(Config),
 				Filter = MacrosFSFilterSet.ToString()
 			};
 

@@ -228,17 +228,26 @@ namespace BizHawk.Client.EmuHawk
 				TasView.SelectRow(CurrentTasMovie.InputLogLength, false);
 			}
 
-			var macro = new MovieZone(
-				CurrentTasMovie,
-				Emulator,
-				Tools,
-				MovieSession,
-				TasView.FirstSelectedIndex ?? 0,
-				TasView.LastSelectedIndex ?? 0 - TasView.FirstSelectedIndex ?? 0 + 1);
+			var file = SaveFileDialog(
+				null,
+				MacroInputTool.SuggestedFolder(Config, Game),
+				MacroInputTool.MacrosFSFilterSet,
+				this
+			);
 
-			//var macroTool = Tools.Load<MacroInputTool>(false);
-			var macroTool = new MacroInputTool { Config = Config };
-			macroTool.SaveMacroAs(macro);
+			if (file != null)
+			{
+				new MovieZone(
+					CurrentTasMovie,
+					Emulator,
+					Tools,
+					MovieSession,
+					TasView.FirstSelectedIndex ?? 0,
+					TasView.LastSelectedIndex ?? 0 - TasView.FirstSelectedIndex ?? 0 + 1)
+					.Save(file.FullName);
+
+				Config.RecentMacros.Add(file.FullName);
+			}
 		}
 
 		private void PlaceMacroAtSelectionMenuItem_Click(object sender, EventArgs e)
@@ -248,13 +257,22 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			//var macroTool = Tools.Load<MacroInputTool>(false);
-			var macroTool = new MacroInputTool { Config = Config };
-			var macro = macroTool.LoadMacro(Emulator, Tools);
-			if (macro != null)
+			var file = OpenFileDialog(
+				null,
+				MacroInputTool.SuggestedFolder(Config, Game),
+				MacroInputTool.MacrosFSFilterSet
+			);
+
+			if (file != null)
 			{
-				macro.Start = TasView.FirstSelectedIndex ?? 0;
-				macro.PlaceZone(CurrentTasMovie, Config);
+				var macro = new MovieZone(file.FullName, Emulator, MovieSession, Tools);
+				if (macro != null)
+				{
+					macro.Start = TasView.FirstSelectedIndex ?? 0;
+					macro.PlaceZone(CurrentTasMovie, Config);
+
+					Config.RecentMacros.Add(file.FullName);
+				}
 			}
 		}
 
