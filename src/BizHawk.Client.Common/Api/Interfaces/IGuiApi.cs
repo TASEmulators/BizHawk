@@ -9,8 +9,16 @@ namespace BizHawk.Client.Common
 		void ToggleCompositingMode();
 		ImageAttributes GetAttributes();
 		void SetAttributes(ImageAttributes a);
+
+		void WithEmuSurface(Action drawingCallsFunc);
+
+		[Obsolete]
 		void DrawNew(string name, bool clear = true);
+
+		[Obsolete]
 		void DrawFinish();
+
+		[Obsolete]
 		bool HasGUISurface { get; }
 
 		void SetPadding(int all);

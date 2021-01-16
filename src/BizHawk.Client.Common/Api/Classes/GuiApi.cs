@@ -75,12 +75,37 @@ namespace BizHawk.Client.Common
 
 		public void SetAttributes(ImageAttributes a) => _attributes = a;
 
-		public void DrawNew(string name, bool clear)
+		private void LockEmuSurface()
+		{
+			if (_GUISurface != null) throw new InvalidOperationException("attempt to lock surface without unlocking previous");
+			_GUISurface = _displayManager.LockLuaSurface("emu", clear: true);
+		}
+
+		private void UnlockEmuSurface()
+		{
+			if (_GUISurface != null) _displayManager.UnlockLuaSurface(_GUISurface);
+			_GUISurface = null;
+		}
+
+		public void WithEmuSurface(Action drawingCallsFunc)
+		{
+			LockEmuSurface();
+			try
+			{
+				drawingCallsFunc();
+			}
+			finally
+			{
+				UnlockEmuSurface();
+			}
+		}
+
+		public void LockEmuSurfaceLua()
 		{
 			try
 			{
-				DrawFinish();
-				_GUISurface = _displayManager.LockLuaSurface(name, clear);
+				UnlockEmuSurface();
+				LockEmuSurface();
 			}
 			catch (InvalidOperationException ex)
 			{
@@ -88,11 +113,24 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void DrawFinish()
+		public void UnlockEmuSurfaceLua() => UnlockEmuSurface();
+
+		public void DrawNew(string name, bool clear)
 		{
-			if (_GUISurface != null) _displayManager.UnlockLuaSurface(_GUISurface);
-			_GUISurface = null;
+			switch (name)
+			{
+				case null:
+				case "emu":
+					LogCallback("the `DrawNew(\"emu\")` function has been deprecated");
+					return;
+				case "native":
+					throw new InvalidOperationException("the ability to draw in the margins with `DrawNew(\"native\")` has been removed");
+				default:
+					throw new InvalidOperationException("invalid surface name");
+			}
 		}
+
+		public void DrawFinish() => LogCallback("the `DrawFinish()` function has been deprecated");
 
 		public void SetPadding(int all) => _padding = (all, all, all, all);
 
@@ -104,11 +142,7 @@ namespace BizHawk.Client.Common
 
 		public void AddMessage(string message) => _displayManager.OSD.AddMessage(message);
 
-		public void ClearGraphics()
-		{
-			_GUISurface.Clear();
-			DrawFinish();
-		}
+		public void ClearGraphics() => _GUISurface.Clear();
 
 		public void ClearText() => _displayManager.OSD.ClearGuiText();
 
