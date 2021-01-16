@@ -134,7 +134,11 @@ namespace BizHawk.Client.EmuHawk
 						MainForm.FrameBufferResized();
 					}
 
-					(LuaImp as Win32LuaLibraries)?.Close();
+					if (LuaImp is Win32LuaLibraries luaLibsImpl)
+					{
+						luaLibsImpl.GuiLibrary?.DrawFinish();
+						luaLibsImpl.Close();
+					}
 					DisplayManager.OSD.ClearGuiText();
 				}
 				else
@@ -215,6 +219,11 @@ namespace BizHawk.Client.EmuHawk
 					// Even if the lua console is self-rebooting from client.reboot_core() we still want to re-inject dependencies
 					luaLibsImpl.Restart(Emulator.ServiceProvider, Config, Emulator, Game);
 					return;
+				}
+
+				if (luaLibsImpl.GuiLibrary != null && luaLibsImpl.GuiLibrary.HasLuaSurface)
+				{
+					luaLibsImpl.GuiLibrary.DrawFinish();
 				}
 
 				runningScripts = luaLibsImpl.ScriptList.Where(lf => lf.Enabled).ToList();
@@ -563,6 +572,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			luaLibsImpl.CallFrameBeforeEvent();
+			luaLibsImpl.StartLuaDrawing();
 		}
 
 		protected override void UpdateAfter()
@@ -574,6 +584,7 @@ namespace BizHawk.Client.EmuHawk
 
 			luaLibsImpl.CallFrameAfterEvent();
 			ResumeScripts(true);
+			luaLibsImpl.EndLuaDrawing();
 		}
 
 		protected override void FastUpdateBefore()
@@ -604,6 +615,11 @@ namespace BizHawk.Client.EmuHawk
 				|| (MainForm.IsTurboing && !Config.RunLuaDuringTurbo))
 			{
 				return;
+			}
+
+			if (luaLibsImpl.GuiLibrary?.SurfaceIsNull == true)
+			{
+				luaLibsImpl.GuiLibrary.DrawNew("emu");
 			}
 
 			foreach (var lf in luaLibsImpl.ScriptList.Where(l => l.Enabled && l.Thread != null && !l.Paused))
@@ -939,7 +955,7 @@ namespace BizHawk.Client.EmuHawk
 					item.State = LuaFile.RunState.Disabled;
 				});
 
-				// there used to be a call here which did a redraw of the Gui/OSD, which included a call to `Tools.UpdateToolsAfter` --yoshi
+				ReDraw();
 			}
 			catch (IOException)
 			{
@@ -949,6 +965,17 @@ namespace BizHawk.Client.EmuHawk
 			{
 				DialogController.ShowMessageBox(ex.ToString());
 			}
+		}
+
+		private void ReDraw()
+		{
+			// Shenanigans
+			// We want any gui.text messages from a script to immediately update even when paused
+			DisplayManager.OSD.ClearGuiText();
+			Tools.UpdateToolsAfter();
+			if (!(LuaImp is Win32LuaLibraries luaLibsImpl)) return;
+			luaLibsImpl.EndLuaDrawing();
+			luaLibsImpl.StartLuaDrawing();
 		}
 
 		private void PauseScriptMenuItem_Click(object sender, EventArgs e)
@@ -1554,7 +1581,7 @@ namespace BizHawk.Client.EmuHawk
 				luaLibsImpl.RegisteredFunctions.RemoveForFile(file, Emulator);
 				luaLibsImpl.CallExitEvent(file);
 				file.Stop();
-				// there used to be a call here which did a redraw of the Gui/OSD, which included a call to `Tools.UpdateToolsAfter` --yoshi
+				ReDraw();
 			}
 		}
 
