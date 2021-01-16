@@ -239,7 +239,6 @@ namespace BizHawk.Client.EmuHawk
 			if (file != null)
 			{
 				new MovieZone(
-					CurrentTasMovie,
 					Emulator,
 					Tools,
 					MovieSession,
