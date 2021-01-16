@@ -10,7 +10,7 @@ namespace BizHawk.Client.Common
 		ImageAttributes GetAttributes();
 		void SetAttributes(ImageAttributes a);
 
-		void WithEmuSurface(Action drawingCallsFunc);
+		void WithSurface(DisplaySurfaceID surfaceID, Action drawingCallsFunc);
 
 		[Obsolete]
 		void DrawNew(string name, bool clear = true);
@@ -27,32 +27,31 @@ namespace BizHawk.Client.Common
 		(int Left, int Top, int Right, int Bottom) GetPadding();
 
 		void AddMessage(string message);
-		void ClearGraphics();
+		void ClearGraphics(DisplaySurfaceID? surfaceID = null);
 		void ClearText();
 		void SetDefaultForegroundColor(Color color);
 		void SetDefaultBackgroundColor(Color color);
 		Color? GetDefaultTextBackground();
 		void SetDefaultTextBackground(Color color);
 		void SetDefaultPixelFont(string fontfamily);
-		void DrawBezier(Point p1, Point p2, Point p3, Point p4, Color? color = null);
-		void DrawBeziers(Point[] points, Color? color = null);
-		void DrawBox(int x, int y, int x2, int y2, Color? line = null, Color? background = null);
-		void DrawEllipse(int x, int y, int width, int height, Color? line = null, Color? background = null);
-		void DrawIcon(string path, int x, int y, int? width = null, int? height = null);
-		void DrawImage(Image img, int x, int y, int? width = null, int? height = null, bool cache = true);
-		void DrawImage(string path, int x, int y, int? width = null, int? height = null, bool cache = true);
+		void DrawBezier(Point p1, Point p2, Point p3, Point p4, Color? color = null, DisplaySurfaceID? surfaceID = null);
+		void DrawBeziers(Point[] points, Color? color = null, DisplaySurfaceID? surfaceID = null);
+		void DrawBox(int x, int y, int x2, int y2, Color? line = null, Color? background = null, DisplaySurfaceID? surfaceID = null);
+		void DrawEllipse(int x, int y, int width, int height, Color? line = null, Color? background = null, DisplaySurfaceID? surfaceID = null);
+		void DrawIcon(string path, int x, int y, int? width = null, int? height = null, DisplaySurfaceID? surfaceID = null);
+		void DrawImage(Image img, int x, int y, int? width = null, int? height = null, bool cache = true, DisplaySurfaceID? surfaceID = null);
+		void DrawImage(string path, int x, int y, int? width = null, int? height = null, bool cache = true, DisplaySurfaceID? surfaceID = null);
 		void ClearImageCache();
-		void DrawImageRegion(Image img, int source_x, int source_y, int source_width, int source_height, int dest_x, int dest_y, int? dest_width = null, int? dest_height = null);
-		void DrawImageRegion(string path, int source_x, int source_y, int source_width, int source_height, int dest_x, int dest_y, int? dest_width = null, int? dest_height = null);
-		void DrawLine(int x1, int y1, int x2, int y2, Color? color = null);
-		void DrawAxis(int x, int y, int size, Color? color = null);
-		void DrawPie(int x, int y, int width, int height, int startangle, int sweepangle, Color? line = null, Color? background = null);
-		void DrawPixel(int x, int y, Color? color = null);
-		void DrawPolygon(Point[] points, Color? line = null, Color? background = null);
-		void DrawRectangle(int x, int y, int width, int height, Color? line = null, Color? background = null);
-		void DrawString(int x, int y, string message, Color? forecolor = null, Color? backcolor = null, int? fontsize = null,
-							  string fontfamily = null, string fontstyle = null, string horizalign = null, string vertalign = null);
-		void DrawText(int x, int y, string message, Color? forecolor = null, Color? backcolor = null, string fontfamily = null);
+		void DrawImageRegion(Image img, int source_x, int source_y, int source_width, int source_height, int dest_x, int dest_y, int? dest_width = null, int? dest_height = null, DisplaySurfaceID? surfaceID = null);
+		void DrawImageRegion(string path, int source_x, int source_y, int source_width, int source_height, int dest_x, int dest_y, int? dest_width = null, int? dest_height = null, DisplaySurfaceID? surfaceID = null);
+		void DrawLine(int x1, int y1, int x2, int y2, Color? color = null, DisplaySurfaceID? surfaceID = null);
+		void DrawAxis(int x, int y, int size, Color? color = null, DisplaySurfaceID? surfaceID = null);
+		void DrawPie(int x, int y, int width, int height, int startangle, int sweepangle, Color? line = null, Color? background = null, DisplaySurfaceID? surfaceID = null);
+		void DrawPixel(int x, int y, Color? color = null, DisplaySurfaceID? surfaceID = null);
+		void DrawPolygon(Point[] points, Color? line = null, Color? background = null, DisplaySurfaceID? surfaceID = null);
+		void DrawRectangle(int x, int y, int width, int height, Color? line = null, Color? background = null, DisplaySurfaceID? surfaceID = null);
+		void DrawString(int x, int y, string message, Color? forecolor = null, Color? backcolor = null, int? fontsize = null, string fontfamily = null, string fontstyle = null, string horizalign = null, string vertalign = null, DisplaySurfaceID? surfaceID = null);
+		void DrawText(int x, int y, string message, Color? forecolor = null, Color? backcolor = null, string fontfamily = null, DisplaySurfaceID? surfaceID = null);
 		void Text(int x, int y, string message, Color? forecolor = null, string anchor = null);
 	}
 }
