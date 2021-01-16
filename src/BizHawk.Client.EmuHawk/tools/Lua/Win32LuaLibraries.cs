@@ -125,8 +125,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public string EngineName => Lua.WhichLua;
 
-		public GuiLuaLibrary GuiLibrary => (GuiLuaLibrary) Libraries[typeof(GuiLuaLibrary)];
-
 		public bool IsRebootingCore { get; set; }
 
 		public bool IsUpdateSupressed { get; set; }
@@ -152,22 +150,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				lib.APIs = apiContainer;
 				ServiceInjector.UpdateServices(newServiceProvider, lib);
-			}
-		}
-
-		public void StartLuaDrawing()
-		{
-			if (ScriptList.Count != 0 && GuiLibrary.SurfaceIsNull && !IsUpdateSupressed)
-			{
-				GuiLibrary.DrawNew("emu");
-			}
-		}
-
-		public void EndLuaDrawing()
-		{
-			if (ScriptList.Count != 0 && !IsUpdateSupressed)
-			{
-				GuiLibrary.DrawFinish();
 			}
 		}
 
@@ -252,7 +234,6 @@ namespace BizHawk.Client.EmuHawk
 			FormsLibrary.DestroyAll();
 			_lua.Close();
 			_lua = new Lua();
-			GuiLibrary.Dispose();
 		}
 
 		public INamedLuaFunction CreateAndRegisterNamedFunction(LuaFunction function, string theEvent, Action<string> logCallback, LuaFile luaFile, string name = null)
