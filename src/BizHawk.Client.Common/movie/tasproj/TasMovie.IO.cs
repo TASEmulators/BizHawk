@@ -174,9 +174,13 @@ namespace BizHawk.Client.Common
 				}
 				catch
 				{
-					// Do nothing, if state history got corrupted, the file is still very much useable
+					// Continue with a fresh manager. If state history got corrupted, the file is still very much useable
 					// and we would want the user to be able to load, and regenerate their state history
 					// however, we still have an issue of how state history got corrupted
+					TasStateManager = new ZwinderStateManager(
+						Session.Settings.DefaultTasStateManagerSettings,
+						IsReserved);
+					Session.PopupMessage("State history was corrupted, clearing and working with a fresh history.");
 				}
 			});
 		}
