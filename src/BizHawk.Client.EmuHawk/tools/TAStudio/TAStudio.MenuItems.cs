@@ -242,8 +242,8 @@ namespace BizHawk.Client.EmuHawk
 					Emulator,
 					Tools,
 					MovieSession,
-					TasView.FirstSelectedIndex ?? 0,
-					TasView.LastSelectedIndex ?? 0 - TasView.FirstSelectedIndex ?? 0 + 1)
+					TasView.FirstSelectedIndex.Value,
+					TasView.LastSelectedIndex.Value - TasView.FirstSelectedIndex.Value + 1)
 					.Save(file.FullName);
 
 				Config.RecentMacros.Add(file.FullName);
