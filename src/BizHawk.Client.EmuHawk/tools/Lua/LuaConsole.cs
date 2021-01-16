@@ -120,7 +120,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					Settings.Columns = LuaListView.AllColumns;
 					
-					DisplayManager.ClearLuaSurfaces();
+					DisplayManager.ClearApiHawkSurfaces();
 
 					if (DisplayManager.ClientExtraPadding != (0, 0, 0, 0))
 					{
@@ -1511,7 +1511,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void EraseToolbarItem_Click(object sender, EventArgs e)
 		{
-			DisplayManager.ClearLuaSurfaces();
+			DisplayManager.ClearApiHawkSurfaces();
 		}
 
 		// Stupid designer

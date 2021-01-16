@@ -92,11 +92,11 @@ namespace BizHawk.Client.Common
 			{
 				case DisplaySurfaceID.EmuCore:
 					if (_GUISurface != null) throw new InvalidOperationException("attempt to lock surface without unlocking previous");
-					_GUISurface = _displayManager.LockLuaSurface(surfaceID.GetName(), clear: true);
+					_GUISurface = _displayManager.LockApiHawkSurface(surfaceID, clear: true);
 					break;
 				case DisplaySurfaceID.Client:
 					if (_clientSurface != null) throw new InvalidOperationException("attempt to lock surface without unlocking previous");
-					_clientSurface = _displayManager.LockLuaSurface(surfaceID.GetName(), clear: true);
+					_clientSurface = _displayManager.LockApiHawkSurface(surfaceID, clear: true);
 					break;
 				default:
 					throw new ArgumentException(message: "not a valid enum member", paramName: nameof(surfaceID));
@@ -108,11 +108,11 @@ namespace BizHawk.Client.Common
 			switch (surfaceID)
 			{
 				case DisplaySurfaceID.EmuCore:
-					if (_GUISurface != null) _displayManager.UnlockLuaSurface(_GUISurface);
+					if (_GUISurface != null) _displayManager.UnlockApiHawkSurface(_GUISurface);
 					_GUISurface = null;
 					break;
 				case DisplaySurfaceID.Client:
-					if (_clientSurface != null) _displayManager.UnlockLuaSurface(_clientSurface);
+					if (_clientSurface != null) _displayManager.UnlockApiHawkSurface(_clientSurface);
 					_clientSurface = null;
 					break;
 				default:

@@ -9,12 +9,12 @@ namespace BizHawk.Client.Common
 
 		OSDManager OSD { get; }
 
-		/// <summary>locks the lua surface called <paramref name="name"/></summary>
+		/// <summary>locks the surface with ID <paramref name="surfaceID"/></summary>
 		/// <exception cref="InvalidOperationException">already locked, or unknown surface</exception>
-		DisplaySurface LockLuaSurface(string name, bool clear = true);
+		DisplaySurface LockApiHawkSurface(DisplaySurfaceID surfaceID, bool clear = true);
 
-		/// <summary>unlocks this DisplaySurface which had better have been locked as a lua surface</summary>
+		/// <summary>unlocks the given <paramref name="surface"/>, which must be a locked surface produced by <see cref="LockApiHawkSurface"/></summary>
 		/// <exception cref="InvalidOperationException">already unlocked</exception>
-		void UnlockLuaSurface(DisplaySurface surface);
+		void UnlockApiHawkSurface(DisplaySurface surface);
 	}
 }
