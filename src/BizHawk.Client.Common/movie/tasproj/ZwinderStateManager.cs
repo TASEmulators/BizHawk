@@ -469,7 +469,7 @@ namespace BizHawk.Client.Common
 
 		public bool HasState(int frame)
 		{
-			return GetStateClosestToFrame(frame).Key == frame;
+			return StateCache.Contains(frame);
 		}
 
 		private bool InvalidateGaps(int frame)
