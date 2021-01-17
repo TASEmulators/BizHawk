@@ -675,6 +675,7 @@ namespace BizHawk.Client.Common.Filters
 		}
 	}
 
+	/// <remarks>More accurately, ApiHawkLayer, since the <c>gui</c> Lua library is delegated.</remarks>
 	public class LuaLayer : BaseFilter
 	{
 		public override void Initialize()

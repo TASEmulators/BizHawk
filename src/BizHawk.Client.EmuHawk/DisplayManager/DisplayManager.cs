@@ -130,10 +130,10 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			_luaSurfaceSets["emu"] = new SwappableDisplaySurfaceSet();
-			_luaSurfaceSets["native"] = new SwappableDisplaySurfaceSet();
-			_luaSurfaceFrugalizers["emu"] = new TextureFrugalizer(_gl);
-			_luaSurfaceFrugalizers["native"] = new TextureFrugalizer(_gl);
+			_apiHawkSurfaceSets[DisplaySurfaceID.EmuCore] = new SwappableDisplaySurfaceSet();
+			_apiHawkSurfaceSets[DisplaySurfaceID.Client] = new SwappableDisplaySurfaceSet();
+			_apiHawkSurfaceFrugalizers[DisplaySurfaceID.EmuCore] = new TextureFrugalizer(_gl);
+			_apiHawkSurfaceFrugalizers[DisplaySurfaceID.Client] = new TextureFrugalizer(_gl);
 
 			RefreshUserShader();
 		}
@@ -152,7 +152,7 @@ namespace BizHawk.Client.EmuHawk
 			if (Disposed) return;
 			Disposed = true;
 			_videoTextureFrugalizer.Dispose();
-			foreach (var f in _luaSurfaceFrugalizers.Values)
+			foreach (var f in _apiHawkSurfaceFrugalizers.Values)
 			{
 				f.Dispose();
 			}
@@ -217,7 +217,7 @@ namespace BizHawk.Client.EmuHawk
 		public PrivateFontCollection CustomFonts { get; } = new PrivateFontCollection();
 
 		private readonly TextureFrugalizer _videoTextureFrugalizer;
-		private readonly Dictionary<string, TextureFrugalizer> _luaSurfaceFrugalizers = new Dictionary<string, TextureFrugalizer>();
+		private readonly Dictionary<DisplaySurfaceID, TextureFrugalizer> _apiHawkSurfaceFrugalizers = new();
 		private readonly RenderTargetFrugalizer[] _shaderChainFrugalizers;
 		private readonly RetroShaderChain _shaderChainHq2X, _shaderChainScanlines, _shaderChainBicubic;
 		private RetroShaderChain _shaderChainUser;
@@ -340,7 +340,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			//add lua layer 'emu'
-			AppendLuaLayer(chain, "emu");
+			AppendApiHawkLayer(chain, DisplaySurfaceID.EmuCore);
 
 			if(includeUserFilters)
 				if (GlobalConfig.DispPrescale != 1)
@@ -394,7 +394,7 @@ namespace BizHawk.Client.EmuHawk
 				chain.AddFilter(fPresent, "presentation");
 
 			//add lua layer 'native'
-			AppendLuaLayer(chain, "native");
+			AppendApiHawkLayer(chain, DisplaySurfaceID.Client);
 
 			// and OSD goes on top of that
 			// TODO - things break if this isn't present (the final presentation filter gets messed up when used with prescaling)
@@ -416,18 +416,18 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void AppendLuaLayer(FilterProgram chain, string name)
+		private void AppendApiHawkLayer(FilterProgram chain, DisplaySurfaceID surfaceID)
 		{
-			var luaNativeSurface = _luaSurfaceSets[name].GetCurrent();
+			var luaNativeSurface = _apiHawkSurfaceSets[surfaceID].GetCurrent();
 			if (luaNativeSurface == null)
 			{
 				return;
 			}
 
-			Texture2d luaNativeTexture = _luaSurfaceFrugalizers[name].Get(luaNativeSurface);
+			Texture2d luaNativeTexture = _apiHawkSurfaceFrugalizers[surfaceID].Get(luaNativeSurface);
 			var fLuaLayer = new LuaLayer();
 			fLuaLayer.SetTexture(luaNativeTexture);
-			chain.AddFilter(fLuaLayer, name);
+			chain.AddFilter(fLuaLayer, surfaceID.GetName());
 		}
 
 		/// <summary>
@@ -1100,33 +1100,34 @@ namespace BizHawk.Client.EmuHawk
 		private bool? _lastVsyncSetting;
 		private GraphicsControl _lastVsyncSettingGraphicsControl;
 
-		private readonly Dictionary<string, DisplaySurface> _mapNameToLuaSurface = new Dictionary<string,DisplaySurface>();
-		private readonly Dictionary<DisplaySurface, string> _mapLuaSurfaceToName = new Dictionary<DisplaySurface, string>();
-		private readonly Dictionary<string, SwappableDisplaySurfaceSet> _luaSurfaceSets = new Dictionary<string, SwappableDisplaySurfaceSet>();
+		private readonly Dictionary<DisplaySurfaceID, DisplaySurface> _apiHawkIDToSurface = new();
+
+		/// <remarks>Can't this just be a field/prop of <see cref="DisplaySurface"/>? --yoshi</remarks>
+		private readonly Dictionary<DisplaySurface, DisplaySurfaceID> _apiHawkSurfaceToID = new();
+
+		private readonly Dictionary<DisplaySurfaceID, SwappableDisplaySurfaceSet> _apiHawkSurfaceSets = new();
 
 		/// <summary>
 		/// Peeks a locked lua surface, or returns null if it isn't locked
 		/// </summary>
-		public DisplaySurface PeekLockedLuaSurface(string name)
+		public DisplaySurface PeekApiHawkLockedSurface(DisplaySurfaceID surfaceID)
 		{
-			if (_mapNameToLuaSurface.ContainsKey(name))
-				return _mapNameToLuaSurface[name];
+			if (_apiHawkIDToSurface.ContainsKey(surfaceID))
+				return _apiHawkIDToSurface[surfaceID];
 			return null;
 		}
 
-		/// <summary>locks the lua surface called <paramref name="name"/></summary>
-		/// <exception cref="InvalidOperationException">already locked, or unknown surface</exception>
-		public DisplaySurface LockLuaSurface(string name, bool clear=true)
+		public DisplaySurface LockApiHawkSurface(DisplaySurfaceID surfaceID, bool clear)
 		{
-			if (_mapNameToLuaSurface.ContainsKey(name))
+			if (_apiHawkIDToSurface.ContainsKey(surfaceID))
 			{
-				throw new InvalidOperationException($"Lua surface is already locked: {name}");
+				throw new InvalidOperationException($"ApiHawk/Lua surface is already locked: {surfaceID.GetName()}");
 			}
 
-			if (!_luaSurfaceSets.TryGetValue(name, out var sdss))
+			if (!_apiHawkSurfaceSets.TryGetValue(surfaceID, out var sdss))
 			{
 				sdss = new SwappableDisplaySurfaceSet();
-				_luaSurfaceSets.Add(name, sdss);
+				_apiHawkSurfaceSets.Add(surfaceID, sdss);
 			}
 
 			// placeholder logic for more abstracted surface definitions from filter chain
@@ -1136,45 +1137,38 @@ namespace BizHawk.Client.EmuHawk
 			currNativeWidth += _clientExtraPadding.Horizontal;
 			currNativeHeight += _clientExtraPadding.Vertical;
 
-			int width,height;
-			if (name == "emu")
+			var (width, height) = surfaceID switch
 			{
-				width = _currEmuWidth;
-				height = _currEmuHeight;
-				width += _gameExtraPadding.Horizontal;
-				height += _gameExtraPadding.Vertical;
-			}
-			else if (name == "native")
-			{
-				width = currNativeWidth; height = currNativeHeight;
-			}
-			else throw new InvalidOperationException($"Unknown lua surface name: {name}");
+				DisplaySurfaceID.EmuCore => (_currEmuWidth + _gameExtraPadding.Horizontal, _currEmuHeight + _gameExtraPadding.Vertical),
+				DisplaySurfaceID.Client => (currNativeWidth, currNativeHeight),
+				_ => throw new ArgumentException(message: "not a valid enum member", paramName: nameof(surfaceID))
+			};
 
 			DisplaySurface ret = sdss.AllocateSurface(width, height, clear);
-			_mapNameToLuaSurface[name] = ret;
-			_mapLuaSurfaceToName[ret] = name;
+			_apiHawkIDToSurface[surfaceID] = ret;
+			_apiHawkSurfaceToID[ret] = surfaceID;
 			return ret;
 		}
 
-		public void ClearLuaSurfaces()
+		public void ClearApiHawkSurfaces()
 		{
-			foreach (var kvp in _luaSurfaceSets)
+			foreach (var kvp in _apiHawkSurfaceSets)
 			{
 				try
 				{
-					var surf = PeekLockedLuaSurface(kvp.Key);
+					var surf = PeekApiHawkLockedSurface(kvp.Key);
 					DisplaySurface surfLocked = null;
 					if (surf == null)
 					{
-						surfLocked = LockLuaSurface(kvp.Key, true);
+						surfLocked = LockApiHawkSurface(kvp.Key, true);
 					}
 
 					if (surfLocked != null)
 					{
-						UnlockLuaSurface(surfLocked);
+						UnlockApiHawkSurface(surfLocked);
 					}
 
-					_luaSurfaceSets[kvp.Key].SetPending(null);
+					_apiHawkSurfaceSets[kvp.Key].SetPending(null);
 				}
 				catch (InvalidOperationException)
 				{
@@ -1184,17 +1178,17 @@ namespace BizHawk.Client.EmuHawk
 
 		/// <summary>unlocks this DisplaySurface which had better have been locked as a lua surface</summary>
 		/// <exception cref="InvalidOperationException">already unlocked</exception>
-		public void UnlockLuaSurface(DisplaySurface surface)
+		public void UnlockApiHawkSurface(DisplaySurface surface)
 		{
-			if (!_mapLuaSurfaceToName.ContainsKey(surface))
+			if (!_apiHawkSurfaceToID.ContainsKey(surface))
 			{
 				throw new InvalidOperationException("Surface was not locked as a lua surface");
 			}
 
-			string name = _mapLuaSurfaceToName[surface];
-			_mapLuaSurfaceToName.Remove(surface);
-			_mapNameToLuaSurface.Remove(name);
-			_luaSurfaceSets[name].SetPending(surface);
+			var surfaceID = _apiHawkSurfaceToID[surface];
+			_apiHawkSurfaceToID.Remove(surface);
+			_apiHawkIDToSurface.Remove(surfaceID);
+			_apiHawkSurfaceSets[surfaceID].SetPending(surface);
 		}
 
 		// helper classes:

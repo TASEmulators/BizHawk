@@ -49,6 +49,7 @@ namespace BizHawk.Client.EmuHawk
 			LuaWait = new AutoResetEvent(false);
 			Docs.Clear();
 			var apiContainer = ApiManager.RestartLua(serviceProvider, LogToLuaConsole, _mainForm, _displayManager, _inputManager, _mainForm.MovieSession, _mainForm.Tools, config, emulator, game);
+			_guiAPI = (GuiApi) apiContainer.Gui;
 
 			// Register lua libraries
 			foreach (var lib in Client.Common.ReflectionCache.Types.Concat(EmuHawk.ReflectionCache.Types)
@@ -106,6 +107,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly IDisplayManagerForApi _displayManager;
 
+		private GuiApi _guiAPI;
+
 		private readonly InputManager _inputManager;
 
 		private readonly MainForm _mainForm;
@@ -124,8 +127,6 @@ namespace BizHawk.Client.EmuHawk
 		private EmulationLuaLibrary EmulationLuaLibrary => (EmulationLuaLibrary)Libraries[typeof(EmulationLuaLibrary)];
 
 		public string EngineName => Lua.WhichLua;
-
-		public GuiLuaLibrary GuiLibrary => (GuiLuaLibrary) Libraries[typeof(GuiLuaLibrary)];
 
 		public bool IsRebootingCore { get; set; }
 
@@ -148,26 +149,11 @@ namespace BizHawk.Client.EmuHawk
 			IGameInfo game)
 		{
 			var apiContainer = ApiManager.RestartLua(newServiceProvider, LogToLuaConsole, _mainForm, _displayManager, _inputManager, _mainForm.MovieSession, _mainForm.Tools, config, emulator, game);
+			_guiAPI = (GuiApi) apiContainer.Gui;
 			foreach (var lib in Libraries.Values)
 			{
 				lib.APIs = apiContainer;
 				ServiceInjector.UpdateServices(newServiceProvider, lib);
-			}
-		}
-
-		public void StartLuaDrawing()
-		{
-			if (ScriptList.Count != 0 && GuiLibrary.SurfaceIsNull && !IsUpdateSupressed)
-			{
-				GuiLibrary.DrawNew("emu");
-			}
-		}
-
-		public void EndLuaDrawing()
-		{
-			if (ScriptList.Count != 0 && !IsUpdateSupressed)
-			{
-				GuiLibrary.DrawFinish();
 			}
 		}
 
@@ -252,7 +238,6 @@ namespace BizHawk.Client.EmuHawk
 			FormsLibrary.DestroyAll();
 			_lua.Close();
 			_lua = new Lua();
-			GuiLibrary.Dispose();
 		}
 
 		public INamedLuaFunction CreateAndRegisterNamedFunction(LuaFunction function, string theEvent, Action<string> logCallback, LuaFile luaFile, string name = null)
@@ -307,7 +292,9 @@ namespace BizHawk.Client.EmuHawk
 			{
 				LuaLibraryBase.SetCurrentThread(lf);
 
+				_guiAPI.LockEmuSurfaceLua();
 				var execResult = _currThread.Resume(0);
+				_guiAPI.UnlockEmuSurfaceLua();
 
 				_lua.RunScheduledDisposes(); // TODO: I don't think this is needed anymore, we run this regularly anyway
 
@@ -321,6 +308,11 @@ namespace BizHawk.Client.EmuHawk
 
 				FrameAdvanceRequested = false;
 				return result;
+			}
+			catch (Exception)
+			{
+				_guiAPI.UnlockEmuSurfaceLua();
+				throw;
 			}
 			finally
 			{
