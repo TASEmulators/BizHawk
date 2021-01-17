@@ -40,7 +40,7 @@ namespace BizHawk.Client.EmuHawk
 				var p = OSTC.LinkedLibManager.LoadOrZero(dllToLoad);
 				if (p == IntPtr.Zero)
 				{
-					using (var box = new ExceptionBox($"EmuHawk needs {desc} in order to run! See the readme for more info. (EmuHawk will now close.)")) box.ShowDialog();
+					using (var box = new ExceptionBox($"EmuHawk needs {desc} in order to run! See the readme on GitHub for more info. (EmuHawk will now close.)")) box.ShowDialog();
 					Process.GetCurrentProcess().Kill();
 					return;
 				}
