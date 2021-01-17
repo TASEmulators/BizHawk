@@ -9,8 +9,6 @@ using System.Windows.Forms;
 using BizHawk.Bizware.BizwareGL;
 using BizHawk.Bizware.DirectX;
 
-using Microsoft.VisualBasic.ApplicationServices;
-
 using BizHawk.Common;
 using BizHawk.Common.PathExtensions;
 using BizHawk.Client.Common;
@@ -210,41 +208,27 @@ namespace BizHawk.Client.EmuHawk
 			var exitCode = 0;
 			try
 			{
-				if (!OSTC.IsUnixHost && initialConfig.SingleInstanceMode)
+				var mf = new MainForm(initialConfig, workingGL, newSound => globalSound = newSound, args, out var movieSession);
+//				var title = mf.Text;
+				mf.Show();
+//				mf.Text = title;
+				try
 				{
-					try
-					{
-						InitAndRunSingleInstance(initialConfig, workingGL, newSound => globalSound = newSound, i => exitCode = i, args);
-					}
-					catch (ObjectDisposedException)
-					{
-						// Eat it, MainForm disposed itself and Run attempts to dispose of itself.  Eventually we would want to figure out a way to prevent that, but in the meantime it is harmless, so just eat the error
-					}
+					exitCode = mf.ProgramRunLoop();
+					if (!mf.IsDisposed)
+						mf.Dispose();
 				}
-				else
+				catch (Exception e) when (movieSession.Movie.IsActive() && !(Debugger.IsAttached || VersionInfo.DeveloperBuild))
 				{
-					var mf = new MainForm(initialConfig, workingGL, newSound => globalSound = newSound, args, out var movieSession);
-//					var title = mf.Text;
-					mf.Show();
-//					mf.Text = title;
-					try
+					var result = MessageBox.Show(
+						"EmuHawk has thrown a fatal exception and is about to close.\nA movie has been detected. Would you like to try to save?\n(Note: Depending on what caused this error, this may or may not succeed)",
+						$"Fatal error: {e.GetType().Name}",
+						MessageBoxButtons.YesNo,
+						MessageBoxIcon.Exclamation
+					);
+					if (result == DialogResult.Yes)
 					{
-						exitCode = mf.ProgramRunLoop();
-						if (!mf.IsDisposed)
-							mf.Dispose();
-					}
-					catch (Exception e) when (movieSession.Movie.IsActive() && !(Debugger.IsAttached || VersionInfo.DeveloperBuild))
-					{
-						var result = MessageBox.Show(
-							"EmuHawk has thrown a fatal exception and is about to close.\nA movie has been detected. Would you like to try to save?\n(Note: Depending on what caused this error, this may or may not succeed)",
-							$"Fatal error: {e.GetType().Name}",
-							MessageBoxButtons.YesNo,
-							MessageBoxIcon.Exclamation
-						);
-						if (result == DialogResult.Yes)
-						{
-							movieSession.Movie.Save();
-						}
+						movieSession.Movie.Save();
 					}
 				}
 			}
@@ -314,49 +298,5 @@ namespace BizHawk.Client.EmuHawk
 				return File.Exists(fname) ? Assembly.LoadFile(fname) : null;
 			}
 		}
-
-		private class SingleInstanceController : WindowsFormsApplicationBase
-		{
-			private readonly Config _config;
-
-			private readonly IGL _gl;
-
-			private readonly Action<int> _setExitCode;
-
-			private readonly Action<Sound> _updateGlobalSound;
-
-			private readonly string[] cmdArgs;
-
-			public SingleInstanceController(Config config, IGL gl, Action<Sound> updateGlobalSound, Action<int> setExitCode, string[] args)
-			{
-				_config = config;
-				_gl = gl;
-				_setExitCode = setExitCode;
-				_updateGlobalSound = updateGlobalSound;
-				cmdArgs = args;
-				IsSingleInstance = true;
-				StartupNextInstance += this_StartupNextInstance;
-			}
-
-			public void Run() => Run(cmdArgs);
-
-			private void this_StartupNextInstance(object sender, StartupNextInstanceEventArgs e)
-			{
-				if (e.CommandLine.Count >= 1)
-					((MainForm)MainForm).LoadRom(e.CommandLine[0], new LoadRomArgs { OpenAdvanced = new OpenAdvanced_OpenRom() });
-			}
-
-			protected override void OnCreateMainForm()
-			{
-				MainForm = new MainForm(_config, _gl, _updateGlobalSound, cmdArgs, out _);
-				var title = MainForm.Text;
-				MainForm.Show();
-				MainForm.Text = title;
-				_setExitCode(((MainForm) MainForm).ProgramRunLoop());
-			}
-		}
-
-		private static void InitAndRunSingleInstance(Config config, IGL gl, Action<Sound> updateGlobalSound, Action<int> setExitCode, string[] args)
-			=> new SingleInstanceController(config, gl, updateGlobalSound, setExitCode, args).Run();
 	}
 }
