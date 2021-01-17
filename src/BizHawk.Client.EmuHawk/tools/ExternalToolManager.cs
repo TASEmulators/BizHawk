@@ -74,9 +74,7 @@ namespace BizHawk.Client.EmuHawk
 				var externalToolFile = Assembly.LoadFrom(fileName);
 				var entryPoint = externalToolFile.GetTypes()
 					.SingleOrDefault(t => typeof(IExternalToolForm).IsAssignableFrom(t) && t.GetCustomAttributes().OfType<ExternalToolAttribute>().Any());
-#pragma warning disable CS0618
-				if (entryPoint == null) throw new ExternalToolAttribute.MissingException(externalToolFile.GetCustomAttributes().OfType<BizHawkExternalToolAttribute>().Any());
-#pragma warning restore CS0618
+				if (entryPoint == null) throw new ExternalToolAttribute.MissingException();
 
 				var allAttrs = entryPoint.GetCustomAttributes().ToList();
 				var applicabilityAttrs = allAttrs.OfType<ExternalToolApplicabilityAttributeBase>().ToList();
@@ -128,9 +126,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					BadImageFormatException => "This assembly can't be loaded, probably because it's corrupt or targets an incompatible .NET runtime.",
 					ExternalToolApplicabilityAttributeBase.DuplicateException => "The IExternalToolForm has conflicting applicability attributes.",
-					ExternalToolAttribute.MissingException e1 => e1.OldAttributeFound
-						? "The assembly doesn't contain a class implementing IExternalToolForm and annotated with [ExternalTool].\nHowever, the assembly itself is annotated with [BizHawkExternalTool], which is now deprecated. Has the tool been updated since BizHawk 2.4?"
-						: "The assembly doesn't contain a class implementing IExternalToolForm and annotated with [ExternalTool].",
+					ExternalToolAttribute.MissingException => "The assembly doesn't contain a class implementing IExternalToolForm and annotated with [ExternalTool].",
 					ReflectionTypeLoadException => "Something went wrong while trying to load the assembly.",
 					_ => $"An exception of type {e.GetType().FullName} was thrown while trying to load the assembly and look for an IExternalToolForm:\n{e.Message}"
 				};

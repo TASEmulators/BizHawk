@@ -107,15 +107,7 @@ namespace BizHawk.Client.Common
 			Name = string.IsNullOrWhiteSpace(name) ? Guid.NewGuid().ToString() : name;
 		}
 
-		public class MissingException : Exception
-		{
-			public readonly bool OldAttributeFound;
-
-			public MissingException(bool oldAttributeFound)
-			{
-				OldAttributeFound = oldAttributeFound;
-			}
-		}
+		public class MissingException : Exception {}
 	}
 
 	[AttributeUsage(AttributeTargets.Class)]
