@@ -1,5 +1,5 @@
 variables:
-  CI_HAWK_ARTIFACT_NAME: "BizHawk_devbuild_${CI_COMMIT_REF_SLUG}_${CI_COMMIT_SHORT_SHA}"
+  CI_HAWK_ARTIFACT_NAME: "BizHawk_devbuild_${CI_COMMIT_SHORT_SHA}"
   CI_HAWK_TMPARTIFACT_NAME: "BizHawk_tempbuild_${CI_COMMIT_REF_SLUG}_${CI_COMMIT_SHORT_SHA}"
 
 stages:
@@ -47,7 +47,7 @@ check_style:
     - Dist/BuildRelease.sh -p:MachineRunAnalyzersDuringBuild=true || Dist/BuildRelease.sh -p:MachineRunAnalyzersDuringBuild=true
   stage: test
 
-package_linux:
+.package_linux_x64:
   artifacts:
     expire_in: "1 month"
     name: "$CI_HAWK_ARTIFACT_NAME.tar"
@@ -56,17 +56,14 @@ package_linux:
   image: debian:buster-slim
   needs:
     - build
-  rules:
-    - if: '$CI_COMMIT_REF_SLUG == "master" || $CI_COMMIT_REF_SLUG == "release"'
-      when: always
   script:
     - su -c "apt-get update && apt-get -y install p7zip-full"
-    - Dist/Package.sh
+    - Dist/Package.sh "linux-x64"
     - cd packaged_output
     - tar -cf "../$CI_HAWK_ARTIFACT_NAME.tar" *
   stage: package
 
-package_windows:
+.package_windows_x64:
   artifacts:
     expire_in: "1 month"
     name: "$CI_HAWK_ARTIFACT_NAME"
@@ -75,18 +72,43 @@ package_windows:
   image: debian:buster-slim
   needs:
     - build
-  rules:
-    - if: '$CI_COMMIT_REF_SLUG == "master" || $CI_COMMIT_REF_SLUG == "release"'
-      when: always
   script:
     - su -c "apt-get update && apt-get -y install p7zip-full"
-    - Dist/Package.sh
+    - Dist/Package.sh "windows-x64"
       # now we replace $CI_PROJECT_DIR with $CI_PROJECT_DIR/packaged_output, so that the archival step will put everything at the top level
     - mv packaged_output ..
     - cd ..
     - rm -fr $CI_PROJECT_DIR
     - mv packaged_output $CI_PROJECT_DIR
   stage: package
+
+package_devbuild_linux:
+  extends: .package_linux_x64
+  rules:
+    - if: $CI_COMMIT_REF_SLUG == "master"
+      when: always
+
+package_devbuild_windows:
+  extends: .package_windows_x64
+  rules:
+    - if: $CI_COMMIT_REF_SLUG == "master"
+      when: always
+
+package_release_linux:
+  extends: .package_linux_x64
+  rules:
+    - if: $CI_COMMIT_REF_SLUG == "release"
+      when: always
+  variables:
+    CI_HAWK_ARTIFACT_NAME: "BizHawk_release_${CI_COMMIT_SHORT_SHA}"
+
+package_release_windows:
+  extends: .package_windows_x64
+  rules:
+    - if: $CI_COMMIT_REF_SLUG == "release"
+      when: always
+  variables:
+    CI_HAWK_ARTIFACT_NAME: "BizHawk_release_${CI_COMMIT_SHORT_SHA}"
 
 run_tests:
   artifacts:
