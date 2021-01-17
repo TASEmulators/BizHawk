@@ -118,6 +118,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 									break;
 								case "chip":
 									currCart.Chips.Add(xmlReader.GetAttribute("type"));
+									if (xmlReader.GetAttribute("battery") != null)
+										currCart.WramBattery = true;
 									break;
 							}
 						} else 
