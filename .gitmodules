@@ -12,7 +12,7 @@
 	url = https://github.com/TASVideos/snes9x.git
 	branch = bizsnes
 [submodule "mgba"]
-	path = mgba
+	path = submodules/mgba
 	url = https://github.com/TASVideos/mgba.git
 	branch = bizhawk-0.9
 [submodule "melonds"]
