@@ -78,12 +78,8 @@ namespace BizHawk.Client.EmuHawk
 			ToolManager toolManager,
 			Config config,
 			IEmulator emulator,
-			IGameInfo game)
-		{
-			_container = Register(serviceProvider, Console.WriteLine, mainForm, displayManager, inputManager, movieSession, toolManager, config, emulator, game);
-			ClientApi.EmuClient = _container.EmuClient;
-			return new BasicApiProvider(_container);
-		}
+			IGameInfo game
+		) => new BasicApiProvider(_container = Register( serviceProvider, Console.WriteLine, mainForm, displayManager, inputManager, movieSession, toolManager, config, emulator, game));
 
 		public static ApiContainer RestartLua(
 			IEmulatorServiceProvider serviceProvider,
