@@ -11,9 +11,9 @@ namespace BizHawk.Common
 		/// Bump this immediately after release.
 		/// Only use '0'..'9' and '.' or it will fail to parse and the new version notification won't work.
 		/// </remarks>
-		public static readonly string MainVersion = "2.5.3";
+		public static readonly string MainVersion = "2.6.0";
 
-		public static readonly string ReleaseDate = "September 12, 2020";
+		public static readonly string ReleaseDate = "January 17, 2020";
 
 		public static readonly string HomePage = "http://tasvideos.org/BizHawk.html";
 
