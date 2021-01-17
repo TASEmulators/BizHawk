@@ -4,6 +4,7 @@
 		<ErrorReport>prompt</ErrorReport>
 		<IsTargetingNetFramework>$(TargetFramework.StartsWith("net4"))</IsTargetingNetFramework>
 		<LangVersion>9.0</LangVersion>
+		<Nullable>enable</Nullable>
 		<PlatformTarget>AnyCPU</PlatformTarget>
 		<RunAnalyzersDuringBuild Condition=" '$(MachineRunAnalyzersDuringBuild)' == '' ">false</RunAnalyzersDuringBuild>
 		<RunCodeAnalysis>false</RunCodeAnalysis>
@@ -24,6 +25,9 @@
 		<DefineConstants>$(DefineConstants);$(MachineExtraCompilationFlag)</DefineConstants>
 	</PropertyGroup>
 	<ItemGroup>
+		<PackageReference Include="Nullable" Version="1.3.0" PrivateAssets="all" />
+	</ItemGroup>
+	<ItemGroup Condition=" $(IsTargetingNetFramework) ">
 		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="all" />
 	</ItemGroup>
 </Project>

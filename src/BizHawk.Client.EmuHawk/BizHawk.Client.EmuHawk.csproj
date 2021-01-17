@@ -8,75 +8,9 @@
 		<ApplicationIcon>images/logo.ico</ApplicationIcon>
 		<ApplicationManifest>app.manifest</ApplicationManifest>
 		<DefineConstants>$(DefineConstants);EXE_PROJECT</DefineConstants>
+		<Nullable>disable</Nullable>
 		<ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
 	</PropertyGroup>
-<!--
-	<PropertyGroup>
-		<AppDesignerFolder>Properties</AppDesignerFolder>
-		<ApplicationRevision>0</ApplicationRevision>
-		<ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-		<AssemblyName>EmuHawk</AssemblyName>
-		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-		<BootstrapperEnabled>true</BootstrapperEnabled>
-		<FileAlignment>512</FileAlignment>
-		<FileUpgradeFlags/>
-		<Install>true</Install>
-		<InstallFrom>Disk</InstallFrom>
-		<IsWebBootstrapper>false</IsWebBootstrapper>
-		<MapFileExtensions>true</MapFileExtensions>
-		<OldToolsVersion>3.5</OldToolsVersion>
-		<Prefer32Bit>false</Prefer32Bit>
-		<ProjectGuid>{DD448B37-BA3F-4544-9754-5406E8094723}</ProjectGuid>
-		<ProductVersion>9.0.30729</ProductVersion>
-		<PublishUrl>publish/</PublishUrl>
-		<ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
-		<RootNamespace>BizHawk.Client.EmuHawk</RootNamespace>
-		<SchemaVersion>2.0</SchemaVersion>
-		<StartupObject>BizHawk.Client.EmuHawk.Program</StartupObject>
-		<TargetFrameworkProfile/>
-		<UpdateEnabled>false</UpdateEnabled>
-		<UpdateInterval>7</UpdateInterval>
-		<UpdateIntervalUnits>Days</UpdateIntervalUnits>
-		<UpdateMode>Foreground</UpdateMode>
-		<UpdatePeriodically>false</UpdatePeriodically>
-		<UpdateRequired>false</UpdateRequired>
-		<UpgradeBackupLocation/>
-		<UseApplicationTrust>false</UseApplicationTrust>
-		<UseVSHostingProcess>false</UseVSHostingProcess>
-	</PropertyGroup>
-	<ItemGroup>
-		<BootstrapperPackage Include="Microsoft.Net.Client.3.5">
-			<Visible>False</Visible>
-			<ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
-			<Install>false</Install>
-		</BootstrapperPackage>
-		<BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
-			<Visible>False</Visible>
-			<ProductName>.NET Framework 2.0 %28x86%29</ProductName>
-			<Install>false</Install>
-		</BootstrapperPackage>
-		<BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
-			<Visible>False</Visible>
-			<ProductName>.NET Framework 3.0 %28x86%29</ProductName>
-			<Install>false</Install>
-		</BootstrapperPackage>
-		<BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
-			<Visible>False</Visible>
-			<ProductName>.NET Framework 3.5</ProductName>
-			<Install>false</Install>
-		</BootstrapperPackage>
-		<BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-			<Visible>False</Visible>
-			<ProductName>.NET Framework 3.5 SP1</ProductName>
-			<Install>true</Install>
-		</BootstrapperPackage>
-		<BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
-			<Visible>False</Visible>
-			<ProductName>Windows Installer 3.1</ProductName>
-			<Install>true</Install>
-		</BootstrapperPackage>
-	</ItemGroup>
--->
 	<ItemGroup>
 		<PackageReference Include="System.Net.Http" Version="4.3.4" />
 		<Reference Include="System.Windows.Forms" />
@@ -112,24 +46,6 @@
 	<ItemGroup>
 		<Compile Update="ArchiveChooser.cs" SubType="Form" />
 		<Compile Update="ArchiveChooser.Designer.cs" DependentUpon="ArchiveChooser.cs" />
-		<Compile Update="config\Messages\ColorRow.cs">
-		  <SubType>UserControl</SubType>
-		</Compile>
-		<Compile Update="config\Messages\ColorRow.Designer.cs">
-		  <DependentUpon>ColorRow.cs</DependentUpon>
-		</Compile>
-		<Compile Update="config\Messages\MessageRow.cs">
-		  <SubType>UserControl</SubType>
-		</Compile>
-		<Compile Update="config\Messages\MessageRow.Designer.cs">
-		  <DependentUpon>MessageRow.cs</DependentUpon>
-		</Compile>
-		<Compile Update="config\Messages\MessageEdit.cs">
-		  <SubType>UserControl</SubType>
-		</Compile>
-		<Compile Update="config\Messages\MessageEdit.Designer.cs">
-		  <DependentUpon>MessageEdit.cs</DependentUpon>
-		</Compile>
 		<EmbeddedResource Update="ArchiveChooser.resx" DependentUpon="ArchiveChooser.cs" SubType="Designer" />
 		<Compile Update="AVOut/FFmpegWriterForm.cs" SubType="Form" />
 		<Compile Update="AVOut/FFmpegWriterForm.Designer.cs" DependentUpon="FFmpegWriterForm.cs" />
@@ -241,15 +157,18 @@
 		<Compile Update="config/INTV/IntvControllerSettings.cs" SubType="Form" />
 		<Compile Update="config/INTV/IntvControllerSettings.Designer.cs" DependentUpon="IntvControllerSettings.cs" />
 		<EmbeddedResource Update="config/INTV/IntvControllerSettings.resx" DependentUpon="IntvControllerSettings.cs" />
-		<Compile Update="config\Messages\MessageConfig.cs" SubType="Form" />
-		<Compile Update="config\Messages\MessageConfig.Designer.cs" DependentUpon="MessageConfig.cs" />
-		<EmbeddedResource Update="config\Messages\ColorRow.resx">
-		  <DependentUpon>ColorRow.cs</DependentUpon>
-		</EmbeddedResource>
-		<EmbeddedResource Update="config\Messages\MessageRow.resx">
-		  <DependentUpon>MessageRow.cs</DependentUpon>
-		</EmbeddedResource>
-		<EmbeddedResource Update="config\Messages\MessageConfig.resx" DependentUpon="MessageConfig.cs" SubType="Designer" />
+		<Compile Update="config/Messages/ColorRow.cs" SubType="UserControl" />
+		<Compile Update="config/Messages/ColorRow.Designer.cs" DependentUpon="ColorRow.cs" />
+		<EmbeddedResource Update="config/Messages/ColorRow.resx" DependentUpon="ColorRow.cs" />
+		<Compile Update="config/Messages/MessageConfig.cs" SubType="Form" />
+		<Compile Update="config/Messages/MessageConfig.Designer.cs" DependentUpon="MessageConfig.cs" />
+		<EmbeddedResource Update="config/Messages/MessageConfig.resx" DependentUpon="MessageConfig.cs" SubType="Designer" />
+		<Compile Update="config/Messages/MessageEdit.cs" SubType="UserControl" />
+		<Compile Update="config/Messages/MessageEdit.Designer.cs" DependentUpon="MessageEdit.cs" />
+		<EmbeddedResource Update="config/Messages/MessageEdit.resx" DependentUpon="MessageEdit.cs" />
+		<Compile Update="config/Messages/MessageRow.cs" SubType="UserControl" />
+		<Compile Update="config/Messages/MessageRow.Designer.cs" DependentUpon="MessageRow.cs" />
+		<EmbeddedResource Update="config/Messages/MessageRow.resx" DependentUpon="MessageRow.cs" />
 		<Compile Update="config/N64/N64ControllerSettingControl.cs" SubType="UserControl" />
 		<Compile Update="config/N64/N64ControllerSettingControl.Designer.cs" DependentUpon="N64ControllerSettingControl.cs" />
 		<EmbeddedResource Update="config/N64/N64ControllerSettingControl.resx" DependentUpon="N64ControllerSettingControl.cs" />

@@ -6,58 +6,8 @@
 	<PropertyGroup>
 		<ApplicationIcon>discohawk.ico</ApplicationIcon>
 		<DefineConstants>$(DefineConstants);EXE_PROJECT</DefineConstants>
+		<Nullable>disable</Nullable>
 	</PropertyGroup>
-<!--
-	<PropertyGroup>
-		<AppDesignerFolder>Properties</AppDesignerFolder>
-		<ApplicationRevision>0</ApplicationRevision>
-		<ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-		<AssemblyName>DiscoHawk</AssemblyName>
-		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-		<BootstrapperEnabled>true</BootstrapperEnabled>
-		<FileAlignment>512</FileAlignment>
-		<FileUpgradeFlags/>
-		<Install>true</Install>
-		<InstallFrom>Disk</InstallFrom>
-		<IsWebBootstrapper>false</IsWebBootstrapper>
-		<MapFileExtensions>true</MapFileExtensions>
-		<NoWin32Manifest>true</NoWin32Manifest>
-		<OldToolsVersion>3.5</OldToolsVersion>
-		<ProductVersion>9.0.30729</ProductVersion>
-		<ProjectGuid>{C4366030-6D03-424B-AE53-F4F43BB217C3}</ProjectGuid>
-		<PublishUrl>publish/</PublishUrl>
-		<RootNamespace>BizHawk.Client.DiscoHawk</RootNamespace>
-		<SchemaVersion>2.0</SchemaVersion>
-		<StartupObject/>
-		<TargetFrameworkProfile/>
-		<UpdateEnabled>false</UpdateEnabled>
-		<UpdateInterval>7</UpdateInterval>
-		<UpdateIntervalUnits>Days</UpdateIntervalUnits>
-		<UpdateMode>Foreground</UpdateMode>
-		<UpdatePeriodically>false</UpdatePeriodically>
-		<UpdateRequired>false</UpdateRequired>
-		<UpgradeBackupLocation/>
-		<UseApplicationTrust>false</UseApplicationTrust>
-		<UseVSHostingProcess>false</UseVSHostingProcess>
-	</PropertyGroup>
-	<ItemGroup>
-		<BootstrapperPackage Include="Microsoft.Net.Client.3.5">
-			<Visible>False</Visible>
-			<ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
-			<Install>false</Install>
-		</BootstrapperPackage>
-		<BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-			<Visible>False</Visible>
-			<ProductName>.NET Framework 3.5 SP1</ProductName>
-			<Install>true</Install>
-		</BootstrapperPackage>
-		<BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
-			<Visible>False</Visible>
-			<ProductName>Windows Installer 3.1</ProductName>
-			<Install>true</Install>
-		</BootstrapperPackage>
-	</ItemGroup>
--->
 	<ItemGroup>
 		<Reference Include="System.Web" />
 		<Reference Include="System.Windows.Forms" />
