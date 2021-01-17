@@ -788,10 +788,10 @@ namespace BizHawk.Client.EmuHawk
 			{
 				MainForm.FrameAdvance();
 
-				byte[] greenZone = CurrentTasMovie.TasStateManager[Emulator.Frame];
-				if (greenZone.Length > 0)
+				if (CurrentTasMovie.TasStateManager.HasState(Emulator.Frame))
 				{
 					byte[] state = StatableEmulator.CloneSavestate();
+					byte[] greenZone = CurrentTasMovie.TasStateManager[Emulator.Frame];
 
 					if (!state.SequenceEqual(greenZone))
 					{
@@ -805,7 +805,6 @@ namespace BizHawk.Client.EmuHawk
 								File.WriteAllBytes(path, greenZone);
 							}
 						}
-
 						return;
 					}
 
