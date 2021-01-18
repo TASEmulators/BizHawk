@@ -28,7 +28,6 @@ namespace BizHawk.Client.EmuHawk
 			_apiTypes = list.ToArray();
 		}
 
-		/// <remarks>TODO do we need to keep references to these because of GC weirdness? --yoshi</remarks>
 		private static ApiContainer? _container;
 
 		private static ApiContainer? _luaContainer;
@@ -78,8 +77,12 @@ namespace BizHawk.Client.EmuHawk
 			ToolManager toolManager,
 			Config config,
 			IEmulator emulator,
-			IGameInfo game
-		) => new BasicApiProvider(_container = Register( serviceProvider, Console.WriteLine, mainForm, displayManager, inputManager, movieSession, toolManager, config, emulator, game));
+			IGameInfo game)
+		{
+			_container?.Dispose();
+			_container = Register(serviceProvider, Console.WriteLine, mainForm, displayManager, inputManager, movieSession, toolManager, config, emulator, game);
+			return new BasicApiProvider(_container);
+		}
 
 		public static ApiContainer RestartLua(
 			IEmulatorServiceProvider serviceProvider,
@@ -91,7 +94,11 @@ namespace BizHawk.Client.EmuHawk
 			ToolManager toolManager,
 			Config config,
 			IEmulator emulator,
-			IGameInfo game
-		) => _luaContainer = Register(serviceProvider, logCallback, mainForm, displayManager, inputManager, movieSession, toolManager, config, emulator, game);
+			IGameInfo game)
+		{
+			_luaContainer?.Dispose();
+			_luaContainer = Register(serviceProvider, logCallback, mainForm, displayManager, inputManager, movieSession, toolManager, config, emulator, game);
+			return _luaContainer;
+		}
 	}
 }

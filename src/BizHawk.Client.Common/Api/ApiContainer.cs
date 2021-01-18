@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace BizHawk.Client.Common
 {
-	public sealed class ApiContainer
+	public sealed class ApiContainer : IDisposable
 	{
 		public readonly IReadOnlyDictionary<Type, IExternalApi> Libraries;
 
@@ -26,5 +26,10 @@ namespace BizHawk.Client.Common
 		public IToolApi Tool => (IToolApi) Libraries[typeof(IToolApi)];
 
 		public ApiContainer(IReadOnlyDictionary<Type, IExternalApi> libs) => Libraries = libs;
+
+		public void Dispose()
+		{
+			foreach (var lib in Libraries.Values) if (lib is IDisposable disposableLib) disposableLib.Dispose();
+		}
 	}
 }
