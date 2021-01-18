@@ -48,8 +48,7 @@ namespace BizHawk.Client.EmuHawk
 			_mainForm = mainForm;
 			LuaWait = new AutoResetEvent(false);
 			Docs.Clear();
-			var apiContainer = ApiManager.RestartLua(serviceProvider, LogToLuaConsole, _mainForm, _displayManager, _inputManager, _mainForm.MovieSession, _mainForm.Tools, config, emulator, game);
-			_guiAPI = (GuiApi) apiContainer.Gui;
+			_apiContainer = ApiManager.RestartLua(serviceProvider, LogToLuaConsole, _mainForm, _displayManager, _inputManager, _mainForm.MovieSession, _mainForm.Tools, config, emulator, game);
 
 			// Register lua libraries
 			foreach (var lib in Client.Common.ReflectionCache.Types.Concat(EmuHawk.ReflectionCache.Types)
@@ -64,7 +63,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (addLibrary)
 				{
-					var instance = (LuaLibraryBase) Activator.CreateInstance(lib, this, apiContainer, (Action<string>) LogToLuaConsole);
+					var instance = (LuaLibraryBase) Activator.CreateInstance(lib, this, _apiContainer, (Action<string>) LogToLuaConsole);
 					ServiceInjector.UpdateServices(serviceProvider, instance);
 
 					// TODO: make EmuHawk libraries have a base class with common properties such as this
@@ -105,9 +104,11 @@ namespace BizHawk.Client.EmuHawk
 			EnumerateLuaFunctions(nameof(LuaCanvas), typeof(LuaCanvas), null); // add LuaCanvas to Lua function reference table
 		}
 
+		private ApiContainer _apiContainer;
+
 		private readonly IDisplayManagerForApi _displayManager;
 
-		private GuiApi _guiAPI;
+		private GuiApi GuiAPI => (GuiApi) _apiContainer.Gui;
 
 		private readonly InputManager _inputManager;
 
@@ -148,11 +149,10 @@ namespace BizHawk.Client.EmuHawk
 			IEmulator emulator,
 			IGameInfo game)
 		{
-			var apiContainer = ApiManager.RestartLua(newServiceProvider, LogToLuaConsole, _mainForm, _displayManager, _inputManager, _mainForm.MovieSession, _mainForm.Tools, config, emulator, game);
-			_guiAPI = (GuiApi) apiContainer.Gui;
+			_apiContainer = ApiManager.RestartLua(newServiceProvider, LogToLuaConsole, _mainForm, _displayManager, _inputManager, _mainForm.MovieSession, _mainForm.Tools, config, emulator, game);
 			foreach (var lib in Libraries.Values)
 			{
-				lib.APIs = apiContainer;
+				lib.APIs = _apiContainer;
 				ServiceInjector.UpdateServices(newServiceProvider, lib);
 			}
 		}
@@ -292,9 +292,9 @@ namespace BizHawk.Client.EmuHawk
 			{
 				LuaLibraryBase.SetCurrentThread(lf);
 
-				_guiAPI.LockEmuSurfaceLua();
+				GuiAPI.LockEmuSurfaceLua();
 				var execResult = _currThread.Resume(0);
-				_guiAPI.UnlockEmuSurfaceLua();
+				GuiAPI.UnlockEmuSurfaceLua();
 
 				_lua.RunScheduledDisposes(); // TODO: I don't think this is needed anymore, we run this regularly anyway
 
@@ -311,7 +311,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception)
 			{
-				_guiAPI.UnlockEmuSurfaceLua();
+				GuiAPI.UnlockEmuSurfaceLua();
 				throw;
 			}
 			finally
