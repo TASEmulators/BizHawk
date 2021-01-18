@@ -117,6 +117,8 @@ namespace BizHawk.Client.EmuHawk
 			this.toolStripSeparator1 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.SoftResetMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.HardResetMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.EmulatorMenuSeparator2 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
+			this.LoadedCoreNameMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.ViewSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.WindowSizeSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.x1MenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -919,7 +921,9 @@ namespace BizHawk.Client.EmuHawk
 			this.RebootCoreMenuItem,
 			this.toolStripSeparator1,
 			this.SoftResetMenuItem,
-			this.HardResetMenuItem});
+			this.HardResetMenuItem,
+			this.EmulatorMenuSeparator2,
+			this.LoadedCoreNameMenuItem});
 			this.EmulationSubMenu.Text = "&Emulation";
 			this.EmulationSubMenu.DropDownOpened += new System.EventHandler(this.EmulationMenuItem_DropDownOpened);
 			// 
@@ -942,6 +946,11 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.HardResetMenuItem.Text = "&Hard Reset";
 			this.HardResetMenuItem.Click += new System.EventHandler(this.HardResetMenuItem_Click);
+			// 
+			// LoadedCoreNameMenuItem
+			// 
+			this.LoadedCoreNameMenuItem.Enabled = false;
+			this.LoadedCoreNameMenuItem.Text = "Loaded core: NullHawk (NULL)";
 			// 
 			// ViewSubMenu
 			// 
@@ -2620,6 +2629,8 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SnesGfxDebuggerMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator18;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx HardResetMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripSeparatorEx EmulatorMenuSeparator2;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx LoadedCoreNameMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator19;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx CaptureOSDMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator20;

@@ -2756,6 +2756,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UpdateCoreStatusBarButton()
 		{
+			var coreDispName = CoreExtensions.CoreExtensions.DisplayName(Emulator);
+			LoadedCoreNameMenuItem.Text = $"Loaded core: {coreDispName} ({Emulator.SystemId})";
 			if (Emulator.IsNull())
 			{
 				CoreNameStatusBarButton.Visible = false;
@@ -2765,7 +2767,7 @@ namespace BizHawk.Client.EmuHawk
 			CoreNameStatusBarButton.Visible = true;
 			var attributes = Emulator.Attributes();
 
-			CoreNameStatusBarButton.Text = CoreExtensions.CoreExtensions.DisplayName(Emulator);
+			CoreNameStatusBarButton.Text = coreDispName;
 			CoreNameStatusBarButton.Image = Emulator.Icon();
 			CoreNameStatusBarButton.ToolTipText = attributes.Ported ? "(ported) " : "";
 
