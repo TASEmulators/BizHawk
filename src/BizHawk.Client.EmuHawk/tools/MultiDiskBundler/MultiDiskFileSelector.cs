@@ -11,7 +11,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private readonly Func<string> _getLoadedRomNameCallback;
 
-		private readonly ToolFormBase _parent;
+		private readonly PathEntryCollection _pathEntries;
 
 		public IDialogController DialogController { get; }
 
@@ -32,11 +32,11 @@ namespace BizHawk.Client.EmuHawk
 			OnNameChanged(EventArgs.Empty);
 		}
 
-		public MultiDiskFileSelector(ToolFormBase parent, IDialogController dialogController, Func<string> getLoadedRomNameCallback)
+		public MultiDiskFileSelector(IDialogController dialogController, PathEntryCollection pathEntries, Func<string> getLoadedRomNameCallback)
 		{
 			DialogController = dialogController;
+			_pathEntries = pathEntries;
 			_getLoadedRomNameCallback = getLoadedRomNameCallback;
-			_parent = parent;
 			InitializeComponent();
 			PathBox.TextChanged += HandleLabelTextChanged;
 		}
@@ -75,7 +75,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			using var ofd = new OpenFileDialog
 			{
-				InitialDirectory = _parent.Config.PathEntries.RomAbsolutePath(),
+				InitialDirectory = _pathEntries.RomAbsolutePath(),
 				Filter = RomLoader.RomFilter,
 				RestoreDirectory = true
 			};
