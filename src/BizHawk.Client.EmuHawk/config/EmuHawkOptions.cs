@@ -19,6 +19,12 @@ namespace BizHawk.Client.EmuHawk
 			_config = config;
 			_osdMessageCallback = osdMessageCallback;
 			InitializeComponent();
+
+			//TODO re-enable once reimplemented
+			SingleInstanceModeCheckbox.Enabled = false;
+			SingleInstanceModeCheckbox.Text += " (temporarily removed)";
+			label3.Enabled = false;
+			label14.Enabled = false;
 		}
 
 		public int AutosaveSaveRAMSeconds
