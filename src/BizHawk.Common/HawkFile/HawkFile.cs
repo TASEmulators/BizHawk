@@ -180,26 +180,30 @@ namespace BizHawk.Common
 			if (!_rootExists) return this;
 			if (_boundStream != null) throw new InvalidOperationException("stream already bound!");
 
-			if (_archiveItems == null || _extractor == null)
-			{
-				// open uncompressed file
-				if (extensions.Length == 0
-					|| extensions.Contains(Path.GetExtension(FullPathWithoutMember).ToLowerInvariant()))
-				{
-					BindRoot();
-				}
-			}
-			else
+			if (!(_archiveItems == null || _extractor == null))
 			{
 				if (extensions.Length != 0)
 				{
 					var candidates = _archiveItems.Where(item => extensions.Contains(Path.GetExtension(item.Name).ToLowerInvariant())).ToList();
 					if (onlyBindSingle ? candidates.Count == 1 : candidates.Count != 0) BindArchiveMember(candidates[0].Index);
+					return this;
 				}
 				else if (!onlyBindSingle || _archiveItems.Count == 1)
 				{
 					BindArchiveMember(0);
+					return this;
 				}
+				else
+				{
+					return this;
+				}
+			}
+
+			// open uncompressed file
+			if (extensions.Length == 0
+				|| extensions.Contains(Path.GetExtension(FullPathWithoutMember).ToLowerInvariant()))
+			{
+				BindRoot();
 			}
 
 			return this;
