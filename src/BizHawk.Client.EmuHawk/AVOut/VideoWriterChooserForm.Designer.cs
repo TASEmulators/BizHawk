@@ -210,7 +210,7 @@
 			this.checkBoxASync.Name = "checkBoxASync";
 			this.checkBoxASync.Size = new System.Drawing.Size(95, 17);
 			this.checkBoxASync.TabIndex = 16;
-			this.checkBoxASync.Text = "Alternate Sync";
+			this.checkBoxASync.Text = "Sync to Audio";
 			this.checkBoxASync.UseVisualStyleBackColor = true;
 			// 
 			// panel1
