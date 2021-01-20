@@ -47,6 +47,7 @@
 			this.checkBoxASync = new System.Windows.Forms.CheckBox();
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.lblResolutionWarning = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.toolTip1 = new System.Windows.Forms.ToolTip();
 			this.tableLayoutPanel4.SuspendLayout();
 			this.panelSizeSelect.SuspendLayout();
 			this.panel1.SuspendLayout();
@@ -212,6 +213,7 @@
 			this.checkBoxASync.TabIndex = 16;
 			this.checkBoxASync.Text = "Sync to Audio";
 			this.checkBoxASync.UseVisualStyleBackColor = true;
+			toolTip1.SetToolTip(checkBoxASync, "Configures A/V Sync strategy for Variable Frame Rate movies. If checked, drops or repeats frames to match audio sync. If unchecked, stretches audio to match video sync, resulting in pitch issues");
 			// 
 			// panel1
 			// 
@@ -280,6 +282,7 @@
 		private System.Windows.Forms.Panel panelSizeSelect;
 		private System.Windows.Forms.CheckBox checkBoxPad;
 		private System.Windows.Forms.CheckBox checkBoxASync;
+		private System.Windows.Forms.ToolTip toolTip1;
 		private BizHawk.WinForms.Controls.LocLabelEx lblSize;
 		private System.Windows.Forms.Panel panel1;
 		private BizHawk.WinForms.Controls.LocLabelEx lblResolutionWarning;
