@@ -208,9 +208,9 @@ namespace BizHawk.Client.Common
 		{
 			var romExtensions = new[]
 			{
-				"SMS", "SMC", "SFC", "PCE", "SGX", "GG", "SG", "BIN", "GEN", "MD", "SMD", "GB",
-				"NES", "FDS", "ROM", "INT", "GBC", "UNF", "A78", "CRT", "COL", "XML", "Z64",
-				"V64", "N64", "WS", "WSC", "GBA", "32X", "VEC", "O2"
+				".sms", ".smc", ".sfc", ".pce", ".sgx", ".gg", ".sg", ".bin", ".gen", ".md", ".smd", ".gb",
+				".nes", ".fds", ".rom", ".int", ".gbc", ".unf", ".a78", ".crt", ".col", ".xml", ".z64",
+				".v64", ".n64", ".ws", ".wsc", ".gba", ".32x", ".vec", ".o2"
 			};
 
 			// try binding normal rom extensions first
@@ -426,11 +426,11 @@ namespace BizHawk.Client.Common
 			rom = new RomGame(file);
 
 			// hacky for now
-			if (file.Extension.ToLowerInvariant() == ".exe")
+			if (file.Extension == ".exe")
 			{
 				rom.GameInfo.System = "PSX";
 			}
-			else if (file.Extension.ToLowerInvariant() == ".nsf")
+			else if (file.Extension == ".nsf")
 			{
 				rom.GameInfo.System = "NES";
 			}
@@ -685,7 +685,7 @@ namespace BizHawk.Client.Common
 					}
 
 					// not libretro: do extension checking
-					var ext = file.Extension.ToLowerInvariant();
+					var ext = file.Extension;
 					switch (ext)
 					{
 						case ".m3u":

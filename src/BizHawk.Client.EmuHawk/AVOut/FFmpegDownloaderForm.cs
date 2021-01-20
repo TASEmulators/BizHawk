@@ -81,7 +81,7 @@ namespace BizHawk.Client.EmuHawk
 				//try acquiring file
 				using (var hf = new HawkFile(fn))
 				{
-					using (var exe = hf.BindFirstOf("EXE"))
+					using (var exe = hf.BindFirstOf(".exe"))
 					{
 						var data = exe.ReadAllBytes();
 

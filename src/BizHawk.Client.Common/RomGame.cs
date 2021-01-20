@@ -29,7 +29,7 @@ namespace BizHawk.Client.Common
 				throw new Exception("The file needs to exist, yo.");
 			}
 
-			Extension = file.Extension;
+			Extension = file.Extension.ToUpperInvariant();
 
 			var stream = file.GetStream();
 			int fileLength = (int)stream.Length;
@@ -63,8 +63,8 @@ namespace BizHawk.Client.Common
 			{
 				RomData = FileData;
 			}
-			else if (file.Extension == ".DSK" || file.Extension == ".TAP" || file.Extension == ".TZX" || 
-				file.Extension == ".PZX" || file.Extension == ".CSW" || file.Extension == ".WAV" || file.Extension == ".CDT")
+			else if (file.Extension == ".dsk" || file.Extension == ".tap" || file.Extension == ".tzx" ||
+				file.Extension == ".pzx" || file.Extension == ".csw" || file.Extension == ".wav" || file.Extension == ".cdt")
 			{
 				// these are not roms. unfortunately if treated as such there are certain edge-cases
 				// where a header offset is detected. This should mitigate this issue until a cleaner solution is found 
@@ -79,12 +79,12 @@ namespace BizHawk.Client.Common
 				Buffer.BlockCopy(FileData, headerOffset, RomData, 0, romLength);
 			}
 
-			if (file.Extension == ".SMD")
+			if (file.Extension == ".smd")
 			{
 				RomData = DeInterleaveSMD(RomData);
 			}
 
-			if (file.Extension == ".Z64" || file.Extension == ".N64" || file.Extension == ".V64")
+			if (file.Extension == ".z64" || file.Extension == ".n64" || file.Extension == ".v64")
 			{
 				RomData = MutateSwapN64(RomData);
 			}
@@ -92,7 +92,7 @@ namespace BizHawk.Client.Common
 			// note: this will be taking several hashes, of a potentially large amount of data.. yikes!
 			GameInfo = Database.GetGameInfo(RomData, file.Name);
 
-			if (GameInfo.NotInDatabase && headerOffset == 128 && file.Extension == ".A78")
+			if (GameInfo.NotInDatabase && headerOffset == 128 && file.Extension == ".a78")
 			{
 				// if the game is not in the DB, add the header back in so the core can use it
 				// for now only .A78 games, but probably should be for other systems as well
@@ -104,7 +104,7 @@ namespace BizHawk.Client.Common
 			if (patch != null)
 			{
 				using var patchFile = new HawkFile(patch);
-				patchFile.BindFirstOf("IPS");
+				patchFile.BindFirstOf(".ips");
 				if (patchFile.IsBound)
 				{
 					RomData = IPS.Patch(RomData, patchFile.GetStream());
