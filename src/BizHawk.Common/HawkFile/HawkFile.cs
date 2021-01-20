@@ -71,12 +71,7 @@ namespace BizHawk.Common
 
 		/// <summary>Makes a new HawkFile based on the provided path.</summary>
 		/// <param name="delayIOAndDearchive">Pass <see langword="true"/> to only populate a few fields (those that can be computed from the string <paramref name="path"/>), which is less computationally expensive.</param>
-		/// <param name="nonArchiveExtensions">
-		/// These file extensions are assumed to not be archives. Include the leading period in each, and use lowercase.<br/>
-		/// Does not apply when <paramref name="delayIOAndDearchive"/> is <see langword="true"/>.<br/>
-		/// If <see langword="null"/> is passed (the default), uses <see cref="CommonNonArchiveExtensions"/> which should mitigate false positives caused by weak archive detection signatures.
-		/// </param>
-		public HawkFile([HawkFilePath] string path, bool delayIOAndDearchive = false, IReadOnlyCollection<string>? nonArchiveExtensions = null)
+		public HawkFile([HawkFilePath] string path, bool delayIOAndDearchive = false, bool allowArchives = true)
 		{
 			if (delayIOAndDearchive)
 			{
@@ -97,23 +92,29 @@ namespace BizHawk.Common
 			Exists = _rootExists = !string.IsNullOrEmpty(path) && new FileInfo(path).Exists;
 			if (!_rootExists) return;
 
-			if (DearchivalMethod != null
-				&& !(nonArchiveExtensions ?? CommonNonArchiveExtensions).Contains(Path.GetExtension(path).ToLowerInvariant())
-				&& DearchivalMethod.CheckSignature(path, out _, out _))
+			if (DearchivalMethod != null && allowArchives)
 			{
-				_extractor = DearchivalMethod.Construct(path);
-				try
+				var ext = Path.GetExtension(path).ToLowerInvariant();
+				if (DearchivalMethod.AllowedArchiveExtensions.Contains(ext))
 				{
-					_archiveItems = _extractor.Scan();
-					IsArchive = true;
-				}
-				catch
-				{
-					_archiveItems = null;
-					_extractor.Dispose();
-					_extractor = null;
+					if (DearchivalMethod.CheckSignature(path, out _, out _))
+					{
+						_extractor = DearchivalMethod.Construct(path);
+						try
+						{
+							_archiveItems = _extractor.Scan();
+							IsArchive = true;
+						}
+						catch
+						{
+							_archiveItems = null;
+							_extractor.Dispose();
+							_extractor = null;
+						}
+					}
 				}
 			}
+
 			if (_extractor == null)
 			{
 				_rootStream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
@@ -276,11 +277,8 @@ namespace BizHawk.Common
 		/// <summary>Set this with an instance which can construct archive handlers as necessary for archive handling.</summary>
 		public static IFileDearchivalMethod<IHawkArchiveFile>? DearchivalMethod;
 
-		public static readonly IReadOnlyCollection<string> CommonNonArchiveExtensions = new[] { ".smc", ".sfc", ".dll" };
-
 		[return: HawkFilePath]
 		private static string MakeCanonicalName(string root, string? member) => member == null ? root : $"{root}|{member}";
-
 
 		/// <returns>path / member path pair iff <paramref name="path"/> contains <c>'|'</c>, <see langword="null"/> otherwise</returns>
 		private static (string, string)? SplitArchiveMemberPath([HawkFilePath] string path)

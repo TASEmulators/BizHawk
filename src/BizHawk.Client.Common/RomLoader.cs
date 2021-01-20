@@ -604,12 +604,9 @@ namespace BizHawk.Client.Common
 				return false;
 			}
 
-			using var file = new HawkFile(
-				path,
-				nonArchiveExtensions: OpenAdvanced is OpenAdvanced_MAME
-					? new[] { ".zip", ".7z" } // MAME uses these extensions for arcade ROMs, but also accepts all sorts of variations of archives, folders, and files. if we let archive loader handle this, it won't know where to stop, since it'd require MAME's ROM database (which contains ROM names and blob hashes) to look things up, and even then it might be confused by archive/folder structure. so assume the user provides the proper ROM directly, and handle possible errors later
-					: null
-			);
+			bool allowArchives = true;
+			if (OpenAdvanced is OpenAdvanced_MAME) allowArchives = false;
+			using var file = new HawkFile(path, false, allowArchives);
 			if (!file.Exists) return false; // if the provided file doesn't even exist, give up!
 
 			CanonicalFullPath = file.CanonicalFullPath;

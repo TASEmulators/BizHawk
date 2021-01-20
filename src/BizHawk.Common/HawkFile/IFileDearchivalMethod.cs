@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace BizHawk.Common
 {
 	/// <summary>Used by <see cref="HawkFile"/> to delegate archive management.</summary>
@@ -5,6 +7,8 @@ namespace BizHawk.Common
 	{
 		/// <remarks>TODO could this receive a <see cref="HawkFile"/> itself? possibly handy, in very clever scenarios of mounting fake files</remarks>
 		bool CheckSignature(string fileName, out int offset, out bool isExecutable);
+
+		IReadOnlyCollection<string> AllowedArchiveExtensions { get; }
 
 		T Construct(string path);
 	}

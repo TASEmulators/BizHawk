@@ -1,7 +1,6 @@
-#nullable enable
-
 using System.IO;
 using System.Linq;
+using System.Collections.Generic;
 using BizHawk.Common;
 using SharpCompress.Archives;
 
@@ -31,5 +30,11 @@ namespace BizHawk.Client.Common
 		public SharpCompressArchiveFile Construct(string path) => new SharpCompressArchiveFile(path);
 
 		public static readonly SharpCompressDearchivalMethod Instance = new SharpCompressDearchivalMethod();
+
+		//don't try any .tar.* formats, they don't work
+		//don't try .gz, it's illogical (gz contains no useful archive directory information. we would need to synthesize some.)
+		static readonly IReadOnlyCollection<string> archiveExts = new[] { ".zip", ".7z", ".rar" };
+
+		public IReadOnlyCollection<string> AllowedArchiveExtensions { get { return archiveExts; } }
 	}
 }
