@@ -58,7 +58,7 @@ namespace BizHawk.Common
 		/// <value>returns the complete full path of the bound file, excluding the archive member portion</value>
 		public readonly string FullPathWithoutMember;
 
-		public readonly bool IsArchive;
+		public bool IsArchive { get; private set; }
 
 		/// <summary>Indicates whether the file is an archive member (IsArchive &amp;&amp; IsBound[to member])</summary>
 		public bool IsArchiveMember => IsArchive && IsBound;
@@ -174,8 +174,9 @@ namespace BizHawk.Common
 		}
 
 		/// <param name="extensions">File extensions; include the leading period in each, and use lowercase.</param>
+		/// <param name="forceArchiveMember">If <see langword="true"/>, only bind members or fail (i.e. bind nothing), don't bind root</param>
 		/// <exception cref="InvalidOperationException">stream already bound</exception>
-		private HawkFile BindByExtensionCore(string[] extensions, bool onlyBindSingle = false)
+		private HawkFile BindByExtensionCore(string[] extensions, bool forceArchiveMember, bool onlyBindSingle = false)
 		{
 			if (!_rootExists) return this;
 			if (_boundStream != null) throw new InvalidOperationException("stream already bound!");
@@ -184,19 +185,34 @@ namespace BizHawk.Common
 			{
 				if (extensions.Length != 0)
 				{
-					var candidates = _archiveItems.Where(item => extensions.Contains(Path.GetExtension(item.Name).ToLowerInvariant())).ToList();
-					if (onlyBindSingle ? candidates.Count == 1 : candidates.Count != 0) BindArchiveMember(candidates[0].Index);
-					return this;
+					var candidates = GetBindCandidates(_archiveItems, extensions);
+					if (candidates != null)
+					{
+						if (onlyBindSingle ? candidates.Count == 1 : candidates.Count != 0) BindArchiveMember(candidates[0].Index);
+						return this;
+					}
+					// else failed to get archive member, fall through
 				}
 				else if (!onlyBindSingle || _archiveItems.Count == 1)
 				{
-					BindArchiveMember(0);
-					return this;
+					var candidate = GetFirstValidBindCandidate(_archiveItems);
+					if (candidate != null)
+					{
+						BindArchiveMember(candidate.Value);
+						return this;
+					}
+					// else failed to get archive member, fall through
 				}
 				else
 				{
 					return this;
 				}
+
+				_extractor = null;
+				IsArchive = false;
+				Console.WriteLine($"file detected as archive but member loading failed, proceeding with root as non-archive (path: {FullPathWithoutMember})");
+				if (forceArchiveMember) return this;
+				// else we'll bind the root, fall through
 			}
 
 			// open uncompressed file
@@ -209,24 +225,27 @@ namespace BizHawk.Common
 			return this;
 		}
 
+		/// <param name="forceArchiveMember">If <see langword="true"/>, only bind members or fail (i.e. bind nothing), don't bind root</param>
 		/// <summary>Binds the first archive member if one exists, or for non-archives, binds the file.</summary>
-		public HawkFile BindFirst() => BindByExtensionCore(Array.Empty<string>());
+		public HawkFile BindFirst(bool forceArchiveMember = false) => BindByExtensionCore(Array.Empty<string>(), forceArchiveMember: forceArchiveMember);
 
 		/// <summary>
 		/// Binds the first archive member whose file extension is in <paramref name="extensions"/> if one exists,
 		/// or for non-archives, binds the file if its file extension is in <paramref name="extensions"/>.
 		/// </summary>
 		/// <param name="extensions">File extensions; include the leading period in each, and use lowercase.</param>
+		/// <param name="forceArchiveMember">If <see langword="true"/>, only bind members or fail (i.e. bind nothing), don't bind root</param>
 		/// <remarks>You probably should use <see cref="BindSoleItemOf"/> or the archive chooser instead.</remarks>
-		public HawkFile BindFirstOf(string[] extensions) => BindByExtensionCore(extensions);
+		public HawkFile BindFirstOf(string[] extensions, bool forceArchiveMember = false) => BindByExtensionCore(extensions, forceArchiveMember: forceArchiveMember);
 
 		/// <summary>
 		/// Binds the first archive member whose file extension is <paramref name="extension"/> if one exists,
 		/// or for non-archives, binds the file if its file extension is <paramref name="extension"/>.
 		/// </summary>
 		/// <param name="extension">File extension; include the leading period, and use lowercase.</param>
+		/// <param name="forceArchiveMember">If <see langword="true"/>, only bind members or fail (i.e. bind nothing), don't bind root</param>
 		/// <remarks>You probably should use <see cref="BindSoleItemOf"/> or the archive chooser instead.</remarks>
-		public HawkFile BindFirstOf(string extension) => BindByExtensionCore(new[] { extension });
+		public HawkFile BindFirstOf(string extension, bool forceArchiveMember = false) => BindByExtensionCore(new[] { extension }, forceArchiveMember: forceArchiveMember);
 
 		/// <summary>causes the root to be bound (in the case of non-archive files)</summary>
 		private void BindRoot()
@@ -235,9 +254,10 @@ namespace BizHawk.Common
 			Debug.WriteLine($"{nameof(HawkFile)} bound {CanonicalFullPath}");
 		}
 
-		/// <summary>As <see cref="BindFirstOf(string[])"/>, but doesn't bind anything if there are multiple archive members with a matching file extension.</summary>
+		/// <summary>As <see cref="BindFirstOf(string[],bool)"/>, but doesn't bind anything if there are multiple archive members with a matching file extension.</summary>
 		/// <param name="extensions">File extensions; include the leading period in each, and use lowercase.</param>
-		public HawkFile BindSoleItemOf(string[] extensions) => BindByExtensionCore(extensions, onlyBindSingle: true);
+		/// <param name="forceArchiveMember">If <see langword="true"/>, only bind members or fail (i.e. bind nothing), don't bind root</param>
+		public HawkFile BindSoleItemOf(string[] extensions, bool forceArchiveMember = false) => BindByExtensionCore(extensions, forceArchiveMember: forceArchiveMember, onlyBindSingle: true);
 
 		public void Dispose()
 		{
@@ -277,6 +297,42 @@ namespace BizHawk.Common
 		public static IFileDearchivalMethod<IHawkArchiveFile>? DearchivalMethod;
 
 		public static readonly IReadOnlyCollection<string> CommonNonArchiveExtensions = new[] { ".smc", ".sfc", ".dll" };
+
+		/// <param name="extensions">File extensions; include the leading period in each, and use lowercase.</param>
+		/// <returns>
+		/// the archive members with any of the given <paramref name="extensions"/>,
+		/// or, if the archive containing <paramref name="items"/> is corrupt or not an archive, <see langword="null"/>
+		/// </returns>
+		/// <remarks><see cref="DebuggerNonUserCodeAttribute">[DebuggerNonUserCode]</see> prevents VS from pausing execution for the caught exception - we just want to suppress it and return <see langword="null"/></remarks>
+		[DebuggerNonUserCode]
+		private static IReadOnlyList<HawkArchiveFileItem>? GetBindCandidates(IReadOnlyCollection<HawkArchiveFileItem> items, string[] extensions)
+		{
+			try
+			{
+				return items.Where(item => extensions.Contains(Path.GetExtension(item.Name).ToLowerInvariant())).ToList();
+			}
+			catch (ArgumentException)
+			{
+				return null;
+			}
+		}
+
+		/// <returns>the first archive member, or, if the archive containing <paramref name="items"/> is corrupt or not an archive, <see langword="null"/></returns>
+		/// <remarks><see cref="DebuggerNonUserCodeAttribute">[DebuggerNonUserCode]</see> prevents VS from pausing execution for the caught exception - we just want to suppress it and return <see langword="null"/></remarks>
+		[DebuggerNonUserCode]
+		private static HawkArchiveFileItem? GetFirstValidBindCandidate(IReadOnlyList<HawkArchiveFileItem> items)
+		{
+			var first = items[0];
+			try
+			{
+				_ = Path.GetExtension(first.Name);
+			}
+			catch (ArgumentException)
+			{
+				return null;
+			}
+			return first;
+		}
 
 		[return: HawkFilePath]
 		private static string MakeCanonicalName(string root, string? member) => member == null ? root : $"{root}|{member}";
