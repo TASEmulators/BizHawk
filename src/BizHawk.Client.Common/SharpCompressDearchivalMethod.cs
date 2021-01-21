@@ -1,7 +1,9 @@
-using System.IO;
-using System.Linq;
+#nullable enable
+
 using System.Collections.Generic;
+
 using BizHawk.Common;
+
 using SharpCompress.Archives;
 
 namespace BizHawk.Client.Common
@@ -27,13 +29,10 @@ namespace BizHawk.Client.Common
 			return true; // no exception? good enough
 		}
 
-		public SharpCompressArchiveFile Construct(string path) => new SharpCompressArchiveFile(path);
+		public SharpCompressArchiveFile Construct(string path) => new(path);
 
-		public static readonly SharpCompressDearchivalMethod Instance = new SharpCompressDearchivalMethod();
+		public static readonly SharpCompressDearchivalMethod Instance = new();
 
-		//don't try any .tar.* formats, they don't work
-		static readonly IReadOnlyCollection<string> archiveExts = new[] { ".zip", ".7z", ".rar", ".gz" };
-
-		public IReadOnlyCollection<string> AllowedArchiveExtensions { get { return archiveExts; } }
+		public IReadOnlyCollection<string> AllowedArchiveExtensions { get; } = new[] { ".zip", ".7z", ".rar", ".gz" }; // don't try any .tar.* formats, they don't work
 	}
 }
