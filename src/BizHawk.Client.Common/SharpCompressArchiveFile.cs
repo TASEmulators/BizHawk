@@ -26,7 +26,8 @@ namespace BizHawk.Client.Common
 
 		public void Dispose()
 		{
-			_archive?.Dispose();
+			if (_archive == null) throw new ObjectDisposedException(nameof(SharpCompressArchiveFile));
+			_archive.Dispose();
 			_archive = null;
 		}
 
