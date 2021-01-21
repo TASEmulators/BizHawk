@@ -53,6 +53,16 @@ namespace BizHawk.Client.Common
 
 		public static readonly SharpCompressDearchivalMethod Instance = new();
 
-		public IReadOnlyCollection<string> AllowedArchiveExtensions { get; } = new[] { ".zip", ".7z", ".rar", ".gz" }; // don't try any .tar.* formats, they don't work
+		public IReadOnlyCollection<string> AllowedArchiveExtensions { get; } = new[]
+		{
+			".7z",
+			".gz",
+			".rar",
+			".tar",
+//			/*.tar*/".bz2", ".tb2", ".tbz", ".tbz2", ".tz2",
+//			/*.tar.gz,*/ ".taz", ".tgz",
+//			/*.tar*/".lz",
+			".zip",
+		};
 	}
 }
