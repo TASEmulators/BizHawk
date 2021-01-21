@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
-using ICSharpCode.SharpZipLib.Zip;
 
 namespace BizHawk.Client.Common
 {
 	public class ZipStateLoader : IDisposable
 	{
-		private ZipFile _zip;
+		private ZipArchive _zip;
 		private Version _ver;
 		private bool _isDisposed;
-		private Dictionary<string, ZipEntry> _entriesByName;
+		private Dictionary<string, ZipArchiveEntry> _entriesByName;
 
 		private ZipStateLoader()
 		{
@@ -20,7 +20,6 @@ namespace BizHawk.Client.Common
 		public void Dispose()
 		{
 			Dispose(true);
-			GC.SuppressFinalize(this);
 		}
 
 		protected virtual void Dispose(bool disposing)
@@ -30,7 +29,7 @@ namespace BizHawk.Client.Common
 				_isDisposed = true;
 				if (disposing)
 				{
-					_zip.Close();
+					_zip.Dispose();
 				}
 			}
 		}
@@ -53,8 +52,8 @@ namespace BizHawk.Client.Common
 
 		private void PopulateEntries()
 		{
-			_entriesByName = new Dictionary<string, ZipEntry>();
-			foreach (ZipEntry z in _zip)
+			_entriesByName = new Dictionary<string, ZipArchiveEntry>();
+			foreach (var z in _zip.Entries)
 			{
 				string name = z.Name;
 				int i;
@@ -84,17 +83,17 @@ namespace BizHawk.Client.Common
 			
 			try
 			{
-				ret._zip = new ZipFile(filename);
+				ret._zip = new ZipArchive(new FileStream(filename, FileMode.Open, FileAccess.Read), ZipArchiveMode.Read);
 				ret.PopulateEntries();
 				if (!isMovieLoad && !ret.GetLump(BinaryStateLump.Versiontag, false, ret.ReadVersion))
 				{
-					ret._zip.Close();
+					ret._zip.Dispose();
 					return null;
 				}
 
 				return ret;
 			}
-			catch (ZipException)
+			catch (IOException)
 			{
 				return null;
 			}
@@ -109,8 +108,8 @@ namespace BizHawk.Client.Common
 		{
 			if (_entriesByName.TryGetValue(lump.ReadName, out var e))
 			{
-				using var zs = _zip.GetInputStream(e);
-				callback(zs, e.Size);
+				using var zs = e.Open();
+				callback(zs, e.Length);
 
 				return true;
 			}
