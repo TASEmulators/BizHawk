@@ -14,4 +14,7 @@
 		<PackageReference Include="JunitXml.TestLogger" Version="2.1.78" PrivateAssets="all" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Client.Common/BizHawk.Client.Common.csproj" />
 	</ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Include="data/**/*" />
+	</ItemGroup>
 </Project>

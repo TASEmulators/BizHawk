@@ -24,6 +24,8 @@ namespace BizHawk.Client.Common
 
 		public SharpCompressArchiveFile(string path) => _archive = ArchiveFactory.Open(path, new());
 
+		public SharpCompressArchiveFile(Stream fileStream) => _archive = ArchiveFactory.Open(fileStream, new());
+
 		public void Dispose()
 		{
 			if (_archive == null) throw new ObjectDisposedException(nameof(SharpCompressArchiveFile));

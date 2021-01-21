@@ -49,7 +49,39 @@ namespace BizHawk.Client.Common
 			return false;
 		}
 
+		public bool CheckSignature(Stream fileStream, string? filenameHint)
+		{
+			if (!fileStream.CanRead || !fileStream.CanSeek) return false;
+
+			try
+			{
+				using var arcTest = ArchiveFactory.Open(fileStream); // should throw for non-archives
+				if (arcTest.Type != ArchiveType.Tar) return true; // not expecting false positives from anything but .tar for now
+			}
+			catch
+			{
+				return false;
+			}
+
+			// as above, SharpCompress seems to overzealously flag files it thinks are the in original .tar format, so we'll check for false positives
+
+			if (fileStream.Length < 512) return false;
+			// looking for magic bytes
+			var seekPos = fileStream.Position;
+			fileStream.Seek(0x101, SeekOrigin.Begin);
+			var buffer = new byte[8];
+			fileStream.Read(buffer, 0, 8);
+			fileStream.Seek(seekPos, SeekOrigin.Begin);
+			var s = buffer.BytesToHexString();
+			if (s == "7573746172003030" || s == "7573746172202000") return true; // "ustar\000" (libarchive's bsdtar) or "ustar  \0" (GNU Tar)
+
+			Console.WriteLine($"SharpCompress identified file in stream as original .tar format, probably a false positive, ignoring. Filename hint: {filenameHint}");
+			return false;
+		}
+
 		public SharpCompressArchiveFile Construct(string path) => new(path);
+
+		public SharpCompressArchiveFile Construct(Stream fileStream) => new(fileStream);
 
 		public static readonly SharpCompressDearchivalMethod Instance = new();
 
