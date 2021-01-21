@@ -9,6 +9,7 @@ namespace BizHawk.Common
 	{
 		void ExtractFile(int index, Stream stream);
 
-		List<HawkArchiveFileItem> Scan();
+		/// <returns><see langword="null"/> on failure</returns>
+		List<HawkArchiveFileItem>? Scan();
 	}
 }

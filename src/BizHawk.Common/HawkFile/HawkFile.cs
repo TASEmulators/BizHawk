@@ -102,11 +102,12 @@ namespace BizHawk.Common
 						_extractor = DearchivalMethod.Construct(path);
 						try
 						{
-							_archiveItems = _extractor.Scan();
+							_archiveItems = _extractor.Scan() ?? throw new NullReferenceException();
 							IsArchive = true;
 						}
 						catch
 						{
+							Console.WriteLine($"Failed to scan file list of {FullPathWithoutMember}");
 							_archiveItems = null;
 							_extractor.Dispose();
 							_extractor = null;
@@ -132,6 +133,12 @@ namespace BizHawk.Common
 				if (_extractor != null)
 				{
 					var scanResults = _extractor.Scan();
+					if (scanResults == null)
+					{
+						Console.WriteLine($"Failed to scan file list of {FullPathWithoutMember}");
+						Exists = false;
+						return;
+					}
 					for (int i = 0, l = scanResults.Count; i < l; i++)
 					{
 						if (string.Equals(scanResults[i].Name, autobind, StringComparison.InvariantCultureIgnoreCase))

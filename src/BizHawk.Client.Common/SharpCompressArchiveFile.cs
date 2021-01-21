@@ -39,10 +39,17 @@ namespace BizHawk.Client.Common
 			entryStream.CopyTo(stream);
 		}
 
-		public List<HawkArchiveFileItem> Scan()
+		public List<HawkArchiveFileItem>? Scan()
 		{
-			var files = EnumerateArchiveFiles();
-			return files.Select((e, i) => new HawkArchiveFileItem(e.Key.Replace('\\', '/'), e.Size, i, i)).ToList();
+			List<HawkArchiveFileItem> outFiles = new();
+			var entries = EnumerateArchiveFiles().ToList();
+			for (var i = 0; i < entries.Count; i++)
+			{
+				var entry = entries[i];
+				if (entry.Key == null) return null;
+				outFiles.Add(new HawkArchiveFileItem(entry.Key.Replace('\\', '/'), entry.Size, i, i));
+			}
+			return outFiles;
 		}
 	}
 }
