@@ -19,6 +19,8 @@ namespace BizHawk.Client.Common.movie.import
 		private LibsnesControllerDeck _deck;
 		protected override void RunImport()
 		{
+			Result.Movie.HeaderEntries[HeaderKeys.Core] = CoreNames.Bsnes;
+
 			// .LSMV movies are .zip files containing data files.
 			using (var fs = new FileStream(SourceFile.FullName, FileMode.Open, FileAccess.Read))
 			{
@@ -33,7 +35,6 @@ namespace BizHawk.Client.Common.movie.import
 
 			using var zip = new ZipFile(SourceFile.FullName);
 
-			Result.Movie.HeaderEntries[HeaderKeys.Core] = CoreNames.Bsnes;
 			var ss = new LibsnesCore.SnesSyncSettings
 			{
 				LeftPort = LibsnesControllerDeck.ControllerType.Gamepad,
