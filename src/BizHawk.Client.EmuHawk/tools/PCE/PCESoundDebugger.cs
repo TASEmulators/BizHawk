@@ -7,8 +7,7 @@ using BizHawk.Client.Common;
 using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Cores.PCEngine;
 using BizHawk.Emulation.Common;
-
-using ICSharpCode.SharpZipLib.Zip;
+using System.IO.Compression;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -176,16 +175,10 @@ namespace BizHawk.Client.EmuHawk
 			string tmpFilename = $"{Path.GetTempFileName()}.zip";
 			using (var stream = new FileStream(tmpFilename, FileMode.Create, FileAccess.Write, FileShare.Read))
 			{
-				var zip = new ZipOutputStream(stream)
-				{
-					IsStreamOwner = false,
-					UseZip64 = UseZip64.Off
-				};
+				using var zip = new ZipArchive(stream, ZipArchiveMode.Create);
 
 				foreach (var entry in _psgEntries)
 				{
-					var ze = new ZipEntry($"{entry.Name}.wav") { CompressionMethod = CompressionMethod.Deflated };
-					zip.PutNextEntry(ze);
 					var ms = new MemoryStream();
 					var bw = new BinaryWriter(ms);
 					bw.Write(EmptyWav, 0, EmptyWav.Length);
@@ -204,13 +197,11 @@ namespace BizHawk.Client.EmuHawk
 
 					bw.Flush();
 					var buf = ms.GetBuffer();
-					zip.Write(buf, 0, (int)ms.Length);
-					zip.Flush();
-					zip.CloseEntry();
-				}
 
-				zip.Close();
-				stream.Flush();
+					var ze = zip.CreateEntry($"{entry.Name}.wav", CompressionLevel.Fastest);
+					using var zipstream = ze.Open();
+					zipstream.Write(buf, 0, (int)ms.Length);
+				}
 			}
 			System.Diagnostics.Process.Start(tmpFilename);
 		}
