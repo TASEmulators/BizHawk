@@ -11,7 +11,6 @@
 		<Reference Include="System.Data.SQLite, Version=1.0.105.2, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=AMD64" SpecificVersion="False" HintPath="$(ProjectDir)../../References/x64/SQLite/System.Data.SQLite.dll" />
 		<Reference Include="NLua" HintPath="$(ProjectDir)../../output/dll/nlua/NLua.dll" Private="False" />
 		<PackageReference Include="SharpCompress" Version="0.24.0" />
-		<PackageReference Include="SharpZipLib" Version="1.1.0" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Emulation.Cores/BizHawk.Emulation.Cores.csproj" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Bizware.BizwareGL/BizHawk.Bizware.BizwareGL.csproj" />
 	</ItemGroup>
