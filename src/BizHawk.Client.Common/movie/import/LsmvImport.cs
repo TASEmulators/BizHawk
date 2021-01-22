@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using BizHawk.Common;
@@ -6,7 +7,6 @@ using BizHawk.Common.IOExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
-using ICSharpCode.SharpZipLib.Zip;
 
 namespace BizHawk.Client.Common.movie.import
 {
@@ -22,7 +22,7 @@ namespace BizHawk.Client.Common.movie.import
 			Result.Movie.HeaderEntries[HeaderKeys.Core] = CoreNames.Bsnes;
 
 			// .LSMV movies are .zip files containing data files.
-			using (var fs = new FileStream(SourceFile.FullName, FileMode.Open, FileAccess.Read))
+			using var fs = new FileStream(SourceFile.FullName, FileMode.Open, FileAccess.Read);
 			{
 				byte[] data = new byte[4];
 				fs.Read(data, 0, 4);
@@ -31,9 +31,10 @@ namespace BizHawk.Client.Common.movie.import
 					Result.Errors.Add("This is not a zip file.");
 					return;
 				}
+				fs.Position = 0;
 			}
 
-			using var zip = new ZipFile(SourceFile.FullName);
+			using var zip = new ZipArchive(fs, ZipArchiveMode.Read, true);
 
 			var ss = new LibsnesCore.SnesSyncSettings
 			{
@@ -44,11 +45,11 @@ namespace BizHawk.Client.Common.movie.import
 
 			string platform = "SNES";
 
-			foreach (ZipEntry item in zip)
+			foreach (var item in zip.Entries)
 			{
 				if (item.Name == "authors")
 				{
-					using var stream = zip.GetInputStream(item);
+					using var stream = item.Open();
 					string authors = Encoding.UTF8.GetString(stream.ReadAllBytes());
 					string authorList = "";
 					string authorLast = "";
@@ -86,19 +87,19 @@ namespace BizHawk.Client.Common.movie.import
 				}
 				else if (item.Name == "coreversion")
 				{
-					using var stream = zip.GetInputStream(item);
+					using var stream = item.Open();
 					string coreVersion = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
 					Result.Movie.Comments.Add($"CoreOrigin {coreVersion}");
 				}
 				else if (item.Name == "gamename")
 				{
-					using var stream = zip.GetInputStream(item);
+					using var stream = item.Open();
 					string gameName = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
 					Result.Movie.HeaderEntries[HeaderKeys.GameName] = gameName;
 				}
 				else if (item.Name == "gametype")
 				{
-					using var stream = zip.GetInputStream(item);
+					using var stream = item.Open();
 					string gametype = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
 
 					// TODO: Handle the other types.
@@ -123,7 +124,7 @@ namespace BizHawk.Client.Common.movie.import
 				}
 				else if (item.Name == "input")
 				{
-					using var stream = zip.GetInputStream(item);
+					using var stream = item.Open();
 					string input = Encoding.UTF8.GetString(stream.ReadAllBytes());
 
 					int lineNum = 0;
@@ -157,7 +158,7 @@ namespace BizHawk.Client.Common.movie.import
 				}
 				else if (item.Name.StartsWith("moviesram."))
 				{
-					using var stream = zip.GetInputStream(item);
+					using var stream = item.Open();
 					byte[] movieSram = stream.ReadAllBytes();
 					if (movieSram.Length != 0)
 					{
@@ -168,7 +169,7 @@ namespace BizHawk.Client.Common.movie.import
 				}
 				else if (item.Name == "port1")
 				{
-					using var stream = zip.GetInputStream(item);
+					using var stream = item.Open();
 					string port1 = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
 					Result.Movie.HeaderEntries["port1"] = port1;
 					ss.LeftPort = LibsnesControllerDeck.ControllerType.Gamepad;
@@ -176,7 +177,7 @@ namespace BizHawk.Client.Common.movie.import
 				}
 				else if (item.Name == "port2")
 				{
-					using var stream = zip.GetInputStream(item);
+					using var stream = item.Open();
 					string port2 = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
 					Result.Movie.HeaderEntries["port2"] = port2;
 					ss.RightPort = LibsnesControllerDeck.ControllerType.Gamepad;
@@ -184,13 +185,13 @@ namespace BizHawk.Client.Common.movie.import
 				}
 				else if (item.Name == "projectid")
 				{
-					using var stream = zip.GetInputStream(item);
+					using var stream = item.Open();
 					string projectId = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
 					Result.Movie.HeaderEntries["ProjectID"] = projectId;
 				}
 				else if (item.Name == "rerecords")
 				{
-					using var stream = zip.GetInputStream(item);
+					using var stream = item.Open();
 					string rerecords = Encoding.UTF8.GetString(stream.ReadAllBytes());
 					int rerecordCount;
 
@@ -208,7 +209,7 @@ namespace BizHawk.Client.Common.movie.import
 				}
 				else if (item.Name.EndsWith(".sha256"))
 				{
-					using var stream = zip.GetInputStream(item);
+					using var stream = item.Open();
 					string rom = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
 					int pos = item.Name.LastIndexOf(".sha256");
 					string name = item.Name.Substring(0, pos);
@@ -221,7 +222,7 @@ namespace BizHawk.Client.Common.movie.import
 				}
 				else if (item.Name == "subtitles")
 				{
-					using var stream = zip.GetInputStream(item);
+					using var stream = item.Open();
 					string subtitles = Encoding.UTF8.GetString(stream.ReadAllBytes());
 					using (var reader = new StringReader(subtitles))
 					{
@@ -238,19 +239,19 @@ namespace BizHawk.Client.Common.movie.import
 				}
 				else if (item.Name == "starttime.second")
 				{
-					using var stream = zip.GetInputStream(item);
+					using var stream = item.Open();
 					string startSecond = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
 					Result.Movie.HeaderEntries["StartSecond"] = startSecond;
 				}
 				else if (item.Name == "starttime.subsecond")
 				{
-					using var stream = zip.GetInputStream(item);
+					using var stream = item.Open();
 					string startSubSecond = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
 					Result.Movie.HeaderEntries["StartSubSecond"] = startSubSecond;
 				}
 				else if (item.Name == "systemid")
 				{
-					using var stream = zip.GetInputStream(item);
+					using var stream = item.Open();
 					string systemId = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
 					Result.Movie.Comments.Add($"{EmulationOrigin} {systemId}");
 				}
