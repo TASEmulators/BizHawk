@@ -94,8 +94,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				//make sure it worked
-				if (!new FFmpegService().QueryServiceAvailable())
-					throw new Exception("download failed");
+				if (!FFmpegService.QueryServiceAvailable()) throw new Exception("download failed");
 
 				succeeded = true;
 			}
@@ -108,12 +107,6 @@ namespace BizHawk.Client.EmuHawk
 				try { File.Delete(fn); }
 				catch { }
 			}
-		}
-
-		public static void Run(IDialogParent parent)
-		{
-			var form = new FFmpegDownloaderForm();
-			parent.ShowDialogWithTempMute(form);
 		}
 
 		private void btnDownload_Click(object sender, EventArgs e)

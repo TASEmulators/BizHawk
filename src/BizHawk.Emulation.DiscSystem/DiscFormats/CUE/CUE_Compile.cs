@@ -327,9 +327,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 			//check whether processing was available
 			if (needsCodec)
 			{
-				FFmpegService ffmpeg = new FFmpegService();
-				if (!ffmpeg.QueryServiceAvailable())
-					Warn("Decoding service will be required for further processing, but is not available");
+				if (!FFmpegService.QueryServiceAvailable()) Warn("Decoding service will be required for further processing, but is not available");
 			}
 		}
 

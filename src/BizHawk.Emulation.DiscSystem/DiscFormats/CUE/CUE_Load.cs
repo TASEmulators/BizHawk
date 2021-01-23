@@ -114,8 +114,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 						}
 					case CompiledCueFileType.DecodeAudio:
 						{
-							FFmpegService ffmpeg = new FFmpegService();
-							if (!ffmpeg.QueryServiceAvailable())
+							if (!FFmpegService.QueryServiceAvailable())
 							{
 								throw new DiscReferenceException(ccf.FullPath, "No decoding service was available (make sure ffmpeg.exe is available. Even though this may be a wav, ffmpeg is used to load oddly formatted wave files. If you object to this, please send us a note and we'll see what we can do. It shouldn't be too hard.)");
 							}

@@ -8,7 +8,7 @@ using System.IO;
 
 namespace BizHawk.Common
 {
-	public class FFmpegService
+	public static class FFmpegService
 	{
 		public static string FFmpegPath = string.Empty; // always updated in DiscoHawk.Program/EmuHawk.Program
 
@@ -31,7 +31,7 @@ namespace BizHawk.Common
 		//note: accepts . or : in the stream stream/substream separator in the stream ID format, since that changed at some point in FFMPEG history
 		//if someone has a better idea how to make the determination of whether an audio stream is available, I'm all ears
 		private static readonly Regex rxHasAudio = new Regex(@"Stream \#(\d*(\.|\:)\d*)\: Audio", RegexOptions.Compiled);
-		public AudioQueryResult QueryAudio(string path)
+		public static AudioQueryResult QueryAudio(string path)
 		{
 			var ret = new AudioQueryResult();
 			string stdout = Run("-i", path).Text;
@@ -42,7 +42,7 @@ namespace BizHawk.Common
 		/// <summary>
 		/// queries whether this service is available. if ffmpeg is broken or missing, then you can handle it gracefully
 		/// </summary>
-		public bool QueryServiceAvailable()
+		public static bool QueryServiceAvailable()
 		{
 			try
 			{
@@ -61,7 +61,7 @@ namespace BizHawk.Common
 			public int ExitCode;
 		}
 
-		public RunResults Run(params string[] args)
+		public static RunResults Run(params string[] args)
 		{
 			args = Escape(args);
 			StringBuilder sbCmdline = new StringBuilder();
@@ -92,7 +92,7 @@ namespace BizHawk.Common
 		}
 
 		/// <exception cref="InvalidOperationException">FFmpeg exited with non-zero exit code or produced no output</exception>
-		public byte[] DecodeAudio(string path)
+		public static byte[] DecodeAudio(string path)
 		{
 			string tempfile = Path.GetTempFileName();
 			try

@@ -20,12 +20,7 @@ namespace BizHawk.Emulation.DiscSystem
 		{
 		}
 
-		private bool CheckForAudio(string path)
-		{
-			FFmpegService ffmpeg = new FFmpegService();
-			var qa = ffmpeg.QueryAudio(path);
-			return qa.IsAudio;
-		}
+		private bool CheckForAudio(string path) => FFmpegService.QueryAudio(path).IsAudio;
 
 		/// <summary>
 		/// finds audio at a path similar to the provided path (i.e. finds Track01.mp3 for Track01.wav)
@@ -59,7 +54,7 @@ namespace BizHawk.Emulation.DiscSystem
 		}
 
 		/// <exception cref="AudioDecoder_Exception">could not find source audio for <paramref name="audioPath"/></exception>
-		public byte[] AcquireWaveData(string audioPath) => new FFmpegService()
+		public byte[] AcquireWaveData(string audioPath) => FFmpegService
 			.DecodeAudio(FindAudio(audioPath) ?? throw new AudioDecoder_Exception($"Could not find source audio for: {Path.GetFileName(audioPath)}"));
 	}
 }

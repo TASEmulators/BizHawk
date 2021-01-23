@@ -47,8 +47,7 @@ namespace BizHawk.Client.DiscoHawk
 				try
 				{
 					File.WriteAllBytes(tempfile, waveData);
-					var ffmpeg = new FFmpegService();
-					ffmpeg.Run("-f", "s16le", "-ar", "44100", "-ac", "2", "-i", tempfile, "-f", "mp3", "-ab", "192k", mp3Path);
+					FFmpegService.Run("-f", "s16le", "-ar", "44100", "-ac", "2", "-i", tempfile, "-f", "mp3", "-ab", "192k", mp3Path);
 				}
 				finally
 				{
