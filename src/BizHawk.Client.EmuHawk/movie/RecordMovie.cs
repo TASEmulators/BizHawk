@@ -91,8 +91,8 @@ namespace BizHawk.Client.EmuHawk
 				var test = new FileInfo(path);
 				if (test.Exists)
 				{
-					var result = MessageBox.Show($"{path} already exists, overwrite?", "Confirm overwrite", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
-					if (result == DialogResult.Cancel)
+					var result = DialogController.ShowMessageBox2($"{path} already exists, overwrite?", "Confirm overwrite", EMsgBoxIcon.Warning, useOKCancel: true);
+					if (!result)
 					{
 						return;
 					}
@@ -155,7 +155,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				MessageBox.Show("Please select a movie to record", "File selection error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				DialogController.ShowMessageBox("Please select a movie to record", "File selection error", EMsgBoxIcon.Error);
 			}
 		}
 
