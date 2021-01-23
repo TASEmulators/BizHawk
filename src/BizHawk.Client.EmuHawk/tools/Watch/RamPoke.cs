@@ -13,14 +13,18 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private readonly List<Watch> _watchList;
 		private readonly CheatCollection _cheats;
+
+		public IDialogController DialogController { get; }
+
 		public Point InitialLocation { get; set; } = new Point(0, 0);
 
-		public RamPoke(IEnumerable<Watch> watches, CheatCollection cheats)
+		public RamPoke(IDialogController dialogController, IEnumerable<Watch> watches, CheatCollection cheats)
 		{
 			_watchList = watches
 				.Where(w => !w.IsSeparator) // Weed out separators just in case
 				.ToList();
 			_cheats = cheats;
+			DialogController = dialogController;
 			InitializeComponent();
 			Icon = Properties.Resources.PokeIcon;
 		}
@@ -29,7 +33,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UnSupportedConfiguration()
 		{
-			MessageBox.Show("RAM Poke does not support mixed types", "Unsupported Options", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			DialogController.ShowMessageBox("RAM Poke does not support mixed types", "Unsupported Options", EMsgBoxIcon.Error);
 			Close();
 		}
 

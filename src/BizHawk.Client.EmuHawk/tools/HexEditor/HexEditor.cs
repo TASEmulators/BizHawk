@@ -1673,7 +1673,7 @@ namespace BizHawk.Client.EmuHawk
 						Common.WatchDisplayType.Hex,
 						BigEndian));
 
-				using var poke = new RamPoke(watches, MainForm.CheatList)
+				using var poke = new RamPoke(DialogController, watches, MainForm.CheatList)
 				{
 					InitialLocation = this.ChildPointToScreen(AddressLabel),
 					ParentTool = this

@@ -17,10 +17,13 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool ApplyNewSoundDevice { get; private set; }
 
-		public SoundConfig(Config config, Func<ESoundOutputMethod, IEnumerable<string>> getDeviceNamesCallback)
+		public IDialogController DialogController { get; }
+
+		public SoundConfig(IDialogController dialogController, Config config, Func<ESoundOutputMethod, IEnumerable<string>> getDeviceNamesCallback)
 		{
 			_config = config;
 			_getDeviceNamesCallback = getDeviceNamesCallback;
+			DialogController = dialogController;
 			InitializeComponent();
 		}
 
@@ -68,7 +71,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (rbOutputMethodDirectSound.Checked && (int)BufferSizeNumeric.Value < 60)
 			{
-				MessageBox.Show("Buffer size must be at least 60 milliseconds for DirectSound.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				DialogController.ShowMessageBox("Buffer size must be at least 60 milliseconds for DirectSound.", "Error", EMsgBoxIcon.Error);
 				return;
 			}
 			var oldOutputMethod = _config.SoundOutputMethod;

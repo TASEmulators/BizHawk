@@ -246,7 +246,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OpenAdvancedMenuItem_Click(object sender, EventArgs e)
 		{
-			using var oac = new OpenAdvancedChooser(Config, CreateCoreComm, Game, RunLibretroCoreChooser);
+			using var oac = new OpenAdvancedChooser(this, Config, CreateCoreComm, Game, RunLibretroCoreChooser);
 			if (this.ShowDialogWithTempMute(oac) == DialogResult.Cancel) return;
 
 			if (oac.Result == AdvancedRomLoaderType.LibretroLaunchNoGame)
@@ -912,7 +912,7 @@ namespace BizHawk.Client.EmuHawk
 				ESoundOutputMethod.OpenAL => OpenALSoundOutput.GetDeviceNames(),
 				_ => Enumerable.Empty<string>()
 			};
-			using var form = new SoundConfig(Config, GetDeviceNamesCallback);
+			using var form = new SoundConfig(this, Config, GetDeviceNamesCallback);
 			if (!form.ShowDialog().IsOk())
 			{
 				AddOnScreenMessage("Sound config aborted");
@@ -1301,7 +1301,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BatchRunnerMenuItem_Click(object sender, EventArgs e)
 		{
-			using var form = new BatchRun(Config, CreateCoreComm);
+			using var form = new BatchRun(this, Config, CreateCoreComm);
 			form.ShowDialog();
 		}
 
@@ -2319,7 +2319,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (MovieSession.Movie.IsActive())
 			{
-				using var form = new EditSubtitlesForm(MovieSession.Movie, MovieSession.ReadOnly);
+				using var form = new EditSubtitlesForm(this, MovieSession.Movie, MovieSession.ReadOnly);
 				form.ShowDialog();
 			}
 		}

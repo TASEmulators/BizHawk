@@ -1035,6 +1035,7 @@ namespace BizHawk.Client.EmuHawk
 		private void StateHistorySettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			new GreenzoneSettings(
+				DialogController,
 				new ZwinderStateManagerSettings(CurrentTasMovie.TasStateManager.Settings),
 				(s, k) => { CurrentTasMovie.TasStateManager.UpdateSettings(s, k); },
 				false)
@@ -1052,13 +1053,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SubtitlesMenuItem_Click(object sender, EventArgs e)
 		{
-			var form = new EditSubtitlesForm(CurrentTasMovie, false);
+			var form = new EditSubtitlesForm(DialogController, CurrentTasMovie, false);
 			form.ShowDialog();
 		}
 
 		private void DefaultStateSettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			new GreenzoneSettings(
+				DialogController,
 				new ZwinderStateManagerSettings(Config.Movies.DefaultTasStateManagerSettings),
 				(s, k) => { Config.Movies.DefaultTasStateManagerSettings = s; },
 				true)

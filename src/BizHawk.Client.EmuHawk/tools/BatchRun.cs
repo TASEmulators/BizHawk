@@ -20,10 +20,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private Thread _thread;
 
-		public BatchRun(Config config, Func<CoreComm> createCoreComm)
+		public IDialogController DialogController { get; }
+
+		public BatchRun(IDialogController dialogController, Config config, Func<CoreComm> createCoreComm)
 		{
 			_config = config;
 			_createCoreComm = createCoreComm;
+			DialogController = dialogController;
 			InitializeComponent();
 		}
 
@@ -57,13 +60,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_thread != null)
 			{
-				MessageBox.Show("Old one still running!");
+				DialogController.ShowMessageBox("Old one still running!");
 			}
 			else
 			{
 				if (listBox1.Items.Count == 0)
 				{
-					MessageBox.Show("No files!");
+					DialogController.ShowMessageBox("No files!");
 				}
 				else
 				{
@@ -99,7 +102,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception e)
 			{
-				MessageBox.Show(e.ToString(), "The Whole Thing Died!");
+				DialogController.ShowMessageBox(e.ToString(), "The Whole Thing Died!");
 				this.Invoke(() => label3.Text = "Deaded!");
 			}
 			this.Invoke(() => _thread = null);
@@ -115,7 +118,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_thread != null)
 			{
-				MessageBox.Show("Can't close while task is running!");
+				DialogController.ShowMessageBox("Can't close while task is running!");
 				e.Cancel = true;
 			}
 		}
@@ -137,7 +140,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				MessageBox.Show("No results to save!");
+				DialogController.ShowMessageBox("No results to save!");
 			}
 		}
 	}

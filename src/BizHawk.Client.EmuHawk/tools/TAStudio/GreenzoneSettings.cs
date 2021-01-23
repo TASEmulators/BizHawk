@@ -11,8 +11,11 @@ namespace BizHawk.Client.EmuHawk
 		private ZwinderStateManagerSettings _settings;
 		private readonly bool _isDefault;
 
-		public GreenzoneSettings(ZwinderStateManagerSettings settings, Action<ZwinderStateManagerSettings, bool> saveSettings, bool isDefault)
+		public IDialogController DialogController { get; }
+
+		public GreenzoneSettings(IDialogController dialogController, ZwinderStateManagerSettings settings, Action<ZwinderStateManagerSettings, bool> saveSettings, bool isDefault)
 		{
+			DialogController = dialogController;
 			InitializeComponent();
 			Icon = Properties.Resources.TAStudioIcon;
 
@@ -31,9 +34,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OkBtn_Click(object sender, EventArgs e)
 		{
-			bool keep = false;
-			if (!_isDefault)
-				keep = (MessageBox.Show("Attempt to keep old states?", "Keep old states?", MessageBoxButtons.YesNo) == DialogResult.Yes);
+			var keep = !_isDefault && DialogController.ShowMessageBox2("Attempt to keep old states?", "Keep old states?");
 			_saveSettings(_settings, keep);
 			Close();
 		}

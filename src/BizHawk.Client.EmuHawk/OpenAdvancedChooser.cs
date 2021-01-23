@@ -34,16 +34,19 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly Func<bool> _libretroCoreChooserCallback;
 
+		public IDialogController DialogController { get; }
+
 		public AdvancedRomLoaderType Result;
 
 		public string SuggestedExtensionFilter;
 
-		public OpenAdvancedChooser(Config config, Func<CoreComm> createCoreComm, IGameInfo game, Func<bool> libretroCoreChooserCallback)
+		public OpenAdvancedChooser(IDialogController dialogController, Config config, Func<CoreComm> createCoreComm, IGameInfo game, Func<bool> libretroCoreChooserCallback)
 		{
 			_config = config;
 			_createCoreComm = createCoreComm;
 			_game = game;
 			_libretroCoreChooserCallback = libretroCoreChooserCallback;
+			DialogController = dialogController;
 
 			InitializeComponent();
 
@@ -101,7 +104,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (!bootstrap)
 				{
-					MessageBox.Show($"Couldn't load the selected Libretro core for analysis. It won't be available.\n\nError:\n\n{ex}");
+					DialogController.ShowMessageBox($"Couldn't load the selected Libretro core for analysis. It won't be available.\n\nError:\n\n{ex}");
 				}
 			}
 		}

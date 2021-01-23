@@ -496,7 +496,7 @@ namespace BizHawk.Client.EmuHawk
 			var indices = MovieView.SelectedIndices;
 			if (indices.Count > 0)
 			{
-				var s = new EditSubtitlesForm(_movieList[MovieView.SelectedIndices[0]], true);
+				var s = new EditSubtitlesForm(DialogController, _movieList[MovieView.SelectedIndices[0]], true);
 				s.Show();
 			}
 		}
