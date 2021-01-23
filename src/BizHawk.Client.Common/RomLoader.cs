@@ -13,8 +13,7 @@ using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.Sony.PSX;
 using BizHawk.Emulation.Cores.Arcades.MAME;
 using BizHawk.Emulation.DiscSystem;
-using ICSharpCode.SharpZipLib.Zip.Compression;
-using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
+using System.IO.Compression;
 
 namespace BizHawk.Client.Common
 {
@@ -503,10 +502,11 @@ namespace BizHawk.Client.Common
 
 		private void LoadPSF(string path, CoreComm nextComm, HawkFile file, out IEmulator nextEmulator, out RomGame rom, out GameInfo game)
 		{
+			// TODO: Why does the PSF loader need CbDeflater provided?  Surely this is a matter internal to it.
 			static byte[] CbDeflater(Stream instream, int size)
 			{
 				var ret = new MemoryStream();
-				new InflaterInputStream(instream, new Inflater(false)).CopyTo(ret);
+				new GZipStream(instream, CompressionMode.Decompress).CopyTo(ret);
 				return ret.ToArray();
 			}
 			var psf = new PSF();

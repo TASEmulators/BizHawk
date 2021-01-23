@@ -10,8 +10,8 @@ using BizHawk.Client.Common;
 using BizHawk.Common;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Common;
-using ICSharpCode.SharpZipLib.Core;
-using ICSharpCode.SharpZipLib.Zip;
+using System.IO.Compression;
+using System.Linq;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -95,12 +95,6 @@ namespace BizHawk.Client.EmuHawk
 			public NoiseState Noise;
 		}
 
-		private class Stupid : IStaticDataSource
-		{
-			public Stream Stream { get; set; }
-			public Stream GetSource() => Stream;
-		}
-
 		private void Export_Click(object sender, EventArgs e)
 		{
 			//acquire target
@@ -120,14 +114,13 @@ namespace BizHawk.Client.EmuHawk
 
 
 			// load template
-			var msSongXml = new MemoryStream();
-			var zfTemplate = new ZipFile(templatePath);
+			XElement templateRoot;
+			using (var zfTemplate = new ZipArchive(new FileStream(templatePath, FileMode.Open, FileAccess.Read), ZipArchiveMode.Read))
 			{
-				using var zis = zfTemplate.GetInputStream(zfTemplate.GetEntry("Song.xml"));
-				byte[] buffer = new byte[4096]; // 4K is optimum
-				StreamUtils.Copy(zis, msSongXml, buffer);
+				var entry = zfTemplate.Entries.Single(e => e.Name == "Song.xml");
+				using var stream = entry.Open();
+				templateRoot = XElement.Load(stream);
 			}
-			var templateRoot = XElement.Parse(Encoding.UTF8.GetString(msSongXml.ToArray()));
 
 			//get the pattern pool, and whack the child nodes
 			var xPatterns = templateRoot.XPathSelectElement("//Patterns");
@@ -412,18 +405,11 @@ namespace BizHawk.Client.EmuHawk
 			File.Delete(outPath);
 			File.Copy(templatePath, outPath);
 
-			var msOutXml = new MemoryStream();
-			templateRoot.Save(msOutXml);
-			msOutXml.Flush();
-			msOutXml.Position = 0;
-			var zfOutput = new ZipFile(outPath);
-			zfOutput.BeginUpdate();
-			zfOutput.Add(new Stupid { Stream = msOutXml }, "Song.xml");
-			zfOutput.CommitUpdate();
-			zfOutput.Close();
-
-			// for easier debugging, write patterndata XML
-			////DUMP_TO_DISK(msOutXml.ToArray())
+			using var zfOutput = new ZipArchive(new FileStream(outPath, FileMode.Create, FileAccess.Write), ZipArchiveMode.Create);
+			using (var stream = zfOutput.CreateEntry("Song.xml").Open())
+			{
+				templateRoot.Save(stream);
+			}
 		}
 
 		private readonly List<ApuState> _log = new List<ApuState>();
