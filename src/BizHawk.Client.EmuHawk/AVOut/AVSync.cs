@@ -5,7 +5,6 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	[VideoWriterIgnore]
 	public class AudioStretcher : AVStretcher
 	{
 		public AudioStretcher(IVideoWriter w)
@@ -45,7 +44,6 @@ namespace BizHawk.Client.EmuHawk
 		}
 	}
 
-	[VideoWriterIgnore]
 	public class VideoStretcher : AVStretcher
 	{
 		public VideoStretcher(IVideoWriter w)

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
+using System.Linq;
+
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
 
@@ -115,11 +116,6 @@ namespace BizHawk.Client.EmuHawk
 		}
 	}
 
-	[AttributeUsage(AttributeTargets.Class)]
-	public sealed class VideoWriterIgnoreAttribute : Attribute
-	{
-	}
-
 	public class VideoWriterInfo
 	{
 		public VideoWriterAttribute Attribs { get; }
@@ -149,10 +145,10 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (!t.IsInterface
 					&& typeof(IVideoWriter).IsAssignableFrom(t)
-					&& !t.IsAbstract
-					&& t.GetCustomAttributes(typeof(VideoWriterIgnoreAttribute), false).Length == 0)
+					&& !t.IsAbstract)
 				{
-					var a = (VideoWriterAttribute)t.GetCustomAttributes(typeof(VideoWriterAttribute), false)[0];
+					var a = t.GetCustomAttributes(typeof(VideoWriterAttribute), false).Cast<VideoWriterAttribute>().FirstOrDefault();
+					if (a == null) continue;
 					VideoWriters.Add(a.ShortName, new VideoWriterInfo(a, t));
 				}
 			}
