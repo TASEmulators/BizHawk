@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Windows.Forms;
+
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
 

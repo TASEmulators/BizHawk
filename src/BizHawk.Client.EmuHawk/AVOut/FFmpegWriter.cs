@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Diagnostics;
-using System.Windows.Forms;
+
 using BizHawk.Client.Common;
 using BizHawk.Common;
 using BizHawk.Common.PathExtensions;
@@ -203,7 +203,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch
 			{
-				MessageBox.Show($"Exception! ffmpeg history:\n{FfmpegGetError()}");
+				_dialogParent.DialogController.ShowMessageBox($"Exception! ffmpeg history:\n{FfmpegGetError()}");
 				throw;
 			}
 
@@ -297,7 +297,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch
 			{
-				MessageBox.Show($"Exception! ffmpeg history:\n{FfmpegGetError()}");
+				_dialogParent.DialogController.ShowMessageBox($"Exception! ffmpeg history:\n{FfmpegGetError()}");
 				throw;
 			}
 		}

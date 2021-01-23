@@ -5,7 +5,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Text;
 using System.Threading;
-using System.Windows.Forms;
+
 using BizHawk.Client.Common;
 
 using BizHawk.Emulation.Common;
@@ -666,7 +666,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception e)
 			{
-				MessageBox.Show($"JMD Worker Thread died:\n\n{e}");
+				_dialogParent.DialogController.ShowMessageBox($"JMD Worker Thread died:\n\n{e}");
 			}
 		}
 

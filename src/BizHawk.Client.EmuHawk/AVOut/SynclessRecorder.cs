@@ -3,7 +3,6 @@ using System.IO;
 using System.Collections.Generic;
 using System.Drawing.Imaging;
 using System.Text;
-using System.Windows.Forms;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Bizware.BizwareGL;

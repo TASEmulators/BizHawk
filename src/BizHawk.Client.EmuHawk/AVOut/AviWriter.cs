@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
-using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Common;
@@ -104,7 +103,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception e)
 			{
-				MessageBox.Show($"AVIFIL32 Thread died:\n\n{e}");
+				_dialogParent.DialogController.ShowMessageBox($"AVIFIL32 Thread died:\n\n{e}");
 			}
 		}
 

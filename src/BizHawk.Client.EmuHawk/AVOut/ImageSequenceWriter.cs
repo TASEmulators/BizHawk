@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Drawing.Imaging;
-using System.Windows.Forms;
 
 using BizHawk.Bizware.BizwareGL;
 using BizHawk.Client.Common;
