@@ -26,7 +26,7 @@ using BizHawk.Emulation.Common;
 // TODO - display some kind if [!] if you have a user-specified file which is known but defined as incompatible by the firmware DB
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class FirmwaresConfig : Form
+	public partial class FirmwaresConfig : Form, IDialogParent
 	{
 		private readonly IDictionary<string, string> _firmwareUserSpecifications;
 
@@ -35,6 +35,8 @@ namespace BizHawk.Client.EmuHawk
 		private readonly IMainFormForConfig _mainForm;
 
 		private readonly PathEntryCollection _pathEntries;
+
+		public IDialogController DialogController => _mainForm.DialogController;
 
 		private readonly FirmwareManager Manager;
 
@@ -365,7 +367,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TbbOrganize_Click(object sender, EventArgs e)
 		{
-			if (MessageBox.Show(this, "This is going to move/rename every automatically-selected firmware file under your configured firmwares directory to match our recommended organizational scheme (which is not super great right now). Proceed?", "Firmwares Organization Confirm", MessageBoxButtons.OKCancel) == DialogResult.Cancel)
+			if (!this.ModalMessageBox2("This is going to move/rename every automatically-selected firmware file under your configured firmwares directory to match our recommended organizational scheme (which is not super great right now). Proceed?", "Firmwares Organization Confirm", useOKCancel: true))
 			{
 				return;
 			}
@@ -478,8 +480,8 @@ namespace BizHawk.Client.EmuHawk
 							// check whether this file is currently outside of the global firmware directory
 							if (_currSelectorDir != firmwarePath)
 							{
-								var askMoveResult = MessageBox.Show(this, "The selected custom firmware does not reside in the root of the global firmware directory.\nDo you want to copy it there?", "Import Custom Firmware", MessageBoxButtons.YesNo);
-								if (askMoveResult == DialogResult.Yes)
+								var askMoveResult = this.ModalMessageBox2("The selected custom firmware does not reside in the root of the global firmware directory.\nDo you want to copy it there?", "Import Custom Firmware");
+								if (askMoveResult)
 								{
 									try
 									{
@@ -489,7 +491,7 @@ namespace BizHawk.Client.EmuHawk
 									}
 									catch (Exception ex)
 									{
-										MessageBox.Show(this, $"There was an issue copying the file. The customization has NOT been set.\n\n{ex.StackTrace}");
+										this.ModalMessageBox($"There was an issue copying the file. The customization has NOT been set.\n\n{ex.StackTrace}");
 										continue;
 									}
 								}
@@ -501,7 +503,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				catch (Exception ex)
 				{
-					MessageBox.Show(this, $"There was an issue during the process. The customization has NOT been set.\n\n{ex.StackTrace}");
+					this.ModalMessageBox($"There was an issue during the process. The customization has NOT been set.\n\n{ex.StackTrace}");
 					return;
 				}
 
@@ -602,7 +604,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Owner is PathConfig)
 			{
-				MessageBox.Show("C-C-C-Combo Breaker!", "Nice try, but");
+				DialogController.ShowMessageBox("C-C-C-Combo Breaker!", "Nice try, but");
 				return;
 			}
 
@@ -725,7 +727,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (!string.IsNullOrEmpty(errors))
 			{
-				MessageBox.Show(errors, "Error importing these files");
+				DialogController.ShowMessageBox(errors, "Error importing these files");
 			}
 
 			if (didSomething)
