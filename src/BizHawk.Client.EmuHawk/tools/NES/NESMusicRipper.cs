@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml.XPath;
@@ -10,8 +12,6 @@ using BizHawk.Client.Common;
 using BizHawk.Common;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Common;
-using System.IO.Compression;
-using System.Linq;
 
 namespace BizHawk.Client.EmuHawk
 {

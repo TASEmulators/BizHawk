@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.IO.Compression;
 using System.Collections.Generic;
 using System.Windows.Forms;
 
@@ -7,7 +8,6 @@ using BizHawk.Client.Common;
 using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Cores.PCEngine;
 using BizHawk.Emulation.Common;
-using System.IO.Compression;
 
 namespace BizHawk.Client.EmuHawk
 {

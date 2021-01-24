@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
@@ -9,7 +10,6 @@ using BizHawk.Client.Common;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Common;
-using System.IO.Compression;
 
 namespace BizHawk.Client.EmuHawk
 {
