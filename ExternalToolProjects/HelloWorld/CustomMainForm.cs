@@ -72,19 +72,19 @@ namespace HelloWorld
 			label_GameHash.Click += label_GameHash_Click;
 			Closing += (sender, args) => APIs.EmuClient.SetClientExtraPadding(0, 0, 0, 0);
 
-			ClientApi.BeforeQuickSave += (sender, e) =>
+			APIs.EmuClient.BeforeQuickSave += (sender, e) =>
 			{
 				if (e.Slot != 0) return; // only take effect on slot 0
 				var basePath = Path.Combine(GlobalConfig.PathEntries.SaveStateAbsolutePath(APIs.Emulation.GetSystemId()), "Test");
 				if (!Directory.Exists(basePath)) Directory.CreateDirectory(basePath);
-				ClientApi.SaveState(Path.Combine(basePath, e.Name));
+				APIs.EmuClient.SaveState(Path.Combine(basePath, e.Name));
 				e.Handled = true;
 			};
-			ClientApi.BeforeQuickLoad += (sender, e) =>
+			APIs.EmuClient.BeforeQuickLoad += (sender, e) =>
 			{
 				if (e.Slot != 0) return; // only take effect on slot 0
 				var basePath = Path.Combine(GlobalConfig.PathEntries.SaveStateAbsolutePath(APIs.Emulation.GetSystemId()), "Test");
-				ClientApi.LoadState(Path.Combine(basePath, e.Name));
+				APIs.EmuClient.LoadState(Path.Combine(basePath, e.Name));
 				e.Handled = true;
 			};
 		}
@@ -123,9 +123,9 @@ namespace HelloWorld
 			label_Watch3.Text = $"Third watch ({Watches[2].AddressString}) current value: {Watches[2].ValueString}";
 		}
 
-		private void button1_Click(object sender, EventArgs e) => ClientApi.DoFrameAdvance();
+		private void button1_Click(object sender, EventArgs e) => APIs.EmuClient.DoFrameAdvance();
 
-		private void button2_Click(object sender, EventArgs e) => ClientApi.GetInput(1);
+		private void button2_Click(object sender, EventArgs e) => APIs.EmuClient.GetInput(1);
 
 		private void button3_Click(object sender, EventArgs e)
 		{
@@ -133,21 +133,21 @@ namespace HelloWorld
 			{
 				if (i % 60 == 0)
 				{
-					var j1 = ClientApi.GetInput(1);
+					var j1 = APIs.EmuClient.GetInput(1);
 					j1.AddInput(JoypadButton.A);
-					ClientApi.SetInput(1, j1);
+					APIs.EmuClient.SetInput(1, j1);
 
-					ClientApi.DoFrameAdvance();
+					APIs.EmuClient.DoFrameAdvance();
 
 					j1.RemoveInput(JoypadButton.A);
-					ClientApi.SetInput(1, j1);
-					ClientApi.DoFrameAdvance();
+					APIs.EmuClient.SetInput(1, j1);
+					APIs.EmuClient.DoFrameAdvance();
 				}
-				ClientApi.DoFrameAdvance();
+				APIs.EmuClient.DoFrameAdvance();
 			}
-			var j = ClientApi.GetInput(1);
+			var j = APIs.EmuClient.GetInput(1);
 			j.ClearInputs();
-			ClientApi.SetInput(1, j);
+			APIs.EmuClient.SetInput(1, j);
 		}
 
 		private void label_GameHash_Click(object sender, EventArgs e) => Clipboard.SetText(APIs.GameInfo.GetRomHash());
@@ -155,7 +155,7 @@ namespace HelloWorld
 		private void loadstate_Click(object sender, EventArgs e)
 		{
 			if (string.IsNullOrWhiteSpace(savestateName.Text)) return;
-			ClientApi.LoadState(savestateName.Text);
+			APIs.EmuClient.LoadState(savestateName.Text);
 #if false
 			static void Test(BinaryReader r)
 			{
@@ -167,7 +167,7 @@ namespace HelloWorld
 
 		private void saveState_Click(object sender, EventArgs e)
 		{
-			if (!string.IsNullOrWhiteSpace(savestateName.Text)) ClientApi.SaveState(savestateName.Text);
+			if (!string.IsNullOrWhiteSpace(savestateName.Text)) APIs.EmuClient.SaveState(savestateName.Text);
 		}
 	}
 }
