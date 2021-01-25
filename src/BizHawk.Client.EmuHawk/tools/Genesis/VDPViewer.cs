@@ -189,22 +189,22 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveBGBScreenshotToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			SaveAsFile(bmpViewNTA.Bmp, "NTB");
+			SaveAsFile(bmpViewNTB.Bmp, "NTB");
 		}
 
 		private void SaveTilesScreenshotToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			SaveAsFile(bmpViewNTA.Bmp, "Tiles");
+			SaveAsFile(bmpViewTiles.Bmp, "Tiles");
 		}
 
 		private void SaveWindowScreenshotToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			SaveAsFile(bmpViewNTA.Bmp, "Window");
+			SaveAsFile(bmpViewNTW.Bmp, "Window");
 		}
 
 		private void SavePaletteScreenshotToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			SaveAsFile(bmpViewNTA.Bmp, "Palettes");
+			SaveAsFile(bmpViewPal.Bmp, "Palettes");
 		}
 	}
 }
