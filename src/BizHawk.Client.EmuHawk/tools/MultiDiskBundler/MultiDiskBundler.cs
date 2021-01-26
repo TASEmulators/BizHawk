@@ -213,7 +213,7 @@ namespace BizHawk.Client.EmuHawk
 						new XElement("LoadAssets",
 							names.Select(n => new XElement(
 								"Asset",
-								new XAttribute("FileName", PathExtensions.GetRelativePath(basePath, n))
+								new XAttribute("FileName", OSTailoredCode.IsUnixHost ? PathExtensions.GetRelativePath(n, basePath) : PathExtensions.GetRelativePath(basePath, n))
 							))
 						)
 					);
