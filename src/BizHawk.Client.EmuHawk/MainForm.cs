@@ -9,6 +9,9 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
+using System.Security.AccessControl;
+using System.Security.Principal;
+using System.IO.Pipes;
 
 using BizHawk.Common;
 using BizHawk.Common.BufferExtensions;
@@ -275,6 +278,17 @@ namespace BizHawk.Client.EmuHawk
 
 		public MainForm(Config config, IGL gl, Action<Sound> updateGlobalSound, string[] args, out IMovieSession movieSession)
 		{
+			movieSession = null;
+
+			if (config.SingleInstanceMode)
+			{
+				if (singleInstanceInit(args))
+				{
+					Dispose();
+					return;
+				}
+			}
+
 			//do this threaded stuff early so it has plenty of time to run in background
 			Database.InitializeDatabase(Path.Combine(PathUtils.ExeDirectoryPath, "gamedb", "gamedb.txt"));
 			BootGodDb.Initialize(Path.Combine(PathUtils.ExeDirectoryPath, "gamedb"));
@@ -746,6 +760,7 @@ namespace BizHawk.Client.EmuHawk
 			if (disposing)
 			{
 				components?.Dispose();
+				singleInstanceDispose();
 			}
 
 			base.Dispose(disposing);
@@ -2151,13 +2166,27 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private static void CheckMessages()
+		private void CheckMessages()
 		{
 			Application.DoEvents();
 			if (ActiveForm != null)
 			{
 				ScreenSaver.ResetTimerPeriodically();
 			}
+
+			List<string[]> todo = null;
+			lock (_singleInstanceForwardedArgs)
+			{
+				if (_singleInstanceForwardedArgs.Count > 0)
+				{
+					todo = new List<string[]>(_singleInstanceForwardedArgs);
+					_singleInstanceForwardedArgs.Clear();
+				}
+			}
+
+			if(todo != null)
+				foreach (var args in todo)
+					singleInstanceProcessArgs(args);
 		}
 
 		private void AutohideCursor(bool hide)
@@ -4530,5 +4559,153 @@ namespace BizHawk.Client.EmuHawk
 
 		public void StartSound() => Sound.StartSound();
 		public void StopSound() => Sound.StopSound();
+
+		System.Threading.Mutex _singleInstanceMutex;
+		System.IO.Pipes.NamedPipeServerStream _singleInstanceServer;
+		List<string[]> _singleInstanceForwardedArgs = new List<string[]>();
+
+		bool singleInstanceInit(string[] args)
+		{
+			//note: this isn't 100% reliable, it's just a user convenience
+			_singleInstanceMutex = new System.Threading.Mutex(true, "mutex-{84125ACB-F570-4458-9748-321F887FE795}", out bool createdNew);
+			if (createdNew)
+			{
+				startSingleInstanceServer();
+				return false;
+			}
+			else
+			{
+				forwardSingleInstanceStartup(args);
+				return true;
+			}
+		}
+
+		void singleInstanceDispose()
+		{
+			if (_singleInstanceServer != null)
+			{
+				_singleInstanceServer.Dispose();
+			}
+		}
+
+		void forwardSingleInstanceStartup(string[] args)
+		{
+			using (var namedPipeClientStream = new System.IO.Pipes.NamedPipeClientStream(".", "pipe-{84125ACB-F570-4458-9748-321F887FE795}", PipeDirection.Out))
+			{
+				try
+				{
+					namedPipeClientStream.Connect(0);
+					//do this a bit cryptically to avoid loading up another big assembly (especially ones as frail as http and/or web ones)
+					var payloadString = string.Join("|", args.Select(a => System.Text.Encoding.UTF8.GetBytes(a).BytesToHexString()));
+					var payloadBytes = System.Text.Encoding.ASCII.GetBytes(payloadString);
+					namedPipeClientStream.Write(payloadBytes, 0, payloadBytes.Length);
+				}
+				catch
+				{
+					Console.WriteLine("Failed forwarding args to already-running single instance");
+				}
+			}
+		}
+
+		void startSingleInstanceServer()
+		{
+			//MIT LICENSE - https://www.autoitconsulting.com/site/development/single-instance-winform-app-csharp-mutex-named-pipes/
+
+			// Create a new pipe accessible by local authenticated users, disallow network
+			var sidNetworkService = new SecurityIdentifier(WellKnownSidType.NetworkServiceSid, null);
+			var sidWorld = new SecurityIdentifier(WellKnownSidType.WorldSid, null);
+
+			var pipeSecurity = new PipeSecurity();
+
+			// Deny network access to the pipe
+			var accessRule = new PipeAccessRule(sidNetworkService, PipeAccessRights.ReadWrite, AccessControlType.Deny);
+			pipeSecurity.AddAccessRule(accessRule);
+
+			// Alow Everyone to read/write
+			accessRule = new PipeAccessRule(sidWorld, PipeAccessRights.ReadWrite, AccessControlType.Allow);
+			pipeSecurity.AddAccessRule(accessRule);
+
+			// Current user is the owner
+			SecurityIdentifier sidOwner = WindowsIdentity.GetCurrent().Owner;
+			if (sidOwner != null)
+			{
+				accessRule = new PipeAccessRule(sidOwner, PipeAccessRights.FullControl, AccessControlType.Allow);
+				pipeSecurity.AddAccessRule(accessRule);
+			}
+
+			// Create pipe and start the async connection wait
+			_singleInstanceServer = new NamedPipeServerStream(
+					"pipe-{84125ACB-F570-4458-9748-321F887FE795}",
+					PipeDirection.In,
+					1,
+					PipeTransmissionMode.Message,
+					PipeOptions.Asynchronous,
+					0,
+					0,
+					pipeSecurity);
+
+			// Begin async wait for connections
+			_singleInstanceServer.BeginWaitForConnection(singleInstanceServerPipeCallback, null);
+		}
+
+		//Note: This method is called on a non-UI thread.
+		//Note: this seems really frail. I don't think it's industrial strength. Pipes are weak compared to sockets.
+		//It was probably frail in the first place with the old vbnet impl
+		private void singleInstanceServerPipeCallback(IAsyncResult iAsyncResult)
+		{
+			try
+			{
+				_singleInstanceServer.EndWaitForConnection(iAsyncResult);
+
+				//a bit over-engineered in case someone wants to send a script or a rom or something
+				//buffer size is set to something tiny so that we are continually testing it 
+				var payloadBytes = new MemoryStream();
+				for (; ; )
+				{
+					var bytes = new byte[16];
+					int did = _singleInstanceServer.Read(bytes, 0, bytes.Length);
+					payloadBytes.Write(bytes, 0, did);
+					if (_singleInstanceServer.IsMessageComplete)
+						break;
+				}
+
+				var payloadString = System.Text.Encoding.ASCII.GetString(payloadBytes.GetBuffer(), 0, (int)payloadBytes.Length);
+				var args = payloadString.Split('|').Select(a => System.Text.Encoding.UTF8.GetString(a.HexStringToBytes())).ToArray();
+
+				Console.WriteLine("RECEIVED SINGLE INSTANCE FORWARDED ARGS:");
+				lock (_singleInstanceForwardedArgs)
+					_singleInstanceForwardedArgs.Add(args);
+			}
+			catch (ObjectDisposedException)
+			{
+				// EndWaitForConnection will exception when someone calls closes the pipe before connection made
+				// In that case we dont create any more pipes and just return
+				// This will happen when app is closing and our pipe is closed/disposed
+				return;
+			}
+			catch (Exception)
+			{
+				// ignored
+			}
+			finally
+			{
+				// Close the original pipe (we will create a new one each time)
+				_singleInstanceServer.Dispose();
+			}
+
+			// Create a new pipe for next connection
+			startSingleInstanceServer();
+		}
+
+		void singleInstanceProcessArgs(string[] args)
+		{
+			//ulp. it's not clear how to handle these.
+			//we only have a legacy case where we can tell the form to load a rom, if it's in a sensible condition for that.
+			//er.. let's assume it's always in a sensible condition
+			//in case this all sounds insanely sketchy to you, remember, the main 99% use case is double clicking roms in explorer
+
+			//BANZAIIIIIIIIIIIIIIIIIIIIIIIIIII
+			LoadRom(args[0]);
+		}
 	}
 }
