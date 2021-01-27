@@ -95,7 +95,7 @@ Released binaries can be found right here on GitHub (also linked at the top of t
 
 Click `BizHawk-<version>.zip` to download it. Also note the changelog, the full version of which is [here at TASVideos](http://tasvideos.org/Bizhawk/ReleaseHistory.html). Extract it anywhere, but **don't mix different versions** of BizHawk, keep each version in its own folder. You may move or rename the folder containing `EmuHawk.exe`, even to another drive — as long as you keep all the files together, and the prerequisites are installed when you go to run it.
 
-Run `EmuHawk.exe` to start. If startup is blocked by a Windows SmartScreen dialog, click "More Info" to reveal the override button. Third-party antivirus may also block startup.
+Run `EmuHawk.exe` to start. If startup is blocked by a Windows SmartScreen dialog, click "More Info" to reveal the override button. Third-party antivirus may also block startup. There are some command-line arguments you can use: see [*Passing command-line arguments*](#passing-command-line-arguments).
 
 EmuHawk does have some prerequisites which it can't work without (it will let you know if they're missing). The list is [here](https://github.com/TASVideos/BizHawk-Prereqs/blob/master/README), and we've made an all-in-one installer which you can get [here](https://github.com/TASVideos/BizHawk-Prereqs/releases/latest). You should only have to run this once per machine, unless the changelog says we need something extra.
 
@@ -119,7 +119,7 @@ No package for your distro? Grab the latest release here on GitHub (it's the sam
 
 If you download BizHawk this way, **don't mix different versions**, keep each version in its own folder. The runtime dependencies are glibc, Mono "complete", OpenAL, and `lsb_release`. .NET Core is **not** a runtime dependency, only Mono. WINE is also **not** a runtime dependency.
 
-Run `EmuHawkMono.sh` to start EmuHawk—you can run it from anywhere, so creating a .desktop file to wrap the script is fine. The shell script should print an error if it fails, otherwise it's safe to ignore console output. There are some command-line options which aren't well-documented; you might be able to figure them out from [the code](https://github.com/TASVideos/BizHawk/blob/e128cb82f211dade27d04a21737e073374098f49/src/BizHawk.Client.EmuHawk/ArgParser.cs). They're the same on Windows, with one exception: passing `--mono-no-redirect` *as the first argument* prints stdout to the console. *Not* passing it will redirect stdout to a file.
+Run `EmuHawkMono.sh` to start EmuHawk—you can run it from anywhere, so creating a .desktop file to wrap the script is fine. The shell script should print an error if it fails, otherwise it's safe to ignore console output. It takes mostly the same command-line arguments as on Windows: see [*Passing command-line arguments*](#passing-command-line-arguments).
 
 Most features and cores work, notable omissions being Lua support, Mupen64Plus (N64), and Octoshock (PSX). See [#1430](https://github.com/TASVideos/BizHawk/issues/1430) for details.
 
@@ -174,13 +174,35 @@ git clone https://github.com/TASVideos/BizHawk.git BizHawk_master
 BizHawk_master/Dist/BuildRelease.sh
 ```
 
-The assemblies are put in `BizHawk_master/output`, so if you have the runtime dependencies (see [*Installing*](#unix)) you can call `BizHawk_master/output/EmuHawkMono.sh`. Reminder that stdout is redirected to `BizHawk_master/output/EmuHawkMono_laststdout.txt` unless `--mono-no-redirect` is the first command-line argument.
+The assemblies are put in `BizHawk_master/output`, so if you have the runtime dependencies (see [*Installing*](#unix)) you can call `BizHawk_master/output/EmuHawkMono.sh`.
 
 VS 2019 isn't available on Linux, but Rider and VS Code are. You can always code from the command line...
 
 [to top](#bizhawk)
 
 ## Usage
+
+#### Passing command-line arguments
+
+EmuHawk takes some command-line options which aren't well-documented; you might be able to figure them out from [the source](https://github.com/TASVideos/BizHawk/blob/78daf4913d4c8e47d24fc14d84ca33ddef913ed4/src/BizHawk.Client.Common/ArgParser.cs).
+
+On Windows 8.1/10, it's easiest to use PowerShell for this. For example, to pass `--lua=C:\path\to\script.lua` as the first argument and `C:\path\to\rom.n64` as the second, navigate to the BizHawk install folder and run:
+```pwsh
+(New-Object System.Diagnostics.Process -Property @{StartInfo=(New-Object System.Diagnostics.ProcessStartInfo -Property @{FileName="$PWD\EmuHawk.exe";Arguments='"--lua=C:\path\to\script.lua" "C:\path\to\rom.n64"'})}).Start()
+```
+
+For char escaping tips you're on your own. It might help to split up the command so you can identify syntax errors:
+```pwsh
+$s = '"--lua=C:\path\to\script.lua" "C:\path\to\rom.n64"'
+$startInfo = New-Object System.Diagnostics.ProcessStartInfo -Property @{FileName="$PWD\EmuHawk.exe";Arguments=$s}
+$proc = New-Object System.Diagnostics.Process -Property @{StartInfo=$startInfo}
+$proc.Start()
+```
+
+On Linux, you can pass arguments to `EmuHawkMono.sh` as expected and they will be forwarded to `mono`. (You can also `export` env. vars.) There is one exception: if you pass `--mono-no-redirect` as the *first argument* it will be eaten by the script itself, and stdout will *not* be redirected to a file.
+The same example as above would be `./EmuHawkMono.sh --lua=/path/to/script.lua /path/to/rom.n64`.
+
+For char escaping tips, see ~~Unix StackExchange~~ your shell's man/info page. BASH and Zsh have different rules!
 
 #### Loading firmware
 
