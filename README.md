@@ -19,6 +19,7 @@ Jump to:
 	* [Unix](#unix-1)
 * [Usage](#usage)
 	* [TASing](#tasing)
+	* [External tools](#external-tools)
 	* [Cores](#cores)
 * [Support and troubleshooting](#support-and-troubleshooting)
 * [Contributing](#contributing)
@@ -41,9 +42,9 @@ The BizHawk common features (across all cores) are:
 * screenshotting and recording audio + video to file
 * firmware management
 * input, framerate, and more in a HUD over the game
-* emulated controllers via a comprehensive input mapper
-* Lua control over core and frontend (Windows only)
-* hotkey bindings to control the UI
+* rebindable hotkeys for controlling the frontend (keyboard+mouse+gamepad)
+* a comprehensive input mapper for the emulated gamepads and other peripherals
+* programmatic control over core and frontend with Lua (Windows only) or C#.NET
 
 Supported consoles and computers:
 
@@ -93,11 +94,13 @@ Released binaries can be found right here on GitHub (also linked at the top of t
 
 [![Windows | binaries](https://img.shields.io/badge/Windows-binaries-%230078D6.svg?logo=windows&logoColor=0078D6&style=popout)](https://github.com/TASVideos/BizHawk/releases/latest)
 
-Click `BizHawk-<version>.zip` to download it. Also note the changelog, the full version of which is [here at TASVideos](http://tasvideos.org/Bizhawk/ReleaseHistory.html). Extract it anywhere, but **don't mix different versions** of BizHawk, keep each version in its own folder. You may move or rename the folder containing `EmuHawk.exe`, even to another drive — as long as you keep all the files together, and the prerequisites are installed when you go to run it.
+Click `BizHawk-<version>.zip` to download it. Also note the changelog, the full version of which is [here at TASVideos](http://tasvideos.org/Bizhawk/ReleaseHistory.html).
+Extract it anywhere, but **don't mix different versions** of BizHawk, keep each version in its own folder. You may move or rename the folder containing `EmuHawk.exe`, even to another drive — as long as you keep all the files together, and the prerequisites are installed when you go to run it.
 
 Run `EmuHawk.exe` to start. If startup is blocked by a Windows SmartScreen dialog, click "More Info" to reveal the override button. Third-party antivirus may also block startup. There are some command-line arguments you can use: see [*Passing command-line arguments*](#passing-command-line-arguments).
 
-EmuHawk does have some prerequisites which it can't work without (it will let you know if they're missing). The list is [here](https://github.com/TASVideos/BizHawk-Prereqs/blob/master/README), and we've made an all-in-one installer which you can get [here](https://github.com/TASVideos/BizHawk-Prereqs/releases/latest). You should only have to run this once per machine, unless the changelog says we need something extra.
+EmuHawk does have some prerequisites which it can't work without (it will let you know if they're missing). The list is [here](https://github.com/TASVideos/BizHawk-Prereqs/blob/master/README), and we've made an all-in-one installer which you can get [here](https://github.com/TASVideos/BizHawk-Prereqs/releases/latest).
+You should only have to run this once per machine, unless the changelog says we need something extra.
 
 We will be following Microsoft in dropping support for old versions of Windows, that is, we reserve the right to ignore your problems unless you've updated to at least Win10 1909 or Win8.1 KB4586845. Read more on [MSDN](https://docs.microsoft.com/en-us/lifecycle/faq/windows).
 
@@ -119,7 +122,7 @@ No package for your distro? Grab the latest release here on GitHub (it's the sam
 
 If you download BizHawk this way, **don't mix different versions**, keep each version in its own folder. The runtime dependencies are glibc, Mono "complete", OpenAL, and `lsb_release`. .NET Core is **not** a runtime dependency, only Mono. WINE is also **not** a runtime dependency.
 
-Run `EmuHawkMono.sh` to start EmuHawk—you can run it from anywhere, so creating a .desktop file to wrap the script is fine. The shell script should print an error if it fails, otherwise it's safe to ignore console output. It takes mostly the same command-line arguments as on Windows: see [*Passing command-line arguments*](#passing-command-line-arguments).
+Run `EmuHawkMono.sh` to start EmuHawk—you can run it from anywhere, so creating a `.desktop` file to wrap the script is fine. The shell script should print an error if it fails, otherwise it's safe to ignore console output. It takes mostly the same command-line arguments as on Windows: see [*Passing command-line arguments*](#passing-command-line-arguments).
 
 Most features and cores work, notable omissions being Lua support, Mupen64Plus (N64), and Octoshock (PSX). See [#1430](https://github.com/TASVideos/BizHawk/issues/1430) for details.
 
@@ -161,7 +164,8 @@ git clone https://github.com/TASVideos/BizHawk.git BizHawk_master
 
 Once it's downloaded and extracted, go into the repo's `Dist` folder and run `QuickTestBuildAndPackage_Release.bat`. This is the same process used by AppVeyor.
 
-For anything more complicated than just building, you'll need an IDE like [VS Community 2019](https://visualstudio.microsoft.com/vs/community), currently the best free C# IDE (you may prefer Rider, VS Code, or something else). To build with VS, open `BizHawk.sln` and use the toolbar to choose `Release | Any CPU | BizHawk.Client.EmuHawk` and click the Start button. See [*Compiling* at TASVideos](http://tasvideos.org/Bizhawk/Compiling.html) for more detailed instructions (warning: somewhat outdated).
+For anything more complicated than just building, you'll need an IDE like [VS Community 2019](https://visualstudio.microsoft.com/vs/community), currently the best free C# IDE (you may prefer Rider, VS Code, or something else).
+To build with VS, open `BizHawk.sln` and use the toolbar to choose `Release | Any CPU | BizHawk.Client.EmuHawk` and click the Start button. See [*Compiling* at TASVideos](http://tasvideos.org/Bizhawk/Compiling.html) for more detailed instructions (warning: somewhat outdated).
 
 [to top](#bizhawk)
 
@@ -206,64 +210,57 @@ For char escaping tips, see ~~Unix StackExchange~~ your shell's man/info page. B
 
 #### Loading firmware
 
-Put all your dumped firmware files in the `Firmware` folder and everything will be automatically detected and loaded when you try to load a game (filenames and subfolders aren't enforced, you can just throw them in there). If you're missing required or optional firmware, you will see a "You are missing the needed firmware files [...]" dialog.
+Put all your dumped firmware files in the `/Firmware` folder and everything will be automatically detected and loaded when you try to load a game (filenames and subfolders aren't enforced, you can just throw them in there). If you're missing required or optional firmware, you will see a "You are missing the needed firmware files [...]" dialog.
 
 Keep in mind some firmware is optional, and some have multiple versions, only one of which needs to be set.
 
 If you want to customise firmware (when there are alternative firmwares, for example) go to `Config` > `Firmwares...`, right-click the line of the firmware you want to change, click "Set Customization", and open the file.
 
-You can change where BizHawk looks for firmware by going to `Config` > `Paths...` and changing "Firmware" in the "Global" tab to the new location. This allows multiple BizHawk releases to use the same folder.
+You can change where EmuHawk looks for firmware by going to `Config` > `Paths...` and changing "Firmware" in the "Global" tab to the new location. This allows multiple installs to use the same folder.
 
 #### Identifying a good rom
 
-With a core and game loaded, look in the very left of the status bar (`View` > `Display Status Bar`):
+With a core and game loaded, look in the very left of the status bar (on by default, toggle with `View` > `Display Status Bar`):
 * a green checkmark means you've loaded a "known good" rom;
 * a "!" in a red circle means you've loaded a "known bad" rom, created by incorrect dumping methods; and
 * something else, usually a ?-block, means you've loaded something that's not in the database.
 
-#### Rebinding keys and controllers
+#### Rebinding hotkeys and virtual gamepads
 
-There are two keybind windows, `Config` > `Controllers...` and `Config` > `Hotkeys...`. These let you bind your keyboard and controllers to virtual controllers and to frontend functions, respectively.
+There are two keybind windows, `Config` > `Controllers...` and `Config` > `Hotkeys...`. These let you bind your keyboard/mouse and gamepads to virtual gamepads, and to frontend functions, respectively.
 
-Using them is simple, click in a box next to an action and press the button (or bump the axis) you want bound to that action. If the "Auto Tab" checkbox at the bottom of the window is checked, the next box will be selected automatically and whatever button you press will be bound to *that* action, and so on down the list. If "Auto Tab" is unchecked, clicking a filled box will let you bind another button to the same action. Keep in mind there are multiple tabs of actions.
+Using them is simple, click in a box next to an action and press the button (or bump the axis) you want bound to that action.
+If the "Auto Tab" checkbox at the bottom of the window is checked, the next box will be selected automatically and whatever button you press will be bound to *that* action, and so on down the list. If "Auto Tab" is unchecked, clicking a filled box will let you bind another button to the same action. Keep in mind there are multiple tabs of actions.
 
-#### Changing cores
+#### Selecting and configuring cores
 
-To change which core is used for NES, SNES, GB, or GBA, go to `Config` > `Cores`. There, you'll also find the `GB in SGB` item, which is a checkbox that makes GB games run with the *Super Game Boy* on an SNES.
+To change which core is used where multiple cores emulate the same system (currently: NES, SNES, GB/C, SGB, and PCE/TG-16), look under `Config` > `Cores`. Under that menu, you'll also find the `GB in SGB` checkbox. When checked, GB/C games will be loaded using the chosen SGB core instead of the chosen GB core.
 
-Most cores have their own settings window too, look in the menubar for the system name after `Tools`. Some have multiple windows, like Mupen64Plus which has virtual controller settings and graphics settings.
+Cores have their own settings, which you can find in various windows under the system-specific menu (between `Tools` and `Help` when a rom is loaded). Some cores, like Mupen64Plus, have a labyrinth of menus while others have one.
 
 #### Running Lua scripts
 
 (Reminder that this feature is Windows-only for now.)
 
-Go to `Tools` > `Lua Console`. The opened window has two parts, the loaded script list and the console output. The buttons below the menubar are shortcuts for items in the menus, hover over them to see what they do. Any script you load is added to the list, and will start running immediately. Instead of using "Open script", you can drag-and-drop .lua files onto the console or game windows.
+Go to `Tools` > `Lua Console`. The opened window has two parts, the loaded script list and the console output. The buttons below the menubar are shortcuts for items in the menus, hover over them to see what they do.
+Any script you load is added to the list, and will start running immediately. Instead of using "Open script", you can drag-and-drop .lua files onto the console or game windows.
 
 Running scripts have a "▶️" beside their name, and stopped scripts (manually or due to an error) have a "⏹️" beside them. Using "Pause or Resume", you can temporarily pause scripts, those have a "⏸️".
 
 "Toggle script" does just that (paused scripts are stopped). "Reload script" stops it and loads changes to the file, running scripts are then started again. "Remove script" stops it and removes it from the list.
 
-#### In-game Saves
+#### In-game saves
 
-Games may internally [save your progress](https://en.wikipedia.org/wiki/Saved_game) into memory (SRAM, memory cards) or file. When this happens, BizHawk stores this in-game save in the Operating System memory and makes the `File` > `Save RAM` menu bold.
+Games often have a "save progress" feature, which writes some save data on the cart or some sort of memory card. (Not to be confused with EmuHawk's savestates.)
+But when EmuHawk emulates this process, the in-game saves remain *in the host system's memory (RAM)* along with the rest of the virtual system, meaning it's not really saved. The save data needs to be copied to a file on disk (on the host), which we call "SaveRAM flushing".
 
-BizHawk can write in-game saves to disk - this is called flushing. Every time you save in the game (not to be confusing with *emulator savestates*), you should backup your saves! Go to `File` > `Save RAM` and hit `Flush Save Ram`. Note that some systems use SRAM for irrelevant tasks and store temporary data there, and the menu may become bold without in-game saves involved. Be aware when the game is *supposed to save* and flush accordingly.
+You can simply use `File` > `Save RAM` > `Flush Save Ram` (default hotkey: `Ctrl+S`) to make EmuHawk save properly. The `.SaveRAM` files are in system-specific subfolders of the BizHawk install folder (configurable) for if you want to make backups, which you should.
 
-BizHawk can be configured to flush saves to disk automatically in `Config` > `Customize` > `Advanced AutoSaveRAM`. Upon closing the ROM (which includes any core reboot) BizHawk may try to flush save RAM automatically as well.
+The `File` > `Save RAM` menu is printed in **bold** when the virtual system does a save, which usually corresponds to pushing a "save progress" button in-game. Note that some games use SRAM for miscellaneous tasks, so it may not be strictly necessary to flush the SaveRAM every time it's changed. Can't hurt though.
 
-```
+EmuHawk can also flush automatically, which you can configure with `Config` > `Customize...` > `Advanced` > `AutoSaveRAM`. When closing or switching roms, EmuHawk may also try to flush SaveRAM. **A disclaimer: Automatic flushing is extremely unreliable and not being maintained. It may corrupt your previous saves!**
 
-DISCLAIMER
-
-Automatic flushing is extremely unreliable and not being maintained.
-It may corrupt your previous saves!
-It will be completely removed in future.
-Develop a habit to always flush saves manually every time you save in the game.
-Make backups of the flushed save files!
-If you don't flush saves manually and backup them, and something breaks, you're on your own.
-If your save has been corrupted, there's nothing we can do about it.
-
-```
+More disclaimers: Develop a habit to always flush saves manually every time you save in the game, and make backups of the flushed save files! If you don't flush saves manually and something breaks, you're on your own. If your save has been corrupted and you didn't make a backup, there's nothing we can do about it.
 
 [to top](#bizhawk)
 
@@ -271,7 +268,7 @@ If your save has been corrupted, there's nothing we can do about it.
 
 ~~This section refers to BizHawk specifically. For resources on TASing in general, see [Welcome to TASVideos](http://tasvideos.org/WelcomeToTASVideos.html).~~ This section hasn't been written yet.
 
-For now, the best way to learn how to TAS is to browse pages like [BasicTools](http://tasvideos.org/TasingGuide/BasicTools.html) on TASVideos and watch tutorials like [Sand_Knight and dwangoAC's](https://youtu.be/6tJniMaR2Ps).
+For now, the best way to learn how to TAS is to browse pages like [BasicTools](http://tasvideos.org/TasingGuide/BasicTools.html) on TASVideos and watch tutorials like [The8bitbeast's](https://www.youtube.com/playlist?list=PLlJzD6wWmoXmihK13itZJ-mzjK3SD1EaM) and [Sand_Knight and dwangoAC's](https://youtu.be/6tJniMaR2Ps).
 
 [to top](#bizhawk)
 
@@ -336,10 +333,10 @@ Please don't bother core devs about these WIPs unless you're looking to contribu
 
 A short [FAQ](http://tasvideos.org/Bizhawk/FAQ.html) is provided on the [BizHawk wiki](http://tasvideos.org/Bizhawk.html). If your problem is one of the many not answered there, and you can't find it in the [issue tracker search](https://github.com/TASVideos/BizHawk/issues?q=is%3Aissue+PUT_ISSUE_KEYWORDS_HERE), you can try:
 * `#bizhawk` on freenode IRC ([via web browser](https://webchat.freenode.net/#bizhawk); via HexChat/Irssi: `chat.freenode.net:6697`; [via Matrix](https://matrix.to/#/#freenode_#bizhawk:matrix.org))
-* `#emulation` (TASers: `#tas-production`) on [the TASVideos Discord](https://discordapp.com/invite/GySG2b6)
+* `#emulation` on [the TASVideos Discord](https://discordapp.com/invite/GySG2b6) (also the more specialised channels `#tas-production` and `#scripting`, and [the ApiHawk server](https://discord.gg/UPhN4um3px))
 * The TASVideos [forum for BizHawk](http://tasvideos.org/forum/viewforum.php?f=64)
 
-You can [open a new issue](https://github.com/TASVideos/BizHawk/issues/new) at any time if you're logged in to GitHub.
+You can [open a new issue](https://github.com/TASVideos/BizHawk/issues/new) at any time if you're logged in to GitHub. Please **at the very least read the issue templates**, we tend to ask the same questions for every one-line issue that's opened.
 
 [to top](#bizhawk)
 
@@ -347,7 +344,8 @@ You can [open a new issue](https://github.com/TASVideos/BizHawk/issues/new) at a
 
 ### EmuHawk development
 
-Do you want your name next to [these fine people](https://github.com/TASVideos/BizHawk/graphs/contributors)? Fork the repo and work on one of our [many open issues](https://github.com/TASVideos/BizHawk/issues). If you ask on IRC/Discord (see above), you might get more info about the problem—or you might find someone else is also working on it. It's especially important to ask about adding new features.
+Do you want your name next to [these fine people](https://github.com/TASVideos/BizHawk/graphs/contributors)? Fork the repo and work on one of our [many open issues](https://github.com/TASVideos/BizHawk/issues).
+If you ask on IRC/Discord (see above), you might get more info about the problem—or you might find someone else is also working on it. It's especially important to ask about adding new features.
 
 All the source code for EmuHawk is in `/src`. The project file, `/src/BizHawk.Client.EmuHawk/BizHawk.Client.EmuHawk.csproj`, includes the other projects [in a tree](https://gitlab.com/TASVideos/BizHawk/snippets/1886666).
 
@@ -359,7 +357,7 @@ When opening a PR:
 	* If you fork on GitLab, the tests will run in CI.
 * For the time being, code style is checked manually. Please use CRLF, tabs, and [Allman braces](https://en.wikipedia.org/wiki/Indentation_style#Allman_style) in new files.
 	* Static code analysis is configured but disabled—build with `-p:MachineRunAnalyzersDuringBuild=true`.
-		* If you fork on GitLab, the Analyzers will run in CI if you use `git push -o ci.variable="BIZHAWKBUILD_USE_ANALYZERS=true"` (or otherwise set that env. var).
+		* If you fork on GitLab, the Analyzers will run in CI if you use `git push -o ci.variable="BIZHAWKBUILD_USE_ANALYZERS=true"` (or otherwise set that env. var for the pipeline).
 
 [to top](#bizhawk)
 
@@ -400,6 +398,8 @@ Disclaimer time! Can't have emulation software without a disclaimer...
 * [FCEUX](http://www.fceux.com/web/home.html) for NES/Famicom — cross-platform; TASing is Windows-only
 * [libTAS](https://github.com/clementgallet/libTAS) for ELF (Linux desktop apps) — requires GNU+Linux host; also emulates other emulators
 * [lsnes](http://tasvideos.org/Lsnes.html) for GB and SNES — cross-platform
+* [melonDS](http://melonds.kuribo64.net) for Nintendo DS — cross-platform
+* [mGBA](https://mgba.io) for GBA and GB/C — cross-platform
 
 Emulators for other systems can be found on the [EmulatorResources page](http://tasvideos.org/EmulatorResources.html) at TASVideos. The [TASVideos GitHub page](https://github.com/TASVideos) also holds copies of other emulators and plugins where development happens sometimes, their upstreams may be of use.
 
