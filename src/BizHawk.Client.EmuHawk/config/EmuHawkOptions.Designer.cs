@@ -53,6 +53,7 @@
 			this.label3 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.SingleInstanceModeCheckbox = new System.Windows.Forms.CheckBox();
 			this.tabPage3 = new System.Windows.Forms.TabPage();
+			this.NoMixedKeyPriorityCheckBox = new System.Windows.Forms.CheckBox();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
 			this.label10 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.label9 = new BizHawk.WinForms.Controls.LocLabelEx();
@@ -76,7 +77,7 @@
 			this.FrameAdvSkipLagCheckbox = new System.Windows.Forms.CheckBox();
 			this.BackupSRamCheckbox = new System.Windows.Forms.CheckBox();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-			this.NoMixedKeyPriorityCheckBox = new System.Windows.Forms.CheckBox();
+			this.locLabelEx1 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.groupBox3.SuspendLayout();
@@ -140,7 +141,7 @@
 			this.tabPage1.Location = new System.Drawing.Point(4, 22);
 			this.tabPage1.Name = "tabPage1";
 			this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage1.Size = new System.Drawing.Size(386, 349);
+			this.tabPage1.Size = new System.Drawing.Size(386, 391);
 			this.tabPage1.TabIndex = 0;
 			this.tabPage1.Text = "General";
 			this.tabPage1.UseVisualStyleBackColor = true;
@@ -273,6 +274,7 @@
 			// 
 			// groupBox1
 			// 
+			this.groupBox1.Controls.Add(this.locLabelEx1);
 			this.groupBox1.Controls.Add(this.StartPausedCheckbox);
 			this.groupBox1.Controls.Add(this.label14);
 			this.groupBox1.Controls.Add(this.StartFullScreenCheckbox);
@@ -280,7 +282,7 @@
 			this.groupBox1.Controls.Add(this.SingleInstanceModeCheckbox);
 			this.groupBox1.Location = new System.Drawing.Point(6, 205);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(369, 121);
+			this.groupBox1.Size = new System.Drawing.Size(369, 133);
 			this.groupBox1.TabIndex = 15;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Startup Options";
@@ -348,6 +350,16 @@
 			this.tabPage3.TabIndex = 2;
 			this.tabPage3.Text = "Advanced";
 			this.tabPage3.UseVisualStyleBackColor = true;
+			// 
+			// NoMixedKeyPriorityCheckBox
+			// 
+			this.NoMixedKeyPriorityCheckBox.AutoSize = true;
+			this.NoMixedKeyPriorityCheckBox.Location = new System.Drawing.Point(6, 294);
+			this.NoMixedKeyPriorityCheckBox.Name = "NoMixedKeyPriorityCheckBox";
+			this.NoMixedKeyPriorityCheckBox.Size = new System.Drawing.Size(288, 17);
+			this.NoMixedKeyPriorityCheckBox.TabIndex = 25;
+			this.NoMixedKeyPriorityCheckBox.Text = "Key Priority Toggle - Remove Mixed Key Priority Options";
+			this.NoMixedKeyPriorityCheckBox.UseVisualStyleBackColor = true;
 			// 
 			// groupBox2
 			// 
@@ -554,15 +566,11 @@
 			this.BackupSRamCheckbox.Text = "Backup SaveRAM to .SaveRAM.bak";
 			this.BackupSRamCheckbox.UseVisualStyleBackColor = true;
 			// 
-			// NoMixedKeyPriorityCheckBox
+			// locLabelEx1
 			// 
-			this.NoMixedKeyPriorityCheckBox.AutoSize = true;
-			this.NoMixedKeyPriorityCheckBox.Location = new System.Drawing.Point(6, 294);
-			this.NoMixedKeyPriorityCheckBox.Name = "NoMixedKeyPriorityCheckBox";
-			this.NoMixedKeyPriorityCheckBox.Size = new System.Drawing.Size(288, 17);
-			this.NoMixedKeyPriorityCheckBox.TabIndex = 25;
-			this.NoMixedKeyPriorityCheckBox.Text = "Key Priority Toggle - Remove Mixed Key Priority Options";
-			this.NoMixedKeyPriorityCheckBox.UseVisualStyleBackColor = true;
+			this.locLabelEx1.Location = new System.Drawing.Point(26, 112);
+			this.locLabelEx1.Name = "locLabelEx1";
+			this.locLabelEx1.Text = "Note: Only a tiny subset of commandline args work (incl. rom path)";
 			// 
 			// EmuHawkOptions
 			// 
@@ -647,5 +655,6 @@
 		private BizHawk.WinForms.Controls.LocLabelEx label3;
 		private System.Windows.Forms.CheckBox SingleInstanceModeCheckbox;
 		private System.Windows.Forms.CheckBox NoMixedKeyPriorityCheckBox;
+		private WinForms.Controls.LocLabelEx locLabelEx1;
 	}
 }
