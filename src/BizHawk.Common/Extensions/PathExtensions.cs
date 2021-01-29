@@ -40,8 +40,8 @@ namespace BizHawk.Common.PathExtensions
 #endif
 			}
 
-			var parentUri = new Uri(parentPath);
-			for (var childUri = new DirectoryInfo(childPath).Parent; childUri != null; childUri = childUri.Parent)
+			var parentUri = new Uri(parentPath.RemoveSuffix(Path.DirectorySeparatorChar));
+			for (var childUri = new DirectoryInfo(childPath); childUri != null; childUri = childUri.Parent)
 			{
 				if (new Uri(childUri.FullName) == parentUri) return true;
 			}
