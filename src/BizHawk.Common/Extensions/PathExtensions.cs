@@ -20,8 +20,9 @@ namespace BizHawk.Common.PathExtensions
 			if (OSTailoredCode.IsUnixHost)
 			{
 #if true
-				return OSTailoredCode.SimpleSubshell("realpath", $"-L \"{childPath}\"", $"invalid path {childPath} or missing realpath binary")
-					.StartsWith(OSTailoredCode.SimpleSubshell("realpath", $"-L \"{parentPath}\"", $"invalid path {parentPath} or missing realpath binary"));
+				var c = OSTailoredCode.SimpleSubshell("realpath", $"-Lm \"{childPath}\"", $"invalid path {childPath} or missing realpath binary");
+				var p = OSTailoredCode.SimpleSubshell("realpath", $"-Lm \"{parentPath}\"", $"invalid path {parentPath} or missing realpath binary");
+				return c == p || c.StartsWith($"{p}/");
 #else // written for Unix port but may be useful for Windows when moving to .NET Core
 				var parentUriPath = new Uri(parentPath.TrimEnd('.')).AbsolutePath.TrimEnd('/');
 				try
