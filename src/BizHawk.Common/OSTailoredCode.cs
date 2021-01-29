@@ -3,6 +3,8 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.InteropServices;
 
+using BizHawk.Common.StringExtensions;
+
 #if EXE_PROJECT
 namespace EXE_PROJECT // Use a different namespace so the executable can still use this class' members without an implicit dependency on the BizHawk.Common library, and without resorting to code duplication.
 #else
@@ -44,9 +46,13 @@ namespace BizHawk.Common
 			return (winVer, null);
 		});
 
+		private static readonly Lazy<bool> _isWSL = new(() => IsUnixHost && SimpleSubshell("uname", "-r", "missing uname?").Contains("microsoft", StringComparison.InvariantCultureIgnoreCase));
+
 		public static (WindowsVersion Version, int? Win10Release)? HostWindowsVersion => _HostWindowsVersion.Value;
 
 		public static readonly bool IsUnixHost = CurrentOS != DistinctOS.Windows;
+
+		public static bool IsWSL => _isWSL.Value;
 
 		private static readonly Lazy<ILinkedLibManager> _LinkedLibManager = new Lazy<ILinkedLibManager>(() => CurrentOS switch
 		{

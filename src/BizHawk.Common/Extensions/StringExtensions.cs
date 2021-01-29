@@ -5,6 +5,9 @@ namespace BizHawk.Common.StringExtensions
 {
 	public static class StringExtensions
 	{
+		public static bool Contains(this string haystack, string needle, StringComparison comparisonType)
+			=> haystack.IndexOf(needle, comparisonType) != -1;
+
 		/// <returns>
 		/// <see langword="true"/> if <paramref name="str"/> appears in <paramref name="options"/> (case-insensitive)
 		/// </returns>
