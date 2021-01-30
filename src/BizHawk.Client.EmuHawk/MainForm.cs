@@ -282,7 +282,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (config.SingleInstanceMode)
 			{
-				if (singleInstanceInit(args))
+				if (SingleInstanceInit(args))
 				{
 					Dispose();
 					return;
@@ -758,7 +758,7 @@ namespace BizHawk.Client.EmuHawk
 			if (disposing)
 			{
 				components?.Dispose();
-				singleInstanceDispose();
+				SingleInstanceDispose();
 			}
 
 			base.Dispose(disposing);
@@ -2172,7 +2172,7 @@ namespace BizHawk.Client.EmuHawk
 				ScreenSaver.ResetTimerPeriodically();
 			}
 
-			List<string[]> todo = null;
+			List<string[]> todo = new();
 			lock (_singleInstanceForwardedArgs)
 			{
 				if (_singleInstanceForwardedArgs.Count > 0)
@@ -2181,10 +2181,7 @@ namespace BizHawk.Client.EmuHawk
 					_singleInstanceForwardedArgs.Clear();
 				}
 			}
-
-			if(todo != null)
-				foreach (var args in todo)
-					singleInstanceProcessArgs(args);
+			foreach (var args in todo) SingleInstanceProcessArgs(args);
 		}
 
 		private void AutohideCursor(bool hide)
@@ -4558,54 +4555,49 @@ namespace BizHawk.Client.EmuHawk
 		public void StartSound() => Sound.StartSound();
 		public void StopSound() => Sound.StopSound();
 
-		System.Threading.Mutex _singleInstanceMutex;
-		System.IO.Pipes.NamedPipeServerStream _singleInstanceServer;
-		List<string[]> _singleInstanceForwardedArgs = new List<string[]>();
+		private Mutex _singleInstanceMutex;
+		private NamedPipeServerStream _singleInstanceServer;
+		private readonly List<string[]> _singleInstanceForwardedArgs = new();
 
-		bool singleInstanceInit(string[] args)
+		private bool SingleInstanceInit(string[] args)
 		{
 			//note: this isn't 100% reliable, it's just a user convenience
-			_singleInstanceMutex = new System.Threading.Mutex(true, "mutex-{84125ACB-F570-4458-9748-321F887FE795}", out bool createdNew);
+			_singleInstanceMutex = new Mutex(true, "mutex-{84125ACB-F570-4458-9748-321F887FE795}", out bool createdNew);
 			if (createdNew)
 			{
-				startSingleInstanceServer();
+				StartSingleInstanceServer();
 				return false;
 			}
 			else
 			{
-				forwardSingleInstanceStartup(args);
+				ForwardSingleInstanceStartup(args);
 				return true;
 			}
 		}
 
-		void singleInstanceDispose()
+		private void SingleInstanceDispose()
 		{
-			if (_singleInstanceServer != null)
+			_singleInstanceServer?.Dispose();
+		}
+
+		private void ForwardSingleInstanceStartup(string[] args)
+		{
+			using var namedPipeClientStream = new NamedPipeClientStream(".", "pipe-{84125ACB-F570-4458-9748-321F887FE795}", PipeDirection.Out);
+			try
 			{
-				_singleInstanceServer.Dispose();
+				namedPipeClientStream.Connect(0);
+				//do this a bit cryptically to avoid loading up another big assembly (especially ones as frail as http and/or web ones)
+				var payloadString = string.Join("|", args.Select(a => Encoding.UTF8.GetBytes(a).BytesToHexString()));
+				var payloadBytes = Encoding.ASCII.GetBytes(payloadString);
+				namedPipeClientStream.Write(payloadBytes, 0, payloadBytes.Length);
+			}
+			catch
+			{
+				Console.WriteLine("Failed forwarding args to already-running single instance");
 			}
 		}
 
-		void forwardSingleInstanceStartup(string[] args)
-		{
-			using (var namedPipeClientStream = new System.IO.Pipes.NamedPipeClientStream(".", "pipe-{84125ACB-F570-4458-9748-321F887FE795}", PipeDirection.Out))
-			{
-				try
-				{
-					namedPipeClientStream.Connect(0);
-					//do this a bit cryptically to avoid loading up another big assembly (especially ones as frail as http and/or web ones)
-					var payloadString = string.Join("|", args.Select(a => System.Text.Encoding.UTF8.GetBytes(a).BytesToHexString()));
-					var payloadBytes = System.Text.Encoding.ASCII.GetBytes(payloadString);
-					namedPipeClientStream.Write(payloadBytes, 0, payloadBytes.Length);
-				}
-				catch
-				{
-					Console.WriteLine("Failed forwarding args to already-running single instance");
-				}
-			}
-		}
-
-		void startSingleInstanceServer()
+		private void StartSingleInstanceServer()
 		{
 			//MIT LICENSE - https://www.autoitconsulting.com/site/development/single-instance-winform-app-csharp-mutex-named-pipes/
 
@@ -4643,13 +4635,13 @@ namespace BizHawk.Client.EmuHawk
 					pipeSecurity);
 
 			// Begin async wait for connections
-			_singleInstanceServer.BeginWaitForConnection(singleInstanceServerPipeCallback, null);
+			_singleInstanceServer.BeginWaitForConnection(SingleInstanceServerPipeCallback, null);
 		}
 
 		//Note: This method is called on a non-UI thread.
 		//Note: this seems really frail. I don't think it's industrial strength. Pipes are weak compared to sockets.
 		//It was probably frail in the first place with the old vbnet impl
-		private void singleInstanceServerPipeCallback(IAsyncResult iAsyncResult)
+		private void SingleInstanceServerPipeCallback(IAsyncResult iAsyncResult)
 		{
 			try
 			{
@@ -4658,17 +4650,16 @@ namespace BizHawk.Client.EmuHawk
 				//a bit over-engineered in case someone wants to send a script or a rom or something
 				//buffer size is set to something tiny so that we are continually testing it 
 				var payloadBytes = new MemoryStream();
-				for (; ; )
+				while (true)
 				{
 					var bytes = new byte[16];
 					int did = _singleInstanceServer.Read(bytes, 0, bytes.Length);
 					payloadBytes.Write(bytes, 0, did);
-					if (_singleInstanceServer.IsMessageComplete)
-						break;
+					if (_singleInstanceServer.IsMessageComplete) break;
 				}
 
 				var payloadString = System.Text.Encoding.ASCII.GetString(payloadBytes.GetBuffer(), 0, (int)payloadBytes.Length);
-				var args = payloadString.Split('|').Select(a => System.Text.Encoding.UTF8.GetString(a.HexStringToBytes())).ToArray();
+				var args = payloadString.Split('|').Select(a => Encoding.UTF8.GetString(a.HexStringToBytes())).ToArray();
 
 				Console.WriteLine("RECEIVED SINGLE INSTANCE FORWARDED ARGS:");
 				lock (_singleInstanceForwardedArgs)
@@ -4692,10 +4683,10 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// Create a new pipe for next connection
-			startSingleInstanceServer();
+			StartSingleInstanceServer();
 		}
 
-		void singleInstanceProcessArgs(string[] args)
+		private void SingleInstanceProcessArgs(string[] args)
 		{
 			//ulp. it's not clear how to handle these.
 			//we only have a legacy case where we can tell the form to load a rom, if it's in a sensible condition for that.
