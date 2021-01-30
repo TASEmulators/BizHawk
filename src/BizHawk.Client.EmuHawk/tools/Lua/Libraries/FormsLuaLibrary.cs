@@ -1209,58 +1209,50 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		/// <exception cref="Exception">misformatted colour</exception>
+		/// <exception cref="Exception">
+		/// identifier doesn't match any prop of referenced <see cref="Form"/>/<see cref="Control"/>; or
+		/// property is of type <see cref="Color"/> and a string was passed with the wrong format
+		/// </exception>
 		[LuaMethodExample("forms.setproperty( 332, \"Property\", \"Property value\" );")]
 		[LuaMethod("setproperty", "Attempts to set the given property of the widget with the given value.  Note: not all properties will be able to be represented for the control to accept")]
 		public void SetProperty(int handle, string property, object value)
 		{
+			// relying on exceptions for error handling here
+			void ParseAndSet(Control c)
+			{
+				var pi = c.GetType().GetProperty(property) ?? throw new Exception($"no property with the identifier {property}");
+				var pt = pi.PropertyType;
+				object value1;
+				if (pt.IsEnum)
+				{
+					value1 = Enum.Parse(pt, value.ToString(), true);
+				}
+				else if (pt == typeof(Color) && value is string s)
+				{
+					if (s[0] != '#' || s.Length != 9) throw new Exception("invalid format for Color, format the string as #AARRGGBB or pass a Color object");
+					value1 = Color.FromArgb(int.Parse(s.Substring(1), System.Globalization.NumberStyles.HexNumber));
+				}
+				else
+				{
+					value1 = value;
+				}
+				pi.SetValue(c, Convert.ChangeType(value1, pt), null);
+			}
+
 			var ptr = new IntPtr(handle);
 			foreach (var form in _luaForms)
 			{
 				if (form.Handle == ptr)
 				{
-					var pt = form.GetType().GetProperty(property).PropertyType;
-					if (pt.IsEnum)
-					{
-						value = Enum.Parse(form.GetType().GetProperty(property).PropertyType, value.ToString(), true);
-					}
-
-					if (pt == typeof(Color))
-					{
-						// relying on exceptions for error handling here
-						var sval = (string)value;
-						if (sval[0] != '#')
-						{
-							throw new Exception("Invalid #aarrggbb color");
-						}
-
-						if (sval.Length != 9)
-						{
-							throw new Exception("Invalid #aarrggbb color");
-						}
-
-						value = Color.FromArgb(int.Parse(sval.Substring(1), System.Globalization.NumberStyles.HexNumber));
-					}
-
-					form.GetType()
-						.GetProperty(property)
-						.SetValue(form, Convert.ChangeType(value, form.GetType().GetProperty(property).PropertyType), null);
+					ParseAndSet(form);
+					return;
 				}
-				else
+				foreach (Control control in form.Controls)
 				{
-					foreach (Control control in form.Controls)
+					if (control.Handle == ptr)
 					{
-						if (control.Handle == ptr)
-						{
-							if (control.GetType().GetProperty(property).PropertyType.IsEnum)
-							{
-								value = Enum.Parse(control.GetType().GetProperty(property).PropertyType, value.ToString(), true);
-							}
-
-							control.GetType()
-								.GetProperty(property)
-								.SetValue(control, Convert.ChangeType(value, control.GetType().GetProperty(property).PropertyType), null);
-						}
+						ParseAndSet(control);
+						return;
 					}
 				}
 			}
