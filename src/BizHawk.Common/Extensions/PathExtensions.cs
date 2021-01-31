@@ -58,7 +58,11 @@ namespace BizHawk.Common.PathExtensions
 		public static string? GetRelativePath(string? fromPath, string? toPath)
 		{
 			if (fromPath == null || toPath == null) return null;
-			if (OSTailoredCode.IsUnixHost) return toPath.MakeRelativeTo(fromPath);
+			if (OSTailoredCode.IsUnixHost)
+			{
+				var realpathOutput = OSTailoredCode.SimpleSubshell("realpath", $"--relative-to=\"{fromPath}\" \"{toPath}\"", $"invalid path {toPath}, invalid path {fromPath}, or missing realpath binary");
+				return !realpathOutput.StartsWith("../") && realpathOutput != "." && realpathOutput != ".." ? $"./{realpathOutput}" : realpathOutput;
+			}
 
 			//TODO merge this with the Windows implementation in MakeRelativeTo
 			static FileAttributes GetPathAttribute(string path1)
@@ -101,7 +105,7 @@ namespace BizHawk.Common.PathExtensions
 			if (!absolutePath.IsSubfolderOf(basePath)) return absolutePath;
 			if (!OSTailoredCode.IsUnixHost) return absolutePath.Replace(basePath, ".").RemoveSuffix(Path.DirectorySeparatorChar);
 #if true // Unix implementation using realpath
-			var realpathOutput = OSTailoredCode.SimpleSubshell("realpath", $"--relative-to=\"{basePath}\" \"{absolutePath}\"", $"invalid path {absolutePath}, invalid path {basePath}, or missing realpath binary");
+			var realpathOutput = OSTailoredCode.SimpleSubshell("realpath", $"--relative-base=\"{basePath}\" \"{absolutePath}\"", $"invalid path {absolutePath}, invalid path {basePath}, or missing realpath binary");
 			return !realpathOutput.StartsWith("../") && realpathOutput != "." && realpathOutput != ".." ? $"./{realpathOutput}" : realpathOutput;
 #else // for some reason there were two Unix implementations in the codebase before me? --yoshi
 			// alt. #1

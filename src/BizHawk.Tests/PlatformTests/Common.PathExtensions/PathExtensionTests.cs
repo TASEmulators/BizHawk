@@ -58,16 +58,25 @@ namespace BizHawk.Tests.Common.PathExtensions
 			Assert.AreEqual(expectedIsSubfolder, childPath.IsSubfolderOf(parentPath));
 		}
 
-#if false // don't bother, GetRelativePath simply calls MakeRelativeTo on Unix
-		public void TestGetRelativePathUnix() {}
-#endif
+		[TestMethod]
+		[DataRow("./share", "/usr/share", "/usr")]
+		[DataRow(".", "/usr", "/usr")]
+		[DataRow("..", "/usr", "/usr/share")]
+		[DataRow("../bin", "/usr/bin", "/usr/share")]
+		[DataRow("../../etc", "/etc", "/usr/share")]
+		public void TestGetRelativePathUnix(string expectedRelPath, string toPath, string fromPath) // swapped here instead of in data
+		{
+			PlatformTestUtils.OnlyRunOnRealUnix();
+
+			Assert.AreEqual(expectedRelPath, PE.GetRelativePath(fromPath: fromPath, toPath: toPath));
+		}
 
 		[TestMethod]
 		[DataRow("./share", "/usr/share", "/usr")]
 		[DataRow(".", "/usr", "/usr")]
 		[DataRow("/usr", "/usr", "/usr/share")] // not `..`
 		[DataRow("/usr/bin", "/usr/bin", "/usr/share")] // not `../bin`
-		[DataRow("/bin", "/bin", "/usr/share")] // not `../../bin`
+		[DataRow("/etc", "/etc", "/usr/share")] // not `../../etc`
 		public void TestMakeRelativeToUnix(string expectedRelPath, string absolutePath, string basePath)
 		{
 			PlatformTestUtils.OnlyRunOnRealUnix();
