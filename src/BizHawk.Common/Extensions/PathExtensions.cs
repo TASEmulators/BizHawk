@@ -50,11 +50,15 @@ namespace BizHawk.Common.PathExtensions
 
 		/// <exception cref="ArgumentException">running on Windows host, and unmanaged call failed</exception>
 		/// <exception cref="FileNotFoundException">running on Windows host, and either path is not a regular file or directory</exception>
-		/// <remarks>Algorithm for Windows taken from https://stackoverflow.com/a/485516/7467292</remarks>
+		/// <remarks>
+		/// always returns a relative path, even if it means going up first<br/>
+		/// algorithm for Windows taken from https://stackoverflow.com/a/485516/7467292<br/>
+		/// the parameter names seem backwards, but those are the names used in the Win32 API we're calling
+		/// </remarks>
 		public static string? GetRelativePath(string? fromPath, string? toPath)
 		{
 			if (fromPath == null || toPath == null) return null;
-			if (OSTailoredCode.IsUnixHost) return fromPath.MakeRelativeTo(toPath);
+			if (OSTailoredCode.IsUnixHost) return toPath.MakeRelativeTo(fromPath);
 
 			//TODO merge this with the Windows implementation in MakeRelativeTo
 			static FileAttributes GetPathAttribute(string path1)
@@ -87,7 +91,10 @@ namespace BizHawk.Common.PathExtensions
 		public static string MakeProgramRelativePath(this string path) => Path.Combine(PathUtils.ExeDirectoryPath, path);
 
 		/// <returns>the relative path which is equivalent to <paramref name="absolutePath"/> when the CWD is <paramref name="basePath"/>, or <see langword="null"/> if either path is <see langword="null"/></returns>
-		/// <remarks>returned string omits trailing slash; implementation calls <see cref="IsSubfolderOf"/> for you</remarks>
+		/// <remarks>
+		/// only returns a relative path if <paramref name="absolutePath"/> is a child of <paramref name="basePath"/> (uses <see cref="IsSubfolderOf"/>), otherwise returns <paramref name="absolutePath"/><br/>
+		/// returned string omits trailing slash
+		/// </remarks>
 		public static string? MakeRelativeTo(this string? absolutePath, string? basePath)
 		{
 			if (absolutePath == null || basePath == null) return null;
