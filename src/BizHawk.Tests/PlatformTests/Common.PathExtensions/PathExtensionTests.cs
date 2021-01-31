@@ -59,55 +59,33 @@ namespace BizHawk.Tests.Common.PathExtensions
 		}
 
 		[TestMethod]
-		[DataRow("./share", "/usr/share", "/usr")]
-		[DataRow(".", "/usr", "/usr")]
-		[DataRow("..", "/usr", "/usr/share")]
-		[DataRow("../bin", "/usr/bin", "/usr/share")]
-		[DataRow("../../etc", "/etc", "/usr/share")]
-		public void TestGetRelativePathUnix(string expectedRelPath, string toPath, string fromPath) // swapped here instead of in data
+		[DataRow("./share", true, "/usr/share", "/usr")]
+		[DataRow(".", true, "/usr", "/usr")]
+		[DataRow("..", false, "/usr", "/usr/share")]
+		[DataRow("../bin", false, "/usr/bin", "/usr/share")]
+		[DataRow("../../etc", false, "/etc", "/usr/share")]
+		public void TestGetRelativeUnix(string expectedRelPath, bool isChild, string absolutePath, string basePath)
 		{
 			PlatformTestUtils.OnlyRunOnRealUnix();
 
-			Assert.AreEqual(expectedRelPath, PE.GetRelativePath(fromPath: fromPath, toPath: toPath));
+			Assert.AreEqual(expectedRelPath, PE.GetRelativePath(fromPath: basePath, toPath: absolutePath)); // params swapped w.r.t. `MakeRelativeTo`
+			// `MakeRelativeTo` is supposed to return an absolute path (the receiver is assumed to be absolute) iff the receiver isn't a child of the given base path
+			Assert.AreEqual(isChild ? expectedRelPath : absolutePath, absolutePath.MakeRelativeTo(basePath));
 		}
 
 		[TestMethod]
-		[DataRow("./share", "/usr/share", "/usr")]
-		[DataRow(".", "/usr", "/usr")]
-		[DataRow("/usr", "/usr", "/usr/share")] // not `..`
-		[DataRow("/usr/bin", "/usr/bin", "/usr/share")] // not `../bin`
-		[DataRow("/etc", "/etc", "/usr/share")] // not `../../etc`
-		public void TestMakeRelativeToUnix(string expectedRelPath, string absolutePath, string basePath)
-		{
-			PlatformTestUtils.OnlyRunOnRealUnix();
-
-			Assert.AreEqual(expectedRelPath, absolutePath.MakeRelativeTo(basePath));
-		}
-
-		[TestMethod]
-		[DataRow(@".\SysWOW64", @"C:\Windows\SysWOW64", @"C:\Windows")]
-		[DataRow(@".", @"C:\Windows", @"C:\Windows")]
-		[DataRow(@"..", @"C:\Windows", @"C:\Windows\SysWOW64")]
-		[DataRow(@"..\System32", @"C:\Windows\System32", @"C:\Windows\SysWOW64")]
-		[DataRow(@"..\..\Program Files", @"C:\Program Files", @"C:\Windows\SysWOW64")]
-		public void TestGetRelativePathWindows(string expectedRelPath, string toPath, string fromPath) // swapped here instead of in data
+		[DataRow(@".\SysWOW64", true, @"C:\Windows\SysWOW64", @"C:\Windows")]
+		[DataRow(@".", true, @"C:\Windows", @"C:\Windows")]
+		[DataRow(@"..", false, @"C:\Windows", @"C:\Windows\SysWOW64")]
+		[DataRow(@"..\System32", false, @"C:\Windows\System32", @"C:\Windows\SysWOW64")]
+		[DataRow(@"..\..\Program Files", false, @"C:\Program Files", @"C:\Windows\SysWOW64")]
+		public void TestGetRelativeWindows(string expectedRelPath, bool isChild, string absolutePath, string basePath)
 		{
 			PlatformTestUtils.OnlyRunOnWindows();
 
-			Assert.AreEqual(expectedRelPath, PE.GetRelativePath(fromPath: fromPath, toPath: toPath));
-		}
-
-		[TestMethod]
-		[DataRow(@".\SysWOW64", @"C:\Windows\SysWOW64", @"C:\Windows")]
-		[DataRow(@".", @"C:\Windows", @"C:\Windows")]
-		[DataRow(@"C:\Windows", @"C:\Windows", @"C:\Windows\SysWOW64")] // not `..`
-		[DataRow(@"C:\Windows\System32", @"C:\Windows\System32", @"C:\Windows\SysWOW64")] // not `..\System32`
-		[DataRow(@"C:\Program Files", @"C:\Program Files", @"C:\Windows\SysWOW64")] // not `..\..\Program Files`
-		public void TestMakeRelativeToWindows(string expectedRelPath, string absolutePath, string basePath)
-		{
-			PlatformTestUtils.OnlyRunOnWindows();
-
-			Assert.AreEqual(expectedRelPath, absolutePath.MakeRelativeTo(basePath));
+			Assert.AreEqual(expectedRelPath, PE.GetRelativePath(fromPath: basePath, toPath: absolutePath)); // params swapped w.r.t. `MakeRelativeTo`
+			// `MakeRelativeTo` is supposed to return an absolute path (the receiver is assumed to be absolute) iff the receiver isn't a child of the given base path
+			Assert.AreEqual(isChild ? expectedRelPath : absolutePath, absolutePath.MakeRelativeTo(basePath));
 		}
 	}
 }
