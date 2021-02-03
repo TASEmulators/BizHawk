@@ -5,6 +5,7 @@
 	</PropertyGroup>
 	<Import Project="../MainSlnCommon.props" />
 	<PropertyGroup>
+		<DefineConstants Condition=" '$(GITLAB_CI)' != '' Or '$(APPVEYOR)' != '' ">$(DefineConstants);SKIP_PLATFORM_TESTS</DefineConstants>
 		<OutputPath>$(ProjectDir)../../test_output</OutputPath>
 	</PropertyGroup>
 	<ItemGroup>

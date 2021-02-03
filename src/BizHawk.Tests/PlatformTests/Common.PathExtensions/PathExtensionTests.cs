@@ -13,6 +13,8 @@ namespace BizHawk.Tests.Common.PathExtensions
 		[TestMethod]
 		public void TestNullability()
 		{
+			PlatformTestUtils.RunEverywhere();
+
 			var p = OSTailoredCode.IsUnixHost ? "/" : @"C:\";
 
 			Assert.IsFalse(PE.IsSubfolderOf(childPath: null, parentPath: p));
