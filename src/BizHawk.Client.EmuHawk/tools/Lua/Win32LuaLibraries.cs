@@ -165,13 +165,16 @@ namespace BizHawk.Client.EmuHawk
 		{
 			try
 			{
+				GuiAPI.LockEmuSurfaceLua();
 				foreach (var lf in RegisteredFunctions.Where(l => l.Event == "OnSavestateSave"))
 				{
 					lf.Call(name);
 				}
+				GuiAPI.UnlockEmuSurfaceLua();
 			}
 			catch (Exception e)
 			{
+				GuiAPI.UnlockEmuSurfaceLua();
 				LogToLuaConsole($"error running function attached by lua function event.onsavestate\nError message: {e.Message}");
 			}
 		}
@@ -180,13 +183,16 @@ namespace BizHawk.Client.EmuHawk
 		{
 			try
 			{
+				GuiAPI.LockEmuSurfaceLua();
 				foreach (var lf in RegisteredFunctions.Where(l => l.Event == "OnSavestateLoad"))
 				{
 					lf.Call(name);
 				}
+				GuiAPI.UnlockEmuSurfaceLua();
 			}
 			catch (Exception e)
 			{
+				GuiAPI.UnlockEmuSurfaceLua();
 				LogToLuaConsole($"error running function attached by lua function event.onloadstate\nError message: {e.Message}");
 			}
 		}
@@ -196,13 +202,16 @@ namespace BizHawk.Client.EmuHawk
 			if (IsUpdateSupressed) return;
 			try
 			{
+				GuiAPI.LockEmuSurfaceLua();
 				foreach (var lf in RegisteredFunctions.Where(l => l.Event == "OnFrameStart"))
 				{
 					lf.Call();
 				}
+				GuiAPI.UnlockEmuSurfaceLua();
 			}
 			catch (Exception e)
 			{
+				GuiAPI.UnlockEmuSurfaceLua();
 				LogToLuaConsole($"error running function attached by lua function event.onframestart\nError message: {e.Message}");
 			}
 		}
@@ -212,23 +221,28 @@ namespace BizHawk.Client.EmuHawk
 			if (IsUpdateSupressed) return;
 			try
 			{
+				GuiAPI.LockEmuSurfaceLua();
 				foreach (var lf in RegisteredFunctions.Where(l => l.Event == "OnFrameEnd"))
 				{
 					lf.Call();
 				}
+				GuiAPI.UnlockEmuSurfaceLua();
 			}
 			catch (Exception e)
 			{
+				GuiAPI.UnlockEmuSurfaceLua();
 				LogToLuaConsole($"error running function attached by lua function event.onframeend\nError message: {e.Message}");
 			}
 		}
 
 		public void CallExitEvent(LuaFile lf)
 		{
+			GuiAPI.LockEmuSurfaceLua();
 			foreach (var exitCallback in RegisteredFunctions.ForFile(lf).ForEvent("OnExit"))
 			{
 				exitCallback.Call();
 			}
+			GuiAPI.UnlockEmuSurfaceLua();
 		}
 
 		public void Close()
