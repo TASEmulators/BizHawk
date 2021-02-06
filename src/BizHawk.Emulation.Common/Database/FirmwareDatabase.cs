@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Common
 			var fdsNintendo = File("57FE1BDEE955BB48D357E463CCBF129496930B62", 8192, "FDS_disksys-nintendo.rom", "Bios (Nintendo)");
 			var fdsTwinFc = File("E4E41472C454F928E53EB10E0509BF7D1146ECC1", 8192, "FDS_disksys-nintendo.rom", "Bios (TwinFC)");
 			Firmware("NES", "Bios_FDS", "Bios");
-			Option("NES", "Bios_FDS", fdsNintendo);
+			Option("NES", "Bios_FDS", fdsNintendo, FirmwareOptionStatus.Ideal);
 			Option("NES", "Bios_FDS", fdsTwinFc);
 
 			FirmwareAndOption("973E10840DB683CF3FAF61BD443090786B3A9F04", 262144, "SNES", "Rom_SGB", "SNES_sgb.sfc", "Super GameBoy Rom"); // World (Rev B) ?
@@ -325,15 +325,7 @@ namespace BizHawk.Emulation.Common
 				Status = status,
 				Size = size
 			};
-
 			FirmwareOptions.Add(fo);
-
-			// first option is automatically ideal
-			if (FirmwareOptions.Count == 1 && fo.Status == FirmwareOptionStatus.Acceptable)
-			{
-				fo.Status = FirmwareOptionStatus.Ideal;
-			}
-
 			return fo;
 		}
 
