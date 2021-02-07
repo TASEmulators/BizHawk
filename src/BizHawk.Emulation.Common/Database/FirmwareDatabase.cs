@@ -31,9 +31,12 @@ namespace BizHawk.Emulation.Common
 
 			FirmwareAndOption("79F5FF55DD10187C7FD7B8DAAB0B3FFBD1F56A2C", 262144, "PCECD", "Bios", "PCECD_3.0-(J).pce", "Super CD Bios (J)");
 			FirmwareAndOption("014881a959e045e00f4db8f52955200865d40280", 32768, "PCECD", "GE-Bios", "PCECD_gecard.pce", "Games Express CD Card (Japan)");
-			FirmwareAndOption("D9D134BB6B36907C615A594CC7688F7BFCEF5B43", 4096, "A78", "Bios_NTSC", "A78_NTSC_bios.bin", "NTSC Bios");
-			//FirmwareAndOption("CE236581AB7921B59DB95BA12837C22F160896CB", 4096, "A78", "Bios_NTSC", "A78_NTSC_speed_bios.bin", "NTSC Bios speed");
 
+			Firmware("A78", "Bios_NTSC", "NTSC Bios");
+#if false
+			Option("A78", "Bios_NTSC", File("CE236581AB7921B59DB95BA12837C22F160896CB", 4096, "A78_NTSC_speed_bios.bin", "NTSC Bios speed"));
+#endif
+			Option("A78", "Bios_NTSC", File("D9D134BB6B36907C615A594CC7688F7BFCEF5B43", 4096, "A78_NTSC_bios.bin", "NTSC Bios"));
 			FirmwareAndOption("5A140136A16D1D83E4FF32A19409CA376A8DF874", 16384, "A78", "Bios_PAL", "A78_PAL_BIOS.bin", "PAL Bios");
 			FirmwareAndOption("A3AF676991391A6DD716C79022D4947206B78164", 4096, "A78", "Bios_HSC", "A78_highscore.bin", "Highscore Bios");
 
@@ -54,8 +57,6 @@ namespace BizHawk.Emulation.Common
 
 			FirmwareAndOption("E4ED47FAE31693E016B081C6BDA48DA5B70D7CCB", 512, "Lynx", "Boot", "LYNX_boot.img", "Boot Rom");
 
-			////FirmwareAndOption("24F67BDEA115A2C847C8813A262502EE1607B7DF", "NDS", "Bios_Arm7", "biosnds7.rom", "ARM7 Bios");
-			////FirmwareAndOption("BFAAC75F101C135E32E2AAF541DE6B1BE4C8C62D", "NDS", "Bios_Arm9", "biosnds9.rom", "ARM9 Bios");
 			FirmwareAndOption("5A65B922B562CB1F57DAB51B73151283F0E20C7A", 8192, "INTV", "EROM", "INTV_EROM.bin", "Executive Rom");
 			FirmwareAndOption("F9608BB4AD1CFE3640D02844C7AD8E0BCD974917", 2048, "INTV", "GROM", "INTV_GROM.bin", "Graphics Rom");
 
@@ -73,8 +74,6 @@ namespace BizHawk.Emulation.Common
 			FirmwareAndOption("B398CFCB94C9F7E808E0FECE54813CFDFB96F8D0", 16384, "MSX", "bios_test", "MSX_bios.rom", "MSX BIOS");
 			FirmwareAndOption("18559FA9C2D9E99A319550D809009ECDBA6D396E", 16384, "MSX", "basic_test", "MSX_cbios_basic.rom", "MSX BASIC (C-BIOS v0.29a)");
 			FirmwareAndOption("2F997E8A57528518C82AB3693FDAE243DBBCC508", 32768, "MSX", "bios_test_ext", "MSX_cbios_main_msx1.rom", "MSX BIOS (C-BIOS v0.29a)");
-			
-
 			FirmwareAndOption("E998F0C441F4F1800EF44E42CD1659150206CF79", 16384, "MSX", "bios_pal", "MSX_8020-20bios.rom", "MSX BIOS (Philips VG-8020)");
 			FirmwareAndOption("DF48902F5F12AF8867AE1A87F255145F0E5E0774", 16384, "MSX", "bios_jp", "MSX_4000bios.rom", "MSX BIOS (FS-4000)");
 
@@ -115,7 +114,6 @@ namespace BizHawk.Emulation.Common
 			var ti83_108 = File("9C74F0B61655E9E160E92164DB472AD7EE02B0F8", 262144, "TI83_108.rom", "TI-83 Rom v1.08"); // ?? is this size correct?
 			var ti83p_103 = File("37EAEEB9FB5C18FB494E322B75070E80CC4D858E", 262144, "TI83p_103b.rom", "TI-83 Plus Rom v1.03"); // ?? is this size correct?
 			var ti83p_112 = File("6615DF5554076B6B81BD128BF847D2FF046E556B", 262144, "TI83p_112.rom", "TI-83 Plus Rom v1.12"); // ?? is this size correct?
-
 			Firmware("TI83", "Rom", "TI-83 Rom");
 			Option("TI83", "Rom", ti83_102);
 			Option("TI83", "Rom", ti83_103);
@@ -134,7 +132,6 @@ namespace BizHawk.Emulation.Common
 			var jp_mcd1_9112 = File("e4193c6ae44c3cea002707d2a88f1fbcced664de", 131072, "MCD_jp_9112.bin", "Mega CD JP (9112)");
 			var us_scd1_9210 = File("f4f315adcef9b8feb0364c21ab7f0eaf5457f3ed", 131072, "SCD_us_9210.bin", "Sega CD US (9210)");
 			var us_scd2_9303 = File("bd3ee0c8ab732468748bf98953603ce772612704", 131072, "SCD_us_9303.bin", "Sega CD US (9303)");
-
 			Firmware("GEN", "CD_BIOS_EU", "Mega CD Bios (Europe)");
 			Firmware("GEN", "CD_BIOS_JP", "Mega CD Bios (Japan)");
 			Firmware("GEN", "CD_BIOS_US", "Sega CD Bios (USA)");
@@ -150,14 +147,12 @@ namespace BizHawk.Emulation.Common
 			FirmwareAndOption("1e5b0b2441a4979b6966d942b20cc76c413b8c5e", 2048, "32X", "M", "32X_M_BIOS.BIN", "32x SH2 MASTER BIOS");
 			FirmwareAndOption("4103668c1bbd66c5e24558e73d4f3f92061a109a", 1024, "32X", "S", "32X_S_BIOS.BIN", "32x SH2 SLAVE BIOS");
 
-
 			// SMS
 			var sms_us_13 = File("C315672807D8DDB8D91443729405C766DD95CAE7", 8192, "SMS_us_1.3.sms", "SMS BIOS 1.3 (USA, Europe)");
 			var sms_jp_21 = File("A8C1B39A2E41137835EDA6A5DE6D46DD9FADBAF2", 8192, "SMS_jp_2.1.sms", "SMS BIOS 2.1 (Japan)");
 			var sms_us_1b = File("29091FF60EF4C22B1EE17AA21E0E75BAC6B36474", 8192, "SMS_us_1.0b.sms", "SMS BIOS 1.0 (USA) (Proto)"); // ?? is this size correct?
 			var sms_m404 = File("4A06C8E66261611DCE0305217C42138B71331701", 8192, "SMS_m404.sms", "SMS BIOS (USA) (M404) (Proto)"); // ?? is this size correct?
 			var sms_kr = File("2FEAFD8F1C40FDF1BD5668F8C5C02E5560945B17", 131072, "SMS_kr.sms", "SMS BIOS (Kr)"); // ?? is this size correct?
-
 			Firmware("SMS", "Export", "SMS Bios (USA/Export)");
 			Firmware("SMS", "Japan", "SMS Bios (Japan)");
 			Firmware("SMS", "Korea", "SMS Bios (Korea)");
@@ -182,41 +177,33 @@ namespace BizHawk.Emulation.Common
 			var ps_21a = File("CA7AF30B50D9756CBD764640126C454CFF658479", 524288, "PSX_2.1(A).bin", "PSX BIOS (Version 2.1 07/17/95 A)", "Used on DTL-H1101 [g]. This is for Rev B hardware, presumably.");
 			var ps_21e = File("76CF6B1B2A7C571A6AD07F2BAC0DB6CD8F71E2CC", 524288, "PSX_2.1(E).bin", "PSX BIOS (Version 2.1 07/17/95 E)", "Used on SCPH-1002, DTL-H1102 [g]. This is for Rev B hardware [w].");
 			var ps_22j = File("FFA7F9A7FB19D773A0C3985A541C8E5623D2C30D", 524288, "PSX_2.2(J).bin", "PSX BIOS (Version 2.2 12/04/95 J)", "Used on SCPH-5000, DTL-H1200, DTL-H3000 [g]. This is for Rev C hardware [w].");
-			var ps_22j_bad = File("E340DB2696274DDA5FDC25E434A914DB71E8B02B", 524288, "PSX_2.2(J)-bad.bin", "BAD DUMP OF SCPH-5000. Found on [p]."); // BAD!!
-			var ps_22j_bad2 = File("81622ACE63E25696A5D884692E554D350DDF57A6", 526083, "PSX_2.2(J)-bad2.bin", "PSX BIOS (Version 2.2 12/04/95 J", "BAD DUMP OF SCPH-5000."); // BAD!
+			var ps_22j_bad = File("E340DB2696274DDA5FDC25E434A914DB71E8B02B", 524288, "PSX_2.2(J)-bad.bin", "(bad dump) PSX BIOS (Version 2.2 12/04/95 J)", "BAD DUMP OF SCPH-5000. Found on [p].", isBad: true);
+			var ps_22j_bad2 = File("81622ACE63E25696A5D884692E554D350DDF57A6", 526083, "PSX_2.2(J)-bad2.bin", "(bad dump) PSX BIOS (Version 2.2 12/04/95 J)", "BAD DUMP OF SCPH-5000.", isBad: true);
 			var ps_22a = File("10155D8D6E6E832D6EA66DB9BC098321FB5E8EBF", 524288, "PSX_2.2(A).bin", "PSX BIOS (Version 2.2 12/04/95 A)", "Used on SCPH-1001, DTL-H1201, DTL-H3001 [g]. This is for Rev C hardware [w].");
 			var ps_22e = File("B6A11579CAEF3875504FCF3831B8E3922746DF2C", 524288, "PSX_2.2(E).bin", "PSX BIOS (Version 2.2 12/04/95 E)", "Used on SCPH-1002, DTL-H1202, DTL-H3002 [g]. This is for Rev C hardware [w].");
 			var ps_22d = File("73107D468FC7CB1D2C5B18B269715DD889ECEF06", 524288, "PSX_2.2(D).bin", "PSX BIOS (Version 2.2 03/06/96 D)", "Used on DTL-H1100 [g]. This is for Rev C hardware, presumably.");
-			/*new*/
 			var ps_22jv = File("15C94DA3CC5A38A582429575AF4198C487FE893C", 1048576, "PSX_2.2(J).bin", "PSX BIOS (Version 2.2 12/04/95 J)", "Used on SCPH-5903 [t].");
 			var ps_30j = File("B05DEF971D8EC59F346F2D9AC21FB742E3EB6917", 524288, "PSX_3.0(J).bin", "PSX BIOS (Version 3.0 09/09/96 J)", "Used on SCPH-5500 [g]. This is for Rev C hardware [w]. Recommended for (J) [f].");
 			var ps_30a = File("0555C6FAE8906F3F09BAF5988F00E55F88E9F30B", 524288, "PSX_3.0(A).bin", "PSX BIOS (Version 3.0 11/18/96 A)", "Used on SCPH-5501, SCPH-5503, SCPH-7003 [g]. This is for Rev C hardware [w]. Recommended for (U) [f].");
 			var ps_30e = File("F6BC2D1F5EB6593DE7D089C425AC681D6FFFD3F0", 524288, "PSX_3.0(E).bin", "PSX BIOS (Version 3.0 01/06/97 E)", "Used on SCPH-5502, SCPH-5552 [g]. This is for Rev C hardware [w]. Recommended for (E) [f].");
-			var ps_30e_bad = File("F8DE9325FC36FCFA4B29124D291C9251094F2E54", 524288, "PSX_3.0(E)-bad.bin", "BAD DUMP OF SCPH-5502. Found on [p]."); // BAD!
+			var ps_30e_bad = File("F8DE9325FC36FCFA4B29124D291C9251094F2E54", 524288, "PSX_3.0(E)-bad.bin", "PSX BIOS (Version 3.0 01/06/97 E)", "BAD DUMP OF SCPH-5502. Found on [p].", isBad: true);
 			var ps_40j = File("77B10118D21AC7FFA9B35F9C4FD814DA240EB3E9", 524288, "PSX_4.0(J).bin", "PSX BIOS (Version 4.0 08/18/97 J)", "Used on SCPH-7000, SCPH-7500, SCPH-9000 [g]. This is for Rev C hardware [w].");
 			var ps_41a = File("14DF4F6C1E367CE097C11DEAE21566B4FE5647A9", 524288, "PSX_4.1(A).bin", "PSX BIOS (Version 4.1 12/16/97 A)", "Used on SCPH-7001, SCPH-7501, SCPH-7503, SCPH-9001, SCPH-9003, SCPH-9903 [g]. This is for Rev C hardware [w].");
 			var ps_41e = File("8D5DE56A79954F29E9006929BA3FED9B6A418C1D", 524288, "PSX_4.1(E).bin", "PSX BIOS (Version 4.1 12/16/97 E)", "Used on SCPH-7002, SCPH-7502, SCPH-9002 [g]. This is for Rev C hardware [w].");
-			/*new*/
 			var ps_41aw = File("1B0DBDB23DA9DC0776AAC58D0755DC80FEA20975", 524288, "PSX_4.1(A).bin", "PSX BIOS (Version 4.1 11/14/97 A)", "Used on SCPH-7000W [t].");
 			var psone_43j = File("339A48F4FCF63E10B5B867B8C93CFD40945FAF6C", 524288, "PSX_4.3(J).bin", "PSX BIOS (Version 4.3 03/11/00 J)", "Used on PSone SCPH-100 [g]. This is for Rev C PSone hardware [w].");
 			var psone_44e = File("BEB0AC693C0DC26DAF5665B3314DB81480FA5C7C", 524288, "PSX_4.4(E).bin", "PSX BIOS (Version 4.4 03/24/00 E)", "Used on PSone SCPH-102 [g]. This is for Rev C PSone hardware [w].");
 			var psone_45a = File("DCFFE16BD90A723499AD46C641424981338D8378", 524288, "PSX_4.5(A).bin", "PSX BIOS (Version 4.5 05/25/00 A)", "Used on PSone SCPH-101 [g]. This is for Rev C PSone hardware [w].");
 			var psone_r5e = File("DBC7339E5D85827C095764FC077B41F78FD2ECAE", 524288, "PSX_4.5(E).bin", "PSX BIOS (Version 4.5 05/25/00 E)", "Used on PSone SCPH-102 [g]. This is for Rev C PSone hardware [w].");
 			var ps2_50j = File("D7D6BE084F51354BC951D8FA2D8D912AA70ABC5E", 4194304, "PSX_5.0(J).bin", "PSX BIOS (Version 5.0 10/27/00 J)", "Found on a PS2 [p]. May be known as SCPH18000.BIN.");
-			/*new*/ var ps_dtl_h2000 = File("1A8D6F9453111B1D317BB7DAE300495FBF54600C", 524288, "PSX_DTLH2000.bin", "DTL-H2000 Devkit [t]");
-			/*new*/ var ps_ps3 = File("C40146361EB8CF670B19FDC9759190257803CAB7", 524288, "PSX_rom.bin", "PSX BIOS (Version 5.0 06/23/03 A)", "Found on a PS3. [t]");
-			
-
-			ps_22j_bad.Bad = ps_22j_bad2.Bad = ps_30e_bad.Bad = true;
-
+			var ps_dtl_h2000 = File("1A8D6F9453111B1D317BB7DAE300495FBF54600C", 524288, "PSX_DTLH2000.bin", "DTL-H2000 Devkit [t]");
+			var ps_ps3 = File("C40146361EB8CF670B19FDC9759190257803CAB7", 524288, "PSX_rom.bin", "PSX BIOS (Version 5.0 06/23/03 A)", "Found on a PS3. [t]");
 			Firmware("PSX", "U", "BIOS (U)");
 			Firmware("PSX", "J", "BIOS (J)");
 			Firmware("PSX", "E", "BIOS (E)");
-
 			Option("PSX", "U", ps_30a);
 			Option("PSX", "J", ps_30j);
 			Option("PSX", "E", ps_30e);
-
 			// in general, alternates aren't allowed.. their quality isn't known.
 			// we have this comment from fobby.net: "SCPH7502 works fine for European games" (TBD)
 			// however, we're sticking with the 3.0 series.
@@ -254,7 +241,6 @@ namespace BizHawk.Emulation.Common
 			Firmware("AppleII", "AppleIIe", "AppleIIe.rom");
 			var appleII_AppleIIe = File("B8EA90ABE135A0031065E01697C4A3A20D51198B", 16384, "AppleIIe.rom", "Apple II e");
 			Option("AppleII", "AppleIIe", appleII_AppleIIe);
-
 			Firmware("AppleII", "DiskII", "DiskII.rom");
 			var appleII_DiskII = File("D4181C9F046AAFC3FB326B381BAAC809D9E38D16", 256, "AppleIIe_DiskII.rom", "Disk II");
 			Option("AppleII", "DiskII", appleII_DiskII);
@@ -272,7 +258,6 @@ namespace BizHawk.Emulation.Common
 			Firmware("GBC", "World", "Game Boy Color Boot Rom");
 			Option("GBC", "World", File("1293d68bf9643bc4f36954c1e80e38f39864528d", 2304, "cgb.bin", "Game Boy Color Boot Rom"), FirmwareOptionStatus.Ideal);
 			Option("GBC", "World", File("df5a0d2d49de38fbd31cc2aab8e62c8550e655c0", 2304, "cgb0.bin", "Game Boy Color Boot Rom (Early Revision)"), FirmwareOptionStatus.Unacceptable);
-
 			Firmware("GBC", "AGB", "Game Boy Color Boot Rom (GBA)");
 			Option("GBC", "AGB", File("fa5287e24b0fa533b3b5ef2b28a81245346c1a0f", 2304, "agb.bin", "Game Boy Color Boot Rom (GBA)"), FirmwareOptionStatus.Ideal);
 			Option("GBC", "AGB", File("1ecafa77ab3172193f3305486a857f443e28ebd9", 2304, "agb_gambatte.bin", "Game Boy Color Boot Rom (GBA, Gambatte RE)"), FirmwareOptionStatus.Bad);
@@ -282,7 +267,6 @@ namespace BizHawk.Emulation.Common
 			var pcfxv101 = File("8B662F7548078BE52A871565E19511CCCA28C5C8", 1024 * 1024, "PCFX_v101.bin", "PCFX BIOS 1.01");
 			Option("PCFX", "BIOS", pcfxbios, FirmwareOptionStatus.Ideal);
 			Option("PCFX", "BIOS", pcfxv101, FirmwareOptionStatus.Acceptable);
-
 			Firmware("PCFX", "SCSIROM", "fx-scsi.rom");
 			var fxscsi = File("65482A23AC5C10A6095AEE1DB5824CCA54EAD6E5", 512 * 1024, "PCFX_fx-scsi.rom", "PCFX SCSI ROM");
 			Option("PCFX", "SCSIROM", fxscsi);
@@ -344,7 +328,13 @@ namespace BizHawk.Emulation.Common
 		}
 
 		// defines a firmware file
-		private static FirmwareFile File(string hash, long size, string recommendedName, string descr, string additionalInfo = "")
+		private static FirmwareFile File(
+			string hash,
+			long size,
+			string recommendedName,
+			string desc,
+			string additionalInfo = "",
+			bool isBad = false)
 		{
 			hash = hash.ToUpperInvariant();
 
@@ -353,8 +343,9 @@ namespace BizHawk.Emulation.Common
 				Hash = hash,
 				Size = size,
 				RecommendedName = recommendedName,
-				Description = descr,
-				Info = additionalInfo
+				Description = desc,
+				Info = additionalInfo,
+				Bad = isBad,
 			};
 			FirmwareFiles.Add(ff);
 			FirmwareFilesByHash[hash] = ff;
