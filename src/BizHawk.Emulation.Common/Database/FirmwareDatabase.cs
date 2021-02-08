@@ -279,44 +279,31 @@ namespace BizHawk.Emulation.Common
 
 		// adds a defined firmware ID to the database
 		private static void Firmware(string systemId, string id, string descr)
-		{
-			var fr = new FirmwareRecord
+			=> FirmwareRecords.Add(new FirmwareRecord
 			{
 				SystemId = systemId,
 				FirmwareId = id,
 				Descr = descr
-			};
+			});
 
-			FirmwareRecords.Add(fr);
-		}
-
-		private static FirmwareOption _OptionWork(string hash, long size, string systemId, string id, FirmwareOptionStatus status = FirmwareOptionStatus.Acceptable)
-		{
-			var fo = new FirmwareOption
+		private static void _OptionWork(string hash, long size, string systemId, string id, FirmwareOptionStatus status)
+			=> FirmwareOptions.Add(new FirmwareOption
 			{
 				SystemId = systemId,
 				FirmwareId = id,
 				Hash = hash,
 				Status = status,
 				Size = size
-			};
-			FirmwareOptions.Add(fo);
-			return fo;
-		}
+			});
 
 		// adds an acceptable option for a firmware ID to the database
-		private static FirmwareOption Option(string systemId, string id, FirmwareFile ff, FirmwareOptionStatus status = FirmwareOptionStatus.Acceptable)
-		{
-			var fo = _OptionWork(ff.Hash, ff.Size, systemId, id, status);
-
-			// make sure this goes in as bad
-			if (ff.Bad)
-			{
-				fo.Status = FirmwareOptionStatus.Bad;
-			}
-
-			return fo;
-		}
+		private static void Option(string systemId, string id, FirmwareFile ff, FirmwareOptionStatus status = FirmwareOptionStatus.Acceptable)
+			=> _OptionWork(
+				ff.Hash,
+				ff.Size,
+				systemId,
+				id,
+				ff.Bad ? FirmwareOptionStatus.Bad : status);
 
 		// defines a firmware file
 		private static FirmwareFile File(
@@ -326,26 +313,27 @@ namespace BizHawk.Emulation.Common
 			string desc,
 			string additionalInfo = "",
 			bool isBad = false)
-		{
-			var ff = new FirmwareFile
-			{
-				Hash = hash,
-				Size = size,
-				RecommendedName = recommendedName,
-				Description = desc,
-				Info = additionalInfo,
-				Bad = isBad,
-			};
-			FirmwareFilesByHash[hash] = ff;
-			return ff;
-		}
+				=> FirmwareFilesByHash[hash] = new FirmwareFile
+				{
+					Hash = hash,
+					Size = size,
+					RecommendedName = recommendedName,
+					Description = desc,
+					Info = additionalInfo,
+					Bad = isBad,
+				};
 
 		// adds a defined firmware ID and one file and option
 		private static void FirmwareAndOption(string hash, long size, string systemId, string id, string name, string descr)
 		{
 			Firmware(systemId, id, descr);
-			File(hash, size, name, descr);
-			_OptionWork(hash, size, systemId, id);
+			var ff = File(hash, size, name, descr);
+			_OptionWork(
+				ff.Hash,
+				ff.Size,
+				systemId,
+				id,
+				FirmwareOptionStatus.Acceptable); //TODO should the single option for these firmwares be Ideal?
 		}
 
 		public static readonly List<FirmwareRecord> FirmwareRecords = new List<FirmwareRecord>();
