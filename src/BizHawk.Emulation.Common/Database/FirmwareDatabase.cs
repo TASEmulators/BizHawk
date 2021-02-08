@@ -7,8 +7,61 @@ namespace BizHawk.Emulation.Common
 {
 	public static class FirmwareDatabase
 	{
+		public static IEnumerable<FirmwareFile> FirmwareFiles => FirmwareFilesByHash.Values;
+
+		public static readonly IReadOnlyDictionary<string, FirmwareFile> FirmwareFilesByHash;
+
+		public static readonly IReadOnlyCollection<FirmwareOption> FirmwareOptions;
+
+		public static readonly IReadOnlyCollection<FirmwareRecord> FirmwareRecords;
+
 		static FirmwareDatabase()
 		{
+			Dictionary<string, FirmwareFile> filesByHash = new();
+			List<FirmwareOption> options = new();
+			List<FirmwareRecord> records = new();
+
+			FirmwareFile File(
+				string hash,
+				long size,
+				string recommendedName,
+				string desc,
+				string additionalInfo = "",
+				bool isBad = false)
+					=> filesByHash[hash] = new FirmwareFile
+					{
+						Hash = hash,
+						Size = size,
+						RecommendedName = recommendedName,
+						Description = desc,
+						Info = additionalInfo,
+						Bad = isBad,
+					};
+
+			void Option(string systemId, string id, FirmwareFile ff, FirmwareOptionStatus status = FirmwareOptionStatus.Acceptable)
+				=> options.Add(new FirmwareOption
+				{
+					SystemId = systemId,
+					FirmwareId = id,
+					Hash = ff.Hash,
+					Status = ff.Bad ? FirmwareOptionStatus.Bad : status,
+					Size = ff.Size
+				});
+
+			void Firmware(string systemId, string id, string desc)
+				=> records.Add(new FirmwareRecord
+				{
+					SystemId = systemId,
+					FirmwareId = id,
+					Descr = desc
+				});
+
+			void FirmwareAndOption(string hash, long size, string systemId, string id, string name, string desc)
+			{
+				Firmware(systemId, id, desc);
+				Option(systemId, id, File(hash, size, name, desc), FirmwareOptionStatus.Acceptable); //TODO should the single option for these firmwares be Ideal?
+			}
+
 			// FDS has two OK variants  (http://tcrf.net/Family_Computer_Disk_System)
 			var fdsNintendo = File("57FE1BDEE955BB48D357E463CCBF129496930B62", 8192, "FDS_disksys-nintendo.rom", "Bios (Nintendo)");
 			var fdsTwinFc = File("E4E41472C454F928E53EB10E0509BF7D1146ECC1", 8192, "FDS_disksys-nintendo.rom", "Bios (TwinFC)");
@@ -275,59 +328,11 @@ namespace BizHawk.Emulation.Common
 			Option("PS2", "BIOS", File("3BAF847C1C217AA71AC6D298389C88EDB3DB32E2", 4 * 1024 * 1024, "ps2-0220j-20060905.bin", "PS2 Bios"));
 			Option("PS2", "BIOS", File("F9229FE159D0353B9F0632F3FDC66819C9030458", 4 * 1024 * 1024, "ps2-0230a-20080220.bin", "PS2 Bios"), FirmwareOptionStatus.Ideal);
 			Option("PS2", "BIOS", File("9915B5BA56798F4027AC1BD8D10ABE0C1C9C326A", 4 * 1024 * 1024, "ps2-0230e-20080220.bin", "PS2 Bios"));
+
+			FirmwareFilesByHash = filesByHash;
+			FirmwareOptions = options;
+			FirmwareRecords = records;
 		}
-
-		// adds a defined firmware ID to the database
-		private static void Firmware(string systemId, string id, string descr)
-			=> FirmwareRecords.Add(new FirmwareRecord
-			{
-				SystemId = systemId,
-				FirmwareId = id,
-				Descr = descr
-			});
-
-		// adds an acceptable option for a firmware ID to the database
-		private static void Option(string systemId, string id, FirmwareFile ff, FirmwareOptionStatus status = FirmwareOptionStatus.Acceptable)
-			=> FirmwareOptions.Add(new FirmwareOption
-			{
-				SystemId = systemId,
-				FirmwareId = id,
-				Hash = ff.Hash,
-				Status = ff.Bad ? FirmwareOptionStatus.Bad : status,
-				Size = ff.Size
-			});
-
-		// defines a firmware file
-		private static FirmwareFile File(
-			string hash,
-			long size,
-			string recommendedName,
-			string desc,
-			string additionalInfo = "",
-			bool isBad = false)
-				=> FirmwareFilesByHash[hash] = new FirmwareFile
-				{
-					Hash = hash,
-					Size = size,
-					RecommendedName = recommendedName,
-					Description = desc,
-					Info = additionalInfo,
-					Bad = isBad,
-				};
-
-		// adds a defined firmware ID and one file and option
-		private static void FirmwareAndOption(string hash, long size, string systemId, string id, string name, string descr)
-		{
-			Firmware(systemId, id, descr);
-			Option(systemId, id, File(hash, size, name, descr), FirmwareOptionStatus.Acceptable); //TODO should the single option for these firmwares be Ideal?
-		}
-
-		public static readonly List<FirmwareRecord> FirmwareRecords = new List<FirmwareRecord>();
-		public static readonly List<FirmwareOption> FirmwareOptions = new List<FirmwareOption>();
-
-		public static IEnumerable<FirmwareFile> FirmwareFiles => FirmwareFilesByHash.Values;
-
-		public static readonly Dictionary<string, FirmwareFile> FirmwareFilesByHash = new Dictionary<string, FirmwareFile>();
 
 		public class FirmwareFile
 		{
