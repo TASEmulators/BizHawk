@@ -286,24 +286,16 @@ namespace BizHawk.Emulation.Common
 				Descr = descr
 			});
 
-		private static void _OptionWork(string hash, long size, string systemId, string id, FirmwareOptionStatus status)
+		// adds an acceptable option for a firmware ID to the database
+		private static void Option(string systemId, string id, FirmwareFile ff, FirmwareOptionStatus status = FirmwareOptionStatus.Acceptable)
 			=> FirmwareOptions.Add(new FirmwareOption
 			{
 				SystemId = systemId,
 				FirmwareId = id,
-				Hash = hash,
-				Status = status,
-				Size = size
+				Hash = ff.Hash,
+				Status = ff.Bad ? FirmwareOptionStatus.Bad : status,
+				Size = ff.Size
 			});
-
-		// adds an acceptable option for a firmware ID to the database
-		private static void Option(string systemId, string id, FirmwareFile ff, FirmwareOptionStatus status = FirmwareOptionStatus.Acceptable)
-			=> _OptionWork(
-				ff.Hash,
-				ff.Size,
-				systemId,
-				id,
-				ff.Bad ? FirmwareOptionStatus.Bad : status);
 
 		// defines a firmware file
 		private static FirmwareFile File(
@@ -327,13 +319,7 @@ namespace BizHawk.Emulation.Common
 		private static void FirmwareAndOption(string hash, long size, string systemId, string id, string name, string descr)
 		{
 			Firmware(systemId, id, descr);
-			var ff = File(hash, size, name, descr);
-			_OptionWork(
-				ff.Hash,
-				ff.Size,
-				systemId,
-				id,
-				FirmwareOptionStatus.Acceptable); //TODO should the single option for these firmwares be Ideal?
+			Option(systemId, id, File(hash, size, name, descr), FirmwareOptionStatus.Acceptable); //TODO should the single option for these firmwares be Ideal?
 		}
 
 		public static readonly List<FirmwareRecord> FirmwareRecords = new List<FirmwareRecord>();
