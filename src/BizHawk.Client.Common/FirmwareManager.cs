@@ -59,7 +59,10 @@ namespace BizHawk.Client.Common
 		// Requests the specified firmware. tries really hard to scan and resolve as necessary
 		public string Request(PathEntryCollection pathEntries, IDictionary<string, string> userSpecifications, string sysId, string firmwareId)
 		{
-			var resolved = Resolve(pathEntries, userSpecifications, FirmwareDatabase.LookupFirmwareRecord(sysId, firmwareId));
+			var resolved = Resolve(
+				pathEntries,
+				userSpecifications,
+				FirmwareDatabase.FirmwareRecords.FirstOrDefault(fr => fr.FirmwareId == firmwareId && fr.SystemId == sysId));
 			if (resolved == null)
 			{
 				return null;

@@ -1,4 +1,3 @@
-using System.Linq;
 using System.Collections.Generic;
 
 // ReSharper disable IdentifierTypo
@@ -400,12 +399,6 @@ namespace BizHawk.Emulation.Common
 
 			public bool IsAcceptableOrIdeal => Status == FirmwareOptionStatus.Ideal || Status == FirmwareOptionStatus.Acceptable;
 			public string ConfigKey => $"{SystemId}+{FirmwareId}";
-		}
-
-		public static FirmwareRecord LookupFirmwareRecord(string sysId, string firmwareId)
-		{
-			return FirmwareRecords
-				.FirstOrDefault(fr => fr.FirmwareId == firmwareId && fr.SystemId == sysId);
 		}
 	} // static class FirmwareDatabase
 }
