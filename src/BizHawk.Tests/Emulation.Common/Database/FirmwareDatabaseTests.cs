@@ -11,6 +11,12 @@ namespace BizHawk.Tests.Emulation.Common
 	public class FirmwareDatabaseTests
 	{
 		[TestMethod]
+		public void CheckFilesInOptions()
+		{
+			foreach (var fo in FirmwareDatabase.FirmwareOptions) Assert.IsTrue(FirmwareDatabase.FirmwareFilesByHash.ContainsKey(fo.Hash), $"option {fo.ConfigKey} references unknown file {fo.Hash}");
+		}
+
+		[TestMethod]
 		public void CheckFormatOfHashes()
 		{
 			static void CustomAssert(string hash)

@@ -1,4 +1,3 @@
-﻿using System;
 using System.Linq;
 using System.Collections.Generic;
 
@@ -294,10 +293,6 @@ namespace BizHawk.Emulation.Common
 
 		private static FirmwareOption _OptionWork(string hash, long size, string systemId, string id, FirmwareOptionStatus status = FirmwareOptionStatus.Acceptable)
 		{
-			//confirm that it's been added as a file
-			if (!FirmwareFilesByHash.ContainsKey(hash))
-				throw new InvalidOperationException("Added option for unregistered file");
-
 			var fo = new FirmwareOption
 			{
 				SystemId = systemId,
@@ -342,7 +337,6 @@ namespace BizHawk.Emulation.Common
 				Info = additionalInfo,
 				Bad = isBad,
 			};
-			FirmwareFiles.Add(ff);
 			FirmwareFilesByHash[hash] = ff;
 			return ff;
 		}
@@ -357,7 +351,8 @@ namespace BizHawk.Emulation.Common
 
 		public static readonly List<FirmwareRecord> FirmwareRecords = new List<FirmwareRecord>();
 		public static readonly List<FirmwareOption> FirmwareOptions = new List<FirmwareOption>();
-		public static readonly List<FirmwareFile> FirmwareFiles = new List<FirmwareFile>();
+
+		public static IEnumerable<FirmwareFile> FirmwareFiles => FirmwareFilesByHash.Values;
 
 		public static readonly Dictionary<string, FirmwareFile> FirmwareFilesByHash = new Dictionary<string, FirmwareFile>();
 
