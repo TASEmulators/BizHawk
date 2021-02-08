@@ -115,14 +115,13 @@ namespace BizHawk.Client.Common
 					return false;
 
 				// weed out filesizes first to reduce the unnecessary overhead of a hashing operation
-				if (FirmwareDatabase.FirmwareFiles.FirstOrDefault(a => a.Size == fi.Length) == null)
-					return false;
+				if (FirmwareDatabase.FirmwareFiles.All(a => a.Size != fi.Length)) return false;
 
 				// check the hash
 				using var reader = new RealFirmwareReader();
 				reader.Read(fi);
-				if (FirmwareDatabase.FirmwareFiles.FirstOrDefault(a => a.Hash == reader.Dict.FirstOrDefault().Value.Hash) != null)
-					return true;
+				var hash = reader.Dict.Values.First().Hash;
+				if (FirmwareDatabase.FirmwareFiles.Any(a => a.Hash == hash)) return true;
 			}
 			catch { }
 
@@ -245,10 +244,7 @@ namespace BizHawk.Client.Common
 						ri.KnownFirmwareFile = ff;
 
 						// if the known firmware file is for a different firmware, flag it so we can show a warning
-						var option = FirmwareDatabase.FirmwareOptions
-							.FirstOrDefault(fo => fo.Hash == rff.Hash && fo.ConfigKey != fr.ConfigKey);
-
-						if (option != null)
+						if (FirmwareDatabase.FirmwareOptions.Any(fo => fo.Hash == rff.Hash && fo.ConfigKey != fr.ConfigKey))
 						{
 							ri.KnownMismatching = true;
 						}
