@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Common
 			FirmwareAndOption("91383B92745CC7CC4F15409AC5BC2C2F699A43F1", 163840, "SNES", "ST018", "SNES_st018.rom", "ST018 Rom");
 
 			FirmwareAndOption("79F5FF55DD10187C7FD7B8DAAB0B3FFBD1F56A2C", 262144, "PCECD", "Bios", "PCECD_3.0-(J).pce", "Super CD Bios (J)");
-			FirmwareAndOption("014881a959e045e00f4db8f52955200865d40280", 32768, "PCECD", "GE-Bios", "PCECD_gecard.pce", "Games Express CD Card (Japan)");
+			FirmwareAndOption("014881A959E045E00F4DB8F52955200865D40280", 32768, "PCECD", "GE-Bios", "PCECD_gecard.pce", "Games Express CD Card (Japan)");
 
 			Firmware("A78", "Bios_NTSC", "NTSC Bios");
 #if false
@@ -102,9 +102,9 @@ namespace BizHawk.Emulation.Common
 			Option("SAT", "E", ss_100a_ue);
 			Option("SAT", "E", ss_100_j);
 			Option("SAT", "E", ss_101_j);
-			FirmwareAndOption("a67cd4f550751f8b91de2b8b74528ab4e0c11c77", 2 * 1024 * 1024, "SAT", "KOF95", "SAT_KoF95.bin", "King of Fighters cartridge");
+			FirmwareAndOption("A67CD4F550751F8B91DE2B8B74528AB4E0C11C77", 2 * 1024 * 1024, "SAT", "KOF95", "SAT_KoF95.bin", "King of Fighters cartridge");
 			//Firmware("SAT", "ULTRAMAN", "Ultraman cartridge");
-			FirmwareAndOption("56c1b93da6b660bf393fbf48ca47569000ef4047", 2 * 1024 * 1024, "SAT", "ULTRAMAN", "SAT_Ultraman.bin", "Ultraman cartridge");
+			FirmwareAndOption("56C1B93DA6B660BF393FBF48CA47569000EF4047", 2 * 1024 * 1024, "SAT", "ULTRAMAN", "SAT_Ultraman.bin", "Ultraman cartridge");
 
 			var ti83_102 = File("CE08F6A808701FC6672230A790167EE485157561", 262144, "TI83_102.rom", "TI-83 Rom v1.02"); // ?? is this size correct?
 			var ti83_103 = File("8399E384804D8D29866CAA4C8763D7A61946A467", 262144, "TI83_103.rom", "TI-83 Rom v1.03"); // ?? is this size correct?
@@ -125,13 +125,13 @@ namespace BizHawk.Emulation.Common
 			Option("TI83", "Rom", ti83p_112);
 
 			// mega cd
-			var eu_mcd1_9210 = File("f891e0ea651e2232af0c5c4cb46a0cae2ee8f356", 131072, "MCD_eu_9210.bin", "Mega CD EU (9210)");
-			var eu_mcd2_9303 = File("7063192ae9f6b696c5b81bc8f0a9fe6f0c400e58", 131072, "MCD_eu_9303.bin", "Mega CD EU (9303)");
-			var eu_mcd2_9306 = File("523b3125fb0ac094e16aa072bc6ccdca22e520e5", 131072, "MCD_eu_9306.bin", "Mega CD EU (9310)"); // ?? is this size correct?
-			var jp_mcd1_9111 = File("4846f448160059a7da0215a5df12ca160f26dd69", 131072, "MCD_jp_9111.bin", "Mega CD JP (9111)");
-			var jp_mcd1_9112 = File("e4193c6ae44c3cea002707d2a88f1fbcced664de", 131072, "MCD_jp_9112.bin", "Mega CD JP (9112)");
-			var us_scd1_9210 = File("f4f315adcef9b8feb0364c21ab7f0eaf5457f3ed", 131072, "SCD_us_9210.bin", "Sega CD US (9210)");
-			var us_scd2_9303 = File("bd3ee0c8ab732468748bf98953603ce772612704", 131072, "SCD_us_9303.bin", "Sega CD US (9303)");
+			var eu_mcd1_9210 = File("F891E0EA651E2232AF0C5C4CB46A0CAE2EE8F356", 131072, "MCD_eu_9210.bin", "Mega CD EU (9210)");
+			var eu_mcd2_9303 = File("7063192AE9F6B696C5B81BC8F0A9FE6F0C400E58", 131072, "MCD_eu_9303.bin", "Mega CD EU (9303)");
+			var eu_mcd2_9306 = File("523B3125FB0AC094E16AA072BC6CCDCA22E520E5", 131072, "MCD_eu_9306.bin", "Mega CD EU (9310)"); // ?? is this size correct?
+			var jp_mcd1_9111 = File("4846F448160059A7DA0215A5DF12CA160F26DD69", 131072, "MCD_jp_9111.bin", "Mega CD JP (9111)");
+			var jp_mcd1_9112 = File("E4193C6AE44C3CEA002707D2A88F1FBCCED664DE", 131072, "MCD_jp_9112.bin", "Mega CD JP (9112)");
+			var us_scd1_9210 = File("F4F315ADCEF9B8FEB0364C21AB7F0EAF5457F3ED", 131072, "SCD_us_9210.bin", "Sega CD US (9210)");
+			var us_scd2_9303 = File("BD3EE0C8AB732468748BF98953603CE772612704", 131072, "SCD_us_9303.bin", "Sega CD US (9303)");
 			Firmware("GEN", "CD_BIOS_EU", "Mega CD Bios (Europe)");
 			Firmware("GEN", "CD_BIOS_JP", "Mega CD Bios (Japan)");
 			Firmware("GEN", "CD_BIOS_US", "Sega CD Bios (USA)");
@@ -142,10 +142,9 @@ namespace BizHawk.Emulation.Common
 			Option("GEN", "CD_BIOS_JP", jp_mcd1_9112);
 			Option("GEN", "CD_BIOS_US", us_scd1_9210);
 			Option("GEN", "CD_BIOS_US", us_scd2_9303);
-
-			FirmwareAndOption("dbebd76a448447cb6e524ac3cb0fd19fc065d944", 256, "32X", "G", "32X_G_BIOS.BIN", "32x 68k BIOS");
-			FirmwareAndOption("1e5b0b2441a4979b6966d942b20cc76c413b8c5e", 2048, "32X", "M", "32X_M_BIOS.BIN", "32x SH2 MASTER BIOS");
-			FirmwareAndOption("4103668c1bbd66c5e24558e73d4f3f92061a109a", 1024, "32X", "S", "32X_S_BIOS.BIN", "32x SH2 SLAVE BIOS");
+			FirmwareAndOption("DBEBD76A448447CB6E524AC3CB0FD19FC065D944", 256, "32X", "G", "32X_G_BIOS.BIN", "32x 68k BIOS");
+			FirmwareAndOption("1E5B0B2441A4979B6966D942B20CC76C413B8C5E", 2048, "32X", "M", "32X_M_BIOS.BIN", "32x SH2 MASTER BIOS");
+			FirmwareAndOption("4103668C1BBD66C5E24558E73D4F3F92061A109A", 1024, "32X", "S", "32X_S_BIOS.BIN", "32x SH2 SLAVE BIOS");
 
 			// SMS
 			var sms_us_13 = File("C315672807D8DDB8D91443729405C766DD95CAE7", 8192, "SMS_us_1.3.sms", "SMS BIOS 1.3 (USA, Europe)");
@@ -245,22 +244,22 @@ namespace BizHawk.Emulation.Common
 			var appleII_DiskII = File("D4181C9F046AAFC3FB326B381BAAC809D9E38D16", 256, "AppleIIe_DiskII.rom", "Disk II");
 			Option("AppleII", "DiskII", appleII_DiskII);
 
-			FirmwareAndOption("b2e1955d957a475de2411770452eff4ea19f4cee", 1024, "O2", "BIOS", "O2_Odyssey2.bin", "Odyssey 2 Bios");
-			FirmwareAndOption("a6120aed50831c9c0d95dbdf707820f601d9452e", 1024, "O2", "BIOS-C52", "O2_PhillipsC52.bin", "Phillips C52 Bios");
+			FirmwareAndOption("B2E1955D957A475DE2411770452EFF4EA19F4CEE", 1024, "O2", "BIOS", "O2_Odyssey2.bin", "Odyssey 2 Bios");
+			FirmwareAndOption("A6120AED50831C9C0D95DBDF707820F601D9452E", 1024, "O2", "BIOS-C52", "O2_PhillipsC52.bin", "Phillips C52 Bios");
 			FirmwareAndOption("5130243429B40B01A14E1304D0394B8459A6FBAE", 1024, "G7400", "BIOS", "G7400_bios.bin", "G7400 Bios");
 
 			Firmware("GB", "World", "Game Boy Boot Rom");
-			Option("GB", "World", File("4ed31ec6b0b175bb109c0eb5fd3d193da823339f", 256, "dmg.bin", "Game Boy Boot Rom"), FirmwareOptionStatus.Ideal);
+			Option("GB", "World", File("4ED31EC6B0B175BB109C0EB5FD3D193DA823339F", 256, "dmg.bin", "Game Boy Boot Rom"), FirmwareOptionStatus.Ideal);
 			// Early revisions of GB/C boot ROMs are not well-supported because the corresponding CPU differences are not emulated.
-			Option("GB", "World", File("8bd501e31921e9601788316dbd3ce9833a97bcbc", 256, "dmg0.bin", "Game Boy Boot Rom (Early J Revision)"), FirmwareOptionStatus.Unacceptable);
-			Option("GB", "World", File("4e68f9da03c310e84c523654b9026e51f26ce7f0", 256, "mgb.bin", "Game Boy Boot Rom (Pocket)"), FirmwareOptionStatus.Acceptable);
+			Option("GB", "World", File("8BD501E31921E9601788316DBD3CE9833A97BCBC", 256, "dmg0.bin", "Game Boy Boot Rom (Early J Revision)"), FirmwareOptionStatus.Unacceptable);
+			Option("GB", "World", File("4E68F9DA03C310E84C523654B9026E51F26CE7F0", 256, "mgb.bin", "Game Boy Boot Rom (Pocket)"), FirmwareOptionStatus.Acceptable);
 
 			Firmware("GBC", "World", "Game Boy Color Boot Rom");
-			Option("GBC", "World", File("1293d68bf9643bc4f36954c1e80e38f39864528d", 2304, "cgb.bin", "Game Boy Color Boot Rom"), FirmwareOptionStatus.Ideal);
-			Option("GBC", "World", File("df5a0d2d49de38fbd31cc2aab8e62c8550e655c0", 2304, "cgb0.bin", "Game Boy Color Boot Rom (Early Revision)"), FirmwareOptionStatus.Unacceptable);
+			Option("GBC", "World", File("1293D68BF9643BC4F36954C1E80E38F39864528D", 2304, "cgb.bin", "Game Boy Color Boot Rom"), FirmwareOptionStatus.Ideal);
+			Option("GBC", "World", File("DF5A0D2D49DE38FBD31CC2AAB8E62C8550E655C0", 2304, "cgb0.bin", "Game Boy Color Boot Rom (Early Revision)"), FirmwareOptionStatus.Unacceptable);
 			Firmware("GBC", "AGB", "Game Boy Color Boot Rom (GBA)");
-			Option("GBC", "AGB", File("fa5287e24b0fa533b3b5ef2b28a81245346c1a0f", 2304, "agb.bin", "Game Boy Color Boot Rom (GBA)"), FirmwareOptionStatus.Ideal);
-			Option("GBC", "AGB", File("1ecafa77ab3172193f3305486a857f443e28ebd9", 2304, "agb_gambatte.bin", "Game Boy Color Boot Rom (GBA, Gambatte RE)"), FirmwareOptionStatus.Bad);
+			Option("GBC", "AGB", File("FA5287E24B0FA533B3B5EF2B28A81245346C1A0F", 2304, "agb.bin", "Game Boy Color Boot Rom (GBA)"), FirmwareOptionStatus.Ideal);
+			Option("GBC", "AGB", File("1ECAFA77AB3172193F3305486A857F443E28EBD9", 2304, "agb_gambatte.bin", "Game Boy Color Boot Rom (GBA, Gambatte RE)"), FirmwareOptionStatus.Bad);
 
 			Firmware("PCFX", "BIOS", "PCFX bios");
 			var pcfxbios = File("1A77FD83E337F906AECAB27A1604DB064CF10074", 1024 * 1024, "PCFX_bios.bin", "PCFX BIOS 1.00");
@@ -272,12 +271,12 @@ namespace BizHawk.Emulation.Common
 			Option("PCFX", "SCSIROM", fxscsi);
 
 			Firmware("PS2", "BIOS", "PS2 Bios");
-			Option("PS2", "BIOS", File("fbd54bfc020af34008b317dcb80b812dd29b3759", 4 * 1024 * 1024, "ps2-0230j-20080220.bin", "PS2 Bios"));
-			Option("PS2", "BIOS", File("8361d615cc895962e0f0838489337574dbdc9173", 4 * 1024 * 1024, "ps2-0220a-20060905.bin", "PS2 Bios"));
-			Option("PS2", "BIOS", File("da5aacead2fb55807d6d4e70b1f10f4fdcfd3281", 4 * 1024 * 1024, "ps2-0220e-20060905.bin", "PS2 Bios"));
-			Option("PS2", "BIOS", File("3baf847c1c217aa71ac6d298389c88edb3db32e2", 4 * 1024 * 1024, "ps2-0220j-20060905.bin", "PS2 Bios"));
-			Option("PS2", "BIOS", File("f9229fe159d0353b9f0632f3fdc66819c9030458", 4 * 1024 * 1024, "ps2-0230a-20080220.bin", "PS2 Bios"), FirmwareOptionStatus.Ideal);
-			Option("PS2", "BIOS", File("9915b5ba56798f4027ac1bd8d10abe0c1c9c326a", 4 * 1024 * 1024, "ps2-0230e-20080220.bin", "PS2 Bios"));
+			Option("PS2", "BIOS", File("FBD54BFC020AF34008B317DCB80B812DD29B3759", 4 * 1024 * 1024, "ps2-0230j-20080220.bin", "PS2 Bios"));
+			Option("PS2", "BIOS", File("8361D615CC895962E0F0838489337574DBDC9173", 4 * 1024 * 1024, "ps2-0220a-20060905.bin", "PS2 Bios"));
+			Option("PS2", "BIOS", File("DA5AACEAD2FB55807D6D4E70B1F10F4FDCFD3281", 4 * 1024 * 1024, "ps2-0220e-20060905.bin", "PS2 Bios"));
+			Option("PS2", "BIOS", File("3BAF847C1C217AA71AC6D298389C88EDB3DB32E2", 4 * 1024 * 1024, "ps2-0220j-20060905.bin", "PS2 Bios"));
+			Option("PS2", "BIOS", File("F9229FE159D0353B9F0632F3FDC66819C9030458", 4 * 1024 * 1024, "ps2-0230a-20080220.bin", "PS2 Bios"), FirmwareOptionStatus.Ideal);
+			Option("PS2", "BIOS", File("9915B5BA56798F4027AC1BD8D10ABE0C1C9C326A", 4 * 1024 * 1024, "ps2-0230e-20080220.bin", "PS2 Bios"));
 		}
 
 		// adds a defined firmware ID to the database
@@ -295,8 +294,6 @@ namespace BizHawk.Emulation.Common
 
 		private static FirmwareOption _OptionWork(string hash, long size, string systemId, string id, FirmwareOptionStatus status = FirmwareOptionStatus.Acceptable)
 		{
-			hash = hash.ToUpperInvariant();
-
 			//confirm that it's been added as a file
 			if (!FirmwareFilesByHash.ContainsKey(hash))
 				throw new InvalidOperationException("Added option for unregistered file");
@@ -336,8 +333,6 @@ namespace BizHawk.Emulation.Common
 			string additionalInfo = "",
 			bool isBad = false)
 		{
-			hash = hash.ToUpperInvariant();
-
 			var ff = new FirmwareFile
 			{
 				Hash = hash,
