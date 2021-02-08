@@ -1,9 +1,17 @@
+#nullable enable
+
 namespace BizHawk.Emulation.Common
 {
-	public sealed class FirmwareRecord
+	public readonly struct FirmwareRecord
 	{
-		public string Descr { get; set; }
+		public readonly string Description;
 
-		public FirmwareID ID { get; set; }
+		public readonly FirmwareID ID;
+
+		public FirmwareRecord(FirmwareID id, string desc)
+		{
+			Description = desc;
+			ID = id;
+		}
 	}
 }

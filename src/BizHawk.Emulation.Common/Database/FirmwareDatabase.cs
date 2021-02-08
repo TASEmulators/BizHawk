@@ -40,11 +40,7 @@ namespace BizHawk.Emulation.Common
 				=> options.Add(new(new(systemId, id), ff.Hash, ff.Size, ff.IsBad ? FirmwareOptionStatus.Bad : status));
 
 			void Firmware(string systemId, string id, string desc)
-				=> records.Add(new FirmwareRecord
-				{
-					ID = new(systemId, id),
-					Descr = desc
-				});
+				=> records.Add(new(new(systemId, id), desc));
 
 			void FirmwareAndOption(string hash, long size, string systemId, string id, string name, string desc)
 			{

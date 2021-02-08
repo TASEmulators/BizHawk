@@ -179,7 +179,7 @@ namespace BizHawk.Client.EmuHawk
 				};
 				lvi.SubItems.Add(fr.ID.System);
 				lvi.SubItems.Add(fr.ID.Firmware);
-				lvi.SubItems.Add(fr.Descr);
+				lvi.SubItems.Add(fr.Description);
 				lvi.SubItems.Add(""); // resolved with
 				lvi.SubItems.Add(""); // location
 				lvi.SubItems.Add(""); // size
@@ -531,7 +531,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				lblFirmware =
 				{
-					Text = $"{fr.ID.System} : {fr.ID.Firmware} ({fr.Descr})"
+					Text = $"{fr.ID.System} : {fr.ID.Firmware} ({fr.Description})"
 				}
 			};
 

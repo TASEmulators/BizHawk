@@ -37,7 +37,7 @@ namespace BizHawk.Client.Common
 			var resolved = Resolve(
 				pathEntries,
 				userSpecifications,
-				FirmwareDatabase.FirmwareRecords.FirstOrDefault(fr => fr.ID == id));
+				FirmwareDatabase.FirmwareRecords.First(fr => fr.ID == id));
 			if (resolved == null)
 			{
 				return null;
