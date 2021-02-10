@@ -41,14 +41,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			switch (Cart.BoardType)
 			{
 				case "NAMCOT-175":
-					//wagyan land 2
-					//splatter house
 					SetMirrorType(Cart.PadH, Cart.PadV);
 					break;
 				case "NAMCOT-340":
-					//family circuit '91
-					//dream master
-					//famista '92
 					enablemirror = true;
 					break;
 				case "MAPPER210":
