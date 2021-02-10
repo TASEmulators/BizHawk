@@ -109,8 +109,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					case 0x00: SetMirrorType(EMirrorType.OneScreenA); break;
 					case 0x40: SetMirrorType(EMirrorType.Vertical); break;
-					case 0x80: SetMirrorType(EMirrorType.Horizontal); break;
-					case 0xc0: SetMirrorType(EMirrorType.OneScreenB); break;
+					case 0x80: SetMirrorType(EMirrorType.OneScreenB); break;
+					case 0xc0: SetMirrorType(EMirrorType.Horizontal); break;
 				}
 			}
 		}
