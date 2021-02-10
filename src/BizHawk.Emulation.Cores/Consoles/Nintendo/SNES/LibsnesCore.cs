@@ -3,6 +3,7 @@ using System.Linq;
 using System.Xml;
 using System.IO;
 
+using BizHawk.Common;
 using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.W65816;
@@ -505,16 +506,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			// it gets called once per frame with video_refresh() and has nothing to do with anything
 		}
 
+		private static readonly Range<int> snes_input_notify_lagRange = 0x4000.RangeToExclusive(0x5000);
+
+		/// <remarks>
+		/// <paramref name="index"/> will take the values:
+		/// <list type="bullet">
+		/// <item><description>0x0000..0x0001 incl. - signifies latch bit going to 0/1, respectively. should be reported as oninputpoll</description></item>
+		/// <item><description>0x4218..0x421B incl. (actual check is on 0x4000..0x4FFF, taken from <see cref="snes_input_notify_lagRange"/>) - lag frame related</description></item>
+		/// </list>
+		/// </remarks>
 		private void snes_input_notify(int index)
 		{
-			// gets called with the following numbers:
-			// 4xxx : lag frame related
-			// 0: signifies latch bit going to 0.  should be reported as oninputpoll
-			// 1: signifies latch bit going to 1.  should be reported as oninputpoll
-			if (index >= 0x4000)
-			{
-				IsLagFrame = false;
-			}
+#if BSNES_LAGFIX_B
+			_inputNotifyCBIsNotLag = snes_input_notify_lagRange.Contains(index);
+#else // BSNES_LAGFIX_A
+			_inputNotifyCBIsLag = !snes_input_notify_lagRange.Contains(index);
+#endif
 		}
 
 		private void snes_video_refresh(int* data, int width, int height)

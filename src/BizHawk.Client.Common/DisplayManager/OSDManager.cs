@@ -90,10 +90,10 @@ namespace BizHawk.Client.Common
 		private readonly List<UIDisplay> _guiTextList = new List<UIDisplay>();
 		private readonly List<UIDisplay> _ramWatchList = new List<UIDisplay>();
 
-		public void AddMessage(string message)
-		{
-			_messages.Add(new UIMessage { Message = message, ExpireAt = DateTime.Now + TimeSpan.FromSeconds(2) });
-		}
+		public void AddMessage(string message, int expireInSeconds)
+			=> _messages.Add(new UIMessage { Message = message, ExpireAt = DateTime.Now + TimeSpan.FromSeconds(expireInSeconds) });
+
+		public void AddMessage(string message) => AddMessage(message, 2);
 
 		public void ClearRamWatches()
 		{

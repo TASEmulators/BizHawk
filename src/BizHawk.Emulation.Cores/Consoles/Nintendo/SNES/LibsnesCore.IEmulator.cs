@@ -8,17 +8,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public ControllerDefinition ControllerDefinition => _controllerDeck.Definition;
 
+#if BSNES_LAGFIX_B
+		private bool? _inputNotifyCBIsNotLag = null;
+#else // BSNES_LAGFIX_A
+		private bool? _inputNotifyCBIsLag = null;
+#endif
+
 		public bool FrameAdvance(IController controller, bool render, bool renderSound)
 		{
 			_controller = controller;
 
-			/* if the input poll callback is called, it will set this to false
-			 * this has to be done before we save the per-frame state in deterministic
-			 * mode, because in there, the core actually advances, and might advance
-			 * through the point in time where IsLagFrame gets set to false.  makes sense?
-			 */
-
-			IsLagFrame = true;
+#if BSNES_LAGFIX_B
+			_inputNotifyCBIsNotLag = null;
+#else // BSNES_LAGFIX_A
+			_inputNotifyCBIsLag = null;
+#endif
 
 			if (_tracer.Enabled)
 			{
@@ -73,9 +77,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			_timeFrameCounter++;
 			Api.CMD_run();
 
-			// once upon a time we forwarded messages from bsnes here, by checking for queued text messages, but I don't think it's needed any longer
-			if (IsLagFrame)
+#if BSNES_LAGFIX_B
+			if (_inputNotifyCBIsNotLag == true)
+#else // BSNES_LAGFIX_A
+			if (_inputNotifyCBIsLag != true)
+#endif
 			{
+				IsLagFrame = false;
+			}
+			else
+			{
+				IsLagFrame = true;
 				LagCount++;
 			}
 

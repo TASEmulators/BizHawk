@@ -19,7 +19,19 @@ build:
   image: mcr.microsoft.com/dotnet/sdk:5.0
   script:
     - if [ "$CI_COMMIT_REF_SLUG" == "release" ]; then Dist/UpdateVersionInfoForRelease.sh; fi
-    - Dist/BuildRelease.sh
+    - Dist/BuildRelease.sh -p:MachineExtraCompilationFlag=BSNES_LAGFIX_A
+  stage: build
+
+build_b:
+  artifacts:
+    expire_in: "30 minutes"
+    name: "$CI_HAWK_TMPARTIFACT_NAME"
+    paths:
+      - output
+  image: mcr.microsoft.com/dotnet/sdk:5.0
+  script:
+    - if [ "$CI_COMMIT_REF_SLUG" == "release" ]; then Dist/UpdateVersionInfoForRelease.sh; fi
+    - Dist/BuildRelease.sh -p:MachineExtraCompilationFlag=BSNES_LAGFIX_B
   stage: build
 
 build_ext_tools:
@@ -104,6 +116,20 @@ check_style:
     - mv packaged_output $CI_PROJECT_DIR
   stage: package
 
+package_bsnes_lagfix_a_windows:
+  extends: .package_windows_x64
+  rules:
+    - if: $CI_COMMIT_REF_SLUG == "bsnes-lagfix-experiments"
+      when: always
+
+package_bsnes_lagfix_b_windows:
+  extends: .package_windows_x64
+  needs:
+    - build_b
+  rules:
+    - if: $CI_COMMIT_REF_SLUG == "bsnes-lagfix-experiments"
+      when: always
+
 package_devbuild_linux:
   extends: .package_linux_x64
   rules:
@@ -143,6 +169,9 @@ run_tests:
   needs:
     - job: build
       artifacts: false
+  rules:
+    - if: $CI_COMMIT_REF_SLUG != "bsnes-lagfix-experiments"
+      when: always
   script:
     - cd src/BizHawk.Version
     - dotnet build -c Release # configuration doesn't really matter as the assembly is empty

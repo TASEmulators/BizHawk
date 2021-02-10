@@ -657,6 +657,12 @@ namespace BizHawk.Client.EmuHawk
 				}
 #endif
 			}
+
+#if BSNES_LAGFIX_B
+			OSD.AddMessage("BSNES lag fix experiment B", expireInSeconds: 10);
+#else // BSNES_LAGFIX_A
+			OSD.AddMessage("BSNES lag fix experiment A", expireInSeconds: 10);
+#endif
 		}
 
 		private readonly bool _suppressSyncSettingsWarning;
