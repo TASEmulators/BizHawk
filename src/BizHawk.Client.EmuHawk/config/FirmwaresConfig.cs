@@ -280,7 +280,7 @@ namespace BizHawk.Client.EmuHawk
 			// for each type of firmware, try resolving and record the result
 			foreach (ListViewItem lvi in lvFirmwares.Items)
 			{
-				var fr = lvi.Tag as FirmwareDatabase.FirmwareRecord;
+				var fr = (FirmwareDatabase.FirmwareRecord) lvi.Tag;
 				var ri = Manager.Resolve(
 					_pathEntries,
 					_firmwareUserSpecifications,
@@ -446,7 +446,7 @@ namespace BizHawk.Client.EmuHawk
 					// for each selected item, set the user choice (even though multiple selection for this operation is no longer allowed)
 					foreach (ListViewItem lvi in lvFirmwares.SelectedItems)
 					{
-						var fr = lvi.Tag as FirmwareDatabase.FirmwareRecord;
+						var fr = (FirmwareDatabase.FirmwareRecord) lvi.Tag;
 						string filePath = ofd.FileName;
 
 						// if the selected file is an archive, allow the user to pick the inside file
@@ -514,7 +514,7 @@ namespace BizHawk.Client.EmuHawk
 			// for each selected item, clear the user choice
 			foreach (ListViewItem lvi in lvFirmwares.SelectedItems)
 			{
-				var fr = lvi.Tag as FirmwareDatabase.FirmwareRecord;
+				var fr = (FirmwareDatabase.FirmwareRecord) lvi.Tag;
 				_firmwareUserSpecifications.Remove(fr.ConfigKey);
 			}
 
