@@ -18,7 +18,7 @@
 	</ItemGroup>
 	<ItemGroup>
 		<Reference Include="GongShell" HintPath="$(ProjectDir)../../References/GongShell.dll" Private="true" />
-		<Reference Include="NLua, Version=1.3.2.0, Culture=neutral, processorArchitecture=MSIL" HintPath="$(ProjectDir)../../output/dll/nlua/NLua.dll" Private="true" SpecificVersion="false" />
+		<Reference Include="NLua, Version=1.3.2.0, Culture=neutral, processorArchitecture=MSIL" SpecificVersion="false" HintPath="$(ProjectDir)../../Assets/dll/nlua/NLua.dll" Private="false" /><!-- don't copy, will be copied with Assets -->
 		<Reference Include="PcxFileTypePlugin.HawkQuantizer" HintPath="$(ProjectDir)../../References/PcxFileTypePlugin.HawkQuantizer.dll" Private="true" />
 		<PackageReference Include="OpenTK.GLControl" Version="3.1.0" PrivateAssets="all" />
 	</ItemGroup>
