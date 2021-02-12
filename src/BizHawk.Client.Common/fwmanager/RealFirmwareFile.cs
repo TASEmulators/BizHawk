@@ -1,12 +1,20 @@
+#nullable enable
+
 using System.IO;
 
 namespace BizHawk.Client.Common
 {
 	/// <summary>represents a file found on disk in the user's firmware directory matching a file in our database</summary>
-	public sealed class RealFirmwareFile
+	public readonly struct RealFirmwareFile
 	{
-		public FileInfo FileInfo { get; set; }
+		public readonly FileInfo FileInfo;
 
-		public string Hash { get; set; }
+		public readonly string Hash;
+
+		public RealFirmwareFile(FileInfo fileInfo, string hash)
+		{
+			FileInfo = fileInfo;
+			Hash = hash;
+		}
 	}
 }

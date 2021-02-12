@@ -58,15 +58,14 @@ namespace BizHawk.Client.Common
 
 			public RealFirmwareFile Read(FileInfo fi)
 			{
-				var rff = new RealFirmwareFile { FileInfo = fi };
-
 				using (var fs = fi.OpenRead())
 				{
 					_sha1.ComputeHash(fs);
 				}
 
-				rff.Hash = _sha1.Hash.BytesToHexString();
-				Dict[rff.Hash] = rff;
+				var hash = _sha1.Hash.BytesToHexString();
+				var rff = new RealFirmwareFile(fi, hash);
+				Dict[hash] = rff;
 				return rff;
 			}
 
