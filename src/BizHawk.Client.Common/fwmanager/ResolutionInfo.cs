@@ -1,12 +1,14 @@
+#nullable enable
+
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
 	public sealed class ResolutionInfo
 	{
-		public string FilePath { get; set; }
+		public string? FilePath { get; set; }
 
-		public string Hash { get; set; }
+		public string? Hash { get; set; }
 
 		public FirmwareFile? KnownFirmwareFile { get; set; }
 
