@@ -1,13 +1,22 @@
+#nullable enable
+
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
-	public sealed class FirmwareEventArgs
+	public readonly struct FirmwareEventArgs
 	{
-		public string Hash { get; set; }
+		public readonly string? Hash;
 
-		public FirmwareID ID { get; set; }
+		public readonly FirmwareID ID;
 
-		public long Size { get; set; }
+		public readonly long Size;
+
+		public FirmwareEventArgs(FirmwareID id, string? hash, long size)
+		{
+			Hash = hash;
+			ID = id;
+			Size = size;
+		}
 	}
 }

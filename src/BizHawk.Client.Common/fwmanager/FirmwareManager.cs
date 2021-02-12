@@ -42,14 +42,7 @@ namespace BizHawk.Client.Common
 			{
 				return null;
 			}
-
-			RecentlyServed.Add(new FirmwareEventArgs
-			{
-				ID = id,
-				Hash = resolved.Hash,
-				Size = resolved.Size
-			});
-
+			RecentlyServed.Add(new(id, resolved.Hash, resolved.Size));
 			return resolved.FilePath;
 		}
 
