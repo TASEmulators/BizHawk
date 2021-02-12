@@ -235,7 +235,7 @@ namespace BizHawk.Client.Common
 				}
 			}
 
-			if (firmwareManager.RecentlyServed.Any())
+			if (firmwareManager.RecentlyServed.Count != 0)
 			{
 				foreach (var firmware in firmwareManager.RecentlyServed)
 				{
