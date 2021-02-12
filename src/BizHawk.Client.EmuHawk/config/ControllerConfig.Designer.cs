@@ -216,7 +216,7 @@
 			// 
 			// AllowUdCheckbox
 			// 
-			this.AllowUdCheckbox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.AllowUdCheckbox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.AllowUdCheckbox.AutoSize = true;
 			this.AllowUdCheckbox.Location = new System.Drawing.Point(576, 548);
 			this.AllowUdCheckbox.Name = "AllowUdCheckbox";
@@ -241,6 +241,7 @@
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.buttonOK);
 			this.Controls.Add(this.checkBoxAutoTab);
+			this.MinimumSize = new System.Drawing.Size(948, 611);
 			this.Name = "ControllerConfig";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Controller Config";
