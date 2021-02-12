@@ -11,37 +11,10 @@ namespace BizHawk.Client.Common
 {
 	public class FirmwareManager
 	{
-		// represents a file found on disk in the user's firmware directory matching a file in our database
-		public class RealFirmwareFile
-		{
-			public FileInfo FileInfo { get; set; }
-			public string Hash { get; set; }
-		}
-
 		public List<FirmwareEventArgs> RecentlyServed { get; } = new List<FirmwareEventArgs>();
-
-		public class ResolutionInfo
-		{
-			public bool UserSpecified { get; set; }
-			public bool Missing { get; set; }
-			public bool KnownMismatching { get; set; }
-			public FirmwareDatabase.FirmwareFile KnownFirmwareFile { get; set; }
-			public string FilePath { get; set; }
-			public string Hash { get; set; }
-			public long Size { get; set; }
-		}
 
 		private readonly Dictionary<FirmwareDatabase.FirmwareRecord, ResolutionInfo> _resolutionDictionary = new Dictionary<FirmwareDatabase.FirmwareRecord, ResolutionInfo>();
 
-		public class FirmwareEventArgs
-		{
-			public string Hash { get; set; }
-			public long Size { get; set; }
-			public string SystemId { get; set; }
-			public string FirmwareId { get; set; }
-		}
-
-		
 		// purpose of forbidScan: sometimes this is called from a loop in Scan(). we don't want to repeatedly DoScanAndResolve in that case, its already been done.
 		public ResolutionInfo Resolve(PathEntryCollection pathEntries, IDictionary<string, string> userSpecifications, FirmwareDatabase.FirmwareRecord record, bool forbidScan = false)
 		{
