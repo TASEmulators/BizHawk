@@ -11,6 +11,8 @@ namespace BizHawk.Client.Common
 {
 	public class FirmwareManager
 	{
+		private static readonly FirmwareID NDS_FIRMWARE = new("NDS", "firmware");
+
 		public List<FirmwareEventArgs> RecentlyServed { get; } = new List<FirmwareEventArgs>();
 
 		private readonly Dictionary<FirmwareRecord, ResolutionInfo> _resolutionDictionary = new();
@@ -30,12 +32,12 @@ namespace BizHawk.Client.Common
 		}
 
 		// Requests the specified firmware. tries really hard to scan and resolve as necessary
-		public string Request(PathEntryCollection pathEntries, IDictionary<string, string> userSpecifications, string sysId, string firmwareId)
+		public string Request(PathEntryCollection pathEntries, IDictionary<string, string> userSpecifications, FirmwareID id)
 		{
 			var resolved = Resolve(
 				pathEntries,
 				userSpecifications,
-				FirmwareDatabase.FirmwareRecords.FirstOrDefault(fr => fr.FirmwareId == firmwareId && fr.SystemId == sysId));
+				FirmwareDatabase.FirmwareRecords.FirstOrDefault(fr => fr.ID == id));
 			if (resolved == null)
 			{
 				return null;
@@ -43,8 +45,7 @@ namespace BizHawk.Client.Common
 
 			RecentlyServed.Add(new FirmwareEventArgs
 			{
-				SystemId = sysId,
-				FirmwareId = firmwareId,
+				ID = id,
 				Hash = resolved.Hash,
 				Size = resolved.Size
 			});
@@ -150,11 +151,8 @@ namespace BizHawk.Client.Common
 				_resolutionDictionary.Remove(fr);
 
 				// get all options for this firmware (in order)
-				var fr1 = fr;
-				var options = FirmwareDatabase.FirmwareOptions
-						.Where(fo => fo.SystemId == fr1.SystemId
-							&& fo.FirmwareId == fr1.FirmwareId
-							&& fo.IsAcceptableOrIdeal);
+				var id = fr.ID;
+				var options = FirmwareDatabase.FirmwareOptions.Where(fo => fo.ID == id && fo.IsAcceptableOrIdeal);
 
 				// try each option
 				foreach (var fo in options)
@@ -182,7 +180,7 @@ namespace BizHawk.Client.Common
 			foreach (var fr in FirmwareDatabase.FirmwareRecords)
 			{
 				// do we have a user specification for this firmware record?
-				if (userSpecifications.TryGetValue(fr.ConfigKey, out var userSpec))
+				if (userSpecifications.TryGetValue(fr.ID.ConfigKey, out var userSpec))
 				{
 					// flag it as user specified
 					if (!_resolutionDictionary.TryGetValue(fr, out ResolutionInfo ri))
@@ -205,12 +203,10 @@ namespace BizHawk.Client.Common
 					}
 
 					// compute its hash
-					RealFirmwareFile rff;
 					// NDS's firmware file contains user settings; these are over-written by sync settings, so we shouldn't allow them to impact the hash
-					if (fr.SystemId == "NDS" && fr.FirmwareId == "firmware")
-						rff = reader.Read(new FileInfo(Emulation.Cores.Consoles.Nintendo.NDS.MelonDS.CreateModifiedFirmware(userSpec)));
-					else
-						rff = reader.Read(fi);
+					var rff = reader.Read(fr.ID == NDS_FIRMWARE
+						? new FileInfo(Emulation.Cores.Consoles.Nintendo.NDS.MelonDS.CreateModifiedFirmware(userSpec))
+						: fi);
 					ri.Size = fi.Length;
 					ri.Hash = rff.Hash;
 
@@ -220,7 +216,7 @@ namespace BizHawk.Client.Common
 						ri.KnownFirmwareFile = ff;
 
 						// if the known firmware file is for a different firmware, flag it so we can show a warning
-						if (FirmwareDatabase.FirmwareOptions.Any(fo => fo.Hash == rff.Hash && fo.ConfigKey != fr.ConfigKey))
+						if (FirmwareDatabase.FirmwareOptions.Any(fo => fo.Hash == rff.Hash && fo.ID != fr.ID))
 						{
 							ri.KnownMismatching = true;
 						}

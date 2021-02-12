@@ -177,8 +177,8 @@ namespace BizHawk.Client.EmuHawk
 					ImageIndex = IdUnsure,
 					ToolTipText = null
 				};
-				lvi.SubItems.Add(fr.SystemId);
-				lvi.SubItems.Add(fr.FirmwareId);
+				lvi.SubItems.Add(fr.ID.System);
+				lvi.SubItems.Add(fr.ID.Firmware);
 				lvi.SubItems.Add(fr.Descr);
 				lvi.SubItems.Add(""); // resolved with
 				lvi.SubItems.Add(""); // location
@@ -189,15 +189,15 @@ namespace BizHawk.Client.EmuHawk
 				lvFirmwares.Items.Add(lvi);
 
 				// build the groups in the ListView as we go:
-				if (!groups.ContainsKey(fr.SystemId))
+				if (!groups.ContainsKey(fr.ID.System))
 				{
-					if (!SystemGroupNames.TryGetValue(fr.SystemId, out var name))
+					if (!SystemGroupNames.TryGetValue(fr.ID.System, out var name))
 						name = "FIX ME (FirmwaresConfig.cs)";
-					lvFirmwares.Groups.Add(fr.SystemId, name);
+					lvFirmwares.Groups.Add(fr.ID.System, name);
 					var lvg = lvFirmwares.Groups[lvFirmwares.Groups.Count - 1];
-					groups[fr.SystemId] = lvg;
+					groups[fr.ID.System] = lvg;
 				}
-				lvi.Group = groups[fr.SystemId];
+				lvi.Group = groups[fr.ID.System];
 			}
 
 			// now that we have some items in the ListView, we can size some columns to sensible widths
@@ -496,7 +496,7 @@ namespace BizHawk.Client.EmuHawk
 							}
 						}
 
-						_firmwareUserSpecifications[fr.ConfigKey] = filePath;
+						_firmwareUserSpecifications[fr.ID.ConfigKey] = filePath;
 					}
 				}
 				catch (Exception ex)
@@ -515,7 +515,7 @@ namespace BizHawk.Client.EmuHawk
 			foreach (ListViewItem lvi in lvFirmwares.SelectedItems)
 			{
 				var fr = (FirmwareRecord) lvi.Tag;
-				_firmwareUserSpecifications.Remove(fr.ConfigKey);
+				_firmwareUserSpecifications.Remove(fr.ID.ConfigKey);
 			}
 
 			DoScan();
@@ -527,16 +527,13 @@ namespace BizHawk.Client.EmuHawk
 			var fr = (FirmwareRecord) lvi.Tag;
 
 			// get all options for this firmware (in order)
-			var options =
-				from fo in FirmwareDatabase.FirmwareOptions
-				where fo.SystemId == fr.SystemId && fo.FirmwareId == fr.FirmwareId
-				select fo;
+			var options = FirmwareDatabase.FirmwareOptions.Where(fo => fo.ID == fr.ID);
 
 			var fciDialog = new FirmwaresConfigInfo
 			{
 				lblFirmware =
 				{
-					Text = $"{fr.SystemId} : {fr.FirmwareId} ({fr.Descr})"
+					Text = $"{fr.ID.System} : {fr.ID.Firmware} ({fr.Descr})"
 				}
 			};
 

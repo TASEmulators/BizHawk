@@ -23,12 +23,11 @@
 		/// <summary>
 		/// Get a firmware as a byte array
 		/// </summary>
-		/// <param name="sysId">the core systemID</param>
-		/// <param name="firmwareId">the firmware id</param>
+		/// <param name="id">the firmware id</param>
 		/// <param name="required">if true, result is guaranteed to be valid; else null is possible if not found</param>
 		/// <param name="msg">message to show if fail to get</param>
-		byte[] GetFirmware(string sysId, string firmwareId, bool required, string msg = null);
+		byte[] GetFirmware(FirmwareID id, bool required, string msg = null);
 
-		byte[] GetFirmwareWithGameInfo(string sysId, string firmwareId, bool required, out GameInfo gi, string msg = null);
+		byte[] GetFirmwareWithGameInfo(FirmwareID id, bool required, out GameInfo gi, string msg = null);
 	}
 }

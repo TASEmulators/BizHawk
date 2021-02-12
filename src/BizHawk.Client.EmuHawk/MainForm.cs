@@ -3854,7 +3854,7 @@ namespace BizHawk.Client.EmuHawk
 						Console.WriteLine("Active Firmwares:");
 						foreach (var f in FirmwareManager.RecentlyServed)
 						{
-							Console.WriteLine("  {0} : {1}", f.FirmwareId, f.Hash);
+							Console.WriteLine($"  {f.ID} : {f.Hash}");
 						}
 					}
 
