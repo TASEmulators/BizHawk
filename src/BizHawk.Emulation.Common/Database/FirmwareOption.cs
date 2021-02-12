@@ -1,15 +1,25 @@
+#nullable enable
+
 namespace BizHawk.Emulation.Common
 {
-	public sealed class FirmwareOption
+	public readonly struct FirmwareOption
 	{
-		public string Hash { get; set; }
+		public readonly string Hash;
 
-		public FirmwareID ID { get; set; }
+		public readonly FirmwareID ID;
 
 		public bool IsAcceptableOrIdeal => Status == FirmwareOptionStatus.Ideal || Status == FirmwareOptionStatus.Acceptable;
 
-		public long Size { get; set; }
+		public readonly long Size;
 
-		public FirmwareOptionStatus Status { get; set; }
+		public readonly FirmwareOptionStatus Status;
+
+		public FirmwareOption(FirmwareID id, string hash, long size, FirmwareOptionStatus status)
+		{
+			Hash = hash;
+			ID = id;
+			Size = size;
+			Status = status;
+		}
 	}
 }
