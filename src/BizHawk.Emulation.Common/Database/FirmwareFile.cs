@@ -1,17 +1,35 @@
+#nullable enable
+
 namespace BizHawk.Emulation.Common
 {
-	public sealed class FirmwareFile
+	public readonly struct FirmwareFile
 	{
-		public bool Bad { get; set; }
+		public readonly string Description;
 
-		public string Description { get; set; }
+		public readonly string Hash;
 
-		public string Hash { get; set; }
+		public readonly string Info;
 
-		public string Info { get; set; }
+		public readonly bool IsBad;
 
-		public string RecommendedName { get; set; }
+		public readonly string RecommendedName;
 
-		public long Size { get; set; }
+		public readonly long Size;
+
+		public FirmwareFile(
+			string hash,
+			long size,
+			string recommendedName,
+			string desc,
+			string additionalInfo = "",
+			bool isBad = false)
+		{
+			Description = desc;
+			Hash = hash;
+			Info = additionalInfo;
+			IsBad = isBad;
+			RecommendedName = recommendedName;
+			Size = size;
+		}
 	}
 }

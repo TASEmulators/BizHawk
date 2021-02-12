@@ -318,7 +318,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						lvi.ImageIndex = IdOk;
 						lvi.ToolTipText = "Good! This file has been bound to some kind of a decent choice";
-						lvi.SubItems[4].Text = ri.KnownFirmwareFile.Description;
+						lvi.SubItems[4].Text = ri.KnownFirmwareFile.Value.Description;
 					}
 
 					// bolden the item if necessary
@@ -376,9 +376,7 @@ namespace BizHawk.Client.EmuHawk
 				if (ri?.KnownFirmwareFile == null) continue;
 				if (ri.UserSpecified) continue;
 
-				var fpTarget = Path.Combine(
-					_pathEntries.FirmwareAbsolutePath(),
-					ri.KnownFirmwareFile.RecommendedName);
+				var fpTarget = Path.Combine(_pathEntries.FirmwareAbsolutePath(), ri.KnownFirmwareFile.Value.RecommendedName);
 				string fpSource = ri.FilePath;
 
 				try

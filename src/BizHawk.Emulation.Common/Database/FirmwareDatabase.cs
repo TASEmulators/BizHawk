@@ -28,22 +28,20 @@ namespace BizHawk.Emulation.Common
 				string desc,
 				string additionalInfo = "",
 				bool isBad = false)
-					=> filesByHash[hash] = new FirmwareFile
-					{
-						Hash = hash,
-						Size = size,
-						RecommendedName = recommendedName,
-						Description = desc,
-						Info = additionalInfo,
-						Bad = isBad,
-					};
+					=> filesByHash[hash] = new(
+						hash: hash,
+						size: size,
+						recommendedName: recommendedName,
+						desc: desc,
+						additionalInfo: additionalInfo,
+						isBad: isBad);
 
-			void Option(string systemId, string id, FirmwareFile ff, FirmwareOptionStatus status = FirmwareOptionStatus.Acceptable)
+			void Option(string systemId, string id, in FirmwareFile ff, FirmwareOptionStatus status = FirmwareOptionStatus.Acceptable)
 				=> options.Add(new FirmwareOption
 				{
 					ID = new(systemId, id),
 					Hash = ff.Hash,
-					Status = ff.Bad ? FirmwareOptionStatus.Bad : status,
+					Status = ff.IsBad ? FirmwareOptionStatus.Bad : status,
 					Size = ff.Size
 				});
 
@@ -64,8 +62,8 @@ namespace BizHawk.Emulation.Common
 			var fdsNintendo = File("57FE1BDEE955BB48D357E463CCBF129496930B62", 8192, "FDS_disksys-nintendo.rom", "Bios (Nintendo)");
 			var fdsTwinFc = File("E4E41472C454F928E53EB10E0509BF7D1146ECC1", 8192, "FDS_disksys-nintendo.rom", "Bios (TwinFC)");
 			Firmware("NES", "Bios_FDS", "Bios");
-			Option("NES", "Bios_FDS", fdsNintendo, FirmwareOptionStatus.Ideal);
-			Option("NES", "Bios_FDS", fdsTwinFc);
+			Option("NES", "Bios_FDS", in fdsNintendo, FirmwareOptionStatus.Ideal);
+			Option("NES", "Bios_FDS", in fdsTwinFc);
 
 			FirmwareAndOption("973E10840DB683CF3FAF61BD443090786B3A9F04", 262144, "SNES", "Rom_SGB", "SNES_sgb.sfc", "Super GameBoy Rom"); // World (Rev B) ?
 			FirmwareAndOption("A002F4EFBA42775A31185D443F3ED1790B0E949A", 3072, "SNES", "CX4", "SNES_cx4.rom", "CX4 Rom");
@@ -97,8 +95,8 @@ namespace BizHawk.Emulation.Common
 			var gbaNormal = File("300C20DF6731A33952DED8C436F7F186D25D3492", 16384, "GBA_bios.rom", "Bios (World)");
 			var gbaJDebug = File("AA98A2AD32B86106340665D1222D7D973A1361C7", 16384, "GBA_bios_Debug-(J).rom", "Bios (J Debug)");
 			Firmware("GBA", "Bios", "Bios");
-			Option("GBA", "Bios", gbaNormal);
-			Option("GBA", "Bios", gbaJDebug);
+			Option("GBA", "Bios", in gbaNormal);
+			Option("GBA", "Bios", in gbaJDebug);
 
 			FirmwareAndOption("24F67BDEA115A2C847C8813A262502EE1607B7DF", 16384, "NDS", "bios7", "NDS_Bios7.bin", "ARM7 BIOS");
 			FirmwareAndOption("BFAAC75F101C135E32E2AAF541DE6B1BE4C8C62D", 4096, "NDS", "bios9", "NDS_Bios9.bin", "ARM9 BIOS");
@@ -137,20 +135,20 @@ namespace BizHawk.Emulation.Common
 			var ss_100a_ue = File("3BB41FEB82838AB9A35601AC666DE5AACFD17A58", 524288, "SAT_1.00a-(U+E).bin", "Bios v1.00a (U+E)"); // ?? is this size correct?
 			var ss_101_j = File("DF94C5B4D47EB3CC404D88B33A8FDA237EAF4720", 524288, "SAT_1.01-(J).bin", "Bios v1.01 (J)"); // ?? is this size correct?
 			Firmware("SAT", "J", "Bios (J)");
-			Option("SAT", "J", ss_100_j);
-			Option("SAT", "J", ss_101_j);
-			Option("SAT", "J", ss_100_ue);
-			Option("SAT", "J", ss_100a_ue);
+			Option("SAT", "J", in ss_100_j);
+			Option("SAT", "J", in ss_101_j);
+			Option("SAT", "J", in ss_100_ue);
+			Option("SAT", "J", in ss_100a_ue);
 			Firmware("SAT", "U", "Bios (U)");
-			Option("SAT", "U", ss_100_ue);
-			Option("SAT", "U", ss_100a_ue);
-			Option("SAT", "U", ss_100_j);
-			Option("SAT", "U", ss_101_j);
+			Option("SAT", "U", in ss_100_ue);
+			Option("SAT", "U", in ss_100a_ue);
+			Option("SAT", "U", in ss_100_j);
+			Option("SAT", "U", in ss_101_j);
 			Firmware("SAT", "E", "Bios (E)");
-			Option("SAT", "E", ss_100_ue);
-			Option("SAT", "E", ss_100a_ue);
-			Option("SAT", "E", ss_100_j);
-			Option("SAT", "E", ss_101_j);
+			Option("SAT", "E", in ss_100_ue);
+			Option("SAT", "E", in ss_100a_ue);
+			Option("SAT", "E", in ss_100_j);
+			Option("SAT", "E", in ss_101_j);
 			FirmwareAndOption("A67CD4F550751F8B91DE2B8B74528AB4E0C11C77", 2 * 1024 * 1024, "SAT", "KOF95", "SAT_KoF95.bin", "King of Fighters cartridge");
 			//Firmware("SAT", "ULTRAMAN", "Ultraman cartridge");
 			FirmwareAndOption("56C1B93DA6B660BF393FBF48CA47569000EF4047", 2 * 1024 * 1024, "SAT", "ULTRAMAN", "SAT_Ultraman.bin", "Ultraman cartridge");
@@ -164,14 +162,14 @@ namespace BizHawk.Emulation.Common
 			var ti83p_103 = File("37EAEEB9FB5C18FB494E322B75070E80CC4D858E", 262144, "TI83p_103b.rom", "TI-83 Plus Rom v1.03"); // ?? is this size correct?
 			var ti83p_112 = File("6615DF5554076B6B81BD128BF847D2FF046E556B", 262144, "TI83p_112.rom", "TI-83 Plus Rom v1.12"); // ?? is this size correct?
 			Firmware("TI83", "Rom", "TI-83 Rom");
-			Option("TI83", "Rom", ti83_102);
-			Option("TI83", "Rom", ti83_103);
-			Option("TI83", "Rom", ti83_104);
-			Option("TI83", "Rom", ti83_106);
-			Option("TI83", "Rom", ti83_107);
-			Option("TI83", "Rom", ti83_108);
-			Option("TI83", "Rom", ti83p_103);
-			Option("TI83", "Rom", ti83p_112);
+			Option("TI83", "Rom", in ti83_102);
+			Option("TI83", "Rom", in ti83_103);
+			Option("TI83", "Rom", in ti83_104);
+			Option("TI83", "Rom", in ti83_106);
+			Option("TI83", "Rom", in ti83_107);
+			Option("TI83", "Rom", in ti83_108);
+			Option("TI83", "Rom", in ti83p_103);
+			Option("TI83", "Rom", in ti83p_112);
 
 			// mega cd
 			var eu_mcd1_9210 = File("F891E0EA651E2232AF0C5C4CB46A0CAE2EE8F356", 131072, "MCD_eu_9210.bin", "Mega CD EU (9210)");
@@ -184,13 +182,13 @@ namespace BizHawk.Emulation.Common
 			Firmware("GEN", "CD_BIOS_EU", "Mega CD Bios (Europe)");
 			Firmware("GEN", "CD_BIOS_JP", "Mega CD Bios (Japan)");
 			Firmware("GEN", "CD_BIOS_US", "Sega CD Bios (USA)");
-			Option("GEN", "CD_BIOS_EU", eu_mcd1_9210);
-			Option("GEN", "CD_BIOS_EU", eu_mcd2_9303);
-			Option("GEN", "CD_BIOS_EU", eu_mcd2_9306);
-			Option("GEN", "CD_BIOS_JP", jp_mcd1_9111);
-			Option("GEN", "CD_BIOS_JP", jp_mcd1_9112);
-			Option("GEN", "CD_BIOS_US", us_scd1_9210);
-			Option("GEN", "CD_BIOS_US", us_scd2_9303);
+			Option("GEN", "CD_BIOS_EU", in eu_mcd1_9210);
+			Option("GEN", "CD_BIOS_EU", in eu_mcd2_9303);
+			Option("GEN", "CD_BIOS_EU", in eu_mcd2_9306);
+			Option("GEN", "CD_BIOS_JP", in jp_mcd1_9111);
+			Option("GEN", "CD_BIOS_JP", in jp_mcd1_9112);
+			Option("GEN", "CD_BIOS_US", in us_scd1_9210);
+			Option("GEN", "CD_BIOS_US", in us_scd2_9303);
 			FirmwareAndOption("DBEBD76A448447CB6E524AC3CB0FD19FC065D944", 256, "32X", "G", "32X_G_BIOS.BIN", "32x 68k BIOS");
 			FirmwareAndOption("1E5B0B2441A4979B6966D942B20CC76C413B8C5E", 2048, "32X", "M", "32X_M_BIOS.BIN", "32x SH2 MASTER BIOS");
 			FirmwareAndOption("4103668C1BBD66C5E24558E73D4F3F92061A109A", 1024, "32X", "S", "32X_S_BIOS.BIN", "32x SH2 SLAVE BIOS");
@@ -204,11 +202,11 @@ namespace BizHawk.Emulation.Common
 			Firmware("SMS", "Export", "SMS Bios (USA/Export)");
 			Firmware("SMS", "Japan", "SMS Bios (Japan)");
 			Firmware("SMS", "Korea", "SMS Bios (Korea)");
-			Option("SMS", "Export", sms_us_13);
-			Option("SMS", "Export", sms_us_1b);
-			Option("SMS", "Export", sms_m404);
-			Option("SMS", "Japan", sms_jp_21);
-			Option("SMS", "Korea", sms_kr);
+			Option("SMS", "Export", in sms_us_13);
+			Option("SMS", "Export", in sms_us_1b);
+			Option("SMS", "Export", in sms_m404);
+			Option("SMS", "Japan", in sms_jp_21);
+			Option("SMS", "Korea", in sms_kr);
 
 			// PSX
 			// http://forum.fobby.net/index.php?t=msg&goto=2763 [f]
@@ -249,49 +247,49 @@ namespace BizHawk.Emulation.Common
 			Firmware("PSX", "U", "BIOS (U)");
 			Firmware("PSX", "J", "BIOS (J)");
 			Firmware("PSX", "E", "BIOS (E)");
-			Option("PSX", "U", ps_30a);
-			Option("PSX", "J", ps_30j);
-			Option("PSX", "E", ps_30e);
+			Option("PSX", "U", in ps_30a);
+			Option("PSX", "J", in ps_30j);
+			Option("PSX", "E", in ps_30e);
 			// in general, alternates aren't allowed.. their quality isn't known.
 			// we have this comment from fobby.net: "SCPH7502 works fine for European games" (TBD)
 			// however, we're sticking with the 3.0 series.
 			// please note: 2.1 or 2.2 would be a better choice, as the dates are the same and the bioses are more likely to matching in terms of entry points and such.
 			// but 3.0 is what mednafen used
-			Option("PSX", "J", ps_10j, FirmwareOptionStatus.Unacceptable);
-			Option("PSX", "J", ps_11j, FirmwareOptionStatus.Unacceptable);
-			Option("PSX", "U", ps_20a, FirmwareOptionStatus.Unacceptable);
-			Option("PSX", "E", ps_20e, FirmwareOptionStatus.Unacceptable);
-			Option("PSX", "J", ps_21j, FirmwareOptionStatus.Unacceptable);
-			Option("PSX", "U", ps_21a, FirmwareOptionStatus.Unacceptable);
-			Option("PSX", "E", ps_21e, FirmwareOptionStatus.Unacceptable);
-			Option("PSX", "J", ps_22j, FirmwareOptionStatus.Unacceptable);
-			Option("PSX", "J", ps_22j_bad, FirmwareOptionStatus.Bad);
-			Option("PSX", "J", ps_22j_bad2, FirmwareOptionStatus.Bad);
-			Option("PSX", "U", ps_22a, FirmwareOptionStatus.Unacceptable);
-			Option("PSX", "E", ps_22e, FirmwareOptionStatus.Unacceptable);
-			Option("PSX", "J", ps_22d, FirmwareOptionStatus.Unacceptable);
-			Option("PSX", "E", ps_30e_bad, FirmwareOptionStatus.Bad);
-			Option("PSX", "J", ps_40j, FirmwareOptionStatus.Unacceptable);
-			Option("PSX", "U", ps_41a, FirmwareOptionStatus.Unacceptable);
-			Option("PSX", "E", ps_41e, FirmwareOptionStatus.Unacceptable);
-			Option("PSX", "J", psone_43j, FirmwareOptionStatus.Unacceptable);
-			Option("PSX", "E", psone_44e, FirmwareOptionStatus.Unacceptable);
-			Option("PSX", "U", psone_45a, FirmwareOptionStatus.Unacceptable);
-			Option("PSX", "E", psone_r5e, FirmwareOptionStatus.Unacceptable);
-			Option("PSX", "J", ps2_50j, FirmwareOptionStatus.Unacceptable);
-			Option("PSX", "J", ps_22jv, FirmwareOptionStatus.Unacceptable);
-			Option("PSX", "U", ps_41aw, FirmwareOptionStatus.Unacceptable);
-			Option("PSX", "U", ps_ps3, FirmwareOptionStatus.Unacceptable);
-			Option("PSX", "U", ps_dtl_h2000, FirmwareOptionStatus.Unacceptable); //not really sure what to do with this one, let's just call it region free
-			Option("PSX", "E", ps_dtl_h2000, FirmwareOptionStatus.Unacceptable);
-			Option("PSX", "J", ps_dtl_h2000, FirmwareOptionStatus.Unacceptable);
+			Option("PSX", "J", in ps_10j, FirmwareOptionStatus.Unacceptable);
+			Option("PSX", "J", in ps_11j, FirmwareOptionStatus.Unacceptable);
+			Option("PSX", "U", in ps_20a, FirmwareOptionStatus.Unacceptable);
+			Option("PSX", "E", in ps_20e, FirmwareOptionStatus.Unacceptable);
+			Option("PSX", "J", in ps_21j, FirmwareOptionStatus.Unacceptable);
+			Option("PSX", "U", in ps_21a, FirmwareOptionStatus.Unacceptable);
+			Option("PSX", "E", in ps_21e, FirmwareOptionStatus.Unacceptable);
+			Option("PSX", "J", in ps_22j, FirmwareOptionStatus.Unacceptable);
+			Option("PSX", "J", in ps_22j_bad, FirmwareOptionStatus.Bad);
+			Option("PSX", "J", in ps_22j_bad2, FirmwareOptionStatus.Bad);
+			Option("PSX", "U", in ps_22a, FirmwareOptionStatus.Unacceptable);
+			Option("PSX", "E", in ps_22e, FirmwareOptionStatus.Unacceptable);
+			Option("PSX", "J", in ps_22d, FirmwareOptionStatus.Unacceptable);
+			Option("PSX", "E", in ps_30e_bad, FirmwareOptionStatus.Bad);
+			Option("PSX", "J", in ps_40j, FirmwareOptionStatus.Unacceptable);
+			Option("PSX", "U", in ps_41a, FirmwareOptionStatus.Unacceptable);
+			Option("PSX", "E", in ps_41e, FirmwareOptionStatus.Unacceptable);
+			Option("PSX", "J", in psone_43j, FirmwareOptionStatus.Unacceptable);
+			Option("PSX", "E", in psone_44e, FirmwareOptionStatus.Unacceptable);
+			Option("PSX", "U", in psone_45a, FirmwareOptionStatus.Unacceptable);
+			Option("PSX", "E", in psone_r5e, FirmwareOptionStatus.Unacceptable);
+			Option("PSX", "J", in ps2_50j, FirmwareOptionStatus.Unacceptable);
+			Option("PSX", "J", in ps_22jv, FirmwareOptionStatus.Unacceptable);
+			Option("PSX", "U", in ps_41aw, FirmwareOptionStatus.Unacceptable);
+			Option("PSX", "U", in ps_ps3, FirmwareOptionStatus.Unacceptable);
+			Option("PSX", "U", in ps_dtl_h2000, FirmwareOptionStatus.Unacceptable); //not really sure what to do with this one, let's just call it region free
+			Option("PSX", "E", in ps_dtl_h2000, FirmwareOptionStatus.Unacceptable);
+			Option("PSX", "J", in ps_dtl_h2000, FirmwareOptionStatus.Unacceptable);
 
 			Firmware("AppleII", "AppleIIe", "AppleIIe.rom");
 			var appleII_AppleIIe = File("B8EA90ABE135A0031065E01697C4A3A20D51198B", 16384, "AppleIIe.rom", "Apple II e");
-			Option("AppleII", "AppleIIe", appleII_AppleIIe);
+			Option("AppleII", "AppleIIe", in appleII_AppleIIe);
 			Firmware("AppleII", "DiskII", "DiskII.rom");
 			var appleII_DiskII = File("D4181C9F046AAFC3FB326B381BAAC809D9E38D16", 256, "AppleIIe_DiskII.rom", "Disk II");
-			Option("AppleII", "DiskII", appleII_DiskII);
+			Option("AppleII", "DiskII", in appleII_DiskII);
 
 			FirmwareAndOption("B2E1955D957A475DE2411770452EFF4EA19F4CEE", 1024, "O2", "BIOS", "O2_Odyssey2.bin", "Odyssey 2 Bios");
 			FirmwareAndOption("A6120AED50831C9C0D95DBDF707820F601D9452E", 1024, "O2", "BIOS-C52", "O2_PhillipsC52.bin", "Phillips C52 Bios");
@@ -313,11 +311,11 @@ namespace BizHawk.Emulation.Common
 			Firmware("PCFX", "BIOS", "PCFX bios");
 			var pcfxbios = File("1A77FD83E337F906AECAB27A1604DB064CF10074", 1024 * 1024, "PCFX_bios.bin", "PCFX BIOS 1.00");
 			var pcfxv101 = File("8B662F7548078BE52A871565E19511CCCA28C5C8", 1024 * 1024, "PCFX_v101.bin", "PCFX BIOS 1.01");
-			Option("PCFX", "BIOS", pcfxbios, FirmwareOptionStatus.Ideal);
-			Option("PCFX", "BIOS", pcfxv101, FirmwareOptionStatus.Acceptable);
+			Option("PCFX", "BIOS", in pcfxbios, FirmwareOptionStatus.Ideal);
+			Option("PCFX", "BIOS", in pcfxv101, FirmwareOptionStatus.Acceptable);
 			Firmware("PCFX", "SCSIROM", "fx-scsi.rom");
 			var fxscsi = File("65482A23AC5C10A6095AEE1DB5824CCA54EAD6E5", 512 * 1024, "PCFX_fx-scsi.rom", "PCFX SCSI ROM");
-			Option("PCFX", "SCSIROM", fxscsi);
+			Option("PCFX", "SCSIROM", in fxscsi);
 
 			Firmware("PS2", "BIOS", "PS2 Bios");
 			Option("PS2", "BIOS", File("FBD54BFC020AF34008B317DCB80B812DD29B3759", 4 * 1024 * 1024, "ps2-0230j-20080220.bin", "PS2 Bios"));

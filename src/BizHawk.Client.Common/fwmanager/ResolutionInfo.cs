@@ -8,7 +8,7 @@ namespace BizHawk.Client.Common
 
 		public string Hash { get; set; }
 
-		public FirmwareFile KnownFirmwareFile { get; set; }
+		public FirmwareFile? KnownFirmwareFile { get; set; }
 
 		public bool KnownMismatching { get; set; }
 
