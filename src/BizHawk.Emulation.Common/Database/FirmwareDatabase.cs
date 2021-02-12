@@ -333,51 +333,5 @@ namespace BizHawk.Emulation.Common
 			FirmwareOptions = options;
 			FirmwareRecords = records;
 		}
-
-		public class FirmwareFile
-		{
-			public string Hash { get; set; }
-			public long Size { get; set; }
-			public string RecommendedName { get; set; }
-			public string Description { get; set; }
-			public string Info { get; set; }
-			public bool Bad { get; set; }
-		}
-
-		public class FirmwareRecord
-		{
-			public string SystemId { get; set; }
-			public string FirmwareId { get; set; }
-			public string Descr { get; set; }
-
-			public string ConfigKey => $"{SystemId}+{FirmwareId}";
-		}
-
-		public enum FirmwareOptionStatus
-		{
-			/// <summary>Preferred to get checkmarks, and for TASing</summary>
-			Ideal,
-
-			/// <summary>Works with our core, but not preferred for TASing</summary>
-			Acceptable,
-
-			/// <summary>A good file, but it doesn't work with our core</summary>
-			Unacceptable,
-
-			/// <summary>Nonlegitimate files that are notable enough to be worth detecting, even if mainly to categorize as a BAD option</summary>
-			Bad
-		}
-
-		public class FirmwareOption
-		{
-			public string SystemId { get; set; }
-			public string FirmwareId { get; set; }
-			public string Hash { get; set; }
-			public long Size { get; set; }
-			public FirmwareOptionStatus Status { get; set; }
-
-			public bool IsAcceptableOrIdeal => Status == FirmwareOptionStatus.Ideal || Status == FirmwareOptionStatus.Acceptable;
-			public string ConfigKey => $"{SystemId}+{FirmwareId}";
-		}
 	} // static class FirmwareDatabase
 }

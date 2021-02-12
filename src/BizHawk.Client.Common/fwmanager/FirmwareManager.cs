@@ -13,10 +13,10 @@ namespace BizHawk.Client.Common
 	{
 		public List<FirmwareEventArgs> RecentlyServed { get; } = new List<FirmwareEventArgs>();
 
-		private readonly Dictionary<FirmwareDatabase.FirmwareRecord, ResolutionInfo> _resolutionDictionary = new Dictionary<FirmwareDatabase.FirmwareRecord, ResolutionInfo>();
+		private readonly Dictionary<FirmwareRecord, ResolutionInfo> _resolutionDictionary = new();
 
 		// purpose of forbidScan: sometimes this is called from a loop in Scan(). we don't want to repeatedly DoScanAndResolve in that case, its already been done.
-		public ResolutionInfo Resolve(PathEntryCollection pathEntries, IDictionary<string, string> userSpecifications, FirmwareDatabase.FirmwareRecord record, bool forbidScan = false)
+		public ResolutionInfo Resolve(PathEntryCollection pathEntries, IDictionary<string, string> userSpecifications, FirmwareRecord record, bool forbidScan = false)
 		{
 			_resolutionDictionary.TryGetValue(record, out var resolved);
 			// couldn't find it! do a scan and resolve to try harder

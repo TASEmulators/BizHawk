@@ -280,7 +280,7 @@ namespace BizHawk.Client.EmuHawk
 			// for each type of firmware, try resolving and record the result
 			foreach (ListViewItem lvi in lvFirmwares.Items)
 			{
-				var fr = (FirmwareDatabase.FirmwareRecord) lvi.Tag;
+				var fr = (FirmwareRecord) lvi.Tag;
 				var ri = Manager.Resolve(
 					_pathEntries,
 					_firmwareUserSpecifications,
@@ -446,7 +446,7 @@ namespace BizHawk.Client.EmuHawk
 					// for each selected item, set the user choice (even though multiple selection for this operation is no longer allowed)
 					foreach (ListViewItem lvi in lvFirmwares.SelectedItems)
 					{
-						var fr = (FirmwareDatabase.FirmwareRecord) lvi.Tag;
+						var fr = (FirmwareRecord) lvi.Tag;
 						string filePath = ofd.FileName;
 
 						// if the selected file is an archive, allow the user to pick the inside file
@@ -514,7 +514,7 @@ namespace BizHawk.Client.EmuHawk
 			// for each selected item, clear the user choice
 			foreach (ListViewItem lvi in lvFirmwares.SelectedItems)
 			{
-				var fr = (FirmwareDatabase.FirmwareRecord) lvi.Tag;
+				var fr = (FirmwareRecord) lvi.Tag;
 				_firmwareUserSpecifications.Remove(fr.ConfigKey);
 			}
 
@@ -524,7 +524,7 @@ namespace BizHawk.Client.EmuHawk
 		private void TsmiInfo_Click(object sender, EventArgs e)
 		{
 			var lvi = lvFirmwares.SelectedItems[0];
-			var fr = (FirmwareDatabase.FirmwareRecord)lvi.Tag;
+			var fr = (FirmwareRecord) lvi.Tag;
 
 			// get all options for this firmware (in order)
 			var options =
@@ -548,22 +548,22 @@ namespace BizHawk.Client.EmuHawk
 				olvi.SubItems.Add(new ListViewItem.ListViewSubItem());
 				olvi.SubItems.Add(new ListViewItem.ListViewSubItem());
 				var ff = FirmwareDatabase.FirmwareFilesByHash[o.Hash];
-				if (o.Status == FirmwareDatabase.FirmwareOptionStatus.Ideal)
+				if (o.Status == FirmwareOptionStatus.Ideal)
 				{
 					olvi.ImageIndex = FirmwaresConfigInfo.idIdeal;
 					olvi.ToolTipText = FirmwaresConfigInfo.ttIdeal;
 				}
-				if (o.Status == FirmwareDatabase.FirmwareOptionStatus.Acceptable)
+				if (o.Status == FirmwareOptionStatus.Acceptable)
 				{
 					olvi.ImageIndex = FirmwaresConfigInfo.idAcceptable;
 					olvi.ToolTipText = FirmwaresConfigInfo.ttAcceptable;
 				}
-				if (o.Status == FirmwareDatabase.FirmwareOptionStatus.Unacceptable)
+				if (o.Status == FirmwareOptionStatus.Unacceptable)
 				{
 					olvi.ImageIndex = FirmwaresConfigInfo.idUnacceptable;
 					olvi.ToolTipText = FirmwaresConfigInfo.ttUnacceptable;
 				}
-				if (o.Status == FirmwareDatabase.FirmwareOptionStatus.Bad)
+				if (o.Status == FirmwareOptionStatus.Bad)
 				{
 					olvi.ImageIndex = FirmwaresConfigInfo.idBad;
 					olvi.ToolTipText = FirmwaresConfigInfo.ttBad;
