@@ -16,6 +16,10 @@ namespace BizHawk.Bizware.BizwareGL
 	//* Use PostMultiplyMatrix to apply more work to a prior matrix (in the manner described above) since I am calling this all post-work
 	public class MatrixStack
 	{
+		private const float DEG_TO_RAD_FACTOR = (float) System.Math.PI / 180.0f;
+
+		private static float DegreesToRadians(float degrees) => degrees * DEG_TO_RAD_FACTOR;
+
 		public MatrixStack()
 		{
 			LoadIdentity();
@@ -71,10 +75,10 @@ namespace BizHawk.Bizware.BizwareGL
 		public void Scale(float ratio) { Scale(ratio, ratio, ratio); IsDirty = true; }
 		public void Scale(float x, float y) { Scale(x, y, 1); IsDirty = true; }
 
-		public void RotateAxis(float x, float y, float z, float degrees) { PostMultiplyMatrix(Matrix4.CreateFromAxisAngle(new Vector3(x, y, z), MathHelper.DegreesToRadians(degrees))); IsDirty = true; }
-		public void RotateY(float degrees) { PostMultiplyMatrix(Matrix4.CreateRotationY(MathHelper.DegreesToRadians(degrees))); IsDirty = true; }
-		public void RotateX(float degrees) { PostMultiplyMatrix(Matrix4.CreateRotationX(MathHelper.DegreesToRadians(degrees))); IsDirty = true; }
-		public void RotateZ(float degrees) { PostMultiplyMatrix(Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(degrees))); IsDirty = true; }
+		public void RotateAxis(float x, float y, float z, float degrees) { PostMultiplyMatrix(Matrix4.CreateFromAxisAngle(new Vector3(x, y, z), DegreesToRadians(degrees))); IsDirty = true; }
+		public void RotateY(float degrees) { PostMultiplyMatrix(Matrix4.CreateRotationY(DegreesToRadians(degrees))); IsDirty = true; }
+		public void RotateX(float degrees) { PostMultiplyMatrix(Matrix4.CreateRotationX(DegreesToRadians(degrees))); IsDirty = true; }
+		public void RotateZ(float degrees) { PostMultiplyMatrix(Matrix4.CreateRotationZ(DegreesToRadians(degrees))); IsDirty = true; }
 
 		public void Translate(Vector2 v) { Translate(v.X, v.Y, 0); IsDirty = true; }
 		public void Translate(Vector3 trans) { PostMultiplyMatrix(Matrix4.CreateTranslation(trans)); IsDirty = true; }
