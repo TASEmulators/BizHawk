@@ -233,7 +233,7 @@ namespace BizHawk.Bizware.BizwareGL
 			//projection is always identity, so who cares i guess
 			//Matrix4 mat = Projection.Top * Modelview.Top;
 			Matrix4 mat = Modelview.Top;
-			g.Transform = new sd.Drawing2D.Matrix(mat.M11, mat.M12, mat.M21, mat.M22, mat.M41, mat.M42);
+			g.Transform = new sd.Drawing2D.Matrix(mat.Row0.X, mat.Row0.Y, mat.Row1.X, mat.Row1.Y, mat.Row3.X, mat.Row3.Y);
 		}
 
 		private unsafe void DrawInternal(Art art, float x, float y, float w, float h)

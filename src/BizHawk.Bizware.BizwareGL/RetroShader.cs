@@ -92,8 +92,7 @@ namespace BizHawk.Bizware.BizwareGL
 
 			var Projection = Owner.CreateGuiProjectionMatrix(OutputSize);
 			var Modelview = Owner.CreateGuiViewMatrix(OutputSize);
-			var mat = Modelview * Projection;
-			mat.Transpose();
+			var mat = Matrix4.Transpose(Modelview * Projection);
 			Pipeline["modelViewProj"].Set(mat, true);
 
 			Owner.SetTextureWrapMode(tex, true);
