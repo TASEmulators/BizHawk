@@ -375,7 +375,7 @@ namespace BizHawk.Client.Common.Filters
 
 			//TODO: this could be more efficient (draw only in gap)
 			GL.SetClearColor(Color.Black);
-			GL.Clear(OpenTK.Graphics.OpenGL.ClearBufferMask.ColorBufferBit);
+			GL.Clear(ClearBufferMask.ColorBufferBit);
 
 			FilterProgram.GuiRenderer.Begin(outputSize);
 			GuiRenderer.SetBlendState(GL.BlendNoneCopy);
@@ -558,7 +558,7 @@ namespace BizHawk.Client.Common.Filters
 				return;
 
 			GL.SetClearColor(Color.FromArgb(BackgroundColor));
-			GL.Clear(OpenTK.Graphics.OpenGL.ClearBufferMask.ColorBufferBit);
+			GL.Clear(ClearBufferMask.ColorBufferBit);
 
 			GuiRenderer.Begin(OutputSize.Width, OutputSize.Height);
 			GuiRenderer.SetBlendState(GL.BlendNoneCopy);

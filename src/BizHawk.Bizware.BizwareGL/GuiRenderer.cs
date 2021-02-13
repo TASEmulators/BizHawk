@@ -5,7 +5,6 @@
 using System;
 using System.Diagnostics;
 using OpenTK;
-using OpenTK.Graphics.OpenGL;
 
 using sd = System.Drawing;
 

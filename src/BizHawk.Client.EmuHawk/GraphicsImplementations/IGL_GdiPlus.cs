@@ -2,7 +2,6 @@ using System;
 using System.IO;
 using System.Drawing;
 using OpenTK;
-using OpenTK.Graphics.OpenGL;
 
 using BizHawk.Bizware.BizwareGL;
 
@@ -135,10 +134,10 @@ namespace BizHawk.Client.EmuHawk
 	
 		}
 
-		public void SetMinFilter(Texture2d texture, TextureMinFilter minFilter)
+		public void SetMinFilter(Texture2d texture, Bizware.BizwareGL.TextureMinFilter minFilter)
 			=> ((GDIPTextureWrapper) texture.Opaque).MinFilter = minFilter;
 
-		public void SetMagFilter(Texture2d texture, TextureMagFilter magFilter)
+		public void SetMagFilter(Texture2d texture, Bizware.BizwareGL.TextureMagFilter magFilter)
 			=> ((GDIPTextureWrapper) texture.Opaque).MagFilter = magFilter;
 
 		public Texture2d LoadTexture(Bitmap bitmap)

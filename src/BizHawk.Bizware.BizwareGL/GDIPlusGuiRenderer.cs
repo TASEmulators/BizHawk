@@ -4,7 +4,6 @@ using System;
 using System.Drawing.Imaging;
 
 using OpenTK;
-using OpenTK.Graphics.OpenGL;
 
 using sd = System.Drawing;
 

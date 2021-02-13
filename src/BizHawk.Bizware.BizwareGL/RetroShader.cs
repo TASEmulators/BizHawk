@@ -2,7 +2,6 @@ using System;
 using System.Drawing;
 
 using OpenTK;
-using OpenTK.Graphics.OpenGL;
 
 namespace BizHawk.Bizware.BizwareGL
 {

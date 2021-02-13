@@ -952,7 +952,7 @@ namespace BizHawk.Client.EmuHawk
 			_gl.BeginScene();
 			_gl.BindRenderTarget(null);
 			_gl.SetClearColor(Color.Black);
-			_gl.Clear(OpenTK.Graphics.OpenGL.ClearBufferMask.ColorBufferBit);
+			_gl.Clear(ClearBufferMask.ColorBufferBit);
 			_gl.EndScene();
 			_presentationPanel.GraphicsControl.SwapBuffers();
 		}
