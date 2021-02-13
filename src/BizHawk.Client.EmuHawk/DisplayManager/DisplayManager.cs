@@ -668,9 +668,7 @@ namespace BizHawk.Client.EmuHawk
 					if (arInteger)
 					{
 						// ALERT COPYPASTE LAUNDROMAT
-						Vector2 VS = new Vector2(virtualWidth, virtualHeight);
-						Vector2 BS = new Vector2(bufferWidth, bufferHeight);
-						Vector2 AR = Vector2.Divide(VS, BS);
+						Vector2 AR = new(virtualWidth / (float) bufferWidth, virtualHeight / (float) bufferHeight);
 						float targetPar = AR.X / AR.Y;
 
 						// this would malfunction for AR <= 0.5 or AR >= 2.0

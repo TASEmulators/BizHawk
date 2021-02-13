@@ -67,9 +67,7 @@ namespace BizHawk.Client.Common.Filters
 				// apply the zooming algorithm (pasted and reworked, for now)
 				// ALERT COPYPASTE LAUNDROMAT
 
-				Vector2 VS = new Vector2(virtualWidth, virtualHeight);
-				Vector2 BS = new Vector2(textureWidth, textureHeight);
-				Vector2 AR = Vector2.Divide(VS, BS);
+				Vector2 AR = new(virtualWidth / (float) textureWidth, virtualHeight / (float) textureHeight);
 				float targetPar = (AR.X / AR.Y);
 				Vector2 PS = new Vector2(1, 1); //this would malfunction for AR <= 0.5 or AR >= 2.0
 
@@ -352,8 +350,7 @@ namespace BizHawk.Client.Common.Filters
 
 			//in case we're in this layout, we get confused, so fix it
 			var settings = nds.GetSettings();
-			if (settings.ScreenLayout == MelonDS.ScreenLayoutKind.Top)
-				point = Vector2.Zero;
+			if (settings.ScreenLayout == MelonDS.ScreenLayoutKind.Top) point = new(0.0f, 0.0f);
 
 			//TODO: we probably need more subtle logic here.
 			//some capability to return -1,-1 perhaps in case the cursor is nowhere.

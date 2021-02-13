@@ -1,46 +1,24 @@
-﻿namespace BizHawk.Bizware.DirectX
+﻿using SlimDX;
+
+namespace BizHawk.Bizware.DirectX
 {
 	internal static class Extensions
 	{
-		public static global::SlimDX.Matrix ToSlimDXMatrix(this OpenTK.Matrix4 m, bool transpose)
+		public static Matrix ToSlimDXMatrix(this OpenTK.Matrix4 m, bool transpose)
 		{
-			global::SlimDX.Matrix ret = new global::SlimDX.Matrix
+			Matrix ret = new()
 			{
-				M11 = m.M11,
-				M12 = m.M12,
-				M13 = m.M13,
-				M14 = m.M14,
-				M21 = m.M21,
-				M22 = m.M22,
-				M23 = m.M23,
-				M24 = m.M24,
-				M31 = m.M31,
-				M32 = m.M32,
-				M33 = m.M33,
-				M34 = m.M34,
-				M41 = m.M41,
-				M42 = m.M42,
-				M43 = m.M43,
-				M44 = m.M44
+				M11 = m.Row0.X, M12 = m.Row0.Y, M13 = m.Row0.Z, M14 = m.Row0.W,
+				M21 = m.Row1.X, M22 = m.Row1.Y, M23 = m.Row1.Z, M24 = m.Row1.W,
+				M31 = m.Row2.X, M32 = m.Row2.Y, M33 = m.Row2.Z, M34 = m.Row2.W,
+				M41 = m.Row3.X, M42 = m.Row3.Y, M43 = m.Row3.Z, M44 = m.Row3.W
 			};
-
-			//could be optimized later into the above copies
-			if (transpose)
-			{
-				ret = global::SlimDX.Matrix.Transpose(ret);
-			}
-
-			return ret;
+			// Transpose call could be inlined to reduce 2 sets of copies to 1
+			return transpose ? Matrix.Transpose(ret) : ret;
 		}
 
-		public static global::SlimDX.Vector4 ToSlimDXVector4(this OpenTK.Vector4 v)
-		{
-			return new global::SlimDX.Vector4(v.X, v.Y, v.Z, v.W);
-		}
+		public static Vector2 ToSlimDXVector2(this OpenTK.Vector2 v) => new(v.X, v.Y);
 
-		public static global::SlimDX.Vector2 ToSlimDXVector2(this OpenTK.Vector2 v)
-		{
-			return new global::SlimDX.Vector2(v.X, v.Y);
-		}
+		public static Vector4 ToSlimDXVector4(this OpenTK.Vector4 v) => new(v.X, v.Y, v.Z, v.W);
 	}
 }

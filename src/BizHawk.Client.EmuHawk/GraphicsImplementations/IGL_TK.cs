@@ -604,25 +604,25 @@ namespace BizHawk.Client.EmuHawk
 		public Matrix4 CreateGuiProjectionMatrix(sd.Size dims)
 		{
 			Matrix4 ret = Matrix4.Identity;
-			ret.M11 = 2.0f / (float)dims.Width;
-			ret.M22 = 2.0f / (float)dims.Height;
+			ret.Row0.X = 2.0f / (float)dims.Width;
+			ret.Row1.Y = 2.0f / (float)dims.Height;
 			return ret;
 		}
 
 		public Matrix4 CreateGuiViewMatrix(sd.Size dims, bool autoflip)
 		{
 			Matrix4 ret = Matrix4.Identity;
-			ret.M22 = -1.0f;
-			ret.M41 = -(float)dims.Width * 0.5f;
-			ret.M42 = (float)dims.Height * 0.5f;
+			ret.Row1.Y = -1.0f;
+			ret.Row3.X = -(float)dims.Width * 0.5f;
+			ret.Row3.Y = (float)dims.Height * 0.5f;
 			if (autoflip)
 			{
 				if (_currRenderTarget == null) { }
 				else
 				{
 					//flip as long as we're not a final render target
-					ret.M22 = 1.0f;
-					ret.M42 *= -1;
+					ret.Row1.Y = 1.0f;
+					ret.Row3.Y *= -1;
 				}
 			}
 			return ret;

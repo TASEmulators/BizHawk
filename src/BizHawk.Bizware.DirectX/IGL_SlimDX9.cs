@@ -754,17 +754,17 @@ namespace BizHawk.Bizware.DirectX
 		public Matrix4 CreateGuiProjectionMatrix(Size dims)
 		{
 			Matrix4 ret = Matrix4.Identity;
-			ret.M11 = 2.0f / (float)dims.Width;
-			ret.M22 = 2.0f / (float)dims.Height;
+			ret.Row0.X = 2.0f / (float)dims.Width;
+			ret.Row1.Y = 2.0f / (float)dims.Height;
 			return ret;
 		}
 
 		public Matrix4 CreateGuiViewMatrix(Size dims, bool autoFlip)
 		{
 			Matrix4 ret = Matrix4.Identity;
-			ret.M22 = -1.0f;
-			ret.M41 = -(float)dims.Width * 0.5f - 0.5f;
-			ret.M42 = (float)dims.Height * 0.5f + 0.5f;
+			ret.Row1.Y = -1.0f;
+			ret.Row3.X = -(float)dims.Width * 0.5f - 0.5f;
+			ret.Row3.Y = (float)dims.Height * 0.5f + 0.5f;
 
 			// auto-flipping isn't needed on d3d
 			return ret;
