@@ -113,10 +113,9 @@ namespace BizHawk.Bizware.BizwareGL
 		/// </summary>
 		BitmapBuffer ResolveTexture2d(Texture2d texture);
 
-		/// <summary>
-		/// Sets a 2d texture parameter
-		/// </summary>
-		void TexParameter2d(Texture2d texture, TextureParameterName pname, int param);
+		void SetMinFilter(Texture2d texture, TextureMinFilter minFilter);
+
+		void SetMagFilter(Texture2d texture, TextureMagFilter magFilter);
 
 		/// <summary>
 		/// creates a vertex layout resource

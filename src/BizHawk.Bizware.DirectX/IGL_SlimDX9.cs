@@ -649,24 +649,15 @@ namespace BizHawk.Bizware.DirectX
 			tw.WrapClamp = clamp ? TextureAddress.Clamp : TextureAddress.Wrap;
 		}
 
-		public void TexParameter2d(Texture2d tex, gl.TextureParameterName pName, int param)
-		{
-			var tw = (TextureWrapper)tex.Opaque;
+		public void SetMinFilter(Texture2d texture, gl.TextureMinFilter minFilter)
+			=> ((TextureWrapper) texture.Opaque).MinFilter = minFilter == gl.TextureMinFilter.Linear
+				? TextureFilter.Linear
+				: TextureFilter.Point;
 
-			if (pName == gl.TextureParameterName.TextureMinFilter)
-			{
-				tw.MinFilter = param == (int)gl.TextureMinFilter.Linear
-					? TextureFilter.Linear
-					: TextureFilter.Point;
-			}
-
-			if (pName == gl.TextureParameterName.TextureMagFilter)
-			{
-				tw.MagFilter = param == (int)gl.TextureMagFilter.Linear
-					? TextureFilter.Linear 
-					: TextureFilter.Point;
-			}
-		}
+		public void SetMagFilter(Texture2d texture, gl.TextureMagFilter magFilter)
+			=> ((TextureWrapper) texture.Opaque).MagFilter = magFilter == gl.TextureMagFilter.Linear
+				? TextureFilter.Linear
+				: TextureFilter.Point;
 
 		public Texture2d LoadTexture(Bitmap bitmap)
 		{
