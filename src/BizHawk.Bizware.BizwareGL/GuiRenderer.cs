@@ -24,9 +24,9 @@ namespace BizHawk.Bizware.BizwareGL
 			Owner = owner;
 
 			VertexLayout = owner.CreateVertexLayout();
-			VertexLayout.DefineVertexAttribute("aPosition", 0, 2, VertexAttribPointerType.Float, AttributeUsage.Position, false, 32, 0);
-			VertexLayout.DefineVertexAttribute("aTexcoord", 1, 2, VertexAttribPointerType.Float, AttributeUsage.Texcoord0, false, 32, 8);
-			VertexLayout.DefineVertexAttribute("aColor", 2, 4, VertexAttribPointerType.Float, AttributeUsage.Texcoord1, false, 32, 16);
+			VertexLayout.DefineVertexAttribute("aPosition", 0, 2, VertexAttribPointerType.Float, AttribUsage.Position, false, 32, 0);
+			VertexLayout.DefineVertexAttribute("aTexcoord", 1, 2, VertexAttribPointerType.Float, AttribUsage.Texcoord0, false, 32, 8);
+			VertexLayout.DefineVertexAttribute("aColor", 2, 4, VertexAttribPointerType.Float, AttribUsage.Texcoord1, false, 32, 16);
 			VertexLayout.Close();
 
 			_Projection = new MatrixStack();

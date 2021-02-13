@@ -1,6 +1,6 @@
 ﻿namespace BizHawk.Bizware.BizwareGL
 {
-	public enum AttributeUsage
+	public enum AttribUsage
 	{
 		Unspecified,
 		Position, 

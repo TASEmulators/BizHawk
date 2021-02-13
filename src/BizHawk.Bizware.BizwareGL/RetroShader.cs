@@ -18,9 +18,9 @@ namespace BizHawk.Bizware.BizwareGL
 			Owner = owner;
 
 			VertexLayout = owner.CreateVertexLayout();
-			VertexLayout.DefineVertexAttribute("position", 0, 4, VertexAttribPointerType.Float, AttributeUsage.Position, false, 40, 0);
-			VertexLayout.DefineVertexAttribute("color", 1, 4, VertexAttribPointerType.Float, AttributeUsage.Color0, false, 40, 16); //just dead weight, i have no idea why this is here. but some old HLSL compilers (used in bizhawk for various reasons) will want it to exist here since it exists in the vertex shader
-			VertexLayout.DefineVertexAttribute("tex", 2, 2, VertexAttribPointerType.Float, AttributeUsage.Texcoord0, false, 40, 32);
+			VertexLayout.DefineVertexAttribute("position", 0, 4, VertexAttribPointerType.Float, AttribUsage.Position, false, 40, 0);
+			VertexLayout.DefineVertexAttribute("color", 1, 4, VertexAttribPointerType.Float, AttribUsage.Color0, false, 40, 16); //just dead weight, i have no idea why this is here. but some old HLSL compilers (used in bizhawk for various reasons) will want it to exist here since it exists in the vertex shader
+			VertexLayout.DefineVertexAttribute("tex", 2, 2, VertexAttribPointerType.Float, AttribUsage.Texcoord0, false, 40, 32);
 			VertexLayout.Close();
 
 			string defines = "";

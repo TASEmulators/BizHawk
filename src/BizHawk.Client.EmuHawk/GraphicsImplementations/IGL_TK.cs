@@ -758,22 +758,22 @@ namespace BizHawk.Client.EmuHawk
 					//comment SNACKPANTS
 					switch (kvp.Value.Usage)
 					{
-						case AttributeUsage.Position:
+						case AttribUsage.Position:
 							GL.EnableClientState(ArrayCap.VertexArray);
 							GL.VertexPointer(kvp.Value.Components,VertexPointerType.Float,kvp.Value.Stride,new IntPtr(pData) + kvp.Value.Offset);
 							break;
-						case AttributeUsage.Texcoord0:
+						case AttribUsage.Texcoord0:
 							GL.ClientActiveTexture(TextureUnit.Texture0);
 							GL.EnableClientState(ArrayCap.TextureCoordArray);
 							GL.TexCoordPointer(kvp.Value.Components, TexCoordPointerType.Float, kvp.Value.Stride, new IntPtr(pData) + kvp.Value.Offset);
 							break;
-						case AttributeUsage.Texcoord1:
+						case AttribUsage.Texcoord1:
 							GL.ClientActiveTexture(TextureUnit.Texture1);
 							GL.EnableClientState(ArrayCap.TextureCoordArray);
 							GL.TexCoordPointer(kvp.Value.Components, TexCoordPointerType.Float, kvp.Value.Stride, new IntPtr(pData) + kvp.Value.Offset);
 							GL.ClientActiveTexture(TextureUnit.Texture0);
 							break;
-						case AttributeUsage.Color0:
+						case AttribUsage.Color0:
 							break;
 					}
 				}

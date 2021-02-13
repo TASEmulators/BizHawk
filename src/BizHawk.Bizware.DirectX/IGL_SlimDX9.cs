@@ -367,17 +367,17 @@ namespace BizHawk.Bizware.DirectX
 				byte usageIndex = 0;
 				switch(item.Usage)
 				{
-					case AttributeUsage.Position: 
+					case AttribUsage.Position:
 						usage = DeclarationUsage.Position; 
 						break;
-					case AttributeUsage.Texcoord0: 
+					case AttribUsage.Texcoord0:
 						usage = DeclarationUsage.TextureCoordinate;
 						break;
-					case AttributeUsage.Texcoord1: 
+					case AttribUsage.Texcoord1:
 						usage = DeclarationUsage.TextureCoordinate;
 						usageIndex = 1;
 						break;
-					case AttributeUsage.Color0:
+					case AttribUsage.Color0:
 						usage = DeclarationUsage.Color;
 						break;
 					default:
