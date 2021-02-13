@@ -1,7 +1,5 @@
 using System;
 
-using OpenTK.Graphics.OpenGL;
-
 namespace BizHawk.Bizware.BizwareGL
 {
 	public class GDIPTextureWrapper : IDisposable

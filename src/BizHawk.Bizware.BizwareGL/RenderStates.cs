@@ -7,29 +7,36 @@ namespace BizHawk.Bizware.BizwareGL
 	/// </summary>
 	public class CacheBlendState : IBlendState
 	{
-		public bool Enabled;
-		public global::OpenTK.Graphics.OpenGL.BlendingFactorSrc colorSource;
-		public global::OpenTK.Graphics.OpenGL.BlendEquationMode colorEquation;
-		public global::OpenTK.Graphics.OpenGL.BlendingFactorDest colorDest;
-		public global::OpenTK.Graphics.OpenGL.BlendingFactorSrc alphaSource;
-		public global::OpenTK.Graphics.OpenGL.BlendEquationMode alphaEquation;
-		public global::OpenTK.Graphics.OpenGL.BlendingFactorDest alphaDest;
+		public readonly bool Enabled;
 
-		public CacheBlendState(bool enabled,
-			global::OpenTK.Graphics.OpenGL.BlendingFactorSrc colorSource,
-			global::OpenTK.Graphics.OpenGL.BlendEquationMode colorEquation,
-			global::OpenTK.Graphics.OpenGL.BlendingFactorDest colorDest,
-			global::OpenTK.Graphics.OpenGL.BlendingFactorSrc alphaSource,
-			global::OpenTK.Graphics.OpenGL.BlendEquationMode alphaEquation,
-			global::OpenTK.Graphics.OpenGL.BlendingFactorDest alphaDest)
+		public readonly BlendingFactorSrc colorSource;
+
+		public readonly BlendEquationMode colorEquation;
+
+		public readonly BlendingFactorDest colorDest;
+
+		public readonly BlendingFactorSrc alphaSource;
+
+		public readonly BlendEquationMode alphaEquation;
+
+		public readonly BlendingFactorDest alphaDest;
+
+		public CacheBlendState(
+			bool enabled,
+			BlendingFactorSrc colorSource,
+			BlendEquationMode colorEquation,
+			BlendingFactorDest colorDest,
+			BlendingFactorSrc alphaSource,
+			BlendEquationMode alphaEquation,
+			BlendingFactorDest alphaDest)
 		{
 			this.Enabled = enabled;
-			this.colorSource = (global::OpenTK.Graphics.OpenGL.BlendingFactorSrc)colorSource;
-			this.colorEquation = (global::OpenTK.Graphics.OpenGL.BlendEquationMode)colorEquation;
-			this.colorDest = (global::OpenTK.Graphics.OpenGL.BlendingFactorDest)colorDest;
-			this.alphaSource = (global::OpenTK.Graphics.OpenGL.BlendingFactorSrc)alphaSource;
-			this.alphaEquation = (global::OpenTK.Graphics.OpenGL.BlendEquationMode)alphaEquation;
-			this.alphaDest = (global::OpenTK.Graphics.OpenGL.BlendingFactorDest)alphaDest;
+			this.colorSource = colorSource;
+			this.colorEquation = colorEquation;
+			this.colorDest = colorDest;
+			this.alphaSource = alphaSource;
+			this.alphaEquation = alphaEquation;
+			this.alphaDest = alphaDest;
 		}
 	}
 }

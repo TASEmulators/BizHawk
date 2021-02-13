@@ -17,9 +17,16 @@ using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 
+using BizGL = BizHawk.Bizware.BizwareGL;
+using BlendEquationMode = OpenTK.Graphics.OpenGL.BlendEquationMode;
+using BlendingFactorDest = OpenTK.Graphics.OpenGL.BlendingFactorDest;
+using BlendingFactorSrc = OpenTK.Graphics.OpenGL.BlendingFactorSrc;
+using ClearBufferMask = OpenTK.Graphics.OpenGL.ClearBufferMask;
+using PrimitiveType = OpenTK.Graphics.OpenGL.PrimitiveType;
 using sd = System.Drawing;
 using sdi = System.Drawing.Imaging;
 using swf = System.Windows.Forms;
+using VertexAttribPointerType = OpenTK.Graphics.OpenGL.VertexAttribPointerType;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -89,9 +96,9 @@ namespace BizHawk.Client.EmuHawk
 			GraphicsContext.Dispose(); GraphicsContext = null;
 		}
 
-		public void Clear(ClearBufferMask mask)
+		public void Clear(BizGL.ClearBufferMask mask)
 		{
-			GL.Clear(mask);
+			GL.Clear((ClearBufferMask) (int) mask); // these are the same enum
 		}
 		public void SetClearColor(sd.Color color)
 		{
@@ -126,8 +133,13 @@ namespace BizHawk.Client.EmuHawk
 			return CreateShader(ShaderType.VertexShader, source, entry, required);
 		}
 
-		public IBlendState CreateBlendState(BlendingFactorSrc colorSource, BlendEquationMode colorEquation, BlendingFactorDest colorDest,
-			BlendingFactorSrc alphaSource, BlendEquationMode alphaEquation, BlendingFactorDest alphaDest)
+		public IBlendState CreateBlendState(
+			BizGL.BlendingFactorSrc colorSource,
+			BizGL.BlendEquationMode colorEquation,
+			BizGL.BlendingFactorDest colorDest,
+			BizGL.BlendingFactorSrc alphaSource,
+			BizGL.BlendEquationMode alphaEquation,
+			BizGL.BlendingFactorDest alphaDest)
 		{
 			return new CacheBlendState(true, colorSource, colorEquation, colorDest, alphaSource, alphaEquation, alphaDest);
 		}
@@ -138,8 +150,15 @@ namespace BizHawk.Client.EmuHawk
 			if (mybs.Enabled)
 			{
 				GL.Enable(EnableCap.Blend);
-				GL.BlendEquationSeparate(mybs.colorEquation, mybs.alphaEquation);
-				GL.BlendFuncSeparate(mybs.colorSource, mybs.colorDest, mybs.alphaSource, mybs.alphaDest);
+				// these are all casts to copies of the same enum
+				GL.BlendEquationSeparate(
+					(BlendEquationMode) (int) mybs.colorEquation,
+					(BlendEquationMode) (int) mybs.alphaEquation);
+				GL.BlendFuncSeparate(
+					(BlendingFactorSrc) (int) mybs.colorSource,
+					(BlendingFactorDest) (int) mybs.colorDest,
+					(BlendingFactorSrc) (int) mybs.alphaSource,
+					(BlendingFactorDest) (int) mybs.alphaDest);
 			}
 			else GL.Disable(EnableCap.Blend);
 			if (rsBlend == _rsBlendNoneOpaque)
@@ -368,9 +387,9 @@ namespace BizHawk.Client.EmuHawk
 			MyBindArrayData(sStatePendingVertexLayout, pData);
 		}
 
-		public void DrawArrays(PrimitiveType mode, int first, int count)
+		public void DrawArrays(BizGL.PrimitiveType mode, int first, int count)
 		{
-			GL.DrawArrays(mode, first, count);
+			GL.DrawArrays((PrimitiveType) (int) mode, first, count); // these are the same enum
 		}
 
 		public void SetPipelineUniform(PipelineUniform uniform, bool value)
@@ -427,13 +446,13 @@ namespace BizHawk.Client.EmuHawk
 			GL.BindTexture(TextureTarget.Texture2D, (int)tex.Opaque);
 		}
 
-		public void SetMinFilter(Texture2d texture, TextureMinFilter minFilter)
+		public void SetMinFilter(Texture2d texture, BizGL.TextureMinFilter minFilter)
 		{
 			BindTexture2d(texture);
 			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int) minFilter);
 		}
 
-		public void SetMagFilter(Texture2d texture, TextureMagFilter magFilter)
+		public void SetMagFilter(Texture2d texture, BizGL.TextureMagFilter magFilter)
 		{
 			BindTexture2d(texture);
 			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int) magFilter);
@@ -490,8 +509,8 @@ namespace BizHawk.Client.EmuHawk
 			Texture2d tex = new Texture2d(this, texId, w, h);
 			GL.BindTexture(TextureTarget.Texture2D, texId);
 			GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba8, w, h, 0, PixelFormat.Bgra, PixelType.UnsignedByte, IntPtr.Zero);
-			tex.SetMagFilter(TextureMagFilter.Nearest);
-			tex.SetMinFilter(TextureMinFilter.Nearest);
+			tex.SetMagFilter(BizGL.TextureMagFilter.Nearest);
+			tex.SetMinFilter(BizGL.TextureMinFilter.Nearest);
 
 			// create the FBO
 			int fbId = GL.Ext.GenFramebuffer();
@@ -752,7 +771,13 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if(_currPipeline.Memo == "gui")
 				{
-					GL.VertexAttribPointer(kvp.Key, kvp.Value.Components, (VertexAttribPointerType)kvp.Value.AttribType, kvp.Value.Normalized, kvp.Value.Stride, new IntPtr(pData) + kvp.Value.Offset);
+					GL.VertexAttribPointer(
+						kvp.Key,
+						kvp.Value.Components,
+						(VertexAttribPointerType) (int) kvp.Value.AttribType, // these are the same enum
+						kvp.Value.Normalized,
+						kvp.Value.Stride,
+						new IntPtr(pData) + kvp.Value.Offset);
 					GL.EnableVertexAttribArray(kvp.Key);
 					currBindings.Add(kvp.Key);
 				}
@@ -801,18 +826,18 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_rsBlendNoneVerbatim = new CacheBlendState(
 				false, 
-				BlendingFactorSrc.One, BlendEquationMode.FuncAdd, BlendingFactorDest.Zero, 
-				BlendingFactorSrc.One, BlendEquationMode.FuncAdd, BlendingFactorDest.Zero);
+				BizGL.BlendingFactorSrc.One, BizGL.BlendEquationMode.FuncAdd, BizGL.BlendingFactorDest.Zero,
+				BizGL.BlendingFactorSrc.One, BizGL.BlendEquationMode.FuncAdd, BizGL.BlendingFactorDest.Zero);
 
 			_rsBlendNoneOpaque = new CacheBlendState(
 				false, 
-				BlendingFactorSrc.One, BlendEquationMode.FuncAdd, BlendingFactorDest.Zero, 
-				BlendingFactorSrc.ConstantAlpha, BlendEquationMode.FuncAdd, BlendingFactorDest.Zero);
+				BizGL.BlendingFactorSrc.One, BizGL.BlendEquationMode.FuncAdd, BizGL.BlendingFactorDest.Zero,
+				BizGL.BlendingFactorSrc.ConstantAlpha, BizGL.BlendEquationMode.FuncAdd, BizGL.BlendingFactorDest.Zero);
 
 			_rsBlendNormal = new CacheBlendState(
 				true,
-				BlendingFactorSrc.SrcAlpha, BlendEquationMode.FuncAdd, BlendingFactorDest.OneMinusSrcAlpha,
-				BlendingFactorSrc.One, BlendEquationMode.FuncAdd, BlendingFactorDest.Zero);
+				BizGL.BlendingFactorSrc.SrcAlpha, BizGL.BlendEquationMode.FuncAdd, BizGL.BlendingFactorDest.OneMinusSrcAlpha,
+				BizGL.BlendingFactorSrc.One, BizGL.BlendEquationMode.FuncAdd, BizGL.BlendingFactorDest.Zero);
 		}
 
 		private CacheBlendState _rsBlendNoneVerbatim, _rsBlendNoneOpaque, _rsBlendNormal;

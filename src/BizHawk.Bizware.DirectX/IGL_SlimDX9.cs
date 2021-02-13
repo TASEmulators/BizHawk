@@ -7,7 +7,8 @@ using BizHawk.Bizware.BizwareGL;
 
 using SlimDX.Direct3D9;
 using OpenTK;
-using gl = OpenTK.Graphics.OpenGL;
+
+using PrimitiveType = SlimDX.Direct3D9.PrimitiveType;
 using sd = System.Drawing;
 using sdi = System.Drawing.Imaging;
 using swf = System.Windows.Forms;
@@ -130,12 +131,12 @@ namespace BizHawk.Bizware.DirectX
 			_d3d.Dispose();
 		}
 
-		public void Clear(OpenTK.Graphics.OpenGL.ClearBufferMask mask)
+		public void Clear(ClearBufferMask mask)
 		{
 			ClearFlags flags = ClearFlags.None;
-			if ((mask & gl.ClearBufferMask.ColorBufferBit) != 0) flags |= ClearFlags.Target;
-			if ((mask & gl.ClearBufferMask.DepthBufferBit) != 0) flags |= ClearFlags.ZBuffer;
-			if ((mask & gl.ClearBufferMask.StencilBufferBit) != 0) flags |= ClearFlags.Stencil;
+			if ((mask & ClearBufferMask.ColorBufferBit) != 0) flags |= ClearFlags.Target;
+			if ((mask & ClearBufferMask.DepthBufferBit) != 0) flags |= ClearFlags.ZBuffer;
+			if ((mask & ClearBufferMask.StencilBufferBit) != 0) flags |= ClearFlags.Stencil;
 			Dev.Clear(flags, _clearColor, 0.0f, 0);
 		}
 
@@ -145,8 +146,13 @@ namespace BizHawk.Bizware.DirectX
 			_clearColor = color.ToArgb();
 		}
 
-		public IBlendState CreateBlendState(gl.BlendingFactorSrc colorSource, gl.BlendEquationMode colorEquation, gl.BlendingFactorDest colorDest,
-					gl.BlendingFactorSrc alphaSource, gl.BlendEquationMode alphaEquation, gl.BlendingFactorDest alphaDest)
+		public IBlendState CreateBlendState(
+			BlendingFactorSrc colorSource,
+			BlendEquationMode colorEquation,
+			BlendingFactorDest colorDest,
+			BlendingFactorSrc alphaSource,
+			BlendEquationMode alphaEquation,
+			BlendingFactorDest alphaDest)
 		{
 			return new CacheBlendState(true, colorSource, colorEquation, colorDest, alphaSource, alphaEquation, alphaDest);
 		}
@@ -238,42 +244,42 @@ namespace BizHawk.Bizware.DirectX
 			}
 		}
 
-		private BlendOperation ConvertBlendOp(gl.BlendEquationMode glMode)
+		private BlendOperation ConvertBlendOp(BlendEquationMode glMode)
 		{
 			return glMode switch
 			{
-				gl.BlendEquationMode.FuncAdd => BlendOperation.Add,
-				gl.BlendEquationMode.FuncSubtract => BlendOperation.Subtract,
-				gl.BlendEquationMode.Max => BlendOperation.Maximum,
-				gl.BlendEquationMode.Min => BlendOperation.Minimum,
-				gl.BlendEquationMode.FuncReverseSubtract => BlendOperation.ReverseSubtract,
+				BlendEquationMode.FuncAdd => BlendOperation.Add,
+				BlendEquationMode.FuncSubtract => BlendOperation.Subtract,
+				BlendEquationMode.Max => BlendOperation.Maximum,
+				BlendEquationMode.Min => BlendOperation.Minimum,
+				BlendEquationMode.FuncReverseSubtract => BlendOperation.ReverseSubtract,
 				_ => throw new ArgumentOutOfRangeException()
 			};
 		}
 
-		private Blend ConvertBlendArg(gl.BlendingFactorDest glMode) => ConvertBlendArg((gl.BlendingFactorSrc)glMode);
+		private Blend ConvertBlendArg(BlendingFactorDest glMode) => ConvertBlendArg((BlendingFactorSrc) glMode);
 
-		private Blend ConvertBlendArg(gl.BlendingFactorSrc glMode) => glMode switch
+		private Blend ConvertBlendArg(BlendingFactorSrc glMode) => glMode switch
 		{
-			gl.BlendingFactorSrc.Zero => Blend.Zero,
-			gl.BlendingFactorSrc.One => Blend.One,
-			gl.BlendingFactorSrc.SrcColor => Blend.SourceColor,
-			gl.BlendingFactorSrc.OneMinusSrcColor => Blend.InverseSourceColor,
-			gl.BlendingFactorSrc.SrcAlpha => Blend.SourceAlpha,
-			gl.BlendingFactorSrc.OneMinusSrcAlpha => Blend.InverseSourceAlpha,
-			gl.BlendingFactorSrc.DstAlpha => Blend.DestinationAlpha,
-			gl.BlendingFactorSrc.OneMinusDstAlpha => Blend.InverseDestinationAlpha,
-			gl.BlendingFactorSrc.DstColor => Blend.DestinationColor,
-			gl.BlendingFactorSrc.OneMinusDstColor => Blend.InverseDestinationColor,
-			gl.BlendingFactorSrc.SrcAlphaSaturate => Blend.SourceAlphaSaturated,
-			gl.BlendingFactorSrc.ConstantColor => Blend.BlendFactor,
-			gl.BlendingFactorSrc.OneMinusConstantColor => Blend.InverseBlendFactor,
-			gl.BlendingFactorSrc.ConstantAlpha => throw new NotSupportedException(),
-			gl.BlendingFactorSrc.OneMinusConstantAlpha => throw new NotSupportedException(),
-			gl.BlendingFactorSrc.Src1Alpha => throw new NotSupportedException(),
-			gl.BlendingFactorSrc.Src1Color => throw new NotSupportedException(),
-			gl.BlendingFactorSrc.OneMinusSrc1Color => throw new NotSupportedException(),
-			gl.BlendingFactorSrc.OneMinusSrc1Alpha => throw new NotSupportedException(),
+			BlendingFactorSrc.Zero => Blend.Zero,
+			BlendingFactorSrc.One => Blend.One,
+			BlendingFactorSrc.SrcColor => Blend.SourceColor,
+			BlendingFactorSrc.OneMinusSrcColor => Blend.InverseSourceColor,
+			BlendingFactorSrc.SrcAlpha => Blend.SourceAlpha,
+			BlendingFactorSrc.OneMinusSrcAlpha => Blend.InverseSourceAlpha,
+			BlendingFactorSrc.DstAlpha => Blend.DestinationAlpha,
+			BlendingFactorSrc.OneMinusDstAlpha => Blend.InverseDestinationAlpha,
+			BlendingFactorSrc.DstColor => Blend.DestinationColor,
+			BlendingFactorSrc.OneMinusDstColor => Blend.InverseDestinationColor,
+			BlendingFactorSrc.SrcAlphaSaturate => Blend.SourceAlphaSaturated,
+			BlendingFactorSrc.ConstantColor => Blend.BlendFactor,
+			BlendingFactorSrc.OneMinusConstantColor => Blend.InverseBlendFactor,
+			BlendingFactorSrc.ConstantAlpha => throw new NotSupportedException(),
+			BlendingFactorSrc.OneMinusConstantAlpha => throw new NotSupportedException(),
+			BlendingFactorSrc.Src1Alpha => throw new NotSupportedException(),
+			BlendingFactorSrc.Src1Color => throw new NotSupportedException(),
+			BlendingFactorSrc.OneMinusSrc1Color => throw new NotSupportedException(),
+			BlendingFactorSrc.OneMinusSrc1Alpha => throw new NotSupportedException(),
 			_ => throw new ArgumentOutOfRangeException()
 		};
 
@@ -305,18 +311,18 @@ namespace BizHawk.Bizware.DirectX
 		{
 			_rsBlendNoneVerbatim = new CacheBlendState(
 				false,
-				gl.BlendingFactorSrc.One, gl.BlendEquationMode.FuncAdd, gl.BlendingFactorDest.Zero,
-				gl.BlendingFactorSrc.One, gl.BlendEquationMode.FuncAdd, gl.BlendingFactorDest.Zero);
+				BlendingFactorSrc.One, BlendEquationMode.FuncAdd, BlendingFactorDest.Zero,
+				BlendingFactorSrc.One, BlendEquationMode.FuncAdd, BlendingFactorDest.Zero);
 
 			_rsBlendNoneOpaque = new CacheBlendState(
 				false,
-				gl.BlendingFactorSrc.One, gl.BlendEquationMode.FuncAdd, gl.BlendingFactorDest.Zero,
-				gl.BlendingFactorSrc.ConstantAlpha, gl.BlendEquationMode.FuncAdd, gl.BlendingFactorDest.Zero);
+				BlendingFactorSrc.One, BlendEquationMode.FuncAdd, BlendingFactorDest.Zero,
+				BlendingFactorSrc.ConstantAlpha, BlendEquationMode.FuncAdd, BlendingFactorDest.Zero);
 
 			_rsBlendNormal = new CacheBlendState(
 				true,
-				gl.BlendingFactorSrc.SrcAlpha, gl.BlendEquationMode.FuncAdd, gl.BlendingFactorDest.OneMinusSrcAlpha,
-				gl.BlendingFactorSrc.One, gl.BlendEquationMode.FuncAdd, gl.BlendingFactorDest.Zero);
+				BlendingFactorSrc.SrcAlpha, BlendEquationMode.FuncAdd, BlendingFactorDest.OneMinusSrcAlpha,
+				BlendingFactorSrc.One, BlendEquationMode.FuncAdd, BlendingFactorDest.Zero);
 		}
 
 		private CacheBlendState _rsBlendNoneVerbatim, _rsBlendNoneOpaque, _rsBlendNormal;
@@ -351,7 +357,7 @@ namespace BizHawk.Bizware.DirectX
 				DeclarationType declType;
 				switch (item.AttribType)
 				{
-					case gl.VertexAttribPointerType.Float:
+					case VertexAttribPointerType.Float:
 						if (item.Components == 1) declType = DeclarationType.Float1;
 						else if (item.Components == 2) declType = DeclarationType.Float2;
 						else if (item.Components == 3) declType = DeclarationType.Float3;
@@ -649,13 +655,13 @@ namespace BizHawk.Bizware.DirectX
 			tw.WrapClamp = clamp ? TextureAddress.Clamp : TextureAddress.Wrap;
 		}
 
-		public void SetMinFilter(Texture2d texture, gl.TextureMinFilter minFilter)
-			=> ((TextureWrapper) texture.Opaque).MinFilter = minFilter == gl.TextureMinFilter.Linear
+		public void SetMinFilter(Texture2d texture, TextureMinFilter minFilter)
+			=> ((TextureWrapper) texture.Opaque).MinFilter = minFilter == TextureMinFilter.Linear
 				? TextureFilter.Linear
 				: TextureFilter.Point;
 
-		public void SetMagFilter(Texture2d texture, gl.TextureMagFilter magFilter)
-			=> ((TextureWrapper) texture.Opaque).MagFilter = magFilter == gl.TextureMagFilter.Linear
+		public void SetMagFilter(Texture2d texture, TextureMagFilter magFilter)
+			=> ((TextureWrapper) texture.Opaque).MagFilter = magFilter == TextureMagFilter.Linear
 				? TextureFilter.Linear
 				: TextureFilter.Point;
 
@@ -924,12 +930,12 @@ namespace BizHawk.Bizware.DirectX
 			return ret;
 		}
 
-		/// <exception cref="NotSupportedException"><paramref name="mode"/> is <see cref="gl.PrimitiveType.TriangleStrip"/></exception>
-		public unsafe void DrawArrays(gl.PrimitiveType mode, int first, int count)
+		/// <exception cref="NotSupportedException"><paramref name="mode"/> is not <see cref="BizwareGL.PrimitiveType.TriangleStrip"/></exception>
+		public unsafe void DrawArrays(BizwareGL.PrimitiveType mode, int first, int count)
 		{
 			var pt = PrimitiveType.TriangleStrip;
 
-			if (mode != gl.PrimitiveType.TriangleStrip)
+			if (mode != BizwareGL.PrimitiveType.TriangleStrip)
 			{
 				throw new NotSupportedException();
 			}
