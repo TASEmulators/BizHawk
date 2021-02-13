@@ -135,14 +135,11 @@ namespace BizHawk.Client.EmuHawk
 	
 		}
 
-		public void TexParameter2d(Texture2d tex, TextureParameterName pname, int param)
-		{
-			var tw = tex.Opaque as GDIPTextureWrapper;
-			if (pname == TextureParameterName.TextureMinFilter)
-				tw.MinFilter = (TextureMinFilter)param;
-			if (pname == TextureParameterName.TextureMagFilter)
-				tw.MagFilter = (TextureMagFilter)param;
-		}
+		public void SetMinFilter(Texture2d texture, TextureMinFilter minFilter)
+			=> ((GDIPTextureWrapper) texture.Opaque).MinFilter = minFilter;
+
+		public void SetMagFilter(Texture2d texture, TextureMagFilter magFilter)
+			=> ((GDIPTextureWrapper) texture.Opaque).MagFilter = magFilter;
 
 		public Texture2d LoadTexture(Bitmap bitmap)
 		{

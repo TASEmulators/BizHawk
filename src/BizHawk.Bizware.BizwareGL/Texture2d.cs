@@ -41,15 +41,9 @@ namespace BizHawk.Bizware.BizwareGL
 		{
 		}
 
-		public void SetMinFilter(TextureMinFilter minFilter)
-		{
-			Owner.TexParameter2d(this,TextureParameterName.TextureMinFilter, (int)minFilter);
-		}
+		public void SetMinFilter(TextureMinFilter minFilter) => Owner.SetMinFilter(this, minFilter);
 
-		public void SetMagFilter(TextureMagFilter magFilter)
-		{
-			Owner.TexParameter2d(this, TextureParameterName.TextureMagFilter, (int)magFilter);
-		}
+		public void SetMagFilter(TextureMagFilter magFilter) => Owner.SetMagFilter(this, magFilter);
 
 		public void SetFilterLinear()
 		{
