@@ -3,7 +3,7 @@
 	/// <summary>
 	/// This enum is used to specify how you want your <see cref="Watch"/> to be displayed
 	/// </summary>
-	public enum DisplayType
+	public enum WatchDisplayType
 	{
 		/// <summary>
 		/// Separator, only used by <see cref="SeparatorWatch"/>

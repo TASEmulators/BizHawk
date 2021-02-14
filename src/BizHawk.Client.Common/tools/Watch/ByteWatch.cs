@@ -20,14 +20,14 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		/// <param name="domain"><see cref="MemoryDomain"/> where you want to track</param>
 		/// <param name="address">The address you want to track</param>
-		/// <param name="type">How you you want to display the value See <see cref="DisplayType"/></param>
+		/// <param name="type">How you you want to display the value See <see cref="WatchDisplayType"/></param>
 		/// <param name="bigEndian">Specify the endianess. true for big endian</param>
 		/// <param name="note">A custom note about the <see cref="Watch"/></param>
 		/// <param name="value">Current value</param>
 		/// <param name="previous">Previous value</param>
 		/// <param name="changeCount">How many times value has changed</param>
-		/// <exception cref="ArgumentException">Occurs when a <see cref="DisplayType"/> is incompatible with <see cref="WatchSize.Byte"/></exception>
-		internal ByteWatch(MemoryDomain domain, long address, DisplayType type, bool bigEndian, string note, byte value, byte previous, int changeCount)
+		/// <exception cref="ArgumentException">Occurs when a <see cref="WatchDisplayType"/> is incompatible with <see cref="WatchSize.Byte"/></exception>
+		internal ByteWatch(MemoryDomain domain, long address, WatchDisplayType type, bool bigEndian, string note, byte value, byte previous, int changeCount)
 			: base(domain, address, WatchSize.Byte, type, bigEndian, note)
 		{
 			_value = value == 0 ? GetByte() : value;
@@ -36,24 +36,24 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <summary>
-		/// Gets an enumeration of <see cref="DisplayType"/> that are valid for a <see cref="ByteWatch"/>
+		/// Gets an enumeration of <see cref="WatchDisplayType"/> that are valid for a <see cref="ByteWatch"/>
 		/// </summary>
-		public static IEnumerable<DisplayType> ValidTypes
+		public static IEnumerable<WatchDisplayType> ValidTypes
 		{
 			get
 			{
-				yield return DisplayType.Unsigned;
-				yield return DisplayType.Signed;
-				yield return DisplayType.Hex;
-				yield return DisplayType.Binary;
+				yield return WatchDisplayType.Unsigned;
+				yield return WatchDisplayType.Signed;
+				yield return WatchDisplayType.Hex;
+				yield return WatchDisplayType.Binary;
 			}
 		}
 
 		/// <summary>
-		/// Get a list a <see cref="DisplayType"/> that can be used for this <see cref="ByteWatch"/>
+		/// Get a list a <see cref="WatchDisplayType"/> that can be used for this <see cref="ByteWatch"/>
 		/// </summary>
-		/// <returns>An enumeration that contains all valid <see cref="DisplayType"/></returns>
-		public override IEnumerable<DisplayType> AvailableTypes()
+		/// <returns>An enumeration that contains all valid <see cref="WatchDisplayType"/></returns>
+		public override IEnumerable<WatchDisplayType> AvailableTypes()
 		{
 			return ValidTypes;
 		}
@@ -79,7 +79,7 @@ namespace BizHawk.Client.Common
 				byte val = 0;
 				switch (Type)
 				{
-					case DisplayType.Unsigned:
+					case WatchDisplayType.Unsigned:
 						if (value.IsUnsigned())
 						{
 							val = (byte)int.Parse(value);
@@ -90,7 +90,7 @@ namespace BizHawk.Client.Common
 						}
 
 						break;
-					case DisplayType.Signed:
+					case WatchDisplayType.Signed:
 						if (value.IsSigned())
 						{
 							val = (byte)(sbyte)int.Parse(value);
@@ -101,7 +101,7 @@ namespace BizHawk.Client.Common
 						}
 
 						break;
-					case DisplayType.Hex:
+					case WatchDisplayType.Hex:
 						if (value.IsHex())
 						{
 							val = (byte)int.Parse(value, NumberStyles.HexNumber);
@@ -112,7 +112,7 @@ namespace BizHawk.Client.Common
 						}
 
 						break;
-					case DisplayType.Binary:
+					case WatchDisplayType.Binary:
 						if (value.IsBinary())
 						{
 							val = (byte)Convert.ToInt32(value, 2);
@@ -171,10 +171,10 @@ namespace BizHawk.Client.Common
 			return Type switch
 			{
 				_ when !IsValid => "-",
-				DisplayType.Unsigned => val.ToString(),
-				DisplayType.Signed => ((sbyte) val).ToString(),
-				DisplayType.Hex => $"{val:X2}",
-				DisplayType.Binary => Convert.ToString(val, 2).PadLeft(8, '0').Insert(4, " "),
+				WatchDisplayType.Unsigned => val.ToString(),
+				WatchDisplayType.Signed => ((sbyte) val).ToString(),
+				WatchDisplayType.Hex => $"{val:X2}",
+				WatchDisplayType.Binary => Convert.ToString(val, 2).PadLeft(8, '0').Insert(4, " "),
 				_ => val.ToString()
 			};
 		}

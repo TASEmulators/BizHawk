@@ -79,7 +79,7 @@ namespace BizHawk.Client.Common
 
 		public char SizeAsChar => _watch.SizeAsChar;
 
-		public DisplayType Type => _watch.Type;
+		public WatchDisplayType Type => _watch.Type;
 
 		public char TypeAsChar => _watch.TypeAsChar;
 
@@ -267,7 +267,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void SetType(DisplayType type)
+		public void SetType(WatchDisplayType type)
 		{
 			if (_watch.IsDisplayTypeAvailable(type))
 			{

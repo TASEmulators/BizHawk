@@ -73,7 +73,7 @@ namespace BizHawk.Client.EmuHawk
 
 			ValueHexIndLabel.Text =
 				CompareHexIndLabel.Text =
-				_cheat.Type == DisplayType.Hex ? HexInd : "";
+				_cheat.Type == WatchDisplayType.Hex ? HexInd : "";
 
 			BigEndianCheckBox.Checked = _cheat.BigEndian ?? false;
 
@@ -119,7 +119,7 @@ namespace BizHawk.Client.EmuHawk
 
 			ValueBox.Type = 
 				CompareBox.Type =
-				DisplayType.Hex;
+				WatchDisplayType.Hex;
 
 			ValueBox.ResetText();
 			CompareBox.ResetText();
@@ -130,7 +130,7 @@ namespace BizHawk.Client.EmuHawk
 
 			BigEndianCheckBox.Checked = false;
 
-			SetTypeSelected(DisplayType.Hex);
+			SetTypeSelected(WatchDisplayType.Hex);
 
 			CheckFormState();
 			CompareBox.Text = ""; // TODO: A needed hack until WatchValueBox.ToRawInt() becomes nullable
@@ -154,7 +154,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void SetTypeSelected(DisplayType type)
+		private void SetTypeSelected(WatchDisplayType type)
 		{
 			foreach (var item in DisplayTypeDropDown.Items)
 			{
@@ -185,21 +185,21 @@ namespace BizHawk.Client.EmuHawk
 			{
 				default:
 				case 0:
-					foreach (DisplayType t in ByteWatch.ValidTypes)
+					foreach (WatchDisplayType t in ByteWatch.ValidTypes)
 					{
 						DisplayTypeDropDown.Items.Add(Watch.DisplayTypeToString(t));
 					}
 
 					break;
 				case 1:
-					foreach (DisplayType t in WordWatch.ValidTypes)
+					foreach (WatchDisplayType t in WordWatch.ValidTypes)
 					{
 						DisplayTypeDropDown.Items.Add(Watch.DisplayTypeToString(t));
 					}
 
 					break;
 				case 2:
-					foreach (DisplayType t in DWordWatch.ValidTypes)
+					foreach (WatchDisplayType t in DWordWatch.ValidTypes)
 					{
 						DisplayTypeDropDown.Items.Add(Watch.DisplayTypeToString(t));
 					}

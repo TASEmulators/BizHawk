@@ -205,7 +205,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 			}
 		}
 
-		public void SetType(DisplayType type) => _settings.Type = type;
+		public void SetType(WatchDisplayType type) => _settings.Type = type;
 
 		public void SetEndian(bool bigEndian) => _settings.BigEndian = bigEndian;
 
@@ -358,33 +358,33 @@ namespace BizHawk.Client.Common.RamSearchEngine
 			{
 				default:
 				case ComparisonOperator.Equal:
-					return _settings.Type == DisplayType.Float
+					return _settings.Type == WatchDisplayType.Float
 						? watchList.Where(w => GetValue(w.Address).ToFloat().HawkFloatEquality(w.Previous.ToFloat()))
 						: watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) == SignExtendAsNeeded(w.Previous));
 				case ComparisonOperator.NotEqual:
 					return watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) != SignExtendAsNeeded(w.Previous));
 				case ComparisonOperator.GreaterThan:
-					return _settings.Type == DisplayType.Float
+					return _settings.Type == WatchDisplayType.Float
 						? watchList.Where(w => GetValue(w.Address).ToFloat() > w.Previous.ToFloat())
 						: watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) > SignExtendAsNeeded(w.Previous));
 				case ComparisonOperator.GreaterThanEqual:
-					return _settings.Type == DisplayType.Float
+					return _settings.Type == WatchDisplayType.Float
 						? watchList.Where(w => GetValue(w.Address).ToFloat() >= w.Previous.ToFloat())
 						: watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) >= SignExtendAsNeeded(w.Previous));
 
 				case ComparisonOperator.LessThan:
-					return _settings.Type == DisplayType.Float
+					return _settings.Type == WatchDisplayType.Float
 						? watchList.Where(w => GetValue(w.Address).ToFloat() < w.Previous.ToFloat())
 						: watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) < SignExtendAsNeeded(w.Previous));
 				case ComparisonOperator.LessThanEqual:
-					return _settings.Type == DisplayType.Float
+					return _settings.Type == WatchDisplayType.Float
 						? watchList.Where(w => GetValue(w.Address).ToFloat() <= w.Previous.ToFloat())
 						: watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) <= SignExtendAsNeeded(w.Previous));
 				case ComparisonOperator.DifferentBy:
 					if (DifferentBy.HasValue)
 					{
 						var differentBy = DifferentBy.Value;
-						if (_settings.Type == DisplayType.Float)
+						if (_settings.Type == WatchDisplayType.Float)
 						{
 							return watchList.Where(w => (GetValue(w.Address).ToFloat() + differentBy).HawkFloatEquality(w.Previous.ToFloat())
 								|| (GetValue(w.Address).ToFloat() - differentBy).HawkFloatEquality(w.Previous.ToFloat()));
@@ -414,28 +414,28 @@ namespace BizHawk.Client.Common.RamSearchEngine
 				{
 					default:
 					case ComparisonOperator.Equal:
-						return _settings.Type == DisplayType.Float
+						return _settings.Type == WatchDisplayType.Float
 							? watchList.Where(w => GetValue(w.Address).ToFloat().HawkFloatEquality(compareValue.ToFloat()))
 							: watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) == SignExtendAsNeeded(compareValue));
 					case ComparisonOperator.NotEqual:
-						return _settings.Type == DisplayType.Float
+						return _settings.Type == WatchDisplayType.Float
 							? watchList.Where(w => !GetValue(w.Address).ToFloat().HawkFloatEquality(compareValue.ToFloat()))
 							: watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) != SignExtendAsNeeded(compareValue));
 					case ComparisonOperator.GreaterThan:
-						return _settings.Type == DisplayType.Float
+						return _settings.Type == WatchDisplayType.Float
 							? watchList.Where(w => GetValue(w.Address).ToFloat() > compareValue.ToFloat())
 							: watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) > SignExtendAsNeeded(compareValue));
 					case ComparisonOperator.GreaterThanEqual:
-						return _settings.Type == DisplayType.Float
+						return _settings.Type == WatchDisplayType.Float
 							? watchList.Where(w => GetValue(w.Address).ToFloat() >= compareValue.ToFloat())
 							: watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) >= SignExtendAsNeeded(compareValue));
 					case ComparisonOperator.LessThan:
-						return _settings.Type == DisplayType.Float
+						return _settings.Type == WatchDisplayType.Float
 							? watchList.Where(w => GetValue(w.Address).ToFloat() < compareValue.ToFloat())
 							: watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) < SignExtendAsNeeded(compareValue));
 
 					case ComparisonOperator.LessThanEqual:
-						return _settings.Type == DisplayType.Float
+						return _settings.Type == WatchDisplayType.Float
 							? watchList.Where(w => GetValue(w.Address).ToFloat() <= compareValue.ToFloat())
 							: watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) <= SignExtendAsNeeded(compareValue));
 
@@ -443,7 +443,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 						if (DifferentBy.HasValue)
 						{
 							var differentBy = DifferentBy.Value;
-							if (_settings.Type == DisplayType.Float)
+							if (_settings.Type == WatchDisplayType.Float)
 							{
 								return watchList.Where(w => (GetValue(w.Address).ToFloat() + differentBy).HawkFloatEquality(compareValue)
 									|| (GetValue(w.Address).ToFloat() - differentBy).HawkFloatEquality(compareValue));
@@ -552,34 +552,34 @@ namespace BizHawk.Client.Common.RamSearchEngine
 				{
 					default:
 					case ComparisonOperator.Equal:
-						return _settings.Type == DisplayType.Float
+						return _settings.Type == WatchDisplayType.Float
 							? watchList.Where(w => (GetValue(w.Address).ToFloat() - w.Previous.ToFloat()).HawkFloatEquality(compareValue))
 							: watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) - SignExtendAsNeeded(w.Previous) == compareValue);
 					case ComparisonOperator.NotEqual:
-						return _settings.Type == DisplayType.Float
+						return _settings.Type == WatchDisplayType.Float
 							? watchList.Where(w => !(GetValue(w.Address).ToFloat() - w.Previous.ToFloat()).HawkFloatEquality(compareValue))
 							: watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) - SignExtendAsNeeded(w.Previous) != compareValue);
 					case ComparisonOperator.GreaterThan:
-						return _settings.Type == DisplayType.Float
+						return _settings.Type == WatchDisplayType.Float
 							? watchList.Where(w => GetValue(w.Address).ToFloat() - w.Previous.ToFloat() > compareValue)
 							: watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) - SignExtendAsNeeded(w.Previous) > compareValue);
 					case ComparisonOperator.GreaterThanEqual:
-						return _settings.Type == DisplayType.Float
+						return _settings.Type == WatchDisplayType.Float
 							? watchList.Where(w => GetValue(w.Address).ToFloat() - w.Previous.ToFloat() >= compareValue)
 							: watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) - SignExtendAsNeeded(w.Previous) >= compareValue);
 					case ComparisonOperator.LessThan:
-						return _settings.Type == DisplayType.Float
+						return _settings.Type == WatchDisplayType.Float
 							? watchList.Where(w => GetValue(w.Address).ToFloat() - w.Previous.ToFloat() < compareValue)
 							: watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) - SignExtendAsNeeded(w.Previous) < compareValue);
 					case ComparisonOperator.LessThanEqual:
-						return _settings.Type == DisplayType.Float
+						return _settings.Type == WatchDisplayType.Float
 							? watchList.Where(w => GetValue(w.Address).ToFloat() - w.Previous.ToFloat() <= compareValue)
 							: watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) - SignExtendAsNeeded(w.Previous) <= compareValue);
 					case ComparisonOperator.DifferentBy:
 						if (DifferentBy.HasValue)
 						{
 							var differentBy = DifferentBy.Value;
-							if (_settings.Type == DisplayType.Float)
+							if (_settings.Type == WatchDisplayType.Float)
 							{
 								return watchList.Where(w => (GetValue(w.Address).ToFloat() - w.Previous.ToFloat() + differentBy).HawkFloatEquality(compareValue)
 									|| (GetValue(w.Address).ToFloat() - w.Previous.ToFloat() - differentBy).HawkFloatEquality(w.Previous));
@@ -599,7 +599,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 
 		private long SignExtendAsNeeded(long val)
 		{
-			if (_settings.Type != DisplayType.Signed)
+			if (_settings.Type != WatchDisplayType.Signed)
 			{
 				return val;
 			}

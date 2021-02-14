@@ -98,7 +98,7 @@ namespace BizHawk.Client.EmuHawk
 			this.ValueBox.Size = new System.Drawing.Size(116, 20);
 			this.ValueBox.TabIndex = 10;
 			this.ValueBox.Text = "00";
-			this.ValueBox.Type = BizHawk.Client.Common.DisplayType.Hex;
+			this.ValueBox.Type = BizHawk.Client.Common.WatchDisplayType.Hex;
 			// 
 			// ValueHexLabel
 			// 

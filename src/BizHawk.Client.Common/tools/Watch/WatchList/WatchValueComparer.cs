@@ -29,7 +29,7 @@ namespace BizHawk.Client.Common
 				int xValue;
 				int yValue;
 
-				if (x.Type == DisplayType.Signed)
+				if (x.Type == WatchDisplayType.Signed)
 				{
 					int.TryParse(x.ValueString, out xValue);
 				}
@@ -38,7 +38,7 @@ namespace BizHawk.Client.Common
 					xValue = x.Value;
 				}
 
-				if (y.Type == DisplayType.Signed)
+				if (y.Type == WatchDisplayType.Signed)
 				{
 					int.TryParse(y.ValueString, out yValue);
 				}

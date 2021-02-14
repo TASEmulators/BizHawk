@@ -603,7 +603,7 @@ namespace BizHawk.Client.EmuHawk
 			this.DifferenceBox.Nullable = false;
 			this.DifferenceBox.Size = new System.Drawing.Size(72, 20);
 			this.DifferenceBox.TabIndex = 45;
-			this.DifferenceBox.Type = BizHawk.Client.Common.DisplayType.Hex;
+			this.DifferenceBox.Type = BizHawk.Client.Common.WatchDisplayType.Hex;
 			this.DifferenceBox.TextChanged += new System.EventHandler(this.CompareToValue_TextChanged);
 			// 
 			// DifferenceRadio
@@ -659,7 +659,7 @@ namespace BizHawk.Client.EmuHawk
 			this.SpecificValueBox.Size = new System.Drawing.Size(72, 20);
 			this.SpecificValueBox.TabIndex = 15;
 			this.SpecificValueBox.Text = "00";
-			this.SpecificValueBox.Type = BizHawk.Client.Common.DisplayType.Hex;
+			this.SpecificValueBox.Type = BizHawk.Client.Common.WatchDisplayType.Hex;
 			this.SpecificValueBox.TextChanged += new System.EventHandler(this.CompareToValue_TextChanged);
 			// 
 			// NumberOfChangesRadio
@@ -878,7 +878,7 @@ namespace BizHawk.Client.EmuHawk
 			this.DifferentByBox.Nullable = false;
 			this.DifferentByBox.Size = new System.Drawing.Size(55, 20);
 			this.DifferentByBox.TabIndex = 85;
-			this.DifferentByBox.Type = BizHawk.Client.Common.DisplayType.Hex;
+			this.DifferentByBox.Type = BizHawk.Client.Common.WatchDisplayType.Hex;
 			this.DifferentByBox.TextChanged += new System.EventHandler(this.DifferentByBox_TextChanged);
 			// 
 			// DifferentByRadio

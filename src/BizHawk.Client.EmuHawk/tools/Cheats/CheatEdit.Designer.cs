@@ -211,7 +211,7 @@
 			this.CompareBox.Nullable = true;
 			this.CompareBox.Size = new System.Drawing.Size(65, 31);
 			this.CompareBox.TabIndex = 15;
-			this.CompareBox.Type = BizHawk.Client.Common.DisplayType.Hex;
+			this.CompareBox.Type = BizHawk.Client.Common.WatchDisplayType.Hex;
 			this.CompareBox.TextChanged += new System.EventHandler(this.CompareBox_TextChanged);
 			// 
 			// ValueBox
@@ -225,7 +225,7 @@
 			this.ValueBox.Size = new System.Drawing.Size(65, 31);
 			this.ValueBox.TabIndex = 12;
 			this.ValueBox.Text = "00";
-			this.ValueBox.Type = BizHawk.Client.Common.DisplayType.Hex;
+			this.ValueBox.Type = BizHawk.Client.Common.WatchDisplayType.Hex;
 			// 
 			// CompareTypeDropDown
 			// 

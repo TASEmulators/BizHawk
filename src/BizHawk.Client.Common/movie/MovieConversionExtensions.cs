@@ -229,7 +229,7 @@ namespace BizHawk.Client.Common
 			if (emulator.HasRegions())
 			{
 				var region = emulator.AsRegionable().Region;
-				if (region == Emulation.Common.DisplayType.PAL)
+				if (region == DisplayType.PAL)
 				{
 					movie.HeaderEntries.Add(HeaderKeys.Pal, "1");
 				}

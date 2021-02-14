@@ -446,28 +446,28 @@ namespace BizHawk.Client.EmuHawk
 			string s = w.Size == WatchSize.Byte ? "1" : (w.Size == WatchSize.Word ? "2" : "4");
 			switch (w.Type)
 			{
-				case Common.DisplayType.Binary:
+				case Common.WatchDisplayType.Binary:
 					s += "b";
 					break;
-				case Common.DisplayType.FixedPoint_12_4:
+				case Common.WatchDisplayType.FixedPoint_12_4:
 					s += "F";
 					break;
-				case Common.DisplayType.FixedPoint_16_16:
+				case Common.WatchDisplayType.FixedPoint_16_16:
 					s += "F6";
 					break;
-				case Common.DisplayType.FixedPoint_20_12:
+				case Common.WatchDisplayType.FixedPoint_20_12:
 					s += "F2";
 					break;
-				case Common.DisplayType.Float:
+				case Common.WatchDisplayType.Float:
 					s += "f";
 					break;
-				case Common.DisplayType.Hex:
+				case Common.WatchDisplayType.Hex:
 					s += "h";
 					break;
-				case Common.DisplayType.Signed:
+				case Common.WatchDisplayType.Signed:
 					s += "s";
 					break;
-				case Common.DisplayType.Unsigned:
+				case Common.WatchDisplayType.Unsigned:
 					s += "u";
 					break;
 			}

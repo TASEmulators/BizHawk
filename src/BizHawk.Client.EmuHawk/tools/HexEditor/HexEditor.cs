@@ -788,11 +788,11 @@ namespace BizHawk.Client.EmuHawk
 			{
 				default:
 				case 1:
-					return Watch.GenerateWatch(_domain, address, WatchSize.Byte, Common.DisplayType.Hex, BigEndian);
+					return Watch.GenerateWatch(_domain, address, WatchSize.Byte, Common.WatchDisplayType.Hex, BigEndian);
 				case 2:
-					return Watch.GenerateWatch(_domain, address, WatchSize.Word, Common.DisplayType.Hex, BigEndian);
+					return Watch.GenerateWatch(_domain, address, WatchSize.Word, Common.WatchDisplayType.Hex, BigEndian);
 				case 4:
-					return Watch.GenerateWatch(_domain, address, WatchSize.DWord, Common.DisplayType.Hex, BigEndian);
+					return Watch.GenerateWatch(_domain, address, WatchSize.DWord, Common.WatchDisplayType.Hex, BigEndian);
 			}
 		}
 
@@ -814,7 +814,7 @@ namespace BizHawk.Client.EmuHawk
 					_domain,
 					_highlightedAddress.Value,
 					WatchSize,
-					Common.DisplayType.Hex,
+					Common.WatchDisplayType.Hex,
 					BigEndian);
 
 				MainForm.CheatList.Add(new Cheat(
@@ -831,7 +831,7 @@ namespace BizHawk.Client.EmuHawk
 						_domain,
 						address,
 						WatchSize,
-						Common.DisplayType.Hex,
+						Common.WatchDisplayType.Hex,
 						BigEndian);
 
 					cheats.Add(new Cheat(
@@ -1670,7 +1670,7 @@ namespace BizHawk.Client.EmuHawk
 						_domain,
 						address,
 						(WatchSize)DataSize,
-						Common.DisplayType.Hex,
+						Common.WatchDisplayType.Hex,
 						BigEndian));
 
 				using var poke = new RamPoke(watches, MainForm.CheatList)

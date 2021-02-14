@@ -20,14 +20,14 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		/// <param name="domain"><see cref="MemoryDomain"/> where you want to track</param>
 		/// <param name="address">The address you want to track</param>
-		/// <param name="type">How you you want to display the value See <see cref="DisplayType"/></param>
+		/// <param name="type">How you you want to display the value See <see cref="WatchDisplayType"/></param>
 		/// <param name="bigEndian">Specify the endianess. true for big endian</param>
 		/// <param name="note">A custom note about the <see cref="Watch"/></param>
 		/// <param name="value">Current value</param>
 		/// <param name="previous">Previous value</param>
 		/// <param name="changeCount">How many times value has changed</param>
-		/// <exception cref="ArgumentException">Occurs when a <see cref="DisplayType"/> is incompatible with <see cref="WatchSize.Word"/></exception>
-		internal WordWatch(MemoryDomain domain, long address, DisplayType type, bool bigEndian, string note, ushort value, ushort previous, int changeCount)
+		/// <exception cref="ArgumentException">Occurs when a <see cref="WatchDisplayType"/> is incompatible with <see cref="WatchSize.Word"/></exception>
+		internal WordWatch(MemoryDomain domain, long address, WatchDisplayType type, bool bigEndian, string note, ushort value, ushort previous, int changeCount)
 			: base(domain, address, WatchSize.Word, type, bigEndian, note)
 		{
 			_value = value == 0 ? GetWord() : value;
@@ -36,25 +36,25 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <summary>
-		/// Gets an Enumeration of <see cref="DisplayType"/>s that are valid for a <see cref="WordWatch"/>
+		/// Gets an Enumeration of <see cref="WatchDisplayType"/>s that are valid for a <see cref="WordWatch"/>
 		/// </summary>
-		public static IEnumerable<DisplayType> ValidTypes
+		public static IEnumerable<WatchDisplayType> ValidTypes
 		{
 			get
 			{
-				yield return DisplayType.Unsigned;
-				yield return DisplayType.Signed;
-				yield return DisplayType.Hex;
-				yield return DisplayType.Binary;
-				yield return DisplayType.FixedPoint_12_4;
+				yield return WatchDisplayType.Unsigned;
+				yield return WatchDisplayType.Signed;
+				yield return WatchDisplayType.Hex;
+				yield return WatchDisplayType.Binary;
+				yield return WatchDisplayType.FixedPoint_12_4;
 			}
 		}
 
 		/// <summary>
-		/// Get a list a <see cref="DisplayType"/> that can be used for this <see cref="WordWatch"/>
+		/// Get a list a <see cref="WatchDisplayType"/> that can be used for this <see cref="WordWatch"/>
 		/// </summary>
-		/// <returns>An enumeration that contains all valid <see cref="DisplayType"/></returns>
-		public override IEnumerable<DisplayType> AvailableTypes() => ValidTypes;
+		/// <returns>An enumeration that contains all valid <see cref="WatchDisplayType"/></returns>
+		public override IEnumerable<WatchDisplayType> AvailableTypes() => ValidTypes;
 
 		/// <summary>
 		/// Reset the previous value; set it to the current one
@@ -77,7 +77,7 @@ namespace BizHawk.Client.Common
 				ushort val = 0;
 				switch (Type)
 				{
-					case DisplayType.Unsigned:
+					case WatchDisplayType.Unsigned:
 						if (value.IsUnsigned())
 						{
 							val = (ushort)int.Parse(value);
@@ -88,7 +88,7 @@ namespace BizHawk.Client.Common
 						}
 
 						break;
-					case DisplayType.Signed:
+					case WatchDisplayType.Signed:
 						if (value.IsSigned())
 						{
 							val = (ushort)(short)int.Parse(value);
@@ -99,7 +99,7 @@ namespace BizHawk.Client.Common
 						}
 
 						break;
-					case DisplayType.Hex:
+					case WatchDisplayType.Hex:
 						if (value.IsHex())
 						{
 							val = (ushort)int.Parse(value, NumberStyles.HexNumber);
@@ -110,7 +110,7 @@ namespace BizHawk.Client.Common
 						}
 
 						break;
-					case DisplayType.Binary:
+					case WatchDisplayType.Binary:
 						if (value.IsBinary())
 						{
 							val = (ushort)Convert.ToInt32(value, 2);
@@ -121,7 +121,7 @@ namespace BizHawk.Client.Common
 						}
 
 						break;
-					case DisplayType.FixedPoint_12_4:
+					case WatchDisplayType.FixedPoint_12_4:
 						if (value.IsFixedPoint())
 						{
 							val = (ushort)(double.Parse(value) * 16.0);
@@ -181,10 +181,10 @@ namespace BizHawk.Client.Common
 			return Type switch
 			{
 				_ when !IsValid => "-",
-				DisplayType.Unsigned => val.ToString(),
-				DisplayType.Signed => ((short) val).ToString(), DisplayType.Hex => $"{val:X4}",
-				DisplayType.FixedPoint_12_4 => $"{val / 16.0:F4}",
-				DisplayType.Binary => Convert
+				WatchDisplayType.Unsigned => val.ToString(),
+				WatchDisplayType.Signed => ((short) val).ToString(), WatchDisplayType.Hex => $"{val:X4}",
+				WatchDisplayType.FixedPoint_12_4 => $"{val / 16.0:F4}",
+				WatchDisplayType.Binary => Convert
 					.ToString(val, 2)
 					.PadLeft(16, '0')
 					.Insert(8, " ")

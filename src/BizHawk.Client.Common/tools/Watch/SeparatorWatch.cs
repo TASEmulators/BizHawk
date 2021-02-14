@@ -12,7 +12,7 @@ namespace BizHawk.Client.Common
 		/// Initializes a new instance of the <see cref="SeparatorWatch"/> class.
 		/// </summary>
 		internal SeparatorWatch()
-			: base(null, 0, WatchSize.Separator, DisplayType.Separator, true, "")
+			: base(null, 0, WatchSize.Separator, WatchDisplayType.Separator, true, "")
 		{
 		}
 
@@ -30,12 +30,12 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <summary>
-		/// Get the appropriate DisplayType
+		/// Get the appropriate WatchDisplayType
 		/// </summary>
-		/// <returns>DisplayType.Separator nothing else</returns>
-		public override IEnumerable<DisplayType> AvailableTypes()
+		/// <returns>WatchDisplayType.Separator nothing else</returns>
+		public override IEnumerable<WatchDisplayType> AvailableTypes()
 		{
-			yield return DisplayType.Separator;
+			yield return WatchDisplayType.Separator;
 		}
 
 		/// <summary>

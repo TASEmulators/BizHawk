@@ -308,7 +308,7 @@
 			this.StopOnFrameTextBox.Nullable = true;
 			this.StopOnFrameTextBox.Size = new System.Drawing.Size(54, 20);
 			this.StopOnFrameTextBox.TabIndex = 58;
-			this.StopOnFrameTextBox.Type = BizHawk.Client.Common.DisplayType.Unsigned;
+			this.StopOnFrameTextBox.Type = BizHawk.Client.Common.WatchDisplayType.Unsigned;
 			this.StopOnFrameTextBox.TextChanged += new System.EventHandler(this.StopOnFrameTextBox_TextChanged_1);
 			// 
 			// MovieCount

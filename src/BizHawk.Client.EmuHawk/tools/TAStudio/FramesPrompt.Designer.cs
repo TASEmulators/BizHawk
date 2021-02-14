@@ -74,7 +74,7 @@
 			this.NumFramesBox.Size = new System.Drawing.Size(51, 20);
 			this.NumFramesBox.TabIndex = 3;
 			this.NumFramesBox.Text = "1";
-			this.NumFramesBox.Type = BizHawk.Client.Common.DisplayType.Unsigned;
+			this.NumFramesBox.Type = BizHawk.Client.Common.WatchDisplayType.Unsigned;
 			// 
 			// FramesPrompt
 			// 

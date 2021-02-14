@@ -107,7 +107,7 @@ namespace BizHawk.Client.EmuHawk
 		[ConfigPersist]
 		public RamSearchSettings Settings { get; set; }
 
-		private void HardSetDisplayTypeDropDown(Common.DisplayType type)
+		private void HardSetDisplayTypeDropDown(Common.WatchDisplayType type)
 		{
 			foreach (var item in DisplayTypeDropdown.Items)
 			{
@@ -152,8 +152,8 @@ namespace BizHawk.Client.EmuHawk
 			LoadConfigSettings();
 			SpecificValueBox.ByteSize = _settings.Size;
 			SpecificValueBox.Type = _settings.Type;
-			DifferentByBox.Type = Common.DisplayType.Unsigned;
-			DifferenceBox.Type = Common.DisplayType.Unsigned;
+			DifferentByBox.Type = Common.WatchDisplayType.Unsigned;
+			DifferenceBox.Type = Common.WatchDisplayType.Unsigned;
 
 			MessageLabel.Text = "";
 			SpecificAddressBox.MaxLength = (MemoryDomains.MainMemory.Size - 1).NumHexDigits();
@@ -594,7 +594,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void DoDisplayTypeClick(Common.DisplayType type)
+		private void DoDisplayTypeClick(Common.WatchDisplayType type)
 		{
 			if (_settings.Type != type)
 			{
@@ -666,7 +666,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (!isTypeCompatible)
 			{
-				_settings.Type = Common.DisplayType.Unsigned;
+				_settings.Type = Common.WatchDisplayType.Unsigned;
 			}
 
 			_dropdownDontfire = true;
@@ -689,7 +689,7 @@ namespace BizHawk.Client.EmuHawk
 				WatchSize.Byte => ByteWatch.ValidTypes,
 				WatchSize.Word => WordWatch.ValidTypes,
 				WatchSize.DWord => DWordWatch.ValidTypes,
-				_ => new List<Common.DisplayType>()
+				_ => new List<Common.WatchDisplayType>()
 			};
 
 			foreach (var type in types)
@@ -1066,7 +1066,7 @@ namespace BizHawk.Client.EmuHawk
 				WatchSize.Byte => ByteWatch.ValidTypes,
 				WatchSize.Word => WordWatch.ValidTypes,
 				WatchSize.DWord => DWordWatch.ValidTypes,
-				_ => new List<Common.DisplayType>()
+				_ => new List<Common.WatchDisplayType>()
 			};
 
 			foreach (var type in types)

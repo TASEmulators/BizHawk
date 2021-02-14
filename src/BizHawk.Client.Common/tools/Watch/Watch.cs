@@ -21,7 +21,7 @@ namespace BizHawk.Client.Common
 		IComparable<Watch>
 	{
 		private MemoryDomain _domain;
-		private DisplayType _type;
+		private WatchDisplayType _type;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Watch"/> class
@@ -29,11 +29,11 @@ namespace BizHawk.Client.Common
 		/// <param name="domain"><see cref="MemoryDomain"/> where you want to track</param>
 		/// <param name="address">The address you want to track</param>
 		/// <param name="size">A <see cref="WatchSize"/> (byte, word, double word)</param>
-		/// <param name="type">How you you want to display the value See <see cref="DisplayType"/></param>
+		/// <param name="type">How you you want to display the value See <see cref="WatchDisplayType"/></param>
 		/// <param name="bigEndian">Specify the endianess. true for big endian</param>
 		/// <param name="note">A custom note about the <see cref="Watch"/></param>
-		/// <exception cref="ArgumentException">Occurs when a <see cref="DisplayType"/> is incompatible with the <see cref="WatchSize"/></exception>
-		protected Watch(MemoryDomain domain, long address, WatchSize size, DisplayType type, bool bigEndian, string note)
+		/// <exception cref="ArgumentException">Occurs when a <see cref="WatchDisplayType"/> is incompatible with the <see cref="WatchSize"/></exception>
+		protected Watch(MemoryDomain domain, long address, WatchSize size, WatchDisplayType type, bool bigEndian, string note)
 		{
 			if (IsDisplayTypeAvailable(type))
 			{
@@ -46,7 +46,7 @@ namespace BizHawk.Client.Common
 			}
 			else
 			{
-				throw new ArgumentException($"{nameof(DisplayType)} {type} is invalid for this type of {nameof(Watch)}", nameof(type));
+				throw new ArgumentException($"{nameof(WatchDisplayType)} {type} is invalid for this type of {nameof(Watch)}", nameof(type));
 			}
 		}
 
@@ -64,7 +64,7 @@ namespace BizHawk.Client.Common
 		/// <term>b,w or d</term>
 		/// <description>The <see cref="WatchSize"/>, byte, word or double word</description>
 		/// <term>s, u, h, b, 1, 2, 3, f</term>
-		/// <description>The <see cref="DisplayType"/> signed, unsigned,etc...</description>
+		/// <description>The <see cref="WatchDisplayType"/> signed, unsigned,etc...</description>
 		/// </item>
 		/// <item>
 		/// <term>0 or 1</term>
@@ -99,7 +99,7 @@ namespace BizHawk.Client.Common
 			if (long.TryParse(parts[0], NumberStyles.HexNumber, CultureInfo.CurrentCulture, out var address))
 			{
 				WatchSize size = SizeFromChar(parts[1][0]);
-				DisplayType type = DisplayTypeFromChar(parts[2][0]);
+				WatchDisplayType type = DisplayTypeFromChar(parts[2][0]);
 				bool bigEndian = parts[3] != "0";
 				MemoryDomain domain = domains[parts[4]];
 				string notes = parts[5].Trim('\r', '\n');
@@ -130,7 +130,7 @@ namespace BizHawk.Client.Common
 		/// <param name="prev">Previous value</param>
 		/// <param name="changeCount">Number of changes occurs in current <see cref="Watch"/></param>
 		/// <returns>New <see cref="Watch"/> instance. True type is depending of size parameter</returns>
-		public static Watch GenerateWatch(MemoryDomain domain, long address, WatchSize size, DisplayType type, bool bigEndian, string note = "", long value = 0, long prev = 0, int changeCount = 0)
+		public static Watch GenerateWatch(MemoryDomain domain, long address, WatchSize size, WatchDisplayType type, bool bigEndian, string note = "", long value = 0, long prev = 0, int changeCount = 0)
 		{
 			return size switch
 			{
@@ -250,10 +250,10 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <summary>
-		/// Gets a list a <see cref="DisplayType"/> that can be used for this <see cref="Watch"/>
+		/// Gets a list a <see cref="WatchDisplayType"/> that can be used for this <see cref="Watch"/>
 		/// </summary>
-		/// <returns>An enumeration that contains all valid <see cref="DisplayType"/></returns>
-		public abstract IEnumerable<DisplayType> AvailableTypes();
+		/// <returns>An enumeration that contains all valid <see cref="WatchDisplayType"/></returns>
+		public abstract IEnumerable<WatchDisplayType> AvailableTypes();
 
 		/// <summary>
 		/// Resets the previous value; set it to the current one
@@ -405,11 +405,11 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <summary>
-		/// Determines if the specified <see cref="DisplayType"/> can be
+		/// Determines if the specified <see cref="WatchDisplayType"/> can be
 		/// used for the current <see cref="Watch"/>
 		/// </summary>
-		/// <param name="type"><see cref="DisplayType"/> you want to check</param>
-		public bool IsDisplayTypeAvailable(DisplayType type)
+		/// <param name="type"><see cref="WatchDisplayType"/> you want to check</param>
+		public bool IsDisplayTypeAvailable(WatchDisplayType type)
 		{
 			return AvailableTypes().Any(d => d == type);
 		}
@@ -502,8 +502,8 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Gets or sets the way current <see cref="Watch"/> is displayed
 		/// </summary>
-		/// <exception cref="ArgumentException">Occurs when a <see cref="DisplayType"/> is incompatible with the <see cref="WatchSize"/></exception>
-		public DisplayType Type
+		/// <exception cref="ArgumentException">Occurs when a <see cref="WatchDisplayType"/> is incompatible with the <see cref="WatchSize"/></exception>
+		public WatchDisplayType Type
 		{
 			get => _type;
 			set
@@ -514,7 +514,7 @@ namespace BizHawk.Client.Common
 				}
 				else
 				{
-					throw new ArgumentException($"DisplayType {value} is invalid for this type of Watch");
+					throw new ArgumentException($"WatchDisplayType {value} is invalid for this type of Watch");
 				}
 			}
 		}
@@ -553,25 +553,25 @@ namespace BizHawk.Client.Common
 		public WatchSize Size { get; }
 
 		// TODO: Replace all the following stuff by implementing ISerializable
-		public static string DisplayTypeToString(DisplayType type)
+		public static string DisplayTypeToString(WatchDisplayType type)
 		{
 			return type switch
 			{
-				DisplayType.FixedPoint_12_4 => "Fixed Point 12.4",
-				DisplayType.FixedPoint_20_12 => "Fixed Point 20.12",
-				DisplayType.FixedPoint_16_16 => "Fixed Point 16.16",
+				WatchDisplayType.FixedPoint_12_4 => "Fixed Point 12.4",
+				WatchDisplayType.FixedPoint_20_12 => "Fixed Point 20.12",
+				WatchDisplayType.FixedPoint_16_16 => "Fixed Point 16.16",
 				_ => type.ToString()
 			};
 		}
 
-		public static DisplayType StringToDisplayType(string name)
+		public static WatchDisplayType StringToDisplayType(string name)
 		{
 			return name switch
 			{
-				"Fixed Point 12.4" => DisplayType.FixedPoint_12_4,
-				"Fixed Point 20.12" => DisplayType.FixedPoint_20_12,
-				"Fixed Point 16.16" => DisplayType.FixedPoint_16_16,
-				_ => (DisplayType) Enum.Parse(typeof(DisplayType), name)
+				"Fixed Point 12.4" => WatchDisplayType.FixedPoint_12_4,
+				"Fixed Point 20.12" => WatchDisplayType.FixedPoint_20_12,
+				"Fixed Point 16.16" => WatchDisplayType.FixedPoint_16_16,
+				_ => (WatchDisplayType) Enum.Parse(typeof(WatchDisplayType), name)
 			};
 		}
 
@@ -608,34 +608,34 @@ namespace BizHawk.Client.Common
 			{
 				return Type switch
 				{
-					DisplayType.Separator => '_',
-					DisplayType.Unsigned => 'u',
-					DisplayType.Signed => 's',
-					DisplayType.Hex => 'h',
-					DisplayType.Binary => 'b',
-					DisplayType.FixedPoint_12_4 => '1',
-					DisplayType.FixedPoint_20_12 => '2',
-					DisplayType.FixedPoint_16_16 => '3',
-					DisplayType.Float => 'f',
+					WatchDisplayType.Separator => '_',
+					WatchDisplayType.Unsigned => 'u',
+					WatchDisplayType.Signed => 's',
+					WatchDisplayType.Hex => 'h',
+					WatchDisplayType.Binary => 'b',
+					WatchDisplayType.FixedPoint_12_4 => '1',
+					WatchDisplayType.FixedPoint_20_12 => '2',
+					WatchDisplayType.FixedPoint_16_16 => '3',
+					WatchDisplayType.Float => 'f',
 					_ => '_'
 				};
 			}
 		}
 
-		public static DisplayType DisplayTypeFromChar(char c)
+		public static WatchDisplayType DisplayTypeFromChar(char c)
 		{
 			return c switch
 			{
-				'_' => DisplayType.Separator,
-				'u' => DisplayType.Unsigned,
-				's' => DisplayType.Signed,
-				'h' => DisplayType.Hex,
-				'b' => DisplayType.Binary,
-				'1' => DisplayType.FixedPoint_12_4,
-				'2' => DisplayType.FixedPoint_20_12,
-				'3' => DisplayType.FixedPoint_16_16,
-				'f' => DisplayType.Float,
-				_ => DisplayType.Separator
+				'_' => WatchDisplayType.Separator,
+				'u' => WatchDisplayType.Unsigned,
+				's' => WatchDisplayType.Signed,
+				'h' => WatchDisplayType.Hex,
+				'b' => WatchDisplayType.Binary,
+				'1' => WatchDisplayType.FixedPoint_12_4,
+				'2' => WatchDisplayType.FixedPoint_20_12,
+				'3' => WatchDisplayType.FixedPoint_16_16,
+				'f' => WatchDisplayType.Float,
+				_ => WatchDisplayType.Separator
 			};
 		}
 	}

@@ -43,7 +43,7 @@ namespace BizHawk.Client.Common.cheats
 				domain,
 				result.Address,
 				result.Size,
-				DisplayType.Hex,
+				WatchDisplayType.Hex,
 				domain.EndianType == MemoryDomain.Endian.Big,
 				description);
 			return result.Compare.HasValue

@@ -143,19 +143,19 @@ namespace BizHawk.Client.EmuHawk
 			{
 				default:
 				case 0:
-					foreach (DisplayType t in ByteWatch.ValidTypes)
+					foreach (WatchDisplayType t in ByteWatch.ValidTypes)
 					{
 						DisplayTypeDropDown.Items.Add(Watch.DisplayTypeToString(t));
 					}
 					break;
 				case 1:
-					foreach (DisplayType t in WordWatch.ValidTypes)
+					foreach (WatchDisplayType t in WordWatch.ValidTypes)
 					{
 						DisplayTypeDropDown.Items.Add(Watch.DisplayTypeToString(t));
 					}
 					break;
 				case 2:
-					foreach (DisplayType t in DWordWatch.ValidTypes)
+					foreach (WatchDisplayType t in DWordWatch.ValidTypes)
 					{
 						DisplayTypeDropDown.Items.Add(Watch.DisplayTypeToString(t));
 					}

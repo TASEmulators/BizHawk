@@ -284,7 +284,7 @@ namespace BizHawk.Client.Common
 						// Set to hex for saving
 						var tempCheatType = cheat.Type;
 
-						cheat.SetType(DisplayType.Hex);
+						cheat.SetType(WatchDisplayType.Hex);
 
 						sb
 							.Append(cheat.AddressStr).Append('\t')
@@ -349,7 +349,7 @@ namespace BizHawk.Client.Common
 					{
 						int? compare;
 						var size = WatchSize.Byte;
-						var type = DisplayType.Hex;
+						var type = WatchDisplayType.Hex;
 						var bigEndian = false;
 						var comparisonType = Cheat.CompareType.None;
 
