@@ -1,7 +1,5 @@
 namespace BizHawk.Bizware.BizwareGL
 {
-	public interface IBlendState { }
-
 	/// <summary>
 	/// An IBlendState token that just caches all the args needed to create a blend state
 	/// </summary>
