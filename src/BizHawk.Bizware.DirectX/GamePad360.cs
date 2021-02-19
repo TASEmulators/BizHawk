@@ -58,12 +58,11 @@ namespace BizHawk.Bizware.DirectX
 				IsAvailable = libraryHandle != IntPtr.Zero;
 
 				// don't remove this code. it's important to catch errors on systems with broken xinput installs.
-				// (probably, checking for the library was adequate, but let's not get rid of this anyway)
 				if (IsAvailable) _ = new Controller(UserIndex.One).IsConnected;
 			}
 			catch
 			{
-				// ignored
+				IsAvailable = false;
 			}
 		}
 
