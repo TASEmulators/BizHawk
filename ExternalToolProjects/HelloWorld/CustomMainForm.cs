@@ -6,8 +6,6 @@ using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk;
 using BizHawk.Emulation.Common;
 
-using DisplayType = BizHawk.Client.Common.DisplayType;
-
 namespace HelloWorld
 {
 	/// <remarks>All of this is example code, but it's at least a little more substantiative than a simple "hello world".</remarks>
@@ -55,9 +53,9 @@ namespace HelloWorld
 				{
 					var w = new WatchList(_memoryDomains, _emu?.SystemId ?? string.Empty);
 					w.AddRange(new[] {
-						Watch.GenerateWatch(_memoryDomains?.MainMemory, 0x40, WatchSize.Byte, DisplayType.Hex, true),
-						Watch.GenerateWatch(_memoryDomains?.MainMemory, 0x50, WatchSize.Word, DisplayType.Unsigned, true),
-						Watch.GenerateWatch(_memoryDomains?.MainMemory, 0x60, WatchSize.DWord, DisplayType.Hex, true)
+						Watch.GenerateWatch(_memoryDomains?.MainMemory, 0x40, WatchSize.Byte, WatchDisplayType.Hex, true),
+						Watch.GenerateWatch(_memoryDomains?.MainMemory, 0x50, WatchSize.Word, WatchDisplayType.Unsigned, true),
+						Watch.GenerateWatch(_memoryDomains?.MainMemory, 0x60, WatchSize.DWord, WatchDisplayType.Hex, true)
 					});
 					return w;
 				}
