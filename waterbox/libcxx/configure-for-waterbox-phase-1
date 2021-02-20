@@ -1,7 +1,8 @@
 #!/bin/sh
-MYPATH="`dirname \"$0\"`"
-SYSROOT="`realpath \"$MYPATH/../sysroot\"`"
-LLVMDIR="`realpath \"$MYPATH/../llvm-project\"`"
+set -e
+if [ -z "$SYSROOT" ]; then export SYSROOT="$(realpath "$(dirname "$0")/../sysroot")"; fi
+if [ -z "$LLVMDIR" ]; then export LLVMDIR="$(realpath "$(dirname "$0")/../llvm-project")"; fi
+
 rm -rf build1
 mkdir build1
 cd build1
@@ -23,4 +24,4 @@ cmake \
 	-DCMAKE_INSTALL_PREFIX="$SYSROOT" \
 	-DCMAKE_AR="/usr/bin/gcc-ar" \
 	-DCMAKE_RANLIB="/usr/bin/gcc-ranlib" \
-	../../llvm-project/libcxxabi
+	$LLVMDIR/libcxxabi
