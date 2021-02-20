@@ -31,8 +31,8 @@ It consists of a modified musl libc, and build scripts to tie it all together.
 
 4. Build libraries.
 	cd musl
-	./configure-for-waterbox
-	make -j install
+	./wbox_configure.sh
+	./wbox_build.sh
 	cd ../emulibc
 	make
 	cd ../libco
