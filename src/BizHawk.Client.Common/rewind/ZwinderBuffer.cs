@@ -439,10 +439,9 @@ namespace BizHawk.Client.Common
 				long requestedSize = _position + 1;
 				while (requestedSize > _notifySize)
 					_notifySize = _notifySizeReached();
+				_backingStore.Position = (_position + _offset) & _mask;
 				_backingStore.WriteByte(value);
 				_position++;
-				if (_position + _offset == BufferLength)
-					_backingStore.Position = 0;
 			}
 		}
 
@@ -455,6 +454,7 @@ namespace BizHawk.Client.Common
 				_offset = offset;
 				_size = size;
 				_mask = mask;
+				_backingStore.Position = _offset;
 			}
 
 			private readonly Stream _backingStore;
@@ -489,7 +489,6 @@ namespace BizHawk.Client.Common
 				{
 					var start = (_position + _offset) & _mask;
 					var end = (start + n) & _mask;
-					_backingStore.Position = start;
 					if (end < start)
 					{
 						long m = BufferLength - start;

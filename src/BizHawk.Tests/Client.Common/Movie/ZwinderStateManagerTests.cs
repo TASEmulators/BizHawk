@@ -1,6 +1,8 @@
+using System;
 using System.IO;
 using System.Linq;
 using BizHawk.Client.Common;
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -441,6 +443,132 @@ namespace BizHawk.Tests.Client.Common.Movie
 			zw.Capture(3, s => ss.SaveStateBinary(new BinaryWriter(s)), null, true);
 
 			zw.SaveStateBinary(new BinaryWriter(new MemoryStream()));
+		}
+
+		[TestMethod]
+		public void TestReadByteCorruption()
+		{
+			using var zw = new ZwinderBuffer(new RewindConfig
+			{
+				BufferSize = 1,
+				TargetFrameLength = 1
+			});
+			zw.Capture(0, s =>
+			{
+				s.Write(new byte[] { 1, 2, 3, 4 });
+			});
+			zw.Capture(1, s =>
+			{
+				s.Write(new byte[] { 5, 6, 7, 8 });
+			});
+			var state = zw.GetState(0);
+			Assert.AreEqual(0, state.Frame);
+			Assert.AreEqual(4, state.Size);
+			Assert.AreEqual(1, state.GetReadStream().ReadByte());
+		}
+
+		[TestMethod]
+		public void TestReadBytesCorruption()
+		{
+			using var zw = new ZwinderBuffer(new RewindConfig
+			{
+				BufferSize = 1,
+				TargetFrameLength = 1
+			});
+			zw.Capture(0, s =>
+			{
+				s.Write(new byte[] { 1, 2, 3, 4 });
+			});
+			zw.Capture(1, s =>
+			{
+				s.Write(new byte[] { 5, 6, 7, 8 });
+			});
+			var state = zw.GetState(0);
+			Assert.AreEqual(0, state.Frame);
+			Assert.AreEqual(4, state.Size);
+			var bb = new byte[2];
+			state.GetReadStream().Read(bb, 0, 2);
+			Assert.AreEqual(1, bb[0]);
+			Assert.AreEqual(2, bb[1]);
+		}
+
+		[TestMethod]
+		public void TestWriteByteCorruption()
+		{
+			using var zw = new ZwinderBuffer(new RewindConfig
+			{
+				BufferSize = 1,
+				TargetFrameLength = 1
+			});
+			zw.Capture(0, s =>
+			{
+				s.WriteByte(1);
+				s.WriteByte(2);
+				s.WriteByte(3);
+				s.WriteByte(4);
+			});
+			zw.Capture(1, s =>
+			{
+				s.WriteByte(5);
+				s.WriteByte(6);
+				s.WriteByte(7);
+				s.WriteByte(8);
+			});
+			zw.GetState(0).GetReadStream(); // Rewinds the backing store
+			zw.Capture(2, s =>
+			{
+				s.WriteByte(9);
+				s.WriteByte(10);
+				s.WriteByte(11);
+				s.WriteByte(12);
+			});
+
+			var state = zw.GetState(0);
+			Assert.AreEqual(0, state.Frame);
+			Assert.AreEqual(4, state.Size);
+			Assert.AreEqual(1, state.GetReadStream().ReadByte());
+		}
+
+		[TestMethod]
+		public void BufferStressTest()
+		{
+			var r = new Random(8675309);
+			using var zw = new ZwinderBuffer(new RewindConfig
+			{
+				BufferSize = 1,
+				TargetFrameLength = 1
+			});
+			var buff = new byte[40000];
+
+			for (int round = 0; round < 10; round++)
+			{
+				for (int i = 0; i < 500; i++)
+				{
+					zw.Capture(i, s =>
+					{
+						var length = r.Next(40000);
+						var bw = new BinaryWriter(s);
+						Span<byte> bytes = buff[0..length];
+						r.NextBytes(bytes);
+						bw.Write(length);
+						bw.Write(bytes);
+						bw.Write(CRC32.Calculate(bytes));
+					});
+				}
+				for (int i = 0; i < zw.Count; i++)
+				{
+					var info = zw.GetState(i);
+					var s = info.GetReadStream();
+					var br = new BinaryReader(s);
+					var length = info.Size;
+					if (length != br.ReadInt32() + 8)
+						throw new Exception("Length field corrupted");
+					Span<byte> bytes = buff[0..(length - 8)];
+					br.Read(bytes);
+					if (br.ReadInt32() != CRC32.Calculate(bytes))
+						throw new Exception("Data or CRC field corrupted");
+				}
+			}
 		}
 
 		private class StateSource : IStatable
