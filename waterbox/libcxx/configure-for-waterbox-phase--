@@ -2,11 +2,6 @@
 MYPATH="`dirname \"$0\"`"
 SYSROOT="`realpath \"$MYPATH/../sysroot\"`"
 LLVMDIR="`realpath \"$MYPATH/../llvm-project\"`"
-
-#To uselibclang-rt (and libunwind), we need to evict the gcc libs, but musl automatically puts that in the specs file
-#and has no setting to remove it.  Fix that here.
-sed -i -e '13c\' -e '' "$SYSROOT/lib/musl-gcc.specs"
-
 rm -rf build-
 mkdir build-
 cd build-
