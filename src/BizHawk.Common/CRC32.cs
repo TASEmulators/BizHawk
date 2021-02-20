@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Common
+﻿using System;
+
+namespace BizHawk.Common
 {
 	// we could get a little list of crcs from here and make it clear which crc this class was for, and expose others
 	// http://www.ross.net/crc/download/crc_v3.txt
@@ -30,7 +32,7 @@
 			}
 		}
 
-		public static int Calculate(byte[] data)
+		public static int Calculate(ReadOnlySpan<byte> data)
 		{
 			uint result = 0xFFFFFFFF;
 			foreach (var b in data)
@@ -38,7 +40,7 @@
 				result = (result >> 8) ^ Crc32Table[b ^ (result & 0xFF)];
 			}
 
-			return (int)~result;
+			return (int)~result;			
 		}
 	}
 }

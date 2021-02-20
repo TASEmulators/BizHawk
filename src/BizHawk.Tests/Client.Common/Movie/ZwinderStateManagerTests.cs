@@ -1,6 +1,8 @@
+using System;
 using System.IO;
 using System.Linq;
 using BizHawk.Client.Common;
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -441,6 +443,48 @@ namespace BizHawk.Tests.Client.Common.Movie
 			zw.Capture(3, s => ss.SaveStateBinary(new BinaryWriter(s)), null, true);
 
 			zw.SaveStateBinary(new BinaryWriter(new MemoryStream()));
+		}
+
+		[TestMethod]
+		public void BufferStressTest()
+		{
+			var r = new Random(8675309);
+			using var zw = new ZwinderBuffer(new RewindConfig
+			{
+				BufferSize = 1,
+				TargetFrameLength = 1
+			});
+			var buff = new byte[40000];
+
+			for (int round = 0; round < 10; round++)
+			{
+				for (int i = 0; i < 500; i++)
+				{
+					zw.Capture(i, s =>
+					{
+						var length = r.Next(40000);
+						var bw = new BinaryWriter(s);
+						Span<byte> bytes = buff[0..length];
+						r.NextBytes(bytes);
+						bw.Write(length);
+						bw.Write(bytes);
+						bw.Write(CRC32.Calculate(bytes));
+					});
+				}
+				for (int i = 0; i < zw.Count; i++)
+				{
+					var info = zw.GetState(i);
+					var s = info.GetReadStream();
+					var br = new BinaryReader(s);
+					var length = info.Size;
+					if (length != br.ReadInt32() + 8)
+						throw new Exception("Length field corrupted");
+					Span<byte> bytes = buff[0..(length - 8)];
+					br.Read(bytes);
+					if (br.ReadInt32() != CRC32.Calculate(bytes))
+						throw new Exception("Data or CRC field corrupted");
+				}
+			}
 		}
 
 		private class StateSource : IStatable

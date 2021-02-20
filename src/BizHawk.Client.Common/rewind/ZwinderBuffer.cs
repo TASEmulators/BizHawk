@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Threading;
 using BizHawk.BizInvoke;
 using BizHawk.Common;
 
@@ -10,6 +11,9 @@ namespace BizHawk.Client.Common
 {
 	public class ZwinderBuffer : IDisposable
 	{
+		private static int NextId = 0;
+		private readonly int _thisId;
+
 		/*
 		Main goals:
 		1. No copies, ever.  States are deposited directly to, and read directly from, one giant ring buffer.
@@ -20,6 +24,8 @@ namespace BizHawk.Client.Common
 		*/
 		public ZwinderBuffer(IRewindSettings settings)
 		{
+			_thisId = Interlocked.Increment(ref NextId);
+
 			if (settings == null)
 				throw new ArgumentException("ZwinderBuffer's settings cannot be null.");
 
@@ -200,14 +206,20 @@ namespace BizHawk.Client.Common
 			};
 			var stream = new SaveStateStream(_backingStore, start, _sizeMask, initialMaxSize, notifySizeReached);
 
+			var ms = new MemoryStream();
+			callback(ms);
+			var data = new ReadOnlySpan<byte>(ms.GetBuffer(), 0, (int)ms.Length);
+			Console.WriteLine($"SAVE ID {_thisId} FRAME {frame} LEN {ms.Length} DATA {CRC32.Calculate(data)}");
+			ms.Position = 0;
+
 			if (_useCompression)
 			{
 				using var compressor = new DeflateStream(stream, CompressionLevel.Fastest, leaveOpen: true);
-				callback(compressor);
+				ms.CopyTo(compressor);
 			}
 			else
 			{
-				callback(stream);
+				ms.CopyTo(stream);
 			}
 
 			_states[_nextStateIndex].Frame = frame;
@@ -234,7 +246,12 @@ namespace BizHawk.Client.Common
 			private readonly ZwinderBuffer _parent;
 			public Stream GetReadStream()
 			{
-				return _parent.MakeLoadStream(_index);
+				var ms = new MemoryStream();
+				_parent.MakeLoadStream(_index).CopyTo(ms);
+				var data = new ReadOnlySpan<byte>(ms.GetBuffer(), 0, (int)ms.Length);
+				Console.WriteLine($"LOAD ID {_parent._thisId} FRAME {Frame} LEN {ms.Length} DATA {CRC32.Calculate(data)}");
+				ms.Position = 0;
+				return ms;
 			}
 			internal StateInformation(ZwinderBuffer parent, int index)
 			{
@@ -320,7 +337,7 @@ namespace BizHawk.Client.Common
 		public static ZwinderBuffer Create(BinaryReader reader, RewindConfig rewindConfig, bool hackyV0 = false)
 		{
 			ZwinderBuffer ret;
-
+			//
 			// Initial format had no version number, but I think it's a safe bet no valid file has buffer size 2^56 or more so this should work.
 			int version = hackyV0 ? 0 : reader.ReadByte();
 			if (version == 0)
