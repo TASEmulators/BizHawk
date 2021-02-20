@@ -40,7 +40,7 @@ namespace BizHawk.Common
 				result = (result >> 8) ^ Crc32Table[b ^ (result & 0xFF)];
 			}
 
-			return (int)~result;			
+			return (int)~result;
 		}
 	}
 }
