@@ -533,17 +533,11 @@ namespace BizHawk.Client.EmuHawk
 					if (!record.Lagged.HasValue && LastPositionFrame > Emulator.Frame)
 					{
 						StartSeeking(LastPositionFrame, true);
+						return;
 					}
-					else
-					{
-						MainForm.UnpauseEmulator();
-					}
-				}
-				else
-				{
-					MainForm.PauseEmulator();
 				}
 
+				MainForm.TogglePause();
 				return;
 			}
 
