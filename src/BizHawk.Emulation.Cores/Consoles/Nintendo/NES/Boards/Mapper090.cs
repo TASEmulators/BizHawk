@@ -510,7 +510,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override byte ReadExp(int addr)
 		{
-			switch (addr & 0x1807)
+			addr &= 0x1807;
+			switch (addr)
 			{
 				case 0x1000:
 					int value = dipswitch_0 ? 0x80 : 0x00;
@@ -527,12 +528,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case 0x1807:
 					return ram_bytes[addr - 0x1803];
 				default:
-					return base.ReadExp(addr);
+					return NES.DB;
 			}
 		}
 
 		public override void WriteExp(int addr, byte value)
 		{
+			addr &= 0x1807;
 			switch (addr)
 			{
 				case 0x1800:
