@@ -165,7 +165,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			try
 			{
-				GuiAPI.LockEmuSurfaceLua();
 				foreach (var lf in RegisteredFunctions.Where(l => l.Event == "OnSavestateSave"))
 				{
 					lf.Call(name);
@@ -183,7 +182,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			try
 			{
-				GuiAPI.LockEmuSurfaceLua();
 				foreach (var lf in RegisteredFunctions.Where(l => l.Event == "OnSavestateLoad"))
 				{
 					lf.Call(name);
@@ -202,7 +200,6 @@ namespace BizHawk.Client.EmuHawk
 			if (IsUpdateSupressed) return;
 			try
 			{
-				GuiAPI.LockEmuSurfaceLua();
 				foreach (var lf in RegisteredFunctions.Where(l => l.Event == "OnFrameStart"))
 				{
 					lf.Call();
@@ -221,7 +218,6 @@ namespace BizHawk.Client.EmuHawk
 			if (IsUpdateSupressed) return;
 			try
 			{
-				GuiAPI.LockEmuSurfaceLua();
 				foreach (var lf in RegisteredFunctions.Where(l => l.Event == "OnFrameEnd"))
 				{
 					lf.Call();
@@ -237,7 +233,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public void CallExitEvent(LuaFile lf)
 		{
-			GuiAPI.LockEmuSurfaceLua();
 			foreach (var exitCallback in RegisteredFunctions.ForFile(lf).ForEvent("OnExit"))
 			{
 				exitCallback.Call();
@@ -306,7 +301,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				LuaLibraryBase.SetCurrentThread(lf);
 
-				GuiAPI.LockEmuSurfaceLua();
 				var execResult = _currThread.Resume(0);
 				GuiAPI.UnlockEmuSurfaceLua();
 

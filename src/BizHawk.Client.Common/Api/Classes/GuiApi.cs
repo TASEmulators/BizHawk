@@ -47,6 +47,8 @@ namespace BizHawk.Client.Common
 
 		private DisplaySurfaceID? _usingSurfaceID = null;
 
+		public bool EnableLuaAutolockHack = false;
+
 		public bool HasGUISurface => _GUISurface != null;
 
 		public GuiApi(Action<string> logCallback, IDisplayManagerForApi displayManager)
@@ -79,12 +81,19 @@ namespace BizHawk.Client.Common
 
 		public void SetAttributes(ImageAttributes a) => _attributes = a;
 
-		private DisplaySurface GetRelevantSurface(DisplaySurfaceID? surfaceID) => (surfaceID ?? _usingSurfaceID) switch
+		private DisplaySurface GetRelevantSurface(DisplaySurfaceID? surfaceID)
 		{
-			DisplaySurfaceID.EmuCore => _GUISurface,
-			DisplaySurfaceID.Client => _clientSurface,
-			_ => throw new Exception()
-		};
+			switch (surfaceID ?? _usingSurfaceID)
+			{
+				case DisplaySurfaceID.EmuCore:
+					if (_GUISurface == null && EnableLuaAutolockHack) LockEmuSurfaceLua();
+					return _GUISurface;
+				case DisplaySurfaceID.Client:
+					return _clientSurface;
+				default:
+					throw new Exception();
+			}
+		}
 
 		private void LockSurface(DisplaySurfaceID surfaceID)
 		{
