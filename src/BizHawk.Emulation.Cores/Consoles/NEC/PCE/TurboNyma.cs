@@ -23,15 +23,15 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 		public TurboNyma(CoreLoadParameters<NymaSettings, NymaSyncSettings> lp)
 			: base(lp.Comm, "PCE", "PC Engine Controller", lp.Settings, lp.SyncSettings)
 		{
-			var firmwares = new Dictionary<string, (string, string)>();
+			var firmwares = new Dictionary<string, FirmwareID>();
 			if (lp.Discs.Count > 0)
 			{
 				_hasCds = true;
 				var ids = lp.Discs.Select(dg => dg.DiscType).ToList();
 				if (ids.Contains(DiscType.TurboCD))
-					firmwares.Add("FIRMWARE:syscard3.pce", ("PCECD", "Bios"));
+					firmwares.Add("FIRMWARE:syscard3.pce", new("PCECD", "Bios"));
 				if (ids.Contains(DiscType.TurboGECD))
-					firmwares.Add("FIRMWARE:gecard.pce", ("PCECD", "GE-Bios"));
+					firmwares.Add("FIRMWARE:gecard.pce", new("PCECD", "GE-Bios"));
 			}
 			else if (lp.Roms.Count == 1)
 			{

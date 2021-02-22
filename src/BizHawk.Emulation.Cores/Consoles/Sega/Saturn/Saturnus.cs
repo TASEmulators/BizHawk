@@ -15,13 +15,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 		{
 			if (lp.Roms.Count > 0)
 				throw new InvalidOperationException("To load a Saturn game, please load the CUE file and not the BIN file.");
-			var firmwares = new Dictionary<string, (string, string)>
+			var firmwares = new Dictionary<string, FirmwareID>
 			{
-				{ "FIRMWARE:$J", ("SAT", "J") },
-				{ "FIRMWARE:$U", ("SAT", "U") },
-				{ "FIRMWARE:$KOF", ("SAT", "KOF95") },
-				{ "FIRMWARE:$ULTRA", ("SAT", "ULTRAMAN") },
-				// { "FIRMWARE:$SATAR", ("SAT", "AR") }, // action replay garbage
+				{ "FIRMWARE:$J", new("SAT", "J") },
+				{ "FIRMWARE:$U", new("SAT", "U") },
+				{ "FIRMWARE:$KOF", new("SAT", "KOF95") },
+				{ "FIRMWARE:$ULTRA", new("SAT", "ULTRAMAN") },
+				// { "FIRMWARE:$SATAR", new("SAT", "AR") }, // action replay garbage
 			};
 			DoInit<LibNymaCore>(lp, "ss.wbx", firmwares);
 		}

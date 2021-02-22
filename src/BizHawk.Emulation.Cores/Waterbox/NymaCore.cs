@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		protected T DoInit<T>(
 			CoreLoadParameters<NymaSettings, NymaSyncSettings> lp,
 			string wbxFilename,
-			IDictionary<string, (string SystemID, string FirmwareID)> firmwares = null
+			IDictionary<string, FirmwareID> firmwares = null
 		)
 			where T : LibNymaCore
 		{
@@ -45,7 +45,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			);
 		}
 		protected T DoInit<T>(GameInfo game, byte[] rom, Disc[] discs, string wbxFilename, string extension, bool deterministic,
-			IDictionary<string, (string SystemID, string FirmwareID)> firmwares = null)
+			IDictionary<string, FirmwareID> firmwares = null)
 			where T : LibNymaCore
 		{
 			_settingsQueryDelegate = SettingsQuery;
@@ -56,9 +56,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 			var firmwareDelegate = new LibNymaCore.FrontendFirmwareNotify((name) =>
 			{
-				if (firmwares != null && firmwares.TryGetValue(name, out var info))
+				if (firmwares != null && firmwares.TryGetValue(name, out var id))
 				{
-					var data = CoreComm.CoreFileProvider.GetFirmware(info.SystemID, info.FirmwareID, true,
+					var data = CoreComm.CoreFileProvider.GetFirmware(id, true,
 						"Firmware files are usually required and may stop your game from loading");
 					if (data != null)
 					{
