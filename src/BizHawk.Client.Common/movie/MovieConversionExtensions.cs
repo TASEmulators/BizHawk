@@ -239,8 +239,7 @@ namespace BizHawk.Client.Common
 			{
 				foreach (var firmware in firmwareManager.RecentlyServed)
 				{
-					var key = $"{firmware.ID.System}_Firmware_{firmware.ID.Firmware}";
-
+					var key = firmware.ID.MovieHeaderKey;
 					if (!movie.HeaderEntries.ContainsKey(key))
 					{
 						movie.HeaderEntries.Add(key, firmware.Hash);

@@ -12,6 +12,8 @@ namespace BizHawk.Emulation.Common
 
 		public readonly string Firmware;
 
+		public string MovieHeaderKey => $"{System}_Firmware_{Firmware}";
+
 		public readonly string System;
 
 		public FirmwareID(string system, string firmware)

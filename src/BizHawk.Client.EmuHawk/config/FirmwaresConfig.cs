@@ -172,6 +172,7 @@ namespace BizHawk.Client.EmuHawk
 			var groups = new Dictionary<string, ListViewGroup>();
 			foreach (var fr in FirmwareDatabase.FirmwareRecords)
 			{
+				var sysID = fr.ID.System;
 				var lvi = new ListViewItem
 				{
 					Tag = fr,
@@ -179,7 +180,7 @@ namespace BizHawk.Client.EmuHawk
 					ImageIndex = IdUnsure,
 					ToolTipText = null
 				};
-				lvi.SubItems.Add(fr.ID.System);
+				lvi.SubItems.Add(sysID);
 				lvi.SubItems.Add(fr.ID.Firmware);
 				lvi.SubItems.Add(fr.Description);
 				lvi.SubItems.Add(""); // resolved with
@@ -191,15 +192,15 @@ namespace BizHawk.Client.EmuHawk
 				lvFirmwares.Items.Add(lvi);
 
 				// build the groups in the ListView as we go:
-				if (!groups.ContainsKey(fr.ID.System))
+				if (!groups.ContainsKey(sysID))
 				{
-					if (!SystemGroupNames.TryGetValue(fr.ID.System, out var name))
+					if (!SystemGroupNames.TryGetValue(sysID, out var name))
 						name = "FIX ME (FirmwaresConfig.cs)";
-					lvFirmwares.Groups.Add(fr.ID.System, name);
+					lvFirmwares.Groups.Add(sysID, name);
 					var lvg = lvFirmwares.Groups[lvFirmwares.Groups.Count - 1];
-					groups[fr.ID.System] = lvg;
+					groups[sysID] = lvg;
 				}
-				lvi.Group = groups[fr.ID.System];
+				lvi.Group = groups[sysID];
 			}
 
 			// now that we have some items in the ListView, we can size some columns to sensible widths
@@ -533,7 +534,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				lblFirmware =
 				{
-					Text = $"{fr.ID.System} : {fr.ID.Firmware} ({fr.Description})"
+					Text = $"{fr.ID} ({fr.Description})"
 				}
 			};
 

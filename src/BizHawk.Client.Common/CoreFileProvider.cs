@@ -40,13 +40,13 @@ namespace BizHawk.Client.Common
 		{
 			if (required)
 			{
-				var fullMsg = $"Couldn't find required firmware \"{id.System}:{id.Firmware}\".  This is fatal{(msg != null ? $": {msg}" : ".")}";
+				var fullMsg = $"Couldn't find required firmware {id}.  This is fatal{(msg != null ? $": {msg}" : ".")}";
 				throw new MissingFirmwareException(fullMsg);
 			}
 
 			if (msg != null)
 			{
-				var fullMsg = $"Couldn't find firmware \"{id.System}:{id.Firmware}\".  Will attempt to continue: {msg}";
+				var fullMsg = $"Couldn't find firmware {id}.  Will attempt to continue: {msg}";
 				_showWarning(fullMsg);
 			}
 		}
