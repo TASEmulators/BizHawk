@@ -191,16 +191,6 @@ namespace BizHawk.Client.Common
 			OnLoadError?.Invoke(this, new RomErrorArgs(message, systemId, path, det, type));
 		}
 
-		private bool PreferredPlatformIsDefined(string extension)
-		{
-			if (_config.PreferredPlatformsForExtensions.ContainsKey(extension))
-			{
-				return !string.IsNullOrEmpty(_config.PreferredPlatformsForExtensions[extension]);
-			}
-
-			return false;
-		}
-
 		public IOpenAdvanced OpenAdvanced { get; set; }
 
 		private bool HandleArchiveBinding(HawkFile file)
@@ -290,9 +280,7 @@ namespace BizHawk.Client.Common
 					case DiscType.AudioDisc:
 					case DiscType.UnknownCDFS:
 					case DiscType.UnknownFormat:
-						game.System = PreferredPlatformIsDefined(ext)
-							? _config.PreferredPlatformsForExtensions[ext]
-							: "NULL";
+						game.System = _config.TryGetChosenSystemForFileExt(ext, out var sysID) ? sysID : "NULL";
 						break;
 
 					default: //"for an unknown disc, default to psx instead of pce-cd, since that is far more likely to be what they are attempting to open" [5e07ab3ec3b8b8de9eae71b489b55d23a3909f55, year 2015]
@@ -439,9 +427,9 @@ namespace BizHawk.Client.Common
 			if (string.IsNullOrEmpty(rom.GameInfo.System))
 			{
 				// Has the user picked a preference for this extension?
-				if (PreferredPlatformIsDefined(rom.Extension.ToLowerInvariant()))
+				if (_config.TryGetChosenSystemForFileExt(rom.Extension.ToLowerInvariant(), out var systemID))
 				{
-					rom.GameInfo.System = _config.PreferredPlatformsForExtensions[rom.Extension.ToLowerInvariant()];
+					rom.GameInfo.System = systemID;
 				}
 				else if (ChoosePlatform != null)
 				{

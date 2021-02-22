@@ -38,14 +38,18 @@ namespace BizHawk.Client.Common
 			PathEntries.RefreshTempPath();
 		}
 
-		// Core preference for generic file extension, key: file extension, value: a systemID or empty if no preference
+		/// <summary>
+		/// Used to determine the system a rom is classified as (and thus which core to use) for the times when our romloading autodetect magic can't determine a system.
+		/// Keys are file extensions, include the leading period in each, and use lowercase;
+		/// values are system IDs, use <see cref="string.Empty"/> for unset (though <see langword="null"/> should also work, omitting will remove from UI).
+		/// </summary>
 		public Dictionary<string, string> PreferredPlatformsForExtensions { get; set; } = new Dictionary<string, string>
 		{
-			[".bin"] =  "",
-			[".rom"] =  "",
-			[".iso"] =  "",
+			[".bin"] = "",
+			[".cue"] = "",
 			[".img"] = "",
-			[".cue"] =  ""
+			[".iso"] = "",
+			[".rom"] = "",
 		};
 
 		public PathEntryCollection PathEntries { get; set; } = new PathEntryCollection();
