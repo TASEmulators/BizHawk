@@ -548,7 +548,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 					{
 						var length = r.Next(40000);
 						var bw = new BinaryWriter(s);
-						Span<byte> bytes = buff[0..length];
+						var bytes = buff.AsSpan(0, length);
 						r.NextBytes(bytes);
 						bw.Write(length);
 						bw.Write(bytes);
@@ -563,7 +563,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 					var length = info.Size;
 					if (length != br.ReadInt32() + 8)
 						throw new Exception("Length field corrupted");
-					Span<byte> bytes = buff[0..(length - 8)];
+					var bytes = buff.AsSpan(0, length - 8);
 					br.Read(bytes);
 					if (br.ReadInt32() != CRC32.Calculate(bytes))
 						throw new Exception("Data or CRC field corrupted");
