@@ -83,12 +83,26 @@ namespace BizHawk.Client.Common
 
 		private DisplaySurface GetRelevantSurface(DisplaySurfaceID? surfaceID)
 		{
-			switch (surfaceID ?? _usingSurfaceID)
+			var nnID = surfaceID ?? _usingSurfaceID ?? throw new Exception();
+			void ThisIsTheLuaAutolockHack()
+			{
+				try
+				{
+					UnlockSurface(nnID);
+					LockSurface(nnID);
+				}
+				catch (InvalidOperationException ex)
+				{
+					LogCallback(ex.ToString());
+				}
+			}
+			switch (nnID)
 			{
 				case DisplaySurfaceID.EmuCore:
-					if (_GUISurface == null && EnableLuaAutolockHack) LockEmuSurfaceLua();
+					if (_GUISurface == null && EnableLuaAutolockHack) ThisIsTheLuaAutolockHack();
 					return _GUISurface;
 				case DisplaySurfaceID.Client:
+					if (_clientSurface == null && EnableLuaAutolockHack) ThisIsTheLuaAutolockHack();
 					return _clientSurface;
 				default:
 					throw new Exception();
@@ -141,19 +155,6 @@ namespace BizHawk.Client.Common
 			{
 				_usingSurfaceID = null;
 				UnlockSurface(surfaceID);
-			}
-		}
-
-		public void LockEmuSurfaceLua()
-		{
-			try
-			{
-				UnlockSurface(DisplaySurfaceID.EmuCore);
-				LockSurface(DisplaySurfaceID.EmuCore);
-			}
-			catch (InvalidOperationException ex)
-			{
-				LogCallback(ex.ToString());
 			}
 		}
 
