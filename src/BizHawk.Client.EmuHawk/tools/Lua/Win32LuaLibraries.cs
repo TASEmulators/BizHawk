@@ -169,11 +169,11 @@ namespace BizHawk.Client.EmuHawk
 				{
 					lf.Call(name);
 				}
-				GuiAPI.UnlockEmuSurfaceLua();
+				GuiAPI.ThisIsTheLuaAutounlockHack();
 			}
 			catch (Exception e)
 			{
-				GuiAPI.UnlockEmuSurfaceLua();
+				GuiAPI.ThisIsTheLuaAutounlockHack();
 				LogToLuaConsole($"error running function attached by lua function event.onsavestate\nError message: {e.Message}");
 			}
 		}
@@ -186,11 +186,11 @@ namespace BizHawk.Client.EmuHawk
 				{
 					lf.Call(name);
 				}
-				GuiAPI.UnlockEmuSurfaceLua();
+				GuiAPI.ThisIsTheLuaAutounlockHack();
 			}
 			catch (Exception e)
 			{
-				GuiAPI.UnlockEmuSurfaceLua();
+				GuiAPI.ThisIsTheLuaAutounlockHack();
 				LogToLuaConsole($"error running function attached by lua function event.onloadstate\nError message: {e.Message}");
 			}
 		}
@@ -204,11 +204,11 @@ namespace BizHawk.Client.EmuHawk
 				{
 					lf.Call();
 				}
-				GuiAPI.UnlockEmuSurfaceLua();
+				GuiAPI.ThisIsTheLuaAutounlockHack();
 			}
 			catch (Exception e)
 			{
-				GuiAPI.UnlockEmuSurfaceLua();
+				GuiAPI.ThisIsTheLuaAutounlockHack();
 				LogToLuaConsole($"error running function attached by lua function event.onframestart\nError message: {e.Message}");
 			}
 		}
@@ -222,11 +222,11 @@ namespace BizHawk.Client.EmuHawk
 				{
 					lf.Call();
 				}
-				GuiAPI.UnlockEmuSurfaceLua();
+				GuiAPI.ThisIsTheLuaAutounlockHack();
 			}
 			catch (Exception e)
 			{
-				GuiAPI.UnlockEmuSurfaceLua();
+				GuiAPI.ThisIsTheLuaAutounlockHack();
 				LogToLuaConsole($"error running function attached by lua function event.onframeend\nError message: {e.Message}");
 			}
 		}
@@ -237,7 +237,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				exitCallback.Call();
 			}
-			GuiAPI.UnlockEmuSurfaceLua();
+			GuiAPI.ThisIsTheLuaAutounlockHack();
 		}
 
 		public void Close()
@@ -302,7 +302,7 @@ namespace BizHawk.Client.EmuHawk
 				LuaLibraryBase.SetCurrentThread(lf);
 
 				var execResult = _currThread.Resume(0);
-				GuiAPI.UnlockEmuSurfaceLua();
+				GuiAPI.ThisIsTheLuaAutounlockHack();
 
 				_lua.RunScheduledDisposes(); // TODO: I don't think this is needed anymore, we run this regularly anyway
 
@@ -319,7 +319,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception)
 			{
-				GuiAPI.UnlockEmuSurfaceLua();
+				GuiAPI.ThisIsTheLuaAutounlockHack();
 				throw;
 			}
 			finally

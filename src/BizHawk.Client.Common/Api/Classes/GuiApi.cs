@@ -158,7 +158,11 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void UnlockEmuSurfaceLua() => UnlockSurface(DisplaySurfaceID.EmuCore);
+		public void ThisIsTheLuaAutounlockHack()
+		{
+			UnlockSurface(DisplaySurfaceID.EmuCore);
+			UnlockSurface(DisplaySurfaceID.Client);
+		}
 
 		public void DrawNew(string name, bool clear)
 		{
