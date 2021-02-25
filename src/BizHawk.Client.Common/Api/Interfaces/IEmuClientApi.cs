@@ -63,14 +63,6 @@ namespace BizHawk.Client.Common
 
 		void FrameSkip(int numFrames);
 
-		/// <summary>
-		/// Gets a <see cref="Joypad"/> for specified player
-		/// </summary>
-		/// <param name="player">Player (one based) you want current inputs</param>
-		/// <returns>A <see cref="Joypad"/> populated with current inputs</returns>
-		/// <exception cref="IndexOutOfRangeException">Raised when you specify a player less than 1 or greater than maximum allows (see SystemInfo class to get this information)</exception>
-		Joypad GetInput(int player);
-
 		bool GetSoundOn();
 
 		int GetTargetScanlineIntensity();
@@ -177,15 +169,6 @@ namespace BizHawk.Client.Common
 		/// <param name="right">Right padding</param>
 		/// <param name="bottom">Bottom padding</param>
 		void SetGameExtraPadding(int left, int top = 0, int right = 0, int bottom = 0);
-
-		/// <summary>
-		/// Set inputs in specified <see cref="Joypad"/> to specified player
-		/// </summary>
-		/// <param name="player">Player (one based) whom inputs must be set</param>
-		/// <param name="joypad"><see cref="Joypad"/> with inputs</param>
-		/// <exception cref="IndexOutOfRangeException">Raised when you specify a player less than 1 or greater than maximum allows (see SystemInfo class to get this information)</exception>
-		/// <remarks>Still have some strange behaviour with multiple inputs; so this feature is still in beta</remarks>
-		void SetInput(int player, Joypad joypad);
 
 		void SetScreenshotOSD(bool value);
 

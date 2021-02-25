@@ -1,27 +1,17 @@
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Nintendo.Gameboy;
-using BizHawk.Emulation.Cores.PCEngine;
-using BizHawk.Emulation.Cores.Sega.MasterSystem;
 
 namespace BizHawk.Client.Common
 {
 	public sealed class EmuClientApi : IEmuClientApi
 	{
-		private readonly List<Joypad> _allJoyPads;
-
 		private readonly Config _config;
 
 		private readonly IWindowCoordsTransformer _displayManager;
-
-		private readonly InputManager _inputManager;
 
 		private readonly IMainFormForApi _mainForm;
 
@@ -30,43 +20,6 @@ namespace BizHawk.Client.Common
 		private readonly IEmulator Emulator;
 
 		private readonly IGameInfo Game;
-
-		private readonly IReadOnlyCollection<JoypadButton> JoypadButtonsArray = Enum.GetValues(typeof(JoypadButton)).Cast<JoypadButton>().ToList(); //TODO can the return of GetValues be cast to JoypadButton[]? --yoshi
-
-		private readonly JoypadStringToEnumConverter JoypadConverter = new JoypadStringToEnumConverter();
-
-		/// <remarks>future humans: if this is broken, rewrite the caller instead if fixing it</remarks>
-		private SystemInfo RunningSystem
-		{
-			get
-			{
-				switch (Emulator.SystemId)
-				{
-					case "PCE" when Emulator is PCEngine pceHawk:
-						return pceHawk.Type switch
-						{
-							NecSystemType.TurboGrafx => SystemInfo.PCE,
-							NecSystemType.TurboCD => SystemInfo.PCECD,
-							NecSystemType.SuperGrafx => SystemInfo.SGX,
-							_ => throw new ArgumentOutOfRangeException()
-						};
-					case "PCE":
-						return SystemInfo.PCE;
-					case "SMS":
-						var sms = (SMS) Emulator;
-						return sms.IsSG1000
-							? SystemInfo.SG
-							: sms.IsGameGear
-								? SystemInfo.GG
-								: SystemInfo.SMS;
-					case "GB":
-						if (Emulator is Gameboy gb) return gb.IsCGBMode() ? SystemInfo.GBC : SystemInfo.GB;
-						return SystemInfo.DualGB;
-					default:
-						return SystemInfo.FindByCoreSystem(SystemIdConverter.Convert(Emulator.SystemId));
-				}
-			}
-		}
 
 		public static readonly BizHawkSystemIdToEnumConverter SystemIdConverter = new BizHawkSystemIdToEnumConverter();
 
@@ -82,27 +35,14 @@ namespace BizHawk.Client.Common
 
 		public event StateSavedEventHandler StateSaved;
 
-		public EmuClientApi(Action<string> logCallback, IMainFormForApi mainForm, IWindowCoordsTransformer displayManager, InputManager inputManager, Config config, IEmulator emulator, IGameInfo game)
+		public EmuClientApi(Action<string> logCallback, IMainFormForApi mainForm, IWindowCoordsTransformer displayManager, Config config, IEmulator emulator, IGameInfo game)
 		{
 			_config = config;
 			_displayManager = displayManager;
 			Emulator = emulator;
 			Game = game;
-			_inputManager = inputManager;
 			_logCallback = logCallback;
 			_mainForm = mainForm;
-
-			try
-			{
-				_allJoyPads = new List<Joypad>(RunningSystem.MaxControllers);
-				for (var i = 1; i <= RunningSystem.MaxControllers; i++)
-					_allJoyPads.Add(new Joypad(RunningSystem, i));
-			}
-			catch (Exception e)
-			{
-				Console.Error.WriteLine("Apihawk is garbage and may not work this session.");
-				Console.Error.WriteLine(e);
-			}
 			VideoProvider = Emulator.AsVideoProviderOrDefault();
 		}
 
@@ -147,38 +87,6 @@ namespace BizHawk.Client.Common
 
 			_config.FrameSkip = numFrames;
 			_mainForm.FrameSkipMessage();
-		}
-
-		private void GetAllInputs()
-		{
-			var joypadAdapter = _inputManager.AutofireStickyXorAdapter;
-
-			var pressedButtons = joypadAdapter.Definition.BoolButtons.Where(b => joypadAdapter.IsPressed(b));
-
-			foreach (var j in _allJoyPads) j.ClearInputs();
-
-			Parallel.ForEach(pressedButtons, button =>
-			{
-				if (RunningSystem == SystemInfo.GB) _allJoyPads[0].AddInput(JoypadConverter.Convert(button));
-				else if (int.TryParse(button.Substring(1, 2), out var player)) _allJoyPads[player - 1].AddInput(JoypadConverter.Convert(button.Substring(3)));
-			});
-
-			if ((RunningSystem.AvailableButtons & JoypadButton.AnalogStick) == JoypadButton.AnalogStick)
-			{
-				for (var i = 1; i <= RunningSystem.MaxControllers; i++)
-				{
-					_allJoyPads[i - 1].AnalogX = joypadAdapter.AxisValue($"P{i} X Axis");
-					_allJoyPads[i - 1].AnalogY = joypadAdapter.AxisValue($"P{i} Y Axis");
-				}
-			}
-		}
-
-		public Joypad GetInput(int player)
-		{
-			if (!1.RangeTo(RunningSystem.MaxControllers).Contains(player))
-				throw new IndexOutOfRangeException($"{RunningSystem.DisplayName} does not support {player} controller(s)");
-			GetAllInputs();
-			return _allJoyPads[player - 1];
 		}
 
 		public bool GetSoundOn() => _config.SoundEnabled;
@@ -271,39 +179,6 @@ namespace BizHawk.Client.Common
 		{
 			_displayManager.GameExtraPadding = (left, top, right, bottom);
 			_mainForm.FrameBufferResized();
-		}
-
-		public void SetInput(int player, Joypad joypad)
-		{
-			if (!1.RangeTo(RunningSystem.MaxControllers).Contains(player)) throw new IndexOutOfRangeException($"{RunningSystem.DisplayName} does not support {player} controller(s)");
-
-			if (joypad.Inputs == 0)
-			{
-				_inputManager.AutofireStickyXorAdapter.ClearStickies();
-			}
-			else
-			{
-				foreach (var button in JoypadButtonsArray.Where(button => joypad.Inputs.HasFlag(button)))
-				{
-					_inputManager.AutofireStickyXorAdapter.SetSticky(
-						RunningSystem == SystemInfo.GB
-							? $"{JoypadConverter.ConvertBack(button, RunningSystem)}"
-							: $"P{player} {JoypadConverter.ConvertBack(button, RunningSystem)}",
-						isSticky: true
-					);
-				}
-			}
-
-#if false // Using this breaks joypad usage (even in UI); have to figure out why
-			if ((RunningSystem.AvailableButtons & JoypadButton.AnalogStick) == JoypadButton.AnalogStick)
-			{
-				for (var i = 1; i <= RunningSystem.MaxControllers; i++)
-				{
-					_inputManager.AutofireStickyXorAdapter.SetAxis($"P{i} X Axis", _allJoyPads[i - 1].AnalogX);
-					_inputManager.AutofireStickyXorAdapter.SetAxis($"P{i} Y Axis", _allJoyPads[i - 1].AnalogY);
-				}
-			}
-#endif
 		}
 
 		public void SetScreenshotOSD(bool value) => _config.ScreenshotCaptureOsd = value;

@@ -1,7 +1,6 @@
 ﻿using System.Drawing;
-using BizHawk.Client.Common;
-using BizHawk.Emulation.Common;
 
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
@@ -49,104 +48,52 @@ namespace BizHawk.Client.EmuHawk.CoreExtensions
 			return str;
 		}
 
-		public static SystemInfo System(this IEmulator emulator)
+		public static string GetSystemDisplayName(this IEmulator emulator) => emulator.SystemId switch
 		{
-			switch (emulator.SystemId)
-			{ 
-				default:
-				case "NULL":
-					return SystemInfo.Null;
-				case "NES":
-					return SystemInfo.Nes;
-				case "INTV":
-					return SystemInfo.Intellivision;
-				case "SG":
-					return SystemInfo.SG;
-				case "SMS":
-					if (emulator is SMS gg && gg.IsGameGear)
-					{
-						return SystemInfo.GG;
-					}
-
-					if (emulator is SMS sg && sg.IsSG1000)
-					{
-						return SystemInfo.SG;
-					}
-
-					return SystemInfo.SMS;
-				case "PCECD":
-					return SystemInfo.PCECD;
-				case "PCE":
-					return SystemInfo.PCE;
-				case "SGX":
-					return SystemInfo.SGX;
-				case "GEN":
-					return SystemInfo.Genesis;
-				case "TI83":
-					return SystemInfo.TI83;
-				case "SNES":
-					return SystemInfo.SNES;
-				case "GB":
-					/*
-					if ((Emulator as IGameboyCommon).IsCGBMode())
-					{
-						return SystemInfo.GBC;
-					}
-					*/
-					return SystemInfo.GB;
-				case "A26":
-					return SystemInfo.Atari2600;
-				case "A78":
-					return SystemInfo.Atari7800;
-				case "C64":
-					return SystemInfo.C64;
-				case "Coleco":
-					return SystemInfo.Coleco;
-				case "GBA":
-					return SystemInfo.GBA;
-				case "NDS":
-					return SystemInfo.NDS;
-				case "N64":
-					return SystemInfo.N64;
-				case "SAT":
-					return SystemInfo.Saturn;
-				case "DGB":
-					return SystemInfo.DualGB;
-				case "GB3x":
-					return SystemInfo.GB3x;
-				case "GB4x":
-					return SystemInfo.GB4x;
-				case "WSWAN":
-					return SystemInfo.WonderSwan;
-				case "Lynx":
-					return SystemInfo.Lynx;
-				case "PSX":
-					return SystemInfo.PSX;
-				case "AppleII":
-					return SystemInfo.AppleII;
-				case "Libretro":
-					return SystemInfo.Libretro;
-				case "VB":
-					return SystemInfo.VirtualBoy;
-				case "VEC":
-					return SystemInfo.Vectrex;
-				case "NGP":
-					return SystemInfo.NeoGeoPocket;
-				case "ZXSpectrum":
-					return SystemInfo.ZxSpectrum;
-				case "AmstradCPC":
-					return SystemInfo.AmstradCpc;
-				case "ChannelF":
-					return SystemInfo.ChannelF;
-				case "O2":
-					return SystemInfo.O2;
-				case "MAME":
-					return SystemInfo.Mame;
-				case "uzem":
-					return SystemInfo.UzeBox;
-				case "PCFX":
-					return SystemInfo.Pcfx;
-			}
-		}
+			"NULL" => string.Empty,
+			"NES" => "NES",
+			"INTV" => "Intellivision",
+			"SG" => "SG-1000",
+			"SMS" when emulator is SMS { IsGameGear: true } => "Game Gear",
+			"SMS" when emulator is SMS { IsSG1000: true } => "SG-1000",
+			"SMS" => "Sega Master System",
+			"PCECD" => "TurboGrafx - 16(CD)",
+			"PCE" => "TurboGrafx-16",
+			"SGX" => "SuperGrafx",
+			"GEN" => "Genesis",
+			"TI83" => "TI - 83",
+			"SNES" => "SNES",
+#if false
+			"GB" when emulator is IGameboyCommon gb && gb.IsCGBMode() => "Gameboy Color",
+#endif
+			"GB" => "GB",
+			"A26" => "Atari 2600",
+			"A78" => "Atari 7800",
+			"C64" => "Commodore 64",
+			"Coleco" => "ColecoVision",
+			"GBA" => "Gameboy Advance",
+			"NDS" => "NDS",
+			"N64" => "Nintendo 64",
+			"SAT" => "Saturn",
+			"DGB" => "Game Boy Link",
+			"GB3x" => "Game Boy Link 3x",
+			"GB4x" => "Game Boy Link 4x",
+			"WSWAN" => "WonderSwan",
+			"Lynx" => "Lynx",
+			"PSX" => "PlayStation",
+			"AppleII" => "Apple II",
+			"Libretro" => "Libretro",
+			"VB" => "Virtual Boy",
+			"VEC" => "Vectrex",
+			"NGP" => "Neo-Geo Pocket",
+			"ZXSpectrum" => "ZX Spectrum",
+			"AmstradCPC" => "Amstrad CPC",
+			"ChannelF" => "Channel F",
+			"O2" => "Odyssey2",
+			"MAME" => "MAME",
+			"uzem" => "uzem",
+			"PCFX" => "PCFX",
+			_ => string.Empty
+		};
 	}
 }
