@@ -57,10 +57,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			byte[] Bios = null;
 			byte[] Mine = null;
 
-			Bios = comm.CoreFileProvider.GetFirmware("Vectrex", "Bios", true, "BIOS Not Found, Cannot Load");
+			Bios = comm.CoreFileProvider.GetFirmware("VEC", "Bios", true, "BIOS Not Found, Cannot Load");
 			_bios = Bios;
 
-			Mine = comm.CoreFileProvider.GetFirmware("Vectrex", "Minestorm", true, "Minestorm Not Found, Cannot Load");
+			Mine = comm.CoreFileProvider.GetFirmware("VEC", "Minestorm", true, "Minestorm Not Found, Cannot Load");
 			minestorm = Mine;
 
 			Console.WriteLine("SHA1:" + rom.HashSHA1(0, rom.Length));

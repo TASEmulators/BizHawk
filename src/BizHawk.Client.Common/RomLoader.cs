@@ -460,7 +460,7 @@ namespace BizHawk.Client.Common
 						game.System = "SGB";
 					}
 					break;
-				case "Arcade":
+				case "MAME":
 					nextEmulator = new MAME(
 						file.Directory,
 						file.CanonicalName,

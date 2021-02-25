@@ -62,7 +62,6 @@ namespace BizHawk.Client.Common
 				"MSX" => CoreSystem.MSX,
 				"VB" => CoreSystem.VirtualBoy,
 				"NGP" => CoreSystem.NeoGeoPocket,
-				"DNGP" => CoreSystem.NeoGeoPocket,
 				"SGB" => CoreSystem.SuperGameBoy,
 				"UZE" => CoreSystem.UzeBox,
 				"PCFX" => CoreSystem.PcFx,

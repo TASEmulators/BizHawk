@@ -91,7 +91,7 @@ namespace BizHawk.Client.EmuHawk.CoreExtensions
 			"ChannelF" => "Channel F",
 			"O2" => "Odyssey2",
 			"MAME" => "MAME",
-			"uzem" => "uzem",
+			"UZE" => "uzem",
 			"PCFX" => "PCFX",
 			_ => string.Empty
 		};

@@ -70,12 +70,12 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 			if (is_G7400)
 			{
-				_bios = comm.CoreFileProvider.GetFirmware("G7400", "BIOS", true, "BIOS Not Found, Cannot Load")
+				_bios = comm.CoreFileProvider.GetFirmware("O2", "BIOS-G7400", true, "BIOS Not Found, Cannot Load")
 				?? throw new MissingFirmwareException("Missing G7400 Bios");
 			}
 			else
 			{
-				_bios = comm.CoreFileProvider.GetFirmware("O2", "BIOS", true, "BIOS Not Found, Cannot Load")
+				_bios = comm.CoreFileProvider.GetFirmware("O2", "BIOS-O2", true, "BIOS Not Found, Cannot Load")
 				?? throw new MissingFirmwareException("Missing Odyssey2 Bios");
 			}
 			

@@ -42,7 +42,9 @@ namespace BizHawk.Client.Common.cheats
 		{
 			"N64" => "RDRAM",
 			"PSX" => "MainRAM",
-			"Saturn" => "Work Ram High", // Work RAM High may be incorrect?
+#if false
+			"SAT" => "Work Ram High", // Work RAM High may be incorrect?
+#endif
 			_ => null
 
 		};

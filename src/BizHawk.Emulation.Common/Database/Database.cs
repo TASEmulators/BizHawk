@@ -382,7 +382,7 @@ namespace BizHawk.Emulation.Common
 				// refactor to use mame db (output of "mame -listxml" command)
 				// there's no good definition for Arcade anymore, so we might limit to coin-based machines?
 				case ".ZIP":
-					game.System = "Arcade";
+					game.System = "MAME";
 					break;
 			}
 

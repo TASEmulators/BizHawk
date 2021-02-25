@@ -60,7 +60,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (Emulator is SMS sms && sms.IsGameGear)
 				{
-					SystemDropDown.SelectedItem = "Game Gear";
+					SystemDropDown.SelectedItem = "GGL";
 				}
 
 				FileSelectors.First().Path = MainForm.CurrentlyOpenRom;

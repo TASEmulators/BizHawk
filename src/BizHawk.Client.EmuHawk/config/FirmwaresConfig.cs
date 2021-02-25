@@ -58,7 +58,7 @@ namespace BizHawk.Client.EmuHawk
 			["PSX"] = "PlayStation",
 			["Lynx"] = "Lynx",
 			["AppleII"] = "Apple II",
-			["O2"] = "Odyssey 2",
+			["O2"] = "Odyssey 2 / Philips Videopac+ G7400",
 			["GB"] = "Game Boy",
 			["GBC"] = "Game Boy Color",
 			["PCFX"] = "PC-FX",
@@ -66,9 +66,8 @@ namespace BizHawk.Client.EmuHawk
 			["ZXSpectrum"] = "ZX Spectrum",
 			["AmstradCPC"] = "Amstrad CPC",
 			["ChannelF"] = "Channel F",
-			["Vectrex"] = "Vectrex",
+			["VEC"] = "Vectrex",
 			["MSX"] = "MSX",
-			["G7400"] = "Philips Videopac+ G7400",
 			["PS2"] = "Sony PlayStation 2",
 		};
 

@@ -26,8 +26,7 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 
 		private bool do_r_next = false;
 
-		// TODO: Are there really xml games in the wild with this SystemId?
-		[CoreConstructor("Game Gear")]
+		[CoreConstructor("GGL")]
 		public GGHawkLink(CoreLoadParameters<GGLinkSettings, GGLinkSyncSettings> lp)
 		{
 			if (lp.Roms.Count != 2)
