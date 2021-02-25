@@ -339,6 +339,10 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 			Icon = Properties.Resources.Logo;
 			SetImages();
+#if !DEBUG
+			ZXSpectrumExportSnapshotMenuItemMenuItem.Enabled = false;
+			ZXSpectrumExportSnapshotMenuItemMenuItem.Visible = false;
+#endif
 
 			Game = GameInfo.NullInstance;
 			_throttle = new Throttle();
@@ -1973,11 +1977,6 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case "ZXSpectrum":
 					zXSpectrumToolStripMenuItem.Visible = true;
-#if DEBUG
-					ZXSpectrumExportSnapshotMenuItemMenuItem.Visible = true;
-#else
-					ZXSpectrumExportSnapshotMenuItemMenuItem.Visible = false;
-#endif
 					break;
 				case "AmstradCPC":
 					amstradCPCToolStripMenuItem.Visible = true;
