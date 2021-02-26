@@ -5,7 +5,6 @@ namespace BizHawk.Client.Common
 {
 	public class PathEntry
 	{
-		public string SystemDisplayName { get; set; }
 		public string Type { get; set; }
 		[JsonIgnore]
 		private string _path;
