@@ -69,51 +69,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			RecentForROMs.Checked = _pathEntries.UseRecentForRoms;
 
-			DoTabs(_pathEntries.ToList());
-			SetDefaultFocusedTab();
+			DoTabs(_pathEntries.ToList(), _game.System);
 			DoRomToggle();
 		}
 
-		private void SetDefaultFocusedTab()
+		private void DoTabs(IList<PathEntry> pathCollection, string focusTabOfSystem)
 		{
-			var tab = FindTabByName(_game.System);
-			if (tab != null)
-			{
-				PathTabControl.SelectTab(tab);
-			}
-		}
-
-		private TabPage FindTabByName(string name)
-		{
-			var global = PathTabControl.TabPages
-				.OfType<TabPage>()
-				.First(tp => tp.Name.ToUpper().Contains("GLOBAL"));
-
-			return PathTabControl.TabPages
-				.OfType<TabPage>()
-				.FirstOrDefault(tp => tp.Name.ToUpper().StartsWith(name.ToUpper()))
-				?? global;
-		}
-
-		private void DoTabs(List<PathEntry> pathCollection)
-		{
-			PathTabControl.Visible = false;
-			PathTabControl.TabPages.Clear();
-
-			// Separate by system
-			var systems = _pathEntries
-				.Select(s => s.SystemDisplayName)
-				.Distinct()
-				.ToList();
-			systems.Sort();
-
-			// Hacky way to put global first
-			var global = systems.FirstOrDefault(s => s == "Global");
-			systems.Remove(global);
-			systems.Insert(0, global);
-
-			var tabPages = new List<TabPage>(systems.Count);
-
 			int x = UIHelper.ScaleX(6);
 			int textBoxWidth = UIHelper.ScaleX(70);
 			int padding = UIHelper.ScaleX(5);
@@ -123,18 +84,17 @@ namespace BizHawk.Client.EmuHawk
 			int widgetOffset = UIHelper.ScaleX(85);
 			int rowHeight = UIHelper.ScaleY(30);
 
-			foreach (var systemDisplayName in systems)
+			void AddTabPageForSystem(string system, string systemDisplayName)
 			{
-				var systemId = _pathEntries.First(p => p.SystemDisplayName == systemDisplayName).System;
 				var t = new TabPage
 				{
+					Name = system,
 					Text = systemDisplayName,
-					Name = systemId,
 					Width = UIHelper.ScaleX(200), // Initial Left/Width of child controls are based on this size.
 					AutoScroll = true
 				};
 				var paths = pathCollection
-					.Where(p => p.System == systemId)
+					.Where(p => p.System == system)
 					.OrderBy(p => p.Ordinal)
 					.ThenBy(p => p.Type);
 
@@ -215,10 +175,27 @@ namespace BizHawk.Client.EmuHawk
 					y += rowHeight;
 				}
 
-				tabPages.Add(t);
+				PathTabControl.TabPages.Add(t);
+				if (system == focusTabOfSystem || system.Split('_').Contains(focusTabOfSystem))
+				{
+					PathTabControl.SelectTab(PathTabControl.TabPages.Count - 1);
+				}
 			}
 
-			PathTabControl.TabPages.AddRange(tabPages.ToArray());
+			PathTabControl.Visible = false;
+
+			PathTabControl.TabPages.Clear();
+			var systems = _pathEntries.Select(e => e.System).Distinct() // group entries by "system" (intentionally using instance field here, not parameter)
+				.Select(sys => (sys, _pathEntries.First(p => p.System == sys).SystemDisplayName))
+				.OrderBy(tuple => tuple.Item2) // sorted alphabetically by display name
+				.ToList();
+			// add the Global tab first...
+			const string idGlobal = "Global_NULL";
+			systems.RemoveAll(tuple => tuple.Item1 == idGlobal);
+			AddTabPageForSystem(idGlobal, _pathEntries.First(p => p.System == idGlobal).SystemDisplayName);
+			// ...then continue with the others
+			foreach (var (sys, dispName) in systems) AddTabPageForSystem(sys, dispName);
+
 			PathTabControl.Visible = true;
 		}
 
@@ -330,10 +307,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void DefaultsBtn_Click(object sender, EventArgs e)
-		{
-			DoTabs(PathEntryCollection.DefaultValues);
-			SetDefaultFocusedTab();
-		}
+			=> DoTabs(PathEntryCollection.DefaultValues, "Global_NULL");
 
 		private void Ok_Click(object sender, EventArgs e)
 		{
