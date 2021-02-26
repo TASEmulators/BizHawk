@@ -12,22 +12,13 @@ namespace BizHawk.Client.Common
 	{
 		public List<PathEntry> Paths { get; }
 
-		public PathEntryCollection()
-		{
-			Paths = new List<PathEntry>();
-			Paths.AddRange(DefaultValues);
-		}
-
 		[JsonConstructor]
 		public PathEntryCollection(List<PathEntry> paths)
 		{
 			Paths = paths;
 		}
 
-		public void Add(PathEntry p)
-		{
-			Paths.Add(p);
-		}
+		public PathEntryCollection() : this(new List<PathEntry>(DefaultValues)) {}
 
 		public bool UseRecentForRoms { get; set; }
 		public string LastRomPath { get; set; } = ".";
