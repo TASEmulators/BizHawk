@@ -15,8 +15,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		"",
 		isPorted: true,
 		isReleased: true,
-		portedVersion: "SVN 344",
-		portedUrl: "http://gambatte.sourceforge.net/",
+		portedVersion: "Gambatte-Speedrun r717+",
+		portedUrl: "https://github.com/pokemon-speedrunning/gambatte-speedrun",
 		singleInstance: false)]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class Gameboy : IEmulator, IVideoProvider, ISoundProvider, ISaveRam, IStatable, IInputPollable, ICodeDataLogger,
