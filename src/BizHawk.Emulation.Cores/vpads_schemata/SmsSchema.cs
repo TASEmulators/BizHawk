@@ -6,26 +6,9 @@ using BizHawk.Emulation.Cores.Sega.MasterSystem;
 
 namespace BizHawk.Emulation.Cores
 {
-	[Schema("SMS")]
-	// ReSharper disable once UnusedMember.Global
-	public class SmsSchema : IVirtualPadSchema
+	internal abstract class SmsSchemaControls
 	{
-		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core, Action<string> showMessageBox)
-		{
-			if (((SMS)core).IsGameGear)
-			{
-				yield return StandardController(1, false);
-				yield return Console(false);
-			}
-			else
-			{
-				yield return StandardController(1, true);
-				yield return StandardController(2, true);
-				yield return Console(true);
-			}
-		}
-
-		private static PadSchema StandardController(int controller, bool isSms)
+		public static PadSchema StandardController(int controller, bool isSms)
 		{
 			return new PadSchema
 			{
@@ -34,7 +17,7 @@ namespace BizHawk.Emulation.Cores
 			};
 		}
 
-		private static IEnumerable<ButtonSchema> StandardButtons(int controller, bool isSms)
+		public static IEnumerable<ButtonSchema> StandardButtons(int controller, bool isSms)
 		{
 
 			yield return ButtonSchema.Up(14, 12, controller);
@@ -49,7 +32,7 @@ namespace BizHawk.Emulation.Cores
 			}
 		}
 
-		private static PadSchema Console(bool isSms)
+		public static PadSchema Console(bool isSms)
 		{
 			return new ConsoleSchema
 			{
@@ -58,13 +41,37 @@ namespace BizHawk.Emulation.Cores
 			};
 		}
 
-		private static IEnumerable<ButtonSchema> ConsoleButtons(bool isSms)
+		public static IEnumerable<ButtonSchema> ConsoleButtons(bool isSms)
 		{
 			yield return new ButtonSchema(10, 15, "Reset");
 			if (isSms)
 			{
 				yield return new ButtonSchema(58, 15, "Pause");
 			}
+		}
+	}
+
+	[Schema("GG")]
+	public class GameGearSchema : IVirtualPadSchema
+	{
+		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core, Action<string> showMessageBox)
+		{
+			yield return SmsSchemaControls.StandardController(1, false);
+			yield return SmsSchemaControls.Console(false);
+		}
+	}
+
+	[Schema("SG")]
+	public class SG1000Schema : SMSSchema {} // are these really the same controller layouts? --yoshi
+
+	[Schema("SMS")]
+	public class SMSSchema : IVirtualPadSchema
+	{
+		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core, Action<string> showMessageBox)
+		{
+			yield return SmsSchemaControls.StandardController(1, true);
+			yield return SmsSchemaControls.StandardController(2, true);
+			yield return SmsSchemaControls.Console(true);
 		}
 	}
 }
