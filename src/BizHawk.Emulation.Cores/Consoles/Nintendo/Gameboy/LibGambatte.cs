@@ -20,10 +20,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		[Flags]
 		public enum LoadFlags : uint
 		{
-			/// <summary>Treat the ROM as not having CGB support regardless of what its header advertises</summary>
-			FORCE_DMG = 1,
+			/// <summary>Treat the ROM as having CGB support regardless of what its header advertises</summary>
+			CGB_MODE = 1,
 			/// <summary>Use GBA intial CPU register values when in CGB mode.</summary>
-			GBA_CGB = 2,
+			GBA_FLAG = 2,
 			/// <summary>Use heuristics to detect and support some multicart MBCs disguised as MBC1.</summary>
 			MULTICART_COMPAT = 4
 		}

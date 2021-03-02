@@ -60,16 +60,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				switch (_syncSettings.ConsoleMode)
 				{
 					case GambatteSyncSettings.ConsoleModeType.GB:
-						flags |= LibGambatte.LoadFlags.FORCE_DMG;
 						break;
 					case GambatteSyncSettings.ConsoleModeType.GBC:
+						flags |= LibGambatte.LoadFlags.CGB_MODE;
 						break;
 					case GambatteSyncSettings.ConsoleModeType.GBA:
-						flags |= LibGambatte.LoadFlags.GBA_CGB;
+						flags |= LibGambatte.LoadFlags.CGB_MODE | LibGambatte.LoadFlags.GBA_FLAG;
 						break;
 					default:
-						if (game.System == "GB")
-							flags |= LibGambatte.LoadFlags.FORCE_DMG;
 						break;
 				}
 
@@ -86,17 +84,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				byte[] bios;
 				string biosSystemId;
 				string biosId;
-				if ((flags & LibGambatte.LoadFlags.FORCE_DMG) == LibGambatte.LoadFlags.FORCE_DMG)
-				{
-					biosSystemId = "GB";
-					biosId = "World";
-					IsCgb = false;
-				}
-				else
+				if ((flags & LibGambatte.LoadFlags.CGB_MODE) == LibGambatte.LoadFlags.CGB_MODE)
 				{
 					biosSystemId = "GBC";
 					biosId = _syncSettings.ConsoleMode == GambatteSyncSettings.ConsoleModeType.GBA ? "AGB" : "World";
 					IsCgb = true;
+				}
+				else
+				{
+					biosSystemId = "GB";
+					biosId = "World";
+					IsCgb = false;
 				}
 
 				if (_syncSettings.EnableBIOS)
