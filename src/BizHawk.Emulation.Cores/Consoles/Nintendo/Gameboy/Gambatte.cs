@@ -68,6 +68,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 						flags |= LibGambatte.LoadFlags.CGB_MODE | LibGambatte.LoadFlags.GBA_FLAG;
 						break;
 					default:
+						if (game.System == "GBC")
+							flags |= LibGambatte.LoadFlags.CGB_MODE;
 						break;
 				}
 
