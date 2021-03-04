@@ -513,7 +513,9 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 						{
 							return _peek(addr, firstOffset, size);
 						},
-						read == "rom" ? (Action<long, byte>) null : (addr, val) => _poke(addr, val, firstOffset, size),
+						read == "rom"
+							? null
+							: (long addr, byte val) => _poke(addr, val, firstOffset, size),
 						dataWidth));
 				}
 			}
