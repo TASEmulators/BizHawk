@@ -181,6 +181,7 @@
 			this.AcceptBackgroundInputCheckbox.TabIndex = 23;
 			this.AcceptBackgroundInputCheckbox.Text = "Accept background input";
 			this.AcceptBackgroundInputCheckbox.UseVisualStyleBackColor = true;
+			this.AcceptBackgroundInputCheckbox.CheckedChanged += new System.EventHandler(this.AcceptBackgroundInputCheckbox_CheckedChanged);
 			// 
 			// AcceptBackgroundInputControllerOnlyCheckBox
 			// 
