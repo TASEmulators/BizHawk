@@ -7,6 +7,7 @@
 		<GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
 	</PropertyGroup>
 	<ItemGroup>
+		<PackageReference Include="System.Memory" Version="4.5.4" />
 		<NET48ExternalToolFormDependency Include="$(ProjectDir)CSharp-SQLite.dll" />
 		<Reference Include="CSharp-SQLite"
 			HintPath="$(ProjectDir)CSharp-SQLite.dll"
