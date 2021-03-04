@@ -1,3 +1,6 @@
+#include:
+#- template: Security/SAST.gitlab-ci.yml
+
 variables:
   CI_HAWK_ARTIFACT_NAME: "BizHawk_devbuild_${CI_COMMIT_SHORT_SHA}"
   CI_HAWK_TMPARTIFACT_NAME: "BizHawk_tempbuild_${CI_COMMIT_REF_SLUG}_${CI_COMMIT_SHORT_SHA}"
@@ -124,6 +127,11 @@ run_tests:
   script:
     - Dist/BuildTestRelease.sh || Dist/BuildTestRelease.sh
   stage: test
+
+#sast:
+#  variables:
+#    SAST_EXCLUDED_ANALYZERS: bandit, brakeman, eslint, flawfinder, gosec, kubesec, nodejs-scan, phpcs-security-audit, pmd-apex, sobelow, spotbugs
+#  stage: test
 
 #cache:
 #  key: "$CI_COMMIT_REF_SLUG"
