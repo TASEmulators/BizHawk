@@ -177,49 +177,49 @@ pitchtype = mainmemory.read_u8(pitchtypeAddr);
 
 --What the pitcher will pitch
 if (pitchtype == 0) then
-	gui.text(0,0,"Sinker!!", null, null, "bottomright");
+	gui.text(0,0,"Sinker!!", nil, nil, "bottomright");
 end
 if (pitchtype == 2) then
-	gui.text(0,0, "Fast Ball", null, null, "bottomright")
+	gui.text(0,0, "Fast Ball", nil, nil, "bottomright")
 end
 if (pitchtype == 1) then
-	gui.text(0,0,"Regular Pitch", null, null, "bottomright")
+	gui.text(0,0,"Regular Pitch", nil, nil, "bottomright")
 end
 
 --Top of Inning
 if (inningtb == 0) then
-	gui.text(0,0, "Health    " .. mainmemory.read_u8(0x061D), null, null, "topright")
-	gui.text(0,12,"Drop     " .. mainmemory.read_u8(0x0617) % 16, null, null, "topright")
-	gui.text(0,24,"CurveL " .. mainmemory.read_u8(0x061C) / 16, null, null, "topright")
-	gui.text(0,36,"CurveR     " .. mainmemory.read_u8(0x061C) % 16, null, null, "topright")
-	gui.text(0,48,"Fast SP   " .. mainmemory.read_u8(0x061B), null, null, "topright")
-	gui.text(0,60,"Reg  SP   " .. mainmemory.read_u8(0x061A), null, null, "topright")
-	gui.text(0,72,"Sink SP   " .. mainmemory.read_u8(0x0619), null, null, "topright")
+	gui.text(0,0, "Health    " .. mainmemory.read_u8(0x061D), nil, nil, "topright")
+	gui.text(0,12,"Drop     " .. mainmemory.read_u8(0x0617) % 16, nil, nil, "topright")
+	gui.text(0,24,"CurveL " .. mainmemory.read_u8(0x061C) / 16, nil, nil, "topright")
+	gui.text(0,36,"CurveR     " .. mainmemory.read_u8(0x061C) % 16, nil, nil, "topright")
+	gui.text(0,48,"Fast SP   " .. mainmemory.read_u8(0x061B), nil, nil, "topright")
+	gui.text(0,60,"Reg  SP   " .. mainmemory.read_u8(0x061A), nil, nil, "topright")
+	gui.text(0,72,"Sink SP   " .. mainmemory.read_u8(0x0619), nil, nil, "topright")
 	
 	P1currPower = mainmemory.read_u8(P1currHitterPowerAddr) + (mainmemory.read_u8(P1currHitterPowerAddr+1) * 256);
-	gui.text(0,108, "Power: " .. P1currPower, null, null, "topright");
+	gui.text(0,108, "Power: " .. P1currPower, nil, nil, "topright");
 	P1currSpeed = mainmemory.read_u8(P1currSpeedAddr);
-	gui.text(0,120, "Speed: " .. P1currSpeed, null, null, "topright");
+	gui.text(0,120, "Speed: " .. P1currSpeed, nil, nil, "topright");
 	P1currCt = mainmemory.read_u8(P1currContactAddr);
-	gui.text(0,132, "Contact: " .. P1currCt, null, null, "topright");
+	gui.text(0,132, "Contact: " .. P1currCt, nil, nil, "topright");
 end
 
 --Bottom of Inning
 if (inningtb == 0x10) then
-	gui.text(0,0,"Health   " .. mainmemory.read_u8(0x060D), null, null, "topright")
-	gui.text(0,12,"Drop    " .. mainmemory.read_u8(0x0607) % 16, null, null, "topright")
-	gui.text(0,24,"CurveL " .. mainmemory.read_u8(0x060C) / 16, null, null, "topright")
-	gui.text(0,36,"CurveR   " .. mainmemory.read_u8(0x060C) % 16, null, null, "topright")
-	gui.text(0,48,"Fast SP  " .. mainmemory.read_u8(0x060B), null, null, "topright")
-	gui.text(0,60,"Reg  SP  " .. mainmemory.read_u8(0x060A), null, null, "topright")
-	gui.text(0,72,"Sink SP  " .. mainmemory.read_u8(0x0609), null, null, "topright")
+	gui.text(0,0,"Health   " .. mainmemory.read_u8(0x060D), nil, nil, "topright")
+	gui.text(0,12,"Drop    " .. mainmemory.read_u8(0x0607) % 16, nil, nil, "topright")
+	gui.text(0,24,"CurveL " .. mainmemory.read_u8(0x060C) / 16, nil, nil, "topright")
+	gui.text(0,36,"CurveR   " .. mainmemory.read_u8(0x060C) % 16, nil, nil, "topright")
+	gui.text(0,48,"Fast SP  " .. mainmemory.read_u8(0x060B), nil, nil, "topright")
+	gui.text(0,60,"Reg  SP  " .. mainmemory.read_u8(0x060A), nil, nil, "topright")
+	gui.text(0,72,"Sink SP  " .. mainmemory.read_u8(0x0609), nil, nil, "topright")
 
 	P2currPower = mainmemory.read_u8(P2currHitterPowerAddr) + (mainmemory.read_u8(P2currHitterPowerAddr+1) * 256);
-	gui.text(0,108, "Power: " .. P2currPower, null, null, "topright");
+	gui.text(0,108, "Power: " .. P2currPower, nil, nil, "topright");
 	P2currSpeed = mainmemory.read_u8(P2currSpeedAddr);
-	gui.text(0,120, "Speed: " .. P2currSpeed, null, null, "topright");
+	gui.text(0,120, "Speed: " .. P2currSpeed, nil, nil, "topright");
 	P2currCt = mainmemory.read_u8(P2currContactAddr);
-	gui.text(0,132, "Contact: " .. P2currCt, null, null, "topright");
+	gui.text(0,132, "Contact: " .. P2currCt, nil, nil, "topright");
 end
 
 end
@@ -228,7 +228,7 @@ end
 if (PitchingScreen == 0x0036) then
 
 p1Outs = mainmemory.read_u8(p1OutsAddr);
-gui.text(0,0, "Outs " .. p1Outs, null, null, "topright");
+gui.text(0,0, "Outs " .. p1Outs, nil, nil, "topright");
 
 end
 -------------------------------------------------------

@@ -23,7 +23,7 @@ while true do
 		if (hours > 0) then
 			time = "0" .. hours .. ":" .. time;
 		end
-		gui.text(0, 0, time, null, 1);
+		gui.text(0, 0, time, nil, 1);
 	end
 	emu.frameadvance();
 end

@@ -13,7 +13,7 @@ buttons = { };
 buttons["Up"] = false;
 buttons["Down"] = true;
 buttons["Left"] = "invert";
-buttons["Right"] = null;
+buttons["Right"] = nil;
 joypad.set(buttons, 1);
 
 pushThings = true;	
@@ -24,17 +24,17 @@ while true do
 		buttons["A"] = false;
 		buttons["B"] = true;
 		buttons["Select"] = "invert";
-		buttons["Start"] = null;
+		buttons["Start"] = nil;
 		joypad.set(buttons, 1);
 	end
 	
 	if (emu.framecount() == 600) then
 		pushThings = false;
 		turnoff = { };
-		turnoff["A"] = null;
-		turnoff["B"] = null;
-		turnoff["Select"] = null;
-		turnoff["Start"] = null;
+		turnoff["A"] = nil;
+		turnoff["B"] = nil;
+		turnoff["Select"] = nil;
+		turnoff["Start"] = nil;
 		
 		joypad.set(turnoff, 1);
 		console.writeline("cleared")
