@@ -3195,7 +3195,7 @@ namespace BizHawk.Client.EmuHawk
 			_dumpaudiosync = Config.VideoWriterAudioSync;
 			if (unattended && !string.IsNullOrEmpty(videoWriterName))
 			{
-				aw = VideoWriterInventory.GetVideoWriter(videoWriterName);
+				aw = VideoWriterInventory.GetVideoWriter(videoWriterName, this);
 			}
 			else
 			{
@@ -3258,7 +3258,7 @@ namespace BizHawk.Client.EmuHawk
 						aw.SetDefaultVideoCodecToken(Config);
 					}
 
-					var token = aw.AcquireVideoCodecToken(this, Config);
+					var token = aw.AcquireVideoCodecToken(Config);
 					if (token == null)
 					{
 						AddOnScreenMessage("A/V capture canceled.");

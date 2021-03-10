@@ -229,7 +229,7 @@ namespace BizHawk.Client.EmuHawk
 			public void Dispose() { }
 		}
 
-		public IDisposable AcquireVideoCodecToken(IDialogParent parent, Config config)
+		public IDisposable AcquireVideoCodecToken(Config config)
 		{
 			// don't care
 			return new WavWriterVToken();

@@ -98,7 +98,7 @@ namespace BizHawk.Client.EmuHawk
 			if (result == DialogResult.OK && dlg.listBox1.SelectedIndex != -1)
 			{
 				var vwi = (VideoWriterInfo)dlg.listBox1.SelectedItem;
-				ret = vwi.Create();
+				ret = vwi.Create(owner);
 				config.VideoWriter = vwi.Attribs.ShortName;
 			}
 			else

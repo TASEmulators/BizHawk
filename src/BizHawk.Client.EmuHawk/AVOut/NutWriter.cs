@@ -29,7 +29,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			// ignored
 		}
-		public IDisposable AcquireVideoCodecToken(IDialogParent parent, Config config)
+		public IDisposable AcquireVideoCodecToken(Config config)
 		{
 			return new NutWriterToken();
 		}

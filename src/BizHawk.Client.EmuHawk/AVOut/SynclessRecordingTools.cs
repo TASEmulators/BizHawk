@@ -124,11 +124,11 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			using var avw = new AviWriter();
+			using var avw = new AviWriter(this);
 			avw.SetAudioParameters(44100, 2, 16); // hacky
 			avw.SetMovieParameters(60, 1); // hacky
 			avw.SetVideoParameters(width, height);
-			var token = avw.AcquireVideoCodecToken(this, _config);
+			var token = avw.AcquireVideoCodecToken(_config);
 			avw.SetVideoCodecToken(token);
 			avw.OpenFile(sfd.FileName);
 			foreach (var fi in _mFrameInfos)

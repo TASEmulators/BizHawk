@@ -63,9 +63,8 @@ namespace BizHawk.Client.EmuHawk
 		/// obtain a set of recording compression parameters
 		/// return null on user cancel
 		/// </summary>
-		/// <param name="parent">parent for if the user is shown config dialog</param>
 		/// <returns>codec token, dispose of it when you're done with it</returns>
-		IDisposable AcquireVideoCodecToken(IDialogParent parent, Config config);
+		IDisposable AcquireVideoCodecToken(Config config);
 
 		/// <summary>
 		/// set framerate to fpsNum/fpsDen (assumed to be unchanging over the life of the stream)
@@ -118,6 +117,8 @@ namespace BizHawk.Client.EmuHawk
 
 	public class VideoWriterInfo
 	{
+		private static readonly Type[] CTOR_TYPES_A = { typeof(IDialogParent) };
+
 		public VideoWriterAttribute Attribs { get; }
 		private readonly Type _type;
 
@@ -127,7 +128,11 @@ namespace BizHawk.Client.EmuHawk
 			Attribs = attribs;
 		}
 
-		public IVideoWriter Create() => (IVideoWriter)Activator.CreateInstance(_type);
+		/// <param name="dialogParent">parent for if the user is shown config dialog</param>
+		public IVideoWriter Create(IDialogParent dialogParent) => (IVideoWriter) (
+			_type.GetConstructor(CTOR_TYPES_A)
+				?.Invoke(new object[] { dialogParent })
+				?? Activator.CreateInstance(_type));
 
 		public override string ToString() => Attribs.Name;
 	}
@@ -159,10 +164,11 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// find an IVideoWriter by its short name
 		/// </summary>
-		public static IVideoWriter GetVideoWriter(string name)
+		/// <param name="dialogParent">parent for if the user is shown config dialog</param>
+		public static IVideoWriter GetVideoWriter(string name, IDialogParent dialogParent)
 		{
 			return VideoWriters.TryGetValue(name, out var ret)
-				? ret.Create()
+				? ret.Create(dialogParent)
 				: null;
 		}
 	}
