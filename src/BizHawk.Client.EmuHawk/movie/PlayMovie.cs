@@ -408,12 +408,6 @@ namespace BizHawk.Client.EmuHawk
 						}
 						break;
 					case HeaderKeys.Platform:
-						// feos: previously it was compared against _game.System, but when the movie is created
-						// its platform is copied from _emulator.SystemId, see PopulateWithDefaultHeaderValues()
-						// the problem is that for GameGear and SG100, those mismatch, resulting in false positive here
-						// I have a patch to make GG and SG appear as platforms in movie header (issue #1246)
-						// but even with it, for all the old movies, this false positive would have to be worked around anyway
-						// TODO: actually check header flags like "IsGGMode" and "IsSegaCDMode" (those are never parsed by BizHawk)
 						if (kvp.Value != _emulator.SystemId)
 						{
 							item.BackColor = Color.Pink;

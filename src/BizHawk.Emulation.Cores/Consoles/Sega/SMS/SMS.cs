@@ -101,6 +101,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				Console.WriteLine("Using SMS Compatibility mode for Game Gear System");
 			}
 
+			SystemId = game.System;
+
 			Vdp = new VDP(this, Cpu, IsGameGear ? VdpMode.GameGear : VdpMode.SMS, Region);
 			ser.Register<IVideoProvider>(Vdp);
 			PSG = new SN76489sms();

@@ -160,7 +160,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		public int Frame => _frame;
 
-		public string SystemId => "SMS";
+		public string SystemId { get; }
 
 		public bool DeterministicEmulation => true;
 
