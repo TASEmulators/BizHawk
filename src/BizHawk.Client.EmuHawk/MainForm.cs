@@ -164,7 +164,7 @@ namespace BizHawk.Client.EmuHawk
 		public CoreComm CreateCoreComm()
 		{
 			var cfp = new CoreFileProvider(
-				ShowMessageCoreComm,
+				this,
 				FirmwareManager,
 				Config.PathEntries,
 				Config.FirmwareUserSpecifications);
