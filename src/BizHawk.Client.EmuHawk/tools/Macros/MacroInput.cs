@@ -98,13 +98,13 @@ namespace BizHawk.Client.EmuHawk
 				return true;
 			}
 
-			DialogResult result = DialogController.ShowMessageBox("You have unsaved macro(s). Do you wish to save them?", "Save?", MessageBoxButtons.YesNoCancel);
-			if (result == DialogResult.Cancel)
+			var result = DialogController.ShowMessageBox3("You have unsaved macro(s). Do you wish to save them?", "Save?");
+			if (result == null)
 			{
 				return false;
 			}
 
-			if (result == DialogResult.No)
+			if (result == false)
 			{
 				return true;
 			}

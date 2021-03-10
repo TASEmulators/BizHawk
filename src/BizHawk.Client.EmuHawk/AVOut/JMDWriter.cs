@@ -555,7 +555,7 @@ namespace BizHawk.Client.EmuHawk
 
 			int c = Math.Min(Math.Max(config.JmdCompression, NO_COMPRESSION), BEST_COMPRESSION);
 
-			if (!JmdForm.DoCompressionDlg(ref t, ref c, 1, 6, NO_COMPRESSION, BEST_COMPRESSION, _dialogParent.SelfAsHandle))
+			if (!JmdForm.DoCompressionDlg(ref t, ref c, 1, 6, NO_COMPRESSION, BEST_COMPRESSION, _dialogParent.AsWinFormsHandle()))
 				return null;
 
 			config.JmdThreads = ret.NumThreads = t;

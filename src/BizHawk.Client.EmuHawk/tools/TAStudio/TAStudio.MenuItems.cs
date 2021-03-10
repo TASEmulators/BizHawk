@@ -132,8 +132,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (filename.EndsWith(MovieService.StandardMovieExtension))
 			{
-				var result1 = DialogController.ShowMessageBox("This is a regular movie, a new project must be created from it to use in TAStudio\nProceed?", "Convert movie", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
-				if (result1.IsOk())
+				var result1 = DialogController.ShowMessageBox2("This is a regular movie, a new project must be created from it to use in TAStudio\nProceed?", "Convert movie", EMsgBoxIcon.Question, useOKCancel: true);
+				if (result1)
 				{
 					_initializing = true; // Starting a new movie causes a core reboot
 					WantsToControlReboot = false;
@@ -150,7 +150,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				DialogController.ShowMessageBox("This is not a BizHawk movie!", "Movie load error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				DialogController.ShowMessageBox("This is not a BizHawk movie!", "Movie load error", EMsgBoxIcon.Error);
 			}
 		}
 
@@ -284,7 +284,7 @@ namespace BizHawk.Client.EmuHawk
 				|| Emulator is Emulation.Cores.Nintendo.Gameboy.Gameboy
 				|| Emulator is Emulation.Cores.Nintendo.SubGBHawk.SubGBHawk)
 			{
-				DialogController.ShowMessageBox("This core requires emulation to be on the last frame when writing the movie, otherwise movie length will appear incorrect.\nTAStudio can't handle this, so Export BK2, play it to the end, and then Save Movie.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+				DialogController.ShowMessageBox("This core requires emulation to be on the last frame when writing the movie, otherwise movie length will appear incorrect.\nTAStudio can't handle this, so Export BK2, play it to the end, and then Save Movie.", "Warning", EMsgBoxIcon.Warning);
 			}
 
 			var bk2 = CurrentTasMovie.ToBk2();
@@ -740,8 +740,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (TasView.SelectedRows.Count() > 50)
 			{
-				var result = DialogController.ShowMessageBox("Are you sure you want to add more than 50 markers?", "Add markers", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
-				if (result != DialogResult.OK)
+				var result = DialogController.ShowMessageBox2("Are you sure you want to add more than 50 markers?", "Add markers", EMsgBoxIcon.Question, useOKCancel: true);
+				if (!result)
 				{
 					return;
 				}
@@ -775,7 +775,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!Emulator.DeterministicEmulation)
 			{
-				if (DialogController.ShowMessageBox("The emulator is not deterministic. It might fail even if the difference isn't enough to cause a desync.\nContinue with check?", "Not Deterministic", MessageBoxButtons.YesNo) == DialogResult.No)
+				if (!DialogController.ShowMessageBox2("The emulator is not deterministic. It might fail even if the difference isn't enough to cause a desync.\nContinue with check?", "Not Deterministic"))
 				{
 					return;
 				}
@@ -795,7 +795,7 @@ namespace BizHawk.Client.EmuHawk
 
 					if (!state.SequenceEqual(greenZone))
 					{
-						if (DialogController.ShowMessageBox($"Bad data between frames {lastState} and {Emulator.Frame}. Save the relevant state (raw data)?", "Integrity Failed!", MessageBoxButtons.YesNo) == DialogResult.Yes)
+						if (DialogController.ShowMessageBox2($"Bad data between frames {lastState} and {Emulator.Frame}. Save the relevant state (raw data)?", "Integrity Failed!"))
 						{
 							var sfd = new SaveFileDialog { FileName = "integrity.fresh" };
 							if (sfd.ShowDialog().IsOk())
@@ -849,7 +849,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				catch
 				{
-					DialogController.ShowMessageBox("Invalid Entry.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					DialogController.ShowMessageBox("Invalid Entry.", "Input Error", EMsgBoxIcon.Error);
 				}
 
 				if (val > 0)

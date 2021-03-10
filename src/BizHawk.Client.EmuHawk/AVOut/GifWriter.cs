@@ -202,7 +202,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public IDisposable AcquireVideoCodecToken(Config config)
 		{
-			return GifWriterForm.DoTokenForm(_dialogParent.SelfAsHandle, config);
+			return GifWriterForm.DoTokenForm(_dialogParent.AsWinFormsHandle(), config);
 		}
 
 		private void CalcDelay()

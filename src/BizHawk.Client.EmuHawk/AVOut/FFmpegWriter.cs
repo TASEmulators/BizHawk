@@ -219,7 +219,7 @@ namespace BizHawk.Client.EmuHawk
 				_dialogParent.ShowDialogWithTempMute(form);
 				if (!FFmpegService.QueryServiceAvailable()) return null;
 			}
-			return FFmpegWriterForm.DoFFmpegWriterDlg(_dialogParent.SelfAsHandle, config);
+			return FFmpegWriterForm.DoFFmpegWriterDlg(_dialogParent.AsWinFormsHandle(), config);
 		}
 
 		/// <exception cref="ArgumentException"><paramref name="token"/> does not inherit <see cref="FFmpegWriterForm.FormatPreset"/></exception>

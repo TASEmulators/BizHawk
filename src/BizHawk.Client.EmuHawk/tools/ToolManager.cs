@@ -634,12 +634,10 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (!skipExtToolWarning)
 				{
-					if (_owner.ShowMessageBox(
+					if (!_owner.ShowMessageBox2(
 						"Are you sure want to load this external tool?\r\nAccept ONLY if you trust the source and if you know what you're doing. In any other case, choose no.",
 						"Confirm loading",
-						MessageBoxButtons.YesNo,
-						MessageBoxIcon.Question)
-							!= DialogResult.Yes)
+						EMsgBoxIcon.Question))
 					{
 						return null;
 					}
@@ -650,18 +648,18 @@ namespace BizHawk.Client.EmuHawk
 					tool = Activator.CreateInstanceFrom(dllPath, toolTypeName ?? "BizHawk.Client.EmuHawk.CustomMainForm").Unwrap() as IExternalToolForm;
 					if (tool == null)
 					{
-						_owner.ShowMessageBox($"It seems that the object CustomMainForm does not implement {nameof(IExternalToolForm)}. Please review the code.", "No, no, no. Wrong Way !", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+						_owner.ShowMessageBox($"It seems that the object CustomMainForm does not implement {nameof(IExternalToolForm)}. Please review the code.", "No, no, no. Wrong Way !", EMsgBoxIcon.Warning);
 						return null;
 					}
 				}
 				catch (MissingMethodException)
 				{
-					_owner.ShowMessageBox("It seems that the object CustomMainForm does not have a public default constructor. Please review the code.", "No, no, no. Wrong Way !", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+					_owner.ShowMessageBox("It seems that the object CustomMainForm does not have a public default constructor. Please review the code.", "No, no, no. Wrong Way !", EMsgBoxIcon.Warning);
 					return null;
 				}
 				catch (TypeLoadException)
 				{
-					_owner.ShowMessageBox("It seems that the object CustomMainForm does not exists. Please review the code.", "No, no, no. Wrong Way !", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+					_owner.ShowMessageBox("It seems that the object CustomMainForm does not exists. Please review the code.", "No, no, no. Wrong Way !", EMsgBoxIcon.Warning);
 					return null;
 				}
 			}

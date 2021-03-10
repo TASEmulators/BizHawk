@@ -392,15 +392,14 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!Emulator.Attributes().Released)
 			{
-				var result = this.ModalMessageBox(
+				var result = this.ModalMessageBox2(
 					"Thanks for using BizHawk!  The emulation core you have selected "
 						+ "is currently BETA-status.  We appreciate your help in testing BizHawk. "
 						+ "You can record a movie on this core if you'd like to, but expect to "
 						+ "encounter bugs and sync problems.  Continue?",
-					"BizHawk",
-					MessageBoxButtons.YesNo);
+					"BizHawk");
 
-				if (result != DialogResult.Yes)
+				if (!result)
 				{
 					return;
 				}
@@ -1522,13 +1521,7 @@ namespace BizHawk.Client.EmuHawk
 						var message =
 							$"Invalid file format. Reason: {ex.Message} \nForce transfer? This may cause the calculator to crash.";
 
-						if (ShowMessageBox(
-							owner: null,
-							message,
-							"Upload Failed",
-							MessageBoxButtons.YesNoCancel,
-							MessageBoxIcon.Question)
-								== DialogResult.Yes)
+						if (this.ShowMessageBox3(owner: null, message, "Upload Failed", EMsgBoxIcon.Question) == true)
 						{
 							ti83.LinkPort.SendFileToCalc(File.OpenRead(ofd.FileName), false);
 						}
@@ -2477,14 +2470,13 @@ namespace BizHawk.Client.EmuHawk
 		private void UpdateNotification_Click(object sender, EventArgs e)
 		{
 			Sound.StopSound();
-			var result = this.ModalMessageBox(
+			var result = this.ModalMessageBox3(
 				$"Version {Config.UpdateLatestVersion} is now available. Would you like to open the BizHawk homepage?\r\n\r\nClick \"No\" to hide the update notification for this version.",
 				"New Version Available",
-				MessageBoxButtons.YesNoCancel,
-				MessageBoxIcon.Question);
+				EMsgBoxIcon.Question);
 			Sound.StartSound();
 
-			if (result == DialogResult.Yes)
+			if (result == true)
 			{
 				System.Threading.ThreadPool.QueueUserWorkItem(s =>
 				{
@@ -2493,7 +2485,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 				});
 			}
-			else if (result == DialogResult.No)
+			else if (result == false)
 			{
 				UpdateChecker.GlobalConfig = Config;
 				UpdateChecker.IgnoreNewVersion();

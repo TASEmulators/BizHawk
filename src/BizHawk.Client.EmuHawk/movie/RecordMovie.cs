@@ -20,8 +20,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public IDialogController DialogController => _mainForm;
 
-		public IWin32Window SelfAsHandle => this;
-
 		public RecordMovie(
 			IMainFormForTools mainForm,
 			Config config,

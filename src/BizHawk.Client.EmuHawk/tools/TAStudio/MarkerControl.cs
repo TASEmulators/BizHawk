@@ -17,8 +17,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public IDialogController DialogController => Tastudio.MainForm;
 
-		public IWin32Window SelfAsHandle => this;
-
 		public MarkerControl()
 		{
 			InitializeComponent();

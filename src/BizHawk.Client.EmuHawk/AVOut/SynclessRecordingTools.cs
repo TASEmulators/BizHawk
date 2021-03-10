@@ -21,8 +21,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public IDialogController DialogController { get; }
 
-		public IWin32Window SelfAsHandle => this;
-
 		public SynclessRecordingTools(Config config, IGameInfo game, IDialogController dialogController)
 		{
 			_config = config;

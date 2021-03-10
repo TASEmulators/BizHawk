@@ -22,8 +22,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public IDialogController DialogController => MainForm;
 
-		public IWin32Window SelfAsHandle => this;
-
 		public BreakpointControl()
 		{
 			InitializeComponent();

@@ -216,16 +216,15 @@ namespace BizHawk.Client.EmuHawk
 				{
 					changesString = "The current movie has unsaved changes. Would you like to save before closing it?";
 				}
-				var result = DialogController.ShowMessageBox(
+				var result = DialogController.ShowMessageBox3(
 					"TAStudio will create a new project file from the current movie.\n\n" + changesString,
 					"Convert movie",
-					MessageBoxButtons.YesNoCancel,
-					MessageBoxIcon.Question);
-				if (result.Equals(DialogResult.Yes))
+					EMsgBoxIcon.Question);
+				if (result == true)
 				{
 					MovieSession.Movie.Save();
 				}
-				else if (result.Equals(DialogResult.Cancel))
+				else if (result == null)
 				{
 					return false;
 				}

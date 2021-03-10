@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Windows.Forms;
+
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 using BizHawk.Client.Common.cheats;
@@ -50,12 +50,12 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else
 					{
-						DialogController.ShowMessageBox(result.Error, "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+						DialogController.ShowMessageBox(result.Error, "Input Error", EMsgBoxIcon.Error);
 					}
 				}
 				catch (Exception ex)
 				{
-					DialogController.ShowMessageBox($"An Error occured: {ex.GetType()}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					DialogController.ShowMessageBox($"An Error occured: {ex.GetType()}", "Error", EMsgBoxIcon.Error);
 				}
 			}
 
@@ -66,8 +66,8 @@ namespace BizHawk.Client.EmuHawk
 		private void BtnClear_Click(object sender, EventArgs e)
 		{
 			// Clear old Inputs
-			var result = DialogController.ShowMessageBox("Are you sure you want to clear this form?", "Clear Form", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-			if (result == DialogResult.Yes)
+			var result = DialogController.ShowMessageBox2("Are you sure you want to clear this form?", "Clear Form", EMsgBoxIcon.Question);
+			if (result)
 			{
 				txtDescription.Clear();
 				txtCheat.Clear();

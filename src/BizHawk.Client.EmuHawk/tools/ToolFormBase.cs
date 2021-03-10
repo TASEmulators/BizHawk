@@ -25,8 +25,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public IDialogController DialogController => MainForm;
 
-		public virtual IWin32Window SelfAsHandle => this;
-
 		public virtual bool AskSaveChanges() => true;
 
 		public virtual void Restart() {}
