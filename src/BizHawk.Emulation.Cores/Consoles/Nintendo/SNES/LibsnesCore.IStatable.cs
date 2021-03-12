@@ -19,6 +19,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			IsLagFrame = reader.ReadBoolean();
 			LagCount = reader.ReadInt32();
 			Frame = reader.ReadInt32();
+			Api.QUERY_set_cdl(_currCdl);
 		}
 	}
 }
