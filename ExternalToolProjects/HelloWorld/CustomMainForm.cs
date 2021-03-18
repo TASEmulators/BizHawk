@@ -123,31 +123,6 @@ namespace HelloWorld
 
 		private void button1_Click(object sender, EventArgs e) => APIs.EmuClient.DoFrameAdvance();
 
-		private void button2_Click(object sender, EventArgs e) => APIs.EmuClient.GetInput(1);
-
-		private void button3_Click(object sender, EventArgs e)
-		{
-			for (var i = 0; i < 600; i++)
-			{
-				if (i % 60 == 0)
-				{
-					var j1 = APIs.EmuClient.GetInput(1);
-					j1.AddInput(JoypadButton.A);
-					APIs.EmuClient.SetInput(1, j1);
-
-					APIs.EmuClient.DoFrameAdvance();
-
-					j1.RemoveInput(JoypadButton.A);
-					APIs.EmuClient.SetInput(1, j1);
-					APIs.EmuClient.DoFrameAdvance();
-				}
-				APIs.EmuClient.DoFrameAdvance();
-			}
-			var j = APIs.EmuClient.GetInput(1);
-			j.ClearInputs();
-			APIs.EmuClient.SetInput(1, j);
-		}
-
 		private void label_GameHash_Click(object sender, EventArgs e) => Clipboard.SetText(APIs.GameInfo.GetRomHash());
 
 		private void loadstate_Click(object sender, EventArgs e)
