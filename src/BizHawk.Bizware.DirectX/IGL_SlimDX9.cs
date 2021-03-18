@@ -6,7 +6,6 @@ using System.Threading;
 using BizHawk.Bizware.BizwareGL;
 
 using SlimDX.Direct3D9;
-using OpenTK;
 
 using PrimitiveType = SlimDX.Direct3D9.PrimitiveType;
 using sd = System.Drawing;
@@ -23,7 +22,7 @@ namespace BizHawk.Bizware.DirectX
 
 		private static Direct3D _d3d;
 		internal Device Dev;
-		private readonly INativeWindow _offscreenNativeWindow;
+		private readonly OpenTK.INativeWindow _offscreenNativeWindow;
 
 		// rendering state
 		private IntPtr _pVertexData;
@@ -42,7 +41,7 @@ namespace BizHawk.Bizware.DirectX
 			OpenTKConfigurator.EnsureConfigurated();
 
 			// make an 'offscreen context' so we can at least do things without having to create a window
-			_offscreenNativeWindow = new NativeWindow { ClientSize = new Size(8, 8) };
+			_offscreenNativeWindow = new OpenTK.NativeWindow { ClientSize = new Size(8, 8) };
 
 			CreateDevice();
 			CreateRenderStates();

@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using System.Drawing;
-using OpenTK;
 
 using BizHawk.Bizware.BizwareGL;
 

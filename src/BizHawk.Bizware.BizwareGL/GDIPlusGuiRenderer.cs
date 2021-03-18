@@ -3,8 +3,6 @@
 using System;
 using System.Drawing.Imaging;
 
-using OpenTK;
-
 using sd = System.Drawing;
 
 namespace BizHawk.Bizware.BizwareGL
@@ -16,21 +14,15 @@ namespace BizHawk.Bizware.BizwareGL
 			Owner = gl;
 		}
 
-		private readonly OpenTK.Graphics.Color4[] CornerColors =
-		{
-			new OpenTK.Graphics.Color4(1.0f,1.0f,1.0f,1.0f),
-			new OpenTK.Graphics.Color4(1.0f,1.0f,1.0f,1.0f),
-			new OpenTK.Graphics.Color4(1.0f,1.0f,1.0f,1.0f),
-			new OpenTK.Graphics.Color4(1.0f,1.0f,1.0f,1.0f)
-		};
+		private readonly Vector4[] CornerColors = { new(1.0f, 1.0f, 1.0f, 1.0f), new(1.0f, 1.0f, 1.0f, 1.0f), new(1.0f, 1.0f, 1.0f, 1.0f), new(1.0f, 1.0f, 1.0f, 1.0f) };
 
-		public void SetCornerColor(int which, OpenTK.Graphics.Color4 color)
+		public void SetCornerColor(int which, Vector4 color)
 		{
 			CornerColors[which] = color;
 		}
 
 		/// <exception cref="ArgumentException"><paramref name="colors"/> does not have exactly <c>4</c> elements</exception>
-		public void SetCornerColors(OpenTK.Graphics.Color4[] colors)
+		public void SetCornerColors(Vector4[] colors)
 		{
 			Flush(); //don't really need to flush with current implementation. we might as well roll modulate color into it too.
 			if (colors.Length != 4) throw new ArgumentException("array must be size 4", nameof(colors));

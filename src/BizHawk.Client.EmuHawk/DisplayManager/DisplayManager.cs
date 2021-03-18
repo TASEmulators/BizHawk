@@ -21,8 +21,6 @@ using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Sony.PSX;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.NDS;
 
-using OpenTK;
-
 namespace BizHawk.Client.EmuHawk
 {
 	/// <summary>

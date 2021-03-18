@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 
-using OpenTK;
-
 namespace BizHawk.Bizware.BizwareGL
 {
 	/// <summary>

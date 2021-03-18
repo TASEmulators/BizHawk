@@ -4,7 +4,6 @@ using BizHawk.Client.Common.FilterManager;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.NDS;
 
 using BizHawk.Bizware.BizwareGL;
-using OpenTK;
 
 namespace BizHawk.Client.Common.Filters
 {

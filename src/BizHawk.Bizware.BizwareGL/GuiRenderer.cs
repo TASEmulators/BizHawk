@@ -4,7 +4,6 @@
 
 using System;
 using System.Diagnostics;
-using OpenTK;
 
 using sd = System.Drawing;
 
@@ -49,19 +48,16 @@ namespace BizHawk.Bizware.BizwareGL
 			CurrPipeline = DefaultPipeline = Owner.CreatePipeline(VertexLayout, vs, ps, true, "xgui");
 		}
 
-		private readonly OpenTK.Graphics.Color4[] CornerColors = new OpenTK.Graphics.Color4[4] {
-			new OpenTK.Graphics.Color4(1.0f,1.0f,1.0f,1.0f),new OpenTK.Graphics.Color4(1.0f,1.0f,1.0f,1.0f),new OpenTK.Graphics.Color4(1.0f,1.0f,1.0f,1.0f),new OpenTK.Graphics.Color4(1.0f,1.0f,1.0f,1.0f)
-		};
+		private readonly Vector4[] CornerColors = { new(1.0f, 1.0f, 1.0f, 1.0f), new(1.0f, 1.0f, 1.0f, 1.0f), new(1.0f, 1.0f, 1.0f, 1.0f), new(1.0f, 1.0f, 1.0f, 1.0f) };
 
-
-		public void SetCornerColor(int which, OpenTK.Graphics.Color4 color)
+		public void SetCornerColor(int which, Vector4 color)
 		{
 			Flush(); //don't really need to flush with current implementation. we might as well roll modulate color into it too.
 			CornerColors[which] = color;
 		}
 
 		/// <exception cref="ArgumentException"><paramref name="colors"/> does not have exactly <c>4</c> elements</exception>
-		public void SetCornerColors(OpenTK.Graphics.Color4[] colors)
+		public void SetCornerColors(Vector4[] colors)
 		{
 			Flush(); //don't really need to flush with current implementation. we might as well roll modulate color into it too.
 			if (colors.Length != 4) throw new ArgumentException("array must be size 4", nameof(colors));
@@ -243,10 +239,10 @@ namespace BizHawk.Bizware.BizwareGL
 			else { v0 = art.v0; v1 = art.v1; }
 
 			float[] data = new float[32] {
-			  x,y, u0,v0, CornerColors[0].R, CornerColors[0].G, CornerColors[0].B, CornerColors[0].A,
-			  x+art.Width,y, u1,v0, CornerColors[1].R, CornerColors[1].G, CornerColors[1].B, CornerColors[1].A,
-			  x,y+art.Height, u0,v1, CornerColors[2].R, CornerColors[2].G, CornerColors[2].B, CornerColors[2].A,
-			  x+art.Width,y+art.Height, u1,v1,  CornerColors[3].R, CornerColors[3].G, CornerColors[3].B, CornerColors[3].A,
+			  x,y, u0,v0, CornerColors[0].X, CornerColors[0].Y, CornerColors[0].Z, CornerColors[0].W,
+			  x+art.Width,y, u1,v0, CornerColors[1].X, CornerColors[1].Y, CornerColors[1].Z, CornerColors[1].W,
+			  x,y+art.Height, u0,v1, CornerColors[2].X, CornerColors[2].Y, CornerColors[2].Z, CornerColors[2].W,
+			  x+art.Width,y+art.Height, u1,v1,  CornerColors[3].X, CornerColors[3].Y, CornerColors[3].Z, CornerColors[3].W,
 			};
 
 			Texture2d tex = art.BaseTexture;
@@ -295,34 +291,34 @@ namespace BizHawk.Bizware.BizwareGL
 			pData[1] = y;
 			pData[2] = u0;
 			pData[3] = v0;
-			pData[4] = CornerColors[0].R;
-			pData[5] = CornerColors[0].G;
-			pData[6] = CornerColors[0].B;
-			pData[7] = CornerColors[0].A;
+			pData[4] = CornerColors[0].X;
+			pData[5] = CornerColors[0].Y;
+			pData[6] = CornerColors[0].Z;
+			pData[7] = CornerColors[0].W;
 			pData[8] = x + w;
 			pData[9] = y;
 			pData[10] = u1;
 			pData[11] = v0;
-			pData[12] = CornerColors[1].R;
-			pData[13] = CornerColors[1].G;
-			pData[14] = CornerColors[1].B;
-			pData[15] = CornerColors[1].A;
+			pData[12] = CornerColors[1].X;
+			pData[13] = CornerColors[1].Y;
+			pData[14] = CornerColors[1].Z;
+			pData[15] = CornerColors[1].W;
 			pData[16] = x;
 			pData[17] = y + h;
 			pData[18] = u0;
 			pData[19] = v1;
-			pData[20] = CornerColors[2].R;
-			pData[21] = CornerColors[2].G;
-			pData[22] = CornerColors[2].B;
-			pData[23] = CornerColors[2].A;
+			pData[20] = CornerColors[2].X;
+			pData[21] = CornerColors[2].Y;
+			pData[22] = CornerColors[2].Z;
+			pData[23] = CornerColors[2].W;
 			pData[24] = x + w;
 			pData[25] = y + h;
 			pData[26] = u1;
 			pData[27] = v1;
-			pData[28] = CornerColors[3].R;
-			pData[29] = CornerColors[3].G;
-			pData[30] = CornerColors[3].B;
-			pData[31] = CornerColors[3].A;
+			pData[28] = CornerColors[3].X;
+			pData[29] = CornerColors[3].Y;
+			pData[30] = CornerColors[3].Z;
+			pData[31] = CornerColors[3].W;
 
 			Owner.BindArrayData(pData);
 			Owner.DrawArrays(PrimitiveType.TriangleStrip, 0, 4);

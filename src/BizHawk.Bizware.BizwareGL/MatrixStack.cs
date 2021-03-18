@@ -1,8 +1,6 @@
 using System.Drawing;
 using System.Collections.Generic;
 
-using OpenTK;
-
 namespace BizHawk.Bizware.BizwareGL
 {
 	//note: the sense of these matrices, as well as pre- and post- multiplying may be all mixed up.
@@ -67,9 +65,9 @@ namespace BizHawk.Bizware.BizwareGL
 		public void Pop() { Top = stack.Pop(); IsDirty = true; }
 		public void Push() { stack.Push(Top); IsDirty = true; }
 
-		public void RotateAxis(Vector3 axisRotation, float angle) { PostMultiplyMatrix(Matrix4.CreateFromAxisAngle(axisRotation, angle)); IsDirty = true; }
+		public void RotateAxis(Vector3 axisRotation, float angle) { PostMultiplyMatrix(Matrix4.CreateFromAxisAngle(in axisRotation, angle)); IsDirty = true; }
 
-		public void Scale(Vector3 scale) { PostMultiplyMatrix(Matrix4.CreateScale(scale)); IsDirty = true; }
+		public void Scale(Vector3 scale) { PostMultiplyMatrix(Matrix4.CreateScale(in scale)); IsDirty = true; }
 		public void Scale(Vector2 scale) { PostMultiplyMatrix(Matrix4.CreateScale(scale.X, scale.Y, 1)); IsDirty = true; }
 		public void Scale(float x, float y, float z) { PostMultiplyMatrix(Matrix4.CreateScale(x, y, z)); IsDirty = true; }
 		public void Scale(float ratio) { Scale(ratio, ratio, ratio); IsDirty = true; }
@@ -81,7 +79,7 @@ namespace BizHawk.Bizware.BizwareGL
 		public void RotateZ(float degrees) { PostMultiplyMatrix(Matrix4.CreateRotationZ(DegreesToRadians(degrees))); IsDirty = true; }
 
 		public void Translate(Vector2 v) { Translate(v.X, v.Y, 0); IsDirty = true; }
-		public void Translate(Vector3 trans) { PostMultiplyMatrix(Matrix4.CreateTranslation(trans)); IsDirty = true; }
+		public void Translate(Vector3 trans) { PostMultiplyMatrix(Matrix4.CreateTranslation(in trans)); IsDirty = true; }
 		public void Translate(float x, float y, float z) { PostMultiplyMatrix(Matrix4.CreateTranslation(x, y, z)); IsDirty = true; }
 		public void Translate(float x, float y) { Translate(x, y, 0); IsDirty = true; }
 		public void Translate(Point pt) { Translate(pt.X, pt.Y, 0); IsDirty = true; }

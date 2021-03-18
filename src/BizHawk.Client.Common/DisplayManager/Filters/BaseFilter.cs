@@ -3,7 +3,6 @@ using System.Drawing;
 using BizHawk.Client.Common.FilterManager;
 
 using BizHawk.Bizware.BizwareGL;
-using OpenTK;
 
 // Here's how to make a filter:
 // 1. Reset your state entirely in Initialize(). 
