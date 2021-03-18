@@ -7,7 +7,7 @@ using BizHawk.Client.Common;
 
 using OpenTK.Input;
 
-namespace BizHawk.Client.EmuHawk
+namespace BizHawk.Bizware.OpenTK3
 {
 	public static class OTK_Keyboard
 	{

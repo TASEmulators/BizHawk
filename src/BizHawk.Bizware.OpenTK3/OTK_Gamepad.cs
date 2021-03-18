@@ -6,7 +6,7 @@ using OpenTK.Input;
 
 using OpenTKGamePad = OpenTK.Input.GamePad;
 
-namespace BizHawk.Client.EmuHawk
+namespace BizHawk.Bizware.OpenTK3
 {
 	/// <summary>
 	/// Modified OpenTK Gamepad Handler<br/>

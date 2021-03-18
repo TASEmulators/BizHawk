@@ -7,7 +7,7 @@ using BizHawk.Client.Common;
 using OpenTK.Audio;
 using OpenTK.Audio.OpenAL;
 
-namespace BizHawk.Client.EmuHawk
+namespace BizHawk.Bizware.OpenTK3
 {
 	public class OpenALSoundOutput : ISoundOutput
 	{

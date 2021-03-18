@@ -16,6 +16,7 @@ using BizHawk.Common;
 using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
+using OpenTK.Platform;
 
 using BizGL = BizHawk.Bizware.BizwareGL;
 using BlendEquationMode = OpenTK.Graphics.OpenGL.BlendEquationMode;
@@ -31,7 +32,7 @@ using Vector2 = BizHawk.Bizware.BizwareGL.Vector2;
 using Vector4 = BizHawk.Bizware.BizwareGL.Vector4;
 using VertexAttribPointerType = OpenTK.Graphics.OpenGL.VertexAttribPointerType;
 
-namespace BizHawk.Client.EmuHawk
+namespace BizHawk.Bizware.OpenTK3
 {
 	/// <summary>
 	/// OpenTK implementation of the BizwareGL.IGL interface. 
@@ -819,7 +820,7 @@ namespace BizHawk.Client.EmuHawk
 			MakeContextCurrent(this.GraphicsContext,OffscreenNativeWindow.WindowInfo);
 		}
 
-		internal void MakeContextCurrent(IGraphicsContext context, global::OpenTK.Platform.IWindowInfo windowInfo)
+		internal void MakeContextCurrent(IGraphicsContext context, IWindowInfo windowInfo)
 		{
 			context.MakeCurrent(windowInfo);
 			PurgeStateCache();

@@ -9,8 +9,8 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<Reference Include="System.Windows.Forms" />
-		<Reference Include="SlimDX" HintPath="$(ProjectDir)../../References/x64/SlimDX.dll" Private="true" />
 		<PackageReference Include="OpenTK" Version="3.3.0" PrivateAssets="all" NoWarn="NU1701" />
-		<ProjectReference Include="$(ProjectDir)../BizHawk.Bizware.OpenTK3/BizHawk.Bizware.OpenTK3.csproj" />
+		<PackageReference Include="OpenTK.GLControl" Version="3.1.0" PrivateAssets="all" />
+		<ProjectReference Include="$(ProjectDir)../BizHawk.Client.Common/BizHawk.Client.Common.csproj" />
 	</ItemGroup>
 </Project>

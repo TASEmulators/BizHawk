@@ -3,7 +3,9 @@ using System.IO;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Threading;
+
 using BizHawk.Bizware.BizwareGL;
+using BizHawk.Bizware.OpenTK3;
 
 using SlimDX.Direct3D9;
 

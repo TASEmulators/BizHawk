@@ -1,8 +1,6 @@
-using System;
-
 using OpenTK;
 
-namespace BizHawk.Bizware.BizwareGL
+namespace BizHawk.Bizware.OpenTK3
 {
 	public static class OpenTKConfigurator
 	{

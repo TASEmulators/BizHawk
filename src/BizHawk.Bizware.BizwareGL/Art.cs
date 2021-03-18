@@ -15,13 +15,13 @@ namespace BizHawk.Bizware.BizwareGL
 			Height = tex.Height;
 		}
 
-		internal Art(ArtManager owner)
+		public Art(ArtManager owner)
 		{
 			Owner = owner;
 		}
 
 		public ArtManager Owner { get; }
-		public Texture2d BaseTexture { get; internal set; }
+		public Texture2d BaseTexture { get; set; }
 		
 		public float Width, Height;
 		public float u0, v0, u1, v1;

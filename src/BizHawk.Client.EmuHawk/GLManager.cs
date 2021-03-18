@@ -1,6 +1,7 @@
 using System;
 using BizHawk.Bizware.BizwareGL;
 using BizHawk.Bizware.DirectX;
+using BizHawk.Bizware.OpenTK3;
 
 namespace BizHawk.Client.EmuHawk
 {
