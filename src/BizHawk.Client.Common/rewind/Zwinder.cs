@@ -60,12 +60,18 @@ namespace BizHawk.Client.Common
 			_buffer.Capture(frame, s => _stateSource.SaveStateBinary(new BinaryWriter(s)));
 		}
 
-		public bool Rewind()
+		public bool Rewind(int frameToAvoid)
 		{
 			if (!Active || Count == 0)
 				return false;
 			var index = Count - 1;
 			var state = _buffer.GetState(index);
+			if (state.Frame == frameToAvoid && Count > 1)
+			{
+				// Do not decrement index again.  We will "head" this state and not pop it since it will be advanced past
+				// without an opportunity to capture.  This is a bit hackish.
+				state = _buffer.GetState(index - 1);
+			}
 			_stateSource.LoadStateBinary(new BinaryReader(state.GetReadStream()));
 			_buffer.InvalidateEnd(index);
 			return true;
