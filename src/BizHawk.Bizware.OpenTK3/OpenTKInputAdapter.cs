@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 using BizHawk.Client.Common;
 
-namespace BizHawk.Client.EmuHawk
+namespace BizHawk.Bizware.OpenTK3
 {
 	public sealed class OpenTKInputAdapter : IHostInputAdapter
 	{

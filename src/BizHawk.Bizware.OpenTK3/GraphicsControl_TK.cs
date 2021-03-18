@@ -1,9 +1,11 @@
 using System.Windows.Forms;
+
 using BizHawk.Bizware.BizwareGL;
+
 using OpenTK;
 using OpenTK.Graphics;
 
-namespace BizHawk.Client.EmuHawk
+namespace BizHawk.Bizware.OpenTK3
 {
 	internal class GLControlWrapper : GLControl, IGraphicsControl
 	{

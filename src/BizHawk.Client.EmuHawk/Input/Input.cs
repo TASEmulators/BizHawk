@@ -5,6 +5,7 @@ using System.Threading;
 using System.Windows.Forms;
 
 using BizHawk.Bizware.DirectX;
+using BizHawk.Bizware.OpenTK3;
 using BizHawk.Common;
 using BizHawk.Client.Common;
 

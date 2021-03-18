@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 using BizHawk.Bizware.BizwareGL;
 using BizHawk.Bizware.DirectX;
-
+using BizHawk.Bizware.OpenTK3;
 using BizHawk.Common;
 using BizHawk.Common.PathExtensions;
 using BizHawk.Client.Common;

@@ -5,9 +5,11 @@
 using System;
 using System.Diagnostics;
 
+using BizHawk.Bizware.BizwareGL;
+
 using sd = System.Drawing;
 
-namespace BizHawk.Bizware.BizwareGL
+namespace BizHawk.Bizware.OpenTK3
 {
 	/// <summary>
 	/// A simple renderer useful for rendering GUI stuff. 
