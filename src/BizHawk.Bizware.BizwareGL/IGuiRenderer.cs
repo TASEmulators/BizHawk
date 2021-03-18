@@ -24,7 +24,7 @@ namespace BizHawk.Bizware.BizwareGL
 		/// <summary>
 		/// draws the specified Art resource with the specified offset. This could be tricky if youve applied other rotate or scale transforms first.
 		/// </summary>
-		void Draw(Art art, OpenTK.Vector2 pos);
+		void Draw(Art art, Vector2 pos);
 
 		/// <summary>
 		/// draws the specified Art resource with the specified offset. This could be tricky if youve applied other rotate or scale transforms first.
@@ -83,12 +83,14 @@ namespace BizHawk.Bizware.BizwareGL
 		/// <summary>
 		/// Sets the specified corner color (for the gradient effect)
 		/// </summary>
-		void SetCornerColor(int which, OpenTK.Graphics.Color4 color);
+		/// <remarks>(x, y, z, w) is (r, g, b, a)</remarks>
+		void SetCornerColor(int which, Vector4 color);
 
 		/// <summary>
 		/// Sets all four corner colors at once
 		/// </summary>
-		void SetCornerColors(OpenTK.Graphics.Color4[] colors);
+		/// <remarks>(x, y, z, w) is (r, g, b, a)</remarks>
+		void SetCornerColors(Vector4[] colors);
 
 		/// <summary>
 		/// Restores the pipeline to the default

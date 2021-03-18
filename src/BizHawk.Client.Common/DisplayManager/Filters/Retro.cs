@@ -10,7 +10,6 @@ using System.Drawing;
 using BizHawk.Client.Common.FilterManager;
 
 using BizHawk.Bizware.BizwareGL;
-using OpenTK;
 
 namespace BizHawk.Client.Common.Filters
 {

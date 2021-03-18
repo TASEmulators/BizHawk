@@ -4,7 +4,7 @@ namespace BizHawk.Bizware.DirectX
 {
 	internal static class Extensions
 	{
-		public static Matrix ToSlimDXMatrix(this OpenTK.Matrix4 m, bool transpose)
+		public static Matrix ToSlimDXMatrix(this BizwareGL.Matrix4 m, bool transpose)
 		{
 			Matrix ret = new()
 			{
@@ -17,8 +17,8 @@ namespace BizHawk.Bizware.DirectX
 			return transpose ? Matrix.Transpose(ret) : ret;
 		}
 
-		public static Vector2 ToSlimDXVector2(this OpenTK.Vector2 v) => new(v.X, v.Y);
+		public static Vector2 ToSlimDXVector2(this BizwareGL.Vector2 v) => new(v.X, v.Y);
 
-		public static Vector4 ToSlimDXVector4(this OpenTK.Vector4 v) => new(v.X, v.Y, v.Z, v.W);
+		public static Vector4 ToSlimDXVector4(this BizwareGL.Vector4 v) => new(v.X, v.Y, v.Z, v.W);
 	}
 }

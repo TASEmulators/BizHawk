@@ -4,7 +4,6 @@ using System.Drawing;
 using BizHawk.Client.Common.Filters;
 
 using BizHawk.Bizware.BizwareGL;
-using OpenTK;
 
 namespace BizHawk.Client.Common.FilterManager
 {

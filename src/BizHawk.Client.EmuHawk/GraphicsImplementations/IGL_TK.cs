@@ -22,10 +22,13 @@ using BlendEquationMode = OpenTK.Graphics.OpenGL.BlendEquationMode;
 using BlendingFactorDest = OpenTK.Graphics.OpenGL.BlendingFactorDest;
 using BlendingFactorSrc = OpenTK.Graphics.OpenGL.BlendingFactorSrc;
 using ClearBufferMask = OpenTK.Graphics.OpenGL.ClearBufferMask;
+using Matrix4 = BizHawk.Bizware.BizwareGL.Matrix4;
 using PrimitiveType = OpenTK.Graphics.OpenGL.PrimitiveType;
 using sd = System.Drawing;
 using sdi = System.Drawing.Imaging;
 using swf = System.Windows.Forms;
+using Vector2 = BizHawk.Bizware.BizwareGL.Vector2;
+using Vector4 = BizHawk.Bizware.BizwareGL.Vector4;
 using VertexAttribPointerType = OpenTK.Graphics.OpenGL.VertexAttribPointerType;
 
 namespace BizHawk.Client.EmuHawk
