@@ -34,14 +34,10 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private static void SetLocation(Control control, int x, int y)
-		{
-			control.Location = new Point(x, y);
-		}
+			=> control.Location = UIHelper.Scale(new Point(x, y));
 
 		private static void SetSize(Control control, int width, int height)
-		{
-			control.Size = new Size(width, height);
-		}
+			=> control.Size = UIHelper.Scale(new Size(width, height));
 
 		private static void SetText(Control control, string caption)
 		{
@@ -350,7 +346,7 @@ namespace BizHawk.Client.EmuHawk
 			_luaForms.Add(form);
 			if (width.HasValue && height.HasValue)
 			{
-				form.Size = new Size(width.Value, height.Value);
+				form.Size = UIHelper.Scale(new Size(width.Value, height.Value));
 			}
 
 			form.Text = title;
