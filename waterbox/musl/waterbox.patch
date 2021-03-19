@@ -1,0 +1,42 @@
+From 86de3f18486c631ed4206d3298af090650e0c981 Mon Sep 17 00:00:00 2001
+From: YoshiRulz <OSSYoshiRulz@gmail.com>
+Date: Sat, 20 Mar 2021 09:31:50 +1000
+Subject: [PATCH] Patch-in waterbox support
+
+---
+ configure               | 1 +
+ tools/musl-gcc.specs.sh | 4 ++--
+ 2 files changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/configure b/configure
+index a2728969..5ae2afc1 100755
+--- a/configure
++++ b/configure
+@@ -309,6 +309,7 @@ printf "%s\n" "$target"
+ # Convert to just ARCH
+ #
+ case "$target" in
++waterbox*) ARCH=waterbox ;;
+ # Catch these early to simplify matching for 32-bit archs
+ arm*) ARCH=arm ;;
+ aarch64*) ARCH=aarch64 ;;
+diff --git a/tools/musl-gcc.specs.sh b/tools/musl-gcc.specs.sh
+index 30492574..e338cb0c 100644
+--- a/tools/musl-gcc.specs.sh
++++ b/tools/musl-gcc.specs.sh
+@@ -17,10 +17,10 @@ cat <<EOF
+ libgcc.a%s %:if-exists(libgcc_eh.a%s)
+ 
+ *startfile:
+-%{!shared: $libdir/Scrt1.o} $libdir/crti.o crtbeginS.o%s
++%{!shared: $libdir/Scrt1.o} $libdir/crti.o
+ 
+ *endfile:
+-crtendS.o%s $libdir/crtn.o
++$libdir/crtn.o
+ 
+ *link:
+ -dynamic-linker $ldso -nostdlib %{shared:-shared} %{static:-static} %{rdynamic:-export-dynamic}
+-- 
+2.30.1
+

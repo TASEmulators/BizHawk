@@ -19,9 +19,9 @@
 	path = melonds
 	url = https://github.com/TASVideos/melonDS.git
 	branch = SuuperW_DSHawk
-[submodule "waterbox/musl"]
-	path = waterbox/musl
-	url = https://github.com/nattthebear/musl.git
+[submodule "musl"]
+	path = waterbox/musl/upstream-src
+	url = git://git.musl-libc.org/musl
 [submodule "waterbox/nyma/mednafen"]
 	path = waterbox/nyma/mednafen
 	url = https://github.com/TASVideos/mednafen.git

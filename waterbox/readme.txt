@@ -31,8 +31,7 @@ It consists of a modified musl libc, and build scripts to tie it all together.
 
 4. Build libraries.
 	cd musl
-	./wbox_configure.sh
-	./wbox_build.sh
+	./do-local-build.sh
 	cd ../emulibc
 	make
 	cd ../libco
