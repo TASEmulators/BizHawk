@@ -78,7 +78,7 @@ namespace BizHawk.Client.Common
 			// Hack
 			if (systemId == "Global")
 			{
-				systemId = null;
+				return collection.AbsolutePathForInner(path, systemId: null);
 			}
 
 			// This function translates relative path and special identifiers in absolute paths

@@ -202,7 +202,8 @@ namespace BizHawk.Client.EmuHawk
 			// Ugly hack, we don't want to pass in the system in for system base and global paths
 			if (name == "Base" || system == "Global" || system == "Global_NULL")
 			{
-				system = null;
+				BrowseFolder(box, name, system: null);
+				return;
 			}
 
 			DialogResult result;
