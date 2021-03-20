@@ -4517,7 +4517,16 @@ namespace BizHawk.Client.EmuHawk
 
 				if (isRewinding)
 				{
-					runFrame = Rewinder.Rewind() && Emulator.Frame > 1;
+					// Try to avoid the previous frame:  We want to frame advance right after rewinding so we can give a useful
+					// framebuffer.
+					var frameToAvoid = Emulator.Frame - 1;
+					runFrame = Rewinder.Rewind(frameToAvoid);
+					if (Emulator.Frame == frameToAvoid)
+					{
+						// The rewinder was unable to satisfy our request.  Prefer showing a stale framebuffer to
+						// advancing in a way that essentially no-ops the entire rewind.
+						runFrame = false;
+					}
 
 					if (runFrame && MovieSession.Movie.IsRecording())
 					{
