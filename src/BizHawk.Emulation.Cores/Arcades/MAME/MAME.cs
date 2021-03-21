@@ -499,13 +499,13 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 			for (int i = 1; i <= mapCount; i++)
 			{
-				var read = MameGetString($"return { MAMELuaCommand.SpaceMap }[{ i }].readtype");
-				var write = MameGetString($"return { MAMELuaCommand.SpaceMap }[{ i }].writetype");
+				var read = MameGetString($"return { MAMELuaCommand.SpaceMap }[{ i }].read.handlertype");
+				var write = MameGetString($"return { MAMELuaCommand.SpaceMap }[{ i }].write.handlertype");
 
 				if (read == "ram" && write == "ram" || read == "rom")
 				{
-					var firstOffset = LibMAME.mame_lua_get_int($"return { MAMELuaCommand.SpaceMap }[{ i }].offset");
-					var lastOffset = LibMAME.mame_lua_get_int($"return { MAMELuaCommand.SpaceMap }[{ i }].endoff");
+					var firstOffset = LibMAME.mame_lua_get_int($"return { MAMELuaCommand.SpaceMap }[{ i }].address_start");
+					var lastOffset = LibMAME.mame_lua_get_int($"return { MAMELuaCommand.SpaceMap }[{ i }].address_end");
 					var name = $"{ deviceName } : { read } : 0x{ firstOffset:X}-0x{ lastOffset:X}";
 
 					domains.Add(new MemoryDomainDelegate(name, lastOffset - firstOffset + 1, endian,
@@ -676,7 +676,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			UpdateGameName();
 			InitMemoryDomains();
 
-			int length = LibMAME.mame_lua_get_int("return string.len(manager:machine():buffer_save())");
+			int length = LibMAME.mame_lua_get_int("return string.len(manager.machine:buffer_save())");
 			_mameSaveBuffer = new byte[length];
 			_hawkSaveBuffer = new byte[length + 4 + 4 + 4 + 1];
 
@@ -756,7 +756,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			foreach (var fieldPort in _fieldsPorts)
 			{
 				LibMAME.mame_lua_execute(
-					"manager:machine():ioport()" +
+					"manager.machine.ioport" +
 					$".ports  [\"{ fieldPort.Value }\"]" +
 					$".fields [\"{ fieldPort.Key   }\"]" +
 					$":set_value({ (_controller.IsPressed(fieldPort.Key) ? 1 : 0) })");
@@ -769,39 +769,45 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			public const string Step = "emu.step()";
 			public const string Pause = "emu.pause()";
 			public const string Unpause = "emu.unpause()";
-			public const string Exit = "manager:machine():exit()";
+			public const string Exit = "manager.machine:exit()";
 
 			// getters
 			public const string GetVersion = "return emu.app_version()";
-			public const string GetGameName = "return manager:machine():system().description";
-			public const string GetPixels = "return manager:machine():video():pixels()";
-			public const string GetSamples = "return manager:machine():sound():samples()";
-			public const string GetFrameNumber = "return select(2, next(manager:machine().screens)):frame_number()";
-			public const string GetRefresh = "return select(2, next(manager:machine().screens)):refresh_attoseconds()";
-			public const string GetWidth = "return (select(1, manager:machine():video():size()))";
-			public const string GetHeight = "return (select(2, manager:machine():video():size()))";
-			public const string GetMainCPUName = "return manager:machine().devices[\":maincpu\"]:shortname()";
+			public const string GetGameName = "return manager.machine.system.description";
+			public const string GetPixels = "return manager.machine.video:snapshot_pixels()";
+			public const string GetSamples = "return manager.machine.sound:get_samples()";
+			public const string GetWidth = "return (select(1, manager.machine.video:snapshot_size()))";
+			public const string GetHeight = "return (select(2, manager.machine:video:snapshot_size()))";
+			public const string GetMainCPUName = "return manager.machine.devices[\":maincpu\"].shortname";
 
 			// memory space
-			public const string GetSpace = "return manager:machine().devices[\":maincpu\"].spaces[\"program\"]";
-			public const string GetSpaceMapCount = "return #manager:machine().devices[\":maincpu\"].spaces[\"program\"].map";
-			public const string SpaceMap = "manager:machine().devices[\":maincpu\"].spaces[\"program\"].map";
-			public const string GetSpaceAddressMask = "return manager:machine().devices[\":maincpu\"].spaces[\"program\"].address_mask";
-			public const string GetSpaceAddressShift = "return manager:machine().devices[\":maincpu\"].spaces[\"program\"].shift";
-			public const string GetSpaceDataWidth = "return manager:machine().devices[\":maincpu\"].spaces[\"program\"].data_width";
-			public const string GetSpaceEndianness = "return manager:machine().devices[\":maincpu\"].spaces[\"program\"].endianness";
+			public const string GetSpace = "return manager.machine.devices[\":maincpu\"].spaces[\"program\"]";
+			public const string GetSpaceMapCount = "return #manager.machine.devices[\":maincpu\"].spaces[\"program\"].map.entries";
+			public const string SpaceMap = "manager.machine.devices[\":maincpu\"].spaces[\"program\"].map.entries";
+			public const string GetSpaceAddressMask = "return manager.machine.devices[\":maincpu\"].spaces[\"program\"].address_mask";
+			public const string GetSpaceAddressShift = "return manager.machine.devices[\":maincpu\"].spaces[\"program\"].shift";
+			public const string GetSpaceDataWidth = "return manager.machine.devices[\":maincpu\"].spaces[\"program\"].data_width";
+			public const string GetSpaceEndianness = "return manager.machine.devices[\":maincpu\"].spaces[\"program\"].endianness";
 
 			// complex stuff
+			public const string GetFrameNumber =
+				"for k,v in pairs(manager.machine.screens) do " +
+					"return v:frame_number() " +
+				"end";
+			public const string GetRefresh =
+				"for k,v in pairs(manager.machine.screens) do " +
+					"return v.refresh_attoseconds() " +
+				"end";
 			public const string GetBoundX =
-				"local x0,x1,y0,y1 = manager:machine():render():ui_target():view_bounds() " +
-				"return x1-x0";
+				"local b = manager.machine.render.ui_target.current_view.bounds " +
+				"return b.x1-b.x0";
 			public const string GetBoundY =
-				"local x0,x1,y0,y1 = manager:machine():render():ui_target():view_bounds() " +
-				"return y1-y0";
+				"local b = manager.machine.render.ui_target.current_view.bounds " +
+				"return b.y1-b.y0";
 			public const string GetInputFields =
 				"final = {} " +
-				"for tag, _ in pairs(manager:machine():ioport().ports) do " +
-					"for name, field in pairs(manager:machine():ioport().ports[tag].fields) do " +
+				"for tag, _ in pairs(manager.machine.ioport.ports) do " +
+					"for name, field in pairs(manager.machine.ioport.ports[tag].fields) do " +
 						"if field.type_class ~= \"dipswitch\" then " +
 							"table.insert(final, string.format(\"%s,%s;\", tag, name)) " +
 						"end " +
@@ -811,25 +817,9 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				"return table.concat(final)";
 			public const string GetROMsInfo =
 				"final = {} " +
-				"devices = {} " +
-				"for _, d in pairs(manager:machine().devices) do " +
-					"devices[d:tag()] = d " +
-					"local device = d " +
-					"for i=0,10 do " +
-						"local owner = device:owner() " +
-						"if owner then " +
-							"devices[owner:tag()] = owner " +
-							"device = owner " +
-						"else " +
-							"break " +
-						"end " +
-					"end " +
-				"end " +
-				"for _, d in pairs(devices) do " +
-					"for __, r in pairs(d.roms) do " +
-						"if (r:hashdata() ~= \"\") then " +
-							"table.insert(final, string.format(\"%s,%s,%s;\", r:name(), r:hashdata(), r:flags())) " +
-						"end " +
+				"for __, r in pairs(manager.machine.devices[\":\"].roms) do " +
+					"if (r:hashdata() ~= \"\") then " +
+						"table.insert(final, string.format(\"%s,%s,%s;\", r:name(), r:hashdata(), r:flags())) " +
 					"end " +
 				"end " +
 				"table.sort(final) " +
