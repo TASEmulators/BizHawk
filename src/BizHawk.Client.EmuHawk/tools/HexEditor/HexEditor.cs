@@ -1209,6 +1209,7 @@ namespace BizHawk.Client.EmuHawk
 				return false;
 			}
 
+			_textTable.Clear();
 			var file = new FileInfo(path);
 			if (!file.Exists)
 			{
@@ -1219,6 +1220,11 @@ namespace BizHawk.Client.EmuHawk
 			string line;
 			while ((line = sr.ReadLine()) != null)
 			{
+				if (string.IsNullOrWhiteSpace(line))
+				{
+					continue;
+				}
+
 				var parts = line.Split('=');
 				_textTable.Add(int.Parse(parts[0], NumberStyles.HexNumber), parts[1].First());
 			}
