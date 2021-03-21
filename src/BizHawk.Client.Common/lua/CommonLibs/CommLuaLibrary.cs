@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Text;
+
+using NLua;
 
 namespace BizHawk.Client.Common
 {
@@ -52,6 +55,13 @@ namespace BizHawk.Client.Common
 				return -1;
 			}
 			return APIs.Comm.Sockets.SendString(SendString);
+		}
+
+		[LuaMethod("socketServerSendBytes", "sends a string to the Socket server")]
+		public int SocketServerSendBytes(LuaTable byteArray)
+		{
+			if (!CheckSocketServer()) return -1;
+			return APIs.Comm.Sockets.SendBytes(_th.EnumerateValues<double>(byteArray).Select(d => (byte) d).ToArray());
 		}
 
 		[LuaMethod("socketServerResponse", "receives a message from the Socket server")]
