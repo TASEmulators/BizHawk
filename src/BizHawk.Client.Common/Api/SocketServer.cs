@@ -72,13 +72,14 @@ namespace BizHawk.Client.Common
 
 		public string GetInfo() => $"{_targetAddr.HostIP}:{_targetAddr.Port}";
 
-		public string ReceiveMessage()
+		public string ReceiveMessage(Encoding encoding = null)
 		{
 			if (!Connected)
 			{
 				Connect();
 			}
 
+			var encoding1 = encoding ?? Encoding.UTF8;
 			var resp = "";
 			var receivedBytes = new byte[256];
 			var receivedLength = 1;
@@ -87,7 +88,7 @@ namespace BizHawk.Client.Common
 				try
 				{
 					receivedLength = _soc.Receive(receivedBytes, receivedBytes.Length, 0);
-					resp += Encoding.ASCII.GetString(receivedBytes);
+					resp += encoding1.GetString(receivedBytes);
 				}
 				catch
 				{
@@ -141,9 +142,9 @@ namespace BizHawk.Client.Common
 			return resp == "" ? "Failed to get a response" : resp;
 		}
 
-		public int SendString(string sendString)
+		public int SendString(string sendString, Encoding encoding = null)
 		{
-			var sentBytes = SendBytes(Encoding.ASCII.GetBytes(sendString));
+			var sentBytes = SendBytes((encoding ?? Encoding.UTF8).GetBytes(sendString));
 			Successful = sentBytes > 0;
 			return sentBytes;
 		}
