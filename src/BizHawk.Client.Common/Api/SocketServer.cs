@@ -79,23 +79,25 @@ namespace BizHawk.Client.Common
 				Connect();
 			}
 
-			var encoding1 = encoding ?? Encoding.UTF8;
-			var resp = "";
 			var receivedBytes = new byte[256];
-			var receivedLength = 1;
-			while (receivedLength > 0)
+			System.IO.MemoryStream ms = new System.IO.MemoryStream();
+			for(; ;)
 			{
 				try
 				{
-					receivedLength = _soc.Receive(receivedBytes, receivedBytes.Length, 0);
-					resp += encoding1.GetString(receivedBytes);
+					int receivedLength = _soc.Receive(receivedBytes, receivedBytes.Length, 0);
+					if (receivedLength == 0)
+						break;
+					ms.Write(receivedBytes, 0, receivedLength);
 				}
 				catch
 				{
-					receivedLength = 0;
+					ms.SetLength(0);
+					break;
 				}
 			}
-			return resp;
+			var myencoding = encoding ?? Encoding.UTF8;
+			return myencoding.GetString(ms.ToArray(), 0, (int)ms.Length);
 		}
 
 		public int SendBytes(byte[] sendBytes)
