@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
+
+using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.NDS;
 
 namespace BizHawk.Client.EmuHawk
@@ -80,7 +82,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DefaultBtn_Click(object sender, EventArgs e)
 		{
-			if (MessageBox.Show("Revert to and save default settings?", "default settings", MessageBoxButtons.OKCancel).IsOk())
+			if (_mainForm.DialogController.ShowMessageBox2("Revert to and save default settings?", "default settings", useOKCancel: true))
 			{
 				_mainForm.PutCoreSyncSettings(new MelonDS.MelonSyncSettings());
 				DialogResult = DialogResult.OK;

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
@@ -9,20 +8,19 @@ namespace BizHawk.Client.Common
 	public class CoreFileProvider : ICoreFileProvider
 	{
 		private readonly FirmwareManager _firmwareManager;
-		private readonly Action<string> _showWarning;
+		private readonly IDialogParent _dialogParent;
 		private readonly PathEntryCollection _pathEntries;
 		private readonly IDictionary<string, string> _firmwareUserSpecifications;
 
 		public CoreFileProvider(
-			Action<string> showWarning,
+			IDialogParent dialogParent,
 			FirmwareManager firmwareManager,
 			PathEntryCollection pathEntries,
 			IDictionary<string, string> firmwareUserSpecifications)
 		{
-			_showWarning = showWarning;
+			_dialogParent = dialogParent;
 			_firmwareManager = firmwareManager;
 			_pathEntries = pathEntries;
-			_firmwareManager = firmwareManager;
 			_firmwareUserSpecifications = firmwareUserSpecifications;
 		}
 
@@ -47,7 +45,7 @@ namespace BizHawk.Client.Common
 			if (msg != null)
 			{
 				var fullMsg = $"Couldn't find firmware {id}.  Will attempt to continue: {msg}";
-				_showWarning(fullMsg);
+				_dialogParent.ModalMessageBox(fullMsg, "Warning", EMsgBoxIcon.Warning);
 			}
 		}
 

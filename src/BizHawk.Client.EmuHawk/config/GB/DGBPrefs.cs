@@ -5,18 +5,23 @@ using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class DGBPrefs : Form
+	public partial class DGBPrefs : Form, IDialogParent
 	{
 		private readonly Config _config;
 		private readonly IGameInfo _game;
 		private readonly IMovieSession _movieSession;
 
-		private DGBPrefs(Config config, IGameInfo game, IMovieSession movieSession)
+		public IDialogController DialogController { get; }
+
+		private DGBPrefs(IDialogController dialogController, Config config, IGameInfo game, IMovieSession movieSession)
 		{
 			_config = config;
 			_game = game;
 			_movieSession = movieSession;
+			DialogController = dialogController;
 			InitializeComponent();
+			gbPrefControl1.DialogParent = this;
+			gbPrefControl2.DialogParent = this;
 			Icon = Properties.Resources.DualIcon;
 		}
 
@@ -42,7 +47,7 @@ namespace BizHawk.Client.EmuHawk
 			var s = gambatte.GetSettings();
 			var ss = gambatte.GetSyncSettings();
 
-			using var dlg = new DGBPrefs(config, game, movieSession);
+			using var dlg = new DGBPrefs(mainForm.DialogController, config, game, movieSession);
 			dlg.PutSettings(s, ss);
 
 			dlg.gbPrefControl1.ColorGameBoy = gambatte.IsCGBMode(false);

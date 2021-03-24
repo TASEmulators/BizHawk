@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
-using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Common;
@@ -19,7 +18,12 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private CodecToken _currVideoCodecToken = null;
 		private AviWriterSegment _currSegment;
+
+		private readonly IDialogParent _dialogParent;
+
 		private IEnumerator<string> _nameProvider;
+
+		public AviWriter(IDialogParent dialogParent) => _dialogParent = dialogParent;
 
 		public void SetFrame(int frame)
 		{
@@ -99,7 +103,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception e)
 			{
-				MessageBox.Show($"AVIFIL32 Thread died:\n\n{e}");
+				_dialogParent.DialogController.ShowMessageBox($"AVIFIL32 Thread died:\n\n{e}");
 			}
 		}
 
@@ -261,7 +265,7 @@ namespace BizHawk.Client.EmuHawk
 		/// Acquires a video codec configuration from the user. you may save it for future use, but you must dispose of it when you're done with it.
 		/// returns null if the user canceled the dialog
 		/// </summary>
-		public IDisposable AcquireVideoCodecToken(IDialogParent parent, Config config)
+		public IDisposable AcquireVideoCodecToken(Config config)
 		{
 			var tempParams = new Parameters
 			{
@@ -278,7 +282,7 @@ namespace BizHawk.Client.EmuHawk
 			File.Delete(tempfile);
 			tempfile = Path.ChangeExtension(tempfile, "avi");
 			temp.OpenFile(tempfile, tempParams, null);
-			var ret = temp.AcquireVideoCodecToken(parent.SelfAsHandle.Handle, _currVideoCodecToken);
+			var ret = temp.AcquireVideoCodecToken(_dialogParent.AsWinFormsHandle().Handle, _currVideoCodecToken);
 			CodecToken token = (CodecToken)ret;
 			config.AviCodecToken = token?.Serialize();
 			temp.CloseFile();

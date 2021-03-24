@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
-using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Common.IOExtensions;
@@ -229,7 +228,7 @@ namespace BizHawk.Client.EmuHawk
 			public void Dispose() { }
 		}
 
-		public IDisposable AcquireVideoCodecToken(IDialogParent parent, Config config)
+		public IDisposable AcquireVideoCodecToken(Config config)
 		{
 			// don't care
 			return new WavWriterVToken();

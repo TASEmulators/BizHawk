@@ -98,13 +98,13 @@ namespace BizHawk.Client.EmuHawk
 				return true;
 			}
 
-			DialogResult result = DialogController.ShowMessageBox("You have unsaved macro(s). Do you wish to save them?", "Save?", MessageBoxButtons.YesNoCancel);
-			if (result == DialogResult.Cancel)
+			var result = DialogController.ShowMessageBox3("You have unsaved macro(s). Do you wish to save them?", "Save?");
+			if (result == null)
 			{
 				return false;
 			}
 
-			if (result == DialogResult.No)
+			if (result == false)
 			{
 				return true;
 			}
@@ -250,7 +250,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DummyLoadMacro(string path)
 		{
-			MovieZone loadZone = new MovieZone(path, Emulator, MovieSession, Tools);
+			MovieZone loadZone = new MovieZone(path, MainForm, Emulator, MovieSession, Tools);
 			_zones.Add(loadZone);
 			ZonesList.Items.Add($"{loadZone.Name} - length: {loadZone.Length}");
 		}
@@ -307,7 +307,7 @@ namespace BizHawk.Client.EmuHawk
 			if (this.ShowDialogWithTempMute(dialog) != DialogResult.OK) return null;
 
 			Config.RecentMacros.Add(dialog.FileName);
-			return new MovieZone(dialog.FileName, emulator ?? Emulator, MovieSession, tools ?? Tools);
+			return new MovieZone(dialog.FileName, MainForm, emulator ?? Emulator, MovieSession, tools ?? Tools);
 		}
 	}
 }

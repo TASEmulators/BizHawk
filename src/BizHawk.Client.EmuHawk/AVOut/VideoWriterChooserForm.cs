@@ -10,13 +10,17 @@ namespace BizHawk.Client.EmuHawk
 	/// <summary>
 	/// implements a simple dialog which chooses an IVideoWriter to record with
 	/// </summary>
-	public partial class VideoWriterChooserForm : Form
+	public partial class VideoWriterChooserForm : Form, IDialogParent
 	{
 		private readonly int _captureWidth = 640;
 		private readonly int _captureHeight = 480;
 
+		public IDialogController DialogController { get; }
+
 		private VideoWriterChooserForm(IMainFormForTools mainForm, IEmulator emulator, Config config)
 		{
+			DialogController = mainForm;
+
 			InitializeComponent();
 
 			// TODO: do we want to use virtual w/h?
@@ -53,15 +57,16 @@ namespace BizHawk.Client.EmuHawk
 		/// <param name="owner">parent window</param>
 		/// <param name="emulator">The current emulator</param>
 		/// <returns>user choice, or null on Cancel\Close\invalid</returns>
-		public static IVideoWriter DoVideoWriterChooserDlg(
+		public static IVideoWriter DoVideoWriterChooserDlg<T>(
 			IEnumerable<VideoWriterInfo> list,
-			IMainFormForTools owner,
+			T owner,
 			IEmulator emulator,
 			Config config,
 			out int resizeW,
 			out int resizeH,
 			out bool pad,
 			ref bool audioSync)
+				where T : IMainFormForTools, IDialogParent
 		{
 			var dlg = new VideoWriterChooserForm(owner, emulator, config)
 			{
@@ -98,7 +103,7 @@ namespace BizHawk.Client.EmuHawk
 			if (result == DialogResult.OK && dlg.listBox1.SelectedIndex != -1)
 			{
 				var vwi = (VideoWriterInfo)dlg.listBox1.SelectedItem;
-				ret = vwi.Create();
+				ret = vwi.Create(owner);
 				config.VideoWriter = vwi.Attribs.ShortName;
 			}
 			else
@@ -153,13 +158,13 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (numericTextBoxW.IntValue < 1 || numericTextBoxH.IntValue < 1)
 					{
-						MessageBox.Show(this, "Size must be positive!");
+						this.ModalMessageBox("Size must be positive!");
 						DialogResult = DialogResult.None;
 					}
 				}
 				catch (FormatException)
 				{
-					MessageBox.Show(this, "Size must be numeric!");
+					this.ModalMessageBox("Size must be numeric!");
 					DialogResult = DialogResult.None;
 				}
 			}

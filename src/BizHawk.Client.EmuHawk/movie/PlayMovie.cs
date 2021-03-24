@@ -31,8 +31,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public IDialogController DialogController => _mainForm;
 
-		public IWin32Window SelfAsHandle => this;
-
 		public PlayMovie(
 			IMainFormForTools mainForm,
 			Config config,
@@ -498,7 +496,7 @@ namespace BizHawk.Client.EmuHawk
 			var indices = MovieView.SelectedIndices;
 			if (indices.Count > 0)
 			{
-				var s = new EditSubtitlesForm(_movieList[MovieView.SelectedIndices[0]], true);
+				var s = new EditSubtitlesForm(DialogController, _movieList[MovieView.SelectedIndices[0]], true);
 				s.Show();
 			}
 		}

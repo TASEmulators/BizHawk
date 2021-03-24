@@ -164,7 +164,7 @@ namespace BizHawk.Client.EmuHawk
 		public CoreComm CreateCoreComm()
 		{
 			var cfp = new CoreFileProvider(
-				ShowMessageCoreComm,
+				this,
 				FirmwareManager,
 				Config.PathEntries,
 				Config.FirmwareUserSpecifications);
@@ -172,7 +172,11 @@ namespace BizHawk.Client.EmuHawk
 			if (Config.SkipWaterboxIntegrityChecks)
 				prefs = CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck;
 
-			return new CoreComm(ShowMessageCoreComm, AddOnScreenMessage, cfp, prefs);
+			return new CoreComm(
+				message => this.ModalMessageBox(message, "Warning", EMsgBoxIcon.Warning),
+				AddOnScreenMessage,
+				cfp,
+				prefs);
 		}
 
 		private void SetImages()
@@ -318,8 +322,8 @@ namespace BizHawk.Client.EmuHawk
 			movieSession = MovieSession = new MovieSession(
 				Config.Movies,
 				Config.PathEntries.MovieBackupsAbsolutePath(),
+				this,
 				AddOnScreenMessage,
-				ShowMessageCoreComm,
 				PauseEmulator,
 				SetMainformMovieInfo);
 
@@ -461,7 +465,7 @@ namespace BizHawk.Client.EmuHawk
 					message = "Couldn't initialize DirectSound! Things may go poorly for you. Try changing your sound driver to 44.1khz instead of 48khz in mmsys.cpl.";
 				}
 
-				ShowMessageBox(owner: null, message, "Initialization Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				ShowMessageBox(owner: null, message, "Initialization Error", EMsgBoxIcon.Error);
 
 				Config.SoundOutputMethod = ESoundOutputMethod.Dummy;
 				Sound = new Sound(Handle, Config, () => Emulator.VsyncRate());
@@ -2317,8 +2321,7 @@ namespace BizHawk.Client.EmuHawk
 							owner: null,
 							"No sync settings found, using currently configured settings for this core.",
 							"No sync settings found",
-							MessageBoxButtons.OK,
-							MessageBoxIcon.Warning);
+							EMsgBoxIcon.Warning);
 					}
 				}
 			}
@@ -3195,7 +3198,7 @@ namespace BizHawk.Client.EmuHawk
 			_dumpaudiosync = Config.VideoWriterAudioSync;
 			if (unattended && !string.IsNullOrEmpty(videoWriterName))
 			{
-				aw = VideoWriterInventory.GetVideoWriter(videoWriterName);
+				aw = VideoWriterInventory.GetVideoWriter(videoWriterName, this);
 			}
 			else
 			{
@@ -3258,7 +3261,7 @@ namespace BizHawk.Client.EmuHawk
 						aw.SetDefaultVideoCodecToken(Config);
 					}
 
-					var token = aw.AcquireVideoCodecToken(this, Config);
+					var token = aw.AcquireVideoCodecToken(Config);
 					if (token == null)
 					{
 						AddOnScreenMessage("A/V capture canceled.");
@@ -3534,22 +3537,16 @@ namespace BizHawk.Client.EmuHawk
 			return Path.Combine(pathEntry, name);
 		}
 
-		private void ShowMessageCoreComm(string message)
-		{
-			this.ModalMessageBox(message, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-		}
-
 		private void ShowLoadError(object sender, RomLoader.RomErrorArgs e)
 		{
 			if (e.Type == RomLoader.LoadErrorType.MissingFirmware)
 			{
-				var result = ShowMessageBox(
+				var result = ShowMessageBox2(
 					owner: null,
 					"You are missing the needed firmware files to load this Rom\n\nWould you like to open the firmware manager now and configure your firmwares?",
 					e.Message,
-					MessageBoxButtons.YesNo,
-					MessageBoxIcon.Error);
-				if (result == DialogResult.Yes)
+					EMsgBoxIcon.Error);
+				if (result)
 				{
 					FirmwaresMenuItem_Click(null, e);
 					if (e.Retry)
@@ -3569,7 +3566,7 @@ namespace BizHawk.Client.EmuHawk
 					title = $"{e.AttemptedCoreLoad} load error";
 				}
 
-				this.ModalMessageBox(e.Message, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
+				this.ModalMessageBox(e.Message, title, EMsgBoxIcon.Error);
 			}
 		}
 
@@ -3935,14 +3932,13 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (!FlushSaveRAM())
 				{
-					var msgRes = ShowMessageBox(
+					var msgRes = ShowMessageBox2(
 						owner: null,
 						"Failed flushing the game's Save RAM to your disk.\nClose without flushing Save RAM?",
 						"Directory IO Error",
-						MessageBoxButtons.YesNo,
-						MessageBoxIcon.Error);
+						EMsgBoxIcon.Error);
 
-					if (msgRes != DialogResult.Yes)
+					if (!msgRes)
 					{
 						return;
 					}
@@ -4002,7 +3998,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (result.Errors.Any())
 			{
-				ShowMessageBox(owner: null, string.Join("\n", result.Errors), "Conversion error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				ShowMessageBox(owner: null, string.Join("\n", result.Errors), "Conversion error", EMsgBoxIcon.Error);
 			}
 
 			if (result.Warnings.Any())
@@ -4545,20 +4541,52 @@ namespace BizHawk.Client.EmuHawk
 
 		public IDialogController DialogController => this;
 
-		public IWin32Window SelfAsHandle => this;
-
-		public DialogResult ShowMessageBox(
+		public void ShowMessageBox(
 			IDialogParent/*?*/ owner,
 			string text,
 			string/*?*/ caption = null,
-			MessageBoxButtons? buttons = null,
-			MessageBoxIcon? icon = null)
-				=> MessageBox.Show(
-					owner?.SelfAsHandle,
-					text,
-					caption ?? string.Empty,
-					buttons ?? MessageBoxButtons.OK,
-					icon ?? MessageBoxIcon.None);
+			EMsgBoxIcon? icon = null)
+				=> this.ShowMessageBox(
+					owner: owner,
+					text: text,
+					caption: caption,
+					buttons: MessageBoxButtons.OK,
+					icon: icon);
+
+		public bool ShowMessageBox2(
+			IDialogParent/*?*/ owner,
+			string text,
+			string/*?*/ caption = null,
+			EMsgBoxIcon? icon = null,
+			bool useOKCancel = false)
+				=> this.ShowMessageBox(
+					owner: owner,
+					text: text,
+					caption: caption,
+					buttons: useOKCancel ? MessageBoxButtons.OKCancel : MessageBoxButtons.YesNo,
+					icon: icon) switch
+				{
+					DialogResult.OK => true,
+					DialogResult.Yes => true,
+					_ => false
+				};
+
+		public bool? ShowMessageBox3(
+			IDialogParent/*?*/ owner,
+			string text,
+			string/*?*/ caption = null,
+			EMsgBoxIcon? icon = null)
+				=> this.ShowMessageBox(
+					owner: owner,
+					text: text,
+					caption: caption,
+					buttons: MessageBoxButtons.YesNoCancel,
+					icon: icon) switch
+				{
+					DialogResult.Yes => true,
+					DialogResult.No => false,
+					_ => null
+				};
 
 		public void StartSound() => Sound.StartSound();
 		public void StopSound() => Sound.StopSound();

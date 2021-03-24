@@ -863,7 +863,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (SelectedIndices.Any())
 			{
-				var poke = new RamPoke(SelectedIndices.Select(t => _searches[t]), MainForm.CheatList)
+				var poke = new RamPoke(DialogController, SelectedIndices.Select(t => _searches[t]), MainForm.CheatList)
 				{
 					InitialLocation = this.ChildPointToScreen(WatchListView)
 				};

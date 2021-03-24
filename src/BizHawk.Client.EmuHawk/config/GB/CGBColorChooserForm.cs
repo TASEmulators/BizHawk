@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Windows.Forms;
 
+using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 
 namespace BizHawk.Client.EmuHawk
@@ -116,11 +117,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public static void DoCGBColorChooserFormDialog(IWin32Window parent, Gameboy.GambatteSettings s)
+		public static void DoCGBColorChooserFormDialog(IDialogParent parent, Gameboy.GambatteSettings s)
 		{
 			using var dlg = new CGBColorChooserForm();
 			dlg.LoadType(s);
-			var result = dlg.ShowDialog(parent);
+			var result = parent.ShowDialogAsChild(dlg);
 			if (result == DialogResult.OK)
 			{
 				s.CGBColors = dlg._type;

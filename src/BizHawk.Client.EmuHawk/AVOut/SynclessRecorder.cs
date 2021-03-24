@@ -3,7 +3,6 @@ using System.IO;
 using System.Collections.Generic;
 using System.Drawing.Imaging;
 using System.Text;
-using System.Windows.Forms;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Bizware.BizwareGL;
@@ -83,7 +82,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public IDisposable AcquireVideoCodecToken(IDialogParent parent, Config config)
+		public IDisposable AcquireVideoCodecToken(Config config)
 		{
 			return new DummyDisposable();
 		}

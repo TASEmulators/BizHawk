@@ -771,7 +771,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (SelectedWatches.Any())
 			{
-				var poke = new RamPoke(SelectedWatches, MainForm.CheatList)
+				var poke = new RamPoke(DialogController, SelectedWatches, MainForm.CheatList)
 				{
 					InitialLocation = this.ChildPointToScreen(WatchListView)
 				};

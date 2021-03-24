@@ -73,7 +73,7 @@ namespace BizHawk.Client.EmuHawk
 		private void BtnNiceDisplayConfig_Click(object sender, EventArgs e)
 		{
 			_dispSettingsSet = true;
-			MessageBox.Show("Finetuned Display Options will take effect if you OK from PSX Options");
+			_mainForm.DialogController.ShowMessageBox("Finetuned Display Options will take effect if you OK from PSX Options");
 		}
 
 		public static DialogResult DoSettingsDialog(IMainFormForConfig mainForm, Config config, Octoshock psx)
@@ -187,7 +187,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LinkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			MessageBox.Show($@"These options control BizHawk's Display Options to make it act quite a lot like Mednafen:
+			_mainForm.DialogController.ShowMessageBox($@"These options control BizHawk's Display Options to make it act quite a lot like Mednafen:
 
 {nameof(_config.DispManagerAR)} = System (Use emulator-recommended AR)
 {nameof(_config.DispFixAspectRatio)} = true (Maintain aspect ratio [letterbox main window as needed])

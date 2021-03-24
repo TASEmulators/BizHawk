@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Diagnostics;
-using System.Windows.Forms;
+
 using BizHawk.Client.Common;
 using BizHawk.Common;
 using BizHawk.Common.PathExtensions;
@@ -17,6 +17,8 @@ namespace BizHawk.Client.EmuHawk
 	[VideoWriter("ffmpeg", "FFmpeg writer", "Uses an external FFMPEG process to encode video and audio.  Various formats supported.  Splits on resolution change.")]
 	public class FFmpegWriter : IVideoWriter
 	{
+		private readonly IDialogParent _dialogParent;
+
 		/// <summary>
 		/// handle to external ffmpeg process
 		/// </summary>
@@ -61,6 +63,8 @@ namespace BizHawk.Client.EmuHawk
 		/// file extension actually used
 		/// </summary>
 		private string _ext;
+
+		public FFmpegWriter(IDialogParent dialogParent) => _dialogParent = dialogParent;
 
 		public void SetFrame(int frame)
 		{
@@ -199,7 +203,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch
 			{
-				MessageBox.Show($"Exception! ffmpeg history:\n{FfmpegGetError()}");
+				_dialogParent.DialogController.ShowMessageBox($"Exception! ffmpeg history:\n{FfmpegGetError()}");
 				throw;
 			}
 
@@ -207,15 +211,15 @@ namespace BizHawk.Client.EmuHawk
 			//ffmpeg.StandardInput.BaseStream.Write(b, 0, b.Length);
 		}
 
-		public IDisposable AcquireVideoCodecToken(IDialogParent parent, Config config)
+		public IDisposable AcquireVideoCodecToken(Config config)
 		{
 			if (!FFmpegService.QueryServiceAvailable())
 			{
 				using var form = new FFmpegDownloaderForm();
-				parent.ShowDialogWithTempMute(form);
+				_dialogParent.ShowDialogWithTempMute(form);
 				if (!FFmpegService.QueryServiceAvailable()) return null;
 			}
-			return FFmpegWriterForm.DoFFmpegWriterDlg(parent.SelfAsHandle, config);
+			return FFmpegWriterForm.DoFFmpegWriterDlg(_dialogParent.AsWinFormsHandle(), config);
 		}
 
 		/// <exception cref="ArgumentException"><paramref name="token"/> does not inherit <see cref="FFmpegWriterForm.FormatPreset"/></exception>
@@ -293,7 +297,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch
 			{
-				MessageBox.Show($"Exception! ffmpeg history:\n{FfmpegGetError()}");
+				_dialogParent.DialogController.ShowMessageBox($"Exception! ffmpeg history:\n{FfmpegGetError()}");
 				throw;
 			}
 		}

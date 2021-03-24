@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Windows.Forms;
+
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
 
@@ -247,9 +247,9 @@ namespace BizHawk.Client.EmuHawk
 			W.AddSamples(samples);
 		}
 
-		public IDisposable AcquireVideoCodecToken(IDialogParent parent, Config config)
+		public IDisposable AcquireVideoCodecToken(Config config)
 		{
-			return W.AcquireVideoCodecToken(parent, config);
+			return W.AcquireVideoCodecToken(config);
 		}
 
 		public void SetMovieParameters(int fpsNum, int fpsDen)

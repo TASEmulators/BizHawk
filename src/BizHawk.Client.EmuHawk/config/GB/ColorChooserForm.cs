@@ -10,15 +10,18 @@ using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class ColorChooserForm : Form
+	public partial class ColorChooserForm : Form, IDialogParent
 	{
 		private readonly Config _config;
 		private readonly IGameInfo _game;
 
-		private ColorChooserForm(Config config, IGameInfo game)
+		public IDialogController DialogController { get; }
+
+		private ColorChooserForm(IDialogController dialogController, Config config, IGameInfo game)
 		{
 			_config = config;
 			_game = game;
+			DialogController = dialogController;
 			InitializeComponent();
 			Icon = Properties.Resources.GambatteIcon;
 		}
@@ -236,13 +239,13 @@ namespace BizHawk.Client.EmuHawk
 			RefreshAllBackdrops();
 		}
 
-		public static void DoColorChooserFormDialog(IWin32Window parent, Config config, IGameInfo game, Gameboy.GambatteSettings s)
+		public static void DoColorChooserFormDialog(IDialogParent parent, Config config, IGameInfo game, Gameboy.GambatteSettings s)
 		{
-			using var dlg = new ColorChooserForm(config, game);
+			using var dlg = new ColorChooserForm(parent.DialogController, config, game);
 
 			dlg.SetAllColors(s.GBPalette);
 
-			var result = dlg.ShowDialog(parent);
+			var result = parent.ShowDialogAsChild(dlg);
 			if (result.IsOk())
 			{
 				int[] colors = new int[12];
@@ -272,7 +275,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (alert)
 				{
-					MessageBox.Show(this, "Error loading .pal file!");
+					this.ModalMessageBox("Error loading .pal file!");
 				}
 			}
 		}
@@ -293,7 +296,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch
 			{
-				MessageBox.Show(this, "Error saving .pal file!");
+				this.ModalMessageBox("Error saving .pal file!");
 			}
 		}
 

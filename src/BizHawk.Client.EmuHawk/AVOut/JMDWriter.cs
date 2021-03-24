@@ -5,7 +5,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Text;
 using System.Threading;
-using System.Windows.Forms;
+
 using BizHawk.Client.Common;
 
 using BizHawk.Emulation.Common;
@@ -69,6 +69,8 @@ namespace BizHawk.Client.EmuHawk
 				NumThreads = 3;
 			}
 		}
+
+		private readonly IDialogParent _dialogParent;
 
 		// stores compression parameters
 		private CodecToken _token;
@@ -512,8 +514,10 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// sets default (probably wrong) parameters
 		/// </summary>
-		public JmdWriter()
+		public JmdWriter(IDialogParent dialogParent)
 		{
+			_dialogParent = dialogParent;
+
 			_fpsNum = 25;
 			_fpsDen = 1;
 			_audioSampleRate = 22050;
@@ -542,7 +546,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public IDisposable AcquireVideoCodecToken(IDialogParent parent, Config config)
+		public IDisposable AcquireVideoCodecToken(Config config)
 		{
 			var ret = new CodecToken();
 
@@ -551,7 +555,7 @@ namespace BizHawk.Client.EmuHawk
 
 			int c = Math.Min(Math.Max(config.JmdCompression, NO_COMPRESSION), BEST_COMPRESSION);
 
-			if (!JmdForm.DoCompressionDlg(ref t, ref c, 1, 6, NO_COMPRESSION, BEST_COMPRESSION, parent.SelfAsHandle))
+			if (!JmdForm.DoCompressionDlg(ref t, ref c, 1, 6, NO_COMPRESSION, BEST_COMPRESSION, _dialogParent.AsWinFormsHandle()))
 				return null;
 
 			config.JmdThreads = ret.NumThreads = t;
@@ -662,7 +666,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception e)
 			{
-				MessageBox.Show($"JMD Worker Thread died:\n\n{e}");
+				_dialogParent.DialogController.ShowMessageBox($"JMD Worker Thread died:\n\n{e}");
 			}
 		}
 

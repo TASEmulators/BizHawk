@@ -12,25 +12,26 @@ namespace BizHawk.Client.Common
 
 	public class MovieSession : IMovieSession
 	{
+		private readonly IDialogParent _dialogParent;
+
 		private readonly Action _pauseCallback;
 		private readonly Action _modeChangedCallback;
 		private readonly Action<string> _messageCallback;
-		private readonly Action<string> _popupCallback;
 
 		private IMovie _queuedMovie;
 
 		public MovieSession(
 			IMovieConfig settings,
 			string backDirectory,
+			IDialogParent dialogParent,
 			Action<string> messageCallback,
-			Action<string> popupCallback,
 			Action pauseCallback,
 			Action modeChangedCallback)
 		{
 			Settings = settings;
 			BackupDirectory = backDirectory;
 			_messageCallback = messageCallback;
-			_popupCallback = popupCallback;
+			_dialogParent = dialogParent;
 			_pauseCallback = pauseCallback
 				?? throw new ArgumentNullException($"{nameof(pauseCallback)} cannot be null.");
 			_modeChangedCallback = modeChangedCallback
@@ -316,10 +317,7 @@ namespace BizHawk.Client.Common
 			return new Bk2Movie(this, path);
 		}
 
-		public void PopupMessage(string message)
-		{
-			_popupCallback?.Invoke(message);
-		}
+		public void PopupMessage(string message) => _dialogParent.ModalMessageBox(message, "Warning", EMsgBoxIcon.Warning);
 
 		private void Output(string message)
 		{

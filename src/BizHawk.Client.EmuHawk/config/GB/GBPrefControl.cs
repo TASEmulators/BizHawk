@@ -22,6 +22,10 @@ namespace BizHawk.Client.EmuHawk
 		[Browsable(false)]
 		public bool ColorGameBoy { get; set; }
 
+		/// <remarks>TODO <see cref="UserControl">UserControls</see> can be <see cref="IDialogParent">IDialogParents</see> too, the modal should still be tied to the parent <see cref="Form"/> if used that way</remarks>
+		[Browsable(false)]
+		public IDialogParent DialogParent { private get; set; }
+
 		[Browsable(false)]
 		public bool SyncSettingsChanged { get; private set; }
 
@@ -62,11 +66,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (ColorGameBoy)
 			{
-				CGBColorChooserForm.DoCGBColorChooserFormDialog(ParentForm, _s);
+				CGBColorChooserForm.DoCGBColorChooserFormDialog(DialogParent, _s);
 			}
 			else
 			{
-				ColorChooserForm.DoColorChooserFormDialog(ParentForm, _config, _game, _s);
+				ColorChooserForm.DoColorChooserFormDialog(DialogParent, _config, _game, _s);
 			}
 		}
 

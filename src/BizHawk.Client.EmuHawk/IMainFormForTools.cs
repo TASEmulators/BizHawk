@@ -6,7 +6,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public interface IMainFormForTools : IDialogController, IDialogParent
+	public interface IMainFormForTools : IDialogController
 	{
 		CheatCollection CheatList { get; }
 

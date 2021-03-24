@@ -3,7 +3,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public interface IMainFormForConfig : IDialogController, IDialogParent
+	public interface IMainFormForConfig : IDialogParent
 	{
 		/// <remarks>only referenced from <see cref="GenericCoreConfig"/></remarks>
 		IEmulator Emulator { get; }

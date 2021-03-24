@@ -15,8 +15,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public IDialogController DialogController { get; }
 
-		public IWin32Window SelfAsHandle => this;
-
 		public string SystemString { get; set; } = "";
 
 		public string Path

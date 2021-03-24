@@ -11,11 +11,13 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class ControllerConfig : Form
+	public partial class ControllerConfig : Form, IDialogParent
 	{
 		private static readonly Dictionary<string, Lazy<Bitmap>> ControllerImages = new Dictionary<string, Lazy<Bitmap>>();
 		private readonly IEmulator _emulator;
 		private readonly Config _config;
+
+		public IDialogController DialogController { get; }
 
 		static ControllerConfig()
 		{
@@ -176,11 +178,13 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		public ControllerConfig(
+			IDialogController dialogController,
 			IEmulator emulator,
 			Config config)
 		{
 			_emulator = emulator;
 			_config = config;
+			DialogController = dialogController;
 			
 			InitializeComponent();
 
@@ -430,8 +434,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			// this doesn't work anymore, as it stomps out any defaults for buttons that aren't currently active on the console
 			// there are various ways to fix it, each with its own semantic problems
-			var result = MessageBox.Show(this, "OK to overwrite defaults for current control scheme?", "Save Defaults", MessageBoxButtons.YesNo);
-			if (result == DialogResult.Yes)
+			var result = this.ModalMessageBox2("OK to overwrite defaults for current control scheme?", "Save Defaults");
+			if (result)
 			{
 				var cd = ConfigService.Load<DefaultControls>(Config.ControlDefaultPath);
 				cd.AllTrollers[_emulator.ControllerDefinition.Name] = new Dictionary<string, string>();

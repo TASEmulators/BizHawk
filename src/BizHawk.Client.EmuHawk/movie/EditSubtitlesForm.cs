@@ -15,10 +15,13 @@ namespace BizHawk.Client.EmuHawk
 		private readonly IMovie _selectedMovie;
 		private readonly bool _readOnly;
 
-		public EditSubtitlesForm(IMovie movie, bool readOnly)
+		public IDialogController DialogController { get; }
+
+		public EditSubtitlesForm(IDialogController dialogController, IMovie movie, bool readOnly)
 		{
 			_selectedMovie = movie;
 			_readOnly = readOnly;
+			DialogController = dialogController;
 			InitializeComponent();
 			Icon = Properties.Resources.TAStudioIcon;
 		}
@@ -75,7 +78,7 @@ namespace BizHawk.Client.EmuHawk
 			var c = SubGrid.Rows[row].Cells[column];
 			var error = $"Unable to parse value: {c.Value}";
 			var caption = $"Parse Error Row {row} Column {column}";
-			MessageBox.Show(error, caption, MessageBoxButtons.OK, MessageBoxIcon.Error);
+			DialogController.ShowMessageBox(error, caption, EMsgBoxIcon.Error);
 		}
 
 		private void Ok_Click(object sender, EventArgs e)
@@ -222,11 +225,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch
 			{
-				MessageBox.Show(
-					"Could not determine movie fps, export failed.",
-					"Error",
-					MessageBoxButtons.OK,
-					MessageBoxIcon.Error);
+				DialogController.ShowMessageBox( "Could not determine movie fps, export failed.", "Error", EMsgBoxIcon.Error);
 
 				return;
 			}
@@ -236,7 +235,7 @@ namespace BizHawk.Client.EmuHawk
 			File.WriteAllText(fileName, str);
 
 			// Display success
-			MessageBox.Show($"Subtitles successfully exported to {fileName}.", "Success");
+			DialogController.ShowMessageBox($"Subtitles successfully exported to {fileName}.", "Success");
 		}
 
 		private void SubGrid_DefaultValuesNeeded(object sender, DataGridViewRowEventArgs e)

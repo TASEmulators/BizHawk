@@ -82,7 +82,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private readonly IDialogParent _dialogParent;
+
 		private GifToken _token;
+
+		public GifWriter(IDialogParent dialogParent) => _dialogParent = dialogParent;
 
 		/// <exception cref="ArgumentException"><paramref name="token"/> does not inherit <see cref="GifWriter.GifToken"/></exception>
 		public void SetVideoCodecToken(IDisposable token)
@@ -196,9 +200,9 @@ namespace BizHawk.Client.EmuHawk
 			// ignored
 		}
 
-		public IDisposable AcquireVideoCodecToken(IDialogParent parent, Config config)
+		public IDisposable AcquireVideoCodecToken(Config config)
 		{
-			return GifWriterForm.DoTokenForm(parent.SelfAsHandle, config);
+			return GifWriterForm.DoTokenForm(_dialogParent.AsWinFormsHandle(), config);
 		}
 
 		private void CalcDelay()

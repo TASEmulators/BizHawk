@@ -216,8 +216,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// TODO - I don't like this system. It's hard to figure out how to use it. It should be done in multiple passes.
-			var result = DialogController.ShowMessageBox("Save changes to CDL session?", "CDL Auto Save", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-			if (result == DialogResult.No)
+			var result = DialogController.ShowMessageBox2("Save changes to CDL session?", "CDL Auto Save", EMsgBoxIcon.Question);
+			if (!result)
 			{
 				ShutdownCDL();
 				return true;
@@ -312,9 +312,8 @@ namespace BizHawk.Client.EmuHawk
 			//take care not to clobber an existing CDL
 			if (_cdl != null)
 			{
-				var result = this.ModalMessageBox("OK to create new CDL?", "Query", MessageBoxButtons.YesNo);
-				if (result != DialogResult.Yes)
-					return;
+				var result = this.ModalMessageBox2("OK to create new CDL?", "Query");
+				if (!result) return;
 			}
 
 			NewFileLogic();
@@ -334,9 +333,8 @@ namespace BizHawk.Client.EmuHawk
 			//take care not to clobber an existing CDL
 			if (_cdl != null)
 			{
-				var result = this.ModalMessageBox("OK to load new CDL?", "Query", MessageBoxButtons.YesNo);
-				if (result != DialogResult.Yes)
-					return;
+				var result = this.ModalMessageBox2("OK to load new CDL?", "Query");
+				if (!result) return;
 			}
 
 			LoadFile(file.FullName);
@@ -435,8 +433,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				var result = this.ModalMessageBox("OK to clear CDL?", "Query", MessageBoxButtons.YesNo);
-				if (result == DialogResult.Yes)
+				var result = this.ModalMessageBox2("OK to clear CDL?", "Query");
+				if (result)
 				{
 					_cdl.ClearData();
 					UpdateDisplay(true);
