@@ -68,7 +68,7 @@ namespace BizHawk.Client.Common
 		public string SocketServerResponse()
 		{
 			CheckSocketServer();
-			return APIs.Comm.Sockets?.ReceiveMessage();
+			return APIs.Comm.Sockets?.ReceiveString();
 		}
 
 		[LuaMethod("socketServerSuccessful", "returns the status of the last Socket server action")]

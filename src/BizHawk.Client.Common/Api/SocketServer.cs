@@ -67,37 +67,54 @@ namespace BizHawk.Client.Common
 			_soc = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 			_soc.Connect(_remoteEp);
 			Connected = true;
-			_soc.ReceiveTimeout = 5;
 		}
 
 		public string GetInfo() => $"{_targetAddr.HostIP}:{_targetAddr.Port}";
 
-		public string ReceiveMessage(Encoding encoding = null)
+		public string ReceiveString(Encoding encoding = null)
 		{
 			if (!Connected)
 			{
 				Connect();
 			}
 
-			var receivedBytes = new byte[256];
-			System.IO.MemoryStream ms = new System.IO.MemoryStream();
-			for(; ;)
-			{
-				try
-				{
-					int receivedLength = _soc.Receive(receivedBytes, receivedBytes.Length, 0);
-					if (receivedLength == 0)
-						break;
-					ms.Write(receivedBytes, 0, receivedLength);
-				}
-				catch
-				{
-					ms.SetLength(0);
-					break;
-				}
-			}
 			var myencoding = encoding ?? Encoding.UTF8;
-			return myencoding.GetString(ms.ToArray(), 0, (int)ms.Length);
+
+			try
+			{
+				//build length of string into a string
+				byte[] oneByte = new byte[1];
+				StringBuilder sb = new StringBuilder();
+				for (; ; )
+				{
+					int recvd = _soc.Receive(oneByte, 1, 0);
+					if (oneByte[0] == (byte)' ')
+						break;
+					sb.Append((char)oneByte[0]);
+				}
+
+				//receive string of indicated length
+				int lenStringBytes = int.Parse(sb.ToString());
+				byte[] buf = new byte[lenStringBytes];
+				int todo = lenStringBytes;
+				int at = 0;
+				for (; ; )
+				{
+					int recvd = _soc.Receive(buf, at, todo, SocketFlags.None);
+					if (recvd == 0)
+						throw new InvalidOperationException("ReceiveString terminated early");
+					todo -= recvd;
+					at += recvd;
+					if (todo == 0)
+						break;
+				}
+				return myencoding.GetString(buf, 0, lenStringBytes);
+			}
+			catch
+			{
+				//not sure I like this, but that's how it was
+				return "";
+			}
 		}
 
 		public int SendBytes(byte[] sendBytes)
@@ -140,13 +157,23 @@ namespace BizHawk.Client.Common
 			{
 				return Successful ? "Screenshot was sent" : "Screenshot could not be sent";
 			}
-			var resp = ReceiveMessage();
+			var resp = ReceiveString();
 			return resp == "" ? "Failed to get a response" : resp;
 		}
 
 		public int SendString(string sendString, Encoding encoding = null)
 		{
-			var sentBytes = SendBytes((encoding ?? Encoding.UTF8).GetBytes(sendString));
+			var payloadBytes = (encoding ?? Encoding.UTF8).GetBytes(sendString);
+			var strLenOfPayloadBytes = payloadBytes.Length.ToString();
+			var strLenOfPayloadBytesAsBytes = Encoding.ASCII.GetBytes(strLenOfPayloadBytes);
+			
+			System.IO.MemoryStream ms = new System.IO.MemoryStream();
+			ms.Write(strLenOfPayloadBytesAsBytes, 0, strLenOfPayloadBytesAsBytes.Length);
+			ms.WriteByte((byte)' ');
+			ms.Write(payloadBytes,0,payloadBytes.Length);
+			
+			int sentBytes = SendBytes(ms.ToArray());
+
 			Successful = sentBytes > 0;
 			return sentBytes;
 		}
