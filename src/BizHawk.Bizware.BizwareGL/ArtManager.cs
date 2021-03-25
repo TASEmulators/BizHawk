@@ -53,7 +53,7 @@ namespace BizHawk.Bizware.BizwareGL
 			AssertIsOpen(true);
 
 			Art a = new Art(this);
-			ArtLooseTextureAssociation[a] = tex;
+			ArtLooseTextureAssociation.Add((a, tex));
 			ManagedArts.Add(a);
 
 			return a;
@@ -79,7 +79,9 @@ namespace BizHawk.Bizware.BizwareGL
 			// add 2 extra pixels for padding on all sides
 			var atlasItems = new List<TexAtlas.RectItem>();
 			foreach (var kvp in ArtLooseTextureAssociation)
-				atlasItems.Add(new TexAtlas.RectItem(kvp.Value.Width+2, kvp.Value.Height+2, kvp));
+			{
+				atlasItems.Add(new TexAtlas.RectItem(kvp.Bitmap.Width + 2, kvp.Bitmap.Height + 2, kvp));
+			}
 			var results = TexAtlas.PackAtlas(atlasItems);
 
 			// this isn't supported yet:
@@ -93,10 +95,7 @@ namespace BizHawk.Bizware.BizwareGL
 			for (int i = 0; i < atlasItems.Count; i++)
 			{
 				var item = results[0].Items[i];
-				var artAndBitmap = (KeyValuePair<Art, BitmapBuffer>)item.Item;
-				var art = artAndBitmap.Key;
-				var bitmap = artAndBitmap.Value;
-
+				var (art, bitmap) = ((Art, BitmapBuffer)) item.Item;
 				int w = bitmap.Width;
 				int h = bitmap.Height;
 				int dx = item.X + 1;
@@ -123,8 +122,7 @@ namespace BizHawk.Bizware.BizwareGL
 			//if we're closed forever, then forget all the original bitmaps
 			if (forever)
 			{
-				foreach (var kvp in ArtLooseTextureAssociation)
-					kvp.Value.Dispose();
+				foreach (var tuple in ArtLooseTextureAssociation) tuple.Bitmap.Dispose();
 				ArtLooseTextureAssociation.Clear();
 			}
 
@@ -150,7 +148,7 @@ namespace BizHawk.Bizware.BizwareGL
 		/// <summary>
 		/// This is used to remember the original bitmap sources for art files. Once the ArtManager is closed forever, this will be purged
 		/// </summary>
-		private readonly Dictionary<Art, BitmapBuffer> ArtLooseTextureAssociation = new Dictionary<Art, BitmapBuffer>();
+		private readonly List<(Art Art, BitmapBuffer Bitmap)> ArtLooseTextureAssociation = new();
 
 		/// <summary>
 		/// Physical texture resources, which exist after this ArtManager has been closed
