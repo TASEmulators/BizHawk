@@ -166,8 +166,6 @@ namespace BizHawk.Client.EmuHawk
 				Settings = new LuaConsoleSettings();
 			}
 
-			LuaImp.ScriptList.ChangedCallback = SessionChangedCallback;
-
 			if (Config.RecentLuaSession.AutoLoad && !Config.RecentLuaSession.Empty)
 			{
 				LoadSessionFromRecent(Config.RecentLuaSession.MostRecent);
@@ -196,7 +194,6 @@ namespace BizHawk.Client.EmuHawk
 			SetColumns();
 
 			splitContainer1.SetDistanceOrDefault(Settings.SplitDistance, _defaultSplitDistance);
-			LuaImp.RegisteredFunctions.ChangedCallback = UpdateRegisteredFunctionsDialog;
 		}
 
 		private void BranchesMarkersSplit_SplitterMoved(object sender, SplitterEventArgs e)
@@ -232,6 +229,8 @@ namespace BizHawk.Client.EmuHawk
 				? new UnixLuaLibraries()
 				: new Win32LuaLibraries(Emulator.ServiceProvider, (MainForm) MainForm, DisplayManager, InputManager, Config, Emulator, Game);
 			LuaImp.ScriptList.AddRange(currentScripts ?? Enumerable.Empty<LuaFile>());
+			LuaImp.ScriptList.ChangedCallback = SessionChangedCallback;
+			LuaImp.RegisteredFunctions.ChangedCallback = UpdateRegisteredFunctionsDialog;
 
 			InputBox.AutoCompleteCustomSource.AddRange(LuaImp.Docs.Select(a => $"{a.Library}.{a.Name}").ToArray());
 
