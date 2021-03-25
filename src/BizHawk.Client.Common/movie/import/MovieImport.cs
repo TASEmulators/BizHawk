@@ -31,7 +31,12 @@ namespace BizHawk.Client.Common
 		);
 
 		// Attempt to import another type of movie file into a movie object.
-		public static ImportResult ImportFile(IMovieSession session, IEmulator emulator, string path, Config config)
+		public static ImportResult ImportFile(
+			IDialogParent dialogParent,
+			IMovieSession session,
+			IEmulator emulator,
+			string path,
+			Config config)
 		{
 			string ext = Path.GetExtension(path) ?? "";
 			var importerType = ImporterForExtension(ext);
@@ -48,7 +53,7 @@ namespace BizHawk.Client.Common
 
 			return importer == null
 				? ImportResult.Error($"No importer found for file type {ext}")
-				: importer.Import(session, emulator, path, config);
+				: importer.Import(dialogParent, session, emulator, path, config);
 		}
 
 		private static Type ImporterForExtension(string ext)

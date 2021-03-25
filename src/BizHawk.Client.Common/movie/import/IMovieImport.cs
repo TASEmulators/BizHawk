@@ -9,7 +9,12 @@ namespace BizHawk.Client.Common
 {
 	public interface IMovieImport
 	{
-		ImportResult Import(IMovieSession session, IEmulator emulator, string path, Config config);
+		ImportResult Import(
+			IDialogParent dialogParent,
+			IMovieSession session,
+			IEmulator emulator,
+			string path,
+			Config config);
 	}
 
 	internal abstract class MovieImporter : IMovieImport
@@ -18,8 +23,16 @@ namespace BizHawk.Client.Common
 		protected const string Md5 = "MD5";
 		protected const string MovieOrigin = "MovieOrigin";
 
-		public ImportResult Import(IMovieSession session, IEmulator emulator, string path, Config config)
+		protected IDialogParent _dialogParent;
+
+		public ImportResult Import(
+			IDialogParent dialogParent,
+			IMovieSession session,
+			IEmulator emulator,
+			string path,
+			Config config)
 		{
+			_dialogParent = dialogParent;
 			SourceFile = new FileInfo(path);
 			Config = config;
 
