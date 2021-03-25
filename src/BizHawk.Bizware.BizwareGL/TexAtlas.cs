@@ -31,25 +31,14 @@ namespace BizHawk.Bizware.BizwareGL
 			public readonly List<RectangleBinPack.Node> nodes = new List<RectangleBinPack.Node>();
 		}
 
-		public class PackedAtlasResults
-		{
-			public class SingleAtlas
-			{
-				public Size Size;
-				public List<RectItem> Items;
-			}
-			public List<SingleAtlas> Atlases = new List<SingleAtlas>();
-		}
-
 		public static int MaxSizeBits = 16;
 
 		/// <summary>
 		/// packs the supplied RectItems into an atlas. Modifies the RectItems with x/y values of location in new atlas.
 		/// </summary>
-		public static PackedAtlasResults PackAtlas(IEnumerable<RectItem> items)
+		public static IReadOnlyList<(Size Size, List<RectItem> Items)> PackAtlas(IReadOnlyCollection<RectItem> items)
 		{
-			var ret = new PackedAtlasResults();
-			ret.Atlases.Add(new PackedAtlasResults.SingleAtlas());
+			List<(Size Size, List<RectItem> Items)> atlases = new();
 
 			// initially, we'll try all the items; none remain
 			var currentItems = new List<RectItem>(items);
@@ -132,17 +121,14 @@ namespace BizHawk.Bizware.BizwareGL
 			}
 
 			//we found a fit. setup this atlas in the result and drop the items into it
-			var atlas = ret.Atlases[ret.Atlases.Count - 1];
-			atlas.Size.Width = tfpFinal.w;
-			atlas.Size.Height = tfpFinal.h;
-			atlas.Items = new List<RectItem>(currentItems);
+			atlases.Add((new Size(tfpFinal.w, tfpFinal.h), new List<RectItem>(currentItems)));
 			foreach (var item in currentItems)
 			{
 				object o = item.Item;
 				var node = tfpFinal.nodes.Find((x) => x.ri == item);
 				item.X = node.x;
 				item.Y = node.y;
-				item.TexIndex = ret.Atlases.Count - 1;
+				item.TexIndex = atlases.Count - 1;
 			}
 
 			//if we have any items left, we've got to run this again
@@ -153,14 +139,11 @@ namespace BizHawk.Bizware.BizwareGL
 				currentItems.AddRange(remainItems);
 				remainItems.Clear();
 
-				ret.Atlases.Add(new PackedAtlasResults.SingleAtlas());
 				goto RETRY;
 			}
 
-			if (ret.Atlases.Count > 1)
-				Console.WriteLine("Created animset with >1 texture ({0} textures)", ret.Atlases.Count);
-
-			return ret;
+			if (atlases.Count > 1) Console.WriteLine($"Created animset with >1 texture ({atlases.Count} textures)");
+			return atlases;
 		}
 
 		// original file: RectangleBinPack.cpp

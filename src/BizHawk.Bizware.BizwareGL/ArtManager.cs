@@ -83,16 +83,16 @@ namespace BizHawk.Bizware.BizwareGL
 			var results = TexAtlas.PackAtlas(atlasItems);
 
 			// this isn't supported yet:
-			if (results.Atlases.Count > 1)
+			if (results.Count > 1)
 				throw new InvalidOperationException("Art files too big for atlas");
 
 			// prepare the output buffer
-			BitmapBuffer bmpResult = new BitmapBuffer(results.Atlases[0].Size);
+			BitmapBuffer bmpResult = new BitmapBuffer(results[0].Size);
 
 			//for each item, copy it into the output buffer and set the tex parameters on them
 			for (int i = 0; i < atlasItems.Count; i++)
 			{
-				var item = results.Atlases[0].Items[i];
+				var item = results[0].Items[i];
 				var artAndBitmap = (KeyValuePair<Art, BitmapBuffer>)item.Item;
 				var art = artAndBitmap.Key;
 				var bitmap = artAndBitmap.Value;
