@@ -13,6 +13,7 @@ Jump to:
 * Installing
 	* [Windows](#windows)
 	* [Unix](#unix)
+		* [macOS](#macos-legacy-bizhawk)
 	* [Development builds](#development-builds)
 * Building
 	* [Windows](#windows-1)
@@ -148,7 +149,7 @@ Development builds are made automatically whenever someone contributes. Because 
 
 Click one of the buttons above to download a dev build (they're also at the top of this readme). AppVeyor uses Windows and GitLab CI uses Linux, but they work all the same.
 * On the AppVeyor page for a Build, click "Artifacts", then `BizHawk_Developer-<datetime>-#<long hexadecimal>.zip`.
-* On the GitLab CI page for a Pipeline, click "Jobs", then the download button on the right under the heading "Package". (On the Pipelines list page, there's also a download button on each Pipeline—choose `package:archive` there.)
+* On the GitLab CI page for a Pipeline, click "Jobs", then the download button on the right under the heading "Package". (On the Pipelines list page, there's also a download button on each Pipeline—choose `package_devbuild_*:archive` there.)
 
 To find the dev builds for a specific commit, you can click the green checkmark next to it (in the [commit history](https://github.com/TASVideos/BizHawk/commits/master), for example) for a dropdown, then click either "Details" link to go to AppVeyor/GitLab.
 
@@ -174,12 +175,12 @@ With VS, start the build by choosing the `BizHawk.Client.EmuHawk` executable in 
 
 Before you can build, you'll need the .NET 5 SDK or later (package name is usually `dotnet-sdk-5.0`, see [full instructions](https://docs.microsoft.com/en-gb/dotnet/core/install/linux)). You may need to uninstall MSBuild and/or the 3.1 SDK first. Once it's installed, run:
 ```sh
-git clone https://github.com/TASVideos/BizHawk.git BizHawk_master
-# or ssh: git clone git@github.com:TASVideos/BizHawk.git BizHawk_master
-BizHawk_master/Dist/BuildRelease.sh
+git clone https://github.com/TASVideos/BizHawk.git BizHawk_master && cd BizHawk_master
+# or ssh: git clone git@github.com:TASVideos/BizHawk.git BizHawk_master && cd BizHawk_master
+Dist/BuildRelease.sh
 ```
 
-The assemblies are put in `BizHawk_master/output`, so if you have the runtime dependencies (see [*Installing*](#unix)) you can call `BizHawk_master/output/EmuHawkMono.sh`.
+The assemblies are put in the `/output` dir, so if you have the runtime dependencies (see [*Installing*](#unix)) you can call `/output/EmuHawkMono.sh`.
 
 VS 2019 isn't available on Linux, but Rider and VS Code are. You can always code from the command line...
 
