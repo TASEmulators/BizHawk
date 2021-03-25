@@ -15,7 +15,7 @@ namespace BizHawk.Client.Common.movie.import
 
 		protected override void RunImport()
 		{
-			Result.Movie.HeaderEntries[HeaderKeys.Core] = CoreNames.Bsnes;
+			Result.Movie.HeaderEntries[HeaderKeys.Core] = CoreNames.Bsnes; //TODO set to Snes9x instead? or give the user the choice?
 
 			using var fs = SourceFile.Open(FileMode.Open, FileAccess.Read);
 			using var r = new BinaryReader(fs);
@@ -311,7 +311,7 @@ namespace BizHawk.Client.Common.movie.import
 				Result.Movie.AppendFrame(controllers);
 
 				Result.Movie.SyncSettingsJson = ConfigService.SaveWithType(ss);
-				Config.PreferredCores["SNES"] = CoreNames.Bsnes; // TODO: convert to snes9x if it is the user's preference
+				MaybeSetCorePreference(sysID: "SNES", CoreNames.Bsnes, fileExt: ".smv");
 			}
 		}
 	}

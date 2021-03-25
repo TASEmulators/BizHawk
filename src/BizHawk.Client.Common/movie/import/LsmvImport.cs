@@ -259,7 +259,7 @@ namespace BizHawk.Client.Common.movie.import
 
 			Result.Movie.HeaderEntries[HeaderKeys.Platform] = platform;
 			Result.Movie.SyncSettingsJson = ConfigService.SaveWithType(ss);
-			Config.PreferredCores["SNES"] = CoreNames.Bsnes; // TODO: convert to snes9x if it is the user's preference
+			MaybeSetCorePreference(sysID: "SNES", CoreNames.Bsnes, fileExt: ".lsmv");
 		}
 
 		private IController EmptyLmsvFrame()

@@ -25,6 +25,17 @@ namespace BizHawk.Client.Common
 
 		protected IDialogParent _dialogParent;
 
+		protected void MaybeSetCorePreference(string sysID, string coreName, string fileExt)
+		{
+			if (Config.PreferredCores[sysID] != coreName
+				&& _dialogParent.ModalMessageBox2(
+					$"{fileExt} movies will have a better chance of syncing using the {coreName} core. Change your core preference for {sysID} roms to {coreName} now?",
+					icon: EMsgBoxIcon.Question))
+			{
+				Config.PreferredCores[sysID] = coreName;
+			}
+		}
+
 		public ImportResult Import(
 			IDialogParent dialogParent,
 			IMovieSession session,
