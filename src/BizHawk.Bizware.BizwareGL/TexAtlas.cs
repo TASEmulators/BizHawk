@@ -38,99 +38,92 @@ namespace BizHawk.Bizware.BizwareGL
 		/// </summary>
 		public static IReadOnlyList<(Size Size, List<RectItem> Items)> PackAtlas(IReadOnlyCollection<RectItem> items)
 		{
-			List<(Size, List<RectItem>)> atlases = new();
-
-			// initially, we'll try all the items; none remain
-			var currentItems = new List<RectItem>(items);
-			var remainItems = new List<RectItem>();
-
-		RETRY1:
-		RETRY:
-
-			// this is where the texture size range is determined.
-			// we run this every time we make an atlas, in case we want to variably control the maximum texture output size.
-			// ALSO - we accumulate data in there, so we need to refresh it each time. ... lame.
-			var todoSizes = new List<TryFitParam>();
-			for (int i = 3; i <= MaxSizeBits; i++)
+			static void AddAtlas(ICollection<(Size, List<RectItem>)> atlases, IReadOnlyCollection<RectItem> initItems)
 			{
-				for (int j = 3; j <= MaxSizeBits; j++)
-				{
-					int w = 1 << i;
-					int h = 1 << j;
-					TryFitParam tfp = new TryFitParam(w, h);
-					todoSizes.Add(tfp);
-				}
-			}
+				List<RectItem> currentItems = new(initItems);
+				List<RectItem> remainItems = new();
 
-			//run the packing algorithm on each potential size
-			Parallel.ForEach(todoSizes, (param) =>
-			{
-				var rbp = new RectangleBinPack();
-				rbp.Init(16384, 16384);
-				param.rbp.Init(param.w, param.h);
+			RETRY:
 
-				foreach (var ri in currentItems)
+				// this is where the texture size range is determined.
+				// we run this every time we make an atlas, in case we want to variably control the maximum texture output size.
+				// ALSO - we accumulate data in there, so we need to refresh it each time. ... lame.
+				var todoSizes = new List<TryFitParam>();
+				for (int i = 3; i <= MaxSizeBits; i++)
 				{
-					RectangleBinPack.Node node = param.rbp.Insert(ri.Width, ri.Height);
-					if (node == null)
+					for (int j = 3; j <= MaxSizeBits; j++)
 					{
-						param.ok = false;
-					}
-					else
-					{
-						node.ri = ri;
-						param.nodes.Add(node);
+						int w = 1 << i;
+						int h = 1 << j;
+						TryFitParam tfp = new TryFitParam(w, h);
+						todoSizes.Add(tfp);
 					}
 				}
-			});
 
-			//find the best fit among the potential sizes that worked
-			var best = long.MaxValue;
-			var tfpFinal = todoSizes[0];
-			foreach (var tfp in todoSizes)
-			{
-				if (!tfp.ok) continue;
-				var area = tfp.w * (long) tfp.h;
-				if (area > best) continue; // larger than best, not interested
-				if (area == best) // same area, compare perimeter as tie-breaker (to create squares, which are nicer to look at)
+				//run the packing algorithm on each potential size
+				Parallel.ForEach(todoSizes, (param) =>
 				{
-					if (tfp.w + tfp.h >= tfpFinal.w + tfpFinal.h) continue;
+					var rbp = new RectangleBinPack();
+					rbp.Init(16384, 16384);
+					param.rbp.Init(param.w, param.h);
+
+					foreach (var ri in currentItems)
+					{
+						RectangleBinPack.Node node = param.rbp.Insert(ri.Width, ri.Height);
+						if (node == null)
+						{
+							param.ok = false;
+						}
+						else
+						{
+							node.ri = ri;
+							param.nodes.Add(node);
+						}
+					}
+				});
+
+				//find the best fit among the potential sizes that worked
+				var best = long.MaxValue;
+				var tfpFinal = todoSizes[0];
+				foreach (var tfp in todoSizes)
+				{
+					if (!tfp.ok) continue;
+					var area = tfp.w * (long) tfp.h;
+					if (area > best) continue; // larger than best, not interested
+					if (area == best) // same area, compare perimeter as tie-breaker (to create squares, which are nicer to look at)
+					{
+						if (tfp.w + tfp.h >= tfpFinal.w + tfpFinal.h) continue;
+					}
+					best = area;
+					tfpFinal = tfp;
 				}
-				best = area;
-				tfpFinal = tfp;
-			}
 
-			//did we find any fit?
-			if (best == long.MaxValue)
-			{
-				//nope - move an item to the remaining list and try again
-				remainItems.Add(currentItems[currentItems.Count - 1]);
-				currentItems.RemoveAt(currentItems.Count - 1);
-				goto RETRY;
-			}
+				//did we find any fit?
+				if (best == long.MaxValue)
+				{
+					//nope - move an item to the remaining list and try again
+					remainItems.Add(currentItems[currentItems.Count - 1]);
+					currentItems.RemoveAt(currentItems.Count - 1);
+					goto RETRY;
+				}
 
-			//we found a fit. setup this atlas in the result and drop the items into it
+				//we found a fit. setup this atlas in the result and drop the items into it
 			atlases.Add((new Size(tfpFinal.w, tfpFinal.h), new List<RectItem>(currentItems)));
-			foreach (var item in currentItems)
-			{
-				object o = item.Item;
-				var node = tfpFinal.nodes.Find((x) => x.ri == item);
-				item.X = node.x;
-				item.Y = node.y;
-				item.TexIndex = atlases.Count - 1;
+				foreach (var item in currentItems)
+				{
+					object o = item.Item;
+					var node = tfpFinal.nodes.Find((x) => x.ri == item);
+					item.X = node.x;
+					item.Y = node.y;
+					item.TexIndex = atlases.Count - 1;
+				}
+
+				//if we have any items left, we've got to run this again
+				if (remainItems.Count > 0) AddAtlas(atlases, remainItems);
 			}
 
-			//if we have any items left, we've got to run this again
-			if (remainItems.Count > 0)
-			{
-				//move all remaining items into the clear list
-				currentItems.Clear();
-				currentItems.AddRange(remainItems);
-				remainItems.Clear();
-
-				goto RETRY1;
-			}
-
+			List<(Size, List<RectItem>)> atlases = new();
+			AddAtlas(atlases, items);
 			if (atlases.Count > 1) Console.WriteLine($"Created animset with >1 texture ({atlases.Count} textures)");
 			return atlases;
 		}
