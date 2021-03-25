@@ -11,8 +11,6 @@ namespace BizHawk.Client.EmuHawk
 	/// </summary>
 	public sealed class UnixLuaLibraries : IPlatformLuaLibEnv
 	{
-		private static readonly LuaFunctionList EmptyLuaFunList = new LuaFunctionList();
-
 		public LuaDocumentation Docs { get; } = new LuaDocumentation();
 
 		public string EngineName => null;
@@ -21,9 +19,15 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool IsUpdateSupressed { get; set; }
 
-		public LuaFunctionList RegisteredFunctions => EmptyLuaFunList;
+		public LuaFunctionList RegisteredFunctions { get; }
 
-		public LuaFileList ScriptList { get; } = new LuaFileList();
+		public LuaFileList ScriptList { get; }
+
+		public UnixLuaLibraries(LuaFileList scriptList, LuaFunctionList registeredFuncList)
+		{
+			RegisteredFunctions = registeredFuncList;
+			ScriptList = scriptList;
+		}
 
 		public void CallLoadStateEvent(string name) {}
 

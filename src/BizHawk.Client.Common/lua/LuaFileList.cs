@@ -9,7 +9,8 @@ namespace BizHawk.Client.Common
 	{
 		private bool _changes;
 
-		public Action ChangedCallback { get; set; }
+		private readonly Action ChangedCallback;
+
 		public bool Changes
 		{
 			get => _changes;
@@ -24,6 +25,13 @@ namespace BizHawk.Client.Common
 		}
 
 		public string Filename { get; set; } = "";
+
+		/// <remarks><paramref name="onChanged"/> will not be called when initialising from given <paramref name="collection"/>, only on subsequent mutations</remarks>
+		public LuaFileList(IReadOnlyCollection<LuaFile> collection, Action onChanged)
+		{
+			ChangedCallback = onChanged;
+			if (collection != null) AddRange(collection); // doesn't actually trigger callback as the superclass' Add is called; if this class is rewritten without `new` methods, something clever will need to be done, like a bool field _initialised
+		}
 
 		public void StopAllScripts()
 		{

@@ -224,13 +224,22 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			var currentScripts = LuaImp?.ScriptList; // Temp fix for now
+			LuaFileList newScripts = new(LuaImp?.ScriptList, onChanged: SessionChangedCallback);
+			LuaFunctionList registeredFuncList = new(onChanged: UpdateRegisteredFunctionsDialog);
 			LuaImp = OSTailoredCode.IsUnixHost
-				? new UnixLuaLibraries()
-				: new Win32LuaLibraries(Emulator.ServiceProvider, (MainForm) MainForm, DisplayManager, InputManager, Config, Emulator, Game);
-			LuaImp.ScriptList.AddRange(currentScripts ?? Enumerable.Empty<LuaFile>());
-			LuaImp.ScriptList.ChangedCallback = SessionChangedCallback;
-			LuaImp.RegisteredFunctions.ChangedCallback = UpdateRegisteredFunctionsDialog;
+				? new UnixLuaLibraries(
+					newScripts,
+					registeredFuncList)
+				: new Win32LuaLibraries(
+					newScripts,
+					registeredFuncList,
+					Emulator.ServiceProvider,
+					(MainForm) MainForm, //HACK
+					DisplayManager,
+					InputManager,
+					Config,
+					Emulator,
+					Game);
 
 			InputBox.AutoCompleteCustomSource.AddRange(LuaImp.Docs.Select(a => $"{a.Library}.{a.Name}").ToArray());
 

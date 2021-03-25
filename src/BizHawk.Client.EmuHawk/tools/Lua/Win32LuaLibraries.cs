@@ -16,6 +16,8 @@ namespace BizHawk.Client.EmuHawk
 	public class Win32LuaLibraries : IPlatformLuaLibEnv
 	{
 		public Win32LuaLibraries(
+			LuaFileList scriptList,
+			LuaFunctionList registeredFuncList,
 			IEmulatorServiceProvider serviceProvider,
 			MainForm mainForm,
 			IDisplayManagerForApi displayManager,
@@ -47,6 +49,8 @@ namespace BizHawk.Client.EmuHawk
 			_inputManager = inputManager;
 			_mainForm = mainForm;
 			LuaWait = new AutoResetEvent(false);
+			RegisteredFunctions = registeredFuncList;
+			ScriptList = scriptList;
 			Docs.Clear();
 			_apiContainer = ApiManager.RestartLua(serviceProvider, LogToLuaConsole, _mainForm, _displayManager, _inputManager, _mainForm.MovieSession, _mainForm.Tools, config, emulator, game);
 
@@ -137,7 +141,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private EventWaitHandle LuaWait;
 
-		public LuaFileList ScriptList { get; } = new LuaFileList();
+		public LuaFileList ScriptList { get; }
 
 		private static void LogToLuaConsole(object outputs) => _logToLuaConsoleCallback(new[] { outputs });
 
@@ -159,7 +163,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool FrameAdvanceRequested { get; private set; }
 
-		public LuaFunctionList RegisteredFunctions { get; } = new LuaFunctionList();
+		public LuaFunctionList RegisteredFunctions { get; }
 
 		public void CallSaveStateEvent(string name)
 		{

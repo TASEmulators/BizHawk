@@ -10,10 +10,12 @@ namespace BizHawk.Client.Common
 	public class LuaFunctionList : IEnumerable<NamedLuaFunction>
 	{
 		private readonly List<NamedLuaFunction> _functions = new List<NamedLuaFunction>();
-		
-		public Action ChangedCallback { get; set; }
 
-		public NamedLuaFunction this[string guid] => 
+		private readonly Action Changed;
+
+		public LuaFunctionList(Action onChanged) => Changed = onChanged;
+
+		public NamedLuaFunction this[string guid] =>
 			_functions.FirstOrDefault(nlf => nlf.Guid.ToString() == guid);
 
 		public void Add(NamedLuaFunction nlf)
@@ -77,7 +79,5 @@ namespace BizHawk.Client.Common
 
 		public IEnumerator<NamedLuaFunction> GetEnumerator() => _functions.GetEnumerator();
 		IEnumerator IEnumerable.GetEnumerator() => _functions.GetEnumerator();
-
-		private void Changed() => ChangedCallback?.Invoke();
 	}
 }
