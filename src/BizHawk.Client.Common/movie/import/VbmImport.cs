@@ -273,7 +273,6 @@ namespace BizHawk.Client.Common.movie.import
 
 			if (isGBA)
 			{
-				Config.PreferredCores["GBA"] = CoreNames.Mgba;
 				var ss = new MGBAHawk.SyncSettings { SkipBios = true };
 				Result.Movie.SyncSettingsJson = ConfigService.SaveWithType(ss);
 			}
