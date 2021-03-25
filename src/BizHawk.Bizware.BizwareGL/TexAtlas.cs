@@ -135,7 +135,7 @@ namespace BizHawk.Bizware.BizwareGL
 			var atlas = ret.Atlases[ret.Atlases.Count - 1];
 			atlas.Size.Width = tfpFinal.w;
 			atlas.Size.Height = tfpFinal.h;
-			atlas.Items = new List<RectItem>(items);
+			atlas.Items = new List<RectItem>(currentItems);
 			foreach (var item in currentItems)
 			{
 				object o = item.Item;
