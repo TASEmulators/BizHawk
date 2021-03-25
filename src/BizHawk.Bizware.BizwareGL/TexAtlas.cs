@@ -43,72 +43,71 @@ namespace BizHawk.Bizware.BizwareGL
 				List<RectItem> currentItems = new(initItems);
 				List<RectItem> remainItems = new();
 
-			RETRY:
-
-				// this is where the texture size range is determined.
-				// we run this every time we make an atlas, in case we want to variably control the maximum texture output size.
-				// ALSO - we accumulate data in there, so we need to refresh it each time. ... lame.
-				var todoSizes = new List<TryFitParam>();
-				for (int i = 3; i <= MaxSizeBits; i++)
+				TryFitParam tfpFinal;
+				while (true)
 				{
-					for (int j = 3; j <= MaxSizeBits; j++)
+					// this is where the texture size range is determined.
+					// we run this every time we make an atlas, in case we want to variably control the maximum texture output size.
+					// ALSO - we accumulate data in there, so we need to refresh it each time. ... lame.
+					var todoSizes = new List<TryFitParam>();
+					for (int i = 3; i <= MaxSizeBits; i++)
 					{
-						int w = 1 << i;
-						int h = 1 << j;
-						TryFitParam tfp = new TryFitParam(w, h);
-						todoSizes.Add(tfp);
-					}
-				}
-
-				//run the packing algorithm on each potential size
-				Parallel.ForEach(todoSizes, (param) =>
-				{
-					var rbp = new RectangleBinPack();
-					rbp.Init(16384, 16384);
-					param.rbp.Init(param.w, param.h);
-
-					foreach (var ri in currentItems)
-					{
-						RectangleBinPack.Node node = param.rbp.Insert(ri.Width, ri.Height);
-						if (node == null)
+						for (int j = 3; j <= MaxSizeBits; j++)
 						{
-							param.ok = false;
-						}
-						else
-						{
-							node.ri = ri;
-							param.nodes.Add(node);
+							int w = 1 << i;
+							int h = 1 << j;
+							TryFitParam tfp = new TryFitParam(w, h);
+							todoSizes.Add(tfp);
 						}
 					}
-				});
 
-				//find the best fit among the potential sizes that worked
-				var best = long.MaxValue;
-				var tfpFinal = todoSizes[0];
-				foreach (var tfp in todoSizes)
-				{
-					if (!tfp.ok) continue;
-					var area = tfp.w * (long) tfp.h;
-					if (area > best) continue; // larger than best, not interested
-					if (area == best) // same area, compare perimeter as tie-breaker (to create squares, which are nicer to look at)
+					//run the packing algorithm on each potential size
+					Parallel.ForEach(todoSizes, (param) =>
 					{
-						if (tfp.w + tfp.h >= tfpFinal.w + tfpFinal.h) continue;
-					}
-					best = area;
-					tfpFinal = tfp;
-				}
+						var rbp = new RectangleBinPack();
+						rbp.Init(16384, 16384);
+						param.rbp.Init(param.w, param.h);
 
-				//did we find any fit?
-				if (best == long.MaxValue)
-				{
+						foreach (var ri in currentItems)
+						{
+							RectangleBinPack.Node node = param.rbp.Insert(ri.Width, ri.Height);
+							if (node == null)
+							{
+								param.ok = false;
+							}
+							else
+							{
+								node.ri = ri;
+								param.nodes.Add(node);
+							}
+						}
+					});
+
+					//find the best fit among the potential sizes that worked
+					var best = long.MaxValue;
+					tfpFinal = todoSizes[0];
+					foreach (var tfp in todoSizes)
+					{
+						if (!tfp.ok) continue;
+						var area = tfp.w * (long) tfp.h;
+						if (area > best) continue; // larger than best, not interested
+						if (area == best) // same area, compare perimeter as tie-breaker (to create squares, which are nicer to look at)
+						{
+							if (tfp.w + tfp.h >= tfpFinal.w + tfpFinal.h) continue;
+						}
+						best = area;
+						tfpFinal = tfp;
+					}
+
+					//did we find any fit?
+					if (best < long.MaxValue) break;
 					//nope - move an item to the remaining list and try again
 					remainItems.Add(currentItems[currentItems.Count - 1]);
 					currentItems.RemoveAt(currentItems.Count - 1);
-					goto RETRY;
 				}
 
 				//we found a fit. setup this atlas in the result and drop the items into it
-			atlases.Add((new Size(tfpFinal.w, tfpFinal.h), new List<RectItem>(currentItems)));
+				atlases.Add((new Size(tfpFinal.w, tfpFinal.h), new List<RectItem>(currentItems)));
 				foreach (var item in currentItems)
 				{
 					object o = item.Item;
