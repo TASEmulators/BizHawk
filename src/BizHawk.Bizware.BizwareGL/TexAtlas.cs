@@ -38,12 +38,13 @@ namespace BizHawk.Bizware.BizwareGL
 		/// </summary>
 		public static IReadOnlyList<(Size Size, List<RectItem> Items)> PackAtlas(IReadOnlyCollection<RectItem> items)
 		{
-			List<(Size Size, List<RectItem> Items)> atlases = new();
+			List<(Size, List<RectItem>)> atlases = new();
 
 			// initially, we'll try all the items; none remain
 			var currentItems = new List<RectItem>(items);
 			var remainItems = new List<RectItem>();
 
+		RETRY1:
 		RETRY:
 
 			// this is where the texture size range is determined.
@@ -84,31 +85,19 @@ namespace BizHawk.Bizware.BizwareGL
 			});
 
 			//find the best fit among the potential sizes that worked
-			long best = long.MaxValue;
-			TryFitParam tfpFinal = null;
-			foreach (TryFitParam tfp in todoSizes)
+			var best = long.MaxValue;
+			var tfpFinal = todoSizes[0];
+			foreach (var tfp in todoSizes)
 			{
-				if (tfp.ok)
+				if (!tfp.ok) continue;
+				var area = tfp.w * (long) tfp.h;
+				if (area > best) continue; // larger than best, not interested
+				if (area == best) // same area, compare perimeter as tie-breaker (to create squares, which are nicer to look at)
 				{
-					long area = (long)tfp.w * (long)tfp.h;
-					long perimeter = (long)tfp.w + (long)tfp.h;
-					if (area < best)
-					{
-						best = area;
-						tfpFinal = tfp;
-					}
-					else if (area == best)
-					{
-						//try to minimize perimeter (to create squares, which are nicer to look at)
-						if (tfpFinal == null)
-						{ }
-						else if (perimeter < tfpFinal.w + tfpFinal.h)
-						{
-							best = area;
-							tfpFinal = tfp;
-						}
-					}
+					if (tfp.w + tfp.h >= tfpFinal.w + tfpFinal.h) continue;
 				}
+				best = area;
+				tfpFinal = tfp;
 			}
 
 			//did we find any fit?
@@ -139,7 +128,7 @@ namespace BizHawk.Bizware.BizwareGL
 				currentItems.AddRange(remainItems);
 				remainItems.Clear();
 
-				goto RETRY;
+				goto RETRY1;
 			}
 
 			if (atlases.Count > 1) Console.WriteLine($"Created animset with >1 texture ({atlases.Count} textures)");
