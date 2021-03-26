@@ -138,8 +138,6 @@ namespace BizHawk.Client.Common.FilterManager
 
 		public void Compile(string channel, Size inSize, Size outsize, bool finalTarget)
 		{
-		RETRY:
-			
 			Program.Clear();
 
 			//prep filters for initialization
@@ -188,7 +186,8 @@ namespace BizHawk.Client.Common.FilterManager
 					{
 						var renderer = new Render();
 						Filters.Insert(i, renderer);
-						goto RETRY;
+						Compile(channel, inSize, outsize, finalTarget);
+						return;
 					}
 					// check if the desired disposition needs to change from a render target to a texture
 					// (if so, the current render target gets resolved, and made no longer current
@@ -196,7 +195,8 @@ namespace BizHawk.Client.Common.FilterManager
 					{
 						var resolver = new Resolve();
 						Filters.Insert(i, resolver);
-						goto RETRY;
+						Compile(channel, inSize, outsize, finalTarget);
+						return;
 					}
 				}
 
@@ -249,7 +249,8 @@ namespace BizHawk.Client.Common.FilterManager
 			{
 				var renderer = new Render();
 				Filters.Insert(Filters.Count, renderer);
-				goto RETRY;
+				Compile(channel, inSize, outsize, finalTarget);
+				return;
 			}
 
 			// patch the program so that the final RenderTarget set operation is the framebuffer instead
