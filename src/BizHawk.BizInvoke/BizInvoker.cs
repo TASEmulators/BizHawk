@@ -16,20 +16,38 @@ namespace BizHawk.BizInvoke
 		/// </summary>
 		private class InvokerImpl
 		{
-			public Type ImplType;
-			public List<Action<object, IImportResolver, ICallingConventionAdapter>> Hooks;
-			public Action<object, IMonitor> ConnectMonitor;
-			public Action<object, ICallingConventionAdapter> ConnectCallingConventionAdapter;
+			private readonly Action<object, ICallingConventionAdapter> _connectCallingConventionAdapter;
+
+			private readonly Action<object, IMonitor> _connectMonitor;
+
+			private readonly List<Action<object, IImportResolver, ICallingConventionAdapter>> _hooks;
+
+			private readonly Type _implType;
+
+			public readonly bool IsMonitored;
+
+			public InvokerImpl(
+				List<Action<object, IImportResolver, ICallingConventionAdapter>> hooks,
+				Type implType,
+				Action<object, IMonitor> connectMonitor,
+				Action<object, ICallingConventionAdapter> connectCallingConventionAdapter)
+			{
+				_connectCallingConventionAdapter = connectCallingConventionAdapter;
+				_connectMonitor = connectMonitor;
+				_hooks = hooks;
+				_implType = implType;
+				IsMonitored = connectMonitor != null;
+			}
 
 			public object Create(IImportResolver dll, IMonitor monitor, ICallingConventionAdapter adapter)
 			{
-				var ret = Activator.CreateInstance(ImplType);
-				ConnectCallingConventionAdapter(ret, adapter);
-				foreach (var f in Hooks)
+				var ret = Activator.CreateInstance(_implType);
+				_connectCallingConventionAdapter(ret, adapter);
+				foreach (var f in _hooks)
 				{
 					f(ret, dll, adapter);
 				}
-				ConnectMonitor?.Invoke(ret, monitor);
+				_connectMonitor?.Invoke(ret, monitor);
 				return ret;
 			}
 		}
@@ -87,7 +105,7 @@ namespace BizHawk.BizInvoke
 				}
 			}
 
-			if (impl.ConnectMonitor != null)
+			if (impl.IsMonitored)
 			{
 				throw new InvalidOperationException("Class was previously proxied with a monitor!");
 			}
@@ -111,7 +129,7 @@ namespace BizHawk.BizInvoke
 				}
 			}
 
-			if (impl.ConnectMonitor == null)
+			if (!impl.IsMonitored)
 			{
 				throw new InvalidOperationException("Class was previously proxied without a monitor!");
 			}
@@ -188,18 +206,13 @@ namespace BizHawk.BizInvoke
 				postCreateHooks.Add(hook);
 			}
 
-			var ret = new InvokerImpl
-			{
-				Hooks = postCreateHooks,
-				ImplType = type.CreateType()
-			};
-			if (monitor)
-			{
-				ret.ConnectMonitor = (o, m) => o.GetType().GetField(monitorField.Name).SetValue(o, m);
-			}
-			ret.ConnectCallingConventionAdapter = (o, a) => o.GetType().GetField(adapterField.Name).SetValue(o, a);
-
-			return ret;
+			return new(
+				postCreateHooks,
+				type.CreateType(),
+				connectMonitor: monitor
+					? (o, m) => o.GetType().GetField(monitorField.Name).SetValue(o, m)
+					: null,
+				connectCallingConventionAdapter: (o, a) => o.GetType().GetField(adapterField.Name).SetValue(o, a));
 		}
 
 		/// <summary>
