@@ -367,8 +367,7 @@ namespace BizHawk.Bizware.OpenTK3
 		/// <remarks><paramref name="left"/> and <paramref name="right"/> are in 0..<see cref="int.MaxValue"/></remarks>
 		public void SetVibration(int left, int right)
 		{
-			const float SCALE = 1.1920929E-07f; // 2^-(32-9) ~= 1 / (int.MaxValue / 2^9)
-			static float Conv(int i) => (i >> 9) * SCALE; // the idea being to get the mantissa's worth of precision out of the int param, though I'm not sure this achieves that --yoshi
+			static float Conv(int i) => (float)i/int.MaxValue;
 			OpenTKGamePad.SetVibration(_deviceIndex, Conv(left), Conv(right));
 		}
 	}

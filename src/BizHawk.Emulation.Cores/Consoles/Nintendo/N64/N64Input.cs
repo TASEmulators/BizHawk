@@ -140,6 +140,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		}
 
 		private void RumbleCallback(int Control, int On) => 
-			Controller?.SetHapticChannelStrength($"P{Control} Mono Haptic", On);
+			Controller?.SetHapticChannelStrength($"X{Control} Mono Haptic", On);
 	}
 }
