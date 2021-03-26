@@ -307,17 +307,24 @@ namespace BizHawk.BizInvoke
 			};
 		}
 
-		private class ParameterLoadInfo
+		private readonly struct ParameterLoadInfo
 		{
 			/// <summary>
 			/// The native type for this parameter, to pass to calli
 			/// </summary>
-			public Type NativeType;
+			public readonly Type NativeType;
+
 			/// <summary>
 			/// Closure that will actually emit the parameter load to the il stream.  The evaluation stack will
 			/// already have other parameters on it at this time.
 			/// </summary>
-			public Action EmitLoad;
+			public readonly Action EmitLoad;
+
+			public ParameterLoadInfo(Type nativeType, Action emitLoad)
+			{
+				NativeType = nativeType;
+				EmitLoad = emitLoad;
+			}
 		}
 
 		/// <summary>
@@ -475,18 +482,16 @@ namespace BizHawk.BizInvoke
 				{
 					throw new NotImplementedException("Only refs of primitive or enum types are supported!");
 				}
-				return new ParameterLoadInfo
-				{
-					NativeType = typeof(IntPtr),
-					EmitLoad = () =>
+				return new(
+					typeof(IntPtr),
+					() =>
 					{
 						var loc = il.DeclareLocal(type, true);
 						il.Emit(OpCodes.Ldarg, (short)idx);
 						il.Emit(OpCodes.Dup);
 						il.Emit(OpCodes.Stloc, loc);
 						il.Emit(OpCodes.Conv_I);
-					}
-				};
+					});
 			}
 
 			if (type.IsArray)
@@ -508,10 +513,9 @@ namespace BizHawk.BizInvoke
 					throw new NotImplementedException("Only 0-based 1-dimensional arrays are supported!");
 				}
 
-				return new ParameterLoadInfo
-				{
-					NativeType = typeof(IntPtr),
-					EmitLoad = () => 
+				return new(
+					typeof(IntPtr),
+					() =>
 					{
 						var loc = il.DeclareLocal(type, true);
 						var end = il.DefineLabel();
@@ -531,17 +535,15 @@ namespace BizHawk.BizInvoke
 						il.MarkLabel(isNull);
 						LoadConstant(il, IntPtr.Zero);
 						il.MarkLabel(end);
-					}
-				};
+					});
 			}
 
 			if (typeof(Delegate).IsAssignableFrom(type))
 			{
 				// callback -- use the same callingconventionadapter on it that the invoker is being made from
-				return new ParameterLoadInfo
-				{
-					NativeType = typeof(IntPtr),
-					EmitLoad = () =>
+				return new(
+					typeof(IntPtr),
+					() =>
 					{
 						var mi = typeof(ICallingConventionAdapter).GetMethod("GetFunctionPointerForDelegate");
 						var end = il.DefineLabel();
@@ -559,8 +561,7 @@ namespace BizHawk.BizInvoke
 						il.MarkLabel(isNull);
 						LoadConstant(il, IntPtr.Zero);
 						il.MarkLabel(end);
-					}
-				};
+					});
 			}
 
 			if (type == typeof(string))
@@ -621,23 +622,20 @@ namespace BizHawk.BizInvoke
 				il.Emit(OpCodes.Stloc, bytes);
 				il.MarkLabel(end);
 
-				return new ParameterLoadInfo
-				{
-					NativeType = typeof(IntPtr),
-					EmitLoad = () =>
+				return new(
+					typeof(IntPtr),
+					() =>
 					{
 						il.Emit(OpCodes.Ldloc, bytes);
-					}
-				};
+					});
 			}
 
 			if (type.IsClass)
 			{
 				// non ref of class can just be passed as pointer
-				return new ParameterLoadInfo
-				{
-					NativeType = typeof(IntPtr),
-					EmitLoad = () =>
+				return new(
+					typeof(IntPtr),
+					() =>
 					{
 						var loc = il.DeclareLocal(type, true);
 						var end = il.DefineLabel();
@@ -659,20 +657,17 @@ namespace BizHawk.BizInvoke
 						il.MarkLabel(isNull);
 						LoadConstant(il, IntPtr.Zero);
 						il.MarkLabel(end);
-					}
-				};
+					});
 			}
 
 			if (type.IsPrimitive || type.IsEnum || type.IsPointer)
 			{
-				return new ParameterLoadInfo
-				{
-					NativeType = type,
-					EmitLoad = () =>
+				return new(
+					type,
+					() =>
 					{
 						il.Emit(OpCodes.Ldarg, (short)idx);
-					}
-				};
+					});
 			}
 
 			throw new NotImplementedException("Unrecognized parameter type!");
