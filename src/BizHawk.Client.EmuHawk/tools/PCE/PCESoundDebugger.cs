@@ -63,24 +63,31 @@ namespace BizHawk.Client.EmuHawk
 					lvChannels.Items[i].SubItems[1].Text = "-";
 					lvChannels.Items[i].SubItems[2].Text = "-";
 					lvChannels.Items[i].SubItems[3].Text = "(disabled)";
-					goto DEAD;
+					_lastSamples[i] = null;
+					continue;
 				}
 				if (ch.DDA)
 				{
 					lvChannels.Items[i].SubItems[1].Text = "-";
 					lvChannels.Items[i].SubItems[2].Text = "-";
 					lvChannels.Items[i].SubItems[3].Text = "(DDA)";
-					goto DEAD;
+					_lastSamples[i] = null;
+					continue;
 				}
 				lvChannels.Items[i].SubItems[1].Text = ch.Volume.ToString();
 				lvChannels.Items[i].SubItems[2].Text = ch.Frequency.ToString();
 				if (ch.NoiseChannel)
 				{
 					lvChannels.Items[i].SubItems[3].Text = "(noise)";
-					goto DEAD;
+					_lastSamples[i] = null;
+					continue;
 				}
 
-				if (ch.Volume == 0) goto DEAD;
+				if (ch.Volume == 0)
+				{
+					_lastSamples[i] = null;
+					continue;
+				}
 
 				lvChannels.Items[i].SubItems[3].Text = "-";
 
@@ -135,11 +142,6 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				lvChannels.Items[i].SubItems[3].Text = _psgEntryTable[md5].Name;
-
-				continue;
-
-			DEAD:
-				_lastSamples[i] = null;
 			}
 
 			if (sync)
