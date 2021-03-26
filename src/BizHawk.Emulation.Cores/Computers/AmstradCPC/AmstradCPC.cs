@@ -107,8 +107,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		public CPCBase _machine;
 
 		public List<GameInfo> _gameInfo;
-		public List<GameInfo> _tapeInfo = new List<GameInfo>();
-		public List<GameInfo> _diskInfo = new List<GameInfo>();
+		public readonly IList<GameInfo> _tapeInfo = new List<GameInfo>();
+		public readonly IList<GameInfo> _diskInfo = new List<GameInfo>();
 
 		private SoundProviderMixer SoundMixer;
 

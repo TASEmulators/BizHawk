@@ -39,22 +39,22 @@ namespace BizHawk.Emulation.DiscSystem
 			/// <summary>
 			/// The [Session] sections
 			/// </summary>
-			public List<CCDSession> Sessions = new List<CCDSession>();
+			public readonly IList<CCDSession> Sessions = new List<CCDSession>();
 
 			/// <summary>
 			/// The [Entry] sctions
 			/// </summary>
-			public List<CCDTocEntry> TOCEntries = new List<CCDTocEntry>();
+			public readonly IList<CCDTocEntry> TOCEntries = new List<CCDTocEntry>();
 
 			/// <summary>
 			/// The [TRACK] sections
 			/// </summary>
-			public List<CCDTrack> Tracks = new List<CCDTrack>();
+			public readonly IList<CCDTrack> Tracks = new List<CCDTrack>();
 
 			/// <summary>
 			/// The [TRACK] sections, indexed by number
 			/// </summary>
-			public Dictionary<int, CCDTrack> TracksByNumber = new Dictionary<int, CCDTrack>();
+			public readonly IDictionary<int, CCDTrack> TracksByNumber = new Dictionary<int, CCDTrack>();
 		}
 
 		/// <summary>
@@ -126,7 +126,7 @@ namespace BizHawk.Emulation.DiscSystem
 			/// <summary>
 			/// The indexes specified for the track (these are 0-indexed)
 			/// </summary>
-			public Dictionary<int, int> Indexes = new Dictionary<int, int>();
+			public readonly IDictionary<int, int> Indexes = new Dictionary<int, int>();
 		}
 
 		/// <summary>

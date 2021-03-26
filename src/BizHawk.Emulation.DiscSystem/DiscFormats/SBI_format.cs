@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.DiscSystem.SBI
 		/// <summary>
 		/// a list of patched ABAs
 		/// </summary>
-		public List<int> ABAs = new List<int>();
+		public readonly IList<int> ABAs = new List<int>();
 
 		/// <summary>
 		/// 12 values (Q subchannel data) for every patched ABA; -1 means unpatched

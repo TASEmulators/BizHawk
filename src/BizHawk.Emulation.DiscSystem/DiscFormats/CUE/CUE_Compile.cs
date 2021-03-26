@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Linq;
 
 using BizHawk.Common;
 
@@ -104,11 +105,11 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 		public CueTrackFlags Flags = CueTrackFlags.None;
 		public CueTrackType TrackType = CueTrackType.Unknown;
 
-		public List<CompiledCueIndex> Indexes = new List<CompiledCueIndex>();
+		public readonly IList<CompiledCueIndex> Indexes = new List<CompiledCueIndex>();
 
 		public override string ToString()
 		{
-			var idx = Indexes.Find((i) => i.Number == 1);
+			var idx = Indexes.FirstOrDefault(cci => cci.Number == 1);
 			if (idx.Number != 1) return $"T#{Number:D2} NO INDEX 1";
 			var indexlist = string.Join("|", Indexes);
 			return $"T#{Number:D2} {BlobIndex}:{idx.FileMSF} ({indexlist})";

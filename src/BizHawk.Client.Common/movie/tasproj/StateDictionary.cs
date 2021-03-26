@@ -9,7 +9,7 @@ namespace BizHawk.Client.Common
 {
 	internal class TempFileStateDictionary : IDictionary<int, byte[]>, IDisposable
 	{ 
-		private Dictionary<int, Stream> _streams = new Dictionary<int, Stream>();
+		private readonly IDictionary<int, Stream> _streams = new Dictionary<int, Stream>();
 
 		public byte[] this[int key]
 		{

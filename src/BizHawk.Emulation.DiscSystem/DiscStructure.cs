@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// This is a 1-indexed list of sessions (session 1 is at [1])
 		/// Support for multiple sessions is thoroughly not working yet
 		/// </summary>
-		public List<Session> Sessions = new List<Session>();
+		public readonly IList<Session> Sessions = new List<Session>();
 
 		public class Session
 		{
@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.DiscSystem
 			/// For a disc with "3 tracks", Tracks.Count will be 5: it includes that lead-in track as well as the leadout track.
 			/// Perhaps we should turn this into a special collection type with no Count or Length, or a method to GetTrack()
 			/// </summary>
-			public List<Track> Tracks = new List<Track>();
+			public readonly IList<Track> Tracks = new List<Track>();
 
 			/// <summary>
 			/// A reference to the first information track (Track 1)

@@ -35,12 +35,12 @@ namespace BizHawk.Emulation.DiscSystem
 			/// <summary>
 			/// List of MDS session blocks
 			/// </summary>
-			public List<ASession> Sessions = new List<ASession>();
+			public readonly IList<ASession> Sessions = new List<ASession>();
 
 			/// <summary>
 			/// List of track blocks
 			/// </summary>
-			public List<ATrack> Tracks = new List<ATrack>();
+			public readonly IList<ATrack> Tracks = new List<ATrack>();
 
 			/// <summary>
 			/// Current parsed session objects
@@ -50,7 +50,7 @@ namespace BizHawk.Emulation.DiscSystem
 			/// <summary>
 			/// Calculated MDS TOC entries (still to be parsed into BizHawk)
 			/// </summary>
-			public List<ATOCEntry> TOCEntries = new List<ATOCEntry>();
+			public readonly IList<ATOCEntry> TOCEntries = new List<ATOCEntry>();
 			
 		}
 

@@ -60,7 +60,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <summary>
 		/// Free-form optional memos about the disc
 		/// </summary>
-		public Dictionary<string, object> Memos = new Dictionary<string, object>();
+		public readonly IDictionary<string, object> Memos = new Dictionary<string, object>();
 
 		public void Dispose()
 		{
@@ -104,7 +104,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <summary>
 		/// Disposable resources (blobs, mostly) referenced by this disc
 		/// </summary>
-		internal List<IDisposable> DisposableResources = new List<IDisposable>();
+		internal readonly IList<IDisposable> DisposableResources = new List<IDisposable>();
 
 		/// <summary>
 		/// The sectors on the disc. Don't use this directly! Use the SectorSynthProvider instead.

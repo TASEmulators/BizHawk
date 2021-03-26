@@ -29,7 +29,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// Working list of generated tape data blocks
 		/// </summary>
-		private List<TapeDataBlock> _blocks = new List<TapeDataBlock>();
+		private readonly IList<TapeDataBlock> _blocks = new List<TapeDataBlock>();
 
 		/// <summary>
 		/// Position counter

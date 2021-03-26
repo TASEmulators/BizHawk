@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// Working list of generated tape data blocks
 		/// </summary>
-		private List<TapeDataBlock> _blocks = new List<TapeDataBlock>();
+		private readonly IList<TapeDataBlock> _blocks = new List<TapeDataBlock>();
 
 		/// <summary>
 		/// Position counter
@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// Object to keep track of loops - this assumes there is only one loop at a time
 		/// </summary>
-		private List<KeyValuePair<int, int>> _loopCounter = new List<KeyValuePair<int, int>>();
+		private readonly IList<KeyValuePair<int, int>> _loopCounter = new List<KeyValuePair<int, int>>();
 
 		private readonly DatacorderDevice _datacorder;
 

@@ -229,7 +229,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 		public class RiffContainer_INFO : RiffContainer
 		{
-			public Dictionary<string, string> dictionary = new Dictionary<string, string>();
+			public readonly IDictionary<string, string> dictionary = new Dictionary<string, string>();
 			public RiffContainer_INFO() { type = "INFO"; }
 
 			/// <exception cref="FormatException"><paramref name="rc"/>.<see cref="RiffContainer.subchunks"/> contains a chunk that does not inherit <see cref="RiffSubchunk"/></exception>

@@ -83,7 +83,7 @@ namespace BizHawk.Emulation.Cores
 		/// <summary>
 		/// extra information which could be easily gotten during the file ID (region, suspected homebrew, CRC invalid, etc.)
 		/// </summary>
-		public Dictionary<string, object> ExtraInfo = new Dictionary<string, object>();
+		public readonly IDictionary<string, object> ExtraInfo = new Dictionary<string, object>();
 	}
 
 	public class FileIDResults : List<FileIDResult>

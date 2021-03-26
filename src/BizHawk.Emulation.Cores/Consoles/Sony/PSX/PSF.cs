@@ -8,8 +8,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 {
 	public class PSF
 	{
-		public Dictionary<string, string> TagsDictionary = new Dictionary<string, string>();
-		public List<string> LooseTags = new List<string>();
+		public readonly IDictionary<string, string> TagsDictionary = new Dictionary<string, string>();
+		public readonly IList<string> LooseTags = new List<string>();
 
 		public byte[] Data;
 		public byte[] LibData;

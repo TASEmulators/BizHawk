@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		private IntPtr DllBase;
 
 		private readonly List<Symbol> SymbolsByAddr = new List<Symbol>();
-		private Dictionary<string, Symbol> SymbolsByName = new Dictionary<string, Symbol>();
+		private readonly IDictionary<string, Symbol> SymbolsByName = new Dictionary<string, Symbol>();
 
 		private readonly byte[][] data = new byte[10][];
 
