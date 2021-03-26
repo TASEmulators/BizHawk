@@ -703,9 +703,7 @@ namespace BizHawk.Client.EmuHawk
 				// handle events and dispatch as a hotkey action, or a hotkey button, or an input button
 				// ...but prepare haptics first, those get read in ProcessInput
 				var finalHostController = (ControllerInputCoalescer) InputManager.ControllerInputCoalescer;
-				// for now, vibrate the first gamepad when the Fast Forward hotkey is held, using the value from the previous (host) frame
-				var debugVibrating = InputManager.ClientControls.IsPressed("Fast Forward") ? int.MaxValue : 0;
-				foreach (var channel in DEBUG_HAPTIC_CHANNELS) finalHostController.SetHapticChannelStrength(channel, debugVibrating);
+
 				ProcessInput(
 					_hotkeyCoalescer,
 					finalHostController,
@@ -737,6 +735,8 @@ namespace BizHawk.Client.EmuHawk
 				{
 					Tools.LuaConsole.ResumeScripts(false);
 				}
+
+				// maybe clear haptics here? --yoshi
 
 				StepRunLoop_Core();
 				StepRunLoop_Throttle();
@@ -980,7 +980,10 @@ namespace BizHawk.Client.EmuHawk
 			Func<string, List<string>> searchHotkeyBindings,
 			Func<string, bool> activeControllerHasBinding)
 		{
-			Input.Instance.Adapter.SetHaptics(finalHostController.GetHapticsSnapshot());
+			// TODO: I don't understand what yoshi is doing with finalHostController.
+			// but I assume that the haptics are supposed to be copied over there at some point,
+			// instead of using this adapter directly.
+			Input.Instance.Adapter.SetHaptics(InputManager.ActiveController.GetHapticsSnapshot());
 
 			// loop through all available events
 			Input.InputEvent ie;

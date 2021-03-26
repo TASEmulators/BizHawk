@@ -21,6 +21,7 @@ namespace BizHawk.Emulation.Common
 			BoolButtons.AddRange(source.BoolButtons);
 			foreach (var kvp in source.Axes) Axes.Add(kvp);
 			CategoryLabels = source.CategoryLabels;
+			HapticsChannels = source.HapticsChannels;
 		}
 
 		/// <summary>
@@ -34,6 +35,16 @@ namespace BizHawk.Emulation.Common
 		public List<string> BoolButtons { get; set; } = new List<string>();
 
 		public readonly AxisDict Axes = new AxisDict();
+
+		/// <summary>
+		/// Contains channel names for haptic feedback.
+		/// </summary>
+		/// <remarks>
+		/// For example, a gamepad with a single haptics motor is represented as 
+		/// <c>{ "X0 Mono" }</c>, and a gamepad with one left and one right 
+		/// motor would be <c>{ "X0 Left", "X0 Right" }</c>.
+		/// </remarks>
+		public List<string> HapticsChannels { get; set; } = new List<string>();
 
 		/// <summary>
 		/// Gets the category labels. These labels provide a means of categorizing controls in various controller display and config screens

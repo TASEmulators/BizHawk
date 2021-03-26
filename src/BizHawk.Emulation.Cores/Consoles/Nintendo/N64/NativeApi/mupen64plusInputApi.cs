@@ -61,7 +61,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		/// <summary>
 		/// Event fired when mupen changes rumble pak status
 		/// </summary>
-		private event RumbleCallback OnRumbleChange;
+		internal event RumbleCallback OnRumbleChange;
 
 		public mupen64plusInputApi(mupen64plusApi core)
 		{
@@ -70,20 +70,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 			InpDll = core.AttachPlugin(mupen64plusApi.m64p_plugin_type.M64PLUGIN_INPUT,
 				"mupen64plus-input-bkm.dll");
 
-			mupen64plusApi.m64p_error result;
 			InpSetInputCallback = GetInputDelegate<SetInputCallback>("SetInputCallback");
 			InpSetRumbleCallback = GetInputDelegate<SetRumbleCallback>("SetRumbleCallback");
 			InpSetControllerPakType = GetInputDelegate<SetControllerPakType>("SetControllerPakType");
 			InpSetControllerConnected = GetInputDelegate<SetControllerConnected>("SetControllerConnected");
 
-			m64pRumbleCallback = new RumbleCallback(FireOnRumbleChange);
-			result = InpSetRumbleCallback(m64pRumbleCallback);
+			SetM64RumbleCallback(new RumbleCallback(FireOnRumbleChange));
 		}
 
 		public void SetM64PInputCallback(InputCallback inputCallback)
 		{
 			InpInputCallback = inputCallback;
 			InpSetInputCallback(InpInputCallback);
+		}
+
+		public void SetM64RumbleCallback(RumbleCallback rumbleCallback)
+		{
+			mupen64plusApi.m64p_error result;
+			m64pRumbleCallback = rumbleCallback;
+			result = InpSetRumbleCallback(m64pRumbleCallback);
 		}
 
 		private void FireOnRumbleChange(int Control, int on)

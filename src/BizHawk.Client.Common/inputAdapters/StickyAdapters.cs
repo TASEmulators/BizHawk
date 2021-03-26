@@ -39,6 +39,10 @@ namespace BizHawk.Client.Common
 			return Source.AxisValue(name);
 		}
 
+		public IReadOnlyCollection<(string name, int strength)> GetHapticsSnapshot() => Source.GetHapticsSnapshot();
+
+		public void SetHapticChannelStrength(string name, int strength) => Source.SetHapticChannelStrength(name, strength);
+
 		public IController Source { get; set; }
 
 		private List<string> _justPressed = new List<string>();
@@ -140,6 +144,10 @@ namespace BizHawk.Client.Common
 
 			return Source.AxisValue(name);
 		}
+
+		public IReadOnlyCollection<(string name, int strength)> GetHapticsSnapshot() => Source.GetHapticsSnapshot();
+
+		public void SetHapticChannelStrength(string name, int strength) => Source.SetHapticChannelStrength(name, strength);
 
 		// TODO: Change the AutoHold adapter to be one of these, with an 'Off' value of 0?
 		// Probably would have slightly lower performance, but it seems weird to have such a similar class that is only used once.
