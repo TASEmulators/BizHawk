@@ -60,6 +60,40 @@ namespace BizHawk.Bizware.OpenTK3
 			}
 		}
 
+		public void ProcessVibrationAll(IReadOnlyCollection<(string name, int strength)> haptics) {
+			foreach (var pad in OTK_GamePad.EnumerateDevices())
+			{
+				int leftStrength = 0;
+				int rightStrength = 0;
+				bool dualHaptics = false;
+				foreach (var (name, strength) in haptics)
+				{
+					if (name == $"{pad.InputNamePrefix}Mono Haptic")
+					{
+						dualHaptics = true;
+						leftStrength = rightStrength = strength;
+						break;
+					}
+					else if (name == $"{pad.InputNamePrefix}Left Haptic")
+					{
+						dualHaptics = true;
+						leftStrength = strength;
+					}
+					else if (name == $"{pad.InputNamePrefix}Right Haptic")
+					{
+						dualHaptics = true;
+						rightStrength = strength;
+					}
+				}
+				if (dualHaptics)
+				{
+					// Convert Int32 to 0.0 to 1.0 range float.
+					pad.SetVibration((float)leftStrength / Int32.MaxValue, 
+									 (float)rightStrength / Int32.MaxValue);
+				}
+			}
+		}
+
 		public IEnumerable<KeyEvent> ProcessHostKeyboards() => OTK_Keyboard.Update();
 
 		public void SetHaptics(IReadOnlyCollection<(string Name, int Strength)> hapticsSnapshot)

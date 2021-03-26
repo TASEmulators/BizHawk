@@ -61,7 +61,10 @@ namespace BizHawk.Bizware.DirectX
 		public IEnumerable<KeyEvent> ProcessHostKeyboards() => KeyInput.Update(_config ?? throw new Exception(nameof(ProcessHostKeyboards) + " called before the global config was passed"))
 			.Concat(IPCKeyInput.Update());
 
-		public void SetHaptics(IReadOnlyCollection<(string Name, int Strength)> hapticsSnapshot) {}
+		public void SetHaptics(IReadOnlyCollection<(string Name, int Strength)> hapticsSnapshot) {
+			
+			GamePad360.UpdateVibrationAll(hapticsSnapshot);
+		}
 
 		public void UpdateConfig(Config config) => _config = config;
 	}

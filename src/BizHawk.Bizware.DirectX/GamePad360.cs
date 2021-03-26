@@ -114,6 +114,44 @@ namespace BizHawk.Bizware.DirectX
 			}
 		}
 
+		public static void UpdateVibrationAll(IReadOnlyCollection<(string name, int strength)> haptics)
+		{
+			lock (SyncObj)
+			{
+				foreach (var device in Devices)
+				{
+					int leftStrength = 0;
+					int rightStrength = 0;
+					bool dualHaptics = false;
+					foreach (var (name, strength) in haptics)
+					{
+						if (name == $"X{device.PlayerNumber -1} Mono Haptic")
+						{
+							dualHaptics = true;
+							leftStrength = rightStrength = strength;
+							break;
+						}
+						else if (name == $"X{device.PlayerNumber -1} Left Haptic")
+						{
+							dualHaptics = true;
+							leftStrength = strength;
+						}
+						else if (name == $"X{device.PlayerNumber -1} Right Haptic")
+						{
+							dualHaptics = true;
+							rightStrength = strength;
+						}
+					}
+					if (dualHaptics)
+					{
+						// Convert Int32 to Int 16, taking the high bits.
+						device.UpdateVibration((ushort)(leftStrength >> 16), 
+											   (ushort)(rightStrength >> 16));
+					}
+				}
+			}
+		}
+
 		// ********************************** Instance Members **********************************
 
 		private readonly Controller _controller;
@@ -152,6 +190,14 @@ namespace BizHawk.Bizware.DirectX
 				_state.Gamepad.bLeftTrigger = slimState.Gamepad.LeftTrigger;
 				_state.Gamepad.bRightTrigger = slimState.Gamepad.RightTrigger;
 			}
+		}
+
+		public void UpdateVibration(ushort leftMotorSpeed, ushort rightMotorSpeed)
+		{
+			Vibration v = new Vibration();
+			v.LeftMotorSpeed = leftMotorSpeed;
+			v.RightMotorSpeed = rightMotorSpeed;
+			_controller.SetVibration(v);
 		}
 
 		public IEnumerable<(string AxisID, float Value)> GetAxes()

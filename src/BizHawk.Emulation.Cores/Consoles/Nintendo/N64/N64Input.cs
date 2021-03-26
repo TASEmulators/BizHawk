@@ -139,7 +139,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			_api.SetM64PControllerConnected(controller, connectionStatus);
 		}
 
-		private void RumbleCallback(int Control, int On) => 
-			Controller?.SetHapticChannelStrength($"X{Control} Mono Haptic", On);
+		private void RumbleCallback(int Control, int On) => // N64 only has 1 bit. Normalize to Int32.
+			Controller?.SetHapticChannelStrength($"X{Control} Mono Haptic", (On << 31) );
 	}
 }

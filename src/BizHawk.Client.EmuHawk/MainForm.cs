@@ -738,9 +738,13 @@ namespace BizHawk.Client.EmuHawk
 					Tools.LuaConsole.ResumeScripts(false);
 				}
 
+				// maybe clear haptics here? --yoshi
+
 				StepRunLoop_Core();
 				StepRunLoop_Throttle();
 
+				Input.Instance.SetHapticsFromSnapshot(EmulatorPaused || IsTurboing ? Array.Empty<(string, int)>() : InputManager.ActiveController.GetHapticsSnapshot());
+				
 				Render();
 
 				CheckMessages();

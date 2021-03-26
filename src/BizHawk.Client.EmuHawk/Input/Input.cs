@@ -400,35 +400,8 @@ namespace BizHawk.Client.EmuHawk
 					//analyze keys
 					foreach (var ke in keyEvents)
 						HandleButton(KeyName(ke.Key), ke.Pressed, ClientInputFocus.Keyboard);
-					
-					foreach (var pad in OTK_GamePad.EnumerateDevices())
-					{
-						int leftStrength = 0;
-						int rightStrength = 0;
-						bool dualHaptic = false;
-						foreach (var (name, strength) in _hapticFeedback)
-						{
-							if (name == $"{pad.InputNamePrefix}Mono Haptic")
-							{
-								pad.SetVibration(strength, strength);
-								break;
-							}
-							else if (name == $"{pad.InputNamePrefix}Left Haptic")
-							{
-								dualHaptic = true;
-								leftStrength = strength;
-							}
-							else if (name == $"{pad.InputNamePrefix}Right Haptic")
-							{
-								dualHaptic = true;
-								rightStrength = strength;
-							}
-						}
-						if (dualHaptic)
-						{
-							pad.SetVibration(leftStrength, rightStrength);
-						}
-					}
+
+					Adapter.ProcessVibrationAll(_hapticFeedback);
 
 					lock (_axisValues)
 					{
