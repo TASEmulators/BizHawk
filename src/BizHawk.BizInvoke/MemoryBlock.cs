@@ -45,8 +45,10 @@ namespace BizHawk.BizInvoke
 		/// <paramref name="start"/> or end (= <paramref name="start"/> + <paramref name="length"/> - <c>1</c>)
 		/// are outside [<see cref="Start"/>, <see cref="EndExclusive"/>), the range of the block
 		/// </exception>
+		/// <exception cref="ObjectDisposedException">disposed</exception>
 		public Stream GetStream(ulong start, ulong length, bool writer)
 		{
+			if (_pal == null) throw new ObjectDisposedException(nameof(MemoryBlock));
 			if (start < Start)
 				throw new ArgumentOutOfRangeException(nameof(start), start, "invalid address");
 			if (EndExclusive < start + length)
@@ -56,8 +58,10 @@ namespace BizHawk.BizInvoke
 
 		/// <summary>set r/w/x protection on a portion of memory. rounded to encompassing pages</summary>
 		/// <exception cref="InvalidOperationException">failed to protect memory</exception>
+		/// <exception cref="ObjectDisposedException">disposed</exception>
 		public void Protect(ulong start, ulong length, Protection prot)
 		{
+			if (_pal == null) throw new ObjectDisposedException(nameof(MemoryBlock));
 			if (length == 0)
 				return;
 
