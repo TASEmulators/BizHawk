@@ -22,7 +22,16 @@ namespace BizHawk.Tests.Client.Common.cheats
 				=> GenerateNonsense ? NonsenseData : RealData;
 
 			public string GetDisplayName(MethodInfo methodInfo, object?[] data)
-				=> $"{methodInfo.Name}({string.Join(", ", data.Select(o => o is int i ? $"0x{i:X}" : o?.ToString() ?? "null"))})";
+			{
+				static string Format(object? o) => o switch
+				{
+					null => "null",
+					int i => $"0x{i:X}",
+					string s => $"\"{s}\"",
+					_ => o.ToString()!
+				};
+				return $"{methodInfo.Name}({string.Join(", ", data.Select(Format))})";
+			}
 		}
 
 		private const string ERROR_GBA_CODEBREAKER = "Codebreaker/GameShark SP/Xploder codes are not yet supported.";
