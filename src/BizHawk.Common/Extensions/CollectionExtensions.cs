@@ -104,5 +104,18 @@ namespace BizHawk.Common.CollectionExtensions
 
 			throw new InvalidOperationException("Item not found");
 		}
+
+		public static T? FirstOrNull<T>(this IEnumerable<T> list, Func<T, bool> predicate)
+			where T : struct
+		{
+			try
+			{
+				return list.First(predicate);
+			}
+			catch (InvalidOperationException)
+			{
+				return null;
+			}
+		}
 	}
 }

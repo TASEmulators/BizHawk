@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 
 using BizHawk.Common.BufferExtensions;
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -125,12 +126,11 @@ namespace BizHawk.Client.Common
 			foreach (var fr in FirmwareDatabase.FirmwareRecords)
 			{
 				_resolutionDictionary.Remove(fr); // clear previous resolution results
-				
 				// check each acceptable option for this firmware, looking for the first that's in the reader's file list
-				FirmwareOption fo = FirmwareDatabase.FirmwareOptions.FirstOrDefault(fo1 => fo1.ID == fr.ID && fo1.IsAcceptableOrIdeal && reader.Dict.ContainsKey(fo1.Hash));
-				if (fo.Size == 0)
-					continue;
-
+				var found = FirmwareDatabase.FirmwareOptions.FirstOrNull(fo1 => fo1.ID == fr.ID && fo1.IsAcceptableOrIdeal
+					&& reader.Dict.ContainsKey(fo1.Hash));
+				if (found == null) continue; // didn't find any of them
+				var fo = found.Value;
 				// else found one, add it to the dict
 				_resolutionDictionary[fr] = new ResolutionInfo
 				{
