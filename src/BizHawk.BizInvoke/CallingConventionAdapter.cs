@@ -48,10 +48,8 @@ namespace BizHawk.BizInvoke
 	public static class CallingConventionAdapterExtensions
 	{
 		public static T GetDelegateForFunctionPointer<T>(this ICallingConventionAdapter a, IntPtr p)
-			where T : class
-		{
-			return (T)(object)a.GetDelegateForFunctionPointer(p, typeof(T));
-		}
+			where T : Delegate
+			=> (T) a.GetDelegateForFunctionPointer(p, typeof(T));
 	}
 
 	public class ParameterInfo
