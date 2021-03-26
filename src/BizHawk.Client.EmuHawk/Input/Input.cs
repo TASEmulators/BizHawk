@@ -202,7 +202,9 @@ namespace BizHawk.Client.EmuHawk
 		private readonly Dictionary<string, LogicalButton> _modifierState = new Dictionary<string, LogicalButton>();
 		private readonly WorkingDictionary<string, bool> _lastState = new WorkingDictionary<string, bool>();
 		private readonly WorkingDictionary<string, int> _axisValues = new WorkingDictionary<string, int>();
-		private readonly WorkingDictionary<string, float> _axisDeltas = new WorkingDictionary<string, float>();
+		private readonly WorkingDictionary<string, float> _axisDeltas = new WorkingDictionary<string, float>(); 
+		private IReadOnlyCollection<(string name, int strength)> _hapticFeedback = Array.Empty<(string, int)>();
+
 		private bool _trackDeltas;
 		private bool _ignoreEventsNextPoll;
 
@@ -499,6 +501,9 @@ namespace BizHawk.Client.EmuHawk
 				_trackDeltas = false;
 			}
 		}
+
+		public void SetHapticsFromSnapshot(IReadOnlyCollection<(string name, int strength)> snapshot) => 
+			_hapticFeedback = snapshot;
 
 		public void Update()
 		{

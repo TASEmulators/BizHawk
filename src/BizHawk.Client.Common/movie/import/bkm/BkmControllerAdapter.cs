@@ -1,4 +1,7 @@
-﻿using BizHawk.Common;
+﻿using System;
+using System.Collections.Generic;
+
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -44,6 +47,11 @@ namespace BizHawk.Client.Common
 		{
 			return _myAxisControls[name];
 		}
+
+		// No Haptics for BKMs
+		public IReadOnlyCollection<(string name, int strength)> GetHapticsSnapshot() => throw new NotImplementedException(); // no idea --yoshi
+
+		public void SetHapticChannelStrength(string name, int strength) => throw new NotImplementedException();
 
 		/// <summary>
 		/// latches all buttons from the supplied mnemonic string

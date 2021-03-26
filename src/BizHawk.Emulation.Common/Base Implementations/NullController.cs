@@ -1,4 +1,7 @@
-﻿namespace BizHawk.Emulation.Common
+﻿using System;
+using System.Collections.Generic;
+
+namespace BizHawk.Emulation.Common
 {
 	/// <summary>
 	/// A empty implementation of IController that represents the lack of
@@ -15,6 +18,10 @@
 		public bool IsPressed(string button) => false;
 
 		public int AxisValue(string name) => 0;
+
+		public IReadOnlyCollection<(string name, int strength)> GetHapticsSnapshot() => Array.Empty<(string, int)>();
+
+		public void SetHapticChannelStrength(string name, int strength) { }
 
 		public static readonly NullController Instance = new NullController();
 	}
