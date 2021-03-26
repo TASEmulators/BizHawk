@@ -5,6 +5,7 @@ namespace BizHawk.BizInvoke
 {
 	public static unsafe class BizInvokerUtilities
 	{
+#nullable disable //TODO If U1 and U2 were structs, this wouldn't be a problem. Would changing them to structs break this helper's functionality? --yoshi
 		[StructLayout(LayoutKind.Explicit)]
 		private class U
 		{
@@ -13,6 +14,7 @@ namespace BizHawk.BizInvoke
 			[FieldOffset(0)]
 			public U2 Second;
 		}
+#nullable restore
 		[StructLayout(LayoutKind.Explicit)]
 		private class U1
 		{
@@ -24,6 +26,8 @@ namespace BizHawk.BizInvoke
 		{
 			[FieldOffset(0)]
 			public object Target;
+
+			public U2(object target) => Target = target;
 		}
 		private class CF
 		{
@@ -39,7 +43,7 @@ namespace BizHawk.BizInvoke
 			int ret;
 			fixed(int* fx = &c.FirstField)
 			{
-				var u = new U { Second = new U2 { Target = c }};
+				var u = new U { Second = new U2(c) };
 				ret = (int)((ulong)(UIntPtr)fx - (ulong)u.First.P);
 			}
 			return ret;
@@ -50,7 +54,7 @@ namespace BizHawk.BizInvoke
 			int ret;
 			fixed(char* fx = s)
 			{
-				var u = new U { Second = new U2 { Target = s }};
+				var u = new U { Second = new U2(s) };
 				ret = (int)((ulong)(UIntPtr)fx - (ulong)u.First.P);
 			}
 			return ret;

@@ -21,11 +21,11 @@ namespace BizHawk.BizInvoke
 			_pal = OSTailoredCode.IsUnixHost
 				? (IMemoryBlockPal)new MemoryBlockLinuxPal(Size)
 				: new MemoryBlockWindowsPal(Size);
-			Start = _pal.Start;
+			Start = _pal!.Start;
 			EndExclusive = Start + Size;
 		}
 
-		private IMemoryBlockPal _pal;
+		private IMemoryBlockPal? _pal;
 
 		/// <summary>
 		/// end address of the memory block (not part of the block; class invariant: equal to <see cref="Start"/> + <see cref="Size"/>)

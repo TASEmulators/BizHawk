@@ -71,10 +71,10 @@ namespace BizHawk.BizInvoke
 				foreach (var a in methods)
 				{
 					MethodBuilder unused;
-					var delegateType = BizInvokeUtilities.CreateDelegateType(a.Info, a.Attr.CallingConvention, typeBuilder, out unused).CreateType();
+					var delegateType = BizInvokeUtilities.CreateDelegateType(a.Info, a.Attr!.CallingConvention, typeBuilder, out unused).CreateType()!;
 					DelegateTypes.Add(new StoredDelegateInfo(a.Info, delegateType, a.Attr.EntryPoint ?? a.Info.Name));
 				}
-				StorageType = typeBuilder.CreateType();
+				StorageType = typeBuilder.CreateType()!;
 				OriginalType = type;
 			}
 		}
@@ -105,18 +105,18 @@ namespace BizHawk.BizInvoke
 
 		public static IImportResolver GetExvoker(object o, ICallingConventionAdapter a)
 		{
-			DelegateStorage ds;
+			DelegateStorage? ds;
 			lock (Impls)
 			{
 				var type = o.GetType();
 				if (!Impls.TryGetValue(type, out ds))
 				{
 					ds = new DelegateStorage(type);
-					Impls.Add(type, ds);
+					Impls.Add(type, ds!);
 				}
 			}
 
-			return new ExvokerImpl(o, ds, a);
+			return new ExvokerImpl(o, ds!, a);
 		}
 	}
 
@@ -127,7 +127,7 @@ namespace BizHawk.BizInvoke
 		public CallingConvention CallingConvention { get; }
 
 		/// <remarks>The annotated method's name is used iff <see langword="null"/>.</remarks>
-		public string EntryPoint { get; set; }
+		public string? EntryPoint { get; set; } = null;
 
 		public BizExportAttribute(CallingConvention c)
 		{

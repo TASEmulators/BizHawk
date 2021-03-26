@@ -5,7 +5,6 @@
 	<Import Project="../MainSlnCommon.props" />
 	<PropertyGroup>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<Nullable>disable</Nullable>
 	</PropertyGroup>
 	<ItemGroup>
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Common/BizHawk.Common.csproj" />

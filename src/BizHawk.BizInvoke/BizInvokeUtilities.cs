@@ -54,7 +54,7 @@ namespace BizHawk.BizInvoke
 			}
 
 			{
-				var p = delegateInvoke.DefineParameter(0, ParameterAttributes.Retval, method.ReturnParameter.Name);
+				var p = delegateInvoke.DefineParameter(0, ParameterAttributes.Retval, method.ReturnParameter!.Name);
 				foreach (var a in method.ReturnParameter.GetCustomAttributes(false))
 				{
 					p.SetCustomAttribute(GetAttributeBuilder(a));
@@ -64,7 +64,9 @@ namespace BizHawk.BizInvoke
 			delegateInvoke.SetImplementationFlags(MethodImplAttributes.Runtime | MethodImplAttributes.Managed);
 
 			// add the [UnmanagedFunctionPointer] to the delegate so interop will know how to call it
-			var attr = new CustomAttributeBuilder(typeof(UnmanagedFunctionPointerAttribute).GetConstructor(new[] { typeof(CallingConvention) }), new object[] { nativeCall });
+			var attr = new CustomAttributeBuilder(
+				typeof(UnmanagedFunctionPointerAttribute).GetConstructor(new[] { typeof(CallingConvention) })!,
+				new object[] { nativeCall });
 			delegateType.SetCustomAttribute(attr);
 
 			invokeMethod = delegateInvoke;
@@ -80,7 +82,7 @@ namespace BizHawk.BizInvoke
 			var t = o.GetType();
 			if (t == typeof(OutAttribute) || t == typeof(InAttribute))
 			{
-				return new CustomAttributeBuilder(t.GetConstructor(Type.EmptyTypes), new object[0]);
+				return new CustomAttributeBuilder(t.GetConstructor(Type.EmptyTypes)!, new object[0]);
 			}
 
 			throw new InvalidOperationException($"Unknown parameter attribute {t.Name}");
