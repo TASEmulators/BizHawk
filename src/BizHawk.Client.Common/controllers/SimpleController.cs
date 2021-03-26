@@ -34,8 +34,8 @@ namespace BizHawk.Client.Common
 
 		public int AxisValue(string name) => Axes[name];
 
-		public IReadOnlyCollection<(string Name, int Strength)> GetHapticsSnapshot()
-			=> HapticFeedback.Select(kvp => (kvp.Key, kvp.Value)).ToArray();
+		public IReadOnlyCollection<(string name, int strength)> GetHapticsSnapshot() => 
+			HapticFeedback.Select(kvp => (kvp.Key, kvp.Value)).ToArray();
 
 		public void SetHapticChannelStrength(string name, int strength) => HapticFeedback[name] = strength;
 
