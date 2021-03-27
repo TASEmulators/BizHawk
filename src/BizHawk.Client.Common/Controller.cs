@@ -49,14 +49,30 @@ namespace BizHawk.Client.Common
 				.SelectMany(kvp => kvp.Value)
 				.Any(boundButton => boundButton == button);
 
-		public void NormalizeAxes()
+		/// <summary>
+		/// uses the bindings to latch our own logical button state from the source controller's button state (which are assumed to be the physical side of the binding).
+		/// this will clobber any existing data (use OR_* or other functions to layer in additional input sources)
+		/// </summary>
+		public void LatchFromPhysical(IController finalHostController)
 		{
+			_buttons.Clear();
+			
+			foreach (var kvp in _bindings)
+			{
+				_buttons[kvp.Key] = false;
+				foreach (var button in kvp.Value)
+				{
+					if (finalHostController.IsPressed(button))
+					{
+						_buttons[kvp.Key] = true;
+					}
+				}
+			}
+
 			foreach (var kvp in _axisBindings)
 			{
-				var range = _axisRanges[kvp.Key];
-
-				// values of _axes are ints in -10000..10000 (or 0..10000), so scale to -1..1, using floats to keep fractional part
-				var value = _axes[kvp.Key] / 10000.0f;
+				// values from finalHostController are ints in -10000..10000 (or 0..10000), so scale to -1..1, using floats to keep fractional part
+				var value = finalHostController.AxisValue(kvp.Value.Value) / 10000.0f;
 
 				// apply deadzone (and scale diminished range back up to -1..1)
 				var deadzone = kvp.Value.Deadzone;
@@ -69,41 +85,13 @@ namespace BizHawk.Client.Common
 				value *= kvp.Value.Mult;
 
 				// -1..1 -> range
+				var range = _axisRanges[kvp.Key];
 				value *= Math.Max(range.Neutral - range.Min, range.Max - range.Neutral);
 				value += range.Neutral;
 
 				// finally, constrain to range again in case the original value was unexpectedly large, or the deadzone and scale made it so, or the axis is lopsided
 				_axes[kvp.Key] = ((int) value).ConstrainWithin(range.Range);
 			}
-		}
-
-		/// <summary>
-		/// uses the bindings to latch our own logical button state from the source controller's button state (which are assumed to be the physical side of the binding).
-		/// this will clobber any existing data (use OR_* or other functions to layer in additional input sources)
-		/// </summary>
-		public void LatchFromPhysical(IController controller)
-		{
-			_buttons.Clear();
-			
-			foreach (var kvp in _bindings)
-			{
-				_buttons[kvp.Key] = false;
-				foreach (var button in kvp.Value)
-				{
-					if (controller.IsPressed(button))
-					{
-						_buttons[kvp.Key] = true;
-					}
-				}
-			}
-
-			foreach (var kvp in _axisBindings)
-			{
-				_axes[kvp.Key] = controller.AxisValue(kvp.Value.Value);
-			}
-
-			// it's not sure where this should happen, so for backwards compatibility.. do it every time
-			NormalizeAxes();
 		}
 
 		public void ApplyAxisConstraints(string constraintClass)
