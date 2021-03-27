@@ -694,16 +694,21 @@ namespace BizHawk.Client.EmuHawk
 				Input.Instance.Update();
 
 				// handle events and dispatch as a hotkey action, or a hotkey button, or an input button
-				ProcessInput();
+				var finalHostController = (ControllerInputCoalescer) InputManager.ControllerInputCoalescer;
+				ProcessInput(
+					_hotkeyCoalescer,
+					finalHostController,
+					InputManager.ClientControls.SearchBindings,
+					InputManager.ActiveController.HasBinding);
 				InputManager.ClientControls.LatchFromPhysical(_hotkeyCoalescer);
 
-				InputManager.ActiveController.LatchFromPhysical(InputManager.ControllerInputCoalescer);
+				InputManager.ActiveController.LatchFromPhysical(finalHostController);
 
 				InputManager.ActiveController.ApplyAxisConstraints(
 					(Emulator is N64 && Config.N64UseCircularAnalogConstraint) ? "Natural Circle" : null);
 
 				InputManager.ActiveController.OR_FromLogical(InputManager.ClickyVirtualPadController);
-				InputManager.AutoFireController.LatchFromPhysical(InputManager.ControllerInputCoalescer);
+				InputManager.AutoFireController.LatchFromPhysical(finalHostController);
 
 				if (InputManager.ClientControls["Autohold"])
 				{
@@ -958,10 +963,12 @@ namespace BizHawk.Client.EmuHawk
 			base.OnDeactivate(e);
 		}
 
-		private void ProcessInput()
+		private void ProcessInput(
+			InputCoalescer hotkeyCoalescer,
+			ControllerInputCoalescer finalHostController,
+			Func<string, List<string>> searchHotkeyBindings,
+			Func<string, bool> activeControllerHasBinding)
 		{
-			var conInput = (ControllerInputCoalescer)InputManager.ControllerInputCoalescer;
-
 			for (; ; )
 			{
 				// loop through all available events
@@ -977,7 +984,7 @@ namespace BizHawk.Client.EmuHawk
 				// TODO - wonder what happens if we pop up something interactive as a response to one of these hotkeys? may need to purge further processing
 
 				// look for hotkey bindings for this key
-				var triggers = InputManager.ClientControls.SearchBindings(ie.LogicalButton.ToString());
+				var triggers = searchHotkeyBindings(ie.LogicalButton.ToString());
 				if (triggers.Count == 0)
 				{
 					// Maybe it is a system alt-key which hasn't been overridden
@@ -1009,7 +1016,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					default:
 					case 0: // Both allowed
-						conInput.Receive(ie);
+						finalHostController.Receive(ie);
 
 						handled = false;
 						if (ie.EventType == Input.InputEventType.Press)
@@ -1020,13 +1027,13 @@ namespace BizHawk.Client.EmuHawk
 						// hotkeys which aren't handled as actions get coalesced as pollable virtual client buttons
 						if (!handled)
 						{
-							_hotkeyCoalescer.Receive(ie);
+							hotkeyCoalescer.Receive(ie);
 						}
 
 						break;
 					case 1: // Input overrides Hotkeys
-						conInput.Receive(ie);
-						if (!InputManager.ActiveController.HasBinding(ie.LogicalButton.ToString()))
+						finalHostController.Receive(ie);
+						if (!activeControllerHasBinding(ie.LogicalButton.ToString()))
 						{
 							handled = false;
 							if (ie.EventType == Input.InputEventType.Press)
@@ -1037,7 +1044,7 @@ namespace BizHawk.Client.EmuHawk
 							// hotkeys which aren't handled as actions get coalesced as pollable virtual client buttons
 							if (!handled)
 							{
-								_hotkeyCoalescer.Receive(ie);
+								hotkeyCoalescer.Receive(ie);
 							}
 						}
 
@@ -1052,12 +1059,12 @@ namespace BizHawk.Client.EmuHawk
 						// hotkeys which aren't handled as actions get coalesced as pollable virtual client buttons
 						if (!handled)
 						{
-							_hotkeyCoalescer.Receive(ie);
+							hotkeyCoalescer.Receive(ie);
 
 							// Check for hotkeys that may not be handled through CheckHotkey() method, reject controller input mapped to these
 							if (!triggers.Any(IsInternalHotkey))
 							{
-								conInput.Receive(ie);
+								finalHostController.Receive(ie);
 							}
 						}
 
@@ -1074,7 +1081,7 @@ namespace BizHawk.Client.EmuHawk
 					mouseX = f;
 				else if (f.Key == "WMouse Y")
 					mouseY = f;
-				else conInput.AcceptNewAxis(f.Key, f.Value);
+				else finalHostController.AcceptNewAxis(f.Key, f.Value);
 			}
 
 			//if we found mouse coordinates (and why wouldn't we?) then translate them now
@@ -1084,8 +1091,8 @@ namespace BizHawk.Client.EmuHawk
 				var p = DisplayManager.UntransformPoint(new Point((int) mouseX.Value.Value, (int) mouseY.Value.Value));
 				float x = p.X / (float)_currentVideoProvider.BufferWidth;
 				float y = p.Y / (float)_currentVideoProvider.BufferHeight;
-				conInput.AcceptNewAxis("WMouse X", (int) ((x * 20000) - 10000));
-				conInput.AcceptNewAxis("WMouse Y", (int) ((y * 20000) - 10000));
+				finalHostController.AcceptNewAxis("WMouse X", (int) ((x * 20000) - 10000));
+				finalHostController.AcceptNewAxis("WMouse Y", (int) ((y * 20000) - 10000));
 			}
 
 		}
