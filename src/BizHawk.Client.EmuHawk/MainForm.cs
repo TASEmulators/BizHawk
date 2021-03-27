@@ -969,15 +969,10 @@ namespace BizHawk.Client.EmuHawk
 			Func<string, List<string>> searchHotkeyBindings,
 			Func<string, bool> activeControllerHasBinding)
 		{
-			for (; ; )
+			// loop through all available events
+			Input.InputEvent ie;
+			while ((ie = Input.Instance.DequeueEvent()) != null)
 			{
-				// loop through all available events
-				var ie = Input.Instance.DequeueEvent();
-				if (ie == null)
-				{
-					break;
-				}
-
 				// useful debugging:
 				// Console.WriteLine(ie);
 
