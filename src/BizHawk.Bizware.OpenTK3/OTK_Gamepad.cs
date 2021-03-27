@@ -107,6 +107,8 @@ namespace BizHawk.Bizware.OpenTK3
 		/// <summary>The object returned by <see cref="Joystick.GetCapabilities"/></summary>
 		private readonly JoystickCapabilities? _joystickCapabilities;
 
+		public readonly IReadOnlyCollection<string> HapticsChannels;
+
 		/// <summary>For use in keybind boxes</summary>
 		public readonly string InputNamePrefix;
 
@@ -145,7 +147,9 @@ namespace BizHawk.Bizware.OpenTK3
 			{
 				_name = "OTK GamePad Undetermined Name";
 			}
-
+			HapticsChannels = _gamePadCapabilities != null && _gamePadCapabilities.Value.HasLeftVibrationMotor && _gamePadCapabilities.Value.HasRightVibrationMotor
+				? new[] { "Left", "Right" } // two haptic motors
+				: new[] { "Mono" }; // one or zero haptic motors -- in the latter case, pretend it's mono anyway as that doesn't seem to cause problems
 			InputNamePrefix = $"{(MappedGamePad ? "X" : "J")}{_playerIndex} ";
 
 			Update();
@@ -360,17 +364,13 @@ namespace BizHawk.Bizware.OpenTK3
 			AddItem("RightTrigger", () => state.Triggers.Right > dzt);
 		}
 
-		/// <summary>
-		/// Sets the gamepad's left and right vibration
-		/// We don't currently use this in Bizhawk - do we have any cores that support this?
-		/// </summary>
-		/// <param name="left"></param>
-		/// <param name="right"></param>
-		public void SetVibration(float left, float right) => OpenTKGamePad.SetVibration(
-			_deviceIndex,
-			_gamePadCapabilities?.HasLeftVibrationMotor == true ? left : 0,
-			_gamePadCapabilities?.HasRightVibrationMotor == true ? right : 0
-		);
+		/// <remarks><paramref name="left"/> and <paramref name="right"/> are in 0..<see cref="int.MaxValue"/></remarks>
+		public void SetVibration(int left, int right)
+		{
+			const float SCALE = 1.1920929E-07f; // 2^-(32-9) ~= 1 / (int.MaxValue / 2^9)
+			static float Conv(int i) => (i >> 9) * SCALE; // the idea being to get the mantissa's worth of precision out of the int param, though I'm not sure this achieves that --yoshi
+			OpenTKGamePad.SetVibration(_deviceIndex, Conv(left), Conv(right));
+		}
 	}
 }
 

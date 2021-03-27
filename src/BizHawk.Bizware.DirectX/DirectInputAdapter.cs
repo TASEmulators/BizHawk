@@ -10,6 +10,8 @@ namespace BizHawk.Bizware.DirectX
 {
 	public sealed class DirectInputAdapter : IHostInputAdapter
 	{
+		private static readonly Dictionary<string, IReadOnlyCollection<string>> EMPTY_HAPTICS_CHANNEL_DICT = new();
+
 		private Config? _config;
 
 		public void DeInitAll()
@@ -24,6 +26,9 @@ namespace BizHawk.Bizware.DirectX
 			IPCKeyInput.Initialize();
 			ReInitGamepads(mainFormHandle);
 		}
+
+		public IReadOnlyDictionary<string, IReadOnlyCollection<string>> GetHapticsChannels()
+			=> EMPTY_HAPTICS_CHANNEL_DICT;
 
 		public void ReInitGamepads(IntPtr mainFormHandle)
 		{
@@ -55,6 +60,8 @@ namespace BizHawk.Bizware.DirectX
 
 		public IEnumerable<KeyEvent> ProcessHostKeyboards() => KeyInput.Update(_config ?? throw new Exception(nameof(ProcessHostKeyboards) + " called before the global config was passed"))
 			.Concat(IPCKeyInput.Update());
+
+		public void SetHaptics(IReadOnlyCollection<(string Name, int Strength)> hapticsSnapshot) {}
 
 		public void UpdateConfig(Config config) => _config = config;
 	}
