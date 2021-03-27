@@ -53,7 +53,7 @@ namespace BizHawk.Client.Common
 		{
 			foreach (var kvp in _axisBindings)
 			{
-				if (!_axisRanges.TryGetValue(kvp.Key, out var range)) continue; //TODO throw (or use indexer instead of TryGetValue)? this `continue` should never be hit --yoshi
+				var range = _axisRanges[kvp.Key];
 
 				// values of _axes are ints in -10000..10000 (or 0..10000), so scale to -1..1, using floats to keep fractional part
 				var value = _axes[kvp.Key] / 10000.0f;
@@ -99,12 +99,7 @@ namespace BizHawk.Client.Common
 
 			foreach (var kvp in _axisBindings)
 			{
-				var input = controller.AxisValue(kvp.Value.Value);
-				string outKey = kvp.Key;
-				if (_axisRanges.ContainsKey(outKey))
-				{
-					_axes[outKey] = input;
-				}
+				_axes[kvp.Key] = controller.AxisValue(kvp.Value.Value);
 			}
 
 			// it's not sure where this should happen, so for backwards compatibility.. do it every time
