@@ -231,5 +231,12 @@ namespace BizHawk.Bizware.DirectX
 		public string ButtonName(int index) => _names[index];
 
 		public bool Pressed(int index) => _actions[index]();
+
+		/// <remarks><paramref name="left"/> and <paramref name="right"/> are in 0..<see cref="int.MaxValue"/></remarks>
+		public void SetVibration(int left, int right)
+		{
+			static ushort Conv(int i) => unchecked((ushort) ((i >> 15) & 0xFFFF));
+			_controller.SetVibration(new() { LeftMotorSpeed = Conv(left), RightMotorSpeed = Conv(right) });
+		}
 	}
 }
