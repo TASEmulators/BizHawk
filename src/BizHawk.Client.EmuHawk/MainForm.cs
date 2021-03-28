@@ -138,20 +138,27 @@ namespace BizHawk.Client.EmuHawk
 			var requestedExtToolDll = _argParser.openExtToolDll;
 			if (requestedExtToolDll != null)
 			{
+				IExternalToolForm loaded = null;
+
 				var enabled = ExtToolManager.ToolStripMenu.Where(item => item.Enabled)
 					.Select(item => ((string, string)) item.Tag)
 					.ToList();
 				try
 				{
-					var found = enabled.First(tuple => tuple.Item1 == requestedExtToolDll
+					int foundIndex = enabled.FindIndex(tuple => 
+						tuple.Item1 == requestedExtToolDll
 						|| Path.GetFileName(tuple.Item1) == requestedExtToolDll
 						|| Path.GetFileNameWithoutExtension(tuple.Item1) == requestedExtToolDll);
-					Tools.LoadExternalToolForm(found.Item1, found.Item2, skipExtToolWarning: true);
+					
+					if(foundIndex != -1)
+						loaded = Tools.LoadExternalToolForm(enabled[foundIndex].Item1, enabled[foundIndex].Item2, skipExtToolWarning: true);
 				}
-				catch (Exception)
+				catch
 				{
-					Console.WriteLine($"requested ext. tool dll {requestedExtToolDll} could not be loaded");
 				}
+
+				if(loaded == null)
+					Console.WriteLine($"requested ext. tool dll {requestedExtToolDll} could not be loaded");
 			}
 		}
 
