@@ -108,14 +108,10 @@ namespace BizHawk.Common.CollectionExtensions
 		public static T? FirstOrNull<T>(this IEnumerable<T> list, Func<T, bool> predicate)
 			where T : struct
 		{
-			try
-			{
-				return list.First(predicate);
-			}
-			catch (InvalidOperationException)
-			{
-				return null;
-			}
+			foreach (var t in list)
+				if (predicate(t))
+					return t;
+			return null;
 		}
 	}
 }
