@@ -122,10 +122,13 @@ namespace BizHawk.Bizware.DirectX
 
 		public int PlayerNumber => (int)_index0 + 1;
 
+		public readonly string InputNamePrefix;
+
 		private GamePad360(uint index0, Controller c)
 		{
 			this._index0 = index0;
 			_controller = c;
+			InputNamePrefix = $"X{PlayerNumber} ";
 			InitializeButtons();
 			Update();
 		}
