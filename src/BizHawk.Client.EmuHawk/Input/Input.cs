@@ -401,8 +401,6 @@ namespace BizHawk.Client.EmuHawk
 					foreach (var ke in keyEvents)
 						HandleButton(KeyName(ke.Key), ke.Pressed, ClientInputFocus.Keyboard);
 
-					Adapter.ProcessVibrationAll(_hapticFeedback);
-
 					lock (_axisValues)
 					{
 						//_axisValues.Clear();

@@ -123,20 +123,21 @@ namespace BizHawk.Bizware.DirectX
 					int leftStrength = 0;
 					int rightStrength = 0;
 					bool dualHaptics = false;
+					string prefix = $"X{device.PlayerNumber - 1}";
 					foreach (var (name, strength) in haptics)
 					{
-						if (name == $"X{device.PlayerNumber -1} Mono Haptic")
+						if (name == $"{prefix} Mono")
 						{
 							dualHaptics = true;
 							leftStrength = rightStrength = strength;
 							break;
 						}
-						else if (name == $"X{device.PlayerNumber -1} Left Haptic")
+						else if (name == $"{prefix} Left")
 						{
 							dualHaptics = true;
 							leftStrength = strength;
 						}
-						else if (name == $"X{device.PlayerNumber -1} Right Haptic")
+						else if (name == $"{prefix} Right")
 						{
 							dualHaptics = true;
 							rightStrength = strength;
