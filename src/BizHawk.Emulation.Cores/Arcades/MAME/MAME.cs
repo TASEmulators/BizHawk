@@ -777,7 +777,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			public const string GetPixels = "return manager.machine.video:snapshot_pixels()";
 			public const string GetSamples = "return manager.machine.sound:get_samples()";
 			public const string GetWidth = "return (select(1, manager.machine.video:snapshot_size()))";
-			public const string GetHeight = "return (select(2, manager.machine:video:snapshot_size()))";
+			public const string GetHeight = "return (select(2, manager.machine.video:snapshot_size()))";
 			public const string GetMainCPUName = "return manager.machine.devices[\":maincpu\"].shortname";
 
 			// memory space
@@ -796,7 +796,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				"end";
 			public const string GetRefresh =
 				"for k,v in pairs(manager.machine.screens) do " +
-					"return v.refresh_attoseconds() " +
+					"return v.refresh_attoseconds " +
 				"end";
 			public const string GetBoundX =
 				"local b = manager.machine.render.ui_target.current_view.bounds " +
