@@ -64,14 +64,6 @@ namespace BizHawk.Client.Common
 		private Graphics GetGraphics(DisplaySurfaceID? surfaceID)
 		{
 			var g = GetRelevantSurface(surfaceID)?.GetGraphics() ?? Graphics.FromImage(_nullGraphicsBitmap);
-			var (tx, ty) = Emulator.ScreenLogicalOffsets();
-			if (tx != 0 || ty != 0)
-			{
-				var transform = g.Transform;
-				transform.Translate(-tx, -ty);
-				g.Transform = transform;
-			}
-
 			return g;
 		}
 
