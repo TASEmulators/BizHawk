@@ -144,9 +144,9 @@ namespace BizHawk.Bizware.DirectX
 					}
 					if (dualHaptics)
 					{
-						// Convert Int32 to Int 16, taking the high bits.
-						device.UpdateVibration((ushort)(leftStrength >> 16), 
-											   (ushort)(rightStrength >> 16));
+						// Convert Int32 to UInt 16, taking the high bits.
+						device.UpdateVibration((ushort)(leftStrength >> 15), 
+											   (ushort)(rightStrength >> 15));
 					}
 				}
 			}
