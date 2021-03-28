@@ -41,8 +41,8 @@ namespace BizHawk.Emulation.Common
 		/// </summary>
 		/// <remarks>
 		/// For example, a gamepad with a single haptics motor is represented as 
-		/// <c>{ "P1 Mono Haptic" }</c>, and a gamepad with one left and one right 
-		/// motor would be <c>{ "P1 Left Haptic", "P1 Right Haptic" }</c>.
+		/// <c>{ "X0 Mono" }</c>, and a gamepad with one left and one right 
+		/// motor would be <c>{ "X0 Left", "X0 Right" }</c>.
 		/// </remarks>
 		public List<string> HapticsChannels { get; set; } = new List<string>();
 
