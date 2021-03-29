@@ -30,6 +30,7 @@ namespace BizHawk.Client.Common
 		private readonly WorkingDictionary<string, int> _axes = new WorkingDictionary<string, int>();
 		private readonly Dictionary<string, AxisSpec> _axisRanges = new WorkingDictionary<string, AxisSpec>();
 		private readonly Dictionary<string, AnalogBind> _axisBindings = new Dictionary<string, AnalogBind>();
+		private readonly Dictionary<string, FeedbackBind> _feedbackBindings = new Dictionary<string, FeedbackBind>();
 
 		/// <summary>don't do this</summary>
 		public void ForceType(ControllerDefinition newType) => Definition = newType;
@@ -94,6 +95,14 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		public void PrepareHapticsForHost(SimpleController finalHostController, int debug)
+		{
+			foreach (var kvp in _feedbackBindings)
+			{
+				finalHostController.SetHapticChannelStrength(kvp.Value.GamepadPrefix + kvp.Value.Channel, (int) ((double) debug * kvp.Value.Prescale));
+			}
+		}
+
 		public void ApplyAxisConstraints(string constraintClass)
 			=> Definition.ApplyAxisConstraints(constraintClass, _axes);
 
@@ -152,6 +161,8 @@ namespace BizHawk.Client.Common
 		{
 			_axisBindings[button] = bind;
 		}
+
+		public void BindFeedbackChannel(string channel, FeedbackBind binding) => _feedbackBindings[channel] = binding;
 
 		public List<string> PressedButtons => _buttons
 			.Where(kvp => kvp.Value)

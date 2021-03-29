@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Emulation.Common
+﻿using System.Collections.Generic;
+
+namespace BizHawk.Emulation.Common
 {
 	/// <summary>
 	/// A empty implementation of IController that represents the lack of

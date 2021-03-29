@@ -668,14 +668,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public override bool BlocksInputWhenFocused { get; } = false;
 
-		private static readonly IReadOnlyCollection<string> DEBUG_HAPTIC_CHANNELS = new[]
-		{
-			"J0 Mono", "J0 Left", "J0 Right",
-			"X0 Mono", "X0 Left", "X0 Right",
-			"J1 Mono", "J1 Left", "J1 Right",
-			"X1 Mono", "X1 Left", "X1 Right"
-		};
-
 		public int ProgramRunLoop()
 		{
 			// needs to be done late, after the log console snaps on top
@@ -711,8 +703,9 @@ namespace BizHawk.Client.EmuHawk
 				// ...but prepare haptics first, those get read in ProcessInput
 				var finalHostController = (ControllerInputCoalescer) InputManager.ControllerInputCoalescer;
 				// for now, vibrate the first gamepad when the Fast Forward hotkey is held, using the value from the previous (host) frame
-				var debugVibrating = InputManager.ClientControls.IsPressed("Fast Forward") ? int.MaxValue : 0;
-				foreach (var channel in DEBUG_HAPTIC_CHANNELS) finalHostController.SetHapticChannelStrength(channel, debugVibrating);
+				InputManager.ActiveController.PrepareHapticsForHost(
+					finalHostController,
+					debug: InputManager.ClientControls.IsPressed("Fast Forward") ? int.MaxValue : 0);
 				ProcessInput(
 					_hotkeyCoalescer,
 					finalHostController,
