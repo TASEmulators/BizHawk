@@ -286,6 +286,7 @@ namespace BizHawk.Client.EmuHawk
 			toolTip1.SetToolTip(UndoBranchButton, "Undo Branch Update");
 			_branchUndo = BranchUndo.Update;
 
+			BranchView.ScrollToIndex(Branches.Current);
 			Branches.Replace(SelectedBranch, CreateBranch());
 			Tastudio.RefreshDialog();
 			SavedCallback?.Invoke(Branches.Current);
@@ -443,6 +444,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (Branches[slot] != null)
 				{
+					BranchView.DeselectAll();
 					Select(slot, true);
 				}
 				else

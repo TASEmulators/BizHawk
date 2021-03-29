@@ -317,7 +317,7 @@ namespace BizHawk.Client.EmuHawk
 		public bool FullRowSelect { get; set; }
 
 		/// <summary>
-		/// Gets or sets a value indicating whether multiple items can to be selected
+		/// Gets or sets a value indicating whether multiple items can be selected
 		/// </summary>
 		[Category("Behavior")]
 		[DefaultValue(true)]
@@ -1569,7 +1569,7 @@ namespace BizHawk.Client.EmuHawk
 			CurrentCell = newCell;
 
 			if (PointedCellChanged != null &&
-				(_lastCell.Column != CurrentCell.Column || _lastCell.RowIndex != CurrentCell.RowIndex))
+				(_lastCell?.Column != CurrentCell.Column || _lastCell?.RowIndex != CurrentCell.RowIndex))
 			{
 				PointedCellChanged(this, new CellEventArgs(_lastCell, CurrentCell));
 			}
