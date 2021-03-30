@@ -421,6 +421,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (Branches[slot] != null)
 				{
+					BranchView.DeselectAll();
 					Select(slot, true);
 				}
 				else
