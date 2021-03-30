@@ -137,7 +137,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			api.frame_advance();
 			api.frame_advance();
 
-			SetControllerButtons();
+			SetControllerButtons(_syncSettings);
 		}
 
 		private readonly N64Input _inputProvider;
