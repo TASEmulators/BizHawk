@@ -50,6 +50,23 @@ check_style:
     - Dist/BuildRelease.sh -p:MachineRunAnalyzersDuringBuild=true || Dist/BuildRelease.sh -p:MachineRunAnalyzersDuringBuild=true
   stage: test
 
+#infersharp:
+#  artifacts:
+#    paths:
+#      - infer-out/*
+#  image: mcr.microsoft.com/infersharp:v1.0
+#  needs:
+#    - job: build
+#  rules:
+#    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+#      when: always
+#  script:
+#    - mkdir "infer-in"
+#    - find output -name "BizHawk.*.dll" -exec cp "{}" "infer-in" \;
+#    - cp "output/EmuHawk.exe" "infer-in"
+#    - /app/run_infersharp.sh "infer-in"
+#  stage: test
+
 .package_linux_x64:
   artifacts:
     expire_in: "1 month"
