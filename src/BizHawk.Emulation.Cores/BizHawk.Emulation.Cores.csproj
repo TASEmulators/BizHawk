@@ -17,6 +17,7 @@
 		<EmbeddedResource Include="Resources/**/*" />
 	</ItemGroup>
 	<ItemGroup>
+		<Compile Update="Arcades/MAME/MAME.*.cs" DependentUpon="MAME.cs" />
 		<Compile Update="Calculator/TI83.*.cs" DependentUpon="TI83.cs" />
 		<Compile Update="Computers/AppleII/AppleII.*.cs" DependentUpon="AppleII.cs" />
 		<Compile Update="Computers/Commodore64/C64.*.cs" DependentUpon="C64.cs" />

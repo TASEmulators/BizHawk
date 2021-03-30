@@ -74,12 +74,10 @@ made that way to make the buffer persist actoss C API calls.
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Diagnostics;
 using System.Dynamic;
-using System.IO;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
@@ -121,75 +119,15 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			}
 		}
 
-		private static string MameGetString(string command)
-		{
-			IntPtr ptr = LibMAME.mame_lua_get_string(command, out var lengthInBytes);
-
-			if (ptr == IntPtr.Zero)
-			{
-				Console.WriteLine("LibMAME ERROR: string buffer pointer is null");
-				return "";
-			}
-
-			var ret = Marshal.PtrToStringAnsi(ptr, lengthInBytes);
-
-			if (!LibMAME.mame_lua_free_string(ptr))
-			{
-				Console.WriteLine("LibMAME ERROR: string buffer wasn't freed");
-			}
-
-			return ret;
-		}
-
-		public IEmulatorServiceProvider ServiceProvider { get; }
-		public ControllerDefinition ControllerDefinition => MAMEController;
-		public object GetSettings() => null;
-		public PutSettingsDirtyBits PutSettings(object o) => PutSettingsDirtyBits.None;
-		public string SystemId => "MAME";
-		public int[] GetVideoBuffer() => _frameBuffer;
-		public bool DeterministicEmulation => true;
-		public bool CanProvideAsync => false;
-		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
-		public int BackgroundColor => 0;
-		public int Frame { get; private set; }
-		public int VirtualWidth { get; private set; } = 320;
-		public int VirtualHeight { get; private set; } = 240;
-		public int BufferWidth { get; private set; } = 320;
-		public int BufferHeight { get; private set; } = 240;
-		public int VsyncNumerator { get; private set; } = 60;
-		public int VsyncDenominator { get; private set; } = 1;
-		public int LagCount { get; set; } = 0;
-		public bool IsLagFrame { get; set; } = false;
-
-		[FeatureNotImplemented]
-		public IInputCallbackSystem InputCallbacks => throw new NotImplementedException();
-
-		private SyncSettings _syncSettings;
+		private string _gameName = "Arcade";
+		private readonly string _gameDirectory;
+		private readonly string _gameFilename;
+		private string _loadFailure = "";
 		private readonly Thread _mameThread;
 		private readonly ManualResetEvent _mameStartupComplete = new ManualResetEvent(false);
 		private readonly ManualResetEvent _mameFrameComplete = new ManualResetEvent(false);
 		private readonly ManualResetEvent _memoryAccessComplete = new ManualResetEvent(false);
 		private readonly AutoResetEvent _mamePeriodicComplete = new AutoResetEvent(false);
-		private readonly SortedDictionary<string, string> _fieldsPorts = new SortedDictionary<string, string>();
-		private SortedDictionary<string, string> _romHashes = new SortedDictionary<string, string>();
-		private IController _controller = NullController.Instance;
-		private IMemoryDomains _memoryDomains;
-		private byte[] _mameSaveBuffer;
-		private byte[] _hawkSaveBuffer;
-		private int _systemBusAddressShift = 0;
-		private bool _memAccess = false;
-		private int[] _frameBuffer = new int[0];
-		private readonly Queue<short> _audioSamples = new Queue<short>();
-		private decimal _dAudioSamples = 0;
-		private readonly int _sampleRate = 44100;
-		private int _numSamples = 0;
-		private bool _paused = true;
-		private bool _exiting = false;
-		private bool _frameDone = true;
-		private readonly string _gameDirectory;
-		private readonly string _gameFilename;
-		private string _gameName = "Arcade";
-		private string _loadFailure = "";
 		private LibMAME.PeriodicCallbackDelegate _periodicCallback;
 		private LibMAME.SoundCallbackDelegate _soundCallback;
 		private LibMAME.BootCallbackDelegate _bootCallback;
@@ -245,341 +183,24 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			LibMAME.mame_launch(args.Length, args);
 		}
 
-		public bool FrameAdvance(IController controller, bool render, bool renderSound = true)
+		private static string MameGetString(string command)
 		{
-			if (_exiting)
-			{
-				return false;
-			}
-
-			_controller = controller;
-			_paused = false;
-			_frameDone = false;
-
-			if (_memAccess)
-			{
-				_mamePeriodicComplete.WaitOne();
-			}
-
-			for (; _frameDone == false;)
-			{
-				_mameFrameComplete.WaitOne();
-			}
-
-			Frame++;
-
-			if (IsLagFrame)
-			{
-				LagCount++;
-			}
-
-			return true;
-		}
-
-		public void ResetCounters()
-		{
-			Frame = 0;
-			LagCount = 0;
-			IsLagFrame = false;
-		}
-
-		public void Dispose()
-		{
-			_exiting = true;
-			_mameThread.Join();
-			_mameSaveBuffer = new byte[0];
-			_hawkSaveBuffer = new byte[0];
-		}
-
-		public void SaveStateBinary(BinaryWriter writer)
-		{
-			writer.Write(_mameSaveBuffer.Length);
-
-			LibMAME.SaveError err = LibMAME.mame_save_buffer(_mameSaveBuffer, out int length);
-
-			if (length != _mameSaveBuffer.Length)
-			{
-				throw new InvalidOperationException("Savestate buffer size mismatch!");
-			}
-
-			if (err != LibMAME.SaveError.NONE)
-			{
-				throw new InvalidOperationException("MAME LOADSTATE ERROR: " + err.ToString());
-			}
-
-			writer.Write(_mameSaveBuffer);
-			writer.Write(Frame);
-			writer.Write(LagCount);
-			writer.Write(IsLagFrame);
-		}
-
-		public void LoadStateBinary(BinaryReader reader)
-		{
-			int length = reader.ReadInt32();
-
-			if (length != _mameSaveBuffer.Length)
-			{
-				throw new InvalidOperationException("Savestate buffer size mismatch!");
-			}
-
-			reader.Read(_mameSaveBuffer, 0, _mameSaveBuffer.Length);
-			LibMAME.SaveError err = LibMAME.mame_load_buffer(_mameSaveBuffer, _mameSaveBuffer.Length);
-
-			if (err != LibMAME.SaveError.NONE)
-			{
-				throw new InvalidOperationException("MAME SAVESTATE ERROR: " + err.ToString());
-			}
-
-			Frame = reader.ReadInt32();
-			LagCount = reader.ReadInt32();
-			IsLagFrame = reader.ReadBoolean();
-		}
-
-		public SyncSettings GetSyncSettings()
-		{
-			return _syncSettings.Clone();
-		}
-
-		public PutSettingsDirtyBits PutSyncSettings(SyncSettings o)
-		{
-			bool ret = SyncSettings.NeedsReboot(o, _syncSettings);
-			_syncSettings = o;
-			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
-		}
-
-		public class SyncSettings
-		{
-			public static bool NeedsReboot(SyncSettings x, SyncSettings y)
-			{
-				return !DeepEquality.DeepEquals(x, y);
-			}
-
-			public SyncSettings Clone()
-			{
-				return (SyncSettings)MemberwiseClone();
-			}
-
-			public ExpandoObject ExpandoSettings { get; set; }
-		}
-
-		public void SetSyncMode(SyncSoundMode mode)
-		{
-			if (mode == SyncSoundMode.Async)
-			{
-				throw new NotSupportedException("Async mode is not supported.");
-			}
-		}
-
-		/*
-		 * GetSamplesSync() and MAME
-		 * 
-		 * MAME generates samples 50 times per second, regardless of the VBlank
-		 * rate of the emulated machine. It then uses complicated logic to
-		 * output the required amount of audio to the OS driver and to the AVI,
-		 * where it's meant to tie flashed samples to video frame duration.
-		 * 
-		 * I'm doing my own logic here for now. I grab MAME's audio buffer
-		 * whenever it's filled (MAMESoundCallback()) and enqueue it.
-		 * 
-		 * Whenever Hawk wants new audio, I dequeue it, but with a little quirk.
-		 * Since sample count per frame may not align with frame duration, I
-		 * subtract the entire decimal fraction of "required" samples from total
-		 * samples. I check if the fractional reminder of total samples is > 0.5
-		 * by rounding it. I invert it to see what number I should add to the
-		 * integer representation of "required" samples, to compensate for
-		 * misalignment between fractional and integral "required" samples.
-		 * 
-		 * TODO: Figure out how MAME does this and maybe use their method instead.
-		 */
-		public void GetSamplesSync(out short[] samples, out int nsamp)
-		{
-			decimal dSamplesPerFrame = (decimal)_sampleRate * VsyncDenominator / VsyncNumerator;
-
-			if (_audioSamples.Any())
-			{
-				_dAudioSamples -= dSamplesPerFrame;
-				int remainder = (int)Math.Round(_dAudioSamples - Math.Truncate(_dAudioSamples)) ^ 1;
-				nsamp = (int)Math.Round(dSamplesPerFrame) + remainder;
-			}
-			else
-			{
-				nsamp = (int)Math.Round(dSamplesPerFrame);
-			}
-
-			samples = new short[nsamp * 2];
-
-			for (int i = 0; i < nsamp * 2; i++)
-			{
-				if (_audioSamples.Any())
-				{
-					samples[i] = _audioSamples.Dequeue();
-				}
-				else
-				{
-					samples[i] = 0;
-				}
-			}
-		}
-
-		public void GetSamplesAsync(short[] samples)
-		{
-			throw new InvalidOperationException("Async mode is not supported.");
-		}
-
-		public void DiscardSamples()
-		{
-			_audioSamples.Clear();
-		}
-
-		private byte _peek(long addr, int firstOffset, long size)
-		{
-			if (addr < 0 || addr >= size)
-			{
-				throw new ArgumentOutOfRangeException();
-			}
-
-			if (!_memAccess)
-			{
-				_memAccess = true;
-				_mamePeriodicComplete.WaitOne();
-			}
-
-			addr += firstOffset;
-
-			var val = (byte)LibMAME.mame_read_byte((uint)addr << _systemBusAddressShift);
-
-			_memoryAccessComplete.Set();
-
-			return val;
-		}
-
-		private void _poke(long addr, byte val, int firstOffset, long size)
-		{
-			if (addr < 0 || addr >= size)
-			{
-				throw new ArgumentOutOfRangeException();
-			}
-
-			if (!_memAccess)
-			{
-				_memAccess = true;
-				_mamePeriodicComplete.WaitOne();
-			}
-
-			addr += firstOffset;
-
-			LibMAME.mame_lua_execute($"{ MAMELuaCommand.GetSpace }:write_u8({ addr << _systemBusAddressShift }, { val })");
-
-			_memoryAccessComplete.Set();
-		}
-
-		private void InitMemoryDomains()
-		{
-			var domains = new List<MemoryDomain>();
-
-			_systemBusAddressShift = LibMAME.mame_lua_get_int(MAMELuaCommand.GetSpaceAddressShift);
-			var dataWidth = LibMAME.mame_lua_get_int(MAMELuaCommand.GetSpaceDataWidth) >> 3; // mame returns in bits
-			var size = (long)LibMAME.mame_lua_get_double(MAMELuaCommand.GetSpaceAddressMask) + dataWidth;
-			var endianString = MameGetString(MAMELuaCommand.GetSpaceEndianness);
-			var deviceName = MameGetString(MAMELuaCommand.GetMainCPUName);
-			//var addrSize = (size * 2).ToString();
-
-			MemoryDomain.Endian endian = MemoryDomain.Endian.Unknown;
-
-			if (endianString == "little")
-			{
-				endian = MemoryDomain.Endian.Little;
-			}
-			else if (endianString == "big")
-			{
-				endian = MemoryDomain.Endian.Big;
-			}
-
-			var mapCount = LibMAME.mame_lua_get_int(MAMELuaCommand.GetSpaceMapCount);
-
-			for (int i = 1; i <= mapCount; i++)
-			{
-				var read = MameGetString($"return { MAMELuaCommand.SpaceMap }[{ i }].read.handlertype");
-				var write = MameGetString($"return { MAMELuaCommand.SpaceMap }[{ i }].write.handlertype");
-
-				if (read == "ram" && write == "ram" || read == "rom")
-				{
-					var firstOffset = LibMAME.mame_lua_get_int($"return { MAMELuaCommand.SpaceMap }[{ i }].address_start");
-					var lastOffset = LibMAME.mame_lua_get_int($"return { MAMELuaCommand.SpaceMap }[{ i }].address_end");
-					var name = $"{ deviceName } : { read } : 0x{ firstOffset:X}-0x{ lastOffset:X}";
-
-					domains.Add(new MemoryDomainDelegate(name, lastOffset - firstOffset + 1, endian,
-						delegate (long addr)
-						{
-							return _peek(addr, firstOffset, size);
-						},
-						read == "rom"
-							? null
-							: (long addr, byte val) => _poke(addr, val, firstOffset, size),
-						dataWidth));
-				}
-			}
-
-			domains.Add(new MemoryDomainDelegate(deviceName + " : System Bus", size, endian,
-				delegate (long addr)
-				{
-					return _peek(addr, 0, size);
-				},
-				null, dataWidth));
-
-			_memoryDomains = new MemoryDomainList(domains);
-			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(_memoryDomains);
-		}
-
-		private void UpdateFramerate()
-		{
-			VsyncNumerator = 1000000000;
-			long refresh = (long)LibMAME.mame_lua_get_double(MAMELuaCommand.GetRefresh);
-			VsyncDenominator = (int)(refresh / 1000000000);
-		}
-
-		private void UpdateAspect()
-		{
-			int x = (int)LibMAME.mame_lua_get_double(MAMELuaCommand.GetBoundX);
-			int y = (int)LibMAME.mame_lua_get_double(MAMELuaCommand.GetBoundY);
-			VirtualHeight = BufferWidth > BufferHeight * x / y
-				? BufferWidth * y / x
-				: BufferHeight;
-			VirtualWidth = VirtualHeight * x / y;
-		}
-
-		private void UpdateVideo()
-		{
-			BufferWidth = LibMAME.mame_lua_get_int(MAMELuaCommand.GetWidth);
-			BufferHeight = LibMAME.mame_lua_get_int(MAMELuaCommand.GetHeight);
-			int expectedSize = BufferWidth * BufferHeight;
-			int bytesPerPixel = 4;
-			IntPtr ptr = LibMAME.mame_lua_get_string(MAMELuaCommand.GetPixels, out var lengthInBytes);
+			IntPtr ptr = LibMAME.mame_lua_get_string(command, out var lengthInBytes);
 
 			if (ptr == IntPtr.Zero)
 			{
-				Console.WriteLine("LibMAME ERROR: frame buffer pointer is null");
-				return;
+				Console.WriteLine("LibMAME ERROR: string buffer pointer is null");
+				return "";
 			}
 
-			if (expectedSize * bytesPerPixel != lengthInBytes)
-			{
-				Console.WriteLine(
-					"LibMAME ERROR: frame buffer has wrong size\n" +
-					$"width:    { BufferWidth                  } pixels\n" +
-					$"height:   { BufferHeight                 } pixels\n" +
-					$"expected: { expectedSize * bytesPerPixel } bytes\n" +
-					$"received: { lengthInBytes                } bytes\n");
-				return;
-			}
-
-			_frameBuffer = new int[expectedSize];
-			Marshal.Copy(ptr, _frameBuffer, 0, expectedSize);
+			var ret = Marshal.PtrToStringAnsi(ptr, lengthInBytes);
 
 			if (!LibMAME.mame_lua_free_string(ptr))
 			{
-				Console.WriteLine("LibMAME ERROR: frame buffer wasn't freed");
+				Console.WriteLine("LibMAME ERROR: string buffer wasn't freed");
 			}
+
+			return ret;
 		}
 
 		private void UpdateGameName()
@@ -705,33 +326,6 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			}
 		}
 
-		public static ControllerDefinition MAMEController = new ControllerDefinition
-		{
-			Name = "MAME Controller",
-			BoolButtons = new List<string>()
-		};
-
-		private void GetInputFields()
-		{
-			string inputFields = MameGetString(MAMELuaCommand.GetInputFields);
-			string[] portFields = inputFields.Split(';');
-			MAMEController.BoolButtons.Clear();
-			_fieldsPorts.Clear();
-
-			foreach (string portField in portFields)
-			{
-				if (portField != string.Empty)
-				{
-					string[] substrings = portField.Split(',');
-					string tag = substrings.First();
-					string field = substrings.Last();
-
-					_fieldsPorts.Add(field, tag);
-					MAMEController.BoolButtons.Add(field);
-				}
-			}
-		}
-
 		private void GetROMsInfo()
 		{
 			string ROMsInfo = MameGetString(MAMELuaCommand.GetROMsInfo);
@@ -748,18 +342,6 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 					_romHashes.Add(name, hashdata);
 				}
-			}
-		}
-
-		private void SendInput()
-		{
-			foreach (var fieldPort in _fieldsPorts)
-			{
-				LibMAME.mame_lua_execute(
-					"manager.machine.ioport" +
-					$".ports  [\"{ fieldPort.Value }\"]" +
-					$".fields [\"{ fieldPort.Key   }\"]" +
-					$":set_value({ (_controller.IsPressed(fieldPort.Key) ? 1 : 0) })");
 			}
 		}
 
