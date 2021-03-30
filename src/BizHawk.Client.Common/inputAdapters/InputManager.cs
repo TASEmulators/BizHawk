@@ -117,8 +117,7 @@ namespace BizHawk.Client.Common
 
 			if (feedbackBinds.TryGetValue(def.Name, out var fBinds))
 			{
-				const string channel = "Debug";
-//				foreach (var channel in def.HapticsChannels)
+				foreach (var channel in def.HapticsChannels)
 				{
 					if (fBinds.TryGetValue(channel, out var bind)) ret.BindFeedbackChannel(channel, bind);
 				}

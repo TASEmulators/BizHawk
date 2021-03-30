@@ -239,7 +239,7 @@ namespace BizHawk.Client.EmuHawk
 			LoadToPanel(
 				FeedbacksTab,
 				_emulator.ControllerDefinition.Name,
-				/*_emulator.ControllerDefinition.HapticsChannels*/new[] { "Debug" },
+				_emulator.ControllerDefinition.HapticsChannels,
 				_emulator.ControllerDefinition.CategoryLabels,
 				haptics,
 				new(string.Empty, string.Empty, 1.0f),

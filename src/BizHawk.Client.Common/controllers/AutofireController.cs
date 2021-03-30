@@ -44,6 +44,10 @@ namespace BizHawk.Client.Common
 			throw new NotImplementedException();
 		}
 
+		public IReadOnlyCollection<(string Name, int Strength)> GetHapticsSnapshot() => Array.Empty<(string, int)>();
+
+		public void SetHapticChannelStrength(string name, int strength) {}
+
 		/// <summary>
 		/// uses the bindings to latch our own logical button state from the source controller's button state (which are assumed to be the physical side of the binding).
 		/// this will clobber any existing data (use OR_* or other functions to layer in additional input sources)

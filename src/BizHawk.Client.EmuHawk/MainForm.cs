@@ -703,9 +703,8 @@ namespace BizHawk.Client.EmuHawk
 				// ...but prepare haptics first, those get read in ProcessInput
 				var finalHostController = (ControllerInputCoalescer) InputManager.ControllerInputCoalescer;
 				// for now, vibrate the first gamepad when the Fast Forward hotkey is held, using the value from the previous (host) frame
-				InputManager.ActiveController.PrepareHapticsForHost(
-					finalHostController,
-					debug: InputManager.ClientControls.IsPressed("Fast Forward") ? int.MaxValue : 0);
+				InputManager.ActiveController.SetHapticChannelStrength("Debug", InputManager.ClientControls.IsPressed("Fast Forward") ? int.MaxValue : 0);
+				InputManager.ActiveController.PrepareHapticsForHost(finalHostController);
 				ProcessInput(
 					_hotkeyCoalescer,
 					finalHostController,

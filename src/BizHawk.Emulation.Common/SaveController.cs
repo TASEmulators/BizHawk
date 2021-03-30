@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -95,5 +96,9 @@ namespace BizHawk.Emulation.Common
 		{
 			return _buttons[name];
 		}
+
+		public IReadOnlyCollection<(string Name, int Strength)> GetHapticsSnapshot() => Array.Empty<(string, int)>();
+
+		public void SetHapticChannelStrength(string name, int strength) {}
 	}
 }

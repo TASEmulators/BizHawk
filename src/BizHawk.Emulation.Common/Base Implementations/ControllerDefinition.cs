@@ -10,9 +10,7 @@ namespace BizHawk.Emulation.Common
 	/// <seealso cref="IEmulator" /> 
 	public class ControllerDefinition
 	{
-		public ControllerDefinition()
-		{
-		}
+		public ControllerDefinition() => HapticsChannels.Add("Debug");
 
 		public ControllerDefinition(ControllerDefinition source)
 			: this()
@@ -34,6 +32,9 @@ namespace BizHawk.Emulation.Common
 		public List<string> BoolButtons { get; set; } = new List<string>();
 
 		public readonly AxisDict Axes = new AxisDict();
+
+		/// <summary>Contains names of virtual haptic feedback channels, e.g. <c>{ "P1 Mono" }</c>, <c>{ "P2 Left", "P2 Right" }</c>.</summary>
+		public List<string> HapticsChannels { get; } = new();
 
 		/// <summary>
 		/// Gets the category labels. These labels provide a means of categorizing controls in various controller display and config screens

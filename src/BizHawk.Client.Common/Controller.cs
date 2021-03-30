@@ -17,6 +17,7 @@ namespace BizHawk.Client.Common
 				_axes[kvp.Key] = kvp.Value.Neutral;
 				_axisRanges[kvp.Key] = kvp.Value;
 			}
+			foreach (var channel in Definition.HapticsChannels) _haptics[channel] = 0;
 		}
 
 		public ControllerDefinition Definition { get; private set; }
@@ -25,11 +26,17 @@ namespace BizHawk.Client.Common
 
 		public int AxisValue(string name) => _axes[name];
 
+		public IReadOnlyCollection<(string Name, int Strength)> GetHapticsSnapshot()
+			=> _haptics.Select(kvp => (kvp.Key, kvp.Value)).ToArray();
+
+		public void SetHapticChannelStrength(string name, int strength) => _haptics[name] = strength;
+
 		private readonly WorkingDictionary<string, List<string>> _bindings = new WorkingDictionary<string, List<string>>();
 		private readonly WorkingDictionary<string, bool> _buttons = new WorkingDictionary<string, bool>();
 		private readonly WorkingDictionary<string, int> _axes = new WorkingDictionary<string, int>();
 		private readonly Dictionary<string, AxisSpec> _axisRanges = new WorkingDictionary<string, AxisSpec>();
 		private readonly Dictionary<string, AnalogBind> _axisBindings = new Dictionary<string, AnalogBind>();
+		private readonly Dictionary<string, int> _haptics = new WorkingDictionary<string, int>();
 		private readonly Dictionary<string, FeedbackBind> _feedbackBindings = new Dictionary<string, FeedbackBind>();
 
 		/// <summary>don't do this</summary>
@@ -95,11 +102,14 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void PrepareHapticsForHost(SimpleController finalHostController, int debug)
+		public void PrepareHapticsForHost(SimpleController finalHostController)
 		{
 			foreach (var kvp in _feedbackBindings)
 			{
-				finalHostController.SetHapticChannelStrength(kvp.Value.GamepadPrefix + kvp.Value.Channel, (int) ((double) debug * kvp.Value.Prescale));
+				if (_haptics.TryGetValue(kvp.Key, out var strength))
+				{
+					finalHostController.SetHapticChannelStrength(kvp.Value.GamepadPrefix + kvp.Value.Channel, (int) ((double) strength * kvp.Value.Prescale));
+				}
 			}
 		}
 

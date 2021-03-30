@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Common
 {
@@ -17,6 +18,10 @@ namespace BizHawk.Emulation.Common
 		public bool IsPressed(string button) => false;
 
 		public int AxisValue(string name) => 0;
+
+		public IReadOnlyCollection<(string Name, int Strength)> GetHapticsSnapshot() => Array.Empty<(string, int)>();
+
+		public void SetHapticChannelStrength(string name, int strength) {}
 
 		public static readonly NullController Instance = new NullController();
 	}
