@@ -51,19 +51,19 @@ namespace BizHawk.Client.Common
 		public static BinaryStateLump Session { get; private set; }
 
 		// branch stuff
-		[Name("Branches\\CoreData", "bin")]
+		[Name("Branches/CoreData", "bin")]
 		public static BinaryStateLump BranchCoreData { get; private set; }
-		[Name("Branches\\InputLog", "txt")]
+		[Name("Branches/InputLog", "txt")]
 		public static BinaryStateLump BranchInputLog { get; private set; }
-		[Name("Branches\\FrameBuffer", "bmp")]
+		[Name("Branches/FrameBuffer", "bmp")]
 		public static BinaryStateLump BranchFrameBuffer { get; private set; }
-		[Name("Branches\\CoreFrameBuffer", "bmp")]
+		[Name("Branches/CoreFrameBuffer", "bmp")]
 		public static BinaryStateLump BranchCoreFrameBuffer { get; private set; }
-		[Name("Branches\\Header", "json")]
+		[Name("Branches/Header", "json")]
 		public static BinaryStateLump BranchHeader { get; private set; }
-		[Name("Branches\\Markers", "txt")]
+		[Name("Branches/Markers", "txt")]
 		public static BinaryStateLump BranchMarkers { get; private set; }
-		[Name("Branches\\UserText", "txt")]
+		[Name("Branches/UserText", "txt")]
 		public static BinaryStateLump BranchUserText { get; private set; }
 
 		[AttributeUsage(AttributeTargets.Property)]
