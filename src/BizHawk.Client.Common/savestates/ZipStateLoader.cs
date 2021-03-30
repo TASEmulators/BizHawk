@@ -55,7 +55,7 @@ namespace BizHawk.Client.Common
 			_entriesByName = new Dictionary<string, ZipArchiveEntry>();
 			foreach (var z in _zip.Entries)
 			{
-				string name = z.Name;
+				string name = z.FullName;
 				int i;
 				if ((i = name.LastIndexOf('.')) != -1)
 				{
@@ -80,7 +80,7 @@ namespace BizHawk.Client.Common
 					return null;
 				}
 			}
-			
+
 			try
 			{
 				ret._zip = new ZipArchive(new FileStream(filename, FileMode.Open, FileAccess.Read), ZipArchiveMode.Read);
@@ -113,12 +113,12 @@ namespace BizHawk.Client.Common
 
 				return true;
 			}
-			
+
 			if (abort)
 			{
 				throw new Exception($"Essential zip section not found: {lump.ReadName}");
 			}
-			
+
 			return false;
 		}
 
