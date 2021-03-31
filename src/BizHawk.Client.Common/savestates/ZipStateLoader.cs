@@ -62,7 +62,7 @@ namespace BizHawk.Client.Common
 					name = name.Substring(0, i);
 				}
 
-				_entriesByName.Add(name, z);
+				_entriesByName.Add(name.Replace('\\', '/'), z);
 			}
 		}
 
