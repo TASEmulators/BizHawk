@@ -88,8 +88,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public class GambatteSyncSettings
 		{
-			[DisplayName("Enable official Nintendo BIOS")]
-			[Description("Boots game using system BIOS. You must have the bios file. Should be used for TASing.")]
+			[DisplayName("Use official Nintendo BootROM")]
+			[Description("Uses a provided official BootROM (or "BIOS") instead of built-in unofficial firmware. You must provide the BootROM. Should be used for TASing.")]
 			[DefaultValue(false)]
 			public bool EnableBIOS { get; set; }
 
@@ -112,7 +112,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			public bool MulticartCompat { get; set; }
 
 			[DisplayName("Realtime RTC")]
-			[Description("If true, the real time clock in MBC3 games will reflect real time, instead of emulated time.  Ignored (treated as false) when a movie is recording.")]
+			[Description("If true, the real time clock in MBC3 and HuC3 games will reflect real time, instead of emulated time.  Ignored (treated as false) when a movie is recording.")]
 			[DefaultValue(false)]
 			public bool RealTimeRTC { get; set; }
 
