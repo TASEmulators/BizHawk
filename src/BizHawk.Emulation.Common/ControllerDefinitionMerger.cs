@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace BizHawk.Emulation.Common
 {
@@ -33,7 +32,6 @@ namespace BizHawk.Emulation.Common
 			foreach (var def in controllers)
 			{
 				Dictionary<string, string> buttonAxisRemaps = new();
-				Dictionary<string, string> feedbackRemaps = new();
 
 				foreach (string s in def.BoolButtons)
 				{
@@ -49,15 +47,8 @@ namespace BizHawk.Emulation.Common
 					buttonAxisRemaps[kvp.Key] = r;
 				}
 
-				foreach (var s in def.HapticsChannels)
-				{
-					string r = Allocate(s, ref plr, ref playerNext);
-					ret.HapticsChannels.Add(r);
-					feedbackRemaps[s] = r;
-				}
-
 				plr = playerNext;
-				unmergers.Add(new ControlDefUnMerger(buttonAxisRemaps, feedbackRemaps));
+				unmergers.Add(new ControlDefUnMerger(buttonAxisRemaps));
 			}
 
 			return ret;
@@ -68,22 +59,16 @@ namespace BizHawk.Emulation.Common
 	{
 		private class DummyController : IController
 		{
-			/// <inheritdoc cref="ControlDefUnMerger._buttonAxisRemaps"/>
 			private readonly IReadOnlyDictionary<string, string> _buttonAxisRemaps;
-
-			/// <inheritdoc cref="ControlDefUnMerger._buttonAxisRemaps"/>
-			private readonly IReadOnlyDictionary<string, string> _feedbackRemaps;
 
 			private readonly IController _src;
 
 			public DummyController(
 				IController src,
-				IReadOnlyDictionary<string, string> buttonAxisRemaps,
-				IReadOnlyDictionary<string, string> feedbackRemaps)
+				IReadOnlyDictionary<string, string> buttonAxisRemaps)
 			{
 				_src = src;
 				_buttonAxisRemaps = buttonAxisRemaps;
-				_feedbackRemaps = feedbackRemaps;
 			}
 
 			/// <exception cref="NotImplementedException">always</exception>
@@ -99,28 +84,18 @@ namespace BizHawk.Emulation.Common
 				return _src.AxisValue(_buttonAxisRemaps[name]);
 			}
 
-			public IReadOnlyCollection<(string Name, int Strength)> GetHapticsSnapshot()
-				=> _src.GetHapticsSnapshot()
-					.Select(hapticsEntry => (_feedbackRemaps.First(kvpRemap => kvpRemap.Value == hapticsEntry.Name).Value, hapticsEntry.Strength)) // reverse lookup
-					.ToArray();
+			public IReadOnlyCollection<(string Name, int Strength)> GetHapticsSnapshot() => Array.Empty<(string, int)>();
 
-			public void SetHapticChannelStrength(string name, int strength) => _src.SetHapticChannelStrength(_feedbackRemaps[name], strength);
+			public void SetHapticChannelStrength(string name, int strength) {}
 		}
 
-		/// <remarks>these need to be separate because it's expected that <c>"P1 Left"</c> will appear in both</remarks>
 		private readonly IReadOnlyDictionary<string, string> _buttonAxisRemaps;
 
-		/// <inheritdoc cref="_buttonAxisRemaps"/>
-		private readonly IReadOnlyDictionary<string, string> _feedbackRemaps;
-
-		public ControlDefUnMerger(
-			IReadOnlyDictionary<string, string> buttonAxisRemaps,
-			IReadOnlyDictionary<string, string> feedbackRemaps)
+		public ControlDefUnMerger(IReadOnlyDictionary<string, string> buttonAxisRemaps)
 		{
 			_buttonAxisRemaps = buttonAxisRemaps;
-			_feedbackRemaps = feedbackRemaps;
 		}
 
-		public IController UnMerge(IController c) => new DummyController(c, _buttonAxisRemaps, _feedbackRemaps);
+		public IController UnMerge(IController c) => new DummyController(c, _buttonAxisRemaps);
 	}
 }
