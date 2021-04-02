@@ -14,6 +14,9 @@ namespace BizHawk.Emulation.Cores
 	{
 		private readonly Dictionary<string, List<Core>> _systems = new Dictionary<string, List<Core>>();
 
+		/// <summary>keys are system IDs; values are core/ctor info for all that system's cores</summary>
+		public IReadOnlyDictionary<string, List<Core>> AllCores => _systems;
+
 		public readonly IReadOnlyCollection<Core> SystemsFlat;
 
 		public class Core
