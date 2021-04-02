@@ -13,7 +13,11 @@ namespace BizHawk.Tests.Client.Common.config
 	[TestClass]
 	public sealed class SerializationStabilityTests
 	{
+#if NET5_0
 		private static readonly IReadOnlySet<Type> KnownGoodFromStdlib = new HashSet<Type>
+#else
+		private static readonly ICollection<Type> KnownGoodFromStdlib = new HashSet<Type>
+#endif
 		{
 			typeof(bool),
 			typeof(DateTime),
