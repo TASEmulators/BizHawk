@@ -1,3 +1,3 @@
-start fart "..\Version\VersionInfo.cs" "DeveloperBuild = true" "DeveloperBuild = false"
+start fart "..\src\BizHawk.Common\VersionInfo.cs" "DeveloperBuild = true" "DeveloperBuild = false"
 call QuickTestBuildAndPackage.bat
-start fart "..\Version\VersionInfo.cs" "DeveloperBuild = false" "DeveloperBuild = true"
+start fart "..\src\BizHawk.Common\VersionInfo.cs" "DeveloperBuild = false" "DeveloperBuild = true"

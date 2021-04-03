@@ -10,4 +10,6 @@ config="$1"
 shift
 if [ -z "$NUGET_PACKAGES" ]; then export NUGET_PACKAGES="$HOME/.nuget/packages"; fi
 printf "running 'dotnet %s' in %s configuration, extra args: %s\n" "$cmd" "$config" "$*"
-dotnet "$cmd" BizHawk.sln -c "$config" -m -clp:NoSummary "$@"
+version=$(grep -Po "MainVersion = \"\K(.*)(?=\")" src/BizHawk.Common/VersionInfo.cs)
+git_hash=$(git rev-parse --verify HEAD)
+dotnet "$cmd" BizHawk.sln -c "$config" -m -clp:NoSummary -p:Version="$version" -p:SourceRevisionId="$git_hash" "$@"
