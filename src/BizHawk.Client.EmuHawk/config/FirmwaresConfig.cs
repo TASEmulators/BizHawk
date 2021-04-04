@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -10,6 +11,7 @@ using System.Windows.Forms;
 using BizHawk.Common;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.Properties;
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
 
 // notes: eventually, we intend to have a "firmware acquisition interface" exposed to the emulator cores.
@@ -22,8 +24,6 @@ using BizHawk.Emulation.Common;
 
 // IDEA: show current path in tooltip (esp. for custom resolved)
 // IDEA: prepop set customization to dir of current custom
-
-// TODO - display some kind if [!] if you have a user-specified file which is known but defined as incompatible by the firmware DB
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class FirmwaresConfig : Form, IDialogParent
@@ -80,6 +80,7 @@ namespace BizHawk.Client.EmuHawk
 		private const int IdUnsure = 0;
 		private const int IdMissing = 1;
 		private const int IdOk = 2;
+		private const int IdBad = 3;
 
 		private Font _fixedFont, _boldFont, _boldFixedFont;
 
@@ -129,8 +130,19 @@ namespace BizHawk.Client.EmuHawk
 				= tbbCloseReload.Image
 				= tbbOpenFolder.Image = Resources.Placeholder;
 
-			// prep ImageList for ListView with 3 item states for {idUnsure, idMissing, idOk}
-			imageList1.Images.AddRange(new Image[] { Resources.RetroQuestion, Resources.ExclamationRed, Resources.GreenCheck });
+			// prep ImageList for ListView
+			imageList1.Images.AddRange(new Image[]
+			{
+				Resources.RetroQuestion,
+				Resources.ExclamationRed,
+				Resources.GreenCheck,
+				Resources.ThumbsDown,
+			});
+			// these constants are used for items' ImageIndex, the order matters
+			Debug.Assert(imageList1.Images[IdUnsure] == Resources.RetroQuestion);
+			Debug.Assert(imageList1.Images[IdMissing] == Resources.ExclamationRed);
+			Debug.Assert(imageList1.Images[IdOk] == Resources.GreenCheck);
+			Debug.Assert(imageList1.Images[IdBad] == Resources.ThumbsDown);
 
 			_listViewSorter = new ListViewSorter(-1);
 
@@ -312,11 +324,18 @@ namespace BizHawk.Client.EmuHawk
 					bool bolden = ri.UserSpecified;
 
 					// set columns based on whether it was a known file
-					if (ri.KnownFirmwareFile == null)
+					var hash = ri.KnownFirmwareFile?.Hash;
+					if (hash == null)
 					{
 						lvi.ImageIndex = IdUnsure;
 						lvi.ToolTipText = "You've bound a custom choice here. Hope you know what you're doing.";
 						lvi.SubItems[4].Text = "-custom-";
+					}
+					else if (FirmwareDatabase.FirmwareOptions.FirstOrNull(fo => fo.Hash == hash)?.IsAcceptableOrIdeal == false)
+					{
+						lvi.ImageIndex = IdBad;
+						lvi.ToolTipText = "Bad! This file has been bound to a choice which is known to be bad (details in right-click > Info)";
+						lvi.SubItems[4].Text = ri.KnownFirmwareFile.Value.Description;
 					}
 					else
 					{
