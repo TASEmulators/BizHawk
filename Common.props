@@ -1,6 +1,7 @@
 <Project>
 	<PropertyGroup>
 		<AnalysisLevel>5</AnalysisLevel>
+		<EnableNETAnalyzers>true</EnableNETAnalyzers>
 		<ErrorReport>prompt</ErrorReport>
 		<IsTargetingNetFramework>$(TargetFramework.StartsWith("net4"))</IsTargetingNetFramework>
 		<LangVersion>9.0</LangVersion>
