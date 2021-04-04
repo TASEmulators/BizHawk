@@ -13,7 +13,7 @@
 		<PackageReference Include="Menees.Analyzers" Version="2.0.4" Condition=" '$(MachineRunAnalyzersDuringBuild)' != '' " />
 		<PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.3.0" Condition=" '$(MachineRunAnalyzersDuringBuild)' != '' " />
 		<PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.205" Condition=" '$(MachineRunAnalyzersDuringBuild)' != '' " />
-		<ProjectReference Include="$(ProjectDir)../BizHawk.Version/BizHawk.Version.csproj" /><!-- generates VersionInfo.gen.cs -->
+		<ProjectReference Include="$(ProjectDir)../BizHawk.Version/BizHawk.Version.csproj" ReferenceOutputAssembly="false" /><!-- generates VersionInfo.gen.cs -->
 	</ItemGroup>
 	<ItemGroup>
 		<Compile Update="VersionInfo.gen.cs" DependentUpon="VersionInfo.cs" />
