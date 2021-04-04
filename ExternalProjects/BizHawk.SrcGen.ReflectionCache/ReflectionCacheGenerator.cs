@@ -78,6 +78,8 @@ namespace {nSpace}
 	{{
 		private static readonly Assembly Asm = typeof({nSpace}.ReflectionCache).Assembly;
 
+		public static readonly Version AsmVersion = Asm.GetName().Version!;
+
 		private static readonly Lazy<Type[]> _types = new Lazy<Type[]>(() => Asm.GetTypesWithoutLoadErrors().ToArray());
 
 		public static Type[] Types => _types.Value;

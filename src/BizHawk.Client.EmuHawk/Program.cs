@@ -87,21 +87,27 @@ namespace BizHawk.Client.EmuHawk
 		{
 			// this check has to be done VERY early.  i stepped through a debug build with wrong .dll versions purposely used,
 			// and there was a TypeLoadException before the first line of SubMain was reached (some static ColorType init?)
-			// zero 25-dec-2012 - only do for public builds. its annoying during development
-			// and don't bother when installed from a package manager i.e. not Windows --yoshi
-			// commenting this out until I get it generated properly --yoshi
-//			if (!VersionInfo.DeveloperBuild && !OSTC.IsUnixHost)
-//			{
-//				var thisversion = typeof(Program).Assembly.GetName().Version;
-//				var utilversion = Assembly.Load(new AssemblyName("BizHawk.Client.Common")).GetName().Version;
-//				var emulversion = Assembly.Load(new AssemblyName("BizHawk.Emulation.Cores")).GetName().Version;
-//
-//				if (thisversion != utilversion || thisversion != emulversion)
-//				{
-//					MessageBox.Show("Conflicting revisions found!  Don't mix .dll versions!");
-//					return -1;
-//				}
-//			}
+			var thisAsmVer = EmuHawk.ReflectionCache.AsmVersion;
+			foreach (var asmVer in new[]
+			{
+				BizInvoke.ReflectionCache.AsmVersion,
+				Bizware.BizwareGL.ReflectionCache.AsmVersion,
+				Bizware.DirectX.ReflectionCache.AsmVersion,
+				Bizware.OpenTK3.ReflectionCache.AsmVersion,
+				Client.Common.ReflectionCache.AsmVersion,
+				Common.ReflectionCache.AsmVersion,
+				Emulation.Common.ReflectionCache.AsmVersion,
+				Emulation.Cores.ReflectionCache.AsmVersion,
+				Emulation.DiscSystem.ReflectionCache.AsmVersion,
+				WinForms.Controls.ReflectionCache.AsmVersion,
+			})
+			{
+				if (asmVer != thisAsmVer)
+				{
+					MessageBox.Show("One or more of the BizHawk.* assemblies have the wrong version!\n(Did you attempt to update by overwriting an existing install?)");
+					return -1;
+				}
+			}
 
 			TempFileManager.Start();
 
