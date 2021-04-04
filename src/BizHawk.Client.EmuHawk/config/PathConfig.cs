@@ -128,35 +128,6 @@ namespace BizHawk.Client.EmuHawk
 					btn.Click += (sender, args) => BrowseFolder(tempBox, tempPath, tempSystem);
 
 					int infoPadding = UIHelper.ScaleX(0);
-					if (t.Name.Contains("Global") && path.Type == "Firmware")
-					{
-						infoPadding = UIHelper.ScaleX(26);
-
-						var firmwareButton = new Button
-						{
-							Name = "Global",
-							Text = "",
-							Image = Properties.Resources.Help,
-							Location = new Point(UIHelper.ScaleX(115), y + buttonOffsetY),
-							Size = new Size(buttonWidth, buttonHeight),
-							Anchor = AnchorStyles.Top | AnchorStyles.Right
-						};
-
-						firmwareButton.Click += (sender, e) =>
-						{
-							if (Owner is FirmwaresConfig)
-							{
-								_mainForm.DialogController.ShowMessageBox("C-C-C-Combo Breaker!", "Nice try, but");
-								return;
-							}
-
-							using var f = new FirmwaresConfig(_firmwareManager, _firmwareUserSpecifications, _game, _mainForm, _pathEntries) { TargetSystem = "Global" };
-							f.ShowDialog(this);
-						};
-
-						t.Controls.Add(firmwareButton);
-					}
-
 					var label = new Label
 					{
 						Text = path.Type,
