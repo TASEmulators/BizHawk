@@ -47,7 +47,9 @@ check_style:
       when: always
       allow_failure: false
   script:
-    - Dist/BuildRelease.sh -p:MachineRunAnalyzersDuringBuild=true || Dist/BuildRelease.sh -p:MachineRunAnalyzersDuringBuild=true
+    - cd src/BizHawk.Version
+    - dotnet build -c Release # configuration doesn't really matter as the assembly is empty
+    - ../../Dist/BuildRelease.sh -p:MachineRunAnalyzersDuringBuild=true
   stage: test
 
 #infersharp:
@@ -142,7 +144,9 @@ run_tests:
     - job: build
       artifacts: false
   script:
-    - Dist/BuildTestRelease.sh || Dist/BuildTestRelease.sh
+    - cd src/BizHawk.Version
+    - dotnet build -c Release # configuration doesn't really matter as the assembly is empty
+    - ../../Dist/BuildTestRelease.sh
   stage: test
 
 #sast:
