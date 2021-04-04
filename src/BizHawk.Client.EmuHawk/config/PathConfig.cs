@@ -184,12 +184,12 @@ namespace BizHawk.Client.EmuHawk
 
 			PathTabControl.TabPages.Clear();
 			var systems = _pathEntries.Select(e => e.System).Distinct() // group entries by "system" (intentionally using instance field here, not parameter)
-				.Select(sys => (sys, PathEntryCollection.GetDisplayNameFor(sys)))
-				.OrderBy(tuple => tuple.Item2) // sorted alphabetically by display name
+				.Select(sys => (SysGroup: sys, DisplayName: PathEntryCollection.GetDisplayNameFor(sys)))
+				.OrderBy(tuple => tuple.DisplayName)
 				.ToList();
 			// add the Global tab first...
 			const string idGlobal = "Global_NULL";
-			systems.RemoveAll(tuple => tuple.Item1 == idGlobal);
+			systems.RemoveAll(tuple => tuple.SysGroup == idGlobal);
 			AddTabPageForSystem(idGlobal, PathEntryCollection.GetDisplayNameFor(idGlobal));
 			// ...then continue with the others
 			foreach (var (sys, dispName) in systems) AddTabPageForSystem(sys, dispName);
