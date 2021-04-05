@@ -6,7 +6,7 @@ using BizHawk.Emulation.Cores;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace BizHawk.Tests.Client.EmuHawk
+namespace BizHawk.Tests.Client.Common.config
 {
 	[TestClass]
 	public sealed class CorePickerStabilityTests
