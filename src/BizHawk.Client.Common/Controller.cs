@@ -89,15 +89,17 @@ namespace BizHawk.Client.Common
 				else value -= deadzone;
 				value /= 1.0f - deadzone;
 
-				// scale by user-set multiplier (which is 0..1, i.e. value can only shrink and is therefore still in -1..1)
+				// scale by user-set multiplier (which is -2..2, therefore value is now in -2..2)
 				value *= kvp.Value.Mult;
 
-				// -1..1 -> range
+				// -1..1 -> -A..A (where A is the larger "side" of the range e.g. a range of 0..50, neutral=10 would give A=40, and thus a value in -40..40)
 				var range = _axisRanges[kvp.Key];
 				value *= Math.Max(range.Neutral - range.Min, range.Max - range.Neutral);
+
+				// shift the midpoint, so a value of 0 becomes range.Neutral (and, assuming >=1x multiplier, all values in range are reachable)
 				value += range.Neutral;
 
-				// finally, constrain to range again in case the original value was unexpectedly large, or the deadzone and scale made it so, or the axis is lopsided
+				// finally, constrain to range
 				_axes[kvp.Key] = ((int) value).ConstrainWithin(range.Range);
 			}
 		}
