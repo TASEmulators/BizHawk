@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using System.Linq;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
+using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -37,6 +39,14 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 			Icon = Properties.Resources.TAStudioIcon;
 			BrowseBtn.Image = Properties.Resources.OpenFile;
+			if (OSTailoredCode.IsUnixHost) Load += (_, _) =>
+			{
+				//HACK to make this usable on Linux. No clue why this Form in particular is so much worse, maybe the GroupBox? --yoshi
+				DefaultAuthorCheckBox.Location += new Size(0, 20);
+				var s = new Size(0, 36);
+				OK.Location += s;
+				Cancel.Location += s;
+			};
 
 			if (!_emulator.HasSavestates())
 			{
