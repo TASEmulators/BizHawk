@@ -104,11 +104,11 @@ namespace BizHawk.Client.EmuHawk
 		
 		}
 
-		public unsafe void SetPipelineUniformMatrix(PipelineUniform uniform, Matrix4 mat, bool transpose)
+		public void SetPipelineUniformMatrix(PipelineUniform uniform, Matrix4 mat, bool transpose)
 		{
 		}
 
-		public unsafe void SetPipelineUniformMatrix(PipelineUniform uniform, ref Matrix4 mat, bool transpose)
+		public void SetPipelineUniformMatrix(PipelineUniform uniform, ref Matrix4 mat, bool transpose)
 		{
 		}
 
@@ -124,7 +124,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 		}
 
-		public unsafe void SetPipelineUniform(PipelineUniform uniform, Vector4[] values)
+		public void SetPipelineUniform(PipelineUniform uniform, Vector4[] values)
 		{
 		}
 
@@ -334,7 +334,7 @@ namespace BizHawk.Client.EmuHawk
 			rtw.Dispose();
 		}
 
-		public unsafe RenderTarget CreateRenderTarget(int w, int h)
+		public RenderTarget CreateRenderTarget(int w, int h)
 		{
 			var tw = new GDIPTextureWrapper
 			{

@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 {
 	public partial class QuickNES
 	{
-		private unsafe void InitMemoryDomains()
+		private void InitMemoryDomains()
 		{
 			List<MemoryDomain> mm = new List<MemoryDomain>();
 			for (int i = 0; ; i++)

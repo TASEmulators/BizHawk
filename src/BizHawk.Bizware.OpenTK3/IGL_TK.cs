@@ -577,7 +577,7 @@ namespace BizHawk.Bizware.OpenTK3
 			return ret;
 		}
 
-		public unsafe BitmapBuffer ResolveTexture2d(Texture2d tex)
+		public BitmapBuffer ResolveTexture2d(Texture2d tex)
 		{
 			//note - this is dangerous since it changes the bound texture. could we save it?
 			BindTexture2d(tex);

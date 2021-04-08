@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			[FieldOffset(1024)]
 			public IntPtr Data;
 
-			public unsafe IntPtr GetDataOrThrow()
+			public IntPtr GetDataOrThrow()
 			{
 				if (ErrorMessageStart != 0)
 				{

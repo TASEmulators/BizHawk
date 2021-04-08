@@ -218,7 +218,7 @@ namespace BizHawk.Bizware.OpenTK3
 			DrawInternal(art, x, y, width, height);
 		}
 
-		private unsafe void DrawInternal(Texture2d tex, float x, float y, float w, float h)
+		private void DrawInternal(Texture2d tex, float x, float y, float w, float h)
 		{
 			Art art = new Art((ArtManager)null);
 			art.Width = w;
@@ -258,7 +258,7 @@ namespace BizHawk.Bizware.OpenTK3
 			}
 		}
 
-		private unsafe void PrepDrawSubrectInternal(Texture2d tex)
+		private void PrepDrawSubrectInternal(Texture2d tex)
 		{
 			if (sTexture != tex)
 			{
@@ -330,7 +330,7 @@ namespace BizHawk.Bizware.OpenTK3
 #endif
 		}
 
-		private unsafe void DrawSubrectInternal(Texture2d tex, float x, float y, float w, float h, float u0, float v0, float u1, float v1)
+		private void DrawSubrectInternal(Texture2d tex, float x, float y, float w, float h, float u0, float v0, float u1, float v1)
 		{
 			PrepDrawSubrectInternal(tex);
 			EmitRectangleInternal(x, y, w, h, u0, v0, u1, v1);

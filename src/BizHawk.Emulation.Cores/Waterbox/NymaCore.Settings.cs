@@ -9,7 +9,7 @@ using NymaTypes;
 
 namespace BizHawk.Emulation.Cores.Waterbox
 {
-	unsafe partial class NymaCore : ISettable<NymaCore.NymaSettings, NymaCore.NymaSyncSettings>
+	public partial class NymaCore : ISettable<NymaCore.NymaSettings, NymaCore.NymaSyncSettings>
 	{
 		public NymaSettingsInfo SettingsInfo { get; private set; }
 		private NymaSettings _settings;

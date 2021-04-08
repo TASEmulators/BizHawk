@@ -16,7 +16,7 @@ namespace BizHawk.Client.Common
 		private BitmapData _bmpData;
 		private readonly int[] _pixels;
 
-		public unsafe void Clear()
+		public void Clear()
 		{
 			FromBitmap(false);
 			Util.Memset(PixelPtr, 0, Stride * Height);
@@ -37,7 +37,7 @@ namespace BizHawk.Client.Common
 			return Graphics.FromImage(_bmp);
 		}
 
-		public unsafe void ToBitmap(bool copy=true)
+		public void ToBitmap(bool copy = true)
 		{
 			if (_isBitmap) return;
 			_isBitmap = true;
@@ -70,7 +70,7 @@ namespace BizHawk.Client.Common
 
 		private bool _isBitmap;
 
-		public unsafe void FromBitmap(bool copy = true)
+		public void FromBitmap(bool copy = true)
 		{
 			if (!_isBitmap)
 			{

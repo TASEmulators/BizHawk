@@ -80,7 +80,7 @@ namespace BizHawk.Bizware.BizwareGL
 			UnlockBits(CurrLock);
 		}
 
-		public unsafe void YFlip()
+		public void YFlip()
 		{
 			//TODO - could be faster
 			var bmpdata = LockBits();
@@ -107,7 +107,7 @@ namespace BizHawk.Bizware.BizwareGL
 		/// <summary>
 		/// Makes sure the alpha channel is clean and optionally y-flips
 		/// </summary>
-		public unsafe void Normalize(bool yflip)
+		public void Normalize(bool yflip)
 		{
 			var bmpdata = LockBits();
 			int[] newPixels = new int[Width * Height];
@@ -380,7 +380,7 @@ namespace BizHawk.Bizware.BizwareGL
 		/// <summary>
 		/// Loads the BitmapBuffer from a source buffer, which is expected to be the right pixel format
 		/// </summary>
-		public unsafe void LoadFrom(int width, int stride, int height, byte* data, BitmapLoadOptions options)
+		public void LoadFrom(int width, int stride, int height, byte* data, BitmapLoadOptions options)
 		{
 			bool cleanup = options.CleanupAlpha0;
 			Width = width;
@@ -447,7 +447,7 @@ namespace BizHawk.Bizware.BizwareGL
 		/// <summary>
 		/// clears this instance to (0,0,0,0) -- without allocating a new array (to avoid GC churn)
 		/// </summary>
-		public unsafe void ClearWithoutAlloc()
+		public void ClearWithoutAlloc()
 		{
 			//http://techmikael.blogspot.com/2009/12/filling-array-with-default-value.html
 			//this guy says its faster
@@ -498,7 +498,7 @@ namespace BizHawk.Bizware.BizwareGL
 		/// <summary>
 		/// Dumps this BitmapBuffer to a new System.Drawing.Bitmap
 		/// </summary>
-		public unsafe Bitmap ToSysdrawingBitmap()
+		public Bitmap ToSysdrawingBitmap()
 		{
 			if (WrappedBitmap != null)
 				return (Bitmap)WrappedBitmap.Clone();
@@ -514,7 +514,7 @@ namespace BizHawk.Bizware.BizwareGL
 		/// Dumps this BitmapBuffer to an existing System.Drawing.Bitmap.
 		/// Some features of this may not be super fast (in particular, 32bpp to 24bpp conversion; we might fix that later with a customized loop)
 		/// </summary>
-		public unsafe void ToSysdrawingBitmap(Bitmap bmp)
+		public void ToSysdrawingBitmap(Bitmap bmp)
 		{
 			if (WrappedBitmap != null)
 			{

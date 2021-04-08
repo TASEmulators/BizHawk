@@ -37,7 +37,7 @@ namespace BizHawk.BizInvoke
 		/// Didn't I have code somewhere else to do this already?
 		/// </summary>
 		/// <returns></returns>
-		public static unsafe int ComputeClassFieldOffset()
+		public static int ComputeClassFieldOffset()
 		{
 			var c = new CF();
 			int ret;
@@ -48,7 +48,7 @@ namespace BizHawk.BizInvoke
 			}
 			return ret;
 		}
-		public static unsafe int ComputeStringOffset()
+		public static int ComputeStringOffset()
 		{
 			var s = new string(new char[0]);
 			int ret;

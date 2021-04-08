@@ -636,7 +636,7 @@ namespace BizHawk.Client.EmuHawk
 
 			private static bool FAILED(int hr) => hr < 0;
 
-			private static unsafe int AVISaveOptions(IntPtr stream, ref AVIWriterImports.AVICOMPRESSOPTIONS opts, IntPtr owner)
+			private static int AVISaveOptions(IntPtr stream, ref AVIWriterImports.AVICOMPRESSOPTIONS opts, IntPtr owner)
 			{
 				fixed (AVIWriterImports.AVICOMPRESSOPTIONS* _popts = &opts)
 				{
@@ -847,7 +847,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// todo - why couldnt this take an ISoundProvider? it could do the timekeeping as well.. hmm
-			public unsafe void AddSamples(short[] samples)
+			public void AddSamples(short[] samples)
 			{
 				int todo = samples.Length;
 				int idx = 0;
@@ -868,7 +868,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			private unsafe void FlushBufferedAudio()
+			private void FlushBufferedAudio()
 			{
 				int todo = _outStatus.audio_buffered_shorts;
 				int todo_realsamples = todo / 2;
@@ -888,7 +888,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			/// <exception cref="InvalidOperationException">attempted frame resize during encoding</exception>
-			public unsafe void AddFrame(IVideoProvider source)
+			public void AddFrame(IVideoProvider source)
 			{
 				const int AVIIF_KEYFRAME = 0x00000010;
 

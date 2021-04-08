@@ -554,7 +554,7 @@ namespace BizHawk.Bizware.DirectX
 			}
 		}
 
-		public unsafe void SetPipelineUniformMatrix(PipelineUniform uniform, Matrix4 mat, bool transpose)
+		public void SetPipelineUniformMatrix(PipelineUniform uniform, Matrix4 mat, bool transpose)
 		{
 			if (uniform.Owner == null)
 			{
@@ -568,7 +568,7 @@ namespace BizHawk.Bizware.DirectX
 			}
 		}
 
-		public unsafe void SetPipelineUniformMatrix(PipelineUniform uniform, ref Matrix4 mat, bool transpose)
+		public void SetPipelineUniformMatrix(PipelineUniform uniform, ref Matrix4 mat, bool transpose)
 		{
 			if (uniform.Owner == null)
 			{
@@ -617,7 +617,7 @@ namespace BizHawk.Bizware.DirectX
 			}
 		}
 
-		public unsafe void SetPipelineUniform(PipelineUniform uniform, Vector4[] values)
+		public void SetPipelineUniform(PipelineUniform uniform, Vector4[] values)
 		{
 			if (uniform.Owner == null) return; // uniform was optimized out
 			var v = new SlimDX.Vector4[values.Length];
@@ -688,7 +688,7 @@ namespace BizHawk.Bizware.DirectX
 		}
 
 		/// <exception cref="InvalidOperationException">GDI+ call returned unexpected data</exception>
-		public unsafe void LoadTextureData(Texture2d tex, BitmapBuffer bmp)
+		public void LoadTextureData(Texture2d tex, BitmapBuffer bmp)
 		{
 			sdi.BitmapData bmpData = bmp.LockBits();
 			var tw = tex.Opaque as TextureWrapper;
@@ -717,7 +717,7 @@ namespace BizHawk.Bizware.DirectX
 		}
 
 		/// <exception cref="InvalidOperationException">SlimDX call returned unexpected data</exception>
-		public unsafe BitmapBuffer ResolveTexture2d(Texture2d tex)
+		public BitmapBuffer ResolveTexture2d(Texture2d tex)
 		{
 			//TODO - lazy create and cache resolving target in RT
 			var target = new Texture(Dev, tex.IntWidth, tex.IntHeight, 1, Usage.None, Format.A8R8G8B8, Pool.SystemMemory);
