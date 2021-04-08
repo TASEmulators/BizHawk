@@ -1,4 +1,3 @@
-using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
@@ -10,7 +9,7 @@ namespace BizHawk.Client.Common
 	/// This is a wrapper for a Bitmap, basically, which can also be a int[].
 	/// It should be phased out, in favor of BitmapBuffer and Texture2d's
 	/// </summary>
-	public unsafe class DisplaySurface : IDisposable
+	public unsafe class DisplaySurface : IDisplaySurface
 	{
 		private Bitmap _bmp;
 		private BitmapData _bmpData;
@@ -28,9 +27,6 @@ namespace BizHawk.Client.Common
 			return _bmp;
 		}
 
-		/// <summary>
-		/// returns a Graphics object used to render to this surface. be sure to dispose it!
-		/// </summary>
 		public Graphics GetGraphics()
 		{
 			ToBitmap();

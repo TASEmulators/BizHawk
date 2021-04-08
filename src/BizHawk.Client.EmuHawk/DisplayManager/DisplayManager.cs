@@ -1097,24 +1097,24 @@ namespace BizHawk.Client.EmuHawk
 		private bool? _lastVsyncSetting;
 		private GraphicsControl _lastVsyncSettingGraphicsControl;
 
-		private readonly Dictionary<DisplaySurfaceID, DisplaySurface> _apiHawkIDToSurface = new();
+		private readonly Dictionary<DisplaySurfaceID, IDisplaySurface> _apiHawkIDToSurface = new();
 
-		/// <remarks>Can't this just be a field/prop of <see cref="DisplaySurface"/>? --yoshi</remarks>
-		private readonly Dictionary<DisplaySurface, DisplaySurfaceID> _apiHawkSurfaceToID = new();
+		/// <remarks>Can't this just be a prop of <see cref="IDisplaySurface"/>? --yoshi</remarks>
+		private readonly Dictionary<IDisplaySurface, DisplaySurfaceID> _apiHawkSurfaceToID = new();
 
 		private readonly Dictionary<DisplaySurfaceID, SwappableDisplaySurfaceSet> _apiHawkSurfaceSets = new();
 
 		/// <summary>
 		/// Peeks a locked lua surface, or returns null if it isn't locked
 		/// </summary>
-		public DisplaySurface PeekApiHawkLockedSurface(DisplaySurfaceID surfaceID)
+		public IDisplaySurface PeekApiHawkLockedSurface(DisplaySurfaceID surfaceID)
 		{
 			if (_apiHawkIDToSurface.ContainsKey(surfaceID))
 				return _apiHawkIDToSurface[surfaceID];
 			return null;
 		}
 
-		public DisplaySurface LockApiHawkSurface(DisplaySurfaceID surfaceID, bool clear)
+		public IDisplaySurface LockApiHawkSurface(DisplaySurfaceID surfaceID, bool clear)
 		{
 			if (_apiHawkIDToSurface.ContainsKey(surfaceID))
 			{
@@ -1141,7 +1141,7 @@ namespace BizHawk.Client.EmuHawk
 				_ => throw new ArgumentException(message: "not a valid enum member", paramName: nameof(surfaceID))
 			};
 
-			DisplaySurface ret = sdss.AllocateSurface(width, height, clear);
+			IDisplaySurface ret = sdss.AllocateSurface(width, height, clear);
 			_apiHawkIDToSurface[surfaceID] = ret;
 			_apiHawkSurfaceToID[ret] = surfaceID;
 			return ret;
@@ -1167,19 +1167,20 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		/// <summary>unlocks this DisplaySurface which had better have been locked as a lua surface</summary>
+		/// <summary>unlocks this IDisplaySurface which had better have been locked as a lua surface</summary>
 		/// <exception cref="InvalidOperationException">already unlocked</exception>
-		public void UnlockApiHawkSurface(DisplaySurface surface)
+		public void UnlockApiHawkSurface(IDisplaySurface surface)
 		{
-			if (!_apiHawkSurfaceToID.ContainsKey(surface))
+			if (surface is not DisplaySurface dispSurfaceImpl) throw new ArgumentException("o noes", nameof(surface));
+			if (!_apiHawkSurfaceToID.ContainsKey(dispSurfaceImpl))
 			{
 				throw new InvalidOperationException("Surface was not locked as a lua surface");
 			}
 
-			var surfaceID = _apiHawkSurfaceToID[surface];
-			_apiHawkSurfaceToID.Remove(surface);
+			var surfaceID = _apiHawkSurfaceToID[dispSurfaceImpl];
+			_apiHawkSurfaceToID.Remove(dispSurfaceImpl);
 			_apiHawkIDToSurface.Remove(surfaceID);
-			_apiHawkSurfaceSets[surfaceID].SetPending(surface);
+			_apiHawkSurfaceSets[surfaceID].SetPending(dispSurfaceImpl);
 		}
 
 		// helper classes:
