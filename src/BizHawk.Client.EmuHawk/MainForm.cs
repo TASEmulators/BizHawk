@@ -26,7 +26,6 @@ using BizHawk.Emulation.Cores.Nintendo.GBA;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.Nintendo.N64;
-using BizHawk.Emulation.Cores.Nintendo.GBHawkLink;
 
 using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Client.EmuHawk.CoreExtensions;
@@ -38,7 +37,7 @@ using BizHawk.Emulation.Cores.Consoles.NEC.PCE;
 using BizHawk.Emulation.Cores.Nintendo.SNES9X;
 using BizHawk.Emulation.Cores.Consoles.SNK;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
-using BizHawk.Emulation.Cores.Consoles.Nintendo.Faust;
+using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -1924,61 +1923,13 @@ namespace BizHawk.Client.EmuHawk
 
 			switch (Emulator.SystemId)
 			{
-				default:
-					DisplayDefaultCoreMenu();
-					break;
 				case "NULL":
-					break;
-				case "TI83":
-					TI83SubMenu.Visible = true;
-					break;
-				case "NES":
-					NESSubMenu.Visible = true;
-					break;
-				case "GB":
-				case "GBC":
-					GBSubMenu.Visible = true;
-					break;
-				case "NDS":
-					NDSSubMenu.Visible = true;
 					break;
 				case "A78":
 					A7800SubMenu.Visible = true;
 					break;
-				case "PSX":
-					PSXSubMenu.Visible = true;
-					break;
-				case "SNES":
-				case "SGB":
-					if (Emulator is LibsnesCore bsnes)
-					{
-						SNESSubMenu.Text = bsnes.IsSGB ? "&SGB" : "&SNES";
-						SNESSubMenu.Visible = true;
-					}
-					else if (Emulator is Snes9x || Emulator is Faust)
-					{
-						DisplayDefaultCoreMenu();
-					}
-					else if (Emulator is Sameboy)
-					{
-						GBSubMenu.Visible = true;
-					}
-					break;
-				case "Coleco":
-					ColecoSubMenu.Visible = true;
-					break;
-				case "N64":
-					N64SubMenu.Visible = true;
-					break;
-				case "DGB":
-					if (Emulator is GBHawkLink)
-					{
-						DisplayDefaultCoreMenu();
-					}
-					else
-					{
-						DGBSubMenu.Visible = true;
-					}
+				case "AmstradCPC":
+					amstradCPCToolStripMenuItem.Visible = true;
 					break;
 				case "AppleII":
 					AppleSubMenu.Visible = true;
@@ -1986,14 +1937,48 @@ namespace BizHawk.Client.EmuHawk
 				case "C64":
 					C64SubMenu.Visible = true;
 					break;
+				case "Coleco":
+					ColecoSubMenu.Visible = true;
+					break;
 				case "INTV":
 					IntvSubMenu.Visible = true;
+					break;
+				case "N64":
+					N64SubMenu.Visible = true;
+					break;
+				case "NDS":
+					NDSSubMenu.Visible = true;
+					break;
+				case "NES":
+					NESSubMenu.Visible = true;
+					break;
+				case "PSX":
+					PSXSubMenu.Visible = true;
+					break;
+				case "TI83":
+					TI83SubMenu.Visible = true;
 					break;
 				case "ZXSpectrum":
 					zXSpectrumToolStripMenuItem.Visible = true;
 					break;
-				case "AmstradCPC":
-					amstradCPCToolStripMenuItem.Visible = true;
+				case "DGB" when Emulator is GambatteLink:
+					DGBSubMenu.Visible = true;
+					break;
+				case "GB":
+				case "GBC":
+				case "SGB" when Emulator is Sameboy:
+					GBSubMenu.Visible = true;
+					break;
+				case "SNES" when Emulator is LibsnesCore { IsSGB: true }: // doesn't use "SGB" sysID
+					SNESSubMenu.Text = "&SGB";
+					SNESSubMenu.Visible = true;
+					break;
+				case "SNES" when Emulator is LibsnesCore { IsSGB: false }:
+					SNESSubMenu.Text = "&SNES";
+					SNESSubMenu.Visible = true;
+					break;
+				default:
+					DisplayDefaultCoreMenu();
 					break;
 			}
 		}
