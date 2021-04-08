@@ -38,9 +38,13 @@ namespace BizHawk.Client.Common
 	public class TasBranchCollection : List<TasBranch>, ITasBranchCollection
 	{
 		private readonly ITasMovie _movie;
-		public TasBranchCollection(ITasMovie movie)
+
+		private readonly IQuickBmpFile _quickBmpFile;
+
+		public TasBranchCollection(ITasMovie movie, IQuickBmpFile quickBmpFile)
 		{
 			_movie = movie;
+			_quickBmpFile = quickBmpFile;
 		}
 
 		public int Current { get; set; } = -1;
@@ -147,13 +151,13 @@ namespace BizHawk.Client.Common
 				bs.PutLump(nframebuffer, delegate(Stream s)
 				{
 					var vp = new BitmapBufferVideoProvider(b.OSDFrameBuffer);
-					QuickBmpFile.Save(vp, s, b.OSDFrameBuffer.Width, b.OSDFrameBuffer.Height);
+					_quickBmpFile.Save(vp, s, b.OSDFrameBuffer.Width, b.OSDFrameBuffer.Height);
 				});
 
 				bs.PutLump(ncoreframebuffer, delegate(Stream s)
 				{
 					var vp = new BitmapBufferVideoProvider(b.CoreFrameBuffer);
-					QuickBmpFile.Save(vp, s, b.CoreFrameBuffer.Width, b.CoreFrameBuffer.Height);
+					_quickBmpFile.Save(vp, s, b.CoreFrameBuffer.Width, b.CoreFrameBuffer.Height);
 				});
 
 				bs.PutLump(nmarkers, delegate(TextWriter tw)
@@ -240,13 +244,13 @@ namespace BizHawk.Client.Common
 
 				bl.GetLump(nframebuffer, true, delegate(Stream s, long length)
 				{
-					QuickBmpFile.LoadAuto(s, out var vp);
+					_quickBmpFile.LoadAuto(s, out var vp);
 					b.OSDFrameBuffer = new BitmapBuffer(vp.BufferWidth, vp.BufferHeight, vp.GetVideoBuffer());
 				});
 
 				bl.GetLump(ncoreframebuffer, false, delegate(Stream s, long length)
 				{
-					QuickBmpFile.LoadAuto(s, out var vp);
+					_quickBmpFile.LoadAuto(s, out var vp);
 					b.CoreFrameBuffer = new BitmapBuffer(vp.BufferWidth, vp.BufferHeight, vp.GetVideoBuffer());
 				});
 
