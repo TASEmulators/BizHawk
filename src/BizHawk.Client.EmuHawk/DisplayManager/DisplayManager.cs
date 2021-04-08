@@ -31,6 +31,8 @@ namespace BizHawk.Client.EmuHawk
 	/// </summary>
 	public class DisplayManager : IDisplayManagerForApi, IWindowCoordsTransformer, IDisposable
 	{
+		private static DisplaySurface CreateDisplaySurface(int w, int h) => new(w, h);
+
 		private class DisplayManagerRenderTargetProvider : IRenderTargetProvider
 		{
 			private readonly Func<Size, RenderTarget> _callback;
@@ -129,8 +131,8 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			_apiHawkSurfaceSets[DisplaySurfaceID.EmuCore] = new SwappableDisplaySurfaceSet();
-			_apiHawkSurfaceSets[DisplaySurfaceID.Client] = new SwappableDisplaySurfaceSet();
+			_apiHawkSurfaceSets[DisplaySurfaceID.EmuCore] = new(CreateDisplaySurface);
+			_apiHawkSurfaceSets[DisplaySurfaceID.Client] = new(CreateDisplaySurface);
 			_apiHawkSurfaceFrugalizers[DisplaySurfaceID.EmuCore] = new TextureFrugalizer(_gl);
 			_apiHawkSurfaceFrugalizers[DisplaySurfaceID.Client] = new TextureFrugalizer(_gl);
 
@@ -1102,7 +1104,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <remarks>Can't this just be a prop of <see cref="IDisplaySurface"/>? --yoshi</remarks>
 		private readonly Dictionary<IDisplaySurface, DisplaySurfaceID> _apiHawkSurfaceToID = new();
 
-		private readonly Dictionary<DisplaySurfaceID, SwappableDisplaySurfaceSet> _apiHawkSurfaceSets = new();
+		private readonly Dictionary<DisplaySurfaceID, SwappableDisplaySurfaceSet<DisplaySurface>> _apiHawkSurfaceSets = new();
 
 		/// <summary>
 		/// Peeks a locked lua surface, or returns null if it isn't locked
@@ -1123,7 +1125,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (!_apiHawkSurfaceSets.TryGetValue(surfaceID, out var sdss))
 			{
-				sdss = new SwappableDisplaySurfaceSet();
+				sdss = new(CreateDisplaySurface);
 				_apiHawkSurfaceSets.Add(surfaceID, sdss);
 			}
 
@@ -1171,7 +1173,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <exception cref="InvalidOperationException">already unlocked</exception>
 		public void UnlockApiHawkSurface(IDisplaySurface surface)
 		{
-			if (surface is not DisplaySurface dispSurfaceImpl) throw new ArgumentException("o noes", nameof(surface));
+			if (surface is not DisplaySurface dispSurfaceImpl) throw new ArgumentException("don't mix " + nameof(IDisplaySurface) + " implementations!", nameof(surface));
 			if (!_apiHawkSurfaceToID.ContainsKey(dispSurfaceImpl))
 			{
 				throw new InvalidOperationException("Surface was not locked as a lua surface");
