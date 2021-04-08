@@ -1153,22 +1153,16 @@ namespace BizHawk.Client.EmuHawk
 			{
 				try
 				{
-					var surf = PeekApiHawkLockedSurface(kvp.Key);
-					DisplaySurface surfLocked = null;
-					if (surf == null)
+					if (PeekApiHawkLockedSurface(kvp.Key) == null)
 					{
-						surfLocked = LockApiHawkSurface(kvp.Key, true);
+						var surfLocked = LockApiHawkSurface(kvp.Key, true);
+						if (surfLocked != null) UnlockApiHawkSurface(surfLocked);
 					}
-
-					if (surfLocked != null)
-					{
-						UnlockApiHawkSurface(surfLocked);
-					}
-
 					_apiHawkSurfaceSets[kvp.Key].SetPending(null);
 				}
 				catch (InvalidOperationException)
 				{
+					// ignored
 				}
 			}
 		}
