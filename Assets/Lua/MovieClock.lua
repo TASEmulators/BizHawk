@@ -1,16 +1,18 @@
 while true do
 	if (movie.isloaded()) then
 		if movie.getheader()["Core"] == "Gambatte" then
-			fps = 2 ^ 21;
-			frames = emu.totalexecutedcycles();
+			clockrate = 2 ^ 21;
+			cycles = emu.totalexecutedcycles();
+			tseconds = (cycles / clockrate);
 		elseif movie.getheader()["Core"] == "SubGBHawk" then
-			fps = 2 ^ 22;
-			frames = emu.totalexecutedcycles();
+			clockrate = 2 ^ 22;
+			cycles = emu.totalexecutedcycles();
+			tseconds = (cycles / clockrate);
 		else
 			fps = movie.getfps();
 			frames = emu.framecount();
+			tseconds = (frames / fps);
 		end
-		tseconds = (frames / fps);
 		secondsraw = tseconds % 60;
 		shift = 10 ^ 2;
 		seconds = math.floor((secondsraw * shift) + 0.5) / shift;
