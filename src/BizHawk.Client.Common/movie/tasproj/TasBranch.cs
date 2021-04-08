@@ -240,16 +240,14 @@ namespace BizHawk.Client.Common
 
 				bl.GetLump(nframebuffer, true, delegate(Stream s, long length)
 				{
-					var vp = new QuickBmpFile.LoadedBMP();
-					QuickBmpFile.Load(vp, s);
-					b.OSDFrameBuffer = new BitmapBuffer(vp.BufferWidth, vp.BufferHeight, vp.VideoBuffer);
+					QuickBmpFile.LoadAuto(s, out var vp);
+					b.OSDFrameBuffer = new BitmapBuffer(vp.BufferWidth, vp.BufferHeight, vp.GetVideoBuffer());
 				});
 
 				bl.GetLump(ncoreframebuffer, false, delegate(Stream s, long length)
 				{
-					var vp = new QuickBmpFile.LoadedBMP();
-					QuickBmpFile.Load(vp, s);
-					b.CoreFrameBuffer = new BitmapBuffer(vp.BufferWidth, vp.BufferHeight, vp.VideoBuffer);
+					QuickBmpFile.LoadAuto(s, out var vp);
+					b.CoreFrameBuffer = new BitmapBuffer(vp.BufferWidth, vp.BufferHeight, vp.GetVideoBuffer());
 				});
 
 				b.Markers = new TasMovieMarkerList(movie);

@@ -333,5 +333,7 @@ namespace BizHawk.Client.Common
 
 			s.Write(dst, 0, dst.Length);
 		}
+
+		public readonly bool LoadAuto(Stream s, out IVideoProvider vp) => Load(vp = new LoadedBMP(), s);
 	}
 }
