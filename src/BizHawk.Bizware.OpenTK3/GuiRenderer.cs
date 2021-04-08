@@ -253,7 +253,7 @@ namespace BizHawk.Bizware.OpenTK3
 
 			fixed (float* pData = &data[0])
 			{
-				Owner.BindArrayData(pData);
+				Owner.BindArrayData(new(pData));
 				Owner.DrawArrays(PrimitiveType.TriangleStrip, 0, 4);
 			}
 		}
@@ -322,7 +322,7 @@ namespace BizHawk.Bizware.OpenTK3
 			pData[30] = CornerColors[3].Z;
 			pData[31] = CornerColors[3].W;
 
-			Owner.BindArrayData(pData);
+			Owner.BindArrayData(new(pData));
 			Owner.DrawArrays(PrimitiveType.TriangleStrip, 0, 4);
 
 #if DEBUG

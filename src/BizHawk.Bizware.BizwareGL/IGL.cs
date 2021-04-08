@@ -87,7 +87,7 @@ namespace BizHawk.Bizware.BizwareGL
 		/// <summary>
 		/// Binds array data for use with the currently-bound pipeline's VertexLayout
 		/// </summary>
-		unsafe void BindArrayData(void* pData);
+		void BindArrayData(IntPtr pData);
 
 		/// <summary>
 		/// Begins a rendering scene; use before doing any draw calls, as per normal

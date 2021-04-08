@@ -386,10 +386,7 @@ namespace BizHawk.Bizware.OpenTK3
 			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, mode);
 		}
 
-		public unsafe void BindArrayData(void* pData)
-		{
-			MyBindArrayData(sStatePendingVertexLayout, pData);
-		}
+		public void BindArrayData(IntPtr pData) => MyBindArrayData(sStatePendingVertexLayout, pData);
 
 		public void DrawArrays(BizGL.PrimitiveType mode, int first, int count)
 		{
@@ -749,7 +746,7 @@ namespace BizHawk.Bizware.OpenTK3
 			currBindings.Clear();
 		}
 
-		private unsafe void MyBindArrayData(VertexLayout layout, void* pData)
+		private void MyBindArrayData(VertexLayout layout, IntPtr pData)
 		{
 			UnbindVertexAttributes();
 
@@ -781,7 +778,7 @@ namespace BizHawk.Bizware.OpenTK3
 						(VertexAttribPointerType) (int) kvp.Value.AttribType, // these are the same enum
 						kvp.Value.Normalized,
 						kvp.Value.Stride,
-						new IntPtr(pData) + kvp.Value.Offset);
+						pData + kvp.Value.Offset);
 					GL.EnableVertexAttribArray(kvp.Key);
 					currBindings.Add(kvp.Key);
 				}
@@ -795,17 +792,17 @@ namespace BizHawk.Bizware.OpenTK3
 					{
 						case AttribUsage.Position:
 							GL.EnableClientState(ArrayCap.VertexArray);
-							GL.VertexPointer(kvp.Value.Components,VertexPointerType.Float,kvp.Value.Stride,new IntPtr(pData) + kvp.Value.Offset);
+							GL.VertexPointer(kvp.Value.Components,VertexPointerType.Float,kvp.Value.Stride,pData + kvp.Value.Offset);
 							break;
 						case AttribUsage.Texcoord0:
 							GL.ClientActiveTexture(TextureUnit.Texture0);
 							GL.EnableClientState(ArrayCap.TextureCoordArray);
-							GL.TexCoordPointer(kvp.Value.Components, TexCoordPointerType.Float, kvp.Value.Stride, new IntPtr(pData) + kvp.Value.Offset);
+							GL.TexCoordPointer(kvp.Value.Components, TexCoordPointerType.Float, kvp.Value.Stride, pData + kvp.Value.Offset);
 							break;
 						case AttribUsage.Texcoord1:
 							GL.ClientActiveTexture(TextureUnit.Texture1);
 							GL.EnableClientState(ArrayCap.TextureCoordArray);
-							GL.TexCoordPointer(kvp.Value.Components, TexCoordPointerType.Float, kvp.Value.Stride, new IntPtr(pData) + kvp.Value.Offset);
+							GL.TexCoordPointer(kvp.Value.Components, TexCoordPointerType.Float, kvp.Value.Stride, pData + kvp.Value.Offset);
 							GL.ClientActiveTexture(TextureUnit.Texture0);
 							break;
 						case AttribUsage.Color0:

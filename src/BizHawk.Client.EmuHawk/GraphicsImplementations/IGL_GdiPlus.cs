@@ -47,9 +47,7 @@ namespace BizHawk.Client.EmuHawk
 			_currentClearColor = color;
 		}
 		
-		public unsafe void BindArrayData(void* pData)
-		{
-		}
+		public void BindArrayData(IntPtr pData) {}
 
 		public void FreeTexture(Texture2d tex)
 		{

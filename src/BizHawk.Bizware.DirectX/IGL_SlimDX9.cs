@@ -951,10 +951,7 @@ namespace BizHawk.Bizware.DirectX
 			Dev.DrawUserPrimitives(pt, primCount, (void*)ptr, (uint)stride);
 		}
 
-		public unsafe void BindArrayData(void* pData)
-		{
-			_pVertexData = new IntPtr(pData);
-		}
+		public void BindArrayData(IntPtr pData) => _pVertexData = pData;
 
 		public void BeginScene()
 		{
