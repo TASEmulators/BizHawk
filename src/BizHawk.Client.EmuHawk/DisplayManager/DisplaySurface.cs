@@ -1,9 +1,11 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
+
+using BizHawk.Client.Common;
 using BizHawk.Common;
 
-namespace BizHawk.Client.Common
+namespace BizHawk.Client.EmuHawk
 {
 	/// <summary>
 	/// This is a wrapper for a Bitmap, basically, which can also be a int[].
