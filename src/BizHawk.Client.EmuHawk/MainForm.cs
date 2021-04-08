@@ -344,6 +344,11 @@ namespace BizHawk.Client.EmuHawk
 			ZXSpectrumExportSnapshotMenuItemMenuItem.Enabled = false;
 			ZXSpectrumExportSnapshotMenuItemMenuItem.Visible = false;
 #endif
+#if AVI_SUPPORT
+			SynclessRecordingMenuItem.Click += (_, _) => new SynclessRecordingTools(Config, Game, this).Run();
+#else
+			SynclessRecordingMenuItem.Enabled = false;
+#endif
 
 			Game = GameInfo.NullInstance;
 			_throttle = new Throttle();
@@ -3229,7 +3234,11 @@ namespace BizHawk.Client.EmuHawk
 
 			try
 			{
+#if AVI_SUPPORT
 				bool usingAvi = aw is AviWriter; // SO GROSS!
+#else
+				const bool usingAvi = false;
+#endif
 
 				if (_dumpaudiosync)
 				{

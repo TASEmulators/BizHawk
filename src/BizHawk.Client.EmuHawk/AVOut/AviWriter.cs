@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if AVI_SUPPORT
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
@@ -460,10 +461,12 @@ namespace BizHawk.Client.EmuHawk
 
 			public static void DeallocateAVICOMPRESSOPTIONS(ref AVIWriterImports.AVICOMPRESSOPTIONS opts)
 			{
+#endif
 #if false // test: increase stability by never freeing anything, ever
 				if (opts.lpParms != IntPtr.Zero) Win32Imports.HeapFree(Win32Imports.GetProcessHeap(), 0, opts.lpParms);
 				if (opts.lpFormat != IntPtr.Zero) Win32Imports.HeapFree(Win32Imports.GetProcessHeap(), 0, opts.lpFormat);
 #endif
+#if AVI_SUPPORT
 				opts.lpParms = IntPtr.Zero;
 				opts.lpFormat = IntPtr.Zero;
 			}
@@ -985,6 +988,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool UsesVideo => true;
 
+#endif
 #if false // API has changed
 		private static void TestAVI()
 		{
@@ -1017,5 +1021,7 @@ namespace BizHawk.Client.EmuHawk
 			aw.CloseFile();
 		}
 #endif
+#if AVI_SUPPORT
 	}
 }
+#endif

@@ -532,11 +532,6 @@ namespace BizHawk.Client.EmuHawk
 			StopAv();
 		}
 
-		private void SynclessRecordingMenuItem_Click(object sender, EventArgs e)
-		{
-			new SynclessRecordingTools(Config, Game, this).Run();
-		}
-
 		private void CaptureOSDMenuItem_Click(object sender, EventArgs e)
 		{
 			bool c = ((ToolStripMenuItem)sender).Checked;

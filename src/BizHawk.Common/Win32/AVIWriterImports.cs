@@ -1,5 +1,6 @@
 #nullable disable
 
+#if AVI_SUPPORT
 using System;
 using System.Runtime.InteropServices;
 
@@ -139,3 +140,4 @@ namespace BizHawk.Common
 		public static extern int AVIStreamWrite(IntPtr pavi, int lStart, int lSamples, IntPtr lpBuffer, int cbBuffer, int dwFlags, IntPtr plSampWritten, out int plBytesWritten);
 	}
 }
+#endif

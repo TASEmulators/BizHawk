@@ -869,7 +869,6 @@ namespace BizHawk.Client.EmuHawk
 			// SynclessRecordingMenuItem
 			// 
 			this.SynclessRecordingMenuItem.Text = "S&yncless Recording Tools";
-			this.SynclessRecordingMenuItem.Click += new System.EventHandler(this.SynclessRecordingMenuItem_Click);
 			// 
 			// ScreenshotSubMenu
 			// 
