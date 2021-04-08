@@ -86,7 +86,13 @@ namespace BizHawk.Client.Common
 
 			if (file.Extension == ".z64" || file.Extension == ".n64" || file.Extension == ".v64")
 			{
-				RomData = MutateSwapN64(RomData);
+				// Use a simple magic number to detect N64 rom format, then byteswap the ROM to ensure a consistent endianness/order
+				RomData = RomData[0] switch
+				{
+					0x37 => EndiannessUtils.ByteSwap16(RomData), // V64 format (byte swapped)
+					0x40 => EndiannessUtils.ByteSwap32(RomData), // N64 format (word swapped)
+					_ => RomData // Z64 format (no swap), or something unexpected; in either case do nothing
+				};
 			}
 
 			// note: this will be taking several hashes, of a potentially large amount of data.. yikes!
@@ -135,55 +141,6 @@ namespace BizHawk.Client.Common
 			}
 
 			return output;
-		}
-
-		private static unsafe byte[] MutateSwapN64(byte[] source)
-		{
-			// N64 roms are in one of the following formats:
-			//  .Z64 = No swapping
-			//  .N64 = Word Swapped
-			//  .V64 = Byte Swapped
-
-			// File extension does not always match the format
-			int size = source.Length;
-
-			// V64 format
-			fixed (byte* pSource = &source[0])
-			{
-				if (pSource[0] == 0x37)
-				{
-					for (int i = 0; i < size; i += 2)
-					{
-						byte temp = pSource[i];
-						pSource[i] = pSource[i + 1];
-						pSource[i + 1] = temp;
-					}
-				}
-
-				// N64 format
-				else if (pSource[0] == 0x40)
-				{
-					for (int i = 0; i < size; i += 4)
-					{
-						// output[i] = source[i + 3];
-						// output[i + 3] = source[i];
-						// output[i + 1] = source[i + 2];
-						// output[i + 2] = source[i + 1];
-						byte temp = pSource[i];
-						pSource[i] = pSource[i + 3];
-						pSource[i + 3] = temp;
-
-						temp = pSource[i + 1];
-						pSource[i + 1] = pSource[i + 2];
-						pSource[i + 2] = temp;
-					}
-				}
-				else // Z64 format (or some other unknown format)
-				{
-				}
-			}
-
-			return source;
 		}
 
 		private void CheckForPatchOptions()
