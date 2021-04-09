@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public Gameboy(CoreComm comm, GameInfo game, byte[] file, Gameboy.GambatteSettings settings, Gameboy.GambatteSyncSettings syncSettings, bool deterministic)
 		{
 			var ser = new BasicServiceProvider(this);
-			ser.Register<IDisassemblable>(new GBDisassembler());
+			ser.Register<IDisassemblable>(_disassembler);
 			ServiceProvider = ser;
 			Tracer = new TraceBuffer
 			{
@@ -157,6 +157,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				throw;
 			}
 		}
+
+		private readonly GBDisassembler _disassembler = new();
 
 		public string RomDetails { get; }
 

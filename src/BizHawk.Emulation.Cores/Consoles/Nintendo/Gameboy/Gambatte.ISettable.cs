@@ -17,6 +17,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public PutSettingsDirtyBits PutSettings(GambatteSettings o)
 		{
 			_settings = o;
+			_disassembler.UseRGBDSSyntax = _settings.RgbdsSyntax;
 			if (IsCGBMode())
 			{
 				SetCGBColors(_settings.CGBColors);
@@ -80,6 +81,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			{
 				GBPalette = (int[])DefaultPalette.Clone();
 				CGBColors = GBColors.ColorType.gambatte;
+				RgbdsSyntax = true;
 			}
 
 

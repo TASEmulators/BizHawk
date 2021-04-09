@@ -7,6 +7,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
 	public class GBDisassembler : VerifiedDisassembler
 	{
+		public bool UseRGBDSSyntax;
+
 		public override IEnumerable<string> AvailableCpus
 		{
 			get { yield return "Z80GB"; }
@@ -16,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public override string Disassemble(MemoryDomain m, uint addr, out int length)
 		{
-			string ret = LR35902.Disassemble((ushort)addr, a => m.PeekByte(a), out var tmp, false);
+			var ret = LR35902.Disassemble((ushort) addr, a => m.PeekByte(a), UseRGBDSSyntax, out var tmp);
 			length = tmp;
 			return ret;
 		}

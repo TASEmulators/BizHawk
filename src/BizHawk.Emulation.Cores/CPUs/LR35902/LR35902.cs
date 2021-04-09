@@ -142,7 +142,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 		}
 
 		// Execute instructions
-		public void ExecuteOne()
+		public void ExecuteOne(bool useRGBDSSyntax)
 		{
 			switch (instr_table[instr_pntr++])
 			{
@@ -177,7 +177,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 					else
 					{
 						OnExecFetch?.Invoke(RegPC);
-						if (TraceCallback != null && !CB_prefix) TraceCallback(State());
+						if (TraceCallback != null && !CB_prefix) TraceCallback(State(useRGBDSSyntax));
 						CDLCallback?.Invoke(RegPC, eCDLogMemFlags.FetchFirst);
 						FetchInstruction(ReadMemory(RegPC++));
 					}
@@ -354,7 +354,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 							});
 
 							OnExecFetch?.Invoke(RegPC);
-							if (TraceCallback != null && !CB_prefix) TraceCallback(State());
+							if (TraceCallback != null && !CB_prefix) TraceCallback(State(useRGBDSSyntax));
 							CDLCallback?.Invoke(RegPC, eCDLogMemFlags.FetchFirst);
 
 							FetchInstruction(ReadMemory(RegPC));
@@ -420,7 +420,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 							if (Halt_bug_3)
 							{
 								OnExecFetch?.Invoke(RegPC);
-								if (TraceCallback != null && !CB_prefix) TraceCallback(State());
+								if (TraceCallback != null && !CB_prefix) TraceCallback(State(useRGBDSSyntax));
 								CDLCallback?.Invoke(RegPC, eCDLogMemFlags.FetchFirst);
 
 								RegPC++;
@@ -436,7 +436,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 						else
 						{
 							OnExecFetch?.Invoke(RegPC);
-							if (TraceCallback != null && !CB_prefix) TraceCallback(State());
+							if (TraceCallback != null && !CB_prefix) TraceCallback(State(useRGBDSSyntax));
 							CDLCallback?.Invoke(RegPC, eCDLogMemFlags.FetchFirst);
 
 							if (Halt_bug_3)
@@ -563,7 +563,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 
 						stopped = false;
 						OnExecFetch?.Invoke(RegPC);
-						if (TraceCallback != null && !CB_prefix) TraceCallback(State());
+						if (TraceCallback != null && !CB_prefix) TraceCallback(State(useRGBDSSyntax));
 						CDLCallback?.Invoke(RegPC, eCDLogMemFlags.FetchFirst);
 						FetchInstruction(ReadMemory(RegPC++));
 
@@ -587,7 +587,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 					break;
 				case OP_G:
 					OnExecFetch?.Invoke(RegPC);
-					TraceCallback?.Invoke(State());
+					TraceCallback?.Invoke(State(useRGBDSSyntax));
 					CDLCallback?.Invoke(RegPC, eCDLogMemFlags.FetchFirst);
 
 					FetchInstruction(ReadMemory(RegPC)); // note no increment
@@ -752,11 +752,11 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 
 		public string TraceHeader => "LR35902: PC, machine code, mnemonic, operands, registers (A, F, B, C, D, E, H, L, SP), Cy, flags (ZNHCI)";
 
-		public TraceInfo State(bool disassemble = true)
+		public TraceInfo State(bool useRGBDSSyntax, bool disassemble = true)
 		{
 			return new TraceInfo
 			{
-				Disassembly = $"{(disassemble ? Disassemble(RegPC, ReadMemory, out _, false) : "---")} ".PadRight(40),
+				Disassembly = $"{(disassemble ? Disassemble(RegPC, ReadMemory, useRGBDSSyntax, out _) : "---")} ".PadRight(40),
 				RegisterInfo = string.Join(" ",
 					$"A:{Regs[A]:X2}",
 					$"F:{Regs[F]:X2}",

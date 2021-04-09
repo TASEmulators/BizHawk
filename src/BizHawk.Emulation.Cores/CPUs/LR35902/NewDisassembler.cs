@@ -1040,7 +1040,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 			"set 7, a", // ff
 		};
 
-		public static string Disassemble(ushort addr, Func<ushort, byte> reader, out ushort size, bool rgbds)
+		public static string Disassemble(ushort addr, Func<ushort, byte> reader, bool rgbds, out ushort size)
 		{
 			ushort origaddr = addr;
 			var bytes = new List<byte>
