@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			Tracer.Put(new TraceInfo
 			{
 				Disassembly =
-					LR35902.Disassemble((ushort)s[1], addr => LibGambatte.gambatte_cpuread(GambatteState, addr), out unused)
+					LR35902.Disassemble((ushort)s[1], addr => LibGambatte.gambatte_cpuread(GambatteState, addr), out unused, _settings.RgbdsSyntax)
 						.PadRight(36),
 				RegisterInfo =
 					string.Format(

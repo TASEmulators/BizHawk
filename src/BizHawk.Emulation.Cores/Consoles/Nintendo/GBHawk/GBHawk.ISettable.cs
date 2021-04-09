@@ -64,6 +64,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			[Description("CPU returns the actual CPU cycles executed, GBI returns the values needed for console verification")]
 			[DefaultValue(Cycle_Return.CPU)]
 			public Cycle_Return cycle_return_setting { get; set; }
+			
+			/*[DisplayName("Use RGBDS syntax")]
+			[Description("When true, rgbds' syntax is used for disassembly.")]
+			[DefaultValue(false)]
+			public bool Rgbds_syntax { get; set; }*/
 
 			public GBSettings Clone()
 			{

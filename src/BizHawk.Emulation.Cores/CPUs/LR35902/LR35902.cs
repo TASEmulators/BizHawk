@@ -756,7 +756,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 		{
 			return new TraceInfo
 			{
-				Disassembly = $"{(disassemble ? Disassemble(RegPC, ReadMemory, out _) : "---")} ".PadRight(40),
+				Disassembly = $"{(disassemble ? Disassemble(RegPC, ReadMemory, out _, false) : "---")} ".PadRight(40),
 				RegisterInfo = string.Join(" ",
 					$"A:{Regs[A]:X2}",
 					$"F:{Regs[F]:X2}",

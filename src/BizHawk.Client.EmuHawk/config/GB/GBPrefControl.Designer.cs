@@ -31,6 +31,7 @@
 			this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
 			this.buttonDefaults = new System.Windows.Forms.Button();
 			this.buttonPalette = new System.Windows.Forms.Button();
+			this.cbRgbdsSyntax = new System.Windows.Forms.CheckBox();
 			this.checkBoxMuted = new System.Windows.Forms.CheckBox();
 			this.cbDisplayBG = new System.Windows.Forms.CheckBox();
 			this.cbDisplayOBJ = new System.Windows.Forms.CheckBox();
@@ -120,9 +121,22 @@
 			this.cbDisplayWIN.UseVisualStyleBackColor = true;
 			this.cbDisplayWIN.CheckedChanged += new System.EventHandler(this.CbDisplayWin_CheckedChanged);
 			// 
+			// cbRgbdsSyntax
+			// 
+			this.cbRgbdsSyntax.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.cbRgbdsSyntax.AutoSize = true;
+			this.cbRgbdsSyntax.Location = new System.Drawing.Point(265, 292);
+			this.cbRgbdsSyntax.Name = "cbRgbdsSyntax";
+			this.cbRgbdsSyntax.Size = new System.Drawing.Size(55, 17);
+			this.cbRgbdsSyntax.TabIndex = 7;
+			this.cbRgbdsSyntax.Text = "RGBDS";
+			this.cbRgbdsSyntax.UseVisualStyleBackColor = true;
+			this.cbRgbdsSyntax.CheckedChanged += new System.EventHandler(this.CbRgbdsSyntax_CheckedChanged);
+			// 
 			// GBPrefControl
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
+			this.Controls.Add(this.cbRgbdsSyntax);
 			this.Controls.Add(this.cbDisplayWIN);
 			this.Controls.Add(this.cbDisplayOBJ);
 			this.Controls.Add(this.cbDisplayBG);
@@ -142,6 +156,7 @@
 		private System.Windows.Forms.PropertyGrid propertyGrid1;
 		private System.Windows.Forms.Button buttonDefaults;
 		private System.Windows.Forms.Button buttonPalette;
+		private System.Windows.Forms.CheckBox cbRgbdsSyntax;
 		private System.Windows.Forms.CheckBox checkBoxMuted;
 		private System.Windows.Forms.CheckBox cbDisplayBG;
 		private System.Windows.Forms.CheckBox cbDisplayOBJ;

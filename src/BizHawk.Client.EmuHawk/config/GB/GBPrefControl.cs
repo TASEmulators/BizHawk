@@ -42,6 +42,7 @@ namespace BizHawk.Client.EmuHawk
 			propertyGrid1.SelectedObject = _ss;
 			propertyGrid1.Enabled = movieSession.Movie.NotActive();
 			checkBoxMuted.Checked = _s.Muted;
+			cbRgbdsSyntax.Checked = _s.RgbdsSyntax;
 			cbDisplayBG.Checked = _s.DisplayBG;
 			cbDisplayOBJ.Checked = _s.DisplayOBJ;
 			cbDisplayWIN.Checked = _s.DisplayWindow;
@@ -82,6 +83,11 @@ namespace BizHawk.Client.EmuHawk
 		private void CheckBoxMuted_CheckedChanged(object sender, EventArgs e)
 		{
 			_s.Muted = ((CheckBox)sender).Checked;
+		}
+		
+		private void CbRgbdsSyntax_CheckedChanged(object sender, EventArgs e)
+		{
+			_s.RgbdsSyntax = ((CheckBox)sender).Checked;
 		}
 
 		private void CbDisplayBG_CheckedChanged(object sender, EventArgs e)

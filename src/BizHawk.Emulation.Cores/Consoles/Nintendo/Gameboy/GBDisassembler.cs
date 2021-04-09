@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public override string Disassemble(MemoryDomain m, uint addr, out int length)
 		{
-			string ret = LR35902.Disassemble((ushort)addr, a => m.PeekByte(a), out var tmp);
+			string ret = LR35902.Disassemble((ushort)addr, a => m.PeekByte(a), out var tmp, false);
 			length = tmp;
 			return ret;
 		}
