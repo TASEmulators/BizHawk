@@ -1048,18 +1048,18 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 				reader(addr++)
 			};
 
-			string result = rgbds ? rgbds_table[bytes[0]] : table[bytes[0]];
+			string result = (rgbds ? rgbds_table : table)[bytes[0]];
 			if (bytes[0] == 0xcb)
 			{
 				bytes.Add(reader(addr++));
-				result = rgbds ? rgbds_table[bytes[1] + 256] : table[bytes[1] + 256];
+				result = (rgbds ? rgbds_table : table)[bytes[1] + 256];
 			}
 
 			if (result.Contains("d8"))
 			{
 				byte d = reader(addr++);
 				bytes.Add(d);
-				result = rgbds ? result.Replace("d8", $"${d:X2}") : result.Replace("d8", $"#{d:X2}h");
+				result = result.Replace("d8", rgbds ? $"${d:X2}" : $"#{d:X2}h");
 			}
 			else if (result.Contains("d16"))
 			{
@@ -1067,7 +1067,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 				byte dhi = reader(addr++);
 				bytes.Add(dlo);
 				bytes.Add(dhi);
-				result = rgbds ? result.Replace("d16", $"${dhi:X2}{dlo:X2}") : result.Replace("d16", $"#{dhi:X2}{dlo:X2}h");
+				result = result.Replace("d16", rgbds ? $"${dhi:X2}{dlo:X2}" : $"#{dhi:X2}{dlo:X2}h");
 			}
 			else if (result.Contains("a16"))
 			{
@@ -1075,13 +1075,13 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 				byte dhi = reader(addr++);
 				bytes.Add(dlo);
 				bytes.Add(dhi);
-				result = rgbds ? result.Replace("a16", $"${dhi:X2}{dlo:X2}") : result.Replace("a16", $"#{dhi:X2}{dlo:X2}h");
+				result = result.Replace("a16", rgbds ? $"${dhi:X2}{dlo:X2}" : $"#{dhi:X2}{dlo:X2}h");
 			}
 			else if (result.Contains("a8"))
 			{
 				byte d = reader(addr++);
 				bytes.Add(d);
-				result = rgbds ? result.Replace("a8", $"$FF{d:X2}") : result.Replace("a8", $"#FF{d:X2}h");
+				result = result.Replace("a8", rgbds ? $"$FF{d:X2}" : $"#FF{d:X2}h");
 			}
 			else if (result.Contains("r8"))
 			{
@@ -1090,7 +1090,8 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 				int offs = d;
 				if (offs >= 128)
 					offs -= 256;
-				result = rgbds ? result.Replace("r8", $"${(ushort)(addr + offs):X4}") : result.Replace("r8", $"{(ushort)(addr + offs):X4}h");
+				var u = (ushort) (addr + offs);
+				result = result.Replace("r8", rgbds ? $"${u:X4}" : $"{u:X4}h");
 			}
 			var ret = new StringBuilder();
 			ret.Append($"{origaddr:X4}:  ");
