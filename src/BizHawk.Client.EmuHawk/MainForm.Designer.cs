@@ -949,7 +949,7 @@ namespace BizHawk.Client.EmuHawk
 			// LoadedCoreNameMenuItem
 			// 
 			this.LoadedCoreNameMenuItem.Enabled = false;
-			this.LoadedCoreNameMenuItem.Text = "Loaded core: NullHawk (NULL)";
+			this.LoadedCoreNameMenuItem.Text = "Loaded core: <core name> (sysID)";
 			// 
 			// ViewSubMenu
 			// 
@@ -2164,7 +2164,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// CoreNameStatusBarButton
 			// 
-			this.CoreNameStatusBarButton.Text = "Neshawk";
+			this.CoreNameStatusBarButton.Text = "<core name>";
 			// 
 			// ProfileFirstBootLabel
 			// 

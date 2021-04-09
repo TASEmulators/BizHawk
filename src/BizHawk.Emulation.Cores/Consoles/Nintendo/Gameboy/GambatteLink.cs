@@ -4,7 +4,7 @@ using BizHawk.Emulation.Common;
 namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
 	[Core(
-		"DualGambatte",
+		CoreNames.DualGambatte,
 		"sinamas/natt",
 		isPorted: true,
 		isReleased: true)]

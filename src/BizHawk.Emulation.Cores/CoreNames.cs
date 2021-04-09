@@ -8,23 +8,23 @@ namespace BizHawk.Emulation.Cores
 	/// </summary>
 	public static class CoreNames
 	{
-		public const string NesHawk = "NesHawk";
-		public const string SubNesHawk = "SubNESHawk";
-		public const string QuickNes = "QuickNes";
-		public const string Snes9X = "Snes9x";
 		public const string Bsnes = "BSNES";
-		public const string Mgba = "mGBA";
-		public const string GbHawk = "GBHawk";
-		public const string Gambatte = "Gambatte";
-		public const string SubGbHawk = "SubGBHawk";
-		public const string SameBoy = "SameBoy";
-		public const string PicoDrive = "PicoDrive";
-		public const string Gpgx = "Genplus-gx";
-		public const string PceHawk = "PCEHawk";
-		public const string TurboNyma = "TurboNyma";
-		public const string HyperNyma = "HyperNyma";
-		public const string Faust = "Faust";
 		public const string DualGambatte = "DualGambatte";
+		public const string Faust = "Faust";
+		public const string Gambatte = "Gambatte";
+		public const string GbHawk = "GBHawk";
 		public const string GBHawkLink = "GBHawkLink";
+		public const string Gpgx = "Genplus-gx";
+		public const string HyperNyma = "HyperNyma";
+		public const string Mgba = "mGBA";
+		public const string NesHawk = "NesHawk";
+		public const string PceHawk = "PCEHawk";
+		public const string PicoDrive = "PicoDrive";
+		public const string QuickNes = "QuickNes";
+		public const string SameBoy = "SameBoy";
+		public const string Snes9X = "Snes9x";
+		public const string SubGbHawk = "SubGBHawk";
+		public const string SubNesHawk = "SubNESHawk";
+		public const string TurboNyma = "TurboNyma";
 	}
 }
