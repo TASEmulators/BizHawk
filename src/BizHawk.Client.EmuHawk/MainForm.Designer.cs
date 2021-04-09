@@ -309,7 +309,7 @@ namespace BizHawk.Client.EmuHawk
 			this.ForumsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.FeaturesMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.AboutMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.Atari7800HawkCoreMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.A7800HawkCoreMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.MainStatusBar = new BizHawk.WinForms.Controls.StatusStripEx();
 			this.DumpStatusButton = new System.Windows.Forms.ToolStripDropDownButton();
 			this.EmuStatus = new BizHawk.WinForms.Controls.StatusLabelEx();
@@ -2001,9 +2001,9 @@ namespace BizHawk.Client.EmuHawk
 			this.AboutMenuItem.Text = "&About";
 			this.AboutMenuItem.Click += new System.EventHandler(this.AboutMenuItem_Click);
 			// 
-			// Atari7800HawkCoreMenuItem
+			// A7800HawkCoreMenuItem
 			// 
-			this.Atari7800HawkCoreMenuItem.Text = "Atari7800Hawk";
+			this.A7800HawkCoreMenuItem.Text = "A7800Hawk";
 			// 
 			// MainStatusBar
 			// 
@@ -2772,7 +2772,7 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SNESControllerConfigurationMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx C64DisksSubMenu;
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator36;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx Atari7800HawkCoreMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx A7800HawkCoreMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx zXSpectrumToolStripMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ZXSpectrumControllerConfigurationMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ZXSpectrumCoreEmulationSettingsMenuItem;

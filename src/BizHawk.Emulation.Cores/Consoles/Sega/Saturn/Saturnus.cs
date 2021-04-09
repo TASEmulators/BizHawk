@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 {
-	[Core("Saturnus",
+	[Core(CoreNames.Saturnus,
 		author: "Mednafen Team",
 		isPorted: true,
 		isReleased: true,

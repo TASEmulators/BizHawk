@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Cores.Consoles.SNK
 {
-	[Core("NeoPop",
+	[Core(CoreNames.NeoPop,
 		author: "Thomas Klausner, Mednafen Team",
 		isPorted: true,
 		isReleased: true,

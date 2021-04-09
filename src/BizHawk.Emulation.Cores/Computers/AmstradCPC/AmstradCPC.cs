@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 	/// * Main Initialization *
 	/// </summary>
 	[Core(
-		"CPCHawk",
+		CoreNames.CPCHawk,
 		"Asnivor",
 		isPorted: false,
 		isReleased: false)]

@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 {
-	[Core("Virtual Boyee",
+	[Core(CoreNames.VirtualBoyee,
 		author: "Mednafen Team",
 		isPorted: true,
 		isReleased: true,

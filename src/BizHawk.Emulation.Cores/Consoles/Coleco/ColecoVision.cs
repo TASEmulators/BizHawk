@@ -5,7 +5,7 @@ using System;
 namespace BizHawk.Emulation.Cores.ColecoVision
 {
 	[Core(
-		"ColecoHawk",
+		CoreNames.ColecoHawk,
 		"Vecna",
 		isPorted: false,
 		isReleased: true)]

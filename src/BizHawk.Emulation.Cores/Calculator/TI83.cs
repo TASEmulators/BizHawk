@@ -7,7 +7,7 @@ using BizHawk.Emulation.Cores.Components.Z80A;
 namespace BizHawk.Emulation.Cores.Calculators
 {
 	[Core(
-		"TI83Hawk",
+		CoreNames.TI83Hawk,
 		"zeromus",
 		isPorted: false,
 		isReleased: true)]

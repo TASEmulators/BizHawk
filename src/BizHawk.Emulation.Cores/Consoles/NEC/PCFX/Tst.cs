@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Cores.Consoles.NEC.PCFX
 {
-	[Core("T. S. T.",
+	[Core(CoreNames.TST,
 		author: "Mednafen Team",
 		isPorted: true,
 		isReleased: true,
