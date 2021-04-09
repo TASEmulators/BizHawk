@@ -2006,7 +2006,11 @@ namespace BizHawk.Client.EmuHawk
 		private void DisplayDefaultCoreMenu()
 		{
 			GenericCoreSubMenu.Visible = true;
-			GenericCoreSubMenu.Text = "&" + EmulatorExtensions.DisplayName(Emulator);
+#if true
+			GenericCoreSubMenu.Text = Emulator.GetSystemDisplayName();
+#else //TODO accelerator; I commented out this naive approach which doesn't work --yoshi
+			GenericCoreSubMenu.Text = $"&{Emulator.GetSystemDisplayName()}";
+#endif
 			GenericCoreSubMenu.DropDownItems.Clear();
 
 			var settingsMenuItem = new ToolStripMenuItem { Text = "&Settings" };
@@ -2793,7 +2797,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UpdateCoreStatusBarButton()
 		{
-			var coreDispName = CoreExtensions.CoreExtensions.DisplayName(Emulator);
+			var attributes = Emulator.Attributes();
+			var coreDispName = attributes.Released ? attributes.CoreName : $"(Experimental) {attributes.CoreName}";
 			LoadedCoreNameMenuItem.Text = $"Loaded core: {coreDispName} ({Emulator.SystemId})";
 			if (Emulator.IsNull())
 			{
@@ -2802,7 +2807,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			CoreNameStatusBarButton.Visible = true;
-			var attributes = Emulator.Attributes();
 
 			CoreNameStatusBarButton.Text = coreDispName;
 			CoreNameStatusBarButton.Image = Emulator.Icon();

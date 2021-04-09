@@ -6,12 +6,7 @@ using BizHawk.Emulation.Cores.Components.MC6809;
 
 namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 {
-	[Core(
-		"VectrexHawk",
-		"",
-		isPorted: false,
-		isReleased: true,
-		displayName: "Vectrex")]
+	[Core("VectrexHawk", "", isPorted: false, isReleased: true)]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class VectrexHawk : IEmulator, ISaveRam, IDebuggable, IInputPollable, IRegionable, 
 	ISettable<object, VectrexHawk.VectrexSyncSettings>

@@ -1790,7 +1790,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GenericCoreSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			GenericCoreConfig.DoDialog(this, $"{Emulator.DisplayName()} Settings");
+			var coreName = ((CoreAttribute) Attribute.GetCustomAttribute(Emulator.GetType(), typeof(CoreAttribute))).CoreName;
+			GenericCoreConfig.DoDialog(this, $"{coreName} Settings");
 		}
 
 		private void AppleIISettingsMenuItem_Click(object sender, EventArgs e)

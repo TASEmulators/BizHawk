@@ -5,8 +5,13 @@ using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Cores.Consoles.NEC.PCFX
 {
-	[Core("T. S. T.", "Mednafen Team", true, true, "1.26.1",
-		"https://mednafen.github.io/releases/", false, "PC-FX")]
+	[Core("T. S. T.",
+		author: "Mednafen Team",
+		isPorted: true,
+		isReleased: true,
+		portedVersion: "1.26.1",
+		portedUrl: "https://mednafen.github.io/releases/",
+		singleInstance: false)]
 	public class Tst : NymaCore
 	{
 		[CoreConstructor("PCFX")]
