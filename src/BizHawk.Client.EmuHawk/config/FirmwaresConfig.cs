@@ -30,8 +30,6 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private readonly IDictionary<string, string> _firmwareUserSpecifications;
 
-		private readonly IGameInfo _game;
-
 		private readonly IMainFormForConfig _mainForm;
 
 		private readonly PathEntryCollection _pathEntries;
@@ -108,14 +106,12 @@ namespace BizHawk.Client.EmuHawk
 		public FirmwaresConfig(
 			FirmwareManager firmwareManager,
 			IDictionary<string, string> firmwareUserSpecifications,
-			IGameInfo game,
 			IMainFormForConfig mainForm,
 			PathEntryCollection pathEntries,
 			bool retryLoadRom = false,
 			string reloadRomPath = null)
 		{
 			_firmwareUserSpecifications = firmwareUserSpecifications;
-			_game = game;
 			_mainForm = mainForm;
 			_pathEntries = pathEntries;
 			Manager = firmwareManager;
@@ -226,7 +222,9 @@ namespace BizHawk.Client.EmuHawk
 				WarpToSystemId(TargetSystem);
 			}
 
-			RefreshBasePath();
+			var oldBasePath = _currSelectorDir;
+			linkBasePath.Text = _currSelectorDir = _pathEntries.FirmwareAbsolutePath();
+			if (_currSelectorDir != oldBasePath) DoScan();
 
 			_cbAllowImport = new CheckBox
 			{
@@ -617,29 +615,6 @@ namespace BizHawk.Client.EmuHawk
 		private void TsmiCopy_Click(object sender, EventArgs e)
 		{
 			PerformListCopy();
-		}
-
-		private void LinkBasePath_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-		{
-			if (Owner is PathConfig)
-			{
-				DialogController.ShowMessageBox("C-C-C-Combo Breaker!", "Nice try, but");
-				return;
-			}
-
-			using var pathConfig = new PathConfig(Manager, _firmwareUserSpecifications, _game, _mainForm, _pathEntries);
-			pathConfig.ShowDialog(this);
-			RefreshBasePath();
-		}
-
-		private void RefreshBasePath()
-		{
-			string oldBasePath = _currSelectorDir;
-			linkBasePath.Text = _currSelectorDir = _pathEntries.FirmwareAbsolutePath();
-			if (oldBasePath != _currSelectorDir)
-			{
-				DoScan();
-			}
 		}
 
 		private void TbbImport_Click(object sender, EventArgs e)

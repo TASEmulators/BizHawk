@@ -873,13 +873,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (e is RomLoader.RomErrorArgs args)
 			{
-				using var configForm = new FirmwaresConfig(FirmwareManager, Config.FirmwareUserSpecifications, Game, this, Config.PathEntries, retryLoadRom: true, reloadRomPath: args.RomPath);
+				using var configForm = new FirmwaresConfig(FirmwareManager, Config.FirmwareUserSpecifications, this, Config.PathEntries, retryLoadRom: true, reloadRomPath: args.RomPath);
 				var result = configForm.ShowDialog();
 				args.Retry = result == DialogResult.Retry;
 			}
 			else
 			{
-				using var configForm = new FirmwaresConfig(FirmwareManager, Config.FirmwareUserSpecifications, Game, this, Config.PathEntries);
+				using var configForm = new FirmwaresConfig(FirmwareManager, Config.FirmwareUserSpecifications, this, Config.PathEntries);
 				configForm.ShowDialog();
 			}
 		}
@@ -895,7 +895,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PathsMenuItem_Click(object sender, EventArgs e)
 		{
-			using var form = new PathConfig(FirmwareManager, Config.FirmwareUserSpecifications, Game, this, Config.PathEntries);
+			using var form = new PathConfig(this, Config.PathEntries, Game.System);
 			form.ShowDialog();
 		}
 
