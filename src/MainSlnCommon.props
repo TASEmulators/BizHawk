@@ -11,6 +11,6 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<AdditionalFiles Include="$(ProjectDir)../../.stylecop.json" />
-		<ProjectReference Include="$(ProjectDir)../../ExternalProjects/BizHawk.SrcGen.ReflectionCache/BizHawk.SrcGen.ReflectionCache.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+		<Analyzer Include="$(ProjectDir)../../References/BizHawk.SrcGen.ReflectionCache.dll" />
 	</ItemGroup>
 </Project>
