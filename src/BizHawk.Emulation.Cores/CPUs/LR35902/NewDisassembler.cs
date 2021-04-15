@@ -1097,13 +1097,8 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 			{
 				byte d = reader(addr++);
 				bytes.Add(d);
-				int offs = d;
-				string sign = "";
-				if (offs >= 128)
-				{
-					offs -= 256;
-					sign = "-";
-				}
+				int offs = (d > 127) ? (256 - d) : d;
+				string sign = (d > 127) ? "-" : "";
 				result = result.Replace("e8", rgbds ? sign + $"${offs:X2}" : sign + $"{offs:X2}h");
 			}
 			var ret = new StringBuilder();
