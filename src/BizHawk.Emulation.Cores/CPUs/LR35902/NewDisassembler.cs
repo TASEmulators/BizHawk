@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -242,7 +242,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 			"PUSH HL", // e5
 			"AND  d8", // e6
 			"RST  20H", // e7
-			"ADD  SP,r8", // e8
+			"ADD  SP,e8", // e8
 			"JP   HL", // e9
 			"LD   (a16),A", // ea
 			"???", // eb
@@ -258,7 +258,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 			"PUSH AF", // f5
 			"OR   d8", // f6
 			"RST  30H", // f7
-			"LD   HL,SP+r8", // f8
+			"LD   HL,SP+e8", // f8
 			"LD   SP,HL", // f9
 			"LD   A,(a16)", // fa
 			"EI   ", // fb
@@ -758,7 +758,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 			"push hl", // e5
 			"and a, d8", // e6
 			"rst $20", // e7
-			"add sp, r8", // e8
+			"add sp, e8", // e8
 			"jp hl", // e9
 			"ld [a16], a", // ea
 			"invalid opcode $EB", // eb
@@ -774,7 +774,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 			"push af", // f5
 			"or a, d8", // f6
 			"rst $30", // f7
-			"ld hl, sp + r8", // f8
+			"ld hl, sp + e8", // f8
 			"ld sp, hl", // f9
 			"ld a, [a16]", // fa
 			"ei", // fb
@@ -1092,6 +1092,19 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 					offs -= 256;
 				var u = (ushort) (addr + offs);
 				result = result.Replace("r8", rgbds ? $"${u:X4}" : $"{u:X4}h");
+			}
+			else if (result.Contains("e8"))
+			{
+				byte d = reader(addr++);
+				bytes.Add(d);
+				int offs = d;
+				string sign = "";
+				if (offs >= 128)
+				{
+					offs -= 256;
+					sign = "-";
+				}
+				result = result.Replace("e8", rgbds ? sign + $"${offs:X2}" : sign + $"{offs:X2}h");
 			}
 			var ret = new StringBuilder();
 			ret.Append($"{origaddr:X4}:  ");
