@@ -183,8 +183,7 @@
 			this.MarkerView.TabIndex = 0;
 			this.MarkerView.TabStop = false;
 			this.MarkerView.SelectedIndexChanged += new System.EventHandler(this.MarkerView_SelectedIndexChanged);
-			this.MarkerView.DoubleClick += new System.EventHandler(this.MarkerView_DoubleClick);
-			this.MarkerView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.MarkerView_MouseDoubleClick);
+			this.MarkerView.DoubleClick += new System.EventHandler(this.MarkerView_MouseDoubleClick);
 			// 
 			// MarkersGroupBox
 			// 
