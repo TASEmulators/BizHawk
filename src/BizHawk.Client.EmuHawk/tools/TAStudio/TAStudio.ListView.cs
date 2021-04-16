@@ -479,8 +479,13 @@ namespace BizHawk.Client.EmuHawk
 					index += ControllerType.BoolButtons.Count - 1;
 				}
 
-				AutoPatternBool p = BoolPatterns[index];
-				InputManager.AutofireStickyXorAdapter.SetSticky(button, isOn.Value, p);
+				// Fixes auto-loading, but why is this code like this? The code above suggests we have a BoolPattern for every  bool button? But we don't
+				// This is a sign of a deeper problem, but this fixes some basic functionality at least
+				if (index < BoolPatterns.Length)
+				{
+					AutoPatternBool p = BoolPatterns[index];
+					InputManager.AutofireStickyXorAdapter.SetSticky(button, isOn.Value, p);
+				}
 			}
 			else
 			{
@@ -499,8 +504,13 @@ namespace BizHawk.Client.EmuHawk
 					value = 0;
 				}
 
-				AutoPatternAxis p = AxisPatterns[index];
-				InputManager.AutofireStickyXorAdapter.SetAxis(button, value, p);
+				// Fixes auto-loading, but why is this code like this? The code above suggests we have a AxisPattern for every axis button? But we don't
+				// This is a sign of a deeper problem, but this fixes some basic functionality at least
+				if (index < BoolPatterns.Length)
+				{
+					AutoPatternAxis p = AxisPatterns[index];
+					InputManager.AutofireStickyXorAdapter.SetAxis(button, value, p);
+				}
 			}
 		}
 
