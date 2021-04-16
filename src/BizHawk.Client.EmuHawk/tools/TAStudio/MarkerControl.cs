@@ -315,5 +315,15 @@ namespace BizHawk.Client.EmuHawk
 
 			return -1;
 		}
+
+		private void MarkerView_DoubleClick(object sender, EventArgs e)
+		{
+			if (MarkerView.AnyRowsSelected)
+			{
+				var index = MarkerView.SelectedRows.First();
+				var marker = Markers[index];
+				EditMarkerPopUp(marker);
+			}
+		}
 	}
 }
