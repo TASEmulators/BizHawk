@@ -2541,8 +2541,6 @@ namespace BizHawk.Client.EmuHawk
 				Tools.Load<TI83KeyPad>();
 			}
 
-			Tools.AutoLoad();
-
 			if (Config.RecentWatches.AutoLoad)
 			{
 				Tools.LoadRamWatch(!Config.DisplayRamWatch);
@@ -2553,6 +2551,7 @@ namespace BizHawk.Client.EmuHawk
 				Tools.Load<Cheats>();
 			}
 
+			Tools.AutoLoad();
 			HandlePlatformMenus();
 		}
 

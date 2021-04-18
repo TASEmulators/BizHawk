@@ -227,7 +227,10 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					Load(t, false);
+					if (!IsLoaded(t))
+					{
+						Load(t, false);
+					}
 				}
 			}
 		}
@@ -455,6 +458,17 @@ namespace BizHawk.Client.EmuHawk
 			if (existingTool != null)
 			{
 				return !existingTool.IsDisposed;
+			}
+
+			return false;
+		}
+
+		public bool IsLoaded(Type toolType)
+		{
+			var existingTool = _tools.FirstOrDefault(t => t.GetType() == toolType);
+			if (existingTool != null)
+			{
+				return !existingTool.IsDisposed || (existingTool is RamWatch && _config.DisplayRamWatch);
 			}
 
 			return false;
