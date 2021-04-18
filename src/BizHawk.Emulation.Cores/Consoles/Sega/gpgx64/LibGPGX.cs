@@ -224,6 +224,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			/* Menacer */
 			INPUT_MENACER_TRIGGER = 0x0040,
 			INPUT_MENACER_START = 0x0080,
+			INPUT_MENACER_B = 0x0020,
+			INPUT_MENACER_C = 0x0010,
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
