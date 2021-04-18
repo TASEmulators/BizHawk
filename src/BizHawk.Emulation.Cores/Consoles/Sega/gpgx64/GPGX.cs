@@ -145,8 +145,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					return LibGPGX.INPUT_SYSTEM.SYSTEM_WAYPLAY;
 				case ControlType.Mouse:
 					return LibGPGX.INPUT_SYSTEM.SYSTEM_MOUSE;
-				case ControlType.LightPhaser:
-					return LibGPGX.INPUT_SYSTEM.SYSTEM_LIGHTPHASER;
 			}
 		}
 
@@ -175,8 +173,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			Activator,
 			Teamplayer,
 			Wayplay,
-			Mouse,
-			LightPhaser,
+			Mouse
 		}
 
 
