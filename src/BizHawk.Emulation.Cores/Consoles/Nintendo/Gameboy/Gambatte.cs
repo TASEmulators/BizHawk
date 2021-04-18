@@ -286,7 +286,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			LibGambatte.gambatte_settracecallback(GambatteState, _tracecb);
 
-			LibGambatte.gambatte_setlayers(GambatteState, (_settings.DisplayBG ? 1 : 0) | (_settings.DisplayOBJ ? 2 : 0) | (_settings.DisplayWindow ? 4 : 0));
+			LibGambatte.gambatte_setlayers(GambatteState, (_syncSettings.DisplayBG ? 1 : 0) | (_syncSettings.DisplayOBJ ? 2 : 0) | (_syncSettings.DisplayWindow ? 4 : 0));
 		}
 
 		internal void FrameAdvancePost()
