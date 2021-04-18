@@ -59,7 +59,7 @@ namespace BizHawk.Client.EmuHawk
 			this.tbbOpenFolder = new System.Windows.Forms.ToolStripButton();
 			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
 			this.panel2 = new System.Windows.Forms.Panel();
-			this.linkBasePath = new System.Windows.Forms.LinkLabel();
+			this.linkBasePath = new System.Windows.Forms.Label();
 			this.label1 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.label2 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
@@ -307,19 +307,18 @@ namespace BizHawk.Client.EmuHawk
 			// linkBasePath
 			// 
 			this.linkBasePath.AutoSize = true;
-			this.linkBasePath.Location = new System.Drawing.Point(125, 0);
+			this.linkBasePath.Location = new System.Drawing.Point(295, 0);
 			this.linkBasePath.Name = "linkBasePath";
 			this.linkBasePath.Size = new System.Drawing.Size(55, 13);
 			this.linkBasePath.TabIndex = 27;
 			this.linkBasePath.TabStop = true;
 			this.linkBasePath.Text = "linkLabel1";
-			this.linkBasePath.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkBasePath_LinkClicked);
 			// 
 			// label1
 			// 
 			this.label1.Location = new System.Drawing.Point(3, 0);
 			this.label1.Name = "label1";
-			this.label1.Text = "Firmwares Search Path:";
+			this.label1.Text = "Scan will look under (change in Config > Paths... > Global):";
 			// 
 			// label2
 			// 
@@ -378,7 +377,7 @@ namespace BizHawk.Client.EmuHawk
 				private BizHawk.WinForms.Controls.ToolStripMenuItemEx tsmiInfo;
 				private BizHawk.WinForms.Controls.ToolStripMenuItemEx tsmiCopy;
 				private System.Windows.Forms.Panel panel2;
-				private System.Windows.Forms.LinkLabel linkBasePath;
+				private System.Windows.Forms.Label linkBasePath;
 				private BizHawk.WinForms.Controls.LocLabelEx label1;
 				private System.Windows.Forms.ToolStripButton tbbImport;
 				private System.Windows.Forms.ColumnHeader columnHeader8;
