@@ -21,7 +21,7 @@ namespace BizHawk.Client.Common
 		// pass axes solely from the original source
 		// this works in the code because SourceOr is the autofire controller
 		public int AxisValue(string name) => Source.AxisValue(name);
-		
+
 		public IReadOnlyCollection<(string Name, int Strength)> GetHapticsSnapshot() => Source.GetHapticsSnapshot();
 
 		public void SetHapticChannelStrength(string name, int strength) => Source.SetHapticChannelStrength(name, strength);

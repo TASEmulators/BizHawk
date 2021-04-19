@@ -25,4 +25,4 @@ namespace BizHawk.Emulation.Common
 
 		public static readonly NullController Instance = new NullController();
 	}
-}
+}

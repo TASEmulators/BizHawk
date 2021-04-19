@@ -87,7 +87,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		}
 
 		private void SetRumble(int player, int bIsActive)
-			=> Controller.SetHapticChannelStrength($"P{player} Mono", bIsActive == 0 ? 0 : int.MaxValue);
+			=> Controller.SetHapticChannelStrength($"P{player} Rumble Pak", bIsActive == 0 ? 0 : int.MaxValue);
 
 		/// <summary>
 		/// Read all buttons from a controller and translate them

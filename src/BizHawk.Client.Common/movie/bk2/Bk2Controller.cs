@@ -113,7 +113,7 @@ namespace BizHawk.Client.Common
 		{
 			_myAxisControls[buttonName] = value;
 		}
-		
+
 		private class ControlMap
 		{
 			public string Name { get; set; }
