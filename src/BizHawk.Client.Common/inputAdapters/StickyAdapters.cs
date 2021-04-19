@@ -39,7 +39,7 @@ namespace BizHawk.Client.Common
 			return Source.AxisValue(name);
 		}
 
-		public IReadOnlyCollection<(string name, int strength)> GetHapticsSnapshot() => Source.GetHapticsSnapshot();
+		public IReadOnlyCollection<(string Name, int Strength)> GetHapticsSnapshot() => Source.GetHapticsSnapshot();
 
 		public void SetHapticChannelStrength(string name, int strength) => Source.SetHapticChannelStrength(name, strength);
 
@@ -145,7 +145,7 @@ namespace BizHawk.Client.Common
 			return Source.AxisValue(name);
 		}
 
-		public IReadOnlyCollection<(string name, int strength)> GetHapticsSnapshot() => Source.GetHapticsSnapshot();
+		public IReadOnlyCollection<(string Name, int Strength)> GetHapticsSnapshot() => Source.GetHapticsSnapshot();
 
 		public void SetHapticChannelStrength(string name, int strength) => Source.SetHapticChannelStrength(name, strength);
 

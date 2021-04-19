@@ -48,10 +48,9 @@ namespace BizHawk.Client.Common
 			return _myAxisControls[name];
 		}
 
-		// No Haptics for BKMs
-		public IReadOnlyCollection<(string name, int strength)> GetHapticsSnapshot() => throw new NotImplementedException(); // no idea --yoshi
+		public IReadOnlyCollection<(string Name, int Strength)> GetHapticsSnapshot() => throw new NotImplementedException(); // no idea --yoshi
 
-		public void SetHapticChannelStrength(string name, int strength) => throw new NotImplementedException();
+		public void SetHapticChannelStrength(string name, int strength) => throw new NotImplementedException(); // no idea --yoshi
 
 		/// <summary>
 		/// latches all buttons from the supplied mnemonic string

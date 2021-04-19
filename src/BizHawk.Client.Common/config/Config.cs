@@ -22,12 +22,16 @@ namespace BizHawk.Client.Common
 
 		public Config()
 		{
-			if (AllTrollers.Count == 0 && AllTrollersAutoFire.Count == 0 && AllTrollersAnalog.Count == 0)
+			if (AllTrollers.Count == 0
+				&& AllTrollersAutoFire.Count == 0
+				&& AllTrollersAnalog.Count == 0
+				&& AllTrollersFeedbacks.Count == 0)
 			{
 				var cd = ConfigService.Load<DefaultControls>(ControlDefaultPath);
 				AllTrollers = cd.AllTrollers;
 				AllTrollersAutoFire = cd.AllTrollersAutoFire;
 				AllTrollersAnalog = cd.AllTrollersAnalog;
+				AllTrollersFeedbacks = cd.AllTrollersFeedbacks;
 			}
 		}
 
@@ -293,6 +297,7 @@ namespace BizHawk.Client.Common
 		public Dictionary<string, Dictionary<string, string>> AllTrollers { get; set; } = new Dictionary<string, Dictionary<string, string>>();
 		public Dictionary<string, Dictionary<string, string>> AllTrollersAutoFire { get; set; } = new Dictionary<string, Dictionary<string, string>>();
 		public Dictionary<string, Dictionary<string, AnalogBind>> AllTrollersAnalog { get; set; } = new Dictionary<string, Dictionary<string, AnalogBind>>();
+		public Dictionary<string, Dictionary<string, FeedbackBind>> AllTrollersFeedbacks { get; set; } = new Dictionary<string, Dictionary<string, FeedbackBind>>();
 
 		/// <remarks>as this setting spans multiple cores and doesn't actually affect the behavior of any core, it hasn't been absorbed into the new system</remarks>
 		public bool GbAsSgb { get; set; }

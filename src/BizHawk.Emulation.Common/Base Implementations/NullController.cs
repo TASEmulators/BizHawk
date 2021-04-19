@@ -19,9 +19,9 @@ namespace BizHawk.Emulation.Common
 
 		public int AxisValue(string name) => 0;
 
-		public IReadOnlyCollection<(string name, int strength)> GetHapticsSnapshot() => Array.Empty<(string, int)>();
+		public IReadOnlyCollection<(string Name, int Strength)> GetHapticsSnapshot() => Array.Empty<(string, int)>();
 
-		public void SetHapticChannelStrength(string name, int strength) { }
+		public void SetHapticChannelStrength(string name, int strength) {}
 
 		public static readonly NullController Instance = new NullController();
 	}

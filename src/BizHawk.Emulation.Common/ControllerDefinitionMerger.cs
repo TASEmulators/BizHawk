@@ -32,24 +32,32 @@ namespace BizHawk.Emulation.Common
 			int playerNext = 1;
 			foreach (var def in controllers)
 			{
-				var remaps = new Dictionary<string, string>();
+				Dictionary<string, string> buttonAxisRemaps = new();
+				Dictionary<string, string> feedbackRemaps = new();
 
 				foreach (string s in def.BoolButtons)
 				{
 					string r = Allocate(s, ref plr, ref playerNext);
 					ret.BoolButtons.Add(r);
-					remaps[s] = r;
+					buttonAxisRemaps[s] = r;
 				}
 
 				foreach (var kvp in def.Axes)
 				{
 					string r = Allocate(kvp.Key, ref plr, ref playerNext);
 					ret.Axes.Add(r, kvp.Value);
-					remaps[kvp.Key] = r;
+					buttonAxisRemaps[kvp.Key] = r;
+				}
+
+				foreach (var s in def.HapticsChannels)
+				{
+					string r = Allocate(s, ref plr, ref playerNext);
+					ret.HapticsChannels.Add(r);
+					feedbackRemaps[s] = r;
 				}
 
 				plr = playerNext;
-				unmergers.Add(new ControlDefUnMerger(remaps));
+				unmergers.Add(new ControlDefUnMerger(buttonAxisRemaps, feedbackRemaps));
 			}
 
 			return ret;
@@ -58,22 +66,24 @@ namespace BizHawk.Emulation.Common
 
 	public class ControlDefUnMerger
 	{
-		private readonly Dictionary<string, string> _remaps;
-
-		public ControlDefUnMerger(Dictionary<string, string> remaps)
-		{
-			_remaps = remaps;
-		}
-
 		private class DummyController : IController
 		{
-			private readonly IController _src;
-			private readonly Dictionary<string, string> _remaps;
+			/// <inheritdoc cref="ControlDefUnMerger._buttonAxisRemaps"/>
+			private readonly IReadOnlyDictionary<string, string> _buttonAxisRemaps;
 
-			public DummyController(IController src, Dictionary<string, string> remaps)
+			/// <inheritdoc cref="ControlDefUnMerger._buttonAxisRemaps"/>
+			private readonly IReadOnlyDictionary<string, string> _feedbackRemaps;
+
+			private readonly IController _src;
+
+			public DummyController(
+				IController src,
+				IReadOnlyDictionary<string, string> buttonAxisRemaps,
+				IReadOnlyDictionary<string, string> feedbackRemaps)
 			{
 				_src = src;
-				_remaps = remaps;
+				_buttonAxisRemaps = buttonAxisRemaps;
+				_feedbackRemaps = feedbackRemaps;
 			}
 
 			/// <exception cref="NotImplementedException">always</exception>
@@ -81,26 +91,36 @@ namespace BizHawk.Emulation.Common
 
 			public bool IsPressed(string button)
 			{
-				return _src.IsPressed(_remaps[button]);
+				return _src.IsPressed(_buttonAxisRemaps[button]);
 			}
 
 			public int AxisValue(string name)
 			{
-				return _src.AxisValue(_remaps[name]);
+				return _src.AxisValue(_buttonAxisRemaps[name]);
 			}
 
-			// MYSTERIOUS FUNCTION - TODO: Delete, or determine it's correct.
-			public IReadOnlyCollection<(string name, int strength)> GetHapticsSnapshot()
-				=> _src.GetHapticsSnapshot().Select(hapticsEntry => (_remaps.First(kvpRemap => kvpRemap.Value == hapticsEntry.name).Value, hapticsEntry.strength)) // reverse lookup
+			public IReadOnlyCollection<(string Name, int Strength)> GetHapticsSnapshot()
+				=> _src.GetHapticsSnapshot()
+					.Select(hapticsEntry => (_feedbackRemaps.First(kvpRemap => kvpRemap.Value == hapticsEntry.Name).Value, hapticsEntry.Strength)) // reverse lookup
 					.ToArray();
 
-			public void SetHapticChannelStrength(string name, int strength) => _src.SetHapticChannelStrength(_remaps[name], strength);
-
+			public void SetHapticChannelStrength(string name, int strength) => _src.SetHapticChannelStrength(_feedbackRemaps[name], strength);
 		}
 
-		public IController UnMerge(IController c)
+		/// <remarks>these need to be separate because it's expected that <c>"P1 Left"</c> will appear in both</remarks>
+		private readonly IReadOnlyDictionary<string, string> _buttonAxisRemaps;
+
+		/// <inheritdoc cref="_buttonAxisRemaps"/>
+		private readonly IReadOnlyDictionary<string, string> _feedbackRemaps;
+
+		public ControlDefUnMerger(
+			IReadOnlyDictionary<string, string> buttonAxisRemaps,
+			IReadOnlyDictionary<string, string> feedbackRemaps)
 		{
-			return new DummyController(c, _remaps);
+			_buttonAxisRemaps = buttonAxisRemaps;
+			_feedbackRemaps = feedbackRemaps;
 		}
+
+		public IController UnMerge(IController c) => new DummyController(c, _buttonAxisRemaps, _feedbackRemaps);
 	}
 }

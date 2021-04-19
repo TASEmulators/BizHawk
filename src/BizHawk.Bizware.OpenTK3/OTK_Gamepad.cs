@@ -367,7 +367,8 @@ namespace BizHawk.Bizware.OpenTK3
 		/// <remarks><paramref name="left"/> and <paramref name="right"/> are in 0..<see cref="int.MaxValue"/></remarks>
 		public void SetVibration(int left, int right)
 		{
-			static float Conv(int i) => (float)((double)i/int.MaxValue); // Preserve some precision
+			const double SCALE = 1.0 / int.MaxValue;
+			static float Conv(int i) => (float) (i * SCALE);
 			OpenTKGamePad.SetVibration(_deviceIndex, Conv(left), Conv(right));
 		}
 	}

@@ -17,11 +17,7 @@ namespace BizHawk.Client.Common
 				_axes[kvp.Key] = kvp.Value.Neutral;
 				_axisRanges[kvp.Key] = kvp.Value;
 			}
-			
-			foreach (var channel in Definition.HapticsChannels)
-			{
-				_haptics[channel] = 0;
-			}
+			foreach (var channel in Definition.HapticsChannels) _haptics[channel] = 0;
 		}
 
 		public ControllerDefinition Definition { get; private set; }
@@ -30,7 +26,7 @@ namespace BizHawk.Client.Common
 
 		public int AxisValue(string name) => _axes[name];
 
-		public IReadOnlyCollection<(string name, int strength)> GetHapticsSnapshot()
+		public IReadOnlyCollection<(string Name, int Strength)> GetHapticsSnapshot()
 			=> _haptics.Select(kvp => (kvp.Key, kvp.Value)).ToArray();
 
 		public void SetHapticChannelStrength(string name, int strength) => _haptics[name] = strength;
@@ -41,6 +37,7 @@ namespace BizHawk.Client.Common
 		private readonly Dictionary<string, AxisSpec> _axisRanges = new WorkingDictionary<string, AxisSpec>();
 		private readonly Dictionary<string, AnalogBind> _axisBindings = new Dictionary<string, AnalogBind>();
 		private readonly Dictionary<string, int> _haptics = new WorkingDictionary<string, int>();
+		private readonly Dictionary<string, FeedbackBind> _feedbackBindings = new Dictionary<string, FeedbackBind>();
 
 		/// <summary>don't do this</summary>
 		public void ForceType(ControllerDefinition newType) => Definition = newType;
@@ -105,6 +102,17 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		public void PrepareHapticsForHost(SimpleController finalHostController)
+		{
+			foreach (var kvp in _feedbackBindings)
+			{
+				if (_haptics.TryGetValue(kvp.Key, out var strength))
+				{
+					finalHostController.SetHapticChannelStrength(kvp.Value.GamepadPrefix + kvp.Value.Channel, (int) ((double) strength * kvp.Value.Prescale));
+				}
+			}
+		}
+
 		public void ApplyAxisConstraints(string constraintClass)
 			=> Definition.ApplyAxisConstraints(constraintClass, _axes);
 
@@ -163,6 +171,8 @@ namespace BizHawk.Client.Common
 		{
 			_axisBindings[button] = bind;
 		}
+
+		public void BindFeedbackChannel(string channel, FeedbackBind binding) => _feedbackBindings[channel] = binding;
 
 		public List<string> PressedButtons => _buttons
 			.Where(kvp => kvp.Value)

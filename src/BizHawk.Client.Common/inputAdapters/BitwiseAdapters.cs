@@ -26,6 +26,10 @@ namespace BizHawk.Client.Common
 
 		public void SetHapticChannelStrength(string name, int strength) => Source.SetHapticChannelStrength(name, strength);
 
+		public IReadOnlyCollection<(string Name, int Strength)> GetHapticsSnapshot() => Source.GetHapticsSnapshot();
+
+		public void SetHapticChannelStrength(string name, int strength) => Source.SetHapticChannelStrength(name, strength);
+
 		public IController Source { get; set; }
 		internal IController SourceAnd { get; set; }
 	}
@@ -48,7 +52,7 @@ namespace BizHawk.Client.Common
 		// this works in the code because SourceOr is the autofire controller
 		public int AxisValue(string name) => Source.AxisValue(name);
 
-		public IReadOnlyCollection<(string name, int strength)> GetHapticsSnapshot() => Source.GetHapticsSnapshot();
+		public IReadOnlyCollection<(string Name, int Strength)> GetHapticsSnapshot() => Source.GetHapticsSnapshot();
 
 		public void SetHapticChannelStrength(string name, int strength) => Source.SetHapticChannelStrength(name, strength);
 
@@ -70,7 +74,7 @@ namespace BizHawk.Client.Common
 		// this works in the code because SourceOr is the autofire controller
 		public int AxisValue(string name) => Source.AxisValue(name);
 
-		public IReadOnlyCollection<(string name, int strength)> GetHapticsSnapshot() => Source.GetHapticsSnapshot();
+		public IReadOnlyCollection<(string Name, int Strength)> GetHapticsSnapshot() => Source.GetHapticsSnapshot();
 
 		public void SetHapticChannelStrength(string name, int strength) => Source.SetHapticChannelStrength(name, strength);
 

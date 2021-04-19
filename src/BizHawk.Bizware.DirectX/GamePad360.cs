@@ -161,10 +161,13 @@ namespace BizHawk.Bizware.DirectX
 
 		public int PlayerNumber => (int)_index0 + 1;
 
+		public readonly string InputNamePrefix;
+
 		private GamePad360(uint index0, Controller c)
 		{
 			this._index0 = index0;
 			_controller = c;
+			InputNamePrefix = $"X{PlayerNumber} ";
 			InitializeButtons();
 			Update();
 		}
@@ -275,5 +278,12 @@ namespace BizHawk.Bizware.DirectX
 		public string ButtonName(int index) => _names[index];
 
 		public bool Pressed(int index) => _actions[index]();
+
+		/// <remarks><paramref name="left"/> and <paramref name="right"/> are in 0..<see cref="int.MaxValue"/></remarks>
+		public void SetVibration(int left, int right)
+		{
+			static ushort Conv(int i) => unchecked((ushort) ((i >> 15) & 0xFFFF));
+			_controller.SetVibration(new() { LeftMotorSpeed = Conv(left), RightMotorSpeed = Conv(right) });
+		}
 	}
 }

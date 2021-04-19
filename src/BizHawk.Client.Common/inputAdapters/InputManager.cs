@@ -53,7 +53,7 @@ namespace BizHawk.Client.Common
 		{
 			var def = emulator.ControllerDefinition;
 
-			ActiveController = BindToDefinition(def, config.AllTrollers, config.AllTrollersAnalog);
+			ActiveController = BindToDefinition(def, config.AllTrollers, config.AllTrollersAnalog, config.AllTrollersFeedbacks);
 			AutoFireController = BindToDefinitionAF(emulator, config.AllTrollersAutoFire, config.AutofireOn, config.AutofireOff);
 
 			// allow propagating controls that are in the current controller definition but not in the prebaked one
@@ -86,7 +86,11 @@ namespace BizHawk.Client.Common
 			AutofireStickyXorAdapter.MassToggleStickyState(ActiveController.PressedButtons);
 		}
 
-		private static Controller BindToDefinition(ControllerDefinition def, IDictionary<string, Dictionary<string, string>> allBinds, IDictionary<string, Dictionary<string, AnalogBind>> analogBinds)
+		private static Controller BindToDefinition(
+			ControllerDefinition def,
+			IDictionary<string, Dictionary<string, string>> allBinds,
+			IDictionary<string, Dictionary<string, AnalogBind>> analogBinds,
+			IDictionary<string, Dictionary<string, FeedbackBind>> feedbackBinds)
 		{
 			var ret = new Controller(def);
 			if (allBinds.TryGetValue(def.Name, out var binds))
@@ -108,6 +112,14 @@ namespace BizHawk.Client.Common
 					{
 						ret.BindAxis(btn, bind);
 					}
+				}
+			}
+
+			if (feedbackBinds.TryGetValue(def.Name, out var fBinds))
+			{
+				foreach (var channel in def.HapticsChannels)
+				{
+					if (fBinds.TryGetValue(channel, out var bind)) ret.BindFeedbackChannel(channel, bind);
 				}
 			}
 

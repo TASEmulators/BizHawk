@@ -9,6 +9,9 @@ namespace BizHawk.Emulation.Common
 		/// </summary>
 		ControllerDefinition Definition { get; }
 
+		/// <seealso cref="SetHapticChannelStrength"/>
+		IReadOnlyCollection<(string Name, int Strength)> GetHapticsSnapshot();
+
 		/// <summary>
 		/// Returns the current state of a boolean control
 		/// </summary>
@@ -19,10 +22,7 @@ namespace BizHawk.Emulation.Common
 		/// </summary>
 		int AxisValue(string name);
 
-		/// <see cref="SetHapticChannelStrength"/>
-		IReadOnlyCollection<(string name, int strength)> GetHapticsSnapshot();
-
-		/// <param name="name">a haptic axis name e.g. "P1 Mono Haptic", "P2 Left Haptic"</param>
+		/// <param name="name">haptic channel name e.g. "P1 Mono", "P2 Left"</param>
 		/// <param name="strength">0..<see cref="int.MaxValue"/></param>
 		void SetHapticChannelStrength(string name, int strength);
 	}

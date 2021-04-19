@@ -44,11 +44,9 @@ namespace BizHawk.Client.Common
 			throw new NotImplementedException();
 		}
 
-		/// No Haptics for Autofire
-		public IReadOnlyCollection<(string name, int strength)> GetHapticsSnapshot() 
-			=> Array.Empty<(string, int)>();
+		public IReadOnlyCollection<(string Name, int Strength)> GetHapticsSnapshot() => Array.Empty<(string, int)>();
 
-		public void SetHapticChannelStrength(string name, int strength) { }
+		public void SetHapticChannelStrength(string name, int strength) {}
 
 		/// <summary>
 		/// uses the bindings to latch our own logical button state from the source controller's button state (which are assumed to be the physical side of the binding).

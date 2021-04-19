@@ -65,9 +65,8 @@ namespace BizHawk.Client.Common
 		// The float format implies no U+D and no L+R no matter what, so just passthru
 		public int AxisValue(string name) => Source.AxisValue(name);
 
-		public IReadOnlyCollection<(string name, int strength)> GetHapticsSnapshot() => Source.GetHapticsSnapshot();
+		public IReadOnlyCollection<(string Name, int Strength)> GetHapticsSnapshot() => Source.GetHapticsSnapshot();
 
 		public void SetHapticChannelStrength(string name, int strength) => Source.SetHapticChannelStrength(name, strength);
-
 	}
 }

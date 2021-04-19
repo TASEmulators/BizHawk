@@ -97,11 +97,8 @@ namespace BizHawk.Emulation.Common
 			return _buttons[name];
 		}
 
-		public IReadOnlyCollection<(string name, int strength)> GetHapticsSnapshot()
-			=> _buttons.Where(kvp => kvp.Key.EndsWith("Haptic"))
-				.Select(kvp => (kvp.Key, kvp.Value))
-				.ToArray();
+		public IReadOnlyCollection<(string Name, int Strength)> GetHapticsSnapshot() => Array.Empty<(string, int)>();
 
-		public void SetHapticChannelStrength(string name, int strength) => _buttons[name] = strength; 
+		public void SetHapticChannelStrength(string name, int strength) {}
 	}
 }

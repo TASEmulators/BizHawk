@@ -96,6 +96,7 @@ namespace BizHawk.Bizware.DirectX
 		{
 			_joystick = joystick;
 			PlayerNumber = index + 1;
+			InputNamePrefix = $"J{PlayerNumber} ";
 			Update();
 			InitializeCallbacks();
 		}
@@ -140,6 +141,8 @@ namespace BizHawk.Bizware.DirectX
 		}
 
 		public int PlayerNumber { get; }
+
+		public readonly string InputNamePrefix;
 
 		public string ButtonName(int index)
 		{
