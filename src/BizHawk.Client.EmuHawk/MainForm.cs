@@ -668,14 +668,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public override bool BlocksInputWhenFocused { get; } = false;
 
-		private static readonly IReadOnlyCollection<string> DEBUG_HAPTIC_CHANNELS = new[]
-		{
-			"J0 Mono", "J0 Left", "J0 Right",
-			"X0 Mono", "X0 Left", "X0 Right",
-			"J1 Mono", "J1 Left", "J1 Right",
-			"X1 Mono", "X1 Left", "X1 Right"
-		};
-
 		public int ProgramRunLoop()
 		{
 			// needs to be done late, after the log console snaps on top
@@ -742,8 +734,6 @@ namespace BizHawk.Client.EmuHawk
 				{
 					Tools.LuaConsole.ResumeScripts(false);
 				}
-
-				// maybe clear haptics here? --yoshi
 
 				StepRunLoop_Core();
 				StepRunLoop_Throttle();

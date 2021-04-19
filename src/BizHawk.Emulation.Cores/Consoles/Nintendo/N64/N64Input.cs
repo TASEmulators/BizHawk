@@ -1,10 +1,6 @@
 ﻿using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.N64.NativeApi;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
 namespace BizHawk.Emulation.Cores.Nintendo.N64
 {
 	public class N64Input
@@ -22,8 +18,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			_emuCore = emuCore;
 			_api = new mupen64plusInputApi(core);
 
-			_api.SetM64PInputCallback(GetControllerInput);
-			_api.OnRumbleChange += RumbleCallback;
+			_api.SetM64PInputCallbacks(GetControllerInput, SetRumble);
 
 			core.VInterrupt += ShiftInputPolledBools;
 			for (int i = 0; i < controllerSettings.Length; ++i)
@@ -91,6 +86,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			return value;
 		}
 
+		private void SetRumble(int player, int bIsActive)
+			=> Controller.SetHapticChannelStrength($"P{player} Mono", bIsActive == 0 ? 0 : int.MaxValue);
+
 		/// <summary>
 		/// Read all buttons from a controller and translate them
 		/// into a form the N64 understands
@@ -138,8 +136,5 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		{
 			_api.SetM64PControllerConnected(controller, connectionStatus);
 		}
-
-		private void RumbleCallback(int Control, int On) => // N64 only has 1 bit. Normalize to Int32.
-			Controller?.SetHapticChannelStrength($"X{Control} Mono", (On * Int32.MaxValue) );
 	}
 }

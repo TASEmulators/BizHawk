@@ -114,11 +114,6 @@ namespace BizHawk.Client.Common
 			_myAxisControls[buttonName] = value;
 		}
 		
-		// No haptics for BK2s.
-		public IReadOnlyCollection<(string name, int strength)> GetHapticsSnapshot() => throw new NotImplementedException();
-
-		public void SetHapticChannelStrength(string name, int strength) => throw new NotImplementedException();
-
 		private class ControlMap
 		{
 			public string Name { get; set; }
