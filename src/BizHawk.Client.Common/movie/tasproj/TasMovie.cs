@@ -185,7 +185,7 @@ namespace BizHawk.Client.Common
 		{
 			// todo: this isn't working quite right when autorestore is off and we're editing while seeking
 			// but accounting for that requires access to Mainform.IsSeeking
-			if (Emulator.Frame > LastEditedFrame)
+			if (Emulator.Frame != LastEditedFrame)
 			{
 				// emulated a new frame, current editing segment may change now. taseditor logic
 				LastPositionStable = false;
