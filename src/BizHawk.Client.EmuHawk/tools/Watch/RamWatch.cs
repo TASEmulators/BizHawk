@@ -102,6 +102,9 @@ namespace BizHawk.Client.EmuHawk
 			SetColumns();
 		}
 
+		public override bool IsActive => Config!.DisplayRamWatch || base.IsActive;
+		public override bool IsLoaded => base.IsActive;
+
 		private void SetColumns()
 		{
 			WatchListView.AllColumns.AddRange(Settings.Columns);
@@ -117,14 +120,14 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Columns = new List<RollColumn>
 				{
-					new RollColumn { Text = "Address", Name = WatchList.Address, Visible = true, UnscaledWidth = 60, Type = ColumnType.Text },
-					new RollColumn { Text = "Value", Name = WatchList.Value, Visible = true, UnscaledWidth = 59, Type = ColumnType.Text },
-					new RollColumn { Text = "Prev", Name = WatchList.Prev, Visible = false, UnscaledWidth = 59, Type = ColumnType.Text },
-					new RollColumn { Text = "Changes", Name = WatchList.ChangesCol, Visible = true, UnscaledWidth = 60, Type = ColumnType.Text },
-					new RollColumn { Text = "Diff", Name = WatchList.Diff, Visible = false, UnscaledWidth = 59, Type = ColumnType.Text },
-					new RollColumn { Text = "Type", Name = WatchList.Type, Visible = false, UnscaledWidth = 55, Type = ColumnType.Text },
-					new RollColumn { Text = "Domain", Name = WatchList.Domain, Visible = true, UnscaledWidth = 55, Type = ColumnType.Text },
-					new RollColumn { Text = "Notes", Name = WatchList.Notes, Visible = true, UnscaledWidth = 128, Type = ColumnType.Text }
+					new() { Text = "Address", Name = WatchList.Address, Visible = true, UnscaledWidth = 60, Type = ColumnType.Text },
+					new() { Text = "Value", Name = WatchList.Value, Visible = true, UnscaledWidth = 59, Type = ColumnType.Text },
+					new() { Text = "Prev", Name = WatchList.Prev, Visible = false, UnscaledWidth = 59, Type = ColumnType.Text },
+					new() { Text = "Changes", Name = WatchList.ChangesCol, Visible = true, UnscaledWidth = 60, Type = ColumnType.Text },
+					new() { Text = "Diff", Name = WatchList.Diff, Visible = false, UnscaledWidth = 59, Type = ColumnType.Text },
+					new() { Text = "Type", Name = WatchList.Type, Visible = false, UnscaledWidth = 55, Type = ColumnType.Text },
+					new() { Text = "Domain", Name = WatchList.Domain, Visible = true, UnscaledWidth = 55, Type = ColumnType.Text },
+					new() { Text = "Notes", Name = WatchList.Notes, Visible = true, UnscaledWidth = 128, Type = ColumnType.Text }
 				};
 			}
 
