@@ -317,10 +317,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern int gambatte_savesavedatalength(IntPtr core, bool isDeterministic);
 
-	   /// <summary>
-	   /// new savestate method
-	   /// </summary>
-	 [DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
+		/// <summary>
+		/// new savestate method
+		/// </summary>
+		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern int gambatte_newstatelen(IntPtr core);
 
 		/// <summary>

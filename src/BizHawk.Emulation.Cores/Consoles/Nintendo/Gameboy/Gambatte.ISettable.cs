@@ -121,6 +121,33 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			[DefaultValue(0)]
 			public int RTCDivisorOffset { get; set; }
 
+			[JsonIgnore]
+			private int _internalRTCDays;
+
+			[JsonIgnore]
+			private int _internalRTCHours;
+
+			[JsonIgnore]
+			private int _internalRTCMinutes;
+
+			[JsonIgnore]
+			private int _internalRTCSeconds;
+
+			[JsonIgnore]
+			private int _internalRTCCycles;
+
+			[JsonIgnore]
+			private int _latchedRTCDays;
+
+			[JsonIgnore]
+			private int _latchedRTCHours;
+
+			[JsonIgnore]
+			private int _latchedRTCMinutes;
+
+			[JsonIgnore]
+			private int _latchedRTCSeconds;
+
 			[DisplayName("RTC Overflow")]
 			[Description("Sets whether the internal RTC day counter has overflowed.")]
 			[DefaultValue(false)]
@@ -136,8 +163,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			[DefaultValue(0)]
 			public int InternalRTCDays
 			{
-				get => InternalRTCDays;
-				set => InternalRTCDays = Math.Max(0, Math.Min(511, value));
+				get => _internalRTCDays;
+				set => _internalRTCDays = Math.Max(0, Math.Min(511, value));
 			}
 
 			[DisplayName("RTC Hours")]
@@ -145,8 +172,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			[DefaultValue(0)]
 			public int InternalRTCHours
 			{
-				get => InternalRTCHours;
-				set => InternalRTCHours = Math.Max(-8, Math.Min(23, value));
+				get => _internalRTCHours;
+				set => _internalRTCHours = Math.Max(-8, Math.Min(23, value));
 			}
 
 			[DisplayName("RTC Minutes")]
@@ -154,8 +181,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			[DefaultValue(0)]
 			public int InternalRTCMinutes
 			{
-				get => InternalRTCMinutes;
-				set => InternalRTCMinutes = Math.Max(-4, Math.Min(59, value));
+				get => _internalRTCMinutes;
+				set => _internalRTCMinutes = Math.Max(-4, Math.Min(59, value));
 			}
 
 			[DisplayName("RTC Seconds")]
@@ -163,8 +190,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			[DefaultValue(0)]
 			public int InternalRTCSeconds
 			{
-				get => InternalRTCSeconds;
-				set => InternalRTCSeconds = Math.Max(-4, Math.Min(59, value));
+				get => _internalRTCSeconds;
+				set => _internalRTCSeconds = Math.Max(-4, Math.Min(59, value));
 			}
 
 			[DisplayName("RTC Sub-Seconds")]
@@ -172,8 +199,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			[DefaultValue(0)]
 			public int InternalRTCCycles
 			{
-				get => InternalRTCCycles;
-				set => InternalRTCCycles = Math.Max(0, Math.Min((4194303 + RTCDivisorOffset), value));
+				get => _internalRTCCycles;
+				set => _internalRTCCycles = Math.Max(0, Math.Min((4194303 + RTCDivisorOffset), value));
 			}
 
 			[DisplayName("Latched RTC Overflow")]
@@ -191,8 +218,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			[DefaultValue(0)]
 			public int LatchedRTCDays
 			{
-				get => LatchedRTCDays;
-				set => LatchedRTCDays = Math.Max(0, Math.Min(511, value));
+				get => _latchedRTCDays;
+				set => _latchedRTCDays = Math.Max(0, Math.Min(511, value));
 			}
 
 			[DisplayName("Latched RTC Hours")]
@@ -200,8 +227,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			[DefaultValue(0)]
 			public int LatchedRTCHours
 			{
-				get => LatchedRTCHours;
-				set => LatchedRTCHours = Math.Max(0, Math.Min(63, value));
+				get => _latchedRTCHours;
+				set => _latchedRTCHours = Math.Max(0, Math.Min(63, value));
 			}
 
 			[DisplayName("Latched RTC Minutes")]
@@ -209,8 +236,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			[DefaultValue(0)]
 			public int LatchedRTCMinutes
 			{
-				get => LatchedRTCMinutes;
-				set => LatchedRTCMinutes = Math.Max(0, Math.Min(63, value));
+				get => _latchedRTCMinutes;
+				set => _latchedRTCMinutes = Math.Max(0, Math.Min(63, value));
 			}
 
 			[DisplayName("Latched RTC Seconds")]
@@ -218,8 +245,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			[DefaultValue(0)]
 			public int LatchedRTCSeconds
 			{
-				get => LatchedRTCSeconds;
-				set => LatchedRTCSeconds = Math.Max(-4, Math.Min(59, value));
+				get => _latchedRTCSeconds;
+				set => _latchedRTCSeconds = Math.Max(0, Math.Min(63, value));
 			}
 
 			[DisplayName("Equal Length Frames")]

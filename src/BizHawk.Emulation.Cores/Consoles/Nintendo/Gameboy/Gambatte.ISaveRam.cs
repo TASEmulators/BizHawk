@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		{
 			get
 			{
-				if (LibGambatte.gambatte_savesavedatalength(GambatteState, DeterministicEmulation) == 0)
+				if (LibGambatte.gambatte_savesavedatalength(GambatteState, false) == 0)
 				{
 					return false;
 				}
