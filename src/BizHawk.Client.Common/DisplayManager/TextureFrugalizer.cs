@@ -34,7 +34,7 @@ namespace BizHawk.Client.Common
 		private readonly IGL _gl;
 		private List<Texture2d> _currentTextures;
 
-		public Texture2d Get(DisplaySurface ds)
+		public Texture2d Get(IDisplaySurface ds)
 		{
 			using var bb = new BitmapBuffer(ds.PeekBitmap(), new BitmapLoadOptions());
 			return Get(bb);

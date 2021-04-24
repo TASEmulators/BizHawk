@@ -294,11 +294,12 @@ namespace BizHawk.Client.EmuHawk
 
 		// SuuperW: Marker renaming can be done with a right-click.
 		// A much more useful feature would be to easily jump to it.
-		private void MarkerView_MouseDoubleClick(object sender, MouseEventArgs e)
+		private void MarkerView_MouseDoubleClick(object sender, EventArgs e)
 		{
-			if (MarkerView.CurrentCell?.RowIndex != null && MarkerView.CurrentCell.RowIndex < MarkerView.RowCount)
+			if (MarkerView.AnyRowsSelected)
 			{
-				var marker = Markers[MarkerView.CurrentCell.RowIndex.Value];
+				var index = MarkerView.SelectedRows.First();
+				var marker = Markers[index];
 				Tastudio.GoToFrame(marker.Frame);
 			}
 		}
@@ -309,7 +310,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var index = MarkerView.SelectedRows.First();
 				var marker = Markers[index];
-
 				return marker.Frame;
 			}
 

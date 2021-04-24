@@ -3,6 +3,7 @@ using System.Linq;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.NDS;
 
 namespace BizHawk.Client.Common
@@ -76,7 +77,7 @@ namespace BizHawk.Client.Common
 				Result.Movie.SyncSettingsJson = ConfigService.SaveWithType(syncSettings);
 			}
 
-			Result.Movie.HeaderEntries[HeaderKeys.Core] = "MelonDS";
+			Result.Movie.HeaderEntries[HeaderKeys.Core] = CoreNames.MelonDS;
 		}
 
 		private readonly string[] _buttons = { "Left", "Right", "Up", "Down", "A", "B", "X", "Y", "L", "R", "Start", "Select" };

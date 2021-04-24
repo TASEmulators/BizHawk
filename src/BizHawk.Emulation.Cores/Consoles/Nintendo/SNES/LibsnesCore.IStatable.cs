@@ -3,7 +3,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.SNES
 {
-	public unsafe partial class LibsnesCore : IStatable
+	public partial class LibsnesCore : IStatable
 	{
 		public void SaveStateBinary(BinaryWriter writer)
 		{

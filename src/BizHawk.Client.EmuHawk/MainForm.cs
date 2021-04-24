@@ -26,7 +26,6 @@ using BizHawk.Emulation.Cores.Nintendo.GBA;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.Nintendo.N64;
-using BizHawk.Emulation.Cores.Nintendo.GBHawkLink;
 
 using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Client.EmuHawk.CoreExtensions;
@@ -38,7 +37,7 @@ using BizHawk.Emulation.Cores.Consoles.NEC.PCE;
 using BizHawk.Emulation.Cores.Nintendo.SNES9X;
 using BizHawk.Emulation.Cores.Consoles.SNK;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
-using BizHawk.Emulation.Cores.Consoles.Nintendo.Faust;
+using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -319,6 +318,7 @@ namespace BizHawk.Client.EmuHawk
 				Config.Movies,
 				Config.PathEntries.MovieBackupsAbsolutePath(),
 				this,
+				QuickBmpFile,
 				AddOnScreenMessage,
 				PauseEmulator,
 				SetMainformMovieInfo);
@@ -342,6 +342,11 @@ namespace BizHawk.Client.EmuHawk
 #if !DEBUG
 			ZXSpectrumExportSnapshotMenuItemMenuItem.Enabled = false;
 			ZXSpectrumExportSnapshotMenuItemMenuItem.Visible = false;
+#endif
+#if AVI_SUPPORT
+			SynclessRecordingMenuItem.Click += (_, _) => new SynclessRecordingTools(Config, Game, this).Run();
+#else
+			SynclessRecordingMenuItem.Enabled = false;
 #endif
 
 			Game = GameInfo.NullInstance;
@@ -1918,61 +1923,13 @@ namespace BizHawk.Client.EmuHawk
 
 			switch (Emulator.SystemId)
 			{
-				default:
-					DisplayDefaultCoreMenu();
-					break;
 				case "NULL":
-					break;
-				case "TI83":
-					TI83SubMenu.Visible = true;
-					break;
-				case "NES":
-					NESSubMenu.Visible = true;
-					break;
-				case "GB":
-				case "GBC":
-					GBSubMenu.Visible = true;
-					break;
-				case "NDS":
-					NDSSubMenu.Visible = true;
 					break;
 				case "A78":
 					A7800SubMenu.Visible = true;
 					break;
-				case "PSX":
-					PSXSubMenu.Visible = true;
-					break;
-				case "SNES":
-				case "SGB":
-					if (Emulator is LibsnesCore bsnes)
-					{
-						SNESSubMenu.Text = bsnes.IsSGB ? "&SGB" : "&SNES";
-						SNESSubMenu.Visible = true;
-					}
-					else if (Emulator is Snes9x || Emulator is Faust)
-					{
-						DisplayDefaultCoreMenu();
-					}
-					else if (Emulator is Sameboy)
-					{
-						GBSubMenu.Visible = true;
-					}
-					break;
-				case "Coleco":
-					ColecoSubMenu.Visible = true;
-					break;
-				case "N64":
-					N64SubMenu.Visible = true;
-					break;
-				case "DGB":
-					if (Emulator is GBHawkLink)
-					{
-						DisplayDefaultCoreMenu();
-					}
-					else
-					{
-						DGBSubMenu.Visible = true;
-					}
+				case "AmstradCPC":
+					amstradCPCToolStripMenuItem.Visible = true;
 					break;
 				case "AppleII":
 					AppleSubMenu.Visible = true;
@@ -1980,14 +1937,48 @@ namespace BizHawk.Client.EmuHawk
 				case "C64":
 					C64SubMenu.Visible = true;
 					break;
+				case "Coleco":
+					ColecoSubMenu.Visible = true;
+					break;
 				case "INTV":
 					IntvSubMenu.Visible = true;
+					break;
+				case "N64":
+					N64SubMenu.Visible = true;
+					break;
+				case "NDS":
+					NDSSubMenu.Visible = true;
+					break;
+				case "NES":
+					NESSubMenu.Visible = true;
+					break;
+				case "PSX":
+					PSXSubMenu.Visible = true;
+					break;
+				case "TI83":
+					TI83SubMenu.Visible = true;
 					break;
 				case "ZXSpectrum":
 					zXSpectrumToolStripMenuItem.Visible = true;
 					break;
-				case "AmstradCPC":
-					amstradCPCToolStripMenuItem.Visible = true;
+				case "DGB" when Emulator is GambatteLink:
+					DGBSubMenu.Visible = true;
+					break;
+				case "GB":
+				case "GBC":
+				case "SGB" when Emulator is Sameboy:
+					GBSubMenu.Visible = true;
+					break;
+				case "SNES" when Emulator is LibsnesCore { IsSGB: true }: // doesn't use "SGB" sysID
+					SNESSubMenu.Text = "&SGB";
+					SNESSubMenu.Visible = true;
+					break;
+				case "SNES" when Emulator is LibsnesCore { IsSGB: false }:
+					SNESSubMenu.Text = "&SNES";
+					SNESSubMenu.Visible = true;
+					break;
+				default:
+					DisplayDefaultCoreMenu();
 					break;
 			}
 		}
@@ -2000,7 +1991,11 @@ namespace BizHawk.Client.EmuHawk
 		private void DisplayDefaultCoreMenu()
 		{
 			GenericCoreSubMenu.Visible = true;
-			GenericCoreSubMenu.Text = "&" + EmulatorExtensions.DisplayName(Emulator);
+#if true
+			GenericCoreSubMenu.Text = Emulator.GetSystemDisplayName();
+#else //TODO accelerator; I commented out this naive approach which doesn't work --yoshi
+			GenericCoreSubMenu.Text = $"&{Emulator.GetSystemDisplayName()}";
+#endif
 			GenericCoreSubMenu.DropDownItems.Clear();
 
 			var settingsMenuItem = new ToolStripMenuItem { Text = "&Settings" };
@@ -2787,7 +2782,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UpdateCoreStatusBarButton()
 		{
-			var coreDispName = CoreExtensions.CoreExtensions.DisplayName(Emulator);
+			var attributes = Emulator.Attributes();
+			var coreDispName = attributes.Released ? attributes.CoreName : $"(Experimental) {attributes.CoreName}";
 			LoadedCoreNameMenuItem.Text = $"Loaded core: {coreDispName} ({Emulator.SystemId})";
 			if (Emulator.IsNull())
 			{
@@ -2796,7 +2792,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			CoreNameStatusBarButton.Visible = true;
-			var attributes = Emulator.Attributes();
 
 			CoreNameStatusBarButton.Text = coreDispName;
 			CoreNameStatusBarButton.Image = Emulator.Icon();
@@ -3228,7 +3223,11 @@ namespace BizHawk.Client.EmuHawk
 
 			try
 			{
+#if AVI_SUPPORT
 				bool usingAvi = aw is AviWriter; // SO GROSS!
+#else
+				const bool usingAvi = false;
+#endif
 
 				if (_dumpaudiosync)
 				{
@@ -4091,7 +4090,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (new SavestateFile(Emulator, MovieSession, MovieSession.UserBag).Load(path))
+			if (new SavestateFile(Emulator, MovieSession, QuickBmpFile, MovieSession.UserBag).Load(path))
 			{
 				OSD.ClearGuiText();
 				EmuClient.OnStateLoaded(this, userFriendlyStateName);
@@ -4170,7 +4169,7 @@ namespace BizHawk.Client.EmuHawk
 
 			try
 			{
-				new SavestateFile(Emulator, MovieSession, MovieSession.UserBag).Create(path, Config.Savestates);
+				new SavestateFile(Emulator, MovieSession, QuickBmpFile, MovieSession.UserBag).Create(path, Config.Savestates);
 
 				EmuClient.OnStateSaved(this, userFriendlyStateName);
 
@@ -4737,5 +4736,7 @@ namespace BizHawk.Client.EmuHawk
 			//BANZAIIIIIIIIIIIIIIIIIIIIIIIIIII
 			LoadRom(args[0]);
 		}
+
+		public IQuickBmpFile QuickBmpFile { get; } = new QuickBmpFile();
 	}
 }

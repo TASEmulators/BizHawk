@@ -41,6 +41,9 @@ namespace BizHawk.Client.EmuHawk
 		/// <remarks>only referenced from <see cref="PlaybackBox"/></remarks>
 		bool PressRewind { set; }
 
+		/// <remarks>only referenced from <see cref="TAStudio"/></remarks>
+		IQuickBmpFile QuickBmpFile { get; }
+
 		/// <remarks>only referenced from <see cref="GenericDebugger"/></remarks>
 		event Action<bool> OnPauseChanged;
 

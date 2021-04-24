@@ -7,7 +7,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Atari.Lynx
 {
-	[Core("Handy", "K. Wilkins, Mednafen Team", true, true, "mednafen 0-9-34-1", "http://mednafen.sourceforge.net/", false)]
+	[Core(CoreNames.Handy, "K. Wilkins, Mednafen Team", true, true, "mednafen 0-9-34-1", "http://mednafen.sourceforge.net/", false)]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight), typeof(IRegionable), typeof(ISettable<,>) })]
 	public partial class Lynx : IEmulator, IVideoProvider, ISoundProvider, ISaveRam, IStatable, IInputPollable
 	{

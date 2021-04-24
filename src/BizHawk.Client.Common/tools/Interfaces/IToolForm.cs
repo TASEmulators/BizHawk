@@ -40,12 +40,23 @@
 		/// </summary>
 		bool AskSaveChanges();
 
+		/// <summary>
+		/// Returns a value indicating whether or not the current tool is active and running
+		/// </summary>
+		bool IsActive { get; }
+
+		/// <summary>
+		/// Gets a value indicating whether a tool is actually open.
+		/// This value should be the same as <see cref="IsActive"/>
+		/// except for tools that can be closed/hidden,
+		/// where the tool can be active but not loaded
+		/// </summary>
+		bool IsLoaded { get; }
+
 		// Necessary winform calls
 		bool Focus();
 		bool ContainsFocus { get; }
 		void Show();
 		void Close();
-		bool IsDisposed { get; }
-		bool IsHandleCreated { get; }
 	}
 }

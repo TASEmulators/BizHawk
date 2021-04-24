@@ -30,7 +30,7 @@ using BizHawk.Emulation.DiscSystem;
 namespace BizHawk.Emulation.Cores.Sony.PSX
 {
 	[Core(
-		"Octoshock",
+		CoreNames.Octoshock,
 		"Mednafen Team",
 		isPorted: true,
 		isReleased: true)]

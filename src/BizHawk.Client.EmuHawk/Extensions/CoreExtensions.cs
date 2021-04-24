@@ -38,61 +38,13 @@ namespace BizHawk.Client.EmuHawk.CoreExtensions
 			};
 		}
 
-		public static string DisplayName(this IEmulator core)
+		public static string GetSystemDisplayName(this IEmulator emulator) => emulator switch
 		{
-			var attributes = core.Attributes();
-
-			var str = (!attributes.Released ? "(Experimental) " : "") +
-				attributes.CoreName;
-
-			return str;
-		}
-
-		public static string GetSystemDisplayName(this IEmulator emulator) => emulator.SystemId switch
-		{
-			"NULL" => string.Empty,
-			"NES" => "NES",
-			"INTV" => "Intellivision",
-			"GG" => "Game Gear",
-			"SG" => "SG-1000",
-			"SMS" => "Sega Master System",
-			"PCECD" => "TurboGrafx - 16(CD)",
-			"PCE" => "TurboGrafx-16",
-			"SGX" => "SuperGrafx",
-			"GEN" => "Genesis",
-			"TI83" => "TI - 83",
-			"SNES" => "SNES",
+			NullEmulator => string.Empty,
 #if false
-			"GB" when emulator is IGameboyCommon gb && gb.IsCGBMode() => "Gameboy Color",
+			IGameboyCommon gb when gb.IsCGBMode() => EmulatorExtensions.SystemIDToDisplayName("GBC"),
 #endif
-			"GB" => "GB",
-			"A26" => "Atari 2600",
-			"A78" => "Atari 7800",
-			"C64" => "Commodore 64",
-			"Coleco" => "ColecoVision",
-			"GBA" => "Gameboy Advance",
-			"NDS" => "NDS",
-			"N64" => "Nintendo 64",
-			"SAT" => "Saturn",
-			"DGB" => "Game Boy Link",
-			"GB3x" => "Game Boy Link 3x",
-			"GB4x" => "Game Boy Link 4x",
-			"WSWAN" => "WonderSwan",
-			"Lynx" => "Lynx",
-			"PSX" => "PlayStation",
-			"AppleII" => "Apple II",
-			"Libretro" => "Libretro",
-			"VB" => "Virtual Boy",
-			"VEC" => "Vectrex",
-			"NGP" => "Neo-Geo Pocket",
-			"ZXSpectrum" => "ZX Spectrum",
-			"AmstradCPC" => "Amstrad CPC",
-			"ChannelF" => "Channel F",
-			"O2" => "Odyssey2",
-			"MAME" => "MAME",
-			"UZE" => "uzem",
-			"PCFX" => "PCFX",
-			_ => string.Empty
+			_ => EmulatorExtensions.SystemIDToDisplayName(emulator.SystemId)
 		};
 	}
 }

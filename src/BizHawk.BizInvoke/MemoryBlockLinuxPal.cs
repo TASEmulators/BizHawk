@@ -5,7 +5,7 @@ using static BizHawk.BizInvoke.POSIXLibC;
 
 namespace BizHawk.BizInvoke
 {
-	internal sealed unsafe class MemoryBlockLinuxPal : IMemoryBlockPal
+	internal sealed class MemoryBlockLinuxPal : IMemoryBlockPal
 	{
 		public ulong Start { get; }
 		private readonly ulong _size;

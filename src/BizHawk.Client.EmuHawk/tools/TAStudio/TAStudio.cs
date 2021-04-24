@@ -562,6 +562,7 @@ namespace BizHawk.Client.EmuHawk
 			CurrentTasMovie.GreenzoneInvalidated = GreenzoneInvalidated;
 			Settings.RecentTas.Add(MovieSession.Movie.Filename);
 			MainForm.SetMainformMovieInfo();
+			CurrentTasMovie.PropertyChanged += TasMovie_OnPropertyChanged;
 		}
 
 		private bool LoadFile(FileInfo file, bool startsFromSavestate = false, int gotoFrame = 0)

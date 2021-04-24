@@ -1,6 +1,6 @@
 ﻿namespace BizHawk.Emulation.Cores.Nintendo.SNES
 {
-	unsafe partial class LibsnesApi
+	public partial class LibsnesApi
 	{
 		public enum eMessage : int
 		{

@@ -64,7 +64,7 @@ namespace BizHawk.Bizware.BizwareGL
 		/// If the close operation is forever, then internal backup copies of resources will be freed, but it can never be reopened.
 		/// This function may take some time to run, as it is 
 		/// </summary>
-		public unsafe void Close(bool forever = true)
+		public void Close(bool forever = true)
 		{
 			AssertIsOpen(true);
 			IsOpened = false;

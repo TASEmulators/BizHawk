@@ -16,9 +16,10 @@ namespace BizHawk.Client.Common
 		public const double CurrentVersion = 1.1;
 
 		/// <exception cref="InvalidOperationException">loaded core does not implement <see cref="IStatable"/></exception>
-		internal TasMovie(IMovieSession session, string path) : base(session, path)
+		internal TasMovie(IMovieSession session, string path, IQuickBmpFile quickBmpFile)
+			: base(session, path)
 		{
-			Branches = new TasBranchCollection(this);
+			Branches = new TasBranchCollection(this, quickBmpFile);
 			ChangeLog = new TasMovieChangeLog(this);
 			Header[HeaderKeys.MovieVersion] = $"BizHawk v2.0 Tasproj v{CurrentVersion.ToString(CultureInfo.InvariantCulture)}";
 			Markers = new TasMovieMarkerList(this);
@@ -184,7 +185,7 @@ namespace BizHawk.Client.Common
 		{
 			// todo: this isn't working quite right when autorestore is off and we're editing while seeking
 			// but accounting for that requires access to Mainform.IsSeeking
-			if (Emulator.Frame > LastEditedFrame)
+			if (Emulator.Frame != LastEditedFrame)
 			{
 				// emulated a new frame, current editing segment may change now. taseditor logic
 				LastPositionStable = false;

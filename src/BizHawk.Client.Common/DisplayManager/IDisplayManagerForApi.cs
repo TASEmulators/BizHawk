@@ -11,10 +11,10 @@ namespace BizHawk.Client.Common
 
 		/// <summary>locks the surface with ID <paramref name="surfaceID"/></summary>
 		/// <exception cref="InvalidOperationException">already locked, or unknown surface</exception>
-		DisplaySurface LockApiHawkSurface(DisplaySurfaceID surfaceID, bool clear = true);
+		IDisplaySurface LockApiHawkSurface(DisplaySurfaceID surfaceID, bool clear = true);
 
 		/// <summary>unlocks the given <paramref name="surface"/>, which must be a locked surface produced by <see cref="LockApiHawkSurface"/></summary>
 		/// <exception cref="InvalidOperationException">already unlocked</exception>
-		void UnlockApiHawkSurface(DisplaySurface surface);
+		void UnlockApiHawkSurface(IDisplaySurface surface);
 	}
 }

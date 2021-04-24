@@ -39,9 +39,9 @@ namespace BizHawk.Client.Common
 
 		private Color? _defaultTextBackground = Color.FromArgb(128, 0, 0, 0);
 
-		private DisplaySurface _clientSurface;
+		private IDisplaySurface _clientSurface;
 
-		private DisplaySurface _GUISurface;
+		private IDisplaySurface _GUISurface;
 
 		private (int Left, int Top, int Right, int Bottom) _padding = (0, 0, 0, 0);
 
@@ -73,7 +73,7 @@ namespace BizHawk.Client.Common
 
 		public void SetAttributes(ImageAttributes a) => _attributes = a;
 
-		private DisplaySurface GetRelevantSurface(DisplaySurfaceID? surfaceID)
+		private IDisplaySurface GetRelevantSurface(DisplaySurfaceID? surfaceID)
 		{
 			var nnID = surfaceID ?? _usingSurfaceID ?? throw new Exception();
 			void ThisIsTheLuaAutolockHack()

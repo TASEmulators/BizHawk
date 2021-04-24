@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+	</PropertyGroup>
+	<Import Project="../../Common.props" />
+	<PropertyGroup>
+		<Nullable>disable</Nullable>
+	</PropertyGroup>
+	<ItemGroup>
+		<ProjectReference Include="$(ProjectDir)../FlatBuffers.Core/FlatBuffers.Core.csproj" />
+	</ItemGroup>
+</Project>
