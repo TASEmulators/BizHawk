@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace BizHawk.Client.Common
@@ -6,20 +7,25 @@ namespace BizHawk.Client.Common
 	/// encapsulates thread-safe concept of pending/current display surfaces, reusing buffers where matching 
 	/// sizes are available and keeping them cleaned up when they don't seem like they'll need to be used anymore
 	/// </summary>
-	public class SwappableDisplaySurfaceSet
+	public class SwappableDisplaySurfaceSet<T>
+		where T : class, IDisplaySurface
 	{
-		private DisplaySurface _pending, _current;
+		private readonly Func<int, int, T> _createDispSurface;
+
+		private T _pending, _current;
 		private bool _isPending;
-		private readonly Queue<DisplaySurface> _releasedSurfaces = new Queue<DisplaySurface>();
+		private readonly Queue<T> _releasedSurfaces = new();
+
+		public SwappableDisplaySurfaceSet(Func<int, int, T> createDispSurface) => _createDispSurface = createDispSurface;
 
 		/// <summary>
 		/// retrieves a surface with the specified size, reusing an old buffer if available and clearing if requested
 		/// </summary>
-		public DisplaySurface AllocateSurface(int width, int height, bool needsClear = true)
+		public T AllocateSurface(int width, int height, bool needsClear = true)
 		{
 			for (; ; )
 			{
-				DisplaySurface trial;
+				T trial;
 				lock (this)
 				{
 					if (_releasedSurfaces.Count == 0) break;
@@ -38,13 +44,13 @@ namespace BizHawk.Client.Common
 				trial.Dispose();
 			}
 
-			return new DisplaySurface(width, height);
+			return _createDispSurface(width, height);
 		}
 
 		/// <summary>
 		/// sets the provided buffer as pending. takes control of the supplied buffer
 		/// </summary>
-		public void SetPending(DisplaySurface newPending)
+		public void SetPending(T newPending)
 		{
 			lock (this)
 			{
@@ -54,7 +60,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void ReleaseSurface(DisplaySurface surface)
+		public void ReleaseSurface(T surface)
 		{
 			lock (this) _releasedSurfaces.Enqueue(surface);
 		}
@@ -62,7 +68,7 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// returns the current buffer, making the most recent pending buffer (if there is such) as the new current first.
 		/// </summary>
-		public DisplaySurface GetCurrent()
+		public T GetCurrent()
 		{
 			lock (this)
 			{

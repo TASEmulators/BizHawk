@@ -1,22 +1,23 @@
-using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
+
+using BizHawk.Client.Common;
 using BizHawk.Common;
 
-namespace BizHawk.Client.Common
+namespace BizHawk.Client.EmuHawk
 {
 	/// <summary>
 	/// This is a wrapper for a Bitmap, basically, which can also be a int[].
 	/// It should be phased out, in favor of BitmapBuffer and Texture2d's
 	/// </summary>
-	public unsafe class DisplaySurface : IDisposable
+	public unsafe class DisplaySurface : IDisplaySurface
 	{
 		private Bitmap _bmp;
 		private BitmapData _bmpData;
 		private readonly int[] _pixels;
 
-		public unsafe void Clear()
+		public void Clear()
 		{
 			FromBitmap(false);
 			Util.Memset(PixelPtr, 0, Stride * Height);
@@ -28,16 +29,13 @@ namespace BizHawk.Client.Common
 			return _bmp;
 		}
 
-		/// <summary>
-		/// returns a Graphics object used to render to this surface. be sure to dispose it!
-		/// </summary>
 		public Graphics GetGraphics()
 		{
 			ToBitmap();
 			return Graphics.FromImage(_bmp);
 		}
 
-		public unsafe void ToBitmap(bool copy=true)
+		public void ToBitmap(bool copy = true)
 		{
 			if (_isBitmap) return;
 			_isBitmap = true;
@@ -70,7 +68,7 @@ namespace BizHawk.Client.Common
 
 		private bool _isBitmap;
 
-		public unsafe void FromBitmap(bool copy = true)
+		public void FromBitmap(bool copy = true)
 		{
 			if (!_isBitmap)
 			{

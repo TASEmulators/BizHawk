@@ -142,7 +142,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			}
 		}
 
-		public unsafe void QUERY_peek_cpu_regs(out CPURegs ret)
+		public void QUERY_peek_cpu_regs(out CPURegs ret)
 		{
 			using (_exe.EnterExit())
 			{

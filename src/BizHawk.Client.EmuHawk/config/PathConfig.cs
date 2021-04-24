@@ -6,21 +6,16 @@ using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Common;
-using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class PathConfig : Form
 	{
-		private readonly FirmwareManager _firmwareManager;
-
-		private readonly IDictionary<string, string> _firmwareUserSpecifications;
-
-		private readonly IGameInfo _game;
-
 		private readonly IMainFormForConfig _mainForm;
 
 		private readonly PathEntryCollection _pathEntries;
+
+		private readonly string _sysID;
 
 		// All path text boxes should do some kind of error checking
 		// Config path under base, config will default to %exe%
@@ -47,18 +42,11 @@ namespace BizHawk.Client.EmuHawk
 			"%rom%",
 		};
 
-		public PathConfig(
-			FirmwareManager firmwareManager,
-			IDictionary<string, string> firmwareUserSpecifications,
-			IGameInfo game,
-			IMainFormForConfig mainForm,
-			PathEntryCollection pathEntries)
+		public PathConfig(IMainFormForConfig mainForm, PathEntryCollection pathEntries, string sysID)
 		{
-			_firmwareManager = firmwareManager;
-			_firmwareUserSpecifications = firmwareUserSpecifications;
-			_game = game;
 			_mainForm = mainForm;
 			_pathEntries = pathEntries;
+			_sysID = sysID;
 			InitializeComponent();
 			SpecialCommandsBtn.Image = Properties.Resources.Help;
 		}
@@ -67,7 +55,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			RecentForROMs.Checked = _pathEntries.UseRecentForRoms;
 
-			DoTabs(_pathEntries.ToList(), _game.System);
+			DoTabs(_pathEntries.ToList(), _sysID);
 			DoRomToggle();
 		}
 
@@ -127,40 +115,10 @@ namespace BizHawk.Client.EmuHawk
 					var tempSystem = path.System;
 					btn.Click += (sender, args) => BrowseFolder(tempBox, tempPath, tempSystem);
 
-					int infoPadding = UIHelper.ScaleX(0);
-					if (t.Name.Contains("Global") && path.Type == "Firmware")
-					{
-						infoPadding = UIHelper.ScaleX(26);
-
-						var firmwareButton = new Button
-						{
-							Name = "Global",
-							Text = "",
-							Image = Properties.Resources.Help,
-							Location = new Point(UIHelper.ScaleX(115), y + buttonOffsetY),
-							Size = new Size(buttonWidth, buttonHeight),
-							Anchor = AnchorStyles.Top | AnchorStyles.Right
-						};
-
-						firmwareButton.Click += (sender, e) =>
-						{
-							if (Owner is FirmwaresConfig)
-							{
-								_mainForm.DialogController.ShowMessageBox("C-C-C-Combo Breaker!", "Nice try, but");
-								return;
-							}
-
-							using var f = new FirmwaresConfig(_firmwareManager, _firmwareUserSpecifications, _game, _mainForm, _pathEntries) { TargetSystem = "Global" };
-							f.ShowDialog(this);
-						};
-
-						t.Controls.Add(firmwareButton);
-					}
-
 					var label = new Label
 					{
 						Text = path.Type,
-						Location = new Point(widgetOffset + buttonWidth + padding + infoPadding, y + UIHelper.ScaleY(4)),
+						Location = new Point(widgetOffset + buttonWidth + padding, y + UIHelper.ScaleY(4)),
 						Size = new Size(UIHelper.ScaleX(100), UIHelper.ScaleY(15)),
 						Name = path.Type,
 						Anchor = AnchorStyles.Top | AnchorStyles.Right

@@ -2,6 +2,7 @@
 using System.IO;
 using System.Runtime.InteropServices;
 
+using BizHawk.Client.Common;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
@@ -10,9 +11,9 @@ using BizHawk.Emulation.Common;
 // ReSharper disable StyleCop.SA1304
 // ReSharper disable StyleCop.SA1307
 // ReSharper disable StyleCop.SA1401
-namespace BizHawk.Client.Common
+namespace BizHawk.Client.EmuHawk
 {
-	public static class QuickBmpFile
+	public readonly struct QuickBmpFile : IQuickBmpFile
 	{
 		[StructLayout(LayoutKind.Sequential, Pack = 1)]
 		private class BITMAPFILEHEADER
@@ -333,5 +334,13 @@ namespace BizHawk.Client.Common
 
 			s.Write(dst, 0, dst.Length);
 		}
+
+		readonly void IQuickBmpFile.Copy(IVideoProvider src, IVideoProvider dst) => Copy(src, dst);
+
+		readonly bool IQuickBmpFile.Load(IVideoProvider v, Stream s) => Load(v, s);
+
+		public readonly bool LoadAuto(Stream s, out IVideoProvider vp) => Load(vp = new LoadedBMP(), s);
+
+		readonly void IQuickBmpFile.Save(IVideoProvider v, Stream s, int w, int h) => Save(v, s, w, h);
 	}
 }

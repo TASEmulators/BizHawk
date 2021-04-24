@@ -64,7 +64,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		public bool SkipMemoryConsistencyCheck { get; set; } = false;
 	}
 
-	public unsafe class WaterboxHost : IMonitor, IImportResolver, IStatable, IDisposable, ICallbackAdjuster
+	public sealed class WaterboxHost : IMonitor, IImportResolver, IStatable, IDisposable, ICallbackAdjuster
 	{
 		private IntPtr _nativeHost;
 		private int _enterCount;

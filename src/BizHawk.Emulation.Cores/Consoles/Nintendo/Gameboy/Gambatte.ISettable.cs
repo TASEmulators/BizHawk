@@ -65,7 +65,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			public int[] GBPalette;
 			public GBColors.ColorType CGBColors;
-			public bool DisplayBG = true, DisplayOBJ = true, DisplayWindow = true;
 
 			/// <summary>
 			/// true to mute all audio
@@ -136,6 +135,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				get => _equalLengthFrames;
 				set => _equalLengthFrames = value;
 			}
+
+			[DisplayName("Display BG")]
+			[Description("Display background")]
+			[DefaultValue(true)]
+			public bool DisplayBG { get; set; }
+
+			[DisplayName("Display OBJ")]
+			[Description("Display objects")]
+			[DefaultValue(true)]
+			public bool DisplayOBJ { get; set; }
+
+			[DisplayName("Display Window")]
+			[Description("Display window")]
+			[DefaultValue(true)]
+			public bool DisplayWindow { get; set; }
 
 			[JsonIgnore]
 			[DeepEqualsIgnore]

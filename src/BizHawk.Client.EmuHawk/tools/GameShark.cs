@@ -3,6 +3,7 @@
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 using BizHawk.Client.Common.cheats;
+using BizHawk.Emulation.Cores;
 
 // TODO:
 // Add Support/Handling for The Following Systems and Devices:
@@ -11,7 +12,10 @@ using BizHawk.Client.Common.cheats;
 // SNES: GoldFinger (Action Replay II) Support?
 namespace BizHawk.Client.EmuHawk
 {
-	[Tool(true, new[] { "GB", "GBA", "GEN", "N64", "NES", "PSX", "SAT", "SMS", "SNES" }, new[] { "Snes9x" })]
+	[Tool(
+		released: true,
+		supportedSystems: new[] { "GB", "GBA", "GEN", "N64", "NES", "PSX", "SAT", "SMS", "SNES" },
+		unsupportedCores: new[] { CoreNames.Snes9X })]
 	public partial class GameShark : ToolFormBase, IToolFormAutoConfig
 	{
 		[RequiredService]

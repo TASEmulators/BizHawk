@@ -8,7 +8,7 @@ using BizHawk.Common.NumberExtensions;
 namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 {
 	[Core(
-		"A7800Hawk",
+		CoreNames.A7800Hawk,
 		"",
 		isPorted: false,
 		isReleased: true)]

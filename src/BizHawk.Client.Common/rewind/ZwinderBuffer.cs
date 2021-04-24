@@ -351,7 +351,7 @@ namespace BizHawk.Client.Common
 			return ret;
 		}
 
-		private unsafe class SaveStateStream : Stream, ISpanStream
+		private sealed class SaveStateStream : Stream, ISpanStream
 		{
 			/// <summary>
 			/// 
@@ -445,7 +445,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		private unsafe class LoadStateStream : Stream, ISpanStream
+		private sealed class LoadStateStream : Stream, ISpanStream
 		{
 			public LoadStateStream(Stream backingStore, long offset, long size, long mask)
 			{
@@ -481,7 +481,7 @@ namespace BizHawk.Client.Common
 				return Read(new Span<byte>(buffer, offset, count));
 			}
 
-			public unsafe int Read(Span<byte> buffer)
+			public int Read(Span<byte> buffer)
 			{
 				long n = Math.Min(_size - _position, buffer.Length);
 				int ret = (int)n;

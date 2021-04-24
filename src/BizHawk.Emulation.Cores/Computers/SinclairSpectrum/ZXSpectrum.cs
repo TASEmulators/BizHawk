@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 	/// * Main Initialization *
 	/// </summary>
 	[Core(
-		"ZXHawk",
+		CoreNames.ZXHawk,
 		"Asnivor, Alyosha",
 		isPorted: false,
 		isReleased: true)]

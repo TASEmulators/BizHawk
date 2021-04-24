@@ -228,17 +228,17 @@ namespace BizHawk.Bizware.BizwareGL
 			g.Transform = new sd.Drawing2D.Matrix(mat.Row0.X, mat.Row0.Y, mat.Row1.X, mat.Row1.Y, mat.Row3.X, mat.Row3.Y);
 		}
 
-		private unsafe void DrawInternal(Art art, float x, float y, float w, float h)
+		private void DrawInternal(Art art, float x, float y, float w, float h)
 		{
 			DrawInternal(art.BaseTexture, x, y, w, h, art.u0, art.v0, art.u1, art.v1);
 		}
 
-		private unsafe void DrawInternal(Texture2d tex, float x, float y, float w, float h)
+		private void DrawInternal(Texture2d tex, float x, float y, float w, float h)
 		{
 			DrawInternal(tex, x, y, w, h, 0, 0, 1, 1);
 		}
 
-		private unsafe void DrawInternal(Texture2d tex, float x, float y, float w, float h, float u0, float v0, float u1, float v1)
+		private void DrawInternal(Texture2d tex, float x, float y, float w, float h, float u0, float v0, float u1, float v1)
 		{
 			var g = ((dynamic) Gdi).GetCurrentGraphics() as sd.Graphics;
 			PrepDraw(g, tex);
@@ -264,7 +264,7 @@ namespace BizHawk.Bizware.BizwareGL
 			g.Transform = new sd.Drawing2D.Matrix(); //.Reset() doesn't work ? ?
 		}
 
-		private unsafe void DrawInternal(Art art, float x, float y, float w, float h, bool fx, bool fy)
+		private void DrawInternal(Art art, float x, float y, float w, float h, bool fx, bool fy)
 		{
 		}
 

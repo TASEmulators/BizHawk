@@ -1182,13 +1182,13 @@
         "Deadzone": 0.0
       },
       "P2 Mouse X": {
-        "Value": "WMouse X",
-        "Mult": 1.0,
+        "Value": "X1 LeftThumbX Axis",
+        "Mult": 0.1,
         "Deadzone": 0.0
       },
       "P2 Mouse Y": {
-        "Value": "WMouse Y",
-        "Mult": 1.0,
+        "Value": "X1 LeftThumbY Axis",
+        "Mult": 0.1,
         "Deadzone": 0.0
       }
     },

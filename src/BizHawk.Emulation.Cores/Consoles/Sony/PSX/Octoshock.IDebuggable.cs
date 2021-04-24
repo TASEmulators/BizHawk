@@ -124,7 +124,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			OctoshockDll.shock_SetMemCb(psx, mem_cb, mask);
 		}
 
-		private unsafe void SetMemoryDomains()
+		private void SetMemoryDomains()
 		{
 			var mmd = new List<MemoryDomain>();
 

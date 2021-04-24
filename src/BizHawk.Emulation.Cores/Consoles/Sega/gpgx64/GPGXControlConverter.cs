@@ -61,6 +61,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		{
 			new CName("Lightgun Trigger", LibGPGX.INPUT_KEYS.INPUT_MENACER_TRIGGER),
 			new CName("Lightgun Start", LibGPGX.INPUT_KEYS.INPUT_MENACER_START),
+			new CName("Lightgun B", LibGPGX.INPUT_KEYS.INPUT_MENACER_B),
+			new CName("Lightgun C", LibGPGX.INPUT_KEYS.INPUT_MENACER_C),
 		};
 
 		private static readonly CName[] Activator = 
@@ -121,7 +123,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		private void DoMouseAnalog(int idx, int player)
 		{
-			ControllerDef.AddXYPair($"P{player} Mouse {{0}}", AxisPairOrientation.RightAndUp, (-256).RangeTo(255), 0); //TODO verify direction against hardware
+			// In "Genesis Technical Bulletin #27" (last seen at http://techdocs.exodusemulator.com/Console/SegaMegaDrive/Documentation.html), some example code for the Genesis is given which describes the 32 bits of Mouse data:
+			// ` ignored YXYX     XXXXXXXX YYYYYYYY`
+			// `0-------_oossCMRL_########_########`
+			// Each axis is represented as 10 bits: 1 `s` bit for sign, 8 bits for the value, and 1 `o` bit indicating whether the value fell outside the range (i.e. abs(val)>=256).
+			// So the range -256..256 includes every normal state, though nothing outside -10..10 is at all useful based on my in-game testing. (Games probably didn't have special checks for -0 or for the overflow bit being used with a value <=255.)
+			// The game in question is Eye of the Beholder, you can FFW to the main menu and get a cursor right away.
+			// --yoshi
+			ControllerDef.AddXYPair($"P{player} Mouse {{0}}", AxisPairOrientation.RightAndUp, (-256).RangeTo(256), 0);
 			var nx = $"P{player} Mouse X";
 			var ny = $"P{player} Mouse Y";
 			_converts.Add(() =>

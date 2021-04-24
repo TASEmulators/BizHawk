@@ -13,20 +13,52 @@ namespace BizHawk.Emulation.Common
 {
 	public static class EmulatorExtensions
 	{
+		public static readonly IReadOnlyDictionary<string, string> SystemIDDisplayNames = new Dictionary<string, string>
+		{
+			["A26"] = "Atari 2600",
+			["A78"] = "Atari 7800",
+			["AmstradCPC"] = "Amstrad CPC",
+			["AppleII"] = "Apple II",
+			["C64"] = "Commodore 64",
+			["ChannelF"] = "Channel F",
+			["Coleco"] = "ColecoVision",
+			["DGB"] = "Game Boy Link",
+			["GB"] = "GB",
+			["GB3x"] = "Game Boy Link 3x",
+			["GB4x"] = "Game Boy Link 4x",
+			["GBA"] = "Gameboy Advance",
+			["GBC"] = "Gameboy Color",
+			["GEN"] = "Genesis",
+			["GG"] = "Game Gear",
+			["INTV"] = "Intellivision",
+			["Libretro"] = "Libretro",
+			["Lynx"] = "Lynx",
+			["MAME"] = "MAME",
+			["N64"] = "Nintendo 64",
+			["NDS"] = "NDS",
+			["NES"] = "NES",
+			["NGP"] = "Neo-Geo Pocket",
+			["O2"] = "Odyssey2",
+			["PCE"] = "TurboGrafx-16",
+			["PCECD"] = "TurboGrafx - 16(CD)",
+			["PCFX"] = "PCFX",
+			["PSX"] = "PlayStation",
+			["SAT"] = "Saturn",
+			["SG"] = "SG-1000",
+			["SGX"] = "SuperGrafx",
+			["SMS"] = "Sega Master System",
+			["SNES"] = "SNES",
+			["TI83"] = "TI - 83",
+			["UZE"] = "Uzebox",
+			["VB"] = "Virtual Boy",
+			["VEC"] = "Vectrex",
+			["WSWAN"] = "WonderSwan",
+			["ZXSpectrum"] = "ZX Spectrum",
+		};
+
 		public static CoreAttribute Attributes(this IEmulator core)
 		{
 			return (CoreAttribute)Attribute.GetCustomAttribute(core.GetType(), typeof(CoreAttribute));
-		}
-
-		public static string DisplayName(this IEmulator core)
-		{
-			var attr = (CoreAttribute)Attribute.GetCustomAttribute(core.GetType(), typeof(CoreAttribute));
-			if (attr == null)
-			{
-				return core.GetType().Name;
-			}
-
-			return attr.DisplayName ?? attr.CoreName;
 		}
 
 		// todo: most of the special cases involving the NullEmulator should probably go away
@@ -459,5 +491,8 @@ namespace BizHawk.Emulation.Common
 		/// <remarks>TODO inline (only change is wrapping strings in <see cref="FirmwareID"/> ctor, these IDs should probably be consts in each core's class)</remarks>
 		public static byte[] GetFirmwareWithGameInfo(this ICoreFileProvider cfp, string sysId, string firmwareId, bool required, out GameInfo gi, string msg = null)
 			=> cfp.GetFirmwareWithGameInfo(new(system: sysId, firmware: firmwareId), required: required, out gi, msg: msg);
+
+		public static string SystemIDToDisplayName(string sysID)
+			=> SystemIDDisplayNames.TryGetValue(sysID, out var dispName) ? dispName : string.Empty;
 	}
 }

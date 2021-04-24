@@ -697,30 +697,51 @@ namespace BizHawk.Client.EmuHawk
 				case "GB Toggle BG":
 					if (Emulator is Gameboy gb)
 					{
-						var s = gb.GetSettings();
-						s.DisplayBG ^= true;
-						gb.PutSettings(s);
-						AddOnScreenMessage($"BG toggled {(s.DisplayBG ? "on" : "off")}");
+						if (!gb.DeterministicEmulation)
+						{
+							var ss = gb.GetSyncSettings();
+							ss.DisplayBG ^= true;
+							gb.PutSyncSettings(ss);
+							AddOnScreenMessage($"BG toggled {(ss.DisplayBG ? "on" : "off")}");
+						}
+						else
+						{
+							AddOnScreenMessage($"BG cannot be toggled during movie recording.");
+						}
 					}
 
 					break;
 				case "GB Toggle Obj":
 					if (Emulator is Gameboy gb2)
 					{
-						var s = gb2.GetSettings();
-						s.DisplayOBJ ^= true;
-						gb2.PutSettings(s);
-						AddOnScreenMessage($"OBJ toggled {(s.DisplayOBJ ? "on" : "off")}");
+						if (!gb2.DeterministicEmulation)
+						{
+							var ss = gb2.GetSyncSettings();
+							ss.DisplayOBJ ^= true;
+							gb2.PutSyncSettings(ss);
+							AddOnScreenMessage($"OBJ toggled {(ss.DisplayOBJ ? "on" : "off")}");
+						}
+						else
+						{
+							AddOnScreenMessage($"OBJ cannot be toggled during movie recording.");
+						}
 					}
 
 					break;
 				case "GB Toggle Window":
 					if (Emulator is Gameboy gb3)
 					{
-						var s = gb3.GetSettings();
-						s.DisplayWindow ^= true;
-						gb3.PutSettings(s);
-						AddOnScreenMessage($"WIN toggled {(s.DisplayWindow ? "on" : "off")}");
+						if (!gb3.DeterministicEmulation)
+						{
+							var ss = gb3.GetSyncSettings();
+							ss.DisplayWindow ^= true;
+							gb3.PutSyncSettings(ss);
+							AddOnScreenMessage($"WIN toggled {(ss.DisplayWindow ? "on" : "off")}");
+						}
+						else
+						{
+							AddOnScreenMessage($"WIN cannot be toggled during movie recording.");
+						}
 					}
 
 					break;

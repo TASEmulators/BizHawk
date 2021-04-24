@@ -4,7 +4,7 @@ using BizHawk.Emulation.Common;
 namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 {
 	[Core(
-		"ChannelFHawk",
+		CoreNames.ChannelFHawk,
 		"Asnivor",
 		isPorted: false,
 		isReleased: false)]

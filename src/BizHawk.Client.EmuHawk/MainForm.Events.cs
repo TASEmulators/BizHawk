@@ -532,11 +532,6 @@ namespace BizHawk.Client.EmuHawk
 			StopAv();
 		}
 
-		private void SynclessRecordingMenuItem_Click(object sender, EventArgs e)
-		{
-			new SynclessRecordingTools(Config, Game, this).Run();
-		}
-
 		private void CaptureOSDMenuItem_Click(object sender, EventArgs e)
 		{
 			bool c = ((ToolStripMenuItem)sender).Checked;
@@ -878,13 +873,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (e is RomLoader.RomErrorArgs args)
 			{
-				using var configForm = new FirmwaresConfig(FirmwareManager, Config.FirmwareUserSpecifications, Game, this, Config.PathEntries, retryLoadRom: true, reloadRomPath: args.RomPath);
+				using var configForm = new FirmwaresConfig(FirmwareManager, Config.FirmwareUserSpecifications, this, Config.PathEntries, retryLoadRom: true, reloadRomPath: args.RomPath);
 				var result = configForm.ShowDialog();
 				args.Retry = result == DialogResult.Retry;
 			}
 			else
 			{
-				using var configForm = new FirmwaresConfig(FirmwareManager, Config.FirmwareUserSpecifications, Game, this, Config.PathEntries);
+				using var configForm = new FirmwaresConfig(FirmwareManager, Config.FirmwareUserSpecifications, this, Config.PathEntries);
 				configForm.ShowDialog();
 			}
 		}
@@ -900,7 +895,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PathsMenuItem_Click(object sender, EventArgs e)
 		{
-			using var form = new PathConfig(FirmwareManager, Config.FirmwareUserSpecifications, Game, this, Config.PathEntries);
+			using var form = new PathConfig(this, Config.PathEntries, Game.System);
 			form.ShowDialog();
 		}
 
@@ -1795,7 +1790,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GenericCoreSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			GenericCoreConfig.DoDialog(this, $"{Emulator.DisplayName()} Settings");
+			var coreName = ((CoreAttribute) Attribute.GetCustomAttribute(Emulator.GetType(), typeof(CoreAttribute))).CoreName;
+			GenericCoreConfig.DoDialog(this, $"{coreName} Settings");
 		}
 
 		private void AppleIISettingsMenuItem_Click(object sender, EventArgs e)
@@ -2545,8 +2541,6 @@ namespace BizHawk.Client.EmuHawk
 				Tools.Load<TI83KeyPad>();
 			}
 
-			Tools.AutoLoad();
-
 			if (Config.RecentWatches.AutoLoad)
 			{
 				Tools.LoadRamWatch(!Config.DisplayRamWatch);
@@ -2557,6 +2551,7 @@ namespace BizHawk.Client.EmuHawk
 				Tools.Load<Cheats>();
 			}
 
+			Tools.AutoLoad();
 			HandlePlatformMenus();
 		}
 

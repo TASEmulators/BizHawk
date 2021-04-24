@@ -11,7 +11,7 @@ using static BizHawk.Emulation.Cores.Waterbox.LibNymaCore;
 
 namespace BizHawk.Emulation.Cores.Waterbox
 {
-	unsafe partial class NymaCore
+	public partial class NymaCore
 	{
 		private const int MAX_INPUT_DATA = 256;
 

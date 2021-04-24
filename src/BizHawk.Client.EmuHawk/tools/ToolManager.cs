@@ -111,15 +111,17 @@ namespace BizHawk.Client.EmuHawk
 			var existingTool = _tools.OfType<T>().FirstOrDefault();
 			if (existingTool != null)
 			{
-				if (!existingTool.IsDisposed)
+				if (existingTool.IsLoaded)
 				{
 					if (focus)
 					{
 						existingTool.Show();
 						existingTool.Focus();
 					}
+
 					return existingTool;
 				}
+
 				_tools.Remove(existingTool);
 			}
 
@@ -161,7 +163,7 @@ namespace BizHawk.Client.EmuHawk
 			var existingTool = _tools.OfType<IExternalToolForm>().FirstOrDefault(t => t.GetType().Assembly.Location == toolPath);
 			if (existingTool != null)
 			{
-				if (!existingTool.IsDisposed)
+				if (existingTool.IsActive)
 				{
 					if (focus)
 					{
@@ -170,6 +172,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					return existingTool;
 				}
+
 				_tools.Remove(existingTool);
 			}
 
@@ -227,7 +230,10 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					Load(t, false);
+					if (!IsLoaded(t))
+					{
+						Load(t, false);
+					}
 				}
 			}
 		}
@@ -454,10 +460,16 @@ namespace BizHawk.Client.EmuHawk
 			var existingTool = _tools.FirstOrDefault(t => t is T);
 			if (existingTool != null)
 			{
-				return !existingTool.IsDisposed;
+				return existingTool.IsActive;
 			}
 
 			return false;
+		}
+
+		public bool IsLoaded(Type toolType)
+		{
+			var existingTool = _tools.FirstOrDefault(t => t.GetType() == toolType);
+			return existingTool != null && existingTool.IsActive;
 		}
 
 		public bool IsOnScreen(Point topLeft)
@@ -472,7 +484,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <typeparam name="T">Type of tool to check</typeparam>
 		public bool Has<T>() where T : IToolForm
 		{
-			return _tools.Any(t => t is T && !t.IsDisposed);
+			return _tools.Any(t => t is T && t.IsActive);
 		}
 
 		/// <summary>
@@ -496,13 +508,9 @@ namespace BizHawk.Client.EmuHawk
 		public void UpdateValues<T>() where T : IToolForm
 		{
 			var tool = _tools.FirstOrDefault(t => t is T);
-			if (tool != null)
+			if (tool != null && tool.IsActive)
 			{
-				if (!tool.IsDisposed ||
-					(tool is RamWatch && _config.DisplayRamWatch)) // RAM Watch hack, on screen display should run even if RAM Watch is closed
-				{
-					tool.UpdateValues(ToolFormUpdateType.General);
-				}
+				tool.UpdateValues(ToolFormUpdateType.General);
 			}
 		}
 
@@ -527,10 +535,13 @@ namespace BizHawk.Client.EmuHawk
 				{
 					ServiceInjector.UpdateServices(_emulator.ServiceProvider, tool);
 					
-					if ((tool.IsHandleCreated && !tool.IsDisposed) || tool is RamWatch) // Hack for RAM Watch - in display watches mode it wants to keep running even closed, it will handle disposed logic
+					if (tool.IsActive)
 					{
 						if (tool is IExternalToolForm)
+						{
 							ApiInjector.UpdateApis(ApiProvider, tool);
+						}
+
 						tool.Restart();
 					}
 				}
@@ -677,8 +688,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			foreach (var tool in _tools)
 			{
-				if (!tool.IsDisposed
-					|| (tool is RamWatch && _config.DisplayRamWatch)) // RAM Watch hack, on screen display should run even if RAM Watch is closed
+				if (tool.IsActive)
 				{
 					tool.UpdateValues(ToolFormUpdateType.PreFrame);
 				}
@@ -689,8 +699,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			foreach (var tool in _tools)
 			{
-				if (!tool.IsDisposed
-					|| (tool is RamWatch && _config.DisplayRamWatch)) // RAM Watch hack, on screen display should run even if RAM Watch is closed
+				if (tool.IsActive)
 				{
 					tool.UpdateValues(ToolFormUpdateType.PostFrame);
 				}
@@ -701,8 +710,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			foreach (var tool in _tools)
 			{
-				if (!tool.IsDisposed
-					|| (tool is RamWatch && _config.DisplayRamWatch)) // RAM Watch hack, on screen display should run even if RAM Watch is closed
+				if (tool.IsActive)
 				{
 					tool.UpdateValues(ToolFormUpdateType.FastPreFrame);
 				}
@@ -713,8 +721,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			foreach (var tool in _tools)
 			{
-				if (!tool.IsDisposed
-					|| (tool is RamWatch && _config.DisplayRamWatch)) // RAM Watch hack, on screen display should run even if RAM Watch is closed
+				if (tool.IsActive)
 				{
 					tool.UpdateValues(ToolFormUpdateType.FastPostFrame);
 				}
@@ -740,10 +747,8 @@ namespace BizHawk.Client.EmuHawk
 				return true; // no ToolAttribute on given type -> assumed all supported
 			}
 
-			var displayName = CoreExtensions.CoreExtensions.DisplayName(_emulator);
-			var systemId = _emulator.SystemId;
-			return !attr.UnsupportedCores.Contains(displayName) // not unsupported
-				&& (!attr.SupportedSystems.Any() || attr.SupportedSystems.Contains(systemId)); // supported (no supported list -> assumed all supported)
+			return !attr.UnsupportedCores.Contains(_emulator.Attributes().CoreName) // not unsupported
+				&& (!attr.SupportedSystems.Any() || attr.SupportedSystems.Contains(_emulator.SystemId)); // supported (no supported list -> assumed all supported)
 		}
 
 		public bool IsAvailable<T>() => IsAvailable(typeof(T));
@@ -755,10 +760,11 @@ namespace BizHawk.Client.EmuHawk
 			T tool = _tools.OfType<T>().FirstOrDefault();
 			if (tool != null)
 			{
-				if (!tool.IsDisposed)
+				if (tool.IsActive)
 				{
 					return tool;
 				}
+
 				_tools.Remove(tool);
 			}
 			tool = new T();
@@ -782,7 +788,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void LoadRamWatch(bool loadDialog)
 		{
-			if (IsLoaded<RamWatch>())
+			if (IsLoaded<RamWatch>() && !_config.DisplayRamWatch)
 			{
 				return;
 			}
