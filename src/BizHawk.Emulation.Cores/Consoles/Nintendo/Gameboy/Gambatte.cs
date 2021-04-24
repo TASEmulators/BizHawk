@@ -145,6 +145,42 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				{
 					LibGambatte.gambatte_settimemode(GambatteState, false);
 				}
+
+				if (DeterministicEmulation)
+				{
+					int[] rtcRegs = new int[11];
+					rtcRegs[(int)LibGambatte.RtcRegIndicies.Dh] = 0;
+					if (_syncSettings.InternalRTCOverflow)
+					{
+						rtcRegs[(int)LibGambatte.RtcRegIndicies.Dh] |= 0x80;
+					}
+					if (_syncSettings.InternalRTCHalt)
+					{
+						rtcRegs[(int)LibGambatte.RtcRegIndicies.Dh] |= 0x40;
+					}
+					rtcRegs[(int)LibGambatte.RtcRegIndicies.Dh] |= _syncSettings.InternalRTCDays >> 8;
+					rtcRegs[(int)LibGambatte.RtcRegIndicies.Dl] = _syncSettings.InternalRTCDays & 0xFF;
+					rtcRegs[(int)LibGambatte.RtcRegIndicies.H] = (_syncSettings.InternalRTCHours < 0) ? (_syncSettings.InternalRTCHours + 0x20) : _syncSettings.InternalRTCHours;
+					rtcRegs[(int)LibGambatte.RtcRegIndicies.M] = (_syncSettings.InternalRTCMinutes < 0) ? (_syncSettings.InternalRTCMinutes + 0x40) : _syncSettings.InternalRTCMinutes;
+					rtcRegs[(int)LibGambatte.RtcRegIndicies.S] = (_syncSettings.InternalRTCSeconds < 0) ? (_syncSettings.InternalRTCSeconds + 0x40) : _syncSettings.InternalRTCSeconds;
+					rtcRegs[(int)LibGambatte.RtcRegIndicies.C] = _syncSettings.InternalRTCCycles;
+					rtcRegs[(int)LibGambatte.RtcRegIndicies.Dh_L] = 0;
+					if (_syncSettings.LatchedRTCOverflow)
+					{
+						rtcRegs[(int)LibGambatte.RtcRegIndicies.Dh_L] |= 0x80;
+					}
+					if (_syncSettings.LatchedRTCHalt)
+					{
+						rtcRegs[(int)LibGambatte.RtcRegIndicies.Dh_L] |= 0x40;
+					}
+					rtcRegs[(int)LibGambatte.RtcRegIndicies.Dh_L] |= _syncSettings.LatchedRTCDays >> 8;
+					rtcRegs[(int)LibGambatte.RtcRegIndicies.Dl_L] = _syncSettings.LatchedRTCDays & 0xFF;
+					rtcRegs[(int)LibGambatte.RtcRegIndicies.H_L] = _syncSettings.LatchedRTCHours;
+					rtcRegs[(int)LibGambatte.RtcRegIndicies.M_L] = _syncSettings.LatchedRTCMinutes;
+					rtcRegs[(int)LibGambatte.RtcRegIndicies.S_L] = _syncSettings.LatchedRTCSeconds;
+					LibGambatte.gambatte_setrtcregs(GambatteState, rtcRegs);
+				}
+
 				LibGambatte.gambatte_setrtcdivisoroffset(GambatteState, _syncSettings.RTCDivisorOffset);
 
 				_cdCallback = new LibGambatte.CDCallback(CDCallbackProc);

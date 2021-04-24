@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 
 using Newtonsoft.Json;
 
@@ -119,6 +120,107 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			[Description("CPU clock frequency relative to real time clock. Base value is 2^22 Hz. Used in cycle-based RTC to sync on real hardware to account for RTC imperfections.")]
 			[DefaultValue(0)]
 			public int RTCDivisorOffset { get; set; }
+
+			[DisplayName("RTC Overflow")]
+			[Description("Sets whether the internal RTC day counter has overflowed.")]
+			[DefaultValue(false)]
+			public bool InternalRTCOverflow { get; set; }
+
+			[DisplayName("RTC Halt")]
+			[Description("Sets whether the internal RTC has halted.")]
+			[DefaultValue(false)]
+			public bool InternalRTCHalt { get; set; }
+
+			[DisplayName("RTC Days")]
+			[Description("Sets the internal RTC day counter. Ranges from 0 to 511.")]
+			[DefaultValue(0)]
+			public int InternalRTCDays
+			{
+				get => InternalRTCDays;
+				set => InternalRTCDays = Math.Max(0, Math.Min(511, value));
+			}
+
+			[DisplayName("RTC Hours")]
+			[Description("Sets the internal RTC hour counter. Ranges from -8 to 23.")]
+			[DefaultValue(0)]
+			public int InternalRTCHours
+			{
+				get => InternalRTCHours;
+				set => InternalRTCHours = Math.Max(-8, Math.Min(23, value));
+			}
+
+			[DisplayName("RTC Minutes")]
+			[Description("Sets the internal RTC minute counter. Ranges from -4 to 59.")]
+			[DefaultValue(0)]
+			public int InternalRTCMinutes
+			{
+				get => InternalRTCMinutes;
+				set => InternalRTCMinutes = Math.Max(-4, Math.Min(59, value));
+			}
+
+			[DisplayName("RTC Seconds")]
+			[Description("Sets the internal RTC second counter. Ranges from -4 to 59.")]
+			[DefaultValue(0)]
+			public int InternalRTCSeconds
+			{
+				get => InternalRTCSeconds;
+				set => InternalRTCSeconds = Math.Max(-4, Math.Min(59, value));
+			}
+
+			[DisplayName("RTC Sub-Seconds")]
+			[Description("Sets the internal RTC sub-second counter, expressed in CPU cycles. Ranges from 0 to 4194303 + the set RTC divisor offset.")]
+			[DefaultValue(0)]
+			public int InternalRTCCycles
+			{
+				get => InternalRTCCycles;
+				set => InternalRTCCycles = Math.Max(0, Math.Min((4194303 + RTCDivisorOffset), value));
+			}
+
+			[DisplayName("Latched RTC Overflow")]
+			[Description("Sets whether the latched RTC shows an overflow.")]
+			[DefaultValue(false)]
+			public bool LatchedRTCOverflow { get; set; }
+
+			[DisplayName("Latched RTC Halt")]
+			[Description("Sets whether the latched RTC shows a halt.")]
+			[DefaultValue(false)]
+			public bool LatchedRTCHalt { get; set; }
+
+			[DisplayName("Latched RTC Days")]
+			[Description("Sets the latched RTC day counter. Ranges from 0 to 511.")]
+			[DefaultValue(0)]
+			public int LatchedRTCDays
+			{
+				get => LatchedRTCDays;
+				set => LatchedRTCDays = Math.Max(0, Math.Min(511, value));
+			}
+
+			[DisplayName("Latched RTC Hours")]
+			[Description("Sets the latched RTC hour counter. Ranges from 0 to 31.")]
+			[DefaultValue(0)]
+			public int LatchedRTCHours
+			{
+				get => LatchedRTCHours;
+				set => LatchedRTCHours = Math.Max(0, Math.Min(63, value));
+			}
+
+			[DisplayName("Latched RTC Minutes")]
+			[Description("Sets the latched RTC minute counter. Ranges from 0 to 63.")]
+			[DefaultValue(0)]
+			public int LatchedRTCMinutes
+			{
+				get => LatchedRTCMinutes;
+				set => LatchedRTCMinutes = Math.Max(0, Math.Min(63, value));
+			}
+
+			[DisplayName("Latched RTC Seconds")]
+			[Description("Sets the latched RTC second counter. Ranges from 0 to 63.")]
+			[DefaultValue(0)]
+			public int LatchedRTCSeconds
+			{
+				get => LatchedRTCSeconds;
+				set => LatchedRTCSeconds = Math.Max(-4, Math.Min(59, value));
+			}
 
 			[DisplayName("Equal Length Frames")]
 			[Description("When false, emulation frames sync to vblank.  Only useful for high level TASing.")]
