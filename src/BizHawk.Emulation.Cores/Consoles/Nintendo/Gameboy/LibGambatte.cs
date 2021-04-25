@@ -296,8 +296,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// </summary>
 		/// <param name="core">opaque state pointer</param>
 		/// <param name="dest">byte buffer to write into.  gambatte_savesavedatalength() bytes will be written</param>
+		/// <param name="isDeterministic">determinism bool. RTC data is ignored if set </param>
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void gambatte_savesavedata(IntPtr core, byte[] dest);
+		public static extern void gambatte_savesavedata(IntPtr core, byte[] dest, bool isDeterministic);
 
 		/// <summary>
 		/// restore persistant cart memory.
