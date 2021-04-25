@@ -37,13 +37,13 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				{
 					if (addr < 0 || addr >= 0x10000)
 						throw new ArgumentOutOfRangeException();
-					return Cpu.ReadMemory((ushort)addr);
+					return Cpu.PeekMemory((ushort)addr);
 				},
 				(addr, value) =>
 				{
 					if (addr < 0 || addr >= 0x10000)
 						throw new ArgumentOutOfRangeException();
-					Cpu.WriteMemory((ushort)addr, value);
+					Cpu.PokeMemory((ushort)addr, value);
 				},
 				wordSize: 2);
 			domains.Add(cpuBusDomain);
