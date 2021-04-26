@@ -11,6 +11,14 @@ Please note that I'm somewhat sure that this build only runs on windows machines
 The random input controller lets you play with your normal controller but adds some random inputs in a given interval. The interval and some more options can be found in the Tab "Config" -> "Controllers..." (after loading a N64 rom) -> "Random Inputs". This "Plugin" is disabled by default. You can change any options at any time.
 
 
+# How to play
+I build the source for you (yeay?) and released a version v0.1 based on windows. Just download the zip file under releases, extract it and have fun!
+
+
+
+
+
+
 
 
 
