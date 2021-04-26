@@ -67,7 +67,11 @@ namespace BizHawk.Client.Common
 			UdLRControllerAdapter.Source = ActiveController.Or(AutoFireController);
 			UdLRControllerAdapter.AllowUdlr = config.AllowUdlr;
 
-			StickyXorAdapter.Source = UdLRControllerAdapter;
+			RandomAdapter rng = new RandomAdapter(RandomAdapterConfig.Interval, RandomAdapterConfig.IsEnabled, RandomAdapterConfig.FuckupCamera, RandomAdapterConfig.FuckupControls);
+
+			rng.Source = UdLRControllerAdapter;
+
+			StickyXorAdapter.Source = rng;
 			AutofireStickyXorAdapter.Source = StickyXorAdapter;
 
 			session.MovieIn = AutofireStickyXorAdapter;

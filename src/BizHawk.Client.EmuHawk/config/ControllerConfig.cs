@@ -196,6 +196,13 @@ namespace BizHawk.Client.EmuHawk
 			SuspendLayout();
 			LoadPanels(_config);
 
+			chkRandomCamera.Checked = RandomAdapterConfig.FuckupCamera;
+			chkRandomMovement.Checked = RandomAdapterConfig.FuckupControls;
+			chkRandomEnabled.Checked = RandomAdapterConfig.IsEnabled;
+			txbRandomInterval.Text = RandomAdapterConfig.Interval.ToString();
+
+			this.chkRandomEnabled_CheckedChanged(null, null);
+
 			AllowUdCheckbox.Checked = _config.AllowUdlr;
 			checkBoxAutoTab.Checked = _config.InputConfigAutoTab;
 
@@ -344,6 +351,11 @@ namespace BizHawk.Client.EmuHawk
 			ActOnControlCollection<ControllerConfigPanel>(AutofireControlsTab, c => c.Save(_config.AllTrollersAutoFire[_emulator.ControllerDefinition.Name]));
 			ActOnControlCollection<AnalogBindPanel>(AnalogControlsTab, c => c.Save(_config.AllTrollersAnalog[_emulator.ControllerDefinition.Name]));
 			ActOnControlCollection<FeedbacksBindPanel>(FeedbacksTab, c => c.Save(_config.AllTrollersFeedbacks[_emulator.ControllerDefinition.Name]));
+
+			RandomAdapterConfig.FuckupCamera = chkRandomCamera.Checked;
+			RandomAdapterConfig.FuckupControls = chkRandomMovement.Checked;
+			RandomAdapterConfig.IsEnabled = chkRandomEnabled.Checked;
+			RandomAdapterConfig.Interval = int.Parse(txbRandomInterval.Text);
 		}
 
 		private void SaveToDefaults(DefaultControls cd)
@@ -503,6 +515,13 @@ namespace BizHawk.Client.EmuHawk
 			{
 				ClearWidgetAndChildren(c);
 			}
+		}
+
+		private void chkRandomEnabled_CheckedChanged(object sender, EventArgs e)
+		{
+			chkRandomCamera.Enabled = chkRandomEnabled.Checked;
+			chkRandomMovement.Enabled = chkRandomEnabled.Checked;
+			txbRandomInterval.Enabled = chkRandomEnabled.Checked;
 		}
 	}
 }
