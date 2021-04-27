@@ -79,9 +79,9 @@ struct Interface : Emulator::Interface {
 #include "configuration.hpp"
 
 struct Settings {
-  uint controllerPort1 = (uint)ID::Device::Gamepad;
-  uint controllerPort2 = (uint)ID::Device::Gamepad;
-  uint expansionPort = (uint)ID::Device::None;
+  uint controllerPort1 = ID::Device::Gamepad;
+  uint controllerPort2 = ID::Device::Gamepad;
+  uint expansionPort = ID::Device::None;
   bool random = true;
 };
 

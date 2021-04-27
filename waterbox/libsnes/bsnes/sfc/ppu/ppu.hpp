@@ -48,11 +48,11 @@ private:
 
   struct VRAM {
     auto& operator[](uint address) { return data[address & mask]; }
-    uint16* data;//[64 * 1024];
+    uint16 data[64 * 1024];
     uint16 mask = 0x7fff;
   } vram;
 
-  uint16* output;//[512 * 480];
+  uint16 output[512 * 480];
   uint16 lightTable[16][32768];
 
   struct {

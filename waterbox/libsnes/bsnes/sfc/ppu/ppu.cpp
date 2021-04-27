@@ -21,9 +21,6 @@ bg4(Background::ID::BG4) {
   ppu1.version = 1;  //allowed values: 1
   ppu2.version = 3;  //allowed values: 1, 2, 3
 
-		vram.data = (uint16_t*) malloc(128 * 1024);
-		output = (uint16_t*) malloc(512 * 480 * sizeof(uint16_t));
-
   for(uint l = 0; l < 16; l++) {
     for(uint r = 0; r < 32; r++) {
       for(uint g = 0; g < 32; g++) {

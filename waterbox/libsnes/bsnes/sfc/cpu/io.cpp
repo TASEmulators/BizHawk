@@ -134,9 +134,9 @@ auto CPU::writeCPU(uint addr, uint8 data) -> void {
     controllerPort2.device->latch(data & 1);
     return;
 
-  //todo: it is not known what happens when writing to this register during auto-joypad polling
   case 0x4200:  //NMITIMEN
     io.autoJoypadPoll = data & 1;
+    if(!io.autoJoypadPoll) status.autoJoypadCounter = 33; // Disable auto-joypad read
     nmitimenUpdate(data);
     return;
 

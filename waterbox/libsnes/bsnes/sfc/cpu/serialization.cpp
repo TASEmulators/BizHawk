@@ -3,7 +3,7 @@ auto CPU::serialize(serializer& s) -> void {
   Thread::serialize(s);
   PPUcounter::serialize(s);
 
-  // s.array(wram);
+  s.array(wram);
 
   s.integer(version);
 
@@ -43,8 +43,6 @@ auto CPU::serialize(serializer& s) -> void {
   s.integer(status.hdmaPending);
   s.integer(status.hdmaMode);
 
-  s.integer(status.autoJoypadActive);
-  s.integer(status.autoJoypadLatch);
   s.integer(status.autoJoypadCounter);
 
   s.integer(io.wramAddress);

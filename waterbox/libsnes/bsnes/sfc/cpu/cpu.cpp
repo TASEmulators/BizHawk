@@ -65,13 +65,9 @@ auto CPU::load() -> bool {
   return true;
 }
 
-CPU::CPU() {
-	wram = (uint8*) malloc(128*1024);// interface()->allocSharedMemory("WRAM", 128 * 1024);
-}
-
 auto CPU::power(bool reset) -> void {
   WDC65816::power();
-  Thread::create(Enter, system.cpuFrequency(), 16384);
+  Thread::create(Enter, system.cpuFrequency());
   coprocessors.reset();
   PPUcounter::reset();
   PPUcounter::scanline = {&CPU::scanline, this};
@@ -96,14 +92,14 @@ auto CPU::power(bool reset) -> void {
   writer = {&CPU::writeDMA, this};
   bus.map(reader, writer, "00-3f,80-bf:4300-437f");
 
-  if(!reset) random.array(wram, 128*1024);
+  if(!reset) random.array(wram, sizeof(wram));
 
   if(configuration.hacks.hotfixes) {
     //Dirt Racer (Europe) relies on uninitialized memory containing certain values to boot without freezing.
     //the game itself is broken and will fail to run sometimes on real hardware, but for the sake of expedience,
     //WRAM is initialized to a constant value that will allow this game to always boot in successfully.
     if(cartridge.headerTitle() == "DIRT RACER") {
-      for(int i = 0; i < 128*1024; i++) wram[i] = 0xff;
+      for(auto& byte : wram) byte = 0xff;
     }
   }
 

@@ -46,60 +46,11 @@ struct fInterface : public SuperFamicom::Interface {
 		return backdropColor;
 	}
 
-	// void videoFrame(const uint16_t* data, uint pitch, uint width, uint height) {
-
-	// 	for (uint y = 0; y < height; y++) {
-	// 		const uint16_t* sp = data + y * pitch;
-	// 		uint32_t* dp = buffer + y * pitch;
-	// 		for (uint x = 0; x < width; x++) {
-	// 			*dp++ = palette[*sp++];
-	// 		}
-	// 	}
-
-  //   if(pvideo_refresh) pvideo_refresh(buffer, width, height);
-  //   if(pinput_poll) pinput_poll();
-	// }
-
-  // void videoRefresh(const uint32_t *data, bool hires, bool interlace, bool overscan) {
-	// 	const uint16_t* actual_data = (uint16_t*) data;
-
-  //   unsigned width = hires ? 512 : 256;
-  //   unsigned height = overscan ? 239 : 224;
-  //   unsigned pitch = 1024 >> interlace;
-  //   if(interlace) height <<= 1;
-	// 	actual_data += 8 * 1024;
-  //   data += 9 * 1024;  //skip front porch
-
-  //   for(unsigned y = 0; y < height; y++) {
-  //     const uint16_t *sp = actual_data + y * pitch;
-  //     uint32_t *dp = buffer + y * pitch;
-  //     for(unsigned x = 0; x < width; x++) {
-	// 			// if (*sp) {
-	// 				// abort();
-	// 			// }
-  //       *dp++ = palette[(*sp)*255/32768];// | 0xff000000;
-	// 			sp++;
-  //     }
-  //   }
-
-  //   if(pvideo_refresh) pvideo_refresh(buffer, width, height);
-  //   if(pinput_poll) pinput_poll();
-  // }
-
-	// void audioFrame
-
-  // void audioSample(int16_t left, int16_t right) {
-  //   if(paudio_sample) return paudio_sample(left, right);
-  // }
-
 	//zero 27-sep-2012
 	snes_scanlineStart_t pScanlineStart;
 	void scanlineStart(int line)
 	{
 		if(pScanlineStart) pScanlineStart((int)line);
-
-		// SuperFamicom::ID::Device testdevice;// = SuperFamicom::ID::Device::Mouse;
-		// uint var = *(uint*)&testdevice;
 	}
 
   int16_t inputPoll(bool port, SuperFamicom::ID::Device device, unsigned index, unsigned id) {
@@ -222,8 +173,10 @@ void snes_set_video_refresh(snes_video_refresh_t video_refresh) {
 }
 
 void snes_set_color_lut(uint32_t * colors) {
-  for (int i = 0; i < 16 * 32768; i++)
+  for (int i = 0; i < 16 * 32768; i++) {
+		// fprintf(stderr, "colors[%d]: %08X\n", i, colors[i]);
     iface->palette[i] = colors[i];
+	}
 }
 
 void snes_set_audio_sample(snes_audio_sample_t audio_sample) {
@@ -471,7 +424,7 @@ bool snes_load_cartridge_bsx_slotted(
   const char *rom_xml, const uint8_t *rom_data, unsigned rom_size,
   const char *bsx_xml, const uint8_t *bsx_data, unsigned bsx_size
 ) {
-  if(rom_data) SuperFamicom::cartridge.rom.copy(rom_data, rom_size);
+  // if(rom_data) SuperFamicom::cartridge.rom.copy(rom_data, rom_size);
   // iface->cart = SuperFamicom::cartridge;//SnesCartridge(rom_data, rom_size);
   // string xmlrom = (rom_xml && *rom_xml) ? string(rom_xml) : "";iface->cart.markup;
   // if(bsx_data) SuperFamicom::bsxflash.memory.copy(bsx_data, bsx_size);
@@ -485,7 +438,7 @@ bool snes_load_cartridge_bsx(
   const char *rom_xml, const uint8_t *rom_data, unsigned rom_size,
   const char *bsx_xml, const uint8_t *bsx_data, unsigned bsx_size
 ) {
-  if(rom_data) SuperFamicom::cartridge.rom.copy(rom_data, rom_size);
+  // if(rom_data) SuperFamicom::cartridge.rom.copy(rom_data, rom_size);
   // iface->cart = SnesCartridge(rom_data, rom_size);
   // string xmlrom = (rom_xml && *rom_xml) ? string(rom_xml) : iface->cart.markup;
   // if(bsx_data) SuperFamicom::bsxflash.memory.copy(bsx_data, bsx_size);
@@ -500,7 +453,7 @@ bool snes_load_cartridge_sufami_turbo(
   const char *sta_xml, const uint8_t *sta_data, unsigned sta_size,
   const char *stb_xml, const uint8_t *stb_data, unsigned stb_size
 ) {
-  if(rom_data) SuperFamicom::cartridge.rom.copy(rom_data, rom_size);
+  // if(rom_data) SuperFamicom::cartridge.rom.copy(rom_data, rom_size);
   // iface->cart = SnesCartridge(rom_data, rom_size);
   // string xmlrom = (rom_xml && *rom_xml) ? string(rom_xml) : iface->cart.markup;
   // if(sta_data) SuperFamicom::sufamiturbo.slotA.rom.copy(sta_data, sta_size);
@@ -516,7 +469,7 @@ bool snes_load_cartridge_super_game_boy(
   const char *rom_xml, const uint8_t *rom_data, unsigned rom_size,
   const char *dmg_xml, const uint8_t *dmg_data, unsigned dmg_size
 ) {
-  if(rom_data) SuperFamicom::cartridge.rom.copy(rom_data, rom_size);
+  // if(rom_data) SuperFamicom::cartridge.rom.copy(rom_data, rom_size);
   // iface->cart = SnesCartridge(rom_data, rom_size);
   // string xmlrom = (rom_xml && *rom_xml) ? string(rom_xml) : iface->cart.markup;
   // if(dmg_data) {
@@ -545,7 +498,7 @@ char snes_get_mapper(void) {
 }
 
 uint8_t* snes_get_memory_data(unsigned id) {
-  if(SuperFamicom::cartridge.loaded == false) return 0;
+  if(emulator->loaded() == false) return 0;
 
   switch(id) {
     case SNES_MEMORY_CARTRIDGE_RAM:
@@ -598,7 +551,7 @@ uint8_t* snes_get_memory_data(unsigned id) {
 }
 
 const char* snes_get_memory_id_name(unsigned id) {
-  if(SuperFamicom::cartridge.loaded == false) return nullptr;
+  if(emulator->loaded() == false) return nullptr;
 
   switch(id) {
     case SNES_MEMORY_CARTRIDGE_RAM:
@@ -655,7 +608,7 @@ const char* snes_get_memory_id_name(unsigned id) {
 }
 
 unsigned snes_get_memory_size(unsigned id) {
-  if(SuperFamicom::cartridge.loaded == false) return 0;
+  if(emulator->loaded() == false) return 0;
   unsigned size = 0;
 
   switch(id) {

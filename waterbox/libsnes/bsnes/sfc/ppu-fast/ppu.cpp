@@ -1,13 +1,8 @@
 #include <sfc/sfc.hpp>
 
-// #include <heuristics/global_interface.cpp>
-// struct fInterface : public SuperFamicom::Interface{};
-// extern fInterface* iface;
-
 namespace SuperFamicom {
 
 PPU& ppubase = ppu;
-
 
 #define PPU PPUfast
 #define ppu ppufast
@@ -38,12 +33,11 @@ auto PPU::renderCycle() const -> uint { return configuration.hacks.ppu.renderCyc
 auto PPU::noVRAMBlocking() const -> bool { return configuration.hacks.ppu.noVRAMBlocking; }
 #define ppu ppufast
 
-
 PPU::PPU() {
   output = new uint16_t[2304 * 2160]();
 
   for(uint l : range(16)) {
-    lightTable[l] = new uint16_t[32768]; // (uint16_t*) calloc(sizeof(uint16_t), 32768);
+    lightTable[l] = new uint16_t[32768];
     for(uint r : range(32)) {
       for(uint g : range(32)) {
         for(uint b : range(32)) {
@@ -168,14 +162,7 @@ auto PPU::refresh() -> void {
     }
 
     if(auto device = controllerPort2.device) device->draw(output, pitch * sizeof(uint16), width, height);
-		// below code SHOULD eventually abort, the fact it doesn't means something is wrong, TODO
-		// for (int i = 0; i < 1'000'000; i++) {
-			// if (output[i]);
-				// abort();
-		// }
-		fprintf(stderr, "got here ppu-fast\n");
-		platform->videoFrame(output, pitch * sizeof(uint16), width, height, hd() ? hdScale() : 1);
-    // platform->videoFrame(output, pitch * sizeof(uint16), width, height, hd() ? hdScale() : 1);
+    platform->videoFrame(output, pitch * sizeof(uint16), width, height, hd() ? hdScale() : 1);
 
     frame.pitch  = pitch;
     frame.width  = width;

@@ -1,5 +1,5 @@
 #include <sfc/sfc.hpp>
-// #include "emulibc.h"
+#include <emulibc.h>
 
 namespace SuperFamicom {
 
@@ -7,13 +7,8 @@ bool Memory::GlobalWriteEnable = false;
 Bus bus;
 
 Bus::~Bus() {
-  // if(lookup) delete[] lookup;
-  // if(target) delete[] target;
-}
-
-Bus::Bus() {
-	lookup = ((uint8_t*) alloc_sealed(16 * 1024 * 1024));// */new uint8 [16 * 1024 * 1024]();
-  target = ((uint32_t*) alloc_sealed(16 * 1024 * 1024 * sizeof(uint32_t)));// */new uint32[16 * 1024 * 1024]();
+  if(lookup) delete[] lookup;
+  if(target) delete[] target;
 }
 
 auto Bus::reset() -> void {
@@ -23,18 +18,11 @@ auto Bus::reset() -> void {
     counter[id] = 0;
   }
 
-  // if(lookup) delete[] lookup;
-  // if(target) delete[] target;
+  if(lookup) delete[] lookup;
+  if(target) delete[] target;
 
-  // lookup = new uint8 [16 * 1024 * 1024]();
-  // target = new uint32[16 * 1024 * 1024]();
-
-
-  // if(lookup) delete[] lookup;
-  // if(target) delete[] target;
-
-  // lookup = (uint8_t*) alloc_sealed(16 * 1024 * 1024);// new uint8 [16 * 1024 * 1024]();
-  // target = (uint32_t*) alloc_sealed(16 * 1024 * 1024 * sizeof(uint32_t));// new uint32[16 * 1024 * 1024]();
+  lookup = (uint8_t*) alloc_sealed(16 * 1024 * 1024); // new uint8 [16 * 1024 * 1024];
+  target = (uint32_t*) alloc_sealed(16 * 1024 * 1024 * sizeof(uint32)); // new uint32[16 * 1024 * 1024];
 
   reader[0] = [](uint, uint8 data) -> uint8 { return data; };
   writer[0] = [](uint, uint8) -> void {};

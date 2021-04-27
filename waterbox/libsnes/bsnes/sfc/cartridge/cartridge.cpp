@@ -110,78 +110,8 @@ auto Cartridge::load() -> bool {
     information.sha256 = sha.digest();
   }
 
-	loaded = true;
-
   return true;
 }
-
-
-// auto Cartridge::load_edit(string rom_xml, const char* rom_data, unsigned rom_size) -> bool {
-//   information = {};
-//   has = {};
-//   game = {};
-//   slotGameBoy = {};
-//   slotBSMemory = {};
-//   slotSufamiTurboA = {};
-//   slotSufamiTurboB = {};
-
-//   // if(auto loaded = platform->load(ID::SuperFamicom, "Super Famicom", "sfc", {"Auto", "NTSC", "PAL"})) {
-//     information.pathID = 1;//loaded.pathID;
-//     information.region = "NTSC";//loaded.option;
-//   // } else return false;
-
-//   // if(auto fp = platform->open(ID::SuperFamicom, "manifest.bml", File::Read, File::Required)) {
-//     game.load(string_view(rom_xml));// fp->reads());
-//   // } else return false;
-
-//   loadCartridge(game.document, rom_data, rom_size);
-
-//   //Game Boy
-//   if(cartridge.has.ICD) {
-//     information.sha256 = "";  //Game Boy cartridge not loaded yet: set later via loadGameBoy()
-//   }
-
-//   //BS Memory
-//   else if(cartridge.has.MCC && cartridge.has.BSMemorySlot) {
-//     information.sha256 = Hash::SHA256({bsmemory.memory.data(), bsmemory.memory.size()}).digest();
-//   }
-
-//   //Sufami Turbo
-//   else if(cartridge.has.SufamiTurboSlotA || cartridge.has.SufamiTurboSlotB) {
-//     Hash::SHA256 sha;
-//     if(cartridge.has.SufamiTurboSlotA) sha.input(sufamiturboA.rom.data(), sufamiturboA.rom.size());
-//     if(cartridge.has.SufamiTurboSlotB) sha.input(sufamiturboB.rom.data(), sufamiturboB.rom.size());
-//     information.sha256 = sha.digest();
-//   }
-
-//   //Super Famicom
-//   else {
-//     Hash::SHA256 sha;
-//     //hash each ROM image that exists; any with size() == 0 is ignored by sha256_chunk()
-//     sha.input(rom.data(), rom.size());
-//     sha.input(mcc.rom.data(), mcc.rom.size());
-//     sha.input(sa1.rom.data(), sa1.rom.size());
-//     sha.input(superfx.rom.data(), superfx.rom.size());
-//     sha.input(hitachidsp.rom.data(), hitachidsp.rom.size());
-//     sha.input(spc7110.prom.data(), spc7110.prom.size());
-//     sha.input(spc7110.drom.data(), spc7110.drom.size());
-//     sha.input(sdd1.rom.data(), sdd1.rom.size());
-//     //hash all firmware that exists
-//     vector<uint8> buffer;
-//     buffer = armdsp.firmware();
-//     sha.input(buffer.data(), buffer.size());
-//     buffer = hitachidsp.firmware();
-//     sha.input(buffer.data(), buffer.size());
-//     buffer = necdsp.firmware();
-//     sha.input(buffer.data(), buffer.size());
-//     //finalize hash
-//     information.sha256 = sha.digest();
-//   }
-
-// 	loaded = true;
-
-//   return true;
-// }
 
 auto Cartridge::loadBSMemory() -> bool {
   if(auto fp = platform->open(bsmemory.pathID, "manifest.bml", File::Read, File::Required)) {

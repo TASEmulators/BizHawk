@@ -1,6 +1,3 @@
-#ifndef READABLE_H
-#define READABLE_H
-
 struct ReadableMemory : Memory {
   inline auto reset() -> void override {
     delete[] self.data;
@@ -17,14 +14,6 @@ struct ReadableMemory : Memory {
       self.data[address] = fill;
     }
   }
-
-	inline auto copy(const uint8 *data, unsigned size) {
-		if(!self.data) {
-			self.size = (size & ~255) + ((bool)(size & 255) << 8);
-			self.data = new uint8[self.size]();
-		}
-		memcpy(self.data, data, min(self.size, size));
-	}
 
   inline auto data() -> uint8* override {
     return self.data;
@@ -54,5 +43,3 @@ private:
     uint size = 0;
   } self;
 };
-
-#endif

@@ -1,6 +1,3 @@
-#ifndef WRITABLE_H
-#define WRITABLE_H
-
 struct WritableMemory : Memory {
   inline auto reset() -> void override {
     delete[] self.data;
@@ -44,5 +41,3 @@ private:
     uint size = 0;
   } self;
 };
-
-#endif

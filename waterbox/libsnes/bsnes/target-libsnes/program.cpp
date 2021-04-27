@@ -263,6 +263,7 @@ auto Program::videoFrame(const uint16* data, uint pitch, uint width, uint height
 		const uint16_t* sp = data + y * pitch;
 		uint32_t* dp = iface->buffer + y * pitch;
 		for (uint x = 0; x < width; x++) {
+			// fprintf(stderr, "*sp++: %d\n", *sp);
 			*dp++ = iface->palette[*sp++];
 		}
 	}
@@ -536,6 +537,7 @@ auto Program::loadSuperFamicom(string location) -> bool
 
 	hackPatchMemory(rom);
 	superFamicom.document = BML::unserialize(superFamicom.manifest);
+	fprintf(stderr, "document: \"%s\"\n", superFamicom.manifest.data());
 	superFamicom.location = location;
 
 	uint offset = 0;

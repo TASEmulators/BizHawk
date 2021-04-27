@@ -3,11 +3,6 @@
 //license: GPLv3
 //started: 2004-10-14
 
-#ifdef BIZHAWK
-#include <libco.h>
-#include <emulibc.h>
-#endif
-
 #include <emulator/emulator.hpp>
 #include <emulator/random.hpp>
 #include <emulator/cheat.hpp>
@@ -80,13 +75,12 @@ namespace SuperFamicom {
   struct Thread {
     enum : uint { Size = 4_KiB * sizeof(void*) };
 
-    auto create(auto (*entrypoint)() -> void, uint frequency_, int size = Thread::Size) -> void {
-			if (thread) co_delete(thread);
-      // if(!thread) {
-        thread = co_create(size * sizeof(void*), entrypoint);
-      // } else {
-        // thread = co_derive(thread, size * sizeof(void*), entrypoint);
-      // }
+    auto create(auto (*entrypoint)() -> void, uint frequency_) -> void {
+      if(!thread) {
+        thread = co_create(Thread::Size, entrypoint);
+      } else {
+        thread = co_derive(thread, Thread::Size, entrypoint);
+      }
       frequency = frequency_;
       clock = 0;
     }

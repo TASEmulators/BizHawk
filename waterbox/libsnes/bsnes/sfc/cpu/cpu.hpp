@@ -4,8 +4,6 @@ struct CPU : Processor::WDC65816, Thread, PPUcounter {
   inline auto refresh() const -> bool { return status.dramRefresh == 1; }
   inline auto synchronizing() const -> bool override { return scheduler.synchronizing(); }
 
-	CPU();
-
   //cpu.cpp
   auto synchronizeSMP() -> void;
   auto synchronizePPU() -> void;
@@ -70,7 +68,7 @@ struct CPU : Processor::WDC65816, Thread, PPUcounter {
   //serialization.cpp
   auto serialize(serializer&) -> void;
 
-  uint8* wram;//[128 * 1024];
+  uint8 wram[128 * 1024];
   vector<Thread*> coprocessors;
 
   struct Overclocking {
@@ -120,8 +118,6 @@ private:
     bool hdmaPending = 0;
     bool hdmaMode = 0;  //0 = init, 1 = run
 
-    bool autoJoypadActive = 0;
-    bool autoJoypadLatch = 0;
     uint autoJoypadCounter = 33;  //state machine; 4224 / 128 = 33 (inactive)
   } status;
 

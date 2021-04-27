@@ -1,8 +1,3 @@
-#include <sfc/interface/interface.hpp>
-
-// why does this not work all of a sudden? was SuperFamicom::Interface
-// extern Interface* iface;
-
 namespace Emulator {
 
 #include "stream.cpp"
@@ -61,16 +56,15 @@ auto Audio::process() -> void {
     }
 
     for(auto c : range(_channels)) {
-      // samples[c] = max(-1.0, min(+1.0, samples[c] * _volume));
+      samples[c] = max(-1.0, min(+1.0, samples[c] * _volume));
     }
 
     if(_channels == 2) {
-      // if(_balance < 0.0) samples[1] *= 1.0 + _balance;
-      // if(_balance > 0.0) samples[0] *= 1.0 - _balance;
+      if(_balance < 0.0) samples[1] *= 1.0 + _balance;
+      if(_balance > 0.0) samples[0] *= 1.0 - _balance;
     }
 
-		platform->audioFrame(samples, _channels);
-    // iface->audioFrame((uint16_t)samples[0], (uint16_t)samples[1]); // TODO AUDIO
+    platform->audioFrame(samples, _channels);
   }
 }
 

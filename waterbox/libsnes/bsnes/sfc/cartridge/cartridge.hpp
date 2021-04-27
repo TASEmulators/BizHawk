@@ -8,9 +8,7 @@ struct Cartridge {
   auto titles() const -> vector<string>;
   auto title() const -> string;
 
-  // auto load_edit(string, const char*, unsigned) -> bool;
   auto load() -> bool;
-	bool loaded;
   auto save() -> void;
   auto unload() -> void;
 
@@ -69,16 +67,16 @@ private:
 
   //load.cpp
   auto loadBoard(string) -> Markup::Node;
-  auto loadCartridge(Markup::Node, const char* = NULL, unsigned = 0) -> void;
+  auto loadCartridge(Markup::Node) -> void;
   auto loadCartridgeBSMemory(Markup::Node) -> void;
   auto loadCartridgeSufamiTurboA(Markup::Node) -> void;
   auto loadCartridgeSufamiTurboB(Markup::Node) -> void;
 
-  auto loadMemory(Memory&, Markup::Node, bool required, const char* = NULL, unsigned = 0) -> void;
+  auto loadMemory(Memory&, Markup::Node, bool required) -> void;
   template<typename T> auto loadMap(Markup::Node, T&) -> uint;
   auto loadMap(Markup::Node, const function<uint8 (uint, uint8)>&, const function<void (uint, uint8)>&) -> uint;
 
-  auto loadROM(Markup::Node, const char* data = NULL, unsigned size = 0) -> void;
+  auto loadROM(Markup::Node) -> void;
   auto loadRAM(Markup::Node) -> void;
   auto loadICD(Markup::Node) -> void;
   auto loadMCC(Markup::Node) -> void;

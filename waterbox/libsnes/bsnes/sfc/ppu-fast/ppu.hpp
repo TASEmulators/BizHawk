@@ -273,7 +273,6 @@ public:
   Latch latch;
   IO io;
 
-  // uint16* vram = (uint16_t*) calloc(32 * 1024, sizeof(uint16_t)); //[32 * 1024] = {};
   uint16 vram[32 * 1024] = {};
   uint16 cgram[256] = {};
   Object objects[128] = {};

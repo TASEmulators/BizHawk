@@ -1,6 +1,3 @@
-#ifndef MEMORY_H
-#define MEMORY_H
-
 struct Memory {
   static bool GlobalWriteEnable;
 
@@ -28,7 +25,6 @@ struct Bus {
   alwaysinline static auto reduce(uint address, uint mask) -> uint;
 
   ~Bus();
-	Bus();
 
   alwaysinline auto read(uint address, uint8 data = 0) -> uint8;
   alwaysinline auto write(uint address, uint8 data) -> void;
@@ -51,5 +47,3 @@ private:
 };
 
 extern Bus bus;
-
-#endif
