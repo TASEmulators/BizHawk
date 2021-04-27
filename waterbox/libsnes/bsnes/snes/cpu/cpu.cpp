@@ -5,6 +5,7 @@ namespace SNES {
 
 CPU cpu;
 
+#include "serialization.cpp"
 #include "dma/dma.cpp"
 #include "memory/memory.cpp"
 #include "mmio/mmio.cpp"
@@ -86,15 +87,7 @@ void CPU::enter() {
 void CPU::op_step() {
   debugger.op_exec(regs.pc.d);
 
-  if (interface()->wanttrace & TRACE_CPU_MASK)
-  {
-    char tmp[512];
-		disassemble_opcode(tmp, regs.pc.d);
-		tmp[511] = 0;
-    interface()->cpuTrace(TRACE_CPU, tmp);
-  }
-
-  (this->*opcode_table[op_readpcfirst()])();
+  (this->*opcode_table[op_readpc()])();
 }
 
 void CPU::enable() {
@@ -113,7 +106,7 @@ void CPU::enable() {
   bus.map(Bus::MapMode::Direct, 0x00, 0x3f, 0x4300, 0x437f, read, write);
   bus.map(Bus::MapMode::Direct, 0x80, 0xbf, 0x4300, 0x437f, read, write);
 
-  read = [](unsigned addr) { cdlInfo.set(eCDLog_AddrType_WRAM, addr); return cpu.wram[addr]; };
+  read = [](unsigned addr) { return cpu.wram[addr]; };
   write = [](unsigned addr, uint8 data) { cpu.wram[addr] = data; };
 
   bus.map(Bus::MapMode::Linear, 0x00, 0x3f, 0x0000, 0x1fff, read, write, 0x000000, 0x002000);
@@ -123,7 +116,7 @@ void CPU::enable() {
 
 void CPU::power() {
   cpu_version = config.cpu.version;
-	for(int i=0;i<128*1024;i++) wram[i] = random(config.cpu.wram_init_value);
+  for(auto &n : wram) n = random(config.cpu.wram_init_value);
 
   regs.a = regs.x = regs.y = 0x0000;
   regs.s = 0x01ff;
@@ -131,14 +124,10 @@ void CPU::power() {
   mmio_power();
   dma_power();
   timing_power();
-
-	//zero 01-dec-2012
-	//gotta clear these to something, sometime
-	rd.d = sp = dp = 0;
 }
 
 void CPU::reset() {
-  create(Enter, system.cpu_frequency(), 16384);
+  create(Enter, system.cpu_frequency());
   coprocessors.reset();
   PPUcounter::reset();
 
@@ -161,19 +150,11 @@ void CPU::reset() {
   timing_reset();
 }
 
-CPU::CPU()
-	: wram(nullptr)
-{
+CPU::CPU() {
   PPUcounter::scanline = { &CPU::scanline, this };
 }
 
 CPU::~CPU() {
-	interface()->freeSharedMemory(wram);
-}
-
-void CPU::initialize()
-{
-	wram = (uint8*)interface()->allocSharedMemory("WRAM",128 * 1024);
 }
 
 }

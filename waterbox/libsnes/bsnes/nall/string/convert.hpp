@@ -1,64 +1,53 @@
-#ifdef NALL_STRING_INTERNAL_HPP
+#pragma once
 
 namespace nall {
 
-char* strlower(char *str) {
-  if(!str) return 0;
-  int i = 0;
-  while(str[i]) {
-    str[i] = chrlower(str[i]);
-    i++;
+auto string::downcase() -> string& {
+  char* p = get();
+  for(uint n = 0; n < size(); n++) {
+    if(p[n] >= 'A' && p[n] <= 'Z') p[n] += 0x20;
   }
-  return str;
+  return *this;
 }
 
-char* strupper(char *str) {
-  if(!str) return 0;
-  int i = 0;
-  while(str[i]) {
-    str[i] = chrupper(str[i]);
-    i++;
+auto string::qdowncase() -> string& {
+  char* p = get();
+  for(uint n = 0, quoted = 0; n < size(); n++) {
+    if(p[n] == '\"') quoted ^= 1;
+    if(!quoted && p[n] >= 'A' && p[n] <= 'Z') p[n] += 0x20;
   }
-  return str;
+  return *this;
 }
 
-char* qstrlower(char *s) {
-  if(!s) return 0;
-  bool quoted = false;
-  while(*s) {
-    if(*s == '\"' || *s == '\'') quoted ^= 1;
-    if(quoted == false && *s >= 'A' && *s <= 'Z') *s += 0x20;
-    s++;
+auto string::upcase() -> string& {
+  char* p = get();
+  for(uint n = 0; n < size(); n++) {
+    if(p[n] >= 'a' && p[n] <= 'z') p[n] -= 0x20;
   }
+  return *this;
 }
 
-char* qstrupper(char *s) {
-  if(!s) return 0;
-  bool quoted = false;
-  while(*s) {
-    if(*s == '\"' || *s == '\'') quoted ^= 1;
-    if(quoted == false && *s >= 'a' && *s <= 'z') *s -= 0x20;
-    s++;
+auto string::qupcase() -> string& {
+  char* p = get();
+  for(uint n = 0, quoted = 0; n < size(); n++) {
+    if(p[n] == '\"') quoted ^= 1;
+    if(!quoted && p[n] >= 'a' && p[n] <= 'z') p[n] -= 0x20;
   }
+  return *this;
 }
 
-char* strtr(char *dest, const char *before, const char *after) {
-  if(!dest || !before || !after) return dest;
-  int sl = strlen(dest), bsl = strlen(before), asl = strlen(after);
-
-  if(bsl != asl || bsl == 0) return dest;  //patterns must be the same length for 1:1 replace
-  for(unsigned i = 0; i < sl; i++) {
-    for(unsigned l = 0; l < bsl; l++) {
-      if(dest[i] == before[l]) {
-        dest[i] = after[l];
+auto string::transform(string_view from, string_view to) -> string& {
+  if(from.size() != to.size() || from.size() == 0) return *this;  //patterns must be the same length
+  char* p = get();
+  for(uint n = 0; n < size(); n++) {
+    for(uint s = 0; s < from.size(); s++) {
+      if(p[n] == from[s]) {
+        p[n] = to[s];
         break;
       }
     }
   }
-
-  return dest;
+  return *this;
 }
 
 }
-
-#endif

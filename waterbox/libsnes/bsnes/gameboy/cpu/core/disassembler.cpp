@@ -274,7 +274,7 @@ string CPU::disassemble_opcode(uint16 pc) {
     case 0xf3: return { "di" };
     case 0xf4: return { "xx" };
     case 0xf5: return { "push af" };
-    case 0xf6: return { "or   a,$", hex<2>(p0) };
+    case 0xf6: return { "or  a,$", hex<2>(p0) };
     case 0xf7: return { "rst  $0030" };
     case 0xf8: return { "ld   hl,sp+$", hex<4>((int8)p0) };
     case 0xf9: return { "ld   sp,hl" };

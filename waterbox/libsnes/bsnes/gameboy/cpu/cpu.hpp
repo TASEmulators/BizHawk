@@ -88,8 +88,8 @@ struct CPU : Processor, MMIO {
     bool interrupt_enable_vblank;
   } status;
 
-  uint8* wram; //[32768];  //GB=8192, GBC=32768
-  uint8* hram; //[128];
+  uint8 wram[32768];  //GB=8192, GBC=32768
+  uint8 hram[128];
 
   static void Main();
   void main();
@@ -98,9 +98,8 @@ struct CPU : Processor, MMIO {
   void interrupt_exec(uint16 pc);
   void power();
 
-  void initialize();
+  void serialize(serializer&);
   CPU();
-  ~CPU();
 };
 
 extern CPU cpu;

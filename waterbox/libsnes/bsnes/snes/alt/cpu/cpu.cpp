@@ -5,6 +5,7 @@ namespace SNES {
 
 CPU cpu;
 
+#include "serialization.cpp"
 #include "dma.cpp"
 #include "memory.cpp"
 #include "mmio.cpp"
@@ -76,7 +77,7 @@ void CPU::enter() {
 }
 
 alwaysinline void CPU::op_step() {
-  (this->*opcode_table[op_readpcfirst()])();
+  (this->*opcode_table[op_readpc()])();
 }
 
 void CPU::enable() {
@@ -95,8 +96,8 @@ void CPU::enable() {
   bus.map(Bus::MapMode::Direct, 0x00, 0x3f, 0x4300, 0x437f, read, write);
   bus.map(Bus::MapMode::Direct, 0x80, 0xbf, 0x4300, 0x437f, read, write);
 
-	read = [](unsigned addr) { cdlInfo.set(eCDLog_AddrType_WRAM, addr); return cpu.wram[addr]; };
-	write = [](unsigned addr, uint8 data) { cpu.wram[addr] = data; };
+  read = [](unsigned addr) { return cpu.wram[addr]; };
+  write = [](unsigned addr, uint8 data) { cpu.wram[addr] = data; };
 
   bus.map(Bus::MapMode::Linear, 0x00, 0x3f, 0x0000, 0x1fff, read, write, 0x000000, 0x002000);
   bus.map(Bus::MapMode::Linear, 0x80, 0xbf, 0x0000, 0x1fff, read, write, 0x000000, 0x002000);
@@ -113,7 +114,7 @@ void CPU::power() {
 }
 
 void CPU::reset() {
-  create(Enter, system.cpu_frequency(), 16384);
+  create(Enter, system.cpu_frequency());
   coprocessors.reset();
   PPUcounter::reset();
 
@@ -170,20 +171,11 @@ void CPU::reset() {
   dma_reset();
 }
 
-CPU::CPU() 
-	: queue(512, { &CPU::queue_event, this })
-	, wram(nullptr)
-{
+CPU::CPU() : queue(512, { &CPU::queue_event, this }) {
   PPUcounter::scanline = { &CPU::scanline, this };
 }
 
 CPU::~CPU() {
-	interface()->freeSharedMemory(wram);
-}
-
-void CPU::initialize()
-{
-	wram = (uint8*)interface()->allocSharedMemory("WRAM", 128 * 1024);
 }
 
 }

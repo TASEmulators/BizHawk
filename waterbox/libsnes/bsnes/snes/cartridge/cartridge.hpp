@@ -85,6 +85,7 @@ struct Cartridge : property<Cartridge> {
   void load(Mode, const char*);
   void unload();
 
+  void serialize(serializer&);
   Cartridge();
   ~Cartridge();
 
@@ -109,11 +110,6 @@ private:
   void parse_markup_obc1(XML::Node&);
   void parse_markup_msu1(XML::Node&);
   void parse_markup_link(XML::Node&);
-
-	inline uint8 rom_read(unsigned addr);
-	inline void rom_write(unsigned addr, uint8 n);
-	inline uint8 ram_read(unsigned addr);
-	inline void ram_write(unsigned addr, uint8 n);
 };
 
 extern Cartridge cartridge;

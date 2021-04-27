@@ -2,7 +2,6 @@
 
 #include <math.h>
 #include <nall/stdint.hpp>
-#include <emulibc.h>
 
 namespace nall {
 

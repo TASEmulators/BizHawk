@@ -70,7 +70,6 @@ uint8 SMP::op_busread(uint16 addr) {
     return result;
   }
 
-	cdlInfo.set(eCDLog_AddrType_APURAM, addr);
   return ram_read(addr);
 }
 
@@ -181,11 +180,10 @@ void SMP::op_io() {
   cycle_edge();
 }
 
-uint8 SMP::op_read(uint16 addr, eCDLog_Flags flags) {
+uint8 SMP::op_read(uint16 addr) {
   debugger.op_read(addr);
 
   add_clocks(12);
-	cdlInfo.currFlags = flags;
   uint8 r = op_busread(addr);
   add_clocks(12);
   cycle_edge();

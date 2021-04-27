@@ -1,0 +1,29 @@
+include $(CORE_DIR)/version.mk
+
+INCFLAGS    := -I$(CORE_DIR)
+
+SOURCES_C   := $(CORE_DIR)/Core/gb.c \
+               $(CORE_DIR)/Core/sgb.c \
+               $(CORE_DIR)/Core/apu.c \
+               $(CORE_DIR)/Core/memory.c \
+               $(CORE_DIR)/Core/mbc.c \
+               $(CORE_DIR)/Core/timing.c \
+               $(CORE_DIR)/Core/display.c \
+               $(CORE_DIR)/Core/symbol_hash.c \
+               $(CORE_DIR)/Core/camera.c \
+               $(CORE_DIR)/Core/sm83_cpu.c \
+               $(CORE_DIR)/Core/joypad.c \
+               $(CORE_DIR)/Core/save_state.c \
+               $(CORE_DIR)/Core/random.c \
+               $(CORE_DIR)/Core/rumble.c \
+               $(CORE_DIR)/libretro/agb_boot.c \
+               $(CORE_DIR)/libretro/cgb_boot.c \
+               $(CORE_DIR)/libretro/dmg_boot.c \
+               $(CORE_DIR)/libretro/sgb_boot.c \
+               $(CORE_DIR)/libretro/sgb2_boot.c \
+               $(CORE_DIR)/libretro/libretro.c
+
+CFLAGS += -DGB_DISABLE_TIMEKEEPING -DGB_DISABLE_REWIND -DGB_DISABLE_DEBUGGER -DGB_DISABLE_CHEATS
+
+
+SOURCES_CXX :=	

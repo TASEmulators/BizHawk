@@ -11,6 +11,8 @@ public:
   uint8 mmio_read(unsigned addr);
   void mmio_write(unsigned addr, uint8 data);
 
+  void serialize(serializer&);
+
 private:
   file datafile;
   file audiofile;

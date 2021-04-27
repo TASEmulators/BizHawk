@@ -1,6 +1,6 @@
 class CPU : public Processor, public CPUcore, public PPUcounter {
 public:
-  uint8* wram; //[128 * 1024];
+  uint8 wram[128 * 1024];
 
   enum : bool { Threaded = true };
   array<Processor*> coprocessors;
@@ -19,7 +19,7 @@ public:
   void mmio_write(unsigned addr, uint8 data);
 
   void op_io();
-  uint8 op_read(unsigned addr, eCDLog_Flags = eCDLog_Flags_CPUData);
+  uint8 op_read(unsigned addr);
   void op_write(unsigned addr, uint8 data);
 
   void enter();
@@ -27,9 +27,9 @@ public:
   void power();
   void reset();
 
+  void serialize(serializer&);
   CPU();
   ~CPU();
-	void initialize();
 
 private:
   //cpu
@@ -145,16 +145,6 @@ private:
     uint8 joy3l, joy3h;
     uint8 joy4l, joy4h;
   } status;
-  
-public:
-  struct Debugger {
-    hook<void (uint24)> op_exec;
-    hook<void (uint24)> op_read;
-    hook<void (uint24, uint8)> op_write;
-    hook<void ()> op_nmi;
-    hook<void ()> op_irq;
-  } debugger;
-  
 };
 
 extern CPU cpu;

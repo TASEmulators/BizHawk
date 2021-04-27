@@ -1,116 +1,58 @@
-#ifndef NALL_MAP_HPP
-#define NALL_MAP_HPP
+#pragma once
 
-#include <nall/vector.hpp>
+#include <nall/set.hpp>
 
 namespace nall {
 
-template<typename LHS, typename RHS>
-struct map {
-  struct pair {
-    LHS name;
-    RHS data;
+template<typename T, typename U> struct map {
+  struct node_t {
+    T key;
+    U value;
+    node_t() = default;
+    node_t(const T& key) : key(key) {}
+    node_t(const T& key, const U& value) : key(key), value(value) {}
+    auto operator< (const node_t& source) const -> bool { return key <  source.key; }
+    auto operator==(const node_t& source) const -> bool { return key == source.key; }
   };
 
-  inline void reset() {
-    list.reset();
+  auto find(const T& key) const -> maybe<U&> {
+    if(auto node = root.find({key})) return node().value;
+    return nothing;
   }
 
-  inline unsigned size() const {
-    return list.size();
-  }
+  auto insert(const T& key, const U& value) -> void { root.insert({key, value}); }
+  auto remove(const T& key) -> void { root.remove({key}); }
+  auto size() const -> unsigned { return root.size(); }
+  auto reset() -> void { root.reset(); }
 
-  //O(log n) find
-  inline optional<unsigned> find(const LHS &name) const {
-    signed first = 0, last = size() - 1;
-    while(first <= last) {
-      signed middle = (first + last) / 2;
-           if(name < list[middle].name) last  = middle - 1;  //search lower half
-      else if(list[middle].name < name) first = middle + 1;  //search upper half
-      else return { true, middle };                          //match found
-    }
-    return { false, 0u };
-  }
+  auto begin() -> typename set<node_t>::iterator { return root.begin(); }
+  auto end() -> typename set<node_t>::iterator { return root.end(); }
 
-  //O(n) insert + O(log n) find
-  inline RHS& insert(const LHS &name, const RHS &data) {
-    if(auto position = find(name)) {
-      list[position()].data = data;
-      return list[position()].data;
-    }
-    signed offset = size();
-    for(unsigned n = 0; n < size(); n++) {
-      if(name < list[n].name) { offset = n; break; }
-    }
-    list.insert(offset, { name, data });
-    return list[offset].data;
-  }
-
-  //O(log n) find
-  inline void modify(const LHS &name, const RHS &data) {
-    if(auto position = find(name)) list[position()].data = data;
-  }
-
-  //O(n) remove + O(log n) find
-  inline void remove(const LHS &name) {
-    if(auto position = find(name)) list.remove(position());
-  }
-
-  //O(log n) find
-  inline RHS& operator[](const LHS &name) {
-    if(auto position = find(name)) return list[position()].data;
-    throw;
-  }
-
-  inline const RHS& operator[](const LHS &name) const {
-    if(auto position = find(name)) return list[position()].data;
-    throw;
-  }
-
-  inline RHS& operator()(const LHS &name) {
-    return insert(name, RHS());
-  }
-
-  inline const RHS& operator()(const LHS &name, const RHS &data) const {
-    if(auto position = find(name)) return list[position()].data;
-    return data;
-  }
-
-  inline pair* begin() { return list.begin(); }
-  inline pair* end() { return list.end(); }
-  inline const pair* begin() const { return list.begin(); }
-  inline const pair* end() const { return list.end(); }
+  auto begin() const -> const typename set<node_t>::iterator { return root.begin(); }
+  auto end() const -> const typename set<node_t>::iterator { return root.end(); }
 
 protected:
-  vector<pair> list;
+  set<node_t> root;
 };
 
-template<typename LHS, typename RHS>
-struct bidirectional_map {
-  const map<LHS, RHS> &lhs;
-  const map<RHS, LHS> &rhs;
+template<typename T, typename U> struct bimap {
+  auto find(const T& key) const -> maybe<U&> { return tmap.find(key); }
+  auto find(const U& key) const -> maybe<T&> { return umap.find(key); }
+  auto insert(const T& key, const U& value) -> void { tmap.insert(key, value); umap.insert(value, key); }
+  auto remove(const T& key) -> void { if(auto p = tmap.find(key)) { umap.remove(p().value); tmap.remove(key); } }
+  auto remove(const U& key) -> void { if(auto p = umap.find(key)) { tmap.remove(p().value); umap.remove(key); } }
+  auto size() const -> unsigned { return tmap.size(); }
+  auto reset() -> void { tmap.reset(); umap.reset(); }
 
-  inline void reset() {
-    llist.reset();
-    rlist.reset();
-  }
+  auto begin() -> typename set<typename map<T, U>::node_t>::iterator { return tmap.begin(); }
+  auto end() -> typename set<typename map<T, U>::node_t>::iterator { return tmap.end(); }
 
-  inline unsigned size() const {
-    return llist.size();
-  }
-
-  inline void insert(const LHS &ldata, const RHS &rdata) {
-    llist.insert(ldata, rdata);
-    rlist.insert(rdata, ldata);
-  }
-
-  inline bidirectional_map() : lhs(llist), rhs(rlist) {}
+  auto begin() const -> const typename set<typename map<T, U>::node_t>::iterator { return tmap.begin(); }
+  auto end() const -> const typename set<typename map<T, U>::node_t>::iterator { return tmap.end(); }
 
 protected:
-  map<LHS, RHS> llist;
-  map<RHS, LHS> rlist;
+  map<T, U> tmap;
+  map<U, T> umap;
 };
 
 }
-
-#endif

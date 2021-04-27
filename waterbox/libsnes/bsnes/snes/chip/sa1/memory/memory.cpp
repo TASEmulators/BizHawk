@@ -107,8 +107,7 @@ void SA1::op_io() {
   tick();
 }
 
-uint8 SA1::op_read(unsigned addr, eCDLog_Flags flags) {
-	(void)flags; //this was needed for inheritance purposes, as SA-1 is derived from the main CPU class
+uint8 SA1::op_read(unsigned addr) {
   tick();
   if(((addr & 0x40e000) == 0x006000) || ((addr & 0xd00000) == 0x400000)) tick();
   return bus_read(addr);
@@ -129,9 +128,7 @@ uint8 SA1::mmc_read(unsigned addr) {
   }
 
   static auto read = [](unsigned addr) {
-    auto myaddr = bus.mirror(addr, cartridge.rom.size());
-    cdlInfo.set(eCDLog_AddrType_CARTROM, myaddr);
-    return cartridge.rom.read(myaddr);
+    return cartridge.rom.read(bus.mirror(addr, cartridge.rom.size()));
   };
 
   if((addr & 0xe08000) == 0x008000) {  //$00-1f:8000-ffff

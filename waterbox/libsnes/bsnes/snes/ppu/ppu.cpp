@@ -10,6 +10,7 @@ PPU ppu;
 #include "screen/screen.cpp"
 #include "sprite/sprite.cpp"
 #include "window/window.cpp"
+#include "serialization.cpp"
 
 void PPU::step(unsigned clocks) {
   clock += clocks;
@@ -89,13 +90,9 @@ void PPU::power() {
   ppu1_version = config.ppu1.version;
   ppu2_version = config.ppu2.version;
 
-	for(int i=0;i<128*1024;i++) vram[i] = 0;
-	for(int i=0;i<544;i++) oam[i] = 0;
-	for(int i=0;i<512;i++) cgram[i] = 0;
-
-//not sure about this
-reset();
-
+  for(auto &n : vram) n = random(0x00);
+  for(auto &n : oam) n = random(0x00);
+  for(auto &n : cgram) n = random(0x00);
 }
 
 void PPU::reset() {
@@ -141,20 +138,6 @@ void PPU::frame() {
   display.overscan = regs.overscan;
 }
 
-void PPU::layer_enable(unsigned layer, unsigned priority, bool enable)
-{
-	//TODO
-}
-
-void PPU::initialize()
-{
-	vram = (uint8*)interface()->allocSharedMemory("VRAM",128 * 1024);
-  oam = (uint8*)interface()->allocSharedMemory("OAM",544);
-  cgram = (uint8*)interface()->allocSharedMemory("CGRAM",512);	
-  surface = (uint32_t*)alloc_invisible(512 * 512 * sizeof(uint32_t));
-  output = surface + 16 * 512;	
-}
-
 PPU::PPU() :
 bg1(*this, Background::ID::BG1),
 bg2(*this, Background::ID::BG2),
@@ -163,11 +146,12 @@ bg4(*this, Background::ID::BG4),
 sprite(*this),
 window(*this),
 screen(*this) {
-
+  surface = new uint32[512 * 512];
+  output = surface + 16 * 512;
 }
 
 PPU::~PPU() {
-  abort();
+  delete[] surface;
 }
 
 }

@@ -1,5 +1,6 @@
 {
     "files.associations": {
+        "*.bindump": "python",
         "ostream": "cpp",
         "algorithm": "cpp",
         "cmath": "cpp",
@@ -37,6 +38,17 @@
         "xstddef": "cpp",
         "xstring": "cpp",
         "xtr1common": "cpp",
-        "xutility": "cpp"
+        "xutility": "cpp",
+        "atomic": "cpp",
+        "*.tcc": "cpp",
+        "memory_resource": "cpp",
+        "array": "cpp",
+        "numeric": "cpp",
+        "random": "cpp",
+        "*.inc": "cpp",
+        "stop_token": "cpp",
+        "libretro.h": "c",
+        "bit": "cpp",
+        "ratio": "cpp"
     }
 }

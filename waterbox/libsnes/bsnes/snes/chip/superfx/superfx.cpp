@@ -3,6 +3,7 @@
 #define SUPERFX_CPP
 namespace SNES {
 
+#include "serialization.cpp"
 #include "bus/bus.cpp"
 #include "core/core.cpp"
 #include "memory/memory.cpp"
@@ -53,7 +54,7 @@ void SuperFX::power() {
 }
 
 void SuperFX::reset() {
-  create(SuperFX::Enter, system.cpu_frequency(), 16384);
+  create(SuperFX::Enter, system.cpu_frequency());
   instruction_counter = 0;
 
   for(unsigned n = 0; n < 16; n++) regs.r[n] = 0x0000;

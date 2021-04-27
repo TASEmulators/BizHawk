@@ -8,11 +8,7 @@
 
 void CPU::add_clocks(unsigned clocks) {
   system.clocks_executed += clocks;
-
-	auto flags = cdlInfo.currFlags;
-
   if(system.sgb()) scheduler.exit(Scheduler::ExitReason::StepEvent);
-	cdlInfo.currFlags = flags;
 
   status.clock += clocks;
   if(status.clock >= 4 * 1024 * 1024) {
@@ -29,11 +25,9 @@ void CPU::add_clocks(unsigned clocks) {
 
   lcd.clock -= clocks * lcd.frequency;
   if(lcd.clock <= 0) co_switch(scheduler.active_thread = lcd.thread);
-	cdlInfo.currFlags = flags;
 
   apu.clock -= clocks * apu.frequency;
   if(apu.clock <= 0) co_switch(scheduler.active_thread = apu.thread);
-	cdlInfo.currFlags = flags;
 }
 
 void CPU::timer_262144hz() {

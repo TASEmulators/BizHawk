@@ -8,55 +8,60 @@ CXXFLAGS := -DHOOKS -DBIZHAWK -DPROFILE_COMPATIBILITY -DGAMEBOY \
 	-Wno-parentheses -Wno-sign-compare \
 	-Wno-unused-variable -Wno-unused-function \
 	-fno-threadsafe-statics \
-	-std=c++0x
+	-std=c++17 \
+	-Wno-multichar -DGB_INTERNAL -DGB_DISABLE_DEBUGGER -DGB_DISABLE_CHEATS \
+	-fno-strict-aliasing -fwrapv -Wno-trigraphs -Wno-switch -Wno-reorder -Wno-misleading-indentation
+
+CCFLAGS := -std=c11 -DGB_INTERNAL -DGB_DISABLE_DEBUGGER -DGB_DISABLE_CHEATS -D_GNU_SOURCE -Wno-multichar \
+	-Werror -Wall -Wno-unknown-warning -Wno-unknown-warning-option \
+	-Wno-nonnull -Wno-unused-result -Wno-strict-aliasing -Wno-multichar -Wno-int-in-bool-context -fno-strict-aliasing
 
 TARGET = libsnes.wbx
 
-SRCS_PERF = \
-	$(ROOT_DIR)/bsnes/snes/alt/cpu/cpu.cpp \
-	$(ROOT_DIR)/bsnes/snes/alt/ppu-performance/ppu.cpp \
-	$(ROOT_DIR)/bsnes/snes/alt/smp/smp.cpp
-SRCS_COMPAT = \
-	$(ROOT_DIR)/bsnes/snes/alt/ppu-compatibility/ppu.cpp \
-	$(ROOT_DIR)/bsnes/snes/cpu/cpu.cpp \
-	$(ROOT_DIR)/bsnes/snes/smp/smp.cpp
-SRCS_ALL = \
-	$(ROOT_DIR)/bsnes/base/base.cpp \
-	$(ROOT_DIR)/bsnes/gameboy/apu/apu.cpp \
-	$(ROOT_DIR)/bsnes/gameboy/cartridge/cartridge.cpp \
-	$(ROOT_DIR)/bsnes/gameboy/cpu/cpu.cpp \
-	$(ROOT_DIR)/bsnes/snes/alt/dsp/dsp.cpp \
-	$(ROOT_DIR)/bsnes/gameboy/interface/interface.cpp \
-	$(ROOT_DIR)/bsnes/gameboy/lcd/lcd.cpp \
-	$(ROOT_DIR)/bsnes/gameboy/memory/memory.cpp \
-	$(ROOT_DIR)/bsnes/gameboy/scheduler/scheduler.cpp \
-	$(ROOT_DIR)/bsnes/gameboy/system/system.cpp \
-	$(ROOT_DIR)/bsnes/gameboy/video/video.cpp \
-	$(ROOT_DIR)/bsnes/snes/cartridge/cartridge.cpp \
-	$(ROOT_DIR)/bsnes/snes/chip/armdsp/armdsp.cpp \
-	$(ROOT_DIR)/bsnes/snes/chip/bsx/bsx.cpp \
-	$(ROOT_DIR)/bsnes/snes/chip/hitachidsp/hitachidsp.cpp \
-	$(ROOT_DIR)/bsnes/snes/chip/icd2/icd2.cpp \
-	$(ROOT_DIR)/bsnes/snes/chip/link/link.cpp \
-	$(ROOT_DIR)/bsnes/snes/chip/msu1/msu1.cpp \
-	$(ROOT_DIR)/bsnes/snes/chip/necdsp/necdsp.cpp \
-	$(ROOT_DIR)/bsnes/snes/chip/nss/nss.cpp \
-	$(ROOT_DIR)/bsnes/snes/chip/obc1/obc1.cpp \
-	$(ROOT_DIR)/bsnes/snes/chip/sa1/sa1.cpp \
-	$(ROOT_DIR)/bsnes/snes/chip/sdd1/sdd1.cpp \
-	$(ROOT_DIR)/bsnes/snes/chip/spc7110/spc7110.cpp \
-	$(ROOT_DIR)/bsnes/snes/chip/srtc/srtc.cpp \
-	$(ROOT_DIR)/bsnes/snes/chip/sufamiturbo/sufamiturbo.cpp \
-	$(ROOT_DIR)/bsnes/snes/chip/superfx/superfx.cpp \
-	$(ROOT_DIR)/bsnes/snes/config/config.cpp \
-	$(ROOT_DIR)/bsnes/snes/controller/controller.cpp \
-	$(ROOT_DIR)/bsnes/snes/cpu/core/core.cpp \
-	$(ROOT_DIR)/bsnes/snes/interface/interface.cpp \
-	$(ROOT_DIR)/bsnes/snes/memory/memory.cpp \
-	$(ROOT_DIR)/bsnes/snes/smp/core/core.cpp \
-	$(ROOT_DIR)/bsnes/snes/system/system.cpp \
+SRCS_PROCESSORS = \
+	$(ROOT_DIR)/bsnes/processor/spc700/spc700.cpp \
+	$(ROOT_DIR)/bsnes/processor/wdc65816/wdc65816.cpp \
+	$(ROOT_DIR)/bsnes/processor/arm7tdmi/arm7tdmi.cpp
+
+SRCS_EMULATOR = \
+	$(ROOT_DIR)/bsnes/emulator/emulator.cpp \
+	$(ROOT_DIR)/bsnes/filter/filter.cpp
+
+SRCS_GB = \
+	$(ROOT_DIR)/bsnes/gb/Core/apu.c \
+	$(ROOT_DIR)/bsnes/gb/Core/camera.c \
+	$(ROOT_DIR)/bsnes/gb/Core/rumble.c \
+	$(ROOT_DIR)/bsnes/gb/Core/display.c \
+	$(ROOT_DIR)/bsnes/gb/Core/gb.c \
+	$(ROOT_DIR)/bsnes/gb/Core/joypad.c \
+	$(ROOT_DIR)/bsnes/gb/Core/mbc.c \
+	$(ROOT_DIR)/bsnes/gb/Core/memory.c \
+	$(ROOT_DIR)/bsnes/gb/Core/printer.c \
+	$(ROOT_DIR)/bsnes/gb/Core/random.c \
+	$(ROOT_DIR)/bsnes/gb/Core/rewind.c \
+	$(ROOT_DIR)/bsnes/gb/Core/save_state.c \
+	$(ROOT_DIR)/bsnes/gb/Core/sgb.c \
+	$(ROOT_DIR)/bsnes/gb/Core/sm83_cpu.c \
+	$(ROOT_DIR)/bsnes/gb/Core/symbol_hash.c \
+	$(ROOT_DIR)/bsnes/gb/Core/timing.c
+
+SRCS_SFC = \
+	$(ROOT_DIR)/bsnes/sfc/interface/interface.cpp \
+	$(ROOT_DIR)/bsnes/sfc/system/system.cpp \
+	$(ROOT_DIR)/bsnes/sfc/controller/controller.cpp \
+	$(ROOT_DIR)/bsnes/sfc/cartridge/cartridge.cpp \
+	$(ROOT_DIR)/bsnes/sfc/memory/memory.cpp \
+	$(ROOT_DIR)/bsnes/sfc/cpu/cpu.cpp \
+	$(ROOT_DIR)/bsnes/sfc/smp/smp.cpp \
+	$(ROOT_DIR)/bsnes/sfc/dsp/dsp.cpp \
+	$(ROOT_DIR)/bsnes/sfc/ppu/ppu.cpp \
+	$(ROOT_DIR)/bsnes/sfc/ppu-fast/ppu.cpp \
+	$(ROOT_DIR)/bsnes/sfc/expansion/expansion.cpp \
+	$(ROOT_DIR)/bsnes/sfc/coprocessor/coprocessor.cpp \
+	$(ROOT_DIR)/bsnes/sfc/slot/slot.cpp \
 	$(ROOT_DIR)/bsnes/target-libsnes/libsnes.cpp \
 	$(ROOT_DIR)/bsnes/target-libsnes/libsnes_pwrap.cpp
-SRCS = $(SRCS_ALL) $(SRCS_COMPAT)
+
+SRCS = $(SRCS_PROCESSORS) $(SRCS_EMULATOR) $(SRCS_GB) $(SRCS_SFC)
 
 include ../common.mak

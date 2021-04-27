@@ -12,6 +12,7 @@ System system;
 #include "video.cpp"
 #include "audio.cpp"
 #include "input.cpp"
+#include "serialization.cpp"
 
 void System::run() {
   scheduler.sync = Scheduler::SynchronizeMode::None;
@@ -121,6 +122,9 @@ void System::load() {
   if(cartridge.has_obc1()) obc1.load();
   if(cartridge.has_msu1()) msu1.load();
   if(cartridge.has_link()) link.load();
+
+  serialize_init();
+  cheat.init();
 }
 
 void System::unload() {
@@ -147,11 +151,11 @@ void System::unload() {
 }
 
 void System::power() {
-  random.seed((unsigned)interface()->randomSeed());
+  random.seed((unsigned)time(0));
 
   region = config.region;
   expansion = config.expansion_port;
-  if(region.value == Region::Autodetect) {
+  if(region == Region::Autodetect) {
     region = (cartridge.region() == Cartridge::Region::NTSC ? Region::NTSC : Region::PAL);
   }
 
@@ -231,19 +235,7 @@ void System::reset() {
 
 void System::scanline() {
   video.scanline();
-  /*
-   * the idea is to have the frame boundary (for framestep tasing) come as soon as possible
-   * after the end of a visible frame, so it comes before the input poll.
-   * the old number was constant 241, which is at a very odd time for NTSC.
-   * the new numbers are the minimum possible to still capture a full frame; any lower,
-   * and the last scanline(s) of the frame are still from the old frame.
-   */
-  int stopline;
-  if (ppu.overscan()) // (region != Region::NTSC)
-    stopline = 240;
-  else
-    stopline = 225;
-  if(cpu.vcounter() == stopline) scheduler.exit(Scheduler::ExitReason::FrameEvent);
+  if(cpu.vcounter() == 241) scheduler.exit(Scheduler::ExitReason::FrameEvent);
 }
 
 void System::frame() {
@@ -254,11 +246,4 @@ System::System() {
   expansion = ExpansionPortDevice::BSX;
 }
 
-}
-
-
-//zero 04-sep-2012
-extern "C" void snes_set_layer_enable(int layer, int priority, bool enable)
-{
-	SNES::ppu.layer_enable(layer, priority, enable);
 }

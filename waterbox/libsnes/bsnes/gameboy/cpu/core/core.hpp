@@ -5,7 +5,6 @@ void initialize_opcode_table();
 
 void op_xx();
 void op_cb();
-uint8 op_fetch();
 
 //8-bit load commands
 template<unsigned x, unsigned y> void op_ld_r_r();

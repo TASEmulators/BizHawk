@@ -3,7 +3,7 @@ void bus_write(unsigned addr, uint8 data);
 uint8 vbr_read(unsigned addr);
 
 alwaysinline void op_io();
-alwaysinline uint8 op_read(unsigned addr, eCDLog_Flags = eCDLog_Flags_CPUData);
+alwaysinline uint8 op_read(unsigned addr);
 alwaysinline void op_write(unsigned addr, uint8 data);
 
 uint8 mmc_read(unsigned addr);

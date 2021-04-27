@@ -87,14 +87,10 @@ void CPU::scanline() {
 }
 
 void CPU::run_auto_joypad_poll() {
-	
   input.port1->latch(1);
   input.port2->latch(1);
   input.port1->latch(0);
   input.port2->latch(0);
-  interface()->inputNotify(1);
-  interface()->inputNotify(0);
-
 
   uint16 joy1 = 0, joy2 = 0, joy3 = 0, joy4 = 0;
   for(unsigned i = 0; i < 16; i++) {

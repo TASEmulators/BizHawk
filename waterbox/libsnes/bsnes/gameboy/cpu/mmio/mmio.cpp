@@ -28,15 +28,8 @@ void CPU::mmio_joyp_poll() {
 }
 
 uint8 CPU::mmio_read(uint16 addr) {
-  if(addr >= 0xc000 && addr <= 0xfdff) {
-		unsigned mapped_addr = wram_addr(addr);
-		cdlInfo.set(eCDLog_AddrType_SGB_WRAM, mapped_addr);
-		return wram[mapped_addr];
-	}
-  if(addr >= 0xff80 && addr <= 0xfffe) {
-		cdlInfo.set(eCDLog_AddrType_SGB_HRAM, addr & 0x7f);
-		return hram[addr & 0x7f];
-	}
+  if(addr >= 0xc000 && addr <= 0xfdff) return wram[wram_addr(addr)];
+  if(addr >= 0xff80 && addr <= 0xfffe) return hram[addr & 0x7f];
 
   if(addr == 0xff00) {  //JOYP
     return (status.p15 << 5)

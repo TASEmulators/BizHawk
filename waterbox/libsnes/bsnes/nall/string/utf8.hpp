@@ -1,43 +1,32 @@
-#ifdef NALL_STRING_INTERNAL_HPP
+#pragma once
 
 namespace nall {
 
-struct UTF8 {
-  unsigned size;       //size of encoded codepoint
-  uint64_t data;       //encoded codepoint
-  unsigned codepoint;  //decoded codepoint
-};
-
-inline UTF8 utf8_read(const char *s) {
-  UTF8 utf8;
-
-       if((*s & 0xfe) == 0xfc) utf8.size = 6;
-  else if((*s & 0xfc) == 0xf8) utf8.size = 5;
-  else if((*s & 0xf8) == 0xf0) utf8.size = 4;
-  else if((*s & 0xf0) == 0xe0) utf8.size = 3;
-  else if((*s & 0xe0) == 0xc0) utf8.size = 2;
-  else                         utf8.size = 1;
-
-  utf8.data = 0;
-  for(unsigned n = 0; n < utf8.size; n++) {
-    utf8.data = (utf8.data << 8) | (uint8_t)s[n];
+//note: this function assumes the string contains valid UTF-8 characters
+//invalid characters will result in an incorrect result from this function
+//invalid case 1: byte 1 == 0b'01xxxxxx
+//invalid case 2: bytes 2-4 != 0b'10xxxxxx
+//invalid case 3: end of string without bytes 2-4 present
+auto characters(string_view self, int offset, int length) -> uint {
+  uint characters = 0;
+  if(offset < 0) offset = self.size() - abs(offset);
+  if(offset >= 0 && offset < self.size()) {
+    if(length < 0) length = self.size() - offset;
+    if(length >= 0) {
+      for(int index = offset; index < offset + length;) {
+        auto byte = self.data()[index++];
+        if((byte & 0b111'00000) == 0b110'00000) index += 1;
+        if((byte & 0b1111'0000) == 0b1110'0000) index += 2;
+        if((byte & 0b11111'000) == 0b11110'000) index += 3;
+        characters++;
+      }
+    }
   }
-
-  static uint8_t mask[] = { 0, 0x7f, 0x1f, 0x0f, 0x07, 0x03, 0x01 };
-  utf8.codepoint = s[0] & mask[utf8.size];
-  for(unsigned n = 1; n < utf8.size; n++) {
-    utf8.codepoint = (utf8.codepoint << 6) | (s[n] & 0x3f);
-  }
-
-  return utf8;
+  return characters;
 }
 
-inline void utf8_write(char *s, const UTF8 &utf8) {
-  for(signed n = utf8.size - 1, shift = 0; n >= 0; n--, shift += 8) {
-    s[n] = utf8.data >> shift;
-  }
+auto string::characters(int offset, int length) const -> uint {
+  return nall::characters(*this, offset, length);
 }
 
 }
-
-#endif

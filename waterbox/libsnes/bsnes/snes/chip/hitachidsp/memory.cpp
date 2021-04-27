@@ -11,16 +11,11 @@ void HitachiDSP::bus_write(unsigned addr, uint8 data) {
 
 uint8 HitachiDSP::rom_read(unsigned addr) {
   if(co_active() == cpu.thread) {
-    if(state == State::Idle)
-    {
-      cdlInfo.set(eCDLog_AddrType_CARTROM, addr);
-      return cartridge.rom.read(addr);
-    }
+    if(state == State::Idle) return cartridge.rom.read(addr);
     if((addr & 0x40ffe0) == 0x00ffe0) return regs.vector[addr & 0x1f];
     return cpu.regs.mdr;
   }
   if(co_active() == hitachidsp.thread) {
-    cdlInfo.set(eCDLog_AddrType_CARTROM, addr);
     return cartridge.rom.read(addr);
   }
   return cpu.regs.mdr;

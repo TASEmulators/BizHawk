@@ -101,14 +101,7 @@ void PPU::render_bg_tile(uint16 tile_num) {
 #undef render_bg_tile_line_8bpp
 
 void PPU::flush_pixel_cache() {
-	
-	uint16 main;
-
-	int backdropColor = interface()->getBackdropColor();
-	if(backdropColor == -1)
-		main = get_palette(0);
-	else main = backdropColor;
-
+  uint16 main = get_palette(0);
   uint16 sub  = (regs.pseudo_hires || regs.bg_mode == 5 || regs.bg_mode == 6)
               ? main
               : regs.color_rgb;
@@ -127,12 +120,12 @@ void PPU::flush_pixel_cache() {
 }
 
 void PPU::alloc_tiledata_cache() {
-  bg_tiledata[TILE_2BIT]       = (uint8_t*)alloc_invisible(262144);
-  bg_tiledata[TILE_4BIT]       = (uint8_t*)alloc_invisible(131072);
-  bg_tiledata[TILE_8BIT]       = (uint8_t*)alloc_invisible( 65536);
-  bg_tiledata_state[TILE_2BIT] = (uint8_t*)alloc_invisible(  4096);
-  bg_tiledata_state[TILE_4BIT] = (uint8_t*)alloc_invisible(  2048);
-  bg_tiledata_state[TILE_8BIT] = (uint8_t*)alloc_invisible(  1024);
+  bg_tiledata[TILE_2BIT]       = new uint8_t[262144]();
+  bg_tiledata[TILE_4BIT]       = new uint8_t[131072]();
+  bg_tiledata[TILE_8BIT]       = new uint8_t[ 65536]();
+  bg_tiledata_state[TILE_2BIT] = new uint8_t[  4096]();
+  bg_tiledata_state[TILE_4BIT] = new uint8_t[  2048]();
+  bg_tiledata_state[TILE_8BIT] = new uint8_t[  1024]();
 }
 
 //marks all tiledata cache entries as dirty
@@ -143,7 +136,12 @@ void PPU::flush_tiledata_cache() {
 }
 
 void PPU::free_tiledata_cache() {
-  abort();
+  delete[] bg_tiledata[TILE_2BIT];
+  delete[] bg_tiledata[TILE_4BIT];
+  delete[] bg_tiledata[TILE_8BIT];
+  delete[] bg_tiledata_state[TILE_2BIT];
+  delete[] bg_tiledata_state[TILE_4BIT];
+  delete[] bg_tiledata_state[TILE_8BIT];
 }
 
 #endif

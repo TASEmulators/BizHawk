@@ -28,8 +28,10 @@ void SuperScope::enter() {
 
     if(next < prev) {
       //Vcounter wrapped back to zero; update cursor coordinates for start of new frame
-      int nx = interface()->inputPoll(port, Input::Device::SuperScope, 0, (unsigned)Input::SuperScopeID::X);
-      int ny = interface()->inputPoll(port, Input::Device::SuperScope, 0, (unsigned)Input::SuperScopeID::Y);
+      int nx = interface->inputPoll(port, Input::Device::SuperScope, 0, (unsigned)Input::SuperScopeID::X);
+      int ny = interface->inputPoll(port, Input::Device::SuperScope, 0, (unsigned)Input::SuperScopeID::Y);
+      nx += x;
+      ny += y;
       x = max(-16, min(256 + 16, nx));
       y = max(-16, min(240 + 16, ny));
       offscreen = (x < 0 || y < 0 || x >= 256 || y >= (ppu.overscan() ? 240 : 225));
@@ -45,7 +47,7 @@ uint2 SuperScope::data() {
 
   if(counter == 0) {
     //turbo is a switch; toggle is edge sensitive
-    bool newturbo = interface()->inputPoll(port, Input::Device::SuperScope, 0, (unsigned)Input::SuperScopeID::Turbo);
+    bool newturbo = interface->inputPoll(port, Input::Device::SuperScope, 0, (unsigned)Input::SuperScopeID::Turbo);
     if(newturbo && !turbo) {
       turbo = !turbo;  //toggle state
       turbolock = true;
@@ -56,7 +58,7 @@ uint2 SuperScope::data() {
     //trigger is a button
     //if turbo is active, trigger is level sensitive; otherwise, it is edge sensitive
     trigger = false;
-    bool newtrigger = interface()->inputPoll(port, Input::Device::SuperScope, 0, (unsigned)Input::SuperScopeID::Trigger);
+    bool newtrigger = interface->inputPoll(port, Input::Device::SuperScope, 0, (unsigned)Input::SuperScopeID::Trigger);
     if(newtrigger && (turbo || !triggerlock)) {
       trigger = true;
       triggerlock = true;
@@ -65,11 +67,11 @@ uint2 SuperScope::data() {
     }
 
     //cursor is a button; it is always level sensitive
-    cursor = interface()->inputPoll(port, Input::Device::SuperScope, 0, (unsigned)Input::SuperScopeID::Cursor);
+    cursor = interface->inputPoll(port, Input::Device::SuperScope, 0, (unsigned)Input::SuperScopeID::Cursor);
 
     //pause is a button; it is always edge sensitive
     pause = false;
-    bool newpause = interface()->inputPoll(port, Input::Device::SuperScope, 0, (unsigned)Input::SuperScopeID::Pause);
+    bool newpause = interface->inputPoll(port, Input::Device::SuperScope, 0, (unsigned)Input::SuperScopeID::Pause);
     if(newpause && !pauselock) {
       pause = true;
       pauselock = true;
@@ -99,7 +101,7 @@ void SuperScope::latch(bool data) {
 }
 
 SuperScope::SuperScope(bool port) : Controller(port) {
-  create(Controller::Enter, 21477272, 8192);
+  create(Controller::Enter, 21477272);
   latched = 0;
   counter = 0;
 

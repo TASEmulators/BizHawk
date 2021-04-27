@@ -30,6 +30,7 @@ public:
   void power();
   void reset();
 
+  void serialize(serializer&);
   SA1();
 };
 

@@ -1,459 +1,156 @@
-#ifndef NALL_VECTOR_HPP
-#define NALL_VECTOR_HPP
+#pragma once
 
-#include <algorithm>
-#include <initializer_list>
 #include <new>
-#include <type_traits>
-#include <utility>
-#include <nall/algorithm.hpp>
+
+#include <nall/array-span.hpp>
+#include <nall/array-view.hpp>
 #include <nall/bit.hpp>
-#include <nall/sort.hpp>
-#include <nall/utility.hpp>
+#include <nall/function.hpp>
+#include <nall/iterator.hpp>
+#include <nall/maybe.hpp>
+#include <nall/memory.hpp>
+#include <nall/merge-sort.hpp>
+#include <nall/range.hpp>
+#include <nall/traits.hpp>
+#include <nall/view.hpp>
 
 namespace nall {
-  template<typename T> struct vector {
-    struct exception_out_of_bounds{};
-
-  protected:
-    T *pool;
-    unsigned poolsize;
-    unsigned objectsize;
-
-  public:
-    unsigned size() const { return objectsize; }
-    unsigned capacity() const { return poolsize; }
-
-    void reset() {
-      if(pool) {
-        for(unsigned n = 0; n < objectsize; n++) pool[n].~T();
-        free(pool);
-      }
-      pool = nullptr;
-      poolsize = 0;
-      objectsize = 0;
-    }
-
-    void reserve(unsigned size) {
-      size = bit::round(size);  //amortize growth
-      T *copy = (T*)calloc(size, sizeof(T));
-      for(unsigned n = 0; n < min(size, objectsize); n++) new(copy + n) T(pool[n]);
-      for(unsigned n = 0; n < objectsize; n++) pool[n].~T();
-      free(pool);
-      pool = copy;
-      poolsize = size;
-      objectsize = min(size, objectsize);
-    }
-
-    template<typename... Args>
-    void append(const T& data, Args&&... args) {
-      append(data);
-      append(std::forward<Args>(args)...);
-    }
-
-    void append(const T& data) {
-      if(objectsize + 1 > poolsize) reserve(objectsize + 1);
-      new(pool + objectsize++) T(data);
-    }
-
-    void insert(unsigned position, const T& data) {
-      append(data);
-      for(signed n = size() - 1; n > position; n--) pool[n] = pool[n - 1];
-      pool[position] = data;
-    }
-
-    void prepend(const T& data) {
-      insert(0, data);
-    }
-
-    void remove(unsigned index = ~0u, unsigned count = 1) {
-      if(index == ~0) index = objectsize ? objectsize - 1 : 0;
-      for(unsigned n = index; count + n < objectsize; n++) pool[n] = pool[count + n];
-      objectsize = (count + index >= objectsize) ? index : objectsize - count;
-    }
-
-    T take(unsigned index = ~0u) {
-      if(index == ~0) index = objectsize ? objectsize - 1 : 0;
-      if(index >= objectsize) throw exception_out_of_bounds();
-      T item = pool[index];
-      remove(index);
-      return item;
-    }
-
-    void sort() {
-      nall::sort(pool, objectsize);
-    }
-
-    template<typename Comparator> void sort(const Comparator &lessthan) {
-      nall::sort(pool, objectsize, lessthan);
-    }
-
-    optional<unsigned> find(const T& data) {
-      for(unsigned n = 0; n < size(); n++) if(pool[n] == data) return { true, n };
-      return { false, 0u };
-    }
-
-    T& first() {
-      if(objectsize == 0) throw exception_out_of_bounds();
-      return pool[0];
-    }
-
-    T& last() {
-      if(objectsize == 0) throw exception_out_of_bounds();
-      return pool[objectsize - 1];
-    }
-
-    //access
-    inline T& operator[](unsigned position) {
-      if(position >= objectsize) throw exception_out_of_bounds();
-      return pool[position];
-    }
-
-    inline const T& operator[](unsigned position) const {
-      if(position >= objectsize) throw exception_out_of_bounds();
-      return pool[position];
-    }
-
-    inline T& operator()(unsigned position) {
-      if(position >= poolsize) reserve(position + 1);
-      while(position >= objectsize) append(T());
-      return pool[position];
-    }
-
-    inline const T& operator()(unsigned position, const T& data) const {
-      if(position >= objectsize) return data;
-      return pool[position];
-    }
-
-    //iteration
-    T* begin() { return &pool[0]; }
-    T* end() { return &pool[objectsize]; }
-    const T* begin() const { return &pool[0]; }
-    const T* end() const { return &pool[objectsize]; }
-
-    //copy
-    inline vector& operator=(const vector &source) {
-      reset();
-      reserve(source.capacity());
-      for(auto &data : source) append(data);
-      return *this;
-    }
-
-    vector(const vector &source) : pool(nullptr), poolsize(0), objectsize(0) {
-      operator=(source);
-    }
-
-    //move
-    inline vector& operator=(vector &&source) {
-      reset();
-      pool = source.pool, poolsize = source.poolsize, objectsize = source.objectsize;
-      source.pool = nullptr, source.poolsize = 0, source.objectsize = 0;
-      return *this;
-    }
-
-    vector(vector &&source) : pool(nullptr), poolsize(0), objectsize(0) {
-      operator=(std::move(source));
-    }
-
-    //construction
-    vector() : pool(nullptr), poolsize(0), objectsize(0) {
-    }
-
-    vector(std::initializer_list<T> list) : pool(nullptr), poolsize(0), objectsize(0) {
-      for(auto &data : list) append(data);
-    }
-
-    ~vector() {
-      reset();
-    }
-  };
-
-  //linear_vector
-  //memory: O(capacity * 2)
-  //
-  //linear_vector uses placement new + manual destructor calls to create a
-  //contiguous block of memory for all objects. accessing individual elements
-  //is fast, though resizing the array incurs significant overhead.
-  //reserve() overhead is reduced from quadratic time to amortized constant time
-  //by resizing twice as much as requested.
-  //
-  //if objects hold memory address references to themselves (introspection), a
-  //valid copy constructor will be needed to keep pointers valid.
-
-  #define NALL_DEPRECATED
-  #if defined(NALL_DEPRECATED)
-  template<typename T> struct linear_vector {
-  protected:
-    T *pool;
-    unsigned poolsize, objectsize;
-
-  public:
-    unsigned size() const { return objectsize; }
-    unsigned capacity() const { return poolsize; }
-
-    void reset() {
-      if(pool) {
-        for(unsigned i = 0; i < objectsize; i++) pool[i].~T();
-        free(pool);
-      }
-      pool = nullptr;
-      poolsize = 0;
-      objectsize = 0;
-    }
-
-    void reserve(unsigned newsize) {
-      newsize = bit::round(newsize);  //round to nearest power of two (for amortized growth)
-
-      T *poolcopy = (T*)calloc(newsize, sizeof(T));
-      for(unsigned i = 0; i < min(objectsize, newsize); i++) new(poolcopy + i) T(pool[i]);
-      for(unsigned i = 0; i < objectsize; i++) pool[i].~T();
-      free(pool);
-      pool = poolcopy;
-      poolsize = newsize;
-      objectsize = min(objectsize, newsize);
-    }
-
-    void resize(unsigned newsize) {
-      if(newsize > poolsize) reserve(newsize);
-
-      if(newsize < objectsize) {
-        //vector is shrinking; destroy excess objects
-        for(unsigned i = newsize; i < objectsize; i++) pool[i].~T();
-      } else if(newsize > objectsize) {
-        //vector is expanding; allocate new objects
-        for(unsigned i = objectsize; i < newsize; i++) new(pool + i) T;
-      }
-
-      objectsize = newsize;
-    }
-
-    void append(const T data) {
-      if(objectsize + 1 > poolsize) reserve(objectsize + 1);
-      new(pool + objectsize++) T(data);
-    }
-
-    template<typename U> void insert(unsigned index, const U list) {
-      linear_vector<T> merged;
-      for(unsigned i = 0; i < index; i++) merged.append(pool[i]);
-      for(auto &item : list) merged.append(item);
-      for(unsigned i = index; i < objectsize; i++) merged.append(pool[i]);
-      operator=(merged);
-    }
-
-    void insert(unsigned index, const T item) {
-      insert(index, linear_vector<T>{ item });
-    }
-
-    void remove(unsigned index, unsigned count = 1) {
-      for(unsigned i = index; count + i < objectsize; i++) {
-        pool[i] = pool[count + i];
-      }
-      if(count + index >= objectsize) resize(index);  //every element >= index was removed
-      else resize(objectsize - count);
-    }
-
-    linear_vector() : pool(nullptr), poolsize(0), objectsize(0) {
-    }
-
-    linear_vector(std::initializer_list<T> list) : pool(nullptr), poolsize(0), objectsize(0) {
-      for(const T *p = list.begin(); p != list.end(); ++p) append(*p);
-    }
-
-    ~linear_vector() {
-      reset();
-    }
-
-    //copy
-    inline linear_vector<T>& operator=(const linear_vector<T> &source) {
-      reset();
-      reserve(source.capacity());
-      resize(source.size());
-      for(unsigned i = 0; i < source.size(); i++) operator[](i) = source.operator[](i);
-      return *this;
-    }
-
-    linear_vector(const linear_vector<T> &source) : pool(nullptr), poolsize(0), objectsize(0) {
-      operator=(source);
-    }
-
-    //move
-    inline linear_vector<T>& operator=(linear_vector<T> &&source) {
-      reset();
-      pool = source.pool;
-      poolsize = source.poolsize;
-      objectsize = source.objectsize;
-      source.pool = nullptr;
-      source.reset();
-      return *this;
-    }
-
-    linear_vector(linear_vector<T> &&source) : pool(nullptr), poolsize(0), objectsize(0) {
-      operator=(std::move(source));
-    }
-
-    //index
-    inline T& operator[](unsigned index) {
-      if(index >= objectsize) resize(index + 1);
-      return pool[index];
-    }
-
-    inline const T& operator[](unsigned index) const {
-      if(index >= objectsize) throw "vector[] out of bounds";
-      return pool[index];
-    }
-
-    //iteration
-    T* begin() { return &pool[0]; }
-    T* end() { return &pool[objectsize]; }
-    const T* begin() const { return &pool[0]; }
-    const T* end() const { return &pool[objectsize]; }
-  };
-
-  //pointer_vector
-  //memory: O(1)
-  //
-  //pointer_vector keeps an array of pointers to each vector object. this adds
-  //significant overhead to individual accesses, but allows for optimal memory
-  //utilization.
-  //
-  //by guaranteeing that the base memory address of each objects never changes,
-  //this avoids the need for an object to have a valid copy constructor.
-
-  template<typename T> struct pointer_vector {
-  protected:
-    T **pool;
-    unsigned poolsize, objectsize;
-
-  public:
-    unsigned size() const { return objectsize; }
-    unsigned capacity() const { return poolsize; }
-
-    void reset() {
-      if(pool) {
-        for(unsigned i = 0; i < objectsize; i++) { if(pool[i]) delete pool[i]; }
-        free(pool);
-      }
-      pool = nullptr;
-      poolsize = 0;
-      objectsize = 0;
-    }
-
-    void reserve(unsigned newsize) {
-      newsize = bit::round(newsize);  //round to nearest power of two (for amortized growth)
-
-      for(unsigned i = newsize; i < objectsize; i++) {
-        if(pool[i]) { delete pool[i]; pool[i] = 0; }
-      }
-
-      pool = (T**)realloc(pool, newsize * sizeof(T*));
-      for(unsigned i = poolsize; i < newsize; i++) pool[i] = 0;
-      poolsize = newsize;
-      objectsize = min(objectsize, newsize);
-    }
-
-    void resize(unsigned newsize) {
-      if(newsize > poolsize) reserve(newsize);
-
-      for(unsigned i = newsize; i < objectsize; i++) {
-        if(pool[i]) { delete pool[i]; pool[i] = 0; }
-      }
-
-      objectsize = newsize;
-    }
-
-    void append(const T data) {
-      if(objectsize + 1 > poolsize) reserve(objectsize + 1);
-      pool[objectsize++] = new T(data);
-    }
-
-    template<typename U> void insert(unsigned index, const U list) {
-      pointer_vector<T> merged;
-      for(unsigned i = 0; i < index; i++) merged.append(*pool[i]);
-      for(auto &item : list) merged.append(item);
-      for(unsigned i = index; i < objectsize; i++) merged.append(*pool[i]);
-      operator=(merged);
-    }
-
-    void insert(unsigned index, const T item) {
-      insert(index, pointer_vector<T>{ item });
-    }
-
-    void remove(unsigned index, unsigned count = 1) {
-      for(unsigned i = index; count + i < objectsize; i++) {
-        *pool[i] = *pool[count + i];
-      }
-      if(count + index >= objectsize) resize(index);  //every element >= index was removed
-      else resize(objectsize - count);
-    }
-
-    pointer_vector() : pool(nullptr), poolsize(0), objectsize(0) {
-    }
-
-    pointer_vector(std::initializer_list<T> list) : pool(nullptr), poolsize(0), objectsize(0) {
-      for(const T *p = list.begin(); p != list.end(); ++p) append(*p);
-    }
-
-    ~pointer_vector() {
-      reset();
-    }
-
-    //copy
-    inline pointer_vector<T>& operator=(const pointer_vector<T> &source) {
-      reset();
-      reserve(source.capacity());
-      resize(source.size());
-      for(unsigned i = 0; i < source.size(); i++) operator[](i) = source.operator[](i);
-      return *this;
-    }
-
-    pointer_vector(const pointer_vector<T> &source) : pool(nullptr), poolsize(0), objectsize(0) {
-      operator=(source);
-    }
-
-    //move
-    inline pointer_vector<T>& operator=(pointer_vector<T> &&source) {
-      reset();
-      pool = source.pool;
-      poolsize = source.poolsize;
-      objectsize = source.objectsize;
-      source.pool = nullptr;
-      source.reset();
-      return *this;
-    }
-
-    pointer_vector(pointer_vector<T> &&source) : pool(nullptr), poolsize(0), objectsize(0) {
-      operator=(std::move(source));
-    }
-
-    //index
-    inline T& operator[](unsigned index) {
-      if(index >= objectsize) resize(index + 1);
-      if(!pool[index]) pool[index] = new T;
-      return *pool[index];
-    }
-
-    inline const T& operator[](unsigned index) const {
-      if(index >= objectsize || !pool[index]) throw "vector[] out of bounds";
-      return *pool[index];
-    }
-
-    //iteration
-    struct iterator {
-      bool operator!=(const iterator &source) const { return index != source.index; }
-      T& operator*() { return vector.operator[](index); }
-      iterator& operator++() { index++; return *this; }
-      iterator(const pointer_vector &vector, unsigned index) : vector(vector), index(index) {}
-    private:
-      const pointer_vector &vector;
-      unsigned index;
-    };
-
-    iterator begin() { return iterator(*this, 0); }
-    iterator end() { return iterator(*this, objectsize); }
-    const iterator begin() const { return iterator(*this, 0); }
-    const iterator end() const { return iterator(*this, objectsize); }
-  };
-  #endif
+
+template<typename T>
+struct vector_base {
+  using type = vector_base;
+
+  //core.hpp
+  vector_base() = default;
+  vector_base(const initializer_list<T>& values);
+  vector_base(const type& source);
+  vector_base(type&& source);
+  ~vector_base();
+
+  explicit operator bool() const;
+  operator array_span<T>();
+  operator array_view<T>() const;
+  template<typename Cast = T> auto capacity() const -> uint64_t;
+  template<typename Cast = T> auto size() const -> uint64_t;
+  template<typename Cast = T> auto data() -> Cast*;
+  template<typename Cast = T> auto data() const -> const Cast*;
+
+  //assign.hpp
+  auto operator=(const type& source) -> type&;
+  auto operator=(type&& source) -> type&;
+
+  //compare.hpp
+  auto operator==(const type& source) const -> bool;
+  auto operator!=(const type& source) const -> bool;
+
+  //memory.hpp
+  auto reset() -> void;
+  auto acquire(const T* data, uint64_t size, uint64_t capacity = 0) -> void;
+  auto release() -> T*;
+
+  auto reserveLeft(uint64_t capacity) -> bool;
+  auto reserveRight(uint64_t capacity) -> bool;
+  auto reserve(uint64_t capacity) -> bool { return reserveRight(capacity); }
+
+  auto reallocateLeft(uint64_t size) -> bool;
+  auto reallocateRight(uint64_t size) -> bool;
+  auto reallocate(uint64_t size) -> bool { return reallocateRight(size); }
+
+  auto resizeLeft(uint64_t size, const T& value = T()) -> bool;
+  auto resizeRight(uint64_t size, const T& value = T()) -> bool;
+  auto resize(uint64_t size, const T& value = T()) -> bool { return resizeRight(size, value); }
+
+  //access.hpp
+  alwaysinline auto operator[](uint64_t offset) -> T&;
+  alwaysinline auto operator[](uint64_t offset) const -> const T&;
+
+  alwaysinline auto operator()(uint64_t offset) -> T&;
+  alwaysinline auto operator()(uint64_t offset, const T& value) const -> const T&;
+
+  alwaysinline auto left() -> T&;
+  alwaysinline auto first() -> T& { return left(); }
+  alwaysinline auto left() const -> const T&;
+  alwaysinline auto first() const -> const T& { return left(); }
+
+  alwaysinline auto right() -> T&;
+  alwaysinline auto last() -> T& { return right(); }
+  alwaysinline auto right() const -> const T&;
+  alwaysinline auto last() const -> const T& { return right(); }
+
+  //modify.hpp
+  auto prepend(const T& value) -> void;
+  auto prepend(T&& value) -> void;
+  auto prepend(const type& values) -> void;
+  auto prepend(type&& values) -> void;
+
+  auto append(const T& value) -> void;
+  auto append(T&& value) -> void;
+  auto append(const type& values) -> void;
+  auto append(type&& values) -> void;
+
+  auto insert(uint64_t offset, const T& value) -> void;
+
+  auto removeLeft(uint64_t length = 1) -> void;
+  auto removeFirst(uint64_t length = 1) -> void { return removeLeft(length); }
+  auto removeRight(uint64_t length = 1) -> void;
+  auto removeLast(uint64_t length = 1) -> void { return removeRight(length); }
+  auto remove(uint64_t offset, uint64_t length = 1) -> void;
+  auto removeByIndex(uint64_t offset) -> bool;
+  auto removeByValue(const T& value) -> bool;
+
+  auto takeLeft() -> T;
+  auto takeFirst() -> T { return move(takeLeft()); }
+  auto takeRight() -> T;
+  auto takeLast() -> T { return move(takeRight()); }
+  auto take(uint64_t offset) -> T;
+
+  //iterator.hpp
+  auto begin() -> iterator<T> { return {data(), 0}; }
+  auto end() -> iterator<T> { return {data(), size()}; }
+
+  auto begin() const -> iterator_const<T> { return {data(), 0}; }
+  auto end() const -> iterator_const<T> { return {data(), size()}; }
+
+  auto rbegin() -> reverse_iterator<T> { return {data(), size() - 1}; }
+  auto rend() -> reverse_iterator<T> { return {data(), (uint64_t)-1}; }
+
+  auto rbegin() const -> reverse_iterator_const<T> { return {data(), size() - 1}; }
+  auto rend() const -> reverse_iterator_const<T> { return {data(), (uint64_t)-1}; }
+
+  //utility.hpp
+  auto fill(const T& value = {}) -> void;
+  auto sort(const function<bool (const T& lhs, const T& rhs)>& comparator = [](auto& lhs, auto& rhs) { return lhs < rhs; }) -> void;
+  auto reverse() -> void;
+  auto find(const function<bool (const T& lhs)>& comparator) -> maybe<uint64_t>;
+  auto find(const T& value) const -> maybe<uint64_t>;
+  auto findSorted(const T& value) const -> maybe<uint64_t>;
+  auto foreach(const function<void (const T&)>& callback) -> void;
+  auto foreach(const function<void (uint, const T&)>& callback) -> void;
+
+protected:
+  T* _pool = nullptr;   //pointer to first initialized element in pool
+  uint64_t _size = 0;   //number of initialized elements in pool
+  uint64_t _left = 0;   //number of allocated elements free on the left of pool
+  uint64_t _right = 0;  //number of allocated elements free on the right of pool
+};
+
 }
 
-#endif
+#define vector vector_base
+#include <nall/vector/core.hpp>
+#include <nall/vector/assign.hpp>
+#include <nall/vector/compare.hpp>
+#include <nall/vector/memory.hpp>
+#include <nall/vector/access.hpp>
+#include <nall/vector/modify.hpp>
+#include <nall/vector/iterator.hpp>
+#include <nall/vector/utility.hpp>
+#undef vector
+
+namespace nall {
+  template<typename T> struct vector : vector_base<T> {
+    using vector_base<T>::vector_base;
+  };
+}
+
+#include <nall/vector/specialization/uint8_t.hpp>

@@ -7,6 +7,7 @@
 namespace SNES {
 
 #include "markup.cpp"
+#include "serialization.cpp"
 
 Cartridge cartridge;
 
@@ -36,8 +37,7 @@ void Cartridge::load(Mode cartridge_mode, const char *markup) {
 //print(markup, "\n\n");
 
   if(ram_size > 0) {
-		uint8* buf = (uint8*)interface()->allocSharedMemory("CARTRIDGE_RAM",ram_size,0xff);
-    ram.map(buf, ram_size);
+    ram.map(allocate<uint8>(ram_size, 0xff), ram_size);
     nvram.append({ "program.ram", ram.data(), ram.size() });
   }
 
@@ -80,10 +80,7 @@ void Cartridge::unload() {
   loaded = false;
 }
 
-Cartridge::Cartridge()
-	: rom("CARTRIDGE_ROM")
-	, ram("CARTRIDGE_RAM")
-{
+Cartridge::Cartridge() {
   loaded = false;
   unload();
 }

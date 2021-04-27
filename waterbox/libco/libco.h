@@ -1,7 +1,7 @@
 /*
-  libco v18 (2016-09-14)
+  libco v20 (2019-10-16)
   author: byuu
-  license: public domain
+  license: ISC
 */
 
 #ifndef LIBCO_H
@@ -14,9 +14,11 @@ extern "C" {
 typedef void* cothread_t;
 
 cothread_t co_active(void);
-cothread_t co_create(unsigned int, void(*)(void));
+cothread_t co_derive(void*, unsigned int, void (*)(void));
+cothread_t co_create(unsigned int, void (*)(void));
 void co_delete(cothread_t);
 void co_switch(cothread_t);
+int co_serializable(void);
 
 #ifdef __cplusplus
 }

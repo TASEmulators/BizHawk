@@ -93,7 +93,6 @@ struct Register {
   Register& operator=(uint32 n) {
     data = n;
     if(write) write();
-		return *this;
   }
 
   Register& operator+=(uint32 n) { return operator=(data + n); }

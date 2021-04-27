@@ -1,7 +1,7 @@
 struct PPU : public Processor, public PPUcounter {
-  uint8 *vram; //[64 * 1024];
-  uint8 *oam; //[544];
-  uint8 *cgram; //[512];
+  uint8 vram[64 * 1024];
+  uint8 oam[544];
+  uint8 cgram[512];
 
   enum : bool { Threaded = true };
   alwaysinline void step(unsigned clocks);
@@ -16,9 +16,8 @@ struct PPU : public Processor, public PPUcounter {
   void enable();
   void power();
   void reset();
-  void layer_enable(unsigned layer, unsigned priority, bool enable);
 
-  void initialize();  
+  void serialize(serializer&);
   PPU();
   ~PPU();
 

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>en</string>
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>QLGenerator</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>com.github.liji32.sameboy.gb</string>
+				<string>com.github.liji32.sameboy.gbc</string>
+				<string>com.github.liji32.sameboy.isx</string>
+			</array>
+		</dict>
+	</array>
+	<key>CFBundleExecutable</key>
+	<string>SameBoyQL</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.github.liji32.sameboy.previewer</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>SameBoy</string>
+	<key>CFBundleShortVersionString</key>
+	<string>Version @VERSION</string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>CFPlugInDynamicRegisterFunction</key>
+	<string></string>
+	<key>CFPlugInDynamicRegistration</key>
+	<string>NO</string>
+	<key>CFPlugInFactories</key>
+	<dict>
+		<key>48BC750C-2BB9-49B1-AE80-786E22B3DEB4</key>
+		<string>QuickLookGeneratorPluginFactory</string>
+	</dict>
+	<key>CFPlugInTypes</key>
+	<dict>
+		<key>5E2D9680-5022-40FA-B806-43349622E5B9</key>
+		<array>
+			<string>48BC750C-2BB9-49B1-AE80-786E22B3DEB4</string>
+		</array>
+	</dict>
+	<key>CFPlugInUnloadFunction</key>
+	<string></string>
+	<key>NSHumanReadableCopyright</key>
+	<string>Copyright © 2015-2020 Lior Halphon</string>
+	<key>QLNeedsToBeRunInMainThread</key>
+	<false/>
+	<key>QLPreviewHeight</key>
+	<integer>144</integer>
+	<key>QLPreviewWidth</key>
+	<integer>160</integer>
+	<key>QLSupportsConcurrentRequests</key>
+	<true/>
+	<key>QLThumbnailMinimumSize</key>
+	<integer>64</integer>
+</dict>
+</plist>

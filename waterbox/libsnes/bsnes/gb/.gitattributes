@@ -1,0 +1,6 @@
+HexFiend/* linguist-vendored
+*.inc linguist-language=C
+Core/*.h linguist-language=C
+SDL/*.h linguist-language=C
+Windows/*.h linguist-language=C
+Cocoa/*.h linguist-language=Objective-C

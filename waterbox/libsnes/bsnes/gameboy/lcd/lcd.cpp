@@ -12,6 +12,7 @@ namespace GameBoy {
 #include "dmg.cpp"
 #include "cgb.cpp"
 #include "mmio/mmio.cpp"
+#include "serialization.cpp"
 LCD lcd;
 
 void LCD::Main() {

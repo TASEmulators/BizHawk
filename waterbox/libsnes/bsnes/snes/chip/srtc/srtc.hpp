@@ -1,6 +1,6 @@
 class SRTC {
 public:
-  uint8* rtc; //[20];
+  uint8 rtc[20];
 
   void init();
   void load();
@@ -11,9 +11,8 @@ public:
   uint8 read(unsigned addr);
   void write(unsigned addr, uint8 data);
 
-	void initialize();
+  void serialize(serializer&);
   SRTC();
-	~SRTC();
 
 private:
   static const unsigned months[12];

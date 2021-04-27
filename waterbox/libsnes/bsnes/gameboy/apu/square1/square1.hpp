@@ -32,4 +32,5 @@ struct Square1 {
   void clock_envelope();
   void write(unsigned r, uint8 data);
   void power();
+  void serialize(serializer&);
 };

@@ -10,13 +10,12 @@ void CPU::op_io() {
   alu_edge();
 }
 
-uint8 CPU::op_read(uint32 addr, eCDLog_Flags flags) {
+uint8 CPU::op_read(uint32 addr) {
   debugger.op_read(addr);
 
   status.clock_count = speed(addr);
   dma_edge();
   add_clocks(status.clock_count - 4);
-	cdlInfo.currFlags = flags;
   regs.mdr = bus.read(addr);
   add_clocks(4);
   alu_edge();

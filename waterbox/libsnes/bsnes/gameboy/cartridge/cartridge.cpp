@@ -13,6 +13,7 @@ namespace GameBoy {
 #include "mmm01/mmm01.cpp"
 #include "huc1/huc1.cpp"
 #include "huc3/huc3.cpp"
+#include "serialization.cpp"
 Cartridge cartridge;
 
 void Cartridge::load(System::Revision revision, const string &markup, const uint8_t *data, unsigned size) {
@@ -59,7 +60,7 @@ void Cartridge::load(System::Revision revision, const string &markup, const uint
     case Mapper::HuC3:  mapper = &huc3;  break;
   }
 
-  ramdata = (uint8_t*)interface->allocSharedMemory("SGB_CARTRAM",ramsize = info.ramsize, 0xff);
+  ramdata = new uint8_t[ramsize = info.ramsize]();
   system.load(revision);
 
   loaded = true;
@@ -70,13 +71,12 @@ void Cartridge::unload() {
   if(loaded == false) return;
 
   if(romdata) { delete[] romdata; romdata = 0; }
-	if(ramdata) { interface->freeSharedMemory(ramdata); }
+  if(ramdata) { delete[] ramdata; ramdata = 0; }
   loaded = false;
 }
 
 uint8 Cartridge::rom_read(unsigned addr) {
   if(addr >= romsize) addr %= romsize;
-	cdlInfo.set(eCDLog_AddrType_SGB_CARTROM, addr);
   return romdata[addr];
 }
 
@@ -88,7 +88,6 @@ void Cartridge::rom_write(unsigned addr, uint8 data) {
 uint8 Cartridge::ram_read(unsigned addr) {
   if(ramsize == 0) return 0x00;
   if(addr >= ramsize) addr %= ramsize;
-	cdlInfo.set(eCDLog_AddrType_SGB_CARTRAM, addr);
   return ramdata[addr];
 }
 

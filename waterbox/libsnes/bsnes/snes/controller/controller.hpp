@@ -13,7 +13,6 @@
 
 struct Controller : Processor {
   enum : bool { Port1 = 0, Port2 = 1 };
-  enum { SaveSize = 16 };
   const bool port;
 
   static void Enter();

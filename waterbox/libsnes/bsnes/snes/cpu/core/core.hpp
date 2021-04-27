@@ -8,7 +8,7 @@ struct CPUcore {
   uint8_t sp, dp;
 
   virtual void op_io() = 0;
-  virtual uint8_t op_read(uint32_t addr, eCDLog_Flags flags = eCDLog_Flags_CPUData) = 0;
+  virtual uint8_t op_read(uint32_t addr) = 0;
   virtual void op_write(uint32_t addr, uint8_t data) = 0;
   virtual void last_cycle() = 0;
   virtual bool interrupt_pending() = 0;
@@ -212,5 +212,6 @@ struct CPUcore {
     table_mx = 1024,  //16-bit accumulator, 16-bit index
   };
 
+  void core_serialize(serializer&);
   CPUcore();
 };

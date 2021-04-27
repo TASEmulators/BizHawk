@@ -28,6 +28,7 @@ struct Screen {
   uint16 get_color(unsigned palette);
   uint16 get_direct_color(unsigned palette, unsigned tile);
 
+  void serialize(serializer&);
   Screen(PPU &self);
 
   PPU &self;

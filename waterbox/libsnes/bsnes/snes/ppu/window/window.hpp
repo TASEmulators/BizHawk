@@ -80,6 +80,7 @@ struct Window {
     uint8 mask, bool main_enable, bool sub_enable
   );
 
+  void serialize(serializer&);
   Window(PPU &self);
 
   PPU &self;

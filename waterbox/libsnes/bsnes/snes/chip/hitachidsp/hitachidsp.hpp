@@ -2,11 +2,9 @@
 
 class HitachiDSP : public Coprocessor {
 public:
-
-	//zero 01-sep-2014 - dont clobber these when reconstructing!
-  static unsigned frequency;
-  static uint24 dataROM[1024];
-
+  unsigned frequency;
+//uint16 programROM[2][256];
+  uint24 dataROM[1024];
   uint8  dataRAM[3072];
   uint24 stack[8];
   uint16 opcode;
@@ -43,6 +41,8 @@ public:
   //registers.cpp
   unsigned reg_read(unsigned n) const;
   void reg_write(unsigned n, unsigned data);
+
+  void serialize(serializer&);
 };
 
 extern HitachiDSP hitachidsp;

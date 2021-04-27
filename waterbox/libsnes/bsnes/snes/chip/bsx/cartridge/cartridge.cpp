@@ -2,12 +2,6 @@
 
 BSXCartridge bsxcartridge;
 
-BSXCartridge::BSXCartridge()
-	: sram("BSX_RAM")
-	, psram("BSX_PRAM")
-{
-}
-
 void BSXCartridge::init() {
 }
 

@@ -21,7 +21,7 @@ void ResampleNearest::clear() {
 
 void ResampleNearest::sample() {
   while(fraction <= 1.0) {
-		std::vector<real> channel(dsp.settings.channels);
+    real channel[dsp.settings.channels];
 
     for(unsigned n = 0; n < dsp.settings.channels; n++) {
       real a = dsp.buffer.read(n, -1);
@@ -32,7 +32,7 @@ void ResampleNearest::sample() {
       channel[n] = mu < 0.5 ? a : b;
     }
 
-    dsp.write(channel.data());
+    dsp.write(channel);
     fraction += step;
   }
 

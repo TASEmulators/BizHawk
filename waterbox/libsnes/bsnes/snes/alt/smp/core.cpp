@@ -14,14 +14,12 @@ void SMP::op_io() {
   #endif
 }
 
-uint8 SMP::op_read(uint16 addr, eCDLog_Flags flags) {
+uint8 SMP::op_read(uint16 addr) {
   #if defined(CYCLE_ACCURATE)
   tick();
   #endif
   if((addr & 0xfff0) == 0x00f0) return mmio_read(addr);
   if(addr >= 0xffc0 && status.iplrom_enable) return iplrom[addr & 0x3f];
-	cdlInfo.currFlags = flags;
-	cdlInfo.set(eCDLog_AddrType_APURAM, addr);
   return apuram[addr];
 }
 
@@ -34,19 +32,18 @@ void SMP::op_write(uint16 addr, uint8 data) {
 }
 
 void SMP::op_step() {
-	#define op_readpcfirst() op_read(regs.pc++,eCDLog_Flags_ExecFirst)
-  #define op_readpc() op_read(regs.pc++,eCDLog_Flags_ExecOperand)
-  #define op_readdp(addr) op_read((regs.p.p << 8) + addr,eCDLog_Flags_CPUData)
+  #define op_readpc() op_read(regs.pc++)
+  #define op_readdp(addr) op_read((regs.p.p << 8) + addr)
   #define op_writedp(addr, data) op_write((regs.p.p << 8) + addr, data)
-  #define op_readaddr(addr) op_read(addr,eCDLog_Flags_CPUData)
+  #define op_readaddr(addr) op_read(addr)
   #define op_writeaddr(addr, data) op_write(addr, data)
-  #define op_readstack() op_read(0x0100 | ++regs.sp,eCDLog_Flags_CPUData)
+  #define op_readstack() op_read(0x0100 | ++regs.sp)
   #define op_writestack(data) op_write(0x0100 | regs.sp--, data)
 
   #if defined(CYCLE_ACCURATE)
 
   if(opcode_cycle == 0) {
-    opcode_number = op_readpcfirst();
+    opcode_number = op_readpc();
     opcode_cycle++;
   } else switch(opcode_number) {
     #include "core/opcycle_misc.cpp"
@@ -58,7 +55,7 @@ void SMP::op_step() {
 
   #else
 
-  unsigned opcode = op_readpcfirst();
+  unsigned opcode = op_readpc();
   switch(opcode) {
     #include "core/op_misc.cpp"
     #include "core/op_mov.cpp"

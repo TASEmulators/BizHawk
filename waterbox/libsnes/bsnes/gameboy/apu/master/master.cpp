@@ -96,4 +96,24 @@ void APU::Master::power() {
   right  = 0;
 }
 
+void APU::Master::serialize(serializer &s) {
+  s.integer(left_in_enable);
+  s.integer(left_volume);
+  s.integer(right_in_enable);
+  s.integer(right_volume);
+  s.integer(channel4_left_enable);
+  s.integer(channel3_left_enable);
+  s.integer(channel2_left_enable);
+  s.integer(channel1_left_enable);
+  s.integer(channel4_right_enable);
+  s.integer(channel3_right_enable);
+  s.integer(channel2_right_enable);
+  s.integer(channel1_right_enable);
+  s.integer(enable);
+
+  s.integer(center);
+  s.integer(left);
+  s.integer(right);
+}
+
 #endif

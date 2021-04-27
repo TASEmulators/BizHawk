@@ -58,6 +58,7 @@ struct Cartridge : MMIO, property<Cartridge> {
 
   void power();
 
+  void serialize(serializer&);
   Cartridge();
   ~Cartridge();
 };

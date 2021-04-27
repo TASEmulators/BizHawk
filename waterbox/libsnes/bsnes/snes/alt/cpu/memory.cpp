@@ -24,8 +24,7 @@ void CPU::op_io() {
   add_clocks(6);
 }
 
-uint8 CPU::op_read(unsigned addr, eCDLog_Flags flags) {
-	cdlInfo.currFlags = flags;
+uint8 CPU::op_read(unsigned addr) {
   regs.mdr = bus.read(addr);
   add_clocks(speed(addr));
   return regs.mdr;

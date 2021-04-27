@@ -6,11 +6,8 @@ namespace SNES {
 #include "memory.cpp"
 #include "opcodes.cpp"
 #include "registers.cpp"
+#include "serialization.cpp"
 HitachiDSP hitachidsp;
-
-//zero 01-sep-2014 - dont clobber these when reconstructing!
-unsigned HitachiDSP::frequency;
-uint24 HitachiDSP::dataROM[1024];
 
 void HitachiDSP::Enter() { hitachidsp.enter(); }
 
@@ -58,7 +55,7 @@ void HitachiDSP::power() {
 }
 
 void HitachiDSP::reset() {
-  create(HitachiDSP::Enter, frequency, 8192);
+  create(HitachiDSP::Enter, frequency);
   state = State::Idle;
 
   regs.n = 0;

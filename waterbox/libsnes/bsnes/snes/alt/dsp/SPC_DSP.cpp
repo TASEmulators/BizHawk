@@ -526,11 +526,6 @@ VOICE_CLOCK( V4 )
 				m.t_looped = v->vbit;
 			}
 			v->brr_offset = 1;
-
-			//assume we're going to access the whole block
-			cdlInfo.currFlags = eCDLog_Flags_BRR;
-			for(int i=0;i<9;i++)
-				cdlInfo.set(eCDLog_AddrType_APURAM, (v->brr_addr+i) & 0xFFFF);
 		}
 	}
 	

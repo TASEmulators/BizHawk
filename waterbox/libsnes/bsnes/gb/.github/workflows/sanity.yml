@@ -1,0 +1,36 @@
+name: "Bulidability and Sanity"
+on: push
+
+jobs:
+  sanity:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, ubuntu-latest, ubuntu-16.04]
+        cc: [gcc, clang]
+        include:
+        - os: macos-latest
+          cc: clang
+          extra_target: cocoa
+        exclude:
+        - os: macos-latest
+          cc: gcc
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install deps
+        shell: bash
+        run: |
+          ./.github/actions/install_deps.sh ${{ matrix.os }}
+      - name: Build
+        run: |
+          ${{ matrix.cc }} -v; (make -j sdl tester libretro ${{ matrix.extra_target }} CONF=release CC=${{ matrix.cc }} || (echo "==== Build Failed ==="; make sdl tester libretro ${{ matrix.extra_target }} CONF=release CC=${{ matrix.cc }}))
+      - name: Sanity tests
+        shell: bash
+        run: |
+          ./.github/actions/sanity_tests.sh
+      - name: Upload binaries
+        uses: actions/upload-artifact@v1
+        with:
+          name: sameboy-canary-${{ matrix.os }}-${{ matrix.cc }}
+          path: build/bin

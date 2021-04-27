@@ -1,265 +1,154 @@
-#ifdef NALL_STRING_INTERNAL_HPP
-
-#include <malloc.h>
+#pragma once
 
 namespace nall {
 
-template<bool Insensitive>
-bool chrequal(char x, char y) {
-  if(Insensitive) return chrlower(x) == chrlower(y);
-  return x == y;
-}
+auto string::read(string_view filename) -> string {
+  #if !defined(_WIN32)
+  FILE* fp = fopen(filename, "rb");
+  #else
+  FILE* fp = _wfopen(utf16_t(filename), L"rb");
+  #endif
 
-template<bool Quoted, typename T>
-bool quoteskip(T *&p) {
-  if(Quoted == false) return false;
-  if(*p != '\'' && *p != '\"') return false;
-
-  while(*p == '\'' || *p == '\"') {
-    char x = *p++;
-    while(*p && *p++ != x);
-  }
-  return true;
-}
-
-template<bool Quoted, typename T>
-bool quotecopy(char *&t, T *&p) {
-  if(Quoted == false) return false;
-  if(*p != '\'' && *p != '\"') return false;
-
-  while(*p == '\'' || *p == '\"') {
-    char x = *p++;
-    *t++ = x;
-    while(*p && *p != x) *t++ = *p++;
-    *t++ = *p++;
-  }
-  return true;
-}
-
-string substr(const char *src, unsigned start, unsigned length) {
-  string dest;
-  if(length == ~0u) {
-    //copy entire string
-    dest.reserve(strlen(src + start) + 1);
-    strcpy(dest(), src + start);
-  } else {
-    //copy partial string
-    dest.reserve(length + 1);
-    strmcpy(dest(), src + start, length + 1);
-  }
-  return dest;
-}
-
-string sha256(const uint8_t *data, unsigned size) {
-  sha256_ctx sha;
-  uint8_t hash[32];
-  sha256_init(&sha);
-  sha256_chunk(&sha, data, size);
-  sha256_final(&sha);
-  sha256_hash(&sha, hash);
   string result;
-  for(auto &byte : hash) result.append(hex<2>(byte));
+  if(!fp) return result;
+
+  fseek(fp, 0, SEEK_END);
+  int filesize = ftell(fp);
+  if(filesize < 0) return fclose(fp), result;
+
+  rewind(fp);
+  result.resize(filesize);
+  (void)fread(result.get(), 1, filesize, fp);
+  return fclose(fp), result;
+}
+
+auto string::repeat(string_view pattern, uint times) -> string {
+  string result;
+  while(times--) result.append(pattern.data());
   return result;
 }
 
-/* cast.hpp arithmetic -> string */
+auto string::fill(char fill) -> string& {
+  memory::fill(get(), size(), fill);
+  return *this;
+}
 
-char* integer(char *result, intmax_t value) {
+auto string::hash() const -> uint {
+  const char* p = data();
+  uint length = size();
+  uint result = 5381;
+  while(length--) result = (result << 5) + result + *p++;
+  return result;
+}
+
+auto string::remove(uint offset, uint length) -> string& {
+  char* p = get();
+  length = min(length, size());
+  memory::move(p + offset, p + offset + length, size() - length);
+  return resize(size() - length);
+}
+
+auto string::reverse() -> string& {
+  char* p = get();
+  uint length = size();
+  uint pivot = length >> 1;
+  for(int x = 0, y = length - 1; x < pivot && y >= 0; x++, y--) std::swap(p[x], p[y]);
+  return *this;
+}
+
+//+length => insert/delete from start (right justify)
+//-length => insert/delete from end (left justify)
+auto string::size(int length, char fill) -> string& {
+  uint size = this->size();
+  if(size == length) return *this;
+
+  bool right = length >= 0;
+  length = abs(length);
+
+  if(size < length) {  //expand
+    resize(length);
+    char* p = get();
+    uint displacement = length - size;
+    if(right) memory::move(p + displacement, p, size);
+    else p += size;
+    while(displacement--) *p++ = fill;
+  } else {  //shrink
+    char* p = get();
+    uint displacement = size - length;
+    if(right) memory::move(p, p + displacement, length);
+    resize(length);
+  }
+
+  return *this;
+}
+
+auto slice(string_view self, int offset, int length) -> string {
+  string result;
+  if(offset < 0) offset = self.size() - abs(offset);
+  if(offset >= 0 && offset < self.size()) {
+    if(length < 0) length = self.size() - offset;
+    if(length >= 0) {
+      result.resize(length);
+      memory::copy(result.get(), self.data() + offset, length);
+    }
+  }
+  return result;
+}
+
+auto string::slice(int offset, int length) const -> string {
+  return nall::slice(*this, offset, length);
+}
+
+template<typename T> auto fromInteger(char* result, T value) -> char* {
   bool negative = value < 0;
-  if(negative) value = -value;
+  if(!negative) value = -value;  //negate positive integers to support eg INT_MIN
 
-  char buffer[64];
-  unsigned size = 0;
+  char buffer[1 + sizeof(T) * 3];
+  uint size = 0;
 
   do {
-    unsigned n = value % 10;
-    buffer[size++] = '0' + n;
+    int n = value % 10;  //-0 to -9
+    buffer[size++] = '0' - n;  //'0' to '9'
     value /= 10;
   } while(value);
-  buffer[size++] = negative ? '-' : '+';
+  if(negative) buffer[size++] = '-';
 
-  for(signed x = size - 1, y = 0; x >= 0 && y < size; x--, y++) result[x] = buffer[y];
+  for(int x = size - 1, y = 0; x >= 0 && y < size; x--, y++) result[x] = buffer[y];
   result[size] = 0;
   return result;
 }
 
-char* decimal(char *result, uintmax_t value) {
-  char buffer[64];
-  unsigned size = 0;
+template<typename T> auto fromNatural(char* result, T value) -> char* {
+  char buffer[1 + sizeof(T) * 3];
+  uint size = 0;
 
   do {
-    unsigned n = value % 10;
+    uint n = value % 10;
     buffer[size++] = '0' + n;
     value /= 10;
   } while(value);
 
-  for(signed x = size - 1, y = 0; x >= 0 && y < size; x--, y++) result[x] = buffer[y];
+  for(int x = size - 1, y = 0; x >= 0 && y < size; x--, y++) result[x] = buffer[y];
   result[size] = 0;
   return result;
-}
-
-/* general-purpose arithmetic -> string */
-
-template<unsigned length_, char padding> string integer(intmax_t value) {
-  bool negative = value < 0;
-  if(negative) value = -value;
-
-  char buffer[64];
-  unsigned size = 0;
-
-  do {
-    unsigned n = value % 10;
-    buffer[size++] = '0' + n;
-    value /= 10;
-  } while(value);
-  buffer[size++] = negative ? '-' : '+';
-  buffer[size] = 0;
-
-  unsigned length = (length_ == 0 ? size : length_);
-  char result[length + 1];
-  memset(result, padding, length);
-  result[length] = 0;
-
-  for(signed x = length - 1, y = 0; x >= 0 && y < size; x--, y++) {
-    result[x] = buffer[y];
-  }
-
-  return (const char*)result;
-}
-
-template<unsigned length_, char padding> string linteger(intmax_t value) {
-  bool negative = value < 0;
-  if(negative) value = -value;
-
-  char buffer[64];
-  unsigned size = 0;
-
-  do {
-    unsigned n = value % 10;
-    buffer[size++] = '0' + n;
-    value /= 10;
-  } while(value);
-  buffer[size++] = negative ? '-' : '+';
-  buffer[size] = 0;
-
-  unsigned length = (length_ == 0 ? size : length_);
-  char result[length + 1];
-  memset(result, padding, length);
-  result[length] = 0;
-
-  for(signed x = 0, y = size - 1; x < length && y >= 0; x++, y--) {
-    result[x] = buffer[y];
-  }
-
-  return (const char*)result;
-}
-
-template<unsigned length_, char padding> string decimal(uintmax_t value) {
-  char buffer[64];
-  unsigned size = 0;
-
-  do {
-    unsigned n = value % 10;
-    buffer[size++] = '0' + n;
-    value /= 10;
-  } while(value);
-  buffer[size] = 0;
-
-  unsigned length = (length_ == 0 ? size : length_);
-  std::vector<char> result(length + 1);
-  memset(result.data(), padding, length);
-  result[length] = 0;
-
-  for(signed x = length - 1, y = 0; x >= 0 && y < size; x--, y++) {
-    result[x] = buffer[y];
-  }
-
-  return (const char*)result.data();
-}
-
-template<unsigned length_, char padding> string ldecimal(uintmax_t value) {
-  char buffer[64];
-  unsigned size = 0;
-
-  do {
-    unsigned n = value % 10;
-    buffer[size++] = '0' + n;
-    value /= 10;
-  } while(value);
-  buffer[size] = 0;
-
-  unsigned length = (length_ == 0 ? size : length_);
-  char result[length + 1];
-  memset(result, padding, length);
-  result[length] = 0;
-
-  for(signed x = 0, y = size - 1; x < length && y >= 0; x++, y--) {
-    result[x] = buffer[y];
-  }
-
-  return (const char*)result;
-}
-
-template<unsigned length_, char padding> string hex(uintmax_t value) {
-  char buffer[64];
-  unsigned size = 0;
-
-  do {
-    unsigned n = value & 15;
-    buffer[size++] = n < 10 ? '0' + n : 'a' + n - 10;
-    value >>= 4;
-  } while(value);
-
-  unsigned length = (length_ == 0 ? size : length_);
-  std::vector<char> result(length + 1);
-  memset(result.data(), padding, length);
-  result[length] = 0;
-
-  for(signed x = length - 1, y = 0; x >= 0 && y < size; x--, y++) {
-    result[x] = buffer[y];
-  }
-
-  return (const char*)result.data();
-}
-
-template<unsigned length_, char padding> string binary(uintmax_t value) {
-  char buffer[256];
-  unsigned size = 0;
-
-  do {
-    unsigned n = value & 1;
-    buffer[size++] = '0' + n;
-    value >>= 1;
-  } while(value);
-
-  unsigned length = (length_ == 0 ? size : length_);
-  char result[length + 1];
-  memset(result, padding, length);
-  result[length] = 0;
-
-  for(signed x = length - 1, y = 0; x >= 0 && y < size; x--, y++) {
-    result[x] = buffer[y];
-  }
-
-  return (const char*)result;
 }
 
 //using sprintf is certainly not the most ideal method to convert
 //a double to a string ... but attempting to parse a double by
 //hand, digit-by-digit, results in subtle rounding errors.
-unsigned fp(char *str, long double value) {
+template<typename T> auto fromReal(char* result, T value) -> uint {
   char buffer[256];
   #ifdef _WIN32
   //Windows C-runtime does not support long double via sprintf()
   sprintf(buffer, "%f", (double)value);
   #else
-  sprintf(buffer, "%Lf", value);
+  sprintf(buffer, "%Lf", (long double)value);
   #endif
 
   //remove excess 0's in fraction (2.500000 -> 2.5)
-  for(char *p = buffer; *p; p++) {
+  for(char* p = buffer; *p; p++) {
     if(*p == '.') {
-      char *p = buffer + strlen(buffer) - 1;
+      char* p = buffer + strlen(buffer) - 1;
       while(*p == '0') {
         if(*(p - 1) != '.') *p = 0;  //... but not for eg 1.0 -> 1.
         p--;
@@ -268,18 +157,9 @@ unsigned fp(char *str, long double value) {
     }
   }
 
-  unsigned length = strlen(buffer);
-  if(str) strcpy(str, buffer);
+  uint length = strlen(buffer);
+  if(result) strcpy(result, buffer);
   return length + 1;
 }
 
-string fp(long double value) {
-  string temp;
-  temp.reserve(fp(0, value));
-  fp(temp(), value);
-  return temp;
 }
-
-}
-
-#endif

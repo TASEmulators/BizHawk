@@ -131,4 +131,30 @@ void APU::Square1::power() {
   volume = 0;
 }
 
+void APU::Square1::serialize(serializer &s) {
+  s.integer(enable);
+
+  s.integer(sweep_frequency);
+  s.integer(sweep_direction);
+  s.integer(sweep_shift);
+  s.integer(sweep_negate);
+  s.integer(duty);
+  s.integer(length);
+  s.integer(envelope_volume);
+  s.integer(envelope_direction);
+  s.integer(envelope_frequency);
+  s.integer(frequency);
+  s.integer(counter);
+
+  s.integer(output);
+  s.integer(duty_output);
+  s.integer(phase);
+  s.integer(period);
+  s.integer(envelope_period);
+  s.integer(sweep_period);
+  s.integer(frequency_shadow);
+  s.integer(sweep_enable);
+  s.integer(volume);
+}
+
 #endif

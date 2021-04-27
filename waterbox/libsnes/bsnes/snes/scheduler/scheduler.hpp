@@ -3,8 +3,6 @@ struct Scheduler : property<Scheduler> {
   enum class ExitReason : unsigned { UnknownEvent, FrameEvent, SynchronizeEvent, DebuggerEvent };
   readonly<ExitReason> exit_reason;
 
-	void clearExitReason() { exit_reason = ExitReason::UnknownEvent; }
-
   cothread_t host_thread;  //program thread (used to exit emulation)
   cothread_t thread;       //active emulation thread (used to enter emulation)
 

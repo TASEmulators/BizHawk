@@ -86,4 +86,23 @@ void APU::Noise::power() {
   lfsr = 0;
 }
 
+void APU::Noise::serialize(serializer &s) {
+  s.integer(enable);
+
+  s.integer(envelope_volume);
+  s.integer(envelope_direction);
+  s.integer(envelope_frequency);
+  s.integer(frequency);
+  s.integer(narrow_lfsr);
+  s.integer(divisor);
+  s.integer(counter);
+
+  s.integer(output);
+  s.integer(length);
+  s.integer(envelope_period);
+  s.integer(volume);
+  s.integer(period);
+  s.integer(lfsr);
+}
+
 #endif

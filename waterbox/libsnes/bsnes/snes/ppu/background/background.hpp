@@ -70,6 +70,7 @@ struct Background {
   void begin_mode7();
   void run_mode7();
 
+  void serialize(serializer&);
   Background(PPU &self, unsigned id);
 
   PPU &self;

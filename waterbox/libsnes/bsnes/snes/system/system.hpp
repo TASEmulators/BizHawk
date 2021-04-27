@@ -22,11 +22,19 @@ struct System : property<System> {
   readonly<ExpansionPortDevice> expansion;
   readonly<unsigned> cpu_frequency;
   readonly<unsigned> apu_frequency;
+  readonly<unsigned> serialize_size;
+
+  serializer serialize();
+  bool unserialize(serializer&);
 
   System();
 
 private:
   void runthreadtosave();
+
+  void serialize(serializer&);
+  void serialize_all(serializer&);
+  void serialize_init();
 
   friend class Cartridge;
   friend class Video;

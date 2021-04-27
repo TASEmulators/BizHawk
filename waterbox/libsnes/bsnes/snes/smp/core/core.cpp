@@ -6,6 +6,7 @@ namespace SNES {
 #include "algorithms.cpp"
 #include "opcodes.cpp"
 #include "disassembler.cpp"
+#include "serialization.cpp"
 
 void SMPcore::op_step() {
   switch(opcode = op_readpc()) {

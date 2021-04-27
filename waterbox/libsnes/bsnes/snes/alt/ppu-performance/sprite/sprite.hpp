@@ -63,6 +63,7 @@ class Sprite {
   alwaysinline bool on_scanline(unsigned sprite);
   void render();
 
+  void serialize(serializer&);
   Sprite(PPU &self);
 
   PPU &self;

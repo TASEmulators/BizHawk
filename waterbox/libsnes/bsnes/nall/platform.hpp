@@ -1,24 +1,35 @@
-#ifndef NALL_PLATFORM_HPP
-#define NALL_PLATFORM_HPP
+#pragma once
 
-#if defined(_WIN32)
-  //minimum version needed for _wstat64, etc
-  #undef  __MSVCRT_VERSION__
-  #define __MSVCRT_VERSION__ 0x0601
+#include <nall/intrinsics.hpp>
+
+namespace Math {
+  static const long double e  = 2.71828182845904523536;
+  static const long double Pi = 3.14159265358979323846;
+}
+
+#if defined(PLATFORM_WINDOWS)
+  #include <nall/windows/guard.hpp>
+  #include <initguid.h>
+  #include <cguid.h>
+  #include <winsock2.h>
+  #include <ws2tcpip.h>
+  #include <windows.h>
+  #include <direct.h>
+  #include <io.h>
+  #include <wchar.h>
+  #include <shlobj.h>
+  #include <shellapi.h>
+  #include <nall/windows/guard.hpp>
   #include <nall/windows/utf8.hpp>
 #endif
 
-#ifdef _MSC_VER
-#define _USE_MATH_DEFINES 1
-#endif
-
-//=========================
-//standard platform headers
-//=========================
-
+#include <atomic>
 #include <limits>
+#include <mutex>
+#include <utility>
 
 #include <assert.h>
+#include <errno.h>
 #include <limits.h>
 #include <math.h>
 #include <stdarg.h>
@@ -26,130 +37,88 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include <limits.h>
+#include <utime.h>
+#include <fcntl.h>
+#include <unistd.h>
 
 #include <sys/types.h>
 #include <sys/stat.h>
 
-#include <string>
-#include <vector>
-
-#if defined(_WIN32)
-  #include <io.h>
-  #include <direct.h>
-  //#include <shlobj.h> //bizhawk chokes?
-  #include <wchar.h>
-  #undef interface
-  #define dllexport __declspec(dllexport)
-	//bad things happen without these here
-#else
+#if !defined(PLATFORM_WINDOWS)
+  #include <dlfcn.h>
   #include <unistd.h>
   #include <pwd.h>
+  #include <grp.h>
+  #include <sys/socket.h>
+  #include <sys/wait.h>
+  #include <netinet/in.h>
+  #include <netdb.h>
+  #include <poll.h>
+#endif
+
+#if defined(COMPILER_MICROSOFT)
+  #define va_copy(dest, src) ((dest) = (src))
+#endif
+
+#if defined(PLATFORM_WINDOWS)
+  #undef  IN
+  #undef  OUT
+  #undef  interface
+  #define dllexport __declspec(dllexport)
+  #define MSG_NOSIGNAL 0
+
+  extern "C" {
+    using pollfd = WSAPOLLFD;
+  }
+
+  inline auto access(const char* path, int amode) -> int { return _waccess(nall::utf16_t(path), amode); }
+  inline auto getcwd(char* buf, size_t size) -> char* { wchar_t wpath[PATH_MAX] = L""; if(!_wgetcwd(wpath, size)) return nullptr; strcpy(buf, nall::utf8_t(wpath)); return buf; }
+  inline auto mkdir(const char* path, int mode) -> int { return _wmkdir(nall::utf16_t(path)); }
+  inline auto poll(struct pollfd fds[], unsigned long nfds, int timeout) -> int { return WSAPoll(fds, nfds, timeout); }
+  inline auto putenv(const char* value) -> int { return _wputenv(nall::utf16_t(value)); }
+  inline auto realpath(const char* file_name, char* resolved_name) -> char* { wchar_t wfile_name[PATH_MAX] = L""; if(!_wfullpath(wfile_name, nall::utf16_t(file_name), PATH_MAX)) return nullptr; strcpy(resolved_name, nall::utf8_t(wfile_name)); return resolved_name; }
+  inline auto rename(const char* oldname, const char* newname) -> int { return _wrename(nall::utf16_t(oldname), nall::utf16_t(newname)); }
+
+  namespace nall {
+    //network functions take void*, not char*. this allows them to be used without casting
+
+    inline auto recv(int socket, void* buffer, size_t length, int flags) -> ssize_t {
+      return ::recv(socket, (char*)buffer, length, flags);
+    }
+
+    inline auto send(int socket, const void* buffer, size_t length, int flags) -> ssize_t {
+      return ::send(socket, (const char*)buffer, length, flags);
+    }
+
+    inline auto setsockopt(int socket, int level, int option_name, const void* option_value, socklen_t option_len) -> int {
+      return ::setsockopt(socket, level, option_name, (const char*)option_value, option_len);
+    }
+  }
+#else
   #define dllexport
 #endif
 
-//==================
-//warning supression
-//==================
-
-//Visual C++
-#if defined(_MSC_VER)
-  //disable libc "deprecation" warnings
-  #pragma warning(disable:4996)
+#if defined(PLATFORM_MACOS)
+  #define MSG_NOSIGNAL 0
 #endif
 
-//================
-//POSIX compliance
-//================
-
-#if defined(_MSC_VER)
-  #define PATH_MAX  _MAX_PATH
-  #define va_copy(dest, src)  ((dest) = (src))
-#endif
-
-#if defined(_WIN32)
-  #define getcwd      _getcwd
-  #define ftruncate   _chsize
-  #define mkdir(n, m) _wmkdir(nall::utf16_t(n))
-  #define putenv      _putenv
-  #define rmdir       _rmdir
-  #define vsnprintf   _vsnprintf
-  inline void usleep(unsigned milliseconds) { Sleep(milliseconds / 1000); }
-#endif
-
-//================
-//inline expansion
-//================
-
-#if defined(__GNUC__)
-  #define noinline      __attribute__((noinline))
-  #define inline        inline
+#if defined(COMPILER_CLANG) || defined(COMPILER_GCC)
+  #define noinline   __attribute__((noinline))
   #define alwaysinline  inline __attribute__((always_inline))
-#elif defined(_MSC_VER)
-  #define noinline      __declspec(noinline)
-  #define inline        inline
+#elif defined(COMPILER_MICROSOFT)
+  #define noinline   __declspec(noinline)
   #define alwaysinline  inline __forceinline
 #else
   #define noinline
-  #define inline        inline
   #define alwaysinline  inline
 #endif
 
-//=========================
-//file system functionality
-//=========================
-
-#if defined(_WIN32)
-  inline char* realpath(const char *filename, char *resolvedname) {
-    wchar_t fn[_MAX_PATH] = L"";
-    _wfullpath(fn, nall::utf16_t(filename), _MAX_PATH);
-    strcpy(resolvedname, nall::utf8_t(fn));
-    for(unsigned n = 0; resolvedname[n]; n++) if(resolvedname[n] == '\\') resolvedname[n] = '/';
-    return resolvedname;
-  }
-
-  inline char* userpath(char *path) {
-		//TODO BIZHAWK
-		return nullptr;
-    //wchar_t fp[_MAX_PATH] = L"";
-    //SHGetFolderPathW(0, CSIDL_APPDATA | CSIDL_FLAG_CREATE, 0, 0, fp);
-    //strcpy(path, nall::utf8_t(fp));
-    //for(unsigned n = 0; path[n]; n++) if(path[n] == '\\') path[n] = '/';
-    //unsigned length = strlen(path);
-    //if(path[length] != '/') strcpy(path + length, "/");
-    //return path;
-  }
-
-  inline char* getcwd(char *path) {
-		//TODO BIZHAWK
-		return nullptr;
-    //wchar_t fp[_MAX_PATH] = L"";
-    //_wgetcwd(fp, _MAX_PATH);
-    //strcpy(path, nall::utf8_t(fp));
-    //for(unsigned n = 0; path[n]; n++) if(path[n] == '\\') path[n] = '/';
-    //unsigned length = strlen(path);
-    //if(path[length] != '/') strcpy(path + length, "/");
-    //return path;
-  }
+//P0627: [[unreachable]] -- impossible to simulate with identical syntax, must omit brackets ...
+#if defined(COMPILER_CLANG) || defined(COMPILER_GCC)
+  #define unreachable __builtin_unreachable()
 #else
-  //realpath() already exists
-
-  inline char* userpath(char *path) {
-    *path = 0;
-    struct passwd *userinfo = getpwuid(getuid());
-    if(userinfo) strcpy(path, userinfo->pw_dir);
-    unsigned length = strlen(path);
-    if(path[length] != '/') strcpy(path + length, "/");
-    return path;
-  }
-
-  inline char *getcwd(char *path) {
-    auto unused = getcwd(path, PATH_MAX);
-    unsigned length = strlen(path);
-    if(path[length] != '/') strcpy(path + length, "/");
-    return path;
-  }
+  #define unreachable throw
 #endif
 
-#endif
-
+#define export $export
+#define register $register

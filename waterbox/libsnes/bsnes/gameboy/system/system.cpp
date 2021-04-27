@@ -6,6 +6,7 @@ namespace GameBoy {
 #include "bootrom-dmg.cpp"
 #include "bootrom-sgb.cpp"
 #include "bootrom-cgb.cpp"
+#include "serialization.cpp"
 System system;
 
 void System::run() {
@@ -39,6 +40,7 @@ void System::init() {
 
 void System::load(Revision revision) {
   this->revision = revision;
+  serialize_init();
 }
 
 void System::power() {

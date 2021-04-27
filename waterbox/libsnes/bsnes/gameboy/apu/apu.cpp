@@ -8,6 +8,7 @@ namespace GameBoy {
 #include "wave/wave.cpp"
 #include "noise/noise.cpp"
 #include "master/master.cpp"
+#include "serialization.cpp"
 APU apu;
 
 void APU::Main() {

@@ -8,6 +8,7 @@ PPU ppu;
 #include "memory/memory.cpp"
 #include "mmio/mmio.cpp"
 #include "render/render.cpp"
+#include "serialization.cpp"
 
 void PPU::step(unsigned clocks) {
   clock += clocks;
@@ -83,8 +84,6 @@ void PPU::scanline() {
     regs.range_over = false;
   }
 
-	interface()->scanlineStart(line);
-
   if(line == 1) {
     //mosaic reset
     for(int bg = BG1; bg <= BG4; bg++) regs.bg_y[bg] = 1;
@@ -130,9 +129,9 @@ void PPU::power() {
   ppu1_version = config.ppu1.version;
   ppu2_version = config.ppu2.version;
 
-	for(int i=0;i<128*1024;i++) vram[i] = 0;
-	for(int i=0;i<544;i++) oam[i] = 0;
-	for(int i=0;i<512;i++) cgram[i] = 0;
+  for(auto &n : vram) n = 0x00;
+  for(auto &n : oam) n = 0x00;
+  for(auto &n : cgram) n = 0x00;
   flush_tiledata_cache();
 
   region = (system.region() == System::Region::NTSC ? 0 : 1);  //0 = NTSC, 1 = PAL
@@ -345,20 +344,9 @@ void PPU::power() {
 }
 
 void PPU::reset() {
-  create(Enter, system.cpu_frequency(), 32768);
+  create(Enter, system.cpu_frequency());
   PPUcounter::reset();
   memset(surface, 0, 512 * 512 * sizeof(uint32));
-
-	//zero 01-dec-2012 - gotta reset these sometime, somewhere
-	memset(oam_itemlist, 0, sizeof(oam_itemlist));
-	memset(oam_tilelist, 0, sizeof(oam_tilelist));
-	memset(oam_line_pal, 0, sizeof(oam_line_pal));
-	memset(oam_line_pri, 0, sizeof(oam_line_pri));
-	active_sprite = sprite_list_valid = 0;
-	memset(bg_info, 0, sizeof(bg_info));
-	memset(window, 0, sizeof(window));
-	memset(pixel_cache, 0, sizeof(pixel_cache));
-	regs.oam_tilecount = regs.oam_itemcount = 0;
 
   frame();
 
@@ -405,21 +393,8 @@ void PPU::set_frameskip(unsigned frameskip_) {
   framecounter = 0;
 }
 
-PPU::PPU()
-	: vram(nullptr)
-	, oam(nullptr)
-	, cgram(nullptr)
-{
-  
-}
-
-void PPU::initialize()
-{
-	vram = (uint8*)interface()->allocSharedMemory("VRAM",128 * 1024);
-  oam = (uint8*)interface()->allocSharedMemory("OAM",544);
-  cgram = (uint8*)interface()->allocSharedMemory("CGRAM",512);
-
-  surface = (uint32_t*)alloc_invisible(512 * 512 * sizeof(uint32_t));
+PPU::PPU() {
+  surface = new uint32[512 * 512];
   output = surface + 16 * 512;
 
   alloc_tiledata_cache();
@@ -447,7 +422,8 @@ void PPU::initialize()
 }
 
 PPU::~PPU() {
-  abort();
+  delete[] surface;
+  free_tiledata_cache();
 }
 
 }

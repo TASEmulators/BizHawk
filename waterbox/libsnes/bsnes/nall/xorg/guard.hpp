@@ -1,29 +1,51 @@
 #ifndef NALL_XORG_GUARD_HPP
 #define NALL_XORG_GUARD_HPP
 
-#define None
-#undef XlibNone
-#define XlibNone 0L
-#define Button1 XlibButton1
-#define Button2 XlibButton2
-#define Button3 XlibButton3
-#define Button4 XlibButton4
-#define Button5 XlibButton5
+#define Atom XlibAtom
 #define Display XlibDisplay
+#define Font XlibFont
 #define Screen XlibScreen
 #define Window XlibWindow
 
 #else
 #undef NALL_XORG_GUARD_HPP
 
-#undef None
+#undef Atom
+#undef Display
+#undef Font
+#undef Screen
+#undef Window
+
+#undef Above
+#undef Below
+#undef Bool
+
+#ifndef NALL_XORG_GUARD_CONSTANTS
+#define NALL_XORG_GUARD_CONSTANTS
+enum XlibConstants : int {
+  XlibButton1 = Button1,
+  XlibButton2 = Button2,
+  XlibButton3 = Button3,
+  XlibButton4 = Button4,
+  XlibButton5 = Button5,
+  XlibCurrentTime = CurrentTime,
+  XlibFalse = False,
+  XlibNone = None,
+  XlibTrue = True,
+};
+#endif
+
 #undef Button1
 #undef Button2
 #undef Button3
 #undef Button4
 #undef Button5
-#undef Display
-#undef Screen
-#undef Window
+#undef CurrentTime
+#undef False
+#undef None
+#undef True
+
+#undef MAX
+#undef MIN
 
 #endif

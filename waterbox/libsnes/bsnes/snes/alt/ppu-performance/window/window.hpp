@@ -14,6 +14,7 @@ public:
   uint8 sub[256];
 
   void render(bool screen);
+  void serialize(serializer&);
 };
 
 class ColorWindow {
@@ -32,4 +33,5 @@ public:
   uint8 sub[256];
 
   void render(bool screen);
+  void serialize(serializer&);
 };

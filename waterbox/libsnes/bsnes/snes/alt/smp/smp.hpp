@@ -17,9 +17,9 @@ public:
   void power();
   void reset();
 
+  void serialize(serializer&);
   SMP();
   ~SMP();
-	void initialize();
 
   void disassemble_opcode(char *output, uint16 addr);
 
@@ -89,7 +89,7 @@ public:
 
   void tick();
   alwaysinline void op_io();
-  alwaysinline uint8 op_read(uint16 addr, eCDLog_Flags flags);
+  alwaysinline uint8 op_read(uint16 addr);
   alwaysinline void op_write(uint16 addr, uint8 data);
   alwaysinline void op_step();
   static const unsigned cycle_count_table[256];

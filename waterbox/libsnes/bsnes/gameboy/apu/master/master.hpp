@@ -20,4 +20,5 @@ struct Master {
   void run();
   void write(unsigned r, uint8 data);
   void power();
+  void serialize(serializer&);
 };

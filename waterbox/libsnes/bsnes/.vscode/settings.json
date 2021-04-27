@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "*.bindump": "python",
+        "memory": "cpp",
+        "cstdlib": "cpp",
+        "*.tcc": "cpp",
+        "string": "cpp",
+        "string_view": "cpp"
+    }
+}

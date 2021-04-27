@@ -14,7 +14,7 @@ public:
   uint8 read(unsigned addr);
   void write(unsigned addr, uint8 data);
 
-	ICD2();
+  void serialize(serializer&);
 
 private:
   #include "interface/interface.hpp"

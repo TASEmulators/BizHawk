@@ -22,7 +22,6 @@ uint8 CPU::mmio_read(unsigned addr) {
     case 0x4017: {
       uint8 result = (regs.mdr & 0xe0) | 0x1c;
       result |= input.port2->data() & 3;
-			if (!status.auto_joypad_poll_enabled) interface()->inputNotify(0x4017);
       return result;
     }
 
@@ -52,23 +51,21 @@ uint8 CPU::mmio_read(unsigned addr) {
       return result;
     }
 
-    case 0x4213: 
-			// interface()->inputNotify(0x4213); // if there are lag counter issues with super scope, uncomment this
-			return status.pio;
+    case 0x4213: return status.pio;
 
     case 0x4214: return status.rddiv >> 0;
     case 0x4215: return status.rddiv >> 8;
     case 0x4216: return status.rdmpy >> 0;
     case 0x4217: return status.rdmpy >> 8;
 
-    case 0x4218: interface()->inputNotify(0x4218); return status.joy1l;
-    case 0x4219: interface()->inputNotify(0x4219); return status.joy1h;
-    case 0x421a: interface()->inputNotify(0x421a); return status.joy2l;
-    case 0x421b: interface()->inputNotify(0x421b); return status.joy2h;
-    case 0x421c: interface()->inputNotify(0x421c); return status.joy3l;
-    case 0x421d: interface()->inputNotify(0x421d); return status.joy3h;
-    case 0x421e: interface()->inputNotify(0x421e); return status.joy4l;
-    case 0x421f: interface()->inputNotify(0x421f); return status.joy4h;
+    case 0x4218: return status.joy1l;
+    case 0x4219: return status.joy1h;
+    case 0x421a: return status.joy2l;
+    case 0x421b: return status.joy2h;
+    case 0x421c: return status.joy3l;
+    case 0x421d: return status.joy3h;
+    case 0x421e: return status.joy4l;
+    case 0x421f: return status.joy4h;
   }
 
   if((addr & 0xff80) == 0x4300) {
@@ -132,8 +129,6 @@ void CPU::mmio_write(unsigned addr, uint8 data) {
     case 0x4016: {
       input.port1->latch(data & 1);
       input.port2->latch(data & 1);
-	  interface()->inputNotify(data & 1); // latch notify
-			if (!status.auto_joypad_poll_enabled) { interface()->inputNotify(0x4016); }
       return;
     }
 
