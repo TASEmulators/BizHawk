@@ -8,7 +8,7 @@
 		<Nullable>disable</Nullable>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="Cyotek.Drawing.BitmapFont" Version="1.3.4" />
+		<PackageReference Include="Cyotek.Drawing.BitmapFont" Version="2.0.2" />
 		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" /><!-- for (extra?) dynamic type support -->
 		<PackageReference Include="System.Drawing.Common" Version="5.0.0" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Common/BizHawk.Common.csproj" />
