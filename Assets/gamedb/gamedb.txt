@@ -1,0 +1,51 @@
+#include gamedb_a2600.txt
+#include gamedb_a7800.txt
+#include gamedb_appleII.txt
+#include gamedb_coleco.txt
+#include gamedb_e_cards.txt
+#include gamedb_intv.txt
+#include gamedb_gb.txt
+#include gamedb_gba.txt
+#include gamedb_gbc.txt
+#include gamedb_lynx.txt
+#include gamedb_msx.txt
+;#include gamedb_msx1-L.txt (legacy?)
+;#include gamedb_msx2-L.txt (legacy?)
+#include gamedb_n64.txt
+#include gamedb_nes.txt
+#include gamedb_Odyssey2.txt
+#include gamedb_pce_cd.txt
+#include gamedb_pce_hucards.txt
+#include gamedb_psx.txt
+#include gamedb_sega_sg1000.txt
+#include gamedb_sega_gg.txt
+#include gamedb_sega_sms.txt
+#include gamedb_sega_md.txt
+#include gamedb_snes.txt
+#include gamedb_user.txt
+#include gamedb_vectrex.txt
+#include gamedb_ws.txt
+#include gamedb_wsc.txt
+#include gamedb_zxspectrum.txt
+#include gamedb_amstradcpc.txt
+#include gamedb_ngp.txt
+#include gamedb_channelf.txt
+
+; ************ TI-83 ************
+
+4EDF419CAA9FB0542B4FED8BCD8B54C2		TI-83 v1.02	TI83		initPC=6ce
+28308683219BC1242B3A423F05061E69		TI-83 v1.03	TI83		initPC=6ce
+02D48EAAD98A74619E2F68DE23AC212F		TI-83 v1.04	TI83		initPC=6ce
+552338D93033ECCA7B06CAB4D9DA789B	B	TI-83 v1.06	TI83		initPC=6ce
+D4448D09BBFDE687C04F9E3310E023AB		TI-83 v1.07	TI83		initPC=6ce
+13B0ACA73319CD7617705DD6BD509B8B	B	TI-83 v1.08	TI83		initPC=6ce
+163B7CECDD3862116DFA7F0D650D56AB	B	TI-83 v1.10	TI83		initPC=6ce
+5ACB6614E0004AAF8B9EC706D4E47DFB	B	TI-83 v1.12	TI83		initPC=6ce
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;bad PSX (not many, so collecting here for now);;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;licensed by sony... string erased:
+C94257E7	B	Looney Tunes - Sheep Raider (STATiC Dump)	PSX		dh=00000000
+829A295C	B	Monster Rancher 2 (U) (EXE Patched)	PSX		dh=00000000
+
+
