@@ -1438,10 +1438,10 @@ EW_EXPORT s32 shock_Destroy(void* psx)
 	for(int i=0;i<2;i++)
 	{
 		delete VTBuffer[i];
-		VTLineWidths[i] = nullptr;
-
-		free(VTLineWidths[i]);
 		VTBuffer[i] = nullptr;
+		
+		free(VTLineWidths[i]);
+		VTLineWidths[i] = nullptr;
 	}
 
 	TextMem.resize(0);
