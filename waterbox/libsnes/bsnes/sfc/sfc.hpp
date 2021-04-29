@@ -79,7 +79,7 @@ namespace SuperFamicom {
       if(!thread) {
         thread = co_create(Thread::Size, entrypoint);
       } else {
-        thread = co_derive(thread, Thread::Size, entrypoint);
+        thread = co_create(Thread::Size, entrypoint);
       }
       frequency = frequency_;
       clock = 0;
