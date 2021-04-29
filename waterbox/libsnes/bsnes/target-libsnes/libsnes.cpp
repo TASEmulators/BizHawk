@@ -115,7 +115,20 @@ struct fInterface : public SuperFamicom::Interface {
 			// cart()
 	{
     buffer = (uint32_t*)alloc_invisible(512 * 480 * sizeof(uint32_t));
-    palette = (uint32_t*)alloc_invisible(16 * 32768 * sizeof(uint32_t));
+    palette = (uint32_t*)alloc_invisible(32768 * sizeof(uint32_t));
+		// initialize palette here cause why not?
+		for(uint color : range(32768)) {
+			uint16 r = (color >> 10) & 31;
+			uint16 g = (color >>  5) & 31;
+			uint16 b = (color >>  0) & 31;
+
+			r = r << 3 | r >> 2; r = r << 8 | r << 0;
+			g = g << 3 | g >> 2; g = g << 8 | g << 0;
+			b = b << 3 | b >> 2; b = b << 8 | b << 0;
+
+			palette[color] = r >> 8 << 16 | g >> 8 <<  8 | b >> 8 << 0;
+		}
+
 		// memset(&cdlInfo,0,sizeof(cdlInfo));
   }
 
@@ -176,7 +189,7 @@ void snes_set_color_lut(uint32_t * colors) {
 	fprintf(stderr, "snes colors were initialized, hopefully to values\n");
   for (int i = 0; i < 16 * 32768; i++) {
 		// fprintf(stderr, "colors[%d]: %08X\n", i, colors[i]);
-    iface->palette[i] = colors[i];
+    // iface->palette[i] = colors[i];
 	}
 }
 

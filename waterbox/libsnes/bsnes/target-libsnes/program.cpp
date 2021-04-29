@@ -268,7 +268,7 @@ auto Program::videoFrame(const uint16* data, uint pitch, uint width, uint height
 				// fprintf(stderr, "sp[%d]: %d\n", y * pitch, *sp);
 			// }
 			// fprintf(stderr, "*sp++: %d\n", *sp);
-			*dp++ = *sp++; //iface->palette[*sp++];
+			*dp++ = iface->palette[*sp++]; //iface->palette[*sp++];
 		}
 	}
 

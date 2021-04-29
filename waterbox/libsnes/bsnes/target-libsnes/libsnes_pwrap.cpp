@@ -413,6 +413,7 @@ void CMD_init()
 	SuperFamicom::configuration.hacks.entropy = comm.value ? "Low" : "None";// config.random = !!comm.value;
 	snes_init();
 
+	fprintf(stderr, "comm inports[0]: %d, comm inports[1]: %d\n", *(uint*) &comm.inports[0], *(uint*) &comm.inports[1]);
 	SuperFamicom::controllerPort1.connect(*(uint*) &comm.inports[0]);
 	SuperFamicom::controllerPort2.connect(*(uint*) &comm.inports[1]);
 	// SuperFamicom::input.connect(SuperFamicom::Controller::Port1, comm.inports[0]);

@@ -18,8 +18,8 @@ auto Bus::reset() -> void {
     counter[id] = 0;
   }
 
-//   if(lookup) delete[] lookup;
-//   if(target) delete[] target;
+  if(lookup) delete[] lookup;
+  if(target) delete[] target;
 
   lookup = new uint8 [16 * 1024 * 1024];
   target = new uint32[16 * 1024 * 1024];
