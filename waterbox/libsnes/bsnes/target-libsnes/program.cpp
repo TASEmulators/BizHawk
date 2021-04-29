@@ -249,22 +249,26 @@ auto Program::load(uint id, string name, string type, vector<string> options) ->
 }
 
 auto Program::videoFrame(const uint16* data, uint pitch, uint width, uint height, uint scale) -> void {
-	// if (!overscan)
-	// {
-	// 	uint multiplier = height / 240;
-	// 	data += 8 * (pitch >> 1) * multiplier;
-	// 	height -= 16 * multiplier;
-	// }
+	pitch >>= 1;
+	if (!overscan)
+	{
+		uint multiplier = height / 240;
+		data += 8 * pitch * multiplier;
+		height -= 16 * multiplier;
+	}
 
 	// video_cb(data, width, height, pitch);
-	fprintf(stderr, "got a video frame: %p\n", data);
+	fprintf(stderr, "got a video frame with dimensions h: %d, w: %d, p: %d, overscan: %d\n", height, width, pitch, overscan);
 
 	for (uint y = 0; y < height; y++) {
 		const uint16_t* sp = data + y * pitch;
 		uint32_t* dp = iface->buffer + y * pitch;
 		for (uint x = 0; x < width; x++) {
+			// if (*sp) {
+				// fprintf(stderr, "sp[%d]: %d\n", y * pitch, *sp);
+			// }
 			// fprintf(stderr, "*sp++: %d\n", *sp);
-			*dp++ = iface->palette[*sp++];
+			*dp++ = *sp++; //iface->palette[*sp++];
 		}
 	}
 

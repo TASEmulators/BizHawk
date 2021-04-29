@@ -173,6 +173,7 @@ void snes_set_video_refresh(snes_video_refresh_t video_refresh) {
 }
 
 void snes_set_color_lut(uint32_t * colors) {
+	fprintf(stderr, "snes colors were initialized, hopefully to values\n");
   for (int i = 0; i < 16 * 32768; i++) {
 		// fprintf(stderr, "colors[%d]: %08X\n", i, colors[i]);
     iface->palette[i] = colors[i];
@@ -400,7 +401,7 @@ bool snes_load_cartridge_normal(
   const char *rom_xml, const uint8_t *rom_data, unsigned rom_size
 ) {
 	// SuperFamicom::interface();
-	// emulator->configure("Audio/Frequency", 48000); // no idea whether this should be here
+	emulator->configure("Audio/Frequency", 44100); // no idea whether this should be here
 
 	// hardcoded bullshit as we have no args
 	program->superFamicom.location = "C:\\AdminProgramme\\BizHawk 2.4\\Super Mario World (USA)\\Super Mario World (USA).sfc";
