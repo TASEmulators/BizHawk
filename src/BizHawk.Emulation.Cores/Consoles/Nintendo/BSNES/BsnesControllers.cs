@@ -134,12 +134,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public void UpdateState(IController controller)
 		{
-			Console.WriteLine("state was updated");
 			for (int i = 0; i < 12; i++)
 			{
 				_state[i] = controller.IsPressed(Buttons[i]);
-				if (_state[i])
-					Console.WriteLine("yes");
 			}
 		}
 

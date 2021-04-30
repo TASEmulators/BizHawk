@@ -416,7 +416,7 @@ bool snes_load_cartridge_normal(
   const char *rom_xml, const uint8_t *rom_data, unsigned rom_size
 ) {
 	// SuperFamicom::interface();
-	emulator->configure("Audio/Frequency", 44100); // no idea whether this should be here
+	// emulator->configure("Audio/Frequency", 44100); // no idea whether this should be here
 
 	// hardcoded bullshit as we have no args
 	program->superFamicom.location = "C:\\AdminProgramme\\BizHawk 2.4\\Super Mario World (USA)\\Super Mario World (USA).sfc";

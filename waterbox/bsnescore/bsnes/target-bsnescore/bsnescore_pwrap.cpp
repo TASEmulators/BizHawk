@@ -425,13 +425,15 @@ static void CMD_Run()
 {
 	do_SIG_audio_flush();
 
+	snes_run();
+
 	//we could avoid this if we saved the current thread before jumping back to co_control, instead of always jumping back to co_emu
 	//in effect, we're scrambling the scheduler
 	//EDIT - well, we changed that, but.. we still want this probably, for debugging and stuff
 	// for (;;)
 	// {
 		// using namespace SuperFamicom;
-		SuperFamicom::system.run();
+		// SuperFamicom::system.run();
 		// SuperFamicom::scheduler.desynchronize();// = SuperFamicom::Scheduler::SynchronizeMode::None;
 		// SuperFamicom::scheduler.clearExitReason();
 		// SuperFamicom::scheduler.enter();
@@ -552,7 +554,7 @@ const Action kHandlers_CMD[] = {
 	CMD_init,
 	snes_power,
 	snes_reset,
-	snes_run,
+	CMD_Run,
 	nullptr,
 	nullptr,
 	CMD_LoadCartridgeNormal,
