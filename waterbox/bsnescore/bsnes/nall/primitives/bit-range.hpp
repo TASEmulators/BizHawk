@@ -58,7 +58,8 @@ template<int Precision, int Lo, int Hi> struct BitRange<Precision, Lo, Hi> {
   }
 
   template<typename T> inline auto& operator=(const T& source) {
-    target = target & ~mask | source << shift & mask;
+    type value = source;
+    target = target & ~mask | value << shift & mask;
     return *this;
   }
 
@@ -105,17 +106,20 @@ template<int Precision, int Lo, int Hi> struct BitRange<Precision, Lo, Hi> {
   }
 
   template<typename T> inline auto& operator&=(const T& source) {
-    target = target & (~mask | source << shift & mask);
+    type value = source;
+    target = target & (~mask | value << shift & mask);
     return *this;
   }
 
   template<typename T> inline auto& operator^=(const T& source) {
-    target = target ^ source << shift & mask;
+    type value = source;
+    target = target ^ value << shift & mask;
     return *this;
   }
 
   template<typename T> inline auto& operator|=(const T& source) {
-    target = target | source << shift & mask;
+    type value = source;
+    target = target | value << shift & mask;
     return *this;
   }
 
@@ -185,7 +189,8 @@ template<int Precision> struct BitRange<Precision> {
   }
 
   template<typename T> inline auto& operator=(const T& source) {
-    target = target & ~mask | source << shift & mask;
+    type value = source;
+    target = target & ~mask | value << shift & mask;
     return *this;
   }
 
@@ -232,17 +237,20 @@ template<int Precision> struct BitRange<Precision> {
   }
 
   template<typename T> inline auto& operator&=(const T& source) {
-    target = target & (~mask | source << shift & mask);
+    type value = source;
+    target = target & (~mask | value << shift & mask);
     return *this;
   }
 
   template<typename T> inline auto& operator^=(const T& source) {
-    target = target ^ source << shift & mask;
+    type value = source;
+    target = target ^ value << shift & mask;
     return *this;
   }
 
   template<typename T> inline auto& operator|=(const T& source) {
-    target = target | source << shift & mask;
+    type value = source;
+    target = target | value << shift & mask;
     return *this;
   }
 
