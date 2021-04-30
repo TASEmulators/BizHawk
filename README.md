@@ -1,3 +1,31 @@
+# BizHawk AI
+This is a simple fork of BizHawk in hope to have a better "framework" to kick my AI in mupen64plus.
+I did some experiments regarding the Input / Controller handling in this code resulting in the funny RandomController!
+To achieve those results I simply applied some hacks to gain a fast pace. I ignored most of the "how the ui should work" stuff and wired some "this is not intended in our system" classes / dependencies. Yes, I did not sleep well.
+
+To have fun with this simple hack, you'll have to build the source from scratch. Follow the build instructions in the original instructions bellow to build your copy. On windows machines it's fairly simple.
+
+Please note that I'm somewhat sure that this build only runs on windows machines since I simply added some ui controls only (?) available on windows.
+
+## Random Inputs Controller
+The random input controller lets you play with your normal controller but adds some random inputs in a given interval. The interval and some more options can be found in the Tab "Config" -> "Controllers..." (after loading a N64 rom) -> "Random Inputs". This "Plugin" is disabled by default. You can change any options at any time.
+
+
+# How to play
+I build the source for you (yeay?) and released a version v0.1 based on windows. Just download the zip file under releases, extract it and have fun!
+
+
+
+
+
+
+
+
+
+
+
+# Below you'll find the original BizHawk readme and all original links
+
 # BizHawk
 
 A multi-system emulator written in C#. As well as quality-of-life features for casual players, it also has recording/playback and debugging tools, making it the first choice for TASers (Tool-Assisted Speedrunners).
