@@ -7,7 +7,6 @@ namespace SNES {
 
 #include "interface/interface.cpp"
 #include "mmio/mmio.cpp"
-#include "serialization.cpp"
 ICD2 icd2;
 
 void ICD2::Enter() { icd2.enter(); }
@@ -46,7 +45,7 @@ void ICD2::power() {
 }
 
 void ICD2::reset() {
-  create(ICD2::Enter, cpu.frequency / 5);
+  create(ICD2::Enter, cpu.frequency / 5, 16384);
 
   r6000_ly = 0x00;
   r6000_row = 0x00;
@@ -69,9 +68,13 @@ void ICD2::reset() {
   joyp14lock = 0;
   pulselock = true;
 
-  GameBoy::interface = this;
   GameBoy::system.init();
   GameBoy::system.power();
+}
+
+ICD2::ICD2()
+{
+  GameBoy::interface = this;
 }
 
 }

@@ -1,87 +1,101 @@
-#pragma once
-
-#include <nall/stdint.hpp>
+#ifndef NALL_ATOI_HPP
+#define NALL_ATOI_HPP
 
 namespace nall {
 
-constexpr inline auto toBinary_(const char* s, uintmax sum = 0) -> uintmax {
+//note: this header is intended to form the base for user-defined literals;
+//once they are supported by GCC. eg:
+//unsigned operator "" b(const char *s) { return binary(s); }
+//-> signed data = 1001b;
+//(0b1001 is nicer, but is not part of the C++ standard)
+
+constexpr inline uintmax_t binary_(const char *s, uintmax_t sum = 0) {
   return (
-    *s == '0' || *s == '1' ? toBinary_(s + 1, (sum << 1) | *s - '0') :
-    *s == '\'' ? toBinary_(s + 1, sum) :
+    *s == '0' || *s == '1' ? binary_(s + 1, (sum << 1) | *s - '0') :
     sum
   );
 }
 
-constexpr inline auto toOctal_(const char* s, uintmax sum = 0) -> uintmax {
+constexpr inline uintmax_t octal_(const char *s, uintmax_t sum = 0) {
   return (
-    *s >= '0' && *s <= '7' ? toOctal_(s + 1, (sum << 3) | *s - '0') :
-    *s == '\'' ? toOctal_(s + 1, sum) :
+    *s >= '0' && *s <= '7' ? octal_(s + 1, (sum << 3) | *s - '0') :
     sum
   );
 }
 
-constexpr inline auto toDecimal_(const char* s, uintmax sum = 0) -> uintmax {
+constexpr inline uintmax_t decimal_(const char *s, uintmax_t sum = 0) {
   return (
-    *s >= '0' && *s <= '9' ? toDecimal_(s + 1, (sum * 10) + *s - '0') :
-    *s == '\'' ? toDecimal_(s + 1, sum) :
+    *s >= '0' && *s <= '9' ? decimal_(s + 1, (sum * 10) + *s - '0') :
     sum
   );
 }
 
-constexpr inline auto toHex_(const char* s, uintmax sum = 0) -> uintmax {
+constexpr inline uintmax_t hex_(const char *s, uintmax_t sum = 0) {
   return (
-    *s >= 'A' && *s <= 'F' ? toHex_(s + 1, (sum << 4) | *s - 'A' + 10) :
-    *s >= 'a' && *s <= 'f' ? toHex_(s + 1, (sum << 4) | *s - 'a' + 10) :
-    *s >= '0' && *s <= '9' ? toHex_(s + 1, (sum << 4) | *s - '0') :
-    *s == '\'' ? toHex_(s + 1, sum) :
+    *s >= 'A' && *s <= 'F' ? hex_(s + 1, (sum << 4) | *s - 'A' + 10) :
+    *s >= 'a' && *s <= 'f' ? hex_(s + 1, (sum << 4) | *s - 'a' + 10) :
+    *s >= '0' && *s <= '9' ? hex_(s + 1, (sum << 4) | *s - '0') :
     sum
   );
 }
 
 //
 
-constexpr inline auto toBinary(const char* s) -> uintmax {
+constexpr inline uintmax_t binary(const char *s) {
   return (
-    *s == '0' && (*(s + 1) == 'B' || *(s + 1) == 'b') ? toBinary_(s + 2) :
-    *s == '%' ? toBinary_(s + 1) : toBinary_(s)
+    *s == '0' && *(s + 1) == 'B' ? binary_(s + 2) :
+    *s == '0' && *(s + 1) == 'b' ? binary_(s + 2) :
+    *s == '%' ? binary_(s + 1) :
+    binary_(s)
   );
 }
 
-constexpr inline auto toOctal(const char* s) -> uintmax {
+constexpr inline uintmax_t octal(const char *s) {
   return (
-    *s == '0' && (*(s + 1) == 'O' || *(s + 1) == 'o') ? toOctal_(s + 2) :
-    toOctal_(s)
+    octal_(s)
   );
 }
 
-constexpr inline auto toHex(const char* s) -> uintmax {
+constexpr inline intmax_t integer(const char *s) {
   return (
-    *s == '0' && (*(s + 1) == 'X' || *(s + 1) == 'x') ? toHex_(s + 2) :
-    *s == '$' ? toHex_(s + 1) : toHex_(s)
+    *s == '+' ? +decimal_(s + 1) :
+    *s == '-' ? -decimal_(s + 1) :
+    decimal_(s)
   );
 }
 
-//
-
-constexpr inline auto toNatural(const char* s) -> uintmax {
+constexpr inline uintmax_t decimal(const char *s) {
   return (
-    *s == '0' && (*(s + 1) == 'B' || *(s + 1) == 'b') ? toBinary_(s + 2) :
-    *s == '0' && (*(s + 1) == 'O' || *(s + 1) == 'o') ? toOctal_(s + 2) :
-    *s == '0' && (*(s + 1) == 'X' || *(s + 1) == 'x') ? toHex_(s + 2) :
-    *s == '%' ? toBinary_(s + 1) : *s == '$' ? toHex_(s + 1) : toDecimal_(s)
+    decimal_(s)
   );
 }
 
-constexpr inline auto toInteger(const char* s) -> intmax {
+constexpr inline uintmax_t hex(const char *s) {
   return (
-    *s == '+' ? +toNatural(s + 1) : *s == '-' ? -toNatural(s + 1) : toNatural(s)
+    *s == '0' && *(s + 1) == 'X' ? hex_(s + 2) :
+    *s == '0' && *(s + 1) == 'x' ? hex_(s + 2) :
+    *s == '$' ? hex_(s + 1) :
+    hex_(s)
   );
 }
 
-//
+constexpr inline intmax_t numeral(const char *s) {
+  return (
+    *s == '0' && *(s + 1) == 'X' ? hex_(s + 2) :
+    *s == '0' && *(s + 1) == 'x' ? hex_(s + 2) :
+    *s == '0' && *(s + 1) == 'B' ? binary_(s + 2) :
+    *s == '0' && *(s + 1) == 'b' ? binary_(s + 2) :
+    *s == '0' ? octal_(s + 1) :
+    *s == '+' ? +decimal_(s + 1) :
+    *s == '-' ? -decimal_(s + 1) :
+    decimal_(s)
+  );
+}
 
-inline auto toReal(const char* s) -> double {
+inline double fp(const char *s) {
   return atof(s);
 }
 
 }
+
+#endif

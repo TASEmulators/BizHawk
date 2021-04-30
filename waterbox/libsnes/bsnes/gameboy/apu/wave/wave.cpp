@@ -80,20 +80,4 @@ void APU::Wave::power() {
   pattern_sample = 0;
 }
 
-void APU::Wave::serialize(serializer &s) {
-  s.integer(enable);
-
-  s.integer(dac_enable);
-  s.integer(volume_shift);
-  s.integer(frequency);
-  s.integer(counter);
-  s.array(pattern);
-
-  s.integer(output);
-  s.integer(length);
-  s.integer(period);
-  s.integer(pattern_offset);
-  s.integer(pattern_sample);
-}
-
 #endif

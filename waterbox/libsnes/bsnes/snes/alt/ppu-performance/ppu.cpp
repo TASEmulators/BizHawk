@@ -11,7 +11,6 @@ PPU ppu;
 #include "background/background.cpp"
 #include "sprite/sprite.cpp"
 #include "screen/screen.cpp"
-#include "serialization.cpp"
 
 void PPU::step(unsigned clocks) {
   clock += clocks;
@@ -90,9 +89,9 @@ void PPU::enable() {
 }
 
 void PPU::power() {
-  for(auto &n : vram) n = 0;
-  for(auto &n : oam) n = 0;
-  for(auto &n : cgram) n = 0;
+	for(int i=0;i<128*1024;i++) vram[i] = 0;
+	for(int i=0;i<544;i++) oam[i] = 0;
+	for(int i=0;i<512;i++) cgram[i] = 0;
   reset();
 }
 
@@ -134,8 +133,12 @@ bg2(*this, Background::ID::BG2),
 bg3(*this, Background::ID::BG3),
 bg4(*this, Background::ID::BG4),
 sprite(*this),
-screen(*this) {
-  surface = new uint32[512 * 512];
+screen(*this),
+vram(nullptr),
+oam(nullptr),
+cgram(nullptr)
+{
+  surface = (uint32_t*)alloc_invisible(512 * 512 * sizeof(uint32_t));
   output = surface + 16 * 512;
   display.width = 256;
   display.height = 224;
@@ -144,7 +147,14 @@ screen(*this) {
 }
 
 PPU::~PPU() {
-  delete[] surface;
+  abort();
+}
+
+void PPU::initialize()
+{
+	vram = (uint8*)interface()->allocSharedMemory("VRAM",128 * 1024);
+  oam = (uint8*)interface()->allocSharedMemory("OAM",544);
+  cgram = (uint8*)interface()->allocSharedMemory("CGRAM",512);
 }
 
 }

@@ -33,12 +33,15 @@ struct MappedRAM : Memory {
   inline uint8 read(unsigned addr);
   inline void write(unsigned addr, uint8 n);
   inline const uint8& operator[](unsigned addr) const;
-  inline MappedRAM();
+  inline MappedRAM(const char* name = NULL);
+
+	inline void setName(const char* name) { name_ = name; }
 
 private:
   uint8 *data_;
   unsigned size_;
   bool write_protect_;
+	const char* name_;
 };
 
 struct Bus {

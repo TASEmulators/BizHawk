@@ -5,7 +5,6 @@ namespace SNES {
 
 DSP dsp;
 
-#include "serialization.cpp"
 #include "SPC_DSP.cpp"
 
 void DSP::step(unsigned clocks) {

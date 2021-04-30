@@ -112,12 +112,23 @@ uint8* PPU::Cache::tile(unsigned bpp, unsigned tile) {
 }
 
 PPU::Cache::Cache(PPU &self) : self(self) {
-  tiledata[0] = new uint8[262144]();
-  tiledata[1] = new uint8[131072]();
-  tiledata[2] = new uint8[ 65536]();
-  tilevalid[0] = new uint8[ 4096]();
-  tilevalid[1] = new uint8[ 2048]();
-  tilevalid[2] = new uint8[ 1024]();
+  tiledata[0] = (uint8*)alloc_invisible(262144);
+  tiledata[1] = (uint8*)alloc_invisible(131072);
+  tiledata[2] = (uint8*)alloc_invisible(65536);
+  tilevalid[0] = (uint8*)alloc_invisible(4096);
+  tilevalid[1] = (uint8*)alloc_invisible(2048);
+  tilevalid[2] = (uint8*)alloc_invisible(1024);
+}
+
+PPU::Cache::invalidate() {
+  memset(tilevalid[0], 0, 4096);
+  memset(tilevalid[1], 0, 2048);
+  memset(tilevalid[2], 0, 1024);
+}
+
+PPU::Cache::~Cache()
+{
+	abort();
 }
 
 #endif

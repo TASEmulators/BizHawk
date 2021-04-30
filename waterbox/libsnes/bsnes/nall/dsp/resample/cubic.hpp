@@ -21,7 +21,7 @@ void ResampleCubic::clear() {
 
 void ResampleCubic::sample() {
   while(fraction <= 1.0) {
-    real channel[dsp.settings.channels];
+		std::vector<real> channel(dsp.settings.channels);
 
     for(unsigned n = 0; n < dsp.settings.channels; n++) {
       real a = dsp.buffer.read(n, -3);
@@ -39,7 +39,7 @@ void ResampleCubic::sample() {
       channel[n] = A * (mu * 3) + B * (mu * 2) + C * mu + D;
     }
 
-    dsp.write(channel);
+    dsp.write(channel.data());
     fraction += step;
   }
 

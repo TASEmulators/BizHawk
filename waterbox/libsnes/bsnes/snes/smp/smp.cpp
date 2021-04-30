@@ -5,7 +5,6 @@ namespace SNES {
 
 SMP smp;
 
-#include "serialization.cpp"
 #include "iplrom.cpp"
 #include "memory/memory.cpp"
 #include "timing/timing.cpp"
@@ -40,6 +39,11 @@ void SMP::enter() {
     }
 
     debugger.op_exec(regs.pc);
+		if(interface()->wanttrace & TRACE_SMP_MASK)
+		{
+			auto str = disassemble_opcode(regs.pc);
+			interface()->cpuTrace(TRACE_SMP, (const char*)str);
+		}
     op_step();
   }
 }
@@ -49,10 +53,14 @@ void SMP::power() {
   timer0.target = 0;
   timer1.target = 0;
   timer2.target = 0;
+
+	//zero 01-dec-2012
+	//gotta clear these to something, sometime
+	dp.w = sp.w = rd.w = wr.w = bit.w = ya.w = 0;
 }
 
 void SMP::reset() {
-  create(Enter, system.apu_frequency());
+  create(Enter, system.apu_frequency(), 16384);
 
   regs.pc = 0xffc0;
   regs.a = 0x00;
@@ -61,7 +69,7 @@ void SMP::reset() {
   regs.s = 0xef;
   regs.p = 0x02;
 
-  for(auto &n : apuram) n = random(0x00);
+	for(int i=0;i<64*1024;i++) apuram[i] = random(0x00);
   apuram[0x00f4] = 0x00;
   apuram[0x00f5] = 0x00;
   apuram[0x00f6] = 0x00;
@@ -114,10 +122,18 @@ void SMP::reset() {
   timer2.enable = false;
 }
 
-SMP::SMP() {
+SMP::SMP()
+	: apuram(nullptr)
+{
 }
 
 SMP::~SMP() {
+	interface()->freeSharedMemory(apuram);
+}
+
+void SMP::initialize()
+{
+	apuram = (uint8*)interface()->allocSharedMemory("APURAM",64 * 1024);
 }
 
 }

@@ -21,7 +21,7 @@ void ResampleHermite::clear() {
 
 void ResampleHermite::sample() {
   while(fraction <= 1.0) {
-    real channel[dsp.settings.channels];
+		std::vector<real> channel(dsp.settings.channels);
 
     for(unsigned n = 0; n < dsp.settings.channels; n++) {
       real a = dsp.buffer.read(n, -3);
@@ -51,7 +51,7 @@ void ResampleHermite::sample() {
       channel[n] = (a0 * b) + (a1 * m0) + (a2 * m1) + (a3 * c);
     }
 
-    dsp.write(channel);
+    dsp.write(channel.data());
     fraction += step;
   }
 

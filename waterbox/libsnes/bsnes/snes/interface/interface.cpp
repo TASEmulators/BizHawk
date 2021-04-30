@@ -2,7 +2,10 @@
 
 namespace SNES {
 
-Interface *interface = nullptr;
+Interface::Interface()
+	: wanttrace(false)
+{
+}
 
 void Interface::videoRefresh(const uint32_t *data, bool hires, bool interlace, bool overscan) {
 }
@@ -14,8 +17,29 @@ int16_t Interface::inputPoll(bool port, Input::Device device, unsigned index, un
   return 0;
 }
 
+void Interface::inputNotify(int index) {
+}
+
 void Interface::message(const string &text) {
   print(text, "\n");
+}
+
+time_t Interface::currentTime()
+{
+  return time(0);
+}
+
+time_t Interface::randomSeed()
+{
+  return time(0);
+}
+
+int Interface::getBackdropColor()
+{
+	return -1;
+}
+
+void Interface::cpuTrace(uint32_t which, const char *msg) {
 }
 
 }

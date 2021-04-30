@@ -1,41 +1,36 @@
-#pragma once
+#ifdef NALL_STRING_INTERNAL_HPP
 
 namespace nall {
 
-template<bool Insensitive, bool Quoted>
-auto vector<string>::_split(string_view source, string_view find, long limit) -> type& {
+template<unsigned Limit, bool Insensitive, bool Quoted> lstring& lstring::usplit(const char *key, const char *base) {
   reset();
-  if(limit <= 0 || find.size() == 0) return *this;
+  if(!key || !*key) return *this;
 
-  const char* p = source.data();
-  int size = source.size();
-  int base = 0;
-  int matches = 0;
+  const char *p = base;
 
-  for(int n = 0, quoted = 0; n <= size - (int)find.size();) {
-    if(Quoted) { if(p[n] == '\"') { quoted ^= 1; n++; continue; } if(quoted) { n++; continue; } }
-    if(string::_compare<Insensitive>(p + n, size - n, find.data(), find.size())) { n++; continue; }
-    if(matches >= limit) break;
-
-    string& s = operator()(matches);
-    s.resize(n - base);
-    memory::copy(s.get(), p + base, n - base);
-
-    n += find.size();
-    base = n;
-    matches++;
+  while(*p) {
+    if(Limit) if(size() >= Limit) break;
+    if(quoteskip<Quoted>(p)) continue;
+    for(unsigned n = 0;; n++) {
+      if(key[n] == 0) {
+        append(substr(base, 0, p - base));
+        p += n;
+        base = p;
+        break;
+      }
+      if(!chrequal<Insensitive>(key[n], p[n])) { p++; break; }
+    }
   }
 
-  string& s = operator()(matches);
-  s.resize(size - base);
-  memory::copy(s.get(), p + base, size - base);
-
+  append(base);
   return *this;
 }
 
-auto string::split(string_view on, long limit) const -> vector<string> { return vector<string>()._split<0, 0>(*this, on, limit); }
-auto string::isplit(string_view on, long limit) const -> vector<string> { return vector<string>()._split<1, 0>(*this, on, limit); }
-auto string::qsplit(string_view on, long limit) const -> vector<string> { return vector<string>()._split<0, 1>(*this, on, limit); }
-auto string::iqsplit(string_view on, long limit) const -> vector<string> { return vector<string>()._split<1, 1>(*this, on, limit); }
+template<unsigned Limit> lstring& lstring::split(const char *key, const char *src) { return usplit<Limit, false, false>(key, src); }
+template<unsigned Limit> lstring& lstring::isplit(const char *key, const char *src) { return usplit<Limit, true, false>(key, src); }
+template<unsigned Limit> lstring& lstring::qsplit(const char *key, const char *src) { return usplit<Limit, false, true>(key, src); }
+template<unsigned Limit> lstring& lstring::iqsplit(const char *key, const char *src) { return usplit<Limit, true, true>(key, src); }
 
-}
+};
+
+#endif

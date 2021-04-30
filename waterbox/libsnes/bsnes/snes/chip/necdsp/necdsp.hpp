@@ -4,17 +4,18 @@
 class NECDSP : public Coprocessor {
 public:
   enum class Revision : unsigned { uPD7725, uPD96050 } revision;
-  unsigned frequency;
 
   #include "registers.hpp"
 
-  uint24 programROM[16384];
-  uint16 dataROM[2048];
-  uint16 dataRAM[2048];
+	//zero 01-sep-2014 - dont clobber these when reconstructing!
+  static unsigned frequency;
+  static uint24 programROM[16384];
+  static uint16 dataROM[2048];
+  static unsigned programROMSize;
+  static unsigned dataROMSize;
 
-  unsigned programROMSize;
-  unsigned dataROMSize;
   unsigned dataRAMSize;
+  uint16 dataRAM[2048];
 
   static void Enter();
   void enter();
@@ -41,7 +42,6 @@ public:
   void power();
   void reset();
 
-  void serialize(serializer&);
   NECDSP();
   ~NECDSP();
 };

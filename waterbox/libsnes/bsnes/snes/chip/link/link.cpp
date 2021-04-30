@@ -22,7 +22,7 @@ void Link::init() {
 
 void Link::load() {
   if(opened()) close();
-  string basename = interface->path(Cartridge::Slot::Base, "");
+  string basename = interface()->path(Cartridge::Slot::Base, "");
   string name = program != "" ? program : notdir(basename);
   string path = dir(basename);
   if(open(name, path)) {
@@ -44,7 +44,7 @@ void Link::power() {
 
 void Link::reset() {
   if(link_reset) link_reset();
-  create(Link::Enter, frequency);
+  create(Link::Enter, frequency, 8192);
 }
 
 uint8 Link::read(unsigned addr) {

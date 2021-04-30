@@ -1,12 +1,13 @@
 #include <gameboy/gameboy.hpp>
 
+#include <snes/snes.hpp>
+
 #define CPU_CPP
 namespace GameBoy {
 
 #include "core/core.cpp"
 #include "mmio/mmio.cpp"
 #include "timing/timing.cpp"
-#include "serialization.cpp"
 CPU cpu;
 
 void CPU::Main() {
@@ -19,10 +20,17 @@ void CPU::main() {
       scheduler.sync = Scheduler::SynchronizeMode::All;
       scheduler.exit(Scheduler::ExitReason::SynchronizeEvent);
     }
-
-    if(trace) print(disassemble(r[PC]), "\n");
+		
+		if(SNES::interface()->wanttrace & TRACE_GB_MASK)
+		{
+			auto disasm = disassemble(r[PC]);
+			SNES::interface()->cpuTrace(TRACE_GB, (const char*)disasm);
+		}
+    //if(trace) print(disassemble(r[PC]), "\n");
     interrupt_test();
+		cdlInfo.currFlags = eCDLog_Flags_ExecFirst;
     uint8 opcode = op_read(r[PC]++);
+		cdlInfo.currFlags = eCDLog_Flags_CPUData;
     (this->*opcode_table[opcode])();
   }
 }
@@ -129,8 +137,8 @@ void CPU::power() {
   bus.mmio[0xff77] = this;  //???
   }
 
-  for(auto &n : wram) n = 0x00;
-  for(auto &n : hram) n = 0x00;
+  for(unsigned n = 0; n < 32768; n++) wram[n] = 0x00;
+  for(unsigned n = 0; n < 8192; n++) hram[n] = 0x00;
 
   r[PC] = 0x0000;
   r[SP] = 0x0000;
@@ -195,8 +203,24 @@ void CPU::power() {
   status.interrupt_enable_vblank = 0;
 }
 
-CPU::CPU() : trace(false) {
+CPU::CPU()
+	: trace(false)
+	, wram(nullptr)
+	, hram(nullptr)
+{
   initialize_opcode_table();
 }
 
+CPU::~CPU()
+{
+	SNES::interface()->freeSharedMemory(wram);
+	SNES::interface()->freeSharedMemory(hram);
 }
+
+void CPU::initialize()
+{
+	wram = (uint8*)SNES::interface()->allocSharedMemory("SGB_WRAM", 32768);
+	hram = (uint8*)SNES::interface()->allocSharedMemory("SGB_HRAM", 8192);
+}
+
+} //namespace GameBoy

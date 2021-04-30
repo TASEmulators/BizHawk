@@ -8,9 +8,9 @@ struct Buffer {
 
   void setChannels(unsigned channels) {
     for(unsigned c = 0; c < this->channels; c++) {
-      if(sample[c]) delete[] sample[c];
+      if(sample[c]) abort();
     }
-    if(sample) delete[] sample;
+    if(sample) abort();
 
     this->channels = channels;
     if(channels == 0) return;

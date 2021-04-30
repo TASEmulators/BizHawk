@@ -1,14 +1,8 @@
 #ifndef SNES_HPP
 #define SNES_HPP
 
+#include <emulibc.h>
 #include <base/base.hpp>
-
-namespace SNES {
-  namespace Info {
-    static const char Name[] = "bsnes";
-    static const unsigned SerializerVersion = 23;
-  }
-}
 
 /*
   bsnes - SNES emulator
@@ -17,7 +11,7 @@ namespace SNES {
   project started: 2004-10-14
 */
 
-#include <libco/libco.h>
+#include <libco.h>
 
 #if defined(GAMEBOY)
   #include <gameboy/gameboy.hpp>
@@ -29,16 +23,11 @@ namespace SNES {
     unsigned frequency;
     int64 clock;
 
-    inline void create(void (*entrypoint)(), unsigned frequency) {
+    inline void create(void (*entrypoint)(), unsigned frequency, int size) {
       if(thread) co_delete(thread);
-      thread = co_create(65536 * sizeof(void*), entrypoint);
+      thread = co_create(size * sizeof(void*), entrypoint);
       this->frequency = frequency;
       clock = 0;
-    }
-
-    inline void serialize(serializer &s) {
-      s.integer(frequency);
-      s.integer(clock);
     }
 
     inline Processor() : thread(nullptr) {
@@ -66,7 +55,6 @@ namespace SNES {
   #include <snes/system/system.hpp>
   #include <snes/chip/chip.hpp>
   #include <snes/cartridge/cartridge.hpp>
-  #include <snes/cheat/cheat.hpp>
   #include <snes/interface/interface.hpp>
 
   #include <snes/memory/memory-inline.hpp>

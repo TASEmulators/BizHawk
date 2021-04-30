@@ -1,29 +1,30 @@
-#pragma once
+#ifndef NALL_INTERPOLATION_HPP
+#define NALL_INTERPOLATION_HPP
 
 namespace nall {
 
 struct Interpolation {
-  static inline auto Nearest(double mu, double a, double b, double c, double d) -> double {
+  static inline double Nearest(double mu, double a, double b, double c, double d) {
     return (mu <= 0.5 ? b : c);
   }
 
-  static inline auto Sublinear(double mu, double a, double b, double c, double d) -> double {
+  static inline double Sublinear(double mu, double a, double b, double c, double d) {
     mu = ((mu - 0.5) * 2.0) + 0.5;
     if(mu < 0) mu = 0;
     if(mu > 1) mu = 1;
     return b * (1.0 - mu) + c * mu;
   }
 
-  static inline auto Linear(double mu, double a, double b, double c, double d) -> double {
+  static inline double Linear(double mu, double a, double b, double c, double d) {
     return b * (1.0 - mu) + c * mu;
   }
 
-  static inline auto Cosine(double mu, double a, double b, double c, double d) -> double {
-    mu = (1.0 - cos(mu * Math::Pi)) / 2.0;
+  static inline double Cosine(double mu, double a, double b, double c, double d) {
+    mu = (1.0 - cos(mu * 3.14159265)) / 2.0;
     return b * (1.0 - mu) + c * mu;
   }
 
-  static inline auto Cubic(double mu, double a, double b, double c, double d) -> double {
+  static inline double Cubic(double mu, double a, double b, double c, double d) {
     double A = d - c - a + b;
     double B = a - b - A;
     double C = c - a;
@@ -31,7 +32,7 @@ struct Interpolation {
     return A * (mu * mu * mu) + B * (mu * mu) + C * mu + D;
   }
 
-  static inline auto Hermite(double mu1, double a, double b, double c, double d) -> double {
+  static inline double Hermite(double mu1, double a, double b, double c, double d) {
     const double tension = 0.0;  //-1 = low, 0 = normal, +1 = high
     const double bias = 0.0;  //-1 = left, 0 = even, +1 = right
     double mu2, mu3, m0, m1, a0, a1, a2, a3;
@@ -54,3 +55,5 @@ struct Interpolation {
 };
 
 }
+
+#endif

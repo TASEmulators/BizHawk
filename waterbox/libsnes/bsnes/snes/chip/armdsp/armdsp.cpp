@@ -3,12 +3,16 @@
 #define ARMDSP_CPP
 namespace SNES {
 
+//zero 01-sep-2014 - dont clobber these when reconstructing!
+uint8 *ArmDSP::firmware;
+uint8 *ArmDSP::programROM;
+uint8 *ArmDSP::dataROM;
+
 static bool trace = 0;
 
 #include "opcodes.cpp"
 #include "memory.cpp"
 #include "disassembler.cpp"
-#include "serialization.cpp"
 ArmDSP armdsp;
 
 void ArmDSP::Enter() { armdsp.enter(); }
@@ -151,7 +155,7 @@ void ArmDSP::reset() {
 }
 
 void ArmDSP::arm_reset() {
-  create(ArmDSP::Enter, 21477272);
+  create(ArmDSP::Enter, 21477272, 8192);
 
   bridge.ready = false;
   bridge.timer = 0;

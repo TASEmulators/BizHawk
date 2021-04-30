@@ -2,54 +2,6 @@
 
 Video video;
 
-unsigned Video::palette30(unsigned color) {
-  unsigned l = (color >> 15) & 15;
-  unsigned b = (color >> 10) & 31;
-  unsigned g = (color >>  5) & 31;
-  unsigned r = (color >>  0) & 31;
-
-  double L = (1.0 + l) / 16.0;
-  if(l == 0) L *= 0.5;
-  unsigned R = L * ((r << 5) + (r << 0));
-  unsigned G = L * ((g << 5) + (g << 0));
-  unsigned B = L * ((b << 5) + (b << 0));
-
-  return (R << 20) + (G << 10) + (B << 0);
-}
-
-void Video::generate(Format format) {
-  for(unsigned n = 0; n < (1 << 19); n++) palette[n] = palette30(n);
-
-  if(format == Format::RGB24) {
-    for(unsigned n = 0; n < (1 << 19); n++) {
-      unsigned color = palette[n];
-      palette[n] = ((color >> 6) & 0xff0000) + ((color >> 4) & 0x00ff00) + ((color >> 2) & 0x0000ff);
-    }
-  }
-
-  if(format == Format::RGB16) {
-    for(unsigned n = 0; n < (1 << 19); n++) {
-      unsigned color = palette[n];
-      palette[n] = ((color >> 14) & 0xf800) + ((color >> 9) & 0x07e0) + ((color >> 5) & 0x001f);
-    }
-  }
-
-  if(format == Format::RGB15) {
-    for(unsigned n = 0; n < (1 << 19); n++) {
-      unsigned color = palette[n];
-      palette[n] = ((color >> 15) & 0x7c00) + ((color >> 10) & 0x03e0) + ((color >> 5) & 0x001f);
-    }
-  }
-}
-
-Video::Video() {
-  palette = new unsigned[1 << 19];
-}
-
-Video::~Video() {
-  delete[] palette;
-}
-
 //internal
 
 const uint8_t Video::cursor[15 * 15] = {
@@ -129,7 +81,7 @@ void Video::update() {
     }
   }
 
-  interface->videoRefresh(ppu.surface, hires, ppu.interlace(), ppu.overscan());
+  interface()->videoRefresh(ppu.surface, hires, ppu.interlace(), ppu.overscan());
 
   hires = false;
 }

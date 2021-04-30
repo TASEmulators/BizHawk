@@ -8,7 +8,6 @@ DSP dsp;
 #define REG(n) state.regs[r_##n]
 #define VREG(n) state.regs[v.vidx + v_##n]
 
-#include "serialization.cpp"
 #include "gaussian.cpp"
 #include "counter.cpp"
 #include "envelope.cpp"
@@ -223,6 +222,11 @@ void DSP::write(uint8 addr, uint8 data) {
 
 void DSP::power() {
   memset(&state.regs, 0, sizeof state.regs);
+	
+	//zero 01-dec-2012 - gotta reset these sometime, somewhere
+	//zero 17-may-2014 - WHAT?
+	//state.echo_hist[0] = state.echo_hist[1] = 0;
+
   state.echo_hist_pos = 0;
   state.every_other_sample = false;
   state.kon = 0;

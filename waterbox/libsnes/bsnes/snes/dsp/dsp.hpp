@@ -10,7 +10,6 @@ struct DSP : public Processor {
   void power();
   void reset();
 
-  void serialize(serializer&);
   DSP();
   ~DSP();
 

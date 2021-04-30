@@ -1,58 +1,69 @@
-#pragma once
+#ifdef NALL_STRING_INTERNAL_HPP
 
 namespace nall {
 
-template<bool Insensitive>
-auto string::_compare(const char* target, uint capacity, const char* source, uint size) -> int {
-  if(Insensitive) return memory::icompare(target, capacity, source, size);
-  return memory::compare(target, capacity, source, size);
+char chrlower(char c) {
+  return (c >= 'A' && c <= 'Z') ? c + ('a' - 'A') : c;
 }
 
-//size() + 1 includes null-terminator; required to properly compare strings of differing lengths
-auto string::compare(string_view x, string_view y) -> int {
-  return memory::compare(x.data(), x.size() + 1, y.data(), y.size() + 1);
+char chrupper(char c) {
+  return (c >= 'a' && c <= 'z') ? c - ('a' - 'A') : c;
 }
 
-auto string::icompare(string_view x, string_view y) -> int {
-  return memory::icompare(x.data(), x.size() + 1, y.data(), y.size() + 1);
+int istrcmp(const char *str1, const char *str2) {
+  while(*str1) {
+    if(chrlower(*str1) != chrlower(*str2)) break;
+    str1++, str2++;
+  }
+  return (int)chrlower(*str1) - (int)chrlower(*str2);
 }
 
-auto string::compare(string_view source) const -> int {
-  return memory::compare(data(), size() + 1, source.data(), source.size() + 1);
+bool strbegin(const char *str, const char *key) {
+  int i, ssl = strlen(str), ksl = strlen(key);
+
+  if(ksl > ssl) return false;
+  return (!memcmp(str, key, ksl));
 }
 
-auto string::icompare(string_view source) const -> int {
-  return memory::icompare(data(), size() + 1, source.data(), source.size() + 1);
+bool istrbegin(const char *str, const char *key) {
+  int ssl = strlen(str), ksl = strlen(key);
+
+  if(ksl > ssl) return false;
+  for(int i = 0; i < ksl; i++) {
+    if(str[i] >= 'A' && str[i] <= 'Z') {
+      if(str[i] != key[i] && str[i]+0x20 != key[i])return false;
+    } else if(str[i] >= 'a' && str[i] <= 'z') {
+      if(str[i] != key[i] && str[i]-0x20 != key[i])return false;
+    } else {
+      if(str[i] != key[i])return false;
+    }
+  }
+  return true;
 }
 
-auto string::equals(string_view source) const -> bool {
-  if(size() != source.size()) return false;
-  return memory::compare(data(), source.data(), source.size()) == 0;
+bool strend(const char *str, const char *key) {
+  int ssl = strlen(str), ksl = strlen(key);
+
+  if(ksl > ssl) return false;
+  return (!memcmp(str + ssl - ksl, key, ksl));
 }
 
-auto string::iequals(string_view source) const -> bool {
-  if(size() != source.size()) return false;
-  return memory::icompare(data(), source.data(), source.size()) == 0;
-}
+bool istrend(const char *str, const char *key) {
+  int ssl = strlen(str), ksl = strlen(key);
 
-auto string::beginsWith(string_view source) const -> bool {
-  if(source.size() > size()) return false;
-  return memory::compare(data(), source.data(), source.size()) == 0;
-}
-
-auto string::ibeginsWith(string_view source) const -> bool {
-  if(source.size() > size()) return false;
-  return memory::icompare(data(), source.data(), source.size()) == 0;
-}
-
-auto string::endsWith(string_view source) const -> bool {
-  if(source.size() > size()) return false;
-  return memory::compare(data() + size() - source.size(), source.data(), source.size()) == 0;
-}
-
-auto string::iendsWith(string_view source) const -> bool {
-  if(source.size() > size()) return false;
-  return memory::icompare(data() + size() - source.size(), source.data(), source.size()) == 0;
+  if(ksl > ssl) return false;
+  for(int i = ssl - ksl, z = 0; i < ssl; i++, z++) {
+    if(str[i] >= 'A' && str[i] <= 'Z') {
+      if(str[i] != key[z] && str[i]+0x20 != key[z])return false;
+    } else if(str[i] >= 'a' && str[i] <= 'z') {
+      if(str[i] != key[z] && str[i]-0x20 != key[z])return false;
+    } else {
+      if(str[i] != key[z])return false;
+    }
+  }
+  return true;
 }
 
 }
+
+#endif

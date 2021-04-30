@@ -43,18 +43,6 @@ Memory::~Memory() {
 
 uint8 Bus::read(uint16 addr) {
   uint8 data = mmio[addr]->mmio_read(addr);
-
-  if(cheat.override[addr]) {
-    for(unsigned n = 0; n < cheat.size(); n++) {
-      if(cheat[n].addr == addr) {
-        if(cheat[n].comp > 255 || cheat[n].comp == data) {
-          data = cheat[n].data;
-          break;
-        }
-      }
-    }
-  }
-
   return data;
 }
 

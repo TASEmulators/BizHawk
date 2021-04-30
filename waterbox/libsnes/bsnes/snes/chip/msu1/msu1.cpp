@@ -5,8 +5,6 @@ namespace SNES {
 
 MSU1 msu1;
 
-#include "serialization.cpp"
-
 void MSU1::Enter() { msu1.enter(); }
 
 void MSU1::enter() {
@@ -52,7 +50,7 @@ void MSU1::init() {
 
 void MSU1::load() {
   if(datafile.open()) datafile.close();
-  datafile.open(interface->path(Cartridge::Slot::Base, "msu1.rom"), file::mode::read);
+  datafile.open(interface()->path(Cartridge::Slot::Base, "msu1.rom"), file::mode::read);
 }
 
 void MSU1::unload() {
@@ -65,7 +63,7 @@ void MSU1::power() {
 }
 
 void MSU1::reset() {
-  create(MSU1::Enter, 44100);
+  create(MSU1::Enter, 44100, 16384);
 
   mmio.data_offset  = 0;
   mmio.audio_offset = 0;
@@ -112,7 +110,7 @@ void MSU1::mmio_write(unsigned addr, uint8 data) {
   case 4: mmio.audio_track = (mmio.audio_track & 0xff00) | (data << 0);
   case 5: mmio.audio_track = (mmio.audio_track & 0x00ff) | (data << 8);
     if(audiofile.open()) audiofile.close();
-    if(audiofile.open(interface->path(Cartridge::Slot::Base, { "track-", (unsigned)mmio.audio_track, ".pcm" }), file::mode::read)) {
+    if(audiofile.open(interface()->path(Cartridge::Slot::Base, { "track-", (unsigned)mmio.audio_track, ".pcm" }), file::mode::read)) {
       uint32 header = audiofile.readm(4);
       if(header != 0x4d535531) {  //verify 'MSU1' header
         audiofile.close();

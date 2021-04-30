@@ -1,122 +1,192 @@
-#pragma once
+#ifndef NALL_VARINT_HPP
+#define NALL_VARINT_HPP
 
-#include <nall/primitives.hpp>
-#include <nall/serializer.hpp>
-#include <nall/stdint.hpp>
+#include <nall/bit.hpp>
+#include <nall/type_traits.hpp>
 
 namespace nall {
-
-struct varint {
-  virtual auto read() -> uint8_t = 0;
-  virtual auto write(uint8_t) -> void = 0;
-
-  auto readvu() -> uintmax {
-    uintmax data = 0, shift = 1;
-    while(true) {
-      uint8_t x = read();
-      data += (x & 0x7f) * shift;
-      if(x & 0x80) break;
-      shift <<= 7;
-      data += shift;
-    }
-    return data;
-  }
-
-  auto readvs() -> intmax {
-    uintmax data = readvu();
-    bool negate = data & 1;
-    data >>= 1;
-    if(negate) data = ~data;
-    return data;
-  }
-
-  auto writevu(uintmax data) -> void {
-    while(true) {
-      uint8_t x = data & 0x7f;
-      data >>= 7;
-      if(data == 0) return write(0x80 | x);
-      write(x);
-      data--;
-    }
-  }
-
-  auto writevs(intmax data) -> void {
-    bool negate = data < 0;
-    if(negate) data = ~data;
-    data = (data << 1) | negate;
-    writevu(data);
-  }
-};
-
-struct VariadicNatural {
-  inline VariadicNatural() : mask(~0ull) { assign(0); }
-  template<typename T> inline VariadicNatural(const T& value) : mask(~0ull) { assign(value); }
-
-  inline operator uint64_t() const { return data; }
-  template<typename T> inline auto& operator=(const T& value) { return assign(value); }
-
-  inline auto operator++(int) { auto value = data; assign(data + 1); return value; }
-  inline auto operator--(int) { auto value = data; assign(data - 1); return value; }
-
-  inline auto& operator++() { return assign(data + 1); }
-  inline auto& operator--() { return assign(data - 1); }
-
-  inline auto& operator &=(const uint64_t value) { return assign(data  & value); }
-  inline auto& operator |=(const uint64_t value) { return assign(data  | value); }
-  inline auto& operator ^=(const uint64_t value) { return assign(data  ^ value); }
-  inline auto& operator<<=(const uint64_t value) { return assign(data << value); }
-  inline auto& operator>>=(const uint64_t value) { return assign(data >> value); }
-  inline auto& operator +=(const uint64_t value) { return assign(data  + value); }
-  inline auto& operator -=(const uint64_t value) { return assign(data  - value); }
-  inline auto& operator *=(const uint64_t value) { return assign(data  * value); }
-  inline auto& operator /=(const uint64_t value) { return assign(data  / value); }
-  inline auto& operator %=(const uint64_t value) { return assign(data  % value); }
-
-  inline auto resize(uint bits) {
-    assert(bits <= 64);
-    mask = ~0ull >> (64 - bits);
-    data &= mask;
-  }
-
-  inline auto serialize(serializer& s) {
-    s(data);
-    s(mask);
-  }
-
-  struct Reference {
-    inline Reference(VariadicNatural& self, uint lo, uint hi) : self(self), Lo(lo), Hi(hi) {}
-
-    inline operator uint64_t() const {
-      const uint64_t RangeBits = Hi - Lo + 1;
-      const uint64_t RangeMask = (((1ull << RangeBits) - 1) << Lo) & self.mask;
-      return (self & RangeMask) >> Lo;
-    }
-
-    inline auto& operator=(const uint64_t value) {
-      const uint64_t RangeBits = Hi - Lo + 1;
-      const uint64_t RangeMask = (((1ull << RangeBits) - 1) << Lo) & self.mask;
-      self.data = (self.data & ~RangeMask) | ((value << Lo) & RangeMask);
-      return *this;
-    }
-
+  template<unsigned bits> class uint_t {
   private:
-    VariadicNatural& self;
-    const uint Lo;
-    const uint Hi;
+    typedef typename type_if<bits <= 8 * sizeof(unsigned), unsigned, uintmax_t>::type type_t;
+    type_t data;
+
+  public:
+    inline operator type_t() const { return data; }
+    inline type_t operator ++(int) { type_t r = data; data = uclip<bits>(data + 1); return r; }
+    inline type_t operator --(int) { type_t r = data; data = uclip<bits>(data - 1); return r; }
+    inline type_t operator ++() { return data = uclip<bits>(data + 1); }
+    inline type_t operator --() { return data = uclip<bits>(data - 1); }
+    inline type_t operator  =(const type_t i) { return data = uclip<bits>(i); }
+    inline type_t operator |=(const type_t i) { return data = uclip<bits>(data  | i); }
+    inline type_t operator ^=(const type_t i) { return data = uclip<bits>(data  ^ i); }
+    inline type_t operator &=(const type_t i) { return data = uclip<bits>(data  & i); }
+    inline type_t operator<<=(const type_t i) { return data = uclip<bits>(data << i); }
+    inline type_t operator>>=(const type_t i) { return data = uclip<bits>(data >> i); }
+    inline type_t operator +=(const type_t i) { return data = uclip<bits>(data  + i); }
+    inline type_t operator -=(const type_t i) { return data = uclip<bits>(data  - i); }
+    inline type_t operator *=(const type_t i) { return data = uclip<bits>(data  * i); }
+    inline type_t operator /=(const type_t i) { return data = uclip<bits>(data  / i); }
+    inline type_t operator %=(const type_t i) { return data = uclip<bits>(data  % i); }
+
+    inline uint_t() : data(0) {}
+    inline uint_t(const type_t i) : data(uclip<bits>(i)) {}
+
+    template<unsigned s> inline type_t operator=(const uint_t<s> &i) { return data = uclip<bits>((type_t)i); }
+    template<unsigned s> inline uint_t(const uint_t<s> &i) : data(uclip<bits>(i)) {}
   };
 
-  inline auto bits(uint lo, uint hi) -> Reference { return {*this, lo < hi ? lo : hi, hi > lo ? hi : lo}; }
-  inline auto bit(uint index) -> Reference { return {*this, index, index}; }
-  inline auto byte(uint index) -> Reference { return {*this, index * 8 + 0, index * 8 + 7}; }
+  template<unsigned bits> class int_t {
+  private:
+    typedef typename type_if<bits <= 8 * sizeof(signed), signed, intmax_t>::type type_t;
+    type_t data;
 
-private:
-  auto assign(uint64_t value) -> VariadicNatural& {
-    data = value & mask;
-    return *this;
-  }
+  public:
+    inline operator type_t() const { return data; }
+    inline type_t operator ++(int) { type_t r = data; data = sclip<bits>(data + 1); return r; }
+    inline type_t operator --(int) { type_t r = data; data = sclip<bits>(data - 1); return r; }
+    inline type_t operator ++() { return data = sclip<bits>(data + 1); }
+    inline type_t operator --() { return data = sclip<bits>(data - 1); }
+    inline type_t operator  =(const type_t i) { return data = sclip<bits>(i); }
+    inline type_t operator |=(const type_t i) { return data = sclip<bits>(data  | i); }
+    inline type_t operator ^=(const type_t i) { return data = sclip<bits>(data  ^ i); }
+    inline type_t operator &=(const type_t i) { return data = sclip<bits>(data  & i); }
+    inline type_t operator<<=(const type_t i) { return data = sclip<bits>(data << i); }
+    inline type_t operator>>=(const type_t i) { return data = sclip<bits>(data >> i); }
+    inline type_t operator +=(const type_t i) { return data = sclip<bits>(data  + i); }
+    inline type_t operator -=(const type_t i) { return data = sclip<bits>(data  - i); }
+    inline type_t operator *=(const type_t i) { return data = sclip<bits>(data  * i); }
+    inline type_t operator /=(const type_t i) { return data = sclip<bits>(data  / i); }
+    inline type_t operator %=(const type_t i) { return data = sclip<bits>(data  % i); }
 
-  uint64_t data;
-  uint64_t mask;
-};
+    inline int_t() : data(0) {}
+    inline int_t(const type_t i) : data(sclip<bits>(i)) {}
 
+    template<unsigned s> inline type_t operator=(const int_t<s> &i) { return data = sclip<bits>((type_t)i); }
+    template<unsigned s> inline int_t(const int_t<s> &i) : data(sclip<bits>(i)) {}
+  };
+
+  class varuint_t {
+  private:
+    unsigned data;
+    unsigned mask;
+
+  public:
+    inline operator unsigned() const { return data; }
+    inline unsigned operator ++(int) { unsigned r = data; data = (data + 1) & mask; return r; }
+    inline unsigned operator --(int) { unsigned r = data; data = (data - 1) & mask; return r; }
+    inline unsigned operator ++() { return data = (data + 1) & mask; }
+    inline unsigned operator --() { return data = (data - 1) & mask; }
+    inline unsigned operator  =(const unsigned i) { return data = (i) & mask; }
+    inline unsigned operator |=(const unsigned i) { return data = (data  | i) & mask; }
+    inline unsigned operator ^=(const unsigned i) { return data = (data  ^ i) & mask; }
+    inline unsigned operator &=(const unsigned i) { return data = (data  & i) & mask; }
+    inline unsigned operator<<=(const unsigned i) { return data = (data << i) & mask; }
+    inline unsigned operator>>=(const unsigned i) { return data = (data >> i) & mask; }
+    inline unsigned operator +=(const unsigned i) { return data = (data  + i) & mask; }
+    inline unsigned operator -=(const unsigned i) { return data = (data  - i) & mask; }
+    inline unsigned operator *=(const unsigned i) { return data = (data  * i) & mask; }
+    inline unsigned operator /=(const unsigned i) { return data = (data  / i) & mask; }
+    inline unsigned operator %=(const unsigned i) { return data = (data  % i) & mask; }
+
+    inline void bits(unsigned bits) { mask = (1U << (bits - 1)) + ((1U << (bits - 1)) - 1); data &= mask; }
+    inline varuint_t() : data(0), mask(~0U) {}
+    inline varuint_t(const unsigned i) : data(i), mask(~0U) {}
+  };
+
+  class varuintmax_t {
+  private:
+    uintmax_t data;
+    uintmax_t mask;
+
+  public:
+    inline operator uintmax_t() const { return data; }
+    inline uintmax_t operator ++(int) { uintmax_t r = data; data = (data + 1) & mask; return r; }
+    inline uintmax_t operator --(int) { uintmax_t r = data; data = (data - 1) & mask; return r; }
+    inline uintmax_t operator ++() { return data = (data + 1) & mask; }
+    inline uintmax_t operator --() { return data = (data - 1) & mask; }
+    inline uintmax_t operator  =(const uintmax_t i) { return data = (i) & mask; }
+    inline uintmax_t operator |=(const uintmax_t i) { return data = (data  | i) & mask; }
+    inline uintmax_t operator ^=(const uintmax_t i) { return data = (data  ^ i) & mask; }
+    inline uintmax_t operator &=(const uintmax_t i) { return data = (data  & i) & mask; }
+    inline uintmax_t operator<<=(const uintmax_t i) { return data = (data << i) & mask; }
+    inline uintmax_t operator>>=(const uintmax_t i) { return data = (data >> i) & mask; }
+    inline uintmax_t operator +=(const uintmax_t i) { return data = (data  + i) & mask; }
+    inline uintmax_t operator -=(const uintmax_t i) { return data = (data  - i) & mask; }
+    inline uintmax_t operator *=(const uintmax_t i) { return data = (data  * i) & mask; }
+    inline uintmax_t operator /=(const uintmax_t i) { return data = (data  / i) & mask; }
+    inline uintmax_t operator %=(const uintmax_t i) { return data = (data  % i) & mask; }
+
+    inline void bits(unsigned bits) { mask = (1ULL << (bits - 1)) + ((1ULL << (bits - 1)) - 1); data &= mask; }
+    inline varuintmax_t() : data(0), mask(~0ULL) {}
+    inline varuintmax_t(const uintmax_t i) : data(i), mask(~0ULL) {}
+  };
 }
+
+//typedefs
+  typedef nall::uint_t< 1> uint1_t;
+  typedef nall::uint_t< 2> uint2_t;
+  typedef nall::uint_t< 3> uint3_t;
+  typedef nall::uint_t< 4> uint4_t;
+  typedef nall::uint_t< 5> uint5_t;
+  typedef nall::uint_t< 6> uint6_t;
+  typedef nall::uint_t< 7> uint7_t;
+//typedef nall::uint_t< 8> uint8_t;
+  typedef nall::uint_t< 9> uint9_t;
+  typedef nall::uint_t<10> uint10_t;
+  typedef nall::uint_t<11> uint11_t;
+  typedef nall::uint_t<12> uint12_t;
+  typedef nall::uint_t<13> uint13_t;
+  typedef nall::uint_t<14> uint14_t;
+  typedef nall::uint_t<15> uint15_t;
+//typedef nall::uint_t<16> uint16_t;
+  typedef nall::uint_t<17> uint17_t;
+  typedef nall::uint_t<18> uint18_t;
+  typedef nall::uint_t<19> uint19_t;
+  typedef nall::uint_t<20> uint20_t;
+  typedef nall::uint_t<21> uint21_t;
+  typedef nall::uint_t<22> uint22_t;
+  typedef nall::uint_t<23> uint23_t;
+  typedef nall::uint_t<24> uint24_t;
+  typedef nall::uint_t<25> uint25_t;
+  typedef nall::uint_t<26> uint26_t;
+  typedef nall::uint_t<27> uint27_t;
+  typedef nall::uint_t<28> uint28_t;
+  typedef nall::uint_t<29> uint29_t;
+  typedef nall::uint_t<30> uint30_t;
+  typedef nall::uint_t<31> uint31_t;
+//typedef nall::uint_t<32> uint32_t;
+
+  typedef nall::int_t< 1> int1_t;
+  typedef nall::int_t< 2> int2_t;
+  typedef nall::int_t< 3> int3_t;
+  typedef nall::int_t< 4> int4_t;
+  typedef nall::int_t< 5> int5_t;
+  typedef nall::int_t< 6> int6_t;
+  typedef nall::int_t< 7> int7_t;
+//typedef nall::int_t< 8> int8_t;
+  typedef nall::int_t< 9> int9_t;
+  typedef nall::int_t<10> int10_t;
+  typedef nall::int_t<11> int11_t;
+  typedef nall::int_t<12> int12_t;
+  typedef nall::int_t<13> int13_t;
+  typedef nall::int_t<14> int14_t;
+  typedef nall::int_t<15> int15_t;
+//typedef nall::int_t<16> int16_t;
+  typedef nall::int_t<17> int17_t;
+  typedef nall::int_t<18> int18_t;
+  typedef nall::int_t<19> int19_t;
+  typedef nall::int_t<20> int20_t;
+  typedef nall::int_t<21> int21_t;
+  typedef nall::int_t<22> int22_t;
+  typedef nall::int_t<23> int23_t;
+  typedef nall::int_t<24> int24_t;
+  typedef nall::int_t<25> int25_t;
+  typedef nall::int_t<26> int26_t;
+  typedef nall::int_t<27> int27_t;
+  typedef nall::int_t<28> int28_t;
+  typedef nall::int_t<29> int29_t;
+  typedef nall::int_t<30> int30_t;
+  typedef nall::int_t<31> int31_t;
+//typedef nall::int_t<32> int32_t;
+
+#endif

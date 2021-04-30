@@ -5,7 +5,6 @@ namespace SNES {
 
 SPC7110 spc7110;
 
-#include "serialization.cpp"
 #include "decomp.cpp"
 
 const unsigned SPC7110::months[12] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
@@ -101,7 +100,7 @@ void SPC7110::set_data_adjust(unsigned addr)  { r4814 = addr; r4815 = addr >> 8;
 
 void SPC7110::update_time(int offset) {
   time_t rtc_time = (rtc[16] << 0) | (rtc[17] << 8) | (rtc[18] << 16) | (rtc[19] << 24);
-  time_t current_time = time(0) - offset;
+  time_t current_time = SNES::interface()->currentTime() - offset;
 
   //sizeof(time_t) is platform-dependent; though rtc[] needs to be platform-agnostic.
   //yet platforms with 32-bit signed time_t will overflow every ~68 years. handle this by
@@ -239,7 +238,9 @@ uint8 SPC7110::mmio_read(unsigned addr) {
         set_data_adjust(adjust + 1);
       }
 
-      uint8 data = cartridge.rom.read(datarom_addr(adjustaddr));
+      auto myaddr = datarom_addr(adjustaddr);
+      cdlInfo.set(eCDLog_AddrType_CARTROM, myaddr);
+      uint8 data = cartridge.rom.read(myaddr);
       if(!(r4818 & 2)) {
         unsigned increment = (r4818 & 1) ? data_increment() : 1;
         if(r4818 & 4) increment = (int16)increment;  //16-bit sign extend
@@ -268,7 +269,9 @@ uint8 SPC7110::mmio_read(unsigned addr) {
       unsigned adjust = data_adjust();
       if(r4818 & 8) adjust = (int16)adjust;  //16-bit sign extend
 
-      uint8 data = cartridge.rom.read(datarom_addr(addr + adjust));
+      auto myaddr = datarom_addr(addr + adjust);
+      cdlInfo.set(eCDLog_AddrType_CARTROM, myaddr);
+      uint8 data = cartridge.rom.read(myaddr);
       if((r4818 & 0x60) == 0x60) {
         if((r4818 & 16) == 0) {
           set_data_pointer(addr + adjust);
@@ -358,6 +361,12 @@ void SPC7110::mmio_write(unsigned addr, uint8 data) {
       unsigned index   = (r4804 << 2);
       unsigned length  = (r4809 + (r480a << 8));
       unsigned addr    = datarom_addr(table + index);
+
+      cdlInfo.set(eCDLog_AddrType_CARTROM, addr + 0);
+			cdlInfo.set(eCDLog_AddrType_CARTROM, addr + 1);
+			cdlInfo.set(eCDLog_AddrType_CARTROM, addr + 2);
+			cdlInfo.set(eCDLog_AddrType_CARTROM, addr + 3);
+
       unsigned mode    = (cartridge.rom.read(addr + 0));
       unsigned offset  = (cartridge.rom.read(addr + 1) << 16)
                        + (cartridge.rom.read(addr + 2) <<  8)
@@ -631,17 +640,38 @@ void SPC7110::mmio_write(unsigned addr, uint8 data) {
   }
 }
 
-SPC7110::SPC7110() {
+SPC7110::SPC7110() :
+	rtc(nullptr)
+{
+
 }
 
+SPC7110::~SPC7110()
+{
+	interface()->freeSharedMemory(rtc);
+}
+
+void SPC7110::initialize()
+{
+	rtc = (uint8*)interface()->allocSharedMemory("SPC7110_RTC", 20);
+}
 //============
 //SPC7110::MCU
 //============
 
 uint8 SPC7110::mcu_read(unsigned addr) {
-  if(addr <= 0xdfffff) return cartridge.rom.read(dx_offset + (addr & 0x0fffff));
-  if(addr <= 0xefffff) return cartridge.rom.read(ex_offset + (addr & 0x0fffff));
-  if(addr <= 0xffffff) return cartridge.rom.read(fx_offset + (addr & 0x0fffff));
+  if(addr <= 0xdfffff) {
+    cdlInfo.set(eCDLog_AddrType_CARTROM, dx_offset + (addr & 0x0fffff));
+    return cartridge.rom.read(dx_offset + (addr & 0x0fffff));
+  }
+  if(addr <= 0xefffff) {
+    cdlInfo.set(eCDLog_AddrType_CARTROM, ex_offset + (addr & 0x0fffff));
+    return cartridge.rom.read(ex_offset + (addr & 0x0fffff));
+  }
+  if(addr <= 0xffffff) {
+    cdlInfo.set(eCDLog_AddrType_CARTROM, fx_offset + (addr & 0x0fffff));
+    return cartridge.rom.read(fx_offset + (addr & 0x0fffff));
+  }
   return cpu.regs.mdr;
 }
 

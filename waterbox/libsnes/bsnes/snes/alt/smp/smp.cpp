@@ -81,68 +81,21 @@ void SMP::reset() {
   timer0.stage3_ticks = timer1.stage3_ticks = timer2.stage3_ticks = 0;
 }
 
-void SMP::serialize(serializer &s) {
-  Processor::serialize(s);
-
-  s.array(apuram, 64 * 1024);
-
-  s.integer(opcode_number);
-  s.integer(opcode_cycle);
-
-  s.integer(regs.pc);
-  s.integer(regs.sp);
-  s.integer(regs.a);
-  s.integer(regs.x);
-  s.integer(regs.y);
-
-  s.integer(regs.p.n);
-  s.integer(regs.p.v);
-  s.integer(regs.p.p);
-  s.integer(regs.p.b);
-  s.integer(regs.p.h);
-  s.integer(regs.p.i);
-  s.integer(regs.p.z);
-  s.integer(regs.p.c);
-
-  s.integer(rd);
-  s.integer(wr);
-  s.integer(dp);
-  s.integer(sp);
-  s.integer(ya);
-  s.integer(bit);
-
-  s.integer(status.iplrom_enable);
-
-  s.integer(status.dsp_addr);
-
-  s.integer(status.ram00f8);
-  s.integer(status.ram00f9);
-
-  s.integer(timer0.enable);
-  s.integer(timer0.target);
-  s.integer(timer0.stage1_ticks);
-  s.integer(timer0.stage2_ticks);
-  s.integer(timer0.stage3_ticks);
-
-  s.integer(timer1.enable);
-  s.integer(timer1.target);
-  s.integer(timer1.stage1_ticks);
-  s.integer(timer1.stage2_ticks);
-  s.integer(timer1.stage3_ticks);
-
-  s.integer(timer2.enable);
-  s.integer(timer2.target);
-
-  s.integer(timer2.stage1_ticks);
-  s.integer(timer2.stage2_ticks);
-  s.integer(timer2.stage3_ticks);
-}
-
-SMP::SMP() {
-  apuram = (uint8_t*) malloc(64 * 1024);
+SMP::SMP() :
+	apuram(nullptr)
+{
+  
 }
 
 SMP::~SMP() {
+	interface()->freeSharedMemory(apuram);
 }
+
+void SMP::initialize()
+{
+	apuram = (uint8*)interface()->allocSharedMemory("APURAM", 64 * 1024);
+}
+
+
 
 }

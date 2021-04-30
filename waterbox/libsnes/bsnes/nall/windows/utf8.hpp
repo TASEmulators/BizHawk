@@ -1,86 +1,86 @@
-#pragma once
+#ifndef NALL_UTF8_HPP
+#define NALL_UTF8_HPP
 
-using uint = unsigned;
+//UTF-8 <> UTF-16 conversion
+//used only for Win32; Linux, etc use UTF-8 internally
+
+#if defined(_WIN32)
+
+#undef UNICODE
+#undef _WIN32_WINNT
+#undef  NOMINMAX
+#define UNICODE
+#define _WIN32_WINNT 0x0501
+#define NOMINMAX
+#include <windows.h>
+#undef interface
 
 namespace nall {
   //UTF-8 to UTF-16
-  struct utf16_t {
-    utf16_t(const char* s = "") { operator=(s); }
-    ~utf16_t() { reset(); }
+  class utf16_t {
+  public:
+    operator wchar_t*() {
+      return buffer;
+    }
 
-    utf16_t(const utf16_t&) = delete;
-    auto operator=(const utf16_t&) -> utf16_t& = delete;
+    operator const wchar_t*() const {
+      return buffer;
+    }
 
-    auto operator=(const char* s) -> utf16_t& {
-      reset();
+    utf16_t(const char *s = "") {
       if(!s) s = "";
-      length = MultiByteToWideChar(CP_UTF8, 0, s, -1, nullptr, 0);
-      buffer = new wchar_t[length + 1];
+      unsigned length = MultiByteToWideChar(CP_UTF8, 0, s, -1, 0, 0);
+      buffer = new wchar_t[length + 1]();
       MultiByteToWideChar(CP_UTF8, 0, s, -1, buffer, length);
-      buffer[length] = 0;
-      return *this;
     }
 
-    operator wchar_t*() { return buffer; }
-    operator const wchar_t*() const { return buffer; }
-
-    auto reset() -> void {
+    ~utf16_t() {
       delete[] buffer;
-      length = 0;
     }
-
-    auto data() -> wchar_t* { return buffer; }
-    auto data() const -> const wchar_t* { return buffer; }
-
-    auto size() const -> uint { return length; }
 
   private:
-    wchar_t* buffer = nullptr;
-    uint length = 0;
+    wchar_t *buffer;
   };
 
   //UTF-16 to UTF-8
-  struct utf8_t {
-    utf8_t(const wchar_t* s = L"") { operator=(s); }
-    ~utf8_t() { reset(); }
+  class utf8_t {
+  public:
+    operator char*() {
+      return buffer;
+    }
+
+    operator const char*() const {
+      return buffer;
+    }
+
+    utf8_t(const wchar_t *s = L"") {
+      if(!s) s = L"";
+      unsigned length = WideCharToMultiByte(CP_UTF8, 0, s, -1, 0, 0, (const char*)0, (BOOL*)0);
+      buffer = new char[length + 1]();
+      WideCharToMultiByte(CP_UTF8, 0, s, -1, buffer, length, (const char*)0, (BOOL*)0);
+    }
+
+    ~utf8_t() {
+      delete[] buffer;
+    }
 
     utf8_t(const utf8_t&) = delete;
-    auto operator=(const utf8_t&) -> utf8_t& = delete;
-
-    auto operator=(const wchar_t* s) -> utf8_t& {
-      reset();
-      if(!s) s = L"";
-      length = WideCharToMultiByte(CP_UTF8, 0, s, -1, nullptr, 0, nullptr, nullptr);
-      buffer = new char[length + 1];
-      WideCharToMultiByte(CP_UTF8, 0, s, -1, buffer, length, nullptr, nullptr);
-      buffer[length] = 0;
-      return *this;
-    }
-
-    auto reset() -> void {
-      delete[] buffer;
-      length = 0;
-    }
-
-    operator char*() { return buffer; }
-    operator const char*() const { return buffer; }
-
-    auto data() -> char* { return buffer; }
-    auto data() const -> const char* { return buffer; }
-
-    auto size() const -> uint { return length; }
+    utf8_t& operator=(const utf8_t&) = delete;
 
   private:
-    char* buffer = nullptr;
-    uint length = 0;
+    char *buffer;
   };
 
-  inline auto utf8_arguments(int& argc, char**& argv) -> void {
-    wchar_t** wargv = CommandLineToArgvW(GetCommandLineW(), &argc);
-    argv = new char*[argc + 1]();
-    for(uint i = 0; i < argc; i++) {
-      argv[i] = new char[PATH_MAX];
+  inline void utf8_args(int &argc, char **&argv) {
+    wchar_t **wargv = CommandLineToArgvW(GetCommandLineW(), &argc);
+    argv = new char*[argc];
+    for(unsigned i = 0; i < argc; i++) {
+      argv[i] = new char[_MAX_PATH];
       strcpy(argv[i], nall::utf8_t(wargv[i]));
     }
   }
 }
+
+#endif  //if defined(_WIN32)
+
+#endif

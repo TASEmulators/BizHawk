@@ -3,11 +3,18 @@
 #include "table.cpp"
 #include "disassembler.cpp"
 
+uint8 CPU::op_fetch() {
+	cdlInfo.currFlags = eCDLog_Flags_ExecOperand;
+	uint8 opcode = op_read(r[PC]++);
+	cdlInfo.currFlags = eCDLog_Flags_CPUData;
+	return opcode;
+}
+
 void CPU::op_xx() {
 }
 
 void CPU::op_cb() {
-  uint8 opcode = op_read(r[PC]++);
+  uint8 opcode = op_fetch();
   (this->*opcode_table_cb[opcode])();
 }
 
@@ -18,7 +25,7 @@ template<unsigned x, unsigned y> void CPU::op_ld_r_r() {
 }
 
 template<unsigned x> void CPU::op_ld_r_n() {
-  r[x] = op_read(r[PC]++);
+  r[x] = op_fetch();
 }
 
 template<unsigned x> void CPU::op_ld_r_hl() {
@@ -30,7 +37,7 @@ template<unsigned x> void CPU::op_ld_hl_r() {
 }
 
 void CPU::op_ld_hl_n() {
-  op_write(r[HL], op_read(r[PC]++));
+  op_write(r[HL], op_fetch());
 }
 
 template<unsigned x> void CPU::op_ld_a_rr() {
@@ -38,8 +45,8 @@ template<unsigned x> void CPU::op_ld_a_rr() {
 }
 
 void CPU::op_ld_a_nn() {
-  uint8 lo = op_read(r[PC]++);
-  uint8 hi = op_read(r[PC]++);
+  uint8 lo = op_fetch();
+  uint8 hi = op_fetch();
   r[A] = op_read((hi << 8) | (lo << 0));
 }
 
@@ -48,17 +55,17 @@ template<unsigned x> void CPU::op_ld_rr_a() {
 }
 
 void CPU::op_ld_nn_a() {
-  uint8 lo = op_read(r[PC]++);
-  uint8 hi = op_read(r[PC]++);
+  uint8 lo = op_fetch();
+  uint8 hi = op_fetch();
   op_write((hi << 8) | (lo << 0), r[A]);
 }
 
 void CPU::op_ld_a_ffn() {
-  r[A] = op_read(0xff00 + op_read(r[PC]++));
+  r[A] = op_read(0xff00 + op_fetch());
 }
 
 void CPU::op_ld_ffn_a() {
-  op_write(0xff00 + op_read(r[PC]++), r[A]);
+  op_write(0xff00 + op_fetch(), r[A]);
 }
 
 void CPU::op_ld_a_ffc() {
@@ -92,13 +99,13 @@ void CPU::op_ldd_a_hl() {
 //16-bit load commands
 
 template<unsigned x> void CPU::op_ld_rr_nn() {
-  r[x]  = op_read(r[PC]++) << 0;
-  r[x] |= op_read(r[PC]++) << 8;
+  r[x]  = op_fetch() << 0;
+  r[x] |= op_fetch() << 8;
 }
 
 void CPU::op_ld_nn_sp() {
-  uint16 addr = op_read(r[PC]++) << 0;
-  addr |= op_read(r[PC]++) << 8;
+  uint16 addr = op_fetch() << 0;
+  addr |= op_fetch() << 8;
   op_write(addr + 0, r[SP] >> 0);
   op_write(addr + 1, r[SP] >> 8);
 }
@@ -132,7 +139,7 @@ void CPU::opi_add_a(uint8 x) {
 }
 
 template<unsigned x> void CPU::op_add_a_r() { opi_add_a(r[x]); }
-void CPU::op_add_a_n() { opi_add_a(op_read(r[PC]++)); }
+void CPU::op_add_a_n() { opi_add_a(op_fetch()); }
 void CPU::op_add_a_hl() { opi_add_a(op_read(r[HL])); }
 
 void CPU::opi_adc_a(uint8 x) {
@@ -146,7 +153,7 @@ void CPU::opi_adc_a(uint8 x) {
 }
 
 template<unsigned x> void CPU::op_adc_a_r() { opi_adc_a(r[x]); }
-void CPU::op_adc_a_n() { opi_adc_a(op_read(r[PC]++)); }
+void CPU::op_adc_a_n() { opi_adc_a(op_fetch()); }
 void CPU::op_adc_a_hl() { opi_adc_a(op_read(r[HL])); }
 
 void CPU::opi_sub_a(uint8 x) {
@@ -160,7 +167,7 @@ void CPU::opi_sub_a(uint8 x) {
 }
 
 template<unsigned x> void CPU::op_sub_a_r() { opi_sub_a(r[x]); }
-void CPU::op_sub_a_n() { opi_sub_a(op_read(r[PC]++)); }
+void CPU::op_sub_a_n() { opi_sub_a(op_fetch()); }
 void CPU::op_sub_a_hl() { opi_sub_a(op_read(r[HL])); }
 
 void CPU::opi_sbc_a(uint8 x) {
@@ -174,7 +181,7 @@ void CPU::opi_sbc_a(uint8 x) {
 }
 
 template<unsigned x> void CPU::op_sbc_a_r() { opi_sbc_a(r[x]); }
-void CPU::op_sbc_a_n() { opi_sbc_a(op_read(r[PC]++)); }
+void CPU::op_sbc_a_n() { opi_sbc_a(op_fetch()); }
 void CPU::op_sbc_a_hl() { opi_sbc_a(op_read(r[HL])); }
 
 void CPU::opi_and_a(uint8 x) {
@@ -186,7 +193,7 @@ void CPU::opi_and_a(uint8 x) {
 }
 
 template<unsigned x> void CPU::op_and_a_r() { opi_and_a(r[x]); }
-void CPU::op_and_a_n() { opi_and_a(op_read(r[PC]++)); }
+void CPU::op_and_a_n() { opi_and_a(op_fetch()); }
 void CPU::op_and_a_hl() { opi_and_a(op_read(r[HL])); }
 
 void CPU::opi_xor_a(uint8 x) {
@@ -198,7 +205,7 @@ void CPU::opi_xor_a(uint8 x) {
 }
 
 template<unsigned x> void CPU::op_xor_a_r() { opi_xor_a(r[x]); }
-void CPU::op_xor_a_n() { opi_xor_a(op_read(r[PC]++)); }
+void CPU::op_xor_a_n() { opi_xor_a(op_fetch()); }
 void CPU::op_xor_a_hl() { opi_xor_a(op_read(r[HL])); }
 
 void CPU::opi_or_a(uint8 x) {
@@ -210,7 +217,7 @@ void CPU::opi_or_a(uint8 x) {
 }
 
 template<unsigned x> void CPU::op_or_a_r() { opi_or_a(r[x]); }
-void CPU::op_or_a_n() { opi_or_a(op_read(r[PC]++)); }
+void CPU::op_or_a_n() { opi_or_a(op_fetch()); }
 void CPU::op_or_a_hl() { opi_or_a(op_read(r[HL])); }
 
 void CPU::opi_cp_a(uint8 x) {
@@ -223,7 +230,7 @@ void CPU::opi_cp_a(uint8 x) {
 }
 
 template<unsigned x> void CPU::op_cp_a_r() { opi_cp_a(r[x]); }
-void CPU::op_cp_a_n() { opi_cp_a(op_read(r[PC]++)); }
+void CPU::op_cp_a_n() { opi_cp_a(op_fetch()); }
 void CPU::op_cp_a_hl() { opi_cp_a(op_read(r[HL])); }
 
 template<unsigned x> void CPU::op_inc_r() {
@@ -305,7 +312,7 @@ template<unsigned x> void CPU::op_dec_rr() {
 void CPU::op_add_sp_n() {
   op_io();
   op_io();
-  signed n = (int8)op_read(r[PC]++);
+  signed n = (int8)op_fetch();
   r.f.z = 0;
   r.f.n = 0;
   r.f.h = ((r[SP] & 0x0f) + (n & 0x0f)) > 0x0f;
@@ -315,7 +322,7 @@ void CPU::op_add_sp_n() {
 
 void CPU::op_ld_hl_sp_n() {
   op_io();
-  signed n = (int8)op_read(r[PC]++);
+  signed n = (int8)op_fetch();
   r.f.z = 0;
   r.f.n = 0;
   r.f.h = ((r[SP] & 0x0f) + (n & 0x0f)) > 0x0f;
@@ -594,8 +601,8 @@ void CPU::op_ei() {
 //jump commands
 
 void CPU::op_jp_nn() {
-  uint8 lo = op_read(r[PC]++);
-  uint8 hi = op_read(r[PC]++);
+  uint8 lo = op_fetch();
+  uint8 hi = op_fetch();
   r[PC] = (hi << 8) | (lo << 0);
   op_io();
 }
@@ -605,8 +612,8 @@ void CPU::op_jp_hl() {
 }
 
 template<unsigned x, bool y> void CPU::op_jp_f_nn() {
-  uint8 lo = op_read(r[PC]++);
-  uint8 hi = op_read(r[PC]++);
+  uint8 lo = op_fetch();
+  uint8 hi = op_fetch();
   if(r.f[x] == y) {
     r[PC] = (hi << 8) | (lo << 0);
     op_io();
@@ -614,13 +621,13 @@ template<unsigned x, bool y> void CPU::op_jp_f_nn() {
 }
 
 void CPU::op_jr_n() {
-  int8 n = op_read(r[PC]++);
+  int8 n = op_fetch();
   r[PC] += n;
   op_io();
 }
 
 template<unsigned x, bool y> void CPU::op_jr_f_n() {
-  int8 n = op_read(r[PC]++);
+  int8 n = op_fetch();
   if(r.f[x] == y) {
     r[PC] += n;
     op_io();
@@ -628,8 +635,8 @@ template<unsigned x, bool y> void CPU::op_jr_f_n() {
 }
 
 void CPU::op_call_nn() {
-  uint8 lo = op_read(r[PC]++);
-  uint8 hi = op_read(r[PC]++);
+  uint8 lo = op_fetch();
+  uint8 hi = op_fetch();
   op_write(--r[SP], r[PC] >> 8);
   op_write(--r[SP], r[PC] >> 0);
   r[PC] = (hi << 8) | (lo << 0);
@@ -637,8 +644,8 @@ void CPU::op_call_nn() {
 }
 
 template<unsigned x, bool y> void CPU::op_call_f_nn() {
-  uint8 lo = op_read(r[PC]++);
-  uint8 hi = op_read(r[PC]++);
+  uint8 lo = op_fetch();
+  uint8 hi = op_fetch();
   if(r.f[x] == y) {
     op_write(--r[SP], r[PC] >> 8);
     op_write(--r[SP], r[PC] >> 0);

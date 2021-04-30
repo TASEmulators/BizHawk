@@ -2,7 +2,7 @@
 
 uint2 Gamepad::data() {
   if(counter >= 16) return 1;
-  uint2 result = interface->inputPoll(port, Input::Device::Joypad, 0, counter);
+  uint2 result = interface()->inputPoll(port, Input::Device::Joypad, 0, counter);
   if(latched == 0) counter++;
   return result;
 }

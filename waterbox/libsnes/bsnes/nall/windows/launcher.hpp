@@ -1,10 +1,11 @@
-#pragma once
+#ifndef NALL_WINDOWS_LAUNCHER_HPP
+#define NALL_WINDOWS_LAUNCHER_HPP
 
 namespace nall {
 
 //launch a new process and inject specified DLL into it
 
-auto launch(const char* applicationName, const char* libraryName, uint32 entryPoint) -> bool {
+bool launch(const char *applicationName, const char *libraryName, uint32_t entryPoint) {
   //if a launcher does not send at least one message, a wait cursor will appear
   PostThreadMessage(GetCurrentThreadId(), WM_USER, 0, 0);
   MSG msg;
@@ -21,19 +22,19 @@ auto launch(const char* applicationName, const char* libraryName, uint32 entryPo
   );
   if(result == false) return false;
 
-  uint8 entryData[1024], entryHook[1024] = {
+  uint8_t entryData[1024], entryHook[1024] = {
     0x68, 0x00, 0x00, 0x00, 0x00,  //push libraryName
     0xb8, 0x00, 0x00, 0x00, 0x00,  //mov eax,LoadLibraryW
     0xff, 0xd0,                    //call eax
     0xcd, 0x03,                    //int 3
   };
 
-  entryHook[1] = (uint8)((entryPoint + 14) >>  0);
-  entryHook[2] = (uint8)((entryPoint + 14) >>  8);
-  entryHook[3] = (uint8)((entryPoint + 14) >> 16);
-  entryHook[4] = (uint8)((entryPoint + 14) >> 24);
+  entryHook[1] = (uint8_t)((entryPoint + 14) >>  0);
+  entryHook[2] = (uint8_t)((entryPoint + 14) >>  8);
+  entryHook[3] = (uint8_t)((entryPoint + 14) >> 16);
+  entryHook[4] = (uint8_t)((entryPoint + 14) >> 24);
 
-  auto pLoadLibraryW = (uint32)GetProcAddress(GetModuleHandleW(L"kernel32"), "LoadLibraryW");
+  uint32_t pLoadLibraryW = (uint32_t)GetProcAddress(GetModuleHandleW(L"kernel32"), "LoadLibraryW");
   entryHook[6] = pLoadLibraryW >>  0;
   entryHook[7] = pLoadLibraryW >>  8;
   entryHook[8] = pLoadLibraryW >> 16;
@@ -89,3 +90,5 @@ auto launch(const char* applicationName, const char* libraryName, uint32 entryPo
 }
 
 }
+
+#endif

@@ -74,7 +74,6 @@ struct Sprite {
 
   bool on_scanline(SpriteItem&);
 
-  void serialize(serializer&);
   Sprite(PPU &self);
 
   PPU &self;

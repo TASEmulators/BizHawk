@@ -1,5 +1,8 @@
 struct CPU : public Processor, public CPUcore, public PPUcounter {
-  uint8 wram[128 * 1024];
+  uint8 *wram; //[128 * 1024];
+  
+	function<uint8 (unsigned)> read_wram;
+	function<void (unsigned, uint8)> write_wram;
 
   enum : bool { Threaded = true };
   array<Processor*> coprocessors;
@@ -21,9 +24,9 @@ struct CPU : public Processor, public CPUcore, public PPUcounter {
   void power();
   void reset();
 
-  void serialize(serializer&);
   CPU();
   ~CPU();
+	void initialize();
 
 privileged:
   #include "dma/dma.hpp"
@@ -134,6 +137,7 @@ privileged:
   static void Enter();
   void op_step();
 
+public:
   struct Debugger {
     hook<void (uint24)> op_exec;
     hook<void (uint24)> op_read;

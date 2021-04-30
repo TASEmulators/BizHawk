@@ -7,6 +7,9 @@ struct Interface {
   virtual bool inputPoll(unsigned id);
 
   virtual void message(const string &text);
+
+	virtual void* allocSharedMemory(const char* memtype, size_t amt, int initialByte = -1) = 0;
+	virtual void freeSharedMemory(void* ptr) = 0;
 };
 
 extern Interface *interface;

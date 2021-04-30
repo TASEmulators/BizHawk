@@ -4,6 +4,9 @@ void videoRefresh(const uint16_t *data);
 void audioSample(int16_t center, int16_t left, int16_t right);
 bool inputPoll(unsigned id);
 
+void* allocSharedMemory(const char* memtype, size_t amt, int initialByte = -1);
+void freeSharedMemory(void* ptr);
+
 struct Packet {
   uint8 data[16];
   uint8& operator[](unsigned addr) { return data[addr & 15]; }

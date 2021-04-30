@@ -14,7 +14,6 @@ public:
   void unload();
   void power();
   void reset();
-  void serialize(serializer&);
 
 private:
   unsigned clockmode;

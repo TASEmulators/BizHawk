@@ -18,5 +18,4 @@ struct Wave {
   void write(unsigned r, uint8 data);
   void write_pattern(unsigned p, uint8 data);
   void power();
-  void serialize(serializer&);
 };

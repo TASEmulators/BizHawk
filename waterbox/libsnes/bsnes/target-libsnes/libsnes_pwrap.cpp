@@ -5,7 +5,7 @@
 //brk: core->frontend: "core break" the emulation process has suspended. the frontend is free to do whatever it wishes.
 
 #define LIBSNES_IMPORT
-#include "sfc/sfc.hpp"
+#include "snes/snes.hpp"
 #include "libsnes.hpp"
 #include <emulibc.h>
 
@@ -18,7 +18,7 @@
 #include <string>
 #include <vector>
 
-extern SuperFamicom::Interface *iface;
+extern SNES::Interface *iface;
 
 typedef uint8 u8;
 typedef uint16 u16;
@@ -153,7 +153,7 @@ struct CommStruct
 	int32 port, device, index, slot;
 	int32 width, height;
 	int32 scanline;
-	SuperFamicom::ID::Device inports[2];
+	SNES::Input::Device inports[2];
 
 	int32 padding2;
 
@@ -302,9 +302,9 @@ void* snes_allocSharedMemory(const char* memtype, size_t amt)
 	comm.str = (char*)memtype;
 	comm.size = amt;
 	comm.ptr = ret;
-
+	
 	BREAK(eMessage_SIG_allocSharedMemory);
-
+	
 	return comm.ptr;
 }
 
@@ -312,7 +312,7 @@ void snes_freeSharedMemory(void* ptr)
 {
 	//its important that this happen before the message marshaling because allocation/free attempts can happen before the marshaling is setup (or at shutdown time, in case of errors?)
 	//if(!running) return;
-
+	
 	if (!ptr) return;
 
 	comm.ptr = ptr;
@@ -410,14 +410,11 @@ void CMD_LoadCartridgeSGB()
 
 void CMD_init()
 {
-	SuperFamicom::configuration.hacks.entropy = comm.value ? "Low" : "None";// config.random = !!comm.value;
+	SNES::config.random = !!comm.value;
 	snes_init();
 
-	fprintf(stderr, "comm inports[0]: %d, comm inports[1]: %d\n", *(uint*) &comm.inports[0], *(uint*) &comm.inports[1]);
-	SuperFamicom::controllerPort1.connect(*(uint*) &comm.inports[0]);
-	SuperFamicom::controllerPort2.connect(*(uint*) &comm.inports[1]);
-	// SuperFamicom::input.connect(SuperFamicom::Controller::Port1, comm.inports[0]);
-	// SuperFamicom::input.connect(SuperFamicom::Controller::Port2, comm.inports[1]);
+	SNES::input.connect(SNES::Controller::Port1, comm.inports[0]);
+	SNES::input.connect(SNES::Controller::Port2, comm.inports[1]);
 }
 
 static void CMD_Run()
@@ -427,23 +424,20 @@ static void CMD_Run()
 	//we could avoid this if we saved the current thread before jumping back to co_control, instead of always jumping back to co_emu
 	//in effect, we're scrambling the scheduler
 	//EDIT - well, we changed that, but.. we still want this probably, for debugging and stuff
-	// for (;;)
-	// {
-		// using namespace SuperFamicom;
-		SuperFamicom::system.run();
-		// SuperFamicom::scheduler.desynchronize();// = SuperFamicom::Scheduler::SynchronizeMode::None;
-		// SuperFamicom::scheduler.clearExitReason();
-		// SuperFamicom::scheduler.enter();
-		// if (SuperFamicom::scheduler.event == SuperFamicom::Scheduler::Event::Frame)
-		// {
-			// SuperFamicom::System
-			// SuperFamicom::System::frameEvent(SuperFamicom::system);// SuperFamicom::video.update();
-			// break;
-		// }
+	for (;;)
+	{
+		SNES::scheduler.sync = SNES::Scheduler::SynchronizeMode::None;
+		SNES::scheduler.clearExitReason();
+		SNES::scheduler.enter();
+		if (SNES::scheduler.exit_reason() == SNES::Scheduler::ExitReason::FrameEvent)
+		{
+			SNES::video.update();
+			break;
+		}
 		//not used yet
-		// if (SuperFamicom::scheduler.exit_reason() == SuperFamicom::Scheduler::ExitReason::DebuggerEvent)
-			// break;
-	// }
+		if (SNES::scheduler.exit_reason() == SNES::Scheduler::ExitReason::DebuggerEvent)
+			break;
+	}
 
 	do_SIG_audio_flush();
 }
@@ -468,29 +462,28 @@ void QUERY_GetMemoryIdName() {
 	comm.str = (char* )snes_get_memory_id_name(comm.id);
 }
 void QUERY_state_hook_exec() {
-	// SuperFamicom::cpu.debugger.op_exec = comm.value ? debug_op_exec : hook<void(uint24)>();
+	SNES::cpu.debugger.op_exec = comm.value ? debug_op_exec : hook<void(uint24)>();
 }
 void QUERY_state_hook_read() {
-	// SuperFamicom::cpu.debugger.op_read = comm.value ? debug_op_read : hook<void(uint24)>();
+	SNES::cpu.debugger.op_read = comm.value ? debug_op_read : hook<void(uint24)>();
 }
 void QUERY_state_hook_write() {
-	// SuperFamicom::cpu.debugger.op_write = comm.value ? debug_op_write : hook<void(uint24, uint8)>();
+	SNES::cpu.debugger.op_write = comm.value ? debug_op_write : hook<void(uint24, uint8)>();
 }
 void QUERY_state_hook_nmi() {
-	// SuperFamicom::cpu.debugger.op_nmi = comm.value ? debug_op_nmi : hook<void()>();
+	SNES::cpu.debugger.op_nmi = comm.value ? debug_op_nmi : hook<void()>();
 }
 void QUERY_state_hook_irq() {
-	// SuperFamicom::cpu.debugger.op_irq = comm.value ? debug_op_irq : hook<void()>();
+	SNES::cpu.debugger.op_irq = comm.value ? debug_op_irq : hook<void()>();
 }
 void QUERY_state_hook_exec_smp() {
-	// SuperFamicom::smp.debugger.op_exec = comm.value ? debug_op_exec_smp : hook<void(uint24)>();
+	SNES::smp.debugger.op_exec = comm.value ? debug_op_exec_smp : hook<void(uint24)>();
 }
 void QUERY_state_hook_read_smp() {
-	// SuperFamicom::smp.debugger.op_read = comm.value ? debug_op_read_smp : hook<void(uint24)>();
+	SNES::smp.debugger.op_read = comm.value ? debug_op_read_smp : hook<void(uint24)>();
 }
 void QUERY_state_hook_write_smp() {
-	// SuperFamicom::smp.deb
-	// SuperFamicom::smp.debugger.op_write = comm.value ? debug_op_write_smp : hook<void(uint24, uint8)>();
+	SNES::smp.debugger.op_write = comm.value ? debug_op_write_smp : hook<void(uint24, uint8)>();
 }
 void QUERY_state_enable_trace() {
 	snes_set_trace_callback(comm.value, snes_trace);
@@ -524,26 +517,25 @@ void QUERY_peek_logical_register() {
 	comm.value = snes_peek_logical_register(comm.id);
 }
 void QUERY_peek_cpu_regs() {
-	// comm.cpuregs.pc = SuperFamicom::cpu.p
-	// comm.cpuregs.pc = (u32)SuperFamicom::cpu.regs.pc;
-	// comm.cpuregs.a = SuperFamicom::cpu.regs.a;
-	// comm.cpuregs.x = SuperFamicom::cpu.regs.x;
-	// comm.cpuregs.y = SuperFamicom::cpu.regs.y;
-	// comm.cpuregs.s = SuperFamicom::cpu.regs.s;
-	// comm.cpuregs.d = SuperFamicom::cpu.regs.d;
-	// comm.cpuregs.db = SuperFamicom::cpu.regs.db;
-	// comm.cpuregs.vector = SuperFamicom::cpu.regs.vector;
-	// comm.cpuregs.p = SuperFamicom::cpu.regs.p;
+	comm.cpuregs.pc = (u32)SNES::cpu.regs.pc;
+	comm.cpuregs.a = SNES::cpu.regs.a;
+	comm.cpuregs.x = SNES::cpu.regs.x;
+	comm.cpuregs.y = SNES::cpu.regs.y;
+	comm.cpuregs.s = SNES::cpu.regs.s;
+	comm.cpuregs.d = SNES::cpu.regs.d;
+	comm.cpuregs.db = SNES::cpu.regs.db;
+	comm.cpuregs.vector = SNES::cpu.regs.vector;
+	comm.cpuregs.p = SNES::cpu.regs.p;
 	comm.cpuregs.nothing = 0;
 	comm.cpuregs.nothing2 = 0;
-	comm.cpuregs.v = SuperFamicom::cpu.vcounter();
-	comm.cpuregs.h = SuperFamicom::cpu.hdot();
+	comm.cpuregs.v = SNES::cpu.vcounter();
+	comm.cpuregs.h = SNES::cpu.hdot();
 }
 void QUERY_peek_set_cdl() {
 	for (int i = 0; i<16; i++)
 	{
-		// cdlInfo.blocks[i] = (uint8*)comm.cdl_ptr[i];
-		// cdlInfo.blockSizes[i] = comm.cdl_size[i];
+		cdlInfo.blocks[i] = (uint8*)comm.cdl_ptr[i];
+		cdlInfo.blockSizes[i] = comm.cdl_size[i];
 	}
 }
 
@@ -700,8 +692,7 @@ EXPORT void SetBuffer(int id, void* ptr, int32 size)
 
 EXPORT void PostLoadState()
 {
-	// SuperFamicom::ppu.
-	// SuperFamicom::ppu.flush_tiledata_cache();
+	SNES::ppu.flush_tiledata_cache();
 }
 
 int main()

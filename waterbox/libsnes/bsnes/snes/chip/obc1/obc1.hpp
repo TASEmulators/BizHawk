@@ -9,8 +9,6 @@ public:
   uint8 read(unsigned addr);
   void write(unsigned addr, uint8 data);
 
-  void serialize(serializer&);
-
 private:
   uint8 ram_read(unsigned addr);
   void ram_write(unsigned addr, uint8 data);

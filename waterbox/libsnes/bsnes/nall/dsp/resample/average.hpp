@@ -50,7 +50,7 @@ void ResampleAverage::sample() {
 
 void ResampleAverage::sampleLinear() {
   while(fraction <= 1.0) {
-    real channel[dsp.settings.channels];
+    std::vector<real> channel(dsp.settings.channels);
 
     for(unsigned n = 0; n < dsp.settings.channels; n++) {
       real a = dsp.buffer.read(n, -1);
@@ -61,7 +61,7 @@ void ResampleAverage::sampleLinear() {
       channel[n] = a * (1.0 - mu) + b * mu;
     }
 
-    dsp.write(channel);
+    dsp.write(channel.data());
     fraction += step;
   }
 

@@ -5,7 +5,6 @@ namespace SNES {
 
 SA1 sa1;
 
-#include "serialization.cpp"
 #include "bus/bus.cpp"
 #include "dma/dma.cpp"
 #include "memory/memory.cpp"
@@ -131,7 +130,7 @@ void SA1::power() {
 }
 
 void SA1::reset() {
-  create(SA1::Enter, system.cpu_frequency());
+  create(SA1::Enter, system.cpu_frequency(), 8192);
 
   cpubwram.dma = false;
   for(unsigned addr = 0; addr < iram.size(); addr++) {

@@ -35,7 +35,6 @@ class Screen {
   alwaysinline uint16 get_pixel_sub(unsigned x);
   void render();
 
-  void serialize(serializer&);
   Screen(PPU &self);
   ~Screen();
 

@@ -1,33 +1,44 @@
+alwaysinline uint8_t op_readpcfirst() {
+  return op_read((regs.pc.b << 16) + regs.pc.w++, (eCDLog_Flags)(eCDLog_Flags_ExecFirst | (regs.p & 0x30)));
+}
+
 alwaysinline uint8_t op_readpc() {
-  return op_read((regs.pc.b << 16) + regs.pc.w++);
+	return op_read((regs.pc.b << 16) + regs.pc.w++, eCDLog_Flags_ExecOperand);
 }
 
 alwaysinline uint8_t op_readstack() {
+	cdlInfo.currFlags = eCDLog_Flags_CPUData;
   regs.e ? regs.s.l++ : regs.s.w++;
   return op_read(regs.s.w);
 }
 
 alwaysinline uint8_t op_readstackn() {
+	cdlInfo.currFlags = eCDLog_Flags_CPUData;
   return op_read(++regs.s.w);
 }
 
 alwaysinline uint8_t op_readaddr(uint32_t addr) {
+	cdlInfo.currFlags = eCDLog_Flags_CPUData;
   return op_read(addr & 0xffff);
 }
 
 alwaysinline uint8_t op_readlong(uint32_t addr) {
+	cdlInfo.currFlags = eCDLog_Flags_CPUData;
   return op_read(addr & 0xffffff);
 }
 
 alwaysinline uint8_t op_readdbr(uint32_t addr) {
+	cdlInfo.currFlags = eCDLog_Flags_CPUData;
   return op_read(((regs.db << 16) + addr) & 0xffffff);
 }
 
 alwaysinline uint8_t op_readpbr(uint32_t addr) {
+	cdlInfo.currFlags = eCDLog_Flags_CPUData;
   return op_read((regs.pc.b << 16) + (addr & 0xffff));
 }
 
 alwaysinline uint8_t op_readdp(uint32_t addr) {
+	cdlInfo.currFlags = eCDLog_Flags_CPUData;
   if(regs.e && regs.d.l == 0x00) {
     return op_read((regs.d & 0xff00) + ((regs.d + (addr & 0xffff)) & 0xff));
   } else {
@@ -36,6 +47,7 @@ alwaysinline uint8_t op_readdp(uint32_t addr) {
 }
 
 alwaysinline uint8_t op_readsp(uint32_t addr) {
+	cdlInfo.currFlags = eCDLog_Flags_CPUData;
   return op_read((regs.s + (addr & 0xffff)) & 0xffff);
 }
 
