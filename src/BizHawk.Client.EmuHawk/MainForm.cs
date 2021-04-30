@@ -4737,6 +4737,11 @@ namespace BizHawk.Client.EmuHawk
 			LoadRom(args[0]);
 		}
 
+		private void AIToolsMenu_Click(object sender, EventArgs e)
+		{
+			Tools.Load<AITools>();
+		}
+
 		public IQuickBmpFile QuickBmpFile { get; } = new QuickBmpFile();
 	}
 }
