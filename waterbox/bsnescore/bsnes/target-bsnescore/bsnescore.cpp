@@ -22,7 +22,7 @@ struct fInterface : public SuperFamicom::Interface {
   snes_audio_sample_t paudio_sample;
   snes_input_poll_t pinput_poll;
   snes_input_state_t pinput_state;
-  snes_input_notify_t pinput_notify;
+  snes_no_lag_t pno_lag;
   snes_path_request_t ppath_request;
 	snes_allocSharedMemory_t pallocSharedMemory;
 	snes_freeSharedMemory_t pfreeSharedMemory;
@@ -30,8 +30,6 @@ struct fInterface : public SuperFamicom::Interface {
   string basename;
   uint32_t *buffer;
   uint32_t *palette;
-
-  Cartridge cart;
 
 	//zero 11-sep-2012
 	time_t randomSeed() { return 0; }
@@ -52,10 +50,6 @@ struct fInterface : public SuperFamicom::Interface {
 	{
 		if(pScanlineStart) pScanlineStart((int)line);
 	}
-
-  void inputNotify(int index) {
-    if (pinput_notify) pinput_notify(index);
-  }
 
   void message(const string &text) {
 		messages.push(text);
@@ -100,7 +94,7 @@ struct fInterface : public SuperFamicom::Interface {
 			paudio_sample(0),
 			pinput_poll(0),
 			pinput_state(0),
-			pinput_notify(0),
+			pno_lag(0),
 			ppath_request(0),
 			pScanlineStart(0),
 			pallocSharedMemory(0),
@@ -180,14 +174,6 @@ void snes_set_video_refresh(snes_video_refresh_t video_refresh) {
   iface->pvideo_refresh = video_refresh;
 }
 
-void snes_set_color_lut(uint32_t * colors) {
-	fprintf(stderr, "snes colors were initialized, hopefully to values\n");
-  for (int i = 0; i < 16 * 32768; i++) {
-		// fprintf(stderr, "colors[%d]: %08X\n", i, colors[i]);
-    // iface->palette[i] = colors[i];
-	}
-}
-
 void snes_set_audio_sample(snes_audio_sample_t audio_sample) {
   iface->paudio_sample = audio_sample;
 }
@@ -200,8 +186,8 @@ void snes_set_input_state(snes_input_state_t input_state) {
   iface->pinput_state = input_state;
 }
 
-void snes_set_input_notify(snes_input_notify_t input_notify) {
-  iface->pinput_notify = input_notify;
+void snes_set_no_lag(snes_no_lag_t no_lag) {
+  iface->pno_lag = no_lag;
 }
 
 void snes_set_path_request(snes_path_request_t path_request)
@@ -215,18 +201,12 @@ void snes_set_controller_port_device(bool port, unsigned device) {
 	} else {
 		SuperFamicom::controllerPort2.connect(device);
 	}
-  // SuperFamicom::input.connect(port, (SuperFamicom::ID::Device)device);
 }
 
 void snes_set_cartridge_basename(const char *basename) {
   iface->basename = basename;
 }
 
-template<typename T> inline void reconstruct(T* t) {
-	/*t->~T();
-	memset(t,0,sizeof(*t));
-	new(t) T();*/
-}
 
 void snes_init(void) {
 
@@ -234,62 +214,23 @@ void snes_init(void) {
 	//force everything to get initialized, even though it probably already is
 	SuperFamicom::interface();
 
-	//zero 01-sep-2014 - this is too slow. made rewind totally boring. made other edits to firmware chips to preserve their roms instead
-	//zero 22-may-2014 - why not this too, for the sake of completeness?
-	// reconstruct(&SuperFamicom::cartridge);
-
-	//zero 01-dec-2012 - due to systematic variable initialization fails in bsnes components, these reconstructions are necessary,
-	//and the previous comment here which called this paranoid has been removed.
-  reconstruct(&SuperFamicom::icd);
-  // reconstruct(&SuperFamicom::nss);
-  reconstruct(&SuperFamicom::superfx);
-  reconstruct(&SuperFamicom::sa1);
-  reconstruct(&SuperFamicom::necdsp);
-  reconstruct(&SuperFamicom::hitachidsp);
-  reconstruct(&SuperFamicom::armdsp);
-  // reconstruct(&SuperFamicom::bsxsatellaview);
-  // reconstruct(&SuperFamicom::bsxcartridge);
-  // reconstruct(&SuperFamicom::bsxflash);
-  // reconstruct(&SuperFamicom::sharprtc); SuperFamicom::sharprtc.initialize();
-  reconstruct(&SuperFamicom::sdd1);
-  // reconstruct(&SuperFamicom::spc7110); SuperFamicom::spc7110.power();// .initialize();
-  reconstruct(&SuperFamicom::obc1);
-  reconstruct(&SuperFamicom::msu1);
-  // reconstruct(&SuperFamicom::link);
-  // reconstruct(&SuperFamicom::video);
-  // reconstruct(&SuperFamicom::audio);
-
-	//zero 01-dec-2012 - forgot to do all these. massive desync chaos!
-	//remove these to make it easier to find initialization fails in the component power-ons / constructors / etc.
-	//or just forget about it. this snes_init gets called paranoidly frequently by bizhawk, so things should stay zeroed correctly
-	// reconstruct(&SuperFamicom::cpu); SuperFamicom::cpu.load();
-	reconstruct(&SuperFamicom::smp); //SuperFamicom::smp.load();
-	reconstruct(&SuperFamicom::dsp);
-	reconstruct(&SuperFamicom::ppu);
-	// SuperFamicom::ppu.load();
-  // SuperFamicom::system.load(emulator);
-
-  //zero 26-aug-2013 - yup. still more
-  // reconstruct(&GameBoy::cpu); GameBoy::cpu.initialize();
+	// needed in order to get audio sync working. should probably figure out what exactly this does
+	Emulator::audio.setFrequency(32040.);
 }
 
 void snes_term(void) {
 	emulator->unload();
-  // SuperFamicom::system.unload();
 }
 
 void snes_power(void) {
-	// emulator->power();
-  SuperFamicom::system.power(false);
+	emulator->power();
 }
 
 void snes_reset(void) {
-	// emulator = new SuperFamicom::Interface;
-  SuperFamicom::system.power(true);
+	emulator->reset();
 }
 
 void snes_run(void) {
-	// fprintf(stderr, "snes run was called\n");
 	if (iface->pinput_poll) iface->pinput_poll();
 
 	// TODO: there should be one input_poll call per frame which updates the actual controller pressed states
@@ -297,7 +238,6 @@ void snes_run(void) {
 	// so the current pinput_state which ACTUALLY POLLS shouldn't be used in its place
 
 	emulator->run();
-  // SuperFamicom::system.run();
 }
 
 //zero 21-sep-2012
@@ -506,7 +446,7 @@ void snes_unload_cartridge(void) {
 }
 
 bool snes_get_region(void) {
-  return SuperFamicom::system.region() == SuperFamicom::System::Region::NTSC ? 0 : 1;
+	return SuperFamicom::Region::PAL();
 }
 
 char snes_get_mapper(void) {

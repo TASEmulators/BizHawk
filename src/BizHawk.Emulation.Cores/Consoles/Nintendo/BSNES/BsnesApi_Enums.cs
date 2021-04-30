@@ -49,7 +49,7 @@
 			eMessage_SIG_video_refresh,
 			eMessage_SIG_input_poll,
 			eMessage_SIG_input_state,
-			eMessage_SIG_input_notify,
+			eMessage_SIG_no_lag,
 			eMessage_SIG_audio_flush,
 			eMessage_SIG_path_request,
 			eMessage_SIG_trace_callback,

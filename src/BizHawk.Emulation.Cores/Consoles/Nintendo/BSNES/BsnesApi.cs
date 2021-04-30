@@ -181,7 +181,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		private snes_video_refresh_t video_refresh;
 		private snes_input_poll_t input_poll;
 		private snes_input_state_t input_state;
-		private snes_input_notify_t input_notify;
+		private snes_no_lag_t no_lag;
 		private snes_audio_sample_t audio_sample;
 		private snes_scanlineStart_t scanlineStart;
 		private snes_path_request_t pathRequest;
@@ -191,13 +191,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		// not used??
 		public void QUERY_set_input_poll(snes_input_poll_t input_poll) { this.input_poll = input_poll; }
 		public void QUERY_set_input_state(snes_input_state_t input_state) { this.input_state = input_state; }
-		public void QUERY_set_input_notify(snes_input_notify_t input_notify) { this.input_notify = input_notify; }
+		public void QUERY_set_no_lag(snes_no_lag_t no_lag) { this.no_lag = no_lag; }
 		public void QUERY_set_path_request(snes_path_request_t pathRequest) { this.pathRequest = pathRequest; }
 
 		public delegate void snes_video_refresh_t(int* data, int width, int height);
 		public delegate void snes_input_poll_t();
 		public delegate short snes_input_state_t(int port, int device, int index, int id);
-		public delegate void snes_input_notify_t(int index);
+		public delegate void snes_no_lag_t();
 		public delegate void snes_audio_sample_t(ushort left, ushort right);
 		public delegate void snes_scanlineStart_t(int line);
 		public delegate string snes_path_request_t(int slot, string hint);

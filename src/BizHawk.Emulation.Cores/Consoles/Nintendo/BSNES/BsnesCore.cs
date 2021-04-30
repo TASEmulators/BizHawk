@@ -73,7 +73,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			_videocb = snes_video_refresh;
 			_inputpollcb = snes_input_poll;
 			_inputstatecb = snes_input_state;
-			_inputnotifycb = snes_input_notify;
+			_nolagcb = snes_no_lag;
 			_scanlineStartCb = snes_scanlineStart;
 			_tracecb = snes_trace;
 			_soundcb = snes_audio_sample;
@@ -85,7 +85,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				_videocb,
 				_inputpollcb,
 				_inputstatecb,
-				_inputnotifycb,
+				_nolagcb,
 				_scanlineStartCb,
 				_tracecb,
 				_soundcb,
@@ -201,7 +201,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			Api.QUERY_set_video_refresh(_videocb);
 			Api.QUERY_set_input_poll(_inputpollcb);
 			Api.QUERY_set_input_state(_inputstatecb);
-			Api.QUERY_set_input_notify(_inputnotifycb);
+			Api.QUERY_set_no_lag(_nolagcb);
 			Api.QUERY_set_audio_sample(_soundcb);
 			Api.Seal();
 			// RefreshPalette();
@@ -210,7 +210,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		private readonly BsnesApi.snes_video_refresh_t _videocb;
 		private readonly BsnesApi.snes_input_poll_t _inputpollcb;
 		private readonly BsnesApi.snes_input_state_t _inputstatecb;
-		private readonly BsnesApi.snes_input_notify_t _inputnotifycb;
+		private readonly BsnesApi.snes_no_lag_t _nolagcb;
 		private readonly BsnesApi.snes_path_request_t _pathrequestcb;
 
 		internal CoreComm CoreComm { get; }
@@ -491,16 +491,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			return _controllers.CoreInputState(port, index, id);
 		}
 
-		private void snes_input_notify(int index)
+		private void snes_no_lag()
 		{
-			// gets called with the following numbers:
-			// 4xxx : lag frame related
-			// 0: signifies latch bit going to 0.  should be reported as oninputpoll
-			// 1: signifies latch bit going to 1.  should be reported as oninputpoll
-			if (index >= 0x4000)
-			{
-				IsLagFrame = false;
-			}
+			// gets called whenever there was input polled, aka no lag
+			IsLagFrame = false;
 		}
 
 		private void snes_video_refresh(int* data, int width, int height)

@@ -87,7 +87,7 @@ typedef void (*snes_video_refresh_t)(const uint32_t *data, unsigned width, unsig
 typedef void (*snes_audio_sample_t)(uint16_t left, uint16_t right);
 typedef void (*snes_input_poll_t)(void);
 typedef short (*snes_input_state_t)(unsigned port, unsigned device, unsigned index, unsigned id);
-typedef void (*snes_input_notify_t)(int index);
+typedef void (*snes_no_lag_t)(void);
 typedef void (*snes_trace_t)(uint32_t which, const char *msg);
 typedef void* (*snes_allocSharedMemory_t)(const char* memtype, size_t amt);
 typedef void (*snes_freeSharedMemory_t)(void* ptr);
@@ -100,7 +100,7 @@ void snes_set_video_refresh(snes_video_refresh_t);
 void snes_set_audio_sample(snes_audio_sample_t);
 void snes_set_input_poll(snes_input_poll_t);
 void snes_set_input_state(snes_input_state_t);
-void snes_set_input_notify(snes_input_notify_t);
+void snes_set_no_lag(snes_no_lag_t);
 
 void snes_set_allocSharedMemory(snes_allocSharedMemory_t);
 void snes_set_freeSharedMemory(snes_freeSharedMemory_t);
@@ -159,8 +159,6 @@ int snes_poll_message();
 void snes_dequeue_message(char* buffer);
 typedef const char* (*snes_path_request_t)(int slot, const char* hint);
 void snes_set_path_request(snes_path_request_t path_request);
-
-void snes_set_color_lut(uint32_t * colors);
 
 void snes_set_trace_callback(uint32_t mask, void (*callback)(uint32_t mask, const char *));
 

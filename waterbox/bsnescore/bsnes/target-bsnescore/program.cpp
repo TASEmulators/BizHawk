@@ -34,6 +34,7 @@ struct Program : Emulator::Platform
 	auto audioFrame(const double* samples, uint channels) -> void override;
 	auto inputPoll(uint port, uint device, uint input) -> int16 override;
 	auto inputRumble(uint port, uint device, uint input, bool enable) -> void override;
+	auto notify(string text) -> void override;
 
 	auto load() -> void;
 	auto loadFile(string location) -> vector<uint8_t>;
@@ -374,6 +375,12 @@ auto pollInputDevices(uint port, uint device, uint input) -> int16
 	// return input_state(libretro_port, libretro_device, libretro_index, libretro_id);
 }
 
+auto Program::notify(string message) -> void
+{
+	if (message == "NOTIFY NO_LAG" && iface->pno_lag)
+		iface->pno_lag();
+}
+
 auto Program::inputPoll(uint port, uint device, uint input) -> int16
 {
 	// fprintf(stderr, "%p\n", iface->pinput_state);
@@ -532,7 +539,7 @@ auto Program::loadSuperFamicom(string location) -> bool
 	} else
 		rom = loadFile(location);
 	fprintf(stderr, "location: \"%s\"\n", location.data());
-	fprintf(stderr, "rom size: %d\n", rom.size());
+	fprintf(stderr, "rom size: %ld\n", rom.size());
 
 	if(rom.size() < 0x8000) return false;
 

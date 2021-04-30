@@ -37,9 +37,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 								_comm->value = (uint)input_state(port, device, index, id);
 							break;
 						}
-					case eMessage.eMessage_SIG_input_notify:
+					case eMessage.eMessage_SIG_no_lag:
 						{
-							input_notify?.Invoke(_comm->index);
+							no_lag?.Invoke();
 							break;
 						}
 					case eMessage.eMessage_SIG_audio_flush:

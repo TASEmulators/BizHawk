@@ -76,7 +76,7 @@ enum eMessage : int32
 	eMessage_SIG_video_refresh,
 	eMessage_SIG_input_poll,
 	eMessage_SIG_input_state,
-	eMessage_SIG_input_notify,
+	eMessage_SIG_no_lag,
 	eMessage_SIG_audio_flush,
 	eMessage_SIG_path_request,
 	eMessage_SIG_trace_callback,
@@ -264,10 +264,9 @@ void snes_input_poll(void)
 	BREAK(eMessage_SIG_input_poll);
 }
 
-void snes_input_notify(int index)
+void snes_no_lag()
 {
-	comm.index = index;
-	BREAK(eMessage_SIG_input_notify);
+	BREAK(eMessage_SIG_no_lag);
 }
 
 void snes_trace(uint32_t which, const char *msg)
@@ -376,7 +375,7 @@ void pwrap_init()
 	snes_set_audio_sample(snes_audio_sample);
 	snes_set_input_poll(snes_input_poll);
 	snes_set_input_state(snes_input_state);
-	snes_set_input_notify(snes_input_notify);
+	snes_set_no_lag(snes_no_lag);
 	snes_set_path_request(snes_path_request);
 	snes_set_allocSharedMemory(snes_allocSharedMemory);
 	snes_set_freeSharedMemory(snes_freeSharedMemory);
@@ -463,9 +462,6 @@ void QUERY_poke() {
 	if (comm.id == SNES_MEMORY_SYSBUS)
 		bus_write(comm.addr, comm.value);
 	else snes_get_memory_data(comm.id)[comm.addr] = comm.value;
-}
-void QUERY_set_color_lut() {
-	snes_set_color_lut((uint32_t*)comm.ptr);
 }
 void QUERY_GetMemoryIdName() {
 	comm.str = (char* )snes_get_memory_id_name(comm.id);
@@ -568,7 +564,7 @@ const Action kHandlers_QUERY[] = {
 	QUERY_peek,
 	QUERY_poke,
 	nullptr, //eMessage_QUERY_serialize_size TODO - grab during bootup/reset (for all possible memdomains)
-	QUERY_set_color_lut,
+	nullptr, // was QUERY_set_color_lut
 	QUERY_GetMemoryIdName, //snes_get_memory_id_name TODO - grab during bootup (for all possible memdomains)
 	QUERY_state_hook_exec, //eMessage_QUERY_state_hook_exec
 	QUERY_state_hook_read, //eMessage_QUERY_state_hook_read
