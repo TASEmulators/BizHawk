@@ -196,7 +196,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			}
 
 			[DefaultValue(TexrectCoordsMode.Off)]
-			[DisplayName("Bilinear filtering mode")]
+			[DisplayName("Correct Texrect Coords")]
 			[Description("Make texrect coordinates continuous to avoid black lines between them. (0=Off, 1=Auto, 2=Force)")]
 			public TexrectCoordsMode CorrectTexrectCoords { get; set; }
 
