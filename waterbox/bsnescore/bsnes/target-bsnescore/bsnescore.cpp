@@ -130,9 +130,9 @@ namespace SuperFamicom {
 	SuperFamicom::Interface *interface()
 	{
 		if(iface != nullptr) return iface;
-		iface = new ::fInterface();
+		iface = new ::fInterface;
 		emulator = iface;
-		program = new Program();
+		program = new Program;
 		pwrap_init();
 		return iface;
 	}
@@ -350,7 +350,6 @@ bool snes_load_cartridge_normal(
 ) {
 	// let's hope this works
 	program->superFamicom.location = base_rom_path;
-	program->base_name = base_rom_path;
 
 	vector<uint8_t> rom_data_vector;
 	for (int i = 0; i < rom_size; i++) rom_data_vector.append(rom_data[i]);
@@ -410,7 +409,6 @@ bool snes_load_cartridge_super_game_boy(
   const uint8_t *sgb_rom_data, unsigned sgb_rom_size
 ) {
 	program->superFamicom.location = base_rom_path;
-	program->base_name = base_rom_path;
 
 	vector<uint8_t> rom_data_vector;
 	for (int i = 0; i < rom_size; i++) rom_data_vector.append(rom_data[i]);
@@ -433,7 +431,21 @@ bool snes_get_region(void) {
 }
 
 char snes_get_mapper(void) {
-  return '\0';// iface->cart.mapper;
+	string board = program->superFamicom.document["game/board"].text();
+	string mapper = board.split('-', 1)[0];
+	if (mapper == "LOROM") return 0;
+	if (mapper == "HIROM") return 1;
+	if (mapper == "EXLOROM") return 2;
+	if (mapper == "EXHIROM") return 3;
+	if (mapper == "SUPERFXROM") return 4;
+	if (mapper == "SA1ROM") return 5;
+	if (mapper == "SPC7110ROM") return 6;
+	if (mapper == "BSCLOROM") return 7;
+	if (mapper == "BSCHIROM") return 8;
+	if (mapper == "BSXROM") return 9;
+	if (mapper == "STROM") return 10;
+
+	return -1;
 }
 
 uint8_t* snes_get_memory_data(unsigned id) {

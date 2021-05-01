@@ -202,7 +202,7 @@ struct CommStruct
 cothread_t co_control, co_emu, co_emu_suspended;
 
 //internal state
-bool audio_en = false;
+bool audio_enabled = false;
 static const int AUDIOBUFFER_SIZE = SAMPLE_RATE/50 * 2;
 uint16_t audiobuffer[SAMPLE_RATE * 2];
 int audiobuffer_idx = 0;
@@ -237,7 +237,7 @@ void do_SIG_audio_flush()
 //this is the raw callback from the emulator internals when a new audio sample is available
 void snes_audio_sample(uint16_t left, uint16_t right)
 {
-	if(!audio_en) return;
+	if(!audio_enabled) return;
 
 	//if theres no room in the audio buffer, we need to send a flush signal
 	if (audiobuffer_idx == AUDIOBUFFER_SIZE)
@@ -387,6 +387,7 @@ static void Analyze()
 {
 	//gather some "static" type information, so we dont have to poll annoyingly for it later
 	comm.mapper = snes_get_mapper();
+	printf("what did get mapper return: %d\n", comm.mapper);
 	comm.region = snes_get_region();
 }
 
@@ -427,101 +428,82 @@ static void CMD_Run()
 	do_SIG_audio_flush();
 }
 
-void QUERY_get_memory_size() {
-	comm.value = snes_get_memory_size(comm.value);
-}
-void QUERY_peek() {
-	if (comm.id == SNES_MEMORY_SYSBUS)
-		comm.value = bus_read(comm.addr);
-	else comm.value = snes_get_memory_data(comm.id)[comm.addr];
-}
-void QUERY_poke() {
-	if (comm.id == SNES_MEMORY_SYSBUS)
-		bus_write(comm.addr, comm.value);
-	else snes_get_memory_data(comm.id)[comm.addr] = comm.value;
-}
-void QUERY_GetMemoryIdName() {
-	comm.str = (char* )snes_get_memory_id_name(comm.id);
-}
-void QUERY_state_hook_exec() {
-	// SuperFamicom::cpu.debugger.op_exec = comm.value ? debug_op_exec : hook<void(uint24)>();
-}
-void QUERY_state_hook_read() {
-	// SuperFamicom::cpu.debugger.op_read = comm.value ? debug_op_read : hook<void(uint24)>();
-}
-void QUERY_state_hook_write() {
-	// SuperFamicom::cpu.debugger.op_write = comm.value ? debug_op_write : hook<void(uint24, uint8)>();
-}
-void QUERY_state_hook_nmi() {
-	// SuperFamicom::cpu.debugger.op_nmi = comm.value ? debug_op_nmi : hook<void()>();
-}
-void QUERY_state_hook_irq() {
-	// SuperFamicom::cpu.debugger.op_irq = comm.value ? debug_op_irq : hook<void()>();
-}
-void QUERY_state_hook_exec_smp() {
-	// SuperFamicom::smp.debugger.op_exec = comm.value ? debug_op_exec_smp : hook<void(uint24)>();
-}
-void QUERY_state_hook_read_smp() {
-	// SuperFamicom::smp.debugger.op_read = comm.value ? debug_op_read_smp : hook<void(uint24)>();
-}
-void QUERY_state_hook_write_smp() {
-	// SuperFamicom::smp.deb
-	// SuperFamicom::smp.debugger.op_write = comm.value ? debug_op_write_smp : hook<void(uint24, uint8)>();
-}
-void QUERY_state_enable_trace() {
-	snes_set_trace_callback(comm.value, snes_trace);
-}
-void QUERY_state_enable_scanline() {
-	if (comm.value)
-		snes_set_scanlineStart(snes_scanlineStart);
-	else snes_set_scanlineStart(nullptr);
-}
-void QUERY_state_enable_audio() {
-	audio_en = !!comm.value;
-}
-void QUERY_state_set_layer_enable() {
-	snes_set_layer_enable(0, 0, !!comm.layerEnables.BG1_Prio0);
-	snes_set_layer_enable(0, 1, !!comm.layerEnables.BG1_Prio1);
-	snes_set_layer_enable(1, 0, !!comm.layerEnables.BG2_Prio0);
-	snes_set_layer_enable(1, 1, !!comm.layerEnables.BG2_Prio1);
-	snes_set_layer_enable(2, 0, !!comm.layerEnables.BG3_Prio0);
-	snes_set_layer_enable(2, 1, !!comm.layerEnables.BG3_Prio1);
-	snes_set_layer_enable(3, 0, !!comm.layerEnables.BG4_Prio0);
-	snes_set_layer_enable(3, 1, !!comm.layerEnables.BG4_Prio1);
-	snes_set_layer_enable(4, 0, !!comm.layerEnables.Obj_Prio0);
-	snes_set_layer_enable(4, 1, !!comm.layerEnables.Obj_Prio1);
-	snes_set_layer_enable(4, 2, !!comm.layerEnables.Obj_Prio2);
-	snes_set_layer_enable(4, 3, !!comm.layerEnables.Obj_Prio3);
-}
-void QUERY_set_backdropColor() {
-	snes_set_backdropColor((s32)comm.value);
-}
-void QUERY_peek_logical_register() {
-	comm.value = snes_peek_logical_register(comm.id);
-}
-void QUERY_peek_cpu_regs() {
-	// comm.cpuregs.pc = SuperFamicom::cpu.p
-	// comm.cpuregs.pc = (u32)SuperFamicom::cpu.regs.pc;
-	// comm.cpuregs.a = SuperFamicom::cpu.regs.a;
-	// comm.cpuregs.x = SuperFamicom::cpu.regs.x;
-	// comm.cpuregs.y = SuperFamicom::cpu.regs.y;
-	// comm.cpuregs.s = SuperFamicom::cpu.regs.s;
-	// comm.cpuregs.d = SuperFamicom::cpu.regs.d;
-	// comm.cpuregs.db = SuperFamicom::cpu.regs.db;
-	// comm.cpuregs.vector = SuperFamicom::cpu.regs.vector;
-	// comm.cpuregs.p = SuperFamicom::cpu.regs.p;
-	comm.cpuregs.nothing = 0;
-	comm.cpuregs.nothing2 = 0;
-	comm.cpuregs.v = SuperFamicom::cpu.vcounter();
-	comm.cpuregs.h = SuperFamicom::cpu.hdot();
-}
-void QUERY_peek_set_cdl() {
-	for (int i = 0; i<16; i++)
-	{
-		// cdlInfo.blocks[i] = (uint8*)comm.cdl_ptr[i];
-		// cdlInfo.blockSizes[i] = comm.cdl_size[i];
-	}
-}
+// void QUERY_state_hook_exec() {
+// 	// SuperFamicom::cpu.debugger.op_exec = comm.value ? debug_op_exec : hook<void(uint24)>();
+// }
+// void QUERY_state_hook_read() {
+// 	// SuperFamicom::cpu.debugger.op_read = comm.value ? debug_op_read : hook<void(uint24)>();
+// }
+// void QUERY_state_hook_write() {
+// 	// SuperFamicom::cpu.debugger.op_write = comm.value ? debug_op_write : hook<void(uint24, uint8)>();
+// }
+// void QUERY_state_hook_nmi() {
+// 	// SuperFamicom::cpu.debugger.op_nmi = comm.value ? debug_op_nmi : hook<void()>();
+// }
+// void QUERY_state_hook_irq() {
+// 	// SuperFamicom::cpu.debugger.op_irq = comm.value ? debug_op_irq : hook<void()>();
+// }
+// void QUERY_state_hook_exec_smp() {
+// 	// SuperFamicom::smp.debugger.op_exec = comm.value ? debug_op_exec_smp : hook<void(uint24)>();
+// }
+// void QUERY_state_hook_read_smp() {
+// 	// SuperFamicom::smp.debugger.op_read = comm.value ? debug_op_read_smp : hook<void(uint24)>();
+// }
+// void QUERY_state_hook_write_smp() {
+// 	// SuperFamicom::smp.deb
+// 	// SuperFamicom::smp.debugger.op_write = comm.value ? debug_op_write_smp : hook<void(uint24, uint8)>();
+// }
+// void QUERY_state_enable_trace() {
+// 	snes_set_trace_callback(comm.value, snes_trace);
+// }
+// void QUERY_state_enable_scanline() {
+// 	if (comm.value)
+// 		snes_set_scanlineStart(snes_scanlineStart);
+// 	else snes_set_scanlineStart(nullptr);
+// }
+// void QUERY_state_set_layer_enable() {
+// 	snes_set_layer_enable(0, 0, !!comm.layerEnables.BG1_Prio0);
+// 	snes_set_layer_enable(0, 1, !!comm.layerEnables.BG1_Prio1);
+// 	snes_set_layer_enable(1, 0, !!comm.layerEnables.BG2_Prio0);
+// 	snes_set_layer_enable(1, 1, !!comm.layerEnables.BG2_Prio1);
+// 	snes_set_layer_enable(2, 0, !!comm.layerEnables.BG3_Prio0);
+// 	snes_set_layer_enable(2, 1, !!comm.layerEnables.BG3_Prio1);
+// 	snes_set_layer_enable(3, 0, !!comm.layerEnables.BG4_Prio0);
+// 	snes_set_layer_enable(3, 1, !!comm.layerEnables.BG4_Prio1);
+// 	snes_set_layer_enable(4, 0, !!comm.layerEnables.Obj_Prio0);
+// 	snes_set_layer_enable(4, 1, !!comm.layerEnables.Obj_Prio1);
+// 	snes_set_layer_enable(4, 2, !!comm.layerEnables.Obj_Prio2);
+// 	snes_set_layer_enable(4, 3, !!comm.layerEnables.Obj_Prio3);
+// }
+// void QUERY_set_backdropColor() {
+// 	snes_set_backdropColor((s32)comm.value);
+// }
+// void QUERY_peek_logical_register() {
+// 	comm.value = snes_peek_logical_register(comm.id);
+// }
+// void QUERY_peek_cpu_regs() {
+// 	// comm.cpuregs.pc = SuperFamicom::cpu.p
+// 	// comm.cpuregs.pc = (u32)SuperFamicom::cpu.regs.pc;
+// 	// comm.cpuregs.a = SuperFamicom::cpu.regs.a;
+// 	// comm.cpuregs.x = SuperFamicom::cpu.regs.x;
+// 	// comm.cpuregs.y = SuperFamicom::cpu.regs.y;
+// 	// comm.cpuregs.s = SuperFamicom::cpu.regs.s;
+// 	// comm.cpuregs.d = SuperFamicom::cpu.regs.d;
+// 	// comm.cpuregs.db = SuperFamicom::cpu.regs.db;
+// 	// comm.cpuregs.vector = SuperFamicom::cpu.regs.vector;
+// 	// comm.cpuregs.p = SuperFamicom::cpu.regs.p;
+// 	comm.cpuregs.nothing = 0;
+// 	comm.cpuregs.nothing2 = 0;
+// 	comm.cpuregs.v = SuperFamicom::cpu.vcounter();
+// 	comm.cpuregs.h = SuperFamicom::cpu.hdot();
+// }
+// void QUERY_peek_set_cdl() {
+// 	for (int i = 0; i<16; i++)
+// 	{
+// 		// cdlInfo.blocks[i] = (uint8*)comm.cdl_ptr[i];
+// 		// cdlInfo.blockSizes[i] = comm.cdl_size[i];
+// 	}
+// }
 
 const Action kHandlers_CMD[] = {
 	CMD_init,
@@ -534,31 +516,6 @@ const Action kHandlers_CMD[] = {
 	CMD_LoadCartridgeSGB,
 	snes_term,
 	snes_unload_cartridge,
-};
-
-const Action kHandlers_QUERY[] = {
-	QUERY_get_memory_size, //eMessage_QUERY_get_memory_size TODO - grab during bootup (for all possible memdomains)
-	QUERY_peek,
-	QUERY_poke,
-	nullptr, //eMessage_QUERY_serialize_size TODO - grab during bootup/reset (for all possible memdomains)
-	nullptr, // was QUERY_set_color_lut
-	QUERY_GetMemoryIdName, //snes_get_memory_id_name TODO - grab during bootup (for all possible memdomains)
-	QUERY_state_hook_exec, //eMessage_QUERY_state_hook_exec
-	QUERY_state_hook_read, //eMessage_QUERY_state_hook_read
-	QUERY_state_hook_write, //eMessage_QUERY_state_hook_write
-	QUERY_state_hook_exec_smp, //eMessage_QUERY_state_hook_exec_smp
-	QUERY_state_hook_read_smp, //eMessage_QUERY_state_hook_read_smp
-	QUERY_state_hook_write_smp, //eMessage_QUERY_state_hook_write_smp
-	QUERY_state_hook_nmi, //eMessage_QUERY_state_hook_nmi
-	QUERY_state_hook_irq, //eMessage_QUERY_state_hook_irq
-	QUERY_state_enable_trace, //eMessage_QUERY_enable_trace TODO - consolidate enable flags
-	QUERY_state_enable_scanline, //eMessage_QUERY_enable_scanline TODO - consolidate enable flags
-	QUERY_state_enable_audio, //eMessage_QUERY_enable_audio TODO - consolidate enable flags
-	QUERY_state_set_layer_enable, //eMessage_QUERY_set_layer_enable
-	QUERY_set_backdropColor, //eMessage_QUERY_set_backdropColor
-	QUERY_peek_logical_register, //eMessage_QUERY_peek_logical_register
-	QUERY_peek_cpu_regs, //eMessage_QUERY_peek_cpu_regs
-	QUERY_peek_set_cdl, //eMessage_QUERY_set_cdl
 };
 
 //all this does is run commands on the emulation thread infinitely forever
@@ -626,38 +583,115 @@ EXPORT void* DllInit()
 
 EXPORT void Message(eMessage msg)
 {
-	if (msg == eMessage_Resume)
+	switch (msg)
 	{
-		cothread_t temp = co_emu_suspended;
-		co_emu_suspended = NULL;
-		co_switch(temp);
-	}
-
-	if (msg >= eMessage_CMD_FIRST && msg <= eMessage_CMD_LAST)
-	{
-		//CMD is only valid if status is idle
-		if (comm.status != eStatus_Idle)
-		{
-			printf("ERROR: cmd during non-idle\n");
-			return;
+		case eMessage_Resume: {
+			cothread_t temp = co_emu_suspended;
+			co_emu_suspended = nullptr;
+			co_switch(temp);
+			break;
 		}
+		case eMessage_QUERY_get_memory_size: {
+			comm.value = snes_get_memory_size(comm.value);
+			break;
+		}
+		case eMessage_QUERY_peek: {
+			if (comm.id == SNES_MEMORY_SYSBUS)
+				comm.value = bus_read(comm.addr);
+			else comm.value = snes_get_memory_data(comm.id)[comm.addr];
+			break;
+		}
+		case eMessage_QUERY_poke: {
+			if (comm.id == SNES_MEMORY_SYSBUS)
+				bus_write(comm.addr, comm.value);
+			else snes_get_memory_data(comm.id)[comm.addr] = comm.value;
+			break;
+		}
+		case eMessage_QUERY_serialize_size: {
+			// was never implemented?
+		}
+		case eMessage_QUERY_set_color_lut: {
+			break;
+		}
+		case eMessage_QUERY_GetMemoryIdName: {
+			comm.str = (char*) snes_get_memory_id_name(comm.id);
+			break;
+		}
+		case eMessage_QUERY_state_hook_exec: {
 
-		comm.status = eStatus_CMD;
-		comm.cmd = msg;
+		}
+		case eMessage_QUERY_state_hook_read: {
 
-		CMD_cb = kHandlers_CMD[msg - eMessage_CMD_FIRST - 1];
-		co_switch(co_emu);
+		}
+		case eMessage_QUERY_state_hook_write: {
 
-		//we could be in ANY STATE when we return from here
-	}
+		}
+		case eMessage_QUERY_state_hook_nmi: {
 
-	//QUERY can run any time
-	//but... some of them might not be safe for re-entrancy.
-	//later, we should have metadata for messages that indicates that
-	if (msg >= eMessage_QUERY_FIRST && msg <= eMessage_QUERY_LAST)
-	{
-		Action cb = kHandlers_QUERY[msg - eMessage_QUERY_FIRST - 1];
-		if (cb) cb();
+		}
+		case eMessage_QUERY_state_hook_irq: {
+
+		}
+		case eMessage_QUERY_state_hook_exec_smp: {
+
+		}
+		case eMessage_QUERY_state_hook_read_smp: {
+
+		}
+		case eMessage_QUERY_state_hook_write_smp: {
+			break;
+		}
+		case eMessage_QUERY_enable_trace: {
+			snes_set_trace_callback(comm.value, snes_trace);
+			break;
+		}
+		case eMessage_QUERY_enable_scanline: {
+			if (comm.value)
+				snes_set_scanlineStart(snes_scanlineStart);
+			else snes_set_scanlineStart(nullptr);
+			break;
+		}
+		case eMessage_QUERY_enable_audio: {
+			audio_enabled = comm.value;
+			break;
+		}
+		case eMessage_QUERY_set_layer_enable: {
+
+		}
+		case eMessage_QUERY_set_backdropColor: {
+
+		}
+		case eMessage_QUERY_peek_logical_register: {
+
+		}
+		case eMessage_QUERY_peek_cpu_regs: {
+
+		}
+		case eMessage_QUERY_set_cdl: {
+			break;
+		}
+		case eMessage_CMD_init ... eMessage_CMD_unload_cartridge:
+			//CMD is only valid if status is idle
+			if (comm.status != eStatus_Idle) {
+				fprintf(stderr, "ERROR: cmd during non-idle\n");
+				return;
+			}
+
+			comm.status = eStatus_CMD;
+			comm.cmd = msg;
+
+			CMD_cb = kHandlers_CMD[msg - eMessage_CMD_FIRST - 1];
+			co_switch(co_emu);
+
+	// 	// nested switch to allow separating the CMDs
+	// switch (msg)
+	// {
+	// 	case eMessage_CMD_init:
+	// 		fprintf(stderr, "message was exactly init: %d\n", msg);
+	// 		break;
+	// }
+
+			// we could be in ANY STATE when we return from here
 	}
 }
 

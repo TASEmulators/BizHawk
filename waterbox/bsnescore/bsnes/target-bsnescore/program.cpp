@@ -48,8 +48,6 @@ struct Program : Emulator::Platform
 
 	auto hackPatchMemory(vector<uint8_t>& data) -> void;
 
-	string base_name;
-
 	bool overscan = false;
 
 public:
