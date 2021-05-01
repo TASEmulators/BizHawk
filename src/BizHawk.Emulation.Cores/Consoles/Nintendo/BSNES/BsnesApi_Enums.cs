@@ -139,32 +139,7 @@
 		public enum SNES_REGION : uint
 		{
 			NTSC = 0,
-			PAL = 1,
+			PAL = 1
 		}
-
-		// public enum BSNES_MEMORY : uint
-		// {
-		// 	CARTRIDGE_RAM = 0,
-		// 	CARTRIDGE_RTC = 1,
-		// 	BSX_RAM = 2,
-		// 	BSX_PRAM = 3,
-		// 	SUFAMI_TURBO_A_RAM = 4,
-		// 	SUFAMI_TURBO_B_RAM = 5,
-		// 	SGB_CARTRAM = 6,
-		// 	SGB_RTC = 7,
-		// 	SGB_WRAM = 8,
-		// 	SGB_HRAM = 9,
-		//
-		// 	WRAM = 100,
-		// 	APURAM = 101,
-		// 	VRAM = 102,
-		// 	OAM = 103,
-		// 	CGRAM = 104,
-		//
-		// 	CARTRIDGE_ROM = 105,
-		//
-		// 	SYSBUS = 200,
-		// 	LOGICAL_REGS = 201
-		// }
 	}
 }

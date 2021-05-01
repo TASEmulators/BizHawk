@@ -107,10 +107,7 @@ void snes_set_no_lag(snes_no_lag_t);
 void snes_set_allocSharedMemory(snes_allocSharedMemory_t);
 void snes_set_freeSharedMemory(snes_freeSharedMemory_t);
 
-void snes_set_controller_port_device(bool port, unsigned device);
-void snes_set_cartridge_basename(const char *basename);
-
-void snes_init(void);
+void snes_init(int entropy);
 void snes_term(void);
 void snes_power(void);
 void snes_reset(void);

@@ -22,8 +22,8 @@ extern SuperFamicom::Interface *iface;
 
 typedef uint8 u8;
 typedef uint16 u16;
-typedef uint64 u64;
 typedef uint32 u32;
+typedef uint64 u64;
 
 typedef int32 s32;
 
@@ -103,23 +103,13 @@ enum eStatus : int32
 };
 
 
-//watch it! the size of this struct is important!
-#ifdef _MSC_VER
-#pragma pack(push,1)
-#endif
 struct CPURegsComm {
 	u32 pc;
 	u16 a, x, y, s, d, vector; //6x
 	u8 p, db, nothing, nothing2;
 	u16 v, h;
-}
-#ifndef _MSC_VER
-__attribute__((__packed__))
-#endif
-;
-#ifdef _MSC_VER
-#pragma pack(pop)
-#endif
+};
+static_assert(sizeof(CPURegsComm) == 24);
 
 struct LayerEnablesComm
 {
@@ -131,6 +121,7 @@ struct LayerEnablesComm
 };
 
 //TODO: do any of these need to be volatile?
+// tOdO bTw
 struct CommStruct
 {
 	//the cmd being executed
@@ -177,7 +168,7 @@ struct CommStruct
 	//===========================================================
 
 	//private stuff
-	void* privbuf[3]; //TODO remember to tidy this..
+	void* privbuf[3]; //TODO remember to tidy this.. gj
 
 	void CopyBuffer(int id, void* ptr, int32 size)
 	{
@@ -204,7 +195,7 @@ cothread_t co_control, co_emu, co_emu_suspended;
 //internal state
 bool audio_enabled = false;
 static const int AUDIOBUFFER_SIZE = SAMPLE_RATE/50 * 2;
-uint16_t audiobuffer[SAMPLE_RATE * 2];
+uint16_t audiobuffer[AUDIOBUFFER_SIZE];
 int audiobuffer_idx = 0;
 Action CMD_cb;
 
@@ -387,7 +378,6 @@ static void Analyze()
 {
 	//gather some "static" type information, so we dont have to poll annoyingly for it later
 	comm.mapper = snes_get_mapper();
-	printf("what did get mapper return: %d\n", comm.mapper);
 	comm.region = snes_get_region();
 }
 
@@ -413,11 +403,8 @@ void CMD_LoadCartridgeSGB()
 
 void CMD_init()
 {
-	// TODO: use actual entropy enum
-	SuperFamicom::configuration.hacks.entropy = comm.value ? "Low" : "None";// config.random = !!comm.value;
-	snes_init();
+	snes_init(comm.value);
 
-	fprintf(stderr, "comm inports[0]: %d, comm inports[1]: %d\n", *(uint*) &comm.inports[0], *(uint*) &comm.inports[1]);
 	SuperFamicom::controllerPort1.connect(*(uint*) &comm.inports[0]);
 	SuperFamicom::controllerPort2.connect(*(uint*) &comm.inports[1]);
 }

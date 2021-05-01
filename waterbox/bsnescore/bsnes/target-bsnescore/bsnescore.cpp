@@ -27,7 +27,6 @@ struct fInterface : public SuperFamicom::Interface {
 	snes_allocSharedMemory_t pallocSharedMemory;
 	snes_freeSharedMemory_t pfreeSharedMemory;
   snes_trace_t ptrace;
-  string basename;
   uint32_t *buffer;
   uint32_t *palette;
 
@@ -58,16 +57,6 @@ struct fInterface : public SuperFamicom::Interface {
   void cpuTrace(uint32_t which, const char *msg) {
     if (ptrace)
 			ptrace(which, (const char *)msg);
-  }
-
-  string path(SuperFamicom::ID slot, const string &hint)
-	{
-		if(ppath_request)
-		{
-			const char* path = ppath_request(*(int*)&slot, hint.data());
-			return path;
-		}
-    return { basename, hint };
   }
 
 
@@ -189,27 +178,23 @@ void snes_set_path_request(snes_path_request_t path_request)
 	 iface->ppath_request = path_request;
 }
 
-void snes_set_controller_port_device(bool port, unsigned device) {
-	if (port == 0) {
-		SuperFamicom::controllerPort1.connect(device);
-	} else {
-		SuperFamicom::controllerPort2.connect(device);
-	}
-}
 
-void snes_set_cartridge_basename(const char *basename) {
-  iface->basename = basename;
-}
-
-
-void snes_init(void) {
+void snes_init(int entropy) {
 
 	fprintf(stderr, "snes_init was called!\n");
-	//force everything to get initialized, even though it probably already is
 	SuperFamicom::interface();
 
-	// needed in order to get audio sync working. should probably figure out what exactly this does
-	Emulator::audio.setFrequency(32040.);
+	string entropy_string;
+	switch (entropy)
+	{
+		case 0: entropy_string = "None"; break;
+		case 1: entropy_string = "Low"; break;
+		case 2: entropy_string = "High"; break;
+	}
+	emulator->configure("Hacks/Entropy", entropy_string);
+
+	// needed in order to get audio sync working. should probably figure out what exactly this does or how to change that properly
+	Emulator::audio.setFrequency(SAMPLE_RATE);
 }
 
 void snes_term(void) {
@@ -224,13 +209,35 @@ void snes_reset(void) {
 	emulator->reset();
 }
 
+// static int runahead_frames = 1;
+
+// run with runahead doesn't work yet, i suspect it's due to either waterbox or the serialize thing breaking
+// static void run_with_runahead(const int frames)
+// {
+// 	assert(frames > 0);
+
+// 	emulator->setRunAhead(true);
+// 	emulator->run();
+// 	auto state = emulator->serialize(false);
+// 	for (int i = 0; i < frames - 1; i++) {
+// 		emulator->run();
+// 	}
+// 	emulator->setRunAhead(false);
+// 	emulator->run();
+// 	state.setMode(serializer::Mode::Load);
+// 	emulator->unserialize(state);
+// }
+
 void snes_run(void) {
 	if (iface->pinput_poll) iface->pinput_poll();
 
 	// TODO: I currently have implemented separate poll and state calls, where poll updates the state and the state call just receives this
 	// based on the way this is implemented this approach might be useless in terms of reducing polling load, will need confirmation here
 
-	emulator->run();
+	// if (runahead_frames > 0)
+		// run_with_runahead(runahead_frames);
+	// else
+		emulator->run();
 }
 
 //zero 21-sep-2012

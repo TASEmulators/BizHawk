@@ -54,15 +54,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			}
 		}
 
-		public void QUERY_set_color_lut(IntPtr colors)
-		{
-			using (_exe.EnterExit())
-			{
-				_comm->ptr = colors.ToPointer();
-				_core.Message(eMessage.eMessage_QUERY_set_color_lut);
-			}
-		}
-
 		public void QUERY_set_state_hook_exec(bool state)
 		{
 			using (_exe.EnterExit())

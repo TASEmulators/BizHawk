@@ -1,5 +1,7 @@
 NEED_LIBCO := 1
 
+# todo: make openmp work for parallelized ppu
+# LDFLAGS := -fopenmp
 #-DPROFILE_PERFORMANCE
 CXXFLAGS := -DHOOKS -DBIZHAWK -DPROFILE_COMPATIBILITY -DGAMEBOY \
 	-D_GNU_SOURCE \

@@ -1,5 +1,4 @@
 #include <sfc/sfc.hpp>
-#include <emulibc.h>
 
 namespace SuperFamicom {
 
@@ -21,8 +20,8 @@ auto Bus::reset() -> void {
   if(lookup) delete[] lookup;
   if(target) delete[] target;
 
-  lookup = new uint8 [16 * 1024 * 1024];
-  target = new uint32[16 * 1024 * 1024];
+  lookup = new uint8 [16 * 1024 * 1024]();
+  target = new uint32[16 * 1024 * 1024]();
 
   reader[0] = [](uint, uint8 data) -> uint8 { return data; };
   writer[0] = [](uint, uint8) -> void {};
