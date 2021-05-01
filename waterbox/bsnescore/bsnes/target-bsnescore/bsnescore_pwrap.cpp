@@ -359,20 +359,6 @@ static void debug_op_write_smp(uint24 addr, uint8 value)
 	BREAK(eMessage_BRK_hook_write_smp);
 }
 
-void pwrap_init()
-{
-	//bsnes's interface initialization calls into this after initializing itself, so we can get a chance to mod it for pwrap functionalities
-
-	// TODO: bsnes does NOT call any of these functions anymore, so we should simplify
-	snes_set_video_refresh(snes_video_refresh);
-	snes_set_audio_sample(snes_audio_sample);
-	snes_set_input_poll(snes_input_poll);
-	snes_set_input_state(snes_input_state);
-	snes_set_no_lag(snes_no_lag);
-	snes_set_path_request(snes_path_request);
-	snes_set_allocSharedMemory(snes_allocSharedMemory);
-	snes_set_freeSharedMemory(snes_freeSharedMemory);
-}
 
 static void Analyze()
 {
@@ -383,8 +369,6 @@ static void Analyze()
 
 void CMD_LoadCartridgeNormal()
 {
-	// const char* base_rom_path = (const char*)comm.buf[0];
-	// if(!*base_rom_path) base_rom_path = nullptr;
 	bool ret = snes_load_cartridge_normal((const char*) comm.buf[0], (const uint8_t*)comm.buf[1], comm.buf_size[1]);
 	comm.value = ret;
 
@@ -439,14 +423,6 @@ static void CMD_Run()
 // void QUERY_state_hook_write_smp() {
 // 	// SuperFamicom::smp.deb
 // 	// SuperFamicom::smp.debugger.op_write = comm.value ? debug_op_write_smp : hook<void(uint24, uint8)>();
-// }
-// void QUERY_state_enable_trace() {
-// 	snes_set_trace_callback(comm.value, snes_trace);
-// }
-// void QUERY_state_enable_scanline() {
-// 	if (comm.value)
-// 		snes_set_scanlineStart(snes_scanlineStart);
-// 	else snes_set_scanlineStart(nullptr);
 // }
 // void QUERY_state_set_layer_enable() {
 // 	snes_set_layer_enable(0, 0, !!comm.layerEnables.BG1_Prio0);
@@ -596,8 +572,6 @@ EXPORT void Message(eMessage msg)
 		}
 		case eMessage_QUERY_serialize_size: {
 			// was never implemented?
-		}
-		case eMessage_QUERY_set_color_lut: {
 			break;
 		}
 		case eMessage_QUERY_GetMemoryIdName: {

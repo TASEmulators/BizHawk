@@ -261,7 +261,7 @@ auto Program::videoFrame(const uint16* data, uint pitch, uint width, uint height
 		}
 	}
 
-    if(iface->pvideo_refresh) iface->pvideo_refresh(iface->buffer, width, height);
+    snes_video_refresh(iface->buffer, width, height);
 
 	// why was input polled after a frame and not before? anyway good it's commented out LOL
     // if(iface->pinput_poll) iface->pinput_poll();
@@ -282,26 +282,22 @@ auto Program::audioFrame(const double* samples, uint channels) -> void
 {
 	int16_t left = d2i16(samples[0]);
 	int16_t right = d2i16(samples[1]);
-		return iface->paudio_sample(left, right);
+	return snes_audio_sample(left, right);
 }
 
 auto Program::notify(string message) -> void
 {
-	if (message == "NOTIFY NO_LAG" && iface->pno_lag)
-		iface->pno_lag();
+	if (message == "NOTIFY NO_LAG")
+		snes_no_lag();
 }
 
 auto Program::inputPoll(uint port, uint device, uint input) -> int16
 {
-	if (iface->pinput_state) {
-		// TODO: need to verify math correctness here, i have no idea what exactly will be passed here
-		int16 pressed = iface->pinput_state(port, device, input / 12, input);
+	// TODO: need to verify math correctness here, i have no idea what exactly will be passed here
+	int16 pressed = snes_input_state(port, device, input / 12, input);
 
-		// if (pressed) fprintf(stderr, "polled input with value %d\n", pressed);
-		return pressed;
-	}
-
-	return 0;
+	// if (pressed) fprintf(stderr, "polled input with value %d\n", pressed);
+	return pressed;
 }
 
 auto Program::inputRumble(uint port, uint device, uint input, bool enable) -> void
@@ -326,19 +322,19 @@ auto Program::openRomSuperFamicom(string name, vfs::file::mode mode) -> shared_p
 		return vfs::memory::file::open(superFamicom.expansion.data(), superFamicom.expansion.size());
 	}
 
-	// TODO: need to check whether these iface->ppath_request requests actually are correct and... work
-	if(name == "msu1/data.rom" && iface->ppath_request)
+	// TODO: need to check whether these snes_path_request requests actually are correct and... work
+	if(name == "msu1/data.rom")
 	{
-		return vfs::fs::file::open(iface->ppath_request(ID::SuperFamicom, name), mode);
+		return vfs::fs::file::open(snes_path_request(ID::SuperFamicom, name), mode);
 	}
 
-	if(name.match("msu1/track*.pcm") && iface->ppath_request)
+	if(name.match("msu1/track*.pcm"))
 	{
 		// name.trimLeft("msu1/track", 1L);
-		return vfs::fs::file::open(iface->ppath_request(ID::SuperFamicom, name), mode);
+		return vfs::fs::file::open(snes_path_request(ID::SuperFamicom, name), mode);
 	}
 
-	if(name == "save.ram" && iface->ppath_request)
+	if(name == "save.ram")
 	{
 		// string save_path;
 
@@ -347,7 +343,7 @@ auto Program::openRomSuperFamicom(string name, vfs::file::mode mode) -> shared_p
 
 		// save_path = { base_name.trimRight(suffix, 1L), ".srm" };
 
-		return vfs::fs::file::open(iface->ppath_request(ID::SuperFamicom, name.data()), mode);
+		return vfs::fs::file::open(snes_path_request(ID::SuperFamicom, name.data()), mode);
 	}
 
 	return {};
@@ -359,7 +355,7 @@ auto Program::openRomGameBoy(string name, vfs::file::mode mode) -> shared_pointe
 		return vfs::memory::file::open(gameBoy.program.data(), gameBoy.program.size());
 	}
 
-	if(name == "save.ram" && iface->ppath_request)
+	if(name == "save.ram")
 	{
 		// string save_path;
 
@@ -368,10 +364,10 @@ auto Program::openRomGameBoy(string name, vfs::file::mode mode) -> shared_pointe
 
 		// save_path = { base_name.trimRight(suffix, 1L), ".srm" };
 
-		return vfs::fs::file::open(iface->ppath_request(ID::GameBoy, name), mode);
+		return vfs::fs::file::open(snes_path_request(ID::GameBoy, name), mode);
 	}
 
-	if(name == "time.rtc" && iface->ppath_request)
+	if(name == "time.rtc")
 	{
 		// string save_path;
 
@@ -384,7 +380,7 @@ auto Program::openRomGameBoy(string name, vfs::file::mode mode) -> shared_pointe
 		// else
 			// save_path = { base_name.trimRight(suffix, 1L), ".rtc" };
 
-		return vfs::fs::file::open(iface->ppath_request(ID::GameBoy, name), mode);
+		return vfs::fs::file::open(snes_path_request(ID::GameBoy, name), mode);
 	}
 
 	return {};

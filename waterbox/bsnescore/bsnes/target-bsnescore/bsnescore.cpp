@@ -18,20 +18,9 @@ using namespace SuperFamicom;
 struct fInterface : public SuperFamicom::Interface {
 	typedef SuperFamicom::Interface BaseType;
 
-  snes_video_refresh_t pvideo_refresh;
-  snes_audio_sample_t paudio_sample;
-  snes_input_poll_t pinput_poll;
-  snes_input_state_t pinput_state;
-  snes_no_lag_t pno_lag;
-  snes_path_request_t ppath_request;
-	snes_allocSharedMemory_t pallocSharedMemory;
-	snes_freeSharedMemory_t pfreeSharedMemory;
   snes_trace_t ptrace;
   uint32_t *buffer;
   uint32_t *palette;
-
-	//zero 11-sep-2012
-	time_t randomSeed() { return 0; }
 
 	//zero 26-sep-2012
 	std::queue<nall::string> messages;
@@ -64,8 +53,7 @@ struct fInterface : public SuperFamicom::Interface {
 	void* allocSharedMemory(const char* memtype, size_t amt, int initialByte = -1)
 	{
 		void* ret;
-		//if pallocSharedMemory isnt set up yet, we're going to have serious problems
-		ret = pallocSharedMemory(memtype,amt);
+		ret = snes_allocSharedMemory(memtype,amt);
 		if(initialByte != -1)
 		{
 			for(unsigned i = 0; i < amt; i++) ((uint8*)ret)[i] = (uint8)initialByte;
@@ -74,20 +62,11 @@ struct fInterface : public SuperFamicom::Interface {
 	}
 	void freeSharedMemory(void* ptr)
 	{
-		if(!pfreeSharedMemory) return; //??
-		pfreeSharedMemory(ptr);
+		snes_freeSharedMemory(ptr);
 	}
 
   fInterface() :
-			pvideo_refresh(0),
-			paudio_sample(0),
-			pinput_poll(0),
-			pinput_state(0),
-			pno_lag(0),
-			ppath_request(0),
 			pScanlineStart(0),
-			pallocSharedMemory(0),
-			pfreeSharedMemory(0),
 			backdropColor(-1),
 			ptrace(0)
 	{
@@ -110,7 +89,6 @@ struct fInterface : public SuperFamicom::Interface {
   }
 };
 
-void pwrap_init();
 fInterface *iface = nullptr;
 
 #include "program.cpp"
@@ -122,60 +100,19 @@ namespace SuperFamicom {
 		iface = new ::fInterface;
 		emulator = iface;
 		program = new Program;
-		pwrap_init();
 		return iface;
 	}
 }
 
+// if ever used from inside bsnes should probably go through platform->allocSharedMemory
 void* extern_allocSharedMemory(const char* memtype, size_t amt, int initialByte = -1) {
 	return iface->allocSharedMemory(memtype, amt, initialByte);
 }
 
+// leaving for now, but unused
 const char* snes_library_id(void) {
   static string version = {"bsnes v", Emulator::Version};
   return version;
-}
-
-unsigned snes_library_revision_major(void) {
-  return 1;
-}
-
-unsigned snes_library_revision_minor(void) {
-  return 3;
-}
-
-void snes_set_allocSharedMemory(snes_allocSharedMemory_t cb)
-{
-	iface->pallocSharedMemory = cb;
-}
-void snes_set_freeSharedMemory(snes_freeSharedMemory_t cb)
-{
-	iface->pfreeSharedMemory = cb;
-}
-
-void snes_set_video_refresh(snes_video_refresh_t video_refresh) {
-  iface->pvideo_refresh = video_refresh;
-}
-
-void snes_set_audio_sample(snes_audio_sample_t audio_sample) {
-  iface->paudio_sample = audio_sample;
-}
-
-void snes_set_input_poll(snes_input_poll_t input_poll) {
-  iface->pinput_poll = input_poll;
-}
-
-void snes_set_input_state(snes_input_state_t input_state) {
-  iface->pinput_state = input_state;
-}
-
-void snes_set_no_lag(snes_no_lag_t no_lag) {
-  iface->pno_lag = no_lag;
-}
-
-void snes_set_path_request(snes_path_request_t path_request)
-{
-	 iface->ppath_request = path_request;
 }
 
 
@@ -229,7 +166,7 @@ void snes_reset(void) {
 // }
 
 void snes_run(void) {
-	if (iface->pinput_poll) iface->pinput_poll();
+	snes_input_poll();
 
 	// TODO: I currently have implemented separate poll and state calls, where poll updates the state and the state call just receives this
 	// based on the way this is implemented this approach might be useless in terms of reducing polling load, will need confirmation here
@@ -465,41 +402,41 @@ uint8_t* snes_get_memory_data(unsigned id) {
       if(SuperFamicom::cartridge.has.SharpRTC) return new uint8_t[20];// SuperFamicom::sharprtc srtc.rtc;
       if(SuperFamicom::cartridge.has.SPC7110) return new uint8_t[20];//SuperFamicom::spc7110 .rtc;
       return 0;
-  //   case SNES_MEMORY_BSX_RAM:
-  //     if(SuperFamicom::cartridge.mode() != SuperFamicom::Cartridge::Mode::Bsx) break;
-  //     return SuperFamicom::bsxcartridge.sram.data();
-  //   case SNES_MEMORY_BSX_PRAM:
-  //     if(SuperFamicom::cartridge.mode() != SuperFamicom::Cartridge::Mode::Bsx) break;
-  //     return SuperFamicom::bsxcartridge.psram.data();
-  //   case SNES_MEMORY_SUFAMI_TURBO_A_RAM:
-  //     if(SuperFamicom::cartridge.mode() != SuperFamicom::Cartridge::Mode::SufamiTurbo) break;
-  //     return SuperFamicom::sufamiturbo.slotA.ram.data();
-  //   case SNES_MEMORY_SUFAMI_TURBO_B_RAM:
-  //     if(SuperFamicom::cartridge.mode() != SuperFamicom::Cartridge::Mode::SufamiTurbo) break;
-  //     return SuperFamicom::sufamiturbo.slotB.ram.data();
-  //   case SNES_MEMORY_GAME_BOY_CARTRAM:
-  //     if(SuperFamicom::cartridge.mode() != SuperFamicom::Cartridge::Mode::SuperGameBoy) break;
-  //     return GameBoy::cartridge.ramdata;
-  // //case SNES_MEMORY_GAME_BOY_RTC:
-  // //  if(SuperFamicom::cartridge.mode() != SuperFamicom::Cartridge::Mode::SuperGameBoy) break;
-  // //  return GameBoy::cartridge.rtcdata;
-  //   case SNES_MEMORY_GAME_BOY_WRAM:
-  //     if(SuperFamicom::cartridge.mode() != SuperFamicom::Cartridge::Mode::SuperGameBoy) break;
-  //     return GameBoy::cpu.wram;
-  //   case SNES_MEMORY_GAME_BOY_HRAM:
-  //     if(SuperFamicom::cartridge.mode() != SuperFamicom::Cartridge::Mode::SuperGameBoy) break;
-  //     return GameBoy::cpu.hram;
+    case SNES_MEMORY_BSX_RAM:
+      if(!SuperFamicom::cartridge.has.BSMemorySlot) break;
+      return SuperFamicom::mcc.rom.data();
+    case SNES_MEMORY_BSX_PRAM:
+      if(!SuperFamicom::cartridge.has.BSMemorySlot) break;
+      return SuperFamicom::mcc.psram.data();
+    case SNES_MEMORY_SUFAMI_TURBO_A_RAM:
+      if(!SuperFamicom::cartridge.has.SufamiTurboSlotA) break;
+      return SuperFamicom::sufamiturboA.ram.data();
+    case SNES_MEMORY_SUFAMI_TURBO_B_RAM:
+      if(!SuperFamicom::cartridge.has.SufamiTurboSlotB) break;
+      return SuperFamicom::sufamiturboB.ram.data();
+    // case SNES_MEMORY_GAME_BOY_CARTRAM:
+    //   if(!SuperFamicom::cartridge.has.GameBoySlot) break;
+    //   return SuperFamicom::cartridge.ram;
+		// case SNES_MEMORY_GAME_BOY_RTC:
+		// 	if(!SuperFamicom::cartridge.has.GameBoySlot) break;
+		// 	return GameBoy::cartridge.rtcdata;
+    // case SNES_MEMORY_GAME_BOY_WRAM:
+    //   if(!SuperFamicom::cartridge.has.GameBoySlot) break;
+    //   return GameBoy::cpu.wram;
+    // case SNES_MEMORY_GAME_BOY_HRAM:
+    //   if(!SuperFamicom::cartridge.has.GameBoySlot) break;
+    //   return GameBoy::cpu.hram;
 
-  //   case SNES_MEMORY_WRAM:
-  //     return SuperFamicom::cpu.wram;
-  //   case SNES_MEMORY_APURAM:
-  //     return SuperFamicom::smp.apuram;
-  //   case SNES_MEMORY_VRAM:
-  //     return SuperFamicom::ppu.vram;
-  //   case SNES_MEMORY_OAM:
-  //     return SuperFamicom::ppu.oam;
-  //   case SNES_MEMORY_CGRAM:
-  //     return SuperFamicom::ppu.cgram;
+    case SNES_MEMORY_WRAM:
+      return SuperFamicom::cpu.wram;
+    case SNES_MEMORY_APURAM:
+      return SuperFamicom::dsp.apuram;
+    case SNES_MEMORY_VRAM:
+      return (uint8_t*) SuperFamicom::ppufast.vram;
+    case SNES_MEMORY_OAM:
+      return (uint8_t*) SuperFamicom::ppufast.objects;
+    case SNES_MEMORY_CGRAM:
+      return (uint8_t*) SuperFamicom::ppufast.cgram;
 
 		case SNES_MEMORY_CARTRIDGE_ROM:
       return SuperFamicom::cartridge.rom.data();
@@ -621,7 +558,7 @@ unsigned snes_get_memory_size(unsigned id) {
       size = 64 * 1024;
       break;
     case SNES_MEMORY_OAM:
-      size = 544;
+      size = 10 * 128;
       break;
     case SNES_MEMORY_CGRAM:
       size = 512;
