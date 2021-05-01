@@ -46,7 +46,7 @@
 	<ItemGroup>
 		<Compile Update="ArchiveChooser.cs" SubType="Form" />
 		<Compile Update="ArchiveChooser.Designer.cs" DependentUpon="ArchiveChooser.cs" />
-		<Compile Update="AITools.cs">
+		<Compile Update="tools\AITools.cs">
 		  <SubType>Form</SubType>
 		</Compile>
 		<Compile Update="BizBox - Kopieren %282%29.Designer.cs">

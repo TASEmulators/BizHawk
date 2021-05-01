@@ -24,7 +24,13 @@ namespace BizHawk.Client.EmuHawk
 		[RequiredService]
 		private IMemoryDomains MemoryDomains { get; set; }
 
-		private Watch watch = null;
+		private Watch coinWatch = null;
+
+		private Watch xWatch = null;
+		
+		private Watch yWatch = null;
+		
+		private Watch zWatch = null;
 
 		public bool IsActive => true;
 
@@ -139,7 +145,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (type == ToolFormUpdateType.PostFrame)
 			{
-				lblCoins.Text = this.watch.ValueString;
+				lblCoins.Text = this.coinWatch.ValueString;
+				lblX.Text = this.xWatch.ValueString;
+				lblY.Text = this.yWatch.ValueString;
+				lblZ.Text = this.zWatch.ValueString;
 			}
 		}
 
@@ -152,7 +161,10 @@ namespace BizHawk.Client.EmuHawk
 				throw new Exception("Somethign went wrong");
 			}
 
-			this.watch = Watch.GenerateWatch(domain, 0x33B218, WatchSize.Word, WatchDisplayType.Unsigned, true);
+			this.coinWatch = Watch.GenerateWatch(domain, 0x33B218, WatchSize.Word, WatchDisplayType.Unsigned, true);
+			this.xWatch = Watch.GenerateWatch(domain, 0x33B1AC, WatchSize.DWord, WatchDisplayType.Float, true);
+			this.yWatch = Watch.GenerateWatch(domain, 0x33B1B0, WatchSize.DWord, WatchDisplayType.Float, true);
+			this.zWatch = Watch.GenerateWatch(domain, 0x33B1B4, WatchSize.DWord, WatchDisplayType.Float, true);
 		}
 
 		public bool AskSaveChanges()
