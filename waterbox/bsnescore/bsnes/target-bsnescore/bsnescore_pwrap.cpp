@@ -203,8 +203,8 @@ cothread_t co_control, co_emu, co_emu_suspended;
 
 //internal state
 bool audio_en = false;
-static const int AUDIOBUFFER_SIZE = 44100 * 2;
-uint16_t audiobuffer[AUDIOBUFFER_SIZE];
+static const int AUDIOBUFFER_SIZE = SAMPLE_RATE/50 * 2;
+uint16_t audiobuffer[SAMPLE_RATE * 2];
 int audiobuffer_idx = 0;
 Action CMD_cb;
 
@@ -371,6 +371,8 @@ static void debug_op_write_smp(uint24 addr, uint8 value)
 void pwrap_init()
 {
 	//bsnes's interface initialization calls into this after initializing itself, so we can get a chance to mod it for pwrap functionalities
+
+	// TODO: bsnes does NOT call any of these functions anymore, so we should simplify
 	snes_set_video_refresh(snes_video_refresh);
 	snes_set_audio_sample(snes_audio_sample);
 	snes_set_input_poll(snes_input_poll);
@@ -390,10 +392,10 @@ static void Analyze()
 
 void CMD_LoadCartridgeNormal()
 {
-	const char* xml = (const char*)comm.buf[0];
-	if(!xml[0]) xml = nullptr;
-	bool ret = snes_load_cartridge_normal(xml, (const uint8_t*)comm.buf[1], comm.buf_size[1]);
-	comm.value = ret?1:0;
+	// const char* base_rom_path = (const char*)comm.buf[0];
+	// if(!*base_rom_path) base_rom_path = nullptr;
+	bool ret = snes_load_cartridge_normal((const char*) comm.buf[0], (const uint8_t*)comm.buf[1], comm.buf_size[1]);
+	comm.value = ret;
 
 	if(ret)
 		Analyze();
@@ -401,8 +403,8 @@ void CMD_LoadCartridgeNormal()
 
 void CMD_LoadCartridgeSGB()
 {
-	bool ret = snes_load_cartridge_super_game_boy((const char*)comm.buf[0], (const u8*)comm.buf[1], comm.buf_size[1], nullptr, (const u8*)comm.buf[2], comm.buf_size[2]);
-	comm.value = ret ? 1 : 0;
+	bool ret = snes_load_cartridge_super_game_boy((const char*)comm.buf[0], (const uint8_t*)comm.buf[1], comm.buf_size[1], (const uint8_t*)comm.buf[2], comm.buf_size[2]);
+	comm.value = ret;
 
 	if(ret)
 		Analyze();
@@ -410,43 +412,18 @@ void CMD_LoadCartridgeSGB()
 
 void CMD_init()
 {
+	// TODO: use actual entropy enum
 	SuperFamicom::configuration.hacks.entropy = comm.value ? "Low" : "None";// config.random = !!comm.value;
 	snes_init();
 
 	fprintf(stderr, "comm inports[0]: %d, comm inports[1]: %d\n", *(uint*) &comm.inports[0], *(uint*) &comm.inports[1]);
 	SuperFamicom::controllerPort1.connect(*(uint*) &comm.inports[0]);
 	SuperFamicom::controllerPort2.connect(*(uint*) &comm.inports[1]);
-	// SuperFamicom::input.connect(SuperFamicom::Controller::Port1, comm.inports[0]);
-	// SuperFamicom::input.connect(SuperFamicom::Controller::Port2, comm.inports[1]);
 }
 
 static void CMD_Run()
 {
-	do_SIG_audio_flush();
-
 	snes_run();
-
-	//we could avoid this if we saved the current thread before jumping back to co_control, instead of always jumping back to co_emu
-	//in effect, we're scrambling the scheduler
-	//EDIT - well, we changed that, but.. we still want this probably, for debugging and stuff
-	// for (;;)
-	// {
-		// using namespace SuperFamicom;
-		// SuperFamicom::system.run();
-		// SuperFamicom::scheduler.desynchronize();// = SuperFamicom::Scheduler::SynchronizeMode::None;
-		// SuperFamicom::scheduler.clearExitReason();
-		// SuperFamicom::scheduler.enter();
-		// if (SuperFamicom::scheduler.event == SuperFamicom::Scheduler::Event::Frame)
-		// {
-			// SuperFamicom::System
-			// SuperFamicom::System::frameEvent(SuperFamicom::system);// SuperFamicom::video.update();
-			// break;
-		// }
-		//not used yet
-		// if (SuperFamicom::scheduler.exit_reason() == SuperFamicom::Scheduler::ExitReason::DebuggerEvent)
-			// break;
-	// }
-
 	do_SIG_audio_flush();
 }
 

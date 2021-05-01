@@ -16,6 +16,8 @@
 extern "C" {
 #endif
 
+#define SAMPLE_RATE 32040
+
 #define SNES_PORT_1  0
 #define SNES_PORT_2  1
 
@@ -115,7 +117,7 @@ void snes_reset(void);
 void snes_run(void);
 
 bool snes_load_cartridge_normal(
-  const char *rom_xml, const uint8_t *rom_data, unsigned rom_size
+  const char *base_rom_path, const uint8_t *rom_data, unsigned rom_size
 );
 
 bool snes_load_cartridge_bsx_slotted(
@@ -135,8 +137,8 @@ bool snes_load_cartridge_sufami_turbo(
 );
 
 bool snes_load_cartridge_super_game_boy(
-  const char *rom_xml, const uint8_t *rom_data, unsigned rom_size,
-  const char *dmg_xml, const uint8_t *dmg_data, unsigned dmg_size
+  const char *base_rom_path, const uint8_t *rom_data, unsigned rom_size,
+  const uint8_t *sgb_rom_data, unsigned sgb_rom_size
 );
 
 void snes_unload_cartridge(void);

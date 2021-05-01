@@ -63,7 +63,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 						{
 							int slot = _comm->slot;
 							string hint = _comm->GetAscii();
-							string ret = hint;
 							if (pathRequest != null)
 								hint = pathRequest(slot, hint);
 							CopyAscii(0, hint);

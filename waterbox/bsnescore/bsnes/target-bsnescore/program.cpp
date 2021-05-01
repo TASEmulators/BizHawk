@@ -3,7 +3,6 @@
 // #include <emulator/emulator.hpp>
 // #include <sfc/interface/interface.hpp>
 // #include <filter/filter.hpp>
-// #include <lzma/lzma.hpp>
 #include <nall/directory.hpp>
 #include <nall/instance.hpp>
 #include <nall/decode/rle.hpp>
@@ -26,7 +25,6 @@ static Emulator::Interface *emulator;
 struct Program : Emulator::Platform
 {
 	Program();
-	~Program();
 
 	auto open(uint id, string name, vfs::file::mode mode, bool required) -> shared_pointer<vfs::file> override;
 	auto load(uint id, string name, string type, vector<string> options = {}) -> Emulator::Platform::Load override;
@@ -38,9 +36,9 @@ struct Program : Emulator::Platform
 
 	auto load() -> void;
 	auto loadFile(string location) -> vector<uint8_t>;
-	auto loadSuperFamicom(string location) -> bool;
-	auto loadGameBoy(string location) -> bool;
-	auto loadBSMemory(string location) -> bool;
+	auto loadSuperFamicom() -> bool;
+	auto loadGameBoy() -> bool;
+	auto loadBSMemory() -> bool;
 
 	auto save() -> void;
 
@@ -92,11 +90,6 @@ Program::Program()
 	platform = this;
 }
 
-Program::~Program()
-{
-	delete emulator;
-}
-
 auto Program::save() -> void
 {
 	if(!emulator->loaded()) return;
@@ -105,6 +98,8 @@ auto Program::save() -> void
 
 auto Program::open(uint id, string name, vfs::file::mode mode, bool required) -> shared_pointer<vfs::file>
 {
+	fprintf(stderr, "name \"%s\" was requested\n", name.data());
+
 	shared_pointer<vfs::file> result;
 
 	if (name == "ipl.rom" && mode == vfs::file::mode::read) {
@@ -114,8 +109,6 @@ auto Program::open(uint id, string name, vfs::file::mode mode, bool required) ->
 	if (name == "boards.bml" && mode == vfs::file::mode::read) {
 		result = vfs::memory::file::open(Boards, sizeof(Boards));
 	}
-
-	fprintf(stderr, "name \"%s\" was requested\n", name.data());
 
 	if (id == 1) { //Super Famicom
 		if (name == "manifest.bml" && mode == vfs::file::mode::read) {
@@ -159,6 +152,7 @@ auto Program::open(uint id, string name, vfs::file::mode mode, bool required) ->
 		else {
 			result = openRomBSMemory(name, mode);
 		}
+		// sufami turbo would be id 4 and 5 and is ignored for reasons? do we support it in bizhawk?
 	}
 	return result;
 }
@@ -222,27 +216,25 @@ auto Program::load() -> void {
 }
 
 auto Program::load(uint id, string name, string type, vector<string> options) -> Emulator::Platform::Load {
-	// fprintf(stderr, "Got exactly here with id %d\n", id);
-	// uint8_t* data = (uint8_t*)
+
 	if (id == 1)
 	{
-		fprintf(stderr, "Got here with superfamicom location \"%s\"\n", superFamicom.location.data());
-		if (loadSuperFamicom(superFamicom.location))
+		if (loadSuperFamicom())
 		{
 			return {id, superFamicom.region};
 		}
 	}
 	else if (id == 2)
 	{
-		fprintf(stderr, "This will fail\n");
-		if (loadGameBoy(gameBoy.location))
+		if (loadGameBoy())
 		{
 			return { id, NULL };
 		}
 	}
-	else if (id == 3) {
-		fprintf(stderr, "This will fail\n");
-		if (loadBSMemory(bsMemory.location)) {
+	else if (id == 3)
+	{
+		if (loadBSMemory())
+		{
 			return { id, NULL };
 		}
 	}
@@ -250,6 +242,9 @@ auto Program::load(uint id, string name, string type, vector<string> options) ->
 }
 
 auto Program::videoFrame(const uint16* data, uint pitch, uint width, uint height, uint scale) -> void {
+
+	// note: scale is not used currently, but as bsnes has builtin scaling support (something something mode 7)
+	// we might actually wanna make use of that? also overscan might always be false rn, will need to check
 	pitch >>= 1;
 	if (!overscan)
 	{
@@ -258,25 +253,20 @@ auto Program::videoFrame(const uint16* data, uint pitch, uint width, uint height
 		height -= 16 * multiplier;
 	}
 
-	// video_cb(data, width, height, pitch);
 	fprintf(stderr, "got a video frame with dimensions h: %d, w: %d, p: %d, overscan: %d\n", height, width, pitch, overscan);
 
 	for (uint y = 0; y < height; y++) {
 		const uint16_t* sp = data + y * pitch;
 		uint32_t* dp = iface->buffer + y * pitch;
 		for (uint x = 0; x < width; x++) {
-			// if (*sp) {
-				// fprintf(stderr, "sp[%d]: %d\n", y * pitch, *sp);
-			// }
-			// fprintf(stderr, "*sp++: %d\n", *sp);
-			*dp++ = iface->palette[*sp++]; //iface->palette[*sp++];
+			*dp++ = iface->palette[*sp++];
 		}
 	}
 
     if(iface->pvideo_refresh) iface->pvideo_refresh(iface->buffer, width, height);
-	// below code is and was useless and is currently left for reference
-    // if(iface->pinput_poll) iface->pinput_poll();
 
+	// why was input polled after a frame and not before? anyway good it's commented out LOL
+    // if(iface->pinput_poll) iface->pinput_poll();
 }
 
 // Double the fun!
@@ -294,85 +284,7 @@ auto Program::audioFrame(const double* samples, uint channels) -> void
 {
 	int16_t left = d2i16(samples[0]);
 	int16_t right = d2i16(samples[1]);
-	//audio_cb(left, right);
-	// audio_queue(left, right);
-	if (iface->paudio_sample)
-		// abort(); // paudiosample exists
-	// else
-		// abort(); // paudiosample is null
 		return iface->paudio_sample(left, right);
-}
-
-auto pollInputDevices(uint port, uint device, uint input) -> int16
-{
-	// TODO: This will need to be remapped on a per-system basis.
-	unsigned libretro_port;
-	unsigned libretro_id;
-	unsigned libretro_device;
-	unsigned libretro_index = 0;
-
-	// static const unsigned joypad_mapping[] = {
-	// 	RETRO_DEVICE_ID_JOYPAD_UP,
-	// 	RETRO_DEVICE_ID_JOYPAD_DOWN,
-	// 	RETRO_DEVICE_ID_JOYPAD_LEFT,
-	// 	RETRO_DEVICE_ID_JOYPAD_RIGHT,
-	// 	RETRO_DEVICE_ID_JOYPAD_B,
-	// 	RETRO_DEVICE_ID_JOYPAD_A,
-	// 	RETRO_DEVICE_ID_JOYPAD_Y,
-	// 	RETRO_DEVICE_ID_JOYPAD_X,
-	// 	RETRO_DEVICE_ID_JOYPAD_L,
-	// 	RETRO_DEVICE_ID_JOYPAD_R,
-	// 	RETRO_DEVICE_ID_JOYPAD_SELECT,
-	// 	RETRO_DEVICE_ID_JOYPAD_START,
-	// };
-
-	// static const unsigned mouse_mapping[] = {
-	// 	RETRO_DEVICE_ID_MOUSE_X,
-	// 	RETRO_DEVICE_ID_MOUSE_Y,
-	// 	RETRO_DEVICE_ID_MOUSE_LEFT,
-	// 	RETRO_DEVICE_ID_MOUSE_RIGHT,
-	// };
-
-	// switch (port)
-	// {
-	// 	case SuperFamicom::ID::Port::Controller1:
-	// 		libretro_port = 0;
-	// 		break;
-	// 	case SuperFamicom::ID::Port::Controller2:
-	// 		libretro_port = 1;
-	// 		break;
-
-	// 	default:
-	// 		return 0;
-	// }
-
-	// switch (device)
-	// {
-	// 	case SuperFamicom::ID::Device::Gamepad:
-	// 		libretro_device = RETRO_DEVICE_JOYPAD;
-	// 		libretro_id = joypad_mapping[input];
-	// 		break;
-
-	// 	case SuperFamicom::ID::Device::Mouse:
-	// 		libretro_device = RETRO_DEVICE_MOUSE;
-	// 		libretro_id = mouse_mapping[input];
-	// 		break;
-
-	// 	case SuperFamicom::ID::Device::SuperMultitap:
-	// 		libretro_device = RETRO_DEVICE_JOYPAD; // Maps to player [2, 5].
-	// 		libretro_port += input / 12;
-	// 		libretro_id = joypad_mapping[input % 12];
-	// 		break;
-
-	// 	// TODO: SuperScope/Justifiers.
-	// 	// Do we care? The v94 port hasn't hooked them up. :)
-
-	// 	default:
-	// 		return 0;
-	// }
-
-	return 0;
-	// return input_state(libretro_port, libretro_device, libretro_index, libretro_id);
 }
 
 auto Program::notify(string message) -> void
@@ -383,22 +295,20 @@ auto Program::notify(string message) -> void
 
 auto Program::inputPoll(uint port, uint device, uint input) -> int16
 {
-	// fprintf(stderr, "%p\n", iface->pinput_state);
 	if (iface->pinput_state) {
-		// todo: need to verify math correctness here, i have no idea
+		// TODO: need to verify math correctness here, i have no idea what exactly will be passed here
 		int16 pressed = iface->pinput_state(port, device, input / 12, input);
 
 		// if (pressed) fprintf(stderr, "polled input with value %d\n", pressed);
-		// return iface->pinput_state(port, device, 0 /*todo apparently this matters for multitap controllers? just set to 0 for now*/, input);
 		return pressed;
 	}
 
 	return 0;
-	// return pollInputDevices(port, device, input);
 }
 
 auto Program::inputRumble(uint port, uint device, uint input, bool enable) -> void
 {
+	// do we support this in bizhawk? if so we should probably use this
 }
 
 auto Program::openRomSuperFamicom(string name, vfs::file::mode mode) -> shared_pointer<vfs::file>
@@ -418,32 +328,28 @@ auto Program::openRomSuperFamicom(string name, vfs::file::mode mode) -> shared_p
 		return vfs::memory::file::open(superFamicom.expansion.data(), superFamicom.expansion.size());
 	}
 
-	if(name == "msu1/data.rom")
+	// TODO: need to check whether these iface->ppath_request requests actually are correct and... work
+	if(name == "msu1/data.rom" && iface->ppath_request)
 	{
-		return vfs::fs::file::open({Location::notsuffix(superFamicom.location), ".msu"}, mode);
+		return vfs::fs::file::open(iface->ppath_request(ID::SuperFamicom, name), mode);
 	}
 
-	if(name.match("msu1/track*.pcm"))
+	if(name.match("msu1/track*.pcm") && iface->ppath_request)
 	{
-		name.trimLeft("msu1/track", 1L);
-		return vfs::fs::file::open({Location::notsuffix(superFamicom.location), name}, mode);
+		// name.trimLeft("msu1/track", 1L);
+		return vfs::fs::file::open(iface->ppath_request(ID::SuperFamicom, name), mode);
 	}
 
-	if(name == "save.ram")
+	if(name == "save.ram" && iface->ppath_request)
 	{
-		string save_path;
+		// string save_path;
 
-		auto suffix = Location::suffix(base_name);
-		auto base = Location::base(base_name.transform("\\", "/"));
+		// auto suffix = Location::suffix(base_name);
+		// auto base = Location::base(base_name.transform("\\", "/"));
 
-		const char *save = nullptr;
-		assert(false);
-		// if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_SAVE_DIRECTORY, &save) && save)
-			// save_path = { string(save).transform("\\", "/"), "/", base.trimRight(suffix, 1L), ".srm" };
-		// else
-			save_path = { base_name.trimRight(suffix, 1L), ".srm" };
+		// save_path = { base_name.trimRight(suffix, 1L), ".srm" };
 
-		return vfs::fs::file::open(save_path, mode);
+		return vfs::fs::file::open(iface->ppath_request(ID::SuperFamicom, name.data()), mode);
 	}
 
 	return {};
@@ -455,38 +361,32 @@ auto Program::openRomGameBoy(string name, vfs::file::mode mode) -> shared_pointe
 		return vfs::memory::file::open(gameBoy.program.data(), gameBoy.program.size());
 	}
 
-	if(name == "save.ram")
+	if(name == "save.ram" && iface->ppath_request)
 	{
-		string save_path;
+		// string save_path;
 
-		auto suffix = Location::suffix(base_name);
-		auto base = Location::base(base_name.transform("\\", "/"));
+		// auto suffix = Location::suffix(base_name);
+		// auto base = Location::base(base_name.transform("\\", "/"));
 
-		const char *save = nullptr;
-		assert(false);
-		// if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_SAVE_DIRECTORY, &save) && save)
-			// save_path = { string(save).transform("\\", "/"), "/", base.trimRight(suffix, 1L), ".srm" };
-		// else
-			save_path = { base_name.trimRight(suffix, 1L), ".srm" };
+		// save_path = { base_name.trimRight(suffix, 1L), ".srm" };
 
-		return vfs::fs::file::open(save_path, mode);
+		return vfs::fs::file::open(iface->ppath_request(ID::GameBoy, name), mode);
 	}
 
-	if(name == "time.rtc")
+	if(name == "time.rtc" && iface->ppath_request)
 	{
-		string save_path;
+		// string save_path;
 
-		auto suffix = Location::suffix(base_name);
-		auto base = Location::base(base_name.transform("\\", "/"));
+		// auto suffix = Location::suffix(base_name);
+		// auto base = Location::base(base_name.transform("\\", "/"));
 
-		const char *save = nullptr;
-		assert(false);
+		// const char *save = nullptr;
 		// if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_SAVE_DIRECTORY, &save) && save)
 			// save_path = { string(save).transform("\\", "/"), "/", base.trimRight(suffix, 1L), ".rtc" };
 		// else
-			save_path = { base_name.trimRight(suffix, 1L), ".rtc" };
+			// save_path = { base_name.trimRight(suffix, 1L), ".rtc" };
 
-		return vfs::fs::file::open(save_path, mode);
+		return vfs::fs::file::open(iface->ppath_request(ID::GameBoy, name), mode);
 	}
 
 	return {};
@@ -507,38 +407,10 @@ auto Program::openRomBSMemory(string name, vfs::file::mode mode) -> shared_point
 	return {};
 }
 
-auto Program::loadFile(string location) -> vector<uint8_t>
+auto Program::loadSuperFamicom() -> bool
 {
-	// if(Location::suffix(location).downcase() == ".zip") {
-	// 	Decode::ZIP archive;
-	// 	if(archive.open(location)) {
-	// 		for(auto& file : archive.file) {
-	// 			auto type = Location::suffix(file.name).downcase();
-	// 			if(type == ".sfc" || type == ".smc" || type == ".gb" || type == ".gbc" || type == ".bs" || type == ".st") {
-	// 				return archive.extract(file);
-	// 			}
-	// 		}
-	// 	}
-	// return {};
-	// }
-	// else if(Location::suffix(location).downcase() == ".7z") {
-	// 	return LZMA::extract(location);
-	// }
-	// else {
-		return file::read(location);
-	// }
-}
-
-// static vector<uint8_t> rom = nullptr;
-
-auto Program::loadSuperFamicom(string location) -> bool
-{
-	vector<uint8_t> rom;
-	if (superFamicom.raw_data) {
-		rom = superFamicom.raw_data;//vector<uint8_t>(superFamicom.raw_data, superFamicom.raw_data + superFamicom.raw_data_size);
-	} else
-		rom = loadFile(location);
-	fprintf(stderr, "location: \"%s\"\n", location.data());
+	vector<uint8_t> rom = superFamicom.raw_data;
+	fprintf(stderr, "location: \"%s\"\n", superFamicom.location.data());
 	fprintf(stderr, "rom size: %ld\n", rom.size());
 
 	if(rom.size() < 0x8000) return false;
@@ -551,7 +423,7 @@ auto Program::loadSuperFamicom(string location) -> bool
 		rom.resize(rom.size() - 512);
 	}
 
-	auto heuristics = Heuristics::SuperFamicom(rom, location);
+	auto heuristics = Heuristics::SuperFamicom(rom, superFamicom.location);
 	auto sha256 = Hash::SHA256(rom).digest();
 
 	superFamicom.title = heuristics.title();
@@ -560,8 +432,8 @@ auto Program::loadSuperFamicom(string location) -> bool
 
 	hackPatchMemory(rom);
 	superFamicom.document = BML::unserialize(superFamicom.manifest);
-	fprintf(stderr, "document: \"%s\"\n", superFamicom.manifest.data());
-	superFamicom.location = location;
+	fprintf(stderr, "loaded game manifest: \"\n%s\"\n", superFamicom.manifest.data());
+	// superFamicom.location = location;
 
 	uint offset = 0;
 	if(auto size = heuristics.programRomSize()) {
@@ -587,37 +459,31 @@ auto Program::loadSuperFamicom(string location) -> bool
 	return true;
 }
 
-auto Program::loadGameBoy(string location) -> bool {
-	vector<uint8_t> rom;
-	rom = loadFile(location);
+auto Program::loadGameBoy() -> bool {
+	if (gameBoy.program.size() < 0x4000) return false;
 
-	if (rom.size() < 0x4000) return false;
-
-	auto heuristics = Heuristics::GameBoy(rom, location);
-	auto sha256 = Hash::SHA256(rom).digest();
+	auto heuristics = Heuristics::GameBoy(gameBoy.program, gameBoy.location);
+	auto sha256 = Hash::SHA256(gameBoy.program).digest();
 
 	gameBoy.manifest = heuristics.manifest();
 	gameBoy.document = BML::unserialize(gameBoy.manifest);
-	gameBoy.location = location;
-	gameBoy.program = rom;
+	// gameBoy.location = location;
+	// gameBoy.program = rom;
 
 	return true;
 }
 
-auto Program::loadBSMemory(string location) -> bool {
-	vector<uint8_t> rom;
-	rom = loadFile(location);
+auto Program::loadBSMemory() -> bool {
+	if (bsMemory.program.size() < 0x8000) return false;
 
-	if (rom.size() < 0x8000) return false;
-
-	auto heuristics = Heuristics::BSMemory(rom, location);
-	auto sha256 = Hash::SHA256(rom).digest();
+	auto heuristics = Heuristics::BSMemory(bsMemory.program, gameBoy.location);
+	auto sha256 = Hash::SHA256(bsMemory.program).digest();
 
 	bsMemory.manifest = heuristics.manifest();
 	bsMemory.document = BML::unserialize(bsMemory.manifest);
-	bsMemory.location = location;
+	// bsMemory.location = location;
+	// bsMemory.program = rom;
 
-	bsMemory.program = rom;
 	return true;
 }
 
@@ -636,6 +502,8 @@ auto Program::hackPatchMemory(vector<uint8_t>& data) -> void
 		if(data[0x4e9a] == 0x10) data[0x4e9a] = 0x80;
 	}
 }
+
+// TODO: apparently this code is for cheats. Yeah no idea how that works but we can probably just call this function maybe
 
 auto decodeSNES(string& code) -> bool {
   //Game Genie

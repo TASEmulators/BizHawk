@@ -64,7 +64,7 @@ struct fInterface : public SuperFamicom::Interface {
 	{
 		if(ppath_request)
 		{
-			const char* path = ppath_request(*(int*)&slot, (const char*)hint);
+			const char* path = ppath_request(*(int*)&slot, hint.data());
 			return path;
 		}
     return { basename, hint };
@@ -101,7 +101,6 @@ struct fInterface : public SuperFamicom::Interface {
 			pfreeSharedMemory(0),
 			backdropColor(-1),
 			ptrace(0)
-			// cart()
 	{
     buffer = (uint32_t*)alloc_invisible(512 * 480 * sizeof(uint32_t));
     palette = (uint32_t*)alloc_invisible(32768 * sizeof(uint32_t));
@@ -120,15 +119,10 @@ struct fInterface : public SuperFamicom::Interface {
 
 		// memset(&cdlInfo,0,sizeof(cdlInfo));
   }
-
-  ~fInterface() {
-    abort();
-  }
 };
 
 void pwrap_init();
 fInterface *iface = nullptr;
-// fInterface* extern_interface = iface;
 
 #include "program.cpp"
 
@@ -233,9 +227,8 @@ void snes_reset(void) {
 void snes_run(void) {
 	if (iface->pinput_poll) iface->pinput_poll();
 
-	// TODO: there should be one input_poll call per frame which updates the actual controller pressed states
-	// the core will ask for this state by itself potentially many times per frame (as i understand it, please correct if wrong)
-	// so the current pinput_state which ACTUALLY POLLS shouldn't be used in its place
+	// TODO: I currently have implemented separate poll and state calls, where poll updates the state and the state call just receives this
+	// based on the way this is implemented this approach might be useless in terms of reducing polling load, will need confirmation here
 
 	emulator->run();
 }
@@ -353,25 +346,16 @@ int snes_peek_logical_register(int reg)
 }
 
 bool snes_load_cartridge_normal(
-  const char *rom_xml, const uint8_t *rom_data, unsigned rom_size
+  const char *base_rom_path, const uint8_t *rom_data, unsigned rom_size
 ) {
-	// SuperFamicom::interface();
-	// emulator->configure("Audio/Frequency", 44100); // no idea whether this should be here
+	// let's hope this works
+	program->superFamicom.location = base_rom_path;
+	program->base_name = base_rom_path;
 
-	// hardcoded bullshit as we have no args
-	program->superFamicom.location = "C:\\AdminProgramme\\BizHawk 2.4\\Super Mario World (USA)\\Super Mario World (USA).sfc";
-	program->base_name = "C:\\AdminProgramme\\BizHawk 2.4\\Super Mario World (USA)\\Super Mario World (USA).sfc";
-	// if(rom_data) SuperFamicom::cartridge.rom.copy(rom_data, rom_size);
-  // iface->cart = SuperFamicom::cartridge;// Cartridge(rom_data, rom_size);
 	vector<uint8_t> rom_data_vector;
 	for (int i = 0; i < rom_size; i++) rom_data_vector.append(rom_data[i]);
 	program->superFamicom.raw_data = rom_data_vector;
-	// rom_data_vector.assign(rom_data, rom_data + rom_size);
-	// nall::vector<uint8_t> test = nall::vector<uint8_t>(rom_data_vector.)
-  // string xmlrom = (rom_xml && *rom_xml) ? string(rom_xml) : Heuristics::SuperFamicom(rom_data_vector, "Super Mario World.sfc").manifest();// BML::serialize(SuperFamicom::cartridge.game.document);//iface->cart.markup;
-  // SuperFamicom::cartridge.load_edit(xmlrom, (const char*) rom_data, rom_size);// cartridge.load(SuperFamicom::Cartridge::Mode::Normal, { xmlrom });
-  // iface->cart = SuperFamicom::cartridge;// Cartridge(rom_data, rom_size);
-  // SuperFamicom::system.power(false);
+
   program->load();
   return true;
 }
@@ -422,23 +406,22 @@ bool snes_load_cartridge_sufami_turbo(
 }
 
 bool snes_load_cartridge_super_game_boy(
-  const char *rom_xml, const uint8_t *rom_data, unsigned rom_size,
-  const char *dmg_xml, const uint8_t *dmg_data, unsigned dmg_size
+  const char *base_rom_path, const uint8_t *rom_data, unsigned rom_size,
+  const uint8_t *sgb_rom_data, unsigned sgb_rom_size
 ) {
-  // if(rom_data) SuperFamicom::cartridge.rom.copy(rom_data, rom_size);
-  // iface->cart = SnesCartridge(rom_data, rom_size);
-  // string xmlrom = (rom_xml && *rom_xml) ? string(rom_xml) : iface->cart.markup;
-  // if(dmg_data) {
-  //   //GameBoyCartridge needs to modify dmg_data (for MMM01 emulation); so copy data
-  //   uint8_t *data = new uint8_t[dmg_size];
-  //   memcpy(data, dmg_data, dmg_size);
-  //   string xmldmg = (dmg_xml && *dmg_xml) ? string(dmg_xml) : GameBoyCartridge(data, dmg_size).markup;
-  //   GameBoy::cartridge.load(GameBoy::System::Revision::SuperGameBoy, xmldmg, data, dmg_size);
-    // delete[] data;
-  // }
-  // SuperFamicom::cartridge.load(SuperFamicom::Cartridge::Mode::SuperGameBoy, xmlrom);
-  // SuperFamicom::system.power(false);
-  return false;
+	program->superFamicom.location = base_rom_path;
+	program->base_name = base_rom_path;
+
+	vector<uint8_t> rom_data_vector;
+	for (int i = 0; i < rom_size; i++) rom_data_vector.append(rom_data[i]);
+	program->superFamicom.raw_data = rom_data_vector;
+
+	vector<uint8_t> sgb_rom_data_vector;
+	for (int i = 0; i < sgb_rom_size; i++) sgb_rom_data_vector.append(sgb_rom_data[i]);
+	program->gameBoy.program = sgb_rom_data_vector;
+
+  program->load();
+  return true;
 }
 
 void snes_unload_cartridge(void) {

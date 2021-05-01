@@ -114,12 +114,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			ser.Register<ISoundProvider>(_resampler);
 
 			// strip header
-			if ((romData?.Length & 0x7FFF) == 512)
-			{
-				var newData = new byte[romData.Length - 512];
-				Array.Copy(romData, 512, newData, 0, newData.Length);
-				romData = newData;
-			}
+			// if ((romData?.Length & 0x7FFF) == 512)
+			// {
+			// 	var newData = new byte[romData.Length - 512];
+			// 	Array.Copy(romData, 512, newData, 0, newData.Length);
+			// 	romData = newData;
+			// }
 
 			if (game.System == "SGB")
 			{
@@ -130,15 +130,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				_currLoadParams = new LoadParams
 				{
 					type = LoadParamType.SuperGameBoy,
-					rom_xml = null,
-					rom_data = sgbRomData,
-					rom_size = (uint)sgbRomData.Length,
-					dmg_data = romData,
+					baseRomPath = baseRomPath,
+					rom_data = romData,
+					sgb_rom_data = sgbRomData
 				};
 
 				if (!LoadCurrent())
 				{
-					throw new Exception("snes_load_cartridge_normal() failed");
+					throw new Exception("snes_load_cartridge_super_gameboy() failed");
 				}
 			}
 			else
@@ -151,6 +150,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 					// bsnes wont inspect the xml to load the necessary sfc file.
 					// so, we have to do that here and pass it in as the romData :/
+
+					// TODO: uhh i have no idea what the xml is or whether this below code is needed
 					if (_romxml["cartridge"]?["rom"] != null)
 					{
 						romData = File.ReadAllBytes(PathSubfile(_romxml["cartridge"]["rom"].Attributes["name"].Value));
@@ -165,7 +166,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				_currLoadParams = new LoadParams
 				{
 					type = LoadParamType.Normal,
-					xml_data = xmlData,
+					baseRomPath = baseRomPath,
 					rom_data = romData
 				};
 
@@ -272,7 +273,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		{
 			// every rom requests msu1.rom... why? who knows.
 			// also handle msu-1 pcm files here
-			bool isMsu1Rom = hint == "msu1.rom";
+			bool isMsu1Rom = hint == "msu1/data.rom";
 			bool isMsu1Pcm = Path.GetExtension(hint).ToLower() == ".pcm";
 			if (isMsu1Rom || isMsu1Pcm)
 			{
@@ -307,6 +308,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			}
 
 			// not MSU-1.  ok.
+			if (hint == "save.ram")
+			{
+
+			}
+
 			string firmwareId;
 
 			switch (hint)
@@ -454,19 +460,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		private struct LoadParams
 		{
 			public LoadParamType type;
-			public byte[] xml_data;
-
-			public string rom_xml;
+			public string baseRomPath;
 			public byte[] rom_data;
-			public uint rom_size;
-			public byte[] dmg_data;
+			public byte[] sgb_rom_data;
 		}
 
 		private bool LoadCurrent()
 		{
 			bool result = _currLoadParams.type == LoadParamType.Normal
-				? Api.CMD_load_cartridge_normal(_currLoadParams.xml_data, _currLoadParams.rom_data)
-				: Api.CMD_load_cartridge_super_game_boy(_currLoadParams.rom_xml, _currLoadParams.rom_data, _currLoadParams.rom_size, _currLoadParams.dmg_data);
+				? Api.CMD_load_cartridge_normal(_currLoadParams.baseRomPath, _currLoadParams.rom_data)
+				: Api.CMD_load_cartridge_super_game_boy(_currLoadParams.baseRomPath, _currLoadParams.rom_data, _currLoadParams.sgb_rom_data);
 
 			// _mapper = Api.Mapper;
 			_region = Api.Region;
