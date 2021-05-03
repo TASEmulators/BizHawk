@@ -566,7 +566,8 @@ EXPORT void Message(eMessage msg)
         case eMessage_QUERY_poke: {
             if (comm.id == SNES_MEMORY_SYSBUS)
                 bus_write(comm.addr, comm.value);
-            else snes_get_memory_data(comm.id)[comm.addr] = comm.value;
+            else
+				snes_write_memory_data(comm.id, comm.addr, comm.value);
             break;
         }
         case eMessage_QUERY_serialize_size: {

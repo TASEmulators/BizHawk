@@ -135,6 +135,7 @@ void snes_unload_cartridge(void);
 bool snes_get_region(void);
 char snes_get_mapper(void);
 uint8_t* snes_get_memory_data(unsigned id);
+void snes_write_memory_data(unsigned id, unsigned index, unsigned value);
 const char* snes_get_memory_id_name(unsigned id);
 unsigned snes_get_memory_size(unsigned id);
 

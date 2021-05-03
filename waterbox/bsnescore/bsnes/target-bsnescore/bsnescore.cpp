@@ -393,6 +393,22 @@ char snes_get_mapper(void) {
     return -1;
 }
 
+static uint8_t sharprtc_data[16];
+static uint8_t epsonrtc_data[16];
+
+void snes_write_memory_data(unsigned id, unsigned index, unsigned value)
+{
+	uint8_t* data = snes_get_memory_data(id);
+	if (!data) return;
+
+	data[index] = value;
+
+	if (id == SNES_MEMORY_CARTRIDGE_RTC) {
+		if (cartridge.has.SharpRTC) sharprtc.load(data);
+		if (cartridge.has.EpsonRTC) epsonrtc.load(data);
+	}
+}
+
 uint8_t* snes_get_memory_data(unsigned id)
 {
     if(!emulator->loaded()) return 0;
@@ -402,9 +418,15 @@ uint8_t* snes_get_memory_data(unsigned id)
         case SNES_MEMORY_CARTRIDGE_RAM:
             return cartridge.ram.data();
         case SNES_MEMORY_CARTRIDGE_RTC:
-            if(cartridge.has.SharpRTC) return new uint8_t[20];// sharprtc srtc.rtc;
-            if(cartridge.has.SPC7110) return new uint8_t[20];//spc7110 .rtc;
-            return 0;
+            if(cartridge.has.SharpRTC) {
+				sharprtc.save(sharprtc_data);
+                return sharprtc_data;
+			}
+            if(cartridge.has.EpsonRTC) {
+                epsonrtc.save(epsonrtc_data);
+                return epsonrtc_data;
+            }
+            break;
         case SNES_MEMORY_BSX_RAM:
             if(!cartridge.has.BSMemorySlot) break;
             return mcc.rom.data();
@@ -445,7 +467,7 @@ uint8_t* snes_get_memory_data(unsigned id)
             return cartridge.rom.data();
     }
 
-    return 0;
+    return nullptr;
 }
 
 const char* snes_get_memory_id_name(unsigned id) {
@@ -507,8 +529,8 @@ unsigned snes_get_memory_size(unsigned id) {
             size = cartridge.ram.size();
             break;
         case SNES_MEMORY_CARTRIDGE_RTC:
-            if(cartridge.has.SharpRTC || cartridge.has.SPC7110)
-                size = 20;
+            if(cartridge.has.SharpRTC || cartridge.has.EpsonRTC)
+                size = 16;
             break;
         case SNES_MEMORY_BSX_RAM:
             if(cartridge.has.BSMemorySlot)
