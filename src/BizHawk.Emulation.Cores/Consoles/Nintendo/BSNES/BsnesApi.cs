@@ -418,7 +418,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			 * many syscalls happen and many kinds of poison can end up on the stack.  so here, we call
 			 * _core.DllInit() again, which recreates that cothread, zeroing out all of the memory first,
 			 * as well as zeroing out the comm struct. */
-			_core.DllInit();
+			// let's see what happen when we don't attempt to hack it like that
+			// _core.DllInit();
 			_exe.Seal();
 			_sealed = true;
 			foreach (var s in _readonlyFiles)

@@ -441,9 +441,6 @@ static void CMD_Run()
 // void QUERY_set_backdropColor() {
 // 	snes_set_backdropColor((s32)comm.value);
 // }
-// void QUERY_peek_logical_register() {
-// 	comm.value = snes_peek_logical_register(comm.id);
-// }
 // void QUERY_peek_cpu_regs() {
 // 	// comm.cpuregs.pc = SuperFamicom::cpu.p
 // 	// comm.cpuregs.pc = (u32)SuperFamicom::cpu.regs.pc;
@@ -530,6 +527,8 @@ EXPORT void* DllInit()
 	#undef T
 
 	memset(&comm, 0, sizeof(comm));
+
+	fprintf(stderr, "THIS DLLINIT FUNCTION WAS CALLED!!!\n\n\n");
 
 	//make a coroutine thread to run the emulation in. we'll switch back to this cothread when communicating with the frontend
 	co_control = co_active();
@@ -623,7 +622,8 @@ EXPORT void Message(eMessage msg)
 
 		}
 		case eMessage_QUERY_peek_logical_register: {
-
+			comm.value = snes_peek_logical_register(comm.id);
+			break;
 		}
 		case eMessage_QUERY_peek_cpu_regs: {
 

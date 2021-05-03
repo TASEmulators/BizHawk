@@ -73,6 +73,7 @@ auto SMP::readIO(uint16 address) -> uint8 {
     return data;
   }
 
+	__builtin_unreachable();
   return data;  //unreachable
 }
 

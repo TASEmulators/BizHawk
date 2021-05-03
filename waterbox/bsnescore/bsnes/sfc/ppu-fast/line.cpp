@@ -4,7 +4,7 @@ uint PPU::Line::count = 0;
 auto PPU::Line::flush() -> void {
   if(Line::count) {
     if(ppu.hdScale() > 1) cacheMode7HD();
-    #pragma omp parallel for if(Line::count >= 8)
+    // #pragma omp parallel for if(Line::count >= 8) // we do not have openmp support in waterbox
     for(uint y = 0; y < Line::count; y++) {
       if(ppu.deinterlace()) {
         if(!ppu.interlace()) {

@@ -15,8 +15,8 @@
 using namespace nall;
 using namespace SuperFamicom;
 
-struct fInterface : public SuperFamicom::Interface {
-	typedef SuperFamicom::Interface BaseType;
+struct fInterface : public Interface {
+	typedef Interface BaseType;
 
   snes_trace_t ptrace;
   uint32_t *buffer;
@@ -94,7 +94,7 @@ fInterface *iface = nullptr;
 #include "program.cpp"
 
 namespace SuperFamicom {
-	SuperFamicom::Interface *interface()
+	Interface *interface()
 	{
 		if(iface != nullptr) return iface;
 		iface = new ::fInterface;
@@ -119,7 +119,7 @@ const char* snes_library_id(void) {
 void snes_init(int entropy) {
 
 	fprintf(stderr, "snes_init was called!\n");
-	SuperFamicom::interface();
+	interface();
 
 	string entropy_string;
 	switch (entropy)
@@ -195,97 +195,98 @@ bool snes_check_cartridge(const uint8_t *rom_data, unsigned rom_size)
 //zero 05-sep-2012
 int snes_peek_logical_register(int reg)
 {
+	if (emulator->configuration("Hacks/PPU/Fast") == "true")
 	switch(reg)
 	{
+		//zero 17-may-2014
+		// 3-may-2021 above timestamp left for reference because i like it
+
 		//$2105
-		//zero 17-may-2014 TODO - enable these for other profiles
-#if !defined(PROFILE_PERFORMANCE) && !defined(PROFILE_ACCURACY) && defined(this_isnt_defined_fukc_you)
-	case SNES_REG_BG_MODE: return SuperFamicom::ppu.regs.bg_mode;
-	case SNES_REG_BG3_PRIORITY: return SuperFamicom::ppu.regs.bg3_priority;
-	case SNES_REG_BG1_TILESIZE: return SuperFamicom::ppu.regs.bg_tilesize[SuperFamicom::PPU::BG1];
-	case SNES_REG_BG2_TILESIZE: return SuperFamicom::ppu.regs.bg_tilesize[SuperFamicom::PPU::BG2];
-	case SNES_REG_BG3_TILESIZE: return SuperFamicom::ppu.regs.bg_tilesize[SuperFamicom::PPU::BG3];
-	case SNES_REG_BG4_TILESIZE: return SuperFamicom::ppu.regs.bg_tilesize[SuperFamicom::PPU::BG4];
-
-		//$2107
-	case SNES_REG_BG1_SCADDR: return SuperFamicom::ppu.regs.bg_scaddr[SuperFamicom::PPU::BG1]>>9;
-	case SNES_REG_BG1_SCSIZE: return SuperFamicom::ppu.regs.bg_scsize[SuperFamicom::PPU::BG1];
-		//$2108
-	case SNES_REG_BG2_SCADDR: return SuperFamicom::ppu.regs.bg_scaddr[SuperFamicom::PPU::BG2]>>9;
-	case SNES_REG_BG2_SCSIZE: return SuperFamicom::ppu.regs.bg_scsize[SuperFamicom::PPU::BG2];
-		//$2109
-	case SNES_REG_BG3_SCADDR: return SuperFamicom::ppu.regs.bg_scaddr[SuperFamicom::PPU::BG3]>>9;
-	case SNES_REG_BG3_SCSIZE: return SuperFamicom::ppu.regs.bg_scsize[SuperFamicom::PPU::BG3];
-		//$210A
-	case SNES_REG_BG4_SCADDR: return SuperFamicom::ppu.regs.bg_scaddr[SuperFamicom::PPU::BG4]>>9;
-	case SNES_REG_BG4_SCSIZE: return SuperFamicom::ppu.regs.bg_scsize[SuperFamicom::PPU::BG4];
-		//$210B
-	case SNES_REG_BG1_TDADDR: return SuperFamicom::ppu.regs.bg_tdaddr[SuperFamicom::PPU::BG1]>>13;
-	case SNES_REG_BG2_TDADDR: return SuperFamicom::ppu.regs.bg_tdaddr[SuperFamicom::PPU::BG2]>>13;
-		//$210C
-	case SNES_REG_BG3_TDADDR: return SuperFamicom::ppu.regs.bg_tdaddr[SuperFamicom::PPU::BG3]>>13;
-	case SNES_REG_BG4_TDADDR: return SuperFamicom::ppu.regs.bg_tdaddr[SuperFamicom::PPU::BG4]>>13;
-		//$2133 SETINI
-	case SNES_REG_SETINI_MODE7_EXTBG: return SuperFamicom::ppu.regs.mode7_extbg?1:0;
-	case SNES_REG_SETINI_HIRES: return SuperFamicom::ppu.regs.pseudo_hires?1:0;
-	case SNES_REG_SETINI_OVERSCAN: return SuperFamicom::ppu.regs.overscan?1:0;
-	case SNES_REG_SETINI_OBJ_INTERLACE: return SuperFamicom::ppu.regs.oam_interlace?1:0;
-	case SNES_REG_SETINI_SCREEN_INTERLACE: return SuperFamicom::ppu.regs.interlace?1:0;
-		//$2130 CGWSEL
-	case SNES_REG_CGWSEL_COLORMASK: return SuperFamicom::ppu.regs.color_mask;
-	case SNES_REG_CGWSEL_COLORSUBMASK: return SuperFamicom::ppu.regs.colorsub_mask;
-	case SNES_REG_CGWSEL_ADDSUBMODE: return SuperFamicom::ppu.regs.addsub_mode?1:0;
-	case SNES_REG_CGWSEL_DIRECTCOLOR: return SuperFamicom::ppu.regs.direct_color?1:0;
-		//$2101 OBSEL
-	case SNES_REG_OBSEL_NAMEBASE: return SuperFamicom::ppu.regs.oam_tdaddr>>14;
-	case SNES_REG_OBSEL_NAMESEL: return SuperFamicom::ppu.regs.oam_nameselect;
-	case SNES_REG_OBSEL_SIZE: return SuperFamicom::ppu.regs.oam_basesize;
-		//$2131 CGADSUB
-	//enum { BG1 = 0, BG2 = 1, BG3 = 2, BG4 = 3, OAM = 4, BACK = 5, COL = 5 };
-	case SNES_REG_CGADSUB_MODE: return SuperFamicom::ppu.regs.color_mode;
-	case SNES_REG_CGADSUB_HALF: return SuperFamicom::ppu.regs.color_halve;
-	case SNES_REG_CGADSUB_BG4: return SuperFamicom::ppu.regs.color_enabled[3];
-	case SNES_REG_CGADSUB_BG3: return SuperFamicom::ppu.regs.color_enabled[2];
-	case SNES_REG_CGADSUB_BG2: return SuperFamicom::ppu.regs.color_enabled[1];
-	case SNES_REG_CGADSUB_BG1: return SuperFamicom::ppu.regs.color_enabled[0];
-	case SNES_REG_CGADSUB_OBJ: return SuperFamicom::ppu.regs.color_enabled[4];
-	case SNES_REG_CGADSUB_BACKDROP: return SuperFamicom::ppu.regs.color_enabled[5];
-		//$212C TM
-	case SNES_REG_TM_BG1: return SuperFamicom::ppu.regs.bg_enabled[0];
-	case SNES_REG_TM_BG2: return SuperFamicom::ppu.regs.bg_enabled[1];
-	case SNES_REG_TM_BG3: return SuperFamicom::ppu.regs.bg_enabled[2];
-	case SNES_REG_TM_BG4: return SuperFamicom::ppu.regs.bg_enabled[3];
-	case SNES_REG_TM_OBJ: return SuperFamicom::ppu.regs.bg_enabled[4];
-		//$212D TM
-	case SNES_REG_TS_BG1: return SuperFamicom::ppu.regs.bgsub_enabled[0];
-	case SNES_REG_TS_BG2: return SuperFamicom::ppu.regs.bgsub_enabled[1];
-	case SNES_REG_TS_BG3: return SuperFamicom::ppu.regs.bgsub_enabled[2];
-	case SNES_REG_TS_BG4: return SuperFamicom::ppu.regs.bgsub_enabled[3];
-	case SNES_REG_TS_OBJ: return SuperFamicom::ppu.regs.bgsub_enabled[4];
-		//Mode7 regs
-	case SNES_REG_M7SEL_REPEAT: return SuperFamicom::ppu.regs.mode7_repeat;
-	case SNES_REG_M7SEL_HFLIP: return SuperFamicom::ppu.regs.mode7_vflip;
-	case SNES_REG_M7SEL_VFLIP: return SuperFamicom::ppu.regs.mode7_hflip;
-	case SNES_REG_M7A: return SuperFamicom::ppu.regs.m7a;
-	case SNES_REG_M7B: return SuperFamicom::ppu.regs.m7b;
-	case SNES_REG_M7C: return SuperFamicom::ppu.regs.m7c;
-	case SNES_REG_M7D: return SuperFamicom::ppu.regs.m7d;
-	case SNES_REG_M7X: return SuperFamicom::ppu.regs.m7x;
-	case SNES_REG_M7Y: return SuperFamicom::ppu.regs.m7y;
-		//BG scroll regs
-	case SNES_REG_BG1HOFS: return SuperFamicom::ppu.regs.bg_hofs[0] & 0x3FF;
-	case SNES_REG_BG1VOFS: return SuperFamicom::ppu.regs.bg_vofs[0] & 0x3FF;
-	case SNES_REG_BG2HOFS: return SuperFamicom::ppu.regs.bg_hofs[1] & 0x3FF;
-	case SNES_REG_BG2VOFS: return SuperFamicom::ppu.regs.bg_vofs[1] & 0x3FF;
-	case SNES_REG_BG3HOFS: return SuperFamicom::ppu.regs.bg_hofs[2] & 0x3FF;
-	case SNES_REG_BG3VOFS: return SuperFamicom::ppu.regs.bg_vofs[2] & 0x3FF;
-	case SNES_REG_BG4HOFS: return SuperFamicom::ppu.regs.bg_hofs[3] & 0x3FF;
-	case SNES_REG_BG4VOFS: return SuperFamicom::ppu.regs.bg_vofs[3] & 0x3FF;
-	case SNES_REG_M7HOFS: return SuperFamicom::ppu.regs.m7_hofs & 0x1FFF; //rememebr to make these signed with <<19>>19
-	case SNES_REG_M7VOFS: return SuperFamicom::ppu.regs.m7_vofs & 0x1FFF; //rememebr to make these signed with <<19>>19
-#endif
-
+		case SNES_REG_BG_MODE: return ppufast.io.bgMode;
+		case SNES_REG_BG3_PRIORITY: return ppufast.io.bgPriority;
+		case SNES_REG_BG1_TILESIZE: return ppufast.io.bg1.tileSize;
+		case SNES_REG_BG2_TILESIZE: return ppufast.io.bg2.tileSize;
+		case SNES_REG_BG3_TILESIZE: return ppufast.io.bg3.tileSize;
+		case SNES_REG_BG4_TILESIZE: return ppufast.io.bg4.tileSize;
+			//$2107
+		case SNES_REG_BG1_SCADDR: return ppufast.io.bg1.screenAddress >> 8;
+		case SNES_REG_BG1_SCSIZE: return ppufast.io.bg1.screenSize;
+			//$2108
+		case SNES_REG_BG2_SCADDR: return ppufast.io.bg2.screenAddress >> 8;
+		case SNES_REG_BG2_SCSIZE: return ppufast.io.bg2.screenSize;
+			//$2109
+		case SNES_REG_BG3_SCADDR: return ppufast.io.bg3.screenAddress >> 8;
+		case SNES_REG_BG3_SCSIZE: return ppufast.io.bg3.screenSize;
+			//$210A
+		case SNES_REG_BG4_SCADDR: return ppufast.io.bg4.screenAddress >> 8;
+		case SNES_REG_BG4_SCSIZE: return ppufast.io.bg4.screenSize;
+			//$210B
+		case SNES_REG_BG1_TDADDR: return ppufast.io.bg1.tiledataAddress >> 12;
+		case SNES_REG_BG2_TDADDR: return ppufast.io.bg2.tiledataAddress >> 12;
+			//$210C
+		case SNES_REG_BG3_TDADDR: return ppufast.io.bg3.tiledataAddress >> 12;
+		case SNES_REG_BG4_TDADDR: return ppufast.io.bg4.tiledataAddress >> 12;
+			//$2133 SETINI
+		case SNES_REG_SETINI_MODE7_EXTBG: return ppufast.io.extbg;
+		case SNES_REG_SETINI_HIRES: return ppufast.io.pseudoHires;
+		case SNES_REG_SETINI_OVERSCAN: return ppufast.io.overscan;
+		case SNES_REG_SETINI_OBJ_INTERLACE: return ppufast.io.obj.interlace;
+		case SNES_REG_SETINI_SCREEN_INTERLACE: return ppufast.io.interlace;
+			//$2130 CGWSEL
+		case SNES_REG_CGWSEL_COLORMASK: return ppufast.io.col.window.aboveMask;
+		case SNES_REG_CGWSEL_COLORSUBMASK: return ppufast.io.col.window.belowMask;
+		case SNES_REG_CGWSEL_ADDSUBMODE: return ppufast.io.col.blendMode;
+		case SNES_REG_CGWSEL_DIRECTCOLOR: return ppufast.io.col.directColor;
+			//$2101 OBSEL
+		case SNES_REG_OBSEL_NAMEBASE: return ppufast.io.obj.tiledataAddress >> 13; // TODO: figure out why these shifts are only in specific places
+		case SNES_REG_OBSEL_NAMESEL: return ppufast.io.obj.nameselect;
+		case SNES_REG_OBSEL_SIZE: return ppufast.io.obj.baseSize;
+			//$2131 CGADDSUB
+		//enum { BG1 = 0, BG2 = 1, BG3 = 2, BG4 = 3, OAM = 4, BACK = 5, COL = 5 };
+		case SNES_REG_CGADDSUB_BG1: return ppufast.io.col.enable[PPUfast::Source::BG1];
+		case SNES_REG_CGADDSUB_BG2: return ppufast.io.col.enable[PPUfast::Source::BG2];
+		case SNES_REG_CGADDSUB_BG3: return ppufast.io.col.enable[PPUfast::Source::BG3];
+		case SNES_REG_CGADDSUB_BG4: return ppufast.io.col.enable[PPUfast::Source::BG4];
+		case SNES_REG_CGADDSUB_OBJ: return ppufast.io.col.enable[PPUfast::Source::OBJ2];
+		case SNES_REG_CGADDSUB_BACKDROP: return ppufast.io.col.enable[PPUfast::Source::COL];
+		case SNES_REG_CGADDSUB_HALF: return ppufast.io.col.halve;
+		case SNES_REG_CGADDSUB_MODE: return ppufast.io.col.mathMode;
+			//$212C TM
+		case SNES_REG_TM_BG1: return ppufast.io.bg1.aboveEnable;
+		case SNES_REG_TM_BG2: return ppufast.io.bg2.aboveEnable;
+		case SNES_REG_TM_BG3: return ppufast.io.bg3.aboveEnable;
+		case SNES_REG_TM_BG4: return ppufast.io.bg4.aboveEnable;
+		case SNES_REG_TM_OBJ: return ppufast.io.obj.aboveEnable;
+			//$212D TS
+		case SNES_REG_TS_BG1: return ppufast.io.bg1.belowEnable;
+		case SNES_REG_TS_BG2: return ppufast.io.bg2.belowEnable;
+		case SNES_REG_TS_BG3: return ppufast.io.bg3.belowEnable;
+		case SNES_REG_TS_BG4: return ppufast.io.bg4.belowEnable;
+		case SNES_REG_TS_OBJ: return ppufast.io.obj.belowEnable;
+			//Mode7 regs
+		case SNES_REG_M7SEL_HFLIP: return ppufast.io.mode7.hflip;
+		case SNES_REG_M7SEL_VFLIP: return ppufast.io.mode7.vflip;
+		case SNES_REG_M7SEL_REPEAT: return ppufast.io.mode7.repeat;
+		case SNES_REG_M7A: return ppufast.io.mode7.a;
+		case SNES_REG_M7B: return ppufast.io.mode7.b;
+		case SNES_REG_M7C: return ppufast.io.mode7.c;
+		case SNES_REG_M7D: return ppufast.io.mode7.d;
+		case SNES_REG_M7X: return ppufast.io.mode7.x;
+		case SNES_REG_M7Y: return ppufast.io.mode7.y;
+			//BG scroll regs
+		case SNES_REG_BG1HOFS: return ppufast.io.bg1.hoffset;
+		case SNES_REG_BG1VOFS: return ppufast.io.bg1.voffset;
+		case SNES_REG_BG2HOFS: return ppufast.io.bg2.hoffset;
+		case SNES_REG_BG2VOFS: return ppufast.io.bg2.voffset;
+		case SNES_REG_BG3HOFS: return ppufast.io.bg3.hoffset;
+		case SNES_REG_BG3VOFS: return ppufast.io.bg3.voffset;
+		case SNES_REG_BG4HOFS: return ppufast.io.bg4.hoffset;
+		case SNES_REG_BG4VOFS: return ppufast.io.bg4.voffset;
+		case SNES_REG_M7HOFS: return ppufast.io.mode7.hoffset; // TODO figure out what that comment means .regs.m7_hofs & 0x1FFF; //rememebr to make these signed with <<19>>19
+		case SNES_REG_M7VOFS: return ppufast.io.mode7.voffset; //rememebr to make these signed with <<19>>19
 	}
+	else; // no fast ppu
+	// TODO: potentially provide register values even in this case? currently all those are private in ppu.hpp
 	return 0;
 }
 
@@ -307,13 +308,13 @@ bool snes_load_cartridge_bsx_slotted(
   const char *rom_xml, const uint8_t *rom_data, unsigned rom_size,
   const char *bsx_xml, const uint8_t *bsx_data, unsigned bsx_size
 ) {
-  // if(rom_data) SuperFamicom::cartridge.rom.copy(rom_data, rom_size);
-  // iface->cart = SuperFamicom::cartridge;//SnesCartridge(rom_data, rom_size);
+  // if(rom_data) cartridge.rom.copy(rom_data, rom_size);
+  // iface->cart = cartridge;//SnesCartridge(rom_data, rom_size);
   // string xmlrom = (rom_xml && *rom_xml) ? string(rom_xml) : "";iface->cart.markup;
-  // if(bsx_data) SuperFamicom::bsxflash.memory.copy(bsx_data, bsx_size);
+  // if(bsx_data) bsxflash.memory.copy(bsx_data, bsx_size);
   // string xmlbsx = (bsx_xml && *bsx_xml) ? string(bsx_xml) : SnesCartridge(bsx_data, bsx_size).markup;
-  // SuperFamicom::cartridge.load(SuperFamicom::Cartridge::Mode::BsxSlotted, xmlrom);
-  // SuperFamicom::system.power(false);
+  // cartridge.load(Cartridge::Mode::BsxSlotted, xmlrom);
+  // system.power(false);
   return false;
 }
 
@@ -321,13 +322,13 @@ bool snes_load_cartridge_bsx(
   const char *rom_xml, const uint8_t *rom_data, unsigned rom_size,
   const char *bsx_xml, const uint8_t *bsx_data, unsigned bsx_size
 ) {
-  // if(rom_data) SuperFamicom::cartridge.rom.copy(rom_data, rom_size);
+  // if(rom_data) cartridge.rom.copy(rom_data, rom_size);
   // iface->cart = SnesCartridge(rom_data, rom_size);
   // string xmlrom = (rom_xml && *rom_xml) ? string(rom_xml) : iface->cart.markup;
-  // if(bsx_data) SuperFamicom::bsxflash.memory.copy(bsx_data, bsx_size);
+  // if(bsx_data) bsxflash.memory.copy(bsx_data, bsx_size);
   // string xmlbsx = (bsx_xml && *bsx_xml) ? string(bsx_xml) : SnesCartridge(bsx_data, bsx_size).markup;
-  // SuperFamicom::cartridge.load(SuperFamicom::Cartridge::Mode::Bsx, xmlrom);
-  // SuperFamicom::system.power(false);
+  // cartridge.load(Cartridge::Mode::Bsx, xmlrom);
+  // system.power(false);
   return false;
 }
 
@@ -336,15 +337,15 @@ bool snes_load_cartridge_sufami_turbo(
   const char *sta_xml, const uint8_t *sta_data, unsigned sta_size,
   const char *stb_xml, const uint8_t *stb_data, unsigned stb_size
 ) {
-  // if(rom_data) SuperFamicom::cartridge.rom.copy(rom_data, rom_size);
+  // if(rom_data) cartridge.rom.copy(rom_data, rom_size);
   // iface->cart = SnesCartridge(rom_data, rom_size);
   // string xmlrom = (rom_xml && *rom_xml) ? string(rom_xml) : iface->cart.markup;
-  // if(sta_data) SuperFamicom::sufamiturbo.slotA.rom.copy(sta_data, sta_size);
+  // if(sta_data) sufamiturbo.slotA.rom.copy(sta_data, sta_size);
   // string xmlsta = (sta_xml && *sta_xml) ? string(sta_xml) : SnesCartridge(sta_data, sta_size).markup;
-  // if(stb_data) SuperFamicom::sufamiturbo.slotB.rom.copy(stb_data, stb_size);
+  // if(stb_data) sufamiturbo.slotB.rom.copy(stb_data, stb_size);
   // string xmlstb = (stb_xml && *stb_xml) ? string(stb_xml) : SnesCartridge(stb_data, stb_size).markup;
-  // SuperFamicom::cartridge.load(SuperFamicom::Cartridge::Mode::SufamiTurbo, xmlrom);
-  // SuperFamicom::system.power(false);
+  // cartridge.load(Cartridge::Mode::SufamiTurbo, xmlrom);
+  // system.power(false);
   return false;
 }
 
@@ -367,11 +368,11 @@ bool snes_load_cartridge_super_game_boy(
 }
 
 void snes_unload_cartridge(void) {
-  SuperFamicom::cartridge.unload();
+  cartridge.unload();
 }
 
 bool snes_get_region(void) {
-	return SuperFamicom::Region::PAL();
+	return Region::PAL();
 }
 
 char snes_get_mapper(void) {
@@ -393,100 +394,100 @@ char snes_get_mapper(void) {
 }
 
 uint8_t* snes_get_memory_data(unsigned id) {
-  if(emulator->loaded() == false) return 0;
+  if(!emulator->loaded()) return 0;
 
   switch(id) {
     case SNES_MEMORY_CARTRIDGE_RAM:
-      return SuperFamicom::cartridge.ram.data();
+      return cartridge.ram.data();
     case SNES_MEMORY_CARTRIDGE_RTC:
-      if(SuperFamicom::cartridge.has.SharpRTC) return new uint8_t[20];// SuperFamicom::sharprtc srtc.rtc;
-      if(SuperFamicom::cartridge.has.SPC7110) return new uint8_t[20];//SuperFamicom::spc7110 .rtc;
+      if(cartridge.has.SharpRTC) return new uint8_t[20];// sharprtc srtc.rtc;
+      if(cartridge.has.SPC7110) return new uint8_t[20];//spc7110 .rtc;
       return 0;
     case SNES_MEMORY_BSX_RAM:
-      if(!SuperFamicom::cartridge.has.BSMemorySlot) break;
-      return SuperFamicom::mcc.rom.data();
+      if(!cartridge.has.BSMemorySlot) break;
+      return mcc.rom.data();
     case SNES_MEMORY_BSX_PRAM:
-      if(!SuperFamicom::cartridge.has.BSMemorySlot) break;
-      return SuperFamicom::mcc.psram.data();
+      if(!cartridge.has.BSMemorySlot) break;
+      return mcc.psram.data();
     case SNES_MEMORY_SUFAMI_TURBO_A_RAM:
-      if(!SuperFamicom::cartridge.has.SufamiTurboSlotA) break;
-      return SuperFamicom::sufamiturboA.ram.data();
+      if(!cartridge.has.SufamiTurboSlotA) break;
+      return sufamiturboA.ram.data();
     case SNES_MEMORY_SUFAMI_TURBO_B_RAM:
-      if(!SuperFamicom::cartridge.has.SufamiTurboSlotB) break;
-      return SuperFamicom::sufamiturboB.ram.data();
+      if(!cartridge.has.SufamiTurboSlotB) break;
+      return sufamiturboB.ram.data();
     // case SNES_MEMORY_GAME_BOY_CARTRAM:
-    //   if(!SuperFamicom::cartridge.has.GameBoySlot) break;
-    //   return SuperFamicom::cartridge.ram;
+    //   if(!cartridge.has.GameBoySlot) break;
+    //   return cartridge.ram;
 		// case SNES_MEMORY_GAME_BOY_RTC:
-		// 	if(!SuperFamicom::cartridge.has.GameBoySlot) break;
+		// 	if(!cartridge.has.GameBoySlot) break;
 		// 	return GameBoy::cartridge.rtcdata;
     // case SNES_MEMORY_GAME_BOY_WRAM:
-    //   if(!SuperFamicom::cartridge.has.GameBoySlot) break;
+    //   if(!cartridge.has.GameBoySlot) break;
     //   return GameBoy::cpu.wram;
     // case SNES_MEMORY_GAME_BOY_HRAM:
-    //   if(!SuperFamicom::cartridge.has.GameBoySlot) break;
+    //   if(!cartridge.has.GameBoySlot) break;
     //   return GameBoy::cpu.hram;
 
     case SNES_MEMORY_WRAM:
-      return SuperFamicom::cpu.wram;
+      return cpu.wram;
     case SNES_MEMORY_APURAM:
-      return SuperFamicom::dsp.apuram;
+      return dsp.apuram;
     case SNES_MEMORY_VRAM:
-      return (uint8_t*) SuperFamicom::ppufast.vram;
+      return (uint8_t*) ppufast.vram;
     case SNES_MEMORY_OAM:
-      return (uint8_t*) SuperFamicom::ppufast.objects;
+      return (uint8_t*) ppufast.objects;
     case SNES_MEMORY_CGRAM:
-      return (uint8_t*) SuperFamicom::ppufast.cgram;
+      return (uint8_t*) ppufast.cgram;
 
 		case SNES_MEMORY_CARTRIDGE_ROM:
-      return SuperFamicom::cartridge.rom.data();
+      return cartridge.rom.data();
   }
 
   return 0;
 }
 
 const char* snes_get_memory_id_name(unsigned id) {
-  if(emulator->loaded() == false) return nullptr;
+  if(!emulator->loaded()) return nullptr;
 
   switch(id) {
     case SNES_MEMORY_CARTRIDGE_RAM:
       return "CARTRIDGE_RAM";
     case SNES_MEMORY_CARTRIDGE_RTC:
-      if(SuperFamicom::cartridge.has.SharpRTC) return "RTC";
-      if(SuperFamicom::cartridge.has.SPC7110) return "SPC7110_RTC";
+      if(cartridge.has.SharpRTC) return "RTC";
+      if(cartridge.has.SPC7110) return "SPC7110_RTC";
       return nullptr;
     case SNES_MEMORY_BSX_RAM:
-      if(SuperFamicom::cartridge.has.BSMemorySlot)// mode() != SuperFamicom::Cartridge::Mode::Bsx) break;
+      if(cartridge.has.BSMemorySlot)// mode() != Cartridge::Mode::Bsx) break;
       return "BSX_SRAM";
     case SNES_MEMORY_BSX_PRAM:
-      if(SuperFamicom::cartridge.has.BSMemorySlot)//() != SuperFamicom::Cartridge::Mode::Bsx) break;
+      if(cartridge.has.BSMemorySlot)//() != Cartridge::Mode::Bsx) break;
       return "BSX_PSRAM";
     case SNES_MEMORY_SUFAMI_TURBO_A_RAM:
-      if(SuperFamicom::cartridge.has.SufamiTurboSlotA)// mode() != SuperFamicom::Cartridge::Mode::SufamiTurbo) break;
+      if(cartridge.has.SufamiTurboSlotA)// mode() != Cartridge::Mode::SufamiTurbo) break;
 			return "SUFAMI_SLOTARAM";
     case SNES_MEMORY_SUFAMI_TURBO_B_RAM:
-      if(SuperFamicom::cartridge.has.SufamiTurboSlotB)//() != SuperFamicom::Cartridge::Mode::SufamiTurbo) break;
+      if(cartridge.has.SufamiTurboSlotB)//() != Cartridge::Mode::SufamiTurbo) break;
       return "SUFAMI_SLOTBRAM";
     case SNES_MEMORY_GAME_BOY_CARTRAM:
-      if(SuperFamicom::cartridge.has.GameBoySlot)//() != SuperFamicom::Cartridge::Mode::SuperGameBoy) break;
+      if(cartridge.has.GameBoySlot)//() != Cartridge::Mode::SuperGameBoy) break;
       //return GameBoy::cartridge.ramdata;
 			return "SGB_CARTRAM";
   //case SNES_MEMORY_GAME_BOY_RTC:
-  //  if(SuperFamicom::cartridge.mode() != SuperFamicom::Cartridge::Mode::SuperGameBoy) break;
+  //  if(cartridge.mode() != Cartridge::Mode::SuperGameBoy) break;
   //  return GameBoy::cartridge.rtcdata;
     case SNES_MEMORY_GAME_BOY_WRAM:
-      if(SuperFamicom::cartridge.has.GameBoySlot)//() != SuperFamicom::Cartridge::Mode::SuperGameBoy) break;
+      if(cartridge.has.GameBoySlot)//() != Cartridge::Mode::SuperGameBoy) break;
       //see notes in SetupMemoryDomains in bizhawk
       return "SGB_WRAM";
     case SNES_MEMORY_GAME_BOY_HRAM:
-      if(SuperFamicom::cartridge.has.GameBoySlot)//() != SuperFamicom::Cartridge::Mode::SuperGameBoy) break;
+      if(cartridge.has.GameBoySlot)//() != Cartridge::Mode::SuperGameBoy) break;
       return "SGB_HRAM";
 
     case SNES_MEMORY_WRAM:
-      //return SuperFamicom::cpu.wram;
+      //return cpu.wram;
 			return "WRAM";
     case SNES_MEMORY_APURAM:
-      //return SuperFamicom::smp.apuram;
+      //return smp.apuram;
 			return "APURAM";
     case SNES_MEMORY_VRAM:
       return "VRAM";
@@ -503,49 +504,49 @@ const char* snes_get_memory_id_name(unsigned id) {
 }
 
 unsigned snes_get_memory_size(unsigned id) {
-  if(emulator->loaded() == false) return 0;
+  if(!emulator->loaded()) return 0;
   unsigned size = 0;
 
   switch(id) {
     case SNES_MEMORY_CARTRIDGE_RAM:
-      size = SuperFamicom::cartridge.ram.size();
+      size = cartridge.ram.size();
       break;
     case SNES_MEMORY_CARTRIDGE_RTC:
-      if(SuperFamicom::cartridge.has.SharpRTC || SuperFamicom::cartridge.has.SPC7110) size = 20;
+      if(cartridge.has.SharpRTC || cartridge.has.SPC7110)
+        size = 20;
       break;
     case SNES_MEMORY_BSX_RAM:
-		case SNES_MEMORY_BSX_PRAM:
-      if(SuperFamicom::cartridge.has.BSMemorySlot)
-      size = SuperFamicom::bsmemory.size();// bsxcartridge.sram.size();
+      if(cartridge.has.BSMemorySlot)
+        size = mcc.rom.size();
       break;
-    // case SNES_MEMORY_BSX_PRAM:
-      // if(SuperFamicom::cartridge.mode() != SuperFamicom::Cartridge::Mode::Bsx) break;
-      // size = SuperFamicom::bsxcartridge.psram.size();
-      // break;
+    case SNES_MEMORY_BSX_PRAM:
+      if(cartridge.has.BSMemorySlot)
+        size = mcc.psram.size();
+      break;
     case SNES_MEMORY_SUFAMI_TURBO_A_RAM:
-      if(SuperFamicom::cartridge.has.SufamiTurboSlotA)// .mode() != SuperFamicom::Cartridge::Mode::SufamiTurbo) break;
-      size = SuperFamicom::sufamiturboA.ram.size();// sufamiturbo.slotA.ram.size();
+      if(cartridge.has.SufamiTurboSlotA)// .mode() != Cartridge::Mode::SufamiTurbo) break;
+        size = sufamiturboA.ram.size();// sufamiturbo.slotA.ram.size();
       break;
     case SNES_MEMORY_SUFAMI_TURBO_B_RAM:
-      if(SuperFamicom::cartridge.has.SufamiTurboSlotB)// mode() != SuperFamicom::Cartridge::Mode::SufamiTurbo) break;
-      size = SuperFamicom::sufamiturboB.ram.size();// .slotB.ram.size();
+      if(cartridge.has.SufamiTurboSlotB)// mode() != Cartridge::Mode::SufamiTurbo) break;
+        size = sufamiturboB.ram.size();// .slotB.ram.size();
       break;
     case SNES_MEMORY_GAME_BOY_CARTRAM:
-      if(SuperFamicom::cartridge.has.GameBoySlot)// mode() != SuperFamicom::Cartridge::Mode::SuperGameBoy) break;
-      size = SuperFamicom::cartridge.ram.size();// GameBoy::cartridge.ramsize;
+      if(cartridge.has.GameBoySlot)// mode() != Cartridge::Mode::SuperGameBoy) break;
+        size = cartridge.ram.size();// GameBoy::cartridge.ramsize;
       break;
   //case SNES_MEMORY_GAME_BOY_RTC:
-  //  if(SuperFamicom::cartridge.mode() != SuperFamicom::Cartridge::Mode::SuperGameBoy) break;
+  //  if(cartridge.mode() != Cartridge::Mode::SuperGameBoy) break;
   //  size = GameBoy::cartridge.rtcsize;
   //  break;
     case SNES_MEMORY_GAME_BOY_WRAM:
-      if(SuperFamicom::cartridge.has.GameBoySlot)// mode() != SuperFamicom::Cartridge::Mode::SuperGameBoy) break;
+      if(cartridge.has.GameBoySlot)// mode() != Cartridge::Mode::SuperGameBoy) break;
       //see notes in SetupMemoryDomains in bizhawk
-      size = 32768;
+        size = 32768;
       break;
     case SNES_MEMORY_GAME_BOY_HRAM:
-      if(SuperFamicom::cartridge.has.GameBoySlot)//.mode() != SuperFamicom::Cartridge::Mode::SuperGameBoy) break;
-      size = 128;
+      if(cartridge.has.GameBoySlot)//.mode() != Cartridge::Mode::SuperGameBoy) break;
+        size = 128;
       break;
 
     case SNES_MEMORY_WRAM:
@@ -565,7 +566,7 @@ unsigned snes_get_memory_size(unsigned id) {
       break;
 
     case SNES_MEMORY_CARTRIDGE_ROM:
-      size =  SuperFamicom::cartridge.rom.size();
+      size =  cartridge.rom.size();
       break;
   }
 
@@ -574,10 +575,10 @@ unsigned snes_get_memory_size(unsigned id) {
 }
 
 uint8_t bus_read(unsigned addr) {
-  return SuperFamicom::bus.read(addr);
+  return bus.read(addr);
 }
 void bus_write(unsigned addr, uint8_t val) {
-  SuperFamicom::bus.write(addr, val);
+  bus.write(addr, val);
 }
 
 int snes_poll_message()

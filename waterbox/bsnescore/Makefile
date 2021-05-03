@@ -1,9 +1,6 @@
 NEED_LIBCO := 1
 
-# todo: make openmp work for parallelized ppu
-# LDFLAGS := -fopenmp
-#-DPROFILE_PERFORMANCE
-CXXFLAGS := -DHOOKS -DBIZHAWK -DPROFILE_COMPATIBILITY -DGAMEBOY \
+CXXFLAGS := -DHOOKS -DGAMEBOY \
 	-D_GNU_SOURCE \
 	-Werror=int-to-pointer-cast \
 	-I../libco -I./bsnes \
