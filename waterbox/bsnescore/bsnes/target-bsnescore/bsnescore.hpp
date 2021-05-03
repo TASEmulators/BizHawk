@@ -106,28 +106,28 @@ void snes_reset(void);
 void snes_run(void);
 
 bool snes_load_cartridge_normal(
-  const char *base_rom_path, const uint8_t *rom_data, unsigned rom_size
+    const char *base_rom_path, const uint8_t *rom_data, unsigned rom_size
 );
 
 bool snes_load_cartridge_bsx_slotted(
-  const char *rom_xml, const uint8_t *rom_data, unsigned rom_size,
-  const char *bsx_xml, const uint8_t *bsx_data, unsigned bsx_size
+    const char *rom_xml, const uint8_t *rom_data, unsigned rom_size,
+    const char *bsx_xml, const uint8_t *bsx_data, unsigned bsx_size
 );
 
 bool snes_load_cartridge_bsx(
-  const char *rom_xml, const uint8_t *rom_data, unsigned rom_size,
-  const char *bsx_xml, const uint8_t *bsx_data, unsigned bsx_size
+    const char *rom_xml, const uint8_t *rom_data, unsigned rom_size,
+    const char *bsx_xml, const uint8_t *bsx_data, unsigned bsx_size
 );
 
 bool snes_load_cartridge_sufami_turbo(
-  const char *rom_xml, const uint8_t *rom_data, unsigned rom_size,
-  const char *sta_xml, const uint8_t *sta_data, unsigned sta_size,
-  const char *stb_xml, const uint8_t *stb_data, unsigned stb_size
+    const char *rom_xml, const uint8_t *rom_data, unsigned rom_size,
+    const char *sta_xml, const uint8_t *sta_data, unsigned sta_size,
+    const char *stb_xml, const uint8_t *stb_data, unsigned stb_size
 );
 
 bool snes_load_cartridge_super_game_boy(
-  const char *base_rom_path, const uint8_t *rom_data, unsigned rom_size,
-  const uint8_t *sgb_rom_data, unsigned sgb_rom_size
+    const char *base_rom_path, const uint8_t *rom_data, unsigned rom_size,
+    const uint8_t *sgb_rom_data, unsigned sgb_rom_size
 );
 
 void snes_unload_cartridge(void);
