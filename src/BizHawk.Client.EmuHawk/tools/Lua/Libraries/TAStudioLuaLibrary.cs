@@ -477,18 +477,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Engaged())
 			{
-				Tastudio.QueryItemBgColorCallback = (index, name) =>
-				{
-					var result = luaf.Call(index, name);
-
-					if (result != null)
-					{
-						var color = ToColor(result[0]);
-						return color;
-					}
-
-					return null;
-				};
+				Tastudio.QueryItemBgColorCallback = (index, name) => _th.SafeParseColor(luaf.Call(index, name)?[0]);
 			}
 		}
 

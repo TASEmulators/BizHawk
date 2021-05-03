@@ -44,7 +44,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			if (true /*NLua.Lua.WhichLua == "NLua"*/) _lua["keepalives"] = _lua.NewTable();
-			_th = new NLuaTableHelper(_lua);
+			_th = new NLuaTableHelper(_lua, LogToLuaConsole);
 			_displayManager = displayManager;
 			_inputManager = inputManager;
 			_mainForm = mainForm;
