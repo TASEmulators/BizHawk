@@ -18,8 +18,6 @@
 #include <string>
 #include <vector>
 
-extern SuperFamicom::Interface *iface;
-
 typedef uint8 u8;
 typedef uint16 u16;
 typedef uint32 u32;
@@ -113,11 +111,11 @@ static_assert(sizeof(CPURegsComm) == 24);
 
 struct LayerEnablesComm
 {
-    u8 BG1_Prio0, BG1_Prio1;
-    u8 BG2_Prio0, BG2_Prio1;
-    u8 BG3_Prio0, BG3_Prio1;
-    u8 BG4_Prio0, BG4_Prio1;
-    u8 Obj_Prio0, Obj_Prio1, Obj_Prio2, Obj_Prio3;
+    bool BG1_Prio0, BG1_Prio1;
+    bool BG2_Prio0, BG2_Prio1;
+    bool BG3_Prio0, BG3_Prio1;
+    bool BG4_Prio0, BG4_Prio1;
+    bool Obj_Prio0, Obj_Prio1, Obj_Prio2, Obj_Prio3;
 };
 
 //TODO: do any of these need to be volatile?
@@ -424,20 +422,6 @@ static void CMD_Run()
 //     // SuperFamicom::smp.deb
 //     // SuperFamicom::smp.debugger.op_write = comm.value ? debug_op_write_smp : hook<void(uint24, uint8)>();
 // }
-// void QUERY_state_set_layer_enable() {
-//     snes_set_layer_enable(0, 0, !!comm.layerEnables.BG1_Prio0);
-//     snes_set_layer_enable(0, 1, !!comm.layerEnables.BG1_Prio1);
-//     snes_set_layer_enable(1, 0, !!comm.layerEnables.BG2_Prio0);
-//     snes_set_layer_enable(1, 1, !!comm.layerEnables.BG2_Prio1);
-//     snes_set_layer_enable(2, 0, !!comm.layerEnables.BG3_Prio0);
-//     snes_set_layer_enable(2, 1, !!comm.layerEnables.BG3_Prio1);
-//     snes_set_layer_enable(3, 0, !!comm.layerEnables.BG4_Prio0);
-//     snes_set_layer_enable(3, 1, !!comm.layerEnables.BG4_Prio1);
-//     snes_set_layer_enable(4, 0, !!comm.layerEnables.Obj_Prio0);
-//     snes_set_layer_enable(4, 1, !!comm.layerEnables.Obj_Prio1);
-//     snes_set_layer_enable(4, 2, !!comm.layerEnables.Obj_Prio2);
-//     snes_set_layer_enable(4, 3, !!comm.layerEnables.Obj_Prio3);
-// }
 // void QUERY_set_backdropColor() {
 //     snes_set_backdropColor((s32)comm.value);
 // }
@@ -567,7 +551,7 @@ EXPORT void Message(eMessage msg)
             if (comm.id == SNES_MEMORY_SYSBUS)
                 bus_write(comm.addr, comm.value);
             else
-				snes_write_memory_data(comm.id, comm.addr, comm.value);
+                snes_write_memory_data(comm.id, comm.addr, comm.value);
             break;
         }
         case eMessage_QUERY_serialize_size: {
@@ -617,7 +601,19 @@ EXPORT void Message(eMessage msg)
             break;
         }
         case eMessage_QUERY_set_layer_enable: {
-
+            snes_set_layer_enabled(0, 0, comm.layerEnables.BG1_Prio0);
+            snes_set_layer_enabled(0, 1, comm.layerEnables.BG1_Prio1);
+            snes_set_layer_enabled(1, 0, comm.layerEnables.BG2_Prio0);
+            snes_set_layer_enabled(1, 1, comm.layerEnables.BG2_Prio1);
+            snes_set_layer_enabled(2, 0, comm.layerEnables.BG3_Prio0);
+            snes_set_layer_enabled(2, 1, comm.layerEnables.BG3_Prio1);
+            snes_set_layer_enabled(3, 0, comm.layerEnables.BG4_Prio0);
+            snes_set_layer_enabled(3, 1, comm.layerEnables.BG4_Prio1);
+            snes_set_layer_enabled(4, 0, comm.layerEnables.Obj_Prio0);
+            snes_set_layer_enabled(4, 1, comm.layerEnables.Obj_Prio1);
+            snes_set_layer_enabled(4, 2, comm.layerEnables.Obj_Prio2);
+            snes_set_layer_enabled(4, 3, comm.layerEnables.Obj_Prio3);
+            break;
         }
         case eMessage_QUERY_set_backdropColor: {
 

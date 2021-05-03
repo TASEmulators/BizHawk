@@ -49,27 +49,26 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				Api.CMD_power();
 			}
 
-			// var enables = new LibsnesApi.LayerEnables
-			// {
-			// 	BG1_Prio0 = _settings.ShowBG1_0,
-			// 	BG1_Prio1 = _settings.ShowBG1_1,
-			// 	BG2_Prio0 = _settings.ShowBG2_0,
-			// 	BG2_Prio1 = _settings.ShowBG2_1,
-			// 	BG3_Prio0 = _settings.ShowBG3_0,
-			// 	BG3_Prio1 = _settings.ShowBG3_1,
-			// 	BG4_Prio0 = _settings.ShowBG4_0,
-			// 	BG4_Prio1 = _settings.ShowBG4_1,
-			// 	Obj_Prio0 = _settings.ShowOBJ_0,
-			// 	Obj_Prio1 = _settings.ShowOBJ_1,
-			// 	Obj_Prio2 = _settings.ShowOBJ_2,
-			// 	Obj_Prio3 = _settings.ShowOBJ_3
-			// };
-
-			// Api.SetLayerEnables(ref enables);
+			var enables = new BsnesApi.LayerEnables
+			{
+				BG1_Prio0 = _settings.ShowBG1_0,
+				BG1_Prio1 = _settings.ShowBG1_1,
+				BG2_Prio0 = _settings.ShowBG2_0,
+				BG2_Prio1 = _settings.ShowBG2_1,
+				BG3_Prio0 = _settings.ShowBG3_0,
+				BG3_Prio1 = _settings.ShowBG3_1,
+				BG4_Prio0 = _settings.ShowBG4_0,
+				BG4_Prio1 = _settings.ShowBG4_1,
+				Obj_Prio0 = _settings.ShowOBJ_0,
+				Obj_Prio1 = _settings.ShowOBJ_1,
+				Obj_Prio2 = _settings.ShowOBJ_2,
+				Obj_Prio3 = _settings.ShowOBJ_3
+			};
+			Api.SetLayerEnables(ref enables);
 
 			// RefreshMemoryCallbacks(false);
 
-			// apparently this is one frame?
+			// apparently this is one frame? yes it is?
 			_timeFrameCounter++;
 			Api.CMD_run();
 

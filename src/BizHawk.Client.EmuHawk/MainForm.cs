@@ -134,11 +134,11 @@ namespace BizHawk.Client.EmuHawk
 					.ToList();
 				try
 				{
-					int foundIndex = enabled.FindIndex(tuple => 
+					int foundIndex = enabled.FindIndex(tuple =>
 						tuple.Item1 == requestedExtToolDll
 						|| Path.GetFileName(tuple.Item1) == requestedExtToolDll
 						|| Path.GetFileNameWithoutExtension(tuple.Item1) == requestedExtToolDll);
-					
+
 					if(foundIndex != -1)
 						loaded = Tools.LoadExternalToolForm(enabled[foundIndex].Item1, enabled[foundIndex].Item2, skipExtToolWarning: true);
 				}
@@ -672,7 +672,7 @@ namespace BizHawk.Client.EmuHawk
 				_needsFullscreenOnLoad = false;
 				ToggleFullscreen();
 			}
-			
+
 			// Simply exit the program if the version is asked for
 			if (_argParser.printVersion)
 			{
@@ -1010,7 +1010,7 @@ namespace BizHawk.Client.EmuHawk
 					// ordinarily, an alt release with nothing else would move focus to the MenuBar. but that is sort of useless, and hard to implement exactly right.
 				}
 
-				// zero 09-sep-2012 - all input is eligible for controller input. not sure why the above was done. 
+				// zero 09-sep-2012 - all input is eligible for controller input. not sure why the above was done.
 				// maybe because it doesn't make sense to me to bind hotkeys and controller inputs to the same keystrokes
 
 				bool handled;
@@ -1297,7 +1297,7 @@ namespace BizHawk.Client.EmuHawk
 
 				// Work around an AMD driver bug in >= vista:
 				// It seems windows will activate opengl fullscreen mode when a GL control is occupying the exact space of a screen (0,0 and dimensions=screensize)
-				// AMD cards manifest a problem under these circumstances, flickering other monitors. 
+				// AMD cards manifest a problem under these circumstances, flickering other monitors.
 				// It isn't clear whether nvidia cards are failing to employ this optimization, or just not flickering.
 				// (this could be determined with more work; other side affects of the fullscreen mode include: corrupted TaskBar, no modal boxes on top of GL control, no screenshots)
 				// At any rate, we can solve this by adding a 1px black border around the GL control
@@ -1307,7 +1307,7 @@ namespace BizHawk.Client.EmuHawk
 					&& Config.DispMethod == EDispMethod.OpenGL)
 				{
 					// ATTENTION: this causes the StatusBar to not work well, since the backcolor is now set to black instead of SystemColors.Control.
-					// It seems that some StatusBar elements composite with the backcolor. 
+					// It seems that some StatusBar elements composite with the backcolor.
 					// Maybe we could add another control under the StatusBar. with a different backcolor
 					Padding = new Padding(1);
 					BackColor = Color.Black;
@@ -1425,53 +1425,80 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SNES_ToggleBg(int layer)
 		{
-			if (!(Emulator is LibsnesCore || Emulator is Snes9x) || !1.RangeTo(4).Contains(layer))
+			if (Emulator is not (BsnesCore or LibsnesCore or Snes9x) || !1.RangeTo(4).Contains(layer))
 			{
 				return;
 			}
 
 			bool result = false;
-			if (Emulator is LibsnesCore bsnes)
+			switch (Emulator)
 			{
-				var s = bsnes.GetSettings();
-				switch (layer)
+				case BsnesCore bsnes:
 				{
-					case 1:
-						result = s.ShowBG1_0 = s.ShowBG1_1 ^= true;
-						break;
-					case 2:
-						result = s.ShowBG2_0 = s.ShowBG2_1 ^= true;
-						break;
-					case 3:
-						result = s.ShowBG3_0 = s.ShowBG3_1 ^= true;
-						break;
-					case 4:
-						result = s.ShowBG4_0 = s.ShowBG4_1 ^= true;
-						break;
-				}
+					var s = bsnes.GetSettings();
+					switch (layer)
+					{
+						case 1:
+							result = s.ShowBG1_0 = s.ShowBG1_1 ^= true;
+							break;
+						case 2:
+							result = s.ShowBG2_0 = s.ShowBG2_1 ^= true;
+							break;
+						case 3:
+							result = s.ShowBG3_0 = s.ShowBG3_1 ^= true;
+							break;
+						case 4:
+							result = s.ShowBG4_0 = s.ShowBG4_1 ^= true;
+							break;
+					}
 
-				bsnes.PutSettings(s);
-			}
-			else if (Emulator is Snes9x snes9X)
-			{
-				var s = snes9X.GetSettings();
-				switch (layer)
+					bsnes.PutSettings(s);
+					break;
+				}
+				case LibsnesCore libsnes:
 				{
-					case 1:
-						result = s.ShowBg0 ^= true;
-						break;
-					case 2:
-						result = s.ShowBg1 ^= true;
-						break;
-					case 3:
-						result = s.ShowBg2 ^= true;
-						break;
-					case 4:
-						result = s.ShowBg3 ^= true;
-						break;
-				}
+					var s = libsnes.GetSettings();
+					switch (layer)
+					{
+						case 1:
+							result = s.ShowBG1_0 = s.ShowBG1_1 ^= true;
+							break;
+						case 2:
+							result = s.ShowBG2_0 = s.ShowBG2_1 ^= true;
+							break;
+						case 3:
+							result = s.ShowBG3_0 = s.ShowBG3_1 ^= true;
+							break;
+						case 4:
+							result = s.ShowBG4_0 = s.ShowBG4_1 ^= true;
+							break;
+					}
 
-				snes9X.PutSettings(s);
+					libsnes.PutSettings(s);
+					break;
+				}
+				case Snes9x snes9X:
+				{
+					var s = snes9X.GetSettings();
+					switch (layer)
+					{
+						case 1:
+							result = s.ShowBg0 ^= true;
+							break;
+						case 2:
+							result = s.ShowBg1 ^= true;
+							break;
+						case 3:
+							result = s.ShowBg2 ^= true;
+							break;
+						case 4:
+							result = s.ShowBg3 ^= true;
+							break;
+					}
+
+					snes9X.PutSettings(s);
+					break;
+				}
 			}
 
 			AddOnScreenMessage($"BG {layer} Layer {(result ? "On" : "Off")}");
@@ -1974,6 +2001,10 @@ namespace BizHawk.Client.EmuHawk
 					SNESSubMenu.Visible = true;
 					break;
 				case "SNES" when Emulator is LibsnesCore { IsSGB: false }:
+					SNESSubMenu.Text = "&SNES";
+					SNESSubMenu.Visible = true;
+					break;
+				case "SNES" when Emulator is BsnesCore { IsSGB: false }:
 					SNESSubMenu.Text = "&SNES";
 					SNESSubMenu.Visible = true;
 					break;
@@ -2603,7 +2634,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Config.ClockThrottle)
 				return true;
-			
+
 			AddOnScreenMessage("Unable to change speed, please switch to clock throttle");
 			return false;
 		}
@@ -4688,7 +4719,7 @@ namespace BizHawk.Client.EmuHawk
 				_singleInstanceServer.EndWaitForConnection(iAsyncResult);
 
 				//a bit over-engineered in case someone wants to send a script or a rom or something
-				//buffer size is set to something tiny so that we are continually testing it 
+				//buffer size is set to something tiny so that we are continually testing it
 				var payloadBytes = new MemoryStream();
 				while (true)
 				{

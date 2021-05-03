@@ -176,6 +176,8 @@ public:
       uint16 voffset = 0;
       uint8 tileMode = 0;
       uint8 priority[2] = {};
+
+      bool priority_enabled[2] = {true, true};
     } bg1, bg2, bg3, bg4;
 
     struct Object {
@@ -194,6 +196,8 @@ public:
       bool rangeOver = 0;
       bool timeOver = 0;
       uint8 priority[4] = {};
+
+      bool priority_enabled[4] = {true, true, true, true};
     } obj;
 
     struct Color {

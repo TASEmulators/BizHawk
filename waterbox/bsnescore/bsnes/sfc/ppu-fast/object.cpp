@@ -113,7 +113,7 @@ auto PPU::Line::renderObject(PPU::IO::Object& self) -> void {
         color += tile.data >> shift + 21 & 8;
         if(color) {
           palette[tileX] = tile.palette + color;
-          priority[tileX] = self.priority[tile.priority];
+          priority[tileX] = self.priority_enabled[tile.priority] ? self.priority[tile.priority] : 0;
         }
       }
       tileX++;

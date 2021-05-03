@@ -178,7 +178,7 @@ namespace BizHawk.Client.EmuHawk
 			SaveMovieMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Save Movie"].Bindings;
 
 			PlayMovieMenuItem.Enabled
-				= ImportMoviesMenuItem.Enabled 
+				= ImportMoviesMenuItem.Enabled
 				= RecentMovieSubMenu.Enabled
 					= !Tools.IsLoaded<TAStudio>();
 
@@ -1472,7 +1472,7 @@ namespace BizHawk.Client.EmuHawk
 				using var dlg = new NESSyncSettingsForm(this, sub.GetSyncSettings().Clone(), sub.HasMapperProperties);
 				dlg.ShowDialog(this);
 			}
-			
+
 		}
 
 		private void BarcodeReaderMenuItem_Click(object sender, EventArgs e)
@@ -1665,9 +1665,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SnesOptionsMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Emulator is LibsnesCore bsnes)
+			if (Emulator is LibsnesCore libsnes)
 			{
-				SNESOptions.DoSettingsDialog(this, bsnes);
+				SNESOptions.DoSettingsDialog(this, libsnes);
+			}
+			if (Emulator is BsnesCore bsnes)
+			{
+				BSNESOptions.DoSettingsDialog(this, bsnes);
 			}
 		}
 
@@ -1715,7 +1719,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			N64PluginSettingsMenuItem.Enabled =
 				N64ControllerSettingsMenuItem.Enabled =
-				N64ExpansionSlotMenuItem.Enabled = 
+				N64ExpansionSlotMenuItem.Enabled =
 				MovieSession.Movie.NotActive();
 
 			N64CircularAnalogRangeMenuItem.Checked = Config.N64UseCircularAnalogConstraint;
@@ -2144,7 +2148,7 @@ namespace BizHawk.Client.EmuHawk
 				using var form = new AmstradCpcNonSyncSettings(this, cpc.GetSettings().Clone());
 				form.ShowDialog();
 			}
-			
+
 		}
 
 		private void HelpSubMenu_DropDownOpened(object sender, EventArgs e)

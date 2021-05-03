@@ -240,10 +240,3 @@ auto System::power(bool reset) -> void {
 }
 
 }
-
-//zero 04-sep-2012 | now 07-april-2021
-extern "C" void snes_set_layer_enable(int layer, int priority, bool enable)
-{
-	// SuperFamicom::PPU.layer_enable(layer, priority, enable);
-	// do nothing, TODO
-}

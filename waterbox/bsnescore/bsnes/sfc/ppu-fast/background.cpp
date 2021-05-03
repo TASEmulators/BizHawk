@@ -76,7 +76,7 @@ auto PPU::Line::renderBackground(PPU::IO::Background& self, uint8 source) -> voi
     uint tileNumber = getTile(self, hoffset, voffset);
     uint mirrorY = tileNumber & 0x8000 ? 7 : 0;
     uint mirrorX = tileNumber & 0x4000 ? 7 : 0;
-    uint8 tilePriority = self.priority[bool(tileNumber & 0x2000)];
+    uint8 tilePriority = self.priority_enabled[bool(tileNumber & 0x2000)] ? self.priority[bool(tileNumber & 0x2000)] : 0;
     uint paletteNumber = tileNumber >> 10 & 7;
     uint paletteIndex = paletteBase + (paletteNumber << paletteShift) & 0xff;
 

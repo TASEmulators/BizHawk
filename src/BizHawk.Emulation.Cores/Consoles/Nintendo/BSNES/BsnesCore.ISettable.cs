@@ -17,12 +17,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public PutSettingsDirtyBits PutSettings(SnesSettings o)
 		{
-			// bool refreshNeeded = o.Palette != _settings.Palette;
-			// _settings = o;
-			// if (refreshNeeded)
-			// {
-			// 	RefreshPalette();
-			// }
+			_settings = o;
 
 			return PutSettingsDirtyBits.None;
 		}
@@ -43,18 +38,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public class SnesSettings
 		{
-			// public bool ShowBG1_0 { get; set; } = true;
-			// public bool ShowBG2_0 { get; set; } = true;
-			// public bool ShowBG3_0 { get; set; } = true;
-			// public bool ShowBG4_0 { get; set; } = true;
-			// public bool ShowBG1_1 { get; set; } = true;
-			// public bool ShowBG2_1 { get; set; } = true;
-			// public bool ShowBG3_1 { get; set; } = true;
-			// public bool ShowBG4_1 { get; set; } = true;
-			// public bool ShowOBJ_0 { get; set; } = true;
-			// public bool ShowOBJ_1 { get; set; } = true;
-			// public bool ShowOBJ_2 { get; set; } = true;
-			// public bool ShowOBJ_3 { get; set; } = true;
+			public bool ShowBG1_0 { get; set; } = true;
+			public bool ShowBG2_0 { get; set; } = true;
+			public bool ShowBG3_0 { get; set; } = true;
+			public bool ShowBG4_0 { get; set; } = true;
+			public bool ShowBG1_1 { get; set; } = true;
+			public bool ShowBG2_1 { get; set; } = true;
+			public bool ShowBG3_1 { get; set; } = true;
+			public bool ShowBG4_1 { get; set; } = true;
+			public bool ShowOBJ_0 { get; set; } = true;
+			public bool ShowOBJ_1 { get; set; } = true;
+			public bool ShowOBJ_2 { get; set; } = true;
+			public bool ShowOBJ_3 { get; set; } = true;
 
 			// public bool CropSGBFrame { get; set; } = false;
 			// public bool AlwaysDoubleSize { get; set; } = false;

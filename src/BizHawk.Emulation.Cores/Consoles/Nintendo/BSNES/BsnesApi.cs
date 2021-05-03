@@ -216,73 +216,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		[StructLayout(LayoutKind.Sequential)]
 		public struct LayerEnables
 		{
-			private byte _BG1_Prio0, _BG1_Prio1;
-			private byte _BG2_Prio0, _BG2_Prio1;
-			private byte _BG3_Prio0, _BG3_Prio1;
-			private byte _BG4_Prio0, _BG4_Prio1;
-			private byte _Obj_Prio0, _Obj_Prio1, _Obj_Prio2, _Obj_Prio3;
-
-			public bool BG1_Prio0
-			{
-				get => _BG1_Prio0 != 0;
-				set => _BG1_Prio0 = (byte)(value ? 1 : 0);
-			}
-			public bool BG1_Prio1
-			{
-				get => _BG1_Prio1 != 0;
-				set => _BG1_Prio1 = (byte)(value ? 1 : 0);
-			}
-			public bool BG2_Prio0
-			{
-				get => _BG2_Prio0 != 0;
-				set => _BG2_Prio0 = (byte)(value ? 1 : 0);
-			}
-			public bool BG2_Prio1
-			{
-				get => _BG2_Prio1 != 0;
-				set => _BG2_Prio1 = (byte)(value ? 1 : 0);
-			}
-			public bool BG3_Prio0
-			{
-				get => _BG3_Prio0 != 0;
-				set => _BG3_Prio0 = (byte)(value ? 1 : 0);
-			}
-			public bool BG3_Prio1
-			{
-				get => _BG3_Prio1 != 0;
-				set => _BG3_Prio1 = (byte)(value ? 1 : 0);
-			}
-			public bool BG4_Prio0
-			{
-				get => _BG4_Prio0 != 0;
-				set => _BG4_Prio0 = (byte)(value ? 1 : 0);
-			}
-			public bool BG4_Prio1
-			{
-				get => _BG4_Prio1 != 0;
-				set => _BG4_Prio1 = (byte)(value ? 1 : 0);
-			}
-
-			public bool Obj_Prio0
-			{
-				get => _Obj_Prio0 != 0;
-				set => _Obj_Prio0 = (byte)(value ? 1 : 0);
-			}
-			public bool Obj_Prio1
-			{
-				get => _Obj_Prio1 != 0;
-				set => _Obj_Prio1 = (byte)(value ? 1 : 0);
-			}
-			public bool Obj_Prio2
-			{
-				get => _Obj_Prio2 != 0;
-				set => _Obj_Prio2 = (byte)(value ? 1 : 0);
-			}
-			public bool Obj_Prio3
-			{
-				get => _Obj_Prio3 != 0;
-				set => _Obj_Prio3 = (byte)(value ? 1 : 0);
-			}
+			public bool BG1_Prio0, BG1_Prio1;
+			public bool BG2_Prio0, BG2_Prio1;
+			public bool BG3_Prio0, BG3_Prio1;
+			public bool BG4_Prio0, BG4_Prio1;
+			public bool Obj_Prio0, Obj_Prio1, Obj_Prio2, Obj_Prio3;
 		}
 
 		[StructLayout(LayoutKind.Explicit)]

@@ -214,7 +214,20 @@ namespace BizHawk.Client.Common
 		public void SetRenderPlanes(params bool[] args)
 		{
 			static bool GetSetting(bool[] settings, int index) => index >= settings.Length || settings[index];
-			void SetBsnes(LibsnesCore core)
+			void SetLibsnes(LibsnesCore core)
+			{
+				var s = core.GetSettings();
+				s.ShowBG1_0 = s.ShowBG1_1 = GetSetting(args, 0);
+				s.ShowBG2_0 = s.ShowBG2_1 = GetSetting(args, 1);
+				s.ShowBG3_0 = s.ShowBG3_1 = GetSetting(args, 2);
+				s.ShowBG4_0 = s.ShowBG4_1 = GetSetting(args, 3);
+				s.ShowOBJ_0 = GetSetting(args, 4);
+				s.ShowOBJ_1 = GetSetting(args, 5);
+				s.ShowOBJ_2 = GetSetting(args, 6);
+				s.ShowOBJ_3 = GetSetting(args, 7);
+				core.PutSettings(s);
+			}
+			void SetBsnes(BsnesCore core)
 			{
 				var s = core.GetSettings();
 				s.ShowBG1_0 = s.ShowBG1_1 = GetSetting(args, 0);
@@ -286,7 +299,10 @@ namespace BizHawk.Client.Common
 					SetGPGX(gpgx);
 					break;
 				case LibsnesCore snes:
-					SetBsnes(snes);
+					SetLibsnes(snes);
+					break;
+				case BsnesCore bsnes:
+					SetBsnes(bsnes);
 					break;
 				case NES nes:
 					SetNesHawk(nes);

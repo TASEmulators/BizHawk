@@ -1,13 +1,6 @@
 #include "bsnescore.hpp"
 #include <sfc/sfc.hpp>
 #include <emulibc.h>
-// #include <heuristics/heuristics.hpp>
-// #include <heuristics/heuristics.cpp>
-// #include <heuristics/super-famicom.cpp>
-// #include <heuristics/global_interface.cpp>
-
-// #include <sfc/memory/memory.hpp>
-// #include <sfc/cartridge/cartridge.hpp>
 #include <nall/hid.hpp>
 
 #include <queue>
@@ -393,20 +386,34 @@ char snes_get_mapper(void) {
     return -1;
 }
 
+void snes_set_layer_enabled(int layer, int priority, bool enable)
+{
+    // fprintf(stderr, "snes_set_layer_enabled was called with layer %d, priority %d and bool %d\n", layer, priority, enable);
+    if (emulator->configuration("Hacks/PPU/Fast") == "true")
+    switch (layer)
+    {
+        case 0: ppufast.io.bg1.priority_enabled[priority] = enable; break;
+        case 1: ppufast.io.bg2.priority_enabled[priority] = enable; break;
+        case 2: ppufast.io.bg3.priority_enabled[priority] = enable; break;
+        case 3: ppufast.io.bg4.priority_enabled[priority] = enable; break;
+        case 4: ppufast.io.obj.priority_enabled[priority] = enable; break;
+    }
+}
+
 static uint8_t sharprtc_data[16];
 static uint8_t epsonrtc_data[16];
 
 void snes_write_memory_data(unsigned id, unsigned index, unsigned value)
 {
-	uint8_t* data = snes_get_memory_data(id);
-	if (!data) return;
+    uint8_t* data = snes_get_memory_data(id);
+    if (!data) return;
 
-	data[index] = value;
+    data[index] = value;
 
-	if (id == SNES_MEMORY_CARTRIDGE_RTC) {
-		if (cartridge.has.SharpRTC) sharprtc.load(data);
-		if (cartridge.has.EpsonRTC) epsonrtc.load(data);
-	}
+    if (id == SNES_MEMORY_CARTRIDGE_RTC) {
+        if (cartridge.has.SharpRTC) sharprtc.load(data);
+        if (cartridge.has.EpsonRTC) epsonrtc.load(data);
+    }
 }
 
 uint8_t* snes_get_memory_data(unsigned id)
@@ -419,9 +426,9 @@ uint8_t* snes_get_memory_data(unsigned id)
             return cartridge.ram.data();
         case SNES_MEMORY_CARTRIDGE_RTC:
             if(cartridge.has.SharpRTC) {
-				sharprtc.save(sharprtc_data);
+                sharprtc.save(sharprtc_data);
                 return sharprtc_data;
-			}
+            }
             if(cartridge.has.EpsonRTC) {
                 epsonrtc.save(epsonrtc_data);
                 return epsonrtc_data;
