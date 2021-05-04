@@ -310,11 +310,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			// Even after _watches is cleared, these callbacks hang around! So this check is necessary
 			var script = LuaImp.ScriptList.FirstOrDefault(s => s.Path == e.FullPath && s.Enabled);
-
-			if (script != null)
-			{
-				Invoke(new MethodInvoker(delegate { RefreshScriptMenuItem_Click(null, null); }));
-			}
+			if (script != null) Invoke((MethodInvoker) (() => RefreshLuaScript(script)));
 		}
 
 		public void LoadLuaFile(string path)
@@ -1416,8 +1412,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RefreshScriptMenuItem_Click(object sender, EventArgs e)
 		{
-			ToggleScriptMenuItem_Click(sender, e);
-			ToggleScriptMenuItem_Click(sender, e);
+			if (!(LuaImp is Win32LuaLibraries luaLibsImpl)) return;
+			var files = !SelectedFiles.Any() && Settings.ToggleAllIfNoneSelected
+				? luaLibsImpl.ScriptList
+				: SelectedFiles;
+			foreach (var file in files) RefreshLuaScript(file);
+			UpdateDialog();
 		}
 
 		private void InputBox_KeyDown(object sender, KeyEventArgs e)
@@ -1564,6 +1564,12 @@ namespace BizHawk.Client.EmuHawk
 				file.Stop();
 				// there used to be a call here which did a redraw of the Gui/OSD, which included a call to `Tools.UpdateToolsAfter` --yoshi
 			}
+		}
+
+		private void RefreshLuaScript(LuaFile file)
+		{
+			ToggleLuaScript(file);
+			ToggleLuaScript(file);
 		}
 
 		[RestoreDefaults]
