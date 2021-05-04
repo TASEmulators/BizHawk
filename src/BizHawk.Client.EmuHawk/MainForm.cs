@@ -497,8 +497,8 @@ namespace BizHawk.Client.EmuHawk
 			if (_argParser.cmdRom != null)
 			{
 				// Commandline should always override auto-load
-				var ioa = OpenAdvancedSerializer.ParseWithLegacy(_argParser.cmdRom);
-				LoadRom(_argParser.cmdRom, new LoadRomArgs { OpenAdvanced = ioa });
+				var romPath = _argParser.cmdRom.MakeAbsolute();
+				LoadRom(romPath, new LoadRomArgs { OpenAdvanced = OpenAdvancedSerializer.ParseWithLegacy(romPath) });
 				if (Game == null)
 				{
 					ShowMessageBox(owner: null, $"Failed to load {_argParser.cmdRom} specified on commandline");

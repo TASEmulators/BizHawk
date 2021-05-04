@@ -196,6 +196,7 @@ On Windows 8.1/10, it's easiest to use PowerShell for this. For example, to pass
 ```pwsh
 (New-Object System.Diagnostics.Process -Property @{StartInfo=(New-Object System.Diagnostics.ProcessStartInfo -Property @{FileName="$PWD\EmuHawk.exe";Arguments='"--lua=C:\path\to\script.lua" "C:\path\to\rom.n64"'})}).Start()
 ```
+Note: PowerShell's `cd` doesn't seem to change the CWD of child processes. Just open a shell from the install folder. Don't @ me.
 
 For char escaping tips you're on your own. It might help to split up the command so you can identify syntax errors:
 ```pwsh
@@ -205,8 +206,12 @@ $proc = New-Object System.Diagnostics.Process -Property @{StartInfo=$startInfo}
 $proc.Start()
 ```
 
-On Linux, you can pass arguments to `EmuHawkMono.sh` as expected and they will be forwarded to `mono`. (You can also `export` env. vars.) There is one exception: if you pass `--mono-no-redirect` as the *first argument* it will be eaten by the script itself, and stdout will *not* be redirected to a file.
-The same example as above would be `./EmuHawkMono.sh --lua=/path/to/script.lua /path/to/rom.n64`.
+On Linux, you can pass arguments to `EmuHawkMono.sh` as expected and they will be forwarded to `mono`. (You can also `export` env. vars.) All the arguments work as on Windows, with some caveats:
+* Lua scripts are ignored;
+* file paths must be absolute (or relative to the install dir, `EmuHawkMono.sh` changes the CWD to there);
+* `--mono-no-redirect`: if you pass this flag *as the first argument*, it will be eaten by the script itself, and stdout will *not* be redirected to a file. (It's redirected by default.)
+
+The same example as above would be `./EmuHawkMono.sh --lua=/path/to/script.lua /path/to/rom.n64` (but Lua is no-op).
 
 For char escaping tips, see ~~Unix StackExchange~~ your shell's man/info page. BASH and Zsh have different rules!
 
