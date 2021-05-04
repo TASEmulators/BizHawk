@@ -18,7 +18,7 @@ auto DSP::main() -> void {
 
   int count = spc_dsp.sample_count();
   if(count > 0) {
-    if(!system.runAhead)
+    if(!system.runAhead && system.renderAudio)
     for(uint n = 0; n < count; n += 2) {
       float left  = samplebuffer[n + 0] / 32768.0f;
       float right = samplebuffer[n + 1] / 32768.0f;

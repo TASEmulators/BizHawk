@@ -4,6 +4,9 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+#define EXPORT extern "C" ECL_EXPORT
+
+// what is this? it's unused how am i supposed to figure this out
 #if defined(BSNESCORE_IMPORT)
 #define BSNESCORE_IMPORTDECL __declspec(dllimport)
 #elif defined(BSNESCORE_EXPORT)
@@ -87,8 +90,6 @@ extern "C" {
 
 typedef void (*snes_trace_t)(uint32_t which, const char *msg);
 
-const char* snes_library_id(void);
-
 // provided in pwrap.c currently as it communicates with the frontend
 void snes_video_refresh(const uint32_t *data, unsigned width, unsigned height);
 void snes_audio_sample(uint16_t left, uint16_t right);
@@ -96,8 +97,8 @@ void snes_input_poll(void);
 int16_t snes_input_state(unsigned port, unsigned device, unsigned index, unsigned id);
 void snes_no_lag();
 const char* snes_path_request(int slot, const char* hint);
-void* snes_allocSharedMemory(const char* memtype, size_t amt);
-void snes_freeSharedMemory(void* ptr);
+// void* snes_allocSharedMemory(const char* memtype, size_t amt);
+// void snes_freeSharedMemory(void* ptr);
 
 void snes_init(int entropy);
 void snes_term(void);
@@ -140,17 +141,13 @@ const char* snes_get_memory_id_name(unsigned id);
 unsigned snes_get_memory_size(unsigned id);
 
 //zeromus additions
-bool snes_check_cartridge(const uint8_t *rom_data, unsigned rom_size);
+// bool snes_check_cartridge(const uint8_t *rom_data, unsigned rom_size);
 void snes_set_layer_enabled(int layer, int priority, bool enable);
-typedef void (*snes_scanlineStart_t)(int);
-void snes_set_scanlineStart(snes_scanlineStart_t);
-void snes_set_backdropColor(int color);
-//returns -1 if no messages, messagelength if there is one
-int snes_poll_message();
-//give us a buffer of messagelength and we'll dequeue a message into it. you better take care of the null pointer
-void snes_dequeue_message(char* buffer);
+// typedef void (*snes_scanlineStart_t)(int);
+// void snes_set_scanlineStart(snes_scanlineStart_t);
+extern uint16_t backdropColor;
 
-void snes_set_trace_callback(uint32_t mask, void (*callback)(uint32_t mask, const char *));
+// void snes_set_trace_callback(uint32_t mask, void (*callback)(uint32_t mask, const char *));
 
 // system bus implementation
 uint8_t bus_read(unsigned addr);

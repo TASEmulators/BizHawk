@@ -42,7 +42,7 @@ auto MSU1::main() -> void {
     }
   }
 
-  if(!system.runAhead) stream->sample(float(left), float(right));
+  if(!system.runAhead && system.renderAudio) stream->sample(float(left), float(right));
   step(1);
   synchronizeCPU();
 }

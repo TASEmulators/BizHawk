@@ -20,22 +20,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			IsLagFrame = true;
 
+#if false
 			if (_tracer.Enabled)
 			{
 				//Api.QUERY_set_trace_callback(1<<(int)LibsnesApi.eTRACE.SMP, _tracecb); //TEST -- it works but theres no way to control it from the frontend now
 
-				if(IsSGB)
-					Api.QUERY_set_trace_callback(1<<(int)LibsnesApi.eTRACE.GB, _tracecb);
-				else
-					Api.QUERY_set_trace_callback(1<<(int)LibsnesApi.eTRACE.CPU, _tracecb);
+				// if(IsSGB)
+					// Api._core.snes_set_trace_callback(BsnesApi.eTRACE.GB, _tracecb);
+				// else
+					// Api._core.snes_set_trace_callback(BsnesApi.eTRACE.CPU, _tracecb);
 			}
 			else
 			{
 				Api.QUERY_set_trace_callback(0,null);
 			}
+#endif
 
-			// speedup when sound rendering is not needed
-			Api.QUERY_set_audio_sample(renderSound ? _soundcb : null);
+			// speedup when sound or video rendering is not needed
+			Api._core.snes_set_video_enabled(render);
+			Api._core.snes_set_audio_enabled(renderSound);
 
 			bool resetSignal = controller.IsPressed("Reset");
 			if (resetSignal)
@@ -68,7 +71,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			// RefreshMemoryCallbacks(false);
 
-			// apparently this is one frame? yes it is?
+			// run the core for one frame
 			_timeFrameCounter++;
 			Api.CMD_run();
 

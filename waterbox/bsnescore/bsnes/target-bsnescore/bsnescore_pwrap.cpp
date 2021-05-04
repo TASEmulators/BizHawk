@@ -191,7 +191,7 @@ struct CommStruct
 cothread_t co_control, co_emu, co_emu_suspended;
 
 //internal state
-bool audio_enabled = false;
+extern bool audio_enabled;
 static const int AUDIOBUFFER_SIZE = SAMPLE_RATE/50 * 2;
 uint16_t audiobuffer[AUDIOBUFFER_SIZE];
 int audiobuffer_idx = 0;
@@ -223,7 +223,6 @@ void do_SIG_audio_flush()
     audiobuffer_idx = 0;
 }
 
-//this is the raw callback from the emulator internals when a new audio sample is available
 void snes_audio_sample(uint16_t left, uint16_t right)
 {
     if(!audio_enabled) return;
@@ -258,12 +257,12 @@ void snes_no_lag()
     BREAK(eMessage_SIG_no_lag);
 }
 
-void snes_trace(uint32_t which, const char *msg)
-{
-    comm.value = which;
-    comm.str = (char*) msg;
-    BREAK(eMessage_SIG_trace_callback);
-}
+// void snes_trace(uint32_t which, const char *msg)
+// {
+//     comm.value = which;
+//     comm.str = (char*) msg;
+//     BREAK(eMessage_SIG_trace_callback);
+// }
 
 const char* snes_path_request(int slot, const char* hint)
 {
@@ -273,41 +272,41 @@ const char* snes_path_request(int slot, const char* hint)
     return (const char*)comm.buf[0];
 }
 
-void snes_scanlineStart(int line)
-{
-    comm.scanline = line;
-    BREAK(eMessage_BRK_scanlineStart);
-}
+// void snes_scanlineStart(int line)
+// {
+//     comm.scanline = line;
+//     BREAK(eMessage_BRK_scanlineStart);
+// }
 
-void* snes_allocSharedMemory(const char* memtype, size_t amt)
-{
-    //its important that this happen before the message marshaling because allocation/free attempts can happen before the marshaling is setup (or at shutdown time, in case of errors?)
-    //if(!running) return NULL;
+// void* snes_allocSharedMemory(const char* memtype, size_t amt)
+// {
+//     //its important that this happen before the message marshaling because allocation/free attempts can happen before the marshaling is setup (or at shutdown time, in case of errors?)
+//     //if(!running) return NULL;
 
-    void* ret;
+//     void* ret;
 
-    ret = alloc_plain(amt);
+//     ret = alloc_plain(amt);
 
-    comm.str = (char*)memtype;
-    comm.size = amt;
-    comm.ptr = ret;
+//     comm.str = (char*)memtype;
+//     comm.size = amt;
+//     comm.ptr = ret;
 
-    BREAK(eMessage_SIG_allocSharedMemory);
+//     BREAK(eMessage_SIG_allocSharedMemory);
 
-    return comm.ptr;
-}
+//     return comm.ptr;
+// }
 
-void snes_freeSharedMemory(void* ptr)
-{
-    //its important that this happen before the message marshaling because allocation/free attempts can happen before the marshaling is setup (or at shutdown time, in case of errors?)
-    //if(!running) return;
+// void snes_freeSharedMemory(void* ptr)
+// {
+//     //its important that this happen before the message marshaling because allocation/free attempts can happen before the marshaling is setup (or at shutdown time, in case of errors?)
+//     //if(!running) return;
 
-    if (!ptr) return;
+//     if (!ptr) return;
 
-    comm.ptr = ptr;
+//     comm.ptr = ptr;
 
-    BREAK(eMessage_SIG_freeSharedMemory);
-}
+//     BREAK(eMessage_SIG_freeSharedMemory);
+// }
 
 static void debug_op_exec(uint24 addr)
 {
@@ -394,7 +393,9 @@ void CMD_init()
 static void CMD_Run()
 {
     snes_run();
-    do_SIG_audio_flush();
+	// TODO: I have no idea how the audio buffer works, but there has to be a better way to handle this
+	if (audio_enabled)
+    	do_SIG_audio_flush();
 }
 
 // void QUERY_state_hook_exec() {
@@ -421,9 +422,6 @@ static void CMD_Run()
 // void QUERY_state_hook_write_smp() {
 //     // SuperFamicom::smp.deb
 //     // SuperFamicom::smp.debugger.op_write = comm.value ? debug_op_write_smp : hook<void(uint24, uint8)>();
-// }
-// void QUERY_set_backdropColor() {
-//     snes_set_backdropColor((s32)comm.value);
 // }
 // void QUERY_peek_cpu_regs() {
 //     // comm.cpuregs.pc = SuperFamicom::cpu.p
@@ -480,9 +478,6 @@ void new_emuthread()
 
 //------------------------------------------------
 //DLL INTERFACE
-
-#include <emulibc.h>
-#define EXPORT extern "C" ECL_EXPORT
 
 EXPORT void* DllInit()
 {
@@ -587,17 +582,17 @@ EXPORT void Message(eMessage msg)
             break;
         }
         case eMessage_QUERY_enable_trace: {
-            snes_set_trace_callback(comm.value, snes_trace);
+            // snes_set_trace_callback(comm.value, snes_trace);
             break;
         }
         case eMessage_QUERY_enable_scanline: {
-            if (comm.value)
-                snes_set_scanlineStart(snes_scanlineStart);
-            else snes_set_scanlineStart(nullptr);
+            // if (comm.value)
+                // snes_set_scanlineStart(snes_scanlineStart);
+            // else snes_set_scanlineStart(nullptr);
             break;
         }
         case eMessage_QUERY_enable_audio: {
-            audio_enabled = comm.value;
+            // audio_enabled = comm.value;
             break;
         }
         case eMessage_QUERY_set_layer_enable: {
@@ -616,7 +611,7 @@ EXPORT void Message(eMessage msg)
             break;
         }
         case eMessage_QUERY_set_backdropColor: {
-
+            backdropColor = comm.value;
         }
         case eMessage_QUERY_peek_logical_register: {
             comm.value = snes_peek_logical_register(comm.id);

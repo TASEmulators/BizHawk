@@ -46,15 +46,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 						{
 							uint nsamples = _comm->size;
 
-							if (audio_sample != null)
+							ushort* audiobuffer = ((ushort*)_comm->ptr);
+							for (uint i = 0; i < nsamples;)
 							{
-								ushort* audiobuffer = ((ushort*)_comm->ptr);
-								for (uint i = 0; i < nsamples;)
-								{
-									ushort left = audiobuffer[i++];
-									ushort right = audiobuffer[i++];
-									audio_sample(left, right);
-								}
+								ushort left = audiobuffer[i++];
+								ushort right = audiobuffer[i++];
+								_corecs.snes_audio_sample(left, right);// audio_sample(left, right);
 							}
 
 							break;

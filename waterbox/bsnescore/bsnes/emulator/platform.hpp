@@ -22,6 +22,8 @@ struct Platform {
   virtual auto inputRumble(uint port, uint device, uint input, bool enable) -> void {}
   virtual auto dipSettings(Markup::Node node) -> uint { return 0; }
   virtual auto notify(string text) -> void {}
+	// 03-may-2021 manual addition. unused currently but let's hope for the best
+	virtual auto getBackdropColor() -> uint16 { return 0; }
 };
 
 extern Platform* platform;

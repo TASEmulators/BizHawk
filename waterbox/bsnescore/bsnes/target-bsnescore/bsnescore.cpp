@@ -8,62 +8,55 @@
 using namespace nall;
 using namespace SuperFamicom;
 
-struct fInterface : public Interface {
-    typedef Interface BaseType;
+static uint32_t* video_buffer;
+static uint32_t* palette;
+uint16_t backdropColor;
 
-    snes_trace_t ptrace;
-    uint32_t *buffer;
-    uint32_t *palette;
+// snes_trace_t ptrace;
 
-    //zero 26-sep-2012
-    std::queue<nall::string> messages;
+// //zero 27-sep-2012
+// snes_scanlineStart_t pScanlineStart;
+// void scanlineStart(int line)
+// {
+// 	if(pScanlineStart) pScanlineStart((int)line);
+// }
 
-    //zero 17-oct-2012
-    int backdropColor;
-    int getBackdropColor()
-    {
-        return backdropColor;
-    }
+// void cpuTrace(uint32_t which, const char *msg) {
+// 	if (ptrace)
+// 		ptrace(which, (const char *)msg);
+// }
 
-    //zero 27-sep-2012
-    snes_scanlineStart_t pScanlineStart;
-    void scanlineStart(int line)
-    {
-        if(pScanlineStart) pScanlineStart((int)line);
-    }
+// //zero 23-dec-2012
+// void* allocSharedMemory(const char* memtype, size_t amt, int initialByte = -1)
+// {
+// 	void* ret;
+// 	ret = snes_allocSharedMemory(memtype,amt);
+// 	if(initialByte != -1)
+// 	{
+// 		for(unsigned i = 0; i < amt; i++) ((uint8*)ret)[i] = (uint8)initialByte;
+// 	}
+// 	return ret;
+// }
+// void freeSharedMemory(void* ptr)
+// {
+// 	snes_freeSharedMemory(ptr);
+// }
 
-    void message(const string &text) {
-        messages.push(text);
-    }
+#include "program.cpp"
 
-    void cpuTrace(uint32_t which, const char *msg) {
-        if (ptrace)
-            ptrace(which, (const char *)msg);
-    }
+// if ever used from inside bsnes should probably go through platform->allocSharedMemory
+// void* extern_allocSharedMemory(const char* memtype, size_t amt, int initialByte = -1) {
+//     return iface->allocSharedMemory(memtype, amt, initialByte);
+// }
 
+// i will slap anyone who attempts to call this twice. do not do it.
+void snes_init(int entropy)
+{
+    fprintf(stderr, "snes_init was called!\n");
+	emulator = new SuperFamicom::Interface;
+	program = new Program;
 
-    //zero 23-dec-2012
-    void* allocSharedMemory(const char* memtype, size_t amt, int initialByte = -1)
-    {
-        void* ret;
-        ret = snes_allocSharedMemory(memtype,amt);
-        if(initialByte != -1)
-        {
-            for(unsigned i = 0; i < amt; i++) ((uint8*)ret)[i] = (uint8)initialByte;
-        }
-        return ret;
-    }
-    void freeSharedMemory(void* ptr)
-    {
-        snes_freeSharedMemory(ptr);
-    }
-
-  fInterface() :
-        pScanlineStart(0),
-        backdropColor(-1),
-        ptrace(0)
-    {
-    buffer = (uint32_t*)alloc_invisible(512 * 480 * sizeof(uint32_t));
+    video_buffer = (uint32_t*)alloc_invisible(512 * 480 * sizeof(uint32_t));
     palette = (uint32_t*)alloc_invisible(32768 * sizeof(uint32_t));
     // initialize palette here cause why not?
     for(uint color : range(32768)) {
@@ -77,42 +70,7 @@ struct fInterface : public Interface {
 
         palette[color] = r >> 8 << 16 | g >> 8 <<  8 | b >> 8 << 0;
     }
-
     // memset(&cdlInfo,0,sizeof(cdlInfo));
-  }
-};
-
-fInterface *iface = nullptr;
-
-#include "program.cpp"
-
-namespace SuperFamicom {
-    Interface *interface()
-    {
-        if(iface != nullptr) return iface;
-        iface = new ::fInterface;
-        emulator = iface;
-        program = new Program;
-        return iface;
-    }
-}
-
-// if ever used from inside bsnes should probably go through platform->allocSharedMemory
-void* extern_allocSharedMemory(const char* memtype, size_t amt, int initialByte = -1) {
-    return iface->allocSharedMemory(memtype, amt, initialByte);
-}
-
-// leaving for now, but unused
-const char* snes_library_id(void) {
-    static string version = {"bsnes v", Emulator::Version};
-    return version;
-}
-
-
-void snes_init(int entropy)
-{
-    fprintf(stderr, "snes_init was called!\n");
-    interface();
 
     string entropy_string;
     switch (entropy)
@@ -171,19 +129,19 @@ void snes_run(void) {
 }
 
 //zero 21-sep-2012
-void snes_set_scanlineStart(snes_scanlineStart_t cb)
-{
-    iface->pScanlineStart = cb;
-}
+// void snes_set_scanlineStart(snes_scanlineStart_t cb)
+// {
+//     iface->pScanlineStart = cb;
+// }
 
 //zero 03-sep-2012
-bool snes_check_cartridge(const uint8_t *rom_data, unsigned rom_size)
-{
-    //tries to determine whether this rom is a snes rom - BUT THIS TRIES TO ACCEPT EVERYTHING! so we cant really use it
-    // Cartridge temp(rom_data, rom_size);
-    // return temp.type != Cartridge::TypeUnknown && temp.type != Cartridge::TypeGameBoy;
-    return true;
-}
+// bool snes_check_cartridge(const uint8_t *rom_data, unsigned rom_size)
+// {
+//     //tries to determine whether this rom is a snes rom - BUT THIS TRIES TO ACCEPT EVERYTHING! so we cant really use it
+//     // Cartridge temp(rom_data, rom_size);
+//     // return temp.type != Cartridge::TypeUnknown && temp.type != Cartridge::TypeGameBoy;
+//     return true;
+// }
 
 //zero 05-sep-2012
 int snes_peek_logical_register(int reg)
@@ -416,6 +374,7 @@ void snes_write_memory_data(unsigned id, unsigned index, unsigned value)
     }
 }
 
+// this will not return "live" rtc data. this may or not be an issue, depending on what the frontend expects
 uint8_t* snes_get_memory_data(unsigned id)
 {
     if(!emulator->loaded()) return 0;
@@ -601,28 +560,31 @@ void bus_write(unsigned addr, uint8_t val) {
     bus.write(addr, val);
 }
 
-int snes_poll_message()
+
+//
+// fresh dll interface functions
+//
+
+
+bool audio_enabled = true;
+
+EXPORT void snes_set_audio_enabled(bool enable)
 {
-    if(iface->messages.empty()) return -1;
-    return iface->messages.front().length();
-}
-void snes_dequeue_message(char* buffer)
-{
-    int len = iface->messages.front().length();
-    memcpy(buffer,(const char*)iface->messages.front(),len);
-    iface->messages.pop();
+    SuperFamicom::system.renderAudio = enable;
+    audio_enabled = enable;
 }
 
-void snes_set_backdropColor(int color)
+EXPORT void snes_set_video_enabled(bool enable)
 {
-    iface->backdropColor = color;
+	// fprintf(stderr, "video enable was set to %d\n", enable);
+    SuperFamicom::system.renderVideo = enable;
 }
 
-void snes_set_trace_callback(uint32_t mask, snes_trace_t callback)
-{
-    // iface->wanttrace = mask;
-    if (mask)
-        iface->ptrace = callback;
-    else
-        iface->ptrace = nullptr;
-}
+// void snes_set_trace_callback(uint32_t mask, snes_trace_t callback)
+// {
+//     // iface->wanttrace = mask;
+//     if (mask)
+//         iface->ptrace = callback;
+//     else
+//         iface->ptrace = nullptr;
+// }

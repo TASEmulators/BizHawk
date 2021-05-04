@@ -76,11 +76,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			_nolagcb = snes_no_lag;
 			_scanlineStartCb = snes_scanlineStart;
 			_tracecb = snes_trace;
-			_soundcb = snes_audio_sample;
 			_pathrequestcb = snes_path_request;
 
 			// TODO: pass profile here
-			Api = new BsnesApi(CoreComm.CoreFileProvider.DllPath(), CoreComm, new Delegate[]
+			Api = new BsnesApi(this, CoreComm.CoreFileProvider.DllPath(), CoreComm, new Delegate[]
 			{
 				_videocb,
 				_inputpollcb,
@@ -88,7 +87,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				_nolagcb,
 				_scanlineStartCb,
 				_tracecb,
-				_soundcb,
 				_pathrequestcb
 			});
 			// {
@@ -193,17 +191,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			// SetupMemoryDomains(romData, sgbRomData);
 
-			if (CurrentProfile == "Compatibility")
-			{
-				ser.Register<ITraceable>(_tracer);
-			}
+			ser.Register<ITraceable>(_tracer);
 
 			Api.QUERY_set_path_request(null);
 			Api.QUERY_set_video_refresh(_videocb);
 			Api.QUERY_set_input_poll(_inputpollcb);
 			Api.QUERY_set_input_state(_inputstatecb);
 			Api.QUERY_set_no_lag(_nolagcb);
-			Api.QUERY_set_audio_sample(_soundcb);
 			Api.Seal();
 			// RefreshPalette();
 		}
@@ -226,7 +220,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		private readonly XmlDocument _romxml;
 		private readonly BsnesApi.snes_scanlineStart_t _scanlineStartCb;
 		private readonly BsnesApi.snes_trace_t _tracecb;
-		private readonly BsnesApi.snes_audio_sample_t _soundcb;
 
 		private IController _controller;
 		private readonly LoadParams _currLoadParams;
@@ -240,9 +233,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		{
 			public string BoardName => "SGB";
 		}
-
-		// what is a profile? accuracy is good, i don't like this compatibility
-		public string CurrentProfile => "Compatibility"; // We no longer support performance, and accuracy isn't worth the effort so we shall just hardcode this one
 
 		public BsnesApi Api { get; }
 
@@ -636,7 +626,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			_resampler = new SpeexResampler((SpeexResampler.Quality)6, 64081, 88200, 32041, 44100);
 		}
 
-		private void snes_audio_sample(ushort left, ushort right)
+		public void snes_audio_sample(ushort left, ushort right)
 		{
 			_resampler.EnqueueSample((short)left, (short)right);
 		}

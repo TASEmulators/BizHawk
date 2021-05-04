@@ -99,21 +99,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				_core.Message(eMessage.eMessage_QUERY_enable_scanline);
 			}
 		}
-		public void QUERY_set_audio_sample(snes_audio_sample_t audio_sample)
-		{
-			using (_exe.EnterExit())
-			{
-				this.audio_sample = audio_sample;
-				_comm->value = (audio_sample != null) ? 1u : 0u;
-				_core.Message(eMessage.eMessage_QUERY_enable_audio);
-			}
-		}
 
 		public void QUERY_set_layer_enable()
 		{
 			_core.Message(eMessage.eMessage_QUERY_set_layer_enable);
 		}
 
+		// unused but supposedly to be used in the graphics debugger code. make that work pls ty
 		public void QUERY_set_backdropColor(int backdropColor)
 		{
 			using (_exe.EnterExit())

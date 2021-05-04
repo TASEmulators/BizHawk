@@ -33,6 +33,7 @@ struct Program : Emulator::Platform
 	auto inputPoll(uint port, uint device, uint input) -> int16 override;
 	auto inputRumble(uint port, uint device, uint input, bool enable) -> void override;
 	auto notify(string text) -> void override;
+	auto getBackdropColor() -> uint16 override;
 
 	auto load() -> void;
 	auto loadFile(string location) -> vector<uint8_t>;
@@ -255,13 +256,13 @@ auto Program::videoFrame(const uint16* data, uint pitch, uint width, uint height
 
 	for (uint y = 0; y < height; y++) {
 		const uint16_t* sp = data + y * pitch;
-		uint32_t* dp = iface->buffer + y * pitch;
+		uint32_t* dp = video_buffer + y * pitch;
 		for (uint x = 0; x < width; x++) {
-			*dp++ = iface->palette[*sp++];
+			*dp++ = palette[*sp++];
 		}
 	}
 
-    snes_video_refresh(iface->buffer, width, height);
+    snes_video_refresh(video_buffer, width, height);
 
 	// why was input polled after a frame and not before? anyway good it's commented out LOL
     // if(iface->pinput_poll) iface->pinput_poll();
@@ -289,6 +290,11 @@ auto Program::notify(string message) -> void
 {
 	if (message == "NOTIFY NO_LAG")
 		snes_no_lag();
+}
+
+auto Program::getBackdropColor() -> uint16
+{
+	return backdropColor;
 }
 
 auto Program::inputPoll(uint port, uint device, uint input) -> int16
@@ -427,7 +433,6 @@ auto Program::loadSuperFamicom() -> bool
 	hackPatchMemory(rom);
 	superFamicom.document = BML::unserialize(superFamicom.manifest);
 	fprintf(stderr, "loaded game manifest: \"\n%s\"\n", superFamicom.manifest.data());
-	// superFamicom.location = location;
 
 	uint offset = 0;
 	if(auto size = heuristics.programRomSize()) {
@@ -461,8 +466,6 @@ auto Program::loadGameBoy() -> bool {
 
 	gameBoy.manifest = heuristics.manifest();
 	gameBoy.document = BML::unserialize(gameBoy.manifest);
-	// gameBoy.location = location;
-	// gameBoy.program = rom;
 
 	return true;
 }
@@ -475,8 +478,6 @@ auto Program::loadBSMemory() -> bool {
 
 	bsMemory.manifest = heuristics.manifest();
 	bsMemory.document = BML::unserialize(bsMemory.manifest);
-	// bsMemory.location = location;
-	// bsMemory.program = rom;
 
 	return true;
 }

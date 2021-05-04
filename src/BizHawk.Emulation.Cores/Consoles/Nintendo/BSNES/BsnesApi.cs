@@ -22,6 +22,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		public abstract void SetBuffer(int id, void* ptr, int size);
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void PostLoadState();
+
+
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract void snes_set_audio_enabled(bool enabled);
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract void snes_set_video_enabled(bool enabled);
+
 	}
 
 	public unsafe partial class BsnesApi : IDisposable, IMonitor, IStatable
@@ -35,7 +42,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		}
 
 		private WaterboxHost _exe;
-		private BsnesCoreImpl _core;
+		public BsnesCoreImpl _core;
 		private bool _disposed;
 		private CommStruct* _comm;
 		private readonly Dictionary<string, IntPtr> _sharedMemoryBlocks = new Dictionary<string, IntPtr>();
@@ -59,8 +66,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			_readonlyFiles.Add(name);
 		}
 
-		public BsnesApi(string dllPath, CoreComm comm, IEnumerable<Delegate> allCallbacks)
+		public BsnesApi(BsnesCore core, string dllPath, CoreComm comm, IEnumerable<Delegate> allCallbacks)
 		{
+			this._corecs = core;
 			_exe = new WaterboxHost(new WaterboxOptions
 			{
 				Filename = "bsnes.wbx",
@@ -182,10 +190,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		private snes_input_poll_t input_poll;
 		private snes_input_state_t input_state;
 		private snes_no_lag_t no_lag;
-		private snes_audio_sample_t audio_sample;
 		private snes_scanlineStart_t scanlineStart;
 		private snes_path_request_t pathRequest;
 		private snes_trace_t traceCallback;
+		private readonly BsnesCore _corecs;
 
 		public void QUERY_set_video_refresh(snes_video_refresh_t video_refresh) { this.video_refresh = video_refresh; }
 		// not used??

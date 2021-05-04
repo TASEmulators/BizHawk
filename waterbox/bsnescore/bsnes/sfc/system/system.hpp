@@ -26,6 +26,8 @@ struct System {
   uint frameSkip = 0;
   uint frameCounter = 0;
   bool runAhead = 0;
+  bool renderVideo = true;
+  bool renderAudio = true;
 
 private:
   Emulator::Interface* interface = nullptr;
