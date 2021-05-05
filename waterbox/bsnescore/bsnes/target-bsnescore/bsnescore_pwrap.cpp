@@ -109,15 +109,6 @@ struct CPURegsComm {
 };
 static_assert(sizeof(CPURegsComm) == 24);
 
-struct LayerEnablesComm
-{
-    bool BG1_Prio0, BG1_Prio1;
-    bool BG2_Prio0, BG2_Prio1;
-    bool BG3_Prio0, BG3_Prio1;
-    bool BG4_Prio0, BG4_Prio1;
-    bool Obj_Prio0, Obj_Prio1, Obj_Prio2, Obj_Prio3;
-};
-
 //TODO: do any of these need to be volatile?
 // tOdO bTw
 struct CommStruct
@@ -188,88 +179,18 @@ struct CommStruct
 } comm;
 
 //coroutines
-cothread_t co_control, co_emu, co_emu_suspended;
+cothread_t co_control, co_emu;
 
-//internal state
-extern bool audio_enabled;
-static const int AUDIOBUFFER_SIZE = SAMPLE_RATE/50 * 2;
-uint16_t audiobuffer[AUDIOBUFFER_SIZE];
-int audiobuffer_idx = 0;
 Action CMD_cb;
 
 void BREAK(eMessage msg)
 {
     comm.status = eStatus_BRK;
     comm.reason = msg;
-    co_emu_suspended = co_active();
+    // setting this is necessary for some reason; I believe bsnes uses own cothreads which may switch from time to time
+    co_emu = co_active();
     co_switch(co_control);
     comm.status = eStatus_CMD;
-}
-
-void snes_video_refresh(const uint32_t *data, unsigned width, unsigned height)
-{
-    comm.width = width;
-    comm.height = height;
-    comm.ptr = (void*)data;
-
-    BREAK(eMessage_SIG_video_refresh);
-}
-
-void do_SIG_audio_flush()
-{
-    comm.ptr = audiobuffer;
-    comm.size = audiobuffer_idx;
-    BREAK(eMessage_SIG_audio_flush);
-    audiobuffer_idx = 0;
-}
-
-void snes_audio_sample(uint16_t left, uint16_t right)
-{
-    if(!audio_enabled) return;
-
-    //if theres no room in the audio buffer, we need to send a flush signal
-    if (audiobuffer_idx == AUDIOBUFFER_SIZE)
-    {
-        do_SIG_audio_flush();
-    }
-
-    audiobuffer[audiobuffer_idx++] = left;
-    audiobuffer[audiobuffer_idx++] = right;
-}
-
-int16_t snes_input_state(unsigned port, unsigned device, unsigned index, unsigned id)
-{
-    comm.port = port;
-    comm.device = device;
-    comm.index = index;
-    comm.id = id;
-    BREAK(eMessage_SIG_input_state);
-    return comm.value;
-}
-
-void snes_input_poll(void)
-{
-    BREAK(eMessage_SIG_input_poll);
-}
-
-void snes_no_lag()
-{
-    BREAK(eMessage_SIG_no_lag);
-}
-
-// void snes_trace(uint32_t which, const char *msg)
-// {
-//     comm.value = which;
-//     comm.str = (char*) msg;
-//     BREAK(eMessage_SIG_trace_callback);
-// }
-
-const char* snes_path_request(int slot, const char* hint)
-{
-    comm.slot = slot;
-    comm.str= (char *)hint;
-    BREAK(eMessage_SIG_path_request);
-    return (const char*)comm.buf[0];
 }
 
 // void snes_scanlineStart(int line)
@@ -393,9 +314,6 @@ void CMD_init()
 static void CMD_Run()
 {
     snes_run();
-	// TODO: I have no idea how the audio buffer works, but there has to be a better way to handle this
-	if (audio_enabled)
-    	do_SIG_audio_flush();
 }
 
 // void QUERY_state_hook_exec() {
@@ -527,9 +445,7 @@ EXPORT void Message(eMessage msg)
     switch (msg)
     {
         case eMessage_Resume: {
-            cothread_t temp = co_emu_suspended;
-            co_emu_suspended = nullptr;
-            co_switch(temp);
+            co_switch(co_emu);
             break;
         }
         case eMessage_QUERY_get_memory_size: {
@@ -596,18 +512,6 @@ EXPORT void Message(eMessage msg)
             break;
         }
         case eMessage_QUERY_set_layer_enable: {
-            snes_set_layer_enabled(0, 0, comm.layerEnables.BG1_Prio0);
-            snes_set_layer_enabled(0, 1, comm.layerEnables.BG1_Prio1);
-            snes_set_layer_enabled(1, 0, comm.layerEnables.BG2_Prio0);
-            snes_set_layer_enabled(1, 1, comm.layerEnables.BG2_Prio1);
-            snes_set_layer_enabled(2, 0, comm.layerEnables.BG3_Prio0);
-            snes_set_layer_enabled(2, 1, comm.layerEnables.BG3_Prio1);
-            snes_set_layer_enabled(3, 0, comm.layerEnables.BG4_Prio0);
-            snes_set_layer_enabled(3, 1, comm.layerEnables.BG4_Prio1);
-            snes_set_layer_enabled(4, 0, comm.layerEnables.Obj_Prio0);
-            snes_set_layer_enabled(4, 1, comm.layerEnables.Obj_Prio1);
-            snes_set_layer_enabled(4, 2, comm.layerEnables.Obj_Prio2);
-            snes_set_layer_enabled(4, 3, comm.layerEnables.Obj_Prio3);
             break;
         }
         case eMessage_QUERY_set_backdropColor: {

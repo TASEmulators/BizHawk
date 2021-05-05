@@ -15,56 +15,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 					default:
 						return false;
 
-					case eMessage.eMessage_SIG_video_refresh:
-						{
-							int width = _comm->width;
-							int height = _comm->height;
-							video_refresh?.Invoke((int*)_comm->ptr, width, height);
-							break;
-						}
-					case eMessage.eMessage_SIG_input_poll:
-						{
-							input_poll?.Invoke();
-							break;
-						}
-					case eMessage.eMessage_SIG_input_state:
-						{
-							int port = _comm->port;
-							int device = _comm->device;
-							int index = _comm->index;
-							int id = (int)_comm->id;
-							if (input_state != null)
-								_comm->value = (uint)input_state(port, device, index, id);
-							break;
-						}
-					case eMessage.eMessage_SIG_no_lag:
-						{
-							no_lag?.Invoke();
-							break;
-						}
-					case eMessage.eMessage_SIG_audio_flush:
-						{
-							uint nsamples = _comm->size;
-
-							ushort* audiobuffer = ((ushort*)_comm->ptr);
-							for (uint i = 0; i < nsamples;)
-							{
-								ushort left = audiobuffer[i++];
-								ushort right = audiobuffer[i++];
-								_corecs.snes_audio_sample(left, right);// audio_sample(left, right);
-							}
-
-							break;
-						}
-					case eMessage.eMessage_SIG_path_request:
-						{
-							int slot = _comm->slot;
-							string hint = _comm->GetAscii();
-							if (pathRequest != null)
-								hint = pathRequest(slot, hint);
-							CopyAscii(0, hint);
-							break;
-						}
 					case eMessage.eMessage_SIG_trace_callback:
 						{
 							traceCallback?.Invoke(_comm->value, _comm->GetAscii());

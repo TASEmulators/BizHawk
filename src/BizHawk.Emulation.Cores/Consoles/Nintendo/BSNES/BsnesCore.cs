@@ -71,6 +71,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			_syncSettings = syncSettings ?? new SnesSyncSettings();
 
 			_videocb = snes_video_refresh;
+			_audiocb = snes_audio_sample;
 			_inputpollcb = snes_input_poll;
 			_inputstatecb = snes_input_state;
 			_nolagcb = snes_no_lag;
@@ -82,6 +83,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			Api = new BsnesApi(this, CoreComm.CoreFileProvider.DllPath(), CoreComm, new Delegate[]
 			{
 				_videocb,
+				_audiocb,
 				_inputpollcb,
 				_inputstatecb,
 				_nolagcb,
@@ -104,6 +106,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			_controllers.NativeInit(Api);
 
 			Api.CMD_init(_syncSettings.Entropy);
+			Api._core.snes_set_callbacks(_inputpollcb, _inputstatecb, _nolagcb, _videocb, _audiocb, _pathrequestcb);
 
 			Api.QUERY_set_path_request(_pathrequestcb);
 
@@ -202,7 +205,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			// RefreshPalette();
 		}
 
-		private readonly BsnesApi.snes_video_refresh_t _videocb;
+		private readonly BsnesApi.snes_video_frame_t _videocb;
+		private readonly BsnesApi.snes_audio_sample_t _audiocb;
 		private readonly BsnesApi.snes_input_poll_t _inputpollcb;
 		private readonly BsnesApi.snes_input_state_t _inputstatecb;
 		private readonly BsnesApi.snes_no_lag_t _nolagcb;

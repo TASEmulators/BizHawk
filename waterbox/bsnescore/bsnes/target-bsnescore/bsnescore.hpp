@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-#define EXPORT extern "C" ECL_EXPORT
+#define EXPORT ECL_EXPORT
 
 // what is this? it's unused how am i supposed to figure this out
 #if defined(BSNESCORE_IMPORT)
@@ -90,13 +90,7 @@ extern "C" {
 
 typedef void (*snes_trace_t)(uint32_t which, const char *msg);
 
-// provided in pwrap.c currently as it communicates with the frontend
-void snes_video_refresh(const uint32_t *data, unsigned width, unsigned height);
-void snes_audio_sample(uint16_t left, uint16_t right);
-void snes_input_poll(void);
-int16_t snes_input_state(unsigned port, unsigned device, unsigned index, unsigned id);
-void snes_no_lag();
-const char* snes_path_request(int slot, const char* hint);
+// todo: put to platform->allocSharedMemory or smth
 // void* snes_allocSharedMemory(const char* memtype, size_t amt);
 // void snes_freeSharedMemory(void* ptr);
 
@@ -140,9 +134,18 @@ void snes_write_memory_data(unsigned id, unsigned index, unsigned value);
 const char* snes_get_memory_id_name(unsigned id);
 unsigned snes_get_memory_size(unsigned id);
 
+struct LayerEnablesComm
+{
+    bool BG1_Prio0, BG1_Prio1;
+    bool BG2_Prio0, BG2_Prio1;
+    bool BG3_Prio0, BG3_Prio1;
+    bool BG4_Prio0, BG4_Prio1;
+    bool Obj_Prio0, Obj_Prio1, Obj_Prio2, Obj_Prio3;
+};
+
+
 //zeromus additions
 // bool snes_check_cartridge(const uint8_t *rom_data, unsigned rom_size);
-void snes_set_layer_enabled(int layer, int priority, bool enable);
 // typedef void (*snes_scanlineStart_t)(int);
 // void snes_set_scanlineStart(snes_scanlineStart_t);
 extern uint16_t backdropColor;

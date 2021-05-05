@@ -81,29 +81,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			}
 		}
 
-		public void QUERY_set_trace_callback(int mask, snes_trace_t callback)
-		{
-			using (_exe.EnterExit())
-			{
-				this.traceCallback = callback;
-				_comm->value = (uint)mask;
-				_core.Message(eMessage.eMessage_QUERY_enable_trace);
-			}
-		}
-		public void QUERY_set_scanlineStart(snes_scanlineStart_t scanlineStart)
-		{
-			using (_exe.EnterExit())
-			{
-				this.scanlineStart = scanlineStart;
-				_comm->value = (scanlineStart != null) ? 1u : 0u;
-				_core.Message(eMessage.eMessage_QUERY_enable_scanline);
-			}
-		}
-
-		public void QUERY_set_layer_enable()
-		{
-			_core.Message(eMessage.eMessage_QUERY_set_layer_enable);
-		}
+		// public void QUERY_set_trace_callback(int mask, snes_trace_t callback)
+		// {
+		// 	using (_exe.EnterExit())
+		// 	{
+		// 		this.traceCallback = callback;
+		// 		_comm->value = (uint)mask;
+		// 		_core.Message(eMessage.eMessage_QUERY_enable_trace);
+		// 	}
+		// }
+		// public void QUERY_set_scanlineStart(snes_scanlineStart_t scanlineStart)
+		// {
+		// 	using (_exe.EnterExit())
+		// 	{
+		// 		this.scanlineStart = scanlineStart;
+		// 		_comm->value = (scanlineStart != null) ? 1u : 0u;
+		// 		_core.Message(eMessage.eMessage_QUERY_enable_scanline);
+		// 	}
+		// }
 
 		// unused but supposedly to be used in the graphics debugger code. make that work pls ty
 		public void QUERY_set_backdropColor(int backdropColor)

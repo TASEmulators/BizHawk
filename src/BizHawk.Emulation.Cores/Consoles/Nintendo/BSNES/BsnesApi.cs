@@ -29,6 +29,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void snes_set_video_enabled(bool enabled);
 
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract void snes_set_layer_enables(BsnesApi.LayerEnables layerEnables);
+
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract void snes_set_callbacks(
+			BsnesApi.snes_input_poll_t inputPollCb, BsnesApi.snes_input_state_t inputStateCb,
+			BsnesApi.snes_no_lag_t noLagCb, BsnesApi.snes_video_frame_t videoFrameCb,
+			BsnesApi.snes_audio_sample_t audioSampleCb, BsnesApi.snes_path_request_t pathRequestCb);
+
 	}
 
 	public unsafe partial class BsnesApi : IDisposable, IMonitor, IStatable
@@ -46,7 +55,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		private bool _disposed;
 		private CommStruct* _comm;
 		private readonly Dictionary<string, IntPtr> _sharedMemoryBlocks = new Dictionary<string, IntPtr>();
-		private bool _sealed = false;
+		private bool _sealed;
 
 		public void Enter()
 		{
@@ -186,7 +195,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			BRR = 0x80,
 		}
 
-		private snes_video_refresh_t video_refresh;
+		private snes_video_frame_t _videoFrame;
 		private snes_input_poll_t input_poll;
 		private snes_input_state_t input_state;
 		private snes_no_lag_t no_lag;
@@ -195,14 +204,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		private snes_trace_t traceCallback;
 		private readonly BsnesCore _corecs;
 
-		public void QUERY_set_video_refresh(snes_video_refresh_t video_refresh) { this.video_refresh = video_refresh; }
-		// not used??
+		public void QUERY_set_video_refresh(snes_video_frame_t videoFrame) { this._videoFrame = videoFrame; }
 		public void QUERY_set_input_poll(snes_input_poll_t input_poll) { this.input_poll = input_poll; }
 		public void QUERY_set_input_state(snes_input_state_t input_state) { this.input_state = input_state; }
 		public void QUERY_set_no_lag(snes_no_lag_t no_lag) { this.no_lag = no_lag; }
 		public void QUERY_set_path_request(snes_path_request_t pathRequest) { this.pathRequest = pathRequest; }
 
-		public delegate void snes_video_refresh_t(int* data, int width, int height);
+		public delegate void snes_video_frame_t(int* data, int width, int height);
 		public delegate void snes_input_poll_t();
 		public delegate short snes_input_state_t(int port, int device, int index, int id);
 		public delegate void snes_no_lag_t();
@@ -221,8 +229,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			public ushort v, h;
 		}
 
+		// I cannot use a struct here because marshalling is retarded for bool (4 bytes). I honestly cannot
 		[StructLayout(LayoutKind.Sequential)]
-		public struct LayerEnables
+		public class LayerEnables
 		{
 			public bool BG1_Prio0, BG1_Prio1;
 			public bool BG2_Prio0, BG2_Prio1;
@@ -290,8 +299,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			[FieldOffset(320)]
 			public CPURegs cpuregs;
-			[FieldOffset(344)]
-			public LayerEnables layerEnables;
+			// [FieldOffset(344)]
+			// public LayerEnables layerEnables;
 
 			[FieldOffset(356)]
 			//static configuration-type information which can be grabbed off the core at any time without even needing a QUERY command
@@ -335,15 +344,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				{
 					return _comm->mapper;
 				}
-			}
-		}
-
-		public void SetLayerEnables(ref LayerEnables enables)
-		{
-			using (_exe.EnterExit())
-			{
-				_comm->layerEnables = enables;
-				QUERY_set_layer_enable();
 			}
 		}
 

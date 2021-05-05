@@ -1,4 +1,5 @@
 #include "bsnescore.hpp"
+#include "callbacks.h"
 #include <sfc/sfc.hpp>
 #include <emulibc.h>
 #include <nall/hid.hpp>
@@ -53,8 +54,8 @@ uint16_t backdropColor;
 void snes_init(int entropy)
 {
     fprintf(stderr, "snes_init was called!\n");
-	emulator = new SuperFamicom::Interface;
-	program = new Program;
+    emulator = new SuperFamicom::Interface;
+    program = new Program;
 
     video_buffer = (uint32_t*)alloc_invisible(512 * 480 * sizeof(uint32_t));
     palette = (uint32_t*)alloc_invisible(32768 * sizeof(uint32_t));
@@ -121,6 +122,7 @@ void snes_run(void) {
 
     // TODO: I currently have implemented separate poll and state calls, where poll updates the state and the state call just receives this
     // based on the way this is implemented this approach might be useless in terms of reducing polling load, will need confirmation here
+    // the runahead feature should also be considered in case this is ever implemented and works
 
     // if (runahead_frames > 0)
         // run_with_runahead(runahead_frames);
@@ -344,20 +346,6 @@ char snes_get_mapper(void) {
     return -1;
 }
 
-void snes_set_layer_enabled(int layer, int priority, bool enable)
-{
-    // fprintf(stderr, "snes_set_layer_enabled was called with layer %d, priority %d and bool %d\n", layer, priority, enable);
-    if (emulator->configuration("Hacks/PPU/Fast") == "true")
-    switch (layer)
-    {
-        case 0: ppufast.io.bg1.priority_enabled[priority] = enable; break;
-        case 1: ppufast.io.bg2.priority_enabled[priority] = enable; break;
-        case 2: ppufast.io.bg3.priority_enabled[priority] = enable; break;
-        case 3: ppufast.io.bg4.priority_enabled[priority] = enable; break;
-        case 4: ppufast.io.obj.priority_enabled[priority] = enable; break;
-    }
-}
-
 static uint8_t sharprtc_data[16];
 static uint8_t epsonrtc_data[16];
 
@@ -566,18 +554,63 @@ void bus_write(unsigned addr, uint8_t val) {
 //
 
 
-bool audio_enabled = true;
-
 EXPORT void snes_set_audio_enabled(bool enable)
 {
     SuperFamicom::system.renderAudio = enable;
-    audio_enabled = enable;
 }
 
 EXPORT void snes_set_video_enabled(bool enable)
 {
-	// fprintf(stderr, "video enable was set to %d\n", enable);
+    // fprintf(stderr, "video enable was set to %d\n", enable);
     SuperFamicom::system.renderVideo = enable;
+}
+
+
+// callbacks
+snes_input_poll_t snes_input_poll;
+snes_input_state_t snes_input_state;
+snes_no_lag_t snes_no_lag;
+snes_video_frame_t snes_video_frame;
+snes_audio_sample_t snes_audio_sample;
+snes_path_request_t snes_path_request;
+// snes_trace_t snes_trace;
+
+EXPORT void snes_set_callbacks(
+    snes_input_poll_t input_poll_cb,
+    snes_input_state_t input_state_cb,
+    snes_no_lag_t no_lag_cb,
+    snes_video_frame_t video_frame_cb,
+    snes_audio_sample_t audio_sample_cb,
+    snes_path_request_t path_request_cb
+    // snes_trace_t trace_cb
+)
+{
+    snes_input_poll = input_poll_cb;
+    snes_input_state = input_state_cb;
+    snes_no_lag = no_lag_cb;
+    snes_video_frame = video_frame_cb;
+    snes_audio_sample = audio_sample_cb;
+    snes_path_request = path_request_cb;
+    // snes_trace = trace_cb;
+}
+
+// TODO: frontend does not differenciate the bgN's prio0 and prio1. They should either be removed or supported individually
+EXPORT void snes_set_layer_enables(LayerEnablesComm* layerEnables)
+{
+    if (emulator->configuration("Hacks/PPU/Fast") == "true") {
+        ppufast.io.bg1.priority_enabled[0] = layerEnables->BG1_Prio0;
+        ppufast.io.bg1.priority_enabled[1] = layerEnables->BG1_Prio1;
+        ppufast.io.bg2.priority_enabled[0] = layerEnables->BG2_Prio0;
+        ppufast.io.bg2.priority_enabled[1] = layerEnables->BG2_Prio1;
+        ppufast.io.bg3.priority_enabled[0] = layerEnables->BG3_Prio0;
+        ppufast.io.bg3.priority_enabled[1] = layerEnables->BG3_Prio1;
+        ppufast.io.bg4.priority_enabled[0] = layerEnables->BG4_Prio0;
+        ppufast.io.bg4.priority_enabled[1] = layerEnables->BG4_Prio1;
+        ppufast.io.obj.priority_enabled[0] = layerEnables->Obj_Prio0;
+        ppufast.io.obj.priority_enabled[1] = layerEnables->Obj_Prio1;
+        ppufast.io.obj.priority_enabled[2] = layerEnables->Obj_Prio2;
+        ppufast.io.obj.priority_enabled[3] = layerEnables->Obj_Prio3;
+    }
 }
 
 // void snes_set_trace_callback(uint32_t mask, snes_trace_t callback)

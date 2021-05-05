@@ -262,7 +262,8 @@ auto Program::videoFrame(const uint16* data, uint pitch, uint width, uint height
 		}
 	}
 
-    snes_video_refresh(video_buffer, width, height);
+	// this int* cast shouldn't be necessary, but bizhawk expects a "signed" buffer? makes no sense logically
+    snes_video_frame((int*) video_buffer, width, height);
 
 	// why was input polled after a frame and not before? anyway good it's commented out LOL
     // if(iface->pinput_poll) iface->pinput_poll();

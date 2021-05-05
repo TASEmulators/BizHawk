@@ -67,7 +67,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				Obj_Prio2 = _settings.ShowOBJ_2,
 				Obj_Prio3 = _settings.ShowOBJ_3
 			};
-			Api.SetLayerEnables(ref enables);
+			Api._core.snes_set_layer_enables(enables);
 
 			// RefreshMemoryCallbacks(false);
 
