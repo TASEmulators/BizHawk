@@ -50,86 +50,6 @@ uint16_t backdropColor;
 //     return iface->allocSharedMemory(memtype, amt, initialByte);
 // }
 
-// i will slap anyone who attempts to call this twice. do not do it.
-void snes_init(int entropy)
-{
-    fprintf(stderr, "snes_init was called!\n");
-    emulator = new SuperFamicom::Interface;
-    program = new Program;
-
-    video_buffer = (uint32_t*)alloc_invisible(512 * 480 * sizeof(uint32_t));
-    palette = (uint32_t*)alloc_invisible(32768 * sizeof(uint32_t));
-    // initialize palette here cause why not?
-    for(uint color : range(32768)) {
-        uint16 r = (color >> 10) & 31;
-        uint16 g = (color >>  5) & 31;
-        uint16 b = (color >>  0) & 31;
-
-        r = r << 3 | r >> 2; r = r << 8 | r << 0;
-        g = g << 3 | g >> 2; g = g << 8 | g << 0;
-        b = b << 3 | b >> 2; b = b << 8 | b << 0;
-
-        palette[color] = r >> 8 << 16 | g >> 8 <<  8 | b >> 8 << 0;
-    }
-    // memset(&cdlInfo,0,sizeof(cdlInfo));
-
-    string entropy_string;
-    switch (entropy)
-    {
-        case 0: entropy_string = "None"; break;
-        case 1: entropy_string = "Low"; break;
-        case 2: entropy_string = "High"; break;
-    }
-    emulator->configure("Hacks/Entropy", entropy_string);
-
-    // needed in order to get audio sync working. should probably figure out what exactly this does or how to change that properly
-    Emulator::audio.setFrequency(SAMPLE_RATE);
-}
-
-void snes_term(void) {
-    emulator->unload();
-}
-
-void snes_power(void) {
-    emulator->power();
-}
-
-void snes_reset(void) {
-    emulator->reset();
-}
-
-// static int runahead_frames = 1;
-
-// run with runahead doesn't work yet, i suspect it's due to either waterbox or the serialize thing breaking
-// static void run_with_runahead(const int frames)
-// {
-//     assert(frames > 0);
-
-//     emulator->setRunAhead(true);
-//     emulator->run();
-//     auto state = emulator->serialize(false);
-//     for (int i = 0; i < frames - 1; i++) {
-//         emulator->run();
-//     }
-//     emulator->setRunAhead(false);
-//     emulator->run();
-//     state.setMode(serializer::Mode::Load);
-//     emulator->unserialize(state);
-// }
-
-void snes_run(void) {
-    snes_input_poll();
-
-    // TODO: I currently have implemented separate poll and state calls, where poll updates the state and the state call just receives this
-    // based on the way this is implemented this approach might be useless in terms of reducing polling load, will need confirmation here
-    // the runahead feature should also be considered in case this is ever implemented and works
-
-    // if (runahead_frames > 0)
-        // run_with_runahead(runahead_frames);
-    // else
-        emulator->run();
-}
-
 //zero 21-sep-2012
 // void snes_set_scanlineStart(snes_scanlineStart_t cb)
 // {
@@ -243,20 +163,7 @@ int snes_peek_logical_register(int reg)
     return 0;
 }
 
-bool snes_load_cartridge_normal(
-  const char *base_rom_path, const uint8_t *rom_data, unsigned rom_size
-) {
-    // let's hope this works
-    program->superFamicom.location = base_rom_path;
-
-    vector<uint8_t> rom_data_vector;
-    for (int i = 0; i < rom_size; i++) rom_data_vector.append(rom_data[i]);
-    program->superFamicom.raw_data = rom_data_vector;
-
-    program->load();
-    return true;
-}
-
+// unused?
 bool snes_load_cartridge_bsx_slotted(
   const char *rom_xml, const uint8_t *rom_data, unsigned rom_size,
   const char *bsx_xml, const uint8_t *bsx_data, unsigned bsx_size
@@ -271,6 +178,7 @@ bool snes_load_cartridge_bsx_slotted(
     return false;
 }
 
+// unused?
 bool snes_load_cartridge_bsx(
   const char *rom_xml, const uint8_t *rom_data, unsigned rom_size,
   const char *bsx_xml, const uint8_t *bsx_data, unsigned bsx_size
@@ -285,6 +193,7 @@ bool snes_load_cartridge_bsx(
     return false;
 }
 
+// unused?
 bool snes_load_cartridge_sufami_turbo(
   const char *rom_xml, const uint8_t *rom_data, unsigned rom_size,
   const char *sta_xml, const uint8_t *sta_data, unsigned sta_size,
@@ -302,48 +211,9 @@ bool snes_load_cartridge_sufami_turbo(
     return false;
 }
 
-bool snes_load_cartridge_super_game_boy(
-  const char *base_rom_path, const uint8_t *rom_data, unsigned rom_size,
-  const uint8_t *sgb_rom_data, unsigned sgb_rom_size
-) {
-    program->superFamicom.location = base_rom_path;
-
-    vector<uint8_t> rom_data_vector;
-    for (int i = 0; i < rom_size; i++) rom_data_vector.append(rom_data[i]);
-    program->superFamicom.raw_data = rom_data_vector;
-
-    vector<uint8_t> sgb_rom_data_vector;
-    for (int i = 0; i < sgb_rom_size; i++) sgb_rom_data_vector.append(sgb_rom_data[i]);
-    program->gameBoy.program = sgb_rom_data_vector;
-
-    program->load();
-    return true;
-}
-
+// again, unused
 void snes_unload_cartridge(void) {
     cartridge.unload();
-}
-
-bool snes_get_region(void) {
-    return Region::PAL();
-}
-
-char snes_get_mapper(void) {
-    string board = program->superFamicom.document["game/board"].text();
-    string mapper = board.split('-', 1)[0];
-    if (mapper == "LOROM") return 0;
-    if (mapper == "HIROM") return 1;
-    if (mapper == "EXLOROM") return 2;
-    if (mapper == "EXHIROM") return 3;
-    if (mapper == "SUPERFXROM") return 4;
-    if (mapper == "SA1ROM") return 5;
-    if (mapper == "SPC7110ROM") return 6;
-    if (mapper == "BSCLOROM") return 7;
-    if (mapper == "BSCHIROM") return 8;
-    if (mapper == "BSXROM") return 9;
-    if (mapper == "STROM") return 10;
-
-    return -1;
 }
 
 static uint8_t sharprtc_data[16];
@@ -554,6 +424,101 @@ void bus_write(unsigned addr, uint8_t val) {
 //
 
 
+// i will slap anyone who attempts to call this twice. do not do it.
+EXPORT void snes_init(int entropy, uint left_port, uint right_port)
+{
+    fprintf(stderr, "snes_init was called!\n");
+    emulator = new SuperFamicom::Interface;
+    program = new Program;
+
+    video_buffer = (uint32_t*)alloc_invisible(512 * 480 * sizeof(uint32_t));
+    palette = (uint32_t*)alloc_invisible(32768 * sizeof(uint32_t));
+    // initialize palette here cause why not?
+    for(uint color : range(32768)) {
+        uint16 r = (color >> 10) & 31;
+        uint16 g = (color >>  5) & 31;
+        uint16 b = (color >>  0) & 31;
+
+        r = r << 3 | r >> 2; r = r << 8 | r << 0;
+        g = g << 3 | g >> 2; g = g << 8 | g << 0;
+        b = b << 3 | b >> 2; b = b << 8 | b << 0;
+
+        palette[color] = r >> 8 << 16 | g >> 8 <<  8 | b >> 8 << 0;
+    }
+    // memset(&cdlInfo,0,sizeof(cdlInfo));
+
+    string entropy_string;
+    switch (entropy)
+    {
+        case 0: entropy_string = "None"; break;
+        case 1: entropy_string = "Low"; break;
+        case 2: entropy_string = "High"; break;
+    }
+    emulator->configure("Hacks/Entropy", entropy_string);
+
+    emulator->connect(ID::Port::Controller1, left_port);
+    emulator->connect(ID::Port::Controller2, right_port);
+
+    // needed in order to get audio sync working. should probably figure out what exactly this does or how to change that properly
+    Emulator::audio.setFrequency(SAMPLE_RATE);
+}
+
+EXPORT void snes_power(void)
+{
+    emulator->power();
+}
+
+// unused currently? should it be?
+EXPORT void snes_term(void)
+{
+    emulator->unload();
+}
+
+EXPORT void snes_reset(void)
+{
+    emulator->reset();
+}
+
+// note: run with runahead doesn't work yet, i suspect it's due to either waterbox or the serialize thing breaking
+EXPORT void snes_run(void)
+{
+    snes_input_poll();
+
+    // TODO: I currently have implemented separate poll and state calls, where poll updates the state and the state call just receives this
+    // based on the way this is implemented this approach might be useless in terms of reducing polling load, will need confirmation here
+    // the runahead feature should also be considered in case this is ever implemented and works
+
+    emulator->run();
+}
+
+
+EXPORT void snes_load_cartridge_normal(
+  const char* base_rom_path, const uint8_t* rom_data, int rom_size
+) {
+    program->superFamicom.location = base_rom_path;
+
+    program->superFamicom.raw_data.resize(rom_size);
+    memcpy(program->superFamicom.raw_data.data(), rom_data, rom_size);
+
+    program->load();
+}
+
+EXPORT void snes_load_cartridge_super_gameboy(
+  const char* base_rom_path, const uint8_t* rom_data, int rom_size,
+  const uint8_t* sgb_rom_data, int sgb_rom_size
+) {
+    program->superFamicom.location = base_rom_path;
+
+    program->superFamicom.raw_data.resize(rom_size);
+    memcpy(program->superFamicom.raw_data.data(), rom_data, rom_size);
+
+    program->gameBoy.program.resize(sgb_rom_size);
+    memcpy(program->gameBoy.program.data(), sgb_rom_data, sgb_rom_size);
+
+    program->load();
+}
+
+
 EXPORT void snes_set_audio_enabled(bool enable)
 {
     SuperFamicom::system.renderAudio = enable;
@@ -566,7 +531,8 @@ EXPORT void snes_set_video_enabled(bool enable)
 }
 
 
-// callbacks
+// should probably be moved out of this place, maybe to a designated callbacks.c? makes more sense to me rn
+// callbacks, set initially by the frontend
 snes_input_poll_t snes_input_poll;
 snes_input_state_t snes_input_state;
 snes_no_lag_t snes_no_lag;
@@ -612,6 +578,29 @@ EXPORT void snes_set_layer_enables(LayerEnablesComm* layerEnables)
         ppufast.io.obj.priority_enabled[3] = layerEnables->Obj_Prio3;
     }
 }
+
+EXPORT bool snes_get_region(void) {
+    return Region::PAL();
+}
+
+EXPORT char snes_get_mapper(void) {
+    string board = program->superFamicom.document["game/board"].text();
+    string mapper = board.split('-', 1)[0];
+    if (mapper == "LOROM") return 0;
+    if (mapper == "HIROM") return 1;
+    if (mapper == "EXLOROM") return 2;
+    if (mapper == "EXHIROM") return 3;
+    if (mapper == "SUPERFXROM") return 4;
+    if (mapper == "SA1ROM") return 5;
+    if (mapper == "SPC7110ROM") return 6;
+    if (mapper == "BSCLOROM") return 7;
+    if (mapper == "BSCHIROM") return 8;
+    if (mapper == "BSXROM") return 9;
+    if (mapper == "STROM") return 10;
+
+    return -1;
+}
+
 
 // void snes_set_trace_callback(uint32_t mask, snes_trace_t callback)
 // {

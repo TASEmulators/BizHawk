@@ -28,7 +28,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public unsafe partial class BsnesCore : IEmulator, IVideoProvider, IStatable, IInputPollable, IRegionable, ISettable<BsnesCore.SnesSettings, BsnesCore.SnesSyncSettings>
 	{
+		// TODO: will need to be moved out to IMemoryDomains once I can get myself to that bullshit
 		private BsnesApi.SNES_REGION? _region;
+		private BsnesApi.SNES_MAPPER? _mapper;
 
 		// [CoreConstructor("SGB")]
 		[CoreConstructor("SNES")]
@@ -103,9 +105,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			// ScanlineHookManager = new MyScanlineHookManager(this);
 
 			_controllers = new BsnesControllers(_syncSettings);
-			_controllers.NativeInit(Api);
+			// _controllers.NativeInit(Api);
 
-			Api.CMD_init(_syncSettings.Entropy);
+			Api._core.snes_init(_syncSettings.Entropy, _controllers._ports[0].DeviceType, _controllers._ports[1].DeviceType);
 			Api._core.snes_set_callbacks(_inputpollcb, _inputstatecb, _nolagcb, _videocb, _audiocb, _pathrequestcb);
 
 			Api.QUERY_set_path_request(_pathrequestcb);
@@ -135,11 +137,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 					rom_data = romData,
 					sgb_rom_data = sgbRomData
 				};
-
-				if (!LoadCurrent())
-				{
-					throw new Exception("snes_load_cartridge_super_gameboy() failed");
-				}
 			}
 			else
 			{
@@ -170,12 +167,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 					baseRomPath = baseRomPath,
 					rom_data = romData
 				};
-
-				if (!LoadCurrent())
-				{
-					throw new Exception("snes_load_cartridge_normal() failed");
-				}
 			}
+			LoadCurrent();
 
 			if (_region == BsnesApi.SNES_REGION.NTSC)
 			{
@@ -190,7 +183,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				VsyncDenominator = 4 * 341 * 312;
 			}
 
-			Api.CMD_power();
+			Api._core.snes_power();
 
 			// SetupMemoryDomains(romData, sgbRomData);
 
@@ -459,16 +452,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			public byte[] sgb_rom_data;
 		}
 
-		private bool LoadCurrent()
+		private void LoadCurrent()
 		{
-			bool result = _currLoadParams.type == LoadParamType.Normal
-				? Api.CMD_load_cartridge_normal(_currLoadParams.baseRomPath, _currLoadParams.rom_data)
-				: Api.CMD_load_cartridge_super_game_boy(_currLoadParams.baseRomPath, _currLoadParams.rom_data, _currLoadParams.sgb_rom_data);
+			if (_currLoadParams.type == LoadParamType.Normal)
+				Api._core.snes_load_cartridge_normal(_currLoadParams.baseRomPath, _currLoadParams.rom_data, _currLoadParams.rom_data.Length);
+			else
+				Api._core.snes_load_cartridge_super_gameboy(_currLoadParams.baseRomPath, _currLoadParams.rom_data, _currLoadParams.rom_data.Length,
+					_currLoadParams.sgb_rom_data, _currLoadParams.sgb_rom_data.Length);
 
-			// _mapper = Api.Mapper;
-			_region = Api.Region;
-
-			return result;
+			_region = Api._core.snes_get_region();
+			_mapper = Api._core.snes_get_mapper();
 		}
 
 		// poll which updates the controller state

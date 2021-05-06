@@ -31,6 +31,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void snes_set_layer_enables(BsnesApi.LayerEnables layerEnables);
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract BsnesApi.SNES_REGION snes_get_region();
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract BsnesApi.SNES_MAPPER snes_get_mapper();
 
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void snes_set_callbacks(
@@ -38,6 +42,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			BsnesApi.snes_no_lag_t noLagCb, BsnesApi.snes_video_frame_t videoFrameCb,
 			BsnesApi.snes_audio_sample_t audioSampleCb, BsnesApi.snes_path_request_t pathRequestCb);
 
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract void snes_init(BsnesApi.ENTROPY entropy, BsnesApi.BSNES_INPUT_DEVICE left, BsnesApi.BSNES_INPUT_DEVICE right);
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract void snes_power();
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract void snes_term();
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract void snes_reset();
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract void snes_run();
+
+		[BizImport(CallingConvention.Cdecl)]
+		// TODO: figure out whether any marshalling should be done here
+		public abstract void snes_load_cartridge_normal(string baseRomPath, byte[] romData, int romSize);
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract void snes_load_cartridge_super_gameboy(string baseRomPath, byte[] romData, int romSize, byte[] sgbRomData, int sgbRomSize);
 	}
 
 	public unsafe partial class BsnesApi : IDisposable, IMonitor, IStatable

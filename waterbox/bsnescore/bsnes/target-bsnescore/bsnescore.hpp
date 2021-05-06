@@ -94,15 +94,6 @@ typedef void (*snes_trace_t)(uint32_t which, const char *msg);
 // void* snes_allocSharedMemory(const char* memtype, size_t amt);
 // void snes_freeSharedMemory(void* ptr);
 
-void snes_init(int entropy);
-void snes_term(void);
-void snes_power(void);
-void snes_reset(void);
-void snes_run(void);
-
-bool snes_load_cartridge_normal(
-    const char *base_rom_path, const uint8_t *rom_data, unsigned rom_size
-);
 
 bool snes_load_cartridge_bsx_slotted(
     const char *rom_xml, const uint8_t *rom_data, unsigned rom_size,
@@ -120,15 +111,9 @@ bool snes_load_cartridge_sufami_turbo(
     const char *stb_xml, const uint8_t *stb_data, unsigned stb_size
 );
 
-bool snes_load_cartridge_super_game_boy(
-    const char *base_rom_path, const uint8_t *rom_data, unsigned rom_size,
-    const uint8_t *sgb_rom_data, unsigned sgb_rom_size
-);
 
 void snes_unload_cartridge(void);
 
-bool snes_get_region(void);
-char snes_get_mapper(void);
 uint8_t* snes_get_memory_data(unsigned id);
 void snes_write_memory_data(unsigned id, unsigned index, unsigned value);
 const char* snes_get_memory_id_name(unsigned id);

@@ -43,13 +43,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			bool resetSignal = controller.IsPressed("Reset");
 			if (resetSignal)
 			{
-				Api.CMD_reset();
+				Api._core.snes_reset();
 			}
 
 			bool powerSignal = controller.IsPressed("Power");
 			if (powerSignal)
 			{
-				Api.CMD_power();
+				Api._core.snes_power();
 			}
 
 			var enables = new BsnesApi.LayerEnables
@@ -73,7 +73,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			// run the core for one frame
 			_timeFrameCounter++;
-			Api.CMD_run();
+			Api._core.snes_run();
 
 			// once upon a time we forwarded messages from bsnes here, by checking for queued text messages, but I don't think it's needed any longer
 			if (IsLagFrame)

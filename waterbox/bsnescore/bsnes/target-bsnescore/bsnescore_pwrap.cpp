@@ -278,44 +278,6 @@ static void debug_op_write_smp(uint24 addr, uint8 value)
 }
 
 
-static void Analyze()
-{
-    //gather some "static" type information, so we dont have to poll annoyingly for it later
-    comm.mapper = snes_get_mapper();
-    comm.region = snes_get_region();
-}
-
-void CMD_LoadCartridgeNormal()
-{
-    bool ret = snes_load_cartridge_normal((const char*) comm.buf[0], (const uint8_t*)comm.buf[1], comm.buf_size[1]);
-    comm.value = ret;
-
-    if(ret)
-        Analyze();
-}
-
-void CMD_LoadCartridgeSGB()
-{
-    bool ret = snes_load_cartridge_super_game_boy((const char*)comm.buf[0], (const uint8_t*)comm.buf[1], comm.buf_size[1], (const uint8_t*)comm.buf[2], comm.buf_size[2]);
-    comm.value = ret;
-
-    if(ret)
-        Analyze();
-}
-
-void CMD_init()
-{
-    snes_init(comm.value);
-
-    SuperFamicom::controllerPort1.connect(*(uint*) &comm.inports[0]);
-    SuperFamicom::controllerPort2.connect(*(uint*) &comm.inports[1]);
-}
-
-static void CMD_Run()
-{
-    snes_run();
-}
-
 // void QUERY_state_hook_exec() {
 //     // SuperFamicom::cpu.debugger.op_exec = comm.value ? debug_op_exec : hook<void(uint24)>();
 // }
@@ -365,24 +327,11 @@ static void CMD_Run()
 //     }
 // }
 
-const Action kHandlers_CMD[] = {
-    CMD_init,
-    snes_power,
-    snes_reset,
-    CMD_Run,
-    nullptr,
-    nullptr,
-    CMD_LoadCartridgeNormal,
-    CMD_LoadCartridgeSGB,
-    snes_term,
-    snes_unload_cartridge,
-};
-
 //all this does is run commands on the emulation thread infinitely forever
 //(I should probably make a mechanism for bailing...)
 void new_emuthread()
 {
-    for (;;)
+    while (true)
     {
         //process the current CMD
         CMD_cb();
@@ -527,28 +476,6 @@ EXPORT void Message(eMessage msg)
         case eMessage_QUERY_set_cdl: {
             break;
         }
-        case eMessage_CMD_init ... eMessage_CMD_unload_cartridge:
-            //CMD is only valid if status is idle
-            if (comm.status != eStatus_Idle) {
-                fprintf(stderr, "ERROR: cmd during non-idle\n");
-                return;
-            }
-
-            comm.status = eStatus_CMD;
-            comm.cmd = msg;
-
-            CMD_cb = kHandlers_CMD[msg - eMessage_CMD_FIRST - 1];
-            co_switch(co_emu);
-
-    //     // nested switch to allow separating the CMDs
-    // switch (msg)
-    // {
-    //     case eMessage_CMD_init:
-    //         fprintf(stderr, "message was exactly init: %d\n", msg);
-    //         break;
-    // }
-
-            // we could be in ANY STATE when we return from here
     }
 }
 

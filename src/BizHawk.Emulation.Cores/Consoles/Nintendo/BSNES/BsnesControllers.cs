@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
@@ -34,7 +33,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			}
 		}
 
-		private readonly IBsnesController[] _ports;
+		public readonly IBsnesController[] _ports;
 		private readonly ControlDefUnMerger[] _mergers;
 
 		public ControllerDefinition Definition { get; }
