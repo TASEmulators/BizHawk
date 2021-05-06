@@ -214,7 +214,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			public bool LatchedRTCHalt { get; set; }
 
 			[DisplayName("Latched RTC Days")]
-			[Description("Sets the latched RTC day counter. Ranges from 0 to 511.")]
+			[Description("Sets the latched RTC days. Ranges from 0 to 511.")]
 			[DefaultValue(0)]
 			public int LatchedRTCDays
 			{
@@ -223,7 +223,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			}
 
 			[DisplayName("Latched RTC Hours")]
-			[Description("Sets the latched RTC hour counter. Ranges from 0 to 31.")]
+			[Description("Sets the latched RTC hours. Ranges from 0 to 31.")]
 			[DefaultValue(0)]
 			public int LatchedRTCHours
 			{
@@ -232,7 +232,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			}
 
 			[DisplayName("Latched RTC Minutes")]
-			[Description("Sets the latched RTC minute counter. Ranges from 0 to 63.")]
+			[Description("Sets the latched RTC minutes. Ranges from 0 to 63.")]
 			[DefaultValue(0)]
 			public int LatchedRTCMinutes
 			{
@@ -241,7 +241,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			}
 
 			[DisplayName("Latched RTC Seconds")]
-			[Description("Sets the latched RTC second counter. Ranges from 0 to 63.")]
+			[Description("Sets the latched RTC seconds. Ranges from 0 to 63.")]
 			[DefaultValue(0)]
 			public int LatchedRTCSeconds
 			{
