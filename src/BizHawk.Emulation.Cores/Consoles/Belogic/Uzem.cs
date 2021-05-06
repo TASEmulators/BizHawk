@@ -6,7 +6,7 @@ using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.Belogic
 {
-	[Core(CoreNames.Uzem, "David Etherton", true, true, "", "", false)]
+	[PortedCore(CoreNames.Uzem, "David Etherton")]
 	public class Uzem : WaterboxCore
 	{
 		private LibUzem _uze;

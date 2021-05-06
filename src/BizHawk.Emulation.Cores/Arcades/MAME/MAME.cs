@@ -83,14 +83,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Arcades.MAME
 {
-	[Core(
-		name: CoreNames.MAME,
-		author: "MAMEDev",
-		isPorted: true,
-		isReleased: false,
-		portedVersion: "0.230",
-		portedUrl: "https://github.com/mamedev/mame.git",
-		singleInstance: false)]
+	[PortedCore(CoreNames.MAME, "MAMEDev", "0.230", "https://github.com/mamedev/mame.git", isReleased: false)]
 	public partial class MAME : IEmulator, IVideoProvider, ISoundProvider, ISettable<object, MAME.SyncSettings>, IStatable, IInputPollable
 	{
 		public MAME(string dir, string file, MAME.SyncSettings syncSettings, out string gamename)
@@ -210,7 +203,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		private void CheckVersions()
 		{
 			var mameVersion = MameGetString(MAMELuaCommand.GetVersion);
-			var version = this.Attributes().PortedVersion;
+			var version = ((PortedCoreAttribute) this.Attributes()).PortedVersion;
 			Debug.Assert(version == mameVersion,
 				"MAME versions desync!\n\n" +
 				$"MAME is { mameVersion }\n" +

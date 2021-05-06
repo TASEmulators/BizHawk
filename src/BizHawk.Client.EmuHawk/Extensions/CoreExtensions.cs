@@ -19,7 +19,7 @@ namespace BizHawk.Client.EmuHawk.CoreExtensions
 		{
 			var attributes = core.Attributes();
 
-			if (!attributes.Ported)
+			if (attributes is not PortedCoreAttribute)
 			{
 				return Properties.Resources.CorpHawkSmall;
 			}

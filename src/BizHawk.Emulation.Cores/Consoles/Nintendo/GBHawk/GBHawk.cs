@@ -20,11 +20,7 @@ using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
-	[Core(
-		CoreNames.GbHawk,
-		"",
-		isPorted: false,
-		isReleased: true)]
+	[Core(CoreNames.GbHawk, "")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class GBHawk : IEmulator, ISaveRam, IDebuggable, IInputPollable, IRegionable, IGameboyCommon,
 	ISettable<GBHawk.GBSettings, GBHawk.GBSyncSettings>

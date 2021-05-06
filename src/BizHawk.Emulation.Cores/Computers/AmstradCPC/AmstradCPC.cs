@@ -13,11 +13,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 	/// CPCHawk: Core Class
 	/// * Main Initialization *
 	/// </summary>
-	[Core(
-		CoreNames.CPCHawk,
-		"Asnivor",
-		isPorted: false,
-		isReleased: false)]
+	[Core(CoreNames.CPCHawk, "Asnivor", isReleased: false)]
 	public partial class AmstradCPC : IRegionable, IDriveLight
 	{
 		[CoreConstructor("AmstradCPC")]

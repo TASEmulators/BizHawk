@@ -9,11 +9,7 @@ using BizHawk.Emulation.Cores.Computers.Commodore64.Media;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
-	[Core(
-		CoreNames.C64Hawk,
-		"SaxxonPike",
-		isPorted: false,
-		isReleased: true)]
+	[Core(CoreNames.C64Hawk, "SaxxonPike")]
 	public sealed partial class C64 : IEmulator, IRegionable, IBoardInfo, IRomInfo
 	{
 		[CoreConstructor("C64")]

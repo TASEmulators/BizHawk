@@ -10,8 +10,7 @@ using System.Linq;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 {
-	[Core(CoreNames.SameBoy, "LIJI32", true, true, "efc11783c7fb6da66e1dd084e41ba6a85c0bd17e",
-		"https://sameboy.github.io/", false)]
+	[PortedCore(CoreNames.SameBoy, "LIJI32", "efc11783c7fb6da66e1dd084e41ba6a85c0bd17e", "https://sameboy.github.io/")]
 	public class Sameboy : WaterboxCore,
 		IGameboyCommon, ISaveRam,
 		ISettable<Sameboy.Settings, Sameboy.SyncSettings>

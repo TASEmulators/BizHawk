@@ -4,7 +4,7 @@ using BizHawk.Emulation.Cores.Sega.MasterSystem;
 
 namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 {
-	[Core(CoreNames.GGHawkLink, "", isPorted: false, isReleased: false)]
+	[Core(CoreNames.GGHawkLink, "", isReleased: false)]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class GGHawkLink : IEmulator, ISaveRam, IDebuggable, IStatable, IInputPollable, IRegionable, ILinkable,
 		ISettable<GGHawkLink.GGLinkSettings, GGHawkLink.GGLinkSyncSettings>

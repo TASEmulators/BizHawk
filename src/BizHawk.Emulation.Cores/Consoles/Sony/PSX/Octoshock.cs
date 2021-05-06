@@ -29,11 +29,7 @@ using BizHawk.Emulation.DiscSystem;
 
 namespace BizHawk.Emulation.Cores.Sony.PSX
 {
-	[Core(
-		CoreNames.Octoshock,
-		"Mednafen Team",
-		isPorted: true,
-		isReleased: true)]
+	[PortedCore(CoreNames.Octoshock, "Mednafen Team")]
 	public unsafe partial class Octoshock : IEmulator, IVideoProvider, ISoundProvider, ISaveRam, IStatable, IDriveLight, ISettable<Octoshock.Settings, Octoshock.SyncSettings>, IRegionable, IInputPollable, IRomInfo
 	{
 		public Octoshock(CoreComm comm, PSF psf, Octoshock.Settings settings, Octoshock.SyncSettings syncSettings)

@@ -2795,7 +2795,7 @@ namespace BizHawk.Client.EmuHawk
 
 			CoreNameStatusBarButton.Text = coreDispName;
 			CoreNameStatusBarButton.Image = Emulator.Icon();
-			CoreNameStatusBarButton.ToolTipText = attributes.Ported ? "(ported) " : "";
+			CoreNameStatusBarButton.ToolTipText = attributes is PortedCoreAttribute ? "(ported) " : "";
 
 
 			if (Emulator.SystemId == "ZXSpectrum")

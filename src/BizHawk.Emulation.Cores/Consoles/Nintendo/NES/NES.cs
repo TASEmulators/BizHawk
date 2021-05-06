@@ -9,11 +9,7 @@ using BizHawk.Emulation.Common;
 //TODO - redo all timekeeping in terms of master clock
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	[Core(
-		CoreNames.NesHawk,
-		"zeromus, natt, alyosha, adelikat",
-		isPorted: false,
-		isReleased: true)]
+	[Core(CoreNames.NesHawk, "zeromus, natt, alyosha, adelikat")]
 	public partial class NES : IEmulator, ISaveRam, IDebuggable, IInputPollable, IRegionable, IVideoLogicalOffsets,
 		IBoardInfo, IRomInfo, ISettable<NES.NESSettings, NES.NESSyncSettings>, ICodeDataLogger
 	{

@@ -10,14 +10,7 @@ using System.Linq;
 
 namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 {
-	[Core(
-		CoreNames.Gpgx,
-		"",
-		isPorted: true,
-		isReleased: true,
-		portedVersion: "r874",
-		portedUrl: "https://code.google.com/p/genplus-gx/",
-		singleInstance: false)]
+	[PortedCore(CoreNames.Gpgx, "", "r874", "https://code.google.com/p/genplus-gx/")]
 	public partial class GPGX : IEmulator, IVideoProvider, ISaveRam, IStatable, IRegionable,
 		IInputPollable, IDebuggable, IDriveLight, ICodeDataLogger, IDisassemblable
 	{

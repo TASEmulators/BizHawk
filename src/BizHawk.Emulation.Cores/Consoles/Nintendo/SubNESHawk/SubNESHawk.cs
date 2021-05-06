@@ -3,11 +3,7 @@ using BizHawk.Emulation.Cores.Nintendo.NES;
 
 namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 {
-	[Core(
-		CoreNames.SubNesHawk,
-		"",
-		isPorted: false,
-		isReleased: true)]
+	[Core(CoreNames.SubNesHawk, "")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class SubNESHawk : IEmulator, IStatable, IInputPollable,
 		ISettable<NES.NES.NESSettings, NES.NES.NESSyncSettings>
