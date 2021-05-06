@@ -1,0 +1,6 @@
+root = false
+
+[*]
+# let it auto-detect indent_style for each file
+# i'm not gonna let my workflow get tampered with
+indent_style =
