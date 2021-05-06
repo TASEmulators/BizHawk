@@ -21,17 +21,12 @@ namespace BizHawk.Client.EmuHawk
 				CoreAuthorLabel.Visible = false;
 			}
 
-			CorePortedLabel.Text = attributes.Ported ? " (Ported)" : "";
-
-			if (!attributes.Ported)
+			if (attributes.Ported)
 			{
-				CoreUrlLink.Visible = false;
-			}
-			else
-			{
-				CoreUrlLink.Visible = true;
-				CoreUrlLink.Text = attributes.PortedVersion;
+				CorePortedLabel.Text = " (Ported)";
 				_url = attributes.PortedUrl;
+				CoreUrlLink.Text = attributes.PortedVersion;
+				CoreUrlLink.Visible = true;
 			}
 		}
 

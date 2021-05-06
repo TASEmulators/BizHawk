@@ -58,7 +58,7 @@
 			this.CorePortedLabel.Location = new System.Drawing.Point(140, 0);
 			this.CorePortedLabel.Name = "CorePortedLabel";
 			this.CorePortedLabel.Padding = new System.Windows.Forms.Padding(5, 5, 0, 0);
-			this.CorePortedLabel.Text = "label3";
+			this.CorePortedLabel.Text = "";
 			// 
 			// CoreUrlLink
 			// 
@@ -71,6 +71,7 @@
 			this.CoreUrlLink.TabIndex = 3;
 			this.CoreUrlLink.TabStop = true;
 			this.CoreUrlLink.Text = "linkLabel1";
+			this.CoreUrlLink.Visible = false;
 			this.CoreUrlLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.CoreUrlLink_LinkClicked);
 			// 
 			// BizBoxInfoControl
