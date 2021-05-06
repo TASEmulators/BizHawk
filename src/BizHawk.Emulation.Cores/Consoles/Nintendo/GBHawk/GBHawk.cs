@@ -94,6 +94,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public MapperBase mapper;
 
+		private readonly GBHawkDisassembler _disassembler = new();
+
 		private readonly ITraceable _tracer;
 
 		public LR35902 cpu;
@@ -127,7 +129,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			audio = new Audio();
 			serialport = new SerialPort();
 
-			_settings = (GBSettings)settings ?? new GBSettings();
+			_ = PutSettings(settings ?? new GBSettings());
 			_syncSettings = (GBSyncSettings)syncSettings ?? new GBSyncSettings();
 
 			byte[] Bios = null;
@@ -213,13 +215,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Register<ISoundProvider>(audio);
 			ServiceProvider = ser;
 
-			_settings = (GBSettings)settings ?? new GBSettings();
+			_ = PutSettings(settings ?? new GBSettings());
 			_syncSettings = (GBSyncSettings)syncSettings ?? new GBSyncSettings();
 
 			_tracer = new TraceBuffer { Header = cpu.TraceHeader };
 			ser.Register<ITraceable>(_tracer);
 			ser.Register<IStatable>(new StateSerializer(SyncState));
-            ser.Register<IDisassemblable>(new GBHawkDisassembler());
+            ser.Register<IDisassemblable>(_disassembler);
 			SetupMemoryDomains();
 			cpu.SetCallbacks(ReadMemory, PeekMemory, PeekMemory, WriteMemory);
 			HardReset();
@@ -740,6 +742,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public class GBHawkDisassembler : VerifiedDisassembler
 		{
+			public bool UseRGBDSSyntax;
+
 			public override IEnumerable<string> AvailableCpus
 			{
 				get { yield return "LR35902"; }
@@ -749,7 +753,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			public override string Disassemble(MemoryDomain m, uint addr, out int length)
 			{
-				string ret = LR35902.Disassemble((ushort)addr, a => m.PeekByte(a), out var tmp);
+				var ret = LR35902.Disassemble((ushort) addr, a => m.PeekByte(a), UseRGBDSSyntax, out var tmp);
 				length = tmp;
 				return ret;
 			}

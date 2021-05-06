@@ -18,6 +18,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public PutSettingsDirtyBits PutSettings(GambatteSettings o)
 		{
 			_settings = o;
+			_disassembler.UseRGBDSSyntax = _settings.RgbdsSyntax;
 			if (IsCGBMode())
 			{
 				SetCGBColors(_settings.CGBColors);
@@ -70,11 +71,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			/// true to mute all audio
 			/// </summary>
 			public bool Muted;
+			
+			/// <summary>
+			/// true to use rgbds syntax
+			/// </summary>
+			public bool RgbdsSyntax;
 
 			public GambatteSettings()
 			{
 				GBPalette = (int[])DefaultPalette.Clone();
 				CGBColors = GBColors.ColorType.gambatte;
+				RgbdsSyntax = true;
 			}
 
 

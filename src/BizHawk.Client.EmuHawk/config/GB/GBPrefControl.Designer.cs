@@ -31,6 +31,7 @@
 			this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
 			this.buttonDefaults = new System.Windows.Forms.Button();
 			this.buttonPalette = new System.Windows.Forms.Button();
+			this.cbRgbdsSyntax = new System.Windows.Forms.CheckBox();
 			this.checkBoxMuted = new System.Windows.Forms.CheckBox();
 			this.SuspendLayout();
 			// 
@@ -81,9 +82,22 @@
 			this.checkBoxMuted.UseVisualStyleBackColor = true;
 			this.checkBoxMuted.CheckedChanged += new System.EventHandler(this.CheckBoxMuted_CheckedChanged);
 			// 
+			// cbRgbdsSyntax
+			// 
+			this.cbRgbdsSyntax.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.cbRgbdsSyntax.AutoSize = true;
+			this.cbRgbdsSyntax.Location = new System.Drawing.Point(130, 292);
+			this.cbRgbdsSyntax.Name = "cbRgbdsSyntax";
+			this.cbRgbdsSyntax.Size = new System.Drawing.Size(150, 17);
+			this.cbRgbdsSyntax.TabIndex = 7;
+			this.cbRgbdsSyntax.Text = "RGBDS Syntax";
+			this.cbRgbdsSyntax.UseVisualStyleBackColor = true;
+			this.cbRgbdsSyntax.CheckedChanged += new System.EventHandler(this.CbRgbdsSyntax_CheckedChanged);
+			// 
 			// GBPrefControl
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
+			this.Controls.Add(this.cbRgbdsSyntax);
 			this.Controls.Add(this.checkBoxMuted);
 			this.Controls.Add(this.buttonPalette);
 			this.Controls.Add(this.buttonDefaults);
@@ -100,6 +114,7 @@
 		private System.Windows.Forms.PropertyGrid propertyGrid1;
 		private System.Windows.Forms.Button buttonDefaults;
 		private System.Windows.Forms.Button buttonPalette;
+		private System.Windows.Forms.CheckBox cbRgbdsSyntax;
 		private System.Windows.Forms.CheckBox checkBoxMuted;
 	}
 }
