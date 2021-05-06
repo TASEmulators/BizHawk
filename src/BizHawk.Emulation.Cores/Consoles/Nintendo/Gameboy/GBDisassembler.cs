@@ -9,10 +9,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 	{
 		public bool UseRGBDSSyntax;
 
-		public override IEnumerable<string> AvailableCpus
-		{
-			get { yield return "Z80GB"; }
-		}
+		public override IEnumerable<string> AvailableCpus { get; } = new[] { "LR35902" };
 
 		public override string PCRegisterName => "PC";
 

@@ -744,10 +744,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		{
 			public bool UseRGBDSSyntax;
 
-			public override IEnumerable<string> AvailableCpus
-			{
-				get { yield return "LR35902"; }
-			}
+			public override IEnumerable<string> AvailableCpus { get; } = new[] { "LR35902" };
 
 			public override string PCRegisterName => "PC";
 
