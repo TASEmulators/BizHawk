@@ -156,7 +156,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TasView_QueryItemIcon(int index, RollColumn column, ref Bitmap bitmap, ref int offsetX, ref int offsetY)
 		{
-			if (!_engaged)
+			if (!_engaged || _initializing)
 			{
 				return;
 			}

@@ -434,10 +434,11 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod(
 			"clear",
 			"Clears the canvas")]
-		public void Clear(int componentHandle, Color color)
+		public void Clear(int componentHandle, [LuaColorParam] object color)
 		{
 			try
 			{
+				var color1 = _th.ParseColor(color);
 				var ptr = new IntPtr(componentHandle);
 				foreach (var form in _luaForms)
 				{
@@ -449,7 +450,7 @@ namespace BizHawk.Client.EmuHawk
 
 					foreach (var control in form.Controls.OfType<LuaPictureBox>())
 					{
-						control.Clear(color);
+						control.Clear(color1);
 					}
 				}
 			}
@@ -492,10 +493,11 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod(
 			"setDefaultForegroundColor",
 			"Sets the default foreground color to use in drawing methods, white by default")]
-		public void SetDefaultForegroundColor(int componentHandle, Color color)
+		public void SetDefaultForegroundColor(int componentHandle, [LuaColorParam] object color)
 		{
 			try
 			{
+				var color1 = _th.ParseColor(color);
 				var ptr = new IntPtr(componentHandle);
 				foreach (var form in _luaForms)
 				{
@@ -507,7 +509,7 @@ namespace BizHawk.Client.EmuHawk
 
 					foreach (var control in form.Controls.OfType<LuaPictureBox>())
 					{
-						control.SetDefaultForegroundColor(color);
+						control.SetDefaultForegroundColor(color1);
 					}
 				}
 			}
@@ -521,10 +523,11 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod(
 			"setDefaultBackgroundColor",
 			"Sets the default background color to use in drawing methods, transparent by default")]
-		public void SetDefaultBackgroundColor(int componentHandle, Color color)
+		public void SetDefaultBackgroundColor(int componentHandle, [LuaColorParam] object color)
 		{
 			try
 			{
+				var color1 = _th.ParseColor(color);
 				var ptr = new IntPtr(componentHandle);
 				foreach (var form in _luaForms)
 				{
@@ -536,7 +539,7 @@ namespace BizHawk.Client.EmuHawk
 
 					foreach (var control in form.Controls.OfType<LuaPictureBox>())
 					{
-						control.SetDefaultBackgroundColor(color);
+						control.SetDefaultBackgroundColor(color1);
 					}
 				}
 			}
@@ -550,10 +553,11 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod(
 			"setDefaultTextBackground",
 			"Sets the default backgroiund color to use in text drawing methods, half-transparent black by default")]
-		public void SetDefaultTextBackground(int componentHandle, Color color)
+		public void SetDefaultTextBackground(int componentHandle, [LuaColorParam] object color)
 		{
 			try
 			{
+				var color1 = _th.ParseColor(color);
 				var ptr = new IntPtr(componentHandle);
 				foreach (var form in _luaForms)
 				{
@@ -565,7 +569,7 @@ namespace BizHawk.Client.EmuHawk
 
 					foreach (var control in form.Controls.OfType<LuaPictureBox>())
 					{
-						control.SetDefaultTextBackground(color);
+						control.SetDefaultTextBackground(color1);
 					}
 				}
 			}
@@ -579,10 +583,11 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod(
 			"drawBezier",
 			"Draws a Bezier curve using the table of coordinates provided in the given color")]
-		public void DrawBezier(int componentHandle, LuaTable points, Color color)
+		public void DrawBezier(int componentHandle, LuaTable points, [LuaColorParam] object color)
 		{
 			try
 			{
+				var color1 = _th.ParseColor(color);
 				var ptr = new IntPtr(componentHandle);
 				foreach (var form in _luaForms)
 				{
@@ -594,7 +599,7 @@ namespace BizHawk.Client.EmuHawk
 
 					foreach (var control in form.Controls.OfType<LuaPictureBox>())
 					{
-						control.DrawBezier(points, color);
+						control.DrawBezier(points, color1);
 					}
 				}
 			}
@@ -608,10 +613,12 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod(
 			"drawBox",
 			"Draws a rectangle on screen from x1/y1 to x2/y2. Same as drawRectangle except it receives two points intead of a point and width/height")]
-		public void DrawBox(int componentHandle, int x, int y, int x2, int y2, Color? line = null, Color? background = null)
+		public void DrawBox(int componentHandle, int x, int y, int x2, int y2, [LuaColorParam] object line = null, [LuaColorParam] object background = null)
 		{
 			try
 			{
+				var strokeColor = _th.SafeParseColor(line);
+				var fillColor = _th.SafeParseColor(background);
 				var ptr = new IntPtr(componentHandle);
 				foreach (var form in _luaForms)
 				{
@@ -623,7 +630,7 @@ namespace BizHawk.Client.EmuHawk
 
 					foreach (var control in form.Controls.OfType<LuaPictureBox>())
 					{
-						control.DrawBox(x, y, x2, y2, line, background);
+						control.DrawBox(x, y, x2, y2, strokeColor, fillColor);
 					}
 				}
 			}
@@ -637,10 +644,12 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod(
 			"drawEllipse",
 			"Draws an ellipse at the given coordinates and the given width and height. Line is the color of the ellipse. Background is the optional fill color")]
-		public void DrawEllipse(int componentHandle, int x, int y, int width, int height, Color? line = null, Color? background = null)
+		public void DrawEllipse(int componentHandle, int x, int y, int width, int height, [LuaColorParam] object line = null, [LuaColorParam] object background = null)
 		{
 			try
 			{
+				var strokeColor = _th.SafeParseColor(line);
+				var fillColor = _th.SafeParseColor(background);
 				var ptr = new IntPtr(componentHandle);
 				foreach (var form in _luaForms)
 				{
@@ -652,7 +661,7 @@ namespace BizHawk.Client.EmuHawk
 
 					foreach (var control in form.Controls.OfType<LuaPictureBox>())
 					{
-						control.DrawEllipse(x, y, width, height, line, background);
+						control.DrawEllipse(x, y, width, height, strokeColor, fillColor);
 					}
 				}
 			}
@@ -792,10 +801,11 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod(
 			"drawLine",
 			"Draws a line from the first coordinate pair to the 2nd. Color is optional (if not specified it will be drawn black)")]
-		public void DrawLine(int componentHandle, int x1, int y1, int x2, int y2, Color? color = null)
+		public void DrawLine(int componentHandle, int x1, int y1, int x2, int y2, [LuaColorParam] object color = null)
 		{
 			try
 			{
+				var color1 = _th.SafeParseColor(color);
 				var ptr = new IntPtr(componentHandle);
 				foreach (var form in _luaForms)
 				{
@@ -807,7 +817,7 @@ namespace BizHawk.Client.EmuHawk
 
 					foreach (var control in form.Controls.OfType<LuaPictureBox>())
 					{
-						control.DrawLine(x1, y1, x2, y2, color);
+						control.DrawLine(x1, y1, x2, y2, color1);
 					}
 				}
 			}
@@ -821,10 +831,11 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod(
 			"drawAxis",
 			"Draws an axis of the specified size at the coordinate pair.)")]
-		public void DrawAxis(int componentHandle, int x, int y, int size, Color? color = null)
+		public void DrawAxis(int componentHandle, int x, int y, int size, [LuaColorParam] object color = null)
 		{
 			try
 			{
+				var color1 = _th.SafeParseColor(color);
 				var ptr = new IntPtr(componentHandle);
 				foreach (var form in _luaForms)
 				{
@@ -836,7 +847,7 @@ namespace BizHawk.Client.EmuHawk
 
 					foreach (var control in form.Controls.OfType<LuaPictureBox>())
 					{
-						control.DrawAxis(x, y, size, color);
+						control.DrawAxis(x, y, size, color1);
 					}
 				}
 			}
@@ -851,10 +862,11 @@ namespace BizHawk.Client.EmuHawk
 			"drawArc",
 			"draws a Arc shape at the given coordinates and the given width and height"
 		)]
-		public void DrawArc(int componentHandle, int x, int y, int width, int height, int startangle, int sweepangle, Color? line = null)
+		public void DrawArc(int componentHandle, int x, int y, int width, int height, int startangle, int sweepangle, [LuaColorParam] object line = null)
 		{
 			try
 			{
+				var strokeColor = _th.SafeParseColor(line);
 				var ptr = new IntPtr(componentHandle);
 				foreach (var form in _luaForms)
 				{
@@ -866,7 +878,7 @@ namespace BizHawk.Client.EmuHawk
 
 					foreach (var control in form.Controls.OfType<LuaPictureBox>())
 					{
-						control.DrawArc(x, y, width, height, startangle, sweepangle, line);
+						control.DrawArc(x, y, width, height, startangle, sweepangle, strokeColor);
 					}
 				}
 			}
@@ -888,11 +900,13 @@ namespace BizHawk.Client.EmuHawk
 			int height,
 			int startangle,
 			int sweepangle,
-			Color? line = null,
-			Color? background = null)
+			[LuaColorParam] object line = null,
+			[LuaColorParam] object background = null)
 		{
 			try
 			{
+				var strokeColor = _th.SafeParseColor(line);
+				var fillColor = _th.SafeParseColor(background);
 				var ptr = new IntPtr(componentHandle);
 				foreach (var form in _luaForms)
 				{
@@ -904,7 +918,7 @@ namespace BizHawk.Client.EmuHawk
 
 					foreach (var control in form.Controls.OfType<LuaPictureBox>())
 					{
-						control.DrawPie(x, y, width, height, startangle, sweepangle, line, background);
+						control.DrawPie(x, y, width, height, startangle, sweepangle, strokeColor, fillColor);
 					}
 				}
 			}
@@ -918,10 +932,11 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod(
 			"drawPixel",
 			"Draws a single pixel at the given coordinates in the given color. Color is optional (if not specified it will be drawn black)")]
-		public void DrawPixel(int componentHandle, int x, int y, Color? color = null)
+		public void DrawPixel(int componentHandle, int x, int y, [LuaColorParam] object color = null)
 		{
 			try
 			{
+				var color1 = _th.SafeParseColor(color);
 				var ptr = new IntPtr(componentHandle);
 				foreach (var form in _luaForms)
 				{
@@ -933,7 +948,7 @@ namespace BizHawk.Client.EmuHawk
 
 					foreach (var control in form.Controls.OfType<LuaPictureBox>())
 					{
-						control.DrawPixel(x, y, color);
+						control.DrawPixel(x, y, color1);
 					}
 				}
 			}
@@ -947,10 +962,12 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod(
 			"drawPolygon",
 			"Draws a polygon using the table of coordinates specified in points. This should be a table of tables(each of size 2). If x or y is passed, the polygon will be translated by the passed coordinate pair. Line is the color of the polygon. Background is the optional fill color")]
-		public void DrawPolygon(int componentHandle, LuaTable points, int? x = null, int? y = null, Color? line = null, Color? background = null)
+		public void DrawPolygon(int componentHandle, LuaTable points, int? x = null, int? y = null, [LuaColorParam] object line = null, [LuaColorParam] object background = null)
 		{
 			try
 			{
+				var strokeColor = _th.SafeParseColor(line);
+				var fillColor = _th.SafeParseColor(background);
 				var ptr = new IntPtr(componentHandle);
 				foreach (var form in _luaForms)
 				{
@@ -962,7 +979,7 @@ namespace BizHawk.Client.EmuHawk
 
 					foreach (var control in form.Controls.OfType<LuaPictureBox>())
 					{
-						control.DrawPolygon(points, x, y, line, background);
+						control.DrawPolygon(points, x, y, strokeColor, fillColor);
 					}
 				}
 			}
@@ -977,10 +994,12 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod(
 			"drawRectangle",
 			"Draws a rectangle at the given coordinate and the given width and height. Line is the color of the box. Background is the optional fill color")]
-		public void DrawRectangle(int componentHandle, int x, int y, int width, int height, Color? line = null, Color? background = null)
+		public void DrawRectangle(int componentHandle, int x, int y, int width, int height, [LuaColorParam] object line = null, [LuaColorParam] object background = null)
 		{
 			try
 			{
+				var strokeColor = _th.SafeParseColor(line);
+				var fillColor = _th.SafeParseColor(background);
 				var ptr = new IntPtr(componentHandle);
 				foreach (var form in _luaForms)
 				{
@@ -992,7 +1011,7 @@ namespace BizHawk.Client.EmuHawk
 
 					foreach (var control in form.Controls.OfType<LuaPictureBox>())
 					{
-						control.DrawRectangle(x, y, width, height, line, background);
+						control.DrawRectangle(x, y, width, height, strokeColor, fillColor);
 					}
 				}
 			}
@@ -1011,8 +1030,8 @@ namespace BizHawk.Client.EmuHawk
 			int x,
 			int y,
 			string message,
-			Color? forecolor = null,
-			Color? backcolor = null,
+			[LuaColorParam] object forecolor = null,
+			[LuaColorParam] object backcolor = null,
 			int? fontsize = null,
 			string fontfamily = null,
 			string fontstyle = null,
@@ -1021,6 +1040,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			try
 			{
+				var fgColor = _th.SafeParseColor(forecolor);
+				var bgColor = _th.SafeParseColor(backcolor);
 				var ptr = new IntPtr(componentHandle);
 				foreach (var form in _luaForms)
 				{
@@ -1032,7 +1053,7 @@ namespace BizHawk.Client.EmuHawk
 
 					foreach (var control in form.Controls.OfType<LuaPictureBox>())
 					{
-						control.DrawText(x, y, message, forecolor, backcolor, fontsize, fontfamily, fontstyle, horizalign, vertalign);
+						control.DrawText(x, y, message, fgColor, bgColor, fontsize, fontfamily, fontstyle, horizalign, vertalign);
 					}
 				}
 			}
@@ -1051,8 +1072,8 @@ namespace BizHawk.Client.EmuHawk
 			int x,
 			int y,
 			string message,
-			Color? forecolor = null,
-			Color? backcolor = null,
+			[LuaColorParam] object forecolor = null,
+			[LuaColorParam] object backcolor = null,
 			int? fontsize = null,
 			string fontfamily = null,
 			string fontstyle = null,
@@ -1061,6 +1082,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			try
 			{
+				var fgColor = _th.SafeParseColor(forecolor);
+				var bgColor = _th.SafeParseColor(backcolor);
 				var ptr = new IntPtr(componentHandle);
 				foreach (var form in _luaForms)
 				{
@@ -1072,7 +1095,7 @@ namespace BizHawk.Client.EmuHawk
 
 					foreach (var control in form.Controls.OfType<LuaPictureBox>())
 					{
-						control.DrawText(x, y, message, forecolor, backcolor, fontsize, fontfamily, fontstyle, horizalign, vertalign);
+						control.DrawText(x, y, message, fgColor, bgColor, fontsize, fontfamily, fontstyle, horizalign, vertalign);
 					}
 				}
 			}
@@ -1218,21 +1241,12 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var pi = c.GetType().GetProperty(property) ?? throw new Exception($"no property with the identifier {property}");
 				var pt = pi.PropertyType;
-				object value1;
-				if (pt.IsEnum)
-				{
-					value1 = Enum.Parse(pt, value.ToString(), true);
-				}
-				else if (pt == typeof(Color) && value is string s)
-				{
-					if (s[0] != '#' || s.Length != 9) throw new Exception("invalid format for Color, format the string as #AARRGGBB or pass a Color object");
-					value1 = Color.FromArgb(int.Parse(s.Substring(1), System.Globalization.NumberStyles.HexNumber));
-				}
-				else
-				{
-					value1 = value;
-				}
-				pi.SetValue(c, Convert.ChangeType(value1, pt), null);
+				var o = pt.IsEnum
+					? Enum.Parse(pt, value.ToString(), true)
+					: pt == typeof(Color)
+						? _th.ParseColor(value)
+						: Convert.ChangeType(value, pt);
+				pi.SetValue(c, o, null);
 			}
 
 			var ptr = new IntPtr(handle);

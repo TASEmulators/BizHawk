@@ -147,7 +147,6 @@
 			this.Controls.Add(this.label_Watch2);
 			this.Controls.Add(this.label_Watch1);
 			this.Name = "CustomMainForm";
-			this.Text = "HelloWorld";
 			this.ResumeLayout(false);
 			this.PerformLayout();
 

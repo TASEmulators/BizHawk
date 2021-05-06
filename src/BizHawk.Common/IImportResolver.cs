@@ -5,6 +5,8 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 
+using BizHawk.Common.PathExtensions;
+
 namespace BizHawk.Common
 {
 	/// <summary>Implementors are able to provide pointers to functions in dynamically-linked libraries, which are loaded through some undefined mechanism.</summary>
@@ -32,7 +34,7 @@ namespace BizHawk.Common
 			};
 		}
 
-		private static string UnixResolveFilePath(string orig) => orig[0] == '/'
+		private static string UnixResolveFilePath(string orig) => orig.IsAbsolute()
 			? orig
 			: UnixSearchPaths.Select(dir => dir + orig)
 				.FirstOrDefault(s =>
@@ -40,7 +42,7 @@ namespace BizHawk.Common
 					var fi = new FileInfo(s);
 					return fi.Exists && (fi.Attributes & FileAttributes.Directory) != FileAttributes.Directory;
 				})
-				?? orig;
+				?? orig; // don't MakeAbsolute, just pass through and hope something lower-level magically makes it work
 
 		private IntPtr _p;
 

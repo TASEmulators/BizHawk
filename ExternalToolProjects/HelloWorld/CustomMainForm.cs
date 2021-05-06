@@ -12,7 +12,7 @@ namespace HelloWorld
 	[ExternalTool("HelloWorld", Description = "An example of how to interact with EmuHawk")]
 //	[ExternalToolApplicability.SingleRom(CoreSystem.NES, "EA343F4E445A9050D4B4FBAC2C77D0693B1D0922")] // example of limiting tool usage (this is SMB1)
 	[ExternalToolEmbeddedIcon("HelloWorld.icon_Hello.ico")]
-	public partial class CustomMainForm : Form, IExternalToolForm
+	public partial class CustomMainForm : ToolFormBase, IExternalToolForm
 	{
 		/// <remarks>
 		/// <see cref="RequiredServiceAttribute">RequiredServices</see> are populated by EmuHawk at runtime.
@@ -64,6 +64,8 @@ namespace HelloWorld
 			}
 		}
 
+		protected override string WindowTitleStatic => "HelloWorld";
+
 		public CustomMainForm()
 		{
 			InitializeComponent();
@@ -87,10 +89,8 @@ namespace HelloWorld
 			};
 		}
 
-		public bool AskSaveChanges() => true;
-
 		/// <remarks>This is called once when the form is opened, and every time a new movie session starts.</remarks>
-		public void Restart()
+		public override void Restart()
 		{
 			APIs.EmuClient.SetClientExtraPadding(50, 50);
 
@@ -107,7 +107,7 @@ namespace HelloWorld
 			}
 		}
 
-		public void UpdateValues(ToolFormUpdateType type)
+		public override void UpdateValues(ToolFormUpdateType type)
 		{
 			if (!(type == ToolFormUpdateType.PreFrame || type == ToolFormUpdateType.FastPreFrame)
 			    || APIs.GameInfo.GetRomName() == "Null"

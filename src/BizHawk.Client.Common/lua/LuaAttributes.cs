@@ -2,6 +2,9 @@
 
 namespace BizHawk.Client.Common
 {
+	[AttributeUsage(AttributeTargets.Parameter)]
+	public sealed class LuaColorParamAttribute : Attribute {}
+
 	[AttributeUsage(AttributeTargets.Method | AttributeTargets.Class)]
 	public sealed class LuaDeprecatedMethodAttribute : Attribute {}
 
