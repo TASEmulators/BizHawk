@@ -41,6 +41,7 @@
 			this.label6 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.FullnessLabel = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.groupBox4 = new System.Windows.Forms.GroupBox();
+			this.cbDeltaCompression = new System.Windows.Forms.CheckBox();
 			this.TargetFrameLengthNumeric = new System.Windows.Forms.NumericUpDown();
 			this.label2 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.EstTimeLabel = new BizHawk.WinForms.Controls.LocLabelEx();
@@ -183,6 +184,7 @@
 			// 
 			// groupBox4
 			// 
+			this.groupBox4.Controls.Add(this.cbDeltaCompression);
 			this.groupBox4.Controls.Add(this.TargetFrameLengthNumeric);
 			this.groupBox4.Controls.Add(this.label2);
 			this.groupBox4.Controls.Add(this.label4);
@@ -202,10 +204,21 @@
 			this.groupBox4.Controls.Add(this.StateSizeLabel);
 			this.groupBox4.Location = new System.Drawing.Point(12, 12);
 			this.groupBox4.Name = "groupBox4";
-			this.groupBox4.Size = new System.Drawing.Size(371, 205);
+			this.groupBox4.Size = new System.Drawing.Size(371, 218);
 			this.groupBox4.TabIndex = 2;
 			this.groupBox4.TabStop = false;
 			this.groupBox4.Text = "RewindSettings";
+			// 
+			// cbDeltaCompression
+			// 
+			this.cbDeltaCompression.AutoSize = true;
+			this.cbDeltaCompression.Location = new System.Drawing.Point(15, 193);
+			this.cbDeltaCompression.Name = "cbDeltaCompression";
+			this.cbDeltaCompression.Padding = new System.Windows.Forms.Padding(16, 0, 0, 0);
+			this.cbDeltaCompression.Size = new System.Drawing.Size(149, 17);
+			this.cbDeltaCompression.TabIndex = 35;
+			this.cbDeltaCompression.Text = "Use delta compression";
+			this.cbDeltaCompression.UseVisualStyleBackColor = true;
 			// 
 			// TargetFrameLengthNumeric
 			// 
@@ -538,5 +551,6 @@
 				private BizHawk.WinForms.Controls.LocLabelEx label20;
 		private System.Windows.Forms.NumericUpDown TargetFrameLengthNumeric;
 		private BizHawk.WinForms.Controls.LocLabelEx label2;
+		private System.Windows.Forms.CheckBox cbDeltaCompression;
 	}
 }
