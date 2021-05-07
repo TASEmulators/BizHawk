@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Common
 	/// gets and sets input callbacks in the core.  An input callback should fire any time input is
 	/// polled by the core
 	/// </summary>
-	/// <seealso cref="IInputPollable"/> 
+	/// <seealso cref="IInputPollable"/>
 	public interface IInputCallbackSystem : ICollection<Action>
 	{
 		/// <summary>

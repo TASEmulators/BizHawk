@@ -31,7 +31,7 @@ namespace BizHawk.Client.EmuHawk
 		public bool Checked
 		{
 			get => RowRadio.Checked;
-			set 
+			set
 			{
 				_programmaticallyUpdating = true;
 				RowRadio.Checked = value;

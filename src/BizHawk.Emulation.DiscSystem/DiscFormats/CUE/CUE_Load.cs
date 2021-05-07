@@ -12,7 +12,7 @@
 //most fundamentally, it is organized with TRACK and INDEX commands alternating.
 //these should be flattened into individual records with CURRTRACK and CURRINDEX fields.
 //more generally, it's organized with 'register' settings and INDEX commands alternating.
-//whenever an INDEX command is received from the cue file, individual flattened records are written with the current 'register' settings 
+//whenever an INDEX command is received from the cue file, individual flattened records are written with the current 'register' settings
 //and an incrementing timestamp until the INDEX command appears (or the EOF happens)
 //PREGAP commands are special : at the moment it is received, emit flat records with a different pregap structure
 //POSTGAP commands are special : TBD

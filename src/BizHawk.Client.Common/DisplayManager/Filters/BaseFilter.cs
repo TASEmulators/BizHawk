@@ -5,8 +5,8 @@ using BizHawk.Client.Common.FilterManager;
 using BizHawk.Bizware.BizwareGL;
 
 // Here's how to make a filter:
-// 1. Reset your state entirely in Initialize(). 
-//    The filter will be re-initialized several times while the chain is getting worked out, but not re-instantiated. 
+// 1. Reset your state entirely in Initialize().
+//    The filter will be re-initialized several times while the chain is getting worked out, but not re-instantiated.
 //    This is sort of annoying, but there's pretty good reasons for it (some external process has created the filters and set parameters needed to govern their chaining and surface properties)
 // 2. In Initialize(), be sure to use DeclareInput
 // (something about PresizeInput())

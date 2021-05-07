@@ -11,8 +11,8 @@ namespace BizHawk.Emulation.Common
 	/// by which a service provider will be populated with available services.  However, an implementation
 	/// by design must provide this mechanism
 	/// </summary>
-	/// <seealso cref="IEmulator" /> 
-	/// <seealso cref="IEmulatorService"/> 
+	/// <seealso cref="IEmulator" />
+	/// <seealso cref="IEmulatorService"/>
 	public interface IEmulatorServiceProvider
 	{
 		/// <summary>

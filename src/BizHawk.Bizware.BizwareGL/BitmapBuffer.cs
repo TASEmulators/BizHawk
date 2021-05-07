@@ -525,7 +525,7 @@ namespace BizHawk.Bizware.BizwareGL
 				return;
 			}
 
-			//note: we lock it as 32bpp even if the bitmap is 24bpp so we can write to it more conveniently. 
+			//note: we lock it as 32bpp even if the bitmap is 24bpp so we can write to it more conveniently.
 			var bmpdata = bmp.LockBits(new Rectangle(0, 0, Width, Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 
 			if(bmpdata.Stride == bmpdata.Width*4)

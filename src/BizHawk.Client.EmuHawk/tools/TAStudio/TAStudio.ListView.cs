@@ -1034,7 +1034,7 @@ namespace BizHawk.Client.EmuHawk
 						// If going backwards, delete!
 						bool shouldInsert = true;
 						if (startVal < _rightClickFrame)
-						{ 
+						{
 							// Cloning to a previous frame makes no sense.
 							startVal = _rightClickFrame - 1;
 						}

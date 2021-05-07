@@ -3,7 +3,7 @@
 	public enum AttribUsage
 	{
 		Unspecified,
-		Position, 
+		Position,
 		Color0,
 		Texcoord0, Texcoord1,
 	}

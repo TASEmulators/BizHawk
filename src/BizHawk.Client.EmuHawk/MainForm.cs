@@ -134,7 +134,7 @@ namespace BizHawk.Client.EmuHawk
 					.ToList();
 				try
 				{
-					int foundIndex = enabled.FindIndex(tuple => 
+					int foundIndex = enabled.FindIndex(tuple =>
 						tuple.Item1 == requestedExtToolDll
 						|| Path.GetFileName(tuple.Item1) == requestedExtToolDll
 						|| Path.GetFileNameWithoutExtension(tuple.Item1) == requestedExtToolDll);
@@ -1010,7 +1010,7 @@ namespace BizHawk.Client.EmuHawk
 					// ordinarily, an alt release with nothing else would move focus to the MenuBar. but that is sort of useless, and hard to implement exactly right.
 				}
 
-				// zero 09-sep-2012 - all input is eligible for controller input. not sure why the above was done. 
+				// zero 09-sep-2012 - all input is eligible for controller input. not sure why the above was done.
 				// maybe because it doesn't make sense to me to bind hotkeys and controller inputs to the same keystrokes
 
 				bool handled;
@@ -1297,7 +1297,7 @@ namespace BizHawk.Client.EmuHawk
 
 				// Work around an AMD driver bug in >= vista:
 				// It seems windows will activate opengl fullscreen mode when a GL control is occupying the exact space of a screen (0,0 and dimensions=screensize)
-				// AMD cards manifest a problem under these circumstances, flickering other monitors. 
+				// AMD cards manifest a problem under these circumstances, flickering other monitors.
 				// It isn't clear whether nvidia cards are failing to employ this optimization, or just not flickering.
 				// (this could be determined with more work; other side affects of the fullscreen mode include: corrupted TaskBar, no modal boxes on top of GL control, no screenshots)
 				// At any rate, we can solve this by adding a 1px black border around the GL control
@@ -1307,7 +1307,7 @@ namespace BizHawk.Client.EmuHawk
 					&& Config.DispMethod == EDispMethod.OpenGL)
 				{
 					// ATTENTION: this causes the StatusBar to not work well, since the backcolor is now set to black instead of SystemColors.Control.
-					// It seems that some StatusBar elements composite with the backcolor. 
+					// It seems that some StatusBar elements composite with the backcolor.
 					// Maybe we could add another control under the StatusBar. with a different backcolor
 					Padding = new Padding(1);
 					BackColor = Color.Black;
@@ -4688,7 +4688,7 @@ namespace BizHawk.Client.EmuHawk
 				_singleInstanceServer.EndWaitForConnection(iAsyncResult);
 
 				//a bit over-engineered in case someone wants to send a script or a rom or something
-				//buffer size is set to something tiny so that we are continually testing it 
+				//buffer size is set to something tiny so that we are continually testing it
 				var payloadBytes = new MemoryStream();
 				while (true)
 				{

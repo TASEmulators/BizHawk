@@ -14,10 +14,10 @@ namespace BizHawk.Client.Common
 	public class InputManager
 	{
 		// the original source controller, bound to the user, sort of the "input" port for the chain, i think
-		public Controller ActiveController { get; set; } // TODO: private setter, add a method that takes both controllers in 
+		public Controller ActiveController { get; set; } // TODO: private setter, add a method that takes both controllers in
 
 		// rapid fire version on the user controller, has its own key bindings and is OR'ed against ActiveController
-		public AutofireController AutoFireController { get; set; } // TODO: private setter, add a method that takes both controllers in 
+		public AutofireController AutoFireController { get; set; } // TODO: private setter, add a method that takes both controllers in
 
 		// the "output" port for the controller chain.
 		public CopyControllerAdapter ControllerOutput { get; } = new CopyControllerAdapter();

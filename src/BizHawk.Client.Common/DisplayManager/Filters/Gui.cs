@@ -51,7 +51,7 @@ namespace BizHawk.Client.Common.Filters
 			float widthScale = (float)targetWidth / sourceWidth;
 			float heightScale = (float)targetHeight / sourceHeight;
 
-			if (maintainAspect 
+			if (maintainAspect
 				// zero 20-jul-2014 - hacks upon hacks, this function needs rewriting
 				&& !maintainInteger
 				)

@@ -178,7 +178,7 @@ namespace BizHawk.Client.EmuHawk
 			SaveMovieMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Save Movie"].Bindings;
 
 			PlayMovieMenuItem.Enabled
-				= ImportMoviesMenuItem.Enabled 
+				= ImportMoviesMenuItem.Enabled
 				= RecentMovieSubMenu.Enabled
 					= !Tools.IsLoaded<TAStudio>();
 
@@ -1715,7 +1715,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			N64PluginSettingsMenuItem.Enabled =
 				N64ControllerSettingsMenuItem.Enabled =
-				N64ExpansionSlotMenuItem.Enabled = 
+				N64ExpansionSlotMenuItem.Enabled =
 				MovieSession.Movie.NotActive();
 
 			N64CircularAnalogRangeMenuItem.Checked = Config.N64UseCircularAnalogConstraint;

@@ -354,7 +354,7 @@ namespace BizHawk.Client.Common
 		private sealed class SaveStateStream : Stream, ISpanStream
 		{
 			/// <summary>
-			/// 
+			///
 			/// </summary>
 			/// <param name="backingStore">The ringbuffer to write into</param>
 			/// <param name="offset">Offset into the buffer to start writing (and treat as position 0 in the stream)</param>

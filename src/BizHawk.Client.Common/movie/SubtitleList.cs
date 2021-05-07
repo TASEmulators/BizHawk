@@ -43,7 +43,7 @@ namespace BizHawk.Client.Common
 						message += subParts[i] + ' ';
 					}
 
-					Add(new Subtitle 
+					Add(new Subtitle
 					{
 						Frame = int.Parse(subParts[1]),
 						X = int.Parse(subParts[2]),

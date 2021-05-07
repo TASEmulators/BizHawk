@@ -13,7 +13,7 @@ namespace BizHawk.Client.DiscoHawk
 
 		private void richTextBox1_LinkClicked(object sender, LinkClickedEventArgs e)
 		{
-			 System.Diagnostics.Process.Start(e.LinkText);
+			System.Diagnostics.Process.Start(e.LinkText);
 		}
 
 		private void button1_Click(object sender, EventArgs e)

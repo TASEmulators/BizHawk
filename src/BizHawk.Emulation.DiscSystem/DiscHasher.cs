@@ -81,7 +81,7 @@ namespace BizHawk.Emulation.DiscSystem
 			return crc.Result;
 		}
 
-		// gets an identifying hash. hashes the first 512 sectors of 
+		// gets an identifying hash. hashes the first 512 sectors of
 		// the first data track on the disc.
 		//TODO - this is a very platform-specific thing. hashing the TOC may be faster and be just as effective. so, rename it appropriately
 		public string OldHash()

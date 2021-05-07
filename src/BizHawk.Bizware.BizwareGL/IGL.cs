@@ -9,7 +9,7 @@ namespace BizHawk.Bizware.BizwareGL
 	/// This is a wrapper over OpenGL and direct3d to give a uniform interface
 	/// TODO - This really needs to be split up into an internal and a user interface. so many of the functions are made to support the smart wrappers
 	/// Maybe make a method that returns an interface used for advanced methods (and IGL_TK could implement that as well and just "return this:")
-	/// 
+	///
 	/// NOTE: THIS SHOULD NOT BE ASSUMED TO BE THREAD SAFE! Make a new IGL if you want to use it in a new thread. I hope that will work...
 	/// </summary>
 	public interface IGL : IDisposable

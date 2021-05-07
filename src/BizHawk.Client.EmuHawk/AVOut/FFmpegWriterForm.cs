@@ -173,7 +173,7 @@ namespace BizHawk.Client.EmuHawk
 				config.FFmpegFormat = ret.ToString();
 				if (ret.Custom)
 				{
-					ret.Commandline = 
+					ret.Commandline =
 						config.FFmpegCustomCommand =
 						dlg.textBox1.Text;
 

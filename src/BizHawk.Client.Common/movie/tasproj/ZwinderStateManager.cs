@@ -356,7 +356,7 @@ namespace BizHawk.Client.Common
 							state.GetReadStream().CopyTo(s);
 							AddStateCache(state.Frame);
 						},
-						index2 => 
+						index2 =>
 						{
 							var state2 = _recent.GetState(index2);
 							StateCache.Remove(state2.Frame);

@@ -48,7 +48,7 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public static PathEntry EntryWithFallback(this PathEntryCollection collection, string pathType, string systemId)
 		{
-			return (collection[systemId, pathType] 
+			return (collection[systemId, pathType]
 				?? collection[systemId, "Base"])
 				?? collection["Global", "Base"];
 		}

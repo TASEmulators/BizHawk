@@ -270,7 +270,7 @@ namespace BizHawk.Client.EmuHawk
 			fixed (int* dstp = dst)
 			{
 				using (new SimpleTime("Blit"))
-				{ 
+				{
 					Blit(new BMP
 					{
 						Data = (int*)srcp,
@@ -316,7 +316,7 @@ namespace BizHawk.Client.EmuHawk
 			fixed (byte* dstp = dst)
 			{
 				using (new SimpleTime("Blit"))
-				{ 
+				{
 					Blit(new BMP
 					{
 						Data = srcp,

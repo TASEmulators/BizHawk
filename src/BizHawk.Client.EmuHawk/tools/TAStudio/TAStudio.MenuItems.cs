@@ -334,7 +334,7 @@ namespace BizHawk.Client.EmuHawk
 				CloneFramesXTimesMenuItem.Enabled =
 				TruncateMenuItem.Enabled =
 				InsertFrameMenuItem.Enabled =
-				InsertNumFramesMenuItem.Enabled = 
+				InsertNumFramesMenuItem.Enabled =
 				TasView.AnyRowsSelected;
 
 			ReselectClipboardMenuItem.Enabled =

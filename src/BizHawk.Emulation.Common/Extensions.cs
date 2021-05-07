@@ -350,7 +350,7 @@ namespace BizHawk.Emulation.Common
 		/// Gets a list of boolean button names. If a controller number is specified, only returns button names
 		/// (without the "P" prefix) that match that controller number. If a controller number is NOT specified,
 		/// then all button names are returned.
-		/// 
+		///
 		/// For example, consider example "P1 A", "P1 B", "P2 A", "P2 B". See below for sample outputs:
 		///   - ToBoolButtonNameList(controller, 1) -> [A, B]
 		///   - ToBoolButtonNameList(controller, 2) -> [A, B]

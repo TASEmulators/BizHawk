@@ -6,7 +6,7 @@ using BizHawk.Emulation.Common;
 namespace BizHawk.Client.Common
 {
 	/// <summary>
-	/// Filters input for things called Up and Down while considering the client's AllowUD_LR option. 
+	/// Filters input for things called Up and Down while considering the client's AllowUD_LR option.
 	/// This is a bit gross but it is unclear how to do it more nicely
 	/// </summary>
 	public class UdlrControllerAdapter : IInputAdapter

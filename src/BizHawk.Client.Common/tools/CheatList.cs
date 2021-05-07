@@ -223,7 +223,7 @@ namespace BizHawk.Client.Common
 
 		public bool IsActive(MemoryDomain domain, long address)
 		{
-			return _cheatList.Any(cheat => 
+			return _cheatList.Any(cheat =>
 					!cheat.IsSeparator &&
 					cheat.Enabled &&
 					cheat.Domain == domain

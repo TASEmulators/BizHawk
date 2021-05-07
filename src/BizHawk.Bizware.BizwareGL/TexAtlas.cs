@@ -132,7 +132,7 @@ namespace BizHawk.Bizware.BizwareGL
 		private class RectangleBinPack
 		{
 			/** A node of a binary tree. Each node represents a rectangular area of the texture
-				we surface. Internal nodes store rectangles of used data, whereas leaf nodes track 
+				we surface. Internal nodes store rectangles of used data, whereas leaf nodes track
 				rectangles of free space. All the rectangles stored in the tree are disjoint. */
 			public class Node
 			{

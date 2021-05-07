@@ -659,7 +659,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 			//these are special values.. I think, taken from this:
 			//http://www.staff.uni-mainz.de/tacke/scsi/SCSI2-14.html
-			//the CCD will contain Points as decimal values except for these specially converted decimal values which should stay as BCD. 
+			//the CCD will contain Points as decimal values except for these specially converted decimal values which should stay as BCD.
 			//Why couldn't they all be BCD? I don't know. I guess because BCD is inconvenient, but only A0 and friends have special meaning. It's confusing.
 			ino = BCD2.FromDecimal(entry.Point);
 			if (entry.Point == 0xA0) ino.BCDValue = 0xA0;
@@ -747,13 +747,12 @@ namespace BizHawk.Emulation.DiscSystem
 							blobstrings.Add(t);
 					}
 
-					var tBlobs = (from a in tr.ImageFileNamePaths
-									 select a).ToList();
+					var tBlobs = (from a in tr.ImageFileNamePaths select a).ToList();
 
 					if (tBlobs.Count < 1)
 						throw new MDSParseException("BLOB Error!");
 
-					// is the currBlob valid for this track, or do we need to increment?   
+					// is the currBlob valid for this track, or do we need to increment?
 					string bString = tBlobs.First();
 #endif
 
@@ -826,9 +825,9 @@ namespace BizHawk.Emulation.DiscSystem
 							case 2448:
 								sBase = new CUE.SS_2352()
 								{
-									Policy = IN_DiscMountPolicy                                 
+									Policy = IN_DiscMountPolicy
 								};
-								//userSector = 2352;                          
+								//userSector = 2352;
 								break;
 							case 2048:
 							default:
@@ -857,7 +856,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 						//these are special values.. I think, taken from this:
 						//http://www.staff.uni-mainz.de/tacke/scsi/SCSI2-14.html
-						//the CCD will contain Points as decimal values except for these specially converted decimal values which should stay as BCD. 
+						//the CCD will contain Points as decimal values except for these specially converted decimal values which should stay as BCD.
 						//Why couldn't they all be BCD? I don't know. I guess because BCD is inconvenient, but only A0 and friends have special meaning. It's confusing.
 						ino = BCD2.FromDecimal(track.Point);
 						if (track.Point == 0xA0) ino.BCDValue = 0xA0;

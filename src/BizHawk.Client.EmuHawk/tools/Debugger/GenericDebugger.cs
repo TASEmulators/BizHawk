@@ -243,7 +243,7 @@ namespace BizHawk.Client.EmuHawk
 			return base.ProcessCmdKey(ref msg, keyData);
 		}
 
-		private Control _currentToolTipControl = null; 
+		private Control _currentToolTipControl = null;
 
 		private void GenericDebugger_MouseMove(object sender, MouseEventArgs e)
 		{

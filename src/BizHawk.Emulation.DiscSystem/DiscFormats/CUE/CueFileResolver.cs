@@ -94,7 +94,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 				var ext = Path.GetExtension(fi.FullName).ToLowerInvariant();
 
 				//some choices are always bad: (we're looking for things like .bin and .wav)
-				//it's a little unclear whether we should go for a whitelist or a blacklist here. 
+				//it's a little unclear whether we should go for a whitelist or a blacklist here.
 				//there's similar numbers of cases either way.
 				//perhaps we could code both (and prefer choices from the whitelist)
 				if (ext == ".cue" || ext == ".sbi" || ext == ".ccd" || ext == ".sub")

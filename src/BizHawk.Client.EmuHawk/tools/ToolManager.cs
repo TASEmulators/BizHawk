@@ -269,7 +269,7 @@ namespace BizHawk.Client.EmuHawk
 
 			var closeMenuItem = new ToolStripMenuItem
 			{
-				Name = "CloseBtn", 
+				Name = "CloseBtn",
 				Text = "&Close",
 				ShortcutKeyDisplayString = "Alt+F4"
 			};

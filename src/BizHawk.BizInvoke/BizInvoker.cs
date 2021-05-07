@@ -389,8 +389,9 @@ namespace BizHawk.BizInvoke
 
 			il.Emit(OpCodes.Ldarg_0);
 			il.Emit(OpCodes.Ldfld, field);
-			il.EmitCalli(OpCodes.Calli, 
-				nativeCall, 
+			il.EmitCalli(
+				OpCodes.Calli,
+				nativeCall,
 				returnType == typeof(bool) ? typeof(byte) : returnType, // undo winapi style bool garbage
 				paramLoadInfos.Select(p => p.NativeType).ToArray());
 

@@ -15,7 +15,7 @@ namespace BizHawk.Common
 			//LogFilename = "d:/bizhawk.log";
 			//EnableDomain("CD");
 			//EnableDomain("CPU");
-			//EnableDomain("VDC");  
+			//EnableDomain("VDC");
 			//EnableDomain("MEM");
 		}
 

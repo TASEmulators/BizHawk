@@ -83,7 +83,7 @@ namespace BizHawk.Emulation.DiscSystem
 			if (ret.LastRecordedTrackNumber == -1) { ret.LastRecordedTrackNumber = maxFoundTrack; }
 			if (ret.Session1Format == SessionFormat.None) ret.Session1Format = SessionFormat.Type00_CDROM_CDDA;
 
-			//if (!ret.LeadoutTimestamp.Valid) { 
+			//if (!ret.LeadoutTimestamp.Valid) {
 			//  //we're DOOMED. we cant know the length of the last track without this....
 			//}
 			job.Result = ret;

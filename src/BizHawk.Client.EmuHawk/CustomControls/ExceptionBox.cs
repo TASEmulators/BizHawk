@@ -24,7 +24,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			string txt = txtException.Text;
 			Clipboard.SetText(txt);
-			try 
+			try
 			{
 				if (Clipboard.GetText() == txt)
 				{

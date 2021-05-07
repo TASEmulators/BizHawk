@@ -235,10 +235,8 @@ namespace BizHawk.Emulation.DiscSystem
 			EControlQ control = ses.LeadoutTrack.Control;
 
 			//ehhh? CDI?
-		 //if(toc.tracks[toc.last_track].valid)
-		 // control |= toc.tracks[toc.last_track].control & 0x4;
-		 //else if(toc.disc_type == DISC_TYPE_CD_I)
-		 // control |= 0x4;
+//			if(toc.tracks[toc.last_track].valid) control |= toc.tracks[toc.last_track].control & 0x4;
+//			else if(toc.disc_type == DISC_TYPE_CD_I) control |= 0x4;
 			control |= (EControlQ)(((int)ses.LastInformationTrack.Control) & 4);
 			
 			SubchannelQ sq = new SubchannelQ();

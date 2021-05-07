@@ -684,7 +684,7 @@ namespace BizHawk.Client.EmuHawk
 						for (int i = 1; i < zoom;i++)
 						{
 							//would not be good to run this per frame, but it seems to only run when the resolution changes, etc.
-							Vector2[] trials = 
+							Vector2[] trials =
 							{
 								PS + new Vector2(1, 0),
 								PS + new Vector2(0, 1),

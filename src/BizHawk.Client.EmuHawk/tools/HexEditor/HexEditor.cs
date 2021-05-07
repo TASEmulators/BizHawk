@@ -302,7 +302,7 @@ namespace BizHawk.Client.EmuHawk
 				GoToAddress(found);
 				_findStr = search;
 			}
-			else if (wrap == false)  
+			else if (wrap == false)
 			{
 				FindPrev(value, true); // Search the opposite direction if not found
 			}
@@ -349,7 +349,7 @@ namespace BizHawk.Client.EmuHawk
 				GoToAddress(found);
 				_findStr = search;
 			}
-			else if (wrap == false) 
+			else if (wrap == false)
 			{
 				FindPrev(value, true); // Search the opposite direction if not found
 			}
@@ -2248,7 +2248,7 @@ namespace BizHawk.Client.EmuHawk
 
 			for (int i = 0; i < 4; i++)
 			{
-					for (int j = 0; j < 4; j++) 
+					for (int j = 0; j < 4; j++)
 					{
 						ushort hi = _domain.PeekUshort(((addr+(i<<3)+(j<<1)     )^0x0), bigEndian);
 						ushort lo = _domain.PeekUshort(((addr+(i<<3)+(j<<1) + 32)^0x0), bigEndian);
@@ -2275,4 +2275,4 @@ namespace BizHawk.Client.EmuHawk
 			DialogController.ShowMessageBox(str);
 		}
 	}
-} 
+}

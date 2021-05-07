@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Common
 	/// <summary>
 	/// Defines the schema for all the currently available controls for an IEmulator instance
 	/// </summary>
-	/// <seealso cref="IEmulator" /> 
+	/// <seealso cref="IEmulator" />
 	public class ControllerDefinition
 	{
 		public ControllerDefinition()

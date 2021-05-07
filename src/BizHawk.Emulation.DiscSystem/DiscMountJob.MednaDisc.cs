@@ -59,7 +59,7 @@
 
 				var q = new SubchannelQ
 				{
-					q_status = SubchannelQ.ComputeStatus(kADR, (EControlQ)m_te.control), 
+					q_status = SubchannelQ.ComputeStatus(kADR, (EControlQ) m_te.control),
 					q_tno = BCD2.FromDecimal(0), //unknown with mednadisc
 					q_index = BCD2.FromDecimal(i),
 					min = BCD2.FromDecimal(0), //unknown with mednadisc

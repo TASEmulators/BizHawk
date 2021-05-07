@@ -61,8 +61,11 @@ namespace BizHawk.BizInvoke
 				AllocationType flAllocationType, MemoryProtection flProtect);
 
 			[DllImport("kernel32.dll", SetLastError = true)]
-			public static extern bool VirtualProtect(UIntPtr lpAddress, UIntPtr dwSize,
-			   MemoryProtection flNewProtect, out MemoryProtection lpflOldProtect);
+			public static extern bool VirtualProtect(
+				UIntPtr lpAddress,
+				UIntPtr dwSize,
+				MemoryProtection flNewProtect,
+				out MemoryProtection lpflOldProtect);
 
 			[Flags]
 			public enum AllocationType : uint
@@ -123,9 +126,13 @@ namespace BizHawk.BizInvoke
 			public static extern bool UnmapViewOfFile(IntPtr lpBaseAddress);
 
 			[DllImport("kernel32.dll")]
-			public static extern IntPtr MapViewOfFileEx(IntPtr hFileMappingObject,
-			   FileMapAccessType dwDesiredAccess, uint dwFileOffsetHigh, uint dwFileOffsetLow,
-			   UIntPtr dwNumberOfBytesToMap, IntPtr lpBaseAddress);
+			public static extern IntPtr MapViewOfFileEx(
+				IntPtr hFileMappingObject,
+				FileMapAccessType dwDesiredAccess,
+				uint dwFileOffsetHigh,
+				uint dwFileOffsetLow,
+				UIntPtr dwNumberOfBytesToMap,
+				IntPtr lpBaseAddress);
 
 			[Flags]
 			public enum FileMapAccessType : uint

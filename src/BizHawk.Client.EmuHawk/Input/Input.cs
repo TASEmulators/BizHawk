@@ -132,7 +132,7 @@ namespace BizHawk.Client.EmuHawk
 			Adapter.FirstInitAll(mainFormHandle);
 			_updateThread = new Thread(UpdateThreadProc)
 			{
-				IsBackground = true, 
+				IsBackground = true,
 				Priority = ThreadPriority.AboveNormal // why not? this thread shouldn't be very heavy duty, and we want it to be responsive
 			};
 			_updateThread.Start();
@@ -223,7 +223,7 @@ namespace BizHawk.Client.EmuHawk
 			if (EnableIgnoreModifiers && currentModifier != ModifierKey.None) return;
 			if (_lastState[button] == newState) return;
 
-			// apply 
+			// apply
 			// NOTE: this is not quite right. if someone held leftshift+rightshift it would be broken. seems unlikely, though.
 			if (currentModifier != ModifierKey.None)
 			{

@@ -375,7 +375,7 @@ namespace BizHawk.Bizware.DirectX
 				switch(item.Usage)
 				{
 					case AttribUsage.Position:
-						usage = DeclarationUsage.Position; 
+						usage = DeclarationUsage.Position;
 						break;
 					case AttribUsage.Texcoord0:
 						usage = DeclarationUsage.TextureCoordinate;

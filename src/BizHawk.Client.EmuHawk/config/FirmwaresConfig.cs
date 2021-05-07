@@ -16,7 +16,7 @@ using BizHawk.Emulation.Common;
 
 // notes: eventually, we intend to have a "firmware acquisition interface" exposed to the emulator cores.
 // it will be implemented by EmuHawk, and use firmware keys to fetch the firmware content.
-// however, for now, the cores are using strings from the config class. so we have the `configMember` which is 
+// however, for now, the cores are using strings from the config class. so we have the `configMember` which is
 // used by reflection to set the configuration for firmwares which were found
 
 // TODO - we may eventually need to add a progress dialog for this. we should have one for other reasons.
@@ -119,7 +119,7 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 
 			tbbGroup.Image
-				= tbbScan.Image 
+				= tbbScan.Image
 				= tbbOrganize.Image
 				= tbbImport.Image
 				= tbbClose.Image
@@ -402,12 +402,12 @@ namespace BizHawk.Client.EmuHawk
 
 				try
 				{
-				  File.Move(fpSource, fpTarget);
+					File.Move(fpSource, fpTarget);
 				}
 				catch
 				{
-				  // sometimes moves fail. especially in newer versions of windows with explorers more fragile than your great-grandma.
-				  // I am embarrassed that I know that. about windows, not your great-grandma.
+					// sometimes moves fail. especially in newer versions of windows with explorers more fragile than your great-grandma.
+					// I am embarrassed that I know that. about windows, not your great-grandma.
 				}
 			}
 
@@ -715,7 +715,7 @@ namespace BizHawk.Client.EmuHawk
 					if (_cbAllowImport.Checked || Manager.CanFileBeImported(hf.CanonicalFullPath))
 					{
 						didSomething |= RunImportJobSingle(basePath, f, ref errors);
-					} 
+					}
 				}
 			}
 

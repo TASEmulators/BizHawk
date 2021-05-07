@@ -10,8 +10,8 @@ namespace BizHawk.Emulation.Common
 	/// Useful for ported cores that have these hooks but no input callback hook,
 	/// This allows for an input callback implementation without the need for additional APIs
 	/// </summary>
-	/// <seealso cref="IInputCallbackSystem"/> 
-	/// <seealso cref="IDebuggable"/> 
+	/// <seealso cref="IInputCallbackSystem"/>
+	/// <seealso cref="IDebuggable"/>
 	public class MemoryBasedInputCallbackSystem : IInputCallbackSystem
 	{
 		private readonly List<Action> _inputCallbacks = new List<Action>();

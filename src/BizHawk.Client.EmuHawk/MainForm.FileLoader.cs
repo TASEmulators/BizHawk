@@ -223,15 +223,15 @@ namespace BizHawk.Client.EmuHawk
 			/*
 			 *  Refactor, moving the loading of particular files into separate functions that can
 			 *  then be used by this code, and loading individual files through the file dialogue.
-			 *  
+			 *
 			 *  Step 1:
 			 *	  Build a dictionary of relevant files from everything that was dragged and dropped.
 			 *	  This includes peeking into all relevant archives and using their files.
-			 *	  
+			 *
 			 *  Step 2:
 			 *	  Perhaps ask the user which of a particular file type they want to use.
 			 *		  Example:  rom1.nes, rom2.smc, rom3.cue are drag-dropped, ask the user which they want to use.
-			 *		  
+			 *
 			 *  Step 3:
 			 *	  Load all of the relevant files, in priority order:
 			 *	  1) The ROM
@@ -242,7 +242,7 @@ namespace BizHawk.Client.EmuHawk
 			 *	  6) LUA scripts
 			 *	  7) Cheat files
 			 *	  8) Movie Playback Files
-			 *	  
+			 *
 			 *  Bonus:
 			 *	  Make that order easy to change in the code, heavily suggesting ROM and playback as first and last respectively.
 			 */

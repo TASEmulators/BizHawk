@@ -11,7 +11,7 @@ namespace BizHawk.Client.DiscoHawk
 	public partial class MainDiscoForm : Form
 	{
 		// Release TODO:
-		// An input (queue) list 
+		// An input (queue) list
 		// An outputted list showing new file name
 		// Progress bar should show file being converted
 		// Add disc button, which puts it on the progress cue (converts it)

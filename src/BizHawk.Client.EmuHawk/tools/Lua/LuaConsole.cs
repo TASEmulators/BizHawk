@@ -295,8 +295,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Path = Path.GetDirectoryName(path),
 				Filter = Path.GetFileName(path),
-				NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite
-							 | NotifyFilters.FileName | NotifyFilters.DirectoryName,
+				NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName,
 				EnableRaisingEvents = true
 			};
 
@@ -1259,11 +1258,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			RegisteredFunctionsContextItem.Enabled = LuaImp.RegisteredFunctions.Any();
 			CopyContextItem.Enabled = OutputBox.SelectedText.Any();
-			ClearConsoleContextItem.Enabled = 
-				SelectAllContextItem.Enabled = 
+			ClearConsoleContextItem.Enabled =
+				SelectAllContextItem.Enabled =
 				OutputBox.Text.Any();
 
-			ClearRegisteredFunctionsLogContextItem.Enabled = 
+			ClearRegisteredFunctionsLogContextItem.Enabled =
 				LuaImp.RegisteredFunctions.Any();
 		}
 
@@ -1499,7 +1498,7 @@ namespace BizHawk.Client.EmuHawk
 
 		// For whatever reason an auto-complete TextBox doesn't respond to delete
 		// Which is annoying but worse is that it let's the key propagate
-		// If a script is highlighted in the ListView, and the user presses 
+		// If a script is highlighted in the ListView, and the user presses
 		// delete, it will remove the script without this hack
 		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
 		{

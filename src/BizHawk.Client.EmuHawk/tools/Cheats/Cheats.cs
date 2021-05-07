@@ -172,7 +172,7 @@ namespace BizHawk.Client.EmuHawk
 			GeneralUpdate();
 		}
 
-		private void SetColumns() 
+		private void SetColumns()
 		{
 			CheatListView.AllColumns.AddRange(Settings.Columns);
 			CheatListView.Refresh();
