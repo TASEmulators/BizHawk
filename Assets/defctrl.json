@@ -996,25 +996,25 @@
 			"P1 Button 4": "S, J1 B4, X1 Y"
 		},
 		"O2 Joystick": {
-	      "P1 Up": "Up",
-	      "P1 Down": "Down",
-	      "P1 Left": "Left",
-	      "P1 Right": "Right",
-	      "P1 F": "Z",
-	      "0": "Keypad0",
-	      "1": "Keypad1",
-	      "2": "Keypad2",
-	      "3": "Keypad3",
-	      "4": "Keypad4",
-	      "5": "Keypad5",
-	      "6": "Keypad6",
-	      "7": "Keypad7",
-	      "8": "Keypad8",
-	      "9": "Keypad9",
-	      "YES": "Y",
-	      "NO": "N",
-	      "ENT": "KeypadEnter"
-	    }
+			"P1 Up": "Up",
+			"P1 Down": "Down",
+			"P1 Left": "Left",
+			"P1 Right": "Right",
+			"P1 F": "Z",
+			"0": "Keypad0",
+			"1": "Keypad1",
+			"2": "Keypad2",
+			"3": "Keypad3",
+			"4": "Keypad4",
+			"5": "Keypad5",
+			"6": "Keypad6",
+			"7": "Keypad7",
+			"8": "Keypad8",
+			"9": "Keypad9",
+			"YES": "Y",
+			"NO": "N",
+			"ENT": "KeypadEnter"
+		}
 	},
 	"AllTrollersAutoFire": {
 		"NES Controller": {
@@ -1064,319 +1064,319 @@
 			"Return": "Enter"
 		}
 	},
-  "AllTrollersAnalog": {
-    "NES Controller": {
-      "P2 Paddle": {
-        "Value": "WMouse X",
-        "Mult": 1.0,
-        "Deadzone": 0.0
-      },
-      "P2 Zapper X": {
-        "Value": "WMouse X",
-        "Mult": 1.0,
-        "Deadzone": 0.0
-      },
-      "P2 Zapper Y": {
-        "Value": "WMouse Y",
-        "Mult": 1.0,
-        "Deadzone": 0.0
-      },
-      "P3 Paddle": {
-        "Value": "WMouse X",
-        "Mult": 1.0,
-        "Deadzone": 0.0
-      },
-      "P3 Zapper X": {
-        "Value": "WMouse X",
-        "Mult": 1.0,
-        "Deadzone": 0.0
-      },
-      "P3 Zapper Y": {
-        "Value": "WMouse Y",
-        "Mult": 1.0,
-        "Deadzone": 0.0
-      }
-    },
-    "Atari 7800 Paddle Controller": {
-      "P1 Paddle": {
-        "Value": "WMouse X",
-        "Mult": 1.0,
-        "Deadzone": 0.0
-      }
-    },
-    "Atari 7800 Light Gun Controller": {
-      "P1 VPos": {
-        "Value": "WMouse Y",
-        "Mult": 1.0,
-        "Deadzone": 0.0
-      },
-      "P1 HPos": {
-        "Value": "WMouse X",
-        "Mult": 1.0,
-        "Deadzone": 0.0
-      }
-    },
-	"NDS Controller": {
-      "TouchX": {
-        "Value": "WMouse X",
-        "Mult": 1.0,
-        "Deadzone": 0.0
-      },
-      "TouchY": {
-        "Value": "WMouse Y",
-        "Mult": 1.0,
-        "Deadzone": 0.0
-      }
-    },
-    "Nintendo 64 Controller": {
-      "P1 X Axis": {
-        "Value": "X1 LeftThumbX Axis",
-        "Mult": 1.0,
-        "Deadzone": 0.1
-      },
-      "P1 Y Axis": {
-        "Value": "X1 LeftThumbY Axis",
-        "Mult": 1.0,
-        "Deadzone": 0.1
-      },
-      "P2 X Axis": {
-        "Value": "",
-        "Mult": 1.0,
-        "Deadzone": 0.1
-      },
-      "P2 Y Axis": {
-        "Value": "",
-        "Mult": 1.0,
-        "Deadzone": 0.1
-      },
-      "P3 X Axis": {
-        "Value": "",
-        "Mult": 1.0,
-        "Deadzone": 0.1
-      },
-      "P3 Y Axis": {
-        "Value": "",
-        "Mult": 1.0,
-        "Deadzone": 0.1
-      },
-      "P4 X Axis": {
-        "Value": "",
-        "Mult": 1.0,
-        "Deadzone": 0.1
-      },
-      "P4 Y Axis": {
-        "Value": "",
-        "Mult": 1.0,
-        "Deadzone": 0.1
-      }
-    },
-    "GPGX Genesis Controller": {
-      "P2 Lightgun X": {
-        "Value": "WMouse X",
-        "Mult": 1.0,
-        "Deadzone": 0.0
-      },
-      "P2 Lightgun Y": {
-        "Value": "WMouse Y",
-        "Mult": 1.0,
-        "Deadzone": 0.0
-      },
-      "P2 Mouse X": {
-        "Value": "X1 LeftThumbX Axis",
-        "Mult": 0.1,
-        "Deadzone": 0.0
-      },
-      "P2 Mouse Y": {
-        "Value": "X1 LeftThumbY Axis",
-        "Mult": 0.1,
-        "Deadzone": 0.0
-      }
-    },
-    "WonderSwan Controller": {},
-    "Lynx Controller": {},
-    "PSX Front Panel": {
-      "P1 LStick X": {
-        "Value": "X1 LeftThumbX Axis",
-        "Mult": 1.0,
-        "Deadzone": 0.1
-      },
-      "P1 LStick Y": {
-        "Value": "X1 LeftThumbY Axis",
-        "Mult": 1.0,
-        "Deadzone": 0.1
-      },
-      "P1 RStick X": {
-        "Value": "X1 RightThumbX Axis",
-        "Mult": 1.0,
-        "Deadzone": 0.1
-      },
-      "P1 RStick Y": {
-        "Value": "X1 RightThumbY Axis",
-        "Mult": 1.0,
-        "Deadzone": 0.1
-      }
-    },
-    "Apple IIe Keyboard": {},
-    "LibRetro Controls": {
-      "Pointer X": {
-        "Value": "WMouse X",
-        "Mult": 1.0,
-        "Deadzone": 0.1
-      },
-      "Pointer Y": {
-        "Value": "WMouse Y",
-        "Mult": 1.0,
-        "Deadzone": 0.1
-      },
-      "P1 Pointer X": {
-        "Value": "",
-        "Mult": 1.0,
-        "Deadzone": 0.1
-      },
-      "P1 Pointer Y": {
-        "Value": "",
-        "Mult": 1.0,
-        "Deadzone": 0.1
-      }
-    },
-    "PC-FX Controller": {
-      "P2 Mouse X": {
-        "Value": "X1 LeftThumbX Axis",
-        "Mult": 1.0,
-        "Deadzone": 0.1
-      },
-      "P2 Mouse Y": {
-        "Value": "X1 LeftThumbY Axis",
-        "Mult": 1.0,
-        "Deadzone": 0.1
-      }
-    },
-    "SNES Controller": {
-      "P1 Mouse X": {
-        "Value": "X1 LeftThumbX Axis",
-        "Mult": 1.0,
-        "Deadzone": 0.1
-      },
-      "P1 Mouse Y": {
-        "Value": "X1 LeftThumbY Axis",
-        "Mult": 1.0,
-        "Deadzone": 0.1
-      },
-      "P2 Scope X": {
-        "Value": "WMouse X",
-        "Mult": 1.0,
-        "Deadzone": 0.1
-      },
-      "P2 Scope Y": {
-        "Value": "WMouse Y",
-        "Mult": 1.0,
-        "Deadzone": 0.1
-      }
-    },
-    "VirtualBoy Controller": {},
-    "NeoGeo Portable Controller": {},
-    "Saturn Controller": {
-      "P1 Right Stick Horizontal": {
-        "Value": "X1 RightThumbX Axis",
-        "Mult": 1.0,
-        "Deadzone": 0.1
-      },
-      "P1 Right Stick Vertical": {
-        "Value": "",
-        "Mult": 1.0,
-        "Deadzone": 0.1
-      },
-      "P1 Right Throttle": {
-        "Value": "X1 RightThumbY Axis",
-        "Mult": 1.0,
-        "Deadzone": 0.1
-      },
-      "P1 Left Stick Horizontal": {
-        "Value": "X1 LeftThumbX Axis",
-        "Mult": 1.0,
-        "Deadzone": 0.1
-      },
-      "P1 Left Stick Vertical": {
-        "Value": "X1 LeftThumbY Axis",
-        "Mult": 1.0,
-        "Deadzone": 0.1
-      },
-      "P1 Left Throttle": {
-        "Value": "",
-        "Mult": 1.0,
-        "Deadzone": 0.1
-      },
-      "P1 Wheel": {
-        "Value": "X1 LeftThumbX Axis",
-        "Mult": 1.0,
-        "Deadzone": 0.1
-      },
-      "P1 Stick Horizontal": {
-        "Value": "X1 LeftThumbX Axis",
-        "Mult": 1.0,
-        "Deadzone": 0.1
-      },
-      "P1 Stick Vertical": {
-        "Value": "X1 LeftThumbY Axis",
-        "Mult": 1.0,
-        "Deadzone": 0.1
-      },
-      "P1 Throttle": {
-        "Value": "X1 RightThumbX Axis",
-        "Mult": 1.0,
-        "Deadzone": 0.1
-      },
-      "P1 X": {
-        "Value": "WMouse X",
-        "Mult": 1.0,
-        "Deadzone": 0.1
-      },
-      "P1 Y": {
-        "Value": "WMouse Y",
-        "Mult": 1.0,
-        "Deadzone": 0.1
-      }
-    },
-    "SMS Paddle Controller": {
-      "P1 Paddle": {
-        "Value": "X1 LeftThumbX Axis",
-        "Mult": 1.0,
-        "Deadzone": 0.1
-      }
-    },
-    "SMS Light Phaser Controller": {
-      "P1 X": {
-        "Value": "WMouse X",
-        "Mult": 1.0,
-        "Deadzone": 0.0
-      },
-      "P1 Y": {
-        "Value": "WMouse Y",
-        "Mult": 1.0,
-        "Deadzone": 0.0
-      }
-    },
-    "SMS Sports Pad Controller": {
-      "P1 X": {
-        "Value": "X1 LeftThumbX Axis",
-        "Mult": 1.0,
-        "Deadzone": 0.1
-      },
-        "P1 Y": {
-        "Value": "X1 LeftThumbY Axis",
-        "Mult": -1.0,
-        "Deadzone": 0.1
-      },
-        "P2 X": {
-        "Value": "X2 LeftThumbX Axis",
-        "Mult": 1.0,
-        "Deadzone": 0.1
-      },
-        "P2 Y": {
-        "Value": "X2 LeftThumbY Axis",
-        "Mult": -1.0,
-        "Deadzone": 0.1
-      }
-    }
-  }
+	"AllTrollersAnalog": {
+		"NES Controller": {
+			"P2 Paddle": {
+				"Value": "WMouse X",
+				"Mult": 1.0,
+				"Deadzone": 0.0
+			},
+			"P2 Zapper X": {
+				"Value": "WMouse X",
+				"Mult": 1.0,
+				"Deadzone": 0.0
+			},
+			"P2 Zapper Y": {
+				"Value": "WMouse Y",
+				"Mult": 1.0,
+				"Deadzone": 0.0
+			},
+			"P3 Paddle": {
+				"Value": "WMouse X",
+				"Mult": 1.0,
+				"Deadzone": 0.0
+			},
+			"P3 Zapper X": {
+				"Value": "WMouse X",
+				"Mult": 1.0,
+				"Deadzone": 0.0
+			},
+			"P3 Zapper Y": {
+				"Value": "WMouse Y",
+				"Mult": 1.0,
+				"Deadzone": 0.0
+			}
+		},
+		"Atari 7800 Paddle Controller": {
+			"P1 Paddle": {
+				"Value": "WMouse X",
+				"Mult": 1.0,
+				"Deadzone": 0.0
+			}
+		},
+		"Atari 7800 Light Gun Controller": {
+			"P1 VPos": {
+				"Value": "WMouse Y",
+				"Mult": 1.0,
+				"Deadzone": 0.0
+			},
+			"P1 HPos": {
+				"Value": "WMouse X",
+				"Mult": 1.0,
+				"Deadzone": 0.0
+			}
+		},
+		"NDS Controller": {
+			"TouchX": {
+				"Value": "WMouse X",
+				"Mult": 1.0,
+				"Deadzone": 0.0
+			},
+			"TouchY": {
+				"Value": "WMouse Y",
+				"Mult": 1.0,
+				"Deadzone": 0.0
+			}
+		},
+		"Nintendo 64 Controller": {
+			"P1 X Axis": {
+				"Value": "X1 LeftThumbX Axis",
+				"Mult": 1.0,
+				"Deadzone": 0.1
+			},
+			"P1 Y Axis": {
+				"Value": "X1 LeftThumbY Axis",
+				"Mult": 1.0,
+				"Deadzone": 0.1
+			},
+			"P2 X Axis": {
+				"Value": "",
+				"Mult": 1.0,
+				"Deadzone": 0.1
+			},
+			"P2 Y Axis": {
+				"Value": "",
+				"Mult": 1.0,
+				"Deadzone": 0.1
+			},
+			"P3 X Axis": {
+				"Value": "",
+				"Mult": 1.0,
+				"Deadzone": 0.1
+			},
+			"P3 Y Axis": {
+				"Value": "",
+				"Mult": 1.0,
+				"Deadzone": 0.1
+			},
+			"P4 X Axis": {
+				"Value": "",
+				"Mult": 1.0,
+				"Deadzone": 0.1
+			},
+			"P4 Y Axis": {
+				"Value": "",
+				"Mult": 1.0,
+				"Deadzone": 0.1
+			}
+		},
+		"GPGX Genesis Controller": {
+			"P2 Lightgun X": {
+				"Value": "WMouse X",
+				"Mult": 1.0,
+				"Deadzone": 0.0
+			},
+			"P2 Lightgun Y": {
+				"Value": "WMouse Y",
+				"Mult": 1.0,
+				"Deadzone": 0.0
+			},
+			"P2 Mouse X": {
+				"Value": "X1 LeftThumbX Axis",
+				"Mult": 0.1,
+				"Deadzone": 0.0
+			},
+			"P2 Mouse Y": {
+				"Value": "X1 LeftThumbY Axis",
+				"Mult": 0.1,
+				"Deadzone": 0.0
+			}
+		},
+		"WonderSwan Controller": {},
+		"Lynx Controller": {},
+		"PSX Front Panel": {
+			"P1 LStick X": {
+				"Value": "X1 LeftThumbX Axis",
+				"Mult": 1.0,
+				"Deadzone": 0.1
+			},
+			"P1 LStick Y": {
+				"Value": "X1 LeftThumbY Axis",
+				"Mult": 1.0,
+				"Deadzone": 0.1
+			},
+			"P1 RStick X": {
+				"Value": "X1 RightThumbX Axis",
+				"Mult": 1.0,
+				"Deadzone": 0.1
+			},
+			"P1 RStick Y": {
+				"Value": "X1 RightThumbY Axis",
+				"Mult": 1.0,
+				"Deadzone": 0.1
+			}
+		},
+		"Apple IIe Keyboard": {},
+		"LibRetro Controls": {
+			"Pointer X": {
+				"Value": "WMouse X",
+				"Mult": 1.0,
+				"Deadzone": 0.1
+			},
+			"Pointer Y": {
+				"Value": "WMouse Y",
+				"Mult": 1.0,
+				"Deadzone": 0.1
+			},
+			"P1 Pointer X": {
+				"Value": "",
+				"Mult": 1.0,
+				"Deadzone": 0.1
+			},
+			"P1 Pointer Y": {
+				"Value": "",
+				"Mult": 1.0,
+				"Deadzone": 0.1
+			}
+		},
+		"PC-FX Controller": {
+			"P2 Mouse X": {
+				"Value": "X1 LeftThumbX Axis",
+				"Mult": 1.0,
+				"Deadzone": 0.1
+			},
+			"P2 Mouse Y": {
+				"Value": "X1 LeftThumbY Axis",
+				"Mult": 1.0,
+				"Deadzone": 0.1
+			}
+		},
+		"SNES Controller": {
+			"P1 Mouse X": {
+				"Value": "X1 LeftThumbX Axis",
+				"Mult": 1.0,
+				"Deadzone": 0.1
+			},
+			"P1 Mouse Y": {
+				"Value": "X1 LeftThumbY Axis",
+				"Mult": 1.0,
+				"Deadzone": 0.1
+			},
+			"P2 Scope X": {
+				"Value": "WMouse X",
+				"Mult": 1.0,
+				"Deadzone": 0.1
+			},
+			"P2 Scope Y": {
+				"Value": "WMouse Y",
+				"Mult": 1.0,
+				"Deadzone": 0.1
+			}
+		},
+		"VirtualBoy Controller": {},
+		"NeoGeo Portable Controller": {},
+		"Saturn Controller": {
+			"P1 Right Stick Horizontal": {
+				"Value": "X1 RightThumbX Axis",
+				"Mult": 1.0,
+				"Deadzone": 0.1
+			},
+			"P1 Right Stick Vertical": {
+				"Value": "",
+				"Mult": 1.0,
+				"Deadzone": 0.1
+			},
+			"P1 Right Throttle": {
+				"Value": "X1 RightThumbY Axis",
+				"Mult": 1.0,
+				"Deadzone": 0.1
+			},
+			"P1 Left Stick Horizontal": {
+				"Value": "X1 LeftThumbX Axis",
+				"Mult": 1.0,
+				"Deadzone": 0.1
+			},
+			"P1 Left Stick Vertical": {
+				"Value": "X1 LeftThumbY Axis",
+				"Mult": 1.0,
+				"Deadzone": 0.1
+			},
+			"P1 Left Throttle": {
+				"Value": "",
+				"Mult": 1.0,
+				"Deadzone": 0.1
+			},
+			"P1 Wheel": {
+				"Value": "X1 LeftThumbX Axis",
+				"Mult": 1.0,
+				"Deadzone": 0.1
+			},
+			"P1 Stick Horizontal": {
+				"Value": "X1 LeftThumbX Axis",
+				"Mult": 1.0,
+				"Deadzone": 0.1
+			},
+			"P1 Stick Vertical": {
+				"Value": "X1 LeftThumbY Axis",
+				"Mult": 1.0,
+				"Deadzone": 0.1
+			},
+			"P1 Throttle": {
+				"Value": "X1 RightThumbX Axis",
+				"Mult": 1.0,
+				"Deadzone": 0.1
+			},
+			"P1 X": {
+				"Value": "WMouse X",
+				"Mult": 1.0,
+				"Deadzone": 0.1
+			},
+			"P1 Y": {
+				"Value": "WMouse Y",
+				"Mult": 1.0,
+				"Deadzone": 0.1
+			}
+		},
+		"SMS Paddle Controller": {
+			"P1 Paddle": {
+				"Value": "X1 LeftThumbX Axis",
+				"Mult": 1.0,
+				"Deadzone": 0.1
+			}
+		},
+		"SMS Light Phaser Controller": {
+			"P1 X": {
+				"Value": "WMouse X",
+				"Mult": 1.0,
+				"Deadzone": 0.0
+			},
+			"P1 Y": {
+				"Value": "WMouse Y",
+				"Mult": 1.0,
+				"Deadzone": 0.0
+			}
+		},
+		"SMS Sports Pad Controller": {
+			"P1 X": {
+				"Value": "X1 LeftThumbX Axis",
+				"Mult": 1.0,
+				"Deadzone": 0.1
+			},
+			"P1 Y": {
+				"Value": "X1 LeftThumbY Axis",
+				"Mult": -1.0,
+				"Deadzone": 0.1
+			},
+			"P2 X": {
+				"Value": "X2 LeftThumbX Axis",
+				"Mult": 1.0,
+				"Deadzone": 0.1
+			},
+			"P2 Y": {
+				"Value": "X2 LeftThumbY Axis",
+				"Mult": -1.0,
+				"Deadzone": 0.1
+			}
+		}
+	}
 }
