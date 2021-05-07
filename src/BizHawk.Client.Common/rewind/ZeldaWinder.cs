@@ -21,34 +21,34 @@ namespace BizHawk.Client.Common
 		private int _masterFrame = -1;
 		private int _masterLength = 0;
 		private byte[] _scratch = new byte[0];
+		private int _count;
 
-		// private Task _activeTask = null;
+		private Task _activeTask = null;
+		private bool _active;
 
-		// private void Sync()
-		// {
-		// 	_activeTask?.Wait();
-		// 	_activeTask = null;
-		// }
+		private void Sync()
+		{
+			_activeTask?.Wait();
+			_activeTask = null;
+		}
+		private void Work(Action work)
+		{
+			_activeTask = Task.Run(work);
+		}
 
 		public ZeldaWinder(IStatable stateSource, IRewindSettings settings)
 		{
 			_buffer = new ZwinderBuffer(settings);
 			_stateSource = stateSource;
-			Active = true;
+			_active = true;
 		}
 
 		/// <summary>
 		/// How many states are actually in the state ringbuffer
 		/// </summary>
-		public int Count => _buffer.Count + (_masterFrame != -1 ? 1 : 0);
+		public int Count { get { Sync(); return _count; } }
 
-		public float FullnessRatio => Used / (float)Size;
-
-		/// <summary>
-		/// total number of bytes used
-		/// </summary>
-		/// <value></value>
-		public long Used => _buffer.Used;
+		public float FullnessRatio { get { Sync(); return _buffer.Used / (float)_buffer.Size; } }
 
 		/// <summary>
 		/// Total size of the _buffer
@@ -59,9 +59,13 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// TODO: This is not a frequency, it's the reciprocal
 		/// </summary>
-		public int RewindFrequency => _buffer.RewindFrequency;
+		public int RewindFrequency { get { Sync(); return _buffer.RewindFrequency; } }
 
-		public bool Active { get; private set; }
+		public bool Active
+		{
+			get { Sync(); return _active; }
+			private set { Sync(); _active = value; }
+		}
 
 		public void Suspend()
 		{
@@ -75,17 +79,20 @@ namespace BizHawk.Client.Common
 
 		public void Dispose()
 		{
+			Sync();
 			_buffer.Dispose();
 		}
 
 		public void Clear()
 		{
+			Sync();
 			_buffer.InvalidateEnd(0);
 		}
 
 		public unsafe void Capture(int frame)
 		{
-			if (!Active)
+			Sync();
+			if (!_active)
 				return;
 			if (_masterFrame == -1)
 			{
@@ -94,85 +101,95 @@ namespace BizHawk.Client.Common
 				(_master, _scratch) = (_scratch, _master);
 				_masterLength = (int)sss.Position;
 				_masterFrame = frame;
-				return;				
+				_count++;
+				return;
 			}
+			if (!_buffer.WillCapture(_masterFrame))
+				return;
 
-			_buffer.Capture(_masterFrame, underlyingStream_ =>
 			{
-				var zeldas = SpanStream.GetOrBuild(underlyingStream_);
 				var sss = new SaveStateStream(this);
 				_stateSource.SaveStateBinary(new BinaryWriter(sss));
-				if (_master.Length < _scratch.Length)
+
+				Work(() =>
 				{
-					var replacement = new byte[_scratch.Length];
-					Array.Copy(_master, replacement, _master.Length);
-					_master = replacement;
-				}
-
-				var lengthHolder = _masterLength;
-				var lengthHolderSpan = new ReadOnlySpan<byte>(&lengthHolder, 4);
-
-				zeldas.Write(lengthHolderSpan);
-
-				fixed (byte* older_ = _master)
-				fixed (byte* newer_ = _scratch)
-				{
-					int* older = (int*)older_;
-					int* newer = (int*)newer_;
-					int lastIndex = (Math.Min(_masterLength, (int)sss.Position) + 3) / 4;
-					int lastOldIndex = (_masterLength + 3) / 4;
-					int* olderEnd = older + lastIndex;
-
-					int* from = older;
-					int* to = older;
-
-					while (older < olderEnd)
+					_buffer.Capture(_masterFrame, underlyingStream_ =>
 					{
-						if (*older++ == *newer++)
+						var zeldas = SpanStream.GetOrBuild(underlyingStream_);
+						if (_master.Length < _scratch.Length)
 						{
-							if (to < from)
+							var replacement = new byte[_scratch.Length];
+							Array.Copy(_master, replacement, _master.Length);
+							_master = replacement;
+						}
+
+						var lengthHolder = _masterLength;
+						var lengthHolderSpan = new ReadOnlySpan<byte>(&lengthHolder, 4);
+
+						zeldas.Write(lengthHolderSpan);
+
+						fixed (byte* older_ = _master)
+						fixed (byte* newer_ = _scratch)
+						{
+							int* older = (int*)older_;
+							int* newer = (int*)newer_;
+							int lastIndex = (Math.Min(_masterLength, (int)sss.Position) + 3) / 4;
+							int lastOldIndex = (_masterLength + 3) / 4;
+							int* olderEnd = older + lastIndex;
+
+							int* from = older;
+							int* to = older;
+
+							while (older < olderEnd)
 							{
+								if (*older++ == *newer++)
+								{
+									if (to < from)
+									{
 								// Save on [to, from]
 								lengthHolder = (int)(from - to);
+										zeldas.Write(lengthHolderSpan);
+										zeldas.Write(new ReadOnlySpan<byte>(to, lengthHolder * 4));
+									}
+									to = older;
+								}
+								else
+								{
+									if (from < to)
+									{
+								// encode gap [from, to]
+								lengthHolder = (int)(to - from) | IS_GAP;
+										zeldas.Write(lengthHolderSpan);
+									}
+									from = older;
+								}
+							}
+							if (from < to)
+							{
+						// encode gap [from, to]
+						lengthHolder = (int)(to - from) | IS_GAP;
+								zeldas.Write(lengthHolderSpan);
+							}
+							if (lastOldIndex > lastIndex)
+							{
+								from += lastOldIndex - lastIndex;
+							}
+							if (to < from)
+							{
+						// Save on [to, from]
+						lengthHolder = (int)(from - to);
 								zeldas.Write(lengthHolderSpan);
 								zeldas.Write(new ReadOnlySpan<byte>(to, lengthHolder * 4));
 							}
-							to = older;
 						}
-						else
-						{
-							if (from < to)
-							{
-								// encode gap [from, to]
-								lengthHolder = (int)(to - from) | IS_GAP;
-								zeldas.Write(lengthHolderSpan);
-							}
-							from = older;
-						}
-					}
-					if (from < to)
-					{
-						// encode gap [from, to]
-						lengthHolder = (int)(to - from) | IS_GAP;
-						zeldas.Write(lengthHolderSpan);
-					}
-					if (lastOldIndex > lastIndex)
-					{
-						from += lastOldIndex - lastIndex;
-					}
-					if (to < from)
-					{
-						// Save on [to, from]
-						lengthHolder = (int)(from - to);
-						zeldas.Write(lengthHolderSpan);
-						zeldas.Write(new ReadOnlySpan<byte>(to, lengthHolder * 4));
-					}
-				}
 
-				(_master, _scratch) = (_scratch, _master);
-				_masterLength = (int)sss.Position;
-				_masterFrame = frame;
-			});
+						(_master, _scratch) = (_scratch, _master);
+						_masterLength = (int)sss.Position;
+						_masterFrame = frame;
+						_count++;
+					});
+				});
+			}
 		}
 
 		private unsafe void RefillMaster(ZwinderBuffer.StateInformation state)
@@ -203,29 +220,35 @@ namespace BizHawk.Client.Common
 
 		public bool Rewind(int frameToAvoid)
 		{
-			if (!Active || Count == 0)
+			Sync();
+			if (!_active || _count == 0)
 				return false;
 
-			if (_masterFrame == frameToAvoid && Count > 1)
+			if (_masterFrame == frameToAvoid && _count > 1)
 			{
 				var index = _buffer.Count - 1;
 				RefillMaster(_buffer.GetState(index));
-				_buffer.InvalidateEnd(index);	
-				_stateSource.LoadStateBinary(new BinaryReader(new MemoryStream(_master, 0, _masterLength, false)));			
+				_buffer.InvalidateEnd(index);
+				_stateSource.LoadStateBinary(new BinaryReader(new MemoryStream(_master, 0, _masterLength, false)));
+				_count--;
 			}
 			else
 			{
 				_stateSource.LoadStateBinary(new BinaryReader(new MemoryStream(_master, 0, _masterLength, false)));
-				var index = _buffer.Count - 1;
-				if (index >= 0)
+				Work(() =>
 				{
-					RefillMaster(_buffer.GetState(index));
-					_buffer.InvalidateEnd(index);
-				}
-				else
-				{
-					_masterFrame = -1;
-				}
+					var index = _buffer.Count - 1;
+					if (index >= 0)
+					{
+						RefillMaster(_buffer.GetState(index));
+						_buffer.InvalidateEnd(index);
+					}
+					else
+					{
+						_masterFrame = -1;
+					}
+					_count--;
+				});
 			}
 			return true;
 		}
@@ -248,7 +271,7 @@ namespace BizHawk.Client.Common
 			public override bool CanWrite => true;
 			public override long Length => _position;
 			public override long Position { get => _position; set => throw new IOException(); }
-			public override void Flush() {}
+			public override void Flush() { }
 			public override int Read(byte[] buffer, int offset, int count) => throw new IOException();
 			public override long Seek(long offset, SeekOrigin origin) => throw new IOException();
 			public override void SetLength(long value) => throw new IOException();
@@ -263,7 +286,7 @@ namespace BizHawk.Client.Common
 					var replacement = new byte[(Math.Max(_dest.Length * 2, requestedSize) + 3) & ~3];
 					Array.Copy(_dest, replacement, _dest.Length);
 					_dest = replacement;
-				}				
+				}
 			}
 			public void Write(ReadOnlySpan<byte> buffer)
 			{
