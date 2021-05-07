@@ -201,21 +201,28 @@ namespace BizHawk.Client.Common
 		{
 			if (!Active || Count == 0)
 				return false;
-			
-			// TODO:  Obey `frameToAvoid`.  We'll need to materialize to the other buffer while not losing _master.
 
-			_stateSource.LoadStateBinary(new BinaryReader(new MemoryStream(_master, 0, _masterLength, false)));
-			var index = _buffer.Count - 1;
-			if (index >= 0)
+			if (_masterFrame == frameToAvoid && Count > 1)
 			{
+				var index = _buffer.Count - 1;
 				RefillMaster(_buffer.GetState(index));
-				_buffer.InvalidateEnd(index);
+				_buffer.InvalidateEnd(index);	
+				_stateSource.LoadStateBinary(new BinaryReader(new MemoryStream(_master, 0, _masterLength, false)));			
 			}
 			else
 			{
-				_masterFrame = -1;
+				_stateSource.LoadStateBinary(new BinaryReader(new MemoryStream(_master, 0, _masterLength, false)));
+				var index = _buffer.Count - 1;
+				if (index >= 0)
+				{
+					RefillMaster(_buffer.GetState(index));
+					_buffer.InvalidateEnd(index);
+				}
+				else
+				{
+					_masterFrame = -1;
+				}
 			}
-
 			return true;
 		}
 
