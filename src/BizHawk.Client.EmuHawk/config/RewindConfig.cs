@@ -151,6 +151,7 @@ namespace BizHawk.Client.EmuHawk
 		private void UseCompression_CheckedChanged(object sender, EventArgs e)
 		{
 			CalculateEstimates();
+			cbDeltaCompression.Enabled = ((CheckBox) sender).Checked;
 		}
 
 		private void NudCompression_ValueChanged(object sender, EventArgs e)
