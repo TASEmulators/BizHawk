@@ -119,7 +119,8 @@ namespace BizHawk.Client.Common
 				{
 					int* older = (int*)older_;
 					int* newer = (int*)newer_;
-					int lastIndex = _master.Length / 4; // TODO: Improve on this.
+					int lastIndex = (Math.Min(_masterLength, (int)sss.Position) + 3) / 4;
+					int lastOldIndex = (_masterLength + 3) / 4;
 					int* olderEnd = older + lastIndex;
 
 					int* from = older;
@@ -149,19 +150,22 @@ namespace BizHawk.Client.Common
 							from = older;
 						}
 					}
-
+					if (from < to)
+					{
+						// encode gap [from, to]
+						lengthHolder = (int)(to - from) | IS_GAP;
+						zeldas.Write(lengthHolderSpan);
+					}
+					if (lastOldIndex > lastIndex)
+					{
+						from += lastOldIndex - lastIndex;
+					}
 					if (to < from)
 					{
 						// Save on [to, from]
 						lengthHolder = (int)(from - to);
 						zeldas.Write(lengthHolderSpan);
 						zeldas.Write(new ReadOnlySpan<byte>(to, lengthHolder * 4));
-					}
-					else if (from < to)
-					{
-						// encode gap [from, to]
-						lengthHolder = (int)(to - from) | IS_GAP;
-						zeldas.Write(lengthHolderSpan);
 					}
 				}
 
