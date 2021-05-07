@@ -47,6 +47,7 @@ namespace BizHawk.Client.EmuHawk
 
 			RewindEnabledBox.Checked = _config.Rewind.Enabled;
 			UseCompression.Checked = _config.Rewind.UseCompression;
+			cbDeltaCompression.Checked = _config.Rewind.UseDelta;
 			BufferSizeUpDown.Value = Math.Max(_config.Rewind.BufferSize, BufferSizeUpDown.Minimum);
 			TargetFrameLengthNumeric.Value = Math.Max(_config.Rewind.TargetFrameLength, TargetFrameLengthNumeric.Minimum);
 			StateSizeLabel.Text = FormatKB(_avgStateSize);
@@ -111,6 +112,7 @@ namespace BizHawk.Client.EmuHawk
 			_config.Rewind.Enabled = PutRewindSetting(_config.Rewind.Enabled, RewindEnabledBox.Checked);
 			_config.Rewind.BufferSize = PutRewindSetting(_config.Rewind.BufferSize, (int)BufferSizeUpDown.Value);
 			_config.Rewind.TargetFrameLength = PutRewindSetting(_config.Rewind.TargetFrameLength, (int)TargetFrameLengthNumeric.Value);
+			_config.Rewind.UseDelta = PutRewindSetting(_config.Rewind.UseDelta, cbDeltaCompression.Checked);
 
 			// These settings are not used by DoRewindSettings
 			_config.Savestates.CompressionLevelNormal = (int)nudCompression.Value;
@@ -151,7 +153,6 @@ namespace BizHawk.Client.EmuHawk
 		private void UseCompression_CheckedChanged(object sender, EventArgs e)
 		{
 			CalculateEstimates();
-			cbDeltaCompression.Enabled = ((CheckBox) sender).Checked;
 		}
 
 		private void NudCompression_ValueChanged(object sender, EventArgs e)

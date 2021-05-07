@@ -119,7 +119,7 @@
 			this.UseCompression.Name = "UseCompression";
 			this.UseCompression.Size = new System.Drawing.Size(306, 17);
 			this.UseCompression.TabIndex = 5;
-			this.UseCompression.Text = "Use compression (economizes buffer usage at cost of CPU)";
+			this.UseCompression.Text = "Use zlib compression (economizes buffer usage at cost of CPU)";
 			this.UseCompression.UseVisualStyleBackColor = true;
 			this.UseCompression.CheckedChanged += new System.EventHandler(this.UseCompression_CheckedChanged);
 			// 
@@ -214,10 +214,9 @@
 			this.cbDeltaCompression.AutoSize = true;
 			this.cbDeltaCompression.Location = new System.Drawing.Point(15, 193);
 			this.cbDeltaCompression.Name = "cbDeltaCompression";
-			this.cbDeltaCompression.Padding = new System.Windows.Forms.Padding(16, 0, 0, 0);
 			this.cbDeltaCompression.Size = new System.Drawing.Size(149, 17);
 			this.cbDeltaCompression.TabIndex = 35;
-			this.cbDeltaCompression.Text = "Use delta compression";
+			this.cbDeltaCompression.Text = "Use delta compression (economizes buffer usage at cost of CPU)";
 			this.cbDeltaCompression.UseVisualStyleBackColor = true;
 			// 
 			// TargetFrameLengthNumeric

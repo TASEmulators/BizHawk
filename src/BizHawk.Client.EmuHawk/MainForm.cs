@@ -949,7 +949,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Rewinder?.Dispose();
 			Rewinder = Emulator.HasSavestates() && Config.Rewind.Enabled
-				? new ZeldaWinder(Emulator.AsStatable(), Config.Rewind)
+				? Config.Rewind.UseDelta
+					? new ZeldaWinder(Emulator.AsStatable(), Config.Rewind)
+					: new Zwinder(Emulator.AsStatable(), Config.Rewind)
 				: null;
 			AddOnScreenMessage(Rewinder?.Active == true ? "Rewind started" : "Rewind disabled");
 		}
