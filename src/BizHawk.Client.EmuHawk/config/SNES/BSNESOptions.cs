@@ -11,9 +11,6 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 		}
 
-		private bool _suppressDoubleSize;
-		private bool _userDoubleSizeOption;
-
 		public static void DoSettingsDialog(IMainFormForConfig mainForm, BsnesCore bsnes)
 		{
 			var s = bsnes.GetSettings();
@@ -21,8 +18,9 @@ namespace BizHawk.Client.EmuHawk
 			using var dlg = new BSNESOptions
 			{
 				Entropy = ss.Entropy,
-				// AlwaysDoubleSize = s.AlwaysDoubleSize,
-				// CropSGBFrame = s.CropSGBFrame,
+				AlwaysDoubleSize = s.AlwaysDoubleSize,
+				Hotfixes = ss.Hotfixes,
+				FastPPU = ss.FastPPU,
 				ShowObj1 = s.ShowOBJ_0,
 				ShowObj2 = s.ShowOBJ_1,
 				ShowObj3 = s.ShowOBJ_2,
@@ -33,12 +31,13 @@ namespace BizHawk.Client.EmuHawk
 				ShowBg4 = s.ShowBG4_0
 			};
 
-			var result = mainForm.ShowDialogAsChild(dlg);
+			DialogResult result = mainForm.ShowDialogAsChild(dlg);
 			if (result == DialogResult.OK)
 			{
-				// s.AlwaysDoubleSize = dlg.AlwaysDoubleSize;
-				// s.CropSGBFrame = dlg.CropSGBFrame;
 				ss.Entropy = dlg.Entropy;
+				s.AlwaysDoubleSize = dlg.AlwaysDoubleSize;
+				ss.Hotfixes = dlg.Hotfixes;
+				ss.FastPPU = dlg.FastPPU;
 				s.ShowOBJ_0 = dlg.ShowObj1;
 				s.ShowOBJ_1 = dlg.ShowObj2;
 				s.ShowOBJ_2 = dlg.ShowObj3;
@@ -53,55 +52,39 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		// private bool AlwaysDoubleSize
-		// {
-			// get => _userDoubleSizeOption;
-			// set
-			// {
-				// _userDoubleSizeOption = value;
-				// RefreshDoubleSizeOption();
-			// }
-		// }
+		private bool AlwaysDoubleSize
+		{
+			get => cbDoubleSize.Checked;
+			init => cbDoubleSize.Checked = value;
+		}
 
-		// private bool CropSGBFrame
-		// {
-			// get => cbCropSGBFrame.Checked;
-			// set => cbCropSGBFrame.Checked = value;
-		// }
+		private bool Hotfixes
+		{
+			get => cbGameHotfixes.Checked;
+			init => cbGameHotfixes.Checked = value;
+		}
+
+		private bool FastPPU
+		{
+			get => cbFastPPU.Checked;
+			init => cbDoubleSize.Enabled = cbFastPPU.Checked = value;
+		}
 
 		private BsnesApi.ENTROPY Entropy
 		{
 			get => (BsnesApi.ENTROPY) EntropyBox.SelectedIndex;
-			set => EntropyBox.SelectedIndex = (int) value;
+			init => EntropyBox.SelectedIndex = (int) value;
 		}
 
-		private bool ShowObj1 { get => Obj1Checkbox.Checked; set => Obj1Checkbox.Checked = value;
-		}
-		private bool ShowObj2 { get => Obj2Checkbox.Checked; set => Obj2Checkbox.Checked = value; }
-		private bool ShowObj3 { get => Obj3Checkbox.Checked; set => Obj3Checkbox.Checked = value; }
-		private bool ShowObj4 { get => Obj4Checkbox.Checked; set => Obj4Checkbox.Checked = value; }
+		private bool ShowObj1 { get => Obj1Checkbox.Checked; init => Obj1Checkbox.Checked = value; }
+		private bool ShowObj2 { get => Obj2Checkbox.Checked; init => Obj2Checkbox.Checked = value; }
+		private bool ShowObj3 { get => Obj3Checkbox.Checked; init => Obj3Checkbox.Checked = value; }
+		private bool ShowObj4 { get => Obj4Checkbox.Checked; init => Obj4Checkbox.Checked = value; }
 
-		private bool ShowBg1 { get => Bg1Checkbox.Checked; set => Bg1Checkbox.Checked = value; }
-		private bool ShowBg2 { get => Bg2Checkbox.Checked; set => Bg2Checkbox.Checked = value; }
-		private bool ShowBg3 { get => Bg3Checkbox.Checked; set => Bg3Checkbox.Checked = value; }
-		private bool ShowBg4 { get => Bg4Checkbox.Checked; set => Bg4Checkbox.Checked = value; }
-
-		// private void RefreshDoubleSizeOption()
-		// {
-			// _suppressDoubleSize = true;
-			// cbDoubleSize.Checked = !cbDoubleSize.Enabled || _userDoubleSizeOption;
-			// _suppressDoubleSize = false;
-		// }
-
-		// private void CbDoubleSize_CheckedChanged(object sender, EventArgs e)
-		// {
-			// if (_suppressDoubleSize)
-			// {
-				// return;
-			// }
-
-			// _userDoubleSizeOption = cbDoubleSize.Checked;
-		// }
+		private bool ShowBg1 { get => Bg1Checkbox.Checked; init => Bg1Checkbox.Checked = value; }
+		private bool ShowBg2 { get => Bg2Checkbox.Checked; init => Bg2Checkbox.Checked = value; }
+		private bool ShowBg3 { get => Bg3Checkbox.Checked; init => Bg3Checkbox.Checked = value; }
+		private bool ShowBg4 { get => Bg4Checkbox.Checked; init => Bg4Checkbox.Checked = value; }
 
 		private void BtnOk_Click(object sender, EventArgs e)
 		{
@@ -113,6 +96,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			DialogResult = DialogResult.Cancel;
 			Close();
+		}
+
+		private void FastPPU_CheckedChanged(object sender, EventArgs e)
+		{
+			cbDoubleSize.Enabled = cbFastPPU.Checked;
 		}
 	}
 }

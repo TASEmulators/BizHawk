@@ -1,5 +1,4 @@
-﻿using System.Reflection.Emit;
-using BizHawk.Emulation.Common;
+﻿using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.SNES
 {
@@ -26,8 +25,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		{
 			bool ret = o.LeftPort != _syncSettings.LeftPort
 				|| o.RightPort != _syncSettings.RightPort
-				|| o.LimitAnalogChangeSensitivity != _syncSettings.LimitAnalogChangeSensitivity
-				|| o.Entropy != _syncSettings.Entropy;
+				|| o.LimitAnalogChangeSensitivity != _syncSettings.LimitAnalogChangeSensitivity // TODO check correctness of this one
+				|| o.Entropy != _syncSettings.Entropy
+				|| o.Hotfixes != _syncSettings.Hotfixes
+				|| o.FastPPU != _syncSettings.FastPPU;
 
 			_syncSettings = o;
 			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
@@ -51,8 +52,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			public bool ShowOBJ_2 { get; set; } = true;
 			public bool ShowOBJ_3 { get; set; } = true;
 
-			// public bool CropSGBFrame { get; set; } = false;
-			// public bool AlwaysDoubleSize { get; set; } = false;
+			public bool AlwaysDoubleSize { get; set; }
 
 			public SnesSettings Clone()
 			{
@@ -68,7 +68,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			public bool LimitAnalogChangeSensitivity { get; set; } = true;
 
-			public BsnesApi.ENTROPY Entropy = BsnesApi.ENTROPY.Low;
+			public BsnesApi.ENTROPY Entropy { get; set; } = BsnesApi.ENTROPY.Low;
+
+			public bool Hotfixes { get; set; } = true;
+
+			public bool FastPPU { get; set; } = true;
 
 			public SnesSyncSettings Clone()
 			{

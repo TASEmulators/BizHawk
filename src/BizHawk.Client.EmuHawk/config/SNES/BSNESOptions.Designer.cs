@@ -32,12 +32,11 @@
             this.btnCancel = new System.Windows.Forms.Button();
             this.cbDoubleSize = new System.Windows.Forms.CheckBox();
             this.lblDoubleSize = new BizHawk.WinForms.Controls.LocLabelEx();
-            this.radioButton1 = new System.Windows.Forms.RadioButton();
-            this.cbCropSGBFrame = new System.Windows.Forms.CheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.Bg4Checkbox = new System.Windows.Forms.CheckBox();
             this.Bg3Checkbox = new System.Windows.Forms.CheckBox();
             this.Bg2Checkbox = new System.Windows.Forms.CheckBox();
+            this.lblTODO = new BizHawk.WinForms.Controls.LocLabelEx();
             this.Bg1Checkbox = new System.Windows.Forms.CheckBox();
             this.Obj4Checkbox = new System.Windows.Forms.CheckBox();
             this.Obj3Checkbox = new System.Windows.Forms.CheckBox();
@@ -45,6 +44,10 @@
             this.Obj1Checkbox = new System.Windows.Forms.CheckBox();
             this.EntropyBox = new System.Windows.Forms.ComboBox();
             this.lblEntropy = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.lblRunAhead = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.cbGameHotfixes = new System.Windows.Forms.CheckBox();
+            this.cbFastPPU = new System.Windows.Forms.CheckBox();
+            this.lblFun = new BizHawk.WinForms.Controls.LocLabelEx();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             //
@@ -74,7 +77,7 @@
             // cbDoubleSize
             //
             this.cbDoubleSize.AutoSize = true;
-            this.cbDoubleSize.Location = new System.Drawing.Point(18, 20);
+            this.cbDoubleSize.Location = new System.Drawing.Point(18, 16);
             this.cbDoubleSize.Name = "cbDoubleSize";
             this.cbDoubleSize.Size = new System.Drawing.Size(178, 17);
             this.cbDoubleSize.TabIndex = 6;
@@ -83,33 +86,11 @@
             //
             // lblDoubleSize
             //
-            this.lblDoubleSize.Location = new System.Drawing.Point(33, 38);
+            this.lblDoubleSize.Location = new System.Drawing.Point(33, 34);
             this.lblDoubleSize.MaximumSize = new System.Drawing.Size(260, 0);
             this.lblDoubleSize.Name = "lblDoubleSize";
             this.lblDoubleSize.Text = "Some games are changing the resolution constantly (e.g. SD3) so this option can f" +
-				"orce the SNES output to stay double-size always. NOTE: The Accuracy core runs as" +
-				" if this is selected. Note: I have no idea whether above statement is correct.";
-            //
-            // radioButton1
-            //
-            this.radioButton1.AutoSize = true;
-            this.radioButton1.Location = new System.Drawing.Point(37, 46);
-            this.radioButton1.Name = "radioButton1";
-            this.radioButton1.Size = new System.Drawing.Size(202, 17);
-            this.radioButton1.TabIndex = 9;
-            this.radioButton1.TabStop = true;
-            this.radioButton1.Text = "Performance (only for casual gaming!)";
-            this.radioButton1.UseVisualStyleBackColor = true;
-            //
-            // cbCropSGBFrame
-            //
-            this.cbCropSGBFrame.AutoSize = true;
-            this.cbCropSGBFrame.Location = new System.Drawing.Point(15, 110);
-            this.cbCropSGBFrame.Name = "cbCropSGBFrame";
-            this.cbCropSGBFrame.Size = new System.Drawing.Size(105, 17);
-            this.cbCropSGBFrame.TabIndex = 10;
-            this.cbCropSGBFrame.Text = "Crop SGB Frame";
-            this.cbCropSGBFrame.UseVisualStyleBackColor = true;
+    "orce the SNES output to stay double-size always.";
             //
             // groupBox1
             //
@@ -118,6 +99,7 @@
             this.groupBox1.Controls.Add(this.Bg4Checkbox);
             this.groupBox1.Controls.Add(this.Bg3Checkbox);
             this.groupBox1.Controls.Add(this.Bg2Checkbox);
+            this.groupBox1.Controls.Add(this.lblTODO);
             this.groupBox1.Controls.Add(this.Bg1Checkbox);
             this.groupBox1.Controls.Add(this.Obj4Checkbox);
             this.groupBox1.Controls.Add(this.Obj3Checkbox);
@@ -133,7 +115,7 @@
             // Bg4Checkbox
             //
             this.Bg4Checkbox.AutoSize = true;
-            this.Bg4Checkbox.Location = new System.Drawing.Point(150, 98);
+            this.Bg4Checkbox.Location = new System.Drawing.Point(199, 98);
             this.Bg4Checkbox.Name = "Bg4Checkbox";
             this.Bg4Checkbox.Size = new System.Drawing.Size(50, 17);
             this.Bg4Checkbox.TabIndex = 7;
@@ -143,7 +125,7 @@
             // Bg3Checkbox
             //
             this.Bg3Checkbox.AutoSize = true;
-            this.Bg3Checkbox.Location = new System.Drawing.Point(150, 75);
+            this.Bg3Checkbox.Location = new System.Drawing.Point(199, 75);
             this.Bg3Checkbox.Name = "Bg3Checkbox";
             this.Bg3Checkbox.Size = new System.Drawing.Size(50, 17);
             this.Bg3Checkbox.TabIndex = 6;
@@ -153,17 +135,24 @@
             // Bg2Checkbox
             //
             this.Bg2Checkbox.AutoSize = true;
-            this.Bg2Checkbox.Location = new System.Drawing.Point(150, 52);
+            this.Bg2Checkbox.Location = new System.Drawing.Point(199, 52);
             this.Bg2Checkbox.Name = "Bg2Checkbox";
             this.Bg2Checkbox.Size = new System.Drawing.Size(50, 17);
             this.Bg2Checkbox.TabIndex = 5;
             this.Bg2Checkbox.Text = "BG 2";
             this.Bg2Checkbox.UseVisualStyleBackColor = true;
             //
+            // lblTODO
+            //
+            this.lblTODO.Location = new System.Drawing.Point(86, 29);
+            this.lblTODO.MaximumSize = new System.Drawing.Size(100, 0);
+            this.lblTODO.Name = "lblTODO";
+            this.lblTODO.Text = "TODO differentiate between BG prio0 and prio1 or merge these options backend";
+            //
             // Bg1Checkbox
             //
             this.Bg1Checkbox.AutoSize = true;
-            this.Bg1Checkbox.Location = new System.Drawing.Point(150, 29);
+            this.Bg1Checkbox.Location = new System.Drawing.Point(199, 29);
             this.Bg1Checkbox.Name = "Bg1Checkbox";
             this.Bg1Checkbox.Size = new System.Drawing.Size(50, 17);
             this.Bg1Checkbox.TabIndex = 4;
@@ -224,9 +213,43 @@
             //
             // lblEntropy
             //
-            this.lblEntropy.Location = new System.Drawing.Point(249, 114);
+            this.lblEntropy.Location = new System.Drawing.Point(249, 117);
             this.lblEntropy.Name = "lblEntropy";
             this.lblEntropy.Text = "Entropy";
+            //
+            // lblRunAhead
+            //
+            this.lblRunAhead.Location = new System.Drawing.Point(33, 109);
+            this.lblRunAhead.Name = "lblRunAhead";
+            this.lblRunAhead.Text = "Runahead (reduces input latency) (TODO)";
+            //
+            // cbGameHotfixes
+            //
+            this.cbGameHotfixes.AutoSize = true;
+            this.cbGameHotfixes.Location = new System.Drawing.Point(18, 83);
+            this.cbGameHotfixes.Name = "cbGameHotfixes";
+            this.cbGameHotfixes.Size = new System.Drawing.Size(93, 17);
+            this.cbGameHotfixes.TabIndex = 22;
+            this.cbGameHotfixes.Text = "Game hotfixes";
+            this.cbGameHotfixes.UseVisualStyleBackColor = true;
+            //
+            // cbFastPPU
+            //
+            this.cbFastPPU.AutoSize = true;
+            this.cbFastPPU.Location = new System.Drawing.Point(18, 135);
+            this.cbFastPPU.Name = "cbFastPPU";
+            this.cbFastPPU.Size = new System.Drawing.Size(90, 17);
+            this.cbFastPPU.TabIndex = 23;
+            this.cbFastPPU.Text = "Use fast PPU";
+            this.cbFastPPU.UseVisualStyleBackColor = true;
+			this.cbFastPPU.CheckedChanged += FastPPU_CheckedChanged;
+            //
+            // lblFun
+            //
+            this.lblFun.Location = new System.Drawing.Point(16, 308);
+            this.lblFun.MaximumSize = new System.Drawing.Size(100, 0);
+            this.lblFun.Name = "lblFun";
+            this.lblFun.Text = "haha this is fun";
             //
             // BSNESOptions
             //
@@ -235,10 +258,13 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(304, 338);
+            this.Controls.Add(this.lblFun);
+            this.Controls.Add(this.cbFastPPU);
+            this.Controls.Add(this.cbGameHotfixes);
+            this.Controls.Add(this.lblRunAhead);
             this.Controls.Add(this.lblEntropy);
             this.Controls.Add(this.EntropyBox);
             this.Controls.Add(this.groupBox1);
-            this.Controls.Add(this.cbCropSGBFrame);
             this.Controls.Add(this.lblDoubleSize);
             this.Controls.Add(this.cbDoubleSize);
             this.Controls.Add(this.btnCancel);
@@ -263,8 +289,6 @@
 		private System.Windows.Forms.Button btnCancel;
 		private System.Windows.Forms.CheckBox cbDoubleSize;
 		private BizHawk.WinForms.Controls.LocLabelEx lblDoubleSize;
-		private System.Windows.Forms.RadioButton radioButton1;
-		private System.Windows.Forms.CheckBox cbCropSGBFrame;
 		private System.Windows.Forms.GroupBox groupBox1;
 		private System.Windows.Forms.CheckBox Bg4Checkbox;
 		private System.Windows.Forms.CheckBox Bg3Checkbox;
@@ -276,5 +300,10 @@
 		private System.Windows.Forms.CheckBox Obj1Checkbox;
 		private System.Windows.Forms.ComboBox EntropyBox;
 		private WinForms.Controls.LocLabelEx lblEntropy;
+		private WinForms.Controls.LocLabelEx lblRunAhead;
+		private WinForms.Controls.LocLabelEx lblTODO;
+		private System.Windows.Forms.CheckBox cbGameHotfixes;
+		private System.Windows.Forms.CheckBox cbFastPPU;
+		private WinForms.Controls.LocLabelEx lblFun;
 	}
 }

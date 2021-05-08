@@ -9,8 +9,6 @@
 using namespace nall;
 using namespace SuperFamicom;
 
-static uint32_t* video_buffer;
-static uint32_t* palette;
 uint16_t backdropColor;
 
 // snes_trace_t ptrace;
@@ -425,26 +423,11 @@ void bus_write(unsigned addr, uint8_t val) {
 
 
 // i will slap anyone who attempts to call this twice. do not do it.
-EXPORT void snes_init(int entropy, uint left_port, uint right_port)
+EXPORT void snes_init(int entropy, uint left_port, uint right_port, bool hotfixes, bool fast_ppu)
 {
     fprintf(stderr, "snes_init was called!\n");
     emulator = new SuperFamicom::Interface;
     program = new Program;
-
-    video_buffer = (uint32_t*)alloc_invisible(512 * 480 * sizeof(uint32_t));
-    palette = (uint32_t*)alloc_invisible(32768 * sizeof(uint32_t));
-    // initialize palette here cause why not?
-    for(uint color : range(32768)) {
-        uint16 r = (color >> 10) & 31;
-        uint16 g = (color >>  5) & 31;
-        uint16 b = (color >>  0) & 31;
-
-        r = r << 3 | r >> 2; r = r << 8 | r << 0;
-        g = g << 3 | g >> 2; g = g << 8 | g << 0;
-        b = b << 3 | b >> 2; b = b << 8 | b << 0;
-
-        palette[color] = r >> 8 << 16 | g >> 8 <<  8 | b >> 8 << 0;
-    }
     // memset(&cdlInfo,0,sizeof(cdlInfo));
 
     string entropy_string;
@@ -459,8 +442,11 @@ EXPORT void snes_init(int entropy, uint left_port, uint right_port)
     emulator->connect(ID::Port::Controller1, left_port);
     emulator->connect(ID::Port::Controller2, right_port);
 
+    emulator->configure("Hacks/Hotfixes", hotfixes);
+    emulator->configure("Hacks/PPU/Fast", fast_ppu);
+
     // needed in order to get audio sync working. should probably figure out what exactly this does or how to change that properly
-    Emulator::audio.setFrequency(SAMPLE_RATE);
+    Emulator::audio.setFrequency(44100);
 }
 
 EXPORT void snes_power(void)
@@ -491,6 +477,28 @@ EXPORT void snes_run(void)
     emulator->run();
 }
 
+// not used, but would probably be nice
+void snes_hd_scale(int scale)
+{
+    emulator->configure("Hacks/PPU/Mode7/Scale", scale);
+}
+
+EXPORT int snes_serialized_size()
+{
+    return emulator->serialize().size();
+}
+
+EXPORT void snes_serialize(uint8_t* data, int size)
+{
+    auto serializer = emulator->serialize();
+    memcpy(data, serializer.data(), size);
+}
+
+EXPORT void snes_unserialize(const uint8_t* data, int size)
+{
+    serializer s(data, size);
+    emulator->unserialize(s);
+}
 
 EXPORT void snes_load_cartridge_normal(
   const char* base_rom_path, const uint8_t* rom_data, int rom_size
@@ -526,7 +534,6 @@ EXPORT void snes_set_audio_enabled(bool enable)
 
 EXPORT void snes_set_video_enabled(bool enable)
 {
-    // fprintf(stderr, "video enable was set to %d\n", enable);
     SuperFamicom::system.renderVideo = enable;
 }
 
@@ -542,13 +549,13 @@ snes_path_request_t snes_path_request;
 // snes_trace_t snes_trace;
 
 EXPORT void snes_set_callbacks(
-    snes_input_poll_t input_poll_cb,
-    snes_input_state_t input_state_cb,
-    snes_no_lag_t no_lag_cb,
-    snes_video_frame_t video_frame_cb,
-    snes_audio_sample_t audio_sample_cb,
-    snes_path_request_t path_request_cb
-    // snes_trace_t trace_cb
+  snes_input_poll_t input_poll_cb,
+  snes_input_state_t input_state_cb,
+  snes_no_lag_t no_lag_cb,
+  snes_video_frame_t video_frame_cb,
+  snes_audio_sample_t audio_sample_cb,
+  snes_path_request_t path_request_cb
+  // snes_trace_t trace_cb
 )
 {
     snes_input_poll = input_poll_cb;
@@ -579,7 +586,7 @@ EXPORT void snes_set_layer_enables(LayerEnablesComm* layerEnables)
     }
 }
 
-EXPORT bool snes_get_region(void) {
+EXPORT int snes_get_region(void) {
     return Region::PAL();
 }
 
@@ -600,13 +607,3 @@ EXPORT char snes_get_mapper(void) {
 
     return -1;
 }
-
-
-// void snes_set_trace_callback(uint32_t mask, snes_trace_t callback)
-// {
-//     // iface->wanttrace = mask;
-//     if (mask)
-//         iface->ptrace = callback;
-//     else
-//         iface->ptrace = nullptr;
-// }

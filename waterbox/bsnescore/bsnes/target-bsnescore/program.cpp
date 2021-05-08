@@ -252,21 +252,9 @@ auto Program::videoFrame(const uint16* data, uint pitch, uint width, uint height
 		height -= 16 * multiplier;
 	}
 
-	fprintf(stderr, "got a video frame with dimensions h: %d, w: %d, p: %d, overscan: %d\n", height, width, pitch, overscan);
+	fprintf(stderr, "got a video frame with dimensions h: %d, w: %d, p: %d, overscan: %d, scale: %d\n", height, width, pitch, overscan, scale);
 
-	for (uint y = 0; y < height; y++) {
-		const uint16_t* sp = data + y * pitch;
-		uint32_t* dp = video_buffer + y * pitch;
-		for (uint x = 0; x < width; x++) {
-			*dp++ = palette[*sp++];
-		}
-	}
-
-	// this int* cast shouldn't be necessary, but bizhawk expects a "signed" buffer? makes no sense logically
- 	snes_video_frame((int*) video_buffer, width, height);
-
-	// why was input polled after a frame and not before? anyway good it's commented out LOL
-	// if(iface->pinput_poll) iface->pinput_poll();
+ 	snes_video_frame(data, width, height, pitch);
 }
 
 // Double the fun!

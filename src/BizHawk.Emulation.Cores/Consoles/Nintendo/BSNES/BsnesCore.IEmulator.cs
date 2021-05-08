@@ -67,12 +67,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				Obj_Prio2 = _settings.ShowOBJ_2,
 				Obj_Prio3 = _settings.ShowOBJ_3
 			};
+			// TODO: I really don't think stuff like this should be set every single frame (only on change)
 			Api._core.snes_set_layer_enables(enables);
 
 			// RefreshMemoryCallbacks(false);
 
 			// run the core for one frame
-			_timeFrameCounter++;
+			Frame++;
 			Api._core.snes_run();
 
 			// once upon a time we forwarded messages from bsnes here, by checking for queued text messages, but I don't think it's needed any longer
@@ -84,18 +85,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			return true;
 		}
 
-		public int Frame
-		{
-			get => _timeFrameCounter;
-			private set => _timeFrameCounter = value;
-		}
+		public int Frame { get; private set; }
 
 		public string SystemId { get; }
 		public bool DeterministicEmulation => true;
 
 		public void ResetCounters()
 		{
-			_timeFrameCounter = 0;
+			Frame = 0;
 			LagCount = 0;
 			IsLagFrame = false;
 		}

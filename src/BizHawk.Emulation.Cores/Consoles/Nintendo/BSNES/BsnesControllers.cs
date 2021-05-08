@@ -55,14 +55,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			Definition.Name = "SNES Controller";
 		}
 
-		public void NativeInit(BsnesApi api)
-		{
-			for (int i = 0; i < 2; i++)
-			{
-				api.SetInputPortBeforeInit(i, _ports[i].DeviceType);
-			}
-		}
-
 		public void CoreInputPoll(IController controller)
 		{
 			// i hope this is correct lol

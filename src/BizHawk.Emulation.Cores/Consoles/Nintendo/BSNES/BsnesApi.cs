@@ -20,9 +20,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		public abstract void CopyBuffer(int id, void* ptr, int size);
 		[BizImport(CallingConvention.Cdecl, Compatibility = true)]
 		public abstract void SetBuffer(int id, void* ptr, int size);
-		[BizImport(CallingConvention.Cdecl)]
-		public abstract void PostLoadState();
-
 
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void snes_set_audio_enabled(bool enabled);
@@ -43,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			BsnesApi.snes_audio_sample_t audioSampleCb, BsnesApi.snes_path_request_t pathRequestCb);
 
 		[BizImport(CallingConvention.Cdecl)]
-		public abstract void snes_init(BsnesApi.ENTROPY entropy, BsnesApi.BSNES_INPUT_DEVICE left, BsnesApi.BSNES_INPUT_DEVICE right);
+		public abstract void snes_init(BsnesApi.ENTROPY entropy, BsnesApi.BSNES_INPUT_DEVICE left, BsnesApi.BSNES_INPUT_DEVICE right, bool hotfixes, bool fastPPU);
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void snes_power();
 		[BizImport(CallingConvention.Cdecl)]
@@ -52,9 +49,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		public abstract void snes_reset();
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void snes_run();
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract void snes_serialize(byte[] serializedData, int serializedSize);
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract void snes_unserialize(byte[] serializedData, int serializedSize);
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract int snes_serialized_size();
 
 		[BizImport(CallingConvention.Cdecl)]
-		// TODO: figure out whether any marshalling should be done here
 		public abstract void snes_load_cartridge_normal(string baseRomPath, byte[] romData, int romSize);
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void snes_load_cartridge_super_gameboy(string baseRomPath, byte[] romData, int romSize, byte[] sgbRomData, int sgbRomSize);
@@ -97,16 +99,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public BsnesApi(BsnesCore core, string dllPath, CoreComm comm, IEnumerable<Delegate> allCallbacks)
 		{
-			this._corecs = core;
 			_exe = new WaterboxHost(new WaterboxOptions
 			{
 				Filename = "bsnes.wbx",
 				Path = dllPath,
-				SbrkHeapSizeKB = 16 * 1024,
-				InvisibleHeapSizeKB = 8 * 1024,
-				MmapHeapSizeKB = 128 * 1024, // TODO: see if we can safely make libco stacks smaller
-				PlainHeapSizeKB = 32 * 1024, // TODO: This can be smaller, probably; needs to be as big as largest ROM + 2MB, or less
-				SealedHeapSizeKB = 80 * 1024,
+				SbrkHeapSizeKB = 16 * 1024, // TODO: this can probably be optimized slightly
+				InvisibleHeapSizeKB = 4,
+				MmapHeapSizeKB = 128 * 1024, // TODO: check whether this can be smaller; it needs to be 80+ at least rn
+				PlainHeapSizeKB = 0,
+				SealedHeapSizeKB = 0, // this might actually need to be larger than 0, but doesn't crash for me
 				SkipCoreConsistencyCheck = comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
 				SkipMemoryConsistencyCheck = comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
 			});
@@ -215,26 +216,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			BRR = 0x80,
 		}
 
-		private snes_video_frame_t _videoFrame;
-		private snes_input_poll_t input_poll;
-		private snes_input_state_t input_state;
-		private snes_no_lag_t no_lag;
 		private snes_scanlineStart_t scanlineStart;
-		private snes_path_request_t pathRequest;
 		private snes_trace_t traceCallback;
-		private readonly BsnesCore _corecs;
 
-		public void QUERY_set_video_refresh(snes_video_frame_t videoFrame) { this._videoFrame = videoFrame; }
-		public void QUERY_set_input_poll(snes_input_poll_t input_poll) { this.input_poll = input_poll; }
-		public void QUERY_set_input_state(snes_input_state_t input_state) { this.input_state = input_state; }
-		public void QUERY_set_no_lag(snes_no_lag_t no_lag) { this.no_lag = no_lag; }
-		public void QUERY_set_path_request(snes_path_request_t pathRequest) { this.pathRequest = pathRequest; }
 
-		public delegate void snes_video_frame_t(int* data, int width, int height);
+		public delegate void snes_video_frame_t(ushort* data, int width, int height, int pitch);
 		public delegate void snes_input_poll_t();
 		public delegate short snes_input_state_t(int port, int device, int index, int id);
 		public delegate void snes_no_lag_t();
-		public delegate void snes_audio_sample_t(ushort left, ushort right);
+		public delegate void snes_audio_sample_t(short left, short right);
 		public delegate void snes_scanlineStart_t(int line);
 		public delegate string snes_path_request_t(int slot, string hint);
 		public delegate void snes_trace_t(uint which, string msg);
@@ -333,6 +323,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			//utilities
 			//TODO: make internal, wrap on the API instead of the comm
+			// gotcha m8 we gonna nuke the comm struct
 			public string GetAscii() => _getAscii(str);
 			public bool GetBool() { return value != 0; }
 
@@ -346,35 +337,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			}
 		}
 
-		public SNES_REGION Region
-		{
-			get
-			{
-				using (_exe.EnterExit())
-				{
-					return _comm->region;
-				}
-			}
-		}
-		public SNES_MAPPER Mapper
-		{
-			get
-			{
-				using (_exe.EnterExit())
-				{
-					return _comm->mapper;
-				}
-			}
-		}
-
-		public void SetInputPortBeforeInit(int port, BSNES_INPUT_DEVICE type)
-		{
-			using (_exe.EnterExit())
-			{
-				_comm->inports[port] = (int)type;
-			}
-		}
-
 		public void Seal()
 		{
 			/* Cothreads can very easily acquire "pointer poison"; because their stack and even registers
@@ -384,6 +346,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			 * many syscalls happen and many kinds of poison can end up on the stack.  so here, we call
 			 * _core.DllInit() again, which recreates that cothread, zeroing out all of the memory first,
 			 * as well as zeroing out the comm struct. */
+
+			//TODO: well check this yknow
 			// let's see what happen when we don't attempt to hack it like that
 			// _core.DllInit();
 			_exe.Seal();
@@ -395,15 +359,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			_readonlyFiles.Clear();
 		}
 
+		// TODO: confirm that the serializedSize is CONSTANT for any given game,
+		// else this might be problematic
+		private int serializedSize;// = 284275;
+
 		public void SaveStateBinary(BinaryWriter writer)
 		{
-			_exe.SaveStateBinary(writer);
+			if (serializedSize == 0)
+				serializedSize = _core.snes_serialized_size();
+			// TODO: do some profiling and testing to check whether this is actually better than _exe.SaveStateBinary(writer);
+
+			byte[] serializedData = new byte[serializedSize];
+			_core.snes_serialize(serializedData, serializedSize);
+			writer.Write(serializedData);
 		}
 
 		public void LoadStateBinary(BinaryReader reader)
 		{
-			_exe.LoadStateBinary(reader);
-			_core.PostLoadState();
+			byte[] serializedData = reader.ReadBytes(serializedSize);
+			_core.snes_unserialize(serializedData, serializedSize);
 		}
 
 		public MemoryDomain GetPagesDomain()

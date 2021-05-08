@@ -39,7 +39,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			:this(game, rom, null, null, comm, settings, syncSettings)
 		{}
 
-		[CoreConstructor("SNES")]
 		public BsnesCore(GameInfo game, byte[] romData, byte[] xmlData, string baseRomPath, CoreComm comm,
 			SnesSettings settings, SnesSyncSettings syncSettings)
 		{
@@ -72,26 +71,26 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			_settings = settings ?? new SnesSettings();
 			_syncSettings = syncSettings ?? new SnesSyncSettings();
 
-			_videocb = snes_video_refresh;
-			_audiocb = snes_audio_sample;
-			_inputpollcb = snes_input_poll;
-			_inputstatecb = snes_input_state;
-			_nolagcb = snes_no_lag;
+			BsnesApi.snes_video_frame_t videocb = snes_video_refresh;
+			BsnesApi.snes_audio_sample_t audiocb = snes_audio_sample;
+			BsnesApi.snes_input_poll_t inputpollcb = snes_input_poll;
+			BsnesApi.snes_input_state_t inputstatecb = snes_input_state;
+			BsnesApi.snes_no_lag_t nolagcb = snes_no_lag;
 			_scanlineStartCb = snes_scanlineStart;
 			_tracecb = snes_trace;
-			_pathrequestcb = snes_path_request;
+			BsnesApi.snes_path_request_t pathrequestcb = snes_path_request;
 
 			// TODO: pass profile here
 			Api = new BsnesApi(this, CoreComm.CoreFileProvider.DllPath(), CoreComm, new Delegate[]
 			{
-				_videocb,
-				_audiocb,
-				_inputpollcb,
-				_inputstatecb,
-				_nolagcb,
+				videocb,
+				audiocb,
+				inputpollcb,
+				inputstatecb,
+				nolagcb,
 				_scanlineStartCb,
 				_tracecb,
-				_pathrequestcb
+				pathrequestcb
 			});
 			// {
 				// ReadHook = u =>  ReadHook,
@@ -105,24 +104,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			// ScanlineHookManager = new MyScanlineHookManager(this);
 
 			_controllers = new BsnesControllers(_syncSettings);
-			// _controllers.NativeInit(Api);
 
-			Api._core.snes_init(_syncSettings.Entropy, _controllers._ports[0].DeviceType, _controllers._ports[1].DeviceType);
-			Api._core.snes_set_callbacks(_inputpollcb, _inputstatecb, _nolagcb, _videocb, _audiocb, _pathrequestcb);
-
-			Api.QUERY_set_path_request(_pathrequestcb);
+			generate_palette();
+			Api._core.snes_init(_syncSettings.Entropy, _controllers._ports[0].DeviceType, _controllers._ports[1].DeviceType,
+				_syncSettings.Hotfixes, _syncSettings.FastPPU);
+			Api._core.snes_set_callbacks(inputpollcb, inputstatecb, nolagcb, videocb, audiocb, pathrequestcb);
 
 			// start up audio resampler
 			InitAudio();
 			ser.Register<ISoundProvider>(_resampler);
-
-			// strip header
-			// if ((romData?.Length & 0x7FFF) == 512)
-			// {
-			// 	var newData = new byte[romData.Length - 512];
-			// 	Array.Copy(romData, 512, newData, 0, newData.Length);
-			// 	romData = newData;
-			// }
 
 			if (game.System == "SGB")
 			{
@@ -134,8 +124,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				{
 					type = LoadParamType.SuperGameBoy,
 					baseRomPath = baseRomPath,
-					rom_data = romData,
-					sgb_rom_data = sgbRomData
+					romData = romData,
+					sgbRomData = sgbRomData
 				};
 			}
 			else
@@ -165,7 +155,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				{
 					type = LoadParamType.Normal,
 					baseRomPath = baseRomPath,
-					rom_data = romData
+					romData = romData
 				};
 			}
 			LoadCurrent();
@@ -183,31 +173,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				VsyncDenominator = 4 * 341 * 312;
 			}
 
-			Api._core.snes_power();
-
 			// SetupMemoryDomains(romData, sgbRomData);
 
 			ser.Register<ITraceable>(_tracer);
 
-			Api.QUERY_set_path_request(null);
-			Api.QUERY_set_video_refresh(_videocb);
-			Api.QUERY_set_input_poll(_inputpollcb);
-			Api.QUERY_set_input_state(_inputstatecb);
-			Api.QUERY_set_no_lag(_nolagcb);
 			Api.Seal();
-			// RefreshPalette();
 		}
-
-		private readonly BsnesApi.snes_video_frame_t _videocb;
-		private readonly BsnesApi.snes_audio_sample_t _audiocb;
-		private readonly BsnesApi.snes_input_poll_t _inputpollcb;
-		private readonly BsnesApi.snes_input_state_t _inputstatecb;
-		private readonly BsnesApi.snes_no_lag_t _nolagcb;
-		private readonly BsnesApi.snes_path_request_t _pathrequestcb;
 
 		internal CoreComm CoreComm { get; }
 
-		private readonly string _baseRomPath = "";
+		private readonly string _baseRomPath;
 
 		private string PathSubfile(string fname) => Path.Combine(_baseRomPath, fname);
 
@@ -221,7 +196,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		private IController _controller;
 		private readonly LoadParams _currLoadParams;
 		private SpeexResampler _resampler;
-		private int _timeFrameCounter;
 		private bool _disposed;
 
 		public bool IsSGB { get; }
@@ -297,7 +271,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			// not MSU-1.  ok.
 			if (hint == "save.ram")
 			{
-
+				// TODO handle saveram at some point
 			}
 
 			string firmwareId;
@@ -448,17 +422,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		{
 			public LoadParamType type;
 			public string baseRomPath;
-			public byte[] rom_data;
-			public byte[] sgb_rom_data;
+			public byte[] romData;
+			public byte[] sgbRomData;
 		}
 
 		private void LoadCurrent()
 		{
 			if (_currLoadParams.type == LoadParamType.Normal)
-				Api._core.snes_load_cartridge_normal(_currLoadParams.baseRomPath, _currLoadParams.rom_data, _currLoadParams.rom_data.Length);
+				Api._core.snes_load_cartridge_normal(_currLoadParams.baseRomPath, _currLoadParams.romData, _currLoadParams.romData.Length);
 			else
-				Api._core.snes_load_cartridge_super_gameboy(_currLoadParams.baseRomPath, _currLoadParams.rom_data, _currLoadParams.rom_data.Length,
-					_currLoadParams.sgb_rom_data, _currLoadParams.sgb_rom_data.Length);
+				Api._core.snes_load_cartridge_super_gameboy(_currLoadParams.baseRomPath, _currLoadParams.romData, _currLoadParams.romData.Length,
+					_currLoadParams.sgbRomData, _currLoadParams.sgbRomData.Length);
 
 			_region = Api._core.snes_get_region();
 			_mapper = Api._core.snes_get_mapper();
@@ -487,119 +461,57 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			IsLagFrame = false;
 		}
 
-		private void snes_video_refresh(int* data, int width, int height)
+		private readonly int[] palette = new int[32768];
+
+		private void generate_palette()
 		{
-			// bool doubleSize = _settings.AlwaysDoubleSize;
-			bool doubleSize = false;
-			bool lineDouble = doubleSize, dotDouble = doubleSize;
+			for (int color = 0; color < 32768; color++) {
+				int r = (color >> 10) & 31;
+				int g = (color >>  5) & 31;
+				int b = (color >>  0) & 31;
 
-			_videoWidth = width;
-			_videoHeight = height;
+				r = r << 3 | r >> 2; r = r << 8 | r << 0;
+				g = g << 3 | g >> 2; g = g << 8 | g << 0;
+				b = b << 3 | b >> 2; b = b << 8 | b << 0;
 
-			int yskip = 1, xskip = 1;
+				palette[color] = r >> 8 << 16 | g >> 8 <<  8 | b >> 8 << 0;
+			}
+		}
 
-			// if we are in high-res mode, we get double width. so, lets double the height here to keep it square.
+		// i have no idea how all this logic works, but it does. should probably uh be looked at again
+		private void snes_video_refresh(ushort* data, int width, int height, int pitch)
+		{
+			int widthMultiplier = 1;
+			int heightMultiplier = 1;
+			if (_settings.AlwaysDoubleSize)
+			{
+				if (width == 256) widthMultiplier = 2;
+				if (height == 224) heightMultiplier = 2;
+			}
+			BufferWidth = width * widthMultiplier;
+			BufferHeight = height * heightMultiplier;
+
+			int dpitch = pitch;
+			if (height == 448)
+				dpitch <<= 1;
 			if (width == 512)
-			{
-				_videoHeight *= 2;
-				yskip = 2;
+				dpitch <<= 1;
 
-				lineDouble = true;
-
-				// we don't dot double here because the user wanted double res and the game provided double res
-				dotDouble = false;
-			}
-			else if (lineDouble)
-			{
-				_videoHeight *= 2;
-				yskip = 2;
-			}
-
-			int srcPitch = 1024;
-			int srcStart = 0;
-
-			bool interlaced = height == 478 || height == 448;
-			if (interlaced)
-			{
-				// from bsnes in interlaced mode we have each field side by side
-				// so we will come in with a dimension of 512x448, say
-				// but the fields are side by side, so it's actually 1024x224.
-				// copy the first scanline from row 0, then the 2nd scanline from row 0 (offset 512)
-				// EXAMPLE: yu yu hakushu legal screens
-				// EXAMPLE: World Class Service Super Nintendo Tester (double resolution vertically but not horizontally, in character test the stars should shrink)
-				lineDouble = false;
-				srcPitch = 512;
-				yskip = 1;
-				_videoHeight = height;
-			}
-
-			if (dotDouble)
-			{
-				_videoWidth *= 2;
-				xskip = 2;
-			}
-
-			// if (_settings.CropSGBFrame && IsSGB)
-			// {
-				// _videoWidth = 160;
-				// _videoHeight = 144;
-			// }
-
-			int size = _videoWidth * _videoHeight;
+			int size = BufferWidth * BufferHeight;
 			if (_videoBuffer.Length != size)
 			{
 				_videoBuffer = new int[size];
 			}
 
-			// if (_settings.CropSGBFrame && IsSGB)
-			// {
-			// 	int di = 0;
-			// 	for (int y = 0; y < 144; y++)
-			// 	{
-			// 		int si = ((y+39) * srcPitch) + 48;
-			// 		for(int x=0;x<160;x++)
-			// 			_videoBuffer[di++] = data[si++];
-			// 	}
-			// 	return;
-			// }
-
-			for (int j = 0; j < 2; j++)
+			for (int y = 0; y < height * heightMultiplier; y++)
 			{
-				if (j == 1 && !dotDouble)
+				int si = y / heightMultiplier * pitch;
+				int di = y * widthMultiplier * dpitch / 4;
+				for (int x = 0; x < width * widthMultiplier; x++)
 				{
-					break;
-				}
-
-				int xbonus = j;
-				for (int i = 0; i < 2; i++)
-				{
-					// potentially do this twice, if we need to line double
-					if (i == 1 && !lineDouble)
-					{
-						break;
-					}
-
-					int bonus = (i * _videoWidth) + xbonus;
-					for (int y = 0; y < height; y++)
-					{
-						for (int x = 0; x < width; x++)
-						{
-							int si = (y * srcPitch) + x + srcStart;
-							int di = y * _videoWidth * yskip + x * xskip + bonus;
-							int rgb = data[si];
-							_videoBuffer[di] = rgb;
-						}
-					}
+					_videoBuffer[di++] = palette[data[si + x / widthMultiplier]];
 				}
 			}
-
-			VirtualHeight = BufferHeight;
-			VirtualWidth = BufferWidth;
-			if (VirtualHeight * 2 < VirtualWidth)
-				VirtualHeight *= 2;
-			if (VirtualHeight > 240)
-				VirtualWidth = 512;
-			VirtualWidth = (int)Math.Round(VirtualWidth * 1.146);
 		}
 
 		// private void RefreshMemoryCallbacks(bool suppress)
@@ -620,17 +532,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		private void InitAudio()
 		{
-			_resampler = new SpeexResampler((SpeexResampler.Quality)6, 64081, 88200, 32041, 44100);
+			_resampler = new SpeexResampler(SpeexResampler.Quality.QUALITY_DESKTOP, 64080, 88200, 32040, 44100);
 		}
 
-		public void snes_audio_sample(ushort left, ushort right)
+		private void snes_audio_sample(short left, short right)
 		{
-			_resampler.EnqueueSample((short)left, (short)right);
+			_resampler.EnqueueSample(left, right);
 		}
-
-		// private void RefreshPalette()
-		// {
-			// SetPalette((SnesColors.ColorType)Enum.Parse(typeof(SnesColors.ColorType), _settings.Palette, false));
-		// }
 	}
 }
