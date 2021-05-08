@@ -258,15 +258,14 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				return;
 			}
 
-			_numSamples = lengthInBytes / bytesPerSample;
+			int numSamples = lengthInBytes / bytesPerSample;
 
 			unsafe
 			{
 				short* pSample = (short*)ptr.ToPointer();
-				for (int i = 0; i < _numSamples; i++)
+				for (int i = 0; i < numSamples; i++)
 				{
 					_audioSamples.Enqueue(*(pSample + i));
-					_dAudioSamples++;
 				}
 			}
 
