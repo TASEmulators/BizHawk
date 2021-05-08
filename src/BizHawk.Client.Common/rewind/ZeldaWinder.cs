@@ -146,8 +146,8 @@ namespace BizHawk.Client.Common
 								{
 									if (to < from)
 									{
-								// Save on [to, from]
-								lengthHolder = (int)(from - to);
+										// Save on [to, from]
+										lengthHolder = (int)(from - to);
 										zeldas.Write(lengthHolderSpan);
 										zeldas.Write(new ReadOnlySpan<byte>(to, lengthHolder * 4));
 									}
@@ -157,8 +157,8 @@ namespace BizHawk.Client.Common
 								{
 									if (from < to)
 									{
-								// encode gap [from, to]
-								lengthHolder = (int)(to - from) | IS_GAP;
+										// encode gap [from, to]
+										lengthHolder = (int)(to - from) | IS_GAP;
 										zeldas.Write(lengthHolderSpan);
 									}
 									from = older;
@@ -166,8 +166,8 @@ namespace BizHawk.Client.Common
 							}
 							if (from < to)
 							{
-						// encode gap [from, to]
-						lengthHolder = (int)(to - from) | IS_GAP;
+								// encode gap [from, to]
+								lengthHolder = (int)(to - from) | IS_GAP;
 								zeldas.Write(lengthHolderSpan);
 							}
 							if (lastOldIndex > lastIndex)
@@ -176,8 +176,8 @@ namespace BizHawk.Client.Common
 							}
 							if (to < from)
 							{
-						// Save on [to, from]
-						lengthHolder = (int)(from - to);
+								// Save on [to, from]
+								lengthHolder = (int)(from - to);
 								zeldas.Write(lengthHolderSpan);
 								zeldas.Write(new ReadOnlySpan<byte>(to, lengthHolder * 4));
 							}
