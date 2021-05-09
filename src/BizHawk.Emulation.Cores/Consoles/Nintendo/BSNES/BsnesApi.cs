@@ -32,6 +32,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		public abstract BsnesApi.SNES_REGION snes_get_region();
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract BsnesApi.SNES_MAPPER snes_get_mapper();
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract void* snes_get_memory_region(int id, out int size, out int wordSize);
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract byte snes_bus_read(uint address);
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract void snes_bus_write(uint address, byte value);
 
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void snes_set_callbacks(
@@ -72,8 +78,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			}
 		}
 
-		private WaterboxHost _exe;
-		public BsnesCoreImpl _core;
+		internal WaterboxHost _exe;
+		internal BsnesCoreImpl _core;
 		private bool _disposed;
 		private CommStruct* _comm;
 		private readonly Dictionary<string, IntPtr> _sharedMemoryBlocks = new Dictionary<string, IntPtr>();

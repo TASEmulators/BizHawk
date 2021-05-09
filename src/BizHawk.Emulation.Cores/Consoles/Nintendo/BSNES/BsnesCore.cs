@@ -173,7 +173,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				VsyncDenominator = 4 * 341 * 312;
 			}
 
-			// SetupMemoryDomains(romData, sgbRomData);
+			SetMemoryDomains();
 
 			ser.Register<ITraceable>(_tracer);
 

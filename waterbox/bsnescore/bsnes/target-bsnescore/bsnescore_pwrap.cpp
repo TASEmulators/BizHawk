@@ -4,7 +4,6 @@
 //sig: core->frontend: "core signal" a synchronous operation called from the emulation process which the frontend should handle immediately without issuing any calls into the core
 //brk: core->frontend: "core break" the emulation process has suspended. the frontend is free to do whatever it wishes.
 
-#define BSNESCORE_IMPORT
 #include "sfc/sfc.hpp"
 #include "bsnescore.hpp"
 #include <emulibc.h>
@@ -398,28 +397,18 @@ EXPORT void Message(eMessage msg)
             break;
         }
         case eMessage_QUERY_get_memory_size: {
-            comm.value = snes_get_memory_size(comm.value);
             break;
         }
         case eMessage_QUERY_peek: {
-            if (comm.id == SNES_MEMORY_SYSBUS)
-                comm.value = bus_read(comm.addr);
-            else comm.value = snes_get_memory_data(comm.id)[comm.addr];
             break;
         }
         case eMessage_QUERY_poke: {
-            if (comm.id == SNES_MEMORY_SYSBUS)
-                bus_write(comm.addr, comm.value);
-            else
-                snes_write_memory_data(comm.id, comm.addr, comm.value);
             break;
         }
         case eMessage_QUERY_serialize_size: {
-            // was never implemented?
             break;
         }
         case eMessage_QUERY_GetMemoryIdName: {
-            comm.str = (char*) snes_get_memory_id_name(comm.id);
             break;
         }
         case eMessage_QUERY_state_hook_exec: {

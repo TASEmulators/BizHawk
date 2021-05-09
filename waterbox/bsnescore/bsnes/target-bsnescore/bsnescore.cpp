@@ -54,14 +54,6 @@ uint16_t backdropColor;
 //     iface->pScanlineStart = cb;
 // }
 
-//zero 03-sep-2012
-// bool snes_check_cartridge(const uint8_t *rom_data, unsigned rom_size)
-// {
-//     //tries to determine whether this rom is a snes rom - BUT THIS TRIES TO ACCEPT EVERYTHING! so we cant really use it
-//     // Cartridge temp(rom_data, rom_size);
-//     // return temp.type != Cartridge::TypeUnknown && temp.type != Cartridge::TypeGameBoy;
-//     return true;
-// }
 
 //zero 05-sep-2012
 int snes_peek_logical_register(int reg)
@@ -166,13 +158,6 @@ bool snes_load_cartridge_bsx_slotted(
   const char *rom_xml, const uint8_t *rom_data, unsigned rom_size,
   const char *bsx_xml, const uint8_t *bsx_data, unsigned bsx_size
 ) {
-  // if(rom_data) cartridge.rom.copy(rom_data, rom_size);
-  // iface->cart = cartridge;//SnesCartridge(rom_data, rom_size);
-  // string xmlrom = (rom_xml && *rom_xml) ? string(rom_xml) : "";iface->cart.markup;
-  // if(bsx_data) bsxflash.memory.copy(bsx_data, bsx_size);
-  // string xmlbsx = (bsx_xml && *bsx_xml) ? string(bsx_xml) : SnesCartridge(bsx_data, bsx_size).markup;
-  // cartridge.load(Cartridge::Mode::BsxSlotted, xmlrom);
-  // system.power(false);
     return false;
 }
 
@@ -181,13 +166,6 @@ bool snes_load_cartridge_bsx(
   const char *rom_xml, const uint8_t *rom_data, unsigned rom_size,
   const char *bsx_xml, const uint8_t *bsx_data, unsigned bsx_size
 ) {
-  // if(rom_data) cartridge.rom.copy(rom_data, rom_size);
-  // iface->cart = SnesCartridge(rom_data, rom_size);
-  // string xmlrom = (rom_xml && *rom_xml) ? string(rom_xml) : iface->cart.markup;
-  // if(bsx_data) bsxflash.memory.copy(bsx_data, bsx_size);
-  // string xmlbsx = (bsx_xml && *bsx_xml) ? string(bsx_xml) : SnesCartridge(bsx_data, bsx_size).markup;
-  // cartridge.load(Cartridge::Mode::Bsx, xmlrom);
-  // system.power(false);
     return false;
 }
 
@@ -197,223 +175,12 @@ bool snes_load_cartridge_sufami_turbo(
   const char *sta_xml, const uint8_t *sta_data, unsigned sta_size,
   const char *stb_xml, const uint8_t *stb_data, unsigned stb_size
 ) {
-  // if(rom_data) cartridge.rom.copy(rom_data, rom_size);
-  // iface->cart = SnesCartridge(rom_data, rom_size);
-  // string xmlrom = (rom_xml && *rom_xml) ? string(rom_xml) : iface->cart.markup;
-  // if(sta_data) sufamiturbo.slotA.rom.copy(sta_data, sta_size);
-  // string xmlsta = (sta_xml && *sta_xml) ? string(sta_xml) : SnesCartridge(sta_data, sta_size).markup;
-  // if(stb_data) sufamiturbo.slotB.rom.copy(stb_data, stb_size);
-  // string xmlstb = (stb_xml && *stb_xml) ? string(stb_xml) : SnesCartridge(stb_data, stb_size).markup;
-  // cartridge.load(Cartridge::Mode::SufamiTurbo, xmlrom);
-  // system.power(false);
     return false;
 }
 
 // again, unused
 void snes_unload_cartridge(void) {
     cartridge.unload();
-}
-
-static uint8_t sharprtc_data[16];
-static uint8_t epsonrtc_data[16];
-
-void snes_write_memory_data(unsigned id, unsigned index, unsigned value)
-{
-    uint8_t* data = snes_get_memory_data(id);
-    if (!data) return;
-
-    data[index] = value;
-
-    if (id == SNES_MEMORY_CARTRIDGE_RTC) {
-        if (cartridge.has.SharpRTC) sharprtc.load(data);
-        if (cartridge.has.EpsonRTC) epsonrtc.load(data);
-    }
-}
-
-// this will not return "live" rtc data. this may or not be an issue, depending on what the frontend expects
-uint8_t* snes_get_memory_data(unsigned id)
-{
-    if(!emulator->loaded()) return 0;
-
-    switch(id)
-    {
-        case SNES_MEMORY_CARTRIDGE_RAM:
-            return cartridge.ram.data();
-        case SNES_MEMORY_CARTRIDGE_RTC:
-            if(cartridge.has.SharpRTC) {
-                sharprtc.save(sharprtc_data);
-                return sharprtc_data;
-            }
-            if(cartridge.has.EpsonRTC) {
-                epsonrtc.save(epsonrtc_data);
-                return epsonrtc_data;
-            }
-            break;
-        case SNES_MEMORY_BSX_RAM:
-            if(!cartridge.has.BSMemorySlot) break;
-            return mcc.rom.data();
-        case SNES_MEMORY_BSX_PRAM:
-            if(!cartridge.has.BSMemorySlot) break;
-            return mcc.psram.data();
-        case SNES_MEMORY_SUFAMI_TURBO_A_RAM:
-            if(!cartridge.has.SufamiTurboSlotA) break;
-            return sufamiturboA.ram.data();
-        case SNES_MEMORY_SUFAMI_TURBO_B_RAM:
-            if(!cartridge.has.SufamiTurboSlotB) break;
-            return sufamiturboB.ram.data();
-        // case SNES_MEMORY_GAME_BOY_CARTRAM:
-        //     if(!cartridge.has.GameBoySlot) break;
-        //     return cartridge.ram;
-        // case SNES_MEMORY_GAME_BOY_RTC:
-        //     if(!cartridge.has.GameBoySlot) break;
-        //     return GameBoy::cartridge.rtcdata;
-        // case SNES_MEMORY_GAME_BOY_WRAM:
-        //   if(!cartridge.has.GameBoySlot) break;
-        //   return GameBoy::cpu.wram;
-        // case SNES_MEMORY_GAME_BOY_HRAM:
-        //   if(!cartridge.has.GameBoySlot) break;
-        //   return GameBoy::cpu.hram;
-
-        case SNES_MEMORY_WRAM:
-            return cpu.wram;
-        case SNES_MEMORY_APURAM:
-            return dsp.apuram;
-        case SNES_MEMORY_VRAM:
-            return (uint8_t*) ppufast.vram;
-        case SNES_MEMORY_OAM:
-            return (uint8_t*) ppufast.objects;
-        case SNES_MEMORY_CGRAM:
-            return (uint8_t*) ppufast.cgram;
-
-        case SNES_MEMORY_CARTRIDGE_ROM:
-            return cartridge.rom.data();
-    }
-
-    return nullptr;
-}
-
-const char* snes_get_memory_id_name(unsigned id) {
-    if(!emulator->loaded()) return nullptr;
-
-    switch(id) {
-        case SNES_MEMORY_CARTRIDGE_RAM:
-            return "CARTRIDGE_RAM";
-        case SNES_MEMORY_CARTRIDGE_RTC:
-            if(cartridge.has.SharpRTC) return "RTC";
-            if(cartridge.has.SPC7110) return "SPC7110_RTC";
-            return nullptr;
-        case SNES_MEMORY_BSX_RAM:
-            if(!cartridge.has.BSMemorySlot) break;// mode() != Cartridge::Mode::Bsx) break;
-            return "BSX_SRAM";
-        case SNES_MEMORY_BSX_PRAM:
-            if(!cartridge.has.BSMemorySlot) break;//() != Cartridge::Mode::Bsx) break;
-            return "BSX_PSRAM";
-        case SNES_MEMORY_SUFAMI_TURBO_A_RAM:
-            if(!cartridge.has.SufamiTurboSlotA) break;// mode() != Cartridge::Mode::SufamiTurbo) break;
-            return "SUFAMI_SLOTARAM";
-        case SNES_MEMORY_SUFAMI_TURBO_B_RAM:
-            if(!cartridge.has.SufamiTurboSlotB) break;//() != Cartridge::Mode::SufamiTurbo) break;
-            return "SUFAMI_SLOTBRAM";
-        case SNES_MEMORY_GAME_BOY_CARTRAM:
-            if(!cartridge.has.GameBoySlot) break;//() != Cartridge::Mode::SuperGameBoy) break;
-            return "SGB_CARTRAM";
-        case SNES_MEMORY_GAME_BOY_WRAM:
-            if(!cartridge.has.GameBoySlot) break;//() != Cartridge::Mode::SuperGameBoy) break;
-            //see notes in SetupMemoryDomains in bizhawk
-            return "SGB_WRAM";
-        case SNES_MEMORY_GAME_BOY_HRAM:
-            if(!cartridge.has.GameBoySlot) break;//() != Cartridge::Mode::SuperGameBoy) break;
-            return "SGB_HRAM";
-        case SNES_MEMORY_WRAM:
-            return "WRAM";
-        case SNES_MEMORY_APURAM:
-            return "APURAM";
-        case SNES_MEMORY_VRAM:
-            return "VRAM";
-        case SNES_MEMORY_OAM:
-            return "OAM";
-        case SNES_MEMORY_CGRAM:
-            return "CGRAM";
-        case SNES_MEMORY_CARTRIDGE_ROM:
-            return "CARTRIDGE_ROM";
-    }
-
-    return nullptr;
-}
-
-unsigned snes_get_memory_size(unsigned id) {
-    if(!emulator->loaded()) return 0;
-    unsigned size = 0;
-
-    switch(id)
-    {
-        case SNES_MEMORY_CARTRIDGE_RAM:
-            size = cartridge.ram.size();
-            break;
-        case SNES_MEMORY_CARTRIDGE_RTC:
-            if(cartridge.has.SharpRTC || cartridge.has.EpsonRTC)
-                size = 16;
-            break;
-        case SNES_MEMORY_BSX_RAM:
-            if(cartridge.has.BSMemorySlot)
-                size = mcc.rom.size();
-            break;
-        case SNES_MEMORY_BSX_PRAM:
-            if(cartridge.has.BSMemorySlot)
-                size = mcc.psram.size();
-            break;
-        case SNES_MEMORY_SUFAMI_TURBO_A_RAM:
-            if(cartridge.has.SufamiTurboSlotA)// .mode() != Cartridge::Mode::SufamiTurbo) break;
-                size = sufamiturboA.ram.size();// sufamiturbo.slotA.ram.size();
-            break;
-        case SNES_MEMORY_SUFAMI_TURBO_B_RAM:
-            if(cartridge.has.SufamiTurboSlotB)// mode() != Cartridge::Mode::SufamiTurbo) break;
-                size = sufamiturboB.ram.size();// .slotB.ram.size();
-            break;
-        // case SNES_MEMORY_GAME_BOY_CARTRAM:
-        //     if(cartridge.has.GameBoySlot)// mode() != Cartridge::Mode::SuperGameBoy) break;
-        //         size = cartridge.ram.size();// GameBoy::cartridge.ramsize;
-        //     break;
-        case SNES_MEMORY_GAME_BOY_WRAM:
-            if(cartridge.has.GameBoySlot)// mode() != Cartridge::Mode::SuperGameBoy) break;
-                //see notes in SetupMemoryDomains in bizhawk
-                size = 32768;
-            break;
-        case SNES_MEMORY_GAME_BOY_HRAM:
-            if(cartridge.has.GameBoySlot)//.mode() != Cartridge::Mode::SuperGameBoy) break;
-                size = 128;
-            break;
-
-        case SNES_MEMORY_WRAM:
-            size = 128 * 1024;
-            break;
-        case SNES_MEMORY_APURAM:
-            size = 64 * 1024;
-            break;
-        case SNES_MEMORY_VRAM:
-            size = 64 * 1024;
-            break;
-        case SNES_MEMORY_OAM:
-            size = 10 * 128;
-            break;
-        case SNES_MEMORY_CGRAM:
-            size = 512;
-            break;
-
-        case SNES_MEMORY_CARTRIDGE_ROM:
-            size =  cartridge.rom.size();
-            break;
-    }
-
-    if(size == -1U) size = 0;
-    return size;
-}
-
-uint8_t bus_read(unsigned addr) {
-    return bus.read(addr);
-}
-void bus_write(unsigned addr, uint8_t val) {
-    bus.write(addr, val);
 }
 
 
@@ -606,4 +373,73 @@ EXPORT char snes_get_mapper(void) {
     if (mapper == "STROM") return 10;
 
     return -1;
+}
+
+EXPORT void* snes_get_memory_region(int id, int* size, int* word_size)
+{
+    if(!emulator->loaded()) return nullptr;
+    bool fast_ppu = emulator->configuration("Hacks/PPU/Fast") == "true";
+
+    switch(id)
+    {
+        case SNES_MEMORY::CARTRIDGE_RAM:
+            *size = SuperFamicom::cartridge.ram.size();
+            *word_size = 1;
+            return cartridge.ram.data();
+        case SNES_MEMORY::BSX_RAM:
+            if (!cartridge.has.BSMemorySlot) break;
+            *size = mcc.rom.size();
+            *word_size = 1;
+            return mcc.rom.data();
+        case SNES_MEMORY::BSX_PRAM:
+            if (!cartridge.has.BSMemorySlot) break;
+            *size = mcc.psram.size();
+            *word_size = 1;
+            return mcc.psram.data();
+        case SNES_MEMORY::SUFAMI_TURBO_A_RAM:
+            if (!cartridge.has.SufamiTurboSlotA) break;
+            *size = sufamiturboA.ram.size();
+            *word_size = 1;
+            return sufamiturboA.ram.data();
+        case SNES_MEMORY::SUFAMI_TURBO_B_RAM:
+            if (!cartridge.has.SufamiTurboSlotB) break;
+            *size = sufamiturboB.ram.size();
+            *word_size = 1;
+            return sufamiturboB.ram.data();
+
+        case SNES_MEMORY::WRAM:
+            *size = sizeof(cpu.wram);
+            *word_size = 1;
+            return cpu.wram;
+        case SNES_MEMORY::APURAM:
+            *size = sizeof(dsp.apuram);
+            *word_size = 1;
+            return dsp.apuram;
+        case SNES_MEMORY::VRAM:
+            if (!fast_ppu) break;
+            *size = sizeof(ppufast.vram);
+            *word_size = sizeof(*SuperFamicom::ppufast.vram);
+            return ppufast.vram;
+        // case SNES_MEMORY::OAM: // probably weird since bsnes uses "object"s instead of bytes for oam rn
+            // return (uint8_t*) ppufast.objects;
+        case SNES_MEMORY::CGRAM:
+            if (!fast_ppu) break;
+            *size = sizeof(ppufast.cgram);
+            *word_size = sizeof(*ppufast.cgram);
+            return ppufast.cgram;
+
+        case SNES_MEMORY::CARTRIDGE_ROM:
+            *size = cartridge.rom.size();
+            *word_size = 1;
+            return cartridge.rom.data();
+    }
+
+    return nullptr;
+}
+
+EXPORT uint8_t snes_bus_read(unsigned addr) {
+    return bus.read(addr);
+}
+EXPORT void snes_bus_write(unsigned addr, uint8_t value) {
+    bus.write(addr, value);
 }

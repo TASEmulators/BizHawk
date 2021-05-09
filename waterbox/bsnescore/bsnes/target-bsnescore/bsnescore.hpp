@@ -6,87 +6,22 @@
 
 #define EXPORT ECL_EXPORT
 
-// what is this? it's unused how am i supposed to figure this out
-#if defined(BSNESCORE_IMPORT)
-#define BSNESCORE_IMPORTDECL __declspec(dllimport)
-#elif defined(BSNESCORE_EXPORT)
-#define BSNESCORE_IMPORTDECL __declspec(dllexport)
-#else
-#define BSNESCORE_IMPORTDECL
-#endif
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #define SAMPLE_RATE 32040
 
-#define SNES_PORT_1  0
-#define SNES_PORT_2  1
+enum SNES_MEMORY {
+    CARTRIDGE_RAM,
+    BSX_RAM,
+    BSX_PRAM,
+    SUFAMI_TURBO_A_RAM,
+    SUFAMI_TURBO_B_RAM,
 
-#define SNES_DEVICE_NONE          0
-#define SNES_DEVICE_JOYPAD        1
-#define SNES_DEVICE_MULTITAP      2
-#define SNES_DEVICE_MOUSE         3
-#define SNES_DEVICE_SUPER_SCOPE   4
-#define SNES_DEVICE_JUSTIFIER     5
-#define SNES_DEVICE_JUSTIFIERS    6
-#define SNES_DEVICE_SERIAL_CABLE  7
+    WRAM,
+    APURAM,
+    VRAM,
+    CGRAM,
 
-#define SNES_DEVICE_ID_JOYPAD_B        0
-#define SNES_DEVICE_ID_JOYPAD_Y        1
-#define SNES_DEVICE_ID_JOYPAD_SELECT   2
-#define SNES_DEVICE_ID_JOYPAD_START    3
-#define SNES_DEVICE_ID_JOYPAD_UP       4
-#define SNES_DEVICE_ID_JOYPAD_DOWN     5
-#define SNES_DEVICE_ID_JOYPAD_LEFT     6
-#define SNES_DEVICE_ID_JOYPAD_RIGHT    7
-#define SNES_DEVICE_ID_JOYPAD_A        8
-#define SNES_DEVICE_ID_JOYPAD_X        9
-#define SNES_DEVICE_ID_JOYPAD_L       10
-#define SNES_DEVICE_ID_JOYPAD_R       11
-
-#define SNES_DEVICE_ID_MOUSE_X      0
-#define SNES_DEVICE_ID_MOUSE_Y      1
-#define SNES_DEVICE_ID_MOUSE_LEFT   2
-#define SNES_DEVICE_ID_MOUSE_RIGHT  3
-
-#define SNES_DEVICE_ID_SUPER_SCOPE_X        0
-#define SNES_DEVICE_ID_SUPER_SCOPE_Y        1
-#define SNES_DEVICE_ID_SUPER_SCOPE_TRIGGER  2
-#define SNES_DEVICE_ID_SUPER_SCOPE_CURSOR   3
-#define SNES_DEVICE_ID_SUPER_SCOPE_TURBO    4
-#define SNES_DEVICE_ID_SUPER_SCOPE_PAUSE    5
-
-#define SNES_DEVICE_ID_JUSTIFIER_X        0
-#define SNES_DEVICE_ID_JUSTIFIER_Y        1
-#define SNES_DEVICE_ID_JUSTIFIER_TRIGGER  2
-#define SNES_DEVICE_ID_JUSTIFIER_START    3
-
-#define SNES_REGION_NTSC  0
-#define SNES_REGION_PAL   1
-
-#define SNES_MEMORY_CARTRIDGE_RAM       0
-#define SNES_MEMORY_CARTRIDGE_RTC       1
-#define SNES_MEMORY_BSX_RAM             2
-#define SNES_MEMORY_BSX_PRAM            3
-#define SNES_MEMORY_SUFAMI_TURBO_A_RAM  4
-#define SNES_MEMORY_SUFAMI_TURBO_B_RAM  5
-#define SNES_MEMORY_GAME_BOY_CARTRAM    6
-#define SNES_MEMORY_GAME_BOY_RTC        7
-#define SNES_MEMORY_GAME_BOY_WRAM       8
-#define SNES_MEMORY_GAME_BOY_HRAM       9
-
-#define SNES_MEMORY_WRAM    100
-#define SNES_MEMORY_APURAM  101
-#define SNES_MEMORY_VRAM    102
-#define SNES_MEMORY_OAM     103
-#define SNES_MEMORY_CGRAM   104
-
-#define SNES_MEMORY_CARTRIDGE_ROM 105
-
-#define SNES_MEMORY_SYSBUS 200
-#define SNES_MEMORY_LOGICAL_REGS 201
+    CARTRIDGE_ROM
+};
 
 typedef void (*snes_trace_t)(uint32_t which, const char *msg);
 
@@ -114,11 +49,6 @@ bool snes_load_cartridge_sufami_turbo(
 
 void snes_unload_cartridge(void);
 
-uint8_t* snes_get_memory_data(unsigned id);
-void snes_write_memory_data(unsigned id, unsigned index, unsigned value);
-const char* snes_get_memory_id_name(unsigned id);
-unsigned snes_get_memory_size(unsigned id);
-
 struct LayerEnablesComm
 {
     bool BG1_Prio0, BG1_Prio1;
@@ -130,7 +60,6 @@ struct LayerEnablesComm
 
 
 //zeromus additions
-// bool snes_check_cartridge(const uint8_t *rom_data, unsigned rom_size);
 // typedef void (*snes_scanlineStart_t)(int);
 // void snes_set_scanlineStart(snes_scanlineStart_t);
 extern uint16_t backdropColor;
@@ -228,8 +157,5 @@ void bus_write(unsigned addr, uint8_t val);
 
 int snes_peek_logical_register(int reg);
 
-#ifdef __cplusplus
-}
-#endif
 
 #endif
