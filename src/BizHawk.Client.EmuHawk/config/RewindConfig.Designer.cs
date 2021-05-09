@@ -33,7 +33,7 @@
 			this.Cancel = new System.Windows.Forms.Button();
 			this.RewindEnabledBox = new System.Windows.Forms.CheckBox();
 			this.UseCompression = new System.Windows.Forms.CheckBox();
-			this.label4 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label4 = new BizHawk.WinForms.Controls.LabelEx();
 			this.BufferSizeUpDown = new System.Windows.Forms.NumericUpDown();
 			this.label3 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.label1 = new BizHawk.WinForms.Controls.LocLabelEx();
@@ -41,6 +41,10 @@
 			this.label6 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.FullnessLabel = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.groupBox4 = new System.Windows.Forms.GroupBox();
+			this.locSingleRowFLP1 = new BizHawk.WinForms.Controls.LocSingleRowFLP();
+			this.labelEx3 = new BizHawk.WinForms.Controls.LabelEx();
+			this.labelEx2 = new BizHawk.WinForms.Controls.LabelEx();
+			this.labelEx1 = new BizHawk.WinForms.Controls.LabelEx();
 			this.cbDeltaCompression = new System.Windows.Forms.CheckBox();
 			this.TargetFrameLengthNumeric = new System.Windows.Forms.NumericUpDown();
 			this.label2 = new BizHawk.WinForms.Controls.LocLabelEx();
@@ -71,6 +75,7 @@
 			this.label12 = new BizHawk.WinForms.Controls.LocLabelEx();
 			((System.ComponentModel.ISupportInitialize)(this.BufferSizeUpDown)).BeginInit();
 			this.groupBox4.SuspendLayout();
+			this.locSingleRowFLP1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.TargetFrameLengthNumeric)).BeginInit();
 			this.groupBox6.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarCompression)).BeginInit();
@@ -125,20 +130,20 @@
 			// 
 			// label4
 			// 
-			this.label4.Location = new System.Drawing.Point(181, 112);
+			this.label4.Margin = new System.Windows.Forms.Padding(0);
 			this.label4.Name = "label4";
 			this.label4.Text = "MB";
 			// 
 			// BufferSizeUpDown
 			// 
-			this.BufferSizeUpDown.Location = new System.Drawing.Point(125, 110);
+			this.BufferSizeUpDown.Location = new System.Drawing.Point(0, 0);
 			this.BufferSizeUpDown.Maximum = new decimal(new int[] {
-            32768,
+            15,
             0,
             0,
             0});
 			this.BufferSizeUpDown.Minimum = new decimal(new int[] {
-            64,
+            6,
             0,
             0,
             0});
@@ -146,7 +151,7 @@
 			this.BufferSizeUpDown.Size = new System.Drawing.Size(52, 20);
 			this.BufferSizeUpDown.TabIndex = 8;
 			this.BufferSizeUpDown.Value = new decimal(new int[] {
-            512,
+            9,
             0,
             0,
             0});
@@ -184,12 +189,11 @@
 			// 
 			// groupBox4
 			// 
+			this.groupBox4.Controls.Add(this.locSingleRowFLP1);
 			this.groupBox4.Controls.Add(this.cbDeltaCompression);
 			this.groupBox4.Controls.Add(this.TargetFrameLengthNumeric);
 			this.groupBox4.Controls.Add(this.label2);
-			this.groupBox4.Controls.Add(this.label4);
 			this.groupBox4.Controls.Add(this.UseCompression);
-			this.groupBox4.Controls.Add(this.BufferSizeUpDown);
 			this.groupBox4.Controls.Add(this.RewindEnabledBox);
 			this.groupBox4.Controls.Add(this.label3);
 			this.groupBox4.Controls.Add(this.EstTimeLabel);
@@ -208,6 +212,34 @@
 			this.groupBox4.TabIndex = 2;
 			this.groupBox4.TabStop = false;
 			this.groupBox4.Text = "RewindSettings";
+			// 
+			// locSingleRowFLP1
+			// 
+			this.locSingleRowFLP1.Controls.Add(this.labelEx3);
+			this.locSingleRowFLP1.Controls.Add(this.BufferSizeUpDown);
+			this.locSingleRowFLP1.Controls.Add(this.labelEx2);
+			this.locSingleRowFLP1.Controls.Add(this.labelEx1);
+			this.locSingleRowFLP1.Controls.Add(this.label4);
+			this.locSingleRowFLP1.Location = new System.Drawing.Point(100, 107);
+			this.locSingleRowFLP1.Name = "locSingleRowFLP1";
+			// 
+			// labelEx3
+			// 
+			this.labelEx3.Margin = new System.Windows.Forms.Padding(0);
+			this.labelEx3.Name = "labelEx3";
+			this.labelEx3.Text = "2 ^";
+			// 
+			// labelEx2
+			// 
+			this.labelEx2.Margin = new System.Windows.Forms.Padding(0);
+			this.labelEx2.Name = "labelEx2";
+			this.labelEx2.Text = "MB  =";
+			// 
+			// labelEx1
+			// 
+			this.labelEx1.Margin = new System.Windows.Forms.Padding(0);
+			this.labelEx1.Name = "labelEx1";
+			this.labelEx1.Text = "512";
 			// 
 			// cbDeltaCompression
 			// 
@@ -497,6 +529,8 @@
 			((System.ComponentModel.ISupportInitialize)(this.BufferSizeUpDown)).EndInit();
 			this.groupBox4.ResumeLayout(false);
 			this.groupBox4.PerformLayout();
+			this.locSingleRowFLP1.ResumeLayout(false);
+			this.locSingleRowFLP1.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.TargetFrameLengthNumeric)).EndInit();
 			this.groupBox6.ResumeLayout(false);
 			this.groupBox6.PerformLayout();
@@ -517,7 +551,7 @@
 		private System.Windows.Forms.CheckBox UseCompression;
 		private BizHawk.WinForms.Controls.LocLabelEx label1;
 		private BizHawk.WinForms.Controls.LocLabelEx StateSizeLabel;
-		private BizHawk.WinForms.Controls.LocLabelEx label4;
+		private BizHawk.WinForms.Controls.LabelEx label4;
 		private System.Windows.Forms.NumericUpDown BufferSizeUpDown;
 		private BizHawk.WinForms.Controls.LocLabelEx label3;
 		private BizHawk.WinForms.Controls.LocLabelEx label6;
@@ -551,5 +585,9 @@
 		private System.Windows.Forms.NumericUpDown TargetFrameLengthNumeric;
 		private BizHawk.WinForms.Controls.LocLabelEx label2;
 		private System.Windows.Forms.CheckBox cbDeltaCompression;
+		private WinForms.Controls.LocSingleRowFLP locSingleRowFLP1;
+		private WinForms.Controls.LabelEx labelEx3;
+		private WinForms.Controls.LabelEx labelEx2;
+		private WinForms.Controls.LabelEx labelEx1;
 	}
 }

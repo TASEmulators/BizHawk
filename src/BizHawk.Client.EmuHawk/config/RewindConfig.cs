@@ -48,7 +48,7 @@ namespace BizHawk.Client.EmuHawk
 			RewindEnabledBox.Checked = _config.Rewind.Enabled;
 			UseCompression.Checked = _config.Rewind.UseCompression;
 			cbDeltaCompression.Checked = _config.Rewind.UseDelta;
-			BufferSizeUpDown.Value = Math.Max(_config.Rewind.BufferSize, BufferSizeUpDown.Minimum);
+			BufferSizeUpDown.Value = Math.Max((decimal) Math.Log(_config.Rewind.BufferSize, 2), BufferSizeUpDown.Minimum);
 			TargetFrameLengthNumeric.Value = Math.Max(_config.Rewind.TargetFrameLength, TargetFrameLengthNumeric.Minimum);
 			StateSizeLabel.Text = FormatKB(_avgStateSize);
 			CalculateEstimates();
@@ -110,7 +110,7 @@ namespace BizHawk.Client.EmuHawk
 			// These settings are used by DoRewindSettings, which we'll only call if anything actually changed (i.e. preserve rewind history if possible)
 			_config.Rewind.UseCompression = PutRewindSetting(_config.Rewind.UseCompression, UseCompression.Checked);
 			_config.Rewind.Enabled = PutRewindSetting(_config.Rewind.Enabled, RewindEnabledBox.Checked);
-			_config.Rewind.BufferSize = PutRewindSetting(_config.Rewind.BufferSize, (int)BufferSizeUpDown.Value);
+			_config.Rewind.BufferSize = PutRewindSetting(_config.Rewind.BufferSize, 1L << (int) BufferSizeUpDown.Value);
 			_config.Rewind.TargetFrameLength = PutRewindSetting(_config.Rewind.TargetFrameLength, (int)TargetFrameLengthNumeric.Value);
 			_config.Rewind.UseDelta = PutRewindSetting(_config.Rewind.UseDelta, cbDeltaCompression.Checked);
 
@@ -134,7 +134,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CalculateEstimates()
 		{
-			var bufferSize = (long)BufferSizeUpDown.Value;
+			var bufferSize = 1L << (int) BufferSizeUpDown.Value;
+			labelEx1.Text = bufferSize.ToString();
 			bufferSize *= 1024 * 1024;
 			var estFrames = bufferSize / _avgStateSize;
 
