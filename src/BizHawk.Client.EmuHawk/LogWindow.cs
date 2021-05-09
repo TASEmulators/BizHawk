@@ -47,7 +47,7 @@ namespace BizHawk.Client.EmuHawk
 			_logStream = new LogStream();
 			Log.HACK_LOG_STREAM = _logStream;
 			Console.SetOut(new StreamWriter(_logStream) { AutoFlush = true });
-			_logStream.Emit = Append;
+			_logStream.Emit = appendInvoked;
 		}
 
 		private void Detach()
@@ -64,10 +64,12 @@ namespace BizHawk.Client.EmuHawk
 		public void ShowReport(string title, string report)
 		{
 			var ss = report.Split('\n');
-			foreach (var s in ss)
-			{
-				_lines.Add(s.TrimEnd('\r'));
-			}
+			
+			lock (_lines)
+				foreach (var s in ss)
+				{
+					_lines.Add(s.TrimEnd('\r'));
+				}
 
 			virtualListView1.VirtualListSize = ss.Length;
 			_windowTitle = title;
@@ -75,24 +77,51 @@ namespace BizHawk.Client.EmuHawk
 			btnClear.Visible = false;
 		}
 
-		public void Append(string str)
+		private void append(string str, bool invoked)
 		{
 			var ss = str.Split('\n');
 			foreach (var s in ss)
 			{
 				if (!string.IsNullOrWhiteSpace(s))
 				{
-					_lines.Add(s.TrimEnd('\r'));
-					virtualListView1.VirtualListSize++;
+					if (invoked)
+						Invoke((Action<string>)doAppendInvoked,s);
+					else 
+						lock (_lines)
+							_lines.Add(s.TrimEnd('\r'));
 				}
 			}
 		}
 
+		private void doAppendInvoked(string value)
+		{
+			//note that we take precautions to update _lines and VirtualListSize together here
+			//the lock happens here and not outside the invoke because we want only one thread to be locking (that's the gui thread)
+			lock (_lines)
+			{
+				_lines.Add(value.TrimEnd('\r'));
+				virtualListView1.VirtualListSize = _lines.Count;
+			}
+		}
+
+		private void appendInvoked(string str)
+		{
+			append(str, true);
+		}
+
+		public void Append(string str)
+		{
+			append(str, false);
+		}
+
 		private void BtnClear_Click(object sender, EventArgs e)
 		{
-			_lines.Clear();
-			virtualListView1.VirtualListSize = 0;
-			virtualListView1.SelectedIndices.Clear();
+			lock (_lines)
+			{
+				_lines.Clear();
+				virtualListView1.VirtualListSize = 0;
+				virtualListView1.SelectedIndices.Clear();
+			}
 		}
 
 		private void BtnClose_Click(object sender, EventArgs e)
@@ -126,8 +155,9 @@ namespace BizHawk.Client.EmuHawk
 		private void ButtonCopy_Click(object sender, EventArgs e)
 		{
 			var sb = new StringBuilder();
-			foreach (int i in virtualListView1.SelectedIndices)
-				sb.AppendLine(_lines[i]);
+			lock(_lines)
+				foreach (int i in virtualListView1.SelectedIndices)
+					sb.AppendLine(_lines[i]);
 			if (sb.Length > 0)
 				Clipboard.SetText(sb.ToString(), TextDataFormat.Text);
 		}
@@ -135,8 +165,9 @@ namespace BizHawk.Client.EmuHawk
 		private void ButtonCopyAll_Click(object sender, EventArgs e)
 		{
 			var sb = new StringBuilder();
-			foreach (var s in _lines)
-				sb.AppendLine(s);
+			lock(_lines)
+				foreach (var s in _lines)
+					sb.AppendLine(s);
 			if (sb.Length > 0)
 				Clipboard.SetText(sb.ToString(), TextDataFormat.Text);
 		}
@@ -200,7 +231,7 @@ namespace BizHawk.Client.EmuHawk
 				// TODO - buffer undecoded characters (this may be important)
 				//(use decoder = System.Text.Encoding.Unicode.GetDecoder())
 				string str = Encoding.ASCII.GetString(buffer, offset, count);
-				Emit?.Invoke(str);
+				Emit(str);
 			}
 
 			public Action<string> Emit;
