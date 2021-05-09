@@ -141,7 +141,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 				if (Interrupt > 0 && (Interrupt > InterruptMaskLevel || Interrupt > 7))
 				{
 					// TODO: Entering interrupt is not free. how many cycles does it take?
-					//Log.Error("CPU","****** ENTER INTERRUPT {0} *******", Interrupt);
+					//GarboLog.Error("CPU","****** ENTER INTERRUPT {0} *******", Interrupt);
 					short sr = (short)SR;                  // capture current SR.
 					S = true;                               // switch to supervisor mode, if not already in it.
 					A[7].s32 -= 4;                          // Push PC on stack
@@ -155,7 +155,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 				}
 
 				int prevCycles = PendingCycles;
-				//Log.Note("CPU", State());
+				//GarboLog.Note("CPU", State());
 				op = (ushort)ReadWord(PC);
 				if (Opcodes[op] == null) throw new Exception($"unhandled opcode at pc={PC:X6}");
 				PC += 2;

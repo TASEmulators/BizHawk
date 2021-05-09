@@ -68,7 +68,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		public void AdpcmControlWrite(byte value)
 		{
-			//Log.Error("CD","ADPCM CONTROL WRITE {0:X2}",value);
+			//GarboLog.Error("CD","ADPCM CONTROL WRITE {0:X2}",value);
 			if ((Port180D & 0x80) != 0 && (value & 0x80) == 0)
 			{
 				ReadAddress = 0;

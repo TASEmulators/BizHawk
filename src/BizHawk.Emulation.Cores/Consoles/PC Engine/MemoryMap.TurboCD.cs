@@ -47,7 +47,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				return 0xFF;
 			}
 
-			Log.Error("MEM", "UNHANDLED READ: {0:X6}", addr);
+			GarboLog.Error("MEM", "UNHANDLED READ: {0:X6}", addr);
 			return 0xFF;
 		}
 
@@ -74,7 +74,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				else if (addr == 0x1FF402) { IOBuffer = value; Cpu.WriteIrqControl(value); }
 				else if (addr == 0x1FF403) { IOBuffer = value; Cpu.WriteIrqStatus(); }
 				else if (addr >= 0x1FF800) { WriteCD(addr, value); }
-				else Log.Error("MEM", "unhandled hardware write [{0:X6}] : {1:X2}", addr, value);
+				else GarboLog.Error("MEM", "unhandled hardware write [{0:X6}] : {1:X2}", addr, value);
 			}
 
 			else if (addr >= 0x80000 && addr < 0x88000 && ArcadeCard) // Arcade Card
@@ -94,7 +94,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			}
 
 			else
-				Log.Error("MEM", "UNHANDLED WRITE: {0:X6}:{1:X2}", addr, value);
+				GarboLog.Error("MEM", "UNHANDLED WRITE: {0:X6}:{1:X2}", addr, value);
 		}
 	}
 }
