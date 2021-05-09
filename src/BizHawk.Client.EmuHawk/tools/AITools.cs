@@ -7,6 +7,7 @@ using BizHawk.Client.EmuHawk.Properties;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
+using MarioAI;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -29,7 +30,8 @@ namespace BizHawk.Client.EmuHawk
 		private Watch xWatch = null;
 		
 		private Watch yWatch = null;
-		
+		private Label lblPython;
+		private Label label6;
 		private Watch zWatch = null;
 
 		public bool IsActive => true;
@@ -41,6 +43,11 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 
 			this.Show();
+
+			var aistuff = new PythonBridge();
+
+			this.lblPython.Text = aistuff.DoStuff().ToString();
+
 		}
 
 		private void InitializeComponent()
@@ -53,6 +60,8 @@ namespace BizHawk.Client.EmuHawk
             this.lblY = new System.Windows.Forms.Label();
             this.lblZ = new System.Windows.Forms.Label();
             this.lblCoins = new System.Windows.Forms.Label();
+            this.lblPython = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label1
@@ -123,9 +132,28 @@ namespace BizHawk.Client.EmuHawk
             this.lblCoins.Size = new System.Drawing.Size(0, 13);
             this.lblCoins.TabIndex = 7;
             // 
+            // lblPython
+            // 
+            this.lblPython.AutoSize = true;
+            this.lblPython.Location = new System.Drawing.Point(93, 145);
+            this.lblPython.Name = "lblPython";
+            this.lblPython.Size = new System.Drawing.Size(0, 13);
+            this.lblPython.TabIndex = 9;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(23, 145);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(40, 13);
+            this.label6.TabIndex = 8;
+            this.label6.Text = "Python";
+            // 
             // AITools
             // 
             this.ClientSize = new System.Drawing.Size(303, 220);
+            this.Controls.Add(this.lblPython);
+            this.Controls.Add(this.label6);
             this.Controls.Add(this.lblCoins);
             this.Controls.Add(this.lblZ);
             this.Controls.Add(this.lblY);
