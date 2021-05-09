@@ -84,24 +84,24 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (!string.IsNullOrWhiteSpace(s))
 				{
-					if (invoked)
-						Invoke((Action<string>)doAppendInvoked,s);
-					else 
-						lock (_lines)
-							_lines.Add(s.TrimEnd('\r'));
+					lock (_lines)
+					{
+						_lines.Add(s.TrimEnd('\r'));
+						if (invoked)
+						{
+							//basically an easy way to post an update message which should hopefully happen before anything else happens (redraw or user interaction)
+							BeginInvoke((Action)doUpdateListSize);
+						}
+						else
+							doUpdateListSize();
+					}
 				}
 			}
 		}
 
-		private void doAppendInvoked(string value)
+		private void doUpdateListSize()
 		{
-			//note that we take precautions to update _lines and VirtualListSize together here
-			//the lock happens here and not outside the invoke because we want only one thread to be locking (that's the gui thread)
-			lock (_lines)
-			{
-				_lines.Add(value.TrimEnd('\r'));
-				virtualListView1.VirtualListSize = _lines.Count;
-			}
+			virtualListView1.VirtualListSize = _lines.Count;
 		}
 
 		private void appendInvoked(string str)
