@@ -71,21 +71,23 @@ namespace HelloWorld
 			InitializeComponent();
 			label_GameHash.Click += label_GameHash_Click;
 			Closing += (sender, args) => APIs.EmuClient.SetClientExtraPadding(0, 0, 0, 0);
-
-			APIs.EmuClient.BeforeQuickSave += (sender, e) =>
+			Load += (_, _) =>
 			{
-				if (e.Slot != 0) return; // only take effect on slot 0
-				var basePath = Path.Combine(GlobalConfig.PathEntries.SaveStateAbsolutePath(APIs.Emulation.GetSystemId()), "Test");
-				if (!Directory.Exists(basePath)) Directory.CreateDirectory(basePath);
-				APIs.EmuClient.SaveState(Path.Combine(basePath, e.Name));
-				e.Handled = true;
-			};
-			APIs.EmuClient.BeforeQuickLoad += (sender, e) =>
-			{
-				if (e.Slot != 0) return; // only take effect on slot 0
-				var basePath = Path.Combine(GlobalConfig.PathEntries.SaveStateAbsolutePath(APIs.Emulation.GetSystemId()), "Test");
-				APIs.EmuClient.LoadState(Path.Combine(basePath, e.Name));
-				e.Handled = true;
+				APIs.EmuClient.BeforeQuickSave += (_, e) =>
+				{
+					if (e.Slot != 0) return; // only take effect on slot 0
+					var basePath = Path.Combine(GlobalConfig.PathEntries.SaveStateAbsolutePath(APIs.Emulation.GetSystemId()), "Test");
+					if (!Directory.Exists(basePath)) Directory.CreateDirectory(basePath);
+					APIs.EmuClient.SaveState(Path.Combine(basePath, e.Name));
+					e.Handled = true;
+				};
+				APIs.EmuClient.BeforeQuickLoad += (_, e) =>
+				{
+					if (e.Slot != 0) return; // only take effect on slot 0
+					var basePath = Path.Combine(GlobalConfig.PathEntries.SaveStateAbsolutePath(APIs.Emulation.GetSystemId()), "Test");
+					APIs.EmuClient.LoadState(Path.Combine(basePath, e.Name));
+					e.Handled = true;
+				};
 			};
 		}
 
