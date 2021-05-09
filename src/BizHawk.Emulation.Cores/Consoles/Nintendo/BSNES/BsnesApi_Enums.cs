@@ -75,21 +75,14 @@
 			BSX_PRAM,
 			SUFAMI_TURBO_A_RAM,
 			SUFAMI_TURBO_B_RAM,
-			// SGB_CARTRAM = 6,
-			// SGB_RTC = 7,
-			// SGB_WRAM = 8,
-			// SGB_HRAM = 9,
 
 			WRAM,
 			APURAM,
 			VRAM,
-			// OAM = 103,
+			// OAM, // needs some work in the core probably? or we return an objects pointer
 			CGRAM,
 
 			CARTRIDGE_ROM
-
-			// SYSBUS = 200,
-			// LOGICAL_REGS = 201
 		}
 
 		private enum eStatus
@@ -120,7 +113,6 @@
 			High
 		}
 
-		// should now no longer be necessary i think
 		public enum SNES_MAPPER : byte
 		{
 			LOROM = 0,

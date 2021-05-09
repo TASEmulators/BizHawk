@@ -17,28 +17,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			 * mode, because in there, the core actually advances, and might advance
 			 * through the point in time where IsLagFrame gets set to false.  makes sense?
 			 */
-
 			IsLagFrame = true;
-
-#if false
-			if (_tracer.Enabled)
-			{
-				//Api.QUERY_set_trace_callback(1<<(int)LibsnesApi.eTRACE.SMP, _tracecb); //TEST -- it works but theres no way to control it from the frontend now
-
-				// if(IsSGB)
-					// Api._core.snes_set_trace_callback(BsnesApi.eTRACE.GB, _tracecb);
-				// else
-					// Api._core.snes_set_trace_callback(BsnesApi.eTRACE.CPU, _tracecb);
-			}
-			else
-			{
-				Api.QUERY_set_trace_callback(0,null);
-			}
-#endif
-
-			// speedup when sound or video rendering is not needed
-			Api._core.snes_set_video_enabled(render);
-			Api._core.snes_set_audio_enabled(renderSound);
 
 			bool resetSignal = controller.IsPressed("Reset");
 			if (resetSignal)
@@ -69,8 +48,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			};
 			// TODO: I really don't think stuff like this should be set every single frame (only on change)
 			Api._core.snes_set_layer_enables(enables);
-
-			// RefreshMemoryCallbacks(false);
+			Api._core.snes_set_trace_enabled(_tracer.Enabled);
+			Api._core.snes_set_video_enabled(render);
+			Api._core.snes_set_audio_enabled(renderSound);
 
 			// run the core for one frame
 			Frame++;

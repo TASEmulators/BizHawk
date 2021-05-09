@@ -192,90 +192,6 @@ void BREAK(eMessage msg)
     comm.status = eStatus_CMD;
 }
 
-// void snes_scanlineStart(int line)
-// {
-//     comm.scanline = line;
-//     BREAK(eMessage_BRK_scanlineStart);
-// }
-
-// void* snes_allocSharedMemory(const char* memtype, size_t amt)
-// {
-//     //its important that this happen before the message marshaling because allocation/free attempts can happen before the marshaling is setup (or at shutdown time, in case of errors?)
-//     //if(!running) return NULL;
-
-//     void* ret;
-
-//     ret = alloc_plain(amt);
-
-//     comm.str = (char*)memtype;
-//     comm.size = amt;
-//     comm.ptr = ret;
-
-//     BREAK(eMessage_SIG_allocSharedMemory);
-
-//     return comm.ptr;
-// }
-
-// void snes_freeSharedMemory(void* ptr)
-// {
-//     //its important that this happen before the message marshaling because allocation/free attempts can happen before the marshaling is setup (or at shutdown time, in case of errors?)
-//     //if(!running) return;
-
-//     if (!ptr) return;
-
-//     comm.ptr = ptr;
-
-//     BREAK(eMessage_SIG_freeSharedMemory);
-// }
-
-static void debug_op_exec(uint24 addr)
-{
-    comm.addr = addr;
-    BREAK(eMessage_BRK_hook_exec);
-}
-
-static void debug_op_read(uint24 addr)
-{
-    comm.addr = addr;
-    BREAK(eMessage_BRK_hook_read);
-}
-
-static void debug_op_write(uint24 addr, uint8 value)
-{
-    comm.addr = addr;
-    comm.value = value;
-    BREAK(eMessage_BRK_hook_write);
-}
-
-static void debug_op_nmi()
-{
-    BREAK(eMessage_BRK_hook_nmi);
-}
-
-static void debug_op_irq()
-{
-    BREAK(eMessage_BRK_hook_irq);
-}
-
-static void debug_op_exec_smp(uint24 addr)
-{
-    comm.addr = addr;
-    BREAK(eMessage_BRK_hook_exec_smp);
-}
-
-static void debug_op_read_smp(uint24 addr)
-{
-    comm.addr = addr;
-    BREAK(eMessage_BRK_hook_read_smp);
-}
-
-static void debug_op_write_smp(uint24 addr, uint8 value)
-{
-    comm.addr = addr;
-    comm.value = value;
-    BREAK(eMessage_BRK_hook_write_smp);
-}
-
 
 // void QUERY_state_hook_exec() {
 //     // SuperFamicom::cpu.debugger.op_exec = comm.value ? debug_op_exec : hook<void(uint24)>();
@@ -317,13 +233,6 @@ static void debug_op_write_smp(uint24 addr, uint8 value)
 //     comm.cpuregs.nothing2 = 0;
 //     comm.cpuregs.v = SuperFamicom::cpu.vcounter();
 //     comm.cpuregs.h = SuperFamicom::cpu.hdot();
-// }
-// void QUERY_peek_set_cdl() {
-//     for (int i = 0; i<16; i++)
-//     {
-//         // cdlInfo.blocks[i] = (uint8*)comm.cdl_ptr[i];
-//         // cdlInfo.blockSizes[i] = comm.cdl_size[i];
-//     }
 // }
 
 //all this does is run commands on the emulation thread infinitely forever

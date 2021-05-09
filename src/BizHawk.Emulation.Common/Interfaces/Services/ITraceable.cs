@@ -24,7 +24,7 @@
 		ITraceSink Sink { set; }
 
 		/// <summary>
-		/// Gets a value indicating whether racing is enabled
+		/// Gets a value indicating whether tracing is enabled
 		/// This is defined as equivalent to Sink != null
 		/// It's put here because it's such a common operation to check whether it's enabled, and it's not nice to write Sink != null all over
 		/// </summary>

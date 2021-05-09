@@ -34,6 +34,7 @@ struct Program : Emulator::Platform
 	auto inputRumble(uint port, uint device, uint input, bool enable) -> void override;
 	auto notify(string text) -> void override;
 	auto getBackdropColor() -> uint16 override;
+	auto cpuTrace(vector<string>) -> void override;
 
 	auto load() -> void;
 	auto loadFile(string location) -> vector<uint8_t>;
@@ -254,7 +255,7 @@ auto Program::videoFrame(const uint16* data, uint pitch, uint width, uint height
 
 	fprintf(stderr, "got a video frame with dimensions h: %d, w: %d, p: %d, overscan: %d, scale: %d\n", height, width, pitch, overscan, scale);
 
- 	snes_video_frame(data, width, height, pitch);
+ 	snesCallbacks.snes_video_frame(data, width, height, pitch);
 }
 
 // Double the fun!
@@ -272,14 +273,19 @@ auto Program::audioFrame(const double* samples, uint channels) -> void
 {
 	int16_t left = d2i16(samples[0]);
 	int16_t right = d2i16(samples[1]);
-	return snes_audio_sample(left, right);
+	return snesCallbacks.snes_audio_sample(left, right);
 }
 
 auto Program::notify(string message) -> void
 {
 	// TODO: This is probably not necessary this way; checking whether inputPoll is called is probably enough
 	if (message == "NOTIFY NO_LAG")
-		snes_no_lag();
+		snesCallbacks.snes_no_lag();
+}
+
+auto Program::cpuTrace(vector<string> parts) -> void
+{
+	snesCallbacks.snes_trace(parts[0], parts[1]);
 }
 
 auto Program::getBackdropColor() -> uint16
@@ -290,7 +296,7 @@ auto Program::getBackdropColor() -> uint16
 auto Program::inputPoll(uint port, uint device, uint input) -> int16
 {
 	// TODO: need to verify math correctness here, i have no idea what exactly will be passed here
-	int16 pressed = snes_input_state(port, device, input / 12, input);
+	int16 pressed = snesCallbacks.snes_input_state(port, device, input / 12, input);
 
 	// if (pressed) fprintf(stderr, "polled input with value %d\n", pressed);
 	return pressed;
@@ -321,13 +327,13 @@ auto Program::openRomSuperFamicom(string name, vfs::file::mode mode) -> shared_p
 	// TODO: need to check whether these snes_path_request requests actually are correct and... work
 	if(name == "msu1/data.rom")
 	{
-		return vfs::fs::file::open(snes_path_request(ID::SuperFamicom, name), mode);
+		return vfs::fs::file::open(snesCallbacks.snes_path_request(ID::SuperFamicom, name), mode);
 	}
 
 	if(name.match("msu1/track*.pcm"))
 	{
 		// name.trimLeft("msu1/track", 1L);
-		return vfs::fs::file::open(snes_path_request(ID::SuperFamicom, name), mode);
+		return vfs::fs::file::open(snesCallbacks.snes_path_request(ID::SuperFamicom, name), mode);
 	}
 
 	if(name == "save.ram")
@@ -339,7 +345,7 @@ auto Program::openRomSuperFamicom(string name, vfs::file::mode mode) -> shared_p
 
 		// save_path = { base_name.trimRight(suffix, 1L), ".srm" };
 
-		return vfs::fs::file::open(snes_path_request(ID::SuperFamicom, name.data()), mode);
+		return vfs::fs::file::open(snesCallbacks.snes_path_request(ID::SuperFamicom, name.data()), mode);
 	}
 
 	return {};
@@ -360,7 +366,7 @@ auto Program::openRomGameBoy(string name, vfs::file::mode mode) -> shared_pointe
 
 		// save_path = { base_name.trimRight(suffix, 1L), ".srm" };
 
-		return vfs::fs::file::open(snes_path_request(ID::GameBoy, name), mode);
+		return vfs::fs::file::open(snesCallbacks.snes_path_request(ID::GameBoy, name), mode);
 	}
 
 	if(name == "time.rtc")
@@ -376,7 +382,7 @@ auto Program::openRomGameBoy(string name, vfs::file::mode mode) -> shared_pointe
 		// else
 			// save_path = { base_name.trimRight(suffix, 1L), ".rtc" };
 
-		return vfs::fs::file::open(snes_path_request(ID::GameBoy, name), mode);
+		return vfs::fs::file::open(snesCallbacks.snes_path_request(ID::GameBoy, name), mode);
 	}
 
 	return {};

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Text;
 using BizHawk.Common;
 using BizHawk.Emulation.Cores.Waterbox;
 using BizHawk.BizInvoke;
@@ -14,20 +14,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 	{
 		[BizImport(CallingConvention.Cdecl, Compatibility = true)]
 		public abstract IntPtr DllInit();
-		[BizImport(CallingConvention.Cdecl, Compatibility = true)]
-		public abstract void Message(BsnesApi.eMessage msg);
-		[BizImport(CallingConvention.Cdecl, Compatibility = true)]
-		public abstract void CopyBuffer(int id, void* ptr, int size);
-		[BizImport(CallingConvention.Cdecl, Compatibility = true)]
-		public abstract void SetBuffer(int id, void* ptr, int size);
 
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void snes_set_audio_enabled(bool enabled);
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void snes_set_video_enabled(bool enabled);
-
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void snes_set_layer_enables(BsnesApi.LayerEnables layerEnables);
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract void snes_set_trace_enabled(bool enabled);
+
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract BsnesApi.SNES_REGION snes_get_region();
 		[BizImport(CallingConvention.Cdecl)]
@@ -40,13 +36,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		public abstract void snes_bus_write(uint address, byte value);
 
 		[BizImport(CallingConvention.Cdecl)]
-		public abstract void snes_set_callbacks(
-			BsnesApi.snes_input_poll_t inputPollCb, BsnesApi.snes_input_state_t inputStateCb,
-			BsnesApi.snes_no_lag_t noLagCb, BsnesApi.snes_video_frame_t videoFrameCb,
-			BsnesApi.snes_audio_sample_t audioSampleCb, BsnesApi.snes_path_request_t pathRequestCb);
+		public abstract void snes_set_callbacks(IntPtr[] snesCallbacks);
 
 		[BizImport(CallingConvention.Cdecl)]
-		public abstract void snes_init(BsnesApi.ENTROPY entropy, BsnesApi.BSNES_INPUT_DEVICE left, BsnesApi.BSNES_INPUT_DEVICE right, bool hotfixes, bool fastPPU);
+		public abstract void snes_init(BsnesApi.ENTROPY entropy, BsnesApi.BSNES_INPUT_DEVICE left,
+			BsnesApi.BSNES_INPUT_DEVICE right, ushort mergedBools);// bool hotfixes, bool fastPPU);
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void snes_power();
 		[BizImport(CallingConvention.Cdecl)]
@@ -55,6 +49,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		public abstract void snes_reset();
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void snes_run();
+
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void snes_serialize(byte[] serializedData, int serializedSize);
 		[BizImport(CallingConvention.Cdecl)]
@@ -64,26 +59,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void snes_load_cartridge_normal(string baseRomPath, byte[] romData, int romSize);
+		// note this might fail currently if ever called
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void snes_load_cartridge_super_gameboy(string baseRomPath, byte[] romData, int romSize, byte[] sgbRomData, int sgbRomSize);
 	}
 
 	public unsafe partial class BsnesApi : IDisposable, IMonitor, IStatable
 	{
-		static BsnesApi()
-		{
-			if (sizeof(CommStruct) != 368)
-			{
-				throw new InvalidOperationException("sizeof(comm)");
-			}
-		}
-
 		internal WaterboxHost _exe;
 		internal BsnesCoreImpl _core;
+		private readonly ICallingConventionAdapter _adapter;
 		private bool _disposed;
-		private CommStruct* _comm;
-		private readonly Dictionary<string, IntPtr> _sharedMemoryBlocks = new Dictionary<string, IntPtr>();
-		private bool _sealed;
 
 		public void Enter()
 		{
@@ -101,6 +87,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		{
 			_exe.AddReadonlyFile(data, name);
 			_readonlyFiles.Add(name);
+		}
+
+		public void SetCallbacks(SnesCallbacks callbacks)
+		{
+			FieldInfo[] fieldInfos = typeof(SnesCallbacks).GetFields();
+			IntPtr[] functionPointerArray = new IntPtr[fieldInfos.Length];
+			for (int i = 0; i < fieldInfos.Length; i++)
+			{
+				functionPointerArray[i] = _adapter.GetFunctionPointerForDelegate((Delegate) fieldInfos[i].GetValue(callbacks));
+			}
+			_core.snes_set_callbacks(functionPointerArray);
 		}
 
 		public BsnesApi(BsnesCore core, string dllPath, CoreComm comm, IEnumerable<Delegate> allCallbacks)
@@ -122,8 +119,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				// Marshal checks that function pointers passed to GetDelegateForFunctionPointer are
 				// _currently_ valid when created, even though they don't need to be valid until
 				// the delegate is later invoked.  so GetInvoker needs to be acquired within a lock.
-				_core = BizInvoker.GetInvoker<BsnesCoreImpl>(_exe, _exe, CallingConventionAdapters.MakeWaterbox(allCallbacks, _exe));
-				_comm = (CommStruct*)_core.DllInit().ToPointer();
+				_adapter = CallingConventionAdapters.MakeWaterbox(allCallbacks, _exe);
+				_core = BizInvoker.GetInvoker<BsnesCoreImpl>(_exe, _exe, _adapter);
+				_core.DllInit();
 			}
 		}
 
@@ -135,115 +133,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				_exe.Dispose();
 				_exe = null;
 				_core = null;
-				_comm = null;
 			}
 		}
-
-		/// <summary>
-		/// Copy an ascii string into libretro. It keeps the copy.
-		/// </summary>
-		public void CopyAscii(int id, string str)
-		{
-			fixed (byte* cp = Encoding.ASCII.GetBytes(str + "\0"))
-			{
-				_core.CopyBuffer(id, cp, str.Length + 1);
-			}
-		}
-
-		/// <summary>
-		/// Copy a buffer into libretro. It keeps the copy.
-		/// </summary>
-		public void CopyBytes(int id, byte[] bytes)
-		{
-			fixed (byte* bp = bytes)
-			{
-				_core.CopyBuffer(id, bp, bytes.Length);
-			}
-		}
-
-		/// <summary>
-		/// Locks a buffer and sets it into libretro. You must pass a delegate to be executed while that buffer is locked.
-		/// This is meant to be used for avoiding a memcpy for large roms (which the core is then just going to memcpy again on its own)
-		/// The memcpy has to happen at some point (libretro semantics specify [not literally, the docs don't say] that the core should finish using the buffer before its init returns)
-		/// but this limits it to once.
-		/// Moreover, this keeps the c++ side from having to free strings when they're no longer used (and memory management is trickier there, so we try to avoid it)
-		/// </summary>
-		public void SetBytes(int id, byte[] bytes, Action andThen)
-		{
-			if (_sealed)
-				throw new InvalidOperationException("Init period is over");
-			fixed (byte* bp = bytes)
-			{
-				_core.SetBuffer(id, bp, bytes.Length);
-				andThen();
-			}
-		}
-
-		/// <summary>
-		/// see SetBytes
-		/// </summary>
-		public void SetAscii(int id, string str, Action andThen)
-		{
-			if (_sealed)
-				throw new InvalidOperationException("Init period is over");
-			fixed (byte* cp = Encoding.ASCII.GetBytes(str + "\0"))
-			{
-				_core.SetBuffer(id, cp, str.Length + 1);
-				andThen();
-			}
-		}
-
-		public Action<uint> ReadHook, ExecHook;
-		public Action<uint, byte> WriteHook;
-
-		public Action<uint> ReadHook_SMP, ExecHook_SMP;
-		public Action<uint, byte> WriteHook_SMP;
-
-		public enum eCDLog_AddrType
-		{
-			CARTROM, CARTRAM, WRAM, APURAM,
-			SGB_CARTROM, SGB_CARTRAM, SGB_WRAM, SGB_HRAM,
-			NUM
-		}
-
-		public enum eTRACE : uint
-		{
-			CPU = 0,
-			SMP = 1,
-			GB = 2
-		}
-
-		public enum eCDLog_Flags
-		{
-			ExecFirst = 0x01,
-			ExecOperand = 0x02,
-			CPUData = 0x04,
-			DMAData = 0x08, //not supported yet
-			BRR = 0x80,
-		}
-
-		private snes_scanlineStart_t scanlineStart;
-		private snes_trace_t traceCallback;
-
 
 		public delegate void snes_video_frame_t(ushort* data, int width, int height, int pitch);
 		public delegate void snes_input_poll_t();
 		public delegate short snes_input_state_t(int port, int device, int index, int id);
 		public delegate void snes_no_lag_t();
 		public delegate void snes_audio_sample_t(short left, short right);
-		public delegate void snes_scanlineStart_t(int line);
 		public delegate string snes_path_request_t(int slot, string hint);
-		public delegate void snes_trace_t(uint which, string msg);
+		public delegate void snes_trace_t(string disassembly, string register_info);
 
-
-		[StructLayout(LayoutKind.Sequential, Pack = 1)]
-		public struct CPURegs
-		{
-			public uint pc;
-			public ushort a, x, y, s, d, vector; //7x
-			public byte p, db, nothing, nothing2;
-			public ushort v, h;
-		}
 
 		// I cannot use a struct here because marshalling is retarded for bool (4 bytes). I honestly cannot
 		[StructLayout(LayoutKind.Sequential)]
@@ -256,91 +156,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			public bool Obj_Prio0, Obj_Prio1, Obj_Prio2, Obj_Prio3;
 		}
 
-		[StructLayout(LayoutKind.Explicit)]
-		private struct CommStruct
+		[StructLayout(LayoutKind.Sequential)]
+		public class SnesCallbacks
 		{
-			[FieldOffset(0)]
-			//the cmd being executed
-			public readonly eMessage cmd;
-			[FieldOffset(4)]
-			//the status of the core
-			public readonly eStatus status;
-			[FieldOffset(8)]
-			//the SIG or BRK that the core is halted in
-			public readonly eMessage reason;
-
-			//flexible in/out parameters
-			//these are all "overloaded" a little so it isn't clear what's used for what in for any particular message..
-			//but I think it will beat having to have some kind of extremely verbose custom layouts for every message
-			[FieldOffset(16)]
-			public sbyte* str;
-			[FieldOffset(24)]
-			public void* ptr;
-			[FieldOffset(32)]
-			public uint id;
-			[FieldOffset(36)]
-			public uint addr;
-			[FieldOffset(40)]
-			public uint value;
-			[FieldOffset(44)]
-			public uint size;
-			[FieldOffset(48)]
-			public int port;
-			[FieldOffset(52)]
-			public int device;
-			[FieldOffset(56)]
-			public int index;
-			[FieldOffset(60)]
-			public int slot;
-			[FieldOffset(64)]
-			public int width;
-			[FieldOffset(68)]
-			public int height;
-			[FieldOffset(72)]
-			public int scanline;
-			[FieldOffset(76)]
-			public fixed int inports[2];
-
-			[FieldOffset(88)]
-			//this should always be used in pairs
-			public fixed long buf[3]; //ACTUALLY A POINTER but can't marshal it :(
-			[FieldOffset(112)]
-			public fixed int buf_size[3];
-
-			[FieldOffset(128)]
-			//bleck. this is a long so that it can be a 32/64bit pointer
-			public fixed long cdl_ptr[16];
-			[FieldOffset(256)]
-			public fixed int cdl_size[16];
-
-			[FieldOffset(320)]
-			public CPURegs cpuregs;
-			// [FieldOffset(344)]
-			// public LayerEnables layerEnables;
-
-			[FieldOffset(356)]
-			//static configuration-type information which can be grabbed off the core at any time without even needing a QUERY command
-			public SNES_REGION region;
-			[FieldOffset(360)]
-			public SNES_MAPPER mapper;
-
-			[FieldOffset(364)] private uint BLANK0;
-
-
-			//utilities
-			//TODO: make internal, wrap on the API instead of the comm
-			// gotcha m8 we gonna nuke the comm struct
-			public string GetAscii() => _getAscii(str);
-			public bool GetBool() { return value != 0; }
-
-			private string _getAscii(sbyte* ptr)
-			{
-				int len = 0;
-				sbyte* junko = (sbyte*)ptr;
-				while (junko[len] != 0) len++;
-
-				return new string((sbyte*)str, 0, len, Encoding.ASCII);
-			}
+			public snes_input_poll_t inputPollCb;
+			public snes_input_state_t inputStateCb;
+			public snes_no_lag_t noLagCb;
+			public snes_video_frame_t videoFrameCb;
+			public snes_audio_sample_t audioSampleCb;
+			public snes_path_request_t pathRequestCb;
+			public snes_trace_t snesTraceCb;
 		}
 
 		public void Seal()
@@ -357,7 +182,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			// let's see what happen when we don't attempt to hack it like that
 			// _core.DllInit();
 			_exe.Seal();
-			_sealed = true;
 			foreach (var s in _readonlyFiles)
 			{
 				_exe.RemoveReadonlyFile(s);
@@ -384,11 +208,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		{
 			byte[] serializedData = reader.ReadBytes(serializedSize);
 			_core.snes_unserialize(serializedData, serializedSize);
-		}
-
-		public MemoryDomain GetPagesDomain()
-		{
-			return _exe.GetPagesDomain();
 		}
 	}
 }

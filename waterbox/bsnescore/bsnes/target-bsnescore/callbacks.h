@@ -9,15 +9,18 @@ typedef void (*snes_no_lag_t)(void);
 typedef void (*snes_video_frame_t)(const uint16_t* data, int width, int height, int pitch);
 typedef void (*snes_audio_sample_t)(int16_t left, int16_t right);
 typedef char* (*snes_path_request_t)(int slot, const char* hint);
-// typedef void (*snes_trace_t)(int which, char* message);
+typedef void (*snes_trace_t)(const char* disassembly, const char* register_info);
 
-extern snes_input_poll_t snes_input_poll;
-extern snes_input_state_t snes_input_state;
-extern snes_no_lag_t snes_no_lag;
-extern snes_video_frame_t snes_video_frame;
-extern snes_audio_sample_t snes_audio_sample;
-extern snes_path_request_t snes_path_request;
-// extern snes_trace_t snes_trace;
+struct SnesCallbacks {
+    snes_input_poll_t snes_input_poll;
+    snes_input_state_t snes_input_state;
+    snes_no_lag_t snes_no_lag;
+    snes_video_frame_t snes_video_frame;
+    snes_audio_sample_t snes_audio_sample;
+    snes_path_request_t snes_path_request;
+    snes_trace_t snes_trace;
+};
 
+extern SnesCallbacks snesCallbacks;
 
 #endif

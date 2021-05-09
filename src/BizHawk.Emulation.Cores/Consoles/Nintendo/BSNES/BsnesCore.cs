@@ -7,19 +7,13 @@ using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.W65816;
 
-// TODO - add serializer (?)
-
 // http://wiki.superfamicom.org/snes/show/Backgrounds
 
-// TODO
-// libsnes needs to be modified to support multiple instances - THIS IS NECESSARY - or else loading one game and then another breaks things
-// edit - this is a lot of work
-// wrap dll code around some kind of library-accessing interface so that it doesn't malfunction if the dll is unavailable
 namespace BizHawk.Emulation.Cores.Nintendo.SNES
 {
 	[Core(
-		CoreNames.Bsnes115,
-		"bsnes team",
+		name: CoreNames.Bsnes115,
+		author: "bsnes team",
 		isPorted: true,
 		isReleased: true,
 		portedVersion: "v115",
@@ -28,9 +22,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public unsafe partial class BsnesCore : IEmulator, IVideoProvider, IStatable, IInputPollable, IRegionable, ISettable<BsnesCore.SnesSettings, BsnesCore.SnesSyncSettings>
 	{
-		// TODO: will need to be moved out to IMemoryDomains once I can get myself to that bullshit
 		private BsnesApi.SNES_REGION? _region;
-		private BsnesApi.SNES_MAPPER? _mapper;
 
 		// [CoreConstructor("SGB")]
 		[CoreConstructor("SNES")]
@@ -45,13 +37,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			_baseRomPath = baseRomPath;
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
-
-			_tracer = new TraceBuffer
-			{
-				Header = "65816: PC, mnemonic, operands, registers (A, X, Y, S, D, DB, flags (NVMXDIZC), V, H)"
-			};
-
-			ser.Register<IDisassemblable>(new W65816_DisassemblerService());
 
 			_game = game;
 			CoreComm = comm;
@@ -71,44 +56,36 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			_settings = settings ?? new SnesSettings();
 			_syncSettings = syncSettings ?? new SnesSyncSettings();
 
-			BsnesApi.snes_video_frame_t videocb = snes_video_refresh;
-			BsnesApi.snes_audio_sample_t audiocb = snes_audio_sample;
-			BsnesApi.snes_input_poll_t inputpollcb = snes_input_poll;
-			BsnesApi.snes_input_state_t inputstatecb = snes_input_state;
-			BsnesApi.snes_no_lag_t nolagcb = snes_no_lag;
-			_scanlineStartCb = snes_scanlineStart;
-			_tracecb = snes_trace;
-			BsnesApi.snes_path_request_t pathrequestcb = snes_path_request;
+			BsnesApi.SnesCallbacks callbacks = new()
+			{
+				inputPollCb = snes_input_poll,
+				inputStateCb = snes_input_state,
+				noLagCb = snes_no_lag,
+				videoFrameCb = snes_video_refresh,
+				audioSampleCb = snes_audio_sample,
+				pathRequestCb = snes_path_request,
+				snesTraceCb = snes_trace
+			};
 
-			// TODO: pass profile here
 			Api = new BsnesApi(this, CoreComm.CoreFileProvider.DllPath(), CoreComm, new Delegate[]
 			{
-				videocb,
-				audiocb,
-				inputpollcb,
-				inputstatecb,
-				nolagcb,
-				_scanlineStartCb,
-				_tracecb,
-				pathrequestcb
+				callbacks.inputPollCb,
+				callbacks.inputStateCb,
+				callbacks.noLagCb,
+				callbacks.videoFrameCb,
+				callbacks.audioSampleCb,
+				callbacks.pathRequestCb,
+				callbacks.snesTraceCb
 			});
-			// {
-				// ReadHook = u =>  ReadHook,
-				// ExecHook = ExecHook,
-				// WriteHook = WriteHook,
-				// ReadHook_SMP = ReadHook_SMP,
-				// ExecHook_SMP = ExecHook_SMP,
-				// WriteHook_SMP = WriteHook_SMP,
-			// };
-
-			// ScanlineHookManager = new MyScanlineHookManager(this);
 
 			_controllers = new BsnesControllers(_syncSettings);
 
 			generate_palette();
+			// TODO: massive random hack till waterboxhost gets fixed to support 5+ args
+			ushort mergedBools = (ushort) ((_syncSettings.Hotfixes ? 1 << 8 : 0) | (_syncSettings.FastPPU ? 1 : 0));
 			Api._core.snes_init(_syncSettings.Entropy, _controllers._ports[0].DeviceType, _controllers._ports[1].DeviceType,
-				_syncSettings.Hotfixes, _syncSettings.FastPPU);
-			Api._core.snes_set_callbacks(inputpollcb, inputstatecb, nolagcb, videocb, audiocb, pathrequestcb);
+				mergedBools);
+			Api.SetCallbacks(callbacks);
 
 			// start up audio resampler
 			InitAudio();
@@ -158,6 +135,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 					romData = romData
 				};
 			}
+
 			LoadCurrent();
 
 			if (_region == BsnesApi.SNES_REGION.NTSC)
@@ -175,7 +153,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			SetMemoryDomains();
 
-			ser.Register<ITraceable>(_tracer);
+			_tracer = new TraceBuffer
+			{
+				Header = "65816: PC, mnemonic, operands, registers (A, X, Y, S, D, B, flags (NVMXDIZC), V, H)"
+			};
+			ser.Register<IDisassemblable>(new W65816_DisassemblerService());
+			ser.Register(_tracer);
 
 			Api.Seal();
 		}
@@ -190,8 +173,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		private readonly BsnesControllers _controllers;
 		private readonly ITraceable _tracer;
 		private readonly XmlDocument _romxml;
-		private readonly BsnesApi.snes_scanlineStart_t _scanlineStartCb;
-		private readonly BsnesApi.snes_trace_t _tracecb;
 
 		private IController _controller;
 		private readonly LoadParams _currLoadParams;
@@ -207,28 +188,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public BsnesApi Api { get; }
 
-		public MyScanlineHookManager ScanlineHookManager { get; }
-
-		public class MyScanlineHookManager : ScanlineHookManager
-		{
-			private readonly BsnesCore _core;
-
-			public MyScanlineHookManager(BsnesCore core)
-			{
-				_core = core;
-			}
-
-			// protected override void OnHooksChanged()
-			// {
-				// _core.OnScanlineHooksChanged();
-			// }
-		}
-
-
-		private void snes_scanlineStart(int line)
-		{
-			ScanlineHookManager.HandleScanline(line);
-		}
 
 		private string snes_path_request(int slot, string hint)
 		{
@@ -310,109 +269,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			return ret;
 		}
 
-		private void snes_trace(uint which, string msg)
-		{
-			// no idea what this is but it has to go
-			// TODO: get them out of the core split up and remove this hackery
-			const string splitStr = "A:";
-
-			if (which == (uint)BsnesApi.eTRACE.CPU)
-			{
-				var split = msg.Split(new[] { splitStr }, 2, StringSplitOptions.None);
-
-				_tracer.Put(new TraceInfo
-				{
-					Disassembly = split[0].PadRight(34),
-					RegisterInfo = splitStr + split[1]
-				});
-			}
-			else if (which == (uint)BsnesApi.eTRACE.SMP)
-			{
-				int idx = msg.IndexOf("YA:");
-				string dis = msg.Substring(0,idx).TrimEnd();
-				string regs = msg.Substring(idx);
-				_tracer.Put(new TraceInfo
-				{
-					Disassembly = dis,
-					RegisterInfo = regs
-				});
-			}
-			else if (which == (uint)BsnesApi.eTRACE.GB)
-			{
-				int idx = msg.IndexOf("AF:");
-				string dis = msg.Substring(0,idx).TrimEnd();
-				string regs = msg.Substring(idx);
-				_tracer.Put(new TraceInfo
-				{
-					Disassembly = dis,
-					RegisterInfo = regs
-				});
-			}
-		}
-
-		// private void ReadHook(uint addr)
-		// {
-		// 	if (MemoryCallbacks.HasReads)
-		// 	{
-		// 		uint flags = (uint)MemoryCallbackFlags.AccessRead;
-		// 		MemoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "System Bus");
-		// 		// we RefreshMemoryCallbacks() after the trigger in case the trigger turns itself off at that point
-		// 		// EDIT: for now, theres some IPC re-entrancy problem
-		// 		// RefreshMemoryCallbacks();
-		// 	}
-		// }
-
-		// private void ExecHook(uint addr)
-		// {
-		// 	if (MemoryCallbacks.HasExecutes)
-		// 	{
-		// 		uint flags = (uint)MemoryCallbackFlags.AccessExecute;
-		// 		MemoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "System Bus");
-		// 		// we RefreshMemoryCallbacks() after the trigger in case the trigger turns itself off at that point
-		// 		// EDIT: for now, theres some IPC re-entrancy problem
-		// 		// RefreshMemoryCallbacks();
-		// 	}
-		// }
-
-		// private void WriteHook(uint addr, byte val)
-		// {
-		// 	if (MemoryCallbacks.HasWrites)
-		// 	{
-		// 		uint flags = (uint)MemoryCallbackFlags.AccessWrite;
-		// 		MemoryCallbacks.CallMemoryCallbacks(addr, val, flags, "System Bus");
-		// 		// we RefreshMemoryCallbacks() after the trigger in case the trigger turns itself off at that point
-		// 		// EDIT: for now, theres some IPC re-entrancy problem
-		// 		// RefreshMemoryCallbacks();
-		// 	}
-		// }
-		//
-		// private void ReadHook_SMP(uint addr)
-		// {
-		// 	if (MemoryCallbacks.HasReads)
-		// 	{
-		// 		uint flags = (uint)MemoryCallbackFlags.AccessRead;
-		// 		MemoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "SMP");
-		// 	}
-		// }
-		//
-		// private void ExecHook_SMP(uint addr)
-		// {
-		// 	if (MemoryCallbacks.HasExecutes)
-		// 	{
-		// 		uint flags = (uint)MemoryCallbackFlags.AccessExecute;
-		// 		MemoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "SMP");
-		// 	}
-		// }
-		//
-		// private void WriteHook_SMP(uint addr, byte val)
-		// {
-		// 	if (MemoryCallbacks.HasWrites)
-		// 	{
-		// 		uint flags = (uint)MemoryCallbackFlags.AccessWrite;
-		// 		MemoryCallbacks.CallMemoryCallbacks(addr, val, flags, "SMP");
-		// 	}
-		// }
-
 		private enum LoadParamType
 		{
 			Normal, SuperGameBoy
@@ -435,7 +291,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 					_currLoadParams.sgbRomData, _currLoadParams.sgbRomData.Length);
 
 			_region = Api._core.snes_get_region();
-			_mapper = Api._core.snes_get_mapper();
 		}
 
 		// poll which updates the controller state
@@ -514,22 +369,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			}
 		}
 
-		// private void RefreshMemoryCallbacks(bool suppress)
-		// {
-			// var mcs = MemoryCallbacks;
-			// Api.QUERY_set_state_hook_exec(!suppress && mcs.HasExecutesForScope("System Bus"));
-			// Api.QUERY_set_state_hook_read(!suppress && mcs.HasReadsForScope("System Bus"));
-			// Api.QUERY_set_state_hook_write(!suppress && mcs.HasWritesForScope("System Bus"));
-		// }
-
-		//public byte[] snes_get_memory_data_read(LibsnesApi.SNES_MEMORY id)
-		//{
-		//  var size = (int)api.snes_get_memory_size(id);
-		//  if (size == 0) return new byte[0];
-		//  var ret = api.snes_get_memory_data(id);
-		//  return ret;
-		//}
-
 		private void InitAudio()
 		{
 			_resampler = new SpeexResampler(SpeexResampler.Quality.QUALITY_DESKTOP, 64080, 88200, 32040, 44100);
@@ -538,6 +377,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		private void snes_audio_sample(short left, short right)
 		{
 			_resampler.EnqueueSample(left, right);
+		}
+
+		private void snes_trace(string disassembly, string registerInfo)
+		{
+			_tracer.Put(new TraceInfo
+			{
+				Disassembly = disassembly,
+				RegisterInfo = registerInfo
+			});
 		}
 	}
 }

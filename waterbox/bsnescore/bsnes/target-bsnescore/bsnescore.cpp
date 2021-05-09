@@ -11,51 +11,12 @@ using namespace SuperFamicom;
 
 uint16_t backdropColor;
 
-// snes_trace_t ptrace;
-
-// //zero 27-sep-2012
-// snes_scanlineStart_t pScanlineStart;
-// void scanlineStart(int line)
-// {
-// 	if(pScanlineStart) pScanlineStart((int)line);
-// }
-
-// void cpuTrace(uint32_t which, const char *msg) {
-// 	if (ptrace)
-// 		ptrace(which, (const char *)msg);
-// }
-
-// //zero 23-dec-2012
-// void* allocSharedMemory(const char* memtype, size_t amt, int initialByte = -1)
-// {
-// 	void* ret;
-// 	ret = snes_allocSharedMemory(memtype,amt);
-// 	if(initialByte != -1)
-// 	{
-// 		for(unsigned i = 0; i < amt; i++) ((uint8*)ret)[i] = (uint8)initialByte;
-// 	}
-// 	return ret;
-// }
-// void freeSharedMemory(void* ptr)
-// {
-// 	snes_freeSharedMemory(ptr);
-// }
-
 #include "program.cpp"
 
-// if ever used from inside bsnes should probably go through platform->allocSharedMemory
-// void* extern_allocSharedMemory(const char* memtype, size_t amt, int initialByte = -1) {
-//     return iface->allocSharedMemory(memtype, amt, initialByte);
-// }
-
-//zero 21-sep-2012
-// void snes_set_scanlineStart(snes_scanlineStart_t cb)
-// {
-//     iface->pScanlineStart = cb;
-// }
 
 
 //zero 05-sep-2012
+// currently unused; was only used in the graphics debugger as far as i can see
 int snes_peek_logical_register(int reg)
 {
     if (emulator->configuration("Hacks/PPU/Fast") == "true")
@@ -178,20 +139,16 @@ bool snes_load_cartridge_sufami_turbo(
     return false;
 }
 
-// again, unused
-void snes_unload_cartridge(void) {
-    cartridge.unload();
-}
-
 
 //
 // fresh dll interface functions
 //
 
 
-// i will slap anyone who attempts to call this twice. do not do it.
-EXPORT void snes_init(int entropy, uint left_port, uint right_port, bool hotfixes, bool fast_ppu)
+EXPORT void snes_init(int entropy, uint left_port, uint right_port, uint16_t merged_bools)// bool hotfixes, bool fast_ppu)
 {
+    bool hotfixes = merged_bools >> 8;
+    bool fast_ppu = merged_bools & 1;
     fprintf(stderr, "snes_init was called!\n");
     emulator = new SuperFamicom::Interface;
     program = new Program;
@@ -213,7 +170,7 @@ EXPORT void snes_init(int entropy, uint left_port, uint right_port, bool hotfixe
     emulator->configure("Hacks/PPU/Fast", fast_ppu);
 
     // needed in order to get audio sync working. should probably figure out what exactly this does or how to change that properly
-    Emulator::audio.setFrequency(44100);
+    Emulator::audio.setFrequency(SAMPLE_RATE);
 }
 
 EXPORT void snes_power(void)
@@ -235,7 +192,7 @@ EXPORT void snes_reset(void)
 // note: run with runahead doesn't work yet, i suspect it's due to either waterbox or the serialize thing breaking
 EXPORT void snes_run(void)
 {
-    snes_input_poll();
+    snesCallbacks.snes_input_poll();
 
     // TODO: I currently have implemented separate poll and state calls, where poll updates the state and the state call just receives this
     // based on the way this is implemented this approach might be useless in terms of reducing polling load, will need confirmation here
@@ -294,46 +251,6 @@ EXPORT void snes_load_cartridge_super_gameboy(
 }
 
 
-EXPORT void snes_set_audio_enabled(bool enable)
-{
-    SuperFamicom::system.renderAudio = enable;
-}
-
-EXPORT void snes_set_video_enabled(bool enable)
-{
-    SuperFamicom::system.renderVideo = enable;
-}
-
-
-// should probably be moved out of this place, maybe to a designated callbacks.c? makes more sense to me rn
-// callbacks, set initially by the frontend
-snes_input_poll_t snes_input_poll;
-snes_input_state_t snes_input_state;
-snes_no_lag_t snes_no_lag;
-snes_video_frame_t snes_video_frame;
-snes_audio_sample_t snes_audio_sample;
-snes_path_request_t snes_path_request;
-// snes_trace_t snes_trace;
-
-EXPORT void snes_set_callbacks(
-  snes_input_poll_t input_poll_cb,
-  snes_input_state_t input_state_cb,
-  snes_no_lag_t no_lag_cb,
-  snes_video_frame_t video_frame_cb,
-  snes_audio_sample_t audio_sample_cb,
-  snes_path_request_t path_request_cb
-  // snes_trace_t trace_cb
-)
-{
-    snes_input_poll = input_poll_cb;
-    snes_input_state = input_state_cb;
-    snes_no_lag = no_lag_cb;
-    snes_video_frame = video_frame_cb;
-    snes_audio_sample = audio_sample_cb;
-    snes_path_request = path_request_cb;
-    // snes_trace = trace_cb;
-}
-
 // TODO: frontend does not differenciate the bgN's prio0 and prio1. They should either be removed or supported individually
 EXPORT void snes_set_layer_enables(LayerEnablesComm* layerEnables)
 {
@@ -352,6 +269,32 @@ EXPORT void snes_set_layer_enables(LayerEnablesComm* layerEnables)
         ppufast.io.obj.priority_enabled[3] = layerEnables->Obj_Prio3;
     }
 }
+
+EXPORT void snes_set_audio_enabled(bool enable)
+{
+    SuperFamicom::system.renderAudio = enable;
+}
+
+EXPORT void snes_set_video_enabled(bool enable)
+{
+    SuperFamicom::system.renderVideo = enable;
+}
+
+EXPORT void snes_set_trace_enabled(bool enabled)
+{
+    platform->traceEnabled = enabled;
+}
+
+
+// should probably be moved out of this place, maybe to a designated callbacks.c? makes more sense to me rn
+// callbacks, set initially by the frontend
+SnesCallbacks snesCallbacks;
+
+EXPORT void snes_set_callbacks(SnesCallbacks* callbacks)
+{
+    snesCallbacks = SnesCallbacks(*callbacks);
+}
+
 
 EXPORT int snes_get_region(void) {
     return Region::PAL();
@@ -437,9 +380,12 @@ EXPORT void* snes_get_memory_region(int id, int* size, int* word_size)
     return nullptr;
 }
 
-EXPORT uint8_t snes_bus_read(unsigned addr) {
+EXPORT uint8_t snes_bus_read(unsigned addr)
+{
     return bus.read(addr);
 }
-EXPORT void snes_bus_write(unsigned addr, uint8_t value) {
+
+EXPORT void snes_bus_write(unsigned addr, uint8_t value)
+{
     bus.write(addr, value);
 }

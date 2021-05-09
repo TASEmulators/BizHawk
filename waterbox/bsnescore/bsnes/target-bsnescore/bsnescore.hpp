@@ -23,12 +23,6 @@ enum SNES_MEMORY {
     CARTRIDGE_ROM
 };
 
-typedef void (*snes_trace_t)(uint32_t which, const char *msg);
-
-// todo: put to platform->allocSharedMemory or smth
-// void* snes_allocSharedMemory(const char* memtype, size_t amt);
-// void snes_freeSharedMemory(void* ptr);
-
 
 bool snes_load_cartridge_bsx_slotted(
     const char *rom_xml, const uint8_t *rom_data, unsigned rom_size,
@@ -63,12 +57,6 @@ struct LayerEnablesComm
 // typedef void (*snes_scanlineStart_t)(int);
 // void snes_set_scanlineStart(snes_scanlineStart_t);
 extern uint16_t backdropColor;
-
-// void snes_set_trace_callback(uint32_t mask, void (*callback)(uint32_t mask, const char *));
-
-// system bus implementation
-uint8_t bus_read(unsigned addr);
-void bus_write(unsigned addr, uint8_t val);
 
 
 //$2105

@@ -1,8 +1,8 @@
-auto WDC65816::disassemble() -> string {
+auto WDC65816::disassemble() -> vector<string> {
   return disassemble(r.pc.d, r.e, r.p.m, r.p.x);
 }
 
-auto WDC65816::disassemble(uint24 address, bool e, bool m, bool x) -> string {
+auto WDC65816::disassemble(uint24 address, bool e, bool m, bool x) -> vector<string> {
   string s;
 
   uint24 pc = address;
@@ -447,22 +447,24 @@ auto WDC65816::disassemble(uint24 address, bool e, bool m, bool x) -> string {
   if(effective) s.append("[", hex(*effective, 6L), "]");
   while(s.size() < 31) s.append(" ");
 
-  s.append(" A:", hex(r.a.w, 4L));
-  s.append(" X:", hex(r.x.w, 4L));
-  s.append(" Y:", hex(r.y.w, 4L));
-  s.append(" S:", hex(r.s.w, 4L));
-  s.append(" D:", hex(r.d.w, 4L));
-  s.append(" B:", hex(r.b  , 2L));
+  string s2;
+
+  s2.append(" A:", hex(r.a.w, 4L));
+  s2.append(" X:", hex(r.x.w, 4L));
+  s2.append(" Y:", hex(r.y.w, 4L));
+  s2.append(" S:", hex(r.s.w, 4L));
+  s2.append(" D:", hex(r.d.w, 4L));
+  s2.append(" B:", hex(r.b  , 2L));
 
   if(e) {
-    s.append(' ',
+    s2.append(' ',
       r.p.n ? 'N' : 'n', r.p.v ? 'V' : 'v',
       r.p.m ? '1' : '0', r.p.x ? 'B' : 'b',
       r.p.d ? 'D' : 'd', r.p.i ? 'I' : 'i',
       r.p.z ? 'Z' : 'z', r.p.c ? 'C' : 'c'
     );
   } else {
-    s.append(' ',
+    s2.append(' ',
       r.p.n ? 'N' : 'n', r.p.v ? 'V' : 'v',
       r.p.m ? 'M' : 'm', r.p.x ? 'X' : 'x',
       r.p.d ? 'D' : 'd', r.p.i ? 'I' : 'i',
@@ -470,5 +472,5 @@ auto WDC65816::disassemble(uint24 address, bool e, bool m, bool x) -> string {
     );
   }
 
-  return s;
+  return vector<string>(s, s2);
 }

@@ -229,8 +229,8 @@ struct WDC65816 {
   auto serialize(serializer&) -> void;
 
   //disassembler.cpp
-  auto disassemble() -> string;
-  auto disassemble(uint24 addr, bool e, bool m, bool x) -> string;
+  auto disassemble() -> vector<string>;
+  auto disassemble(uint24 addr, bool e, bool m, bool x) -> vector<string>;
 
   struct f8 {
     bool c = 0;  //carry
