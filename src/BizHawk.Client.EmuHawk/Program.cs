@@ -14,6 +14,8 @@ using BizHawk.Common.PathExtensions;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.CustomControls;
 
+using Serilog;
+
 using OSTC = EXE_PROJECT.OSTailoredCode;
 
 namespace BizHawk.Client.EmuHawk
@@ -108,6 +110,20 @@ namespace BizHawk.Client.EmuHawk
 					return -1;
 				}
 			}
+
+			Log.Logger = new LoggerConfiguration()
+#if INFO_NO_DEBUG
+				// default = Information
+#elif VERBOSE
+				.MinimumLevel.Verbose()
+#elif DEBUG
+				.MinimumLevel.Debug()
+#endif
+				.WriteTo.Console()
+				.CreateLogger();
+			Log.Information("Version check passed and logger created, proceeding with initialisation");
+			Log.Debug("(If you can read this, Debug-level events are logged)");
+			Log.Verbose("(If you can read this, Verbose-level events are logged)");
 
 			TempFileManager.Start();
 
