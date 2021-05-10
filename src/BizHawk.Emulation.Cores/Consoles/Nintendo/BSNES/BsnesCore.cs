@@ -16,11 +16,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		author: "bsnes team",
 		isPorted: true,
 		isReleased: true,
-		portedVersion: "v115",
+		portedVersion: "v115+",
 		portedUrl: "https://bsnes.dev",
 		singleInstance: false)]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
-	public unsafe partial class BsnesCore : IEmulator, IVideoProvider, IStatable, IInputPollable, IRegionable, ISettable<BsnesCore.SnesSettings, BsnesCore.SnesSyncSettings>
+	public unsafe partial class BsnesCore : IEmulator, IVideoProvider, ISaveRam, IStatable, IInputPollable, IRegionable, ISettable<BsnesCore.SnesSettings, BsnesCore.SnesSyncSettings>
 	{
 		private BsnesApi.SNES_REGION? _region;
 
@@ -38,7 +38,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
 
-			_game = game;
 			CoreComm = comm;
 			byte[] sgbRomData = null;
 
@@ -67,7 +66,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				snesTraceCb = snes_trace
 			};
 
-			Api = new BsnesApi(this, CoreComm.CoreFileProvider.DllPath(), CoreComm, new Delegate[]
+			Api = new BsnesApi(CoreComm.CoreFileProvider.DllPath(), CoreComm, new Delegate[]
 			{
 				callbacks.inputPollCb,
 				callbacks.inputStateCb,
@@ -83,7 +82,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			generate_palette();
 			// TODO: massive random hack till waterboxhost gets fixed to support 5+ args
 			ushort mergedBools = (ushort) ((_syncSettings.Hotfixes ? 1 << 8 : 0) | (_syncSettings.FastPPU ? 1 : 0));
-			Api._core.snes_init(_syncSettings.Entropy, _controllers._ports[0].DeviceType, _controllers._ports[1].DeviceType,
+			Api.core.snes_init(_syncSettings.Entropy, _controllers._ports[0].DeviceType, _controllers._ports[1].DeviceType,
 				mergedBools);
 			Api.SetCallbacks(callbacks);
 
@@ -163,13 +162,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			Api.Seal();
 		}
 
-		internal CoreComm CoreComm { get; }
+		private CoreComm CoreComm { get; }
 
 		private readonly string _baseRomPath;
 
 		private string PathSubfile(string fname) => Path.Combine(_baseRomPath, fname);
 
-		private readonly GameInfo _game;
 		private readonly BsnesControllers _controllers;
 		private readonly ITraceable _tracer;
 		private readonly XmlDocument _romxml;
@@ -186,9 +184,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			public string BoardName => "SGB";
 		}
 
-		public BsnesApi Api { get; }
+		private BsnesApi Api { get; }
 
-
+		// TODO: this code is outdated and needs to be checked against all kind of roms and xmls etc.
 		private string snes_path_request(int slot, string hint)
 		{
 			// every rom requests msu1.rom... why? who knows.
@@ -230,7 +228,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			// not MSU-1.  ok.
 			if (hint == "save.ram")
 			{
-				// TODO handle saveram at some point
+				// core asked for saveram, but the interface isn't designed to be able to handle this.
+				// so, we'll just return nothing and the frontend will set the saveram itself later
+				return null;
 			}
 
 			string firmwareId;
@@ -285,12 +285,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		private void LoadCurrent()
 		{
 			if (_currLoadParams.type == LoadParamType.Normal)
-				Api._core.snes_load_cartridge_normal(_currLoadParams.baseRomPath, _currLoadParams.romData, _currLoadParams.romData.Length);
+				Api.core.snes_load_cartridge_normal(_currLoadParams.baseRomPath, _currLoadParams.romData, _currLoadParams.romData.Length);
 			else
-				Api._core.snes_load_cartridge_super_gameboy(_currLoadParams.baseRomPath, _currLoadParams.romData, _currLoadParams.romData.Length,
+				Api.core.snes_load_cartridge_super_gameboy(_currLoadParams.baseRomPath, _currLoadParams.romData, _currLoadParams.romData.Length,
 					_currLoadParams.sgbRomData, _currLoadParams.sgbRomData.Length);
 
-			_region = Api._core.snes_get_region();
+			_region = Api.core.snes_get_region();
 		}
 
 		// poll which updates the controller state

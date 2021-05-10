@@ -4,15 +4,10 @@
 #include <emulibc.h>
 #include <nall/hid.hpp>
 
-#include <queue>
-
 using namespace nall;
 using namespace SuperFamicom;
 
-uint16_t backdropColor;
-
 #include "program.cpp"
-
 
 
 //zero 05-sep-2012
@@ -114,36 +109,18 @@ int snes_peek_logical_register(int reg)
     return 0;
 }
 
-// unused?
-bool snes_load_cartridge_bsx_slotted(
-  const char *rom_xml, const uint8_t *rom_data, unsigned rom_size,
-  const char *bsx_xml, const uint8_t *bsx_data, unsigned bsx_size
-) {
-    return false;
-}
-
-// unused?
-bool snes_load_cartridge_bsx(
-  const char *rom_xml, const uint8_t *rom_data, unsigned rom_size,
-  const char *bsx_xml, const uint8_t *bsx_data, unsigned bsx_size
-) {
-    return false;
-}
-
-// unused?
-bool snes_load_cartridge_sufami_turbo(
-  const char *rom_xml, const uint8_t *rom_data, unsigned rom_size,
-  const char *sta_xml, const uint8_t *sta_data, unsigned sta_size,
-  const char *stb_xml, const uint8_t *stb_data, unsigned stb_size
-) {
-    return false;
-}
-
 
 //
 // fresh dll interface functions
 //
 
+// callbacks, set initially by the frontend
+SnesCallbacks snesCallbacks;
+
+EXPORT void snes_set_callbacks(SnesCallbacks* callbacks)
+{
+    snesCallbacks = SnesCallbacks(*callbacks);
+}
 
 EXPORT void snes_init(int entropy, uint left_port, uint right_port, uint16_t merged_bools)// bool hotfixes, bool fast_ppu)
 {
@@ -212,6 +189,7 @@ EXPORT int snes_serialized_size()
     return emulator->serialize().size();
 }
 
+// waiting for libco update in order to be able to use this deterministically (no synchronize)
 EXPORT void snes_serialize(uint8_t* data, int size)
 {
     auto serializer = emulator->serialize();
@@ -252,7 +230,7 @@ EXPORT void snes_load_cartridge_super_gameboy(
 
 
 // TODO: frontend does not differenciate the bgN's prio0 and prio1. They should either be removed or supported individually
-EXPORT void snes_set_layer_enables(LayerEnablesComm* layerEnables)
+EXPORT void snes_set_layer_enables(LayerEnables* layerEnables)
 {
     if (emulator->configuration("Hacks/PPU/Fast") == "true") {
         ppufast.io.bg1.priority_enabled[0] = layerEnables->BG1_Prio0;
@@ -286,16 +264,6 @@ EXPORT void snes_set_trace_enabled(bool enabled)
 }
 
 
-// should probably be moved out of this place, maybe to a designated callbacks.c? makes more sense to me rn
-// callbacks, set initially by the frontend
-SnesCallbacks snesCallbacks;
-
-EXPORT void snes_set_callbacks(SnesCallbacks* callbacks)
-{
-    snesCallbacks = SnesCallbacks(*callbacks);
-}
-
-
 EXPORT int snes_get_region(void) {
     return Region::PAL();
 }
@@ -326,7 +294,7 @@ EXPORT void* snes_get_memory_region(int id, int* size, int* word_size)
     switch(id)
     {
         case SNES_MEMORY::CARTRIDGE_RAM:
-            *size = SuperFamicom::cartridge.ram.size();
+            *size = cartridge.ram.size();
             *word_size = 1;
             return cartridge.ram.data();
         case SNES_MEMORY::BSX_RAM:
@@ -361,7 +329,7 @@ EXPORT void* snes_get_memory_region(int id, int* size, int* word_size)
         case SNES_MEMORY::VRAM:
             if (!fast_ppu) break;
             *size = sizeof(ppufast.vram);
-            *word_size = sizeof(*SuperFamicom::ppufast.vram);
+            *word_size = sizeof(*ppufast.vram);
             return ppufast.vram;
         // case SNES_MEMORY::OAM: // probably weird since bsnes uses "object"s instead of bytes for oam rn
             // return (uint8_t*) ppufast.objects;

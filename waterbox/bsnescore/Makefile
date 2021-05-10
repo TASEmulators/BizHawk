@@ -58,8 +58,7 @@ SRCS_SFC = \
 	$(ROOT_DIR)/bsnes/sfc/expansion/expansion.cpp \
 	$(ROOT_DIR)/bsnes/sfc/coprocessor/coprocessor.cpp \
 	$(ROOT_DIR)/bsnes/sfc/slot/slot.cpp \
-	$(ROOT_DIR)/bsnes/target-bsnescore/bsnescore.cpp \
-	$(ROOT_DIR)/bsnes/target-bsnescore/bsnescore_pwrap.cpp
+	$(ROOT_DIR)/bsnes/target-bsnescore/bsnescore.cpp
 
 SRCS = $(SRCS_PROCESSORS) $(SRCS_EMULATOR) $(SRCS_GB) $(SRCS_SFC)
 

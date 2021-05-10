@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores
 		public const string A7800Hawk = "A7800Hawk";
 		public const string Atari2600Hawk = "Atari2600Hawk";
 		public const string Bsnes = "BSNES";
-		public const string Bsnes115 = "BSNESNew";
+		public const string Bsnes115 = "BSNESv115+";
 		public const string C64Hawk = "C64Hawk";
 		public const string ChannelFHawk = "ChannelFHawk";
 		public const string ColecoHawk = "ColecoHawk";

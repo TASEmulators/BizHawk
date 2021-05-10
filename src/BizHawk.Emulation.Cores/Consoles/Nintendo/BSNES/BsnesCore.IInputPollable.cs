@@ -9,6 +9,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		public bool IsLagFrame { get; set; }
 
 		// TODO: optimize managed to unmanaged using the ActiveChanged event
+		// ??? no idea what this is
 		public IInputCallbackSystem InputCallbacks { get; } = new InputCallbackSystem();
 	}
 }

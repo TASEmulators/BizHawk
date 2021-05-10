@@ -22,13 +22,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			bool resetSignal = controller.IsPressed("Reset");
 			if (resetSignal)
 			{
-				Api._core.snes_reset();
+				Api.core.snes_reset();
 			}
 
 			bool powerSignal = controller.IsPressed("Power");
 			if (powerSignal)
 			{
-				Api._core.snes_power();
+				Api.core.snes_power();
 			}
 
 			var enables = new BsnesApi.LayerEnables
@@ -47,14 +47,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				Obj_Prio3 = _settings.ShowOBJ_3
 			};
 			// TODO: I really don't think stuff like this should be set every single frame (only on change)
-			Api._core.snes_set_layer_enables(enables);
-			Api._core.snes_set_trace_enabled(_tracer.Enabled);
-			Api._core.snes_set_video_enabled(render);
-			Api._core.snes_set_audio_enabled(renderSound);
+			Api.core.snes_set_layer_enables(enables);
+			Api.core.snes_set_trace_enabled(_tracer.Enabled);
+			Api.core.snes_set_video_enabled(render);
+			Api.core.snes_set_audio_enabled(renderSound);
 
 			// run the core for one frame
 			Frame++;
-			Api._core.snes_run();
+			Api.core.snes_run();
 
 			// once upon a time we forwarded messages from bsnes here, by checking for queued text messages, but I don't think it's needed any longer
 			if (IsLagFrame)

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
@@ -88,10 +89,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		short GetState(int index, int id);
 
 		ControllerDefinition Definition { get; }
-
-		// due to the way things are implemented, right now, all of the ILibsnesControllers are stateless
-		// but if one needed state, that would be doable
-		// void SyncState(Serializer ser);
 	}
 
 	internal class BsnesController : IBsnesController
@@ -100,25 +97,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		private readonly bool[] _state = new bool[12];
 
-		private static readonly string[] Buttons =
+		private static readonly Dictionary<int, string> ButtonsDict = new()
 		{
-			"0Up",
-			"0Down",
-			"0Left",
-			"0Right",
-			"0B",
-			"0A",
-			"0Y",
-			"0X",
-			"0L",
-			"0R",
-			"0Select",
-			"0Start"
+			{0, "0Up"},
+			{1, "0Down"},
+			{2, "0Left"},
+			{3, "0Right"},
+			{10, "0Select"},
+			{11, "0Start"},
+			{6, "0Y"},
+			{4, "0B"},
+			{7, "0X"},
+			{5, "0A"},
+			{8, "0L"},
+			{9, "0R"},
 		};
 
 		private static readonly ControllerDefinition _definition = new()
 		{
-			BoolButtons = Buttons.ToList()
+			BoolButtons = new List<string>(ButtonsDict.Values)
 		};
 
 		public ControllerDefinition Definition => _definition;
@@ -127,7 +124,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		{
 			for (int i = 0; i < 12; i++)
 			{
-				_state[i] = controller.IsPressed(Buttons[i]);
+				_state[i] = controller.IsPressed(ButtonsDict[i]);
 			}
 		}
 
@@ -140,6 +137,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		}
 	}
 
+	// TODO: no idea how these controllers map and what TAStudio / frontend / core expects, so this needs to be re-mapped
 	public class BsnesMultitapController : IBsnesController
 	{
 		public BSNES_INPUT_DEVICE DeviceType => BSNES_INPUT_DEVICE.SuperMultitap;
@@ -216,7 +214,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				.AddXYPair("0Mouse {0}", AxisPairOrientation.RightAndDown, (-127).RangeTo(127), 0); //TODO verify direction against hardware, R+D inferred from behaviour in Mario Paint
 
 		public ControllerDefinition Definition => _definition;
-		public bool LimitAnalogChangeSensitivity { get; set; } = true;
+		public bool LimitAnalogChangeSensitivity { get; init; } = true;
 
 		public void UpdateState(IController controller)
 		{

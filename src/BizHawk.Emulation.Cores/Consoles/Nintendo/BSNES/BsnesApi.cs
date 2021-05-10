@@ -12,9 +12,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 {
 	public abstract unsafe class BsnesCoreImpl
 	{
-		[BizImport(CallingConvention.Cdecl, Compatibility = true)]
-		public abstract IntPtr DllInit();
-
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void snes_set_audio_enabled(bool enabled);
 		[BizImport(CallingConvention.Cdecl)]
@@ -66,26 +63,26 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 	public unsafe partial class BsnesApi : IDisposable, IMonitor, IStatable
 	{
-		internal WaterboxHost _exe;
-		internal BsnesCoreImpl _core;
+		internal WaterboxHost exe;
+		internal BsnesCoreImpl core;
 		private readonly ICallingConventionAdapter _adapter;
 		private bool _disposed;
 
 		public void Enter()
 		{
-			_exe.Enter();
+			exe.Enter();
 		}
 
 		public void Exit()
 		{
-			_exe.Exit();
+			exe.Exit();
 		}
 
 		private readonly List<string> _readonlyFiles = new List<string>();
 
 		public void AddReadonlyFile(byte[] data, string name)
 		{
-			_exe.AddReadonlyFile(data, name);
+			exe.AddReadonlyFile(data, name);
 			_readonlyFiles.Add(name);
 		}
 
@@ -97,12 +94,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			{
 				functionPointerArray[i] = _adapter.GetFunctionPointerForDelegate((Delegate) fieldInfos[i].GetValue(callbacks));
 			}
-			_core.snes_set_callbacks(functionPointerArray);
+			core.snes_set_callbacks(functionPointerArray);
 		}
 
-		public BsnesApi(BsnesCore core, string dllPath, CoreComm comm, IEnumerable<Delegate> allCallbacks)
+		public BsnesApi(string dllPath, CoreComm comm, IEnumerable<Delegate> allCallbacks)
 		{
-			_exe = new WaterboxHost(new WaterboxOptions
+			exe = new WaterboxHost(new WaterboxOptions
 			{
 				Filename = "bsnes.wbx",
 				Path = dllPath,
@@ -114,14 +111,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				SkipCoreConsistencyCheck = comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
 				SkipMemoryConsistencyCheck = comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
 			});
-			using (_exe.EnterExit())
+			using (exe.EnterExit())
 			{
 				// Marshal checks that function pointers passed to GetDelegateForFunctionPointer are
 				// _currently_ valid when created, even though they don't need to be valid until
 				// the delegate is later invoked.  so GetInvoker needs to be acquired within a lock.
-				_adapter = CallingConventionAdapters.MakeWaterbox(allCallbacks, _exe);
-				_core = BizInvoker.GetInvoker<BsnesCoreImpl>(_exe, _exe, _adapter);
-				_core.DllInit();
+				_adapter = CallingConventionAdapters.MakeWaterbox(allCallbacks, exe);
+				this.core = BizInvoker.GetInvoker<BsnesCoreImpl>(exe, exe, _adapter);
 			}
 		}
 
@@ -130,9 +126,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			if (!_disposed)
 			{
 				_disposed = true;
-				_exe.Dispose();
-				_exe = null;
-				_core = null;
+				exe.Dispose();
+				exe = null;
+				core = null;
+				// serializedSize = 0;
 			}
 		}
 
@@ -170,44 +167,37 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public void Seal()
 		{
-			/* Cothreads can very easily acquire "pointer poison"; because their stack and even registers
-			 * are part of state, any poisoned pointer that's used even temporarily might be persisted longer
-			 * than needed.  Most of the libsnes core cothreads handle internal matters only and aren't very
-			 * vulnerable to pointer poison, but the main boss cothread is used heavily during init, when
-			 * many syscalls happen and many kinds of poison can end up on the stack.  so here, we call
-			 * _core.DllInit() again, which recreates that cothread, zeroing out all of the memory first,
-			 * as well as zeroing out the comm struct. */
-
-			//TODO: well check this yknow
-			// let's see what happen when we don't attempt to hack it like that
-			// _core.DllInit();
-			_exe.Seal();
+			// TODO: check correctness of this method
+			exe.Seal();
 			foreach (var s in _readonlyFiles)
 			{
-				_exe.RemoveReadonlyFile(s);
+				exe.RemoveReadonlyFile(s);
 			}
 			_readonlyFiles.Clear();
 		}
 
 		// TODO: confirm that the serializedSize is CONSTANT for any given game,
 		// else this might be problematic
-		private int serializedSize;// = 284275;
+		// private int serializedSize;// = 284275;
 
 		public void SaveStateBinary(BinaryWriter writer)
 		{
-			if (serializedSize == 0)
-				serializedSize = _core.snes_serialized_size();
+			// if (serializedSize == 0)
+				// serializedSize = _core.snes_serialized_size();
 			// TODO: do some profiling and testing to check whether this is actually better than _exe.SaveStateBinary(writer);
+			// re-adding bsnes's own serialization will need to be done once it's confirmed to be deterministic, aka after libco update
 
-			byte[] serializedData = new byte[serializedSize];
-			_core.snes_serialize(serializedData, serializedSize);
-			writer.Write(serializedData);
+			// byte[] serializedData = new byte[serializedSize];
+			exe.SaveStateBinary(writer);
+			// _core.snes_serialize(serializedData, serializedSize);
+			// writer.Write(serializedData);
 		}
 
 		public void LoadStateBinary(BinaryReader reader)
 		{
-			byte[] serializedData = reader.ReadBytes(serializedSize);
-			_core.snes_unserialize(serializedData, serializedSize);
+			// byte[] serializedData = reader.ReadBytes(serializedSize);
+			exe.LoadStateBinary(reader);
+			// _core.snes_unserialize(serializedData, serializedSize);
 		}
 	}
 }

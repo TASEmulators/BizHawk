@@ -24,26 +24,7 @@ enum SNES_MEMORY {
 };
 
 
-bool snes_load_cartridge_bsx_slotted(
-    const char *rom_xml, const uint8_t *rom_data, unsigned rom_size,
-    const char *bsx_xml, const uint8_t *bsx_data, unsigned bsx_size
-);
-
-bool snes_load_cartridge_bsx(
-    const char *rom_xml, const uint8_t *rom_data, unsigned rom_size,
-    const char *bsx_xml, const uint8_t *bsx_data, unsigned bsx_size
-);
-
-bool snes_load_cartridge_sufami_turbo(
-    const char *rom_xml, const uint8_t *rom_data, unsigned rom_size,
-    const char *sta_xml, const uint8_t *sta_data, unsigned sta_size,
-    const char *stb_xml, const uint8_t *stb_data, unsigned stb_size
-);
-
-
-void snes_unload_cartridge(void);
-
-struct LayerEnablesComm
+struct LayerEnables
 {
     bool BG1_Prio0, BG1_Prio1;
     bool BG2_Prio0, BG2_Prio1;
@@ -53,12 +34,7 @@ struct LayerEnablesComm
 };
 
 
-//zeromus additions
-// typedef void (*snes_scanlineStart_t)(int);
-// void snes_set_scanlineStart(snes_scanlineStart_t);
-extern uint16_t backdropColor;
-
-
+// below code unused; would be useful for the graphics debugger
 //$2105
 #define SNES_REG_BG_MODE 0
 #define SNES_REG_BG3_PRIORITY 1
