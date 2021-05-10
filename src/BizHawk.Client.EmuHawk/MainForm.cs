@@ -39,6 +39,8 @@ using BizHawk.Emulation.Cores.Consoles.SNK;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 
+using Serilog;
+
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class MainForm : FormBase, IDialogParent, IMainFormForApi, IMainFormForConfig, IMainFormForTools
@@ -657,6 +659,8 @@ namespace BizHawk.Client.EmuHawk
 				}
 #endif
 			}
+
+			Log.Information("EmuHawk.MainForm initialised successfully (not yet loaded)");
 		}
 
 		private readonly bool _suppressSyncSettingsWarning;

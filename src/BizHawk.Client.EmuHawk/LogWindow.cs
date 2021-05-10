@@ -45,7 +45,7 @@ namespace BizHawk.Client.EmuHawk
 		private void Attach()
 		{
 			_logStream = new LogStream();
-			Log.HACK_LOG_STREAM = _logStream;
+			GarboLog.HACK_LOG_STREAM = _logStream;
 			Console.SetOut(new StreamWriter(_logStream) { AutoFlush = true });
 			_logStream.Emit = appendInvoked;
 		}
@@ -58,7 +58,7 @@ namespace BizHawk.Client.EmuHawk
 			});
 			_logStream.Close();
 			_logStream = null;
-			Log.HACK_LOG_STREAM = null;
+			GarboLog.HACK_LOG_STREAM = null;
 		}
 
 		public void ShowReport(string title, string report)

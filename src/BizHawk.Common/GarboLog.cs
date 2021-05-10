@@ -4,9 +4,9 @@ using System.IO;
 
 namespace BizHawk.Common
 {
-	public static class Log
+	public static class GarboLog
 	{
-		static Log()
+		static GarboLog()
 		{
 			// You can set current desired logging settings here.
 			// Production builds should be done with all logging disabled.

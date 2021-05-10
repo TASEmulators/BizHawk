@@ -242,7 +242,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 			if ((Registers[DCR] & 2) > 0)
 			{
-				//Log.Note("Vdc","FIRE VRAM-VRAM DMA COMPLETE IRQ");
+				//GarboLog.Note("Vdc","FIRE VRAM-VRAM DMA COMPLETE IRQ");
 				StatusByte |= StatusVramVramDmaComplete;
 				cpu.IRQ1Assert = true;
 			}
