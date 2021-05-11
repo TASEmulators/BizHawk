@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.SNES
@@ -17,7 +18,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			if (_saveRamSize == 0) return null;
 
 			byte[] saveRamCopy = new byte[_saveRamSize];
-			Marshal.Copy((IntPtr) _saveRam, saveRamCopy, 0, _saveRamSize);
+			using (Api.exe.EnterExit())
+			{
+				Marshal.Copy((IntPtr) _saveRam, saveRamCopy, 0, _saveRamSize);
+			}
+
 			return saveRamCopy;
 		}
 
@@ -25,7 +30,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		{
 			if (_saveRamSize == 0) return;
 
-			Marshal.Copy(data, 0, (IntPtr) _saveRam, _saveRamSize);
+			using (Api.exe.EnterExit())
+			{
+				Marshal.Copy(data, 0, (IntPtr) _saveRam, _saveRamSize);
+			}
 		}
 	}
 }

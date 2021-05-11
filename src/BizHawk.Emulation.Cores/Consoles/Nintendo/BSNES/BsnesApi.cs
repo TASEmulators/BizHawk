@@ -135,7 +135,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public delegate void snes_video_frame_t(ushort* data, int width, int height, int pitch);
 		public delegate void snes_input_poll_t();
-		public delegate short snes_input_state_t(int port, int device, int index, int id);
+		public delegate short snes_input_state_t(int port, int index, int id);
 		public delegate void snes_no_lag_t();
 		public delegate void snes_audio_sample_t(short left, short right);
 		public delegate string snes_path_request_t(int slot, string hint);

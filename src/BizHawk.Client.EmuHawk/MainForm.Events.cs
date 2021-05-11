@@ -1656,6 +1656,11 @@ namespace BizHawk.Client.EmuHawk
 				using var form = new SNESControllerSettings(this, bsnes.GetSyncSettings().Clone());
 				form.ShowDialog();
 			}
+			else if (Emulator is BsnesCore bsnesCore)
+			{
+				using var form = new BSNESControllerSettings(this, bsnesCore.GetSyncSettings().Clone());
+				form.ShowDialog();
+			}
 		}
 
 		private void SnesGfxDebuggerMenuItem_Click(object sender, EventArgs e)

@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public unsafe partial class BsnesCore : IEmulator, IVideoProvider, ISaveRam, IStatable, IInputPollable, IRegionable, ISettable<BsnesCore.SnesSettings, BsnesCore.SnesSyncSettings>
 	{
-		private BsnesApi.SNES_REGION? _region;
+		private BsnesApi.SNES_REGION _region;
 
 		// [CoreConstructor("SGB")]
 		[CoreConstructor("SNES")]
@@ -300,13 +300,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		}
 
 		/// <param name="port">0 or 1, corresponding to L and R physical ports on the snes</param>
-		/// <param name="device">LibsnesApi.SNES_DEVICE enum index specifying type of device</param>
 		/// <param name="index">meaningless for most controllers.  for multitap, 0-3 for which multitap controller</param>
 		/// <param name="id">button ID enum; in the case of a regular controller, this corresponds to shift register position</param>
 		/// <returns>for regular controllers, one bit D0 of button status.  for other controls, varying ranges depending on id</returns>
-		private short snes_input_state(int port, int device, int index, int id)
+		private short snes_input_state(int port, int index, int id)
 		{
-			// we're not using device here... should we?
 			return _controllers.CoreInputState(port, index, id);
 		}
 

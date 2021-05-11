@@ -25,15 +25,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 					};
 				case BSNES_INPUT_DEVICE.SuperMultitap:
 					return new BsnesMultitapController();
-				// case BSNES_INPUT_DEVICE.SuperScope:
-					// return new BsnesSuperScopeController();
-				// case BSNES_INPUT_DEVICE.Justifier:
-					// return new BsnesJustifierController();
+				case BSNES_INPUT_DEVICE.SuperScope:
+					return new BsnesSuperScopeController();
+				case BSNES_INPUT_DEVICE.Justifier:
+					return new BsnesJustifierController(false);
+				case BSNES_INPUT_DEVICE.Justifiers:
+					return new BsnesJustifierController(true);
 				default:
 					throw new InvalidOperationException();
 			}
 		}
 
+		// TODO this should probably be private, only hacked it public
 		public readonly IBsnesController[] _ports;
 		private readonly ControlDefUnMerger[] _mergers;
 
@@ -78,11 +81,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		/// </summary>
 		BSNES_INPUT_DEVICE DeviceType { get; }
 
-		// updates the state; corresponding to a poll request from the core
+		// Updates the internal state; gets called once per frame from the core
 		void UpdateState(IController controller);
 
 		/// <summary>
-		/// respond to a native core poll
+		/// Returns the internal state; gets called potentially many times per frame
 		/// </summary>
 		/// <param name="index">bsnes specific value, sometimes multitap number</param>
 		/// <param name="id">bsnes specific value, sometimes button number</param>
@@ -97,25 +100,30 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		private readonly bool[] _state = new bool[12];
 
-		private static readonly Dictionary<int, string> ButtonsDict = new()
+		private static readonly string[] Buttons =
 		{
-			{0, "0Up"},
-			{1, "0Down"},
-			{2, "0Left"},
-			{3, "0Right"},
-			{10, "0Select"},
-			{11, "0Start"},
-			{6, "0Y"},
-			{4, "0B"},
-			{7, "0X"},
-			{5, "0A"},
-			{8, "0L"},
-			{9, "0R"},
+			"0Up", "0Down", "0Left", "0Right", "0B", "0A", "0Y", "0X", "0L", "0R", "0Select", "0Start"
+		};
+
+		private static readonly Dictionary<string, int> ButtonsOrder = new()
+		{
+			["0Up"] = 0,
+			["0Down"] = 1,
+			["0Left"] = 2,
+			["0Right"] = 3,
+			["0Select"] = 4,
+			["0Start"] = 5,
+			["0Y"] = 6,
+			["0B"] = 7,
+			["0X"] = 8,
+			["0A"] = 9,
+			["0L"] = 10,
+			["0R"] = 11
 		};
 
 		private static readonly ControllerDefinition _definition = new()
 		{
-			BoolButtons = new List<string>(ButtonsDict.Values)
+			BoolButtons = Buttons.OrderBy(b => ButtonsOrder[b]).ToList()
 		};
 
 		public ControllerDefinition Definition => _definition;
@@ -124,7 +132,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		{
 			for (int i = 0; i < 12; i++)
 			{
-				_state[i] = controller.IsPressed(ButtonsDict[i]);
+				_state[i] = controller.IsPressed(Buttons[i]);
 			}
 		}
 
@@ -137,33 +145,37 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		}
 	}
 
-	// TODO: no idea how these controllers map and what TAStudio / frontend / core expects, so this needs to be re-mapped
 	public class BsnesMultitapController : IBsnesController
 	{
 		public BSNES_INPUT_DEVICE DeviceType => BSNES_INPUT_DEVICE.SuperMultitap;
 
-		private readonly bool[] _state = new bool[12 * 4];
+		private readonly bool[,] _state = new bool[4, 12];
 
 		private static readonly string[] Buttons =
 		{
-			"Up",
-			"Down",
-			"Left",
-			"Right",
-			"Select",
-			"Start",
-			"Y",
-			"B",
-			"X",
-			"A",
-			"R",
-			"L"
+			"Up", "Down", "Left", "Right", "B", "A", "Y", "X", "L", "R", "Select", "Start"
+		};
+
+		private static readonly Dictionary<string, int> ButtonsOrder = new()
+		{
+			["Up"] = 0,
+			["Down"] = 1,
+			["Left"] = 2,
+			["Right"] = 3,
+			["Select"] = 4,
+			["Start"] = 5,
+			["Y"] = 6,
+			["B"] = 7,
+			["X"] = 8,
+			["A"] = 9,
+			["R"] = 10,
+			["L"] = 11
 		};
 
 		private static readonly ControllerDefinition _definition = new()
 		{
 			BoolButtons = Enumerable.Range(0, 4)
-			.SelectMany(i => Buttons
+			.SelectMany(i => Buttons.OrderBy(b => ButtonsOrder[b])
 				.Select(b => i + b))
 			.ToList()
 		};
@@ -172,18 +184,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public void UpdateState(IController controller)
 		{
-			for (int i = 0; i < _state.Length; i++)
+			for (int port = 0; port < 4; port++)
+			for (int i = 0; i < 12; i++)
 			{
-				_state[i] = controller.IsPressed(_definition.BoolButtons[i]);
+				_state[port, i] = controller.IsPressed(port + Buttons[i]);
 			}
 		}
 
 		public short GetState(int index, int id)
 		{
-			if (id >= 12 * 4)
+			if (id >= 12 || index >= 4)
 				return 0;
 
-			return (short)(_state[id] ? 1 : 0);
+			return (short) (_state[index, id] ? 1 : 0);
 		}
 	}
 
@@ -197,10 +210,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public void UpdateState(IController controller) { }
 
-		public short GetState(int index, int id)
-		{
-			return 0;
-		}
+		public short GetState(int index, int id) => 0;
 	}
 
 	public class BsnesMouseController : IBsnesController
@@ -209,9 +219,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		private readonly short[] _state = new short[4];
 
-		private static readonly ControllerDefinition _definition
-			= new ControllerDefinition { BoolButtons = { "0Mouse Left", "0Mouse Right" } }
-				.AddXYPair("0Mouse {0}", AxisPairOrientation.RightAndDown, (-127).RangeTo(127), 0); //TODO verify direction against hardware, R+D inferred from behaviour in Mario Paint
+		private static readonly ControllerDefinition _definition = new ControllerDefinition
+			{ BoolButtons = { "0Mouse Left", "0Mouse Right" } }
+			.AddXYPair("0Mouse {0}", AxisPairOrientation.RightAndDown, (-127).RangeTo(127), 0); //TODO verify direction against hardware, R+D inferred from behaviour in Mario Paint
 
 		public ControllerDefinition Definition => _definition;
 		public bool LimitAnalogChangeSensitivity { get; init; } = true;
@@ -233,7 +243,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			_state[1] = (short) y;
 
 			_state[2] = (short) (controller.IsPressed("0Mouse Left") ? 1 : 0);
-			_state[3] = (short)(controller.IsPressed("0Mouse Right") ? 1 : 0);
+			_state[3] = (short) (controller.IsPressed("0Mouse Right") ? 1 : 0);
 		}
 
 		public short GetState(int index, int id)
@@ -245,68 +255,80 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		}
 	}
 
-	// public class SnesSuperScopeController : ILibsnesController
-	// {
-	// 	public LibsnesApi.SNES_INPUT_PORT PortType => LibsnesApi.SNES_INPUT_PORT.SuperScope;
-	//
-	// 	private static readonly ControllerDefinition _definition
-	// 		= new ControllerDefinition { BoolButtons = { "0Trigger", "0Cursor", "0Turbo", "0Pause" } }
-	// 			.AddLightGun("0Scope {0}");
-	//
-	// 	public ControllerDefinition Definition => _definition;
-	//
-	// 	public short GetState(IController controller, int index, int id)
-	// 	{
-	// 		switch (id)
-	// 		{
-	// 			default:
-	// 				return 0;
-	// 			case 0:
-	// 				var x = controller.AxisValue("0Scope X");
-	// 				return (short)x;
-	// 			case 1:
-	// 				var y = controller.AxisValue("0Scope Y");
-	// 				return (short)y;
-	// 			case 2:
-	// 				return (short)(controller.IsPressed("0Trigger") ? 1 : 0);
-	// 			case 3:
-	// 				return (short)(controller.IsPressed("0Cursor") ? 1 : 0);
-	// 			case 4:
-	// 				return (short)(controller.IsPressed("0Turbo") ? 1 : 0);
-	// 			case 5:
-	// 				return (short)(controller.IsPressed("0Pause") ? 1 : 0);
-	// 		}
-	// 	}
-	// }
-	//
-	// public class SnesJustifierController : ILibsnesController
-	// {
-	// 	public LibsnesApi.SNES_INPUT_PORT PortType => LibsnesApi.SNES_INPUT_PORT.Justifier;
-	//
-	// 	private static readonly ControllerDefinition _definition
-	// 		= new ControllerDefinition { BoolButtons = { "0Trigger", "0Start", "1Trigger", "1Start" } }
-	// 			.AddLightGun("0Justifier {0}")
-	// 			.AddLightGun("1Justifier {0}");
-	//
-	// 	public ControllerDefinition Definition => _definition;
-	//
-	// 	public short GetState(IController controller, int index, int id)
-	// 	{
-	// 		switch (id)
-	// 		{
-	// 			default:
-	// 				return 0;
-	// 			case 0:
-	// 				var x = controller.AxisValue(index + "Justifier X");
-	// 				return (short)x;
-	// 			case 1:
-	// 				var y = controller.AxisValue(index + "Justifier Y");
-	// 				return (short)y;
-	// 			case 2:
-	// 				return (short)(controller.IsPressed(index + "Trigger") ? 1 : 0);
-	// 			case 3:
-	// 				return (short)(controller.IsPressed(index + "Start") ? 1 : 0);
-	// 		}
-	// 	}
-	// }
+	public class BsnesSuperScopeController : IBsnesController
+	{
+		public BSNES_INPUT_DEVICE DeviceType => BSNES_INPUT_DEVICE.SuperScope;
+
+		private readonly short[] _state = new short[6];
+
+		private static readonly ControllerDefinition _definition = new ControllerDefinition
+			{ BoolButtons = { "0Trigger", "0Cursor", "0Turbo", "0Pause" } }
+			.AddLightGun("0Scope {0}");
+
+		public ControllerDefinition Definition => _definition;
+
+		public void UpdateState(IController controller)
+		{
+			_state[0] = (short) controller.AxisValue("0Scope X");
+			_state[1] = (short) controller.AxisValue("0Scope Y");
+			for (int i = 2; i < 6; i++)
+			{
+				_state[i] = (short) (controller.IsPressed(_definition.BoolButtons[i]) ? 1 : 0);
+			}
+		}
+
+		public short GetState(int index, int id)
+		{
+			if (id >= 6)
+				return 0;
+
+			return _state[id];
+		}
+	}
+
+	public class BsnesJustifierController : IBsnesController
+	{
+		public BsnesJustifierController(bool chained)
+		{
+			Definition = chained
+				? new ControllerDefinition
+					{ BoolButtons = { "0Trigger", "0Start", "1Trigger", "1Start" } }
+					.AddLightGun("0Justifier {0}")
+					.AddLightGun("1Justifier {0}")
+				: new ControllerDefinition
+					{BoolButtons = { "0Trigger", "0Start"} }
+					.AddLightGun("0Justifier {0}");
+			_state = new short[chained ? 8 : 4];
+			_chained = chained;
+		}
+
+		private readonly bool _chained;
+		private readonly short[] _state;
+
+		public BSNES_INPUT_DEVICE DeviceType => _chained ? BSNES_INPUT_DEVICE.Justifiers : BSNES_INPUT_DEVICE.Justifier;
+
+		public ControllerDefinition Definition { get; }
+
+		public void UpdateState(IController controller)
+		{
+			_state[0] = (short) controller.AxisValue("0Justifier X");
+			_state[1] = (short) controller.AxisValue("0Justifier Y");
+			_state[2] = (short) (controller.IsPressed(Definition.BoolButtons[0]) ? 1 : 0);
+			_state[3] = (short) (controller.IsPressed(Definition.BoolButtons[1]) ? 1 : 0);
+			if (_chained)
+			{
+				_state[4] = (short) controller.AxisValue("1Justifier X");
+				_state[5] = (short) controller.AxisValue("1Justifier Y");
+				_state[6] = (short) (controller.IsPressed(Definition.BoolButtons[2]) ? 1 : 0);
+				_state[7] = (short) (controller.IsPressed(Definition.BoolButtons[3]) ? 1 : 0);
+			}
+		}
+		public short GetState(int index, int id)
+		{
+			if (index >= 2 || id >= 4 || (index == 1 && !_chained))
+				return 0;
+
+			return _state[index * 4 + id];
+		}
+	}
 }

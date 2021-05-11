@@ -284,11 +284,17 @@ auto Program::getBackdropColor() -> uint16
 
 auto Program::inputPoll(uint port, uint device, uint input) -> int16
 {
-	// TODO: need to verify math correctness here, i have no idea what exactly will be passed here
-	int16 pressed = snesCallbacks.snes_input_state(port, device, input / 12, input);
+	int index = 0;
+	int id = input;
+	if (device == ID::Device::SuperMultitap) {
+		index = input / 12;
+		id = input % 12;
+	} else if (device == ID::Device::Justifiers) {
+		index = input / 4;
+		id = input % 4;
+	}
 
-	// if (pressed) fprintf(stderr, "polled input with value %d\n", pressed);
-	return pressed;
+	return snesCallbacks.snes_input_state(port, index, id);
 }
 
 auto Program::inputRumble(uint port, uint device, uint input, bool enable) -> void

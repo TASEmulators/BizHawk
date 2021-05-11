@@ -27,10 +27,7 @@
 			SuperMultitap,
 			SuperScope,
 			Justifier,
-			Justifiers,
-
-			Satellaview,
-			S21FX
+			Justifiers
 		}
 
 		public enum ENTROPY

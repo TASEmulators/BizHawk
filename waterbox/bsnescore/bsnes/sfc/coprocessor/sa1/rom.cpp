@@ -54,7 +54,7 @@ auto SA1::ROM::readCPU(uint address, uint8 data) -> uint8 {
     return read(sa1.mmio.fb << 20 | address & 0x0fffff);
   }
 
-  return data;  //unreachable
+  unreachable;
 }
 
 auto SA1::ROM::writeCPU(uint address, uint8 data) -> void {
