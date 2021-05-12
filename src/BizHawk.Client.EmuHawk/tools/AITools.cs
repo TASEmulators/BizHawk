@@ -22,6 +22,8 @@ namespace BizHawk.Client.EmuHawk
 		private Label lblZ;
 		private Label lblCoins;
 
+		private int counter = 0;
+
 		[RequiredService]
 		private IMemoryDomains MemoryDomains { get; set; }
 
@@ -170,9 +172,13 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		public void UpdateValues(ToolFormUpdateType type)
-		{
+		{		
 			if (type == ToolFormUpdateType.PostFrame)
 			{
+				this.counter += 1;
+
+				Console.WriteLine("After a Frame {0}", counter);
+
 				lblCoins.Text = this.coinWatch.ValueString;
 				lblX.Text = this.xWatch.ValueString;
 				lblY.Text = this.yWatch.ValueString;

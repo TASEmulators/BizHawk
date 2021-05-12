@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net48</TargetFramework>
+	</PropertyGroup>
+	<Import Project="../../src/MainSlnExecutable.props" />
+	<PropertyGroup>
+		<DefineConstants>$(DefineConstants);EXE_PROJECT</DefineConstants>
+		<Nullable>disable</Nullable>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<ApplicationManifest>app.manifest</ApplicationManifest>
+		<ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
+	</PropertyGroup>
+	<ItemGroup>
+		<Compile Include="$(ProjectDir)../../src/BizHawk.Common/OSTailoredCode.cs" />
+	</ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="$(ProjectDir)../../src/BizHawk.Common/BizHawk.Common.csproj" />
+	  <ProjectReference Include="$(ProjectDir)../../src/BizHawk.Emulation.Cores/BizHawk.Emulation.Cores.csproj" />
+	</ItemGroup>
+</Project>

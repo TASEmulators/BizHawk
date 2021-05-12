@@ -61,6 +61,8 @@ namespace BizHawk.Client.Common
 
 		public bool IsPressed(string button)
 		{
+			Console.WriteLine("Asking for Input {0}", button);
+
 			if (randomInput != null && button == randomInput)
 			{
 				// todo lock
