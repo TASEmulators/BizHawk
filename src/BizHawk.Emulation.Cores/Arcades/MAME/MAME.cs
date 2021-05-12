@@ -83,7 +83,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Arcades.MAME
 {
-	[PortedCore(CoreNames.MAME, "MAMEDev", "0.230", "https://github.com/mamedev/mame.git", isReleased: false)]
+	[PortedCore(CoreNames.MAME, "MAMEDev", "0.231", "https://github.com/mamedev/mame.git", isReleased: false)]
 	public partial class MAME : IEmulator, IVideoProvider, ISoundProvider, ISettable<object, MAME.SyncSettings>, IStatable, IInputPollable
 	{
 		public MAME(string dir, string file, MAME.SyncSettings syncSettings, out string gamename)
@@ -94,9 +94,10 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 			_gameDirectory = dir;
 			_gameFilename = file;
-			_mameThread = new Thread(ExecuteMAMEThread);
 
-			AsyncLaunchMAME();
+			_mameThread = new Thread(ExecuteMAMEThread);
+			_mameThread.Start();
+			_mameStartupComplete.WaitOne();
 
 			_syncSettings = (SyncSettings)syncSettings ?? new SyncSettings();
 			_syncSettings.ExpandoSettings = new ExpandoObject();
@@ -124,12 +125,6 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		private LibMAME.SoundCallbackDelegate _soundCallback;
 		private LibMAME.BootCallbackDelegate _bootCallback;
 		private LibMAME.LogCallbackDelegate _logCallback;
-
-		private void AsyncLaunchMAME()
-		{
-			_mameThread.Start();
-			_mameStartupComplete.WaitOne();
-		}
 
 		private void ExecuteMAMEThread()
 		{
