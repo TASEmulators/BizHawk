@@ -10,24 +10,14 @@
 		<ApplicationManifest>app.manifest</ApplicationManifest>
 		<ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
 	</PropertyGroup>
+  <PropertyGroup>
+    <Reference Include="System.Windows.Forms" />
+  </PropertyGroup>
 	<ItemGroup>
 		<Compile Include="$(ProjectDir)../../src/BizHawk.Common/OSTailoredCode.cs" />
 	</ItemGroup>
 	<ItemGroup>
-    <Reference Include="System.Windows.Forms" />
 	  <ProjectReference Include="$(ProjectDir)../../src/BizHawk.Common/BizHawk.Common.csproj" />
 	  <ProjectReference Include="$(ProjectDir)../../src/BizHawk.Emulation.Cores/BizHawk.Emulation.Cores.csproj" />
-	  <ProjectReference Include="..\..\src\BizHawk.Bizware.BizwareGL\BizHawk.Bizware.BizwareGL.csproj" />
-	  <ProjectReference Include="..\..\src\BizHawk.Bizware.DirectX\BizHawk.Bizware.DirectX.csproj" />
-	  <ProjectReference Include="..\..\src\BizHawk.Client.Common\BizHawk.Client.Common.csproj" />
-	  <ProjectReference Include="..\..\src\BizHawk.Client.EmuHawk\BizHawk.Client.EmuHawk.csproj" />
-	</ItemGroup>
-	<ItemGroup>
-	  <Compile Update="CustomRenderer.cs">
-	    <SubType>Form</SubType>
-	  </Compile>
-	  <Compile Update="GraphicsControl.cs">
-	    <SubType>UserControl</SubType>
-	  </Compile>
 	</ItemGroup>
 </Project>

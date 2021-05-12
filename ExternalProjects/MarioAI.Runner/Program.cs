@@ -1,4 +1,9 @@
-﻿using BizHawk.Emulation.Common;
+﻿using BizHawk.Bizware.BizwareGL;
+using BizHawk.Bizware.DirectX;
+using BizHawk.Bizware.OpenTK3;
+using BizHawk.Client.Common;
+using BizHawk.Client.EmuHawk;
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.N64;
 using System;
 using System.Collections.Generic;
@@ -12,40 +17,21 @@ using System.Threading.Tasks;
 
 namespace MarioAI.Runner
 {
-    class Program
+    static class Program
 	{
+
+
 		static Program()
 		{
-			AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
-		}
-
-		public Program()
-		{
 			var dllDir = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "dll");
-			SetDllDirectory(dllDir);
-		}
 
-		static void RemoveMOTW(string path)
-		{
-			DeleteFileW($"{path}:Zone.Identifier");
+			SetDllDirectory(dllDir);
+
+			AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
 		}
 
 		static void Main(string[] args)
         {
-			var dllDir = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "dll"); // Path.Combine(), "dll");
-			
-			SetDllDirectory(dllDir);
-
-
-			//var todo = new Queue<DirectoryInfo>(new[] { new DirectoryInfo(dllDir) });
-			//while (todo.Count != 0)
-			//{
-			//	var di = todo.Dequeue();
-			//	foreach (var disub in di.GetDirectories()) todo.Enqueue(disub);
-			//	foreach (var fi in di.GetFiles("*.dll")) RemoveMOTW(fi.FullName);
-			//	foreach (var fi in di.GetFiles("*.exe")) RemoveMOTW(fi.FullName);
-			//}
-
 			N64Settings n64Settings = new N64Settings();
 
 			N64SyncSettings n64SyncSettings = new N64SyncSettings()
@@ -57,15 +43,75 @@ namespace MarioAI.Runner
 
 			var file = File.ReadAllBytes("C:\\temp\\mario.n64");
 
-			N64 test = new N64(gameInfo, file, n64Settings, n64SyncSettings);
-        }
+			N64 emulator = new N64(gameInfo, file, n64Settings, n64SyncSettings);
+
+			IGL igl = TryInitIGL(EDispMethod.SlimDX9);
+
+			Config config = new Config();
+
+			InputManager inputManager = new InputManager();
+
+			CustomRenderer renderForm = new CustomRenderer(config, igl, emulator, inputManager);
+
+			renderForm.Show();
+
+			var controller = new DebugController();
+
+			for (int i = 0; i < 200; i++)
+			{
+				Console.WriteLine("Current Frame: {0}", emulator.Frame);
+
+				Console.WriteLine("Current Frame is skipframe: {0}", emulator.IsLagFrame);
+
+				emulator.FrameAdvance(controller, false, false);
+
+				Console.WriteLine("Next Frame: {0}", emulator.Frame);
+			}
+		}
+
+		private static IGL TryInitIGL(EDispMethod dispMethod)
+		{
+			switch (dispMethod)
+			{
+				case EDispMethod.SlimDX9:
+
+					IGL_SlimDX9 glSlimDX;
+
+					try
+					{
+						glSlimDX = new IGL_SlimDX9();
+					}
+					catch (Exception ex)
+					{
+						return TryInitIGL(EDispMethod.GdiPlus);
+					}
+
+					return CheckRenderer(glSlimDX);
+
+				default:
+				case EDispMethod.GdiPlus:
+					return new IGL_GdiPlus();
+			}
+		}
+
+		private static IGL CheckRenderer(IGL gl)
+		{
+			try
+			{
+				using (gl.CreateRenderer())
+				{
+					return gl;
+				}
+			}
+			catch (Exception ex)
+			{
+				return TryInitIGL(EDispMethod.GdiPlus);
+			}
+		}
 
 		//declared here instead of a more usual place to avoid dependencies on the more usual place
 		[DllImport("kernel32.dll", SetLastError = true)]
 		private static extern bool SetDllDirectory(string lpPathName);
-
-		[DllImport("kernel32.dll", EntryPoint = "DeleteFileW", SetLastError = true, CharSet = CharSet.Unicode, ExactSpelling = true)]
-		private static extern bool DeleteFileW([MarshalAs(UnmanagedType.LPWStr)] string lpFileName);
 
 		private static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
 		{

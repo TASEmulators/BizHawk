@@ -144,6 +144,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		private readonly N64VideoProvider _videoProvider;
 		private readonly N64Audio _audioProvider;
 
+		public IVideoProvider VideoProvider { get { return this._videoProvider; }  }
+
 		private readonly EventWaitHandle _pendingThreadEvent = new EventWaitHandle(false, EventResetMode.AutoReset);
 		private readonly EventWaitHandle _completeThreadEvent = new EventWaitHandle(false, EventResetMode.AutoReset);
 
