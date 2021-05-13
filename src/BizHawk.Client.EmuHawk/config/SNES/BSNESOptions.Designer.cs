@@ -49,10 +49,8 @@
             this.Obj1Checkbox = new System.Windows.Forms.CheckBox();
             this.EntropyBox = new System.Windows.Forms.ComboBox();
             this.lblEntropy = new BizHawk.WinForms.Controls.LocLabelEx();
-            this.lblRunAhead = new BizHawk.WinForms.Controls.LocLabelEx();
             this.cbGameHotfixes = new System.Windows.Forms.CheckBox();
             this.cbFastPPU = new System.Windows.Forms.CheckBox();
-            this.lblFun = new BizHawk.WinForms.Controls.LocLabelEx();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -276,16 +274,10 @@
             this.lblEntropy.Name = "lblEntropy";
             this.lblEntropy.Text = "Entropy";
             // 
-            // lblRunAhead
-            // 
-            this.lblRunAhead.Location = new System.Drawing.Point(33, 109);
-            this.lblRunAhead.Name = "lblRunAhead";
-            this.lblRunAhead.Text = "Runahead (reduces input latency) (TODO)";
-            // 
             // cbGameHotfixes
             // 
             this.cbGameHotfixes.AutoSize = true;
-            this.cbGameHotfixes.Location = new System.Drawing.Point(18, 83);
+            this.cbGameHotfixes.Location = new System.Drawing.Point(18, 91);
             this.cbGameHotfixes.Name = "cbGameHotfixes";
             this.cbGameHotfixes.Size = new System.Drawing.Size(93, 17);
             this.cbGameHotfixes.TabIndex = 22;
@@ -295,20 +287,13 @@
             // cbFastPPU
             // 
             this.cbFastPPU.AutoSize = true;
-            this.cbFastPPU.Location = new System.Drawing.Point(18, 135);
+            this.cbFastPPU.Location = new System.Drawing.Point(18, 128);
             this.cbFastPPU.Name = "cbFastPPU";
             this.cbFastPPU.Size = new System.Drawing.Size(90, 17);
             this.cbFastPPU.TabIndex = 23;
             this.cbFastPPU.Text = "Use fast PPU";
             this.cbFastPPU.UseVisualStyleBackColor = true;
             this.cbFastPPU.CheckedChanged += new System.EventHandler(this.FastPPU_CheckedChanged);
-            // 
-            // lblFun
-            // 
-            this.lblFun.Location = new System.Drawing.Point(16, 308);
-            this.lblFun.MaximumSize = new System.Drawing.Size(100, 0);
-            this.lblFun.Name = "lblFun";
-            this.lblFun.Text = "haha this is fun";
             // 
             // BSNESOptions
             // 
@@ -317,10 +302,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(304, 338);
-            this.Controls.Add(this.lblFun);
             this.Controls.Add(this.cbFastPPU);
             this.Controls.Add(this.cbGameHotfixes);
-            this.Controls.Add(this.lblRunAhead);
             this.Controls.Add(this.lblEntropy);
             this.Controls.Add(this.EntropyBox);
             this.Controls.Add(this.groupBox1);
@@ -359,10 +342,8 @@
 		private System.Windows.Forms.CheckBox Obj1Checkbox;
 		private System.Windows.Forms.ComboBox EntropyBox;
 		private WinForms.Controls.LocLabelEx lblEntropy;
-		private WinForms.Controls.LocLabelEx lblRunAhead;
 		private System.Windows.Forms.CheckBox cbGameHotfixes;
 		private System.Windows.Forms.CheckBox cbFastPPU;
-		private WinForms.Controls.LocLabelEx lblFun;
 		private System.Windows.Forms.CheckBox Bg1_0Checkbox;
 		private System.Windows.Forms.CheckBox Bg4_0Checkbox;
 		private System.Windows.Forms.CheckBox Bg3_0Checkbox;

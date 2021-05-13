@@ -32,9 +32,8 @@ struct Program : Emulator::Platform
 
 	auto save() -> void;
 
-	auto openRomSuperFamicom(string name, vfs::file::mode mode) -> shared_pointer<vfs::file>;
-	auto openRomGameBoy(string name, vfs::file::mode mode) -> shared_pointer<vfs::file>;
-	auto openRomBSMemory(string name, vfs::file::mode mode) -> shared_pointer<vfs::file>;
+	auto openFileSuperFamicom(string name, vfs::file::mode mode) -> shared_pointer<vfs::file>;
+	auto openFileGameBoy(string name, vfs::file::mode mode) -> shared_pointer<vfs::file>;
 
 	auto hackPatchMemory(vector<uint8_t>& data) -> void;
 
@@ -113,7 +112,7 @@ auto Program::open(uint id, string name, vfs::file::mode mode, bool required) ->
 			result = vfs::memory::file::open(superFamicom.expansion.data(), superFamicom.expansion.size());
 		}
 		else {
-			result = openRomSuperFamicom(name, mode);
+			result = openFileSuperFamicom(name, mode);
 		}
 	}
 	else if (id == 2) { //Game Boy
@@ -124,7 +123,7 @@ auto Program::open(uint id, string name, vfs::file::mode mode, bool required) ->
 			result = vfs::memory::file::open(gameBoy.program.data(), gameBoy.program.size());
 		}
 		else {
-			result = openRomGameBoy(name, mode);
+			result = openFileGameBoy(name, mode);
 		}
 	}
 	else if (id == 3) {  //BS Memory
@@ -139,11 +138,47 @@ auto Program::open(uint id, string name, vfs::file::mode mode, bool required) ->
 			result = vfs::memory::file::open(bsMemory.program.data(), bsMemory.program.size());
 		}
 		else {
-			result = openRomBSMemory(name, mode);
+			result = {};
 		}
 		// sufami turbo would be id 4 and 5 and is ignored for reasons? do we support it in bizhawk?
 	}
 	return result;
+}
+
+auto Program::openFileSuperFamicom(string name, vfs::file::mode mode) -> shared_pointer<vfs::file>
+{
+	// TODO: need to check whether these snes_path_request requests actually are correct and... work
+	if(name == "msu1/data.rom")
+	{
+		return vfs::fs::file::open(snesCallbacks.snes_path_request(ID::SuperFamicom, name), mode);
+	}
+
+	if(name.match("msu1/track*.pcm"))
+	{
+		return vfs::fs::file::open(snesCallbacks.snes_path_request(ID::SuperFamicom, name), mode);
+	}
+
+	if(name == "save.ram")
+	{
+		return vfs::fs::file::open(snesCallbacks.snes_path_request(ID::SuperFamicom, name.data()), mode);
+	}
+
+	return {};
+}
+
+auto Program::openFileGameBoy(string name, vfs::file::mode mode) -> shared_pointer<vfs::file>
+{
+	if(name == "save.ram")
+	{
+		return vfs::fs::file::open(snesCallbacks.snes_path_request(ID::GameBoy, name), mode);
+	}
+
+	if(name == "time.rtc")
+	{
+		return vfs::fs::file::open(snesCallbacks.snes_path_request(ID::GameBoy, name), mode);
+	}
+
+	return {};
 }
 
 auto Program::load() -> void {
@@ -230,6 +265,66 @@ auto Program::load(uint id, string name, string type, vector<string> options) ->
 	return { id, options(0) };
 }
 
+auto Program::loadSuperFamicom() -> bool
+{
+	vector<uint8_t>& rom = superFamicom.raw_data;
+	fprintf(stderr, "location: \"%s\"\n", superFamicom.location.data());
+	fprintf(stderr, "rom size: %ld\n", rom.size());
+
+	if(rom.size() < 0x8000) return false;
+
+	auto heuristics = Heuristics::SuperFamicom(rom, superFamicom.location);
+
+	superFamicom.title = heuristics.title();
+	superFamicom.region = heuristics.videoRegion();
+	superFamicom.manifest = heuristics.manifest();
+
+	hackPatchMemory(rom);
+	superFamicom.document = BML::unserialize(superFamicom.manifest);
+	fprintf(stderr, "loaded game manifest: \"\n%s\"\n", superFamicom.manifest.data());
+
+	uint offset = 0;
+	if(auto size = heuristics.programRomSize()) {
+		superFamicom.program.acquire(rom.data() + offset, size);
+		offset += size;
+	}
+	if(auto size = heuristics.dataRomSize()) {
+		superFamicom.data.acquire(rom.data() + offset, size);
+		offset += size;
+	}
+	if(auto size = heuristics.expansionRomSize()) {
+		superFamicom.expansion.acquire(rom.data() + offset, size);
+		offset += size;
+	}
+	if(auto size = heuristics.firmwareRomSize()) {
+		superFamicom.firmware.acquire(rom.data() + offset, size);
+		offset += size;
+	}
+	return true;
+}
+
+auto Program::loadGameBoy() -> bool {
+	if (gameBoy.program.size() < 0x4000) return false;
+
+	auto heuristics = Heuristics::GameBoy(gameBoy.program, gameBoy.location);
+
+	gameBoy.manifest = heuristics.manifest();
+	gameBoy.document = BML::unserialize(gameBoy.manifest);
+
+	return true;
+}
+
+auto Program::loadBSMemory() -> bool {
+	if (bsMemory.program.size() < 0x8000) return false;
+
+	auto heuristics = Heuristics::BSMemory(bsMemory.program, gameBoy.location);
+
+	bsMemory.manifest = heuristics.manifest();
+	bsMemory.document = BML::unserialize(bsMemory.manifest);
+
+	return true;
+}
+
 auto Program::videoFrame(const uint16* data, uint pitch, uint width, uint height, uint scale) -> void {
 
 	// note: scale is not used currently, but as bsnes has builtin scaling support (something something mode 7)
@@ -299,179 +394,8 @@ auto Program::inputPoll(uint port, uint device, uint input) -> int16
 
 auto Program::inputRumble(uint port, uint device, uint input, bool enable) -> void
 {
-	// do we support this in bizhawk? if so we should probably use this
 }
 
-auto Program::openRomSuperFamicom(string name, vfs::file::mode mode) -> shared_pointer<vfs::file>
-{
-	if(name == "program.rom" && mode == vfs::file::mode::read)
-	{
-		return vfs::memory::file::open(superFamicom.program.data(), superFamicom.program.size());
-	}
-
-	if(name == "data.rom" && mode == vfs::file::mode::read)
-	{
-		return vfs::memory::file::open(superFamicom.data.data(), superFamicom.data.size());
-	}
-
-	if(name == "expansion.rom" && mode == vfs::file::mode::read)
-	{
-		return vfs::memory::file::open(superFamicom.expansion.data(), superFamicom.expansion.size());
-	}
-
-	// TODO: need to check whether these snes_path_request requests actually are correct and... work
-	if(name == "msu1/data.rom")
-	{
-		return vfs::fs::file::open(snesCallbacks.snes_path_request(ID::SuperFamicom, name), mode);
-	}
-
-	if(name.match("msu1/track*.pcm"))
-	{
-		// name.trimLeft("msu1/track", 1L);
-		return vfs::fs::file::open(snesCallbacks.snes_path_request(ID::SuperFamicom, name), mode);
-	}
-
-	if(name == "save.ram")
-	{
-		// string save_path;
-
-		// auto suffix = Location::suffix(base_name);
-		// auto base = Location::base(base_name.transform("\\", "/"));
-
-		// save_path = { base_name.trimRight(suffix, 1L), ".srm" };
-
-		return vfs::fs::file::open(snesCallbacks.snes_path_request(ID::SuperFamicom, name.data()), mode);
-	}
-
-	return {};
-}
-
-auto Program::openRomGameBoy(string name, vfs::file::mode mode) -> shared_pointer<vfs::file> {
-	if(name == "program.rom" && mode == vfs::file::mode::read)
-	{
-		return vfs::memory::file::open(gameBoy.program.data(), gameBoy.program.size());
-	}
-
-	if(name == "save.ram")
-	{
-		// string save_path;
-
-		// auto suffix = Location::suffix(base_name);
-		// auto base = Location::base(base_name.transform("\\", "/"));
-
-		// save_path = { base_name.trimRight(suffix, 1L), ".srm" };
-
-		return vfs::fs::file::open(snesCallbacks.snes_path_request(ID::GameBoy, name), mode);
-	}
-
-	if(name == "time.rtc")
-	{
-		// string save_path;
-
-		// auto suffix = Location::suffix(base_name);
-		// auto base = Location::base(base_name.transform("\\", "/"));
-
-		// const char *save = nullptr;
-		// if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_SAVE_DIRECTORY, &save) && save)
-			// save_path = { string(save).transform("\\", "/"), "/", base.trimRight(suffix, 1L), ".rtc" };
-		// else
-			// save_path = { base_name.trimRight(suffix, 1L), ".rtc" };
-
-		return vfs::fs::file::open(snesCallbacks.snes_path_request(ID::GameBoy, name), mode);
-	}
-
-	return {};
-}
-
-auto Program::openRomBSMemory(string name, vfs::file::mode mode) -> shared_pointer<vfs::file> {
-	if (name == "program.rom" && mode == vfs::file::mode::read)
-	{
-		return vfs::memory::file::open(bsMemory.program.data(), bsMemory.program.size());
-	}
-
-	if (name == "program.flash")
-	{
-		//writes are not flushed to disk
-		return vfs::memory::file::open(bsMemory.program.data(), bsMemory.program.size());
-	}
-
-	return {};
-}
-
-auto Program::loadSuperFamicom() -> bool
-{
-	vector<uint8_t> rom = superFamicom.raw_data;
-	fprintf(stderr, "location: \"%s\"\n", superFamicom.location.data());
-	fprintf(stderr, "rom size: %ld\n", rom.size());
-
-	if(rom.size() < 0x8000) return false;
-
-	//assume ROM and IPS agree on whether a copier header is present
-	//superFamicom.patched = applyPatchIPS(rom, location);
-	if((rom.size() & 0x7fff) == 512) {
-		//remove copier header
-		memory::move(&rom[0], &rom[512], rom.size() - 512);
-		rom.resize(rom.size() - 512);
-	}
-
-	auto heuristics = Heuristics::SuperFamicom(rom, superFamicom.location);
-	auto sha256 = Hash::SHA256(rom).digest();
-
-	superFamicom.title = heuristics.title();
-	superFamicom.region = heuristics.videoRegion();
-	superFamicom.manifest = heuristics.manifest();
-
-	hackPatchMemory(rom);
-	superFamicom.document = BML::unserialize(superFamicom.manifest);
-	fprintf(stderr, "loaded game manifest: \"\n%s\"\n", superFamicom.manifest.data());
-
-	uint offset = 0;
-	if(auto size = heuristics.programRomSize()) {
-		superFamicom.program.resize(size);
-		memory::copy(&superFamicom.program[0], &rom[offset], size);
-		offset += size;
-	}
-	if(auto size = heuristics.dataRomSize()) {
-		superFamicom.data.resize(size);
-		memory::copy(&superFamicom.data[0], &rom[offset], size);
-		offset += size;
-	}
-	if(auto size = heuristics.expansionRomSize()) {
-		superFamicom.expansion.resize(size);
-		memory::copy(&superFamicom.expansion[0], &rom[offset], size);
-		offset += size;
-	}
-	if(auto size = heuristics.firmwareRomSize()) {
-		superFamicom.firmware.resize(size);
-		memory::copy(&superFamicom.firmware[0], &rom[offset], size);
-		offset += size;
-	}
-	return true;
-}
-
-auto Program::loadGameBoy() -> bool {
-	if (gameBoy.program.size() < 0x4000) return false;
-
-	auto heuristics = Heuristics::GameBoy(gameBoy.program, gameBoy.location);
-	auto sha256 = Hash::SHA256(gameBoy.program).digest();
-
-	gameBoy.manifest = heuristics.manifest();
-	gameBoy.document = BML::unserialize(gameBoy.manifest);
-
-	return true;
-}
-
-auto Program::loadBSMemory() -> bool {
-	if (bsMemory.program.size() < 0x8000) return false;
-
-	auto heuristics = Heuristics::BSMemory(bsMemory.program, gameBoy.location);
-	auto sha256 = Hash::SHA256(bsMemory.program).digest();
-
-	bsMemory.manifest = heuristics.manifest();
-	bsMemory.document = BML::unserialize(bsMemory.manifest);
-
-	return true;
-}
 
 auto Program::hackPatchMemory(vector<uint8_t>& data) -> void
 {
@@ -487,175 +411,4 @@ auto Program::hackPatchMemory(vector<uint8_t>& data) -> void
 		if(data[0x4ded] == 0x10) data[0x4ded] = 0x80;
 		if(data[0x4e9a] == 0x10) data[0x4e9a] = 0x80;
 	}
-}
-
-// TODO: apparently this code is for cheats. Yeah no idea how that works but we can probably just call this function maybe
-
-auto decodeSNES(string& code) -> bool {
-  //Game Genie
-  if(code.size() == 9 && code[4u] == '-') {
-	//strip '-'
-	code = {code.slice(0, 4), code.slice(5, 4)};
-	//validate
-	for(uint n : code) {
-	  if(n >= '0' && n <= '9') continue;
-	  if(n >= 'a' && n <= 'f') continue;
-	  return false;
-	}
-	//decode
-	code.transform("df4709156bc8a23e", "0123456789abcdef");
-	uint32_t r = toHex(code);
-	//abcd efgh ijkl mnop qrst uvwx
-	//ijkl qrst opab cduv wxef ghmn
-	uint address =
-	  (!!(r & 0x002000) << 23) | (!!(r & 0x001000) << 22)
-	| (!!(r & 0x000800) << 21) | (!!(r & 0x000400) << 20)
-	| (!!(r & 0x000020) << 19) | (!!(r & 0x000010) << 18)
-	| (!!(r & 0x000008) << 17) | (!!(r & 0x000004) << 16)
-	| (!!(r & 0x800000) << 15) | (!!(r & 0x400000) << 14)
-	| (!!(r & 0x200000) << 13) | (!!(r & 0x100000) << 12)
-	| (!!(r & 0x000002) << 11) | (!!(r & 0x000001) << 10)
-	| (!!(r & 0x008000) <<  9) | (!!(r & 0x004000) <<  8)
-	| (!!(r & 0x080000) <<  7) | (!!(r & 0x040000) <<  6)
-	| (!!(r & 0x020000) <<  5) | (!!(r & 0x010000) <<  4)
-	| (!!(r & 0x000200) <<  3) | (!!(r & 0x000100) <<  2)
-	| (!!(r & 0x000080) <<  1) | (!!(r & 0x000040) <<  0);
-	uint data = r >> 24;
-	code = {hex(address, 6L), "=", hex(data, 2L)};
-	return true;
-  }
-
-  //Pro Action Replay
-  if(code.size() == 8) {
-	//validate
-	for(uint n : code) {
-	  if(n >= '0' && n <= '9') continue;
-	  if(n >= 'a' && n <= 'f') continue;
-	  return false;
-	}
-	//decode
-	uint32_t r = toHex(code);
-	uint address = r >> 8;
-	uint data = r & 0xff;
-	code = {hex(address, 6L), "=", hex(data, 2L)};
-	return true;
-  }
-
-  //higan: address=data
-  if(code.size() == 9 && code[6u] == '=') {
-	string nibbles = {code.slice(0, 6), code.slice(7, 2)};
-	//validate
-	for(uint n : nibbles) {
-	  if(n >= '0' && n <= '9') continue;
-	  if(n >= 'a' && n <= 'f') continue;
-	  return false;
-	}
-	//already in decoded form
-	return true;
-  }
-
-  //higan: address=compare?data
-  if(code.size() == 12 && code[6u] == '=' && code[9u] == '?') {
-	string nibbles = {code.slice(0, 6), code.slice(7, 2), code.slice(10, 2)};
-	//validate
-	for(uint n : nibbles) {
-	  if(n >= '0' && n <= '9') continue;
-	  if(n >= 'a' && n <= 'f') continue;
-	  return false;
-	}
-	//already in decoded form
-	return true;
-  }
-
-  //unrecognized code format
-  return false;
-}
-
-auto decodeGB(string& code) -> bool {
-  auto nibble = [&](const string& s, uint index) -> uint {
-	if(index >= s.size()) return 0;
-	if(s[index] >= '0' && s[index] <= '9') return s[index] - '0';
-	return s[index] - 'a' + 10;
-  };
-
-  //Game Genie
-  if(code.size() == 7 && code[3u] == '-') {
-	code = {code.slice(0, 3), code.slice(4, 3)};
-	//validate
-	for(uint n : code) {
-	  if(n >= '0' && n <= '9') continue;
-	  if(n >= 'a' && n <= 'f') continue;
-	  return false;
-	}
-	uint data = nibble(code, 0) << 4 | nibble(code, 1) << 0;
-	uint address = (nibble(code, 5) ^ 15) << 12 | nibble(code, 2) << 8 | nibble(code, 3) << 4 | nibble(code, 4) << 0;
-	code = {hex(address, 4L), "=", hex(data, 2L)};
-	return true;
-  }
-
-  //Game Genie
-  if(code.size() == 11 && code[3u] == '-' && code[7u] == '-') {
-	code = {code.slice(0, 3), code.slice(4, 3), code.slice(8, 3)};
-	//validate
-	for(uint n : code) {
-	  if(n >= '0' && n <= '9') continue;
-	  if(n >= 'a' && n <= 'f') continue;
-	  return false;
-	}
-	uint data = nibble(code, 0) << 4 | nibble(code, 1) << 0;
-	uint address = (nibble(code, 5) ^ 15) << 12 | nibble(code, 2) << 8 | nibble(code, 3) << 4 | nibble(code, 4) << 0;
-	uint8_t t = nibble(code, 6) << 4 | nibble(code, 8) << 0;
-	t = t >> 2 | t << 6;
-	uint compare = t ^ 0xba;
-	code = {hex(address, 4L), "=", hex(compare, 2L), "?", hex(data, 2L)};
-	return true;
-  }
-
-  //GameShark
-  if(code.size() == 8) {
-	//validate
-	for(uint n : code) {
-	  if(n >= '0' && n <= '9') continue;
-	  if(n >= 'a' && n <= 'f') continue;
-	  return false;
-	}
-	//first two characters are the code type / VRAM bank, which is almost always 01.
-	//other values are presumably supported, but I have no info on them, so they're not supported.
-	if(code[0u] != '0') return false;
-	if(code[1u] != '1') return false;
-	uint data = toHex(code.slice(2, 2));
-	uint16_t address = toHex(code.slice(4, 4));
-	address = address >> 8 | address << 8;
-	code = {hex(address, 4L), "=", hex(data, 2L)};
-	return true;
-  }
-
-  //higan: address=data
-  if(code.size() == 7 && code[4u] == '=') {
-	string nibbles = {code.slice(0, 4), code.slice(5, 2)};
-	//validate
-	for(uint n : nibbles) {
-	  if(n >= '0' && n <= '9') continue;
-	  if(n >= 'a' && n <= 'f') continue;
-	  return false;
-	}
-	//already in decoded form
-	return true;
-  }
-
-  //higan: address=compare?data
-  if(code.size() == 10 && code[4u] == '=' && code[7u] == '?') {
-	string nibbles = {code.slice(0, 4), code.slice(5, 2), code.slice(8, 2)};
-	//validate
-	for(uint n : nibbles) {
-	  if(n >= '0' && n <= '9') continue;
-	  if(n >= 'a' && n <= 'f') continue;
-	  return false;
-	}
-	//already in decoded form
-	return true;
-  }
-
-  //unrecognized code format
-  return false;
 }

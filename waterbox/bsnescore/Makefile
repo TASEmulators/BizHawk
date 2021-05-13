@@ -1,19 +1,15 @@
 NEED_LIBCO := 1
 
-CXXFLAGS := -DHOOKS -DGAMEBOY \
-	-D_GNU_SOURCE \
-	-Werror=int-to-pointer-cast \
+CXXFLAGS := -std=c++17 \
 	-I../libco -I./bsnes \
-	-Wno-parentheses -Wno-sign-compare \
-	-Wno-unused-variable -Wno-unused-function \
-	-fno-threadsafe-statics \
-	-std=c++17 \
-	-Wno-multichar -DGB_INTERNAL -DGB_DISABLE_DEBUGGER -DGB_DISABLE_CHEATS \
-	-fno-strict-aliasing -fwrapv -Wno-trigraphs -Wno-switch -Wno-reorder -Wno-misleading-indentation
+	-Werror=int-to-pointer-cast \
+	-Wno-parentheses -Wno-sign-compare -Wno-unused-variable -Wno-trigraphs -Wno-switch -Wno-reorder -Wno-misleading-indentation \
+	-fno-threadsafe-statics -fno-strict-aliasing -fwrapv
 
-CCFLAGS := -std=c11 -DGB_INTERNAL -DGB_DISABLE_DEBUGGER -DGB_DISABLE_CHEATS -D_GNU_SOURCE -Wno-multichar \
-	-Werror -Wall -Wno-unknown-warning -Wno-unknown-warning-option \
-	-Wno-nonnull -Wno-unused-result -Wno-strict-aliasing -Wno-multichar -Wno-int-in-bool-context -fno-strict-aliasing
+CCFLAGS := -std=c11 -DGB_INTERNAL -DGB_DISABLE_DEBUGGER -DGB_DISABLE_CHEATS -D_GNU_SOURCE \
+	-Werror \
+	-Wall -Wno-multichar -Wno-int-in-bool-context \
+	-fno-strict-aliasing
 
 TARGET = bsnes.wbx
 
@@ -23,8 +19,7 @@ SRCS_PROCESSORS = \
 	$(ROOT_DIR)/bsnes/processor/arm7tdmi/arm7tdmi.cpp
 
 SRCS_EMULATOR = \
-	$(ROOT_DIR)/bsnes/emulator/emulator.cpp \
-	$(ROOT_DIR)/bsnes/filter/filter.cpp
+	$(ROOT_DIR)/bsnes/emulator/emulator.cpp
 
 SRCS_GB = \
 	$(ROOT_DIR)/bsnes/gb/Core/apu.c \

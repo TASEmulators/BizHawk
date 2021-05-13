@@ -36,8 +36,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			}
 		}
 
-		// TODO this should probably be private, only hacked it public
-		public readonly IBsnesController[] _ports;
+		private readonly IBsnesController[] _ports;
 		private readonly ControlDefUnMerger[] _mergers;
 
 		public ControllerDefinition Definition { get; }

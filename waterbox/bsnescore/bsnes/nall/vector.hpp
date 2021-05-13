@@ -45,7 +45,7 @@ struct vector_base {
 
   //memory.hpp
   auto reset() -> void;
-  auto acquire(const T* data, uint64_t size, uint64_t capacity = 0) -> void;
+  auto acquire(T* data, uint64_t size, uint64_t capacity = 0) -> void;
   auto release() -> T*;
 
   auto reserveLeft(uint64_t capacity) -> bool;

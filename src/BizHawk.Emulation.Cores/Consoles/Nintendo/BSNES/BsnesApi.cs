@@ -58,7 +58,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		public abstract void snes_load_cartridge_normal(string baseRomPath, byte[] romData, int romSize);
 		// note this might fail currently if ever called
 		[BizImport(CallingConvention.Cdecl)]
-		public abstract void snes_load_cartridge_super_gameboy(string baseRomPath, byte[] romData, int romSize, byte[] sgbRomData, int sgbRomSize);
+		public abstract void snes_load_cartridge_super_gameboy(string baseRomPath, byte[] romData, byte[] sgbRomData, ulong mergedRomSizes);
 	}
 
 	public unsafe partial class BsnesApi : IDisposable, IMonitor, IStatable
@@ -103,9 +103,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			{
 				Filename = "bsnes.wbx",
 				Path = dllPath,
-				SbrkHeapSizeKB = 16 * 1024, // TODO: this can probably be optimized slightly
+				SbrkHeapSizeKB = 13 * 1024,
 				InvisibleHeapSizeKB = 4,
-				MmapHeapSizeKB = 128 * 1024, // TODO: check whether this can be smaller; it needs to be 80+ at least rn
+				MmapHeapSizeKB = 105 * 1024, // TODO: check whether this needs to be larger; it depends on the rom size
 				PlainHeapSizeKB = 0,
 				SealedHeapSizeKB = 0, // this might actually need to be larger than 0, but doesn't crash for me
 				SkipCoreConsistencyCheck = comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),

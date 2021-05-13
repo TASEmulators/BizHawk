@@ -146,6 +146,7 @@ EXPORT void snes_init(int entropy, uint left_port, uint right_port, uint16_t mer
     emulator->configure("Hacks/Hotfixes", hotfixes);
     emulator->configure("Hacks/PPU/Fast", fast_ppu);
 
+    emulator->configure("Video/BlurEmulation", false); // blurs the video when not using fast ppu. I don't like it so I disable it here :)
     // needed in order to get audio sync working. should probably figure out what exactly this does or how to change that properly
     Emulator::audio.setFrequency(SAMPLE_RATE);
 }
@@ -166,7 +167,7 @@ EXPORT void snes_reset(void)
     emulator->reset();
 }
 
-// note: run with runahead doesn't work yet, i suspect it's due to either waterbox or the serialize thing breaking
+// note: run with runahead doesn't work yet, i suspect it's due to the serialize thing breaking (cause of libco)
 EXPORT void snes_run(void)
 {
     snesCallbacks.snes_input_poll();
@@ -213,10 +214,12 @@ EXPORT void snes_load_cartridge_normal(
     program->load();
 }
 
+// TODO: merged_rom_sizes is bad, fix this
 EXPORT void snes_load_cartridge_super_gameboy(
-  const char* base_rom_path, const uint8_t* rom_data, int rom_size,
-  const uint8_t* sgb_rom_data, int sgb_rom_size
+  const char* base_rom_path, const uint8_t* rom_data, const uint8_t* sgb_rom_data, uint64_t merged_rom_sizes
 ) {
+    int rom_size = merged_rom_sizes >> 32;
+    int sgb_rom_size = merged_rom_sizes & 0xffffffff;
     program->superFamicom.location = base_rom_path;
 
     program->superFamicom.raw_data.resize(rom_size);
@@ -229,7 +232,6 @@ EXPORT void snes_load_cartridge_super_gameboy(
 }
 
 
-// TODO: frontend does not differenciate the bgN's prio0 and prio1. They should either be removed or supported individually
 EXPORT void snes_set_layer_enables(LayerEnables* layerEnables)
 {
     if (emulator->configuration("Hacks/PPU/Fast") == "true") {

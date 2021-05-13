@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		{
 			bool ret = o.LeftPort != _syncSettings.LeftPort
 				|| o.RightPort != _syncSettings.RightPort
-				|| o.LimitAnalogChangeSensitivity != _syncSettings.LimitAnalogChangeSensitivity // TODO check correctness of this one
+				|| o.LimitAnalogChangeSensitivity != _syncSettings.LimitAnalogChangeSensitivity
 				|| o.Entropy != _syncSettings.Entropy
 				|| o.Hotfixes != _syncSettings.Hotfixes
 				|| o.FastPPU != _syncSettings.FastPPU;

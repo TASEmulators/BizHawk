@@ -82,8 +82,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			generate_palette();
 			// TODO: massive random hack till waterboxhost gets fixed to support 5+ args
 			ushort mergedBools = (ushort) ((_syncSettings.Hotfixes ? 1 << 8 : 0) | (_syncSettings.FastPPU ? 1 : 0));
-			Api.core.snes_init(_syncSettings.Entropy, _controllers._ports[0].DeviceType, _controllers._ports[1].DeviceType,
-				mergedBools);
+			Api.core.snes_init(_syncSettings.Entropy, _syncSettings.LeftPort, _syncSettings.RightPort, mergedBools);
 			Api.SetCallbacks(callbacks);
 
 			// start up audio resampler
@@ -287,8 +286,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			if (_currLoadParams.type == LoadParamType.Normal)
 				Api.core.snes_load_cartridge_normal(_currLoadParams.baseRomPath, _currLoadParams.romData, _currLoadParams.romData.Length);
 			else
-				Api.core.snes_load_cartridge_super_gameboy(_currLoadParams.baseRomPath, _currLoadParams.romData, _currLoadParams.romData.Length,
-					_currLoadParams.sgbRomData, _currLoadParams.sgbRomData.Length);
+				Api.core.snes_load_cartridge_super_gameboy(_currLoadParams.baseRomPath, _currLoadParams.romData,
+					_currLoadParams.sgbRomData, (ulong) _currLoadParams.romData.Length << 32 |  (uint)_currLoadParams.sgbRomData.Length);
 
 			_region = Api.core.snes_get_region();
 		}
