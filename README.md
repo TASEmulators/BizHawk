@@ -30,7 +30,6 @@ Jump to:
 	* [Localization](#localization)
 	* [License](#license)
 * [Related projects](#related-projects)
-* [License](#license)
 
 ## Features and systems
 
