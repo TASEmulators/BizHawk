@@ -56,7 +56,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			Frame++;
 			Api.core.snes_run();
 
-			// once upon a time we forwarded messages from bsnes here, by checking for queued text messages, but I don't think it's needed any longer
 			if (IsLagFrame)
 			{
 				LagCount++;

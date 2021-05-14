@@ -2,7 +2,7 @@
 /snes9xgit
 
 **/.vs/**
-**.vscode/
+**/.vscode/
 **/bin/**
 **/obj/**
 /output/**

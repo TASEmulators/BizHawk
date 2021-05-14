@@ -57,7 +57,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 
 			public SnesSettings Clone()
 			{
-				return (SnesSettings)MemberwiseClone();
+				return (SnesSettings) MemberwiseClone();
 			}
 		}
 
@@ -80,6 +80,5 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 				return (SnesSyncSettings) MemberwiseClone();
 			}
 		}
-
 	}
 }

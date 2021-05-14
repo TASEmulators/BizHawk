@@ -65,9 +65,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			{
 				Filename = "libsnes.wbx",
 				Path = dllPath,
-				SbrkHeapSizeKB = 16 * 1024,
+				SbrkHeapSizeKB = 4 * 1024,
 				InvisibleHeapSizeKB = 8 * 1024,
-				MmapHeapSizeKB = 128 * 1024, // TODO: see if we can safely make libco stacks smaller
+				MmapHeapSizeKB = 32 * 1024, // TODO: see if we can safely make libco stacks smaller
 				PlainHeapSizeKB = 32 * 1024, // TODO: This can be smaller, probably; needs to be as big as largest ROM + 2MB, or less
 				SealedHeapSizeKB = 80 * 1024,
 				SkipCoreConsistencyCheck = comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
