@@ -326,24 +326,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			}
 		}
 
-		// i have no idea how all this logic works, but it does. should probably uh be looked at again
 		private void snes_video_refresh(ushort* data, int width, int height, int pitch)
 		{
 			int widthMultiplier = 1;
 			int heightMultiplier = 1;
-			if (_settings.AlwaysDoubleSize)
+			if (_settings.CropSGBFrame && IsSGB)
 			{
-				if (width == 256) widthMultiplier = 2;
-				if (height == 224) heightMultiplier = 2;
+				BufferWidth = 160;
+				BufferHeight = 144;
 			}
-			BufferWidth = width * widthMultiplier;
-			BufferHeight = height * heightMultiplier;
-
-			int dpitch = pitch;
-			if (height == 448)
-				dpitch <<= 1;
-			if (width == 512)
-				dpitch <<= 1;
+			else
+			{
+				if (_settings.AlwaysDoubleSize)
+				{
+					if (width == 256) widthMultiplier = 2;
+					if (height == 224) heightMultiplier = 2;
+				}
+				BufferWidth = width * widthMultiplier;
+				BufferHeight = height * heightMultiplier;
+			}
 
 			int size = BufferWidth * BufferHeight;
 			if (_videoBuffer.Length != size)
@@ -351,10 +352,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				_videoBuffer = new int[size];
 			}
 
+			int di = 0;
+			if (_settings.CropSGBFrame && IsSGB)
+			{
+				for (int y = 39; y < 39 + 144; y++)
+				{
+					ushort* sp = data + y * pitch + 48;
+					for (int x = 0; x < 160; x++)
+					{
+						_videoBuffer[di++] = palette[*sp++];
+					}
+				}
+				return;
+			}
+
 			for (int y = 0; y < height * heightMultiplier; y++)
 			{
 				int si = y / heightMultiplier * pitch;
-				int di = y * widthMultiplier * dpitch / 4;
 				for (int x = 0; x < width * widthMultiplier; x++)
 				{
 					_videoBuffer[di++] = palette[data[si + x / widthMultiplier]];

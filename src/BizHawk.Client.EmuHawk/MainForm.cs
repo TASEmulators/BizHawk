@@ -2004,8 +2004,8 @@ namespace BizHawk.Client.EmuHawk
 					SNESSubMenu.Text = "&SNES";
 					SNESSubMenu.Visible = true;
 					break;
-				case "SNES" when Emulator is BsnesCore { IsSGB: false }:
-					SNESSubMenu.Text = "&SNES";
+				case "SNES" when Emulator is BsnesCore bsnesCore:
+					SNESSubMenu.Text = bsnesCore.IsSGB ?  "&SGB" : "&SNES";
 					SNESSubMenu.DropDownItems[2].Visible = false;
 					SNESSubMenu.Visible = true;
 					break;

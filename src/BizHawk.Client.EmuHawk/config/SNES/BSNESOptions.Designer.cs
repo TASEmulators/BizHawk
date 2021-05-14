@@ -51,6 +51,7 @@
             this.lblEntropy = new BizHawk.WinForms.Controls.LocLabelEx();
             this.cbGameHotfixes = new System.Windows.Forms.CheckBox();
             this.cbFastPPU = new System.Windows.Forms.CheckBox();
+            this.cbCropSGBFrame = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -277,7 +278,7 @@
             // cbGameHotfixes
             // 
             this.cbGameHotfixes.AutoSize = true;
-            this.cbGameHotfixes.Location = new System.Drawing.Point(18, 91);
+            this.cbGameHotfixes.Location = new System.Drawing.Point(18, 111);
             this.cbGameHotfixes.Name = "cbGameHotfixes";
             this.cbGameHotfixes.Size = new System.Drawing.Size(93, 17);
             this.cbGameHotfixes.TabIndex = 22;
@@ -287,13 +288,23 @@
             // cbFastPPU
             // 
             this.cbFastPPU.AutoSize = true;
-            this.cbFastPPU.Location = new System.Drawing.Point(18, 128);
+            this.cbFastPPU.Location = new System.Drawing.Point(18, 138);
             this.cbFastPPU.Name = "cbFastPPU";
             this.cbFastPPU.Size = new System.Drawing.Size(90, 17);
             this.cbFastPPU.TabIndex = 23;
             this.cbFastPPU.Text = "Use fast PPU";
             this.cbFastPPU.UseVisualStyleBackColor = true;
             this.cbFastPPU.CheckedChanged += new System.EventHandler(this.FastPPU_CheckedChanged);
+            // 
+            // cbCropSGBFrame
+            // 
+            this.cbCropSGBFrame.AutoSize = true;
+            this.cbCropSGBFrame.Location = new System.Drawing.Point(18, 84);
+            this.cbCropSGBFrame.Name = "cbCropSGBFrame";
+            this.cbCropSGBFrame.Size = new System.Drawing.Size(105, 17);
+            this.cbCropSGBFrame.TabIndex = 27;
+            this.cbCropSGBFrame.Text = "Crop SGB Frame";
+            this.cbCropSGBFrame.UseVisualStyleBackColor = true;
             // 
             // BSNESOptions
             // 
@@ -302,6 +313,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(304, 338);
+            this.Controls.Add(this.cbCropSGBFrame);
             this.Controls.Add(this.cbFastPPU);
             this.Controls.Add(this.cbGameHotfixes);
             this.Controls.Add(this.lblEntropy);
@@ -350,5 +362,6 @@
 		private System.Windows.Forms.CheckBox Bg2_0Checkbox;
 		private WinForms.Controls.LocLabelEx lblPriority1;
 		private WinForms.Controls.LocLabelEx lblPriority0;
+		private System.Windows.Forms.CheckBox cbCropSGBFrame;
 	}
 }

@@ -17,8 +17,9 @@ namespace BizHawk.Client.EmuHawk
 			var ss = bsnes.GetSyncSettings();
 			using var dlg = new BSNESOptions
 			{
-				Entropy = ss.Entropy,
 				AlwaysDoubleSize = s.AlwaysDoubleSize,
+				CropSGBFrame = s.CropSGBFrame,
+				Entropy = ss.Entropy,
 				Hotfixes = ss.Hotfixes,
 				FastPPU = ss.FastPPU,
 				ShowObj1 = s.ShowOBJ_0,
@@ -38,8 +39,9 @@ namespace BizHawk.Client.EmuHawk
 			DialogResult result = mainForm.ShowDialogAsChild(dlg);
 			if (result == DialogResult.OK)
 			{
-				ss.Entropy = dlg.Entropy;
 				s.AlwaysDoubleSize = dlg.AlwaysDoubleSize;
+				s.CropSGBFrame = dlg.CropSGBFrame;
+				ss.Entropy = dlg.Entropy;
 				ss.Hotfixes = dlg.Hotfixes;
 				ss.FastPPU = dlg.FastPPU;
 				s.ShowOBJ_0 = dlg.ShowObj1;
@@ -64,6 +66,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get => cbDoubleSize.Checked;
 			init => cbDoubleSize.Checked = value;
+		}
+
+		private bool CropSGBFrame
+		{
+			get => cbCropSGBFrame.Checked;
+			init => cbCropSGBFrame.Checked = value;
 		}
 
 		private bool Hotfixes
