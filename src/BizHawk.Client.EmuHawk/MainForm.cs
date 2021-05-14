@@ -1993,9 +1993,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			GenericCoreSubMenu.Visible = true;
 #if true
-			GenericCoreSubMenu.Text = Emulator.GetSystemDisplayName();
+			GenericCoreSubMenu.Text = Emulator.SystemId;
 #else //TODO accelerator; I commented out this naive approach which doesn't work --yoshi
-			GenericCoreSubMenu.Text = $"&{Emulator.GetSystemDisplayName()}";
+			GenericCoreSubMenu.Text = $"&{Emulator.SystemId}";
 #endif
 			GenericCoreSubMenu.DropDownItems.Clear();
 
