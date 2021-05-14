@@ -1905,6 +1905,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void HandlePlatformMenus()
 		{
+			if (GenericCoreSubMenu.Visible)
+			{
+				var i = GenericCoreSubMenu.Text.IndexOf('&');
+				if (i != -1) AvailableAccelerators.Add(GenericCoreSubMenu.Text[i + 1]);
+			}
 			GenericCoreSubMenu.Visible = false;
 			TI83SubMenu.Visible = false;
 			NESSubMenu.Visible = false;
@@ -1989,14 +1994,43 @@ namespace BizHawk.Client.EmuHawk
 			.Where(t => t.GetCustomAttribute<SpecializedToolAttribute>() != null)
 			.ToList();
 
+		private ISet<char> _availableAccelerators;
+
+		private ISet<char> AvailableAccelerators
+		{
+			get
+			{
+				if (_availableAccelerators == null)
+				{
+					_availableAccelerators = new HashSet<char>();
+					for (var c = 'A'; c <= 'Z'; c++) _availableAccelerators.Add(c);
+					foreach (ToolStripItem item in MainMenuStrip.Items)
+					{
+						if (!item.Visible) continue;
+						var i = item.Text.IndexOf('&');
+						if (i == -1 || i == item.Text.Length - 1) continue;
+						_availableAccelerators.Remove(char.ToUpperInvariant(item.Text[i + 1]));
+					}
+				}
+				return _availableAccelerators;
+			}
+		}
+
 		private void DisplayDefaultCoreMenu()
 		{
 			GenericCoreSubMenu.Visible = true;
-#if true
-			GenericCoreSubMenu.Text = Emulator.SystemId;
-#else //TODO accelerator; I commented out this naive approach which doesn't work --yoshi
-			GenericCoreSubMenu.Text = $"&{Emulator.SystemId}";
-#endif
+			var sysID = Emulator.SystemId;
+			for (var i = 0; i < sysID.Length; i++)
+			{
+				var upper = char.ToUpperInvariant(sysID[i]);
+				if (AvailableAccelerators.Contains(upper))
+				{
+					AvailableAccelerators.Remove(upper);
+					sysID = sysID.Insert(i, "&");
+					break;
+				}
+			}
+			GenericCoreSubMenu.Text = sysID;
 			GenericCoreSubMenu.DropDownItems.Clear();
 
 			var settingsMenuItem = new ToolStripMenuItem { Text = "&Settings" };
