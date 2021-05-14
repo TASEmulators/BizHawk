@@ -32,8 +32,8 @@ struct Program : Emulator::Platform
 
 	auto save() -> void;
 
-	auto openFileSuperFamicom(string name, vfs::file::mode mode) -> shared_pointer<vfs::file>;
-	auto openFileGameBoy(string name, vfs::file::mode mode) -> shared_pointer<vfs::file>;
+	auto openFileSuperFamicom(string name, vfs::file::mode mode, bool required) -> shared_pointer<vfs::file>;
+	auto openFileGameBoy(string name, vfs::file::mode mode, bool required) -> shared_pointer<vfs::file>;
 
 	auto hackPatchMemory(vector<uint8_t>& data) -> void;
 
@@ -112,7 +112,7 @@ auto Program::open(uint id, string name, vfs::file::mode mode, bool required) ->
 			result = vfs::memory::file::open(superFamicom.expansion.data(), superFamicom.expansion.size());
 		}
 		else {
-			result = openFileSuperFamicom(name, mode);
+			result = openFileSuperFamicom(name, mode, required);
 		}
 	}
 	else if (id == 2) { //Game Boy
@@ -123,7 +123,7 @@ auto Program::open(uint id, string name, vfs::file::mode mode, bool required) ->
 			result = vfs::memory::file::open(gameBoy.program.data(), gameBoy.program.size());
 		}
 		else {
-			result = openFileGameBoy(name, mode);
+			result = openFileGameBoy(name, mode, required);
 		}
 	}
 	else if (id == 3) {  //BS Memory
@@ -140,42 +140,114 @@ auto Program::open(uint id, string name, vfs::file::mode mode, bool required) ->
 		else {
 			result = {};
 		}
-		// sufami turbo would be id 4 and 5 and is ignored for reasons? do we support it in bizhawk?
+		// sufami turbo would be id 4 and 5 and is ignored for reasons? do we support it in bizhawk? TODO check this
 	}
 	return result;
 }
 
-auto Program::openFileSuperFamicom(string name, vfs::file::mode mode) -> shared_pointer<vfs::file>
+auto Program::openFileSuperFamicom(string name, vfs::file::mode mode, bool required) -> shared_pointer<vfs::file>
 {
-	// TODO: need to check whether these snes_path_request requests actually are correct and... work
-	if(name == "msu1/data.rom")
+	// TODO: the original bsnes code handles a lot more paths; *.data.ram, time.rtc and download.ram
+	// I believe none of these can currently be correctly served by bizhawk and I therefor ignore them here
+	// This should probably be changed? Not sure how much can break from not having them
+	if(name == "msu1/data.rom" || name.match("msu1/track*.pcm") || name == "save.ram")
 	{
-		return vfs::fs::file::open(snesCallbacks.snes_path_request(ID::SuperFamicom, name), mode);
+		return vfs::fs::file::open(snesCallbacks.snes_path_request(ID::SuperFamicom, name, required), mode);
 	}
 
-	if(name.match("msu1/track*.pcm"))
-	{
-		return vfs::fs::file::open(snesCallbacks.snes_path_request(ID::SuperFamicom, name), mode);
+	if(name == "arm6.program.rom" && mode == vfs::file::mode::read) {
+		if(superFamicom.firmware.size() == 0x28000) {
+			return vfs::memory::file::open(&superFamicom.firmware.data()[0x00000], 0x20000);
+		}
+		if(auto memory = superFamicom.document["game/board/memory(type=ROM,content=Program,architecture=ARM6)"]) {
+			return vfs::fs::file::open(snesCallbacks.snes_path_request(ID::SuperFamicom, memory["identifier"].text().downcase(), required), mode);
+		}
 	}
 
-	if(name == "save.ram")
-	{
-		return vfs::fs::file::open(snesCallbacks.snes_path_request(ID::SuperFamicom, name.data()), mode);
+	if(name == "arm6.data.rom" && mode == vfs::file::mode::read) {
+		if(superFamicom.firmware.size() == 0x28000) {
+			return vfs::memory::file::open(&superFamicom.firmware.data()[0x20000], 0x08000);
+		}
+		if(auto memory = superFamicom.document["game/board/memory(type=ROM,content=Data,architecture=ARM6)"]) {
+			auto file = vfs::fs::file::open(snesCallbacks.snes_path_request(ID::SuperFamicom, memory["identifier"].text().downcase(), required), mode);
+			if (file) file->seek(0x20000, vfs::file::index::absolute);
+			return file;
+		}
+	}
+
+	if(name == "hg51bs169.data.rom" && mode == vfs::file::mode::read) {
+		if(superFamicom.firmware.size() == 0xc00) {
+			return vfs::memory::file::open(superFamicom.firmware.data(), superFamicom.firmware.size());
+		}
+		if(auto memory = superFamicom.document["game/board/memory(type=ROM,content=Data,architecture=HG51BS169)"]) {
+			return vfs::fs::file::open(snesCallbacks.snes_path_request(ID::SuperFamicom, memory["identifier"].text().downcase(), required), mode);
+		}
+	}
+
+	if(name == "lr35902.boot.rom" && mode == vfs::file::mode::read) {
+		if(superFamicom.firmware.size() == 0x100) {
+			return vfs::memory::file::open(superFamicom.firmware.data(), superFamicom.firmware.size());
+		}
+		if(auto memory = superFamicom.document["game/board/memory(type=ROM,content=Boot,architecture=LR35902)"]) {
+			return vfs::fs::file::open(snesCallbacks.snes_path_request(ID::SuperFamicom, memory["identifier"].text().downcase(), required), mode);
+		}
+	}
+
+	if(name == "upd7725.program.rom" && mode == vfs::file::mode::read) {
+		if(superFamicom.firmware.size() == 0x2000) {
+			return vfs::memory::file::open(&superFamicom.firmware.data()[0x0000], 0x1800);
+		}
+		if(auto memory = superFamicom.document["game/board/memory(type=ROM,content=Program,architecture=uPD7725)"]) {
+			auto file = vfs::fs::file::open(snesCallbacks.snes_path_request(ID::SuperFamicom, memory["identifier"].text().downcase(), required), mode);
+			return file;
+		}
+	}
+
+	if(name == "upd7725.data.rom" && mode == vfs::file::mode::read) {
+		if(superFamicom.firmware.size() == 0x2000) {
+			return vfs::memory::file::open(&superFamicom.firmware.data()[0x1800], 0x0800);
+		}
+		if(auto memory = superFamicom.document["game/board/memory(type=ROM,content=Data,architecture=uPD7725)"]) {
+			auto file = vfs::fs::file::open(snesCallbacks.snes_path_request(ID::SuperFamicom, memory["identifier"].text().downcase(), required), mode);
+			if (file) file->seek(0x1800, vfs::file::index::absolute);
+			return file;
+		}
+	}
+
+	if(name == "upd96050.program.rom" && mode == vfs::file::mode::read) {
+		if(superFamicom.firmware.size() == 0xd000) {
+			return vfs::memory::file::open(&superFamicom.firmware.data()[0x0000], 0xc000);
+		}
+		if(auto memory = superFamicom.document["game/board/memory(type=ROM,content=Program,architecture=uPD96050)"]) {
+			auto file = vfs::fs::file::open(snesCallbacks.snes_path_request(ID::SuperFamicom, memory["identifier"].text().downcase(), required), mode);
+			return file;
+		}
+	}
+
+	if(name == "upd96050.data.rom" && mode == vfs::file::mode::read) {
+		if(superFamicom.firmware.size() == 0xd000) {
+			return vfs::memory::file::open(&superFamicom.firmware.data()[0xc000], 0x1000);
+		}
+		if(auto memory = superFamicom.document["game/board/memory(type=ROM,content=Data,architecture=uPD96050)"]) {
+			auto file = vfs::fs::file::open(snesCallbacks.snes_path_request(ID::SuperFamicom, memory["identifier"].text().downcase(), required), mode);
+			if (file) file->seek(0xc000, vfs::file::index::absolute);
+			return file;
+		}
 	}
 
 	return {};
 }
 
-auto Program::openFileGameBoy(string name, vfs::file::mode mode) -> shared_pointer<vfs::file>
+auto Program::openFileGameBoy(string name, vfs::file::mode mode, bool required) -> shared_pointer<vfs::file>
 {
 	if(name == "save.ram")
 	{
-		return vfs::fs::file::open(snesCallbacks.snes_path_request(ID::GameBoy, name), mode);
+		return vfs::fs::file::open(snesCallbacks.snes_path_request(ID::GameBoy, name, required), mode);
 	}
 
 	if(name == "time.rtc")
 	{
-		return vfs::fs::file::open(snesCallbacks.snes_path_request(ID::GameBoy, name), mode);
+		return vfs::fs::file::open(snesCallbacks.snes_path_request(ID::GameBoy, name, required), mode);
 	}
 
 	return {};
@@ -362,8 +434,7 @@ auto Program::audioFrame(const double* samples, uint channels) -> void
 
 auto Program::notify(string message) -> void
 {
-	// TODO: This is probably not necessary this way; checking whether inputPoll is called is probably enough
-	if (message == "NOTIFY NO_LAG")
+	if (message == "NOTIFY NO_LAG");
 		snesCallbacks.snes_no_lag();
 }
 

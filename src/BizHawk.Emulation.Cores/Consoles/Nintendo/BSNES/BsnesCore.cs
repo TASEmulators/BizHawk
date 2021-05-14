@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 	{
 		private BsnesApi.SNES_REGION _region;
 
-		// [CoreConstructor("SGB")]
+		[CoreConstructor("SGB")]
 		[CoreConstructor("SNES")]
 		public BsnesCore(GameInfo game, byte[] rom, CoreComm comm,
 			SnesSettings settings, SnesSyncSettings syncSettings)
@@ -99,8 +99,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				{
 					type = LoadParamType.SuperGameBoy,
 					baseRomPath = baseRomPath,
-					romData = romData,
-					sgbRomData = sgbRomData
+					romData = sgbRomData,
+					sgbRomData = romData
 				};
 			}
 			else
@@ -185,9 +185,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		private BsnesApi Api { get; }
 
-		// TODO: this code is outdated and needs to be checked against all kind of roms and xmls etc.
-		private string snes_path_request(int slot, string hint)
+		private string snes_path_request(int slot, string hint, bool required)
 		{
+			// TODO: this msu1 handling code is outdated and needs to be remade from someone with knowledge.
 			// every rom requests msu1.rom... why? who knows.
 			// also handle msu-1 pcm files here
 			bool isMsu1Rom = hint == "msu1/data.rom";
@@ -236,30 +236,26 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			switch (hint)
 			{
-				case "cx4.rom": firmwareId = "CX4"; break;
-				case "dsp1.rom": firmwareId = "DSP1"; break;
-				case "dsp1b.rom": firmwareId = "DSP1b"; break;
-				case "dsp2.rom": firmwareId = "DSP2"; break;
-				case "dsp3.rom": firmwareId = "DSP3"; break;
-				case "dsp4.rom": firmwareId = "DSP4"; break;
-				case "st010.rom": firmwareId = "ST010"; break;
-				case "st011.rom": firmwareId = "ST011"; break;
-				case "st018.rom": firmwareId = "ST018"; break;
+				case "cx4": firmwareId = "CX4"; break;
+				case "dsp1": firmwareId = "DSP1"; break;
+				case "dsp1b": firmwareId = "DSP1b"; break;
+				case "dsp2": firmwareId = "DSP2"; break;
+				case "dsp3": firmwareId = "DSP3"; break;
+				case "dsp4": firmwareId = "DSP4"; break;
+				case "st010": firmwareId = "ST010"; break;
+				case "st011": firmwareId = "ST011"; break;
+				case "st018": firmwareId = "ST018"; break;
 				default:
 					CoreComm.ShowMessage($"Unrecognized SNES firmware request \"{hint}\".");
 					return "";
 			}
 
-			string ret;
-			var data = CoreComm.CoreFileProvider.GetFirmware("SNES", firmwareId, false, "Game may function incorrectly without the requested firmware.");
+			string ret = "";
+			var data = CoreComm.CoreFileProvider.GetFirmware("SNES", firmwareId, required, "Game may function incorrectly without the requested firmware.");
 			if (data != null)
 			{
 				ret = hint;
 				Api.AddReadonlyFile(data, hint);
-			}
-			else
-			{
-				ret = "";
 			}
 
 			Console.WriteLine("Served bsnescore request for firmware \"{0}\"", hint);

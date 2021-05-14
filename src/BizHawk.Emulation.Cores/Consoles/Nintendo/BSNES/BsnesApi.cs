@@ -78,12 +78,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			exe.Exit();
 		}
 
-		private readonly List<string> _readonlyFiles = new List<string>();
+		private readonly List<string> _readonlyFiles = new();
 
 		public void AddReadonlyFile(byte[] data, string name)
 		{
-			exe.AddReadonlyFile(data, name);
-			_readonlyFiles.Add(name);
+			// current logic potentially requests the same name twice; once for program and once for data
+			// because this gets mapped to the same file, we only add it once
+			if (!_readonlyFiles.Contains(name))
+			{
+				exe.AddReadonlyFile(data, name);
+				_readonlyFiles.Add(name);
+			}
 		}
 
 		public void SetCallbacks(SnesCallbacks callbacks)
@@ -103,7 +108,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			{
 				Filename = "bsnes.wbx",
 				Path = dllPath,
-				SbrkHeapSizeKB = 13 * 1024,
+				SbrkHeapSizeKB = 14 * 1024,
 				InvisibleHeapSizeKB = 4,
 				MmapHeapSizeKB = 105 * 1024, // TODO: check whether this needs to be larger; it depends on the rom size
 				PlainHeapSizeKB = 0,
@@ -138,7 +143,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		public delegate short snes_input_state_t(int port, int index, int id);
 		public delegate void snes_no_lag_t();
 		public delegate void snes_audio_sample_t(short left, short right);
-		public delegate string snes_path_request_t(int slot, string hint);
+		public delegate string snes_path_request_t(int slot, string hint, bool required);
 		public delegate void snes_trace_t(string disassembly, string register_info);
 
 
