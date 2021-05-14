@@ -1103,20 +1103,17 @@ namespace BizHawk.Client.EmuHawk
 
 		}
 
-		public void RebootCore()
+		public bool RebootCore()
 		{
 			if (IsSlave && Master.WantsToControlReboot)
 			{
 				Master.RebootCore();
+				return true;
 			}
 			else
 			{
-				if (CurrentlyOpenRomArgs == null)
-				{
-					return;
-				}
-
-				LoadRom(CurrentlyOpenRomArgs.OpenAdvanced.SimplePath, CurrentlyOpenRomArgs);
+				if (CurrentlyOpenRomArgs == null) return true;
+				return LoadRom(CurrentlyOpenRomArgs.OpenAdvanced.SimplePath, CurrentlyOpenRomArgs);
 			}
 		}
 
