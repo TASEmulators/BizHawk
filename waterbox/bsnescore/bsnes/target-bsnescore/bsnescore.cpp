@@ -230,6 +230,8 @@ EXPORT void snes_load_cartridge_super_gameboy(
 
     program->load();
 }
+// Note that bsmemory and sufamiturbo (a and b) are never loaded
+// I have no idea what that is but it probably should be supported frontend
 
 
 EXPORT void snes_set_layer_enables(LayerEnables* layerEnables)
