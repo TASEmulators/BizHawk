@@ -290,7 +290,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			//do this threaded stuff early so it has plenty of time to run in background
-			Database.InitializeDatabase(Path.Combine(PathUtils.ExeDirectoryPath, "gamedb", "gamedb.txt"));
+			Database.InitializeDatabase(Path.Combine(PathUtils.ExeDirectoryPath, "gamedb", "gamedb.txt"), warnForCollisions: false);
 			BootGodDb.Initialize(Path.Combine(PathUtils.ExeDirectoryPath, "gamedb"));
 
 			Config = config;
@@ -1224,10 +1224,9 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 
-
-				Util.DebugWriteLine($"For emulator framebuffer {new Size(_currentVideoProvider.BufferWidth, _currentVideoProvider.BufferHeight)}:");
-				Util.DebugWriteLine($"  For virtual size {new Size(_currentVideoProvider.VirtualWidth, _currentVideoProvider.VirtualHeight)}:");
-				Util.DebugWriteLine($"  Selecting display size {lastComputedSize}");
+//				Util.DebugWriteLine($"For emulator framebuffer {new Size(_currentVideoProvider.BufferWidth, _currentVideoProvider.BufferHeight)}:");
+//				Util.DebugWriteLine($"  For virtual size {new Size(_currentVideoProvider.VirtualWidth, _currentVideoProvider.VirtualHeight)}:");
+//				Util.DebugWriteLine($"  Selecting display size {lastComputedSize}");
 
 				// Change size
 				Size = new Size(lastComputedSize.Width + borderWidth, lastComputedSize.Height + borderHeight);
