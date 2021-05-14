@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
-namespace BizHawk.Emulation.Cores.Nintendo.SNES
+namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 {
 	public unsafe partial class BsnesCore : ISaveRam
 	{

@@ -8,7 +8,7 @@ using BizHawk.Emulation.Cores.Waterbox;
 using BizHawk.BizInvoke;
 using BizHawk.Emulation.Common;
 
-namespace BizHawk.Emulation.Cores.Nintendo.SNES
+namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 {
 	public abstract unsafe class BsnesCoreImpl
 	{
@@ -56,7 +56,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void snes_load_cartridge_normal(string baseRomPath, byte[] romData, int romSize);
-		// note this might fail currently if ever called
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void snes_load_cartridge_super_gameboy(string baseRomPath, byte[] romData, byte[] sgbRomData, ulong mergedRomSizes);
 	}
@@ -112,7 +111,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				InvisibleHeapSizeKB = 4,
 				MmapHeapSizeKB = 105 * 1024, // TODO: check whether this needs to be larger; it depends on the rom size
 				PlainHeapSizeKB = 0,
-				SealedHeapSizeKB = 0, // this might actually need to be larger than 0, but doesn't crash for me
+				SealedHeapSizeKB = 0,
 				SkipCoreConsistencyCheck = comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
 				SkipMemoryConsistencyCheck = comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
 			});
@@ -172,7 +171,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public void Seal()
 		{
-			// TODO: check correctness of this method
 			exe.Seal();
 			foreach (var s in _readonlyFiles)
 			{
@@ -193,16 +191,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			// re-adding bsnes's own serialization will need to be done once it's confirmed to be deterministic, aka after libco update
 
 			// byte[] serializedData = new byte[serializedSize];
-			exe.SaveStateBinary(writer);
 			// _core.snes_serialize(serializedData, serializedSize);
 			// writer.Write(serializedData);
+			exe.SaveStateBinary(writer);
 		}
 
 		public void LoadStateBinary(BinaryReader reader)
 		{
 			// byte[] serializedData = reader.ReadBytes(serializedSize);
-			exe.LoadStateBinary(reader);
 			// _core.snes_unserialize(serializedData, serializedSize);
+			exe.LoadStateBinary(reader);
 		}
 	}
 }

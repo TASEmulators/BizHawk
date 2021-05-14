@@ -22,6 +22,7 @@ using BizHawk.Bizware.BizwareGL;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
+using BizHawk.Emulation.Cores.Nintendo.BSNES;
 using BizHawk.Emulation.Cores.Nintendo.GBA;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Nintendo.SNES;

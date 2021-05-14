@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using BizHawk.Emulation.Common;
 
-namespace BizHawk.Emulation.Cores.Nintendo.SNES
+namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 {
 	public partial class BsnesCore : IStatable
 	{

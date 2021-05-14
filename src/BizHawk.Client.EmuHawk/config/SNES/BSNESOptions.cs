@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
-using BizHawk.Emulation.Cores.Nintendo.SNES;
+using BizHawk.Emulation.Cores.Nintendo.BSNES;
 
 namespace BizHawk.Client.EmuHawk
 {

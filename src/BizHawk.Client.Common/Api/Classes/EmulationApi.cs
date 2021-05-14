@@ -5,6 +5,7 @@ using System.ComponentModel;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
+using BizHawk.Emulation.Cores.Nintendo.BSNES;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.PCEngine;
@@ -230,6 +231,7 @@ namespace BizHawk.Client.Common
 			void SetBsnes(BsnesCore core)
 			{
 				var s = core.GetSettings();
+				// TODO: This should probably support both prios inidividually but I have no idea whether changing this breaks anything
 				s.ShowBG1_0 = s.ShowBG1_1 = GetSetting(args, 0);
 				s.ShowBG2_0 = s.ShowBG2_1 = GetSetting(args, 1);
 				s.ShowBG3_0 = s.ShowBG3_1 = GetSetting(args, 2);

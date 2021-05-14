@@ -4,36 +4,29 @@ using System.Linq;
 using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
-using static BizHawk.Emulation.Cores.Nintendo.SNES.BsnesApi;
+using BizHawk.Emulation.Cores.Nintendo.SNES;
+using static BizHawk.Emulation.Cores.Nintendo.BSNES.BsnesApi;
 
-namespace BizHawk.Emulation.Cores.Nintendo.SNES
+namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 {
 	public class BsnesControllers
 	{
 		private static IBsnesController GetController(BSNES_INPUT_DEVICE t, BsnesCore.SnesSyncSettings ss)
 		{
-			switch (t)
+			return t switch
 			{
-				case BSNES_INPUT_DEVICE.None:
-					return new BsnesUnpluggedController();
-				case BSNES_INPUT_DEVICE.Gamepad:
-					return new BsnesController();
-				case BSNES_INPUT_DEVICE.Mouse:
-					return new BsnesMouseController
-					{
-						LimitAnalogChangeSensitivity = ss.LimitAnalogChangeSensitivity
-					};
-				case BSNES_INPUT_DEVICE.SuperMultitap:
-					return new BsnesMultitapController();
-				case BSNES_INPUT_DEVICE.SuperScope:
-					return new BsnesSuperScopeController();
-				case BSNES_INPUT_DEVICE.Justifier:
-					return new BsnesJustifierController(false);
-				case BSNES_INPUT_DEVICE.Justifiers:
-					return new BsnesJustifierController(true);
-				default:
-					throw new InvalidOperationException();
-			}
+				BSNES_INPUT_DEVICE.None => new BsnesUnpluggedController(),
+				BSNES_INPUT_DEVICE.Gamepad => new BsnesController(),
+				BSNES_INPUT_DEVICE.Mouse => new BsnesMouseController
+				{
+					LimitAnalogChangeSensitivity = ss.LimitAnalogChangeSensitivity
+				},
+				BSNES_INPUT_DEVICE.SuperMultitap => new BsnesMultitapController(),
+				BSNES_INPUT_DEVICE.SuperScope => new BsnesSuperScopeController(),
+				BSNES_INPUT_DEVICE.Justifier => new BsnesJustifierController(false),
+				BSNES_INPUT_DEVICE.Justifiers => new BsnesJustifierController(true),
+				_ => throw new InvalidOperationException()
+			};
 		}
 
 		private readonly IBsnesController[] _ports;
@@ -75,11 +68,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 	public interface IBsnesController
 	{
-		/// <summary>
-		/// the type to pass back to the native init
-		/// </summary>
-		BSNES_INPUT_DEVICE DeviceType { get; }
-
 		// Updates the internal state; gets called once per frame from the core
 		void UpdateState(IController controller);
 
@@ -95,8 +83,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 	internal class BsnesController : IBsnesController
 	{
-		public BSNES_INPUT_DEVICE DeviceType => BSNES_INPUT_DEVICE.Gamepad;
-
 		private readonly bool[] _state = new bool[12];
 
 		private static readonly string[] Buttons =
@@ -146,8 +132,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 	public class BsnesMultitapController : IBsnesController
 	{
-		public BSNES_INPUT_DEVICE DeviceType => BSNES_INPUT_DEVICE.SuperMultitap;
-
 		private readonly bool[,] _state = new bool[4, 12];
 
 		private static readonly string[] Buttons =
@@ -201,8 +185,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 	public class BsnesUnpluggedController : IBsnesController
 	{
-		public BSNES_INPUT_DEVICE DeviceType => BSNES_INPUT_DEVICE.None;
-
 		private static readonly ControllerDefinition _definition = new();
 
 		public ControllerDefinition Definition => _definition;
@@ -214,8 +196,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 	public class BsnesMouseController : IBsnesController
 	{
-		public BSNES_INPUT_DEVICE DeviceType => BSNES_INPUT_DEVICE.Mouse;
-
 		private readonly short[] _state = new short[4];
 
 		private static readonly ControllerDefinition _definition = new ControllerDefinition
@@ -256,8 +236,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 	public class BsnesSuperScopeController : IBsnesController
 	{
-		public BSNES_INPUT_DEVICE DeviceType => BSNES_INPUT_DEVICE.SuperScope;
-
 		private readonly short[] _state = new short[6];
 
 		private static readonly ControllerDefinition _definition = new ControllerDefinition
@@ -303,8 +281,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		private readonly bool _chained;
 		private readonly short[] _state;
-
-		public BSNES_INPUT_DEVICE DeviceType => _chained ? BSNES_INPUT_DEVICE.Justifiers : BSNES_INPUT_DEVICE.Justifier;
 
 		public ControllerDefinition Definition { get; }
 

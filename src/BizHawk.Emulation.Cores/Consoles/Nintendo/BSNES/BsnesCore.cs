@@ -9,7 +9,7 @@ using BizHawk.Emulation.Cores.Components.W65816;
 
 // http://wiki.superfamicom.org/snes/show/Backgrounds
 
-namespace BizHawk.Emulation.Cores.Nintendo.SNES
+namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 {
 	[Core(
 		name: CoreNames.Bsnes115,
