@@ -34,7 +34,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 			if (DeterministicEmulation != deterministic)
 			{
-				throw new InvalidOperationException("A BIOS is required for deterministic recordings!");
+				throw new MissingFirmwareException("A BIOS is required for deterministic recordings!");
 			}
 
 			if (!DeterministicEmulation && bios != null && !_syncSettings.RTCUseRealTime && !_syncSettings.SkipBios)
