@@ -11,14 +11,7 @@ using BizHawk.Emulation.Cores.Components.W65816;
 
 namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 {
-	[Core(
-		name: CoreNames.Bsnes115,
-		author: "bsnes team",
-		isPorted: true,
-		isReleased: true,
-		portedVersion: "v115+",
-		portedUrl: "https://bsnes.dev",
-		singleInstance: false)]
+	[PortedCore(CoreNames.Bsnes115, "bsnes team", "v115+", "https://bsnes.dev", isReleased: false)]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public unsafe partial class BsnesCore : IEmulator, IVideoProvider, ISaveRam, IStatable, IInputPollable, IRegionable, ISettable<BsnesCore.SnesSettings, BsnesCore.SnesSyncSettings>
 	{
