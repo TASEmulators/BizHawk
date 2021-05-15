@@ -25,6 +25,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ToolBox_Load(object sender, EventArgs e)
 		{
+			if (OSTailoredCode.IsUnixHost)
+			{
+				Close();
+				return;
+			}
 			Location = new Point(
 				Owner.Location.X + Owner.Size.Width,
 				Owner.Location.Y
@@ -33,6 +38,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public override void Restart()
 		{
+			if (OSTailoredCode.IsUnixHost) return;
 			SetTools();
 			SetSize();
 

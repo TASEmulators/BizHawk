@@ -349,6 +349,12 @@ namespace BizHawk.Client.EmuHawk
 #else
 			SynclessRecordingMenuItem.Enabled = false;
 #endif
+			if (OSTailoredCode.IsUnixHost)
+			{
+				ToolBoxMenuItem.Enabled = false;
+				ToolBoxMenuItem.Visible = false;
+				toolStripSeparator12.Visible = false;
+			}
 
 			Game = GameInfo.NullInstance;
 			_throttle = new Throttle();
