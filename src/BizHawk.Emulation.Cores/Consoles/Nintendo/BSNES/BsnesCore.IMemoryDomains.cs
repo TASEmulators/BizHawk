@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.BSNES
@@ -15,12 +16,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			{
 				void* data = Api.core.snes_get_memory_region(i, out int size, out int wordSize);
 				if (data == null) continue;
-				if (Enum.GetName(typeof(BsnesApi.SNES_MEMORY), i) == BsnesApi.SNES_MEMORY.CARTRIDGE_RAM.ToString())
+				if (i == (int) BsnesApi.SNES_MEMORY.CARTRIDGE_RAM)
 				{
 					_saveRam = (byte*) data;
 					_saveRamSize = size;
 				}
-				mm.Add(new MemoryDomainIntPtr(Enum.GetName(typeof(BsnesApi.SNES_MEMORY), i), MemoryDomain.Endian.Little, (IntPtr) data, size, true, wordSize));
+				mm.Add(new MemoryDomainIntPtrMonitor(Enum.GetName(typeof(BsnesApi.SNES_MEMORY), i), MemoryDomain.Endian.Little, (IntPtr) data, size, true, wordSize, Api));
 			}
 
 			mm.Add(new MemoryDomainDelegate(
