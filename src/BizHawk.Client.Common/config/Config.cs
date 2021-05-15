@@ -22,9 +22,9 @@ namespace BizHawk.Client.Common
 			(new[] { "NES" },
 				new[] { CoreNames.QuickNes, CoreNames.NesHawk, CoreNames.SubNesHawk }),
 			(new[] { "SNES" },
-				new[] { CoreNames.Faust, CoreNames.Snes9X, CoreNames.Bsnes }),
+				new[] { CoreNames.Faust, CoreNames.Snes9X, CoreNames.Bsnes, CoreNames.Bsnes115 }),
 			(new[] { "SGB" },
-				new[] { CoreNames.SameBoy, CoreNames.Bsnes }),
+				new[] { CoreNames.SameBoy, CoreNames.Bsnes, CoreNames.Bsnes115}),
 			(new[] { "GB", "GBC" },
 				new[] { CoreNames.Gambatte, CoreNames.GbHawk, CoreNames.SubGbHawk }),
 			(new[] { "DGB" },
@@ -208,7 +208,7 @@ namespace BizHawk.Client.Common
 		public int AlertMessageColor { get; set; } = DefaultMessagePositions.AlertMessageColor;
 		public int LastInputColor { get; set; } = DefaultMessagePositions.LastInputColor;
 		public int MovieInput { get; set; } = DefaultMessagePositions.MovieInput;
-		
+
 		public int DispPrescale { get; set; } = 1;
 
 		private static bool DetectDirectX()

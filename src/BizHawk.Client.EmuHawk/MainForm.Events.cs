@@ -22,6 +22,7 @@ using BizHawk.Emulation.Cores.Computers.SinclairSpectrum;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.NDS;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 using BizHawk.Emulation.Cores.Intellivision;
+using BizHawk.Emulation.Cores.Nintendo.BSNES;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Nintendo.N64;
 using BizHawk.Emulation.Cores.Nintendo.NES;
@@ -1472,7 +1473,7 @@ namespace BizHawk.Client.EmuHawk
 				using var dlg = new NESSyncSettingsForm(this, sub.GetSyncSettings().Clone(), sub.HasMapperProperties);
 				dlg.ShowDialog(this);
 			}
-			
+
 		}
 
 		private void BarcodeReaderMenuItem_Click(object sender, EventArgs e)
@@ -1656,6 +1657,11 @@ namespace BizHawk.Client.EmuHawk
 				using var form = new SNESControllerSettings(this, bsnes.GetSyncSettings().Clone());
 				form.ShowDialog();
 			}
+			else if (Emulator is BsnesCore bsnesCore)
+			{
+				using var form = new BSNESControllerSettings(this, bsnesCore.GetSyncSettings().Clone());
+				form.ShowDialog();
+			}
 		}
 
 		private void SnesGfxDebuggerMenuItem_Click(object sender, EventArgs e)
@@ -1665,9 +1671,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SnesOptionsMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Emulator is LibsnesCore bsnes)
+			if (Emulator is LibsnesCore libsnes)
 			{
-				SNESOptions.DoSettingsDialog(this, bsnes);
+				SNESOptions.DoSettingsDialog(this, libsnes);
+			}
+			if (Emulator is BsnesCore bsnes)
+			{
+				BSNESOptions.DoSettingsDialog(this, bsnes);
 			}
 		}
 
@@ -2144,7 +2154,7 @@ namespace BizHawk.Client.EmuHawk
 				using var form = new AmstradCpcNonSyncSettings(this, cpc.GetSettings().Clone());
 				form.ShowDialog();
 			}
-			
+
 		}
 
 		private void HelpSubMenu_DropDownOpened(object sender, EventArgs e)

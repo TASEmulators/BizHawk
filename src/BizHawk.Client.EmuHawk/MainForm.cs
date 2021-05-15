@@ -22,6 +22,7 @@ using BizHawk.Bizware.BizwareGL;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
+using BizHawk.Emulation.Cores.Nintendo.BSNES;
 using BizHawk.Emulation.Cores.Nintendo.GBA;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
@@ -138,7 +139,7 @@ namespace BizHawk.Client.EmuHawk
 						tuple.Item1 == requestedExtToolDll
 						|| Path.GetFileName(tuple.Item1) == requestedExtToolDll
 						|| Path.GetFileNameWithoutExtension(tuple.Item1) == requestedExtToolDll);
-					
+
 					if(foundIndex != -1)
 						loaded = Tools.LoadExternalToolForm(enabled[foundIndex].Item1, enabled[foundIndex].Item2, skipExtToolWarning: true);
 				}
@@ -672,7 +673,7 @@ namespace BizHawk.Client.EmuHawk
 				_needsFullscreenOnLoad = false;
 				ToggleFullscreen();
 			}
-			
+
 			// Simply exit the program if the version is asked for
 			if (_argParser.printVersion)
 			{
@@ -1425,53 +1426,80 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SNES_ToggleBg(int layer)
 		{
-			if (!(Emulator is LibsnesCore || Emulator is Snes9x) || !1.RangeTo(4).Contains(layer))
+			if (Emulator is not (BsnesCore or LibsnesCore or Snes9x) || !1.RangeTo(4).Contains(layer))
 			{
 				return;
 			}
 
 			bool result = false;
-			if (Emulator is LibsnesCore bsnes)
+			switch (Emulator)
 			{
-				var s = bsnes.GetSettings();
-				switch (layer)
+				case BsnesCore bsnes:
 				{
-					case 1:
-						result = s.ShowBG1_0 = s.ShowBG1_1 ^= true;
-						break;
-					case 2:
-						result = s.ShowBG2_0 = s.ShowBG2_1 ^= true;
-						break;
-					case 3:
-						result = s.ShowBG3_0 = s.ShowBG3_1 ^= true;
-						break;
-					case 4:
-						result = s.ShowBG4_0 = s.ShowBG4_1 ^= true;
-						break;
-				}
+					var s = bsnes.GetSettings();
+					switch (layer)
+					{
+						case 1:
+							result = s.ShowBG1_0 = s.ShowBG1_1 ^= true;
+							break;
+						case 2:
+							result = s.ShowBG2_0 = s.ShowBG2_1 ^= true;
+							break;
+						case 3:
+							result = s.ShowBG3_0 = s.ShowBG3_1 ^= true;
+							break;
+						case 4:
+							result = s.ShowBG4_0 = s.ShowBG4_1 ^= true;
+							break;
+					}
 
-				bsnes.PutSettings(s);
-			}
-			else if (Emulator is Snes9x snes9X)
-			{
-				var s = snes9X.GetSettings();
-				switch (layer)
+					bsnes.PutSettings(s);
+					break;
+				}
+				case LibsnesCore libsnes:
 				{
-					case 1:
-						result = s.ShowBg0 ^= true;
-						break;
-					case 2:
-						result = s.ShowBg1 ^= true;
-						break;
-					case 3:
-						result = s.ShowBg2 ^= true;
-						break;
-					case 4:
-						result = s.ShowBg3 ^= true;
-						break;
-				}
+					var s = libsnes.GetSettings();
+					switch (layer)
+					{
+						case 1:
+							result = s.ShowBG1_0 = s.ShowBG1_1 ^= true;
+							break;
+						case 2:
+							result = s.ShowBG2_0 = s.ShowBG2_1 ^= true;
+							break;
+						case 3:
+							result = s.ShowBG3_0 = s.ShowBG3_1 ^= true;
+							break;
+						case 4:
+							result = s.ShowBG4_0 = s.ShowBG4_1 ^= true;
+							break;
+					}
 
-				snes9X.PutSettings(s);
+					libsnes.PutSettings(s);
+					break;
+				}
+				case Snes9x snes9X:
+				{
+					var s = snes9X.GetSettings();
+					switch (layer)
+					{
+						case 1:
+							result = s.ShowBg0 ^= true;
+							break;
+						case 2:
+							result = s.ShowBg1 ^= true;
+							break;
+						case 3:
+							result = s.ShowBg2 ^= true;
+							break;
+						case 4:
+							result = s.ShowBg3 ^= true;
+							break;
+					}
+
+					snes9X.PutSettings(s);
+					break;
+				}
 			}
 
 			AddOnScreenMessage($"BG {layer} Layer {(result ? "On" : "Off")}");
@@ -1980,6 +2008,11 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case "SNES" when Emulator is LibsnesCore { IsSGB: false }:
 					SNESSubMenu.Text = "&SNES";
+					SNESSubMenu.Visible = true;
+					break;
+				case "SNES" when Emulator is BsnesCore bsnesCore:
+					SNESSubMenu.Text = bsnesCore.IsSGB ?  "&SGB" : "&SNES";
+					SNESSubMenu.DropDownItems[2].Visible = false;
 					SNESSubMenu.Visible = true;
 					break;
 				default:
@@ -2637,7 +2670,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Config.ClockThrottle)
 				return true;
-			
+
 			AddOnScreenMessage("Unable to change speed, please switch to clock throttle");
 			return false;
 		}
