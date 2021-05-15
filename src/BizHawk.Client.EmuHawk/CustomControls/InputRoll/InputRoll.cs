@@ -310,7 +310,7 @@ namespace BizHawk.Client.EmuHawk
 		public bool AllowColumnReorder { get; set; }
 
 		/// <summary>
-		/// Gets or sets a value indicating whether the entire row will always be selected 
+		/// Gets or sets a value indicating whether the entire row will always be selected
 		/// </summary>
 		[Category("Appearance")]
 		[DefaultValue(false)]

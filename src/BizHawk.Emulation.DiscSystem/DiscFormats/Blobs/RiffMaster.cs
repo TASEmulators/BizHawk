@@ -7,7 +7,7 @@ using BizHawk.Common;
 namespace BizHawk.Emulation.DiscSystem
 {
 	/// <summary>
-	/// Parses a RIFF file into a live data structure. 
+	/// Parses a RIFF file into a live data structure.
 	/// References to large blobs remain mostly on disk in the file which RiffMaster keeps a reference too. Dispose it to close the file.
 	/// You can modify blobs however you want and write the file back out to a new path, if you're careful (that was the original point of this)
 	/// Please be sure to test round-tripping when you make any changes. This architecture is a bit tricky to use, but it works if you're careful.
@@ -59,7 +59,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 			/// <summary>
 			/// distinct from a size or a length, the `volume` is the volume of bytes occupied by the chunk on disk (accounting for padding).
-			/// 
+			///
 			/// </summary>
 			public abstract long GetVolume();
 
@@ -278,7 +278,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 		private long readCounter;
 		private RiffChunk ReadChunk(BinaryReader br)
-		 {
+		{
 			RiffChunk ret;
 			string tag = ReadTag(br); readCounter += 4;
 			uint size = br.ReadUInt32(); readCounter += 4;

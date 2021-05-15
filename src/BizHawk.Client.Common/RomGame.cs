@@ -37,7 +37,7 @@ namespace BizHawk.Client.Common
 			// read the entire contents of the file into memory.
 			// unfortunate in the case of large files, but that's what we've got to work with for now.
 
-			// if we're offset exactly 512 bytes from a 1024-byte boundary, 
+			// if we're offset exactly 512 bytes from a 1024-byte boundary,
 			// assume we have a header of that size. Otherwise, assume it's just all rom.
 			// Other 'recognized' header sizes may need to be added.
 			int headerOffset = fileLength % BankSize;
@@ -56,8 +56,8 @@ namespace BizHawk.Client.Common
 			stream.Position = 0;
 			stream.Read(FileData, 0, fileLength);
 
-			// if there was no header offset, RomData is equivalent to FileData 
-			// (except in cases where the original interleaved file data is necessary.. in that case we'll have problems.. 
+			// if there was no header offset, RomData is equivalent to FileData
+			// (except in cases where the original interleaved file data is necessary.. in that case we'll have problems..
 			// but this whole architecture is not going to withstand every peculiarity and be fast as well.
 			if (headerOffset == 0)
 			{
@@ -67,7 +67,7 @@ namespace BizHawk.Client.Common
 				file.Extension == ".pzx" || file.Extension == ".csw" || file.Extension == ".wav" || file.Extension == ".cdt")
 			{
 				// these are not roms. unfortunately if treated as such there are certain edge-cases
-				// where a header offset is detected. This should mitigate this issue until a cleaner solution is found 
+				// where a header offset is detected. This should mitigate this issue until a cleaner solution is found
 				// (-Asnivor)
 				RomData = FileData;
 			}
@@ -120,7 +120,7 @@ namespace BizHawk.Client.Common
 
 		private static byte[] DeInterleaveSMD(byte[] source)
 		{
-			// SMD files are interleaved in pages of 16k, with the first 8k containing all 
+			// SMD files are interleaved in pages of 16k, with the first 8k containing all
 			// odd bytes and the second 8k containing all even bytes.
 			int size = source.Length;
 			if (size > 0x400000)

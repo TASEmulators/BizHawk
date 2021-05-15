@@ -3,7 +3,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 {
-	[Core(CoreNames.GBHawkLink, "", isPorted: false, isReleased: true)]
+	[Core(CoreNames.GBHawkLink, "")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class GBHawkLink : IEmulator, ISaveRam, IDebuggable, IStatable, IInputPollable, IRegionable, ILinkable,
 		ISettable<GBHawkLink.GBLinkSettings, GBHawkLink.GBLinkSyncSettings>

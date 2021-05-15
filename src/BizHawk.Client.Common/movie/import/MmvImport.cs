@@ -134,7 +134,7 @@ namespace BizHawk.Client.Common.movie.import
 
 					if (player == 1)
 					{
-						controllers["Pause"] = 
+						controllers["Pause"] =
 							(((controllerState >> 6) & 0x1) != 0 && !isGameGear)
 							|| (((controllerState >> 7) & 0x1) != 0 && isGameGear);
 					}

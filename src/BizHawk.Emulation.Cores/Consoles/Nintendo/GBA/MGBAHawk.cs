@@ -6,7 +6,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBA
 {
-	[Core(CoreNames.Mgba, "endrift", true, true, "0.8", "https://mgba.io/", false)]
+	[PortedCore(CoreNames.Mgba, "endrift", "0.8", "https://mgba.io/")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight), typeof(IRegionable) })]
 	public partial class MGBAHawk : IEmulator, IVideoProvider, ISoundProvider, IGBAGPUViewable,
 		ISaveRam, IStatable, IInputPollable, ISettable<MGBAHawk.Settings, MGBAHawk.SyncSettings>,
@@ -34,7 +34,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 			if (DeterministicEmulation != deterministic)
 			{
-				throw new InvalidOperationException("A BIOS is required for deterministic recordings!");
+				throw new MissingFirmwareException("A BIOS is required for deterministic recordings!");
 			}
 
 			if (!DeterministicEmulation && bios != null && !_syncSettings.RTCUseRealTime && !_syncSettings.SkipBios)

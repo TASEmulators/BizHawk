@@ -12,7 +12,7 @@ using sd = System.Drawing;
 namespace BizHawk.Bizware.OpenTK3
 {
 	/// <summary>
-	/// A simple renderer useful for rendering GUI stuff. 
+	/// A simple renderer useful for rendering GUI stuff.
 	/// When doing GUI rendering, run everything through here (if you need a GL feature not done through here, run it through here first)
 	/// Call Begin, then draw, then End, and don't use other Renderers or GL calls in the meantime, unless you know what you're doing.
 	/// This can perform batching (well.. maybe not yet), which is occasionally necessary for drawing large quantities of things.
@@ -241,10 +241,10 @@ namespace BizHawk.Bizware.OpenTK3
 			else { v0 = art.v0; v1 = art.v1; }
 
 			float[] data = new float[32] {
-			  x,y, u0,v0, CornerColors[0].X, CornerColors[0].Y, CornerColors[0].Z, CornerColors[0].W,
-			  x+art.Width,y, u1,v0, CornerColors[1].X, CornerColors[1].Y, CornerColors[1].Z, CornerColors[1].W,
-			  x,y+art.Height, u0,v1, CornerColors[2].X, CornerColors[2].Y, CornerColors[2].Z, CornerColors[2].W,
-			  x+art.Width,y+art.Height, u1,v1,  CornerColors[3].X, CornerColors[3].Y, CornerColors[3].Z, CornerColors[3].W,
+				x,y, u0,v0, CornerColors[0].X, CornerColors[0].Y, CornerColors[0].Z, CornerColors[0].W,
+				x+art.Width,y, u1,v0, CornerColors[1].X, CornerColors[1].Y, CornerColors[1].Z, CornerColors[1].W,
+				x,y+art.Height, u0,v1, CornerColors[2].X, CornerColors[2].Y, CornerColors[2].Z, CornerColors[2].W,
+				x+art.Width,y+art.Height, u1,v1, CornerColors[3].X, CornerColors[3].Y, CornerColors[3].Z, CornerColors[3].W,
 			};
 
 			Texture2d tex = art.BaseTexture;

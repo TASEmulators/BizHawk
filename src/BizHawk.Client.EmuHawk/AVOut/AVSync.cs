@@ -184,10 +184,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			// this writer will never support this capability
 
-            // but it needs to for syncless recorder, otherwise it won't work at all
-            if (W is SynclessRecorder)
+			// but it needs to for syncless recorder, otherwise it won't work at all
+			if (W is SynclessRecorder)
 			{
-                W.SetFrame(frame);
+				W.SetFrame(frame);
 			}
 		}
 

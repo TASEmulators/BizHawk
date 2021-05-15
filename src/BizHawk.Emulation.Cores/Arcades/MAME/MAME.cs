@@ -83,14 +83,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Arcades.MAME
 {
-	[Core(
-		name: CoreNames.MAME,
-		author: "MAMEDev",
-		isPorted: true,
-		isReleased: false,
-		portedVersion: "0.230",
-		portedUrl: "https://github.com/mamedev/mame.git",
-		singleInstance: false)]
+	[PortedCore(CoreNames.MAME, "MAMEDev", "0.231", "https://github.com/mamedev/mame.git", isReleased: false)]
 	public partial class MAME : IEmulator, IVideoProvider, ISoundProvider, ISettable<object, MAME.SyncSettings>, IStatable, IInputPollable
 	{
 		public MAME(string dir, string file, MAME.SyncSettings syncSettings, out string gamename)
@@ -101,9 +94,10 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 			_gameDirectory = dir;
 			_gameFilename = file;
-			_mameThread = new Thread(ExecuteMAMEThread);
 
-			AsyncLaunchMAME();
+			_mameThread = new Thread(ExecuteMAMEThread);
+			_mameThread.Start();
+			_mameStartupComplete.WaitOne();
 
 			_syncSettings = (SyncSettings)syncSettings ?? new SyncSettings();
 			_syncSettings.ExpandoSettings = new ExpandoObject();
@@ -131,12 +125,6 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		private LibMAME.SoundCallbackDelegate _soundCallback;
 		private LibMAME.BootCallbackDelegate _bootCallback;
 		private LibMAME.LogCallbackDelegate _logCallback;
-
-		private void AsyncLaunchMAME()
-		{
-			_mameThread.Start();
-			_mameStartupComplete.WaitOne();
-		}
 
 		private void ExecuteMAMEThread()
 		{
@@ -210,7 +198,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		private void CheckVersions()
 		{
 			var mameVersion = MameGetString(MAMELuaCommand.GetVersion);
-			var version = this.Attributes().PortedVersion;
+			var version = ((PortedCoreAttribute) this.Attributes()).PortedVersion;
 			Debug.Assert(version == mameVersion,
 				"MAME versions desync!\n\n" +
 				$"MAME is { mameVersion }\n" +
@@ -265,15 +253,14 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				return;
 			}
 
-			_numSamples = lengthInBytes / bytesPerSample;
+			int numSamples = lengthInBytes / bytesPerSample;
 
 			unsafe
 			{
 				short* pSample = (short*)ptr.ToPointer();
-				for (int i = 0; i < _numSamples; i++)
+				for (int i = 0; i < numSamples; i++)
 				{
 					_audioSamples.Enqueue(*(pSample + i));
-					_dAudioSamples++;
 				}
 			}
 

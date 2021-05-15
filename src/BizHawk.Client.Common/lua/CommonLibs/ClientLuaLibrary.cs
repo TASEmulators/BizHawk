@@ -88,6 +88,13 @@ namespace BizHawk.Client.Common
 		[LuaMethod("seekframe", "Makes the emulator seek to the frame specified")]
 		public void SeekFrame(int frame)
 		{
+			if (frame < Emulator.Frame)
+			{
+				Log("client.seekframe: cannot seek backwards");
+				return;
+			}
+			if (frame == Emulator.Frame) return;
+
 			bool wasPaused = MainForm.EmulatorPaused;
 
 			// can't re-enter lua while doing this

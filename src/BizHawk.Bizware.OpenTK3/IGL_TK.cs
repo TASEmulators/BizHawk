@@ -35,7 +35,7 @@ using VertexAttribPointerType = OpenTK.Graphics.OpenGL.VertexAttribPointerType;
 namespace BizHawk.Bizware.OpenTK3
 {
 	/// <summary>
-	/// OpenTK implementation of the BizwareGL.IGL interface. 
+	/// OpenTK implementation of the BizwareGL.IGL interface.
 	/// TODO - can we have more than one of these? could be dangerous. such dangerous things to be possibly reconsidered are marked with HAMNUTS
 	/// TODO - if we have any way of making contexts, we also need a way of freeing it, and then we can cleanup our dictionaries
 	/// </summary>
@@ -76,7 +76,7 @@ namespace BizHawk.Bizware.OpenTK3
 			MakeDefaultCurrent();
 
 			//this is important for reasons unknown
-			GraphicsContext.LoadAll(); 
+			GraphicsContext.LoadAll();
 
 			//misc initialization
 			CreateRenderStates();
@@ -395,7 +395,7 @@ namespace BizHawk.Bizware.OpenTK3
 
 		public void SetPipelineUniform(PipelineUniform uniform, bool value)
 		{
-			GL.Uniform1((int)uniform.Sole.Opaque, value ? 1 : 0); 
+			GL.Uniform1((int) uniform.Sole.Opaque, value ? 1 : 0);
 		}
 
 		public unsafe void SetPipelineUniformMatrix(PipelineUniform uniform, Matrix4 mat, bool transpose)
@@ -826,12 +826,12 @@ namespace BizHawk.Bizware.OpenTK3
 		private void CreateRenderStates()
 		{
 			_rsBlendNoneVerbatim = new CacheBlendState(
-				false, 
+				false,
 				BizGL.BlendingFactorSrc.One, BizGL.BlendEquationMode.FuncAdd, BizGL.BlendingFactorDest.Zero,
 				BizGL.BlendingFactorSrc.One, BizGL.BlendEquationMode.FuncAdd, BizGL.BlendingFactorDest.Zero);
 
 			_rsBlendNoneOpaque = new CacheBlendState(
-				false, 
+				false,
 				BizGL.BlendingFactorSrc.One, BizGL.BlendEquationMode.FuncAdd, BizGL.BlendingFactorDest.Zero,
 				BizGL.BlendingFactorSrc.ConstantAlpha, BizGL.BlendEquationMode.FuncAdd, BizGL.BlendingFactorDest.Zero);
 

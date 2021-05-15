@@ -144,7 +144,7 @@ namespace BizHawk.Client.EmuHawk
 			// Highlight the branch cell a little, if hovering over it
 			if (BranchView.CurrentCell.IsDataCell()
 				&& BranchView.CurrentCell.Column.Name == BranchNumberColumnName &&
-				column.Name == BranchNumberColumnName && 
+				column.Name == BranchNumberColumnName &&
 				index == BranchView.CurrentCell.RowIndex)
 			{
 				color = Color.FromArgb((byte)(color.A - 24), (byte)(color.R - 24), (byte)(color.G - 24), (byte)(color.B - 24));
@@ -229,7 +229,7 @@ namespace BizHawk.Client.EmuHawk
 			UpdateBranchContextMenuItem.Enabled =
 			LoadBranchContextMenuItem.Enabled =
 			EditBranchTextContextMenuItem.Enabled =
-			JumpToBranchContextMenuItem.Enabled = 
+			JumpToBranchContextMenuItem.Enabled =
 				BranchView.SelectedRows.Count() == 1;
 		}
 

@@ -291,7 +291,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (!CurrentTasMovie.Changes || Settings.AutosaveInterval == 0 
+			if (!CurrentTasMovie.Changes || Settings.AutosaveInterval == 0
 				|| CurrentTasMovie.Filename == DefaultTasProjName())
 			{
 				return;
@@ -957,7 +957,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (fromLua)
 			{
-				bool wasPaused = MainForm.EmulatorPaused; 
+				bool wasPaused = MainForm.EmulatorPaused;
 				
 				// why not use this? because I'm not letting the form freely run. it all has to be under this loop.
 				// i could use this and then poll StepRunLoop_Core() repeatedly, but.. that's basically what I'm doing
@@ -1157,7 +1157,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TAStudio_DragDrop(object sender, DragEventArgs e)
 		{
-			// TODO: Maybe this should call Mainform's DragDrop method, 
+			// TODO: Maybe this should call Mainform's DragDrop method,
 			// since that can file types that are not movies,
 			// and it can process multiple files sequentially
 			var filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);

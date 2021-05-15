@@ -180,7 +180,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				AllowWrap = false // must be an independent resource
 			};
-			var bb = new BitmapBuffer(tw.SDBitmap, blow); 
+			var bb = new BitmapBuffer(tw.SDBitmap, blow);
 			return bb;
 		}
 
@@ -220,7 +220,7 @@ namespace BizHawk.Client.EmuHawk
 			//  ret.M42 = dims.Height;
 			//  return ret;
 			//}
-			//else 
+			//else
 				return Matrix4.Identity;
 		}
 

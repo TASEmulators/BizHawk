@@ -46,7 +46,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <summary>
 		/// The DiscTOCRaw corresponding to the RawTOCEntries.
 		/// TODO - there's one of these for every session, so... having one here doesn't make sense
-		/// so... 
+		/// so...
 		/// TODO - remove me
 		/// </summary>
 		public DiscTOC TOC;

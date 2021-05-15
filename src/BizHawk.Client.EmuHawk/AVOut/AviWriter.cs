@@ -13,7 +13,7 @@ using BizHawk.Emulation.Common;
 // some helpful p/invoke from http://www.codeproject.com/KB/audio-video/Motion_Detection.aspx?msg=1142967
 namespace BizHawk.Client.EmuHawk
 {
-	[VideoWriter("vfwavi", "AVI writer", 
+	[VideoWriter("vfwavi", "AVI writer",
 		"Uses the Microsoft AVIFIL32 system to write .avi files.  Audio is uncompressed; Video can be compressed with any installed VCM codec.  Splits on 2G and resolution change.")]
 	internal class AviWriter : IVideoWriter
 	{

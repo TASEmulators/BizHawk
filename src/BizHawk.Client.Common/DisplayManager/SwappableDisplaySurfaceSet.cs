@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace BizHawk.Client.Common
 {
 	/// <summary>
-	/// encapsulates thread-safe concept of pending/current display surfaces, reusing buffers where matching 
+	/// encapsulates thread-safe concept of pending/current display surfaces, reusing buffers where matching
 	/// sizes are available and keeping them cleaned up when they don't seem like they'll need to be used anymore
 	/// </summary>
 	public class SwappableDisplaySurfaceSet<T>

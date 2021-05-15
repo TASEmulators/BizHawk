@@ -51,6 +51,8 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			Frame = reader.ReadInt32();
 			LagCount = reader.ReadInt32();
 			IsLagFrame = reader.ReadBoolean();
+
+			DiscardSamples();
 		}
 	}
 }

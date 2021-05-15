@@ -10,13 +10,7 @@ using System.Linq;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 {
-	[Core(CoreNames.VirtualBoyee,
-		author: "Mednafen Team",
-		isPorted: true,
-		isReleased: true,
-		portedVersion: "0.9.44.1",
-		portedUrl: "https://mednafen.github.io/releases/",
-		singleInstance: false)]
+	[PortedCore(CoreNames.VirtualBoyee, "Mednafen Team", "0.9.44.1", "https://mednafen.github.io/releases/")]
 	public class VirtualBoyee : WaterboxCore, ISettable<VirtualBoyee.Settings, VirtualBoyee.SyncSettings>
 	{
 		private readonly LibVirtualBoyee _boyee;

@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Common
 	/// that the core object itself implements.  In addition it provides
 	/// a Register() method to allow the core to pass in any additional services
 	/// </summary>
-	/// <seealso cref="IEmulatorServiceProvider"/> 
+	/// <seealso cref="IEmulatorServiceProvider"/>
 	public class BasicServiceProvider : IEmulatorServiceProvider
 	{
 		private readonly Dictionary<Type, object> _services = new Dictionary<Type, object>();
@@ -46,7 +46,7 @@ namespace BizHawk.Emulation.Common
 		/// <summary>the core can call this to register an additional service</summary>
 		/// <typeparam name="T">The <see cref="IEmulatorService"/> to register</typeparam>
 		/// <exception cref="ArgumentNullException"><paramref name="provider"/> is null</exception>
-		public void Register<T>(T provider) 
+		public void Register<T>(T provider)
 			where T : IEmulatorService
 		{
 			if (provider == null)

@@ -287,7 +287,7 @@ namespace BizHawk.Client.Common.Filters
 
 			// apply all parameters to this shader.. even if it was meant for other shaders. kind of lame.
 			if(Parameters != null)
-			{ 
+			{
 				foreach (var kvp in Parameters)
 				{
 					if (kvp.Value is float value)

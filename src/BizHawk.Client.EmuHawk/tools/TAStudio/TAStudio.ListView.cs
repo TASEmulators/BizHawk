@@ -156,7 +156,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TasView_QueryItemIcon(int index, RollColumn column, ref Bitmap bitmap, ref int offsetX, ref int offsetY)
 		{
-			if (!_engaged)
+			if (!_engaged || _initializing)
 			{
 				return;
 			}
@@ -1034,7 +1034,7 @@ namespace BizHawk.Client.EmuHawk
 						// If going backwards, delete!
 						bool shouldInsert = true;
 						if (startVal < _rightClickFrame)
-						{ 
+						{
 							// Cloning to a previous frame makes no sense.
 							startVal = _rightClickFrame - 1;
 						}

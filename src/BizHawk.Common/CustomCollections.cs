@@ -100,7 +100,7 @@ namespace BizHawk.Common
 			var startIndex = _list.BinarySearch(item);
 			if (startIndex < 0)
 			{
-				// If BinarySearch doesn't find the item, 
+				// If BinarySearch doesn't find the item,
 				// it returns the bitwise complement of the index of the next element
 				// that is larger than item
 				startIndex = ~startIndex;

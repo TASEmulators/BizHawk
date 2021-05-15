@@ -17,14 +17,7 @@ using BizHawk.Emulation.Cores.Components.W65816;
 // wrap dll code around some kind of library-accessing interface so that it doesn't malfunction if the dll is unavailable
 namespace BizHawk.Emulation.Cores.Nintendo.SNES
 {
-	[Core(
-		CoreNames.Bsnes,
-		"byuu",
-		isPorted: true,
-		isReleased: true,
-		portedVersion: "v87",
-		portedUrl: "http://byuu.org/",
-		singleInstance: false)]
+	[PortedCore(CoreNames.Bsnes, "byuu", "v87", "http://byuu.org/")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public unsafe partial class LibsnesCore : IEmulator, IVideoProvider, ISaveRam, IStatable, IInputPollable, IRegionable, ICodeDataLogger,
 		IDebuggable, ISettable<LibsnesCore.SnesSettings, LibsnesCore.SnesSyncSettings>

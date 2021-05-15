@@ -165,6 +165,17 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <summary>
+		/// Predict whether Capture() will capture a state.  Useful if expensive work needs to happen before
+		/// Capture() is called.
+		/// </summary>
+		/// <param name="frame">The same frame number to be passed to capture</param>
+		/// <returns>Whether capture will happen, assuming Capture() is passed the same frame and force = false</returns>
+		public bool WillCapture(int frame)
+		{
+			return ShouldCapture(frame);
+		}
+
+		/// <summary>
 		/// Maybe captures a state, if the conditions are favorable
 		/// </summary>
 		/// <param name="frame">frame number to capture</param>
@@ -354,7 +365,7 @@ namespace BizHawk.Client.Common
 		private sealed class SaveStateStream : Stream, ISpanStream
 		{
 			/// <summary>
-			/// 
+			///
 			/// </summary>
 			/// <param name="backingStore">The ringbuffer to write into</param>
 			/// <param name="offset">Offset into the buffer to start writing (and treat as position 0 in the stream)</param>

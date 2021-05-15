@@ -3,11 +3,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 {
-	[Core(
-		CoreNames.ChannelFHawk,
-		"Asnivor",
-		isPorted: false,
-		isReleased: false)]
+	[Core(CoreNames.ChannelFHawk, "Asnivor", isReleased: false)]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class ChannelF
 	{

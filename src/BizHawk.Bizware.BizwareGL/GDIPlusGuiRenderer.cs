@@ -65,12 +65,11 @@ namespace BizHawk.Bizware.BizwareGL
 
 			float[][] colorMatrixElements =
 			{
-			 new float[] {r,  0,  0,  0,  0},
-			 new float[] {0,  g,  0,  0,  0},
-			 new float[] {0,  0,  b,  0,  0},
-			 new float[] {0,  0,  0,  a,  0},
-			 new float[] {0,  0,  0,  0,  1}
-
+				new float[] { r, 0, 0, 0, 0 },
+				new float[] { 0, g, 0, 0, 0 },
+				new float[] { 0, 0, b, 0, 0 },
+				new float[] { 0, 0, 0, a, 0 },
+				new float[] { 0, 0, 0, 0, 1 },
 			};
 
 			var colorMatrix = new ColorMatrix(colorMatrixElements);

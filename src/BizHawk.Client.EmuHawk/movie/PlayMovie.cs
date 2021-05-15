@@ -554,7 +554,7 @@ namespace BizHawk.Client.EmuHawk
 			Run();
 			_movieSession.ReadOnly = ReadOnlyCheckBox.Checked;
 
-			if (StopOnFrameCheckbox.Checked && 
+			if (StopOnFrameCheckbox.Checked &&
 				(StopOnFrameTextBox.ToRawInt().HasValue || LastFrameCheckbox.Checked))
 			{
 				_mainForm.PauseOnFrame = LastFrameCheckbox.Checked

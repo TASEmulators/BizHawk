@@ -269,7 +269,7 @@ namespace BizHawk.Client.EmuHawk
 					// try compiling it
 					bool ok = false;
 					string errors = "";
-					try 
+					try
 					{
 						var filter = new RetroShaderChain(_gl, cgp, Path.GetDirectoryName(choice));
 						ok = filter.Available;

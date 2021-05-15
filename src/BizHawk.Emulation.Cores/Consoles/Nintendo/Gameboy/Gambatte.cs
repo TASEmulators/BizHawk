@@ -10,14 +10,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 	/// <summary>
 	/// a gameboy/gameboy color emulator wrapped around native C++ libgambatte
 	/// </summary>
-	[Core(
-		CoreNames.Gambatte,
-		"",
-		isPorted: true,
-		isReleased: true,
-		portedVersion: "Gambatte-Speedrun r717+",
-		portedUrl: "https://github.com/pokemon-speedrunning/gambatte-speedrun",
-		singleInstance: false)]
+	[PortedCore(CoreNames.Gambatte, "", "Gambatte-Speedrun r717+", "https://github.com/pokemon-speedrunning/gambatte-speedrun")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class Gameboy : IEmulator, IVideoProvider, ISoundProvider, ISaveRam, IStatable, IInputPollable, ICodeDataLogger,
 		IBoardInfo, IRomInfo, IDebuggable, ISettable<Gameboy.GambatteSettings, Gameboy.GambatteSyncSettings>,
@@ -28,7 +21,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public Gameboy(CoreComm comm, GameInfo game, byte[] file, Gameboy.GambatteSettings settings, Gameboy.GambatteSyncSettings syncSettings, bool deterministic)
 		{
 			var ser = new BasicServiceProvider(this);
-			ser.Register<IDisassemblable>(new GBDisassembler());
+			ser.Register<IDisassemblable>(_disassembler);
 			ServiceProvider = ser;
 			Tracer = new TraceBuffer
 			{
@@ -145,6 +138,42 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				{
 					LibGambatte.gambatte_settimemode(GambatteState, false);
 				}
+
+				if (DeterministicEmulation)
+				{
+					int[] rtcRegs = new int[11];
+					rtcRegs[(int)LibGambatte.RtcRegIndicies.Dh] = 0;
+					if (_syncSettings.InternalRTCOverflow)
+					{
+						rtcRegs[(int)LibGambatte.RtcRegIndicies.Dh] |= 0x80;
+					}
+					if (_syncSettings.InternalRTCHalt)
+					{
+						rtcRegs[(int)LibGambatte.RtcRegIndicies.Dh] |= 0x40;
+					}
+					rtcRegs[(int)LibGambatte.RtcRegIndicies.Dh] |= _syncSettings.InternalRTCDays >> 8;
+					rtcRegs[(int)LibGambatte.RtcRegIndicies.Dl] = _syncSettings.InternalRTCDays & 0xFF;
+					rtcRegs[(int)LibGambatte.RtcRegIndicies.H] = (_syncSettings.InternalRTCHours < 0) ? (_syncSettings.InternalRTCHours + 0x20) : _syncSettings.InternalRTCHours;
+					rtcRegs[(int)LibGambatte.RtcRegIndicies.M] = (_syncSettings.InternalRTCMinutes < 0) ? (_syncSettings.InternalRTCMinutes + 0x40) : _syncSettings.InternalRTCMinutes;
+					rtcRegs[(int)LibGambatte.RtcRegIndicies.S] = (_syncSettings.InternalRTCSeconds < 0) ? (_syncSettings.InternalRTCSeconds + 0x40) : _syncSettings.InternalRTCSeconds;
+					rtcRegs[(int)LibGambatte.RtcRegIndicies.C] = _syncSettings.InternalRTCCycles;
+					rtcRegs[(int)LibGambatte.RtcRegIndicies.Dh_L] = 0;
+					if (_syncSettings.LatchedRTCOverflow)
+					{
+						rtcRegs[(int)LibGambatte.RtcRegIndicies.Dh_L] |= 0x80;
+					}
+					if (_syncSettings.LatchedRTCHalt)
+					{
+						rtcRegs[(int)LibGambatte.RtcRegIndicies.Dh_L] |= 0x40;
+					}
+					rtcRegs[(int)LibGambatte.RtcRegIndicies.Dh_L] |= _syncSettings.LatchedRTCDays >> 8;
+					rtcRegs[(int)LibGambatte.RtcRegIndicies.Dl_L] = _syncSettings.LatchedRTCDays & 0xFF;
+					rtcRegs[(int)LibGambatte.RtcRegIndicies.H_L] = _syncSettings.LatchedRTCHours;
+					rtcRegs[(int)LibGambatte.RtcRegIndicies.M_L] = _syncSettings.LatchedRTCMinutes;
+					rtcRegs[(int)LibGambatte.RtcRegIndicies.S_L] = _syncSettings.LatchedRTCSeconds;
+					LibGambatte.gambatte_setrtcregs(GambatteState, rtcRegs);
+				}
+
 				LibGambatte.gambatte_setrtcdivisoroffset(GambatteState, _syncSettings.RTCDivisorOffset);
 
 				_cdCallback = new LibGambatte.CDCallback(CDCallbackProc);
@@ -157,6 +186,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				throw;
 			}
 		}
+
+		private readonly GBDisassembler _disassembler = new();
 
 		public string RomDetails { get; }
 

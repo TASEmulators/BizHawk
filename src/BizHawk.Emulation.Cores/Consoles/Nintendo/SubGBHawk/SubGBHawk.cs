@@ -5,11 +5,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.SubGBHawk
 {
-	[Core(
-		CoreNames.SubGbHawk,
-		"",
-		isPorted: false,
-		isReleased: true)]
+	[Core(CoreNames.SubGbHawk, "")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class SubGBHawk : IEmulator, IStatable, IInputPollable,
 		ISettable<GBHawk.GBHawk.GBSettings, GBHawk.GBHawk.GBSyncSettings>, IDebuggable

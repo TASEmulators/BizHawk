@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Globalization;
 using System.Threading;
 
 namespace BizHawk.Client.Common
@@ -56,17 +57,6 @@ namespace BizHawk.Client.Common
 		protected static int LuaInt(object luaArg)
 		{
 			return (int)(double)luaArg;
-		}
-
-		protected static Color? ToColor(object o)
-		{
-			return o switch
-			{
-				null => null,
-				double d => Color.FromArgb((int) (long) d),
-				string s => Color.FromName(s),
-				_ => null
-			};
 		}
 
 		protected void Log(object message)

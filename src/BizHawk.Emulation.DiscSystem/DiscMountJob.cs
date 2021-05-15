@@ -204,7 +204,7 @@ namespace BizHawk.Emulation.DiscSystem
 								INDEX 01 00:00:00";
 						if (len % 2048 != 0 && len % 2352 == 0)
 							LoadCue(Path.GetDirectoryName(IN_FromPath), mode2cue);
-						else 
+						else
 							LoadCue(Path.GetDirectoryName(IN_FromPath), mode1cue);
 						break;
 					}

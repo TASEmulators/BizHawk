@@ -32,7 +32,8 @@ namespace BizHawk.Client.EmuHawk
 
 				if (!_isLoadingRom)
 				{
-					RebootCore();
+					var rebootSucceeded = RebootCore();
+					if (!rebootSucceeded) return false;
 				}
 
 				Config.RecentMovies.Add(movie.Filename);

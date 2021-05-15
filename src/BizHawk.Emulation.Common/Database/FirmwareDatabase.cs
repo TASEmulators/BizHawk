@@ -202,7 +202,7 @@ namespace BizHawk.Emulation.Common
 			// http://forum.fobby.net/index.php?t=msg&goto=2763 [f]
 			// http://www.psxdev.net/forum/viewtopic.php?f=69&t=56 [p]
 			// https://en.wikipedia.org/wiki/PlayStation_models#Comparison_of_models [w]
-			// https://github.com/petrockblog/RetroPie-Setup/wiki/PCSX-Core-Playstation-1 [g] 
+			// https://github.com/petrockblog/RetroPie-Setup/wiki/PCSX-Core-Playstation-1 [g]
 			// http://redump.org/datfile/psx-bios/ also
 			// http://emulation.gametechwiki.com/index.php/File_Hashes [t]
 			var ps_10j = File("343883A7B555646DA8CEE54AADD2795B6E7DD070", 524288, "PSX_1.0(J).bin", "PSX BIOS (Version 1.0 J)", "Used on SCPH-1000, DTL-H1000 [g]. This is Rev for A hardware [w].");

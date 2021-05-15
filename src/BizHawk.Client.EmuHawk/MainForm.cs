@@ -291,7 +291,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			//do this threaded stuff early so it has plenty of time to run in background
-			Database.InitializeDatabase(Path.Combine(PathUtils.ExeDirectoryPath, "gamedb", "gamedb.txt"));
+			Database.InitializeDatabase(Path.Combine(PathUtils.ExeDirectoryPath, "gamedb", "gamedb.txt"), warnForCollisions: false);
 			BootGodDb.Initialize(Path.Combine(PathUtils.ExeDirectoryPath, "gamedb"));
 
 			Config = config;
@@ -498,8 +498,8 @@ namespace BizHawk.Client.EmuHawk
 			if (_argParser.cmdRom != null)
 			{
 				// Commandline should always override auto-load
-				var ioa = OpenAdvancedSerializer.ParseWithLegacy(_argParser.cmdRom);
-				LoadRom(_argParser.cmdRom, new LoadRomArgs { OpenAdvanced = ioa });
+				var romPath = _argParser.cmdRom.MakeAbsolute();
+				LoadRom(romPath, new LoadRomArgs { OpenAdvanced = OpenAdvancedSerializer.ParseWithLegacy(romPath) });
 				if (Game == null)
 				{
 					ShowMessageBox(owner: null, $"Failed to load {_argParser.cmdRom} specified on commandline");
@@ -699,7 +699,9 @@ namespace BizHawk.Client.EmuHawk
 				// ...but prepare haptics first, those get read in ProcessInput
 				var finalHostController = (ControllerInputCoalescer) InputManager.ControllerInputCoalescer;
 				// for now, vibrate the first gamepad when the Fast Forward hotkey is held, using the value from the previous (host) frame
+#if false // waiting on https://github.com/TASVideos/BizHawk/pull/2683
 				InputManager.ActiveController.SetHapticChannelStrength("Debug", InputManager.ClientControls.IsPressed("Fast Forward") ? int.MaxValue : 0);
+#endif
 				InputManager.ActiveController.PrepareHapticsForHost(finalHostController);
 				ProcessInput(
 					_hotkeyCoalescer,
@@ -950,7 +952,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Rewinder?.Dispose();
 			Rewinder = Emulator.HasSavestates() && Config.Rewind.Enabled
-				? new Zwinder(Emulator.AsStatable(), Config.Rewind)
+				? Config.Rewind.UseDelta
+					? new ZeldaWinder(Emulator.AsStatable(), Config.Rewind)
+					: new Zwinder(Emulator.AsStatable(), Config.Rewind)
 				: null;
 			AddOnScreenMessage(Rewinder?.Active == true ? "Rewind started" : "Rewind disabled");
 		}
@@ -1100,20 +1104,17 @@ namespace BizHawk.Client.EmuHawk
 
 		}
 
-		public void RebootCore()
+		public bool RebootCore()
 		{
 			if (IsSlave && Master.WantsToControlReboot)
 			{
 				Master.RebootCore();
+				return true;
 			}
 			else
 			{
-				if (CurrentlyOpenRomArgs == null)
-				{
-					return;
-				}
-
-				LoadRom(CurrentlyOpenRomArgs.OpenAdvanced.SimplePath, CurrentlyOpenRomArgs);
+				if (CurrentlyOpenRomArgs == null) return true;
+				return LoadRom(CurrentlyOpenRomArgs.OpenAdvanced.SimplePath, CurrentlyOpenRomArgs);
 			}
 		}
 
@@ -1224,10 +1225,9 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 
-
-				Util.DebugWriteLine($"For emulator framebuffer {new Size(_currentVideoProvider.BufferWidth, _currentVideoProvider.BufferHeight)}:");
-				Util.DebugWriteLine($"  For virtual size {new Size(_currentVideoProvider.VirtualWidth, _currentVideoProvider.VirtualHeight)}:");
-				Util.DebugWriteLine($"  Selecting display size {lastComputedSize}");
+//				Util.DebugWriteLine($"For emulator framebuffer {new Size(_currentVideoProvider.BufferWidth, _currentVideoProvider.BufferHeight)}:");
+//				Util.DebugWriteLine($"  For virtual size {new Size(_currentVideoProvider.VirtualWidth, _currentVideoProvider.VirtualHeight)}:");
+//				Util.DebugWriteLine($"  Selecting display size {lastComputedSize}");
 
 				// Change size
 				Size = new Size(lastComputedSize.Width + borderWidth, lastComputedSize.Height + borderHeight);
@@ -1932,6 +1932,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void HandlePlatformMenus()
 		{
+			if (GenericCoreSubMenu.Visible)
+			{
+				var i = GenericCoreSubMenu.Text.IndexOf('&');
+				if (i != -1) AvailableAccelerators.Add(GenericCoreSubMenu.Text[i + 1]);
+			}
 			GenericCoreSubMenu.Visible = false;
 			TI83SubMenu.Visible = false;
 			NESSubMenu.Visible = false;
@@ -2021,14 +2026,43 @@ namespace BizHawk.Client.EmuHawk
 			.Where(t => t.GetCustomAttribute<SpecializedToolAttribute>() != null)
 			.ToList();
 
+		private ISet<char> _availableAccelerators;
+
+		private ISet<char> AvailableAccelerators
+		{
+			get
+			{
+				if (_availableAccelerators == null)
+				{
+					_availableAccelerators = new HashSet<char>();
+					for (var c = 'A'; c <= 'Z'; c++) _availableAccelerators.Add(c);
+					foreach (ToolStripItem item in MainMenuStrip.Items)
+					{
+						if (!item.Visible) continue;
+						var i = item.Text.IndexOf('&');
+						if (i == -1 || i == item.Text.Length - 1) continue;
+						_availableAccelerators.Remove(char.ToUpperInvariant(item.Text[i + 1]));
+					}
+				}
+				return _availableAccelerators;
+			}
+		}
+
 		private void DisplayDefaultCoreMenu()
 		{
 			GenericCoreSubMenu.Visible = true;
-#if true
-			GenericCoreSubMenu.Text = Emulator.GetSystemDisplayName();
-#else //TODO accelerator; I commented out this naive approach which doesn't work --yoshi
-			GenericCoreSubMenu.Text = $"&{Emulator.GetSystemDisplayName()}";
-#endif
+			var sysID = Emulator.SystemId;
+			for (var i = 0; i < sysID.Length; i++)
+			{
+				var upper = char.ToUpperInvariant(sysID[i]);
+				if (AvailableAccelerators.Contains(upper))
+				{
+					AvailableAccelerators.Remove(upper);
+					sysID = sysID.Insert(i, "&");
+					break;
+				}
+			}
+			GenericCoreSubMenu.Text = sysID;
 			GenericCoreSubMenu.DropDownItems.Clear();
 
 			var settingsMenuItem = new ToolStripMenuItem { Text = "&Settings" };
@@ -2828,7 +2862,7 @@ namespace BizHawk.Client.EmuHawk
 
 			CoreNameStatusBarButton.Text = coreDispName;
 			CoreNameStatusBarButton.Image = Emulator.Icon();
-			CoreNameStatusBarButton.ToolTipText = attributes.Ported ? "(ported) " : "";
+			CoreNameStatusBarButton.ToolTipText = attributes is PortedCoreAttribute ? "(ported) " : "";
 
 
 			if (Emulator.SystemId == "ZXSpectrum")

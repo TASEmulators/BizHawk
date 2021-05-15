@@ -144,14 +144,14 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			if (Start > movie.InputLogLength)
-			{ 
+			{
 				// Cannot place a frame here. Find a nice way around this.
 				return;
 			}
 
 			// Can't be done with a regular movie.
 			if (!Replace && movie is ITasMovie tasMovie2)
-			{ 
+			{
 				tasMovie2.InsertEmptyFrame(Start, Length);
 			}
 
@@ -169,7 +169,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				// Copy over the frame.
 				for (int i = 0; i < Length; i++)
-				{ 
+				{
 					_controller.SetFromMnemonic(_log[i]);
 					LatchFromSourceButtons(_targetController, _controller);
 					movie.PokeFrame(i + Start, _targetController);

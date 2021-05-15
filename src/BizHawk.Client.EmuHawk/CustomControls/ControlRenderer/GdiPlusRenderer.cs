@@ -23,7 +23,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 			public void Dispose()
 			{
 				// Nothing to do
-				// Other drawing methods need a way to dispose on demand, hence the need for 
+				// Other drawing methods need a way to dispose on demand, hence the need for
 				// this dummy class
 			}
 		}

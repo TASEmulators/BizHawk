@@ -296,24 +296,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// </summary>
 		/// <param name="core">opaque state pointer</param>
 		/// <param name="dest">byte buffer to write into.  gambatte_savesavedatalength() bytes will be written</param>
+		/// <param name="isDeterministic">determinism bool. RTC data is ignored if set </param>
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void gambatte_savesavedata(IntPtr core, byte[] dest);
+		public static extern void gambatte_savesavedata(IntPtr core, byte[] dest, bool isDeterministic);
 
 		/// <summary>
 		/// restore persistant cart memory.
 		/// </summary>
 		/// <param name="core">opaque state pointer</param>
 		/// <param name="data">byte buffer to read from.  gambatte_savesavedatalength() bytes will be read</param>
+		/// <param name="isDeterministic">determinism bool. RTC data is ignored if set </param>
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void gambatte_loadsavedata(IntPtr core, byte[] data);
+		public static extern void gambatte_loadsavedata(IntPtr core, byte[] data, bool isDeterministic);
 
 		/// <summary>
 		/// get the size of the persistant cart memory block.  this value DEPENDS ON THE PARTICULAR CART LOADED
 		/// </summary>
 		/// <param name="core">opaque state pointer</param>
+		/// <param name="isDeterministic">determinism bool. RTC data is ignored if set </param>
 		/// <returns>length in bytes.  0 means no internal persistant cart memory</returns>
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern int gambatte_savesavedatalength(IntPtr core);
+		public static extern int gambatte_savesavedatalength(IntPtr core, bool isDeterministic);
 
 		/// <summary>
 		/// new savestate method
@@ -415,6 +418,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public enum RegIndicies : int
 		{
 			PC, SP, A, B, C, D, E, F, H, L
+		}
+
+		/// <summary>
+		/// get MBC3 RTC reg values
+		/// </summary>
+		/// <param name="core">opaque state pointer</param>
+		/// <param name="dest">length of at least 11, please</param>
+		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void gambatte_getrtcregs(IntPtr core, int[] dest);
+
+		/// <summary>
+		/// set MBC3 RTC reg values
+		/// </summary>
+		/// <param name="core">opaque state pointer</param>
+		/// <param name="src">length of at least 11, please</param>
+		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void gambatte_setrtcregs(IntPtr core, int[] src);
+
+		public enum RtcRegIndicies : int
+		{
+			Dh, Dl, H, M, S, C, Dh_L, Dl_L, H_L, M_L, S_L
 		}
 	}
 }

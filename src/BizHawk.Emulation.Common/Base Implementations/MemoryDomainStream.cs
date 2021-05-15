@@ -26,7 +26,7 @@ namespace BizHawk.Emulation.Common
 			get => _position;
 			set
 			{
-				if (value < 0 || value > _d.Size) 
+				if (value < 0 || value > _d.Size)
 					throw new IOException("Position out of range");
 				_position = value;
 			}

@@ -5,13 +5,14 @@ using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
+using BizHawk.Client.EmuHawk;
 
 using static BizHawk.Experiment.AutoGenConfig.ConfigEditorUIGenerators;
 
 namespace BizHawk.Experiment.AutoGenConfig
 {
 	[ExternalTool("AutoGenConfig")]
-	public class AutoGenConfigForm : Form, IExternalToolForm
+	public class AutoGenConfigForm : ToolFormBase, IExternalToolForm
 	{
 		public ApiContainer? _apiContainer { get; set; }
 
@@ -25,7 +26,7 @@ namespace BizHawk.Experiment.AutoGenConfig
 
 		private readonly ConfigEditorMetadata Metadata = new ConfigEditorMetadata(Cache);
 
-		public override string Text => "AutoGenConfig";
+		protected override string WindowTitleStatic => "AutoGenConfig";
 
 		public AutoGenConfigForm()
 		{
@@ -152,11 +153,5 @@ namespace BizHawk.Experiment.AutoGenConfig
 			};
 			ResumeLayout();
 		}
-
-		public bool AskSaveChanges() => true;
-
-		public void Restart() {}
-
-		public void UpdateValues(ToolFormUpdateType type) {}
 	}
 }

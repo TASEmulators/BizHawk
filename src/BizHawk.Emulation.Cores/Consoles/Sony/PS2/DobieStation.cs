@@ -7,7 +7,7 @@ using BizHawk.Emulation.DiscSystem;
 
 namespace BizHawk.Emulation.Cores.Sony.PS2
 {
-	[Core(CoreNames.DobieStation, "PSI", true, false, "fa33778b056aa32", "https://github.com/PSI-Rockin/DobieStation", false)]
+	[PortedCore(CoreNames.DobieStation, "PSI", "fa33778b056aa32", "https://github.com/PSI-Rockin/DobieStation", isReleased: false)]
 	public unsafe class DobieStation : WaterboxCore, ISettable<object, DobieStation.DobieSyncSettings>
 	{
 		private readonly LibDobieStation _core;

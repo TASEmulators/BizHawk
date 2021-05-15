@@ -255,7 +255,7 @@ namespace BizHawk.Client.EmuHawk
 
 
 		// Upon Load State, TAStudio uses global ToolManager.UpdateBefore(); as well as global ToolManager.UpdateAfter();
-		// Both of which will Call UpdateValues() and Update() which both end up in the Update() function.  Calling Update() will cause the Log to add an additional log.  
+		// Both of which will Call UpdateValues() and Update() which both end up in the Update() function.  Calling Update() will cause the Log to add an additional log.
 		// By not handling both of those calls the _currentBotAttempt.Log.Count will be 2 more than expected.
 		// However this also causes a problem with RamWatch not being up to date since that TOO gets called.
 		// Need to find out if having RamWatch open while TasStudio is open causes issues.

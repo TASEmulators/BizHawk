@@ -11,9 +11,8 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
 
 		private readonly Queue<short> _audioSamples = new Queue<short>();
-		private decimal _dAudioSamples = 0;
 		private readonly int _sampleRate = 44100;
-		private int _numSamples = 0;
+		private long _soundRemainder = 0;
 
 		public void SetSyncMode(SyncSoundMode mode)
 		{
@@ -34,31 +33,14 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		 * I'm doing my own logic here for now. I grab MAME's audio buffer
 		 * whenever it's filled (MAMESoundCallback()) and enqueue it.
 		 * 
-		 * Whenever Hawk wants new audio, I dequeue it, but with a little quirk.
-		 * Since sample count per frame may not align with frame duration, I
-		 * subtract the entire decimal fraction of "required" samples from total
-		 * samples. I check if the fractional reminder of total samples is > 0.5
-		 * by rounding it. I invert it to see what number I should add to the
-		 * integer representation of "required" samples, to compensate for
-		 * misalignment between fractional and integral "required" samples.
-		 * 
-		 * TODO: Figure out how MAME does this and maybe use their method instead.
+		 * Whenever Hawk wants new audio, I dequeue it, while preserving the
+		 * fractinal part of the sample count, to use it later.
 		 */
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
-			decimal dSamplesPerFrame = (decimal)_sampleRate * VsyncDenominator / VsyncNumerator;
-
-			if (_audioSamples.Any())
-			{
-				_dAudioSamples -= dSamplesPerFrame;
-				int remainder = (int)Math.Round(_dAudioSamples - Math.Truncate(_dAudioSamples)) ^ 1;
-				nsamp = (int)Math.Round(dSamplesPerFrame) + remainder;
-			}
-			else
-			{
-				nsamp = (int)Math.Round(dSamplesPerFrame);
-			}
-
+			long nSampNumerator = _sampleRate * (long)VsyncDenominator + _soundRemainder;
+			nsamp = (int)(nSampNumerator / VsyncNumerator);			
+			_soundRemainder = nSampNumerator % VsyncNumerator; // exactly remember fractional parts of an audio sample
 			samples = new short[nsamp * 2];
 
 			for (int i = 0; i < nsamp * 2; i++)
@@ -81,6 +63,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		public void DiscardSamples()
 		{
+			_soundRemainder = 0;
 			_audioSamples.Clear();
 		}
 	}

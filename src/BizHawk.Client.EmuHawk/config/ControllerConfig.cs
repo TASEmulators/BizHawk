@@ -236,6 +236,7 @@ namespace BizHawk.Client.EmuHawk
 				new AnalogBind("", 1.0f, 0.1f),
 				CreateAnalogPanel
 			);
+#if false // waiting on https://github.com/TASVideos/BizHawk/pull/2683
 			LoadToPanel(
 				FeedbacksTab,
 				_emulator.ControllerDefinition.Name,
@@ -244,6 +245,7 @@ namespace BizHawk.Client.EmuHawk
 				haptics,
 				new(string.Empty, string.Empty, 1.0f),
 				CreateFeedbacksPanel);
+#endif
 
 			if (AnalogControlsTab.Controls.Count == 0)
 			{

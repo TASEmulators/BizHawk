@@ -48,6 +48,26 @@ namespace BizHawk.Common.PathExtensions
 			return false;
 		}
 
+		/// <returns><see langword="true"/> iff absolute (OS-dependent)</returns>
+		/// <seealso cref="IsRelative"/>
+		public static bool IsAbsolute(this string path)
+		{
+			if (OSTailoredCode.IsUnixHost) return path.Length >= 1 && path[0] == '/';
+			if (path.Contains('/')) return IsAbsolute(path.Replace('/', '\\'));
+			return path.Length >= 3
+				&& path[2] switch
+				{
+					'\\' => path[1] == '\\' && ('A'.RangeTo('Z').Contains(path[0]) || 'a'.RangeTo('z').Contains(path[0])),
+					'?' => path.StartsWith(@"\\?\"),
+					_ => false
+				};
+		}
+
+		/// <returns><see langword="false"/> iff absolute (OS-dependent)</returns>
+		/// <remarks>that means it may return <see langword="true"/> for invalid paths</remarks>
+		/// <seealso cref="IsAbsolute"/>
+		public static bool IsRelative(this string path) => !path.IsAbsolute();
+
 		/// <exception cref="ArgumentException">running on Windows host, and unmanaged call failed</exception>
 		/// <exception cref="FileNotFoundException">running on Windows host, and either path is not a regular file or directory</exception>
 		/// <remarks>
@@ -86,6 +106,15 @@ namespace BizHawk.Common.PathExtensions
 				? path.ToString()
 				: throw new ArgumentException("Paths must have a common prefix");
 		}
+
+		/// <returns>absolute path (OS-dependent) equivalent to <paramref name="path"/></returns>
+		/// <remarks>
+		/// unless <paramref name="cwd"/> is given, uses <see cref="CWDHacks.Get">CWDHacks.Get</see>/<see cref="Environment.CurrentDirectory">Environment.CurrentDirectory</see>,
+		/// so take care when calling this after startup
+		/// </remarks>
+		public static string MakeAbsolute(this string path, string? cwd = null) => path.IsAbsolute()
+			? path
+			: new FileInfo($"{cwd ?? (OSTailoredCode.IsUnixHost ? Environment.CurrentDirectory : CWDHacks.Get())}/{path}").FullName; // FileInfo for normalisation ("C:\a\b\..\c" => "C:\a\c")
 
 		/// <returns>the absolute path equivalent to <paramref name="path"/> which contains <c>%exe%</c> (expanded) as a prefix</returns>
 		/// <remarks>
