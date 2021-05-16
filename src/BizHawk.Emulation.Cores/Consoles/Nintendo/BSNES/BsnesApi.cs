@@ -14,10 +14,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 	public abstract unsafe class BsnesCoreImpl
 	{
 		[BizImport(CallingConvention.Cdecl)]
-		public abstract void snes_set_audio_enabled(bool enabled);
-		[BizImport(CallingConvention.Cdecl)]
-		public abstract void snes_set_video_enabled(bool enabled);
-		[BizImport(CallingConvention.Cdecl)]
 		public abstract void snes_set_layer_enables(ref BsnesApi.LayerEnables layerEnables);
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void snes_set_trace_enabled(bool enabled);
@@ -45,8 +41,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		public abstract void snes_term();
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void snes_reset();
+
+		[StructLayout(LayoutKind.Sequential)]
+		public struct SnesFrameAdvanceInfo
+		{
+			public short* audio;
+			public bool renderAudio;
+			public bool renderVideo;
+		}
+
 		[BizImport(CallingConvention.Cdecl)]
-		public abstract void snes_run();
+		public abstract void snes_run(ref SnesFrameAdvanceInfo fi);
 
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void snes_serialize(byte[] serializedData, int serializedSize);
@@ -137,10 +142,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		}
 
 		public delegate void snes_video_frame_t(ushort* data, int width, int height, int pitch);
-		public delegate void snes_input_poll_t();
 		public delegate short snes_input_state_t(int port, int index, int id);
 		public delegate void snes_no_lag_t();
-		public delegate void snes_audio_sample_t(short left, short right);
 		public delegate string snes_path_request_t(int slot, string hint, bool required);
 		public delegate void snes_trace_t(string disassembly, string register_info);
 
@@ -157,11 +160,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		[StructLayout(LayoutKind.Sequential)]
 		public class SnesCallbacks
 		{
-			public snes_input_poll_t inputPollCb;
 			public snes_input_state_t inputStateCb;
 			public snes_no_lag_t noLagCb;
 			public snes_video_frame_t videoFrameCb;
-			public snes_audio_sample_t audioSampleCb;
 			public snes_path_request_t pathRequestCb;
 			public snes_trace_t snesTraceCb;
 

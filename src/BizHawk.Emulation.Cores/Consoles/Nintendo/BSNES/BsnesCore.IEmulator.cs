@@ -2,11 +2,13 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 {
-	public partial class BsnesCore : IEmulator
+	public unsafe partial class BsnesCore : IEmulator
 	{
 		public IEmulatorServiceProvider ServiceProvider { get; }
 
 		public ControllerDefinition ControllerDefinition => _controllers.Definition;
+
+		private short[] _soundBuffer = new short[4096];
 
 		public bool FrameAdvance(IController controller, bool render, bool renderSound)
 		{
@@ -49,12 +51,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			// TODO: I really don't think stuff like this should be set every single frame (only on change)
 			Api.core.snes_set_layer_enables(ref enables);
 			Api.core.snes_set_trace_enabled(_tracer.Enabled);
-			Api.core.snes_set_video_enabled(render);
-			Api.core.snes_set_audio_enabled(renderSound);
 
-			// run the core for one frame
-			Frame++;
-			Api.core.snes_run();
+			fixed (short* soundPointer = _soundBuffer)
+			{
+				var fi = new BsnesCoreImpl.SnesFrameAdvanceInfo
+				{
+					audio = soundPointer,
+					renderAudio = renderSound,
+					renderVideo = render,
+				};
+
+				// run the core for one frame
+				Frame++;
+				Api.core.snes_run(ref fi);
+
+				_resampler.EnqueueSamples(_soundBuffer, (int)(fi.audio - soundPointer) / 2);
+			}
 
 			if (IsLagFrame)
 			{

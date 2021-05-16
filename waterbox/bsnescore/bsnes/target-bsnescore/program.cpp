@@ -409,7 +409,7 @@ auto Program::videoFrame(const uint16* data, uint pitch, uint width, uint height
 		height -= 16 * multiplier;
 	}
 
-	fprintf(stderr, "got a video frame with dimensions h: %d, w: %d, p: %d, overscan: %d, scale: %d\n", height, width, pitch, overscan, scale);
+	// fprintf(stderr, "got a video frame with dimensions h: %d, w: %d, p: %d, overscan: %d, scale: %d\n", height, width, pitch, overscan, scale);
 
  	snesCallbacks.snes_video_frame(data, width, height, pitch);
 }
@@ -427,9 +427,8 @@ static int16_t d2i16(double v)
 
 auto Program::audioFrame(const double* samples, uint channels) -> void
 {
-	int16_t left = d2i16(samples[0]);
-	int16_t right = d2i16(samples[1]);
-	return snesCallbacks.snes_audio_sample(left, right);
+	*ExternalAudioBuffer++ = d2i16(samples[0]);
+	*ExternalAudioBuffer++ = d2i16(samples[1]);
 }
 
 auto Program::notify(string message) -> void

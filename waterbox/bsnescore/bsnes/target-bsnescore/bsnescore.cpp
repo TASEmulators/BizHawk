@@ -167,16 +167,22 @@ EXPORT void snes_reset(void)
     emulator->reset();
 }
 
+short* ExternalAudioBuffer;
+
 // note: run with runahead doesn't work yet, i suspect it's due to the serialize thing breaking (cause of libco)
-EXPORT void snes_run(void)
+EXPORT void snes_run(SnesFrameAdvanceInfo &fi)
 {
-    snesCallbacks.snes_input_poll();
+	ExternalAudioBuffer = fi.audio;
+    SuperFamicom::system.renderAudio = fi.renderAudio;
+    SuperFamicom::system.renderVideo = fi.renderVideo;
 
     // TODO: I currently have implemented separate poll and state calls, where poll updates the state and the state call just receives this
     // based on the way this is implemented this approach might be useless in terms of reducing polling load, will need confirmation here
     // the runahead feature should also be considered in case this is ever implemented and works
 
     emulator->run();
+
+	fi.audio = ExternalAudioBuffer;
 }
 
 // not used, but would probably be nice
@@ -250,16 +256,6 @@ EXPORT void snes_set_layer_enables(LayerEnables* layerEnables)
         ppufast.io.obj.priority_enabled[2] = layerEnables->Obj_Prio2;
         ppufast.io.obj.priority_enabled[3] = layerEnables->Obj_Prio3;
     }
-}
-
-EXPORT void snes_set_audio_enabled(bool enable)
-{
-    SuperFamicom::system.renderAudio = enable;
-}
-
-EXPORT void snes_set_video_enabled(bool enable)
-{
-    SuperFamicom::system.renderVideo = enable;
 }
 
 EXPORT void snes_set_trace_enabled(bool enabled)
