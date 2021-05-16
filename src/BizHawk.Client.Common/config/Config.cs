@@ -337,6 +337,8 @@ namespace BizHawk.Client.Common
 			["SGX"] = CoreNames.TurboNyma
 		};
 
+		public bool DontTryOtherCores { get; set; }
+
 		// ReSharper disable once UnusedMember.Global
 		public string LastWrittenFrom { get; set; } = VersionInfo.MainVersion;
 

@@ -399,7 +399,7 @@ namespace BizHawk.Client.Common
 				}
 				catch (Exception e)
 				{
-					if (e is MissingFirmwareException || e.InnerException is MissingFirmwareException)
+					if (_config.DontTryOtherCores || e is MissingFirmwareException || e.InnerException is MissingFirmwareException)
 						throw;
 					exceptions.Add(e);
 				}
