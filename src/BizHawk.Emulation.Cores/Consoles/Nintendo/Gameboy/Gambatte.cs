@@ -259,6 +259,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			//return LibGambatte.gambatte_iscgb(GambatteState);
 			return IsCgb;
 		}
+		
+		/// <summary>
+		/// true if the emulator is currently emulating CGB in DMG compatibility mode (NOTE: this mode does not take affect until the bootrom unmaps itself)
+		/// </summary>
+		public bool IsCGBDMGMode()
+		{
+			return LibGambatte.gambatte_iscgbdmg(GambatteState);
+		}
 
 		private InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
 
