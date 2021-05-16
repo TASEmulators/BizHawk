@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void snes_set_video_enabled(bool enabled);
 		[BizImport(CallingConvention.Cdecl)]
-		public abstract void snes_set_layer_enables(BsnesApi.LayerEnables layerEnables);
+		public abstract void snes_set_layer_enables(ref BsnesApi.LayerEnables layerEnables);
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void snes_set_trace_enabled(bool enabled);
 
@@ -144,10 +144,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		public delegate string snes_path_request_t(int slot, string hint, bool required);
 		public delegate void snes_trace_t(string disassembly, string register_info);
 
-
-		// I cannot use a struct here because marshalling is retarded for bool (4 bytes). I honestly cannot
 		[StructLayout(LayoutKind.Sequential)]
-		public class LayerEnables
+		public struct LayerEnables
 		{
 			public bool BG1_Prio0, BG1_Prio1;
 			public bool BG2_Prio0, BG2_Prio1;

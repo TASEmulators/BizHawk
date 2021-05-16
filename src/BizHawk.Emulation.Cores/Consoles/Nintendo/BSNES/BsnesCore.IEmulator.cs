@@ -47,7 +47,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 				Obj_Prio3 = _settings.ShowOBJ_3
 			};
 			// TODO: I really don't think stuff like this should be set every single frame (only on change)
-			Api.core.snes_set_layer_enables(enables);
+			Api.core.snes_set_layer_enables(ref enables);
 			Api.core.snes_set_trace_enabled(_tracer.Enabled);
 			Api.core.snes_set_video_enabled(render);
 			Api.core.snes_set_audio_enabled(renderSound);

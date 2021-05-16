@@ -486,10 +486,11 @@ namespace BizHawk.BizInvoke
 
 			if (type.IsByRef)
 			{
+				// Just pass a raw pointer.  In the `ref structType` case, caller needs to ensure fields are compatible.
 				var et = type.GetElementType()!;
-				if (!et.IsPrimitive && !et.IsEnum)
+				if (!et.IsValueType)
 				{
-					throw new NotImplementedException("Only refs of primitive or enum types are supported!");
+					throw new NotImplementedException("Only refs of value types are supported!");
 				}
 				return new(
 					typeof(IntPtr),
@@ -642,6 +643,7 @@ namespace BizHawk.BizInvoke
 			if (type.IsClass)
 			{
 				// non ref of class can just be passed as pointer
+				// Just like in the `ref struct` case, if the fields aren't compatible, that's the caller's problem.
 				return new(
 					typeof(IntPtr),
 					() =>
