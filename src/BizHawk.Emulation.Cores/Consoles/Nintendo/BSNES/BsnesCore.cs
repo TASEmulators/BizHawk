@@ -59,16 +59,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 				snesTraceCb = snes_trace
 			};
 
-			Api = new BsnesApi(CoreComm.CoreFileProvider.DllPath(), CoreComm, new Delegate[]
-			{
-				callbacks.inputPollCb,
-				callbacks.inputStateCb,
-				callbacks.noLagCb,
-				callbacks.videoFrameCb,
-				callbacks.audioSampleCb,
-				callbacks.pathRequestCb,
-				callbacks.snesTraceCb
-			});
+			Api = new BsnesApi(CoreComm.CoreFileProvider.DllPath(), CoreComm, callbacks.AllDelegatesInMemoryOrder());
 
 			_controllers = new BsnesControllers(_syncSettings);
 

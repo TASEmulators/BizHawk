@@ -81,7 +81,7 @@ namespace BizHawk.BizInvoke
 			var aname = new AssemblyName("BizInvokeProxyAssembly");
 			ImplAssemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(aname, AssemblyBuilderAccess.Run);
 			ImplModuleBuilder = ImplAssemblyBuilder.DefineDynamicModule("BizInvokerModule");
-			ClassFieldOffset = BizInvokerUtilities.ComputeClassFieldOffset();
+			ClassFieldOffset = BizInvokerUtilities.ComputeClassFirstFieldOffset();
 			StringOffset = BizInvokerUtilities.ComputeStringOffset();
 		}
 

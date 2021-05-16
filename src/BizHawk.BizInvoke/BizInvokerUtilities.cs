@@ -1,5 +1,8 @@
 using System;
+using System.Reflection;
+using System.Reflection.Emit;
 using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
 
 namespace BizHawk.BizInvoke
 {
@@ -44,21 +47,18 @@ namespace BizHawk.BizInvoke
 		}
 
 		/// <summary>
-		/// Didn't I have code somewhere else to do this already?
+		/// Computes the byte offset of the first field of any class relative to a class pointer.
 		/// </summary>
 		/// <returns></returns>
-		public static int ComputeClassFieldOffset()
+		public static int ComputeClassFirstFieldOffset()
 		{
-			var c = new CF();
-			int ret;
-			fixed(int* fx = &c.FirstField)
-			{
-				U u = new(new U2(c));
-				ret = (int) ((ulong) (UIntPtr) fx - (ulong) u.First!.P);
-			}
-			return ret;
+			return ComputeFieldOffset(typeof(CF).GetField("FirstField"));
 		}
 
+		/// <summary>
+		/// Compute the byte offset of the first byte of string data (UTF16) relative to a pointer to the string.
+		/// </summary>
+		/// <returns></returns>
 		public static int ComputeStringOffset()
 		{
 			var s = new string(new char[0]);
@@ -69,6 +69,35 @@ namespace BizHawk.BizInvoke
 				ret = (int) ((ulong) (UIntPtr) fx - (ulong) u.First!.P);
 			}
 			return ret;
+		}
+
+		/// <summary>
+		/// Compute the byte offset of a field relative to a pointer to the class instance.
+		/// Slow, so cache it if you need it.
+		/// </summary>
+		public static int ComputeFieldOffset(FieldInfo fi)
+		{
+			if (fi.DeclaringType.IsValueType)
+			{
+				throw new NotImplementedException("Only supported for class fields right now");
+			}
+
+			var obj = FormatterServices.GetUninitializedObject(fi.DeclaringType);
+			var method = new DynamicMethod("ComputeFieldOffsetHelper", typeof(int), new[] { typeof(object) }, typeof(string).Module, true);
+			var il = method.GetILGenerator();
+			var local = il.DeclareLocal(fi.DeclaringType, true);
+			il.Emit(OpCodes.Ldarg_0);
+			il.Emit(OpCodes.Stloc, local);
+			il.Emit(OpCodes.Ldarg_0);
+			il.Emit(OpCodes.Ldflda, fi);
+			il.Emit(OpCodes.Conv_I);
+			il.Emit(OpCodes.Ldarg_0);
+			il.Emit(OpCodes.Conv_I);
+			il.Emit(OpCodes.Sub);
+			il.Emit(OpCodes.Conv_I4);
+			il.Emit(OpCodes.Ret);
+			var del = (Func<object, int>)method.CreateDelegate(typeof(Func<object, int>));
+			return del(obj);
 		}
 	}
 }

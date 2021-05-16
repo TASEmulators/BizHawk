@@ -7,6 +7,7 @@ using BizHawk.Common;
 using BizHawk.Emulation.Cores.Waterbox;
 using BizHawk.BizInvoke;
 using BizHawk.Emulation.Common;
+using System.Linq;
 
 namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 {
@@ -92,12 +93,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 
 		public void SetCallbacks(SnesCallbacks callbacks)
 		{
-			FieldInfo[] fieldInfos = typeof(SnesCallbacks).GetFields();
-			IntPtr[] functionPointerArray = new IntPtr[fieldInfos.Length];
-			for (int i = 0; i < fieldInfos.Length; i++)
-			{
-				functionPointerArray[i] = _adapter.GetFunctionPointerForDelegate((Delegate) fieldInfos[i].GetValue(callbacks));
-			}
+			var functionPointerArray = callbacks
+				.AllDelegatesInMemoryOrder()
+				.Select(f => _adapter.GetFunctionPointerForDelegate(f))
+				.ToArray();
 			core.snes_set_callbacks(functionPointerArray);
 		}
 
@@ -167,6 +166,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			public snes_audio_sample_t audioSampleCb;
 			public snes_path_request_t pathRequestCb;
 			public snes_trace_t snesTraceCb;
+
+			private static List<FieldInfo> FieldsInOrder = null;
+
+			public IEnumerable<Delegate> AllDelegatesInMemoryOrder()
+			{
+				if (FieldsInOrder == null)
+				{
+					FieldsInOrder = GetType()
+						.GetFields()
+						.OrderBy(fi => BizInvokerUtilities.ComputeFieldOffset(fi))
+						.ToList();
+				}
+				return FieldsInOrder
+					.Select(f => (Delegate)f.GetValue(this));
+			}
 		}
 
 		public void Seal()
@@ -186,7 +200,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		public void SaveStateBinary(BinaryWriter writer)
 		{
 			// if (serializedSize == 0)
-				// serializedSize = _core.snes_serialized_size();
+			// serializedSize = _core.snes_serialized_size();
 			// TODO: do some profiling and testing to check whether this is actually better than _exe.SaveStateBinary(writer);
 			// re-adding bsnes's own serialization will need to be done once it's confirmed to be deterministic, aka after libco update
 
