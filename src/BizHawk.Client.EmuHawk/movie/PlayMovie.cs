@@ -392,24 +392,24 @@ namespace BizHawk.Client.EmuHawk
 				switch (kvp.Key)
 				{
 					case HeaderKeys.Sha1:
-						if (kvp.Value != _game.Hash)
+						if (_game.Hash != kvp.Value)
 						{
 							item.BackColor = Color.Pink;
-							item.ToolTipText = $"Expected: {_game.Hash}\n Actual: {kvp.Value}";
+							item.ToolTipText = $"Expected: {kvp.Value}\nActual: {_game.Hash}";
 						}
 						break;
 					case HeaderKeys.EmulatorVersion:
-						if (kvp.Value != VersionInfo.GetEmuVersion())
+						if (VersionInfo.GetEmuVersion() != kvp.Value)
 						{
 							item.BackColor = Color.Yellow;
-							item.ToolTipText = $"Expected: {VersionInfo.GetEmuVersion()}\n Actual: {kvp.Value}";
+							item.ToolTipText = $"Expected: {kvp.Value}\nActual: {VersionInfo.GetEmuVersion()}";
 						}
 						break;
 					case HeaderKeys.Platform:
-						if (kvp.Value != _emulator.SystemId)
+						if (_emulator.SystemId != kvp.Value)
 						{
 							item.BackColor = Color.Pink;
-							item.ToolTipText = $"Expected: {_emulator.SystemId}\n Actual: {kvp.Value}";
+							item.ToolTipText = $"Expected: {kvp.Value}\n Actual: {_emulator.SystemId}";
 						}
 						break;
 				}
