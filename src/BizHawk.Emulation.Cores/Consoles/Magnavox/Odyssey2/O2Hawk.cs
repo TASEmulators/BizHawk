@@ -121,7 +121,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			HardReset();
 		}
 
-		public DisplayType Region => DisplayType.NTSC;
+		public DisplayType Region => is_pal ? DisplayType.PAL : DisplayType.NTSC;
 
 		private readonly O2HawkControllerDeck _controllerDeck;
 

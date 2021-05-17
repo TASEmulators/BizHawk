@@ -71,7 +71,9 @@ namespace BizHawk.Client.Common
 			["ZXSpectrum_PAL"] = 50.080128205,
 			["AmstradCPC_PAL"] = 50.08012820512821,
 			["UZE"] = 60.016319939602,
-			["VEC"] = 50
+			["VEC"] = 50,
+			["O2"] = 60,
+			["O2_PAL"] = 50
 		};
 
 		public static double GetFrameRate(string systemId, bool pal)
