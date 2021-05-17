@@ -43,7 +43,7 @@ namespace BizHawk.BizInvoke
 
 		private class CF
 		{
-			public int FirstField;
+			public int FirstField = 0;
 		}
 
 		/// <summary>
