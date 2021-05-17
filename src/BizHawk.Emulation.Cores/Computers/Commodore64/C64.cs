@@ -67,6 +67,15 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			SetupMemoryDomains();
 		}
 
+		public void ExecFetch(ushort addr)
+		{
+			if (_memoryCallbacks.HasExecutes)
+			{
+				uint flags = (uint)(MemoryCallbackFlags.CPUZero | MemoryCallbackFlags.AccessExecute);
+				_memoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "System Bus");
+			}
+		}
+
 		private CoreComm CoreComm { get; }
 
 		public string RomDetails { get; }
