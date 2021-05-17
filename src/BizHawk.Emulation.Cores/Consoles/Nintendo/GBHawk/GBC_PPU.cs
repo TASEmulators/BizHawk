@@ -185,7 +185,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				case 0xFF46: // DMA 
 					DMA_addr = value;
 					DMA_start = true;
-					DMA_OAM_access = true;
+					if (!DMA_bus_control) { DMA_OAM_access = true; }
 					DMA_clock = 0;
 					DMA_inc = 0;
 					break; 
@@ -1511,17 +1511,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		{
 			if (DMA_clock >= 4)
 			{
+				DMA_bus_control = true;
 				DMA_OAM_access = false;
 				if ((DMA_clock % 4) == 1)
 				{
 					// the cpu can't access memory during this time, but we still need the ppu to be able to.
-					DMA_start = false;
+					DMA_bus_control = false;
 					// Gekkio reports that A14 being high on DMA transfers always represent WRAM accesses
 					// So transfers nominally from higher memory areas are actually still from there (i.e. FF -> DF)
 					byte DMA_actual = DMA_addr;
 					if (DMA_addr > 0xDF) { DMA_actual &= 0xDF; }					
-					DMA_byte = Core.ReadMemory((ushort)((DMA_actual << 8) + DMA_inc));				
-					DMA_start = true;
+					DMA_byte = Core.ReadMemory((ushort)((DMA_actual << 8) + DMA_inc));
+					DMA_bus_control = true;
 				}
 				else if ((DMA_clock % 4) == 3)
 				{
@@ -1548,6 +1549,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			if (DMA_clock == -1)
 			{
 				DMA_start = false;
+				DMA_bus_control = false;
 				DMA_OAM_access = true;
 			}
 		}

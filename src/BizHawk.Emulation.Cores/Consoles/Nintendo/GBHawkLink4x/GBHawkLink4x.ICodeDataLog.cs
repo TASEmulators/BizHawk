@@ -54,7 +54,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 				if ((flags & LR35902.eCDLogMemFlags.Write) != 0) return;
 			}
 			
-			if (A.ppu.DMA_start)
+			if (A.ppu.DMA_bus_control)
 			{
 				// some of gekkio's tests require these to be accessible during DMA
 				if (addr < 0x8000)
