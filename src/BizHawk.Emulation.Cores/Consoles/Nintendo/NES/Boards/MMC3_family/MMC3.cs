@@ -149,6 +149,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(irq_reload_flag), ref irq_reload_flag);
 			ser.Sync(nameof(wram_enable), ref wram_enable);
 			ser.Sync(nameof(wram_write_protect), ref wram_write_protect);
+			ser.Sync(nameof(cmd), ref cmd);
 			Sync();
 		}
 
