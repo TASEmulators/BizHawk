@@ -9,16 +9,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 	{
 		public IEmulatorServiceProvider ServiceProvider { get; }
 
-		public ControllerDefinition ControllerDefinition => ((int)_syncSettings.FrameLength == 2) ? SubGbController : GbController;
+		public ControllerDefinition ControllerDefinition => (_syncSettings.FrameLength == GambatteSyncSettings.FrameLengthType.UserDefinedFrames) ? SubGbController : GbController;
 
 		public bool FrameAdvance(IController controller, bool render, bool rendersound)
 		{
 			FrameAdvancePrep(controller);
 			uint samplesEmitted;
-			switch ((int)_syncSettings.FrameLength)
+			switch (_syncSettings.FrameLength)
 			{
-				// VBlank Driven Frames
-				case 0:
+				case GambatteSyncSettings.FrameLengthType.VBlankDrivenFrames:
 					// target number of samples to emit: always 59.7fps
 					// runfor() always ends after creating a video frame, so sync-up is guaranteed
 					// when the display has been off, some frames can be markedly shorter than expected
@@ -35,8 +34,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 						ProcessSound((int)samplesEmitted);
 					}
 					break;
-				// Equal Length Frames
-				case 1:
+				case GambatteSyncSettings.FrameLengthType.EqualLengthFrames:
 					while (true)
 					{
 						// target number of samples to emit: length of 1 frame minus whatever overflow
@@ -63,8 +61,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 						}
 					}
 					break;
-				// User Defined Frames
-				case 2:
+				case GambatteSyncSettings.FrameLengthType.UserDefinedFrames:
 					while (true)
 					{
 						// target number of samples to emit: input length minus whatever overflow
