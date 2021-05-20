@@ -38,6 +38,7 @@ namespace BizHawk.Emulation.Common
 
 		/// <summary>
 		/// Gets the current frame count
+		/// Frame must be incremented after emulation in the core
 		/// </summary>
 		int Frame { get; }
 

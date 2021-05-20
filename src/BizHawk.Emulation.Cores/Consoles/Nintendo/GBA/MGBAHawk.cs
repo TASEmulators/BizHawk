@@ -116,7 +116,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		public bool FrameAdvance(IController controller, bool render, bool renderSound = true)
 		{
-			Frame++;
 			if (controller.IsPressed("Power"))
 			{
 				LibmGBA.BizReset(Core);
@@ -146,6 +145,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 			// this should be called in hblank on the appropriate line, but until we implement that, just do it here
 			_scanlinecb?.Invoke();
+
+			Frame++;
 
 			return true;
 		}

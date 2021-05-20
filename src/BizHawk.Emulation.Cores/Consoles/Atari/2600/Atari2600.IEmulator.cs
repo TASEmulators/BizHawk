@@ -13,7 +13,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		{
 			_controller = controller;
 
-			_frame++;
 			_islag = true;
 
 			// Handle all the console controls here
@@ -75,6 +74,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 
 			_tia.LineCount = 0;
+
+			_frame++;
 
 			return true;
 		}

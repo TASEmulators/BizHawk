@@ -276,8 +276,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		internal void FrameAdvancePrep(IController controller)
 		{
-			Frame++;
-
 			// update our local copy of the controller data
 			CurrentButtons = 0;
 
@@ -326,6 +324,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			{
 				LagCount++;
 			}
+
+			Frame++;
 
 			endofframecallback?.Invoke(LibGambatte.gambatte_cpuread(GambatteState, 0xff40));
 		}

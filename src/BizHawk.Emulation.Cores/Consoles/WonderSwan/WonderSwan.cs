@@ -62,7 +62,6 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 		public bool FrameAdvance(IController controller, bool render, bool rendersound = true)
 		{
-			Frame++;
 			IsLagFrame = true;
 
 			if (controller.IsPressed("Power"))
@@ -78,6 +77,8 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 			if (IsLagFrame)
 				LagCount++;
+
+			Frame++;
 
 			return true;
 		}

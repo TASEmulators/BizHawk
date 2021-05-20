@@ -36,8 +36,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubGBHawk
 				_GBCore.cpu.TraceCallback = null;
 			}
 
-			_frame++;
-
 			reset_frame = false;
 			if (controller.IsPressed("P1 Power"))
 			{
@@ -81,6 +79,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubGBHawk
 			}
 
 			reset_frame = false;
+
+			_frame++;
+
 			return ret;
 		}
 

@@ -808,8 +808,6 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			//TODO - actually, make this feedback from the core. there should be a register or status which effectively corresponds to whether it's reading.
 			DriveLightOn = false;
 
-			Frame++;
-
 			SetInput();
 
 			OctoshockDll.shock_SetLEC(psx, _SyncSettings.EnableLEC);
@@ -898,6 +896,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				if (sbuffcontains * 2 > sbuff.Length) throw new InvalidOperationException($"{nameof(OctoshockDll.shock_GetSamples)} returned too many samples: {sbuffcontains}");
 				OctoshockDll.shock_GetSamples(psx, samples);
 			}
+
+			Frame++;
 
 			return true;
 		}

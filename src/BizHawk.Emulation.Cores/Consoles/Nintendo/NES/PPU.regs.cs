@@ -363,7 +363,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			//quite strange that is makes the sprite hit flag go high like this
 			if (nes._isVS2c05==2)
 			{
-				if (nes.Frame<4)
+				if (nes.Frame<3)
 				{
 
 					return (byte)((Reg2002_vblank_active << 7) | (Reg2002_objhit << 6) | (1 << 5) | (0x1D));

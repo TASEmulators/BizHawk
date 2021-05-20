@@ -70,8 +70,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			RefreshMemoryCallbacks(false);
 
 			// apparently this is one frame?
-			_timeFrameCounter++;
 			Api.CMD_run();
+			_timeFrameCounter++;
 
 			// once upon a time we forwarded messages from bsnes here, by checking for queued text messages, but I don't think it's needed any longer
 			if (IsLagFrame)

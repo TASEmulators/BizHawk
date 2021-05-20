@@ -196,7 +196,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 				QN.qn_set_tracecb(Context, Tracer.Enabled ? _traceCb : null);
 
-				Frame++;
 				LibQuickNES.ThrowStringError(QN.qn_emulate_frame(Context, j1, j2));
 				IsLagFrame = QN.qn_get_joypad_read_count(Context) == 0;
 				if (IsLagFrame)
@@ -209,6 +208,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 				_callBack1?.Invoke();
 				_callBack2?.Invoke();
+
+				Frame++;
 
 				return true;
 			}

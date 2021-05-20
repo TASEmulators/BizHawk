@@ -46,7 +46,6 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		{
 			_controller = controller;
 			_lagged = true;
-			_frame++;
 
 			if (!IsGameGear)
 			{
@@ -129,6 +128,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				_isLag = false;
 			}
 
+			_frame++;
+
 			return true;
 		}
 
@@ -136,7 +137,6 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		public void FrameAdvancePrep()
 		{
 			_lagged = true;
-			_frame++;
 
 			if (!IsGameGear && IsGameGear_C)
 			{
@@ -156,6 +156,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			{
 				_isLag = false;
 			}
+
+			_frame++;
 		}
 
 		public int Frame => _frame;

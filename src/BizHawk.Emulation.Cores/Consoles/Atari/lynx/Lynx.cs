@@ -121,7 +121,6 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 
 		public bool FrameAdvance(IController controller, bool render, bool rendersound = true)
 		{
-			Frame++;
 			if (controller.IsPressed("Power"))
 			{
 				LibLynx.Reset(Core);
@@ -134,6 +133,8 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 			{
 				LagCount++;
 			}
+
+			Frame++;
 
 			return true;
 		}

@@ -19,7 +19,6 @@ namespace BizHawk.Emulation.Cores.Intellivision
 				_cpu.TraceCallback = null;
 			}
 
-			_frame++;
 			_sticRow = -1;
 
 			// read the controller state here for now
@@ -124,6 +123,8 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			{
 				SoftReset();
 			}
+
+			_frame++;
 
 			return true;
 		}

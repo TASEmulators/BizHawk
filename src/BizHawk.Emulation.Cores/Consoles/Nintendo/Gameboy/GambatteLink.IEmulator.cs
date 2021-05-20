@@ -38,7 +38,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			_cablediscosignal = cablediscosignalNew;
 
-			Frame++;
 			L.FrameAdvancePrep(LCont);
 			R.FrameAdvancePrep(RCont);
 
@@ -147,6 +146,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			{
 				LagCount++;
 			}
+
+			Frame++;
 
 			return true;
 		}

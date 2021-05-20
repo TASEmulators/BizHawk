@@ -54,8 +54,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				cpu.TraceCallback = null;
 			}
 
-			_frame++;
-
 			if (controller.IsPressed("P1 Power"))
 			{
 				HardReset();
@@ -89,6 +87,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			{
 				_lagcount++;
 			}
+
+			_frame++;
 
 			return true;
 		}

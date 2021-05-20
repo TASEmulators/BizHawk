@@ -13,7 +13,6 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			_controller = controller;
 			_lagged = true;
 			DriveLightOn = false;
-			Frame++;
 			CheckSpriteLimit();
 			PSG.BeginFrame(Cpu.TotalExecutedCycles);
 
@@ -39,6 +38,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			{
 				_isLag = false;
 			}
+
+			Frame++;
 
 			return true;
 		}

@@ -304,8 +304,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				HardReset();
 			}
 
-			Frame++;
-
 			//if (resetSignal)
 			//Controller.UnpressButton("Reset");   TODO fix this
 			resetSignal = controller.IsPressed("Reset");
@@ -380,6 +378,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			// turn off all cheats
 			// any cheats still active will be re-applied by the buspoke at the start of the next frame
 			num_cheats = 0;
+
+			Frame++;
 
 			return true;
 		}

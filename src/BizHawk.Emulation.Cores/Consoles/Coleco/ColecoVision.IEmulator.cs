@@ -25,8 +25,6 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 				SoftReset();
 			}
 
-			_frame++;
-
 			_isLag = true;
 			if (_tracer.Enabled)
 			{
@@ -163,6 +161,8 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			{
 				_lagCount++;
 			}
+
+			_frame++;
 
 			return true;
 		}
