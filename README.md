@@ -286,41 +286,41 @@ We're looking to create [a catalog](https://github.com/TASVideos/BizHawk-Externa
 
 ### Cores
 
-A *core* is what we call the smaller bits of software that emulate just one system or family of systems, e.g. NES/Famicom. For the most part, there's a "best" core for each system, based on accuracy, but there are a few alternative cores which are *faster and less accurate*.
+A *core* is what we call the smaller bits of software that emulate just one system or family of systems, e.g. NesHawk for NES/Famicom. For the most part, we have one core per system, but sometimes you have the choice between speed (in terms of CPU usage) and accuracy.
 
-*Hawk* cores are part of the BizHawk project. All other cores are ported, mainly from the Mednafen project.
+In the table below, core names in **bold** are accuracy-focused and acceptable on TASVideos. The -*Hawk* cores are part of the BizHawk project. All other cores are ported, mainly from the Mednafen project.
 
-System | Core | Alt. Cores
---:|:--|:--
-Apple II | Virtu |
-Atari 2600 | Atari2600Hawk |
-Atari 7800 | A7800Hawk |
-Atari Lynx | Handy |
-Commodore 64 | C64Hawk |
-ColecoVision | ColecoHawk |
-Game Boy / Color | GBHawk | Gambatte
-Game Boy Advance | mGBA |
-Intellivision | IntelliHawk |
-N64 | Mupen64Plus |
-Neo Geo Pocket | NeoPop |
-NES | NesHawk | QuickNes |
-Odyssey² | O2Hawk |
-PC-FX | T.S.T. |
-Playstation (PSX) | Octoshock |
-Sega 32X | PicoDrive |
-Sega Game Gear | SMSHawk |
-Sega Genesis | Genplus-gx |
-Sega Master System | SMSHawk |
-Sega Saturn | Saturnus |
-SNES | BSNES | Faust, Snes9x
-Super Game Boy | BSNES | SameBoy
-TI-83 | TI83Hawk |
-TurboGrafx | TurboNyma | HyperNyma, PCEHawk
-Uzebox | Uzem |
-Vectrex | VectrexHawk |
-Virtual Boy | Virtual Boyee |
-WonderSwan / Color | Cygne |
-ZX Spectrum | ZXHawk |
+System | Cores
+--:|:--
+Apple II | **Virtu**
+Atari 2600 | **Atari2600Hawk**
+Atari 7800 | **A7800Hawk**
+Atari Lynx | **Handy**
+Commodore 64 | **C64Hawk**
+ColecoVision | **ColecoHawk**
+Game Boy / Color | **Gambatte**, **GBHawk**
+Game Boy Advance | **mGBA**
+Intellivision | **IntelliHawk**
+N64 | **Mupen64Plus**
+Neo Geo Pocket | **NeoPop**
+NES | **NesHawk**, QuickNes
+Odyssey² | **O2Hawk**
+PC-FX | **T.S.T.**
+Playstation (PSX) | **Octoshock**
+Sega 32X | **PicoDrive**
+Sega Game Gear | **SMSHawk**
+Sega Genesis | **Genplus-gx**
+Sega Master System | **SMSHawk**
+Sega Saturn | **Saturnus**
+SNES | **BSNES**, Faust, Snes9x
+Super Game Boy | **BSNES**, **SameBoy**
+TI-83 | **TI83Hawk**
+TurboGrafx | HyperNyma, **PCEHawk**, **TurboNyma**
+Uzebox | **Uzem**
+Vectrex | **VectrexHawk**
+Virtual Boy | **Virtual Boyee**
+WonderSwan / Color | **Cygne**
+ZX Spectrum | **ZXHawk**
 
 There are also works-in-progress for:
 * Amstrad CPC (home-grown core)
