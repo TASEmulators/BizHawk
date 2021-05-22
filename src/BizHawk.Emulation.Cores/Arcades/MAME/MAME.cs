@@ -84,26 +84,24 @@ using BizHawk.Emulation.Common;
 namespace BizHawk.Emulation.Cores.Arcades.MAME
 {
 	[PortedCore(CoreNames.MAME, "MAMEDev", "0.231", "https://github.com/mamedev/mame.git", isReleased: false)]
-	public partial class MAME : IEmulator, IVideoProvider, ISoundProvider, ISettable<object, MAME.SyncSettings>, IStatable, IInputPollable
+	public partial class MAME : IEmulator, IVideoProvider, ISoundProvider, ISettable<object, MAME.MAMESyncSettings>, IStatable, IInputPollable
 	{
-		public MAME(string dir, string file, MAME.SyncSettings syncSettings, out string gamename)
+		public MAME(string dir, string file, MAME.MAMESyncSettings syncSettings, out string gamename)
 		{
 			OSTailoredCode.LinkedLibManager.FreeByPtr(OSTailoredCode.LinkedLibManager.LoadOrThrow(LibMAME.dll)); // don't bother if the library is missing
 
+			_gameDirectory = dir;
+			_gameFileName = file;
+
 			ServiceProvider = new BasicServiceProvider(this);
 
-			_gameDirectory = dir;
-			_gameFilename = file;
+			_syncSettings = syncSettings ?? new MAMESyncSettings();
 
 			_mameThread = new Thread(ExecuteMAMEThread);
 			_mameThread.Start();
 			_mameStartupComplete.WaitOne();
 
-			_syncSettings = (SyncSettings)syncSettings ?? new SyncSettings();
-			_syncSettings.ExpandoSettings = new ExpandoObject();
-			var dynamicObject = (IDictionary<string, object>)_syncSettings.ExpandoSettings;
-			dynamicObject.Add("OKAY", 1);
-			gamename = _gameName;
+			gamename = _gameFullName;
 
 			if (_loadFailure != "")
 			{
@@ -112,9 +110,10 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			}
 		}
 
-		private string _gameName = "Arcade";
+		private string _gameFullName = "Arcade";
+		private string _gameShortName = "arcade";
 		private readonly string _gameDirectory;
-		private readonly string _gameFilename;
+		private readonly string _gameFileName;
 		private string _loadFailure = "";
 		private readonly Thread _mameThread;
 		private readonly ManualResetEvent _mameStartupComplete = new ManualResetEvent(false);
@@ -128,7 +127,6 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		private void ExecuteMAMEThread()
 		{
-			// dodge GC
 			_periodicCallback = MAMEPeriodicCallback;
 			_soundCallback = MAMESoundCallback;
 			_bootCallback = MAMEBootCallback;
@@ -143,7 +141,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			string[] args =
 			{
 				 "mame"                                 // dummy, internally discarded by index, so has to go first
-				, _gameFilename                         // no dash for rom names
+				, _gameFileName                         // no dash for rom names
 				, "-noreadconfig"                       // forbid reading ini files
 				, "-nowriteconfig"                      // forbid writing ini files
 				, "-norewind"                           // forbid rewind savestates (captured upon frame advance)
@@ -192,7 +190,8 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		private void UpdateGameName()
 		{
-			_gameName = MameGetString(MAMELuaCommand.GetGameName);
+			_gameFullName = MameGetString(MAMELuaCommand.GetGameFullName);
+			_gameShortName = MameGetString(MAMELuaCommand.GetGameShortName);
 		}
 
 		private void CheckVersions()
@@ -282,6 +281,8 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			UpdateFramerate();
 			UpdateGameName();
 			InitMemoryDomains();
+			FetchDefaultGameSettings();
+			OverrideGameSettings();
 
 			int length = LibMAME.mame_lua_get_int("return string.len(manager.machine:buffer_save())");
 			_mameSaveBuffer = new byte[length];
@@ -341,21 +342,22 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 			// getters
 			public const string GetVersion = "return emu.app_version()";
-			public const string GetGameName = "return manager.machine.system.description";
-			public const string GetPixels = "return manager.machine.video:snapshot_pixels()";
-			public const string GetSamples = "return manager.machine.sound:get_samples()";
+			public const string GetGameShortName = "return manager.machine.system.name";
+			public const string GetGameFullName = "return manager.machine.system.description";
 			public const string GetWidth = "return (select(1, manager.machine.video:snapshot_size()))";
 			public const string GetHeight = "return (select(2, manager.machine.video:snapshot_size()))";
+			public const string GetPixels = "return manager.machine.video:snapshot_pixels()";
+			public const string GetSamples = "return manager.machine.sound:get_samples()";
 			public const string GetMainCPUName = "return manager.machine.devices[\":maincpu\"].shortname";
 
 			// memory space
 			public const string GetSpace = "return manager.machine.devices[\":maincpu\"].spaces[\"program\"]";
-			public const string GetSpaceMapCount = "return #manager.machine.devices[\":maincpu\"].spaces[\"program\"].map.entries";
-			public const string SpaceMap = "manager.machine.devices[\":maincpu\"].spaces[\"program\"].map.entries";
 			public const string GetSpaceAddressMask = "return manager.machine.devices[\":maincpu\"].spaces[\"program\"].address_mask";
 			public const string GetSpaceAddressShift = "return manager.machine.devices[\":maincpu\"].spaces[\"program\"].shift";
 			public const string GetSpaceDataWidth = "return manager.machine.devices[\":maincpu\"].spaces[\"program\"].data_width";
 			public const string GetSpaceEndianness = "return manager.machine.devices[\":maincpu\"].spaces[\"program\"].endianness";
+			public const string GetSpaceMapCount = "return #manager.machine.devices[\":maincpu\"].spaces[\"program\"].map.entries";
+			public const string SpaceMap = "manager.machine.devices[\":maincpu\"].spaces[\"program\"].map.entries";
 
 			// complex stuff
 			public const string GetFrameNumber =
@@ -372,8 +374,17 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			public const string GetBoundY =
 				"local b = manager.machine.render.ui_target.current_view.bounds " +
 				"return b.y1-b.y0";
+			public const string GetROMsInfo =
+				"local final = {} " +
+				"for __, r in pairs(manager.machine.devices[\":\"].roms) do " +
+					"if (r:hashdata() ~= \"\") then " +
+						"table.insert(final, string.format(\"%s,%s,%s;\", r:name(), r:hashdata(), r:flags())) " +
+					"end " +
+				"end " +
+				"table.sort(final) " +
+				"return table.concat(final)";
 			public const string GetInputFields =
-				"final = {} " +
+				"local final = {} " +
 				"for tag, _ in pairs(manager.machine.ioport.ports) do " +
 					"for name, field in pairs(manager.machine.ioport.ports[tag].fields) do " +
 						"if field.type_class ~= \"dipswitch\" then " +
@@ -383,12 +394,34 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				"end " +
 				"table.sort(final) " +
 				"return table.concat(final)";
-			public const string GetROMsInfo =
-				"final = {} " +
-				"for __, r in pairs(manager.machine.devices[\":\"].roms) do " +
-					"if (r:hashdata() ~= \"\") then " +
-						"table.insert(final, string.format(\"%s,%s,%s;\", r:name(), r:hashdata(), r:flags())) " +
+			public const string GetDIPSwitchTags =
+				"local final = {} " +
+				"for tag, _ in pairs(manager.machine.ioport.ports) do " +
+					"for name, field in pairs(manager.machine.ioport.ports[tag].fields) do " +
+						"if field.type_class == \"dipswitch\" then " +
+							"table.insert(final, tag..\";\") " +
+							"break " +
+						"end " +
 					"end " +
+				"end " +
+				"table.sort(final) " +
+				"return table.concat(final)";
+
+			public static string InputField(string tag, string fieldName) =>
+				$"manager.machine.ioport.ports[\"{ tag }\"].fields[\"{ fieldName }\"]";
+			public static string GetDIPSwitchFields(string tag) =>
+				"local final = { } " +
+				$"for name, field in pairs(manager.machine.ioport.ports[\"{ tag }\"].fields) do " +
+					"if field.type_class == \"dipswitch\" then " +
+						"table.insert(final, field.name..\"^\") " +
+					 "end " +
+				"end " +
+				"table.sort(final) " +
+				"return table.concat(final)";
+			public static string GetDIPSwitchOptions(string tag, string fieldName) =>
+				"local final = { } " +
+				$"for value, description in pairs(manager.machine.ioport.ports[\"{ tag }\"].fields[\"{ fieldName }\"].settings) do " +
+					"table.insert(final, string.format(\"%d~%s@\", value, description)) " +
 				"end " +
 				"table.sort(final) " +
 				"return table.concat(final)";

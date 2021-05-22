@@ -464,7 +464,7 @@ namespace BizHawk.Client.Common
 					nextEmulator = new MAME(
 						file.Directory,
 						file.CanonicalName,
-						GetCoreSyncSettings<MAME, MAME.SyncSettings>(),
+						GetCoreSyncSettings<MAME, MAME.MAMESyncSettings>(),
 						out var gameName
 					);
 					rom.GameInfo.Name = gameName;

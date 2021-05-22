@@ -92,6 +92,19 @@ namespace BizHawk.Client.EmuHawk
 					TypeDescriptor.RemoveProvider(desc, typeof(Emulation.Cores.Waterbox.NymaCore.NymaSyncSettings));
 				}
 			}
+			else if(owner.Emulator is Emulation.Cores.Arcades.MAME.MAME mame)
+			{
+				var desc = new Emulation.Cores.Arcades.MAME.MAMETypeDescriptorProvider(mame.CurrentDriverSettings);
+				try
+				{
+					TypeDescriptor.AddProvider(desc, typeof(Emulation.Cores.Arcades.MAME.MAME.MAMESyncSettings));
+					DoDialog(owner, "MAME", true, false);
+				}
+				finally
+				{
+					TypeDescriptor.RemoveProvider(desc, typeof(Emulation.Cores.Arcades.MAME.MAME.MAMESyncSettings));
+				}
+			}
 			else
 			{
 				using var dlg = new GenericCoreConfig(owner) { Text = title };
