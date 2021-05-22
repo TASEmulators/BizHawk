@@ -20,8 +20,9 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		public PutSettingsDirtyBits PutSyncSettings(MAMESyncSettings o)
 		{
-			bool ret = MAMESyncSettings.NeedsReboot(o, _syncSettings);
-			_syncSettings = o;
+			var s = o.Clone();
+			bool ret = MAMESyncSettings.NeedsReboot(s, _syncSettings);
+			_syncSettings = s;
 			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}
 
@@ -31,12 +32,15 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 			public static bool NeedsReboot(MAMESyncSettings x, MAMESyncSettings y)
 			{
-				return !DeepEquality.DeepEquals(x, y);
+				return !DeepEquality.DeepEquals(x.DriverSettings, y.DriverSettings);
 			}
 
 			public MAMESyncSettings Clone()
 			{
-				return (MAMESyncSettings)MemberwiseClone();
+				return new MAMESyncSettings
+				{
+					DriverSettings = new Dictionary<string, string>(DriverSettings)
+				};
 			}
 		}
 
@@ -84,7 +88,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 				if (s != null)
 				{
-					LibMAME.mame_lua_execute($"{ s.LuaCode }:set_value({ setting.Value })");	
+					LibMAME.mame_lua_execute($"{ s.LuaCode }.user_value = { setting.Value }");
 				}
 			}
 		}
