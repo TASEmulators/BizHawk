@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		public class MAMESyncSettings
 		{
-			public Dictionary<string, string> DriverSettings { get; set; } = new Dictionary<string, string>();
+			public SortedDictionary<string, string> DriverSettings { get; set; } = new SortedDictionary<string, string>();
 
 			public static bool NeedsReboot(MAMESyncSettings x, MAMESyncSettings y)
 			{
@@ -39,7 +39,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			{
 				return new MAMESyncSettings
 				{
-					DriverSettings = new Dictionary<string, string>(DriverSettings)
+					DriverSettings = new SortedDictionary<string, string>(DriverSettings)
 				};
 			}
 		}

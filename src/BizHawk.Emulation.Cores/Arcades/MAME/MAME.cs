@@ -153,7 +153,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				, "-nonvram_save"                       // prevent dumping non-volatile ram to disk
 				, "-artpath",          "mame\\artwork"  // path to load artowrk from
 				, "-diff_directory",      "mame\\diff"  // hdd diffs, whenever stuff is written back to an image
-				, "-cfg_directory",                ":"  // send invalid path to prevent cfg handling
+				, "-cfg_directory",                "?"  // send invalid path to prevent cfg handling
 				, "-volume",                     "-32"  // lowest attenuation means mame osd remains silent
 				, "-output",                 "console"  // print everything to hawk console
 				, "-samplerate", _sampleRate.ToString() // match hawk samplerate
