@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		{
 			static void AddN64StandardController(ControllerDefinition def, int player)
 			{
-				def.BoolButtons.AddRange(new[] { $"P{player} A Up", $"P{player} A Down", $"P{player} A Left", $"P{player} A Right", $"P{player} DPad U", $"P{player} DPad D", $"P{player} DPad L", $"P{player} DPad R", $"P{player} Start", $"P{player} Z", $"P{player} B", $"P{player} A", $"P{player} C Up", $"P{player} C Down", $"P{player} C Right", $"P{player} C Left", $"P{player} L", $"P{player} R" });
+				def.BoolButtons.AddRange(new[] { $"P{player} A Up", $"P{player} A Down", $"P{player} A Left", $"P{player} A Right", $"P{player} DPad U", $"P{player} DPad D", $"P{player} DPad L", $"P{player} DPad R", $"P{player} Start", $"P{player} Z", $"P{player} B", $"P{player} A", $"P{player} C Up", $"P{player} C Down", $"P{player} C Left", $"P{player} C Right", $"P{player} L", $"P{player} R" });
 				def.AddXYPair(
 					$"P{player} {{0}} Axis",
 					AxisPairOrientation.RightAndUp,
