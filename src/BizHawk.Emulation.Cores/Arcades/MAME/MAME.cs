@@ -318,17 +318,43 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			string ROMsInfo = MameGetString(MAMELuaCommand.GetROMsInfo);
 			string[] ROMs = ROMsInfo.Split(';');
 
+			DriverSetting setting = new DriverSetting()
+			{
+				Name = "BIOS",
+				GameName = _gameShortName,
+				LuaCode = "bios",
+				Type = SettingType.BIOS
+			};
+
 			foreach (string ROM in ROMs)
 			{
 				if (ROM != string.Empty)
 				{
-					string[] substrings = ROM.Split(',');
+					string[] substrings = ROM.Split('~');
 					string name = substrings[0];
-					string hashdata = substrings[1].Replace("R", " CRC:").Replace("S", " SHA:");
-					string flags = substrings[2];
+					string hashdata = substrings[1];
+					long flags = long.Parse(substrings[2]);
 
-					_romHashes.Add(name, hashdata);
+					if ((flags & 0xf) == 9 || (flags & 0xf) == 10)
+					{
+						setting.Options.Add(name, hashdata);
+
+						if ((flags & 0xf) == 10)
+						{
+							setting.DefaultValue = name;
+						}
+					}
+					else
+					{
+						hashdata = hashdata.Replace("R", " CRC:").Replace("S", " SHA:");
+						_romHashes.Add(name, hashdata);
+					}
 				}
+			}
+
+			if (setting.Options.Count > 0)
+			{
+				CurrentDriverSettings.Add(setting);
 			}
 		}
 
@@ -378,7 +404,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				"local final = {} " +
 				"for __, r in pairs(manager.machine.devices[\":\"].roms) do " +
 					"if (r:hashdata() ~= \"\") then " +
-						"table.insert(final, string.format(\"%s,%s,%s;\", r:name(), r:hashdata(), r:flags())) " +
+						"table.insert(final, string.format(\"%s~%s~%s;\", r:name(), r:hashdata(), r:flags())) " +
 					"end " +
 				"end " +
 				"table.sort(final) " +
