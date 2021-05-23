@@ -34,6 +34,7 @@ namespace SuperFamicom {
     cothread_t host = nullptr;
     cothread_t active = nullptr;
     bool desynchronized = false;
+    bool StepOnce = false;
 
     auto enter() -> void {
       host = co_active();

@@ -28,6 +28,7 @@ auto CPU::Enter() -> void {
   while(true) {
     scheduler.synchronize();
     cpu.main();
+    if (scheduler.StepOnce) scheduler.leave(Scheduler::Event::Desynchronized);
   }
 }
 

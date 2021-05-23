@@ -361,3 +361,55 @@ EXPORT void snes_bus_write(unsigned addr, uint8_t value)
 {
     bus.write(addr, value);
 }
+
+EXPORT void snes_get_cpu_registers(SnesRegisters* registers)
+{
+    registers->pc = SuperFamicom::cpu.r.pc.d;
+    registers->a = SuperFamicom::cpu.r.a.w;
+    registers->x = SuperFamicom::cpu.r.x.w;
+    registers->y = SuperFamicom::cpu.r.y.w;
+    registers->z = SuperFamicom::cpu.r.z.w;
+    registers->s = SuperFamicom::cpu.r.s.w;
+    registers->d = SuperFamicom::cpu.r.d.w;
+
+    registers->b = SuperFamicom::cpu.r.b;
+    registers->p = SuperFamicom::cpu.r.p;
+    registers->mdr = SuperFamicom::cpu.r.mdr;
+    registers->e = SuperFamicom::cpu.r.e;
+
+    registers->v = SuperFamicom::cpu.vcounter();
+    registers->h = SuperFamicom::cpu.hdot();
+}
+
+EXPORT void snes_set_cpu_register(char* _register, uint32_t value)
+{
+    string register = _register;
+    if (register == "PC") SuperFamicom::cpu.r.pc = value;
+    if (register == "A") SuperFamicom::cpu.r.a = value;
+    if (register == "X") SuperFamicom::cpu.r.x = value;
+    if (register == "Y") SuperFamicom::cpu.r.y = value;
+    if (register == "Z") SuperFamicom::cpu.r.z = value;
+    if (register == "S") SuperFamicom::cpu.r.s = value;
+    if (register == "D") SuperFamicom::cpu.r.d = value;
+    if (register == "B") SuperFamicom::cpu.r.b = value;
+    if (register == "P") SuperFamicom::cpu.r.p = value;
+    if (register == "E") SuperFamicom::cpu.r.e = value;
+    if (register == "MDR") SuperFamicom::cpu.r.mdr = value;
+
+    if (register == "FLAG C") SuperFamicom::cpu.r.p.c = value;
+    if (register == "FLAG Z") SuperFamicom::cpu.r.p.z = value;
+    if (register == "FLAG I") SuperFamicom::cpu.r.p.i = value;
+    if (register == "FLAG D") SuperFamicom::cpu.r.p.d = value;
+    if (register == "FLAG X") SuperFamicom::cpu.r.p.x = value;
+    if (register == "FLAG M") SuperFamicom::cpu.r.p.m = value;
+    if (register == "FLAG V") SuperFamicom::cpu.r.p.v = value;
+    if (register == "FLAG N") SuperFamicom::cpu.r.p.n = value;
+}
+
+EXPORT bool snes_cpu_step()
+{
+    scheduler.StepOnce = true;
+    emulator->run();
+    scheduler.StepOnce = false;
+    return scheduler.event == Scheduler::Event::Frame;
+}

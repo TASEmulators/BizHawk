@@ -59,6 +59,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		public abstract void snes_load_cartridge_normal(string baseRomPath, byte[] romData, int romSize);
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void snes_load_cartridge_super_gameboy(string baseRomPath, byte[] romData, byte[] sgbRomData, ulong mergedRomSizes);
+
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract void snes_get_cpu_registers(ref BsnesApi.CpuRegisters registers);
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract void snes_set_cpu_register(string register, uint value);
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract bool snes_cpu_step();
 	}
 
 	public unsafe partial class BsnesApi : IDisposable, IMonitor, IStatable
@@ -145,6 +152,29 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		public delegate void snes_trace_t(string disassembly, string register_info);
 
 		[StructLayout(LayoutKind.Sequential)]
+		public struct CpuRegisters
+		{
+			public uint pc;
+			public ushort a, x, y, z, s, d;
+			public byte b, p, mdr;
+			public bool e;
+			public ushort v, h;
+		}
+
+		[Flags]
+		public enum RegisterFlags : byte
+		{
+			C = 1,
+			Z = 2,
+			I = 4,
+			D = 8,
+			X = 16,
+			M = 32,
+			V = 64,
+			N = 128,
+		}
+
+		[StructLayout(LayoutKind.Sequential)]
 		public struct LayerEnables
 		{
 			public bool BG1_Prio0, BG1_Prio1;
@@ -165,17 +195,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			public snes_path_request_t pathRequestCb;
 			public snes_trace_t snesTraceCb;
 
-			private static List<FieldInfo> FieldsInOrder = null;
+			private static List<FieldInfo> FieldsInOrder;
 
 			public IEnumerable<Delegate> AllDelegatesInMemoryOrder()
 			{
-				if (FieldsInOrder == null)
-				{
-					FieldsInOrder = GetType()
-						.GetFields()
-						.OrderBy(fi => BizInvokerUtilities.ComputeFieldOffset(fi))
-						.ToList();
-				}
+				FieldsInOrder ??= GetType()
+					.GetFields()
+					.OrderBy(BizInvokerUtilities.ComputeFieldOffset)
+					.ToList();
 				return FieldsInOrder
 					.Select(f => (Delegate)f.GetValue(this));
 			}

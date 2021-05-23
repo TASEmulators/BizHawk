@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 {
 	[PortedCore(CoreNames.Bsnes115, "bsnes team", "v115+", "https://bsnes.dev", isReleased: false)]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
-	public unsafe partial class BsnesCore : IEmulator, IVideoProvider, ISaveRam, IStatable, IInputPollable, IRegionable, ISettable<BsnesCore.SnesSettings, BsnesCore.SnesSyncSettings>
+	public unsafe partial class BsnesCore : IEmulator, IDebuggable, IVideoProvider, ISaveRam, IStatable, IInputPollable, IRegionable, ISettable<BsnesCore.SnesSettings, BsnesCore.SnesSyncSettings>
 	{
 		private BsnesApi.SNES_REGION _region;
 

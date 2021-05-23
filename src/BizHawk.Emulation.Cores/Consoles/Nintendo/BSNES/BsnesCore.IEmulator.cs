@@ -53,8 +53,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			Api.core.snes_set_audio_enabled(renderSound);
 
 			// run the core for one frame
-			Frame++;
 			Api.core.snes_run();
+			Frame++;
 
 			if (IsLagFrame)
 			{

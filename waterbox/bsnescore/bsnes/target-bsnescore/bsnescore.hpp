@@ -33,6 +33,15 @@ struct LayerEnables
     bool Obj_Prio0, Obj_Prio1, Obj_Prio2, Obj_Prio3;
 };
 
+struct SnesRegisters
+{
+    uint32_t pc;
+    uint16_t a, x, y, z, s, d;
+    uint8_t b, p, mdr;
+    bool e;
+    uint16_t v, h;
+};
+
 
 // below code unused; would be useful for the graphics debugger
 //$2105
