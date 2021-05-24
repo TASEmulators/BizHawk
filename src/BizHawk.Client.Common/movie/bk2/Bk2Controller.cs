@@ -13,7 +13,18 @@ namespace BizHawk.Client.Common
 		private readonly WorkingDictionary<string, int> _myAxisControls = new WorkingDictionary<string, int>();
 
 		private readonly Bk2ControllerDefinition _type;
-		private readonly List<ControlMap> _controlsOrdered;
+
+		private IList<ControlMap> _controlsOrdered;
+
+		private IList<ControlMap> ControlsOrdered => _controlsOrdered ??= _type.ControlsOrdered
+			.SelectMany(c => c) // flatten
+			.Select(c => new ControlMap
+			{
+				Name = c,
+				IsBool = _type.BoolButtons.Contains(c),
+				IsAxis = _type.Axes.ContainsKey(c)
+			})
+			.ToList();
 
 		public Bk2Controller(string key, ControllerDefinition definition) : this(definition)
 		{
@@ -30,15 +41,6 @@ namespace BizHawk.Client.Common
 		public Bk2Controller(ControllerDefinition definition)
 		{
 			_type = new Bk2ControllerDefinition(definition);
-			_controlsOrdered =  Definition.ControlsOrdered
-				.SelectMany(c => c)
-				.Select(c => new ControlMap
-				{
-					Name = c,
-					IsBool = _type.BoolButtons.Contains(c),
-					IsAxis = _type.Axes.ContainsKey(c)
-				})
-				.ToList();
 		}
 
 		public ControllerDefinition Definition => _type;
@@ -84,7 +86,7 @@ namespace BizHawk.Client.Common
 				var trimmed = mnemonic.Replace("|", "");
 				var iterator = 0;
 
-				foreach (var key in _controlsOrdered)
+				foreach (var key in ControlsOrdered)
 				{
 					if (key.IsBool)
 					{
