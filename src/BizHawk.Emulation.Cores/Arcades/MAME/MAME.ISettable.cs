@@ -100,7 +100,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			public string LuaCode { get; set; }
 			public string DefaultValue { get; set; }
 			public SettingType Type { get; set; }
-			public Dictionary<string, string> Options { get; set; }
+			public SortedDictionary<string, string> Options { get; set; }
 			public string LookupKey => $"[{ GameName }] { LuaCode }";
 
 			public DriverSetting()
@@ -108,7 +108,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				Name = null;
 				GameName = null;
 				DefaultValue = null;
-				Options = new Dictionary<string, string>();
+				Options = new SortedDictionary<string, string>();
 			}
 		}
 

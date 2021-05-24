@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using static BizHawk.Emulation.Cores.Arcades.MAME.MAME;
-using static BizHawk.Emulation.Cores.Arcades.MAME.MAME.DriverSetting;
 
 namespace BizHawk.Emulation.Cores.Arcades.MAME
 {

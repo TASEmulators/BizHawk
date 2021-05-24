@@ -18,6 +18,12 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			NONE, NOT_FOUND, ILLEGAL_REGISTRATIONS, INVALID_HEADER, READ_ERROR, WRITE_ERROR, DISABLED
 		}
 
+		public const int ROMENTRYTYPE_SYSTEM_BIOS = 9;
+		public const int ROMENTRYTYPE_DEFAULT_BIOS = 10;
+		public const int ROMENTRY_TYPEMASK = 15;
+		public const int BIOS_INDEX = 24;
+		public const int BIOS_FIRST = 1;
+
 		// main launcher
 		[DllImport(dll, CallingConvention = cc)]
 		public static extern uint mame_launch(int argc, string[] argv);

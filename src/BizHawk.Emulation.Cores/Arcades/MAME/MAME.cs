@@ -73,11 +73,10 @@ made that way to make the buffer persist actoss C API calls.
 */
 
 using System;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Diagnostics;
-using System.Dynamic;
+using System.Linq;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
@@ -274,13 +273,13 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			LibMAME.mame_lua_execute(MAMELuaCommand.Pause);
 
 			CheckVersions();
-			GetInputFields();
-			GetROMsInfo();
+			UpdateGameName();
 			UpdateVideo();
 			UpdateAspect();
 			UpdateFramerate();
-			UpdateGameName();
 			InitMemoryDomains();
+			GetInputFields();
+			GetROMsInfo();
 			FetchDefaultGameSettings();
 			OverrideGameSettings();
 
@@ -316,7 +315,8 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		private void GetROMsInfo()
 		{
 			string ROMsInfo = MameGetString(MAMELuaCommand.GetROMsInfo);
-			string[] ROMs = ROMsInfo.Split(';');
+			string[] ROMs = ROMsInfo.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+			string tempDefault = "";
 
 			DriverSetting setting = new DriverSetting()
 			{
@@ -335,11 +335,20 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 					string hashdata = substrings[1];
 					long flags = long.Parse(substrings[2]);
 
-					if ((flags & 0xf) == 9 || (flags & 0xf) == 10)
+					if ((flags & LibMAME.ROMENTRY_TYPEMASK) == LibMAME.ROMENTRYTYPE_SYSTEM_BIOS
+						|| (flags & LibMAME.ROMENTRY_TYPEMASK) == LibMAME.ROMENTRYTYPE_DEFAULT_BIOS)
 					{
 						setting.Options.Add(name, hashdata);
 
-						if ((flags & 0xf) == 10)
+						// if no bios is explicitly marked as default
+						// mame uses the first one in the list
+						// and its index is reflected in the flags (ROM_BIOSFLAGSMASK)
+						if ((flags >> LibMAME.BIOS_INDEX) == LibMAME.BIOS_FIRST)
+						{
+							tempDefault = name;
+						}
+
+						if ((flags & LibMAME.ROMENTRY_TYPEMASK) == LibMAME.ROMENTRYTYPE_DEFAULT_BIOS)
 						{
 							setting.DefaultValue = name;
 						}
@@ -354,6 +363,11 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 			if (setting.Options.Count > 0)
 			{
+				if (setting.DefaultValue == null)
+				{
+					setting.DefaultValue = tempDefault;
+				}
+
 				CurrentDriverSettings.Add(setting);
 			}
 		}
