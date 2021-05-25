@@ -86,10 +86,70 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			{
 				DriverSetting s = CurrentDriverSettings.SingleOrDefault(s => s.LookupKey == setting.Key);
 
-				if (s != null)
+				if (s != null && s.Type == SettingType.DIPSWITCH)
 				{
 					LibMAME.mame_lua_execute($"{ s.LuaCode }.user_value = { setting.Value }");
 				}
+			}
+		}
+
+		private void GetROMsInfo()
+		{
+			string ROMsInfo = MameGetString(MAMELuaCommand.GetROMsInfo);
+			string[] ROMs = ROMsInfo.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+			string tempDefault = "";
+
+			DriverSetting setting = new DriverSetting()
+			{
+				Name = "BIOS",
+				GameName = _gameShortName,
+				LuaCode = LibMAME.BIOS_LUA_CODE,
+				Type = SettingType.BIOS
+			};
+
+			foreach (string ROM in ROMs)
+			{
+				if (ROM != string.Empty)
+				{
+					string[] substrings = ROM.Split('~');
+					string name = substrings[0];
+					string hashdata = substrings[1];
+					long flags = long.Parse(substrings[2]);
+
+					if ((flags & LibMAME.ROMENTRY_TYPEMASK) == LibMAME.ROMENTRYTYPE_SYSTEM_BIOS
+						|| (flags & LibMAME.ROMENTRY_TYPEMASK) == LibMAME.ROMENTRYTYPE_DEFAULT_BIOS)
+					{
+						setting.Options.Add(name, hashdata);
+
+						// if no bios is explicitly marked as default
+						// mame uses the first one in the list
+						// and its index is reflected in the flags (ROM_BIOSFLAGSMASK)
+						if ((flags >> LibMAME.BIOS_INDEX) == LibMAME.BIOS_FIRST)
+						{
+							tempDefault = name;
+						}
+
+						if ((flags & LibMAME.ROMENTRY_TYPEMASK) == LibMAME.ROMENTRYTYPE_DEFAULT_BIOS)
+						{
+							setting.DefaultValue = name;
+						}
+					}
+					else
+					{
+						hashdata = hashdata.Replace("R", " CRC:").Replace("S", " SHA:");
+						_romHashes.Add(name, hashdata);
+					}
+				}
+			}
+
+			if (setting.Options.Count > 0)
+			{
+				if (setting.DefaultValue == null)
+				{
+					setting.DefaultValue = tempDefault;
+				}
+
+				CurrentDriverSettings.Add(setting);
 			}
 		}
 
@@ -101,7 +161,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			public string DefaultValue { get; set; }
 			public SettingType Type { get; set; }
 			public SortedDictionary<string, string> Options { get; set; }
-			public string LookupKey => $"[{ GameName }] { LuaCode }";
+			public string LookupKey => MAMELuaCommand.MakeLookupKey(GameName, LuaCode);
 
 			public DriverSetting()
 			{

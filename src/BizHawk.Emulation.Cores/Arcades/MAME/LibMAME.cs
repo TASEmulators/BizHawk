@@ -8,6 +8,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		internal const string dll = "libmamearcade.dll"; // libmamearcade.dll libpacshd.dll
 		private const CallingConvention cc = CallingConvention.Cdecl;
 
+		// enums
 		public enum OutputChannel
 		{
 			ERROR, WARNING, INFO, DEBUG, VERBOSE, LOG, COUNT
@@ -18,11 +19,13 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			NONE, NOT_FOUND, ILLEGAL_REGISTRATIONS, INVALID_HEADER, READ_ERROR, WRITE_ERROR, DISABLED
 		}
 
+		// constants
 		public const int ROMENTRYTYPE_SYSTEM_BIOS = 9;
 		public const int ROMENTRYTYPE_DEFAULT_BIOS = 10;
 		public const int ROMENTRY_TYPEMASK = 15;
 		public const int BIOS_INDEX = 24;
 		public const int BIOS_FIRST = 1;
+		public const string BIOS_LUA_CODE = "bios";
 
 		// main launcher
 		[DllImport(dll, CallingConvention = cc)]

@@ -79,6 +79,7 @@ using System.Diagnostics;
 using System.Linq;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
+using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Cores.Arcades.MAME
 {
@@ -137,7 +138,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			LibMAME.mame_set_log_callback(_logCallback);
 
 			// https://docs.mamedev.org/commandline/commandline-index.html
-			string[] args =
+			List<string> args = new List<string>
 			{
 				 "mame"                                 // dummy, internally discarded by index, so has to go first
 				, _gameFileName                         // no dash for rom names
@@ -164,7 +165,14 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			//	, "-debug"                              // launch mame debugger (because we can)
 			};
 
-			LibMAME.mame_launch(args.Length, args);
+			if (_syncSettings.DriverSettings.TryGetValue(
+				MAMELuaCommand.MakeLookupKey(_gameFileName.Split('.')[0], LibMAME.BIOS_LUA_CODE),
+				out string value))
+			{
+				args.AddRange(new List<string>{ "-bios", value });
+			}
+
+			LibMAME.mame_launch(args.Count, args.ToArray());
 		}
 
 		private static string MameGetString(string command)
@@ -312,66 +320,6 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			}
 		}
 
-		private void GetROMsInfo()
-		{
-			string ROMsInfo = MameGetString(MAMELuaCommand.GetROMsInfo);
-			string[] ROMs = ROMsInfo.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
-			string tempDefault = "";
-
-			DriverSetting setting = new DriverSetting()
-			{
-				Name = "BIOS",
-				GameName = _gameShortName,
-				LuaCode = "bios",
-				Type = SettingType.BIOS
-			};
-
-			foreach (string ROM in ROMs)
-			{
-				if (ROM != string.Empty)
-				{
-					string[] substrings = ROM.Split('~');
-					string name = substrings[0];
-					string hashdata = substrings[1];
-					long flags = long.Parse(substrings[2]);
-
-					if ((flags & LibMAME.ROMENTRY_TYPEMASK) == LibMAME.ROMENTRYTYPE_SYSTEM_BIOS
-						|| (flags & LibMAME.ROMENTRY_TYPEMASK) == LibMAME.ROMENTRYTYPE_DEFAULT_BIOS)
-					{
-						setting.Options.Add(name, hashdata);
-
-						// if no bios is explicitly marked as default
-						// mame uses the first one in the list
-						// and its index is reflected in the flags (ROM_BIOSFLAGSMASK)
-						if ((flags >> LibMAME.BIOS_INDEX) == LibMAME.BIOS_FIRST)
-						{
-							tempDefault = name;
-						}
-
-						if ((flags & LibMAME.ROMENTRY_TYPEMASK) == LibMAME.ROMENTRYTYPE_DEFAULT_BIOS)
-						{
-							setting.DefaultValue = name;
-						}
-					}
-					else
-					{
-						hashdata = hashdata.Replace("R", " CRC:").Replace("S", " SHA:");
-						_romHashes.Add(name, hashdata);
-					}
-				}
-			}
-
-			if (setting.Options.Count > 0)
-			{
-				if (setting.DefaultValue == null)
-				{
-					setting.DefaultValue = tempDefault;
-				}
-
-				CurrentDriverSettings.Add(setting);
-			}
-		}
-
 		private class MAMELuaCommand
 		{
 			// commands
@@ -447,6 +395,8 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				"table.sort(final) " +
 				"return table.concat(final)";
 
+			public static string MakeLookupKey(string gameName, string luaCode) =>
+				$"[{ gameName }] { luaCode }";
 			public static string InputField(string tag, string fieldName) =>
 				$"manager.machine.ioport.ports[\"{ tag }\"].fields[\"{ fieldName }\"]";
 			public static string GetDIPSwitchFields(string tag) =>
