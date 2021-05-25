@@ -27,7 +27,8 @@
 			SuperMultitap,
 			SuperScope,
 			Justifier,
-			Justifiers
+			Justifiers,
+			Payload
 		}
 
 		public enum ENTROPY

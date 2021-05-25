@@ -25,6 +25,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 				BSNES_INPUT_DEVICE.SuperScope => new BsnesSuperScopeController(),
 				BSNES_INPUT_DEVICE.Justifier => new BsnesJustifierController(false),
 				BSNES_INPUT_DEVICE.Justifiers => new BsnesJustifierController(true),
+				BSNES_INPUT_DEVICE.Payload => new BsnesPayloadController(),
 				_ => throw new InvalidOperationException()
 			};
 		}
@@ -304,6 +305,34 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 				return 0;
 
 			return _state[index * 4 + id];
+		}
+	}
+
+	internal class BsnesPayloadController : IBsnesController
+	{
+		private readonly bool[] _state = new bool[32];
+
+		private static readonly ControllerDefinition _definition = new()
+		{
+			BoolButtons = Enumerable.Range(0, 32).Select(i => $"0B{i}").ToList()
+		};
+
+		public ControllerDefinition Definition => _definition;
+
+		public void UpdateState(IController controller)
+		{
+			for (int i = 0; i < 32; i++)
+			{
+				_state[i] = controller.IsPressed(Definition.BoolButtons[i]);
+			}
+		}
+
+		public short GetState(int index, int id)
+		{
+			if (index >= 2 || id >= 16)
+				return 0;
+
+			return (short) (_state[index * 2 + id] ? 1 : 0);
 		}
 	}
 }
