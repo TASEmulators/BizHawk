@@ -76,8 +76,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				case 0xFF47: ret = BGP;								break; // BGP
 				case 0xFF48: ret = obj_pal_0;						break; // OBP0
 				case 0xFF49: ret = obj_pal_1;						break; // OBP1
-				case 0xFF4A: ret = window_y;						break; // WY
-				case 0xFF4B: ret = window_x;						break; // WX
+				case 0xFF4A: ret = window_y_read;					break; // WY
+				case 0xFF4B: ret = window_x_read;					break; // WX
 
 				// These are GBC specific Regs
 				case 0xFF51: ret = 0xFF;							break; // HDMA1 (src_hi)
@@ -157,7 +157,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				case 0xFF41: // STAT
 					// note that their is no stat interrupt bug in GBC
 					STAT = (byte)((value & 0xF8) | (STAT & 7) | 0x80);
-					//Console.WriteLine("stat " + " " + STAT + " " + value + " " + LY + " " + cycle + " " + Core.REG_FF0F);
 					if (((STAT & 3) == 0) && STAT.Bit(3) && !glitch_state) { HBL_INT = true; } else { HBL_INT = false; }
 
 					if (value.Bit(6) && LCDC.Bit(7))
@@ -200,6 +199,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					break;
 				case 0xFF4A: // WY
 					window_y = value;
+					window_y_read = window_y;
 					if (!window_started && (!LCDC.Bit(7) || (value > LY)))
 					{
 						window_y_latch = window_y;
@@ -209,6 +209,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					break;
 				case 0xFF4B: // WX
 					window_x = value;
+					window_x_read = window_x;
 					break;
 				// These are GBC specific Regs
 				case 0xFF51: // HDMA1
@@ -908,6 +909,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				window_started = false;
 
 				if (SL_sprites_index == 0) { no_sprites = true; }
+
 				// it is much easier to process sprites if we order them according to the rules of sprite priority first
 				if (!no_sprites) { reorder_and_assemble_sprites(); }
 			}
@@ -1892,14 +1894,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			scroll_y = 0;
 			scroll_x = 0;
 			LY = 0;
-			LYC = 0xFF;
+			LYC = 0;
 			LY_read = 0;
 			DMA_addr = 0;
 			BGP = 0xFF;
 			obj_pal_0 = 0;
 			obj_pal_1 = 0;
-			window_y = 0x0;
-			window_x = 0x0;
+			window_y = 0xFF;
+			window_x = 0xFF;
+			window_y_read = 0;
+			window_x_read = 0;
 			window_x_latch = 0xFF;
 			window_y_latch = 0xFF;
 			LY_inc = 1;

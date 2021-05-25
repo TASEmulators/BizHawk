@@ -75,8 +75,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				case 0xFF47: ret = BGP;								break; // BGP
 				case 0xFF48: ret = obj_pal_0;						break; // OBP0
 				case 0xFF49: ret = obj_pal_1;						break; // OBP1
-				case 0xFF4A: ret = window_y;						break; // WY
-				case 0xFF4B: ret = window_x;						break; // WX
+				case 0xFF4A: ret = window_y_read;					break; // WY
+				case 0xFF4B: ret = window_x_read;					break; // WX
 
 				// These are GBC specific Regs
 				case 0xFF51: ret = 0xFF;							break; // HDMA1 (src_hi)
@@ -200,6 +200,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					break;
 				case 0xFF4A: // WY
 					window_y = value;
+					window_y_read = window_y;
 					if (!window_started && (!LCDC.Bit(7) || (value > LY)))
 					{
 						window_y_latch = window_y;
@@ -209,6 +210,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					break;
 				case 0xFF4B: // WX
 					window_x = value;
+					window_x_read = window_x;
 					break;
 
 				// These are GBC specific Regs
@@ -1837,14 +1839,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			scroll_y = 0;
 			scroll_x = 0;
 			LY = 0;
-			LYC = 0xFF;
+			LYC = 0; // NOTE: frame0_m2stat_count_1_dmg08_cgb04c_out91 returns 1 on GBP, indicating internal state is also zero
 			LY_read = 0;
 			DMA_addr = 0;
 			BGP = 0xFF;
 			obj_pal_0 = 0;
 			obj_pal_1 = 0;
-			window_y = 0x0;
-			window_x = 0x0;
+			window_y = 0xFF;
+			window_x = 0xFF;
+			window_y_read = 0;
+			window_x_read = 0;
 			window_x_latch = 0xFF;
 			window_y_latch = 0xFF;
 			LY_inc = 1;

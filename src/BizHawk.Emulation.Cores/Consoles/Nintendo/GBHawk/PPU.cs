@@ -31,6 +31,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public byte obj_pal_1;
 		public byte window_y;
 		public byte window_x;
+		public byte window_y_read;
+		public byte window_x_read;
 		public bool DMA_start;
 		public bool DMA_bus_control;
 		public int DMA_clock;
@@ -203,6 +205,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync(nameof(obj_pal_1), ref obj_pal_1);
 			ser.Sync(nameof(window_y), ref window_y);
 			ser.Sync(nameof(window_x), ref window_x);
+			ser.Sync(nameof(window_y_read), ref window_y_read);
+			ser.Sync(nameof(window_x_read), ref window_x_read);
 			ser.Sync(nameof(DMA_start), ref DMA_start);
 			ser.Sync(nameof(DMA_bus_control), ref DMA_bus_control);
 			ser.Sync(nameof(DMA_clock), ref DMA_clock);
