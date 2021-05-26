@@ -1,6 +1,8 @@
 #![crate_type = "cdylib"]
 
-#![feature(try_trait)]
+#![feature(try_trait_v2)]
+#![feature(never_type)]
+#![feature(control_flow_enum)]
 #![feature(core_intrinsics)]
 #![feature(asm)]
 #![feature(map_first_last)]
