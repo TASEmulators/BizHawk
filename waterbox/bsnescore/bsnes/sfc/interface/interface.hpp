@@ -21,6 +21,7 @@ struct ID {
     Gamepad,
     Mouse,
     SuperMultitap,
+    Payload,
     SuperScope,
     Justifier,
     Justifiers,

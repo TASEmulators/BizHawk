@@ -455,6 +455,9 @@ auto Program::inputPoll(uint port, uint device, uint input) -> int16
 	if (device == ID::Device::SuperMultitap) {
 		index = input / 12;
 		id = input % 12;
+	} else if (device == ID::Device::Payload) {
+		index = input / 16;
+		id = input % 16;
 	} else if (device == ID::Device::Justifiers) {
 		index = input / 4;
 		id = input % 4;

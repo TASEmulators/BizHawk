@@ -22,10 +22,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 					LimitAnalogChangeSensitivity = ss.LimitAnalogChangeSensitivity
 				},
 				BSNES_INPUT_DEVICE.SuperMultitap => new BsnesMultitapController(),
+				BSNES_INPUT_DEVICE.Payload => new BsnesPayloadController(),
 				BSNES_INPUT_DEVICE.SuperScope => new BsnesSuperScopeController(),
 				BSNES_INPUT_DEVICE.Justifier => new BsnesJustifierController(false),
 				BSNES_INPUT_DEVICE.Justifiers => new BsnesJustifierController(true),
-				BSNES_INPUT_DEVICE.Payload => new BsnesPayloadController(),
 				_ => throw new InvalidOperationException()
 			};
 		}
@@ -82,6 +82,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		ControllerDefinition Definition { get; }
 	}
 
+	internal class BsnesUnpluggedController : IBsnesController
+	{
+		private static readonly ControllerDefinition _definition = new();
+
+		public ControllerDefinition Definition => _definition;
+
+		public void UpdateState(IController controller) { }
+
+		public short GetState(int index, int id) => 0;
+	}
+
 	internal class BsnesController : IBsnesController
 	{
 		private readonly bool[] _state = new bool[12];
@@ -131,7 +142,47 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		}
 	}
 
-	public class BsnesMultitapController : IBsnesController
+	internal class BsnesMouseController : IBsnesController
+	{
+		private readonly short[] _state = new short[4];
+
+		private static readonly ControllerDefinition _definition = new ControllerDefinition
+				{ BoolButtons = { "0Mouse Left", "0Mouse Right" } }
+			.AddXYPair("0Mouse {0}", AxisPairOrientation.RightAndDown, (-127).RangeTo(127), 0); //TODO verify direction against hardware, R+D inferred from behaviour in Mario Paint
+
+		public ControllerDefinition Definition => _definition;
+		public bool LimitAnalogChangeSensitivity { get; init; } = true;
+
+		public void UpdateState(IController controller)
+		{
+			int x = controller.AxisValue("0Mouse X");
+			if (LimitAnalogChangeSensitivity)
+			{
+				x = x.Clamp(-10, 10);
+			}
+			_state[0] = (short) x;
+
+			int y = controller.AxisValue("0Mouse Y");
+			if (LimitAnalogChangeSensitivity)
+			{
+				y = y.Clamp(-10, 10);
+			}
+			_state[1] = (short) y;
+
+			_state[2] = (short) (controller.IsPressed("0Mouse Left") ? 1 : 0);
+			_state[3] = (short) (controller.IsPressed("0Mouse Right") ? 1 : 0);
+		}
+
+		public short GetState(int index, int id)
+		{
+			if (id >= 4)
+				return 0;
+
+			return _state[id];
+		}
+	}
+
+	internal class BsnesMultitapController : IBsnesController
 	{
 		private readonly bool[,] _state = new bool[4, 12];
 
@@ -184,58 +235,38 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		}
 	}
 
-	public class BsnesUnpluggedController : IBsnesController
+	internal class BsnesPayloadController : IBsnesController
 	{
-		private static readonly ControllerDefinition _definition = new();
+		private readonly bool[,] _state = new bool[2, 16];
+
+		private readonly int[] _buttonsOrder = {4, 5, 6, 7, 0, 8, 1, 9, 10, 11, 2, 3, 12, 13, 14, 15};
+
+		private static readonly ControllerDefinition _definition = new()
+		{
+			BoolButtons = Enumerable.Range(0, 32).Select(i => $"0B{i}").ToList()
+		};
 
 		public ControllerDefinition Definition => _definition;
-
-		public void UpdateState(IController controller) { }
-
-		public short GetState(int index, int id) => 0;
-	}
-
-	public class BsnesMouseController : IBsnesController
-	{
-		private readonly short[] _state = new short[4];
-
-		private static readonly ControllerDefinition _definition = new ControllerDefinition
-			{ BoolButtons = { "0Mouse Left", "0Mouse Right" } }
-			.AddXYPair("0Mouse {0}", AxisPairOrientation.RightAndDown, (-127).RangeTo(127), 0); //TODO verify direction against hardware, R+D inferred from behaviour in Mario Paint
-
-		public ControllerDefinition Definition => _definition;
-		public bool LimitAnalogChangeSensitivity { get; init; } = true;
 
 		public void UpdateState(IController controller)
 		{
-			int x = controller.AxisValue("0Mouse X");
-			if (LimitAnalogChangeSensitivity)
+			for (int index = 0; index < 2; index++)
+			for (int i = 0; i < 16; i++)
 			{
-				x = x.Clamp(-10, 10);
+				_state[index, i] = controller.IsPressed(Definition.BoolButtons[index * 16 + _buttonsOrder[i]]);
 			}
-			_state[0] = (short) x;
-
-			int y = controller.AxisValue("0Mouse Y");
-			if (LimitAnalogChangeSensitivity)
-			{
-				y = y.Clamp(-10, 10);
-			}
-			_state[1] = (short) y;
-
-			_state[2] = (short) (controller.IsPressed("0Mouse Left") ? 1 : 0);
-			_state[3] = (short) (controller.IsPressed("0Mouse Right") ? 1 : 0);
 		}
 
 		public short GetState(int index, int id)
 		{
-			if (id >= 4)
+			if (index >= 2 || id >= 16)
 				return 0;
 
-			return _state[id];
+			return (short) (_state[index, id] ? 1 : 0);
 		}
 	}
 
-	public class BsnesSuperScopeController : IBsnesController
+	internal class BsnesSuperScopeController : IBsnesController
 	{
 		private readonly short[] _state = new short[6];
 
@@ -264,7 +295,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		}
 	}
 
-	public class BsnesJustifierController : IBsnesController
+	internal class BsnesJustifierController : IBsnesController
 	{
 		public BsnesJustifierController(bool chained)
 		{
@@ -305,34 +336,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 				return 0;
 
 			return _state[index * 4 + id];
-		}
-	}
-
-	internal class BsnesPayloadController : IBsnesController
-	{
-		private readonly bool[] _state = new bool[32];
-
-		private static readonly ControllerDefinition _definition = new()
-		{
-			BoolButtons = Enumerable.Range(0, 32).Select(i => $"0B{i}").ToList()
-		};
-
-		public ControllerDefinition Definition => _definition;
-
-		public void UpdateState(IController controller)
-		{
-			for (int i = 0; i < 32; i++)
-			{
-				_state[i] = controller.IsPressed(Definition.BoolButtons[i]);
-			}
-		}
-
-		public short GetState(int index, int id)
-		{
-			if (index >= 2 || id >= 16)
-				return 0;
-
-			return (short) (_state[index * 2 + id] ? 1 : 0);
 		}
 	}
 }

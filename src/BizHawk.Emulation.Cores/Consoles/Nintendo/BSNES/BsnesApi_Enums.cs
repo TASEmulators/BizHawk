@@ -25,10 +25,10 @@
 			Gamepad,
 			Mouse,
 			SuperMultitap,
+			Payload,
 			SuperScope,
 			Justifier,
-			Justifiers,
-			Payload
+			Justifiers
 		}
 
 		public enum ENTROPY

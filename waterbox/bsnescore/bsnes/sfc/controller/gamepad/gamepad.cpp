@@ -8,15 +8,16 @@ auto Gamepad::data() -> uint2 {
   if(latched == 1) return platform->inputPoll(port, ID::Device::Gamepad, B);
 
   //note: D-pad physically prevents up+down and left+right from being pressed at the same time
+  // patched this "fix" out because it is handled in bizhawk frontend and fixing it here does not seem right anyway
   switch(counter++) {
   case  0: return b;
   case  1: return y;
   case  2: return select;
   case  3: return start;
-  case  4: return up & !down;
-  case  5: return down & !up;
-  case  6: return left & !right;
-  case  7: return right & !left;
+  case  4: return up;
+  case  5: return down;
+  case  6: return left;
+  case  7: return right;
   case  8: return a;
   case  9: return x;
   case 10: return l;
