@@ -60,7 +60,7 @@ namespace BizHawk.Common.PathExtensions
 				return false;
 			if (path[2] == '\\')
 			{
-				if (path[1] != '\\')
+				if (path[1] != ':')
 					return false;
 				bool driveLetter = ('A'.RangeTo('Z').Contains(path[0]) || 'a'.RangeTo('z').Contains(path[0]));
 				return driveLetter;
