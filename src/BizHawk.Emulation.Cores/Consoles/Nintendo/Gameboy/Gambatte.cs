@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			ServiceProvider = ser;
 			Tracer = new TraceBuffer
 			{
-				Header = "Z80: PC, opcode, registers (A, B, C, D, E, F, H, L, LY, SP, CY)"
+				Header = "LR35902: PC, opcode, registers (A, F, B, C, D, E, H, L, LY, SP, CY)"
 			};
 			ser.Register<ITraceable>(Tracer);
 			InitMemoryCallbacks();
