@@ -14,6 +14,8 @@
 **/ipch/**
 /Assets/dll/*.exp
 /Assets/dll/*.lib
+/Assets/dll/*.iobj
+/Assets/dll/*.ipdb
 
 *.ilk
 *.il

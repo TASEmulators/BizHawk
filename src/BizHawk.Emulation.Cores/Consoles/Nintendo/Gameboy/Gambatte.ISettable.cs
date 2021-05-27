@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		{
 			_settings = o;
 			_disassembler.UseRGBDSSyntax = _settings.RgbdsSyntax;
-			if (IsCGBMode())
+			if (IsCGBMode() && (!IsCGBDMGMode() || _syncSettings.EnableBIOS))
 			{
 				SetCGBColors(_settings.CGBColors);
 			}
@@ -96,7 +96,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public class GambatteSyncSettings
 		{
 			[DisplayName("Use official Nintendo BootROM")]
-			[Description("Uses a provided official BootROM (or \"BIOS\") instead of built-in unofficial firmware. You must provide the BootROM. Should be used for TASing.")]
+			[Description("When false, hacks are used to boot without a BIOS. When true, a provided official BootROM (or \"BIOS\") is used. You must provide the BootROM. Should be used for TASing.")]
 			[DefaultValue(false)]
 			public bool EnableBIOS { get; set; }
 

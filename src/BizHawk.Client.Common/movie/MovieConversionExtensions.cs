@@ -264,9 +264,9 @@ namespace BizHawk.Client.Common
 
 			if (emulator is Gameboy gb)
 			{
-				if (gb.IsCGBMode())
+				if (gb.IsCGBMode())	
 				{
-					movie.HeaderEntries.Add("IsCGBMode", "1");
+					movie.HeaderEntries.Add(gb.IsCGBDMGMode() ? "IsCGBDMGMode" : "IsCGBMode", "1");
 				}
 
 				movie.HeaderEntries.Add(HeaderKeys.CycleCount, "0");
