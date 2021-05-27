@@ -25,7 +25,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			/// <summary>Use GBA intial CPU register values when in CGB mode.</summary>
 			GBA_FLAG = 2,
 			/// <summary>Use heuristics to detect and support some multicart MBCs disguised as MBC1.</summary>
-			MULTICART_COMPAT = 4
+			MULTICART_COMPAT = 4,
+			/// <summary>Use heuristics to boot without a BIOS.</summary>
+			NO_BIOS = 8
 		}
 
 		public enum CDLog_AddrType : int
@@ -283,6 +285,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// <param name="core">opaque state pointer</param>
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern bool gambatte_iscgb(IntPtr core);
+
+		/// <summary>
+		/// Returns true if the currently loaded ROM image is treated as having CGB-DMG support.
+		/// </summary>
+		/// <param name="core">opaque state pointer</param>
+		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern bool gambatte_iscgbdmg(IntPtr core);
 
 		/// <summary>
 		/// Returns true if a ROM image is loaded.

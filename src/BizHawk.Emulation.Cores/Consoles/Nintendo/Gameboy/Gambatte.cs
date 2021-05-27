@@ -71,11 +71,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 					flags |= LibGambatte.LoadFlags.MULTICART_COMPAT;
 				}
 
-				if (LibGambatte.gambatte_load(GambatteState, file, (uint)file.Length, flags) != 0)
-				{
-					throw new InvalidOperationException($"{nameof(LibGambatte.gambatte_load)}() returned non-zero (is this not a gb or gbc rom?)");
-				}
-
 				byte[] bios;
 				string biosSystemId;
 				string biosId;
@@ -95,21 +90,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				if (_syncSettings.EnableBIOS)
 				{
 					bios = comm.CoreFileProvider.GetFirmware(biosSystemId, biosId, true, "BIOS Not Found, Cannot Load.  Change SyncSettings to run without BIOS.");
+					if (LibGambatte.gambatte_loadbios(GambatteState, bios, (uint)bios.Length) != 0)
+					{
+						throw new InvalidOperationException($"{nameof(LibGambatte.gambatte_loadbios)}() returned non-zero (bios error)");
+					}
 				}
 				else
 				{
-					var builtinBios = (biosSystemId, biosId) switch {
-						("GB", "World") => Resources.FastDmgBoot,
-						("GBC", "World") => Resources.FastCgbBoot,
-						("GBC", "AGB") => Resources.FastAgbBoot,
-						(_, _) => throw new Exception("Internal GB Error (BIOS??)"),
-					};
-					bios = BizHawk.Common.Util.DecompressGzipFile(new MemoryStream(builtinBios.Value, false));
+					flags |= LibGambatte.LoadFlags.NO_BIOS;
 				}
 
-				if (LibGambatte.gambatte_loadbios(GambatteState, bios, (uint)bios.Length) != 0)
+				if (LibGambatte.gambatte_load(GambatteState, file, (uint)file.Length, flags) != 0)
 				{
-					throw new InvalidOperationException($"{nameof(LibGambatte.gambatte_loadbios)}() returned non-zero (bios error)");
+					throw new InvalidOperationException($"{nameof(LibGambatte.gambatte_load)}() returned non-zero (is this not a gb or gbc rom?)");
 				}
 
 				// set real default colors (before anyone mucks with them at all)
