@@ -52,15 +52,22 @@ namespace BizHawk.Common.PathExtensions
 		/// <seealso cref="IsRelative"/>
 		public static bool IsAbsolute(this string path)
 		{
+			//TODO: this code must be deleted. We can't use bespoke logic for something as squirrely as this. Find a framework way to do it.
+
 			if (OSTailoredCode.IsUnixHost) return path.Length >= 1 && path[0] == '/';
 			if (path.Contains('/')) return IsAbsolute(path.Replace('/', '\\'));
-			return path.Length >= 3
-				&& path[2] switch
-				{
-					'\\' => path[1] == '\\' && ('A'.RangeTo('Z').Contains(path[0]) || 'a'.RangeTo('z').Contains(path[0])),
-					'?' => path.StartsWith(@"\\?\"),
-					_ => false
-				};
+			if (path.Length < 3)
+				return false;
+			if (path[2] == '\\')
+			{
+				if (path[1] != '\\')
+					return false;
+				bool driveLetter = ('A'.RangeTo('Z').Contains(path[0]) || 'a'.RangeTo('z').Contains(path[0]));
+				return driveLetter;
+			}
+			if (path[2] == '?')
+				return path.StartsWith(@"\\?\");
+			return false;
 		}
 
 		/// <returns><see langword="false"/> iff absolute (OS-dependent)</returns>
@@ -112,9 +119,19 @@ namespace BizHawk.Common.PathExtensions
 		/// unless <paramref name="cwd"/> is given, uses <see cref="CWDHacks.Get">CWDHacks.Get</see>/<see cref="Environment.CurrentDirectory">Environment.CurrentDirectory</see>,
 		/// so take care when calling this after startup
 		/// </remarks>
-		public static string MakeAbsolute(this string path, string? cwd = null) => path.IsAbsolute()
-			? path
-			: new FileInfo($"{cwd ?? (OSTailoredCode.IsUnixHost ? Environment.CurrentDirectory : CWDHacks.Get())}/{path}").FullName; // FileInfo for normalisation ("C:\a\b\..\c" => "C:\a\c")
+		public static string MakeAbsolute(this string path, string? cwd = null)
+		{
+			if (path.IsAbsolute())
+				return path;
+			else
+			{
+				// FileInfo for normalisation ("C:\a\b\..\c" => "C:\a\c")
+				var mycwd = cwd ?? (OSTailoredCode.IsUnixHost ? Environment.CurrentDirectory : CWDHacks.Get());
+				var finalpath = $"{mycwd}/{path}";
+				var fi = new FileInfo(finalpath);
+				return fi.FullName;
+			}
+		}
 
 		/// <returns>the absolute path equivalent to <paramref name="path"/> which contains <c>%exe%</c> (expanded) as a prefix</returns>
 		/// <remarks>
