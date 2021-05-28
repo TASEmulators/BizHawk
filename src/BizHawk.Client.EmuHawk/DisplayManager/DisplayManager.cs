@@ -11,6 +11,7 @@ using System.Drawing.Text;
 using System.Runtime.InteropServices;
 
 using BizHawk.Bizware.BizwareGL;
+using BizHawk.Bizware.BizwareGL.DrawingExtensions;
 using BizHawk.Bizware.DirectX;
 using BizHawk.Bizware.OpenTK3;
 using BizHawk.Client.Common;
@@ -68,7 +69,6 @@ namespace BizHawk.Client.EmuHawk
 			_glManager = GLManager.Instance;
 
 			this._presentationPanel = presentationPanel;
-			_graphicsControl = this._presentationPanel.GraphicsControl;
 			_crGraphicsControl = _glManager.GetContextForGraphicsControl(_graphicsControl);
 
 			// it's sort of important for these to be initialized to something nonzero
@@ -171,9 +171,10 @@ namespace BizHawk.Client.EmuHawk
 
 		// layer resources
 		private readonly PresentationPanel _presentationPanel; // well, its the final layer's target, at least
-		private readonly GraphicsControl _graphicsControl; // well, its the final layer's target, at least
 		private readonly GLManager.ContextRef _crGraphicsControl;
 		private FilterProgram _currentFilterProgram;
+
+		private GraphicsControl _graphicsControl => _presentationPanel.GraphicsControl;
 
 		/// <summary>
 		/// these variables will track the dimensions of the last frame's (or the next frame? this is confusing) emulator native output size
@@ -201,6 +202,10 @@ namespace BizHawk.Client.EmuHawk
 		private readonly RenderTargetFrugalizer[] _shaderChainFrugalizers;
 		private readonly RetroShaderChain _shaderChainHq2X, _shaderChainScanlines, _shaderChainBicubic;
 		private RetroShaderChain _shaderChainUser;
+
+		private void ActivateGLContext() => _glManager.Activate(_crGraphicsControl);
+
+		private void SwapBuffersOfGraphicsControl() => _graphicsControl.SwapBuffers();
 
 		public void RefreshUserShader()
 		{
@@ -419,13 +424,15 @@ namespace BizHawk.Client.EmuHawk
 			chain.AddFilter(fLuaLayer, surfaceID.GetName());
 		}
 
+		private Point GraphicsControlPointToClient(Point p) => _graphicsControl.PointToClient(p);
+
 		/// <summary>
 		/// Using the current filter program, turn a mouse coordinate from window space to the original emulator screen space.
 		/// </summary>
 		public Point UntransformPoint(Point p)
 		{
 			// first, turn it into a window coordinate
-			p = _presentationPanel.Control.PointToClient(p);
+			p = GraphicsControlPointToClient(p);
 
 			// now, if there's no filter program active, just give up
 			if (_currentFilterProgram == null) return p;
@@ -464,6 +471,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public Size GetPanelNativeSize() => _presentationPanel.NativeSize;
 
+		private Size GetGraphicsControlSize() => _graphicsControl.Size;
+
 		/// <summary>
 		/// This will receive an emulated output frame from an IVideoProvider and run it through the complete frame processing pipeline
 		/// Then it will stuff it into the bound PresentationPanel.
@@ -478,7 +487,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				VideoProvider = videoProvider,
 				Simulate = displayNothing,
-				ChainOutsize = _graphicsControl.Size,
+				ChainOutsize = GetGraphicsControlSize(),
 				IncludeOSD = true,
 				IncludeUserFilters = true
 			};
@@ -527,7 +536,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				VideoProvider = videoProvider,
 				Simulate = false,
-				ChainOutsize = _graphicsControl.Size,
+				ChainOutsize = GetGraphicsControlSize(),
 				Offscreen = true,
 				IncludeOSD = includeOSD,
 				IncludeUserFilters = true,
@@ -782,7 +791,7 @@ namespace BizHawk.Client.EmuHawk
 			//no drawing actually happens. it's important not to begin drawing on a control
 			if (!job.Simulate && !job.Offscreen)
 			{
-				_glManager.Activate(_crGraphicsControl);
+				ActivateGLContext();
 
 				if (job.ChainOutsize.Width == 0 || job.ChainOutsize.Height == 0)
 				{
@@ -935,13 +944,13 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Blank()
 		{
-			_glManager.Activate(_crGraphicsControl);
+			ActivateGLContext();
 			_gl.BeginScene();
 			_gl.BindRenderTarget(null);
 			_gl.SetClearColor(Color.Black);
 			_gl.Clear(ClearBufferMask.ColorBufferBit);
 			_gl.EndScene();
-			_presentationPanel.GraphicsControl.SwapBuffers();
+			SwapBuffersOfGraphicsControl();
 		}
 
 		private void UpdateSourceDrawingWork(JobInfo job)
@@ -979,15 +988,15 @@ namespace BizHawk.Client.EmuHawk
 				//TODO - whats so hard about triple buffering anyway? just enable it always, and change api to SetVsync(enable,throttle)
 				//maybe even SetVsync(enable,throttlemethod) or just SetVsync(enable,throttle,advanced)
 
-				if (_lastVsyncSetting != vsync || _lastVsyncSettingGraphicsControl != _presentationPanel.GraphicsControl)
+				if (_lastVsyncSetting != vsync || _lastVsyncSettingGraphicsControl != _graphicsControl)
 				{
 					if (_lastVsyncSetting == null && vsync)
 					{
 						// Workaround for vsync not taking effect at startup (Intel graphics related?)
-						_presentationPanel.GraphicsControl.SetVsync(false);
+						_graphicsControl.SetVsync(false);
 					}
-					_presentationPanel.GraphicsControl.SetVsync(vsync);
-					_lastVsyncSettingGraphicsControl = _presentationPanel.GraphicsControl;
+					_graphicsControl.SetVsync(vsync);
+					_lastVsyncSettingGraphicsControl = _graphicsControl;
 					_lastVsyncSetting = vsync;
 				}
 			}
@@ -1054,23 +1063,22 @@ namespace BizHawk.Client.EmuHawk
 			{
 				job.OffscreenBb = rtCurr.Texture2d.Resolve();
 				job.OffscreenBb.DiscardAlpha();
+				return;
 			}
-			else
-			{
-				Debug.Assert(inFinalTarget);
 
-				// wait for vsync to begin
-				if (alternateVsync) dx9.AlternateVsyncPass(0);
+			Debug.Assert(inFinalTarget);
 
-				// present and conclude drawing
-				_presentationPanel.GraphicsControl.SwapBuffers();
+			// wait for vsync to begin
+			if (alternateVsync) dx9.AlternateVsyncPass(0);
 
-				// wait for vsync to end
-				if (alternateVsync) dx9.AlternateVsyncPass(1);
+			// present and conclude drawing
+			_graphicsControl.SwapBuffers();
 
-				// nope. don't do this. workaround for slow context switching on intel GPUs. just switch to another context when necessary before doing anything
-				// presentationPanel.GraphicsControl.End();
-			}
+			// wait for vsync to end
+			if (alternateVsync) dx9.AlternateVsyncPass(1);
+
+			// nope. don't do this. workaround for slow context switching on intel GPUs. just switch to another context when necessary before doing anything
+			// presentationPanel.GraphicsControl.End();
 		}
 
 		private void LoadCustomFont(Stream fontStream)
@@ -1118,9 +1126,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// placeholder logic for more abstracted surface definitions from filter chain
-			int currNativeWidth = _presentationPanel.NativeSize.Width;
-			int currNativeHeight = _presentationPanel.NativeSize.Height;
-
+			var (currNativeWidth, currNativeHeight) = GetPanelNativeSize();
 			currNativeWidth += ClientExtraPadding.Left + ClientExtraPadding.Right;
 			currNativeHeight += ClientExtraPadding.Top + ClientExtraPadding.Bottom;
 
