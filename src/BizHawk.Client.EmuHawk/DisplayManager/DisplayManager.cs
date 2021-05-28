@@ -1012,51 +1012,7 @@ namespace BizHawk.Client.EmuHawk
 			_currentFilterProgram.RenderTargetProvider = new DisplayManagerRenderTargetProvider(size => _shaderChainFrugalizers[rtCounter++].Get(size));
 
 			_gl.BeginScene();
-
-			// run filter chain
-			Texture2d texCurr = null;
-			RenderTarget rtCurr = null;
-			bool inFinalTarget = false;
-			foreach (var step in _currentFilterProgram.Program)
-			{
-				switch (step.Type)
-				{
-					case FilterProgram.ProgramStepType.Run:
-						{
-							int fi = (int)step.Args;
-							var f = _currentFilterProgram.Filters[fi];
-							f.SetInput(texCurr);
-							f.Run();
-							var orec = f.FindOutput();
-							if (orec != null)
-							{
-								if (orec.SurfaceDisposition == SurfaceDisposition.Texture)
-								{
-									texCurr = f.GetOutput();
-									rtCurr = null;
-								}
-							}
-							break;
-						}
-					case FilterProgram.ProgramStepType.NewTarget:
-						{
-							var size = (Size)step.Args;
-							rtCurr = _shaderChainFrugalizers[rtCounter++].Get(size);
-							rtCurr.Bind();
-							_currentFilterProgram.CurrRenderTarget = rtCurr;
-							break;
-						}
-					case FilterProgram.ProgramStepType.FinalTarget:
-						{
-							inFinalTarget = true;
-							rtCurr = null;
-							_currentFilterProgram.CurrRenderTarget = null;
-							_gl.BindRenderTarget(null);
-							break;
-						}
-				}
-			}
-
+			RunFilterChainSteps(ref rtCounter, out var rtCurr, out var inFinalTarget);
 			_gl.EndScene();
 
 			if (job.Offscreen)
@@ -1079,6 +1035,37 @@ namespace BizHawk.Client.EmuHawk
 
 			// nope. don't do this. workaround for slow context switching on intel GPUs. just switch to another context when necessary before doing anything
 			// presentationPanel.GraphicsControl.End();
+		}
+
+		private void RunFilterChainSteps(ref int rtCounter, out RenderTarget rtCurr, out bool inFinalTarget)
+		{
+			Texture2d texCurr = null;
+			rtCurr = null;
+			inFinalTarget = false;
+			foreach (var step in _currentFilterProgram.Program) switch (step.Type)
+			{
+				case FilterProgram.ProgramStepType.Run:
+					var f = _currentFilterProgram.Filters[(int) step.Args];
+					f.SetInput(texCurr);
+					f.Run();
+					if (f.FindOutput() is { SurfaceDisposition: SurfaceDisposition.Texture })
+					{
+						texCurr = f.GetOutput();
+						rtCurr = null;
+					}
+					break;
+				case FilterProgram.ProgramStepType.NewTarget:
+					_currentFilterProgram.CurrRenderTarget = rtCurr = _shaderChainFrugalizers[rtCounter++].Get((Size) step.Args);
+					rtCurr.Bind();
+					break;
+				case FilterProgram.ProgramStepType.FinalTarget:
+					_currentFilterProgram.CurrRenderTarget = rtCurr = null;
+					_gl.BindRenderTarget(rtCurr);
+					inFinalTarget = true;
+					break;
+				default:
+					throw new Exception();
+			}
 		}
 
 		private void LoadCustomFont(Stream fontStream)
