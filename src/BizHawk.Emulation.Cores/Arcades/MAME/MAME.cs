@@ -169,7 +169,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				MAMELuaCommand.MakeLookupKey(_gameFileName.Split('.')[0], LibMAME.BIOS_LUA_CODE),
 				out string value))
 			{
-				args.AddRange(new List<string>{ "-bios", value });
+				args.AddRange(new[] { "-bios", value });
 			}
 
 			LibMAME.mame_launch(args.Count, args.ToArray());
