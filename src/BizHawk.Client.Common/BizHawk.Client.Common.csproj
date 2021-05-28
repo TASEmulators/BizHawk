@@ -13,6 +13,7 @@
 		<PackageReference Include="SharpCompress" Version="0.24.0" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Emulation.Cores/BizHawk.Emulation.Cores.csproj" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Bizware.BizwareGL/BizHawk.Bizware.BizwareGL.csproj" />
+		<EmbeddedResource Include="Resources/**/*" />
 	</ItemGroup>
 	<ItemGroup>
 		<Compile Update="movie/bk2/Bk2Movie.HeaderApi.cs" DependentUpon="Bk2Movie.cs" />
