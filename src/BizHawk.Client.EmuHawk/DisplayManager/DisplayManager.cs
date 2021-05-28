@@ -9,7 +9,6 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Text;
 using System.Runtime.InteropServices;
-using System.Windows.Forms;
 
 using BizHawk.Bizware.BizwareGL;
 using BizHawk.Bizware.DirectX;
@@ -182,27 +181,15 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		private int _currEmuWidth, _currEmuHeight;
 
-		private Padding _clientExtraPadding;
-
-		private Padding _gameExtraPadding;
-
 		/// <summary>
 		/// additional pixels added at the unscaled level for the use of lua drawing. essentially increases the input video provider dimensions
 		/// </summary>
-		public (int Left, int Top, int Right, int Bottom) GameExtraPadding
-		{
-			get => (_gameExtraPadding.Left, _gameExtraPadding.Top, _gameExtraPadding.Right, _gameExtraPadding.Bottom);
-			set => _gameExtraPadding = new Padding(value.Left, value.Top, value.Right, value.Bottom);
-		}
+		public (int Left, int Top, int Right, int Bottom) GameExtraPadding { get; set; }
 
 		/// <summary>
 		/// additional pixels added at the native level for the use of lua drawing. essentially just gets tacked onto the final calculated window sizes.
 		/// </summary>
-		public (int Left, int Top, int Right, int Bottom) ClientExtraPadding
-		{
-			get => (_clientExtraPadding.Left, _clientExtraPadding.Top, _clientExtraPadding.Right, _clientExtraPadding.Bottom);
-			set => _clientExtraPadding = new Padding(value.Left, value.Top, value.Right, value.Bottom);
-		}
+		public (int Left, int Top, int Right, int Bottom) ClientExtraPadding { get; set; }
 
 		/// <summary>
 		/// custom fonts that don't need to be installed on the user side
@@ -226,13 +213,16 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private Padding CalculateCompleteContentPadding(bool user, bool source)
+		private (int Left, int Top, int Right, int Bottom) CalculateCompleteContentPadding(bool user, bool source)
 		{
-			var padding = new Padding();
+			var padding = (Left: 0, Top: 0, Right: 0, Bottom: 0);
 
 			if (user)
 			{
-				padding += _gameExtraPadding;
+				padding.Left += GameExtraPadding.Left;
+				padding.Top += GameExtraPadding.Top;
+				padding.Right += GameExtraPadding.Right;
+				padding.Bottom += GameExtraPadding.Bottom;
 			}
 
 			// an experimental feature
@@ -253,6 +243,12 @@ namespace BizHawk.Client.EmuHawk
 			padding.Bottom -= GlobalConfig.DispCropBottom;
 
 			return padding;
+		}
+
+		private (int Horizontal, int Vertical) CalculateCompleteContentPaddingSum(bool user, bool source)
+		{
+			var p = CalculateCompleteContentPadding(user: user, source: source);
+			return (p.Left + p.Right, p.Top + p.Bottom);
 		}
 
 		private FilterProgram BuildDefaultChain(Size chainInSize, Size chainOutSize, bool includeOSD, bool includeUserFilters)
@@ -318,18 +314,18 @@ namespace BizHawk.Client.EmuHawk
 			// keep in mind, the VideoProvider design in principle might call for another color.
 			// we haven't really been using this very hard, but users will probably want black there (they could fill it to another color if needed tho)
 			var padding = CalculateCompleteContentPadding(true, true);
-			if (padding.Vertical != 0 || padding.Horizontal != 0)
+			if (padding != (0, 0, 0, 0))
 			{
 				// TODO - add another filter just for this, its cumbersome to use final presentation... I think. but maybe there's enough similarities to justify it.
 				Size size = chainInSize;
-				size.Width += padding.Horizontal;
-				size.Height += padding.Vertical;
+				size.Width += padding.Left + padding.Right;
+				size.Height += padding.Top + padding.Bottom;
 				FinalPresentation fPadding = new FinalPresentation(size);
 				chain.AddFilter(fPadding, "padding");
 				fPadding.GuiRenderer = _renderer;
 				fPadding.GL = _gl;
 				fPadding.Config_PadOnly = true;
-				fPadding.Padding = (padding.Left, padding.Top, padding.Right, padding.Bottom);
+				fPadding.Padding = padding;
 			}
 
 			//add lua layer 'emu'
@@ -505,7 +501,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			// TODO - we might need to gather more Config.DispXXX properties here, so they can be overridden
 			var targetSize = new Size(videoProvider.BufferWidth, videoProvider.BufferHeight);
-			var padding = CalculateCompleteContentPadding(true,true);
+			var padding = CalculateCompleteContentPaddingSum(true,true);
 			targetSize.Width += padding.Horizontal;
 			targetSize.Height += padding.Vertical;
 
@@ -634,11 +630,11 @@ namespace BizHawk.Client.EmuHawk
 				virtualHeight = bufferHeight = sz.Height;
 			}
 
-			var padding = CalculateCompleteContentPadding(true, false);
+			var padding = CalculateCompleteContentPaddingSum(true, false);
 			virtualWidth += padding.Horizontal;
 			virtualHeight += padding.Vertical;
 
-			padding = CalculateCompleteContentPadding(true, true);
+			padding = CalculateCompleteContentPaddingSum(true, true);
 			bufferWidth += padding.Horizontal;
 			bufferHeight += padding.Vertical;
 
@@ -739,8 +735,8 @@ namespace BizHawk.Client.EmuHawk
 				chainOutsize = new Size(bufferWidth * zoom, bufferHeight * zoom);
 			}
 
-			chainOutsize.Width += _clientExtraPadding.Horizontal;
-			chainOutsize.Height += _clientExtraPadding.Vertical;
+			chainOutsize.Width += ClientExtraPadding.Left + ClientExtraPadding.Right;
+			chainOutsize.Height += ClientExtraPadding.Top + ClientExtraPadding.Bottom;
 
 			var job = new JobInfo
 			{
@@ -852,7 +848,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			var padding = CalculateCompleteContentPadding(true,false);
+			var padding = CalculateCompleteContentPaddingSum(true,false);
 			vw += padding.Horizontal;
 			vh += padding.Vertical;
 
@@ -1125,12 +1121,12 @@ namespace BizHawk.Client.EmuHawk
 			int currNativeWidth = _presentationPanel.NativeSize.Width;
 			int currNativeHeight = _presentationPanel.NativeSize.Height;
 
-			currNativeWidth += _clientExtraPadding.Horizontal;
-			currNativeHeight += _clientExtraPadding.Vertical;
+			currNativeWidth += ClientExtraPadding.Left + ClientExtraPadding.Right;
+			currNativeHeight += ClientExtraPadding.Top + ClientExtraPadding.Bottom;
 
 			var (width, height) = surfaceID switch
 			{
-				DisplaySurfaceID.EmuCore => (_currEmuWidth + _gameExtraPadding.Horizontal, _currEmuHeight + _gameExtraPadding.Vertical),
+				DisplaySurfaceID.EmuCore => (GameExtraPadding.Left + _currEmuWidth + GameExtraPadding.Right, GameExtraPadding.Top + _currEmuHeight + GameExtraPadding.Bottom),
 				DisplaySurfaceID.Client => (currNativeWidth, currNativeHeight),
 				_ => throw new ArgumentException(message: "not a valid enum member", paramName: nameof(surfaceID))
 			};
