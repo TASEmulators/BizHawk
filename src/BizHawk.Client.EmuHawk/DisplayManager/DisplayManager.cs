@@ -85,21 +85,13 @@ namespace BizHawk.Client.EmuHawk
 				_shaderChainFrugalizers[i] = new RenderTargetFrugalizer(_gl);
 			}
 
-			using (var xml = EmuHawk.ReflectionCache.EmbeddedResourceStream("Resources.courier16px.fnt"))
 			{
-				using var tex = EmuHawk.ReflectionCache.EmbeddedResourceStream("Resources.courier16px_0.png");
+				using var xml = Client.Common.ReflectionCache.EmbeddedResourceStream("Resources.courier16px.fnt");
+				using var tex = Client.Common.ReflectionCache.EmbeddedResourceStream("Resources.courier16px_0.png");
 				_theOneFont = new StringRenderer(_gl, xml, tex);
-			}
-
-			using (var gens =
-				EmuHawk.ReflectionCache.EmbeddedResourceStream("Resources.gens.ttf"))
-			{
+				using var gens = Client.Common.ReflectionCache.EmbeddedResourceStream("Resources.gens.ttf");
 				LoadCustomFont(gens);
-			}
-
-			using (var fceux =
-				EmuHawk.ReflectionCache.EmbeddedResourceStream("Resources.fceux.ttf"))
-			{
+				using var fceux = Client.Common.ReflectionCache.EmbeddedResourceStream("Resources.fceux.ttf");
 				LoadCustomFont(fceux);
 			}
 
