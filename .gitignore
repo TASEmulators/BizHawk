@@ -31,7 +31,8 @@
 
 /src/BizHawk.Common/VersionInfo.gen.cs
 
-
+/src/BizHawk.Tests*/res/*_artifact
+/src/BizHawk.Tests*/res/fw
 
 /Build/*.vshost.*
 
