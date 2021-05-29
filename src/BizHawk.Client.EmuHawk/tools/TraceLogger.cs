@@ -45,7 +45,8 @@ namespace BizHawk.Client.EmuHawk
 			set
 			{
 				_logFile = value;
-				_baseName = Path.ChangeExtension(value.FullName, null);
+				if (value != null) { _baseName = Path.ChangeExtension(value.FullName, null); }
+				else { _baseName = null; }
 			}
 		}
 
