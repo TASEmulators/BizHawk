@@ -59,21 +59,21 @@ namespace BizHawk.Client.EmuHawk
 
 			foreach (var t in tools)
 			{
-				var instance = Activator.CreateInstance(t);
-
+				var wasLoaded = Tools.Has(t);
+				var instance = (Form) Tools.Load(t, focus: false);
 				var tsb = new ToolStripButton
 				{
-					Image = ((Form) instance).Icon.ToBitmap(),
-					Text = ((Form) instance).Text,
-					DisplayStyle = ((Form) instance).ShowIcon ? ToolStripItemDisplayStyle.Image : ToolStripItemDisplayStyle.Text
+					Image = instance.Icon.ToBitmap(),
+					Text = instance.Text,
+					DisplayStyle = instance.ShowIcon ? ToolStripItemDisplayStyle.Image : ToolStripItemDisplayStyle.Text
 				};
-
+				if (!wasLoaded) instance.Dispose();
 				tsb.Click += (o, e) =>
 				{
-					Tools.Load(t);
+					if (wasLoaded) instance.Focus(); // instance refers to already opened tool, focus it
+					else Tools.Load(t); // instance was new and has been disposed by now
 					Close();
 				};
-
 				ToolBoxStrip.Items.Add(tsb);
 			}
 		}
