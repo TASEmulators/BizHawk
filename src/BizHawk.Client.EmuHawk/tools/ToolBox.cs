@@ -57,24 +57,64 @@ namespace BizHawk.Client.EmuHawk
 				.Where(t => ServiceInjector.IsAvailable(Emulator.ServiceProvider, t))
 				.Where(t => VersionInfo.DeveloperBuild || !t.GetCustomAttributes(false).OfType<ToolAttribute>().Any(a => !a.Released));
 
+			/*
+			for (int i = 0; i < tools.Count(); i++)
+			{
+				Console.WriteLine(tools.ElementAt(i).FullName);
+			}
+			*/
+
 			foreach (var t in tools)
 			{
-				var wasLoaded = Tools.Has(t);
-				var instance = (Form) Tools.Load(t, focus: false);
-				var tsb = new ToolStripButton
+				if (t.FullName != "BizHawk.Client.EmuHawk.ToolFormBase")
 				{
-					Image = instance.Icon.ToBitmap(),
-					Text = instance.Text,
-					DisplayStyle = instance.ShowIcon ? ToolStripItemDisplayStyle.Image : ToolStripItemDisplayStyle.Text
-				};
-				if (!wasLoaded) instance.Dispose();
-				tsb.Click += (o, e) =>
-				{
-					if (wasLoaded) instance.Focus(); // instance refers to already opened tool, focus it
-					else Tools.Load(t); // instance was new and has been disposed by now
-					Close();
-				};
-				ToolBoxStrip.Items.Add(tsb);
+					//var instance = Activator.CreateInstance(t);
+
+					var image_t = Properties.Resources.Logo;
+					var text_t = "";
+
+					if (t.FullName == "BizHawk.Client.EmuHawk.CoreFeatureAnalysis") { image_t = Properties.Resources.Logo; }
+					if (t.FullName == "BizHawk.Client.EmuHawk.LogWindow")			{ image_t = Properties.Resources.CommandWindow; }
+					if (t.FullName == "BizHawk.Client.EmuHawk.LuaConsole")			{ image_t = Properties.Resources.TextDocIcon; }
+					if (t.FullName == "BizHawk.Client.EmuHawk.MacroInputTool")		{ image_t = Properties.Resources.TAStudioIcon; }
+					if (t.FullName == "BizHawk.Client.EmuHawk.MultiDiskBundler")	{ image_t = Properties.Resources.DualIcon; }
+					if (t.FullName == "BizHawk.Client.EmuHawk.VirtualpadTool")		{ image_t = Properties.Resources.GameControllerIcon; }
+					if (t.FullName == "BizHawk.Client.EmuHawk.BasicBot")			{ image_t = Properties.Resources.BasicBot; }
+					if (t.FullName == "BizHawk.Client.EmuHawk.CDL")					{ image_t = Properties.Resources.CdLoggerIcon; }
+					if (t.FullName == "BizHawk.Client.EmuHawk.Cheats")				{ image_t = Properties.Resources.BugIcon; }
+					if (t.FullName == "BizHawk.Client.EmuHawk.GenericDebugger")		{ image_t = Properties.Resources.BugIcon; }
+					if (t.FullName == "BizHawk.Client.EmuHawk.GameShark")			{ image_t = Properties.Resources.SharkIcon; }
+					if (t.FullName == "BizHawk.Client.EmuHawk.GBPrinterView")		{ image_t = Properties.Resources.GambatteIcon; }
+					if (t.FullName == "BizHawk.Client.EmuHawk.GbGpuView")			{ image_t = Properties.Resources.GambatteIcon; }
+					if (t.FullName == "BizHawk.Client.EmuHawk.HexEditor")			{ image_t = Properties.Resources.FreezeIcon; }
+					if (t.FullName == "BizHawk.Client.EmuHawk.TAStudio")			{ image_t = Properties.Resources.TAStudioIcon; }
+					if (t.FullName == "BizHawk.Client.EmuHawk.TraceLogger")			{ image_t = Properties.Resources.PencilIcon; }
+					if (t.FullName == "BizHawk.Client.EmuHawk.RamSearch")			{ image_t = Properties.Resources.SearchIcon; }
+					if (t.FullName == "BizHawk.Client.EmuHawk.RamWatch")			{ image_t = Properties.Resources.WatchIcon; }
+					if (t.FullName == "BizHawk.Client.EmuHawk.NESSoundConfig")		{ image_t = Properties.Resources.NesControllerIcon; }
+					if (t.FullName == "BizHawk.Client.EmuHawk.NESMusicRipper")		{ image_t = Properties.Resources.NesControllerIcon; }
+					if (t.FullName == "BizHawk.Client.EmuHawk.NesPPU")				{ image_t = Properties.Resources.MonitorIcon; }
+					if (t.FullName == "BizHawk.Client.EmuHawk.NESNameTableViewer")	{ image_t = Properties.Resources.MonitorIcon; }
+					if (t.FullName == "BizHawk.Client.EmuHawk.SmsVdpViewer")		{ image_t = Properties.Resources.SmsIcon; }
+
+					var tsb = new ToolStripButton
+					{
+						Image = image_t.ToBitmap(),
+						Text = text_t,
+						DisplayStyle = ToolStripItemDisplayStyle.Image
+						//Image = ((Form)instance).Icon.ToBitmap(),
+						//Text = ((Form)instance).Text,
+						//DisplayStyle = ((Form)instance).ShowIcon ? ToolStripItemDisplayStyle.Image : ToolStripItemDisplayStyle.Text
+					};
+
+					tsb.Click += (o, e) =>
+					{
+						Tools.Load(t);
+						//Close();
+					};
+
+					ToolBoxStrip.Items.Add(tsb);
+				}
 			}
 		}
 
