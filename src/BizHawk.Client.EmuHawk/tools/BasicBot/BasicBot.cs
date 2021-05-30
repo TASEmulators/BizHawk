@@ -84,6 +84,8 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override string WindowTitleStatic => "Basic Bot";
 
+		private IMovie CurrentMovie => MovieSession.Movie;
+
 		public BasicBot()
 		{
 			InitializeComponent();
@@ -106,6 +108,16 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BasicBot_Load(object sender, EventArgs e)
 		{
+			// Movie recording must be active (check TAStudio because opening a project re-loads the ROM,
+			// which resets tools before the movie session becomes active)
+			if (!CurrentMovie.IsActive() && !Tools.IsLoaded<TAStudio>())
+			{
+				DialogController.ShowMessageBox("In order to use this tool you must be recording a movie.");
+				Close();
+				DialogResult = DialogResult.Cancel;
+				return;
+			}
+
 			_previousInvisibleEmulation = InvisibleEmulationCheckBox.Checked = Settings.InvisibleEmulation;
 			_previousDisplayMessage = Config.DisplayMessages;
 		}
