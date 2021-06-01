@@ -3729,6 +3729,11 @@ namespace BizHawk.Client.EmuHawk
 				loader.OnLoadSettings += CoreSettings;
 				loader.OnLoadSyncSettings += CoreSyncSettings;
 
+				if (Tools.IsLoaded<GenericDebugger>())
+				{
+					Tools.Restart<GenericDebugger>();
+				}
+
 				// this also happens in CloseGame(). But it needs to happen here since if we're restarting with the same core,
 				// any settings changes that we made need to make it back to config before we try to instantiate that core with
 				// the new settings objects
