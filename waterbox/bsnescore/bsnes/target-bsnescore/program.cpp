@@ -8,8 +8,10 @@
 
 #include "resources.hpp"
 #include <nall/vfs/biz_file.hpp>
+#include <vector>
 
 static Emulator::Interface *emulator;
+static std::vector<short> audioBuffer;
 
 struct Program : Emulator::Platform
 {
@@ -453,9 +455,8 @@ static int16_t d2i16(double v)
 
 auto Program::audioFrame(const double* samples, uint channels) -> void
 {
-	int16_t left = d2i16(samples[0]);
-	int16_t right = d2i16(samples[1]);
-	return snesCallbacks.snes_audio_sample(left, right);
+	audioBuffer.push_back(d2i16(samples[0]));
+	audioBuffer.push_back(d2i16(samples[1]));
 }
 
 auto Program::notify(string message) -> void

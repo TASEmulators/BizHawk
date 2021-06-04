@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Common.Base_Implementations;
 using BizHawk.Emulation.Cores.Components.W65816;
 
 // http://wiki.superfamicom.org/snes/show/Backgrounds
@@ -47,7 +48,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 				noLagCb = snes_no_lag,
 				controllerLatchCb = snes_controller_latch,
 				videoFrameCb = snes_video_refresh,
-				audioSampleCb = snes_audio_sample,
 				pathRequestCb = snes_path_request,
 				traceCb = snes_trace,
 				readHookCb = ReadHook,
@@ -80,7 +80,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 
 			// start up audio resampler
 			InitAudio();
-			ser.Register<ISoundProvider>(_resampler);
+			ser.Register<ISoundProvider>(_soundProvider);
 
 			if (IsSGB)
 			{
@@ -124,7 +124,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		private readonly ITraceable _tracer;
 
 		private IController _controller;
-		private SpeexResampler _resampler;
+		private SimpleSyncSoundProvider _soundProvider;
 		private readonly string _romPath;
 		private bool _disposed;
 
@@ -284,12 +284,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 
 		private void InitAudio()
 		{
-			_resampler = new SpeexResampler(SpeexResampler.Quality.QUALITY_DESKTOP, 64080, 88200, 32040, 44100);
-		}
-
-		private void snes_audio_sample(short left, short right)
-		{
-			_resampler.EnqueueSample(left, right);
+			_soundProvider = new SimpleSyncSoundProvider();
 		}
 
 		private void snes_trace(string disassembly, string registerInfo)
