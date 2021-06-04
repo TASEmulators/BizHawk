@@ -98,15 +98,12 @@ namespace BizHawk.Client.EmuHawk
 			TastudioPlayMode(); // suspend rec mode until seek ends, to allow mouse editing
 			MainForm.UnpauseEmulator();
 
-			if (!_seekBackgroundWorker.IsBusy && diff > TasView.VisibleRows)
-			{
-				_seekBackgroundWorker.RunWorkerAsync();
-			}
+			MessageStatusLabel.Text = "Seeking...";
+			SavingProgressBar.Visible = true;
 		}
 
 		public void StopSeeking(bool skipRecModeCheck = false)
 		{
-			_seekBackgroundWorker.CancelAsync();
 			if (WasRecording && !skipRecModeCheck)
 			{
 				TastudioRecordMode();
