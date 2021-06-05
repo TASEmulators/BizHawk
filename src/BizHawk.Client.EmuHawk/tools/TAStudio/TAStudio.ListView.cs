@@ -98,8 +98,11 @@ namespace BizHawk.Client.EmuHawk
 			TastudioPlayMode(); // suspend rec mode until seek ends, to allow mouse editing
 			MainForm.UnpauseEmulator();
 
-			MessageStatusLabel.Text = "Seeking...";
-			SavingProgressBar.Visible = true;
+			if (diff > TasView.VisibleRows)
+			{
+				MessageStatusLabel.Text = "Seeking...";
+				SavingProgressBar.Visible = true;
+			}
 		}
 
 		public void StopSeeking(bool skipRecModeCheck = false)
