@@ -283,7 +283,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void DrawRectangle(int x, int y, int width, int height, [LuaColorParam] object line = null, [LuaColorParam] object background = null)
 		{
-			var bg = TableHelper.SafeParseColor(line) ?? _defaultBackground;
+			var bg = TableHelper.SafeParseColor(background) ?? _defaultBackground;
 			var boxBackground = Graphics.FromImage(Image);
 			if (bg.HasValue)
 			{
@@ -291,7 +291,7 @@ namespace BizHawk.Client.EmuHawk
 				boxBackground = Graphics.FromImage(Image);
 			}
 			
-			boxBackground.DrawRectangle(GetPen(TableHelper.SafeParseColor(background) ?? _defaultForeground), x, y, width, height);
+			boxBackground.DrawRectangle(GetPen(TableHelper.SafeParseColor(line) ?? _defaultForeground), x, y, width, height);
 		}
 
 		public void DrawText(
