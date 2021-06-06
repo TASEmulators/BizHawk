@@ -236,7 +236,15 @@ namespace BizHawk.Bizware.DirectX
 		public void SetVibration(int left, int right)
 		{
 			static ushort Conv(int i) => unchecked((ushort) ((i >> 15) & 0xFFFF));
-			_controller.SetVibration(new() { LeftMotorSpeed = Conv(left), RightMotorSpeed = Conv(right) });
+
+			try
+			{
+				_controller.SetVibration(new() { LeftMotorSpeed = Conv(left), RightMotorSpeed = Conv(right) });
+			}
+			catch (XInputException)
+			{
+				// Ignored, most likely the controller disconnected
+			}
 		}
 	}
 }
