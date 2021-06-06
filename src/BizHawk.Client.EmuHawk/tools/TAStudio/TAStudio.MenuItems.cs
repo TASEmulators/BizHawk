@@ -1339,10 +1339,12 @@ namespace BizHawk.Client.EmuHawk
 					ToolStripMenuItem dummyObject = playerMenus[i];
 					item.CheckedChanged += (o, ev) =>
 					{
+						// TODO: preserve underlying button checked state and make this a master visibility control
 						foreach (ToolStripMenuItem menuItem in dummyObject.DropDownItems)
 						{
-							menuItem.Checked ^= true;
+							menuItem.Checked = item.Checked;
 						}
+						dummyObject.Visible = item.Checked;
 
 						CurrentTasMovie.FlagChanges();
 						TasView.AllColumns.ColumnsChanged();
