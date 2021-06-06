@@ -236,6 +236,9 @@ namespace BizHawk.Bizware.DirectX
 		public void SetVibration(int left, int right)
 		{
 			static ushort Conv(int i) => unchecked((ushort) ((i >> 15) & 0xFFFF));
+			
+			if (!_controller.IsConnected)
+				return;
 
 			try
 			{
