@@ -121,7 +121,7 @@ namespace BizHawk.Bizware.DirectX
 		private XINPUT_STATE _state;
 
 		public int PlayerNumber => (int)_index0 + 1;
-
+		public bool IsConnected => _controller.IsConnected;
 		public readonly string InputNamePrefix;
 
 		private GamePad360(uint index0, Controller c)
