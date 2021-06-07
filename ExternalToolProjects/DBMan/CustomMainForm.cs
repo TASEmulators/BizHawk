@@ -57,32 +57,12 @@ namespace BizHawk.DBManTool
 			var tbDiscCMPArgs = CreateArgsTextBox();
 #if false
 			btnDiscCMP.Click += (sender, e) => new DiscCmp().Run(tbDiscCMPArgs.Text.Split(' '));
-#endif
-
-			var btnDATConv = CreateLaunchButton();
-			btnDATConv.Click += (sender, e) =>
-			{
-				try
-				{
-					new DATConverter().Show(this);
-				}
-				catch (Exception ex)
-				{
-					MessageBox.Show(ex.ToString());
-				}
-			};
+#endif			
 
 			SuspendLayout();
 			Controls.Add(new FlowLayoutPanel {
 				AutoSize = true,
-				Controls = {
-					new FlowLayoutPanel {
-						AutoSize = true,
-						Controls = {
-							btnDATConv,
-							CreateArgsLabel("DAT Converter")
-						}
-					},
+				Controls = {					
 					new FlowLayoutPanel {
 						AutoSize = true,
 						Controls = {
