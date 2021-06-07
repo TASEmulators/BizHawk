@@ -255,15 +255,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				get => _latchedRTCSeconds;
 				set => _latchedRTCSeconds = Math.Max(0, Math.Min(63, value));
 			}
-
-			[DisplayName("Equal Length Frames")]
-			[Description("When false, emulation frames sync to vblank.  Only useful for high level TASing.")]
-			[DefaultValue(false)]
-			public bool EqualLengthFrames
+			
+			public enum FrameLengthType
 			{
-				get => _equalLengthFrames;
-				set => _equalLengthFrames = value;
+				VBlankDrivenFrames,
+				EqualLengthFrames,
+				UserDefinedFrames
 			}
+
+			[DisplayName("Frame Length")]
+			[Description("Sets how long an emulation frame will last.\nVBlank Driven Frames will make emulation frames sync to VBlank. Recommended for TASing.\nEqual Length Frames will force all frames to emit 35112 samples. Legacy, not recommended for TASing.\nUser Defined Frames allows for the user to define how many samples are emitted for each frame. Only useful if sub-frame input is desired.")]
+			[DefaultValue(FrameLengthType.VBlankDrivenFrames)]
+			public FrameLengthType FrameLength { get; set; }
 
 			[DisplayName("Display BG")]
 			[Description("Display background")]
@@ -282,7 +285,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			[JsonIgnore]
 			[DeepEqualsIgnore]
-			private bool _equalLengthFrames;
+			private FrameLengthType _frameLength;
 
 			public GambatteSyncSettings()
 			{

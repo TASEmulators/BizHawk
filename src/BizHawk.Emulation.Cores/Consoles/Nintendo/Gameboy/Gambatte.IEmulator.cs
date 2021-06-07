@@ -9,56 +9,91 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 	{
 		public IEmulatorServiceProvider ServiceProvider { get; }
 
-		public ControllerDefinition ControllerDefinition => GbController;
+		public ControllerDefinition ControllerDefinition => (_syncSettings.FrameLength == GambatteSyncSettings.FrameLengthType.UserDefinedFrames) ? SubGbController : GbController;
 
 		public bool FrameAdvance(IController controller, bool render, bool rendersound)
 		{
 			FrameAdvancePrep(controller);
-			if (_syncSettings.EqualLengthFrames)
+			uint samplesEmitted;
+			switch (_syncSettings.FrameLength)
 			{
-				while (true)
-				{
-					// target number of samples to emit: length of 1 frame minus whatever overflow
-					uint samplesEmitted = TICKSINFRAME - frameOverflow;
-					Debug.Assert(samplesEmitted * 2 <= _soundbuff.Length);
+				case GambatteSyncSettings.FrameLengthType.VBlankDrivenFrames:
+					// target number of samples to emit: always 59.7fps
+					// runfor() always ends after creating a video frame, so sync-up is guaranteed
+					// when the display has been off, some frames can be markedly shorter than expected
+					samplesEmitted = TICKSINFRAME;
 					if (LibGambatte.gambatte_runfor(GambatteState, _soundbuff, ref samplesEmitted) > 0)
 					{
 						LibGambatte.gambatte_blitto(GambatteState, VideoBuffer, 160);
 					}
 
-					// account for actual number of samples emitted
 					_cycleCount += samplesEmitted;
-					frameOverflow += samplesEmitted;
-
+					frameOverflow = 0;
 					if (rendersound && !Muted)
 					{
 						ProcessSound((int)samplesEmitted);
 					}
-
-					if (frameOverflow >= TICKSINFRAME)
+					break;
+				case GambatteSyncSettings.FrameLengthType.EqualLengthFrames:
+					while (true)
 					{
-						frameOverflow -= TICKSINFRAME;
-						break;
-					}
-				}
-			}
-			else
-			{
-				// target number of samples to emit: always 59.7fps
-				// runfor() always ends after creating a video frame, so sync-up is guaranteed
-				// when the display has been off, some frames can be markedly shorter than expected
-				uint samplesEmitted = TICKSINFRAME;
-				if (LibGambatte.gambatte_runfor(GambatteState, _soundbuff, ref samplesEmitted) > 0)
-				{
-					LibGambatte.gambatte_blitto(GambatteState, VideoBuffer, 160);
-				}
+						// target number of samples to emit: length of 1 frame minus whatever overflow
+						samplesEmitted = TICKSINFRAME - frameOverflow;
+						Debug.Assert(samplesEmitted * 2 <= _soundbuff.Length);
+						if (LibGambatte.gambatte_runfor(GambatteState, _soundbuff, ref samplesEmitted) > 0)
+						{
+							LibGambatte.gambatte_blitto(GambatteState, VideoBuffer, 160);
+						}
 
-				_cycleCount += samplesEmitted;
-				frameOverflow = 0;
-				if (rendersound && !Muted)
-				{
-					ProcessSound((int)samplesEmitted);
-				}
+						// account for actual number of samples emitted
+						_cycleCount += samplesEmitted;
+						frameOverflow += samplesEmitted;
+
+						if (rendersound && !Muted)
+						{
+							ProcessSound((int)samplesEmitted);
+						}
+
+						if (frameOverflow >= TICKSINFRAME)
+						{
+							frameOverflow -= TICKSINFRAME;
+							break;
+						}
+					}
+					break;
+				case GambatteSyncSettings.FrameLengthType.UserDefinedFrames:
+					while (true)
+					{
+						// target number of samples to emit: input length minus whatever overflow
+						float inputFrameLength = controller.AxisValue("Input Length");
+						uint inputFrameLengthInt = (uint)Math.Floor(inputFrameLength);
+						if (inputFrameLengthInt == 0)
+						{
+							inputFrameLengthInt = TICKSINFRAME;
+						}
+						samplesEmitted = inputFrameLengthInt - frameOverflow;
+						Debug.Assert(samplesEmitted * 2 <= _soundbuff.Length);
+						if (LibGambatte.gambatte_runfor(GambatteState, _soundbuff, ref samplesEmitted) > 0)
+						{
+							LibGambatte.gambatte_blitto(GambatteState, VideoBuffer, 160);
+						}
+
+						// account for actual number of samples emitted
+						_cycleCount += samplesEmitted;
+						frameOverflow += samplesEmitted;
+
+						if (rendersound && !Muted)
+						{
+							ProcessSound((int)samplesEmitted);
+						}
+
+						if (frameOverflow >= inputFrameLengthInt)
+						{
+							frameOverflow -= inputFrameLengthInt;
+							break;
+						}
+					}
+					break;
 			}
 
 			if (rendersound && !Muted)
