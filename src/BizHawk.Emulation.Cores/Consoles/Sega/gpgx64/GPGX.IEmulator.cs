@@ -11,9 +11,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		public bool FrameAdvance(IController controller, bool render, bool renderSound = true)
 		{
-			// update non-sync settings
-			PutSettings(_settings);
-
 			if (controller.IsPressed("Reset"))
 				Core.gpgx_reset(false);
 			if (controller.IsPressed("Power"))
