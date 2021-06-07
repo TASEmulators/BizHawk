@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using BizHawk.Common;
 using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
@@ -246,6 +247,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				"Up", "Down", "Left", "Right", "Start", "Select", "B", "A", "Power"
 			}
 		};
+		
+		public static readonly ControllerDefinition SubGbController = new ControllerDefinition
+		{
+			Name = "Subframe Gameboy Controller",
+			BoolButtons =
+			{
+				"Up", "Down", "Left", "Right", "Start", "Select", "B", "A", "Power"
+			}
+		}.AddAxis("Input Length", 0.RangeTo(35112), 35112);
 
 		private LibGambatte.Buttons ControllerCallback()
 		{
