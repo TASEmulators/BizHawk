@@ -283,10 +283,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			[DefaultValue(true)]
 			public bool DisplayWindow { get; set; }
 
-			[JsonIgnore]
-			[DeepEqualsIgnore]
-			private FrameLengthType _frameLength;
-
 			public GambatteSyncSettings()
 			{
 				SettingsUtil.SetDefaultValues(this);
