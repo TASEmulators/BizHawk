@@ -15,6 +15,8 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private readonly Func<(CoreSystem System, string Hash)> _getLoadedRomInfoCallback;
 
+		private PathEntryCollection _paths;
+
 		private FileSystemWatcher DirectoryMonitor;
 
 		private readonly List<ToolStripMenuItem> MenuItems = new List<ToolStripMenuItem>();
@@ -27,14 +29,13 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart(PathEntryCollection paths)
 		{
+			_paths = paths;
 			if (DirectoryMonitor != null)
 			{
 				DirectoryMonitor.Created -= DirectoryMonitor_Created;
 				DirectoryMonitor.Dispose();
 			}
-			var extToolsDir = paths["Global", "External Tools"].Path;
-			if (!Directory.Exists(extToolsDir)) Directory.CreateDirectory(extToolsDir);
-			DirectoryMonitor = new FileSystemWatcher(extToolsDir, "*.dll")
+			DirectoryMonitor = new FileSystemWatcher(_paths["Global", "External Tools"].Path, "*.dll")
 			{
 				IncludeSubdirectories = false,
 				NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite | NotifyFilters.FileName,
@@ -83,7 +84,7 @@ namespace BizHawk.Client.EmuHawk
 				var toolAttribute = allAttrs.OfType<ExternalToolAttribute>().First();
 				if (toolAttribute.LoadAssemblyFiles != null)
 				{
-					foreach (var depFilename in toolAttribute.LoadAssemblyFiles) Assembly.LoadFrom($"ExternalTools/{depFilename}");
+					foreach (var depFilename in toolAttribute.LoadAssemblyFiles) Assembly.LoadFrom($"{_paths["Global", "External Tools"].Path}/{depFilename}");
 				}
 				var embeddedIconAttr = allAttrs.OfType<ExternalToolEmbeddedIconAttribute>().FirstOrDefault();
 				if (embeddedIconAttr != null)
