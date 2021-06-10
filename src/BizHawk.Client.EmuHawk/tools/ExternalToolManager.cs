@@ -35,29 +35,28 @@ namespace BizHawk.Client.EmuHawk
 				DirectoryMonitor.Created -= DirectoryMonitor_Created;
 				DirectoryMonitor.Dispose();
 			}
-			DirectoryMonitor = new FileSystemWatcher(_paths["Global", "External Tools"].Path, "*.dll")
+			var path = _paths["Global", "External Tools"].Path;
+			if (Directory.Exists(path))
 			{
-				IncludeSubdirectories = false,
-				NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite | NotifyFilters.FileName,
-				Filter = "*.dll"
-			};
-			DirectoryMonitor.Created += DirectoryMonitor_Created;
-			DirectoryMonitor.EnableRaisingEvents = true;
+				DirectoryMonitor = new FileSystemWatcher(path, "*.dll")
+				{
+					IncludeSubdirectories = false,
+					NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite | NotifyFilters.FileName,
+					Filter = "*.dll"
+				};
+				DirectoryMonitor.Created += DirectoryMonitor_Created;
+				DirectoryMonitor.EnableRaisingEvents = true;
+			}
 			BuildToolStrip();
 		}
 
 		internal void BuildToolStrip()
 		{
 			MenuItems.Clear();
-			if (Directory.Exists(DirectoryMonitor.Path))
-			{
-				DirectoryInfo dInfo = new DirectoryInfo(DirectoryMonitor.Path);
-
-				foreach (FileInfo fi in dInfo.GetFiles("*.dll"))
-				{
-					MenuItems.Add(GenerateToolTipFromFileName(fi.FullName));
-				}
-			}
+			if (DirectoryMonitor == null) return;
+			DirectoryInfo di = new(DirectoryMonitor.Path);
+			if (!di.Exists) return;
+			foreach (var fi in di.GetFiles("*.dll")) MenuItems.Add(GenerateToolTipFromFileName(fi.FullName));
 		}
 
 		/// <summary>Generates a <see cref="ToolStripMenuItem"/> from an assembly at <paramref name="fileName"/> containing an external tool.</summary>
