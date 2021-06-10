@@ -384,7 +384,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				GraphicsControl = { MainWindow = true }
 			};
-			DisplayManager = new DisplayManager(Config, Emulator, InputManager, MovieSession, GL, _presentationPanel, () => DisableSecondaryThrottling);
+			DisplayManager = new DisplayManagerBase(Config, Emulator, InputManager, MovieSession, GL, _presentationPanel, () => DisableSecondaryThrottling);
 			Controls.Add(_presentationPanel);
 			Controls.SetChildIndex(_presentationPanel, 0);
 
@@ -929,7 +929,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public readonly ToolManager Tools;
 
-		private DisplayManager DisplayManager;
+		private DisplayManagerBase DisplayManager;
 
 		private OSDManager OSD => DisplayManager.OSD;
 

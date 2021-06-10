@@ -13,7 +13,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public ToolManager Tools { protected get; set; }
 
-		public DisplayManager DisplayManager { protected get; set; }
+		public DisplayManagerBase DisplayManager { protected get; set; }
 
 		public InputManager InputManager { protected get; set; }
 
