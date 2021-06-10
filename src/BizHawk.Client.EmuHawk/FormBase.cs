@@ -13,6 +13,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public class FormBase : Form
 	{
+		private const string PLACEHOLDER_TITLE = "(will take value from WindowTitle/WindowTitleStatic)";
+
 		/// <summary>
 		/// Under Mono, <see cref="SystemColors.Control">SystemColors.Control</see> returns an ugly beige.<br/>
 		/// This method recursively replaces the <see cref="Control.BackColor"/> of the given <paramref name="control"/> (can be a <see cref="Form"/>) with <see cref="Color.WhiteSmoke"/>
@@ -39,15 +41,26 @@ namespace BizHawk.Client.EmuHawk
 		public override string Text
 		{
 			get => base.Text;
-			set => throw new InvalidOperationException("window title can only be changed by calling " + nameof(UpdateWindowTitle) + " (which calls " + nameof(WindowTitle) + " getter)");
+			set
+			{
+				if (DesignMode) return;
+				throw new InvalidOperationException("window title can only be changed by calling " + nameof(UpdateWindowTitle) + " (which calls " + nameof(WindowTitle) + " getter)");
+			}
 		}
 
 		protected virtual string WindowTitle => WindowTitleStatic;
 
 		/// <remarks>To enforce the "static title" semantics for implementations, this getter will be called once and cached.</remarks>
-		protected virtual string WindowTitleStatic => DesignMode
-			? "(will take value from WindowTitle/WindowTitleStatic)"
-			: throw new NotImplementedException("you have to implement this; the Designer prevents this from being an abstract method");
+		protected virtual string WindowTitleStatic
+		{
+			get
+			{
+				if (DesignMode) return PLACEHOLDER_TITLE;
+				throw new NotImplementedException("you have to implement this; the Designer prevents this from being an abstract method");
+			}
+		}
+
+		public FormBase() => base.Text = PLACEHOLDER_TITLE;
 
 		protected override void OnLoad(EventArgs e)
 		{
