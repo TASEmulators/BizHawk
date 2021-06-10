@@ -29,7 +29,7 @@ namespace BizHawk.Client.EmuHawk
 	/// Its job is to receive OSD and emulator outputs, and produce one single buffer (BitmapBuffer? Texture2d?) for display by the PresentationPanel.
 	/// Details TBD
 	/// </summary>
-	public class DisplayManager : IDisplayManagerForApi, IWindowCoordsTransformer, IDisposable
+	public class DisplayManagerBase : IDisplayManagerForApi, IWindowCoordsTransformer, IDisposable
 	{
 		private static DisplaySurface CreateDisplaySurface(int w, int h) => new(w, h);
 
@@ -56,7 +56,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private IEmulator GlobalEmulator;
 
-		public DisplayManager(Config config, IEmulator emulator, InputManager inputManager, IMovieSession movieSession, IGL gl, PresentationPanel presentationPanel, Func<bool> getIsSecondaryThrottlingDisabled)
+		public DisplayManagerBase(Config config, IEmulator emulator, InputManager inputManager, IMovieSession movieSession, IGL gl, PresentationPanel presentationPanel, Func<bool> getIsSecondaryThrottlingDisabled)
 		{
 			GlobalConfig = config;
 			GlobalEmulator = emulator;
@@ -1169,9 +1169,9 @@ namespace BizHawk.Client.EmuHawk
 		// helper classes:
 		private class MyBlitter : IBlitter
 		{
-			private readonly DisplayManager _owner;
+			private readonly DisplayManagerBase _owner;
 
-			public MyBlitter(DisplayManager dispManager)
+			public MyBlitter(DisplayManagerBase dispManager)
 			{
 				_owner = dispManager;
 			}
