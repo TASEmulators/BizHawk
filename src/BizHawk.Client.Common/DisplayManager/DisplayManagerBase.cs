@@ -11,7 +11,6 @@ using System.Runtime.InteropServices;
 
 using BizHawk.Bizware.BizwareGL;
 using BizHawk.Bizware.BizwareGL.DrawingExtensions;
-using BizHawk.Client.Common;
 using BizHawk.Client.Common.FilterManager;
 using BizHawk.Client.Common.Filters;
 using BizHawk.Common.PathExtensions;
@@ -19,7 +18,7 @@ using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.NDS;
 using BizHawk.Emulation.Cores.Sony.PSX;
 
-namespace BizHawk.Client.EmuHawk
+namespace BizHawk.Client.Common
 {
 	/// <summary>
 	/// A DisplayManager is destined forevermore to drive the PresentationPanel it gets initialized with.
