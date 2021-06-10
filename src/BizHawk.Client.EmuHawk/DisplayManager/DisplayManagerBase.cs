@@ -2,25 +2,22 @@
 // we could flag textures as 'actually' render targets (keep a reference to the render target?) which could allow us to convert between them more quickly in some cases
 
 using System;
-using System.IO;
-using System.Linq;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Text;
+using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 
 using BizHawk.Bizware.BizwareGL;
 using BizHawk.Bizware.BizwareGL.DrawingExtensions;
-using BizHawk.Bizware.DirectX;
-using BizHawk.Bizware.OpenTK3;
 using BizHawk.Client.Common;
-using BizHawk.Client.Common.Filters;
 using BizHawk.Client.Common.FilterManager;
+using BizHawk.Client.Common.Filters;
 using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Sony.PSX;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.NDS;
+using BizHawk.Emulation.Cores.Sony.PSX;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -33,7 +30,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private static DisplaySurface CreateDisplaySurface(int w, int h) => new(w, h);
 
-		private class DisplayManagerRenderTargetProvider : IRenderTargetProvider
+		protected class DisplayManagerRenderTargetProvider : IRenderTargetProvider
 		{
 			private readonly Func<Size, RenderTarget> _callback;
 
@@ -48,33 +45,29 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private readonly Func<bool> _getIsSecondaryThrottlingDisabled;
-
 		public OSDManager OSD { get; }
 
-		private Config GlobalConfig;
+		protected Config GlobalConfig;
 
 		private IEmulator GlobalEmulator;
 
-		public DisplayManagerBase(Config config, IEmulator emulator, InputManager inputManager, IMovieSession movieSession, IGL gl, PresentationPanel presentationPanel, Func<bool> getIsSecondaryThrottlingDisabled)
+		public DisplayManagerBase(
+			Config config,
+			IEmulator emulator,
+			InputManager inputManager,
+			IMovieSession movieSession,
+			EDispMethod dispMethod,
+			IGL gl,
+			IGuiRenderer renderer)
 		{
 			GlobalConfig = config;
 			GlobalEmulator = emulator;
 			OSD = new OSDManager(config, emulator, inputManager, movieSession);
-			_getIsSecondaryThrottlingDisabled = getIsSecondaryThrottlingDisabled;
 			_gl = gl;
-
-			// setup the GL context manager, needed for coping with multiple opengl cores vs opengl display method
-			// but is it tho? --yoshi
-			_glManager = GLManager.Instance;
-
-			this._presentationPanel = presentationPanel;
-			_crGraphicsControl = _glManager.GetContextForGraphicsControl(_graphicsControl);
+			_renderer = renderer;
 
 			// it's sort of important for these to be initialized to something nonzero
 			_currEmuWidth = _currEmuHeight = 1;
-
-			_renderer = _gl.CreateRenderer();
 
 			_videoTextureFrugalizer = new TextureFrugalizer(_gl);
 
@@ -85,16 +78,16 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			{
-				using var xml = Client.Common.ReflectionCache.EmbeddedResourceStream("Resources.courier16px.fnt");
-				using var tex = Client.Common.ReflectionCache.EmbeddedResourceStream("Resources.courier16px_0.png");
+				using var xml = ReflectionCache.EmbeddedResourceStream("Resources.courier16px.fnt");
+				using var tex = ReflectionCache.EmbeddedResourceStream("Resources.courier16px_0.png");
 				_theOneFont = new StringRenderer(_gl, xml, tex);
-				using var gens = Client.Common.ReflectionCache.EmbeddedResourceStream("Resources.gens.ttf");
+				using var gens = ReflectionCache.EmbeddedResourceStream("Resources.gens.ttf");
 				LoadCustomFont(gens);
-				using var fceux = Client.Common.ReflectionCache.EmbeddedResourceStream("Resources.fceux.ttf");
+				using var fceux = ReflectionCache.EmbeddedResourceStream("Resources.fceux.ttf");
 				LoadCustomFont(fceux);
 			}
 
-			if (_gl is IGL_TK || _gl is IGL_SlimDX9)
+			if (dispMethod == EDispMethod.OpenGL || dispMethod == EDispMethod.SlimDX9)
 			{
 				var fiHq2x = new FileInfo(Path.Combine(PathUtils.ExeDirectoryPath, "Shaders/BizHawk/hq2x.cgp"));
 				if (fiHq2x.Exists)
@@ -108,12 +101,7 @@ namespace BizHawk.Client.EmuHawk
 					using var stream = fiScanlines.OpenRead();
 					_shaderChainScanlines = new RetroShaderChain(_gl, new RetroShaderPreset(stream), Path.Combine(PathUtils.ExeDirectoryPath, "Shaders/BizHawk"));
 				}
-
-				string bicubicPath = "Shaders/BizHawk/bicubic-fast.cgp";
-				if (_gl is IGL_SlimDX9)
-				{
-					bicubicPath = "Shaders/BizHawk/bicubic-normal.cgp";
-				}
+				var bicubicPath = dispMethod == EDispMethod.SlimDX9 ? "Shaders/BizHawk/bicubic-normal.cgp" : "Shaders/BizHawk/bicubic-fast.cgp";
 				var fiBicubic = new FileInfo(Path.Combine(PathUtils.ExeDirectoryPath, bicubicPath));
 				if (fiBicubic.Exists)
 				{
@@ -164,17 +152,14 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		// rendering resources:
-		private readonly IGL _gl;
-		private readonly GLManager _glManager;
+		protected readonly IGL _gl;
+
 		private readonly StringRenderer _theOneFont;
+
 		private readonly IGuiRenderer _renderer;
 
 		// layer resources
-		private readonly PresentationPanel _presentationPanel; // well, its the final layer's target, at least
-		private readonly GLManager.ContextRef _crGraphicsControl;
-		private FilterProgram _currentFilterProgram;
-
-		private GraphicsControl _graphicsControl => _presentationPanel.GraphicsControl;
+		protected FilterProgram _currentFilterProgram;
 
 		/// <summary>
 		/// these variables will track the dimensions of the last frame's (or the next frame? this is confusing) emulator native output size
@@ -198,14 +183,22 @@ namespace BizHawk.Client.EmuHawk
 		public PrivateFontCollection CustomFonts { get; } = new PrivateFontCollection();
 
 		private readonly TextureFrugalizer _videoTextureFrugalizer;
+
 		private readonly Dictionary<DisplaySurfaceID, TextureFrugalizer> _apiHawkSurfaceFrugalizers = new();
-		private readonly RenderTargetFrugalizer[] _shaderChainFrugalizers;
-		private readonly RetroShaderChain _shaderChainHq2X, _shaderChainScanlines, _shaderChainBicubic;
+
+		protected readonly RenderTargetFrugalizer[] _shaderChainFrugalizers;
+
+		private RetroShaderChain _shaderChainHq2X;
+
+		private RetroShaderChain _shaderChainScanlines;
+
+		private RetroShaderChain _shaderChainBicubic;
+
 		private RetroShaderChain _shaderChainUser;
 
-		private void ActivateGLContext() => _glManager.Activate(_crGraphicsControl);
+		protected virtual void ActivateGLContext() => throw new NotImplementedException();
 
-		private void SwapBuffersOfGraphicsControl() => _graphicsControl.SwapBuffers();
+		protected virtual void SwapBuffersOfGraphicsControl() => throw new NotImplementedException();
 
 		public void RefreshUserShader()
 		{
@@ -424,7 +417,7 @@ namespace BizHawk.Client.EmuHawk
 			chain.AddFilter(fLuaLayer, surfaceID.GetName());
 		}
 
-		private Point GraphicsControlPointToClient(Point p) => _graphicsControl.PointToClient(p);
+		protected virtual Point GraphicsControlPointToClient(Point p) => throw new NotImplementedException();
 
 		/// <summary>
 		/// Using the current filter program, turn a mouse coordinate from window space to the original emulator screen space.
@@ -469,9 +462,9 @@ namespace BizHawk.Client.EmuHawk
 			return new Point((int)v.X, (int)v.Y);
 		}
 
-		public Size GetPanelNativeSize() => _presentationPanel.NativeSize;
+		public virtual Size GetPanelNativeSize() => throw new NotImplementedException();
 
-		private Size GetGraphicsControlSize() => _graphicsControl.Size;
+		protected virtual Size GetGraphicsControlSize() => throw new NotImplementedException();
 
 		/// <summary>
 		/// This will receive an emulated output frame from an IVideoProvider and run it through the complete frame processing pipeline
@@ -769,7 +762,7 @@ namespace BizHawk.Client.EmuHawk
 			return size;
 		}
 
-		private class JobInfo
+		protected class JobInfo
 		{
 			public IVideoProvider VideoProvider;
 			public bool Simulate;
@@ -953,53 +946,9 @@ namespace BizHawk.Client.EmuHawk
 			SwapBuffersOfGraphicsControl();
 		}
 
-		private void UpdateSourceDrawingWork(JobInfo job)
+		protected virtual void UpdateSourceDrawingWork(JobInfo job)
 		{
-			bool alternateVsync = false;
-
-			// only used by alternate vsync
-			IGL_SlimDX9 dx9 = null;
-
-			if (!job.Offscreen)
-			{
-				//apply the vsync setting (should probably try to avoid repeating this)
-				var vsync = GlobalConfig.VSyncThrottle || GlobalConfig.VSync;
-
-				//ok, now this is a bit undesirable.
-				//maybe the user wants vsync, but not vsync throttle.
-				//this makes sense... but we don't have the infrastructure to support it now (we'd have to enable triple buffering or something like that)
-				//so what we're gonna do is disable vsync no matter what if throttling is off, and maybe nobody will notice.
-				//update 26-mar-2016: this upsets me. When fast-forwarding and skipping frames, vsync should still work. But I'm not changing it yet
-				if (_getIsSecondaryThrottlingDisabled())
-					vsync = false;
-
-				//for now, it's assumed that the presentation panel is the main window, but that may not always be true
-				if (vsync && GlobalConfig.DispAlternateVsync && GlobalConfig.VSyncThrottle)
-				{
-					dx9 = _gl as IGL_SlimDX9;
-					if (dx9 != null)
-					{
-						alternateVsync = true;
-						//unset normal vsync if we've chosen the alternate vsync
-						vsync = false;
-					}
-				}
-
-				//TODO - whats so hard about triple buffering anyway? just enable it always, and change api to SetVsync(enable,throttle)
-				//maybe even SetVsync(enable,throttlemethod) or just SetVsync(enable,throttle,advanced)
-
-				if (_lastVsyncSetting != vsync || _lastVsyncSettingGraphicsControl != _graphicsControl)
-				{
-					if (_lastVsyncSetting == null && vsync)
-					{
-						// Workaround for vsync not taking effect at startup (Intel graphics related?)
-						_graphicsControl.SetVsync(false);
-					}
-					_graphicsControl.SetVsync(vsync);
-					_lastVsyncSettingGraphicsControl = _graphicsControl;
-					_lastVsyncSetting = vsync;
-				}
-			}
+			if (!job.Offscreen) throw new InvalidOperationException();
 
 			// begin rendering on this context
 			// should this have been done earlier?
@@ -1015,29 +964,11 @@ namespace BizHawk.Client.EmuHawk
 			RunFilterChainSteps(ref rtCounter, out var rtCurr, out var inFinalTarget);
 			_gl.EndScene();
 
-			if (job.Offscreen)
-			{
-				job.OffscreenBb = rtCurr.Texture2d.Resolve();
-				job.OffscreenBb.DiscardAlpha();
-				return;
-			}
-
-			Debug.Assert(inFinalTarget);
-
-			// wait for vsync to begin
-			if (alternateVsync) dx9.AlternateVsyncPass(0);
-
-			// present and conclude drawing
-			_graphicsControl.SwapBuffers();
-
-			// wait for vsync to end
-			if (alternateVsync) dx9.AlternateVsyncPass(1);
-
-			// nope. don't do this. workaround for slow context switching on intel GPUs. just switch to another context when necessary before doing anything
-			// presentationPanel.GraphicsControl.End();
+			job.OffscreenBb = rtCurr.Texture2d.Resolve();
+			job.OffscreenBb.DiscardAlpha();
 		}
 
-		private void RunFilterChainSteps(ref int rtCounter, out RenderTarget rtCurr, out bool inFinalTarget)
+		protected void RunFilterChainSteps(ref int rtCounter, out RenderTarget rtCurr, out bool inFinalTarget)
 		{
 			Texture2d texCurr = null;
 			rtCurr = null;
@@ -1078,9 +1009,6 @@ namespace BizHawk.Client.EmuHawk
 			fontStream.Close();
 			Marshal.FreeCoTaskMem(data);
 		}
-
-		private bool? _lastVsyncSetting;
-		private GraphicsControl _lastVsyncSettingGraphicsControl;
 
 		private readonly Dictionary<DisplaySurfaceID, IDisplaySurface> _apiHawkIDToSurface = new();
 
