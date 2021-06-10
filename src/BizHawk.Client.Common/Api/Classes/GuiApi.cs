@@ -17,7 +17,7 @@ namespace BizHawk.Client.Common
 
 		private readonly Action<string> LogCallback;
 
-		private readonly IDisplayManagerForApi _displayManager;
+		private readonly DisplayManagerBase _displayManager;
 
 		private readonly Dictionary<string, Image> _imageCache = new Dictionary<string, Image>();
 
@@ -51,7 +51,7 @@ namespace BizHawk.Client.Common
 
 		public bool HasGUISurface => _GUISurface != null;
 
-		public GuiApi(Action<string> logCallback, IDisplayManagerForApi displayManager)
+		public GuiApi(Action<string> logCallback, DisplayManagerBase displayManager)
 		{
 			LogCallback = logCallback;
 			_displayManager = displayManager;

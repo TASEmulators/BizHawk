@@ -25,7 +25,7 @@ namespace BizHawk.Client.Common
 	/// Its job is to receive OSD and emulator outputs, and produce one single buffer (BitmapBuffer? Texture2d?) for display by the PresentationPanel.
 	/// Details TBD
 	/// </summary>
-	public class DisplayManagerBase : IDisplayManagerForApi, IWindowCoordsTransformer, IDisposable
+	public class DisplayManagerBase : IDisposable
 	{
 		private static DisplaySurface CreateDisplaySurface(int w, int h) => new(w, h);
 
