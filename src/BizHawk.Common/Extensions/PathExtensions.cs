@@ -8,7 +8,7 @@ using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Common.PathExtensions
 {
-	public static class PathExtensions
+	public static partial class PathExtensions
 	{
 		/// <returns><see langword="true"/> iff <paramref name="childPath"/> indicates a child of <paramref name="parentPath"/>, with <see langword="false"/> being returned if either path is <see langword="null"/></returns>
 		/// <remarks>algorithm for Windows taken from https://stackoverflow.com/a/7710620/7467292</remarks>
@@ -52,22 +52,7 @@ namespace BizHawk.Common.PathExtensions
 		/// <seealso cref="IsRelative"/>
 		public static bool IsAbsolute(this string path)
 		{
-			//TODO: this code must be deleted. We can't use bespoke logic for something as squirrely as this. Find a framework way to do it.
-
-			if (OSTailoredCode.IsUnixHost) return path.Length >= 1 && path[0] == '/';
-			if (path.Contains('/')) return IsAbsolute(path.Replace('/', '\\'));
-			if (path.Length < 3)
-				return false;
-			if (path[2] == '\\')
-			{
-				if (path[1] != ':')
-					return false;
-				bool driveLetter = ('A'.RangeTo('Z').Contains(path[0]) || 'a'.RangeTo('z').Contains(path[0]));
-				return driveLetter;
-			}
-			if (path[2] == '?')
-				return path.StartsWith(@"\\?\");
-			return false;
+			return PathInternal.IsPathFullyQualified(path);
 		}
 
 		/// <returns><see langword="false"/> iff absolute (OS-dependent)</returns>
