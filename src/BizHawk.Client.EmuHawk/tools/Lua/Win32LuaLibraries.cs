@@ -20,7 +20,7 @@ namespace BizHawk.Client.EmuHawk
 			LuaFunctionList registeredFuncList,
 			IEmulatorServiceProvider serviceProvider,
 			MainForm mainForm,
-			IDisplayManagerForApi displayManager,
+			DisplayManagerBase displayManager,
 			InputManager inputManager,
 			Config config,
 			IEmulator emulator,
@@ -110,7 +110,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private ApiContainer _apiContainer;
 
-		private readonly IDisplayManagerForApi _displayManager;
+		private readonly DisplayManagerBase _displayManager;
 
 		private GuiApi GuiAPI => (GuiApi) _apiContainer.Gui;
 
