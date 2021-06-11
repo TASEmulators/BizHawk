@@ -197,11 +197,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			t.BlockDescription = BlockType.CSW_Recording;
 			t.BlockID = 0x18;
 			t.DataPeriods = new List<int>();
+			t.DataLevels = new List<bool>();
 
 			if (flags.Bit(0))
 				t.InitialPulseLevel = true;
 			else
 				t.InitialPulseLevel = false;
+
+			bool currLevel = !t.InitialPulseLevel;
 
 			var rate = (69888 * 50) / sampleRate;
 
@@ -215,10 +218,15 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				}
 
 				t.DataPeriods.Add(length);
+
+				currLevel = !currLevel;
+				t.DataLevels.Add(currLevel);				
 			}
 
 			// add closing period
 			t.DataPeriods.Add((69888 * 50) / 10);
+			currLevel = !currLevel;
+			t.DataLevels.Add(currLevel);
 
 			// add to datacorder
 			_datacorder.DataBlocks.Add(t);

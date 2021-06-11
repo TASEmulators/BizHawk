@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
@@ -85,7 +86,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 			WavStreamReader reader = new WavStreamReader(stream);
 
-			int rate = (69888 * 50) / reader.Header.sampleRate;
+			//int rate = (int)(((double)69888 * (double)50) / (double)reader.Header.sampleRate);
+			int rate = (int)((double)(3500000) / (double)reader.Header.sampleRate);
 			int smpCounter = 0;
 			int state = reader.ReadNext();
 
@@ -94,6 +96,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			t.BlockDescription = BlockType.WAV_Recording;
 			t.BlockID = 0;
 			t.DataPeriods = new List<int>();
+			t.DataLevels = new List<bool>();
+
+			bool currLevel = false;
 
 			for (int i = 0; i < reader.Count; i++)
 			{
@@ -101,16 +106,33 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				smpCounter++;
 				if ((state < 0 && sample < 0) || (state >= 0 && sample >= 0))
 					continue;
-				t.DataPeriods.Add(smpCounter * rate);
+				t.DataPeriods.Add((int)(((double)smpCounter * (double)rate) / (double)0.9838560885608856));
+				currLevel = !currLevel;
+				t.DataLevels.Add(currLevel);
 				smpCounter = 0;
 				state = sample;
 			}
 
 			// add closing period
 			t.DataPeriods.Add((69888 * 50) / 10);
+			currLevel = false;
+			t.DataLevels.Add(currLevel);
 
 			// add to datacorder
 			_datacorder.DataBlocks.Add(t);
+
+			StringBuilder export = new StringBuilder();
+			foreach (var b in _datacorder.DataBlocks)
+			{
+				for (int i = 0; i < b.DataPeriods.Count(); i++)
+				{
+					export.Append(b.DataPeriods[i].ToString());
+					export.Append("\t\t");
+					export.AppendLine(b.DataLevels[i].ToString());
+				}
+			}
+
+			string o = export.ToString();
 		}
 	}
 }
