@@ -121,6 +121,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			// add to datacorder
 			_datacorder.DataBlocks.Add(t);
 
+			/* debug stuff
+
 			StringBuilder export = new StringBuilder();
 			foreach (var b in _datacorder.DataBlocks)
 			{
@@ -133,6 +135,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			}
 
 			string o = export.ToString();
+			*/
 		}
 	}
 }
