@@ -3,6 +3,7 @@
 
 variables:
   CI_HAWK_ARTIFACT_NAME: "BizHawk_devbuild_${CI_COMMIT_SHORT_SHA}"
+  CI_HAWK_ARTIFACT_NAME_TAR: "$CI_HAWK_ARTIFACT_NAME.tar"
   CI_HAWK_TMPARTIFACT_NAME: "BizHawk_tempbuild_${CI_COMMIT_REF_SLUG}_${CI_COMMIT_SHORT_SHA}"
 
 stages:
@@ -72,9 +73,9 @@ check_style:
 .package_linux_x64:
   artifacts:
     expire_in: "1 month"
-    name: "$CI_HAWK_ARTIFACT_NAME.tar"
+    name: "$CI_HAWK_ARTIFACT_NAME"
     paths:
-      - "$CI_HAWK_ARTIFACT_NAME.tar"
+      - "$CI_HAWK_ARTIFACT_NAME_TAR"
   image: debian:buster-slim
   needs:
     - build
@@ -82,7 +83,7 @@ check_style:
     - su -c "apt-get update && apt-get -y install p7zip-full"
     - Dist/Package.sh "linux-x64"
     - cd packaged_output
-    - tar -cf "../$CI_HAWK_ARTIFACT_NAME.tar" *
+    - tar -cf "../$CI_HAWK_ARTIFACT_NAME_TAR" *
   stage: package
 
 .package_windows_x64:
@@ -122,7 +123,8 @@ package_release_linux:
     - if: $CI_COMMIT_REF_SLUG == "release"
       when: always
   variables:
-    CI_HAWK_ARTIFACT_NAME: "BizHawk_release_${CI_COMMIT_SHORT_SHA}"
+    CI_HAWK_ARTIFACT_NAME: "BizHawk-VERSIONHERE-linux-x64.tar" # .zip is added automatically
+    CI_HAWK_ARTIFACT_NAME_TAR: "BizHawk-linux-x64-$CI_COMMIT_SHORT_SHA.tar"
 
 package_release_windows:
   extends: .package_windows_x64
@@ -130,7 +132,7 @@ package_release_windows:
     - if: $CI_COMMIT_REF_SLUG == "release"
       when: always
   variables:
-    CI_HAWK_ARTIFACT_NAME: "BizHawk_release_${CI_COMMIT_SHORT_SHA}"
+    CI_HAWK_ARTIFACT_NAME: "BizHawk-VERSIONHERE-win-x64"
 
 run_tests:
   artifacts:
