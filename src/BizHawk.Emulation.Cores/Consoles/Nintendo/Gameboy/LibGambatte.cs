@@ -280,6 +280,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public static extern void gambatte_setrtcdivisoroffset(IntPtr core, int rtcDivisorOffset);
 
 		/// <summary>
+		/// Sets how long until the cart bus pulls up in CPU cycles.
+		/// This is used to account for differences in pull-up times between carts/consoles.
+		/// </summary>
+		/// <param name="core">opaque state pointer</param>
+		/// <param name="cartBusPullUpTime">Pull-Up Time</param>
+		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void gambatte_setcartbuspulluptime(IntPtr core, uint cartBusPullUpTime);
+
+		/// <summary>
 		/// Returns true if the currently loaded ROM image is treated as having CGB support.
 		/// </summary>
 		/// <param name="core">opaque state pointer</param>
