@@ -1,9 +1,7 @@
 using System;
 using System.Drawing;
 
-using BizHawk.Bizware.BizwareGL;
-
-namespace BizHawk.Client.EmuHawk
+namespace BizHawk.Bizware.BizwareGL
 {
 	public class RenderTargetWrapper
 	{
