@@ -180,6 +180,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 				LibGambatte.gambatte_setrtcdivisoroffset(GambatteState, _syncSettings.RTCDivisorOffset);
 
+				LibGambatte.gambatte_setcartbuspulluptime(GambatteState, _syncSettings.CartBusPullUpTime);
+
 				_cdCallback = new LibGambatte.CDCallback(CDCallbackProc);
 
 				NewSaveCoreSetBuff();
