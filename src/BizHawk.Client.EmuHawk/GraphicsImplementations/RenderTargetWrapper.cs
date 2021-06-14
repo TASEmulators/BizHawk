@@ -1,3 +1,4 @@
+using System;
 using System.Drawing;
 
 using BizHawk.Bizware.BizwareGL;
@@ -6,21 +7,24 @@ namespace BizHawk.Client.EmuHawk
 {
 	public class RenderTargetWrapper
 	{
-		public RenderTargetWrapper(IGL_GdiPlus gdi)
+		public RenderTargetWrapper(
+			Func<BufferedGraphicsContext> getBufferedGraphicsContext,
+			IGraphicsControl control = null)
 		{
-			Gdi = gdi;
+			_getBufferedGraphicsContext = getBufferedGraphicsContext;
+			Control = control;
 		}
 
 		public void Dispose()
 		{
 		}
 
-		private readonly IGL_GdiPlus Gdi;
+		private readonly Func<BufferedGraphicsContext> _getBufferedGraphicsContext;
 
 		/// <summary>
 		/// the control associated with this render target (if any)
 		/// </summary>
-		public GLControlWrapper_GdiPlus Control;
+		private readonly IGraphicsControl Control;
 
 		/// <summary>
 		/// the offscreen render target, if that's what this is representing
@@ -47,7 +51,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			MyBufferedGraphics?.Dispose();
-			MyBufferedGraphics = Gdi.MyBufferedGraphicsContext.Allocate(refGraphics, r);
+			MyBufferedGraphics = _getBufferedGraphicsContext().Allocate(refGraphics, r);
 //			MyBufferedGraphics.Graphics.PixelOffsetMode = PixelOffsetMode.HighSpeed;
 
 			//not sure about this stuff...

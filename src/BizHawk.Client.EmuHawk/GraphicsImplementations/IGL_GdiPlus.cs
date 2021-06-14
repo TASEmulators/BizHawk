@@ -15,11 +15,6 @@ namespace BizHawk.Client.EmuHawk
 		// rendering state
 		private RenderTarget _currRenderTarget;
 
-		public IGL_GdiPlus()
-		{
-			MyBufferedGraphicsContext = new BufferedGraphicsContext();
-		}
-
 		void IDisposable.Dispose()
 		{
 		}
@@ -267,7 +262,7 @@ namespace BizHawk.Client.EmuHawk
 			var ret = new GLControlWrapper_GdiPlus(this);
 			
 			// create a render target for this control
-			var rtw = new RenderTargetWrapper(this) { Control = ret };
+			var rtw = new RenderTargetWrapper(() => MyBufferedGraphicsContext, ret);
 			ret.RenderTargetWrapper = rtw;
 			
 			return ret;
@@ -287,7 +282,7 @@ namespace BizHawk.Client.EmuHawk
 			};
 			var tex = new Texture2d(this, tw, w, h);
 
-			var rtw = new RenderTargetWrapper(this);
+			var rtw = new RenderTargetWrapper(() => MyBufferedGraphicsContext);
 			var rt = new RenderTarget(this, rtw, tex);
 			rtw.Target = rt;
 			return rt;
@@ -342,7 +337,7 @@ namespace BizHawk.Client.EmuHawk
 		public GLControlWrapper_GdiPlus CurrentControl;
 		public RenderTargetWrapper CurrentRenderTargetWrapper;
 
-		public BufferedGraphicsContext MyBufferedGraphicsContext;
+		public readonly BufferedGraphicsContext MyBufferedGraphicsContext = new();
 
 
 	} //class IGL_GdiPlus
