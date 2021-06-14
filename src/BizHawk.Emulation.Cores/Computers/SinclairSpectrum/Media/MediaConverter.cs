@@ -146,7 +146,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		public static int TranslatePause(int pauseInMS)
 		{			
-			var tspms = (double)(69888 * 50) / (double)1000;
+			const double tspms = 69888.0 * 50.0 / 1000.0;
 			int res = (int)(pauseInMS * tspms);
 
 			return res;

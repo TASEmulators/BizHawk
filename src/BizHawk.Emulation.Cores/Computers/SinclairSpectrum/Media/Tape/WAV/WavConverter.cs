@@ -86,8 +86,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 			WavStreamReader reader = new WavStreamReader(stream);
 
-			//int rate = (int)(((double)69888 * (double)50) / (double)reader.Header.sampleRate);
-			int rate = (int)((double)(3500000) / (double)reader.Header.sampleRate);
+			const double d = /*69888.0*/70000.0 * 50.0;
+			int rate = (int) (d / reader.Header.sampleRate);
 			int smpCounter = 0;
 			int state = reader.ReadNext();
 

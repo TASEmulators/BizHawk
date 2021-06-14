@@ -1501,7 +1501,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			_position += 4;
 		}
 
-		#region Not Implemented Yet
+#if true // Not Implemented Yet
 
 		/// <summary>
 		/// 0x33 - Hardware Type
@@ -1976,7 +1976,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		}
 
 
-		#endregion
+#endif
 
 		/// <summary>
 		/// Sets up variables for the next block
