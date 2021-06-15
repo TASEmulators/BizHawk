@@ -186,7 +186,8 @@ namespace BizHawk.Client.EmuHawk
 						return CheckRenderer(glOpenTK);
 					default:
 					case EDispMethod.GdiPlus:
-						return new IGL_GdiPlus(self => new GLControlWrapper_GdiPlus(self));
+						static GLControlWrapper_GdiPlus CreateGLControlWrapper(IGL_GdiPlus self) => new(self); // inlining as lambda causes crash, don't wanna know why --yoshi
+						return new IGL_GdiPlus(CreateGLControlWrapper);
 				}
 			}
 
