@@ -2,13 +2,11 @@ using System;
 using System.IO;
 using System.Drawing;
 
-using BizHawk.Bizware.BizwareGL;
-
 using sd = System.Drawing;
 using sdi = System.Drawing.Imaging;
 
 //TODO - maybe a layer to cache Graphics parameters (notably, filtering) ?
-namespace BizHawk.Client.EmuHawk
+namespace BizHawk.Bizware.BizwareGL
 {
 	public class IGL_GdiPlus : IGL
 	{
