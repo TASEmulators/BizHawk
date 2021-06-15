@@ -17,10 +17,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private GraphicsControl _lastVsyncSettingGraphicsControl;
 
-		// rendering resources:
-
-		private readonly GLManager _glManager;
-
 		// layer resources
 
 		private readonly PresentationPanel _presentationPanel; // well, its the final layer's target, at least
@@ -44,11 +40,11 @@ namespace BizHawk.Client.EmuHawk
 
 			// setup the GL context manager, needed for coping with multiple opengl cores vs opengl display method
 			// but is it tho? --yoshi
-			_glManager = GLManager.Instance;
-			_crGraphicsControl = _glManager.GetContextForGraphicsControl(_graphicsControl);
+			// turns out it was, calling Instance getter here initialises it, and the encapsulated Activate call is necessary too --yoshi
+			_crGraphicsControl = GLManager.Instance.GetContextForGraphicsControl(_graphicsControl);
 		}
 
-		protected override void ActivateGLContext() => _glManager.Activate(_crGraphicsControl);
+		protected override void ActivateGLContext() => GLManager.Instance.Activate(_crGraphicsControl);
 
 		protected override Size GetGraphicsControlSize() => _graphicsControl.Size;
 
