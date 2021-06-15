@@ -23,7 +23,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// the render target for rendering to this control
 		/// </summary>
-		public RenderTargetWrapper RenderTargetWrapper;
+		public RenderTargetWrapper RenderTargetWrapper { get; set; }
 
 		public void SetVsync(bool state)
 		{

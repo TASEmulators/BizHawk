@@ -15,6 +15,11 @@ namespace BizHawk.Client.EmuHawk
 		// rendering state
 		private RenderTarget _currRenderTarget;
 
+		private readonly Func<IGL_GdiPlus, IGraphicsControl> _createGLControlWrapper;
+
+		public IGL_GdiPlus(Func<IGL_GdiPlus, IGraphicsControl> createGLControlWrapper)
+			=> _createGLControlWrapper = createGLControlWrapper;
+
 		void IDisposable.Dispose()
 		{
 		}
@@ -232,17 +237,17 @@ namespace BizHawk.Client.EmuHawk
 			SetViewport(size.Width, size.Height);
 		}
 	
-		public void BeginControl(GLControlWrapper_GdiPlus control)
+		public void BeginControl(IGraphicsControl control)
 		{
 			CurrentControl = control;
 		}
 
-		public void EndControl(GLControlWrapper_GdiPlus control)
+		public void EndControl(IGraphicsControl control)
 		{
 			CurrentControl = null;
 		}
 
-		public void SwapControl(GLControlWrapper_GdiPlus control)
+		public void SwapControl(IGraphicsControl control)
 		{
 		}
 
@@ -259,7 +264,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public IGraphicsControl Internal_CreateGraphicsControl()
 		{
-			var ret = new GLControlWrapper_GdiPlus(this);
+			var ret = _createGLControlWrapper(this);
 			
 			// create a render target for this control
 			var rtw = new RenderTargetWrapper(() => MyBufferedGraphicsContext, ret);
@@ -334,7 +339,7 @@ namespace BizHawk.Client.EmuHawk
 			return rtw.MyBufferedGraphics.Graphics;
 		}
 
-		public GLControlWrapper_GdiPlus CurrentControl;
+		public IGraphicsControl CurrentControl;
 		public RenderTargetWrapper CurrentRenderTargetWrapper;
 
 		public readonly BufferedGraphicsContext MyBufferedGraphicsContext = new();

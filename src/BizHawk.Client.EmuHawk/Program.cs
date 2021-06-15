@@ -186,7 +186,7 @@ namespace BizHawk.Client.EmuHawk
 						return CheckRenderer(glOpenTK);
 					default:
 					case EDispMethod.GdiPlus:
-						return new IGL_GdiPlus();
+						return new IGL_GdiPlus(self => new GLControlWrapper_GdiPlus(self));
 				}
 			}
 

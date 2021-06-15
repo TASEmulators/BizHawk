@@ -7,6 +7,8 @@ namespace BizHawk.Bizware.BizwareGL
 	{
 		Rectangle ClientRectangle { get; }
 
+		RenderTargetWrapper RenderTargetWrapper { get; set; }
+
 		Graphics CreateGraphics();
 
 		/// <summary>
