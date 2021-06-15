@@ -200,6 +200,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				case 0xFF4A: // WY
 					window_y = value;
 					window_y_read = window_y;
+
 					if (!window_started && (!LCDC.Bit(7) || (value > LY)))
 					{
 						window_y_latch = window_y;
@@ -1900,12 +1901,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			BGP = 0xFF;
 			obj_pal_0 = 0;
 			obj_pal_1 = 0;
-			window_y = 0xFF;
-			window_x = 0xFF;
+			window_y = 0;
+			window_x = 0;
 			window_y_read = 0;
 			window_x_read = 0;
-			window_x_latch = 0xFF;
-			window_y_latch = 0xFF;
+			window_y_latch = 0;
+			window_x_latch = 0;
 			LY_inc = 1;
 			no_scan = false;
 			OAM_access_read = true;

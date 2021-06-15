@@ -1271,12 +1271,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			BGP = 0xFF;
 			obj_pal_0 = 0xFF;
 			obj_pal_1 = 0xFF;
-			window_y = 0xFF;
-			window_x = 0xFF;
+			window_y = 0;
+			window_x = 0;
 			window_y_read = 0;
 			window_x_read = 0;
-			window_x_latch = 0xFF;
-			window_y_latch = 0xFF;
+			window_y_latch = 0;
+			window_x_latch = 0;
 			LY_inc = 1;
 			no_scan = false;
 			OAM_access_read = true;
