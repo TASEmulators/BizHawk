@@ -9,6 +9,7 @@
 			BSX_PRAM,
 			SUFAMI_TURBO_A_RAM,
 			SUFAMI_TURBO_B_RAM,
+			SA1_IRAM,
 
 			WRAM,
 			APURAM,
