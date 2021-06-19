@@ -755,14 +755,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				controller_was_latched = true;
 				alt_lag = false;
 				lagged = false;
+				InputCallbacks.Call();
 			}
 			current_strobe = new_strobe;
 		}
 
 		private byte read_joyport(int addr)
 		{
-			InputCallbacks.Call();
-
 			byte ret;
 			if (_isVS)
 			{

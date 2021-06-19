@@ -301,6 +301,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			ser.Sync(nameof(nmi_destiny), ref nmi_destiny);
 			ser.Sync(nameof(evenOddDestiny), ref evenOddDestiny);
+			ser.Sync(nameof(start_up_offset), ref start_up_offset);
 			ser.Sync(nameof(NMI_offset), ref NMI_offset);
 			ser.Sync(nameof(yp_shift), ref yp_shift);
 			ser.Sync(nameof(sprite_eval_cycle), ref sprite_eval_cycle);
