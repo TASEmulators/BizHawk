@@ -744,6 +744,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		private void write_joyport(byte value)
 		{
+			//Console.WriteLine("cont " + value + " frame " + Frame);
+			
 			var si = new StrobeInfo(latched4016, value);
 			ControllerDeck.Strobe(si, _controller);
 			latched4016 = value;
@@ -752,13 +754,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				controller_was_latched = true;
 				alt_lag = false;
+				lagged = false;
 			}
+			current_strobe = new_strobe;
 		}
 
 		private byte read_joyport(int addr)
 		{
 			InputCallbacks.Call();
-			lagged = false;
+
 			byte ret;
 			if (_isVS)
 			{

@@ -12,7 +12,7 @@ using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	sealed partial class PPU
+	public partial class PPU
 	{
 		public sealed class Reg_2001
 		{
@@ -294,7 +294,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public PPUREGS ppur;
 		public Reg_2000 reg_2000;
 		public Reg_2001 reg_2001;
-		private byte reg_2003;
+		public byte reg_2003;
 		public byte reg_2006_2;
 
 		private void regs_reset()
@@ -436,7 +436,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					OAM[reg_2003] = value;
 					reg_2003++;
-				}
+				}				
 			}
 			else
 			{
