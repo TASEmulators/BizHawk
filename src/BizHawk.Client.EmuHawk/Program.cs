@@ -54,18 +54,25 @@ namespace BizHawk.Client.EmuHawk
 			//in case assembly resolution fails, such as if we moved them into the dll subdiretory, this event handler can reroute to them
 			AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
 
-			//but before we even try doing that, whack the MOTW from everything in that directory (that's a dll)
-			//otherwise, some people will have crashes at boot-up due to .net security disliking MOTW.
-			//some people are getting MOTW through a combination of browser used to download bizhawk, and program used to dearchive it
-			//We need to do it here too... otherwise people get exceptions when externaltools we distribute try to startup
-			static void RemoveMOTW(string path) => DeleteFileW($"{path}:Zone.Identifier");
-			var todo = new Queue<DirectoryInfo>(new[] { new DirectoryInfo(dllDir) });
-			while (todo.Count != 0)
+			try
 			{
-				var di = todo.Dequeue();
-				foreach (var disub in di.GetDirectories()) todo.Enqueue(disub);
-				foreach (var fi in di.GetFiles("*.dll")) RemoveMOTW(fi.FullName);
-				foreach (var fi in di.GetFiles("*.exe")) RemoveMOTW(fi.FullName);
+				// but before we even try doing that, whack the MOTW from everything in that directory (that's a dll)
+				// otherwise, some people will have crashes at boot-up due to .net security disliking MOTW.
+				// some people are getting MOTW through a combination of browser used to download bizhawk, and program used to dearchive it
+				// We need to do it here too... otherwise people get exceptions when externaltools we distribute try to startup
+				static void RemoveMOTW(string path) => DeleteFileW($"{path}:Zone.Identifier");
+				var todo = new Queue<DirectoryInfo>(new[] { new DirectoryInfo(dllDir) });
+				while (todo.Count != 0)
+				{
+					var di = todo.Dequeue();
+					foreach (var disub in di.GetDirectories()) todo.Enqueue(disub);
+					foreach (var fi in di.GetFiles("*.dll")) RemoveMOTW(fi.FullName);
+					foreach (var fi in di.GetFiles("*.exe")) RemoveMOTW(fi.FullName);
+				}
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine($"MotW remover failed: {e}");
 			}
 		}
 
