@@ -303,9 +303,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ppur = new PPUREGS();
 			reg_2000 = new Reg_2000(ppur);
 			reg_2001 = new Reg_2001();
-			Reg2002_objoverflow = false;
+			Reg2002_objoverflow = true;
 			Reg2002_objhit = false;
-			Reg2002_vblank_active = false;
+			Reg2002_vblank_active = true;
 			PPUGenLatch = 0;
 			reg_2003 = 0;
 			vtoggle = false;
