@@ -491,7 +491,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					dmc_realign = true;
 				}
-
+				
+				// By this point the cpu should be frozen, if it is not, then we are in a multi-write opcode, add another cycle delay
+				if (!cpu.RDY && !cpu.rdy_freeze && ((cpu.TotalExecutedCycles & 1) == 1))
+				{
+					apu.dmc_dma_countdown+=2;
+				}
+				
 				cpu.RDY = false;
 				dmc_dma_exec = true;
 				apu.dmc_dma_countdown--;

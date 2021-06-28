@@ -511,13 +511,13 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 		private const int VOP_NUM = 264;
 
 		//opcode bytes.. theoretically redundant with the temp variables? who knows.
-		private int opcode;
+		public int opcode;
 		private byte opcode2, opcode3;
 
 		private int ea, alu_temp; //cpu internal temp variables
 		private int mi; //microcode index
 		private bool iflag_pending; //iflag must be stored after it is checked in some cases (CLI and SEI).
-		private bool rdy_freeze; //true if the CPU must be frozen
+		public bool rdy_freeze; //true if the CPU must be frozen
 
 		//tracks whether an interrupt condition has popped up recently.
 		//not sure if this is real or not but it helps with the branch_irq_hack
