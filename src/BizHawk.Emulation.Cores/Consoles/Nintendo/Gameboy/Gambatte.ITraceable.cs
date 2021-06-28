@@ -37,7 +37,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 					s[8] & 0xff,
 					s[9] & 0xff,
 					s[10] & 0xff,
-					s[11] != 0 ? "skip" : "",
+					s[11] != 0 ? "prefetched" : "",
 					s[12] & 0xffffff,
 					s[13] & 0xff)
 			});
