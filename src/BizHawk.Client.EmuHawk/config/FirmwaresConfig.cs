@@ -73,8 +73,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public string TargetSystem { get; set; }
 
-		private CheckBox _cbAllowImport;
-
 		private const int IdUnsure = 0;
 		private const int IdMissing = 1;
 		private const int IdOk = 2;
@@ -221,19 +219,6 @@ namespace BizHawk.Client.EmuHawk
 			var oldBasePath = _currSelectorDir;
 			linkBasePath.Text = _currSelectorDir = _pathEntries.FirmwareAbsolutePath();
 			if (_currSelectorDir != oldBasePath) DoScan();
-
-			_cbAllowImport = new CheckBox
-			{
-				Text = "Allow Importing of Unknown Files",
-				BackColor = SystemColors.Control,
-				CheckAlign = ContentAlignment.MiddleLeft,
-				TextAlign = ContentAlignment.MiddleLeft,
-				Font = new Font("Segeo UI", 9, FontStyle.Regular, GraphicsUnit.Point, 1, false),
-				Checked = false,
-				Size = new Size(230, 22),
-			};
-			ToolStripControlHost host = new ToolStripControlHost(_cbAllowImport);
-			toolStrip1.Items.Add(host);
 		}
 
 		private void TbbClose_Click(object sender, EventArgs e)
