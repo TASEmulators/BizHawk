@@ -22,6 +22,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public int m_vol = 1;
 
 		public int dmc_dma_countdown = -1;
+		public int DMC_RDY_check;
 		public bool call_from_write;
 
 		public bool recalculate = false;
@@ -661,10 +662,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				out_silence = true;
 				DMC_RATE = pal ? DMC_RATE_PAL : DMC_RATE_NTSC;
 				timer_reload = DMC_RATE[0];
-				timer = timer_reload;
+				timer = 1024-1; // confirmed in VisualNES although aligning controller read glitches still doesn't work
 				sample_buffer_filled = false;
 				out_deltacounter = 64;
-				out_bits_remaining = 0;
+				out_bits_remaining = 7; //confirmed in VisualNES
 				user_address = 0x8000; // even though this can't be accessed by writing, it is indeed the power up address
 				user_length = 1;
 			}
@@ -709,7 +710,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				ser.Sync(nameof(out_deltacounter), ref out_deltacounter);
 				ser.Sync(nameof(out_silence), ref out_silence);
 
-				ser.Sync("dmc_call_delay", ref delay);
+				ser.Sync(nameof(delay), ref delay);
 
 				ser.EndSection();
 			}
@@ -728,19 +729,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				// also note that the halt for DMC DMA occurs on APU cycles only (hence the timer check)
 				if (!sample_buffer_filled && sample_length > 0  && apu.dmc_dma_countdown == -1 && delay==0)
 				{
-					// calls from write take one less cycle, but start on a write instead of a read
 					if (!apu.call_from_write)
 					{
-						if (timer % 2 == 1)
-						{
-							delay = 3;
-						} else
-						{
-							delay = 2;
-						}
+						// when called due to empty bueffer while DMC running, there is no delay
+						delay = 1;
 					}
 					else
 					{
+						// when called from write, either a 2 or 3 cycle delay in activation.
 						if (timer % 2 == 1)
 						{
 							delay = 2;
@@ -752,8 +748,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					}
 				}
 
-				// I did some tests in Visual 2A03 and there seems to be some delay betwen when a DMC is first needed and when the 
-				// process to execute the DMA starts. The details are not currently known, but it seems to be a 2 cycle delay
+				// VisualNES and test roms verify that DMC DMA is 1 cycle shorter for calls from writes
+				// however, if the third cycle lands on a write, there is a 2 cycle delay even if the instruction only has a single write
+				// therefore, the RDY_check is 2 in both cases.
 				if (delay != 0)
 				{
 					delay--;
@@ -762,11 +759,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						if (!apu.call_from_write)
 						{
 							apu.dmc_dma_countdown = 4;
+							apu.DMC_RDY_check = 2;
 						}
 						else
 						{
 
 							apu.dmc_dma_countdown = 3;
+							apu.DMC_RDY_check = 2;
 							apu.call_from_write = false;
 						}
 					}
@@ -923,6 +922,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(sequencer_irq_assert), ref sequencer_irq_assert);
 
 			ser.Sync(nameof(dmc_dma_countdown), ref dmc_dma_countdown);
+			ser.Sync(nameof(DMC_RDY_check), ref DMC_RDY_check);
 			ser.Sync("sample_length_delay", ref pending_length_change);
 			ser.Sync("dmc_called_from_write", ref call_from_write);
 			ser.Sync("sequencer_tick_delay", ref seq_tick);
@@ -1164,7 +1164,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					}
 					else if (addr == 0x4017)
 					{
-						if (dmc.timer%2==0)
+						if (dmc.timer % 2 == 1)
 						{
 							seq_tick = 3;
 
@@ -1273,7 +1273,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					_WriteReg(pending_reg, pending_val);
 					pending_reg = -1;
 				}
-				else if (dmc.timer % 2 == 0)
+				else if (dmc.timer % 2 == 1)
 				{
 					_WriteReg(pending_reg, pending_val);
 					pending_reg = -1;

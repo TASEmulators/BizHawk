@@ -493,9 +493,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 				
 				// By this point the cpu should be frozen, if it is not, then we are in a multi-write opcode, add another cycle delay
-				if (!cpu.RDY && !cpu.rdy_freeze && ((cpu.TotalExecutedCycles & 1) == 1))
+				if (!cpu.RDY && !cpu.rdy_freeze && (apu.dmc_dma_countdown == apu.DMC_RDY_check))
 				{
-					apu.dmc_dma_countdown+=2;
+					//Console.WriteLine("dmc RDY false " + cpu.TotalExecutedCycles + " " + apu.call_from_write + " " + cpu.opcode + " " + oam_dma_exec);
+					apu.dmc_dma_countdown += 2;
+					apu.DMC_RDY_check = -1;
 				}
 				
 				cpu.RDY = false;
@@ -508,6 +510,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					apu.dmc_dma_countdown = -1;
 					do_the_reread = true;
 				}
+
+				//Console.WriteLine("dmc RDY false " + cpu.TotalExecutedCycles + " " + apu.call_from_write + " " + cpu.opcode);
 			}
 
 			/////////////////////////////
@@ -598,6 +602,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						{
 							ret_spec = read_joyport(addr);
 							do_the_reread = false;
+							Console.WriteLine("DMC glitch player 1");
 						}
 						return ret_spec;
 
@@ -622,6 +627,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						{
 							ret_spec = read_joyport(addr);
 							do_the_reread = false;
+							Console.WriteLine("DMC glitch player 2");
 						}
 						return ret_spec;
 					}
