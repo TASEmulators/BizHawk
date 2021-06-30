@@ -127,6 +127,7 @@ namespace BizHawk.Client.EmuHawk
 				= tbbOpenFolder.Image = Resources.Placeholder;
 
 			// prep ImageList for ListView
+			// the order matters, so make sure these match IdUnsure, IdMissing, etc.
 			imageList1.Images.AddRange(new Image[]
 			{
 				Resources.RetroQuestion,
@@ -134,11 +135,6 @@ namespace BizHawk.Client.EmuHawk
 				Resources.GreenCheck,
 				Resources.ThumbsDown,
 			});
-			// these constants are used for items' ImageIndex, the order matters
-			Debug.Assert(imageList1.Images[IdUnsure] == Resources.RetroQuestion);
-			Debug.Assert(imageList1.Images[IdMissing] == Resources.ExclamationRed);
-			Debug.Assert(imageList1.Images[IdOk] == Resources.GreenCheck);
-			Debug.Assert(imageList1.Images[IdBad] == Resources.ThumbsDown);
 
 			_listViewSorter = new ListViewSorter(-1);
 
