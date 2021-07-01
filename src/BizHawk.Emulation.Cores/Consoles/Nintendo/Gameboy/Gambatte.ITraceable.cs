@@ -13,8 +13,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		private void MakeTrace(IntPtr _s)
 		{
 			int[] s = new int[14];
-			ushort PC = (ushort)s[1];
 			System.Runtime.InteropServices.Marshal.Copy(_s, s, 0, 14);
+			ushort PC = (ushort)s[1];
 
 			Tracer.Put(new TraceInfo
 			{
