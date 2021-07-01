@@ -31,41 +31,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		{
 			int[] data = new int[10];
 			LibGambatte.gambatte_getregs(GambatteState, data);
-			
-			switch (register)
-			{
-				case "A":
-					data[(int)LibGambatte.RegIndicies.A] = value & 0xff;
-					break;
-				case "B":
-					data[(int)LibGambatte.RegIndicies.B] = value & 0xff;
-					break;
-				case "C":
-					data[(int)LibGambatte.RegIndicies.C] = value & 0xff;
-					break;
-				case "D":
-					data[(int)LibGambatte.RegIndicies.D] = value & 0xff;
-					break;
-				case "E":
-					data[(int)LibGambatte.RegIndicies.E] = value & 0xff;
-					break;
-				case "F":
-					data[(int)LibGambatte.RegIndicies.F] = value & 0xff;
-					break;
-				case "H":
-					data[(int)LibGambatte.RegIndicies.H] = value & 0xff;
-					break;
-				case "L":
-					data[(int)LibGambatte.RegIndicies.L] = value & 0xff;
-					break;
-				case "PC":
-					data[(int)LibGambatte.RegIndicies.PC] = value & 0xffff;
-					break;
-				case "SP":
-					data[(int)LibGambatte.RegIndicies.SP] = value & 0xffff;
-					break;
-			}
-
+			LibGambatte.RegIndicies index = (LibGambatte.RegIndicies)Enum.Parse(typeof(LibGambatte.RegIndicies), register);
+			data[(int)index] = value & (index <= LibGambatte.RegIndicies.SP ? 0xffff : 0xff);
 			LibGambatte.gambatte_setregs(GambatteState, data);
 		}
 
