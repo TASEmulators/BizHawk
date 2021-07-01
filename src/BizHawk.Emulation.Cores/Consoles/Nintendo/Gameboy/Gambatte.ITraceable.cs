@@ -13,14 +13,28 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		private void MakeTrace(IntPtr _s)
 		{
 			int[] s = new int[14];
+			ushort PC = (ushort)s[1];
 			System.Runtime.InteropServices.Marshal.Copy(_s, s, 0, 14);
 
 			Tracer.Put(new TraceInfo
 			{
 				Disassembly =
 					LR35902.Disassemble(
-						(ushort) s[1],
-						addr => (addr == (ushort)s[1]) ? (byte)((s[12] >> 16) & 0xFF) : ((addr == (ushort)s[1] + 1) ? (byte)((s[12] >> 8) & 0xFF) : (byte)(s[12] & 0xFF)),
+						PC,
+						addr => {
+							if (addr == PC) {
+								//opcode
+								return (byte)((s[12] >> 16) & 0xFF);
+							} else {
+								if (addr == PC + 1) {
+									//high operand
+									return (byte)((s[12] >> 8) & 0xFF);
+								} else {
+									//low operand
+									return (byte)(s[12] & 0xFF);
+								}
+							}
+						},
 						_settings.RgbdsSyntax,
 						out _).PadRight(36),
 				RegisterInfo =
