@@ -14,16 +14,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			return new Dictionary<string, RegisterValue>
 			{
-				["PC"] = (ushort)(data[(int)LibGambatte.RegIndicies.PC] & 0xffff),
-				["SP"] = (ushort)(data[(int)LibGambatte.RegIndicies.SP] & 0xffff),
-				["A"] = (byte)(data[(int)LibGambatte.RegIndicies.A] & 0xff),
-				["B"] = (byte)(data[(int)LibGambatte.RegIndicies.B] & 0xff),
-				["C"] = (byte)(data[(int)LibGambatte.RegIndicies.C] & 0xff),
-				["D"] = (byte)(data[(int)LibGambatte.RegIndicies.D] & 0xff),
-				["E"] = (byte)(data[(int)LibGambatte.RegIndicies.E] & 0xff),
-				["F"] = (byte)(data[(int)LibGambatte.RegIndicies.F] & 0xff),
-				["H"] = (byte)(data[(int)LibGambatte.RegIndicies.H] & 0xff),
-				["L"] = (byte)(data[(int)LibGambatte.RegIndicies.L] & 0xff)
+				["PC"] = (ushort)(data[(int)LibGambatte.RegIndices.PC] & 0xffff),
+				["SP"] = (ushort)(data[(int)LibGambatte.RegIndices.SP] & 0xffff),
+				["A"] = (byte)(data[(int)LibGambatte.RegIndices.A] & 0xff),
+				["B"] = (byte)(data[(int)LibGambatte.RegIndices.B] & 0xff),
+				["C"] = (byte)(data[(int)LibGambatte.RegIndices.C] & 0xff),
+				["D"] = (byte)(data[(int)LibGambatte.RegIndices.D] & 0xff),
+				["E"] = (byte)(data[(int)LibGambatte.RegIndices.E] & 0xff),
+				["F"] = (byte)(data[(int)LibGambatte.RegIndices.F] & 0xff),
+				["H"] = (byte)(data[(int)LibGambatte.RegIndices.H] & 0xff),
+				["L"] = (byte)(data[(int)LibGambatte.RegIndices.L] & 0xff)
 			};
 		}
 
@@ -31,8 +31,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		{
 			int[] data = new int[10];
 			LibGambatte.gambatte_getregs(GambatteState, data);
-			LibGambatte.RegIndicies index = (LibGambatte.RegIndicies)Enum.Parse(typeof(LibGambatte.RegIndicies), register);
-			data[(int)index] = value & (index <= LibGambatte.RegIndicies.SP ? 0xffff : 0xff);
+			LibGambatte.RegIndices index = (LibGambatte.RegIndices)Enum.Parse(typeof(LibGambatte.RegIndices), register);
+			data[(int)index] = value & (index <= LibGambatte.RegIndices.SP ? 0xffff : 0xff);
 			LibGambatte.gambatte_setregs(GambatteState, data);
 		}
 
@@ -43,45 +43,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public long TotalExecutedCycles => Math.Max((long)_cycleCount, (long)callbackCycleCount);
 
-		private MemoryCallbackSystem _memorycallbacks = new MemoryCallbackSystem(new[] { "System Bus" });
+		private const string systemBusScope = "System Bus";
+
+		private MemoryCallbackSystem _memorycallbacks = new MemoryCallbackSystem(new[] { systemBusScope });
 		public IMemoryCallbackSystem MemoryCallbacks => _memorycallbacks;
 
 		private LibGambatte.MemoryCallback _readcb;
 		private LibGambatte.MemoryCallback _writecb;
 		private LibGambatte.MemoryCallback _execcb;
-
-		private void ReadCallback(uint address, ulong cycleOffset)
-		{
-			callbackCycleCount = _cycleCount + cycleOffset;
-
-			if (MemoryCallbacks.HasReads)
-			{
-				uint flags = (uint)MemoryCallbackFlags.AccessRead;
-				MemoryCallbacks.CallMemoryCallbacks(address, 0, flags, "System Bus");
-			}
-		}
-
-		private void WriteCallback(uint address, ulong cycleOffset)
-		{
-			callbackCycleCount = _cycleCount + cycleOffset;
-
-			if (MemoryCallbacks.HasWrites)
-			{
-				uint flags = (uint)MemoryCallbackFlags.AccessWrite;
-				MemoryCallbacks.CallMemoryCallbacks(address, 0, flags,"System Bus");
-			}
-		}
-
-		private void ExecCallback(uint address, ulong cycleOffset)
-		{
-			callbackCycleCount = _cycleCount + cycleOffset;
-
-			if (MemoryCallbacks.HasExecutes)
-			{
-				uint flags = (uint)MemoryCallbackFlags.AccessExecute;
-				MemoryCallbacks.CallMemoryCallbacks(address, 0, flags, "System Bus");
-			}
-		}
 
 		/// <summary>
 		/// for use in dual core
@@ -93,19 +62,26 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		private void InitMemoryCallbacks()
 		{
-			_readcb = new LibGambatte.MemoryCallback(ReadCallback);
-			_writecb = new LibGambatte.MemoryCallback(WriteCallback);
-			_execcb = new LibGambatte.MemoryCallback(ExecCallback);
-			_memorycallbacks.ActiveChanged += RefreshMemoryCallbacks;
-		}
+			LibGambatte.MemoryCallback CreateCallback(MemoryCallbackFlags flags, Func<bool> getHasCBOfType)
+			{
+				var rawFlags = (uint)flags;
+				return (address, cycleOffset) =>
+				{
+					callbackCycleCount = _cycleCount + cycleOffset;
+					if (getHasCBOfType()) MemoryCallbacks.CallMemoryCallbacks(address, 0, rawFlags, systemBusScope);
+				};
+			}
 
-		private void RefreshMemoryCallbacks()
-		{
-			var mcs = MemoryCallbacks;
+			_readcb = CreateCallback(MemoryCallbackFlags.AccessRead, () => MemoryCallbacks.HasReads);
+			_writecb = CreateCallback(MemoryCallbackFlags.AccessWrite, () => MemoryCallbacks.HasWrites);
+			_execcb = CreateCallback(MemoryCallbackFlags.AccessExecute, () => MemoryCallbacks.HasExecutes);
 
-			LibGambatte.gambatte_setreadcallback(GambatteState, mcs.HasReads ? _readcb : null);
-			LibGambatte.gambatte_setwritecallback(GambatteState, mcs.HasWrites ? _writecb : null);
-			LibGambatte.gambatte_setexeccallback(GambatteState, mcs.HasExecutes ? _execcb : null);
+			_memorycallbacks.ActiveChanged += () =>
+			{
+				LibGambatte.gambatte_setreadcallback(GambatteState, MemoryCallbacks.HasReads ? _readcb : null);
+				LibGambatte.gambatte_setwritecallback(GambatteState, MemoryCallbacks.HasWrites ? _writecb : null);
+				LibGambatte.gambatte_setexeccallback(GambatteState, MemoryCallbacks.HasExecutes ? _execcb : null);
+			};
 		}
 	}
 }

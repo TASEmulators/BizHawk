@@ -441,7 +441,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void gambatte_setregs(IntPtr core, int[] src);
 
-		public enum RegIndicies : int
+		public enum RegIndices : int
 		{
 			PC, SP, A, B, C, D, E, F, H, L
 		}
