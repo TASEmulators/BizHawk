@@ -125,6 +125,14 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
+			if (!Config.AllowUdlr) 
+			{
+				DialogController.ShowMessageBox("In order to use this tool, 'Allow U+D / L+R' must be checked in the controller menu.");
+				Close();
+				DialogResult = DialogResult.Cancel;
+				return;
+			}
+
 			_previousInvisibleEmulation = InvisibleEmulationCheckBox.Checked = Settings.InvisibleEmulation;
 			_previousDisplayMessage = Config.DisplayMessages;
 		}
