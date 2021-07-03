@@ -41,7 +41,7 @@ static void Setup()
 	samples = (int16_t*)alloc_invisible(22050 * 2 * sizeof(*samples));
 	Surf = new MDFN_Surface(
 		pixels, Game->fb_width, Game->fb_height, Game->fb_width,
-		MDFN_PixelFormat(MDFN_COLORSPACE_RGB, 16, 8, 0, 24)
+		MDFN_PixelFormat(MDFN_COLORSPACE_RGB, 4, 16, 8, 0, 24)
 	);
 	EES = new EmulateSpecStruct();
 	EES->surface = Surf;

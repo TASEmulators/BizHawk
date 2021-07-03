@@ -16,6 +16,7 @@
 /Assets/dll/*.lib
 /Assets/dll/*.iobj
 /Assets/dll/*.ipdb
+/Assets/dll/*.wbx
 
 *.ilk
 *.il
