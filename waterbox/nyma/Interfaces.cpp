@@ -237,9 +237,13 @@ namespace Mednafen
 
 	namespace Time
 	{
-		void Time_Init(void)
+		void Time_Init()
 		{}
-		int64 EpochTime(void)
+		int64 EpochTime()
+		{
+			return FrontendTime;
+		}
+		int64 MonoUS()
 		{
 			return FrontendTime;
 		}
