@@ -904,13 +904,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 			m64pload_saveram(src);
 		}
 
-		/* TODO: Support address masks and null address */
+		/* TODO: Support address masks */
 		public void SetBreakpoint(BreakType type, uint? address)
 		{
 			m64p_breakpoint breakpoint = new m64p_breakpoint
 			{
-				address = address.Value,
-				endaddr = address.Value + 0x03,
+				address = address ?? 0x0, // If address is null, max address range to match any address
+				endaddr = address != null ? address.Value + 0x03 : uint.MaxValue,
 				flags = (uint)m64p_dbg_bkp_flags.M64P_BPT_FLAG_ENABLED
 			};
 
@@ -936,18 +936,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		{
 			int index = 0;
 
+			// Convert null (any) address to breakpoint with max range
+			uint size = address != null ? 4 : uint.MaxValue;
+			address ??= 0x0;
+
 			switch(type)
 			{
 				case BreakType.Read:
-					index = m64pDebugBreakpointLookup(address.Value, 4, (uint)m64p_dbg_bkp_flags.M64P_BPT_FLAG_READ);
+					index = m64pDebugBreakpointLookup(address.Value, size, (uint)m64p_dbg_bkp_flags.M64P_BPT_FLAG_READ);
 					break;
 
 				case BreakType.Write:
-					index = m64pDebugBreakpointLookup(address.Value, 4, (uint)m64p_dbg_bkp_flags.M64P_BPT_FLAG_WRITE);
+					index = m64pDebugBreakpointLookup(address.Value, size, (uint)m64p_dbg_bkp_flags.M64P_BPT_FLAG_WRITE);
 					break;
 
 				case BreakType.Execute:
-					index = m64pDebugBreakpointLookup(address.Value, 4, (uint)m64p_dbg_bkp_flags.M64P_BPT_FLAG_EXEC);
+					index = m64pDebugBreakpointLookup(address.Value, size, (uint)m64p_dbg_bkp_flags.M64P_BPT_FLAG_EXEC);
 					break;
 			}
 
