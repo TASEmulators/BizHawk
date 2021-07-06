@@ -907,12 +907,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		/* TODO: Support address masks */
 		public void SetBreakpoint(BreakType type, uint? address)
 		{
-			m64p_breakpoint breakpoint = new m64p_breakpoint
-			{
-				address = address ?? 0x0, // If address is null, max address range to match any address
-				endaddr = address != null ? address.Value + 0x03 : uint.MaxValue,
-				flags = (uint)m64p_dbg_bkp_flags.M64P_BPT_FLAG_ENABLED
-			};
+			m64p_breakpoint breakpoint = address is null
+				? new m64p_breakpoint()
+				{
+					// For null address, specify max address range to match any address
+					address = 0x0,
+					endaddr = uint.MaxValue,
+					flags = (uint)m64p_dbg_bkp_flags.M64P_BPT_FLAG_ENABLED
+				}
+				: new m64p_breakpoint()
+				{
+					address = address.Value,
+					endaddr = address.Value + 0x03,
+					flags = (uint)m64p_dbg_bkp_flags.M64P_BPT_FLAG_ENABLED
+				};
 
 			switch(type)
 			{
