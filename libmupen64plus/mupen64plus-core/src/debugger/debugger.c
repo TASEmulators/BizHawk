@@ -51,13 +51,13 @@ void init_debugger()
 
     init_host_disassembler();
 
-	sem_pending_steps = SDL_CreateSemaphore(0);
+    sem_pending_steps = SDL_CreateSemaphore(0);
 }
 
 void destroy_debugger()
 {
-	SDL_DestroySemaphore(sem_pending_steps);
-	sem_pending_steps = NULL;
+    SDL_DestroySemaphore(sem_pending_steps);
+    sem_pending_steps = NULL;
     g_DebuggerActive = 0;
 }
 
@@ -83,7 +83,7 @@ void update_debugger(uint32 pc, int bpt)
     }
     if(run==0) {
         // Emulation thread is blocked until a button is clicked.
-		SDL_SemWait(sem_pending_steps);
+        SDL_SemWait(sem_pending_steps);
     }
 
     previousPC = pc;
@@ -91,7 +91,7 @@ void update_debugger(uint32 pc, int bpt)
 
 void debugger_step()
 {
-	SDL_SemPost(sem_pending_steps);
+    SDL_SemPost(sem_pending_steps);
 }
 
 
