@@ -854,7 +854,11 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				LagCount++;
 
 			//what happens to sound in this case?
-			if (render == false) return true;
+			if (render == false) 
+			{
+				Frame++;
+				return true;
+			}
 
 			OctoshockDll.ShockFramebufferInfo fb = new OctoshockDll.ShockFramebufferInfo();
 
