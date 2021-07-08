@@ -146,13 +146,13 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		private static readonly string[] KeyboardMap =
 		{
-			"Key 1", "Key Q", "Key A", "Key Z", "Key Kana", "Key Comma", "Key K", "Key I", "Key 8", null, null, null,
-			"Key 2", "Key W", "Key S", "Key X", "Key Space", "Key Period", "Key L", "Key O", "Key 9", null, null, null,
-			"Key 3", "Key E", "Key D", "Key C", "Key Home/Clear", "Key Slash", "Key Semicolon", "Key P", "Key 0", null, null, null,
-			"Key 4", "Key R", "Key F", "Key V", "Key Insert/Delete", "Key PI", "Key Colon", "Key At", "Key Minus", null, null, null,
-			"Key 5", "Key T", "Key G", "Key B", null, "Key Down Arrow", "Key Right Bracket", "Key Left Bracket", "Key Caret", null, null, null,
-			"Key 6", "Key Y", "Key H", "Key N", null, "Key Left Arrow", "Key Return", null, "Key Yen", null, null, "Key Function",
-			"Key 7", "Key U", "Key J", "Key M", null, "Key Right Arrow", "Key Up Arrow", null, "Key Break", "Key Graph", "Key Control", "Key Shift",
+			"Key 1", "Key Q", "Key A", "Key Z", "Key Kana", "Key Comma", "Key K", "Key I", "Key 8",
+			"Key 2", "Key W", "Key S", "Key X", "Key Space", "Key Period", "Key L", "Key O", "Key 9",
+			"Key 3", "Key E", "Key D", "Key C", "Key Home/Clear", "Key Slash", "Key Semicolon", "Key P", "Key 0",
+			"Key 4", "Key R", "Key F", "Key V", "Key Insert/Delete", "Key PI", "Key Colon", "Key At", "Key Minus",
+			"Key 5", "Key T", "Key G", "Key B", "Key Down Arrow", "Key Right Bracket", "Key Left Bracket", "Key Caret",
+			"Key 6", "Key Y", "Key H", "Key N", "Key Left Arrow", "Key Return", "Key Yen", "Key Function",
+			"Key 7", "Key U", "Key J", "Key M", "Key Right Arrow", "Key Up Arrow", "Key Break", "Key Graph", "Key Control", "Key Shift",
 			"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 B1", "P1 B2", "P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 B1", "P2 B2"
 		};
 	}
