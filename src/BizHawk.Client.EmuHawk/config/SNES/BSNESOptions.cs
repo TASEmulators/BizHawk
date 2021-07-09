@@ -22,6 +22,7 @@ namespace BizHawk.Client.EmuHawk
 				Entropy = ss.Entropy,
 				Hotfixes = ss.Hotfixes,
 				FastPPU = ss.FastPPU,
+				UseSGB2 = ss.UseSGB2,
 				ShowObj1 = s.ShowOBJ_0,
 				ShowObj2 = s.ShowOBJ_1,
 				ShowObj3 = s.ShowOBJ_2,
@@ -44,6 +45,7 @@ namespace BizHawk.Client.EmuHawk
 				ss.Entropy = dlg.Entropy;
 				ss.Hotfixes = dlg.Hotfixes;
 				ss.FastPPU = dlg.FastPPU;
+				ss.UseSGB2 = dlg.UseSGB2;
 				s.ShowOBJ_0 = dlg.ShowObj1;
 				s.ShowOBJ_1 = dlg.ShowObj2;
 				s.ShowOBJ_2 = dlg.ShowObj3;
@@ -84,6 +86,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get => cbFastPPU.Checked;
 			init => cbDoubleSize.Enabled = cbFastPPU.Checked = value;
+		}
+
+		private bool UseSGB2
+		{
+			get => cbUseSGB2.Checked;
+			init => cbDoubleSize.Enabled = cbUseSGB2.Checked = value;
 		}
 
 		private BsnesApi.ENTROPY Entropy

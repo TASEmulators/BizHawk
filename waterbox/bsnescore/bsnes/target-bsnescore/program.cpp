@@ -250,6 +250,16 @@ auto Program::openFileGameBoy(string name, vfs::file::mode mode, bool required) 
 		return vfs::fs::file::open(snesCallbacks.snes_path_request(ID::GameBoy, name, required), mode);
 	}
 
+	if(name == "sgb")
+	{
+		return vfs::fs::file::open(snesCallbacks.snes_path_request(ID::GameBoy, name, required), mode);
+	}
+
+	if(name == "sgb2")
+	{
+		return vfs::fs::file::open(snesCallbacks.snes_path_request(ID::GameBoy, name, required), mode);
+	}
+
 	return {};
 }
 
