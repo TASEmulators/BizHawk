@@ -91,7 +91,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool UseSGB2
 		{
 			get => cbUseSGB2.Checked;
-			init => cbDoubleSize.Enabled = cbUseSGB2.Checked = value;
+			init => cbUseSGB2.Checked = value;
 		}
 
 		private BsnesApi.ENTROPY Entropy
