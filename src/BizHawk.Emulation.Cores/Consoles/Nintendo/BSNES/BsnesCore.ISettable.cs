@@ -76,7 +76,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 
 			public bool FastPPU { get; set; } = true;
 
-			public bool UseSGB2 { get; set; } = false;
+			public bool UseSGB2 { get; set; } = true;
 
 			public SnesSyncSettings Clone()
 			{
