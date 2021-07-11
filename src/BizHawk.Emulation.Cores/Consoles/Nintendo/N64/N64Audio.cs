@@ -14,6 +14,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		private readonly mupen64plusApi coreAPI;
 
 		/// <summary>
+		/// seconds audio has played back
+		/// </summary>
+		public double _seconds { get; set; }
+
+		/// <summary>
 		/// Buffer for audio data
 		/// </summary>
 		private short[] audioBuffer = new short[0];
@@ -67,6 +72,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 			if (audioBufferSize > 0)
 			{
+				_seconds += audioBufferSize / 2.0 / SamplingRate;
 				api.GetAudioBuffer(audioBuffer);
 				if (RenderSound)
 					Resampler.EnqueueSamples(audioBuffer, audioBufferSize / 2);

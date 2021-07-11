@@ -27,6 +27,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			writer.Write(IsLagFrame);
 			writer.Write(LagCount);
 			writer.Write(Frame);
+			writer.Write(SecondCount);
 		}
 
 		public void LoadStateBinary(BinaryReader reader)
@@ -49,6 +50,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			IsLagFrame = reader.ReadBoolean();
 			LagCount = reader.ReadInt32();
 			Frame = reader.ReadInt32();
+			SecondCount = reader.ReadInt32();
 		}
 
 		private readonly byte[] SaveStatePrivateBuff = new byte[16788288 + 1024];

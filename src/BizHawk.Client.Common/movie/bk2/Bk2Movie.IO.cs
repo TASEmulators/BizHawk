@@ -87,11 +87,16 @@ namespace BizHawk.Client.Common
 				{
 					Header[HeaderKeys.CycleCount] = subGb.CycleCount.ToString();
 				}
+				else if (Emulator is Emulation.Cores.Nintendo.N64.N64 n64)
+				{
+					Header[HeaderKeys.SecondCount] = n64.SecondCount.ToString();
+				}
 			}
 			else
 			{
 				Header.Remove(HeaderKeys.CycleCount);
 				Header.Remove(HeaderKeys.VBlankCount);
+				Header.Remove(HeaderKeys.SecondCount);
 			}
 		}
 

@@ -8,6 +8,7 @@ using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Nintendo.GBHawk;
 using BizHawk.Emulation.Cores.Nintendo.SubNESHawk;
 using BizHawk.Emulation.Cores.Nintendo.SubGBHawk;
+using BizHawk.Emulation.Cores.Nintendo.N64;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 using BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive;
@@ -298,6 +299,11 @@ namespace BizHawk.Client.Common
 			if (emulator is SubNESHawk)
 			{
 				movie.HeaderEntries.Add(HeaderKeys.VBlankCount, "0");
+			}
+
+			if (emulator is N64)
+			{
+				movie.HeaderEntries.Add(HeaderKeys.SecondCount, "0");
 			}
 
 			movie.Core = ((CoreAttribute)Attribute

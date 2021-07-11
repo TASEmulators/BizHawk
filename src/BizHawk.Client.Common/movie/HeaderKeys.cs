@@ -21,6 +21,7 @@ namespace BizHawk.Client.Common
 		public const string SyncSettings = "SyncSettings";
 		public const string VBlankCount = "VBlankCount";
 		public const string CycleCount = "CycleCount";
+		public const string SecondCount = "SecondCount";
 		public const string Core = "Core";
 
 		public static bool Contains(string val) =>

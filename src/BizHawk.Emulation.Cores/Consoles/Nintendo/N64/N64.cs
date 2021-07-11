@@ -159,6 +159,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 		public bool IsOverridingUserExpansionSlotSetting { get; set; }
 
+		public double SecondCount
+		{
+			get => _audioProvider._seconds;
+			set => _audioProvider._seconds = value;
+		}
+
 		public void Dispose()
 		{
 			RunThreadAction(() =>
@@ -259,6 +265,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			Frame = 0;
 			LagCount = 0;
 			IsLagFrame = false;
+			SecondCount = 0;
 		}
 
 		public bool DeterministicEmulation => false;

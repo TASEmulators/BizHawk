@@ -76,6 +76,10 @@ namespace BizHawk.Client.Common
 					double cyclesPerSecond = PlatformFrameRates.GetFrameRate("GB_Clock", IsPal);
 					dblSeconds = numCycles / cyclesPerSecond;
 				}
+				else if (Header.ContainsKey(HeaderKeys.SecondCount))
+				{
+					dblSeconds = Convert.ToDouble(Header[HeaderKeys.SecondCount]);
+				}
 				else
 				{
 					ulong numFrames = (ulong) FrameCount;
