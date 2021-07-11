@@ -50,7 +50,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			IsLagFrame = reader.ReadBoolean();
 			LagCount = reader.ReadInt32();
 			Frame = reader.ReadInt32();
-			SecondCount = reader.ReadInt32();
+			SecondCount = reader.ReadDouble();
 		}
 
 		private readonly byte[] SaveStatePrivateBuff = new byte[16788288 + 1024];
