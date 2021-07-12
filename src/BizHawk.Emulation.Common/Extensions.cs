@@ -24,6 +24,7 @@ namespace BizHawk.Emulation.Common
 			["Coleco"] = "ColecoVision",
 			["DGB"] = "Game Boy Link",
 			["GB"] = "GB",
+			["SGB"] = "SGB",
 			["GB3x"] = "Game Boy Link 3x",
 			["GB4x"] = "Game Boy Link 4x",
 			["GBA"] = "Gameboy Advance",
