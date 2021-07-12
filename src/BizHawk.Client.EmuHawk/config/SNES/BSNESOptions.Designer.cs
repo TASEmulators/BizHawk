@@ -306,9 +306,9 @@
             this.cbCropSGBFrame.TabIndex = 27;
             this.cbCropSGBFrame.Text = "Crop SGB Frame";
             this.cbCropSGBFrame.UseVisualStyleBackColor = true;
-            // 
+            //
             // cbUseSGB2
-            // 
+            //
             this.cbUseSGB2.AutoSize = true;
             this.cbUseSGB2.Location = new System.Drawing.Point(129, 84);
             this.cbUseSGB2.Name = "cbUseSGB2";
