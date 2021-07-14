@@ -10,12 +10,7 @@ namespace BizHawk.Emulation.Common
 	/// <seealso cref="IEmulator" />
 	public class ControllerDefinition
 	{
-		public ControllerDefinition()
-		{
-#if DEBUG
-			HapticsChannels.Add("Debug");
-#endif
-		}
+		public ControllerDefinition() {}
 
 		public ControllerDefinition(ControllerDefinition source)
 			: this()
