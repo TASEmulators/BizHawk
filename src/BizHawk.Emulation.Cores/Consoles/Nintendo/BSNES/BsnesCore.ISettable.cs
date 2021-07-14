@@ -28,7 +28,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 				|| o.LimitAnalogChangeSensitivity != _syncSettings.LimitAnalogChangeSensitivity
 				|| o.Entropy != _syncSettings.Entropy
 				|| o.Hotfixes != _syncSettings.Hotfixes
-				|| o.FastPPU != _syncSettings.FastPPU;
+				|| o.FastPPU != _syncSettings.FastPPU
+				|| o.UseSGB2 != _syncSettings.UseSGB2;
 
 			_syncSettings = o;
 			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
@@ -74,6 +75,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			public bool Hotfixes { get; set; } = true;
 
 			public bool FastPPU { get; set; } = true;
+
+			public bool UseSGB2 { get; set; } = true;
 
 			public SnesSyncSettings Clone()
 			{

@@ -122,6 +122,13 @@ auto ICD::load() -> bool {
     GB_load_battery_from_buffer(&sameboy, data, size);
     free(data);
   }
+  if(auto fp = platform->open(pathID(), Frequency == 0 ? "sgb" : "sgb2", File::Read)) { // override homebrew bootroms with official ones if available
+    auto size = fp->size();
+    auto data = (uint8_t*)malloc(size);
+    fp->read(data, size);
+    GB_load_boot_rom_from_buffer(&sameboy, data, size);
+    free(data);
+  }
   return true;
 }
 
