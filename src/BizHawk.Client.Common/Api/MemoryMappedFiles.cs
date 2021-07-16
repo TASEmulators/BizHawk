@@ -8,12 +8,11 @@ namespace BizHawk.Client.Common
 	public sealed class MemoryMappedFiles
 	{
 		private readonly Dictionary<string, MemoryMappedFile> _mmfFiles = new Dictionary<string, MemoryMappedFile>();
-
 		private readonly Func<byte[]> _takeScreenshotCallback;
 
-		public string Filename;
+		public string? Filename;
 
-		public MemoryMappedFiles(Func<byte[]> takeScreenshotCallback, string filename)
+		public MemoryMappedFiles(Func<byte[]> takeScreenshotCallback, string? filename)
 		{
 			_takeScreenshotCallback = takeScreenshotCallback;
 			Filename = filename;
@@ -21,13 +20,24 @@ namespace BizHawk.Client.Common
 
 		public string ReadFromFile(string filename, int expectedSize)
 		{
-			using var viewAccessor = MemoryMappedFile.OpenExisting(filename).CreateViewAccessor();
-			var bytes = new byte[expectedSize];
-			viewAccessor.ReadArray(0, bytes, 0, expectedSize);
+			var bytes = ReadBytesFromFile(filename, expectedSize);
 			return Encoding.UTF8.GetString(bytes);
 		}
+		public byte[] ReadBytesFromFile(string filename, int expectedSize)
+		{
+			if (!_mmfFiles.TryGetValue(filename, out var mmfFile))
+			{
+				mmfFile = _mmfFiles[filename] = MemoryMappedFile.OpenExisting(filename);
+			}
 
-		public int ScreenShotToFile() => WriteToFile(Filename, _takeScreenshotCallback());
+			var viewAccessor = mmfFile.CreateViewAccessor(0, expectedSize, MemoryMappedFileAccess.Read);
+			var bytes = new byte[expectedSize];
+			viewAccessor.ReadArray(0, bytes, 0, expectedSize);
+			viewAccessor.Dispose();
+			return bytes;
+		}
+
+		public int ScreenShotToFile() => WriteToFile(Filename!, _takeScreenshotCallback());
 
 		public int WriteToFile(string filename, byte[] outputBytes)
 		{
@@ -35,6 +45,7 @@ namespace BizHawk.Client.Common
 			{
 				using var accessor = m.CreateViewAccessor(0, outputBytes.Length, MemoryMappedFileAccess.Write);
 				accessor.WriteArray(0, outputBytes, 0, outputBytes.Length);
+				accessor.Dispose();
 				return outputBytes.Length;
 			}
 

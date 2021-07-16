@@ -47,12 +47,23 @@ namespace BizHawk.Client.Common
 		public void WriteByte(long addr, uint value, string domain = null) => APIs.Memory.WriteByte(addr, value, domain);
 
 		[LuaMethodExample("local nlmemrea = memory.readbyterange( 0x100, 30, mainmemory.getname( ) );")]
-		[LuaMethod("readbyterange", "Reads the address range that starts from address, and is length long. Returns the result into a table of key value pairs (where the address is the key).")]
+		[LuaMethod("readbyterange", "Reads the address range that starts from address, and is length long. Returns the result into a table of key value pairs (where the keys go from 0 to length-1).")]
 		public LuaTable ReadByteRange(long addr, int length, string domain = null) => _th.ListToTable(APIs.Memory.ReadByteRange(addr, length, domain));
 
+		[LuaMethodExample("")]
+		[LuaMethod("writebyterangeataddress", "Writes the given values as a contiguous block of unsigned bytes to a specific address")]
+		public void WriteByteRangeAtAddress(LuaTable memoryblock, long addr, string domain = null)
+		{
+			int i = 0;
+			foreach (var v in _th.EnumerateValues<double>(memoryblock))
+			{
+				APIs.Memory.WriteByte(addr+i, (uint)v, domain);
+				i++;
+			}
+		}
 		/// <remarks>TODO C# version requires a contiguous address range</remarks>
 		[LuaMethodExample("")]
-		[LuaMethod("writebyterange", "Writes the given values to the given addresses as unsigned bytes")]
+		[LuaMethod("writebyterange", "Writes all the values of the table (as unsigned bytes) to the address indicated by the associated key")]
 		public void WriteByteRange(LuaTable memoryblock, string domain = null)
 		{
 #if true
