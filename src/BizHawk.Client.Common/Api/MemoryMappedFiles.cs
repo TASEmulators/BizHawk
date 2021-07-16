@@ -27,7 +27,15 @@ namespace BizHawk.Client.Common
 			return Encoding.UTF8.GetString(bytes);
 		}
 
-		public int ScreenShotToFile() => WriteToFile(Filename, _takeScreenshotCallback());
+		public int ScreenShotToFile()
+		{
+			if (Filename is null)
+			{
+				Console.WriteLine("MMF screenshot target not set; start EmuHawk with `--mmf=filename`");
+				return 0;
+			}
+			return WriteToFile(Filename, _takeScreenshotCallback());
+		}
 
 		public int WriteToFile(string filename, byte[] outputBytes)
 		{
