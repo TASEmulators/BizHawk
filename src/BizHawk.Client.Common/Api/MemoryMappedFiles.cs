@@ -21,10 +21,21 @@ namespace BizHawk.Client.Common
 
 		public string ReadFromFile(string filename, int expectedSize)
 		{
-			using var viewAccessor = MemoryMappedFile.OpenExisting(filename).CreateViewAccessor();
+			var bytes = ReadBytesFromFile(filename, expectedSize);
+			return Encoding.UTF8.GetString(bytes);
+		}
+
+		public byte[] ReadBytesFromFile(string filename, int expectedSize)
+		{
+			if (!_mmfFiles.TryGetValue(filename, out var mmfFile))
+			{
+				mmfFile = _mmfFiles[filename] = MemoryMappedFile.OpenExisting(filename);
+			}
+
+			using var viewAccessor = mmfFile.CreateViewAccessor(0, expectedSize, MemoryMappedFileAccess.Read);
 			var bytes = new byte[expectedSize];
 			viewAccessor.ReadArray(0, bytes, 0, expectedSize);
-			return Encoding.UTF8.GetString(bytes);
+			return bytes;
 		}
 
 		public int ScreenShotToFile()
