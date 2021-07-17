@@ -22,8 +22,8 @@ LDFLAGS_32 = -static -static-libgcc -static-libstdc++
 LDFLAGS_64 =
 LDFLAGS = -shared $(LDFLAGS_$(ARCH)) $(CXXFLAGS)
 
-DEST_32 = ../../output/dll
-DEST_64 = ../../output/dll
+DEST_64 = ../../Assets/dll
+DESTCOPY_64 = ../../output/dll
 
 SRCS = \
 	../nes_emu/abstract_file.cpp \
@@ -80,3 +80,6 @@ clean:
 	
 install:
 	$(CP) $(TARGET) $(DEST_$(ARCH))
+ifneq ("$(wildcard $(DESTCOPY_$(ARCH)))", "")
+	$(CP) $(TARGET) $(DESTCOPY_$(ARCH))
+endif
