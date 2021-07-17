@@ -1948,11 +1948,11 @@ namespace BizHawk.Client.EmuHawk
 						break;
 					case 2:
 						var ushortVal = ushort.Parse(nibbleStr, NumberStyles.HexNumber);
-						_domain.PokeUshort(currentAddress, ushortVal, !BigEndian);  // TODO: is this method backwards?
+						_domain.PokeUshort(currentAddress, ushortVal, BigEndian);
 						break;
 					case 4:
 						var uintVal = uint.Parse(nibbleStr, NumberStyles.HexNumber);
-						_domain.PokeUint(currentAddress, uintVal, !BigEndian); // TODO: is this method backwards?
+						_domain.PokeUint(currentAddress, uintVal, BigEndian);
 						break;
 				}
 
