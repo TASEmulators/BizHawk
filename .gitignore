@@ -12,6 +12,7 @@
 **/Release/**
 **/Debug/**
 **/ipch/**
+/Assets/dll/*.wbx
 
 *.ilk
 *.il
