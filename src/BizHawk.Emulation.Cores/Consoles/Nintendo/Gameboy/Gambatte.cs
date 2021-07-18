@@ -99,6 +99,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				}
 				else
 				{
+					if (!_syncSettings.EnableBIOS && DeterministicEmulation)
+					{
+						comm.ShowMessage("Detected disabled BIOS during movie recording. It is recommended to use a BIOS for movie recording. Change Sync Settings to run with a BIOS.");
+					}
 					flags |= LibGambatte.LoadFlags.NO_BIOS;
 				}
 
