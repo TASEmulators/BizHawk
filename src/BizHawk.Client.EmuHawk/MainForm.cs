@@ -459,8 +459,7 @@ namespace BizHawk.Client.EmuHawk
 			);
 			InitControls();
 
-			InputManager.ActiveController = new Controller(NullController.Instance.Definition);
-			InputManager.AutoFireController = _autofireNullControls;
+			InputManager.ResetMainControllers(_autofireNullControls);
 			InputManager.AutofireStickyXorAdapter.SetOnOffPatternFromConfig(Config.AutofireOn, Config.AutofireOff);
 			try
 			{
@@ -4036,8 +4035,7 @@ namespace BizHawk.Client.EmuHawk
 			CheatList.SaveOnClose();
 			Emulator.Dispose();
 			Emulator = new NullEmulator();
-			InputManager.ActiveController = new Controller(NullController.Instance.Definition);
-			InputManager.AutoFireController = _autofireNullControls;
+			InputManager.ResetMainControllers(_autofireNullControls);
 			RewireSound();
 			RebootStatusBarIcon.Visible = false;
 			GameIsClosing = false;
