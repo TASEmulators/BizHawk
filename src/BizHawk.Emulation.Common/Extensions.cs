@@ -480,18 +480,13 @@ namespace BizHawk.Emulation.Common
 
 		public static AxisSpec With(this in AxisSpec spec, Range<int> range, int neutral) => new AxisSpec(range, neutral, spec.IsReversed, spec.Constraint);
 
-		/// <summary>Get a firmware as a byte array</summary>
-		/// <param name="sysId">the core systemID</param>
-		/// <param name="firmwareId">the firmware id</param>
-		/// <param name="required">if true, result is guaranteed to be valid; else null is possible if not found</param>
-		/// <param name="msg">message to show if fail to get</param>
-		/// <remarks>TODO inline (only change is wrapping strings in <see cref="FirmwareID"/> ctor, these IDs should probably be consts in each core's class)</remarks>
-		public static byte[] GetFirmware(this ICoreFileProvider cfp, string sysId, string firmwareId, bool required, string msg = null)
-			=> cfp.GetFirmware(new(system: sysId, firmware: firmwareId), required: required, msg: msg);
-
-		/// <remarks>TODO inline (only change is wrapping strings in <see cref="FirmwareID"/> ctor, these IDs should probably be consts in each core's class)</remarks>
-		public static byte[] GetFirmwareWithGameInfo(this ICoreFileProvider cfp, string sysId, string firmwareId, bool required, out GameInfo gi, string msg = null)
-			=> cfp.GetFirmwareWithGameInfo(new(system: sysId, firmware: firmwareId), required: required, out gi, msg: msg);
+		/// <param name="msg">message to show on failure, either in an exception iff <paramref name="required"/>, or in a warning dialog otherwise</param>
+		/// <exception cref="MissingFirmwareException">if not found and <paramref name="required"/> is <see langword="true"/></exception>
+		/// <remarks>TODO inline</remarks>
+		public static byte[] GetFirmware(this ICoreFileProvider cfp, string sysID, string firmwareID, bool required, string msg = null)
+			=> required
+				? cfp.GetFirmwareOrThrow(new(sysID, firmwareID), msg)
+				: cfp.GetFirmware(new(sysID, firmwareID), msg);
 
 		public static string SystemIDToDisplayName(string sysID)
 			=> SystemIDDisplayNames.TryGetValue(sysID, out var dispName) ? dispName : string.Empty;
