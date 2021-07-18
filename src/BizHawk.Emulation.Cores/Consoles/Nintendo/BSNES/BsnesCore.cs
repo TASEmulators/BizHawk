@@ -44,9 +44,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 					throw new CGBNotSupportedException();
 				}
 
-				sgbRomData = _syncSettings.UseSGB2 
-					? CoreComm.CoreFileProvider.GetFirmware("SNES", "Rom_SGB2", true, "SGB2 Rom is required for SGB2 emulation.")
-					: CoreComm.CoreFileProvider.GetFirmware("SNES", "Rom_SGB", true, "SGB1 Rom is required for SGB1 emulation.");
+				sgbRomData = _syncSettings.UseSGB2
+					? CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("SNES", "Rom_SGB2"), "SGB2 Rom is required for SGB2 emulation.")
+					: CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("SNES", "Rom_SGB"), "SGB1 Rom is required for SGB1 emulation.");
 
 				game.FirmwareHash = sgbRomData.HashSHA1();
 			}
@@ -241,7 +241,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			}
 
 			string ret = "";
-			var data = CoreComm.CoreFileProvider.GetFirmware(firmwareSystem, firmwareId, required, "Game may function incorrectly without the requested firmware.");
+			FirmwareID fwid = new(firmwareSystem, firmwareId);
+			const string MISSING_FIRMWARE_MSG = "Game may function incorrectly without the requested firmware.";
+			var data = required
+				? CoreComm.CoreFileProvider.GetFirmwareOrThrow(fwid, MISSING_FIRMWARE_MSG)
+				: CoreComm.CoreFileProvider.GetFirmware(fwid, MISSING_FIRMWARE_MSG);
 			if (data != null)
 			{
 				ret = hint;

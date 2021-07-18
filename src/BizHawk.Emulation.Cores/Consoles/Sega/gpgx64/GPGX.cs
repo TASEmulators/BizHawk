@@ -234,7 +234,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				if (firmwareID != null)
 				{
 					// this path will be the most common PEBKAC error, so be a bit more vocal about the problem
-					srcdata = CoreComm.CoreFileProvider.GetFirmware("GEN", firmwareID, false, "GPGX firmwares are usually required.");
+					srcdata = CoreComm.CoreFileProvider.GetFirmware(new("GEN", firmwareID), "GPGX firmwares are usually required.");
 					if (srcdata == null)
 					{
 						Console.WriteLine("Frontend couldn't satisfy firmware request GEN:{0}", firmwareID);

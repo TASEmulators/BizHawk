@@ -90,7 +90,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 				if (_syncSettings.EnableBIOS)
 				{
-					bios = comm.CoreFileProvider.GetFirmware(biosSystemId, biosId, true, "BIOS Not Found, Cannot Load.  Change SyncSettings to run without BIOS.");
+					bios = comm.CoreFileProvider.GetFirmwareOrThrow(new(biosSystemId, biosId), "BIOS Not Found, Cannot Load.  Change SyncSettings to run without BIOS.");
 					if (LibGambatte.gambatte_loadbios(GambatteState, bios, (uint)bios.Length) != 0)
 					{
 						throw new InvalidOperationException($"{nameof(LibGambatte.gambatte_loadbios)}() returned non-zero (bios error)");

@@ -161,7 +161,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			}
 			else if (game.System == "SMS" && !game["GG_in_SMS"])
 			{
-				BiosRom = comm.CoreFileProvider.GetFirmware("SMS", _region.ToString(), false);
+				BiosRom = comm.CoreFileProvider.GetFirmware(new("SMS", _region.ToString()));
 
 				if (BiosRom == null)
 				{

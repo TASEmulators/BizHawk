@@ -130,7 +130,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 			byte[] fwBytes;
 			bool missingAny = false;
-			fwBytes = CoreComm.CoreFileProvider.GetFirmware("NDS", "bios7", false);
+			fwBytes = CoreComm.CoreFileProvider.GetFirmware(new("NDS", "bios7"));
 			if (fwBytes != null)
 				File.WriteAllBytes("melon/bios7.bin", fwBytes);
 			else
@@ -139,7 +139,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				missingAny = true;
 			}
 
-			fwBytes = CoreComm.CoreFileProvider.GetFirmware("NDS", "bios9", false);
+			fwBytes = CoreComm.CoreFileProvider.GetFirmware(new("NDS", "bios9"));
 			if (fwBytes != null)
 				File.WriteAllBytes("melon/bios9.bin", fwBytes);
 			else
@@ -148,7 +148,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				missingAny = true;
 			}
 
-			fwBytes = CoreComm.CoreFileProvider.GetFirmware("NDS", "firmware", false);
+			fwBytes = CoreComm.CoreFileProvider.GetFirmware(new("NDS", "firmware"));
 			if (fwBytes != null)
 				File.WriteAllBytes("melon/firmware.bin", fwBytes);
 			else

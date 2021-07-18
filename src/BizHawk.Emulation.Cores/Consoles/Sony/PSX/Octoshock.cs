@@ -182,7 +182,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			}
 
 			//TODO - known bad firmwares are a no-go. we should refuse to boot them. (that's the mednafen policy)
-			byte[] firmware = comm.CoreFileProvider.GetFirmware("PSX", firmwareRegion, true, "A PSX `" + firmwareRegion + "` region bios file is required");
+			var firmware = comm.CoreFileProvider.GetFirmwareOrThrow(new("PSX", firmwareRegion), $"A PSX `{firmwareRegion}` region bios file is required");
 
 			//create the instance
 			fixed (byte* pFirmware = firmware)

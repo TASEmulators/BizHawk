@@ -480,14 +480,6 @@ namespace BizHawk.Emulation.Common
 
 		public static AxisSpec With(this in AxisSpec spec, Range<int> range, int neutral) => new AxisSpec(range, neutral, spec.IsReversed, spec.Constraint);
 
-		/// <param name="msg">message to show on failure, either in an exception iff <paramref name="required"/>, or in a warning dialog otherwise</param>
-		/// <exception cref="MissingFirmwareException">if not found and <paramref name="required"/> is <see langword="true"/></exception>
-		/// <remarks>TODO inline</remarks>
-		public static byte[] GetFirmware(this ICoreFileProvider cfp, string sysID, string firmwareID, bool required, string msg = null)
-			=> required
-				? cfp.GetFirmwareOrThrow(new(sysID, firmwareID), msg)
-				: cfp.GetFirmware(new(sysID, firmwareID), msg);
-
 		public static string SystemIDToDisplayName(string sysID)
 			=> SystemIDDisplayNames.TryGetValue(sysID, out var dispName) ? dispName : string.Empty;
 	}

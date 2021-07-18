@@ -39,7 +39,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			ser.Register<IStatable>(new StateSerializer(SyncState));
 
 			// TODO: hack to allow bios-less operation would be nice, no idea if its feasible
-			_biosRom = comm.CoreFileProvider.GetFirmware("Coleco", "Bios", true, "Coleco BIOS file is required.");
+			_biosRom = comm.CoreFileProvider.GetFirmwareOrThrow(new("Coleco", "Bios"), "Coleco BIOS file is required.");
 
 			// gamedb can overwrite the SyncSettings; this is ok
 			if (game["NoSkip"])
