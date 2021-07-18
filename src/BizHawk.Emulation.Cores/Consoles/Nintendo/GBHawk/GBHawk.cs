@@ -127,41 +127,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			_ = PutSettings(settings ?? new GBSettings());
 			_syncSettings = (GBSyncSettings)syncSettings ?? new GBSyncSettings();
 
-			byte[] Bios = null;
-
+			is_GBC = _syncSettings.ConsoleMode switch
+			{
+				GBSyncSettings.ConsoleModeType.GB => false,
+				GBSyncSettings.ConsoleModeType.GBC => true,
+				_ => game.System is not "GB"
+			};
 			// Load up a BIOS and initialize the correct PPU
-			if (_syncSettings.ConsoleMode == GBSyncSettings.ConsoleModeType.Auto)
-			{
-				if (game.System == "GB")
-				{
-					Bios = comm.CoreFileProvider.GetFirmwareOrThrow(new("GB", "World"), "BIOS Not Found, Cannot Load");
-					ppu = new GB_PPU();
-				}
-				else
-				{
-					Bios = comm.CoreFileProvider.GetFirmwareOrThrow(new("GBC", "World"), "BIOS Not Found, Cannot Load");
-					ppu = new GBC_PPU();
-					is_GBC = true;
-				}			
-			}
-			else if (_syncSettings.ConsoleMode == GBSyncSettings.ConsoleModeType.GB)
-			{
-				Bios = comm.CoreFileProvider.GetFirmwareOrThrow(new("GB", "World"), "BIOS Not Found, Cannot Load");
-				ppu = new GB_PPU();
-			}
-			else
-			{
-				Bios = comm.CoreFileProvider.GetFirmwareOrThrow(new("GBC", "World"), "BIOS Not Found, Cannot Load");
-				ppu = new GBC_PPU();
-				is_GBC = true;
-			}			
-
-			if (Bios == null)
-			{
-				throw new MissingFirmwareException("Missing Gamboy Bios");
-			}
-
-			_bios = Bios;
+			_bios = comm.CoreFileProvider.GetFirmwareOrThrow(new(is_GBC ? "GBC" : "GB", "World"), "BIOS Not Found, Cannot Load");
+			ppu = is_GBC ? new GBC_PPU() : new GB_PPU();
 
 			// set up IR register to off state
 			if (is_GBC) { IR_mask = 0; IR_reg = 0x3E; IR_receive = 2; IR_self = 2; IR_signal = 2; }
