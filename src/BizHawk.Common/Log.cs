@@ -19,7 +19,7 @@ namespace BizHawk.Common
 			//EnableDomain("MEM");
 		}
 
-		// ============== Logging Domain Configuration ==============
+		// -------------- Logging Domain Configuration --------------
 		private static readonly List<string> EnabledLogDomains = new List<string>();
 
 		public static void EnableDomain(string domain)
@@ -38,7 +38,7 @@ namespace BizHawk.Common
 			}
 		}
 
-		// ============== Logging Action Configuration ==============
+		// -------------- Logging Action Configuration --------------
 		public static Action<string> LogAction = DefaultLogger;
 
 		// NOTEs are only logged if the domain is enabled.
@@ -57,7 +57,7 @@ namespace BizHawk.Common
 			LogAction(string.Format(msg, vals));
 		}
 
-		// ============== Default Logger Action ==============
+		// -------------- Default Logger Action --------------
 		public static Stream? HACK_LOG_STREAM;
 
 		private static readonly bool LogToConsole = false;
