@@ -76,22 +76,31 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				byte[] bios;
 				string biosSystemId;
 				string biosId;
-				if ((flags & LibGambatte.LoadFlags.CGB_MODE) == LibGambatte.LoadFlags.CGB_MODE)
-				{
-					biosSystemId = "GBC";
-					biosId = _syncSettings.ConsoleMode == GambatteSyncSettings.ConsoleModeType.GBA ? "AGB" : "World";
-					IsCgb = true;
-				}
-				else
-				{
-					biosSystemId = "GB";
-					biosId = "World";
-					IsCgb = false;
-				}
+
+				IsCgb = (flags & LibGambatte.LoadFlags.CGB_MODE) == LibGambatte.LoadFlags.CGB_MODE;
+				biosSystemId = IsCgb ? "GBC" : "GB";
+				biosId = ((_syncSettings.ConsoleMode == GambatteSyncSettings.ConsoleModeType.GBA) && !_syncSettings.PatchBIOS) ? "AGB" : "World";
 
 				if (_syncSettings.EnableBIOS)
 				{
 					bios = comm.CoreFileProvider.GetFirmware(biosSystemId, biosId, true, "BIOS Not Found, Cannot Load.  Change SyncSettings to run without BIOS.");
+					if (_syncSettings.PatchBIOS)
+					{
+						if (!IsCgb)
+						{
+							bios[0xFD] ^= 0xFE; // patch from dmg<->mgb
+						}
+						else if (_syncSettings.ConsoleMode == GambatteSyncSettings.ConsoleModeType.GBA)
+						{
+							// patch from cgb->agb re
+							bios[0xF3] ^= 0x03;
+							for (var i = 0xF5; i < 0xFB;)
+							{
+								bios[i] = bios[++i];
+							}
+							bios[0xFB] ^= 0x74;
+						}
+					}
 					if (LibGambatte.gambatte_loadbios(GambatteState, bios, (uint)bios.Length) != 0)
 					{
 						throw new InvalidOperationException($"{nameof(LibGambatte.gambatte_loadbios)}() returned non-zero (bios error)");
