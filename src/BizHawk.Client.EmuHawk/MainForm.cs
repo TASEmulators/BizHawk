@@ -222,6 +222,7 @@ namespace BizHawk.Client.EmuHawk
 			DebuggerMenuItem.Image = Properties.Resources.Bug;
 			CodeDataLoggerMenuItem.Image = Properties.Resources.CdLogger;
 			VirtualPadMenuItem.Image = Properties.Resources.GameController;
+			BasicBotMenuItem.Image = Properties.Resources.BasicBotBit;
 			CheatsMenuItem.Image = Properties.Resources.Freeze;
 			GameSharkConverterMenuItem.Image = Properties.Resources.Shark;
 			MultiDiskBundlerFileMenuItem.Image = Properties.Resources.SaveConfig;
@@ -604,9 +605,7 @@ namespace BizHawk.Client.EmuHawk
 				_argParser.HTTPAddresses == null
 					? null
 					: new HttpCommunication(NetworkingTakeScreenshot, _argParser.HTTPAddresses.Value.UrlGet, _argParser.HTTPAddresses.Value.UrlPost),
-				_argParser.MMFFilename == null
-					? null
-					: new MemoryMappedFiles(NetworkingTakeScreenshot, _argParser.MMFFilename),
+				new MemoryMappedFiles(NetworkingTakeScreenshot, _argParser.MMFFilename),
 				_argParser.SocketAddress == null
 					? null
 					: new SocketServer(NetworkingTakeScreenshot, _argParser.SocketAddress.Value.IP, _argParser.SocketAddress.Value.Port)

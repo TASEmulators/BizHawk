@@ -100,7 +100,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			_lua.RegisterFunction("print", this, GetType().GetMethod("Print"));
+			_lua.RegisterFunction("print", this, typeof(Win32LuaLibraries).GetMethod(nameof(Print)));
 
 			EmulationLuaLibrary.FrameAdvanceCallback = Frameadvance;
 			EmulationLuaLibrary.YieldCallback = EmuYield;

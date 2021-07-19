@@ -63,17 +63,8 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 			_controllerDeck = new O2HawkControllerDeck("O2 Controller", "O2 Controller", is_G7400);
 
-			if (is_G7400)
-			{
-				_bios = comm.CoreFileProvider.GetFirmware("O2", "BIOS-G7400", true, "BIOS Not Found, Cannot Load")
-				?? throw new MissingFirmwareException("Missing G7400 Bios");
-			}
-			else
-			{
-				_bios = comm.CoreFileProvider.GetFirmware("O2", "BIOS-O2", true, "BIOS Not Found, Cannot Load")
-				?? throw new MissingFirmwareException("Missing Odyssey2 Bios");
-			}
-			
+			_bios = comm.CoreFileProvider.GetFirmwareOrThrow(new("O2", is_G7400 ? "BIOS-G7400" : "BIOS-O2"), "BIOS Not Found, Cannot Load");
+
 			Buffer.BlockCopy(rom, 0x100, header, 0, 0x50);
 
 			Console.WriteLine("MD5: " + rom.HashMD5(0, rom.Length));

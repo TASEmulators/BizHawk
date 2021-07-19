@@ -52,6 +52,7 @@ namespace BizHawk.Client.EmuHawk.Properties
 		internal static readonly Bitmap Back = ReadEmbeddedBitmap("Back");
 		internal static readonly Bitmap BackMore = ReadEmbeddedBitmap("BackMore");
 		internal static readonly Icon BasicBot = ReadEmbeddedIcon("basicbot");
+		internal static readonly Bitmap BasicBotBit = ReadEmbeddedBitmap("basicbotbit");
 		internal static readonly Bitmap Blank = ReadEmbeddedBitmap("Blank");
 		internal static readonly Cursor BlankCursor = new Cursor(EmuHawk.ReflectionCache.EmbeddedResourceStream("images.BlankCursor.cur"));
 		internal static readonly Bitmap BlueDown = ReadEmbeddedBitmap("BlueDown");

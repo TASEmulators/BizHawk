@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		public Atari2600ControllerDeck(Atari2600ControllerTypes controller1, Atari2600ControllerTypes controller2)
 		{
 			Port1 = ControllerCtors[controller1](1);
-			Port2 = ControllerCtors[controller1](2);
+			Port2 = ControllerCtors[controller2](2);
 
 			Definition = new ControllerDefinition
 			{

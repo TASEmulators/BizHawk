@@ -103,6 +103,13 @@ namespace BizHawk.Client.EmuHawk
 			Settings = new BasicBotSettings();
 
 			_comparisonBotAttempt = new BotAttempt();
+			_currentBotAttempt = new BotAttempt();
+			_bestBotAttempt = new BotAttempt();
+
+			_comparisonBotAttempt.is_Reset = true;
+			_currentBotAttempt.is_Reset = true;
+			_bestBotAttempt.is_Reset = true;
+
 			MainOperator.SelectedItem = ">=";
 		}
 
@@ -113,6 +120,14 @@ namespace BizHawk.Client.EmuHawk
 			if (!CurrentMovie.IsActive() && !Tools.IsLoaded<TAStudio>())
 			{
 				DialogController.ShowMessageBox("In order to use this tool you must be recording a movie.");
+				Close();
+				DialogResult = DialogResult.Cancel;
+				return;
+			}
+
+			if (!Config.AllowUdlr) 
+			{
+				DialogController.ShowMessageBox("In order to use this tool, 'Allow U+D / L+R' must be checked in the controller menu.");
 				Close();
 				DialogResult = DialogResult.Cancel;
 				return;
@@ -265,16 +280,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		// Controls need to be set and synced after emulation, so that everything works out properly at the start of the next frame
+		// Consequently, when loading a state, input needs to be set before the load, to ensure everything works out in the correct order
 
-		// Upon Load State, TAStudio uses global ToolManager.UpdateBefore(); as well as global ToolManager.UpdateAfter();
-		// Both of which will Call UpdateValues() and Update() which both end up in the Update() function.  Calling Update() will cause the Log to add an additional log.
-		// By not handling both of those calls the _currentBotAttempt.Log.Count will be 2 more than expected.
-		// However this also causes a problem with RamWatch not being up to date since that TOO gets called.
-		// Need to find out if having RamWatch open while TasStudio is open causes issues.
-		// there appears to be  "hack"(?) line in ToolManager.UpdateBefore that seems to refresh the RamWatch.  Not sure that is causing any issue since it does look like the RamWatch is ahead too much..
-
-		protected override void UpdateBefore() => Update(fast: false);
-		protected override void FastUpdateBefore() => Update(fast: true);
+		protected override void UpdateAfter() => Update(fast: false);
+		protected override void FastUpdateAfter() => Update(fast: true);
 
 		public override void Restart()
 		{
@@ -317,7 +327,7 @@ namespace BizHawk.Client.EmuHawk
 		private void NewMenuItem_Click(object sender, EventArgs e)
 		{
 			CurrentFileName = "";
-			_bestBotAttempt = null;
+			_bestBotAttempt.is_Reset = true;
 
 			foreach (var cp in ControlProbabilityPanel.Controls.OfType<BotControlsRow>())
 			{
@@ -449,7 +459,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ClearBestButton_Click(object sender, EventArgs e)
 		{
-			_bestBotAttempt = null;
+			_bestBotAttempt.is_Reset = true;
 			Attempts = 0;
 			Frames = 0;
 			UpdateBestAttempt();
@@ -461,7 +471,21 @@ namespace BizHawk.Client.EmuHawk
 			StopBot();
 			_replayMode = true;
 			_doNotUpdateValues = true;
+
+			// here we need to apply the initial frame's input from the best attempt
+			var logEntry = _bestBotAttempt.Log[0];
+			var controller = MovieSession.GenerateMovieController();
+			controller.SetFromMnemonic(logEntry);
+			foreach (var button in controller.Definition.BoolButtons)
+			{
+				// TODO: make an input adapter specifically for the bot?
+				InputManager.ButtonOverrideAdapter.SetButton(button, controller.IsPressed(button));
+			}
+
+			InputManager.SyncControls(Emulator, MovieSession, Config);
+
 			MainForm.LoadQuickSave(SelectedSlot, true); // Triggers an UpdateValues call
+			_lastFrameAdvanced = Emulator.Frame;
 			_doNotUpdateValues = false;
 			_startFrame = Emulator.Frame;
 			SetNormalSpeed();
@@ -494,6 +518,43 @@ namespace BizHawk.Client.EmuHawk
 			public byte ComparisonTypeTie3 { get; set; }
 
 			public List<string> Log { get; } = new List<string>();
+
+			public bool is_Reset { get; set; }
+		}
+
+		private void reset_curent(long attempt_num)
+		{
+			_currentBotAttempt.Attempt = attempt_num;
+			_currentBotAttempt.Maximize = 0;
+			_currentBotAttempt.TieBreak1 = 0;
+			_currentBotAttempt.TieBreak2 = 0;
+			_currentBotAttempt.TieBreak3 = 0;
+
+			// no references to ComparisonType parameters
+
+			_currentBotAttempt.Log.Clear();
+
+			_currentBotAttempt.is_Reset = true;
+		}
+
+		private void copy_curent_to_best()
+		{
+			_bestBotAttempt.Attempt = _currentBotAttempt.Attempt;
+			_bestBotAttempt.Maximize = _currentBotAttempt.Maximize;
+			_bestBotAttempt.TieBreak1 = _currentBotAttempt.TieBreak1;
+			_bestBotAttempt.TieBreak2 = _currentBotAttempt.TieBreak2;
+			_bestBotAttempt.TieBreak3 = _currentBotAttempt.TieBreak3;
+
+			// no references to ComparisonType parameters
+
+			_bestBotAttempt.Log.Clear();
+
+			for (int i = 0; i < _currentBotAttempt.Log.Count; i++)
+			{
+				_bestBotAttempt.Log.Add(_currentBotAttempt.Log[i]);
+			}
+
+			_bestBotAttempt.is_Reset = false;
 		}
 
 		private class BotData
@@ -546,7 +607,22 @@ namespace BizHawk.Client.EmuHawk
 			var json = File.ReadAllText(path);
 			var botData = (BotData)ConfigService.LoadWithType(json);
 
-			_bestBotAttempt = botData.Best;
+			_bestBotAttempt.Attempt = botData.Best.Attempt;
+			_bestBotAttempt.Maximize = botData.Best.Maximize;
+			_bestBotAttempt.TieBreak1 = botData.Best.TieBreak1;
+			_bestBotAttempt.TieBreak2 = botData.Best.TieBreak2;
+			_bestBotAttempt.TieBreak3 = botData.Best.TieBreak3;
+
+			// no references to ComparisonType parameters
+
+			_bestBotAttempt.Log.Clear();
+
+			for (int i = 0; i < botData.Best.Log.Count; i++)
+			{
+				_bestBotAttempt.Log.Add(botData.Best.Log[i]);
+			}
+
+			_bestBotAttempt.is_Reset = false;
 
 			var probabilityControls = ControlProbabilityPanel.Controls
 					.OfType<BotControlsRow>()
@@ -619,7 +695,7 @@ namespace BizHawk.Client.EmuHawk
 			UpdateBestAttempt();
 			UpdateComparisonBotAttempt();
 
-			if (_bestBotAttempt != null)
+			if (!_bestBotAttempt.is_Reset)
 			{
 				PlayBestButton.Enabled = true;
 			}
@@ -766,12 +842,15 @@ namespace BizHawk.Client.EmuHawk
 					var logEntry = _bestBotAttempt.Log[index];
 					var controller = MovieSession.GenerateMovieController();
 					controller.SetFromMnemonic(logEntry);
-
 					foreach (var button in controller.Definition.BoolButtons)
 					{
 						// TODO: make an input adapter specifically for the bot?
 						InputManager.ButtonOverrideAdapter.SetButton(button, controller.IsPressed(button));
 					}
+
+					InputManager.SyncControls(Emulator, MovieSession, Config);
+
+					_lastFrameAdvanced = Emulator.Frame;
 				}
 				else
 				{
@@ -792,20 +871,25 @@ namespace BizHawk.Client.EmuHawk
 					_currentBotAttempt.TieBreak3 = TieBreaker3Value;
 					PlayBestButton.Enabled = true;
 
-					if (_bestBotAttempt == null || IsBetter(_bestBotAttempt, _currentBotAttempt))
+					if (_bestBotAttempt.is_Reset || IsBetter(_bestBotAttempt, _currentBotAttempt))
 					{
-						_bestBotAttempt = _currentBotAttempt;
+						copy_curent_to_best();
 						UpdateBestAttempt();
 					}
 
-					_currentBotAttempt = new BotAttempt { Attempt = Attempts };
+					reset_curent(Attempts);
+					_doNotUpdateValues = true;
+					PressButtons(true);
 					MainForm.LoadQuickSave(SelectedSlot, true);
+					_lastFrameAdvanced = Emulator.Frame;
+					_doNotUpdateValues = false;
+					return;
 				}
 
 				// Before this would have 2 additional hits before the frame even advanced, making the amount of inputs greater than the number of frames to test.
 				if (_currentBotAttempt.Log.Count < FrameLength) //aka do not Add more inputs than there are Frames to test
 				{
-					PressButtons();
+					PressButtons(false);
 					_lastFrameAdvanced = Emulator.Frame;
 				}
 			}
@@ -869,7 +953,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UpdateBestAttempt()
 		{
-			if (_bestBotAttempt != null)
+			if (!_bestBotAttempt.is_Reset)
 			{
 				ClearBestButton.Enabled = true;
 				BestAttemptNumberLabel.Text = _bestBotAttempt.Attempt.ToString();
@@ -899,7 +983,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void PressButtons()
+		private void PressButtons(bool clear_log)
 		{
 			var rand = new Random((int)DateTime.Now.Ticks);
 
@@ -910,7 +994,9 @@ namespace BizHawk.Client.EmuHawk
 
 				InputManager.ClickyVirtualPadController.SetBool(button, pressed);
 			}
+			InputManager.SyncControls(Emulator, MovieSession, Config);
 
+			if (clear_log) { _currentBotAttempt.Log.Clear(); }
 			_currentBotAttempt.Log.Add(_logGenerator.GenerateLogEntry());
 		}
 
@@ -929,7 +1015,7 @@ namespace BizHawk.Client.EmuHawk
 			RunBtn.Visible = false;
 			StopBtn.Visible = true;
 			GoalGroupBox.Enabled = false;
-			_currentBotAttempt = new BotAttempt { Attempt = Attempts };
+			reset_curent(Attempts);
 
 			if (MovieSession.Movie.IsRecording())
 			{
@@ -937,9 +1023,15 @@ namespace BizHawk.Client.EmuHawk
 				MovieSession.Movie.IsCountingRerecords = false;
 			}
 
+			_logGenerator = MovieSession.Movie.LogGeneratorInstance(InputManager.ClickyVirtualPadController);
+			_cachedControlProbabilities = ControlProbabilities;
+
 			_doNotUpdateValues = true;
+			PressButtons(true);
 			MainForm.LoadQuickSave(SelectedSlot, true); // Triggers an UpdateValues call
+			_lastFrameAdvanced = Emulator.Frame;
 			_doNotUpdateValues = false;
+			_startFrame = Emulator.Frame;
 
 			_targetFrame = Emulator.Frame + (int)FrameLengthNumeric.Value;
 
@@ -960,8 +1052,6 @@ namespace BizHawk.Client.EmuHawk
 
 			UpdateBotStatusIcon();
 			MessageLabel.Text = "Running...";
-			_cachedControlProbabilities = ControlProbabilities;
-			_logGenerator = MovieSession.Movie.LogGeneratorInstance(InputManager.ClickyVirtualPadController);
 		}
 
 		private string CanStart()
@@ -993,7 +1083,7 @@ namespace BizHawk.Client.EmuHawk
 			ControlsBox.Enabled = true;
 			StartFromSlotBox.Enabled = true;
 			_targetFrame = 0;
-			_currentBotAttempt = null;
+			reset_curent(0);
 			GoalGroupBox.Enabled = true;
 
 			if (MovieSession.Movie.IsRecording())
@@ -1051,7 +1141,7 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		private void UpdateComparisonBotAttempt()
 		{
-			if (_bestBotAttempt == null)
+			if (_bestBotAttempt.is_Reset)
 			{
 				if (MainBestRadio.Checked)
 				{

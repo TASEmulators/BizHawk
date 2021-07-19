@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 		{
 			ServiceProvider = new BasicServiceProvider(this);
 
-			byte[] bios = comm.CoreFileProvider.GetFirmware("Lynx", "Boot", true, "Boot rom is required");
+			var bios = comm.CoreFileProvider.GetFirmwareOrThrow(new("Lynx", "Boot"), "Boot rom is required");
 			if (bios.Length != 512)
 			{
 				throw new MissingFirmwareException("Lynx Bootrom must be 512 bytes!");

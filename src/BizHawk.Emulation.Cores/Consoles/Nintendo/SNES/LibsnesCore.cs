@@ -54,7 +54,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 					throw new CGBNotSupportedException();
 				}
 
-				sgbRomData = CoreComm.CoreFileProvider.GetFirmware("SNES", "Rom_SGB", true, "SGB Rom is required for SGB emulation.");
+				sgbRomData = CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("SNES", "Rom_SGB"), "SGB Rom is required for SGB emulation.");
 				game.FirmwareHash = sgbRomData.HashSHA1();
 			}
 
@@ -327,7 +327,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			}
 
 			string ret;
-			var data = CoreComm.CoreFileProvider.GetFirmware("SNES", firmwareId, false, "Game may function incorrectly without the requested firmware.");
+			var data = CoreComm.CoreFileProvider.GetFirmware(new("SNES", firmwareId), "Game may function incorrectly without the requested firmware.");
 			if (data != null)
 			{
 				ret = hint;

@@ -321,6 +321,11 @@ EXPORT void* snes_get_memory_region(int id, int* size, int* word_size)
             *size = sufamiturboB.ram.size();
             *word_size = 1;
             return sufamiturboB.ram.data();
+        case SNES_MEMORY::SA1_IRAM:
+            if (!cartridge.has.SA1) break;
+            *size = sa1.iram.size();
+            *word_size = 1;
+            return sa1.iram.data();
 
         case SNES_MEMORY::WRAM:
             *size = sizeof(cpu.wram);

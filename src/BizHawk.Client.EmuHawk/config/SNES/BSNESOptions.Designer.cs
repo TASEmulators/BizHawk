@@ -52,6 +52,7 @@
             this.cbGameHotfixes = new System.Windows.Forms.CheckBox();
             this.cbFastPPU = new System.Windows.Forms.CheckBox();
             this.cbCropSGBFrame = new System.Windows.Forms.CheckBox();
+            this.cbUseSGB2 = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -305,6 +306,16 @@
             this.cbCropSGBFrame.TabIndex = 27;
             this.cbCropSGBFrame.Text = "Crop SGB Frame";
             this.cbCropSGBFrame.UseVisualStyleBackColor = true;
+            //
+            // cbUseSGB2
+            //
+            this.cbUseSGB2.AutoSize = true;
+            this.cbUseSGB2.Location = new System.Drawing.Point(129, 84);
+            this.cbUseSGB2.Name = "cbUseSGB2";
+            this.cbUseSGB2.Size = new System.Drawing.Size(76, 17);
+            this.cbUseSGB2.TabIndex = 30;
+            this.cbUseSGB2.Text = "Use SGB2";
+            this.cbUseSGB2.UseVisualStyleBackColor = true;
             // 
             // BSNESOptions
             // 
@@ -313,6 +324,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(304, 338);
+            this.Controls.Add(this.cbUseSGB2);
             this.Controls.Add(this.cbCropSGBFrame);
             this.Controls.Add(this.cbFastPPU);
             this.Controls.Add(this.cbGameHotfixes);
@@ -363,5 +375,6 @@
 		private WinForms.Controls.LocLabelEx lblPriority1;
 		private WinForms.Controls.LocLabelEx lblPriority0;
 		private System.Windows.Forms.CheckBox cbCropSGBFrame;
+		private System.Windows.Forms.CheckBox cbUseSGB2;
 	}
 }
