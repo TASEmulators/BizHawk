@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		/// </summary>
 		/// <param name="game">Game information of game to load</param>
 		/// <param name="file">Rom that should be loaded</param>
-		/// <param name="rom">byte-swapped rom data</param>
+		/// <param name="rom">rom data with consistent endianness/order</param>
 		/// <param name="syncSettings">N64SyncSettings object</param>
 		[CoreConstructor("N64")]
 		public N64(GameInfo game, byte[] file, byte[] rom, N64Settings settings, N64SyncSettings syncSettings)
