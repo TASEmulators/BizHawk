@@ -161,7 +161,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			}
 			else if (game.System == "SMS" && !game["GG_in_SMS"])
 			{
-				BiosRom = comm.CoreFileProvider.GetFirmware("SMS", _region.ToString(), false);
+				BiosRom = comm.CoreFileProvider.GetFirmware(new("SMS", _region.ToString()));
 
 				if (BiosRom == null)
 				{
@@ -213,6 +213,13 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			{
 				ser.Register<ISmsGpuView>(new SmsGpuView(Vdp));
 			}
+
+			_controllerDeck = new SMSControllerDeck(syncSettings.Port1, syncSettings.Port2, IsGameGear_C, syncSettings.UseKeyboard);
+
+			// Sorta a hack but why not
+			PortDEEnabled = syncSettings.UseKeyboard && !IsGameGear_C;
+
+			_controllerDeck.SetRegion(_controller, _region == SmsSyncSettings.Regions.Japan);
 		}
 
 		public void HardReset()
@@ -420,6 +427,9 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			else if (port == 0xF1 && HasYM2413) YM2413.Write(value);
 			else if (port == 0xF2 && HasYM2413) YM2413.DetectionValue = value;
 		}
+
+		private readonly SMSControllerDeck _controllerDeck;
+		public ControllerDefinition ControllerDefinition => _controllerDeck.Definition;
 
 		private readonly SmsSyncSettings.Regions _region;
 

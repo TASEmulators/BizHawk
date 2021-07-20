@@ -280,9 +280,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		{
 			_state[0] = (short) controller.AxisValue("0Scope X");
 			_state[1] = (short) controller.AxisValue("0Scope Y");
-			for (int i = 2; i < 6; i++)
+			for (int i = 0; i < 4; i++)
 			{
-				_state[i] = (short) (controller.IsPressed(_definition.BoolButtons[i]) ? 1 : 0);
+				_state[i + 2] = (short) (controller.IsPressed(_definition.BoolButtons[i]) ? 1 : 0);
 			}
 		}
 

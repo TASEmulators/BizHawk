@@ -26,7 +26,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 			_cpu.NMICallback = NMICallback;
 			_cpu.MemoryCallbacks = MemoryCallbacks;
 
-			_rom = lp.Comm.CoreFileProvider.GetFirmware("TI83", "Rom", true);
+			_rom = lp.Comm.CoreFileProvider.GetFirmwareOrThrow(new("TI83", "Rom"));
 			LinkPort = new TI83LinkPort(this);
 
 			HardReset();

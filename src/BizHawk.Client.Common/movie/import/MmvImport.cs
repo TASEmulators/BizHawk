@@ -93,16 +93,11 @@ namespace BizHawk.Client.Common.movie.import
 			byte[] md5 = r.ReadBytes(16);
 			Result.Movie.HeaderEntries[Md5] = md5.BytesToHexString().ToLower();
 
-			var ss = new SMS.SmsSyncSettings
-			{
-				ControllerType = SMS.SmsSyncSettings.ControllerTypes.Standard
-			};
-
+			var ss = new SMS.SmsSyncSettings();
+			var cd = new SMSControllerDeck(ss.Port1, ss.Port2, isGameGear, ss.UseKeyboard);
 			var controllers = new SimpleController
 			{
-				Definition = isGameGear
-					? SMS.SmsController
-					: SMS.GGController
+				Definition = cd.Definition
 			};
 
 			/*

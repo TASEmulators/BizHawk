@@ -47,7 +47,7 @@ namespace BizHawk.Emulation.Cores.Sony.PS2
 				SkipMemoryConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
 			}, new[] { _cdCallback });
 
-			var bios = lp.Comm.CoreFileProvider.GetFirmware("PS2", "BIOS", true);
+			var bios = lp.Comm.CoreFileProvider.GetFirmwareOrThrow(new("PS2", "BIOS"));
 			_exe.AddReadonlyFile(new byte[0x840000], "MEMCARD0");
 
 			var worked = _core.Initialize(bios,

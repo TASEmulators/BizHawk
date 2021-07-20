@@ -87,6 +87,8 @@ namespace BizHawk.Client.Common
 		{
 			Sync();
 			_buffer.InvalidateEnd(0);
+			_count = 0;
+			_masterFrame = -1;
 		}
 
 		public unsafe void Capture(int frame)

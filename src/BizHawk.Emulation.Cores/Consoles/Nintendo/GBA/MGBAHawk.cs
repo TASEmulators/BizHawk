@@ -29,7 +29,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			_settings = settings ?? new Settings();
 			DeterministicEmulation = deterministic;
 
-			byte[] bios = comm.CoreFileProvider.GetFirmware("GBA", "Bios", false);
+			var bios = comm.CoreFileProvider.GetFirmware(new("GBA", "Bios"));
 			DeterministicEmulation &= bios != null;
 
 			if (DeterministicEmulation != deterministic)

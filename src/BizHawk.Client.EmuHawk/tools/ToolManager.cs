@@ -74,10 +74,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				throw new ArgumentException($"Type {toolType.Name} does not implement {nameof(IToolForm)}.");
 			}
-
-			return (IToolForm) typeof(ToolManager).GetMethod("Load", new[] { typeof(bool), typeof(string) })
-				.MakeGenericMethod(toolType)
-				.Invoke(this, new object[] { focus, "" });
+			var mi = typeof(ToolManager).GetMethod(nameof(Load), new[] { typeof(bool), typeof(string) })!.MakeGenericMethod(toolType);
+			return (IToolForm) mi.Invoke(this, new object[] { focus, "" });
 		}
 
 		// If the form inherits ToolFormBase, it will set base properties such as Tools, Config, etc

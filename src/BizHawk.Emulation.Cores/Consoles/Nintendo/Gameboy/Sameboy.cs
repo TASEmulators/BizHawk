@@ -82,7 +82,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 			_settings = settings ?? new Settings();
 
 			var bios = _syncSettings.UseRealBIOS && !sgb
-				? comm.CoreFileProvider.GetFirmware(_cgb ? "GBC" : "GB", "World", true)
+				? comm.CoreFileProvider.GetFirmwareOrThrow(new(_cgb ? "GBC" : "GB", "World"))
 				: Util.DecompressGzipFile(new MemoryStream(_cgb ? Resources.SameboyCgbBoot.Value : Resources.SameboyDmgBoot.Value));
 
 			var spc = sgb

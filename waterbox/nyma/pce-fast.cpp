@@ -9,7 +9,7 @@
 #include "mednafen/src/hw_misc/arcade_card/arcade_card.h"
 #include "mednafen/src/pce_fast/huc6280.h"
 
-using namespace PCE_Fast;
+using namespace MDFN_IEN_PCE_FAST;
 
 extern Mednafen::MDFNGI EmulatedPCE_Fast;
 
@@ -45,7 +45,7 @@ static void Access##N(uint8_t* buffer, int64_t address, int64_t count, bool writ
 	}\
 }
 
-namespace PCE_Fast
+namespace MDFN_IEN_PCE_FAST
 {
 	extern ArcadeCard* arcade_card;
 	// extern VCE* vce;

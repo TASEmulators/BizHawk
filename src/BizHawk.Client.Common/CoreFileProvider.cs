@@ -34,59 +34,41 @@ namespace BizHawk.Client.Common
 		public string GetRetroSystemPath(IGameInfo game)
 			=> _pathEntries.RetroSystemAbsolutePath(game);
 
-		private void FirmwareWarn(FirmwareID id, bool required, string msg = null)
+		private (byte[] FW, string Path)? GetFirmwareWithPath(FirmwareID id)
 		{
-			if (required)
-			{
-				var fullMsg = $"Couldn't find required firmware {id}.  This is fatal{(msg != null ? $": {msg}" : ".")}";
-				throw new MissingFirmwareException(fullMsg);
-			}
-
-			if (msg != null)
-			{
-				var fullMsg = $"Couldn't find firmware {id}.  Will attempt to continue: {msg}";
-				_dialogParent.ModalMessageBox(fullMsg, "Warning", EMsgBoxIcon.Warning);
-			}
-		}
-
-		private byte[] GetFirmwareWithPath(FirmwareID id, bool required, string msg, out string path)
-		{
-			var firmwarePath = _firmwareManager.Request(_pathEntries, _firmwareUserSpecifications, id);
-
-			if (firmwarePath == null || !File.Exists(firmwarePath))
-			{
-				path = null;
-				FirmwareWarn(id, required, msg);
-				return null;
-			}
-
+			var path = _firmwareManager.Request(_pathEntries, _firmwareUserSpecifications, id);
 			try
 			{
-				var ret = File.ReadAllBytes(firmwarePath);
-				path = firmwarePath;
-				return ret;
+				if (path is not null && File.Exists(path)) return (File.ReadAllBytes(path), path);
+				// else fall through
 			}
 			catch (IOException)
 			{
-				path = null;
-				FirmwareWarn(id, required, msg);
-				return null;
+				// fall through
 			}
+			return null;
 		}
 
-		/// <exception cref="MissingFirmwareException">not found and <paramref name="required"/> is true</exception>
-		public byte[] GetFirmware(FirmwareID id, bool required, string msg = null)
-			=> GetFirmwareWithPath(id, required, msg, out _);
+		private (byte[] FW, string Path) GetFirmwareWithPathOrThrow(FirmwareID id, string msg)
+			=> GetFirmwareWithPath(id) ?? throw new MissingFirmwareException($"Couldn't find required firmware {id}.  This is fatal{(msg is null ? "." : $": {msg}")}");
 
-		/// <exception cref="MissingFirmwareException">not found and <paramref name="required"/> is true</exception>
-		public byte[] GetFirmwareWithGameInfo(FirmwareID id, bool required, out GameInfo gi, string msg = null)
+		public byte[] GetFirmware(FirmwareID id, string msg = null)
 		{
-			var ret = GetFirmwareWithPath(id, required, msg, out var path);
-			gi = ret != null && path != null
-				? Database.GetGameInfo(ret, path)
-				: null;
+			var tuple = GetFirmwareWithPath(id);
+			if (tuple is null && msg is not null)
+			{
+				_dialogParent.ModalMessageBox($"Couldn't find firmware {id}.  Will attempt to continue: {msg}", "Warning", EMsgBoxIcon.Warning);
+			}
+			return tuple?.FW;
+		}
 
-			return ret;
+		public byte[] GetFirmwareOrThrow(FirmwareID id, string msg = null)
+			=> GetFirmwareWithPathOrThrow(id, msg).FW;
+
+		public (byte[] FW, GameInfo Game) GetFirmwareWithGameInfoOrThrow(FirmwareID id, string msg = null)
+		{
+			var (fw, path) = GetFirmwareWithPathOrThrow(id, msg);
+			return (fw, Database.GetGameInfo(fw, path));
 		}
 	}
 }

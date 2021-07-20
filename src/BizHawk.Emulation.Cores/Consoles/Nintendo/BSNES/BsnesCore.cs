@@ -34,6 +34,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			CoreComm = comm;
 			byte[] sgbRomData = null;
 
+			_settings = settings ?? new SnesSettings();
+			_syncSettings = syncSettings ?? new SnesSyncSettings();
+
 			if (game.System == "SGB")
 			{
 				if ((romData[0x143] & 0xc0) == 0xc0)
@@ -41,12 +44,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 					throw new CGBNotSupportedException();
 				}
 
-				sgbRomData = CoreComm.CoreFileProvider.GetFirmware("SNES", "Rom_SGB", true, "SGB Rom is required for SGB emulation.");
+				sgbRomData = _syncSettings.UseSGB2
+					? CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("SNES", "Rom_SGB2"), "SGB2 Rom is required for SGB2 emulation.")
+					: CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("SNES", "Rom_SGB"), "SGB1 Rom is required for SGB1 emulation.");
+
 				game.FirmwareHash = sgbRomData.HashSHA1();
 			}
-
-			_settings = settings ?? new SnesSettings();
-			_syncSettings = syncSettings ?? new SnesSyncSettings();
 
 			BsnesApi.SnesCallbacks callbacks = new()
 			{
@@ -217,6 +220,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			}
 
 			string firmwareId;
+			string firmwareSystem = "SNES";
 
 			switch (hint)
 			{
@@ -229,13 +233,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 				case "st010": firmwareId = "ST010"; break;
 				case "st011": firmwareId = "ST011"; break;
 				case "st018": firmwareId = "ST018"; break;
+				case "sgb": firmwareId = "SGB"; firmwareSystem = "GB"; break;
+				case "sgb2": firmwareId = "SGB2"; firmwareSystem = "GB"; break;
 				default:
 					CoreComm.ShowMessage($"Unrecognized SNES firmware request \"{hint}\".");
 					return "";
 			}
 
 			string ret = "";
-			var data = CoreComm.CoreFileProvider.GetFirmware("SNES", firmwareId, required, "Game may function incorrectly without the requested firmware.");
+			FirmwareID fwid = new(firmwareSystem, firmwareId);
+			const string MISSING_FIRMWARE_MSG = "Game may function incorrectly without the requested firmware.";
+			var data = required
+				? CoreComm.CoreFileProvider.GetFirmwareOrThrow(fwid, MISSING_FIRMWARE_MSG)
+				: CoreComm.CoreFileProvider.GetFirmware(fwid, MISSING_FIRMWARE_MSG);
 			if (data != null)
 			{
 				ret = hint;
