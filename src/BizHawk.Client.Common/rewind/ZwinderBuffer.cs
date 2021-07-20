@@ -148,31 +148,37 @@ namespace BizHawk.Client.Common
 				_backingStoreType == settings.BackingStore;
 		}
 
-		private bool ShouldCapture(int frame)
+		private bool ShouldCaptureForFrameDiff(int frameDiff)
 		{
 			if (Count == 0)
 			{
 				return true;
 			}
-
-			var frameDiff = frame - _states[HeadStateIndex].Frame;
 			if (frameDiff < 1)
+			{
 				// non-linear time is from a combination of other state changing mechanisms and the rewinder
 				// not much we can say here, so just take a state
 				return true;
+			}
+			return frameDiff >= ComputeIdealRewindInterval();		
+		}
 
-			return frameDiff >= ComputeIdealRewindInterval();
+		private bool ShouldCapture(int frame)
+		{
+			var frameDiff = frame - _states[HeadStateIndex].Frame;
+			return ShouldCaptureForFrameDiff(frameDiff);
 		}
 
 		/// <summary>
-		/// Predict whether Capture() will capture a state.  Useful if expensive work needs to happen before
-		/// Capture() is called.
+		/// Predict whether Capture() would capture a state, assuming another state that doesn't currently exist
+		/// is added first.  This is really weird and is leaking impl details so ZeldaWinder can use it.  Sorry!
 		/// </summary>
-		/// <param name="frame">The same frame number to be passed to capture</param>
-		/// <returns>Whether capture will happen, assuming Capture() is passed the same frame and force = false</returns>
-		public bool WillCapture(int frame)
+		/// <param name="frameAddedFirst">A frame that will be force captured before the frame we're about to capture here</param>
+		/// <param name="frameToMaybeCapture">The frame that we might capture.</param>
+		/// <returns>Whether Capture(frameToMaybeCapture) would actually capture, assuming Capture(frameAddedFirst, force = true) already happened</returns>
+		public bool WouldCapture(int frameAddedFirst, int frameToMaybeCapture)
 		{
-			return ShouldCapture(frame);
+			return ShouldCaptureForFrameDiff(frameToMaybeCapture - frameAddedFirst);
 		}
 
 		/// <summary>
