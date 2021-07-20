@@ -149,6 +149,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 					{
 						cgbDmgColors = ColorsFromTitleHash(file);
 					}
+					_settings.GBPalette = cgbDmgColors;
 					ChangeDMGColors(cgbDmgColors);
 				}
 
