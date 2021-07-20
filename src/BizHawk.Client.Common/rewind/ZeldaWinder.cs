@@ -106,7 +106,7 @@ namespace BizHawk.Client.Common
 				_count++;
 				return;
 			}
-			if (!_buffer.WouldCapture(_masterFrame, frame))
+			if (!_buffer.WouldCapture(frame - _masterFrame))
 				return;
 
 			{

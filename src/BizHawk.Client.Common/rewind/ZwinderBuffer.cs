@@ -170,15 +170,13 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <summary>
-		/// Predict whether Capture() would capture a state, assuming another state that doesn't currently exist
-		/// is added first.  This is really weird and is leaking impl details so ZeldaWinder can use it.  Sorry!
+		/// Predict whether Capture() would capture a state, assuming a particular frame delta.
 		/// </summary>
-		/// <param name="frameAddedFirst">A frame that will be force captured before the frame we're about to capture here</param>
-		/// <param name="frameToMaybeCapture">The frame that we might capture.</param>
-		/// <returns>Whether Capture(frameToMaybeCapture) would actually capture, assuming Capture(frameAddedFirst, force = true) already happened</returns>
-		public bool WouldCapture(int frameAddedFirst, int frameToMaybeCapture)
+		/// <param name="frameDelta">The assumed frame delta.  Normally this will be equal to `nextStateFrame - GetState(Count - 1).Frame`.</param>
+		/// <returns>Whether Capture(nextStateFrame) would actually capture, assuming the frameDelta matched.</returns>
+		public bool WouldCapture(int frameDelta)
 		{
-			return ShouldCaptureForFrameDiff(frameToMaybeCapture - frameAddedFirst);
+			return ShouldCaptureForFrameDiff(frameDelta);
 		}
 
 		/// <summary>
