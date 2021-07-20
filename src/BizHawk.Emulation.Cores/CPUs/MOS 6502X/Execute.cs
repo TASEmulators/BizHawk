@@ -515,7 +515,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 		private byte opcode2, opcode3;
 
 		private int ea, alu_temp; //cpu internal temp variables
-		private int mi; //microcode index
+		public int mi; //microcode index
 		private bool iflag_pending; //iflag must be stored after it is checked in some cases (CLI and SEI).
 		public bool rdy_freeze; //true if the CPU must be frozen
 
