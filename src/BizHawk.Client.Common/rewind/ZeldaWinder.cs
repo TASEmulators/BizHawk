@@ -189,7 +189,12 @@ namespace BizHawk.Client.Common
 						_masterLength = (int)sss.Position;
 						_masterFrame = frame;
 						_count++;
-					}, force: true);
+					},
+					indexInvalidated: index =>
+					{
+						_count--;
+					},
+					force: true);
 				});
 			}
 		}
