@@ -106,7 +106,7 @@ namespace BizHawk.Client.Common
 				_count++;
 				return;
 			}
-			if (!_buffer.WillCapture(_masterFrame))
+			if (!_buffer.WouldCapture(frame - _masterFrame))
 				return;
 
 			{
@@ -189,7 +189,7 @@ namespace BizHawk.Client.Common
 						_masterLength = (int)sss.Position;
 						_masterFrame = frame;
 						_count++;
-					});
+					}, force: true);
 				});
 			}
 		}
