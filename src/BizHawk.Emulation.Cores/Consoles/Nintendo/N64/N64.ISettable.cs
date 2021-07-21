@@ -53,7 +53,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 					AddN64StandardController(
 						ControllerDefinition,
 						i + 1,
-						syncSettings.Controllers[i].PakType == N64SyncSettings.N64ControllerSettings.N64ControllerPakType.RUMBLE_PAK);mupen-rumble-finally
+						syncSettings.Controllers[i].PakType == N64SyncSettings.N64ControllerSettings.N64ControllerPakType.RUMBLE_PAK);
 				}
 			}
 		}
