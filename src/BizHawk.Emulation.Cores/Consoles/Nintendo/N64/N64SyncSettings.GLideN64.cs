@@ -11,6 +11,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			{
 				UseDefaultHacks = true;
 
+				BackgroundsMode = BackgroundsRenderingMode.Stripped;
 				MultiSampling = 0;
 				AspectRatio = AspectRatioMode.FourThree;
 				BufferSwapMode = SwapMode.OnVIUpdateCall;
@@ -46,6 +47,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				txCacheSize = 100;
 				txHiresEnable = false;
 				txHiresFullAlphaChannel = false;
+				txEnhancedTextureFileStorage = false;
+				txHiresTextureFileStorage = false;
 				txHresAltCRC = false;
 				txDump = false;
 				txCacheCompression = true;
@@ -69,6 +72,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				OverscanPalLeft = 0;
 				OverscanPalRight = 0;
 			}
+			
+			public enum BackgroundsRenderingMode
+			{
+				[Description("One Piece")]
+				OnePiece = 0,
+
+				[Description("Stripped")]
+				Stripped = 1
+			}
+			
+			[DefaultValue(BackgroundsRenderingMode.Stripped)]
+			[DisplayName("Background Rendering Mode")]
+			[Description("Render backgrounds mode (HLE only). (0=One Piece (fast), 1=Stripped (precise))")]
+			[Category("Emulation")]
+			public BackgroundsRenderingMode BackgroundsMode { get; set; }
 
 			[DefaultValue(true)]
 			[DisplayName("Use Default Hacks")]
@@ -480,7 +498,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			[Description("Allow to use alpha channel of high-res texture fully.")]
 			[Category("Texture Enhancement")]
 			public bool txHiresFullAlphaChannel { get; set; }
+			
+			[DefaultValue(false)]
+			[DisplayName("Texture Enhancement File Storage")]
+			[Description("Use file storage instead of memory cache for enhanced textures.")]
+			[Category("Texture Enhancement")]
+			public bool txEnhancedTextureFileStorage { get; set; }
 
+			[DefaultValue(false)]
+			[DisplayName("Texture Hires File Storage")]
+			[Description("Use file storage instead of memory cache for HD textures.")]
+			[Category("Texture Enhancement")]
+			public bool txHiresTextureFileStorage { get; set; }
+			
 			[DefaultValue(false)]
 			[DisplayName("Texture Hres Alt CRC")]
 			[Description("Use alternative method of paletted textures CRC calculation.")]
