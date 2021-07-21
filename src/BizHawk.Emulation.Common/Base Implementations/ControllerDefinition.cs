@@ -18,6 +18,7 @@ namespace BizHawk.Emulation.Common
 			Name = source.Name;
 			BoolButtons.AddRange(source.BoolButtons);
 			foreach (var kvp in source.Axes) Axes.Add(kvp);
+			HapticsChannels.AddRange(source.HapticsChannels);
 			CategoryLabels = source.CategoryLabels;
 		}
 
