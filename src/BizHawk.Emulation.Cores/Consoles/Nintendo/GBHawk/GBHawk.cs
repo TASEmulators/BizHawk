@@ -9,7 +9,6 @@ using System.Runtime.InteropServices;
 using System.Collections.Generic;
 
 // TODO: mode1_disableint_gbc.gbc behaves differently between GBC and GBA, why?
-// TODO: oam_dma_start.gb does not behave as expected but test still passes through lucky coincidences / test deficiency
 // TODO: Window Position A6 behaves differently
 // TODO: Verify open bus behaviour for bad SRAM accesses for other MBCs
 // TODO: Apparently sprites at x=A7 do not stop the trigger for FF0F bit flip, but still do not dispatch interrupt or
@@ -20,11 +19,7 @@ using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
-	[Core(
-		CoreNames.GbHawk,
-		"",
-		isPorted: false,
-		isReleased: true)]
+	[Core(CoreNames.GbHawk, "")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class GBHawk : IEmulator, ISaveRam, IDebuggable, IInputPollable, IRegionable, IGameboyCommon,
 	ISettable<GBHawk.GBSettings, GBHawk.GBSyncSettings>
@@ -94,6 +89,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public MapperBase mapper;
 
+		private readonly GBHawkDisassembler _disassembler = new();
+
 		private readonly ITraceable _tracer;
 
 		public LR35902 cpu;
@@ -127,44 +124,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			audio = new Audio();
 			serialport = new SerialPort();
 
-			_settings = (GBSettings)settings ?? new GBSettings();
+			_ = PutSettings(settings ?? new GBSettings());
 			_syncSettings = (GBSyncSettings)syncSettings ?? new GBSyncSettings();
 
-			byte[] Bios = null;
-
+			is_GBC = _syncSettings.ConsoleMode switch
+			{
+				GBSyncSettings.ConsoleModeType.GB => false,
+				GBSyncSettings.ConsoleModeType.GBC => true,
+				_ => game.System is not "GB"
+			};
 			// Load up a BIOS and initialize the correct PPU
-			if (_syncSettings.ConsoleMode == GBSyncSettings.ConsoleModeType.Auto)
-			{
-				if (game.System == "GB")
-				{
-					Bios = comm.CoreFileProvider.GetFirmware("GB", "World", true, "BIOS Not Found, Cannot Load");
-					ppu = new GB_PPU();
-				}
-				else
-				{
-					Bios = comm.CoreFileProvider.GetFirmware("GBC", "World", true, "BIOS Not Found, Cannot Load");
-					ppu = new GBC_PPU();
-					is_GBC = true;
-				}			
-			}
-			else if (_syncSettings.ConsoleMode == GBSyncSettings.ConsoleModeType.GB)
-			{
-				Bios = comm.CoreFileProvider.GetFirmware("GB", "World", true, "BIOS Not Found, Cannot Load");
-				ppu = new GB_PPU();
-			}
-			else
-			{
-				Bios = comm.CoreFileProvider.GetFirmware("GBC", "World", true, "BIOS Not Found, Cannot Load");
-				ppu = new GBC_PPU();
-				is_GBC = true;
-			}			
-
-			if (Bios == null)
-			{
-				throw new MissingFirmwareException("Missing Gamboy Bios");
-			}
-
-			_bios = Bios;
+			_bios = comm.CoreFileProvider.GetFirmwareOrThrow(new(is_GBC ? "GBC" : "GB", "World"), "BIOS Not Found, Cannot Load");
+			ppu = is_GBC ? new GBC_PPU() : new GB_PPU();
 
 			// set up IR register to off state
 			if (is_GBC) { IR_mask = 0; IR_reg = 0x3E; IR_receive = 2; IR_self = 2; IR_signal = 2; }
@@ -213,13 +184,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Register<ISoundProvider>(audio);
 			ServiceProvider = ser;
 
-			_settings = (GBSettings)settings ?? new GBSettings();
+			_ = PutSettings(settings ?? new GBSettings());
 			_syncSettings = (GBSyncSettings)syncSettings ?? new GBSyncSettings();
 
 			_tracer = new TraceBuffer { Header = cpu.TraceHeader };
 			ser.Register<ITraceable>(_tracer);
 			ser.Register<IStatable>(new StateSerializer(SyncState));
-            ser.Register<IDisassemblable>(new GBHawkDisassembler());
+            ser.Register<IDisassemblable>(_disassembler);
 			SetupMemoryDomains();
 			cpu.SetCallbacks(ReadMemory, PeekMemory, PeekMemory, WriteMemory);
 			HardReset();
@@ -740,16 +711,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public class GBHawkDisassembler : VerifiedDisassembler
 		{
-			public override IEnumerable<string> AvailableCpus
-			{
-				get { yield return "LR35902"; }
-			}
+			public bool UseRGBDSSyntax;
+
+			public override IEnumerable<string> AvailableCpus { get; } = new[] { "LR35902" };
 
 			public override string PCRegisterName => "PC";
 
 			public override string Disassemble(MemoryDomain m, uint addr, out int length)
 			{
-				string ret = LR35902.Disassemble((ushort)addr, a => m.PeekByte(a), out var tmp);
+				var ret = LR35902.Disassemble((ushort) addr, a => m.PeekByte(a), UseRGBDSSyntax, out var tmp);
 				length = tmp;
 				return ret;
 			}

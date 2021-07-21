@@ -138,6 +138,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			DisengageDebugger();
 			EngageDebugger();
+			FullUpdate();
 		}
 	}
 }

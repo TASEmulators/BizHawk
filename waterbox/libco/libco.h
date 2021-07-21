@@ -17,6 +17,8 @@ cothread_t co_active(void);
 cothread_t co_create(unsigned int, void(*)(void));
 void co_delete(cothread_t);
 void co_switch(cothread_t);
+cothread_t co_derive(void* memory, unsigned int, void(*)(void));
+int co_serializable(void);
 
 #ifdef __cplusplus
 }

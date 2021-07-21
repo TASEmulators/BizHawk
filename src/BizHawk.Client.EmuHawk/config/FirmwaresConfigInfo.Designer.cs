@@ -70,6 +70,7 @@
 			this.lvOptions.View = System.Windows.Forms.View.Details;
 			this.lvOptions.KeyDown += new System.Windows.Forms.KeyEventHandler(this.LvOptions_KeyDown);
 			this.lvOptions.MouseClick += new System.Windows.Forms.MouseEventHandler(this.LvOptions_MouseClick);
+			this.lvOptions.ShowItemToolTips = true;
 			// 
 			// colSize
 			// 

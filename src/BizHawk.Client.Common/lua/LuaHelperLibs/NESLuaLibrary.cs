@@ -12,7 +12,7 @@ namespace BizHawk.Client.Common
 	[Description("Functions related specifically to Nes Cores")]
 	public sealed class NESLuaLibrary : LuaLibraryBase
 	{
-		// TODO:  
+		// TODO:
 		// perhaps with the new core config system, one could
 		// automatically bring out all of the settings to a lua table, with names.  that
 		// would be completely arbitrary and would remove the whole requirement for this mess

@@ -208,17 +208,17 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			CPU.RegPC = 0;
 			
 			Spectrum.SetCpuRegister("SP", 0xFFFF);
-			Spectrum.SetCpuRegister("IY", 0xFFFF);
-			Spectrum.SetCpuRegister("IX", 0xFFFF);
+			Spectrum.SetCpuRegister("IY", 0);
+			Spectrum.SetCpuRegister("IX", 0);
 			Spectrum.SetCpuRegister("AF", 0xFFFF);
-			Spectrum.SetCpuRegister("BC", 0xFFFF);
-			Spectrum.SetCpuRegister("DE", 0xFFFF);
-			Spectrum.SetCpuRegister("HL", 0xFFFF);
+			Spectrum.SetCpuRegister("BC", 0);
+			Spectrum.SetCpuRegister("DE", 0);
+			Spectrum.SetCpuRegister("HL", 0);
 			Spectrum.SetCpuRegister("SP", 0xFFFF);
 			Spectrum.SetCpuRegister("Shadow AF", 0xFFFF);
-			Spectrum.SetCpuRegister("Shadow BC", 0xFFFF);
-			Spectrum.SetCpuRegister("Shadow DE", 0xFFFF);
-			Spectrum.SetCpuRegister("Shadow HL", 0xFFFF);
+			Spectrum.SetCpuRegister("Shadow BC", 0);
+			Spectrum.SetCpuRegister("Shadow DE", 0);
+			Spectrum.SetCpuRegister("Shadow HL", 0);
 
 			CPU.Regs[CPU.I] = 0;
 			CPU.Regs[CPU.R] = 0;
@@ -260,17 +260,16 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			CPU.RegPC = 0;
 
 			Spectrum.SetCpuRegister("SP", 0xFFFF);
-			Spectrum.SetCpuRegister("IY", 0xFFFF);
-			Spectrum.SetCpuRegister("IX", 0xFFFF);
+			//Spectrum.SetCpuRegister("IY", 0xFFFF);
+			//Spectrum.SetCpuRegister("IX", 0xFFFF);
 			Spectrum.SetCpuRegister("AF", 0xFFFF);
-			Spectrum.SetCpuRegister("BC", 0xFFFF);
-			Spectrum.SetCpuRegister("DE", 0xFFFF);
-			Spectrum.SetCpuRegister("HL", 0xFFFF);
-			Spectrum.SetCpuRegister("SP", 0xFFFF);
+			//Spectrum.SetCpuRegister("BC", 0xFFFF);
+			//Spectrum.SetCpuRegister("DE", 0xFFFF);
+			//Spectrum.SetCpuRegister("HL", 0xFFFF);
 			Spectrum.SetCpuRegister("Shadow AF", 0xFFFF);
-			Spectrum.SetCpuRegister("Shadow BC", 0xFFFF);
-			Spectrum.SetCpuRegister("Shadow DE", 0xFFFF);
-			Spectrum.SetCpuRegister("Shadow HL", 0xFFFF);
+			//Spectrum.SetCpuRegister("Shadow BC", 0xFFFF);
+			//Spectrum.SetCpuRegister("Shadow DE", 0xFFFF);
+			//Spectrum.SetCpuRegister("Shadow HL", 0xFFFF);
 
 			CPU.Regs[CPU.I] = 0;
 			CPU.Regs[CPU.R] = 0;

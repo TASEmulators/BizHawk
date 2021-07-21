@@ -35,7 +35,7 @@ using VertexAttribPointerType = OpenTK.Graphics.OpenGL.VertexAttribPointerType;
 namespace BizHawk.Bizware.OpenTK3
 {
 	/// <summary>
-	/// OpenTK implementation of the BizwareGL.IGL interface. 
+	/// OpenTK implementation of the BizwareGL.IGL interface.
 	/// TODO - can we have more than one of these? could be dangerous. such dangerous things to be possibly reconsidered are marked with HAMNUTS
 	/// TODO - if we have any way of making contexts, we also need a way of freeing it, and then we can cleanup our dictionaries
 	/// </summary>
@@ -76,7 +76,7 @@ namespace BizHawk.Bizware.OpenTK3
 			MakeDefaultCurrent();
 
 			//this is important for reasons unknown
-			GraphicsContext.LoadAll(); 
+			GraphicsContext.LoadAll();
 
 			//misc initialization
 			CreateRenderStates();
@@ -386,10 +386,7 @@ namespace BizHawk.Bizware.OpenTK3
 			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, mode);
 		}
 
-		public unsafe void BindArrayData(void* pData)
-		{
-			MyBindArrayData(sStatePendingVertexLayout, pData);
-		}
+		public void BindArrayData(IntPtr pData) => MyBindArrayData(sStatePendingVertexLayout, pData);
 
 		public void DrawArrays(BizGL.PrimitiveType mode, int first, int count)
 		{
@@ -398,7 +395,7 @@ namespace BizHawk.Bizware.OpenTK3
 
 		public void SetPipelineUniform(PipelineUniform uniform, bool value)
 		{
-			GL.Uniform1((int)uniform.Sole.Opaque, value ? 1 : 0); 
+			GL.Uniform1((int) uniform.Sole.Opaque, value ? 1 : 0);
 		}
 
 		public unsafe void SetPipelineUniformMatrix(PipelineUniform uniform, Matrix4 mat, bool transpose)
@@ -577,7 +574,7 @@ namespace BizHawk.Bizware.OpenTK3
 			return ret;
 		}
 
-		public unsafe BitmapBuffer ResolveTexture2d(Texture2d tex)
+		public BitmapBuffer ResolveTexture2d(Texture2d tex)
 		{
 			//note - this is dangerous since it changes the bound texture. could we save it?
 			BindTexture2d(tex);
@@ -749,7 +746,7 @@ namespace BizHawk.Bizware.OpenTK3
 			currBindings.Clear();
 		}
 
-		private unsafe void MyBindArrayData(VertexLayout layout, void* pData)
+		private void MyBindArrayData(VertexLayout layout, IntPtr pData)
 		{
 			UnbindVertexAttributes();
 
@@ -781,7 +778,7 @@ namespace BizHawk.Bizware.OpenTK3
 						(VertexAttribPointerType) (int) kvp.Value.AttribType, // these are the same enum
 						kvp.Value.Normalized,
 						kvp.Value.Stride,
-						new IntPtr(pData) + kvp.Value.Offset);
+						pData + kvp.Value.Offset);
 					GL.EnableVertexAttribArray(kvp.Key);
 					currBindings.Add(kvp.Key);
 				}
@@ -795,17 +792,17 @@ namespace BizHawk.Bizware.OpenTK3
 					{
 						case AttribUsage.Position:
 							GL.EnableClientState(ArrayCap.VertexArray);
-							GL.VertexPointer(kvp.Value.Components,VertexPointerType.Float,kvp.Value.Stride,new IntPtr(pData) + kvp.Value.Offset);
+							GL.VertexPointer(kvp.Value.Components,VertexPointerType.Float,kvp.Value.Stride,pData + kvp.Value.Offset);
 							break;
 						case AttribUsage.Texcoord0:
 							GL.ClientActiveTexture(TextureUnit.Texture0);
 							GL.EnableClientState(ArrayCap.TextureCoordArray);
-							GL.TexCoordPointer(kvp.Value.Components, TexCoordPointerType.Float, kvp.Value.Stride, new IntPtr(pData) + kvp.Value.Offset);
+							GL.TexCoordPointer(kvp.Value.Components, TexCoordPointerType.Float, kvp.Value.Stride, pData + kvp.Value.Offset);
 							break;
 						case AttribUsage.Texcoord1:
 							GL.ClientActiveTexture(TextureUnit.Texture1);
 							GL.EnableClientState(ArrayCap.TextureCoordArray);
-							GL.TexCoordPointer(kvp.Value.Components, TexCoordPointerType.Float, kvp.Value.Stride, new IntPtr(pData) + kvp.Value.Offset);
+							GL.TexCoordPointer(kvp.Value.Components, TexCoordPointerType.Float, kvp.Value.Stride, pData + kvp.Value.Offset);
 							GL.ClientActiveTexture(TextureUnit.Texture0);
 							break;
 						case AttribUsage.Color0:
@@ -829,12 +826,12 @@ namespace BizHawk.Bizware.OpenTK3
 		private void CreateRenderStates()
 		{
 			_rsBlendNoneVerbatim = new CacheBlendState(
-				false, 
+				false,
 				BizGL.BlendingFactorSrc.One, BizGL.BlendEquationMode.FuncAdd, BizGL.BlendingFactorDest.Zero,
 				BizGL.BlendingFactorSrc.One, BizGL.BlendEquationMode.FuncAdd, BizGL.BlendingFactorDest.Zero);
 
 			_rsBlendNoneOpaque = new CacheBlendState(
-				false, 
+				false,
 				BizGL.BlendingFactorSrc.One, BizGL.BlendEquationMode.FuncAdd, BizGL.BlendingFactorDest.Zero,
 				BizGL.BlendingFactorSrc.ConstantAlpha, BizGL.BlendEquationMode.FuncAdd, BizGL.BlendingFactorDest.Zero);
 

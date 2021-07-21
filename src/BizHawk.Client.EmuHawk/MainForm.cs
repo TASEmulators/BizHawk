@@ -22,11 +22,11 @@ using BizHawk.Bizware.BizwareGL;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
+using BizHawk.Emulation.Cores.Nintendo.BSNES;
 using BizHawk.Emulation.Cores.Nintendo.GBA;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.Nintendo.N64;
-using BizHawk.Emulation.Cores.Nintendo.GBHawkLink;
 
 using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Client.EmuHawk.CoreExtensions;
@@ -38,27 +38,17 @@ using BizHawk.Emulation.Cores.Consoles.NEC.PCE;
 using BizHawk.Emulation.Cores.Nintendo.SNES9X;
 using BizHawk.Emulation.Cores.Consoles.SNK;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
-using BizHawk.Emulation.Cores.Consoles.Nintendo.Faust;
+using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class MainForm : FormBase, IDialogParent, IMainFormForApi, IMainFormForConfig, IMainFormForTools
 	{
-		/// <remarks><c>AppliesTo[0]</c> is used as the group label, and <c>Config.PreferredCores[AppliesTo[0]]</c> determines the currently selected option</remarks>
-		private static readonly IReadOnlyCollection<(string[] AppliesTo, string[] CoreNames)> CoreData = new List<(string[], string[])> {
-			(new[] { "NES" }, new[] { CoreNames.QuickNes, CoreNames.NesHawk, CoreNames.SubNesHawk }),
-			(new[] { "SNES" }, new[] { CoreNames.Faust, CoreNames.Snes9X, CoreNames.Bsnes }),
-			(new[] { "SGB" }, new[] { CoreNames.SameBoy, CoreNames.Bsnes }),
-			(new[] { "GB", "GBC" }, new[] { CoreNames.Gambatte, CoreNames.GbHawk, CoreNames.SubGbHawk }),
-			(new[] { "DGB" }, new[] { CoreNames.DualGambatte, CoreNames.GBHawkLink }),
-			(new[] { "PCE", "PCECD", "SGX" }, new[] { CoreNames.TurboNyma, CoreNames.HyperNyma, CoreNames.PceHawk })
-		};
-
 		private void MainForm_Load(object sender, EventArgs e)
 		{
 			SetWindowText();
 
-			foreach (var (appliesTo, coreNames) in CoreData)
+			foreach (var (appliesTo, coreNames) in Config.CorePickerUIData)
 			{
 				var groupLabel = appliesTo[0];
 				var submenu = new ToolStripMenuItem { Text = groupLabel };
@@ -145,11 +135,11 @@ namespace BizHawk.Client.EmuHawk
 					.ToList();
 				try
 				{
-					int foundIndex = enabled.FindIndex(tuple => 
+					int foundIndex = enabled.FindIndex(tuple =>
 						tuple.Item1 == requestedExtToolDll
 						|| Path.GetFileName(tuple.Item1) == requestedExtToolDll
 						|| Path.GetFileNameWithoutExtension(tuple.Item1) == requestedExtToolDll);
-					
+
 					if(foundIndex != -1)
 						loaded = Tools.LoadExternalToolForm(enabled[foundIndex].Item1, enabled[foundIndex].Item2, skipExtToolWarning: true);
 				}
@@ -232,6 +222,7 @@ namespace BizHawk.Client.EmuHawk
 			DebuggerMenuItem.Image = Properties.Resources.Bug;
 			CodeDataLoggerMenuItem.Image = Properties.Resources.CdLogger;
 			VirtualPadMenuItem.Image = Properties.Resources.GameController;
+			BasicBotMenuItem.Image = Properties.Resources.BasicBotBit;
 			CheatsMenuItem.Image = Properties.Resources.Freeze;
 			GameSharkConverterMenuItem.Image = Properties.Resources.Shark;
 			MultiDiskBundlerFileMenuItem.Image = Properties.Resources.SaveConfig;
@@ -301,7 +292,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			//do this threaded stuff early so it has plenty of time to run in background
-			Database.InitializeDatabase(Path.Combine(PathUtils.ExeDirectoryPath, "gamedb", "gamedb.txt"));
+			Database.InitializeDatabase(Path.Combine(PathUtils.ExeDirectoryPath, "gamedb", "gamedb.txt"), warnForCollisions: false);
 			BootGodDb.Initialize(Path.Combine(PathUtils.ExeDirectoryPath, "gamedb"));
 
 			Config = config;
@@ -329,6 +320,7 @@ namespace BizHawk.Client.EmuHawk
 				Config.Movies,
 				Config.PathEntries.MovieBackupsAbsolutePath(),
 				this,
+				QuickBmpFile,
 				AddOnScreenMessage,
 				PauseEmulator,
 				SetMainformMovieInfo);
@@ -353,6 +345,17 @@ namespace BizHawk.Client.EmuHawk
 			ZXSpectrumExportSnapshotMenuItemMenuItem.Enabled = false;
 			ZXSpectrumExportSnapshotMenuItemMenuItem.Visible = false;
 #endif
+#if AVI_SUPPORT
+			SynclessRecordingMenuItem.Click += (_, _) => new SynclessRecordingTools(Config, Game, this).Run();
+#else
+			SynclessRecordingMenuItem.Enabled = false;
+#endif
+			if (OSTailoredCode.IsUnixHost)
+			{
+				ToolBoxMenuItem.Enabled = false;
+				ToolBoxMenuItem.Visible = false;
+				toolStripSeparator12.Visible = false;
+			}
 
 			Game = GameInfo.NullInstance;
 			_throttle = new Throttle();
@@ -502,8 +505,8 @@ namespace BizHawk.Client.EmuHawk
 			if (_argParser.cmdRom != null)
 			{
 				// Commandline should always override auto-load
-				var ioa = OpenAdvancedSerializer.ParseWithLegacy(_argParser.cmdRom);
-				LoadRom(_argParser.cmdRom, new LoadRomArgs { OpenAdvanced = ioa });
+				var romPath = _argParser.cmdRom.MakeAbsolute();
+				LoadRom(romPath, new LoadRomArgs { OpenAdvanced = OpenAdvancedSerializer.ParseWithLegacy(romPath) });
 				if (Game == null)
 				{
 					ShowMessageBox(owner: null, $"Failed to load {_argParser.cmdRom} specified on commandline");
@@ -602,9 +605,7 @@ namespace BizHawk.Client.EmuHawk
 				_argParser.HTTPAddresses == null
 					? null
 					: new HttpCommunication(NetworkingTakeScreenshot, _argParser.HTTPAddresses.Value.UrlGet, _argParser.HTTPAddresses.Value.UrlPost),
-				_argParser.MMFFilename == null
-					? null
-					: new MemoryMappedFiles(NetworkingTakeScreenshot, _argParser.MMFFilename),
+				new MemoryMappedFiles(NetworkingTakeScreenshot, _argParser.MMFFilename),
 				_argParser.SocketAddress == null
 					? null
 					: new SocketServer(NetworkingTakeScreenshot, _argParser.SocketAddress.Value.IP, _argParser.SocketAddress.Value.Port)
@@ -677,7 +678,7 @@ namespace BizHawk.Client.EmuHawk
 				_needsFullscreenOnLoad = false;
 				ToggleFullscreen();
 			}
-			
+
 			// Simply exit the program if the version is asked for
 			if (_argParser.printVersion)
 			{
@@ -952,7 +953,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Rewinder?.Dispose();
 			Rewinder = Emulator.HasSavestates() && Config.Rewind.Enabled
-				? new Zwinder(Emulator.AsStatable(), Config.Rewind)
+				? Config.Rewind.UseDelta
+					? new ZeldaWinder(Emulator.AsStatable(), Config.Rewind)
+					: new Zwinder(Emulator.AsStatable(), Config.Rewind)
 				: null;
 			AddOnScreenMessage(Rewinder?.Active == true ? "Rewind started" : "Rewind disabled");
 		}
@@ -1013,7 +1016,7 @@ namespace BizHawk.Client.EmuHawk
 					// ordinarily, an alt release with nothing else would move focus to the MenuBar. but that is sort of useless, and hard to implement exactly right.
 				}
 
-				// zero 09-sep-2012 - all input is eligible for controller input. not sure why the above was done. 
+				// zero 09-sep-2012 - all input is eligible for controller input. not sure why the above was done.
 				// maybe because it doesn't make sense to me to bind hotkeys and controller inputs to the same keystrokes
 
 				bool handled;
@@ -1102,20 +1105,17 @@ namespace BizHawk.Client.EmuHawk
 
 		}
 
-		public void RebootCore()
+		public bool RebootCore()
 		{
 			if (IsSlave && Master.WantsToControlReboot)
 			{
 				Master.RebootCore();
+				return true;
 			}
 			else
 			{
-				if (CurrentlyOpenRomArgs == null)
-				{
-					return;
-				}
-
-				LoadRom(CurrentlyOpenRomArgs.OpenAdvanced.SimplePath, CurrentlyOpenRomArgs);
+				if (CurrentlyOpenRomArgs == null) return true;
+				return LoadRom(CurrentlyOpenRomArgs.OpenAdvanced.SimplePath, CurrentlyOpenRomArgs);
 			}
 		}
 
@@ -1226,10 +1226,9 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 
-
-				Util.DebugWriteLine($"For emulator framebuffer {new Size(_currentVideoProvider.BufferWidth, _currentVideoProvider.BufferHeight)}:");
-				Util.DebugWriteLine($"  For virtual size {new Size(_currentVideoProvider.VirtualWidth, _currentVideoProvider.VirtualHeight)}:");
-				Util.DebugWriteLine($"  Selecting display size {lastComputedSize}");
+//				Util.DebugWriteLine($"For emulator framebuffer {new Size(_currentVideoProvider.BufferWidth, _currentVideoProvider.BufferHeight)}:");
+//				Util.DebugWriteLine($"  For virtual size {new Size(_currentVideoProvider.VirtualWidth, _currentVideoProvider.VirtualHeight)}:");
+//				Util.DebugWriteLine($"  Selecting display size {lastComputedSize}");
 
 				// Change size
 				Size = new Size(lastComputedSize.Width + borderWidth, lastComputedSize.Height + borderHeight);
@@ -1300,7 +1299,7 @@ namespace BizHawk.Client.EmuHawk
 
 				// Work around an AMD driver bug in >= vista:
 				// It seems windows will activate opengl fullscreen mode when a GL control is occupying the exact space of a screen (0,0 and dimensions=screensize)
-				// AMD cards manifest a problem under these circumstances, flickering other monitors. 
+				// AMD cards manifest a problem under these circumstances, flickering other monitors.
 				// It isn't clear whether nvidia cards are failing to employ this optimization, or just not flickering.
 				// (this could be determined with more work; other side affects of the fullscreen mode include: corrupted TaskBar, no modal boxes on top of GL control, no screenshots)
 				// At any rate, we can solve this by adding a 1px black border around the GL control
@@ -1310,7 +1309,7 @@ namespace BizHawk.Client.EmuHawk
 					&& Config.DispMethod == EDispMethod.OpenGL)
 				{
 					// ATTENTION: this causes the StatusBar to not work well, since the backcolor is now set to black instead of SystemColors.Control.
-					// It seems that some StatusBar elements composite with the backcolor. 
+					// It seems that some StatusBar elements composite with the backcolor.
 					// Maybe we could add another control under the StatusBar. with a different backcolor
 					Padding = new Padding(1);
 					BackColor = Color.Black;
@@ -1428,53 +1427,80 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SNES_ToggleBg(int layer)
 		{
-			if (!(Emulator is LibsnesCore || Emulator is Snes9x) || !1.RangeTo(4).Contains(layer))
+			if (Emulator is not (BsnesCore or LibsnesCore or Snes9x) || !1.RangeTo(4).Contains(layer))
 			{
 				return;
 			}
 
 			bool result = false;
-			if (Emulator is LibsnesCore bsnes)
+			switch (Emulator)
 			{
-				var s = bsnes.GetSettings();
-				switch (layer)
+				case BsnesCore bsnes:
 				{
-					case 1:
-						result = s.ShowBG1_0 = s.ShowBG1_1 ^= true;
-						break;
-					case 2:
-						result = s.ShowBG2_0 = s.ShowBG2_1 ^= true;
-						break;
-					case 3:
-						result = s.ShowBG3_0 = s.ShowBG3_1 ^= true;
-						break;
-					case 4:
-						result = s.ShowBG4_0 = s.ShowBG4_1 ^= true;
-						break;
-				}
+					var s = bsnes.GetSettings();
+					switch (layer)
+					{
+						case 1:
+							result = s.ShowBG1_0 = s.ShowBG1_1 ^= true;
+							break;
+						case 2:
+							result = s.ShowBG2_0 = s.ShowBG2_1 ^= true;
+							break;
+						case 3:
+							result = s.ShowBG3_0 = s.ShowBG3_1 ^= true;
+							break;
+						case 4:
+							result = s.ShowBG4_0 = s.ShowBG4_1 ^= true;
+							break;
+					}
 
-				bsnes.PutSettings(s);
-			}
-			else if (Emulator is Snes9x snes9X)
-			{
-				var s = snes9X.GetSettings();
-				switch (layer)
+					bsnes.PutSettings(s);
+					break;
+				}
+				case LibsnesCore libsnes:
 				{
-					case 1:
-						result = s.ShowBg0 ^= true;
-						break;
-					case 2:
-						result = s.ShowBg1 ^= true;
-						break;
-					case 3:
-						result = s.ShowBg2 ^= true;
-						break;
-					case 4:
-						result = s.ShowBg3 ^= true;
-						break;
-				}
+					var s = libsnes.GetSettings();
+					switch (layer)
+					{
+						case 1:
+							result = s.ShowBG1_0 = s.ShowBG1_1 ^= true;
+							break;
+						case 2:
+							result = s.ShowBG2_0 = s.ShowBG2_1 ^= true;
+							break;
+						case 3:
+							result = s.ShowBG3_0 = s.ShowBG3_1 ^= true;
+							break;
+						case 4:
+							result = s.ShowBG4_0 = s.ShowBG4_1 ^= true;
+							break;
+					}
 
-				snes9X.PutSettings(s);
+					libsnes.PutSettings(s);
+					break;
+				}
+				case Snes9x snes9X:
+				{
+					var s = snes9X.GetSettings();
+					switch (layer)
+					{
+						case 1:
+							result = s.ShowBg0 ^= true;
+							break;
+						case 2:
+							result = s.ShowBg1 ^= true;
+							break;
+						case 3:
+							result = s.ShowBg2 ^= true;
+							break;
+						case 4:
+							result = s.ShowBg3 ^= true;
+							break;
+					}
+
+					snes9X.PutSettings(s);
+					break;
+				}
 			}
 
 			AddOnScreenMessage($"BG {layer} Layer {(result ? "On" : "Off")}");
@@ -1907,6 +1933,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void HandlePlatformMenus()
 		{
+			if (GenericCoreSubMenu.Visible)
+			{
+				var i = GenericCoreSubMenu.Text.IndexOf('&');
+				if (i != -1) AvailableAccelerators.Add(GenericCoreSubMenu.Text[i + 1]);
+			}
 			GenericCoreSubMenu.Visible = false;
 			TI83SubMenu.Visible = false;
 			NESSubMenu.Visible = false;
@@ -1926,61 +1957,13 @@ namespace BizHawk.Client.EmuHawk
 
 			switch (Emulator.SystemId)
 			{
-				default:
-					DisplayDefaultCoreMenu();
-					break;
 				case "NULL":
-					break;
-				case "TI83":
-					TI83SubMenu.Visible = true;
-					break;
-				case "NES":
-					NESSubMenu.Visible = true;
-					break;
-				case "GB":
-				case "GBC":
-					GBSubMenu.Visible = true;
-					break;
-				case "NDS":
-					NDSSubMenu.Visible = true;
 					break;
 				case "A78":
 					A7800SubMenu.Visible = true;
 					break;
-				case "PSX":
-					PSXSubMenu.Visible = true;
-					break;
-				case "SNES":
-				case "SGB":
-					if (Emulator is LibsnesCore bsnes)
-					{
-						SNESSubMenu.Text = bsnes.IsSGB ? "&SGB" : "&SNES";
-						SNESSubMenu.Visible = true;
-					}
-					else if (Emulator is Snes9x || Emulator is Faust)
-					{
-						DisplayDefaultCoreMenu();
-					}
-					else if (Emulator is Sameboy)
-					{
-						GBSubMenu.Visible = true;
-					}
-					break;
-				case "Coleco":
-					ColecoSubMenu.Visible = true;
-					break;
-				case "N64":
-					N64SubMenu.Visible = true;
-					break;
-				case "DGB":
-					if (Emulator is GBHawkLink)
-					{
-						DisplayDefaultCoreMenu();
-					}
-					else
-					{
-						DGBSubMenu.Visible = true;
-					}
+				case "AmstradCPC":
+					amstradCPCToolStripMenuItem.Visible = true;
 					break;
 				case "AppleII":
 					AppleSubMenu.Visible = true;
@@ -1988,14 +1971,53 @@ namespace BizHawk.Client.EmuHawk
 				case "C64":
 					C64SubMenu.Visible = true;
 					break;
+				case "Coleco":
+					ColecoSubMenu.Visible = true;
+					break;
 				case "INTV":
 					IntvSubMenu.Visible = true;
+					break;
+				case "N64":
+					N64SubMenu.Visible = true;
+					break;
+				case "NDS":
+					NDSSubMenu.Visible = true;
+					break;
+				case "NES":
+					NESSubMenu.Visible = true;
+					break;
+				case "PSX":
+					PSXSubMenu.Visible = true;
+					break;
+				case "TI83":
+					TI83SubMenu.Visible = true;
 					break;
 				case "ZXSpectrum":
 					zXSpectrumToolStripMenuItem.Visible = true;
 					break;
-				case "AmstradCPC":
-					amstradCPCToolStripMenuItem.Visible = true;
+				case "DGB" when Emulator is GambatteLink:
+					DGBSubMenu.Visible = true;
+					break;
+				case "GB":
+				case "GBC":
+				case "SGB" when Emulator is Sameboy:
+					GBSubMenu.Visible = true;
+					break;
+				case "SNES" when Emulator is LibsnesCore { IsSGB: true }: // doesn't use "SGB" sysID
+					SNESSubMenu.Text = "&SGB";
+					SNESSubMenu.Visible = true;
+					break;
+				case "SNES" when Emulator is LibsnesCore { IsSGB: false }:
+					SNESSubMenu.Text = "&SNES";
+					SNESSubMenu.Visible = true;
+					break;
+				case "SNES" when Emulator is BsnesCore bsnesCore:
+					SNESSubMenu.Text = bsnesCore.IsSGB ?  "&SGB" : "&SNES";
+					SNESSubMenu.DropDownItems[2].Visible = false;
+					SNESSubMenu.Visible = true;
+					break;
+				default:
+					DisplayDefaultCoreMenu();
 					break;
 			}
 		}
@@ -2005,10 +2027,43 @@ namespace BizHawk.Client.EmuHawk
 			.Where(t => t.GetCustomAttribute<SpecializedToolAttribute>() != null)
 			.ToList();
 
+		private ISet<char> _availableAccelerators;
+
+		private ISet<char> AvailableAccelerators
+		{
+			get
+			{
+				if (_availableAccelerators == null)
+				{
+					_availableAccelerators = new HashSet<char>();
+					for (var c = 'A'; c <= 'Z'; c++) _availableAccelerators.Add(c);
+					foreach (ToolStripItem item in MainMenuStrip.Items)
+					{
+						if (!item.Visible) continue;
+						var i = item.Text.IndexOf('&');
+						if (i == -1 || i == item.Text.Length - 1) continue;
+						_availableAccelerators.Remove(char.ToUpperInvariant(item.Text[i + 1]));
+					}
+				}
+				return _availableAccelerators;
+			}
+		}
+
 		private void DisplayDefaultCoreMenu()
 		{
 			GenericCoreSubMenu.Visible = true;
-			GenericCoreSubMenu.Text = "&" + EmulatorExtensions.DisplayName(Emulator);
+			var sysID = Emulator.SystemId;
+			for (var i = 0; i < sysID.Length; i++)
+			{
+				var upper = char.ToUpperInvariant(sysID[i]);
+				if (AvailableAccelerators.Contains(upper))
+				{
+					AvailableAccelerators.Remove(upper);
+					sysID = sysID.Insert(i, "&");
+					break;
+				}
+			}
+			GenericCoreSubMenu.Text = sysID;
 			GenericCoreSubMenu.DropDownItems.Clear();
 
 			var settingsMenuItem = new ToolStripMenuItem { Text = "&Settings" };
@@ -2616,7 +2671,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Config.ClockThrottle)
 				return true;
-			
+
 			AddOnScreenMessage("Unable to change speed, please switch to clock throttle");
 			return false;
 		}
@@ -2795,7 +2850,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UpdateCoreStatusBarButton()
 		{
-			var coreDispName = CoreExtensions.CoreExtensions.DisplayName(Emulator);
+			var attributes = Emulator.Attributes();
+			var coreDispName = attributes.Released ? attributes.CoreName : $"(Experimental) {attributes.CoreName}";
 			LoadedCoreNameMenuItem.Text = $"Loaded core: {coreDispName} ({Emulator.SystemId})";
 			if (Emulator.IsNull())
 			{
@@ -2804,11 +2860,10 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			CoreNameStatusBarButton.Visible = true;
-			var attributes = Emulator.Attributes();
 
 			CoreNameStatusBarButton.Text = coreDispName;
 			CoreNameStatusBarButton.Image = Emulator.Icon();
-			CoreNameStatusBarButton.ToolTipText = attributes.Ported ? "(ported) " : "";
+			CoreNameStatusBarButton.ToolTipText = attributes is PortedCoreAttribute ? "(ported) " : "";
 
 
 			if (Emulator.SystemId == "ZXSpectrum")
@@ -3236,7 +3291,11 @@ namespace BizHawk.Client.EmuHawk
 
 			try
 			{
+#if AVI_SUPPORT
 				bool usingAvi = aw is AviWriter; // SO GROSS!
+#else
+				const bool usingAvi = false;
+#endif
 
 				if (_dumpaudiosync)
 				{
@@ -3665,6 +3724,11 @@ namespace BizHawk.Client.EmuHawk
 				loader.OnLoadSettings += CoreSettings;
 				loader.OnLoadSyncSettings += CoreSyncSettings;
 
+				if (Tools.IsLoaded<GenericDebugger>())
+				{
+					Tools.Restart<GenericDebugger>();
+				}
+
 				// this also happens in CloseGame(). But it needs to happen here since if we're restarting with the same core,
 				// any settings changes that we made need to make it back to config before we try to instantiate that core with
 				// the new settings objects
@@ -3998,6 +4062,7 @@ namespace BizHawk.Client.EmuHawk
 				DisplayManager.UpdateGlobals(Config, Emulator);
 				InputManager.SyncControls(Emulator, MovieSession, Config);
 				Tools.UpdateCheatRelatedTools(null, null);
+				ExtToolManager.BuildToolStrip();
 				PauseOnFrame = null;
 				CurrentlyOpenRom = null;
 				CurrentlyOpenRomArgs = null;
@@ -4099,7 +4164,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (new SavestateFile(Emulator, MovieSession, MovieSession.UserBag).Load(path))
+			if (new SavestateFile(Emulator, MovieSession, QuickBmpFile, MovieSession.UserBag).Load(path))
 			{
 				OSD.ClearGuiText();
 				EmuClient.OnStateLoaded(this, userFriendlyStateName);
@@ -4178,7 +4243,7 @@ namespace BizHawk.Client.EmuHawk
 
 			try
 			{
-				new SavestateFile(Emulator, MovieSession, MovieSession.UserBag).Create(path, Config.Savestates);
+				new SavestateFile(Emulator, MovieSession, QuickBmpFile, MovieSession.UserBag).Create(path, Config.Savestates);
 
 				EmuClient.OnStateSaved(this, userFriendlyStateName);
 
@@ -4697,7 +4762,7 @@ namespace BizHawk.Client.EmuHawk
 				_singleInstanceServer.EndWaitForConnection(iAsyncResult);
 
 				//a bit over-engineered in case someone wants to send a script or a rom or something
-				//buffer size is set to something tiny so that we are continually testing it 
+				//buffer size is set to something tiny so that we are continually testing it
 				var payloadBytes = new MemoryStream();
 				while (true)
 				{
@@ -4745,5 +4810,7 @@ namespace BizHawk.Client.EmuHawk
 			//BANZAIIIIIIIIIIIIIIIIIIIIIIIIIII
 			LoadRom(args[0]);
 		}
+
+		public IQuickBmpFile QuickBmpFile { get; } = new QuickBmpFile();
 	}
 }

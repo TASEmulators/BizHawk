@@ -130,8 +130,8 @@
             this.lblAutoLoadText.Font = new System.Drawing.Font("Courier New", 8F);
             this.lblAutoLoadText.Location = new System.Drawing.Point(124, 388);
             this.lblAutoLoadText.Name = "lblAutoLoadText";
-            this.lblAutoLoadText.Text = "When enabled ZXHawk will attempt to control the tape device automatically when th" +
-    "e correct traps are detected";
+            this.lblAutoLoadText.Text = "When enabled, will attempt to control the tape device automatically when the " +
+    "correct traps are detected";
             this.lblAutoLoadText.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // autoLoadcheckBox1

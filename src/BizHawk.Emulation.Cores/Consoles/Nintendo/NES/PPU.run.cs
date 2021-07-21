@@ -2,11 +2,12 @@
 
 using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
+using System;
 using System.Runtime.CompilerServices;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	sealed partial class PPU
+	public partial class PPU
 	{
 		private struct BGDataRecord
 		{
@@ -36,6 +37,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public int spriteHeight;
 		public byte[] soam = new byte[256]; // in a real nes, this would only be 32, but we wish to allow more then 8 sprites per scanline
 		public bool ppu_was_on;
+		public bool ppu_was_on_spr;
 		public byte[] sl_sprites = new byte[3 * 256];
 
 		// installing vram address is delayed after second write to 2006, set this up here
@@ -131,7 +133,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		private bool nmi_destiny;
 		private bool evenOddDestiny;
-		private static readonly int start_up_offset = 2;
+		private int start_up_offset;
 		private int NMI_offset;
 		private int yp_shift;
 		private int sprite_eval_cycle;
@@ -524,7 +526,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 						//check all the conditions that can cause things to render in these 8px
 						renderspritenow = show_obj_new && (xt > 0 || reg_2001.show_obj_leftmost);
-					}				
+					}	
+					
+					if (ppur.status.cycle > 63)
+					{
+						if (ppu_was_on_spr && !PPUON)
+						{
+							Console.WriteLine("oam addr glitch " + ppur.status.sl + " " + ppur.status.cycle);
+							reg_2003++;
+						}
+					}
+					
+					ppu_was_on_spr = PPUON;
 				}
 				else
 				{

@@ -139,7 +139,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 			}
 		}
 
-		public unsafe struct CommStructEnv
+		public struct CommStructEnv
 		{
 			public retro_system_info retro_system_info;
 			public retro_system_av_info retro_system_av_info;

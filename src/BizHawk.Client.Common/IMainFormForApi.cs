@@ -71,7 +71,7 @@ namespace BizHawk.Client.Common
 		void PauseEmulator();
 
 		/// <remarks>only referenced from <c>EmuClientApi</c></remarks>
-		void RebootCore();
+		bool RebootCore();
 
 		/// <remarks>only referenced from <c>EmuClientApi</c></remarks>
 		void Render();

@@ -295,8 +295,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Path = Path.GetDirectoryName(path),
 				Filter = Path.GetFileName(path),
-				NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite
-							 | NotifyFilters.FileName | NotifyFilters.DirectoryName,
+				NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName,
 				EnableRaisingEvents = true
 			};
 
@@ -310,11 +309,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			// Even after _watches is cleared, these callbacks hang around! So this check is necessary
 			var script = LuaImp.ScriptList.FirstOrDefault(s => s.Path == e.FullPath && s.Enabled);
-
-			if (script != null)
-			{
-				Invoke(new MethodInvoker(delegate { RefreshScriptMenuItem_Click(null, null); }));
-			}
+			if (script != null) Invoke((MethodInvoker) (() => RefreshLuaScript(script)));
 		}
 
 		public void LoadLuaFile(string path)
@@ -1263,11 +1258,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			RegisteredFunctionsContextItem.Enabled = LuaImp.RegisteredFunctions.Any();
 			CopyContextItem.Enabled = OutputBox.SelectedText.Any();
-			ClearConsoleContextItem.Enabled = 
-				SelectAllContextItem.Enabled = 
+			ClearConsoleContextItem.Enabled =
+				SelectAllContextItem.Enabled =
 				OutputBox.Text.Any();
 
-			ClearRegisteredFunctionsLogContextItem.Enabled = 
+			ClearRegisteredFunctionsLogContextItem.Enabled =
 				LuaImp.RegisteredFunctions.Any();
 		}
 
@@ -1416,8 +1411,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RefreshScriptMenuItem_Click(object sender, EventArgs e)
 		{
-			ToggleScriptMenuItem_Click(sender, e);
-			ToggleScriptMenuItem_Click(sender, e);
+			if (!(LuaImp is Win32LuaLibraries luaLibsImpl)) return;
+			var files = !SelectedFiles.Any() && Settings.ToggleAllIfNoneSelected
+				? luaLibsImpl.ScriptList
+				: SelectedFiles;
+			foreach (var file in files) RefreshLuaScript(file);
+			UpdateDialog();
 		}
 
 		private void InputBox_KeyDown(object sender, KeyEventArgs e)
@@ -1499,7 +1498,7 @@ namespace BizHawk.Client.EmuHawk
 
 		// For whatever reason an auto-complete TextBox doesn't respond to delete
 		// Which is annoying but worse is that it let's the key propagate
-		// If a script is highlighted in the ListView, and the user presses 
+		// If a script is highlighted in the ListView, and the user presses
 		// delete, it will remove the script without this hack
 		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
 		{
@@ -1564,6 +1563,12 @@ namespace BizHawk.Client.EmuHawk
 				file.Stop();
 				// there used to be a call here which did a redraw of the Gui/OSD, which included a call to `Tools.UpdateToolsAfter` --yoshi
 			}
+		}
+
+		private void RefreshLuaScript(LuaFile file)
+		{
+			ToggleLuaScript(file);
+			ToggleLuaScript(file);
 		}
 
 		[RestoreDefaults]

@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Common
 	/// <summary>
 	/// Defines a code/data log to be used with the code/data logger
 	/// </summary>
-	/// <seealso cref="ICodeDataLogger" /> 
+	/// <seealso cref="ICodeDataLogger" />
 	public interface ICodeDataLog : IDictionary<string, byte[]>
 	{
 		/// <summary>

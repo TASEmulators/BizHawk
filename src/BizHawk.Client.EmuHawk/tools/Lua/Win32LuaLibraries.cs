@@ -20,7 +20,7 @@ namespace BizHawk.Client.EmuHawk
 			LuaFunctionList registeredFuncList,
 			IEmulatorServiceProvider serviceProvider,
 			MainForm mainForm,
-			IDisplayManagerForApi displayManager,
+			DisplayManagerBase displayManager,
 			InputManager inputManager,
 			Config config,
 			IEmulator emulator,
@@ -44,7 +44,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			if (true /*NLua.Lua.WhichLua == "NLua"*/) _lua["keepalives"] = _lua.NewTable();
-			_th = new NLuaTableHelper(_lua);
+			_th = new NLuaTableHelper(_lua, LogToLuaConsole);
 			_displayManager = displayManager;
 			_inputManager = inputManager;
 			_mainForm = mainForm;
@@ -100,7 +100,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			_lua.RegisterFunction("print", this, GetType().GetMethod("Print"));
+			_lua.RegisterFunction("print", this, typeof(Win32LuaLibraries).GetMethod(nameof(Print)));
 
 			EmulationLuaLibrary.FrameAdvanceCallback = Frameadvance;
 			EmulationLuaLibrary.YieldCallback = EmuYield;
@@ -110,7 +110,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private ApiContainer _apiContainer;
 
-		private readonly IDisplayManagerForApi _displayManager;
+		private readonly DisplayManagerBase _displayManager;
 
 		private GuiApi GuiAPI => (GuiApi) _apiContainer.Gui;
 

@@ -15,7 +15,7 @@ namespace BizHawk.Common
 		
 		public static implicit operator Bit(int rhs)
 		{
-			Debug.Assert((rhs & ~1) == 0); 
+			Debug.Assert((rhs & ~1) == 0);
 			return new Bit((uint)rhs);
 		}
 

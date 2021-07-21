@@ -11,7 +11,28 @@ namespace BizHawk.Client.Common
 	public class Config
 	{
 		public static string ControlDefaultPath => Path.Combine(PathUtils.ExeDirectoryPath, "defctrl.json");
-		
+
+		/// <remarks>
+		/// <c>AppliesTo[0]</c> is used as the group label, and
+		/// <c>Config.PreferredCores[AppliesTo[0]]</c> (lookup on global <see cref="Config"/> instance) determines the currently selected option.
+		/// The tuples' order determines the order of menu items.
+		/// </remarks>
+		public static readonly IReadOnlyList<(string[] AppliesTo, string[] CoreNames)> CorePickerUIData = new List<(string[], string[])>
+		{
+			(new[] { "NES" },
+				new[] { CoreNames.QuickNes, CoreNames.NesHawk, CoreNames.SubNesHawk }),
+			(new[] { "SNES" },
+				new[] { CoreNames.Faust, CoreNames.Snes9X, CoreNames.Bsnes, CoreNames.Bsnes115 }),
+			(new[] { "SGB" },
+				new[] { CoreNames.SameBoy, CoreNames.Bsnes, CoreNames.Bsnes115}),
+			(new[] { "GB", "GBC" },
+				new[] { CoreNames.Gambatte, CoreNames.GbHawk, CoreNames.SubGbHawk }),
+			(new[] { "DGB" },
+				new[] { CoreNames.DualGambatte, CoreNames.GBHawkLink }),
+			(new[] { "PCE", "PCECD", "SGX" },
+				new[] { CoreNames.TurboNyma, CoreNames.HyperNyma, CoreNames.PceHawk })
+		};
+
 		public static string DefaultIniPath { get; private set; } = Path.Combine(PathUtils.ExeDirectoryPath, "config.ini");
 
 		// Shenanigans
@@ -187,7 +208,7 @@ namespace BizHawk.Client.Common
 		public int AlertMessageColor { get; set; } = DefaultMessagePositions.AlertMessageColor;
 		public int LastInputColor { get; set; } = DefaultMessagePositions.LastInputColor;
 		public int MovieInput { get; set; } = DefaultMessagePositions.MovieInput;
-		
+
 		public int DispPrescale { get; set; } = 1;
 
 		private static bool DetectDirectX()
@@ -315,6 +336,8 @@ namespace BizHawk.Client.Common
 			["PCECD"] = CoreNames.TurboNyma,
 			["SGX"] = CoreNames.TurboNyma
 		};
+
+		public bool DontTryOtherCores { get; set; }
 
 		// ReSharper disable once UnusedMember.Global
 		public string LastWrittenFrom { get; set; } = VersionInfo.MainVersion;

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Linq;
+
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.NDS;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
@@ -33,10 +35,10 @@ namespace BizHawk.Client.EmuHawk
 				case "Hard Reset":
 					HardReset();
 					break;
-				case "Quick Load": 
+				case "Quick Load":
 					LoadQuickSave($"QuickSave{Config.SaveSlot}");
 					break;
-				case "Quick Save": 
+				case "Quick Save":
 					SaveQuickSave($"QuickSave{Config.SaveSlot}");
 					break;
 				case "Clear Autohold":
@@ -96,7 +98,7 @@ namespace BizHawk.Client.EmuHawk
 					MainMenuStrip.Visible ^= true;
 					break;
 				case "Volume Up":
-					VolumeUp(); 
+					VolumeUp();
 					break;
 				case "Volume Down":
 					VolumeDown();
@@ -140,17 +142,17 @@ namespace BizHawk.Client.EmuHawk
 					break;
 
 				// Save States
-				case "Save State 0": 
+				case "Save State 0":
 					SaveQuickSave("QuickSave0");
 					Config.SaveSlot = 0;
 					UpdateStatusSlots();
 					break;
-				case "Save State 1": 
+				case "Save State 1":
 					SaveQuickSave("QuickSave1");
 					Config.SaveSlot = 1;
 					UpdateStatusSlots();
 					break;
-				case "Save State 2": 
+				case "Save State 2":
 					SaveQuickSave("QuickSave2");
 					Config.SaveSlot = 2;
 					UpdateStatusSlots();
@@ -292,16 +294,16 @@ namespace BizHawk.Client.EmuHawk
 					PlayMovieMenuItem_Click(null, null);
 					break;
 				case "Record Movie":
-					RecordMovieMenuItem_Click(null, null); 
+					RecordMovieMenuItem_Click(null, null);
 					break;
 				case "Stop Movie":
 					StopMovie();
 					break;
 				case "Play from beginning":
-					RestartMovie(); 
+					RestartMovie();
 					break;
 				case "Save Movie":
-					SaveMovie(); 
+					SaveMovie();
 					break;
 
 				// Tools
@@ -349,7 +351,7 @@ namespace BizHawk.Client.EmuHawk
 					Tools.Load<TAStudio>();
 					break;
 				case "ToolBox":
-					Tools.Load<ToolBox>();
+					if (!OSTailoredCode.IsUnixHost) Tools.Load<ToolBox>();
 					break;
 				case "Virtual Pad":
 					Tools.Load<VirtualpadTool>();
@@ -697,30 +699,51 @@ namespace BizHawk.Client.EmuHawk
 				case "GB Toggle BG":
 					if (Emulator is Gameboy gb)
 					{
-						var s = gb.GetSettings();
-						s.DisplayBG ^= true;
-						gb.PutSettings(s);
-						AddOnScreenMessage($"BG toggled {(s.DisplayBG ? "on" : "off")}");
+						if (!gb.DeterministicEmulation)
+						{
+							var ss = gb.GetSyncSettings();
+							ss.DisplayBG ^= true;
+							gb.PutSyncSettings(ss);
+							AddOnScreenMessage($"BG toggled {(ss.DisplayBG ? "on" : "off")}");
+						}
+						else
+						{
+							AddOnScreenMessage($"BG cannot be toggled during movie recording.");
+						}
 					}
 
 					break;
 				case "GB Toggle Obj":
 					if (Emulator is Gameboy gb2)
 					{
-						var s = gb2.GetSettings();
-						s.DisplayOBJ ^= true;
-						gb2.PutSettings(s);
-						AddOnScreenMessage($"OBJ toggled {(s.DisplayOBJ ? "on" : "off")}");
+						if (!gb2.DeterministicEmulation)
+						{
+							var ss = gb2.GetSyncSettings();
+							ss.DisplayOBJ ^= true;
+							gb2.PutSyncSettings(ss);
+							AddOnScreenMessage($"OBJ toggled {(ss.DisplayOBJ ? "on" : "off")}");
+						}
+						else
+						{
+							AddOnScreenMessage($"OBJ cannot be toggled during movie recording.");
+						}
 					}
 
 					break;
 				case "GB Toggle Window":
 					if (Emulator is Gameboy gb3)
 					{
-						var s = gb3.GetSettings();
-						s.DisplayWindow ^= true;
-						gb3.PutSettings(s);
-						AddOnScreenMessage($"WIN toggled {(s.DisplayWindow ? "on" : "off")}");
+						if (!gb3.DeterministicEmulation)
+						{
+							var ss = gb3.GetSyncSettings();
+							ss.DisplayWindow ^= true;
+							gb3.PutSyncSettings(ss);
+							AddOnScreenMessage($"WIN toggled {(ss.DisplayWindow ? "on" : "off")}");
+						}
+						else
+						{
+							AddOnScreenMessage($"WIN cannot be toggled during movie recording.");
+						}
 					}
 
 					break;

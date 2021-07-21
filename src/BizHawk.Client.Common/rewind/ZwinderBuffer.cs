@@ -148,20 +148,35 @@ namespace BizHawk.Client.Common
 				_backingStoreType == settings.BackingStore;
 		}
 
-		private bool ShouldCapture(int frame)
+		private bool ShouldCaptureForFrameDiff(int frameDiff)
 		{
 			if (Count == 0)
 			{
 				return true;
 			}
-
-			var frameDiff = frame - _states[HeadStateIndex].Frame;
 			if (frameDiff < 1)
+			{
 				// non-linear time is from a combination of other state changing mechanisms and the rewinder
 				// not much we can say here, so just take a state
 				return true;
+			}
+			return frameDiff >= ComputeIdealRewindInterval();		
+		}
 
-			return frameDiff >= ComputeIdealRewindInterval();
+		private bool ShouldCapture(int frame)
+		{
+			var frameDiff = frame - _states[HeadStateIndex].Frame;
+			return ShouldCaptureForFrameDiff(frameDiff);
+		}
+
+		/// <summary>
+		/// Predict whether Capture() would capture a state, assuming a particular frame delta.
+		/// </summary>
+		/// <param name="frameDelta">The assumed frame delta.  Normally this will be equal to `nextStateFrame - GetState(Count - 1).Frame`.</param>
+		/// <returns>Whether Capture(nextStateFrame) would actually capture, assuming the frameDelta matched.</returns>
+		public bool WouldCapture(int frameDelta)
+		{
+			return ShouldCaptureForFrameDiff(frameDelta);
 		}
 
 		/// <summary>
@@ -351,10 +366,10 @@ namespace BizHawk.Client.Common
 			return ret;
 		}
 
-		private unsafe class SaveStateStream : Stream, ISpanStream
+		private sealed class SaveStateStream : Stream, ISpanStream
 		{
 			/// <summary>
-			/// 
+			///
 			/// </summary>
 			/// <param name="backingStore">The ringbuffer to write into</param>
 			/// <param name="offset">Offset into the buffer to start writing (and treat as position 0 in the stream)</param>
@@ -445,7 +460,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		private unsafe class LoadStateStream : Stream, ISpanStream
+		private sealed class LoadStateStream : Stream, ISpanStream
 		{
 			public LoadStateStream(Stream backingStore, long offset, long size, long mask)
 			{
@@ -481,7 +496,7 @@ namespace BizHawk.Client.Common
 				return Read(new Span<byte>(buffer, offset, count));
 			}
 
-			public unsafe int Read(Span<byte> buffer)
+			public int Read(Span<byte> buffer)
 			{
 				long n = Math.Min(_size - _position, buffer.Length);
 				int ret = (int)n;

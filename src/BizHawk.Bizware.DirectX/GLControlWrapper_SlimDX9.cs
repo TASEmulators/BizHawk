@@ -8,6 +8,12 @@ namespace BizHawk.Bizware.DirectX
 {
 	public sealed class GLControlWrapperSlimDX9 : Control, IGraphicsControl
 	{
+		public RenderTargetWrapper RenderTargetWrapper
+		{
+			get => throw new NotImplementedException();
+			set => throw new NotImplementedException();
+		}
+
 		public GLControlWrapperSlimDX9(IGL_SlimDX9 sdx)
 		{
 			_sdx = sdx;

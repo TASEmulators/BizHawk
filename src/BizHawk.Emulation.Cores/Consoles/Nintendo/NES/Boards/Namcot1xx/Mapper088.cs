@@ -32,7 +32,7 @@
 			}
 
 			BaseSetup();
-			SetMirrorType(EMirrorType.Vertical);
+			SetMirrorType(Cart.PadH, Cart.PadV);
 
 			chr_bank_mask_1k = Cart.ChrSize - 1;
 

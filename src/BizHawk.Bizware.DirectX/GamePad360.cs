@@ -121,7 +121,7 @@ namespace BizHawk.Bizware.DirectX
 		private XINPUT_STATE _state;
 
 		public int PlayerNumber => (int)_index0 + 1;
-
+		public bool IsConnected => _controller.IsConnected;
 		public readonly string InputNamePrefix;
 
 		private GamePad360(uint index0, Controller c)
@@ -236,7 +236,15 @@ namespace BizHawk.Bizware.DirectX
 		public void SetVibration(int left, int right)
 		{
 			static ushort Conv(int i) => unchecked((ushort) ((i >> 15) & 0xFFFF));
-			_controller.SetVibration(new() { LeftMotorSpeed = Conv(left), RightMotorSpeed = Conv(right) });
+
+			try
+			{
+				_controller.SetVibration(new() { LeftMotorSpeed = Conv(left), RightMotorSpeed = Conv(right) });
+			}
+			catch (XInputException)
+			{
+				// Ignored, most likely the controller disconnected
+			}
 		}
 	}
 }

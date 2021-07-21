@@ -27,6 +27,9 @@ namespace BizHawk.Client.EmuHawk
 
 		public virtual bool AskSaveChanges() => true;
 
+		public virtual bool IsActive => IsHandleCreated && !IsDisposed;
+		public virtual bool IsLoaded => IsActive;
+
 		public virtual void Restart() {}
 
 		public virtual void UpdateValues(ToolFormUpdateType type)

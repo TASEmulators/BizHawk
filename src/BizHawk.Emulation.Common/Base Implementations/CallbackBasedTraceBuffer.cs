@@ -11,10 +11,10 @@ namespace BizHawk.Emulation.Common
 	/// This allows for a traceable implementation without the need for additional API
 	/// Note that this technique will always be significantly slower than a direct implementation
 	/// </summary>
-	/// <seealso cref="ITraceable"/> 
-	/// <seealso cref="IDebuggable"/> 
-	/// <seealso cref="IMemoryDomains"/> 
-	/// <seealso cref="IDisassemblable"/> 
+	/// <seealso cref="ITraceable"/>
+	/// <seealso cref="IDebuggable"/>
+	/// <seealso cref="IMemoryDomains"/>
+	/// <seealso cref="IDisassemblable"/>
 	public abstract class CallbackBasedTraceBuffer : ITraceable
 	{
 		/// <exception cref="InvalidOperationException"><paramref name="debuggableCore"/> does not provide memory callback support or does not implement <see cref="IDebuggable.GetCpuFlagsAndRegisters"/></exception>

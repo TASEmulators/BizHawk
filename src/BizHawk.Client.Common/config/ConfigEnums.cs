@@ -20,10 +20,10 @@
 	public enum EDispManagerAR
 	{
 		None,
-		System, 
+		System,
 
 		// actually, custom SIZE (fixme on major release)
-		Custom, 
+		Custom,
 		CustomRatio
 	}
 

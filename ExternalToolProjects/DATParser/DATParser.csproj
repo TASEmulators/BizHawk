@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<Import Project="$(ProjectDir)../ExtToolCommon.props" />
+	<Import Project="$(ProjectDir)../NET48ExternalToolForm.targets" />
+	<PropertyGroup>
+		<GenerateResourceMSBuildArchitecture Condition=" '$(GenerateResourceMSBuildArchitecture)' == '' ">CurrentArchitecture</GenerateResourceMSBuildArchitecture>
+		<GenerateResourceMSBuildRuntime Condition=" '$(GenerateResourceMSBuildRuntime)' == '' ">CurrentRuntime</GenerateResourceMSBuildRuntime>
+		<GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="System.Memory" Version="4.5.4" />
+	</ItemGroup>
+	<ItemGroup>
+		<Compile Update="CustomMainForm.cs" SubType="Form" />
+		<Compile Update="DATConverter.cs" SubType="Form" />
+		<Compile Update="DATConverter.Designer.cs" DependentUpon="DATConverter.cs" />
+		<Compile Update="Properties/Settings.Designer.cs" AutoGen="true" DependentUpon="Settings.settings" DesignTime="true">
+		  <DesignTimeSharedInput>True</DesignTimeSharedInput>
+		</Compile>
+		<None Update="Properties/Settings.settings" LastGenOutput="Settings.Designer.cs">
+		  <Generator>SettingsSingleFileGenerator</Generator>
+		</None>
+	</ItemGroup>
+</Project>

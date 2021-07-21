@@ -14,6 +14,7 @@ namespace BizHawk.Client.Common
 			On = on < 1 ? 0 : on;
 			Off = off < 1 ? 0 : off;
 			_emulator = emulator;
+			internal_frame = _emulator.Frame;
 		}
 
 		private readonly IEmulator _emulator;
@@ -25,11 +26,13 @@ namespace BizHawk.Client.Common
 		public int On { get; set; }
 		public int Off { get; set; }
 
+		private int internal_frame;
+
 		public ControllerDefinition Definition => _emulator.ControllerDefinition;
 
 		public bool IsPressed(string button)
 		{
-			var a = (_emulator.Frame - _buttonStarts[button]) % (On + Off);
+			var a = (internal_frame - _buttonStarts[button]) % (On + Off);
 			return a < On && _buttons[button];
 		}
 
@@ -54,6 +57,8 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public void LatchFromPhysical(IController controller)
 		{
+			internal_frame = _emulator.Frame;
+			
 			foreach (var kvp in _bindings)
 			{
 				foreach (var boundBtn in kvp.Value)

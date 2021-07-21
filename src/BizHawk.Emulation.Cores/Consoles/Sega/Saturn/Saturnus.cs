@@ -5,8 +5,7 @@ using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 {
-	[Core("Saturnus", "Mednafen Team", true, true, "1.26.1",
-		"https://mednafen.github.io/releases/", false, "Saturn")]
+	[PortedCore(CoreNames.Saturnus, "Mednafen Team", "1.27.1", "https://mednafen.github.io/releases/")]
 	public class Saturnus : NymaCore, IRegionable
 	{
 		[CoreConstructor("SAT")]

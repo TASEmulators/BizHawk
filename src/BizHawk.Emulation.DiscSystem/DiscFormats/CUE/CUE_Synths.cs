@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 		public SubchannelQ sq;
 
 		//subP data
-		public bool Pause; 
+		public bool Pause;
 
 		public abstract void Synth(SectorSynthJob job);
 

@@ -6,12 +6,7 @@ using BizHawk.Emulation.Cores.Components.MC6809;
 
 namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 {
-	[Core(
-		"VectrexHawk",
-		"",
-		isPorted: false,
-		isReleased: true,
-		displayName: "Vectrex")]
+	[Core(CoreNames.VectrexHawk, "")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class VectrexHawk : IEmulator, ISaveRam, IDebuggable, IInputPollable, IRegionable, 
 	ISettable<object, VectrexHawk.VectrexSyncSettings>
@@ -54,14 +49,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			_syncSettings = (VectrexSyncSettings)syncSettings ?? new VectrexSyncSettings();
 			_controllerDeck = new VectrexHawkControllerDeck(_syncSettings.Port1, _syncSettings.Port2);
 
-			byte[] Bios = null;
-			byte[] Mine = null;
-
-			Bios = comm.CoreFileProvider.GetFirmware("VEC", "Bios", true, "BIOS Not Found, Cannot Load");
-			_bios = Bios;
-
-			Mine = comm.CoreFileProvider.GetFirmware("VEC", "Minestorm", true, "Minestorm Not Found, Cannot Load");
-			minestorm = Mine;
+			/*var Bios =*/ _bios = comm.CoreFileProvider.GetFirmwareOrThrow(new("VEC", "Bios"), "BIOS Not Found, Cannot Load");
+			/*var Mine =*/ minestorm = comm.CoreFileProvider.GetFirmwareOrThrow(new("VEC", "Minestorm"), "Minestorm Not Found, Cannot Load");
 
 			Console.WriteLine("SHA1:" + rom.HashSHA1(0, rom.Length));
 

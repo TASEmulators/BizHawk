@@ -14,6 +14,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		private LatchedPort _port;
 		private int _irqDelay;
 		private int _nmiDelay;
+		public C64 c64;
 
 		private struct CpuLink : IMOS6502XLink
 		{
@@ -26,7 +27,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 			public byte DummyReadMemory(ushort address) => unchecked((byte)_chip.Read(address));
 
-			public void OnExecFetch(ushort address) { }
+			public void OnExecFetch(ushort address) => _chip.c64.ExecFetch(address);
 
 			public byte PeekMemory(ushort address) => unchecked((byte)_chip.Peek(address));
 
@@ -128,18 +129,31 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		public int Read(int addr)
 		{
+			int ret = 0;
+			
 			switch (addr)
 			{
 				case 0x0000:
-					return _port.Direction;
+					ret = _port.Direction;
+					break;
 				case 0x0001:
-					return PortData;
+					ret = PortData;
+					break;
 				default:
 					if (ReadAec())
-						return ReadMemory(addr);
+						ret = ReadMemory(addr);
 					else
-						return ReadBus();
+						ret = ReadBus();
+					break;
 			}
+
+			if (c64._memoryCallbacks.HasReads)
+			{
+				uint flags = (uint)(MemoryCallbackFlags.CPUZero | MemoryCallbackFlags.AccessRead);
+				c64._memoryCallbacks.CallMemoryCallbacks((uint)addr, (uint)ret, flags, "System Bus");
+			}
+
+			return ret;
 		}
 
 		public void SyncState(Serializer ser)
@@ -172,6 +186,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 					if (ReadAec())
 						WriteMemory(addr, val);
 					break;
+			}
+
+			if (c64._memoryCallbacks.HasWrites)
+			{
+				uint flags = (uint)(MemoryCallbackFlags.CPUZero | MemoryCallbackFlags.AccessWrite | MemoryCallbackFlags.SizeByte);
+				c64._memoryCallbacks.CallMemoryCallbacks((uint)addr, (uint)val, flags, "System Bus");
 			}
 		}
 	}

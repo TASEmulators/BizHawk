@@ -11,12 +11,14 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
 		<Reference Include="FlatBuffers.Core" HintPath="$(ProjectDir)../../References/FlatBuffers.Core.dll" Private="true" />
+		<Reference Include="FlatBuffers.GenOutput" HintPath="$(ProjectDir)../../References/FlatBuffers.GenOutput.dll" Private="true" />
 		<Reference Include="Virtu" HintPath="$(ProjectDir)../../References/Virtu.dll" Private="true" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Emulation.Common/BizHawk.Emulation.Common.csproj" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Emulation.DiscSystem/BizHawk.Emulation.DiscSystem.csproj" />
 		<EmbeddedResource Include="Resources/**/*" />
 	</ItemGroup>
 	<ItemGroup>
+		<Compile Update="Arcades/MAME/MAME.*.cs" DependentUpon="MAME.cs" />
 		<Compile Update="Calculator/TI83.*.cs" DependentUpon="TI83.cs" />
 		<Compile Update="Computers/AppleII/AppleII.*.cs" DependentUpon="AppleII.cs" />
 		<Compile Update="Computers/Commodore64/C64.*.cs" DependentUpon="C64.cs" />

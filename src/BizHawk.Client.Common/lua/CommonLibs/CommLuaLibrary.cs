@@ -57,7 +57,7 @@ namespace BizHawk.Client.Common
 			return APIs.Comm.Sockets.SendString(SendString);
 		}
 
-		[LuaMethod("socketServerSendBytes", "sends a string to the Socket server")]
+		[LuaMethod("socketServerSendBytes", "sends bytes to the Socket server")]
 		public int SocketServerSendBytes(LuaTable byteArray)
 		{
 			if (!CheckSocketServer()) return -1;
@@ -133,43 +133,50 @@ namespace BizHawk.Client.Common
 		[LuaMethod("mmfSetFilename", "Sets the filename for the screenshots")]
 		public void MmfSetFilename(string filename)
 		{
-			CheckMmf();
 			APIs.Comm.MMF.Filename = filename;
 		}
 
 		[LuaMethod("mmfGetFilename", "Gets the filename for the screenshots")]
 		public string MmfGetFilename()
 		{
-			CheckMmf();
-			return APIs.Comm.MMF?.Filename;
+			return APIs.Comm.MMF.Filename;
 		}
 
 		[LuaMethod("mmfScreenshot", "Saves screenshot to memory mapped file")]
 		public int MmfScreenshot()
 		{
-			CheckMmf();
 			return APIs.Comm.MMF.ScreenShotToFile();
 		}
 
 		[LuaMethod("mmfWrite", "Writes a string to a memory mapped file")]
 		public int MmfWrite(string mmf_filename, string outputString)
 		{
-			CheckMmf();
 			return APIs.Comm.MMF.WriteToFile(mmf_filename, outputString);
+		}
+		[LuaMethod("mmfWriteBytes", "Write bytes to a memory mapped file")]
+		public int MmfWriteBytes(string mmf_filename, LuaTable byteArray)
+		{
+			return APIs.Comm.MMF.WriteToFile(mmf_filename, _th.EnumerateValues<double>(byteArray).Select(d => (byte)d).ToArray());
+		}
+		[LuaMethod("mmfCopyFromMemory", "Copy a section of the memory to a memory mapped file")]
+		public int MmfCopyFromMemory(string mmf_filename, long addr, int length, string domain)
+		{
+			return APIs.Comm.MMF.WriteToFile(mmf_filename, APIs.Memory.ReadByteRange(addr, length, domain).ToArray());
+		}
+		[LuaMethod("mmfCopyToMemory", "Copy a memory mapped file to a section of the memory")]
+		public void MmfCopyToMemory(string mmf_filename, long addr, int length, string domain)
+		{
+			APIs.Memory.WriteByteRange(addr, new List<byte>(APIs.Comm.MMF.ReadBytesFromFile(mmf_filename, length)), domain);
 		}
 		[LuaMethod("mmfRead", "Reads a string from a memory mapped file")]
 		public string MmfRead(string mmf_filename, int expectedSize)
 		{
-			CheckMmf();
-			return APIs.Comm.MMF?.ReadFromFile(mmf_filename, expectedSize);
+			return APIs.Comm.MMF.ReadFromFile(mmf_filename, expectedSize);
 		}
-
-		private void CheckMmf()
+		[LuaMethod("mmfReadBytes", "Reads bytes from a memory mapped file")]
+		public LuaTable MmfReadBytes(string mmf_filename, int expectedSize)
 		{
-			if (APIs.Comm.MMF == null)
-			{
-				Log("Memory mapped file was not initialized, please initialize it via the command line");
-			}
+			return _th.ListToTable(APIs.Comm.MMF.ReadBytesFromFile(mmf_filename, expectedSize));
 		}
 
 		// All HTTP related methods

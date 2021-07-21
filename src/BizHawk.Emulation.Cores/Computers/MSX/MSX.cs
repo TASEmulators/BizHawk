@@ -4,12 +4,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.MSX
 {
-	[Core(
-		"MSXHawk",
-		"",
-		isPorted: false,
-		isReleased: false,
-		displayName: "MSX")]
+	[Core(CoreNames.MSXHawk, "", isReleased: false)]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class MSX : IEmulator, IVideoProvider, ISoundProvider, ISaveRam, IInputPollable, IRegionable, ISettable<MSX.MSXSettings, MSX.MSXSyncSettings>
 	{
@@ -58,9 +53,9 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 				}
 			}
 
-			Bios = comm.CoreFileProvider.GetFirmware("MSX", "bios_jp", false, "BIOS Not Found, Cannot Load");
+			Bios = comm.CoreFileProvider.GetFirmware(new("MSX", "bios_jp"), "BIOS Not Found, Cannot Load")
+				?? comm.CoreFileProvider.GetFirmwareOrThrow(new("MSX", "bios_test_ext"), "BIOS Not Found, Cannot Load");
 
-			if (Bios == null) { Bios = comm.CoreFileProvider.GetFirmware("MSX", "bios_test_ext", true, "BIOS Not Found, Cannot Load"); }
 			//Basic = comm.CoreFileProvider.GetFirmware("MSX", "basic_test", true, "BIOS Not Found, Cannot Load");
 			
 

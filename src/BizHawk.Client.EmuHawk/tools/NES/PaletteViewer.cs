@@ -63,9 +63,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			for (int x = 0; x < 16; x++)
 			{
-				if (BgPalettes[x].Value != BgPalettesPrev[x].Value) 
+				if (BgPalettes[x].Value != BgPalettesPrev[x].Value)
 					return true;
-				if (SpritePalettes[x].Value != SpritePalettesPrev[x].Value) 
+				if (SpritePalettes[x].Value != SpritePalettesPrev[x].Value)
 					return true;
 			}
 			return false;

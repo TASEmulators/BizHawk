@@ -5,8 +5,7 @@ using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Cores.Consoles.SNK
 {
-	[Core("NeoPop", "Thomas Klausner, Mednafen Team", true, true, "1.26.1",
-		"https://mednafen.github.io/releases/", false, "NeoPop")]
+	[PortedCore(CoreNames.NeoPop, "Thomas Klausner, Mednafen Team", "1.27.1", "https://mednafen.github.io/releases/")]
 	public class NeoGeoPort : NymaCore,
 		ISaveRam // NGP provides its own saveram interface
 	{

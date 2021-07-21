@@ -1,4 +1,7 @@
+using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Globalization;
 using System.Linq;
 
 using NLua;
@@ -7,9 +10,15 @@ namespace BizHawk.Client.Common
 {
 	public sealed class NLuaTableHelper
 	{
+		private readonly Action<string> _logCallback;
+
 		private readonly Lua _lua;
 
-		public NLuaTableHelper(Lua lua) => _lua = lua;
+		public NLuaTableHelper(Lua lua, Action<string> logCallback)
+		{
+			_logCallback = logCallback;
+			_lua = lua;
+		}
 
 		public LuaTable CreateTable() => _lua.NewTable();
 
@@ -51,6 +60,34 @@ namespace BizHawk.Client.Common
 				);
 			}
 			return table;
+		}
+
+		public Color ParseColor(object o) => ParseColor(o, safe: false, _logCallback) ?? throw new ArgumentException("failed to parse Color", nameof(o));
+
+		public Color? SafeParseColor(object o) => ParseColor(o, safe: true, _logCallback);
+
+		private static Color? ParseColor(object o, bool safe, Action<string> logCallback)
+		{
+			switch (o)
+			{
+				case null:
+					return null;
+				case Color c:
+					return c;
+				case double d:
+					return ParseColor((int) (long) d, safe, logCallback);
+				case int i:
+					return Color.FromArgb(i);
+				case string s:
+					if (s[0] == '#' && s.Length == 9) return ParseColor(int.Parse(s.Substring(1), NumberStyles.HexNumber), safe, logCallback);
+					var fromName = Color.FromName(s);
+					if (fromName.IsNamedColor) return fromName;
+					if (safe) logCallback($"ParseColor: not a known color name (\"{s}\")");
+					return null;
+				default:
+					if (safe) logCallback("ParseColor: coercing object/table to string");
+					return ParseColor(o.ToString(), safe, logCallback);
+			}
 		}
 	}
 }

@@ -63,7 +63,7 @@ namespace BizHawk.Emulation.DiscSystem
 			return true;
 		} //Parse()
 
-		public List<Entry> Entries = new List<Entry>();
+		public readonly IList<Entry> Entries = new List<Entry>();
 
 		public void Rebase(string basepath)
 		{

@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Linq;
 
 using BizHawk.Common;
 
@@ -104,11 +105,11 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 		public CueTrackFlags Flags = CueTrackFlags.None;
 		public CueTrackType TrackType = CueTrackType.Unknown;
 
-		public List<CompiledCueIndex> Indexes = new List<CompiledCueIndex>();
+		public readonly IList<CompiledCueIndex> Indexes = new List<CompiledCueIndex>();
 
 		public override string ToString()
 		{
-			var idx = Indexes.Find((i) => i.Number == 1);
+			var idx = Indexes.FirstOrDefault(cci => cci.Number == 1);
 			if (idx.Number != 1) return $"T#{Number:D2} NO INDEX 1";
 			var indexlist = string.Join("|", Indexes);
 			return $"T#{Number:D2} {BlobIndex}:{idx.FileMSF} ({indexlist})";
@@ -400,12 +401,12 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 			OUT_CompiledCueFiles = new List<CompiledCueFile>();
 			OUT_CompiledCueTracks = new List<CompiledCueTrack>();
 
-			//add a track 0, for addressing convenience. 
+			//add a track 0, for addressing convenience.
 			//note: for future work, track 0 may need emulation (accessible by very negative LBA--the TOC is stored there)
 			var track0 = new CompiledCueTrack() {
 				Number = 0,
 			};
-			OUT_CompiledCueTracks.Add(track0); 
+			OUT_CompiledCueTracks.Add(track0);
 
 			//global cd text will acquire the cdtext commands set before track commands
 			curr_cdtext  = OUT_GlobalCDText;

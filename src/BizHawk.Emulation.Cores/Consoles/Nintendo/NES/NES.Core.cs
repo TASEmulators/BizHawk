@@ -304,8 +304,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				HardReset();
 			}
 
-			Frame++;
-
 			//if (resetSignal)
 			//Controller.UnpressButton("Reset");   TODO fix this
 			resetSignal = controller.IsPressed("Reset");
@@ -380,6 +378,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			// turn off all cheats
 			// any cheats still active will be re-applied by the buspoke at the start of the next frame
 			num_cheats = 0;
+
+			Frame++;
 
 			return true;
 		}
@@ -491,7 +491,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					dmc_realign = true;
 				}
-
+				
+				// By this point the cpu should be frozen, if it is not, then we are in a multi-write opcode, add another cycle delay
+				if (!cpu.RDY && !cpu.rdy_freeze && (apu.dmc_dma_countdown == apu.DMC_RDY_check))
+				{
+					//Console.WriteLine("dmc RDY false " + cpu.TotalExecutedCycles + " " + apu.call_from_write + " " + cpu.opcode + " " + oam_dma_exec);
+					apu.dmc_dma_countdown += 2;
+					apu.DMC_RDY_check = -1;
+				}
+				
 				cpu.RDY = false;
 				dmc_dma_exec = true;
 				apu.dmc_dma_countdown--;
@@ -502,6 +510,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					apu.dmc_dma_countdown = -1;
 					do_the_reread = true;
 				}
+
+				//Console.WriteLine("dmc RDY false " + cpu.TotalExecutedCycles + " " + apu.call_from_write + " " + cpu.opcode);
 			}
 
 			/////////////////////////////
@@ -592,6 +602,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						{
 							ret_spec = read_joyport(addr);
 							do_the_reread = false;
+							Console.WriteLine("DMC glitch player 1");
 						}
 						return ret_spec;
 
@@ -616,6 +627,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						{
 							ret_spec = read_joyport(addr);
 							do_the_reread = false;
+							Console.WriteLine("DMC glitch player 2");
 						}
 						return ret_spec;
 					}
@@ -744,6 +756,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		private void write_joyport(byte value)
 		{
+			//Console.WriteLine("cont " + value + " frame " + Frame);
+			
 			var si = new StrobeInfo(latched4016, value);
 			ControllerDeck.Strobe(si, _controller);
 			latched4016 = value;
@@ -752,13 +766,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				controller_was_latched = true;
 				alt_lag = false;
+				lagged = false;
+				InputCallbacks.Call();
 			}
+			current_strobe = new_strobe;
 		}
 
 		private byte read_joyport(int addr)
 		{
-			InputCallbacks.Call();
-			lagged = false;
 			byte ret;
 			if (_isVS)
 			{

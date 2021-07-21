@@ -54,8 +54,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				cpu.TraceCallback = null;
 			}
 
-			_frame++;
-
 			if (controller.IsPressed("P1 Power"))
 			{
 				HardReset();
@@ -90,6 +88,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				_lagcount++;
 			}
 
+			_frame++;
+
 			return true;
 		}
 
@@ -114,7 +114,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					DIV_edge_old = (timer.divider_reg & 0x2000) == 0x2000;
 
 					timer.tick();
-					cpu.ExecuteOne();
+					cpu.ExecuteOne(_settings.UseRGBDSSyntax);
 					timer.divider_reg++;
 
 					DIV_falling_edge |= DIV_edge_old & ((timer.divider_reg & 0x2000) == 0);
@@ -131,7 +131,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				DIV_edge_old = double_speed ? ((timer.divider_reg & 0x2000) == 0x2000) : ((timer.divider_reg & 0x1000) == 0x1000);
 
 				timer.tick();
-				cpu.ExecuteOne();
+				cpu.ExecuteOne(_settings.UseRGBDSSyntax);
 				timer.divider_reg++;
 
 				DIV_falling_edge |= DIV_edge_old & (double_speed ? ((timer.divider_reg & 0x2000) == 0) : ((timer.divider_reg & 0x1000) == 0));
@@ -201,7 +201,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				DIV_edge_old = (timer.divider_reg & 0x2000) == 0x2000;
 
 				timer.tick();
-				cpu.ExecuteOne();
+				cpu.ExecuteOne(_settings.UseRGBDSSyntax);
 				timer.divider_reg++;
 
 				DIV_falling_edge |= DIV_edge_old & ((timer.divider_reg & 0x2000) == 0);
@@ -218,7 +218,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			DIV_edge_old = double_speed ? ((timer.divider_reg & 0x2000) == 0x2000) : ((timer.divider_reg & 0x1000) == 0x1000);
 
 			timer.tick();
-			cpu.ExecuteOne();
+			cpu.ExecuteOne(_settings.UseRGBDSSyntax);
 			timer.divider_reg++;
 
 			DIV_falling_edge |= DIV_edge_old & (double_speed ? ((timer.divider_reg & 0x2000) == 0) : ((timer.divider_reg & 0x1000) == 0));

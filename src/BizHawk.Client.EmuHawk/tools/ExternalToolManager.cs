@@ -15,6 +15,8 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private readonly Func<(CoreSystem System, string Hash)> _getLoadedRomInfoCallback;
 
+		private PathEntryCollection _paths;
+
 		private FileSystemWatcher DirectoryMonitor;
 
 		private readonly List<ToolStripMenuItem> MenuItems = new List<ToolStripMenuItem>();
@@ -27,36 +29,34 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart(PathEntryCollection paths)
 		{
+			_paths = paths;
 			if (DirectoryMonitor != null)
 			{
 				DirectoryMonitor.Created -= DirectoryMonitor_Created;
 				DirectoryMonitor.Dispose();
 			}
-			var extToolsDir = paths["Global", "External Tools"].Path;
-			if (!Directory.Exists(extToolsDir)) Directory.CreateDirectory(extToolsDir);
-			DirectoryMonitor = new FileSystemWatcher(extToolsDir, "*.dll")
+			var path = _paths["Global", "External Tools"].Path;
+			if (Directory.Exists(path))
 			{
-				IncludeSubdirectories = false,
-				NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite | NotifyFilters.FileName,
-				Filter = "*.dll"
-			};
-			DirectoryMonitor.Created += DirectoryMonitor_Created;
-			DirectoryMonitor.EnableRaisingEvents = true;
+				DirectoryMonitor = new FileSystemWatcher(path, "*.dll")
+				{
+					IncludeSubdirectories = false,
+					NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite | NotifyFilters.FileName,
+					Filter = "*.dll"
+				};
+				DirectoryMonitor.Created += DirectoryMonitor_Created;
+				DirectoryMonitor.EnableRaisingEvents = true;
+			}
 			BuildToolStrip();
 		}
 
 		internal void BuildToolStrip()
 		{
 			MenuItems.Clear();
-			if (Directory.Exists(DirectoryMonitor.Path))
-			{
-				DirectoryInfo dInfo = new DirectoryInfo(DirectoryMonitor.Path);
-
-				foreach (FileInfo fi in dInfo.GetFiles("*.dll"))
-				{
-					MenuItems.Add(GenerateToolTipFromFileName(fi.FullName));
-				}
-			}
+			if (DirectoryMonitor == null) return;
+			DirectoryInfo di = new(DirectoryMonitor.Path);
+			if (!di.Exists) return;
+			foreach (var fi in di.GetFiles("*.dll")) MenuItems.Add(GenerateToolTipFromFileName(fi.FullName));
 		}
 
 		/// <summary>Generates a <see cref="ToolStripMenuItem"/> from an assembly at <paramref name="fileName"/> containing an external tool.</summary>
@@ -83,7 +83,7 @@ namespace BizHawk.Client.EmuHawk
 				var toolAttribute = allAttrs.OfType<ExternalToolAttribute>().First();
 				if (toolAttribute.LoadAssemblyFiles != null)
 				{
-					foreach (var depFilename in toolAttribute.LoadAssemblyFiles) Assembly.LoadFrom($"ExternalTools/{depFilename}");
+					foreach (var depFilename in toolAttribute.LoadAssemblyFiles) Assembly.LoadFrom($"{_paths["Global", "External Tools"].Path}/{depFilename}");
 				}
 				var embeddedIconAttr = allAttrs.OfType<ExternalToolEmbeddedIconAttribute>().FirstOrDefault();
 				if (embeddedIconAttr != null)

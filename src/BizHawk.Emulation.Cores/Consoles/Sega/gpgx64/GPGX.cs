@@ -10,15 +10,7 @@ using System.Linq;
 
 namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 {
-	[Core(
-		CoreNames.Gpgx,
-		"",
-		isPorted: true,
-		isReleased: true,
-		portedVersion: "r874",
-		portedUrl: "https://code.google.com/p/genplus-gx/",
-		singleInstance: false,
-		displayName: "Genesis")]
+	[PortedCore(CoreNames.Gpgx, "", "r874", "https://code.google.com/p/genplus-gx/")]
 	public partial class GPGX : IEmulator, IVideoProvider, ISaveRam, IStatable, IRegionable,
 		IInputPollable, IDebuggable, IDriveLight, ICodeDataLogger, IDisassemblable
 	{
@@ -242,7 +234,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				if (firmwareID != null)
 				{
 					// this path will be the most common PEBKAC error, so be a bit more vocal about the problem
-					srcdata = CoreComm.CoreFileProvider.GetFirmware("GEN", firmwareID, false, "GPGX firmwares are usually required.");
+					srcdata = CoreComm.CoreFileProvider.GetFirmware(new("GEN", firmwareID), "GPGX firmwares are usually required.");
 					if (srcdata == null)
 					{
 						Console.WriteLine("Frontend couldn't satisfy firmware request GEN:{0}", firmwareID);

@@ -37,14 +37,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			
 			addr_access = addr;
 			
-			if (ppu.DMA_start)
+			if (ppu.DMA_bus_control)
 			{
 				// some of gekkio's tests require these to be accessible during DMA
 				if (addr < 0x8000)
 				{
 					if (ppu.DMA_addr < 0x80)
 					{
-						return 0xFF;
+						return ppu.DMA_byte;
 					}
 
 					bus_value = mapper.ReadMemoryLow(addr);
@@ -269,7 +269,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			
 			addr_access = addr;
 
-			if (ppu.DMA_start)
+			if (ppu.DMA_bus_control)
 			{
 				// some of gekkio's tests require this to be accessible during DMA
 				if (addr >= 0xA000 && addr < 0xC000 && is_GBC)
@@ -424,14 +424,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public byte PeekMemory(ushort addr)
 		{
-			if (ppu.DMA_start)
+			if (ppu.DMA_bus_control)
 			{
 				// some of gekkio's tests require these to be accessible during DMA
 				if (addr < 0x8000)
 				{
 					if (ppu.DMA_addr < 0x80)
 					{
-						return 0xFF;
+						return ppu.DMA_byte;
 					}
 
 					return mapper.PeekMemoryLow(addr);

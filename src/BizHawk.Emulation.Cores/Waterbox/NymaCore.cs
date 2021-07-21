@@ -58,13 +58,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			{
 				if (firmwares != null && firmwares.TryGetValue(name, out var id))
 				{
-					var data = CoreComm.CoreFileProvider.GetFirmware(id, true,
-						"Firmware files are usually required and may stop your game from loading");
-					if (data != null)
-					{
-						_exe.AddReadonlyFile(data, name);
-						filesToRemove.Add(name);
-					}
+					var data = CoreComm.CoreFileProvider.GetFirmwareOrThrow(id, "Firmware files are usually required and may stop your game from loading");
+					_exe.AddReadonlyFile(data, name);
+					filesToRemove.Add(name);
 				}
 				else
 				{

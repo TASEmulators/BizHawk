@@ -6,7 +6,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBA
 {
-	[Core(CoreNames.Mgba, "endrift", true, true, "0.8", "https://mgba.io/", false, "GBA")]
+	[PortedCore(CoreNames.Mgba, "endrift", "0.8", "https://mgba.io/")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight), typeof(IRegionable) })]
 	public partial class MGBAHawk : IEmulator, IVideoProvider, ISoundProvider, IGBAGPUViewable,
 		ISaveRam, IStatable, IInputPollable, ISettable<MGBAHawk.Settings, MGBAHawk.SyncSettings>,
@@ -29,12 +29,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			_settings = settings ?? new Settings();
 			DeterministicEmulation = deterministic;
 
-			byte[] bios = comm.CoreFileProvider.GetFirmware("GBA", "Bios", false);
+			var bios = comm.CoreFileProvider.GetFirmware(new("GBA", "Bios"));
 			DeterministicEmulation &= bios != null;
 
 			if (DeterministicEmulation != deterministic)
 			{
-				throw new InvalidOperationException("A BIOS is required for deterministic recordings!");
+				throw new MissingFirmwareException("A BIOS is required for deterministic recordings!");
 			}
 
 			if (!DeterministicEmulation && bios != null && !_syncSettings.RTCUseRealTime && !_syncSettings.SkipBios)
@@ -116,7 +116,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		public bool FrameAdvance(IController controller, bool render, bool renderSound = true)
 		{
-			Frame++;
 			if (controller.IsPressed("Power"))
 			{
 				LibmGBA.BizReset(Core);
@@ -146,6 +145,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 			// this should be called in hblank on the appropriate line, but until we implement that, just do it here
 			_scanlinecb?.Invoke();
+
+			Frame++;
 
 			return true;
 		}

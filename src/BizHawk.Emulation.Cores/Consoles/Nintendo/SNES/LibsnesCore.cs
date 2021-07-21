@@ -17,14 +17,7 @@ using BizHawk.Emulation.Cores.Components.W65816;
 // wrap dll code around some kind of library-accessing interface so that it doesn't malfunction if the dll is unavailable
 namespace BizHawk.Emulation.Cores.Nintendo.SNES
 {
-	[Core(
-		CoreNames.Bsnes,
-		"byuu",
-		isPorted: true,
-		isReleased: true,
-		portedVersion: "v87",
-		portedUrl: "http://byuu.org/",
-		singleInstance: false)]
+	[PortedCore(CoreNames.Bsnes, "byuu", "v87", "http://byuu.org/")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public unsafe partial class LibsnesCore : IEmulator, IVideoProvider, ISaveRam, IStatable, IInputPollable, IRegionable, ICodeDataLogger,
 		IDebuggable, ISettable<LibsnesCore.SnesSettings, LibsnesCore.SnesSyncSettings>
@@ -61,7 +54,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 					throw new CGBNotSupportedException();
 				}
 
-				sgbRomData = CoreComm.CoreFileProvider.GetFirmware("SNES", "Rom_SGB", true, "SGB Rom is required for SGB emulation.");
+				sgbRomData = CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("SNES", "Rom_SGB"), "SGB Rom is required for SGB emulation.");
 				game.FirmwareHash = sgbRomData.HashSHA1();
 			}
 
@@ -334,7 +327,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			}
 
 			string ret;
-			var data = CoreComm.CoreFileProvider.GetFirmware("SNES", firmwareId, false, "Game may function incorrectly without the requested firmware.");
+			var data = CoreComm.CoreFileProvider.GetFirmware(new("SNES", firmwareId), "Game may function incorrectly without the requested firmware.");
 			if (data != null)
 			{
 				ret = hint;

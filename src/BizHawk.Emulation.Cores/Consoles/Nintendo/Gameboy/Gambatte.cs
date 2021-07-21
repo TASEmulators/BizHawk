@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using BizHawk.Common;
 using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
@@ -10,14 +11,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 	/// <summary>
 	/// a gameboy/gameboy color emulator wrapped around native C++ libgambatte
 	/// </summary>
-	[Core(
-		CoreNames.Gambatte,
-		"",
-		isPorted: true,
-		isReleased: true,
-		portedVersion: "Gambatte-Speedrun r717+",
-		portedUrl: "https://github.com/pokemon-speedrunning/gambatte-speedrun",
-		singleInstance: false)]
+	[PortedCore(CoreNames.Gambatte, "", "Gambatte-Speedrun r717+", "https://github.com/pokemon-speedrunning/gambatte-speedrun")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class Gameboy : IEmulator, IVideoProvider, ISoundProvider, ISaveRam, IStatable, IInputPollable, ICodeDataLogger,
 		IBoardInfo, IRomInfo, IDebuggable, ISettable<Gameboy.GambatteSettings, Gameboy.GambatteSyncSettings>,
@@ -28,11 +22,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public Gameboy(CoreComm comm, GameInfo game, byte[] file, Gameboy.GambatteSettings settings, Gameboy.GambatteSyncSettings syncSettings, bool deterministic)
 		{
 			var ser = new BasicServiceProvider(this);
-			ser.Register<IDisassemblable>(new GBDisassembler());
+			ser.Register<IDisassemblable>(_disassembler);
 			ServiceProvider = ser;
 			Tracer = new TraceBuffer
 			{
-				Header = "Z80: PC, opcode, registers (A, B, C, D, E, F, H, L, LY, SP, CY)"
+				Header = "LR35902: PC, opcode, registers (A, F, B, C, D, E, H, L, LY, SP, CY)"
 			};
 			ser.Register<ITraceable>(Tracer);
 			InitMemoryCallbacks();
@@ -78,11 +72,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 					flags |= LibGambatte.LoadFlags.MULTICART_COMPAT;
 				}
 
-				if (LibGambatte.gambatte_load(GambatteState, file, (uint)file.Length, flags) != 0)
-				{
-					throw new InvalidOperationException($"{nameof(LibGambatte.gambatte_load)}() returned non-zero (is this not a gb or gbc rom?)");
-				}
-
 				byte[] bios;
 				string biosSystemId;
 				string biosId;
@@ -101,22 +90,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 				if (_syncSettings.EnableBIOS)
 				{
-					bios = comm.CoreFileProvider.GetFirmware(biosSystemId, biosId, true, "BIOS Not Found, Cannot Load.  Change SyncSettings to run without BIOS.");
+					bios = comm.CoreFileProvider.GetFirmwareOrThrow(new(biosSystemId, biosId), "BIOS Not Found, Cannot Load.  Change SyncSettings to run without BIOS.");
+					if (LibGambatte.gambatte_loadbios(GambatteState, bios, (uint)bios.Length) != 0)
+					{
+						throw new InvalidOperationException($"{nameof(LibGambatte.gambatte_loadbios)}() returned non-zero (bios error)");
+					}
 				}
 				else
 				{
-					var builtinBios = (biosSystemId, biosId) switch {
-						("GB", "World") => Resources.FastDmgBoot,
-						("GBC", "World") => Resources.FastCgbBoot,
-						("GBC", "AGB") => Resources.FastAgbBoot,
-						(_, _) => throw new Exception("Internal GB Error (BIOS??)"),
-					};
-					bios = BizHawk.Common.Util.DecompressGzipFile(new MemoryStream(builtinBios.Value, false));
+					flags |= LibGambatte.LoadFlags.NO_BIOS;
 				}
 
-				if (LibGambatte.gambatte_loadbios(GambatteState, bios, (uint)bios.Length) != 0)
+				if (LibGambatte.gambatte_load(GambatteState, file, (uint)file.Length, flags) != 0)
 				{
-					throw new InvalidOperationException($"{nameof(LibGambatte.gambatte_loadbios)}() returned non-zero (bios error)");
+					throw new InvalidOperationException($"{nameof(LibGambatte.gambatte_load)}() returned non-zero (is this not a gb or gbc rom?)");
 				}
 
 				// set real default colors (before anyone mucks with them at all)
@@ -141,11 +128,59 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				string romname = System.Text.Encoding.ASCII.GetString(buff);
 				Console.WriteLine("Core reported rom name: {0}", romname);
 
+				if (!_syncSettings.EnableBIOS && IsCgb && IsCGBDMGMode()) // without a bios, we need to set the palette for cgbdmg ourselves
+				{
+					int[] cgbDmgColors = new int[] { 0xFFFFFF, 0x7BFF31, 0x0063C5, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000 };
+					if (file[0x14B] == 0x01 || (file[0x14B] == 0x33 && file[0x144] == '0' && file[0x145] == '1')) // Nintendo licencees get special palettes
+					{
+						cgbDmgColors = ColorsFromTitleHash(file);
+					}
+					ChangeDMGColors(cgbDmgColors);
+				}
+
 				if (!DeterministicEmulation && _syncSettings.RealTimeRTC)
 				{
 					LibGambatte.gambatte_settimemode(GambatteState, false);
 				}
+
+				if (DeterministicEmulation)
+				{
+					int[] rtcRegs = new int[11];
+					rtcRegs[(int)LibGambatte.RtcRegIndicies.Dh] = 0;
+					if (_syncSettings.InternalRTCOverflow)
+					{
+						rtcRegs[(int)LibGambatte.RtcRegIndicies.Dh] |= 0x80;
+					}
+					if (_syncSettings.InternalRTCHalt)
+					{
+						rtcRegs[(int)LibGambatte.RtcRegIndicies.Dh] |= 0x40;
+					}
+					rtcRegs[(int)LibGambatte.RtcRegIndicies.Dh] |= _syncSettings.InternalRTCDays >> 8;
+					rtcRegs[(int)LibGambatte.RtcRegIndicies.Dl] = _syncSettings.InternalRTCDays & 0xFF;
+					rtcRegs[(int)LibGambatte.RtcRegIndicies.H] = (_syncSettings.InternalRTCHours < 0) ? (_syncSettings.InternalRTCHours + 0x20) : _syncSettings.InternalRTCHours;
+					rtcRegs[(int)LibGambatte.RtcRegIndicies.M] = (_syncSettings.InternalRTCMinutes < 0) ? (_syncSettings.InternalRTCMinutes + 0x40) : _syncSettings.InternalRTCMinutes;
+					rtcRegs[(int)LibGambatte.RtcRegIndicies.S] = (_syncSettings.InternalRTCSeconds < 0) ? (_syncSettings.InternalRTCSeconds + 0x40) : _syncSettings.InternalRTCSeconds;
+					rtcRegs[(int)LibGambatte.RtcRegIndicies.C] = _syncSettings.InternalRTCCycles;
+					rtcRegs[(int)LibGambatte.RtcRegIndicies.Dh_L] = 0;
+					if (_syncSettings.LatchedRTCOverflow)
+					{
+						rtcRegs[(int)LibGambatte.RtcRegIndicies.Dh_L] |= 0x80;
+					}
+					if (_syncSettings.LatchedRTCHalt)
+					{
+						rtcRegs[(int)LibGambatte.RtcRegIndicies.Dh_L] |= 0x40;
+					}
+					rtcRegs[(int)LibGambatte.RtcRegIndicies.Dh_L] |= _syncSettings.LatchedRTCDays >> 8;
+					rtcRegs[(int)LibGambatte.RtcRegIndicies.Dl_L] = _syncSettings.LatchedRTCDays & 0xFF;
+					rtcRegs[(int)LibGambatte.RtcRegIndicies.H_L] = _syncSettings.LatchedRTCHours;
+					rtcRegs[(int)LibGambatte.RtcRegIndicies.M_L] = _syncSettings.LatchedRTCMinutes;
+					rtcRegs[(int)LibGambatte.RtcRegIndicies.S_L] = _syncSettings.LatchedRTCSeconds;
+					LibGambatte.gambatte_setrtcregs(GambatteState, rtcRegs);
+				}
+
 				LibGambatte.gambatte_setrtcdivisoroffset(GambatteState, _syncSettings.RTCDivisorOffset);
+
+				LibGambatte.gambatte_setcartbuspulluptime(GambatteState, _syncSettings.CartBusPullUpTime);
 
 				_cdCallback = new LibGambatte.CDCallback(CDCallbackProc);
 
@@ -157,6 +192,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				throw;
 			}
 		}
+
+		private readonly GBDisassembler _disassembler = new();
 
 		public string RomDetails { get; }
 
@@ -212,6 +249,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				"Up", "Down", "Left", "Right", "Start", "Select", "B", "A", "Power"
 			}
 		};
+		
+		public static readonly ControllerDefinition SubGbController = new ControllerDefinition
+		{
+			Name = "Subframe Gameboy Controller",
+			BoolButtons =
+			{
+				"Up", "Down", "Left", "Right", "Start", "Select", "B", "A", "Power"
+			}
+		}.AddAxis("Input Length", 0.RangeTo(35112), 35112);
 
 		private LibGambatte.Buttons ControllerCallback()
 		{
@@ -227,6 +273,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		{
 			//return LibGambatte.gambatte_iscgb(GambatteState);
 			return IsCgb;
+		}
+		
+		/// <summary>
+		/// true if the emulator is currently emulating CGB in DMG compatibility mode (NOTE: this mode does not take affect until the bootrom unmaps itself)
+		/// </summary>
+		public bool IsCGBDMGMode()
+		{
+			return LibGambatte.gambatte_iscgbdmg(GambatteState);
 		}
 
 		private InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
@@ -245,8 +299,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		internal void FrameAdvancePrep(IController controller)
 		{
-			Frame++;
-
 			// update our local copy of the controller data
 			CurrentButtons = 0;
 
@@ -286,7 +338,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			LibGambatte.gambatte_settracecallback(GambatteState, _tracecb);
 
-			LibGambatte.gambatte_setlayers(GambatteState, (_settings.DisplayBG ? 1 : 0) | (_settings.DisplayOBJ ? 2 : 0) | (_settings.DisplayWindow ? 4 : 0));
+			LibGambatte.gambatte_setlayers(GambatteState, (_syncSettings.DisplayBG ? 1 : 0) | (_syncSettings.DisplayOBJ ? 2 : 0) | (_syncSettings.DisplayWindow ? 4 : 0));
 		}
 
 		internal void FrameAdvancePost()
@@ -295,6 +347,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			{
 				LagCount++;
 			}
+
+			Frame++;
 
 			endofframecallback?.Invoke(LibGambatte.gambatte_cpuread(GambatteState, 0xff40));
 		}
@@ -360,10 +414,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				case 0x12: break;
 				case 0x13: break;
 
-				case 0x15: throw new UnsupportedGameException("\"MBC4\" Mapper not supported!");
-				case 0x16: throw new UnsupportedGameException("\"MBC4\" Mapper not supported!");
-				case 0x17: throw new UnsupportedGameException("\"MBC4\" Mapper not supported!");
-
 				case 0x19: break;
 				case 0x1a: break;
 				case 0x1b: break;
@@ -379,6 +429,254 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				case 0xfe: break;
 				case 0xff: break;
 				default: throw new UnsupportedGameException($"Unknown mapper: {romdata[0x147]:x2}");
+			}
+		}
+
+		private static int[] ColorsFromTitleHash(byte[] romdata)
+		{
+			int titleHash = 0;
+			for (int i = 0; i < 16; i++)
+			{
+				titleHash += romdata[0x134 + i];
+			}
+
+			switch (titleHash & 0xFF)
+			{
+				case 0x01:
+				case 0x10:
+				case 0x29:
+				case 0x52:
+				case 0x5D:
+				case 0x68:
+				case 0x6D:
+				case 0xF6:
+					return new int[] { 0xFFFFFF, 0xFFAD63, 0x843100, 0x000000, 0xFFFFFF, 0x63A5FF, 0x0000FF, 0x000000, 0xFFFFFF, 0x7BFF31, 0x008400, 0x000000 };
+				case 0x0C:
+				case 0x16:
+				case 0x35:
+				case 0x67:
+				case 0x75:
+				case 0x92:
+				case 0x99:
+				case 0xB7:
+					return new int[] { 0xFFFFFF, 0xFFAD63, 0x843100, 0x000000, 0xFFFFFF, 0xFFAD63, 0x843100, 0x000000, 0xFFFFFF, 0xFFAD63, 0x843100, 0x000000 };
+				case 0x14:
+					return new int[] { 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000, 0xFFFFFF, 0x7BFF31, 0x008400, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000 };
+				case 0x15:
+				case 0xDB:
+					return new int[] { 0xFFFFFF, 0xFFFF00, 0xFF0000, 0x000000, 0xFFFFFF, 0xFFFF00, 0xFF0000, 0x000000, 0xFFFFFF, 0xFFFF00, 0xFF0000, 0x000000 };
+				case 0x17:
+				case 0x8B:
+					return new int[] { 0xFFFFFF, 0x7BFF31, 0x008400, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000, 0xFFFFFF, 0x63A5FF, 0x0000FF, 0x000000 };
+				case 0x19:
+					return new int[] { 0xFFFFFF, 0xFF9C00, 0xFF0000, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000 };
+				case 0x1D:
+					return new int[] { 0xA59CFF, 0xFFFF00, 0x006300, 0x000000, 0xFF6352, 0xD60000, 0x630000, 0x000000, 0xFF6352, 0xD60000, 0x630000, 0x000000 };
+				case 0x34:
+					return new int[] { 0xFFFFFF, 0x7BFF00, 0xB57300, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000 };
+				case 0x36:
+					return new int[] { 0x52DE00, 0xFF8400, 0xFFFF00, 0xFFFFFF, 0xFFFFFF, 0xFFFFFF, 0x63A5FF, 0x0000FF, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000 };
+				case 0x39:
+				case 0x43:
+				case 0x97:
+					return new int[] { 0xFFFFFF, 0xFFAD63, 0x843100, 0x000000, 0xFFFFFF, 0x63A5FF, 0x0000FF, 0x000000, 0xFFFFFF, 0x63A5FF, 0x0000FF, 0x000000 };
+				case 0x3C:
+					return new int[] { 0xFFFFFF, 0x63A5FF, 0x0000FF, 0x000000, 0xFFFFFF, 0x63A5FF, 0x0000FF, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000 };
+				case 0x3D:
+					return new int[] { 0xFFFFFF, 0x52FF00, 0xFF4200, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000 };
+				case 0x3E:
+				case 0xE0:
+					return new int[] { 0xFFFFFF, 0xFF9C00, 0xFF0000, 0x000000, 0xFFFFFF, 0xFF9C00, 0xFF0000, 0x000000, 0xFFFFFF, 0x5ABDFF, 0xFF0000, 0x0000FF };
+				case 0x49:
+				case 0x5C:
+					return new int[] { 0xA59CFF, 0xFFFF00, 0x006300, 0x000000, 0xFF6352, 0xD60000, 0x630000, 0x000000, 0x0000FF, 0xFFFFFF, 0xFFFF7B, 0x0084FF };
+				case 0x4B:
+				case 0x90:
+				case 0x9A:
+				case 0xBD:
+					return new int[] { 0xFFFFFF, 0x7BFF31, 0x008400, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000 };
+				case 0x4E:
+					return new int[] { 0xFFFFFF, 0x63A5FF, 0x0000FF, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000, 0xFFFFFF, 0xFFFF7B, 0x0084FF, 0xFF0000 };
+				case 0x58:
+					return new int[] { 0xFFFFFF, 0xA5A5A5, 0x525252, 0x000000, 0xFFFFFF, 0xA5A5A5, 0x525252, 0x000000, 0xFFFFFF, 0xA5A5A5, 0x525252, 0x000000 };
+				case 0x59:
+					return new int[] { 0xFFFFFF, 0xADAD84, 0x42737B, 0x000000, 0xFFFFFF, 0xFF7300, 0x944200, 0x000000, 0xFFFFFF, 0x5ABDFF, 0xFF0000, 0x0000FF };
+				case 0x69:
+				case 0xF2:
+					return new int[] { 0xFFFFFF, 0xFFFF00, 0xFF0000, 0x000000, 0xFFFFFF, 0xFFFF00, 0xFF0000, 0x000000, 0xFFFFFF, 0x5ABDFF, 0xFF0000, 0x0000FF };
+				case 0x6B:
+					return new int[] { 0xFFFFFF, 0x8C8CDE, 0x52528C, 0x000000, 0xFFC542, 0xFFD600, 0x943A00, 0x4A0000, 0xFFFFFF, 0x5ABDFF, 0xFF0000, 0x0000FF };
+				case 0x6F:
+					return new int[] { 0xFFFFFF, 0xFFCE00, 0x9C6300, 0x000000, 0xFFFFFF, 0xFFCE00, 0x9C6300, 0x000000, 0xFFFFFF, 0xFFCE00, 0x9C6300, 0x000000 };
+				case 0x70:
+					return new int[] { 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000, 0xFFFFFF, 0x00FF00, 0x318400, 0x004A00, 0xFFFFFF, 0x63A5FF, 0x0000FF, 0x000000 };
+				case 0x71:
+				case 0xFF:
+					return new int[] { 0xFFFFFF, 0xFF9C00, 0xFF0000, 0x000000, 0xFFFFFF, 0xFF9C00, 0xFF0000, 0x000000, 0xFFFFFF, 0xFF9C00, 0xFF0000, 0x000000 };
+				case 0x86:
+				case 0xA8:
+					return new int[] { 0xFFFF9C, 0x94B5FF, 0x639473, 0x003A3A, 0xFFC542, 0xFFD600, 0x943A00, 0x4A0000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000 };
+				case 0x88:
+					return new int[] { 0xA59CFF, 0xFFFF00, 0x006300, 0x000000, 0xA59CFF, 0xFFFF00, 0x006300, 0x000000, 0xA59CFF, 0xFFFF00, 0x006300, 0x000000 };
+				case 0x8C:
+					return new int[] { 0xFFFFFF, 0xADAD84, 0x42737B, 0x000000, 0xFFFFFF, 0xFF7300, 0x944200, 0x000000, 0xFFFFFF, 0xADAD84, 0x42737B, 0x000000 };
+				case 0x95:
+					return new int[] { 0xFFFFFF, 0x52FF00, 0xFF4200, 0x000000, 0xFFFFFF, 0x52FF00, 0xFF4200, 0x000000, 0xFFFFFF, 0x5ABDFF, 0xFF0000, 0x0000FF };
+				case 0x9C:
+					return new int[] { 0xFFFFFF, 0x8C8CDE, 0x52528C, 0x000000, 0xFFFFFF, 0x8C8CDE, 0x52528C, 0x000000, 0xFFC542, 0xFFD600, 0x943A00, 0x4A0000 };
+				case 0x9D:
+					return new int[] { 0xFFFFFF, 0x8C8CDE, 0x52528C, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000, 0xFFFFFF, 0xFFAD63, 0x843100, 0x000000 };
+				case 0xA2:
+				case 0xF7:
+					return new int[] { 0xFFFFFF, 0xFFAD63, 0x843100, 0x000000, 0xFFFFFF, 0x7BFF31, 0x008400, 0x000000, 0xFFFFFF, 0x63A5FF, 0x0000FF, 0x000000 };
+				case 0xAA:
+					return new int[] { 0xFFFFFF, 0x7BFF31, 0x0063C5, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000, 0xFFFFFF, 0x7BFF31, 0x0063C5, 0x000000 };
+				case 0xC9:
+					return new int[] { 0xFFFFCE, 0x63EFEF, 0x9C8431, 0x5A5A5A, 0xFFFFFF, 0xFF7300, 0x944200, 0x000000, 0xFFFFFF, 0x63A5FF, 0x0000FF, 0x000000 };
+				case 0xCE:
+				case 0xD1:
+				case 0xF0:
+					return new int[] { 0x6BFF00, 0xFFFFFF, 0xFF524A, 0x000000, 0xFFFFFF, 0xFFFFFF, 0x63A5FF, 0x0000FF, 0xFFFFFF, 0xFFAD63, 0x843100, 0x000000 };
+				case 0xE8:
+					return new int[] { 0x000000, 0x008484, 0xFFDE00, 0xFFFFFF, 0x000000, 0x008484, 0xFFDE00, 0xFFFFFF, 0x000000, 0x008484, 0xFFDE00, 0xFFFFFF };
+				case 0x0D:
+					switch (romdata[0x137])
+					{
+						case 0x45:
+							return new int[] { 0xFFFFFF, 0x8C8CDE, 0x52528C, 0x000000, 0xFFC542, 0xFFD600, 0x943A00, 0x4A0000, 0xFFC542, 0xFFD600, 0x943A00, 0x4A0000 };
+						case 0x52:
+							return new int[] { 0xFFFFFF, 0xFFFF00, 0xFF0000, 0x000000, 0xFFFFFF, 0xFFFF00, 0xFF0000, 0x000000, 0xFFFFFF, 0x5ABDFF, 0xFF0000, 0x0000FF };
+						default:
+							return new int[] { 0xFFFFFF, 0x7BFF31, 0x0063C5, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000 };
+					}
+				case 0x18:
+					switch (romdata[0x137])
+					{
+						case 0x4B:
+							return new int[] { 0xFFFFFF, 0x8C8CDE, 0x52528C, 0x000000, 0xFFC542, 0xFFD600, 0x943A00, 0x4A0000, 0xFFFFFF, 0x5ABDFF, 0xFF0000, 0x0000FF };
+						default:
+							return new int[] { 0xFFFFFF, 0x7BFF31, 0x0063C5, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000 };
+					}
+				case 0x27:
+					switch (romdata[0x137])
+					{
+						case 0x42:
+							return new int[] { 0xA59CFF, 0xFFFF00, 0x006300, 0x000000, 0xFF6352, 0xD60000, 0x630000, 0x000000, 0x0000FF, 0xFFFFFF, 0xFFFF7B, 0x0084FF };
+						case 0x4E:
+							return new int[] { 0xFFFFFF, 0x7BFF31, 0x008400, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000, 0xFFFFFF, 0x63A5FF, 0x0000FF, 0x000000 };
+						default:
+							return new int[] { 0xFFFFFF, 0x7BFF31, 0x0063C5, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000 };
+					}
+				case 0x28:
+					switch (romdata[0x137])
+					{
+						case 0x41:
+							return new int[] { 0x000000, 0x008484, 0xFFDE00, 0xFFFFFF, 0x000000, 0x008484, 0xFFDE00, 0xFFFFFF, 0x000000, 0x008484, 0xFFDE00, 0xFFFFFF };
+						case 0x46:
+							return new int[] { 0xFFFFFF, 0x7BFF31, 0x008400, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000 };
+						default:
+							return new int[] { 0xFFFFFF, 0x7BFF31, 0x0063C5, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000 };
+					}
+				case 0x46:
+					switch (romdata[0x137])
+					{
+						case 0x45:
+							return new int[] { 0xB5B5FF, 0xFFFF94, 0xAD5A42, 0x000000, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A };
+						case 0x52:
+							return new int[] { 0xFFFFFF, 0x63A5FF, 0x0000FF, 0x000000, 0xFFFF00, 0xFF0000, 0x630000, 0x000000, 0xFFFFFF, 0x7BFF31, 0x008400, 0x000000 };
+						default:
+							return new int[] { 0xFFFFFF, 0x7BFF31, 0x0063C5, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000 };
+					}
+				case 0x61:
+					switch (romdata[0x137])
+					{
+						case 0x41:
+							return new int[] { 0xFFFFFF, 0x7BFF31, 0x008400, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000, 0xFFFFFF, 0x63A5FF, 0x0000FF, 0x000000 };
+						case 0x45:
+							return new int[] { 0xFFFFFF, 0x63A5FF, 0x0000FF, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000, 0xFFFFFF, 0x63A5FF, 0x0000FF, 0x000000 };
+						default:
+							return new int[] { 0xFFFFFF, 0x7BFF31, 0x0063C5, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000 };
+					}
+				case 0x66:
+					switch (romdata[0x137])
+					{
+						case 0x45:
+							return new int[] { 0xFFFFFF, 0x7BFF00, 0xB57300, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000 };
+						default:
+							return new int[] { 0xFFFFFF, 0x7BFF31, 0x0063C5, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000 };
+					}
+				case 0x6A:
+					switch (romdata[0x137])
+					{
+						case 0x49:
+							return new int[] { 0xFFFFFF, 0x52FF00, 0xFF4200, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000 };
+						case 0x4B:
+							return new int[] { 0xFFFFFF, 0x8C8CDE, 0x52528C, 0x000000, 0xFFC542, 0xFFD600, 0x943A00, 0x4A0000, 0xFFFFFF, 0x5ABDFF, 0xFF0000, 0x0000FF };
+						default:
+							return new int[] { 0xFFFFFF, 0x7BFF31, 0x0063C5, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000 };
+					}
+				case 0xA5:
+					switch (romdata[0x137])
+					{
+						case 0x41:
+							return new int[] { 0x000000, 0x008484, 0xFFDE00, 0xFFFFFF, 0x000000, 0x008484, 0xFFDE00, 0xFFFFFF, 0x000000, 0x008484, 0xFFDE00, 0xFFFFFF };
+						case 0x52:
+							return new int[] { 0xFFFFFF, 0xFFAD63, 0x843100, 0x000000, 0xFFFFFF, 0x7BFF31, 0x008400, 0x000000, 0xFFFFFF, 0x7BFF31, 0x008400, 0x000000 };
+						default:
+							return new int[] { 0xFFFFFF, 0x7BFF31, 0x0063C5, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000 };
+					}
+				case 0xB3:
+					switch (romdata[0x137])
+					{
+						case 0x42:
+							return new int[] { 0xA59CFF, 0xFFFF00, 0x006300, 0x000000, 0xFF6352, 0xD60000, 0x630000, 0x000000, 0x0000FF, 0xFFFFFF, 0xFFFF7B, 0x0084FF };
+						case 0x52:
+							return new int[] { 0xFFFFFF, 0x52FF00, 0xFF4200, 0x000000, 0xFFFFFF, 0x52FF00, 0xFF4200, 0x000000, 0xFFFFFF, 0x5ABDFF, 0xFF0000, 0x0000FF };
+						case 0x55:
+							return new int[] { 0xFFFFFF, 0xADAD84, 0x42737B, 0x000000, 0xFFFFFF, 0xFF7300, 0x944200, 0x000000, 0xFFFFFF, 0xFF7300, 0x944200, 0x000000 };
+						default:
+							return new int[] { 0xFFFFFF, 0x7BFF31, 0x0063C5, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000 };
+					}
+				case 0xBF:
+					switch (romdata[0x137])
+					{
+						case 0x20:
+							return new int[] { 0xFFFFFF, 0x8C8CDE, 0x52528C, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000 };
+						case 0x43:
+							return new int[] { 0x6BFF00, 0xFFFFFF, 0xFF524A, 0x000000, 0xFFFFFF, 0xFFFFFF, 0x63A5FF, 0x0000FF, 0xFFFFFF, 0xFFAD63, 0x843100, 0x000000 };
+						default:
+							return new int[] { 0xFFFFFF, 0x7BFF31, 0x0063C5, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000 };
+					}
+				case 0xC6:
+					switch (romdata[0x137])
+					{
+						case 0x41:
+							return new int[] { 0xFFFFFF, 0xADAD84, 0x42737B, 0x000000, 0xFFFFFF, 0xFF7300, 0x944200, 0x000000, 0xFFFFFF, 0x5ABDFF, 0xFF0000, 0x0000FF };
+						default:
+							return new int[] { 0xFFFFFF, 0x7BFF31, 0x0063C5, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000 };
+					}
+				case 0xD3:
+					switch (romdata[0x137])
+					{
+						case 0x49:
+							return new int[] { 0xFFFFFF, 0xADAD84, 0x42737B, 0x000000, 0xFFFFFF, 0xFFAD63, 0x843100, 0x000000, 0xFFFFFF, 0x63A5FF, 0x0000FF, 0x000000 };
+						case 0x52:
+							return new int[] { 0xFFFFFF, 0x8C8CDE, 0x52528C, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000, 0xFFFFFF, 0x8C8CDE, 0x52528C, 0x000000 };
+						default:
+							return new int[] { 0xFFFFFF, 0x7BFF31, 0x0063C5, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000 };
+					}
+				case 0xF4:
+					switch (romdata[0x137])
+					{
+						case 0x20:
+							return new int[] { 0xFFFFFF, 0x7BFF00, 0xB57300, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000 };
+						case 0x2D:
+							return new int[] { 0xFFFFFF, 0x7BFF31, 0x0063C5, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000, 0xFFFFFF, 0x63A5FF, 0x0000FF, 0x000000 };
+						default:
+							return new int[] { 0xFFFFFF, 0x7BFF31, 0x0063C5, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000 };
+					}
+				default:
+					return new int[] { 0xFFFFFF, 0x7BFF31, 0x0063C5, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000 };
 			}
 		}
 

@@ -11,6 +11,16 @@ namespace BizHawk.BizInvoke
 {
 	public static class BizInvoker
 	{
+		private static readonly MethodInfo MInfo_Encoding_GetByteCount = typeof(Encoding).GetMethod(nameof(Encoding.GetByteCount), new[] { typeof(string) })!;
+
+		private static readonly MethodInfo MInfo_Encoding_GetBytes = typeof(Encoding).GetMethod(nameof(Encoding.GetBytes), new[] { typeof(char*), typeof(int), typeof(byte*), typeof(int) })!;
+
+		private static readonly MethodInfo MInfo_ICallingConventionAdapter_GetFunctionPointerForDelegate = typeof(ICallingConventionAdapter).GetMethod(nameof(ICallingConventionAdapter.GetFunctionPointerForDelegate))!;
+
+		private static readonly MethodInfo MInfo_IMonitor_Enter = typeof(IMonitor).GetMethod(nameof(IMonitor.Enter))!;
+
+		private static readonly MethodInfo MInfo_IMonitor_Exit = typeof(IMonitor).GetMethod(nameof(IMonitor.Exit))!;
+
 		/// <summary>
 		/// holds information about a proxy implementation, including type and setup hooks
 		/// </summary>
@@ -81,7 +91,7 @@ namespace BizHawk.BizInvoke
 			var aname = new AssemblyName("BizInvokeProxyAssembly");
 			ImplAssemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(aname, AssemblyBuilderAccess.Run);
 			ImplModuleBuilder = ImplAssemblyBuilder.DefineDynamicModule("BizInvokerModule");
-			ClassFieldOffset = BizInvokerUtilities.ComputeClassFieldOffset();
+			ClassFieldOffset = BizInvokerUtilities.ComputeClassFirstFieldOffset();
 			StringOffset = BizInvokerUtilities.ComputeStringOffset();
 		}
 
@@ -264,7 +274,7 @@ namespace BizHawk.BizInvoke
 			{
 				il.Emit(OpCodes.Ldarg_0);
 				il.Emit(OpCodes.Ldfld, monitorField);
-				il.Emit(OpCodes.Callvirt, typeof(IMonitor).GetMethod("Enter")!);
+				il.Emit(OpCodes.Callvirt, MInfo_IMonitor_Enter);
 				exc = il.BeginExceptionBlock();
 			}
 
@@ -290,7 +300,7 @@ namespace BizHawk.BizInvoke
 				il.BeginFinallyBlock();
 				il.Emit(OpCodes.Ldarg_0);
 				il.Emit(OpCodes.Ldfld, monitorField);
-				il.Emit(OpCodes.Callvirt, typeof(IMonitor).GetMethod("Exit")!);
+				il.Emit(OpCodes.Callvirt, MInfo_IMonitor_Exit);
 				il.EndExceptionBlock();
 
 				if (returnType != typeof(void))
@@ -371,7 +381,7 @@ namespace BizHawk.BizInvoke
 			{
 				il.Emit(OpCodes.Ldarg_0);
 				il.Emit(OpCodes.Ldfld, monitorField);
-				il.Emit(OpCodes.Callvirt, typeof(IMonitor).GetMethod("Enter")!);
+				il.Emit(OpCodes.Callvirt, MInfo_IMonitor_Enter);
 				exc = il.BeginExceptionBlock();
 			}
 
@@ -389,8 +399,9 @@ namespace BizHawk.BizInvoke
 
 			il.Emit(OpCodes.Ldarg_0);
 			il.Emit(OpCodes.Ldfld, field);
-			il.EmitCalli(OpCodes.Calli, 
-				nativeCall, 
+			il.EmitCalli(
+				OpCodes.Calli,
+				nativeCall,
 				returnType == typeof(bool) ? typeof(byte) : returnType, // undo winapi style bool garbage
 				paramLoadInfos.Select(p => p.NativeType).ToArray());
 
@@ -407,7 +418,7 @@ namespace BizHawk.BizInvoke
 				il.BeginFinallyBlock();
 				il.Emit(OpCodes.Ldarg_0);
 				il.Emit(OpCodes.Ldfld, monitorField);
-				il.Emit(OpCodes.Callvirt, typeof(IMonitor).GetMethod("Exit")!);
+				il.Emit(OpCodes.Callvirt, MInfo_IMonitor_Exit);
 				il.EndExceptionBlock();
 
 				if (returnType != typeof(void))
@@ -485,10 +496,11 @@ namespace BizHawk.BizInvoke
 
 			if (type.IsByRef)
 			{
+				// Just pass a raw pointer.  In the `ref structType` case, caller needs to ensure fields are compatible.
 				var et = type.GetElementType()!;
-				if (!et.IsPrimitive && !et.IsEnum)
+				if (!et.IsValueType)
 				{
-					throw new NotImplementedException("Only refs of primitive or enum types are supported!");
+					throw new NotImplementedException("Only refs of value types are supported!");
 				}
 				return new(
 					typeof(IntPtr),
@@ -553,7 +565,7 @@ namespace BizHawk.BizInvoke
 					typeof(IntPtr),
 					() =>
 					{
-						var mi = typeof(ICallingConventionAdapter).GetMethod("GetFunctionPointerForDelegate")!;
+						var mi = MInfo_ICallingConventionAdapter_GetFunctionPointerForDelegate;
 						var end = il.DefineLabel();
 						var isNull = il.DefineLabel();
 
@@ -587,7 +599,7 @@ namespace BizHawk.BizInvoke
 				var strlenbytes = il.DeclareLocal(typeof(int), false);
 				il.Emit(OpCodes.Ldloc, encoding);
 				il.Emit(OpCodes.Ldarg, (short)idx);
-				il.EmitCall(OpCodes.Callvirt, typeof(Encoding).GetMethod("GetByteCount", new[] { typeof(string) })!, Type.EmptyTypes);
+				il.EmitCall(OpCodes.Callvirt, MInfo_Encoding_GetByteCount, Type.EmptyTypes);
 				il.Emit(OpCodes.Stloc, strlenbytes);
 
 				var strval = il.DeclareLocal(typeof(string), true); // pin!
@@ -619,7 +631,7 @@ namespace BizHawk.BizInvoke
 				// bytelength
 				il.Emit(OpCodes.Ldloc, strlenbytes);
 				// call
-				il.EmitCall(OpCodes.Callvirt, typeof(Encoding).GetMethod("GetBytes", new[] { typeof(char*), typeof(int), typeof(byte*), typeof(int) })!, Type.EmptyTypes);
+				il.EmitCall(OpCodes.Callvirt, MInfo_Encoding_GetBytes, Type.EmptyTypes);
 				// unused ret
 				il.Emit(OpCodes.Pop);
 
@@ -641,6 +653,7 @@ namespace BizHawk.BizInvoke
 			if (type.IsClass)
 			{
 				// non ref of class can just be passed as pointer
+				// Just like in the `ref struct` case, if the fields aren't compatible, that's the caller's problem.
 				return new(
 					typeof(IntPtr),
 					() =>

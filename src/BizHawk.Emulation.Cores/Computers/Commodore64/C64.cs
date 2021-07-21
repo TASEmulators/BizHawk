@@ -9,11 +9,7 @@ using BizHawk.Emulation.Cores.Computers.Commodore64.Media;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
-	[Core(
-		"C64Hawk",
-		"SaxxonPike",
-		isPorted: false,
-		isReleased: true)]
+	[Core(CoreNames.C64Hawk, "SaxxonPike")]
 	public sealed partial class C64 : IEmulator, IRegionable, IBoardInfo, IRomInfo
 	{
 		[CoreConstructor("C64")]
@@ -69,6 +65,15 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			}
 
 			SetupMemoryDomains();
+		}
+
+		public void ExecFetch(ushort addr)
+		{
+			if (_memoryCallbacks.HasExecutes)
+			{
+				uint flags = (uint)(MemoryCallbackFlags.CPUZero | MemoryCallbackFlags.AccessExecute);
+				_memoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "System Bus");
+			}
 		}
 
 		private CoreComm CoreComm { get; }
@@ -236,7 +241,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		private byte[] GetFirmware(int length, params string[] names)
 		{
-			var result = names.Select(n => CoreComm.CoreFileProvider.GetFirmware("C64", n, false)).FirstOrDefault(b => b != null && b.Length == length);
+			var result = names.Select(n => CoreComm.CoreFileProvider.GetFirmware(new("C64", n))).FirstOrDefault(b => b != null && b.Length == length);
 			if (result == null)
 			{
 				throw new MissingFirmwareException($"At least one of these firmwares is required: {string.Join(", ", names)}");

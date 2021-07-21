@@ -11,12 +11,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 {
 	public enum NecSystemType { TurboGrafx, TurboCD, SuperGrafx }
 
-	[Core(
-		CoreNames.PceHawk,
-		"Vecna",
-		isPorted: false,
-		isReleased: true,
-		displayName: "PCE")]
+	[Core(CoreNames.PceHawk, "Vecna")]
 	public sealed partial class PCEngine : IEmulator, ISaveRam, IInputPollable, IVideoLogicalOffsets, IRomInfo,
 		IDebuggable, ISettable<PCEngine.PCESettings, PCEngine.PCESyncSettings>, IDriveLight, ICodeDataLogger,
 		IPceGpuView
@@ -38,7 +33,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				Settings = (PCESettings)lp.Settings ?? new PCESettings();
 				_syncSettings = (PCESyncSettings)lp.SyncSettings ?? new PCESyncSettings();
 
-				byte[] rom = lp.Comm.CoreFileProvider.GetFirmwareWithGameInfo("PCECD", "Bios", true, out var biosInfo,
+				var (rom, biosInfo) = lp.Comm.CoreFileProvider.GetFirmwareWithGameInfoOrThrow(
+					new("PCECD", "Bios"),
 					"PCE-CD System Card not found. Please check the BIOS settings in Config->Firmwares.");
 
 				if (biosInfo.Status == RomStatus.BadDump)

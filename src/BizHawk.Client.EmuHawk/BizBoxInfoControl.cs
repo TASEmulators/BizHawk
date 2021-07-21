@@ -13,7 +13,7 @@ namespace BizHawk.Client.EmuHawk
 			CoreNameLabel.Text = attributes.CoreName;
 			
 			if (!string.IsNullOrEmpty(attributes.Author))
-			{ 
+			{
 				CoreAuthorLabel.Text = $"authors: {attributes.Author}";
 			}
 			else
@@ -21,17 +21,12 @@ namespace BizHawk.Client.EmuHawk
 				CoreAuthorLabel.Visible = false;
 			}
 
-			CorePortedLabel.Text = attributes.Ported ? " (Ported)" : "";
-
-			if (!attributes.Ported)
+			if (attributes is PortedCoreAttribute ported)
 			{
-				CoreUrlLink.Visible = false;
-			}
-			else
-			{
+				CorePortedLabel.Text = " (Ported)";
+				_url = ported.PortedUrl;
+				CoreUrlLink.Text = ported.PortedVersion;
 				CoreUrlLink.Visible = true;
-				CoreUrlLink.Text = attributes.PortedVersion;
-				_url = attributes.PortedUrl;
 			}
 		}
 

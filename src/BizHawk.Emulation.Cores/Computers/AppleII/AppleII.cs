@@ -6,11 +6,7 @@ using Jellyfish.Virtu;
 
 namespace BizHawk.Emulation.Cores.Computers.AppleII
 {
-	[Core(
-		"Virtu",
-		"fool",
-		isPorted: true,
-		isReleased: true)]
+	[PortedCore(CoreNames.Virtu, "fool")]
 	[ServiceNotApplicable(new[] { typeof(IBoardInfo), typeof(IRegionable), typeof(ISaveRam) })]
 	public partial class AppleII : IEmulator, ISoundProvider, IVideoProvider, IStatable, IDriveLight
 	{
@@ -35,10 +31,8 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 
 			_disk1 = _romSet[0];
 
-			_appleIIRom = lp.Comm.CoreFileProvider.GetFirmware(
-				SystemId, "AppleIIe", true, "The Apple IIe BIOS firmware is required");
-			_diskIIRom = lp.Comm.CoreFileProvider.GetFirmware(
-				SystemId, "DiskII", true, "The DiskII firmware is required");
+			_appleIIRom = lp.Comm.CoreFileProvider.GetFirmwareOrThrow(new(SystemId, "AppleIIe"), "The Apple IIe BIOS firmware is required");
+			_diskIIRom = lp.Comm.CoreFileProvider.GetFirmwareOrThrow(new(SystemId, "DiskII"), "The DiskII firmware is required");
 
 			_machine = new Components(_appleIIRom, _diskIIRom);
 			

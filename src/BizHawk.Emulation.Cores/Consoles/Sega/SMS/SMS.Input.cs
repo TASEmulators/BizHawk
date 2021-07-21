@@ -6,78 +6,6 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 {
 	public partial class SMS
 	{
-		public static readonly ControllerDefinition SmsController = new ControllerDefinition
-		{
-			Name = "SMS Controller",
-			BoolButtons =
-				{
-					"Reset", "Pause",
-					"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 B1", "P1 B2",
-					"P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 B1", "P2 B2"
-				}
-		};
-
-		public static readonly ControllerDefinition GGController = new ControllerDefinition
-		{
-			Name = "GG Controller",
-			BoolButtons =
-				{
-					"Reset",
-					"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 B1", "P1 B2", "P1 Start"
-				}
-		};
-
-		public static readonly ControllerDefinition SMSPaddleController = new ControllerDefinition
-		{
-			Name = "SMS Paddle Controller",
-			BoolButtons =
-			{
-				"Reset", "Pause",
-				"P1 Left", "P1 Right", "P1 B1",
-				"P2 Left", "P2 Right", "P2 B1",
-			}
-		}.AddAxis("P1 Paddle", 0.RangeTo(255), 128)
-			.AddAxis("P2 Paddle", 0.RangeTo(255), 128);
-
-		public static readonly ControllerDefinition SMSLightPhaserController = new ControllerDefinition
-		{
-			Name = "SMS Light Phaser Controller",
-			BoolButtons =
-			{
-				"Reset", "Pause",
-				"P1 Trigger"
-			}
-		}.AddXYPair("P1 {0}", AxisPairOrientation.RightAndUp, 0.RangeTo(127), 64, 0.RangeTo(1000), 500); //TODO verify direction against hardware
-
-		public static readonly ControllerDefinition SMSSportsPadController = new ControllerDefinition
-		{
-			Name = "SMS Sports Pad Controller",
-			BoolButtons =
-			{
-				"Reset", "Pause",
-				"P1 Left", "P1 Right", "P1 Up", "P1 Down", "P1 B1", "P1 B2",
-				"P2 Left", "P2 Right", "P2 Up", "P2 Down", "P2 B1", "P2 B2"
-			}
-		}.AddXYPair("P1 {0}", AxisPairOrientation.RightAndUp, (-64).RangeTo(63), 0) //TODO verify direction against hardware
-			.AddXYPair("P2 {0}", AxisPairOrientation.RightAndUp, (-64).RangeTo(63), 0); //TODO ditto
-
-		public static readonly ControllerDefinition SMSKeyboardController = new ControllerDefinition
-		{
-			Name = "SMS Keyboard Controller",
-			BoolButtons =
-			{
-				"Key 1", "Key 2", "Key 3", "Key 4", "Key 5", "Key 6", "Key 7", "Key 8", "Key 9", "Key 0", "Key Minus", "Key Caret", "Key Yen", "Key Break",
-				"Key Function", "Key Q", "Key W", "Key E", "Key R", "Key T", "Key Y", "Key U", "Key I", "Key O", "Key P", "Key At", "Key Left Bracket", "Key Return", "Key Up Arrow",
-				"Key Control", "Key A", "Key S", "Key D", "Key F", "Key G", "Key H", "Key J", "Key K", "Key L", "Key Semicolon", "Key Colon", "Key Right Bracket", "Key Left Arrow", "Key Right Arrow",
-				"Key Shift", "Key Z", "Key X", "Key C", "Key V", "Key B", "Key N", "Key M", "Key Comma", "Key Period", "Key Slash", "Key PI", "Key Down Arrow",
-				"Key Graph", "Key Kana", "Key Space", "Key Home/Clear", "Key Insert/Delete",
-
-				"Reset", "Pause",
-				"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 B1", "P1 B2",
-				"P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 B1", "P2 B2"
-			}
-		};
-
 		private static readonly string[] KeyboardMap =
 		{
 			"Key 1", "Key Q", "Key A", "Key Z", "Key Kana", "Key Comma", "Key K", "Key I", "Key 8", null, null, null,
@@ -90,20 +18,9 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 B1", "P1 B2", "P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 B1", "P2 B2"
 		};
 
-		private const int PaddleMin = 0;
-		private const int PaddleMax = 255;
-		private const int SportsPadMin = -64;
-		private const int SportsPadMax = 63;
+		private bool LatchLightPhaser1 = false;
+		private bool LatchLightPhaser2 = false;
 
-		// The paddles and sports pads have data select states
-		private bool Controller1SelectHigh = true;
-		private bool Controller2SelectHigh = true;
-
-		private bool LatchLightPhaser = false;
-
-		// further state value for sports pad, may be useful for other controllers in future
-		private int Controller1State = 3;
-		private int Controller2State = 3;
 		private int ControllerTick = 0; // for timing in japan
 
 		private byte ReadControls1()
@@ -112,247 +29,32 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			_lagged = false;
 			byte value = 0xFF;
 
-			switch (SyncSettings.ControllerType)
+			PresetControllerState(1);
+			// Hard-wired together for paddles?
+			_controllerDeck.SetPin_c2(_controller, _controllerDeck.GetPin_c1(_controller));
+
+			value &= _controllerDeck.ReadPort1_c1(_controller);
+			value &= _controllerDeck.ReadPort1_c2(_controller);
+
+			PostsetControllerState(1);
+			
+			if (!IsGameGear_C && SyncSettings.UseKeyboard)
 			{
-				case SmsSyncSettings.ControllerTypes.Paddle:
+				// 7 represents ordinary controller reads
+				if ((PortDE & 7) != 7)
+				{
+					value = 0xFF;
+
+					for (int bit = 0; bit < 8; ++bit)
 					{
-						// use analog values from a controller, see http://www.smspower.org/Development/Paddle
+						string key = KeyboardMap[(PortDE & 0x07) * 12 + bit];
 
-						int paddle1Pos;
-						if (_controller.IsPressed("P1 Left"))
-							paddle1Pos = PaddleMin;
-						else if (_controller.IsPressed("P1 Right"))
-							paddle1Pos = PaddleMax;
-						else
-							paddle1Pos = (int)_controller.AxisValue("P1 Paddle");
-
-						int paddle2Pos;
-						if (_controller.IsPressed("P2 Left"))
-							paddle2Pos = PaddleMin;
-						else if (_controller.IsPressed("P2 Right"))
-							paddle2Pos = PaddleMax;
-						else
-							paddle2Pos = (int)_controller.AxisValue("P2 Paddle");
-
-						PresetControllerState(1);
-						// Hard-wired together?
-						Controller2SelectHigh = Controller1SelectHigh;
-
-						if (Controller1SelectHigh)
+						if (key != null && _controller.IsPressed(key))
 						{
-							if ((paddle1Pos & 0x10) == 0) value &= 0xFE;
-							if ((paddle1Pos & 0x20) == 0) value &= 0xFD;
-							if ((paddle1Pos & 0x40) == 0) value &= 0xFB;
-							if ((paddle1Pos & 0x80) == 0) value &= 0xF7;
-						}
-						else
-						{
-							if ((paddle1Pos & 0x01) == 0) value &= 0xFE;
-							if ((paddle1Pos & 0x02) == 0) value &= 0xFD;
-							if ((paddle1Pos & 0x04) == 0) value &= 0xFB;
-							if ((paddle1Pos & 0x08) == 0) value &= 0xF7;
-						}
-
-						if (_controller.IsPressed("P1 B1")) value &= 0xEF;
-						if (!Controller1SelectHigh) value &= 0xDF;
-
-						if (Controller2SelectHigh)
-						{
-							if ((paddle2Pos & 0x10) == 0) value &= 0xBF;
-							if ((paddle2Pos & 0x20) == 0) value &= 0x7F;
-						}
-						else
-						{
-							if ((paddle2Pos & 0x01) == 0) value &= 0xBF;
-							if ((paddle2Pos & 0x02) == 0) value &= 0x7F;
-						}
-
-						PostsetControllerState(1);
-					}
-					break;
-
-				case SmsSyncSettings.ControllerTypes.LightPhaser:
-					if (_controller.IsPressed("P1 Trigger")) value &= 0xEF;
-					break;
-
-				case SmsSyncSettings.ControllerTypes.SportsPad:
-					{
-						int p1X;
-						if (_controller.IsPressed("P1 Left"))
-							p1X = SportsPadMin;
-						else if (_controller.IsPressed("P1 Right"))
-							p1X = SportsPadMax;
-						else
-							p1X = (int)_controller.AxisValue("P1 X");
-
-						int p1Y;
-						if (_controller.IsPressed("P1 Up"))
-							p1Y = SportsPadMin;
-						else if (_controller.IsPressed("P1 Down"))
-							p1Y = SportsPadMax;
-						else
-							p1Y = (int)_controller.AxisValue("P1 Y");
-
-						int p2X;
-						if (_controller.IsPressed("P2 Left"))
-							p2X = SportsPadMin;
-						else if (_controller.IsPressed("P2 Right"))
-							p2X = SportsPadMax;
-						else
-							p2X = (int)_controller.AxisValue("P2 X");
-
-						int p2Y;
-						if (_controller.IsPressed("P2 Up"))
-							p2Y = SportsPadMin;
-						else if (_controller.IsPressed("P2 Down"))
-							p2Y = SportsPadMax;
-						else
-							p2Y = (int)_controller.AxisValue("P2 Y");
-
-						if (_region == SmsSyncSettings.Regions.Japan)
-						{
-							p1X += 128;
-							p1Y += 128;
-							p2X += 128;
-							p2Y += 128;
-						}
-						else
-						{
-							p1X *= -1;
-							p1Y *= -1;
-							p2X *= -1;
-							p2Y *= -1;
-						}
-
-						PresetControllerState(1);
-
-						// advance state
-						if (Controller1SelectHigh && (Controller1State % 2 == 0))
-						{
-							++Controller1State;
-						}
-						else if (!Controller1SelectHigh && (Controller1State % 2 == 1))
-						{
-							if (++Controller1State == (_region == SmsSyncSettings.Regions.Japan ? 6 : 4))
-								Controller1State = 0;
-						}
-						if (Controller2SelectHigh && (Controller2State % 2 == 0))
-						{
-							++Controller2State;
-						}
-						else if (!Controller2SelectHigh && (Controller2State % 2 == 1))
-						{
-							if (++Controller2State == (_region == SmsSyncSettings.Regions.Japan ? 6 : 4))
-								Controller2State = 0;
-						}
-
-						switch (Controller1State)
-						{
-							case 0:
-								if ((p1X & 0x10) == 0) value &= 0xFE;
-								if ((p1X & 0x20) == 0) value &= 0xFD;
-								if ((p1X & 0x40) == 0) value &= 0xFB;
-								if ((p1X & 0x80) == 0) value &= 0xF7;
-								break;
-							case 1:
-								if ((p1X & 0x01) == 0) value &= 0xFE;
-								if ((p1X & 0x02) == 0) value &= 0xFD;
-								if ((p1X & 0x04) == 0) value &= 0xFB;
-								if ((p1X & 0x08) == 0) value &= 0xF7;
-								break;
-							case 2:
-								if ((p1Y & 0x10) == 0) value &= 0xFE;
-								if ((p1Y & 0x20) == 0) value &= 0xFD;
-								if ((p1Y & 0x40) == 0) value &= 0xFB;
-								if ((p1Y & 0x80) == 0) value &= 0xF7;
-								break;
-							case 3:
-								if ((p1Y & 0x01) == 0) value &= 0xFE;
-								if ((p1Y & 0x02) == 0) value &= 0xFD;
-								if ((p1Y & 0x04) == 0) value &= 0xFB;
-								if ((p1Y & 0x08) == 0) value &= 0xF7;
-								break;
-							case 4:
-								// specific to Japan: sync via TR
-								value &= 0xDF;
-								break;
-							case 5:
-								// specific to Japan: buttons
-								if (_controller.IsPressed("P1 B1")) value &= 0xFE;
-								if (_controller.IsPressed("P1 B2")) value &= 0xFD;
-								break;
-						}
-
-						if (_region != SmsSyncSettings.Regions.Japan)
-						{
-							// Buttons like normal in Export
-							if (_controller.IsPressed("P1 B1")) value &= 0xEF;
-							if (_controller.IsPressed("P1 B2")) value &= 0xDF;
-						}
-						else
-						{
-							// In Japan, it contains selectHigh
-							if (!Controller1SelectHigh) value &= 0xEF;
-						}
-
-						switch (Controller2State)
-						{
-							case 0:
-								if ((p2X & 0x10) == 0) value &= 0xBF;
-								if ((p2X & 0x20) == 0) value &= 0x7F;
-								break;
-							case 1:
-								if ((p2X & 0x01) == 0) value &= 0xBF;
-								if ((p2X & 0x02) == 0) value &= 0x7F;
-								break;
-							case 2:
-								if ((p2Y & 0x10) == 0) value &= 0xBF;
-								if ((p2Y & 0x20) == 0) value &= 0x7F;
-								break;
-							case 3:
-								if ((p2Y & 0x01) == 0) value &= 0xBF;
-								if ((p2Y & 0x02) == 0) value &= 0x7F;
-								break;
-							case 5:
-								// specific to Japan: buttons
-								if (_controller.IsPressed("P2 B1")) value &= 0xBF;
-								if (_controller.IsPressed("P2 B2")) value &= 0x7F;
-								break;
-						}
-
-						PostsetControllerState(1);
-					}
-					break;
-
-				case SmsSyncSettings.ControllerTypes.Keyboard:
-					{
-						// use keyboard map to get each bit
-
-						for (int bit = 0; bit < 8; ++bit)
-						{
-							string key = KeyboardMap[(PortDE & 0x07) * 12 + bit];
-
-							if (key != null && _controller.IsPressed(key))
-							{
-								value &= (byte)~(1 << bit);
-							}
+							value &= (byte)~(1 << bit);
 						}
 					}
-					break;
-
-				default:
-					// Normal controller
-
-					if (_controller.IsPressed("P1 Up")) value &= 0xFE;
-					if (_controller.IsPressed("P1 Down")) value &= 0xFD;
-					if (_controller.IsPressed("P1 Left")) value &= 0xFB;
-					if (_controller.IsPressed("P1 Right")) value &= 0xF7;
-					if (_controller.IsPressed("P1 B1")) value &= 0xEF;
-					if (_controller.IsPressed("P1 B2")) value &= 0xDF;
-
-					if (_controller.IsPressed("P2 Up")) value &= 0xBF;
-					if (_controller.IsPressed("P2 Down")) value &= 0x7F;
-					break;
+				}			
 			}
 
 			return value;
@@ -364,150 +66,12 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			_lagged = false;
 			byte value = 0xFF;
 
-			switch (SyncSettings.ControllerType)
-			{
-				case SmsSyncSettings.ControllerTypes.Paddle:
-					{
-						// use analog values from a controller, see http://www.smspower.org/Development/Paddle
+			PresetControllerState(2);
 
-						int paddle2Pos;
-						if (_controller.IsPressed("P2 Left"))
-							paddle2Pos = PaddleMin;
-						else if (_controller.IsPressed("P2 Right"))
-							paddle2Pos = PaddleMax;
-						else
-							paddle2Pos = (int)_controller.AxisValue("P2 Paddle");
+			value &= _controllerDeck.ReadPort2_c1(_controller);
+			value &= _controllerDeck.ReadPort2_c2(_controller);
 
-						PresetControllerState(2);
-
-						if (Controller2SelectHigh)
-						{
-							if ((paddle2Pos & 0x40) == 0) value &= 0xFE;
-							if ((paddle2Pos & 0x80) == 0) value &= 0xFD;
-						}
-						else
-						{
-							if ((paddle2Pos & 0x04) == 0) value &= 0xFE;
-							if ((paddle2Pos & 0x08) == 0) value &= 0xFD;
-						}
-
-						if (_controller.IsPressed("P2 B1")) value &= 0xFB;
-						if (!Controller2SelectHigh) value &= 0xF7;
-
-						PostsetControllerState(2);
-					}
-					break;
-
-				case SmsSyncSettings.ControllerTypes.LightPhaser:
-					if (LatchLightPhaser)
-					{
-						value &= 0xBF;
-						LatchLightPhaser = false;
-					}
-					break;
-
-				case SmsSyncSettings.ControllerTypes.SportsPad:
-					{
-						int p2X;
-						if (_controller.IsPressed("P2 Left"))
-							p2X = SportsPadMin;
-						else if (_controller.IsPressed("P2 Right"))
-							p2X = SportsPadMax;
-						else
-							p2X = (int)_controller.AxisValue("P2 X");
-
-						int p2Y;
-						if (_controller.IsPressed("P2 Down"))
-							p2Y = SportsPadMin;
-						else if (_controller.IsPressed("P2 Up"))
-							p2Y = SportsPadMax;
-						else
-							p2Y = (int)_controller.AxisValue("P2 Y");
-
-						if (_region == SmsSyncSettings.Regions.Japan)
-						{
-							p2X += 128;
-							p2Y += 128;
-						}
-						else
-						{
-							p2X *= -1;
-							p2Y *= -1;
-						}
-
-						PresetControllerState(2);
-
-						if (Controller2SelectHigh && (Controller2State % 2 == 0))
-						{
-							++Controller2State;
-						}
-						else if (!Controller2SelectHigh && (Controller2State % 2 == 1))
-						{
-							if (++Controller2State == (_region == SmsSyncSettings.Regions.Japan ? 6 : 4))
-								Controller2State = 0;
-						}
-
-						switch (Controller2State)
-						{
-							case 0:
-								if ((p2X & 0x40) == 0) value &= 0xFE;
-								if ((p2X & 0x80) == 0) value &= 0xFD;
-								break;
-							case 1:
-								if ((p2X & 0x04) == 0) value &= 0xFE;
-								if ((p2X & 0x08) == 0) value &= 0xFD;
-								break;
-							case 2:
-								if ((p2Y & 0x40) == 0) value &= 0xFE;
-								if ((p2Y & 0x80) == 0) value &= 0xFD;
-								break;
-							case 3:
-								if ((p2Y & 0x04) == 0) value &= 0xFE;
-								if ((p2Y & 0x08) == 0) value &= 0xFD;
-								break;
-						}
-						if (_region != SmsSyncSettings.Regions.Japan)
-						{
-							// Buttons like normal in Export
-							if (_controller.IsPressed("P2 B1")) value &= 0xFB;
-							if (_controller.IsPressed("P2 B2")) value &= 0xF7;
-						}
-						else
-						{
-							if (!Controller2SelectHigh) value &= 0xF7;
-						}
-
-						PostsetControllerState(2);
-					}
-					break;
-
-				case SmsSyncSettings.ControllerTypes.Keyboard:
-					{
-						value &= 0x7F;
-
-						// use keyboard map to get each bit
-
-						for (int bit = 0; bit < 4; ++bit)
-						{
-							string key = KeyboardMap[(PortDE & 0x07) * 12 + bit + 8];
-
-							if (key != null && _controller.IsPressed(key))
-							{
-								value &= (byte)~(1 << bit);
-							}
-						}
-					}
-					break;
-
-				default:
-					// Normal controller
-
-					if (_controller.IsPressed("P2 Left")) value &= 0xFE;
-					if (_controller.IsPressed("P2 Right")) value &= 0xFD;
-					if (_controller.IsPressed("P2 B1")) value &= 0xFB;
-					if (_controller.IsPressed("P2 B2")) value &= 0xF7;
-					break;
-			}
+			PostsetControllerState(2);
 
 			if (_controller.IsPressed("Reset")) value &= 0xEF;
 
@@ -526,6 +90,37 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				}
 			}
 
+			if (LatchLightPhaser1)
+			{
+				value &= 0xBF;
+				LatchLightPhaser1 = false;
+			}
+
+			if (LatchLightPhaser2)
+			{
+				value &= 0x7F;
+				LatchLightPhaser2 = false;
+			}
+
+			if (!IsGameGear_C && SyncSettings.UseKeyboard)
+			{
+				// 7 represents ordinary controller reads
+				if ((PortDE & 7) != 7)
+				{
+					value = 0x7F;
+
+					for (int bit = 0; bit < 4; ++bit)
+					{
+						string key = KeyboardMap[(PortDE & 0x07) * 12 + bit + 8];
+
+						if (key != null && _controller.IsPressed(key))
+						{
+							value &= (byte)~(1 << bit);
+						}
+					}
+				}
+			}
+
 			return value;
 		}
 
@@ -534,24 +129,48 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			const int phaserRadius = 4;
 
 			// specifically lightgun needs to do things on a per-line basis
-			if (SyncSettings.ControllerType == SmsSyncSettings.ControllerTypes.LightPhaser)
+			if (!IsGameGear_C) 
 			{
-				byte phaserX = (byte)(_controller.AxisValue("P1 X") + 20);
-				int phaserY = (int)_controller.AxisValue("P1 Y");
-				int scanline = Vdp.ScanLine;
-
-				if (!LatchLightPhaser && phaserY >= scanline - phaserRadius && phaserY <= scanline + phaserRadius)
+				if (SyncSettings.Port1 == SMSControllerTypes.Phaser)
 				{
-					if (scanline >= Vdp.FrameHeight)
-						return;
+					byte phaserX = (byte)(_controller.AxisValue("P1 X") + 20);
+					int phaserY = (int)_controller.AxisValue("P1 Y");
+					int scanline = Vdp.ScanLine;
 
-					// latch HCounter via TH
-					Vdp.HCounter = phaserX;
-					LatchLightPhaser = true;
+					if (!LatchLightPhaser1 && phaserY >= scanline - phaserRadius && phaserY <= scanline + phaserRadius)
+					{
+						if (scanline >= Vdp.FrameHeight)
+							return;
+
+						// latch HCounter via TH
+						Vdp.HCounter = phaserX;
+						LatchLightPhaser1 = true;
+					}
+					else
+					{
+						LatchLightPhaser1 = false;
+					}
 				}
-				else
+
+				if (SyncSettings.Port2 == SMSControllerTypes.Phaser)
 				{
-					LatchLightPhaser = false;
+					byte phaserX = (byte)(_controller.AxisValue("P2 X") + 20);
+					int phaserY = (int)_controller.AxisValue("P2 Y");
+					int scanline = Vdp.ScanLine;
+
+					if (!LatchLightPhaser2 && phaserY >= scanline - phaserRadius && phaserY <= scanline + phaserRadius)
+					{
+						if (scanline >= Vdp.FrameHeight)
+							return;
+
+						// latch HCounter via TH
+						Vdp.HCounter = phaserX;
+						LatchLightPhaser2 = true;
+					}
+					else
+					{
+						LatchLightPhaser2 = false;
+					}
 				}
 			}
 		}
@@ -589,18 +208,18 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			{
 				if ((Port3F & 0x02) == 0x00)
 				{
-					Controller1SelectHigh = (Port3F & 0x20) != 0;
+					_controllerDeck.SetPin_c1(_controller, (Port3F & 0x20) != 0);
 
 					// resync
-					Controller2State = 3;
+					_controllerDeck.SetCounter_c2(_controller, 3);
 				}
 
 				if ((Port3F & 0x08) == 0x00)
 				{
-					Controller2SelectHigh = (Port3F & 0x80) != 0;
+					_controllerDeck.SetPin_c2(_controller, (Port3F & 0x80) != 0);
 
 					// resync
-					Controller1State = 3;
+					_controllerDeck.SetCounter_c1(_controller, 3);
 				}
 			}
 		}
@@ -614,12 +233,15 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 				if (pin == 1)
 				{
-					Controller1SelectHigh ^= true;
+					bool temp = _controllerDeck.GetPin_c1(_controller);
+					_controllerDeck.SetPin_c1(_controller, temp ^ true);
 				}
 				else
 				{
-					Controller1SelectHigh = false;
-					Controller2SelectHigh ^= true;
+					_controllerDeck.SetPin_c1(_controller, false);
+
+					bool temp = _controllerDeck.GetPin_c2(_controller);
+					_controllerDeck.SetPin_c2(_controller, temp ^ true);
 				}
 			}
 		}

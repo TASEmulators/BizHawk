@@ -7,7 +7,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Atari.Lynx
 {
-	[Core("Handy", "K. Wilkins, Mednafen Team", true, true, "mednafen 0-9-34-1", "http://mednafen.sourceforge.net/", false)]
+	[PortedCore(CoreNames.Handy, "K. Wilkins, Mednafen Team", "mednafen 0-9-34-1", "http://mednafen.sourceforge.net/")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight), typeof(IRegionable), typeof(ISettable<,>) })]
 	public partial class Lynx : IEmulator, IVideoProvider, ISoundProvider, ISaveRam, IStatable, IInputPollable
 	{
@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 		{
 			ServiceProvider = new BasicServiceProvider(this);
 
-			byte[] bios = comm.CoreFileProvider.GetFirmware("Lynx", "Boot", true, "Boot rom is required");
+			var bios = comm.CoreFileProvider.GetFirmwareOrThrow(new("Lynx", "Boot"), "Boot rom is required");
 			if (bios.Length != 512)
 			{
 				throw new MissingFirmwareException("Lynx Bootrom must be 512 bytes!");
@@ -121,7 +121,6 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 
 		public bool FrameAdvance(IController controller, bool render, bool rendersound = true)
 		{
-			Frame++;
 			if (controller.IsPressed("Power"))
 			{
 				LibLynx.Reset(Core);
@@ -134,6 +133,8 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 			{
 				LagCount++;
 			}
+
+			Frame++;
 
 			return true;
 		}

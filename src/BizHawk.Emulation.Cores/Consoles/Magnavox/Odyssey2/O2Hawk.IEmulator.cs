@@ -27,8 +27,6 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 				cpu.TraceCallback = null;
 			}
 
-			_frame++;
-
 			if (controller.IsPressed("Power"))
 			{
 				HardReset();
@@ -47,6 +45,8 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			{
 				_lagcount++;
 			}
+
+			_frame++;
 
 			return true;
 		}

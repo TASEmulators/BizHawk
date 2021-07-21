@@ -8,7 +8,7 @@ using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Common.PathExtensions
 {
-	public static class PathExtensions
+	public static partial class PathExtensions
 	{
 		/// <returns><see langword="true"/> iff <paramref name="childPath"/> indicates a child of <paramref name="parentPath"/>, with <see langword="false"/> being returned if either path is <see langword="null"/></returns>
 		/// <remarks>algorithm for Windows taken from https://stackoverflow.com/a/7710620/7467292</remarks>
@@ -48,6 +48,18 @@ namespace BizHawk.Common.PathExtensions
 			return false;
 		}
 
+		/// <returns><see langword="true"/> iff absolute (OS-dependent)</returns>
+		/// <seealso cref="IsRelative"/>
+		public static bool IsAbsolute(this string path)
+		{
+			return PathInternal.IsPathFullyQualified(path);
+		}
+
+		/// <returns><see langword="false"/> iff absolute (OS-dependent)</returns>
+		/// <remarks>that means it may return <see langword="true"/> for invalid paths</remarks>
+		/// <seealso cref="IsAbsolute"/>
+		public static bool IsRelative(this string path) => !path.IsAbsolute();
+
 		/// <exception cref="ArgumentException">running on Windows host, and unmanaged call failed</exception>
 		/// <exception cref="FileNotFoundException">running on Windows host, and either path is not a regular file or directory</exception>
 		/// <remarks>
@@ -85,6 +97,25 @@ namespace BizHawk.Common.PathExtensions
 			return Win32Imports.PathRelativePathTo(path, fromPath, GetPathAttribute(fromPath), toPath, GetPathAttribute(toPath))
 				? path.ToString()
 				: throw new ArgumentException("Paths must have a common prefix");
+		}
+
+		/// <returns>absolute path (OS-dependent) equivalent to <paramref name="path"/></returns>
+		/// <remarks>
+		/// unless <paramref name="cwd"/> is given, uses <see cref="CWDHacks.Get">CWDHacks.Get</see>/<see cref="Environment.CurrentDirectory">Environment.CurrentDirectory</see>,
+		/// so take care when calling this after startup
+		/// </remarks>
+		public static string MakeAbsolute(this string path, string? cwd = null)
+		{
+			if (path.IsAbsolute())
+				return path;
+			else
+			{
+				// FileInfo for normalisation ("C:\a\b\..\c" => "C:\a\c")
+				var mycwd = cwd ?? (OSTailoredCode.IsUnixHost ? Environment.CurrentDirectory : CWDHacks.Get());
+				var finalpath = $"{mycwd}/{path}";
+				var fi = new FileInfo(finalpath);
+				return fi.FullName;
+			}
 		}
 
 		/// <returns>the absolute path equivalent to <paramref name="path"/> which contains <c>%exe%</c> (expanded) as a prefix</returns>

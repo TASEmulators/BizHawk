@@ -7,38 +7,6 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 	{
 		public IEmulatorServiceProvider ServiceProvider { get; }
 
-		public ControllerDefinition ControllerDefinition
-		{
-			get
-			{
-				if (IsGameGear_C)
-				{
-					return GGController;
-				}
-
-				// Sorta a hack but why not
-				PortDEEnabled = SyncSettings.ControllerType == SmsSyncSettings.ControllerTypes.Keyboard;
-
-				switch(SyncSettings.ControllerType)
-				{
-					case SmsSyncSettings.ControllerTypes.Paddle:
-						return SMSPaddleController;
-					case SmsSyncSettings.ControllerTypes.LightPhaser:
-						// scale the vertical to the display mode
-						var axisName = SMSLightPhaserController.Axes[1];
-						SMSLightPhaserController.Axes[axisName] = SMSLightPhaserController.Axes[axisName]
-							.With(0.RangeTo(Vdp.FrameHeight - 1), Vdp.FrameHeight / 2);
-						return SMSLightPhaserController;
-					case SmsSyncSettings.ControllerTypes.SportsPad:
-						return SMSSportsPadController;
-					case SmsSyncSettings.ControllerTypes.Keyboard:
-						return SMSKeyboardController;
-					default:
-						return SmsController;
-				}
-			}
-		}
-
 		// not savestated variables
 		private int s_L, s_R;
 
@@ -46,7 +14,6 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		{
 			_controller = controller;
 			_lagged = true;
-			_frame++;
 
 			if (!IsGameGear)
 			{
@@ -129,6 +96,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				_isLag = false;
 			}
 
+			_frame++;
+
 			return true;
 		}
 
@@ -136,7 +105,6 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		public void FrameAdvancePrep()
 		{
 			_lagged = true;
-			_frame++;
 
 			if (!IsGameGear && IsGameGear_C)
 			{
@@ -156,6 +124,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			{
 				_isLag = false;
 			}
+
+			_frame++;
 		}
 
 		public int Frame => _frame;

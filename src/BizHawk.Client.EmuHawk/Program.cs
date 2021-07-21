@@ -54,18 +54,25 @@ namespace BizHawk.Client.EmuHawk
 			//in case assembly resolution fails, such as if we moved them into the dll subdiretory, this event handler can reroute to them
 			AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
 
-			//but before we even try doing that, whack the MOTW from everything in that directory (that's a dll)
-			//otherwise, some people will have crashes at boot-up due to .net security disliking MOTW.
-			//some people are getting MOTW through a combination of browser used to download bizhawk, and program used to dearchive it
-			//We need to do it here too... otherwise people get exceptions when externaltools we distribute try to startup
-			static void RemoveMOTW(string path) => DeleteFileW($"{path}:Zone.Identifier");
-			var todo = new Queue<DirectoryInfo>(new[] { new DirectoryInfo(dllDir) });
-			while (todo.Count != 0)
+			try
 			{
-				var di = todo.Dequeue();
-				foreach (var disub in di.GetDirectories()) todo.Enqueue(disub);
-				foreach (var fi in di.GetFiles("*.dll")) RemoveMOTW(fi.FullName);
-				foreach (var fi in di.GetFiles("*.exe")) RemoveMOTW(fi.FullName);
+				// but before we even try doing that, whack the MOTW from everything in that directory (that's a dll)
+				// otherwise, some people will have crashes at boot-up due to .net security disliking MOTW.
+				// some people are getting MOTW through a combination of browser used to download bizhawk, and program used to dearchive it
+				// We need to do it here too... otherwise people get exceptions when externaltools we distribute try to startup
+				static void RemoveMOTW(string path) => DeleteFileW($"{path}:Zone.Identifier");
+				var todo = new Queue<DirectoryInfo>(new[] { new DirectoryInfo(dllDir) });
+				while (todo.Count != 0)
+				{
+					var di = todo.Dequeue();
+					foreach (var disub in di.GetDirectories()) todo.Enqueue(disub);
+					foreach (var fi in di.GetFiles("*.dll")) RemoveMOTW(fi.FullName);
+					foreach (var fi in di.GetFiles("*.exe")) RemoveMOTW(fi.FullName);
+				}
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine($"MotW remover failed: {e}");
 			}
 		}
 
@@ -87,21 +94,27 @@ namespace BizHawk.Client.EmuHawk
 		{
 			// this check has to be done VERY early.  i stepped through a debug build with wrong .dll versions purposely used,
 			// and there was a TypeLoadException before the first line of SubMain was reached (some static ColorType init?)
-			// zero 25-dec-2012 - only do for public builds. its annoying during development
-			// and don't bother when installed from a package manager i.e. not Windows --yoshi
-			// commenting this out until I get it generated properly --yoshi
-//			if (!VersionInfo.DeveloperBuild && !OSTC.IsUnixHost)
-//			{
-//				var thisversion = typeof(Program).Assembly.GetName().Version;
-//				var utilversion = Assembly.Load(new AssemblyName("BizHawk.Client.Common")).GetName().Version;
-//				var emulversion = Assembly.Load(new AssemblyName("BizHawk.Emulation.Cores")).GetName().Version;
-//
-//				if (thisversion != utilversion || thisversion != emulversion)
-//				{
-//					MessageBox.Show("Conflicting revisions found!  Don't mix .dll versions!");
-//					return -1;
-//				}
-//			}
+			var thisAsmVer = EmuHawk.ReflectionCache.AsmVersion;
+			foreach (var asmVer in new[]
+			{
+				BizInvoke.ReflectionCache.AsmVersion,
+				Bizware.BizwareGL.ReflectionCache.AsmVersion,
+				Bizware.DirectX.ReflectionCache.AsmVersion,
+				Bizware.OpenTK3.ReflectionCache.AsmVersion,
+				Client.Common.ReflectionCache.AsmVersion,
+				Common.ReflectionCache.AsmVersion,
+				Emulation.Common.ReflectionCache.AsmVersion,
+				Emulation.Cores.ReflectionCache.AsmVersion,
+				Emulation.DiscSystem.ReflectionCache.AsmVersion,
+				WinForms.Controls.ReflectionCache.AsmVersion,
+			})
+			{
+				if (asmVer != thisAsmVer)
+				{
+					MessageBox.Show("One or more of the BizHawk.* assemblies have the wrong version!\n(Did you attempt to update by overwriting an existing install?)");
+					return -1;
+				}
+			}
 
 			TempFileManager.Start();
 
@@ -180,7 +193,8 @@ namespace BizHawk.Client.EmuHawk
 						return CheckRenderer(glOpenTK);
 					default:
 					case EDispMethod.GdiPlus:
-						return new IGL_GdiPlus();
+						static GLControlWrapper_GdiPlus CreateGLControlWrapper(IGL_GdiPlus self) => new(self); // inlining as lambda causes crash, don't wanna know why --yoshi
+						return new IGL_GdiPlus(CreateGLControlWrapper);
 				}
 			}
 

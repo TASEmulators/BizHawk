@@ -23,7 +23,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private IMovie CurrentMovie => MovieSession.Movie;
 
-		// Still need to make sure the user can't load and use macros that 
+		// Still need to make sure the user can't load and use macros that
 		// have options only available for TasMovie
 
 		private bool _initializing;

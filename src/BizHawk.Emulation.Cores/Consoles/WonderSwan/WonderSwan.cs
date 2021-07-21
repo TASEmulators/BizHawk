@@ -6,7 +6,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.WonderSwan
 {
-	[Core("Cygne/Mednafen", "Dox, Mednafen Team", true, true, "1.24.3", "https://mednafen.github.io/releases/", false, "WonderSwan")]
+	[PortedCore(CoreNames.Cygne, "Dox, Mednafen Team", "1.24.3", "https://mednafen.github.io/releases/")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight), typeof(IRegionable) })]
 	public partial class WonderSwan : IEmulator, IVideoProvider, ISoundProvider,
 		IInputPollable, IDebuggable
@@ -62,7 +62,6 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 		public bool FrameAdvance(IController controller, bool render, bool rendersound = true)
 		{
-			Frame++;
 			IsLagFrame = true;
 
 			if (controller.IsPressed("Power"))
@@ -78,6 +77,8 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 			if (IsLagFrame)
 				LagCount++;
+
+			Frame++;
 
 			return true;
 		}

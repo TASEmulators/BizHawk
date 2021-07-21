@@ -46,7 +46,8 @@ namespace BizHawk.Tests.Client.Common.Dearchive
 				Assert.AreEqual(1, items!.Count, $"{filename} contains 1 file, but was detected as containing {items.Count} files");
 				using MemoryStream ms = new((int) items[0].Size);
 				af.ExtractFile(items[0].ArchiveIndex, ms);
-//				Assert.IsTrue(ms.ReadAllBytes().SequenceEqual(Rom), $"the file extracted from {filename} doesn't match the uncompressed file"); //TODO less dumb way of doing this? also it doesn't work
+				ms.Seek(0L, SeekOrigin.Begin);
+				Assert.IsTrue(ms.ReadAllBytes().SequenceEqual(Rom), $"the file extracted from {filename} doesn't match the uncompressed file");
 			}
 		}
 	}

@@ -30,7 +30,6 @@ Jump to:
 	* [Localization](#localization)
 	* [License](#license)
 * [Related projects](#related-projects)
-* [License](#license)
 
 ## Features and systems
 
@@ -196,6 +195,7 @@ On Windows 8.1/10, it's easiest to use PowerShell for this. For example, to pass
 ```pwsh
 (New-Object System.Diagnostics.Process -Property @{StartInfo=(New-Object System.Diagnostics.ProcessStartInfo -Property @{FileName="$PWD\EmuHawk.exe";Arguments='"--lua=C:\path\to\script.lua" "C:\path\to\rom.n64"'})}).Start()
 ```
+Note: PowerShell's `cd` doesn't seem to change the CWD of child processes. Just open a shell from the install folder. Don't @ me.
 
 For char escaping tips you're on your own. It might help to split up the command so you can identify syntax errors:
 ```pwsh
@@ -205,8 +205,12 @@ $proc = New-Object System.Diagnostics.Process -Property @{StartInfo=$startInfo}
 $proc.Start()
 ```
 
-On Linux, you can pass arguments to `EmuHawkMono.sh` as expected and they will be forwarded to `mono`. (You can also `export` env. vars.) There is one exception: if you pass `--mono-no-redirect` as the *first argument* it will be eaten by the script itself, and stdout will *not* be redirected to a file.
-The same example as above would be `./EmuHawkMono.sh --lua=/path/to/script.lua /path/to/rom.n64`.
+On Linux, you can pass arguments to `EmuHawkMono.sh` as expected and they will be forwarded to `mono`. (You can also `export` env. vars.) All the arguments work as on Windows, with some caveats:
+* Lua scripts are ignored;
+* file paths must be absolute (or relative to the install dir, `EmuHawkMono.sh` changes the CWD to there);
+* `--mono-no-redirect`: if you pass this flag *as the first argument*, it will be eaten by the script itself, and stdout will *not* be redirected to a file. (It's redirected by default.)
+
+The same example as above would be `./EmuHawkMono.sh --lua=/path/to/script.lua /path/to/rom.n64` (but Lua is no-op).
 
 For char escaping tips, see ~~Unix StackExchange~~ your shell's man/info page. BASH and Zsh have different rules!
 
@@ -282,41 +286,41 @@ We're looking to create [a catalog](https://github.com/TASVideos/BizHawk-Externa
 
 ### Cores
 
-A *core* is what we call the smaller bits of software that emulate just one system or family of systems, e.g. NES/Famicom. For the most part, there's a "best" core for each system, based on accuracy, but there are a few alternative cores which are *faster and less accurate*.
+A *core* is what we call the smaller bits of software that emulate just one system or family of systems, e.g. NesHawk for NES/Famicom. For the most part, we have one core per system, but sometimes you have the choice between speed (in terms of CPU usage) and accuracy.
 
-*Hawk* cores are part of the BizHawk project. All other cores are ported, mainly from the Mednafen project.
+In the table below, core names in **bold** are accuracy-focused and acceptable on TASVideos. The -*Hawk* cores are part of the BizHawk project. All other cores are ported, mainly from the Mednafen project.
 
-System | Core | Alt. Cores
---:|:--|:--
-Apple II | Virtu |
-Atari 2600 | Atari2600Hawk |
-Atari 7800 | A7800Hawk |
-Atari Lynx | Handy |
-Commodore 64 | C64Hawk |
-ColecoVision | ColecoHawk |
-Game Boy / Color | GBHawk | Gambatte
-Game Boy Advance | mGBA |
-Intellivision | IntelliHawk |
-N64 | Mupen64Plus |
-Neo Geo Pocket | NeoPop |
-NES | NesHawk | QuickNes |
-Odyssey² | O2Hawk |
-PC-FX | T.S.T. |
-Playstation (PSX) | Octoshock |
-Sega 32X | PicoDrive |
-Sega Game Gear | SMSHawk |
-Sega Genesis | Genplus-gx |
-Sega Master System | SMSHawk |
-Sega Saturn | Saturnus |
-SNES | BSNES | Faust, Snes9x
-Super Game Boy | BSNES | SameBoy
-TI-83 | TI83Hawk |
-TurboGrafx | TurboNyma | HyperNyma, PCEHawk
-Uzebox | Uzem |
-Vectrex | VectrexHawk |
-Virtual Boy | Virtual Boyee |
-WonderSwan / Color | Cygne |
-ZX Spectrum | ZXHawk |
+System | Cores
+--:|:--
+Apple II | **Virtu**
+Atari 2600 | **Atari2600Hawk**
+Atari 7800 | **A7800Hawk**
+Atari Lynx | **Handy**
+Commodore 64 | **C64Hawk**
+ColecoVision | **ColecoHawk**
+Game Boy / Color | **Gambatte**, **GBHawk**
+Game Boy Advance | **mGBA**
+Intellivision | **IntelliHawk**
+N64 | **Mupen64Plus**
+Neo Geo Pocket | **NeoPop**
+NES | **NesHawk**, QuickNes
+Odyssey² | **O2Hawk**
+PC-FX | **T.S.T.**
+Playstation (PSX) | **Octoshock**
+Sega 32X | **PicoDrive**
+Sega Game Gear | **SMSHawk**
+Sega Genesis | **Genplus-gx**
+Sega Master System | **SMSHawk**
+Sega Saturn | **Saturnus**
+SNES | **BSNES**, Faust, Snes9x
+Super Game Boy | **BSNES**, **SameBoy**
+TI-83 | **TI83Hawk**
+TurboGrafx | HyperNyma, **PCEHawk**, **TurboNyma**
+Uzebox | **Uzem**
+Vectrex | **VectrexHawk**
+Virtual Boy | **Virtual Boyee**
+WonderSwan / Color | **Cygne**
+ZX Spectrum | **ZXHawk**
 
 There are also works-in-progress for:
 * Amstrad CPC (home-grown core)
@@ -334,8 +338,8 @@ Please don't bother core devs about these WIPs unless you're looking to contribu
 ## Support and troubleshooting
 
 A short [FAQ](http://tasvideos.org/Bizhawk/FAQ.html) is provided on the [BizHawk wiki](http://tasvideos.org/Bizhawk.html). If your problem is one of the many not answered there, and you can't find it in the [issue tracker search](https://github.com/TASVideos/BizHawk/issues?q=is%3Aissue+PUT_ISSUE_KEYWORDS_HERE), you can try:
-* `#bizhawk` on freenode IRC ([via web browser](https://webchat.freenode.net/#bizhawk); via HexChat/Irssi: `chat.freenode.net:6697`; [via Matrix](https://matrix.to/#/#freenode_#bizhawk:matrix.org))
 * `#emulation` on [the TASVideos Discord](https://discordapp.com/invite/GySG2b6) (also the more specialised channels `#tas-production` and `#scripting`, and [the ApiHawk server](https://discord.gg/UPhN4um3px))
+* `#bizhawk` on Libera Chat ([via Matrix](https://matrix.to/#/#bizhawk:libera.chat) or [via IRC](https://libera.chat/guides/connect))
 * The TASVideos [forum for BizHawk](http://tasvideos.org/forum/viewforum.php?f=64)
 
 You can [open a new issue](https://github.com/TASVideos/BizHawk/issues/new) at any time if you're logged in to GitHub. Please **at the very least read the issue templates**, we tend to ask the same questions for every one-line issue that's opened.

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 
@@ -126,17 +127,14 @@ namespace BizHawk.Emulation.Cores
 
 		private static PadSchema Mouse(int controller)
 		{
+			AxisSpec range = new((-256).RangeTo(256), 0);
 			return new PadSchema
 			{
 				DisplayName = "Mouse",
 				Size = new Size(418, 290),
 				Buttons = new PadSchemaControl[]
 				{
-					new AnalogSchema(14, 17, $"P{controller} Mouse X")
-					{
-//						MaxValue = 255,
-//						TargetSize = new Size(520, 570)
-					},
+					new AnalogSchema(14, 17, $"P{controller} Mouse X") { Spec = range, SecondarySpec = range },
 					new ButtonSchema(365, 17, controller, "Mouse Left", "Left"),
 					new ButtonSchema(365, 40, controller, "Mouse Center", "Center"),
 					new ButtonSchema(365, 63, controller, "Mouse Right", "Right"),

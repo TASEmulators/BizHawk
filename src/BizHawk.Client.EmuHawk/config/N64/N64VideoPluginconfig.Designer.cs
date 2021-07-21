@@ -451,6 +451,7 @@
 			this.Controls.Add(this.SaveButton);
 			this.Controls.Add(this.N64plugintabcontrol);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+			this.MaximizeBox = false;
 			this.Name = "N64VideoPluginConfig";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Plugin Settings";

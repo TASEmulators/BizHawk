@@ -24,8 +24,6 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 				L.Cpu.TraceCallback = null;
 			}
 
-			_frame++;
-
 			if (controller.IsPressed("Power"))
 			{
 				HardReset();
@@ -52,6 +50,8 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 			{
 				_lagCount++;
 			}
+
+			_frame++;
 
 			return true;
 		}

@@ -144,7 +144,7 @@ namespace BizHawk.Client.Common
 		{
 			if (frame < FrameCount && frame >= 0)
 			{
-				_adapter ??= new Bk2Controller(Session.MovieController.Definition);
+				_adapter ??= new Bk2Controller(LogKey, Session.MovieController.Definition);
 				_adapter.SetFromMnemonic(Log[frame]);
 				return _adapter;
 			}

@@ -1,6 +1,7 @@
 <Project>
 	<PropertyGroup>
 		<AnalysisLevel>5</AnalysisLevel>
+		<EnableNETAnalyzers>true</EnableNETAnalyzers>
 		<ErrorReport>prompt</ErrorReport>
 		<IsTargetingNetFramework>$(TargetFramework.StartsWith("net4"))</IsTargetingNetFramework>
 		<LangVersion>9.0</LangVersion>
@@ -27,7 +28,11 @@
 	<ItemGroup>
 		<PackageReference Include="Nullable" Version="1.3.0" PrivateAssets="all" />
 	</ItemGroup>
+	<PropertyGroup Condition=" $(IsTargetingNetFramework) ">
+		<GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
+	</PropertyGroup>
 	<ItemGroup Condition=" $(IsTargetingNetFramework) ">
-		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="all" />
+		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="all" />
+		<PackageReference Include="System.Resources.Extensions" Version="5.0.0" />
 	</ItemGroup>
 </Project>

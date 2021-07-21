@@ -46,7 +46,7 @@ namespace BizHawk.Client.EmuHawk
 			using (var brush = new SolidBrush(_checkBackColor))
 				pevent.Graphics.FillRectangle(brush, glyphLoc);
 
-			// draw a checkbox menu glyph (we could do this more elegantly with DrawFrameControl) 
+			// draw a checkbox menu glyph (we could do this more elegantly with DrawFrameControl)
 			bool c = CheckState == CheckState.Checked;
 			if (ForceChecked.HasValue)
 			{

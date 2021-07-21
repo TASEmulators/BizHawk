@@ -399,7 +399,7 @@ namespace BizHawk.Client.Common
 				}
 				catch (Exception e)
 				{
-					if (e is MissingFirmwareException || e.InnerException is MissingFirmwareException)
+					if (_config.DontTryOtherCores || e is MissingFirmwareException || e.InnerException is MissingFirmwareException)
 						throw;
 					exceptions.Add(e);
 				}
@@ -464,7 +464,7 @@ namespace BizHawk.Client.Common
 					nextEmulator = new MAME(
 						file.Directory,
 						file.CanonicalName,
-						GetCoreSyncSettings<MAME, MAME.SyncSettings>(),
+						GetCoreSyncSettings<MAME, MAME.MAMESyncSettings>(),
 						out var gameName
 					);
 					rom.GameInfo.Name = gameName;

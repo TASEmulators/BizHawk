@@ -21,8 +21,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				case 0xFF47: ret = BGP;						break; // BGP
 				case 0xFF48: ret = obj_pal_0;				break; // OBP0
 				case 0xFF49: ret = obj_pal_1;				break; // OBP1
-				case 0xFF4A: ret = window_y;				break; // WY
-				case 0xFF4B: ret = window_x;				break; // WX
+				case 0xFF4A: ret = window_y_read;			break; // WY
+				case 0xFF4B: ret = window_x_read;			break; // WX
 			}
 
 			return ret;
@@ -110,7 +110,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				case 0xFF46: // DMA 
 					DMA_addr = value;
 					DMA_start = true;
-					DMA_OAM_access = true;
+					if (!DMA_bus_control) {DMA_OAM_access = true; }
 					DMA_clock = 0;
 					DMA_inc = 0;
 					break; 
@@ -125,6 +125,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					break;
 				case 0xFF4A: // WY
 					window_y = value;
+					window_y_read = window_y;
 					if (!window_started && (!LCDC.Bit(7) || (value > LY))) 
 					{
 						window_y_latch = window_y;
@@ -134,6 +135,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					break;
 				case 0xFF4B: // WX
 					window_x = value;
+					window_x_read = window_x;
 					break;
 			}			
 		}
@@ -1039,17 +1041,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		{
 			if (DMA_clock >= 4)
 			{
+				DMA_bus_control = true;
 				DMA_OAM_access = false;
 				if ((DMA_clock % 4) == 1)
 				{
 					// the cpu can't access memory during this time, but we still need the ppu to be able to.
-					DMA_start = false;
+					DMA_bus_control = false;
 					// Gekkio reports that A14 being high on DMA transfers always represent WRAM accesses
 					// So transfers nominally from higher memory areas are actually still from there (i.e. FF -> DF)
 					byte DMA_actual = DMA_addr;
 					if (DMA_addr > 0xDF) { DMA_actual &= 0xDF; }
 					DMA_byte = Core.ReadMemory((ushort)((DMA_actual << 8) + DMA_inc));
-					DMA_start = true;
+					DMA_bus_control = true;
 				}
 				else if ((DMA_clock % 4) == 3)
 				{
@@ -1065,6 +1068,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			if (DMA_clock == -1)
 			{
 				DMA_start = false;
+				DMA_bus_control = false;
 				DMA_OAM_access = true;
 			}
 		}
@@ -1262,15 +1266,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			scroll_y = 0;
 			scroll_x = 0;
 			LY = 0;
-			LYC = 0xFF;
+			LYC = 0; // NOTE: might be internal latch to 0xFF on startup, need to check ex. frame0_m2stat_count_1_dmg08_cgb04c_out91
 			DMA_addr = 0xFF;
 			BGP = 0xFF;
 			obj_pal_0 = 0xFF;
 			obj_pal_1 = 0xFF;
-			window_y = 0x0;
-			window_x = 0x0;
-			window_x_latch = 0xFF;
-			window_y_latch = 0xFF;
+			window_y = 0;
+			window_x = 0;
+			window_y_read = 0;
+			window_x_read = 0;
+			window_y_latch = 0;
+			window_x_latch = 0;
 			LY_inc = 1;
 			no_scan = false;
 			OAM_access_read = true;

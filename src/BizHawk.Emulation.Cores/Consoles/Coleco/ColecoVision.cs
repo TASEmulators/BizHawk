@@ -4,11 +4,7 @@ using System;
 
 namespace BizHawk.Emulation.Cores.ColecoVision
 {
-	[Core(
-		"ColecoHawk",
-		"Vecna",
-		isPorted: false,
-		isReleased: true)]
+	[Core(CoreNames.ColecoHawk, "Vecna")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight), typeof(ISaveRam) })]
 	public sealed partial class ColecoVision : IEmulator, IDebuggable, IInputPollable, ISettable<ColecoVision.ColecoSettings, ColecoVision.ColecoSyncSettings>
 	{
@@ -43,7 +39,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			ser.Register<IStatable>(new StateSerializer(SyncState));
 
 			// TODO: hack to allow bios-less operation would be nice, no idea if its feasible
-			_biosRom = comm.CoreFileProvider.GetFirmware("Coleco", "Bios", true, "Coleco BIOS file is required.");
+			_biosRom = comm.CoreFileProvider.GetFirmwareOrThrow(new("Coleco", "Bios"), "Coleco BIOS file is required.");
 
 			// gamedb can overwrite the SyncSettings; this is ok
 			if (game["NoSkip"])

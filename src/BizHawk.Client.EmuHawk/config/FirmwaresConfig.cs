@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -10,11 +11,12 @@ using System.Windows.Forms;
 using BizHawk.Common;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.Properties;
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
 
 // notes: eventually, we intend to have a "firmware acquisition interface" exposed to the emulator cores.
 // it will be implemented by EmuHawk, and use firmware keys to fetch the firmware content.
-// however, for now, the cores are using strings from the config class. so we have the `configMember` which is 
+// however, for now, the cores are using strings from the config class. so we have the `configMember` which is
 // used by reflection to set the configuration for firmwares which were found
 
 // TODO - we may eventually need to add a progress dialog for this. we should have one for other reasons.
@@ -22,15 +24,11 @@ using BizHawk.Emulation.Common;
 
 // IDEA: show current path in tooltip (esp. for custom resolved)
 // IDEA: prepop set customization to dir of current custom
-
-// TODO - display some kind if [!] if you have a user-specified file which is known but defined as incompatible by the firmware DB
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class FirmwaresConfig : Form, IDialogParent
 	{
 		private readonly IDictionary<string, string> _firmwareUserSpecifications;
-
-		private readonly IGameInfo _game;
 
 		private readonly IMainFormForConfig _mainForm;
 
@@ -75,11 +73,10 @@ namespace BizHawk.Client.EmuHawk
 
 		public string TargetSystem { get; set; }
 
-		private CheckBox _cbAllowImport;
-
 		private const int IdUnsure = 0;
 		private const int IdMissing = 1;
 		private const int IdOk = 2;
+		private const int IdBad = 3;
 
 		private Font _fixedFont, _boldFont, _boldFixedFont;
 
@@ -107,14 +104,12 @@ namespace BizHawk.Client.EmuHawk
 		public FirmwaresConfig(
 			FirmwareManager firmwareManager,
 			IDictionary<string, string> firmwareUserSpecifications,
-			IGameInfo game,
 			IMainFormForConfig mainForm,
 			PathEntryCollection pathEntries,
 			bool retryLoadRom = false,
 			string reloadRomPath = null)
 		{
 			_firmwareUserSpecifications = firmwareUserSpecifications;
-			_game = game;
 			_mainForm = mainForm;
 			_pathEntries = pathEntries;
 			Manager = firmwareManager;
@@ -122,15 +117,22 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 
 			tbbGroup.Image
-				= tbbScan.Image 
+				= tbbScan.Image
 				= tbbOrganize.Image
 				= tbbImport.Image
 				= tbbClose.Image
 				= tbbCloseReload.Image
 				= tbbOpenFolder.Image = Resources.Placeholder;
 
-			// prep ImageList for ListView with 3 item states for {idUnsure, idMissing, idOk}
-			imageList1.Images.AddRange(new Image[] { Resources.RetroQuestion, Resources.ExclamationRed, Resources.GreenCheck });
+			// prep ImageList for ListView
+			// the order matters, so make sure these match IdUnsure, IdMissing, etc.
+			imageList1.Images.AddRange(new Image[]
+			{
+				Resources.RetroQuestion,
+				Resources.ExclamationRed,
+				Resources.GreenCheck,
+				Resources.ThumbsDown,
+			});
 
 			_listViewSorter = new ListViewSorter(-1);
 
@@ -214,20 +216,9 @@ namespace BizHawk.Client.EmuHawk
 				WarpToSystemId(TargetSystem);
 			}
 
-			RefreshBasePath();
-
-			_cbAllowImport = new CheckBox
-			{
-				Text = "Allow Importing of Unknown Files",
-				BackColor = SystemColors.Control,
-				CheckAlign = ContentAlignment.MiddleLeft,
-				TextAlign = ContentAlignment.MiddleLeft,
-				Font = new Font("Segeo UI", 9, FontStyle.Regular, GraphicsUnit.Point, 1, false),
-				Checked = false,
-				Size = new Size(230, 22),
-			};
-			ToolStripControlHost host = new ToolStripControlHost(_cbAllowImport);
-			toolStrip1.Items.Add(host);
+			var oldBasePath = _currSelectorDir;
+			linkBasePath.Text = _currSelectorDir = _pathEntries.FirmwareAbsolutePath();
+			if (_currSelectorDir != oldBasePath) DoScan();
 		}
 
 		private void TbbClose_Click(object sender, EventArgs e)
@@ -312,11 +303,18 @@ namespace BizHawk.Client.EmuHawk
 					bool bolden = ri.UserSpecified;
 
 					// set columns based on whether it was a known file
-					if (ri.KnownFirmwareFile == null)
+					var hash = ri.KnownFirmwareFile?.Hash;
+					if (hash == null)
 					{
 						lvi.ImageIndex = IdUnsure;
 						lvi.ToolTipText = "You've bound a custom choice here. Hope you know what you're doing.";
 						lvi.SubItems[4].Text = "-custom-";
+					}
+					else if (FirmwareDatabase.FirmwareOptions.FirstOrNull(fo => fo.Hash == hash)?.IsAcceptableOrIdeal == false)
+					{
+						lvi.ImageIndex = IdBad;
+						lvi.ToolTipText = "Bad! This file has been bound to a choice which is known to be bad (details in right-click > Info)";
+						lvi.SubItems[4].Text = ri.KnownFirmwareFile.Value.Description;
 					}
 					else
 					{
@@ -385,12 +383,12 @@ namespace BizHawk.Client.EmuHawk
 
 				try
 				{
-				  File.Move(fpSource, fpTarget);
+					File.Move(fpSource, fpTarget);
 				}
 				catch
 				{
-				  // sometimes moves fail. especially in newer versions of windows with explorers more fragile than your great-grandma.
-				  // I am embarrassed that I know that. about windows, not your great-grandma.
+					// sometimes moves fail. especially in newer versions of windows with explorers more fragile than your great-grandma.
+					// I am embarrassed that I know that. about windows, not your great-grandma.
 				}
 			}
 
@@ -600,29 +598,6 @@ namespace BizHawk.Client.EmuHawk
 			PerformListCopy();
 		}
 
-		private void LinkBasePath_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-		{
-			if (Owner is PathConfig)
-			{
-				DialogController.ShowMessageBox("C-C-C-Combo Breaker!", "Nice try, but");
-				return;
-			}
-
-			using var pathConfig = new PathConfig(Manager, _firmwareUserSpecifications, _game, _mainForm, _pathEntries);
-			pathConfig.ShowDialog(this);
-			RefreshBasePath();
-		}
-
-		private void RefreshBasePath()
-		{
-			string oldBasePath = _currSelectorDir;
-			linkBasePath.Text = _currSelectorDir = _pathEntries.FirmwareAbsolutePath();
-			if (oldBasePath != _currSelectorDir)
-			{
-				DoScan();
-			}
-		}
-
 		private void TbbImport_Click(object sender, EventArgs e)
 		{
 			using var ofd = new OpenFileDialog { Multiselect = true };
@@ -721,7 +696,7 @@ namespace BizHawk.Client.EmuHawk
 					if (_cbAllowImport.Checked || Manager.CanFileBeImported(hf.CanonicalFullPath))
 					{
 						didSomething |= RunImportJobSingle(basePath, f, ref errors);
-					} 
+					}
 				}
 			}
 

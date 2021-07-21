@@ -9,11 +9,7 @@ using BizHawk.Emulation.Common;
 //TODO - redo all timekeeping in terms of master clock
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	[Core(
-		CoreNames.NesHawk,
-		"zeromus, natt, alyosha, adelikat",
-		isPorted: false,
-		isReleased: true)]
+	[Core(CoreNames.NesHawk, "zeromus, natt, alyosha, adelikat")]
 	public partial class NES : IEmulator, ISaveRam, IDebuggable, IInputPollable, IRegionable, IVideoLogicalOffsets,
 		IBoardInfo, IRomInfo, ISettable<NES.NESSettings, NES.NESSyncSettings>, ICodeDataLogger
 	{
@@ -23,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
 
-			byte[] fdsBios = comm.CoreFileProvider.GetFirmware("NES", "Bios_FDS", false);
+			var fdsBios = comm.CoreFileProvider.GetFirmware(new("NES", "Bios_FDS"));
 			if (fdsBios != null && fdsBios.Length == 40976)
 			{
 				comm.ShowMessage("Your FDS BIOS is a bad dump.  BizHawk will attempt to use it, but no guarantees!  You should find a new one.");

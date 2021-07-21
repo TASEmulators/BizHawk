@@ -358,10 +358,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			//utilities
 			//TODO: make internal, wrap on the API instead of the comm
-			public unsafe string GetAscii() { return _getAscii(str); }
+			public string GetAscii() => _getAscii(str);
 			public bool GetBool() { return value != 0; }
 
-			private unsafe string _getAscii(sbyte* ptr)
+			private string _getAscii(sbyte* ptr)
 			{
 				int len = 0;
 				sbyte* junko = (sbyte*)ptr;

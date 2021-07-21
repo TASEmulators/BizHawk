@@ -938,7 +938,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (currMapEntryState != null)
 			{
-				//view a BG tile 
+				//view a BG tile
 				int paletteStart = 0;
 				var bgs = currMapEntryState;
 				var oneTileEntry = new[] { bgs.entry };
@@ -978,7 +978,7 @@ namespace BizHawk.Client.EmuHawk
 				else if (currTileDataState.Type == eDisplayType.TilesMode7DC)
 					gd.RenderMode7TilesToScreen((int*)bmpdata.Scan0, bmpdata.Stride / 4, false, true, 1, currTileDataState.Tile, 1);
 				else if (currTileDataState.Type == eDisplayType.OBJTiles0 || currTileDataState.Type == eDisplayType.OBJTiles1)
-				{ 
+				{
 					//render an obj tile
 					int tile = currTileDataState.Address / 32;
 					gd.RenderTilesToScreen((int*)bmpdata.Scan0, 1, 1, bmpdata.Stride / 4, bpp, currPaletteSelection.start, tile, 1);
@@ -1356,5 +1356,5 @@ namespace BizHawk.Client.EmuHawk
 			checkEN3_OBJ.Checked ^= true;
 		}
 
-	} //class SNESGraphicsDebugger 
+	} //class SNESGraphicsDebugger
 } //namespace BizHawk.Client.EmuHawk

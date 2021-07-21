@@ -13,20 +13,53 @@ namespace BizHawk.Emulation.Common
 {
 	public static class EmulatorExtensions
 	{
+		public static readonly IReadOnlyDictionary<string, string> SystemIDDisplayNames = new Dictionary<string, string>
+		{
+			["A26"] = "Atari 2600",
+			["A78"] = "Atari 7800",
+			["AmstradCPC"] = "Amstrad CPC",
+			["AppleII"] = "Apple II",
+			["C64"] = "Commodore 64",
+			["ChannelF"] = "Channel F",
+			["Coleco"] = "ColecoVision",
+			["DGB"] = "Game Boy Link",
+			["GB"] = "GB",
+			["SGB"] = "SGB",
+			["GB3x"] = "Game Boy Link 3x",
+			["GB4x"] = "Game Boy Link 4x",
+			["GBA"] = "Gameboy Advance",
+			["GBC"] = "Gameboy Color",
+			["GEN"] = "Genesis",
+			["GG"] = "Game Gear",
+			["INTV"] = "Intellivision",
+			["Libretro"] = "Libretro",
+			["Lynx"] = "Lynx",
+			["MAME"] = "MAME",
+			["N64"] = "Nintendo 64",
+			["NDS"] = "NDS",
+			["NES"] = "NES",
+			["NGP"] = "Neo-Geo Pocket",
+			["O2"] = "Odyssey2",
+			["PCE"] = "TurboGrafx-16",
+			["PCECD"] = "TurboGrafx - 16(CD)",
+			["PCFX"] = "PCFX",
+			["PSX"] = "PlayStation",
+			["SAT"] = "Saturn",
+			["SG"] = "SG-1000",
+			["SGX"] = "SuperGrafx",
+			["SMS"] = "Sega Master System",
+			["SNES"] = "SNES",
+			["TI83"] = "TI - 83",
+			["UZE"] = "Uzebox",
+			["VB"] = "Virtual Boy",
+			["VEC"] = "Vectrex",
+			["WSWAN"] = "WonderSwan",
+			["ZXSpectrum"] = "ZX Spectrum",
+		};
+
 		public static CoreAttribute Attributes(this IEmulator core)
 		{
 			return (CoreAttribute)Attribute.GetCustomAttribute(core.GetType(), typeof(CoreAttribute));
-		}
-
-		public static string DisplayName(this IEmulator core)
-		{
-			var attr = (CoreAttribute)Attribute.GetCustomAttribute(core.GetType(), typeof(CoreAttribute));
-			if (attr == null)
-			{
-				return core.GetType().Name;
-			}
-
-			return attr.DisplayName ?? attr.CoreName;
 		}
 
 		// todo: most of the special cases involving the NullEmulator should probably go away
@@ -318,7 +351,7 @@ namespace BizHawk.Emulation.Common
 		/// Gets a list of boolean button names. If a controller number is specified, only returns button names
 		/// (without the "P" prefix) that match that controller number. If a controller number is NOT specified,
 		/// then all button names are returned.
-		/// 
+		///
 		/// For example, consider example "P1 A", "P1 B", "P2 A", "P2 B". See below for sample outputs:
 		///   - ToBoolButtonNameList(controller, 1) -> [A, B]
 		///   - ToBoolButtonNameList(controller, 2) -> [A, B]
@@ -447,17 +480,7 @@ namespace BizHawk.Emulation.Common
 
 		public static AxisSpec With(this in AxisSpec spec, Range<int> range, int neutral) => new AxisSpec(range, neutral, spec.IsReversed, spec.Constraint);
 
-		/// <summary>Get a firmware as a byte array</summary>
-		/// <param name="sysId">the core systemID</param>
-		/// <param name="firmwareId">the firmware id</param>
-		/// <param name="required">if true, result is guaranteed to be valid; else null is possible if not found</param>
-		/// <param name="msg">message to show if fail to get</param>
-		/// <remarks>TODO inline (only change is wrapping strings in <see cref="FirmwareID"/> ctor, these IDs should probably be consts in each core's class)</remarks>
-		public static byte[] GetFirmware(this ICoreFileProvider cfp, string sysId, string firmwareId, bool required, string msg = null)
-			=> cfp.GetFirmware(new(system: sysId, firmware: firmwareId), required: required, msg: msg);
-
-		/// <remarks>TODO inline (only change is wrapping strings in <see cref="FirmwareID"/> ctor, these IDs should probably be consts in each core's class)</remarks>
-		public static byte[] GetFirmwareWithGameInfo(this ICoreFileProvider cfp, string sysId, string firmwareId, bool required, out GameInfo gi, string msg = null)
-			=> cfp.GetFirmwareWithGameInfo(new(system: sysId, firmware: firmwareId), required: required, out gi, msg: msg);
+		public static string SystemIDToDisplayName(string sysID)
+			=> SystemIDDisplayNames.TryGetValue(sysID, out var dispName) ? dispName : string.Empty;
 	}
 }

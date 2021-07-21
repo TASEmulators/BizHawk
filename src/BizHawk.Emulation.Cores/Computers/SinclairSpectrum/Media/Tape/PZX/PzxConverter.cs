@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// Working list of generated tape data blocks
 		/// </summary>
-		private List<TapeDataBlock> _blocks = new List<TapeDataBlock>();
+		private readonly IList<TapeDataBlock> _blocks = new List<TapeDataBlock>();
 
 		/// <summary>
 		/// Position counter
@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// Object to keep track of loops - this assumes there is only one loop at a time
 		/// </summary>
-		private List<KeyValuePair<int, int>> _loopCounter = new List<KeyValuePair<int, int>>();
+		private readonly IList<KeyValuePair<int, int>> _loopCounter = new List<KeyValuePair<int, int>>();
 
 		private readonly DatacorderDevice _datacorder;
 
@@ -158,8 +158,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 						t.BlockID = GetInt32(b, 0);
 						t.DataPeriods = new List<int>();
+						t.DataLevels = new List<bool>();
 
 						t.InitialPulseLevel = false;
+						bool pLevel = !t.InitialPulseLevel;
 
 						List<ushort[]> pulses = new List<ushort[]>();
 
@@ -197,6 +199,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 							for (int i = 0; i < x[0]; i++)
 							{
 								t.DataPeriods.Add(x[1]);
+								pLevel = !pLevel;
+								t.DataLevels.Add(pLevel);
 							}
 						}
 
@@ -220,6 +224,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 						t.BlockID = GetInt32(b, 0);
 						t.DataPeriods = new List<int>();
+						t.DataLevels = new List<bool>();
 
 						List<ushort> s0 = new List<ushort>();
 						List<ushort> s1 = new List<ushort>();
@@ -235,6 +240,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 							initPulseLevel = (uint)((dCount & 0x80000000) == 0 ? 0 : 1);
 
 							t.InitialPulseLevel = initPulseLevel == 1;
+							bool bLevel = !t.InitialPulseLevel;
 
 							dCount = (int)(dCount & 0x7FFFFFFF);
 							pos += 4;
@@ -274,6 +280,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 										foreach (var pu in s1)
 										{
 											t.DataPeriods.Add((int)pu);
+											bLevel = !bLevel;
+											t.DataLevels.Add(bLevel);
 										}
 
 									}
@@ -282,13 +290,20 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 										foreach (var pu in s0)
 										{
 											t.DataPeriods.Add((int)pu);
+											bLevel = !bLevel;
+											t.DataLevels.Add(bLevel);
 										}
 
 									}
 								}
 							}
 							if (tail > 0)
+							{
 								t.DataPeriods.Add(tail);
+								bLevel = !bLevel;
+								t.DataLevels.Add(bLevel);
+							}
+								
 							dData.Clear();
 						}
 
@@ -320,12 +335,21 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 						var d = GetInt32(b, pos);
 						iniPulseLevel = ((d & 0x80000000) == 0 ? 0 : 1);
 						t.InitialPulseLevel = iniPulseLevel == 1;
+						bool paLevel = !t.InitialPulseLevel;
 						pCount = (d & 0x7FFFFFFF);
 
 						// convert to tape block
 						t.BlockDescription = BlockType.PAUS;
+						paLevel = !paLevel;
+						t.DataLevels.Add(paLevel);
 						t.DataPeriods.Add(0);
+
+						paLevel = !paLevel;
+						t.DataLevels.Add(paLevel);
 						t.DataPeriods.Add(pCount);
+
+						paLevel = !paLevel;
+						t.DataLevels.Add(paLevel);
 						t.DataPeriods.Add(0);
 
 						_datacorder.DataBlocks.Add(t);

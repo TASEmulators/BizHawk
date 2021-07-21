@@ -13,14 +13,7 @@ using BizHawk.Common.BufferExtensions;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 {
-	[Core(
-		CoreNames.QuickNes,
-		"",
-		isPorted: true,
-		isReleased: true,
-		portedVersion: "0.7.0",
-		portedUrl: "https://github.com/kode54/QuickNES",
-		singleInstance: false)]
+	[PortedCore(CoreNames.QuickNes, "", "0.7.0", "https://github.com/kode54/QuickNES")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class QuickNES : IEmulator, IVideoProvider, ISoundProvider, ISaveRam, IInputPollable, IBoardInfo, IVideoLogicalOffsets,
 		IStatable, IDebuggable, ISettable<QuickNES.QuickNESSettings, QuickNES.QuickNESSyncSettings>, INESPPUViewable
@@ -203,7 +196,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 				QN.qn_set_tracecb(Context, Tracer.Enabled ? _traceCb : null);
 
-				Frame++;
 				LibQuickNES.ThrowStringError(QN.qn_emulate_frame(Context, j1, j2));
 				IsLagFrame = QN.qn_get_joypad_read_count(Context) == 0;
 				if (IsLagFrame)
@@ -216,6 +208,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 				_callBack1?.Invoke();
 				_callBack2?.Invoke();
+
+				Frame++;
 
 				return true;
 			}

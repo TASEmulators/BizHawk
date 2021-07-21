@@ -22,17 +22,14 @@ using Newtonsoft.Json;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Common;
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.DiscSystem;
 
 #pragma warning disable 649 //adelikat: Disable dumb warnings until this file is complete
 
 namespace BizHawk.Emulation.Cores.Sony.PSX
 {
-	[Core(
-		"Octoshock",
-		"Mednafen Team",
-		isPorted: true,
-		isReleased: true)]
+	[PortedCore(CoreNames.Octoshock, "Mednafen Team")]
 	public unsafe partial class Octoshock : IEmulator, IVideoProvider, ISoundProvider, ISaveRam, IStatable, IDriveLight, ISettable<Octoshock.Settings, Octoshock.SyncSettings>, IRegionable, IInputPollable, IRomInfo
 	{
 		public Octoshock(CoreComm comm, PSF psf, Octoshock.Settings settings, Octoshock.SyncSettings syncSettings)
@@ -185,7 +182,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			}
 
 			//TODO - known bad firmwares are a no-go. we should refuse to boot them. (that's the mednafen policy)
-			byte[] firmware = comm.CoreFileProvider.GetFirmware("PSX", firmwareRegion, true, "A PSX `" + firmwareRegion + "` region bios file is required");
+			var firmware = comm.CoreFileProvider.GetFirmwareOrThrow(new("PSX", firmwareRegion), $"A PSX `{firmwareRegion}` region bios file is required");
 
 			//create the instance
 			fixed (byte* pFirmware = firmware)
@@ -480,7 +477,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		public bool CurrentTrayOpen { get; private set; }
 		public int CurrentDiscIndexMounted { get; private set; }
 
-		public List<string> HackyDiscButtons = new List<string>();
+		public readonly IList<string> HackyDiscButtons = new List<string>();
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
@@ -811,8 +808,6 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			//TODO - actually, make this feedback from the core. there should be a register or status which effectively corresponds to whether it's reading.
 			DriveLightOn = false;
 
-			Frame++;
-
 			SetInput();
 
 			OctoshockDll.shock_SetLEC(psx, _SyncSettings.EnableLEC);
@@ -859,7 +854,11 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				LagCount++;
 
 			//what happens to sound in this case?
-			if (render == false) return true;
+			if (render == false) 
+			{
+				Frame++;
+				return true;
+			}
 
 			OctoshockDll.ShockFramebufferInfo fb = new OctoshockDll.ShockFramebufferInfo();
 
@@ -901,6 +900,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				if (sbuffcontains * 2 > sbuff.Length) throw new InvalidOperationException($"{nameof(OctoshockDll.shock_GetSamples)} returned too many samples: {sbuffcontains}");
 				OctoshockDll.shock_GetSamples(psx, samples);
 			}
+
+			Frame++;
 
 			return true;
 		}

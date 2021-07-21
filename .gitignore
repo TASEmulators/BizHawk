@@ -2,6 +2,7 @@
 /snes9xgit
 
 **/.vs/**
+**/.vscode/
 **/bin/**
 **/obj/**
 /output/**
@@ -11,6 +12,7 @@
 **/Release/**
 **/Debug/**
 **/ipch/**
+/Assets/dll/*.wbx
 
 *.ilk
 *.il

@@ -53,7 +53,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				throw new Exception($"{nameof(Core.gpgx_put_control)}() failed!");
 
 			IsLagFrame = true;
-			Frame++;
+
 			_driveLight = false;
 
 			Core.gpgx_advance();
@@ -69,6 +69,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 			if (_cds != null)
 				DriveLightOn = _driveLight;
+
+			Frame++;
 
 			return true;
 		}

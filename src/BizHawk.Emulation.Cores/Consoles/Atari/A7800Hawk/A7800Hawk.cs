@@ -7,11 +7,7 @@ using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 {
-	[Core(
-		"A7800Hawk",
-		"",
-		isPorted: false,
-		isReleased: true)]
+	[Core(CoreNames.A7800Hawk, "")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight), typeof(ISettable<,>) })]
 	public partial class A7800Hawk : IEmulator, ISaveRam, IDebuggable, IInputPollable,
 		IRegionable, IBoardInfo, ISettable<A7800Hawk.A7800Settings, A7800Hawk.A7800SyncSettings>
@@ -95,9 +91,9 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			_syncSettings = (A7800SyncSettings)syncSettings ?? new A7800SyncSettings();
 			_controllerDeck = new A7800HawkControllerDeck(_syncSettings.Port1, _syncSettings.Port2);
 
-			byte[] highscoreBios = comm.CoreFileProvider.GetFirmware("A78", "Bios_HSC", false, "Some functions may not work without the high score BIOS.");
-			byte[] palBios = comm.CoreFileProvider.GetFirmware("A78", "Bios_PAL", false, "The game will not run if the correct region BIOS is not available.");
-			byte[] ntscBios = comm.CoreFileProvider.GetFirmware("A78", "Bios_NTSC", false, "The game will not run if the correct region BIOS is not available.");
+			var highscoreBios = comm.CoreFileProvider.GetFirmware(new("A78", "Bios_HSC"), "Some functions may not work without the high score BIOS.");
+			var palBios = comm.CoreFileProvider.GetFirmware(new("A78", "Bios_PAL"), "The game will not run if the correct region BIOS is not available.");
+			var ntscBios = comm.CoreFileProvider.GetFirmware(new("A78", "Bios_NTSC"), "The game will not run if the correct region BIOS is not available.");
 
 			byte[] header = new byte[128];
 			bool is_header = false;

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using BizHawk.Emulation.Common;
+using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 {
@@ -80,9 +81,21 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			[DisplayName("Display Type")]
 			public DisplayTypes DisplayType { get; set; } = DisplayTypes.Auto;
 
-			[DisplayName("Controller Type")]
-			[Description("Currently controllers can not be configured separately")]
-			public ControllerTypes ControllerType { get; set; } = ControllerTypes.Standard;
+			[DisplayName("Use keyboard")]
+			[Description("Enables keyboard for non-GG systems")]
+			public bool UseKeyboard { get; set; } = false;
+
+			[DefaultValue(SMSControllerTypes.Standard)]
+			[DisplayName("Port 1 Device")]
+			[Description("The type of controller plugged into the first controller port")]
+			[TypeConverter(typeof(DescribableEnumConverter))]
+			public SMSControllerTypes Port1 { get; set; } = SMSControllerTypes.Standard;
+
+			[DefaultValue(SMSControllerTypes.Standard)]
+			[DisplayName("Port 2 Device")]
+			[Description("The type of controller plugged into the second controller port")]
+			[TypeConverter(typeof(DescribableEnumConverter))]
+			public SMSControllerTypes Port2 { get; set; } = SMSControllerTypes.Standard;
 
 			public SmsSyncSettings Clone() => (SmsSyncSettings)MemberwiseClone();
 
@@ -94,7 +107,9 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 					|| x.UseBios != y.UseBios
 					|| x.ConsoleRegion != y.ConsoleRegion
 					|| x.DisplayType != y.DisplayType
-					|| x.ControllerType != y.ControllerType;
+					|| x.UseKeyboard != y.UseKeyboard
+					|| x.Port1 != y.Port1
+					|| x.Port2 != y.Port2;
 			}
 
 			public enum ControllerTypes

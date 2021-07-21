@@ -14,11 +14,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 	/// ZXHawk: Core Class
 	/// * Main Initialization *
 	/// </summary>
-	[Core(
-		"ZXHawk",
-		"Asnivor, Alyosha",
-		isPorted: false,
-		isReleased: true)]
+	[Core(CoreNames.ZXHawk, "Asnivor, Alyosha")]
 	public partial class ZXSpectrum : IRegionable, IDriveLight
 	{
 		[CoreConstructor("ZXSpectrum")]
@@ -159,8 +155,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 		public List<GameInfo> _gameInfo;
 
-		public List<GameInfo> _tapeInfo = new List<GameInfo>();
-		public List<GameInfo> _diskInfo = new List<GameInfo>();
+		public readonly IList<GameInfo> _tapeInfo = new List<GameInfo>();
+		public readonly IList<GameInfo> _diskInfo = new List<GameInfo>();
 
 		private SyncSoundMixer SoundMixer;
 
@@ -212,7 +208,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				return embeddedRom;
 
 			// Embedded ROM not found, maybe this is a peripheral ROM?
-			var result = names.Select(n => CoreComm.CoreFileProvider.GetFirmware("ZXSpectrum", n, false)).FirstOrDefault(b => b != null && b.Length == length);
+			var result = names.Select(n => CoreComm.CoreFileProvider.GetFirmware(new("ZXSpectrum", n))).FirstOrDefault(b => b != null && b.Length == length);
 			if (result == null)
 			{
 				throw new MissingFirmwareException($"At least one of these firmwares is required: {string.Join(", ", names)}");

@@ -16,7 +16,7 @@ namespace BizHawk.Bizware.BizwareGL
 		public bool TransparentPalette0 = true;
 
 		/// <summary>
-		/// Specifies whether (r,g,b,0) pixels shall be turned into (0,0,0,0). 
+		/// Specifies whether (r,g,b,0) pixels shall be turned into (0,0,0,0).
 		/// This is useful for cleaning up junk which you might not know you had littering purely transparent areas, which can mess up a lot of stuff during rendering.
 		/// </summary>
 		public bool CleanupAlpha0 = true;

@@ -21,8 +21,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 				cpu.TraceCallback = null;
 			}
 
-			_frame++;
-
 			if (controller.IsPressed("Power"))
 			{
 				HardReset();
@@ -73,6 +71,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			{
 				_lagcount++;
 			}
+
+			_frame++;
 
 			return true;
 		}

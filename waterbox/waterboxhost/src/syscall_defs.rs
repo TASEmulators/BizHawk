@@ -2,7 +2,7 @@
 // There are various crates that contain these, but they're #[cfg]'ed to the HOST system.
 // We want exactly the ones that waterbox guest MUSL uses, exactly the way they're defined there
 
-use std::{ops::Try, fmt};
+use std::{ops::Try, fmt, ops::ControlFlow, ops::FromResidual};
 
 /// the result of a syscall in Rust-friendly form; OK or errno
 pub type SyscallResult = Result<(), SyscallError>;
@@ -40,21 +40,37 @@ pub fn syscall_ok(result: usize) -> SyscallReturn {
 pub struct SyscallReturn(pub usize);
 impl SyscallReturn {
 	pub const ERROR_THRESH: usize = -4096 as isize as usize;
-}
-impl Try for SyscallReturn {
-	type Ok = usize;
-	type Error = SyscallError;
-	fn into_result(self) -> Result<Self::Ok, Self::Error> {
-		if self.0 <= SyscallReturn::ERROR_THRESH {
-			Ok(self.0)
-		} else {
-			Err(SyscallError(-(self.0 as i32)))
-		}
+	pub fn from_ok(v: usize) -> Self {
+		Self::from_output(v)
 	}
-	fn from_error(v: Self::Error) -> Self {
+	pub fn from_error(v: SyscallError) -> Self {
+		Self::from_residual(v)
+	}
+}
+impl FromResidual for SyscallReturn {
+	fn from_residual(v: SyscallError) -> Self {
 		SyscallReturn(-v.0 as isize as usize)
 	}
-	fn from_ok(v: Self::Ok) -> Self {
+}
+impl FromResidual<Result<std::convert::Infallible, SyscallError>> for SyscallReturn {
+	fn from_residual(v: Result<std::convert::Infallible, SyscallError>) -> Self {
+		match v {
+			Ok(never) => match never {},
+			Err(zz) => SyscallReturn(-zz.0 as isize as usize),
+		}
+	}	
+}
+impl Try for SyscallReturn {
+	type Output = usize;
+	type Residual = SyscallError;
+	fn branch(self) -> ControlFlow<Self::Residual, Self::Output> {
+		if self.0 <= SyscallReturn::ERROR_THRESH {
+			ControlFlow::Continue(self.0)
+		} else {
+			ControlFlow::Break(SyscallError(-(self.0 as i32)))
+		}
+	}
+	fn from_output(v: Self::Output) -> Self {
 		assert!(v <= SyscallReturn::ERROR_THRESH);
 		SyscallReturn(v)
 	}

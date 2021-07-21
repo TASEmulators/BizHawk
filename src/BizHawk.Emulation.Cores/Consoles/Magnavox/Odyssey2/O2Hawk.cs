@@ -6,12 +6,7 @@ using BizHawk.Emulation.Cores.Components.I8048;
 
 namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 {
-	[Core(
-		"O2Hawk",
-		"",
-		isPorted: false,
-		isReleased: true,
-		displayName: "Odyssey 2")]
+	[Core(CoreNames.O2Hawk, "")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class O2Hawk : IEmulator, ISaveRam, IDebuggable, IInputPollable, IRegionable, ISettable<O2Hawk.O2Settings, O2Hawk.O2SyncSettings>, IBoardInfo
 	{
@@ -68,17 +63,8 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 			_controllerDeck = new O2HawkControllerDeck("O2 Controller", "O2 Controller", is_G7400);
 
-			if (is_G7400)
-			{
-				_bios = comm.CoreFileProvider.GetFirmware("O2", "BIOS-G7400", true, "BIOS Not Found, Cannot Load")
-				?? throw new MissingFirmwareException("Missing G7400 Bios");
-			}
-			else
-			{
-				_bios = comm.CoreFileProvider.GetFirmware("O2", "BIOS-O2", true, "BIOS Not Found, Cannot Load")
-				?? throw new MissingFirmwareException("Missing Odyssey2 Bios");
-			}
-			
+			_bios = comm.CoreFileProvider.GetFirmwareOrThrow(new("O2", is_G7400 ? "BIOS-G7400" : "BIOS-O2"), "BIOS Not Found, Cannot Load");
+
 			Buffer.BlockCopy(rom, 0x100, header, 0, 0x50);
 
 			Console.WriteLine("MD5: " + rom.HashMD5(0, rom.Length));
@@ -126,7 +112,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			HardReset();
 		}
 
-		public DisplayType Region => DisplayType.NTSC;
+		public DisplayType Region => is_pal ? DisplayType.PAL : DisplayType.NTSC;
 
 		private readonly O2HawkControllerDeck _controllerDeck;
 

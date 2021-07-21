@@ -22,6 +22,7 @@ using BizHawk.Emulation.Cores.Computers.SinclairSpectrum;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.NDS;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 using BizHawk.Emulation.Cores.Intellivision;
+using BizHawk.Emulation.Cores.Nintendo.BSNES;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Nintendo.N64;
 using BizHawk.Emulation.Cores.Nintendo.NES;
@@ -178,7 +179,7 @@ namespace BizHawk.Client.EmuHawk
 			SaveMovieMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Save Movie"].Bindings;
 
 			PlayMovieMenuItem.Enabled
-				= ImportMoviesMenuItem.Enabled 
+				= ImportMoviesMenuItem.Enabled
 				= RecentMovieSubMenu.Enabled
 					= !Tools.IsLoaded<TAStudio>();
 
@@ -532,11 +533,6 @@ namespace BizHawk.Client.EmuHawk
 			StopAv();
 		}
 
-		private void SynclessRecordingMenuItem_Click(object sender, EventArgs e)
-		{
-			new SynclessRecordingTools(Config, Game, this).Run();
-		}
-
 		private void CaptureOSDMenuItem_Click(object sender, EventArgs e)
 		{
 			bool c = ((ToolStripMenuItem)sender).Checked;
@@ -878,13 +874,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (e is RomLoader.RomErrorArgs args)
 			{
-				using var configForm = new FirmwaresConfig(FirmwareManager, Config.FirmwareUserSpecifications, Game, this, Config.PathEntries, retryLoadRom: true, reloadRomPath: args.RomPath);
+				using var configForm = new FirmwaresConfig(FirmwareManager, Config.FirmwareUserSpecifications, this, Config.PathEntries, retryLoadRom: true, reloadRomPath: args.RomPath);
 				var result = configForm.ShowDialog();
 				args.Retry = result == DialogResult.Retry;
 			}
 			else
 			{
-				using var configForm = new FirmwaresConfig(FirmwareManager, Config.FirmwareUserSpecifications, Game, this, Config.PathEntries);
+				using var configForm = new FirmwaresConfig(FirmwareManager, Config.FirmwareUserSpecifications, this, Config.PathEntries);
 				configForm.ShowDialog();
 			}
 		}
@@ -900,7 +896,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PathsMenuItem_Click(object sender, EventArgs e)
 		{
-			using var form = new PathConfig(FirmwareManager, Config.FirmwareUserSpecifications, Game, this, Config.PathEntries);
+			using var form = new PathConfig(this, Config.PathEntries, Game.System);
 			form.ShowDialog();
 		}
 
@@ -1477,7 +1473,7 @@ namespace BizHawk.Client.EmuHawk
 				using var dlg = new NESSyncSettingsForm(this, sub.GetSyncSettings().Clone(), sub.HasMapperProperties);
 				dlg.ShowDialog(this);
 			}
-			
+
 		}
 
 		private void BarcodeReaderMenuItem_Click(object sender, EventArgs e)
@@ -1661,6 +1657,11 @@ namespace BizHawk.Client.EmuHawk
 				using var form = new SNESControllerSettings(this, bsnes.GetSyncSettings().Clone());
 				form.ShowDialog();
 			}
+			else if (Emulator is BsnesCore bsnesCore)
+			{
+				using var form = new BSNESControllerSettings(this, bsnesCore.GetSyncSettings().Clone());
+				form.ShowDialog();
+			}
 		}
 
 		private void SnesGfxDebuggerMenuItem_Click(object sender, EventArgs e)
@@ -1670,9 +1671,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SnesOptionsMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Emulator is LibsnesCore bsnes)
+			if (Emulator is LibsnesCore libsnes)
 			{
-				SNESOptions.DoSettingsDialog(this, bsnes);
+				SNESOptions.DoSettingsDialog(this, libsnes);
+			}
+			if (Emulator is BsnesCore bsnes)
+			{
+				BSNESOptions.DoSettingsDialog(this, bsnes);
 			}
 		}
 
@@ -1720,7 +1725,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			N64PluginSettingsMenuItem.Enabled =
 				N64ControllerSettingsMenuItem.Enabled =
-				N64ExpansionSlotMenuItem.Enabled = 
+				N64ExpansionSlotMenuItem.Enabled =
 				MovieSession.Movie.NotActive();
 
 			N64CircularAnalogRangeMenuItem.Checked = Config.N64UseCircularAnalogConstraint;
@@ -1795,7 +1800,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GenericCoreSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			GenericCoreConfig.DoDialog(this, $"{Emulator.DisplayName()} Settings");
+			var coreName = ((CoreAttribute) Attribute.GetCustomAttribute(Emulator.GetType(), typeof(CoreAttribute))).CoreName;
+			GenericCoreConfig.DoDialog(this, $"{coreName} Settings");
 		}
 
 		private void AppleIISettingsMenuItem_Click(object sender, EventArgs e)
@@ -2148,7 +2154,7 @@ namespace BizHawk.Client.EmuHawk
 				using var form = new AmstradCpcNonSyncSettings(this, cpc.GetSettings().Clone());
 				form.ShowDialog();
 			}
-			
+
 		}
 
 		private void HelpSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -2545,8 +2551,6 @@ namespace BizHawk.Client.EmuHawk
 				Tools.Load<TI83KeyPad>();
 			}
 
-			Tools.AutoLoad();
-
 			if (Config.RecentWatches.AutoLoad)
 			{
 				Tools.LoadRamWatch(!Config.DisplayRamWatch);
@@ -2557,6 +2561,7 @@ namespace BizHawk.Client.EmuHawk
 				Tools.Load<Cheats>();
 			}
 
+			Tools.AutoLoad();
 			HandlePlatformMenus();
 		}
 

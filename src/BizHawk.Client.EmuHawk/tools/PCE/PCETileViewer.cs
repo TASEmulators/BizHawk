@@ -53,7 +53,7 @@ namespace BizHawk.Client.EmuHawk
 			for (int i = 0; i < 256; i++)
 			{
 				if ((i & 15) == 0)
-					dest += inc; 
+					dest += inc;
 				*dest++ = pal[*src++];
 			}
 		}

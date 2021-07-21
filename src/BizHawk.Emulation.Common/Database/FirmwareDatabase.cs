@@ -55,7 +55,18 @@ namespace BizHawk.Emulation.Common
 			Option("NES", "Bios_FDS", in fdsNintendo, FirmwareOptionStatus.Ideal);
 			Option("NES", "Bios_FDS", in fdsTwinFc);
 
-			FirmwareAndOption("973E10840DB683CF3FAF61BD443090786B3A9F04", 262144, "SNES", "Rom_SGB", "SNES_sgb.sfc", "Super GameBoy Rom"); // World (Rev B) ?
+			var sgb = File("6ED55C4368333B57F6A2F8BBD70CCD87ED48058E", 262144, "SNES_SGB_(JU).sfc", "Super Game Boy Rom (JU)");
+			var sgbA = File("6380A5913ACE3041A305FBAF822B5A8847FEA7ED", 262144, "SNES_SGB_RevA_(JU).sfc", "Super Game Boy Rom (JU, Rev A)");
+			var sgbA_Beta = File("4ED5621A9022E1D94B673CC0F68EA24764E8D6BB", 262144, "SNES_SGB_RevABeta_(JU).sfc", "Super Game Boy Rom (JU, Rev A Beta)");
+			var sgbB = File("973E10840DB683CF3FAF61BD443090786B3A9F04", 262144, "SNES_SGB_RevB_(World).sfc", "Super Game Boy Rom (World, Rev B)");
+			var sgb2 = File("E5B2922CA137051059E4269B236D07A22C07BC84", 524288, "SNES_SGB2_(J).sfc", "Super Game Boy 2 Rom (J)");
+			Firmware("SNES", "Rom_SGB", "Super Game Boy Rom");
+			Firmware("SNES", "Rom_SGB2", "Super Game Boy 2 Rom");
+			Option("SNES", "Rom_SGB", in sgb, FirmwareOptionStatus.Ideal);
+			Option("SNES", "Rom_SGB", in sgbA, FirmwareOptionStatus.Ideal);
+			Option("SNES", "Rom_SGB", in sgbA_Beta);
+			Option("SNES", "Rom_SGB", in sgbB, FirmwareOptionStatus.Ideal);
+			Option("SNES", "Rom_SGB2", in sgb2, FirmwareOptionStatus.Ideal);
 			FirmwareAndOption("A002F4EFBA42775A31185D443F3ED1790B0E949A", 3072, "SNES", "CX4", "SNES_cx4.rom", "CX4 Rom");
 			FirmwareAndOption("188D471FEFEA71EB53F0EE7064697FF0971B1014", 8192, "SNES", "DSP1", "SNES_dsp1.rom", "DSP1 Rom");
 			FirmwareAndOption("78B724811F5F18D8C67669D9390397EB1A47A5E2", 8192, "SNES", "DSP1b", "SNES_dsp1b.rom", "DSP1b Rom");
@@ -202,7 +213,7 @@ namespace BizHawk.Emulation.Common
 			// http://forum.fobby.net/index.php?t=msg&goto=2763 [f]
 			// http://www.psxdev.net/forum/viewtopic.php?f=69&t=56 [p]
 			// https://en.wikipedia.org/wiki/PlayStation_models#Comparison_of_models [w]
-			// https://github.com/petrockblog/RetroPie-Setup/wiki/PCSX-Core-Playstation-1 [g] 
+			// https://github.com/petrockblog/RetroPie-Setup/wiki/PCSX-Core-Playstation-1 [g]
 			// http://redump.org/datfile/psx-bios/ also
 			// http://emulation.gametechwiki.com/index.php/File_Hashes [t]
 			var ps_10j = File("343883A7B555646DA8CEE54AADD2795B6E7DD070", 524288, "PSX_1.0(J).bin", "PSX BIOS (Version 1.0 J)", "Used on SCPH-1000, DTL-H1000 [g]. This is Rev for A hardware [w].");
@@ -290,6 +301,13 @@ namespace BizHawk.Emulation.Common
 			// Early revisions of GB/C boot ROMs are not well-supported because the corresponding CPU differences are not emulated.
 			Option("GB", "World", File("8BD501E31921E9601788316DBD3CE9833A97BCBC", 256, "dmg0.bin", "Game Boy Boot Rom (Early J Revision)"), FirmwareOptionStatus.Unacceptable);
 			Option("GB", "World", File("4E68F9DA03C310E84C523654B9026E51F26CE7F0", 256, "mgb.bin", "Game Boy Boot Rom (Pocket)"), FirmwareOptionStatus.Acceptable);
+
+			// these are only used for supported SGB cores
+			// placed in GB as these are within the Game Boy side rather than the SNES side
+			Firmware("GB", "SGB", "Super Game Boy Boot Rom");
+			Option("GB", "SGB", File("AA2F50A77DFB4823DA96BA99309085A3C6278515", 256, "sgb.bin", "Super Game Boy Boot Rom"), FirmwareOptionStatus.Ideal);
+			Firmware("GB", "SGB2", "Super Game Boy 2 Boot Rom");
+			Option("GB", "SGB2", File("93407EA10D2F30AB96A314D8ECA44FE160AEA734", 256, "sgb2.bin", "Super Game Boy 2 Boot Rom"), FirmwareOptionStatus.Ideal);
 
 			Firmware("GBC", "World", "Game Boy Color Boot Rom");
 			Option("GBC", "World", File("1293D68BF9643BC4F36954C1E80E38F39864528D", 2304, "cgb.bin", "Game Boy Color Boot Rom"), FirmwareOptionStatus.Ideal);

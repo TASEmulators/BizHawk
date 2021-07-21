@@ -105,14 +105,15 @@ namespace BizHawk.Bizware.BizwareGL
 				Texture2d tex = TexturePages[bfc.TexturePage];
 				float w = tex.Width;
 				float h = tex.Height;
-				float u0 = bfc.Bounds.Left / w;
-				float v0 = bfc.Bounds.Top / h;
-				float u1 = bfc.Bounds.Right / w;
-				float v1 = bfc.Bounds.Bottom / h;
+				sd.Rectangle bounds = new(bfc.X, bfc.Y, bfc.Width, bfc.Height);
+				float u0 = bounds.Left / w;
+				float v0 = bounds.Top / h;
+				float u1 = bounds.Right / w;
+				float v1 = bounds.Bottom / h;
 
-				float gx = x + bfc.Offset.X;
-				float gy = y + bfc.Offset.Y;
-				renderer.DrawSubrect(tex, gx, gy, bfc.Bounds.Width, bfc.Bounds.Height, u0, v0, u1, v1);
+				float gx = x + bfc.XOffset;
+				float gy = y + bfc.YOffset;
+				renderer.DrawSubrect(tex, gx, gy, bfc.Width, bfc.Height, u0, v0, u1, v1);
 
 				x += bfc.XAdvance;
 			}

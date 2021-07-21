@@ -277,16 +277,25 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 				// create a list to hold the data periods
 				List<int> dataPeriods = new List<int>();
+				List<bool> dataLevels = new List<bool>();
+
+				bool currLevel = false;
 
 				// generate pilot pulses
 				for (int i = 0; i < pilotLength; i++)
 				{
 					dataPeriods.Add(PILOT_PL);
+					currLevel = !currLevel;
+					dataLevels.Add(currLevel);
 				}
 
 				// add syncro pulses
 				dataPeriods.Add(SYNC_1_PL);
+				currLevel = !currLevel;
+				dataLevels.Add(currLevel);
 				dataPeriods.Add(SYNC_2_PL);
+				currLevel = !currLevel;
+				dataLevels.Add(currLevel);
 
 				int pos = 0;
 
@@ -296,13 +305,33 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 					for (byte b = 0x80; b != 0; b >>= 1)
 					{
 						if ((blockdata[i] & b) != 0)
+						{
 							dataPeriods.Add(BIT_1_PL);
+							currLevel = !currLevel;
+							dataLevels.Add(currLevel);
+						}
+							
 						else
+						{
 							dataPeriods.Add(BIT_0_PL);
+							currLevel = !currLevel;
+							dataLevels.Add(currLevel);
+						}
+							
 						if ((blockdata[i] & b) != 0)
+						{
 							dataPeriods.Add(BIT_1_PL);
+							currLevel = !currLevel;
+							dataLevels.Add(currLevel);
+						}
+							
 						else
+						{
 							dataPeriods.Add(BIT_0_PL);
+							currLevel = !currLevel;
+							dataLevels.Add(currLevel);
+						}
+							
 					}
 				}
 
@@ -310,13 +339,29 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				for (byte c = 0x80; c != (byte)(0x80 >> BIT_COUNT_IN_LAST); c >>= 1)
 				{
 					if ((blockdata[pos] & c) != 0)
+					{
 						dataPeriods.Add(BIT_1_PL);
+						currLevel = !currLevel;
+						dataLevels.Add(currLevel);
+					}
 					else
+					{
 						dataPeriods.Add(BIT_0_PL);
+						currLevel = !currLevel;
+						dataLevels.Add(currLevel);
+					}
 					if ((blockdata[pos] & c) != 0)
+					{
 						dataPeriods.Add(BIT_1_PL);
+						currLevel = !currLevel;
+						dataLevels.Add(currLevel);
+					}
 					else
+					{
 						dataPeriods.Add(BIT_0_PL);
+						currLevel = !currLevel;
+						dataLevels.Add(currLevel);
+					}
 				}
 
 				// add block pause
@@ -325,14 +370,27 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 				// default pause for tap files
 				tdb.PauseInMS = 1000;
+				tdb.PauseInTStates = TranslatePause(tdb.PauseInMS);
+
+				// small inversion
+				dataPeriods.Add(3476);
+				currLevel = !currLevel;
+				dataLevels.Add(currLevel);
+
+				// actual pause
+				dataPeriods.Add(tdb.PauseInTStates - 3476);
+				currLevel = !currLevel;
+				dataLevels.Add(currLevel);
 
 				// add to the tapedatablock object
 				tdb.DataPeriods = dataPeriods;
+				tdb.DataLevels = dataLevels;
 
 				// add the raw data
 				tdb.BlockData = blockdata;
 
 				// generate separate PAUS block
+				/*
 				TapeDataBlock tdbPause = new TapeDataBlock();
 				tdbPause.DataPeriods = new List<int>();
 				tdbPause.BlockDescription = BlockType.PAUSE_BLOCK;
@@ -341,10 +399,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				//if (pauseInTStates > 0)
 				//tdbPause.DataPeriods.Add(pauseInTStates);
 				tdb.PauseInMS = 0;
+				tdb.PauseInTStates = pauseInTStates;
+				*/
 
 				// add block to the tape
 				_datacorder.DataBlocks.Add(tdb);
 
+				/*
 				// PAUS block if neccessary
 				if (pauseInTStates > 0)
 				{
@@ -366,6 +427,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 					_datacorder.DataBlocks.Add(tdbPause);
 				}
+				*/
 			}
 		}
 	}

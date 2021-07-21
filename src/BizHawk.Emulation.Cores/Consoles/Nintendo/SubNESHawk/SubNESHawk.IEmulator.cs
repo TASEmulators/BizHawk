@@ -21,8 +21,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 				_nesCore.cpu.TraceCallback = null;
 			}
 
-			_frame++;
-
 			if (controller.IsPressed("Power"))
 			{
 				HardReset();
@@ -62,6 +60,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 			}
 
 			reset_frame = false;
+
+			_frame++;
+
 			return ret;
 		}
 

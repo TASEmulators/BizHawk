@@ -9,6 +9,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 	/// </summary>
 	public class TapeDataBlock
 	{
+		public TapeDataBlock()
+		{
+			DataPeriods = new List<int>();
+			DataLevels = new List<bool>();
+		}
+
 		/// <summary>
 		/// Either the TZX block ID, or -1 in the case of non-tzx blocks
 		/// </summary>
@@ -77,6 +83,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		public List<int> DataPeriods = new List<int>();
 
+		/// <summary>
+		/// List containing the pulse levels (in relation to the pulse timing values)
+		/// </summary>
+		public List<bool> DataLevels = new List<bool>();
+
+		public List<string> PulseDescription = new List<string>();
+
 		public bool InitialPulseLevel;
 
 		/// <summary>
@@ -91,7 +104,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		}
 
 		/// <summary>
-		/// The defined post-block pause
+		/// The defined post-block pause in MS
 		/// </summary>
 		private int _pauseInMS;
 		public int PauseInMS
@@ -100,6 +113,15 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			set => _pauseInMS = value;
 		}
 
+		/// <summary>
+		/// The defined post-block pause in T-States
+		/// </summary>
+		private int _pauseInTStates;
+		public int PauseInTStates
+		{
+			get { return _pauseInTStates; }
+			set { _pauseInTStates = value; }
+		}
 
 		/// <summary>
 		/// Returns the data periods as an array
@@ -226,6 +248,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		Pulse_Length,
 		Pulse_Count,
 
+		TStatesPerSample,
+
+		Archive_Info,
+		Custom_Info,
 		Text_Description,
 		Title,
 		Publisher,

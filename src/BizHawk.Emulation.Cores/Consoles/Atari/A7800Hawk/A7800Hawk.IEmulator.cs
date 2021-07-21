@@ -68,8 +68,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				cpu.TraceCallback = null;
 			}
 
-			_frame++;
-
 			if (controller.IsPressed("Power"))
 			{
 				// it seems that theMachine.Reset() doesn't clear ram, etc
@@ -88,6 +86,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			{
 				_lagCount++;
 			}
+
+			_frame++;
 
 			return true;
 		}

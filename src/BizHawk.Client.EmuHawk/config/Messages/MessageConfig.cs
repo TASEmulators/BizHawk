@@ -82,8 +82,8 @@ namespace BizHawk.Client.EmuHawk
 			int y = 12;
 			foreach (var position in Positions)
 			{
-				var row = new MessageRow 
-				{ 
+				var row = new MessageRow
+				{
 					Name = position.Key,
 					Location = new Point(10, y)
 				};
@@ -106,7 +106,7 @@ namespace BizHawk.Client.EmuHawk
 			int y = 20;
 			foreach (var color in Colors)
 			{
-				var row = new ColorRow 
+				var row = new ColorRow
 				{
 					Name = color.Key,
 					Location = new Point(10, y),

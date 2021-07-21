@@ -150,7 +150,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetDisassemblerItemCount()
 		{
-			DisassemblerView.RowCount = DisassemblerView.VisibleRows * 6 + 2;
+			if (DisassemblerView.VisibleRows > 0)
+			{
+				DisassemblerView.RowCount = DisassemblerView.VisibleRows * 6 + 2;
+			}		
 		}
 
 		private void DisassemblerView_SizeChanged(object sender, EventArgs e)

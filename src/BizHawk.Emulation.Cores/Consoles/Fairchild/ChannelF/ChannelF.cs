@@ -3,11 +3,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 {
-	[Core(
-		"ChannelFHawk",
-		"Asnivor",
-		isPorted: false,
-		isReleased: false)]
+	[Core(CoreNames.ChannelFHawk, "Asnivor", isReleased: false)]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class ChannelF
 	{
@@ -31,8 +27,8 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 			_tracer = new TraceBuffer { Header = CPU.TraceHeader };
 
-			byte[] bios01 = comm.CoreFileProvider.GetFirmware("ChannelF", "ChannelF_sl131253", true);
-			byte[] bios02 = comm.CoreFileProvider.GetFirmware("ChannelF", "ChannelF_sl131254", true);
+			var bios01 = comm.CoreFileProvider.GetFirmwareOrThrow(new("ChannelF", "ChannelF_sl131253"));
+			var bios02 = comm.CoreFileProvider.GetFirmwareOrThrow(new("ChannelF", "ChannelF_sl131254"));
 
 			BIOS01 = bios01;
 			BIOS02 = bios02;

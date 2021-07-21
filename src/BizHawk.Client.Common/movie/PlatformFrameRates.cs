@@ -41,7 +41,7 @@ namespace BizHawk.Client.Common
 			// RetroEdit: I don't like how this is cycles per second instead of FPS.
 			// It probably should be moved to a separate place.
 			["GB_Clock"] = 2097152.0,
-			["GBA"] = 262144.0 / 4389.0, // 59.7275005696 
+			["GBA"] = 262144.0 / 4389.0, // 59.7275005696
 			["GEN"] = 53693175 / (3420.0 * 262),
 			["GEN_PAL"] = 53203424 / (3420.0 * 313),
 
@@ -71,7 +71,9 @@ namespace BizHawk.Client.Common
 			["ZXSpectrum_PAL"] = 50.080128205,
 			["AmstradCPC_PAL"] = 50.08012820512821,
 			["UZE"] = 60.016319939602,
-			["VEC"] = 50
+			["VEC"] = 50,
+			["O2"] = 60,
+			["O2_PAL"] = 50
 		};
 
 		public static double GetFrameRate(string systemId, bool pal)
