@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			{
 				UseDefaultHacks = true;
 
-				BackgroundsMode = 1;
+				BackgroundsMode = BackgroundsRenderingMode.Stripped;
 				MultiSampling = 0;
 				AspectRatio = AspectRatioMode.FourThree;
 				BufferSwapMode = SwapMode.OnVIUpdateCall;
