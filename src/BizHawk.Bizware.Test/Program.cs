@@ -1,23 +1,37 @@
 ﻿using System;
-using System.Windows.Forms;
-using System.Drawing;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Drawing;
+using System.IO;
+using System.Reflection;
+using System.Windows.Forms;
 
 using BizHawk.Bizware.BizwareGL;
-using BizHawk.Bizware.BizwareGL.Drivers.OpenTK;
-
-using OpenTK.Graphics.OpenGL;
+using BizHawk.Bizware.OpenTK3;
+using BizHawk.Client.EmuHawk;
 
 namespace BizHawk.Bizware.Test
 {
 	class Program
 	{
-
-		static unsafe void Main(string[] args)
+		static Program()
 		{
-			BizHawk.Bizware.BizwareGL.IGL igl = new BizHawk.Bizware.BizwareGL.Drivers.OpenTK.IGL_TK();
+			AppDomain.CurrentDomain.AssemblyResolve += (_, args) =>
+			{
+				lock (AppDomain.CurrentDomain)
+				{
+					var firstAsm = Array.Find(AppDomain.CurrentDomain.GetAssemblies(), asm => asm.FullName == args.Name);
+					if (firstAsm is not null) return firstAsm;
+					var guessFilename = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "dll", $"{new AssemblyName(args.Name).Name}.dll");
+					return File.Exists(guessFilename) ? Assembly.LoadFile(guessFilename) : null;
+				}
+			};
+		}
+
+		public static void Main() => RunTest();
+
+		private static void RunTest()
+		{
+			IGL igl = new IGL_TK(2, 0, false);
 
 			List<Art> testArts = new List<Art>();
 			ArtManager am = new ArtManager(igl);
@@ -54,7 +68,7 @@ namespace BizHawk.Bizware.Test
 			rt.Bind();
 			igl.SetClearColor(Color.Blue);
 			igl.Clear(ClearBufferMask.ColorBufferBit);
-			gr.Begin(60, 60, true);
+			gr.Begin(60, 60);
 			gr.Draw(smile);
 			gr.End();
 			rt.Unbind();
@@ -69,7 +83,7 @@ namespace BizHawk.Bizware.Test
 			RetroShader shader;
 			using (var stream = typeof(Program).Assembly.GetManifestResourceStream("BizHawk.Bizware.Test.TestImages.4xSoft.glsl"))
 				shader = new RetroShader(igl, new System.IO.StreamReader(stream).ReadToEnd());
-			igl.SetBlendState(igl.BlendNone);
+			igl.SetBlendState(igl.BlendNoneCopy);
 			shader.Run(rttex2d, new Size(60, 60), new Size(240, 240), true);
 
 
@@ -103,15 +117,15 @@ namespace BizHawk.Bizware.Test
 					gr.SetModulateColor(Color.Green);
 					gr.RectFill(250, 0, 16, 16);
 
-					gr.SetBlendState(igl.BlendNone);
+					gr.SetBlendState(igl.BlendNoneCopy);
 					gr.Draw(rttex2d, 0, 20);
 					gr.SetBlendState(igl.BlendNormal);
 
 					sr.RenderString(gr, 0, 0, "?? fps");
 					gr.SetModulateColor(Color.FromArgb(255, 255, 255, 255));
-					gr.SetCornerColor(0, OpenTK.Graphics.Color4.Red);
+					gr.SetCornerColor(0, new(1.0f, 0.0f, 0.0f, 1.0f));
 					gr.Draw(rt2.Texture2d, 0, 0);
-					gr.SetCornerColor(0, OpenTK.Graphics.Color4.White);
+					gr.SetCornerColor(0, new(1.0f, 1.0f, 1.0f, 1.0f));
 					gr.SetModulateColorWhite();
 					gr.Modelview.Translate((float)Math.Sin(wobble / 360.0f) * 50, 0);
 					gr.Modelview.Translate(100, 100);
