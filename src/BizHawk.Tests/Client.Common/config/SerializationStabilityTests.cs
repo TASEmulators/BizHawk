@@ -45,7 +45,7 @@ namespace BizHawk.Tests.Client.Common.config
 			[typeof(Binding)] = BINDING_SER,
 			[typeof(BindingCollection)] = $@"{{""Bindings"":[{BINDING_SER}]}}",
 			[typeof(CheatConfig)] = $@"{{""DisableOnLoad"":false,""LoadFileByGame"":true,""AutoSaveOnClose"":true,""Recent"":{RECENT_SER}}}",
-			[typeof(FeedbackBind)] = "TODO",
+			[typeof(FeedbackBind)] = @"{""Channels"":""Left+Right"",""GamepadPrefix"":""X1 "",""Prescale"":1.0}",
 			[typeof(MessagePosition)] = @"{""X"":0,""Y"":0,""Anchor"":0}",
 			[typeof(MovieConfig)] = $@"{{""MovieEndAction"":3,""EnableBackupMovies"":true,""MoviesOnDisk"":false,""MovieCompressionLevel"":2,""VBAStyleMovieLoadState"":false,""DefaultTasStateManagerSettings"":{ZWINDER_SER}}}",
 			[typeof(PathEntry)] = PATHENTRY_SER,
