@@ -36,10 +36,7 @@ namespace BizHawk.Client.EmuHawk
 			foreach (var c in _flpMain.Controls.OfType<FeedbackBindControl>())
 			{
 				if (string.IsNullOrEmpty(c.BoundGamepadPrefix)) continue;
-				foreach (var channel in c.BoundChannels.Split('+'))
-				{
-					saveTo[c.VChannelName] = new(c.BoundGamepadPrefix, channel, c.Prescale);
-				}
+				saveTo[c.VChannelName] = new(c.BoundGamepadPrefix, c.BoundChannels, c.Prescale);
 			}
 		}
 	}

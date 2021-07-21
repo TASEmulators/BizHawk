@@ -24,7 +24,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public FeedbackBindControl(string vChannel, FeedbackBind existingBind, IHostInputAdapter hostInputAdapter)
 		{
-			BoundChannels = existingBind.Channel ?? string.Empty;
+			BoundChannels = existingBind.Channels ?? string.Empty;
 			BoundGamepadPrefix = existingBind.GamepadPrefix ?? string.Empty;
 			Prescale = existingBind.IsZeroed ? 1.0f : existingBind.Prescale;
 			VChannelName = vChannel;
