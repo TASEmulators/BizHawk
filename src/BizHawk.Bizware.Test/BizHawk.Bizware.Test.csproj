@@ -5,7 +5,6 @@
 	<Import Project="../MainSlnExecutable.props" />
 	<PropertyGroup>
 		<DefineConstants>$(DefineConstants);EXE_PROJECT</DefineConstants>
-		<Nullable>disable</Nullable>
 		<OutputPath>$(ProjectDir)bin<!--/$(Configuration)/$(TargetFramework)--></OutputPath>
 	</PropertyGroup>
 	<ItemGroup>
