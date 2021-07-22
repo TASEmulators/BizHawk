@@ -1,5 +1,3 @@
-#nullable enable
-
 namespace BizHawk.Emulation.Common
 {
 	/// <summary>represents the direction of <c>(+, +)</c></summary>

@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
 using BizHawk.BizInvoke;
 using BizHawk.Common;
 

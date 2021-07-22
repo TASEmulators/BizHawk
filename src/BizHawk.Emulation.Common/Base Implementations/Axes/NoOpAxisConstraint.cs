@@ -1,5 +1,3 @@
-#nullable enable
-
 namespace BizHawk.Emulation.Common
 {
 	public sealed class NoOpAxisConstraint : AxisConstraint

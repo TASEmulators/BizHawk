@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Emulation.Common
+﻿#nullable disable
+
+namespace BizHawk.Emulation.Common
 {
 	/// <summary>
 	/// This service provides the system by which a client can request SaveRAM data to be stored by the client

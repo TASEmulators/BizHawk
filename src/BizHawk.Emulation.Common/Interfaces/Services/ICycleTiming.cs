@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Emulation.Common
+﻿#nullable disable
+
+namespace BizHawk.Emulation.Common
 {
 	public interface ICycleTiming
 	{

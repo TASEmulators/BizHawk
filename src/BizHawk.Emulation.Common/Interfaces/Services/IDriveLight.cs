@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Emulation.Common
+﻿#nullable disable
+
+namespace BizHawk.Emulation.Common
 {
 	/// <summary>
 	/// Specifies an interface for returning the state of a LED drive light such as on Disk and CD Drives,

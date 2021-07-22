@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Emulation.Common
+﻿#nullable disable
+
+namespace BizHawk.Emulation.Common
 {
 	/// <summary>
 	/// This service specifies the interaction of the client and the core in terms of the state of input polling

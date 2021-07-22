@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Emulation.Common
+﻿#nullable disable
+
+namespace BizHawk.Emulation.Common
 {
 	/// <summary>
 	/// This service provides a means for the current core to generate a

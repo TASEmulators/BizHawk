@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿#nullable disable
+
+using System.IO;
 using BizHawk.Common.BufferExtensions;
 
 namespace BizHawk.Emulation.Common

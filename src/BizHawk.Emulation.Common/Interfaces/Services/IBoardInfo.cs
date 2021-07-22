@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Emulation.Common
+﻿#nullable disable
+
+namespace BizHawk.Emulation.Common
 {
 	/// <summary>
 	/// An <seealso cref="IEmulatorService"/> that returns cart/mapper/board information about the Game hardware itself, if available

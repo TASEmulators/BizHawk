@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Emulation.Common
+﻿#nullable disable
+
+namespace BizHawk.Emulation.Common
 {
 	/// <summary>
 	/// This interface specifies that an interface or implementation is a emulator core service, such as <seealso cref="IDebuggable"/>,

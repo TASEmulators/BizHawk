@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
 
 namespace BizHawk.Emulation.Common.Base_Implementations
 {

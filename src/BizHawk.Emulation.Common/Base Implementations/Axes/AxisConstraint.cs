@@ -1,5 +1,3 @@
-#nullable enable
-
 namespace BizHawk.Emulation.Common
 {
 	public interface AxisConstraint
