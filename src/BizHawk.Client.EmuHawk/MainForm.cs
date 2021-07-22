@@ -447,14 +447,14 @@ namespace BizHawk.Client.EmuHawk
 				{
 					null => Config.AcceptBackgroundInput // none of our forms are focused, check the background input config
 						? Config.AcceptBackgroundInputControllerOnly
-							? Input.AllowInput.OnlyController
-							: Input.AllowInput.All
-						: Input.AllowInput.None,
-					TAStudio when yieldAlt => Input.AllowInput.None,
-					FormBase { BlocksInputWhenFocused: false } => Input.AllowInput.All,
-					ControllerConfig => Input.AllowInput.All,
-					HotkeyConfig => Input.AllowInput.All,
-					_ => Input.AllowInput.None
+							? AllowInput.OnlyController
+							: AllowInput.All
+						: AllowInput.None,
+					TAStudio when yieldAlt => AllowInput.None,
+					FormBase { BlocksInputWhenFocused: false } => AllowInput.All,
+					ControllerConfig => AllowInput.All,
+					HotkeyConfig => AllowInput.All,
+					_ => AllowInput.None
 				}
 			);
 			InitControls();
@@ -701,7 +701,7 @@ namespace BizHawk.Client.EmuHawk
 
 				// handle events and dispatch as a hotkey action, or a hotkey button, or an input button
 				// ...but prepare haptics first, those get read in ProcessInput
-				var finalHostController = (ControllerInputCoalescer) InputManager.ControllerInputCoalescer;
+				var finalHostController = InputManager.ControllerInputCoalescer;
 				InputManager.ActiveController.PrepareHapticsForHost(finalHostController);
 				ProcessInput(
 					_hotkeyCoalescer,
@@ -982,7 +982,7 @@ namespace BizHawk.Client.EmuHawk
 			Input.Instance.Adapter.SetHaptics(finalHostController.GetHapticsSnapshot());
 
 			// loop through all available events
-			Input.InputEvent ie;
+			InputEvent ie;
 			while ((ie = Input.Instance.DequeueEvent()) != null)
 			{
 				// useful debugging:
@@ -995,7 +995,7 @@ namespace BizHawk.Client.EmuHawk
 				if (triggers.Count == 0)
 				{
 					// Maybe it is a system alt-key which hasn't been overridden
-					if (ie.EventType == Input.InputEventType.Press)
+					if (ie.EventType is InputEventType.Press)
 					{
 						if (ie.LogicalButton.Alt && ie.LogicalButton.Button.Length == 1)
 						{
@@ -1026,7 +1026,7 @@ namespace BizHawk.Client.EmuHawk
 						finalHostController.Receive(ie);
 
 						handled = false;
-						if (ie.EventType == Input.InputEventType.Press)
+						if (ie.EventType is InputEventType.Press)
 						{
 							handled = triggers.Aggregate(handled, (current, trigger) => current | CheckHotkey(trigger));
 						}
@@ -1043,7 +1043,7 @@ namespace BizHawk.Client.EmuHawk
 						if (!activeControllerHasBinding(ie.LogicalButton.ToString()))
 						{
 							handled = false;
-							if (ie.EventType == Input.InputEventType.Press)
+							if (ie.EventType is InputEventType.Press)
 							{
 								handled = triggers.Aggregate(false, (current, trigger) => current | CheckHotkey(trigger));
 							}
@@ -1058,7 +1058,7 @@ namespace BizHawk.Client.EmuHawk
 						break;
 					case 2: // Hotkeys override Input
 						handled = false;
-						if (ie.EventType == Input.InputEventType.Press)
+						if (ie.EventType is InputEventType.Press)
 						{
 							handled = triggers.Aggregate(false, (current, trigger) => current | CheckHotkey(trigger));
 						}
@@ -2110,7 +2110,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			InputManager.ClientControls = controls;
-			InputManager.ControllerInputCoalescer = new ControllerInputCoalescer(); // ctor initialises values for host haptics
+			InputManager.ControllerInputCoalescer = new(); // ctor initialises values for host haptics
 			_autofireNullControls = new AutofireController(
 				Emulator,
 				Config.AutofireOn,

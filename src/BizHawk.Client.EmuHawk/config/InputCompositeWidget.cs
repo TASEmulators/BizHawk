@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Windows.Forms;
 
+using BizHawk.Client.Common;
+
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class InputCompositeWidget : UserControl
@@ -80,24 +82,24 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DropdownMenu_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
 		{
-			Input.ModifierKey mods = new Input.ModifierKey();
+			var mods = ModifierKey.None;
 
 			if ((ModifierKeys & Keys.Shift) != 0)
 			{
-				mods |= Input.ModifierKey.Shift;
+				mods |= ModifierKey.Shift;
 			}
 
 			if ((ModifierKeys & Keys.Control) != 0)
 			{
-				mods |= Input.ModifierKey.Control;
+				mods |= ModifierKey.Control;
 			}
 
 			if ((ModifierKeys & Keys.Alt) != 0)
 			{
-				mods |= Input.ModifierKey.Alt;
+				mods |= ModifierKey.Alt;
 			}
 
-			var lb = new Input.LogicalButton(e.ClickedItem.Text, mods);
+			LogicalButton lb = new(e.ClickedItem.Text, mods);
 
 			widget.SetBinding(lb.ToString());
 		}
