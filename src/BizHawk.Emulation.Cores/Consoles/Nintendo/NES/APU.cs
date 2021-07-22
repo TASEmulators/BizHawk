@@ -652,17 +652,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		} // class TriangleUnit
 
-		private sealed class DMCUnit
+		public sealed class DMCUnit
 		{
 			private readonly APU apu;
+			private readonly NES nes;
 			private readonly int[] DMC_RATE;
 			public DMCUnit(APU apu, bool pal)
 			{
 				this.apu = apu;
+				this.nes = apu.nes;
 				out_silence = true;
 				DMC_RATE = pal ? DMC_RATE_PAL : DMC_RATE_NTSC;
 				timer_reload = DMC_RATE[0];
-				timer = 1021; // confirmed in VisualNES although aligning controller read glitches still doesn't work
+				timer = 1020; // confirmed in VisualNES although aligning controller read glitches still doesn't work
 				sample_buffer_filled = false;
 				out_deltacounter = 64;
 				out_bits_remaining = 7; //confirmed in VisualNES
@@ -732,7 +734,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					if (!apu.call_from_write)
 					{
 						// when called due to empty bueffer while DMC running, there is no delay
-						delay = 1;
+						delay = 0;
+						nes.cpu.RDY = false;
+						nes.dmc_dma_exec = true;
+						apu.dmc_dma_countdown = 3; // 3 here but this actually stops 4 cpu cycles because it starts before the cpu is run
+						apu.DMC_RDY_check = 2;
 					}
 					else
 					{
@@ -763,7 +769,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						}
 						else
 						{
-
 							apu.dmc_dma_countdown = 3;
 							apu.DMC_RDY_check = 2;
 							apu.call_from_write = false;
@@ -945,7 +950,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public PulseUnit[] pulse = new PulseUnit[2];
 		public TriangleUnit triangle;
 		public NoiseUnit noise;
-		private readonly DMCUnit dmc;
+		public readonly DMCUnit dmc;
 
 		private bool irq_pending;
 		private bool dmc_irq;

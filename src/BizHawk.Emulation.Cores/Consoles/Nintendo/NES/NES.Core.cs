@@ -282,6 +282,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		private bool resetSignal;
 		private bool hardResetSignal;
+
 		public bool FrameAdvance(IController controller, bool render, bool rendersound)
 		{
 			_controller = controller;
@@ -454,7 +455,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				if (cpu_deadcounter == 0)
 				{
-
 					if (oam_dma_index % 2 == 0)
 					{
 						oam_dma_byte = ReadMemory(oam_dma_addr);
@@ -465,8 +465,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						WriteMemory(0x2004, oam_dma_byte);
 					}
 					oam_dma_index++;
-					if (oam_dma_index == 512) oam_dma_exec = false;
-
+					if (oam_dma_index == 512) 
+					{
+						oam_dma_exec = false;
+					}
 				}
 				else
 				{
@@ -495,7 +497,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				// By this point the cpu should be frozen, if it is not, then we are in a multi-write opcode, add another cycle delay
 				if (!cpu.RDY && !cpu.rdy_freeze && (apu.dmc_dma_countdown == apu.DMC_RDY_check))
 				{
-					//Console.WriteLine("dmc RDY false " + cpu.TotalExecutedCycles + " " + apu.call_from_write + " " + cpu.opcode + " " + oam_dma_exec);
+					//Console.WriteLine("dmc double " + cpu.TotalExecutedCycles + " " + cpu.opcode + " " + cpu.mi);
 					apu.dmc_dma_countdown += 2;
 					apu.DMC_RDY_check = -1;
 				}
@@ -509,9 +511,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					dmc_dma_exec = false;
 					apu.dmc_dma_countdown = -1;
 					do_the_reread = true;
-				}
-
-				//Console.WriteLine("dmc RDY false " + cpu.TotalExecutedCycles + " " + apu.call_from_write + " " + cpu.opcode);
+					
+					//Console.WriteLine("dmc RDY false " + cpu.TotalExecutedCycles + " " + (apu.dmc.timer & 1));
+				}			
+				//Console.WriteLine("dmc RDY false " + cpu.TotalExecutedCycles + " " + cpu.opcode + " " + cpu.mi + " " + apu.dmc_dma_countdown);
 			}
 
 			/////////////////////////////
@@ -598,14 +601,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					{
 						// special hardware glitch case
 						ret_spec = read_joyport(addr);
+
 						if (do_the_reread && ppu.region==PPU.Region.NTSC)
 						{
 							ret_spec = read_joyport(addr);
-							do_the_reread = false;
-							Console.WriteLine("DMC glitch player 1");
+							do_the_reread = false;	
+							Console.WriteLine("DMC glitch player 1 ");
 						}
-						return ret_spec;
 
+						return ret_spec;
 					}
 				case 0x4017:
 					if (_isVS)
@@ -617,7 +621,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						ret = (byte)(ret | (VS_dips[2] << 2) | (VS_dips[3] << 3) | (VS_dips[4] << 4) | (VS_dips[5] << 5) | (VS_dips[6] << 6) | (VS_dips[7] << 7));
 
 						return ret;
-
 					}
 					else
 					{
@@ -714,7 +717,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						sprdma_countdown--;
 						if (sprdma_countdown == 0)
 						{
-							if (cpu.TotalExecutedCycles % 2 == 0)
+							if (apu.dmc.timer % 2 == 0)
 							{
 								cpu_deadcounter = 2;
 							}

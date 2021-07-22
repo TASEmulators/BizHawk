@@ -133,7 +133,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		private bool nmi_destiny;
 		private bool evenOddDestiny;
-		private int start_up_offset;
+		public int start_up_offset;
 		private int NMI_offset;
 		private int yp_shift;
 		private int sprite_eval_cycle;
@@ -532,7 +532,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					{
 						if (ppu_was_on_spr && !PPUON)
 						{
-							Console.WriteLine("oam addr glitch " + ppur.status.sl + " " + ppur.status.cycle);
+							//Console.WriteLine("oam addr glitch " + ppur.status.sl + " " + ppur.status.cycle);
 							reg_2003++;
 						}
 					}
