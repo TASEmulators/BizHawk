@@ -1564,7 +1564,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			ofd.RestoreDirectory = true;
-			ofd.Filter = new FilesystemFilter("Libretro Cores", new[] { "dll" }).ToString();
+			ofd.Filter = new FilesystemFilter("Libretro Cores", new[] { OSTailoredCode.IsUnixHost ? "so" : "dll" }).ToString();
 
 			if (ofd.ShowDialog() == DialogResult.Cancel)
 			{
