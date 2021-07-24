@@ -205,16 +205,9 @@ namespace BizHawk.Client.Common
 		}
 
 		public string InputStrOrAll()
-		{
-			IController m = _inputManager.AutofireStickyXorAdapter;
-
-			if (_movieSession.Movie.IsPlayingOrRecording() && _emulator.Frame > 0)
-			{
-				m = m.Or(_movieSession.Movie.GetInputState(_emulator.Frame - 1));
-			}
-
-			return MakeStringFor(m);
-		}
+			=> MakeStringFor(_movieSession.Movie.IsPlayingOrRecording() && _emulator.Frame > 0
+				? _inputManager.AutofireStickyXorAdapter.Or(_movieSession.Movie.GetInputState(_emulator.Frame - 1))
+				: _inputManager.AutofireStickyXorAdapter);
 
 		private string MakeStringFor(IController controller)
 		{
