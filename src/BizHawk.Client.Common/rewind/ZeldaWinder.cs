@@ -231,31 +231,27 @@ namespace BizHawk.Client.Common
 			if (!_active || _count == 0)
 				return false;
 
-			if (_masterFrame == frameToAvoid && _count > 1)
+			if (_masterFrame == frameToAvoid)
 			{
-				var index = _buffer.Count - 1;
-				RefillMaster(_buffer.GetState(index));
-				_buffer.InvalidateEnd(index);
-				_stateSource.LoadStateBinary(new BinaryReader(new MemoryStream(_master, 0, _masterLength, false)));
+				if (_count > 1)
+				{
+					var index = _buffer.Count - 1;
+					RefillMaster(_buffer.GetState(index));
+					_buffer.InvalidateEnd(index);
+					_stateSource.LoadStateBinary(new BinaryReader(new MemoryStream(_master, 0, _masterLength, false)));
+				}
+				else
+				{
+					_stateSource.LoadStateBinary(new BinaryReader(new MemoryStream(_master, 0, _masterLength, false)));
+					_masterFrame = -1;
+				}
 				_count--;
 			}
 			else
 			{
+				// The emulator will frame advance without giving us a chance to
+				// re-capture this frame, so we shouldn't invalidate this state just yet.
 				_stateSource.LoadStateBinary(new BinaryReader(new MemoryStream(_master, 0, _masterLength, false)));
-				Work(() =>
-				{
-					var index = _buffer.Count - 1;
-					if (index >= 0)
-					{
-						RefillMaster(_buffer.GetState(index));
-						_buffer.InvalidateEnd(index);
-					}
-					else
-					{
-						_masterFrame = -1;
-					}
-					_count--;
-				});
 			}
 			return true;
 		}
