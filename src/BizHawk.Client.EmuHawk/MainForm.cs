@@ -3963,6 +3963,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OnRomChanged()
 		{
+			OSD.Fps = "0 fps";
 			SetWindowText();
 			HandlePlatformMenus();
 			_stateSlots.ClearRedoList();
