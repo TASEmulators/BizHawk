@@ -66,14 +66,21 @@ namespace BizHawk.Client.Common
 				return false;
 			var index = Count - 1;
 			var state = _buffer.GetState(index);
-			if (state.Frame == frameToAvoid && Count > 1)
+			if (state.Frame == frameToAvoid)
 			{
-				// Do not decrement index again.  We will "head" this state and not pop it since it will be advanced past
-				// without an opportunity to capture.  This is a bit hackish.
-				state = _buffer.GetState(index - 1);
+				if (Count > 1)
+				{
+					state = _buffer.GetState(index - 1);
+				}
+				_stateSource.LoadStateBinary(new BinaryReader(state.GetReadStream()));
+				_buffer.InvalidateEnd(index);
 			}
-			_stateSource.LoadStateBinary(new BinaryReader(state.GetReadStream()));
-			_buffer.InvalidateEnd(index);
+			else
+			{
+				// The emulator will frame advance without giving us a chance to
+				// re-capture this frame, so we shouldn't invalidate this state just yet.
+				_stateSource.LoadStateBinary(new BinaryReader(state.GetReadStream()));
+			}
 			return true;
 		}
 
