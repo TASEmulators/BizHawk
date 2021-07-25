@@ -107,7 +107,7 @@ namespace BizHawk.Client.Common
 			{
 				UseCompression = CurrentUseCompression,
 				BufferSize = CurrentBufferSize,
-				ConsistentRewindFrequency = false,
+				UseFixedRewindInterval = false,
 				TargetFrameLength = CurrentTargetFrameLength,
 				BackingStore = CurrentStoreType
 			};
@@ -118,7 +118,7 @@ namespace BizHawk.Client.Common
 			{
 				UseCompression = RecentUseCompression,
 				BufferSize = RecentBufferSize,
-				ConsistentRewindFrequency = false,
+				UseFixedRewindInterval = false,
 				TargetFrameLength = RecentTargetFrameLength,
 				BackingStore = RecentStoreType
 			};
@@ -129,7 +129,7 @@ namespace BizHawk.Client.Common
 			{
 				UseCompression = GapsUseCompression,
 				BufferSize = GapsBufferSize,
-				ConsistentRewindFrequency = false,
+				UseFixedRewindInterval = false,
 				TargetFrameLength = GapsTargetFrameLength,
 				BackingStore = GapsStoreType
 			};

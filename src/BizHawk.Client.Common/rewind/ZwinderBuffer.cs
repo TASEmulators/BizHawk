@@ -55,16 +55,15 @@ namespace BizHawk.Client.Common
 				default:
 					throw new ArgumentException("Unsupported store type for ZwinderBuffer.");
 			}
-			if (settings.ConsistentRewindFrequency)
+			if (settings.UseFixedRewindInterval)
 			{
 				_fixedRewindInterval = true;
-				_targetRewindInterval = settings.TargetRewindFrequency;
+				_targetRewindInterval = settings.TargetRewindInterval;
 			}
 			else
 			{
 				_fixedRewindInterval = false;
 				_targetFrameLength = settings.TargetFrameLength;
-
 			}
 			_states = new StateInfo[STATEMASK + 1];
 			_useCompression = settings.UseCompression;
@@ -161,8 +160,8 @@ namespace BizHawk.Client.Common
 			long size = 1L << (int)Math.Floor(Math.Log(targetSize, 2));
 			return Size == size &&
 				_useCompression == settings.UseCompression &&
-				_fixedRewindInterval == settings.ConsistentRewindFrequency &&
-				(_fixedRewindInterval ? _targetRewindInterval == settings.TargetRewindFrequency : _targetFrameLength == settings.TargetFrameLength) &&
+				_fixedRewindInterval == settings.UseFixedRewindInterval &&
+				(_fixedRewindInterval ? _targetRewindInterval == settings.TargetRewindInterval : _targetFrameLength == settings.TargetFrameLength) &&
 				_backingStoreType == settings.BackingStore;
 		}
 
@@ -367,9 +366,9 @@ namespace BizHawk.Client.Common
 				ret = new ZwinderBuffer(new RewindConfig
 				{
 					BufferSize = (int)(size >> 20),
-					ConsistentRewindFrequency = false,
+					UseFixedRewindInterval = false,
 					TargetFrameLength = targetFrameLength,
-					TargetRewindFrequency = 5,
+					TargetRewindInterval = 5,
 					UseCompression = useCompression
 				});
 				if (ret.Size != size || ret._sizeMask != sizeMask)
