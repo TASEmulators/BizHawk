@@ -16,9 +16,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		/// </summary>
 		/// <param name="game">Game information of game to load</param>
 		/// <param name="file">Rom that should be loaded</param>
+		/// <param name="rom">rom data with consistent endianness/order</param>
 		/// <param name="syncSettings">N64SyncSettings object</param>
 		[CoreConstructor("N64")]
-		public N64(GameInfo game, byte[] file, N64Settings settings, N64SyncSettings syncSettings)
+		public N64(GameInfo game, byte[] file, byte[] rom, N64Settings settings, N64SyncSettings syncSettings)
 		{
 			ServiceProvider = new BasicServiceProvider(this);
 			InputCallbacks = new InputCallbackSystem();
@@ -44,7 +45,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				IsOverridingUserExpansionSlotSetting = true;
 			}
 
-			byte country_code = file[0x3E];
+			byte country_code = rom[0x3E];
 			switch (country_code)
 			{
 				// PAL codes
