@@ -49,7 +49,9 @@ namespace BizHawk.Client.EmuHawk
 			UseCompression.Checked = _config.Rewind.UseCompression;
 			cbDeltaCompression.Checked = _config.Rewind.UseDelta;
 			BufferSizeUpDown.Value = Math.Max((decimal) Math.Log(_config.Rewind.BufferSize, 2), BufferSizeUpDown.Minimum);
+            ConsistentIntervalBox.Checked = _config.Rewind.ConsistentRewindFrequency;
 			TargetFrameLengthNumeric.Value = Math.Max(_config.Rewind.TargetFrameLength, TargetFrameLengthNumeric.Minimum);
+			TargetRewindFrequencyNumeric.Value = Math.Max(_config.Rewind.TargetRewindFrequency, TargetRewindFrequencyNumeric.Minimum);
 			StateSizeLabel.Text = FormatKB(_avgStateSize);
 			CalculateEstimates();
 
@@ -111,7 +113,9 @@ namespace BizHawk.Client.EmuHawk
 			_config.Rewind.UseCompression = PutRewindSetting(_config.Rewind.UseCompression, UseCompression.Checked);
 			_config.Rewind.Enabled = PutRewindSetting(_config.Rewind.Enabled, RewindEnabledBox.Checked);
 			_config.Rewind.BufferSize = PutRewindSetting(_config.Rewind.BufferSize, 1L << (int) BufferSizeUpDown.Value);
+			_config.Rewind.ConsistentRewindFrequency = PutRewindSetting(_config.Rewind.ConsistentRewindFrequency, ConsistentIntervalBox.Checked);
 			_config.Rewind.TargetFrameLength = PutRewindSetting(_config.Rewind.TargetFrameLength, (int)TargetFrameLengthNumeric.Value);
+			_config.Rewind.TargetRewindFrequency = PutRewindSetting(_config.Rewind.TargetRewindFrequency, (int)TargetRewindFrequencyNumeric.Value);
 			_config.Rewind.UseDelta = PutRewindSetting(_config.Rewind.UseDelta, cbDeltaCompression.Checked);
 
 			// These settings are not used by DoRewindSettings

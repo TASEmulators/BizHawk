@@ -46,6 +46,8 @@
 			this.labelEx2 = new BizHawk.WinForms.Controls.LabelEx();
 			this.labelEx1 = new BizHawk.WinForms.Controls.LabelEx();
 			this.cbDeltaCompression = new System.Windows.Forms.CheckBox();
+			this.ConsistentIntervalBox = new System.Windows.Forms.CheckBox();
+			this.TargetRewindFrequencyNumeric = new System.Windows.Forms.NumericUpDown();
 			this.TargetFrameLengthNumeric = new System.Windows.Forms.NumericUpDown();
 			this.label2 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.EstTimeLabel = new BizHawk.WinForms.Controls.LocLabelEx();
@@ -77,6 +79,7 @@
 			this.groupBox4.SuspendLayout();
 			this.locSingleRowFLP1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.TargetFrameLengthNumeric)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.TargetRewindFrequencyNumeric)).BeginInit();
 			this.groupBox6.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarCompression)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudCompression)).BeginInit();
@@ -192,6 +195,8 @@
 			this.groupBox4.Controls.Add(this.locSingleRowFLP1);
 			this.groupBox4.Controls.Add(this.cbDeltaCompression);
 			this.groupBox4.Controls.Add(this.TargetFrameLengthNumeric);
+			this.groupBox4.Controls.Add(this.ConsistentIntervalBox);
+			this.groupBox4.Controls.Add(this.TargetRewindFrequencyNumeric);
 			this.groupBox4.Controls.Add(this.label2);
 			this.groupBox4.Controls.Add(this.UseCompression);
 			this.groupBox4.Controls.Add(this.RewindEnabledBox);
@@ -250,6 +255,38 @@
 			this.cbDeltaCompression.TabIndex = 35;
 			this.cbDeltaCompression.Text = "Use delta compression (economizes buffer usage at cost of CPU)";
 			this.cbDeltaCompression.UseVisualStyleBackColor = true;
+			// 
+			// ConsistentIntervalBox
+			// 
+			this.ConsistentIntervalBox.AutoSize = true;
+			this.ConsistentIntervalBox.Location = new System.Drawing.Point(250, 135);
+			this.ConsistentIntervalBox.Name = "ConsistentIntervalBox";
+			this.ConsistentIntervalBox.Size = new System.Drawing.Size(100, 17);
+			this.ConsistentIntervalBox.TabIndex = 35;
+			this.ConsistentIntervalBox.Text = "Force consistent rewind intervals";
+			this.ConsistentIntervalBox.UseVisualStyleBackColor = true;
+			// 
+			// TargetRewindFrequencyNumeric
+			// 
+			this.TargetRewindFrequencyNumeric.Location = new System.Drawing.Point(200, 135);
+			this.TargetRewindFrequencyNumeric.Maximum = new decimal(new int[] {
+            500000,
+            0,
+            0,
+            0});
+			this.TargetRewindFrequencyNumeric.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+			this.TargetRewindFrequencyNumeric.Name = "TargetRewindFrequencyNumeric";
+			this.TargetRewindFrequencyNumeric.Size = new System.Drawing.Size(52, 20);
+			this.TargetRewindFrequencyNumeric.TabIndex = 21;
+			this.TargetRewindFrequencyNumeric.Value = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
 			// 
 			// TargetFrameLengthNumeric
 			// 
@@ -532,6 +569,7 @@
 			this.locSingleRowFLP1.ResumeLayout(false);
 			this.locSingleRowFLP1.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.TargetFrameLengthNumeric)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.TargetRewindFrequencyNumeric)).EndInit();
 			this.groupBox6.ResumeLayout(false);
 			this.groupBox6.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarCompression)).EndInit();
@@ -582,7 +620,9 @@
 				private BizHawk.WinForms.Controls.LocLabelEx label16;
 				private System.Windows.Forms.CheckBox BackupSavestatesCheckbox;
 				private BizHawk.WinForms.Controls.LocLabelEx label20;
+		private System.Windows.Forms.CheckBox ConsistentIntervalBox;
 		private System.Windows.Forms.NumericUpDown TargetFrameLengthNumeric;
+		private System.Windows.Forms.NumericUpDown TargetRewindFrequencyNumeric;
 		private BizHawk.WinForms.Controls.LocLabelEx label2;
 		private System.Windows.Forms.CheckBox cbDeltaCompression;
 		private WinForms.Controls.LocSingleRowFLP locSingleRowFLP1;
