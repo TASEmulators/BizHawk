@@ -47,7 +47,7 @@ namespace BizHawk.Emulation.Common
 			void FirmwareAndOption(string hash, long size, string systemId, string id, string name, string desc)
 			{
 				Firmware(systemId, id, desc);
-				Option(systemId, id, File(hash, size, name, desc), FirmwareOptionStatus.Acceptable); //TODO should the single option for these firmwares be Ideal?
+				Option(systemId, id, File(hash, size, name, desc), FirmwareOptionStatus.Ideal);
 			}
 
 			// FDS has two OK variants  (http://tcrf.net/Family_Computer_Disk_System)
