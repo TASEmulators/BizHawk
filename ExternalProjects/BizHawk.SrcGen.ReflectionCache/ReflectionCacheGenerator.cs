@@ -88,7 +88,7 @@ namespace {nSpace}
 		public static Stream EmbeddedResourceStream(string embedPath)
 		{{
 			var fullPath = $""{nSpace}.{{embedPath}}"";
-			return Asm.GetManifestResourceStream(fullPath) ?? throw new ArgumentException(""resource at {{fullPath}} not found"", nameof(embedPath));
+			return Asm.GetManifestResourceStream(fullPath) ?? throw new ArgumentException($""resource at {{fullPath}} not found"", nameof(embedPath));
 		}}
 	}}
 }}
