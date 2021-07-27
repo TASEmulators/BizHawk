@@ -1,6 +1,4 @@
-﻿#nullable disable
-
-namespace BizHawk.Emulation.Common
+﻿namespace BizHawk.Emulation.Common
 {
 	/// <summary>
 	/// This service is use by link cable capable cores to manage the status of the link cable

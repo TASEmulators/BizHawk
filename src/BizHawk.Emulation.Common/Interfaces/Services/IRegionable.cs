@@ -1,6 +1,4 @@
-﻿#nullable disable
-
-namespace BizHawk.Emulation.Common
+﻿namespace BizHawk.Emulation.Common
 {
 	/// <summary>
 	/// This service provides the means for a core to specify region information to the client, such NTSC versus PAL

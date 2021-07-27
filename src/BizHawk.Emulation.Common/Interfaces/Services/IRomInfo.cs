@@ -1,6 +1,4 @@
-﻿#nullable disable
-
-namespace BizHawk.Emulation.Common
+﻿namespace BizHawk.Emulation.Common
 {
 	/// <summary>
 	/// Provides detailed information about the Rom such as hashes,
@@ -12,6 +10,6 @@ namespace BizHawk.Emulation.Common
 		/// All necessary information about the Rom.
 		/// Expected to be formatted for user consumption
 		/// </summary>
-		string RomDetails { get; }
+		string? RomDetails { get; }
 	}
 }
