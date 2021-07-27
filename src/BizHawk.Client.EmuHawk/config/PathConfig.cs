@@ -197,7 +197,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_pathEntries.UseRecentForRoms = RecentForROMs.Checked;
 
-			foreach (var t in AllPathBoxes)
+			foreach (var t in AllPathControls.OfType<TextBox>())
 			{
 				var pathEntry = _pathEntries.First(p => p.System == t.Parent.Name && p.Type == t.Name);
 				pathEntry.Path = t.Text;
@@ -214,33 +214,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private IEnumerable<TextBox> AllPathBoxes
-		{
-			get
-			{
-				var allPathBoxes = new List<TextBox>();
-				foreach (TabPage tp in PathTabControl.TabPages)
-				{
-					allPathBoxes.AddRange(tp.Controls.OfType<TextBox>());
-				}
-
-				return allPathBoxes;
-			}
-		}
-
 		private IEnumerable<Control> AllPathControls
-		{
-			get
-			{
-				var allPathControls = new List<Control>();
-				foreach (TabPage tp in PathTabControl.TabPages)
-				{
-					allPathControls.AddRange(tp.Controls());
-				}
-
-				return allPathControls;
-			}
-		}
+			=> PathTabControl.TabPages.Cast<TabPage>().SelectMany(tp => tp.Controls());
 
 		private void NewPathConfig_Load(object sender, EventArgs e)
 		{
