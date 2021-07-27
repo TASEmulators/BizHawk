@@ -12,7 +12,7 @@ namespace BizHawk.Client.Common
 		public static string TasMovieExtension => TasMovie.Extension;
 
 		/// <summary>
-		/// Gets a list of extensions for all <seealso cref="IMovie"/> implementations
+		/// Gets a list of extensions for all <see cref="IMovie"/> implementations
 		/// </summary>
 		public static IEnumerable<string> MovieExtensions => new[] { Bk2Movie.Extension, TasMovie.Extension };
 

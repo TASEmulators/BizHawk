@@ -821,10 +821,10 @@ namespace BizHawk.Client.EmuHawk
 		/// <list type="bullet">
 		/// <item><description>Saving a no-framebuffer state that is stored in RAM</description></item>
 		/// <item><description>Emulating forth for some frames with updates disabled</description></item>
-		/// <item><list type="bullet">
+		/// <item><description><list type="bullet">
 		/// <item><description>Optionally hacking in-game memory
 		/// (like camera position, to show off-screen areas)</description></item>
-		/// </list></item>
+		/// </list></description></item>
 		/// <item><description>Updating the screen</description></item>
 		/// <item><description>Loading the no-framebuffer state from RAM</description></item>
 		/// </list>
@@ -3232,7 +3232,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// start AVI recording, unattended
 		/// </summary>
-		/// <param name="videoWriterName">match the short name of an <seealso cref="IVideoWriter"/></param>
+		/// <param name="videoWriterName">match the short name of an <see cref="IVideoWriter"/></param>
 		/// <param name="filename">filename to save to</param>
 		private void RecordAv(string videoWriterName, string filename)
 		{

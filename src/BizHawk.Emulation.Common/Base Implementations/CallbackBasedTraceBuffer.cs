@@ -7,16 +7,12 @@ using System.Linq;
 namespace BizHawk.Emulation.Common
 {
 	/// <summary>
-	/// An implementation of <seealso cref="ITraceable"/> that is implementation using only methods
-	/// from <seealso cref="IDebuggable"/>, <seealso cref="IMemoryDomains"/>, and <seealso cref="IDisassemblable"/>
+	/// An implementation of <see cref="ITraceable"/> that is implementation using only methods
+	/// from <see cref="IDebuggable"/>, <see cref="IMemoryDomains"/>, and <see cref="IDisassemblable"/>
 	/// Useful for ported cores that have these hooks but no trace logging hook,
 	/// This allows for a traceable implementation without the need for additional API
 	/// Note that this technique will always be significantly slower than a direct implementation
 	/// </summary>
-	/// <seealso cref="ITraceable"/>
-	/// <seealso cref="IDebuggable"/>
-	/// <seealso cref="IMemoryDomains"/>
-	/// <seealso cref="IDisassemblable"/>
 	public abstract class CallbackBasedTraceBuffer : ITraceable
 	{
 		/// <exception cref="InvalidOperationException"><paramref name="debuggableCore"/> does not provide memory callback support or does not implement <see cref="IDebuggable.GetCpuFlagsAndRegisters"/></exception>

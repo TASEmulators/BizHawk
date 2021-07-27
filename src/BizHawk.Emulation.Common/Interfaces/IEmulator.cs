@@ -30,12 +30,13 @@ namespace BizHawk.Emulation.Common
 		/// Runs the emulator core for 1 frame
 		/// note that (some?) cores expect you to call SoundProvider.GetSamples() after each FrameAdvance()
 		/// please do this, even when <paramref name="renderSound"/> = false
-		/// <param name="controller">The <seealso cref="IController"/> instance that the core will use for input.
-		/// The <seealso cref="IController"/> provided by the client must provide the buttons specified by the core through the <seealso cref="ControllerDefinition"/> property
+		/// </summary>
+		/// <param name="controller">
+		/// The <see cref="IController"/> instance that the core will use for input.
+		/// The <see cref="IController"/> provided by the client must provide the buttons specified by the core through the <see cref="ControllerDefinition"/> property
 		/// </param>
 		/// <param name="render">Whether or not to render video, cores will pass false here in cases such as frame skipping</param>
 		/// <param name="renderSound">Whether or not to render audio, cores will pass here false here in cases such as fast forwarding where bypassing sound may improve speed</param>
-		/// </summary>
 		bool FrameAdvance(IController controller, bool render, bool renderSound = true);
 
 		/// <summary>
