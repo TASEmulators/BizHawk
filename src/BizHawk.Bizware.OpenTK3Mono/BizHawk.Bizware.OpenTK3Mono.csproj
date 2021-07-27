@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net48</TargetFramework>
+	</PropertyGroup>
+	<Import Project="../MainSlnCommon.props" />
+	<PropertyGroup>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<Nullable>disable</Nullable>
+	</PropertyGroup>
+	<ItemGroup>
+		<Reference Include="System.Windows.Forms" />
+		<PackageReference Include="OpenTK" Version="3.3.2" PrivateAssets="all" NoWarn="NU1701" />
+		<PackageReference Include="OpenTK.GLControl" Version="3.1.0" PrivateAssets="all" />
+		<ProjectReference Include="$(ProjectDir)../BizHawk.Client.Common/BizHawk.Client.Common.csproj" />
+		<Compile Include="$(ProjectDir)../BizHawk.Bizware.OpenTK3/**/*.cs" />
+	</ItemGroup>
+</Project>

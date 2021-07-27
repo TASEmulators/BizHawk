@@ -1,0 +1,38 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net48</TargetFramework>
+	</PropertyGroup>
+	<Import Project="../MainSlnExecutable.props" />
+	<PropertyGroup>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+<!--
+		<ApplicationManifest>app.manifest</ApplicationManifest>
+-->
+		<Nullable>disable</Nullable>
+<!--
+		<ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
+-->
+		<RootNamespace>BizHawk.Client.EmuHawk</RootNamespace><!-- affects <EmbeddedResource/> paths as seen at runtime -->
+	</PropertyGroup>
+	<ItemGroup>
+		<Reference Include="System.IO.Compression" />
+		<Reference Include="System.Windows.Forms" />
+		<PackageReference Include="System.Net.Http" Version="4.3.4" />
+	</ItemGroup>
+	<ItemGroup>
+		<Reference Include="GongShell" HintPath="$(ProjectDir)../../References/GongShell.dll" Private="true" />
+		<Reference Include="NLua, Version=1.3.2.0, Culture=neutral, processorArchitecture=MSIL" SpecificVersion="false" HintPath="$(ProjectDir)../../Assets/dll/nlua/NLua.dll" Private="false" /><!-- don't copy, will be copied with Assets -->
+		<Reference Include="PcxFileTypePlugin.HawkQuantizer" HintPath="$(ProjectDir)../../References/PcxFileTypePlugin.HawkQuantizer.dll" Private="true" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="$(ProjectDir)../BizHawk.Bizware.DirectXMono/BizHawk.Bizware.DirectXMono.csproj" />
+		<ProjectReference Include="$(ProjectDir)../BizHawk.WinForms.ControlsMono/BizHawk.WinForms.ControlsMono.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+		<Compile Include="$(ProjectDir)../BizHawk.Client.EmuHawk/**/*.cs" />
+		<Compile Remove="Properties/Settings.Designer.cs" />
+		<EmbeddedResource Include="$(ProjectDir)../BizHawk.Client.EmuHawk/images/**/*" LinkBase="images" />
+		<EmbeddedResource Include="$(ProjectDir)../BizHawk.Client.EmuHawk/Resources/**/*" LinkBase="Resources" />
+		<None Include="$(ProjectDir)../../Assets/**/*.*" CopyToOutputDirectory="PreserveNewest" />
+	</ItemGroup>
+</Project>

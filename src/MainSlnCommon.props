@@ -9,6 +9,7 @@
 		<NoWarn>$(NoWarn);CS1573;CS1591</NoWarn>
 		<OutputPath>$(MSBuildProjectDirectory)/../../output/dll</OutputPath>
 		<ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
+		<TargetName>$(MSBuildProjectName.Replace("Mono", ""))</TargetName>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)' == 'Release' And '$(SolutionDir)' != '' ">
 		<PathMap>$(SolutionDir)=/</PathMap>
