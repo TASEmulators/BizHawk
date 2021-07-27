@@ -38,7 +38,7 @@ namespace BizHawk.Emulation.Common
 			return hash;
 		}
 
-		private static void LoadDatabase_Escape(string line, string path, bool warnForCollisions)
+		private static void LoadDatabase_Escape(string line, string path, bool silent)
 		{
 			if (!line.ToUpperInvariant().StartsWith("#INCLUDE"))
 			{
@@ -49,8 +49,8 @@ namespace BizHawk.Emulation.Common
 			var filename = Path.Combine(path, line);
 			if (File.Exists(filename))
 			{
-				Util.DebugWriteLine($"loading external game database {line}");
-				initializeWork(filename, warnForCollisions);
+				if (!silent) Util.DebugWriteLine($"loading external game database {line}");
+				initializeWork(filename, silent);
 			}
 			else
 			{
@@ -93,7 +93,7 @@ namespace BizHawk.Emulation.Common
 
 		private static bool initialized = false;
 
-		private static void initializeWork(string path, bool warnForCollisions)
+		private static void initializeWork(string path, bool silent)
 		{
 			//reminder: this COULD be done on several threads, if it takes even longer
 			using var reader = new StreamReader(new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read));
@@ -109,7 +109,7 @@ namespace BizHawk.Emulation.Common
 
 					if (line.StartsWith("#"))
 					{
-						LoadDatabase_Escape(line, Path.GetDirectoryName(path), warnForCollisions);
+						LoadDatabase_Escape(line, Path.GetDirectoryName(path), silent);
 						continue;
 					}
 
@@ -144,7 +144,7 @@ namespace BizHawk.Emulation.Common
 						ForcedCore = items.Length >= 8 ? items[7].ToLowerInvariant() : ""
 					};
 
-					if (warnForCollisions && DB.ContainsKey(game.Hash))
+					if (!silent && DB.ContainsKey(game.Hash))
 					{
 						Console.WriteLine("gamedb: Multiple hash entries {0}, duplicate detected on \"{1}\" and \"{2}\"", game.Hash, game.Name, DB[game.Hash].Name);
 					}
@@ -160,14 +160,14 @@ namespace BizHawk.Emulation.Common
 			acquire.Set();
 		}
 
-		public static void InitializeDatabase(string path, bool warnForCollisions)
+		public static void InitializeDatabase(string path, bool silent)
 		{
 			if (initialized) throw new InvalidOperationException("Did not expect re-initialize of game Database");
 			initialized = true;
 
 			var stopwatch = Stopwatch.StartNew();
 			ThreadPool.QueueUserWorkItem(_=> {
-				initializeWork(path, warnForCollisions);
+				initializeWork(path, silent);
 				Util.DebugWriteLine("GameDB load: " + stopwatch.Elapsed + " sec");
 			});
 		}
