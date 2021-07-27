@@ -23,7 +23,7 @@ namespace BizHawk.BizInvoke
 		static BizExvoker()
 		{
 			var aname = new AssemblyName("BizExvokeProxyAssembly");
-			ImplAssemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(aname, AssemblyBuilderAccess.Run);
+			ImplAssemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(aname, AssemblyBuilderAccess.Run);
 			ImplModuleBuilder = ImplAssemblyBuilder.DefineDynamicModule("BizExvokerModule");
 		}
 
