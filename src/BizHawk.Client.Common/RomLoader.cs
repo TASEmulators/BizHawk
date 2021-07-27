@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -422,7 +421,7 @@ namespace BizHawk.Client.Common
 				rom.GameInfo.System = "NES";
 			}
 
-			Debug.WriteLine(rom.GameInfo.System);
+			Util.DebugWriteLine(rom.GameInfo.System);
 
 			if (string.IsNullOrEmpty(rom.GameInfo.System))
 			{

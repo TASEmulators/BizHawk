@@ -49,12 +49,12 @@ namespace BizHawk.Emulation.Common
 			var filename = Path.Combine(path, line);
 			if (File.Exists(filename))
 			{
-				Debug.WriteLine("loading external game database {0}", line);
+				Util.DebugWriteLine($"loading external game database {line}");
 				initializeWork(filename, warnForCollisions);
 			}
 			else
 			{
-				Debug.WriteLine("BENIGN: missing external game database {0}", line);
+				Util.DebugWriteLine($"BENIGN: missing external game database {line}");
 			}
 		}
 
@@ -153,7 +153,7 @@ namespace BizHawk.Emulation.Common
 				}
 				catch
 				{
-					Debug.WriteLine($"Error parsing database entry: {line}");
+					Util.DebugWriteLine($"Error parsing database entry: {line}");
 				}
 			}
 

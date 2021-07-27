@@ -174,13 +174,13 @@ namespace BizHawk.Bizware.OpenTK3
 		[Conditional("DEBUG")]
 		private void DebugState(GamePadState tmpState)
 		{
-			if (!tmpState.Equals(state)) Debug.WriteLine($"GamePad State:\t{tmpState}");
+			if (!tmpState.Equals(state)) Console.WriteLine($"GamePad State:\t{tmpState}");
 		}
 
 		[Conditional("DEBUG")]
 		private void DebugState(JoystickState tmpJstate)
 		{
-			if (!tmpJstate.Equals(jState)) Debug.WriteLine($"Joystick State:\t{tmpJstate}");
+			if (!tmpJstate.Equals(jState)) Console.WriteLine($"Joystick State:\t{tmpJstate}");
 		}
 
 		public IEnumerable<(string AxisID, float Value)> GetAxes()
