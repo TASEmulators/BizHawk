@@ -247,6 +247,12 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Close()
 		{
+			foreach (var closeCallback in RegisteredFunctions
+				.Where(l => l.Event == "OnClose"))
+			{
+				closeCallback.Call();
+			}
+
 			RegisteredFunctions.Clear(_mainForm.Emulator);
 			ScriptList.Clear();
 			FormsLibrary.DestroyAll();
