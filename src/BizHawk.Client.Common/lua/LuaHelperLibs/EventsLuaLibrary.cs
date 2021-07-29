@@ -232,10 +232,10 @@ namespace BizHawk.Client.Common
 			=> _luaLibsImpl.CreateAndRegisterNamedFunction(luaf, "OnExit", LogOutputCallback, CurrentFile, name)
 				.Guid.ToString();
 
-		[LuaMethodExample("local close = event.onclose(\r\n\tfunction()\r\n\t\tconsole.log( \"Fires when the emulator closes\" );\r\n\tend\r\n\t, \"Frame name\" );")]
-		[LuaMethod("onclose", "Fires when the emulator closes")]
-		public string OnClose(LuaFunction luaf, string name = null)
-			=> _luaLibsImpl.CreateAndRegisterNamedFunction(luaf, "OnClose", LogOutputCallback, CurrentFile, name)
+		[LuaMethodExample("local closeGuid = event.onconsoleclose(\r\n\tfunction()\r\n\t\tconsole.log( \"Fires when the emulator console closes\" );\r\n\tend\r\n\t, \"Frame name\" );")]
+		[LuaMethod("onconsoleclose", "Fires when the emulator console closes")]
+		public string OnConsoleClose(LuaFunction luaf, string name = null)
+			=> _luaLibsImpl.CreateAndRegisterNamedFunction(luaf, "OnConsoleClose", LogOutputCallback, CurrentFile, name)
 				.Guid.ToString();
 
 		[LuaMethodExample("if ( event.unregisterbyid( \"4d1810b7 - 0d28 - 4acb - 9d8b - d87721641551\" ) ) then\r\n\tconsole.log( \"Removes the registered function that matches the guid.If a function is found and remove the function will return true.If unable to find a match, the function will return false.\" );\r\nend;")]
