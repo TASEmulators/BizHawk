@@ -8,7 +8,6 @@ using BizHawk.Client.Common;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
-using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -357,7 +356,8 @@ namespace BizHawk.Client.EmuHawk
 			byte* oam = (byte*)_oam;
 
 			// clear out the old sprite data
-			Win32Imports.MemSet(lockData.Scan0, 0xff, (uint)(lockData.Height * lockData.Stride));
+			byte* clear_out = (byte*)lockData.Scan0;
+			for (uint i = 0; i < (uint)(lockData.Height * lockData.Stride); i++) { clear_out[i] = 0xFF; }
 
 			for (int s = 0; s < 40; s++)
 			{
