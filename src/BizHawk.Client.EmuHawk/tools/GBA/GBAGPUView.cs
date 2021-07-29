@@ -414,8 +414,7 @@ namespace BizHawk.Client.EmuHawk
 			Bitmap bmp = mbv.BmpView.Bmp;
 			var lockData = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 
-			byte* clear_out = (byte*)lockData.Scan0;
-			for (uint i = 0; i < (uint)(lockData.Height * lockData.Stride); i++) { clear_out[i] = 0xFF; }
+			BmpView.Clear_Selected_Region((byte*)lockData.Scan0, (uint)(lockData.Height * lockData.Stride));
 
 			int* pixels = (int*)lockData.Scan0;
 			int pitch = lockData.Stride / sizeof(int);
@@ -507,8 +506,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (tophalfonly)
 			{
-				byte* clear_out = (byte*)lockData.Scan0;
-				for (uint i = 0; i < (uint)(128 * lockData.Stride); i++) { clear_out[i] = 0xFF; }
+				BmpView.Clear_Selected_Region((byte*)lockData.Scan0, (uint)(128 * lockData.Stride));
 
 				pixels += 128 * pitch;
 				tiles += 16384;

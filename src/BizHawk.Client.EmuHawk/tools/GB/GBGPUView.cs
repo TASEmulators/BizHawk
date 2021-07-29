@@ -356,8 +356,7 @@ namespace BizHawk.Client.EmuHawk
 			byte* oam = (byte*)_oam;
 
 			// clear out the old sprite data
-			byte* clear_out = (byte*)lockData.Scan0;
-			for (uint i = 0; i < (uint)(lockData.Height * lockData.Stride); i++) { clear_out[i] = 0xFF; }
+			BmpView.Clear_Selected_Region((byte*)lockData.Scan0, (uint)(lockData.Height * lockData.Stride));
 
 			for (int s = 0; s < 40; s++)
 			{

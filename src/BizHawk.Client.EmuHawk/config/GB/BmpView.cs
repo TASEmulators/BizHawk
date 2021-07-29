@@ -90,10 +90,14 @@ namespace BizHawk.Client.EmuHawk
 		public unsafe void Clear()
 		{
 			var lockBits = Bmp.LockBits(new Rectangle(0, 0, Bmp.Width, Bmp.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
-			byte* clear_out = (byte*)lockBits.Scan0;
-			for (uint i = 0; i < (uint)(lockBits.Height * lockBits.Stride); i++) { clear_out[i] = 0xFF; }
+			Clear_Selected_Region((byte*)lockBits.Scan0, (uint)(lockBits.Height * lockBits.Stride));
 			Bmp.UnlockBits(lockBits);
 			Refresh();
+		}
+
+		public static unsafe void Clear_Selected_Region(byte* base_pos, uint num_bytes)
+		{
+			for (uint i = 0; i < num_bytes; i++) { base_pos[i] = 0xFF; }
 		}
 	}
 }
