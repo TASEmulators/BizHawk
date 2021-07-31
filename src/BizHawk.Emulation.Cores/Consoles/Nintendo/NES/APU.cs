@@ -660,7 +660,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			public DMCUnit(APU apu, bool pal)
 			{
 				this.apu = apu;
-				this.nes = apu.nes;
+				nes = apu.nes;
 				out_silence = true;
 				DMC_RATE = pal ? DMC_RATE_PAL : DMC_RATE_NTSC;
 				timer_reload = DMC_RATE[0];
@@ -668,26 +668,28 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				sample_buffer_filled = false;
 				out_deltacounter = 64;
 				out_bits_remaining = 7; //confirmed in VisualNES
-				user_address = 0x8000; // even though this can't be accessed by writing, it is indeed the power up address
+				user_address = 0xC000; // even though this can't be accessed by writing, it is indeed the power up address
+				sample_address = 0xC000;
 				user_length = 1;
 			}
 
 			private bool irq_enabled;
 			private bool loop_flag;
-			private int timer_reload;
+			public int timer_reload;
 
 			// dmc delay per visual 2a03
-			private int delay;
+			public int delay;
 
 			// this timer never stops, ever, so it is convenient to use for even/odd timing used elsewhere
 			public int timer;
 			private int user_address;
 			public uint user_length, sample_length;
-			private int sample_address, sample_buffer;
+			public int sample_address, sample_buffer;
 			private bool sample_buffer_filled;
 
-			private int out_shift, out_bits_remaining, out_deltacounter;
+			public int out_shift, out_bits_remaining, out_deltacounter;
 			private bool out_silence;
+			public bool fill_glitch;
 
 			public int sample => out_deltacounter /* - 64*/;
 
@@ -711,6 +713,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				ser.Sync(nameof(out_bits_remaining), ref out_bits_remaining);
 				ser.Sync(nameof(out_deltacounter), ref out_deltacounter);
 				ser.Sync(nameof(out_silence), ref out_silence);
+				ser.Sync(nameof(fill_glitch), ref fill_glitch);
 
 				ser.Sync(nameof(delay), ref delay);
 
@@ -729,15 +732,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				// Any time the sample buffer is in an empty state and bytes remaining is not zero, the following occur: 
 				// also note that the halt for DMC DMA occurs on APU cycles only (hence the timer check)
-				if (!sample_buffer_filled && sample_length > 0  && apu.dmc_dma_countdown == -1 && delay==0)
+				if (!sample_buffer_filled && sample_length > 0 && apu.dmc_dma_countdown == -1 && delay==0)
 				{
 					if (!apu.call_from_write)
 					{
 						// when called due to empty bueffer while DMC running, there is no delay
-						delay = 0;
+						//delay = 1;
 						nes.cpu.RDY = false;
 						nes.dmc_dma_exec = true;
-						apu.dmc_dma_countdown = 3; // 3 here but this actually stops 4 cpu cycles because it starts before the cpu is run
+						apu.dmc_dma_countdown = 3;
 						apu.DMC_RDY_check = 2;
 					}
 					else
@@ -750,7 +753,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						else
 						{
 							delay = 3;
-						}
+						}					
 					}
 				}
 
@@ -762,7 +765,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					delay--;
 					if (delay == 0)
 					{
-						if (!apu.call_from_write)
+						if (fill_glitch)
+						{
+							//fill_glitch = false;
+							apu.dmc_dma_countdown = 1;
+							apu.DMC_RDY_check = -1;
+						}
+						else if (!apu.call_from_write)
 						{
 							apu.dmc_dma_countdown = 4;
 							apu.DMC_RDY_check = 2;
@@ -825,11 +834,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			public void set_lenctr_en(bool en)
 			{
-				if (!en)
+				// should this be delayed by two/three cycles?
+
+				if(!en)
 				{
 					// If the DMC bit is clear, the DMC bytes remaining will be set to 0 
 					// and the DMC will silence when it empties.
-					sample_length = 0;
+					sample_length = 0;					
 				}
 				else
 				{
@@ -892,6 +903,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					sample_buffer = apu.nes.ReadMemory((ushort)sample_address);
 					sample_buffer_filled = true;
 					sample_address = (ushort)(sample_address + 1);
+
+					//sample address wraps to 0xC000
+					if (sample_address == 0) { sample_address = 0xC000;}
 					// Console.WriteLine(sample_length);
 					// Console.WriteLine(user_length);
 					sample_length--;

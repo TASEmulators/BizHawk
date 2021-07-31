@@ -31,7 +31,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(dmc_realign), ref dmc_realign);
 			ser.Sync(nameof(IRQ_delay), ref IRQ_delay);
 			ser.Sync(nameof(special_case_delay), ref special_case_delay);
-			ser.Sync(nameof(do_the_reread), ref do_the_reread);
+			ser.Sync(nameof(reread_trigger), ref reread_trigger);
+			ser.Sync(nameof(do_the_reread_2002), ref do_the_reread_2002);
+			ser.Sync(nameof(do_the_reread_2007), ref do_the_reread_2007);
+			ser.Sync(nameof(do_the_reread_cont_1), ref do_the_reread_cont_1);
+			ser.Sync(nameof(do_the_reread_cont_2), ref do_the_reread_cont_2);
 
 			// VS related
 			ser.Sync("VS", ref _isVS);
