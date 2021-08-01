@@ -295,10 +295,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			return _controllers.CoreInputState(port, index, id);
 		}
 
-		private void snes_no_lag()
+		private void snes_no_lag(bool sgbPoll)
 		{
 			// gets called whenever there was input polled, aka no lag
-			IsLagFrame = false;
+			if (!IsSGB || sgbPoll)
+			{
+				IsLagFrame = false;
+			}
 		}
 
 		private readonly int[] palette = new int[32768];
