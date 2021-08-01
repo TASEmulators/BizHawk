@@ -27,19 +27,15 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 
 		public void NewCDL(ICodeDataLog cdl)
 		{
-			cdl["ROM"] = new byte[_memoryDomains["ROM"].Size];
-			cdl["Main RAM"] = new byte[_memoryDomains["Main RAM"].Size];
-
-			if (_memoryDomains.Has("Save RAM"))
+			void AddIfExists(string name)
 			{
-				cdl["Save RAM"] = new byte[_memoryDomains["Save RAM"].Size];
+				var found = _memoryDomains[name];
+				if (found is not null) cdl[name] = new byte[found.Size];
 			}
-
-			if (_memoryDomains.Has("Cart (Volatile) RAM"))
-			{
-				cdl["Cart (Volatile) RAM"] = new byte[_memoryDomains["Cart (Volatile) RAM"].Size];
-			}
-
+			cdl["ROM"] = new byte[_memoryDomains["ROM"]!.Size];
+			cdl["Main RAM"] = new byte[_memoryDomains["Main RAM"]!.Size];
+			AddIfExists("Save RAM");
+			AddIfExists("Cart (Volatile) RAM");
 			cdl.SubType = "SMS";
 			cdl.SubVer = 0;
 		}

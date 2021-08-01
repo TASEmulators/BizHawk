@@ -26,30 +26,36 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 		public void NewCDL(ICodeDataLog cdl)
 		{
-			cdl["System Bus"] = new byte[memoryDomains["System Bus"].Size];
+			void AddIfExists(string name)
+			{
+				var found = memoryDomains[name];
+				if (found is not null) cdl[name] = new byte[found.Size];
+			}
 
-			if (memoryDomains.Has("ROM - 128K Editor & Menu")) { cdl["ROM - 128K Editor & Menu"] = new byte[memoryDomains["ROM - 128K Editor & Menu"].Size]; }
-			if (memoryDomains.Has("ROM - 128K Syntax Checker")) { cdl["ROM - 128K Syntax Checker"] = new byte[memoryDomains["ROM - 128K Syntax Checker"].Size]; }
-			if (memoryDomains.Has("ROM - +3DOS")) { cdl["ROM - +3DOS"] = new byte[memoryDomains["ROM - +3DOS"].Size]; }
-			if (memoryDomains.Has("ROM - 48K BASIC")) { cdl["ROM - 48K BASIC"] = new byte[memoryDomains["ROM - 48K BASIC"].Size]; }
+			cdl["System Bus"] = new byte[memoryDomains["System Bus"]!.Size];
+
+			AddIfExists("ROM - 128K Editor & Menu");
+			AddIfExists("ROM - 128K Syntax Checker");
+			AddIfExists("ROM - +3DOS");
+			AddIfExists("ROM - 48K BASIC");
 
 			// different RAM bank ordering for < 128k models
 			if (_machineType == MachineType.ZXSpectrum16 || _machineType == MachineType.ZXSpectrum48)
 			{
-				if (memoryDomains.Has("RAM - BANK 0 (Screen)")) { cdl["RAM - BANK 0 (Screen)"] = new byte[memoryDomains["RAM - BANK 0 (Screen)"].Size]; }
-				if (memoryDomains.Has("RAM - BANK 1")) { cdl["RAM - BANK 1"] = new byte[memoryDomains["RAM - BANK 1"].Size]; }
-				if (memoryDomains.Has("RAM - BANK 2")) { cdl["RAM - BANK 2"] = new byte[memoryDomains["RAM - BANK 2"].Size]; }
+				AddIfExists("RAM - BANK 0 (Screen)");
+				AddIfExists("RAM - BANK 1");
+				AddIfExists("RAM - BANK 2");
 			}
 			else
 			{
-				if (memoryDomains.Has("RAM - BANK 5 (Screen)")) { cdl["RAM - BANK 5 (Screen)"] = new byte[memoryDomains["RAM - BANK 5 (Screen)"].Size]; }
-				if (memoryDomains.Has("RAM - BANK 2")) { cdl["RAM - BANK 2"] = new byte[memoryDomains["RAM - BANK 2"].Size]; }
-				if (memoryDomains.Has("RAM - BANK 0")) { cdl["RAM - BANK 0"] = new byte[memoryDomains["RAM - BANK 0"].Size]; }
-				if (memoryDomains.Has("RAM - BANK 1")) { cdl["RAM - BANK 1"] = new byte[memoryDomains["RAM - BANK 1"].Size]; }
-				if (memoryDomains.Has("RAM - BANK 3")) { cdl["RAM - BANK 3"] = new byte[memoryDomains["RAM - BANK 3"].Size]; }
-				if (memoryDomains.Has("RAM - BANK 4")) { cdl["RAM - BANK 4"] = new byte[memoryDomains["RAM - BANK 4"].Size]; }
-				if (memoryDomains.Has("RAM - BANK 6")) { cdl["RAM - BANK 6"] = new byte[memoryDomains["RAM - BANK 6"].Size]; }
-				if (memoryDomains.Has("RAM - BANK 7 (Shadow Screen)")) { cdl["RAM - BANK 7 (Shadow Screen)"] = new byte[memoryDomains["RAM - BANK 7 (Shadow Screen)"].Size]; }
+				AddIfExists("RAM - BANK 5 (Screen)");
+				AddIfExists("RAM - BANK 2");
+				AddIfExists("RAM - BANK 0");
+				AddIfExists("RAM - BANK 1");
+				AddIfExists("RAM - BANK 3");
+				AddIfExists("RAM - BANK 4");
+				AddIfExists("RAM - BANK 6");
+				AddIfExists("RAM - BANK 7 (Shadow Screen)");
 			}
 
 			cdl.SubType = "ZXSpectrum";

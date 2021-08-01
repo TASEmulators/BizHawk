@@ -19,15 +19,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 
 		public void NewCDL(ICodeDataLog cdl)
 		{
-			cdl["ROM"] = new byte[MemoryDomains["ROM A"].Size];
-			cdl["HRAM"] = new byte[MemoryDomains["Zero Page RAM A"].Size];
+			cdl["ROM"] = new byte[MemoryDomains["ROM A"]!.Size];
+			cdl["HRAM"] = new byte[MemoryDomains["Zero Page RAM A"]!.Size];
 
-			cdl["WRAM"] = new byte[MemoryDomains["Main RAM A"].Size];
+			cdl["WRAM"] = new byte[MemoryDomains["Main RAM A"]!.Size];
 
-			if (MemoryDomains.Has("Cart RAM A"))
-			{
-				cdl["CartRAM"] = new byte[MemoryDomains["Cart RAM A"].Size];
-			}
+			var found = MemoryDomains["Cart RAM A"];
+			if (found is not null) cdl["CartRAM"] = new byte[found.Size];
 
 			cdl.SubType = "GB";
 			cdl.SubVer = 0;

@@ -236,7 +236,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		{
 			// inefficient, sloppy, etc etc
 			var chrrom = _memoryDomains["CHR VROM"];
-			var prgrom = _memoryDomains["PRG ROM"];
+			var prgrom = _memoryDomains["PRG ROM"]!;
 
 			var ms = new MemoryStream();
 			for (int i = 0; i < prgrom.Size; i++)

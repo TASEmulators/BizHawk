@@ -1,6 +1,4 @@
-﻿#nullable disable
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -70,7 +68,7 @@ namespace BizHawk.Emulation.Common
 		/// </summary>
 		public bool Active { get; set; }
 
-		public string SubType { get; set; }
+		public string? SubType { get; set; }
 		public int SubVer { get; set; }
 
 		/// <summary>
@@ -156,7 +154,7 @@ namespace BizHawk.Emulation.Common
 			var ret = new Dictionary<string, long>();
 			var w = new BinaryWriter(s);
 			w.Write("BIZHAWK-CDL-2");
-			w.Write(SubType.PadRight(15));
+			w.Write(SubType!.PadRight(15));
 			w.Write(Count);
 			w.Flush();
 			long addr = s.Position;

@@ -233,7 +233,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!_loading)
 			{
-				var domain = MemoryDomains[DomainDropDown.SelectedItem.ToString()];
+				var domain = MemoryDomains[DomainDropDown.SelectedItem.ToString()]!;
 				AddressBox.SetHexProperties(domain.Size);
 			}
 		}
@@ -294,7 +294,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public Cheat GetCheat()
 		{
-			var domain = MemoryDomains[DomainDropDown.SelectedItem.ToString()];
+			var domain = MemoryDomains[DomainDropDown.SelectedItem.ToString()]!;
 			var address = AddressBox.ToRawInt().Value;
 			if (address < domain.Size)
 			{

@@ -1,6 +1,4 @@
-﻿#nullable disable
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Common
 {
@@ -17,7 +15,7 @@ namespace BizHawk.Emulation.Common
 	/// </summary>
 	public interface IMemoryDomains : IEnumerable<MemoryDomain>, IEmulatorService
 	{
-		MemoryDomain this[string name] { get; }
+		MemoryDomain? this[string name] { get; }
 
 		MemoryDomain MainMemory { get; }
 
