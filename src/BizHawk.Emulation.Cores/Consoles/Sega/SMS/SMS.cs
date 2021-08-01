@@ -214,10 +214,10 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				ser.Register<ISmsGpuView>(new SmsGpuView(Vdp));
 			}
 
-			_controllerDeck = new SMSControllerDeck(syncSettings.Port1, syncSettings.Port2, IsGameGear_C, syncSettings.UseKeyboard);
+			_controllerDeck = new SMSControllerDeck(SyncSettings.Port1, SyncSettings.Port2, IsGameGear_C, SyncSettings.UseKeyboard);
 
 			// Sorta a hack but why not
-			PortDEEnabled = syncSettings.UseKeyboard && !IsGameGear_C;
+			PortDEEnabled = SyncSettings.UseKeyboard && !IsGameGear_C;
 
 			_controllerDeck.SetRegion(_controller, _region == SmsSyncSettings.Regions.Japan);
 		}
