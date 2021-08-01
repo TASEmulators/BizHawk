@@ -484,5 +484,10 @@ namespace BizHawk.Emulation.Common
 
 		public static string SystemIDToDisplayName(string sysID)
 			=> SystemIDDisplayNames.TryGetValue(sysID, out var dispName) ? dispName : string.Empty;
+
+		public static bool IsEnabled(this ITraceable core) => core.Sink is not null;
+
+		/// <remarks>TODO no-op instead of NRE when not "enabled"?</remarks>
+		public static void Put(this ITraceable core, TraceInfo info) => core.Sink.Put(info);
 	}
 }

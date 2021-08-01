@@ -81,7 +81,7 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 
 			Console.WriteLine(Header_Length + " " + Disasm_Length + " " + Reg_String_Length);
 
-			Tracer = new TraceBuffer { Header = newHeader.ToString() };
+			Tracer = new TraceBuffer(newHeader.ToString());
 
 			var serviceProvider = ServiceProvider as BasicServiceProvider;
 			serviceProvider.Register<ITraceable>(Tracer);
@@ -132,11 +132,7 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 			LibMSX.MSX_getdisassembly(MSX_Pntr, new_d, t, Disasm_Length);
 			LibMSX.MSX_getregisterstate(MSX_Pntr, new_r, t, Reg_String_Length);
 
-			Tracer.Put(new TraceInfo
-			{
-				Disassembly = new_d.ToString().PadRight(36),
-				RegisterInfo = new_r.ToString()
-			});
+			Tracer.Put(new(disassembly: new_d.ToString().PadRight(36), registerInfo: new_r.ToString()));
 		}
 
 		private readonly MemoryCallbackSystem _memorycallbacks = new MemoryCallbackSystem(new[] { "System Bus" });

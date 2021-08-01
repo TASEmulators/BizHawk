@@ -225,11 +225,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				RomLength = RomData.Length;
 
 				// user request: current value of the SF2MapperLatch on the tracelogger
-				Cpu.Logger = s => Tracer.Put(new TraceInfo
-				{
-					Disassembly = $"{SF2MapperLatch:X1}:{s}",
-					RegisterInfo = ""
-				});
+				Cpu.Logger = s => Tracer.Put(new(disassembly: $"{SF2MapperLatch:X1}:{s}", registerInfo: string.Empty));
 			}
 			else
 			{
@@ -319,7 +315,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 			Cpu.ResetPC();
 
-			Tracer = new TraceBuffer { Header = Cpu.TraceHeader };
+			Tracer = new TraceBuffer(Cpu.TraceHeader);
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
 			ser.Register<ITraceable>(Tracer);

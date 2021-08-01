@@ -19,11 +19,9 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 		public int opcode;
 
 		public TraceInfo CP1610State(bool disassemble = true)
-		{
-			return new TraceInfo
-			{
-				Disassembly = $"{RegisterPC - 1:X4}:  {opcode:X2}  {(disassemble ? Disassemble((ushort)(RegisterPC - 1), out _) : "---")} ".PadRight(26),
-				RegisterInfo = string.Join(" ",
+			=> new(
+				disassembly: $"{RegisterPC - 1:X4}:  {opcode:X2}  {(disassemble ? Disassemble((ushort)(RegisterPC - 1), out _) : "---")} ".PadRight(26),
+				registerInfo: string.Join(" ",
 					new[]
 					{
 						$"Cy:{TotalExecutedCycles}",
@@ -34,10 +32,7 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 							FlagO ? "O" : "o",
 							FlagI ? "I" : "i",
 							FlagD ? "D" : "d")
-					}
-						.Concat(Register.Select((r, i) => $"R{i}:{4:X4}")))
-			};
-		}	
+					}.Concat(Register.Select((r, i) => $"R{i}:{4:X4}"))));
 
 		private void Calc_FlagC(int result)
 		{

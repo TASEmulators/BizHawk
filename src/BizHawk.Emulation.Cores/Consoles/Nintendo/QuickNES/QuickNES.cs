@@ -194,7 +194,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 				SetPads(controller, out var j1, out var j2);
 
-				QN.qn_set_tracecb(Context, Tracer.Enabled ? _traceCb : null);
+				QN.qn_set_tracecb(Context, Tracer.IsEnabled() ? _traceCb : null);
 
 				LibQuickNES.ThrowStringError(QN.qn_emulate_frame(Context, j1, j2));
 				IsLagFrame = QN.qn_get_joypad_read_count(Context) == 0;

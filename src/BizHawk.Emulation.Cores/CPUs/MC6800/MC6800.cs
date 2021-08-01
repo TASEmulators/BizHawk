@@ -433,7 +433,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6800
 						irq_pntr = -1;
 						IRQS = 3;
 
-						TraceCallback?.Invoke(new TraceInfo { Disassembly = "====CWAI NMI====", RegisterInfo = "" });
+						TraceCallback?.Invoke(new(disassembly: "====CWAI NMI====", registerInfo: string.Empty));
 					}
 					else if (IRQPending && !FlagI)
 					{
@@ -446,7 +446,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6800
 						irq_pntr = -1;
 						IRQS = 3;
 
-						TraceCallback?.Invoke(new TraceInfo { Disassembly = "====CWAI IRQ====", RegisterInfo = "" });
+						TraceCallback?.Invoke(new(disassembly: "====CWAI IRQ====", registerInfo: string.Empty));
 					}
 					else
 					{
@@ -465,7 +465,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6800
 				{
 					NMIPending = false;
 
-					TraceCallback?.Invoke(new TraceInfo { Disassembly = "====NMI====", RegisterInfo = "" });
+					TraceCallback?.Invoke(new(disassembly: "====NMI====", registerInfo: string.Empty));
 
 					NMI_();
 					NMICallback();
@@ -476,7 +476,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6800
 				{
 					IRQPending = false;
 
-					TraceCallback?.Invoke(new TraceInfo { Disassembly = "====IRQ====", RegisterInfo = "" });
+					TraceCallback?.Invoke(new(disassembly: "====IRQ====", registerInfo: string.Empty));
 
 					IRQ_();
 					IRQCallback();
@@ -501,11 +501,9 @@ namespace BizHawk.Emulation.Cores.Components.MC6800
 		public string TraceHeader => "MC6809: PC, machine code, mnemonic, operands, registers (A, B, X, SP, CC), Cy, flags (EHINZVC)";
 
 		public TraceInfo State(bool disassemble = true)
-		{
-			return new TraceInfo
-			{
-				Disassembly = $"{(disassemble ? Disassemble(Regs[PC], ReadMemory, out _) : "---")} ".PadRight(50),
-				RegisterInfo = string.Format(
+			=> new(
+				disassembly: $"{(disassemble ? Disassemble(Regs[PC], ReadMemory, out _) : "---")} ".PadRight(50),
+				registerInfo: string.Format(
 					"A:{0:X2} B:{1:X2} X:{2:X4} SP:{3:X4} CC:{4:X2} Cy:{5} {6}{7}{8}{9}{10}{11}",
 					Regs[A],
 					Regs[B],
@@ -518,10 +516,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6800
 					FlagN ? "N" : "n",
 					FlagZ ? "Z" : "z",
 					FlagV ? "V" : "v",
-					FlagC ? "C" : "c"
-					)
-			};
-		}
+					FlagC ? "C" : "c"));
 
 		/// <summary>
 		/// Optimization method to set cur_instr

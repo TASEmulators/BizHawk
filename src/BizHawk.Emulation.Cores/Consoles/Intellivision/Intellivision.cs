@@ -58,7 +58,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			LoadExecutiveRom(comm.CoreFileProvider.GetFirmwareOrThrow(new("INTV", "EROM"), "Executive ROM is required."));
 			LoadGraphicsRom(comm.CoreFileProvider.GetFirmwareOrThrow(new("INTV", "GROM"), "Graphics ROM is required."));
 
-			_tracer = new TraceBuffer { Header = _cpu.TraceHeader };
+			_tracer = new TraceBuffer(_cpu.TraceHeader);
 			ser.Register<ITraceable>(_tracer);
 			ser.Register<IStatable>(new StateSerializer(SyncState));
 			SetupMemoryDomains();

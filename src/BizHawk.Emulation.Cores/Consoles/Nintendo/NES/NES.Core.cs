@@ -287,7 +287,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			_controller = controller;
 
-			if (Tracer.Enabled)
+			if (Tracer.IsEnabled())
 				cpu.TraceCallback = s => Tracer.Put(s);
 			else
 				cpu.TraceCallback = null;

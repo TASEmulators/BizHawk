@@ -214,14 +214,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 			IsVIFrame = false;
 
-			if (Tracer != null && Tracer.Enabled)
-			{
-				api.setTraceCallback(_tracecb);
-			}
-			else
-			{
-				api.setTraceCallback(null);
-			}
+			api.setTraceCallback(Tracer?.IsEnabled() is true ? _tracecb : null);
 
 			_audioProvider.RenderSound = rendersound;
 

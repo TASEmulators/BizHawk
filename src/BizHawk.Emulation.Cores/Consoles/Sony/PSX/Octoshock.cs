@@ -829,7 +829,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			OctoshockDll.shock_SetRenderOptions(psx, ref ropts);
 
 			//prep tracer
-			if (Tracer.Enabled)
+			if (Tracer.IsEnabled())
 				OctoshockDll.shock_SetTraceCallback(psx, IntPtr.Zero, trace_cb);
 			else
 				OctoshockDll.shock_SetTraceCallback(psx, IntPtr.Zero, null);

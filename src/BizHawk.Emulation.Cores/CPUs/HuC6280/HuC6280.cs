@@ -381,11 +381,9 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 		public string TraceHeader => "HuC6280: PC, machine code, mnemonic, operands, registers (A, X, Y, P, SP, Cy), flags (NVTBDIZC)";
 
 		public TraceInfo State()
-		{
-			return new TraceInfo
-			{
-				Disassembly = $"{MPR[PC >> 13]:X2}:{PC:X4}:  {ReadMemory(PC):X2}  {Disassemble(PC, out _)} ".PadRight(30),
-				RegisterInfo = string.Join(" ",
+			=> new(
+				disassembly: $"{MPR[PC >> 13]:X2}:{PC:X4}:  {ReadMemory(PC):X2}  {Disassemble(PC, out _)} ".PadRight(30),
+				registerInfo: string.Join(" ",
 					$"A:{A:X2}",
 					$"X:{X:X2}",
 					$"Y:{Y:X2}",
@@ -400,9 +398,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 						FlagD ? "D" : "d",
 						FlagI ? "I" : "i",
 						FlagZ ? "Z" : "z",
-						FlagC ? "C" : "c"))
-			};
-		}
+						FlagC ? "C" : "c")));
 
 		private static readonly byte[] TableNZ = 
 		{ 

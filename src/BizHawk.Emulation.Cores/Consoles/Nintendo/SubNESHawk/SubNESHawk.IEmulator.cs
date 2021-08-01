@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 		public bool FrameAdvance(IController controller, bool render, bool renderSound)
 		{
 			//Console.WriteLine("-----------------------FRAME-----------------------");
-			if (_tracer.Enabled)
+			if (_tracer.IsEnabled())
 			{
 				_nesCore.cpu.TraceCallback = s => _tracer.Put(s);
 			}

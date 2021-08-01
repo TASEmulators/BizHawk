@@ -59,7 +59,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 				R.ppu.color_palette[3] = color_palette_Gr[3];
 			}
 
-			if (_tracer.Enabled)
+			if (_tracer.IsEnabled())
 			{
 				L.cpu.TraceCallback = s => _tracer.Put(s);
 			}

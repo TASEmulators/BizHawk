@@ -45,7 +45,7 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 			ser.Register<IVideoProvider>(this);
 			ser.Register<ISoundProvider>(this); 
 
-			_tracer = new TraceBuffer { Header = L.Cpu.TraceHeader };
+			_tracer = new TraceBuffer(L.Cpu.TraceHeader);
 			ser.Register(_tracer);
 
 			ServiceProvider = ser;

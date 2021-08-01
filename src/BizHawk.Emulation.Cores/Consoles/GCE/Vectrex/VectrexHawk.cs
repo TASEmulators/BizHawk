@@ -102,7 +102,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			_settings = new object(); // TODO: wtf is this
 			_syncSettings = (VectrexSyncSettings)syncSettings ?? new VectrexSyncSettings();
 
-			_tracer = new TraceBuffer { Header = cpu.TraceHeader };
+			_tracer = new TraceBuffer(cpu.TraceHeader);
 			ser.Register<ITraceable>(_tracer);
 			ser.Register<IStatable>(new StateSerializer(SyncState));
 			SetupMemoryDomains();

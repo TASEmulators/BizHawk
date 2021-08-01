@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 		public bool FrameAdvance(IController controller, bool render, bool renderSound)
 		{
 			//Console.WriteLine("-----------------------FRAME-----------------------");
-			if (_tracer.Enabled)
+			if (_tracer.IsEnabled())
 			{
 				L.Cpu.TraceCallback = s => _tracer.Put(s);
 			}

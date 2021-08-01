@@ -1,6 +1,4 @@
-﻿#nullable disable
-
-namespace BizHawk.Emulation.Common
+﻿namespace BizHawk.Emulation.Common
 {
 	/// <summary>
 	/// A generic implementation of ITraceable that can be used by any core
@@ -8,15 +6,12 @@ namespace BizHawk.Emulation.Common
 	/// <seealso cref="ITraceable" />
 	public class TraceBuffer : ITraceable
 	{
-		public string Header { get; set; } = "Instructions";
+		private const string DEFAULT_HEADER = "Instructions";
 
-		public ITraceSink Sink { private get; set; }
+		public string Header { get; }
 
-		public bool Enabled => Sink != null;
+		public ITraceSink? Sink { get; set; }
 
-		public void Put(TraceInfo info)
-		{
-			Sink.Put(info);
-		}
+		public TraceBuffer(string header = DEFAULT_HEADER) => Header = header;
 	}
 }

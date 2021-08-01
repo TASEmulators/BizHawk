@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 			HardReset();
 			SetupMemoryDomains();
 
-			_tracer = new TraceBuffer { Header = _cpu.TraceHeader };
+			_tracer = new TraceBuffer(_cpu.TraceHeader);
 
 			ser.Register<ITraceable>(_tracer);
 			ser.Register<IDisassemblable>(_cpu);

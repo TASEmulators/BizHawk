@@ -187,7 +187,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			_ = PutSettings(settings ?? new GBSettings());
 			_syncSettings = (GBSyncSettings)syncSettings ?? new GBSyncSettings();
 
-			_tracer = new TraceBuffer { Header = cpu.TraceHeader };
+			_tracer = new TraceBuffer(cpu.TraceHeader);
 			ser.Register<ITraceable>(_tracer);
 			ser.Register<IStatable>(new StateSerializer(SyncState));
             ser.Register<IDisassemblable>(_disassembler);

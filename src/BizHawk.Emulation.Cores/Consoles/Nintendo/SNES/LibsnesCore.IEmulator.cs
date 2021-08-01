@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			IsLagFrame = true;
 
-			if (_tracer.Enabled)
+			if (_tracer.IsEnabled())
 			{
 				//Api.QUERY_set_trace_callback(1<<(int)LibsnesApi.eTRACE.SMP, _tracecb); //TEST -- it works but theres no way to control it from the frontend now
 

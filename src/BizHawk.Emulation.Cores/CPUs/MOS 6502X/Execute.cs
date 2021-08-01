@@ -561,12 +561,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 				interrupt_pending = false;
 				if (NMI)
 				{
-					TraceCallback?.Invoke(new TraceInfo
-					{
-						Disassembly = "====NMI====",
-						RegisterInfo = ""
-					});
-
+					TraceCallback?.Invoke(new(disassembly: "====NMI====", registerInfo: string.Empty));
 					ea = NMIVector;
 					opcode = VOP_NMI;
 					NMI = false;
@@ -577,11 +572,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 
 				if (IRQ && !my_iflag)
 				{
-					TraceCallback?.Invoke(new TraceInfo
-					{
-						Disassembly = "====IRQ====",
-						RegisterInfo = ""
-					});
+					TraceCallback?.Invoke(new(disassembly: "====IRQ====", registerInfo: string.Empty));
 					ea = IRQVector;
 					opcode = VOP_IRQ;
 					mi = 0;

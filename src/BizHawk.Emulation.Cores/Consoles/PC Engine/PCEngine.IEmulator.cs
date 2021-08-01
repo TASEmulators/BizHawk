@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			CheckSpriteLimit();
 			PSG.BeginFrame(Cpu.TotalExecutedCycles);
 
-			Cpu.Debug = Tracer.Enabled;
+			Cpu.Debug = Tracer.IsEnabled();
 
 			if (SuperGrafx)
 			{

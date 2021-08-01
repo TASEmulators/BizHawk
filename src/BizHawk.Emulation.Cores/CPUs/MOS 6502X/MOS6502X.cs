@@ -94,13 +94,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 
 		public TraceInfo State(bool disassemble = true)
 		{
-			if (!disassemble)
-			{
-				return new TraceInfo {
-					Disassembly = "",
-					RegisterInfo = ""
-				};
-			}
+			if (!disassemble) return new(disassembly: string.Empty, registerInfo: string.Empty);
 
 			string rawbytes = "";
 			string disasm = Disassemble(PC, out var length);
@@ -110,10 +104,9 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 				rawbytes += $" {_link.PeekMemory((ushort)(PC + i)):X2}";
 			}
 
-			return new TraceInfo
-			{
-				Disassembly = $"{PC:X4}: {rawbytes,-9}  {disasm} ".PadRight(32),
-				RegisterInfo = string.Join("  ",
+			return new(
+				disassembly: $"{PC:X4}: {rawbytes,-9}  {disasm} ".PadRight(32),
+				registerInfo: string.Join("  ",
 					$"A:{A:X2}",
 					$"X:{X:X2}",
 					$"Y:{Y:X2}",
@@ -131,8 +124,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 //						!RDY ? "R" : "r"
 						),
 					$"Cy:{TotalExecutedCycles}",
-					$"PPU-Cy:{ext_ppu_cycle}")
-			};
+					$"PPU-Cy:{ext_ppu_cycle}"));
 		}
 
 		public bool AtStart => opcode == VOP_Fetch1 || Microcode[opcode][mi] >= Uop.End;

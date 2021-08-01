@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				PSG.Set_Panning(Settings.ForceStereoSeparation ? ForceStereoByte : (byte)0xFF);
 			}
 
-			if (Tracer.Enabled)
+			if (Tracer.IsEnabled())
 			{
 				Cpu.TraceCallback = s => Tracer.Put(s);
 			}

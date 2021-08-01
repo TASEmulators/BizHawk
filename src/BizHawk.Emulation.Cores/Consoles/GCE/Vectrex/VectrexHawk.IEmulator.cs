@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 		public bool FrameAdvance(IController controller, bool render, bool rendersound)
 		{
-			if (_tracer.Enabled)
+			if (_tracer.IsEnabled())
 			{
 				cpu.TraceCallback = s => _tracer.Put(s);
 			}

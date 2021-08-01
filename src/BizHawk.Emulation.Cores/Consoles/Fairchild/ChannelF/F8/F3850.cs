@@ -723,14 +723,13 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				}
 			}
 
-			return new TraceInfo
-			{
-				Disassembly = string.Format(
+			return new(
+				disassembly: string.Format(
 					"{0:X4}: {1} {2}",
 					pc,
 					byte_code.PadRight(12),
 					disasm.PadRight(26)),
-				RegisterInfo = string.Format(
+				registerInfo: string.Format(
 					"Flags:{75}{76}{77}{78}{79} " + 
 					"PC1:{0:X4} DC0:{1:X4} A:{2:X2} ISAR:{3:X2} DB:{4:X2} IO:{5:X2} J:{6:X2} H:{7:X4} K:{8:X4} Q:{9:X4} " + 
 					"R0:{10:X2} R1:{11:X2} R2:{12:X2} R3:{13:X2} R4:{14:X2} R5:{15:X2} R6:{16:X2} R7:{17:X2} R8:{18:X2} R9:{19:X2} " +
@@ -763,9 +762,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 					FlagO ? "O" : "o",
 					FlagZ ? "Z" : "z",
 					FlagC ? "C" : "c",
-					FlagS ? "S" : "s"),
-
-			};
+					FlagS ? "S" : "s"));
 		}
 
 		/// <summary>

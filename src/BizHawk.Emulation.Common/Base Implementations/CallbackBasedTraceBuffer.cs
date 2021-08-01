@@ -15,8 +15,10 @@ namespace BizHawk.Emulation.Common
 	/// </summary>
 	public abstract class CallbackBasedTraceBuffer : ITraceable
 	{
+		private const string DEFAULT_HEADER = "Instructions";
+
 		/// <exception cref="InvalidOperationException"><paramref name="debuggableCore"/> does not provide memory callback support or does not implement <see cref="IDebuggable.GetCpuFlagsAndRegisters"/></exception>
-		protected CallbackBasedTraceBuffer(IDebuggable debuggableCore, IMemoryDomains memoryDomains, IDisassemblable disassembler)
+		protected CallbackBasedTraceBuffer(IDebuggable debuggableCore, IMemoryDomains memoryDomains, IDisassemblable disassembler, string header = DEFAULT_HEADER)
 		{
 			if (!debuggableCore.MemoryCallbacksAvailable())
 			{
@@ -32,7 +34,7 @@ namespace BizHawk.Emulation.Common
 				throw new InvalidOperationException($"{nameof(IDebuggable.GetCpuFlagsAndRegisters)} is required");
 			}
 
-			Header = "Instructions";
+			Header = header;
 			DebuggableCore = debuggableCore;
 			MemoryDomains = memoryDomains;
 			Disassembler = disassembler;
@@ -48,20 +50,9 @@ namespace BizHawk.Emulation.Common
 
 		private ITraceSink _sink;
 
-		public bool Enabled => Sink != null;
-
-		public void Put(TraceInfo info)
-		{
-			Sink.Put(info);
-		}
-
 		public ITraceSink Sink
 		{
-			private get
-			{
-				return _sink;
-			}
-
+			get => _sink;
 			set
 			{
 				_sink = value;
@@ -75,7 +66,7 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		public string Header { get; protected set; }
+		public string Header { get; }
 
 		private class TracingMemoryCallback : IMemoryCallback
 		{

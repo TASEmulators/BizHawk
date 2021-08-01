@@ -57,15 +57,14 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			LoadRom(rom, skipBios);
 			SetupMemoryDomains();
 
-			_tracer.Header = _cpu.TraceHeader;
 			ser.Register<IDisassemblable>(_cpu);
-			ser.Register<ITraceable>(_tracer);
+			ser.Register<ITraceable>(_tracer = new TraceBuffer(_cpu.TraceHeader));
 		}
 
 		private readonly Z80A _cpu;
 		private readonly TMS9918A _vdp;
 		private readonly byte[] _biosRom;
-		private readonly TraceBuffer _tracer = new TraceBuffer();
+		private readonly TraceBuffer _tracer;
 
 		private byte[] _romData;
 		private byte[] _ram = new byte[1024];

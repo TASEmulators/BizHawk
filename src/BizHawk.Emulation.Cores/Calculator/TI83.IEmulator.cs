@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 			_controller = controller;
 			_lagged = true;
 
-			if (_tracer.Enabled)
+			if (_tracer.IsEnabled())
 			{
 				_cpu.TraceCallback = s => _tracer.Put(s);
 			}
