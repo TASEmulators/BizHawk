@@ -13,23 +13,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public void NewCDL(ICodeDataLog cdl)
 		{
-			cdl["RAM"] = new byte[_memoryDomains["RAM"].Size];
-
-			if (_memoryDomains.Has("Save RAM"))
+			void AddIfExists(string name)
 			{
-				cdl["Save RAM"] = new byte[_memoryDomains["Save RAM"].Size];
+				var found = _memoryDomains[name];
+				if (found is not null) cdl[name] = new byte[found.Size];
 			}
-
-			if (_memoryDomains.Has("Battery RAM"))
-			{
-				cdl["Battery RAM"] = new byte[_memoryDomains["Battery RAM"].Size];
-			}
-
-			if (_memoryDomains.Has("Battery RAM"))
-			{
-				cdl["Battery RAM"] = new byte[_memoryDomains["Battery RAM"].Size];
-			}
-
+			cdl["RAM"] = new byte[_memoryDomains["RAM"]!.Size];
+			AddIfExists("Save RAM");
+			AddIfExists("Battery RAM");
+			AddIfExists("Battery RAM"); // ???
 			cdl.SubType = "NES";
 			cdl.SubVer = 0;
 		}

@@ -24,10 +24,8 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
 
-			_tracer = new TraceBuffer
-			{
-				Header = "6502: PC, opcode, register (A, X, Y, P, SP, Cy), flags (NVTBDIZC)"
-			};
+			const string TRACE_HEADER = "6502: PC, opcode, register (A, X, Y, P, SP, Cy), flags (NVTBDIZC)";
+			_tracer = new TraceBuffer(TRACE_HEADER);
 
 			_disk1 = _romSet[0];
 
@@ -121,17 +119,11 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		private bool _prevPressed;
 
 		private void TracerWrapper(string[] content)
-		{
-			_tracer.Put(new TraceInfo
-			{
-				Disassembly = content[0],
-				RegisterInfo = content[1]
-			});
-		}
+			=> _tracer.Put(new(disassembly: content[0], registerInfo: content[1]));
 
 		private void FrameAdv(IController controller, bool render, bool renderSound)
 		{
-			if (_tracer.Enabled)
+			if (_tracer.IsEnabled())
 			{
 				_machine.Cpu.TraceCallback = TracerWrapper;
 			}

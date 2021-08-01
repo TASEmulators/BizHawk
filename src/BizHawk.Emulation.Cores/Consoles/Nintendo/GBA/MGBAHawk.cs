@@ -66,10 +66,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				ServiceProvider = ser;
 				PutSettings(_settings);
 
-				Tracer = new TraceBuffer
-				{
-					Header = "ARM7: PC, machine code, mnemonic, operands, registers"
-				};
+				const string TRACE_HEADER = "ARM7: PC, machine code, mnemonic, operands, registers";
+				Tracer = new TraceBuffer(TRACE_HEADER);
 				_tracecb = msg => Tracer.Put(_traceInfo(msg));
 				ser.Register(Tracer);
 				MemoryCallbacks = new MGBAMemoryCallbackSystem(this);
@@ -107,11 +105,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				sb.Append($" { RegisterNames[i] }:{ regs[RegisterNames[i]].Value:X8}");
 			}
 
-			return new TraceInfo
-			{
-				Disassembly = $"{pc:X8}: { machineCode }  { instruction }".PadRight(50),
-				RegisterInfo = sb.ToString()
-			};
+			return new(
+				disassembly: $"{pc:X8}: { machineCode }  { instruction }".PadRight(50),
+				registerInfo: sb.ToString());
 		}
 
 		public bool FrameAdvance(IController controller, bool render, bool renderSound = true)
@@ -124,7 +120,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				WireMemoryDomainPointers();
 			}
 
-			LibmGBA.BizSetTraceCallback(Core, Tracer.Enabled ? _tracecb : null);
+			LibmGBA.BizSetTraceCallback(Core, Tracer.IsEnabled() ? _tracecb : null);
 
 			IsLagFrame = LibmGBA.BizAdvance(
 				Core,

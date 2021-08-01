@@ -25,19 +25,15 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		public void NewCDL(ICodeDataLog cdl)
 		{
-			cdl["ROM"] = new byte[MemoryDomains["ROM"].Size];
-			cdl["Main RAM"] = new byte[MemoryDomains["Main RAM"].Size];
-
-			if (MemoryDomains.Has("Save RAM"))
+			void AddIfExists(string name)
 			{
-				cdl["Save RAM"] = new byte[MemoryDomains["Save RAM"].Size];
+				var found = MemoryDomains[name];
+				if (found is not null) cdl[name] = new byte[found.Size];
 			}
-
-			if (MemoryDomains.Has("Cart (Volatile) RAM"))
-			{
-				cdl["Cart (Volatile) RAM"] = new byte[MemoryDomains["Cart (Volatile) RAM"].Size];
-			}
-
+			cdl["ROM"] = new byte[MemoryDomains["ROM"]!.Size];
+			cdl["Main RAM"] = new byte[MemoryDomains["Main RAM"]!.Size];
+			AddIfExists("Save RAM");
+			AddIfExists("Cart (Volatile) RAM");
 			cdl.SubType = "SMS";
 			cdl.SubVer = 0;
 		}

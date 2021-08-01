@@ -27,7 +27,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 			_isLag = true;
 
-			if (_tracer.Enabled)
+			if (_tracer.IsEnabled())
 			{
 				_cpu.TraceCallback = s => _tracer.Put(s);
 			}

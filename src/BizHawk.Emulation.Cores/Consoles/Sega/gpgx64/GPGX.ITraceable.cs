@@ -10,22 +10,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		public class GPGXTraceBuffer : CallbackBasedTraceBuffer
 		{
+			private const string TRACE_HEADER = "M68K: PC, machine code, mnemonic, operands, registers (D0-D7, A0-A7, SR, USP), flags (XNZVC)";
+
 			public GPGXTraceBuffer(IDebuggable debuggableCore, IMemoryDomains memoryDomains, IDisassemblable disassembler)
-				: base(debuggableCore, memoryDomains, disassembler)
-			{
-				Header = "M68K: PC, machine code, mnemonic, operands, registers (D0-D7, A0-A7, SR, USP), flags (XNZVC)";
-			}
+				: base(debuggableCore, memoryDomains, disassembler, TRACE_HEADER) {}
 
 			protected override void TraceFromCallback(uint addr, uint value, uint flags)
 			{
 				var regs = DebuggableCore.GetCpuFlagsAndRegisters();
 				uint pc = (uint)regs["M68K PC"].Value;
 				var disasm = Disassembler.Disassemble(MemoryDomains.SystemBus, pc & 0xFFFFFF, out _);
-
-				var traceInfo = new TraceInfo
-				{
-					Disassembly = $"{pc:X6}:  {disasm}".PadRight(50)
-				};
 
 				var sb = new StringBuilder();
 
@@ -49,9 +43,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					(sr &  2) > 0 ? "V" : "v",
 					(sr &  1) > 0 ? "C" : "c"));
 
-				traceInfo.RegisterInfo = sb.ToString().Trim();
-
-				Put(traceInfo);
+				this.Put(new(disassembly: $"{pc:X6}:  {disasm}".PadRight(50), registerInfo: sb.ToString().Trim()));
 			}
 		}
 	}

@@ -800,7 +800,7 @@ namespace BizHawk.Client.EmuHawk
 		private void SetMemoryDomain(string name)
 		{
 			_currentDomain = MemoryDomains[name];
-			_bigEndian = MemoryDomains[name].EndianType == MemoryDomain.Endian.Big;
+			_bigEndian = _currentDomain!.EndianType == MemoryDomain.Endian.Big;
 
 			MaximizeAddressBox.SetHexProperties(_currentDomain.Size);
 			TieBreaker1Box.SetHexProperties(_currentDomain.Size);

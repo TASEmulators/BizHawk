@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 
 			if (current_controller == MSXControllerKB) { kb_rows_check(controller); }		
 			
-			if (Tracer.Enabled)
+			if (Tracer.IsEnabled())
 			{
 				tracecb = MakeTrace;
 			}

@@ -148,31 +148,35 @@ namespace BizHawk.Client.Common
 				_backingStoreType == settings.BackingStore;
 		}
 
-		private bool ShouldCapture(int frame)
+		private bool ShouldCaptureForFrameDiff(int frameDiff)
 		{
 			if (Count == 0)
 			{
 				return true;
 			}
-
-			var frameDiff = frame - _states[HeadStateIndex].Frame;
 			if (frameDiff < 1)
+			{
 				// non-linear time is from a combination of other state changing mechanisms and the rewinder
 				// not much we can say here, so just take a state
 				return true;
+			}
+			return frameDiff >= ComputeIdealRewindInterval();		
+		}
 
-			return frameDiff >= ComputeIdealRewindInterval();
+		private bool ShouldCapture(int frame)
+		{
+			var frameDiff = frame - _states[HeadStateIndex].Frame;
+			return ShouldCaptureForFrameDiff(frameDiff);
 		}
 
 		/// <summary>
-		/// Predict whether Capture() will capture a state.  Useful if expensive work needs to happen before
-		/// Capture() is called.
+		/// Predict whether Capture() would capture a state, assuming a particular frame delta.
 		/// </summary>
-		/// <param name="frame">The same frame number to be passed to capture</param>
-		/// <returns>Whether capture will happen, assuming Capture() is passed the same frame and force = false</returns>
-		public bool WillCapture(int frame)
+		/// <param name="frameDelta">The assumed frame delta.  Normally this will be equal to `nextStateFrame - GetState(Count - 1).Frame`.</param>
+		/// <returns>Whether Capture(nextStateFrame) would actually capture, assuming the frameDelta matched.</returns>
+		public bool WouldCapture(int frameDelta)
 		{
-			return ShouldCapture(frame);
+			return ShouldCaptureForFrameDiff(frameDelta);
 		}
 
 		/// <summary>

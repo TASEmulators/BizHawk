@@ -515,7 +515,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 		private byte opcode2, opcode3;
 
 		private int ea, alu_temp; //cpu internal temp variables
-		private int mi; //microcode index
+		public int mi; //microcode index
 		private bool iflag_pending; //iflag must be stored after it is checked in some cases (CLI and SEI).
 		public bool rdy_freeze; //true if the CPU must be frozen
 
@@ -561,12 +561,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 				interrupt_pending = false;
 				if (NMI)
 				{
-					TraceCallback?.Invoke(new TraceInfo
-					{
-						Disassembly = "====NMI====",
-						RegisterInfo = ""
-					});
-
+					TraceCallback?.Invoke(new(disassembly: "====NMI====", registerInfo: string.Empty));
 					ea = NMIVector;
 					opcode = VOP_NMI;
 					NMI = false;
@@ -577,11 +572,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 
 				if (IRQ && !my_iflag)
 				{
-					TraceCallback?.Invoke(new TraceInfo
-					{
-						Disassembly = "====IRQ====",
-						RegisterInfo = ""
-					});
+					TraceCallback?.Invoke(new(disassembly: "====IRQ====", registerInfo: string.Empty));
 					ea = IRQVector;
 					opcode = VOP_IRQ;
 					mi = 0;

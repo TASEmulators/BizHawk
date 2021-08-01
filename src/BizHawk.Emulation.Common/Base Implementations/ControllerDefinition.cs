@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿#nullable disable
+
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -10,12 +12,7 @@ namespace BizHawk.Emulation.Common
 	/// <seealso cref="IEmulator" />
 	public class ControllerDefinition
 	{
-		public ControllerDefinition()
-		{
-#if DEBUG
-			HapticsChannels.Add("Debug");
-#endif
-		}
+		public ControllerDefinition() {}
 
 		public ControllerDefinition(ControllerDefinition source)
 			: this()
@@ -23,6 +20,7 @@ namespace BizHawk.Emulation.Common
 			Name = source.Name;
 			BoolButtons.AddRange(source.BoolButtons);
 			foreach (var kvp in source.Axes) Axes.Add(kvp);
+			HapticsChannels.AddRange(source.HapticsChannels);
 			CategoryLabels = source.CategoryLabels;
 		}
 

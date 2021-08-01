@@ -1378,5 +1378,14 @@
 				"Deadzone": 0.1
 			}
 		}
+	},
+	"AllTrollersFeedbacks": {
+		"Nintendo 64 Controller": {
+			"P1 Rumble Pak": {
+				"Channels": "Left+Right",
+				"GamepadPrefix": "X1 ",
+				"Prescale": 1.0
+			}
+		}
 	}
 }

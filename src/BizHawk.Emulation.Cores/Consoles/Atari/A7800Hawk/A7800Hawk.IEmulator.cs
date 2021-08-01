@@ -59,7 +59,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		public bool FrameAdvance(IController controller, bool render, bool renderSound)
 		{
-			if (_tracer.Enabled)
+			if (_tracer.IsEnabled())
 			{
 				cpu.TraceCallback = s => _tracer.Put(s);
 			}

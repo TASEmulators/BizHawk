@@ -139,7 +139,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 
 		private void StepInto()
 		{
-			if (_tracer.Enabled)
+			if (_tracer.IsEnabled())
 			{
 				_machine.Cpu.TraceCallback = TracerWrapper;
 			}

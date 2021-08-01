@@ -27,7 +27,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubGBHawk
 				_GBCore.ppu.color_palette[2] = GBHawk.GBHawk.color_palette_Gr[2];
 				_GBCore.ppu.color_palette[3] = GBHawk.GBHawk.color_palette_Gr[3];
 			}
-			if (_tracer.Enabled)
+			if (_tracer.IsEnabled())
 			{
 				_GBCore.cpu.TraceCallback = s => _tracer.Put(s);
 			}

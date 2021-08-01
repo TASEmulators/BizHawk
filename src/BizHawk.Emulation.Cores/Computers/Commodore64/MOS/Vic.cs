@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
+
+using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
@@ -45,11 +46,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		public Vic(int newCycles, int newLines, IList<int[]> newPipeline, int newCyclesPerSec, int hblankStart, int hblankEnd, int vblankStart, int vblankEnd, C64.BorderType borderType, int pixelRatioNum, int pixelRatioDen)
 		{
-			Debug.WriteLine("C64 VIC timings:");
-			Debug.WriteLine("RX   FTCH BA   ACT");
+			Util.DebugWriteLine("C64 VIC timings:");
+			Util.DebugWriteLine("RX   FTCH BA   ACT");
 			for (var i = 0; i < newPipeline[0].Length; i++)
 			{
-				Debug.WriteLine("{0:x4} {1:x4} {2:x4} {3:x8}", newPipeline[0][i], newPipeline[1][i], newPipeline[2][i], newPipeline[3][i]);
+				Util.DebugWriteLine("{0:x4} {1:x4} {2:x4} {3:x8}", newPipeline[0][i], newPipeline[1][i], newPipeline[2][i], newPipeline[3][i]);
 			}
 
 			_pixelRatioNum = pixelRatioNum;

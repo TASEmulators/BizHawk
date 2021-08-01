@@ -138,10 +138,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 
 			SetMemoryDomains();
 
-			_tracer = new TraceBuffer
-			{
-				Header = "65816: PC, mnemonic, operands, registers (A, X, Y, S, D, B, flags (NVMXDIZC), V, H)"
-			};
+			const string TRACE_HEADER = "65816: PC, mnemonic, operands, registers (A, X, Y, S, D, B, flags (NVMXDIZC), V, H)";
+			_tracer = new TraceBuffer(TRACE_HEADER);
 			ser.Register<IDisassemblable>(new W65816_DisassemblerService());
 			ser.Register(_tracer);
 
@@ -381,12 +379,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		}
 
 		private void snes_trace(string disassembly, string registerInfo)
-		{
-			_tracer.Put(new TraceInfo
-			{
-				Disassembly = disassembly,
-				RegisterInfo = registerInfo
-			});
-		}
+			=> _tracer.Put(new(disassembly: disassembly, registerInfo: registerInfo));
 	}
 }

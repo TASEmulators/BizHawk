@@ -448,7 +448,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 				{
 					IRQPending = false;
 
-					TraceCallback?.Invoke(new TraceInfo { Disassembly = "====IRQ====", RegisterInfo = "" });
+					TraceCallback?.Invoke(new(disassembly: "====IRQ====", registerInfo: string.Empty));
 
 					IRQ_(0);
 					IRQCallback();
@@ -458,7 +458,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 				{
 					TIRQPending = false;
 
-					TraceCallback?.Invoke(new TraceInfo { Disassembly = "====TIRQ====", RegisterInfo = "" });
+					TraceCallback?.Invoke(new(disassembly: "====TIRQ====", registerInfo: string.Empty));
 
 					IRQ_(1);
 					IRQCallback();
@@ -522,11 +522,9 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 		public string TraceHeader => "I8048: PC, machine code, mnemonic, operands, registers (A, B, X, Y, US, SP, DP, CC), Cy, flags (CAFBIFT0T1TFR)";
 
 		public TraceInfo State(bool disassemble = true)
-		{
-			return new TraceInfo
-			{
-				Disassembly = $"{(disassemble ? Disassemble(Regs[PC], ReadMemory, out _) : "---")} ".PadRight(50),
-				RegisterInfo = string.Format(
+			=> new(
+				disassembly: $"{(disassemble ? Disassemble(Regs[PC], ReadMemory, out _) : "---")} ".PadRight(50),
+				registerInfo: string.Format(
 					"A:{0:X2} R0:{1:X2} R1:{2:X2} R2:{3:X2} R3:{4:X2} R4:{5:X2} R5:{6:X2} R6:{7:X2} R7:{8:X2} PSW:{9:X4} Cy:{10} LY:{11} {12}{13}{14}{15}{16}{17}{18}{19}{20}{21}{22}",
 					Regs[A],
 					Regs[(ushort)(R0 + RB)],
@@ -550,10 +548,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 					T0 ? "T" : "t",
 					T1 ? "T" : "t",
 					TF ? "T" : "t",
-					RB > 0 ? "R" : "r"
-					)
-			};
-		}
+					RB > 0 ? "R" : "r"));
 
 		/// <summary>
 		/// Optimization method to set cur_instr

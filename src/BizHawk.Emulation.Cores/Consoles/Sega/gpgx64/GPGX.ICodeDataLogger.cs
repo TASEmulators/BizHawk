@@ -16,12 +16,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		public void NewCDL(ICodeDataLog cdl)
 		{
-			cdl["MD CART"] = new byte[_memoryDomains["MD CART"].Size];
-			cdl["68K RAM"] = new byte[_memoryDomains["68K RAM"].Size];
-			cdl["Z80 RAM"] = new byte[_memoryDomains["Z80 RAM"].Size];
+			cdl["MD CART"] = new byte[_memoryDomains["MD CART"]!.Size];
+			cdl["68K RAM"] = new byte[_memoryDomains["68K RAM"]!.Size];
+			cdl["Z80 RAM"] = new byte[_memoryDomains["Z80 RAM"]!.Size];
 
-			if (_memoryDomains.Has("SRAM"))
-				cdl["SRAM"] = new byte[_memoryDomains["SRAM"].Size];
+			var found = _memoryDomains["SRAM"];
+			if (found is not null) cdl["SRAM"] = new byte[found.Size];
 
 			cdl.SubType = "GEN";
 			cdl.SubVer = 0;

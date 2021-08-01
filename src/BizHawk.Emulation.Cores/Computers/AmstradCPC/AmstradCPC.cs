@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			CoreComm = lp.Comm;
 			_gameInfo = lp.Roms.Select(r => r.Game).ToList();
 			_cpu = new Z80A();
-			_tracer = new TraceBuffer { Header = _cpu.TraceHeader };
+			_tracer = new TraceBuffer(_cpu.TraceHeader);
 			_files = lp.Roms.Select(r => r.RomData).ToList();
 
 			var settings = lp.Settings ?? new AmstradCPCSettings();

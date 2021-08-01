@@ -96,7 +96,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 			ser.Register<IVideoProvider>(this);
 			ser.Register<ISoundProvider>(this); 
 
-			_tracer = new TraceBuffer { Header = A.cpu.TraceHeader };
+			_tracer = new TraceBuffer(A.cpu.TraceHeader);
 			ser.Register(_tracer);
 
 			ServiceProvider = ser;

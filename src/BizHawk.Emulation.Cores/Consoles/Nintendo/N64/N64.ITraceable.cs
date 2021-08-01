@@ -17,11 +17,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			var length = 0;
 			var disasm = Disassemble(MemoryDomains.SystemBus, pc, out length);
 
-			var traceInfo = new TraceInfo
-			{
-				Disassembly = $"{pc:X}:  {disasm.PadRight(32)}"
-			};
-
 			var sb = new StringBuilder();
 
 			for (int i = 1; i < 32; i++) // r0 is always zero
@@ -45,16 +40,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 			// drop MMU co-processor regs for now
 
-			traceInfo.RegisterInfo = sb.ToString().Trim();
-
-			Tracer.Put(traceInfo);
+			Tracer.Put(new(disassembly: $"{pc:X}:  {disasm.PadRight(32)}", registerInfo: sb.ToString().Trim()));
 		}
 
 		private const string TraceHeader = "r3400: PC, mnemonic, operands, registers (GPRs, Load/Link Bit, MultHI, MultLO, Implementation/Revision, Control/Status, FGRs)";
 
 		private void ConnectTracer()
 		{
-			Tracer = new TraceBuffer { Header = TraceHeader };
+			Tracer = new TraceBuffer(TraceHeader);
 			(ServiceProvider as BasicServiceProvider).Register<ITraceable>(Tracer);
 			_tracecb = new mupen64plusApi.TraceCallback(MakeTrace);
 		}

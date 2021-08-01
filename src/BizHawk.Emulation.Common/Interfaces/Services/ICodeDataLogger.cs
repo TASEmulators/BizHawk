@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Common
 		/// <summary>
 		/// Sets the CodeDataLog as current (and logging) on the core
 		/// </summary>
-		void SetCDL(ICodeDataLog cdl);
+		void SetCDL(ICodeDataLog? cdl);
 
 		/// <summary>
 		/// Fills a new CodeDataLog with memory domain information suitable for the core
@@ -59,7 +59,7 @@ namespace BizHawk.Emulation.Common
 		/// </summary>
 		bool Active { get; set; }
 
-		string SubType { get; set; }
+		string? SubType { get; set; }
 
 		int SubVer { get; set; }
 

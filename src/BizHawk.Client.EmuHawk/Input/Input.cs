@@ -11,64 +11,8 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	// coalesces events back into instantaneous states
-	public class InputCoalescer : SimpleController
-	{
-		public void Receive(Input.InputEvent ie)
-		{
-			bool state = ie.EventType == Input.InputEventType.Press;
-			
-			string button = ie.LogicalButton.ToString();
-			Buttons[button] = state;
-
-			//when a button is released, all modified variants of it are released as well
-			if (!state)
-			{
-				var releases = Buttons.Where(kvp => kvp.Key.Contains("+") && kvp.Key.EndsWith(ie.LogicalButton.Button)).ToArray();
-				foreach (var kvp in releases)
-					Buttons[kvp.Key] = false;
-			}
-		}
-	}
-
-	public class ControllerInputCoalescer : SimpleController
-	{
-		public void Receive(Input.InputEvent ie)
-		{
-			bool state = ie.EventType == Input.InputEventType.Press;
-
-			string button = ie.LogicalButton.ToString();
-			Buttons[button] = state;
-
-			//For controller input, we want Shift+X to register as both Shift and X (for Keyboard controllers)
-			string[] subgroups = button.Split('+');
-			if (subgroups.Length > 0)
-			{
-				foreach (string s in subgroups)
-				{
-					Buttons[s] = state;
-				}
-			}
-
-			//when a button is released, all modified variants of it are released as well
-			if (!state)
-			{
-				var releases = Buttons.Where((kvp) => kvp.Key.Contains("+") && kvp.Key.EndsWith(ie.LogicalButton.Button)).ToArray();
-				foreach (var kvp in releases)
-					Buttons[kvp.Key] = false;
-			}
-		}
-	}
-
 	public class Input
 	{
-		public enum AllowInput
-		{
-			None = 0,
-			All = 1,
-			OnlyController = 2
-		}
-
 		/// <summary>
 		/// If your form needs this kind of input focus, be sure to say so.
 		/// Really, this only makes sense for mouse, but I've started building it out for other things
@@ -82,30 +26,6 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private readonly HashSet<Control> _wantingMouseFocus = new HashSet<Control>();
-
-		[Flags]
-		public enum ModifierKey
-		{
-			// Summary:
-			//     The bitmask to extract modifiers from a key value.
-			Modifiers = -65536,
-			//
-			// Summary:
-			//     No key pressed.
-			None = 0,
-			//
-			// Summary:
-			//     The SHIFT modifier key.
-			Shift = 65536,
-			//
-			// Summary:
-			//     The CTRL modifier key.
-			Control = 131072,
-			//
-			// Summary:
-			//     The ALT modifier key.
-			Alt = 262144
-		}
 
 		public static Input Instance;
 
@@ -136,67 +56,6 @@ namespace BizHawk.Client.EmuHawk
 				Priority = ThreadPriority.AboveNormal // why not? this thread shouldn't be very heavy duty, and we want it to be responsive
 			};
 			_updateThread.Start();
-		}
-
-		public enum InputEventType
-		{
-			Press, Release
-		}
-		public struct LogicalButton
-		{
-			public LogicalButton(string button, ModifierKey modifiers)
-			{
-				Button = button;
-				Modifiers = modifiers;
-			}
-			public readonly string Button;
-			public readonly ModifierKey Modifiers;
-
-			public bool Alt => (Modifiers & ModifierKey.Alt) != 0;
-			public bool Control => (Modifiers & ModifierKey.Control) != 0;
-			public bool Shift => (Modifiers & ModifierKey.Shift) != 0;
-
-			public override string ToString()
-			{
-				string ret = "";
-				if (Control) ret += "Ctrl+";
-				if (Alt) ret += "Alt+";
-				if (Shift) ret += "Shift+";
-				ret += Button;
-				return ret;
-			}
-			public override bool Equals(object obj)
-			{
-				if (obj is null)
-				{
-					return false;
-				}
-
-				var other = (LogicalButton)obj;
-				return other == this;
-			}
-			public override int GetHashCode()
-			{
-				return Button.GetHashCode() ^ Modifiers.GetHashCode();
-			}
-			public static bool operator ==(LogicalButton lhs, LogicalButton rhs)
-			{
-				return lhs.Button == rhs.Button && lhs.Modifiers == rhs.Modifiers;
-			}
-			public static bool operator !=(LogicalButton lhs, LogicalButton rhs)
-			{
-				return !(lhs == rhs);
-			}
-		}
-		public class InputEvent
-		{
-			public LogicalButton LogicalButton;
-			public InputEventType EventType;
-			public ClientInputFocus Source;
-			public override string ToString()
-			{
-				return $"{EventType}:{LogicalButton}";
-			}
 		}
 
 		private readonly Dictionary<string, LogicalButton> _modifierState = new Dictionary<string, LogicalButton>();

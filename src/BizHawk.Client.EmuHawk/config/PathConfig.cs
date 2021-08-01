@@ -61,6 +61,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DoTabs(IList<PathEntry> pathCollection, string focusTabOfSystem)
 		{
+			bool IsTabPendingFocus(string system) => system == focusTabOfSystem || system.Split('_').Contains(focusTabOfSystem);
+
 			int x = UIHelper.ScaleX(6);
 			int textBoxWidth = UIHelper.ScaleX(70);
 			int padding = UIHelper.ScaleX(5);
@@ -70,15 +72,8 @@ namespace BizHawk.Client.EmuHawk
 			int widgetOffset = UIHelper.ScaleX(85);
 			int rowHeight = UIHelper.ScaleY(30);
 
-			void AddTabPageForSystem(string system, string systemDisplayName)
+			void PopulateTabPage(Control t, string system)
 			{
-				var t = new TabPage
-				{
-					Name = system,
-					Text = systemDisplayName,
-					Width = UIHelper.ScaleX(200), // Initial Left/Width of child controls are based on this size.
-					AutoScroll = true
-				};
 				var paths = pathCollection
 					.Where(p => p.System == system)
 					.OrderBy(p => p.Ordinal)
@@ -130,15 +125,27 @@ namespace BizHawk.Client.EmuHawk
 
 					y += rowHeight;
 				}
-
-				PathTabControl.TabPages.Add(t);
-				if (system == focusTabOfSystem || system.Split('_').Contains(focusTabOfSystem))
+			}
+			void AddTabPageForSystem(string system, string systemDisplayName)
+			{
+				var t = new TabPage
 				{
-					PathTabControl.SelectTab(PathTabControl.TabPages.Count - 1);
+					Name = system,
+					Text = systemDisplayName,
+					Width = UIHelper.ScaleX(200), // Initial Left/Width of child controls are based on this size.
+					AutoScroll = true
+				};
+				PopulateTabPage(t, system);
+				comboSystem.Items.Add(systemDisplayName);
+				PathTabControl.TabPages.Add(t);
+				if (IsTabPendingFocus(system))
+				{
+					comboSystem.SelectedIndex = comboSystem.Items.Count - 1; // event handler selects correct tab in inner TabControl
+					tcMain.SelectTab(1);
 				}
 			}
 
-			PathTabControl.Visible = false;
+			tcMain.Visible = false;
 
 			PathTabControl.TabPages.Clear();
 			var systems = _pathEntries.Select(e => e.System).Distinct() // group entries by "system" (intentionally using instance field here, not parameter)
@@ -147,12 +154,27 @@ namespace BizHawk.Client.EmuHawk
 				.ToList();
 			// add the Global tab first...
 			const string idGlobal = "Global_NULL";
+			tpGlobal.Name = idGlobal; // required for SaveSettings
 			systems.RemoveAll(tuple => tuple.SysGroup == idGlobal);
-			AddTabPageForSystem(idGlobal, PathEntryCollection.GetDisplayNameFor(idGlobal));
+			var hack = tpGlobal.Size.Width - UIHelper.ScaleX(220); // whyyyyyyyyyy
+			textBoxWidth += hack;
+			widgetOffset += hack;
+			Size hack1 = new(17, 0); // also whyyyyyyyyyy
+			PopulateTabPage(tpGlobal, idGlobal);
+			tpGlobal.Controls[tpGlobal.Controls.Count - 1].Size -= hack1; // TextBox
+			tpGlobal.Controls[tpGlobal.Controls.Count - 2].Location -= hack1; // Button
+			textBoxWidth -= hack;
+			widgetOffset -= hack;
 			// ...then continue with the others
 			foreach (var (sys, dispName) in systems) AddTabPageForSystem(sys, dispName);
 
-			PathTabControl.Visible = true;
+			if (IsTabPendingFocus(idGlobal))
+			{
+				comboSystem.SelectedIndex = systems.FindIndex(tuple => tuple.SysGroup == "NES"); // event handler selects correct tab in inner TabControl
+				// selected tab in tcMain is already 0 (Global)
+			}
+
+			tcMain.Visible = true;
 		}
 
 		private void BrowseFolder(TextBox box, string name, string system)
@@ -197,7 +219,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_pathEntries.UseRecentForRoms = RecentForROMs.Checked;
 
-			foreach (var t in AllPathBoxes)
+			foreach (var t in AllPathControls.OfType<TextBox>())
 			{
 				var pathEntry = _pathEntries.First(p => p.System == t.Parent.Name && p.Type == t.Name);
 				pathEntry.Path = t.Text;
@@ -214,33 +236,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private IEnumerable<TextBox> AllPathBoxes
-		{
-			get
-			{
-				var allPathBoxes = new List<TextBox>();
-				foreach (TabPage tp in PathTabControl.TabPages)
-				{
-					allPathBoxes.AddRange(tp.Controls.OfType<TextBox>());
-				}
-
-				return allPathBoxes;
-			}
-		}
-
 		private IEnumerable<Control> AllPathControls
-		{
-			get
-			{
-				var allPathControls = new List<Control>();
-				foreach (TabPage tp in PathTabControl.TabPages)
-				{
-					allPathControls.AddRange(tp.Controls());
-				}
-
-				return allPathControls;
-			}
-		}
+			=> new[] { tpGlobal }.Concat(PathTabControl.TabPages.Cast<TabPage>()).SelectMany(tp => tp.Controls());
 
 		private void NewPathConfig_Load(object sender, EventArgs e)
 		{
@@ -279,6 +276,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_mainForm.AddOnScreenMessage("Path config aborted");
 			Close();
+		}
+
+		private void comboSystem_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			PathTabControl.SelectTab(((ComboBox) sender).SelectedIndex);
 		}
 	}
 }

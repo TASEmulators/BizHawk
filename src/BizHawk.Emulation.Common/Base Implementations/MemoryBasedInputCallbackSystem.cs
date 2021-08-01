@@ -1,17 +1,17 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Common
 {
 	/// <summary>
-	/// An implementation of <seealso cref="IInputCallbackSystem"/> that is implementation using only methods
-	/// from <seealso cref="IDebuggable"/>,
+	/// An implementation of <see cref="IInputCallbackSystem"/> that is implementation using only methods
+	/// from <see cref="IDebuggable"/>,
 	/// Useful for ported cores that have these hooks but no input callback hook,
 	/// This allows for an input callback implementation without the need for additional APIs
 	/// </summary>
-	/// <seealso cref="IInputCallbackSystem"/>
-	/// <seealso cref="IDebuggable"/>
 	public class MemoryBasedInputCallbackSystem : IInputCallbackSystem
 	{
 		private readonly List<Action> _inputCallbacks = new List<Action>();

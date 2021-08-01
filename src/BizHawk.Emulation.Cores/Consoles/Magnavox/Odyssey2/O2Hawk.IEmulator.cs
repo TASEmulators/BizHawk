@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 		{
 			//Console.WriteLine("-----------------------FRAME-----------------------");
 
-			if (_tracer.Enabled)
+			if (_tracer.IsEnabled())
 			{
 				cpu.TraceCallback = s => _tracer.Put(s);
 			}

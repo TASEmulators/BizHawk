@@ -14,7 +14,7 @@
 		/// Unfortunately, the core may think differently of a nonexisting (null) saveram vs a 0 size saveram.
 		/// Frontend users of the ISaveRam should treat null as nonexisting (and thus not even write the file, so that the "does not exist" condition can be roundtripped and not confused with an empty file)
 		/// </summary>
-		byte[] CloneSaveRam();
+		byte[]? CloneSaveRam();
 
 		/// <summary>
 		/// store new SaveRAM to the emu core. the data should be the same size as the return from ReadSaveRam()

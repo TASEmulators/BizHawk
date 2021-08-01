@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			_controller = controller;
 			_isLag = false;
 
-			if (_tracer.Enabled)
+			if (_tracer.IsEnabled())
 			{
 				CPU.TraceCallback = s => _tracer.Put(s);
 			}

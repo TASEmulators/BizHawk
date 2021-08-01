@@ -47,7 +47,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			RebootCore();
 			SetupMemoryDomains();
 
-			Tracer = new TraceBuffer { Header = Cpu.TraceHeader };
+			Tracer = new TraceBuffer(Cpu.TraceHeader);
 
 			ser.Register<IDisassemblable>(Cpu);
 			ser.Register<ITraceable>(Tracer);

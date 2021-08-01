@@ -218,10 +218,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			public int[] VideoBuffer { get; set; }
 
-			public int[] GetVideoBuffer()
-			{
-				return VideoBuffer;
-			}
+			public int[] GetVideoBuffer() => VideoBuffer!;
 
 			public int VirtualWidth => BufferWidth;
 

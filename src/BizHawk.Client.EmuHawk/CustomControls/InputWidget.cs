@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
+using BizHawk.Client.Common;
 using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -14,7 +15,7 @@ namespace BizHawk.Client.EmuHawk
 		private readonly Timer _timer = new Timer();
 		private readonly List<string> _bindings = new List<string>();
 
-		private Input.InputEvent _lastPress;
+		private InputEvent _lastPress;
 
 		public InputCompositeWidget CompositeWidget { get; set; }
 

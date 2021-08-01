@@ -20,7 +20,7 @@ namespace BizHawk.Client.Common
 
 		private string _mainMemName;
 
-		private MemoryDomain Domain => _mainMemDomain ??= ((MemoryApi) APIs.Memory).DomainList[MainMemName];
+		private MemoryDomain Domain => _mainMemDomain ??= ((MemoryApi) APIs.Memory).DomainList[MainMemName]!;
 
 		private string MainMemName => _mainMemName ??= APIs.Memory.MainMemoryName;
 

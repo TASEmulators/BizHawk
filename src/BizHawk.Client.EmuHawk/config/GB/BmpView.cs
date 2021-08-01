@@ -6,8 +6,6 @@ using System.Drawing.Imaging;
 using System.Drawing;
 using System.Windows.Forms;
 
-using BizHawk.Common;
-
 namespace BizHawk.Client.EmuHawk
 {
 	public class BmpView : Control
@@ -89,12 +87,17 @@ namespace BizHawk.Client.EmuHawk
 			Refresh();
 		}
 
-		public void Clear()
+		public unsafe void Clear()
 		{
 			var lockBits = Bmp.LockBits(new Rectangle(0, 0, Bmp.Width, Bmp.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
-			Win32Imports.MemSet(lockBits.Scan0, 0xff, (uint)(lockBits.Height * lockBits.Stride));
+			Clear_Selected_Region((byte*)lockBits.Scan0, (uint)(lockBits.Height * lockBits.Stride));
 			Bmp.UnlockBits(lockBits);
 			Refresh();
+		}
+
+		public static unsafe void Clear_Selected_Region(byte* base_pos, uint num_bytes)
+		{
+			for (uint i = 0; i < num_bytes; i++) { base_pos[i] = 0xFF; }
 		}
 	}
 }

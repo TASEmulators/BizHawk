@@ -35,7 +35,7 @@ namespace BizHawk.Client.Common.cheats
 			var domain = CheatDomainName();
 			return CheatDomainName() == null
 				? _domains.SystemBus
-				: _domains[domain];
+				: _domains[domain]!;
 		}
 
 		private string CheatDomainName() => _systemId switch

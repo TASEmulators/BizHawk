@@ -14,10 +14,10 @@ namespace BizHawk.Client.Common
 	public class InputManager
 	{
 		// the original source controller, bound to the user, sort of the "input" port for the chain, i think
-		public Controller ActiveController { get; set; } // TODO: private setter, add a method that takes both controllers in
+		public Controller ActiveController { get; private set; }
 
 		// rapid fire version on the user controller, has its own key bindings and is OR'ed against ActiveController
-		public AutofireController AutoFireController { get; set; } // TODO: private setter, add a method that takes both controllers in
+		public AutofireController AutoFireController { get; private set; }
 
 		// the "output" port for the controller chain.
 		public CopyControllerAdapter ControllerOutput { get; } = new CopyControllerAdapter();
@@ -43,11 +43,17 @@ namespace BizHawk.Client.Common
 
 		// Input state for game controller inputs are coalesced here
 		// This relies on a client specific implementation!
-		public SimpleController ControllerInputCoalescer { get; set; }
+		public ControllerInputCoalescer ControllerInputCoalescer { get; set; }
 
 		public Controller ClientControls { get; set; }
 
 		public Func<(Point Pos, long Scroll, bool LMB, bool MMB, bool RMB, bool X1MB, bool X2MB)> GetMainFormMouseInfo { get; set; }
+
+		public void ResetMainControllers(AutofireController nullAutofireController)
+		{
+			ActiveController = new(NullController.Instance.Definition);
+			AutoFireController = nullAutofireController;
+		}
 
 		public void SyncControls(IEmulator emulator, IMovieSession session, Config config)
 		{

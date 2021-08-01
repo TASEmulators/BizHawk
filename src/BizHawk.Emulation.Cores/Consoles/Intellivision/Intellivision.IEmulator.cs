@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 		public bool FrameAdvance(IController controller, bool render, bool renderSound)
 		{
-			if (_tracer.Enabled)
+			if (_tracer.IsEnabled())
 			{
 				_cpu.TraceCallback = s => _tracer.Put(s);
 			}

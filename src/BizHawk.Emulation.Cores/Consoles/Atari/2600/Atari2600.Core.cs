@@ -317,7 +317,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			if (cyc_counter == 3)
 			{
 				_m6532.Timer.Tick();
-				if (Tracer.Enabled && Cpu.AtStart)
+				if (Tracer.IsEnabled() && Cpu.AtStart)
 				{
 					Tracer.Put(Cpu.TraceState());
 				}

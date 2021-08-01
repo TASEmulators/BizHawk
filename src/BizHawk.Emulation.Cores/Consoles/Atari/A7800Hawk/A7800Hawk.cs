@@ -261,7 +261,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			ser.Register<ISoundProvider>(this);
 			ServiceProvider = ser;
 
-			_tracer = new TraceBuffer { Header = cpu.TraceHeader };
+			_tracer = new TraceBuffer(cpu.TraceHeader);
 			ser.Register<ITraceable>(_tracer);
 			ser.Register<IStatable>(new StateSerializer(SyncState));
 			SetupMemoryDomains();

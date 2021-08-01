@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				DummyReadMemory = ReadBus
 			};
 
-			_tracer = new TraceBuffer { Header = CPU.TraceHeader };
+			_tracer = new TraceBuffer(CPU.TraceHeader);
 
 			var bios01 = comm.CoreFileProvider.GetFirmwareOrThrow(new("ChannelF", "ChannelF_sl131253"));
 			var bios02 = comm.CoreFileProvider.GetFirmwareOrThrow(new("ChannelF", "ChannelF_sl131254"));

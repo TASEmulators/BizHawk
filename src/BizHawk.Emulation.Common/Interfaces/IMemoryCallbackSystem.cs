@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
 using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Common
@@ -7,11 +9,10 @@ namespace BizHawk.Emulation.Common
 	public delegate void MemoryCallbackDelegate(uint address, uint value, uint flags);
 
 	/// <summary>
-	/// This is a property of <seealso cref="IDebuggable"/>, and defines the means by which a client
+	/// This is a property of <see cref="IDebuggable"/>, and defines the means by which a client
 	/// gets and sets memory callbacks in the core.  A memory callback should fire any time memory is
 	/// read/written/executed by the core, and depends on the type specified by the callback
 	/// </summary>
-	/// <seealso cref="IDebuggable"/>
 	public interface IMemoryCallbackSystem : IEnumerable<IMemoryCallback>
 	{
 		/*
@@ -89,7 +90,7 @@ namespace BizHawk.Emulation.Common
 
 		/// <summary>
 		/// A list of available "scopes" (memory domains, cpus, etc) that a the <see cref="IMemoryCallback.Scope"/> property of the <see cref="IMemoryCallback"/> can have
-		/// Passing a <see cref="IMemoryCallback"/> into the <see cref="Add(IMemoryCallback)"/> method that is not in this list will result in an <seealso cref="InvalidOperationException"/>
+		/// Passing a <see cref="IMemoryCallback"/> into the <see cref="Add(IMemoryCallback)"/> method that is not in this list will result in an <see cref="InvalidOperationException"/>
 		/// </summary>
 		string[] AvailableScopes { get; }
 	}

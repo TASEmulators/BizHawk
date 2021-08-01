@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		{
 			_board.Controller = controller;
 
-			if (_tracer.Enabled)
+			if (_tracer.IsEnabled())
 			{
 				_board.Cpu.TraceCallback = s => _tracer.Put(s);
 			}

@@ -292,7 +292,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			//do this threaded stuff early so it has plenty of time to run in background
-			Database.InitializeDatabase(Path.Combine(PathUtils.ExeDirectoryPath, "gamedb", "gamedb.txt"), warnForCollisions: false);
+			Database.InitializeDatabase(Path.Combine(PathUtils.ExeDirectoryPath, "gamedb", "gamedb.txt"), silent: true);
 			BootGodDb.Initialize(Path.Combine(PathUtils.ExeDirectoryPath, "gamedb"));
 
 			Config = config;
@@ -447,20 +447,19 @@ namespace BizHawk.Client.EmuHawk
 				{
 					null => Config.AcceptBackgroundInput // none of our forms are focused, check the background input config
 						? Config.AcceptBackgroundInputControllerOnly
-							? Input.AllowInput.OnlyController
-							: Input.AllowInput.All
-						: Input.AllowInput.None,
-					TAStudio when yieldAlt => Input.AllowInput.None,
-					FormBase { BlocksInputWhenFocused: false } => Input.AllowInput.All,
-					ControllerConfig => Input.AllowInput.All,
-					HotkeyConfig => Input.AllowInput.All,
-					_ => Input.AllowInput.None
+							? AllowInput.OnlyController
+							: AllowInput.All
+						: AllowInput.None,
+					TAStudio when yieldAlt => AllowInput.None,
+					FormBase { BlocksInputWhenFocused: false } => AllowInput.All,
+					ControllerConfig => AllowInput.All,
+					HotkeyConfig => AllowInput.All,
+					_ => AllowInput.None
 				}
 			);
 			InitControls();
 
-			InputManager.ActiveController = new Controller(NullController.Instance.Definition);
-			InputManager.AutoFireController = _autofireNullControls;
+			InputManager.ResetMainControllers(_autofireNullControls);
 			InputManager.AutofireStickyXorAdapter.SetOnOffPatternFromConfig(Config.AutofireOn, Config.AutofireOff);
 			try
 			{
@@ -702,11 +701,7 @@ namespace BizHawk.Client.EmuHawk
 
 				// handle events and dispatch as a hotkey action, or a hotkey button, or an input button
 				// ...but prepare haptics first, those get read in ProcessInput
-				var finalHostController = (ControllerInputCoalescer) InputManager.ControllerInputCoalescer;
-				// for now, vibrate the first gamepad when the Fast Forward hotkey is held, using the value from the previous (host) frame
-#if false // waiting on https://github.com/TASVideos/BizHawk/pull/2683
-				InputManager.ActiveController.SetHapticChannelStrength("Debug", InputManager.ClientControls.IsPressed("Fast Forward") ? int.MaxValue : 0);
-#endif
+				var finalHostController = InputManager.ControllerInputCoalescer;
 				InputManager.ActiveController.PrepareHapticsForHost(finalHostController);
 				ProcessInput(
 					_hotkeyCoalescer,
@@ -826,10 +821,10 @@ namespace BizHawk.Client.EmuHawk
 		/// <list type="bullet">
 		/// <item><description>Saving a no-framebuffer state that is stored in RAM</description></item>
 		/// <item><description>Emulating forth for some frames with updates disabled</description></item>
-		/// <item><list type="bullet">
+		/// <item><description><list type="bullet">
 		/// <item><description>Optionally hacking in-game memory
 		/// (like camera position, to show off-screen areas)</description></item>
-		/// </list></item>
+		/// </list></description></item>
 		/// <item><description>Updating the screen</description></item>
 		/// <item><description>Loading the no-framebuffer state from RAM</description></item>
 		/// </list>
@@ -987,7 +982,7 @@ namespace BizHawk.Client.EmuHawk
 			Input.Instance.Adapter.SetHaptics(finalHostController.GetHapticsSnapshot());
 
 			// loop through all available events
-			Input.InputEvent ie;
+			InputEvent ie;
 			while ((ie = Input.Instance.DequeueEvent()) != null)
 			{
 				// useful debugging:
@@ -1000,7 +995,7 @@ namespace BizHawk.Client.EmuHawk
 				if (triggers.Count == 0)
 				{
 					// Maybe it is a system alt-key which hasn't been overridden
-					if (ie.EventType == Input.InputEventType.Press)
+					if (ie.EventType is InputEventType.Press)
 					{
 						if (ie.LogicalButton.Alt && ie.LogicalButton.Button.Length == 1)
 						{
@@ -1031,7 +1026,7 @@ namespace BizHawk.Client.EmuHawk
 						finalHostController.Receive(ie);
 
 						handled = false;
-						if (ie.EventType == Input.InputEventType.Press)
+						if (ie.EventType is InputEventType.Press)
 						{
 							handled = triggers.Aggregate(handled, (current, trigger) => current | CheckHotkey(trigger));
 						}
@@ -1048,7 +1043,7 @@ namespace BizHawk.Client.EmuHawk
 						if (!activeControllerHasBinding(ie.LogicalButton.ToString()))
 						{
 							handled = false;
-							if (ie.EventType == Input.InputEventType.Press)
+							if (ie.EventType is InputEventType.Press)
 							{
 								handled = triggers.Aggregate(false, (current, trigger) => current | CheckHotkey(trigger));
 							}
@@ -1063,7 +1058,7 @@ namespace BizHawk.Client.EmuHawk
 						break;
 					case 2: // Hotkeys override Input
 						handled = false;
-						if (ie.EventType == Input.InputEventType.Press)
+						if (ie.EventType is InputEventType.Press)
 						{
 							handled = triggers.Aggregate(false, (current, trigger) => current | CheckHotkey(trigger));
 						}
@@ -1569,7 +1564,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			ofd.RestoreDirectory = true;
-			ofd.Filter = new FilesystemFilter("Libretro Cores", new[] { "dll" }).ToString();
+			ofd.Filter = new FilesystemFilter("Libretro Cores", new[] { OSTailoredCode.IsUnixHost ? "so" : "dll" }).ToString();
 
 			if (ofd.ShowDialog() == DialogResult.Cancel)
 			{
@@ -2115,7 +2110,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			InputManager.ClientControls = controls;
-			InputManager.ControllerInputCoalescer = new ControllerInputCoalescer(); // ctor initialises values for host haptics
+			InputManager.ControllerInputCoalescer = new(); // ctor initialises values for host haptics
 			_autofireNullControls = new AutofireController(
 				Emulator,
 				Config.AutofireOn,
@@ -3237,7 +3232,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// start AVI recording, unattended
 		/// </summary>
-		/// <param name="videoWriterName">match the short name of an <seealso cref="IVideoWriter"/></param>
+		/// <param name="videoWriterName">match the short name of an <see cref="IVideoWriter"/></param>
 		/// <param name="filename">filename to save to</param>
 		private void RecordAv(string videoWriterName, string filename)
 		{
@@ -3943,6 +3938,8 @@ namespace BizHawk.Client.EmuHawk
 				else if (Emulator.IsNull())
 				{
 					// This shows up if there's a problem
+					Tools.Restart(Config, Emulator, Game);
+					ExtToolManager.BuildToolStrip();
 					OnRomChanged();
 					return false;
 				}
@@ -3966,6 +3963,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OnRomChanged()
 		{
+			OSD.Fps = "0 fps";
 			SetWindowText();
 			HandlePlatformMenus();
 			_stateSlots.ClearRedoList();
@@ -4040,8 +4038,7 @@ namespace BizHawk.Client.EmuHawk
 			CheatList.SaveOnClose();
 			Emulator.Dispose();
 			Emulator = new NullEmulator();
-			InputManager.ActiveController = new Controller(NullController.Instance.Definition);
-			InputManager.AutoFireController = _autofireNullControls;
+			InputManager.ResetMainControllers(_autofireNullControls);
 			RewireSound();
 			RebootStatusBarIcon.Visible = false;
 			GameIsClosing = false;

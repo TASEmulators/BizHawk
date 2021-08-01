@@ -72,14 +72,6 @@ namespace BizHawk.Client.Common
 			["Left"] = 'L',
 			["Right"] = 'R',
 
-			["A"] = 'A',
-			["B"] = 'B',
-			["C"] = 'C',
-
-			["X"] = 'X',
-			["Y"] = 'Y',
-			["Z"] = 'Z',
-
 			["Select"] = 's',
 			["SELECT"] = 's',
 			["Start"] = 'S',
@@ -146,7 +138,7 @@ namespace BizHawk.Client.Common
 			["X2"] = '2',
 			["X3"] = '3',
 			["X4"] = '4',
-				
+
 			["Y1"] = '1',
 			["Y2"] = '2',
 			["Y3"] = '3',
@@ -464,6 +456,17 @@ namespace BizHawk.Client.Common
 				["Mode 2: Set B"] = 'B'
 			},
 			["PCE"] = new Dictionary<string, char>
+			{
+				["I"] = '1',
+				["II"] = '2',
+				["III"] = '3',
+				["IV"] = '4',
+				["V"] = '5',
+				["VI"] = '6',
+				["Mode: Set 2-button"] = 'm',
+				["Mode: Set 6-button"] = 'M'
+			},
+			["PCECD"] = new Dictionary<string, char>
 			{
 				["I"] = '1',
 				["II"] = '2',

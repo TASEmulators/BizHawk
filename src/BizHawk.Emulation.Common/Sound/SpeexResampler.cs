@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
 using BizHawk.BizInvoke;
 using BizHawk.Common;
 
@@ -80,7 +82,7 @@ namespace BizHawk.Emulation.Common
 		/// <param name="ratioden">denominator of sample rate change ratio (inrate / outrate)</param>
 		/// <param name="sratein">sampling rate in, rounded to nearest hz</param>
 		/// <param name="srateout">sampling rate out, rounded to nearest hz</param>
-		/// <param name="drainer">function which accepts output as produced. if null, act as an <seealso cref="ISoundProvider"/></param>
+		/// <param name="drainer">function which accepts output as produced. if null, act as an <see cref="ISoundProvider"/></param>
 		/// <param name="input">source to take input from when output is requested. if null, no auto-fetching</param>
 		/// <exception cref="ArgumentException"><paramref name="drainer"/> and <paramref name="input"/> are both non-null</exception>
 		/// <exception cref="Exception">unmanaged call failed</exception>

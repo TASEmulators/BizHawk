@@ -25,10 +25,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			var ser = new BasicServiceProvider(this);
 			ser.Register<IDisassemblable>(_disassembler);
 			ServiceProvider = ser;
-			Tracer = new TraceBuffer
-			{
-				Header = "LR35902: PC, opcode, registers (A, F, B, C, D, E, H, L, LY, SP, CY)"
-			};
+			const string TRACE_HEADER = "LR35902: PC, opcode, registers (A, F, B, C, D, E, H, L, LY, SP, CY)";
+			Tracer = new TraceBuffer(TRACE_HEADER);
 			ser.Register<ITraceable>(Tracer);
 			InitMemoryCallbacks();
 
@@ -334,7 +332,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				LibGambatte.gambatte_reset(GambatteState);
 			}
 
-			if (Tracer.Enabled)
+			if (Tracer.IsEnabled())
 			{
 				_tracecb = MakeTrace;
 			}

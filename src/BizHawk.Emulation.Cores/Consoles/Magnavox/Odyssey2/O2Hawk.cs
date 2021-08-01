@@ -79,7 +79,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			ser.Register<IVideoProvider>(this);
 			ServiceProvider = ser;
 
-			_tracer = new TraceBuffer { Header = cpu.TraceHeader };
+			_tracer = new TraceBuffer(cpu.TraceHeader);
 			ser.Register(_tracer);
 			ser.Register<IStatable>(new StateSerializer(SyncState));
 			SetupMemoryDomains();

@@ -41,7 +41,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 			ser.Register(_nesCore.ServiceProvider.GetService<IRegionable>());
 			ser.Register(_nesCore.ServiceProvider.GetService<ICodeDataLogger>());
 
-			_tracer = new TraceBuffer { Header = "6502: PC, machine code, mnemonic, operands, registers (A, X, Y, P, SP), flags (NVTBDIZCR), CPU Cycle, PPU Cycle" };
+			const string TRACE_HEADER = "6502: PC, machine code, mnemonic, operands, registers (A, X, Y, P, SP), flags (NVTBDIZCR), CPU Cycle, PPU Cycle";
+			_tracer = new TraceBuffer(TRACE_HEADER);
 			ser.Register(_tracer);
 
 			

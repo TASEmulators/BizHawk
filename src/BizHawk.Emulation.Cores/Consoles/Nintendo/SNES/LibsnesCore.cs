@@ -36,10 +36,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
 
-			_tracer = new TraceBuffer
-			{
-				Header = "65816: PC, mnemonic, operands, registers (A, X, Y, S, D, DB, flags (NVMXDIZC), V, H)"
-			};
+			const string TRACE_HEADER = "65816: PC, mnemonic, operands, registers (A, X, Y, S, D, DB, flags (NVMXDIZC), V, H)";
+			_tracer = new TraceBuffer(TRACE_HEADER);
 
 			ser.Register<IDisassemblable>(new W65816_DisassemblerService());
 
@@ -352,34 +350,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			if (which == (uint)LibsnesApi.eTRACE.CPU)
 			{
 				var split = msg.Split(new[] { splitStr }, 2, StringSplitOptions.None);
-
-				_tracer.Put(new TraceInfo
-				{
-					Disassembly = split[0].PadRight(34),
-					RegisterInfo = splitStr + split[1]
-				});
+				_tracer.Put(new(disassembly: split[0].PadRight(34), registerInfo: splitStr + split[1]));
 			}
 			else if (which == (uint)LibsnesApi.eTRACE.SMP)
 			{
 				int idx = msg.IndexOf("YA:");
-				string dis = msg.Substring(0,idx).TrimEnd();
-				string regs = msg.Substring(idx);
-				_tracer.Put(new TraceInfo
-				{
-					Disassembly = dis,
-					RegisterInfo = regs
-				});
+				_tracer.Put(new(disassembly: msg.Substring(0, idx).TrimEnd(), registerInfo: msg.Substring(idx)));
 			}
 			else if (which == (uint)LibsnesApi.eTRACE.GB)
 			{
 				int idx = msg.IndexOf("AF:");
-				string dis = msg.Substring(0,idx).TrimEnd();
-				string regs = msg.Substring(idx);
-				_tracer.Put(new TraceInfo
-				{
-					Disassembly = dis,
-					RegisterInfo = regs
-				});
+				_tracer.Put(new(disassembly: msg.Substring(0, idx).TrimEnd(), registerInfo: msg.Substring(idx)));
 			}
 		}
 

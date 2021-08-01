@@ -53,7 +53,7 @@ namespace BizHawk.Client.Common
 				var ms = new MemoryStream();
 				if (StartsFromSaveRam && emulator.HasSaveRam())
 				{
-					emulator.AsSaveRam().StoreSaveRam(SaveRam);
+					emulator.AsSaveRam().StoreSaveRam(SaveRam!);
 				}
 				emulator.AsStatable().SaveStateBinary(new BinaryWriter(ms));
 				TasStateManager.Engage(ms.ToArray());
