@@ -304,25 +304,28 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				OverscanFrameBuffer = new int[OverscanFrameHeight * OverscanFrameWidth];
 			}
 
+			// TODO: overscan color can change, this should be calculated per scanline, not done in bulk at the end
+			int overscan_color = Palette[BackdropColor];
+
 			// Top overscan
 			for (int y=0; y<overscanTop; y++)
 				for (int x = 0; x < OverscanFrameWidth; x++)
-					OverscanFrameBuffer[(y * OverscanFrameWidth) + x] = BackgroundColor;
+					OverscanFrameBuffer[(y * OverscanFrameWidth) + x] = overscan_color;
 			
 			// Bottom overscan
 			for (int y = overscanTop + 192; y < OverscanFrameHeight; y++)
 				for (int x = 0; x < OverscanFrameWidth; x++)
-					OverscanFrameBuffer[(y * OverscanFrameWidth) + x] = BackgroundColor;
+					OverscanFrameBuffer[(y * OverscanFrameWidth) + x] = overscan_color;
 
 			// Left overscan
 			for (int y = overscanTop; y < overscanTop + 192; y++)
 				for (int x = 0; x < overscanLeft; x++)
-					OverscanFrameBuffer[(y * OverscanFrameWidth) + x] = BackgroundColor;
+					OverscanFrameBuffer[(y * OverscanFrameWidth) + x] = overscan_color;
 
 			// Right overscan
 			for (int y = overscanTop; y < overscanTop + 192; y++)
 				for (int x = overscanLeft + 256; x < OverscanFrameWidth; x++)
-					OverscanFrameBuffer[(y * OverscanFrameWidth) + x] = BackgroundColor;
+					OverscanFrameBuffer[(y * OverscanFrameWidth) + x] = overscan_color;
 
 			// Active display area
 			for (int y = 0; y < 192; y++)

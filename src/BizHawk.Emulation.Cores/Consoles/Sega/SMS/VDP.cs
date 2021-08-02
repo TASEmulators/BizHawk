@@ -473,7 +473,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			}
 		}
 
-		public int BackgroundColor => Palette[BackdropColor];
+		public int BackgroundColor => unchecked((int)0xFF000000);
 
 		public int VsyncNumerator => DisplayType == DisplayType.NTSC ? 60 : 50;
 
