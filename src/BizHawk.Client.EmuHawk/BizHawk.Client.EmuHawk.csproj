@@ -40,6 +40,7 @@
 		<EmbeddedResource Remove="images/sms-icon.png" />
 		<EmbeddedResource Remove="images/tastudio/ts_h_piano_*.png" />
 		<EmbeddedResource Remove="images/tastudio/ts_v_piano_*.png" />
+		<None Include="$(ProjectDir)../../Assets/**/*.*" CopyToOutputDirectory="PreserveNewest" />
 		<None Remove="packages.config" />
 		<None Remove="Properties/Resources.resources" />
 	</ItemGroup>

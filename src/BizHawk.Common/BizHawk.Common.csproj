@@ -13,7 +13,6 @@
 		<PackageReference Include="DotNetAnalyzers.DocumentationAnalyzers" Version="1.0.0-beta.59" />
 		<PackageReference Include="Menees.Analyzers" Version="2.0.4" Condition=" '$(MachineRunAnalyzersDuringBuild)' != '' " />
 		<PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.333" Condition=" '$(MachineRunAnalyzersDuringBuild)' != '' " />
-		<None Include="$(ProjectDir)../../Assets/**/*.*" CopyToOutputDirectory="PreserveNewest" />
 	</ItemGroup>
 	<ItemGroup>
 		<!-- target in Version project generates VersionInfo.gen.cs; note that the Version project MUST BE FIRST in solution file -->
