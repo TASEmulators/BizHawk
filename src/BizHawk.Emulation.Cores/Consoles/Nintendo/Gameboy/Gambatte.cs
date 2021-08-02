@@ -48,7 +48,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			{
 				_syncSettings = syncSettings ?? new GambatteSyncSettings();
 
-				LibGambatte.LoadFlags flags = 0;
+				LibGambatte.LoadFlags flags = LibGambatte.LoadFlags.READONLY_SAV;
 
 				switch (_syncSettings.ConsoleMode)
 				{
@@ -99,9 +99,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 							bios[0xFB] ^= 0x74;
 						}
 					}
-					if (LibGambatte.gambatte_loadbios(GambatteState, bios, (uint)bios.Length) != 0)
+					if (LibGambatte.gambatte_loadbiosbuf(GambatteState, bios, (uint)bios.Length) != 0)
 					{
-						throw new InvalidOperationException($"{nameof(LibGambatte.gambatte_loadbios)}() returned non-zero (bios error)");
+						throw new InvalidOperationException($"{nameof(LibGambatte.gambatte_loadbiosbuf)}() returned non-zero (bios error)");
 					}
 				}
 				else
@@ -113,9 +113,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 					flags |= LibGambatte.LoadFlags.NO_BIOS;
 				}
 
-				if (LibGambatte.gambatte_load(GambatteState, file, (uint)file.Length, flags) != 0)
+				if (LibGambatte.gambatte_loadbuf(GambatteState, file, (uint)file.Length, flags) != 0)
 				{
-					throw new InvalidOperationException($"{nameof(LibGambatte.gambatte_load)}() returned non-zero (is this not a gb or gbc rom?)");
+					throw new InvalidOperationException($"{nameof(LibGambatte.gambatte_loadbuf)}() returned non-zero (is this not a gb or gbc rom?)");
 				}
 
 				// set real default colors (before anyone mucks with them at all)
