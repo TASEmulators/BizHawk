@@ -39,10 +39,20 @@ namespace BizHawk.Client.Common
 
 		public IEnumerable<T> EnumerateValues<T>(LuaTable table) => table.Values.Cast<T>();
 
-		public LuaTable ListToTable<T>(IList<T> list, long indexFrom = 0)
+		public LuaTable ListToTable<T>(IList<T> list, int indexFrom = 0)
 		{
 			var table = _lua.NewTable();
 			for (int i = 0, l = list.Count; i != l; i++) table[indexFrom + i] = list[i];
+			return table;
+		}
+
+		public LuaTable MemoryBlockToTable(IReadOnlyList<byte> bytes, long startAddr)
+		{
+			var length = bytes.Count;
+			var table = CreateTable();
+			var iArray = 0;
+			var iDict = startAddr;
+			while (iArray < length) table[(double) iDict++] = bytes[iArray++];
 			return table;
 		}
 

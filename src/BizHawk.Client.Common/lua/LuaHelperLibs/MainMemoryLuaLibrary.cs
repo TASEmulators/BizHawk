@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Linq;
 
 using BizHawk.Emulation.Common;
 
@@ -43,24 +44,26 @@ namespace BizHawk.Client.Common
 		[LuaMethod("writebyte", "Writes the given value to the given address as an unsigned byte")]
 		public void WriteByte(long addr, uint value) => APIs.Memory.WriteByte(addr, value, MainMemName);
 
-		[LuaMethodExample("local nlmairea = mainmemory.readbyterange( 0x100, 64 );")]
+		[LuaDeprecatedMethod]
 		[LuaMethod("readbyterange", "Reads the address range that starts from address, and is length long. Returns a zero-indexed table containing the read values (an array of bytes.)")]
 		public LuaTable ReadByteRange(long addr, int length) => _th.ListToTable(APIs.Memory.ReadByteRange(addr, length, MainMemName));
 
-		[LuaMethodExample("local nlmairea = mainmemory.readbyterangetable( 0x100, 64, 0x100 );")]
-		[LuaMethod("readbyterangetable", "Reads the address range that starts from address, and is length long. Returns the result into a table of key value pairs (where the index is the first key.)")]
-		public LuaTable ReadByteRangeTable(long addr, int length, long index) => _th.ListToTable(APIs.Memory.ReadByteRange(addr, length), index);
+		[LuaMethodExample("local bytes = mainmemory.read_bytes_as_array(0x100, 30);")]
+		[LuaMethod("read_bytes_as_array", "Reads length bytes starting at addr into an array-like table (1-indexed).")]
+		public LuaTable ReadBytesAsArray(long addr, int length)
+			=> _th.ListToTable(APIs.Memory.ReadByteRange(addr, length, MainMemName), indexFrom: 1);
 
-		/// <remarks>TODO C# version requires a contiguous address range</remarks>
-		[LuaMethodExample("")]
+		[LuaMethodExample("local bytes = mainmemory.read_bytes_as_dict(0x100, 30);")]
+		[LuaMethod("read_bytes_as_dict", "Reads length bytes starting at addr into a dict-like table (where the keys are the addresses, relative to the start of the main memory).")]
+		public LuaTable ReadBytesAsDict(long addr, int length)
+			=> _th.MemoryBlockToTable(APIs.Memory.ReadByteRange(addr, length, MainMemName), addr);
+
+		[LuaDeprecatedMethod]
 		[LuaMethod("writebyterange", "Writes the given values to the given addresses as unsigned bytes")]
 		public void WriteByteRange(LuaTable memoryblock)
 		{
 #if true
-			foreach (var (addr, v) in _th.EnumerateEntries<double, double>(memoryblock))
-			{
-				APIs.Memory.WriteByte(LuaInt(addr), (uint) v, MainMemName);
-			}
+			WriteBytesAsDict(memoryblock);
 #else
 			var d = Domain;
 			if (d.CanPoke())
@@ -83,6 +86,21 @@ namespace BizHawk.Client.Common
 				Log($"Error: the domain {d.Name} is not writable");
 			}
 #endif
+		}
+
+		[LuaMethodExample("mainmemory.write_bytes_as_array(0x100, { 0xAB, 0x12, 0xCD, 0x34 });")]
+		[LuaMethod("write_bytes_as_array", "Writes sequential bytes starting at addr.")]
+		public void WriteBytesAsArray(long addr, LuaTable bytes)
+			=> APIs.Memory.WriteByteRange(addr, _th.EnumerateValues<double>(bytes).Select(d => (byte) d).ToList(), MainMemName);
+
+		[LuaMethodExample("mainmemory.write_bytes_as_dict({ [0x100] = 0xAB, [0x104] = 0xCD, [0x106] = 0x12, [0x107] = 0x34, [0x108] = 0xEF });")]
+		[LuaMethod("write_bytes_as_dict", "Writes bytes at arbitrary addresses (the keys of the given table are the addresses, relative to the start of the main memory).")]
+		public void WriteBytesAsDict(LuaTable addrMap)
+		{
+			foreach (var (addr, v) in _th.EnumerateEntries<double, double>(addrMap))
+			{
+				APIs.Memory.WriteByte(LuaInt(addr), (uint) v, MainMemName);
+			}
 		}
 
 		[LuaMethodExample("local simairea = mainmemory.readfloat(0x100, false);")]
