@@ -151,7 +151,9 @@ namespace BizHawk.Client.EmuHawk
 					Console.WriteLine($"requested ext. tool dll {requestedExtToolDll} could not be loaded");
 			}
 
+#if DEBUG
 			AddDebugMenu();
+#endif
 		}
 
 		static MainForm()
