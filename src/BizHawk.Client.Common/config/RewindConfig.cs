@@ -23,11 +23,12 @@
 		/// Specifies whether TargetFrameLength or TargetRewindInterval is used.
 		/// </summary>
 		public bool UseFixedRewindInterval { get; }
-		
+
 		/// <summary>
 		/// Desired frame length (number of emulated frames you can go back before running out of buffer)
 		/// </summary>
 		int TargetFrameLength { get; }
+
 		/// <summary>
 		/// Desired rewind interval (number of emulated frames you can go back per rewind)
 		/// </summary>

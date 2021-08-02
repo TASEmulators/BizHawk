@@ -176,6 +176,5 @@ namespace BizHawk.Client.EmuHawk
 		{
 			nudCompression.Value = SaveStateConfig.DefaultCompressionLevelNormal;
 		}
-
 	}
 }
