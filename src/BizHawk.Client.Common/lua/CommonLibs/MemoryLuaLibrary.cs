@@ -47,8 +47,12 @@ namespace BizHawk.Client.Common
 		public void WriteByte(long addr, uint value, string domain = null) => APIs.Memory.WriteByte(addr, value, domain);
 
 		[LuaMethodExample("local nlmemrea = memory.readbyterange( 0x100, 30, mainmemory.getname( ) );")]
-		[LuaMethod("readbyterange", "Reads the address range that starts from address, and is length long. Returns the result into a table of key value pairs (where the address is the key).")]
+		[LuaMethod("readbyterange", "Reads the address range that starts from address, and is length long. Returns a zero-indexed table containing the read values (an array of bytes.)")]
 		public LuaTable ReadByteRange(long addr, int length, string domain = null) => _th.ListToTable(APIs.Memory.ReadByteRange(addr, length, domain));
+
+		[LuaMethodExample("local nlmemrea = memory.readbyterangetable( 0x100, 30, mainmemory.getname( ) );")]
+		[LuaMethod("readbyterangetable", "Reads the address range that starts from address, and is length long. Returns the result into a table of key value pairs (where the index is the first key.)")]
+		public LuaTable ReadByteRangeTable(long addr, int length, long index, string domain = null) => _th.ListToTable(APIs.Memory.ReadByteRange(addr, length, domain), index);
 
 		/// <remarks>TODO C# version requires a contiguous address range</remarks>
 		[LuaMethodExample("")]
