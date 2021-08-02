@@ -50,7 +50,7 @@ namespace BizHawk.Client.Common
 		[LuaMethod("readbyterange", "Reads the address range that starts from address, and is length long. Returns a zero-indexed table containing the read values (an array of bytes.)")]
 		public LuaTable ReadByteRange(long addr, int length, string domain = null) => _th.ListToTable(APIs.Memory.ReadByteRange(addr, length, domain));
 
-		[LuaMethodExample("local nlmemrea = memory.readbyterangetable( 0x100, 30, mainmemory.getname( ) );")]
+		[LuaMethodExample("local nlmemrea = memory.readbyterangetable( 0x100, 30, 0x100, mainmemory.getname( ) );")]
 		[LuaMethod("readbyterangetable", "Reads the address range that starts from address, and is length long. Returns the result into a table of key value pairs (where the index is the first key.)")]
 		public LuaTable ReadByteRangeTable(long addr, int length, long index, string domain = null) => _th.ListToTable(APIs.Memory.ReadByteRange(addr, length, domain), index);
 
