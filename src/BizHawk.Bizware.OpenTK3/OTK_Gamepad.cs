@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
+using BizHawk.Common;
+
 using OpenTK.Input;
 
 using OpenTKGamePad = OpenTK.Input.GamePad;
@@ -41,38 +43,41 @@ namespace BizHawk.Bizware.OpenTK3
 
 		public static void UpdateAll()
 		{
+			static void DropAt(int knownAsIndex, IList<OTK_GamePad> devices)
+			{
+				var known = devices[knownAsIndex];
+				Console.WriteLine($"Dropped gamepad #{knownAsIndex}, was port#{known._deviceIndex} ({known._name}) via OpenTK");
+				devices.RemoveAt(knownAsIndex);
+			}
 			if (!initialized) return;
 			lock (_syncObj)
 			{
 				for (var tryIndex = 0; tryIndex < MAX_GAMEPADS; tryIndex++)
 				{
-					var isConnectedAtIndex = OpenTKGamePad.GetState(tryIndex).IsConnected || Joystick.GetState(tryIndex).IsConnected;
 					var knownAsIndex = Devices.FindIndex(dev => dev._deviceIndex == tryIndex);
-					if (knownAsIndex != -1)
+					try
 					{
-						if (isConnectedAtIndex)
+						var isConnectedAtIndex = OpenTKGamePad.GetState(tryIndex).IsConnected || Joystick.GetState(tryIndex).IsConnected;
+						if (knownAsIndex != -1)
 						{
-							Devices[knownAsIndex].Update();
+							if (isConnectedAtIndex) Devices[knownAsIndex].Update();
+							else DropAt(knownAsIndex, Devices);
 						}
 						else
 						{
-							var known = Devices[knownAsIndex];
-							Console.WriteLine($"Dropped gamepad #{knownAsIndex}, was port#{known._deviceIndex} ({known._name}) via OpenTK");
-							Devices.RemoveAt(knownAsIndex);
+							if (isConnectedAtIndex)
+							{
+								var newConn = new OTK_GamePad(tryIndex, Devices.Count);
+								Devices.Insert(tryIndex, newConn); // try and keep our indices in line with the OpenTK ones
+								Console.WriteLine($"Connected new gamepad #{tryIndex}, port#{newConn._deviceIndex} ({newConn._name}) via OpenTK");
+							}
+							// else was and remains disconnected, move along
 						}
 					}
-					else
+					catch (Exception e)
 					{
-						if (isConnectedAtIndex)
-						{
-							var newConn = new OTK_GamePad(tryIndex, Devices.Count);
-							Devices.Insert(tryIndex, newConn); // try and keep our indices in line with the OpenTK ones
-							Console.WriteLine($"Connected new gamepad #{tryIndex}, port#{newConn._deviceIndex} ({newConn._name}) via OpenTK");
-						}
-						else
-						{
-							// was and is disconnected, move along
-						}
+						Util.DebugWriteLine($"caught {e.GetType().FullName} while enumerating OpenTK gamepads");
+						if (knownAsIndex != -1) DropAt(knownAsIndex, Devices);
 					}
 				}
 			}
