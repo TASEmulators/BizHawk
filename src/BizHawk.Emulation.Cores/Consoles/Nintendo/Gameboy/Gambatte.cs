@@ -311,7 +311,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		}
 
 		// needs to match the reverse order of Libgambatte's button enum
-		static readonly IReadOnlyList<String> BUTTON_ORDER_IN_BITMASK = new string[] { "Down", "Up", "Left", "Right", "Start", "Select", "B", "A" };
+		private static readonly IReadOnlyList<string> BUTTON_ORDER_IN_BITMASK = new[] { "Down", "Up", "Left", "Right", "Start", "Select", "B", "A" };
 
 		internal void FrameAdvancePrep(IController controller)
 		{
