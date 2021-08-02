@@ -6,15 +6,15 @@ namespace BizHawk.Client.Common
 	{
 		private static readonly WebSocketServer _wsServer = new WebSocketServer();
 
-		private readonly (HttpCommunication HTTP, MemoryMappedFiles MMF, SocketServer Sockets) _networkingHelpers;
+		private readonly (HttpCommunication? HTTP, MemoryMappedFiles MMF, SocketServer? Sockets) _networkingHelpers;
 
 		public HttpCommunication? HTTP => _networkingHelpers.HTTP;
 
-		public MemoryMappedFiles? MMF => _networkingHelpers.MMF;
+		public MemoryMappedFiles MMF => _networkingHelpers.MMF;
 
 		public SocketServer? Sockets => _networkingHelpers.Sockets;
 
-		public WebSocketServer? WebSockets => _wsServer;
+		public WebSocketServer WebSockets => _wsServer;
 
 		public CommApi(IMainFormForApi mainForm) => _networkingHelpers = mainForm.NetworkingHelpers;
 
