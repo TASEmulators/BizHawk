@@ -126,6 +126,6 @@ namespace BizHawk.Client.Common
 		[LuaMethod("split", "Splits str into a Lua-style array using the given separator (consecutive separators in str will NOT create empty entries in the array). If the separator is not a string exactly one char long, ',' will be used.")]
 		public LuaTable Split(string str, string separator) => string.IsNullOrEmpty(str)
 			? _th.CreateTable()
-			: _th.ListToTable(str.Split(new[] { separator?.Length == 1 ? separator[0] : ',' }, StringSplitOptions.RemoveEmptyEntries), indexFrom: 1);
+			: _th.ListToTable(str.Split(new[] { separator?.Length == 1 ? separator[0] : ',' }, StringSplitOptions.RemoveEmptyEntries));
 	}
 }

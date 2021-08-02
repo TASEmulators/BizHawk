@@ -251,7 +251,7 @@ namespace BizHawk.Client.Common
 		public LuaTable AvailableScopes()
 		{
 			return DebuggableCore?.MemoryCallbacksAvailable() == true
-				? _th.ListToTable(DebuggableCore.MemoryCallbacks.AvailableScopes)
+				? _th.ListToTable(DebuggableCore.MemoryCallbacks.AvailableScopes, indexFrom: 0)
 				: _th.CreateTable();
 		}
 

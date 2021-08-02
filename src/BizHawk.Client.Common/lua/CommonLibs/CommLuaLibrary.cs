@@ -175,9 +175,7 @@ namespace BizHawk.Client.Common
 		}
 		[LuaMethod("mmfReadBytes", "Reads bytes from a memory mapped file")]
 		public LuaTable MmfReadBytes(string mmf_filename, int expectedSize)
-		{
-			return _th.ListToTable(APIs.Comm.MMF.ReadBytesFromFile(mmf_filename, expectedSize));
-		}
+			=> _th.ListToTable(APIs.Comm.MMF.ReadBytesFromFile(mmf_filename, expectedSize), indexFrom: 0);
 
 		// All HTTP related methods
 		[LuaMethod("httpTest", "tests HTTP connections")]

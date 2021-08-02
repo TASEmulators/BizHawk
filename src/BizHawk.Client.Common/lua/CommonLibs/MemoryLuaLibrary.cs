@@ -17,7 +17,8 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local nlmemget = memory.getmemorydomainlist();")]
 		[LuaMethod("getmemorydomainlist", "Returns a string of the memory domains for the loaded platform core. List will be a single string delimited by line feeds")]
-		public LuaTable GetMemoryDomainList() => _th.ListToTable(APIs.Memory.GetMemoryDomainList());
+		public LuaTable GetMemoryDomainList()
+			=> _th.ListToTable(APIs.Memory.GetMemoryDomainList(), indexFrom: 0);
 
 		[LuaMethodExample("local uimemget = memory.getmemorydomainsize( mainmemory.getname( ) );")]
 		[LuaMethod("getmemorydomainsize", "Returns the number of bytes of the specified memory domain. If no domain is specified, or the specified domain doesn't exist, returns the current domain size")]
@@ -49,12 +50,13 @@ namespace BizHawk.Client.Common
 
 		[LuaDeprecatedMethod]
 		[LuaMethod("readbyterange", "Reads the address range that starts from address, and is length long. Returns a zero-indexed table containing the read values (an array of bytes.)")]
-		public LuaTable ReadByteRange(long addr, int length, string domain = null) => _th.ListToTable(APIs.Memory.ReadByteRange(addr, length, domain));
+		public LuaTable ReadByteRange(long addr, int length, string domain = null)
+			=> _th.ListToTable(APIs.Memory.ReadByteRange(addr, length, domain), indexFrom: 0);
 
 		[LuaMethodExample("local bytes = memory.read_bytes_as_array(0x100, 30, \"WRAM\");")]
 		[LuaMethod("read_bytes_as_array", "Reads length bytes starting at addr into an array-like table (1-indexed).")]
 		public LuaTable ReadBytesAsArray(long addr, int length, string domain = null)
-			=> _th.ListToTable(APIs.Memory.ReadByteRange(addr, length, domain), indexFrom: 1);
+			=> _th.ListToTable(APIs.Memory.ReadByteRange(addr, length, domain));
 
 		[LuaMethodExample("local bytes = memory.read_bytes_as_dict(0x100, 30, \"WRAM\");")]
 		[LuaMethod("read_bytes_as_dict", "Reads length bytes starting at addr into a dict-like table (where the keys are the addresses, relative to the start of the domain).")]

@@ -165,7 +165,9 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodExample("local nltasget = tastudio.getselection( );")]
 		[LuaMethod("getselection", "gets the currently selected frames")]
-		public LuaTable GetSelection() => Engaged() ? _th.EnumerateToLuaTable(Tastudio.GetSelection()) : _th.CreateTable();
+		public LuaTable GetSelection() => Engaged()
+			? _th.EnumerateToLuaTable(Tastudio.GetSelection(), indexFrom: 0)
+			: _th.CreateTable();
 
 		[LuaMethodExample("")]
 		[LuaMethod("submitinputchange", "")]
@@ -376,12 +378,14 @@ namespace BizHawk.Client.EmuHawk
 		public LuaTable GetBranches()
 		{
 			if (!Engaged()) return _th.CreateTable();
-			return _th.EnumerateToLuaTable(Tastudio.CurrentTasMovie.Branches.Select(b => new
-			{
-				Id = b.Uuid.ToString(),
-				b.Frame,
-				Text = b.UserText
-			}));
+			return _th.EnumerateToLuaTable(
+				Tastudio.CurrentTasMovie.Branches.Select(b => new
+				{
+					Id = b.Uuid.ToString(),
+					b.Frame,
+					Text = b.UserText
+				}),
+				indexFrom: 0);
 		}
 
 		[LuaMethodExample("local nltasget = tastudio.getbranchinput( \"97021544-2454-4483-824f-47f75e7fcb6a\", 500 );")]
