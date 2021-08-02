@@ -26,8 +26,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			GBA_FLAG = 2,
 			/// <summary>Use heuristics to detect and support some multicart MBCs disguised as MBC1.</summary>
 			MULTICART_COMPAT = 4,
+			/// <summary>Treat the ROM as having SGB support regardless of what its header advertises.</summary>
+			SGB_MODE = 8,
+			/// <summary>Prevent implicit saveSavedata calls for the ROM.</summary>
+			READONLY_SAV = 16,
 			/// <summary>Use heuristics to boot without a BIOS.</summary>
-			NO_BIOS = 8
+			NO_BIOS = 32
 		}
 
 		public enum CDLog_AddrType : int
@@ -52,7 +56,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// <param name="flags">ORed combination of LoadFlags.</param>
 		/// <returns>0 on success, negative value on failure.</returns>
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern int gambatte_load(IntPtr core, byte[] romdata, uint length, LoadFlags flags);
+		public static extern int gambatte_loadbuf(IntPtr core, byte[] romdata, uint length, LoadFlags flags);
 
 		/// <summary>
 		/// Load GB(C) BIOS image.
@@ -62,7 +66,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// <param name="length">length of romdata in bytes</param>
 		/// <returns>0 on success, negative value on failure.</returns>
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern int gambatte_loadbios(IntPtr core, byte[] biosdata, uint length);
+		public static extern int gambatte_loadbiosbuf(IntPtr core, byte[] biosdata, uint length);
 
 		/// <summary>
 		/// Emulates until at least 'samples' stereo sound samples are produced in the supplied buffer,
@@ -83,9 +87,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// <param name="samples">in: number of stereo samples to produce, out: actual number of samples produced</param>
 		/// <returns>sample number at which the video frame was produced. -1 means no frame was produced.</returns>
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern int gambatte_runfor(IntPtr core, short[] soundbuf, ref uint samples);
+		public static extern int gambatte_altrunfor(IntPtr core, short[] soundbuf, ref uint samples);
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern unsafe int gambatte_runfor(IntPtr core, short* soundbuf, ref uint samples);
+		public static extern unsafe int gambatte_altrunfor(IntPtr core, short* soundbuf, ref uint samples);
 
 		/// <summary>
 		/// blit from internal framebuffer to provided framebuffer

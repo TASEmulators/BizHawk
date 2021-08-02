@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 					// runfor() always ends after creating a video frame, so sync-up is guaranteed
 					// when the display has been off, some frames can be markedly shorter than expected
 					samplesEmitted = TICKSINFRAME;
-					if (LibGambatte.gambatte_runfor(GambatteState, _soundbuff, ref samplesEmitted) > 0)
+					if (LibGambatte.gambatte_altrunfor(GambatteState, _soundbuff, ref samplesEmitted) > 0)
 					{
 						LibGambatte.gambatte_blitto(GambatteState, VideoBuffer, 160);
 					}
@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 						// target number of samples to emit: length of 1 frame minus whatever overflow
 						samplesEmitted = TICKSINFRAME - frameOverflow;
 						Debug.Assert(samplesEmitted * 2 <= _soundbuff.Length);
-						if (LibGambatte.gambatte_runfor(GambatteState, _soundbuff, ref samplesEmitted) > 0)
+						if (LibGambatte.gambatte_altrunfor(GambatteState, _soundbuff, ref samplesEmitted) > 0)
 						{
 							LibGambatte.gambatte_blitto(GambatteState, VideoBuffer, 160);
 						}
@@ -73,7 +73,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 						}
 						samplesEmitted = inputFrameLengthInt - frameOverflow;
 						Debug.Assert(samplesEmitted * 2 <= _soundbuff.Length);
-						if (LibGambatte.gambatte_runfor(GambatteState, _soundbuff, ref samplesEmitted) > 0)
+						if (LibGambatte.gambatte_altrunfor(GambatteState, _soundbuff, ref samplesEmitted) > 0)
 						{
 							LibGambatte.gambatte_blitto(GambatteState, VideoBuffer, 160);
 						}

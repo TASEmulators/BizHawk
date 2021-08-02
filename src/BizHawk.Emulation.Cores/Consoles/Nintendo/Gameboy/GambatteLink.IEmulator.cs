@@ -69,7 +69,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 							while (nL < target)
 							{
 								uint nsamp = (uint)(target - nL);
-								if (LibGambatte.gambatte_runfor(L.GambatteState, leftsbuff + (nL * 2), ref nsamp) > 0)
+								if (LibGambatte.gambatte_altrunfor(L.GambatteState, leftsbuff + (nL * 2), ref nsamp) > 0)
 								{
 									LibGambatte.gambatte_blitto(L.GambatteState, leftvbuff, Pitch);
 								}
@@ -80,7 +80,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 							while (nR < target)
 							{
 								uint nsamp = (uint)(target - nR);
-								if (LibGambatte.gambatte_runfor(R.GambatteState, rightsbuff + (nR * 2), ref nsamp) > 0)
+								if (LibGambatte.gambatte_altrunfor(R.GambatteState, rightsbuff + (nR * 2), ref nsamp) > 0)
 								{
 									LibGambatte.gambatte_blitto(R.GambatteState, rightvbuff, Pitch);
 								}
