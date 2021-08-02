@@ -49,7 +49,7 @@
 		public bool UseDelta { get; set; }
 		public bool Enabled { get; set; } = true;
 		public long BufferSize { get; set; } = 512; // in mb
-		public bool UseFixedRewindInterval { get; set; } = true;
+		public bool UseFixedRewindInterval { get; set; } = false;
 		public int TargetFrameLength { get; set; } = 600;
 		public int TargetRewindInterval { get; set; } = 5;
 		public IRewindSettings.BackingStoreType BackingStore { get; set; } = IRewindSettings.BackingStoreType.Memory;
