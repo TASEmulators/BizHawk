@@ -19,12 +19,12 @@
 #include <string>
 
 #define bool unsigned char
-#include "libretro.h"
+#include "../libretro.h"
 #undef bool
 
 extern "C" uint64_t cpu_features_get();
 
-#include "libco/libco.h"
+#include "../libco/libco.h"
 
 //can't use retroarch's dynamic.h, it's too full of weird stuff. don't need it anyway
 
@@ -370,19 +370,19 @@ u8bool retro_environment(unsigned cmd, void *data)
 			{
 				comm.env.variable_keys[i] = var[i].key;
 				comm.env.variable_comments[i] = var[i].value;
-				
+
 				//analyze to find default and save it
 				std::string comment = var[i].value;
 				auto ofs = comment.find_first_of(';')+2;
 				auto pipe = comment.find('|',ofs);
 				if(pipe == std::string::npos)
 					comm.variables[i] = comment.substr(ofs);
-				else 
+				else
 					comm.variables[i] = comment.substr(ofs,pipe-ofs);
 			}
 			return true;
 		}
-		
+
 		case RETRO_ENVIRONMENT_GET_VARIABLE_UPDATE:
 			*(u8bool*)data = comm.variables_dirty;
 			break;
@@ -405,7 +405,7 @@ u8bool retro_environment(unsigned cmd, void *data)
 			//TODO medium priority - other input methods
 			*(u64*)data = (1<<RETRO_DEVICE_JOYPAD);
 			return true;
-		
+
 		case RETRO_ENVIRONMENT_GET_LOG_INTERFACE:
 			((retro_log_callback*)data)->log = retro_log_printf;
 			return true;
@@ -428,7 +428,7 @@ u8bool retro_environment(unsigned cmd, void *data)
 		case RETRO_ENVIRONMENT_SET_PROC_ADDRESS_CALLBACK:
 			comm.env.core_get_proc_address = ((retro_get_proc_address_interface*)data)->get_proc_address;
 			return true;
-		
+
 		case RETRO_ENVIRONMENT_SET_SUBSYSTEM_INFO:
 			//needs retro_load_game_special to be useful; not supported yet
 			return false;
@@ -450,7 +450,7 @@ u8bool retro_environment(unsigned cmd, void *data)
 			*((unsigned *)data) = RETRO_LANGUAGE_ENGLISH;
 				return true;
 	}
-	
+
 	return false;
 }
 
@@ -556,7 +556,7 @@ template<int ROT> void Blit888(int* srcbuf, s32* dstbuf, int width, int height, 
 void retro_video_refresh(const void *data, unsigned width, unsigned height, size_t pitch)
 {
 	//handle a "dup frame" -- same as previous frame. so there isn't anything to be done here
-	if (!data) 
+	if (!data)
 		return;
 
 	comm.env.fb_width = (s32)width;
@@ -610,7 +610,7 @@ void retro_video_refresh(const void *data, unsigned width, unsigned height, size
 		case 270: Blit888<270>((int*)data, comm.env.fb_bufptr, w, h, p); break;
 		}
 		break;
-		
+
 	case RETRO_PIXEL_FORMAT_RGB565:
 		switch (comm.env.rotation_ccw)
 		{
@@ -621,13 +621,13 @@ void retro_video_refresh(const void *data, unsigned width, unsigned height, size
 		}
 		break;
 	}
-	
+
 }
 
 void retro_audio_sample(s16 left, s16 right)
 {
 	s16 samples[] = {left,right};
-	comm.SetBuffer(BufId::Param0,(void*)&samples,4); 
+	comm.SetBuffer(BufId::Param0,(void*)&samples,4);
 	BREAK(SIG_Sample);
 }
 size_t retro_audio_sample_batch(const s16 *data, size_t frames)
@@ -646,7 +646,7 @@ s16 retro_input_state(unsigned port, unsigned device, unsigned index, unsigned i
 	comm.device = device;
 	comm.index = index;
 	comm.id = id;
-	
+
 	BREAK(eMessage::SIG_InputState);
 
 	return (s16)comm.value;
@@ -659,13 +659,13 @@ s16 retro_input_state(unsigned port, unsigned device, unsigned index, unsigned i
 static void LoadHandler(eMessage msg)
 {
 	//retro_set_environment() is guaranteed to be called before retro_init().
-	
+
 	comm.funs.retro_init();
 
 	retro_game_info rgi;
 	retro_game_info* rgiptr = &rgi;
 	memset(&rgi,0,sizeof(rgi));
-	
+
 	if (msg == eMessage::CMD_LoadNoGame)
 	{
 		rgiptr = nullptr;
@@ -752,7 +752,7 @@ void cmd_Unserialize()
 //TODO maybe not sensible though
 //void(*retro_unload_game)(void);
 
-void cmd_SetEnvironment() 
+void cmd_SetEnvironment()
 {
 	//stuff that can't be done until our environment is setup (the core will immediately query the environment)
 	comm.funs.retro_set_environment(retro_environment);
@@ -795,7 +795,7 @@ extern "C" __declspec(dllexport) void* __cdecl DllInit(HMODULE dllModule)
 	memset(&comm,0,sizeof(comm));
 
 	//make a coroutine thread to run the emulation in. we'll switch back to this cothread when communicating with the frontend
-	co_control = co_active(); 
+	co_control = co_active();
 	co_emu = co_create(128*1024 * sizeof(void*), new_emuthread);
 
 	//grab all the function pointers we need.

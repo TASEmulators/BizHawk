@@ -1,5 +1,5 @@
 //TODO: it's a bit of a misnomer to call this a 'core'
-//that's libretro nomenclature for a particular core (nes, genesis, doom, etc.) 
+//that's libretro nomenclature for a particular core (nes, genesis, doom, etc.)
 //we should call this LibretroEmulator (yeah, it was originally called that)
 //Since it's an IEmulator.. but... I don't know. Yeah, that's probably best
 
@@ -23,13 +23,11 @@ namespace BizHawk.Emulation.Cores.Libretro
 		// TODO: codepath just for introspection (lighter weight; no speex, no controls, etc.)
 		public LibretroCore(CoreComm nextComm, IGameInfo game, string corePath)
 		{
-			if (OSTailoredCode.IsUnixHost) throw new NotImplementedException("required library LibretroBridge is not yet available for Linux");
-
 			ServiceProvider = new BasicServiceProvider(this);
 			_SyncSettings = new SyncSettings();
 			CoreComm = nextComm;
 
-			string dllPath = Path.Combine(CoreComm.CoreFileProvider.DllPath(), "LibretroBridge.dll");
+			string dllPath = Path.Combine(CoreComm.CoreFileProvider.DllPath(), OSTailoredCode.IsUnixHost ? "LibretroBridge.so" : "LibretroBridge.dll");
 			api = new LibretroApi(dllPath, corePath);
 
 			if (api.comm->env.retro_api_version != 1)
@@ -325,7 +323,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 			{
 				//if we don't have saveram, it isnt modified. otherwise, assume it is
 				var mem = api.QUERY_GetMemory(LibretroApi.RETRO_MEMORY.SAVE_RAM);
-				
+
 				//bail if the size is 0
 				if (mem.Item2 == 0)
 					return false;
@@ -377,4 +375,3 @@ namespace BizHawk.Emulation.Cores.Libretro
 		}
 	}
 }
- 
