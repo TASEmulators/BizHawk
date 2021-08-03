@@ -1,8 +1,8 @@
 
 LDLIBS := -ldl
 LDFLAGS := -shared
-CFLAGS := -fPIC -Os
-CPPFLAGS := -fPIC -Os -fvisibility=hidden
+CFLAGS := -fPIC -Os -fvisibility=hidden
+CXXFLAGS := -fPIC -Os -fvisibility=hidden
 
 ROOT_DIR := ..
 OBJ_DIR := obj
