@@ -62,9 +62,9 @@ namespace BizHawk.Client.EmuHawk
 					else if (pi.PropertyType.IsEnum) propDict[pi] = Enum.GetValues(pi.PropertyType).Cast<object>().ToArray();
 				}
 				static object RandomElem(IReadOnlyList<object> a, Random rng) => a[rng.Next(a.Count)];
+				Random rng = new();
 				void Fuzz(bool limit)
 				{
-					Random rng = new();
 					var props = propDict.Keys.ToList();
 					if (limit)
 					{
@@ -77,9 +77,9 @@ namespace BizHawk.Client.EmuHawk
 					foreach (var pi in props) pi.SetValue(obj: glidenSS, value: RandomElem(propDict[pi], rng));
 					((MainForm) MainForm).PutCoreSyncSettings(ss);
 				}
-				SzButtonEx btnLightFuzz = new() { Size = new(200, 23), Text = "=> randomise some props" };
+				SzButtonEx btnLightFuzz = new() { Size = new(200, 23), Text = "--> randomise some props" };
 				btnLightFuzz.Click += (_, _) => Fuzz(limit: true);
-				SzButtonEx btnHeavyFuzz = new() { Size = new(200, 23), Text = "=> randomise every prop" };
+				SzButtonEx btnHeavyFuzz = new() { Size = new(200, 23), Text = "--> randomise every prop" };
 				btnHeavyFuzz.Click += (_, _) => Fuzz(limit: false);
 				Controls.Add(new SingleColumnFLP { Controls = { comboPlugin, btnLightFuzz, btnHeavyFuzz } });
 				ResumeLayout();
@@ -117,7 +117,7 @@ namespace BizHawk.Client.EmuHawk
 				foreach (var item in ((ToolStripMenuItemEx) ddoSender).DropDownItems.OfType<DebugVSystemMenuItem>())
 				{
 					var groupEnabled = item.Text == sysID || item.ExtraSysIDs.Contains(sysID);
-					foreach (var child in item.DropDownItems.Cast<DebugVSystemChildItem>().Where(child => child.RequiresLoadedRom)) // RequiresLoadedRom == false => leave Enabled as default true
+					foreach (var child in item.DropDownItems.Cast<DebugVSystemChildItem>().Where(static child => child.RequiresLoadedRom)) // RequiresLoadedRom == false => leave Enabled as default true
 					{
 						child.Enabled = groupEnabled && (child.RequiresCore is null || child.RequiresCore == coreName);
 					}
