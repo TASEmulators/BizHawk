@@ -61,7 +61,7 @@ namespace BizHawk.Client.Common
 						.AppendLine();
 				}
 
-				foreach (var func in this.Where(lf => lf.Library == library.Name))
+				foreach (var func in this.Where(lf => lf.Library == library.Name).OrderBy(lf => lf.Name))
 				{
 					string deprecated = func.IsDeprecated ? "__[[deprecated]]__ " : "";
 					sb
