@@ -266,8 +266,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public static extern void gambatte_setlinkcallback(IntPtr core, LinkCallback callback);
 
 		/// <summary>
-		/// type of the Camera callback
+		/// type of the camera data request callback
 		/// </summary>
+		/// <param name="cameraBuf">pointer to camera buffer</param>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate bool CameraCallback(IntPtr cameraBuf);
 
