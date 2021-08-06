@@ -147,7 +147,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 					{
 						cgbDmgColors = ColorsFromTitleHash(file);
 					}
-					_settings.GBPalette = cgbDmgColors;
 					ChangeDMGColors(cgbDmgColors);
 				}
 
@@ -382,8 +381,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				case 0x1C: return "MBC5 ROM+RUMBLE"; // = MBC5; break;
 				case 0x1D: return "MBC5 ROM+RUMBLE+RAM"; // = MBC5; break;
 				case 0x1E: return "MBC5 ROM+RUMBLE+RAM+BATTERY"; // = MBC5; break;
+				case 0xFC: return "Pocket Camera ROM+RAM+BATTERY"; // = POCKETCAMERA; break
+				case 0xFE: return "HuC3 ROM+RAM+BATTERY"; // = HUC3; break;
 				case 0xFF: return "HuC1 ROM+RAM+BATTERY"; // = HUC1; break;
-				case 0xFE: return "HuC3 ROM+RAM+BATTERY";
 				default: return "UNKNOWN";
 			}
 		}
@@ -429,7 +429,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				case 0x20: throw new UnsupportedGameException("\"MBC6\" Mapper not supported!");
 				case 0x22: throw new UnsupportedGameException("\"MBC7\" Mapper not supported!");
 
-				case 0xfc: throw new UnsupportedGameException("\"Pocket Camera\" Mapper not supported!");
+				case 0xfc: break;
 				case 0xfd: throw new UnsupportedGameException("\"Bandai TAMA5\" Mapper not supported!");
 				case 0xfe: break;
 				case 0xff: break;
