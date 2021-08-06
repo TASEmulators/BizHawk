@@ -328,7 +328,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			if (controller.IsPressed("Power"))
 			{
-				LibGambatte.gambatte_reset(GambatteState);
+				bool stall = _syncSettings.EnableBIOS && (_syncSettings.ConsoleMode is GambatteSyncSettings.ConsoleModeType.GBA); // GBA takes 971616 cycles to switch to CGB mode; CGB CPU is inactive during this time.
+				LibGambatte.gambatte_reset(GambatteState, stall ? 485808 : 0);
 			}
 
 			if (Tracer.IsEnabled())

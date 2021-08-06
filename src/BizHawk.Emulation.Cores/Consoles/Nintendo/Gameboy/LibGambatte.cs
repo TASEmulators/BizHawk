@@ -111,8 +111,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// Equivalent to reloading a ROM image, or turning a Game Boy Color off and on again.
 		/// </summary>
 		/// <param name="core">opaque state pointer</param>
+		/// <param name="samplesToStall">samples of reset stall</param>
 		[DllImport("libgambatte", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void gambatte_reset(IntPtr core);
+		public static extern void gambatte_reset(IntPtr core, uint samplesToStall);
 
 		/// <summary>
 		/// palette type for gambatte_setdmgpalettecolor
