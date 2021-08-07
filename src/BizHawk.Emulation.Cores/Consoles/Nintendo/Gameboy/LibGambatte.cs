@@ -111,8 +111,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// Equivalent to reloading a ROM image, or turning a Game Boy Color off and on again.
 		/// </summary>
 		/// <param name="core">opaque state pointer</param>
+		/// <param name="samplesToStall">samples of reset stall</param>
 		[DllImport("libgambatte", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void gambatte_reset(IntPtr core);
+		public static extern void gambatte_reset(IntPtr core, uint samplesToStall);
 
 		/// <summary>
 		/// palette type for gambatte_setdmgpalettecolor
@@ -264,6 +265,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// <param name="callback">the callback</param>
 		[DllImport("libgambatte", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void gambatte_setlinkcallback(IntPtr core, LinkCallback callback);
+
+		/// <summary>
+		/// type of the camera data request callback
+		/// </summary>
+		/// <param name="cameraBuf">pointer to camera buffer</param>
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate bool CameraCallback(IntPtr cameraBuf);
+
+		/// <summary>
+		/// sets the camera data request callback.
+		/// the callback will receive the pointer to the buffer.
+		/// a 128x112 rgb32 image should be copied to the buffer, with success returned.
+		/// </summary>
+		/// <param name="core">opaque state pointer</param>
+		/// <param name="callback">the callback</param>
+		[DllImport("libgambatte", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void gambatte_setcameracallback(IntPtr core, CameraCallback callback);
 
 		/// <summary>
 		/// Changes between cycle-based and real-time RTC. Defaults to cycle-based.
