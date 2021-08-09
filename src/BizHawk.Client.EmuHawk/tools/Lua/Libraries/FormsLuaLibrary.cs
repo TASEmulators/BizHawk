@@ -1402,6 +1402,9 @@ namespace BizHawk.Client.EmuHawk
 					case "INT":
 						textbox.SetType(BoxType.Signed);
 						break;
+					case "PASSWORD":
+						textbox.PasswordChar = '*';
+						break;
 				}
 			}
 
