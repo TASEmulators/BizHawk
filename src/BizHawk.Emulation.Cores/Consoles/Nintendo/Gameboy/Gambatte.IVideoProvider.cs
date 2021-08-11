@@ -3,6 +3,11 @@
 	public partial class Gameboy
 	{
 		/// <summary>
+		/// buffer of last frame produced
+		/// </summary>
+		private readonly int[] FrameBuffer = CreateVideoBuffer();
+
+		/// <summary>
 		/// stored image of most recent frame
 		/// </summary>
 		private readonly int[] VideoBuffer = CreateVideoBuffer();

@@ -15,6 +15,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public int BackgroundColor => unchecked((int)0xff000000);
 
+		private readonly int[] FrameBuffer = CreateVideoBuffer();
+
 		public int[] GetVideoBuffer() => VideoBuffer;
 
 		private readonly int[] VideoBuffer = CreateVideoBuffer();
