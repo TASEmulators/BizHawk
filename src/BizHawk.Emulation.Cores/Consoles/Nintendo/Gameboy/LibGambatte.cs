@@ -83,28 +83,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// exact time (in number of samples) at which it was drawn.
 		/// </summary>
 		/// <param name="core">opaque state pointer</param>
+		/// <param name="videobuf">160x144 RGB32 (native endian) video frame buffer or 0</param>
+		/// <param name="pitch">distance in number of pixels (not bytes) from the start of one line to the next in videoBuf</param>
 		/// <param name="soundbuf">buffer with space >= samples + 2064</param>
 		/// <param name="samples">in: number of stereo samples to produce, out: actual number of samples produced</param>
 		/// <returns>sample number at which the video frame was produced. -1 means no frame was produced.</returns>
 		[DllImport("libgambatte", CallingConvention = CallingConvention.Cdecl)]
-		public static extern int gambatte_altrunfor(IntPtr core, short[] soundbuf, ref uint samples);
+		public static extern int gambatte_runfor(IntPtr core, int[] videobuf, int pitch, short[] soundbuf, ref uint samples);
 		[DllImport("libgambatte", CallingConvention = CallingConvention.Cdecl)]
-		public static extern unsafe int gambatte_altrunfor(IntPtr core, short* soundbuf, ref uint samples);
-
-		/// <summary>
-		/// blit from internal framebuffer to provided framebuffer
-		/// </summary>
-		/// <param name="core">opaque state pointer</param>
-		/// <param name="pitch">in pixels</param>
-		[DllImport("libgambatte", CallingConvention = CallingConvention.Cdecl)]
-		public static extern unsafe void gambatte_blitto(IntPtr core, int* videobuf, int pitch);
-		/// <summary>
-		/// blit from internal framebuffer to provided framebuffer
-		/// </summary>
-		/// <param name="core">opaque state pointer</param>
-		/// <param name="pitch">in pixels</param>
-		[DllImport("libgambatte", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void gambatte_blitto(IntPtr core, int[] videobuf, int pitch);
+		public static extern unsafe int gambatte_runfor(IntPtr core, int* videobuf, int pitch, short* soundbuf, ref uint samples);
 
 		/// <summary>
 		/// Reset to initial state.

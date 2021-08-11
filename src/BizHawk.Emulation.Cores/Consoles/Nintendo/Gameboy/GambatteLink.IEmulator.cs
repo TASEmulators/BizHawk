@@ -43,10 +43,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			unsafe
 			{
-				fixed (int* leftvbuff = &VideoBuffer[0])
+				fixed (int* leftfbuff = &FrameBuffer[0])
 				{
-					// use pitch to have both cores write to the same video buffer, interleaved
-					int* rightvbuff = leftvbuff + 160;
+					// use pitch to have both cores write to the same frame buffer, interleaved
+					int* rightfbuff = leftfbuff + 160;
 					const int Pitch = 160 * 2;
 
 					fixed (short* leftsbuff = LeftBuffer, rightsbuff = RightBuffer)
@@ -69,9 +69,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 							while (nL < target)
 							{
 								uint nsamp = (uint)(target - nL);
-								if (LibGambatte.gambatte_altrunfor(L.GambatteState, leftsbuff + (nL * 2), ref nsamp) > 0)
+								if (LibGambatte.gambatte_runfor(L.GambatteState, leftfbuff, Pitch, leftsbuff + (nL * 2), ref nsamp) > 0)
 								{
-									LibGambatte.gambatte_blitto(L.GambatteState, leftvbuff, Pitch);
+									for (int i = 0; i < 144; i++)
+									{
+										Array.Copy(FrameBuffer, Pitch * i, VideoBuffer, Pitch * i, 160);
+									}
 								}
 
 								nL += (int)nsamp;
@@ -80,9 +83,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 							while (nR < target)
 							{
 								uint nsamp = (uint)(target - nR);
-								if (LibGambatte.gambatte_altrunfor(R.GambatteState, rightsbuff + (nR * 2), ref nsamp) > 0)
+								if (LibGambatte.gambatte_runfor(R.GambatteState, rightfbuff, Pitch, rightsbuff + (nR * 2), ref nsamp) > 0)
 								{
-									LibGambatte.gambatte_blitto(R.GambatteState, rightvbuff, Pitch);
+									for (int i = 0; i < 144; i++)
+									{
+										Array.Copy(FrameBuffer, 160 + Pitch * i, VideoBuffer, 160 + Pitch * i, 160);
+									}
 								}
 
 								nR += (int)nsamp;
