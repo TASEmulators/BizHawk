@@ -58,10 +58,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 			Link4xSettings = (GBLink4xSettings)lp.Settings ?? new GBLink4xSettings();
 			Link4xSyncSettings = (GBLink4xSyncSettings)lp.SyncSettings ?? new GBLink4xSyncSettings();
 			_controllerDeck = new(
-				GBHawkControllerDeck.DefaultControllerName,
-				GBHawkControllerDeck.DefaultControllerName,
-				GBHawkControllerDeck.DefaultControllerName,
-				GBHawkControllerDeck.DefaultControllerName);
+				GBHawkControllerDeck.DEFAULT_PERIPHERAL_OPTION,
+				GBHawkControllerDeck.DEFAULT_PERIPHERAL_OPTION,
+				GBHawkControllerDeck.DEFAULT_PERIPHERAL_OPTION,
+				GBHawkControllerDeck.DEFAULT_PERIPHERAL_OPTION);
 
 			var tempSetA = new GBHawk.GBHawk.GBSettings();
 			var tempSetB = new GBHawk.GBHawk.GBSettings();

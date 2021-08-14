@@ -4,9 +4,21 @@ using System.Linq;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
+using BizHawk.SrcGen.PeripheralOption;
 
 namespace BizHawk.Emulation.Cores.Intellivision
 {
+	[PeripheralOptionEnum]
+	public enum PeripheralOption : int
+	{
+		[Description("Unplugged Controller")]
+		Unplugged = 0,
+		[Description("Standard Controller")]
+		Standard = 1,
+		[Description("Standard (Analog Disc)")]
+		FakeAnalog = 2,
+	}
+
 	/// <summary>
 	/// Represents a controller plugged into a controller port on the intellivision
 	/// </summary>
@@ -21,7 +33,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		int PortNum { get; }
 	}
 
-	[DisplayName("Unplugged Controller")]
+	[PeripheralOptionImpl(typeof(PeripheralOption), PeripheralOption.Unplugged)]
 	public class UnpluggedController : IPort
 	{
 		public UnpluggedController(int portNum)
@@ -45,7 +57,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		public int PortNum { get; }
 	}
 
-	[DisplayName("Standard Controller")]
+	[PeripheralOptionImpl(typeof(PeripheralOption), PeripheralOption.Standard)]
 	public class StandardController : IPort
 	{
 		public StandardController(int portNum)
@@ -129,7 +141,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		};
 	}
 
-	[DisplayName("Standard (Analog Disc)")]
+	[PeripheralOptionImpl(typeof(PeripheralOption), PeripheralOption.FakeAnalog)]
 	public class FakeAnalogController : IPort
 	{
 		public FakeAnalogController(int portNum)

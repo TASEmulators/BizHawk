@@ -4,9 +4,19 @@ using System.Linq;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
+using BizHawk.SrcGen.PeripheralOption;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
+	[PeripheralOptionEnum]
+	public enum PeripheralOption : int
+	{
+		[Description("Gameboy Controller")]
+		Standard = 1,
+		[Description("Gameboy Controller + Tilt")]
+		Tilt = 2,
+	}
+
 	/// <summary>
 	/// Represents a GB add on
 	/// </summary>
@@ -23,7 +33,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		int PortNum { get; }
 	}
 
-	[DisplayName("Gameboy Controller")]
+	[PeripheralOptionImpl(typeof(PeripheralOption), PeripheralOption.Standard)]
 	public class StandardControls : IPort
 	{
 		public StandardControls(int portNum)
@@ -95,7 +105,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		}
 	}
 
-	[DisplayName("Gameboy Controller + Tilt")]
+	[PeripheralOptionImpl(typeof(PeripheralOption), PeripheralOption.Tilt)]
 	public class StandardTilt : IPort
 	{
 		public StandardTilt(int portNum)

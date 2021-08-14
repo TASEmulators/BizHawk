@@ -1,7 +1,4 @@
-﻿using System;
-using Newtonsoft.Json;
-
-using BizHawk.Common;
+﻿using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.ColecoVision
@@ -48,38 +45,9 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			public bool SkipBiosIntro { get; set; }
 			public bool UseSGM { get; set; }
 
-			private string _port1 = ColecoVisionControllerDeck.DefaultControllerName;
-			private string _port2 = ColecoVisionControllerDeck.DefaultControllerName;
+			public PeripheralOption Port1 = ColecoVisionControllerDeck.DEFAULT_PERIPHERAL_OPTION;
 
-			[JsonIgnore]
-			public string Port1
-			{
-				get => _port1;
-				set
-				{
-					if (!ColecoVisionControllerDeck.ControllerCtors.ContainsKey(value))
-					{
-						throw new InvalidOperationException("Invalid controller type: " + value);
-					}
-
-					_port1 = value;
-				}
-			}
-
-			[JsonIgnore]
-			public string Port2
-			{
-				get => _port2;
-				set
-				{
-					if (!ColecoVisionControllerDeck.ControllerCtors.ContainsKey(value))
-					{
-						throw new InvalidOperationException("Invalid controller type: " + value);
-					}
-
-					_port2 = value;
-				}
-			}
+			public PeripheralOption Port2 = ColecoVisionControllerDeck.DEFAULT_PERIPHERAL_OPTION;
 
 			public ColecoSyncSettings Clone()
 			{

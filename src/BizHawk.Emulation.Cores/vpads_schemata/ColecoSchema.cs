@@ -13,24 +13,21 @@ namespace BizHawk.Emulation.Cores
 	{
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core, Action<string> showMessageBox)
 		{
-			var deck = ((ColecoVision.ColecoVision) core).ControllerDeck;
-			var ports = new[] { deck.Port1.GetType(), deck.Port2.GetType() };
-
-			for (int i = 0; i < 2; i++)
+			static Func<int, PadSchema> SchemaFor(PeripheralOption option) => option switch
 			{
-				if (ports[i] == typeof(StandardController))
-				{
-					yield return StandardController(i + 1);
-				}
-				else if (ports[i] == typeof(ColecoTurboController))
-				{
-					yield return TurboController(i + 1);
-				}
-				else if (ports[i] == typeof(ColecoSuperActionController))
-				{
-					yield return SuperActionController(i + 1);
-				}
-			}
+				PeripheralOption.Standard => StandardController,
+				PeripheralOption.Turbo => TurboController,
+				PeripheralOption.SuperAction => SuperActionController,
+				_ => null
+			};
+
+			var ss = ((ColecoVision.ColecoVision) core).GetSyncSettings().Clone();
+
+			var port1 = SchemaFor(ss.Port1);
+			if (port1 is not null) yield return port1(1);
+
+			var port2 = SchemaFor(ss.Port2);
+			if (port2 is not null) yield return port2(2);
 
 			// omitting console as it only has reset and power buttons
 		}

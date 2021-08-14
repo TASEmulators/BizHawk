@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using BizHawk.Emulation.Common;
 
-using BizHawk.Common.ReflectionExtensions;
 using BizHawk.Emulation.Cores.Atari.A7800Hawk;
 
 namespace BizHawk.Emulation.Cores
@@ -12,47 +11,25 @@ namespace BizHawk.Emulation.Cores
 	// ReSharper disable once UnusedMember.Global
 	public class A78Schema : IVirtualPadSchema
 	{
-		private static string StandardControllerName => typeof(StandardController).DisplayName();
-		private static string ProLineControllerName => typeof(ProLineController).DisplayName();
-		private static string LightGunControllerName => typeof(LightGunController).DisplayName();
-
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core, Action<string> showMessageBox)
 		{
-			var ss = ((A7800Hawk)core).GetSyncSettings().Clone();
-
-			var port1 = SchemaFor(ss.Port1, 1);
-			if (port1 != null)
+			static Func<int, PadSchema> SchemaFor(PeripheralOption option) => option switch
 			{
-				yield return port1;
-			}
+				PeripheralOption.Standard => JoystickController,
+				PeripheralOption.ProLine => ProLineController,
+				PeripheralOption.LightGun => LightGunController,
+				_ => null
+			};
 
-			var port2 = SchemaFor(ss.Port2, 2);
-			if (port2 != null)
-			{
-				yield return port2;
-			}
+			var ss = ((A7800Hawk) core).GetSyncSettings().Clone();
+
+			var port1 = SchemaFor(ss.Port1);
+			if (port1 is not null) yield return port1(1);
+
+			var port2 = SchemaFor(ss.Port2);
+			if (port2 is not null) yield return port2(2);
 
 			yield return ConsoleButtons();
-		}
-
-		private static PadSchema SchemaFor(string controllerName, int portNum)
-		{
-			if (controllerName == StandardControllerName)
-			{
-				return JoystickController(portNum);
-			}
-
-			if (controllerName == ProLineControllerName)
-			{
-				return ProLineController(portNum);
-			}
-
-			if (controllerName == LightGunControllerName)
-			{
-				return LightGunController(portNum);
-			}
-
-			return null;
 		}
 
 		private static PadSchema JoystickController(int controller)

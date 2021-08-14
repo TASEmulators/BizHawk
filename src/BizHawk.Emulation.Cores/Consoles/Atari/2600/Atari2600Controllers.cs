@@ -3,17 +3,19 @@ using System.Linq;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
+using BizHawk.SrcGen.PeripheralOption;
 
 namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
+	[PeripheralOptionEnum]
 	public enum Atari2600ControllerTypes
 	{
-		Unplugged,
-		Joystick,
-		Paddle,
-		BoostGrip,
-		Driving,
-		Keyboard
+		Unplugged = 0,
+		Joystick = 1,
+		Paddle = 2,
+		BoostGrip = 3,
+		Driving = 4,
+		Keyboard = 5,
 	}
 
 	/// <summary>
@@ -32,6 +34,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		int PortNum { get; }
 	}
 
+	[PeripheralOptionImpl(typeof(Atari2600ControllerTypes), Atari2600ControllerTypes.Unplugged)]
 	public class UnpluggedController : IPort
 	{
 		public UnpluggedController(int portNum)
@@ -60,6 +63,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		public int PortNum { get; }
 	}
 
+	[PeripheralOptionImpl(typeof(Atari2600ControllerTypes), Atari2600ControllerTypes.Joystick)]
 	public class StandardController : IPort
 	{
 		public StandardController(int portNum)
@@ -106,6 +110,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		};
 	}
 
+	[PeripheralOptionImpl(typeof(Atari2600ControllerTypes), Atari2600ControllerTypes.Paddle)]
 	public class PaddleController : IPort
 	{
 		public PaddleController(int portNum)
@@ -159,6 +164,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		}
 	}
 
+	[PeripheralOptionImpl(typeof(Atari2600ControllerTypes), Atari2600ControllerTypes.BoostGrip)]
 	public class BoostGripController : IPort
 	{
 		public BoostGripController(int portNum)
@@ -223,6 +229,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		}
 	}
 
+	[PeripheralOptionImpl(typeof(Atari2600ControllerTypes), Atari2600ControllerTypes.Driving)]
 	public class DrivingController : IPort
 	{
 		public DrivingController(int portNum)
@@ -318,6 +325,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		}
 	}
 
+	[PeripheralOptionImpl(typeof(Atari2600ControllerTypes), Atari2600ControllerTypes.Keyboard)]
 	public class KeyboardController : IPort
 	{
 		public KeyboardController(int portNum)

@@ -1,28 +1,21 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.GBHawk;
+using BizHawk.SrcGen.PeripheralOption;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 {
-	public class GBHawkLink4xControllerDeck
+	[PeripheralOptionConsumer(typeof(PeripheralOption), typeof(IPort), PeripheralOption.Standard)]
+	public sealed partial class GBHawkLink4xControllerDeck
 	{
-		public GBHawkLink4xControllerDeck(string controller1Name, string controller2Name, string controller3Name, string controller4Name)
+		public GBHawkLink4xControllerDeck(PeripheralOption port1Option, PeripheralOption port2Option, PeripheralOption port3Option, PeripheralOption port4Option)
 		{
-			Port1 = GBHawkControllerDeck.ControllerCtors.TryGetValue(controller1Name, out var ctor1)
-				? ctor1(1)
-				: throw new InvalidOperationException($"Invalid controller type: {controller1Name}");
-			Port2 = GBHawkControllerDeck.ControllerCtors.TryGetValue(controller2Name, out var ctor2)
-				? ctor2(2)
-				: throw new InvalidOperationException($"Invalid controller type: {controller2Name}");
-			Port3 = GBHawkControllerDeck.ControllerCtors.TryGetValue(controller3Name, out var ctor3)
-				? ctor3(3)
-				: throw new InvalidOperationException($"Invalid controller type: {controller3Name}");
-			Port4 = GBHawkControllerDeck.ControllerCtors.TryGetValue(controller4Name, out var ctor4)
-				? ctor4(4)
-				: throw new InvalidOperationException($"Invalid controller type: {controller4Name}");
+			Port1 = CtorFor(port1Option)(1);
+			Port2 = CtorFor(port2Option)(2);
+			Port3 = CtorFor(port3Option)(3);
+			Port4 = CtorFor(port4Option)(4);
 
 			Definition = new ControllerDefinition(Port1.Definition.Name)
 			{

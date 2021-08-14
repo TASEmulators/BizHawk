@@ -3,9 +3,23 @@ using System.Linq;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
+using BizHawk.SrcGen.PeripheralOption;
 
 namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 {
+	[PeripheralOptionEnum]
+	public enum PeripheralOption : int
+	{
+		[Description("Unplugged Controller")]
+		Unplugged = 0,
+		[Description("Joystick Controller")]
+		Standard = 1,
+		[Description("ProLine Controller")]
+		ProLine = 2,
+		[Description("Light Gun Controller")]
+		LightGun = 3,
+	}
+
 	/// <summary>
 	/// Represents a controller plugged into a controller port on the A7800
 	/// </summary>
@@ -28,7 +42,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		int PortNum { get; }
 	}
 
-	[DisplayName("Unplugged Controller")]
+	[PeripheralOptionImpl(typeof(PeripheralOption), PeripheralOption.Unplugged)]
 	public class UnpluggedController : IPort
 	{
 		public UnpluggedController(int portNum)
@@ -91,7 +105,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		public int PortNum { get; }
 	}
 
-	[DisplayName("Joystick Controller")]
+	[PeripheralOptionImpl(typeof(PeripheralOption), PeripheralOption.Standard)]
 	public class StandardController : IPort
 	{
 		public StandardController(int portNum)
@@ -174,7 +188,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		};
 	}
 
-	[DisplayName("ProLine Controller")]
+	[PeripheralOptionImpl(typeof(PeripheralOption), PeripheralOption.ProLine)]
 	public class ProLineController : IPort
 	{
 		public ProLineController(int portNum)
@@ -266,8 +280,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		};
 	}
 
-
-	[DisplayName("Light Gun Controller")]
+	[PeripheralOptionImpl(typeof(PeripheralOption), PeripheralOption.LightGun)]
 	public class LightGunController : IPort
 	{
 		public LightGunController(int portNum)

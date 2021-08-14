@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
+
+using BizHawk.Common.ReflectionExtensions;
 using BizHawk.Emulation.Cores.Atari.A7800Hawk;
 
 namespace BizHawk.Client.EmuHawk
@@ -21,27 +23,18 @@ namespace BizHawk.Client.EmuHawk
 
 		private void IntvControllerSettings_Load(object sender, EventArgs e)
 		{
-			foreach (var val in A7800HawkControllerDeck.ControllerCtors.Keys)
-			{
-				Port1ComboBox.Items.Add(val);
-				Port2ComboBox.Items.Add(val);
-			}
-
-			Port1ComboBox.SelectedItem = _syncSettings.Port1;
-			Port2ComboBox.SelectedItem = _syncSettings.Port2;
+			Port1ComboBox.PopulateFromEnum(_syncSettings.Port1);
+			Port2ComboBox.PopulateFromEnum(_syncSettings.Port2);
 		}
 
 		private void OkBtn_Click(object sender, EventArgs e)
 		{
-			bool changed =
-				_syncSettings.Port1 != Port1ComboBox.SelectedItem.ToString()
-				|| _syncSettings.Port2 != Port2ComboBox.SelectedItem.ToString();
-
-			if (changed)
+			var port1Option = Port1ComboBox.SelectedItem.ToString().GetEnumFromDescription<PeripheralOption>();
+			var port2Option = Port2ComboBox.SelectedItem.ToString().GetEnumFromDescription<PeripheralOption>();
+			if (port1Option != _syncSettings.Port1 || port2Option != _syncSettings.Port2)
 			{
-				_syncSettings.Port1 = Port1ComboBox.SelectedItem.ToString();
-				_syncSettings.Port2 = Port2ComboBox.SelectedItem.ToString();
-
+				_syncSettings.Port1 = port1Option;
+				_syncSettings.Port2 = port2Option;
 				_mainForm.PutCoreSyncSettings(_syncSettings);
 			}
 

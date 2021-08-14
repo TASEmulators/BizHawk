@@ -1,23 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 
 using BizHawk.Common;
-using BizHawk.Common.ReflectionExtensions;
 using BizHawk.Emulation.Common;
+using BizHawk.SrcGen.PeripheralOption;
 
 namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 {
-	public class VectrexHawkControllerDeck
+	[PeripheralOptionConsumer(typeof(ControllerType), typeof(IPort), ControllerType.Digital)]
+	public sealed partial class VectrexHawkControllerDeck
 	{
-		public VectrexHawkControllerDeck(string controller1Name, string controller2Name)
+		public VectrexHawkControllerDeck(ControllerType port1Option, ControllerType port2Option)
 		{
-			Port1 = ControllerCtors.TryGetValue(controller1Name, out var ctor1)
-				? ctor1(1)
-				: throw new InvalidOperationException($"Invalid controller type: {controller1Name}");
-			Port2 = ControllerCtors.TryGetValue(controller2Name, out var ctor2)
-				? ctor2(2)
-				: throw new InvalidOperationException($"Invalid controller type: {controller2Name}");
+			Port1 = CtorFor(port1Option)(1);
+			Port2 = CtorFor(port2Option)(2);
 
 			Definition = new(Port1.Definition.Name)
 			{
@@ -62,16 +57,5 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 		private readonly IPort Port1;
 		private readonly IPort Port2;
-
-		private static IReadOnlyDictionary<string, Func<int, IPort>> _controllerCtors;
-
-		public static IReadOnlyDictionary<string, Func<int, IPort>> ControllerCtors => _controllerCtors
-			??= new Dictionary<string, Func<int, IPort>>
-			{
-				[typeof(StandardControls).DisplayName()] = portNum => new StandardControls(portNum),
-				[typeof(AnalogControls).DisplayName()] = portNum => new AnalogControls(portNum)
-			};
-
-		public static string DefaultControllerName => typeof(StandardControls).DisplayName();
 	}
 }

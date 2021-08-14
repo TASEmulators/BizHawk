@@ -66,35 +66,35 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		public class PCESyncSettings
 		{
-			[DefaultValue(PceControllerType.GamePad)]
+			[DefaultValue(PceControllerDeck.DEFAULT_PERIPHERAL_OPTION)]
 			[DisplayName("Port 1 Device")]
 			[Description("The type of controller plugged into the first controller port")]
 			[TypeConverter(typeof(DescribableEnumConverter))]
-			public PceControllerType Port1 { get; set; } = PceControllerType.GamePad;
+			public PceControllerType Port1 { get; set; } = PceControllerDeck.DEFAULT_PERIPHERAL_OPTION;
 
-			[DefaultValue(PceControllerType.Unplugged)]
+			[DefaultValue(PceControllerDeck.PERIPHERAL_UNPLUGGED_OPTION)]
 			[DisplayName("Port 2 Device")]
 			[Description("The type of controller plugged into the second controller port")]
 			[TypeConverter(typeof(DescribableEnumConverter))]
-			public PceControllerType Port2 { get; set; } = PceControllerType.Unplugged;
+			public PceControllerType Port2 { get; set; } = PceControllerDeck.PERIPHERAL_UNPLUGGED_OPTION;
 
-			[DefaultValue(PceControllerType.Unplugged)]
+			[DefaultValue(PceControllerDeck.PERIPHERAL_UNPLUGGED_OPTION)]
 			[DisplayName("Port 3 Device")]
 			[Description("The type of controller plugged into the third controller port")]
 			[TypeConverter(typeof(DescribableEnumConverter))]
-			public PceControllerType Port3 { get; set; } = PceControllerType.Unplugged;
+			public PceControllerType Port3 { get; set; } = PceControllerDeck.PERIPHERAL_UNPLUGGED_OPTION;
 
-			[DefaultValue(PceControllerType.Unplugged)]
+			[DefaultValue(PceControllerDeck.PERIPHERAL_UNPLUGGED_OPTION)]
 			[DisplayName("Port 4 Device")]
 			[Description("The type of controller plugged into the fourth controller port")]
 			[TypeConverter(typeof(DescribableEnumConverter))]
-			public PceControllerType Port4 { get; set; } = PceControllerType.Unplugged;
+			public PceControllerType Port4 { get; set; } = PceControllerDeck.PERIPHERAL_UNPLUGGED_OPTION;
 
-			[DefaultValue(PceControllerType.Unplugged)]
+			[DefaultValue(PceControllerDeck.PERIPHERAL_UNPLUGGED_OPTION)]
 			[DisplayName("Port 5 Device")]
 			[Description("The type of controller plugged into the fifth controller port")]
 			[TypeConverter(typeof(DescribableEnumConverter))]
-			public PceControllerType Port5 { get; set; } = PceControllerType.Unplugged;
+			public PceControllerType Port5 { get; set; } = PceControllerDeck.PERIPHERAL_UNPLUGGED_OPTION;
 
 			public PCESyncSettings Clone() => (PCESyncSettings)MemberwiseClone();
 

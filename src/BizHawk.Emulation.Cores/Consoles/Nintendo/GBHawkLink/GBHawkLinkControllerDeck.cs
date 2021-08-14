@@ -1,22 +1,19 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.GBHawk;
+using BizHawk.SrcGen.PeripheralOption;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 {
-	public class GBHawkLinkControllerDeck
+	[PeripheralOptionConsumer(typeof(PeripheralOption), typeof(IPort), PeripheralOption.Standard)]
+	public sealed partial class GBHawkLinkControllerDeck
 	{
-		public GBHawkLinkControllerDeck(string controller1Name, string controller2Name)
+		public GBHawkLinkControllerDeck(PeripheralOption port1Option, PeripheralOption port2Option)
 		{
-			Port1 = GBHawkControllerDeck.ControllerCtors.TryGetValue(controller1Name, out var ctor1)
-				? ctor1(1)
-				: throw new InvalidOperationException($"Invalid controller type: {controller1Name}");
-			Port2 = GBHawkControllerDeck.ControllerCtors.TryGetValue(controller2Name, out var ctor2)
-				? ctor2(2)
-				: throw new InvalidOperationException($"Invalid controller type: {controller2Name}");
+			Port1 = CtorFor(port1Option)(1);
+			Port2 = CtorFor(port2Option)(2);
 
 			Definition = new ControllerDefinition(Port1.Definition.Name)
 			{

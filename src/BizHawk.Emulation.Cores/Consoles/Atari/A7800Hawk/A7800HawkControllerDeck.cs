@@ -1,23 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 
 using BizHawk.Common;
-using BizHawk.Common.ReflectionExtensions;
 using BizHawk.Emulation.Common;
+using BizHawk.SrcGen.PeripheralOption;
 
 namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 {
-	public class A7800HawkControllerDeck
+	[PeripheralOptionConsumer(typeof(PeripheralOption), typeof(IPort), PeripheralOption.Standard)]
+	public sealed partial class A7800HawkControllerDeck
 	{
-		public A7800HawkControllerDeck(string controller1Name, string controller2Name)
+		public A7800HawkControllerDeck(PeripheralOption port1Option, PeripheralOption port2Option)
 		{
-			Port1 = ControllerCtors.TryGetValue(controller1Name, out var ctor1)
-				? ctor1(1)
-				: throw new InvalidOperationException($"Invalid controller type: {controller1Name}");
-			Port2 = ControllerCtors.TryGetValue(controller2Name, out var ctor2)
-				? ctor2(2)
-				: throw new InvalidOperationException($"Invalid controller type: {controller2Name}");
+			Port1 = CtorFor(port1Option)(1);
+			Port2 = CtorFor(port2Option)(2);
 
 			Definition = new(Port1.Definition.Name)
 			{
@@ -107,18 +102,5 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		private readonly IPort Port1;
 		private readonly IPort Port2;
-
-		private static IReadOnlyDictionary<string, Func<int, IPort>> _controllerCtors;
-
-		public static IReadOnlyDictionary<string, Func<int, IPort>> ControllerCtors => _controllerCtors
-			??= new Dictionary<string, Func<int, IPort>>
-			{
-				[typeof(UnpluggedController).DisplayName()] = portNum => new UnpluggedController(portNum),
-				[typeof(StandardController).DisplayName()] = portNum => new StandardController(portNum),
-				[typeof(ProLineController).DisplayName()] = portNum => new ProLineController(portNum),
-				[typeof(LightGunController).DisplayName()] = portNum => new LightGunController(portNum)
-			};
-
-		public static string DefaultControllerName => typeof(StandardController).DisplayName();
 	}
 }

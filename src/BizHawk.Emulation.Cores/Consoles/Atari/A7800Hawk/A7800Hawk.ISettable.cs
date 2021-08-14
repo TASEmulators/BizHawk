@@ -1,5 +1,4 @@
-﻿using System;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
@@ -49,8 +48,10 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		public class A7800SyncSettings
 		{
-			private string _port1 = A7800HawkControllerDeck.DefaultControllerName;
-			private string _port2 = A7800HawkControllerDeck.DefaultControllerName;
+			public PeripheralOption Port1 = A7800HawkControllerDeck.DEFAULT_PERIPHERAL_OPTION;
+
+			public PeripheralOption Port2 = A7800HawkControllerDeck.DEFAULT_PERIPHERAL_OPTION;
+
 			private string _Filter = "None";
 
 			[JsonIgnore]
@@ -58,36 +59,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			{
 				get => _Filter;
 				set => _Filter = value;
-			}
-
-			[JsonIgnore]
-			public string Port1
-			{
-				get => _port1;
-				set
-				{
-					if (!A7800HawkControllerDeck.ControllerCtors.ContainsKey(value))
-					{
-						throw new InvalidOperationException("Invalid controller type: " + value);
-					}
-
-					_port1 = value;
-				}
-			}
-
-			[JsonIgnore]
-			public string Port2
-			{
-				get => _port2;
-				set
-				{
-					if (!A7800HawkControllerDeck.ControllerCtors.ContainsKey(value))
-					{
-						throw new InvalidOperationException("Invalid controller type: " + value);
-					}
-
-					_port2 = value;
-				}
 			}
 
 			public A7800SyncSettings Clone()

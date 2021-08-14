@@ -3,9 +3,17 @@ using System.Linq;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
+using BizHawk.SrcGen.PeripheralOption;
 
 namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 {
+	[PeripheralOptionEnum]
+	public enum PeripheralOption : int
+	{
+		[Description("O2 Controller")]
+		Standard = 1,
+	}
+
 	/// <summary>
 	/// Represents a O2 add on
 	/// </summary>
@@ -20,7 +28,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 		int PortNum { get; }
 	}
 
-	[DisplayName("O2 Controller")]
+	[PeripheralOptionImpl(typeof(PeripheralOption), PeripheralOption.Standard)]
 	public class StandardControls : IPort
 	{
 		public StandardControls(int portNum)
