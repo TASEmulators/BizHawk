@@ -358,9 +358,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		{
 			InputCallbacks.Call();
 			controller_state = _controllerDeck.ReadPort1(controller);
-
-			Acc_X_state = _controllerDeck.ReadAccX1(controller);
-			Acc_Y_state = _controllerDeck.ReadAccY1(controller);
+			(Acc_X_state, Acc_Y_state) = _controllerDeck.ReadAcc1(controller);
 		}
 
 		public byte GetButtons(ushort r)
