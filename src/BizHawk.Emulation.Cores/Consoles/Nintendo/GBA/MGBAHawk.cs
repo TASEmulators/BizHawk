@@ -162,9 +162,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		public void Dispose()
 		{
-
-			//return;
-
 			if (Core != IntPtr.Zero)
 			{
 				LibmGBA.BizDestroy(Core);
