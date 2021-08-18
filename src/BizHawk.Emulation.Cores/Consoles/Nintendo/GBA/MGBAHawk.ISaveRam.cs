@@ -33,6 +33,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				data = LegacyFix(data);
 			}
 
+			System.Diagnostics.Debug.WriteLine("!!!!!! The bit Ali commented out in StoreSaveRam");
 			LibmGBA.BizPutSaveRam(Core, data, data.Length);
 		}
 

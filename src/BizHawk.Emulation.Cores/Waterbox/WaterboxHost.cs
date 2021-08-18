@@ -332,6 +332,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		public void Dispose()
 		{
+			//return;
+
 			if (_nativeHost != IntPtr.Zero)
 			{
 				var retobj = new ReturnData();
