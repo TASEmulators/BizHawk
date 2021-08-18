@@ -64,6 +64,7 @@ namespace BizHawk.Client.Common
 
 		public void DoFrameAdvance()
 		{
+			System.Diagnostics.Debug.WriteLine("frame");
 			_mainForm.FrameAdvance();
 			_mainForm.StepRunLoop_Throttle();
 			_mainForm.Render();

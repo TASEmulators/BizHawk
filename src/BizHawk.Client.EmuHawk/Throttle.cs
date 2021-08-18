@@ -4,6 +4,7 @@ using System.Threading;
 
 using BizHawk.Client.Common;
 using BizHawk.Common;
+using BizHawk.Emulation.Common;
 
 //this throttle is nitsuja's fine-tuned techniques from desmume
 
@@ -126,6 +127,36 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (framesToSkip < 1)
 					framesToSkip += skipRate;
+			}
+
+			// !!!!!!!!! here's where I add the "check shuffler"
+			/*
+			if (RomLoader.activeGameTriggerDef != null && RomLoader.activeEmulator != null)
+			{
+				RomLoader.frameIndex++;
+				RomLoader.shouldCheckForSwitches = true;
+
+				
+				bool shouldSwitch =  RomLoader.activeGameTriggerDef.CheckFrame(); // RomLoader.shouldSwitchGames;
+
+				if (shouldSwitch)
+				{
+					RomLoader.shouldCheckForSwitches = false;
+					RomLoader.shouldSwitchGames = false;
+					RomLoader.frameIndex = 0;
+
+					MainForm.instance.LoadRom(MainForm.instance.Config.PathEntries.LastRomPath, MainForm.instance.CurrentlyOpenRomArgs);
+				}
+			}
+			*/
+			if (RomLoader.activeGameTriggerDef != null)
+			{
+				RomLoader.frameIndex++;
+				bool shouldSwitch = RomLoader.activeGameTriggerDef.CheckFrame();
+				if (shouldSwitch)
+				{
+					MainForm.instance.LoadRom(MainForm.instance.Config.PathEntries.LastRomPath, MainForm.instance.CurrentlyOpenRomArgs);
+				}
 			}
 		}
 

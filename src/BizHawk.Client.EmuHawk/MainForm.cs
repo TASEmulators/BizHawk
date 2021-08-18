@@ -44,8 +44,12 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class MainForm : FormBase, IDialogParent, IMainFormForApi, IMainFormForConfig, IMainFormForTools
 	{
+		public static MainForm instance;
+
 		private void MainForm_Load(object sender, EventArgs e)
 		{
+			MainForm.instance = this;
+
 			SetWindowText();
 
 			foreach (var (appliesTo, coreNames) in Config.CorePickerUIData)
@@ -3666,19 +3670,25 @@ namespace BizHawk.Client.EmuHawk
 			if (!LoadRomInternal(path, args, out failureIsFromAskSave))
 				return false;
 
+			/*
 			// what's the meaning of the last rom path when opening an archive? based on the archive file location
 			if (args.OpenAdvanced is OpenAdvanced_OpenRom)
 			{
 				var leftPart = path.Split('|')[0];
 				Config.PathEntries.LastRomPath = Path.GetFullPath(Path.GetDirectoryName(leftPart) ?? "");
 			}
+			*/
 
 			return true;
 		}
 
+		public static LoadRomArgs lastLoadRomArgs;
+
 		// Still needs a good bit of refactoring
 		private bool LoadRomInternal(string path, LoadRomArgs args, out bool failureIsFromAskSave)
 		{
+			lastLoadRomArgs = args;
+
 			failureIsFromAskSave = false;
 			if (path == null)
 				throw new ArgumentNullException(nameof(path));
@@ -3795,7 +3805,8 @@ namespace BizHawk.Client.EmuHawk
 				if (result)
 				{
 					string openAdvancedArgs = $"*{OpenAdvancedSerializer.Serialize(ioa)}";
-					Emulator.Dispose();
+					System.Diagnostics.Debug.WriteLine("!!!!!!!!! Ali commented out Emulator.Dispose");
+					//Emulator.Dispose();
 					Emulator = loader.LoadedEmulator;
 					InputManager.SyncControls(Emulator, MovieSession, Config);
 
@@ -3880,6 +3891,7 @@ namespace BizHawk.Client.EmuHawk
 					JumpLists.AddRecentItem(openAdvancedArgs, ioa.DisplayName);
 
 					// Don't load Save Ram if a movie is being loaded
+					/*
 					if (!MovieSession.NewMovieQueued)
 					{
 						if (File.Exists(Config.PathEntries.SaveRamAbsolutePath(loader.Game, MovieSession.Movie)))
@@ -3891,6 +3903,7 @@ namespace BizHawk.Client.EmuHawk
 							AddOnScreenMessage("AutoSaveRAM found, but SaveRAM was not saved");
 						}
 					}
+					*/
 
 					Tools.Restart(Config, Emulator, Game);
 
@@ -3909,10 +3922,12 @@ namespace BizHawk.Client.EmuHawk
 
 					CurrentlyOpenRom = oaOpenrom?.Path ?? openAdvancedArgs;
 					CurrentlyOpenRomArgs = args;
+					System.Diagnostics.Debug.WriteLine("!!!!!!! An Ali candidate here? OnRomChanged()");
 					OnRomChanged();
 					DisplayManager.UpdateGlobals(Config, Emulator);
 					DisplayManager.Blank();
-					CreateRewinder();
+					System.Diagnostics.Debug.WriteLine("!!!!!!! An Ali candidate here? CreateRewinder()");
+					//CreateRewinder();
 
 					InputManager.StickyXorAdapter.ClearStickies();
 					InputManager.StickyXorAdapter.ClearStickyAxes();
@@ -4040,7 +4055,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			CheatList.SaveOnClose();
-			Emulator.Dispose();
+			//Emulator.Dispose();
 			Emulator = new NullEmulator();
 			InputManager.ResetMainControllers(_autofireNullControls);
 			RewireSound();
@@ -4052,6 +4067,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public void CloseRom(bool clearSram = false)
 		{
+			System.Diagnostics.Debug.WriteLine("!!!!!!!! CloseRom, clearSram:" + clearSram.ToString());
+
 			// This gets called after Close Game gets called.
 			// Tested with NESHawk and SMB3 (U)
 			if (Tools.AskSave())

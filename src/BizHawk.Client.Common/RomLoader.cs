@@ -14,10 +14,28 @@ using BizHawk.Emulation.Cores.Sony.PSX;
 using BizHawk.Emulation.Cores.Arcades.MAME;
 using BizHawk.Emulation.DiscSystem;
 
+using System.ComponentModel;
+
 namespace BizHawk.Client.Common
 {
 	public class RomLoader
 	{
+		public static Dictionary<string, EmulatorInstance> loadedEmulators = new Dictionary<string, EmulatorInstance>();
+		public static List<string> knownRoms = new List<string>();
+		public static string activeRom = "";
+		public static List<string> romHistory = new List<string>();
+
+		public static EmulatorInstance activeEmulator;
+		public static Dictionary<string, GameTriggerDefinition> gameTriggers = new Dictionary<string, GameTriggerDefinition>();
+		public static GameTriggerDefinition activeGameTriggerDef;
+
+		public static BackgroundWorker checkFrameWorker;
+		public static bool shouldCheckForSwitches;
+		public static bool shouldSwitchGames;
+		public static int frameIndex = 0;
+
+		public static List<MemoryDomain> activeMemoryDomains = new List<MemoryDomain>();
+
 		private class DiscAsset : IDiscAsset
 		{
 			public Disc DiscData { get; set; }
@@ -228,6 +246,7 @@ namespace BizHawk.Client.Common
 
 		private GameInfo MakeGameFromDisc(Disc disc, string ext, string name)
 		{
+			System.Diagnostics.Debug.WriteLine("!!! CALLING MakeGameFromDisc");
 			// TODO - use more sophisticated IDer
 			var discType = new DiscIdentifier(disc).DetectDiscType();
 			var discHasher = new DiscHasher(disc);
@@ -581,9 +600,73 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public bool LoadRom(string path, CoreComm nextComm, string launchLibretroCore, string forcedCoreName = null, int recursiveCount = 0)
+		public bool LoadRom(string tempPath, CoreComm nextComm, string launchLibretroCore, string forcedCoreName = null, int recursiveCount = 0)
 		{
-			if (path == null) return false;
+			System.Diagnostics.Debug.WriteLine("!!!!!!!! LOADING ROM " + tempPath + ", " + nextComm.ToString() + ", " + launchLibretroCore);
+
+			if (knownRoms.Count <= 0)
+			{
+				string[] romFiles = Directory.GetFiles("_magicbox");
+				foreach (string _fileName in romFiles)
+				{
+					if (!_fileName.EndsWith(".bin") && !_fileName.EndsWith(".ccd") && !_fileName.EndsWith(".img") && !_fileName.EndsWith(".sub"))
+					{
+						System.Diagnostics.Debug.WriteLine("!!!!!!!!     found rom: " + _fileName);
+						knownRoms.Add(_fileName);
+					}
+				}
+			}
+
+			if (gameTriggers.Count <= 0)
+			{
+				string[] triggerFiles = Directory.GetFiles("_shuffletriggers");
+				foreach (string _fileName in triggerFiles)
+				{
+					if (_fileName.EndsWith(".txt"))
+					{
+						System.Diagnostics.Debug.WriteLine("!!!!!!!!     found trigger: " + _fileName);
+
+						GameTriggerDefinition definition = GameTriggerDefinition.FromFile(_fileName);
+						string[] pathComponents = _fileName.Split(new string[] { "\\" }, StringSplitOptions.None);
+						string _trimmedFileName = pathComponents[pathComponents.Length - 1];
+						string _key = _trimmedFileName.Split(new string[] { ".txt", "(" }, StringSplitOptions.None)[0];
+						System.Diagnostics.Debug.WriteLine("!!!!!!!!         adding trigger for key: " + _key);
+
+						gameTriggers.Add(_key, definition);
+					}
+				}
+			}
+
+			if (tempPath == null) return false;
+
+			string path = tempPath;
+
+			if (knownRoms.Count > 1)
+			{
+				int attempts = 0;
+				Random random = new Random();
+
+				path = activeRom;
+				while (attempts < 1000 && (path == activeRom || romHistory.Contains(path)))
+				{
+					System.Diagnostics.Debug.WriteLine("!!!!!!!! reshuffling " + path);
+					path = knownRoms[random.Next(0, knownRoms.Count)];
+					attempts++;
+				}
+				activeRom = path;
+				romHistory.Add(activeRom);
+				if (romHistory.Count > knownRoms.Count * 0.5f)
+				{
+					romHistory.RemoveAt(0);
+				}
+				System.Diagnostics.Debug.WriteLine("!!!!!!!! activeRom: " + activeRom + ", romHistory: " + romHistory.Count.ToString() + ", attempts: " + attempts.ToString());
+			} else if (knownRoms.Count == 1)
+			{
+				path = knownRoms[0];
+			}
+
+			System.Diagnostics.Debug.WriteLine("!!!!!!!! Selected ROM " + path);
+
 
 			if (recursiveCount > 1) // hack to stop recursive calls from endlessly rerunning if we can't load it
 			{
@@ -602,125 +685,201 @@ namespace BizHawk.Client.Common
 			RomGame rom = null;
 			GameInfo game = null;
 
-			try
+			if (loadedEmulators.ContainsKey(path))
 			{
-				var cancel = false;
+				nextEmulator = loadedEmulators[path].emulator;
+				rom = loadedEmulators[path].rom;
+				game = loadedEmulators[path].game;
 
-				if (OpenAdvanced is OpenAdvanced_Libretro)
+				activeEmulator = loadedEmulators[path];
+			} else
+			{
+				try
 				{
-					// must be done before LoadNoGame (which triggers retro_init and the paths to be consumed by the core)
-					// game name == name of core
-					Game = game = new GameInfo { Name = Path.GetFileNameWithoutExtension(launchLibretroCore), System = "Libretro" };
-					var retro = new LibretroCore(nextComm, game, launchLibretroCore);
-					nextEmulator = retro;
+					var cancel = false;
 
-					if (retro.Description.SupportsNoGame && string.IsNullOrEmpty(path))
+					if (OpenAdvanced is OpenAdvanced_Libretro)
 					{
-						// if we are allowed to run NoGame and we don't have a game, boot up the core that way
-						if (!retro.LoadNoGame())
+						// must be done before LoadNoGame (which triggers retro_init and the paths to be consumed by the core)
+						// game name == name of core
+						Game = game = new GameInfo { Name = Path.GetFileNameWithoutExtension(launchLibretroCore), System = "Libretro" };
+						var retro = new LibretroCore(nextComm, game, launchLibretroCore);
+						nextEmulator = retro;
+
+						if (retro.Description.SupportsNoGame && string.IsNullOrEmpty(path))
 						{
-							DoLoadErrorCallback("LibretroNoGame failed to load. This is weird", "Libretro");
-							retro.Dispose();
-							return false;
+							// if we are allowed to run NoGame and we don't have a game, boot up the core that way
+							if (!retro.LoadNoGame())
+							{
+								DoLoadErrorCallback("LibretroNoGame failed to load. This is weird", "Libretro");
+								retro.Dispose();
+								return false;
+							}
+						}
+						else
+						{
+							bool ret;
+
+							// if the core requires an archive file, then try passing the filename of the archive
+							// (but do we ever need to actually load the contents of the archive file into ram?)
+							if (retro.Description.NeedsArchives)
+							{
+								if (file.IsArchiveMember)
+								{
+									throw new InvalidOperationException("Should not have bound file member for libretro block_extract core");
+								}
+
+								ret = retro.LoadPath(file.FullPathWithoutMember);
+							}
+							else
+							{
+								// otherwise load the data or pass the filename, as requested. but..
+								if (retro.Description.NeedsRomAsPath && file.IsArchiveMember)
+								{
+									throw new InvalidOperationException("Cannot pass archive member to libretro needs_fullpath core");
+								}
+
+								ret = retro.Description.NeedsRomAsPath
+									? retro.LoadPath(file.FullPathWithoutMember)
+									: HandleArchiveBinding(file) && retro.LoadData(file.ReadAllBytes(), file.Name);
+							}
+
+							if (!ret)
+							{
+								DoLoadErrorCallback("Libretro failed to load the given file. This is probably due to a core/content mismatch. Moreover, the process is now likely to be hosed. We suggest you restart the program.", "Libretro");
+								retro.Dispose();
+								return false;
+							}
 						}
 					}
 					else
 					{
-						bool ret;
-
-						// if the core requires an archive file, then try passing the filename of the archive
-						// (but do we ever need to actually load the contents of the archive file into ram?)
-						if (retro.Description.NeedsArchives)
+						// do the archive binding we had to skip
+						if (!HandleArchiveBinding(file))
 						{
-							if (file.IsArchiveMember)
-							{
-								throw new InvalidOperationException("Should not have bound file member for libretro block_extract core");
-							}
-
-							ret = retro.LoadPath(file.FullPathWithoutMember);
-						}
-						else
-						{
-							// otherwise load the data or pass the filename, as requested. but..
-							if (retro.Description.NeedsRomAsPath && file.IsArchiveMember)
-							{
-								throw new InvalidOperationException("Cannot pass archive member to libretro needs_fullpath core");
-							}
-
-							ret = retro.Description.NeedsRomAsPath
-								? retro.LoadPath(file.FullPathWithoutMember)
-								: HandleArchiveBinding(file) && retro.LoadData(file.ReadAllBytes(), file.Name);
-						}
-
-						if (!ret)
-						{
-							DoLoadErrorCallback("Libretro failed to load the given file. This is probably due to a core/content mismatch. Moreover, the process is now likely to be hosed. We suggest you restart the program.", "Libretro");
-							retro.Dispose();
 							return false;
 						}
+
+						// not libretro: do extension checking
+						var ext = file.Extension;
+						switch (ext)
+						{
+							case ".m3u":
+								LoadM3U(path, nextComm, file, forcedCoreName, out nextEmulator, out game);
+								break;
+							case ".xml":
+								if (!LoadXML(path, nextComm, file, forcedCoreName, out nextEmulator, out rom, out game))
+									return false;
+								break;
+							case ".psf":
+							case ".minipsf":
+								LoadPSF(path, nextComm, file, out nextEmulator, out rom, out game);
+								break;
+							default:
+								if (Disc.IsValidExtension(ext))
+								{
+									if (file.IsArchive)
+										throw new InvalidOperationException("Can't load CD files from archives!");
+									if (!LoadDisc(path, nextComm, file, ext, forcedCoreName, out nextEmulator, out game))
+										return false;
+								}
+								else
+								{
+									LoadOther(nextComm, file, forcedCoreName, out nextEmulator, out rom, out game, out cancel); // must be called after LoadXML because of SNES hacks
+								}
+								break;
+						}
 					}
-				}
-				else
-				{
-					// do the archive binding we had to skip
-					if (!HandleArchiveBinding(file))
+
+					if (nextEmulator == null)
 					{
+						if (!cancel)
+						{
+							DoLoadErrorCallback("No core could load the rom.", null);
+						}
+
 						return false;
 					}
-
-					// not libretro: do extension checking
-					var ext = file.Extension;
-					switch (ext)
-					{
-						case ".m3u":
-							LoadM3U(path, nextComm, file, forcedCoreName, out nextEmulator, out game);
-							break;
-						case ".xml":
-							if (!LoadXML(path, nextComm, file, forcedCoreName, out nextEmulator, out rom, out game))
-								return false;
-							break;
-						case ".psf":
-						case ".minipsf":
-							LoadPSF(path, nextComm, file, out nextEmulator, out rom, out game);
-							break;
-						default:
-							if (Disc.IsValidExtension(ext))
-							{
-								if (file.IsArchive)
-									throw new InvalidOperationException("Can't load CD files from archives!");
-								if (!LoadDisc(path, nextComm, file, ext, forcedCoreName, out nextEmulator, out game))
-									return false;
-							}
-							else
-							{
-								LoadOther(nextComm, file, forcedCoreName, out nextEmulator, out rom, out game, out cancel); // must be called after LoadXML because of SNES hacks
-							}
-							break;
-					}
 				}
-
-				if (nextEmulator == null)
+				catch (Exception ex)
 				{
-					if (!cancel)
-					{
-						DoLoadErrorCallback("No core could load the rom.", null);
-					}
+					var system = game?.System;
 
+					DispatchErrorMessage(ex, system);
 					return false;
 				}
-			}
-			catch (Exception ex)
-			{
-				var system = game?.System;
 
-				DispatchErrorMessage(ex, system);
-				return false;
+				EmulatorInstance newInstance = new EmulatorInstance();
+				newInstance.emulator = nextEmulator;
+				newInstance.rom = rom;
+				newInstance.game = game;
+				loadedEmulators.Add(path, newInstance);
+
+				activeEmulator = newInstance;
 			}
 
 			Rom = rom;
 			LoadedEmulator = nextEmulator;
 			Game = game;
+
+			string _triggerKey = game.Name.Split(new string[] { ".txt", "(" }, StringSplitOptions.None)[0].ToUpper() + game.System.ToString();
+
+			if (gameTriggers.ContainsKey(_triggerKey))
+			{
+				activeGameTriggerDef = gameTriggers[_triggerKey];
+			} else
+			{
+				System.Diagnostics.Debug.WriteLine("!!!!!!!! no trigger for key " + _triggerKey);
+			}
+
+			//activeMemoryDomains = activeEmulator.emulator.AsMemoryDomains().ToList<MemoryDomain>();
+
+			// now make a thread to check for switches!
+
+			/*
+			if (checkFrameWorker != null)
+			{
+				checkFrameWorker.CancelAsync();
+			}
+			checkFrameWorker = new BackgroundWorker();
+			checkFrameWorker.DoWork += AsyncCheckFrame;
+			checkFrameWorker.RunWorkerAsync();
+			*/
+
 			return true;
+		}
+
+		private void AsyncCheckFrame(object sender, DoWorkEventArgs e)
+		{
+			System.Diagnostics.Debug.WriteLine("!!!!!!! AsyncCheckFrame starts");
+
+			int loopCount = 0;
+			int frameIndex = 0;
+			while(true)
+			{
+				//System.Diagnostics.Debug.WriteLine("!!!!!!!     AsyncCheckFrame frame " + loopCount.ToString());
+				if (shouldCheckForSwitches && !shouldSwitchGames && activeGameTriggerDef != null && frameIndex != RomLoader.frameIndex)
+				{
+					if (activeEmulator != null)
+					{
+						MemoryDomain[] domains = activeEmulator.emulator.AsMemoryDomains().ToArray<MemoryDomain>();
+						//System.Diagnostics.Debug.WriteLine("@@@@@@@@@        AsyncCheckFrame got " + domains.Length.ToString() + " domains");
+						foreach(MemoryDomain domain in domains)
+						{
+							//System.Diagnostics.Debug.WriteLine("@@@@@@@@@            " + domain.Name);
+
+						}
+						shouldSwitchGames = activeGameTriggerDef.CheckFrame();
+					}
+
+					//System.Diagnostics.Debug.WriteLine("!!!!!!!        AsyncCheckFrame will check frame " + RomLoader.frameIndex);
+					//shouldSwitchGames = activeGameTriggerDef.CheckFrame();
+					frameIndex = RomLoader.frameIndex;
+
+					//RomLoader.frameIndex++;
+				}
+				loopCount++;
+			}
 		}
 
 		private void DispatchErrorMessage(Exception ex, string system)
@@ -810,4 +969,232 @@ namespace BizHawk.Client.Common
 
 		public static readonly string RomFilter = RomFSFilterSet.ToString("Everything");
 	}
+
+	public class EmulatorInstance
+	{
+		public IEmulator emulator = null;
+		public RomGame rom = null;
+		public GameInfo game = null;
+	}
+
+	public class GameTriggerDefinition {
+		public Dictionary<string, ShuffleTriggerDefinition> triggers = new Dictionary<string, ShuffleTriggerDefinition>();
+
+		public static GameTriggerDefinition FromFile(string _filePath) {
+			GameTriggerDefinition newDef = new GameTriggerDefinition();
+
+			string[] lines = File.ReadAllLines(_filePath);
+			foreach (string line in lines) {
+				string[] components = line.Split(new string[] { ">" }, StringSplitOptions.None);
+				if (components.Length > 1) {
+					newDef.triggers.Add(components[0], ShuffleTriggerDefinition.FromLine(components[1]));
+				}
+			}
+
+			return newDef;
+		}
+
+		public bool CheckFrame()
+		{
+			// Saturn is super slow so I have to implement something...
+			if (RomLoader.activeEmulator.game.System == "SAT")
+			{
+				if (RomLoader.frameIndex % 10 != 0)
+				{
+					return false;
+				}
+			}
+
+
+			//System.Diagnostics.Debug.WriteLine("!!!!!!!        CheckFrame called");
+
+			bool shouldSwitch = false;
+			//if (LuaLibraryBase.publicApiContainer != null)
+			if (MemoryApi.instance != null)
+			{
+				//System.Diagnostics.Debug.WriteLine("!!!!!!!!!              checking MemoryApi.instance");
+
+
+				foreach (string _key in triggers.Keys)
+				{
+					//System.Diagnostics.Debug.WriteLine("!!!!!!!!!              checking _key " + _key);
+
+					bool triggerFired = triggers[_key].CheckFrame();
+					if (triggerFired)
+					{
+						shouldSwitch = true;
+					}
+				}
+			} else
+			{
+				//System.Diagnostics.Debug.WriteLine("!!!!!!!!!                MemoryApi.instance is null");
+			}
+
+			return shouldSwitch;
+		}
+	}
+
+	public class ShuffleTriggerDefinition {
+		public List<int> bytes = new List<int>();
+		public int baseType = 256;
+		public int minChange = -2147483647;
+		public int maxChange = 2147483647;
+		public int delay = 0;
+		public string domain = "DEFAULT";
+		public bool enabled = true;
+
+		public long lastValue = 0;
+		public int countdownToActivate = 0;
+
+		public MemoryDomain DomainWithName(string name)
+		{
+			foreach(MemoryDomain _domain in RomLoader.activeMemoryDomains)
+			{
+				if (_domain.Name == name)
+				{
+					return _domain;
+				}
+			}
+
+			return RomLoader.activeMemoryDomains[0];
+		}
+
+		public string DefaultMemoryDomian()
+		{
+			switch (RomLoader.activeEmulator.game.System)
+			{
+				case "GEN":
+					return "68K RAM";
+				case "GB":
+					return "CartRAM";
+				case "NES":
+					return "WRAM";
+				case "SMS":
+					return "Main RAM";
+				case "GG":
+					return "Main RAM";
+				case "SAT":
+					return "Work RAM High";
+				case "GBA":
+					return "IWRAM";
+			}
+
+			return MemoryApi.instance.MainMemoryName;
+		}
+
+		public bool CheckFrame()
+		{
+			if (!enabled /*|| RomLoader.activeMemoryDomains.Count <= 0*/)
+			{
+				return false;
+			}
+
+			long currentValue = 0;
+			int multiplicand = 1;
+			//MemoryDomain domainToCheck = DomainWithName(domain);
+			string domainToCheck = domain;
+			if (domain.ToUpper() == "DEFAULT")
+			{
+				domainToCheck = DefaultMemoryDomian();
+			}
+
+			foreach(int location in bytes)
+			{
+				//uint valueHere = domainToCheck.PeekByte(location); 
+				uint valueHere = MemoryApi.instance.ReadByte(location, domainToCheck);
+				
+				if (baseType == 100)
+				{
+					uint lowerVal = valueHere % 0x10;
+					uint upperVal = (valueHere - lowerVal) / 16;
+					valueHere = lowerVal + (upperVal * 10);
+				}
+				currentValue += valueHere * multiplicand;
+				multiplicand *= baseType;
+			}
+
+			if (lastValue != currentValue)
+			{
+				long oldValue = lastValue;
+
+				long difference = currentValue - lastValue;
+				lastValue = currentValue;
+
+				if (difference > minChange && difference < maxChange)
+				{
+					System.Diagnostics.Debug.WriteLine("!!!!!!!!!              CheckFrame goes " + oldValue.ToString() + " -> " + currentValue.ToString());
+					if (delay > 0)
+					{
+						countdownToActivate = delay + 1;
+					} else
+					{
+						return true;
+					}
+				}
+			}
+
+			// account for the delay
+			if (countdownToActivate > 0)
+			{
+				countdownToActivate--;
+				if (countdownToActivate <= 0)
+				{
+					countdownToActivate = 0;
+					return true;
+				}
+			}
+
+			//System.Diagnostics.Debug.WriteLine("!!!!!!!!!              CheckFrame returns false");
+			return false;
+		}
+
+		public static ShuffleTriggerDefinition FromLine(string _line) {
+			ShuffleTriggerDefinition newDef = new ShuffleTriggerDefinition();
+
+			string[] fields = _line.Split(new string[] { "/" }, StringSplitOptions.None);
+			foreach (string field in fields)
+			{
+				string[] components = field.Split(new string[] { ":" }, StringSplitOptions.None);
+				if (components.Length > 1)
+				{
+					if (components[0] == "bytes")
+					{
+						string[] byteStrings = components[1].Split(new string[] { "," }, StringSplitOptions.None);
+						foreach (string byteString in byteStrings)
+						{
+							newDef.bytes.Add(int.Parse(byteString, System.Globalization.NumberStyles.HexNumber));
+						}
+					}
+
+					if (components[0] == "base")
+					{
+						newDef.baseType = int.Parse(components[1]);
+					}
+					if (components[0] == "minChange")
+					{
+						newDef.minChange = int.Parse(components[1]);
+					}
+					if (components[0] == "maxChange")
+					{
+						newDef.maxChange = int.Parse(components[1]);
+					}
+					if (components[0] == "delay")
+					{
+						newDef.delay = int.Parse(components[1]);
+					}
+					if (components[0] == "domain")
+					{
+						newDef.domain = components[1];
+					}
+					if (components[0] == "enabled")
+					{
+						newDef.enabled = components[1].ToUpper() == "TRUE";
+					}
+				}
+			}
+
+			return newDef;
+		}
+	}
 }
+

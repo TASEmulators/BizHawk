@@ -7,12 +7,16 @@ namespace BizHawk.Client.Common
 {
 	public abstract class LuaLibraryBase
 	{
+		public static ApiContainer publicApiContainer;
+
 		protected LuaLibraryBase(IPlatformLuaLibEnv luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
 		{
 			LogOutputCallback = logOutputCallback;
 			_luaLibsImpl = luaLibsImpl;
 			_th = _luaLibsImpl.GetTableHelper();
 			APIs = apiContainer;
+
+			publicApiContainer = apiContainer;
 		}
 
 		protected static LuaFile CurrentFile { get; private set; }
@@ -46,7 +50,7 @@ namespace BizHawk.Client.Common
 			{
 				if (_currentHostThread != null)
 				{
-					throw new InvalidOperationException("Can't have lua running in two host threads at a time!");
+					//throw new InvalidOperationException("Can't have lua running in two host threads at a time!");
 				}
 
 				_currentHostThread = Thread.CurrentThread;

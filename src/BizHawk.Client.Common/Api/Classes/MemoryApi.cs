@@ -70,7 +70,13 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public MemoryApi(Action<string> logCallback) => LogCallback = logCallback;
+		public static MemoryApi instance;
+
+		public MemoryApi(Action<string> logCallback)
+		{
+			LogCallback = logCallback;
+			instance = this;
+		}
 
 		private MemoryDomain NamedDomainOrCurrent(string name)
 		{
