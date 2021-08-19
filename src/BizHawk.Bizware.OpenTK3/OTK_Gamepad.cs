@@ -88,9 +88,6 @@ namespace BizHawk.Bizware.OpenTK3
 			return num * 10000.0f;
 		}
 
-		/// <summary>Signals whether OpenTK returned a GUID for this device</summary>
-		private readonly bool _guidObtained;
-
 		/// <summary>The OpenTK device index</summary>
 		private readonly int _deviceIndex;
 
@@ -130,7 +127,6 @@ namespace BizHawk.Bizware.OpenTK3
 				guid = Joystick.GetGuid(_deviceIndex);
 				_joystickCapabilities = Joystick.GetCapabilities(_deviceIndex);
 			}
-			_guidObtained = guid is not null;
 
 			string name;
 			if (OpenTKGamePad.GetState(_deviceIndex).IsConnected)
@@ -149,7 +145,123 @@ namespace BizHawk.Bizware.OpenTK3
 			InputNamePrefix = $"{InputNamePrefixShort} ";
 			MappingsDatabaseName = $"{guid ?? Guid.Empty} {name}";
 			Update();
-			InitializeMappings();
+
+			// Setup mappings prior to button initialization.
+			List<(string ButtonName, Func<bool> GetIsPressed)> buttonGetters = new();
+
+			if (guid is not null)
+			{
+				// placeholder for if/when we figure out how to supply OpenTK with custom GamePadConfigurationDatabase entries
+			}
+
+			// currently OpenTK has an internal database of mappings for the GamePad class: https://github.com/opentk/opentk/blob/master/src/OpenTK/Input/GamePadConfigurationDatabase.cs
+			if (MappedGamePad)
+			{
+				// internal map detected - use OpenTKGamePad
+
+				// OpenTK's ThumbSticks contain float values (as opposed to the shorts of SlimDX)
+				const float ConversionFactor = 1.0f / short.MaxValue;
+				const float dzp = 20000 * ConversionFactor;
+				const float dzn = -20000 * ConversionFactor;
+				const float dzt = 0.6f;
+
+				// buttons
+				buttonGetters.Add(("A", () => state.Buttons.A == ButtonState.Pressed));
+				buttonGetters.Add(("B", () => state.Buttons.B == ButtonState.Pressed));
+				buttonGetters.Add(("X", () => state.Buttons.X == ButtonState.Pressed));
+				buttonGetters.Add(("Y", () => state.Buttons.Y == ButtonState.Pressed));
+				buttonGetters.Add(("Guide", () => state.Buttons.BigButton == ButtonState.Pressed));
+				buttonGetters.Add(("Start", () => state.Buttons.Start == ButtonState.Pressed));
+				buttonGetters.Add(("Back", () => state.Buttons.Back == ButtonState.Pressed));
+				buttonGetters.Add(("LeftThumb", () => state.Buttons.LeftStick == ButtonState.Pressed));
+				buttonGetters.Add(("RightThumb", () => state.Buttons.RightStick == ButtonState.Pressed));
+				buttonGetters.Add(("LeftShoulder", () => state.Buttons.LeftShoulder == ButtonState.Pressed));
+				buttonGetters.Add(("RightShoulder", () => state.Buttons.RightShoulder == ButtonState.Pressed));
+
+				// dpad
+				buttonGetters.Add(("DpadUp", () => state.DPad.Up == ButtonState.Pressed));
+				buttonGetters.Add(("DpadDown", () => state.DPad.Down == ButtonState.Pressed));
+				buttonGetters.Add(("DpadLeft", () => state.DPad.Left == ButtonState.Pressed));
+				buttonGetters.Add(("DpadRight", () => state.DPad.Right == ButtonState.Pressed));
+
+				// sticks
+				buttonGetters.Add(("LStickUp", () => state.ThumbSticks.Left.Y >= dzp));
+				buttonGetters.Add(("LStickDown", () => state.ThumbSticks.Left.Y <= dzn));
+				buttonGetters.Add(("LStickLeft", () => state.ThumbSticks.Left.X <= dzn));
+				buttonGetters.Add(("LStickRight", () => state.ThumbSticks.Left.X >= dzp));
+				buttonGetters.Add(("RStickUp", () => state.ThumbSticks.Right.Y >= dzp));
+				buttonGetters.Add(("RStickDown", () => state.ThumbSticks.Right.Y <= dzn));
+				buttonGetters.Add(("RStickLeft", () => state.ThumbSticks.Right.X <= dzn));
+				buttonGetters.Add(("RStickRight", () => state.ThumbSticks.Right.X >= dzp));
+
+				// triggers
+				buttonGetters.Add(("LeftTrigger", () => state.Triggers.Left > dzt));
+				buttonGetters.Add(("RightTrigger", () => state.Triggers.Right > dzt));
+			}
+			else
+			{
+				// no internal map detected - use Joystick
+
+				// OpenTK's GetAxis returns float values (as opposed to the shorts of SlimDX)
+				const float ConversionFactor = 1.0f / short.MaxValue;
+				const float dzp = 20000 * ConversionFactor;
+				const float dzn = -20000 * ConversionFactor;
+//				const float dzt = 0.6f;
+
+				// axis
+				buttonGetters.Add(("X+", () => jState.GetAxis(0) >= dzp));
+				buttonGetters.Add(("X-", () => jState.GetAxis(0) <= dzn));
+				buttonGetters.Add(("Y+", () => jState.GetAxis(1) >= dzp));
+				buttonGetters.Add(("Y-", () => jState.GetAxis(1) <= dzn));
+				buttonGetters.Add(("Z+", () => jState.GetAxis(2) >= dzp));
+				buttonGetters.Add(("Z-", () => jState.GetAxis(2) <= dzn));
+				buttonGetters.Add(("W+", () => jState.GetAxis(3) >= dzp));
+				buttonGetters.Add(("W-", () => jState.GetAxis(3) <= dzn));
+				buttonGetters.Add(("V+", () => jState.GetAxis(4) >= dzp));
+				buttonGetters.Add(("V-", () => jState.GetAxis(4) <= dzn));
+				buttonGetters.Add(("S+", () => jState.GetAxis(5) >= dzp));
+				buttonGetters.Add(("S-", () => jState.GetAxis(5) <= dzn));
+				buttonGetters.Add(("Q+", () => jState.GetAxis(6) >= dzp));
+				buttonGetters.Add(("Q-", () => jState.GetAxis(6) <= dzn));
+				buttonGetters.Add(("P+", () => jState.GetAxis(7) >= dzp));
+				buttonGetters.Add(("P-", () => jState.GetAxis(7) <= dzn));
+				buttonGetters.Add(("N+", () => jState.GetAxis(8) >= dzp));
+				buttonGetters.Add(("N-", () => jState.GetAxis(8) <= dzn));
+				// should be enough axes, but just in case:
+				for (var i = 9; i < 64; i++)
+				{
+					var j = i;
+					buttonGetters.Add(($"Axis{j.ToString()}+", () => jState.GetAxis(j) >= dzp));
+					buttonGetters.Add(($"Axis{j.ToString()}-", () => jState.GetAxis(j) <= dzn));
+				}
+
+				// buttons
+				for (int i = 0, l = _joystickCapabilities?.ButtonCount ?? 0; i < l; i++)
+				{
+					var j = i;
+					buttonGetters.Add(($"B{i + 1}", () => jState.GetButton(j) == ButtonState.Pressed));
+				}
+
+				// hats
+				buttonGetters.Add(("POV1U", () => jState.GetHat(JoystickHat.Hat0).IsUp));
+				buttonGetters.Add(("POV1D", () => jState.GetHat(JoystickHat.Hat0).IsDown));
+				buttonGetters.Add(("POV1L", () => jState.GetHat(JoystickHat.Hat0).IsLeft));
+				buttonGetters.Add(("POV1R", () => jState.GetHat(JoystickHat.Hat0).IsRight));
+				buttonGetters.Add(("POV2U", () => jState.GetHat(JoystickHat.Hat1).IsUp));
+				buttonGetters.Add(("POV2D", () => jState.GetHat(JoystickHat.Hat1).IsDown));
+				buttonGetters.Add(("POV2L", () => jState.GetHat(JoystickHat.Hat1).IsLeft));
+				buttonGetters.Add(("POV2R", () => jState.GetHat(JoystickHat.Hat1).IsRight));
+				buttonGetters.Add(("POV3U", () => jState.GetHat(JoystickHat.Hat2).IsUp));
+				buttonGetters.Add(("POV3D", () => jState.GetHat(JoystickHat.Hat2).IsDown));
+				buttonGetters.Add(("POV3L", () => jState.GetHat(JoystickHat.Hat2).IsLeft));
+				buttonGetters.Add(("POV3R", () => jState.GetHat(JoystickHat.Hat2).IsRight));
+				buttonGetters.Add(("POV4U", () => jState.GetHat(JoystickHat.Hat3).IsUp));
+				buttonGetters.Add(("POV4D", () => jState.GetHat(JoystickHat.Hat3).IsDown));
+				buttonGetters.Add(("POV4L", () => jState.GetHat(JoystickHat.Hat3).IsLeft));
+				buttonGetters.Add(("POV4R", () => jState.GetHat(JoystickHat.Hat3).IsRight));
+			}
+
+			ButtonGetters = buttonGetters;
 		}
 
 		public void Update()
@@ -212,147 +324,7 @@ namespace BizHawk.Bizware.OpenTK3
 		}
 
 		/// <summary>Contains name and delegate function for all buttons, hats and axis</summary>
-		public readonly List<ButtonObject> buttonObjects = new List<ButtonObject>();
-
-		private void AddItem(string name, Func<bool> pressed) =>
-			buttonObjects.Add(new ButtonObject
-			{
-				ButtonName = name,
-				ButtonAction = pressed
-			});
-
-		public struct ButtonObject
-		{
-			public string ButtonName;
-			public Func<bool> ButtonAction;
-		}
-
-		/// <summary>
-		/// Setup mappings prior to button initialization.<br/>
-		/// This is also here in case in the future we want users to be able to supply their own mappings for a device, perhaps via an input form. Possibly wishful thinking/overly complex.
-		/// </summary>
-		private void InitializeMappings()
-		{
-			if (_guidObtained)
-			{
-				// placeholder for if/when we figure out how to supply OpenTK with custom GamePadConfigurationDatabase entries
-			}
-
-			// currently OpenTK has an internal database of mappings for the GamePad class: https://github.com/opentk/opentk/blob/master/src/OpenTK/Input/GamePadConfigurationDatabase.cs
-			if (MappedGamePad)
-			{
-				// internal map detected - use OpenTKGamePad
-				InitializeGamePadControls();
-			}
-			else
-			{
-				// no internal map detected - use Joystick
-				InitializeJoystickControls();
-			}
-		}
-
-		private void InitializeJoystickControls()
-		{
-			// OpenTK's GetAxis returns float values (as opposed to the shorts of SlimDX)
-			const float ConversionFactor = 1.0f / short.MaxValue;
-			const float dzp = 20000 * ConversionFactor;
-			const float dzn = -20000 * ConversionFactor;
-			//const float dzt = 0.6f;
-
-			// axis
-			AddItem("X+", () => jState.GetAxis(0) >= dzp);
-			AddItem("X-", () => jState.GetAxis(0) <= dzn);
-			AddItem("Y+", () => jState.GetAxis(1) >= dzp);
-			AddItem("Y-", () => jState.GetAxis(1) <= dzn);
-			AddItem("Z+", () => jState.GetAxis(2) >= dzp);
-			AddItem("Z-", () => jState.GetAxis(2) <= dzn);
-			AddItem("W+", () => jState.GetAxis(3) >= dzp);
-			AddItem("W-", () => jState.GetAxis(3) <= dzn);
-			AddItem("V+", () => jState.GetAxis(4) >= dzp);
-			AddItem("V-", () => jState.GetAxis(4) <= dzn);
-			AddItem("S+", () => jState.GetAxis(5) >= dzp);
-			AddItem("S-", () => jState.GetAxis(5) <= dzn);
-			AddItem("Q+", () => jState.GetAxis(6) >= dzp);
-			AddItem("Q-", () => jState.GetAxis(6) <= dzn);
-			AddItem("P+", () => jState.GetAxis(7) >= dzp);
-			AddItem("P-", () => jState.GetAxis(7) <= dzn);
-			AddItem("N+", () => jState.GetAxis(8) >= dzp);
-			AddItem("N-", () => jState.GetAxis(8) <= dzn);
-			// should be enough axis, but just in case:
-			for (var i = 9; i < 64; i++)
-			{
-				var j = i;
-				AddItem($"Axis{j.ToString()}+", () => jState.GetAxis(j) >= dzp);
-				AddItem($"Axis{j.ToString()}-", () => jState.GetAxis(j) <= dzn);
-			}
-
-			// buttons
-			for (var i = 0; i < (_joystickCapabilities?.ButtonCount ?? 0); i++)
-			{
-				var j = i;
-				AddItem($"B{i + 1}", () => jState.GetButton(j) == ButtonState.Pressed);
-			}
-
-			// hats
-			AddItem("POV1U", () => jState.GetHat(JoystickHat.Hat0).IsUp);
-			AddItem("POV1D", () => jState.GetHat(JoystickHat.Hat0).IsDown);
-			AddItem("POV1L", () => jState.GetHat(JoystickHat.Hat0).IsLeft);
-			AddItem("POV1R", () => jState.GetHat(JoystickHat.Hat0).IsRight);
-			AddItem("POV2U", () => jState.GetHat(JoystickHat.Hat1).IsUp);
-			AddItem("POV2D", () => jState.GetHat(JoystickHat.Hat1).IsDown);
-			AddItem("POV2L", () => jState.GetHat(JoystickHat.Hat1).IsLeft);
-			AddItem("POV2R", () => jState.GetHat(JoystickHat.Hat1).IsRight);
-			AddItem("POV3U", () => jState.GetHat(JoystickHat.Hat2).IsUp);
-			AddItem("POV3D", () => jState.GetHat(JoystickHat.Hat2).IsDown);
-			AddItem("POV3L", () => jState.GetHat(JoystickHat.Hat2).IsLeft);
-			AddItem("POV3R", () => jState.GetHat(JoystickHat.Hat2).IsRight);
-			AddItem("POV4U", () => jState.GetHat(JoystickHat.Hat3).IsUp);
-			AddItem("POV4D", () => jState.GetHat(JoystickHat.Hat3).IsDown);
-			AddItem("POV4L", () => jState.GetHat(JoystickHat.Hat3).IsLeft);
-			AddItem("POV4R", () => jState.GetHat(JoystickHat.Hat3).IsRight);
-		}
-
-		private void InitializeGamePadControls()
-		{
-			// OpenTK's ThumbSticks contain float values (as opposed to the shorts of SlimDX)
-			const float ConversionFactor = 1.0f / short.MaxValue;
-			const float dzp = 20000 * ConversionFactor;
-			const float dzn = -20000 * ConversionFactor;
-			const float dzt = 0.6f;
-
-			// buttons
-			AddItem("A", () => state.Buttons.A == ButtonState.Pressed);
-			AddItem("B", () => state.Buttons.B == ButtonState.Pressed);
-			AddItem("X", () => state.Buttons.X == ButtonState.Pressed);
-			AddItem("Y", () => state.Buttons.Y == ButtonState.Pressed);
-			AddItem("Guide", () => state.Buttons.BigButton == ButtonState.Pressed);
-			AddItem("Start", () => state.Buttons.Start == ButtonState.Pressed);
-			AddItem("Back", () => state.Buttons.Back == ButtonState.Pressed);
-			AddItem("LeftThumb", () => state.Buttons.LeftStick == ButtonState.Pressed);
-			AddItem("RightThumb", () => state.Buttons.RightStick == ButtonState.Pressed);
-			AddItem("LeftShoulder", () => state.Buttons.LeftShoulder == ButtonState.Pressed);
-			AddItem("RightShoulder", () => state.Buttons.RightShoulder == ButtonState.Pressed);
-
-			// dpad
-			AddItem("DpadUp", () => state.DPad.Up == ButtonState.Pressed);
-			AddItem("DpadDown", () => state.DPad.Down == ButtonState.Pressed);
-			AddItem("DpadLeft", () => state.DPad.Left == ButtonState.Pressed);
-			AddItem("DpadRight", () => state.DPad.Right == ButtonState.Pressed);
-
-			// sticks
-			AddItem("LStickUp", () => state.ThumbSticks.Left.Y >= dzp);
-			AddItem("LStickDown", () => state.ThumbSticks.Left.Y <= dzn);
-			AddItem("LStickLeft", () => state.ThumbSticks.Left.X <= dzn);
-			AddItem("LStickRight", () => state.ThumbSticks.Left.X >= dzp);
-			AddItem("RStickUp", () => state.ThumbSticks.Right.Y >= dzp);
-			AddItem("RStickDown", () => state.ThumbSticks.Right.Y <= dzn);
-			AddItem("RStickLeft", () => state.ThumbSticks.Right.X <= dzn);
-			AddItem("RStickRight", () => state.ThumbSticks.Right.X >= dzp);
-
-			// triggers
-			AddItem("LeftTrigger", () => state.Triggers.Left > dzt);
-			AddItem("RightTrigger", () => state.Triggers.Right > dzt);
-		}
+		public readonly IReadOnlyCollection<(string ButtonName, Func<bool> GetIsPressed)> ButtonGetters;
 
 		/// <remarks><paramref name="left"/> and <paramref name="right"/> are in 0..<see cref="int.MaxValue"/></remarks>
 		public void SetVibration(int left, int right)
