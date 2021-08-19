@@ -45,7 +45,7 @@ namespace BizHawk.Bizware.OpenTK3
 			{
 				var known = devices[index];
 				devices[index] = null;
-				Console.WriteLine(known is null ? $"Dropped gamepad X{index}/J{index}" : $"Dropped gamepad {known.InputNamePrefixShort}: was {known.MappingsDatabaseName}");
+				Console.WriteLine(known is null ? $"Dropped gamepad X{index + 1}/J{index + 1}" : $"Dropped gamepad {known.InputNamePrefixShort}: was {known.MappingsDatabaseName}");
 			}
 			if (!initialized) return;
 			lock (_syncObj)
@@ -145,7 +145,7 @@ namespace BizHawk.Bizware.OpenTK3
 			HapticsChannels = _gamePadCapabilities != null && _gamePadCapabilities.Value.HasLeftVibrationMotor && _gamePadCapabilities.Value.HasRightVibrationMotor
 				? new[] { "Left", "Right" } // two haptic motors
 				: new[] { "Mono" }; // one or zero haptic motors -- in the latter case, pretend it's mono anyway as that doesn't seem to cause problems
-			InputNamePrefixShort = $"{(MappedGamePad ? "X" : "J")}{_deviceIndex}";
+			InputNamePrefixShort = $"{(MappedGamePad ? "X" : "J")}{_deviceIndex + 1}";
 			InputNamePrefix = $"{InputNamePrefixShort} ";
 			MappingsDatabaseName = $"{guid ?? Guid.Empty} {name}";
 			Update();
