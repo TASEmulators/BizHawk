@@ -12,6 +12,8 @@ namespace BizHawk.Bizware.OpenTK3
 	{
 		private IReadOnlyDictionary<string, int> _lastHapticsSnapshot = new Dictionary<string, int>();
 
+		public string Desc { get; } = "OpenTK 3";
+
 		public void DeInitAll() {}
 
 		public void FirstInitAll(IntPtr mainFormHandle)

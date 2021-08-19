@@ -48,6 +48,7 @@ namespace BizHawk.Client.EmuHawk
 				EHostInputMethod.DirectInput => new DirectInputAdapter(),
 				_ => throw new Exception()
 			};
+			Console.WriteLine($"Using {Adapter.Desc} for host input (keyboard + gamepads)");
 			Adapter.UpdateConfig(config);
 			Adapter.FirstInitAll(mainFormHandle);
 			_updateThread = new Thread(UpdateThreadProc)

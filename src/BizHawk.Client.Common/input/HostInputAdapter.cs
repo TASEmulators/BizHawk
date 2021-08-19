@@ -8,6 +8,8 @@ namespace BizHawk.Client.Common
 	/// <remarks>this was easier than trying to make static classes instantiable...</remarks>
 	public interface IHostInputAdapter
 	{
+		string Desc { get; }
+
 		void DeInitAll();
 
 		void FirstInitAll(IntPtr mainFormHandle);

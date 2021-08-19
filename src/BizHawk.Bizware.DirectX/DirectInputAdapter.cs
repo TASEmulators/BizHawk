@@ -16,6 +16,8 @@ namespace BizHawk.Bizware.DirectX
 
 		private Config? _config;
 
+		public string Desc { get; } = "DirectInput+XInput";
+
 		public void DeInitAll()
 		{
 			KeyInput.Cleanup();

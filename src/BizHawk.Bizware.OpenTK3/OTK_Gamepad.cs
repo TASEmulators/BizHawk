@@ -46,7 +46,7 @@ namespace BizHawk.Bizware.OpenTK3
 			static void DropAt(int knownAsIndex, IList<OTK_GamePad> devices)
 			{
 				var known = devices[knownAsIndex];
-				Console.WriteLine($"Dropped gamepad #{knownAsIndex}, was port#{known._deviceIndex} ({known._name}) via OpenTK");
+				Console.WriteLine($"Dropped gamepad #{knownAsIndex}: was {known.VerboseName}");
 				devices.RemoveAt(knownAsIndex);
 			}
 			if (!initialized) return;
@@ -69,7 +69,7 @@ namespace BizHawk.Bizware.OpenTK3
 							{
 								var newConn = new OTK_GamePad(tryIndex, Devices.Count);
 								Devices.Insert(tryIndex, newConn); // try and keep our indices in line with the OpenTK ones
-								Console.WriteLine($"Connected new gamepad #{tryIndex}, port#{newConn._deviceIndex} ({newConn._name}) via OpenTK");
+								Console.WriteLine($"Connected new gamepad as #{tryIndex}: {newConn.VerboseName}");
 							}
 							// else was and remains disconnected, move along
 						}
@@ -111,6 +111,8 @@ namespace BizHawk.Bizware.OpenTK3
 
 		/// <summary>The object returned by <see cref="Joystick.GetCapabilities"/></summary>
 		private readonly JoystickCapabilities? _joystickCapabilities;
+
+		private readonly string VerboseName;
 
 		public readonly IReadOnlyCollection<string> HapticsChannels;
 
@@ -156,12 +158,8 @@ namespace BizHawk.Bizware.OpenTK3
 				? new[] { "Left", "Right" } // two haptic motors
 				: new[] { "Mono" }; // one or zero haptic motors -- in the latter case, pretend it's mono anyway as that doesn't seem to cause problems
 			InputNamePrefix = $"{(MappedGamePad ? "X" : "J")}{_playerIndex} ";
-
+			VerboseName = $"port #{_deviceIndex} {(MappedGamePad ? "mapped" : "unmapped")} {Guid} {_name}";
 			Update();
-
-			Console.WriteLine($"Initialising OpenTK GamePad: {Guid}");
-			Console.WriteLine($"OpenTK Mapping: {_name}");
-
 			InitializeMappings();
 		}
 
