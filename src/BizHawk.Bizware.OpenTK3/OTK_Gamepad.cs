@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 using BizHawk.Common;
 
@@ -22,7 +23,7 @@ namespace BizHawk.Bizware.OpenTK3
 
 		private static readonly object _syncObj = new object();
 
-		private static readonly List<OTK_GamePad> Devices = new();
+		private static readonly OTK_GamePad[] Devices = new OTK_GamePad[MAX_GAMEPADS];
 
 		private static volatile bool initialized = false;
 
@@ -34,42 +35,38 @@ namespace BizHawk.Bizware.OpenTK3
 
 		public static IEnumerable<OTK_GamePad> EnumerateDevices()
 		{
-			if (!initialized) yield break;
-			lock (_syncObj)
-			{
-				foreach (var device in Devices) yield return device;
-			}
+			if (!initialized) return Enumerable.Empty<OTK_GamePad>();
+			lock (_syncObj) return Devices.Where(pad => pad is not null).ToList();
 		}
 
 		public static void UpdateAll()
 		{
-			static void DropAt(int knownAsIndex, IList<OTK_GamePad> devices)
+			static void DropAt(int index, IList<OTK_GamePad> devices)
 			{
-				var known = devices[knownAsIndex];
-				Console.WriteLine($"Dropped gamepad #{knownAsIndex}: was {known.VerboseName}");
-				devices.RemoveAt(knownAsIndex);
+				var known = devices[index];
+				devices[index] = null;
+				Console.WriteLine(known is null ? $"Dropped gamepad X{index}/J{index}" : $"Dropped gamepad {known.InputNamePrefixShort}: was {known.MappingsDatabaseName}");
 			}
 			if (!initialized) return;
 			lock (_syncObj)
 			{
 				for (var tryIndex = 0; tryIndex < MAX_GAMEPADS; tryIndex++)
 				{
-					var knownAsIndex = Devices.FindIndex(dev => dev._deviceIndex == tryIndex);
+					var known = Devices[tryIndex];
 					try
 					{
 						var isConnectedAtIndex = OpenTKGamePad.GetState(tryIndex).IsConnected || Joystick.GetState(tryIndex).IsConnected;
-						if (knownAsIndex != -1)
+						if (known is not null)
 						{
-							if (isConnectedAtIndex) Devices[knownAsIndex].Update();
-							else DropAt(knownAsIndex, Devices);
+							if (isConnectedAtIndex) known.Update();
+							else DropAt(tryIndex, Devices);
 						}
 						else
 						{
 							if (isConnectedAtIndex)
 							{
-								var newConn = new OTK_GamePad(tryIndex, Devices.Count);
-								Devices.Insert(tryIndex, newConn); // try and keep our indices in line with the OpenTK ones
-								Console.WriteLine($"Connected new gamepad as #{tryIndex}: {newConn.VerboseName}");
+								var newConn = Devices[tryIndex] = new(tryIndex);
+								Console.WriteLine($"Connected new gamepad {newConn.InputNamePrefixShort}: {newConn.MappingsDatabaseName}");
 							}
 							// else was and remains disconnected, move along
 						}
@@ -77,7 +74,7 @@ namespace BizHawk.Bizware.OpenTK3
 					catch (Exception e)
 					{
 						Util.DebugWriteLine($"caught {e.GetType().FullName} while enumerating OpenTK gamepads");
-						if (knownAsIndex != -1) DropAt(knownAsIndex, Devices);
+						DropAt(tryIndex, Devices);
 					}
 				}
 			}
@@ -91,20 +88,11 @@ namespace BizHawk.Bizware.OpenTK3
 			return num * 10000.0f;
 		}
 
-		/// <summary>The GUID as detected by OpenTK.Input.Joystick (or if that failed, a random one generated on construction)</summary>
-		public readonly Guid Guid;
-
 		/// <summary>Signals whether OpenTK returned a GUID for this device</summary>
 		private readonly bool _guidObtained;
 
 		/// <summary>The OpenTK device index</summary>
 		private readonly int _deviceIndex;
-
-		/// <summary>The index to lookup into Devices</summary>
-		private readonly int _playerIndex;
-
-		/// <summary>The name (if any) that OpenTK GamePad has resolved via its internal mapping database</summary>
-		private readonly string _name;
 
 		/// <summary>The object returned by <see cref="OpenTKGamePad.GetCapabilities"/></summary>
 		private readonly GamePadCapabilities? _gamePadCapabilities;
@@ -112,15 +100,19 @@ namespace BizHawk.Bizware.OpenTK3
 		/// <summary>The object returned by <see cref="Joystick.GetCapabilities"/></summary>
 		private readonly JoystickCapabilities? _joystickCapabilities;
 
-		private readonly string VerboseName;
-
 		public readonly IReadOnlyCollection<string> HapticsChannels;
 
 		/// <summary>For use in keybind boxes</summary>
 		public readonly string InputNamePrefix;
 
+		/// <summary>as <see cref="InputNamePrefix"/> but without the trailing space</summary>
+		private readonly string InputNamePrefixShort;
+
 		/// <summary>Public check on whether mapped gamepad config is being used</summary>
 		public bool MappedGamePad => _gamePadCapabilities?.IsMapped == true;
+
+		/// <summary>GUID from <see cref="Joystick"/> (also used for DB) and name from <see cref="OpenTKGamePad"/> via DB</summary>
+		private readonly string MappingsDatabaseName;
 
 		/// <summary>Gamepad Device state information - updated constantly</summary>
 		private GamePadState state;
@@ -128,37 +120,34 @@ namespace BizHawk.Bizware.OpenTK3
 		/// <summary>Joystick Device state information - updated constantly</summary>
 		private JoystickState jState;
 
-		private OTK_GamePad(int index, int playerIndex)
+		private OTK_GamePad(int deviceIndex)
 		{
-			_deviceIndex = index;
-			_playerIndex = playerIndex;
+			_deviceIndex = deviceIndex;
 
+			Guid? guid = null;
 			if (Joystick.GetState(_deviceIndex).IsConnected)
 			{
-				Guid = Joystick.GetGuid(_deviceIndex);
-				_guidObtained = true;
+				guid = Joystick.GetGuid(_deviceIndex);
 				_joystickCapabilities = Joystick.GetCapabilities(_deviceIndex);
 			}
-			else
-			{
-				Guid = Guid.NewGuid();
-				_guidObtained = false;
-			}
+			_guidObtained = guid is not null;
 
+			string name;
 			if (OpenTKGamePad.GetState(_deviceIndex).IsConnected)
 			{
-				_name = OpenTKGamePad.GetName(_deviceIndex);
+				name = OpenTKGamePad.GetName(_deviceIndex);
 				_gamePadCapabilities = OpenTKGamePad.GetCapabilities(_deviceIndex);
 			}
 			else
 			{
-				_name = "OTK GamePad Undetermined Name";
+				name = "OTK GamePad Undetermined Name";
 			}
 			HapticsChannels = _gamePadCapabilities != null && _gamePadCapabilities.Value.HasLeftVibrationMotor && _gamePadCapabilities.Value.HasRightVibrationMotor
 				? new[] { "Left", "Right" } // two haptic motors
 				: new[] { "Mono" }; // one or zero haptic motors -- in the latter case, pretend it's mono anyway as that doesn't seem to cause problems
-			InputNamePrefix = $"{(MappedGamePad ? "X" : "J")}{_playerIndex} ";
-			VerboseName = $"port #{_deviceIndex} {(MappedGamePad ? "mapped" : "unmapped")} {Guid} {_name}";
+			InputNamePrefixShort = $"{(MappedGamePad ? "X" : "J")}{_deviceIndex}";
+			InputNamePrefix = $"{InputNamePrefixShort} ";
+			MappingsDatabaseName = $"{guid ?? Guid.Empty} {name}";
 			Update();
 			InitializeMappings();
 		}
@@ -221,8 +210,6 @@ namespace BizHawk.Bizware.OpenTK3
 				yield break;
 			}
 		}
-
-		public string Name => $"Joystick {_playerIndex} ({_name})";
 
 		/// <summary>Contains name and delegate function for all buttons, hats and axis</summary>
 		public readonly List<ButtonObject> buttonObjects = new List<ButtonObject>();
