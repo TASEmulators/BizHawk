@@ -34,7 +34,7 @@ namespace BizHawk.Bizware.OpenTK3
 			foreach (var pad in OTK_GamePad.EnumerateDevices())
 			{
 				foreach (var but in pad.ButtonGetters) handleButton(pad.InputNamePrefix + but.ButtonName, but.GetIsPressed(), ClientInputFocus.Pad);
-				foreach (var (axisID, f) in pad.GetAxes()) handleAxis($"{pad.InputNamePrefix}{axisID} Axis", (int) f);
+				foreach (var (axisID, f) in pad.GetAxes()) handleAxis($"{pad.InputNamePrefix}{axisID} Axis", f);
 #if DEBUG // effectively no-op as OpenTK 3 doesn't seem to actually support haptic feedback
 				foreach (var channel in pad.HapticsChannels)
 				{

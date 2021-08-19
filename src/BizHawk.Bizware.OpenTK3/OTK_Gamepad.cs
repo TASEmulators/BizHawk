@@ -80,14 +80,6 @@ namespace BizHawk.Bizware.OpenTK3
 			}
 		}
 
-		/// <summary>The things that use <see cref="GetAxes"/> (analog controls) appear to require values -10000.0..10000.0 rather than the -1.0..1.0 that OpenTK returns (although even then the results may be slightly outside of these bounds)</summary>
-		private static float ConstrainFloatInput(float num)
-		{
-			if (num > 1) return 10000.0f;
-			if (num < -1) return -10000.0f;
-			return num * 10000.0f;
-		}
-
 		/// <summary>The OpenTK device index</summary>
 		private readonly int _deviceIndex;
 
@@ -287,40 +279,51 @@ namespace BizHawk.Bizware.OpenTK3
 			if (!tmpJstate.Equals(jState)) Console.WriteLine($"Joystick State:\t{tmpJstate}");
 		}
 
-		public IEnumerable<(string AxisID, float Value)> GetAxes()
+		public IReadOnlyCollection<(string AxisID, int Value)> GetAxes()
 		{
+			// The host input stack appears to require values -10000.0..10000.0 rather than the -1.0..1.0 that OpenTK returns (although even then the results may be slightly outside of these bounds)
+			static int ConstrainFloatInput(float num) => num switch
+			{
+				> 1 => 10000,
+				< -1 => -10000,
+				_ => (int) (num * 10000.0f)
+			};
+
 			if (MappedGamePad)
 			{
 				// automapping identified - use OpenTKGamePad
-				yield return ("LeftThumbX", ConstrainFloatInput(state.ThumbSticks.Left.X));
-				yield return ("LeftThumbY", ConstrainFloatInput(state.ThumbSticks.Left.Y));
-				yield return ("RightThumbX", ConstrainFloatInput(state.ThumbSticks.Right.X));
-				yield return ("RightThumbY", ConstrainFloatInput(state.ThumbSticks.Right.Y));
-				yield return ("LeftTrigger", ConstrainFloatInput(state.Triggers.Left));
-				yield return ("RightTrigger", ConstrainFloatInput(state.Triggers.Right));
-				yield break;
-			}
-			else
-			{
-				// use Joystick
-				yield return ("X", ConstrainFloatInput(jState.GetAxis(0)));
-				yield return ("Y", ConstrainFloatInput(jState.GetAxis(1)));
-				yield return ("Z", ConstrainFloatInput(jState.GetAxis(2)));
-				yield return ("W", ConstrainFloatInput(jState.GetAxis(3)));
-				yield return ("V", ConstrainFloatInput(jState.GetAxis(4)));
-				yield return ("S", ConstrainFloatInput(jState.GetAxis(5)));
-				yield return ("Q", ConstrainFloatInput(jState.GetAxis(6)));
-				yield return ("P", ConstrainFloatInput(jState.GetAxis(7)));
-				yield return ("N", ConstrainFloatInput(jState.GetAxis(8)));
-
-				for (var i = 9; i < 64; i++)
+				return new[]
 				{
-					var j = i;
-					yield return ($"Axis{j.ToString()}", ConstrainFloatInput(jState.GetAxis(j)));
-				}
-
-				yield break;
+					("LeftThumbX", ConstrainFloatInput(state.ThumbSticks.Left.X)),
+					("LeftThumbY", ConstrainFloatInput(state.ThumbSticks.Left.Y)),
+					("RightThumbX", ConstrainFloatInput(state.ThumbSticks.Right.X)),
+					("RightThumbY", ConstrainFloatInput(state.ThumbSticks.Right.Y)),
+					("LeftTrigger", ConstrainFloatInput(state.Triggers.Left)),
+					("RightTrigger", ConstrainFloatInput(state.Triggers.Right)),
+				};
 			}
+
+			// else use Joystick
+			List<(string AxisID, int Value)> values = new()
+			{
+				("X", ConstrainFloatInput(jState.GetAxis(0))),
+				("Y", ConstrainFloatInput(jState.GetAxis(1))),
+				("Z", ConstrainFloatInput(jState.GetAxis(2))),
+				("W", ConstrainFloatInput(jState.GetAxis(3))),
+				("V", ConstrainFloatInput(jState.GetAxis(4))),
+				("S", ConstrainFloatInput(jState.GetAxis(5))),
+				("Q", ConstrainFloatInput(jState.GetAxis(6))),
+				("P", ConstrainFloatInput(jState.GetAxis(7))),
+				("N", ConstrainFloatInput(jState.GetAxis(8))),
+			};
+
+			for (var i = 9; i < 64; i++)
+			{
+				var j = i;
+				values.Add(($"Axis{j.ToString()}", ConstrainFloatInput(jState.GetAxis(j))));
+			}
+
+			return values;
 		}
 
 		/// <summary>Contains name and delegate function for all buttons, hats and axis</summary>
