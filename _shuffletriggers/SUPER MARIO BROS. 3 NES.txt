@@ -1,0 +1,2 @@
+coins>bytes:1967/calculation:sum/minChange:0/maxChange:1000
+score>bytes:0717,0716,0715/base:256/domain:RAM/delay:5

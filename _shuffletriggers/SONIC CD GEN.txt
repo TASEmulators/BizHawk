@@ -1,0 +1,1 @@
+ring>bytes:1513/base:256/minChange:0/maxChange:2147483647/delay:0/domain:DEFAULT/controlOutput:PRESS/enabled:True

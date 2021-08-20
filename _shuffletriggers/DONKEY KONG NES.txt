@@ -1,0 +1,1 @@
+score>bytes:0025,0026,0027/domain:RAM

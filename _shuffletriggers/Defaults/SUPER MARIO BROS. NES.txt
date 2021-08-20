@@ -1,0 +1,1 @@
+score>bytes:07E2,07E1,07E0,07DF,07DE,07DD/domain:RAM/delay:5

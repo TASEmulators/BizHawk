@@ -1,0 +1,4 @@
+enemies>bytes:0627/domain:RAM
+rupees>bytes:066D/domain:RAM
+keys>bytes:066E/domain:RAM
+bombs>bytes:0658/domain:RAM

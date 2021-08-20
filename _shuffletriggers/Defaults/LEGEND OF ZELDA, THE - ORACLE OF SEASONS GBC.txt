@@ -1,0 +1,2 @@
+rupees>bytes:06A5,06A6/base:100/domain:WRAM
+kills>bytes:063E/domain:WRAM

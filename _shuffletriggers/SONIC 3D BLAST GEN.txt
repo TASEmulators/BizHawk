@@ -1,0 +1,2 @@
+rings>bytes:0A5B
+specialRings>bytes:A17D/maxChange:5

@@ -1,0 +1,1 @@
+rings>bytes:B3F0/base:256/minChange:0/maxChange:2147483647/delay:0/domain:Work Ram High/controlOutput:PRESS/enabled:True

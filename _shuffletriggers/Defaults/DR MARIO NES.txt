@@ -1,0 +1,1 @@
+virus>bytes:072A,072B,072C,072D,072E/domain:RAM

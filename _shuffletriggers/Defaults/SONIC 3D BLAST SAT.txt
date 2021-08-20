@@ -1,0 +1,2 @@
+ring>bytes:098008,098009/base:100/minChange:0/maxChange:2147483647/delay:0/domain:Work Ram High/controlOutput:PRESS/enabled:True/isTracker:False/trackerDivisor:1
+specialRing>bytes:0FFC94,0FFC95/base:256/minChange:0/maxChange:2147483647/delay:0/domain:Work Ram High/controlOutput:PRESS/enabled:True/isTracker:False/trackerDivisor:1

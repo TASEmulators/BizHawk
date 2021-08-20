@@ -1,0 +1,2 @@
+coins>bytes:0262,0263/base:100
+enemies>bytes:028D/base:100

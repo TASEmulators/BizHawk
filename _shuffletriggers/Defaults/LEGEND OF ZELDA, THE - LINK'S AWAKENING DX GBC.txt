@@ -1,0 +1,4 @@
+rupees>bytes:1B5E,1B5D/domain:WRAM/base:100
+arrows>bytes:1B45,1B5D/domain:WRAM
+bombs>bytes:1B4D,1B5D/domain:WRAM
+powder>bytes:1B4C/domain:WRAM

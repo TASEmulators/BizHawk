@@ -1,0 +1,3 @@
+rings>bytes:FE21/calculation:sum/minChange:0/maxChange:1000
+score>bytes:FE29,FE28,FE27/delay:5/controlOutput:CHANGE
+xPos>bytes:D009,D008/base:256/minChange:0/maxChange:2147483647/delay:0/domain:DEFAULT/controlOutput:PRESS/enabled:True/isTracker:True/trackerDivisor:90

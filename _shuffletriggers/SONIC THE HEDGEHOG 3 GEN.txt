@@ -1,0 +1,5 @@
+rings>bytes:FE21
+specialRings>bytes:E43B/maxChange:5
+score>bytes:FE29,FE28,FE27/delay:5/controlOutput:CHANGE
+xPos>bytes:B011,B010/base:256/minChange:0/maxChange:2147483647/delay:0/domain:DEFAULT/controlOutput:PRESS/enabled:True/isTracker:True/trackerDivisor:64
+yPos>bytes:B015,B014/base:256/minChange:0/maxChange:2147483647/delay:0/domain:DEFAULT/controlOutput:PRESS/enabled:False/isTracker:True/trackerDivisor:128

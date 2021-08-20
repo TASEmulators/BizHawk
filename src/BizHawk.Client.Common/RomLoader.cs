@@ -822,14 +822,19 @@ namespace BizHawk.Client.Common
 			LoadedEmulator = nextEmulator;
 			Game = game;
 
-			string _triggerKey = game.Name.Split(new string[] { ".txt", "(" }, StringSplitOptions.None)[0].ToUpper() + game.System.ToString();
+			string _triggerKeyStart = game.Name.Split(new string[] { "(" }, StringSplitOptions.None)[0];
+			if (!_triggerKeyStart.EndsWith(" "))
+			{
+				_triggerKeyStart += " ";
+			}
+			string _triggerKey = _triggerKeyStart.ToUpper() + game.System.ToString();
 
 			if (gameTriggers.ContainsKey(_triggerKey))
 			{
 				activeGameTriggerDef = gameTriggers[_triggerKey];
 			} else
 			{
-				System.Diagnostics.Debug.WriteLine("!!!!!!!! no trigger for key " + _triggerKey);
+				System.Diagnostics.Debug.WriteLine("!!!!!!!! no trigger for game ("+ game.Name + ") key: " + _triggerKey);
 			}
 
 			//activeMemoryDomains = activeEmulator.emulator.AsMemoryDomains().ToList<MemoryDomain>();
@@ -1037,7 +1042,7 @@ namespace BizHawk.Client.Common
 	public class ShuffleTriggerDefinition {
 		public List<int> bytes = new List<int>();
 		public int baseType = 256;
-		public int minChange = -2147483647;
+		public int minChange = 0;
 		public int maxChange = 2147483647;
 		public int delay = 0;
 		public string domain = "DEFAULT";

@@ -1,0 +1,2 @@
+coins>bytes:097B/calculation:sum/minChange:0/maxChange:1000
+hearts>bytes:0808/calculation:sum/minChange:0/maxChange:1000/controlOutput:CHANGE

@@ -1,0 +1,1 @@
+rings>bytes:E009,E008/base:256/minChange:0/maxChange:2147483647/delay:0/domain:68K RAM/controlOutput:PRESS/enabled:True
