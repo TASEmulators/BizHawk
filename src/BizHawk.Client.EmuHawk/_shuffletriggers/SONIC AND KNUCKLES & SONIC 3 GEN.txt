@@ -1,5 +1,1 @@
 rings>bytes:FE21/base:256/minChange:0/maxChange:2147483647/delay:0/domain:DEFAULT/controlOutput:PRESS/enabled:True/isTracker:False/trackerDivisor:1
-specialRings>bytes:E43B/base:256/minChange:0/maxChange:5/delay:0/domain:DEFAULT/controlOutput:PRESS/enabled:True/isTracker:False/trackerDivisor:1
-score>bytes:FE29,FE28,FE27/base:256/minChange:0/maxChange:2147483647/delay:5/domain:DEFAULT/controlOutput:CHANGE/enabled:True/isTracker:False/trackerDivisor:1
-xPos>bytes:B011,B010/base:256/minChange:0/maxChange:2147483647/delay:0/domain:DEFAULT/controlOutput:PRESS/enabled:True/isTracker:True/trackerDivisor:90
-yPos>bytes:B015,B014/base:256/minChange:0/maxChange:2147483647/delay:0/domain:DEFAULT/controlOutput:PRESS/enabled:False/isTracker:True/trackerDivisor:128

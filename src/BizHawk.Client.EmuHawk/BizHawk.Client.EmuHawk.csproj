@@ -521,4 +521,282 @@
 		<Compile Update="tools/Watch/WatchValueBox.cs" SubType="Component" />
 		<Compile Update="UpdateChecker.cs" SubType="Code" />
 	</ItemGroup>
+	<ItemGroup>
+	  <None Update="_shuffletriggers\Defaults\DONKEY KONG NES.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\Defaults\DR MARIO NES.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\Defaults\KNUCKLES%27 CHAOTIX GEN.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\Defaults\LEGEND OF ZELDA, THE - A LINK TO THE PAST SNES.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\Defaults\LEGEND OF ZELDA, THE - LINK%27S AWAKENING DX GBC.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\Defaults\LEGEND OF ZELDA, THE - LINK%27S AWAKENING GB.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\Defaults\LEGEND OF ZELDA, THE - ORACLE OF AGES GBC.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\Defaults\LEGEND OF ZELDA, THE - ORACLE OF SEASONS GBC.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\Defaults\LEGEND OF ZELDA, THE NES.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\Defaults\SONIC &amp; KNUCKLES GEN.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\Defaults\SONIC &amp; TAILS 2 GG.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\Defaults\SONIC &amp; TAILS GG.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\Defaults\SONIC 3D BLAST GEN.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\Defaults\SONIC 3D BLAST SAT.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\Defaults\SONIC ADVANCE 2 GBA.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\Defaults\SONIC ADVANCE 3 GBA.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\Defaults\SONIC ADVANCE GBA.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\Defaults\SONIC AND KNUCKLES &amp; SONIC 3 GEN.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\Defaults\SONIC AND KNUCKLES GEN.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\Defaults\SONIC BLAST GG.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\Defaults\SONIC BLAST SMS.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\Defaults\SONIC CD GEN.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\Defaults\SONIC CHAOS GG.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\Defaults\SONIC CHAOS SMS.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\Defaults\SONIC R SAT.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\Defaults\SONIC SPINBALL GEN.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\Defaults\SONIC THE HEDGEHOG - TRIPLE TROUBLE GG.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\Defaults\SONIC THE HEDGEHOG 2 GEN.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\Defaults\SONIC THE HEDGEHOG 2 GG.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\Defaults\SONIC THE HEDGEHOG 2 SMS.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\Defaults\SONIC THE HEDGEHOG 3 GEN.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\Defaults\SONIC THE HEDGEHOG GEN.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\Defaults\SONIC THE HEDGEHOG GG.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\Defaults\SONIC THE HEDGEHOG SMS.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\Defaults\SUPER MARIO 64 N64.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\Defaults\SUPER MARIO BROS. 2 NES.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\Defaults\SUPER MARIO BROS. 3 NES.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\Defaults\SUPER MARIO BROS. NES.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\Defaults\SUPER MARIO KART SNES.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\Defaults\SUPER MARIO LAND 2 - 6 GOLDEN COINS GB.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\Defaults\SUPER MARIO LAND GB.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\Defaults\SUPER MARIO WORLD - SUPER MARIO BROS. 4 SNES.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\Defaults\SUPER MARIO WORLD SNES.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\Defaults\TETRIS GB.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\Defaults\WARIO LAND - SUPER MARIO LAND 3 GB.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\Defaults\ZELDA II, THE ADVENTURE OF LINK NES.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\DONKEY KONG NES.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\DR MARIO NES.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\KNUCKLES%27 CHAOTIX GEN.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\LEGEND OF ZELDA, THE - A LINK TO THE PAST SNES.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\LEGEND OF ZELDA, THE - LINK%27S AWAKENING DX GBC.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\LEGEND OF ZELDA, THE - LINK%27S AWAKENING GB.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\LEGEND OF ZELDA, THE - ORACLE OF AGES GBC.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\LEGEND OF ZELDA, THE - ORACLE OF SEASONS GBC.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\LEGEND OF ZELDA, THE NES.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\SONIC &amp; KNUCKLES GEN.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\SONIC &amp; TAILS 2 GG.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\SONIC &amp; TAILS GG.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\SONIC 3D BLAST GEN.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\SONIC 3D BLAST SAT.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\SONIC ADVANCE 2 GBA.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\SONIC ADVANCE 3 GBA.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\SONIC ADVANCE GBA.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\SONIC AND KNUCKLES &amp; SONIC 3 GEN.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\SONIC AND KNUCKLES GEN.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\SONIC BLAST GG.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\SONIC BLAST SMS.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\SONIC CD GEN.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\SONIC CHAOS GG.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\SONIC CHAOS SMS.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\SONIC R SAT.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\SONIC SPINBALL GEN.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\SONIC THE HEDGEHOG - TRIPLE TROUBLE GG.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\SONIC THE HEDGEHOG 2 GEN.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\SONIC THE HEDGEHOG 2 GG.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\SONIC THE HEDGEHOG 2 SMS.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\SONIC THE HEDGEHOG 3 GEN.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\SONIC THE HEDGEHOG GEN.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\SONIC THE HEDGEHOG GG.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\SONIC THE HEDGEHOG SMS.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\SUPER MARIO 64 N64.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\SUPER MARIO BROS. 2 NES.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\SUPER MARIO BROS. 3 NES.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\SUPER MARIO BROS. NES.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\SUPER MARIO KART SNES.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\SUPER MARIO LAND 2 - 6 GOLDEN COINS GB.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\SUPER MARIO LAND GB.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\SUPER MARIO WORLD - SUPER MARIO BROS. 4 SNES.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\SUPER MARIO WORLD SNES.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\TETRIS GB.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\WARIO LAND - SUPER MARIO LAND 3 GB.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\ZELDA II, THE ADVENTURE OF LINK NES.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
 </Project>

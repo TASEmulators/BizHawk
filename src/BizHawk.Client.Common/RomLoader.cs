@@ -38,6 +38,8 @@ namespace BizHawk.Client.Common
 
 		public static List<MemoryDomain> activeMemoryDomains = new List<MemoryDomain>();
 
+		public static LoadRomArgs lastLoadRomArgs;
+
 		private class DiscAsset : IDiscAsset
 		{
 			public Disc DiscData { get; set; }
@@ -603,17 +605,12 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void LoadGameFromShuffler(string gameId)
+		public static void InitialiseShuffler(bool forceRefresh = false)
 		{
-			System.Diagnostics.Debug.WriteLine("!!!!!!!! I want to load " + gameId);
-		}
-
-		public bool LoadRom(string tempPath, CoreComm nextComm, string launchLibretroCore, string forcedCoreName = null, int recursiveCount = 0)
-		{
-			System.Diagnostics.Debug.WriteLine("!!!!!!!! LOADING ROM " + tempPath + ", " + nextComm.ToString() + ", " + launchLibretroCore);
-
-			if (knownRoms.Count <= 0)
+			if (knownRoms.Count <= 0 || forceRefresh)
 			{
+				knownRoms.Clear();
+
 				string[] romFiles = Directory.GetFiles("_magicbox");
 				foreach (string _fileName in romFiles)
 				{
@@ -625,8 +622,10 @@ namespace BizHawk.Client.Common
 				}
 			}
 
-			if (gameTriggers.Count <= 0)
+			if (gameTriggers.Count <= 0 || forceRefresh)
 			{
+				gameTriggers.Clear();
+
 				string[] triggerFiles = Directory.GetFiles("_shuffletriggers");
 				foreach (string _fileName in triggerFiles)
 				{
@@ -644,11 +643,11 @@ namespace BizHawk.Client.Common
 					}
 				}
 			}
+		}
 
-			if (tempPath == null) return false;
-
-			string path = tempPath;
-
+		public string SelectShuffledGame()
+		{
+			string path = "";
 			if (knownRoms.Count > 1)
 			{
 				int attempts = 0;
@@ -668,19 +667,18 @@ namespace BizHawk.Client.Common
 					romHistory.RemoveAt(0);
 				}
 				System.Diagnostics.Debug.WriteLine("!!!!!!!! activeRom: " + activeRom + ", romHistory: " + romHistory.Count.ToString() + ", attempts: " + attempts.ToString());
-			} else if (knownRoms.Count == 1)
+			}
+			else if (knownRoms.Count == 1)
 			{
 				path = knownRoms[0];
 			}
 
-			System.Diagnostics.Debug.WriteLine("!!!!!!!! Selected ROM " + path);
+			return path;
+		}
 
-
-			if (recursiveCount > 1) // hack to stop recursive calls from endlessly rerunning if we can't load it
-			{
-				DoLoadErrorCallback("Failed multiple attempts to load ROM.", "");
-				return false;
-			}
+		public bool LoadGameFromShuffler(string path)
+		{
+			System.Diagnostics.Debug.WriteLine("!!!!!!!! I want to load " + path);
 
 			bool allowArchives = true;
 			if (OpenAdvanced is OpenAdvanced_MAME) allowArchives = false;
@@ -693,6 +691,10 @@ namespace BizHawk.Client.Common
 			RomGame rom = null;
 			GameInfo game = null;
 
+			CoreComm nextComm = lastCoreComm;
+			string launchLibretroCore = lastLaunchLibretroCore;
+			string forcedCoreName = null;
+
 			if (loadedEmulators.ContainsKey(path))
 			{
 				nextEmulator = loadedEmulators[path].emulator;
@@ -700,7 +702,8 @@ namespace BizHawk.Client.Common
 				game = loadedEmulators[path].game;
 
 				activeEmulator = loadedEmulators[path];
-			} else
+			}
+			else
 			{
 				try
 				{
@@ -840,9 +843,10 @@ namespace BizHawk.Client.Common
 			if (gameTriggers.ContainsKey(_triggerKey))
 			{
 				activeGameTriggerDef = gameTriggers[_triggerKey];
-			} else
+			}
+			else
 			{
-				System.Diagnostics.Debug.WriteLine("!!!!!!!! no trigger for game ("+ game.Name + ") key: " + _triggerKey);
+				System.Diagnostics.Debug.WriteLine("!!!!!!!! no trigger for game (" + game.Name + ") key: " + _triggerKey);
 			}
 
 			//activeMemoryDomains = activeEmulator.emulator.AsMemoryDomains().ToList<MemoryDomain>();
@@ -860,6 +864,33 @@ namespace BizHawk.Client.Common
 			*/
 
 			return true;
+		}
+
+		public static CoreComm lastCoreComm;
+		public static string lastLaunchLibretroCore;
+
+		public bool LoadRom(string tempPath, CoreComm nextComm, string launchLibretroCore, string forcedCoreName = null, int recursiveCount = 0)
+		{
+			System.Diagnostics.Debug.WriteLine("!!!!!!!! LOADING ROM " + tempPath + ", " + nextComm.ToString() + ", " + launchLibretroCore);
+
+			lastCoreComm = nextComm;
+			lastLaunchLibretroCore = launchLibretroCore;
+
+			InitialiseShuffler();
+
+			string path = SelectShuffledGame();
+			if (tempPath.StartsWith("!"))
+			{
+				path = tempPath.Substring(1, tempPath.Length - 1);
+			}
+
+			if (path.Length > 0)
+			{
+				return LoadGameFromShuffler(path);
+			} else
+			{
+				return false;
+			}
 		}
 
 		private void AsyncCheckFrame(object sender, DoWorkEventArgs e)
@@ -1111,11 +1142,14 @@ namespace BizHawk.Client.Common
 				domainToCheck = DefaultMemoryDomian();
 			}
 
+			string locationString = "";
 			foreach(int location in bytes)
 			{
 				//uint valueHere = domainToCheck.PeekByte(location); 
 				uint valueHere = MemoryApi.instance.ReadByte(location, domainToCheck);
-				
+
+				locationString += location.ToString("X4") + " ";
+
 				if (baseType == 100)
 				{
 					uint lowerVal = valueHere % 0x10;
@@ -1135,6 +1169,7 @@ namespace BizHawk.Client.Common
 
 				if (difference > minChange && difference < maxChange)
 				{
+					System.Diagnostics.Debug.WriteLine("!!!!!!!!! Trigger at " + locationString + " " + domainToCheck);
 					System.Diagnostics.Debug.WriteLine("!!!!!!!!!              CheckFrame goes " + oldValue.ToString() + " -> " + currentValue.ToString());
 					if (delay > 0)
 					{

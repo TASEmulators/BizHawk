@@ -3686,6 +3686,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool LoadRomInternal(string path, LoadRomArgs args, out bool failureIsFromAskSave)
 		{
 			lastLoadRomArgs = args;
+			RomLoader.lastLoadRomArgs = args;
 
 			failureIsFromAskSave = false;
 			if (path == null)
@@ -4839,6 +4840,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public void populateSwitchGames()
 		{
+			RomLoader.InitialiseShuffler();
+
 			//switchGameToolStripMenuItem
 			switchGameToolStripMenuItem.DropDownItems.Clear();
 
@@ -4846,7 +4849,18 @@ namespace BizHawk.Client.EmuHawk
 			{
 				ToolStripMenuItem item = new ToolStripMenuItem();
 				item.Text = gameID;
-				item.Click += (s, e) => RomLoader.instance.LoadGameFromShuffler(gameID);
+				item.Click += (s, e) => {
+					/*if (RomLoader.instance != null)
+					{
+						RomLoader.instance.LoadGameFromShuffler(gameID);
+					}
+					else
+					{
+						LoadRom("test");
+						RomLoader.instance.LoadGameFromShuffler(gameID);
+					}*/
+					LoadRom("!" + gameID);
+				};
 				switchGameToolStripMenuItem.DropDownItems.Add(item);
 			}
 		}
