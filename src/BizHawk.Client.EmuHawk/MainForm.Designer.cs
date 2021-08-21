@@ -380,7 +380,6 @@ namespace BizHawk.Client.EmuHawk
             this.ShowMenuContextMenuSeparator = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
             this.ShowMenuContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
             this.timerMouseIdle = new System.Windows.Forms.Timer(this.components);
-            this.toolStripTextBox1 = new System.Windows.Forms.ToolStripTextBox();
             this.MainformMenu.SuspendLayout();
             this.MainStatusBar.SuspendLayout();
             this.MainFormContextMenu.SuspendLayout();
@@ -2000,8 +1999,7 @@ namespace BizHawk.Client.EmuHawk
             this.switchGameToolStripMenuItem,
             this.removeCurrentGameToolStripMenuItem,
             this.toggleActiveGamesToolStripMenuItem,
-            this.viewSupportedGameListToolStripMenuItem,
-            this.toolStripTextBox1});
+            this.viewSupportedGameListToolStripMenuItem});
             this.shufflerToolStripMenuItem.Name = "shufflerToolStripMenuItem";
             this.shufflerToolStripMenuItem.Size = new System.Drawing.Size(119, 36);
             this.shufflerToolStripMenuItem.Text = "&Shuffler";
@@ -2455,11 +2453,6 @@ namespace BizHawk.Client.EmuHawk
             this.timerMouseIdle.Interval = 2000;
             this.timerMouseIdle.Tick += new System.EventHandler(this.TimerMouseIdle_Tick);
             // 
-            // toolStripTextBox1
-            // 
-            this.toolStripTextBox1.Name = "toolStripTextBox1";
-            this.toolStripTextBox1.Size = new System.Drawing.Size(100, 39);
-            // 
             // MainForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -2849,6 +2842,5 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolStripMenuItem toggleActiveGamesToolStripMenuItem;
 		private ToolStripMenuItemEx toolStripMenuItemEx1;
 		private System.Windows.Forms.ToolStripMenuItem viewSupportedGameListToolStripMenuItem;
-		private System.Windows.Forms.ToolStripTextBox toolStripTextBox1;
 	}
 }

@@ -879,6 +879,7 @@ namespace BizHawk.Client.Common
 			}
 			else
 			{
+				activeGameTriggerDef = null;
 				System.Diagnostics.Debug.WriteLine("!!!!!!!! no trigger for game (" + game.Name + ") key: " + _triggerKey);
 			}
 
