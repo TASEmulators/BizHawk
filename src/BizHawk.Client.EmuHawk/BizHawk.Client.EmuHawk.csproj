@@ -522,6 +522,9 @@
 		<Compile Update="UpdateChecker.cs" SubType="Code" />
 	</ItemGroup>
 	<ItemGroup>
+	  <None Update="_magicbox\ADD_ROMS_HERE.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
 	  <None Update="_shuffletriggers\Defaults\DONKEY KONG NES.txt">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>

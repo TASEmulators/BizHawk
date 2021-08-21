@@ -627,7 +627,7 @@ namespace BizHawk.Client.Common
 				string[] romFiles = Directory.GetFiles("_magicbox");
 				foreach (string _fileName in romFiles)
 				{
-					if (!_fileName.EndsWith(".bin") && !_fileName.EndsWith(".ccd") && !_fileName.EndsWith(".img") && !_fileName.EndsWith(".sub"))
+					if (!_fileName.EndsWith(".txt") && !_fileName.EndsWith(".bin") && !_fileName.EndsWith(".ccd") && !_fileName.EndsWith(".img") && !_fileName.EndsWith(".sub"))
 					{
 						System.Diagnostics.Debug.WriteLine("!!!!!!!!     found rom: " + _fileName);
 						knownRoms.Add(_fileName);

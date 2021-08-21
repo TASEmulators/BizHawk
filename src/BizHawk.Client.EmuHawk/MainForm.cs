@@ -50,6 +50,16 @@ namespace BizHawk.Client.EmuHawk
 		{
 			MainForm.instance = this;
 
+			// make sure we check to see if the user has changed the list of games
+			shufflerToolStripMenuItem.DropDownOpening += (s, e) =>
+			{
+				populateSwitchGames();
+				populateSupportedGameList();
+			};
+
+			populateSwitchGames();
+			populateSupportedGameList();
+
 			SetWindowText();
 
 			foreach (var (appliesTo, coreNames) in Config.CorePickerUIData)
@@ -4892,7 +4902,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void shufflerToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			populateSwitchGames();
+
 		}
 
 		private void removeCurrentGameToolStripMenuItem_Click(object sender, EventArgs e)
@@ -4906,6 +4916,82 @@ namespace BizHawk.Client.EmuHawk
 			{
 				LoadRom("temp");
 			}
+		}
+
+		public static Dictionary<string, string> systemNamesPerId = new Dictionary<string, string>
+		{
+			{ "NES", "Nintendo NES" },
+			{"SNES", "Nintendo Super NES" },
+			{"N64", "Nintendo 64" },
+			{"GB", "Nintendo Game Boy" },
+			{"GBC", "Nintendo Game Boy Color" },
+			{"GBA", "Nintendo Game Boy Advance" },
+			{"GEN", "Sega Genesis" },
+			{"GG", "Sega Game Gear" },
+			{"SMS", "Sega Master System" },
+			{"SAT", "Sega Saturn" },
+		};
+
+		public void populateSupportedGameList()
+		{
+			viewSupportedGameListToolStripMenuItem.DropDownItems.Clear();
+
+			Dictionary<string, Dictionary<string, GameTriggerDefinition>> gamesPerSystem = new Dictionary<string, Dictionary<string, GameTriggerDefinition>>();
+			foreach (string triggerId in RomLoader.gameTriggers.Keys)
+			{
+				string[] gameIdComponents = triggerId.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+				string systemId = gameIdComponents[gameIdComponents.Length - 1];
+				string gameId = triggerId.Substring(0, triggerId.Length - systemId.Length).Trim();
+
+				if (!gamesPerSystem.ContainsKey(systemId))
+				{
+					gamesPerSystem.Add(systemId, new Dictionary<string, GameTriggerDefinition>());
+				}
+
+				if (!gamesPerSystem[systemId].ContainsKey(gameId))
+				{
+					gamesPerSystem[systemId].Add(gameId, RomLoader.gameTriggers[triggerId]);
+				}
+			}
+
+			List<string> systemKeys = gamesPerSystem.Keys.ToList();
+			systemKeys.Sort();
+
+			foreach (string systemId in systemKeys)
+			{
+				ToolStripMenuItem systemMenuItem = new ToolStripMenuItem();
+				if (systemNamesPerId.ContainsKey(systemId))
+				{
+					systemMenuItem.Text = systemNamesPerId[systemId];
+				} else
+				{
+					systemMenuItem.Text = systemId;
+				}
+				foreach (string gameId in gamesPerSystem[systemId].Keys)
+				{
+					string textToShow = gameId + " (" + string.Join(", ", gamesPerSystem[systemId][gameId].triggers.Keys) + ")";
+					systemMenuItem.DropDownItems.Add(textToShow);
+				}
+
+				viewSupportedGameListToolStripMenuItem.DropDownItems.Add(systemMenuItem);
+				/*
+				viewSupportedGameListToolStripMenuItem.DropDownItems.Add(new ToolStripSeparator());
+
+				foreach (string gameId in gamesPerSystem[systemId].Keys)
+				{
+					string textToShow = gameId + " (" + string.Join(", ", gamesPerSystem[systemId][gameId].triggers.Keys) + ")";
+					viewSupportedGameListToolStripMenuItem.DropDownItems.Add(textToShow);
+				}
+
+				viewSupportedGameListToolStripMenuItem.DropDownItems.Add(new ToolStripSeparator());
+				*/
+			}
+
+		}
+
+		private void viewSupportedGameListToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+		
 		}
 
 		public IQuickBmpFile QuickBmpFile { get; } = new QuickBmpFile();

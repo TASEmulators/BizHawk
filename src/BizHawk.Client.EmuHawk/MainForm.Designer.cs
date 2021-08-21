@@ -312,6 +312,7 @@ namespace BizHawk.Client.EmuHawk
             this.toolStripMenuItemEx1 = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
             this.removeCurrentGameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toggleActiveGamesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.viewSupportedGameListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.A7800HawkCoreMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
             this.MainStatusBar = new BizHawk.WinForms.Controls.StatusStripEx();
             this.DumpStatusButton = new System.Windows.Forms.ToolStripDropDownButton();
@@ -379,7 +380,7 @@ namespace BizHawk.Client.EmuHawk
             this.ShowMenuContextMenuSeparator = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
             this.ShowMenuContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
             this.timerMouseIdle = new System.Windows.Forms.Timer(this.components);
-            this.viewSupportedGameListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripTextBox1 = new System.Windows.Forms.ToolStripTextBox();
             this.MainformMenu.SuspendLayout();
             this.MainStatusBar.SuspendLayout();
             this.MainFormContextMenu.SuspendLayout();
@@ -387,7 +388,6 @@ namespace BizHawk.Client.EmuHawk
             // 
             // MainformMenu
             // 
-            this.MainformMenu.GripMargin = new System.Windows.Forms.Padding(2, 2, 0, 2);
             this.MainformMenu.ImageScalingSize = new System.Drawing.Size(32, 32);
             this.MainformMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.FileSubMenu,
@@ -2000,7 +2000,8 @@ namespace BizHawk.Client.EmuHawk
             this.switchGameToolStripMenuItem,
             this.removeCurrentGameToolStripMenuItem,
             this.toggleActiveGamesToolStripMenuItem,
-            this.viewSupportedGameListToolStripMenuItem});
+            this.viewSupportedGameListToolStripMenuItem,
+            this.toolStripTextBox1});
             this.shufflerToolStripMenuItem.Name = "shufflerToolStripMenuItem";
             this.shufflerToolStripMenuItem.Size = new System.Drawing.Size(119, 36);
             this.shufflerToolStripMenuItem.Text = "&Shuffler";
@@ -2011,7 +2012,7 @@ namespace BizHawk.Client.EmuHawk
             this.switchGameToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripMenuItemEx1});
             this.switchGameToolStripMenuItem.Name = "switchGameToolStripMenuItem";
-            this.switchGameToolStripMenuItem.Size = new System.Drawing.Size(391, 44);
+            this.switchGameToolStripMenuItem.Size = new System.Drawing.Size(430, 44);
             this.switchGameToolStripMenuItem.Text = "Switch Game";
             this.switchGameToolStripMenuItem.Click += new System.EventHandler(this.switchGameToolStripMenuItem_Click);
             // 
@@ -2029,8 +2030,15 @@ namespace BizHawk.Client.EmuHawk
             // toggleActiveGamesToolStripMenuItem
             // 
             this.toggleActiveGamesToolStripMenuItem.Name = "toggleActiveGamesToolStripMenuItem";
-            this.toggleActiveGamesToolStripMenuItem.Size = new System.Drawing.Size(391, 44);
+            this.toggleActiveGamesToolStripMenuItem.Size = new System.Drawing.Size(430, 44);
             this.toggleActiveGamesToolStripMenuItem.Text = "Toggle Active Games";
+            // 
+            // viewSupportedGameListToolStripMenuItem
+            // 
+            this.viewSupportedGameListToolStripMenuItem.Name = "viewSupportedGameListToolStripMenuItem";
+            this.viewSupportedGameListToolStripMenuItem.Size = new System.Drawing.Size(430, 44);
+            this.viewSupportedGameListToolStripMenuItem.Text = "View Supported Game List";
+            this.viewSupportedGameListToolStripMenuItem.Click += new System.EventHandler(this.viewSupportedGameListToolStripMenuItem_Click);
             // 
             // A7800HawkCoreMenuItem
             // 
@@ -2447,11 +2455,10 @@ namespace BizHawk.Client.EmuHawk
             this.timerMouseIdle.Interval = 2000;
             this.timerMouseIdle.Tick += new System.EventHandler(this.TimerMouseIdle_Tick);
             // 
-            // viewSupportedGameListToolStripMenuItem
+            // toolStripTextBox1
             // 
-            this.viewSupportedGameListToolStripMenuItem.Name = "viewSupportedGameListToolStripMenuItem";
-            this.viewSupportedGameListToolStripMenuItem.Size = new System.Drawing.Size(430, 44);
-            this.viewSupportedGameListToolStripMenuItem.Text = "View Supported Game List";
+            this.toolStripTextBox1.Name = "toolStripTextBox1";
+            this.toolStripTextBox1.Size = new System.Drawing.Size(100, 39);
             // 
             // MainForm
             // 
@@ -2842,5 +2849,6 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolStripMenuItem toggleActiveGamesToolStripMenuItem;
 		private ToolStripMenuItemEx toolStripMenuItemEx1;
 		private System.Windows.Forms.ToolStripMenuItem viewSupportedGameListToolStripMenuItem;
+		private System.Windows.Forms.ToolStripTextBox toolStripTextBox1;
 	}
 }
