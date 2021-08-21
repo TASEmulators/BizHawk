@@ -20,6 +20,8 @@ namespace BizHawk.Client.Common
 {
 	public class RomLoader
 	{
+		public static RomLoader instance;
+
 		public static Dictionary<string, EmulatorInstance> loadedEmulators = new Dictionary<string, EmulatorInstance>();
 		public static List<string> knownRoms = new List<string>();
 		public static string activeRom = "";
@@ -77,6 +79,7 @@ namespace BizHawk.Client.Common
 		public RomLoader(Config config)
 		{
 			_config = config;
+			RomLoader.instance = this;
 		}
 
 		public enum LoadErrorType
@@ -598,6 +601,11 @@ namespace BizHawk.Client.Common
 					return false;
 				}
 			}
+		}
+
+		public void LoadGameFromShuffler(string gameId)
+		{
+			System.Diagnostics.Debug.WriteLine("!!!!!!!! I want to load " + gameId);
 		}
 
 		public bool LoadRom(string tempPath, CoreComm nextComm, string launchLibretroCore, string forcedCoreName = null, int recursiveCount = 0)

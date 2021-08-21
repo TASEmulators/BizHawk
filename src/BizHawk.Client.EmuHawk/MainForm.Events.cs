@@ -60,12 +60,6 @@ namespace BizHawk.Client.EmuHawk
 				Emulator.HasVideoProvider();
 		}
 
-		private void RecentRomMenuItem_DropDownOpened(object sender, EventArgs e)
-		{
-			RecentRomSubMenu.DropDownItems.Clear();
-			RecentRomSubMenu.DropDownItems.AddRange(Config.RecentRoms.RecentMenu(this, LoadRomFromRecent, "ROM", romLoading: true));
-		}
-
 		private bool HasSlot(int slot) => _stateSlots.HasSlot(Emulator, MovieSession.Movie, slot, SaveStatePrefix());
 
 		private void SaveStateSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -243,7 +237,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OpenRomMenuItem_Click(object sender, EventArgs e)
 		{
-			OpenRom();
+			//OpenRom();
+			LoadRom("test");
 		}
 
 		private void OpenAdvancedMenuItem_Click(object sender, EventArgs e)

@@ -1,4 +1,5 @@
-﻿Microsoft Visual Studio Solution File, Format Version 12.00
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28729.10
 MinimumVisualStudioVersion = 16.0.28729.10
@@ -45,9 +46,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BizHawk.Emulation.Cores", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BizHawk.Bizware.BizwareGL", "src\BizHawk.Bizware.BizwareGL\BizHawk.Bizware.BizwareGL.csproj", "{9F84A0B2-861E-4EF4-B89B-5E2A3F38A465}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizHawk.Bizware.DirectX", "src\BizHawk.Bizware.DirectX\BizHawk.Bizware.DirectX.csproj", "{A914D063-9E4B-4086-B156-7B3F39E33DB2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BizHawk.Bizware.DirectX", "src\BizHawk.Bizware.DirectX\BizHawk.Bizware.DirectX.csproj", "{A914D063-9E4B-4086-B156-7B3F39E33DB2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizHawk.Bizware.OpenTK3", "src\BizHawk.Bizware.OpenTK3\BizHawk.Bizware.OpenTK3.csproj", "{1FF433CC-96E1-4F14-B673-CDA7190169C9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BizHawk.Bizware.OpenTK3", "src\BizHawk.Bizware.OpenTK3\BizHawk.Bizware.OpenTK3.csproj", "{1FF433CC-96E1-4F14-B673-CDA7190169C9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BizHawk.BizInvoke", "src\BizHawk.BizInvoke\BizHawk.BizInvoke.csproj", "{E5D76DC1-84A8-47AF-BE25-E76F06D2FBBC}"
 EndProject
@@ -56,6 +57,56 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{74391239-9BC1-40CE-A3D7-180737C5302A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BizHawk.Tests", "src\BizHawk.Tests\BizHawk.Tests.csproj", "{284E19E2-661D-4A7D-864A-AC2FC91E7C25}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_shuffletriggers", "_shuffletriggers", "{A7DBA448-2983-4022-BE77-2B878782000B}"
+	ProjectSection(SolutionItems) = preProject
+		_shuffletriggers\DONKEY KONG NES.txt = _shuffletriggers\DONKEY KONG NES.txt
+		_shuffletriggers\DR MARIO NES.txt = _shuffletriggers\DR MARIO NES.txt
+		_shuffletriggers\KNUCKLES' CHAOTIX GEN.txt = _shuffletriggers\KNUCKLES' CHAOTIX GEN.txt
+		_shuffletriggers\LEGEND OF ZELDA, THE - A LINK TO THE PAST SNES.txt = _shuffletriggers\LEGEND OF ZELDA, THE - A LINK TO THE PAST SNES.txt
+		_shuffletriggers\LEGEND OF ZELDA, THE - LINK'S AWAKENING DX GBC.txt = _shuffletriggers\LEGEND OF ZELDA, THE - LINK'S AWAKENING DX GBC.txt
+		_shuffletriggers\LEGEND OF ZELDA, THE - LINK'S AWAKENING GB.txt = _shuffletriggers\LEGEND OF ZELDA, THE - LINK'S AWAKENING GB.txt
+		_shuffletriggers\LEGEND OF ZELDA, THE - ORACLE OF AGES GBC.txt = _shuffletriggers\LEGEND OF ZELDA, THE - ORACLE OF AGES GBC.txt
+		_shuffletriggers\LEGEND OF ZELDA, THE - ORACLE OF SEASONS GBC.txt = _shuffletriggers\LEGEND OF ZELDA, THE - ORACLE OF SEASONS GBC.txt
+		_shuffletriggers\LEGEND OF ZELDA, THE NES.txt = _shuffletriggers\LEGEND OF ZELDA, THE NES.txt
+		_shuffletriggers\SONIC & KNUCKLES GEN.txt = _shuffletriggers\SONIC & KNUCKLES GEN.txt
+		_shuffletriggers\SONIC & TAILS 2 GG.txt = _shuffletriggers\SONIC & TAILS 2 GG.txt
+		_shuffletriggers\SONIC & TAILS GG.txt = _shuffletriggers\SONIC & TAILS GG.txt
+		_shuffletriggers\SONIC 3D BLAST GEN.txt = _shuffletriggers\SONIC 3D BLAST GEN.txt
+		_shuffletriggers\SONIC 3D BLAST SAT.txt = _shuffletriggers\SONIC 3D BLAST SAT.txt
+		_shuffletriggers\SONIC ADVANCE 2 GBA.txt = _shuffletriggers\SONIC ADVANCE 2 GBA.txt
+		_shuffletriggers\SONIC ADVANCE 3 GBA.txt = _shuffletriggers\SONIC ADVANCE 3 GBA.txt
+		_shuffletriggers\SONIC ADVANCE GBA.txt = _shuffletriggers\SONIC ADVANCE GBA.txt
+		_shuffletriggers\SONIC AND KNUCKLES & SONIC 3 GEN.txt = _shuffletriggers\SONIC AND KNUCKLES & SONIC 3 GEN.txt
+		_shuffletriggers\SONIC AND KNUCKLES GEN.txt = _shuffletriggers\SONIC AND KNUCKLES GEN.txt
+		_shuffletriggers\SONIC BLAST GG.txt = _shuffletriggers\SONIC BLAST GG.txt
+		_shuffletriggers\SONIC BLAST SMS.txt = _shuffletriggers\SONIC BLAST SMS.txt
+		_shuffletriggers\SONIC CD GEN.txt = _shuffletriggers\SONIC CD GEN.txt
+		_shuffletriggers\SONIC CHAOS GG.txt = _shuffletriggers\SONIC CHAOS GG.txt
+		_shuffletriggers\SONIC CHAOS SMS.txt = _shuffletriggers\SONIC CHAOS SMS.txt
+		_shuffletriggers\SONIC R SAT.txt = _shuffletriggers\SONIC R SAT.txt
+		_shuffletriggers\SONIC SPINBALL GEN.txt = _shuffletriggers\SONIC SPINBALL GEN.txt
+		_shuffletriggers\SONIC THE HEDGEHOG - TRIPLE TROUBLE GG.txt = _shuffletriggers\SONIC THE HEDGEHOG - TRIPLE TROUBLE GG.txt
+		_shuffletriggers\SONIC THE HEDGEHOG 2 GEN.txt = _shuffletriggers\SONIC THE HEDGEHOG 2 GEN.txt
+		_shuffletriggers\SONIC THE HEDGEHOG 2 GG.txt = _shuffletriggers\SONIC THE HEDGEHOG 2 GG.txt
+		_shuffletriggers\SONIC THE HEDGEHOG 2 SMS.txt = _shuffletriggers\SONIC THE HEDGEHOG 2 SMS.txt
+		_shuffletriggers\SONIC THE HEDGEHOG 3 GEN.txt = _shuffletriggers\SONIC THE HEDGEHOG 3 GEN.txt
+		_shuffletriggers\SONIC THE HEDGEHOG GEN.txt = _shuffletriggers\SONIC THE HEDGEHOG GEN.txt
+		_shuffletriggers\SONIC THE HEDGEHOG GG.txt = _shuffletriggers\SONIC THE HEDGEHOG GG.txt
+		_shuffletriggers\SONIC THE HEDGEHOG SMS.txt = _shuffletriggers\SONIC THE HEDGEHOG SMS.txt
+		_shuffletriggers\SUPER MARIO 64 N64.txt = _shuffletriggers\SUPER MARIO 64 N64.txt
+		_shuffletriggers\SUPER MARIO BROS. 2 NES.txt = _shuffletriggers\SUPER MARIO BROS. 2 NES.txt
+		_shuffletriggers\SUPER MARIO BROS. 3 NES.txt = _shuffletriggers\SUPER MARIO BROS. 3 NES.txt
+		_shuffletriggers\SUPER MARIO BROS. NES.txt = _shuffletriggers\SUPER MARIO BROS. NES.txt
+		_shuffletriggers\SUPER MARIO KART SNES.txt = _shuffletriggers\SUPER MARIO KART SNES.txt
+		_shuffletriggers\SUPER MARIO LAND 2 - 6 GOLDEN COINS GB.txt = _shuffletriggers\SUPER MARIO LAND 2 - 6 GOLDEN COINS GB.txt
+		_shuffletriggers\SUPER MARIO LAND GB.txt = _shuffletriggers\SUPER MARIO LAND GB.txt
+		_shuffletriggers\SUPER MARIO WORLD - SUPER MARIO BROS. 4 SNES.txt = _shuffletriggers\SUPER MARIO WORLD - SUPER MARIO BROS. 4 SNES.txt
+		_shuffletriggers\SUPER MARIO WORLD SNES.txt = _shuffletriggers\SUPER MARIO WORLD SNES.txt
+		_shuffletriggers\TETRIS GB.txt = _shuffletriggers\TETRIS GB.txt
+		_shuffletriggers\WARIO LAND - SUPER MARIO LAND 3 GB.txt = _shuffletriggers\WARIO LAND - SUPER MARIO LAND 3 GB.txt
+		_shuffletriggers\ZELDA II, THE ADVENTURE OF LINK NES.txt = _shuffletriggers\ZELDA II, THE ADVENTURE OF LINK NES.txt
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

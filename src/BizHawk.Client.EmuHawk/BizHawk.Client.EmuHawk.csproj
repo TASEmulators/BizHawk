@@ -10,6 +10,7 @@
 		<DefineConstants>$(DefineConstants);EXE_PROJECT</DefineConstants>
 		<Nullable>disable</Nullable>
 		<ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
+		<AssemblyName>ShufflerHawk</AssemblyName>
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="System.Net.Http" Version="4.3.4" />

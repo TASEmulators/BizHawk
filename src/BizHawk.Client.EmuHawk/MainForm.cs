@@ -186,8 +186,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetImages()
 		{
-			OpenRomMenuItem.Image = Properties.Resources.OpenFile;
-			RecentRomSubMenu.Image = Properties.Resources.Recent;
 			CloseRomMenuItem.Image = Properties.Resources.Close;
 			PreviousSlotMenuItem.Image = Properties.Resources.MoveLeft;
 			NextSlotMenuItem.Image = Properties.Resources.MoveRight;
@@ -4831,6 +4829,32 @@ namespace BizHawk.Client.EmuHawk
 
 			//BANZAIIIIIIIIIIIIIIIIIIIIIIIIIII
 			LoadRom(args[0]);
+		}
+
+		private void switchGameToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+
+		}
+
+
+		public void populateSwitchGames()
+		{
+			//switchGameToolStripMenuItem
+			switchGameToolStripMenuItem.DropDownItems.Clear();
+
+			foreach (string gameID in RomLoader.knownRoms)
+			{
+				ToolStripMenuItem item = new ToolStripMenuItem();
+				item.Text = gameID;
+				item.Click += (s, e) => RomLoader.instance.LoadGameFromShuffler(gameID);
+				switchGameToolStripMenuItem.DropDownItems.Add(item);
+			}
+		}
+
+		private void shufflerToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			// Get RomLoader to initialise if it hasn't already
+			populateSwitchGames();
 		}
 
 		public IQuickBmpFile QuickBmpFile { get; } = new QuickBmpFile();
