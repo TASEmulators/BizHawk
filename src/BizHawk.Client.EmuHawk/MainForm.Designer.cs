@@ -379,6 +379,7 @@ namespace BizHawk.Client.EmuHawk
             this.ShowMenuContextMenuSeparator = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
             this.ShowMenuContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
             this.timerMouseIdle = new System.Windows.Forms.Timer(this.components);
+            this.viewSupportedGameListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MainformMenu.SuspendLayout();
             this.MainStatusBar.SuspendLayout();
             this.MainFormContextMenu.SuspendLayout();
@@ -1998,7 +1999,8 @@ namespace BizHawk.Client.EmuHawk
             this.shufflerToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.switchGameToolStripMenuItem,
             this.removeCurrentGameToolStripMenuItem,
-            this.toggleActiveGamesToolStripMenuItem});
+            this.toggleActiveGamesToolStripMenuItem,
+            this.viewSupportedGameListToolStripMenuItem});
             this.shufflerToolStripMenuItem.Name = "shufflerToolStripMenuItem";
             this.shufflerToolStripMenuItem.Size = new System.Drawing.Size(119, 36);
             this.shufflerToolStripMenuItem.Text = "&Shuffler";
@@ -2020,8 +2022,9 @@ namespace BizHawk.Client.EmuHawk
             // removeCurrentGameToolStripMenuItem
             // 
             this.removeCurrentGameToolStripMenuItem.Name = "removeCurrentGameToolStripMenuItem";
-            this.removeCurrentGameToolStripMenuItem.Size = new System.Drawing.Size(391, 44);
+            this.removeCurrentGameToolStripMenuItem.Size = new System.Drawing.Size(430, 44);
             this.removeCurrentGameToolStripMenuItem.Text = "Remove Current Game";
+            this.removeCurrentGameToolStripMenuItem.Click += new System.EventHandler(this.removeCurrentGameToolStripMenuItem_Click);
             // 
             // toggleActiveGamesToolStripMenuItem
             // 
@@ -2444,6 +2447,12 @@ namespace BizHawk.Client.EmuHawk
             this.timerMouseIdle.Interval = 2000;
             this.timerMouseIdle.Tick += new System.EventHandler(this.TimerMouseIdle_Tick);
             // 
+            // viewSupportedGameListToolStripMenuItem
+            // 
+            this.viewSupportedGameListToolStripMenuItem.Name = "viewSupportedGameListToolStripMenuItem";
+            this.viewSupportedGameListToolStripMenuItem.Size = new System.Drawing.Size(430, 44);
+            this.viewSupportedGameListToolStripMenuItem.Text = "View Supported Game List";
+            // 
             // MainForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -2832,5 +2841,6 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolStripMenuItem removeCurrentGameToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem toggleActiveGamesToolStripMenuItem;
 		private ToolStripMenuItemEx toolStripMenuItemEx1;
+		private System.Windows.Forms.ToolStripMenuItem viewSupportedGameListToolStripMenuItem;
 	}
 }

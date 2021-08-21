@@ -4837,38 +4837,75 @@ namespace BizHawk.Client.EmuHawk
 
 		}
 
+		private void PreventDropDownClose(object sender, ToolStripDropDownClosingEventArgs e)
+		{
+			if (e.CloseReason == ToolStripDropDownCloseReason.ItemClicked)
+			{
+				e.Cancel = true;
+			}
+		}
 
 		public void populateSwitchGames()
 		{
-			RomLoader.InitialiseShuffler();
+			RomLoader.InitialiseShuffler(true);
 
 			//switchGameToolStripMenuItem
 			switchGameToolStripMenuItem.DropDownItems.Clear();
 
+			toggleActiveGamesToolStripMenuItem.DropDownItems.Clear();
+			//toggleActiveGamesToolStripMenuItem.DropDown.AutoClose = false;
+			toggleActiveGamesToolStripMenuItem.DropDown.Closing += PreventDropDownClose;
+
 			foreach (string gameID in RomLoader.knownRoms)
 			{
-				ToolStripMenuItem item = new ToolStripMenuItem();
-				item.Text = gameID;
-				item.Click += (s, e) => {
-					/*if (RomLoader.instance != null)
-					{
-						RomLoader.instance.LoadGameFromShuffler(gameID);
-					}
-					else
-					{
-						LoadRom("test");
-						RomLoader.instance.LoadGameFromShuffler(gameID);
-					}*/
+				string[] romIDComponents = gameID.Split(new string[] { "\\" }, StringSplitOptions.RemoveEmptyEntries);
+				string shortRomID = romIDComponents[romIDComponents.Length - 1];
+
+				ToolStripMenuItem openGameItem = new ToolStripMenuItem();
+				openGameItem.Text = shortRomID;
+				openGameItem.Click += (s, e) => {
 					LoadRom("!" + gameID);
 				};
-				switchGameToolStripMenuItem.DropDownItems.Add(item);
+				switchGameToolStripMenuItem.DropDownItems.Add(openGameItem);
+
+				ToolStripMenuItem toggleGameItem = new ToolStripMenuItem();
+				toggleGameItem.Text = shortRomID;
+				if (RomLoader.romActiveStates.ContainsKey(gameID))
+				{
+					toggleGameItem.Checked = RomLoader.romActiveStates[gameID];
+				}
+				else
+				{
+					toggleGameItem.Text += " (error: active state not found)";
+				}
+				toggleGameItem.Click += (s, e) => {
+					RomLoader.romActiveStates[gameID] = !RomLoader.romActiveStates[gameID];
+					toggleGameItem.Checked = RomLoader.romActiveStates[gameID];
+					if (RomLoader.ShouldToggleOutOfActiveGame())
+					{
+						LoadRom("temp");
+					}
+				};
+				toggleActiveGamesToolStripMenuItem.DropDownItems.Add(toggleGameItem);
 			}
 		}
 
 		private void shufflerToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			// Get RomLoader to initialise if it hasn't already
 			populateSwitchGames();
+		}
+
+		private void removeCurrentGameToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (RomLoader.romActiveStates.ContainsKey(RomLoader.activeRom))
+			{
+				RomLoader.romActiveStates[RomLoader.activeRom] = !RomLoader.romActiveStates[RomLoader.activeRom];
+			}
+				
+			if (RomLoader.ShouldToggleOutOfActiveGame())
+			{
+				LoadRom("temp");
+			}
 		}
 
 		public IQuickBmpFile QuickBmpFile { get; } = new QuickBmpFile();

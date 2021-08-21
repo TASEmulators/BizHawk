@@ -26,6 +26,7 @@ namespace BizHawk.Client.Common
 		public static List<string> knownRoms = new List<string>();
 		public static string activeRom = "";
 		public static List<string> romHistory = new List<string>();
+		public static Dictionary<string, bool> romActiveStates = new Dictionary<string, bool>();
 
 		public static EmulatorInstance activeEmulator;
 		public static Dictionary<string, GameTriggerDefinition> gameTriggers = new Dictionary<string, GameTriggerDefinition>();
@@ -605,6 +606,18 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		public static bool ShouldToggleOutOfActiveGame()
+		{
+			if (romActiveStates.ContainsKey(activeRom))
+			{
+				if (!romActiveStates[activeRom])
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+
 		public static void InitialiseShuffler(bool forceRefresh = false)
 		{
 			if (knownRoms.Count <= 0 || forceRefresh)
@@ -618,6 +631,14 @@ namespace BizHawk.Client.Common
 					{
 						System.Diagnostics.Debug.WriteLine("!!!!!!!!     found rom: " + _fileName);
 						knownRoms.Add(_fileName);
+					}
+				}
+
+				foreach(string romId in knownRoms)
+				{
+					if (!romActiveStates.ContainsKey(romId))
+					{
+						romActiveStates.Add(romId, true);
 					}
 				}
 			}
@@ -653,16 +674,28 @@ namespace BizHawk.Client.Common
 				int attempts = 0;
 				Random random = new Random();
 
+				List<string> allowedRoms = new List<string>();
+				foreach(string romId in knownRoms)
+				{
+					if (romActiveStates.ContainsKey(romId))
+					{
+						if (romActiveStates[romId])
+						{
+							allowedRoms.Add(romId);
+						}
+					}
+				}
+
 				path = activeRom;
 				while (attempts < 1000 && (path == activeRom || romHistory.Contains(path)))
 				{
 					System.Diagnostics.Debug.WriteLine("!!!!!!!! reshuffling " + path);
-					path = knownRoms[random.Next(0, knownRoms.Count)];
+					path = allowedRoms[random.Next(0, allowedRoms.Count)];
 					attempts++;
 				}
 				activeRom = path;
 				romHistory.Add(activeRom);
-				if (romHistory.Count > knownRoms.Count * 0.5f)
+				if (romHistory.Count > allowedRoms.Count * 0.5f)
 				{
 					romHistory.RemoveAt(0);
 				}
