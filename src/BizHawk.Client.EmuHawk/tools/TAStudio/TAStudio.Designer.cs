@@ -191,6 +191,7 @@ namespace BizHawk.Client.EmuHawk
 			this.BranchesMarkersSplit = new System.Windows.Forms.SplitContainer();
 			this.MainVertialSplit = new System.Windows.Forms.SplitContainer();
 			this.SetFontMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.CopyIncludesFrameNoMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.TASMenu.SuspendLayout();
 			this.TasStatusStrip.SuspendLayout();
 			this.RightClickMenu.SuspendLayout();
@@ -481,6 +482,7 @@ namespace BizHawk.Client.EmuHawk
             this.SetMaxUndoLevelsMenuItem,
             this.SetBranchCellHoverIntervalMenuItem,
             this.SetSeekingCutoffIntervalMenuItem,
+            this.CopyIncludesFrameNoMenuItem,
             this.toolStripSeparator26,
             this.autosaveToolStripMenuItem,
             this.BackupPerFileSaveMenuItem,
@@ -1176,6 +1178,11 @@ namespace BizHawk.Client.EmuHawk
 			this.SetFontMenuItem.Text = "Set Font";
 			this.SetFontMenuItem.Click += new System.EventHandler(this.SetFontMenuItem_Click);
 			// 
+			// CopyIncludesFrameNoMenuItem
+			// 
+			this.CopyIncludesFrameNoMenuItem.Text = "Include Frame No. When Copying Row(s)";
+			this.CopyIncludesFrameNoMenuItem.Click += new System.EventHandler(this.CopyIncludesFrameNoMenuItem_Click);
+			// 
 			// TAStudio
 			// 
 			this.AllowDrop = true;
@@ -1374,5 +1381,6 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SingleClickAxisEditMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx LoadBranchOnDoubleclickMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SetFontMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx CopyIncludesFrameNoMenuItem;
 	}
 }

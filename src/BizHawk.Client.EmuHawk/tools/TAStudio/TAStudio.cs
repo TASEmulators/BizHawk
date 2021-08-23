@@ -75,6 +75,7 @@ namespace BizHawk.Client.EmuHawk
 				SingleClickAxisEdit = false;
 				OldControlSchemeForBranches = false;
 				LoadBranchOnDoubleClick = true;
+				CopyIncludesFrameNo = false;
 
 				// default to taseditor fashion
 				DenoteStatesWithIcons = false;
@@ -107,6 +108,7 @@ namespace BizHawk.Client.EmuHawk
 			public int MainVerticalSplitDistance { get; set; }
 			public int BranchMarkerSplitDistance { get; set; }
 			public bool BindMarkersToInput { get; set; }
+			public bool CopyIncludesFrameNo { get; set; }
 		}
 
 		public TAStudio()

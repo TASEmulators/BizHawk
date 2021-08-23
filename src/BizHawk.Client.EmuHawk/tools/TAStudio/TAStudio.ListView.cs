@@ -313,6 +313,10 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		/// <returns><paramref name="index"/> with leading zeroes such that every frame in the movie will be printed with the same number of digits</returns>
+		private string FrameToStringPadded(int index)
+			=> index.ToString().PadLeft(CurrentTasMovie.InputLogLength.ToString().Length, '0');
+
 		private void TasView_QueryItemText(int index, RollColumn column, out string text, ref int offsetX, ref int offsetY)
 		{
 			if (!_engaged || _initializing)
@@ -344,7 +348,7 @@ namespace BizHawk.Client.EmuHawk
 				else if (columnName == FrameColumnName)
 				{
 					offsetX = TasView.HorizontalOrientation ? 2 : 7;
-					text = index.ToString().PadLeft(CurrentTasMovie.InputLogLength.ToString().Length, '0');
+					text = FrameToStringPadded(index);
 				}
 				else
 				{

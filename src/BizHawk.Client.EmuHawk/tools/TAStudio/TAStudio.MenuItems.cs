@@ -461,8 +461,8 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					_tasClipboard.Add(new TasClipboardEntry(index, input));
-					var lg = CurrentTasMovie.LogGeneratorInstance(input);
-					sb.AppendLine(lg.GenerateLogEntry());
+					var logEntry = CurrentTasMovie.LogGeneratorInstance(input).GenerateLogEntry();
+					sb.AppendLine(Settings.CopyIncludesFrameNo ? $"{FrameToStringPadded(index)} {logEntry}" : logEntry);
 				}
 
 				Clipboard.SetDataObject(sb.ToString());
@@ -828,6 +828,7 @@ namespace BizHawk.Client.EmuHawk
 			OldControlSchemeForBranchesMenuItem.Checked = Settings.OldControlSchemeForBranches;
 			LoadBranchOnDoubleclickMenuItem.Checked = Settings.LoadBranchOnDoubleClick;
 			BindMarkersToInputMenuItem.Checked = CurrentTasMovie.BindMarkersToInput;
+			CopyIncludesFrameNoMenuItem.Checked = Settings.CopyIncludesFrameNo;
 		}
 
 		private void SetMaxUndoLevelsMenuItem_Click(object sender, EventArgs e)
@@ -899,6 +900,11 @@ namespace BizHawk.Client.EmuHawk
 					TasView.SeekingCutoffInterval = val;
 				}
 			}
+		}
+
+		private void CopyIncludesFrameNoMenuItem_Click(object sender, EventArgs e)
+		{
+			Settings.CopyIncludesFrameNo ^= true;
 		}
 
 		private void SetAutosaveIntervalMenuItem_Click(object sender, EventArgs e)
