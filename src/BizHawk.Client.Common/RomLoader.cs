@@ -194,17 +194,10 @@ namespace BizHawk.Client.Common
 
 		private bool HandleArchiveBinding(HawkFile file)
 		{
-			var romExtensions = new[]
-			{
-				".sms", ".smc", ".sfc", ".pce", ".sgx", ".gg", ".sg", ".bin", ".gen", ".md", ".smd", ".gb",
-				".nes", ".fds", ".rom", ".int", ".gbc", ".unf", ".a78", ".crt", ".col", ".xml", ".z64",
-				".v64", ".n64", ".ws", ".wsc", ".gba", ".32x", ".vec", ".o2"
-			};
-
 			// try binding normal rom extensions first
 			if (!file.IsBound)
 			{
-				file.BindSoleItemOf(romExtensions);
+				file.BindSoleItemOf(RomFileExtensions.AutoloadFromArchive);
 			}
 
 			// if we have an archive and need to bind something, then pop the dialog
@@ -765,38 +758,94 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		/// <remarks>roms ONLY; when an archive is loaded with a single file whose extension is one of these, the user prompt is skipped</remarks>
+		private static class RomFileExtensions
+		{
+			public static readonly IReadOnlyCollection<string> A78 = new[] { "a78" };
+
+			public static readonly IReadOnlyCollection<string> C64 = new[] { "crt" };
+
+			public static readonly IReadOnlyCollection<string> Coleco = new[] { "col" };
+
+			public static readonly IReadOnlyCollection<string> GB = new[] { "gb", "gbc" };
+
+			public static readonly IReadOnlyCollection<string> GBA = new[] { "gba" };
+
+			public static readonly IReadOnlyCollection<string> GEN = new[] { "gen", "md", "smd", "32x" };
+
+			public static readonly IReadOnlyCollection<string> INTV = new[] { "int", "bin", "rom" };
+
+			public static readonly IReadOnlyCollection<string> N64 = new[] { "z64", "v64", "n64" };
+
+			public static readonly IReadOnlyCollection<string> NES = new[] { "nes", "fds", "unf" };
+
+			public static readonly IReadOnlyCollection<string> O2 = new[] { "o2" };
+
+			public static readonly IReadOnlyCollection<string> PCE = new[] { "pce", "sgx" };
+
+			public static readonly IReadOnlyCollection<string> SMS = new[] { "sms", "gg", "sg" };
+
+			public static readonly IReadOnlyCollection<string> SNES = new[] { "smc", "sfc", "xml" };
+
+			public static readonly IReadOnlyCollection<string> TI83 = new[] { "rom" };
+
+			public static readonly IReadOnlyCollection<string> VEC = new[] { "vec" };
+
+			public static readonly IReadOnlyCollection<string> WSWAN = new[] { "ws", "wsc" };
+
+			public static readonly IReadOnlyCollection<string> AutoloadFromArchive = new string[0]
+				.Concat(A78)
+				.Concat(C64)
+				.Concat(Coleco)
+				.Concat(GB)
+				.Concat(GBA)
+				.Concat(GEN)
+				.Concat(INTV)
+				.Concat(N64)
+				.Concat(NES)
+				.Concat(O2)
+				.Concat(PCE)
+				.Concat(SMS)
+				.Concat(SNES)
+				.Concat(TI83)
+				.Concat(VEC)
+				.Concat(WSWAN)
+				.Select(static s => $".{s}") // this is what's expected at call-site
+				.ToArray();
+		}
+
 		/// <remarks>TODO add and handle <see cref="FilesystemFilter.LuaScripts"/> (you can drag-and-drop scripts and there are already non-rom things in this list, so why not?)</remarks>
 		private static readonly FilesystemFilterSet RomFSFilterSet = new FilesystemFilterSet(
 			new FilesystemFilter("Music Files", new string[0], devBuildExtraExts: new[] { "psf", "minipsf", "sid", "nsf" }),
 			new FilesystemFilter("Disc Images", new[] { "cue", "ccd", "mds", "m3u" }),
-			new FilesystemFilter("NES", new[] { "nes", "fds", "unf", "nsf" }, addArchiveExts: true),
-			new FilesystemFilter("Super NES", new[] { "smc", "sfc", "xml" }, addArchiveExts: true),
+			new FilesystemFilter("NES", RomFileExtensions.NES.Concat(new[] { "nsf" }).ToList(), addArchiveExts: true),
+			new FilesystemFilter("Super NES", RomFileExtensions.SNES, addArchiveExts: true),
 			new FilesystemFilter("PlayStation", new[] { "cue", "ccd", "mds", "m3u" }),
 			new FilesystemFilter("PSX Executables (experimental)", new string[0], devBuildExtraExts: new[] { "exe" }),
 			new FilesystemFilter("PSF Playstation Sound File", new[] { "psf", "minipsf" }),
-			new FilesystemFilter("Nintendo 64", new[] { "z64", "v64", "n64" }),
-			new FilesystemFilter("Gameboy", new[] { "gb", "gbc", "sgb" }, addArchiveExts: true),
-			new FilesystemFilter("Gameboy Advance", new[] { "gba" }, addArchiveExts: true),
+			new FilesystemFilter("Nintendo 64", RomFileExtensions.N64),
+			new FilesystemFilter("Gameboy", RomFileExtensions.GB.Concat(new[] { "sgb" }).ToList(), addArchiveExts: true),
+			new FilesystemFilter("Gameboy Advance", RomFileExtensions.GBA, addArchiveExts: true),
 			new FilesystemFilter("Nintendo DS", new[] { "nds" }),
-			new FilesystemFilter("Master System", new[] { "sms", "gg", "sg" }, addArchiveExts: true),
-			new FilesystemFilter("PC Engine", new[] { "pce", "sgx", "cue", "ccd", "mds" }, addArchiveExts: true),
+			new FilesystemFilter("Master System", RomFileExtensions.SMS, addArchiveExts: true),
+			new FilesystemFilter("PC Engine", RomFileExtensions.PCE.Concat(new[] { "cue", "ccd", "mds" }).ToList(), addArchiveExts: true),
 			new FilesystemFilter("Atari 2600", new[] { "a26" }, devBuildExtraExts: new[] { "bin" }, addArchiveExts: true),
-			new FilesystemFilter("Atari 7800", new[] { "a78" }, devBuildExtraExts: new[] { "bin" }, addArchiveExts: true),
+			new FilesystemFilter("Atari 7800", RomFileExtensions.A78, devBuildExtraExts: new[] { "bin" }, addArchiveExts: true),
 			new FilesystemFilter("Atari Lynx", new[] { "lnx" }, addArchiveExts: true),
-			new FilesystemFilter("ColecoVision", new[] { "col" }, addArchiveExts: true),
-			new FilesystemFilter("IntelliVision", new[] { "int", "bin", "rom" }, addArchiveExts: true),
-			new FilesystemFilter("TI-83", new[] { "rom" }, addArchiveExts: true),
+			new FilesystemFilter("ColecoVision", RomFileExtensions.Coleco, addArchiveExts: true),
+			new FilesystemFilter("IntelliVision", RomFileExtensions.INTV, addArchiveExts: true),
+			new FilesystemFilter("TI-83", RomFileExtensions.TI83, addArchiveExts: true),
 			FilesystemFilter.Archives,
-			new FilesystemFilter("Genesis", new[] { "gen", "md", "smd", "32x", "bin", "cue", "ccd" }, addArchiveExts: true),
+			new FilesystemFilter("Genesis", RomFileExtensions.GEN.Concat(new[] { "bin", "cue", "ccd" }).ToList(), addArchiveExts: true),
 			new FilesystemFilter("SID Commodore 64 Music File", new string[0], devBuildExtraExts: new[] { "sid" }, devBuildAddArchiveExts: true),
-			new FilesystemFilter("WonderSwan", new[] { "ws", "wsc" }, addArchiveExts: true),
+			new FilesystemFilter("WonderSwan", RomFileExtensions.WSWAN, addArchiveExts: true),
 			new FilesystemFilter("Apple II", new[] { "dsk", "do", "po" }, addArchiveExts: true),
 			new FilesystemFilter("Virtual Boy", new[] { "vb" }, addArchiveExts: true),
 			new FilesystemFilter("Neo Geo Pocket", new[] { "ngp", "ngc" }, addArchiveExts: true),
-			new FilesystemFilter("Commodore 64", new[] { "prg", "d64", "g64", "crt", "tap" }, addArchiveExts: true),
+			new FilesystemFilter("Commodore 64", new[] { "prg", "d64", "g64" }.Concat(RomFileExtensions.C64).Concat(new[] { "tap" }).ToList(), addArchiveExts: true),
 			new FilesystemFilter("Amstrad CPC", new string[0], devBuildExtraExts: new[] { "cdt", "dsk" }, devBuildAddArchiveExts: true),
 			new FilesystemFilter("Sinclair ZX Spectrum", new[] { "tzx", "tap", "dsk", "pzx", "csw", "wav" }, addArchiveExts: true),
-			new FilesystemFilter("Odyssey 2", new[] { "o2" }),
+			new FilesystemFilter("Odyssey 2", RomFileExtensions.O2),
 			new FilesystemFilter("Uzebox", new[] { "uze" }),
 			FilesystemFilter.EmuHawkSaveStates
 		);
