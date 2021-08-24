@@ -199,6 +199,14 @@ namespace BizHawk.Client.Common
 			{
 				file.BindSoleItemOf(RomFileExtensions.AutoloadFromArchive);
 			}
+			// ...including unrecognised extensions that the user has set a platform for
+			if (!file.IsBound)
+			{
+				var exts = _config.PreferredPlatformsForExtensions.Where(static kvp => !string.IsNullOrEmpty(kvp.Value))
+					.Select(static kvp => kvp.Key)
+					.ToList();
+				if (exts.Count is not 0) file.BindSoleItemOf(exts);
+			}
 
 			// if we have an archive and need to bind something, then pop the dialog
 			if (file.IsArchive && !file.IsBound)
