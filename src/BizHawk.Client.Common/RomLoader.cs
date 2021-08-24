@@ -761,13 +761,17 @@ namespace BizHawk.Client.Common
 		/// <remarks>roms ONLY; when an archive is loaded with a single file whose extension is one of these, the user prompt is skipped</remarks>
 		private static class RomFileExtensions
 		{
+			public static readonly IReadOnlyCollection<string> A26 = new[] { "a26" };
+
 			public static readonly IReadOnlyCollection<string> A78 = new[] { "a78" };
 
-			public static readonly IReadOnlyCollection<string> C64 = new[] { "crt" };
+			public static readonly IReadOnlyCollection<string> AppleII = new[] { "dsk", "do", "po" };
+
+			public static readonly IReadOnlyCollection<string> C64 = new[] { "prg", "d64", "g64", "crt", "tap" };
 
 			public static readonly IReadOnlyCollection<string> Coleco = new[] { "col" };
 
-			public static readonly IReadOnlyCollection<string> GB = new[] { "gb", "gbc" };
+			public static readonly IReadOnlyCollection<string> GB = new[] { "gb", "gbc", "sgb" };
 
 			public static readonly IReadOnlyCollection<string> GBA = new[] { "gba" };
 
@@ -775,9 +779,15 @@ namespace BizHawk.Client.Common
 
 			public static readonly IReadOnlyCollection<string> INTV = new[] { "int", "bin", "rom" };
 
+			public static readonly IReadOnlyCollection<string> Lynx = new[] { "lnx" };
+
 			public static readonly IReadOnlyCollection<string> N64 = new[] { "z64", "v64", "n64" };
 
+			public static readonly IReadOnlyCollection<string> NDS = new[] { "nds" };
+
 			public static readonly IReadOnlyCollection<string> NES = new[] { "nes", "fds", "unf" };
+
+			public static readonly IReadOnlyCollection<string> NGP = new[] { "ngp", "ngc" };
 
 			public static readonly IReadOnlyCollection<string> O2 = new[] { "o2" };
 
@@ -789,27 +799,41 @@ namespace BizHawk.Client.Common
 
 			public static readonly IReadOnlyCollection<string> TI83 = new[] { "rom" };
 
+			public static readonly IReadOnlyCollection<string> UZE = new[] { "uze" };
+
+			public static readonly IReadOnlyCollection<string> VB = new[] { "vb" };
+
 			public static readonly IReadOnlyCollection<string> VEC = new[] { "vec" };
 
 			public static readonly IReadOnlyCollection<string> WSWAN = new[] { "ws", "wsc" };
 
+			public static readonly IReadOnlyCollection<string> ZXSpectrum = new[] { "tzx", "tap", "dsk", "pzx" };
+
 			public static readonly IReadOnlyCollection<string> AutoloadFromArchive = new string[0]
+				.Concat(A26)
 				.Concat(A78)
+				.Concat(AppleII)
 				.Concat(C64)
 				.Concat(Coleco)
 				.Concat(GB)
 				.Concat(GBA)
 				.Concat(GEN)
 				.Concat(INTV)
+				.Concat(Lynx)
 				.Concat(N64)
+				.Concat(NDS)
 				.Concat(NES)
+				.Concat(NGP)
 				.Concat(O2)
 				.Concat(PCE)
 				.Concat(SMS)
 				.Concat(SNES)
 				.Concat(TI83)
+				.Concat(UZE)
+				.Concat(VB)
 				.Concat(VEC)
 				.Concat(WSWAN)
+				.Concat(ZXSpectrum)
 				.Select(static s => $".{s}") // this is what's expected at call-site
 				.ToArray();
 		}
@@ -824,14 +848,14 @@ namespace BizHawk.Client.Common
 			new FilesystemFilter("PSX Executables (experimental)", new string[0], devBuildExtraExts: new[] { "exe" }),
 			new FilesystemFilter("PSF Playstation Sound File", new[] { "psf", "minipsf" }),
 			new FilesystemFilter("Nintendo 64", RomFileExtensions.N64),
-			new FilesystemFilter("Gameboy", RomFileExtensions.GB.Concat(new[] { "sgb" }).ToList(), addArchiveExts: true),
+			new FilesystemFilter("Gameboy", RomFileExtensions.GB, addArchiveExts: true),
 			new FilesystemFilter("Gameboy Advance", RomFileExtensions.GBA, addArchiveExts: true),
-			new FilesystemFilter("Nintendo DS", new[] { "nds" }),
+			new FilesystemFilter("Nintendo DS", RomFileExtensions.NDS),
 			new FilesystemFilter("Master System", RomFileExtensions.SMS, addArchiveExts: true),
 			new FilesystemFilter("PC Engine", RomFileExtensions.PCE.Concat(new[] { "cue", "ccd", "mds" }).ToList(), addArchiveExts: true),
-			new FilesystemFilter("Atari 2600", new[] { "a26" }, devBuildExtraExts: new[] { "bin" }, addArchiveExts: true),
+			new FilesystemFilter("Atari 2600", RomFileExtensions.A26, devBuildExtraExts: new[] { "bin" }, addArchiveExts: true),
 			new FilesystemFilter("Atari 7800", RomFileExtensions.A78, devBuildExtraExts: new[] { "bin" }, addArchiveExts: true),
-			new FilesystemFilter("Atari Lynx", new[] { "lnx" }, addArchiveExts: true),
+			new FilesystemFilter("Atari Lynx", RomFileExtensions.Lynx, addArchiveExts: true),
 			new FilesystemFilter("ColecoVision", RomFileExtensions.Coleco, addArchiveExts: true),
 			new FilesystemFilter("IntelliVision", RomFileExtensions.INTV, addArchiveExts: true),
 			new FilesystemFilter("TI-83", RomFileExtensions.TI83, addArchiveExts: true),
@@ -839,14 +863,15 @@ namespace BizHawk.Client.Common
 			new FilesystemFilter("Genesis", RomFileExtensions.GEN.Concat(new[] { "bin", "cue", "ccd" }).ToList(), addArchiveExts: true),
 			new FilesystemFilter("SID Commodore 64 Music File", new string[0], devBuildExtraExts: new[] { "sid" }, devBuildAddArchiveExts: true),
 			new FilesystemFilter("WonderSwan", RomFileExtensions.WSWAN, addArchiveExts: true),
-			new FilesystemFilter("Apple II", new[] { "dsk", "do", "po" }, addArchiveExts: true),
-			new FilesystemFilter("Virtual Boy", new[] { "vb" }, addArchiveExts: true),
-			new FilesystemFilter("Neo Geo Pocket", new[] { "ngp", "ngc" }, addArchiveExts: true),
-			new FilesystemFilter("Commodore 64", new[] { "prg", "d64", "g64" }.Concat(RomFileExtensions.C64).Concat(new[] { "tap" }).ToList(), addArchiveExts: true),
+			new FilesystemFilter("Apple II", RomFileExtensions.AppleII, addArchiveExts: true),
+			new FilesystemFilter("Virtual Boy", RomFileExtensions.VB, addArchiveExts: true),
+			new FilesystemFilter("Neo Geo Pocket", RomFileExtensions.NGP, addArchiveExts: true),
+			new FilesystemFilter("Commodore 64", RomFileExtensions.C64, addArchiveExts: true),
 			new FilesystemFilter("Amstrad CPC", new string[0], devBuildExtraExts: new[] { "cdt", "dsk" }, devBuildAddArchiveExts: true),
-			new FilesystemFilter("Sinclair ZX Spectrum", new[] { "tzx", "tap", "dsk", "pzx", "csw", "wav" }, addArchiveExts: true),
+			new FilesystemFilter("Sinclair ZX Spectrum", RomFileExtensions.ZXSpectrum.Concat(new[] { "csw", "wav" }).ToList(), addArchiveExts: true),
 			new FilesystemFilter("Odyssey 2", RomFileExtensions.O2),
-			new FilesystemFilter("Uzebox", new[] { "uze" }),
+			new FilesystemFilter("Uzebox", RomFileExtensions.UZE),
+			new FilesystemFilter("Vectrex", RomFileExtensions.VEC),
 			FilesystemFilter.EmuHawkSaveStates
 		);
 
