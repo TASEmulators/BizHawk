@@ -380,6 +380,7 @@ namespace BizHawk.Client.EmuHawk
             this.ShowMenuContextMenuSeparator = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
             this.ShowMenuContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
             this.timerMouseIdle = new System.Windows.Forms.Timer(this.components);
+            this.editSwitchTriggersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MainformMenu.SuspendLayout();
             this.MainStatusBar.SuspendLayout();
             this.MainFormContextMenu.SuspendLayout();
@@ -854,7 +855,7 @@ namespace BizHawk.Client.EmuHawk
             // 
             this.CaptureLuaMenuItem.CheckOnClick = true;
             this.CaptureLuaMenuItem.Name = "CaptureLuaMenuItem";
-            this.CaptureLuaMenuItem.Size = new System.Drawing.Size(446, 44);
+            this.CaptureLuaMenuItem.Size = new System.Drawing.Size(223, 22);
             this.CaptureLuaMenuItem.Text = "Capture Lua";
             this.CaptureLuaMenuItem.Click += new System.EventHandler(this.CaptureLuaMenuItem_Click);
             // 
@@ -1999,9 +2000,10 @@ namespace BizHawk.Client.EmuHawk
             this.switchGameToolStripMenuItem,
             this.removeCurrentGameToolStripMenuItem,
             this.toggleActiveGamesToolStripMenuItem,
-            this.viewSupportedGameListToolStripMenuItem});
+            this.viewSupportedGameListToolStripMenuItem,
+            this.editSwitchTriggersToolStripMenuItem});
             this.shufflerToolStripMenuItem.Name = "shufflerToolStripMenuItem";
-            this.shufflerToolStripMenuItem.Size = new System.Drawing.Size(119, 36);
+            this.shufflerToolStripMenuItem.Size = new System.Drawing.Size(60, 19);
             this.shufflerToolStripMenuItem.Text = "&Shuffler";
             this.shufflerToolStripMenuItem.Click += new System.EventHandler(this.shufflerToolStripMenuItem_Click);
             // 
@@ -2010,7 +2012,7 @@ namespace BizHawk.Client.EmuHawk
             this.switchGameToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripMenuItemEx1});
             this.switchGameToolStripMenuItem.Name = "switchGameToolStripMenuItem";
-            this.switchGameToolStripMenuItem.Size = new System.Drawing.Size(430, 44);
+            this.switchGameToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
             this.switchGameToolStripMenuItem.Text = "Switch Game";
             this.switchGameToolStripMenuItem.Click += new System.EventHandler(this.switchGameToolStripMenuItem_Click);
             // 
@@ -2021,20 +2023,20 @@ namespace BizHawk.Client.EmuHawk
             // removeCurrentGameToolStripMenuItem
             // 
             this.removeCurrentGameToolStripMenuItem.Name = "removeCurrentGameToolStripMenuItem";
-            this.removeCurrentGameToolStripMenuItem.Size = new System.Drawing.Size(430, 44);
+            this.removeCurrentGameToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
             this.removeCurrentGameToolStripMenuItem.Text = "Remove Current Game";
             this.removeCurrentGameToolStripMenuItem.Click += new System.EventHandler(this.removeCurrentGameToolStripMenuItem_Click);
             // 
             // toggleActiveGamesToolStripMenuItem
             // 
             this.toggleActiveGamesToolStripMenuItem.Name = "toggleActiveGamesToolStripMenuItem";
-            this.toggleActiveGamesToolStripMenuItem.Size = new System.Drawing.Size(430, 44);
+            this.toggleActiveGamesToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
             this.toggleActiveGamesToolStripMenuItem.Text = "Toggle Active Games";
             // 
             // viewSupportedGameListToolStripMenuItem
             // 
             this.viewSupportedGameListToolStripMenuItem.Name = "viewSupportedGameListToolStripMenuItem";
-            this.viewSupportedGameListToolStripMenuItem.Size = new System.Drawing.Size(430, 44);
+            this.viewSupportedGameListToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
             this.viewSupportedGameListToolStripMenuItem.Text = "View Supported Game List";
             this.viewSupportedGameListToolStripMenuItem.Click += new System.EventHandler(this.viewSupportedGameListToolStripMenuItem_Click);
             // 
@@ -2070,7 +2072,7 @@ namespace BizHawk.Client.EmuHawk
             this.ProfileFirstBootLabel,
             this.LinkConnectStatusBarButton,
             this.UpdateNotification});
-            this.MainStatusBar.Location = new System.Drawing.Point(0, 366);
+            this.MainStatusBar.Location = new System.Drawing.Point(0, 386);
             this.MainStatusBar.Name = "MainStatusBar";
             this.MainStatusBar.ShowItemToolTips = true;
             this.MainStatusBar.SizingGrip = false;
@@ -2082,7 +2084,7 @@ namespace BizHawk.Client.EmuHawk
             this.DumpStatusButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.DumpStatusButton.Name = "DumpStatusButton";
             this.DumpStatusButton.ShowDropDownArrow = false;
-            this.DumpStatusButton.Size = new System.Drawing.Size(4, 38);
+            this.DumpStatusButton.Size = new System.Drawing.Size(4, 20);
             this.DumpStatusButton.Text = "No ROM loaded";
             this.DumpStatusButton.Click += new System.EventHandler(this.DumpStatusButton_Click);
             // 
@@ -2092,7 +2094,7 @@ namespace BizHawk.Client.EmuHawk
             this.PlayRecordStatusButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.PlayRecordStatusButton.Name = "PlayRecordStatusButton";
             this.PlayRecordStatusButton.ShowDropDownArrow = false;
-            this.PlayRecordStatusButton.Size = new System.Drawing.Size(4, 38);
+            this.PlayRecordStatusButton.Size = new System.Drawing.Size(4, 20);
             this.PlayRecordStatusButton.Text = "No movie is active";
             // 
             // PauseStatusButton
@@ -2102,7 +2104,7 @@ namespace BizHawk.Client.EmuHawk
             this.PauseStatusButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.PauseStatusButton.Name = "PauseStatusButton";
             this.PauseStatusButton.ShowDropDownArrow = false;
-            this.PauseStatusButton.Size = new System.Drawing.Size(4, 38);
+            this.PauseStatusButton.Size = new System.Drawing.Size(4, 20);
             this.PauseStatusButton.Text = "toolStripDropDownButton1";
             this.PauseStatusButton.ToolTipText = "Emulator is paused";
             this.PauseStatusButton.Click += new System.EventHandler(this.PauseMenuItem_Click);
@@ -2259,7 +2261,7 @@ namespace BizHawk.Client.EmuHawk
             this.ShowMenuContextMenuSeparator,
             this.ShowMenuContextMenuItem});
             this.MainFormContextMenu.Name = "contextMenuStrip1";
-            this.MainFormContextMenu.Size = new System.Drawing.Size(379, 826);
+            this.MainFormContextMenu.Size = new System.Drawing.Size(217, 490);
             this.MainFormContextMenu.Closing += new System.Windows.Forms.ToolStripDropDownClosingEventHandler(this.MainFormContextMenu_Closing);
             this.MainFormContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.MainFormContextMenu_Opening);
             // 
@@ -2452,6 +2454,13 @@ namespace BizHawk.Client.EmuHawk
             this.timerMouseIdle.Enabled = true;
             this.timerMouseIdle.Interval = 2000;
             this.timerMouseIdle.Tick += new System.EventHandler(this.TimerMouseIdle_Tick);
+            // 
+            // editSwitchTriggersToolStripMenuItem
+            // 
+            this.editSwitchTriggersToolStripMenuItem.Name = "editSwitchTriggersToolStripMenuItem";
+            this.editSwitchTriggersToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+            this.editSwitchTriggersToolStripMenuItem.Text = "Edit Switch Triggers";
+            this.editSwitchTriggersToolStripMenuItem.Click += new System.EventHandler(this.editSwitchTriggersToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -2842,5 +2851,6 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolStripMenuItem toggleActiveGamesToolStripMenuItem;
 		private ToolStripMenuItemEx toolStripMenuItemEx1;
 		private System.Windows.Forms.ToolStripMenuItem viewSupportedGameListToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem editSwitchTriggersToolStripMenuItem;
 	}
 }

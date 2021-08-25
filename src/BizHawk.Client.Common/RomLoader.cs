@@ -900,6 +900,21 @@ namespace BizHawk.Client.Common
 			return true;
 		}
 
+		public static string GetActiveGameFileHandle()
+		{
+			if (activeEmulator != null)
+			{
+				string _triggerKeyStart = activeEmulator.game.Name.Split(new string[] { "(" }, StringSplitOptions.None)[0];
+				if (!_triggerKeyStart.EndsWith(" "))
+				{
+					_triggerKeyStart += " ";
+				}
+				string _triggerKey = _triggerKeyStart.ToUpper() + activeEmulator.game.System.ToString();
+				return _triggerKey;
+			}
+			return "";
+		}
+
 		public static CoreComm lastCoreComm;
 		public static string lastLaunchLibretroCore;
 

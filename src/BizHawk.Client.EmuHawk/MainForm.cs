@@ -4994,6 +4994,12 @@ namespace BizHawk.Client.EmuHawk
 		
 		}
 
+		private void editSwitchTriggersToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			MainWindow editTriggersWindow = new MainWindow();
+			editTriggersWindow.ShowDialog();
+		}
+
 		public IQuickBmpFile QuickBmpFile { get; } = new QuickBmpFile();
 	}
 }
