@@ -1170,6 +1170,8 @@ namespace BizHawk.Client.Common
 					return "Work RAM High";
 				case "GBA":
 					return "IWRAM";
+				case "NGP":
+					return "Neo Geo Pocket";
 			}
 
 			return MemoryApi.instance.MainMemoryName;
@@ -1259,7 +1261,10 @@ namespace BizHawk.Client.Common
 						string[] byteStrings = components[1].Split(new string[] { "," }, StringSplitOptions.None);
 						foreach (string byteString in byteStrings)
 						{
-							newDef.bytes.Add(int.Parse(byteString, System.Globalization.NumberStyles.HexNumber));
+							if (byteString.Length > 0)
+							{
+								newDef.bytes.Add(int.Parse(byteString, System.Globalization.NumberStyles.HexNumber));
+							}
 						}
 					}
 
