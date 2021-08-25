@@ -912,7 +912,7 @@ namespace BizHawk.Client.Common
 				string _triggerKey = _triggerKeyStart.ToUpper() + activeEmulator.game.System.ToString();
 				return _triggerKey;
 			}
-			return "";
+			return "NONE";
 		}
 
 		public static CoreComm lastCoreComm;

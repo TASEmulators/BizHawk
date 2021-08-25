@@ -430,21 +430,7 @@ namespace BizHawk.Client.EmuHawk
 
         private void button2_Click(object sender, EventArgs e)
         {
-			string fileHandle = RomLoader.GetActiveGameFileHandle();
-			if (fileHandle == null)
-			{
-				return;
-			}
-
-			string idPath = "_shuffletriggers\\" + fileHandle + ".txt";
-            if (!File.Exists(idPath))
-            {
-                return;
-            }
-
-            StreamReader gameReader = new StreamReader(idPath);
-            string gameId = gameReader.ReadLine();
-            gameReader.Close();
+            string gameId = RomLoader.GetActiveGameFileHandle();
 
             bool hasFound = false;
 
@@ -465,7 +451,7 @@ namespace BizHawk.Client.EmuHawk
 
             if (!hasFound && gameId != "NONE")
             {
-                StreamWriter gameWriter = new StreamWriter(".\\Events\\" + gameId + ".txt");
+                StreamWriter gameWriter = new StreamWriter(".\\_shuffletriggers\\" + gameId + ".txt");
                 gameWriter.Write("event0>");
                 gameWriter.Close();
 
