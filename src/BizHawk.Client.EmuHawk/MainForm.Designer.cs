@@ -388,7 +388,7 @@ namespace BizHawk.Client.EmuHawk
             // 
             // MainformMenu
             // 
-            this.MainformMenu.ImageScalingSize = new System.Drawing.Size(32, 32);
+            this.MainformMenu.ImageScalingSize = new System.Drawing.Size(16, 16);
             this.MainformMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.FileSubMenu,
             this.EmulationSubMenu,
@@ -2046,7 +2046,7 @@ namespace BizHawk.Client.EmuHawk
             // 
             // MainStatusBar
             // 
-            this.MainStatusBar.ImageScalingSize = new System.Drawing.Size(32, 32);
+            this.MainStatusBar.ImageScalingSize = new System.Drawing.Size(16, 16);
             this.MainStatusBar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.DumpStatusButton,
             this.EmuStatus,
@@ -2233,7 +2233,7 @@ namespace BizHawk.Client.EmuHawk
             // 
             // MainFormContextMenu
             // 
-            this.MainFormContextMenu.ImageScalingSize = new System.Drawing.Size(32, 32);
+            this.MainFormContextMenu.ImageScalingSize = new System.Drawing.Size(16, 16);
             this.MainFormContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.OpenRomContextMenuItem,
             this.LoadLastRomContextMenuItem,

@@ -603,6 +603,9 @@
 	  <None Update="_shuffletriggers\Defaults\SONIC SPINBALL GEN.txt">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
+	  <None Update="_shuffletriggers\Defaults\SONIC THE HEDGEHOG - POCKET ADVENTURE NGP.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
 	  <None Update="_shuffletriggers\Defaults\SONIC THE HEDGEHOG - TRIPLE TROUBLE GG.txt">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
@@ -739,6 +742,9 @@
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
 	  <None Update="_shuffletriggers\SONIC SPINBALL GEN.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\SONIC THE HEDGEHOG - POCKET ADVENTURE NGP.txt">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
 	  <None Update="_shuffletriggers\SONIC THE HEDGEHOG - TRIPLE TROUBLE GG.txt">
