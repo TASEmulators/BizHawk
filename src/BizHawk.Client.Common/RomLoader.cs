@@ -734,6 +734,7 @@ namespace BizHawk.Client.Common
 						}
 					}
 				}
+				RefreshRomHistory();
 
 				path = activeRom;
 				while (attempts < 1000 && (path == activeRom || romHistory.Contains(path)) && allowedRoms.Count > 0)
@@ -756,6 +757,25 @@ namespace BizHawk.Client.Common
 			}
 
 			return path;
+		}
+
+		public static void RefreshRomHistory()
+		{
+			List<string> newHistory = new List<string>();
+			foreach(string romId in romHistory)
+			{
+				if (!romActiveStates.ContainsKey(romId))
+				{
+					newHistory.Add(romId);
+				} else
+				{
+					if (!romActiveStates[romId])
+					{
+						newHistory.Add(romId);
+					}
+				}
+			}
+			romHistory = newHistory;
 		}
 
 		public bool LoadGameFromShuffler(string path)
