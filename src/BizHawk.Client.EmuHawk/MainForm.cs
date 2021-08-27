@@ -4930,6 +4930,7 @@ namespace BizHawk.Client.EmuHawk
 			{"GG", "Sega Game Gear" },
 			{"SMS", "Sega Master System" },
 			{"SAT", "Sega Saturn" },
+			{"NGP", "Neo Geo Pocket" }
 		};
 
 		public void populateSupportedGameList()
@@ -4998,6 +4999,30 @@ namespace BizHawk.Client.EmuHawk
 		{
 			MainWindow editTriggersWindow = new MainWindow();
 			editTriggersWindow.ShowDialog();
+		}
+
+		private void addROMsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			OpenFileDialog addRomDialog = new OpenFileDialog();
+			addRomDialog.Multiselect = true;
+			addRomDialog.ShowDialog();
+
+			// get the file(s) from this and copy it into _magicbox if it's not there already!
+			foreach (string filePath in addRomDialog.FileNames)
+			{
+				Debug.WriteLine("Got file path: " + filePath);
+				string[] filePathSplit = filePath.Split(new string[] { "\\" }, StringSplitOptions.RemoveEmptyEntries);
+				string fileName = filePathSplit[filePathSplit.Length - 1];
+				if (File.Exists(".\\_magicbox\\" + fileName))
+				{
+					Debug.WriteLine("    File already in _magicbox folder");
+				} else
+				{
+					Debug.WriteLine("    Copying file to _magicbox folder");
+					File.Copy(filePath, ".\\_magicbox\\" + fileName);
+					Debug.WriteLine("    Copied file to _magicbox folder");
+				}
+			}
 		}
 
 		public IQuickBmpFile QuickBmpFile { get; } = new QuickBmpFile();

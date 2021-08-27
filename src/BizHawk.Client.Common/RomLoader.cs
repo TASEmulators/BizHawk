@@ -1171,7 +1171,7 @@ namespace BizHawk.Client.Common
 				case "GBA":
 					return "IWRAM";
 				case "NGP":
-					return "Neo Geo Pocket";
+					return "RAM";
 			}
 
 			return MemoryApi.instance.MainMemoryName;
