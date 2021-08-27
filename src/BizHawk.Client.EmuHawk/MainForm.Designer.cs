@@ -310,6 +310,7 @@ namespace BizHawk.Client.EmuHawk
             this.shufflerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.switchGameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemEx1 = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.addROMsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.removeCurrentGameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toggleActiveGamesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewSupportedGameListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -381,7 +382,6 @@ namespace BizHawk.Client.EmuHawk
             this.ShowMenuContextMenuSeparator = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
             this.ShowMenuContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
             this.timerMouseIdle = new System.Windows.Forms.Timer(this.components);
-            this.addROMsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MainformMenu.SuspendLayout();
             this.MainStatusBar.SuspendLayout();
             this.MainFormContextMenu.SuspendLayout();
@@ -2021,6 +2021,13 @@ namespace BizHawk.Client.EmuHawk
             // 
             this.toolStripMenuItemEx1.Text = "toolStripMenuItemEx1";
             // 
+            // addROMsToolStripMenuItem
+            // 
+            this.addROMsToolStripMenuItem.Name = "addROMsToolStripMenuItem";
+            this.addROMsToolStripMenuItem.Size = new System.Drawing.Size(267, 22);
+            this.addROMsToolStripMenuItem.Text = "&Add ROMs";
+            this.addROMsToolStripMenuItem.Click += new System.EventHandler(this.addROMsToolStripMenuItem_Click);
+            // 
             // removeCurrentGameToolStripMenuItem
             // 
             this.removeCurrentGameToolStripMenuItem.Name = "removeCurrentGameToolStripMenuItem";
@@ -2032,7 +2039,7 @@ namespace BizHawk.Client.EmuHawk
             // 
             this.toggleActiveGamesToolStripMenuItem.Name = "toggleActiveGamesToolStripMenuItem";
             this.toggleActiveGamesToolStripMenuItem.Size = new System.Drawing.Size(267, 22);
-            this.toggleActiveGamesToolStripMenuItem.Text = "&Toggle Games in Shufflet";
+            this.toggleActiveGamesToolStripMenuItem.Text = "&Toggle Games in Shuffler";
             // 
             // viewSupportedGameListToolStripMenuItem
             // 
@@ -2460,13 +2467,6 @@ namespace BizHawk.Client.EmuHawk
             this.timerMouseIdle.Enabled = true;
             this.timerMouseIdle.Interval = 2000;
             this.timerMouseIdle.Tick += new System.EventHandler(this.TimerMouseIdle_Tick);
-            // 
-            // addROMsToolStripMenuItem
-            // 
-            this.addROMsToolStripMenuItem.Name = "addROMsToolStripMenuItem";
-            this.addROMsToolStripMenuItem.Size = new System.Drawing.Size(267, 22);
-            this.addROMsToolStripMenuItem.Text = "&Add ROMs";
-            this.addROMsToolStripMenuItem.Click += new System.EventHandler(this.addROMsToolStripMenuItem_Click);
             // 
             // MainForm
             // 

@@ -4895,6 +4895,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						LoadRom("temp");
 					}
+					RomLoader.SaveActiveRomStates();
 				};
 				toggleActiveGamesToolStripMenuItem.DropDownItems.Add(toggleGameItem);
 			}
@@ -4910,8 +4911,9 @@ namespace BizHawk.Client.EmuHawk
 			if (RomLoader.romActiveStates.ContainsKey(RomLoader.activeRom))
 			{
 				RomLoader.romActiveStates[RomLoader.activeRom] = !RomLoader.romActiveStates[RomLoader.activeRom];
+				RomLoader.SaveActiveRomStates();
 			}
-				
+
 			if (RomLoader.ShouldToggleOutOfActiveGame())
 			{
 				LoadRom("temp");

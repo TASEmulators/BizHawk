@@ -606,6 +606,54 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		public static void SaveActiveRomStates()
+		{
+			string textToSave = "";
+			foreach(string _key in romActiveStates.Keys)
+			{
+				if (textToSave.Length > 0)
+				{
+					textToSave += "\n";
+				}
+				textToSave += _key + ":" + romActiveStates[_key];
+			}
+
+			File.WriteAllText(".\\_magicbox\\_romActiveStates.txt", textToSave);
+		}
+
+		public static void ParseRomActiveStates()
+		{
+			if (File.Exists(".\\_magicbox\\_romActiveStates.txt"))
+			{
+				Dictionary<string, bool> parsedStates = new Dictionary<string, bool>();
+				string[] sourceLines = File.ReadAllLines(".\\_magicbox\\_romActiveStates.txt");
+				foreach(string line in sourceLines)
+				{
+					string[] components = line.Split(new string[] { ":" }, StringSplitOptions.RemoveEmptyEntries);
+					if (components.Length > 1)
+					{
+						if (!parsedStates.ContainsKey(components[0]))
+						{
+							parsedStates.Add(components[0], components[1].ToUpper() == "TRUE");
+						}
+					}
+				}
+
+				List<string> keys = new List<string>();
+				foreach(string _key in romActiveStates.Keys)
+				{
+					keys.Add(_key);
+				}
+				foreach (string _key in keys)
+				{
+					if (parsedStates.ContainsKey(_key))
+					{
+						romActiveStates[_key] = parsedStates[_key];
+					}
+				}
+			}
+		}
+
 		public static bool ShouldToggleOutOfActiveGame()
 		{
 			if (romActiveStates.ContainsKey(activeRom))
@@ -641,6 +689,7 @@ namespace BizHawk.Client.Common
 						romActiveStates.Add(romId, true);
 					}
 				}
+				ParseRomActiveStates();
 			}
 
 			if (gameTriggers.Count <= 0 || forceRefresh)
@@ -687,7 +736,7 @@ namespace BizHawk.Client.Common
 				}
 
 				path = activeRom;
-				while (attempts < 1000 && (path == activeRom || romHistory.Contains(path)))
+				while (attempts < 1000 && (path == activeRom || romHistory.Contains(path)) && allowedRoms.Count > 0)
 				{
 					System.Diagnostics.Debug.WriteLine("!!!!!!!! reshuffling " + path);
 					path = allowedRoms[random.Next(0, allowedRoms.Count)];
