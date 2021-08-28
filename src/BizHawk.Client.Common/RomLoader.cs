@@ -41,6 +41,8 @@ namespace BizHawk.Client.Common
 
 		public static LoadRomArgs lastLoadRomArgs;
 
+		public static bool infiniteLivesOn = true;
+
 		private class DiscAsset : IDiscAsset
 		{
 			public Disc DiscData { get; set; }
@@ -703,12 +705,12 @@ namespace BizHawk.Client.Common
 					{
 						System.Diagnostics.Debug.WriteLine("!!!!!!!!     found trigger: " + _fileName);
 
-						GameTriggerDefinition definition = GameTriggerDefinition.FromFile(_fileName);
 						string[] pathComponents = _fileName.Split(new string[] { "\\" }, StringSplitOptions.None);
 						string _trimmedFileName = pathComponents[pathComponents.Length - 1];
 						string _key = _trimmedFileName.Split(new string[] { ".txt", "(" }, StringSplitOptions.None)[0];
 						System.Diagnostics.Debug.WriteLine("!!!!!!!!         adding trigger for key: " + _key);
 
+						GameTriggerDefinition definition = GameTriggerDefinition.FromFile(_fileName, _key);
 						gameTriggers.Add(_key, definition);
 					}
 				}
@@ -1141,17 +1143,24 @@ namespace BizHawk.Client.Common
 
 	public class GameTriggerDefinition {
 		public Dictionary<string, ShuffleTriggerDefinition> triggers = new Dictionary<string, ShuffleTriggerDefinition>();
-
-		public static GameTriggerDefinition FromFile(string _filePath) {
+		public LifeCountDefinition lifeCountDefinition;
+		public static GameTriggerDefinition FromFile(string _triggerFilePath, string _triggerKey) {
 			GameTriggerDefinition newDef = new GameTriggerDefinition();
 
-			string[] lines = File.ReadAllLines(_filePath);
-			foreach (string line in lines) {
-				string[] components = line.Split(new string[] { ">" }, StringSplitOptions.None);
-				if (components.Length > 1) {
-					newDef.triggers.Add(components[0], ShuffleTriggerDefinition.FromLine(components[1]));
+			if (_triggerFilePath != null)
+			{
+				string[] lines = File.ReadAllLines(_triggerFilePath);
+				foreach (string line in lines)
+				{
+					string[] components = line.Split(new string[] { ">" }, StringSplitOptions.None);
+					if (components.Length > 1)
+					{
+						newDef.triggers.Add(components[0], ShuffleTriggerDefinition.FromLine(components[1]));
+					}
 				}
 			}
+
+			newDef.lifeCountDefinition = LifeCountDefinition.FromFile(".\\_lifesettings\\" + _triggerKey + ".txt");
 
 			return newDef;
 		}
@@ -1167,6 +1176,13 @@ namespace BizHawk.Client.Common
 				}
 			}
 
+			if (lifeCountDefinition != null)
+			{
+				if (RomLoader.infiniteLivesOn && RomLoader.frameIndex % Math.Max(1, lifeCountDefinition.period) == 0)
+				{
+					lifeCountDefinition.Apply();
+				}
+			}
 
 			//System.Diagnostics.Debug.WriteLine("!!!!!!!        CheckFrame called");
 
@@ -1196,6 +1212,125 @@ namespace BizHawk.Client.Common
 		}
 	}
 
+	public class LifeCountDefinition
+	{
+		public List<int> bytes = new List<int>();
+		public List<int> values = new List<int>();
+		public List<string> domains = new List<string>();
+		public int period = 300;
+
+		public void Apply()
+		{
+			for (int i = 0; i < bytes.Count; i++)
+			{
+				int location = bytes[i];
+				int value = values.Count > i ? values[i] : 0;
+				string domain = domains.Count > i ? domains[i] : "DEFAULT";
+				string domainToCheck = domain;
+				if (domain.ToUpper() == "DEFAULT")
+				{
+					domainToCheck = ShuffleTriggerDefinition.DefaultMemoryDomian();
+				}
+
+				MemoryApi.instance.WriteByte(location, (uint)(value) % 0x100, domainToCheck);
+			}
+		}
+
+		public string GetStringValue()
+		{
+			string runningString = "period>" + period.ToString();
+			for(int i = 0; i < bytes.Count || i < values.Count || i < domains.Count; i++)
+			{
+				runningString += "\nstate>";
+				if (i < bytes.Count)
+				{
+					if (!runningString.EndsWith(">"))
+					{
+						runningString += "/";
+					}
+					runningString += "byte:" + bytes[i].ToString("X4");
+				}
+
+				if (i < values.Count)
+				{
+					if (!runningString.EndsWith(">"))
+					{
+						runningString += "/";
+					}
+					runningString += "value:" + values[i].ToString("X2");
+				}
+
+				if (i < domains.Count)
+				{
+					if (!runningString.EndsWith(">"))
+					{
+						runningString += "/";
+					}
+					runningString += "domain:" + domains[i];
+				}
+			}
+
+			return runningString;
+		}
+
+		public static LifeCountDefinition FromFile(string _filePath)
+		{
+			LifeCountDefinition newDef = new LifeCountDefinition();
+
+			if (File.Exists(_filePath))
+			{
+				string[] lines = File.ReadAllLines(_filePath);
+				bool hasFoundBreakLine = false;
+				foreach (string line in lines)
+				{
+					if (line == "---")
+					{
+						hasFoundBreakLine = true;
+						continue;
+					}
+
+					if (hasFoundBreakLine)
+					{
+						if (line.StartsWith("period>"))
+						{
+							newDef.period = int.Parse(line.Substring("period>".Length));
+						}
+
+						if (line.StartsWith("state>"))
+						{
+							string[] parameters = line.Substring("state>".Length).Split(new string[] { "/" }, StringSplitOptions.RemoveEmptyEntries);
+							foreach (string parameter in parameters)
+							{
+								newDef.bytes.Add(0);
+								newDef.values.Add(0);
+								newDef.domains.Add("DEFAULT");
+
+								string[] components = parameter.Split(new string[] { ":" }, StringSplitOptions.RemoveEmptyEntries);
+								if (components.Length > 1)
+								{
+									if (components[0] == "byte")
+									{
+										newDef.bytes[newDef.bytes.Count - 1] = int.Parse(components[1], System.Globalization.NumberStyles.HexNumber);
+									}
+									if (components[0] == "value")
+									{
+										newDef.values[newDef.values.Count - 1] = int.Parse(components[1], System.Globalization.NumberStyles.HexNumber);
+									}
+									if (components[0] == "domain")
+									{
+										newDef.domains[newDef.domains.Count - 1] = components[1];
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+
+			return newDef;
+		}
+	}
+
 	public class ShuffleTriggerDefinition {
 		public List<int> bytes = new List<int>();
 		public int baseType = 256;
@@ -1208,7 +1343,7 @@ namespace BizHawk.Client.Common
 		public long lastValue = 0;
 		public int countdownToActivate = 0;
 
-		public MemoryDomain DomainWithName(string name)
+		public static MemoryDomain DomainWithName(string name)
 		{
 			foreach(MemoryDomain _domain in RomLoader.activeMemoryDomains)
 			{
@@ -1221,7 +1356,7 @@ namespace BizHawk.Client.Common
 			return RomLoader.activeMemoryDomains[0];
 		}
 
-		public string DefaultMemoryDomian()
+		public static string DefaultMemoryDomian()
 		{
 			switch (RomLoader.activeEmulator.game.System)
 			{
