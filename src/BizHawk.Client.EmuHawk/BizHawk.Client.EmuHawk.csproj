@@ -564,6 +564,9 @@
 	  <None Update="_lifesettings\SONIC BLAST SMS.txt">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
+	  <None Update="_lifesettings\SONIC CD GEN.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
 	  <None Update="_lifesettings\SONIC CHAOS GG.txt">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
