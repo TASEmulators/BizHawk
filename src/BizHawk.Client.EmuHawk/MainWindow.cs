@@ -194,21 +194,30 @@ namespace BizHawk.Client.EmuHawk
 
 				if (RomLoader.gameTriggers.ContainsKey(gameKey))
 				{
+					Debug.WriteLine("Found game triggers for " + gameKey);
 					if (RomLoader.gameTriggers[gameKey].lifeCountDefinition != null)
 					{
 						lifeCountDefinition = RomLoader.gameTriggers[gameKey].lifeCountDefinition;
+						Debug.WriteLine("Found lifeCountDefinition triggers for " + gameKey + "\n" + lifeCountDefinition.GetStringValue());
 					}
 					else
 					{
+						Debug.WriteLine("Did not find lifeCountDefinition triggers for " + gameKey);
 						RomLoader.gameTriggers[gameKey].lifeCountDefinition = lifeCountDefinition;
 					}
 				}
 				else
 				{
+					Debug.WriteLine("Did not find game triggers for " + gameKey);
+
 					GameTriggerDefinition gameTriggerDefinition = new GameTriggerDefinition();
 					gameTriggerDefinition.lifeCountDefinition = lifeCountDefinition;
 					RomLoader.gameTriggers.Add(gameKey, gameTriggerDefinition);
 				}
+			} else
+			{
+				Debug.WriteLine("activeGamePath is null");
+
 			}
 
 			return lifeCountDefinition;
@@ -216,6 +225,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public void PopulateActiveGameLifeSettings()
 		{
+			Debug.WriteLine("!! PopulateActiveGameLifeSettings");
+
 			LifeCountDefinition lifeCountDefinition = GetActiveLifeCountDefinition();
 
 			livesFrameCount.Text = lifeCountDefinition.period.ToString();
@@ -229,6 +240,11 @@ namespace BizHawk.Client.EmuHawk
 						{
 							control.Text = lifeCountDefinition.bytes[i].ToString("X4");
 						}
+						else
+						{
+							control.Text = "";
+						}
+						Debug.WriteLine("   set " + control.Name + " to " + control.Text);
 					}
 
 					if (control.Name == "livesValue" + i.ToString())
@@ -236,7 +252,11 @@ namespace BizHawk.Client.EmuHawk
 						if (lifeCountDefinition.values.Count > i)
 						{
 							control.Text = lifeCountDefinition.values[i].ToString("X2");
+						} else
+						{
+							control.Text = "";
 						}
+						Debug.WriteLine("   set " + control.Name + " to " + control.Text);
 					}
 
 					if (control.Name == "livesDomain" + i.ToString())
@@ -245,6 +265,11 @@ namespace BizHawk.Client.EmuHawk
 						{
 							control.Text = lifeCountDefinition.domains[i];
 						}
+						else
+						{
+							control.Text = "";
+						}
+						Debug.WriteLine("   set " + control.Name + " to " + control.Text);
 					}
 				}
 			}

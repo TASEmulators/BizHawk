@@ -67,10 +67,10 @@ namespace BizHawk.Client.EmuHawk
             this.livesBytes1 = new System.Windows.Forms.TextBox();
             this.livesValue1 = new System.Windows.Forms.TextBox();
             this.livesDomain1 = new System.Windows.Forms.TextBox();
-            this.livesBytes3 = new System.Windows.Forms.TextBox();
+            this.livesBytes2 = new System.Windows.Forms.TextBox();
             this.livesValue2 = new System.Windows.Forms.TextBox();
             this.livesDomain2 = new System.Windows.Forms.TextBox();
-            this.livesBytes4 = new System.Windows.Forms.TextBox();
+            this.livesBytes3 = new System.Windows.Forms.TextBox();
             this.livesValue3 = new System.Windows.Forms.TextBox();
             this.livesDomain3 = new System.Windows.Forms.TextBox();
             this.saveLivesSettingsButton = new System.Windows.Forms.Button();
@@ -491,13 +491,13 @@ namespace BizHawk.Client.EmuHawk
             this.livesDomain1.TabIndex = 60;
             this.livesDomain1.Tag = "eventSelect";
             // 
-            // livesBytes3
+            // livesBytes2
             // 
-            this.livesBytes3.Location = new System.Drawing.Point(12, 619);
-            this.livesBytes3.Name = "livesBytes3";
-            this.livesBytes3.Size = new System.Drawing.Size(73, 20);
-            this.livesBytes3.TabIndex = 61;
-            this.livesBytes3.Tag = "eventSelect";
+            this.livesBytes2.Location = new System.Drawing.Point(12, 619);
+            this.livesBytes2.Name = "livesBytes2";
+            this.livesBytes2.Size = new System.Drawing.Size(73, 20);
+            this.livesBytes2.TabIndex = 61;
+            this.livesBytes2.Tag = "eventSelect";
             // 
             // livesValue2
             // 
@@ -515,13 +515,13 @@ namespace BizHawk.Client.EmuHawk
             this.livesDomain2.TabIndex = 63;
             this.livesDomain2.Tag = "eventSelect";
             // 
-            // livesBytes4
+            // livesBytes3
             // 
-            this.livesBytes4.Location = new System.Drawing.Point(12, 645);
-            this.livesBytes4.Name = "livesBytes4";
-            this.livesBytes4.Size = new System.Drawing.Size(73, 20);
-            this.livesBytes4.TabIndex = 64;
-            this.livesBytes4.Tag = "eventSelect";
+            this.livesBytes3.Location = new System.Drawing.Point(12, 645);
+            this.livesBytes3.Name = "livesBytes3";
+            this.livesBytes3.Size = new System.Drawing.Size(73, 20);
+            this.livesBytes3.TabIndex = 64;
+            this.livesBytes3.Tag = "eventSelect";
             // 
             // livesValue3
             // 
@@ -577,10 +577,10 @@ namespace BizHawk.Client.EmuHawk
             this.Controls.Add(this.saveLivesSettingsButton);
             this.Controls.Add(this.livesDomain3);
             this.Controls.Add(this.livesValue3);
-            this.Controls.Add(this.livesBytes4);
+            this.Controls.Add(this.livesBytes3);
             this.Controls.Add(this.livesDomain2);
             this.Controls.Add(this.livesValue2);
-            this.Controls.Add(this.livesBytes3);
+            this.Controls.Add(this.livesBytes2);
             this.Controls.Add(this.livesDomain1);
             this.Controls.Add(this.livesValue1);
             this.Controls.Add(this.livesBytes1);
@@ -668,10 +668,10 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.TextBox livesBytes1;
 		private System.Windows.Forms.TextBox livesValue1;
 		private System.Windows.Forms.TextBox livesDomain1;
-		private System.Windows.Forms.TextBox livesBytes3;
+		private System.Windows.Forms.TextBox livesBytes2;
 		private System.Windows.Forms.TextBox livesValue2;
 		private System.Windows.Forms.TextBox livesDomain2;
-		private System.Windows.Forms.TextBox livesBytes4;
+		private System.Windows.Forms.TextBox livesBytes3;
 		private System.Windows.Forms.TextBox livesValue3;
 		private System.Windows.Forms.TextBox livesDomain3;
 		private System.Windows.Forms.Button saveLivesSettingsButton;

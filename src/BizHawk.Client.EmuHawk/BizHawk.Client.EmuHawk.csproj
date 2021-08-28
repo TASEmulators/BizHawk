@@ -525,7 +525,52 @@
 	  <None Update="Firmware\ADD_FIRMWARE_HERE.txt">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
+	  <None Update="_lifesettings\SONIC 3D BLAST GEN.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_lifesettings\SONIC AND KNUCKLES &amp; SONIC 3 GEN.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_lifesettings\SONIC AND KNUCKLES GEN.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_lifesettings\SONIC BLAST GG.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_lifesettings\SONIC BLAST SMS.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_lifesettings\SONIC CHAOS GG.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_lifesettings\SONIC CHAOS SMS.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_lifesettings\SONIC SPINBALL GEN.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_lifesettings\SONIC THE HEDGEHOG - TRIPLE TROUBLE GG.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_lifesettings\SONIC THE HEDGEHOG 2 GEN.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_lifesettings\SONIC THE HEDGEHOG 2 GG.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_lifesettings\SONIC THE HEDGEHOG 2 SMS.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_lifesettings\SONIC THE HEDGEHOG 3 GEN.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
 	  <None Update="_lifesettings\SONIC THE HEDGEHOG GEN.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_lifesettings\SONIC THE HEDGEHOG GG.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_lifesettings\SONIC THE HEDGEHOG SMS.txt">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
 	  <None Update="_magicbox\ADD_ROMS_HERE.txt">

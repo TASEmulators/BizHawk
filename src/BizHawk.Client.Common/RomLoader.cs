@@ -739,12 +739,19 @@ namespace BizHawk.Client.Common
 				RefreshRomHistory();
 
 				path = activeRom;
-				while (attempts < 1000 && (path == activeRom || romHistory.Contains(path)) && allowedRoms.Count > 0)
+				if (allowedRoms.Count > 1)
 				{
-					System.Diagnostics.Debug.WriteLine("!!!!!!!! reshuffling " + path);
-					path = allowedRoms[random.Next(0, allowedRoms.Count)];
-					attempts++;
+					while (attempts < 1000 && (path == activeRom || romHistory.Contains(path)) && allowedRoms.Count > 0)
+					{
+						System.Diagnostics.Debug.WriteLine("!!!!!!!! reshuffling " + path);
+						path = allowedRoms[random.Next(0, allowedRoms.Count)];
+						attempts++;
+					}
+				} else if (allowedRoms.Count == 1)
+				{
+					path = allowedRoms[0];
 				}
+
 				activeRom = path;
 				romHistory.Add(activeRom);
 				if (romHistory.Count > allowedRoms.Count * 0.5f)
@@ -1013,6 +1020,22 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		public static bool CanAllowSwitch()
+		{
+			List<string> allowedRoms = new List<string>();
+			foreach (string romId in knownRoms)
+			{
+				if (romActiveStates.ContainsKey(romId))
+				{
+					if (romActiveStates[romId])
+					{
+						allowedRoms.Add(romId);
+					}
+				}
+			}
+			return allowedRoms.Count > 1;
+		}
+
 		private void AsyncCheckFrame(object sender, DoWorkEventArgs e)
 		{
 			System.Diagnostics.Debug.WriteLine("!!!!!!! AsyncCheckFrame starts");
@@ -1144,6 +1167,8 @@ namespace BizHawk.Client.Common
 	public class GameTriggerDefinition {
 		public Dictionary<string, ShuffleTriggerDefinition> triggers = new Dictionary<string, ShuffleTriggerDefinition>();
 		public LifeCountDefinition lifeCountDefinition;
+
+		public int liveFrames = 0;
 		public static GameTriggerDefinition FromFile(string _triggerFilePath, string _triggerKey) {
 			GameTriggerDefinition newDef = new GameTriggerDefinition();
 
@@ -1167,6 +1192,8 @@ namespace BizHawk.Client.Common
 
 		public bool CheckFrame()
 		{
+			liveFrames++;
+
 			// Saturn is super slow so I have to implement something...
 			if (RomLoader.activeEmulator.game.System == "SAT")
 			{
@@ -1178,7 +1205,7 @@ namespace BizHawk.Client.Common
 
 			if (lifeCountDefinition != null)
 			{
-				if (RomLoader.infiniteLivesOn && RomLoader.frameIndex % Math.Max(1, lifeCountDefinition.period) == 0)
+				if (RomLoader.infiniteLivesOn && liveFrames % Math.Max(1, lifeCountDefinition.period) == 0)
 				{
 					lifeCountDefinition.Apply();
 				}
@@ -1188,7 +1215,7 @@ namespace BizHawk.Client.Common
 
 			bool shouldSwitch = false;
 			//if (LuaLibraryBase.publicApiContainer != null)
-			if (MemoryApi.instance != null)
+			if (MemoryApi.instance != null && RomLoader.CanAllowSwitch())
 			{
 				//System.Diagnostics.Debug.WriteLine("!!!!!!!!!              checking MemoryApi.instance");
 
@@ -1217,7 +1244,7 @@ namespace BizHawk.Client.Common
 		public List<int> bytes = new List<int>();
 		public List<int> values = new List<int>();
 		public List<string> domains = new List<string>();
-		public int period = 300;
+		public int period = 60;
 
 		public void Apply()
 		{
@@ -1232,6 +1259,7 @@ namespace BizHawk.Client.Common
 					domainToCheck = ShuffleTriggerDefinition.DefaultMemoryDomian();
 				}
 
+				//System.Diagnostics.Debug.WriteLine("Writing " + ((uint)(value) % 0x100).ToString("X2") + " to " + location.ToString("X2") + " in " + domainToCheck);
 				MemoryApi.instance.WriteByte(location, (uint)(value) % 0x100, domainToCheck);
 			}
 		}
@@ -1279,52 +1307,49 @@ namespace BizHawk.Client.Common
 
 			if (File.Exists(_filePath))
 			{
+				System.Diagnostics.Debug.WriteLine("!!!!!!!!         found LifeCountDefinition at " + _filePath);
+
 				string[] lines = File.ReadAllLines(_filePath);
-				bool hasFoundBreakLine = false;
 				foreach (string line in lines)
 				{
-					if (line == "---")
+					if (line.StartsWith("period>"))
 					{
-						hasFoundBreakLine = true;
-						continue;
+						newDef.period = int.Parse(line.Substring("period>".Length));
 					}
 
-					if (hasFoundBreakLine)
+					if (line.StartsWith("state>"))
 					{
-						if (line.StartsWith("period>"))
-						{
-							newDef.period = int.Parse(line.Substring("period>".Length));
-						}
+						newDef.bytes.Add(0);
+						newDef.values.Add(0);
+						newDef.domains.Add("DEFAULT");
 
-						if (line.StartsWith("state>"))
+						string[] parameters = line.Substring("state>".Length).Split(new string[] { "/" }, StringSplitOptions.RemoveEmptyEntries);
+						foreach (string parameter in parameters)
 						{
-							string[] parameters = line.Substring("state>".Length).Split(new string[] { "/" }, StringSplitOptions.RemoveEmptyEntries);
-							foreach (string parameter in parameters)
+							string[] components = parameter.Split(new string[] { ":" }, StringSplitOptions.RemoveEmptyEntries);
+							if (components.Length > 1)
 							{
-								newDef.bytes.Add(0);
-								newDef.values.Add(0);
-								newDef.domains.Add("DEFAULT");
-
-								string[] components = parameter.Split(new string[] { ":" }, StringSplitOptions.RemoveEmptyEntries);
-								if (components.Length > 1)
+								if (components[0] == "byte")
 								{
-									if (components[0] == "byte")
-									{
-										newDef.bytes[newDef.bytes.Count - 1] = int.Parse(components[1], System.Globalization.NumberStyles.HexNumber);
-									}
-									if (components[0] == "value")
-									{
-										newDef.values[newDef.values.Count - 1] = int.Parse(components[1], System.Globalization.NumberStyles.HexNumber);
-									}
-									if (components[0] == "domain")
-									{
-										newDef.domains[newDef.domains.Count - 1] = components[1];
-									}
+									newDef.bytes[newDef.bytes.Count - 1] = int.Parse(components[1], System.Globalization.NumberStyles.HexNumber);
+								}
+								if (components[0] == "value")
+								{
+									newDef.values[newDef.values.Count - 1] = int.Parse(components[1], System.Globalization.NumberStyles.HexNumber);
+								}
+								if (components[0] == "domain")
+								{
+									newDef.domains[newDef.domains.Count - 1] = components[1];
 								}
 							}
 						}
 					}
+					
 				}
+			} else
+			{
+				System.Diagnostics.Debug.WriteLine("!!!!!!!!         did not find LifeCountDefinition at " + _filePath);
+
 			}
 
 			return newDef;
