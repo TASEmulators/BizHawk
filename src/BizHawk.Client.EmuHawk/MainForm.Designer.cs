@@ -315,6 +315,7 @@ namespace BizHawk.Client.EmuHawk
             this.toggleActiveGamesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewSupportedGameListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editSwitchTriggersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.infiniteLivesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.A7800HawkCoreMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
             this.MainStatusBar = new BizHawk.WinForms.Controls.StatusStripEx();
             this.DumpStatusButton = new System.Windows.Forms.ToolStripDropDownButton();
@@ -382,7 +383,6 @@ namespace BizHawk.Client.EmuHawk
             this.ShowMenuContextMenuSeparator = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
             this.ShowMenuContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
             this.timerMouseIdle = new System.Windows.Forms.Timer(this.components);
-            this.infiniteLivesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MainformMenu.SuspendLayout();
             this.MainStatusBar.SuspendLayout();
             this.MainFormContextMenu.SuspendLayout();
@@ -1999,12 +1999,12 @@ namespace BizHawk.Client.EmuHawk
             // 
             this.shufflerToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.switchGameToolStripMenuItem,
+            this.infiniteLivesToolStripMenuItem,
             this.addROMsToolStripMenuItem,
             this.removeCurrentGameToolStripMenuItem,
             this.toggleActiveGamesToolStripMenuItem,
             this.viewSupportedGameListToolStripMenuItem,
-            this.editSwitchTriggersToolStripMenuItem,
-            this.infiniteLivesToolStripMenuItem});
+            this.editSwitchTriggersToolStripMenuItem});
             this.shufflerToolStripMenuItem.Name = "shufflerToolStripMenuItem";
             this.shufflerToolStripMenuItem.Size = new System.Drawing.Size(60, 19);
             this.shufflerToolStripMenuItem.Text = "&Shuffler";
@@ -2054,8 +2054,17 @@ namespace BizHawk.Client.EmuHawk
             // 
             this.editSwitchTriggersToolStripMenuItem.Name = "editSwitchTriggersToolStripMenuItem";
             this.editSwitchTriggersToolStripMenuItem.Size = new System.Drawing.Size(267, 22);
-            this.editSwitchTriggersToolStripMenuItem.Text = "&Edit Switch Triggers";
+            this.editSwitchTriggersToolStripMenuItem.Text = "&Edit Switch Triggers/Life Settings";
             this.editSwitchTriggersToolStripMenuItem.Click += new System.EventHandler(this.editSwitchTriggersToolStripMenuItem_Click);
+            // 
+            // infiniteLivesToolStripMenuItem
+            // 
+            this.infiniteLivesToolStripMenuItem.Checked = true;
+            this.infiniteLivesToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.infiniteLivesToolStripMenuItem.Name = "infiniteLivesToolStripMenuItem";
+            this.infiniteLivesToolStripMenuItem.Size = new System.Drawing.Size(267, 22);
+            this.infiniteLivesToolStripMenuItem.Text = "Infinite Lives";
+            this.infiniteLivesToolStripMenuItem.Click += new System.EventHandler(this.infiniteLivesToolStripMenuItem_Click);
             // 
             // A7800HawkCoreMenuItem
             // 
@@ -2469,15 +2478,6 @@ namespace BizHawk.Client.EmuHawk
             this.timerMouseIdle.Enabled = true;
             this.timerMouseIdle.Interval = 2000;
             this.timerMouseIdle.Tick += new System.EventHandler(this.TimerMouseIdle_Tick);
-            // 
-            // infiniteLivesToolStripMenuItem
-            // 
-            this.infiniteLivesToolStripMenuItem.Checked = true;
-            this.infiniteLivesToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.infiniteLivesToolStripMenuItem.Name = "infiniteLivesToolStripMenuItem";
-            this.infiniteLivesToolStripMenuItem.Size = new System.Drawing.Size(267, 22);
-            this.infiniteLivesToolStripMenuItem.Text = "Infinite Lives";
-            this.infiniteLivesToolStripMenuItem.Click += new System.EventHandler(this.infiniteLivesToolStripMenuItem_Click);
             // 
             // MainForm
             // 
