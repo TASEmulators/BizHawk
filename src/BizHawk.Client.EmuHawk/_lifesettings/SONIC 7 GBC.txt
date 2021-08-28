@@ -1,0 +1,2 @@
+period>60
+state>byte:023E/value:05/domain:WRAM

@@ -1,2 +1,2 @@
 period>300
-state>byte:123A/value:123B/domain:r
+state>byte:0055/value:05/domain:RAM

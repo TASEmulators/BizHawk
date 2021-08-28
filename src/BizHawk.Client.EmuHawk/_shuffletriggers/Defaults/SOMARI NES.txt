@@ -1,0 +1,1 @@
+rings>bytes:338,337/domain:RAM/base:10/minChange:0

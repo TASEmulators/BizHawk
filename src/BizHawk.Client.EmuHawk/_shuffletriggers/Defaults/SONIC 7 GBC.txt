@@ -1,0 +1,1 @@
+rings>bytes:287/domain:WRAM/minChange:0

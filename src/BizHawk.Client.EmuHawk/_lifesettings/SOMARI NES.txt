@@ -1,0 +1,2 @@
+period>60
+state>byte:033C/value:05/domain:RAM

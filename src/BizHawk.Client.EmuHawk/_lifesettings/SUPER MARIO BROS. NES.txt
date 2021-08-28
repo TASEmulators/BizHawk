@@ -1,0 +1,2 @@
+period>60
+state>byte:075A/value:05/domain:RAM

@@ -1,0 +1,2 @@
+period>60
+state>byte:1A15/value:05/domain:WRAM
