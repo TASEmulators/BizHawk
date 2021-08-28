@@ -714,6 +714,7 @@ namespace BizHawk.Client.Common
 						gameTriggers.Add(_key, definition);
 					}
 				}
+				RefreshActiveTriggers();
 			}
 		}
 
@@ -944,22 +945,7 @@ namespace BizHawk.Client.Common
 			LoadedEmulator = nextEmulator;
 			Game = game;
 
-			string _triggerKeyStart = game.Name.Split(new string[] { "(" }, StringSplitOptions.None)[0];
-			if (!_triggerKeyStart.EndsWith(" "))
-			{
-				_triggerKeyStart += " ";
-			}
-			string _triggerKey = _triggerKeyStart.ToUpper() + game.System.ToString();
-
-			if (gameTriggers.ContainsKey(_triggerKey))
-			{
-				activeGameTriggerDef = gameTriggers[_triggerKey];
-			}
-			else
-			{
-				activeGameTriggerDef = null;
-				System.Diagnostics.Debug.WriteLine("!!!!!!!! no trigger for game (" + game.Name + ") key: " + _triggerKey);
-			}
+			RefreshActiveTriggers();
 
 			//activeMemoryDomains = activeEmulator.emulator.AsMemoryDomains().ToList<MemoryDomain>();
 
@@ -976,6 +962,29 @@ namespace BizHawk.Client.Common
 			*/
 
 			return true;
+		}
+
+		public static void RefreshActiveTriggers()
+		{
+			if (activeEmulator != null)
+			{
+				string _triggerKeyStart = activeEmulator.game.Name.Split(new string[] { "(" }, StringSplitOptions.None)[0];
+				if (!_triggerKeyStart.EndsWith(" "))
+				{
+					_triggerKeyStart += " ";
+				}
+				string _triggerKey = _triggerKeyStart.ToUpper() + activeEmulator.game.System.ToString();
+
+				if (gameTriggers.ContainsKey(_triggerKey))
+				{
+					activeGameTriggerDef = gameTriggers[_triggerKey];
+				}
+				else
+				{
+					activeGameTriggerDef = null;
+					System.Diagnostics.Debug.WriteLine("!!!!!!!! no trigger for game (" + activeEmulator.game.Name + ") key: " + _triggerKey);
+				}
+			}
 		}
 
 		public static string GetActiveGameFileHandle()

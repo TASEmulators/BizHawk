@@ -689,6 +689,7 @@ namespace BizHawk.Client.EmuHawk
 		private void saveLivesSettingsButton_Click(object sender, EventArgs e)
 		{
 			SaveLifeSettings();
+			RomLoader.InitialiseShuffler(true);
 			PopulateActiveGameLifeSettings();
 		}
 

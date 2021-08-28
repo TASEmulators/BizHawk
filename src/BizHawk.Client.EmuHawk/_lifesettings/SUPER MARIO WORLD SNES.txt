@@ -1,0 +1,3 @@
+period>60
+state>byte:0DB4/value:05/domain:WRAM
+state>byte:0DBE/value:05/domain:WRAM

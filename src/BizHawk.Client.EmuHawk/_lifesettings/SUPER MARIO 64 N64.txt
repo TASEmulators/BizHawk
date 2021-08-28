@@ -1,0 +1,2 @@
+period>60
+state>byte:33B21D/value:05/domain:RDRAM

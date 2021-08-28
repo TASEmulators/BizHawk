@@ -1,0 +1,2 @@
+period>300
+state>byte:123A/value:123B/domain:r

@@ -1,0 +1,3 @@
+﻿state>byte:FE12/value:5
+state>byte:FE13/value:5
+state>byte:FE1D/value:FF
