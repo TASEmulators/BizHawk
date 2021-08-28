@@ -106,7 +106,7 @@ namespace BizHawk.Client.EmuHawk
 
             ClearGameView();
             ShowActiveGameDetails();
-        }       
+		}       
 
         public void ClearGameView()
         {
@@ -174,9 +174,146 @@ namespace BizHawk.Client.EmuHawk
                 }
                 this.EventsThisGameListBox.Items.Add(name);
             }
-        }
 
-        public void RefreshEventList()
+			PopulateActiveGameLifeSettings();
+
+		}
+
+		public LifeCountDefinition GetActiveLifeCountDefinition()
+		{
+			LifeCountDefinition lifeCountDefinition = new LifeCountDefinition();
+
+			if (activeGamePath != null)
+			{
+				string[] splitPath = activeGamePath.Split(new string[] { "\\" }, StringSplitOptions.RemoveEmptyEntries);
+				string gameKey = splitPath[splitPath.Length - 1];
+				if (gameKey.EndsWith(".txt"))
+				{
+					gameKey = gameKey.Substring(0, gameKey.Length - ".txt".Length);
+				}
+
+				if (RomLoader.gameTriggers.ContainsKey(gameKey))
+				{
+					if (RomLoader.gameTriggers[gameKey].lifeCountDefinition != null)
+					{
+						lifeCountDefinition = RomLoader.gameTriggers[gameKey].lifeCountDefinition;
+					}
+					else
+					{
+						RomLoader.gameTriggers[gameKey].lifeCountDefinition = lifeCountDefinition;
+					}
+				}
+				else
+				{
+					GameTriggerDefinition gameTriggerDefinition = new GameTriggerDefinition();
+					gameTriggerDefinition.lifeCountDefinition = lifeCountDefinition;
+					RomLoader.gameTriggers.Add(gameKey, gameTriggerDefinition);
+				}
+			}
+
+			return lifeCountDefinition;
+		}
+
+		public void PopulateActiveGameLifeSettings()
+		{
+			LifeCountDefinition lifeCountDefinition = GetActiveLifeCountDefinition();
+
+			livesFrameCount.Text = lifeCountDefinition.period.ToString();
+			for (int i = 0; i < 4; i++)
+			{
+				foreach (Control control in this.Controls)
+				{
+					if (control.Name == "livesBytes" + i.ToString())
+					{
+						if (lifeCountDefinition.bytes.Count > i)
+						{
+							control.Text = lifeCountDefinition.bytes[i].ToString("X4");
+						}
+					}
+
+					if (control.Name == "livesValue" + i.ToString())
+					{
+						if (lifeCountDefinition.values.Count > i)
+						{
+							control.Text = lifeCountDefinition.values[i].ToString("X2");
+						}
+					}
+
+					if (control.Name == "livesDomain" + i.ToString())
+					{
+						if (lifeCountDefinition.domains.Count > i)
+						{
+							control.Text = lifeCountDefinition.domains[i];
+						}
+					}
+				}
+			}
+		}
+
+		public void SaveLifeSettings()
+		{
+			LifeCountDefinition lifeCountDefinition = GetActiveLifeCountDefinition();
+			int.TryParse(livesFrameCount.Text, out lifeCountDefinition.period);
+
+			for (int i = 0; i < 4; i++)
+			{
+				foreach (Control control in this.Controls)
+				{
+					if (control.Text.Length == 0)
+					{
+						continue;
+					}
+
+					if (control.Name == "livesBytes" + i.ToString())
+					{
+						while (lifeCountDefinition.bytes.Count <= i)
+						{
+							lifeCountDefinition.bytes.Add(0);
+						}
+						int value = lifeCountDefinition.bytes[i];
+						if (int.TryParse(control.Text, System.Globalization.NumberStyles.HexNumber, null, out value))
+						{
+							lifeCountDefinition.bytes[i] = value;
+						}
+					}
+
+					if (control.Name == "livesValue" + i.ToString())
+					{
+						while (lifeCountDefinition.values.Count <= i)
+						{
+							lifeCountDefinition.values.Add(0);
+						}
+						int value = lifeCountDefinition.values[i];
+						if (int.TryParse(control.Text, System.Globalization.NumberStyles.HexNumber, null, out value))
+						{
+							lifeCountDefinition.values[i] = value % 0x100;
+						}
+					}
+
+					if (control.Name == "livesDomain" + i.ToString())
+					{
+						while (lifeCountDefinition.domains.Count <= i)
+						{
+							lifeCountDefinition.domains.Add("DEFAULT");
+						}
+						lifeCountDefinition.domains[i] = control.Text;
+					}
+				}
+			}
+
+			string[] splitPath = activeGamePath.Split(new string[] { "\\" }, StringSplitOptions.RemoveEmptyEntries);
+			string gameKey = splitPath[splitPath.Length - 1];
+			if (gameKey.EndsWith(".txt"))
+			{
+				gameKey = gameKey.Substring(0, gameKey.Length - ".txt".Length);
+			}
+			string path = ".//_lifesettings//" + gameKey + ".txt";
+
+			Debug.WriteLine("WRITING LIFE SETTINGS: " + path + "\n" + lifeCountDefinition.GetStringValue());
+			File.WriteAllText(path, lifeCountDefinition.GetStringValue());
+		}
+
+		public void RefreshEventList()
         {
 
         }
@@ -523,7 +660,18 @@ namespace BizHawk.Client.EmuHawk
                 this.HideControlsWithTag("eventEdit");
             }
         }
-    }
+
+		private void saveLivesSettingsButton_Click(object sender, EventArgs e)
+		{
+			SaveLifeSettings();
+			PopulateActiveGameLifeSettings();
+		}
+
+		private void horizontalLine1_Click(object sender, EventArgs e)
+		{
+
+		}
+	}
 }
 
 public class GameDetails {
@@ -537,6 +685,10 @@ public class GameDetails {
         string[] lines = sourceString.Split(new string[] { "\n", "\r" }, StringSplitOptions.RemoveEmptyEntries);
         foreach (string line in lines)
         {
+			if (line == "---")
+			{
+				break;
+			}
             game.events.Add(EventDefinition.FromString(line));
         }
 

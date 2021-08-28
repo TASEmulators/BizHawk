@@ -5027,6 +5027,17 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void editInfiniteLivesTriggersToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+
+		}
+
+		private void infiniteLivesToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			RomLoader.infiniteLivesOn = !RomLoader.infiniteLivesOn;
+			infiniteLivesToolStripMenuItem.Checked = RomLoader.infiniteLivesOn;
+		}
+
 		public IQuickBmpFile QuickBmpFile { get; } = new QuickBmpFile();
 	}
 }

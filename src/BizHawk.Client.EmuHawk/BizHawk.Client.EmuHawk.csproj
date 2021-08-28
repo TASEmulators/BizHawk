@@ -522,6 +522,12 @@
 		<Compile Update="UpdateChecker.cs" SubType="Code" />
 	</ItemGroup>
 	<ItemGroup>
+	  <None Update="Firmware\ADD_FIRMWARE_HERE.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_lifesettings\SONIC THE HEDGEHOG GEN.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
 	  <None Update="_magicbox\ADD_ROMS_HERE.txt">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>

@@ -382,6 +382,7 @@ namespace BizHawk.Client.EmuHawk
             this.ShowMenuContextMenuSeparator = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
             this.ShowMenuContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
             this.timerMouseIdle = new System.Windows.Forms.Timer(this.components);
+            this.infiniteLivesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MainformMenu.SuspendLayout();
             this.MainStatusBar.SuspendLayout();
             this.MainFormContextMenu.SuspendLayout();
@@ -2002,7 +2003,8 @@ namespace BizHawk.Client.EmuHawk
             this.removeCurrentGameToolStripMenuItem,
             this.toggleActiveGamesToolStripMenuItem,
             this.viewSupportedGameListToolStripMenuItem,
-            this.editSwitchTriggersToolStripMenuItem});
+            this.editSwitchTriggersToolStripMenuItem,
+            this.infiniteLivesToolStripMenuItem});
             this.shufflerToolStripMenuItem.Name = "shufflerToolStripMenuItem";
             this.shufflerToolStripMenuItem.Size = new System.Drawing.Size(60, 19);
             this.shufflerToolStripMenuItem.Text = "&Shuffler";
@@ -2468,6 +2470,15 @@ namespace BizHawk.Client.EmuHawk
             this.timerMouseIdle.Interval = 2000;
             this.timerMouseIdle.Tick += new System.EventHandler(this.TimerMouseIdle_Tick);
             // 
+            // infiniteLivesToolStripMenuItem
+            // 
+            this.infiniteLivesToolStripMenuItem.Checked = true;
+            this.infiniteLivesToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.infiniteLivesToolStripMenuItem.Name = "infiniteLivesToolStripMenuItem";
+            this.infiniteLivesToolStripMenuItem.Size = new System.Drawing.Size(267, 22);
+            this.infiniteLivesToolStripMenuItem.Text = "Infinite Lives";
+            this.infiniteLivesToolStripMenuItem.Click += new System.EventHandler(this.infiniteLivesToolStripMenuItem_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -2859,5 +2870,6 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolStripMenuItem viewSupportedGameListToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem editSwitchTriggersToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem addROMsToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem infiniteLivesToolStripMenuItem;
 	}
 }
