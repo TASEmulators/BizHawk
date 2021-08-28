@@ -537,6 +537,9 @@
 	  <None Update="_lifesettings\SONIC 3D BLAST GEN.txt">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
+	  <None Update="_lifesettings\SONIC 3D BLAST SAT.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
 	  <None Update="_lifesettings\SONIC 7 GBC.txt">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>

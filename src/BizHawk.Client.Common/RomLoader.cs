@@ -1203,20 +1203,20 @@ namespace BizHawk.Client.Common
 		{
 			liveFrames++;
 
+			if (lifeCountDefinition != null)
+			{
+				if (RomLoader.infiniteLivesOn && liveFrames % Math.Max(1, lifeCountDefinition.period) == 0)
+				{
+					lifeCountDefinition.Apply();
+				}
+			}
+
 			// Saturn is super slow so I have to implement something...
 			if (RomLoader.activeEmulator.game.System == "SAT")
 			{
 				if (RomLoader.frameIndex % 10 != 0)
 				{
 					return false;
-				}
-			}
-
-			if (lifeCountDefinition != null)
-			{
-				if (RomLoader.infiniteLivesOn && liveFrames % Math.Max(1, lifeCountDefinition.period) == 0)
-				{
-					lifeCountDefinition.Apply();
 				}
 			}
 

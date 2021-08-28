@@ -1,0 +1,2 @@
+period>60
+state>byte:5448/value:05
