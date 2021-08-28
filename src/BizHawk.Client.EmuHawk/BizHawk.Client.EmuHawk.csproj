@@ -543,6 +543,15 @@
 	  <None Update="_lifesettings\SONIC 7 GBC.txt">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
+	  <None Update="_lifesettings\SONIC ADVANCE 2 GBA.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_lifesettings\SONIC ADVANCE 3 GBA.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_lifesettings\SONIC ADVANCE GBA.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
 	  <None Update="_lifesettings\SONIC AND KNUCKLES &amp; SONIC 3 GEN.txt">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
@@ -562,6 +571,9 @@
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
 	  <None Update="_lifesettings\SONIC SPINBALL GEN.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_lifesettings\SONIC THE HEDGEHOG - POCKET ADVENTURE NGP.txt">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
 	  <None Update="_lifesettings\SONIC THE HEDGEHOG - TRIPLE TROUBLE GG.txt">
