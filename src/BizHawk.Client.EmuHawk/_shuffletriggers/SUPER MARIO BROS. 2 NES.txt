@@ -1,3 +1,0 @@
-enemies>bytes:04AD/domain>RAM
-cherries>bytes:062A/domain>RAM
-coins>bytes:062B/domain>RAM

@@ -11,6 +11,7 @@
 		<Nullable>disable</Nullable>
 		<ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
 		<AssemblyName>ShufflerHawk</AssemblyName>
+		<Version>1.0.0</Version>
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="System.Net.Http" Version="4.3.4" />
@@ -609,6 +610,15 @@
 	  <None Update="_lifesettings\SUPER MARIO 64 N64.txt">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
+	  <None Update="_lifesettings\SUPER MARIO BROS 2 NES.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_lifesettings\SUPER MARIO BROS 3 NES.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_lifesettings\SUPER MARIO BROS NES.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
 	  <None Update="_lifesettings\SUPER MARIO BROS. 2 NES.txt">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
@@ -738,6 +748,12 @@
 	  <None Update="_shuffletriggers\Defaults\SONIC THE HEDGEHOG 3 GEN.txt">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
+	  <None Update="_shuffletriggers\Defaults\SONIC THE HEDGEHOG 4 SNES.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\Defaults\SONIC THE HEDGEHOG CD GEN.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
 	  <None Update="_shuffletriggers\Defaults\SONIC THE HEDGEHOG GEN.txt">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
@@ -753,13 +769,13 @@
 	  <None Update="_shuffletriggers\Defaults\SUPER MARIO 64 N64.txt">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
-	  <None Update="_shuffletriggers\Defaults\SUPER MARIO BROS. 2 NES.txt">
+	  <None Update="_shuffletriggers\Defaults\SUPER MARIO BROS 2 NES.txt">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
-	  <None Update="_shuffletriggers\Defaults\SUPER MARIO BROS. 3 NES.txt">
+	  <None Update="_shuffletriggers\Defaults\SUPER MARIO BROS 3 NES.txt">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
-	  <None Update="_shuffletriggers\Defaults\SUPER MARIO BROS. NES.txt">
+	  <None Update="_shuffletriggers\Defaults\SUPER MARIO BROS NES.txt">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
 	  <None Update="_shuffletriggers\Defaults\SUPER MARIO KART SNES.txt">
@@ -888,6 +904,12 @@
 	  <None Update="_shuffletriggers\SONIC THE HEDGEHOG 3 GEN.txt">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
+	  <None Update="_shuffletriggers\SONIC THE HEDGEHOG 4 SNES.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\SONIC THE HEDGEHOG CD GEN.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
 	  <None Update="_shuffletriggers\SONIC THE HEDGEHOG GEN.txt">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
@@ -903,13 +925,13 @@
 	  <None Update="_shuffletriggers\SUPER MARIO 64 N64.txt">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
-	  <None Update="_shuffletriggers\SUPER MARIO BROS. 2 NES.txt">
+	  <None Update="_shuffletriggers\SUPER MARIO BROS 2 NES.txt">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
-	  <None Update="_shuffletriggers\SUPER MARIO BROS. 3 NES.txt">
+	  <None Update="_shuffletriggers\SUPER MARIO BROS 3 NES.txt">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
-	  <None Update="_shuffletriggers\SUPER MARIO BROS. NES.txt">
+	  <None Update="_shuffletriggers\SUPER MARIO BROS NES.txt">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
 	  <None Update="_shuffletriggers\SUPER MARIO KART SNES.txt">

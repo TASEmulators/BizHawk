@@ -968,12 +968,7 @@ namespace BizHawk.Client.Common
 		{
 			if (activeEmulator != null)
 			{
-				string _triggerKeyStart = activeEmulator.game.Name.Split(new string[] { "(" }, StringSplitOptions.None)[0];
-				if (!_triggerKeyStart.EndsWith(" "))
-				{
-					_triggerKeyStart += " ";
-				}
-				string _triggerKey = _triggerKeyStart.ToUpper() + activeEmulator.game.System.ToString();
+				string _triggerKey = activeEmulator.GetTriggerKey();
 
 				if (gameTriggers.ContainsKey(_triggerKey))
 				{
@@ -991,13 +986,7 @@ namespace BizHawk.Client.Common
 		{
 			if (activeEmulator != null)
 			{
-				string _triggerKeyStart = activeEmulator.game.Name.Split(new string[] { "(" }, StringSplitOptions.None)[0];
-				if (!_triggerKeyStart.EndsWith(" "))
-				{
-					_triggerKeyStart += " ";
-				}
-				string _triggerKey = _triggerKeyStart.ToUpper() + activeEmulator.game.System.ToString();
-				return _triggerKey;
+				return activeEmulator.GetTriggerKey();
 			}
 			return "NONE";
 		}
@@ -1171,6 +1160,17 @@ namespace BizHawk.Client.Common
 		public IEmulator emulator = null;
 		public RomGame rom = null;
 		public GameInfo game = null;
+
+		public string GetTriggerKey()
+		{
+			string _triggerKeyStart = game.Name.Replace(":",",").Replace(".", "").Split(new string[] { "(" }, StringSplitOptions.None)[0];
+			if (!_triggerKeyStart.EndsWith(" "))
+			{
+				_triggerKeyStart += " ";
+			}
+			string _triggerKey = _triggerKeyStart.ToUpper() + game.System.ToString();
+			return _triggerKey;
+		}
 	}
 
 	public class GameTriggerDefinition {

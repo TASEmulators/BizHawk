@@ -742,7 +742,9 @@ public class GameDetails {
         StreamWriter settingsWriter = new StreamWriter(filePath);
         settingsWriter.Write(string.Join("\n", linesToWrite));
         settingsWriter.Close();
-    }
+
+		RomLoader.InitialiseShuffler(true);
+	}
 }
 
 public class EventDefinition
