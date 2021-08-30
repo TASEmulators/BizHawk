@@ -20,6 +20,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 	{
 		[CoreConstructor("GB")]
 		[CoreConstructor("GBC")]
+		[CoreConstructor("SGB")]
 		public Gameboy(CoreComm comm, GameInfo game, byte[] file, Gameboy.GambatteSettings settings, Gameboy.GambatteSyncSettings syncSettings, bool deterministic)
 		{
 			var ser = new BasicServiceProvider(this);
@@ -66,6 +67,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 						break;
 				}
 
+				if (game.System == "SGB")
+				{
+					flags &= ~(LibGambatte.LoadFlags.CGB_MODE | LibGambatte.LoadFlags.GBA_FLAG);
+					flags |= LibGambatte.LoadFlags.SGB_MODE;
+					IsSgb = true;
+				}
+
 				if (_syncSettings.MulticartCompat)
 				{
 					flags |= LibGambatte.LoadFlags.MULTICART_COMPAT;
@@ -77,7 +85,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 				IsCgb = (flags & LibGambatte.LoadFlags.CGB_MODE) == LibGambatte.LoadFlags.CGB_MODE;
 				biosSystemId = IsCgb ? "GBC" : "GB";
-				biosId = ((_syncSettings.ConsoleMode == GambatteSyncSettings.ConsoleModeType.GBA) && !_syncSettings.PatchBIOS) ? "AGB" : "World";
+				biosId = (_syncSettings.ConsoleMode == GambatteSyncSettings.ConsoleModeType.GBA) && !_syncSettings.PatchBIOS ? "AGB" : "World";
+
+				if (IsSgb)
+				{
+					biosId = "SGB2";
+				}
 
 				if (_syncSettings.EnableBIOS)
 				{
@@ -86,15 +99,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 					{
 						if (!IsCgb)
 						{
-							bios[0xFD] ^= 0xFE; // patch from dmg<->mgb
+							bios[0xFD] ^= 0xFE; // patch from dmg<->mgb, or sgb1<->sgb2
 						}
 						else if (_syncSettings.ConsoleMode == GambatteSyncSettings.ConsoleModeType.GBA)
 						{
 							// patch from cgb->agb re
 							bios[0xF3] ^= 0x03;
-							for (var i = 0xF5; i < 0xFB;)
+							for (var i = 0xF5; i < 0xFB; i++)
 							{
-								bios[i] = bios[++i];
+								bios[i] = bios[i + 1];
 							}
 							bios[0xFB] ^= 0x74;
 						}
@@ -237,6 +250,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public int LagCount { get; set; }
 		public bool IsLagFrame { get; set; }
 		public bool IsCgb { get; set; }
+		public bool IsSgb { get; set; }
 
 		// all cycle counts are relative to a 2*1024*1024 mhz refclock
 

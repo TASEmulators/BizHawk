@@ -110,7 +110,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				Auto,
 				GB,
 				GBC,
-				GBA
+				GBA,
 			}
 
 			[DisplayName("Console Mode")]

@@ -29,10 +29,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 					_cycleCount += samplesEmitted;
 					frameOverflow = 0;
-					if (rendersound && !Muted)
-					{
-						ProcessSound((int)samplesEmitted);
-					}
+
+					ProcessSound((int)samplesEmitted, (rendersound && !Muted));
 					break;
 				case GambatteSyncSettings.FrameLengthType.EqualLengthFrames:
 					while (true)
@@ -49,10 +47,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 						_cycleCount += samplesEmitted;
 						frameOverflow += samplesEmitted;
 
-						if (rendersound && !Muted)
-						{
-							ProcessSound((int)samplesEmitted);
-						}
+						ProcessSound((int)samplesEmitted, (rendersound && !Muted));
 
 						if (frameOverflow >= TICKSINFRAME)
 						{
@@ -82,10 +77,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 						_cycleCount += samplesEmitted;
 						frameOverflow += samplesEmitted;
 
-						if (rendersound && !Muted)
-						{
-							ProcessSound((int)samplesEmitted);
-						}
+						ProcessSound((int)samplesEmitted, (rendersound && !Muted));
 
 						if (frameOverflow >= inputFrameLengthInt)
 						{
