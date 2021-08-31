@@ -76,6 +76,7 @@ namespace BizHawk.Client.EmuHawk
             this.saveLivesSettingsButton = new System.Windows.Forms.Button();
             this.horizontalLine1 = new BizHawk.Client.EmuHawk.HorizontalLine();
             this.horizontalLine2 = new BizHawk.Client.EmuHawk.HorizontalLine();
+            this.blockZeroCheckBox = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.RAMMinChangeNumericInput)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.RAMMaxChangeNumericInput)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.EventDelayNumericInput)).BeginInit();
@@ -567,11 +568,24 @@ namespace BizHawk.Client.EmuHawk
             this.horizontalLine2.TabIndex = 69;
             this.horizontalLine2.Text = "horizontalLine2";
             // 
+            // blockZeroCheckBox
+            // 
+            this.blockZeroCheckBox.AutoSize = true;
+            this.blockZeroCheckBox.Location = new System.Drawing.Point(635, 462);
+            this.blockZeroCheckBox.Name = "blockZeroCheckBox";
+            this.blockZeroCheckBox.Size = new System.Drawing.Size(148, 17);
+            this.blockZeroCheckBox.TabIndex = 71;
+            this.blockZeroCheckBox.Tag = "eventEdit";
+            this.blockZeroCheckBox.Text = "ignore change if from zero";
+            this.blockZeroCheckBox.UseVisualStyleBackColor = true;
+            this.blockZeroCheckBox.CheckedChanged += new System.EventHandler(this.blockZeroCheckBox_CheckedChanged);
+            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(799, 713);
+            this.Controls.Add(this.blockZeroCheckBox);
             this.Controls.Add(this.horizontalLine2);
             this.Controls.Add(this.horizontalLine1);
             this.Controls.Add(this.saveLivesSettingsButton);
@@ -677,6 +691,7 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.Button saveLivesSettingsButton;
 		private HorizontalLine horizontalLine1;
 		private HorizontalLine horizontalLine2;
+		private System.Windows.Forms.CheckBox blockZeroCheckBox;
 	}
 }
 

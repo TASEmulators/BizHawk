@@ -3692,6 +3692,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public static LoadRomArgs lastLoadRomArgs;
 
+		public static List<string> pathsWithLoadedSaveRam = new List<string>();
+
 		// Still needs a good bit of refactoring
 		private bool LoadRomInternal(string path, LoadRomArgs args, out bool failureIsFromAskSave)
 		{
@@ -3900,8 +3902,9 @@ namespace BizHawk.Client.EmuHawk
 					JumpLists.AddRecentItem(openAdvancedArgs, ioa.DisplayName);
 
 					// Don't load Save Ram if a movie is being loaded
-					/*
-					if (!MovieSession.NewMovieQueued)
+					
+					// !!!!! Don't load saveRAM if we've already loaded it for this game
+					if (!MovieSession.NewMovieQueued && !pathsWithLoadedSaveRam.Contains(path))
 					{
 						if (File.Exists(Config.PathEntries.SaveRamAbsolutePath(loader.Game, MovieSession.Movie)))
 						{
@@ -3911,8 +3914,9 @@ namespace BizHawk.Client.EmuHawk
 						{
 							AddOnScreenMessage("AutoSaveRAM found, but SaveRAM was not saved");
 						}
+						pathsWithLoadedSaveRam.Add(path);
 					}
-					*/
+					
 
 					Tools.Restart(Config, Emulator, Game);
 

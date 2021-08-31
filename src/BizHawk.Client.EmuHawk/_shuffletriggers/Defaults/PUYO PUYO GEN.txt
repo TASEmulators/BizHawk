@@ -1,0 +1,1 @@
+match>bytes:E00D,E00C/base:256/minChange:39/maxChange:2147483647/delay:5/domain:DEFAULT/controlOutput:PRESS/enabled:True/isTracker:False/trackerDivisor:1/blockFromZero:True

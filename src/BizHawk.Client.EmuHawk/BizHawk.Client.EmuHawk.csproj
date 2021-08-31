@@ -652,6 +652,9 @@
 	  <None Update="_shuffletriggers\Defaults\DR MARIO NES.txt">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
+	  <None Update="_shuffletriggers\Defaults\DR ROBOTNIK%27S MEAN BEAN MACHINE GEN.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
 	  <None Update="_shuffletriggers\Defaults\KNUCKLES%27 CHAOTIX GEN.txt">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
@@ -671,6 +674,12 @@
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
 	  <None Update="_shuffletriggers\Defaults\LEGEND OF ZELDA, THE NES.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\Defaults\PUYO PUYO GEN.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\Defaults\PUYO PUYO TSU GEN.txt">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
 	  <None Update="_shuffletriggers\Defaults\SOMARI NES.txt">
@@ -808,6 +817,9 @@
 	  <None Update="_shuffletriggers\DR MARIO NES.txt">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
+	  <None Update="_shuffletriggers\DR ROBOTNIK%27S MEAN BEAN MACHINE GEN.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
 	  <None Update="_shuffletriggers\KNUCKLES%27 CHAOTIX GEN.txt">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
@@ -827,6 +839,12 @@
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
 	  <None Update="_shuffletriggers\LEGEND OF ZELDA, THE NES.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\PUYO PUYO GEN.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\PUYO PUYO TSU GEN.txt">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
 	  <None Update="_shuffletriggers\SOMARI NES.txt">

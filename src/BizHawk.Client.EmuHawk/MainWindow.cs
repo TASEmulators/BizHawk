@@ -386,6 +386,8 @@ namespace BizHawk.Client.EmuHawk
 
             this.EventDelayNumericInput.Value = def.delay;
 
+			this.blockZeroCheckBox.Checked = def.blockFromZero;
+
             this.EventDomainComboBox.Text = def.domain;
 
             PopulateExample(def);
@@ -506,6 +508,8 @@ namespace BizHawk.Client.EmuHawk
                 activeEventDef.minChange = (int)this.RAMMinChangeNumericInput.Value;
                 activeEventDef.maxChange = (int)this.RAMMaxChangeNumericInput.Value;
                 activeEventDef.delay = (int)this.EventDelayNumericInput.Value;
+
+				activeEventDef.blockFromZero = this.blockZeroCheckBox.Checked;
 
                 activeEventDef.domain = this.EventDomainComboBox.Text;
                 if (!this.EventDomainComboBox.Items.Contains(this.EventDomainComboBox.Text))
@@ -697,6 +701,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 
 		}
+
+		private void blockZeroCheckBox_CheckedChanged(object sender, EventArgs e)
+		{
+
+		}
 	}
 }
 
@@ -760,6 +769,7 @@ public class EventDefinition
     public bool enabled = true;
     public bool isTracker = false;
     public int trackerDivisor = 1;
+	public bool blockFromZero = false;
     public static EventDefinition FromString(string sourceString)
     {
         EventDefinition eventDefinition = new EventDefinition();
@@ -808,7 +818,11 @@ public class EventDefinition
                         case "trackerDivisor":
                             int.TryParse(components[1], out eventDefinition.trackerDivisor);
                             break;
-                    }
+						case "blockFromZero":
+							eventDefinition.blockFromZero = components[1].ToUpper() == "TRUE";
+							break;
+
+					}
                 }
             }
         }
@@ -831,8 +845,9 @@ public class EventDefinition
         fields.Add("enabled:" + enabled.ToString());
         fields.Add("isTracker:" + isTracker.ToString());
         fields.Add("trackerDivisor:" + trackerDivisor.ToString());
+		fields.Add("blockFromZero:" + blockFromZero.ToString());
 
-        return name + ">" + string.Join("/", fields);
+		return name + ">" + string.Join("/", fields);
 
     }
 

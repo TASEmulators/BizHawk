@@ -938,6 +938,8 @@ namespace BizHawk.Client.Common
 				newInstance.game = game;
 				loadedEmulators.Add(path, newInstance);
 
+				
+
 				activeEmulator = newInstance;
 			}
 
@@ -1373,6 +1375,7 @@ namespace BizHawk.Client.Common
 		public int delay = 0;
 		public string domain = "DEFAULT";
 		public bool enabled = true;
+		public bool blockJumpFromZero = false;
 
 		public long lastValue = 0;
 		public int countdownToActivate = 0;
@@ -1456,7 +1459,9 @@ namespace BizHawk.Client.Common
 				long difference = currentValue - lastValue;
 				lastValue = currentValue;
 
-				if (difference > minChange && difference < maxChange)
+				bool shouldBlockJump = blockJumpFromZero && oldValue == 0;
+
+				if (difference > minChange && difference < maxChange && !shouldBlockJump)
 				{
 					System.Diagnostics.Debug.WriteLine("!!!!!!!!! Trigger at " + locationString + " " + domainToCheck);
 					System.Diagnostics.Debug.WriteLine("!!!!!!!!!              CheckFrame goes " + oldValue.ToString() + " -> " + currentValue.ToString());
@@ -1529,6 +1534,10 @@ namespace BizHawk.Client.Common
 					if (components[0] == "enabled")
 					{
 						newDef.enabled = components[1].ToUpper() == "TRUE";
+					}
+					if (components[0] == "blockJumpFromZero")
+					{
+						newDef.blockJumpFromZero = components[1].ToUpper() == "TRUE";
 					}
 				}
 			}
