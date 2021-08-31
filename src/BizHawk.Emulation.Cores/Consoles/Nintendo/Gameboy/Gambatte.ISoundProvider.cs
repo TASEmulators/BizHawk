@@ -52,55 +52,57 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		private BlipBuffer _blipL, _blipR;
 		private uint _blipAccumulate;
 
-		private void ProcessSound(int nsamp, bool processSound)
+		private void ProcessSound(int nsamp)
 		{
-			if (processSound)
+			for (uint i = 0; i < nsamp; i++)
 			{
-				for (uint i = 0; i < nsamp; i++)
+				int curr = _soundbuff[i * 2];
+
+				if (curr != _latchL)
 				{
-					int curr = _soundbuff[i * 2];
-
-					if (curr != _latchL)
-					{
-						int diff = _latchL - curr;
-						_latchL = curr;
-						_blipL.AddDelta(_blipAccumulate, diff >> 2);
-					}
-
-					curr = _soundbuff[(i * 2) + 1];
-
-					if (curr != _latchR)
-					{
-						int diff = _latchR - curr;
-						_latchR = curr;
-						_blipR.AddDelta(_blipAccumulate, diff >> 2);
-					}
-
-					_blipAccumulate++;
+					int diff = _latchL - curr;
+					_latchL = curr;
+					_blipL.AddDelta(_blipAccumulate, diff >> 2);
 				}
+
+				curr = _soundbuff[(i * 2) + 1];
+
+				if (curr != _latchR)
+				{
+					int diff = _latchR - curr;
+					_latchR = curr;
+					_blipR.AddDelta(_blipAccumulate, diff >> 2);
+				}
+
+				_blipAccumulate++;
 			}
-			if (IsSgb) // mix sgb audio in
-			{
-				ulong samples = _cycleCount;
-				int remainder = LibGambatte.gambatte_generatesgbsamples(GambatteState, _sgbsoundbuff, ref samples);
+		}
 
-				ulong epoch = _cycleCount - (ulong)nsamp;
-				ulong t = epoch + 65 - (ulong)remainder;
-				for (uint i = 0; i < samples; i++, t += 65)
+		private void ProcessSgbSound(int nsamp, bool processSound)
+		{
+			ulong samples = _cycleCount;
+			int remainder = LibGambatte.gambatte_generatesgbsamples(GambatteState, _sgbsoundbuff, ref samples);
+			if (remainder < 0)
+			{
+				return;
+			}
+
+			ulong epoch = _cycleCount - (ulong)nsamp;
+			ulong t = epoch + 65 - (ulong)remainder;
+			for (uint i = 0; i < samples; i++, t += 65)
+			{
+				int ls = _sgbsoundbuff[i * 2] - _sgbLatchL;
+				int rs = _sgbsoundbuff[(i * 2) + 1] - _sgbLatchR;
+				if (ls != 0 && processSound)
 				{
-					int ls = _sgbsoundbuff[i * 2] - _sgbLatchL;
-					int rs = _sgbsoundbuff[(i * 2) + 1] - _sgbLatchR;
-					if (ls != 0 && processSound)
-					{
-						_blipL.AddDelta((uint)(t - epoch), ls);
-					}
-					if (rs != 0 && processSound)
-					{
-						_blipR.AddDelta((uint)(t - epoch), rs);
-					}
-					_sgbLatchL = _sgbsoundbuff[i * 2];
-					_sgbLatchR = _sgbsoundbuff[(i * 2) + 1];
+					_blipL.AddDelta((uint)(t - epoch), ls);
 				}
+				if (rs != 0 && processSound)
+				{
+					_blipR.AddDelta((uint)(t - epoch), rs);
+				}
+				_sgbLatchL = _sgbsoundbuff[i * 2];
+				_sgbLatchR = _sgbsoundbuff[(i * 2) + 1];
 			}
 		}
 

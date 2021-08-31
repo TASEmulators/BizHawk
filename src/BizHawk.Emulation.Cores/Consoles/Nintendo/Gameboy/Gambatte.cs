@@ -131,6 +131,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 					throw new InvalidOperationException($"{nameof(LibGambatte.gambatte_loadbuf)}() returned non-zero (is this not a gb or gbc rom?)");
 				}
 
+				if (IsSgb)
+				{
+					byte[] spc = Util.DecompressGzipFile(new MemoryStream(Resources.SgbCartPresent_SPC.Value));
+					if (LibGambatte.gambatte_resetspc(GambatteState, spc, (uint)spc.Length) != 0)
+					{
+						throw new InvalidOperationException($"{nameof(LibGambatte.gambatte_resetspc)}() returned non-zero (spc error)");
+					}
+				}
+
 				// set real default colors (before anyone mucks with them at all)
 				PutSettings((GambatteSettings)settings ?? new GambatteSettings());
 
@@ -344,6 +353,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			{
 				bool stall = _syncSettings.EnableBIOS && (_syncSettings.ConsoleMode is GambatteSyncSettings.ConsoleModeType.GBA); // GBA takes 971616 cycles to switch to CGB mode; CGB CPU is inactive during this time.
 				LibGambatte.gambatte_reset(GambatteState, stall ? 485808u : 0u);
+				if (IsSgb)
+				{
+					byte[] spc = Util.DecompressGzipFile(new MemoryStream(Resources.SgbCartPresent_SPC.Value));
+					if (LibGambatte.gambatte_resetspc(GambatteState, spc, (uint)spc.Length) != 0)
+					{
+						throw new InvalidOperationException($"{nameof(LibGambatte.gambatte_resetspc)}() returned non-zero (spc error)");
+					}
+				}
 			}
 
 			if (Tracer.IsEnabled())

@@ -15,6 +15,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		{
 			FrameAdvancePrep(controller);
 			uint samplesEmitted;
+			uint samplesEmittedInFrame = 0; // for sgb
 			switch (_syncSettings.FrameLength)
 			{
 				case GambatteSyncSettings.FrameLengthType.VBlankDrivenFrames:
@@ -28,9 +29,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 					}
 
 					_cycleCount += samplesEmitted;
+					samplesEmittedInFrame += samplesEmitted;
 					frameOverflow = 0;
 
-					ProcessSound((int)samplesEmitted, (rendersound && !Muted));
+					if (rendersound && !Muted)
+					{
+						ProcessSound((int)samplesEmitted);
+					}
 					break;
 				case GambatteSyncSettings.FrameLengthType.EqualLengthFrames:
 					while (true)
@@ -45,9 +50,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 						// account for actual number of samples emitted
 						_cycleCount += samplesEmitted;
+						samplesEmittedInFrame += samplesEmitted;
 						frameOverflow += samplesEmitted;
 
-						ProcessSound((int)samplesEmitted, (rendersound && !Muted));
+						if (rendersound && !Muted)
+						{
+							ProcessSound((int)samplesEmitted);
+						}
 
 						if (frameOverflow >= TICKSINFRAME)
 						{
@@ -75,9 +84,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 						// account for actual number of samples emitted
 						_cycleCount += samplesEmitted;
+						samplesEmittedInFrame += samplesEmitted;
 						frameOverflow += samplesEmitted;
 
-						ProcessSound((int)samplesEmitted, (rendersound && !Muted));
+						if (rendersound && !Muted)
+						{
+							ProcessSound((int)samplesEmitted);
+						}
 
 						if (frameOverflow >= inputFrameLengthInt)
 						{
@@ -86,6 +99,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 						}
 					}
 					break;
+			}
+
+			if (IsSgb)
+			{
+				ProcessSgbSound((int)samplesEmittedInFrame, (rendersound && !Muted));
 			}
 
 			if (rendersound && !Muted)
