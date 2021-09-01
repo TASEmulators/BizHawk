@@ -94,6 +94,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public static extern unsafe int gambatte_runfor(IntPtr core, int* videobuf, int pitch, short* soundbuf, ref uint samples);
 
 		[DllImport("libgambatte", CallingConvention = CallingConvention.Cdecl)]
+		public static extern int gambatte_updatescreenborder(IntPtr core, int[] videobuf, int pitch);
+
+		[DllImport("libgambatte", CallingConvention = CallingConvention.Cdecl)]
 		public static extern int gambatte_generatesgbsamples(IntPtr core, short[] soundbuf, ref ulong samples);
 
 		[DllImport("libgambatte", CallingConvention = CallingConvention.Cdecl)]

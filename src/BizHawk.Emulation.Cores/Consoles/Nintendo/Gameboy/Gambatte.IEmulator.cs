@@ -26,6 +26,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 					if (LibGambatte.gambatte_runfor(GambatteState, FrameBuffer, 160, _soundbuff, ref samplesEmitted) > 0)
 					{
 						Array.Copy(FrameBuffer, VideoBuffer, FrameBuffer.Length);
+						if (IsSgb)
+						{
+							if (LibGambatte.gambatte_updatescreenborder(GambatteState, SgbVideoBuffer, 256) != 0)
+							{
+								throw new InvalidOperationException($"{nameof(LibGambatte.gambatte_updatescreenborder)}() returned non-zero (border error???)");
+							}
+						}
 					}
 
 					_cycleCount += samplesEmitted;
@@ -46,6 +53,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 						if (LibGambatte.gambatte_runfor(GambatteState, FrameBuffer, 160, _soundbuff, ref samplesEmitted) > 0)
 						{
 							Array.Copy(FrameBuffer, VideoBuffer, FrameBuffer.Length);
+							if (IsSgb)
+							{
+								if (LibGambatte.gambatte_updatescreenborder(GambatteState, SgbVideoBuffer, 256) != 0)
+								{
+									throw new InvalidOperationException($"{nameof(LibGambatte.gambatte_updatescreenborder)}() returned non-zero (border error???)");
+								}
+							}
 						}
 
 						// account for actual number of samples emitted
@@ -80,6 +94,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 						if (LibGambatte.gambatte_runfor(GambatteState, FrameBuffer, 160, _soundbuff, ref samplesEmitted) > 0)
 						{
 							Array.Copy(FrameBuffer, VideoBuffer, FrameBuffer.Length);
+							if (IsSgb)
+							{
+								if (LibGambatte.gambatte_updatescreenborder(GambatteState, SgbVideoBuffer, 256) != 0)
+								{
+									throw new InvalidOperationException($"{nameof(LibGambatte.gambatte_updatescreenborder)}() returned non-zero (border error???)");
+								}
+							}
 						}
 
 						// account for actual number of samples emitted

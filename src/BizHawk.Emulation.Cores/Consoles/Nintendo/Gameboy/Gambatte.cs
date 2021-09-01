@@ -355,7 +355,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				LibGambatte.gambatte_reset(GambatteState, stall ? 485808u : 0u);
 				if (IsSgb)
 				{
-					byte[] spc = Util.DecompressGzipFile(new MemoryStream(Resources.SgbCartPresent_SPC.Value));
+					byte[] spc = Util.DecompressGzipFile(new MemoryStream(Resources.SgbCartPresent_SPC.Value)); // for whatever reason snes_spc needs the spc again on hard reset???
 					if (LibGambatte.gambatte_resetspc(GambatteState, spc, (uint)spc.Length) != 0)
 					{
 						throw new InvalidOperationException($"{nameof(LibGambatte.gambatte_resetspc)}() returned non-zero (spc error)");
