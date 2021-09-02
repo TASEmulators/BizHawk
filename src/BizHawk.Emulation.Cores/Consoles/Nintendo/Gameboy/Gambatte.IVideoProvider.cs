@@ -29,16 +29,16 @@
 
 		public int[] GetVideoBuffer()
 		{
-			return IsSgb ? SgbVideoBuffer : VideoBuffer;
+			return (IsSgb && _settings.ShowBorder) ? SgbVideoBuffer : VideoBuffer;
 		}
 
-		public int VirtualWidth => IsSgb ? 256 : 160;
+		public int VirtualWidth => (IsSgb && _settings.ShowBorder) ? 256 : 160;
 
-		public int VirtualHeight => IsSgb ? 224 : 144;
+		public int VirtualHeight => (IsSgb && _settings.ShowBorder) ? 224 : 144;
 
-		public int BufferWidth => IsSgb ? 256 : 160;
+		public int BufferWidth => (IsSgb && _settings.ShowBorder) ? 256 : 160;
 
-		public int BufferHeight => IsSgb ? 224 : 144;
+		public int BufferHeight => (IsSgb && _settings.ShowBorder) ? 224 : 144;
 
 		public int BackgroundColor => 0;
 

@@ -24,7 +24,7 @@ namespace BizHawk.Client.EmuHawk
 
 			using var dlg = new GBPrefs(mainForm.DialogController);
 			dlg.gbPrefControl1.PutSettings(config, game, movieSession, s, ss);
-			dlg.gbPrefControl1.ColorGameBoy = gb.IsCGBMode();
+			dlg.gbPrefControl1.ColorGameBoy = gb.IsCGBMode() || gb.IsSgb;
 			if (mainForm.ShowDialogAsChild(dlg).IsOk())
 			{
 				dlg.gbPrefControl1.GetSettings(out s, out ss);

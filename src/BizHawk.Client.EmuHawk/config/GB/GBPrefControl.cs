@@ -43,6 +43,7 @@ namespace BizHawk.Client.EmuHawk
 			propertyGrid1.Enabled = movieSession.Movie.NotActive();
 			checkBoxMuted.Checked = _s.Muted;
 			cbRgbdsSyntax.Checked = _s.RgbdsSyntax;
+			cbShowBorder.Checked = _s.ShowBorder;
 		}
 
 		public void GetSettings(out Gameboy.GambatteSettings s, out Gameboy.GambatteSyncSettings ss)
@@ -85,6 +86,11 @@ namespace BizHawk.Client.EmuHawk
 		private void CbRgbdsSyntax_CheckedChanged(object sender, EventArgs e)
 		{
 			_s.RgbdsSyntax = ((CheckBox)sender).Checked;
+		}
+
+		private void CbShowBorder_CheckedChanged(object sender, EventArgs e)
+		{
+			_s.ShowBorder = ((CheckBox)sender).Checked;
 		}
 	}
 }

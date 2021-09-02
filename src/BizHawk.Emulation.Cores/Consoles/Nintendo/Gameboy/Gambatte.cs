@@ -810,8 +810,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			else
 			{
 				LinkConnected = false;
-				printer.Disconnect();
-				printer = null;
+				if (printer != null) // have no idea how this is occuring???
+				{
+					printer.Disconnect();
+					printer = null;
+				}
 			}
 		}
 

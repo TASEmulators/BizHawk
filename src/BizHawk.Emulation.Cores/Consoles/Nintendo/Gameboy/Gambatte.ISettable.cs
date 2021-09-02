@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		{
 			_settings = o;
 			_disassembler.UseRGBDSSyntax = _settings.RgbdsSyntax;
-			if (IsCGBMode())
+			if (IsCGBMode() || IsSgb)
 			{
 				SetCGBColors(_settings.CGBColors);
 			}
@@ -77,11 +77,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			/// </summary>
 			public bool RgbdsSyntax;
 
+			/// <summary>
+			/// true to show sgb border (sgb mode only)
+			/// </summary>
+			public bool ShowBorder;
+
 			public GambatteSettings()
 			{
 				GBPalette = (int[])DefaultPalette.Clone();
 				CGBColors = GBColors.ColorType.gambatte;
 				RgbdsSyntax = true;
+				ShowBorder = true;
 			}
 
 
@@ -110,7 +116,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				Auto,
 				GB,
 				GBC,
-				GBA,
+				GBA
 			}
 
 			[DisplayName("Console Mode")]
