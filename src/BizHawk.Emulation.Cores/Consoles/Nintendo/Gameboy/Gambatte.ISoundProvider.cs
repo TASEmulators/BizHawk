@@ -82,6 +82,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		{
 			ulong samples = _cycleCount;
 			int remainder = LibGambatte.gambatte_generatesgbsamples(GambatteState, _sgbsoundbuff, ref samples);
+			if (remainder < 0)
+			{
+				throw new InvalidOperationException($"{nameof(LibGambatte.gambatte_generatesgbsamples)}() returned negative (spc error???)");
+			}
 			ulong epoch = _cycleCount - (ulong)nsamp;
 			ulong t = epoch + 65 - (ulong)remainder;
 			for (uint i = 0; i < samples; i++, t += 65)
