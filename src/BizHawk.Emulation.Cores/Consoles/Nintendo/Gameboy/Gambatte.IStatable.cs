@@ -37,6 +37,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			writer.Write(frameOverflow);
 			writer.Write(_cycleCount);
 			writer.Write(IsCgb);
+			writer.Write(IsSgb);
+
+			if (IsSgb)
+			{
+				if (LibGambatte.gambatte_savespcstate(GambatteState, _spcsavebuff) != 0)
+				{
+					throw new InvalidOperationException($"{nameof(LibGambatte.gambatte_savespcstate)}() returned non-zero (spc state error???)");
+				}
+				writer.Write(_spcsavebuff);
+			}
 		}
 
 		public void LoadStateBinary(BinaryReader reader)
@@ -61,13 +71,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			frameOverflow = reader.ReadUInt32();
 			_cycleCount = reader.ReadUInt64();
 			IsCgb = reader.ReadBoolean();
+			IsSgb = reader.ReadBoolean();
+
+			if (IsSgb)
+			{
+				reader.Read(_spcsavebuff, 0, _spcsavebuff.Length);
+				if (LibGambatte.gambatte_loadspcstate(GambatteState, _spcsavebuff) != 0)
+				{
+					throw new InvalidOperationException($"{nameof(LibGambatte.gambatte_loadspcstate)}() returned non-zero (spc state error???)");
+				}
+			}
 		}
 
 		private byte[] _savebuff;
+		private byte[] _spcsavebuff; // sgb only
 
 		private void NewSaveCoreSetBuff()
 		{
 			_savebuff = new byte[LibGambatte.gambatte_newstatelen(GambatteState)];
+			_spcsavebuff = new byte[67 * 1024L]; // enum { spc_state_size = 67 * 1024L }; /* maximum space needed when saving */
 		}
 
 		private readonly JsonSerializer ser = new JsonSerializer { Formatting = Formatting.Indented };
@@ -81,6 +103,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			public ulong _cycleCount;
 			public uint frameOverflow;
 			public bool IsCgb;
+			public bool IsSgb;
+			public byte[] _spcsavebuff = new byte[67 * 1024L]; // idk how to serialize this so let's just slap this here
 		}
 
 		internal TextState<TextStateData> SaveState()
@@ -95,6 +119,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			s.ExtraData.frameOverflow = frameOverflow;
 			s.ExtraData._cycleCount = _cycleCount;
 			s.ExtraData.IsCgb = IsCgb;
+			s.ExtraData.IsSgb = IsSgb;
+			if (IsSgb)
+			{
+				if (LibGambatte.gambatte_savespcstate(GambatteState, s.ExtraData._spcsavebuff) != 0)
+				{
+					throw new InvalidOperationException($"{nameof(LibGambatte.gambatte_savespcstate)}() returned non-zero (spc state error???)");
+				}
+			}
 			return s;
 		}
 
@@ -109,6 +141,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			frameOverflow = s.ExtraData.frameOverflow;
 			_cycleCount = s.ExtraData._cycleCount;
 			IsCgb = s.ExtraData.IsCgb;
+			IsSgb = s.ExtraData.IsSgb;
+			if (IsSgb)
+			{
+				if (LibGambatte.gambatte_loadspcstate(GambatteState, s.ExtraData._spcsavebuff) != 0)
+				{
+					throw new InvalidOperationException($"{nameof(LibGambatte.gambatte_loadspcstate)}() returned non-zero (spc state error???)");
+				}
+			}
 		}
 	}
 }
