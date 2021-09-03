@@ -71,8 +71,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		private const int SampPerFrame = 35112;
 
-		private readonly SaveController LCont = new SaveController(Gameboy.GbController);
-		private readonly SaveController RCont = new SaveController(Gameboy.GbController);
+		private readonly SaveController LCont = new SaveController(Gameboy.CreateControllerDefinition(false, false));
+		private readonly SaveController RCont = new SaveController(Gameboy.CreateControllerDefinition(false, false));
 
 		public bool IsCGBMode(bool right)
 		{

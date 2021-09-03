@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using BizHawk.Common;
 using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
@@ -276,29 +277,44 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public long CycleCount => (long)_cycleCount;
 		public double ClockRate => TICKSPERSECOND;
 
-		public static readonly ControllerDefinition GbController = new ControllerDefinition
+		public static ControllerDefinition CreateControllerDefinition(bool sgb, bool sub)
 		{
-			Name = "Gameboy Controller",
-			BoolButtons =
+			var ret = sub
+				? new ControllerDefinition { Name = "Subframe Gameboy Controller" }.AddAxis("Input Length", 0.RangeTo(35112), 35112)
+				: new ControllerDefinition { Name = "Gameboy Controller" };
+			if (sgb)
 			{
-				"Up", "Down", "Left", "Right", "Start", "Select", "B", "A", "Power"
+				for (int i = 0; i < 4; i++)
+				{
+					ret.BoolButtons.AddRange(
+						new[] { "Up", "Down", "Left", "Right", "Start", "Select", "B", "A" }
+							.Select(s => $"P{i + 1} {s}"));
+				}
+				ret.BoolButtons.Add("Power");
 			}
-		};
-		
-		public static readonly ControllerDefinition SubGbController = new ControllerDefinition
-		{
-			Name = "Subframe Gameboy Controller",
-			BoolButtons =
+			else
 			{
-				"Up", "Down", "Left", "Right", "Start", "Select", "B", "A", "Power"
+				ret.BoolButtons.AddRange(new[] { "Up", "Down", "Left", "Right", "Start", "Select", "B", "A", "Power" });
 			}
-		}.AddAxis("Input Length", 0.RangeTo(35112), 35112);
+			return ret;
+		}
 
 		private LibGambatte.Buttons ControllerCallback()
 		{
 			InputCallbacks.Call();
 			IsLagFrame = false;
-			return CurrentButtons;
+			if (IsSgb)
+			{
+				int index = LibGambatte.gambatte_getjoypadindex(GambatteState);
+				uint b = (uint)CurrentButtons;
+				b >>= index * 8;
+				b &= 0xFF;
+				return (LibGambatte.Buttons)b;
+			}
+			else
+			{
+				return CurrentButtons;
+			}
 		}
 
 		/// <summary>
@@ -333,16 +349,34 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		}
 
 		// needs to match the reverse order of Libgambatte's button enum
-		private static readonly IReadOnlyList<string> BUTTON_ORDER_IN_BITMASK = new[] { "Down", "Up", "Left", "Right", "Start", "Select", "B", "A" };
+		private static readonly IReadOnlyList<string> GB_BUTTON_ORDER_IN_BITMASK = new[] { "Down", "Up", "Left", "Right", "Start", "Select", "B", "A" };
+
+		// input callback assumes buttons are ordered from first player in lsbs to last player in msbs
+		private static readonly IReadOnlyList<string> SGB_BUTTON_ORDER_IN_BITMASK = new[] {
+			"P4 Down", "P4 Up", "P4 Left", "P4 Right", "P4 Start", "P4 Select", "P4 B", "P4 A",
+			"P3 Down", "P3 Up", "P3 Left", "P3 Right", "P3 Start", "P3 Select", "P3 B", "P3 A",
+			"P2 Down", "P2 Up", "P2 Left", "P2 Right", "P2 Start", "P2 Select", "P2 B", "P2 A",
+			"P1 Down", "P1 Up", "P1 Left", "P1 Right", "P1 Start", "P1 Select", "P1 B", "P1 A" };
 
 		internal void FrameAdvancePrep(IController controller)
 		{
 			// update our local copy of the controller data
-			byte b = 0;
-			for (var i = 0; i < 8; i++)
+			uint b = 0;
+			if (IsSgb)
 			{
-				b <<= 1;
-				if (controller.IsPressed(BUTTON_ORDER_IN_BITMASK[i])) b |= 1;
+				for (var i = 0; i < 32; i++)
+				{
+					b <<= 1;
+					if (controller.IsPressed(SGB_BUTTON_ORDER_IN_BITMASK[i])) b |= 1;
+				}
+			}
+			else
+			{
+				for (var i = 0; i < 8; i++)
+				{
+					b <<= 1;
+					if (controller.IsPressed(GB_BUTTON_ORDER_IN_BITMASK[i])) b |= 1;
+				}
 			}
 			CurrentButtons = (LibGambatte.Buttons)b;
 

@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 	{
 		public IEmulatorServiceProvider ServiceProvider { get; }
 
-		public ControllerDefinition ControllerDefinition => (_syncSettings.FrameLength == GambatteSyncSettings.FrameLengthType.UserDefinedFrames) ? SubGbController : GbController;
+		public ControllerDefinition ControllerDefinition => CreateControllerDefinition(IsSgb, _syncSettings.FrameLength is GambatteSyncSettings.FrameLengthType.UserDefinedFrames);
 
 		public bool FrameAdvance(IController controller, bool render, bool rendersound)
 		{

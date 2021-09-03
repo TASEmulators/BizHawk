@@ -172,6 +172,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public static extern void gambatte_setinputgetter(IntPtr core, InputGetter getinput);
 
 		/// <summary>
+		/// Gets which SGB controller is in use, 0 indexed.
+		/// </summary>
+		/// <param name="core">opaque state pointer</param>
+		[DllImport("libgambatte", CallingConvention = CallingConvention.Cdecl)]
+		public static extern int gambatte_getjoypadindex(IntPtr core);
+
+		/// <summary>
 		/// type of the read\write memory callbacks
 		/// </summary>
 		/// <param name="address">the address which the cpu is read\writing</param>
