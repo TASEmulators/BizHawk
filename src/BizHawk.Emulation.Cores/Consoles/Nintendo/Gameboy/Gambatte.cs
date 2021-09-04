@@ -219,6 +219,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 				_cdCallback = new LibGambatte.CDCallback(CDCallbackProc);
 
+				ControllerDefinition = CreateControllerDefinition(IsSgb, _syncSettings.FrameLength is GambatteSyncSettings.FrameLengthType.UserDefinedFrames);
+
 				NewSaveCoreSetBuff();
 			}
 			catch

@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 	{
 		public IEmulatorServiceProvider ServiceProvider { get; }
 
-		public ControllerDefinition ControllerDefinition => CreateControllerDefinition(IsSgb, _syncSettings.FrameLength is GambatteSyncSettings.FrameLengthType.UserDefinedFrames);
+		public ControllerDefinition ControllerDefinition { get; set; }
 
 		public bool FrameAdvance(IController controller, bool render, bool rendersound)
 		{
@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 							if (LibGambatte.gambatte_updatescreenborder(GambatteState, SgbVideoBuffer, 256) != 0)
 							{
 								throw new InvalidOperationException($"{nameof(LibGambatte.gambatte_updatescreenborder)}() returned non-zero (border error???)");
-							}	
+							}
 						}
 					}
 
