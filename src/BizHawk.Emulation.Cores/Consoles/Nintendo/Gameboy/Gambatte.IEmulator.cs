@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 							if (LibGambatte.gambatte_updatescreenborder(GambatteState, SgbVideoBuffer, 256) != 0)
 							{
 								throw new InvalidOperationException($"{nameof(LibGambatte.gambatte_updatescreenborder)}() returned non-zero (border error???)");
-							}
+							}	
 						}
 					}
 

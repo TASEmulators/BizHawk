@@ -309,6 +309,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				uint b = (uint)CurrentButtons;
 				b >>= index * 8;
 				b &= 0xFF;
+				if ((b & 0x30) == 0x30) // snes software side blocks l+r
+				{
+					b &= ~0x30u;
+				}
+				if ((b & 0xC0) == 0xC0) // same for u+d
+				{
+					b &= ~0xC0u;
+				}
 				return (LibGambatte.Buttons)b;
 			}
 			else

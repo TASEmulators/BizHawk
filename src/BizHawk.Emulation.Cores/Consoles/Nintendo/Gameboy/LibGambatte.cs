@@ -100,12 +100,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public static extern int gambatte_generatesgbsamples(IntPtr core, short[] soundbuf, ref ulong samples);
 
 		[DllImport("libgambatte", CallingConvention = CallingConvention.Cdecl)]
-		public static extern int gambatte_savespcstate(IntPtr core, byte[] stateBuf);
-
-		[DllImport("libgambatte", CallingConvention = CallingConvention.Cdecl)]
-		public static extern int gambatte_loadspcstate(IntPtr core, byte[] stateBuf);
-
-		[DllImport("libgambatte", CallingConvention = CallingConvention.Cdecl)]
 		public static extern int gambatte_resetspc(IntPtr core, byte[] spcdata, uint len);
 
 		/// <summary>
