@@ -139,7 +139,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public int Frame { get; private set; }
 
-		public string SystemId => "GB";
+		public string SystemId => IsSgb ? "SGB" : "GB";
 
 		public string BoardName { get; }
 
