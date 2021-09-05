@@ -1,0 +1,1 @@
+coin>bytes:0BF8,0BF9,0BFA/base:256/minChange:0/maxChange:2147483647/delay:0/domain:IWRAM/controlOutput:PRESS/enabled:True/isTracker:False/trackerDivisor:1/blockFromZero:False

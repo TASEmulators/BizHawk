@@ -1,0 +1,2 @@
+p1score>bytes:1A52DF,1A52DE,1A52DD,1A52DC/base:256/minChange:39/maxChange:2147483647/delay:5/domain:RDRAM/controlOutput:PRESS/enabled:True/isTracker:False/trackerDivisor:1/blockFromZero:True
+p2score>bytes:1A52EF,1A52EE,1A52ED,1A52EC/base:256/minChange:39/maxChange:2147483647/delay:5/domain:RDRAM/controlOutput:PRESS/enabled:True/isTracker:False/trackerDivisor:1/blockFromZero:True

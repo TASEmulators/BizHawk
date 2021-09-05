@@ -1,0 +1,2 @@
+p1score>bytes:9B70,9B71,9B72,9B73/base:256/minChange:39/maxChange:2147483647/delay:5/domain:EWRAM/controlOutput:PRESS/enabled:True/isTracker:False/trackerDivisor:1/blockFromZero:True
+p2score>bytes:BA98,BA99,BA9A,BA9B/base:256/minChange:39/maxChange:2147483647/delay:5/domain:EWRAM/controlOutput:PRESS/enabled:True/isTracker:False/trackerDivisor:1/blockFromZero:True

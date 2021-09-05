@@ -1,0 +1,2 @@
+p1score>bytes:1632CF,1632CE,1632CD,1632CC/base:256/minChange:39/maxChange:2147483647/delay:5/domain:RDRAM/controlOutput:PRESS/enabled:True/isTracker:False/trackerDivisor:1/blockFromZero:True
+p2score>bytes:1632D3,1632D2,1632D1,1632D0/base:256/minChange:39/maxChange:2147483647/delay:5/domain:RDRAM/controlOutput:PRESS/enabled:True/isTracker:False/trackerDivisor:1/blockFromZero:True

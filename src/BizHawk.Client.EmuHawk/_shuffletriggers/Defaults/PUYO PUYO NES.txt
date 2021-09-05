@@ -1,0 +1,1 @@
+p1score>bytes:007A,007B,007C/base:256/minChange:0/maxChange:2147483647/delay:5/domain:RAM/controlOutput:PRESS/enabled:True/isTracker:False/trackerDivisor:1/blockFromZero:True

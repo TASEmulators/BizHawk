@@ -1,1 +1,2 @@
-match>bytes:E00D,E00C/base:256/minChange:39/maxChange:2147483647/delay:5/domain:DEFAULT/controlOutput:PRESS/enabled:True/isTracker:False/trackerDivisor:1/blockFromZero:True
+p1score>bytes:E00D,E00C/base:256/minChange:39/maxChange:2147483647/delay:5/domain:DEFAULT/controlOutput:PRESS/enabled:True/isTracker:False/trackerDivisor:1/blockFromZero:True
+p2score>bytes:E04D,E04C,E04B/base:256/minChange:39/maxChange:2147483647/delay:5/domain:DEFAULT/controlOutput:PRESS/enabled:True/isTracker:False/trackerDivisor:1/blockFromZero:True

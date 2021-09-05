@@ -1,0 +1,2 @@
+p1score>bytes:74A,74B,74C,74D/base:256/minChange:39/maxChange:2147483647/delay:5/domain:DEFAULT/controlOutput:PRESS/enabled:True/isTracker:False/trackerDivisor:1/blockFromZero:True
+p2score>bytes:78A,78B,78C,78D/base:256/minChange:39/maxChange:2147483647/delay:5/domain:DEFAULT/controlOutput:PRESS/enabled:True/isTracker:False/trackerDivisor:1/blockFromZero:True

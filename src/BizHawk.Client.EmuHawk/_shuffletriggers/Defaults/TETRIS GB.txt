@@ -1,2 +1,1 @@
 line>bytes:1E,1F/base:100/minChange:0/maxChange:2147483647/delay:0/domain:HRAM/controlOutput:PRESS/enabled:True
-nextShape>bytes:0213/base:256/minChange:-128/maxChange:128/delay:0/domain:WRAM/controlOutput:CHANGE/enabled:False

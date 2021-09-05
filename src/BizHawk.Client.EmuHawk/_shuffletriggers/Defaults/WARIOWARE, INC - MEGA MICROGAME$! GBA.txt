@@ -1,0 +1,2 @@
+level>bytes:39DC/base:256/minChange:0/maxChange:2147483647/delay:0/domain:DEFAULT/controlOutput:PRESS/enabled:True/isTracker:False/trackerDivisor:1/blockFromZero:False
+lifeLoss>bytes:39D5/base:256/minChange:-2/maxChange:0/delay:0/domain:DEFAULT/controlOutput:PRESS/enabled:True/isTracker:False/trackerDivisor:1/blockFromZero:False
