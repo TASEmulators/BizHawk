@@ -37,7 +37,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		// sample pairs before resampling
 		private readonly short[] _soundbuff = new short[(35112 + 2064) * 2];
-		private readonly short[] _sgbsoundbuff = new short[2048 * 2];
+		private readonly short[] _sgbsoundbuff = new short[4096 * 2];
 
 		private int _soundoutbuffcontains = 0;
 
