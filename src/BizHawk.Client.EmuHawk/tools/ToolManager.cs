@@ -21,6 +21,7 @@ namespace BizHawk.Client.EmuHawk
 		private readonly MainForm _owner;
 		private Config _config;
 		private readonly DisplayManager _displayManager;
+		private readonly ExternalToolManager _extToolManager;
 		private readonly InputManager _inputManager;
 		private IExternalApiProvider _apiProvider;
 		private IEmulator _emulator;
@@ -45,6 +46,7 @@ namespace BizHawk.Client.EmuHawk
 			MainForm owner,
 			Config config,
 			DisplayManager displayManager,
+			ExternalToolManager extToolManager,
 			InputManager inputManager,
 			IEmulator emulator,
 			IMovieSession movieSession,
@@ -53,6 +55,7 @@ namespace BizHawk.Client.EmuHawk
 			_owner = owner;
 			_config = config;
 			_displayManager = displayManager;
+			_extToolManager = extToolManager;
 			_inputManager = inputManager;
 			_emulator = emulator;
 			_movieSession = movieSession;
@@ -731,18 +734,12 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private static readonly Lazy<List<string>> LazyAsmTypes = new Lazy<List<string>>(() =>
-			EmuHawk.ReflectionCache.Types // Confining the search to only EmuHawk, for now at least, we may want to broaden for external tools one day
-				.Select(t => t.AssemblyQualifiedName)
-				.ToList());
+		private static readonly IList<string> PossibleToolTypeNames = EmuHawk.ReflectionCache.Types.Select(t => t.AssemblyQualifiedName).ToList();
 
 		public bool IsAvailable(Type tool)
 		{
-			if (!ServiceInjector.IsAvailable(_emulator.ServiceProvider, tool)
-				|| !LazyAsmTypes.Value.Contains(tool.AssemblyQualifiedName)) // not a tool
-			{
-				return false;
-			}
+			if (!ServiceInjector.IsAvailable(_emulator.ServiceProvider, tool)) return false;
+			if (!PossibleToolTypeNames.Contains(tool.AssemblyQualifiedName) && !_extToolManager.PossibleExtToolTypeNames.Contains(tool.AssemblyQualifiedName)) return false; // not a tool
 
 			ToolAttribute attr = tool.GetCustomAttributes(false).OfType<ToolAttribute>().SingleOrDefault();
 			if (attr == null)

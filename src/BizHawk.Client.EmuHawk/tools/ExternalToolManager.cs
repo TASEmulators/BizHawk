@@ -21,6 +21,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly List<ToolStripMenuItem> MenuItems = new List<ToolStripMenuItem>();
 
+		internal readonly IList<string> PossibleExtToolTypeNames = new List<string>();
+
 		public ExternalToolManager(PathEntryCollection paths, Func<(CoreSystem System, string Hash)> getLoadedRomInfoCallback)
 		{
 			_getLoadedRomInfoCallback = getLoadedRomInfoCallback;
@@ -53,6 +55,7 @@ namespace BizHawk.Client.EmuHawk
 		internal void BuildToolStrip()
 		{
 			MenuItems.Clear();
+			PossibleExtToolTypeNames.Clear();
 			if (DirectoryMonitor == null) return;
 			DirectoryInfo di = new(DirectoryMonitor.Path);
 			if (!di.Exists) return;
@@ -93,6 +96,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				item.Text = toolAttribute.Name;
 				item.Tag = (externalToolFile.Location, entryPoint.FullName); // Tag set => no errors (show custom icon even when disabled)
+				PossibleExtToolTypeNames.Add(entryPoint.AssemblyQualifiedName);
 				if (applicabilityAttrs.Count == 1)
 				{
 					var (system, loadedRomHash) = _getLoadedRomInfoCallback();
