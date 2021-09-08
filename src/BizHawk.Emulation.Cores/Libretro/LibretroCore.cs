@@ -23,13 +23,11 @@ namespace BizHawk.Emulation.Cores.Libretro
 		// TODO: codepath just for introspection (lighter weight; no speex, no controls, etc.)
 		public LibretroCore(CoreComm nextComm, IGameInfo game, string corePath)
 		{
-			if (OSTailoredCode.IsUnixHost) throw new NotImplementedException("required library LibretroBridge is not yet available for Linux");
-
 			ServiceProvider = new BasicServiceProvider(this);
 			_SyncSettings = new SyncSettings();
 			CoreComm = nextComm;
 
-			string dllPath = Path.Combine(CoreComm.CoreFileProvider.DllPath(), "LibretroBridge.dll");
+			var dllPath = Path.Combine(CoreComm.CoreFileProvider.DllPath(), OSTailoredCode.IsUnixHost ? "LibretroBridge.so" : "LibretroBridge.dll");
 			api = new LibretroApi(dllPath, corePath);
 
 			if (api.comm->env.retro_api_version != 1)
