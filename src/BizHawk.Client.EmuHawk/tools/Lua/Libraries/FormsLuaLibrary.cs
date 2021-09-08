@@ -1168,9 +1168,9 @@ namespace BizHawk.Client.EmuHawk
 			return 0;
 		}
 
-		[LuaMethodExample("forms.setdropdownitems( 332, { \"item1\", \"item2\" } );")]
-		[LuaMethod("setdropdownitems", "Sets the items for a given dropdown box")]
-		public void SetDropdownItems(int handle, LuaTable items)
+		[LuaMethodExample("forms.setdropdownitems(dropdown_handle, { \"item1\", \"item2\" });")]
+		[LuaMethod("setdropdownitems", "Updates the item list of a dropdown menu. The optional third parameter toggles alphabetical sorting of items, pass false to skip sorting.")]
+		public void SetDropdownItems(int handle, LuaTable items, bool alphabetize = true)
 		{
 			try
 			{
@@ -1186,13 +1186,12 @@ namespace BizHawk.Client.EmuHawk
 					{
 						if (control.Handle == ptr)
 						{
-							if (control is LuaDropDown)
+							if (control is LuaDropDown ldd)
 							{
 								var dropdownItems = _th.EnumerateValues<string>(items).ToList();
-								dropdownItems.Sort();
-								(control as LuaDropDown).SetItems(dropdownItems);
+								if (alphabetize) dropdownItems.Sort();
+								ldd.SetItems(dropdownItems);
 							}
-
 							return;
 						}
 					}
