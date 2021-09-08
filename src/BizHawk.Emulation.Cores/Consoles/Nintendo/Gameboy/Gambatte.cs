@@ -264,7 +264,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public bool IsCgb { get; set; }
 		public bool IsSgb { get; set; }
 
-		// all cycle counts are relative to a 2*1024*1024 mhz refclock
+		// all cycle counts are relative to a 2*1024*1024 hz refclock
 
 		/// <summary>
 		/// total cycles actually executed
