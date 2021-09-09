@@ -21,9 +21,6 @@ namespace BizHawk.Emulation.Cores.Libretro
 		private delegate IntPtr DllInit(IntPtr dllModule);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		private delegate IntPtr DllInitUnix(string dllModule);
-
-		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		private delegate void MessageApi(eMessage msg);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
@@ -52,14 +49,13 @@ namespace BizHawk.Emulation.Cores.Libretro
 			instanceDll = new InstanceDll(dllPath);
 			instanceDllCore = new InstanceDll(corePath);
 
+			var dllinit = GetTypedDelegate<DllInit>("DllInit");
 			Message = GetTypedDelegate<MessageApi>("Message");
 			_copyBuffer = GetTypedDelegate<BufferApi>("CopyBuffer");
 			_setBuffer = GetTypedDelegate<BufferApi>("SetBuffer");
 			SetVariable = GetTypedDelegate<SetVariableApi>("SetVariable");
 
-			comm = (CommStruct*) (OSTailoredCode.IsUnixHost
-				? GetTypedDelegate<DllInitUnix>("DllInit")(corePath).ToPointer()
-				: GetTypedDelegate<DllInit>("DllInit")(instanceDllCore.HModule).ToPointer());
+			comm = (CommStruct*)dllinit(instanceDllCore.HModule).ToPointer();
 
 			//TODO: (stash function pointers locally and thunk to IntPtr)
 			//ALSO: this should be done by the core, I think, not the API. No smarts should be in here
