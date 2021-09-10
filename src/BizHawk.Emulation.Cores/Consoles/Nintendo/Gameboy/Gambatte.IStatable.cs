@@ -22,13 +22,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public void SaveStateBinary(BinaryWriter writer)
 		{
-			if (!LibGambatte.gambatte_newstatesave(GambatteState, _savebuff, _savebuff.Length))
+#if false
+			int size = LibGambatte.gambatte_savestate(GambatteState, null, 160, _stateBuf);
+			if (size != _stateBuf.Length)
+			{
+				throw new InvalidOperationException("Savestate buffer size mismatch!");
+			}
+#else
+			if (!LibGambatte.gambatte_newstatesave(GambatteState, _stateBuf, _stateBuf.Length))
 			{
 				throw new Exception($"{nameof(LibGambatte.gambatte_newstatesave)}() returned false");
 			}
+#endif
 
-			writer.Write(_savebuff.Length);
-			writer.Write(_savebuff);
+			writer.Write(_stateBuf.Length);
+			writer.Write(_stateBuf);
 
 			// other variables
 			writer.Write(IsLagFrame);
@@ -43,17 +51,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public void LoadStateBinary(BinaryReader reader)
 		{
 			int length = reader.ReadInt32();
-			if (length != _savebuff.Length)
+			if (length != _stateBuf.Length)
 			{
 				throw new InvalidOperationException("Savestate buffer size mismatch!");
 			}
 
-			reader.Read(_savebuff, 0, _savebuff.Length);
+			reader.Read(_stateBuf, 0, _stateBuf.Length);
 
-			if (!LibGambatte.gambatte_newstateload(GambatteState, _savebuff, _savebuff.Length))
+#if false
+			if (!LibGambatte.gambatte_loadstate(GambatteState, _stateBuf, _stateBuf.Length))
+			{
+				throw new Exception($"{nameof(LibGambatte.gambatte_loadstate)}() returned false");
+			}
+#else
+			if (!LibGambatte.gambatte_newstateload(GambatteState, _stateBuf, _stateBuf.Length))
 			{
 				throw new Exception($"{nameof(LibGambatte.gambatte_newstateload)}() returned false");
 			}
+#endif
 
 			// other variables
 			IsLagFrame = reader.ReadBoolean();
@@ -65,11 +80,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			IsSgb = reader.ReadBoolean();
 		}
 
-		private byte[] _savebuff;
+		private byte[] _stateBuf;
 
 		private void NewSaveCoreSetBuff()
 		{
-			_savebuff = new byte[LibGambatte.gambatte_newstatelen(GambatteState)];
+#if false
+			_stateBuf = new byte[LibGambatte.gambatte_savestate(GambatteState, null, 160, null)];
+#else
+			_stateBuf = new byte[LibGambatte.gambatte_newstatelen(GambatteState)];
+#endif
 		}
 
 		private readonly JsonSerializer ser = new JsonSerializer { Formatting = Formatting.Indented };

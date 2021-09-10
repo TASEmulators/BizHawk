@@ -422,6 +422,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public static extern bool gambatte_getmemoryarea(IntPtr core, MemoryAreas which, ref IntPtr data, ref int length);
 
 		/// <summary>
+		/// Saves emulator state to the buffer given by 'stateBuf'.
+		/// </summary>
+		/// <param name="core">opaque state pointer</param>
+		/// <param name="videoBuf">160x144 RGB32 (native endian) video frame buffer or 0. Used for saving a thumbnail.</param>
+		/// <param name="pitch">pitch distance in number of pixels (not bytes) from the start of one line to the next in videoBuf.</param>
+		/// <param name="stateBuf">buffer for savestate</param>
+		/// <returns>size</returns>
+		[DllImport("libgambatte", CallingConvention = CallingConvention.Cdecl)]
+		public static extern int gambatte_savestate(IntPtr core, int[] videoBuf, int pitch, byte[] stateBuf);
+
+		/// <summary>
+		/// Loads emulator state from the buffer given by 'stateBuf' of size 'size'.
+		/// </summary>
+		/// <param name="core">opaque state pointer</param>
+		/// <param name="stateBuf">buffer for savestate</param>
+		/// <param name="size">size of savestate buffer</param>
+		/// <returns>success</returns>
+		[DllImport("libgambatte", CallingConvention = CallingConvention.Cdecl)]
+		public static extern bool gambatte_loadstate(IntPtr core, byte[] stateBuf, int size);
+
+		/// <summary>
 		/// read a single byte from the cpu bus.  this includes all ram, rom, mmio, etc, as it is visible to the cpu (including mappers).
 		/// while there is no cycle cost to these reads, there may be other side effects!  use at your own risk.
 		/// </summary>
