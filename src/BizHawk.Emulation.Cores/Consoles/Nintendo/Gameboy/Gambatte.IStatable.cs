@@ -1,4 +1,6 @@
-﻿using System;
+﻿//#define USE_UPSTREAM_STATES
+
+using System;
 using System.IO;
 using Newtonsoft.Json;
 
@@ -22,7 +24,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public void SaveStateBinary(BinaryWriter writer)
 		{
-#if false
+#if USE_UPSTREAM_STATES
 			int size = LibGambatte.gambatte_savestate(GambatteState, null, 160, _stateBuf);
 			if (size != _stateBuf.Length)
 			{
@@ -58,7 +60,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			reader.Read(_stateBuf, 0, _stateBuf.Length);
 
-#if false
+#if USE_UPSTREAM_STATES
 			if (!LibGambatte.gambatte_loadstate(GambatteState, _stateBuf, _stateBuf.Length))
 			{
 				throw new Exception($"{nameof(LibGambatte.gambatte_loadstate)}() returned false");
@@ -84,7 +86,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		private void NewSaveCoreSetBuff()
 		{
-#if false
+#if USE_UPSTREAM_STATES
 			_stateBuf = new byte[LibGambatte.gambatte_savestate(GambatteState, null, 160, null)];
 #else
 			_stateBuf = new byte[LibGambatte.gambatte_newstatelen(GambatteState)];
