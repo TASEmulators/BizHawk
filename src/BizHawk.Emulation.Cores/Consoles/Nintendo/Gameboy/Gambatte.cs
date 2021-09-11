@@ -134,11 +134,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 				if (IsSgb)
 				{
-					byte[] spc = Util.DecompressGzipFile(new MemoryStream(Resources.SgbCartPresent_SPC.Value));
-					if (LibGambatte.gambatte_resetspc(GambatteState, spc, (uint)spc.Length) != 0)
-					{
-						throw new InvalidOperationException($"{nameof(LibGambatte.gambatte_resetspc)}() returned non-zero (spc error)");
-					}
+					ResetStallTicks = 128 * (2 << 14);
+				}
+				else if (_syncSettings.EnableBIOS && (_syncSettings.ConsoleMode is GambatteSyncSettings.ConsoleModeType.GBA))
+				{
+					ResetStallTicks = 485808; // GBA takes 971616 cycles to switch to CGB mode; CGB CPU is inactive during this time.
+				}
+				else
+				{
+					ResetStallTicks = 0;
 				}
 
 				// set real default colors (before anyone mucks with them at all)
@@ -243,6 +247,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// number of ticks per second
 		/// </summary>
 		private const uint TICKSPERSECOND = 2097152;
+
+		/// <summary>
+		/// number of ticks per reset
+		/// </summary>
+		private uint ResetStallTicks { get; set; } = 0;
 
 		/// <summary>
 		/// keep a copy of the input callback delegate so it doesn't get GCed
@@ -395,16 +404,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			if (controller.IsPressed("Power"))
 			{
-				bool stall = _syncSettings.EnableBIOS && (_syncSettings.ConsoleMode is GambatteSyncSettings.ConsoleModeType.GBA); // GBA takes 971616 cycles to switch to CGB mode; CGB CPU is inactive during this time.
-				LibGambatte.gambatte_reset(GambatteState, stall ? 485808u : 0u);
-				if (IsSgb)
-				{
-					byte[] spc = Util.DecompressGzipFile(new MemoryStream(Resources.SgbCartPresent_SPC.Value)); // for whatever reason snes_spc needs the spc again on hard reset???
-					if (LibGambatte.gambatte_resetspc(GambatteState, spc, (uint)spc.Length) != 0)
-					{
-						throw new InvalidOperationException($"{nameof(LibGambatte.gambatte_resetspc)}() returned non-zero (spc error)");
-					}
-				}
+				LibGambatte.gambatte_reset(GambatteState, ResetStallTicks);
 			}
 
 			if (Tracer.IsEnabled())
