@@ -249,7 +249,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		private const uint TICKSPERSECOND = 2097152;
 
 		/// <summary>
-		/// number of ticks per reset
+		/// number of reset stall ticks
 		/// </summary>
 		private uint ResetStallTicks { get; set; } = 0;
 
