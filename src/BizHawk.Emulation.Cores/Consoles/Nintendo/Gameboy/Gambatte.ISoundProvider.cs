@@ -85,19 +85,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			{
 				throw new InvalidOperationException($"{nameof(LibGambatte.gambatte_generatesgbsamples)}() returned negative (spc error???)");
 			}
-			ulong epoch = _cycleCount - (ulong)nsamp;
-			ulong t = epoch + 65 - (ulong)remainder;
-			for (uint i = 0; i < samples; i++, t += 65)
+			uint t = 65 - remainder;
+			for (int i = 0; i < samples; i++, t += 65)
 			{
 				int ls = _sgbsoundbuff[i * 2] - _sgbLatchL;
 				int rs = _sgbsoundbuff[(i * 2) + 1] - _sgbLatchR;
 				if (ls != 0 && processSound)
 				{
-					_blipL.AddDelta((uint)(t - epoch), ls);
+					_blipL.AddDelta(t, ls);
 				}
 				if (rs != 0 && processSound)
 				{
-					_blipR.AddDelta((uint)(t - epoch), rs);
+					_blipR.AddDelta(t, rs);
 				}
 				_sgbLatchL = _sgbsoundbuff[i * 2];
 				_sgbLatchR = _sgbsoundbuff[(i * 2) + 1];
