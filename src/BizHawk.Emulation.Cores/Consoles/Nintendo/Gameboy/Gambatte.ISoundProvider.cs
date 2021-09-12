@@ -80,8 +80,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		private void ProcessSgbSound(int nsamp, bool processSound)
 		{
-			ulong samples = _cycleCount;
-			int remainder = LibGambatte.gambatte_generatesgbsamples(GambatteState, _sgbsoundbuff, ref samples);
+			int remainder = LibGambatte.gambatte_generatesgbsamples(GambatteState, _sgbsoundbuff, out uint samples);
 			if (remainder < 0)
 			{
 				throw new InvalidOperationException($"{nameof(LibGambatte.gambatte_generatesgbsamples)}() returned negative (spc error???)");
