@@ -85,7 +85,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			{
 				throw new InvalidOperationException($"{nameof(LibGambatte.gambatte_generatesgbsamples)}() returned negative (spc error???)");
 			}
-			uint t = 65 - remainder;
+			uint t = 65 - (uint)remainder;
 			for (int i = 0; i < samples; i++, t += 65)
 			{
 				int ls = _sgbsoundbuff[i * 2] - _sgbLatchL;
