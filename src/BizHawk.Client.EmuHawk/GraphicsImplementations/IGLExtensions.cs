@@ -11,7 +11,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public static IGuiRenderer CreateRenderer(this IGL gl) => gl switch
 		{
-			IGL_GdiPlus => new GDIPlusGuiRenderer(gl),
+			IGL_GdiPlus gdipImpl => new GDIPlusGuiRenderer(gdipImpl),
 			IGL_SlimDX9 => new GuiRenderer(gl),
 			IGL_TK => new GuiRenderer(gl),
 			_ => throw new NotSupportedException()

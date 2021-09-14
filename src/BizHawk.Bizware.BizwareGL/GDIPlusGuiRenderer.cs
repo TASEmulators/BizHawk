@@ -9,10 +9,10 @@ namespace BizHawk.Bizware.BizwareGL
 {
 	public class GDIPlusGuiRenderer : IGuiRenderer
 	{
-		public GDIPlusGuiRenderer(IGL gl)
-		{
-			Owner = gl;
-		}
+		private readonly IGL_GdiPlus Gdi;
+
+		public GDIPlusGuiRenderer(IGL_GdiPlus gl)
+			=> Gdi = gl;
 
 		private readonly Vector4[] CornerColors = { new(1.0f, 1.0f, 1.0f, 1.0f), new(1.0f, 1.0f, 1.0f, 1.0f), new(1.0f, 1.0f, 1.0f, 1.0f), new(1.0f, 1.0f, 1.0f, 1.0f) };
 
@@ -151,7 +151,7 @@ namespace BizHawk.Bizware.BizwareGL
 		public void DrawSubrect(Texture2d tex, float x, float y, float w, float h, float u0, float v0, float u1, float v1)
 		{
 			var tw = tex.Opaque as GDIPTextureWrapper;
-			var g = ((dynamic) Gdi).GetCurrentGraphics() as sd.Graphics;
+			var g = Gdi.GetCurrentGraphics();
 			PrepDraw(g, tex);
 			SetupMatrix(g);
 
@@ -239,7 +239,7 @@ namespace BizHawk.Bizware.BizwareGL
 
 		private void DrawInternal(Texture2d tex, float x, float y, float w, float h, float u0, float v0, float u1, float v1)
 		{
-			var g = ((dynamic) Gdi).GetCurrentGraphics() as sd.Graphics;
+			var g = Gdi.GetCurrentGraphics();
 			PrepDraw(g, tex);
 
 			SetupMatrix(g);
@@ -268,7 +268,7 @@ namespace BizHawk.Bizware.BizwareGL
 		}
 
 		public bool IsActive { get; private set; }
-		public IGL Owner { get; }
-		public IGL Gdi => Owner;
+
+		public IGL Owner => Gdi;
 	}
 }
