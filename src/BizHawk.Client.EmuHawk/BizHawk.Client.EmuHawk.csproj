@@ -832,6 +832,9 @@
 	  <None Update="_shuffletriggers\Defaults\SUPER MARIO WORLD SNES.txt">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
+	  <None Update="_shuffletriggers\Defaults\SUPER METROID SNES.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
 	  <None Update="_shuffletriggers\Defaults\SUPER PUYO PUYO SNES.txt">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
