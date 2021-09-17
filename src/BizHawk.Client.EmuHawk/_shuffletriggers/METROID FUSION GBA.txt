@@ -1,0 +1,3 @@
+energy>bytes:3001310/domain:RAM
+missileCount>bytes:3001314/domain:RAM
+powerBombCount>bytes:3001318/domain:RAM
