@@ -388,7 +388,9 @@ namespace BizHawk.Client.EmuHawk
 
 			this.blockZeroCheckBox.Checked = def.blockFromZero;
 
-            this.EventDomainComboBox.Text = def.domain;
+			this.EventSteppedChangeEventBufferNumericInput.Value = def.steppedChangeEventBuffer;
+
+			this.EventDomainComboBox.Text = def.domain;
 
             PopulateExample(def);
 
@@ -511,6 +513,8 @@ namespace BizHawk.Client.EmuHawk
 
 				activeEventDef.blockFromZero = this.blockZeroCheckBox.Checked;
 
+				activeEventDef.steppedChangeEventBuffer = (int)this.EventSteppedChangeEventBufferNumericInput.Value;
+
                 activeEventDef.domain = this.EventDomainComboBox.Text;
                 if (!this.EventDomainComboBox.Items.Contains(this.EventDomainComboBox.Text))
                 {
@@ -566,6 +570,10 @@ namespace BizHawk.Client.EmuHawk
         }
 
         private void EventDelayNumericInput_ValueChanged(object sender, EventArgs e)
+        {
+        }
+
+        private void EventSteppedChangeEventBufferNumericInput_ValueChanged(object sender, EventArgs e)
         {
         }
 
@@ -770,6 +778,7 @@ public class EventDefinition
     public bool isTracker = false;
     public int trackerDivisor = 1;
 	public bool blockFromZero = false;
+	public int steppedChangeEventBuffer = 0;
     public static EventDefinition FromString(string sourceString)
     {
         EventDefinition eventDefinition = new EventDefinition();
@@ -821,7 +830,9 @@ public class EventDefinition
 						case "blockFromZero":
 							eventDefinition.blockFromZero = components[1].ToUpper() == "TRUE";
 							break;
-
+						case "steppedChangeEventBuffer":
+							int.TryParse(components[1], out eventDefinition.steppedChangeEventBuffer);
+							break;
 					}
                 }
             }
@@ -846,6 +857,7 @@ public class EventDefinition
         fields.Add("isTracker:" + isTracker.ToString());
         fields.Add("trackerDivisor:" + trackerDivisor.ToString());
 		fields.Add("blockFromZero:" + blockFromZero.ToString());
+		fields.Add("steppedChangeEventBuffer:" + steppedChangeEventBuffer.ToString());
 
 		return name + ">" + string.Join("/", fields);
 
