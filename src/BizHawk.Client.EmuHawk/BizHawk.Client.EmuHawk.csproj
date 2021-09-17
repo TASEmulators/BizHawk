@@ -682,6 +682,9 @@
 	  <None Update="_shuffletriggers\Defaults\LEGEND OF ZELDA, THE NES.txt">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
+	  <None Update="_shuffletriggers\Defaults\METROID II - RETURN OF SAMUS GB.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
 	  <None Update="_shuffletriggers\Defaults\METROID NES.txt">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
