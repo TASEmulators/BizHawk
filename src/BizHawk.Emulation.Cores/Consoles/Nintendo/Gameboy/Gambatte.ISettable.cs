@@ -106,11 +106,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			[DefaultValue(false)]
 			public bool EnableBIOS { get; set; }
 
-			[DisplayName("Patch Similar BootROMs")]
-			[Description("If true, BootROMs (or \"BIOSes\") are patched a similar other. GBC is patched to GBA. DMG is patched to MGB (and vice versa). Should not be used for unofficial BootROMs. Ignored (treated as false) when booting without a BIOS.")]
-			[DefaultValue(false)]
-			public bool PatchBIOS { get; set; }
-
 			public enum ConsoleModeType
 			{
 				Auto,
