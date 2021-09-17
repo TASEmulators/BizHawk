@@ -2004,6 +2004,7 @@ namespace BizHawk.Client.EmuHawk
 				case "GB":
 				case "GBC":
 				case "SGB" when Emulator is Sameboy:
+				case "SGB" when Emulator is Gameboy:
 					GBSubMenu.Visible = true;
 					break;
 				case "SNES" when Emulator is LibsnesCore { IsSGB: true }: // doesn't use "SGB" sysID

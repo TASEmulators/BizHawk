@@ -9,12 +9,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 	{
 		public IEmulatorServiceProvider ServiceProvider { get; }
 
-		public ControllerDefinition ControllerDefinition => (_syncSettings.FrameLength == GambatteSyncSettings.FrameLengthType.UserDefinedFrames) ? SubGbController : GbController;
+		public ControllerDefinition ControllerDefinition { get; set; }
 
 		public bool FrameAdvance(IController controller, bool render, bool rendersound)
 		{
 			FrameAdvancePrep(controller);
 			uint samplesEmitted;
+			uint samplesEmittedInFrame = 0; // for sgb
 			switch (_syncSettings.FrameLength)
 			{
 				case GambatteSyncSettings.FrameLengthType.VBlankDrivenFrames:
@@ -25,10 +26,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 					if (LibGambatte.gambatte_runfor(GambatteState, FrameBuffer, 160, _soundbuff, ref samplesEmitted) > 0)
 					{
 						Array.Copy(FrameBuffer, VideoBuffer, FrameBuffer.Length);
+						if (IsSgb)
+						{
+							if (LibGambatte.gambatte_updatescreenborder(GambatteState, SgbVideoBuffer, 256) != 0)
+							{
+								throw new InvalidOperationException($"{nameof(LibGambatte.gambatte_updatescreenborder)}() returned non-zero (border error???)");
+							}
+						}
 					}
 
 					_cycleCount += samplesEmitted;
+					samplesEmittedInFrame += samplesEmitted;
 					frameOverflow = 0;
+
 					if (rendersound && !Muted)
 					{
 						ProcessSound((int)samplesEmitted);
@@ -43,10 +53,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 						if (LibGambatte.gambatte_runfor(GambatteState, FrameBuffer, 160, _soundbuff, ref samplesEmitted) > 0)
 						{
 							Array.Copy(FrameBuffer, VideoBuffer, FrameBuffer.Length);
+							if (IsSgb)
+							{
+								if (LibGambatte.gambatte_updatescreenborder(GambatteState, SgbVideoBuffer, 256) != 0)
+								{
+									throw new InvalidOperationException($"{nameof(LibGambatte.gambatte_updatescreenborder)}() returned non-zero (border error???)");
+								}
+							}
 						}
 
 						// account for actual number of samples emitted
 						_cycleCount += samplesEmitted;
+						samplesEmittedInFrame += samplesEmitted;
 						frameOverflow += samplesEmitted;
 
 						if (rendersound && !Muted)
@@ -76,10 +94,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 						if (LibGambatte.gambatte_runfor(GambatteState, FrameBuffer, 160, _soundbuff, ref samplesEmitted) > 0)
 						{
 							Array.Copy(FrameBuffer, VideoBuffer, FrameBuffer.Length);
+							if (IsSgb)
+							{
+								if (LibGambatte.gambatte_updatescreenborder(GambatteState, SgbVideoBuffer, 256) != 0)
+								{
+									throw new InvalidOperationException($"{nameof(LibGambatte.gambatte_updatescreenborder)}() returned non-zero (border error???)");
+								}
+							}
 						}
 
 						// account for actual number of samples emitted
 						_cycleCount += samplesEmitted;
+						samplesEmittedInFrame += samplesEmitted;
 						frameOverflow += samplesEmitted;
 
 						if (rendersound && !Muted)
@@ -96,6 +122,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 					break;
 			}
 
+			if (IsSgb)
+			{
+				ProcessSgbSound((int)samplesEmittedInFrame, (rendersound && !Muted));
+			}
+
 			if (rendersound && !Muted)
 			{
 				ProcessSoundEnd();
@@ -108,7 +139,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public int Frame { get; private set; }
 
-		public string SystemId => "GB";
+		public string SystemId => IsSgb ? "SGB" : "GB";
 
 		public string BoardName { get; }
 

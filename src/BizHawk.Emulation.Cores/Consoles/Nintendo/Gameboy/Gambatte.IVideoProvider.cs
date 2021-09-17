@@ -11,7 +11,12 @@
 		/// stored image of most recent frame
 		/// </summary>
 		private readonly int[] VideoBuffer = CreateVideoBuffer();
-		
+
+		/// <summary>
+		/// stored image of most recent sgb frame
+		/// </summary>
+		private readonly int[] SgbVideoBuffer = new int[256 * 244];
+
 		private static int[] CreateVideoBuffer()
 		{
 			var b = new int[160 * 144];
@@ -24,16 +29,16 @@
 
 		public int[] GetVideoBuffer()
 		{
-			return VideoBuffer;
+			return (IsSgb && _settings.ShowBorder) ? SgbVideoBuffer : VideoBuffer;
 		}
 
-		public int VirtualWidth => 160; // only sgb changes this, which we don't emulate here
+		public int VirtualWidth => (IsSgb && _settings.ShowBorder) ? 256 : 160;
 
-		public int VirtualHeight => 144;
+		public int VirtualHeight => (IsSgb && _settings.ShowBorder) ? 224 : 144;
 
-		public int BufferWidth => 160;
+		public int BufferWidth => (IsSgb && _settings.ShowBorder) ? 256 : 160;
 
-		public int BufferHeight => 144;
+		public int BufferHeight => (IsSgb && _settings.ShowBorder) ? 224 : 144;
 
 		public int BackgroundColor => 0;
 

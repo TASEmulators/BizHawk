@@ -24,7 +24,7 @@ namespace BizHawk.Client.Common
 			(new[] { "SNES" },
 				new[] { CoreNames.Faust, CoreNames.Snes9X, CoreNames.Bsnes, CoreNames.Bsnes115 }),
 			(new[] { "SGB" },
-				new[] { CoreNames.SameBoy, CoreNames.Bsnes, CoreNames.Bsnes115}),
+				new[] { CoreNames.Gambatte, CoreNames.SameBoy, CoreNames.Bsnes, CoreNames.Bsnes115}),
 			(new[] { "GB", "GBC" },
 				new[] { CoreNames.Gambatte, CoreNames.GbHawk, CoreNames.SubGbHawk }),
 			(new[] { "DGB" },
