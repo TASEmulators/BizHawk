@@ -1,2 +1,2 @@
-energy>bytes:D051/domain:WRAM
-missileCount>bytes:D053/domain:WRAM
+energy>bytes:D051/domain:RAM
+missileCount>bytes:D053/domain:RAM
