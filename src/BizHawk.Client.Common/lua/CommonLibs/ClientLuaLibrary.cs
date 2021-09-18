@@ -112,6 +112,10 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		[LuaMethodExample("local sounds_terrible = client.get_approx_framerate() < 55;")]
+		[LuaMethod("get_approx_framerate", "Gets the (host) framerate, approximated from frame durations.")]
+		public int GetApproxFramerate() => APIs.EmuClient.GetApproxFramerate();
+
 		[LuaMethodExample("local incliget = client.gettargetscanlineintensity( );")]
 		[LuaMethod("gettargetscanlineintensity", "Gets the current scanline intensity setting, used for the scanline display filter")]
 		public int GetTargetScanlineIntensity() => APIs.EmuClient.GetTargetScanlineIntensity();
