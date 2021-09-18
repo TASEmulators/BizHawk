@@ -20,9 +20,19 @@
 		long BufferSize { get; }
 
 		/// <summary>
+		/// Specifies whether TargetFrameLength or TargetRewindInterval is used.
+		/// </summary>
+		public bool UseFixedRewindInterval { get; }
+
+		/// <summary>
 		/// Desired frame length (number of emulated frames you can go back before running out of buffer)
 		/// </summary>
 		int TargetFrameLength { get; }
+
+		/// <summary>
+		/// Desired rewind interval (number of emulated frames you can go back per rewind)
+		/// </summary>
+		int TargetRewindInterval { get; }
 
 		public enum BackingStoreType
 		{
@@ -39,7 +49,9 @@
 		public bool UseDelta { get; set; }
 		public bool Enabled { get; set; } = true;
 		public long BufferSize { get; set; } = 512; // in mb
+		public bool UseFixedRewindInterval { get; set; } = false;
 		public int TargetFrameLength { get; set; } = 600;
+		public int TargetRewindInterval { get; set; } = 5;
 		public IRewindSettings.BackingStoreType BackingStore { get; set; } = IRewindSettings.BackingStoreType.Memory;
 	}
 }

@@ -55,7 +55,16 @@ namespace BizHawk.Client.Common
 				default:
 					throw new ArgumentException("Unsupported store type for ZwinderBuffer.");
 			}
-			_targetFrameLength = settings.TargetFrameLength;
+			if (settings.UseFixedRewindInterval)
+			{
+				_fixedRewindInterval = true;
+				_targetRewindInterval = settings.TargetRewindInterval;
+			}
+			else
+			{
+				_fixedRewindInterval = false;
+				_targetFrameLength = settings.TargetFrameLength;
+			}
 			_states = new StateInfo[STATEMASK + 1];
 			_useCompression = settings.UseCompression;
 		}
@@ -98,7 +107,9 @@ namespace BizHawk.Client.Common
 
 		private readonly long _sizeMask;
 
+		private readonly bool _fixedRewindInterval;
 		private readonly int _targetFrameLength;
+		private readonly int _targetRewindInterval;
 
 		private struct StateInfo
 		{
@@ -129,6 +140,11 @@ namespace BizHawk.Client.Common
 			{
 				return 1; // shrug
 			}
+			
+			if (_fixedRewindInterval)
+			{
+				return _targetRewindInterval;
+			}
 
 			// assume that the most recent state size is representative of stuff
 			var sizeRatio = Size / (float)_states[HeadStateIndex].Size;
@@ -144,7 +160,8 @@ namespace BizHawk.Client.Common
 			long size = 1L << (int)Math.Floor(Math.Log(targetSize, 2));
 			return Size == size &&
 				_useCompression == settings.UseCompression &&
-				_targetFrameLength == settings.TargetFrameLength &&
+				_fixedRewindInterval == settings.UseFixedRewindInterval &&
+				(_fixedRewindInterval ? _targetRewindInterval == settings.TargetRewindInterval : _targetFrameLength == settings.TargetFrameLength) &&
 				_backingStoreType == settings.BackingStore;
 		}
 
@@ -160,7 +177,7 @@ namespace BizHawk.Client.Common
 				// not much we can say here, so just take a state
 				return true;
 			}
-			return frameDiff >= ComputeIdealRewindInterval();		
+			return frameDiff >= ComputeIdealRewindInterval();
 		}
 
 		private bool ShouldCapture(int frame)
@@ -349,7 +366,9 @@ namespace BizHawk.Client.Common
 				ret = new ZwinderBuffer(new RewindConfig
 				{
 					BufferSize = (int)(size >> 20),
+					UseFixedRewindInterval = false,
 					TargetFrameLength = targetFrameLength,
+					TargetRewindInterval = 5,
 					UseCompression = useCompression
 				});
 				if (ret.Size != size || ret._sizeMask != sizeMask)
