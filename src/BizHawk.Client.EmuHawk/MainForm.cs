@@ -1608,6 +1608,8 @@ namespace BizHawk.Client.EmuHawk
 		private int _framesSinceLastFpsUpdate;
 		private long _timestampLastFpsUpdate;
 
+		public int GetApproxFramerate() => _lastFpsRounded;
+
 		private readonly Throttle _throttle;
 		private bool _unthrottled;
 
