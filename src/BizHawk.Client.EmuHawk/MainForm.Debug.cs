@@ -9,6 +9,8 @@ using System.Windows.Forms;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.Properties;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores;
+using BizHawk.Emulation.Cores.Nintendo.GBA;
 using BizHawk.Emulation.Cores.Nintendo.N64;
 using BizHawk.WinForms.Controls;
 
@@ -99,6 +101,18 @@ namespace BizHawk.Client.EmuHawk
 			{
 				DropDownItems =
 				{
+					new DebugVSystemMenuItem("GBA")
+					{
+						DropDownItems =
+						{
+							new DebugVSystemChildItem(
+								"Reproduce #2805",
+								() => ((MGBAMemoryCallbackSystem) Emulator.AsDebuggable().MemoryCallbacks).Debug2805())
+							{
+								RequiresCore = CoreNames.Mgba,
+							},
+						},
+					},
 					new DebugVSystemMenuItem("N64")
 					{
 						DropDownItems =
