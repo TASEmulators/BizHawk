@@ -1376,6 +1376,7 @@ namespace BizHawk.Client.Common
 		public string domain = "DEFAULT";
 		public bool enabled = true;
 		public bool blockJumpFromZero = false;
+		public int steppedChangeEventBuffer = 0;
 
 		public long lastValue = 0;
 		public int countdownToActivate = 0;
@@ -1418,8 +1419,11 @@ namespace BizHawk.Client.Common
 			return MemoryApi.instance.MainMemoryName;
 		}
 
+		int steppedChangeFrameCount = 0;
 		public bool CheckFrame()
 		{
+			steppedChangeFrameCount++;
+
 			if (!enabled /*|| RomLoader.activeMemoryDomains.Count <= 0*/)
 			{
 				return false;
@@ -1463,6 +1467,12 @@ namespace BizHawk.Client.Common
 
 				if (difference > minChange && difference < maxChange && !shouldBlockJump)
 				{
+					if (steppedChangeEventBuffer > steppedChangeFrameCount)
+					{
+						steppedChangeFrameCount = 0;
+						return false;
+					}
+
 					System.Diagnostics.Debug.WriteLine("!!!!!!!!! Trigger at " + locationString + " " + domainToCheck);
 					System.Diagnostics.Debug.WriteLine("!!!!!!!!!              CheckFrame goes " + oldValue.ToString() + " -> " + currentValue.ToString());
 					if (delay > 0)
@@ -1470,6 +1480,7 @@ namespace BizHawk.Client.Common
 						countdownToActivate = delay + 1;
 					} else
 					{
+						steppedChangeFrameCount = 0;
 						return true;
 					}
 				}
@@ -1482,6 +1493,7 @@ namespace BizHawk.Client.Common
 				if (countdownToActivate <= 0)
 				{
 					countdownToActivate = 0;
+					steppedChangeFrameCount = 0;
 					return true;
 				}
 			}
@@ -1538,6 +1550,10 @@ namespace BizHawk.Client.Common
 					if (components[0] == "blockJumpFromZero")
 					{
 						newDef.blockJumpFromZero = components[1].ToUpper() == "TRUE";
+					}
+					if (components[0] == "steppedChangeEventBuffer")
+					{
+						newDef.steppedChangeEventBuffer = int.Parse(components[1]);
 					}
 				}
 			}

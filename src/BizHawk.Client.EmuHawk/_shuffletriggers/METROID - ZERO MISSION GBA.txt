@@ -1,0 +1,4 @@
+energy>bytes:3001536/base:256/minChange:0/maxChange:2147483647/delay:0/domain:CartRAM/controlOutput:PRESS/enabled:True/isTracker:False/trackerDivisor:1/blockFromZero:False
+missileCount>bytes:3001538/base:256/minChange:0/maxChange:2147483647/delay:0/domain:CartRAM/controlOutput:PRESS/enabled:True/isTracker:False/trackerDivisor:1/blockFromZero:False
+superMissileCount>bytes:300153A/base:256/minChange:0/maxChange:2147483647/delay:0/domain:CartRAM/controlOutput:PRESS/enabled:True/isTracker:False/trackerDivisor:1/blockFromZero:False
+powerBombCount>bytes:300153B/base:256/minChange:0/maxChange:2147483647/delay:0/domain:CartRAM/controlOutput:PRESS/enabled:True/isTracker:False/trackerDivisor:1/blockFromZero:False

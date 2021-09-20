@@ -77,9 +77,12 @@ namespace BizHawk.Client.EmuHawk
             this.horizontalLine1 = new BizHawk.Client.EmuHawk.HorizontalLine();
             this.horizontalLine2 = new BizHawk.Client.EmuHawk.HorizontalLine();
             this.blockZeroCheckBox = new System.Windows.Forms.CheckBox();
-            ((System.ComponentModel.ISupportInitialize)(this.RAMMinChangeNumericInput)).BeginInit();
+			this.label16 = new System.Windows.Forms.Label();
+			this.EventSteppedChangeEventBufferNumericInput = new System.Windows.Forms.NumericUpDown();
+			((System.ComponentModel.ISupportInitialize)(this.RAMMinChangeNumericInput)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.RAMMaxChangeNumericInput)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.EventDelayNumericInput)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.EventSteppedChangeEventBufferNumericInput)).BeginInit();
             this.SuspendLayout();
             // 
             // label8
@@ -379,7 +382,7 @@ namespace BizHawk.Client.EmuHawk
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(9, 500);
+            this.label1.Location = new System.Drawing.Point(9, 525);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(205, 13);
             this.label1.TabIndex = 48;
@@ -389,7 +392,7 @@ namespace BizHawk.Client.EmuHawk
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(9, 551);
+            this.label2.Location = new System.Drawing.Point(9, 576);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(33, 13);
             this.label2.TabIndex = 49;
@@ -399,7 +402,7 @@ namespace BizHawk.Client.EmuHawk
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(99, 551);
+            this.label3.Location = new System.Drawing.Point(99, 576);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(39, 13);
             this.label3.TabIndex = 50;
@@ -409,7 +412,7 @@ namespace BizHawk.Client.EmuHawk
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(198, 551);
+            this.label4.Location = new System.Drawing.Point(198, 576);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(43, 13);
             this.label4.TabIndex = 51;
@@ -419,7 +422,7 @@ namespace BizHawk.Client.EmuHawk
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(9, 525);
+            this.label5.Location = new System.Drawing.Point(9, 550);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(62, 13);
             this.label5.TabIndex = 52;
@@ -429,7 +432,7 @@ namespace BizHawk.Client.EmuHawk
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(137, 525);
+            this.label6.Location = new System.Drawing.Point(137, 550);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(38, 13);
             this.label6.TabIndex = 53;
@@ -438,7 +441,7 @@ namespace BizHawk.Client.EmuHawk
             // 
             // livesFrameCount
             // 
-            this.livesFrameCount.Location = new System.Drawing.Point(77, 522);
+            this.livesFrameCount.Location = new System.Drawing.Point(77, 547);
             this.livesFrameCount.Name = "livesFrameCount";
             this.livesFrameCount.Size = new System.Drawing.Size(55, 20);
             this.livesFrameCount.TabIndex = 54;
@@ -446,7 +449,7 @@ namespace BizHawk.Client.EmuHawk
             // 
             // livesBytes0
             // 
-            this.livesBytes0.Location = new System.Drawing.Point(12, 567);
+            this.livesBytes0.Location = new System.Drawing.Point(12, 592);
             this.livesBytes0.Name = "livesBytes0";
             this.livesBytes0.Size = new System.Drawing.Size(73, 20);
             this.livesBytes0.TabIndex = 55;
@@ -454,7 +457,7 @@ namespace BizHawk.Client.EmuHawk
             // 
             // livesValue0
             // 
-            this.livesValue0.Location = new System.Drawing.Point(102, 567);
+            this.livesValue0.Location = new System.Drawing.Point(102, 592);
             this.livesValue0.Name = "livesValue0";
             this.livesValue0.Size = new System.Drawing.Size(73, 20);
             this.livesValue0.TabIndex = 56;
@@ -462,7 +465,7 @@ namespace BizHawk.Client.EmuHawk
             // 
             // livesDomain0
             // 
-            this.livesDomain0.Location = new System.Drawing.Point(201, 567);
+            this.livesDomain0.Location = new System.Drawing.Point(201, 592);
             this.livesDomain0.Name = "livesDomain0";
             this.livesDomain0.Size = new System.Drawing.Size(73, 20);
             this.livesDomain0.TabIndex = 57;
@@ -470,7 +473,7 @@ namespace BizHawk.Client.EmuHawk
             // 
             // livesBytes1
             // 
-            this.livesBytes1.Location = new System.Drawing.Point(12, 593);
+            this.livesBytes1.Location = new System.Drawing.Point(12, 618);
             this.livesBytes1.Name = "livesBytes1";
             this.livesBytes1.Size = new System.Drawing.Size(73, 20);
             this.livesBytes1.TabIndex = 58;
@@ -478,7 +481,7 @@ namespace BizHawk.Client.EmuHawk
             // 
             // livesValue1
             // 
-            this.livesValue1.Location = new System.Drawing.Point(102, 593);
+            this.livesValue1.Location = new System.Drawing.Point(102, 618);
             this.livesValue1.Name = "livesValue1";
             this.livesValue1.Size = new System.Drawing.Size(73, 20);
             this.livesValue1.TabIndex = 59;
@@ -486,7 +489,7 @@ namespace BizHawk.Client.EmuHawk
             // 
             // livesDomain1
             // 
-            this.livesDomain1.Location = new System.Drawing.Point(201, 593);
+            this.livesDomain1.Location = new System.Drawing.Point(201, 618);
             this.livesDomain1.Name = "livesDomain1";
             this.livesDomain1.Size = new System.Drawing.Size(73, 20);
             this.livesDomain1.TabIndex = 60;
@@ -494,7 +497,7 @@ namespace BizHawk.Client.EmuHawk
             // 
             // livesBytes2
             // 
-            this.livesBytes2.Location = new System.Drawing.Point(12, 619);
+            this.livesBytes2.Location = new System.Drawing.Point(12, 644);
             this.livesBytes2.Name = "livesBytes2";
             this.livesBytes2.Size = new System.Drawing.Size(73, 20);
             this.livesBytes2.TabIndex = 61;
@@ -502,7 +505,7 @@ namespace BizHawk.Client.EmuHawk
             // 
             // livesValue2
             // 
-            this.livesValue2.Location = new System.Drawing.Point(102, 619);
+            this.livesValue2.Location = new System.Drawing.Point(102, 644);
             this.livesValue2.Name = "livesValue2";
             this.livesValue2.Size = new System.Drawing.Size(73, 20);
             this.livesValue2.TabIndex = 62;
@@ -510,7 +513,7 @@ namespace BizHawk.Client.EmuHawk
             // 
             // livesDomain2
             // 
-            this.livesDomain2.Location = new System.Drawing.Point(201, 619);
+            this.livesDomain2.Location = new System.Drawing.Point(201, 644);
             this.livesDomain2.Name = "livesDomain2";
             this.livesDomain2.Size = new System.Drawing.Size(73, 20);
             this.livesDomain2.TabIndex = 63;
@@ -518,7 +521,7 @@ namespace BizHawk.Client.EmuHawk
             // 
             // livesBytes3
             // 
-            this.livesBytes3.Location = new System.Drawing.Point(12, 645);
+            this.livesBytes3.Location = new System.Drawing.Point(12, 670);
             this.livesBytes3.Name = "livesBytes3";
             this.livesBytes3.Size = new System.Drawing.Size(73, 20);
             this.livesBytes3.TabIndex = 64;
@@ -526,7 +529,7 @@ namespace BizHawk.Client.EmuHawk
             // 
             // livesValue3
             // 
-            this.livesValue3.Location = new System.Drawing.Point(102, 645);
+            this.livesValue3.Location = new System.Drawing.Point(102, 670);
             this.livesValue3.Name = "livesValue3";
             this.livesValue3.Size = new System.Drawing.Size(73, 20);
             this.livesValue3.TabIndex = 65;
@@ -534,7 +537,7 @@ namespace BizHawk.Client.EmuHawk
             // 
             // livesDomain3
             // 
-            this.livesDomain3.Location = new System.Drawing.Point(201, 645);
+            this.livesDomain3.Location = new System.Drawing.Point(201, 670);
             this.livesDomain3.Name = "livesDomain3";
             this.livesDomain3.Size = new System.Drawing.Size(73, 20);
             this.livesDomain3.TabIndex = 66;
@@ -542,7 +545,7 @@ namespace BizHawk.Client.EmuHawk
             // 
             // saveLivesSettingsButton
             // 
-            this.saveLivesSettingsButton.Location = new System.Drawing.Point(102, 678);
+            this.saveLivesSettingsButton.Location = new System.Drawing.Point(102, 703);
             this.saveLivesSettingsButton.Name = "saveLivesSettingsButton";
             this.saveLivesSettingsButton.Size = new System.Drawing.Size(172, 23);
             this.saveLivesSettingsButton.TabIndex = 67;
@@ -562,7 +565,7 @@ namespace BizHawk.Client.EmuHawk
             // 
             // horizontalLine2
             // 
-            this.horizontalLine2.Location = new System.Drawing.Point(12, 495);
+            this.horizontalLine2.Location = new System.Drawing.Point(12, 520);
             this.horizontalLine2.Name = "horizontalLine2";
             this.horizontalLine2.Size = new System.Drawing.Size(775, 2);
             this.horizontalLine2.TabIndex = 69;
@@ -579,12 +582,33 @@ namespace BizHawk.Client.EmuHawk
             this.blockZeroCheckBox.Text = "ignore change if from zero";
             this.blockZeroCheckBox.UseVisualStyleBackColor = true;
             this.blockZeroCheckBox.CheckedChanged += new System.EventHandler(this.blockZeroCheckBox_CheckedChanged);
-            // 
-            // MainWindow
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			// 
+			// label16
+			// 
+			this.label16.AutoSize = true;
+			this.label16.Location = new System.Drawing.Point(351, 487);
+			this.label16.Name = "label16";
+			this.label16.Size = new System.Drawing.Size(34, 13);
+			this.label16.TabIndex = 72;
+			this.label16.Tag = "eventEdit";
+			this.label16.Text = "Stepped change event buffer";
+			// 
+			// EventSteppedChangeEventBufferNumericInput
+			// 
+			this.EventSteppedChangeEventBufferNumericInput.Location = new System.Drawing.Point(498, 484);
+			this.EventSteppedChangeEventBufferNumericInput.Name = "EventSteppedChangeEventBufferNumericInput";
+			this.EventSteppedChangeEventBufferNumericInput.Size = new System.Drawing.Size(61, 20);
+			this.EventSteppedChangeEventBufferNumericInput.TabIndex = 73;
+			this.EventSteppedChangeEventBufferNumericInput.Tag = "eventEdit";
+			this.EventSteppedChangeEventBufferNumericInput.ValueChanged += new System.EventHandler(this.EventSteppedChangeEventBufferNumericInput_ValueChanged);
+			// 
+			// MainWindow
+			// 
+			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(799, 713);
+            this.ClientSize = new System.Drawing.Size(799, 738);
+            this.Controls.Add(this.EventSteppedChangeEventBufferNumericInput);
+            this.Controls.Add(this.label16);
             this.Controls.Add(this.blockZeroCheckBox);
             this.Controls.Add(this.horizontalLine2);
             this.Controls.Add(this.horizontalLine1);
@@ -638,6 +662,7 @@ namespace BizHawk.Client.EmuHawk
             ((System.ComponentModel.ISupportInitialize)(this.RAMMinChangeNumericInput)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.RAMMaxChangeNumericInput)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.EventDelayNumericInput)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.EventSteppedChangeEventBufferNumericInput)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -692,6 +717,8 @@ namespace BizHawk.Client.EmuHawk
 		private HorizontalLine horizontalLine1;
 		private HorizontalLine horizontalLine2;
 		private System.Windows.Forms.CheckBox blockZeroCheckBox;
+		private System.Windows.Forms.Label label16;
+		private System.Windows.Forms.NumericUpDown EventSteppedChangeEventBufferNumericInput;
 	}
 }
 

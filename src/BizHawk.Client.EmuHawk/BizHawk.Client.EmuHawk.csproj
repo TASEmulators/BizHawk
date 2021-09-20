@@ -682,6 +682,18 @@
 	  <None Update="_shuffletriggers\Defaults\LEGEND OF ZELDA, THE NES.txt">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
+	  <None Update="_shuffletriggers\Defaults\METROID - ZERO MISSION GBA.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\Defaults\METROID FUSION GBA.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\Defaults\METROID II - RETURN OF SAMUS GB.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\Defaults\METROID NES.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
 	  <None Update="_shuffletriggers\Defaults\PUYO POP FEVER GBA.txt">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
@@ -830,6 +842,9 @@
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
 	  <None Update="_shuffletriggers\Defaults\SUPER MARIO WORLD SNES.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="_shuffletriggers\Defaults\SUPER METROID SNES.txt">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
 	  <None Update="_shuffletriggers\Defaults\SUPER PUYO PUYO SNES.txt">

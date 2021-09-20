@@ -1,0 +1,2 @@
+energy>bytes:6879/domain:WRAM
+missileCount>bytes:6879/domain:WRAM
