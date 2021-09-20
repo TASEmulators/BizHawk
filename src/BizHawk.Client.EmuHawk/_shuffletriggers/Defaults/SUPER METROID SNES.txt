@@ -1,0 +1,4 @@
+energy>bytes:09C2,09C3/base:256/minChange:0/maxChange:2147483647/delay:0/domain:WRAM/controlOutput:PRESS/enabled:True/isTracker:False/trackerDivisor:1/blockFromZero:False/steppedChangeEventBuffer:2
+missileCount>bytes:09C6,09C7/base:256/minChange:0/maxChange:2147483647/delay:0/domain:WRAM/controlOutput:PRESS/enabled:True/isTracker:False/trackerDivisor:1/blockFromZero:False/steppedChangeEventBuffer:2
+superMissileCount>bytes:09CA,09CB/base:256/minChange:0/maxChange:2147483647/delay:0/domain:WRAM/controlOutput:PRESS/enabled:True/isTracker:False/trackerDivisor:1/blockFromZero:False/steppedChangeEventBuffer:2
+powerBombCount>bytes:09CE,09CF/base:256/minChange:0/maxChange:2147483647/delay:0/domain:WRAM/controlOutput:PRESS/enabled:True/isTracker:False/trackerDivisor:1/blockFromZero:False/steppedChangeEventBuffer:2

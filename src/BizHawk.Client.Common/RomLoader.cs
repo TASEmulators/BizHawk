@@ -1372,10 +1372,17 @@ namespace BizHawk.Client.Common
 		public int baseType = 256;
 		public int minChange = 0;
 		public int maxChange = 2147483647;
+
+		// after triggering a switch, this many frames will elapse before the switch occurs
+		// (if an event is triggered during this frame counter, the counter goes back to 0)
 		public int delay = 0;
+
 		public string domain = "DEFAULT";
 		public bool enabled = true;
 		public bool blockJumpFromZero = false;
+
+		// how many frames need to have passed since entering this game before you can switch out
+		// (if event triggered before the frame counter reaches max, counter goes back to 0)
 		public int steppedChangeEventBuffer = 0;
 
 		public long lastValue = 0;
