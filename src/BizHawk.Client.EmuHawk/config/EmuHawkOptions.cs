@@ -61,6 +61,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GuiOptions_Load(object sender, EventArgs e)
 		{
+			rbInputMethodDirectInput.Enabled = HostCapabilityDetector.HasDirectX;
+
 			StartFullScreenCheckbox.Checked = _config.StartFullscreen;
 			StartPausedCheckbox.Checked = _config.StartPaused;
 			PauseWhenMenuActivatedCheckbox.Checked = _config.PauseWhenMenuActivated;

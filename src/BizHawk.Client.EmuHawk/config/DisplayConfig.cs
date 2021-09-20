@@ -94,9 +94,8 @@ namespace BizHawk.Client.EmuHawk
 
 			RefreshAspectRatioOptions();
 
-			if (OSTailoredCode.IsUnixHost)
+			if (!HostCapabilityDetector.HasDirectX)
 			{
-				// Disable SlimDX on Unix
 				rbD3D9.Enabled = false;
 				rbD3D9.AutoCheck = false;
 				cbAlternateVsync.Enabled = false;

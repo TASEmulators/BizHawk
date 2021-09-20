@@ -211,16 +211,7 @@ namespace BizHawk.Client.Common
 
 		public int DispPrescale { get; set; } = 1;
 
-		private static bool DetectDirectX()
-		{
-			if (OSTailoredCode.IsUnixHost) return false;
-			var p = OSTailoredCode.LinkedLibManager.LoadOrZero("d3dx9_43.dll");
-			if (p == IntPtr.Zero) return false;
-			OSTailoredCode.LinkedLibManager.FreeByPtr(p);
-			return true;
-		}
-
-		public EDispMethod DispMethod { get; set; } = DetectDirectX() ? EDispMethod.SlimDX9 : EDispMethod.OpenGL;
+		public EDispMethod DispMethod { get; set; } = HostCapabilityDetector.HasDirectX ? EDispMethod.SlimDX9 : EDispMethod.OpenGL;
 
 		public int DispChromeFrameWindowed { get; set; } = 2;
 		public bool DispChromeStatusBarWindowed { get; set; } = true;
@@ -248,7 +239,7 @@ namespace BizHawk.Client.Common
 		public int DispCropBottom { get; set; } = 0;
 
 		// Sound options
-		public ESoundOutputMethod SoundOutputMethod { get; set; } = DetectDirectX() ? ESoundOutputMethod.DirectSound : ESoundOutputMethod.OpenAL;
+		public ESoundOutputMethod SoundOutputMethod { get; set; } = HostCapabilityDetector.HasDirectX ? ESoundOutputMethod.DirectSound : ESoundOutputMethod.OpenAL;
 		public bool SoundEnabled { get; set; } = true;
 		public bool SoundEnabledNormal { get; set; } = true;
 		public bool SoundEnabledRWFF { get; set; } = true;
@@ -345,7 +336,7 @@ namespace BizHawk.Client.Common
 		// ReSharper disable once UnusedMember.Global
 		public string LastWrittenFromDetailed { get; set; } = VersionInfo.GetEmuVersion();
 
-		public EHostInputMethod HostInputMethod { get; set; } = OSTailoredCode.IsUnixHost ? EHostInputMethod.OpenTK : EHostInputMethod.DirectInput;
+		public EHostInputMethod HostInputMethod { get; set; } = HostCapabilityDetector.HasDirectX ? EHostInputMethod.DirectInput : EHostInputMethod.OpenTK;
 
 		public bool UseStaticWindowTitles { get; set; }
 	}
