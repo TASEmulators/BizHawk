@@ -623,7 +623,7 @@ namespace BizHawk.Client.EmuHawk
 			if (_argParser.luaScript != null)
 			{
 				if (OSTailoredCode.IsUnixHost) Console.WriteLine($"The Lua environment can currently only be created on Windows, {_argParser.luaScript} will not be loaded.");
-				else Tools.LuaConsole.LoadLuaFile(_argParser.luaScript);
+				else Tools.LuaConsole.LoadLuaFile(_argParser.luaScript.MakeAbsolute());
 			}
 
 			SetStatusBar();
