@@ -1,2 +1,2 @@
-energy>bytes:6879/domain:WRAM
-missileCount>bytes:6879/domain:WRAM
+energy>bytes:106,107/base:100/minChange:0/maxChange:2147483647/delay:0/domain:RAM/controlOutput:PRESS/enabled:True/isTracker:False/trackerDivisor:1/blockFromZero:False/steppedChangeEventBuffer:0
+missileCount>bytes:0879/base:100/minChange:0/maxChange:2147483647/delay:0/domain:WRAM/controlOutput:PRESS/enabled:True/isTracker:False/trackerDivisor:1/blockFromZero:False/steppedChangeEventBuffer:0
