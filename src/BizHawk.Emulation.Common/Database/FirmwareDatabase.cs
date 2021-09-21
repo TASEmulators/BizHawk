@@ -1,6 +1,7 @@
 #nullable disable
 
 using System.Collections.Generic;
+using System.Linq;
 
 // ReSharper disable IdentifierTypo
 // ReSharper disable InconsistentNaming
@@ -17,8 +18,11 @@ namespace BizHawk.Emulation.Common
 
 		public static readonly IReadOnlyCollection<FirmwareRecord> FirmwareRecords;
 
+		public static readonly IReadOnlyList<FirmwarePatchOption> AllPatches;
+
 		static FirmwareDatabase()
 		{
+			List<FirmwarePatchOption> allPatches = new();
 			Dictionary<string, FirmwareFile> filesByHash = new();
 			List<FirmwareOption> options = new();
 			List<FirmwareRecord> records = new();
@@ -48,6 +52,13 @@ namespace BizHawk.Emulation.Common
 			{
 				Firmware(systemId, id, desc);
 				Option(systemId, id, File(hash, size, name, desc), FirmwareOptionStatus.Ideal);
+			}
+
+			void AddPatchAndMaybeReverse(FirmwarePatchOption fpo)
+			{
+				allPatches.Add(fpo);
+				if (fpo.Patches.Any(fpd => fpd.Overwrite)) return;
+				allPatches.Add(new(fpo.TargetHash, fpo.Patches.Reverse().ToArray(), fpo.BaseHash));
 			}
 
 			// FDS has two OK variants  (http://tcrf.net/Family_Computer_Disk_System)
@@ -303,6 +314,11 @@ namespace BizHawk.Emulation.Common
 			// Early revisions of GB/C boot ROMs are not well-supported because the corresponding CPU differences are not emulated.
 			Option("GB", "World", File("8BD501E31921E9601788316DBD3CE9833A97BCBC", 256, "dmg0.bin", "Game Boy Boot Rom (Early J Revision)"), FirmwareOptionStatus.Unacceptable);
 			Option("GB", "World", File("4E68F9DA03C310E84C523654B9026E51F26CE7F0", 256, "mgb.bin", "Game Boy Boot Rom (Pocket)"), FirmwareOptionStatus.Acceptable);
+			FirmwarePatchData gbCommonPatchAt0xFD = new(0xFD, new byte[] { 0xFE }); // 2 pairs, all have either 0x01 or 0xFF at this octet
+			AddPatchAndMaybeReverse(new(
+				"4ED31EC6B0B175BB109C0EB5FD3D193DA823339F",
+				gbCommonPatchAt0xFD,
+				"4E68F9DA03C310E84C523654B9026E51F26CE7F0"));
 
 			// these are only used for supported SGB cores
 			// placed in GB as these are within the Game Boy side rather than the SNES side
@@ -310,6 +326,10 @@ namespace BizHawk.Emulation.Common
 			Option("GB", "SGB", File("AA2F50A77DFB4823DA96BA99309085A3C6278515", 256, "sgb.bin", "Super Game Boy Boot Rom"), FirmwareOptionStatus.Ideal);
 			Firmware("GB", "SGB2", "Super Game Boy 2 Boot Rom");
 			Option("GB", "SGB2", File("93407EA10D2F30AB96A314D8ECA44FE160AEA734", 256, "sgb2.bin", "Super Game Boy 2 Boot Rom"), FirmwareOptionStatus.Ideal);
+			AddPatchAndMaybeReverse(new(
+				"AA2F50A77DFB4823DA96BA99309085A3C6278515",
+				gbCommonPatchAt0xFD,
+				"93407EA10D2F30AB96A314D8ECA44FE160AEA734"));
 
 			Firmware("GBC", "World", "Game Boy Color Boot Rom");
 			Option("GBC", "World", File("1293D68BF9643BC4F36954C1E80E38F39864528D", 2304, "cgb.bin", "Game Boy Color Boot Rom"), FirmwareOptionStatus.Ideal);
@@ -317,6 +337,10 @@ namespace BizHawk.Emulation.Common
 			Firmware("GBC", "AGB", "Game Boy Color Boot Rom (GBA)");
 			Option("GBC", "AGB", File("FA5287E24B0FA533B3B5EF2B28A81245346C1A0F", 2304, "agb.bin", "Game Boy Color Boot Rom (GBA)"), FirmwareOptionStatus.Ideal);
 			Option("GBC", "AGB", File("1ECAFA77AB3172193F3305486A857F443E28EBD9", 2304, "agb_gambatte.bin", "Game Boy Color Boot Rom (GBA, Gambatte RE)"), FirmwareOptionStatus.Bad);
+			AddPatchAndMaybeReverse(new(
+				"1293D68BF9643BC4F36954C1E80E38F39864528D",
+				new FirmwarePatchData(0xF3, new byte[] { 0x03, 0x00, 0xCD, 0x1D, 0xD5, 0xAA, 0x4F, 0x90, 0x74 }),
+				"1ECAFA77AB3172193F3305486A857F443E28EBD9"));
 
 			Firmware("PCFX", "BIOS", "PCFX bios");
 			var pcfxbios = File("1A77FD83E337F906AECAB27A1604DB064CF10074", 1024 * 1024, "PCFX_bios.bin", "PCFX BIOS 1.00");
@@ -335,6 +359,7 @@ namespace BizHawk.Emulation.Common
 			Option("PS2", "BIOS", File("F9229FE159D0353B9F0632F3FDC66819C9030458", 4 * 1024 * 1024, "ps2-0230a-20080220.bin", "PS2 Bios"), FirmwareOptionStatus.Ideal);
 			Option("PS2", "BIOS", File("9915B5BA56798F4027AC1BD8D10ABE0C1C9C326A", 4 * 1024 * 1024, "ps2-0230e-20080220.bin", "PS2 Bios"));
 
+			AllPatches = allPatches;
 			FirmwareFilesByHash = filesByHash;
 			FirmwareOptions = options;
 			FirmwareRecords = records;
