@@ -181,6 +181,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		public abstract byte BizReadBus(IntPtr ctx, uint addr);
 
 		[UnmanagedFunctionPointer(cc)]
+		public delegate void InputCallback();
+		[BizImport(cc, Compatibility = true)]
+		public abstract void BizSetInputCallback(IntPtr ctx, InputCallback cb);
+
+		[UnmanagedFunctionPointer(cc)]
 		public delegate void TraceCallback(string msg);
 		[BizImport(cc, Compatibility = true)]
 		public abstract void BizSetTraceCallback(IntPtr ctx, TraceCallback cb);
