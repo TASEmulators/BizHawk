@@ -313,7 +313,7 @@ Sega Genesis | **Genplus-gx**
 Sega Master System | **SMSHawk**
 Sega Saturn | **Saturnus**
 SNES | **BSNES**, Faust, Snes9x
-Super Game Boy | **BSNES**, **SameBoy**
+Super Game Boy | **BSNES**, **Gambatte**, **SameBoy**
 TI-83 | **TI83Hawk**
 TurboGrafx | HyperNyma, **PCEHawk**, **TurboNyma**
 Uzebox | **Uzem**
