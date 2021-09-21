@@ -1569,10 +1569,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				GBPrefs.DoGBPrefsDialog(this, Config, Game, MovieSession, gb);
 			}
-			else // SameBoy
-			{
-				GenericCoreConfig.DoDialog(this, "Gameboy Settings");
-			}
 		}
 
 		private void GbGpuViewerMenuItem_Click(object sender, EventArgs e)

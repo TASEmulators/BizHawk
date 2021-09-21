@@ -2004,7 +2004,6 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case "GB":
 				case "GBC":
-				case "SGB" when Emulator is Sameboy:
 				case "SGB" when Emulator is Gameboy:
 					GBSubMenu.Visible = true;
 					break;
