@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 	public abstract class LibmGBA
 	{
 		[Flags]
-		public enum Buttons : int
+		public enum Buttons : ushort
 		{
 			A = 1,
 			B = 2,
@@ -179,6 +179,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		[BizImport(cc, Compatibility = true)]
 		public abstract byte BizReadBus(IntPtr ctx, uint addr);
+
+		[UnmanagedFunctionPointer(cc)]
+		public delegate void InputCallback();
+		[BizImport(cc, Compatibility = true)]
+		public abstract void BizSetInputCallback(IntPtr ctx, InputCallback cb);
 
 		[UnmanagedFunctionPointer(cc)]
 		public delegate void TraceCallback(string msg);

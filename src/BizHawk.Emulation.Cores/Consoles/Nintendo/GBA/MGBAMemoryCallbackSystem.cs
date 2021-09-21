@@ -60,7 +60,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			}
 			else
 			{
-				MGBAHawk.ZZHacky.BizSetMemCallback(_mgba.Core, container._cd);
+				MGBAHawk.ZZHacky.BizSetMemCallback(_mgba.Core, container.CallDelegate);
 				container.ID = MGBAHawk.ZZHacky.BizSetWatchpoint(_mgba.Core, callback.Address.Value, container.WatchPointType);
 			}
 
@@ -169,8 +169,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			}
 		}
 
-		public LibmGBA.MemCallback _cd => CallDelegate;
-		public static LibmGBA.MemCallback CallDelegate;
+		public LibmGBA.MemCallback CallDelegate;
 
 		private void Call(uint addr, LibmGBA.mWatchpointType type, uint oldValue, uint newValue)
 		{
