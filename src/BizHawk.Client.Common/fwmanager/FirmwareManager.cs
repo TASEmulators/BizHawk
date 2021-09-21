@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Security.Cryptography;
 using System.IO;
 using System.Linq;
@@ -16,6 +17,27 @@ namespace BizHawk.Client.Common
 	{
 		private static readonly FirmwareID NDS_FIRMWARE = new("NDS", "firmware");
 
+		public static (byte[] Patched, string ActualHash) PerformPatchInMemory(byte[] @base, in FirmwarePatchOption patchOption)
+		{
+			var patched = patchOption.Patches.Aggregate(seed: @base, (a, fpd) => fpd.ApplyToMutating(a));
+			using var sha1 = SHA1.Create();
+			sha1.ComputeHash(patched);
+			return (patched, sha1.Hash.BytesToHexString());
+		}
+
+		public static (string FilePath, int FileSize, FirmwareFile FF) PerformPatchOnDisk(string baseFilename, in FirmwarePatchOption patchOption, PathEntryCollection pathEntries)
+		{
+			var @base = File.ReadAllBytes(baseFilename);
+			var (patched, actualHash) = PerformPatchInMemory(@base, in patchOption);
+			Trace.Assert(actualHash == patchOption.TargetHash);
+			var patchedParentDir = Path.Combine(pathEntries["Global", "Temp Files"].Path, "AutopatchedFirmware");
+			Directory.CreateDirectory(patchedParentDir);
+			var ff = FirmwareDatabase.FirmwareFilesByHash[patchOption.TargetHash];
+			var patchedFilePath = Path.Combine(patchedParentDir, ff.RecommendedName);
+			File.WriteAllBytes(patchedFilePath, patched);
+			return (patchedFilePath, @base.Length, ff); // patches can't change length with the current implementation
+		}
+
 		private readonly IReadOnlyCollection<long> _firmwareSizes;
 
 		private readonly List<FirmwareEventArgs> _recentlyServed = new();
@@ -27,6 +49,27 @@ namespace BizHawk.Client.Common
 		public FirmwareManager()
 		{
 			_firmwareSizes = new HashSet<long>(FirmwareDatabase.FirmwareFiles.Select(ff => ff.Size)); // build a list of expected file sizes, used as a simple filter to speed up scanning
+		}
+
+		private ResolutionInfo? AttemptPatch(FirmwareRecord requested, PathEntryCollection pathEntries, IDictionary<string, string> userSpecifications)
+		{
+			// look for patchsets where 1. they produce a file that fulfils the request, and 2. a matching input file is present in the firmware dir
+			var targetOptionHashes = FirmwareDatabase.FirmwareOptions.Where(fo => fo.ID == requested.ID).Select(fo => fo.Hash).ToList();
+			var presentBaseFiles = _resolutionDictionary.Values.Select(ri => ri.Hash).ToList(); //TODO might want to use files which are known (in the database), but not assigned to any record
+			var patchOption = FirmwareDatabase.AllPatches.FirstOrNull(fpo => targetOptionHashes.Contains(fpo.TargetHash) && presentBaseFiles.Contains(fpo.BaseHash));
+			if (patchOption is null) return null;
+			// found one, proceed with patching the base file
+			var baseFilename = _resolutionDictionary.Values.First(ri => ri.Hash == patchOption.Value.BaseHash).FilePath!;
+			var (patchedFilePath, patchedFileLength, ff) = PerformPatchOnDisk(baseFilename, patchOption.Value, pathEntries);
+			// cache and return this new file's metadata
+			userSpecifications[requested.ID.ConfigKey] = patchedFilePath;
+			return _resolutionDictionary[requested] = new()
+			{
+				FilePath = patchedFilePath,
+				KnownFirmwareFile = ff,
+				Hash = patchOption.Value.TargetHash,
+				Size = patchedFileLength
+			};
 		}
 
 		/// <remarks>
@@ -48,10 +91,9 @@ namespace BizHawk.Client.Common
 		// Requests the specified firmware. tries really hard to scan and resolve as necessary
 		public string? Request(PathEntryCollection pathEntries, IDictionary<string, string> userSpecifications, FirmwareID id)
 		{
-			var resolved = Resolve(
-				pathEntries,
-				userSpecifications,
-				FirmwareDatabase.FirmwareRecords.First(fr => fr.ID == id));
+			var requestedRecord = FirmwareDatabase.FirmwareRecords.First(fr => fr.ID == id);
+			var resolved = Resolve(pathEntries, userSpecifications, requestedRecord)
+				?? AttemptPatch(requestedRecord, pathEntries, userSpecifications);
 			if (resolved == null) return null;
 			RecentlyServed.Add(new(id, resolved.Hash, resolved.Size));
 			return resolved.FilePath;
