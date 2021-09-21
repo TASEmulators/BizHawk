@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		public bool IsLagFrame { get; set; }
 		private void InputCb()
 		{
-			// most things are already handled in the core, this is just for event.oninputpoll()
+			// most things are already handled in the core, this is just for event.oninputpoll
 			InputCallbacks.Call();
 		}
 		private InputCallbackSystem _inputCallbacks = new InputCallbackSystem();

@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 	public abstract class LibmGBA
 	{
 		[Flags]
-		public enum Buttons : ushort
+		public enum Buttons : int
 		{
 			A = 1,
 			B = 2,
