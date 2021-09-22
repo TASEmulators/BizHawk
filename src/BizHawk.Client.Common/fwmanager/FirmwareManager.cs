@@ -38,18 +38,14 @@ namespace BizHawk.Client.Common
 			return (patchedFilePath, @base.Length, ff); // patches can't change length with the current implementation
 		}
 
-		private readonly IReadOnlyCollection<long> _firmwareSizes;
+		/// <summary>a list of expected file sizes, used as a simple filter to speed up scanning</summary>
+		private readonly HashSet<long> _firmwareSizes = new(FirmwareDatabase.FirmwareFiles.Select(ff => ff.Size));
 
 		private readonly List<FirmwareEventArgs> _recentlyServed = new();
 
 		private readonly Dictionary<FirmwareRecord, ResolutionInfo> _resolutionDictionary = new();
 
 		public ICollection<FirmwareEventArgs> RecentlyServed => _recentlyServed;
-
-		public FirmwareManager()
-		{
-			_firmwareSizes = new HashSet<long>(FirmwareDatabase.FirmwareFiles.Select(ff => ff.Size)); // build a list of expected file sizes, used as a simple filter to speed up scanning
-		}
 
 		private ResolutionInfo? AttemptPatch(FirmwareRecord requested, PathEntryCollection pathEntries, IDictionary<string, string> userSpecifications)
 		{
@@ -134,7 +130,7 @@ namespace BizHawk.Client.Common
 				if (!fi.Exists) return false;
 
 				// weed out filesizes first to reduce the unnecessary overhead of a hashing operation
-				if (FirmwareDatabase.FirmwareFiles.All(a => a.Size != fi.Length)) return false;
+				if (!_firmwareSizes.Contains(fi.Length)) return false;
 
 				// check the hash
 				using var reader = new RealFirmwareReader();
