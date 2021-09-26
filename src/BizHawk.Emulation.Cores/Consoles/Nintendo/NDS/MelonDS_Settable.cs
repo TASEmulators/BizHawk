@@ -10,24 +10,23 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 {
 	unsafe partial class MelonDS : ISettable<MelonDS.MelonSettings, MelonDS.MelonSyncSettings>
 	{
-		private MelonSettings _settings = new MelonSettings();
+		private MelonSettings _settings;
+		private MelonSyncSettings _syncSettings;
 
 		public MelonSettings GetSettings() => _settings.Clone();
 
 		public MelonSyncSettings GetSyncSettings()
 		{
-			var ret = new MelonSyncSettings();
-			fixed (byte* ptr = ret.UserSettings)
+			fixed (byte* ptr = _syncSettings.UserSettings)
 			{
 				if (!GetUserSettings(ptr))
 				{
-					return null;
+					return _syncSettings;
 				}
 			}
 
-			ret.BootToFirmware = !GetDirectBoot();
-			ret.TimeAtBoot = GetTimeAtBoot();
-			return ret;
+			_syncSettings.TimeAtBoot = GetTimeAtBoot();
+			return _syncSettings;
 		}
 
 		public PutSettingsDirtyBits PutSettings(MelonSettings o)
@@ -58,39 +57,30 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 					SetUserSettings(ptr);
 			}
 
-			SetDirectBoot(!o.BootToFirmware);
 			SetTimeAtBoot(o.TimeAtBoot);
 
 			// At present, no sync settings can be modified without requiring a reboot.
 			return PutSettingsDirtyBits.RebootCore;
 		}
 
-		[DllImport(dllPath)]
+		[DllImport(dllPath, EntryPoint = "melonds_getusersettings")]
 		private static extern bool GetUserSettings(byte* dst);
 
-		[DllImport(dllPath)]
+		[DllImport(dllPath, EntryPoint = "melonds_getusersettingslength")]
 		private static extern int GetUserSettingsLength();
 
 		private static readonly int UserSettingsLength = GetUserSettingsLength();
 
-		[DllImport(dllPath)]
+		[DllImport(dllPath, EntryPoint = "melonds_setusersettings")]
 		private static extern void SetUserSettings(byte* src);
 
-		[DllImport(dllPath)]
-		private static extern bool GetDirectBoot();
-
-		[DllImport(dllPath)]
-		private static extern void SetDirectBoot(bool value);
-
-		[DllImport(dllPath)]
+		[DllImport(dllPath, EntryPoint = "melonds_settimeatboot")]
 		private static extern void SetTimeAtBoot(uint value);
 
-		[DllImport(dllPath)]
+		[DllImport(dllPath, EntryPoint = "melonds_gettimeatboot")]
 		private static extern uint GetTimeAtBoot();
 
-		[DllImport(dllPath)]
-		private static extern uint GetScaleFactor();
-		[DllImport(dllPath)]
+		[DllImport(dllPath, EntryPoint = "melonds_setscalefactor")]
 		private static extern void SetScaleFactor(uint value);
 
 		public enum ScreenLayoutKind
@@ -131,7 +121,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 			public MelonSyncSettings Clone() => (MelonSyncSettings)MemberwiseClone();
 
-			public bool BootToFirmware { get; set; }
+			public bool UseRealBIOS { get; set; } = false;
+			public bool BootToFirmware { get; set; } = false;
 			public uint TimeAtBoot { get; set; } = 946684800; // 2000-01-01 00:00:00 (earliest date possible on a DS)
 
 			[JsonProperty]

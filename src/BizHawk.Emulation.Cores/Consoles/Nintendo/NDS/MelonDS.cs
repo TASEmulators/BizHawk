@@ -4,6 +4,7 @@ using System.IO;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Properties;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 {
@@ -36,6 +37,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		public bool FrameAdvance(IController controller, bool render, bool renderSound = true)
 		{
+			if (controller.IsPressed("Power"))
+			{
+				Reset();
+			}
 			int buttons = (controller.IsPressed("A") ? 1 : 0) | (controller.IsPressed("B") ? 2 : 0)
 				| (controller.IsPressed("Select") ? 4 : 0) | (controller.IsPressed("Start") ? 8 : 0)
 				| (controller.IsPressed("Right") ? 0x10 : 0) | (controller.IsPressed("Left") ? 0x20 : 0)
@@ -43,8 +48,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				| (controller.IsPressed("R") ? 0x100 : 0) | (controller.IsPressed("L") ? 0x200 : 0)
 				| (controller.IsPressed("X") ? 0x400 : 0) | (controller.IsPressed("Y") ? 0x800 : 0)
 				| (controller.IsPressed("Touch") ? 0x2000 : 0)
-				| (controller.IsPressed("LidOpen") ? 0x4000 : 0) | (controller.IsPressed("LidClose") ? 0x8000 : 0)
-				| (controller.IsPressed("Power") ? 0x10000 : 0);
+				| (controller.IsPressed("LidOpen") ? 0x4000 : 0) | (controller.IsPressed("LidClose") ? 0x8000 : 0);
 			FrameAdvance((uint)buttons, (byte)controller.AxisValue("TouchX"), (byte)controller.AxisValue("TouchY"));
 			_getNewBuffer = true;
 			return true;
@@ -59,22 +63,23 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		//const string dllPath = "../../MelonDS/build/libmelonDS.dll";
 		private const string dllPath = "dll/libmelonDS.dll";
 
-		[DllImport(dllPath)]
-		private static extern bool Init();
-		[DllImport(dllPath)]
+		[DllImport(dllPath, EntryPoint = "melonds_create")]
+		private static extern bool Init(int consoletype, byte* dsromfiledata, int dsromfilelength, bool directboot);
+		[DllImport(dllPath, EntryPoint = "melonds_destroy")]
 		private static extern void Deinit();
+		[DllImport(dllPath, EntryPoint = "melonds_loaddsbios")]
+		private static extern bool LoadDsBIOS(byte[] arm7biosdata, int arm7bioslength, byte[] arm9biosdata, int arm9bioslength);
+		[DllImport(dllPath, EntryPoint = "melonds_reset")]
+		private static extern void Reset();
 
-		[DllImport(dllPath)]
-		private static extern void LoadROM(byte* file, int fileSize);
-
-		[DllImport(dllPath, EntryPoint = "ResetCounters")]
+		[DllImport(dllPath, EntryPoint = "melonds_resetcounters")]
 		private static extern void _ResetCounters();
-		[DllImport(dllPath)]
+		[DllImport(dllPath, EntryPoint = "melonds_getframecount")]
 		private static extern int GetFrameCount();
-		[DllImport(dllPath)]
+		[DllImport(dllPath, EntryPoint = "melonds_setframecount")]
 		private static extern void SetFrameCount(uint count);
 
-		[DllImport(dllPath)]
+		[DllImport(dllPath, EntryPoint = "melonds_frameadvance")]
 		private static extern void FrameAdvance(uint buttons, byte touchX, byte touchY);
 
 		[CoreConstructor("NDS")]
@@ -107,17 +112,34 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 			SetUpFiles();
 
-			PutSettings(settings as MelonSettings);
-			PutSyncSettings(syncSettings as MelonSyncSettings);
+			_settings = settings ?? new MelonSettings();
+			_syncSettings = syncSettings ?? new MelonSyncSettings();
 
-			if (!Init())
-				throw new Exception("Failed to init NDS.");
-			InitMemoryDomains();
+			byte[] arm7;
+			byte[] arm9;
+			if (!_syncSettings.UseRealBIOS)
+			{
+				arm7 = CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "bios7"), "Cannot find real arm7 bios, change sync settings to boot without real bios");
+				arm9 = CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "bios9"), "Cannot find real arm9 bios, change sync settings to boot without real bios");
+			}
+			else
+			{
+				arm7 = Util.DecompressGzipFile(new MemoryStream(Resources.DRASTIC_BIOS_ARM7.Value));
+				arm9 = Util.DecompressGzipFile(new MemoryStream(Resources.DRASTIC_BIOS_ARM9.Value));
+			}
+			LoadDsBIOS(arm7, arm7.Length, arm9, arm9.Length);
+
+			PutSettings(_settings);
+			PutSyncSettings(_syncSettings);
 
 			fixed (byte* f = file)
 			{
-				LoadROM(f, file.Length);
+				if (!Init(0, f, file.Length, !_syncSettings.BootToFirmware))
+				{
+					throw new Exception("Failed to init NDS.");
+				}
 			}
+			InitMemoryDomains();
 		}
 
 		/// <summary>
@@ -130,23 +152,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 			byte[] fwBytes;
 			bool missingAny = false;
-			fwBytes = CoreComm.CoreFileProvider.GetFirmware(new("NDS", "bios7"));
-			if (fwBytes != null)
-				File.WriteAllBytes("melon/bios7.bin", fwBytes);
-			else
-			{
-				File.Delete("melon/bios7.bin");
-				missingAny = true;
-			}
-
-			fwBytes = CoreComm.CoreFileProvider.GetFirmware(new("NDS", "bios9"));
-			if (fwBytes != null)
-				File.WriteAllBytes("melon/bios9.bin", fwBytes);
-			else
-			{
-				File.Delete("melon/bios9.bin");
-				missingAny = true;
-			}
 
 			fwBytes = CoreComm.CoreFileProvider.GetFirmware(new("NDS", "firmware"));
 			if (fwBytes != null)

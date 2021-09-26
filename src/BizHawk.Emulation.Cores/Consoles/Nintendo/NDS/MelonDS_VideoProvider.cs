@@ -18,9 +18,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		public int BackgroundColor => 0;
 
-		[DllImport(dllPath)]
+		[DllImport(dllPath, EntryPoint = "melonds_gettopscreenbuffer")]
 		private static extern int* GetTopScreenBuffer();
-		[DllImport(dllPath)]
+		[DllImport(dllPath, EntryPoint = "melonds_getbottomscreenbuffer")]
 		private static extern int* GetBottomScreenBuffer();
 
 		// BizHawk needs to be able to modify the buffer when loading savestates.

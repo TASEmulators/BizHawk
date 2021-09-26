@@ -12,28 +12,22 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		{
 			int length = GetSRAMLength();
 			byte[] data = new byte[length];
-			fixed (byte* dst = data)
-			{
-				GetSRAM(dst, length);
-			}
+			GetSRAM(data, length);
 			return data;
 		}
 
 		public void StoreSaveRam(byte[] data)
 		{
-			fixed (byte* src = data)
-			{
-				SetSRAM(src, data.Length);
-			}
+			SetSRAM(data, data.Length);
 		}
 
-		[DllImport(dllPath)]
+		[DllImport(dllPath, EntryPoint = "melonds_getsramlength")]
 		private static extern int GetSRAMLength();
-		[DllImport(dllPath)]
+		[DllImport(dllPath, EntryPoint = "melonds_getsramdirtyflag")]
 		private static extern bool IsSRAMModified();
-		[DllImport(dllPath)]
-		private static extern void GetSRAM(byte* dst, int length);
-		[DllImport(dllPath)]
-		private static extern void SetSRAM(byte* src, int length);
+		[DllImport(dllPath, EntryPoint = "melonds_exportsram")]
+		private static extern void GetSRAM(byte[] dst, int length);
+		[DllImport(dllPath, EntryPoint = "melonds_importsram")]
+		private static extern void SetSRAM(byte[] src, int length);
 	}
 }

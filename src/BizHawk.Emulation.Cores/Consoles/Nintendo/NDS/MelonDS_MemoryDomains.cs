@@ -31,9 +31,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		public MemoryDomain MainMemory { get; private set; }
 
-		[DllImport(dllPath)]
+		[DllImport(dllPath, EntryPoint = "melonds_getmainmemory")]
 		private static extern byte* GetMainMemory();
-		[DllImport(dllPath)]
+		[DllImport(dllPath, EntryPoint = "melonds_getmainmemorysize")]
 		private static extern int GetMainMemorySize();
 
 		// NDS has two CPUs, with different memory mappings.
@@ -41,17 +41,17 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		public MemoryDomain SystemBus { get; private set; }
 		private class MelonSystemBus : MemoryDomain
 		{
-			[DllImport(dllPath)]
+			[DllImport(dllPath, EntryPoint = "melonds_arm9read8")]
 			private static extern byte ARM9Read8(uint addr);
-			[DllImport(dllPath)]
+			[DllImport(dllPath, EntryPoint = "melonds_arm9write8")]
 			private static extern void ARM9Write8(uint addr, byte value);
-			[DllImport(dllPath)]
+			[DllImport(dllPath, EntryPoint = "melonds_arm9read16")]
 			private static extern ushort ARM9Read16(uint addr);
-			[DllImport(dllPath)]
+			[DllImport(dllPath, EntryPoint = "melonds_arm9write16")]
 			private static extern void ARM9Write16(uint addr, ushort value);
-			[DllImport(dllPath)]
+			[DllImport(dllPath, EntryPoint = "melonds_arm9read32")]
 			private static extern uint ARM9Read32(uint addr);
-			[DllImport(dllPath)]
+			[DllImport(dllPath, EntryPoint = "melonds_arm9write32")]
 			private static extern void ARM9Write32(uint addr, uint value);
 
 			public MelonSystemBus()

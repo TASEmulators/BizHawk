@@ -21,15 +21,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		public IInputCallbackSystem InputCallbacks => throw new NotImplementedException();
 
-		[DllImport(dllPath, EntryPoint = "IsLagFrame")]
+		[DllImport(dllPath, EntryPoint = "melonds_getlagframeflag")]
 		private static extern bool _IsLagFrame();
 
-		[DllImport(dllPath)]
+		[DllImport(dllPath, EntryPoint = "melonds_getlagframecount")]
 		private static extern int GetLagFrameCount();
 
-		[DllImport(dllPath)]
+		[DllImport(dllPath, EntryPoint = "melonds_setlagframeflag")]
 		private static extern void SetIsLagFrame(bool isLag);
-		[DllImport(dllPath)]
+		[DllImport(dllPath, EntryPoint = "melonds_setlagframecount")]
 		private static extern void SetLagFrameCount(uint count);
 
 	}

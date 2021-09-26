@@ -43,13 +43,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			writer.Write(_stateBuffer, 0, len);
 		}
 
-		[DllImport(dllPath)]
+		[DllImport(dllPath, EntryPoint = "melonds_usesavestate")]
 		private static extern bool UseSavestate(byte* data, int len);
 
-		[DllImport(dllPath)]
+		[DllImport(dllPath, EntryPoint = "melonds_getsavestatesize")]
 		private static extern int GetSavestateSize();
 
-		[DllImport(dllPath)]
+		[DllImport(dllPath, EntryPoint = "melonds_getsavestatedata")]
 		private static extern void GetSavestateData(byte* data, int size);
 	}
 }

@@ -17,8 +17,7 @@
 	branch = bizhawk-0.9
 [submodule "melonds"]
 	path = melonds
-	url = https://github.com/TASVideos/melonDS.git
-	branch = SuuperW_DSHawk
+	url = https://github.com/CasualPokePlayer/melonDS.git
 [submodule "waterbox/musl"]
 	path = waterbox/musl
 	url = https://github.com/nattthebear/musl.git

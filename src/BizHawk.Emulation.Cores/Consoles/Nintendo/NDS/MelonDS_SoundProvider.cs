@@ -42,11 +42,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				throw new InvalidOperationException();
 		}
 
-		[DllImport(dllPath)]
+		[DllImport(dllPath, EntryPoint = "melonds_getsamplecount")]
 		private static extern int GetSampleCount();
-		[DllImport(dllPath)]
+		[DllImport(dllPath, EntryPoint = "melonds_getsamples")]
 		private static extern void GetSamples(short* data, int count);
-		[DllImport(dllPath, EntryPoint = "DiscardSamples")]
+		[DllImport(dllPath, EntryPoint = "melonds_discardsamples")]
 		private static extern void _DiscardSamples();
 	}
 }
