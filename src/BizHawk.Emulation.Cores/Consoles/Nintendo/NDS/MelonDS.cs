@@ -60,8 +60,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		}
 
 		// debug path/build for easier testing
-		const string dllPath = "../melonds/build/libcore.dll";
-		//private const string dllPath = "dll/libmelonDS.dll";
+		//const string dllPath = "../melonds/build/libcore.dll";
+		private const string dllPath = "dll/libmelonds.dll";
 
 		[DllImport(dllPath, EntryPoint = "melonds_create")]
 		private static extern bool Init(int consoletype, bool directboot);
