@@ -121,8 +121,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 			public MelonSyncSettings Clone() => (MelonSyncSettings)MemberwiseClone();
 
-			public bool UseRealBIOS { get; set; } = false;
+			public bool UseDSi { get; set; } = false;
+			public bool UseRealDSBIOS { get; set; } = true;
 			public bool BootToFirmware { get; set; } = false;
+			public bool UseDLDI { get; set; } = false;
 			public uint TimeAtBoot { get; set; } = 946684800; // 2000-01-01 00:00:00 (earliest date possible on a DS)
 
 			[JsonProperty]

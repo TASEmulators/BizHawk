@@ -43,6 +43,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		{
 			var top = GetTopScreenBuffer();
 			var bottom = GetBottomScreenBuffer();
+			if (top == null || bottom == null)
+				return;
 
 			for (var i = 0; i < SingleScreenLength; i++)
 			{

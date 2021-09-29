@@ -18,6 +18,7 @@
 [submodule "melonds"]
 	path = melonds
 	url = https://github.com/CasualPokePlayer/melonDS.git
+	branch = melonbiz
 [submodule "waterbox/musl"]
 	path = waterbox/musl
 	url = https://github.com/nattthebear/musl.git
