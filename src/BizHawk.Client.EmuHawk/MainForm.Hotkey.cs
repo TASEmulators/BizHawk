@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Linq;
-
-using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.NDS;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
@@ -351,7 +349,7 @@ namespace BizHawk.Client.EmuHawk
 					Tools.Load<TAStudio>();
 					break;
 				case "ToolBox":
-					if (!OSTailoredCode.IsUnixHost) Tools.Load<ToolBox>();
+					Tools.Load<ToolBox>();
 					break;
 				case "Virtual Pad":
 					Tools.Load<VirtualpadTool>();
