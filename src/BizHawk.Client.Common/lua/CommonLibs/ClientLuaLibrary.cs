@@ -166,7 +166,12 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("client.openrom( \"C:\\\" );")]
 		[LuaMethod("openrom", "opens the Open ROM dialog")]
-		public void OpenRom(string path) => APIs.EmuClient.OpenRom(path);
+		public void OpenRom(string path)
+		{
+			_luaLibsImpl.IsRebootingCore = true;
+			APIs.EmuClient.OpenRom(path);
+			_luaLibsImpl.IsRebootingCore = false;
+		}
 
 		[LuaMethodExample("client.opentasstudio( );")]
 		[LuaMethod("opentasstudio", "opens the TAStudio dialog")]
