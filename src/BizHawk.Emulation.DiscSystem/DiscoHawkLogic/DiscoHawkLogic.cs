@@ -243,6 +243,22 @@ namespace BizHawk.Emulation.DiscSystem
 			return ret;
 		}
 
+		public static bool HawkAndWriteFile(string inputPath, Action<string> errorCallback, DiscInterface discInterface = DiscInterface.BizHawk)
+		{
+			DiscMountJob job = new(inputPath, discInterface);
+			job.Run();
+			var disc = job.OUT_Disc;
+			if (job.OUT_ErrorLevel)
+			{
+				errorCallback(job.OUT_Log);
+				return false;
+			}
+			var baseName = Path.GetFileNameWithoutExtension(inputPath);
+			var outfile = Path.Combine(Path.GetDirectoryName(inputPath), $"{baseName}_hawked.ccd");
+			CCD_Format.Dump(disc, outfile);
+			return true;
+		}
+
 		public static void RunWithArgs(string[] args, Action<string> showComparisonResultsCallback)
 		{
 			bool scanCues = false;
@@ -273,14 +289,11 @@ namespace BizHawk.Emulation.DiscSystem
 
 			if (hawk)
 			{
-				if (infile == null)
-				{
-					return;
-				}
-
-				// TODO - write it out
-				var dmj = new DiscMountJob(fromPath: infile, discInterface: loadDiscInterface);
-				dmj.Run();
+				if (infile == null) return;
+				HawkAndWriteFile(
+					inputPath: infile,
+					errorCallback: err => Console.WriteLine($"failed to convert {infile}:\n{err}"),
+					discInterface: loadDiscInterface);
 			}
 
 			bool verbose = true;
