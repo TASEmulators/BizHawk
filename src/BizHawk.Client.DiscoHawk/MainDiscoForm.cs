@@ -35,25 +35,27 @@ namespace BizHawk.Client.DiscoHawk
 
 		private void lblMagicDragArea_DragDrop(object sender, DragEventArgs e)
 		{
-			List<string> files = ValidateDrop(e.Data);
-			if (files.Count == 0) return;
+			lblMagicDragArea.AllowDrop = false;
+			Cursor = Cursors.WaitCursor;
 			try
 			{
-				Cursor = Cursors.WaitCursor;
-				foreach (var file in files)
+				foreach (var file in ValidateDrop(e.Data))
 				{
 					var success = DiscoHawkLogic.HawkAndWriteFile(
 						inputPath: file,
 						errorCallback: err => MessageBox.Show(err, "Error loading disc"));
 					if (!success) break;
 				}
-
-				Cursor = Cursors.Default;
 			}
 			catch (Exception ex)
 			{
 				MessageBox.Show(ex.ToString(), "Error loading disc");
 				throw;
+			}
+			finally
+			{
+				lblMagicDragArea.AllowDrop = true;
+				Cursor = Cursors.Default;
 			}
 		}
 
