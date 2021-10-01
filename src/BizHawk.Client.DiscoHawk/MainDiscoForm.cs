@@ -42,19 +42,10 @@ namespace BizHawk.Client.DiscoHawk
 				Cursor = Cursors.WaitCursor;
 				foreach (var file in files)
 				{
-					var job = new DiscMountJob(fromPath: file);
-					job.Run();
-					var disc = job.OUT_Disc;
-					if (job.OUT_ErrorLevel)
-					{
-						MessageBox.Show(job.OUT_Log, "Error loading disc");
-						break;
-					}
-
-					string baseName = Path.GetFileNameWithoutExtension(file);
-					baseName += "_hawked";
-					string outfile = $"{Path.Combine(Path.GetDirectoryName(file), baseName)}.ccd";
-					CCD_Format.Dump(disc, outfile);
+					var success = DiscoHawkLogic.HawkAndWriteFile(
+						inputPath: file,
+						errorCallback: err => MessageBox.Show(err, "Error loading disc"));
+					if (!success) break;
 				}
 
 				Cursor = Cursors.Default;
