@@ -74,11 +74,7 @@ namespace BizHawk.Client.EmuHawk
 		private void LoadLuaFile(string filename, string archive = null)
 		{
 			OpenLuaConsole();
-			if (Tools.Has<LuaConsole>())
-			{
-				if (OSTailoredCode.IsUnixHost) Console.WriteLine($"The Lua environment can currently only be created on Windows, {filename} will not be loaded.");
-				else Tools.LuaConsole.LoadLuaFile(filename);
-			}
+			if (Tools.Has<LuaConsole>()) Tools.LuaConsole.LoadLuaFile(filename);
 		}
 
 		private void LoadLuaSession(string filename, string archive = null)
