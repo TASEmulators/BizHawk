@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>CFBundleExecutable</key>
+    <string>melonDS</string>
+    <key>CFBundleIconFile</key>
+    <string>melon.icns</string>
+    <key>CFBundleIdentifier</key>
+    <string>net.kuribo64.melonDS</string>
+    <key>CFBundleDevelopmentRegion</key>
+    <string>English</string>
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+    <key>CFBundleVersion</key>
+    <string>${MELONDS_VERSION}</string>
+    <key>CFBundleShortVersionString</key>
+    <string>${MELONDS_VERSION}</string> 
+    <key>NSHumanReadableCopyright</key>
+    <string>Licensed under GPLv3</string>
+    <key>NSHighResolutionCapable</key>
+    <true/>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>We need microphone access so you can use the emulated DS microphone</string>
+    <key>CFBundleDocumentTypes</key>
+    <array>
+        <dict>
+            <key>CFBundleTypeExtensions</key>
+            <array>
+                <string>nds</string>
+                <string>srl</string>
+            </array>
+            <key>CFBundleTypeRole</key>
+            <string>Viewer</string>
+        </dict>
+    </array>
+</dict>
+</plist>

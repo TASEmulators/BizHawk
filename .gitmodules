@@ -19,6 +19,10 @@
 	path = melonds
 	url = https://github.com/CasualPokePlayer/melonDS.git
 	branch = melonbiz
+[submodule "waterbox/melonds"]
+	path = waterbox/melonds
+	url = https://github.com/CasualPokePlayer/melonDS
+	branch = watermelonbiz
 [submodule "waterbox/musl"]
 	path = waterbox/musl
 	url = https://github.com/nattthebear/musl.git
