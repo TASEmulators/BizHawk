@@ -32,7 +32,7 @@ namespace BizHawk.Common
 			}
 		}
 
-		public static int Calculate(ReadOnlySpan<byte> data)
+		public static uint Calculate(ReadOnlySpan<byte> data)
 		{
 			uint result = 0xFFFFFFFF;
 			foreach (var b in data)
@@ -40,7 +40,7 @@ namespace BizHawk.Common
 				result = (result >> 8) ^ Crc32Table[b ^ (result & 0xFF)];
 			}
 
-			return (int)~result;
+			return ~result;
 		}
 	}
 }

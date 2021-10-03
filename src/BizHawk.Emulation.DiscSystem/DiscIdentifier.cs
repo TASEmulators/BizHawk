@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using BizHawk.Common;
+
 using ISOParser;
 
 //disc type identification logic
@@ -301,7 +303,7 @@ namespace BizHawk.Emulation.DiscSystem
 				return false;
 
 			byte[] sector20 = ReadDataSectorCached(20);
-			uint zecrc = (uint)BizHawk.Common.CRC32.Calculate(sector20);
+			var zecrc = CRC32.Calculate(sector20);
 
 			//known_crcs
 			if (zecrc == 0xd7b47c06) return true; // AV Tanjou

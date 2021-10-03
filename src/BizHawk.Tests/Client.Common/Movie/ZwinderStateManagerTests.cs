@@ -565,7 +565,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 						throw new Exception("Length field corrupted");
 					var bytes = buff.AsSpan(0, length - 8);
 					br.Read(bytes);
-					if (br.ReadInt32() != CRC32.Calculate(bytes))
+					if (br.ReadUInt32() != CRC32.Calculate(bytes))
 						throw new Exception("Data or CRC field corrupted");
 				}
 			}

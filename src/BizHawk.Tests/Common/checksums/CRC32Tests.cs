@@ -31,7 +31,7 @@ namespace BizHawk.Tests.Common.checksums
 			}
 
 			var data = InitialiseArray();
-			Assert.AreEqual(EXPECTED, (uint) CRC32.Calculate(data));
+			Assert.AreEqual(EXPECTED, CRC32.Calculate(data));
 
 			data = InitialiseArray();
 			DiscHasher.SpecialCRC32 crc32 = new();
