@@ -2004,14 +2004,16 @@ namespace BizHawk.Client.EmuHawk
 				case "SNES" when Emulator is LibsnesCore { IsSGB: true }: // doesn't use "SGB" sysID
 					SNESSubMenu.Text = "&SGB";
 					SNESSubMenu.Visible = true;
+					SnesGfxDebuggerMenuItem.Visible = true;
 					break;
 				case "SNES" when Emulator is LibsnesCore { IsSGB: false }:
 					SNESSubMenu.Text = "&SNES";
 					SNESSubMenu.Visible = true;
+					SnesGfxDebuggerMenuItem.Visible = true;
 					break;
 				case "SNES" when Emulator is BsnesCore bsnesCore:
 					SNESSubMenu.Text = bsnesCore.IsSGB ?  "&SGB" : "&SNES";
-					SNESSubMenu.DropDownItems[2].Visible = false;
+					SnesGfxDebuggerMenuItem.Visible = false;
 					SNESSubMenu.Visible = true;
 					break;
 				default:
