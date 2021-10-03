@@ -216,7 +216,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				small_flag = true;
 
 				// additionally, PAL Karateka  has bank 6 (actually 2) at 0x4000
-				if (rom.HashMD5()=="5E0A1E832BBCEA6FACB832FDE23A440A")
+				if (hash_md5 == "md5:5E0A1E832BBCEA6FACB832FDE23A440A")
 				{
 					PAL_Kara = true;
 				}

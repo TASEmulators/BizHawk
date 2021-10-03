@@ -52,12 +52,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			/*var Bios =*/ _bios = comm.CoreFileProvider.GetFirmwareOrThrow(new("VEC", "Bios"), "BIOS Not Found, Cannot Load");
 			/*var Mine =*/ minestorm = comm.CoreFileProvider.GetFirmwareOrThrow(new("VEC", "Minestorm"), "Minestorm Not Found, Cannot Load");
 
-			Console.WriteLine("SHA1:" + rom.HashSHA1(0, rom.Length));
+			var romHashSHA1 = rom.HashSHA1();
+			Console.WriteLine($"SHA1:{romHashSHA1}");
 
 			_rom = rom;
 
 			// If the game is minstorm, then no cartridge is inserted, retun 0xFF
-			if (rom.HashSHA1(0, rom.Length) == "65D07426B520DDD3115D40F255511E0FD2E20AE7")
+			if (romHashSHA1 == "65D07426B520DDD3115D40F255511E0FD2E20AE7")
 			{
 				_rom  = new byte[0x8000];
 
