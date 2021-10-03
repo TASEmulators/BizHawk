@@ -73,51 +73,51 @@ namespace BizHawk.Common
 			}
 
 			ProcessStartInfo oInfo = new ProcessStartInfo(FFmpegPath, sbCmdline.ToString())
-				{
-					UseShellExecute = false,
-					CreateNoWindow = true,
-					RedirectStandardOutput = true,
-					RedirectStandardError = true
-				};
-
-		string result = "";
-
-		//probably naturally thread-safe...
-		//make a lock if not
-		Action<StreamReader,bool> readerloop = (reader,ignore) =>
-		{
-			string line = "";
-			int idx = 0;
-			for (; ; )
 			{
-				int c = reader.Read();
-				if (c == -1) 
-					break;
-				else if (c == '\r')
-					idx = 0;
-				else if (c == '\n')
-				{
-					if(!ignore)
-						lock(oInfo)
-							result += line + "\n";
-					line = "";
-					idx = 0;
-				}
-				else
-				{
-					if (idx < line.Length)
-						line = line.Substring(0, idx) + (char)c + line.Substring(idx + 1);
-					else
-						line += (char)c;
-					idx++;
-				}
-			}
+				UseShellExecute = false,
+				CreateNoWindow = true,
+				RedirectStandardOutput = true,
+				RedirectStandardError = true
+			};
 
-			if(!ignore)
-				if(line != "")
-					lock(oInfo)
-						result += line + "\n"; //not sure about the final \n but i concat it after each finished line so why not.. whatever
-		};
+			string result = "";
+
+			//probably naturally thread-safe...
+			//make a lock if not
+			Action<StreamReader,bool> readerloop = (reader,ignore) =>
+			{
+				string line = "";
+				int idx = 0;
+				for (; ; )
+				{
+					int c = reader.Read();
+					if (c == -1)
+						break;
+					else if (c == '\r')
+						idx = 0;
+					else if (c == '\n')
+					{
+						if(!ignore)
+							lock(oInfo)
+								result += line + "\n";
+						line = "";
+						idx = 0;
+					}
+					else
+					{
+						if (idx < line.Length)
+							line = line.Substring(0, idx) + (char)c + line.Substring(idx + 1);
+						else
+							line += (char)c;
+						idx++;
+					}
+				}
+
+				if(!ignore)
+					if(line != "")
+						lock(oInfo)
+							result += line + "\n"; //not sure about the final \n but i concat it after each finished line so why not.. whatever
+			};
 
 			Process proc = Process.Start(oInfo);
 
