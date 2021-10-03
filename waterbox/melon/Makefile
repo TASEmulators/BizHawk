@@ -6,7 +6,7 @@ CXXFLAGS := -I./src -I./src/teakra/include -I.src/teakra/src \
 	-pedantic -pedantic-errors \
 	-std=c++17 -flto -fPIC \
 
-TARGET = melonds.wbx
+TARGET = melonDS.wbx
 
 CORE_SRCS = \
 	ARCodeFile.cpp \
@@ -16,8 +16,6 @@ CORE_SRCS = \
 	ARMInterpreter_ALU.cpp \
 	ARMInterpreter_Branch.cpp \
 	ARMInterpreter_LoadStore.cpp \
-	BizInterface.cpp \
-	BizPlatform.cpp \
 	Config.cpp \
 	CP15.cpp \
 	CRC32.cpp \
@@ -76,9 +74,11 @@ MISC_SRCS = \
 	xxhash/xxhash.c
 
 SRCS = \
-	$(addprefix melonds/src/,$(CORE_SRCS)) \
-	$(addprefix melonds/src/teakra/src/,$(TEAKRA_SRCS)) \
-	$(addprefix melonds/src/fatfs/,$(FATFS_SRCS)) \
-	$(addprefix melonds/src/,$(MISC_SRCS))
+	$(addprefix melonDS/src/,$(CORE_SRCS)) \
+	$(addprefix melonDS/src/teakra/src/,$(TEAKRA_SRCS)) \
+	$(addprefix melonDS/src/fatfs/,$(FATFS_SRCS)) \
+	$(addprefix melonDS/src/,$(MISC_SRCS)) \
+    BizInterface.cpp \
+	BizPlatform.cpp
 
 include ../common.mak
