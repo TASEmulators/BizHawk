@@ -35,15 +35,17 @@ namespace BizHawk.Emulation.DiscSystem
 			};
 
 			//hash the TOC
-			crc.Add((int)disc.TOC.Session1Format);
-			crc.Add(disc.TOC.FirstRecordedTrackNumber);
-			crc.Add(disc.TOC.LastRecordedTrackNumber);
+			static void AddAsBytesTo(SpecialCRC32 crc32, int i)
+				=> crc32.Add(BitConverter.GetBytes(i), 0, 4);
+			AddAsBytesTo(crc, (int)disc.TOC.Session1Format);
+			AddAsBytesTo(crc, disc.TOC.FirstRecordedTrackNumber);
+			AddAsBytesTo(crc, disc.TOC.LastRecordedTrackNumber);
 			for (int i = 1; i <= 100; i++)
 			{
 				//if (disc.TOC.TOCItems[i].Exists) Console.WriteLine("{0:X8} {1:X2} {2:X2} {3:X8}", crc.Current, (int)disc.TOC.TOCItems[i].Control, disc.TOC.TOCItems[i].Exists ? 1 : 0, disc.TOC.TOCItems[i].LBATimestamp.Sector); //a little debugging
-				crc.Add((int)disc.TOC.TOCItems[i].Control);
-				crc.Add(disc.TOC.TOCItems[i].Exists ? 1 : 0);
-				crc.Add((int)disc.TOC.TOCItems[i].LBA);
+				AddAsBytesTo(crc, (int)disc.TOC.TOCItems[i].Control);
+				AddAsBytesTo(crc, disc.TOC.TOCItems[i].Exists ? 1 : 0);
+				AddAsBytesTo(crc, (int)disc.TOC.TOCItems[i].LBA);
 			}
 
 			//hash first 26 sectors
@@ -145,16 +147,6 @@ namespace BizHawk.Emulation.DiscSystem
 						byte b = pData[offset + i];
 						current = CRC32Table[(current ^ b) & 0xFF] ^ (current >> 8);
 					}
-			}
-
-			private readonly byte[] smallbuf = new byte[8];
-			public void Add(int data)
-			{
-				smallbuf[0] = (byte)((data) & 0xFF);
-				smallbuf[1] = (byte)((data >> 8) & 0xFF);
-				smallbuf[2] = (byte)((data >> 16) & 0xFF);
-				smallbuf[3] = (byte)((data >> 24) & 0xFF);
-				Add(smallbuf, 0, 4);
 			}
 
 			/// <summary>
