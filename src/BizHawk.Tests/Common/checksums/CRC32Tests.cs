@@ -35,12 +35,12 @@ namespace BizHawk.Tests.Common.checksums
 
 			data = InitialiseArray();
 			DiscHasher.SpecialCRC32 crc32 = new();
-			crc32.Add(data, 0, data.Length);
+			crc32.Add(data);
 			Assert.AreEqual(EXPECTED, crc32.Result);
 
 			var dataExtra = InitialiseArrayExtra();
 			DiscHasher.SpecialCRC32 crc32Extra = new();
-			crc32Extra.Add(dataExtra, 0, dataExtra.Length);
+			crc32Extra.Add(dataExtra);
 			Assert.AreEqual(EXPECTED_EXTRA, crc32Extra.Result);
 			crc32.Incorporate(crc32Extra.Result, dataExtra.Length);
 			Assert.AreEqual(EXPECTED_COMBINED, crc32.Result);

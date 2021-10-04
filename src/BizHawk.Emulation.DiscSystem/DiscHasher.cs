@@ -36,7 +36,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 			//hash the TOC
 			static void AddAsBytesTo(SpecialCRC32 crc32, int i)
-				=> crc32.Add(BitConverter.GetBytes(i), 0, 4);
+				=> crc32.Add(BitConverter.GetBytes(i));
 			AddAsBytesTo(crc, (int)disc.TOC.Session1Format);
 			AddAsBytesTo(crc, disc.TOC.FirstRecordedTrackNumber);
 			AddAsBytesTo(crc, disc.TOC.LastRecordedTrackNumber);
@@ -52,7 +52,7 @@ namespace BizHawk.Emulation.DiscSystem
 			for (int i = 0; i < 26; i++)
 			{
 				dsr.ReadLBA_2352(i, buffer2352, 0);
-				crc.Add(buffer2352, 0, 2352);
+				crc.Add(buffer2352);
 			}
 
 			return crc.Result;
@@ -77,7 +77,7 @@ namespace BizHawk.Emulation.DiscSystem
 			for (int i = 0; i < disc.Session1.LeadoutLBA; i++)
 			{
 				dsr.ReadLBA_2352(i, buffer2352, 0);
-				crc.Add(buffer2352, 0, 2352);
+				crc.Add(buffer2352);
 			}
 
 			return crc.Result;
@@ -131,22 +131,9 @@ namespace BizHawk.Emulation.DiscSystem
 
 			private uint current = 0xFFFFFFFF;
 
-			/// <exception cref="ArgumentOutOfRangeException">
-			/// <paramref name="offset"/> is negative, or
-			/// end index (<paramref name="offset"/> + <paramref name="size"/>) is beyond the end of <paramref name="data"/>
-			/// </exception>
-			public unsafe void Add(byte[] data, int offset, int size)
+			public void Add(ReadOnlySpan<byte> data)
 			{
-				if (offset + size > data.Length)
-					throw new ArgumentOutOfRangeException();
-				if (offset < 0)
-					throw new ArgumentOutOfRangeException();
-				fixed (byte* pData = data)
-					for (int i = 0; i < size; i++)
-					{
-						byte b = pData[offset + i];
-						current = CRC32Table[(current ^ b) & 0xFF] ^ (current >> 8);
-					}
+				foreach (var b in data) current = CRC32Table[(current ^ b) & 0xFF] ^ (current >> 8);
 			}
 
 			/// <summary>
