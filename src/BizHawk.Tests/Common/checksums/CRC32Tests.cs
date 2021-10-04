@@ -33,12 +33,12 @@ namespace BizHawk.Tests.Common.checksums
 			Assert.AreEqual(EXPECTED, CRC32.Calculate(data));
 
 			data = InitialiseArray();
-			SpecialCRC32 crc32 = new();
+			CRC32 crc32 = new();
 			crc32.Add(data);
 			Assert.AreEqual(EXPECTED, crc32.Result);
 
 			var dataExtra = InitialiseArrayExtra();
-			SpecialCRC32 crc32Extra = new();
+			CRC32 crc32Extra = new();
 			crc32Extra.Add(dataExtra);
 			Assert.AreEqual(EXPECTED_EXTRA, crc32Extra.Result);
 			crc32.Incorporate(crc32Extra.Result, dataExtra.Length);

@@ -24,10 +24,8 @@ namespace BizHawk.Emulation.DiscSystem
 			//Tekken 3 (Europe) (Alt) and Tekken 3 (Europe) conflict in track 2 and 3 unfortunately, not sure what to do about this yet
 			//the TOC isn't needed!
 			//but it will help detect dumps with mangled TOCs which are all too common
-			//
-			//a possibly special CRC32 is used to help us match redump's DB elsewhere
 
-			SpecialCRC32 crc = new SpecialCRC32();
+			CRC32 crc = new();
 			byte[] buffer2352 = new byte[2352];
 
 			var dsr = new DiscSectorReader(disc)
@@ -36,7 +34,7 @@ namespace BizHawk.Emulation.DiscSystem
 			};
 
 			//hash the TOC
-			static void AddAsBytesTo(SpecialCRC32 crc32, int i)
+			static void AddAsBytesTo(CRC32 crc32, int i)
 				=> crc32.Add(BitConverter.GetBytes(i));
 			AddAsBytesTo(crc, (int)disc.TOC.Session1Format);
 			AddAsBytesTo(crc, disc.TOC.FirstRecordedTrackNumber);
@@ -64,8 +62,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// </summary>
 		public uint Calculate_PSX_RedumpHash()
 		{
-			//a special CRC32 is used to help us match redump's DB
-			SpecialCRC32 crc = new SpecialCRC32();
+			CRC32 crc = new();
 			byte[] buffer2352 = new byte[2352];
 
 			var dsr = new DiscSectorReader(disc)
