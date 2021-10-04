@@ -61,7 +61,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public int RAM_Bank;
 		public int RAM_Bank_ret;
 		public byte VRAM_Bank;
-		internal bool is_GBC;
+		internal bool is_GBC, is_GB_in_GBC;
 		public bool GBC_compat; // compatibility mode for GB games played on GBC
 		public bool double_speed;
 		public bool speed_switch;
@@ -158,6 +158,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			if (is_GBC && ((header[0x43] != 0x80) && (header[0x43] != 0xC0)))
 			{
 				ppu = new GBC_GB_PPU();
+				is_GB_in_GBC = true; // for movie files
 			}
 
 			Console.WriteLine("MD5: " + rom.HashMD5(0, rom.Length));
@@ -201,6 +202,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		}
 
 		public bool IsCGBMode() => is_GBC;
+
+		public bool IsGBInGBCMode() => is_GB_in_GBC;
 
 		/// <summary>
 		/// Produces a palette in the form that certain frontend inspection tools.
