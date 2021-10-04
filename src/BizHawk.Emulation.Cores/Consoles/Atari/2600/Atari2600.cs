@@ -11,6 +11,15 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	public partial class Atari2600 : IEmulator, IDebuggable, IInputPollable, IBoardInfo, IRomInfo,
 		IRegionable, ICreateGameDBEntries, ISettable<Atari2600.A2600Settings, Atari2600.A2600SyncSettings>
 	{
+		internal static class RomChecksums
+		{
+			public const string CongoBongo = /*sha1:*/"3A77DB43B6583E8689435F0F14AA04B9E57BDDED";
+
+			public const string KangarooNotInGameDB = /*sha1:*/"982B8016B393A9AA7DD110295A53C4612ECF2141";
+
+			public const string Tapper = /*sha1:*/"E986E1818E747BEB9B33CE4DFF1CDC6B55BDB620";
+		}
+
 		[CoreConstructor("A26")]
 		public Atari2600(GameInfo game, byte[] rom, Atari2600.A2600Settings settings, Atari2600.A2600SyncSettings syncSettings)
 		{
@@ -35,9 +44,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 
 			var romHashSHA1 = Rom.HashSHA1();
-			if (romHashSHA1 == "3A77DB43B6583E8689435F0F14AA04B9E57BDDED" ||
-				romHashSHA1 == "E986E1818E747BEB9B33CE4DFF1CDC6B55BDB620" ||
-				romHashSHA1 == "982B8016B393A9AA7DD110295A53C4612ECF2141")
+			if (romHashSHA1 is RomChecksums.CongoBongo or RomChecksums.Tapper or RomChecksums.KangarooNotInGameDB)
 			{
 				game.RemoveOption("m");
 				game.AddOption("m", "F8_sega");

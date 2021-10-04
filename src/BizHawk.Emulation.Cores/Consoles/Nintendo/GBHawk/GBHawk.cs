@@ -24,6 +24,31 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 	public partial class GBHawk : IEmulator, ISaveRam, IDebuggable, IInputPollable, IRegionable, IGameboyCommon,
 	ISettable<GBHawk.GBSettings, GBHawk.GBSyncSettings>
 	{
+		internal static class RomChecksums
+		{
+			public const string BombermanCollection = /*md5:*/"9FB9C42CF52DCFDCFBAD5E61AE1B5777";
+
+			public const string BombermanSelectionKORNotInGameDB = /*md5:*/"D0C6FFC3602D91C0B2B1B0461553DE33";
+
+			public const string MortalKombatIAndIIUSAEU = /*md5:*/"CF1F58AB72112716D3C615A553B2F481";
+
+			public const string PirateRockMan8 = /*md5:*/"CAE0998A899DF2EE6ABA8E7695C2A096";
+
+			public const string PirateSachen1 = /*md5:*/"D3C1924D847BC5D125BF54C2076BE27A";
+
+			public const string UnknownRomA = /*md5:*/"97122B9B183AAB4079C8D36A4CE6E9C1";
+
+			public const string WisdomTreeExodus = /*md5:*/"AB1FA0ED0207B1D0D5F401F0CD17BEBF";
+
+			public const string WisdomTreeJoshua = /*md5:*/"2C07CAEE51A1F0C91C72C7C6F380B0F6";
+
+			public const string WisdomTreeKJVBible = /*md5:*/"BA2AC3587B3E1B36DE52E740274071B0";
+
+			public const string WisdomTreeNIVBible = /*md5:*/"8CDDB8B2DCD3EC1A3FDD770DF8BDA07C";
+
+			public const string WisdomTreeSpiritualWarfare = /*md5:*/"37E017C8D1A45BAB609FB5B43FB64337";
+		}
+
 		// this register controls whether or not the GB BIOS is mapped into memory
 		public byte GB_bios_register;
 
@@ -542,21 +567,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 
 			// special case for multi cart mappers
-			if (romHashMD5 == "97122B9B183AAB4079C8D36A4CE6E9C1"
-				|| romHashMD5 == "9FB9C42CF52DCFDCFBAD5E61AE1B5777"
-				|| romHashMD5 == "CF1F58AB72112716D3C615A553B2F481"
-				|| romHashMD5 == "D0C6FFC3602D91C0B2B1B0461553DE33") // Bomberman Selection
+			if (romHashMD5 is RomChecksums.UnknownRomA or RomChecksums.BombermanCollection or RomChecksums.MortalKombatIAndIIUSAEU or RomChecksums.BombermanSelectionKORNotInGameDB)
 			{
 				Console.WriteLine("Using Multi-Cart Mapper");
 				mapper = new MapperMBC1Multi();
 			}
 			
 			// Wisdom Tree does not identify their mapper, so use hash instead
-			if (romHashMD5 == "2C07CAEE51A1F0C91C72C7C6F380B0F6" // Joshua
-				|| romHashMD5 == "37E017C8D1A45BAB609FB5B43FB64337" // Spiritual Warfare
-				|| romHashMD5 == "AB1FA0ED0207B1D0D5F401F0CD17BEBF" // Exodus
-				|| romHashMD5 == "BA2AC3587B3E1B36DE52E740274071B0" // Bible - KJV
-				|| romHashMD5 == "8CDDB8B2DCD3EC1A3FDD770DF8BDA07C") // Bible - NIV
+			else if (romHashMD5 is RomChecksums.WisdomTreeJoshua or RomChecksums.WisdomTreeSpiritualWarfare or RomChecksums.WisdomTreeExodus or RomChecksums.WisdomTreeKJVBible or RomChecksums.WisdomTreeNIVBible)
 			{
 				Console.WriteLine("Using Wisdom Tree Mapper");
 				mapper = new MapperWT();
@@ -564,12 +582,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 
 			// special case for bootlegs
-			if (romHashMD5 == "CAE0998A899DF2EE6ABA8E7695C2A096")
+			else if (romHashMD5 == RomChecksums.PirateRockMan8)
 			{
 				Console.WriteLine("Using RockMan 8 (Unlicensed) Mapper");
 				mapper = new MapperRM8();
 			}
-			if (romHashMD5 == "D3C1924D847BC5D125BF54C2076BE27A")
+			else if (romHashMD5 == RomChecksums.PirateSachen1)
 			{
 				Console.WriteLine("Using Sachen 1 (Unlicensed) Mapper");
 				mapper = new MapperSachen1();

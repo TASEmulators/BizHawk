@@ -11,6 +11,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 	public partial class VectrexHawk : IEmulator, ISaveRam, IDebuggable, IInputPollable, IRegionable, 
 	ISettable<object, VectrexHawk.VectrexSyncSettings>
 	{
+		internal static class RomChecksums
+		{
+			public const string Minestorm = /*sha1:*/"65D07426B520DDD3115D40F255511E0FD2E20AE7";
+		}
+
 		public byte[] RAM = new byte[0x400];
 
 		public byte[] _bios, minestorm;
@@ -58,7 +63,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			_rom = rom;
 
 			// If the game is minstorm, then no cartridge is inserted, retun 0xFF
-			if (romHashSHA1 == "65D07426B520DDD3115D40F255511E0FD2E20AE7")
+			if (romHashSHA1 == RomChecksums.Minestorm)
 			{
 				_rom  = new byte[0x8000];
 

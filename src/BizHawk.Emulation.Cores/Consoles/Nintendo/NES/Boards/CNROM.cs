@@ -90,8 +90,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			chr_mask = (Cart.ChrSize / 8) - 1;
 			SetMirrorType(Cart.PadH, Cart.PadV);
 
-			if (Cart.Sha1 == "sha1:4C9C05FAD6F6F33A92A27C2EDC1E7DE12D7F216D")
-				seicross = true;
+			if (Cart.Sha1 == NES.RomChecksums.SeicrossRev2) seicross = true;
 
 			return true;
 		}
