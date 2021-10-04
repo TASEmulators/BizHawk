@@ -1,5 +1,4 @@
 using BizHawk.Common;
-using BizHawk.Emulation.DiscSystem;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -34,12 +33,12 @@ namespace BizHawk.Tests.Common.checksums
 			Assert.AreEqual(EXPECTED, CRC32.Calculate(data));
 
 			data = InitialiseArray();
-			DiscHasher.SpecialCRC32 crc32 = new();
+			SpecialCRC32 crc32 = new();
 			crc32.Add(data);
 			Assert.AreEqual(EXPECTED, crc32.Result);
 
 			var dataExtra = InitialiseArrayExtra();
-			DiscHasher.SpecialCRC32 crc32Extra = new();
+			SpecialCRC32 crc32Extra = new();
 			crc32Extra.Add(dataExtra);
 			Assert.AreEqual(EXPECTED_EXTRA, crc32Extra.Result);
 			crc32.Incorporate(crc32Extra.Result, dataExtra.Length);
