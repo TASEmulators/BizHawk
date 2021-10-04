@@ -15,10 +15,6 @@
 	path = submodules/mgba
 	url = https://github.com/TASVideos/mgba.git
 	branch = bizhawk-0.9
-[submodule "melonds"]
-	path = melonds
-	url = https://github.com/CasualPokePlayer/melonDS.git
-	branch = melonbiz
 [submodule "waterbox/melon/melonDS"]
 	path = waterbox/melon/melonDS
 	url = https://github.com/CasualPokePlayer/melonDS.git

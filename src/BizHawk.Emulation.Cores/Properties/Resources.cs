@@ -11,8 +11,6 @@ namespace BizHawk.Emulation.Cores.Properties {
 		internal static readonly Lazy<byte[]> CPC_BASIC_1_0_ROM = new Lazy<byte[]>(() => ReadEmbeddedByteArray("CPC_BASIC_1.0.ROM.gz"));
 		internal static readonly Lazy<byte[]> CPC_BASIC_1_1_ROM = new Lazy<byte[]>(() => ReadEmbeddedByteArray("CPC_BASIC_1.1.ROM.gz"));
 		internal static readonly Lazy<byte[]> CPC_OS_6128_ROM = new Lazy<byte[]>(() => ReadEmbeddedByteArray("CPC_OS_6128.ROM.gz"));
-		internal static readonly Lazy<byte[]> DRASTIC_BIOS_ARM7 = new Lazy<byte[]>(() => ReadEmbeddedByteArray("drastic_bios_arm7.bin.gz"));
-		internal static readonly Lazy<byte[]> DRASTIC_BIOS_ARM9 = new Lazy<byte[]>(() => ReadEmbeddedByteArray("drastic_bios_arm9.bin.gz"));
 		internal static readonly Lazy<byte[]> OS_464_ROM = new Lazy<byte[]>(() => ReadEmbeddedByteArray("OS_464.ROM.gz"));
 		internal static readonly Lazy<byte[]> FastCgbBoot = new Lazy<byte[]>(() => ReadEmbeddedByteArray("cgb_boot.rom.gz"));
 		internal static readonly Lazy<byte[]> FastAgbBoot = new Lazy<byte[]>(() => ReadEmbeddedByteArray("agb_boot.rom.gz"));

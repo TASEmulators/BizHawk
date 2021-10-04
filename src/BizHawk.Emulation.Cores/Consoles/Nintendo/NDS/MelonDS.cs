@@ -1,212 +1,388 @@
-﻿using System;
-using System.Runtime.InteropServices;
-using System.IO;
-
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Properties;
+using BizHawk.Emulation.Cores.Waterbox;
+using System;
+
+using System.ComponentModel;
+using System.IO;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 {
-	[PortedCore(CoreNames.MelonDS, "Arisotura", "0.8.2", "http://melonds.kuribo64.net/", singleInstance: true, isReleased: false)]
-	public unsafe partial class MelonDS : IEmulator
+	[PortedCore(CoreNames.MelonDS, "Arisotura", "0.9.3", "http://melonds.kuribo64.net/", singleInstance: true, isReleased: false)]
+	public class NDS : WaterboxCore, ISaveRam,
+		ISettable<NDS.Settings, NDS.SyncSettings>
 	{
-		private readonly BasicServiceProvider _serviceProvider;
-		public IEmulatorServiceProvider ServiceProvider => _serviceProvider;
 
-		public ControllerDefinition ControllerDefinition { get; }
+		private readonly LibMelonDS _core;
+		private readonly bool _dsi;
+		private readonly bool _skipfw;
 
-		public int Frame => GetFrameCount();
+		private byte[] bios7;
+		private byte[] bios9;
+		private byte[] fw;
+		private byte[] dsrom;
+		private byte[] sd;
+		private byte[] gbarom;
+		private byte[] gbasram;
+		private byte[] bios7i;
+		private byte[] bios9i;
+		private byte[] nand;
 
-		public string SystemId => "NDS";
-
-		public bool DeterministicEmulation { get; }
-
-		internal CoreComm CoreComm { get; }
-
-		private bool _disposed;
-		public void Dispose()
-		{
-			if (!_disposed)
-			{
-				Deinit();
-				_resampler.Dispose();
-				_disposed = true;
-			}
-		}
-
-		public bool FrameAdvance(IController controller, bool render, bool renderSound = true)
-		{
-			if (controller.IsPressed("Power"))
-			{
-				Reset();
-			}
-			int buttons = (controller.IsPressed("A") ? 1 : 0) | (controller.IsPressed("B") ? 2 : 0)
-				| (controller.IsPressed("Select") ? 4 : 0) | (controller.IsPressed("Start") ? 8 : 0)
-				| (controller.IsPressed("Right") ? 0x10 : 0) | (controller.IsPressed("Left") ? 0x20 : 0)
-				| (controller.IsPressed("Up") ? 0x40 : 0) | (controller.IsPressed("Down") ? 0x80 : 0)
-				| (controller.IsPressed("R") ? 0x100 : 0) | (controller.IsPressed("L") ? 0x200 : 0)
-				| (controller.IsPressed("X") ? 0x400 : 0) | (controller.IsPressed("Y") ? 0x800 : 0)
-				| (controller.IsPressed("Touch") ? 0x2000 : 0)
-				| (controller.IsPressed("LidOpen") ? 0x4000 : 0) | (controller.IsPressed("LidClose") ? 0x8000 : 0);
-			FrameAdvance((uint)buttons, (byte)controller.AxisValue("TouchX"), (byte)controller.AxisValue("TouchY"));
-			_getNewBuffer = true;
-			return true;
-		}
-
-		public void ResetCounters()
-		{
-			_ResetCounters();
-		}
-
-		// debug path/build for easier testing
-		//const string dllPath = "../melonds/build/libcore.dll";
-		private const string dllPath = "dll/libmelonds.dll";
-
-		[DllImport(dllPath, EntryPoint = "melonds_create")]
-		private static extern bool Init(int consoletype, bool directboot);
-		[DllImport(dllPath, EntryPoint = "melonds_destroy")]
-		private static extern void Deinit();
-		[DllImport(dllPath, EntryPoint = "melonds_loadallfiles")]
-		private static extern bool LoadAllFiles(
-			byte[] arm7biosdata, uint arm7bioslength,
-			byte[] arm9biosdata, uint arm9bioslength,
-			byte[] dsfirmwaredata, uint dsfirmwarelength,
-			byte[] dldisddata, uint dldisdlength,
-			byte[] arm7ibiosdata, uint arm7ibioslength,
-			byte[] arm9ibiosdata, uint arm9ibioslength,
-			byte[] dsifirmwaredata, uint dsifirmwarelength,
-			byte[] dsinanddata, uint dsinandlength,
-			byte[] dsisddata, uint dsisdlength,
-			byte[] gbaromfiledata, uint gbaromfilelength,
-			byte[] gbasramfiledata, uint gbasramfilelength,
-			byte[] romfiledata, uint romfilelength);
-		[DllImport(dllPath, EntryPoint = "melonds_reset")]
-		private static extern void Reset();
-
-		[DllImport(dllPath, EntryPoint = "melonds_resetcounters")]
-		private static extern void _ResetCounters();
-		[DllImport(dllPath, EntryPoint = "melonds_getframecount")]
-		private static extern int GetFrameCount();
-
-		[DllImport(dllPath, EntryPoint = "melonds_frameadvance")]
-		private static extern void FrameAdvance(uint buttons, byte touchX, byte touchY);
+		public delegate void FileOpenCallback(string file);
+		public delegate void FileCloseCallback(string file);
 
 		[CoreConstructor("NDS")]
-		public MelonDS(byte[] file, CoreComm comm, MelonSettings settings, MelonSyncSettings syncSettings, bool deterministic)
+		public NDS(byte[] rom, CoreComm comm, Settings settings, SyncSettings syncSettings, bool deterministic)
+			: base(comm, new Configuration
+			{
+				DefaultWidth = 256,
+				DefaultHeight = 384,
+				MaxWidth = 256,
+				MaxHeight = 384,
+				MaxSamples = 1024,
+				DefaultFpsNumerator = 33513982,
+				DefaultFpsDenominator = 560190,
+				SystemId = "NDS"
+			})
 		{
-			_serviceProvider = new BasicServiceProvider(this);
-			ControllerDefinition = new ControllerDefinition { Name = "NDS Controller" };
-			ControllerDefinition.BoolButtons.Add("Left");
-			ControllerDefinition.BoolButtons.Add("Right");
-			ControllerDefinition.BoolButtons.Add("Up");
-			ControllerDefinition.BoolButtons.Add("Down");
-			ControllerDefinition.BoolButtons.Add("A");
-			ControllerDefinition.BoolButtons.Add("B");
-			ControllerDefinition.BoolButtons.Add("X");
-			ControllerDefinition.BoolButtons.Add("Y");
-			ControllerDefinition.BoolButtons.Add("L");
-			ControllerDefinition.BoolButtons.Add("R");
-			ControllerDefinition.BoolButtons.Add("Start");
-			ControllerDefinition.BoolButtons.Add("Select");
+			_coreFileOpenCallback = FileOpenCb;
+			_coreFileCloseCallback = FileCloseCb;
 
-			ControllerDefinition.BoolButtons.Add("LidOpen");
-			ControllerDefinition.BoolButtons.Add("LidClose");
-			ControllerDefinition.BoolButtons.Add("Power");
+			_core = PreInit<LibMelonDS>(new WaterboxOptions
+			{
+				Filename = "melonds.wbx",
+				SbrkHeapSizeKB = 192,
+				InvisibleHeapSizeKB = 12,
+				SealedHeapSizeKB = 9 * 1024,
+				PlainHeapSizeKB = 4,
+				MmapHeapSizeKB = 1024,
+				SkipCoreConsistencyCheck = comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
+				SkipMemoryConsistencyCheck = comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
+			}, new Delegate[] { _coreFileOpenCallback, _coreFileCloseCallback });
 
-			ControllerDefinition.BoolButtons.Add("Touch");
-			ControllerDefinition.AddXYPair("Touch{0}", AxisPairOrientation.RightAndUp, 0.RangeTo(255), 128, 0.RangeTo(191), 96); //TODO verify direction against hardware
+			_syncSettings = syncSettings ?? new SyncSettings();
+			_settings = settings ?? new Settings();
 
-			CoreComm = comm;
-			DeterministicEmulation = deterministic;
-			_resampler = new SpeexResampler(SpeexResampler.Quality.QUALITY_DEFAULT, 32768, 44100, 32768, 44100);
+			_dsi = _syncSettings.UseDSi;
 
-			_settings = settings ?? new MelonSettings();
-			_syncSettings = syncSettings ?? new MelonSyncSettings();
+			fw = _dsi
+				? comm.CoreFileProvider.GetFirmware(new("NDS", "DSi Firmware"))
+				: comm.CoreFileProvider.GetFirmware(new("NDS", "DS Firmware"));
 
-			byte[] arm7;
-			byte[] arm9;
-			byte[] dsfirmware;
-			byte[] dldisd;
-			byte[] arm7i;
-			byte[] arm9i;
-			byte[] dsifirmware;
-			byte[] dsinand;
-			byte[] dsisd;
-			byte[] gbaromfile;
-			byte[] gbasramfile;
-			// DS bioses are loaded in both DS and DSi mode
+			_skipfw = _syncSettings.DirectBoot || !_syncSettings.UseRealDSBIOS || fw == null;
+
+			bios7 = _syncSettings.UseRealDSBIOS
+				? comm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "BIOS7"))
+				: null;
+
+			bios9 = _syncSettings.UseRealDSBIOS
+				? comm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "BIOS9"))
+				: null;
+
+			Array.Copy(rom, dsrom, rom.Length);
+
+			sd = _syncSettings.SDCardEnable
+				? comm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "SD Card Image"))
+				: null;
+
+			gbarom = _syncSettings.GBACartPresent && !_dsi
+				? comm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "GBA ROM"))
+				: null;
+
+			gbasram = _syncSettings.GBACartPresent && !_dsi
+				? comm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "GBA SaveRAM"))
+				: null;
+
+			bios7i = _dsi
+				? comm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "BIOS7i"))
+				: null;
+
+			bios9i = _dsi
+				? comm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "BIOS9i"))
+				: null;
+
+			nand = _dsi
+				? comm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "DSi NAND"))
+				: null;
+
+			LibMelonDS.LoadFlags flags = LibMelonDS.LoadFlags.NONE;
+
+			if (_dsi)
+			{
+				flags |= LibMelonDS.LoadFlags.USE_DSI;
+			}
+
 			if (_syncSettings.UseRealDSBIOS)
 			{
-				arm7 = CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "bios7"), "Cannot find real arm7 bios, change sync settings to boot without real bios");
-				arm9 = CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "bios9"), "Cannot find real arm9 bios, change sync settings to boot without real bios");
-				dsfirmware = CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "firmware"), "Cannot find real ds firmware, change sync settings to boot without real firmware");
-			}
-			else
-			{
-				arm7 = Util.DecompressGzipFile(new MemoryStream(Resources.DRASTIC_BIOS_ARM7.Value));
-				arm9 = Util.DecompressGzipFile(new MemoryStream(Resources.DRASTIC_BIOS_ARM9.Value));
-				dsfirmware = null; // fake firmware will be used
-			}
-			if (_syncSettings.UseDSi)
-			{
-				arm7i = CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "bios7i"));
-				arm9i = CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "bios9i"));
-				dsifirmware = CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "firmwarei"));
-				dsinand = CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "nand"));
-				dsisd = CoreComm.CoreFileProvider.GetFirmware(new("NDS", "sd"));
-				dldisd = null;
-				gbaromfile = null;
-				gbasramfile = null;
-			}
-			else
-			{
-				arm7i = null;
-				arm9i = null;
-				dsifirmware = null;
-				dsinand = null;
-				dsisd = null;
-				dldisd = _syncSettings.UseDLDI ? CoreComm.CoreFileProvider.GetFirmware(new("NDS", "dldi")) : null;
-				gbaromfile = null;// CoreComm.CoreFileProvider.GetFirmware(new("NDS", "gbarom"));
-				gbasramfile = null;// CoreComm.CoreFileProvider.GetFirmware(new("NDS", "gbasram"));
+				flags |= LibMelonDS.LoadFlags.USE_REAL_DS_BIOS;
 			}
 
-			LoadAllFiles(arm7, (uint)arm7.Length, arm9, (uint)arm9.Length, dsfirmware, dsfirmware == null ? 0 : (uint)dsfirmware.Length, dldisd, dldisd == null ? 0 : (uint)dldisd.Length,
-						 arm7i, arm7i == null ? 0 : (uint)arm7i.Length, arm9i, arm9i == null ? 0 : (uint)arm9i?.Length, dsifirmware, dsifirmware == null ? 0 : (uint)dsifirmware.Length, dsinand, dsinand == null ? 0 : (uint)dsinand.Length, dsisd, dsisd == null ? 0 : (uint)dsisd.Length,
-						 gbaromfile, gbaromfile == null ? 0 : (uint)gbasramfile.Length, gbasramfile, gbasramfile == null ? 0 : (uint)gbasramfile.Length, file, (uint)file.Length);
-
-			if (!Init(0, !_syncSettings.BootToFirmware || !_syncSettings.UseRealDSBIOS))
+			if (_skipfw)
 			{
-				throw new Exception("Failed to init NDS. Bad ROM?");
+				flags |= LibMelonDS.LoadFlags.SKIP_FIRMWARE;
 			}
 
-			PutSettings(_settings);
-			PutSyncSettings(_syncSettings);
+			if (_syncSettings.SDCardEnable)
+			{
+				flags |= LibMelonDS.LoadFlags.SD_CARD_ENABLE;
+			}
 
-			InitMemoryDomains();
+			if (_syncSettings.GBACartPresent)
+			{
+				flags |= LibMelonDS.LoadFlags.GBA_CART_PRESENT;
+			}
+
+			if (_syncSettings.AccurateAudioBitrate)
+			{
+				flags |= LibMelonDS.LoadFlags.ACCURATE_AUDIO_BITRATE;
+			}
+
+			if (_syncSettings.FirmwareOverride || deterministic)
+			{
+				flags |= LibMelonDS.LoadFlags.FIRMWARE_OVERRIDE;
+			}
+
+			_core.SetFileOpenCallback(_coreFileOpenCallback);
+			_core.SetFileCloseCallback(_coreFileCloseCallback);
+
+			if (!_core.Init(flags))
+			{
+				throw new InvalidOperationException("Core rejected the rom!");
+			}
+
+			PostInit();
+
+			DeterministicEmulation = deterministic || !_syncSettings.UseRealTime;
+			InitializeRtc(_syncSettings.InitialTime);
 		}
 
-		/// <summary>
-		/// Creates a modified copy of the given firmware file, with the user settings erased.
-		/// </summary>
-		/// <returns>Returns a path to the new file.</returns>
-		public static string CreateModifiedFirmware(string firmwarePath)
+		public override ControllerDefinition ControllerDefinition => NDSController;
+
+		public static readonly ControllerDefinition NDSController = new ControllerDefinition
 		{
-			Directory.CreateDirectory("melon");
+			Name = "NDS Controller",
+			BoolButtons =
+			{
+				"Up", "Down", "Left", "Right", "Start", "Select", "B", "A", "Y", "X", "L", "R", "LidOpen", "LidClose", "Power", "Touch"
+			}
+		}.AddXYPair("Touch{0}", AxisPairOrientation.RightAndUp, 0.RangeTo(255), 128, 0.RangeTo(191), 96)
+			.AddAxis("GBA Light Sensor", 0.RangeTo(255), 0);
+		private LibMelonDS.Buttons GetButtons(IController c)
+		{
+			LibMelonDS.Buttons b = 0;
+			if (c.IsPressed("Up"))
+				b |= LibMelonDS.Buttons.UP;
+			if (c.IsPressed("Down"))
+				b |= LibMelonDS.Buttons.DOWN;
+			if (c.IsPressed("Left"))
+				b |= LibMelonDS.Buttons.LEFT;
+			if (c.IsPressed("Right"))
+				b |= LibMelonDS.Buttons.RIGHT;
+			if (c.IsPressed("Start"))
+				b |= LibMelonDS.Buttons.START;
+			if (c.IsPressed("Select"))
+				b |= LibMelonDS.Buttons.SELECT;
+			if (c.IsPressed("B"))
+				b |= LibMelonDS.Buttons.B;
+			if (c.IsPressed("A"))
+				b |= LibMelonDS.Buttons.A;
+			if (c.IsPressed("Y"))
+				b |= LibMelonDS.Buttons.Y;
+			if (c.IsPressed("X"))
+				b |= LibMelonDS.Buttons.X;
+			if (c.IsPressed("L"))
+				b |= LibMelonDS.Buttons.L;
+			if (c.IsPressed("R"))
+				b |= LibMelonDS.Buttons.R;
+			if (c.IsPressed("LidOpen"))
+				b |= LibMelonDS.Buttons.LIDOPEN;
+			if (c.IsPressed("LidClose"))
+				b |= LibMelonDS.Buttons.LIDCLOSE;
+			if (c.IsPressed("Power"))
+				b |= LibMelonDS.Buttons.POWER;
+			if (c.IsPressed("Touch"))
+				b |= LibMelonDS.Buttons.TOUCH;
 
-			const string newPath = "melon/tohash.bin";
-			byte[] bytes = File.ReadAllBytes(firmwarePath);
+			return b;
+		}
 
-			// There are two regions for user settings
-			int settingsLength = GetUserSettingsLength();
-			for (int i = bytes.Length - 0x200; i < bytes.Length - 0x200 + settingsLength; i++)
-				bytes[i] = 0xFF;
-			for (int i = bytes.Length - 0x100; i < bytes.Length - 0x100 + settingsLength; i++)
-				bytes[i] = 0xFF;
+		public new bool SaveRamModified => _core.HasSaveRam();
 
+		public new byte[] CloneSaveRam()
+		{
+			_exe.AddTransientFile(new byte[0], "save.ram");
+			_core.GetSaveRam();
+			return _exe.RemoveTransientFile("save.ram");
+		}
 
-			File.WriteAllBytes(newPath, bytes);
-			return newPath;
+		public new void StoreSaveRam(byte[] data)
+		{
+			_exe.AddReadonlyFile(data, "save.ram");
+			_core.PutSaveRam();
+			_exe.RemoveReadonlyFile("save.ram");
+		}
+
+		private Settings _settings;
+		private SyncSettings _syncSettings;
+
+		public enum ScreenLayoutKind
+		{
+			Vertical, Horizontal, Top, Bottom
+		}
+
+		public enum ScreenRotationKind
+		{
+			Rotate0, Rotate90, Rotate180, Rotate270
+		}
+
+		public class Settings
+		{
+			[DisplayName("Screen Layout")]
+			[Description("Adjusts the layout of the screens")]
+			[DefaultValue(ScreenLayoutKind.Vertical)]
+			public ScreenLayoutKind ScreenLayout { get; set; }
+
+			[DisplayName("Rotation")]
+			[Description("Adjusts the orientation of the screens")]
+			[DefaultValue(ScreenRotationKind.Rotate0)]
+			public ScreenRotationKind ScreenRotation { get; set; }
+
+			[DisplayName("Screen Gap")]
+			[DefaultValue(0)]
+			public int ScreenGap { get; set; }
+
+			public Settings Clone()
+			{
+				return (Settings)MemberwiseClone();
+			}
+
+			public static bool NeedsReboot(Settings x, Settings y)
+			{
+				return false;
+			}
+
+			public Settings()
+			{
+				SettingsUtil.SetDefaultValues(this);
+			}
+		}
+
+		public class SyncSettings
+		{
+			[DisplayName("Initial Time")]
+			[Description("Initial time of emulation.")]
+			[DefaultValue(typeof(DateTime), "2000-01-01")]
+			public DateTime InitialTime { get; set; }
+
+			[DisplayName("Use RealTime")]
+			[Description("If true, RTC clock will be based off of real time instead of emulated time.  Ignored (set to false) when recording a movie.")]
+			[DefaultValue(false)]
+			public bool UseRealTime { get; set; }
+
+			[Description("If true, real DS BIOS files will be used.")]
+			[DefaultValue(false)]
+			public bool UseRealDSBIOS { get; set; }
+
+			[Description("If true, initial firmware boot will be skipped. Forced true if firmware cannot be booted.")]
+			[DefaultValue(false)]
+			public bool DirectBoot { get; set; }
+
+			[Description("If true, the firmware settings will be overriden by provided setting. Forced true when recording a movie.")]
+			[DefaultValue(false)]
+			public bool FirmwareOverride { get; set; }
+
+			[Description("")]
+			[DefaultValue(false)]
+			public bool SDCardEnable { get; set; }
+
+			[Description("If true, a GBA cart will be loaded. Ignored in DSi mode.")]
+			[DefaultValue(false)]
+			public bool GBACartPresent { get; set; }
+
+			[Description("If true, the audio bitrate will be set to 10. Otherwise, it will be set to 16.")]
+			[DefaultValue(true)]
+			public bool AccurateAudioBitrate { get; set; }
+
+			[Description("If true, a DSi will be emulated instead of a DS. Highly experimental.")]
+			[DefaultValue(false)]
+			public bool UseDSi { get; set; }
+
+			public SyncSettings Clone()
+			{
+				return (SyncSettings)MemberwiseClone();
+			}
+
+			public static bool NeedsReboot(SyncSettings x, SyncSettings y)
+			{
+				return !DeepEquality.DeepEquals(x, y);
+			}
+
+			public SyncSettings()
+			{
+				SettingsUtil.SetDefaultValues(this);
+			}
+		}
+
+		public Settings GetSettings()
+		{
+			return _settings.Clone();
+		}
+
+		public SyncSettings GetSyncSettings()
+		{
+			return _syncSettings.Clone();
+		}
+
+		public PutSettingsDirtyBits PutSettings(Settings o)
+		{
+			var ret = Settings.NeedsReboot(_settings, o);
+			_settings = o;
+			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
+		}
+
+		public PutSettingsDirtyBits PutSyncSettings(SyncSettings o)
+		{
+			var ret = SyncSettings.NeedsReboot(_syncSettings, o);
+			_syncSettings = o;
+			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
+		}
+
+		protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
+		{
+			return new LibMelonDS.FrameInfo
+			{
+				Time = GetRtcTime(!DeterministicEmulation),
+				Keys = GetButtons(controller),
+				TouchX = (byte)controller.AxisValue("TouchX"),
+				TouchY = (byte)controller.AxisValue("TouchY"),
+				GBALightSensor = (byte)controller.AxisValue("GBA Light Sensor"),
+				SkipFw = _skipfw,
+			};
+		}
+
+		protected override unsafe void FrameAdvancePost()
+		{
+		}
+
+		protected override void LoadStateBinaryInternal(BinaryReader reader)
+		{
+			_core.SetFileOpenCallback(_coreFileOpenCallback);
+			_core.SetFileCloseCallback(_coreFileCloseCallback);
+		}
+
+		public bool IsDSiMode() => _dsi;
+
+		private readonly FileOpenCallback _coreFileOpenCallback;
+		private readonly FileCloseCallback _coreFileCloseCallback;
+
+		private void FileOpenCb(string file)
+		{
+			
+		}
+
+		public void FileCloseCb(string file)
+		{
+			
 		}
 	}
 }
