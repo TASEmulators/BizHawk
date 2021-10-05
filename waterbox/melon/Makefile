@@ -3,8 +3,7 @@ CXXFLAGS := -I./src -I./src/teakra/include -I.src/teakra/src \
 	-Wcast-qual -Wfatal-errors -Wno-missing-braces \
 	-Wno-unused-parameter -Wno-parentheses -Wno-sign-compare \
 	-Wno-unused-variable -Wno-unused-function \
-	-pedantic -pedantic-errors \
-	-std=c++17 -flto -fPIC \
+	-pedantic -std=c++17
 
 TARGET = melonDS.wbx
 

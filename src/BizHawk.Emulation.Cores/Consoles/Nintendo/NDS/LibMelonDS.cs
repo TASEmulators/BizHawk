@@ -50,25 +50,29 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			public byte TouchX;
 			public byte TouchY;
 			public byte GBALightSensor;
-			public bool SkipFw;
 		}
 
 		[BizImport(CC)]
 		public abstract bool Init(LoadFlags flags);
 
-		[BizImport(CC)]
-		public abstract void SetFileOpenCallback(NDS.FileOpenCallback callback);
+		public delegate void FileCallback(byte[] file);
 
 		[BizImport(CC)]
-		public abstract void SetFileCloseCallback(NDS.FileCloseCallback callback);
+		public abstract void SetFileOpenCallback(FileCallback callback);
 
 		[BizImport(CC)]
-		public abstract void PutSaveRam();
+		public abstract void SetFileCloseCallback(FileCallback callback);
+
+		[BizImport(CC)]
+		public abstract bool PutSaveRam(byte[] data, uint len);
 
 		[BizImport(CC)]
 		public abstract void GetSaveRam();
 
 		[BizImport(CC)]
-		public abstract bool HasSaveRam();
+		public abstract bool SaveRamIsDirty();
+
+		[BizImport(CC)]
+		public abstract void Reset();
 	}
 }

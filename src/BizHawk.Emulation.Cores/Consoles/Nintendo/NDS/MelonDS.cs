@@ -1,10 +1,11 @@
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Waterbox;
-using System;
 
+using System;
 using System.ComponentModel;
 using System.IO;
+using System.Text;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 {
@@ -17,19 +18,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		private readonly bool _dsi;
 		private readonly bool _skipfw;
 
-		private byte[] bios7;
-		private byte[] bios9;
-		private byte[] fw;
-		private byte[] dsrom;
-		private byte[] sd;
-		private byte[] gbarom;
-		private byte[] gbasram;
-		private byte[] bios7i;
-		private byte[] bios9i;
-		private byte[] nand;
-
-		public delegate void FileOpenCallback(string file);
-		public delegate void FileCloseCallback(string file);
+		private readonly byte[] bios7;
+		private readonly byte[] bios9;
+		private readonly byte[] fw;
+		private readonly byte[] dsrom;
+		private readonly byte[] sd;
+		private readonly byte[] gbarom;
+		private readonly byte[] gbasram;
+		private readonly byte[] bios7i;
+		private readonly byte[] bios9i;
+		private readonly byte[] nand;
 
 		[CoreConstructor("NDS")]
 		public NDS(byte[] rom, CoreComm comm, Settings settings, SyncSettings syncSettings, bool deterministic)
@@ -45,8 +43,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				SystemId = "NDS"
 			})
 		{
-			_coreFileOpenCallback = FileOpenCb;
-			_coreFileCloseCallback = FileCloseCb;
+			_coreFileOpenCallback = FileOpenCallback;
+			_coreFileCloseCallback = FileCloseCallback;
 
 			_core = PreInit<LibMelonDS>(new WaterboxOptions
 			{
@@ -166,7 +164,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				"Up", "Down", "Left", "Right", "Start", "Select", "B", "A", "Y", "X", "L", "R", "LidOpen", "LidClose", "Power", "Touch"
 			}
 		}.AddXYPair("Touch{0}", AxisPairOrientation.RightAndUp, 0.RangeTo(255), 128, 0.RangeTo(191), 96)
-			.AddAxis("GBA Light Sensor", 0.RangeTo(255), 0);
+			.AddAxis("GBA Light Sensor", 0.RangeTo(10), 0);
 		private LibMelonDS.Buttons GetButtons(IController c)
 		{
 			LibMelonDS.Buttons b = 0;
@@ -206,7 +204,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			return b;
 		}
 
-		public new bool SaveRamModified => _core.HasSaveRam();
+		public new bool SaveRamModified => _core.SaveRamIsDirty();
 
 		public new byte[] CloneSaveRam()
 		{
@@ -217,9 +215,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		public new void StoreSaveRam(byte[] data)
 		{
-			_exe.AddReadonlyFile(data, "save.ram");
-			_core.PutSaveRam();
-			_exe.RemoveReadonlyFile("save.ram");
+			if (_core.PutSaveRam(data, (uint)data.Length))
+			{
+				throw new InvalidOperationException("SaveRAM size mismatch!");
+			}
 		}
 
 		private Settings _settings;
@@ -303,7 +302,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			[DefaultValue(true)]
 			public bool AccurateAudioBitrate { get; set; }
 
-			[Description("If true, a DSi will be emulated instead of a DS. Highly experimental.")]
+			[Description("If true, a DSi will be emulated instead of a DS. Currently experimental.")]
 			[DefaultValue(false)]
 			public bool UseDSi { get; set; }
 
@@ -349,40 +348,171 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
 		{
-			return new LibMelonDS.FrameInfo
+			var ret = new LibMelonDS.FrameInfo
 			{
 				Time = GetRtcTime(!DeterministicEmulation),
 				Keys = GetButtons(controller),
 				TouchX = (byte)controller.AxisValue("TouchX"),
 				TouchY = (byte)controller.AxisValue("TouchY"),
 				GBALightSensor = (byte)controller.AxisValue("GBA Light Sensor"),
-				SkipFw = _skipfw,
 			};
+			if ((ret.Keys & LibMelonDS.Buttons.POWER) == LibMelonDS.Buttons.POWER)
+			{
+				_exe.AddTransientFile(new byte[0], "save.ram");
+				_core.GetSaveRam();
+				_core.Reset();
+				_exe.RemoveTransientFile("save.ram");
+			}
+			return ret;
 		}
 
-		protected override unsafe void FrameAdvancePost()
+		protected override void FrameAdvancePost()
 		{
+
+		}
+
+		protected override void SaveStateBinaryInternal(BinaryWriter writer)
+		{
+			if (fw != null)
+			{
+				writer.Write(fw.Length);
+				writer.Write(fw);
+			}
+			if (sd != null)
+			{
+				writer.Write(sd.Length);
+				writer.Write(sd);
+			}
+			if (gbasram != null)
+			{
+				writer.Write(gbasram.Length);
+				writer.Write(gbasram);
+			}
+			if (nand != null)
+			{
+				writer.Write(nand.Length);
+				writer.Write(nand);
+			}
 		}
 
 		protected override void LoadStateBinaryInternal(BinaryReader reader)
 		{
+			int len;
+			if (fw != null)
+			{
+				len = reader.ReadInt32();
+				if (len != fw.Length)
+				{
+					throw new InvalidOperationException("Firmware state buffer size mismatch!");
+				}
+				reader.Read(fw, 0, len);
+			}
+			if (sd != null)
+			{
+				len = reader.ReadInt32();
+				if (len != sd.Length)
+				{
+					throw new InvalidOperationException("SD Card Image state buffer size mismatch!");
+				}
+				reader.Read(sd, 0, len);
+			}
+			if (gbasram != null)
+			{
+				len = reader.ReadInt32();
+				if (len != gbasram.Length)
+				{
+					throw new InvalidOperationException("GBA SaveRAM state buffer size mismatch!");
+				}
+				reader.Read(gbasram, 0, len);
+			}
+			if (nand != null)
+			{
+				len = reader.ReadInt32();
+				if (len != nand.Length)
+				{
+					throw new InvalidOperationException("DSi NAND state buffer size mismatch!");
+				}
+				reader.Read(nand, 0, len);
+			}
 			_core.SetFileOpenCallback(_coreFileOpenCallback);
 			_core.SetFileCloseCallback(_coreFileCloseCallback);
 		}
 
 		public bool IsDSiMode() => _dsi;
 
-		private readonly FileOpenCallback _coreFileOpenCallback;
-		private readonly FileCloseCallback _coreFileCloseCallback;
+		private readonly LibMelonDS.FileCallback _coreFileOpenCallback;
+		private readonly LibMelonDS.FileCallback _coreFileCloseCallback;
 
-		private void FileOpenCb(string file)
+		private void FileOpenCallback(byte[] file)
 		{
-			
+			string filestring = Encoding.UTF8.GetString(file);
+			switch (filestring)
+			{
+				case "bios7.rom": _exe.AddTransientFile(bios7, filestring); break;
+				case "bios9.rom": _exe.AddTransientFile(bios9, filestring); break;
+				case "firmware.bin": _exe.AddTransientFile(fw, filestring); break;
+				case "game.rom": _exe.AddTransientFile(dsrom, filestring); break;
+				case "sd.bin": _exe.AddTransientFile(sd, filestring); break;
+				case "gba.rom": _exe.AddTransientFile(gbarom, filestring); break;
+				case "gba.ram": _exe.AddTransientFile(gbasram, filestring); break;
+				case "bios7i.rom": _exe.AddTransientFile(bios7i, filestring); break;
+				case "bios9i.rom": _exe.AddTransientFile(bios9i, filestring); break;
+				case "nand.bin": _exe.AddTransientFile(nand, filestring); break;
+				default: break;
+			}
 		}
 
-		public void FileCloseCb(string file)
+		public void FileCloseCallback(byte[] file)
 		{
-			
+			string filestring = Encoding.UTF8.GetString(file);
+			byte[] newdata;
+			switch (filestring)
+			{
+				case "bios7.rom":
+				case "bios9.rom":
+				case "firmware.bin":
+				case "game.rom":
+				case "sd.bin":
+				case "gba.rom":
+				case "gba.ram":
+				case "bios7i.rom":
+				case "bios9i.rom":
+				case "nand.bin": newdata = _exe.RemoveTransientFile(filestring); break;
+				default: return;
+			}
+			switch (filestring)
+			{
+				case "firmware.bin":
+					if (newdata.Length != fw.Length)
+					{
+						throw new InvalidOperationException("Firmware buffer size mismatch!");
+					}
+					Array.Copy(newdata, fw, newdata.Length);
+					break;
+				case "sd.bin":
+					if (newdata.Length != sd.Length)
+					{
+						throw new InvalidOperationException("SD Card Image buffer size mismatch!");
+					}
+					Array.Copy(newdata, sd, newdata.Length);
+					break;
+				case "gba.ram":
+					if (newdata.Length != gbasram.Length)
+					{
+						throw new InvalidOperationException("GBA SaveRAM buffer size mismatch!");
+					}
+					Array.Copy(newdata, gbasram, newdata.Length);
+					break;
+				case "nand.bin":
+					if (newdata.Length != nand.Length)
+					{
+						throw new InvalidOperationException("DSi NAND buffer size mismatch!");
+					}
+					Array.Copy(newdata, nand, newdata.Length);
+					break;
+				default:
+					break;
+			}
 		}
 	}
 }

@@ -9,8 +9,9 @@
 namespace Platform
 {
 
-FileStruct files[NUM_FILES];
 time_t FrontendTime;
+void (*FileOpenCallback)(const char* path);
+void (*FileCloseCallback)(const char* path);
 
 void Init(int argc, char** argv)
 {
@@ -26,17 +27,36 @@ void StopEmu()
 
 FILE* OpenFile(const char* path, const char* mode, bool mustexist)
 {
-    return nullptr;
+    FileOpenCallback(path);
+    FILE* f = fopen(path, mode);
+    return f;
 }
 
 FILE* OpenLocalFile(const char* path, const char* mode)
 {
-    return nullptr;
+    OpenFile(path, mode);
+}
+
+void CloseFile(FILE* file, const char* path)
+{
+    fclose(path, mode);
+    FileCloseCallback(path);
+}
+
+void SetFileOpenCallback(void (*callback)(const char* path))
+{
+    FileOpenCallback = callback;
+}
+
+void SetFileCloseCallback(void (*callback)(const char* path))
+{
+    FileCloseCallback = callback;
 }
 
 Thread* Thread_Create(std::function<void()> func)
 {
-    return new (Thread*) std::thread(func);
+    std::thread* t = new std::thread(func);
+    return (Thread*) t;
 }
 
 void Thread_Free(Thread* thread)
@@ -79,7 +99,8 @@ void Semaphore_Post(Semaphore* sema, int count)
 
 Mutex* Mutex_Create()
 {
-    return new (Mutex*) std::mutex();
+    std::mutex* m = new std::mutex();
+    return (Mutex*) m;
 }
 
 void Mutex_Free(Mutex* mutex)
@@ -140,8 +161,9 @@ int LAN_RecvPacket(u8* data)
     return 0;
 }
 
-void Sleep(u64 usecs)
+bool Sleep(u64 usecs)
 {
+    return false;
 }
 
 void SetFrontendTime(time_t newTime)
@@ -156,15 +178,13 @@ time_t GetFrontendTime()
 
 tm GetFrontendDate(time_t basetime)
 {
-    time_t t = basetime + FrontendTime;
-    return gmtime(&t);
+    time_t t = basetime + FrontendTime; 
+    return *gmtime(&t);
 }
 
 time_t ConvertDateToTime(tm date)
 {
-    time_t time = mktime(&date);
-    tm* utc = gmtime(&time);
-    time_t t = mktime(utc);
-    time += time - t;
-    return time;
+    return timegm(&date);
+}
+
 }
