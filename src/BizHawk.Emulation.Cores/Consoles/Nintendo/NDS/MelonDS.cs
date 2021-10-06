@@ -161,10 +161,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			Name = "NDS Controller",
 			BoolButtons =
 			{
-				"Up", "Down", "Left", "Right", "Start", "Select", "B", "A", "Y", "X", "L", "R", "LidOpen", "LidClose", "Power", "Touch"
+				"Up", "Down", "Left", "Right", "Start", "Select", "B", "A", "Y", "X", "L", "R", "LidOpen", "LidClose", "Touch", "Power"
 			}
 		}.AddXYPair("Touch{0}", AxisPairOrientation.RightAndUp, 0.RangeTo(255), 128, 0.RangeTo(191), 96)
-			.AddAxis("GBA Light Sensor", 0.RangeTo(10), 0);
+			.AddAxis("Mic Input", 0.RangeTo(4096), 0)
+				.AddAxis("GBA Light Sensor", 0.RangeTo(10), 0);
 		private LibMelonDS.Buttons GetButtons(IController c)
 		{
 			LibMelonDS.Buttons b = 0;
@@ -196,8 +197,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				b |= LibMelonDS.Buttons.LIDOPEN;
 			if (c.IsPressed("LidClose"))
 				b |= LibMelonDS.Buttons.LIDCLOSE;
-			if (c.IsPressed("Power"))
-				b |= LibMelonDS.Buttons.POWER;
 			if (c.IsPressed("Touch"))
 				b |= LibMelonDS.Buttons.TOUCH;
 
@@ -348,27 +347,22 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
 		{
-			var ret = new LibMelonDS.FrameInfo
-			{
-				Time = GetRtcTime(!DeterministicEmulation),
-				Keys = GetButtons(controller),
-				TouchX = (byte)controller.AxisValue("TouchX"),
-				TouchY = (byte)controller.AxisValue("TouchY"),
-				GBALightSensor = (byte)controller.AxisValue("GBA Light Sensor"),
-			};
-			if ((ret.Keys & LibMelonDS.Buttons.POWER) == LibMelonDS.Buttons.POWER)
+			if (controller.IsPressed("Power"))
 			{
 				_exe.AddTransientFile(new byte[0], "save.ram");
 				_core.GetSaveRam();
 				_core.Reset();
 				_exe.RemoveTransientFile("save.ram");
 			}
-			return ret;
-		}
-
-		protected override void FrameAdvancePost()
-		{
-
+			return new LibMelonDS.FrameInfo
+			{
+				Time = GetRtcTime(!DeterministicEmulation),
+				Keys = GetButtons(controller),
+				TouchX = (byte)controller.AxisValue("TouchX"),
+				TouchY = (byte)controller.AxisValue("TouchY"),
+				MicInput = (short)controller.AxisValue("Mic Input"),
+				GBALightSensor = (byte)controller.AxisValue("GBA Light Sensor"),
+			};
 		}
 
 		protected override void SaveStateBinaryInternal(BinaryWriter writer)

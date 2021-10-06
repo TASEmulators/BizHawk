@@ -10,11 +10,12 @@
 #include "../emulibc/emulibc.h"
 #include "../emulibc/waterboxcore.h"
 
+#include <algorithm>
+
 #define EXPORT extern "C" ECL_EXPORT
 
 static GPU::RenderSettings biz_render_settings { false, 1, false };
 static bool biz_direct_boot;
-static bool biz_gba_cart_present;
 
 typedef enum
 {
@@ -198,7 +199,7 @@ static void ARM9Access(u8* buffer, s64 address, s64 count, bool write)
 	if (write)
 		while (count--) ARM9Write8(address++, *buffer++);
 	else
-		while (count--) *buffer++ = ARM7Peek8(address++);
+		while (count--) *buffer++ = ARM9Peek8(address++);
 }
 
 static void ARM7Access(u8* buffer, s64 address, s64 count, bool write)
@@ -255,28 +256,11 @@ struct MyFrameInfo : public FrameInfo
 	u32 Keys;
 	s8 TouchX;
 	s8 TouchY;
+	s16 MicInput;
 	s8 GBALightSensor;
 };
 
-typedef enum
-{
-	A = 0x0001,
-	B = 0x0002,
-	SELECT = 0x0004,
-	START = 0x0008,
-	RIGHT = 0x0010,
-	LEFT = 0x0020,
-	UP = 0x0040,
-	DOWN = 0x0080,
-	R = 0x0100,
-	L = 0x0200,
-	X = 0x0400,
-	Y = 0x0800,
-	TOUCH = 0x1000,
-	LIDOPEN = 0x2000,
-	LIDCLOSE = 0x4000,
-	POWER = 0x8000, // handled by frontend
-} Buttons;
+static s16 biz_mic_input[1024];
 
 static bool ValidRange(s8 sensor)
 {
@@ -285,17 +269,20 @@ static bool ValidRange(s8 sensor)
 
 EXPORT void FrameAdvance(MyFrameInfo* f)
 {
-	if (f->Keys & Buttons.TOUCH)
+	NDS::SetKeyMask(~f->Keys & 0xFFF);
+
+	if (f->Keys & 0x1000)
 		NDS::TouchScreen(f->TouchX, f->TouchY);
 	else
 		NDS::ReleaseScreen();
 
-	NDS::SetKeyMask(~f->Keys & 0xFFF);
-
-	if (f->Keys & Buttons.LIDOPEN)
+	if (f->Keys & 0x2000)
 		NDS::SetLidClosed(false);
-	else if (f->Keys & Buttons.LIDCLOSE)
+	else if (f->Keys & 0x4000)
 		NDS::SetLidClosed(true);
+
+	std::fill_n(biz_mic_input, 1024, f->MicInput << 4);
+	NDS::MicInputFrame(biz_mic_input, 1024);
 
 	int sensor = GBACart::SetInput(0, 1);
 	if (sensor != -1 && ValidRange(f->GBALightSensor))
