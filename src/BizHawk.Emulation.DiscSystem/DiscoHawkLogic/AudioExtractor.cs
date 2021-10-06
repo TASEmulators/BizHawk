@@ -9,7 +9,7 @@ namespace BizHawk.Client.DiscoHawk
 {
 	public static class AudioExtractor
 	{
-		public static void Extract(Disc disc, string path, string fileBase, Func<bool?> getOverwritePolicy)
+		public static void Extract(Disc disc, string path, string fileBase, Func<string, bool?> getOverwritePolicy)
 		{
 			var dsr = new DiscSectorReader(disc);
 
@@ -36,7 +36,7 @@ namespace BizHawk.Client.DiscoHawk
 				var mp3Path = $"{Path.Combine(path, fileBase)} - Track {track.Number:D2}.mp3";
 				if (File.Exists(mp3Path))
 				{
-					overwriteExisting ??= getOverwritePolicy();
+					overwriteExisting ??= getOverwritePolicy(mp3Path);
 					switch (overwriteExisting)
 					{
 						case true: // "Yes" -- overwrite

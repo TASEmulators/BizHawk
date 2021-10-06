@@ -4,6 +4,8 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
+using BizHawk.Client.DiscoHawk;
+
 namespace BizHawk.Emulation.DiscSystem
 {
 	/// <remarks>
@@ -267,7 +269,8 @@ namespace BizHawk.Emulation.DiscSystem
 			var loadDiscInterface = DiscInterface.BizHawk;
 			var compareDiscInterfaces = new List<DiscInterface>();
 			bool hawk = false;
-
+			bool music = false;
+			bool overwrite = false;
 			int idx = 0;
 			while (idx < args.Length)
 			{
@@ -284,6 +287,14 @@ namespace BizHawk.Emulation.DiscSystem
 					dirArg = args[idx++];
 					scanCues = true;
 				}
+				else if (au is "MUSIC")
+				{
+					music = true;
+				}
+				else if (au is "OVERWRITE")
+				{
+					overwrite = true;
+				}
 				else infile = a;
 			}
 
@@ -294,6 +305,21 @@ namespace BizHawk.Emulation.DiscSystem
 					inputPath: infile,
 					errorCallback: err => Console.WriteLine($"failed to convert {infile}:\n{err}"),
 					discInterface: loadDiscInterface);
+			}
+
+			if (music)
+			{
+				if (infile is null) return;
+				using var disc = Disc.LoadAutomagic(infile);
+				var path = Path.GetDirectoryName(infile);
+				var filename = Path.GetFileNameWithoutExtension(infile);
+				bool? CheckOverwrite(string mp3Path)
+				{
+					if (overwrite) return true; // overwrite
+					Console.WriteLine($"{mp3Path} already exists. Remove existing output files, or retry with the extra argument \"OVERWRITE\".");
+					return null; // cancel
+				}
+				AudioExtractor.Extract(disc, path, filename, CheckOverwrite);
 			}
 
 			bool verbose = true;
