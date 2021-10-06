@@ -1,5 +1,5 @@
 CXXFLAGS := -DMELONDS_VERSION="" \
-	-I./melonDS/src -I./melonDS/src/teakra/include -I./melonDS/src/teakra/src \
+	-I./melonDS/src -I./melonDS/src/teakra/include \
 	-Wall -Wextra -Werror=int-to-pointer-cast \
 	-Wcast-qual -Wfatal-errors -Wno-missing-braces \
 	-Wno-unused-parameter -Wno-parentheses -Wno-sign-compare \
@@ -9,7 +9,6 @@ CXXFLAGS := -DMELONDS_VERSION="" \
 TARGET = melonDS.wbx
 
 CORE_SRCS = \
-	ARCodeFile.cpp \
 	AREngine.cpp \
 	ARM.cpp \
 	ARMInterpreter.cpp \
@@ -50,17 +49,12 @@ TEAKRA_SRCS = \
 	ahbm.cpp \
 	apbp.cpp \
 	btdmp.cpp \
-	disassembler.cpp \
-	disassembler_c.cpp \
 	dma.cpp \
-	timer.cpp \
 	memory_interface.cpp \
 	mmio.cpp \
-	parser.cpp \
 	processor.cpp \
 	teakra.cpp \
-	teakra_c.cpp \
-	test_generator.cpp
+	timer.cpp
 
 FATFS_SRCS = \
 	diskio.c \
