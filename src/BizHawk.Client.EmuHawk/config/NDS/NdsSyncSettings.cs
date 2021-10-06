@@ -9,11 +9,11 @@ namespace BizHawk.Client.EmuHawk
 	public partial class NdsSyncSettings : Form
 	{
 		private readonly IMainFormForConfig _mainForm;
-		private readonly MelonDS.MelonSyncSettings _syncSettings;
+		private readonly NDS.SyncSettings _syncSettings;
 
 		public NdsSyncSettings(
 			IMainFormForConfig mainForm,
-			MelonDS.MelonSyncSettings syncSettings)
+			NDS.SyncSettings syncSettings)
 		{
 			_mainForm = mainForm;
 			_syncSettings = syncSettings;
@@ -23,12 +23,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NDSSettings_Load(object sender, EventArgs e)
 		{
-			chkBootToFirmware.Checked = _syncSettings.BootToFirmware;
+			/*chkBootToFirmware.Checked = _syncSettings.BootToFirmware;
 			txtName.Text = _syncSettings.Nickname;
 			cbxFavColor.SelectedIndex = _syncSettings.FavoriteColor;
 			numBirthDay.Value = _syncSettings.BirthdayDay;
 			numBirthMonth.Value = _syncSettings.BirthdayMonth;
-			dtpStartupTime.Value = DateTimeOffset.FromUnixTimeSeconds(_syncSettings.TimeAtBoot).UtcDateTime;
+			dtpStartupTime.Value = DateTimeOffset.FromUnixTimeSeconds(_syncSettings.TimeAtBoot).UtcDateTime;*/
 		}
 
 		private void numBirthMonth_ValueChanged(object sender, EventArgs e)
@@ -65,7 +65,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveBtn_Click(object sender, EventArgs e)
 		{
-			_syncSettings.BootToFirmware = chkBootToFirmware.Checked;
+			/*_syncSettings.BootToFirmware = chkBootToFirmware.Checked;
 			_syncSettings.Nickname = txtName.Text;
 			_syncSettings.FavoriteColor = (byte)cbxFavColor.SelectedIndex;
 			_syncSettings.BirthdayDay = (byte)numBirthDay.Value;
@@ -77,14 +77,14 @@ namespace BizHawk.Client.EmuHawk
 
 			_mainForm.PutCoreSyncSettings(_syncSettings);
 			DialogResult =  DialogResult.OK;
-			Close();
+			Close();*/
 		}
 
 		private void DefaultBtn_Click(object sender, EventArgs e)
 		{
 			if (_mainForm.DialogController.ShowMessageBox2("Revert to and save default settings?", "default settings", useOKCancel: true))
 			{
-				_mainForm.PutCoreSyncSettings(new MelonDS.MelonSyncSettings());
+				_mainForm.PutCoreSyncSettings(new NDS.SyncSettings());
 				DialogResult = DialogResult.OK;
 				Close();
 			}

@@ -33,7 +33,7 @@ namespace BizHawk.Client.EmuHawk.CoreExtensions
 				Snes9x => Properties.Resources.Snes9X,
 				MAME => Properties.Resources.Mame,
 				MGBAHawk => Properties.Resources.Mgba,
-				MelonDS => Properties.Resources.MelonDS,
+				NDS => Properties.Resources.MelonDS,
 				_ => null
 			};
 		}

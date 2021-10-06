@@ -208,8 +208,8 @@ namespace BizHawk.Client.Common
 
 				// compute its hash
 				// NDS's firmware file contains user settings; these are over-written by sync settings, so we shouldn't allow them to impact the hash
-				var rff = reader.Read(fr.ID == NDS_FIRMWARE
-					? new FileInfo(Emulation.Cores.Consoles.Nintendo.NDS.MelonDS.CreateModifiedFirmware(userSpec))
+				/*var rff = reader.Read(fr.ID == NDS_FIRMWARE
+					? new FileInfo(Emulation.Cores.Consoles.Nintendo.NDS.NDS.CreateModifiedFirmware(userSpec))
 					: fi);
 				ri.Size = fi.Length;
 				ri.Hash = rff.Hash;
@@ -224,7 +224,7 @@ namespace BizHawk.Client.Common
 					{
 						ri.KnownMismatching = true;
 					}
-				}
+				}*/
 			}
 		}
 	}

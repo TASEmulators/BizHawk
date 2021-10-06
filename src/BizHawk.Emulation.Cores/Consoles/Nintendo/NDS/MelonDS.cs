@@ -48,12 +48,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 			_core = PreInit<LibMelonDS>(new WaterboxOptions
 			{
-				Filename = "melonds.wbx",
-				SbrkHeapSizeKB = 192,
-				InvisibleHeapSizeKB = 12,
-				SealedHeapSizeKB = 9 * 1024,
-				PlainHeapSizeKB = 4,
-				MmapHeapSizeKB = 1024,
+				Filename = "melonDS.wbx",
+				SbrkHeapSizeKB = 64 * 1024,
+				SealedHeapSizeKB = 4 * 1024,
+				InvisibleHeapSizeKB = 4 * 1024,
+				PlainHeapSizeKB = 256,
+				MmapHeapSizeKB = 2 * 1024 * 1024,
 				SkipCoreConsistencyCheck = comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
 				SkipMemoryConsistencyCheck = comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
 			}, new Delegate[] { _coreFileOpenCallback, _coreFileCloseCallback });
@@ -143,7 +143,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			_core.SetFileOpenCallback(_coreFileOpenCallback);
 			_core.SetFileCloseCallback(_coreFileCloseCallback);
 
-			if (!_core.Init(flags))
+			var fwSettings = new LibMelonDS.FirmwareSettings();
+
+			if (!_core.Init(flags, fwSettings))
 			{
 				throw new InvalidOperationException("Core rejected the rom!");
 			}

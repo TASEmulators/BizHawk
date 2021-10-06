@@ -1598,7 +1598,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NDSSyncSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Emulator is MelonDS ds)
+			if (Emulator is NDS ds)
 			{
 				using var form = new NdsSyncSettings(this, ds.GetSyncSettings().Clone());
 				form.ShowDialog();
