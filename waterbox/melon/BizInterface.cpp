@@ -306,8 +306,8 @@ EXPORT void FrameAdvance(MyFrameInfo* f)
 	}
 	f->Width = 256;
 	f->Height = 384;
-	f->Samples = SPU::GetOutputSize();
-	SPU::ReadOutput(f->SoundBuffer, f->Samples / 2);
+	f->Samples = SPU::GetOutputSize() / 2;
+	SPU::ReadOutput(f->SoundBuffer, f->Samples);
 	f->Cycles = NDS::GetSysClockCycles(2);
 	f->Lagged = NDS::LagFrameFlag;
 }

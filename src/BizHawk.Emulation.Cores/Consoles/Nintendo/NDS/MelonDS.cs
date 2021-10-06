@@ -49,11 +49,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			_core = PreInit<LibMelonDS>(new WaterboxOptions
 			{
 				Filename = "melonDS.wbx",
-				SbrkHeapSizeKB = 64 * 1024,
-				SealedHeapSizeKB = 4 * 1024,
-				InvisibleHeapSizeKB = 4 * 1024,
-				PlainHeapSizeKB = 256,
-				MmapHeapSizeKB = 2 * 1024 * 1024,
+				SbrkHeapSizeKB = 2 * 1024,
+				SealedHeapSizeKB = 4,
+				InvisibleHeapSizeKB = 4,
+				PlainHeapSizeKB = 4,
+				MmapHeapSizeKB = 512 * 1024,
 				SkipCoreConsistencyCheck = comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
 				SkipMemoryConsistencyCheck = comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
 			}, new Delegate[] { _coreFileOpenCallback, _coreFileCloseCallback });
@@ -77,6 +77,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				? comm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "BIOS9"))
 				: null;
 
+			dsrom = new byte[rom.Length];
 			Array.Copy(rom, dsrom, rom.Length);
 
 			sd = _syncSettings.SDCardEnable
@@ -154,6 +155,20 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 			DeterministicEmulation = deterministic || !_syncSettings.UseRealTime;
 			InitializeRtc(_syncSettings.InitialTime);
+
+			_resampler = new SpeexResampler(SpeexResampler.Quality.QUALITY_DEFAULT, 32768, 44100, 32768, 44100, null, this);
+			_serviceProvider.Register<ISoundProvider>(_resampler);
+		}
+
+		private SpeexResampler _resampler;
+		public override void Dispose()
+		{
+			base.Dispose();
+			if (_resampler != null)
+			{
+				_resampler.Dispose();
+				_resampler = null;
+			}
 		}
 
 		public override ControllerDefinition ControllerDefinition => NDSController;
@@ -439,28 +454,54 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		private readonly LibMelonDS.FileCallback _coreFileOpenCallback;
 		private readonly LibMelonDS.FileCallback _coreFileCloseCallback;
 
-		private void FileOpenCallback(byte[] file)
+		private void FileOpenCallback(IntPtr _file)
 		{
-			string filestring = Encoding.UTF8.GetString(file);
+			byte[] file = new byte[12];
+			System.Runtime.InteropServices.Marshal.Copy(_file, file, 0, 12);
+			int term = 12;
+			for (int i = 0; i < 12; i++)
+			{
+				if (file[i] == 0)
+				{
+					term = i;
+					break;
+				}
+			}
+			byte[] actualfile = new byte[term];
+			Array.Copy(file, actualfile, term);
+			string filestring = Encoding.ASCII.GetString(actualfile);
 			switch (filestring)
 			{
-				case "bios7.rom": _exe.AddTransientFile(bios7, filestring); break;
-				case "bios9.rom": _exe.AddTransientFile(bios9, filestring); break;
-				case "firmware.bin": _exe.AddTransientFile(fw, filestring); break;
-				case "game.rom": _exe.AddTransientFile(dsrom, filestring); break;
-				case "sd.bin": _exe.AddTransientFile(sd, filestring); break;
-				case "gba.rom": _exe.AddTransientFile(gbarom, filestring); break;
-				case "gba.ram": _exe.AddTransientFile(gbasram, filestring); break;
-				case "bios7i.rom": _exe.AddTransientFile(bios7i, filestring); break;
-				case "bios9i.rom": _exe.AddTransientFile(bios9i, filestring); break;
-				case "nand.bin": _exe.AddTransientFile(nand, filestring); break;
+				case "bios7.rom": if (bios7 != null) { _exe.AddTransientFile(bios7, filestring); } break;
+				case "bios9.rom": if (bios9 != null) { _exe.AddTransientFile(bios9, filestring); } break;
+				case "firmware.bin": if (fw != null) { _exe.AddTransientFile(fw, filestring); } break;
+				case "game.rom": if (dsrom != null) { _exe.AddTransientFile(dsrom, filestring); } break;
+				case "sd.bin": if (sd != null) { _exe.AddTransientFile(sd, filestring); } break;
+				case "gba.rom": if (gbarom != null) { _exe.AddTransientFile(gbarom, filestring); } break;
+				case "gba.ram": if (gbasram != null) { _exe.AddTransientFile(gbasram, filestring); } break;
+				case "bios7i.rom": if (bios7i != null) { _exe.AddTransientFile(bios7i, filestring); } break;
+				case "bios9i.rom": if (bios9i != null) { _exe.AddTransientFile(bios9i, filestring); } break;
+				case "nand.bin": if (nand != null) { _exe.AddTransientFile(nand, filestring); } break;
 				default: break;
 			}
 		}
 
-		public void FileCloseCallback(byte[] file)
+		public void FileCloseCallback(IntPtr _file)
 		{
-			string filestring = Encoding.UTF8.GetString(file);
+			byte[] file = new byte[12];
+			System.Runtime.InteropServices.Marshal.Copy(_file, file, 0, 12);
+			int term = 12;
+			for (int i = 0; i < 12; i++)
+			{
+				if (file[i] == 0)
+				{
+					term = i;
+					break;
+				}
+			}
+			byte[] actualfile = new byte[term];
+			Array.Copy(file, actualfile, term);
+			string filestring = Encoding.ASCII.GetString(actualfile);
 			byte[] newdata;
 			switch (filestring)
 			{
