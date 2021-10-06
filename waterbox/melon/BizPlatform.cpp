@@ -4,7 +4,7 @@
 #include <semaphore.h>
 #include <thread>
 #include <mutex>
-#include "melonds/src/Platform.h"
+#include "Platform.h"
 
 namespace Platform
 {
@@ -34,12 +34,12 @@ FILE* OpenFile(const char* path, const char* mode, bool mustexist)
 
 FILE* OpenLocalFile(const char* path, const char* mode)
 {
-    OpenFile(path, mode);
+    return OpenFile(path, mode);
 }
 
 void CloseFile(FILE* file, const char* path)
 {
-    fclose(path, mode);
+    fclose(file);
     FileCloseCallback(path);
 }
 

@@ -1,11 +1,11 @@
-#include "melonds/src/NDS.h"
-#include "melonds/src/DSi.h"
-#include "melonds/src/GPU.h"
-#include "melonds/src/SPU.h"
-#include "melonds/src/GBACart.h"
-#include "melonds/src/Platform.h"
-#include "melonds/src/Config.h"
-#include "melonds/src/types.h"
+#include "NDS.h"
+#include "DSi.h"
+#include "GPU.h"
+#include "SPU.h"
+#include "GBACart.h"
+#include "Platform.h"
+#include "Config.h"
+#include "types.h"
 
 #include "../emulibc/emulibc.h"
 #include "../emulibc/waterboxcore.h"
@@ -15,7 +15,7 @@
 #define EXPORT extern "C" ECL_EXPORT
 
 static GPU::RenderSettings biz_render_settings { false, 1, false };
-static bool biz_direct_boot;
+static bool biz_skip_fw;
 
 typedef enum
 {
@@ -38,10 +38,10 @@ static const char* bios7i_path = "bios7i.rom";
 static const char* nand_path = "nand.bin";
 static const char* no_path = "";
 
-static const char* rom_path = "game.rom"
-static const char* sram_path = "save.ram"
-static const char* gba_rom_path = "gba.rom"
-static const char* gba_sram_path = "gba.ram"
+static const char* rom_path = "game.rom";
+static const char* sram_path = "save.ram";
+static const char* gba_rom_path = "gba.rom";
+static const char* gba_sram_path = "gba.ram";
 
 typedef struct
 {
@@ -197,54 +197,54 @@ Further Memory (not mapped to ARM9/ARM7 bus)
 static void ARM9Access(u8* buffer, s64 address, s64 count, bool write)
 {
 	if (write)
-		while (count--) ARM9Write8(address++, *buffer++);
+		while (count--) NDS::ARM9Write8(address++, *buffer++);
 	else
-		while (count--) *buffer++ = ARM9Peek8(address++);
+		while (count--) *buffer++ = NDS::ARM9Peek8(address++);
 }
 
 static void ARM7Access(u8* buffer, s64 address, s64 count, bool write)
 {
 	if (write)
-		while (count--) ARM7Write8(address++, *buffer++);
+		while (count--) NDS::ARM7Write8(address++, *buffer++);
 	else
-		while (count--) *buffer++ = ARM7Peek8(address++);
+		while (count--) *buffer++ = NDS::ARM7Peek8(address++);
 }
 
 EXPORT void GetMemoryAreas(MemoryArea *m)
 {
-	m[0].Data = ARM9BIOS;
+	m[0].Data = NDS::ARM9BIOS;
 	m[0].Name = "ARM9 BIOS";
-	m[0].Size = sizeof ARM9BIOS;
+	m[0].Size = sizeof NDS::ARM9BIOS;
 	m[0].Flags = MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE;
 
-	m[1].Data = ARM7BIOS;
+	m[1].Data = NDS::ARM7BIOS;
 	m[1].Name = "ARM7 BIOS";
-	m[1].Size = sizeof ARM7BIOS;
+	m[1].Size = sizeof NDS::ARM7BIOS;
 	m[1].Flags = MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE;
 
-	m[2].Data = MainRAM;
+	m[2].Data = NDS::MainRAM;
 	m[2].Name = "Main RAM";
-	m[2].Size = MainRAMMaxSize;
+	m[2].Size = NDS::MainRAMMaxSize;
 	m[2].Flags = MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_PRIMARY;
 
-	m[3].Data = SharedWRAM;
+	m[3].Data = NDS::SharedWRAM;
 	m[3].Name = "Shared WRAM";
-	m[3].Size = SharedWRAMSize;
+	m[3].Size = NDS::SharedWRAMSize;
 	m[3].Flags = MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE;
 
-	m[4].Data = ARM7WRAM;
+	m[4].Data = NDS::ARM7WRAM;
 	m[4].Name = "ARM7 WRAM";
-	m[4].Size = ARM7WRAMSize;
+	m[4].Size = NDS::ARM7WRAMSize;
 	m[4].Flags = MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE;
 
-	m[5].Data = ARM9Access;
+	m[5].Data = (void*)ARM9Access;
 	m[5].Name = "ARM9 System Bus";
-	m[5].Size = 1 << 32;
+	m[5].Size = 1ull << 32;
 	m[5].Flags = MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_FUNCTIONHOOK;
 
-	m[6].Data = ARM7Access;
+	m[6].Data = (void*)ARM7Access;
 	m[6].Name = "ARM7 System Bus";
-	m[6].Size = 1 << 32;
+	m[6].Size = 1ull << 32;
 	m[6].Flags = MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_FUNCTIONHOOK;
 
 	// fixme: include more shit
@@ -301,8 +301,8 @@ EXPORT void FrameAdvance(MyFrameInfo* f)
 	NDS::RunFrame();
 	for (int i = 0; i < (256 * 192); i++)
 	{
-		f->VideoBuffer[i] = GPU::Framebuffer[GPU::FrontBuffer][1];
-		f->VideoBuffer[(256 * 192) + i] = GPU::Framebuffer[GPU::FrontBuffer][1]; 
+		f->VideoBuffer[i] = GPU::Framebuffer[GPU::FrontBuffer][0][i];
+		f->VideoBuffer[(256 * 192) + i] = GPU::Framebuffer[GPU::FrontBuffer][1][i];
 	}
 	f->Width = 256;
 	f->Height = 384;
