@@ -52,8 +52,18 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			public byte GBALightSensor;
 		}
 
+		public class FirmwareSettings
+		{
+			byte[] FirmwareUsername = new byte[64];
+			int FirmwareLanguage;
+			int FirmwareBirthdayMonth;
+			int FirmwareBirthdayDay;
+			int FirmwareFavouriteColour;
+			byte[] FirmwareMessage = new byte[1024];
+		};
+
 		[BizImport(CC)]
-		public abstract bool Init(LoadFlags flags);
+		public abstract bool Init(LoadFlags flags, FirmwareSettings fwSettings);
 
 		public delegate void FileCallback(byte[] file);
 
