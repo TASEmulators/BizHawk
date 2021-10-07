@@ -539,6 +539,10 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
+			// only on mouse button down, check that the pointed to cell is the correct one (can be wrong due to scroll while playing)
+			TasView._programmaticallyChangingRow = true;
+			TasView.PointMouseToNewCell();
+
 			if (e.Button == MouseButtons.Middle)
 			{
 				if (MainForm.EmulatorPaused)

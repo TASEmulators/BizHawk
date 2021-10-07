@@ -9,6 +9,9 @@ using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.CustomControls;
 using BizHawk.Common;
 
+// TODO: There are some bad interactions between ScrollToIndex and MakeIndexVisible that are preventing things from working as intended.
+//       But, the current behaviour is ok for now for what it is used for.
+
 namespace BizHawk.Client.EmuHawk
 {
 	// Row width depends on font size and padding
@@ -710,7 +713,7 @@ namespace BizHawk.Client.EmuHawk
 						_programmaticallyUpdatingScrollBarValues = false;
 					}
 				}
-
+				_programmaticallyChangingRow = false;
 				PointMouseToNewCell();
 			}
 		}
@@ -785,7 +788,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					while (!range.Contains(lastVisible - value) && FirstVisibleRow != 0);
 				}
-
+				_programmaticallyChangingRow = false;
 				PointMouseToNewCell();
 			}
 		}
@@ -889,11 +892,12 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 			}
-
+			_programmaticallyChangingRow = false;
 			PointMouseToNewCell();
 		}
 
-		private bool _programmaticallyChangingRow = false;
+		public bool _programmaticallyChangingRow = false;
+
 		/// <summary>
 		/// Scrolls so that the given index is visible, if it isn't already; doesn't use scroll settings.
 		/// </summary>
@@ -902,6 +906,7 @@ namespace BizHawk.Client.EmuHawk
 			if (!IsVisible(index))
 			{
 				_programmaticallyChangingRow = true;
+
 				if (FirstVisibleRow > index)
 				{
 					FirstVisibleRow = index;
@@ -948,7 +953,7 @@ namespace BizHawk.Client.EmuHawk
 
 		// It's necessary to call this anytime the control is programmatically scrolled
 		// Since the mouse may not be pointing to the same cell anymore
-		private void PointMouseToNewCell()
+		public void PointMouseToNewCell()
 		{
 			if (_currentX.HasValue && _currentY.HasValue)
 			{
@@ -966,7 +971,7 @@ namespace BizHawk.Client.EmuHawk
 						newCell.RowIndex = 0;
 					}
 
-					if (!_programmaticallyChangingRow)
+					if (_programmaticallyChangingRow)
 					{
 						_programmaticallyChangingRow = false;
 						CellChanged(newCell);
