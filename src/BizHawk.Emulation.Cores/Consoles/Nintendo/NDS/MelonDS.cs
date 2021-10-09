@@ -287,9 +287,17 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			public bool SkipFirmware { get; set; }
 
 			[DisplayName("Firmware Override")]
-			[Description("If true, the firmware settings will be overriden by provided setting. Forced true when recording a movie.")]
+			[Description("If true, the firmware settings will be overriden by provided settings. Forced true when recording a movie.")]
 			[DefaultValue(false)]
 			public bool FirmwareOverride { get; set; }
+
+			public string FirmwareUsername { get; set; }
+			public int FirmwareLanguage { get; set; }
+			public int FirmwareBirthdayMonth { get; set; }
+			public int FirmwareBirthdayDay { get; set; }
+			public int FirmwareFavouriteColour { get; set; }
+			public string FirmwareMessage { get; set; }
+
 
 			public SyncSettings Clone()
 			{

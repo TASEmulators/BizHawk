@@ -246,7 +246,6 @@ namespace BizHawk.Client.EmuHawk
 			this.GBPrinterViewerMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.NDSSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.NdsSettingsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.NdsSyncSettingsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.PSXSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.PSXControllerSettingsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.PSXOptionsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -1640,20 +1639,13 @@ namespace BizHawk.Client.EmuHawk
 			// NDSSubMenu
 			// 
 			this.NDSSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.NdsSettingsMenuItem,
-			this.NdsSyncSettingsMenuItem});
+			this.NdsSettingsMenuItem });
 			this.NDSSubMenu.Text = "NDS";
-			this.NDSSubMenu.DropDownOpened += new System.EventHandler(this.NDSSubMenu_DropDownOpened);
 			// 
 			// NdsSettingsMenuItem
 			// 
 			this.NdsSettingsMenuItem.Text = "Settings...";
 			this.NdsSettingsMenuItem.Click += new System.EventHandler(this.NDSSettingsMenuItem_Click);
-			// 
-			// NdsSyncSettingsMenuItem
-			// 
-			this.NdsSyncSettingsMenuItem.Text = "Sync Settings...";
-			this.NdsSyncSettingsMenuItem.Click += new System.EventHandler(this.NDSSyncSettingsMenuItem_Click);
 			// 
 			// PSXSubMenu
 			// 
@@ -2796,7 +2788,6 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx cpcd1ToolStripMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx AmstradCPCNonSyncSettingsToolStripMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx NDSSubMenu;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx NdsSyncSettingsMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx NdsSettingsMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator8;
 		private System.Windows.Forms.ToolStripMenuItem CaptureLuaMenuItem;

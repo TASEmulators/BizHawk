@@ -64,14 +64,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		[BizImport(CC)]
 		public abstract bool Init(LoadFlags flags, FirmwareSettings fwSettings);
 
-		public delegate void FileCallback(IntPtr file);
-
-		[BizImport(CC)]
-		public abstract void SetFileOpenCallback(FileCallback callback);
-
-		[BizImport(CC)]
-		public abstract void SetFileCloseCallback(FileCallback callback);
-
 		[BizImport(CC)]
 		public abstract bool PutSaveRam(byte[] data, uint len);
 
