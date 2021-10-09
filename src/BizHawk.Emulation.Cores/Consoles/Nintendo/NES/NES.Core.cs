@@ -64,9 +64,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		private DisplayType _display_type = DisplayType.NTSC;
 
-		//Sound config
-		public void SetVol1(int v) { apu.m_vol = v; }
-
 		private BlipBuffer blip = new BlipBuffer(4096);
 		private const int blipbuffsize = 4096;
 
