@@ -71,8 +71,9 @@ EXPORT bool Init(LoadFlags flags, FirmwareSettings* fwSettings)
 	srand(time(NULL));
 	Config::RandomizeMAC = !!(flags & FIRMWARE_OVERRIDE);
 	Config::AudioBitrate = !!(flags & ACCURATE_AUDIO_BITRATE) ? 1 : 2;
+	Config::FixedBootTime = true;
 	Config::UseRealTime = false;
-
+	Config::TimeAtBoot = 0;
 	biz_time = 0;
 	RTC::RtcCallback = BizRtcCallback;
 
