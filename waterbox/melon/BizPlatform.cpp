@@ -9,10 +9,6 @@
 namespace Platform
 {
 
-time_t FrontendTime;
-void (*FileOpenCallback)(const char* path);
-void (*FileCloseCallback)(const char* path);
-
 void Init(int argc, char** argv)
 {
 }
@@ -27,30 +23,12 @@ void StopEmu()
 
 FILE* OpenFile(const char* path, const char* mode, bool mustexist)
 {
-    FileOpenCallback(path);
-    FILE* f = fopen(path, mode);
-    return f;
+    return fopen(path, mode);
 }
 
 FILE* OpenLocalFile(const char* path, const char* mode)
 {
-    return OpenFile(path, mode);
-}
-
-void CloseFile(FILE* file, const char* path)
-{
-    fclose(file);
-    FileCloseCallback(path);
-}
-
-void SetFileOpenCallback(void (*callback)(const char* path))
-{
-    FileOpenCallback = callback;
-}
-
-void SetFileCloseCallback(void (*callback)(const char* path))
-{
-    FileCloseCallback = callback;
+    return fopen(path, mode);
 }
 
 Thread* Thread_Create(std::function<void()> func)
@@ -161,30 +139,8 @@ int LAN_RecvPacket(u8* data)
     return 0;
 }
 
-bool Sleep(u64 usecs)
+void Sleep(u64 usecs)
 {
-    return false;
-}
-
-void SetFrontendTime(time_t newTime)
-{
-    FrontendTime = newTime;
-}
-
-time_t GetFrontendTime()
-{
-    return FrontendTime;
-}
-
-tm GetFrontendDate(time_t basetime)
-{
-    time_t t = basetime + FrontendTime; 
-    return *gmtime(&t);
-}
-
-time_t ConvertDateToTime(tm date)
-{
-    return timegm(&date);
 }
 
 }

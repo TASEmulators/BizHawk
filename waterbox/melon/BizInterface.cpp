@@ -1,6 +1,7 @@
 #include "NDS.h"
 #include "GPU.h"
 #include "SPU.h"
+#include "RTC.h"
 #include "NDSCart.h"
 #include "NDSCart_SRAMManager.h"
 #include "GBACart.h"
@@ -12,11 +13,18 @@
 #include "../emulibc/waterboxcore.h"
 
 #include <algorithm>
+#include <time.h>
 
 #define EXPORT extern "C" ECL_EXPORT
 
 static GPU::RenderSettings biz_render_settings { false, 1, false };
 static bool biz_skip_fw;
+static time_t biz_time;
+
+static time_t BizRtcCallback()
+{
+	return biz_time;
+}
 
 typedef enum
 {
@@ -63,9 +71,10 @@ EXPORT bool Init(LoadFlags flags, FirmwareSettings* fwSettings)
 	srand(time(NULL));
 	Config::RandomizeMAC = !!(flags & FIRMWARE_OVERRIDE);
 	Config::AudioBitrate = !!(flags & ACCURATE_AUDIO_BITRATE) ? 1 : 2;
-	// slight misnomer, this just means frontend time will always be used on boot, not a set one.
-	// wbx core handles setting inital time already, so we don't need to deal with the configs for that
-	Config::UseRealTime = true;
+	Config::UseRealTime = false;
+
+	biz_time = 0;
+	RTC::RtcCallback = BizRtcCallback;
 
 	if (!NDS::Init()) return false;
 	GPU::InitRenderer(false);
@@ -165,7 +174,7 @@ static bool SafeToPeek(u32 addr)
 	{
 		if (addr >= 0x04800000 && addr <= 0x04810000)
 		{
-			if (addr & 1) --addr;
+			if (addr & 1) addr--;
 			addr &= 0x7FFE;
 			if (addr == 0x044 || addr == 0x060)
 				return false;
@@ -180,7 +189,7 @@ static void ARM9Access(u8* buffer, s64 address, s64 count, bool write)
 	if (write)
 		while (count--) NDS::ARM9Write8(address++, *buffer++);
 	else
-		while (count--) *buffer++ = SafeToPeek<true>(address) ? NDS::ARM9Peek8(address) : 0, address++;
+		while (count--) *buffer++ = SafeToPeek<true>(address) ? NDS::ARM9Read8(address) : 0, address++;
 }
 
 static void ARM7Access(u8* buffer, s64 address, s64 count, bool write)
@@ -188,7 +197,7 @@ static void ARM7Access(u8* buffer, s64 address, s64 count, bool write)
 	if (write)
 		while (count--) NDS::ARM7Write8(address++, *buffer++);
 	else
-		while (count--) *buffer++ = SafeToPeek<false>(address) ? NDS::ARM7Peek8(address) : 0, address++;
+		while (count--) *buffer++ = SafeToPeek<false>(address) ? NDS::ARM7Read8(address) : 0, address++;
 }
 
 EXPORT void GetMemoryAreas(MemoryArea *m)
@@ -278,7 +287,7 @@ EXPORT void FrameAdvance(MyFrameInfo* f)
 		}
 	}
 
-	Platform::SetFrontendTime(f->Time);
+	biz_time = f->Time;
 	NDS::RunFrame();
 	for (int i = 0; i < (256 * 192); i++)
 	{
