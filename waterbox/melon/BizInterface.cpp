@@ -1,7 +1,8 @@
 #include "NDS.h"
-#include "DSi.h"
 #include "GPU.h"
 #include "SPU.h"
+#include "NDSCart.h"
+#include "NDSCart_SRAMManager.h"
 #include "GBACart.h"
 #include "Platform.h"
 #include "Config.h"
@@ -20,93 +21,48 @@ static bool biz_skip_fw;
 typedef enum
 {
 	NONE = 0x00,
-	USE_DSI = 0x01,
-	USE_REAL_DS_BIOS = 0x02,
-	SKIP_FIRMWARE = 0x04,
-	SD_CARD_ENABLE = 0x08,
-	GBA_CART_PRESENT = 0x10,
-	ACCURATE_AUDIO_BITRATE = 0x20,
-	FIRMWARE_OVERRIDE = 0x40,
+	USE_REAL_BIOS = 0x01,
+	SKIP_FIRMWARE = 0x02,
+	GBA_CART_PRESENT = 0x04,
+	ACCURATE_AUDIO_BITRATE = 0x08,
+	FIRMWARE_OVERRIDE = 0x10,
 } LoadFlags;
 
 static const char* bios9_path = "bios9.rom";
 static const char* bios7_path = "bios7.rom";
 static const char* firmware_path = "firmware.bin";
-static const char* sd_path = "sd.bin";
-static const char* bios9i_path = "bios9i.rom";
-static const char* bios7i_path = "bios7i.rom";
-static const char* nand_path = "nand.bin";
-static const char* no_path = "";
-
 static const char* rom_path = "game.rom";
 static const char* sram_path = "save.ram";
 static const char* gba_rom_path = "gba.rom";
-static const char* gba_sram_path = "gba.ram";
+static const char* no_path = "";
 
 typedef struct
 {
-	char FirmwareUsername[64];
+	char* FirmwareUsername; // 64 length, please
 	int FirmwareLanguage;
 	int FirmwareBirthdayMonth;
 	int FirmwareBirthdayDay;
 	int FirmwareFavouriteColour;
-	char FirmwareMessage[1024];
+	char* FirmwareMessage; // 1024 length, please
 } FirmwareSettings;
 
-EXPORT bool Init(LoadFlags flags, FirmwareSettings fwSettings)
+EXPORT bool Init(LoadFlags flags, FirmwareSettings* fwSettings)
 {
-	Config::ExternalBIOSEnable = !!(flags & USE_REAL_DS_BIOS);
+	Config::ExternalBIOSEnable = !!(flags & USE_REAL_BIOS);
+
 	strncpy(Config::BIOS9Path, Config::ExternalBIOSEnable ? bios9_path : no_path, 1023);
 	Config::BIOS9Path[1023] = '\0';
 	strncpy(Config::BIOS7Path, Config::ExternalBIOSEnable ? bios7_path : no_path, 1023);
 	Config::BIOS7Path[1023] = '\0';
+	strncpy(Config::FirmwarePath, firmware_path, 1023);
+	Config::FirmwarePath[1023] = '\0';
 
-	bool dsi = !!(flags & USE_DSI);
-	NDS::SetConsoleType(dsi);
-	if (dsi)
-	{
-		strncpy(Config::FirmwarePath, no_path, 1023);
-		Config::FirmwarePath[1023] = '\0';
-		Config::DLDIEnable = false; // i think this is ds only?
-		strncpy(Config::DLDISDPath, no_path, 1023);
-		Config::DLDISDPath[1023] = '\0';
-		strncpy(Config::DSiBIOS9Path, bios9i_path, 1023);
-		Config::DSiBIOS9Path[1023] = '\0';
-		strncpy(Config::DSiBIOS7Path, bios7i_path, 1023);
-		Config::DSiBIOS7Path[1023] = '\0';
-		strncpy(Config::DSiFirmwarePath, firmware_path, 1023);
-		Config::DSiFirmwarePath[1023] = '\0';
-		strncpy(Config::DSiNANDPath, nand_path, 1023);
-		Config::DSiNANDPath[1023] = '\0';
-		Config::DSiSDEnable = !!(flags & SD_CARD_ENABLE);
-		strncpy(Config::DSiSDPath, Config::DSiSDEnable ? sd_path : no_path, 1023);
-		Config::DSiSDPath[1023] = '\0';
-	}
-	else
-	{
-		strncpy(Config::FirmwarePath, firmware_path, 1023);
-		Config::FirmwarePath[1023] = '\0';
-		Config::DLDIEnable = !!(flags & SD_CARD_ENABLE);
-		strncpy(Config::DLDISDPath, Config::DLDIEnable ? sd_path : no_path, 1023);
-		Config::DLDISDPath[1023] = '\0';
-		strncpy(Config::DSiBIOS9Path, no_path, 1023);
-		Config::DSiBIOS9Path[1023] = '\0';
-		strncpy(Config::DSiBIOS7Path, no_path, 1023);
-		Config::DSiBIOS7Path[1023] = '\0';
-		strncpy(Config::DSiFirmwarePath, no_path, 1023);
-		Config::DSiFirmwarePath[1023] = '\0';
-		strncpy(Config::DSiNANDPath, no_path, 1023);
-		Config::DSiNANDPath[1023] = '\0';
-		Config::DSiSDEnable = false;
-		strncpy(Config::DSiSDPath, no_path, 1023);
-		Config::DSiSDPath[1023] = '\0';
-	}
-	DSi::SDMMCFilePath = Config::DSiNANDPath;
-	DSi::SDIOFilePath = Config::DSiSDPath;
+	NDS::SetConsoleType(0);
 	// rand calls are deterministic under wbx, so this will force the mac address to a constant value instead of relying on whatever is in the firmware
 	// fixme: might want to allow the user to specify mac address?
+	srand(time(NULL));
 	Config::RandomizeMAC = !!(flags & FIRMWARE_OVERRIDE);
-	Config::AudioBitrate = !!(flags & ACCURATE_AUDIO_BITRATE) ? 10 : 16;
+	Config::AudioBitrate = !!(flags & ACCURATE_AUDIO_BITRATE) ? 1 : 2;
 	// slight misnomer, this just means frontend time will always be used on boot, not a set one.
 	// wbx core handles setting inital time already, so we don't need to deal with the configs for that
 	Config::UseRealTime = true;
@@ -116,18 +72,8 @@ EXPORT bool Init(LoadFlags flags, FirmwareSettings fwSettings)
 	GPU::SetRenderSettings(false, biz_render_settings);
 	biz_skip_fw = !!(flags & SKIP_FIRMWARE);
 	if (!NDS::LoadROM(rom_path, no_path, biz_skip_fw)) return false;
-	if (flags & GBA_CART_PRESENT) { if (!NDS::LoadGBAROM(gba_rom_path, gba_sram_path)) return false; }
+	if (flags & GBA_CART_PRESENT) { if (!NDS::LoadGBAROM(gba_rom_path, no_path)) return false; }
 	return true;
-}
-
-EXPORT void SetFileOpenCallback(void (*callback)(const char* path))
-{
-	Platform::SetFileOpenCallback(callback);
-}
-
-EXPORT void SetFileCloseCallback(void (*callback)(const char* path))
-{
-	Platform::SetFileCloseCallback(callback);
 }
 
 EXPORT bool PutSaveRam(u8* data, u32 len)
@@ -135,19 +81,24 @@ EXPORT bool PutSaveRam(u8* data, u32 len)
 	return NDS::ImportSRAM(data, len) != 0;
 }
 
-EXPORT void GetSaveRam()
+EXPORT void GetSaveRam(u8* data)
 {
-	NDS::RelocateSave(sram_path, true);
+	NDSCart_SRAMManager::FlushSecondaryBuffer(data, NDSCart_SRAMManager::SecondaryBufferLength);
+}
+
+EXPORT s32 GetSaveRamLength()
+{
+	return NDSCart_SRAMManager::SecondaryBufferLength;
 }
 
 EXPORT bool SaveRamIsDirty()
 {
-	return NDS::SRAMIsDirty();
+	return NDSCart_SRAMManager::NeedsFlush();
 }
 
 EXPORT void Reset()
 {
-	NDS::LoadROM(rom_path, sram_path, biz_skip_fw);
+	NDS::LoadROM(rom_path, no_path, biz_skip_fw);
 }
 
 /* excerpted from gbatek
@@ -194,12 +145,42 @@ Further Memory (not mapped to ARM9/ARM7 bus)
 
 */
 
+template<bool arm9>
+static bool SafeToPeek(u32 addr)
+{
+	if (arm9)
+	{
+		switch (addr)
+		{
+			case 0x04000130:
+			case 0x04000131:
+			case 0x04000600:
+			case 0x04000601:
+			case 0x04000602:
+			case 0x04000603:
+				return false;
+		}
+	}
+	else // arm7
+	{
+		if (addr >= 0x04800000 && addr <= 0x04810000)
+		{
+			if (addr & 1) --addr;
+			addr &= 0x7FFE;
+			if (addr == 0x044 || addr == 0x060)
+				return false;
+		}
+	}
+
+	return true;
+}
+
 static void ARM9Access(u8* buffer, s64 address, s64 count, bool write)
 {
 	if (write)
 		while (count--) NDS::ARM9Write8(address++, *buffer++);
 	else
-		while (count--) *buffer++ = NDS::ARM9Peek8(address++);
+		while (count--) *buffer++ = SafeToPeek<true>(address) ? NDS::ARM9Peek8(address) : 0, address++;
 }
 
 static void ARM7Access(u8* buffer, s64 address, s64 count, bool write)
@@ -207,7 +188,7 @@ static void ARM7Access(u8* buffer, s64 address, s64 count, bool write)
 	if (write)
 		while (count--) NDS::ARM7Write8(address++, *buffer++);
 	else
-		while (count--) *buffer++ = NDS::ARM7Peek8(address++);
+		while (count--) *buffer++ = SafeToPeek<false>(address) ? NDS::ARM7Peek8(address) : 0, address++;
 }
 
 EXPORT void GetMemoryAreas(MemoryArea *m)

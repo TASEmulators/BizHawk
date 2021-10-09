@@ -3,8 +3,10 @@ using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Waterbox;
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
@@ -13,25 +15,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 	public class NDS : WaterboxCore, ISaveRam,
 		ISettable<NDS.Settings, NDS.SyncSettings>
 	{
-
 		private readonly LibMelonDS _core;
-		private readonly bool _dsi;
-		private readonly bool _skipfw;
-
-		private readonly byte[] bios7;
-		private readonly byte[] bios9;
-		private readonly byte[] fw;
-		private readonly byte[] dsrom;
-		private readonly byte[] sd;
-		private readonly byte[] gbarom;
-		private readonly byte[] gbasram;
-		private readonly byte[] bios7i;
-		private readonly byte[] bios9i;
-		private readonly byte[] nand;
+		private readonly List<byte[]> _roms;
 
 		[CoreConstructor("NDS")]
-		public NDS(byte[] rom, CoreComm comm, Settings settings, SyncSettings syncSettings, bool deterministic)
-			: base(comm, new Configuration
+		public unsafe NDS(CoreLoadParameters<Settings, SyncSettings> lp)
+			: base(lp.Comm, new Configuration
 			{
 				DefaultWidth = 256,
 				DefaultHeight = 384,
@@ -43,8 +32,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				SystemId = "NDS"
 			})
 		{
-			_coreFileOpenCallback = FileOpenCallback;
-			_coreFileCloseCallback = FileCloseCallback;
+			_roms = lp.Roms.Select(r => r.RomData).ToList();
+
+			if (_roms.Count > 2)
+			{
+				throw new InvalidOperationException("Wrong number of ROMs!");
+			}
+
+			bool gbacartpresent = _roms.Count == 2;
 
 			_core = PreInit<LibMelonDS>(new WaterboxOptions
 			{
@@ -54,106 +49,82 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				InvisibleHeapSizeKB = 4,
 				PlainHeapSizeKB = 4,
 				MmapHeapSizeKB = 512 * 1024,
-				SkipCoreConsistencyCheck = comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
-				SkipMemoryConsistencyCheck = comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
-			}, new Delegate[] { _coreFileOpenCallback, _coreFileCloseCallback });
+				SkipCoreConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
+				SkipMemoryConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
+			});
 
-			_syncSettings = syncSettings ?? new SyncSettings();
-			_settings = settings ?? new Settings();
+			_syncSettings = lp.SyncSettings ?? new SyncSettings();
+			_settings = lp.Settings ?? new Settings();
 
-			_dsi = _syncSettings.UseDSi;
-
-			fw = _dsi
-				? comm.CoreFileProvider.GetFirmware(new("NDS", "DSi Firmware"))
-				: comm.CoreFileProvider.GetFirmware(new("NDS", "DS Firmware"));
-
-			_skipfw = _syncSettings.DirectBoot || !_syncSettings.UseRealDSBIOS || fw == null;
-
-			bios7 = _syncSettings.UseRealDSBIOS
-				? comm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "BIOS7"))
+			byte[] bios7 = _syncSettings.UseRealBIOS
+				? lp.Comm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "bios7"))
 				: null;
 
-			bios9 = _syncSettings.UseRealDSBIOS
-				? comm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "BIOS9"))
+			byte[] bios9 = _syncSettings.UseRealBIOS
+				? lp.Comm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "bios9"))
 				: null;
 
-			dsrom = new byte[rom.Length];
-			Array.Copy(rom, dsrom, rom.Length);
-
-			sd = _syncSettings.SDCardEnable
-				? comm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "SD Card Image"))
-				: null;
-
-			gbarom = _syncSettings.GBACartPresent && !_dsi
-				? comm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "GBA ROM"))
-				: null;
-
-			gbasram = _syncSettings.GBACartPresent && !_dsi
-				? comm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "GBA SaveRAM"))
-				: null;
-
-			bios7i = _dsi
-				? comm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "BIOS7i"))
-				: null;
-
-			bios9i = _dsi
-				? comm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "BIOS9i"))
-				: null;
-
-			nand = _dsi
-				? comm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "DSi NAND"))
-				: null;
+			byte[] fw = lp.Comm.CoreFileProvider.GetFirmware(new("NDS", "firmware"));
 
 			LibMelonDS.LoadFlags flags = LibMelonDS.LoadFlags.NONE;
 
-			if (_dsi)
-			{
-				flags |= LibMelonDS.LoadFlags.USE_DSI;
-			}
-
-			if (_syncSettings.UseRealDSBIOS)
-			{
-				flags |= LibMelonDS.LoadFlags.USE_REAL_DS_BIOS;
-			}
-
-			if (_skipfw)
-			{
+			if (_syncSettings.UseRealBIOS)
+				flags |= LibMelonDS.LoadFlags.USE_REAL_BIOS;
+			if (_syncSettings.SkipFirmware || !_syncSettings.UseRealBIOS || fw == null)
 				flags |= LibMelonDS.LoadFlags.SKIP_FIRMWARE;
-			}
-
-			if (_syncSettings.SDCardEnable)
-			{
-				flags |= LibMelonDS.LoadFlags.SD_CARD_ENABLE;
-			}
-
-			if (_syncSettings.GBACartPresent)
-			{
+			if (gbacartpresent)
 				flags |= LibMelonDS.LoadFlags.GBA_CART_PRESENT;
-			}
-
-			if (_syncSettings.AccurateAudioBitrate)
-			{
+			if (_settings.AccurateAudioBitrate)
 				flags |= LibMelonDS.LoadFlags.ACCURATE_AUDIO_BITRATE;
-			}
-
-			if (_syncSettings.FirmwareOverride || deterministic)
-			{
+			if (_syncSettings.FirmwareOverride || lp.DeterministicEmulationRequested)
 				flags |= LibMelonDS.LoadFlags.FIRMWARE_OVERRIDE;
-			}
-
-			_core.SetFileOpenCallback(_coreFileOpenCallback);
-			_core.SetFileCloseCallback(_coreFileCloseCallback);
 
 			var fwSettings = new LibMelonDS.FirmwareSettings();
+			fwSettings.FirmwareUsername = new byte[64];
+			fwSettings.FirmwareLanguage = 0;
+			fwSettings.FirmwareBirthdayMonth = 0;
+			fwSettings.FirmwareBirthdayDay = 0;
+			fwSettings.FirmwareFavouriteColour = 0;
+			fwSettings.FirmwareMessage = new byte[1024];
+
+			_exe.AddReadonlyFile(_roms[0], "game.rom");
+			if (gbacartpresent)
+			{
+				_exe.AddReadonlyFile(_roms[1], "gba.rom");
+			}
+			if (_syncSettings.UseRealBIOS)
+			{
+				_exe.AddReadonlyFile(bios7, "bios7.rom");
+				_exe.AddReadonlyFile(bios9, "bios9.rom");
+			}
+			if (fw != null)
+			{
+				_exe.AddReadonlyFile(fw, "firmware.bin");
+			}
 
 			if (!_core.Init(flags, fwSettings))
 			{
-				throw new InvalidOperationException("Core rejected the rom!");
+				throw new InvalidOperationException("Init returned false!");
+			}
+
+			_exe.RemoveReadonlyFile("game.rom");
+			if (gbacartpresent)
+			{
+				_exe.RemoveReadonlyFile("gba.rom");
+			}
+			if (_syncSettings.UseRealBIOS)
+			{
+				_exe.RemoveReadonlyFile("bios7.rom");
+				_exe.RemoveReadonlyFile("bios9.rom");
+			}
+			if (fw != null)
+			{
+				_exe.RemoveReadonlyFile("firmware.bin");
 			}
 
 			PostInit();
 
-			DeterministicEmulation = deterministic || !_syncSettings.UseRealTime;
+			DeterministicEmulation = lp.DeterministicEmulationRequested || (!_syncSettings.UseRealTime && _syncSettings.FirmwareOverride);
 			InitializeRtc(_syncSettings.InitialTime);
 
 			_resampler = new SpeexResampler(SpeexResampler.Quality.QUALITY_DEFAULT, 32768, 44100, 32768, 44100, null, this);
@@ -178,10 +149,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			Name = "NDS Controller",
 			BoolButtons =
 			{
-				"Up", "Down", "Left", "Right", "Start", "Select", "B", "A", "Y", "X", "L", "R", "LidOpen", "LidClose", "Touch", "Power"
+				"Up", "Down", "Left", "Right", "Start", "Select", "B", "A", "Y", "X", "L", "R", "Lid Open", "Lid Close", "Touch", "Power"
 			}
 		}.AddXYPair("Touch{0}", AxisPairOrientation.RightAndUp, 0.RangeTo(255), 128, 0.RangeTo(191), 96)
-			.AddAxis("Mic Input", 0.RangeTo(2048), 0)
+			.AddAxis("Mic Input", 0.RangeTo(2047), 0)
 				.AddAxis("GBA Light Sensor", 0.RangeTo(10), 0);
 		private LibMelonDS.Buttons GetButtons(IController c)
 		{
@@ -224,9 +195,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		public new byte[] CloneSaveRam()
 		{
-			_exe.AddTransientFile(new byte[0], "save.ram");
-			_core.GetSaveRam();
-			return _exe.RemoveTransientFile("save.ram");
+			int length = _core.GetSaveRamLength();
+
+			if (length > 0)
+			{
+				byte[] ret = new byte[length];
+				_core.GetSaveRam(ret);
+				return ret;
+			}
+
+			return new byte[0];
 		}
 
 		public new void StoreSaveRam(byte[] data)
@@ -266,6 +244,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			[DefaultValue(0)]
 			public int ScreenGap { get; set; }
 
+			[Description("If true, the audio bitrate will be set to 10. Otherwise, it will be set to 16.")]
+			[DefaultValue(true)]
+			public bool AccurateAudioBitrate { get; set; }
+
 			public Settings Clone()
 			{
 				return (Settings)MemberwiseClone();
@@ -294,33 +276,20 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			[DefaultValue(false)]
 			public bool UseRealTime { get; set; }
 
-			[Description("If true, real DS BIOS files will be used.")]
+			[DisplayName("Use Real BIOS")]
+			[Description("If true, real BIOS files will be used.")]
 			[DefaultValue(false)]
-			public bool UseRealDSBIOS { get; set; }
+			public bool UseRealBIOS { get; set; }
 
-			[Description("If true, initial firmware boot will be skipped. Forced true if firmware cannot be booted.")]
+			[DisplayName("Skip Firmware")]
+			[Description("If true, initial firmware boot will be skipped. Forced true if firmware cannot be booted (no real bios or missing firmware).")]
 			[DefaultValue(false)]
-			public bool DirectBoot { get; set; }
+			public bool SkipFirmware { get; set; }
 
+			[DisplayName("Firmware Override")]
 			[Description("If true, the firmware settings will be overriden by provided setting. Forced true when recording a movie.")]
 			[DefaultValue(false)]
 			public bool FirmwareOverride { get; set; }
-
-			[Description("")]
-			[DefaultValue(false)]
-			public bool SDCardEnable { get; set; }
-
-			[Description("If true, a GBA cart will be loaded. Ignored in DSi mode.")]
-			[DefaultValue(false)]
-			public bool GBACartPresent { get; set; }
-
-			[Description("If true, the audio bitrate will be set to 10. Otherwise, it will be set to 16.")]
-			[DefaultValue(true)]
-			public bool AccurateAudioBitrate { get; set; }
-
-			[Description("If true, a DSi will be emulated instead of a DS. Currently experimental.")]
-			[DefaultValue(false)]
-			public bool UseDSi { get; set; }
 
 			public SyncSettings Clone()
 			{
@@ -366,10 +335,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		{
 			if (controller.IsPressed("Power"))
 			{
-				_exe.AddTransientFile(new byte[0], "save.ram");
-				_core.GetSaveRam();
+				byte[] sav = CloneSaveRam();
 				_core.Reset();
-				_exe.RemoveTransientFile("save.ram");
+				StoreSaveRam(sav);
 			}
 			return new LibMelonDS.FrameInfo
 			{
@@ -380,176 +348,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				MicInput = (short)controller.AxisValue("Mic Input"),
 				GBALightSensor = (byte)controller.AxisValue("GBA Light Sensor"),
 			};
-		}
-
-		protected override void SaveStateBinaryInternal(BinaryWriter writer)
-		{
-			if (fw != null)
-			{
-				writer.Write(fw.Length);
-				writer.Write(fw);
-			}
-			if (sd != null)
-			{
-				writer.Write(sd.Length);
-				writer.Write(sd);
-			}
-			if (gbasram != null)
-			{
-				writer.Write(gbasram.Length);
-				writer.Write(gbasram);
-			}
-			if (nand != null)
-			{
-				writer.Write(nand.Length);
-				writer.Write(nand);
-			}
-		}
-
-		protected override void LoadStateBinaryInternal(BinaryReader reader)
-		{
-			int len;
-			if (fw != null)
-			{
-				len = reader.ReadInt32();
-				if (len != fw.Length)
-				{
-					throw new InvalidOperationException("Firmware state buffer size mismatch!");
-				}
-				reader.Read(fw, 0, len);
-			}
-			if (sd != null)
-			{
-				len = reader.ReadInt32();
-				if (len != sd.Length)
-				{
-					throw new InvalidOperationException("SD Card Image state buffer size mismatch!");
-				}
-				reader.Read(sd, 0, len);
-			}
-			if (gbasram != null)
-			{
-				len = reader.ReadInt32();
-				if (len != gbasram.Length)
-				{
-					throw new InvalidOperationException("GBA SaveRAM state buffer size mismatch!");
-				}
-				reader.Read(gbasram, 0, len);
-			}
-			if (nand != null)
-			{
-				len = reader.ReadInt32();
-				if (len != nand.Length)
-				{
-					throw new InvalidOperationException("DSi NAND state buffer size mismatch!");
-				}
-				reader.Read(nand, 0, len);
-			}
-			_core.SetFileOpenCallback(_coreFileOpenCallback);
-			_core.SetFileCloseCallback(_coreFileCloseCallback);
-		}
-
-		public bool IsDSiMode() => _dsi;
-
-		private readonly LibMelonDS.FileCallback _coreFileOpenCallback;
-		private readonly LibMelonDS.FileCallback _coreFileCloseCallback;
-
-		private void FileOpenCallback(IntPtr _file)
-		{
-			byte[] file = new byte[12];
-			System.Runtime.InteropServices.Marshal.Copy(_file, file, 0, 12);
-			int term = 12;
-			for (int i = 0; i < 12; i++)
-			{
-				if (file[i] == 0)
-				{
-					term = i;
-					break;
-				}
-			}
-			byte[] actualfile = new byte[term];
-			Array.Copy(file, actualfile, term);
-			string filestring = Encoding.ASCII.GetString(actualfile);
-			switch (filestring)
-			{
-				case "bios7.rom": if (bios7 != null) { _exe.AddTransientFile(bios7, filestring); } break;
-				case "bios9.rom": if (bios9 != null) { _exe.AddTransientFile(bios9, filestring); } break;
-				case "firmware.bin": if (fw != null) { _exe.AddTransientFile(fw, filestring); } break;
-				case "game.rom": if (dsrom != null) { _exe.AddTransientFile(dsrom, filestring); } break;
-				case "sd.bin": if (sd != null) { _exe.AddTransientFile(sd, filestring); } break;
-				case "gba.rom": if (gbarom != null) { _exe.AddTransientFile(gbarom, filestring); } break;
-				case "gba.ram": if (gbasram != null) { _exe.AddTransientFile(gbasram, filestring); } break;
-				case "bios7i.rom": if (bios7i != null) { _exe.AddTransientFile(bios7i, filestring); } break;
-				case "bios9i.rom": if (bios9i != null) { _exe.AddTransientFile(bios9i, filestring); } break;
-				case "nand.bin": if (nand != null) { _exe.AddTransientFile(nand, filestring); } break;
-				default: break;
-			}
-		}
-
-		public void FileCloseCallback(IntPtr _file)
-		{
-			byte[] file = new byte[12];
-			System.Runtime.InteropServices.Marshal.Copy(_file, file, 0, 12);
-			int term = 12;
-			for (int i = 0; i < 12; i++)
-			{
-				if (file[i] == 0)
-				{
-					term = i;
-					break;
-				}
-			}
-			byte[] actualfile = new byte[term];
-			Array.Copy(file, actualfile, term);
-			string filestring = Encoding.ASCII.GetString(actualfile);
-			byte[] newdata;
-			switch (filestring)
-			{
-				case "bios7.rom":
-				case "bios9.rom":
-				case "firmware.bin":
-				case "game.rom":
-				case "sd.bin":
-				case "gba.rom":
-				case "gba.ram":
-				case "bios7i.rom":
-				case "bios9i.rom":
-				case "nand.bin": newdata = _exe.RemoveTransientFile(filestring); break;
-				default: return;
-			}
-			switch (filestring)
-			{
-				case "firmware.bin":
-					if (newdata.Length != fw.Length)
-					{
-						throw new InvalidOperationException("Firmware buffer size mismatch!");
-					}
-					Array.Copy(newdata, fw, newdata.Length);
-					break;
-				case "sd.bin":
-					if (newdata.Length != sd.Length)
-					{
-						throw new InvalidOperationException("SD Card Image buffer size mismatch!");
-					}
-					Array.Copy(newdata, sd, newdata.Length);
-					break;
-				case "gba.ram":
-					if (newdata.Length != gbasram.Length)
-					{
-						throw new InvalidOperationException("GBA SaveRAM buffer size mismatch!");
-					}
-					Array.Copy(newdata, gbasram, newdata.Length);
-					break;
-				case "nand.bin":
-					if (newdata.Length != nand.Length)
-					{
-						throw new InvalidOperationException("DSi NAND buffer size mismatch!");
-					}
-					Array.Copy(newdata, nand, newdata.Length);
-					break;
-				default:
-					break;
-			}
 		}
 	}
 }

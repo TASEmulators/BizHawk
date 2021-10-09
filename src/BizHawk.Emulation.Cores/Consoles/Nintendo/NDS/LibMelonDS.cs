@@ -32,13 +32,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		public enum LoadFlags : uint
 		{
 			NONE = 0x00,
-			USE_DSI = 0x01,
-			USE_REAL_DS_BIOS = 0x02,
-			SKIP_FIRMWARE = 0x04,
-			SD_CARD_ENABLE = 0x08,
-			GBA_CART_PRESENT = 0x10,
-			ACCURATE_AUDIO_BITRATE = 0x20,
-			FIRMWARE_OVERRIDE = 0x40,
+			USE_REAL_BIOS = 0x01,
+			SKIP_FIRMWARE = 0x02,
+			GBA_CART_PRESENT = 0x04,
+			ACCURATE_AUDIO_BITRATE = 0x08,
+			FIRMWARE_OVERRIDE = 0x10,
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
@@ -52,14 +50,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			public byte GBALightSensor;
 		}
 
+		[StructLayout(LayoutKind.Sequential)]
 		public class FirmwareSettings
 		{
-			byte[] FirmwareUsername = new byte[64];
-			int FirmwareLanguage;
-			int FirmwareBirthdayMonth;
-			int FirmwareBirthdayDay;
-			int FirmwareFavouriteColour;
-			byte[] FirmwareMessage = new byte[1024];
+			public byte[] FirmwareUsername; // 64 length, please
+			public int FirmwareLanguage;
+			public int FirmwareBirthdayMonth;
+			public int FirmwareBirthdayDay;
+			public int FirmwareFavouriteColour;
+			public byte[] FirmwareMessage; // 1024 length, please
 		};
 
 		[BizImport(CC)]
@@ -77,7 +76,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		public abstract bool PutSaveRam(byte[] data, uint len);
 
 		[BizImport(CC)]
-		public abstract void GetSaveRam();
+		public abstract void GetSaveRam(byte[] data);
+
+		[BizImport(CC)]
+		public abstract int GetSaveRamLength();
 
 		[BizImport(CC)]
 		public abstract bool SaveRamIsDirty();
