@@ -1117,12 +1117,12 @@
 			}
 		},
 		"NDS Controller": {
-			"TouchX": {
+			"Touch X": {
 				"Value": "WMouse X",
 				"Mult": 1.0,
 				"Deadzone": 0.0
 			},
-			"TouchY": {
+			"Touch Y": {
 				"Value": "WMouse Y",
 				"Mult": 1.0,
 				"Deadzone": 0.0
