@@ -11,10 +11,11 @@ using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.Properties;
+using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class BasicBot : ToolFormBase, IToolFormAutoConfig
+	public sealed partial class BasicBot : ToolFormBase, IToolFormAutoConfig
 	{
 		private string _currentFileName = "";
 
@@ -100,6 +101,12 @@ namespace BizHawk.Client.EmuHawk
 			PlayBestButton.Image = Resources.Play;
 			ClearBestButton.Image = Resources.Close;
 			StopBtn.Image = Resources.Stop;
+			if (OSTailoredCode.IsUnixHost)
+			{
+				AutoSize = false;
+				Margin = new(0, 0, 0, 8);
+			}
+
 			Settings = new BasicBotSettings();
 
 			_comparisonBotAttempt = new BotAttempt();
@@ -132,6 +139,8 @@ namespace BizHawk.Client.EmuHawk
 				DialogResult = DialogResult.Cancel;
 				return;
 			}
+
+			if (OSTailoredCode.IsUnixHost) ClientSize = new(707, 587);
 
 			_previousInvisibleEmulation = InvisibleEmulationCheckBox.Checked = Settings.InvisibleEmulation;
 			_previousDisplayMessage = Config.DisplayMessages;

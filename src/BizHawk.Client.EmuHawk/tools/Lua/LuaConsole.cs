@@ -178,17 +178,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			if (OSTailoredCode.IsUnixHost)
-			{
-				OpenSessionMenuItem.Enabled = false;
-				RecentSessionsSubMenu.Enabled = false;
-				RecentScriptsSubMenu.Enabled = false;
-				NewScriptMenuItem.Enabled = false;
-				OpenScriptMenuItem.Enabled = false;
-				NewScriptToolbarItem.Enabled = false;
-				OpenScriptToolbarItem.Enabled = false;
-				WriteToOutputWindow("The Lua environment can currently only be created on Windows. You may not load scripts.");
-			}
+			if (OSTailoredCode.IsUnixHost) WriteToOutputWindow("Lua in Mono is currently experimental. Please report bugs here: https://github.com/TASVideos/BizHawk/issues/2951\n");
 
 			LuaListView.AllColumns.Clear();
 			SetColumns();
@@ -226,20 +216,16 @@ namespace BizHawk.Client.EmuHawk
 
 			LuaFileList newScripts = new(LuaImp?.ScriptList, onChanged: SessionChangedCallback);
 			LuaFunctionList registeredFuncList = new(onChanged: UpdateRegisteredFunctionsDialog);
-			LuaImp = OSTailoredCode.IsUnixHost
-				? new UnixLuaLibraries(
-					newScripts,
-					registeredFuncList)
-				: new Win32LuaLibraries(
-					newScripts,
-					registeredFuncList,
-					Emulator.ServiceProvider,
-					(MainForm) MainForm, //HACK
-					DisplayManager,
-					InputManager,
-					Config,
-					Emulator,
-					Game);
+			LuaImp = new Win32LuaLibraries(
+				newScripts,
+				registeredFuncList,
+				Emulator.ServiceProvider,
+				(MainForm) MainForm, //HACK
+				DisplayManager,
+				InputManager,
+				Config,
+				Emulator,
+				Game);
 
 			InputBox.AutoCompleteCustomSource.AddRange(LuaImp.Docs.Select(a => $"{a.Library}.{a.Name}").ToArray());
 
@@ -1306,11 +1292,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LuaConsole_DragDrop(object sender, DragEventArgs e)
 		{
-			if (OSTailoredCode.IsUnixHost)
-			{
-				Console.WriteLine("The Lua environment can currently only be created on Windows, no scripts will be loaded.");
-				return;
-			}
 			var filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
 			try
 			{

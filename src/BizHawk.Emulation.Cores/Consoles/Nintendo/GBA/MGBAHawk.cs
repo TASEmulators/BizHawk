@@ -50,7 +50,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 			var skipBios = !DeterministicEmulation && _syncSettings.SkipBios;
 
-			Core = LibmGBA.BizCreate(bios, file, file.Length, GetOverrideInfo(game), skipBios);
+			Core = LibmGBA.BizCreate(bios, file, file.Length, GetOverrideInfo(_syncSettings), skipBios);
 			if (Core == IntPtr.Zero)
 			{
 				throw new InvalidOperationException($"{nameof(LibmGBA.BizCreate)}() returned NULL!  Bad BIOS? and/or ROM?");
@@ -184,61 +184,62 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		private readonly byte[] _saveScratch = new byte[262144];
 		internal IntPtr Core;
 
-		private static LibmGBA.OverrideInfo GetOverrideInfo(GameInfo game)
+		private static LibmGBA.OverrideInfo GetOverrideInfo(SyncSettings syncSettings)
 		{
-			if (!game.OptionPresent("mgbaNeedsOverrides"))
+			var ret = new LibmGBA.OverrideInfo
 			{
-				// the gba game db predates the mgba core in bizhawk, but was never used by the mgba core,
-				// which had its own handling for overrides
-				// to avoid possible regressions, we don't want to be overriding things that we already
-				// know work in mgba, so unless this parameter is set, we do nothing
-				return null;
-			}
+				Savetype = syncSettings.OverrideSaveType,
+				Hardware = LibmGBA.Hardware.None
+			};
 
-			var ret = new LibmGBA.OverrideInfo();
-			if (game.OptionPresent("flashSize"))
+			if (syncSettings.OverrideRtc is SyncSettings.HardwareSelection.Autodetect)
 			{
-				switch (game.GetIntValue("flashSize"))
-				{
-					case 65536:
-						ret.Savetype = LibmGBA.SaveType.Flash512;
-						break;
-					case 131072:
-						ret.Savetype = LibmGBA.SaveType.Flash1m;
-						break;
-					default:
-						throw new InvalidOperationException("Unknown flashSize");
-				}
+				ret.Hardware |= LibmGBA.Hardware.AutodetectRtc;
 			}
-			else if (game.OptionPresent("saveType"))
-			{
-				switch (game.GetIntValue("saveType"))
-				{
-					// 3 specifies either flash 512 or 1024, but in vba-over.ini, the latter will have a flashSize as well
-					case 3:
-						ret.Savetype = LibmGBA.SaveType.Flash512;
-						break;
-					case 4:
-						ret.Savetype = LibmGBA.SaveType.Eeprom;
-						break;
-					default:
-						throw new InvalidOperationException("Unknown saveType");
-				}
-			}
-
-			if (game.GetInt("rtcEnabled", 0) == 1)
+			else if (syncSettings.OverrideRtc is SyncSettings.HardwareSelection.True)
 			{
 				ret.Hardware |= LibmGBA.Hardware.Rtc;
 			}
 
-			if (game.GetInt("mirroringEnabled", 0) == 1)
+			if (syncSettings.OverrideRumble is SyncSettings.HardwareSelection.Autodetect)
 			{
-				throw new InvalidOperationException("Don't know what to do with mirroringEnabled!");
+				ret.Hardware |= LibmGBA.Hardware.AutodetectRumble;
+			}
+			else if (syncSettings.OverrideRumble is SyncSettings.HardwareSelection.True)
+			{
+				ret.Hardware |= LibmGBA.Hardware.Rumble;
 			}
 
-			if (game.OptionPresent("idleLoop"))
+			if (syncSettings.OverrideLightSensor is SyncSettings.HardwareSelection.Autodetect)
 			{
-				ret.IdleLoop = (uint)game.GetHexValue("idleLoop");
+				ret.Hardware |= LibmGBA.Hardware.AutodetectLightSensor;
+			}
+			else if (syncSettings.OverrideLightSensor is SyncSettings.HardwareSelection.True)
+			{
+				ret.Hardware |= LibmGBA.Hardware.LightSensor;
+			}
+
+			if (syncSettings.OverrideGyro is SyncSettings.HardwareSelection.Autodetect)
+			{
+				ret.Hardware |= LibmGBA.Hardware.AutodetectGyro;
+			}
+			else if (syncSettings.OverrideGyro is SyncSettings.HardwareSelection.True)
+			{
+				ret.Hardware |= LibmGBA.Hardware.Gyro;
+			}
+
+			if (syncSettings.OverrideTilt is SyncSettings.HardwareSelection.Autodetect)
+			{
+				ret.Hardware |= LibmGBA.Hardware.AutodetectTilt;
+			}
+			else if (syncSettings.OverrideTilt is SyncSettings.HardwareSelection.True)
+			{
+				ret.Hardware |= LibmGBA.Hardware.Tilt;
+			}
+
+			if (syncSettings.OverrideGbPlayerDetect is true)
+			{
+				ret.Hardware |= LibmGBA.Hardware.GbPlayerDetect;
 			}
 
 			return ret;

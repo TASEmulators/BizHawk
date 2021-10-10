@@ -116,7 +116,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			}
 			if (_fw != null)
 			{
-				_exe.AddReadonlyFile(_fw, "firmware.bin");
+				_exe.AddTransientFile(_fw, "firmware.bin");
 			}
 
 			fixed (byte* namePtr = &name[0])
@@ -144,10 +144,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			{
 				_exe.RemoveReadonlyFile("bios7.rom");
 				_exe.RemoveReadonlyFile("bios9.rom");
-			}
-			if (_fw != null)
-			{
-				_exe.RemoveReadonlyFile("firmware.bin");
 			}
 
 			PostInit();
@@ -548,10 +544,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
 		{
-			if (_fw != null)
-			{
-				_exe.AddTransientFile(_fw, "firmware.bin");
-			}
 			if (controller.IsPressed("Power"))
 			{
 				Reset();
@@ -565,37 +557,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				MicInput = (short)controller.AxisValue("Mic Input"),
 				GBALightSensor = (byte)controller.AxisValue("GBA Light Sensor"),
 			};
-		}
-
-		protected override void FrameAdvancePost()
-		{
-			if (_fw != null)
-			{
-				byte[] fw = _exe.RemoveTransientFile("firmware.bin");
-				Array.Copy(fw, _fw, fw.Length);
-			}
-		}
-
-		protected override void SaveStateBinaryInternal(BinaryWriter writer)
-		{
-			if (_fw != null)
-			{
-				writer.Write(_fw.Length);
-				writer.Write(_fw, 0, _fw.Length);
-			}
-		}
-
-		protected override void LoadStateBinaryInternal(BinaryReader reader)
-		{
-			if (_fw != null)
-			{
-				int len = reader.ReadInt32();
-				if (len != _fw.Length)
-				{
-					throw new InvalidOperationException("Firmware buffer size mismatch!");
-				}
-				reader.Read(_fw, 0, len);
-			}
 		}
 	}
 }

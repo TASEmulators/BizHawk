@@ -191,20 +191,20 @@ namespace BizHawk.Emulation.Common
 		{
 			acquire.WaitOne();
 
-			var hash = $"{CRC32.Calculate(romData):X8}";
-			if (DB.TryGetValue(hash, out var cgi))
+			var hashCRC32 = $"{CRC32.Calculate(romData):X8}";
+			if (DB.TryGetValue(hashCRC32, out var cgi))
 			{
 				return new GameInfo(cgi);
 			}
 
-			hash = romData.HashMD5();
-			if (DB.TryGetValue(hash, out cgi))
+			var hashMD5 = romData.HashMD5();
+			if (DB.TryGetValue(hashMD5, out cgi))
 			{
 				return new GameInfo(cgi);
 			}
 
-			hash = romData.HashSHA1();
-			if (DB.TryGetValue(hash, out cgi))
+			var hashSHA1 = romData.HashSHA1();
+			if (DB.TryGetValue(hashSHA1, out cgi))
 			{
 				return new GameInfo(cgi);
 			}
@@ -212,15 +212,12 @@ namespace BizHawk.Emulation.Common
 			// rom is not in database. make some best-guesses
 			var game = new GameInfo
 			{
-				Hash = hash,
+				Hash = hashSHA1,
 				Status = RomStatus.NotInDatabase,
 				NotInDatabase = true
 			};
 
-			Console.WriteLine(
-				"Game was not in DB. CRC: {0:X8} MD5: {1}",
-				CRC32.Calculate(romData),
-				System.Security.Cryptography.MD5.Create().ComputeHash(romData).BytesToHexString());
+			Console.WriteLine($"Game was not in DB. CRC: {hashCRC32} MD5: {hashMD5}");
 
 			var ext = Path.GetExtension(fileName)?.ToUpperInvariant();
 

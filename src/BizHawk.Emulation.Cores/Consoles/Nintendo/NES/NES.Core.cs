@@ -13,6 +13,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	public partial class NES : IEmulator, ISoundProvider, ICycleTiming
 	{
+		internal static class RomChecksums
+		{
+			public const string CamericaGolden5 = /*sha1:*/"60FC5FA5B5ACCAF3AEFEBA73FC8BFFD3C4DAE558";
+
+			public const string CamericaGolden5Overdump = /*sha1:*/"BAD382331C30B22A908DA4BFF2759C25113CC26A";
+
+			public const string CamericaPegasus4in1 = /*sha1:*/"40409FEC8249EFDB772E6FFB2DCD41860C6CCA23";
+
+			public const string DancingBlocks = /*sha1:*/"68ABE1E49C9E9CCEA978A48232432C252E5912C0";
+
+			public const string SeicrossRev2 = "sha1:4C9C05FAD6F6F33A92A27C2EDC1E7DE12D7F216D"; // yes this is meant to include the prefix
+
+			public const string SilvaSaga = /*sha1:*/"00C50062A2DECE99580063777590F26A253AAB6B";
+		}
+
 		//hardware/state
 		public MOS6502X<CpuLink> cpu;
 		public PPU ppu;
@@ -63,9 +78,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		private byte latched4016;
 
 		private DisplayType _display_type = DisplayType.NTSC;
-
-		//Sound config
-		public void SetVol1(int v) { apu.m_vol = v; }
 
 		private BlipBuffer blip = new BlipBuffer(4096);
 		private const int blipbuffsize = 4096;
@@ -247,22 +259,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			if (cart.GameInfo!=null)
 			{
-				
-				if (cart.GameInfo.Hash == "60FC5FA5B5ACCAF3AEFEBA73FC8BFFD3C4DAE558" // Camerica Golden 5
-					|| cart.GameInfo.Hash == "BAD382331C30B22A908DA4BFF2759C25113CC26A" // Camerica Golden 5
-					|| cart.GameInfo.Hash == "40409FEC8249EFDB772E6FFB2DCD41860C6CCA23" // Camerica Pegasus 4-in-1
-					)
+				if (cart.GameInfo.Hash is RomChecksums.CamericaGolden5 or RomChecksums.CamericaGolden5Overdump or RomChecksums.CamericaPegasus4in1)
 				{
 					ram[0x701] = 0xFF;
 				}
-				
-				if (cart.GameInfo.Hash == "68ABE1E49C9E9CCEA978A48232432C252E5912C0") // Dancing Blocks
+				else if (cart.GameInfo.Hash == RomChecksums.DancingBlocks)
 				{
 					ram[0xEC] = 0;
 					ram[0xED] = 0;
 				}
-
-				if (cart.GameInfo.Hash == "00C50062A2DECE99580063777590F26A253AAB6B") // Silva Saga
+				else if (cart.GameInfo.Hash == RomChecksums.SilvaSaga)
 				{
 					for (int i = 0; i < Board.Wram.Length; i++)
 					{

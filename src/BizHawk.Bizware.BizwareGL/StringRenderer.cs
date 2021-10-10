@@ -40,7 +40,7 @@ namespace BizHawk.Bizware.BizwareGL
 
 			for (int i = 0; i < len; i++)
 			{
-				int c = str[i];
+				var c = str[i];
 
 				if (c == '\r')
 				{
@@ -62,8 +62,7 @@ namespace BizHawk.Bizware.BizwareGL
 					continue;
 				}
 
-				if (!FontInfo.Characters.TryGetValue((char)c, out var bfc))
-					bfc = FontInfo.Characters[unchecked((char)-1)];
+				var bfc = FontInfo[c];
 
 				x += bfc.XAdvance;
 			}
@@ -78,7 +77,7 @@ namespace BizHawk.Bizware.BizwareGL
 
 			for (int i = 0; i < len; i++)
 			{
-				int c = str[i];
+				var c = str[i];
 
 				if (c == '\r')
 				{
@@ -98,8 +97,7 @@ namespace BizHawk.Bizware.BizwareGL
 					continue;
 				}
 
-				if (!FontInfo.Characters.TryGetValue((char)c, out var bfc))
-					bfc = FontInfo.Characters[unchecked((char)-1)];
+				var bfc = FontInfo[c];
 				
 				// calculate texcoords (we shouldve already had this cached, but im speedcoding now)
 				Texture2d tex = TexturePages[bfc.TexturePage];

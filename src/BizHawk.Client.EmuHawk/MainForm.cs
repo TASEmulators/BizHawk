@@ -354,12 +354,6 @@ namespace BizHawk.Client.EmuHawk
 #else
 			SynclessRecordingMenuItem.Enabled = false;
 #endif
-			if (OSTailoredCode.IsUnixHost)
-			{
-				ToolBoxMenuItem.Enabled = false;
-				ToolBoxMenuItem.Visible = false;
-				toolStripSeparator12.Visible = false;
-			}
 
 			Game = GameInfo.NullInstance;
 			_throttle = new Throttle();
@@ -622,8 +616,7 @@ namespace BizHawk.Client.EmuHawk
 			//load Lua Script if requested in the command line arguments
 			if (_argParser.luaScript != null)
 			{
-				if (OSTailoredCode.IsUnixHost) Console.WriteLine($"The Lua environment can currently only be created on Windows, {_argParser.luaScript} will not be loaded.");
-				else Tools.LuaConsole.LoadLuaFile(_argParser.luaScript.MakeAbsolute());
+				Tools.LuaConsole.LoadLuaFile(_argParser.luaScript.MakeAbsolute());
 			}
 
 			SetStatusBar();
@@ -2011,14 +2004,16 @@ namespace BizHawk.Client.EmuHawk
 				case "SNES" when Emulator is LibsnesCore { IsSGB: true }: // doesn't use "SGB" sysID
 					SNESSubMenu.Text = "&SGB";
 					SNESSubMenu.Visible = true;
+					SnesGfxDebuggerMenuItem.Visible = true;
 					break;
 				case "SNES" when Emulator is LibsnesCore { IsSGB: false }:
 					SNESSubMenu.Text = "&SNES";
 					SNESSubMenu.Visible = true;
+					SnesGfxDebuggerMenuItem.Visible = true;
 					break;
 				case "SNES" when Emulator is BsnesCore bsnesCore:
 					SNESSubMenu.Text = bsnesCore.IsSGB ?  "&SGB" : "&SNES";
-					SNESSubMenu.DropDownItems[2].Visible = false;
+					SnesGfxDebuggerMenuItem.Visible = false;
 					SNESSubMenu.Visible = true;
 					break;
 				default:
