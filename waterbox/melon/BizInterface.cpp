@@ -102,14 +102,16 @@ EXPORT bool Init(LoadFlags flags, FirmwareSettings* fwSettings)
 	return true;
 }
 
-EXPORT bool PutSaveRam(u8* data, u32 len)
+EXPORT void PutSaveRam(u8* data, u32 len)
 {
-	return NDS::ImportSRAM(data, len) != 0;
+	if (NDSCart_SRAMManager::SecondaryBufferLength > 0)
+		NDSCart_SRAMManager::UpdateBuffer(data, len);
 }
 
 EXPORT void GetSaveRam(u8* data)
 {
-	NDSCart_SRAMManager::FlushSecondaryBuffer(data, NDSCart_SRAMManager::SecondaryBufferLength);
+	if (NDSCart_SRAMManager::SecondaryBufferLength > 0)
+		NDSCart_SRAMManager::FlushSecondaryBuffer(data, NDSCart_SRAMManager::SecondaryBufferLength);
 }
 
 EXPORT s32 GetSaveRamLength()
@@ -125,7 +127,6 @@ EXPORT bool SaveRamIsDirty()
 EXPORT void Reset()
 {
 	srand(time(NULL));
-	if (NDSCart_SRAMManager::SecondaryBufferLength > 0) NDSCart_SRAMManager::RequestFlush();
 	NDS::LoadROM(rom_path, no_path, biz_skip_fw);
 }
 
