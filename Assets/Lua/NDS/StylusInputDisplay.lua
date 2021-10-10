@@ -1,8 +1,8 @@
 -- Gives a cross hair UI for the stylus for DS games
 
-local upColor = 'green'
+local upColor = 'lime'
 local downColor = 'red'
-local dotColor = 'black'
+local dotColor = 'blue'
 
 function Draw(x, y, maxX, maxY, isDown)
 	color = upColor
@@ -10,11 +10,24 @@ function Draw(x, y, maxX, maxY, isDown)
 		color = downColor
 	end
 
+	gui.drawLine(0, y - 1, maxX, y - 1, color)
 	gui.drawLine(0, y, maxX, y, color)
+	gui.drawLine(0, y + 1, maxX, y + 1, color)
+	
+	gui.drawLine(x - 1, 0, x - 1, maxY, color)
 	gui.drawLine(x, 0, x, maxY, color)
+	gui.drawLine(x + 1, 0, x + 1, maxY, color)
 
 	if isDown then
+		gui.drawPixel(x - 1, y - 1, dotColor)
+		gui.drawPixel(x, y - 1, dotColor)
+		gui.drawPixel(x + 1, y - 1, dotColor)
+		gui.drawPixel(x - 1, y, dotColor)
 		gui.drawPixel(x, y, dotColor)
+		gui.drawPixel(x + 1, y, dotColor)
+		gui.drawPixel(x - 1, y + 1, dotColor)
+		gui.drawPixel(x, y + 1, dotColor)
+		gui.drawPixel(x + 1, y + 1, dotColor)
 	end
 end
 
@@ -34,16 +47,12 @@ while true do
 	local y = btns['Touch Y']
 	local isDown = btns['Touch']
 
-	-- A bit of a hack to ensure it is not drawing while mouse moving
-	-- on the top screen
-	if y == 0 then
-		x = 0
-	end
-
 	pts = client.transformPoint(x, y)
 	local tx = pts["x"];
 	local ty = pts["y"];
-	Draw(tx, ty, 10000, 10000, isDown)
+	local wx = client.screenwidth() / 256
+	local wy = client.screenheight() / 384
+	Draw(tx / wx, ty / wy, 10000, 10000, isDown)
 
-	emu.frameadvance()
+	emu.yield()
 end
