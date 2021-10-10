@@ -300,11 +300,34 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			[DefaultValue(false)]
 			public bool FirmwareOverride { get; set; }
 
+			[DisplayName("Firmware Username")]
+			[Description("Username in firmware. Only applicable if firmware override is in effect.")]
+			[DefaultValue("")]
 			public string FirmwareUsername { get; set; }
+
+			[DisplayName("Firmware Language")]
+			[Description("Language in firmware. Only applicable if firmware override is in effect.")]
+			[DefaultValue(0)]
 			public int FirmwareLanguage { get; set; }
+
+			[DisplayName("Firmware Birthday Month")]
+			[Description("Birthday month in firmware. Only applicable if firmware override is in effect.")]
+			[DefaultValue(0)]
 			public int FirmwareBirthdayMonth { get; set; }
+
+			[DisplayName("Firmware Birthday Day")]
+			[Description("Birthday day in firmware. Only applicable if firmware override is in effect.")]
+			[DefaultValue(0)]
 			public int FirmwareBirthdayDay { get; set; }
+
+			[DisplayName("Firmware Favorite Color")]
+			[Description("Favorite color in firmware. Only applicable if firmware override is in effect.")]
+			[DefaultValue(0)]
 			public int FirmwareFavouriteColour { get; set; }
+
+			[DisplayName("Firmware Message")]
+			[Description("Message in firmware. Only applicable if firmware override is in effect.")]
+			[DefaultValue("")]
 			public string FirmwareMessage { get; set; }
 
 
