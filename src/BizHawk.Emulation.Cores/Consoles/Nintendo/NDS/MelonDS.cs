@@ -563,7 +563,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		{
 			if (_fw != null)
 			{
-				_exe.RemoveTransientFile("firmware.bin");
+				byte[] fw = _exe.RemoveTransientFile("firmware.bin");
+				Array.Copy(fw, _fw, fw.Length);
 			}
 		}
 
