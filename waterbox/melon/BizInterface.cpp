@@ -127,7 +127,7 @@ EXPORT bool SaveRamIsDirty()
 
 EXPORT void Reset()
 {
-	NDS::Reset(false);
+	NDS::LoadBIOS(false);
 	if (biz_skip_fw) NDS::SetupDirectBoot();
 }
 
