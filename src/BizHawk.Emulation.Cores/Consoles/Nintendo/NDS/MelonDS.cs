@@ -92,17 +92,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 			var fwSettings = new LibMelonDS.FirmwareSettings();
 			var name = Encoding.UTF8.GetBytes(_syncSettings.FirmwareUsername);
-			fwSettings.FirmwareUsername = new byte[10 + 1];
-			Array.Copy(name, fwSettings.FirmwareUsername, 10);
-			fwSettings.FirmwareUsername[10] = 0;
+			fwSettings.FirmwareUsernameLength = name.Length;
 			fwSettings.FirmwareLanguage = _syncSettings.FirmwareLanguage;
 			fwSettings.FirmwareBirthdayMonth = _syncSettings.FirmwareBirthdayMonth;
 			fwSettings.FirmwareBirthdayDay = _syncSettings.FirmwareBirthdayDay;
 			fwSettings.FirmwareFavouriteColour = _syncSettings.FirmwareFavouriteColour;
 			var message = Encoding.UTF8.GetBytes(_syncSettings.FirmwareMessage);
-			fwSettings.FirmwareMessage = new byte[26 + 1];
-			Array.Copy(message, fwSettings.FirmwareMessage, 26);
-			fwSettings.FirmwareMessage[26] = 0;
+			fwSettings.FirmwareMessageLength = message.Length;
 
 			_exe.AddReadonlyFile(_roms[0], "game.rom");
 			if (gbacartpresent)
@@ -119,10 +115,17 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				_exe.AddReadonlyFile(_fw, "firmware.bin");
 			}
 
-			if (!_core.Init(flags, fwSettings))
+			fixed (byte* namePtr = &name[0])
+			fixed (byte* messagePtr = &message[0])
 			{
-				throw new InvalidOperationException("Init returned false!");
+				fwSettings.FirmwareUsername = (IntPtr)namePtr;
+				fwSettings.FirmwareMessage = (IntPtr)messagePtr;
+				if (!_core.Init(flags, fwSettings))
+				{
+					throw new InvalidOperationException("Init returned false!");
+				}
 			}
+
 
 			_exe.RemoveReadonlyFile("game.rom");
 			if (gbacartpresent)
@@ -166,9 +169,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			Name = "NDS Controller",
 			BoolButtons =
 			{
-				"Up", "Down", "Left", "Right", "Start", "Select", "B", "A", "Y", "X", "L", "R", "Lid Open", "Lid Close", "Touch", "Power"
+				"Up", "Down", "Left", "Right", "Start", "Select", "B", "A", "Y", "X", "L", "R", "LidOpen", "LidClose", "Touch", "Power"
 			}
-		}.AddXYPair("Touch{0}", AxisPairOrientation.RightAndUp, 0.RangeTo(255), 128, 0.RangeTo(191), 96)
+		}.AddXYPair("Touch {0}", AxisPairOrientation.RightAndUp, 0.RangeTo(255), 128, 0.RangeTo(191), 96)
 			.AddAxis("Mic Input", 0.RangeTo(2047), 0)
 				.AddAxis("GBA Light Sensor", 0.RangeTo(10), 0);
 		private LibMelonDS.Buttons GetButtons(IController c)
@@ -252,6 +255,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			[DefaultValue(ScreenLayoutKind.Vertical)]
 			public ScreenLayoutKind ScreenLayout { get; set; }
 
+			[DisplayName("Invert Screens")]
+			[Description("Inverts the order of the screens.")]
+			[DefaultValue(false)]
+			public bool ScreenInvert { get; set; }
+
 			[DisplayName("Rotation")]
 			[Description("Adjusts the orientation of the screens")]
 			[DefaultValue(ScreenRotationKind.Rotate0)]
@@ -261,6 +269,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			[DefaultValue(0)]
 			public int ScreenGap { get; set; }
 
+			[DisplayName("Accurate Audio Bitrate")]
 			[Description("If true, the audio bitrate will be set to 10. Otherwise, it will be set to 16.")]
 			[DefaultValue(true)]
 			public bool AccurateAudioBitrate { get; set; }
@@ -338,7 +347,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 			[DisplayName("Firmware Username")]
 			[Description("Username in firmware. Only applicable if firmware override is in effect.")]
-			[DefaultValue("")]
+			[DefaultValue("MelonDS")]
 			public string FirmwareUsername
 			{
 				get => _firmwareusername;
@@ -384,7 +393,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 			[DisplayName("Firmware Birthday Month")]
 			[Description("Birthday month in firmware. Only applicable if firmware override is in effect.")]
-			[DefaultValue(Month.January)]
+			[DefaultValue(Month.May)]
 			public Month FirmwareBirthdayMonth
 			{
 				get => _firmwarebirthdaymonth;
@@ -397,7 +406,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 			[DisplayName("Firmware Birthday Day")]
 			[Description("Birthday day in firmware. Only applicable if firmware override is in effect.")]
-			[DefaultValue(1)]
+			[DefaultValue(15)]
 			public int FirmwareBirthdayDay
 			{
 				get => _firmwarebirthdayday;
@@ -426,7 +435,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 			[DisplayName("Firmware Favorite Color")]
 			[Description("Favorite color in firmware. Only applicable if firmware override is in effect.")]
-			[DefaultValue(Color.GreyishBlue)]
+			[DefaultValue(Color.Red)]
 			public Color FirmwareFavouriteColour { get; set; }
 
 			[JsonIgnore]
@@ -434,7 +443,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 			[DisplayName("Firmware Message")]
 			[Description("Message in firmware. Only applicable if firmware override is in effect.")]
-			[DefaultValue("")]
+			[DefaultValue("Melons Taste Great!")]
 			public string FirmwareMessage
 			{
 				get => _firmwaremessage;
@@ -543,8 +552,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			{
 				Time = GetRtcTime(!DeterministicEmulation),
 				Keys = GetButtons(controller),
-				TouchX = (byte)controller.AxisValue("TouchX"),
-				TouchY = (byte)controller.AxisValue("TouchY"),
+				TouchX = (byte)controller.AxisValue("Touch X"),
+				TouchY = (byte)controller.AxisValue("Touch Y"),
 				MicInput = (short)controller.AxisValue("Mic Input"),
 				GBALightSensor = (byte)controller.AxisValue("GBA Light Sensor"),
 			};
@@ -554,7 +563,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		{
 			if (_fw != null)
 			{
-				_exe.RemoveTransientFile("firmware.bin");
+				byte[] fw = _exe.RemoveTransientFile("firmware.bin");
+				Array.Copy(fw, _fw, fw.Length);
 			}
 		}
 

@@ -339,7 +339,12 @@ namespace BizHawk.Client.Common.Filters
 
 		public override Vector2 UntransformPoint(string channel, Vector2 point)
 		{
-			point = Transform(matBotInvert, point);
+			var settings = nds.GetSettings();
+			bool invert = settings.ScreenInvert
+				&& settings.ScreenLayout != NDS.ScreenLayoutKind.Top
+				&& settings.ScreenLayout != NDS.ScreenLayoutKind.Bottom;
+
+			point = Transform(invert ? matTopInvert : matBotInvert, point);
 
 			//hack to accomodate input tracking system's float-point sense (based on the core's VideoBuffer height)
 			//actually, this is needed for a reason similar to the "TouchScreenStart" that I removed.
@@ -348,7 +353,6 @@ namespace BizHawk.Client.Common.Filters
 			point.Y *= 2;
 
 			//in case we're in this layout, we get confused, so fix it
-			var settings = nds.GetSettings();
 			if (settings.ScreenLayout == NDS.ScreenLayoutKind.Top) point = new(0.0f, 0.0f);
 
 			//TODO: we probably need more subtle logic here.
@@ -390,10 +394,12 @@ namespace BizHawk.Client.Common.Filters
 			if (settings.ScreenLayout == NDS.ScreenLayoutKind.Vertical) renderTop = renderBottom = true;
 			if (settings.ScreenLayout == NDS.ScreenLayoutKind.Horizontal) renderTop = renderBottom = true;
 
+			bool invert = settings.ScreenInvert && renderTop && renderBottom;
+
 			if (renderTop)
 			{
 				GuiRenderer.Modelview.Push();
-				GuiRenderer.Modelview.PreMultiplyMatrix(matTop);
+				GuiRenderer.Modelview.PreMultiplyMatrix(invert ? matBot : matTop);
 				GuiRenderer.DrawSubrect(InputTexture, 0, 0, 256, 192, 0.0f, 0.0f, 1.0f, 0.5f);
 				GuiRenderer.Modelview.Pop();
 			}
@@ -401,7 +407,7 @@ namespace BizHawk.Client.Common.Filters
 			if (renderBottom)
 			{
 				GuiRenderer.Modelview.Push();
-				GuiRenderer.Modelview.PreMultiplyMatrix(matBot);
+				GuiRenderer.Modelview.PreMultiplyMatrix(invert ? matTop : matBot);
 				GuiRenderer.DrawSubrect(InputTexture, 0, 0, 256, 192, 0.0f, 0.5f, 1.0f, 1.0f);
 				GuiRenderer.Modelview.Pop();
 			}

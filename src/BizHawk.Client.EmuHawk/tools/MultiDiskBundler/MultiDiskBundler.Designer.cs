@@ -144,6 +144,7 @@
             "GB3x",
             "GB4x",
             "GEN",
+			"NDS",
             "PCFX",
             "PSX",
             "SAT",
