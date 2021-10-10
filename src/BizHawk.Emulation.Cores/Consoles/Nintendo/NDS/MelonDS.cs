@@ -116,7 +116,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			}
 			if (_fw != null)
 			{
-				_exe.AddTransientFile(_fw, "firmware.bin");
+				_exe.AddReadonlyFile(_fw, "firmware.bin");
 			}
 
 			fixed (byte* namePtr = &name[0])
@@ -144,6 +144,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			{
 				_exe.RemoveReadonlyFile("bios7.rom");
 				_exe.RemoveReadonlyFile("bios9.rom");
+			}
+			if (_fw != null)
+			{
+				_exe.RemoveReadonlyFile("firmware.bin");
 			}
 
 			PostInit();
@@ -524,22 +528,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		private void Reset()
 		{
-			// hack around core clearing out rom/save/bios/firmware data on reset
-			byte[] sav = CloneSaveRam();
-			_exe.AddReadonlyFile(_roms[0], "game.rom");
-			if (_userealbios)
-			{
-				_exe.AddReadonlyFile(_bios7, "bios7.rom");
-				_exe.AddReadonlyFile(_bios9, "bios9.rom");
-			}
 			_core.Reset();
-			_exe.RemoveReadonlyFile("game.rom");
-			if (_userealbios)
-			{
-				_exe.RemoveReadonlyFile("bios7.rom");
-				_exe.RemoveReadonlyFile("bios9.rom");
-			}
-			StoreSaveRam(sav);
 		}
 
 		protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
