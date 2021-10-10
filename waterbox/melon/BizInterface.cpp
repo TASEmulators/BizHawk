@@ -46,12 +46,12 @@ static const char* no_path = "";
 
 typedef struct
 {
-	char* FirmwareUsername; // 64 length, please
+	char* FirmwareUsername; // max 10 length (then terminator)
 	int FirmwareLanguage;
 	int FirmwareBirthdayMonth;
 	int FirmwareBirthdayDay;
 	int FirmwareFavouriteColour;
-	char* FirmwareMessage; // 1024 length, please
+	char* FirmwareMessage; // max 26 length (then terminator)
 } FirmwareSettings;
 
 EXPORT bool Init(LoadFlags flags, FirmwareSettings* fwSettings)
