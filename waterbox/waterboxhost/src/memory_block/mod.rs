@@ -416,7 +416,7 @@ impl MemoryBlock {
 		struct Chunk {
 			addr: AddressRange,
 			prot: Protection,
-		};
+		}
 		let mut start = range.start;
 		let chunks = range.iter()
 			.map(|p| {

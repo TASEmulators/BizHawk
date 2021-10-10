@@ -1,4 +1,5 @@
 ﻿using System.Windows.Forms;
+using System.Threading.Tasks;
 using System.IO;
 using BizHawk.Emulation.DiscSystem;
 
@@ -16,18 +17,22 @@ namespace BizHawk.Client.DiscoHawk
 
 			bool confirmed = false;
 			var tracks = disc.Session1.Tracks;
-			foreach (var track in tracks)
+			Parallel.ForEach(tracks, track =>
 			{
 				if (!track.IsAudio)
-					continue;
+					return;
+
+				if (track.NextTrack == null)
+					return;
 
 				int trackLength = track.NextTrack.LBA - track.LBA;
 				var waveData = new byte[trackLength * 2352];
 				int startLba = track.LBA;
-				for (int sector = 0; sector < trackLength; sector++)
-				{
-					dsr.ReadLBA_2352(startLba + sector, waveData, sector * 2352);
-				}
+				lock(disc)
+					for (int sector = 0; sector < trackLength; sector++)
+					{
+						dsr.ReadLBA_2352(startLba + sector, waveData, sector * 2352);
+					}
 
 				string mp3Path = $"{Path.Combine(path, fileBase)} - Track {track.Number:D2}.mp3";
 				if (File.Exists(mp3Path))
@@ -53,7 +58,7 @@ namespace BizHawk.Client.DiscoHawk
 				{
 					File.Delete(tempfile);
 				}
-			}
+			});
 		}
 	}
 }

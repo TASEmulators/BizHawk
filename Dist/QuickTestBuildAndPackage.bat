@@ -69,12 +69,6 @@ cd temp
 rem Patch up working dir with a few other things we want
 mkdir Firmware
 
-rem compress nescart 7z
-cd gamedb
-..\..\7za a -t7z -mx9 NesCarts.7z NesCarts.xml
-del NesCarts.xml
-cd ..
-
 rem Build the final zip
 ..\zip.exe -X -9 -r ..\%NAME% . -i \*
 cd ..

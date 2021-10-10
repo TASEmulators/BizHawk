@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Security.Principal;
 using System.Text;
 using BizHawk.Common;
 
@@ -7,6 +8,10 @@ namespace BizHawk.Client.EmuHawk
 {
 	public static class EmuHawkUtil
 	{
+		/// <summary><see langword="true"/> iff running as Administrator (on Windows) or Superuser (on Unix under Mono)</summary>
+		/// <remarks>TODO check .NET Core</remarks>
+		public static readonly bool CLRHostHasElevatedPrivileges = new WindowsPrincipal(WindowsIdentity.GetCurrent()).IsInRole(WindowsBuiltInRole.Administrator);
+
 		/// <remarks>http://stackoverflow.com/questions/139010/how-to-resolve-a-lnk-in-c-sharp</remarks>
 		public static string ResolveShortcut(string filename)
 		{

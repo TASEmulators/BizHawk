@@ -12,6 +12,13 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 	public partial class A7800Hawk : IEmulator, ISaveRam, IDebuggable, IInputPollable,
 		IRegionable, IBoardInfo, ISettable<A7800Hawk.A7800Settings, A7800Hawk.A7800SyncSettings>
 	{
+		internal static class RomChecksums
+		{
+			public const string KaratekaPAL = "md5:5E0A1E832BBCEA6FACB832FDE23A440A";
+
+			public const string Serpentine = "md5:9BD70C06D3386F76F8162881699A777A";
+		}
+
 		// this register selects between 2600 and 7800 mode in the A7800
 		// however, we already have a 2600 emulator so this core will only be loading A7800 games
 		// furthermore, the location of the register is in the same place as TIA registers (0x0-0x1F)
@@ -189,7 +196,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 						cart_RAM = 8;
 
 						// the homebrew game serpentine requires extra RAM, but in the alternative style
-						if (hash_md5 == "md5:9BD70C06D3386F76F8162881699A777A")
+						if (hash_md5 == RomChecksums.Serpentine)
 						{
 							cart_RAM = 16;
 						}
@@ -216,7 +223,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				small_flag = true;
 
 				// additionally, PAL Karateka  has bank 6 (actually 2) at 0x4000
-				if (rom.HashMD5()=="5E0A1E832BBCEA6FACB832FDE23A440A")
+				if (hash_md5 == RomChecksums.KaratekaPAL)
 				{
 					PAL_Kara = true;
 				}

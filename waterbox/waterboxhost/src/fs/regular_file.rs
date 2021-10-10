@@ -30,10 +30,15 @@ impl IStateable for RegularFile {
 				bin::write_magic(stream, "RegularFile")?;
 				bin::write_hash(stream, &hash[..])?;
 				bin::write(stream, &self.position)?;
-				Ok(())	
-	
+				Ok(())
 			},
-			None => Err(anyhow!("Cannot save state while transient files are active"))
+			None => {
+				bin::write_magic(stream, "RegularFile(RW)")?;
+				bin::writeval(stream, self.data.len())?;
+				stream.write_all(&self.data[..])?;
+				bin::write(stream, &self.position)?;
+				Ok(())
+			},
 		}
 	}
 	fn load_state(&mut self, stream: &mut dyn Read) -> anyhow::Result<()> {
@@ -42,9 +47,18 @@ impl IStateable for RegularFile {
 				bin::verify_magic(stream, "RegularFile")?;
 				bin::verify_hash(stream, &hash[..])?;
 				bin::read(stream, &mut self.position)?;
-				Ok(())		
+				Ok(())
 			}
-			None => Err(anyhow!("Cannot load state while transient files are active"))
+			None => {
+				bin::verify_magic(stream, "RegularFile(RW)")?;
+				let len = bin::readval(stream)?;
+				if len != self.data.len() {
+					self.data.resize(len, 0);
+				}
+				stream.read_exact(&mut self.data[..])?;
+				bin::read(stream, &mut self.position)?;
+				Ok(())
+			},
 		}
 	}
 }

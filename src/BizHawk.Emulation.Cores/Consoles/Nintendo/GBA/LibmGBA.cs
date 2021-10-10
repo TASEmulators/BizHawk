@@ -56,9 +56,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			LightSensor = 4,
 			Gyro = 8,
 			Tilt = 16,
-			GbPlayer = 32,
+			GbPlayer = 32, // we're not dolphin, so let's ignore this
 			GbPlayerDetect = 64,
-			NoOverride = 0x8000 // can probably ignore this
+			// heuristics since core only has a builtin autodetect for ALL hardware
+			// probably will be annoying to update as core adds in more hardware...
+			AutodetectRtc = 128,
+			AutodetectRumble = 256,
+			AutodetectLightSensor = 512,
+			AutodetectGyro = 1024,
+			AutodetectTilt = 2048,
+			// no autodetection for GbPlayerDetect....
 		}
 
 		[Flags]

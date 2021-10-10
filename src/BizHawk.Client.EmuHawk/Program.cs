@@ -219,6 +219,8 @@ namespace BizHawk.Client.EmuHawk
 				SetDllDirectory(dllDir);
 			}
 
+			Util.DebugWriteLine(EmuHawkUtil.CLRHostHasElevatedPrivileges ? "running as Superuser/Administrator" : "running as unprivileged user");
+
 			var exitCode = 0;
 			try
 			{
@@ -288,10 +290,8 @@ namespace BizHawk.Client.EmuHawk
 				//so.. we're going to resort to something really bad.
 				//avert your eyes.
 				var configPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "config.ini");
-				if (!OSTC.IsUnixHost // LuaInterface is not currently working on Mono
-					&& File.Exists(configPath)
-					&& (Array.Find(File.ReadAllLines(configPath), line => line.Contains("  \"LuaEngine\": ")) ?? string.Empty)
-						.Contains("0"))
+				if (File.Exists(configPath)
+					&& (Array.Find(File.ReadAllLines(configPath), line => line.Contains("  \"LuaEngine\": ")) ?? string.Empty).Contains("0"))
 				{
 					requested = "LuaInterface";
 				}

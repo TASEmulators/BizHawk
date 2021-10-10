@@ -247,7 +247,7 @@ namespace BizHawk.Client.Common
 				}
 			}
 
-			if (emulator is GBHawk gbHawk && gbHawk.IsCGBMode())
+			if (emulator is GBHawk gbHawk && gbHawk.IsCGBMode() && !gbHawk.IsGBInGBCMode())
 			{
 				movie.HeaderEntries.Add("IsCGBMode", "1");
 			}
