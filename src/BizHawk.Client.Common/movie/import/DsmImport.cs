@@ -41,7 +41,7 @@ namespace BizHawk.Client.Common
 				}
 				else if (line.StartsWith("firmFavColour"))
 				{
-					syncSettings.FirmwareFavouriteColour = byte.Parse(ParseHeader(line, "firmFavColour"));
+					syncSettings.FirmwareFavouriteColour = (NDS.SyncSettings.Color)byte.Parse(ParseHeader(line, "firmFavColour"));
 				}
 				else if (line.StartsWith("firmBirthDay"))
 				{
@@ -49,7 +49,7 @@ namespace BizHawk.Client.Common
 				}
 				else if (line.StartsWith("firmBirthMonth"))
 				{
-					syncSettings.FirmwareBirthdayMonth = byte.Parse(ParseHeader(line, "firmBirthMonth"));
+					syncSettings.FirmwareBirthdayMonth = (NDS.SyncSettings.Month)byte.Parse(ParseHeader(line, "firmBirthMonth"));
 				}
 				else if (line.StartsWith("rtcStartNew"))
 				{
