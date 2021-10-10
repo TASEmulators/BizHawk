@@ -255,6 +255,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			[DefaultValue(ScreenLayoutKind.Vertical)]
 			public ScreenLayoutKind ScreenLayout { get; set; }
 
+			[DisplayName("Invert Screens")]
+			[Description("Inverts the order of the screens.")]
+			[DefaultValue(false)]
+			public bool ScreenInvert { get; set; }
+
 			[DisplayName("Rotation")]
 			[Description("Adjusts the orientation of the screens")]
 			[DefaultValue(ScreenRotationKind.Rotate0)]
@@ -553,6 +558,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				GBALightSensor = (byte)controller.AxisValue("GBA Light Sensor"),
 			};
 		}
+
+		private const int SingleScreenSize = (256 * 384 / 2);
 
 		protected override void FrameAdvancePost()
 		{
