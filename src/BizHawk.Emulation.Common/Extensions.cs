@@ -390,7 +390,7 @@ namespace BizHawk.Emulation.Common
 			return buttons;
 		}
 
-		public static IDictionary<string, object> ToDictionary(this IController controller, int? controllerNum = null)
+		public static IReadOnlyDictionary<string, object> ToDictionary(this IController controller, int? controllerNum = null)
 		{
 			var buttons = new Dictionary<string, object>();
 

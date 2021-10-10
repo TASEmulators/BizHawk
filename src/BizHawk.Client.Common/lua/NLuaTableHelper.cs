@@ -22,7 +22,7 @@ namespace BizHawk.Client.Common
 
 		public LuaTable CreateTable() => _lua.NewTable();
 
-		public LuaTable DictToTable<T>(IDictionary<string, T> dictionary)
+		public LuaTable DictToTable<T>(IReadOnlyDictionary<string, T> dictionary)
 		{
 			var table = _lua.NewTable();
 

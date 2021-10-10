@@ -25,7 +25,7 @@ namespace BizHawk.Client.Common
 
 		public string GetBoardType() => BoardInfo?.BoardName ?? "";
 
-		public Dictionary<string, string> GetOptions()
+		public IReadOnlyDictionary<string, string> GetOptions()
 		{
 			var options = new Dictionary<string, string>();
 			if (_game == null) return options;

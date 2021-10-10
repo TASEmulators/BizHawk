@@ -10,6 +10,6 @@ namespace BizHawk.Client.Common
 		string GetStatus();
 		bool IsStatusBad();
 		string GetBoardType();
-		Dictionary<string, string> GetOptions();
+		IReadOnlyDictionary<string, string> GetOptions();
 	}
 }
