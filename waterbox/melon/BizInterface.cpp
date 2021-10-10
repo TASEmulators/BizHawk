@@ -47,13 +47,11 @@ static const char* no_path = "";
 typedef struct
 {
 	char* FirmwareUsername; // max 10 length (then terminator)
-	int FirmwareUsernameLength;
-	int FirmwareLanguage;
-	int FirmwareBirthdayMonth;
-	int FirmwareBirthdayDay;
-	int FirmwareFavouriteColour;
+	s32 FirmwareLanguage;
+	s32 FirmwareBirthdayMonth;
+	s32 FirmwareBirthdayDay;
+	s32 FirmwareFavouriteColour;
 	char* FirmwareMessage; // max 26 length (then terminator)
-	int FirmwareMessageLength;
 } FirmwareSettings;
 
 EXPORT bool Init(LoadFlags flags, FirmwareSettings* fwSettings)
@@ -82,14 +80,14 @@ EXPORT bool Init(LoadFlags flags, FirmwareSettings* fwSettings)
 	Config::FirmwareOverrideSettings = !!(flags & FIRMWARE_OVERRIDE);
 	if (Config::FirmwareOverrideSettings)
 	{
-		strncpy(Config::FirmwareUsername, fwSettings->FirmwareUsername, fwSettings->FirmwareUsernameLength);
-		memset(&Config::FirmwareUsername[fwSettings->FirmwareUsernameLength], '\0', 64 - fwSettings->FirmwareUsernameLength);
+		strncpy(Config::FirmwareUsername, fwSettings->FirmwareUsername, 10);
+		memset(&Config::FirmwareUsername[10], '\0', 64 - (10 + 1));
 		Config::FirmwareLanguage = fwSettings->FirmwareLanguage;
 		Config::FirmwareBirthdayMonth = fwSettings->FirmwareBirthdayMonth;
 		Config::FirmwareBirthdayDay = fwSettings->FirmwareBirthdayDay;
 		Config::FirmwareFavouriteColour = fwSettings->FirmwareFavouriteColour;
-		strncpy(Config::FirmwareMessage, fwSettings->FirmwareMessage, fwSettings->FirmwareMessageLength);
-		memset(&Config::FirmwareMessage[fwSettings->FirmwareMessageLength], '\0', 1024 - fwSettings->FirmwareMessageLength);
+		strncpy(Config::FirmwareMessage, fwSettings->FirmwareMessage, 26);
+		memset(&Config::FirmwareMessage[26], '\0', 1024 - (26 + 1));
 	}
 
 	if (!NDS::Init()) return false;
