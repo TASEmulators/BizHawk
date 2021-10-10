@@ -66,16 +66,29 @@ EXPORT bool Init(LoadFlags flags, FirmwareSettings* fwSettings)
 	Config::FirmwarePath[1023] = '\0';
 
 	NDS::SetConsoleType(0);
-	// rand calls are deterministic under wbx, so this will force the mac address to a constant value instead of relying on whatever is in the firmware
+	// time calls are deterministic under wbx, so this will force the mac address to a constant value instead of relying on whatever is in the firmware
 	// fixme: might want to allow the user to specify mac address?
 	srand(time(NULL));
-	Config::RandomizeMAC = !!(flags & FIRMWARE_OVERRIDE);
+	Config::RandomizeMAC = true;
 	Config::AudioBitrate = !!(flags & ACCURATE_AUDIO_BITRATE) ? 1 : 2;
 	Config::FixedBootTime = true;
 	Config::UseRealTime = false;
 	Config::TimeAtBoot = 0;
 	biz_time = 0;
 	RTC::RtcCallback = BizRtcCallback;
+
+	Config::FirmwareOverrideSettings = !!(flags & FIRMWARE_OVERRIDE);
+	if (Config::FirmwareOverrideSettings)
+	{
+		strncpy(Config::FirmwareUsername, fwSettings->FirmwareUsername, 10);
+		memset(&Config::FirmwareUsername[10], '\0', 64 - 10);
+		Config::FirmwareLanguage = fwSettings->FirmwareLanguage;
+		Config::FirmwareBirthdayMonth = fwSettings->FirmwareBirthdayMonth;
+		Config::FirmwareBirthdayDay = fwSettings->FirmwareBirthdayDay;
+		Config::FirmwareFavouriteColour = fwSettings->FirmwareFavouriteColour;
+		strncpy(Config::FirmwareMessage, fwSettings->FirmwareMessage, 26);
+		memset(&Config::FirmwareMessage[26], '\0', 1024 - 26);
+	}
 
 	if (!NDS::Init()) return false;
 	GPU::InitRenderer(false);
