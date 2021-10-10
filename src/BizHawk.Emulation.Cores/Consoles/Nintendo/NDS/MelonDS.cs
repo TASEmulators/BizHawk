@@ -92,7 +92,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 			var fwSettings = new LibMelonDS.FirmwareSettings();
 			var name = Encoding.UTF8.GetBytes(_syncSettings.FirmwareUsername);
-			fwSettings.FirmwareMessageLength = name.Length;
+			fwSettings.FirmwareUsernameLength = name.Length;
 			fwSettings.FirmwareLanguage = _syncSettings.FirmwareLanguage;
 			fwSettings.FirmwareBirthdayMonth = _syncSettings.FirmwareBirthdayMonth;
 			fwSettings.FirmwareBirthdayDay = _syncSettings.FirmwareBirthdayDay;
@@ -264,6 +264,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			[DefaultValue(0)]
 			public int ScreenGap { get; set; }
 
+			[DisplayName("Accurate Audio Bitrate")]
 			[Description("If true, the audio bitrate will be set to 10. Otherwise, it will be set to 16.")]
 			[DefaultValue(true)]
 			public bool AccurateAudioBitrate { get; set; }
@@ -387,7 +388,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 			[DisplayName("Firmware Birthday Month")]
 			[Description("Birthday month in firmware. Only applicable if firmware override is in effect.")]
-			[DefaultValue(Month.January)]
+			[DefaultValue(Month.March)]
 			public Month FirmwareBirthdayMonth
 			{
 				get => _firmwarebirthdaymonth;
@@ -400,7 +401,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 			[DisplayName("Firmware Birthday Day")]
 			[Description("Birthday day in firmware. Only applicable if firmware override is in effect.")]
-			[DefaultValue(1)]
+			[DefaultValue(3)]
 			public int FirmwareBirthdayDay
 			{
 				get => _firmwarebirthdayday;
