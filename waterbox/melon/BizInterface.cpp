@@ -124,6 +124,7 @@ EXPORT bool SaveRamIsDirty()
 
 EXPORT void Reset()
 {
+	srand(time(NULL));
 	NDS::LoadROM(rom_path, no_path, biz_skip_fw);
 }
 
