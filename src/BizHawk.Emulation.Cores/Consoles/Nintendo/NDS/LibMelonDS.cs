@@ -26,6 +26,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			TOUCH = 0x1000,
 			LIDOPEN = 0x2000,
 			LIDCLOSE = 0x4000,
+			POWER = 0x8000,
 		}
 
 		[Flags]
@@ -77,8 +78,5 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		[BizImport(CC)]
 		public abstract bool SaveRamIsDirty();
-
-		[BizImport(CC)]
-		public abstract void Reset();
 	}
 }

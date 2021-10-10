@@ -215,6 +215,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				b |= LibMelonDS.Buttons.LIDCLOSE;
 			if (c.IsPressed("Touch"))
 				b |= LibMelonDS.Buttons.TOUCH;
+			if (c.IsPressed("Power"))
+				b |= LibMelonDS.Buttons.POWER;
 
 			return b;
 		}
@@ -528,10 +530,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
 		{
-			if (controller.IsPressed("Power"))
-			{
-				_core.Reset();
-			}
 			return new LibMelonDS.FrameInfo
 			{
 				Time = GetRtcTime(!DeterministicEmulation),
