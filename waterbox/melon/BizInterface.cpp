@@ -99,6 +99,7 @@ EXPORT bool Init(LoadFlags flags, FirmwareSettings* fwSettings)
 	biz_skip_fw = !!(flags & SKIP_FIRMWARE);
 	if (!NDS::LoadROM(rom_path, no_path, biz_skip_fw)) return false;
 	if (flags & GBA_CART_PRESENT) { if (!NDS::LoadGBAROM(gba_rom_path, gba_sram_path)) return false; }
+	Config::FirmwareOverrideSettings = false;
 	return true;
 }
 
