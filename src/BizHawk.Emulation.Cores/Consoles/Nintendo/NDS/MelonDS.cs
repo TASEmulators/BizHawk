@@ -526,16 +526,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			return Math.Max(1, Math.Min(day, maxdays));
 		}
 
-		private void Reset()
-		{
-			_core.Reset();
-		}
-
 		protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
 		{
 			if (controller.IsPressed("Power"))
 			{
-				Reset();
+				_core.Reset();
 			}
 			return new LibMelonDS.FrameInfo
 			{
