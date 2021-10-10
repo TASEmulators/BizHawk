@@ -125,12 +125,6 @@ EXPORT bool SaveRamIsDirty()
 	return NDSCart_SRAMManager::NeedsFlush();
 }
 
-EXPORT void Reset()
-{
-	NDS::LoadBIOS(false);
-	if (biz_skip_fw) NDS::SetupDirectBoot();
-}
-
 /* excerpted from gbatek
 
 NDS9 Memory Map
@@ -280,6 +274,12 @@ static bool ValidRange(s8 sensor)
 
 EXPORT void FrameAdvance(MyFrameInfo* f)
 {
+	if (f->Keys & 0x8000)
+	{
+		NDS::LoadBIOS(false);
+		if (biz_skip_fw) NDS::SetupDirectBoot();
+	}
+
 	NDS::SetKeyMask(~f->Keys & 0xFFF);
 
 	if (f->Keys & 0x1000)
