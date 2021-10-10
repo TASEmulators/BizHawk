@@ -219,6 +219,8 @@ namespace BizHawk.Client.EmuHawk
 				SetDllDirectory(dllDir);
 			}
 
+			Util.DebugWriteLine(EmuHawkUtil.CLRHostHasElevatedPrivileges ? "running as Superuser/Administrator" : "running as unprivileged user");
+
 			var exitCode = 0;
 			try
 			{
