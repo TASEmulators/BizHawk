@@ -80,14 +80,14 @@ EXPORT bool Init(LoadFlags flags, FirmwareSettings* fwSettings)
 	Config::FirmwareOverrideSettings = !!(flags & FIRMWARE_OVERRIDE);
 	if (Config::FirmwareOverrideSettings)
 	{
-		strncpy(Config::FirmwareUsername, fwSettings->FirmwareUsername, 10);
-		memset(&Config::FirmwareUsername[10], '\0', 64 - (10 + 1));
+		//strncpy(Config::FirmwareUsername, fwSettings->FirmwareUsername, 10);
+		//memset(&Config::FirmwareUsername[10], '\0', 64 - (10 + 1));
 		Config::FirmwareLanguage = fwSettings->FirmwareLanguage;
 		Config::FirmwareBirthdayMonth = fwSettings->FirmwareBirthdayMonth;
 		Config::FirmwareBirthdayDay = fwSettings->FirmwareBirthdayDay;
 		Config::FirmwareFavouriteColour = fwSettings->FirmwareFavouriteColour;
-		strncpy(Config::FirmwareMessage, fwSettings->FirmwareMessage, 26);
-		memset(&Config::FirmwareMessage[26], '\0', 1024 - (26 + 1));
+		//strncpy(Config::FirmwareMessage, fwSettings->FirmwareMessage, 26);
+		//memset(&Config::FirmwareMessage[26], '\0', 1024 - (26 + 1));
 	}
 
 	if (!NDS::Init()) return false;
