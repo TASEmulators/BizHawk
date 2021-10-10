@@ -9,6 +9,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
+using Newtonsoft.Json;
+
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 {
 	[PortedCore(CoreNames.MelonDS, "Arisotura", "0.9.3", "http://melonds.kuribo64.net/", singleInstance: true, isReleased: false)]
@@ -89,12 +91,18 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				flags |= LibMelonDS.LoadFlags.FIRMWARE_OVERRIDE;
 
 			var fwSettings = new LibMelonDS.FirmwareSettings();
-			fwSettings.FirmwareUsername = new byte[64];
-			fwSettings.FirmwareLanguage = 0;
-			fwSettings.FirmwareBirthdayMonth = 0;
-			fwSettings.FirmwareBirthdayDay = 0;
-			fwSettings.FirmwareFavouriteColour = 0;
-			fwSettings.FirmwareMessage = new byte[1024];
+			var name = Encoding.UTF8.GetBytes(_syncSettings.FirmwareUsername);
+			fwSettings.FirmwareUsername = new byte[10 + 1];
+			Array.Copy(name, fwSettings.FirmwareUsername, 10);
+			fwSettings.FirmwareUsername[10] = 0;
+			fwSettings.FirmwareLanguage = _syncSettings.FirmwareLanguage;
+			fwSettings.FirmwareBirthdayMonth = _syncSettings.FirmwareBirthdayMonth;
+			fwSettings.FirmwareBirthdayDay = _syncSettings.FirmwareBirthdayDay;
+			fwSettings.FirmwareFavouriteColour = _syncSettings.FirmwareFavouriteColour;
+			var message = Encoding.UTF8.GetBytes(_syncSettings.FirmwareMessage);
+			fwSettings.FirmwareMessage = new byte[26 + 1];
+			Array.Copy(message, fwSettings.FirmwareMessage, 26);
+			fwSettings.FirmwareMessage[26] = 0;
 
 			_exe.AddReadonlyFile(_roms[0], "game.rom");
 			if (gbacartpresent)
@@ -275,13 +283,38 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		public class SyncSettings
 		{
+			private static readonly DateTime minDate = new DateTime(2000, 1, 1);
+			private static readonly DateTime maxDate = new DateTime(2099, 12, 31, 23, 59, 59);
+
+			[JsonIgnore]
+			private DateTime _initaltime;
+
 			[DisplayName("Initial Time")]
 			[Description("Initial time of emulation.")]
 			[DefaultValue(typeof(DateTime), "2000-01-01")]
-			public DateTime InitialTime { get; set; }
+			public DateTime InitialTime
+			{
+				get => _initaltime;
+				set
+				{
+					if (DateTime.Compare(minDate, value) > 0)
+					{
+						_initaltime = minDate;
+					}
+					else if (DateTime.Compare(maxDate, value) < 0)
+					{
+						_initaltime = maxDate;
+					}
+					else
+					{
+						_initaltime = value;
+					}
 
-			[DisplayName("Use RealTime")]
-			[Description("If true, RTC clock will be based off of real time instead of emulated time.  Ignored (set to false) when recording a movie.")]
+				}
+			}
+
+			[DisplayName("Use Real Time")]
+			[Description("If true, RTC clock will be based off of real time instead of emulated time. Ignored (set to false) when recording a movie.")]
 			[DefaultValue(false)]
 			public bool UseRealTime { get; set; }
 
@@ -300,36 +333,113 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			[DefaultValue(false)]
 			public bool FirmwareOverride { get; set; }
 
+			[JsonIgnore]
+			private string _firmwareusername;
+
 			[DisplayName("Firmware Username")]
 			[Description("Username in firmware. Only applicable if firmware override is in effect.")]
 			[DefaultValue("")]
-			public string FirmwareUsername { get; set; }
+			public string FirmwareUsername
+			{
+				get => _firmwareusername;
+				set => _firmwareusername = value.Substring(0, Math.Min(value.Length, 10));
+			}
+
+			public enum Language : int
+			{
+				Japanese,
+				English,
+				French,
+				German,
+				Italian,
+				Spanish,
+			}
 
 			[DisplayName("Firmware Language")]
 			[Description("Language in firmware. Only applicable if firmware override is in effect.")]
-			[DefaultValue(0)]
-			public int FirmwareLanguage { get; set; }
+			[DefaultValue(Language.English)]
+			public Language FirmwareLanguage { get; set; }
+
+			public enum Month : int
+			{
+				January = 1,
+				February,
+				March,
+				April,
+				May,
+				June,
+				July,
+				August,
+				September,
+				October,
+				November,
+				December,
+			}
+
+			[JsonIgnore]
+			private Month _firmwarebirthdaymonth;
+
+			[JsonIgnore]
+			private int _firmwarebirthdayday;
 
 			[DisplayName("Firmware Birthday Month")]
 			[Description("Birthday month in firmware. Only applicable if firmware override is in effect.")]
-			[DefaultValue(0)]
-			public int FirmwareBirthdayMonth { get; set; }
+			[DefaultValue(Month.January)]
+			public Month FirmwareBirthdayMonth
+			{
+				get => _firmwarebirthdaymonth;
+				set
+				{
+					FirmwareBirthdayDay = SanitizeBirthdayDay(FirmwareBirthdayDay, value);
+					_firmwarebirthdaymonth = value;
+				}
+			}
 
 			[DisplayName("Firmware Birthday Day")]
 			[Description("Birthday day in firmware. Only applicable if firmware override is in effect.")]
-			[DefaultValue(0)]
-			public int FirmwareBirthdayDay { get; set; }
+			[DefaultValue(1)]
+			public int FirmwareBirthdayDay
+			{
+				get => _firmwarebirthdayday;
+				set => _firmwarebirthdayday = SanitizeBirthdayDay(value, FirmwareBirthdayMonth);
+			}
+
+			public enum Color : int
+			{
+				GreyishBlue,
+				Brown,
+				Red,
+				LightPink,
+				Orange,
+				Yellow,
+				Lime,
+				LightGreen,
+				DarkGreen,
+				Turqoise,
+				LightBlue,
+				Blue,
+				DarkBlue,
+				DarkPurple,
+				LightPurple,
+				DarkPink,
+			}
 
 			[DisplayName("Firmware Favorite Color")]
 			[Description("Favorite color in firmware. Only applicable if firmware override is in effect.")]
-			[DefaultValue(0)]
-			public int FirmwareFavouriteColour { get; set; }
+			[DefaultValue(Color.GreyishBlue)]
+			public Color FirmwareFavouriteColour { get; set; }
+
+			[JsonIgnore]
+			private string _firmwaremessage;
 
 			[DisplayName("Firmware Message")]
 			[Description("Message in firmware. Only applicable if firmware override is in effect.")]
 			[DefaultValue("")]
-			public string FirmwareMessage { get; set; }
-
+			public string FirmwareMessage
+			{
+				get => _firmwaremessage;
+				set => _firmwaremessage = value.Substring(0, Math.Min(value.Length, 26));
+			}
 
 			public SyncSettings Clone()
 			{
@@ -369,6 +479,34 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			var ret = SyncSettings.NeedsReboot(_syncSettings, o);
 			_syncSettings = o;
 			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
+		}
+
+		private static int SanitizeBirthdayDay(int day, SyncSettings.Month fwMonth)
+		{
+			int maxdays;
+			switch (fwMonth)
+			{
+				case SyncSettings.Month.February:
+				{
+					maxdays = 29;
+					break;
+				}
+				case SyncSettings.Month.April:
+				case SyncSettings.Month.June:
+				case SyncSettings.Month.September:
+				case SyncSettings.Month.November:
+				{
+					maxdays = 30;
+					break;
+				}
+				default:
+				{
+					maxdays = 31;
+					break;
+				}
+			}
+
+			return Math.Max(1, Math.Min(day, maxdays));
 		}
 
 		private void Reset()
