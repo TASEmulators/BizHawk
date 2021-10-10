@@ -125,7 +125,7 @@ EXPORT bool SaveRamIsDirty()
 EXPORT void Reset()
 {
 	srand(time(NULL));
-	NDSCart_SRAMManager::RequestFlush();
+	if (NDSCart_SRAMManager::SecondaryBufferLength > 0) NDSCart_SRAMManager::RequestFlush();
 	NDS::LoadROM(rom_path, no_path, biz_skip_fw);
 }
 
