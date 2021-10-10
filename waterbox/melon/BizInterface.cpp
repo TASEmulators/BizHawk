@@ -127,8 +127,8 @@ EXPORT bool SaveRamIsDirty()
 
 EXPORT void Reset()
 {
-	srand(time(NULL));
-	NDS::LoadROM(rom_path, no_path, biz_skip_fw);
+	NDS::Reset(false);
+	if (biz_skip_fw) NDS::SetupDirectBoot();
 }
 
 /* excerpted from gbatek
