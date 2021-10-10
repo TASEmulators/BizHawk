@@ -237,7 +237,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		public new void StoreSaveRam(byte[] data)
 		{
-			_core.PutSaveRam(data, (uint)data.Length);
+			if (data.Length > 0)
+			{
+				_core.PutSaveRam(data, (uint)data.Length);
+			}
 		}
 
 		private Settings _settings;
