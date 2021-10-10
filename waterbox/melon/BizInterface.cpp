@@ -42,6 +42,7 @@ static const char* firmware_path = "firmware.bin";
 static const char* rom_path = "game.rom";
 static const char* sram_path = "save.ram";
 static const char* gba_rom_path = "gba.rom";
+static const char* gba_sram_path = "gba.ram";
 static const char* no_path = "";
 
 typedef struct
@@ -97,7 +98,7 @@ EXPORT bool Init(LoadFlags flags, FirmwareSettings* fwSettings)
 	GPU::SetRenderSettings(false, biz_render_settings);
 	biz_skip_fw = !!(flags & SKIP_FIRMWARE);
 	if (!NDS::LoadROM(rom_path, no_path, biz_skip_fw)) return false;
-	if (flags & GBA_CART_PRESENT) { if (!NDS::LoadGBAROM(gba_rom_path, no_path)) return false; }
+	if (flags & GBA_CART_PRESENT) { if (!NDS::LoadGBAROM(gba_rom_path, gba_sram_path)) return false; }
 	return true;
 }
 
