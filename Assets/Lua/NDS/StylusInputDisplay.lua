@@ -30,8 +30,8 @@ while true do
 		btns = movie.getinput(emu.framecount() - 1)
 	end
 
-	local x = btns['TouchX']
-	local y = btns['TouchY']
+	local x = btns['Touch X']
+	local y = btns['Touch Y']
 	local isDown = btns['Touch']
 
 	-- A bit of a hack to ensure it is not drawing while mouse moving
@@ -43,7 +43,7 @@ while true do
 	pts = client.transformPoint(x, y)
 	local tx = pts["x"];
 	local ty = pts["y"];
-gui.DrawNew("native")
+	gui.DrawNew("native")
 	Draw(tx, ty, 10000, 10000, isDown)
 
 	emu.frameadvance()
