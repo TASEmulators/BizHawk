@@ -1,8 +1,8 @@
 -- Gives a cross hair UI for the stylus for DS games
 
-local upColor = 'white'
-local downColor = 'green'
-local dotColor = 'red'
+local upColor = 'green'
+local downColor = 'red'
+local dotColor = 'black'
 
 function Draw(x, y, maxX, maxY, isDown)
 	color = upColor
@@ -43,7 +43,6 @@ while true do
 	pts = client.transformPoint(x, y)
 	local tx = pts["x"];
 	local ty = pts["y"];
-	gui.DrawNew("native")
 	Draw(tx, ty, 10000, 10000, isDown)
 
 	emu.frameadvance()
