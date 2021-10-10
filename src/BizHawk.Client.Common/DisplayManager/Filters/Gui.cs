@@ -340,8 +340,9 @@ namespace BizHawk.Client.Common.Filters
 		public override Vector2 UntransformPoint(string channel, Vector2 point)
 		{
 			var settings = nds.GetSettings();
-			bool invert = settings.ScreenInvert;
-			if (settings.ScreenLayout == NDS.ScreenLayoutKind.Top || settings.ScreenLayout == NDS.ScreenLayoutKind.Bottom) invert = false;
+			bool invert = settings.ScreenInvert
+				&& settings.ScreenLayout != NDS.ScreenLayoutKind.Top
+				&& settings.ScreenLayout != NDS.ScreenLayoutKind.Bottom;
 
 			point = Transform(invert ? matTopInvert : matBotInvert, point);
 
@@ -393,8 +394,7 @@ namespace BizHawk.Client.Common.Filters
 			if (settings.ScreenLayout == NDS.ScreenLayoutKind.Vertical) renderTop = renderBottom = true;
 			if (settings.ScreenLayout == NDS.ScreenLayoutKind.Horizontal) renderTop = renderBottom = true;
 
-			bool invert = false;
-			if (settings.ScreenInvert && renderTop && renderBottom) invert = true;
+			bool invert = settings.ScreenInvert && renderTop && renderBottom;
 
 			if (renderTop)
 			{

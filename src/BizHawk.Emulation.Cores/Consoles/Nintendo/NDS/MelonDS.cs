@@ -559,8 +559,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			};
 		}
 
-		private const int SingleScreenSize = (256 * 384 / 2);
-
 		protected override void FrameAdvancePost()
 		{
 			if (_fw != null)
