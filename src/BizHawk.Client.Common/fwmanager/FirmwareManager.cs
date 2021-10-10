@@ -208,9 +208,11 @@ namespace BizHawk.Client.Common
 
 				// compute its hash
 				// NDS's firmware file contains user settings; these are over-written by sync settings, so we shouldn't allow them to impact the hash
+				// fixme: there's way more stuff in nds firmware which can affect the hash. rtc fuckery, mac address, wifi settings, etc etc. a proper way to clear these out needs to come
 				/*var rff = reader.Read(fr.ID == NDS_FIRMWARE
 					? new FileInfo(Emulation.Cores.Consoles.Nintendo.NDS.NDS.CreateModifiedFirmware(userSpec))
-					: fi);
+					: fi);*/
+				var rff = reader.Read(fi);
 				ri.Size = fi.Length;
 				ri.Hash = rff.Hash;
 
@@ -224,7 +226,7 @@ namespace BizHawk.Client.Common
 					{
 						ri.KnownMismatching = true;
 					}
-				}*/
+				}
 			}
 		}
 	}

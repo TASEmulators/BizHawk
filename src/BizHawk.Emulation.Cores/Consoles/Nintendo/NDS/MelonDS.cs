@@ -17,6 +17,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 	{
 		private readonly LibMelonDS _core;
 		private readonly List<byte[]> _roms;
+		private readonly byte[] _bios7;
+		private readonly byte[] _bios9;
+		private readonly byte[] _fw;
+		private readonly bool _userealbios;
+		private readonly bool _skipfw;
 
 		[CoreConstructor("NDS")]
 		public unsafe NDS(CoreLoadParameters<Settings, SyncSettings> lp)
@@ -56,21 +61,25 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			_syncSettings = lp.SyncSettings ?? new SyncSettings();
 			_settings = lp.Settings ?? new Settings();
 
-			byte[] bios7 = _syncSettings.UseRealBIOS
+			_userealbios = _syncSettings.UseRealBIOS;
+
+			_bios7 = _userealbios
 				? lp.Comm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "bios7"))
 				: null;
 
-			byte[] bios9 = _syncSettings.UseRealBIOS
+			_bios9 = _userealbios
 				? lp.Comm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "bios9"))
 				: null;
 
-			byte[] fw = lp.Comm.CoreFileProvider.GetFirmware(new("NDS", "firmware"));
+			_fw = lp.Comm.CoreFileProvider.GetFirmware(new("NDS", "firmware"));
+
+			_skipfw = _syncSettings.SkipFirmware || !_syncSettings.UseRealBIOS || _fw == null;
 
 			LibMelonDS.LoadFlags flags = LibMelonDS.LoadFlags.NONE;
 
-			if (_syncSettings.UseRealBIOS)
+			if (_userealbios)
 				flags |= LibMelonDS.LoadFlags.USE_REAL_BIOS;
-			if (_syncSettings.SkipFirmware || !_syncSettings.UseRealBIOS || fw == null)
+			if (_skipfw)
 				flags |= LibMelonDS.LoadFlags.SKIP_FIRMWARE;
 			if (gbacartpresent)
 				flags |= LibMelonDS.LoadFlags.GBA_CART_PRESENT;
@@ -94,12 +103,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			}
 			if (_syncSettings.UseRealBIOS)
 			{
-				_exe.AddReadonlyFile(bios7, "bios7.rom");
-				_exe.AddReadonlyFile(bios9, "bios9.rom");
+				_exe.AddReadonlyFile(_bios7, "bios7.rom");
+				_exe.AddReadonlyFile(_bios9, "bios9.rom");
 			}
-			if (fw != null)
+			if (_fw != null)
 			{
-				_exe.AddReadonlyFile(fw, "firmware.bin");
+				_exe.AddReadonlyFile(_fw, "firmware.bin");
 			}
 
 			if (!_core.Init(flags, fwSettings))
@@ -117,14 +126,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				_exe.RemoveReadonlyFile("bios7.rom");
 				_exe.RemoveReadonlyFile("bios9.rom");
 			}
-			if (fw != null)
+			if (_fw != null)
 			{
 				_exe.RemoveReadonlyFile("firmware.bin");
 			}
 
 			PostInit();
 
-			DeterministicEmulation = lp.DeterministicEmulationRequested || (!_syncSettings.UseRealTime && _syncSettings.FirmwareOverride);
+			DeterministicEmulation = lp.DeterministicEmulationRequested || (!_syncSettings.UseRealTime);
 			InitializeRtc(_syncSettings.InitialTime);
 
 			_resampler = new SpeexResampler(SpeexResampler.Quality.QUALITY_DEFAULT, 32768, 44100, 32768, 44100, null, this);
@@ -291,11 +300,34 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			[DefaultValue(false)]
 			public bool FirmwareOverride { get; set; }
 
+			[DisplayName("Firmware Username")]
+			[Description("Username in firmware. Only applicable if firmware override is in effect.")]
+			[DefaultValue("")]
 			public string FirmwareUsername { get; set; }
+
+			[DisplayName("Firmware Language")]
+			[Description("Language in firmware. Only applicable if firmware override is in effect.")]
+			[DefaultValue(0)]
 			public int FirmwareLanguage { get; set; }
+
+			[DisplayName("Firmware Birthday Month")]
+			[Description("Birthday month in firmware. Only applicable if firmware override is in effect.")]
+			[DefaultValue(0)]
 			public int FirmwareBirthdayMonth { get; set; }
+
+			[DisplayName("Firmware Birthday Day")]
+			[Description("Birthday day in firmware. Only applicable if firmware override is in effect.")]
+			[DefaultValue(0)]
 			public int FirmwareBirthdayDay { get; set; }
+
+			[DisplayName("Firmware Favorite Color")]
+			[Description("Favorite color in firmware. Only applicable if firmware override is in effect.")]
+			[DefaultValue(0)]
 			public int FirmwareFavouriteColour { get; set; }
+
+			[DisplayName("Firmware Message")]
+			[Description("Message in firmware. Only applicable if firmware override is in effect.")]
+			[DefaultValue("")]
 			public string FirmwareMessage { get; set; }
 
 
@@ -339,13 +371,35 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}
 
+		private void Reset()
+		{
+			// hack around core clearing out rom/save/bios/firmware data on reset
+			byte[] sav = CloneSaveRam();
+			_exe.AddReadonlyFile(_roms[0], "game.rom");
+			if (_userealbios)
+			{
+				_exe.AddReadonlyFile(_bios7, "bios7.rom");
+				_exe.AddReadonlyFile(_bios9, "bios9.rom");
+			}
+			_core.Reset();
+			_exe.RemoveReadonlyFile("game.rom");
+			if (_userealbios)
+			{
+				_exe.RemoveReadonlyFile("bios7.rom");
+				_exe.RemoveReadonlyFile("bios9.rom");
+			}
+			StoreSaveRam(sav);
+		}
+
 		protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
 		{
+			if (_fw != null)
+			{
+				_exe.AddTransientFile(_fw, "firmware.bin");
+			}
 			if (controller.IsPressed("Power"))
 			{
-				byte[] sav = CloneSaveRam();
-				_core.Reset();
-				StoreSaveRam(sav);
+				Reset();
 			}
 			return new LibMelonDS.FrameInfo
 			{
@@ -356,6 +410,36 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				MicInput = (short)controller.AxisValue("Mic Input"),
 				GBALightSensor = (byte)controller.AxisValue("GBA Light Sensor"),
 			};
+		}
+
+		protected override void FrameAdvancePost()
+		{
+			if (_fw != null)
+			{
+				_exe.RemoveTransientFile("firmware.bin");
+			}
+		}
+
+		protected override void SaveStateBinaryInternal(BinaryWriter writer)
+		{
+			if (_fw != null)
+			{
+				writer.Write(_fw.Length);
+				writer.Write(_fw, 0, _fw.Length);
+			}
+		}
+
+		protected override void LoadStateBinaryInternal(BinaryReader reader)
+		{
+			if (_fw != null)
+			{
+				int len = reader.ReadInt32();
+				if (len != _fw.Length)
+				{
+					throw new InvalidOperationException("Firmware buffer size mismatch!");
+				}
+				reader.Read(_fw, 0, len);
+			}
 		}
 	}
 }
