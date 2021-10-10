@@ -90,10 +90,11 @@ namespace BizHawk.Client.Common
 				{
 					BoolButtons =
 					{
-						"Left", "Right", "Up", "Down",
-						"A", "B", "X", "Y", "L", "R", "Start", "Select", "LidOpen", "LidClose", "Power", "Touch"
+						"Up", "Down", "Left", "Right", "Start", "Select", "B", "A", "Y", "X", "L", "R", "Lid Open", "Lid Close", "Touch", "Power"
 					}
-				}.AddXYPair("Touch{0}", AxisPairOrientation.RightAndUp, 0.RangeTo(255), 128, 0.RangeTo(191), 96) //TODO verify direction against hardware
+				}.AddXYPair("Touch {0}", AxisPairOrientation.RightAndUp, 0.RangeTo(255), 128, 0.RangeTo(191), 96) //TODO verify direction against hardware
+					.AddAxis("Mic Input", 0.RangeTo(2047), 0)
+						.AddAxis("GBA Light Sensor", 0.RangeTo(10), 0)
 			};
 
 			controller["LidOpen"] = false;
@@ -130,8 +131,10 @@ namespace BizHawk.Client.Common
 
 				controller.AcceptNewAxes(new[]
 				{
-					("TouchX", touchX),
-					("TouchY", touchY)
+					("Touch X", touchX),
+					("Touch Y", touchY),
+					("Mic Input", 0),
+					("GBA Light Sensor", 0)
 				});
 			}
 
