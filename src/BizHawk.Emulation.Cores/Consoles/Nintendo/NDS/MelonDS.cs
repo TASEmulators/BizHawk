@@ -41,12 +41,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		{
 			_roms = lp.Roms.Select(r => r.RomData).ToList();
 
-			if (_roms.Count > 2)
+			if (_roms.Count > 3)
 			{
 				throw new InvalidOperationException("Wrong number of ROMs!");
 			}
 
-			bool gbacartpresent = _roms.Count == 2;
+			bool gbacartpresent = _roms.Count > 1;
 
 			_core = PreInit<LibMelonDS>(new WaterboxOptions
 			{
@@ -104,6 +104,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			if (gbacartpresent)
 			{
 				_exe.AddReadonlyFile(_roms[1], "gba.rom");
+				if (_roms[2] != null)
+				{
+					_exe.AddReadonlyFile(_roms[2], "gba.ram");
+				}
 			}
 			if (_syncSettings.UseRealBIOS)
 			{
@@ -131,6 +135,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			if (gbacartpresent)
 			{
 				_exe.RemoveReadonlyFile("gba.rom");
+				if (_roms[2] != null)
+				{
+					_exe.RemoveReadonlyFile("gba.ram");
+				}
 			}
 			if (_syncSettings.UseRealBIOS)
 			{
