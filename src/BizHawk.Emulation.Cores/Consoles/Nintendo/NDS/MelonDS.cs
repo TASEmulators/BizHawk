@@ -92,17 +92,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 			var fwSettings = new LibMelonDS.FirmwareSettings();
 			var name = Encoding.UTF8.GetBytes(_syncSettings.FirmwareUsername);
-			fwSettings.FirmwareUsername = new byte[10 + 1];
-			Array.Copy(name, fwSettings.FirmwareUsername, 10);
-			fwSettings.FirmwareUsername[10] = 0;
+			fwSettings.FirmwareMessageLength = name.Length;
 			fwSettings.FirmwareLanguage = _syncSettings.FirmwareLanguage;
 			fwSettings.FirmwareBirthdayMonth = _syncSettings.FirmwareBirthdayMonth;
 			fwSettings.FirmwareBirthdayDay = _syncSettings.FirmwareBirthdayDay;
 			fwSettings.FirmwareFavouriteColour = _syncSettings.FirmwareFavouriteColour;
 			var message = Encoding.UTF8.GetBytes(_syncSettings.FirmwareMessage);
-			fwSettings.FirmwareMessage = new byte[26 + 1];
-			Array.Copy(message, fwSettings.FirmwareMessage, 26);
-			fwSettings.FirmwareMessage[26] = 0;
+			fwSettings.FirmwareMessageLength = message.Length;
 
 			_exe.AddReadonlyFile(_roms[0], "game.rom");
 			if (gbacartpresent)
@@ -119,10 +115,17 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				_exe.AddReadonlyFile(_fw, "firmware.bin");
 			}
 
-			if (!_core.Init(flags, fwSettings))
+			fixed (byte* namePtr = &name[0])
+			fixed (byte* messagePtr = &message[0])
 			{
-				throw new InvalidOperationException("Init returned false!");
+				fwSettings.FirmwareUsername = (IntPtr)namePtr;
+				fwSettings.FirmwareMessage = (IntPtr)messagePtr;
+				if (!_core.Init(flags, fwSettings))
+				{
+					throw new InvalidOperationException("Init returned false!");
+				}
 			}
+
 
 			_exe.RemoveReadonlyFile("game.rom");
 			if (gbacartpresent)
@@ -338,7 +341,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 			[DisplayName("Firmware Username")]
 			[Description("Username in firmware. Only applicable if firmware override is in effect.")]
-			[DefaultValue("")]
+			[DefaultValue("MelonDS")]
 			public string FirmwareUsername
 			{
 				get => _firmwareusername;
@@ -426,7 +429,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 			[DisplayName("Firmware Favorite Color")]
 			[Description("Favorite color in firmware. Only applicable if firmware override is in effect.")]
-			[DefaultValue(Color.GreyishBlue)]
+			[DefaultValue(Color.Red)]
 			public Color FirmwareFavouriteColour { get; set; }
 
 			[JsonIgnore]
@@ -434,7 +437,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 			[DisplayName("Firmware Message")]
 			[Description("Message in firmware. Only applicable if firmware override is in effect.")]
-			[DefaultValue("")]
+			[DefaultValue("Melons Taste Great!")]
 			public string FirmwareMessage
 			{
 				get => _firmwaremessage;
