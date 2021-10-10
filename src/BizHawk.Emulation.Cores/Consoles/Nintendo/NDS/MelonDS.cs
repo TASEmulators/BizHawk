@@ -393,7 +393,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 			[DisplayName("Firmware Birthday Month")]
 			[Description("Birthday month in firmware. Only applicable if firmware override is in effect.")]
-			[DefaultValue(Month.March)]
+			[DefaultValue(Month.May)]
 			public Month FirmwareBirthdayMonth
 			{
 				get => _firmwarebirthdaymonth;
@@ -406,7 +406,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 			[DisplayName("Firmware Birthday Day")]
 			[Description("Birthday day in firmware. Only applicable if firmware override is in effect.")]
-			[DefaultValue(3)]
+			[DefaultValue(15)]
 			public int FirmwareBirthdayDay
 			{
 				get => _firmwarebirthdayday;
