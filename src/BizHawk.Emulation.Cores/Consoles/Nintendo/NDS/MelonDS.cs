@@ -237,10 +237,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		public new void StoreSaveRam(byte[] data)
 		{
-			if (_core.PutSaveRam(data, (uint)data.Length))
-			{
-				throw new InvalidOperationException("SaveRAM size mismatch!");
-			}
+			_core.PutSaveRam(data, (uint)data.Length);
 		}
 
 		private Settings _settings;
