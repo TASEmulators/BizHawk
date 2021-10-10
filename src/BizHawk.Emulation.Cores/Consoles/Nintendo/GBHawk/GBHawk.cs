@@ -26,11 +26,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 	{
 		internal static class RomChecksums
 		{
-			public const string BombermanCollection = /*md5:*/"9FB9C42CF52DCFDCFBAD5E61AE1B5777";
+			public const string BombermanCollection = /*sha1:*/"385F8FAFA53A83F8F65E1E619FE124BBF7DB4A98";
 
-			public const string BombermanSelectionKORNotInGameDB = /*md5:*/"D0C6FFC3602D91C0B2B1B0461553DE33";
+			public const string BombermanSelectionKORNotInGameDB = /*sha1:*/"52451464A9F4DD5FAEFE4594954CBCE03BFF0D05";
 
-			public const string MortalKombatIAndIIUSAEU = /*md5:*/"CF1F58AB72112716D3C615A553B2F481";
+			public const string MortalKombatIAndIIUSAEU = /*sha1:*/"E337489255B33367CE26194FC4038346D3388BD9";
 
 			public const string PirateRockMan8 = /*md5:*/"CAE0998A899DF2EE6ABA8E7695C2A096";
 
@@ -38,15 +38,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			public const string UnknownRomA = /*md5:*/"97122B9B183AAB4079C8D36A4CE6E9C1";
 
-			public const string WisdomTreeExodus = /*md5:*/"AB1FA0ED0207B1D0D5F401F0CD17BEBF";
+			public const string WisdomTreeExodus = /*sha1:*/"685D5A47A1FC386D7B451C8B2733E654B7779B71";
 
-			public const string WisdomTreeJoshua = /*md5:*/"2C07CAEE51A1F0C91C72C7C6F380B0F6";
+			public const string WisdomTreeJoshua = /*sha1:*/"019B4B0E76336E2613AE6E8B415B5C65F6D465A5";
 
-			public const string WisdomTreeKJVBible = /*md5:*/"BA2AC3587B3E1B36DE52E740274071B0";
+			public const string WisdomTreeKJVBible = /*sha1:*/"6362FDE9DCB08242A64F2FBEA33DE93D1776A6E0";
 
-			public const string WisdomTreeNIVBible = /*md5:*/"8CDDB8B2DCD3EC1A3FDD770DF8BDA07C";
+			public const string WisdomTreeNIVBible = /*sha1:*/"136CF97A8C3560EC9DB3D8F354D91B7DE27E0743";
 
-			public const string WisdomTreeSpiritualWarfare = /*md5:*/"37E017C8D1A45BAB609FB5B43FB64337";
+			public const string WisdomTreeSpiritualWarfare = /*sha1:*/"6E6AE5DBD8FF8B8F41B8411EF119E96E4ECF763F";
 		}
 
 		// this register controls whether or not the GB BIOS is mapped into memory
@@ -188,9 +188,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			var romHashMD5 = rom.HashMD5();
 			Console.WriteLine($"MD5: {romHashMD5}");
-			Console.WriteLine("SHA1: " + rom.HashSHA1(0, rom.Length));
+			var romHashSHA1 = rom.HashSHA1();
+			Console.WriteLine($"SHA1: {romHashSHA1}");
 			_rom = rom;
-			var mppr = Setup_Mapper(romHashMD5);
+			var mppr = Setup_Mapper(romHashMD5, romHashSHA1);
 			if (cart_RAM != null) { cart_RAM_vbls = new byte[cart_RAM.Length]; }
 
 			if (mppr == "MBC7")
@@ -508,7 +509,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 		}
 
-		public string Setup_Mapper(string romHashMD5)
+		public string Setup_Mapper(string romHashMD5, string romHashSHA1)
 		{
 			// setup up mapper based on header entry
 			string mppr;
@@ -567,14 +568,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 
 			// special case for multi cart mappers
-			if (romHashMD5 is RomChecksums.UnknownRomA or RomChecksums.BombermanCollection or RomChecksums.MortalKombatIAndIIUSAEU or RomChecksums.BombermanSelectionKORNotInGameDB)
+			if (romHashMD5 is RomChecksums.UnknownRomA
+				|| romHashSHA1 is RomChecksums.BombermanCollection or RomChecksums.MortalKombatIAndIIUSAEU or RomChecksums.BombermanSelectionKORNotInGameDB)
 			{
 				Console.WriteLine("Using Multi-Cart Mapper");
 				mapper = new MapperMBC1Multi();
 			}
 			
 			// Wisdom Tree does not identify their mapper, so use hash instead
-			else if (romHashMD5 is RomChecksums.WisdomTreeJoshua or RomChecksums.WisdomTreeSpiritualWarfare or RomChecksums.WisdomTreeExodus or RomChecksums.WisdomTreeKJVBible or RomChecksums.WisdomTreeNIVBible)
+			else if (romHashSHA1 is RomChecksums.WisdomTreeJoshua or RomChecksums.WisdomTreeSpiritualWarfare or RomChecksums.WisdomTreeExodus or RomChecksums.WisdomTreeKJVBible or RomChecksums.WisdomTreeNIVBible)
 			{
 				Console.WriteLine("Using Wisdom Tree Mapper");
 				mapper = new MapperWT();
