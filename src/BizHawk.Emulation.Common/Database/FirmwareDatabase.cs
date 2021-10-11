@@ -114,7 +114,7 @@ namespace BizHawk.Emulation.Common
 
 			FirmwareAndOption("24F67BDEA115A2C847C8813A262502EE1607B7DF", 16384, "NDS", "bios7", "NDS_Bios7.bin", "ARM7 BIOS");
 			FirmwareAndOption("BFAAC75F101C135E32E2AAF541DE6B1BE4C8C62D", 4096, "NDS", "bios9", "NDS_Bios9.bin", "ARM9 BIOS");
-			FirmwareAndOption("22A7547DBC302BCBFB4005CFB5A2D426D3F85AC6", 262144, "NDS", "firmware", "NDS_Firmware.bin", "NDS Firmware (blank user data)");
+			FirmwareAndOption("0000000000000000000000000000000000000000", 262144, "NDS", "firmware", "NDS_Firmware.bin", "NDS Firmware (hash tbd)");
 
 
 			FirmwareAndOption("E4ED47FAE31693E016B081C6BDA48DA5B70D7CCB", 512, "Lynx", "Boot", "LYNX_boot.img", "Boot Rom");
