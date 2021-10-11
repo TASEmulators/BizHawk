@@ -502,8 +502,7 @@ namespace BizHawk.Client.EmuHawk
 			if (_argParser.cmdRom != null)
 			{
 				// Commandline should always override auto-load
-				var romPath = _argParser.cmdRom.MakeAbsolute();
-				LoadRom(romPath, new LoadRomArgs { OpenAdvanced = OpenAdvancedSerializer.ParseWithLegacy(romPath) });
+				LoadRom(new LoadRomArgs(new OpenAdvanced_OpenRom(_argParser.cmdRom.MakeAbsolute())));
 				if (Game == null)
 				{
 					ShowMessageBox(owner: null, $"Failed to load {_argParser.cmdRom} specified on commandline");
@@ -1108,11 +1107,8 @@ namespace BizHawk.Client.EmuHawk
 				Master.RebootCore();
 				return true;
 			}
-			else
-			{
-				if (CurrentlyOpenRomArgs == null) return true;
-				return LoadRom(CurrentlyOpenRomArgs.OpenAdvanced.SimplePath, CurrentlyOpenRomArgs);
-			}
+			if (CurrentlyOpenRomArgs == null) return true;
+			return !LoadRom(CurrentlyOpenRomArgs).Failed;
 		}
 
 		public void PauseEmulator()
@@ -2136,18 +2132,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var ioa = OpenAdvancedSerializer.ParseWithLegacy(rom);
 
-			var args = new LoadRomArgs
-			{
-				OpenAdvanced = ioa
-			};
-
 			// if(ioa is this or that) - for more complex behaviour
-			string romPath = ioa.SimplePath;
 
-			if (!LoadRom(romPath, args, out var failureIsFromAskSave))
+			var (failed, failureIsFromAskSave) = LoadRom(new LoadRomArgs(ioa));
+			if (failed)
 			{
 				if (failureIsFromAskSave) OSD.AddMessage("ROM loading cancelled; a tool had unsaved changes");
-				else Config.RecentRoms.HandleLoadError(this, romPath, rom);
+				else Config.RecentRoms.HandleLoadError(this, ioa.SimplePath, rom);
 			}
 		}
 
@@ -2366,8 +2357,7 @@ namespace BizHawk.Client.EmuHawk
 			var file = new FileInfo(ofd.FileName);
 			_lastOpenRomFilter = ofd.FilterIndex;
 
-			var lra = new LoadRomArgs { OpenAdvanced = new OpenAdvanced_OpenRom { Path = file.FullName } };
-			LoadRom(file.FullName, lra);
+			LoadRom(new LoadRomArgs(new OpenAdvanced_OpenRom(file.FullName)));
 		}
 
 		private void CoreSyncSettings(object sender, RomLoader.SettingsLoadArgs e)
@@ -3657,12 +3647,10 @@ namespace BizHawk.Client.EmuHawk
 		private LoadRomArgs _currentLoadRomArgs;
 		private bool _isLoadingRom;
 
-		public bool LoadRom(string path, LoadRomArgs args) => LoadRom(path, args, out _);
-
-		public bool LoadRom(string path, LoadRomArgs args, out bool failureIsFromAskSave)
+		private (bool Failed, bool FailureIsFromAskSave) LoadRom(string path, LoadRomArgs args)
 		{
-			if (!LoadRomInternal(path, args, out failureIsFromAskSave))
-				return false;
+			var result = LoadRomInternal(path, args);
+			if (result.Failed) return result;
 
 			// what's the meaning of the last rom path when opening an archive? based on the archive file location
 			if (args.OpenAdvanced is OpenAdvanced_OpenRom)
@@ -3671,13 +3659,19 @@ namespace BizHawk.Client.EmuHawk
 				Config.PathEntries.LastRomPath = Path.GetFullPath(Path.GetDirectoryName(leftPart) ?? "");
 			}
 
-			return true;
+			return (false, false);
 		}
 
+		private (bool Failed, bool FailureIsFromAskSave) LoadRom(LoadRomArgs args)
+			=> LoadRom(args.OpenAdvanced.SimplePath, args);
+
+		void IMainFormForApi.LoadRom(LoadRomArgs args) => LoadRom(args);
+
+		void IMainFormForTools.LoadRom(LoadRomArgs args) => LoadRom(args);
+
 		// Still needs a good bit of refactoring
-		private bool LoadRomInternal(string path, LoadRomArgs args, out bool failureIsFromAskSave)
+		private (bool Failed, bool FailureIsFromAskSave) LoadRomInternal(string path, LoadRomArgs args)
 		{
-			failureIsFromAskSave = false;
 			if (path == null)
 				throw new ArgumentNullException(nameof(path));
 			if (args == null)
@@ -3707,8 +3701,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (!Tools.AskSave())
 				{
-					failureIsFromAskSave = true;
-					return false;
+					return (true, true);
 				}
 
 				var loader = new RomLoader(Config)
@@ -3935,7 +3928,7 @@ namespace BizHawk.Client.EmuHawk
 					ExtToolManager.BuildToolStrip();
 
 					EmuClient.OnRomLoaded();
-					return true;
+					return (false, false);
 				}
 				else if (Emulator.IsNull())
 				{
@@ -3943,13 +3936,13 @@ namespace BizHawk.Client.EmuHawk
 					Tools.Restart(Config, Emulator, Game);
 					ExtToolManager.BuildToolStrip();
 					OnRomChanged();
-					return false;
+					return (true, false);
 				}
 				else
 				{
 					// The ROM has been loaded by a recursive invocation of the LoadROM method.
 					EmuClient.OnRomLoaded();
-					return true;
+					return (false, false);
 				}
 			}
 			finally

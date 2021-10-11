@@ -253,30 +253,25 @@ namespace BizHawk.Client.EmuHawk
 
 			if (oac.Result == AdvancedRomLoaderType.LibretroLaunchNoGame)
 			{
-				var argsNoGame = new LoadRomArgs
-				{
-					OpenAdvanced = new OpenAdvanced_LibretroNoGame(Config.LibretroCore)
-				};
-				LoadRom("", argsNoGame);
+				LoadRom("", new LoadRomArgs(new OpenAdvanced_LibretroNoGame(Config.LibretroCore)));
 				return;
 			}
 
-			var args = new LoadRomArgs();
-
-			var filter = RomLoader.RomFilter;
-
+			IOpenAdvanced ioa;
+			string filter;
 			if (oac.Result == AdvancedRomLoaderType.LibretroLaunchGame)
 			{
-				args.OpenAdvanced = new OpenAdvanced_Libretro();
+				ioa = new OpenAdvanced_Libretro();
 				filter = oac.SuggestedExtensionFilter;
 			}
 			else if (oac.Result == AdvancedRomLoaderType.ClassicLaunchGame)
 			{
-				args.OpenAdvanced = new OpenAdvanced_OpenRom();
+				ioa = new OpenAdvanced_OpenRom();
+				filter = RomLoader.RomFilter;
 			}
 			else if (oac.Result == AdvancedRomLoaderType.MameLaunchGame)
 			{
-				args.OpenAdvanced = new OpenAdvanced_MAME();
+				ioa = new OpenAdvanced_MAME();
 				filter = new FilesystemFilter("MAME Arcade ROMs", new[] { "zip" }).ToString();
 			}
 			else
@@ -302,7 +297,7 @@ namespace BizHawk.Client.EmuHawk
 			_lastOpenRomFilter = ofd.FilterIndex;
 			/*************************/
 
-			LoadRom(file.FullName, args);
+			LoadRom(file.FullName, new LoadRomArgs(ioa));
 		}
 
 		private void CloseRomMenuItem_Click(object sender, EventArgs e)

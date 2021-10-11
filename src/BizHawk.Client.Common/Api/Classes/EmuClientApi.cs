@@ -138,7 +138,7 @@ namespace BizHawk.Client.Common
 
 		public void OnStateSaved(object sender, string stateName) => StateSaved?.Invoke(sender, new StateSavedEventArgs(stateName));
 
-		public void OpenRom(string path) => _mainForm.LoadRom(path, new LoadRomArgs { OpenAdvanced = OpenAdvancedSerializer.ParseWithLegacy(path) });
+		public void OpenRom(string path) => _mainForm.LoadRom(new LoadRomArgs(new OpenAdvanced_OpenRom(path)));
 
 		public void Pause() => _mainForm.PauseEmulator();
 

@@ -108,13 +108,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void LoadRom(string filename, string archive = null)
-		{
-			var args = new LoadRomArgs
-			{
-				OpenAdvanced = new OpenAdvanced_OpenRom {Path = filename}
-			};
-			LoadRom(filename, args);
-		}
+			=> LoadRom(new LoadRomArgs(new OpenAdvanced_OpenRom(filename)));
 
 		private void LoadStateFile(string filename, string archive = null)
 		{

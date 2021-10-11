@@ -70,7 +70,7 @@ namespace BizHawk.Client.EmuHawk
 		void LoadQuickSave(string quickSlotName, bool suppressOSD = false);
 
 		/// <remarks>only referenced from <see cref="MultiDiskBundler"/></remarks>
-		bool LoadRom(string path, LoadRomArgs args);
+		void LoadRom(LoadRomArgs args);
 
 		/// <remarks>only referenced from <see cref="BookmarksBranchesBox"/></remarks>
 		BitmapBuffer MakeScreenshotImage();
