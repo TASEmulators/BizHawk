@@ -17,15 +17,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		ISettable<NDS.Settings, NDS.SyncSettings>
 	{
 		private readonly LibMelonDS _core;
-		private readonly List<byte[]> _roms;
-		private readonly byte[] _bios7;
-		private readonly byte[] _bios9;
-		private readonly byte[] _fw;
-		private readonly bool _userealbios;
-		private readonly bool _skipfw;
 
 		[CoreConstructor("NDS")]
-		public unsafe NDS(CoreLoadParameters<Settings, SyncSettings> lp)
+		public NDS(CoreLoadParameters<Settings, SyncSettings> lp)
 			: base(lp.Comm, new Configuration
 			{
 				DefaultWidth = 256,
@@ -38,14 +32,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				SystemId = "NDS"
 			})
 		{
-			_roms = lp.Roms.Select(r => r.RomData).ToList();
+			var roms = lp.Roms.Select(r => r.RomData).ToList();
 
-			if (_roms.Count > 3)
+			if (roms.Count > 3)
 			{
 				throw new InvalidOperationException("Wrong number of ROMs!");
 			}
 
-			bool gbacartpresent = _roms.Count > 1;
+			bool gbacartpresent = roms.Count > 1;
 
 			_core = PreInit<LibMelonDS>(new WaterboxOptions
 			{
@@ -62,25 +56,23 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			_syncSettings = lp.SyncSettings ?? new SyncSettings();
 			_settings = lp.Settings ?? new Settings();
 
-			_userealbios = _syncSettings.UseRealBIOS;
-
-			_bios7 = _userealbios
+			var bios7 = _syncSettings.UseRealBIOS
 				? lp.Comm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "bios7"))
 				: null;
 
-			_bios9 = _userealbios
+			var bios9 = _syncSettings.UseRealBIOS
 				? lp.Comm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "bios9"))
 				: null;
 
-			_fw = lp.Comm.CoreFileProvider.GetFirmware(new("NDS", "firmware"));
+			var fw = lp.Comm.CoreFileProvider.GetFirmware(new("NDS", "firmware"));
 
-			_skipfw = _syncSettings.SkipFirmware || !_syncSettings.UseRealBIOS || _fw == null;
+			bool skipfw = _syncSettings.SkipFirmware || !_syncSettings.UseRealBIOS || fw == null;
 
 			LibMelonDS.LoadFlags flags = LibMelonDS.LoadFlags.NONE;
 
-			if (_userealbios)
+			if (_syncSettings.UseRealBIOS)
 				flags |= LibMelonDS.LoadFlags.USE_REAL_BIOS;
-			if (_skipfw)
+			if (skipfw)
 				flags |= LibMelonDS.LoadFlags.SKIP_FIRMWARE;
 			if (gbacartpresent)
 				flags |= LibMelonDS.LoadFlags.GBA_CART_PRESENT;
@@ -99,33 +91,36 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			var message = Encoding.UTF8.GetBytes(_syncSettings.FirmwareMessage);
 			fwSettings.FirmwareMessageLength = message.Length;
 
-			_exe.AddReadonlyFile(_roms[0], "game.rom");
+			_exe.AddReadonlyFile(roms[0], "game.rom");
 			if (gbacartpresent)
 			{
-				_exe.AddReadonlyFile(_roms[1], "gba.rom");
-				if (_roms[2] != null)
+				_exe.AddReadonlyFile(roms[1], "gba.rom");
+				if (roms[2] != null)
 				{
-					_exe.AddReadonlyFile(_roms[2], "gba.ram");
+					_exe.AddReadonlyFile(roms[2], "gba.ram");
 				}
 			}
 			if (_syncSettings.UseRealBIOS)
 			{
-				_exe.AddReadonlyFile(_bios7, "bios7.rom");
-				_exe.AddReadonlyFile(_bios9, "bios9.rom");
+				_exe.AddReadonlyFile(bios7, "bios7.rom");
+				_exe.AddReadonlyFile(bios9, "bios9.rom");
 			}
-			if (_fw != null)
+			if (fw != null)
 			{
-				_exe.AddReadonlyFile(_fw, "firmware.bin");
+				_exe.AddReadonlyFile(fw, "firmware.bin");
+				WarnIfMaybeBadFw(fw);
 			}
 
-			fixed (byte* namePtr = &name[0])
-			fixed (byte* messagePtr = &message[0])
+			unsafe
 			{
-				fwSettings.FirmwareUsername = (IntPtr)namePtr;
-				fwSettings.FirmwareMessage = (IntPtr)messagePtr;
-				if (!_core.Init(flags, fwSettings))
+				fixed (byte* namePtr = &name[0], messagePtr = &message[0])
 				{
-					throw new InvalidOperationException("Init returned false!");
+					fwSettings.FirmwareUsername = (IntPtr)namePtr;
+					fwSettings.FirmwareMessage = (IntPtr)messagePtr;
+					if (!_core.Init(flags, fwSettings))
+					{
+						throw new InvalidOperationException("Init returned false!");
+					}
 				}
 			}
 
@@ -134,7 +129,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			if (gbacartpresent)
 			{
 				_exe.RemoveReadonlyFile("gba.rom");
-				if (_roms[2] != null)
+				if (roms[2] != null)
 				{
 					_exe.RemoveReadonlyFile("gba.ram");
 				}
@@ -144,7 +139,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				_exe.RemoveReadonlyFile("bios7.rom");
 				_exe.RemoveReadonlyFile("bios9.rom");
 			}
-			if (_fw != null)
+			if (fw != null)
 			{
 				_exe.RemoveReadonlyFile("firmware.bin");
 			}
@@ -538,6 +533,79 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				MicInput = (short)controller.AxisValue("Mic Input"),
 				GBALightSensor = (byte)controller.AxisValue("GBA Light Sensor"),
 			};
+		}
+
+		// c++ -> c# port of melon's firmware verification code
+		private static unsafe ushort Crc16(byte* data, int len, int seed)
+		{
+			var poly = new ushort[8] { 0xC0C1, 0xC181, 0xC301, 0xC601, 0xCC01, 0xD801, 0xF001, 0xA001 };
+
+			for (int i = 0; i < len; i++)
+			{
+				seed ^= data[i];
+
+				for (int j = 0; j < 8; j++)
+				{
+					if ((seed & 0x1) != 0)
+					{
+						seed >>= 1;
+						seed ^= (poly[j] << (7 - j));
+					}
+					else
+						seed >>= 1;
+				}
+			}
+
+			return (ushort)(seed & 0xFFFF);
+		}
+
+		private static unsafe bool VerifyCrc16(byte[] fw, int startaddr, int len, int seed, int crcaddr)
+		{
+			ushort storedCrc16 = (ushort)((fw[crcaddr + 1] << 8) | fw[crcaddr]);
+			fixed (byte* start = &fw[startaddr])
+			{
+				ushort actualCrc16 = Crc16(start, len, seed);
+				return storedCrc16 == actualCrc16;
+			}
+		}
+
+		private void WarnIfMaybeBadFw(byte[] fw)
+		{
+			if (fw.Length != 0x20000 && fw.Length != 0x40000 && fw.Length != 0x80000)
+			{
+				CoreComm.ShowMessage("Bad firmware length detected! Firmware might not work!");
+				return;
+			}
+			int fwMask = fw.Length - 1;
+			string badCrc16s = "";
+			if (!VerifyCrc16(fw, 0x2C, (fw[0x2C + 1] << 8) | fw[0x2C], 0x0000, 0x2A))
+			{
+				badCrc16s += " Wifi ";
+			}
+			if (!VerifyCrc16(fw, 0x7FA00 & fwMask, 0xFE, 0x0000, 0x7FAFE & fwMask))
+			{
+				badCrc16s += " AP1 ";
+			}
+			if (!VerifyCrc16(fw, 0x7FB00 & fwMask, 0xFE, 0x0000, 0x7FBFE & fwMask))
+			{
+				badCrc16s += " AP2 ";
+			}
+			if (!VerifyCrc16(fw, 0x7FC00 & fwMask, 0xFE, 0x0000, 0x7FCFE & fwMask))
+			{
+				badCrc16s += " AP3 ";
+			}
+			if (!VerifyCrc16(fw, 0x7FE00 & fwMask, 0x70, 0xFFFF, 0x7FE72 & fwMask))
+			{
+				badCrc16s += " USER0 ";
+			}
+			if (!VerifyCrc16(fw, 0x7FF00 & fwMask, 0x70, 0xFFFF, 0x7FF72 & fwMask))
+			{
+				badCrc16s += " USER1 ";
+			}
+			if (badCrc16s != "")
+			{
+				CoreComm.ShowMessage("Bad Firmware CRC16(s) detected! Firmware might not work! Bad CRC16(s): " + badCrc16s);
+			}
 		}
 	}
 }
