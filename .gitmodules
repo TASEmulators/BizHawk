@@ -37,6 +37,6 @@
 [submodule "submodules/libdarm"]
 	path = submodules/libdarm
 	url = https://github.com/jbremer/darm.git
-[submodule "src/BizHawk.Emulation.Cores/Consoles/Nintendo/NDS/fwunpack"]
-	path = src/BizHawk.Emulation.Cores/Consoles/Nintendo/NDS/fwunpack
+[submodule "submodules/libfwunpack"]
+	path = submodules/libfwunpack
 	url = https://github.com/CasualPokePlayer/fwunpack
