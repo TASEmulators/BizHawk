@@ -85,7 +85,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			var name = Encoding.UTF8.GetBytes(_syncSettings.FirmwareUsername);
 			fwSettings.FirmwareUsernameLength = name.Length;
 			fwSettings.FirmwareLanguage = _syncSettings.FirmwareLanguage;
-			if (_syncSettings.FirmwareBootStyle == SyncSettings.BootStyle.AutoBoot) fwSettings.FirmwareLanguage |= (SyncSettings.Language)0x40;
+			if (_syncSettings.FirmwareStartUp == SyncSettings.StartUp.AutoBoot) fwSettings.FirmwareLanguage |= (SyncSettings.Language)0x40;
 			fwSettings.FirmwareBirthdayMonth = _syncSettings.FirmwareBirthdayMonth;
 			fwSettings.FirmwareBirthdayDay = _syncSettings.FirmwareBirthdayDay;
 			fwSettings.FirmwareFavouriteColour = _syncSettings.FirmwareFavouriteColour;
@@ -354,16 +354,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			[DefaultValue(false)]
 			public bool FirmwareOverride { get; set; }
 
-			public enum BootStyle : int
+			public enum StartUp : int
 			{
 				AutoBoot,
 				ManualBoot,
 			}
 
-			[DisplayName("Firmware Boot Style")]
-			[Description("Style which the NDS boots. Only applicable if firmware override is in effect.")]
-			[DefaultValue(BootStyle.AutoBoot)]
-			public BootStyle FirmwareBootStyle { get; set; }
+			[DisplayName("Firmware Start-Up")]
+			[Description("The way firmware is booted. Auto Boot will go to the game immediately, while Manual Boot will go into the firmware menu. Only applicable if firmware override is in effect.")]
+			[DefaultValue(StartUp.AutoBoot)]
+			public StartUp FirmwareStartUp { get; set; }
 
 			[JsonIgnore]
 			private string _firmwareusername;
