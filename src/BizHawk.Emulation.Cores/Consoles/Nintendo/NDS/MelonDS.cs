@@ -615,7 +615,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				Marshal.Copy(decryptedfw, DecryptedFirmware, 0, decrypedfwlen);
 				FreeDecryptedFirmware(decryptedfw);
 				var hash = BufferExtensions.HashSHA1(DecryptedFirmware, 0, decrypedfwlen);
-				Console.WriteLine("[DEBUG] Decrypted Firmware SHA1: " + hash);
+				CoreComm.ShowMessage("[DEBUG] Decrypted Firmware SHA1: " + hash);
 			}
 			return true;
 		}
