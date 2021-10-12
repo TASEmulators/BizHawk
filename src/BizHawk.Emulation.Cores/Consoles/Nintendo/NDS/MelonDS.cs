@@ -604,7 +604,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		private static string[] goodhashes = new string[]
 		{
-			"D83861C66796665A9777B4E9078E9CC8EB13D880", // MACP nds (one of v1-v4)
+			"D83861C66796665A9777B4E9078E9CC8EB13D880", // MACP nds (one of v1-v4), supposedly the most common
 			"F87038265D24677419FE0AF9EED63B4CE1378CC9", // MACg nds (v5)
 			"674639373F16539F718C728D6CA0C83A2DB66770", // MACh nds-lite (v6)
 		};
