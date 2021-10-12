@@ -118,14 +118,14 @@ namespace BizHawk.Emulation.Common
 			// throwing a ton of hashes from the interwebs
 			var knownhack1 = File("22A7547DBC302BCBFB4005CFB5A2D426D3F85AC6", 262144, "NDS_Firmware [b1].bin", "NDS Firmware", "known hack", true);
 			var knownhack2 = File("AE22DE59FBF3F35CCFBEACAEBA6FA87AC5E7B14B", 262144, "NDS_Firmware [b2].bin", "NDS Firmware", "known hack", true);
-			var maybegood1 = File("EDE9ADD041614EAA232059C63D8613B83FE4E954", 262144, "NDS_Firmware.bin", "NDS Firmware", "maybe good");
-			var maybegood2 = File("CE2F719632CA0B4EBE68A8EA8610FC2376BD6F53", 524288, "iQueDS_Lite_Firmware.bin", "iQueDS-Lite Firmware", "maybe good");
-			var likelygood = File("87DAE2500E889737AF51F4A5B5845770A62482F5", 262144, "NDS_Lite_Firmware.bin", "NDS-Lite Firmware", "likely good"); // least fishy dump known
+			var baddump = File("CE2F719632CA0B4EBE68A8EA8610FC2376BD6F53", 524288, "iQueDS_Lite_Firmware.bin", "iQueDS-Lite Firmware", "bad dump", true);
+			var likelygood1 = File("EDE9ADD041614EAA232059C63D8613B83FE4E954", 262144, "NDS_Firmware.bin", "NDS Firmware", "likely good");
+			var likelygood2 = File("87DAE2500E889737AF51F4A5B5845770A62482F5", 262144, "NDS_Lite_Firmware.bin", "NDS-Lite Firmware", "likely good");
 			Option("NDS", "firmware", in knownhack1);
 			Option("NDS", "firmware", in knownhack2);
-			Option("NDS", "firmware", in maybegood1);
-			Option("NDS", "firmware", in maybegood2);
-			Option("NDS", "firmware", in likelygood);
+			Option("NDS", "firmware", in baddump);
+			Option("NDS", "firmware", in likelygood1);
+			Option("NDS", "firmware", in likelygood2);
 
 			FirmwareAndOption("E4ED47FAE31693E016B081C6BDA48DA5B70D7CCB", 512, "Lynx", "Boot", "LYNX_boot.img", "Boot Rom");
 

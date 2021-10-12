@@ -597,10 +597,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		}
 
 		[DllImport("libfwunpack", CallingConvention = CallingConvention.Cdecl)]
-		public static extern bool GetDecryptedFirmware(byte[] fw, int fwlen, out IntPtr decryptedFw, out int decryptedlen);
+		private static extern bool GetDecryptedFirmware(byte[] fw, int fwlen, out IntPtr decryptedFw, out int decryptedlen);
 
 		[DllImport("libfwunpack", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void FreeDecryptedFirmware(IntPtr decryptedFw);
+		private static extern void FreeDecryptedFirmware(IntPtr decryptedFw);
+
+		private static string[] goodhashes = new string[]
+		{
+			"674639373F16539F718C728D6CA0C83A2DB66770", // nds-lite
+			"D83861C66796665A9777B4E9078E9CC8EB13D880", // nds
+		};
 
 		private bool CheckDecryptedCodeChecksum(byte[] fw)
 		{
@@ -615,7 +621,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				Marshal.Copy(decryptedfw, DecryptedFirmware, 0, decrypedfwlen);
 				FreeDecryptedFirmware(decryptedfw);
 				var hash = BufferExtensions.HashSHA1(DecryptedFirmware, 0, decrypedfwlen);
-				CoreComm.ShowMessage("[DEBUG] Decrypted Firmware SHA1: " + hash);
+				if (hash != goodhashes[0] && hash != goodhashes[1])
+				{
+					CoreComm.ShowMessage("Potentially bad firmware dump! Decrypted Hash " + hash + " does not match known good dumps.");
+					return false;
+				}
 			}
 			return true;
 		}
