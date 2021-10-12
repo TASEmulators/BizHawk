@@ -622,7 +622,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				Marshal.Copy(decryptedfw, DecryptedFirmware, 0, decrypedfwlen);
 				FreeDecryptedFirmware(decryptedfw);
 				var hash = BufferExtensions.HashSHA1(DecryptedFirmware, 0, decrypedfwlen);
-				if (hash != goodhashes[0] && hash != goodhashes[2])
+				if (hash != goodhashes[0] && hash != goodhashes[1] && hash != goodhashes[2])
 				{
 					CoreComm.ShowMessage("Potentially bad firmware dump! Decrypted hash " + hash + " does not match known good dumps.");
 					return false;
