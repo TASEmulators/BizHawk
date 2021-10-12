@@ -604,8 +604,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		private static string[] goodhashes = new string[]
 		{
-			"674639373F16539F718C728D6CA0C83A2DB66770", // nds-lite
-			"D83861C66796665A9777B4E9078E9CC8EB13D880", // nds
+			"D83861C66796665A9777B4E9078E9CC8EB13D880", // MACP nds (one of v1-v4)
+			"F87038265D24677419FE0AF9EED63B4CE1378CC9", // MACg nds (v5)
+			"674639373F16539F718C728D6CA0C83A2DB66770", // MACh nds-lite (v6)
 		};
 
 		private bool CheckDecryptedCodeChecksum(byte[] fw)
@@ -621,7 +622,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				Marshal.Copy(decryptedfw, DecryptedFirmware, 0, decrypedfwlen);
 				FreeDecryptedFirmware(decryptedfw);
 				var hash = BufferExtensions.HashSHA1(DecryptedFirmware, 0, decrypedfwlen);
-				if (hash != goodhashes[0] && hash != goodhashes[1])
+				if (hash != goodhashes[0] && hash != goodhashes[2])
 				{
 					CoreComm.ShowMessage("Potentially bad firmware dump! Decrypted hash " + hash + " does not match known good dumps.");
 					return false;
