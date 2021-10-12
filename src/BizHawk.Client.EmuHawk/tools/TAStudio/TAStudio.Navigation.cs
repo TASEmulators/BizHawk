@@ -7,7 +7,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// Only goes to go to the frame if it is an event before current emulation, otherwise it is just a future event that can freely be edited
 		/// </summary>
-		private void GoToLastEmulatedFrameIfNecessary(int frame)
+		private void GoToLastEmulatedFrameIfNecessary(int frame, bool OnLeftMouseDown = false)
 		{
 			if (frame != Emulator.Frame) // Don't go to a frame if you are already on it!
 			{
@@ -20,12 +20,12 @@ namespace BizHawk.Client.EmuHawk
 						CurrentTasMovie.LastPositionStable = true; // until new frame is emulated
 					}
 
-					GoToFrame(frame);
+					GoToFrame(frame, false, false, OnLeftMouseDown);
 				}
 			}
 		}
 
-		public void GoToFrame(int frame, bool fromLua = false, bool fromRewinding = false)
+		public void GoToFrame(int frame, bool fromLua = false, bool fromRewinding = false, bool OnLeftMouseDown = false)
 		{
 			// If seeking to a frame before or at the end of the movie, use StartAtNearestFrameAndEmulate
 			// Otherwise, load the latest state (if not already there) and seek while recording.
@@ -35,7 +35,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				// Get as close as we can then emulate there
 				StartAtNearestFrameAndEmulate(frame, fromLua, fromRewinding);
-				MaybeFollowCursor();
+				if (!OnLeftMouseDown) { MaybeFollowCursor(); }			
 			}
 			else // Emulate to a future frame
 			{
