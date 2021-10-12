@@ -85,6 +85,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			var name = Encoding.UTF8.GetBytes(_syncSettings.FirmwareUsername);
 			fwSettings.FirmwareUsernameLength = name.Length;
 			fwSettings.FirmwareLanguage = _syncSettings.FirmwareLanguage;
+			if (_syncSettings.FirmwareBootStyle == SyncSettings.BootStyle.AutoBoot) fwSettings.FirmwareLanguage |= (SyncSettings.Language)0x40;
 			fwSettings.FirmwareBirthdayMonth = _syncSettings.FirmwareBirthdayMonth;
 			fwSettings.FirmwareBirthdayDay = _syncSettings.FirmwareBirthdayDay;
 			fwSettings.FirmwareFavouriteColour = _syncSettings.FirmwareFavouriteColour;
@@ -107,8 +108,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			}
 			if (fw != null)
 			{
+				MaybeWarnIfBadFw(fw);
+				SanitizeFw(fw);
 				_exe.AddReadonlyFile(fw, "firmware.bin");
-				WarnIfMaybeBadFw(fw);
 			}
 
 			unsafe
@@ -244,12 +246,18 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		public enum ScreenLayoutKind
 		{
-			Vertical, Horizontal, Top, Bottom
+			Vertical,
+			Horizontal,
+			Top,
+			Bottom,
 		}
 
 		public enum ScreenRotationKind
 		{
-			Rotate0, Rotate90, Rotate180, Rotate270
+			Rotate0,
+			Rotate90,
+			Rotate180,
+			Rotate270
 		}
 
 		public class Settings
@@ -345,6 +353,17 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			[Description("If true, the firmware settings will be overriden by provided settings. Forced true when recording a movie.")]
 			[DefaultValue(false)]
 			public bool FirmwareOverride { get; set; }
+
+			public enum BootStyle : int
+			{
+				AutoBoot,
+				ManualBoot,
+			}
+
+			[DisplayName("Firmware Boot Style")]
+			[Description("Username in firmware. Only applicable if firmware override is in effect.")]
+			[DefaultValue(BootStyle.AutoBoot)]
+			public BootStyle FirmwareBootStyle { get; set; }
 
 			[JsonIgnore]
 			private string _firmwareusername;
@@ -552,14 +571,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 						seed ^= (poly[j] << (7 - j));
 					}
 					else
+					{
 						seed >>= 1;
+					}
 				}
 			}
 
 			return (ushort)(seed & 0xFFFF);
 		}
 
-		private static unsafe bool VerifyCrc16(byte[] fw, int startaddr, int len, int seed, int crcaddr)
+		private unsafe bool VerifyCrc16(byte[] fw, int startaddr, int len, int seed, int crcaddr)
 		{
 			ushort storedCrc16 = (ushort)((fw[crcaddr + 1] << 8) | fw[crcaddr]);
 			fixed (byte* start = &fw[startaddr])
@@ -569,7 +590,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			}
 		}
 
-		private void WarnIfMaybeBadFw(byte[] fw)
+		private void MaybeWarnIfBadFw(byte[] fw)
 		{
 			if (fw.Length != 0x20000 && fw.Length != 0x40000 && fw.Length != 0x80000)
 			{
@@ -606,6 +627,52 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			{
 				CoreComm.ShowMessage("Bad Firmware CRC16(s) detected! Firmware might not work! Bad CRC16(s): " + badCrc16s);
 			}
+		}
+
+		private static void SanitizeFw(byte[] fw)
+		{
+			int fwMask = fw.Length - 1;
+			int[] apstart = new int[3] { 0x07FA00 & fwMask, 0x07FB00 & fwMask, 0x07FC00 & fwMask };
+
+			for (int i = 0; i < 3; i++)
+			{
+				for (int j = 0; j < 0x100; j++)
+				{
+					fw[apstart[i] + j] = 0;
+				}
+			}
+
+			// gbatek marks these as unknown, they seem to depend on the mac address???
+			// bytes 4 (upper nibble only) and 5 also seem to be just random?
+			// various combinations noted (noting last 2 bytes are crc16)
+			// F8 98 C1 E6 CC DD A9 E1 85 D4 9B
+			// F8 98 C1 E6 CC 1D 66 E1 85 D8 A4
+			// F8 98 C1 E6 CC 9D 6B E1 85 60 A7
+			// F8 98 C1 E6 CC 5D 92 E1 85 8C 96
+			// different mac address
+			// 18 90 15 E9 7C 1D F1 E1 85 74 02
+			byte[] macdependentbytes = new byte[11] { 0xF8, 0x98, 0xC1, 0xE6, 0xCC, 0x9D, 0xBE, 0xE1, 0x85, 0x71, 0x5F };
+
+			int apoffset = 0xF5;
+
+			for (int i = 0; i < 2; i++)
+			{
+				for (int j = 0; j < 11; j++)
+				{
+					fw[apstart[i] + apoffset + j] = macdependentbytes[j];
+				}
+			}
+
+			int ffoffset = 0xE7;
+
+			for (int i = 0; i < 3; i++)
+			{
+				fw[apstart[i] + ffoffset] = 0xFF;
+			}
+
+			// slot 3 doesn't have those mac dependent bytes???
+			fw[apstart[2] + 0xFE] = 0x0A;
+			fw[apstart[2] + 0xFF] = 0xF0;
 		}
 	}
 }
