@@ -108,8 +108,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			}
 			if (fw != null)
 			{
-				MaybeWarnIfBadFw(fw);
-				SanitizeFw(fw);
+				if (!MaybeWarnIfBadFw(fw))
+				{
+					SanitizeFw(fw);
+				}
 				_exe.AddReadonlyFile(fw, "firmware.bin");
 			}
 
@@ -590,12 +592,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			}
 		}
 
-		private void MaybeWarnIfBadFw(byte[] fw)
+		private bool MaybeWarnIfBadFw(byte[] fw)
 		{
 			if (fw.Length != 0x20000 && fw.Length != 0x40000 && fw.Length != 0x80000)
 			{
 				CoreComm.ShowMessage("Bad firmware length detected! Firmware might not work!");
-				return;
+				return false;
 			}
 			int fwMask = fw.Length - 1;
 			string badCrc16s = "";
@@ -626,7 +628,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			if (badCrc16s != "")
 			{
 				CoreComm.ShowMessage("Bad Firmware CRC16(s) detected! Firmware might not work! Bad CRC16(s): " + badCrc16s);
+				return false;
 			}
+
+			return true;
 		}
 
 		private static void SanitizeFw(byte[] fw)
