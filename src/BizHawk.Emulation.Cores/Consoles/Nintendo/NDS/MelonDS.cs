@@ -1,13 +1,14 @@
 using BizHawk.Common;
+using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Waterbox;
 
 using Newtonsoft.Json;
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
@@ -595,6 +596,30 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			}
 		}
 
+		[DllImport("libfwunpack", CallingConvention = CallingConvention.Cdecl)]
+		public static extern bool GetDecryptedFirmware(byte[] fw, int fwlen, out IntPtr decryptedFw, out int decryptedlen);
+
+		[DllImport("libfwunpack", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void FreeDecryptedFirmware(IntPtr decryptedFw);
+
+		private bool CheckDecryptedCodeChecksum(byte[] fw)
+		{
+			if (!GetDecryptedFirmware(fw, fw.Length, out IntPtr decryptedfw, out int decrypedfwlen))
+			{
+				CoreComm.ShowMessage("Firmware could not be decryped for verification! This firmware might be not work!");
+				return false;
+			}
+			else
+			{
+				byte[] DecryptedFirmware = new byte[decrypedfwlen];
+				Marshal.Copy(decryptedfw, DecryptedFirmware, 0, decrypedfwlen);
+				FreeDecryptedFirmware(decryptedfw);
+				var hash = BufferExtensions.HashSHA1(DecryptedFirmware, 0, decrypedfwlen);
+				Console.WriteLine("[DEBUG] Decrypted Firmware SHA1: " + hash);
+			}
+			return true;
+		}
+
 		private bool MaybeWarnIfBadFw(byte[] fw)
 		{
 			if (fw.Length != 0x20000 && fw.Length != 0x40000 && fw.Length != 0x80000)
@@ -634,7 +659,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				return false;
 			}
 
-			return true;
+			return CheckDecryptedCodeChecksum(fw);
 		}
 
 		private static void SanitizeFw(byte[] fw)
