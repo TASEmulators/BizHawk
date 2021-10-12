@@ -623,7 +623,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				var hash = BufferExtensions.HashSHA1(DecryptedFirmware, 0, decrypedfwlen);
 				if (hash != goodhashes[0] && hash != goodhashes[1])
 				{
-					CoreComm.ShowMessage("Potentially bad firmware dump! Decrypted Hash " + hash + " does not match known good dumps.");
+					CoreComm.ShowMessage("Potentially bad firmware dump! Decrypted hash " + hash + " does not match known good dumps.");
 					return false;
 				}
 			}
