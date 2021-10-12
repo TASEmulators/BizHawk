@@ -108,9 +108,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			}
 			if (fw != null)
 			{
-				if (!MaybeWarnIfBadFw(fw))
+				if (MaybeWarnIfBadFw(fw))
 				{
-					SanitizeFw(fw);
+					if (_syncSettings.FirmwareOverride)
+					{
+						SanitizeFw(fw);
+					}
 				}
 				_exe.AddReadonlyFile(fw, "firmware.bin");
 			}
