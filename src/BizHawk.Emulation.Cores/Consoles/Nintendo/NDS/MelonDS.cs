@@ -361,7 +361,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			}
 
 			[DisplayName("Firmware Boot Style")]
-			[Description("Username in firmware. Only applicable if firmware override is in effect.")]
+			[Description("Style which the NDS boots. Only applicable if firmware override is in effect.")]
 			[DefaultValue(BootStyle.AutoBoot)]
 			public BootStyle FirmwareBootStyle { get; set; }
 
