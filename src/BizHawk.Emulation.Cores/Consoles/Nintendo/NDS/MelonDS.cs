@@ -580,7 +580,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			return (ushort)(seed & 0xFFFF);
 		}
 
-		private unsafe bool VerifyCrc16(byte[] fw, int startaddr, int len, int seed, int crcaddr)
+		private static unsafe bool VerifyCrc16(byte[] fw, int startaddr, int len, int seed, int crcaddr)
 		{
 			ushort storedCrc16 = (ushort)((fw[crcaddr + 1] << 8) | fw[crcaddr]);
 			fixed (byte* start = &fw[startaddr])
