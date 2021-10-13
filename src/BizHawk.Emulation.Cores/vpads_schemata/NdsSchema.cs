@@ -36,7 +36,7 @@ namespace BizHawk.Emulation.Cores
 					new ButtonSchema(366, 86, "A"),
 
 					// Screen
-					new TargetedPairSchema(72, 35, "TouchX")
+					new TargetedPairSchema(72, 35, "Touch X")
 					{
 						TargetSize = new Size(256, 192)
 					},

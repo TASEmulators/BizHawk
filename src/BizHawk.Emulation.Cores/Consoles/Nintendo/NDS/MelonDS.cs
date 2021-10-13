@@ -111,7 +111,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			{
 				if (MaybeWarnIfBadFw(fw))
 				{
-					if (_syncSettings.FirmwareOverride)
+					if (_syncSettings.FirmwareOverride || lp.DeterministicEmulationRequested)
 					{
 						SanitizeFw(fw);
 					}
