@@ -717,6 +717,36 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			// slot 3 doesn't have those mac dependent bytes???
 			fw[apstart[2] + 0xFE] = 0x0A;
 			fw[apstart[2] + 0xFF] = 0xF0;
+
+			int[] usersettings = new int[2] { 0x7FE00 & fwMask, 0x7FF00 & fwMask };
+
+			for (int i = 0; i < 2; i++)
+			{
+				unsafe
+				{
+					fixed (byte* us = &fw[usersettings[i]])
+					{
+						// alarm settings
+						us[0x52] = 0;
+						us[0x53] = 0;
+						us[0x56] = 0;
+						// year of first boot
+						us[0x66] = 0;
+						// rtc offset
+						us[0x68] = 0;
+						us[0x69] = 0;
+						us[0x6A] = 0;
+						us[0x6B] = 0;
+						// update counter
+						us[0x70] = 0;
+						us[0x71] = 0;
+						// fix crc16 (probably redundant)
+						ushort crc16 = Crc16(us, 0x70, 0xFFFF);
+						us[0x72] = (byte)(crc16 & 0xFF);
+						us[0x73] = (byte)(crc16 >> 8);
+					}
+				}
+			}
 		}
 	}
 }
