@@ -346,7 +346,7 @@ namespace BizHawk.Client.EmuHawk
 
 					break;
 				case "TAStudio":
-					Tools.Load<TAStudio>();
+					TAStudioMenuItem_Click(null, null);
 					break;
 				case "ToolBox":
 					Tools.Load<ToolBox>();
