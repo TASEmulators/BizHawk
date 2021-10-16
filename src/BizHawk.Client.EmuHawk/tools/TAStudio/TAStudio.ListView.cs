@@ -67,11 +67,11 @@ namespace BizHawk.Client.EmuHawk
 		public AutoPatternBool[] BoolPatterns;
 		public AutoPatternAxis[] AxisPatterns;
 
-		public void JumpToGreenzone()
+		public void JumpToGreenzone(bool OnLeftMouseDown = false)
 		{
 			if (Emulator.Frame > CurrentTasMovie.LastEditedFrame)
 			{
-				GoToLastEmulatedFrameIfNecessary(CurrentTasMovie.LastEditedFrame);
+				GoToLastEmulatedFrameIfNecessary(CurrentTasMovie.LastEditedFrame, OnLeftMouseDown);
 			}
 		}
 
@@ -611,7 +611,7 @@ namespace BizHawk.Client.EmuHawk
 				if (TasView.CurrentCell.Column.Name == CursorColumnName)
 				{
 					_startCursorDrag = true;
-					GoToFrame(TasView.CurrentCell.RowIndex.Value);
+					GoToFrame(TasView.CurrentCell.RowIndex.Value, false, false, true);
 				}
 				else if (TasView.CurrentCell.Column.Name == FrameColumnName)
 				{
@@ -673,7 +673,7 @@ namespace BizHawk.Client.EmuHawk
 							CurrentTasMovie.SetBoolStates(firstSel, (frame - firstSel) + 1, buttonName, !allPressed);
 							_boolPaintState = CurrentTasMovie.BoolIsPressed(frame, buttonName);
 							_triggerAutoRestore = true;
-							JumpToGreenzone();
+							JumpToGreenzone(true);
 							RefreshDialog();
 						}
 						else if (ModifierKeys == Keys.Shift && ModifierKeys == Keys.Alt) // Does not work?
@@ -687,7 +687,7 @@ namespace BizHawk.Client.EmuHawk
 							CurrentTasMovie.ToggleBoolState(TasView.CurrentCell.RowIndex.Value, buttonName);
 							_boolPaintState = CurrentTasMovie.BoolIsPressed(frame, buttonName);
 							_triggerAutoRestore = true;
-							JumpToGreenzone();
+							JumpToGreenzone(true);
 							RefreshDialog();
 						}
 					}
