@@ -165,7 +165,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				//use mednafen specs
 				if (SystemRegion == OctoshockDll.eRegion.EU)
 				{
-					//https://github.com/TASVideos/mednafen/blob/740d63996fc7cebffd39ee253a29ee434965db21/src/psx/gpu.cpp#L175
+					//https://github.com/TASEmulators/mednafen/blob/740d63996fc7cebffd39ee253a29ee434965db21/src/psx/gpu.cpp#L175
 					// -> 838865530 / 65536 / 256 -> reduced
 					VsyncNumerator = 419432765;
 					VsyncDenominator = 8388608;
@@ -173,7 +173,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				}
 				else
 				{
-					//https://github.com/TASVideos/mednafen/blob/740d63996fc7cebffd39ee253a29ee434965db21/src/psx/gpu.cpp#L183
+					//https://github.com/TASEmulators/mednafen/blob/740d63996fc7cebffd39ee253a29ee434965db21/src/psx/gpu.cpp#L183
 					//-> 1005627336 / 65536 / 256 -> reduced
 					VsyncNumerator = 502813668;
 					VsyncDenominator = 8388608;

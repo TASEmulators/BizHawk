@@ -60,7 +60,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			Process.Start($"https://github.com/TASVideos/BizHawk/commit/{VersionInfo.GIT_SHORTHASH}");
+			Process.Start($"https://github.com/TASEmulators/BizHawk/commit/{VersionInfo.GIT_SHORTHASH}");
 		}
 
 		private void btnCopyHash_Click(object sender, EventArgs e)
@@ -70,7 +70,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void linkLabel3_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			Process.Start("https://github.com/TASVideos/BizHawk/graphs/contributors");
+			Process.Start("https://github.com/TASEmulators/BizHawk/graphs/contributors");
 		}
 	}
 }
