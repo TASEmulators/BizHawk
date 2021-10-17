@@ -638,6 +638,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				CoreComm.ShowMessage("Bad firmware length detected! Firmware might not work!");
 				return false;
 			}
+			if (fw[0x17C] != 0xFF)
+			{
+				CoreComm.ShowMessage("Hacked firmware detected! Firmware might not work!");
+				return false;
+			}
 			int fwMask = fw.Length - 1;
 			string badCrc16s = "";
 			if (!VerifyCrc16(fw, 0x2C, (fw[0x2C + 1] << 8) | fw[0x2C], 0x0000, 0x2A))
