@@ -24,6 +24,37 @@ namespace BizHawk.Client.EmuHawk
 
 		private int _lastRefresh;
 
+		private void UpdateProgressBar()
+		{
+			if (MainForm.PauseOnFrame.HasValue)
+			{
+				int diff = Emulator.Frame - _seekStartFrame.Value;
+				int unit = MainForm.PauseOnFrame.Value - _seekStartFrame.Value;
+				double progress = 0;
+
+				if (diff != 0 && unit != 0)
+				{
+					progress = (double)100d / unit * diff;
+				}
+
+				if (progress < 0)
+				{
+					progress = 0;
+				}
+				else if (progress > 100)
+				{
+					progress = 100;
+				}
+
+				ProgressBar.Value = (int)progress;
+			}
+			else
+			{
+				ProgressBar.Visible = false;
+				MessageStatusLabel.Text = "";
+			}
+		}
+
 		protected override void GeneralUpdate()
 		{
 			RefreshDialog();
@@ -61,34 +92,12 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			RefreshDialog(refreshNeeded, refreshBranches: false);
+			UpdateProgressBar();
+		}
 
-			if (MainForm.PauseOnFrame.HasValue)
-			{
-				int diff = Emulator.Frame - _seekStartFrame.Value;
-				int unit = MainForm.PauseOnFrame.Value - _seekStartFrame.Value;
-				double progress = 0;
-
-				if (diff != 0 && unit != 0)
-				{
-					progress = (double)100d / unit * diff;
-				}
-
-				if (progress < 0)
-				{
-					progress = 0;
-				}
-				else if (progress > 100)
-				{
-					progress = 100;
-				}
-
-				SavingProgressBar.Value = (int)progress;
-			}
-			else
-			{
-				SavingProgressBar.Visible = false;
-				MessageStatusLabel.Text = "";
-			}
+		protected override void FastUpdateAfter()
+		{
+			UpdateProgressBar();
 		}
 
 		public override void Restart()

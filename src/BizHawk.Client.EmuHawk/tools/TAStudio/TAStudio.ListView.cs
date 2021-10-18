@@ -101,7 +101,7 @@ namespace BizHawk.Client.EmuHawk
 			if (diff > TasView.VisibleRows)
 			{
 				MessageStatusLabel.Text = "Seeking...";
-				SavingProgressBar.Visible = true;
+				ProgressBar.Visible = true;
 			}
 		}
 

@@ -154,7 +154,7 @@ namespace BizHawk.Client.EmuHawk
 			this.TasView = new BizHawk.Client.EmuHawk.InputRoll();
 			this.TasStatusStrip = new StatusStripEx();
 			this.MessageStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
-			this.SavingProgressBar = new System.Windows.Forms.ToolStripProgressBar();
+			this.ProgressBar = new System.Windows.Forms.ToolStripProgressBar();
 			this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
 			this.SplicerStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.TasPlaybackBox = new BizHawk.Client.EmuHawk.PlaybackBox();
@@ -923,7 +923,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.TasStatusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.MessageStatusLabel,
-            this.SavingProgressBar,
+            this.ProgressBar,
             this.toolStripStatusLabel2,
             this.SplicerStatusLabel});
 			this.TasStatusStrip.Location = new System.Drawing.Point(0, 554);
@@ -936,10 +936,10 @@ namespace BizHawk.Client.EmuHawk
 			this.MessageStatusLabel.Size = new System.Drawing.Size(95, 17);
 			this.MessageStatusLabel.Text = "TAStudio engaged";
 			// 
-			// SavingProgressBar
+			// ProgressBar
 			// 
-			this.SavingProgressBar.Name = "SavingProgressBar";
-			this.SavingProgressBar.Size = new System.Drawing.Size(100, 16);
+			this.ProgressBar.Name = "ProgressBar";
+			this.ProgressBar.Size = new System.Drawing.Size(100, 16);
 			// 
 			// toolStripStatusLabel2
 			// 
@@ -1303,7 +1303,7 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx StartFromNowSeparator;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx StartNewProjectFromNowMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx RotateMenuItem;
-		private System.Windows.Forms.ToolStripProgressBar SavingProgressBar;
+		private System.Windows.Forms.ToolStripProgressBar ProgressBar;
 		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel2;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx HideLagFramesSubMenu;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx HideLagFrames3;

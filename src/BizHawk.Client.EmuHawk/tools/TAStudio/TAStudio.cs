@@ -122,7 +122,7 @@ namespace BizHawk.Client.EmuHawk
 			_defaultBranchMarkerSplitDistance = BranchesMarkersSplit.SplitterDistance;
 
 			// TODO: show this at all times or hide it when saving is done?
-			SavingProgressBar.Visible = false;
+			ProgressBar.Visible = false;
 
 			WantsToControlStopMovie = true;
 			WantsToControlRestartMovie = true;
