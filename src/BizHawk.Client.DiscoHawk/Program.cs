@@ -99,9 +99,7 @@ namespace BizHawk.Client.DiscoHawk
 
 		public static string GetExeDirectoryAbsolute()
 		{
-			var uri = new Uri(Assembly.GetEntryAssembly().GetName().CodeBase);
-			string module = uri.LocalPath + System.Web.HttpUtility.UrlDecode(uri.Fragment);
-			return Path.GetDirectoryName(module);
+			return Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 		}
 
 		private static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)

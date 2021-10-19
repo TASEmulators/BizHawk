@@ -17,7 +17,7 @@ namespace BizHawk.Common
 		public static readonly string Version = "N-92462-g529debc987";
 
 		//likewise
-		public static readonly string Url = "https://github.com/TASVideos/ffmpeg-binaries/blob/master/ffmpeg-20181118-529debc-win64-static_ffmpeg.7z?raw=true";
+		public static readonly string Url = "https://github.com/TASEmulators/ffmpeg-binaries/blob/master/ffmpeg-20181118-529debc-win64-static_ffmpeg.7z?raw=true";
 
 		public class AudioQueryResult
 		{

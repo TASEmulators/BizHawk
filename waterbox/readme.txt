@@ -56,7 +56,6 @@ It consists of a modified musl libc, and build scripts to tie it all together.
 	cd nyma && make -f pcfx.mak install
 	cd nyma && make -f ss.mak install
 	cd picodrive && make install
-	cd sameboy && make install
 	cd snes9x && make install
 	cd uzem && make install
 	cd vb && make install

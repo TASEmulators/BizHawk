@@ -140,7 +140,7 @@ namespace BizHawk.Client.Common.movie.import
 							}
 
 							// Insert an empty frame in lsmv snes movies
-							// https://github.com/TASVideos/BizHawk/issues/721
+							// https://github.com/TASEmulators/BizHawk/issues/721
 							// Both emulators send the input to bsnes core at the same V interval, but:
 							// lsnes' frame boundary occurs at V = 241, after which the input is read;
 							// BizHawk's frame boundary is just before automatic polling;

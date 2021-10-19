@@ -59,7 +59,7 @@ namespace BizHawk.Client.Common
 			// according to http://problemkaputt.de/psx-spx.htm
 			//["PSX"] = 44100.0 * 768 * 11 / 7 / 263 / 3413, // 59.292862562
 			//["PSX_PAL"] = 44100.0 * 768 * 11 / 7 / 314 / 3406, // 49.7645593576
-			// according to https://github.com/TASVideos/mednafen/blob/740d63996fc7cebffd39ee253a29ee434965db21/src/psx/gpu.cpp
+			// according to https://github.com/TASEmulators/mednafen/blob/740d63996fc7cebffd39ee253a29ee434965db21/src/psx/gpu.cpp
 			["PSX"] = 502813668.0 / 8388608, //59.940060138702392578125
 			["PSX_PAL"] = 419432765.0 / 8388608, //50.00028192996978759765625
 

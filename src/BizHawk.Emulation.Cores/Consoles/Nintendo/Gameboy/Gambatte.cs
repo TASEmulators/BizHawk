@@ -90,7 +90,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 							: _syncSettings.ConsoleMode is GambatteSyncSettings.ConsoleModeType.GBA
 								? "AGB"
 								: "World");
-					var bios = comm.CoreFileProvider.GetFirmwareOrThrow(fwid, "BIOS Not Found, Cannot Load.  Change SyncSettings to run without BIOS."); // https://github.com/TASVideos/BizHawk/issues/2832 tho
+					var bios = comm.CoreFileProvider.GetFirmwareOrThrow(fwid, "BIOS Not Found, Cannot Load.  Change SyncSettings to run without BIOS."); // https://github.com/TASEmulators/BizHawk/issues/2832 tho
 					if (LibGambatte.gambatte_loadbiosbuf(GambatteState, bios, (uint)bios.Length) != 0)
 					{
 						throw new InvalidOperationException($"{nameof(LibGambatte.gambatte_loadbiosbuf)}() returned non-zero (bios error)");
