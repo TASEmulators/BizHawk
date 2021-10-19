@@ -42,6 +42,7 @@ namespace BizHawk.Client.Common
 			// It probably should be moved to a separate place.
 			["GB_Clock"] = 2097152.0,
 			["GBA"] = 262144.0 / 4389.0, // 59.7275005696
+			["NDS"] = 33513982.0 / 560190.0, // 59.8260982881
 			["GEN"] = 53693175 / (3420.0 * 262),
 			["GEN_PAL"] = 53203424 / (3420.0 * 313),
 
