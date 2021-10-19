@@ -311,6 +311,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		public class SyncSettings
 		{
 			[JsonIgnore]
+			private static readonly DateTime minDate = new DateTime(2000, 1, 1);
+			[JsonIgnore]
+			private static readonly DateTime maxDate = new DateTime(2099, 12, 31, 23, 59, 59);
+
+			[JsonIgnore]
 			private DateTime _initaltime;
 
 			[DisplayName("Initial Time")]
@@ -321,8 +326,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				get => _initaltime;
 				set
 				{
-					DateTime minDate = new DateTime(2000, 1, 1);
-					DateTime maxDate = new DateTime(2099, 12, 31, 23, 59, 59);
 					if (DateTime.Compare(minDate, value) > 0)
 					{
 						_initaltime = minDate;
