@@ -586,7 +586,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		{
 			if (_numSamples < 200 && _renderSound) // hack around core producing way less audio than expected (mostly when lid is closed)
 			{
-				for (int i = _numSamples; i < 547; i++)
+				for (int i = _numSamples * 2; i < (547 * 2); i++)
 				{
 					_soundBuffer[i] = 0;
 				}
