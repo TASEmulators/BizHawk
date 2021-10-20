@@ -566,8 +566,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		[FeatureNotImplemented]
 		public void Step(StepType type) => throw new NotImplementedException();
 
-		protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
+        private bool _renderSound;
+
+        protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
 		{
+            _renderSound = rendersound;
 			return new LibMelonDS.FrameInfo
 			{
 				Time = GetRtcTime(!DeterministicEmulation),
@@ -577,6 +580,18 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				MicInput = (short)controller.AxisValue("Mic Input"),
 				GBALightSensor = (byte)controller.AxisValue("GBA Light Sensor"),
 			};
+		}
+
+		protected override void FrameAdvancePost()
+		{
+			if (_numSamples < 200 && _renderSound) // hack around core producing way less audio than expected (mostly when lid is closed)
+			{
+				for (int i = _numSamples; i < 547; i++)
+				{
+					_soundBuffer[i] = 0;
+				}
+                _numSamples = 547;
+            }
 		}
 
 		// c++ -> c# port of melon's firmware verification code
