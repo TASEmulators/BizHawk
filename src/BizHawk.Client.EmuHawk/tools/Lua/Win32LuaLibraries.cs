@@ -49,6 +49,7 @@ namespace BizHawk.Client.EmuHawk
 			_inputManager = inputManager;
 			_mainForm = mainForm;
 			LuaWait = new AutoResetEvent(false);
+			PathEntries = config.PathEntries;
 			RegisteredFunctions = registeredFuncList;
 			ScriptList = scriptList;
 			Docs.Clear();
@@ -83,9 +84,10 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else if (instance is GuiLuaLibrary guiLib)
 					{
+						// emu lib may be null now, depending on order of ReflectionCache.Types, but definitely won't be null when this is called
 						guiLib.CreateLuaCanvasCallback = (width, height, x, y) =>
 						{
-							var canvas = new LuaCanvas(width, height, x, y, _th, LogToLuaConsole);
+							var canvas = new LuaCanvas(EmulationLuaLibrary, width, height, x, y, _th, LogToLuaConsole);
 							canvas.Show();
 							return _th.ObjectToTable(canvas);
 						};
@@ -141,6 +143,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private EventWaitHandle LuaWait;
 
+		public PathEntryCollection PathEntries { get; private set; }
+
 		public LuaFileList ScriptList { get; }
 
 		private static void LogToLuaConsole(object outputs) => _logToLuaConsoleCallback(new[] { outputs });
@@ -154,6 +158,7 @@ namespace BizHawk.Client.EmuHawk
 			IGameInfo game)
 		{
 			_apiContainer = ApiManager.RestartLua(newServiceProvider, LogToLuaConsole, _mainForm, _displayManager, _inputManager, _mainForm.MovieSession, _mainForm.Tools, config, emulator, game);
+			PathEntries = config.PathEntries;
 			foreach (var lib in Libraries.Values)
 			{
 				lib.APIs = _apiContainer;
