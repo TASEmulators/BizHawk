@@ -84,9 +84,10 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else if (instance is GuiLuaLibrary guiLib)
 					{
+						// emu lib may be null now, depending on order of ReflectionCache.Types, but definitely won't be null when this is called
 						guiLib.CreateLuaCanvasCallback = (width, height, x, y) =>
 						{
-							var canvas = new LuaCanvas(width, height, x, y, _th, LogToLuaConsole);
+							var canvas = new LuaCanvas(EmulationLuaLibrary, width, height, x, y, _th, LogToLuaConsole);
 							canvas.Show();
 							return _th.ObjectToTable(canvas);
 						};

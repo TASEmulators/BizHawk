@@ -5,6 +5,8 @@ using System.Windows.Forms;
 using System.IO;
 
 using BizHawk.Client.Common;
+using BizHawk.Common.PathExtensions;
+
 using NLua;
 
 // ReSharper disable UnusedMember.Global
@@ -13,6 +15,8 @@ namespace BizHawk.Client.EmuHawk
 	[Description("Represents a canvas object returned by the gui.createcanvas() method")]
 	public sealed class LuaCanvas : Form
 	{
+		private readonly EmulationLuaLibrary _emuLib;
+
 		private readonly NLuaTableHelper _th;
 
 		private readonly Action<string> LogOutputCallback;
@@ -20,6 +24,7 @@ namespace BizHawk.Client.EmuHawk
 		private readonly LuaPictureBox luaPictureBox;
 
 		public LuaCanvas(
+			EmulationLuaLibrary emuLib,
 			int width,
 			int height,
 			int? x,
@@ -27,6 +32,7 @@ namespace BizHawk.Client.EmuHawk
 			NLuaTableHelper tableHelper,
 			Action<string> logOutputCallback)
 		{
+			_emuLib = emuLib;
 			_th = tableHelper;
 			LogOutputCallback = logOutputCallback;
 
@@ -412,6 +418,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var position = luaPictureBox.GetMouse();
 			return position.Y;
+		}
+
+		[LuaMethod("save_image_to_disk", "Saves everything that's been drawn to a .png file at the given path. Relative paths are relative to the path set for \"Screenshots\" for the current system.")]
+		public void SaveImageToDisk(string path)
+		{
+			luaPictureBox.Image.Save(path.MakeAbsolute(_emuLib.PathEntries.ScreenshotAbsolutePathFor(_emuLib.GetSystemId())));
 		}
 	}
 }
