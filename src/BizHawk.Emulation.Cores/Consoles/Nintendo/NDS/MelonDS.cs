@@ -6,6 +6,7 @@ using BizHawk.Emulation.Cores.Waterbox;
 using Newtonsoft.Json;
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -15,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 {
 	[PortedCore(CoreNames.MelonDS, "Arisotura", "0.9.3", "http://melonds.kuribo64.net/", singleInstance: true, isReleased: false)]
 	public class NDS : WaterboxCore, ISaveRam,
-		ISettable<NDS.Settings, NDS.SyncSettings>
+		ISettable<NDS.Settings, NDS.SyncSettings>, IDebuggable
 	{
 		private readonly LibMelonDS _core;
 
@@ -548,6 +549,22 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 			return Math.Max(1, Math.Min(day, maxdays));
 		}
+
+		[FeatureNotImplemented]
+		public IMemoryCallbackSystem MemoryCallbacks => throw new NotImplementedException(); // https://github.com/TASEmulators/BizHawk/issues/2585
+
+		public long TotalExecutedCycles => CycleCount;
+
+		[FeatureNotImplemented]
+		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters() => throw new NotImplementedException();
+
+		[FeatureNotImplemented]
+		public void SetCpuRegister(string register, int value) => throw new NotImplementedException();
+
+		public bool CanStep(StepType type) => false;
+
+		[FeatureNotImplemented]
+		public void Step(StepType type) => throw new NotImplementedException();
 
 		protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
 		{

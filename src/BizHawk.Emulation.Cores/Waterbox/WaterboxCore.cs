@@ -210,6 +210,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					Frame++;
 					if (IsLagFrame = frame.Lagged != 0)
 						LagCount++;
+					CycleCount += frame.Cycles;
 					AdvanceRtc();
 
 					if (render)
@@ -247,10 +248,14 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		public int Frame { get; private set; }
 		public int LagCount { get; set; }
 		public bool IsLagFrame { get; set; }
+		public long CycleCount { get; private set; }
 
 		public void ResetCounters()
 		{
 			Frame = 0;
+			LagCount = 0;
+			IsLagFrame = false;
+			CycleCount = 0;
 		}
 
 		protected readonly BasicServiceProvider _serviceProvider;
@@ -269,6 +274,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				Frame = reader.ReadInt32();
 				LagCount = reader.ReadInt32();
 				IsLagFrame = reader.ReadBoolean();
+				CycleCount = reader.ReadInt64();
 				BufferWidth = reader.ReadInt32();
 				BufferHeight = reader.ReadInt32();
 				_clockTime = reader.ReadInt64();
@@ -289,6 +295,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				writer.Write(Frame);
 				writer.Write(LagCount);
 				writer.Write(IsLagFrame);
+				writer.Write(CycleCount);
 				writer.Write(BufferWidth);
 				writer.Write(BufferHeight);
 				writer.Write(_clockTime);
