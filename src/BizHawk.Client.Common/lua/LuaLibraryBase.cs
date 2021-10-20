@@ -7,12 +7,15 @@ namespace BizHawk.Client.Common
 {
 	public abstract class LuaLibraryBase
 	{
+		public PathEntryCollection PathEntries { get; set; }
+
 		protected LuaLibraryBase(IPlatformLuaLibEnv luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
 		{
 			LogOutputCallback = logOutputCallback;
 			_luaLibsImpl = luaLibsImpl;
 			_th = _luaLibsImpl.GetTableHelper();
 			APIs = apiContainer;
+			PathEntries = _luaLibsImpl.PathEntries;
 		}
 
 		protected static LuaFile CurrentFile { get; private set; }
