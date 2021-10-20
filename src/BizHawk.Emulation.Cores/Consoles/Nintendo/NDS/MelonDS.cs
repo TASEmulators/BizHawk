@@ -569,30 +569,30 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
         private bool _renderSound;
 
         protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
-		{
+        {
             _renderSound = rendersound;
-			return new LibMelonDS.FrameInfo
-			{
-				Time = GetRtcTime(!DeterministicEmulation),
-				Keys = GetButtons(controller),
-				TouchX = (byte)controller.AxisValue("Touch X"),
-				TouchY = (byte)controller.AxisValue("Touch Y"),
-				MicInput = (short)controller.AxisValue("Mic Input"),
-				GBALightSensor = (byte)controller.AxisValue("GBA Light Sensor"),
-			};
-		}
+	        return new LibMelonDS.FrameInfo
+	        {
+		        Time = GetRtcTime(!DeterministicEmulation),
+		        Keys = GetButtons(controller),
+		        TouchX = (byte)controller.AxisValue("Touch X"),
+		        TouchY = (byte)controller.AxisValue("Touch Y"),
+		        MicInput = (short)controller.AxisValue("Mic Input"),
+		        GBALightSensor = (byte)controller.AxisValue("GBA Light Sensor"),
+	        };
+        }
 
-		protected override void FrameAdvancePost()
-		{
-			if (_numSamples < 200 && _renderSound) // hack around core producing way less audio than expected (mostly when lid is closed)
-			{
-				for (int i = _numSamples; i < 547; i++)
-				{
-					_soundBuffer[i] = 0;
-				}
+        protected override void FrameAdvancePost()
+        {
+	        if (_numSamples < 200 && _renderSound) // hack around core producing way less audio than expected (mostly when lid is closed)
+	        {
+		        for (int i = _numSamples; i < 547; i++)
+		        {
+			        _soundBuffer[i] = 0;
+		        }
                 _numSamples = 547;
             }
-		}
+        }
 
 		// c++ -> c# port of melon's firmware verification code
 		private static unsafe ushort Crc16(byte* data, int len, int seed)
