@@ -561,10 +561,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			_core.GetRegs(regs);
 
 			var ret = new Dictionary<string, RegisterValue>();
-			for (int i = 0; i < 15; i++)
+			for (int i = 0; i < 2; i++)
 			{
-				ret["ARM9 r" + i] = regs[i];
-				ret["ARM7 r" + i] = regs[15 + i];
+				int ncpu = i == 0 ? 9 : 7;
+				for (int j = 0; j < 15; j++)
+				{
+					ret["ARM" + ncpu + " r" + j] = regs[i * 15 + j];
+				}
 			}
 			return ret;
 		}
