@@ -555,8 +555,25 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		public long TotalExecutedCycles => CycleCount;
 
-		[FeatureNotImplemented]
-		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters() => throw new NotImplementedException();
+		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
+		{
+			int[] regs = new int[2 * 15];
+			unsafe
+			{
+				_core.GetRegs(regs);
+			}
+
+			var ret = new Dictionary<string, RegisterValue>();
+			for (int i = 0; i < 15; i++)
+			{
+				ret["ARM9 r" + i] = regs[i];
+			}
+			for (int i = 0; i < 15; i++)
+			{
+				ret["ARM7 r" + i] = regs[15 + i];
+			}
+			return ret;
+		}
 
 		[FeatureNotImplemented]
 		public void SetCpuRegister(string register, int value) => throw new NotImplementedException();

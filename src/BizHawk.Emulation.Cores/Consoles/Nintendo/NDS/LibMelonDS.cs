@@ -78,5 +78,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		[BizImport(CC)]
 		public abstract bool SaveRamIsDirty();
+
+		[BizImport(CC)]
+		public abstract void GetRegs(int[] regs);
+
+		[BizImport(CC)]
+		public abstract void SetReg(int ncpu, int index, int val);
 	}
 }

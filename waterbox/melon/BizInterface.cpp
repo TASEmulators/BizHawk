@@ -330,7 +330,7 @@ EXPORT void SetInputCallback(void (*callback)())
 	InputCallback = callback;
 }
 
-EXPORT void GetRegs(int** regs)
+EXPORT void GetRegs(int* regs)
 {
 	NDS::GetRegs(regs);
 }
