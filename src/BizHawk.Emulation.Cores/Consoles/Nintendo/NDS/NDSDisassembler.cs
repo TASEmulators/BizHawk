@@ -34,7 +34,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			if (Cpu.Length == 14)
 			{
 				addr &= unchecked((uint)~1);
-				int op = m.PeekByte((int)addr) | m.PeekByte((int)addr + 1) << 8;
+				int op = m.PeekByte(addr) | m.PeekByte(addr + 1) << 8;
 				string ret = _libdarm.DisassembleStuff(addr | 1, (uint)op);
 				length = 2;
 				return ret;
@@ -42,10 +42,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			else
 			{
 				addr &= unchecked((uint)~3);
-				int op = m.PeekByte((int)addr)
-					| m.PeekByte((int)addr + 1) << 8
-					| m.PeekByte((int)addr + 2) << 16
-					| m.PeekByte((int)addr + 3) << 24;
+				int op = m.PeekByte(addr)
+					| m.PeekByte(addr + 1) << 8
+					| m.PeekByte(addr + 2) << 16
+					| m.PeekByte(addr + 3) << 24;
 				string ret = _libdarm.DisassembleStuff(addr, (uint)op);
 				length = 4;
 				return ret;
