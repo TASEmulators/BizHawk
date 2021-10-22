@@ -148,6 +148,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 			PostInit();
 
+			((MemoryDomainList)this.AsMemoryDomains()).SystemBus = new NDSSystemBus(this.AsMemoryDomains()["ARM7 System Bus"], this.AsMemoryDomains()["ARM9 System Bus"]);
+
 			DeterministicEmulation = lp.DeterministicEmulationRequested || (!_syncSettings.UseRealTime);
 			InitializeRtc(_syncSettings.InitialTime);
 
@@ -245,6 +247,31 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				}
 				_numSamples = 547;
 			}
+		}
+
+		// omega hack
+		public class NDSSystemBus : MemoryDomain
+		{
+			private MemoryDomain Arm9Bus;
+			private MemoryDomain Arm7Bus;
+
+			public NDSSystemBus(MemoryDomain arm9, MemoryDomain arm7)
+			{
+				Name = "System Bus";
+				Size = 1L << 32;
+				WordSize = 4;
+				EndianType = Endian.Little;
+				Writable = false;
+
+				Arm9Bus = arm9;
+				Arm7Bus = arm7;
+			}
+
+			public static bool UseArm9 { get; set; } = true;
+
+			public override byte PeekByte(long addr) => UseArm9 ? Arm9Bus.PeekByte(addr) : Arm7Bus.PeekByte(addr);
+
+			public override void PokeByte(long addr, byte val) => throw new InvalidOperationException();
 		}
 	}
 }
