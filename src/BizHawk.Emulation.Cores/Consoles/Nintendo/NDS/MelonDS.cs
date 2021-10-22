@@ -148,7 +148,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 			PostInit();
 
-			((MemoryDomainList)this.AsMemoryDomains()).SystemBus = new NDSSystemBus(this.AsMemoryDomains()["ARM7 System Bus"], this.AsMemoryDomains()["ARM9 System Bus"]);
+			((MemoryDomainList)this.AsMemoryDomains()).SystemBus = new NDSSystemBus(this.AsMemoryDomains()["ARM9 System Bus"], this.AsMemoryDomains()["ARM7 System Bus"]);
 
 			DeterministicEmulation = lp.DeterministicEmulationRequested || (!_syncSettings.UseRealTime);
 			InitializeRtc(_syncSettings.InitialTime);
