@@ -1,15 +1,17 @@
-﻿using System.Collections.Generic;
+﻿#nullable enable
+
+using System.Collections.Generic;
+
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
 	public interface IGameInfoApi : IExternalApi
 	{
-		string GetRomName();
-		string GetRomHash();
-		bool InDatabase();
-		string GetStatus();
-		bool IsStatusBad();
 		string GetBoardType();
-		IReadOnlyDictionary<string, string> GetOptions();
+
+		IGameInfo? GetGameInfo();
+
+		IReadOnlyDictionary<string, string?> GetOptions();
 	}
 }

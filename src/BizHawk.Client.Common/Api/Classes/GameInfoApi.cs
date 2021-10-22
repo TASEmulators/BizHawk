@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿#nullable enable
+
+using System.Collections.Generic;
 
 using BizHawk.Emulation.Common;
 
@@ -7,27 +9,22 @@ namespace BizHawk.Client.Common
 	public sealed class GameInfoApi : IGameInfoApi
 	{
 		[OptionalService]
-		private IBoardInfo BoardInfo { get; set; }
+		public IBoardInfo? _boardInfo { get; set; }
 
-		private readonly IGameInfo _game;
+		private readonly IGameInfo? _game;
 
-		public GameInfoApi(IGameInfo game) => _game = game;
+		public GameInfoApi(IGameInfo? game)
+			=> _game = game;
 
-		public string GetRomName() => _game?.Name ?? "";
+		public string GetBoardType()
+			=> _boardInfo?.BoardName ?? string.Empty;
 
-		public string GetRomHash() => _game?.Hash ?? "";
+		public IGameInfo? GetGameInfo()
+			=> _game;
 
-		public bool InDatabase() => _game?.NotInDatabase == false;
-
-		public string GetStatus() => _game?.Status.ToString();
-
-		public bool IsStatusBad() => _game?.IsRomStatusBad() != false;
-
-		public string GetBoardType() => BoardInfo?.BoardName ?? "";
-
-		public IReadOnlyDictionary<string, string> GetOptions()
+		public IReadOnlyDictionary<string, string?> GetOptions()
 		{
-			var options = new Dictionary<string, string>();
+			var options = new Dictionary<string, string?>();
 			if (_game == null) return options;
 			foreach (var option in ((GameInfo) _game).GetOptions()) options[option.Key] = option.Value;
 			return options;
