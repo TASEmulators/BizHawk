@@ -16,10 +16,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		public override IEnumerable<string> AvailableCpus => new[]
 		{
-			"ARM v4",
-			"ARM v4 (Thumb)",
 			"ARM v5",
 			"ARM v5 (Thumb)",
+			"ARM v4",
+			"ARM v4 (Thumb)",
 		};
 
 		public override string PCRegisterName => int.Parse(Cpu.Substring(5, 1)) == 4 ? "ARM7 r15" : "ARM9 r15";
