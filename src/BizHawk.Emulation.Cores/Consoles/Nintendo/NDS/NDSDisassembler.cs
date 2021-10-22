@@ -29,6 +29,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			if (m is NDS.NDSSystemBus NdsSysBus)
 			{
 				NdsSysBus.UseArm9 = int.Parse(Cpu.Substring(5, 1)) == 5;
+				m = NdsSysBus;
 			}
 			if (Cpu.Length == 14)
 			{
