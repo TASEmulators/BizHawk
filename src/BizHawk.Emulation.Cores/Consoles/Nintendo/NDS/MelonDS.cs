@@ -153,6 +153,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 			_resampler = new SpeexResampler(SpeexResampler.Quality.QUALITY_DEFAULT, 32768, 44100, 32768, 44100, null, this);
 			_serviceProvider.Register<ISoundProvider>(_resampler);
+
+			_serviceProvider.Register<IDisassemblable>(new NDSDisassembler());
 		}
 
 		private SpeexResampler _resampler;

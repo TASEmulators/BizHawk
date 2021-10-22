@@ -14,16 +14,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
-			int[] regs = new int[2 * 15];
+			int[] regs = new int[2 * 16];
 			_core.GetRegs(regs);
 
 			var ret = new Dictionary<string, RegisterValue>();
 			for (int i = 0; i < 2; i++)
 			{
 				int ncpu = i == 0 ? 9 : 7;
-				for (int j = 0; j < 15; j++)
+				for (int j = 0; j < 16; j++)
 				{
-					ret["ARM" + ncpu + " r" + j] = regs[i * 15 + j];
+					ret["ARM" + ncpu + " r" + j] = regs[i * 16 + j];
 				}
 			}
 			return ret;
