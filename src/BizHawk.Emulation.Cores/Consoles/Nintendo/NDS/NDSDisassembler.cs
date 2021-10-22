@@ -26,7 +26,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		public override string Disassemble(MemoryDomain m, uint addr, out int length)
 		{
-			NDS.NDSSystemBus.UseArm9 = int.Parse(Cpu.Substring(5, 1)) == 5;
+			if (m is NDS.NDSSystemBus NdsSysBus)
+			{
+				NdsSysBus.UseArm9 = int.Parse(Cpu.Substring(5, 1)) == 5;
+			}
 			if (Cpu.Length == 14)
 			{
 				addr &= unchecked((uint)~1);

@@ -126,7 +126,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				}
 			}
 
-
 			_exe.RemoveReadonlyFile("game.rom");
 			if (gbacartpresent)
 			{
@@ -267,7 +266,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				Arm7Bus = arm7;
 			}
 
-			public static bool UseArm9 { get; set; } = true;
+			public bool UseArm9 { get; set; } = true;
 
 			public override byte PeekByte(long addr) => UseArm9 ? Arm9Bus.PeekByte(addr) : Arm7Bus.PeekByte(addr);
 
