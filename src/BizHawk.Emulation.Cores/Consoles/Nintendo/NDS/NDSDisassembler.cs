@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 using BizHawk.BizInvoke;
@@ -9,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 {
 	public class NDSDisassembler : VerifiedDisassembler
 	{
-		private readonly Darm _libdarm = BizInvoker.GetInvoker<Darm>(
+		private static readonly Darm _libdarm = BizInvoker.GetInvoker<Darm>(
 			new DynamicLibraryImportResolver(OSTailoredCode.IsUnixHost ? "libdarm.so" : "libdarm.dll", hasLimitedLifetime: false),
 			CallingConventionAdapters.Native
 		);
@@ -55,18 +56,25 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		public string Trace(uint pc, uint op, bool isthumb)
 		{
-			// easier to handle prefetch here
 			if (isthumb)
 			{
-				pc -= 2;
 				pc &= ~1u;
-				return _libdarm.DisassembleStuff(pc | 1, op);
+				string ret = _libdarm.DisassembleStuff(pc | 1, op);
+				if (ret == null)
+				{
+					ret = "Can't disassemble???";
+				}
+				return ret;
 			}
 			else
 			{
-				pc -= 4;
 				pc &= ~3u;
-				return _libdarm.DisassembleStuff(pc, op);
+				string ret = _libdarm.DisassembleStuff(pc, op);
+				if (ret == null)
+				{
+					ret = "Can't disassemble???";
+				}
+				return ret;
 			}
 		}
 	}
