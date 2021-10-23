@@ -60,6 +60,5 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 					CycleCount + _ccoffset,
 					cpu)));
 		}
-
 	}
 }

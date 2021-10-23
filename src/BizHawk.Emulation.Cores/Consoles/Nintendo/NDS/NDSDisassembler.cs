@@ -55,13 +55,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		public string Trace(uint pc, uint op, bool isthumb)
 		{
+			// easier to handle prefetch here
 			if (isthumb)
 			{
+				pc -= 2;
 				pc &= ~1u;
 				return _libdarm.DisassembleStuff(pc | 1, op);
 			}
 			else
 			{
+				pc -= 4;
 				pc &= ~3u;
 				return _libdarm.DisassembleStuff(pc, op);
 			}

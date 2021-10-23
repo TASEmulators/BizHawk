@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
-			int[] regs = new int[2 * 16];
+			uint[] regs = new uint[2 * 16];
 			_core.GetRegs(regs);
 
 			var ret = new Dictionary<string, RegisterValue>();

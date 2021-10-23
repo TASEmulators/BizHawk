@@ -38,6 +38,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 			bool gbacartpresent = roms.Count > 1;
 
+			_tracecb = MakeTrace;
+
 			_core = PreInit<LibMelonDS>(new WaterboxOptions
 			{
 				Filename = "melonDS.wbx",
@@ -48,7 +50,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				MmapHeapSizeKB = 512 * 1024,
 				SkipCoreConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
 				SkipMemoryConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
-			});
+			}, new Delegate[] { _tracecb });
 
 			_syncSettings = lp.SyncSettings ?? new SyncSettings();
 			_settings = lp.Settings ?? new Settings();
