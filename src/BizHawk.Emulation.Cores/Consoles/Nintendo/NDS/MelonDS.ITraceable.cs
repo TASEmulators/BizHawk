@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 	partial class NDS
 	{
 		private ITraceable Tracer { get; }
-		private LibMelonDS.TraceCallback _tracecb;
+		private readonly LibMelonDS.TraceCallback _tracecb;
 
 		private void MakeTrace(LibMelonDS.CpuTypes _cpu, IntPtr _regs, uint _opcode, long _ccoffset)
 		{
@@ -36,11 +36,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 			Tracer.Put(new(
 				disassembly: _disassembler.Trace(
-					(uint)regs[16],
+					(uint)regs[15],
 					_opcode,
-					((uint)_cpu & 2u) == 2).PadRight(36),
+					((uint)_cpu & 2u) == 2u).PadRight(50),
 				registerInfo: string.Format(
-					"r0:{0} r1:{1} r2:{2} r3:{3} r4:{4} r5:{5} r6:{6} r7:{7} r8:{8} r9:{9} r10:{10} r11:{11} r12:{12} r13:{13} r14:{14} r15:{15} Cy:{16} {17}",
+					"r0:{0:x8} r1:{1:x8} r2:{2:x8} r3:{3:x8} r4:{4:x8} r5:{5:x8} r6:{6:x8} r7:{7:x8} r8:{8:x8} r9:{9:x8} r10:{10:x8} r11:{11:x8} r12:{12:x8} r13:{13:x8} r14:{14:x8} r15:{15:x8} Cy:{16} {17}",
 					(uint)regs[0],
 					(uint)regs[1],
 					(uint)regs[2],

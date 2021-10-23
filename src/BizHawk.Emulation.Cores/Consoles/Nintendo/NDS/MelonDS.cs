@@ -233,8 +233,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
 		{
 			_renderSound = rendersound;
-			_tracecb = Tracer.IsEnabled() ? MakeTrace : null;
-			_core.SetTraceCallback(_tracecb);
+			_core.SetTraceCallback(Tracer.IsEnabled() ? _tracecb : null);
 			return new LibMelonDS.FrameInfo
 			{
 				Time = GetRtcTime(!DeterministicEmulation),
