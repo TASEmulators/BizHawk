@@ -248,7 +248,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		protected override void FrameAdvancePost()
 		{
-			if (_numSamples < 200 && _renderSound) // hack around core producing way less audio than expected (mostly when lid is closed)
+			// the core SHOULD produce 547 or 548 samples each frame
+			// however, it seems in some cases (first few frames on power on and lid closed) it doesn't for some reason
+			// hack around it here
+			if (_numSamples < 547 && _renderSound)
 			{
 				for (int i = (_numSamples * 2); i < (547 * 2); i++)
 				{
