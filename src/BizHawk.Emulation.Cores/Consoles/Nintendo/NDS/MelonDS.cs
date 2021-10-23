@@ -253,7 +253,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			// hack around it here
 			if (_numSamples < 547 && _renderSound)
 			{
-				for (int i = (_numSamples * 2); i < (547 * 2); i++)
+				for (int i = _numSamples * 2; i < (547 * 2); i++)
 				{
 					_soundBuffer[i] = 0;
 				}
