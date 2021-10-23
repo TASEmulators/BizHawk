@@ -1,7 +1,7 @@
+using BizHawk.Emulation.Common;
+
 using System;
 using System.Runtime.InteropServices;
-
-using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 {
@@ -12,24 +12,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		private void MakeTrace(LibMelonDS.CpuTypes _cpu, IntPtr _regs, uint _opcode, long _ccoffset)
 		{
-			string cpu;
-			switch (_cpu)
+			string cpu = _cpu switch
 			{
-				case LibMelonDS.CpuTypes.ARM9:
-					cpu = "ARM9";
-					break;
-				case LibMelonDS.CpuTypes.ARM7:
-					cpu = "ARM7";
-					break;
-				case LibMelonDS.CpuTypes.ARM9_THUMB:
-					cpu = "ARM9 (Thumb)";
-					break;
-				case LibMelonDS.CpuTypes.ARM7_THUMB:
-					cpu = "ARM7 (Thumb)";
-					break;
-				default:
-					throw new InvalidOperationException("Invalid CPU Mode???");
-			}
+				LibMelonDS.CpuTypes.ARM9 => "ARM9",
+				LibMelonDS.CpuTypes.ARM7 => "ARM7",
+				LibMelonDS.CpuTypes.ARM9_THUMB => "ARM9 (Thumb)",
+				LibMelonDS.CpuTypes.ARM7_THUMB => "ARM7 (Thumb)",
+				_ => throw new InvalidOperationException("Invalid CPU Mode???"),
+			};
 
 			int[] regs = new int[16];
 			Marshal.Copy(_regs, regs, 0, 16);

@@ -49,22 +49,22 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				InvisibleHeapSizeKB = 4,
 				PlainHeapSizeKB = 4,
 				MmapHeapSizeKB = 512 * 1024,
-				SkipCoreConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
-				SkipMemoryConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
+				SkipCoreConsistencyCheck = CoreComm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
+				SkipMemoryConsistencyCheck = CoreComm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
 			}, new Delegate[] { _tracecb });
 
 			_syncSettings = lp.SyncSettings ?? new SyncSettings();
 			_settings = lp.Settings ?? new Settings();
 
 			var bios7 = _syncSettings.UseRealBIOS
-				? lp.Comm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "bios7"))
+				? CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "bios7"))
 				: null;
 
 			var bios9 = _syncSettings.UseRealBIOS
-				? lp.Comm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "bios9"))
+				? CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "bios9"))
 				: null;
 
-			var fw = lp.Comm.CoreFileProvider.GetFirmware(new("NDS", "firmware"));
+			var fw = CoreComm.CoreFileProvider.GetFirmware(new("NDS", "firmware"));
 
 			bool skipfw = _syncSettings.SkipFirmware || !_syncSettings.UseRealBIOS || fw == null;
 
@@ -261,8 +261,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		// omega hack
 		public class NDSSystemBus : MemoryDomain
 		{
-			private MemoryDomain Arm9Bus;
-			private MemoryDomain Arm7Bus;
+			private readonly MemoryDomain Arm9Bus;
+			private readonly MemoryDomain Arm7Bus;
 
 			public NDSSystemBus(MemoryDomain arm9, MemoryDomain arm7)
 			{
