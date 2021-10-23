@@ -2,6 +2,7 @@
 #include "GPU.h"
 #include "SPU.h"
 #include "RTC.h"
+#include "ARM.h"
 #include "NDSCart.h"
 #include "NDSCart_SRAMManager.h"
 #include "GBACart.h"
@@ -330,12 +331,17 @@ EXPORT void SetInputCallback(void (*callback)())
 	InputCallback = callback;
 }
 
-EXPORT void GetRegs(int* regs)
+EXPORT void GetRegs(u32* regs)
 {
 	NDS::GetRegs(regs);
 }
 
-EXPORT void SetReg(int ncpu, int index, int val)
+EXPORT void SetReg(s32 ncpu, s32 index, s32 val)
 {
 	NDS::SetReg(ncpu, index, val);
+}
+
+EXPORT void SetTraceCallback(void (*callback)(u32 cpu, u32* regs, u32 opcode, s64 ccoffset))
+{
+	TraceCallback = callback;
 }
