@@ -38,7 +38,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			uint pc = (uint)regs[15] - (isthumb ? 2u : 4u); // handle prefetch
 
 			Tracer.Put(new(
-				disassembly: string.Format("{0:x8}", pc).PadRight(12) + _disassembler.Trace(pc, _opcode, isthumb).PadRight(20),
+				disassembly: string.Format("{0:x8}", pc).PadRight(12) + _disassembler.Trace(pc, _opcode, isthumb).PadRight(32),
 				registerInfo: string.Format(
 					"r0:{0:x8} r1:{1:x8} r2:{2:x8} r3:{3:x8} r4:{4:x8} r5:{5:x8} r6:{6:x8} r7:{7:x8} r8:{8:x8} r9:{9:x8} r10:{10:x8} r11:{11:x8} r12:{12:x8} r13:{13:x8} r14:{14:x8} r15:{15:x8} Cy:{16} {17}",
 					(uint)regs[0],
