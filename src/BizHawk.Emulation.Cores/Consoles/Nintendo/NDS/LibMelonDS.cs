@@ -84,5 +84,21 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		[BizImport(CC)]
 		public abstract void SetReg(int ncpu, int index, int val);
+
+		// bit 0 -> ARM9 or ARM7
+		// bit 1 -> ARM or THUMB mode
+		public enum CpuTypes : uint
+		{
+			ARM9,
+			ARM7,
+			ARM9_THUMB,
+			ARM7_THUMB,
+		}
+
+		[UnmanagedFunctionPointer(CC)]
+		public delegate void TraceCallback(CpuTypes _cpu, IntPtr _regs, uint _opcode, long _ccoffset);
+
+		[BizImport(CC)]
+		public abstract void SetTraceCallback(TraceCallback callback);
 	}
 }

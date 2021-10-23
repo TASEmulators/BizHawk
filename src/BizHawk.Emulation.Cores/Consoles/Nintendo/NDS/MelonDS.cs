@@ -12,6 +12,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 	public partial class NDS : WaterboxCore
 	{
 		private readonly LibMelonDS _core;
+		private readonly NDSDisassembler _disassembler;
+		private SpeexResampler _resampler;
 
 		[CoreConstructor("NDS")]
 		public NDS(CoreLoadParameters<Settings, SyncSettings> lp)
@@ -155,10 +157,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			_resampler = new SpeexResampler(SpeexResampler.Quality.QUALITY_DEFAULT, 32768, 44100, 32768, 44100, null, this);
 			_serviceProvider.Register<ISoundProvider>(_resampler);
 
-			_serviceProvider.Register<IDisassemblable>(new NDSDisassembler());
+			_disassembler = new NDSDisassembler();
+			_serviceProvider.Register<IDisassemblable>(_disassembler);
+
+			const string TRACE_HEADER = "ARM9+ARM7: PC, opcode, registers (r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12, r13, r14, r15, Cy, CpuMode)";
+			Tracer = new TraceBuffer(TRACE_HEADER);
+			_serviceProvider.Register<ITraceable>(Tracer);
 		}
 
-		private SpeexResampler _resampler;
 		public override void Dispose()
 		{
 			base.Dispose();
@@ -225,6 +231,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
 		{
 			_renderSound = rendersound;
+			_tracecb = Tracer.IsEnabled() ? MakeTrace : null;
+			_core.SetTraceCallback(_tracecb);
 			return new LibMelonDS.FrameInfo
 			{
 				Time = GetRtcTime(!DeterministicEmulation),

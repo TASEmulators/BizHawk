@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			"ARM v4 (Thumb)",
 		};
 
-		public override string PCRegisterName => int.Parse(Cpu.Substring(5, 1)) == 4 ? "ARM7 r15" : "ARM9 r15";
+		public override string PCRegisterName => int.Parse(Cpu.Substring(5, 1)) == 5 ? "ARM9 r15" : "ARM7 r15";
 
 		public override string Disassemble(MemoryDomain m, uint addr, out int length)
 		{
@@ -31,6 +31,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				NdsSysBus.UseArm9 = int.Parse(Cpu.Substring(5, 1)) == 5;
 				m = NdsSysBus;
 			}
+
 			if (Cpu.Length == 14)
 			{
 				addr &= ~1u;
@@ -49,6 +50,20 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				string ret = _libdarm.DisassembleStuff(addr, (uint)op);
 				length = 4;
 				return ret;
+			}
+		}
+
+		public string Trace(uint pc, uint op, bool isthumb)
+		{
+			if (isthumb)
+			{
+				pc &= ~1u;
+				return _libdarm.DisassembleStuff(pc | 1, op);
+			}
+			else
+			{
+				pc &= ~3u;
+				return _libdarm.DisassembleStuff(pc, op);
 			}
 		}
 	}
