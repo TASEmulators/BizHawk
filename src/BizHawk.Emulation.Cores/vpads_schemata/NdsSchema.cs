@@ -59,6 +59,7 @@ namespace BizHawk.Emulation.Cores
 					new SingleAxisSchema(10, 63, "Mic Input")
 					{
 						TargetSize = new Size(226, 69),
+						MinValue = -1,
 						MaxValue = 2047,
 					},
 
