@@ -188,7 +188,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				"Up", "Down", "Left", "Right", "Start", "Select", "B", "A", "Y", "X", "L", "R", "LidOpen", "LidClose", "Touch", "Power"
 			}
 		}.AddXYPair("Touch {0}", AxisPairOrientation.RightAndUp, 0.RangeTo(255), 128, 0.RangeTo(191), 96)
-			.AddAxis("Mic Input", 0.RangeTo(2047), 0)
+			.AddAxis("Mic Input", (-1).RangeTo(2047), 0)
 			.AddAxis("GBA Light Sensor", 0.RangeTo(10), 0);
 		private LibMelonDS.Buttons GetButtons(IController c)
 		{
