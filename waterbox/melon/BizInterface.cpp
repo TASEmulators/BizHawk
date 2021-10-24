@@ -293,14 +293,7 @@ EXPORT void FrameAdvance(MyFrameInfo* f)
 	else if (f->Keys & 0x4000)
 		NDS::SetLidClosed(true);
 
-	s16 micInput = f->MicInput;
-	if (micInput < 0) micInput = abs(micInput) + 2047;
-	micInput <<= 4;
-
-	for (int i = 0; i < 1024; i++)
-	{
-		biz_mic_input[i] = rand();
-	}
+	std::fill_n(biz_mic_input, 1024, f->MicInput << 4);
 	NDS::MicInputFrame(biz_mic_input, 1024);
 
 	int sensor = GBACart::SetInput(0, 1);
