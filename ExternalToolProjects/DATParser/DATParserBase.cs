@@ -218,6 +218,7 @@ namespace BizHawk.DATTool
 		GB3x,
 		GB4x,
 		O2,
-		MSX
+		MSX,
+		NDS
 	}
 }

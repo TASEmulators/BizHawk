@@ -250,9 +250,8 @@ pub extern fn wbx_seal(obj: &mut WaterboxHost, ret: &mut Return<()>) {
 }
 
 /// Mounts a file in the environment.  All data will be immediately consumed from the reader, which will not be used after this call.
-/// To prevent nondeterminism, adding and removing files is very limited WRT savestates.  If a file is writable, it must never exist
-/// when save_state is called, and can only be used for transient operations.  If a file is readable, it can appear in savestates,
-/// but it must exist in every savestate and the exact sequence of add_file calls must be consistent from savestate to savestate.
+/// To prevent nondeterminism, adding and removing files is very limited WRT savestates.  Every file added must either exist
+/// in every savestate, or never appear in any savestates.  All savestateable files must be added in the same order for every run.
 #[no_mangle]
 pub extern fn wbx_mount_file(obj: &mut WaterboxHost, name: *const c_char, callback: ReadCallback, userdata: usize, writable: bool, ret: &mut Return<()>) {
 	let mut reader = CReader {
@@ -268,6 +267,7 @@ pub extern fn wbx_mount_file(obj: &mut WaterboxHost, name: *const c_char, callba
 
 /// Remove a file previously added.  Writer is optional; if provided, the contents of the file at time of removal will be dumped to it.
 /// It is an error to remove a file which is currently open in the guest.
+/// If the file has been used in savestates, it does not make sense to remove it here, but nothing will stop you.
 #[no_mangle]
 pub extern fn wbx_unmount_file(obj: &mut WaterboxHost, name: *const c_char, callback_opt: Option<WriteCallback>, userdata: usize, ret: &mut Return<()>) {
 	let res: anyhow::Result<()> = (|| {

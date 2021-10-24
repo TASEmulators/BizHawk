@@ -36,7 +36,7 @@ namespace BizHawk.Emulation.Cores
 					new ButtonSchema(366, 86, "A"),
 
 					// Screen
-					new TargetedPairSchema(72, 35, "TouchX")
+					new TargetedPairSchema(72, 35, "Touch X")
 					{
 						TargetSize = new Size(256, 192)
 					},
@@ -49,11 +49,25 @@ namespace BizHawk.Emulation.Cores
 		{
 			return new ConsoleSchema
 			{
-				Size = new Size(160, 45),
-				Buttons = new[]
+				Size = new Size(240, 260),
+				Buttons = new PadSchemaControl[]
 				{
 					new ButtonSchema(8, 18, "LidOpen") { DisplayName = "Lid Open" },
-					new ButtonSchema(68, 18, "LidClose") { DisplayName = "Lid Close" }
+					new ButtonSchema(68, 18, "LidClose") { DisplayName = "Lid Close" },
+					new ButtonSchema(128, 18, "Power"),
+
+					new SingleAxisSchema(10, 63, "Mic Input")
+					{
+						TargetSize = new Size(226, 69),
+						MinValue = -1,
+						MaxValue = 2047,
+					},
+
+					new SingleAxisSchema(10, 137, "GBA Light Sensor")
+					{
+						TargetSize = new Size(226, 69),
+						MaxValue = 10,
+					},
 				}
 			};
 		}

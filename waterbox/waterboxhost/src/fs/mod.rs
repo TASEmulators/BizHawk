@@ -127,9 +127,8 @@ impl FileSystem {
 	// pub fn set_missing_file_callback(&mut self, cb: Option<MissingFileCallback>) {
 	// 	self.missing_file_callback = cb;
 	// }
-	/// Accept a file from the outside world.  Writable files may never appear in a savestate,
-	/// and readonly files must not be added or removed from savestate to savestate, so all uses
-	/// are either transient or read only resources that last for the life of emulation.
+	/// Accept a file from the outside world.  Files must not be added or removed from savestate
+	/// to savestate, so all uses are either transient or resources that last for the life of emulation.
 	pub fn mount(&mut self, name: String, data: Vec<u8>, writable: bool) -> anyhow::Result<()> {
 		if self.files.iter().any(|f| f.name == name) {
 			return Err(anyhow!("File with name {} already mounted.", name))
@@ -340,6 +339,54 @@ mod tests {
 	}
 
 	#[test]
+	fn test_rw_state() -> TestResult {
+		let mut fs = FileSystem::new();
+		fs.mount("myfile".to_string(),
+			"The quick brown fox jumps over the lazy dog.".to_string().into_bytes(), true)?;
+
+		let mut buff = vec![0u8; 8];
+
+		{
+			let fdr = fs.open("myfile", O_RDONLY, 0)?;
+			assert_eq!(fdr.0, 3);
+			// TODO:  If a file is mounted as writable, opening it as readonly still allows it to be written to.
+			// assert!(fs.write(fdr, &buff[..]).is_err());
+			assert_eq!(fs.read(fdr, &mut buff[..])?, 8);
+			assert_eq!(buff, "The quic".as_bytes());
+			fs.close(fdr)?;
+		}
+
+		let fd = fs.open("myfile", O_RDWR, 0)?;
+		assert_eq!(fd.0, 3);
+
+		let mut state0 = Vec::new();
+		fs.save_state(&mut state0)?;
+		assert_eq!(fs.read(fd, &mut buff[..])?, 8);
+		assert_eq!(buff, "The quic".as_bytes());
+		fs.write(fd, &buff[..])?;
+		fs.seek(fd, 0, SEEK_SET)?;
+		assert_eq!(fs.read(fd, &mut buff[..])?, 8);
+		assert_eq!(buff, "The quic".as_bytes());
+		assert_eq!(fs.read(fd, &mut buff[..])?, 8);
+		assert_eq!(buff, "The quic".as_bytes());
+
+		fs.load_state(&mut &state0[..])?;
+		assert_eq!(fs.read(fd, &mut buff[..])?, 8);
+		assert_eq!(buff, "The quic".as_bytes());
+		assert_eq!(fs.read(fd, &mut buff[..])?, 8);
+		assert_eq!(buff, "k brown ".as_bytes());
+		assert_eq!(fs.read(fd, &mut buff[..])?, 8);
+		assert_eq!(buff, "fox jump".as_bytes());
+		assert_eq!(fs.read(fd, &mut buff[..])?, 8);
+		assert_eq!(buff, "s over t".as_bytes());
+		assert_eq!(fs.read(fd, &mut buff[..])?, 8);
+		assert_eq!(buff, "he lazy ".as_bytes());
+		assert_eq!(fs.read(fd, &mut buff[..])?, 4);
+		assert_eq!(&buff[0..4], "dog.".as_bytes());
+		Ok(())		
+	}
+
+	#[test]
 	fn test_negative() -> TestResult {
 		let mut fs = FileSystem::new();
 		assert!(fs.mount("/dev/stdin".to_string(), Vec::new(), false).is_err()); // overriding existing name
@@ -347,7 +394,6 @@ mod tests {
 		assert!(fs.unmount("/dev/stdout").is_err()); // unmounting permanent file
 		fs.mount("oopopo".to_string(), Vec::new(), true)?;
 		let mut state0 = Vec::new();
-		assert!(fs.save_state(&mut state0).is_err()); // save state with transient file
 		state0.resize(0, 0);
 		fs.unmount("oopopo")?;
 		fs.mount("oopopo".to_string(), Vec::new(), false)?;

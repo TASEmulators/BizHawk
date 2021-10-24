@@ -15,7 +15,7 @@ namespace BizHawk.Client.Common
 		{
 			Result.Movie.HeaderEntries[HeaderKeys.Platform] = "NDS";
 
-			var syncSettings = new MelonDS.MelonSyncSettings();
+			var syncSettings = new NDS.SyncSettings();
 
 			using var sr = SourceFile.OpenText();
 			string line;
@@ -37,19 +37,19 @@ namespace BizHawk.Client.Common
 				}
 				else if (line.StartsWith("firmNickname"))
 				{
-					syncSettings.Nickname = ParseHeader(line, "firmNickname");
+					syncSettings.FirmwareUsername = ParseHeader(line, "firmNickname");
 				}
 				else if (line.StartsWith("firmFavColour"))
 				{
-					syncSettings.FavoriteColor = byte.Parse(ParseHeader(line, "firmFavColour"));
+					syncSettings.FirmwareFavouriteColour = (NDS.SyncSettings.Color)byte.Parse(ParseHeader(line, "firmFavColour"));
 				}
 				else if (line.StartsWith("firmBirthDay"))
 				{
-					syncSettings.BirthdayDay = byte.Parse(ParseHeader(line, "firmBirthDay"));
+					syncSettings.FirmwareBirthdayDay = byte.Parse(ParseHeader(line, "firmBirthDay"));
 				}
 				else if (line.StartsWith("firmBirthMonth"))
 				{
-					syncSettings.BirthdayMonth = byte.Parse(ParseHeader(line, "firmBirthMonth"));
+					syncSettings.FirmwareBirthdayMonth = (NDS.SyncSettings.Month)byte.Parse(ParseHeader(line, "firmBirthMonth"));
 				}
 				else if (line.StartsWith("rtcStartNew"))
 				{
@@ -90,10 +90,11 @@ namespace BizHawk.Client.Common
 				{
 					BoolButtons =
 					{
-						"Left", "Right", "Up", "Down",
-						"A", "B", "X", "Y", "L", "R", "Start", "Select", "LidOpen", "LidClose", "Power", "Touch"
+						"Up", "Down", "Left", "Right", "Start", "Select", "B", "A", "Y", "X", "L", "R", "LidOpen", "LidClose", "Touch", "Power"
 					}
-				}.AddXYPair("Touch{0}", AxisPairOrientation.RightAndUp, 0.RangeTo(255), 128, 0.RangeTo(191), 96) //TODO verify direction against hardware
+				}.AddXYPair("Touch {0}", AxisPairOrientation.RightAndUp, 0.RangeTo(255), 128, 0.RangeTo(191), 96) //TODO verify direction against hardware
+					.AddAxis("Mic Input", 0.RangeTo(2047), 0)
+						.AddAxis("GBA Light Sensor", 0.RangeTo(10), 0)
 			};
 
 			controller["LidOpen"] = false;
@@ -130,8 +131,10 @@ namespace BizHawk.Client.Common
 
 				controller.AcceptNewAxes(new[]
 				{
-					("TouchX", touchX),
-					("TouchY", touchY)
+					("Touch X", touchX),
+					("Touch Y", touchY),
+					("Mic Input", 0),
+					("GBA Light Sensor", 0)
 				});
 			}
 

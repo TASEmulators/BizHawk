@@ -789,15 +789,15 @@ namespace BizHawk.Client.EmuHawk
 
 		private void IncrementDSScreenRotate()
 		{
-			if (Emulator is MelonDS ds)
+			if (Emulator is NDS ds)
 			{
 				var settings = ds.GetSettings();
 				settings.ScreenRotation = settings.ScreenRotation switch
 				{
-					MelonDS.ScreenRotationKind.Rotate0 => settings.ScreenRotation = MelonDS.ScreenRotationKind.Rotate90,
-					MelonDS.ScreenRotationKind.Rotate90 => settings.ScreenRotation = MelonDS.ScreenRotationKind.Rotate180,
-					MelonDS.ScreenRotationKind.Rotate180 => settings.ScreenRotation = MelonDS.ScreenRotationKind.Rotate270,
-					MelonDS.ScreenRotationKind.Rotate270 => settings.ScreenRotation = MelonDS.ScreenRotationKind.Rotate0,
+					NDS.ScreenRotationKind.Rotate0 => settings.ScreenRotation = NDS.ScreenRotationKind.Rotate90,
+					NDS.ScreenRotationKind.Rotate90 => settings.ScreenRotation = NDS.ScreenRotationKind.Rotate180,
+					NDS.ScreenRotationKind.Rotate180 => settings.ScreenRotation = NDS.ScreenRotationKind.Rotate270,
+					NDS.ScreenRotationKind.Rotate270 => settings.ScreenRotation = NDS.ScreenRotationKind.Rotate0,
 					_ => settings.ScreenRotation
 				};
 				ds.PutSettings(settings);
@@ -809,7 +809,7 @@ namespace BizHawk.Client.EmuHawk
 		private void IncrementDSLayout(int delta)
 		{
 			bool decrement = delta == -1;
-			if (Emulator is MelonDS ds)
+			if (Emulator is NDS ds)
 			{
 				var settings = ds.GetSettings();
 				var num = (int)settings.ScreenLayout;
@@ -822,8 +822,8 @@ namespace BizHawk.Client.EmuHawk
 					num++;
 				}
 
-				var next = (MelonDS.ScreenLayoutKind)Enum.Parse(typeof(MelonDS.ScreenLayoutKind), num.ToString());
-				if (typeof(MelonDS.ScreenLayoutKind).IsEnumDefined(next))
+				var next = (NDS.ScreenLayoutKind)Enum.Parse(typeof(NDS.ScreenLayoutKind), num.ToString());
+				if (typeof(NDS.ScreenLayoutKind).IsEnumDefined(next))
 				{
 					settings.ScreenLayout = next;
 

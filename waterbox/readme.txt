@@ -49,6 +49,7 @@ It consists of a modified musl libc, and build scripts to tie it all together.
 7. You are now ready to start building cores. Each supports `make` and `make install`, as well as `make debug` and `make install-debug` for local development.  From the root directory, the following should all be valid:
 	cd gpgx && make install
 	cd libsnes && make install
+	cd melon && make install
 	cd nyma && make -f faust.mak install
 	cd nyma && make -f ngp.mak install
 	cd nyma && make -f turbo.mak install

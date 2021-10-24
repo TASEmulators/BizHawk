@@ -488,7 +488,7 @@ namespace BizHawk.Client.Common
 
 		private BaseFilter CreateCoreScreenControl()
 		{
-			if (GlobalEmulator is MelonDS nds)
+			if (GlobalEmulator is NDS nds)
 			{
 				//TODO: need to pipe layout settings into here now
 				var filter = new ScreenControlNDS(nds);

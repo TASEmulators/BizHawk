@@ -174,7 +174,7 @@ namespace BizHawk.Client.Common.Filters
 		public IGL GL;
 		public IGuiRenderer GuiRenderer;
 
-		private readonly MelonDS nds;
+		private readonly NDS nds;
 
 		//TODO: actually use this
 		private bool nop = false;
@@ -195,7 +195,7 @@ namespace BizHawk.Client.Common.Filters
 			return new Vector2(r.X, r.Y);
 		}
 
-		public ScreenControlNDS(MelonDS nds)
+		public ScreenControlNDS(NDS nds)
 		{
 			//not sure if we actually need this nds instance yet
 			this.nds = nds;
@@ -218,27 +218,27 @@ namespace BizHawk.Client.Common.Filters
 			var settings = nds.GetSettings();
 
 			//gap only applies to vertical, I guess
-			if (settings.ScreenLayout == MelonDS.ScreenLayoutKind.Vertical)
+			if (settings.ScreenLayout == NDS.ScreenLayoutKind.Vertical)
 			{
 				bot.Translate(0, 192);
 				bot.Translate(0, settings.ScreenGap);
 			}
-			else if (settings.ScreenLayout == MelonDS.ScreenLayoutKind.Horizontal)
+			else if (settings.ScreenLayout == NDS.ScreenLayoutKind.Horizontal)
 			{
 				bot.Translate(256, 0);
 			}
-			else if (settings.ScreenLayout == MelonDS.ScreenLayoutKind.Top)
+			else if (settings.ScreenLayout == NDS.ScreenLayoutKind.Top)
 			{
 				//do nothing here, we'll discard bottom screen
 			}
 
 			//this doesn't make any sense, it's likely to be too much for a monitor to gracefully handle too
-			if (settings.ScreenLayout != MelonDS.ScreenLayoutKind.Horizontal)
+			if (settings.ScreenLayout != NDS.ScreenLayoutKind.Horizontal)
 			{
 				int rot = 0;
-				if (settings.ScreenRotation == MelonDS.ScreenRotationKind.Rotate90) rot = 90;
-				if (settings.ScreenRotation == MelonDS.ScreenRotationKind.Rotate180) rot = 180;
-				if (settings.ScreenRotation == MelonDS.ScreenRotationKind.Rotate270) rot = 270;
+				if (settings.ScreenRotation == NDS.ScreenRotationKind.Rotate90) rot = 90;
+				if (settings.ScreenRotation == NDS.ScreenRotationKind.Rotate180) rot = 180;
+				if (settings.ScreenRotation == NDS.ScreenRotationKind.Rotate270) rot = 270;
 				top.RotateZ(rot);
 				bot.RotateZ(rot);
 			}
@@ -283,14 +283,14 @@ namespace BizHawk.Client.Common.Filters
 
 			//the size can now be determined in a kind of fluffily magical way by transforming edges and checking the bounds
 			float fxmin = 100000, fymin = 100000, fxmax = -100000, fymax = -100000;
-			if (settings.ScreenLayout != MelonDS.ScreenLayoutKind.Bottom)
+			if (settings.ScreenLayout != NDS.ScreenLayoutKind.Bottom)
 			{
 				fxmin = Math.Min(Math.Min(Math.Min(Math.Min(top_TL.X, top_TR.X), top_BL.X), top_BR.X), fxmin);
 				fymin = Math.Min(Math.Min(Math.Min(Math.Min(top_TL.Y, top_TR.Y), top_BL.Y), top_BR.Y), fymin);
 				fxmax = Math.Max(Math.Max(Math.Max(Math.Max(top_TL.X, top_TR.X), top_BL.X), top_BR.X), fxmax);
 				fymax = Math.Max(Math.Max(Math.Max(Math.Max(top_TL.Y, top_TR.Y), top_BL.Y), top_BR.Y), fymax);
 			}
-			if (settings.ScreenLayout != MelonDS.ScreenLayoutKind.Top)
+			if (settings.ScreenLayout != NDS.ScreenLayoutKind.Top)
 			{
 				fxmin = Math.Min(Math.Min(Math.Min(Math.Min(bot_TL.X, bot_TR.X), bot_BL.X), bot_BR.X), fxmin);
 				fymin = Math.Min(Math.Min(Math.Min(Math.Min(bot_TL.Y, bot_TR.Y), bot_BL.Y), bot_BR.Y), fymin);
@@ -339,7 +339,12 @@ namespace BizHawk.Client.Common.Filters
 
 		public override Vector2 UntransformPoint(string channel, Vector2 point)
 		{
-			point = Transform(matBotInvert, point);
+			var settings = nds.GetSettings();
+			bool invert = settings.ScreenInvert
+				&& settings.ScreenLayout != NDS.ScreenLayoutKind.Top
+				&& settings.ScreenLayout != NDS.ScreenLayoutKind.Bottom;
+
+			point = Transform(invert ? matTopInvert : matBotInvert, point);
 
 			//hack to accomodate input tracking system's float-point sense (based on the core's VideoBuffer height)
 			//actually, this is needed for a reason similar to the "TouchScreenStart" that I removed.
@@ -348,8 +353,7 @@ namespace BizHawk.Client.Common.Filters
 			point.Y *= 2;
 
 			//in case we're in this layout, we get confused, so fix it
-			var settings = nds.GetSettings();
-			if (settings.ScreenLayout == MelonDS.ScreenLayoutKind.Top) point = new(0.0f, 0.0f);
+			if (settings.ScreenLayout == NDS.ScreenLayoutKind.Top) point = new(0.0f, 0.0f);
 
 			//TODO: we probably need more subtle logic here.
 			//some capability to return -1,-1 perhaps in case the cursor is nowhere.
@@ -385,15 +389,17 @@ namespace BizHawk.Client.Common.Filters
 			bool renderTop = false;
 			bool renderBottom = false;
 			var settings = nds.GetSettings();
-			if (settings.ScreenLayout == MelonDS.ScreenLayoutKind.Bottom) renderBottom = true;
-			if (settings.ScreenLayout == MelonDS.ScreenLayoutKind.Top) renderTop = true;
-			if (settings.ScreenLayout == MelonDS.ScreenLayoutKind.Vertical) renderTop = renderBottom = true;
-			if (settings.ScreenLayout == MelonDS.ScreenLayoutKind.Horizontal) renderTop = renderBottom = true;
+			if (settings.ScreenLayout == NDS.ScreenLayoutKind.Bottom) renderBottom = true;
+			if (settings.ScreenLayout == NDS.ScreenLayoutKind.Top) renderTop = true;
+			if (settings.ScreenLayout == NDS.ScreenLayoutKind.Vertical) renderTop = renderBottom = true;
+			if (settings.ScreenLayout == NDS.ScreenLayoutKind.Horizontal) renderTop = renderBottom = true;
+
+			bool invert = settings.ScreenInvert && renderTop && renderBottom;
 
 			if (renderTop)
 			{
 				GuiRenderer.Modelview.Push();
-				GuiRenderer.Modelview.PreMultiplyMatrix(matTop);
+				GuiRenderer.Modelview.PreMultiplyMatrix(invert ? matBot : matTop);
 				GuiRenderer.DrawSubrect(InputTexture, 0, 0, 256, 192, 0.0f, 0.0f, 1.0f, 0.5f);
 				GuiRenderer.Modelview.Pop();
 			}
@@ -401,7 +407,7 @@ namespace BizHawk.Client.Common.Filters
 			if (renderBottom)
 			{
 				GuiRenderer.Modelview.Push();
-				GuiRenderer.Modelview.PreMultiplyMatrix(matBot);
+				GuiRenderer.Modelview.PreMultiplyMatrix(invert ? matTop : matBot);
 				GuiRenderer.DrawSubrect(InputTexture, 0, 0, 256, 192, 0.0f, 0.5f, 1.0f, 1.0f);
 				GuiRenderer.Modelview.Pop();
 			}

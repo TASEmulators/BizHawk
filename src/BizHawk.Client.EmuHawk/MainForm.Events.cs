@@ -1586,24 +1586,10 @@ namespace BizHawk.Client.EmuHawk
 			Tools.Load<GBPrinterView>();
 		}
 
-		private void NDSSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			NdsSyncSettingsMenuItem.Enabled = MovieSession.Movie.NotActive();
-		}
-
 		private void NDSSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			GenericCoreConfig.DoDialog(this, "NDS Settings", false, true);
+			GenericCoreConfig.DoDialog(this, "NDS Settings", false, false);
 			FrameBufferResized();
-		}
-
-		private void NDSSyncSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			if (Emulator is MelonDS ds)
-			{
-				using var form = new NdsSyncSettings(this, ds.GetSyncSettings().Clone());
-				form.ShowDialog();
-			}
 		}
 
 		private void PsxSubMenu_DropDownOpened(object sender, EventArgs e)

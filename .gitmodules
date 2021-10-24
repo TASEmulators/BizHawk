@@ -15,10 +15,10 @@
 	path = submodules/mgba
 	url = https://github.com/TASEmulators/mgba.git
 	branch = bizhawk-0.9
-[submodule "melonds"]
-	path = melonds
+[submodule "waterbox/melon/melonDS"]
+	path = waterbox/melon/melonDS
 	url = https://github.com/TASEmulators/melonDS.git
-	branch = SuuperW_DSHawk
+	branch = melonbiz
 [submodule "waterbox/musl"]
 	path = waterbox/musl
 	url = https://github.com/nattthebear/musl.git
@@ -37,3 +37,6 @@
 [submodule "submodules/libdarm"]
 	path = submodules/libdarm
 	url = https://github.com/jbremer/darm.git
+[submodule "submodules/libfwunpack"]
+	path = submodules/libfwunpack
+	url = https://github.com/TASEmulators/fwunpack
