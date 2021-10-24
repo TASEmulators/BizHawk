@@ -274,15 +274,15 @@ static bool ValidRange(s8 sensor)
 	return (sensor >= 0) && (sensor <= 10);
 }
 
+static int sampPos = 0;
+
 static void MicFeedNoise()
 {
 	int sampLen = sizeof mic_blow / sizeof mic_blow[0];
-	static int sampPos = 0;
 
 	for (int i = 0; i < 735; i++)
 	{
-		biz_mic_input[i] = mic_blow[sampPos];
-		sampPos++;
+		biz_mic_input[i] = mic_blow[sampPos++];
 		if (sampPos >= sampLen) sampPos = 0;
 	}
 }
