@@ -274,6 +274,19 @@ static bool ValidRange(s8 sensor)
 	return (sensor >= 0) && (sensor <= 10);
 }
 
+static void MicFeedNoise()
+{
+	int sampLen = sizeof mic_blow / sizeof mic_blow[0];
+	static int sampPos = 0;
+
+	for (int i = 0; i < 735; i++)
+	{
+		biz_mic_input[i] = mic_blow[sampPos];
+		sampPos++;
+		if (sampPos >= sampLen) sampPos = 0;
+	}
+}
+
 EXPORT void FrameAdvance(MyFrameInfo* f)
 {
 	if (f->Keys & 0x8000)
@@ -295,10 +308,7 @@ EXPORT void FrameAdvance(MyFrameInfo* f)
 		NDS::SetLidClosed(true);
 
 	if (f->MicInput < 0)
-	{
-		for (int i = 0; i < 735; i++)
-			biz_mic_input[i] = mic_blow[i];
-	}
+		MicFeedNoise();
 	else
 		std::fill_n(biz_mic_input, 735, f->MicInput << 4);
 
