@@ -39,4 +39,4 @@
 	url = https://github.com/jbremer/darm.git
 [submodule "submodules/libfwunpack"]
 	path = submodules/libfwunpack
-	url = https://github.com/CasualPokePlayer/fwunpack
+	url = https://github.com/TASEmulators/fwunpack
