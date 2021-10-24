@@ -65,7 +65,7 @@ FATFS_SRCS = \
 MISC_SRCS = \
 	sha1/sha1.c \
 	tiny-AES-c/aes.c \
-	xxhash/xxhash.c \
+	xxhash/xxhash.c
 
 SRCS = \
 	$(addprefix melonDS/src/,$(CORE_SRCS)) \
