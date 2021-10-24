@@ -46,9 +46,17 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			[DefaultValue(ScreenRotationKind.Rotate0)]
 			public ScreenRotationKind ScreenRotation { get; set; }
 
+			[JsonIgnore]
+			private int _screengap;
+
 			[DisplayName("Screen Gap")]
+			[Description("Gap between the screens")]
 			[DefaultValue(0)]
-			public int ScreenGap { get; set; }
+			public int ScreenGap
+			{
+				get => _screengap;
+				set => _screengap = Math.Max(0, Math.Min(128, value));
+			}
 
 			[DisplayName("Accurate Audio Bitrate")]
 			[Description("If true, the audio bitrate will be set to 10. Otherwise, it will be set to 16.")]
@@ -143,7 +151,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			public string FirmwareUsername
 			{
 				get => _firmwareusername;
-				set => _firmwareusername = value.Substring(0, Math.Min(value.Length, 10));
+				set => _firmwareusername = value.Substring(0, Math.Min(10, value.Length));
 			}
 
 			public enum Language : int
@@ -239,7 +247,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			public string FirmwareMessage
 			{
 				get => _firmwaremessage;
-				set => _firmwaremessage = value.Substring(0, Math.Min(value.Length, 26));
+				set => _firmwaremessage = value.Substring(0, Math.Min(26, value.Length));
 			}
 
 			public SyncSettings Clone()
