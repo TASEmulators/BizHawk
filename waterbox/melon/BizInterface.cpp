@@ -263,7 +263,6 @@ struct MyFrameInfo : public FrameInfo
 	s8 TouchX;
 	s8 TouchY;
 	s16 MicInput;
-	u16 MicRate;
 	s8 GBALightSensor;
 };
 
@@ -295,10 +294,9 @@ EXPORT void FrameAdvance(MyFrameInfo* f)
 		NDS::SetLidClosed(true);
 
 	s16 micInput = f->MicInput << 4;
-	u16 micRate = f->MicRate;
 	for (int i = 0; i < 1024; i++)
 	{
-		if (i % micRate == micRate - 1)
+		if (i & 1)
 			biz_mic_input[i] = micInput;
 		else
 			biz_mic_input[i] = 0;
