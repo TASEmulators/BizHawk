@@ -274,6 +274,23 @@ static bool ValidRange(s8 sensor)
 	return (sensor >= 0) && (sensor <= 10);
 }
 
+static void MicFeedNoise()
+{
+    int sample_len = sizeof(mic_blow) / sizeof(u16);
+    static int sample_pos = 0;
+
+    s16 tmp[735];
+
+    for (int i = 0; i < 735; i++)
+    {
+        tmp[i] = mic_blow[sample_pos];
+        sample_pos++;
+        if (sample_pos >= sample_len) sample_pos = 0;
+    }
+
+    NDS::MicInputFrame(tmp, 735);
+}
+
 EXPORT void FrameAdvance(MyFrameInfo* f)
 {
 	if (f->Keys & 0x8000)
@@ -295,11 +312,12 @@ EXPORT void FrameAdvance(MyFrameInfo* f)
 		NDS::SetLidClosed(true);
 
 	if (f->MicInput < 0)
-		memcpy(biz_mic_input, &mic_blow[sizeof mic_blow / sizeof mic_blow[0]] - 735, sizeof biz_mic_input);
+		MicFeedNoise();
 	else
+	{
 		std::fill_n(biz_mic_input, 735, f->MicInput << 4);
-
-	NDS::MicInputFrame(biz_mic_input, 735);
+		NDS::MicInputFrame(biz_mic_input, 735);
+	}
 
 	int sensor = GBACart::SetInput(0, 1);
 	if (sensor != -1 && ValidRange(f->GBALightSensor))
