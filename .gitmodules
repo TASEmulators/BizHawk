@@ -17,7 +17,7 @@
 	branch = bizhawk-0.9
 [submodule "waterbox/melon/melonDS"]
 	path = waterbox/melon/melonDS
-	url = https://github.com/CasualPokePlayer/melonDS.git
+	url = https://github.com/TASEmulators/melonDS.git
 	branch = melonbiz
 [submodule "waterbox/musl"]
 	path = waterbox/musl
