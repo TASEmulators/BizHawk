@@ -267,7 +267,7 @@ struct MyFrameInfo : public FrameInfo
 	s8 GBALightSensor;
 };
 
-static s16 biz_mic_input[1024];
+static s16 biz_mic_input[735];
 
 static bool ValidRange(s8 sensor)
 {
@@ -295,11 +295,11 @@ EXPORT void FrameAdvance(MyFrameInfo* f)
 		NDS::SetLidClosed(true);
 
 	if (f->MicInput < 0)
-		memcpy(biz_mic_input, mic_blow, sizeof biz_mic_input);
+		memcpy(biz_mic_input, &mic_blow[sizeof mic_blow / sizeof mic_blow[0]] - 735, sizeof biz_mic_input);
 	else
-		std::fill_n(biz_mic_input, 1024, f->MicInput << 4);
+		std::fill_n(biz_mic_input, 735, f->MicInput << 4);
 
-	NDS::MicInputFrame(biz_mic_input, 1024);
+	NDS::MicInputFrame(biz_mic_input, 735);
 
 	int sensor = GBACart::SetInput(0, 1);
 	if (sensor != -1 && ValidRange(f->GBALightSensor))
