@@ -189,7 +189,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			}
 		}.AddXYPair("Touch {0}", AxisPairOrientation.RightAndUp, 0.RangeTo(255), 128, 0.RangeTo(191), 96)
 			.AddAxis("Mic Input", 0.RangeTo(2047), 0)
-				.AddAxis("GBA Light Sensor", 0.RangeTo(10), 0);
+			.AddAxis("Mic Rate", 1.RangeTo(512), 1)
+			.AddAxis("GBA Light Sensor", 0.RangeTo(10), 0);
 		private LibMelonDS.Buttons GetButtons(IController c)
 		{
 			LibMelonDS.Buttons b = 0;
@@ -242,6 +243,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				TouchX = (byte)controller.AxisValue("Touch X"),
 				TouchY = (byte)controller.AxisValue("Touch Y"),
 				MicInput = (short)controller.AxisValue("Mic Input"),
+				MicRate = (short)controller.AxisValue("Mic Rate"),
 				GBALightSensor = (byte)controller.AxisValue("GBA Light Sensor"),
 			};
 		}
