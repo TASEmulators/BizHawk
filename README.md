@@ -2,10 +2,10 @@
 
 A multi-system emulator written in C#. As well as quality-of-life features for casual players, it also has recording/playback and debugging tools, making it the first choice for TASers (Tool-Assisted Speedrunners).
 
-[![(latest) release | GitHub](https://img.shields.io/github/release/TASVideos/BizHawk.svg?logo=github&logoColor=333333&style=popout)](https://github.com/TASEmulators/BizHawk/releases/latest)
+[![(latest) release | GitHub](https://img.shields.io/github/release/TASEmulators/BizHawk.svg?logo=github&logoColor=333333&sort=semver&style=popout)](https://github.com/TASEmulators/BizHawk/releases/2.6.3)
 [![latest dev build | AppVeyor](https://img.shields.io/badge/latest_dev_build-AppVeyor-orange.svg?logo=appveyor&logoColor=333333&style=popout)](https://ci.appveyor.com/project/zeromus/bizhawk-udexo/build/artifacts)
 [![latest dev build | GitLab CI](https://img.shields.io/badge/latest_dev_build-GitLab_CI-orange.svg?logo=gitlab&style=popout)](https://gitlab.com/TASVideos/BizHawk/pipelines/master/latest)
-[![GitHub open issues counter](https://img.shields.io/github/issues-raw/TASVideos/BizHawk.svg?logo=github&logoColor=333333&style=popout)](https://github.com/TASEmulators/BizHawk/issues)
+[![GitHub open issues counter](https://img.shields.io/github/issues-raw/TASEmulators/BizHawk.svg?logo=github&logoColor=333333&style=popout)](https://github.com/TASEmulators/BizHawk/issues)
 
 ---
 
@@ -92,7 +92,7 @@ See [*Usage*](#usage) below for info on basic config needed to play games.
 
 Released binaries can be found right here on GitHub (also linked at the top of this readme):
 
-[![Windows | binaries](https://img.shields.io/badge/Windows-binaries-%230078D6.svg?logo=windows&logoColor=0078D6&style=popout)](https://github.com/TASEmulators/BizHawk/releases/latest)
+[![Windows | binaries](https://img.shields.io/badge/Windows-binaries-%230078D6.svg?logo=windows&logoColor=0078D6&style=popout)](https://github.com/TASEmulators/BizHawk/releases/2.6.3)
 
 Click `BizHawk-<version>.zip` to download it. Also note the changelog, the full version of which is [here at TASVideos](http://tasvideos.org/Bizhawk/ReleaseHistory.html).
 Extract it anywhere, but **don't mix different versions** of BizHawk, keep each version in its own folder. You may move or rename the folder containing `EmuHawk.exe`, even to another drive — as long as you keep all the files together, and the prerequisites are installed when you go to run it.
@@ -118,7 +118,7 @@ Install the listed package with your package manager (some buttons are links to 
 
 No package for your distro? Grab the latest release here on GitHub (it's the same as the Windows version):
 
-[![Misc. Linux | bizhawk-monort](https://img.shields.io/badge/Misc._Linux-bizhawk--monort-%23FCC624.svg?logo=linux&logoColor=black&style=popout)](https://github.com/TASEmulators/BizHawk/releases/latest)
+[![Misc. Linux | bizhawk-monort](https://img.shields.io/badge/Misc._Linux-bizhawk--monort-%23FCC624.svg?logo=linux&logoColor=black&style=popout)](https://github.com/TASEmulators/BizHawk/releases/2.6.3)
 
 If you download BizHawk this way, **don't mix different versions**, keep each version in its own folder. The runtime dependencies are glibc, Mono "complete", OpenAL, and `lsb_release`. .NET Core is **not** a runtime dependency, only Mono. WINE is also **not** a runtime dependency.
 
