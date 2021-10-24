@@ -299,10 +299,7 @@ EXPORT void FrameAdvance(MyFrameInfo* f)
 
 	for (int i = 0; i < 1024; i++)
 	{
-		if (i & 1)
-			biz_mic_input[i] = micInput;
-		else
-			biz_mic_input[i] = -micInput;
+		biz_mic_input[i] = rand();
 	}
 	NDS::MicInputFrame(biz_mic_input, 1024);
 
