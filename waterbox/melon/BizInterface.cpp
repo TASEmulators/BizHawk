@@ -293,13 +293,16 @@ EXPORT void FrameAdvance(MyFrameInfo* f)
 	else if (f->Keys & 0x4000)
 		NDS::SetLidClosed(true);
 
-	s16 micInput = f->MicInput << 4;
+	s16 micInput = f->MicInput;
+	if (micInput < 0) micInput = abs(micInput) + 2047;
+	micInput <<= 4;
+
 	for (int i = 0; i < 1024; i++)
 	{
 		if (i & 1)
 			biz_mic_input[i] = micInput;
 		else
-			biz_mic_input[i] = 0;
+			biz_mic_input[i] = -micInput;
 	}
 	NDS::MicInputFrame(biz_mic_input, 1024);
 
