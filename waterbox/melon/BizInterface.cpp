@@ -9,6 +9,7 @@
 #include "Platform.h"
 #include "Config.h"
 #include "types.h"
+#include "frontend/mic_blow.h"
 
 #include "../emulibc/emulibc.h"
 #include "../emulibc/waterboxcore.h"
@@ -293,7 +294,11 @@ EXPORT void FrameAdvance(MyFrameInfo* f)
 	else if (f->Keys & 0x4000)
 		NDS::SetLidClosed(true);
 
-	std::fill_n(biz_mic_input, 1024, f->MicInput << 4);
+	if (f->MicInput < 0)
+		memcpy(biz_mic_input, mic_blow, sizeof biz_mic_input);
+	else
+		std::fill_n(biz_mic_input, 1024, f->MicInput << 4);
+
 	NDS::MicInputFrame(biz_mic_input, 1024);
 
 	int sensor = GBACart::SetInput(0, 1);
