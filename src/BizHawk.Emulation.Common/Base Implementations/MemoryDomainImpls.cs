@@ -135,6 +135,53 @@ namespace BizHawk.Emulation.Common
 		}
 	}
 
+	
+	public class MemoryDomainUshortArray : MemoryDomain
+	{
+		private ushort[] _data;
+
+		public ushort[] Data
+		{
+			get => _data;
+			set
+			{
+				_data = value;
+				Size = _data.LongLength*2;
+			}
+		}
+
+		public override byte PeekByte(long addr)
+		{
+			long bit0 = addr & 1;
+			addr >>= 1;
+			if(bit0==0)
+				return (byte)(_data[addr] & 0xFF);
+			else 
+				return (byte)((_data[addr]>>8)&0xFF);
+		}
+
+		public override void PokeByte(long addr, byte val)
+		{
+			if (!Writable)
+				return;
+			long bit0 = addr & 1;
+			addr >>= 1;
+			if (bit0 == 0)
+				Data[addr] = (ushort)((_data[addr] & 0xFF00) | val);
+			else
+				Data[addr] = (ushort)((_data[addr] & 0x00FF) | (val<<8));
+		}
+
+		public MemoryDomainUshortArray(string name, Endian endian, ushort[] data, bool writable)
+		{
+			Name = name;
+			EndianType = endian;
+			Data = data;
+			Writable = writable;
+			WordSize = 2;
+		}
+	}
+
 	public unsafe class MemoryDomainIntPtr : MemoryDomain
 	{
 		public IntPtr Data { get; set; }
