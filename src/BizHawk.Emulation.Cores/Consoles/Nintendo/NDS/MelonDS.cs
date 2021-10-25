@@ -38,6 +38,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			}
 
 			bool gbacartpresent = roms.Count > 1;
+			bool gbasrampresent = roms.Count == 3;
 
 			_tracecb = MakeTrace;
 
@@ -96,7 +97,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			if (gbacartpresent)
 			{
 				_exe.AddReadonlyFile(roms[1], "gba.rom");
-				if (roms[2] != null)
+				if (gbasrampresent)
 				{
 					_exe.AddReadonlyFile(roms[2], "gba.ram");
 				}
@@ -135,7 +136,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			if (gbacartpresent)
 			{
 				_exe.RemoveReadonlyFile("gba.rom");
-				if (roms[2] != null)
+				if (gbasrampresent)
 				{
 					_exe.RemoveReadonlyFile("gba.ram");
 				}
