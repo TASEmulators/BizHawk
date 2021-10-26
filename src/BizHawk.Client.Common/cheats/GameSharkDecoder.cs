@@ -55,7 +55,6 @@ namespace BizHawk.Client.Common.cheats
 			if (code.LastIndexOf("-") == 7 && code.IndexOf("-") == 3)
 			{
 				return GbGgGameGenieDecoder.Decode(code);
-					
 			}
 
 			// Game Shark codes
