@@ -17,7 +17,7 @@ namespace BizHawk.Client.Common.cheats
 		{
 			return _systemId switch
 			{
-				"GB" or "SGB" => GameBoy(code),
+				"GB" or "SGB" => GameBoy(code), // FIXME: HLE SGB cores report a "SGB" ID, while LLE SNES cores report a "SNES" ID, is this intentional?
 				"GBA" => Gba(code),
 				"GEN" => Gen(code),
 				"N64" => N64(code),
