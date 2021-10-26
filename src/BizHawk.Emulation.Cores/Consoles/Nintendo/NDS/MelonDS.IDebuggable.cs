@@ -1,7 +1,7 @@
-using BizHawk.Emulation.Common;
-
 using System;
 using System.Collections.Generic;
+
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 {

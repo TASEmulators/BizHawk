@@ -1,8 +1,8 @@
+using System;
+using System.Runtime.InteropServices;
+
 using BizHawk.BizInvoke;
 using BizHawk.Emulation.Cores.Waterbox;
-using System;
-
-using System.Runtime.InteropServices;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 {
