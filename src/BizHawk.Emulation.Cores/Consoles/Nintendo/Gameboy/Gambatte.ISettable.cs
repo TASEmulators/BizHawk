@@ -1,10 +1,10 @@
-﻿using System;
-using System.ComponentModel;
+﻿using BizHawk.Common;
+using BizHawk.Emulation.Common;
 
 using Newtonsoft.Json;
 
-using BizHawk.Common;
-using BizHawk.Emulation.Common;
+using System;
+using System.ComponentModel;
 
 namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
@@ -115,7 +115,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			}
 
 			[DisplayName("Console Mode")]
-			[Description("Pick which console to run, 'Auto' chooses from ROM header; 'GB', 'GBC', and 'GBA' chooses the respective system")]
+			[Description("Pick which console to run, 'Auto' chooses from ROM header; 'GB', 'GBC', and 'GBA' chooses the respective system. Does nothing in SGB mode.")]
 			[DefaultValue(ConsoleModeType.Auto)]
 			public ConsoleModeType ConsoleMode { get; set; }
 

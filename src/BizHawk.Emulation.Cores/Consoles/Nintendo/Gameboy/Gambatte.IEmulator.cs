@@ -1,7 +1,7 @@
-﻿using System;
-using System.Diagnostics;
+﻿using BizHawk.Emulation.Common;
 
-using BizHawk.Emulation.Common;
+using System;
+using System.Diagnostics;
 
 namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 	{
 		public IEmulatorServiceProvider ServiceProvider { get; }
 
-		public ControllerDefinition ControllerDefinition { get; set; }
+		public ControllerDefinition ControllerDefinition { get; }
 
 		public bool FrameAdvance(IController controller, bool render, bool rendersound)
 		{

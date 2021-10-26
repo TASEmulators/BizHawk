@@ -1,6 +1,7 @@
-﻿using System;
+﻿using BizHawk.Emulation.Common;
+
+using System;
 using System.Runtime.InteropServices;
-using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
@@ -505,7 +506,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		[DllImport("libgambatte", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void gambatte_setrtcregs(IntPtr core, int[] src);
 
-		public enum RtcRegIndicies : int
+		public enum RtcRegIndices : int
 		{
 			Dh, Dl, H, M, S, C, Dh_L, Dl_L, H_L, M_L, S_L
 		}

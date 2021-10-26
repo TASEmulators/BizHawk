@@ -1,7 +1,7 @@
+using BizHawk.Emulation.Common;
+
 using System;
 using System.IO;
-
-using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
@@ -37,34 +37,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		private void CDCallbackProc(int addr, LibGambatte.CDLog_AddrType addrtype, LibGambatte.CDLog_Flags flags)
 		{
-			if (_cdl == null)
+			if (_cdl == null || !_cdl.Active)
 			{
 				return;
 			}
 
-			if (!_cdl.Active)
+			string key = addrtype switch
 			{
-				return;
-			}
-
-			string key;
-			switch (addrtype)
-			{
-				case LibGambatte.CDLog_AddrType.ROM:
-					key = "ROM";
-					break;
-				case LibGambatte.CDLog_AddrType.HRAM:
-					key = "HRAM";
-					break;
-				case LibGambatte.CDLog_AddrType.WRAM:
-					key = "WRAM";
-					break;
-				case LibGambatte.CDLog_AddrType.CartRAM:
-					key = "CartRAM";
-					break;
-				default:
-					throw new InvalidOperationException("Juniper lightbulb proxy");
-			}
+				LibGambatte.CDLog_AddrType.ROM => "ROM",
+				LibGambatte.CDLog_AddrType.HRAM => "HRAM",
+				LibGambatte.CDLog_AddrType.WRAM => "WRAM",
+				LibGambatte.CDLog_AddrType.CartRAM => "CartRAM",
+				_ => throw new InvalidOperationException("Juniper lightbulb proxy"),
+			};
 
 			_cdl[key][addr] |= (byte)flags;
 		}

@@ -1,5 +1,6 @@
-﻿using System.Collections.Generic;
-using BizHawk.Emulation.Common;
+﻿using BizHawk.Emulation.Common;
+
+using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {

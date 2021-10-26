@@ -1,10 +1,11 @@
-﻿//#define USE_UPSTREAM_STATES
+﻿//#define USE_UPSTREAM_STATES // really more for testing due to needing to use these anyways for initial state code. could potentially be used outright for states
+
+using BizHawk.Emulation.Common;
+
+using Newtonsoft.Json;
 
 using System;
 using System.IO;
-using Newtonsoft.Json;
-
-using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {

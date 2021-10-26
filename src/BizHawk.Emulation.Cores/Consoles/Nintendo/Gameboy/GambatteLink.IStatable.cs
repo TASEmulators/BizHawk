@@ -1,7 +1,8 @@
-﻿using System.IO;
+﻿using BizHawk.Emulation.Common;
+
 using Newtonsoft.Json;
 
-using BizHawk.Emulation.Common;
+using System.IO;
 
 namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {

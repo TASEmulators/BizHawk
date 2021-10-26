@@ -1,5 +1,6 @@
-﻿using System;
-using BizHawk.Emulation.Common;
+﻿using BizHawk.Emulation.Common;
+
+using System;
 
 namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
@@ -9,14 +10,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		IBoardInfo, IRomInfo, IDebuggable, ISettable<GambatteLink.GambatteLinkSettings, GambatteLink.GambatteLinkSyncSettings>, ICodeDataLogger
 	{
 		[CoreConstructor("DGB")]
-		public GambatteLink(CoreLoadParameters<GambatteLink.GambatteLinkSettings, GambatteLink.GambatteLinkSyncSettings> lp)
+		public GambatteLink(CoreLoadParameters<GambatteLinkSettings, GambatteLinkSyncSettings> lp)
 		{
 			if (lp.Roms.Count != 2)
 				throw new InvalidOperationException("Wrong number of roms");
 
 			ServiceProvider = new BasicServiceProvider(this);
-			GambatteLinkSettings linkSettings = (GambatteLinkSettings)lp.Settings ?? new GambatteLinkSettings();
-			GambatteLinkSyncSettings linkSyncSettings = (GambatteLinkSyncSettings)lp.SyncSettings ?? new GambatteLinkSyncSettings();
+			GambatteLinkSettings linkSettings = lp.Settings ?? new GambatteLinkSettings();
+			GambatteLinkSyncSettings linkSyncSettings = lp.SyncSettings ?? new GambatteLinkSyncSettings();
 
 			L = new Gameboy(lp.Comm, lp.Roms[0].Game, lp.Roms[0].RomData, linkSettings.L, linkSyncSettings.L, lp.DeterministicEmulationRequested);
 			R = new Gameboy(lp.Comm, lp.Roms[1].Game, lp.Roms[1].RomData, linkSettings.R, linkSyncSettings.R, lp.DeterministicEmulationRequested);

@@ -1,7 +1,7 @@
-﻿using System;
-
-using BizHawk.Emulation.Common;
+﻿using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.LR35902;
+
+using System;
 
 namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
@@ -18,8 +18,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			Tracer.Put(new(
 				disassembly: LR35902.Disassemble(
-					(ushort) s[1],
-					addr => (addr == (ushort)s[1]) ? (byte)((s[12] >> 16) & 0xFF) : ((addr == (ushort)s[1] + 1) ? (byte)((s[12] >> 8) & 0xFF) : (byte)(s[12] & 0xFF)),
+					PC,
+					addr => {
+						if (addr == PC)
+						{
+							//opcode
+							return (byte)((s[12] >> 16) & 0xFF);
+						}
+						else
+						{
+							if (addr == ((PC + 1) & 0xFFFF))
+							{
+								//high operand
+								return (byte)((s[12] >> 8) & 0xFF);
+							}
+							else
+							{
+								//low operand
+								return (byte)(s[12] & 0xFF);
+							}
+						}
+					},
 					_settings.RgbdsSyntax,
 					out _).PadRight(36),
 				registerInfo: string.Format(
