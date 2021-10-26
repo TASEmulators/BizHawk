@@ -14,7 +14,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	[Tool(
 		released: true,
-		supportedSystems: new[] { "GB", "GBA", "GEN", "N64", "NES", "PSX", "SAT", "SMS", "SNES" },
+		supportedSystems: new[] { "GB", "GBA", "GEN", "N64", "NES", "PSX", "SAT", "SGB", "SMS", "SNES" },
 		unsupportedCores: new[] { CoreNames.Snes9X })]
 	public partial class GameShark : ToolFormBase, IToolFormAutoConfig
 	{
