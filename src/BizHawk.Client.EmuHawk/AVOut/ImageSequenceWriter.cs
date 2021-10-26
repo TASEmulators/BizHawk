@@ -45,8 +45,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public void AddFrame(IVideoProvider source)
 		{
-			string ext = Path.GetExtension(_baseName) ?? "";
-			var name = Path.Combine(Path.GetDirectoryName(_baseName) ?? "", $"{Path.GetFileNameWithoutExtension(_baseName)}_{_frame}{ext}");
+			string ext = Path.GetExtension(_baseName);
+			var name = Path.Combine(Path.GetDirectoryName(_baseName), $"{Path.GetFileNameWithoutExtension(_baseName)}_{_frame}{ext}");
 			BitmapBuffer bb = new BitmapBuffer(source.BufferWidth, source.BufferHeight, source.GetVideoBuffer());
 			using var bmp = bb.ToSysdrawingBitmap();
 			if (ext.ToUpper() == ".PNG")
