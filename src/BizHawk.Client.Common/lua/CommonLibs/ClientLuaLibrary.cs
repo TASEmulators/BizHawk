@@ -348,7 +348,7 @@ namespace BizHawk.Client.Common
 				return;
 			}
 			
-			var decoder = new GameSharkDecoder(MainForm.Emulator.AsMemoryDomains(), MainForm.Emulator);
+			var decoder = new GameSharkDecoder(MainForm.Emulator.AsMemoryDomains(), MainForm.Emulator.SystemId);
 			var result = decoder.Decode(code);
 			
 			if (result.IsValid(out var valid))
@@ -377,7 +377,7 @@ namespace BizHawk.Client.Common
 				return;
 			}
 
-			var decoder = new GameSharkDecoder(MainForm.Emulator.AsMemoryDomains(), MainForm.Emulator);
+			var decoder = new GameSharkDecoder(MainForm.Emulator.AsMemoryDomains(), MainForm.Emulator.SystemId);
 			var result = decoder.Decode(code);
 
 			if (result.IsValid(out var valid))

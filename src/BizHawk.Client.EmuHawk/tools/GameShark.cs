@@ -41,7 +41,7 @@ namespace BizHawk.Client.EmuHawk
 				try
 				{
 					var code = l.ToUpper();
-					var decoder = new GameSharkDecoder(MemoryDomains, Emulator);
+					var decoder = new GameSharkDecoder(MemoryDomains, Emulator.SystemId);
 					var result = decoder.Decode(code);
 					var domain = decoder.CheatDomain();
 
