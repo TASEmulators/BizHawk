@@ -1,21 +1,22 @@
 ﻿using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 
 namespace BizHawk.Client.Common.cheats
 {
 	public class GameSharkDecoder
 	{
 		private readonly IMemoryDomains _domains;
-		private readonly string _systemId;
+		private readonly IEmulator _emulator;
 
-		public GameSharkDecoder(IMemoryDomains domains, string systemId)
+		public GameSharkDecoder(IMemoryDomains domains, IEmulator emulator)
 		{
 			_domains = domains;
-			_systemId = systemId;
+			_emulator = emulator;
 		}
 
 		public IDecodeResult Decode(string code)
 		{
-			return _systemId switch
+			return _emulator.SystemId switch
 			{
 				"GB" => GameBoy(code),
 				"GBA" => Gba(code),
@@ -26,6 +27,7 @@ namespace BizHawk.Client.Common.cheats
 				"SAT" => Saturn(code),
 				"SMS" => Sms(code),
 				"SNES" => Snes(code),
+				"SGB" => _emulator is Gameboy ? GameBoy(code) : Snes(code),
 				_ => new InvalidCheatCode("Cheat codes not currently supported on this system")
 			};
 		}
@@ -38,7 +40,7 @@ namespace BizHawk.Client.Common.cheats
 				: _domains[domain]!;
 		}
 
-		private string CheatDomainName() => _systemId switch
+		private string CheatDomainName() => _emulator.SystemId switch
 		{
 			"N64" => "RDRAM",
 			"PSX" => "MainRAM",
@@ -55,7 +57,6 @@ namespace BizHawk.Client.Common.cheats
 			if (code.LastIndexOf("-") == 7 && code.IndexOf("-") == 3)
 			{
 				return GbGgGameGenieDecoder.Decode(code);
-					
 			}
 
 			// Game Shark codes
