@@ -1193,7 +1193,14 @@ namespace BizHawk.Client.EmuHawk
 			using (var bb = Config.ScreenshotCaptureOsd ? CaptureOSD() : MakeScreenshotImage())
 			{
 				using var img = bb.ToSysdrawingBitmap();
-				img.Save(fi.FullName, ImageFormat.Png);
+				if (Path.GetExtension(path).ToUpper() == ".JPG")
+				{
+					img.Save(fi.FullName, ImageFormat.Jpeg);
+				}
+				else
+				{
+					img.Save(fi.FullName, ImageFormat.Png);
+				}
 			}
 
 			AddOnScreenMessage($"{fi.Name} saved.");
