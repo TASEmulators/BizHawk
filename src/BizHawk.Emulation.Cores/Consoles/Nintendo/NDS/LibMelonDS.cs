@@ -62,7 +62,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			public NDS.SyncSettings.Color FirmwareFavouriteColour;
 			public IntPtr FirmwareMessage; // max 26 length (then terminator)
 			public int FirmwareMessageLength;
-		};
+		}
 
 		[BizImport(CC)]
 		public abstract bool Init(LoadFlags flags, FirmwareSettings fwSettings);
