@@ -93,6 +93,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 			[Description("Your birthdate.  Stored in EEPROM and used by some games.")]
 			[DefaultValue(typeof(DateTime), "1968-05-13")]
+			[TypeConverter(typeof(BizDateTimeConverter))]
 			public DateTime BirthDate { get; set; }
 
 			[Description("True to emulate a color system.")]
