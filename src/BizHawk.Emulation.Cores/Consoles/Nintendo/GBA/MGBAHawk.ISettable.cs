@@ -163,6 +163,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			[DisplayName("RTC Initial Time")]
 			[Description("The initial time of emulation.  Only relevant when a game has an RTC chip and \"RTC Use Real Time\" is false.")]
 			[DefaultValue(typeof(DateTime), "2010-01-01")]
+			[TypeConverter(typeof(BizDateTimeConverter))]
 			public DateTime RTCInitialTime { get; set; }
 
 			[DisplayName("Save Type")]
