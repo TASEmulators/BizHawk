@@ -6,10 +6,10 @@ namespace BizHawk.Common
 {
 	public class BizDateTimeConverter : DateTimeConverter
 	{
-		public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
+		public override object? ConvertTo(ITypeDescriptorContext? context, CultureInfo? culture, object? value, Type destinationType)
 		{
-			var valueStr = value?.ToString() ?? throw new ArgumentException($"got null {nameof(value)}");
-			return valueStr;
+			if (value is not DateTime d || destinationType != typeof(string)) throw new NotSupportedException("can only do DateTime --> string");
+			return d.ToString("s");
 		}
 	}
 }
