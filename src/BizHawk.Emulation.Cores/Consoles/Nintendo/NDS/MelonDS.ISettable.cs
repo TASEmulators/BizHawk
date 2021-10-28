@@ -3,6 +3,7 @@ using BizHawk.Emulation.Common;
 
 using System;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 using Newtonsoft.Json;
 
@@ -133,13 +134,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 			public enum StartUp : int
 			{
+				[Display(Name = "Auto Boot")]
 				AutoBoot,
+				[Display(Name = "Manual Boot")]
 				ManualBoot,
 			}
 
 			[DisplayName("Firmware Start-Up")]
 			[Description("The way firmware is booted. Auto Boot will go to the game immediately, while Manual Boot will go into the firmware menu. Only applicable if firmware override is in effect.")]
 			[DefaultValue(StartUp.AutoBoot)]
+			[TypeConverter(typeof(DescribableEnumConverter))]
 			public StartUp FirmwareStartUp { get; set; }
 
 			[JsonIgnore]
@@ -215,27 +219,37 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 			public enum Color : int
 			{
+				[Display(Name = "Greyish Blue")]
 				GreyishBlue,
 				Brown,
 				Red,
+				[Display(Name = "Light Pink")]
 				LightPink,
 				Orange,
 				Yellow,
 				Lime,
+				[Display(Name = "Light Green")]
 				LightGreen,
+				[Display(Name = "Dark Green")]
 				DarkGreen,
 				Turqoise,
+				[Display(Name = "Light Blue")]
 				LightBlue,
 				Blue,
+				[Display(Name = "Dark Blue")]
 				DarkBlue,
+				[Display(Name = "Dark Purple")]
 				DarkPurple,
+				[Display(Name = "Light Purple")]
 				LightPurple,
+				[Display(Name = "Dark Pink")]
 				DarkPink,
 			}
 
 			[DisplayName("Firmware Favorite Color")]
 			[Description("Favorite color in firmware. Only applicable if firmware override is in effect.")]
 			[DefaultValue(Color.Red)]
+			[TypeConverter(typeof(DescribableEnumConverter))]
 			public Color FirmwareFavouriteColour { get; set; }
 
 			[JsonIgnore]

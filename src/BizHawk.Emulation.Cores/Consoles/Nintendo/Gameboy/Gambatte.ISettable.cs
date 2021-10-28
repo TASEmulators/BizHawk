@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 using Newtonsoft.Json;
 
@@ -269,14 +270,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			
 			public enum FrameLengthType
 			{
+				[Display(Name = "VBlank Driven Frames")]
 				VBlankDrivenFrames,
+				[Display(Name = "Equal Length Frames")]
 				EqualLengthFrames,
+				[Display(Name = "User Defined Frames")]
 				UserDefinedFrames
 			}
 
 			[DisplayName("Frame Length")]
 			[Description("Sets how long an emulation frame will last.\nVBlank Driven Frames will make emulation frames sync to VBlank. Recommended for TASing.\nEqual Length Frames will force all frames to emit 35112 samples. Legacy, not recommended for TASing.\nUser Defined Frames allows for the user to define how many samples are emitted for each frame. Only useful if sub-frame input is desired.")]
 			[DefaultValue(FrameLengthType.VBlankDrivenFrames)]
+			[TypeConverter(typeof(DescribableEnumConverter))]
 			public FrameLengthType FrameLength { get; set; }
 
 			[DisplayName("Display BG")]
