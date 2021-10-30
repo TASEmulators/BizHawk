@@ -29,6 +29,7 @@ CORE_SRCS = \
 	DSi_NWifi.cpp \
 	DSi_SD.cpp \
 	DSi_SPI_TSC.cpp \
+	FATStorage.cpp \
 	GBACart.cpp \
 	GPU.cpp \
 	GPU2D.cpp \
