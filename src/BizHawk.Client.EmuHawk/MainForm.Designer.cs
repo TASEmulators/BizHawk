@@ -244,8 +244,6 @@ namespace BizHawk.Client.EmuHawk
 			this.toolStripSeparator28 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.GBGPUViewerMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.GBPrinterViewerMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.NDSSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.NdsSettingsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.PSXSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.PSXControllerSettingsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.PSXOptionsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -393,7 +391,6 @@ namespace BizHawk.Client.EmuHawk
 			this.TI83SubMenu,
 			this.A7800SubMenu,
 			this.GBSubMenu,
-			this.NDSSubMenu,
 			this.PSXSubMenu,
 			this.SNESSubMenu,
 			this.ColecoSubMenu,
@@ -1636,17 +1633,6 @@ namespace BizHawk.Client.EmuHawk
 			this.GBPrinterViewerMenuItem.Text = "&Printer Viewer";
 			this.GBPrinterViewerMenuItem.Click += new System.EventHandler(this.GbPrinterViewerMenuItem_Click);
 			// 
-			// NDSSubMenu
-			// 
-			this.NDSSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.NdsSettingsMenuItem });
-			this.NDSSubMenu.Text = "NDS";
-			// 
-			// NdsSettingsMenuItem
-			// 
-			this.NdsSettingsMenuItem.Text = "Settings...";
-			this.NdsSettingsMenuItem.Click += new System.EventHandler(this.NDSSettingsMenuItem_Click);
-			// 
 			// PSXSubMenu
 			// 
 			this.PSXSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -2787,8 +2773,6 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx AmstradCPCDisksSubMenu;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx cpcd1ToolStripMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx AmstradCPCNonSyncSettingsToolStripMenuItem;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx NDSSubMenu;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx NdsSettingsMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator8;
 		private System.Windows.Forms.ToolStripMenuItem CaptureLuaMenuItem;
 	}

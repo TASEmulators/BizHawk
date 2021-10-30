@@ -19,7 +19,6 @@ using BizHawk.Emulation.Cores.Computers.AmstradCPC;
 using BizHawk.Emulation.Cores.Computers.AppleII;
 using BizHawk.Emulation.Cores.Computers.Commodore64;
 using BizHawk.Emulation.Cores.Computers.SinclairSpectrum;
-using BizHawk.Emulation.Cores.Consoles.Nintendo.NDS;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 using BizHawk.Emulation.Cores.Intellivision;
 using BizHawk.Emulation.Cores.Nintendo.BSNES;
@@ -1584,12 +1583,6 @@ namespace BizHawk.Client.EmuHawk
 		private void GbPrinterViewerMenuItem_Click(object sender, EventArgs e)
 		{
 			Tools.Load<GBPrinterView>();
-		}
-
-		private void NDSSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			GenericCoreConfig.DoDialog(this, "NDS Settings", false, false);
-			FrameBufferResized();
 		}
 
 		private void PsxSubMenu_DropDownOpened(object sender, EventArgs e)

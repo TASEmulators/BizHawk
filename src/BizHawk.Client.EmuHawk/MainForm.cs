@@ -15,30 +15,29 @@ using System.IO.Pipes;
 
 using BizHawk.Common;
 using BizHawk.Common.BufferExtensions;
+using BizHawk.Common.PathExtensions;
+using BizHawk.Common.StringExtensions;
 
 using BizHawk.Client.Common;
 using BizHawk.Bizware.BizwareGL;
 
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Common.Base_Implementations;
 using BizHawk.Emulation.Cores;
+using BizHawk.Emulation.Cores.Consoles.NEC.PCE;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
+using BizHawk.Emulation.Cores.Consoles.SNK;
 using BizHawk.Emulation.Cores.Nintendo.BSNES;
+using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Nintendo.GBA;
+using BizHawk.Emulation.Cores.Nintendo.N64;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
-using BizHawk.Emulation.Cores.Nintendo.N64;
+using BizHawk.Emulation.Cores.Nintendo.SNES9X;
 
 using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Client.EmuHawk.CoreExtensions;
 using BizHawk.Client.EmuHawk.CustomControls;
-using BizHawk.Common.PathExtensions;
-using BizHawk.Common.StringExtensions;
-using BizHawk.Emulation.Common.Base_Implementations;
-using BizHawk.Emulation.Cores.Consoles.NEC.PCE;
-using BizHawk.Emulation.Cores.Nintendo.SNES9X;
-using BizHawk.Emulation.Cores.Consoles.SNK;
-using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
-using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -1948,7 +1947,6 @@ namespace BizHawk.Client.EmuHawk
 			TI83SubMenu.Visible = false;
 			NESSubMenu.Visible = false;
 			GBSubMenu.Visible = false;
-			NDSSubMenu.Visible = false;
 			A7800SubMenu.Visible = false;
 			SNESSubMenu.Visible = false;
 			PSXSubMenu.Visible = false;
@@ -1985,9 +1983,6 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case "N64":
 					N64SubMenu.Visible = true;
-					break;
-				case "NDS":
-					NDSSubMenu.Visible = true;
 					break;
 				case "NES":
 					NESSubMenu.Visible = true;
