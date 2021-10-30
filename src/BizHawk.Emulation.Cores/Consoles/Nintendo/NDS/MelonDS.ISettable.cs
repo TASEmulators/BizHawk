@@ -90,27 +90,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 			[DisplayName("Initial Time")]
 			[Description("Initial time of emulation.")]
-			[DefaultValue(typeof(DateTime), "2000-01-01")]
+			[DefaultValue(typeof(DateTime), "2010-01-01")]
 			[TypeConverter(typeof(BizDateTimeConverter))]
 			public DateTime InitialTime
 			{
 				get => _initaltime;
-				set
-				{
-					if (DateTime.Compare(minDate, value) > 0)
-					{
-						_initaltime = minDate;
-					}
-					else if (DateTime.Compare(maxDate, value) < 0)
-					{
-						_initaltime = maxDate;
-					}
-					else
-					{
-						_initaltime = value;
-					}
-
-				}
+				set => _initaltime = value < minDate ? minDate : (value > maxDate ? maxDate : value);
 			}
 
 			[DisplayName("Use Real Time")]
