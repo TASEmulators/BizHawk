@@ -88,10 +88,12 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			[DisplayName("Initial Time")]
 			[Description("Initial time of emulation.  Only relevant when UseRealTime is false.")]
 			[DefaultValue(typeof(DateTime), "2010-01-01")]
+			[TypeConverter(typeof(BizDateTimeConverter))]
 			public DateTime InitialTime { get; set; }
 
 			[Description("Your birthdate.  Stored in EEPROM and used by some games.")]
 			[DefaultValue(typeof(DateTime), "1968-05-13")]
+			[TypeConverter(typeof(BizDateTimeConverter))]
 			public DateTime BirthDate { get; set; }
 
 			[Description("True to emulate a color system.")]

@@ -91,6 +91,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			[DisplayName("Initial Time")]
 			[Description("Initial time of emulation.")]
 			[DefaultValue(typeof(DateTime), "2000-01-01")]
+			[TypeConverter(typeof(BizDateTimeConverter))]
 			public DateTime InitialTime
 			{
 				get => _initaltime;
