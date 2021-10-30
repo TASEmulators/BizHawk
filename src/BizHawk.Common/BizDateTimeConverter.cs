@@ -9,7 +9,7 @@ namespace BizHawk.Common
 		public override object? ConvertTo(ITypeDescriptorContext? context, CultureInfo? culture, object? value, Type destinationType)
 		{
 			if (value is not DateTime d || destinationType != typeof(string)) throw new NotSupportedException("can only do DateTime --> string");
-			return d.ToString("s");
+			return d.ToString();
 		}
 	}
 }
