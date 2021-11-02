@@ -15,10 +15,14 @@ namespace BizHawk.Client.DiscoHawk
 		{
 			var dsr = new DiscSectorReader(disc);
 
-			bool confirmed = false;
+			var shouldHalt = false;
+			bool? overwriteExisting = null; // true = overwrite, false = skip existing (unimplemented), null = unset
+
 			var tracks = disc.Session1.Tracks;
 			Parallel.ForEach(tracks, track =>
 			{
+				if (shouldHalt) return;
+
 				if (!track.IsAudio)
 					return;
 
@@ -37,11 +41,15 @@ namespace BizHawk.Client.DiscoHawk
 				string mp3Path = $"{Path.Combine(path, fileBase)} - Track {track.Number:D2}.mp3";
 				if (File.Exists(mp3Path))
 				{
-					if (!confirmed)
+					if (overwriteExisting is null)
 					{
 						var dr = MessageBox.Show("This file already exists. Do you want extraction to proceed overwriting files, or cancel the entire operation immediately?", "File already exists", MessageBoxButtons.OKCancel);
-						if (dr == DialogResult.Cancel) return;
-						confirmed = true;
+						if (dr == DialogResult.Cancel)
+						{
+							shouldHalt = true;
+							return;
+						}
+						overwriteExisting = true;
 					}
 
 					File.Delete(mp3Path);
