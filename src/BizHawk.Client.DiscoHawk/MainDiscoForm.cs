@@ -122,7 +122,17 @@ namespace BizHawk.Client.DiscoHawk
 				using var disc = Disc.LoadAutomagic(file);
 				var path = Path.GetDirectoryName(file);
 				var filename = Path.GetFileNameWithoutExtension(file);
-				AudioExtractor.Extract(disc, path, filename);
+				static bool? PromptForOverwrite()
+					=> MessageBox.Show(
+						"Do you want to overwrite existing files? Choosing \"No\" will simply skip those. You could also \"Cancel\" the extraction entirely.",
+						"File to extract already exists",
+						MessageBoxButtons.YesNoCancel) switch
+					{
+						DialogResult.Yes => true,
+						DialogResult.No => false,
+						_ => null
+					};
+				AudioExtractor.Extract(disc, path, filename, PromptForOverwrite);
 			}
 		}
 

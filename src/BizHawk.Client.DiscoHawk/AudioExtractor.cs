@@ -1,4 +1,4 @@
-﻿using System.Windows.Forms;
+﻿using System;
 using System.Threading.Tasks;
 using System.IO;
 using BizHawk.Emulation.DiscSystem;
@@ -11,12 +11,12 @@ namespace BizHawk.Client.DiscoHawk
 	{
 		public static string FFmpegPath;
 
-		public static void Extract(Disc disc, string path, string fileBase)
+		public static void Extract(Disc disc, string path, string fileBase, Func<bool?> getOverwritePolicy)
 		{
 			var dsr = new DiscSectorReader(disc);
 
 			var shouldHalt = false;
-			bool? overwriteExisting = null; // true = overwrite, false = skip existing (unimplemented), null = unset
+			bool? overwriteExisting = null; // true = overwrite, false = skip existing, null = unset
 
 			var tracks = disc.Session1.Tracks;
 			Parallel.ForEach(tracks, track =>
@@ -41,18 +41,18 @@ namespace BizHawk.Client.DiscoHawk
 				string mp3Path = $"{Path.Combine(path, fileBase)} - Track {track.Number:D2}.mp3";
 				if (File.Exists(mp3Path))
 				{
-					if (overwriteExisting is null)
+					overwriteExisting ??= getOverwritePolicy();
+					switch (overwriteExisting)
 					{
-						var dr = MessageBox.Show("This file already exists. Do you want extraction to proceed overwriting files, or cancel the entire operation immediately?", "File already exists", MessageBoxButtons.OKCancel);
-						if (dr == DialogResult.Cancel)
-						{
+						case true: // "Yes" -- overwrite
+							File.Delete(mp3Path);
+							break;
+						case false: // "No" -- skip
+							return;
+						case null: // "Cancel" -- halt
 							shouldHalt = true;
 							return;
-						}
-						overwriteExisting = true;
 					}
-
-					File.Delete(mp3Path);
 				}
 
 				string tempfile = Path.GetTempFileName();
