@@ -9,8 +9,6 @@ namespace BizHawk.Client.DiscoHawk
 {
 	public static class AudioExtractor
 	{
-		public static string FFmpegPath;
-
 		public static void Extract(Disc disc, string path, string fileBase, Func<bool?> getOverwritePolicy)
 		{
 			var dsr = new DiscSectorReader(disc);
@@ -21,24 +19,21 @@ namespace BizHawk.Client.DiscoHawk
 			var tracks = disc.Session1.Tracks;
 			Parallel.ForEach(tracks, track =>
 			{
-				if (shouldHalt) return;
+				if (shouldHalt || track.NextTrack == null) return;
+				if (!track.IsAudio) return;
 
-				if (!track.IsAudio)
-					return;
-
-				if (track.NextTrack == null)
-					return;
-
-				int trackLength = track.NextTrack.LBA - track.LBA;
+				var startLba = track.LBA;
+				var trackLength = track.NextTrack.LBA - startLba;
 				var waveData = new byte[trackLength * 2352];
-				int startLba = track.LBA;
-				lock(disc)
-					for (int sector = 0; sector < trackLength; sector++)
+				lock (disc)
+				{
+					for (var sector = 0; sector < trackLength; sector++)
 					{
 						dsr.ReadLBA_2352(startLba + sector, waveData, sector * 2352);
 					}
+				}
 
-				string mp3Path = $"{Path.Combine(path, fileBase)} - Track {track.Number:D2}.mp3";
+				var mp3Path = $"{Path.Combine(path, fileBase)} - Track {track.Number:D2}.mp3";
 				if (File.Exists(mp3Path))
 				{
 					overwriteExisting ??= getOverwritePolicy();
@@ -55,8 +50,7 @@ namespace BizHawk.Client.DiscoHawk
 					}
 				}
 
-				string tempfile = Path.GetTempFileName();
-
+				var tempfile = Path.GetTempFileName();
 				try
 				{
 					File.WriteAllBytes(tempfile, waveData);

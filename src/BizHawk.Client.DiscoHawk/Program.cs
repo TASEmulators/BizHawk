@@ -77,7 +77,6 @@ namespace BizHawk.Client.DiscoHawk
 			if (!File.Exists(ffmpegPath))
 				ffmpegPath = Path.Combine(Path.Combine(GetExeDirectoryAbsolute(), "dll"), "ffmpeg.exe");
 			FFmpegService.FFmpegPath = ffmpegPath;
-			AudioExtractor.FFmpegPath = ffmpegPath;
 
 			if (args.Length == 0)
 			{
