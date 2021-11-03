@@ -96,6 +96,9 @@
     <ClCompile Include="..\video\Deinterlacer.cpp">
       <Filter>video</Filter>
     </ClCompile>
+    <ClInclude Include="..\video\convert.cpp">
+      <Filter>video</Filter>
+    </ClInclude>
     <ClCompile Include="..\emuware\EW_state.cpp">
       <Filter>emuware</Filter>
     </ClCompile>
@@ -214,6 +217,9 @@
       <Filter>video</Filter>
     </ClInclude>
     <ClInclude Include="..\video\Deinterlacer.h">
+      <Filter>video</Filter>
+    </ClInclude>
+    <ClInclude Include="..\video\convert.h">
       <Filter>video</Filter>
     </ClInclude>
     <ClInclude Include="..\emuware\EW_state.h">

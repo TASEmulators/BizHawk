@@ -62,6 +62,7 @@
     <ClCompile Include="..\psx\timer.cpp" />
     <ClCompile Include="..\Stream.cpp" />
     <ClCompile Include="..\tests.cpp" />
+    <ClCompile Include="..\video\convert.cpp" />
     <ClCompile Include="..\video\Deinterlacer.cpp" />
     <ClCompile Include="..\video\surface.cpp" />
   </ItemGroup>
@@ -103,6 +104,7 @@
     <ClInclude Include="..\psx\spu.h" />
     <ClInclude Include="..\psx\timer.h" />
     <ClInclude Include="..\Stream.h" />
+    <ClCompile Include="..\video\convert.h" />
     <ClInclude Include="..\video\Deinterlacer.h" />
     <ClInclude Include="..\video\surface.h" />
   </ItemGroup>
