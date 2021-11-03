@@ -242,9 +242,6 @@ class PS_CDC
  bool XA_Test(const uint8 *sdata);
  void XA_ProcessSector(const uint8 *sdata, CD_Audio_Buffer *ab);
  int16 xa_previous[2][2];
- bool xa_cur_set;
- uint8 xa_cur_file;
- uint8 xa_cur_chan;
 
  uint8 ReportLastF;
  int32 ReportStartupDelay;
@@ -263,7 +260,7 @@ class PS_CDC
  void PreSeekHack(int32 target);
  void ReadBase(void);
 
- static const CDC_CTEntry Commands[0x20];
+ MDFN_HIDE static const CDC_CTEntry Commands[0x20];
 
  int32 Command_Nop(const int arg_count, const uint8 *args);
  int32 Command_Setloc(const int arg_count, const uint8 *args);
