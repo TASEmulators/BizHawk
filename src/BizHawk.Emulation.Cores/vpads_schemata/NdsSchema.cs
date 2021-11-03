@@ -56,11 +56,10 @@ namespace BizHawk.Emulation.Cores
 					new ButtonSchema(68, 18, "LidClose") { DisplayName = "Lid Close" },
 					new ButtonSchema(128, 18, "Power"),
 
-					new SingleAxisSchema(10, 63, "Mic Input")
+					new SingleAxisSchema(10, 63, "Mic Volume")
 					{
 						TargetSize = new Size(226, 69),
-						MinValue = -1,
-						MaxValue = 2047,
+						MaxValue = 100,
 					},
 
 					new SingleAxisSchema(10, 137, "GBA Light Sensor")

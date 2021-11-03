@@ -47,7 +47,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			public Buttons Keys;
 			public byte TouchX;
 			public byte TouchY;
-			public short MicInput;
+			public byte MicVolume;
 			public byte GBALightSensor;
 		}
 

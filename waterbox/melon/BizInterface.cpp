@@ -14,6 +14,7 @@
 #include "../emulibc/emulibc.h"
 #include "../emulibc/waterboxcore.h"
 
+#include <cmath>
 #include <algorithm>
 #include <time.h>
 
@@ -263,7 +264,7 @@ struct MyFrameInfo : public FrameInfo
 	u32 Keys;
 	s8 TouchX;
 	s8 TouchY;
-	s16 MicInput;
+	s8 MicVolume;
 	s8 GBALightSensor;
 };
 
@@ -276,13 +277,13 @@ static bool ValidRange(s8 sensor)
 
 static int sampPos = 0;
 
-static void MicFeedNoise()
+static void MicFeedNoise(s8 vol)
 {
 	int sampLen = sizeof mic_blow / sizeof mic_blow[0];
 
 	for (int i = 0; i < 735; i++)
 	{
-		biz_mic_input[i] = mic_blow[sampPos++];
+		biz_mic_input[i] = std::round(mic_blow[sampPos++] * (vol / 100.0));
 		if (sampPos >= sampLen) sampPos = 0;
 	}
 }
@@ -307,10 +308,7 @@ EXPORT void FrameAdvance(MyFrameInfo* f)
 	else if (f->Keys & 0x4000)
 		NDS::SetLidClosed(true);
 
-	if (f->MicInput < 0)
-		MicFeedNoise();
-	else
-		std::fill_n(biz_mic_input, 735, f->MicInput << 4);
+	MicFeedNoise(f->MicVolume);
 
 	NDS::MicInputFrame(biz_mic_input, 735);
 
