@@ -1399,7 +1399,7 @@ EW_EXPORT s32 shock_Create(void** psx, s32 region, void* firmware512k)
 
 
 	//setup gpu output surfaces
-	MDFN_PixelFormat nf(MDFN_COLORSPACE_RGB, 16, 8, 0, 24);
+	MDFN_PixelFormat nf(MDFN_COLORSPACE_RGB, 4, 16, 8, 0, 24);
 	for(int i=0;i<2;i++)
 	{
 		VTBuffer[i] = new MDFN_Surface(NULL, FB_WIDTH, FB_HEIGHT, FB_WIDTH, nf);
