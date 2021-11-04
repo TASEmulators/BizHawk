@@ -6,7 +6,8 @@ local dotColor = 'blue'
 
 client.setwindowsize(client.getwindowsize()) -- assert a sane resolution
 console.writeline("Window size must be at an integer scale for this script to work, this will be asserted now and for screen layout changes")
-console.writeline("WARNING! Using a higher than support window size for your monitor may cause this script to fail! (e.g. 1980x1080 cannot go past 2x window size) Keep the window size to your resolution!"
+console.writeline("WARNING! Using a higher than support window size for your monitor may cause this script to fail! (e.g. 1980x1080 cannot go past 2x window size)")
+console.writeline("Keep the window size in the bounds of your resolution!")
 
 local prevScreenLayout = nds.getscreenlayout()
 
