@@ -470,6 +470,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public static extern int gambatte_linkstatus(IntPtr core, int which);
 
 		/// <summary>
+		/// get current rom bank
+		/// </summary>
+		/// <param name="core">opaque state pointe</param>
+		/// <returns>current rom bank</returns>
+		[DllImport("libgambatte", CallingConvention = CallingConvention.Cdecl)]
+		public static extern int gambatte_getrombank(IntPtr core);
+
+		/// <summary>
+		/// get current sram bank
+		/// </summary>
+		/// <param name="core">opaque state pointe</param>
+		/// <returns>current sram bank</returns>
+		[DllImport("libgambatte", CallingConvention = CallingConvention.Cdecl)]
+		public static extern int gambatte_getsrambank(IntPtr core);
+
+		/// <summary>
 		/// get reg and flag values
 		/// </summary>
 		/// <param name="core">opaque state pointer</param>

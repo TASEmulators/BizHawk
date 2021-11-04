@@ -23,7 +23,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				["E"] = (byte)(data[(int)LibGambatte.RegIndices.E] & 0xff),
 				["F"] = (byte)(data[(int)LibGambatte.RegIndices.F] & 0xff),
 				["H"] = (byte)(data[(int)LibGambatte.RegIndices.H] & 0xff),
-				["L"] = (byte)(data[(int)LibGambatte.RegIndices.L] & 0xff)
+				["L"] = (byte)(data[(int)LibGambatte.RegIndices.L] & 0xff),
+				["ROM Bank"] = LibGambatte.gambatte_getrombank(GambatteState),
+				["SRAM Bank"] = LibGambatte.gambatte_getsrambank(GambatteState)
 			};
 		}
 
