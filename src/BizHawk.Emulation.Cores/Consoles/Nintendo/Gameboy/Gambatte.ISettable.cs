@@ -128,7 +128,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			[DisplayName("Cart Bus Pull-Up Time")]
 			[Description("Time it takes for the cart bus to pull-up to 0xFF in CPU cycles. Used to account for differences in pull-up times between carts/consoles.")]
 			[DefaultValue(8)]
-			public uint CartBusPullUpTime { get; set; }
+			public int CartBusPullUpTime { get; set; }
 
 			[DisplayName("Realtime RTC")]
 			[Description("If true, the real time clock in MBC3 and HuC3 games will reflect real time, instead of emulated time.  Ignored (treated as false) when a movie is recording.")]
