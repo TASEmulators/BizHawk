@@ -6,10 +6,6 @@ local dotColor = 'blue'
 
 client.setwindowsize(client.getwindowsize()) -- assert a sane resolution
 
-invert = false
--- FIXME: No idea how to get lua to detect inverted screens, set this to true if inverted screens are active
--- (typing "invert = true" without the quotes in the console works)
-
 function Draw(x, y, maxX, maxY, isDown)
 	color = upColor
 	if isDown then
@@ -49,16 +45,18 @@ while true do
 		btns = movie.getinput(emu.framecount() - 1)
 	end
 
+	local invert = nds.getscreeninvert()
 	local wsz = client.getwindowsize()
-	local w = client.screenwidth() / wsz
 	local xo = 0
 	local yo = 0
 
-	if w == 512 then -- horizontal
+	if nds.getscreenlayout() == "Horizontal" then
 		if invert then
 			xo = xo - 256
 		else
-			error("Non-inverted horizontal screens are unsupported")
+			console.writeline("Non-inverted horizontal screens are unsupported, switching to inverted screens")
+			nds.setscreeninvert(true)
+			xo = xo - 256
 		end
 	else -- vertical
 		if invert then

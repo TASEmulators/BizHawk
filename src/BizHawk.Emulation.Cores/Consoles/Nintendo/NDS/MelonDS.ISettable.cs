@@ -9,10 +9,10 @@ using Newtonsoft.Json;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 {
-	partial class NDS : ISettable<NDS.Settings, NDS.SyncSettings>
+	partial class NDS : ISettable<NDS.NDSSettings, NDS.NDSSyncSettings>
 	{
-		private Settings _settings;
-		private SyncSettings _syncSettings;
+		private NDSSettings _settings;
+		private NDSSyncSettings _syncSettings;
 
 		public enum ScreenLayoutKind
 		{
@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			Rotate270
 		}
 
-		public class Settings
+		public class NDSSettings
 		{
 			[DisplayName("Screen Layout")]
 			[Description("Adjusts the layout of the screens")]
@@ -64,17 +64,17 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			[DefaultValue(true)]
 			public bool AccurateAudioBitrate { get; set; }
 
-			public Settings Clone()
+			public NDSSettings Clone()
 			{
-				return (Settings)MemberwiseClone();
+				return (NDSSettings)MemberwiseClone();
 			}
 
-			public static bool NeedsReboot(Settings x, Settings y)
+			public static bool NeedsReboot(NDSSettings x, NDSSettings y)
 			{
 				return false;
 			}
 
-			public Settings()
+			public NDSSettings()
 			{
 				SettingsUtil.SetDefaultValues(this);
 			}
@@ -83,7 +83,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		private static readonly DateTime minDate = new DateTime(2000, 1, 1);
 		private static readonly DateTime maxDate = new DateTime(2099, 12, 31, 23, 59, 59);
 
-		public class SyncSettings
+		public class NDSSyncSettings
 		{
 			[JsonIgnore]
 			private DateTime _initaltime;
@@ -250,60 +250,60 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				set => _firmwaremessage = value.Substring(0, Math.Min(26, value.Length));
 			}
 
-			public SyncSettings Clone()
+			public NDSSyncSettings Clone()
 			{
-				return (SyncSettings)MemberwiseClone();
+				return (NDSSyncSettings)MemberwiseClone();
 			}
 
-			public static bool NeedsReboot(SyncSettings x, SyncSettings y)
+			public static bool NeedsReboot(NDSSyncSettings x, NDSSyncSettings y)
 			{
 				return !DeepEquality.DeepEquals(x, y);
 			}
 
-			public SyncSettings()
+			public NDSSyncSettings()
 			{
 				SettingsUtil.SetDefaultValues(this);
 			}
 		}
 
-		public Settings GetSettings()
+		public NDSSettings GetSettings()
 		{
 			return _settings.Clone();
 		}
 
-		public SyncSettings GetSyncSettings()
+		public NDSSyncSettings GetSyncSettings()
 		{
 			return _syncSettings.Clone();
 		}
 
-		public PutSettingsDirtyBits PutSettings(Settings o)
+		public PutSettingsDirtyBits PutSettings(NDSSettings o)
 		{
-			var ret = Settings.NeedsReboot(_settings, o);
+			var ret = NDSSettings.NeedsReboot(_settings, o);
 			_settings = o;
 			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}
 
-		public PutSettingsDirtyBits PutSyncSettings(SyncSettings o)
+		public PutSettingsDirtyBits PutSyncSettings(NDSSyncSettings o)
 		{
-			var ret = SyncSettings.NeedsReboot(_syncSettings, o);
+			var ret = NDSSyncSettings.NeedsReboot(_syncSettings, o);
 			_syncSettings = o;
 			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}
 
-		private static int SanitizeBirthdayDay(int day, SyncSettings.Month fwMonth)
+		private static int SanitizeBirthdayDay(int day, NDSSyncSettings.Month fwMonth)
 		{
 			int maxdays;
 			switch (fwMonth)
 			{
-				case SyncSettings.Month.February:
+				case NDSSyncSettings.Month.February:
 					{
 						maxdays = 29;
 						break;
 					}
-				case SyncSettings.Month.April:
-				case SyncSettings.Month.June:
-				case SyncSettings.Month.September:
-				case SyncSettings.Month.November:
+				case NDSSyncSettings.Month.April:
+				case NDSSyncSettings.Month.June:
+				case NDSSyncSettings.Month.September:
+				case NDSSyncSettings.Month.November:
 					{
 						maxdays = 30;
 						break;

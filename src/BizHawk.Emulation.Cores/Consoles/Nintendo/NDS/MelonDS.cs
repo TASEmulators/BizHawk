@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		private SpeexResampler _resampler;
 
 		[CoreConstructor("NDS")]
-		public NDS(CoreLoadParameters<Settings, SyncSettings> lp)
+		public NDS(CoreLoadParameters<NDSSettings, NDSSyncSettings> lp)
 			: base(lp.Comm, new Configuration
 			{
 				DefaultWidth = 256,
@@ -54,8 +54,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				SkipMemoryConsistencyCheck = CoreComm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
 			}, new Delegate[] { _tracecb });
 
-			_syncSettings = lp.SyncSettings ?? new SyncSettings();
-			_settings = lp.Settings ?? new Settings();
+			_syncSettings = lp.SyncSettings ?? new NDSSyncSettings();
+			_settings = lp.Settings ?? new NDSSettings();
 
 			var bios7 = _syncSettings.UseRealBIOS
 				? CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "bios7"))
@@ -86,7 +86,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			var name = Encoding.UTF8.GetBytes(_syncSettings.FirmwareUsername);
 			fwSettings.FirmwareUsernameLength = name.Length;
 			fwSettings.FirmwareLanguage = _syncSettings.FirmwareLanguage;
-			if (_syncSettings.FirmwareStartUp == SyncSettings.StartUp.AutoBoot) fwSettings.FirmwareLanguage |= (SyncSettings.Language)0x40;
+			if (_syncSettings.FirmwareStartUp == NDSSyncSettings.StartUp.AutoBoot) fwSettings.FirmwareLanguage |= (NDSSyncSettings.Language)0x40;
 			fwSettings.FirmwareBirthdayMonth = _syncSettings.FirmwareBirthdayMonth;
 			fwSettings.FirmwareBirthdayDay = _syncSettings.FirmwareBirthdayDay;
 			fwSettings.FirmwareFavouriteColour = _syncSettings.FirmwareFavouriteColour;

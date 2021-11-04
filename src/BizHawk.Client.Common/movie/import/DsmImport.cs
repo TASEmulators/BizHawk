@@ -15,7 +15,7 @@ namespace BizHawk.Client.Common
 		{
 			Result.Movie.HeaderEntries[HeaderKeys.Platform] = "NDS";
 
-			var syncSettings = new NDS.SyncSettings();
+			var syncSettings = new NDS.NDSSyncSettings();
 
 			using var sr = SourceFile.OpenText();
 			string line;
@@ -41,7 +41,7 @@ namespace BizHawk.Client.Common
 				}
 				else if (line.StartsWith("firmFavColour"))
 				{
-					syncSettings.FirmwareFavouriteColour = (NDS.SyncSettings.Color)byte.Parse(ParseHeader(line, "firmFavColour"));
+					syncSettings.FirmwareFavouriteColour = (NDS.NDSSyncSettings.Color)byte.Parse(ParseHeader(line, "firmFavColour"));
 				}
 				else if (line.StartsWith("firmBirthDay"))
 				{
@@ -49,7 +49,7 @@ namespace BizHawk.Client.Common
 				}
 				else if (line.StartsWith("firmBirthMonth"))
 				{
-					syncSettings.FirmwareBirthdayMonth = (NDS.SyncSettings.Month)byte.Parse(ParseHeader(line, "firmBirthMonth"));
+					syncSettings.FirmwareBirthdayMonth = (NDS.NDSSyncSettings.Month)byte.Parse(ParseHeader(line, "firmBirthMonth"));
 				}
 				else if (line.StartsWith("rtcStartNew"))
 				{

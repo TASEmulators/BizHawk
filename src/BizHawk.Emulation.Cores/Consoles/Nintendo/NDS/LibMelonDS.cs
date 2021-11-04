@@ -56,10 +56,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		{
 			public IntPtr FirmwareUsername; // max 10 length (then terminator)
 			public int FirmwareUsernameLength;
-			public NDS.SyncSettings.Language FirmwareLanguage;
-			public NDS.SyncSettings.Month FirmwareBirthdayMonth;
+			public NDS.NDSSyncSettings.Language FirmwareLanguage;
+			public NDS.NDSSyncSettings.Month FirmwareBirthdayMonth;
 			public int FirmwareBirthdayDay;
-			public NDS.SyncSettings.Color FirmwareFavouriteColour;
+			public NDS.NDSSyncSettings.Color FirmwareFavouriteColour;
 			public IntPtr FirmwareMessage; // max 26 length (then terminator)
 			public int FirmwareMessageLength;
 		}

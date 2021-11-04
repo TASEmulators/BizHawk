@@ -7,6 +7,7 @@ using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 using BizHawk.Emulation.Cores.Nintendo.BSNES;
 using BizHawk.Emulation.Cores.Nintendo.NES;
+using BizHawk.Emulation.Cores.Consoles.Nintendo.NDS;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.PCEngine;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
@@ -193,6 +194,7 @@ namespace BizHawk.Client.Common
 			GPGX gpgx => gpgx.GetSettings(),
 			LibsnesCore snes => snes.GetSettings(),
 			NES nes => nes.GetSettings(),
+			NDS nds => nds.GetSettings(),
 			PCEngine pce => pce.GetSettings(),
 			QuickNES quickNes => quickNes.GetSettings(),
 			SMS sms => sms.GetSettings(),
@@ -205,6 +207,7 @@ namespace BizHawk.Client.Common
 			GPGX gpgx => gpgx.PutSettings((GPGX.GPGXSettings) settings),
 			LibsnesCore snes => snes.PutSettings((LibsnesCore.SnesSettings) settings),
 			NES nes => nes.PutSettings((NES.NESSettings) settings),
+			NDS nds => nds.PutSettings((NDS.NDSSettings) settings),
 			PCEngine pce => pce.PutSettings((PCEngine.PCESettings) settings),
 			QuickNES quickNes => quickNes.PutSettings((QuickNES.QuickNESSettings) settings),
 			SMS sms => sms.PutSettings((SMS.SmsSettings) settings),
