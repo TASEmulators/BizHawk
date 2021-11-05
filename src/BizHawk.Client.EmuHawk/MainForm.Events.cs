@@ -25,6 +25,7 @@ using BizHawk.Emulation.Cores.Nintendo.BSNES;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Nintendo.N64;
 using BizHawk.Emulation.Cores.Nintendo.NES;
+using BizHawk.Emulation.Cores.Consoles.Nintendo.NDS;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.Nintendo.SubNESHawk;
 using BizHawk.Emulation.Cores.Sony.PSX;
@@ -1779,6 +1780,22 @@ namespace BizHawk.Client.EmuHawk
 			if (Emulator is GambatteLink gambatte)
 			{
 				DGBPrefs.DoDGBPrefsDialog(this, Config, Game, MovieSession, gambatte);
+			}
+		}
+
+		private void DualNdsLeftSettingsMenuItem_Click(object sender, EventArgs e)
+		{
+			if (Emulator is DualNDS dualnds)
+			{
+				DualNDSCoreConfig.DoDialog(this, dualnds.GetSettings(), dualnds.GetSyncSettings(), false);
+			}
+		}
+
+		private void DualNdsRightSettingsMenuItem_Click(object sender, EventArgs e)
+		{
+			if (Emulator is DualNDS dualnds)
+			{
+				DualNDSCoreConfig.DoDialog(this, dualnds.GetSettings(), dualnds.GetSyncSettings(), true);
 			}
 		}
 

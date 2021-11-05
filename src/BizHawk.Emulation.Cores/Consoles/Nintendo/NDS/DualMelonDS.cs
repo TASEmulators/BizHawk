@@ -1,0 +1,59 @@
+using System;
+
+using BizHawk.Emulation.Common;
+
+namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
+{
+	[PortedCore(CoreNames.DualMelonDS, "Arisotura", "0.9.3", "http://melonds.kuribo64.net/", isReleased: false)]
+	[ServiceNotApplicable(new[] { typeof(IDriveLight), typeof(IRegionable) })]
+	public partial class DualNDS
+	{
+		private NDS L;
+		private NDS R;
+
+		private readonly SaveController LCont = new SaveController(NDS.NDSController);
+		private readonly SaveController RCont = new SaveController(NDS.NDSController);
+
+		private readonly NDSDisassembler _disassembler;
+		private bool _disposed = false;
+
+		[CoreConstructor("DualNDS")]
+		public DualNDS(CoreLoadParameters<DualNDSSettings, DualNDSSyncSettings> lp)
+		{
+			if (lp.Roms.Count != 2)
+			{
+				throw new InvalidOperationException("Wrong number of ROMs!");
+			}
+
+			ServiceProvider = new BasicServiceProvider(this);
+			DualNDSSettings dualSettings = lp.Settings ?? new DualNDSSettings();
+			DualNDSSyncSettings dualSyncSettings = lp.SyncSettings ?? new DualNDSSyncSettings();
+
+			L = new NDS(ExtractLoadParameters(lp, dualSettings, dualSyncSettings, false));
+			R = new NDS(ExtractLoadParameters(lp, dualSettings, dualSyncSettings, true));
+
+			_disassembler = new NDSDisassembler();
+			(ServiceProvider as BasicServiceProvider).Register<IDisassemblable>(_disassembler);
+
+			SetMemoryDomains();
+		}
+
+		private static CoreLoadParameters<NDS.NDSSettings, NDS.NDSSyncSettings> ExtractLoadParameters(
+			CoreLoadParameters<DualNDSSettings, DualNDSSyncSettings> lp,
+			DualNDSSettings dualSettings,
+			DualNDSSyncSettings dualSyncSettings,
+			bool right)
+		{
+			var ret = new CoreLoadParameters<NDS.NDSSettings, NDS.NDSSyncSettings>
+			{
+				Comm = lp.Comm,
+				Game = lp.Roms[right ? 1 : 0].Game,
+				Settings = right ? dualSettings.R : dualSettings.L,
+				SyncSettings = right ? dualSyncSettings.R : dualSyncSettings.L,
+				DeterministicEmulationRequested = lp.DeterministicEmulationRequested,
+			};
+			ret.Roms.Add(lp.Roms[right ? 1 : 0]);
+			return ret;
+		}
+	}
+}

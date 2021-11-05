@@ -34,6 +34,7 @@ namespace BizHawk.Emulation.Cores
 		public const string Libretro = "Libretro";
 		public const string MAME = "MAME";
 		public const string MelonDS = "MelonDS";
+		public const string DualMelonDS = "DualMelonDS";
 		public const string Mgba = "mGBA";
 		public const string MSXHawk = "MSXHawk";
 		public const string Mupen64Plus = "Mupen64Plus";
