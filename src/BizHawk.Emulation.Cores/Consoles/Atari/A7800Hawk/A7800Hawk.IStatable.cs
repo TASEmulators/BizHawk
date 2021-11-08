@@ -29,6 +29,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			ser.Sync(nameof(RAM), ref RAM, false);
 			ser.Sync(nameof(RAM_6532), ref RAM_6532, false);
 			ser.Sync(nameof(hs_bios_mem), ref hs_bios_mem, false);
+			ser.Sync(nameof(_hsram), ref _hsram, false);
 
 			ser.Sync(nameof(cycle), ref cycle);
 			ser.Sync(nameof(cpu_cycle), ref cpu_cycle);

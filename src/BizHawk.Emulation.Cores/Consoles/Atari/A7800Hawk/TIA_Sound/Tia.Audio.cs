@@ -204,6 +204,20 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				ser.Sync(nameof(freqcnt), ref freqcnt);
 				ser.Sync(nameof(on), ref on);
 			}
+
+			public void Reset()
+			{
+				AUDC = 0;
+				AUDF = 1;
+				AUDV = 0;
+				sr1 = true;
+				sr4 = 0x0f;
+				sr5 = 0x1f;
+				sr9 = 0x1ff;
+				sr3 = 2;
+				freqcnt = 0;
+				on = true;
+			}
 		}
 	}
 }

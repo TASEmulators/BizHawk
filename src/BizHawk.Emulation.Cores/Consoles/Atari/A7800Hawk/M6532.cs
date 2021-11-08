@@ -191,6 +191,9 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			Timer.Value = 0x73;
 			Timer.PrescalerShift = 10;
 			Timer.PrescalerCount = 1 << Timer.PrescalerShift;
+			Timer.InterruptEnabled = false;
+			Timer.InterruptFlag = false;
+			Timer.Overflowed = false;
 
 			_ddRa = 0x00;
 			_ddRb = 0x00;

@@ -30,11 +30,11 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		public byte[] RAM = new byte[0x1000];
 		public byte[] RAM_6532 = new byte[0x80];
 		public byte[] hs_bios_mem = new byte[0x800];
+		public byte[] _hsram = new byte[2048];
 
 		public readonly byte[] _rom;
 		public readonly byte[] _hsbios;
 		public readonly byte[] _bios;
-		public readonly byte[] _hsram = new byte[2048];
 
 		private int _frame = 0;
 

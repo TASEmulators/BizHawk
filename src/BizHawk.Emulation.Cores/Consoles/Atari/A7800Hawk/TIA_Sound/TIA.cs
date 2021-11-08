@@ -26,6 +26,9 @@
 			_capCharging = false;
 			AudioClocks = 0;
 			_doTicks = false;
+			BusState = 0;
+			AUD[0].Reset();
+			AUD[1].Reset();
 		}
 
 		// Execute TIA cycles

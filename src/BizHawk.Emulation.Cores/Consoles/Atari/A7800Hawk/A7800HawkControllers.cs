@@ -45,7 +45,14 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		public byte Read(IController c)
 		{
-			return 0;
+			byte result = 0xF;
+
+			if (PortNum == 1)
+			{
+				result = (byte)(result << 4);
+			}
+
+			return result;
 		}
 
 		public byte ReadFire(IController c)
