@@ -1,73 +1,65 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Windows.Forms;
+
 using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class AutofireConfig : Form
+	public partial class AutofireConfig : Form, IAutofireConfigDialogViewAdapter
 	{
-		private readonly Config _config;
-		private readonly AutofireController _autoFireController;
-		private readonly AutoFireStickyXorAdapter _stickyXorAdapter;
+		private AutofireConfigDialogModel? _m;
+
+		public bool ConsiderLag
+		{
+			get => cbConsiderLag.Checked;
+			set => cbConsiderLag.Checked = value;
+		}
+
+		public int PatternOff
+		{
+			get => (int) nudPatternOff.Value;
+			set => nudPatternOff.Value = value;
+		}
+
+		public int PatternOn
+		{
+			get => (int) nudPatternOn.Value;
+			set => nudPatternOn.Value = value;
+		}
 
 		public AutofireConfig(
 			Config config,
-			AutofireController autoFireController,
-			AutoFireStickyXorAdapter stickyXorAdapter)
+			AutofireController afController,
+			AutoFireStickyXorAdapter afStickyXORAdapter)
 		{
-			_config = config;
-			_autoFireController = autoFireController;
-			_stickyXorAdapter = stickyXorAdapter;
+			_m = new(this, afController, afStickyXORAdapter, config);
 			InitializeComponent();
 			Icon = Properties.Resources.LightningIcon;
 		}
 
 		private void AutofireConfig_Load(object sender, EventArgs e)
-		{
-			if (_config.AutofireOn < nudPatternOn.Minimum)
-			{
-				nudPatternOn.Value = nudPatternOn.Minimum;
-			}
-			else if (_config.AutofireOn > nudPatternOn.Maximum)
-			{
-				nudPatternOn.Value = nudPatternOn.Maximum;
-			}
-			else
-			{
-				nudPatternOn.Value = _config.AutofireOn;
-			}
-
-			if (_config.AutofireOff < nudPatternOff.Minimum)
-			{
-				nudPatternOff.Value = nudPatternOff.Minimum;
-			}
-			else if (_config.AutofireOff > nudPatternOff.Maximum)
-			{
-				nudPatternOff.Value = nudPatternOff.Maximum;
-			}
-			else
-			{
-				nudPatternOff.Value = _config.AutofireOff;
-			}
-
-			cbConsiderLag.Checked = _config.AutofireLagFrames;
-		}
+			=> _m?.BeforeShow();
 
 		private void btnDialogOK_Click(object sender, EventArgs e)
 		{
-			_autoFireController.On = _config.AutofireOn = (int)nudPatternOn.Value;
-			_autoFireController.Off = _config.AutofireOff = (int)nudPatternOff.Value;
-			_config.AutofireLagFrames = cbConsiderLag.Checked;
-			_stickyXorAdapter.SetOnOffPatternFromConfig(_config.AutofireOn, _config.AutofireOff);
-
+			_m?.BeforeClose(true);
 			DialogResult = DialogResult.OK;
 			Close();
 		}
 
 		private void btnDialogCancel_Click(object sender, EventArgs e)
 		{
+			_m?.BeforeClose(false);
 			DialogResult = DialogResult.Cancel;
 			Close();
+		}
+
+		protected override void Dispose(bool disposing)
+		{
+			_m = null; // trying to give GC a hand with the circular reference -- does this help at all? --yoshi
+			base.Dispose(disposing);
 		}
 	}
 }
