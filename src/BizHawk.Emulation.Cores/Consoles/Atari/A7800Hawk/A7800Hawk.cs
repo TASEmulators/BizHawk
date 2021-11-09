@@ -133,36 +133,30 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				{
 					_isPAL = true;
 				}
-				if (dict.ContainsKey("board"))
-				{
-					s_mapper = dict["board"];
-				}
-				else
-				{
-					throw new Exception("No Board selected for this game");
-				}
+
+				if (!dict.TryGetValue("board", out s_mapper)) throw new Exception("No Board selected for this game");
 
 				// check if the game uses pokey or RAM
-				if (dict.ContainsKey("RAM"))
+				if (dict.TryGetValue("RAM", out var cartRAMStr))
 				{
-					int.TryParse(dict["RAM"], out cart_RAM);
+					int.TryParse(cartRAMStr, out cart_RAM);
 				}
 
-				if (dict.ContainsKey("Pokey"))
+				if (dict.TryGetValue("Pokey", out var pokeyStr))
 				{
-					bool.TryParse(dict["Pokey"], out is_pokey);
+					bool.TryParse(pokeyStr, out is_pokey);
 				}
 
-				if (dict.ContainsKey("Pokey_450"))
+				if (dict.TryGetValue("Pokey_450", out var pokey450Str))
 				{
-					bool.TryParse(dict["Pokey_450"], out is_pokey_450);
+					bool.TryParse(pokey450Str, out is_pokey_450);
 				}
 
 				// some games will not function with the high score bios
 				// if such a game is being played, tell the user and disable it
-				if (dict.ContainsKey("No_HS"))
+				if (dict.TryGetValue("No_HS", out var noHSStr))
 				{
-					bool.TryParse(dict["No_HS"], out var no_hs);
+					bool.TryParse(noHSStr, out var no_hs);
 
 					if (no_hs)
 					{

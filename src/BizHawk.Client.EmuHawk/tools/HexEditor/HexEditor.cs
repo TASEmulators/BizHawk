@@ -381,10 +381,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private char Remap(byte val)
 		{
-			if (_textTable.Any())
-			{
-				return _textTable.ContainsKey(val) ? _textTable[val] : '?';
-			}
+			if (_textTable.Count != 0) return _textTable.TryGetValue(val, out var c) ? c : '?';
 
 			if (val < ' ' || val >= 0x7F)
 			{

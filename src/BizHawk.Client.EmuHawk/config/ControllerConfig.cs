@@ -137,19 +137,12 @@ namespace BizHawk.Client.EmuHawk
 			// saving works, those entries will still be preserved in the config file, tho
 			foreach (var button in controllerButtons)
 			{
-				Match m;
-				string categoryLabel;
-				if (categoryLabels.ContainsKey(button))
+				if (!categoryLabels.TryGetValue(button, out var categoryLabel))
 				{
-					categoryLabel = categoryLabels[button];
-				}
-				else if ((m = ButtonMatchesPlayer.Match(button)).Success)
-				{
-					categoryLabel = $"Player {m.Groups[1].Value}";
-				}
-				else
-				{
-					categoryLabel = "Console"; // anything that wants not console can set it in the categorylabels
+					var m = ButtonMatchesPlayer.Match(button);
+					categoryLabel = m.Success
+						? $"Player {m.Groups[1].Value}"
+						: "Console"; // anything that wants not console can set it in the categorylabels
 				}
 
 				if (!buckets.ContainsKey(categoryLabel))

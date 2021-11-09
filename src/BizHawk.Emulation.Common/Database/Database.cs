@@ -144,9 +144,9 @@ namespace BizHawk.Emulation.Common
 						ForcedCore = items.Length >= 8 ? items[7].ToLowerInvariant() : ""
 					};
 
-					if (!silent && DB.ContainsKey(game.Hash))
+					if (!silent && DB.TryGetValue(game.Hash, out var dupe))
 					{
-						Console.WriteLine("gamedb: Multiple hash entries {0}, duplicate detected on \"{1}\" and \"{2}\"", game.Hash, game.Name, DB[game.Hash].Name);
+						Console.WriteLine("gamedb: Multiple hash entries {0}, duplicate detected on \"{1}\" and \"{2}\"", game.Hash, game.Name, dupe.Name);
 					}
 
 					DB[game.Hash] = game;

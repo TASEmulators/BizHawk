@@ -19,19 +19,10 @@ namespace BizHawk.Client.Common
 
 		/// <exception cref="InvalidOperationException"><paramref name="button"/> not overridden</exception>
 		public bool IsPressed(string button)
-		{
-			if (_overrides.ContainsKey(button))
-			{
-				return _overrides[button];
-			}
-
-			throw new InvalidOperationException();
-		}
+			=> _overrides.TryGetValue(button, out var b) ? b : throw new InvalidOperationException();
 
 		public int AxisValue(string name)
-			=> _axisOverrides.ContainsKey(name)
-				? _axisOverrides[name]
-				: 0;
+			=> _axisOverrides.TryGetValue(name, out var i) ? i : 0;
 
 		public IReadOnlyCollection<(string Name, int Strength)> GetHapticsSnapshot() => throw new NotImplementedException(); // no idea --yoshi
 
@@ -44,28 +35,11 @@ namespace BizHawk.Client.Common
 		public IEnumerable<string> InversedButtons => _inverses;
 
 		public void SetAxis(string name, int value)
-		{
-			if (_axisOverrides.ContainsKey(name))
-			{
-				_axisOverrides[name] = value;
-			}
-			else
-			{
-				_axisOverrides.Add(name, value);
-			}
-		}
+			=> _axisOverrides[name] = value;
 
 		public void SetButton(string button, bool value)
 		{
-			if (_overrides.ContainsKey(button))
-			{
-				_overrides[button] = value;
-			}
-			else
-			{
-				_overrides.Add(button, value);
-			}
-
+			_overrides[button] = value;
 			_inverses.Remove(button);
 		}
 

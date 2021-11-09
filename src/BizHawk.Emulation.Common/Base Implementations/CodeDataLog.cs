@@ -93,17 +93,9 @@ namespace BizHawk.Emulation.Common
 
 			foreach (var kvp in this)
 			{
-				if (!other.ContainsKey(kvp.Key))
-				{
-					return false;
-				}
-
-				var oval = other[kvp.Key];
-				if (oval.Length != kvp.Value.Length)
-				{
-					return false;
-				}
+				if (!other.TryGetValue(kvp.Key, out var oval) || oval.Length != kvp.Value.Length) return false;
 			}
+			// don't need to check keys present in other but not in this -- `Count` would differ
 
 			return true;
 		}

@@ -233,13 +233,11 @@ namespace BizHawk.Emulation.DiscSystem
 			if (ccdSection.Name != "CLONECD")
 				throw new CCDParseException("Malformed CCD format: confusing first section name");
 
-			if (!ccdSection.ContainsKey("VERSION"))
+			if (!ccdSection.TryGetValue("VERSION", out var version))
 				throw new CCDParseException("Malformed CCD format: missing version in CloneCD section");
 
 			if(sections[1].Name != "DISC")
 				throw new CCDParseException("Malformed CCD format: section[1] isn't [Disc]");
-
-			int version = ccdSection["VERSION"];
 
 			return version;
 		}

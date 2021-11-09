@@ -165,12 +165,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void DrawImage(string path, int x, int y, int? width = null, int? height = null, bool cache = true)
 		{
-			Image img;
-			if (_imageCache.ContainsKey(path))
-			{
-				img = _imageCache[path];
-			}
-			else
+			if (!_imageCache.TryGetValue(path, out var img))
 			{
 				img = Image.FromFile(path);
 				if (cache)
@@ -195,12 +190,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void DrawImageRegion(string path, int sourceX, int sourceY, int sourceWidth, int sourceHeight, int destX, int destY, int? destWidth = null, int? destHeight = null)
 		{
-			Image img;
-			if (_imageCache.ContainsKey(path))
-			{
-				img = _imageCache[path];
-			}
-			else
+			if (!_imageCache.TryGetValue(path, out var img))
 			{
 				img = Image.FromFile(path);
 				_imageCache.Add(path, img);

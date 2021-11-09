@@ -28,17 +28,9 @@ namespace BizHawk.Client.Common
 
 		public ulong Rerecords
 		{
-			get
-			{
-				if (!Header.ContainsKey(HeaderKeys.Rerecords))
-				{
-					// Modifying the header itself can cause a race condition between loading a movie and rendering the rerecord count, causing a movie's rerecord count to be overwritten with 0 during loading.
-					return 0;
-				}
-
-				return ulong.Parse(Header[HeaderKeys.Rerecords]);
-			}
-
+			get => Header.TryGetValue(HeaderKeys.Rerecords, out var s)
+				? ulong.Parse(s)
+				: 0UL; // Modifying the header itself can cause a race condition between loading a movie and rendering the rerecord count, causing a movie's rerecord count to be overwritten with 0 during loading.
 			set
 			{
 				if (Header[HeaderKeys.Rerecords] != value.ToString())
@@ -51,7 +43,9 @@ namespace BizHawk.Client.Common
 
 		public virtual bool StartsFromSavestate
 		{
-			get => Header.ContainsKey(HeaderKeys.StartsFromSavestate) && bool.Parse(Header[HeaderKeys.StartsFromSavestate]);
+			// ReSharper disable SimplifyConditionalTernaryExpression
+			get => Header.TryGetValue(HeaderKeys.StartsFromSavestate, out var s) ? bool.Parse(s) : false;
+			// ReSharper restore SimplifyConditionalTernaryExpression
 			set
 			{
 				if (value)
@@ -67,7 +61,9 @@ namespace BizHawk.Client.Common
 
 		public bool StartsFromSaveRam
 		{
-			get => Header.ContainsKey(HeaderKeys.StartsFromSaveram) && bool.Parse(Header[HeaderKeys.StartsFromSaveram]);
+			// ReSharper disable SimplifyConditionalTernaryExpression
+			get => Header.TryGetValue(HeaderKeys.StartsFromSaveram, out var s) ? bool.Parse(s) : false;
+			// ReSharper restore SimplifyConditionalTernaryExpression
 			set
 			{
 				if (value)
@@ -79,17 +75,14 @@ namespace BizHawk.Client.Common
 				}
 				else
 				{
-					if (Header.ContainsKey(HeaderKeys.StartsFromSaveram))
-					{
-						Header.Remove(HeaderKeys.StartsFromSaveram);
-					}
+					Header.Remove(HeaderKeys.StartsFromSaveram);
 				}
 			}
 		}
 
 		public string GameName
 		{
-			get => Header.ContainsKey(HeaderKeys.GameName) ? Header[HeaderKeys.GameName] : "";
+			get => Header.TryGetValue(HeaderKeys.GameName, out var s) ? s : string.Empty;
 			set
 			{
 				if (Header[HeaderKeys.GameName] != value)
@@ -102,7 +95,7 @@ namespace BizHawk.Client.Common
 
 		public string SystemID
 		{
-			get => Header.ContainsKey(HeaderKeys.Platform) ? Header[HeaderKeys.Platform] : "";
+			get => Header.TryGetValue(HeaderKeys.Platform, out var s) ? s : string.Empty;
 			set
 			{
 				if (Header[HeaderKeys.Platform] != value)
@@ -216,7 +209,9 @@ namespace BizHawk.Client.Common
 			return sb.ToString();
 		}
 
-		public bool IsPal => Header.ContainsKey(HeaderKeys.Pal) && Header[HeaderKeys.Pal] == "1";
+		// ReSharper disable SimplifyConditionalTernaryExpression
+		public bool IsPal => Header.TryGetValue(HeaderKeys.Pal, out var s) ? s == "1" : false;
+		// ReSharper restore SimplifyConditionalTernaryExpression
 
 		public string TextSavestate { get; set; }
 		public byte[] BinarySavestate { get; set; }

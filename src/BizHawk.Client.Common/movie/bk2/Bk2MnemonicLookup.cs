@@ -20,14 +20,14 @@ namespace BizHawk.Client.Common
 				}
 			}
 
-			if (SystemOverrides.ContainsKey(systemId) && SystemOverrides[systemId].ContainsKey(key))
+			if (SystemOverrides.TryGetValue(systemId, out var overridesForSys) && overridesForSys.TryGetValue(key, out var c))
 			{
-				return SystemOverrides[systemId][key];
+				return c;
 			}
 
-			if (BaseMnemonicLookupTable.ContainsKey(key))
+			if (BaseMnemonicLookupTable.TryGetValue(key, out var c1))
 			{
-				return BaseMnemonicLookupTable[key];
+				return c1;
 			}
 
 			if (key.Length == 1)
@@ -47,14 +47,14 @@ namespace BizHawk.Client.Common
 				.Replace("P4 ", "")
 				.Replace("Key ", "");
 
-			if (AxisSystemOverrides.ContainsKey(systemId) && AxisSystemOverrides[systemId].ContainsKey(key))
+			if (AxisSystemOverrides.TryGetValue(systemId, out var overridesForSystem) && overridesForSystem.TryGetValue(key, out var s))
 			{
-				return AxisSystemOverrides[systemId][key];
+				return s;
 			}
 
-			if (BaseAxisLookupTable.ContainsKey(key))
+			if (BaseAxisLookupTable.TryGetValue(key, out var s1))
 			{
-				return BaseAxisLookupTable[key];
+				return s1;
 			}
 
 			return button;

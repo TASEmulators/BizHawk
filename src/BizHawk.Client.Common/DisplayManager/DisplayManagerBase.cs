@@ -1020,11 +1020,7 @@ namespace BizHawk.Client.Common
 		/// Peeks a locked lua surface, or returns null if it isn't locked
 		/// </summary>
 		public IDisplaySurface PeekApiHawkLockedSurface(DisplaySurfaceID surfaceID)
-		{
-			if (_apiHawkIDToSurface.ContainsKey(surfaceID))
-				return _apiHawkIDToSurface[surfaceID];
-			return null;
-		}
+			=> _apiHawkIDToSurface.TryGetValue(surfaceID, out var surface) ? surface : null;
 
 		public IDisplaySurface LockApiHawkSurface(DisplaySurfaceID surfaceID, bool clear)
 		{
@@ -1082,12 +1078,7 @@ namespace BizHawk.Client.Common
 		public void UnlockApiHawkSurface(IDisplaySurface surface)
 		{
 			if (surface is not DisplaySurface dispSurfaceImpl) throw new ArgumentException("don't mix " + nameof(IDisplaySurface) + " implementations!", nameof(surface));
-			if (!_apiHawkSurfaceToID.ContainsKey(dispSurfaceImpl))
-			{
-				throw new InvalidOperationException("Surface was not locked as a lua surface");
-			}
-
-			var surfaceID = _apiHawkSurfaceToID[dispSurfaceImpl];
+			if (!_apiHawkSurfaceToID.TryGetValue(dispSurfaceImpl, out var surfaceID)) throw new InvalidOperationException("Surface was not locked as a lua surface");
 			_apiHawkSurfaceToID.Remove(dispSurfaceImpl);
 			_apiHawkIDToSurface.Remove(surfaceID);
 			_apiHawkSurfaceSets[surfaceID].SetPending(dispSurfaceImpl);

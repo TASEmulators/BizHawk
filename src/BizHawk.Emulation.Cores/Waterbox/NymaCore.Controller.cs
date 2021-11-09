@@ -64,7 +64,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				for (int port = 0, devByteStart = 0; port < allPorts.Count; port++)
 				{
 					var portInfo = allPorts[port];
-					var deviceName = config.ContainsKey(port) ? config[port] : portInfo.DefaultDeviceShortName;
+					if (!config.TryGetValue(port, out var deviceName)) deviceName = portInfo.DefaultDeviceShortName;
 					finalDevices.Add(deviceName);
 
 					if (hiddenPorts.Contains(portInfo.ShortName))

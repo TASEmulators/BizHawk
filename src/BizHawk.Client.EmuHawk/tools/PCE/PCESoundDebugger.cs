@@ -105,9 +105,9 @@ namespace BizHawk.Client.EmuHawk
 				bw.Flush();
 				string md5 = _waveformTemp.HashMD5();
 
-				if (!_psgEntryTable.ContainsKey(md5))
+				if (!_psgEntryTable.TryGetValue(md5, out var entry))
 				{
-					var entry = new PsgEntry
+					entry = new PsgEntry
 					{
 						Name = md5,
 						WaveForm = waveform,
@@ -122,7 +122,6 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					PsgEntry entry = _psgEntryTable[md5];
 					entry.Active = true;
 
 					// are we playing the same sample as before?
@@ -141,7 +140,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 
-				lvChannels.Items[i].SubItems[3].Text = _psgEntryTable[md5].Name;
+				lvChannels.Items[i].SubItems[3].Text = entry.Name;
 			}
 
 			if (sync)

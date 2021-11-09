@@ -7,7 +7,7 @@ namespace BizHawk.Client.Common
 	{
 		public new string this[string key]
 		{
-			get => ContainsKey(key) ? base[key] : "";
+			get => TryGetValue(key, out var s) ? s : string.Empty;
 			set => base[key] = value;
 		}
 

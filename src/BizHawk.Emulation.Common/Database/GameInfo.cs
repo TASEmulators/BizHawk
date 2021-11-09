@@ -85,7 +85,7 @@ namespace BizHawk.Emulation.Common
 
 		public string OptionValue(string option)
 		{
-			return Options.ContainsKey(option) ? Options[option] : null;
+			return Options.TryGetValue(option, out var s) ? s : null;
 		}
 
 		public int GetIntValue(string option)

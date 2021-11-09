@@ -223,19 +223,13 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			RomDetails = $"{_game.Name}\r\nSHA1:{Rom.HashSHA1()}\r\nMD5:{Rom.HashMD5()}\r\nMapper Impl \"{_mapper.GetType()}\"";
 
 			// Some games (ex. 3D tic tac toe), turn off the screen for extended periods, so we need to allow for this here.
-			if (_game.GetOptions().ContainsKey("SP_FRAME"))
+			if (_game.GetOptions().TryGetValue("SP_FRAME", out var spFrameStr) && spFrameStr == "true")
 			{
-				if (_game.GetOptions()["SP_FRAME"] == "true")
-				{
-					SP_FRAME = true;
-				}
+				SP_FRAME = true;
 			}
-			if (_game.GetOptions().ContainsKey("SP_RESET"))
+			if (_game.GetOptions().TryGetValue("SP_RESET", out var spResetStr) && spResetStr == "true")
 			{
-				if (_game.GetOptions()["SP_RESET"] == "true")
-				{
-					SP_RESET = true;
-				}
+				SP_RESET = true;
 			}
 		}
 

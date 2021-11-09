@@ -39,27 +39,10 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			}
 
 			// look up hash in gamedb to see what mapper to use
-			// if none found default is zero
-			string hash_sha1 = null;
 			string s_mapper = null;
-			hash_sha1 = "sha1:" + rom.HashSHA1(16, rom.Length - 16);
-
-			var gi = Database.CheckDatabase(hash_sha1);
-			if (gi != null)
-			{
-				var dict = gi.GetOptions();
-				if (!dict.ContainsKey("board"))
-				{
-					throw new Exception("INTV gamedb entries must have a board identifier!");
-				}
-
-				s_mapper = dict["board"];
-			}
-			else
-			{
-				s_mapper = "0";
-			}
-
+			var gi = Database.CheckDatabase($"sha1:{rom.HashSHA1(16, rom.Length - 16)}");
+			if (gi != null && !gi.GetOptions().TryGetValue("board", out s_mapper)) throw new Exception("INTV gamedb entries must have a board identifier!");
+			_mapper = 0;
 			int.TryParse(s_mapper, out _mapper);
 
 			return rom.Length;
