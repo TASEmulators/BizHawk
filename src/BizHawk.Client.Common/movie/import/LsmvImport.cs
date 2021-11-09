@@ -47,7 +47,7 @@ namespace BizHawk.Client.Common.movie.import
 
 			foreach (var item in zip.Entries)
 			{
-				if (item.Name == "authors")
+				if (item.FullName == "authors")
 				{
 					using var stream = item.Open();
 					string authors = Encoding.UTF8.GetString(stream.ReadAllBytes());
@@ -85,19 +85,19 @@ namespace BizHawk.Client.Common.movie.import
 
 					Result.Movie.HeaderEntries[HeaderKeys.Author] = authorList;
 				}
-				else if (item.Name == "coreversion")
+				else if (item.FullName == "coreversion")
 				{
 					using var stream = item.Open();
 					string coreVersion = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
 					Result.Movie.Comments.Add($"CoreOrigin {coreVersion}");
 				}
-				else if (item.Name == "gamename")
+				else if (item.FullName == "gamename")
 				{
 					using var stream = item.Open();
 					string gameName = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
 					Result.Movie.HeaderEntries[HeaderKeys.GameName] = gameName;
 				}
-				else if (item.Name == "gametype")
+				else if (item.FullName == "gametype")
 				{
 					using var stream = item.Open();
 					string gametype = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
@@ -122,7 +122,7 @@ namespace BizHawk.Client.Common.movie.import
 					bool pal = gametype == "snes_pal" || gametype == "sgb_pal";
 					Result.Movie.HeaderEntries[HeaderKeys.Pal] = pal.ToString();
 				}
-				else if (item.Name == "input")
+				else if (item.FullName == "input")
 				{
 					using var stream = item.Open();
 					string input = Encoding.UTF8.GetString(stream.ReadAllBytes());
@@ -156,7 +156,7 @@ namespace BizHawk.Client.Common.movie.import
 						}
 					}
 				}
-				else if (item.Name.StartsWith("moviesram."))
+				else if (item.FullName.StartsWith("moviesram."))
 				{
 					using var stream = item.Open();
 					byte[] movieSram = stream.ReadAllBytes();
@@ -167,7 +167,7 @@ namespace BizHawk.Client.Common.movie.import
 						return;
 					}
 				}
-				else if (item.Name == "port1")
+				else if (item.FullName == "port1")
 				{
 					using var stream = item.Open();
 					string port1 = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
@@ -175,7 +175,7 @@ namespace BizHawk.Client.Common.movie.import
 					ss.LeftPort = LibsnesControllerDeck.ControllerType.Gamepad;
 					_deck = new LibsnesControllerDeck(ss);
 				}
-				else if (item.Name == "port2")
+				else if (item.FullName == "port2")
 				{
 					using var stream = item.Open();
 					string port2 = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
@@ -183,13 +183,13 @@ namespace BizHawk.Client.Common.movie.import
 					ss.RightPort = LibsnesControllerDeck.ControllerType.Gamepad;
 					_deck = new LibsnesControllerDeck(ss);
 				}
-				else if (item.Name == "projectid")
+				else if (item.FullName == "projectid")
 				{
 					using var stream = item.Open();
 					string projectId = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
 					Result.Movie.HeaderEntries["ProjectID"] = projectId;
 				}
-				else if (item.Name == "rerecords")
+				else if (item.FullName == "rerecords")
 				{
 					using var stream = item.Open();
 					string rerecords = Encoding.UTF8.GetString(stream.ReadAllBytes());
@@ -207,20 +207,20 @@ namespace BizHawk.Client.Common.movie.import
 
 					Result.Movie.Rerecords = (ulong)rerecordCount;
 				}
-				else if (item.Name.EndsWith(".sha256"))
+				else if (item.FullName.EndsWith(".sha256"))
 				{
 					using var stream = item.Open();
 					string rom = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
-					int pos = item.Name.LastIndexOf(".sha256");
-					string name = item.Name.Substring(0, pos);
+					int pos = item.FullName.LastIndexOf(".sha256");
+					string name = item.FullName.Substring(0, pos);
 					Result.Movie.HeaderEntries[$"SHA256_{name}"] = rom;
 				}
-				else if (item.Name == "savestate")
+				else if (item.FullName == "savestate")
 				{
 					Result.Errors.Add("Movies that begin with a savestate are not supported.");
 					return;
 				}
-				else if (item.Name == "subtitles")
+				else if (item.FullName == "subtitles")
 				{
 					using var stream = item.Open();
 					string subtitles = Encoding.UTF8.GetString(stream.ReadAllBytes());
@@ -237,19 +237,19 @@ namespace BizHawk.Client.Common.movie.import
 						}
 					}
 				}
-				else if (item.Name == "starttime.second")
+				else if (item.FullName == "starttime.second")
 				{
 					using var stream = item.Open();
 					string startSecond = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
 					Result.Movie.HeaderEntries["StartSecond"] = startSecond;
 				}
-				else if (item.Name == "starttime.subsecond")
+				else if (item.FullName == "starttime.subsecond")
 				{
 					using var stream = item.Open();
 					string startSubSecond = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
 					Result.Movie.HeaderEntries["StartSubSecond"] = startSubSecond;
 				}
-				else if (item.Name == "systemid")
+				else if (item.FullName == "systemid")
 				{
 					using var stream = item.Open();
 					string systemId = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
