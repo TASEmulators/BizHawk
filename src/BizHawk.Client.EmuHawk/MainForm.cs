@@ -76,9 +76,9 @@ namespace BizHawk.Client.EmuHawk
 				Config.GbAsSgb ^= true;
 				if (!Emulator.IsNull()) FlagNeedsReboot(); //TODO only alert if a GB or SGB core is loaded
 			};
-			var N64VideoPluginSettingsMenuItem = new ToolStripMenuItem { Image = Properties.Resources.Monitor, Text = "N64 Video Plugin Settings" };
+			var N64VideoPluginSettingsMenuItem = new ToolStripMenuItem { Image = Properties.Resources.Monitor, Text = "N64 Video Plugin Settings..." };
 			N64VideoPluginSettingsMenuItem.Click += N64PluginSettingsMenuItem_Click;
-			var setLibretroCoreToolStripMenuItem = new ToolStripMenuItem { Text = "Set Libretro Core" };
+			var setLibretroCoreToolStripMenuItem = new ToolStripMenuItem { Text = "Set Libretro Core..." };
 			setLibretroCoreToolStripMenuItem.Click += (clickSender, clickArgs) => RunLibretroCoreChooser();
 			CoresSubMenu.DropDownItems.AddRange(new ToolStripItem[] {
 				GBInSGBMenuItem,
