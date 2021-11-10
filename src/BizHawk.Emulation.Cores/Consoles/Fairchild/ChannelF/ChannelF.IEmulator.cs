@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 		public ControllerDefinition ControllerDefinition { get; set; }
 
-		public string SystemId => "ChannelF";
+		public string SystemId => VSystemID.Raw.ChannelF;
 
 		public bool DeterministicEmulation { get; set; }
 

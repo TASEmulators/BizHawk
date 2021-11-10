@@ -4,6 +4,7 @@ using System.Windows.Forms;
 
 using BizHawk.Common;
 using BizHawk.Client.Common;
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 
 namespace BizHawk.Client.EmuHawk
@@ -55,7 +56,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			using var ofd = new OpenFileDialog
 			{
-				InitialDirectory = _config.PathEntries.PalettesAbsolutePathFor("NES"),
+				InitialDirectory = _config.PathEntries.PalettesAbsolutePathFor(VSystemID.Raw.NES),
 				Filter = new FilesystemFilterSet(FilesystemFilter.Palettes).ToString(),
 				RestoreDirectory = true
 			};

@@ -48,7 +48,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 		public int Frame => _machine?.FrameCount ?? 0;
 
-		public string SystemId => "AmstradCPC";
+		public string SystemId => VSystemID.Raw.AmstradCPC;
 
 		public bool DeterministicEmulation { get; }
 

@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 	{
 		private readonly LibSnes9x _core;
 
-		[CoreConstructor("SNES")]
+		[CoreConstructor(VSystemID.Raw.SNES)]
 		public Snes9x(CoreComm comm, byte[] rom, Settings settings, SyncSettings syncSettings)
 			:base(comm, new Configuration
 			{
@@ -27,7 +27,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 				MaxWidth = 512,
 				MaxHeight = 480,
 				MaxSamples = 8192,
-				SystemId = "SNES"
+				SystemId = VSystemID.Raw.SNES,
 			})
 		{
 			settings ??= new Settings();

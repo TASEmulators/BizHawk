@@ -245,24 +245,24 @@ namespace BizHawk.Client.Common
 				switch (discType)
 				{
 					case DiscType.SegaSaturn:
-						game.System = "SAT";
+						game.System = VSystemID.Raw.SAT;
 						break;
 					case DiscType.SonyPSP:
 						game.System = "PSP";
 						break;
 					case DiscType.SonyPS2:
-						game.System = "PS2";
+						game.System = VSystemID.Raw.PS2;
 						break;
 					case DiscType.MegaCD:
-						game.System = "GEN";
+						game.System = VSystemID.Raw.GEN;
 						break;
 					case DiscType.PCFX:
-						game.System = "PCFX";
+						game.System = VSystemID.Raw.PCFX;
 						break;
 
 					case DiscType.TurboGECD:
 					case DiscType.TurboCD:
-						game.System = "PCE";
+						game.System = VSystemID.Raw.PCE;
 						break;
 
 					case DiscType.Amiga:
@@ -280,12 +280,12 @@ namespace BizHawk.Client.Common
 					case DiscType.AudioDisc:
 					case DiscType.UnknownCDFS:
 					case DiscType.UnknownFormat:
-						game.System = _config.TryGetChosenSystemForFileExt(ext, out var sysID) ? sysID : "NULL";
+						game.System = _config.TryGetChosenSystemForFileExt(ext, out var sysID) ? sysID : VSystemID.Raw.NULL;
 						break;
 
 					default: //"for an unknown disc, default to psx instead of pce-cd, since that is far more likely to be what they are attempting to open" [5e07ab3ec3b8b8de9eae71b489b55d23a3909f55, year 2015]
 					case DiscType.SonyPSX:
-						game.System = "PSX";
+						game.System = VSystemID.Raw.PSX;
 						break;
 				}
 			}
@@ -415,11 +415,11 @@ namespace BizHawk.Client.Common
 			// hacky for now
 			if (file.Extension == ".exe")
 			{
-				rom.GameInfo.System = "PSX";
+				rom.GameInfo.System = VSystemID.Raw.PSX;
 			}
 			else if (file.Extension == ".nsf")
 			{
-				rom.GameInfo.System = "NES";
+				rom.GameInfo.System = VSystemID.Raw.NES;
 			}
 
 			Util.DebugWriteLine(rom.GameInfo.System);
@@ -453,14 +453,14 @@ namespace BizHawk.Client.Common
 
 			switch (game.System)
 			{
-				case "GB":
-				case "GBC":
+				case VSystemID.Raw.GB:
+				case VSystemID.Raw.GBC:
 					if (_config.GbAsSgb)
 					{
-						game.System = "SGB";
+						game.System = VSystemID.Raw.SGB;
 					}
 					break;
-				case "MAME":
+				case VSystemID.Raw.MAME:
 					nextEmulator = new MAME(
 						file.Directory,
 						file.CanonicalName,
@@ -562,7 +562,7 @@ namespace BizHawk.Client.Common
 					// need to get rid of this hack at some point
 					rom = new RomGame(file);
 					game = rom.GameInfo;
-					game.System = "SNES";
+					game.System = VSystemID.Raw.SNES;
 					nextEmulator = new LibsnesCore(
 						game,
 						null,
@@ -576,7 +576,7 @@ namespace BizHawk.Client.Common
 				}
 				catch
 				{
-					DoLoadErrorCallback(ex.ToString(), "DGB", LoadErrorType.Xml);
+					DoLoadErrorCallback(ex.ToString(), VSystemID.Raw.DGB, LoadErrorType.Xml);
 					return false;
 				}
 			}
@@ -611,7 +611,7 @@ namespace BizHawk.Client.Common
 				{
 					// must be done before LoadNoGame (which triggers retro_init and the paths to be consumed by the core)
 					// game name == name of core
-					Game = game = new GameInfo { Name = Path.GetFileNameWithoutExtension(launchLibretroCore), System = "Libretro" };
+					Game = game = new GameInfo { Name = Path.GetFileNameWithoutExtension(launchLibretroCore), System = VSystemID.Raw.Libretro };
 					var retro = new LibretroCore(nextComm, game, launchLibretroCore);
 					nextEmulator = retro;
 
@@ -620,7 +620,7 @@ namespace BizHawk.Client.Common
 						// if we are allowed to run NoGame and we don't have a game, boot up the core that way
 						if (!retro.LoadNoGame())
 						{
-							DoLoadErrorCallback("LibretroNoGame failed to load. This is weird", "Libretro");
+							DoLoadErrorCallback("LibretroNoGame failed to load. This is weird", VSystemID.Raw.Libretro);
 							retro.Dispose();
 							return false;
 						}
@@ -655,7 +655,7 @@ namespace BizHawk.Client.Common
 
 						if (!ret)
 						{
-							DoLoadErrorCallback("Libretro failed to load the given file. This is probably due to a core/content mismatch. Moreover, the process is now likely to be hosed. We suggest you restart the program.", "Libretro");
+							DoLoadErrorCallback("Libretro failed to load the given file. This is probably due to a core/content mismatch. Moreover, the process is now likely to be hosed. We suggest you restart the program.", VSystemID.Raw.Libretro);
 							retro.Dispose();
 							return false;
 						}

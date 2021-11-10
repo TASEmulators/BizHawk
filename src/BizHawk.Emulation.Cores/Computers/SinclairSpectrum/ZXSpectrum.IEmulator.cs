@@ -48,7 +48,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 		public int Frame => _machine?.FrameCount ?? 0;
 
-		public string SystemId => "ZXSpectrum";
+		public string SystemId => VSystemID.Raw.ZXSpectrum;
 
 		public bool DeterministicEmulation { get; }
 

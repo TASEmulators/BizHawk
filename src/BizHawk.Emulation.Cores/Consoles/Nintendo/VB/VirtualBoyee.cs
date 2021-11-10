@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 	{
 		private readonly LibVirtualBoyee _boyee;
 
-		[CoreConstructor("VB")]
+		[CoreConstructor(VSystemID.Raw.VB)]
 		public VirtualBoyee(CoreComm comm, byte[] rom, Settings settings, SyncSettings syncSettings)
 			: base(comm, new Configuration
 			{
@@ -26,7 +26,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 				MaxWidth = 1024,
 				MaxHeight = 1024,
 				MaxSamples = 8192,
-				SystemId = "VB"
+				SystemId = VSystemID.Raw.VB,
 			})
 		{
 			_settings = settings ?? new Settings();

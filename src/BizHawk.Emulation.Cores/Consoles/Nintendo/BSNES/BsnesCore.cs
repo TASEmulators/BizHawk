@@ -17,8 +17,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 	{
 		private BsnesApi.SNES_REGION _region;
 
-		[CoreConstructor("SGB")]
-		[CoreConstructor("SNES")]
+		[CoreConstructor(VSystemID.Raw.SGB)]
+		[CoreConstructor(VSystemID.Raw.SNES)]
 		public BsnesCore(GameInfo game, byte[] rom, CoreComm comm,
 			SnesSettings settings, SnesSyncSettings syncSettings)
 			:this(game, rom, null, null, comm, settings, syncSettings)
@@ -37,7 +37,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			_settings = settings ?? new SnesSettings();
 			_syncSettings = syncSettings ?? new SnesSyncSettings();
 
-			if (game.System == "SGB")
+			if (game.System == VSystemID.Raw.SGB)
 			{
 				if ((romData[0x143] & 0xc0) == 0xc0)
 				{
@@ -76,10 +76,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			InitAudio();
 			ser.Register<ISoundProvider>(_resampler);
 
-			if (game.System == "SGB")
+			if (game.System == VSystemID.Raw.SGB)
 			{
 				IsSGB = true;
-				SystemId = "SNES";
+				SystemId = VSystemID.Raw.SNES;
 				ser.Register<IBoardInfo>(new SGBBoardInfo());
 
 				_currLoadParams = new LoadParams
@@ -112,7 +112,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 					}
 				}
 
-				SystemId = "SNES";
+				SystemId = VSystemID.Raw.SNES;
 				_currLoadParams = new LoadParams
 				{
 					type = LoadParamType.Normal,

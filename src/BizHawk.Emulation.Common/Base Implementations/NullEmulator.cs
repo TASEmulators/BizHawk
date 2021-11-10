@@ -42,7 +42,7 @@ namespace BizHawk.Emulation.Common
 
 		public int Frame => 0;
 
-		public string SystemId => "NULL";
+		public string SystemId => VSystemID.Raw.NULL;
 
 		public bool DeterministicEmulation => true;
 

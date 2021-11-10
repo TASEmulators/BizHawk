@@ -6,6 +6,7 @@ using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Common;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -26,7 +27,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			string[] coresToHide = { "GB4x", "O2", "ChannelF", "AmstradCPC" };
+			string[] coresToHide = { VSystemID.Raw.GB4x, VSystemID.Raw.O2, VSystemID.Raw.ChannelF, VSystemID.Raw.AmstradCPC };
 
 			foreach (var core in coresToHide)
 			{
@@ -153,14 +154,13 @@ namespace BizHawk.Client.EmuHawk
 				.OrderBy(tuple => tuple.DisplayName)
 				.ToList();
 			// add the Global tab first...
-			const string idGlobal = "Global_NULL";
-			tpGlobal.Name = idGlobal; // required for SaveSettings
-			systems.RemoveAll(tuple => tuple.SysGroup == idGlobal);
+			tpGlobal.Name = PathEntryCollection.GLOBAL; // required for SaveSettings
+			systems.RemoveAll(tuple => tuple.SysGroup == PathEntryCollection.GLOBAL);
 			var hack = tpGlobal.Size.Width - UIHelper.ScaleX(220); // whyyyyyyyyyy
 			textBoxWidth += hack;
 			widgetOffset += hack;
 			Size hack1 = new(17, 0); // also whyyyyyyyyyy
-			PopulateTabPage(tpGlobal, idGlobal);
+			PopulateTabPage(tpGlobal, PathEntryCollection.GLOBAL);
 			tpGlobal.Controls[tpGlobal.Controls.Count - 1].Size -= hack1; // TextBox
 			tpGlobal.Controls[tpGlobal.Controls.Count - 2].Location -= hack1; // Button
 			textBoxWidth -= hack;
@@ -168,9 +168,9 @@ namespace BizHawk.Client.EmuHawk
 			// ...then continue with the others
 			foreach (var (sys, dispName) in systems) AddTabPageForSystem(sys, dispName);
 
-			if (IsTabPendingFocus(idGlobal))
+			if (IsTabPendingFocus(PathEntryCollection.GLOBAL))
 			{
-				comboSystem.SelectedIndex = systems.FindIndex(tuple => tuple.SysGroup == "NES"); // event handler selects correct tab in inner TabControl
+				comboSystem.SelectedIndex = systems.FindIndex(tuple => tuple.SysGroup == VSystemID.Raw.NES); // event handler selects correct tab in inner TabControl
 				// selected tab in tcMain is already 0 (Global)
 			}
 
@@ -180,7 +180,7 @@ namespace BizHawk.Client.EmuHawk
 		private void BrowseFolder(TextBox box, string name, string system)
 		{
 			// Ugly hack, we don't want to pass in the system in for system base and global paths
-			if (name == "Base" || system == "Global" || system == "Global_NULL")
+			if (name == "Base" || system == "Global" || system == PathEntryCollection.GLOBAL)
 			{
 				BrowseFolder(box, name, system: null);
 				return;
@@ -261,7 +261,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void DefaultsBtn_Click(object sender, EventArgs e)
-			=> DoTabs(PathEntryCollection.DefaultValues, "Global_NULL");
+			=> DoTabs(PathEntryCollection.DefaultValues, PathEntryCollection.GLOBAL);
 
 		private void Ok_Click(object sender, EventArgs e)
 		{

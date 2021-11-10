@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 		public bool is_XROM;
 
-		[CoreConstructor("O2")]
+		[CoreConstructor(VSystemID.Raw.O2)]
 		public O2Hawk(CoreComm comm, GameInfo game, byte[] rom, O2Settings settings, O2SyncSettings syncSettings)
 		{
 			var ser = new BasicServiceProvider(this);

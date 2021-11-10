@@ -41,7 +41,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		//note: its annoying that we have to have a disc before constructing this.
 		//might want to change that later. HOWEVER - we need to definitely have a region, at least
-		[CoreConstructor("PSX")]
+		[CoreConstructor(VSystemID.Raw.PSX)]
 		public Octoshock(CoreLoadParameters<Octoshock.Settings, Octoshock.SyncSettings> lp)
 		{
 			string romDetails;
@@ -281,7 +281,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		public string RomDetails { get; private set; }
 
-		public string SystemId => "PSX";
+		public string SystemId => VSystemID.Raw.PSX;
 
 		public static ControllerDefinition CreateControllerDefinition(SyncSettings syncSettings)
 		{

@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 	[ServiceNotApplicable(new[] { typeof(IBoardInfo), typeof(IDriveLight), typeof(IRegionable), typeof(ISaveRam), typeof(ISoundProvider) })]
 	public partial class TI83 : IEmulator, IVideoProvider, IDebuggable, IInputPollable, ISettable<TI83.TI83Settings, object>
 	{
-		[CoreConstructor("83P")]
+		[CoreConstructor(VSystemID.Raw.TI83P)]
 		public TI83(CoreLoadParameters<TI83Settings, object> lp)
 		{
 			var ser = new BasicServiceProvider(this);

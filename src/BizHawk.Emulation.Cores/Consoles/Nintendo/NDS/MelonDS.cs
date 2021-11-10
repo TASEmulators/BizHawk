@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		private readonly NDSDisassembler _disassembler;
 		private SpeexResampler _resampler;
 
-		[CoreConstructor("NDS")]
+		[CoreConstructor(VSystemID.Raw.NDS)]
 		public NDS(CoreLoadParameters<NDSSettings, NDSSyncSettings> lp)
 			: base(lp.Comm, new Configuration
 			{
@@ -27,7 +27,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				MaxSamples = 1024,
 				DefaultFpsNumerator = 33513982,
 				DefaultFpsDenominator = 560190,
-				SystemId = "NDS"
+				SystemId = VSystemID.Raw.NDS,
 			})
 		{
 			var roms = lp.Roms.Select(r => r.RomData).ToList();

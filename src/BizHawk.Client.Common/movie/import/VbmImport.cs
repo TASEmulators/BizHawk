@@ -110,17 +110,17 @@ namespace BizHawk.Client.Common.movie.import
 			bool isSGB = ((flags >> 2) & 0x1) != 0;
 
 			// (If all 3 of these bits are "0", it is for regular GB.)
-			string platform = "GB";
+			string platform = VSystemID.Raw.GB;
 			if (isGBA)
 			{
-				platform = "GBA";
+				platform = VSystemID.Raw.GBA;
 				Result.Movie.HeaderEntries[HeaderKeys.Core] = CoreNames.Mgba;
 			}
 
 			if (isGBC)
 			{
 				is_GBC = true;
-				platform = "GB";
+				platform = VSystemID.Raw.GB;
 				Result.Movie.HeaderEntries.Add("IsCGBMode", "1");
 			}
 
@@ -176,7 +176,7 @@ namespace BizHawk.Client.Common.movie.import
 			 GBA
 			*/
 			uint gameCodeUnitCode = r.ReadUInt32();
-			if (platform == "GBA")
+			if (platform == VSystemID.Raw.GBA)
 			{
 				Result.Movie.HeaderEntries["CRC16"] = checksumCRC16.ToString();
 				Result.Movie.HeaderEntries["GameCode"] = gameCodeUnitCode.ToString();
@@ -278,7 +278,7 @@ namespace BizHawk.Client.Common.movie.import
 			}
 			else
 			{
-				if (Config.PreferredCores["GB"] == CoreNames.GbHawk || Config.PreferredCores["GB"] == CoreNames.SubGbHawk)
+				if (Config.PreferredCores[VSystemID.Raw.GB] == CoreNames.GbHawk || Config.PreferredCores[VSystemID.Raw.GB] == CoreNames.SubGbHawk)
 				{
 					var tempSync = new GBHawk.GBSyncSettings();
 					if (is_GBC) { tempSync.ConsoleMode = GBHawk.GBSyncSettings.ConsoleModeType.GBC; }

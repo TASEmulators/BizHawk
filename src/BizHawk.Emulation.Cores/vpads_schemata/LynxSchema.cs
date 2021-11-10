@@ -6,7 +6,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores
 {
-	[Schema("Lynx")]
+	[Schema(VSystemID.Raw.Lynx)]
 	// ReSharper disable once UnusedMember.Global
 	public class LynxSchema : IVirtualPadSchema
 	{

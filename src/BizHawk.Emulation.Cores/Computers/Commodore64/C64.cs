@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 	[Core(CoreNames.C64Hawk, "SaxxonPike")]
 	public sealed partial class C64 : IEmulator, IRegionable, IBoardInfo, IRomInfo
 	{
-		[CoreConstructor("C64")]
+		[CoreConstructor(VSystemID.Raw.C64)]
 		public C64(CoreLoadParameters<C64Settings, C64SyncSettings> lp)
 		{
 			PutSyncSettings((C64SyncSettings)lp.SyncSettings ?? new C64SyncSettings());

@@ -30,7 +30,7 @@ namespace BizHawk.Client.Common
 			var @base = File.ReadAllBytes(baseFilename);
 			var (patched, actualHash) = PerformPatchInMemory(@base, in patchOption);
 			Trace.Assert(actualHash == patchOption.TargetHash);
-			var patchedParentDir = Path.Combine(pathEntries["Global", "Temp Files"].Path, "AutopatchedFirmware");
+			var patchedParentDir = Path.Combine(pathEntries[PathEntryCollection.GLOBAL, "Temp Files"].Path, "AutopatchedFirmware");
 			Directory.CreateDirectory(patchedParentDir);
 			var ff = FirmwareDatabase.FirmwareFilesByHash[patchOption.TargetHash];
 			var patchedFilePath = Path.Combine(patchedParentDir, ff.RecommendedName);

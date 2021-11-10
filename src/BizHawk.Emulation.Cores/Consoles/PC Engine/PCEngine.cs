@@ -20,14 +20,14 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		int IVideoLogicalOffsets.ScreenY => Settings.TopLine;
 
-		[CoreConstructor("PCE", Priority = CorePriority.Low)]
-		[CoreConstructor("SGX", Priority = CorePriority.Low)]
-		[CoreConstructor("PCECD", Priority = CorePriority.Low)]
+		[CoreConstructor(VSystemID.Raw.PCE, Priority = CorePriority.Low)]
+		[CoreConstructor(VSystemID.Raw.SGX, Priority = CorePriority.Low)]
+		[CoreConstructor(VSystemID.Raw.PCECD, Priority = CorePriority.Low)]
 		public PCEngine(CoreLoadParameters<PCESettings, PCESyncSettings> lp)
 		{
 			if (lp.Discs.Count == 1 && lp.Roms.Count == 0)
 			{
-				SystemId = "PCECD";
+				SystemId = VSystemID.Raw.PCECD;
 				Type = NecSystemType.TurboCD;
 				this.disc = lp.Discs[0].DiscData;
 				Settings = (PCESettings)lp.Settings ?? new PCESettings();
@@ -84,15 +84,13 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			}
 			else if (lp.Discs.Count == 0 && lp.Roms.Count == 1)
 			{
-				switch (lp.Game.System)
+				switch (SystemId = lp.Game.System)
 				{
 					default:
-					case "PCE":
-						SystemId = "PCE";
+					case VSystemID.Raw.PCE:
 						Type = NecSystemType.TurboGrafx;
 						break;
-					case "SGX":
-						SystemId = "SGX";
+					case VSystemID.Raw.SGX:
 						Type = NecSystemType.SuperGrafx;
 						break;
 				}

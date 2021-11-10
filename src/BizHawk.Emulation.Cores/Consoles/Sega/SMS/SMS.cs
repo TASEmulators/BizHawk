@@ -19,9 +19,9 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 	public partial class SMS : IEmulator, ISoundProvider, ISaveRam, IInputPollable, IRegionable,
 		IDebuggable, ISettable<SMS.SmsSettings, SMS.SmsSyncSettings>, ICodeDataLogger
 	{
-		[CoreConstructor("SMS")]
-		[CoreConstructor("SG")]
-		[CoreConstructor("GG")]
+		[CoreConstructor(VSystemID.Raw.SMS)]
+		[CoreConstructor(VSystemID.Raw.SG)]
+		[CoreConstructor(VSystemID.Raw.GG)]
 		public SMS(CoreComm comm, GameInfo game, byte[] rom, SmsSettings settings, SmsSyncSettings syncSettings)
 		{
 			var ser = new BasicServiceProvider(this);
@@ -29,9 +29,9 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			Settings = (SmsSettings)settings ?? new SmsSettings();
 			SyncSettings = (SmsSyncSettings)syncSettings ?? new SmsSyncSettings();
 
-			IsGameGear = game.System == "GG";
-			IsGameGear_C = game.System == "GG";
-			IsSG1000 = game.System == "SG";
+			IsGameGear = game.System == VSystemID.Raw.GG;
+			IsGameGear_C = game.System == VSystemID.Raw.GG;
+			IsSG1000 = game.System == VSystemID.Raw.SG;
 			RomData = rom;
 
 			if (RomData.Length % BankSize != 0)
@@ -93,7 +93,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				// in SMS compatibility mode (it will fail the check sum if played on an actual SMS though.)
 				IsGameGear = false;
 				IsGameGear_C = true;
-				game.System = "GG";
+				game.System = VSystemID.Raw.GG;
 				Console.WriteLine("Using SMS Compatibility mode for Game Gear System");
 			}
 
@@ -159,7 +159,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				Port3E = 0xF7; // Disable cartridge, enable BIOS rom
 				InitBiosMapper();
 			}
-			else if (game.System == "SMS" && !game["GG_in_SMS"])
+			else if (game.System == VSystemID.Raw.SMS && !game["GG_in_SMS"])
 			{
 				BiosRom = comm.CoreFileProvider.GetFirmware(new("SMS", _region.ToString()));
 

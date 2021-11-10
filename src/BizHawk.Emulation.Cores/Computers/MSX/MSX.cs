@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class MSX : IEmulator, IVideoProvider, ISoundProvider, ISaveRam, IInputPollable, IRegionable, ISettable<MSX.MSXSettings, MSX.MSXSyncSettings>
 	{
-		[CoreConstructor("MSX")]
+		[CoreConstructor(VSystemID.Raw.MSX)]
 		public MSX(CoreComm comm, GameInfo game, byte[] rom, MSX.MSXSettings settings, MSX.MSXSyncSettings syncSettings)
 		{
 			ServiceProvider = new BasicServiceProvider(this);

@@ -26,7 +26,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			QN.qn_setup_mappers();
 		}
 
-		[CoreConstructor("NES", Priority = CorePriority.Low)]
+		[CoreConstructor(VSystemID.Raw.NES, Priority = CorePriority.Low)]
 		public QuickNES(byte[] file, QuickNESSettings settings, QuickNESSyncSettings syncSettings)
 		{
 			FP = OSTailoredCode.IsUnixHost
@@ -218,7 +218,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		private IntPtr Context;
 		public int Frame { get; private set; }
 
-		public string SystemId => "NES";
+		public string SystemId => VSystemID.Raw.NES;
 		public bool DeterministicEmulation => true;
 		public string BoardName { get; }
 

@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Common
 		/// <summary>
 		/// Default fallthrough to AppleII
 		/// </summary>
-		public string IdentifiedSystem { get; set; } = "AppleII";
+		public string IdentifiedSystem { get; set; } = VSystemID.Raw.AppleII;
 
 		// dsk header
 		public byte NumberOfTracks { get; set; }
@@ -68,7 +68,7 @@ namespace BizHawk.Emulation.Common
 				if (trk.Sectors[0].SectorData[0] == 0 && trk.Sectors[0].SectorData[1] == 0
 					&& trk.Sectors[0].SectorData[2] == 40)
 				{
-					_possibleIdent = "ZXSpectrum";
+					_possibleIdent = VSystemID.Raw.ZXSpectrum;
 				}
 			}
 
@@ -83,7 +83,7 @@ namespace BizHawk.Emulation.Common
 					string str = Encoding.ASCII.GetString(s.SectorData, 0, s.SectorData.Length).ToUpper();
 					if (str.Contains("PLUS3DOS"))
 					{
-						IdentifiedSystem = "ZXSpectrum";
+						IdentifiedSystem = VSystemID.Raw.ZXSpectrum;
 						return;
 					}
 				}
@@ -95,13 +95,13 @@ namespace BizHawk.Emulation.Common
 				switch (trk.Sectors[0].GetChecksum256())
 				{
 					case 3:
-						IdentifiedSystem = "ZXSpectrum";
+						IdentifiedSystem = VSystemID.Raw.ZXSpectrum;
 						return;
 					case 1:
 					case 255:
 						// different Amstrad PCW boot records
 						// just return CPC for now
-						IdentifiedSystem = "AmstradCPC";
+						IdentifiedSystem = VSystemID.Raw.AmstradCPC;
 						return;
 				}
 
@@ -109,7 +109,7 @@ namespace BizHawk.Emulation.Common
 				{
 					case 65:
 					case 193:
-						IdentifiedSystem = "AmstradCPC";
+						IdentifiedSystem = VSystemID.Raw.AmstradCPC;
 						return;
 				}
 			}
@@ -124,19 +124,19 @@ namespace BizHawk.Emulation.Common
 						switch (trk.Sectors[0].GetChecksum256())
 						{
 							case 3:
-								IdentifiedSystem = "ZXSpectrum";
+								IdentifiedSystem = VSystemID.Raw.ZXSpectrum;
 								return;
 							case 1:
 							case 255:
 								// different Amstrad PCW checksums
 								// just return CPC for now
-								IdentifiedSystem = "AmstradCPC";
+								IdentifiedSystem = VSystemID.Raw.AmstradCPC;
 								return;
 						}
 						break;
 					case 65:
 					case 193:
-						IdentifiedSystem = "AmstradCPC";
+						IdentifiedSystem = VSystemID.Raw.AmstradCPC;
 						return;
 				}
 			}
@@ -148,14 +148,14 @@ namespace BizHawk.Emulation.Common
 					if (trk.Sectors.Length == 8)
 					{
 						// CPC IBM
-						IdentifiedSystem = "AmstradCPC";
+						IdentifiedSystem = VSystemID.Raw.AmstradCPC;
 						return;
 					}
 					break;
 				case 65:
 				case 193:
 					// possible CPC custom
-					_possibleIdent = "AmstradCPC";
+					_possibleIdent = VSystemID.Raw.AmstradCPC;
 					break;
 			}
 
@@ -174,16 +174,16 @@ namespace BizHawk.Emulation.Common
 									switch (Tracks[1].Sectors[0].SectorID)
 									{
 										case 7:
-											IdentifiedSystem = "ZXSpectrum";
+											IdentifiedSystem = VSystemID.Raw.ZXSpectrum;
 											return;
 										default:
-											_possibleIdent = "ZXSpectrum";
+											_possibleIdent = VSystemID.Raw.ZXSpectrum;
 											break;
 									}
 								}
 								else
 								{
-									_possibleIdent = "ZXSpectrum";
+									_possibleIdent = VSystemID.Raw.ZXSpectrum;
 								}
 								break;
 							case 1:
@@ -193,13 +193,13 @@ namespace BizHawk.Emulation.Common
 									{
 										case 7:
 										case 1:
-											IdentifiedSystem = "ZXSpectrum";
+											IdentifiedSystem = VSystemID.Raw.ZXSpectrum;
 											return;
 									}
 								}
 								else
 								{
-									_possibleIdent = "ZXSpectrum";
+									_possibleIdent = VSystemID.Raw.ZXSpectrum;
 								}
 								break;
 						}
@@ -209,16 +209,16 @@ namespace BizHawk.Emulation.Common
 						trk.Sectors[0].SectorData[9] == 23 &&
 						trk.Sectors[0].SectorData[2] == 40)
 					{
-						IdentifiedSystem = "ZXSpectrum";
+						IdentifiedSystem = VSystemID.Raw.ZXSpectrum;
 						return;
 					}
 				}
 			}
 
 			// last chance. use the possible value
-			if (IdentifiedSystem == "AppleII" && _possibleIdent != "")
+			if (IdentifiedSystem == VSystemID.Raw.AppleII && _possibleIdent != "")
 			{
-				IdentifiedSystem = "ZXSpectrum";
+				IdentifiedSystem = VSystemID.Raw.ZXSpectrum;
 			}
 		}
 

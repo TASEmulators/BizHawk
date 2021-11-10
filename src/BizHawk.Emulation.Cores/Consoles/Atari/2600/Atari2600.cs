@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			public const string Tapper = /*sha1:*/"E986E1818E747BEB9B33CE4DFF1CDC6B55BDB620";
 		}
 
-		[CoreConstructor("A26")]
+		[CoreConstructor(VSystemID.Raw.A26)]
 		public Atari2600(GameInfo game, byte[] rom, Atari2600.A2600Settings settings, Atari2600.A2600SyncSettings syncSettings)
 		{
 			var ser = new BasicServiceProvider(this);
@@ -80,7 +80,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			return new CompactGameInfo
 			{
 				Name = _game.Name,
-				System = "A26",
+				System = VSystemID.Raw.A26,
 				MetaData = "m=" + _mapper.GetType().ToString().Split('.').Last(),
 				Hash = Rom.HashSHA1(),
 				Region = _game.Region,

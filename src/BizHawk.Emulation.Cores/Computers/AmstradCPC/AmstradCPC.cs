@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 	[Core(CoreNames.CPCHawk, "Asnivor", isReleased: false)]
 	public partial class AmstradCPC : IRegionable, IDriveLight
 	{
-		[CoreConstructor("AmstradCPC")]
+		[CoreConstructor(VSystemID.Raw.AmstradCPC)]
 		public AmstradCPC(CoreLoadParameters<AmstradCPCSettings, AmstradCPCSyncSettings> lp)
 		{
 			var ser = new BasicServiceProvider(this);

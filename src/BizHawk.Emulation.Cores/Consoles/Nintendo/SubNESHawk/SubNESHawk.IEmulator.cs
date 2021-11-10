@@ -94,7 +94,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 
 		public int Frame => _frame;
 
-		public string SystemId => "NES";
+		public string SystemId => VSystemID.Raw.NES;
 
 		public bool DeterministicEmulation => _nesCore.DeterministicEmulation;
 

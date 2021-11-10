@@ -10,8 +10,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubGBHawk
 	public partial class SubGBHawk : IEmulator, IStatable, IInputPollable,
 		ISettable<GBHawk.GBHawk.GBSettings, GBHawk.GBHawk.GBSyncSettings>, IDebuggable
 	{
-		[CoreConstructor("GB", Priority = CorePriority.SuperLow)]
-		[CoreConstructor("GBC", Priority = CorePriority.SuperLow)]
+		[CoreConstructor(VSystemID.Raw.GB, Priority = CorePriority.SuperLow)]
+		[CoreConstructor(VSystemID.Raw.GBC, Priority = CorePriority.SuperLow)]
 		public SubGBHawk(CoreComm comm, GameInfo game, byte[] rom, /*string gameDbFn,*/ GBHawk.GBHawk.GBSettings settings, GBHawk.GBHawk.GBSyncSettings syncSettings)
 		{
 			

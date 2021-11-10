@@ -69,7 +69,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 			private set => _frame = value;
 		}
 
-		public string SystemId => "TI83";
+		public string SystemId => VSystemID.Raw.TI83;
 
 		public bool DeterministicEmulation => true;
 

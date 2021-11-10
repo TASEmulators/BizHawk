@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 	public sealed partial class Intellivision : IEmulator, IInputPollable, IDisassemblable,
 		IBoardInfo, IDebuggable, ISettable<Intellivision.IntvSettings, Intellivision.IntvSyncSettings>
 	{
-		[CoreConstructor("INTV")]
+		[CoreConstructor(VSystemID.Raw.INTV)]
 		public Intellivision(CoreComm comm, byte[] rom, Intellivision.IntvSettings settings, Intellivision.IntvSyncSettings syncSettings)
 		{
 			var ser = new BasicServiceProvider(this);

@@ -18,9 +18,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		IBoardInfo, IRomInfo, IDebuggable, ISettable<Gameboy.GambatteSettings, Gameboy.GambatteSyncSettings>,
 		IGameboyCommon, ICycleTiming, ILinkable
 	{
-		[CoreConstructor("GB")]
-		[CoreConstructor("GBC")]
-		[CoreConstructor("SGB")]
+		[CoreConstructor(VSystemID.Raw.GB)]
+		[CoreConstructor(VSystemID.Raw.GBC)]
+		[CoreConstructor(VSystemID.Raw.SGB)]
 		public Gameboy(CoreComm comm, GameInfo game, byte[] file, Gameboy.GambatteSettings settings, Gameboy.GambatteSyncSettings syncSettings, bool deterministic)
 		{
 			var ser = new BasicServiceProvider(this);
@@ -62,12 +62,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 						flags |= LibGambatte.LoadFlags.CGB_MODE | LibGambatte.LoadFlags.GBA_FLAG;
 						break;
 					default:
-						if (game.System == "GBC")
+						if (game.System == VSystemID.Raw.GBC)
 							flags |= LibGambatte.LoadFlags.CGB_MODE;
 						break;
 				}
 
-				if (game.System == "SGB")
+				if (game.System == VSystemID.Raw.SGB)
 				{
 					flags &= ~(LibGambatte.LoadFlags.CGB_MODE | LibGambatte.LoadFlags.GBA_FLAG);
 					flags |= LibGambatte.LoadFlags.SGB_MODE;

@@ -4,6 +4,7 @@ using System.Windows.Forms;
 
 using BizHawk.Common;
 using BizHawk.Client.Common;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -91,7 +92,7 @@ namespace BizHawk.Client.EmuHawk
 				if (hf.IsArchive)
 				{
 					// archive - run the archive chooser
-					if (SystemString == "PSX" || SystemString == "PCFX" || SystemString == "SAT")
+					if (SystemString == VSystemID.Raw.PSX || SystemString == VSystemID.Raw.PCFX || SystemString == VSystemID.Raw.SAT)
 					{
 						DialogController.ShowMessageBox("Using archives with PSX, PCFX or SATURN is not currently recommended/supported.");
 						return;

@@ -289,7 +289,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 		}
 		public int LagCount { get; set; }
 		public bool IsLagFrame { get; set; }
-		public string SystemId => "Libretro";
+		public string SystemId => VSystemID.Raw.Libretro;
 		public bool DeterministicEmulation => false;
 
 		//TODO - terrible things will happen if this changes at runtime

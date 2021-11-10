@@ -136,7 +136,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubGBHawk
 
 		public int Frame => _frame;
 
-		public string SystemId => "GB";
+		public string SystemId => VSystemID.Raw.GB;
 
 		public bool DeterministicEmulation => _GBCore.DeterministicEmulation;
 

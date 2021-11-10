@@ -226,68 +226,68 @@ namespace BizHawk.Emulation.Common
 				case ".NES":
 				case ".UNF":
 				case ".FDS":
-					game.System = "NES";
+					game.System = VSystemID.Raw.NES;
 					break;
 
 				case ".SFC":
 				case ".SMC":
-					game.System = "SNES";
+					game.System = VSystemID.Raw.SNES;
 					break;
 
 				case ".GB":
-					game.System = "GB";
+					game.System = VSystemID.Raw.GB;
 					break;
 				case ".GBC":
-					game.System = "GBC";
+					game.System = VSystemID.Raw.GBC;
 					break;
 				case ".GBA":
-					game.System = "GBA";
+					game.System = VSystemID.Raw.GBA;
 					break;
 				case ".NDS":
-					game.System = "NDS";
+					game.System = VSystemID.Raw.NDS;
 					break;
 
 				case ".SMS":
-					game.System = "SMS";
+					game.System = VSystemID.Raw.SMS;
 					break;
 				case ".GG":
-					game.System = "GG";
+					game.System = VSystemID.Raw.GG;
 					break;
 				case ".SG":
-					game.System = "SG";
+					game.System = VSystemID.Raw.SG;
 					break;
 
 				case ".GEN":
 				case ".MD":
 				case ".SMD":
-					game.System = "GEN";
+					game.System = VSystemID.Raw.GEN;
 					break;
 
 				case ".PSF":
 				case ".MINIPSF":
-					game.System = "PSX";
+					game.System = VSystemID.Raw.PSX;
 					break;
 
 				case ".PCE":
-					game.System = "PCE";
+					game.System = VSystemID.Raw.PCE;
 					break;
 				case ".SGX":
-					game.System = "SGX";
+					game.System = VSystemID.Raw.SGX;
 					break;
 
 				case ".A26":
-					game.System = "A26";
+					game.System = VSystemID.Raw.A26;
 					break;
 				case ".A78":
-					game.System = "A78";
+					game.System = VSystemID.Raw.A78;
 					break;
 
 				case ".COL":
-					game.System = "Coleco";
+					game.System = VSystemID.Raw.Coleco;
 					break;
 
 				case ".INT":
-					game.System = "INTV";
+					game.System = VSystemID.Raw.INTV;
 					break;
 
 				case ".PRG":
@@ -295,48 +295,48 @@ namespace BizHawk.Emulation.Common
 				case ".T64":
 				case ".G64":
 				case ".CRT":
-					game.System = "C64";
+					game.System = VSystemID.Raw.C64;
 					break;
 
 				case ".TZX":
 				case ".PZX":
 				case ".CSW":
 				case ".WAV":
-					game.System = "ZXSpectrum";
+					game.System = VSystemID.Raw.ZXSpectrum;
 					break;
 
 				case ".CDT":
-					game.System = "AmstradCPC";
+					game.System = VSystemID.Raw.AmstradCPC;
 					break;
 
 				case ".TAP":
 					byte[] head = romData.Take(8).ToArray();
 					game.System = Encoding.Default.GetString(head).Contains("C64-TAPE")
-						? "C64"
-						: "ZXSpectrum";
+						? VSystemID.Raw.C64
+						: VSystemID.Raw.ZXSpectrum;
 					break;
 
 				case ".Z64":
 				case ".V64":
 				case ".N64":
-					game.System = "N64";
+					game.System = VSystemID.Raw.N64;
 					break;
 
 				case ".DEBUG":
-					game.System = "DEBUG";
+					game.System = VSystemID.Raw.DEBUG;
 					break;
 
 				case ".WS":
 				case ".WSC":
-					game.System = "WSWAN";
+					game.System = VSystemID.Raw.WSWAN;
 					break;
 
 				case ".LNX":
-					game.System = "Lynx";
+					game.System = VSystemID.Raw.Lynx;
 					break;
 
 				case ".83P":
-					game.System = "83P";
+					game.System = VSystemID.Raw.TI83P;
 					break;
 
 				case ".DSK":
@@ -346,40 +346,40 @@ namespace BizHawk.Emulation.Common
 
 				case ".PO":
 				case ".DO":
-					game.System = "AppleII";
+					game.System = VSystemID.Raw.AppleII;
 					break;
 
 				case ".VB":
-					game.System = "VB";
+					game.System = VSystemID.Raw.VB;
 					break;
 
 				case ".NGP":
 				case ".NGC":
-					game.System = "NGP";
+					game.System = VSystemID.Raw.NGP;
 					break;
 
 				case ".O2":
-					game.System = "O2";
+					game.System = VSystemID.Raw.O2;
 					break;
 
 				case ".UZE":
-					game.System = "UZE";
+					game.System = VSystemID.Raw.UZE;
 					break;
 
 				case ".32X":
-					game.System = "32X";
+					game.System = VSystemID.Raw.Sega32X;
 					game.AddOption("32X", "true");
 					break;
 
 				case ".VEC":
-					game.System = "VEC";
+					game.System = VSystemID.Raw.VEC;
 					game.AddOption("VEC", "true");
 					break;
 
 				// refactor to use mame db (output of "mame -listxml" command)
 				// there's no good definition for Arcade anymore, so we might limit to coin-based machines?
 				case ".ZIP":
-					game.System = "MAME";
+					game.System = VSystemID.Raw.MAME;
 					break;
 			}
 

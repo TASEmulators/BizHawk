@@ -9,7 +9,7 @@ using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 
 namespace BizHawk.Emulation.Cores
 {
-	[Schema("GEN")]
+	[Schema(VSystemID.Raw.GEN)]
 	// ReSharper disable once UnusedMember.Global
 	public class GenSchema : IVirtualPadSchema
 	{

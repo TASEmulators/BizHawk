@@ -179,7 +179,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 		public int Frame => _frame;
 
-		public string SystemId => "Coleco";
+		public string SystemId => VSystemID.Raw.Coleco;
 
 		public bool DeterministicEmulation => true;
 

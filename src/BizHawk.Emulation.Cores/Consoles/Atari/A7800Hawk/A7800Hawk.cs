@@ -75,7 +75,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			public void WriteMemory(ushort address, byte value) => _a7800.WriteMemory(address, value);
 		}
 
-		[CoreConstructor("A78")]
+		[CoreConstructor(VSystemID.Raw.A78)]
 		public A7800Hawk(CoreComm comm, byte[] rom, A7800Hawk.A7800Settings settings, A7800Hawk.A7800SyncSettings syncSettings)
 		{
 			var ser = new BasicServiceProvider(this);

@@ -188,7 +188,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			NameTableView
 				.ToBitMap()
-				.SaveAsFile(Game, "Nametables", "NES", Config.PathEntries, this);
+				.SaveAsFile(Game, "Nametables", VSystemID.Raw.NES, Config.PathEntries, this);
 		}
 
 		private void ScreenshotToClipboardMenuItem_Click(object sender, EventArgs e)

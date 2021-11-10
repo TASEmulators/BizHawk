@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 	public partial class WonderSwan : IEmulator, IVideoProvider, ISoundProvider,
 		IInputPollable, IDebuggable
 	{
-		[CoreConstructor("WSWAN")]
+		[CoreConstructor(VSystemID.Raw.WSWAN)]
 		public WonderSwan(byte[] file, bool deterministic, WonderSwan.Settings settings, WonderSwan.SyncSettings syncSettings)
 		{
 			ServiceProvider = new BasicServiceProvider(this);
@@ -96,7 +96,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		public int LagCount { get; set; }
 		public bool IsLagFrame { get; set; }
 
-		public string SystemId => "WSWAN";
+		public string SystemId => VSystemID.Raw.WSWAN;
 		public bool DeterministicEmulation { get; }
 
 		private readonly InputCallbackSystem _inputCallbacks = new InputCallbackSystem();

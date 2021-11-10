@@ -1,6 +1,8 @@
 ﻿using System.IO;
 using System.Linq;
 using System.Text;
+
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 
@@ -28,7 +30,7 @@ namespace BizHawk.Client.Common.movie.import
 				return;
 			}
 
-			Result.Movie.HeaderEntries[HeaderKeys.Platform] = "SNES";
+			Result.Movie.HeaderEntries[HeaderKeys.Platform] = VSystemID.Raw.SNES;
 
 			// 004 4-byte little-endian unsigned int: version number
 			uint versionNumber = r.ReadUInt32();
@@ -311,7 +313,7 @@ namespace BizHawk.Client.Common.movie.import
 				Result.Movie.AppendFrame(controllers);
 
 				Result.Movie.SyncSettingsJson = ConfigService.SaveWithType(ss);
-				MaybeSetCorePreference(sysID: "SNES", CoreNames.Bsnes, fileExt: ".smv");
+				MaybeSetCorePreference(VSystemID.Raw.SNES, CoreNames.Bsnes, fileExt: ".smv");
 			}
 		}
 	}

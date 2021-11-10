@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 		public Audio audio;
 		public SerialPort serialport;
 
-		[CoreConstructor("VEC")]
+		[CoreConstructor(VSystemID.Raw.VEC)]
 		public VectrexHawk(CoreComm comm, byte[] rom, VectrexHawk.VectrexSyncSettings syncSettings)
 		{
 			var ser = new BasicServiceProvider(this);

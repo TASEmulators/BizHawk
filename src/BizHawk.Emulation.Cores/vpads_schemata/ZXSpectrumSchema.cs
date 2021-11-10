@@ -6,7 +6,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores
 {
-	[Schema("ZXSpectrum")]
+	[Schema(VSystemID.Raw.ZXSpectrum)]
 	// ReSharper disable once UnusedMember.Global
 	internal class ZxSpectrumSchema : IVirtualPadSchema
 	{

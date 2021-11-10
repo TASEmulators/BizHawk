@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	public partial class NES : IEmulator, ISaveRam, IDebuggable, IInputPollable, IRegionable, IVideoLogicalOffsets,
 		IBoardInfo, IRomInfo, ISettable<NES.NESSettings, NES.NESSyncSettings>, ICodeDataLogger
 	{
-		[CoreConstructor("NES")]
+		[CoreConstructor(VSystemID.Raw.NES)]
 		public NES(CoreComm comm, GameInfo game, byte[] rom, NESSettings settings, NESSyncSettings syncSettings)
 		{
 			var ser = new BasicServiceProvider(this);
@@ -277,7 +277,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public bool DeterministicEmulation => true;
 
-		public string SystemId => "NES";
+		public string SystemId => VSystemID.Raw.NES;
 
 		public string GameName => game_name;
 

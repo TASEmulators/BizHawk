@@ -11,10 +11,10 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 	{
 		private readonly LibNeoGeoPort _neopop;
 
-		[CoreConstructor("NGP")]
+		[CoreConstructor(VSystemID.Raw.NGP)]
 		public NeoGeoPort(CoreComm comm, byte[] rom, GameInfo game,
 			NymaSettings settings, NymaSyncSettings syncSettings, bool deterministic, string extension)
-			: base(comm, "NGP", "NeoGeo Portable Controller", settings, syncSettings)
+			: base(comm, VSystemID.Raw.NGP, "NeoGeo Portable Controller", settings, syncSettings)
 		{
 			_neopop = DoInit<LibNeoGeoPort>(game, rom, null, "ngp.wbx", extension, deterministic);
 		}

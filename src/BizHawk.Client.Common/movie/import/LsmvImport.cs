@@ -43,7 +43,7 @@ namespace BizHawk.Client.Common.movie.import
 			};
 			_deck = new LibsnesControllerDeck(ss);
 
-			string platform = "SNES";
+			string platform = VSystemID.Raw.SNES;
 
 			foreach (var item in zip.Entries)
 			{
@@ -106,15 +106,15 @@ namespace BizHawk.Client.Common.movie.import
 					switch (gametype)
 					{
 						case "gdmg":
-							platform = "GB";
+							platform = VSystemID.Raw.GB;
 							break;
 						case "ggbc":
 						case "ggbca":
-							platform = "GBC";
+							platform = VSystemID.Raw.GBC;
 							break;
 						case "sgb_ntsc":
 						case "sgb_pal":
-							platform = "SNES";
+							platform = VSystemID.Raw.SNES;
 							Config.GbAsSgb = true;
 							break;
 					}
@@ -145,7 +145,7 @@ namespace BizHawk.Client.Common.movie.import
 							// lsnes' frame boundary occurs at V = 241, after which the input is read;
 							// BizHawk's frame boundary is just before automatic polling;
 							// This isn't a great place to add this logic but this code is a mess
-							if (lineNum == 1 && platform == "SNES")
+							if (lineNum == 1 && platform == VSystemID.Raw.SNES)
 							{
 								// Note that this logic assumes the first non-empty log entry is a valid input log entry
 								// and that it is NOT a subframe input entry.  It seems safe to assume subframe input would not be on the first line
@@ -259,7 +259,7 @@ namespace BizHawk.Client.Common.movie.import
 
 			Result.Movie.HeaderEntries[HeaderKeys.Platform] = platform;
 			Result.Movie.SyncSettingsJson = ConfigService.SaveWithType(ss);
-			MaybeSetCorePreference(sysID: "SNES", CoreNames.Bsnes, fileExt: ".lsmv");
+			MaybeSetCorePreference(VSystemID.Raw.SNES, CoreNames.Bsnes, fileExt: ".lsmv");
 		}
 
 		private IController EmptyLmsvFrame()
@@ -289,7 +289,7 @@ namespace BizHawk.Client.Common.movie.import
 				"B", "Y", "Select", "Start", "Up", "Down", "Left", "Right", "A", "X", "L", "R"
 			};
 
-			if (platform == "GB" || platform == "GBC")
+			if (platform == VSystemID.Raw.GB || platform == VSystemID.Raw.GBC)
 			{
 				buttons = new[] { "A", "B", "Select", "Start", "Right", "Left", "Up", "Down" };
 			}

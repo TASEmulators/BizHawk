@@ -1,4 +1,6 @@
 ﻿using System.IO;
+
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Sony.PSX;
 
 namespace BizHawk.Client.Common
@@ -8,7 +10,7 @@ namespace BizHawk.Client.Common
 	{
 		protected override void RunImport()
 		{
-			Result.Movie.HeaderEntries[HeaderKeys.Platform] = "PSX";
+			Result.Movie.HeaderEntries[HeaderKeys.Platform] = VSystemID.Raw.PSX;
 
 			using var fs = SourceFile.OpenRead();
 			using var br = new BinaryReader(fs);

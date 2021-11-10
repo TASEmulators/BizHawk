@@ -10,7 +10,7 @@ using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 
 namespace BizHawk.Emulation.Cores
 {
-	[Schema("NES")]
+	[Schema(VSystemID.Raw.NES)]
 	// ReSharper disable once UnusedMember.Global
 	public class NesSchema : IVirtualPadSchema
 	{

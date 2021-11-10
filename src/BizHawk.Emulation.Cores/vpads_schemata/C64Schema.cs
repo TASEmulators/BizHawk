@@ -6,7 +6,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores
 {
-	[Schema("C64")]
+	[Schema(VSystemID.Raw.C64)]
 	// ReSharper disable once UnusedMember.Global
 	public class C64Schema : IVirtualPadSchema
 	{
