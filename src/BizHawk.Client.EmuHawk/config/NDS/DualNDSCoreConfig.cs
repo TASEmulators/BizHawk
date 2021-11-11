@@ -10,29 +10,25 @@ namespace BizHawk.Client.EmuHawk
 	public partial class DualNDSCoreConfig : Form
 	{
 		private readonly IMainFormForConfig _mainForm;
-		private NDS.NDSSettings _singleS;
-		private NDS.NDSSyncSettings _singleSs;
-		private DualNDS.DualNDSSettings _dualS;
-		private DualNDS.DualNDSSyncSettings _dualSs;
-		private bool _syncSettingsChanged;
-		private bool _settingsChanged;
-		private bool _right;
+		private DualNDS.DualNDSSettings _settings;
+		private DualNDS.DualNDSSyncSettings _syncSettings;
+		private bool _settingsChanged, _syncSettingsChanged;
 
-		private DualNDSCoreConfig(IMainFormForConfig mainForm, DualNDS.DualNDSSettings settings, DualNDS.DualNDSSyncSettings syncSettings, bool right)
+		private DualNDSCoreConfig(IMainFormForConfig mainForm, DualNDS.DualNDSSettings settings, DualNDS.DualNDSSyncSettings syncSettings)
 		{
 			InitializeComponent();
 			_mainForm = mainForm;
 
-			_dualS = settings;
-			_dualSs = syncSettings;
-			_singleS = right ? settings.R : settings.L;
-			_singleSs = right ? syncSettings.R : syncSettings.L;
-			_right = right;
+			_settings = settings;
+			_syncSettings = syncSettings;
 
-			propertyGrid1.SelectedObject = _singleS;
+			checkBoxLeftAccurateAudioBitrate.Checked = _settings.L.AccurateAudioBitrate;
+			checkBoxRightAccurateAudioBitrate.Checked = _settings.R.AccurateAudioBitrate;
+
+			propertyGrid1.SelectedObject = _syncSettings.L;
 			propertyGrid1.AdjustDescriptionHeightToFit();
 
-			propertyGrid2.SelectedObject = _singleSs;
+			propertyGrid2.SelectedObject = _syncSettings.R;
 			propertyGrid2.AdjustDescriptionHeightToFit();
 
 			if (_mainForm.MovieSession.Movie.IsActive())
@@ -45,38 +41,29 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_settingsChanged)
 			{
-				if (_right)
-				{
-					_dualS.R = _singleS;
-				}
-				else
-				{
-					_dualS.L = _singleS;
-				}
-				_mainForm.PutCoreSettings(_dualS);
+				_settings.L.AccurateAudioBitrate = checkBoxLeftAccurateAudioBitrate.Checked;
+				_settings.R.AccurateAudioBitrate = checkBoxRightAccurateAudioBitrate.Checked;
+				_mainForm.PutCoreSettings(_settings);
 			}
 
 			if (_syncSettingsChanged)
 			{
-				if (_right)
-				{
-					_dualSs.R = _singleSs;
-				}
-				else
-				{
-					_dualSs.L = _singleSs;
-				}
-				_mainForm.PutCoreSyncSettings(_dualSs);
+				_mainForm.PutCoreSyncSettings(_syncSettings);
 			}
 
 			DialogResult = DialogResult.OK;
 			Close();
 		}
 
-		public static void DoDialog(IMainFormForConfig owner, DualNDS.DualNDSSettings settings, DualNDS.DualNDSSyncSettings syncSettings, bool right)
+		public static void DoDialog(IMainFormForConfig owner, DualNDS.DualNDSSettings settings, DualNDS.DualNDSSyncSettings syncSettings)
 		{
-			using var dlg = new DualNDSCoreConfig(owner, settings, syncSettings, right) { Text = (right ? "Right " : "Left ") + "Dual NDS Settings" };
+			using var dlg = new DualNDSCoreConfig(owner, settings, syncSettings) { Text = "Dual NDS Settings" };
 			owner.ShowDialogAsChild(dlg);
+		}
+
+		private void PropertyGrid1_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
+		{
+			_syncSettingsChanged = true;
 		}
 
 		private void PropertyGrid2_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
@@ -86,17 +73,25 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DefaultsBtn_Click(object sender, EventArgs e)
 		{
-			// the new config objects guarantee that the default constructor gives a default-settings object
-			_singleS = new NDS.NDSSettings();
-			propertyGrid1.SelectedObject = _singleS;
-			_settingsChanged = true;
+			_settings = new DualNDS.DualNDSSettings();
+			_syncSettings = new DualNDS.DualNDSSyncSettings();
 
-			_singleSs = new NDS.NDSSyncSettings();
-			propertyGrid2.SelectedObject = _singleSs;
+			checkBoxLeftAccurateAudioBitrate.Checked = _settings.L.AccurateAudioBitrate;
+			checkBoxRightAccurateAudioBitrate.Checked = _settings.R.AccurateAudioBitrate;
+
+			propertyGrid1.SelectedObject = _syncSettings.L;
+			propertyGrid2.SelectedObject = _syncSettings.R;
+
+			_settingsChanged = true;
 			_syncSettingsChanged = true;
 		}
 
-		private void propertyGrid1_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
+		private void CheckBoxLeftAccurateAudioBitrate_CheckedChanged(object sender, EventArgs e)
+		{
+			_settingsChanged = true;
+		}
+
+		private void CheckBoxRightAccurateAudioBitrate_CheckedChanged(object sender, EventArgs e)
 		{
 			_settingsChanged = true;
 		}

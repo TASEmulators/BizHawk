@@ -1783,19 +1783,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void DualNdsLeftSettingsMenuItem_Click(object sender, EventArgs e)
+		private void DualNdsSettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			if (Emulator is DualNDS dualnds)
 			{
-				DualNDSCoreConfig.DoDialog(this, dualnds.GetSettings(), dualnds.GetSyncSettings(), false);
-			}
-		}
-
-		private void DualNdsRightSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			if (Emulator is DualNDS dualnds)
-			{
-				DualNDSCoreConfig.DoDialog(this, dualnds.GetSettings(), dualnds.GetSyncSettings(), true);
+				DualNDSCoreConfig.DoDialog(this, dualnds.GetSettings(), dualnds.GetSyncSettings());
 			}
 		}
 

@@ -269,8 +269,7 @@ namespace BizHawk.Client.EmuHawk
 			this.DGBSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.DGBsettingsToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.DualNDSSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.DualNDSLeftSettingsToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.DualNDSRightSettingsToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.DualNDSSettingsToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.AppleSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.AppleDisksSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.toolStripSeparator31 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
@@ -1768,19 +1767,13 @@ namespace BizHawk.Client.EmuHawk
 			// DualNDSSubMenu
 			// 
 			this.DualNDSSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.DualNDSLeftSettingsToolStripMenuItem,
-			this.DualNDSRightSettingsToolStripMenuItem});
+			this.DualNDSSettingsToolStripMenuItem});
 			this.DualNDSSubMenu.Text = "&Dual NDS";
 			// 
-			// DualNDSLeftSettingsToolStripMenuItem
+			// DualNDSSettingsToolStripMenuItem
 			// 
-			this.DualNDSLeftSettingsToolStripMenuItem.Text = "Left Settings";
-			this.DualNDSLeftSettingsToolStripMenuItem.Click += new System.EventHandler(this.DualNdsLeftSettingsMenuItem_Click);
-			// 
-			// DualNDSRightSettingsToolStripMenuItem
-			// 
-			this.DualNDSRightSettingsToolStripMenuItem.Text = "Right Settings";
-			this.DualNDSRightSettingsToolStripMenuItem.Click += new System.EventHandler(this.DualNdsRightSettingsMenuItem_Click);
+			this.DualNDSSettingsToolStripMenuItem.Text = "Settings";
+			this.DualNDSSettingsToolStripMenuItem.Click += new System.EventHandler(this.DualNdsSettingsMenuItem_Click);
 			// 
 			// AppleSubMenu
 			// 
@@ -2673,8 +2666,7 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx DGBSubMenu;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx DGBsettingsToolStripMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx DualNDSSubMenu;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx DualNDSLeftSettingsToolStripMenuItem;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx DualNDSRightSettingsToolStripMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx DualNDSSettingsToolStripMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx GenericCoreSubMenu;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx A7800ControllerSettingsMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx A7800FilterSettingsMenuItem;
