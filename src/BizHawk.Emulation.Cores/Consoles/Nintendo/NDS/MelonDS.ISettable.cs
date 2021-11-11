@@ -137,7 +137,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 			[DisplayName("Firmware Username")]
 			[Description("Username in firmware. Only applicable if firmware override is in effect.")]
-			[DefaultValue("MelonDS")]
+			[DefaultValue("melonDS")]
 			public string FirmwareUsername
 			{
 				get => _firmwareusername;
