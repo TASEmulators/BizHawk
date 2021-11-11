@@ -26,6 +26,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			public const string SeicrossRev2 = "sha1:4C9C05FAD6F6F33A92A27C2EDC1E7DE12D7F216D"; // yes this is meant to include the prefix
 
 			public const string SilvaSaga = /*sha1:*/"00C50062A2DECE99580063777590F26A253AAB6B";
+
+			public const string Fam_Jump_II = /*sha1:*/"1D7417D31E19B590AFCEB6A8A6E7B9CAB9F9B475";
 		}
 
 		//hardware/state
@@ -256,8 +258,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			// some boards cannot have specific values in RAM upon initialization
 			// Let's hard code those cases here
 			// these will be defined through the gameDB exclusively for now.
-
-			if (cart.GameInfo!=null)
+			if (cart.GameInfo != null)
 			{
 				if (cart.GameInfo.Hash is RomChecksums.CamericaGolden5 or RomChecksums.CamericaGolden5Overdump or RomChecksums.CamericaPegasus4in1)
 				{
@@ -268,7 +269,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					ram[0xEC] = 0;
 					ram[0xED] = 0;
 				}
-				else if (cart.GameInfo.Hash == RomChecksums.SilvaSaga)
+				else if (cart.GameInfo.Hash == RomChecksums.SilvaSaga || cart.GameInfo.Hash == RomChecksums.Fam_Jump_II)
 				{
 					for (int i = 0; i < Board.Wram.Length; i++)
 					{
