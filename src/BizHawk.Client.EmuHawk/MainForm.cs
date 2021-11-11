@@ -1826,7 +1826,7 @@ namespace BizHawk.Client.EmuHawk
 					byte[] sram;
 
 					// some cores might not know how big the saveram ought to be, so just send it the whole file
-					if (Emulator is MGBAHawk || Emulator is NeoGeoPort)
+					if (Emulator is MGBAHawk || Emulator is NeoGeoPort || (Emulator is NES && (Emulator as NES).BoardName == "FDS"))
 					{
 						sram = File.ReadAllBytes(saveRamPath);
 					}
@@ -1837,7 +1837,7 @@ namespace BizHawk.Client.EmuHawk
 						{
 							// we're eating this one now. The possible negative consequence is that a user could lose
 							// their saveram and not know why
-//							ShowMessageBox(owner: null, "Error: tried to load saveram, but core would not accept it?");
+							// ShowMessageBox(owner: null, "Error: tried to load saveram, but core would not accept it?");
 							return;
 						}
 
