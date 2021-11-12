@@ -63,15 +63,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			var lframe = L.FrameStepPrep(LCont, render, rendersound);
 			var rframe = R.FrameStepPrep(RCont, render, rendersound);
 
-			bool ldone = false;
-			bool rdone = false;
-			while (!ldone || !rdone)
+			bool lrunning = true;
+			bool rrunning = true;
+			while (lrunning || rrunning)
 			{
-				if (!ldone)
-					ldone = L.FrameStep();
-				//if (!rdone)
-					//rdone = R.FrameStep();
-				rdone = true;
+				if (lrunning)
+					lrunning = L.FrameStep();
+				if (rrunning)
+					rrunning = R.FrameStep();
 
 				// todo: actually handle lan packets
 			}
