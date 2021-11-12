@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			}
 
 			_memoryDomains = new MemoryDomainList(mm);
-			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(_memoryDomains);
+			_serviceProvider.Register<IMemoryDomains>(_memoryDomains);
 		}
 
 		private class WrappedMemoryDomain : MemoryDomain

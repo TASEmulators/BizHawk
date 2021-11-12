@@ -50,12 +50,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			}
 
 			R.GetSamplesSync(out short[] rsamples, out int rnsamp);
-			fixed (short* rs = &rsamples[0], sb = &SampleBuffer[0])
+			fixed (short* rs = &rsamples[0], sb = &SampleBuffer[1])
 			{
 				for (int i = 0; i < rnsamp; i++)
 				{
 					int rsamp = (rsamples[i * 2] + rsamples[i * 2 + 1]) >> 1;
-					SampleBuffer[i * 2 + 1] = (short)rsamp;
+					SampleBuffer[i * 2] = (short)rsamp;
 				}
 			}
 

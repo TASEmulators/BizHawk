@@ -33,7 +33,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (_mainForm.MovieSession.Movie.IsActive())
 			{
-				propertyGrid2.Enabled = false; // disable changes to sync setting when movie, so as not to confuse user
+				propertyGrid1.Enabled = propertyGrid2.Enabled = false;
 			}
 		}
 
@@ -41,8 +41,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_settingsChanged)
 			{
-				_settings.L.AccurateAudioBitrate = checkBoxLeftAccurateAudioBitrate.Checked;
-				_settings.R.AccurateAudioBitrate = checkBoxRightAccurateAudioBitrate.Checked;
 				_mainForm.PutCoreSettings(_settings);
 			}
 
@@ -88,11 +86,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CheckBoxLeftAccurateAudioBitrate_CheckedChanged(object sender, EventArgs e)
 		{
+			_settings.L.AccurateAudioBitrate = checkBoxLeftAccurateAudioBitrate.Checked;
 			_settingsChanged = true;
 		}
 
 		private void CheckBoxRightAccurateAudioBitrate_CheckedChanged(object sender, EventArgs e)
 		{
+			_settings.R.AccurateAudioBitrate = checkBoxRightAccurateAudioBitrate.Checked;
 			_settingsChanged = true;
 		}
 	}

@@ -11,6 +11,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		private NDS L;
 		private NDS R;
 
+		private readonly BasicServiceProvider _serviceProvider;
+
 		private readonly SaveController LCont = new SaveController(NDS.NDSController);
 		private readonly SaveController RCont = new SaveController(NDS.NDSController);
 
@@ -25,7 +27,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				throw new InvalidOperationException("Wrong number of ROMs!");
 			}
 
-			ServiceProvider = new BasicServiceProvider(this);
+			_serviceProvider = new BasicServiceProvider(this);
 			DualNDSSettings dualSettings = lp.Settings ?? new DualNDSSettings();
 			DualNDSSyncSettings dualSyncSettings = lp.SyncSettings ?? new DualNDSSyncSettings();
 
@@ -33,7 +35,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			R = new NDS(ExtractLoadParameters(lp, dualSettings, dualSyncSettings, true));
 
 			_disassembler = new NDSDisassembler();
-			(ServiceProvider as BasicServiceProvider).Register<IDisassemblable>(_disassembler);
+			_serviceProvider.Register<IDisassemblable>(_disassembler);
 
 			SetMemoryDomains();
 		}

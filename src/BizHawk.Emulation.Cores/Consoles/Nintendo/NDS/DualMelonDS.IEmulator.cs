@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 {
 	partial class DualNDS : IEmulator
 	{
-		public IEmulatorServiceProvider ServiceProvider { get; }
+		public IEmulatorServiceProvider ServiceProvider => _serviceProvider;
 
 		public ControllerDefinition ControllerDefinition => DualNDSController;
 
