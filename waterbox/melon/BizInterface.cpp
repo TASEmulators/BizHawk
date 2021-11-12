@@ -328,10 +328,10 @@ EXPORT void FrameAdvance(MyFrameInfo* f)
 	biz_time = f->Time;
 	NDS::RunFrame();
 
-	s32* topScreenVideoBuffer = &f->VideoBuffer[0];
-	s32* bottomScreenVideoBuffer = &f->VideoBuffer[256 * 192];
-	s32* topScreenFrameBuffer = &GPU::Framebuffer[GPU::FrontBuffer][0];
-	s32* bottomScreenFrameBuffer = &GPU::Framebuffer[GPU::FrontBuffer][1];
+	u32* topScreenVideoBuffer = &f->VideoBuffer[0];
+	u32* bottomScreenVideoBuffer = &f->VideoBuffer[256 * 192];
+	u32* topScreenFrameBuffer = GPU::Framebuffer[GPU::FrontBuffer][0];
+	u32* bottomScreenFrameBuffer = GPU::Framebuffer[GPU::FrontBuffer][1];
 	for (int i = 0; i < 192; i++)
 	{
 		memcpy(&topScreenVideoBuffer[i * 256], &topScreenFrameBuffer[i * 256], 256 * 4);
@@ -420,10 +420,10 @@ static s16 biz_sound_buffer[1024 * 2];
 EXPORT void PostFrameStep(MyFrameInfo* f)
 {
 	NDS::PostFrameStep();
-	s32* topScreenVideoBuffer = &f->VideoBuffer[0];
-	s32* bottomScreenVideoBuffer = &f->VideoBuffer[2 * 256 * 192];
-	s32* topScreenFrameBuffer = &GPU::Framebuffer[GPU::FrontBuffer][0];
-	s32* bottomScreenFrameBuffer = &GPU::Framebuffer[GPU::FrontBuffer][1];
+	u32* topScreenVideoBuffer = &f->VideoBuffer[0];
+	u32* bottomScreenVideoBuffer = &f->VideoBuffer[2 * 256 * 192];
+	u32* topScreenFrameBuffer = GPU::Framebuffer[GPU::FrontBuffer][0];
+	u32* bottomScreenFrameBuffer = GPU::Framebuffer[GPU::FrontBuffer][1];
 	for (int i = 0; i < 192; i++)
 	{
 		memcpy(&topScreenVideoBuffer[i * 2 * 256], &topScreenFrameBuffer[i * 256], 256 * 4);
