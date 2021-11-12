@@ -73,6 +73,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 					rrunning = R.FrameStep();
 
 				// todo: actually handle lan packets
+				// todo: frame step doesn't really step for now, it'll do all the steps on the unmanaged side. the enter spams will MASSIVELY slow down emulation to the point of a practical deadlock
 			}
 
 			unsafe
