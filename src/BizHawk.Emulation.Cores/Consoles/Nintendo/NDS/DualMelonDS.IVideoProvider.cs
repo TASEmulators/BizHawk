@@ -18,20 +18,5 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		public int[] GetVideoBuffer() => VideoBuffer;
 
 		private readonly int[] VideoBuffer = new int[256 * 2 * 384];
-
-		private unsafe void ProcessVideo()
-		{
-			fixed (int* lb = &L.GetVideoBuffer()[0], rb = &R.GetVideoBuffer()[0], vb = &VideoBuffer[0])
-			{
-				for (int i = 0; i < 384; i++)
-				{
-					for (int j = 0; j < 256; j++)
-					{
-						vb[i * 512 + j] = lb[i * 256 + j];
-						vb[i * 512 + j + 256] = rb[i * 256 + j];
-					}
-				}
-			}
-		}
 	}
 }

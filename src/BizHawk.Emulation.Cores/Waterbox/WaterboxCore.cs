@@ -106,7 +106,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			return realTime ? (long)(DateTime.Now - Epoch).TotalSeconds : _clockTime;
 		}
 
-		private void AdvanceRtc()
+		// don't touch pls
+		public void AdvanceRtc()
 		{
 			_clockRemainder += VsyncDenominator;
 			if (_clockRemainder >= VsyncNumerator)

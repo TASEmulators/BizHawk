@@ -412,7 +412,10 @@ EXPORT void PreFrameStep(MyFrameInfo* f)
 
 EXPORT bool FrameStep()
 {
-	return NDS::RunFrameStep();
+    bool runningFrame = true;
+    while (runningFrame)
+        runningFrame = NDS::RunFrameStep();
+    return runningFrame;
 }
 
 static s16 biz_sound_buffer[1024 * 2];
@@ -437,6 +440,14 @@ EXPORT void PostFrameStep(MyFrameInfo* f)
     {
         s32 samp = (biz_sound_buffer[i * 2] + biz_sound_buffer[i * 2 + 1]) / 2;
         f->SoundBuffer[i * 2] = samp;
+    }
+    if (f->Samples < 547)
+    {
+        for (int i = f->Samples; i < 547; i++)
+        {
+            f->SoundBuffer[i * 2] = 0;
+        }
+        f->Samples = 547;
     }
 	f->Cycles = NDS::GetSysClockCycles(2);
 	f->Lagged = NDS::LagFrameFlag;

@@ -100,5 +100,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		[BizImport(CC)]
 		public abstract void SetTraceCallback(TraceCallback callback);
+
+		// dual core functions
+
+		[BizImport(CC)]
+		public abstract void PreFrameStep([In, Out] LibWaterboxCore.FrameInfo frame);
+
+		[BizImport(CC)]
+		public abstract bool FrameStep();
+
+		[BizImport(CC)]
+		public abstract void PostFrameStep([In, Out] LibWaterboxCore.FrameInfo frame);
 	}
 }

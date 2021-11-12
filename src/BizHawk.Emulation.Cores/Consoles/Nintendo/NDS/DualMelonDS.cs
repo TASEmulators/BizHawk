@@ -11,12 +11,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		private NDS L;
 		private NDS R;
 
-		private readonly BasicServiceProvider _serviceProvider;
-
 		private readonly SaveController LCont = new SaveController(NDS.NDSController);
 		private readonly SaveController RCont = new SaveController(NDS.NDSController);
 
+		private readonly BasicServiceProvider _serviceProvider;
 		private readonly NDSDisassembler _disassembler;
+		private SpeexResampler _resampler;
 		private bool _disposed = false;
 
 		[CoreConstructor("DualNDS")]
@@ -36,6 +36,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 			_disassembler = new NDSDisassembler();
 			_serviceProvider.Register<IDisassemblable>(_disassembler);
+
+			_resampler = new SpeexResampler(SpeexResampler.Quality.QUALITY_DEFAULT, 32768, 44100, 32768, 44100, null, this);
+			_serviceProvider.Register<ISoundProvider>(_resampler);
 
 			SetMemoryDomains();
 		}

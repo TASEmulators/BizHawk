@@ -36,30 +36,5 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		private readonly short[] SampleBuffer = new short[1024 * 2];
 		private int _sampleBufferContains = 0;
-
-		private unsafe void ProcessSound()
-		{
-			L.GetSamplesSync(out short[] lsamples, out int lnsamp);
-			fixed (short* ls = &lsamples[0], sb = &SampleBuffer[0])
-			{
-				for (int i = 0; i < lnsamp; i++)
-				{
-					int lsamp = (lsamples[i * 2] + lsamples[i * 2 + 1]) >> 1;
-					sb[i * 2] = (short)lsamp;
-				}
-			}
-
-			R.GetSamplesSync(out short[] rsamples, out int rnsamp);
-			fixed (short* rs = &rsamples[0], sb = &SampleBuffer[1])
-			{
-				for (int i = 0; i < rnsamp; i++)
-				{
-					int rsamp = (rsamples[i * 2] + rsamples[i * 2 + 1]) >> 1;
-					sb[i * 2] = (short)rsamp;
-				}
-			}
-
-			_sampleBufferContains = Math.Max(lnsamp, rnsamp);
-		}
 	}
 }

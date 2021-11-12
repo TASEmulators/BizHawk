@@ -60,13 +60,35 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				}
 			}
 
-			// todo: step through the frame and actually handle lan packets
+			var lframe = L.FrameStepPrep(LCont, render, rendersound);
+			var rframe = R.FrameStepPrep(RCont, render, rendersound);
 
-			L.FrameAdvance(LCont, render, rendersound);
-			R.FrameAdvance(RCont, render, rendersound);
+			bool ldone = false;
+			bool rdone = false;
+			while (!ldone || !rdone)
+			{
+				if (!ldone)
+					ldone = L.FrameStep();
+				//if (!rdone)
+					//rdone = R.FrameStep();
+				rdone = true;
 
-			ProcessVideo();
-			ProcessSound();
+				// todo: actually handle lan packets
+			}
+
+			unsafe
+			{
+				fixed (int* lvb = &VideoBuffer[0], rvb = &VideoBuffer[256])
+				fixed (short* lsb = &SampleBuffer[0], rsb = &SampleBuffer[1])
+				{
+					lframe.VideoBuffer = (IntPtr)lvb;
+					lframe.SoundBuffer = (IntPtr)lsb;
+					L.FrameStepPost(lframe);
+					rframe.VideoBuffer = (IntPtr)rvb;
+					rframe.SoundBuffer = (IntPtr)rsb;
+					R.FrameStepPost(rframe);
+				}
+			}
 
 			IsLagFrame = L.IsLagFrame && R.IsLagFrame;
 			if (IsLagFrame)
@@ -75,6 +97,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			}
 
 			Frame++;
+
+			if (rendersound)
+			{
+				_sampleBufferContains = Math.Min(lframe.Samples, rframe.Samples);
+			}
+			else
+			{
+				_sampleBufferContains = 0;
+			}
 
 			return true;
 		}

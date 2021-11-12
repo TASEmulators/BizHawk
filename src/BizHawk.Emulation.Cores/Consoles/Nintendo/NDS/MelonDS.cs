@@ -262,6 +262,33 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			}
 		}
 
+		public LibWaterboxCore.FrameInfo FrameStepPrep(IController controller, bool render, bool rendersound)
+		{
+			using (_exe.EnterExit())
+			{
+				var frame = FrameAdvancePrep(controller, render, rendersound);
+				_core.PreFrameStep(frame);
+				return frame;
+			}
+		}
+
+		public bool FrameStep()
+		{
+			using (_exe.EnterExit())
+			{
+				return _core.FrameStep();
+			}
+		}
+
+		public void FrameStepPost(LibWaterboxCore.FrameInfo frame)
+		{
+			using (_exe.EnterExit())
+			{
+				_core.PostFrameStep(frame);
+				AdvanceRtc();
+			}
+		}
+
 		// omega hack
 		public class NDSSystemBus : MemoryDomain
 		{
