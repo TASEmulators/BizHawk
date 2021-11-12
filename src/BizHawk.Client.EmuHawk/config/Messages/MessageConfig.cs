@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using BizHawk.Client.Common;
+using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -80,19 +81,19 @@ namespace BizHawk.Client.EmuHawk
 			MessageTypeBox.Controls.Clear();
 
 			int y = 12;
-			foreach (var position in Positions)
+			foreach (var (name, pos) in Positions)
 			{
 				var row = new MessageRow
 				{
-					Name = position.Key,
+					Name = name,
 					Location = new Point(10, y)
 				};
 				row.Size = new Size(MessageTypeBox.Width - 12, row.Size.Height);
-				row.Bind(position.Key, position.Value, (e) => { SetMessagePosition(row, e); });
-				if (position.Value == _fps)
+				row.Bind(name, pos, e => SetMessagePosition(row, e));
+				if (pos == _fps)
 				{
 					row.Checked = true;
-					MessageEditor.Bind(position.Value, () => { row.SetText(); });
+					MessageEditor.Bind(pos, row.SetText);
 				}
 				y += row.Size.Height;
 
@@ -104,14 +105,14 @@ namespace BizHawk.Client.EmuHawk
 		{
 			ColorBox.Controls.Clear();
 			int y = 20;
-			foreach (var color in Colors)
+			foreach (var (name, argb) in Colors)
 			{
 				var row = new ColorRow
 				{
-					Name = color.Key,
+					Name = name,
 					Location = new Point(10, y),
-					DisplayName = color.Key,
-					SelectedColor = color.Value
+					DisplayName = name,
+					SelectedColor = argb
 				};
 				row.Size = new Size(ColorBox.Width - 12, row.Size.Height);
 				y += row.Size.Height;

@@ -90,10 +90,10 @@ namespace BizHawk.Tests.Client.Common.config
 		{
 			static object Deser(string s, Type type) => JToken.Parse(s).ToObject(type, ConfigService.Serializer)!;
 			static string Ser(object o) => JToken.FromObject(o, ConfigService.Serializer).ToString(Formatting.None);
-			foreach (var kvp in KnownGoodFromBizHawk)
+			foreach (var (type, s) in KnownGoodFromBizHawk)
 			{
-				if (kvp.Value == "TODO") continue;
-				Assert.AreEqual(kvp.Value, Ser(Deser(kvp.Value, kvp.Key)), $"{kvp.Key} failed serialization round-trip");
+				if (s == "TODO") continue;
+				Assert.AreEqual(s, Ser(Deser(s, type)), $"{type} failed serialization round-trip");
 			}
 		}
 	}

@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -26,7 +27,7 @@ namespace BizHawk.Client.Common
 		{
 			var options = new Dictionary<string, string?>();
 			if (_game == null) return options;
-			foreach (var option in ((GameInfo) _game).GetOptions()) options[option.Key] = option.Value;
+			foreach (var (k, v) in ((GameInfo) _game).GetOptions()) options[k] = v;
 			return options;
 		}
 	}

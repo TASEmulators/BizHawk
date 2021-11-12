@@ -12,10 +12,10 @@ namespace BizHawk.Client.Common
 		public Controller(ControllerDefinition definition)
 		{
 			Definition = definition;
-			foreach (var kvp in Definition.Axes)
+			foreach (var (k, v) in Definition.Axes)
 			{
-				_axes[kvp.Key] = kvp.Value.Neutral;
-				_axisRanges[kvp.Key] = kvp.Value;
+				_axes[k] = v.Neutral;
+				_axisRanges[k] = v;
 			}
 			foreach (var channel in Definition.HapticsChannels) _haptics[channel] = 0;
 		}
@@ -65,54 +65,54 @@ namespace BizHawk.Client.Common
 		{
 			_buttons.Clear();
 			
-			foreach (var kvp in _bindings)
+			foreach (var (k, v) in _bindings)
 			{
-				_buttons[kvp.Key] = false;
-				foreach (var button in kvp.Value)
+				_buttons[k] = false;
+				foreach (var button in v)
 				{
 					if (finalHostController.IsPressed(button))
 					{
-						_buttons[kvp.Key] = true;
+						_buttons[k] = true;
 					}
 				}
 			}
 
-			foreach (var kvp in _axisBindings)
+			foreach (var (k, v) in _axisBindings)
 			{
 				// values from finalHostController are ints in -10000..10000 (or 0..10000), so scale to -1..1, using floats to keep fractional part
-				var value = finalHostController.AxisValue(kvp.Value.Value) / 10000.0f;
+				var value = finalHostController.AxisValue(v.Value) / 10000.0f;
 
 				// apply deadzone (and scale diminished range back up to -1..1)
-				var deadzone = kvp.Value.Deadzone;
+				var deadzone = v.Deadzone;
 				if (value < -deadzone) value += deadzone;
 				else if (value < deadzone) value = 0.0f;
 				else value -= deadzone;
 				value /= 1.0f - deadzone;
 
 				// scale by user-set multiplier (which is -2..2, therefore value is now in -2..2)
-				value *= kvp.Value.Mult;
+				value *= v.Mult;
 
 				// -1..1 -> -A..A (where A is the larger "side" of the range e.g. a range of 0..50, neutral=10 would give A=40, and thus a value in -40..40)
-				var range = _axisRanges[kvp.Key];
+				var range = _axisRanges[k];
 				value *= Math.Max(range.Neutral - range.Min, range.Max - range.Neutral);
 
 				// shift the midpoint, so a value of 0 becomes range.Neutral (and, assuming >=1x multiplier, all values in range are reachable)
 				value += range.Neutral;
 
 				// finally, constrain to range
-				_axes[kvp.Key] = ((int) value).ConstrainWithin(range.Range);
+				_axes[k] = ((int) value).ConstrainWithin(range.Range);
 			}
 		}
 
 		public void PrepareHapticsForHost(SimpleController finalHostController)
 		{
-			foreach (var kvp in _feedbackBindings)
+			foreach (var (k, v) in _feedbackBindings)
 			{
-				if (_haptics.TryGetValue(kvp.Key, out var strength))
+				if (_haptics.TryGetValue(k, out var strength))
 				{
-					foreach (var hostChannel in kvp.Value.Channels!.Split('+'))
+					foreach (var hostChannel in v.Channels!.Split('+'))
 					{
-						finalHostController.SetHapticChannelStrength(kvp.Value.GamepadPrefix + hostChannel, (int) ((double) strength * kvp.Value.Prescale));
+						finalHostController.SetHapticChannelStrength(v.GamepadPrefix + hostChannel, (int) ((double) strength * v.Prescale));
 					}
 				}
 			}

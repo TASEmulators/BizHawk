@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Data;
 
+using BizHawk.Common;
+
 namespace BizHawk.Client.EmuHawk
 {
 	public class DataTableDictionaryBind<TKey, TValue>
@@ -22,10 +24,7 @@ namespace BizHawk.Client.EmuHawk
 			Table = new DataTable();
 			Table.Columns.Add("Key", typeof(TKey));
 			Table.Columns.Add("Value", typeof(TValue));
-			foreach (var kvp in Dictionary)
-			{
-				Table.Rows.Add(kvp.Key, kvp.Value);
-			}
+			foreach (var (k, v) in Dictionary) Table.Rows.Add(k, v);
 
 			Table.RowChanged += Table_RowChanged;
 			WasModified = false;

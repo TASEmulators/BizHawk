@@ -25,10 +25,7 @@ namespace BizHawk.Client.Common
 			old.Truncate(0); // Trying to minimize ram usage
 
 			tas.HeaderEntries.Clear();
-			foreach (var kvp in old.HeaderEntries)
-			{
-				tas.HeaderEntries[kvp.Key] = kvp.Value;
-			}
+			foreach (var (k, v) in old.HeaderEntries) tas.HeaderEntries[k] = v;
 
 			// TODO: we have this version number string generated in multiple places
 			tas.HeaderEntries[HeaderKeys.MovieVersion] = $"BizHawk v2.0 Tasproj v{TasMovie.CurrentVersion}";
@@ -61,10 +58,7 @@ namespace BizHawk.Client.Common
 			bk2.CopyLog(old.GetLogEntries());
 
 			bk2.HeaderEntries.Clear();
-			foreach (var kvp in old.HeaderEntries)
-			{
-				bk2.HeaderEntries[kvp.Key] = kvp.Value;
-			}
+			foreach (var (k, v) in old.HeaderEntries) bk2.HeaderEntries[k] = v;
 
 			// TODO: we have this version number string generated in multiple places
 			bk2.HeaderEntries[HeaderKeys.MovieVersion] = "BizHawk v2.0";
@@ -113,10 +107,7 @@ namespace BizHawk.Client.Common
 			tas.LagLog.StartFromFrame(frame);
 
 			tas.HeaderEntries.Clear();
-			foreach (var kvp in old.HeaderEntries)
-			{
-				tas.HeaderEntries[kvp.Key] = kvp.Value;
-			}
+			foreach (var (k, v) in old.HeaderEntries) tas.HeaderEntries[k] = v;
 
 			tas.StartsFromSavestate = true;
 			tas.SyncSettingsJson = old.SyncSettingsJson;
@@ -162,10 +153,7 @@ namespace BizHawk.Client.Common
 			tas.CopyVerificationLog(entries);
 
 			tas.HeaderEntries.Clear();
-			foreach (var kvp in old.HeaderEntries)
-			{
-				tas.HeaderEntries[kvp.Key] = kvp.Value;
-			}
+			foreach (var (k, v) in old.HeaderEntries) tas.HeaderEntries[k] = v;
 
 			tas.StartsFromSaveRam = true;
 			tas.SyncSettingsJson = old.SyncSettingsJson;

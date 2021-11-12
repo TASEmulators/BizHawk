@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -79,7 +80,7 @@ namespace BizHawk.Client.Common
 			{
 				return table;
 			}
-			foreach (var kvp in _movieSession.Movie.HeaderEntries) table[kvp.Key] = kvp.Value;
+			foreach (var (k, v) in _movieSession.Movie.HeaderEntries) table[k] = v;
 			return table;
 		}
 

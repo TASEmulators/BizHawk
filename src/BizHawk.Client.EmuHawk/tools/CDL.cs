@@ -7,6 +7,7 @@ using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.Properties;
 using BizHawk.Client.EmuHawk.ToolExtensions;
+using BizHawk.Common;
 
 // TODO - select which memorydomains go out to the CDL file. will this cause a problem when re-importing it?
 // perhaps missing domains shouldn't fail a check
@@ -133,7 +134,7 @@ namespace BizHawk.Client.EmuHawk
 			_listContents = new string[_cdl.Count][];
 
 			int idx = 0;
-			foreach (var kvp in _cdl)
+			foreach (var (scope, dataA) in _cdl)
 			{
 				int[] totals = new int[8];
 				int total = 0;
@@ -141,10 +142,10 @@ namespace BizHawk.Client.EmuHawk
 				for (int i = 0; i < 256; i++)
 					map[i] = 0;
 
-				fixed (byte* data = kvp.Value)
+				fixed (byte* data = dataA)
 				{
 					byte* src = data;
-					byte* end = data + kvp.Value.Length;
+					byte* end = data + dataA.Length;
 					while (src < end)
 					{
 						byte s = *src++;
@@ -166,28 +167,28 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				var bm = _cdl.GetBlockMap();
-				long addr = bm[kvp.Key];
+				long addr = bm[scope];
 
 				var lvi = _listContents[idx++] = new string[13];
 				lvi[0] = $"{addr:X8}";
-				lvi[1] = kvp.Key;
-				lvi[2] = $"{total / (float)kvp.Value.Length * 100f:0.00}%";
+				lvi[1] = scope;
+				lvi[2] = $"{total / (float) dataA.Length * 100f:0.00}%";
 				if (tsbViewStyle.SelectedIndex == 2)
 					lvi[3] = $"{total / 1024.0f:0.00}";
 				else
 					lvi[3] = $"{total}";
 				if (tsbViewStyle.SelectedIndex == 2)
 				{
-					int n = (int)(kvp.Value.Length / 1024.0f);
-					float ncheck = kvp.Value.Length / 1024.0f;
+					int n = (int) (dataA.Length / 1024.0f);
+					float ncheck = dataA.Length / 1024.0f;
 					lvi[4] = $"of {(n == ncheck ? "" : "~")}{n} KBytes";
 				}
 				else
-					lvi[4] = $"of {kvp.Value.Length} Bytes";
+					lvi[4] = $"of {dataA.Length} Bytes";
 				for (int i = 0; i < 8; i++)
 				{
 					if (tsbViewStyle.SelectedIndex == 0)
-						lvi[5 + i] = $"{totals[i] / (float)kvp.Value.Length * 100f:0.00}%";
+						lvi[5 + i] = $"{totals[i] / (float) dataA.Length * 100f:0.00}%";
 					if (tsbViewStyle.SelectedIndex == 1)
 						lvi[5 + i] = $"{totals[i]}";
 					if (tsbViewStyle.SelectedIndex == 2)

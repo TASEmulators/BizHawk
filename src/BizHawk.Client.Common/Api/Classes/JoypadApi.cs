@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -90,7 +91,7 @@ namespace BizHawk.Client.Common
 
 		public void SetAnalog(IReadOnlyDictionary<string, int?> controls, object controller = null)
 		{
-			foreach (var kvp in controls) SetAnalog(kvp.Key, kvp.Value, controller);
+			foreach (var (k, v) in controls) SetAnalog(k, v, controller);
 		}
 
 		public void SetAnalog(string control, int? value = null, object controller = null)

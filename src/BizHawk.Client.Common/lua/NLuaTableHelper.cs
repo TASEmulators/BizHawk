@@ -4,6 +4,8 @@ using System.Drawing;
 using System.Globalization;
 using System.Linq;
 
+using BizHawk.Common;
+
 using NLua;
 
 namespace BizHawk.Client.Common
@@ -25,12 +27,7 @@ namespace BizHawk.Client.Common
 		public LuaTable DictToTable<T>(IReadOnlyDictionary<string, T> dictionary)
 		{
 			var table = _lua.NewTable();
-
-			foreach (var kvp in dictionary)
-			{
-				table[kvp.Key] = kvp.Value;
-			}
-
+			foreach (var (k, v) in dictionary) table[k] = v;
 			return table;
 		}
 

@@ -3812,17 +3812,17 @@ namespace BizHawk.Client.EmuHawk
 						{
 							var ext = Path.GetExtension(xmlGame.AssetFullPaths[xg])?.ToLowerInvariant();
 
+							var (filename, data) = xmlGame.Assets[xg];
 							if (ext == ".cue" || ext == ".ccd" || ext == ".toc" || ext == ".mds")
 							{
-								xSw.WriteLine(Path.GetFileNameWithoutExtension(xmlGame.Assets[xg].Key));
+								xSw.WriteLine(Path.GetFileNameWithoutExtension(filename));
 								xSw.WriteLine("SHA1:N/A");
 								xSw.WriteLine("MD5:N/A");
 								xSw.WriteLine();
 							}
 							else
 							{
-								xSw.WriteLine(xmlGame.Assets[xg].Key);
-								var data = xmlGame.Assets[xg].Value;
+								xSw.WriteLine(filename);
 								xSw.WriteLine(SHA1Checksum.ComputePrefixedHex(data));
 								xSw.WriteLine(MD5Checksum.ComputePrefixedHex(data));
 								xSw.WriteLine();

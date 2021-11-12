@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -166,11 +167,10 @@ namespace BizHawk.Client.EmuHawk
 				var tt = new TabControl { Dock = DockStyle.Fill };
 				dest.Controls.Add(tt);
 				int pageIdx = 0;
-				foreach (var kvp in orderedBuckets)
+				foreach (var (tabName, buttons) in orderedBuckets)
 				{
-					string tabName = kvp.Key;
 					tt.TabPages.Add(tabName);
-					tt.TabPages[pageIdx++].Controls.Add(createPanel(settings, kvp.Value, tt.Size));
+					tt.TabPages[pageIdx++].Controls.Add(createPanel(settings, buttons, tt.Size));
 				}
 			}
 		}

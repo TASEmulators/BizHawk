@@ -73,10 +73,7 @@ namespace BizHawk.Client.Common
 			}
 
 			// axes don't have sticky logic, so latch default value
-			foreach (var kvp in Definition.Axes)
-			{
-				_myAxisControls[kvp.Key] = kvp.Value.Neutral;
-			}
+			foreach (var (k, v) in Definition.Axes) _myAxisControls[k] = v.Neutral;
 		}
 
 		public void SetFromMnemonic(string mnemonic)

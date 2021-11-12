@@ -637,10 +637,10 @@ namespace BizHawk.Client.EmuHawk
 					.OfType<BotControlsRow>()
 					.ToList();
 
-			foreach (var kvp in botData.ControlProbabilities)
+			foreach (var (button, p) in botData.ControlProbabilities)
 			{
-				var control = probabilityControls.Single(c => c.ButtonName == kvp.Key);
-				control.Probability = kvp.Value;
+				var control = probabilityControls.Single(c => c.ButtonName == button);
+				control.Probability = p;
 			}
 
 			MaximizeAddress = botData.Maximize;

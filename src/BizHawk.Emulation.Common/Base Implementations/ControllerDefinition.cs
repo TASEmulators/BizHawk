@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
+using BizHawk.Common;
+
 namespace BizHawk.Emulation.Common
 {
 	/// <summary>
@@ -47,14 +49,14 @@ namespace BizHawk.Emulation.Common
 		public void ApplyAxisConstraints(string constraintClass, IDictionary<string, int> axes)
 		{
 			if (!Axes.HasContraints) return;
-			foreach (var kvp in Axes)
+			foreach (var (k, v) in Axes)
 			{
-				var constraint = kvp.Value.Constraint;
+				var constraint = v.Constraint;
 				if (constraint == null || constraint.Class != constraintClass) continue;
 				switch (constraint)
 				{
 					case CircularAxisConstraint circular:
-						var xAxis = kvp.Key;
+						var xAxis = k;
 						var yAxis = circular.PairedAxis;
 						(axes[xAxis], axes[yAxis]) = circular.ApplyTo(axes[xAxis], axes[yAxis]);
 						break;

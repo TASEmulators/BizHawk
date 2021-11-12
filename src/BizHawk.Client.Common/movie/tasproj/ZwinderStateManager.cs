@@ -66,14 +66,11 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				var kvp = GetStateClosestToFrame(frame);
-				if (kvp.Key != frame)
-				{
-					return NonState;
-				}
+				var (f, data) = GetStateClosestToFrame(frame);
+				if (f != frame) return NonState;
 
 				var ms = new MemoryStream();
-				kvp.Value.CopyTo(ms);
+				data.CopyTo(ms);
 				return ms.ToArray();
 			}
 		}
@@ -148,8 +145,7 @@ namespace BizHawk.Client.Common
 			}
 			if (_reserved != null)
 			{
-				foreach (var kvp in _reserved)
-					newReserved.Add(kvp.Key, kvp.Value);
+				foreach (var (f, data) in _reserved) newReserved.Add(f, data);
 				(_reserved as TempFileStateDictionary)?.Dispose();
 			}
 			_reserved = newReserved;
@@ -568,11 +564,11 @@ namespace BizHawk.Client.Common
 			_gapFiller.SaveStateBinary(bw);
 
 			bw.Write(_reserved.Count);
-			foreach (var s in _reserved)
+			foreach (var (f, data) in _reserved)
 			{
-				bw.Write(s.Key);
-				bw.Write(s.Value.Length);
-				bw.Write(s.Value);
+				bw.Write(f);
+				bw.Write(data.Length);
+				bw.Write(data);
 			}
 		}
 

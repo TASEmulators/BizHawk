@@ -342,11 +342,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			lock (_axisValues)
 			{
-				foreach (var kvp in _axisDeltas)
+				foreach (var (k, v) in _axisDeltas)
 				{
 					// need to wiggle the stick a bit
-					if (kvp.Value >= 20000.0f)
-						return kvp.Key;
+					if (v >= 20000.0f) return k;
 				}
 			}
 			return null;

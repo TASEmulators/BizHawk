@@ -248,12 +248,12 @@ namespace BizHawk.Emulation.DiscSystem
 			private void Flush()
 			{
 				subchunks.Clear();
-				foreach (KeyValuePair<string, string> kvp in dictionary)
+				foreach (var (subchunkTag, s) in dictionary)
 				{
 					RiffSubchunk rs = new RiffSubchunk
 						{
-							tag = kvp.Key,
-							Source = new MemoryStream(System.Text.Encoding.ASCII.GetBytes(kvp.Value)),
+							tag = subchunkTag,
+							Source = new MemoryStream(System.Text.Encoding.ASCII.GetBytes(s)),
 							Position = 0
 						};
 					rs.Length = (uint)rs.Source.Length;

@@ -60,10 +60,10 @@ namespace BizHawk.Common
 			var temp = firstIsDesc
 				? list.OrderByDescending(_predicates[idOfFirst])
 				: list.OrderBy(_predicates[idOfFirst]);
-			foreach (var kvp in _predicates)
+			foreach (var (id, pred) in _predicates)
 			{
-				if (kvp.Key == idOfFirst) continue;
-				temp = temp.ThenBy(kvp.Value);
+				if (id == idOfFirst) continue;
+				temp = temp.ThenBy(pred);
 			}
 			return temp.ToList();
 		}
@@ -73,10 +73,10 @@ namespace BizHawk.Common
 			var temp = isDescMap[idOfFirst]
 				? list.OrderByDescending(_predicates[idOfFirst])
 				: list.OrderBy(_predicates[idOfFirst]);
-			foreach (var kvp in _predicates)
+			foreach (var (id, pred) in _predicates)
 			{
-				if (kvp.Key == idOfFirst) continue;
-				temp = isDescMap[kvp.Key] ? temp.ThenByDescending(kvp.Value) : temp.ThenBy(kvp.Value);
+				if (id == idOfFirst) continue;
+				temp = isDescMap[id] ? temp.ThenByDescending(pred) : temp.ThenBy(pred);
 			}
 			return temp.ToList();
 		}

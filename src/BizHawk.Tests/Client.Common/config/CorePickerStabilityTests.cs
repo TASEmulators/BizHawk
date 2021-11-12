@@ -35,9 +35,9 @@ namespace BizHawk.Tests.Client.Common.config
 		public void AssertNoMissingCores()
 		{
 			var allCoreNames = CoreInventory.Instance.SystemsFlat.Select(coreInfo => coreInfo.Name).ToHashSet();
-			foreach (var kvp in DefaultCorePrefDict)
+			foreach (var (sysID, coreName) in DefaultCorePrefDict)
 			{
-				Assert.IsTrue(allCoreNames.Contains(kvp.Value), $"default core preference for {kvp.Key} is \"{kvp.Value}\", which doesn't exist");
+				Assert.IsTrue(allCoreNames.Contains(coreName), $"default core preference for {sysID} is \"{coreName}\", which doesn't exist");
 			}
 			foreach (var (appliesTo, coreNames) in Config.CorePickerUIData) foreach (var coreName in coreNames)
 			{

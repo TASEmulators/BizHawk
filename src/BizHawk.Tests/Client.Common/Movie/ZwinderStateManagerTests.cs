@@ -139,9 +139,9 @@ namespace BizHawk.Tests.Client.Common.Movie
 				ss.Frame = frame;
 				zw.Capture(frame, ss);
 			}
-			var kvp = zw.GetStateClosestToFrame(10440);
-			var actual = StateSource.GetFrameNumberInState(kvp.Value);
-			Assert.AreEqual(kvp.Key, actual);
+			var (f, data) = zw.GetStateClosestToFrame(10440);
+			var actual = StateSource.GetFrameNumberInState(data);
+			Assert.AreEqual(f, actual);
 			Assert.IsTrue(actual <= 10440);
 		}
 

@@ -3,6 +3,8 @@ using System.IO;
 using System.Globalization;
 using System.Collections.Generic;
 
+using BizHawk.Common;
+
 //check out ccd2iso linux program?
 //https://wiki.archlinux.org/index.php/CD_Burning#TOC.2FCUE.2FBIN_for_mixed-mode_disks advice here
 //also referencing mednafen sources
@@ -307,15 +309,10 @@ namespace BizHawk.Emulation.DiscSystem
 					CCDTrack track = new CCDTrack(entryNum);
 					ccdf.Tracks.Add(track);
 					ccdf.TracksByNumber[entryNum] = track;
-					foreach (var kvp in section)
+					foreach (var (k, v) in section)
 					{
-						if (kvp.Key == "MODE")
-							track.Mode = kvp.Value;
-						if (kvp.Key.StartsWith("INDEX"))
-						{
-							int inum = int.Parse(kvp.Key.Split(' ')[1]);
-							track.Indexes[inum] = kvp.Value;
-						}
+						if (k == "MODE") track.Mode = v;
+						else if (k.StartsWith("INDEX")) track.Indexes[int.Parse(k.Split(' ')[1])] = v;
 					}
 				}
 			} //sections loop

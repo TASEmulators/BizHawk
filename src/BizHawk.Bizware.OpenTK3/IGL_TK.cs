@@ -768,19 +768,19 @@ namespace BizHawk.Bizware.OpenTK3
 			}
 			GL.ClientActiveTexture(TextureUnit.Texture0);
 
-			foreach (var kvp in layout.Items)
+			foreach (var (i, item) in layout.Items)
 			{
 				if(_currPipeline.Memo == "gui")
 				{
 					GL.VertexAttribPointer(
-						kvp.Key,
-						kvp.Value.Components,
-						(VertexAttribPointerType) (int) kvp.Value.AttribType, // these are the same enum
-						kvp.Value.Normalized,
-						kvp.Value.Stride,
-						pData + kvp.Value.Offset);
-					GL.EnableVertexAttribArray(kvp.Key);
-					currBindings.Add(kvp.Key);
+						i,
+						item.Components,
+						(VertexAttribPointerType) (int) item.AttribType, // these are the same enum
+						item.Normalized,
+						item.Stride,
+						pData + item.Offset);
+					GL.EnableVertexAttribArray(i);
+					currBindings.Add(i);
 				}
 				else
 				{
@@ -788,21 +788,21 @@ namespace BizHawk.Bizware.OpenTK3
 					var pw = _currPipeline.Opaque as PipelineWrapper;
 
 					//comment SNACKPANTS
-					switch (kvp.Value.Usage)
+					switch (item.Usage)
 					{
 						case AttribUsage.Position:
 							GL.EnableClientState(ArrayCap.VertexArray);
-							GL.VertexPointer(kvp.Value.Components,VertexPointerType.Float,kvp.Value.Stride,pData + kvp.Value.Offset);
+							GL.VertexPointer(item.Components, VertexPointerType.Float, item.Stride, pData + item.Offset);
 							break;
 						case AttribUsage.Texcoord0:
 							GL.ClientActiveTexture(TextureUnit.Texture0);
 							GL.EnableClientState(ArrayCap.TextureCoordArray);
-							GL.TexCoordPointer(kvp.Value.Components, TexCoordPointerType.Float, kvp.Value.Stride, pData + kvp.Value.Offset);
+							GL.TexCoordPointer(item.Components, TexCoordPointerType.Float, item.Stride, pData + item.Offset);
 							break;
 						case AttribUsage.Texcoord1:
 							GL.ClientActiveTexture(TextureUnit.Texture1);
 							GL.EnableClientState(ArrayCap.TextureCoordArray);
-							GL.TexCoordPointer(kvp.Value.Components, TexCoordPointerType.Float, kvp.Value.Stride, pData + kvp.Value.Offset);
+							GL.TexCoordPointer(item.Components, TexCoordPointerType.Float, item.Stride, pData + item.Offset);
 							GL.ClientActiveTexture(TextureUnit.Texture0);
 							break;
 						case AttribUsage.Color0:

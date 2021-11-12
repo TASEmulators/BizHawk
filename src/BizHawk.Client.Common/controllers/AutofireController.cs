@@ -59,26 +59,26 @@ namespace BizHawk.Client.Common
 		{
 			internal_frame = _emulator.Frame;
 			
-			foreach (var kvp in _bindings)
+			foreach (var (k, v) in _bindings)
 			{
-				foreach (var boundBtn in kvp.Value)
+				foreach (var boundBtn in v)
 				{
-					if (_buttons[kvp.Key] == false && controller.IsPressed(boundBtn))
+					if (_buttons[k] == false && controller.IsPressed(boundBtn))
 					{
-						_buttonStarts[kvp.Key] = _emulator.Frame;
+						_buttonStarts[k] = _emulator.Frame;
 					}
 				}
 			}
 			
 			_buttons.Clear();
-			foreach (var kvp in _bindings)
+			foreach (var (k, v) in _bindings)
 			{
-				_buttons[kvp.Key] = false;
-				foreach (var button in kvp.Value)
+				_buttons[k] = false;
+				foreach (var button in v)
 				{
 					if (controller.IsPressed(button))
 					{
-						_buttons[kvp.Key] = true;
+						_buttons[k] = true;
 					}
 				}
 			}

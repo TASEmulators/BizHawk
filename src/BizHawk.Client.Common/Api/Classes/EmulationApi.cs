@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
@@ -117,7 +118,7 @@ namespace BizHawk.Client.Common
 				if (DebuggableCore != null)
 				{
 					var table = new Dictionary<string, ulong>();
-					foreach (var kvp in DebuggableCore.GetCpuFlagsAndRegisters()) table[kvp.Key] = kvp.Value.Value;
+					foreach (var (name, rv) in DebuggableCore.GetCpuFlagsAndRegisters()) table[name] = rv.Value;
 					return table;
 				}
 			}

@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
+using BizHawk.Common;
+
 namespace BizHawk.Client.Common
 {
 	public sealed class InputApi : IInputApi
@@ -18,7 +20,7 @@ namespace BizHawk.Client.Common
 		public Dictionary<string, bool> Get()
 		{
 			var buttons = new Dictionary<string, bool>();
-			foreach (var kvp in _inputManager.ControllerInputCoalescer.BoolButtons().Where(kvp => kvp.Value)) buttons[kvp.Key] = true;
+			foreach (var (button, _) in _inputManager.ControllerInputCoalescer.BoolButtons().Where(kvp => kvp.Value)) buttons[button] = true;
 			return buttons;
 		}
 

@@ -182,10 +182,7 @@ namespace BizHawk.Client.Common
 					{
 						var bag = (Dictionary<string, object>)ConfigService.LoadWithType(userData);
 						_userBag.Clear();
-						foreach (var kvp in bag)
-						{
-							_userBag.Add(kvp.Key, kvp.Value);
-						}
+						foreach (var (k, v) in bag) _userBag.Add(k, v);
 					}
 
 					if (_movieSession.Movie.IsActive() && _movieSession.Movie is ITasMovie)

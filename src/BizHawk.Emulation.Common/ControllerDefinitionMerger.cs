@@ -3,6 +3,8 @@
 using System;
 using System.Collections.Generic;
 
+using BizHawk.Common;
+
 namespace BizHawk.Emulation.Common
 {
 	// the idea here is that various connected peripherals have their controls all merged
@@ -42,11 +44,11 @@ namespace BizHawk.Emulation.Common
 					buttonAxisRemaps[s] = r;
 				}
 
-				foreach (var kvp in def.Axes)
+				foreach (var (k, v) in def.Axes)
 				{
-					string r = Allocate(kvp.Key, ref plr, ref playerNext);
-					ret.Axes.Add(r, kvp.Value);
-					buttonAxisRemaps[kvp.Key] = r;
+					var r = Allocate(k, ref plr, ref playerNext);
+					ret.Axes.Add(r, v);
+					buttonAxisRemaps[k] = r;
 				}
 
 				plr = playerNext;

@@ -4,6 +4,8 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
+using BizHawk.Common;
+
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class FileExtensionPreferences : Form
@@ -20,12 +22,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			int spacing = UIHelper.ScaleY(30);
 			int count = 0;
-			foreach (var kvp in _preferredPlatformsForExtensions)
+			foreach (var (fileExt, sysID) in _preferredPlatformsForExtensions)
 			{
 				var picker = new FileExtensionPreferencesPicker(_preferredPlatformsForExtensions)
 				{
-					FileExtension = kvp.Key,
-					OriginalPreference = kvp.Value,
+					FileExtension = fileExt,
+					OriginalPreference = sysID,
 					Location = new Point(UIHelper.ScaleX(15), UIHelper.ScaleY(15) + (spacing * count))
 				};
 

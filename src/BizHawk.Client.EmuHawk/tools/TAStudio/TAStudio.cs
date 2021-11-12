@@ -8,6 +8,7 @@ using System.ComponentModel;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Client.EmuHawk.Properties;
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.N64;
 
@@ -343,22 +344,22 @@ namespace BizHawk.Client.EmuHawk
 				.LogGeneratorInstance(MovieSession.MovieController)
 				.Map();
 
-			foreach (var kvp in columnNames)
+			foreach (var (name, mnemonic) in columnNames)
 			{
 				ColumnType type;
 				int digits;
-				if (ControllerType.Axes.TryGetValue(kvp.Key, out var range))
+				if (ControllerType.Axes.TryGetValue(name, out var range))
 				{
 					type = ColumnType.Axis;
-					digits = Math.Max(kvp.Value.Length, range.MaxDigits);
+					digits = Math.Max(mnemonic.Length, range.MaxDigits);
 				}
 				else
 				{
 					type = ColumnType.Boolean;
-					digits = kvp.Value.Length;
+					digits = mnemonic.Length;
 				}
 
-				AddColumn(kvp.Key, kvp.Value, (digits * 6) + 14, type); // magic numbers reused in EditBranchTextPopUp()
+				AddColumn(name, mnemonic, (digits * 6) + 14, type); // magic numbers reused in EditBranchTextPopUp()
 			}
 
 			var columnsToHide = TasView.AllColumns

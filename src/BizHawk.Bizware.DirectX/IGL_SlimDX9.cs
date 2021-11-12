@@ -6,6 +6,7 @@ using System.Threading;
 
 using BizHawk.Bizware.BizwareGL;
 using BizHawk.Bizware.OpenTK3;
+using BizHawk.Common;
 
 using SlimDX.Direct3D9;
 
@@ -352,9 +353,8 @@ namespace BizHawk.Bizware.DirectX
 
 			var ves = new VertexElement[vertexLayout.Items.Count];
 			int stride = 0;
-			foreach (var kvp in vertexLayout.Items)
+			foreach (var (i, item) in vertexLayout.Items)
 			{
-				var item = kvp.Value;
 				DeclarationType declType;
 				switch (item.AttribType)
 				{
@@ -391,7 +391,7 @@ namespace BizHawk.Bizware.DirectX
 						throw new NotSupportedException();
 				}
 
-				ves[kvp.Key] = new VertexElement(0, (short)item.Offset, declType, DeclarationMethod.Default, usage, usageIndex);
+				ves[i] = new VertexElement(0, (short) item.Offset, declType, DeclarationMethod.Default, usage, usageIndex);
 			}
 
 			var pw = new PipelineWrapper
