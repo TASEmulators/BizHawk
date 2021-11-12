@@ -45,7 +45,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				for (int i = 0; i < lnsamp; i++)
 				{
 					int lsamp = (lsamples[i * 2] + lsamples[i * 2 + 1]) >> 1;
-					SampleBuffer[i * 2] = (short)lsamp;
+					sb[i * 2] = (short)lsamp;
 				}
 			}
 
@@ -55,7 +55,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				for (int i = 0; i < rnsamp; i++)
 				{
 					int rsamp = (rsamples[i * 2] + rsamples[i * 2 + 1]) >> 1;
-					SampleBuffer[i * 2] = (short)rsamp;
+					sb[i * 2] = (short)rsamp;
 				}
 			}
 

@@ -328,10 +328,10 @@ EXPORT void FrameAdvance(MyFrameInfo* f)
 	biz_time = f->Time;
 	NDS::RunFrame();
 
-	int* topScreenVideoBuffer = &f->VideoBuffer[0];
-	int* bottomScreenVideoBuffer = &f->VideoBuffer[256 * 192];
-	int* topScreenFrameBuffer = &GPU::Framebuffer[GPU::FrontBuffer][0];
-	int* bottomScreenFrameBuffer = &GPU::Framebuffer[GPU::FrontBuffer][1];
+	s32* topScreenVideoBuffer = &f->VideoBuffer[0];
+	s32* bottomScreenVideoBuffer = &f->VideoBuffer[256 * 192];
+	s32* topScreenFrameBuffer = &GPU::Framebuffer[GPU::FrontBuffer][0];
+	s32* bottomScreenFrameBuffer = &GPU::Framebuffer[GPU::FrontBuffer][1];
 	for (int i = 0; i < 192; i++)
 	{
 		memcpy(&topScreenVideoBuffer[i * 256], &topScreenFrameBuffer[i * 256], 256 * 4);
