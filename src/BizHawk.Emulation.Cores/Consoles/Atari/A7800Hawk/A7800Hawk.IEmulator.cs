@@ -414,7 +414,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			tia.AudioClocks = 0;
 			master_audio_clock = 0;
 			_blip.Clear();
-
 		}
 
 		public void DisposeSound()
