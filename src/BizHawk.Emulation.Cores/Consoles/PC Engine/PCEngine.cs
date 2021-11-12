@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using BizHawk.Common.BufferExtensions;
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components;
 using BizHawk.Emulation.Cores.Components.H6280;
@@ -68,7 +68,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 					throw new Exception();
 				}
 
-				lp.Game.FirmwareHash = rom.HashSHA1();
+				lp.Game.FirmwareHash = SHA1Checksum.ComputeDigestHex(rom);
 
 				Init(lp.Game, rom);
 

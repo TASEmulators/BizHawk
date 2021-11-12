@@ -3,7 +3,7 @@ using System.Linq;
 using System.IO;
 using System.Collections.Generic;
 
-using BizHawk.Common.BufferExtensions;
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 //TODO - redo all timekeeping in terms of master clock
@@ -417,11 +417,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					// we don't have an ines header, check if the game hash is in the game db
 					exists = false;
 					Console.WriteLine("headerless ROM, using Game DB");
-					hash_md5 = "md5:" + file.HashMD5(0, file.Length);
-					hash_sha1 = "sha1:" + file.HashSHA1(0, file.Length);
-					if (hash_md5 != null) choice = IdentifyFromGameDB(hash_md5);
-					if (choice == null)
-						choice = IdentifyFromGameDB(hash_sha1);
+					hash_md5 = MD5Checksum.ComputePrefixedHex(file);
+					hash_sha1 = SHA1Checksum.ComputePrefixedHex(file);
+					choice = IdentifyFromGameDB(hash_md5) ?? IdentifyFromGameDB(hash_sha1);
 					if (choice==null)
 					{
 						hash_sha1_several.Add(hash_sha1);
@@ -443,9 +441,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					//now that we know we have an iNES header, we can try to ignore it.
 
-					hash_sha1 = "sha1:" + file.HashSHA1(16, file.Length - 16);
+					var trimmed = file.AsSpan(start: 16, length: file.Length - 32);
+					hash_sha1 = SHA1Checksum.ComputePrefixedHex(trimmed);
 					hash_sha1_several.Add(hash_sha1);
-					hash_md5 = "md5:" + file.HashMD5(16, file.Length - 16);
+					hash_md5 = MD5Checksum.ComputePrefixedHex(trimmed);
 
 					LoadWriteLine("Found iNES header:");
 					LoadWriteLine(iNesHeaderInfo.ToString());
@@ -485,10 +484,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						}
 						msTemp.Flush();
 						var bytes = msTemp.ToArray();
-						var hash = "sha1:" + bytes.HashSHA1(0, bytes.Length);
+						var hash = SHA1Checksum.ComputePrefixedHex(bytes);
 						LoadWriteLine("  PRG (8KB) + CHR hash: {0}", hash);
 						hash_sha1_several.Add(hash);
-						hash = "md5:" + bytes.HashMD5(0, bytes.Length);
+						hash = MD5Checksum.ComputePrefixedHex(bytes);
 						LoadWriteLine("  PRG (8KB) + CHR hash:  {0}", hash);
 					}
 				}

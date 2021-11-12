@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using BizHawk.Common.BufferExtensions;
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge;
 using BizHawk.Emulation.Cores.Computers.Commodore64.Media;
@@ -60,8 +60,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 			if (_board.CartPort.IsConnected)
 			{
-				// There are no multi-cart cart games, so just hardcode .First()
-				RomDetails = $"{lp.Game.Name}\r\nSHA1:{_roms.First().HashSHA1()}\r\nMD5:{_roms.First().HashMD5()}\r\nMapper Impl \"{_board.CartPort.CartridgeType}\"";
+				var first = _roms[0]; // There are no multi-cart cart games, so just hardcode first
+				RomDetails = $"{lp.Game.Name}\r\n{SHA1Checksum.ComputePrefixedHex(first)}\r\n{MD5Checksum.ComputePrefixedHex(first)}\r\nMapper Impl \"{_board.CartPort.CartridgeType}\"";
 			}
 
 			SetupMemoryDomains();

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
-using BizHawk.Common.BufferExtensions;
+using BizHawk.Common;
 using BizHawk.Emulation.Cores.PCEngine;
 using BizHawk.Emulation.Common;
 
@@ -103,7 +103,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				bw.Flush();
-				string md5 = _waveformTemp.HashMD5();
+				var md5 = MD5Checksum.ComputeDigestHex(_waveformTemp);
 
 				if (!_psgEntryTable.TryGetValue(md5, out var entry))
 				{

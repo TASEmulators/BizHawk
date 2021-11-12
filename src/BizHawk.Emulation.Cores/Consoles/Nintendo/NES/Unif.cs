@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 
+using BizHawk.Common;
 using BizHawk.Common.BufferExtensions;
 using BizHawk.Common.IOExtensions;
 
@@ -95,16 +96,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				Cart.WramBattery = true;
 			}
 
-			// is there any way using System.Security.Cryptography.SHA1 to compute the hash of
-			// prg concatenated with chr?  i couldn't figure it out, so this implementation is dumb
-			{
-				var ms = new MemoryStream();
-				ms.Write(Prg, 0, Prg.Length);
-				ms.Write(Chr, 0, Chr.Length);
-				ms.Close();
-				var all = ms.ToArray();
-				Cart.Sha1 = "sha1:" + all.HashSHA1(0, all.Length);
-			}
+			Cart.Sha1 = SHA1Checksum.ComputeConcat(Prg, Chr).BytesToHexString();
 
 			// other code will expect this
 			if (Chr.Length == 0)

@@ -1,14 +1,13 @@
 ﻿#nullable enable
 
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Security.Cryptography;
 using System.IO;
 using System.Linq;
 
-using BizHawk.Common.BufferExtensions;
+using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
+using BizHawk.Common.IOExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -20,9 +19,7 @@ namespace BizHawk.Client.Common
 		public static (byte[] Patched, string ActualHash) PerformPatchInMemory(byte[] @base, in FirmwarePatchOption patchOption)
 		{
 			var patched = patchOption.Patches.Aggregate(seed: @base, (a, fpd) => fpd.ApplyToMutating(a));
-			using var sha1 = SHA1.Create();
-			sha1.ComputeHash(patched);
-			return (patched, sha1.Hash.BytesToHexString());
+			return (patched, SHA1Checksum.ComputeDigestHex(patched));
 		}
 
 		public static (string FilePath, int FileSize, FirmwareFile FF) PerformPatchOnDisk(string baseFilename, in FirmwarePatchOption patchOption, PathEntryCollection pathEntries)
@@ -95,26 +92,16 @@ namespace BizHawk.Client.Common
 			return resolved.FilePath;
 		}
 
-		private sealed class RealFirmwareReader : IDisposable
+		private sealed class RealFirmwareReader
 		{
 			private readonly Dictionary<string, RealFirmwareFile> _dict = new();
 
-			private SHA1? _sha1 = SHA1.Create();
-
 			public IReadOnlyDictionary<string, RealFirmwareFile> Dict => _dict;
-
-			public void Dispose()
-			{
-				_sha1?.Dispose();
-				_sha1 = null;
-			}
 
 			public RealFirmwareFile Read(FileInfo fi)
 			{
-				if (_sha1 == null) throw new ObjectDisposedException(nameof(RealFirmwareReader));
 				using var fs = fi.OpenRead();
-				_sha1!.ComputeHash(fs);
-				var hash = _sha1.Hash.BytesToHexString();
+				var hash = SHA1Checksum.ComputeDigestHex(fs.ReadAllBytes());
 				return _dict![hash] = new RealFirmwareFile(fi, hash);
 			}
 		}
@@ -133,7 +120,7 @@ namespace BizHawk.Client.Common
 				if (!_firmwareSizes.Contains(fi.Length)) return false;
 
 				// check the hash
-				using var reader = new RealFirmwareReader();
+				var reader = new RealFirmwareReader();
 				reader.Read(fi);
 				var hash = reader.Dict.Values.First().Hash;
 				return FirmwareDatabase.FirmwareFiles.Any(a => a.Hash == hash);
@@ -146,7 +133,7 @@ namespace BizHawk.Client.Common
 
 		public void DoScanAndResolve(PathEntryCollection pathEntries, IDictionary<string, string> userSpecifications)
 		{
-			using var reader = new RealFirmwareReader();
+			var reader = new RealFirmwareReader();
 
 			// build a list of files under the global firmwares path, and build a hash for each of them (as ResolutionInfo) while we're at it
 			var todo = new Queue<DirectoryInfo>(new[] { new DirectoryInfo(pathEntries.AbsolutePathFor(pathEntries.FirmwaresPathFragment, null)) });

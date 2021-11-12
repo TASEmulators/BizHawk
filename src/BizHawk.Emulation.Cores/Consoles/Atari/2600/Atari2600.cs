@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-using BizHawk.Common.BufferExtensions;
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Atari.Atari2600
@@ -13,11 +13,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	{
 		internal static class RomChecksums
 		{
-			public const string CongoBongo = /*sha1:*/"3A77DB43B6583E8689435F0F14AA04B9E57BDDED";
+			public const string CongoBongo = "SHA1:3A77DB43B6583E8689435F0F14AA04B9E57BDDED";
 
-			public const string KangarooNotInGameDB = /*sha1:*/"982B8016B393A9AA7DD110295A53C4612ECF2141";
+			public const string KangarooNotInGameDB = "SHA1:982B8016B393A9AA7DD110295A53C4612ECF2141";
 
-			public const string Tapper = /*sha1:*/"E986E1818E747BEB9B33CE4DFF1CDC6B55BDB620";
+			public const string Tapper = "SHA1:E986E1818E747BEB9B33CE4DFF1CDC6B55BDB620";
 		}
 
 		[CoreConstructor(VSystemID.Raw.A26)]
@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				game.AddOption("m", DetectMapper(rom));
 			}
 
-			var romHashSHA1 = Rom.HashSHA1();
+			var romHashSHA1 = SHA1Checksum.ComputePrefixedHex(Rom);
 			if (romHashSHA1 is RomChecksums.CongoBongo or RomChecksums.Tapper or RomChecksums.KangarooNotInGameDB)
 			{
 				game.RemoveOption("m");
@@ -82,7 +82,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				Name = _game.Name,
 				System = VSystemID.Raw.A26,
 				MetaData = "m=" + _mapper.GetType().ToString().Split('.').Last(),
-				Hash = Rom.HashSHA1(),
+				Hash = SHA1Checksum.ComputeDigestHex(Rom),
 				Region = _game.Region,
 				Status = RomStatus.Unknown
 			};

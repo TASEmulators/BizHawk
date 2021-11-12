@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <summary>
 		/// calculates the hash for quick PSX Disc identification
 		/// </summary>
-		public uint Calculate_PSX_BizIDHash()
+		public string Calculate_PSX_BizIDHash()
 		{
 			//notes about the hash:
 			//"Arc the Lad II (J) 1.0 and 1.1 conflict up to 25 sectors (so use 26)
@@ -54,7 +54,7 @@ namespace BizHawk.Emulation.DiscSystem
 				crc.Add(buffer2352);
 			}
 
-			return crc.Result;
+			return CRC32Checksum.BytesAsDigest(crc.Result).BytesToHexString();
 		}
 
 		/// <summary>
@@ -97,7 +97,7 @@ namespace BizHawk.Emulation.DiscSystem
 				for (int s = 0; s < 512 && s < lba_len; s++)
 					dsr.ReadLBA_2352(track.LBA + s, buffer, s * 2352);
 
-				return buffer.HashMD5(0, lba_len * 2352);
+				return MD5Checksum.ComputeDigestHex(buffer.AsSpan(start: 0, length: lba_len * 2352));
 			}
 			return "no data track found";
 		}

@@ -1,10 +1,14 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Text;
 
 namespace BizHawk.Common.IOExtensions
 {
 	public static class IOExtensions
 	{
+		public static Span<byte> GetBufferAsSpan(this MemoryStream ms)
+			=> ms.GetBuffer().AsSpan().Slice(start: 0, length: (int) ms.Length);
+
 		public static byte[] ReadAllBytes(this Stream stream)
 		{
 			const int BUFF_SIZE = 4096;

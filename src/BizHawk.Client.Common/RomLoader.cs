@@ -233,7 +233,7 @@ namespace BizHawk.Client.Common
 			var discType = new DiscIdentifier(disc).DetectDiscType();
 			var discHasher = new DiscHasher(disc);
 			var discHash = discType == DiscType.SonyPSX
-				? discHasher.Calculate_PSX_BizIDHash().ToString("X8")
+				? discHasher.Calculate_PSX_BizIDHash()
 				: discHasher.OldHash();
 
 			var game = Database.CheckDatabase(discHash);

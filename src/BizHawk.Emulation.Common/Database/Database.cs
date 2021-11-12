@@ -9,7 +9,6 @@ using System.Text;
 using System.Threading;
 
 using BizHawk.Common;
-using BizHawk.Common.BufferExtensions;
 
 namespace BizHawk.Emulation.Common
 {
@@ -191,19 +190,19 @@ namespace BizHawk.Emulation.Common
 		{
 			acquire.WaitOne();
 
-			var hashCRC32 = $"{CRC32.Calculate(romData):X8}";
+			var hashCRC32 = CRC32Checksum.ComputeDigestHex(romData);
 			if (DB.TryGetValue(hashCRC32, out var cgi))
 			{
 				return new GameInfo(cgi);
 			}
 
-			var hashMD5 = romData.HashMD5();
+			var hashMD5 = MD5Checksum.ComputeDigestHex(romData);
 			if (DB.TryGetValue(hashMD5, out cgi))
 			{
 				return new GameInfo(cgi);
 			}
 
-			var hashSHA1 = romData.HashSHA1();
+			var hashSHA1 = SHA1Checksum.ComputeDigestHex(romData);
 			if (DB.TryGetValue(hashSHA1, out cgi))
 			{
 				return new GameInfo(cgi);

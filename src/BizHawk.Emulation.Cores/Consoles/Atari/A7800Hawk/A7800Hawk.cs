@@ -1,6 +1,6 @@
 ﻿using System;
 
-using BizHawk.Common.BufferExtensions;
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.M6502;
 using BizHawk.Common.NumberExtensions;
@@ -14,9 +14,9 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 	{
 		internal static class RomChecksums
 		{
-			public const string KaratekaPAL = "md5:5E0A1E832BBCEA6FACB832FDE23A440A";
+			public const string KaratekaPAL = "MD5:5E0A1E832BBCEA6FACB832FDE23A440A";
 
-			public const string Serpentine = "md5:9BD70C06D3386F76F8162881699A777A";
+			public const string Serpentine = "MD5:9BD70C06D3386F76F8162881699A777A";
 		}
 
 		// this register selects between 2600 and 7800 mode in the A7800
@@ -120,9 +120,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			// look up hash in gamedb to see what mapper to use
 			// if none found default is zero
 			// also check for PAL region
-			string hash_md5 = null;
 			s_mapper = null;
-			hash_md5 = "md5:" + rom.HashMD5(0, rom.Length);
+			var hash_md5 = MD5Checksum.ComputePrefixedHex(rom);
 
 			var gi = Database.CheckDatabase(hash_md5);
 

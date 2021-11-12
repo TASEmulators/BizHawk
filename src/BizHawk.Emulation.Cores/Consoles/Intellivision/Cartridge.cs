@@ -1,7 +1,6 @@
 ﻿using System;
 
 using BizHawk.Common;
-using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Intellivision
@@ -40,7 +39,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 			// look up hash in gamedb to see what mapper to use
 			string s_mapper = null;
-			var gi = Database.CheckDatabase($"sha1:{rom.HashSHA1(16, rom.Length - 16)}");
+			var gi = Database.CheckDatabase(SHA1Checksum.ComputePrefixedHex(rom.AsSpan(start: 16, length: rom.Length - 32)));
 			if (gi != null && !gi.GetOptions().TryGetValue("board", out s_mapper)) throw new Exception("INTV gamedb entries must have a board identifier!");
 			_mapper = 0;
 			int.TryParse(s_mapper, out _mapper);

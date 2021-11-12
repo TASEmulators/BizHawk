@@ -9,7 +9,6 @@ using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.BizInvoke;
-using BizHawk.Common.BufferExtensions;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 {
@@ -245,7 +244,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 				for (int i = 0; i < chrrom.Size; i++)
 					ms.WriteByte(chrrom.PeekByte(i));
 
-			string sha1 = ms.ToArray().HashSHA1();
+			var sha1 = SHA1Checksum.ComputeDigestHex(ms.ToArray());
 			Console.WriteLine("Hash for BootGod: {0}", sha1);
 
 			// Bail out on ROM's known to not be playable by this core
@@ -300,7 +299,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		// we need to do this from the raw file since QuickNES hasn't had time to process it yet.
 		private byte[] FixInesHeader(byte[] file)
 		{
-			string sha1 = BufferExtensions.HashSHA1(file);
+			var sha1 = SHA1Checksum.ComputeDigestHex(file);
 			bool didSomething = false;
 
 			Console.WriteLine(sha1);

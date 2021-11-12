@@ -1,7 +1,7 @@
 ﻿using System;
 
+using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
-using BizHawk.Common.BufferExtensions;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.M6502;
@@ -220,7 +220,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 			HardReset();
 
-			RomDetails = $"{_game.Name}\r\nSHA1:{Rom.HashSHA1()}\r\nMD5:{Rom.HashMD5()}\r\nMapper Impl \"{_mapper.GetType()}\"";
+			RomDetails = $"{_game.Name}\r\n{SHA1Checksum.ComputePrefixedHex(Rom)}\r\n{MD5Checksum.ComputePrefixedHex(Rom)}\r\nMapper Impl \"{_mapper.GetType()}\"";
 
 			// Some games (ex. 3D tic tac toe), turn off the screen for extended periods, so we need to allow for this here.
 			if (_game.GetOptions().TryGetValue("SP_FRAME", out var spFrameStr) && spFrameStr == "true")

@@ -66,7 +66,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				var sw = new StringWriter();
 				foreach (var d in lp.Discs)
 				{
-					var discHash = new DiscHasher(d.DiscData).Calculate_PSX_BizIDHash().ToString("X8");
+					var discHash = new DiscHasher(d.DiscData).Calculate_PSX_BizIDHash();
 					sw.WriteLine(Path.GetFileName(d.DiscName));
 					sw.WriteLine(DiscHashWarningText(Database.CheckDatabase(discHash), discHash));
 					sw.WriteLine("-------------------------");

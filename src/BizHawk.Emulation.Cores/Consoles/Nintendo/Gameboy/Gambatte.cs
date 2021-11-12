@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 
 using BizHawk.Common;
-using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
 
@@ -137,7 +136,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 				InitMemoryDomains();
 
-				RomDetails = $"{game.Name}\r\nSHA1:{file.HashSHA1()}\r\nMD5:{file.HashMD5()}\r\n";
+				RomDetails = $"{game.Name}\r\n{SHA1Checksum.ComputePrefixedHex(file)}\r\n{MD5Checksum.ComputePrefixedHex(file)}\r\n";
 
 				byte[] buff = new byte[32];
 				LibGambatte.gambatte_romtitle(GambatteState, buff);

@@ -3822,8 +3822,9 @@ namespace BizHawk.Client.EmuHawk
 							else
 							{
 								xSw.WriteLine(xmlGame.Assets[xg].Key);
-								xSw.WriteLine($"SHA1:{xmlGame.Assets[xg].Value.HashSHA1()}");
-								xSw.WriteLine($"MD5:{xmlGame.Assets[xg].Value.HashMD5()}");
+								var data = xmlGame.Assets[xg].Value;
+								xSw.WriteLine(SHA1Checksum.ComputePrefixedHex(data));
+								xSw.WriteLine(MD5Checksum.ComputePrefixedHex(data));
 								xSw.WriteLine();
 							}
 						}
@@ -3857,7 +3858,7 @@ namespace BizHawk.Client.EmuHawk
 					var romDetails = Emulator.RomDetails();
 					if (string.IsNullOrWhiteSpace(romDetails) && loader.Rom != null)
 					{
-						_defaultRomDetails = $"{loader.Game.Name}\r\nSHA1:{loader.Rom.RomData.HashSHA1()}\r\nMD5:{loader.Rom.RomData.HashMD5()}\r\n";
+						_defaultRomDetails = $"{loader.Game.Name}\r\n{SHA1Checksum.ComputePrefixedHex(loader.Rom.RomData)}\r\n{MD5Checksum.ComputePrefixedHex(loader.Rom.RomData)}\r\n";
 					}
 					else if (string.IsNullOrWhiteSpace(romDetails) && loader.Rom == null)
 					{
