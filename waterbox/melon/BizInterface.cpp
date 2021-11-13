@@ -412,10 +412,7 @@ EXPORT void PreFrameStep(MyFrameInfo* f)
 
 EXPORT bool FrameStep()
 {
-    bool runningFrame = true;
-    while (runningFrame)
-        runningFrame = NDS::RunFrameStep();
-    return runningFrame;
+    return NDS::RunFrameStep();
 }
 
 static s16 biz_sound_buffer[1024 * 2];
