@@ -99,6 +99,11 @@ namespace BizHawk.Emulation.Common
 			return _buttons[name];
 		}
 
+		public int SetAxisValue(string name, int axisvalue)
+		{
+			return _buttons[name] = axisvalue;
+		}
+
 		public IReadOnlyCollection<(string Name, int Strength)> GetHapticsSnapshot() => Array.Empty<(string, int)>();
 
 		public void SetHapticChannelStrength(string name, int strength) {}

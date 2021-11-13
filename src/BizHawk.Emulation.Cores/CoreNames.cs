@@ -35,6 +35,7 @@ namespace BizHawk.Emulation.Cores
 		public const string MAME = "MAME";
 		public const string MelonDS = "MelonDS";
 		public const string Mgba = "mGBA";
+		public const string MgbaLink = "mGBALink";
 		public const string MSXHawk = "MSXHawk";
 		public const string Mupen64Plus = "Mupen64Plus";
 		public const string NesHawk = "NesHawk";
