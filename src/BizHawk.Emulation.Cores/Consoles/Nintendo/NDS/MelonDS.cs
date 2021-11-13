@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		[CoreConstructor("NDS")]
 		public NDS(CoreLoadParameters<NDSSettings, NDSSyncSettings> lp)
-			:this(lp, false)
+			: this(lp, false)
 		{
 		}
 
@@ -86,6 +86,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				flags |= LibMelonDS.LoadFlags.ACCURATE_AUDIO_BITRATE;
 			if (_syncSettings.FirmwareOverride || lp.DeterministicEmulationRequested)
 				flags |= LibMelonDS.LoadFlags.FIRMWARE_OVERRIDE;
+			if (right)
+				flags |= LibMelonDS.LoadFlags.IS_RIGHT;
 
 			var fwSettings = new LibMelonDS.FirmwareSettings();
 			var name = Encoding.UTF8.GetBytes(_syncSettings.FirmwareUsername);
