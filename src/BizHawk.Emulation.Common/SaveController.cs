@@ -94,6 +94,11 @@ namespace BizHawk.Emulation.Common
 			return _buttons[button] != 0;
 		}
 
+		public int SetAxisValue(string name, int axisvalue)
+		{
+			return _buttons[name] = axisvalue;
+		}
+
 		public int AxisValue(string name)
 		{
 			return _buttons[name];

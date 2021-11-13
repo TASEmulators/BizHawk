@@ -38,6 +38,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			GBA_CART_PRESENT = 0x04,
 			ACCURATE_AUDIO_BITRATE = 0x08,
 			FIRMWARE_OVERRIDE = 0x10,
+			IS_RIGHT = 0x20,
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
@@ -100,5 +101,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		[BizImport(CC)]
 		public abstract void SetTraceCallback(TraceCallback callback);
+
+		// dual core functions
+
+		[BizImport(CC)]
+		public abstract void PreFrameStep([In, Out] LibWaterboxCore.FrameInfo frame);
+
+		[BizImport(CC)]
+		public abstract bool FrameStep();
+
+		[BizImport(CC)]
+		public abstract void PostFrameStep([In, Out] LibWaterboxCore.FrameInfo frame);
 	}
 }

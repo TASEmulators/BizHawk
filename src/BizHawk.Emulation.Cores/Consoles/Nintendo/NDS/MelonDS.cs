@@ -18,6 +18,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		[CoreConstructor(VSystemID.Raw.NDS)]
 		public NDS(CoreLoadParameters<NDSSettings, NDSSyncSettings> lp)
+			: this(lp, false)
+		{
+		}
+
+		internal NDS(CoreLoadParameters<NDSSettings, NDSSyncSettings> lp, bool right)
 			: base(lp.Comm, new Configuration
 			{
 				DefaultWidth = 256,
@@ -44,7 +49,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 			_core = PreInit<LibMelonDS>(new WaterboxOptions
 			{
-				Filename = "melonDS.wbx",
+				Filename = "melonDS_" + (right ? "R" : "L") + ".wbx",
 				SbrkHeapSizeKB = 2 * 1024,
 				SealedHeapSizeKB = 4,
 				InvisibleHeapSizeKB = 4,
@@ -81,6 +86,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				flags |= LibMelonDS.LoadFlags.ACCURATE_AUDIO_BITRATE;
 			if (_syncSettings.FirmwareOverride || lp.DeterministicEmulationRequested)
 				flags |= LibMelonDS.LoadFlags.FIRMWARE_OVERRIDE;
+			if (right)
+				flags |= LibMelonDS.LoadFlags.IS_RIGHT;
 
 			var fwSettings = new LibMelonDS.FirmwareSettings();
 			var name = Encoding.UTF8.GetBytes(_syncSettings.FirmwareUsername);
@@ -259,6 +266,33 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 					_soundBuffer[i] = 0;
 				}
 				_numSamples = 547;
+			}
+		}
+
+		internal LibWaterboxCore.FrameInfo FrameStepPrep(IController controller, bool render, bool rendersound)
+		{
+			using (_exe.EnterExit())
+			{
+				var frame = FrameAdvancePrep(controller, render, rendersound);
+				_core.PreFrameStep(frame);
+				return frame;
+			}
+		}
+
+		internal bool FrameStep()
+		{
+			using (_exe.EnterExit())
+			{
+				return _core.FrameStep();
+			}
+		}
+
+		internal void FrameStepPost(LibWaterboxCore.FrameInfo frame)
+		{
+			using (_exe.EnterExit())
+			{
+				_core.PostFrameStep(frame);
+				AdvanceRtc();
 			}
 		}
 

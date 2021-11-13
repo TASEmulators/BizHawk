@@ -25,6 +25,7 @@ using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.Base_Implementations;
 using BizHawk.Emulation.Cores;
 using BizHawk.Emulation.Cores.Consoles.NEC.PCE;
+using BizHawk.Emulation.Cores.Consoles.Nintendo.NDS;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 using BizHawk.Emulation.Cores.Consoles.SNK;
 using BizHawk.Emulation.Cores.Nintendo.BSNES;
@@ -1953,6 +1954,7 @@ namespace BizHawk.Client.EmuHawk
 			ColecoSubMenu.Visible = false;
 			N64SubMenu.Visible = false;
 			DGBSubMenu.Visible = false;
+			DualNDSSubMenu.Visible = false;
 			AppleSubMenu.Visible = false;
 			C64SubMenu.Visible = false;
 			IntvSubMenu.Visible = false;
@@ -1998,6 +2000,9 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case VSystemID.Raw.DGB when Emulator is GambatteLink:
 					DGBSubMenu.Visible = true;
+					break;
+				case "Dual NDS":
+					DualNDSSubMenu.Visible = true;
 					break;
 				case VSystemID.Raw.GB:
 				case VSystemID.Raw.GBC:

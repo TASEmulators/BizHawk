@@ -327,10 +327,15 @@ EXPORT void FrameAdvance(MyFrameInfo* f)
 
 	biz_time = f->Time;
 	NDS::RunFrame();
-	for (int i = 0; i < (256 * 192); i++)
+
+	u32* topScreenVideoBuffer = &f->VideoBuffer[0];
+	u32* bottomScreenVideoBuffer = &f->VideoBuffer[256 * 192];
+	u32* topScreenFrameBuffer = GPU::Framebuffer[GPU::FrontBuffer][0];
+	u32* bottomScreenFrameBuffer = GPU::Framebuffer[GPU::FrontBuffer][1];
+	for (int i = 0; i < 192; i++)
 	{
-		f->VideoBuffer[i] = GPU::Framebuffer[GPU::FrontBuffer][0][i];
-		f->VideoBuffer[(256 * 192) + i] = GPU::Framebuffer[GPU::FrontBuffer][1][i];
+		memcpy(&topScreenVideoBuffer[i * 256], &topScreenFrameBuffer[i * 256], 256 * 4);
+		memcpy(&bottomScreenVideoBuffer[i * 256], &bottomScreenFrameBuffer[i * 256], 256 * 4);
 	}
 	f->Width = 256;
 	f->Height = 384;
@@ -360,4 +365,87 @@ EXPORT void SetReg(s32 ncpu, s32 index, s32 val)
 EXPORT void SetTraceCallback(void (*callback)(u32 cpu, u32* regs, u32 opcode, s64 ccoffset))
 {
 	TraceCallback = callback;
+}
+
+// dual core functions
+
+EXPORT void PreFrameStep(MyFrameInfo* f)
+{
+	if (f->Keys & 0x8000)
+	{
+		NDS::LoadBIOS(false);
+		if (biz_skip_fw) NDS::SetupDirectBoot();
+	}
+
+	NDS::SetKeyMask(~f->Keys & 0xFFF);
+
+	if (f->Keys & 0x1000)
+		NDS::TouchScreen(f->TouchX, f->TouchY);
+	else
+		NDS::ReleaseScreen();
+
+	if (f->Keys & 0x2000)
+		NDS::SetLidClosed(false);
+	else if (f->Keys & 0x4000)
+		NDS::SetLidClosed(true);
+
+	MicFeedNoise(f->MicVolume);
+
+	NDS::MicInputFrame(biz_mic_input, 735);
+
+	int sensor = GBACart::SetInput(0, 1);
+	if (sensor != -1 && ValidRange(f->GBALightSensor))
+	{
+		if (sensor > f->GBALightSensor)
+		{
+			while (GBACart::SetInput(0, 1) != f->GBALightSensor) {}
+		}
+		else if (sensor < f->GBALightSensor)
+		{
+			while (GBACart::SetInput(1, 1) != f->GBALightSensor) {}
+		}
+	}
+
+	biz_time = f->Time;
+	NDS::PreFrameStep();
+}
+
+EXPORT bool FrameStep()
+{
+    return NDS::RunFrameStep();
+}
+
+static s16 biz_sound_buffer[1024 * 2];
+
+EXPORT void PostFrameStep(MyFrameInfo* f)
+{
+	NDS::PostFrameStep();
+	u32* topScreenVideoBuffer = &f->VideoBuffer[0];
+	u32* bottomScreenVideoBuffer = &f->VideoBuffer[2 * 256 * 192];
+	u32* topScreenFrameBuffer = GPU::Framebuffer[GPU::FrontBuffer][0];
+	u32* bottomScreenFrameBuffer = GPU::Framebuffer[GPU::FrontBuffer][1];
+	for (int i = 0; i < 192; i++)
+	{
+		memcpy(&topScreenVideoBuffer[i * 2 * 256], &topScreenFrameBuffer[i * 256], 256 * 4);
+		memcpy(&bottomScreenVideoBuffer[i * 2 * 256], &bottomScreenFrameBuffer[i * 256], 256 * 4);
+	}
+	f->Width = 256 * 2;
+	f->Height = 384;
+	f->Samples = SPU::GetOutputSize() / 2;
+	SPU::ReadOutput(biz_sound_buffer, f->Samples);
+    for (int i = 0; i < f->Samples; i++)
+    {
+        s32 samp = (biz_sound_buffer[i * 2] + biz_sound_buffer[i * 2 + 1]) / 2;
+        f->SoundBuffer[i * 2] = samp;
+    }
+    if (f->Samples < 547)
+    {
+        for (int i = f->Samples; i < 547; i++)
+        {
+            f->SoundBuffer[i * 2] = 0;
+        }
+        f->Samples = 547;
+    }
+	f->Cycles = NDS::GetSysClockCycles(2);
+	f->Lagged = NDS::LagFrameFlag;
 }
