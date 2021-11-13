@@ -78,9 +78,6 @@ namespace BizHawk.Client.Common
 		};
 
 		public static double GetFrameRate(string systemId, bool pal)
-		{
-			var key = systemId + (pal ? "_PAL" : "");
-			return Rates.ContainsKey(key) ? Rates[key] : 60.0;
-		}
+			=> Rates.TryGetValue(systemId + (pal ? "_PAL" : ""), out var d) ? d : 60.0;
 	}
 }

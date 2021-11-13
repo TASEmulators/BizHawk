@@ -802,15 +802,7 @@ namespace BizHawk.Common
 					var name = begin.Groups[1].Value;
 					ss.Push(curs);
 					var news = new Section { Name = name };
-					if (!curs.ContainsKey(name))
-					{
-						curs[name] = news;
-					}
-					else
-					{
-						throw new Exception($"Duplicate key \"{name}\" in serializer savestate!");
-					}
-
+					curs.Add(name, news);
 					curs = news;
 				}
 				else
@@ -825,14 +817,7 @@ namespace BizHawk.Common
 					var key = parts[0];
 
 					// UGLY: adds whole string instead of splitting the key. later, split the key, and have the individual Sync methods give up that responsibility
-					if (!curs.Items.ContainsKey(key))
-					{
-						curs.Items[key] = parts[1];
-					}
-					else
-					{
-						throw new Exception($"Duplicate key \"{key}\" in serializer savestate!");
-					}
+					curs.Items.Add(key, parts[1]);
 				}
 			}
 

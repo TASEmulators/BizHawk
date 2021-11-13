@@ -97,7 +97,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 		public int Frame => _frame;
 
-		public string SystemId => "VEC"; 
+		public string SystemId => VSystemID.Raw.VEC;
 
 		public bool DeterministicEmulation { get; set; }
 

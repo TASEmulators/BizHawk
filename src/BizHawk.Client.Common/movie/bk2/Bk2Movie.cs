@@ -70,19 +70,17 @@ namespace BizHawk.Client.Common
 				double dblSeconds;
 				var core = Header[HeaderKeys.Core];
 
-				if (Header.ContainsKey(HeaderKeys.CycleCount) && (core == CoreNames.Gambatte || core == CoreNames.SubGbHawk))
+				if (Header.TryGetValue(HeaderKeys.CycleCount, out var numCyclesStr) && (core == CoreNames.Gambatte || core == CoreNames.SubGbHawk))
 				{
-					ulong numCycles = Convert.ToUInt64(Header[HeaderKeys.CycleCount]);
+					var numCycles = Convert.ToUInt64(numCyclesStr);
 					double cyclesPerSecond = PlatformFrameRates.GetFrameRate("GB_Clock", IsPal);
 					dblSeconds = numCycles / cyclesPerSecond;
 				}
 				else
 				{
-					ulong numFrames = (ulong) FrameCount;
-					if (Header.ContainsKey(HeaderKeys.VBlankCount))
-					{
-						numFrames = Convert.ToUInt64(Header[HeaderKeys.VBlankCount]);
-					}
+					var numFrames = Header.TryGetValue(HeaderKeys.VBlankCount, out var numFramesStr)
+						? Convert.ToUInt64(numFramesStr)
+						: (ulong) FrameCount;
 					dblSeconds = numFrames / FrameRate;
 				}
 

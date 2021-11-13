@@ -77,9 +77,9 @@ namespace BizHawk.Client.EmuHawk
 				Config.GbAsSgb ^= true;
 				if (!Emulator.IsNull()) FlagNeedsReboot(); //TODO only alert if a GB or SGB core is loaded
 			};
-			var N64VideoPluginSettingsMenuItem = new ToolStripMenuItem { Image = Properties.Resources.Monitor, Text = "N64 Video Plugin Settings" };
+			var N64VideoPluginSettingsMenuItem = new ToolStripMenuItem { Image = Properties.Resources.Monitor, Text = "N64 Video Plugin Settings..." };
 			N64VideoPluginSettingsMenuItem.Click += N64PluginSettingsMenuItem_Click;
-			var setLibretroCoreToolStripMenuItem = new ToolStripMenuItem { Text = "Set Libretro Core" };
+			var setLibretroCoreToolStripMenuItem = new ToolStripMenuItem { Text = "Set Libretro Core..." };
 			setLibretroCoreToolStripMenuItem.Click += (clickSender, clickArgs) => RunLibretroCoreChooser();
 			CoresSubMenu.DropDownItems.AddRange(new ToolStripItem[] {
 				GBInSGBMenuItem,
@@ -1560,7 +1560,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				ofd.InitialDirectory = Config.PathEntries.AbsolutePathForType("Libretro", "Cores");
+				ofd.InitialDirectory = Config.PathEntries.AbsolutePathForType(VSystemID.Raw.Libretro, "Cores");
 				if (!Directory.Exists(ofd.InitialDirectory))
 				{
 					Directory.CreateDirectory(ofd.InitialDirectory);
@@ -1827,7 +1827,7 @@ namespace BizHawk.Client.EmuHawk
 					byte[] sram;
 
 					// some cores might not know how big the saveram ought to be, so just send it the whole file
-					if (Emulator is MGBAHawk || Emulator is NeoGeoPort)
+					if (Emulator is MGBAHawk || Emulator is NeoGeoPort || (Emulator is NES && (Emulator as NES).BoardName == "FDS"))
 					{
 						sram = File.ReadAllBytes(saveRamPath);
 					}
@@ -1838,7 +1838,7 @@ namespace BizHawk.Client.EmuHawk
 						{
 							// we're eating this one now. The possible negative consequence is that a user could lose
 							// their saveram and not know why
-//							ShowMessageBox(owner: null, "Error: tried to load saveram, but core would not accept it?");
+							// ShowMessageBox(owner: null, "Error: tried to load saveram, but core would not accept it?");
 							return;
 						}
 
@@ -1963,63 +1963,63 @@ namespace BizHawk.Client.EmuHawk
 
 			switch (Emulator.SystemId)
 			{
-				case "NULL":
+				case VSystemID.Raw.NULL:
 					break;
-				case "A78":
+				case VSystemID.Raw.A78:
 					A7800SubMenu.Visible = true;
 					break;
-				case "AmstradCPC":
+				case VSystemID.Raw.AmstradCPC:
 					amstradCPCToolStripMenuItem.Visible = true;
 					break;
-				case "AppleII":
+				case VSystemID.Raw.AppleII:
 					AppleSubMenu.Visible = true;
 					break;
-				case "C64":
+				case VSystemID.Raw.C64:
 					C64SubMenu.Visible = true;
 					break;
-				case "Coleco":
+				case VSystemID.Raw.Coleco:
 					ColecoSubMenu.Visible = true;
 					break;
-				case "INTV":
+				case VSystemID.Raw.INTV:
 					IntvSubMenu.Visible = true;
 					break;
-				case "N64":
+				case VSystemID.Raw.N64:
 					N64SubMenu.Visible = true;
 					break;
-				case "NES":
+				case VSystemID.Raw.NES:
 					NESSubMenu.Visible = true;
 					break;
-				case "PSX":
+				case VSystemID.Raw.PSX:
 					PSXSubMenu.Visible = true;
 					break;
-				case "TI83":
+				case VSystemID.Raw.TI83:
 					TI83SubMenu.Visible = true;
 					break;
-				case "ZXSpectrum":
+				case VSystemID.Raw.ZXSpectrum:
 					zXSpectrumToolStripMenuItem.Visible = true;
 					break;
-				case "DGB" when Emulator is GambatteLink:
+				case VSystemID.Raw.DGB when Emulator is GambatteLink:
 					DGBSubMenu.Visible = true;
 					break;
 				case "Dual NDS":
 					DualNDSSubMenu.Visible = true;
 					break;
-				case "GB":
-				case "GBC":
-				case "SGB" when Emulator is Gameboy:
+				case VSystemID.Raw.GB:
+				case VSystemID.Raw.GBC:
+				case VSystemID.Raw.SGB when Emulator is Gameboy:
 					GBSubMenu.Visible = true;
 					break;
-				case "SNES" when Emulator is LibsnesCore { IsSGB: true }: // doesn't use "SGB" sysID
+				case VSystemID.Raw.SNES when Emulator is LibsnesCore { IsSGB: true }: // doesn't use "SGB" sysID
 					SNESSubMenu.Text = "&SGB";
 					SNESSubMenu.Visible = true;
 					SnesGfxDebuggerMenuItem.Visible = true;
 					break;
-				case "SNES" when Emulator is LibsnesCore { IsSGB: false }:
+				case VSystemID.Raw.SNES when Emulator is LibsnesCore { IsSGB: false }:
 					SNESSubMenu.Text = "&SNES";
 					SNESSubMenu.Visible = true;
 					SnesGfxDebuggerMenuItem.Visible = true;
 					break;
-				case "SNES" when Emulator is BsnesCore bsnesCore:
+				case VSystemID.Raw.SNES when Emulator is BsnesCore bsnesCore:
 					SNESSubMenu.Text = bsnesCore.IsSGB ?  "&SGB" : "&SNES";
 					SnesGfxDebuggerMenuItem.Visible = false;
 					SNESSubMenu.Visible = true;
@@ -2874,13 +2874,13 @@ namespace BizHawk.Client.EmuHawk
 			CoreNameStatusBarButton.ToolTipText = attributes is PortedCoreAttribute ? "(ported) " : "";
 
 
-			if (Emulator.SystemId == "ZXSpectrum")
+			if (Emulator.SystemId == VSystemID.Raw.ZXSpectrum)
 			{
 				var core = (Emulation.Cores.Computers.SinclairSpectrum.ZXSpectrum)Emulator;
 				CoreNameStatusBarButton.ToolTipText = core.GetMachineType();
 			}
 
-			if (Emulator.SystemId == "AmstradCPC")
+			if (Emulator.SystemId == VSystemID.Raw.AmstradCPC)
 			{
 				var core = (Emulation.Cores.Computers.AmstradCPC.AmstradCPC)Emulator;
 				CoreNameStatusBarButton.ToolTipText = core.GetMachineType();
@@ -3827,8 +3827,9 @@ namespace BizHawk.Client.EmuHawk
 							else
 							{
 								xSw.WriteLine(xmlGame.Assets[xg].Key);
-								xSw.WriteLine($"SHA1:{xmlGame.Assets[xg].Value.HashSHA1()}");
-								xSw.WriteLine($"MD5:{xmlGame.Assets[xg].Value.HashMD5()}");
+								var data = xmlGame.Assets[xg].Value;
+								xSw.WriteLine(SHA1Checksum.ComputePrefixedHex(data));
+								xSw.WriteLine(MD5Checksum.ComputePrefixedHex(data));
 								xSw.WriteLine();
 							}
 						}
@@ -3862,7 +3863,7 @@ namespace BizHawk.Client.EmuHawk
 					var romDetails = Emulator.RomDetails();
 					if (string.IsNullOrWhiteSpace(romDetails) && loader.Rom != null)
 					{
-						_defaultRomDetails = $"{loader.Game.Name}\r\nSHA1:{loader.Rom.RomData.HashSHA1()}\r\nMD5:{loader.Rom.RomData.HashMD5()}\r\n";
+						_defaultRomDetails = $"{loader.Game.Name}\r\n{SHA1Checksum.ComputePrefixedHex(loader.Rom.RomData)}\r\n{MD5Checksum.ComputePrefixedHex(loader.Rom.RomData)}\r\n";
 					}
 					else if (string.IsNullOrWhiteSpace(romDetails) && loader.Rom == null)
 					{
@@ -4346,9 +4347,9 @@ namespace BizHawk.Client.EmuHawk
 
 			return Emulator switch
 			{
-				Snes9x => PromptToSwitchCore(CoreNames.Snes9X, CoreNames.Bsnes, () => Config.PreferredCores["SNES"] = CoreNames.Bsnes),
-				QuickNES => PromptToSwitchCore(CoreNames.QuickNes, CoreNames.NesHawk, () => Config.PreferredCores["NES"] = CoreNames.NesHawk),
-				HyperNyma => PromptToSwitchCore(CoreNames.HyperNyma, CoreNames.TurboNyma, () => Config.PreferredCores["PCE"] = CoreNames.TurboNyma),
+				Snes9x => PromptToSwitchCore(CoreNames.Snes9X, CoreNames.Bsnes, () => Config.PreferredCores[VSystemID.Raw.SNES] = CoreNames.Bsnes),
+				QuickNES => PromptToSwitchCore(CoreNames.QuickNes, CoreNames.NesHawk, () => Config.PreferredCores[VSystemID.Raw.NES] = CoreNames.NesHawk),
+				HyperNyma => PromptToSwitchCore(CoreNames.HyperNyma, CoreNames.TurboNyma, () => Config.PreferredCores[VSystemID.Raw.PCE] = CoreNames.TurboNyma),
 				_ => true
 			};
 		}

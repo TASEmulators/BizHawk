@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			LibmGBA = BizInvoker.GetInvoker<LibmGBA>(resolver, CallingConventionAdapters.Native);
 		}
 
-		[CoreConstructor("GBA")]
+		[CoreConstructor(VSystemID.Raw.GBA)]
 		public MGBAHawk(byte[] file, CoreComm comm, SyncSettings syncSettings, Settings settings, bool deterministic, GameInfo game)
 		{
 			_syncSettings = syncSettings ?? new SyncSettings();
@@ -150,7 +150,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		public int Frame { get; private set; }
 
-		public string SystemId => "GBA";
+		public string SystemId => VSystemID.Raw.GBA;
 
 		public bool DeterministicEmulation { get; }
 

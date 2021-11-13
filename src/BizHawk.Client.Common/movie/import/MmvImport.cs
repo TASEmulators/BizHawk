@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using BizHawk.Common.BufferExtensions;
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
 
 namespace BizHawk.Client.Common.movie.import
@@ -80,7 +81,7 @@ namespace BizHawk.Client.Common.movie.import
 				isGameGear = false;
 			}
 
-			Result.Movie.HeaderEntries[HeaderKeys.Platform] = "SMS"; // System Id is still SMS even if game gear
+			Result.Movie.HeaderEntries[HeaderKeys.Platform] = VSystemID.Raw.SMS; // System Id is still SMS even if game gear
 
 			// bits 4-31: unused
 			r.ReadBytes(3);

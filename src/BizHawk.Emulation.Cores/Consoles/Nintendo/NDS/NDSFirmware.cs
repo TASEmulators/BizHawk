@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-using BizHawk.Common.BufferExtensions;
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
@@ -192,7 +192,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				byte[] DecryptedFirmware = new byte[decrypedfwlen];
 				Marshal.Copy(decryptedfw, DecryptedFirmware, 0, decrypedfwlen);
 				FreeDecryptedFirmware(decryptedfw);
-				var hash = BufferExtensions.HashSHA1(DecryptedFirmware, 0, decrypedfwlen);
+				var hash = SHA1Checksum.ComputeDigestHex(DecryptedFirmware);
 				if (hash != goodhashes[0] && hash != goodhashes[1] && hash != goodhashes[2])
 				{
 					comm.ShowMessage("Potentially bad firmware dump! Decrypted hash " + hash + " does not match known good dumps.");

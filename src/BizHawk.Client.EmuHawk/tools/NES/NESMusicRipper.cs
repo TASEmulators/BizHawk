@@ -117,7 +117,7 @@ namespace BizHawk.Client.EmuHawk
 			XElement templateRoot;
 			using (var zfTemplate = new ZipArchive(new FileStream(templatePath, FileMode.Open, FileAccess.Read), ZipArchiveMode.Read))
 			{
-				var entry = zfTemplate.Entries.Single(e => e.Name == "Song.xml");
+				var entry = zfTemplate.Entries.Single(entry => entry.FullName == "Song.xml");
 				using var stream = entry.Open();
 				templateRoot = XElement.Load(stream);
 			}

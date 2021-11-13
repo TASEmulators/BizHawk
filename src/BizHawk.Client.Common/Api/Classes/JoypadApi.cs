@@ -20,17 +20,17 @@ namespace BizHawk.Client.Common
 			_movieSession = movieSession;
 		}
 
-		public IDictionary<string, object> Get(int? controller = null)
+		public IReadOnlyDictionary<string, object> Get(int? controller = null)
 		{
 			return _inputManager.AutofireStickyXorAdapter.ToDictionary(controller);
 		}
 
-		public IDictionary<string, object> GetWithMovie(int? controller = null)
+		public IReadOnlyDictionary<string, object> GetWithMovie(int? controller = null)
 		{
 			return _inputManager.ControllerOutput.ToDictionary(controller);
 		}
 
-		public IDictionary<string, object> GetImmediate(int? controller = null)
+		public IReadOnlyDictionary<string, object> GetImmediate(int? controller = null)
 		{
 			return _inputManager.ActiveController.ToDictionary(controller);
 		}
@@ -51,7 +51,7 @@ namespace BizHawk.Client.Common
 			foreach (var axis in controller.Definition.Axes.Keys) _inputManager.ButtonOverrideAdapter.SetAxis(axis, controller.AxisValue(axis));
 		}
 
-		public void Set(IDictionary<string, bool> buttons, int? controller = null)
+		public void Set(IReadOnlyDictionary<string, bool> buttons, int? controller = null)
 		{
 			// If a controller is specified, we need to iterate over unique button names. If not, we iterate over
 			// ALL button names with P{controller} prefixes
@@ -88,7 +88,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void SetAnalog(IDictionary<string, int?> controls, object controller = null)
+		public void SetAnalog(IReadOnlyDictionary<string, int?> controls, object controller = null)
 		{
 			foreach (var kvp in controls) SetAnalog(kvp.Key, kvp.Value, controller);
 		}

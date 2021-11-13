@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using BizHawk.Common;
 using BizHawk.Common.PathExtensions;
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
 using Newtonsoft.Json.Linq;
 
@@ -19,17 +20,17 @@ namespace BizHawk.Client.Common
 		/// </remarks>
 		public static readonly IReadOnlyList<(string[] AppliesTo, string[] CoreNames)> CorePickerUIData = new List<(string[], string[])>
 		{
-			(new[] { "NES" },
+			(new[] { VSystemID.Raw.NES },
 				new[] { CoreNames.QuickNes, CoreNames.NesHawk, CoreNames.SubNesHawk }),
-			(new[] { "SNES" },
+			(new[] { VSystemID.Raw.SNES },
 				new[] { CoreNames.Faust, CoreNames.Snes9X, CoreNames.Bsnes, CoreNames.Bsnes115 }),
-			(new[] { "SGB" },
+			(new[] { VSystemID.Raw.SGB },
 				new[] { CoreNames.Gambatte, CoreNames.Bsnes, CoreNames.Bsnes115}),
-			(new[] { "GB", "GBC" },
+			(new[] { VSystemID.Raw.GB, VSystemID.Raw.GBC },
 				new[] { CoreNames.Gambatte, CoreNames.GbHawk, CoreNames.SubGbHawk }),
-			(new[] { "DGB" },
+			(new[] { VSystemID.Raw.DGB },
 				new[] { CoreNames.DualGambatte, CoreNames.GBHawkLink }),
-			(new[] { "PCE", "PCECD", "SGX" },
+			(new[] { VSystemID.Raw.PCE, VSystemID.Raw.PCECD, VSystemID.Raw.SGX },
 				new[] { CoreNames.TurboNyma, CoreNames.HyperNyma, CoreNames.PceHawk })
 		};
 
@@ -317,15 +318,15 @@ namespace BizHawk.Client.Common
 
 		public Dictionary<string, string> PreferredCores = new Dictionary<string, string>
 		{
-			["NES"] = CoreNames.QuickNes,
-			["SNES"] = CoreNames.Snes9X,
-			["GB"] = CoreNames.Gambatte,
-			["GBC"] = CoreNames.Gambatte,
-			["DGB"] = CoreNames.DualGambatte,
-			["SGB"] = CoreNames.Gambatte,
-			["PCE"] = CoreNames.TurboNyma,
-			["PCECD"] = CoreNames.TurboNyma,
-			["SGX"] = CoreNames.TurboNyma
+			[VSystemID.Raw.NES] = CoreNames.QuickNes,
+			[VSystemID.Raw.SNES] = CoreNames.Snes9X,
+			[VSystemID.Raw.GB] = CoreNames.Gambatte,
+			[VSystemID.Raw.GBC] = CoreNames.Gambatte,
+			[VSystemID.Raw.DGB] = CoreNames.DualGambatte,
+			[VSystemID.Raw.SGB] = CoreNames.Gambatte,
+			[VSystemID.Raw.PCE] = CoreNames.TurboNyma,
+			[VSystemID.Raw.PCECD] = CoreNames.TurboNyma,
+			[VSystemID.Raw.SGX] = CoreNames.TurboNyma,
 		};
 
 		public bool DontTryOtherCores { get; set; }

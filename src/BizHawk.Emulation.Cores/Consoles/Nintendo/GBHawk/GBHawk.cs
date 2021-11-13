@@ -1,6 +1,6 @@
 ﻿using System;
 
-using BizHawk.Common.BufferExtensions;
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.LR35902;
 
@@ -26,27 +26,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 	{
 		internal static class RomChecksums
 		{
-			public const string BombermanCollection = /*sha1:*/"385F8FAFA53A83F8F65E1E619FE124BBF7DB4A98";
+			public const string BombermanCollection = "SHA1:385F8FAFA53A83F8F65E1E619FE124BBF7DB4A98";
 
-			public const string BombermanSelectionKORNotInGameDB = /*sha1:*/"52451464A9F4DD5FAEFE4594954CBCE03BFF0D05";
+			public const string BombermanSelectionKORNotInGameDB = "SHA1:52451464A9F4DD5FAEFE4594954CBCE03BFF0D05";
 
-			public const string MortalKombatIAndIIUSAEU = /*sha1:*/"E337489255B33367CE26194FC4038346D3388BD9";
+			public const string MortalKombatIAndIIUSAEU = "SHA1:E337489255B33367CE26194FC4038346D3388BD9";
 
-			public const string PirateRockMan8 = /*md5:*/"CAE0998A899DF2EE6ABA8E7695C2A096";
+			public const string PirateRockMan8 = "MD5:CAE0998A899DF2EE6ABA8E7695C2A096";
 
-			public const string PirateSachen1 = /*md5:*/"D3C1924D847BC5D125BF54C2076BE27A";
+			public const string PirateSachen1 = "MD5:D3C1924D847BC5D125BF54C2076BE27A";
 
-			public const string UnknownRomA = /*md5:*/"97122B9B183AAB4079C8D36A4CE6E9C1";
+			public const string UnknownRomA = "MD5:97122B9B183AAB4079C8D36A4CE6E9C1";
 
-			public const string WisdomTreeExodus = /*sha1:*/"685D5A47A1FC386D7B451C8B2733E654B7779B71";
+			public const string WisdomTreeExodus = "SHA1:685D5A47A1FC386D7B451C8B2733E654B7779B71";
 
-			public const string WisdomTreeJoshua = /*sha1:*/"019B4B0E76336E2613AE6E8B415B5C65F6D465A5";
+			public const string WisdomTreeJoshua = "SHA1:019B4B0E76336E2613AE6E8B415B5C65F6D465A5";
 
-			public const string WisdomTreeKJVBible = /*sha1:*/"6362FDE9DCB08242A64F2FBEA33DE93D1776A6E0";
+			public const string WisdomTreeKJVBible = "SHA1:6362FDE9DCB08242A64F2FBEA33DE93D1776A6E0";
 
-			public const string WisdomTreeNIVBible = /*sha1:*/"136CF97A8C3560EC9DB3D8F354D91B7DE27E0743";
+			public const string WisdomTreeNIVBible = "SHA1:136CF97A8C3560EC9DB3D8F354D91B7DE27E0743";
 
-			public const string WisdomTreeSpiritualWarfare = /*sha1:*/"6E6AE5DBD8FF8B8F41B8411EF119E96E4ECF763F";
+			public const string WisdomTreeSpiritualWarfare = "SHA1:6E6AE5DBD8FF8B8F41B8411EF119E96E4ECF763F";
 		}
 
 		// this register controls whether or not the GB BIOS is mapped into memory
@@ -126,8 +126,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		private static readonly byte[] GBA_override = { 0xFF, 0x00, 0xCD, 0x03, 0x35, 0xAA, 0x31, 0x90, 0x94, 0x00, 0x00, 0x00, 0x00 };
 
-		[CoreConstructor("GB")]
-		[CoreConstructor("GBC")]
+		[CoreConstructor(VSystemID.Raw.GB)]
+		[CoreConstructor(VSystemID.Raw.GBC)]
 		public GBHawk(CoreComm comm, GameInfo game, byte[] rom, /*string gameDbFn,*/ GBSettings settings, GBSyncSettings syncSettings)
 		{
 			var ser = new BasicServiceProvider(this);
@@ -186,10 +186,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				is_GB_in_GBC = true; // for movie files
 			}
 
-			var romHashMD5 = rom.HashMD5();
-			Console.WriteLine($"MD5: {romHashMD5}");
-			var romHashSHA1 = rom.HashSHA1();
-			Console.WriteLine($"SHA1: {romHashSHA1}");
+			var romHashMD5 = MD5Checksum.ComputePrefixedHex(rom);
+			Console.WriteLine(romHashMD5);
+			var romHashSHA1 = SHA1Checksum.ComputePrefixedHex(rom);
+			Console.WriteLine(romHashSHA1);
 			_rom = rom;
 			var mppr = Setup_Mapper(romHashMD5, romHashSHA1);
 			if (cart_RAM != null) { cart_RAM_vbls = new byte[cart_RAM.Length]; }

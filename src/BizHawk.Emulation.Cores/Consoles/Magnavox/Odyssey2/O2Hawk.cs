@@ -1,6 +1,6 @@
 ﻿using System;
 
-using BizHawk.Common.BufferExtensions;
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.I8048;
 
@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 		public bool is_XROM;
 
-		[CoreConstructor("O2")]
+		[CoreConstructor(VSystemID.Raw.O2)]
 		public O2Hawk(CoreComm comm, GameInfo game, byte[] rom, O2Settings settings, O2SyncSettings syncSettings)
 		{
 			var ser = new BasicServiceProvider(this);
@@ -67,8 +67,8 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 			Buffer.BlockCopy(rom, 0x100, header, 0, 0x50);
 
-			Console.WriteLine("MD5: " + rom.HashMD5(0, rom.Length));
-			Console.WriteLine("SHA1: " + rom.HashSHA1(0, rom.Length));
+			Console.WriteLine(MD5Checksum.ComputePrefixedHex(rom));
+			Console.WriteLine(SHA1Checksum.ComputePrefixedHex(rom));
 			_rom = rom;
 
 			if (game["XROM"]) { is_XROM = true; }

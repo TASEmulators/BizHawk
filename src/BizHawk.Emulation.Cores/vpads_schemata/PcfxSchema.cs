@@ -9,7 +9,7 @@ using BizHawk.Emulation.Cores.Waterbox;
 
 namespace BizHawk.Emulation.Cores
 {
-	[Schema("PCFX")]
+	[Schema(VSystemID.Raw.PCFX)]
 	// ReSharper disable once UnusedMember.Global
 	public class PcfxSchema : IVirtualPadSchema
 	{

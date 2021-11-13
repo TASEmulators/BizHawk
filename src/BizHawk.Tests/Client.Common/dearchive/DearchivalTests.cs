@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 
 using BizHawk.Client.Common;
-using BizHawk.Common.BufferExtensions;
+using BizHawk.Common;
 using BizHawk.Common.IOExtensions;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -29,7 +29,7 @@ namespace BizHawk.Tests.Client.Common.Dearchive
 		private byte[] Rom => _rom.Value;
 
 		[TestMethod]
-		public void SanityCheck() => Assert.AreEqual("70DCA8E791878BDD32426391E4233EA52B47CDD1", Rom.HashSHA1());
+		public void SanityCheck() => Assert.AreEqual("SHA1:70DCA8E791878BDD32426391E4233EA52B47CDD1", SHA1Checksum.ComputePrefixedHex(Rom));
 
 		[TestMethod]
 		public void TestSharpCompress()

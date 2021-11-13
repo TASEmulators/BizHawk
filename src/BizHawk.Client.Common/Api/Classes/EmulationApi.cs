@@ -102,7 +102,7 @@ namespace BizHawk.Client.Common
 				if (DebuggableCore != null)
 				{
 					var registers = DebuggableCore.GetCpuFlagsAndRegisters();
-					return registers.ContainsKey(name) ? registers[name].Value : (ulong?) null;
+					return registers.TryGetValue(name, out var rv) ? rv.Value : (ulong?) null;
 				}
 			}
 			catch (NotImplementedException) {}

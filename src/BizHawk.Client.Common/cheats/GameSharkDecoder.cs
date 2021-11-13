@@ -17,15 +17,15 @@ namespace BizHawk.Client.Common.cheats
 		{
 			return _systemId switch
 			{
-				"GB" or "SGB" => GameBoy(code), // FIXME: HLE SGB cores report a "SGB" ID, while LLE SNES cores report a "SNES" ID, is this intentional?
-				"GBA" => Gba(code),
-				"GEN" => Gen(code),
-				"N64" => N64(code),
-				"NES" => Nes(code),
-				"PSX" => Psx(code),
-				"SAT" => Saturn(code),
-				"SMS" => Sms(code),
-				"SNES" => Snes(code),
+				VSystemID.Raw.GB or VSystemID.Raw.SGB => GameBoy(code), // FIXME: HLE SGB cores report a "SGB" ID, while LLE SNES cores report a "SNES" ID, is this intentional?
+				VSystemID.Raw.GBA => Gba(code),
+				VSystemID.Raw.GEN => Gen(code),
+				VSystemID.Raw.N64 => N64(code),
+				VSystemID.Raw.NES => Nes(code),
+				VSystemID.Raw.PSX => Psx(code),
+				VSystemID.Raw.SAT => Saturn(code),
+				VSystemID.Raw.SMS => Sms(code),
+				VSystemID.Raw.SNES => Snes(code),
 				_ => new InvalidCheatCode("Cheat codes not currently supported on this system")
 			};
 		}
@@ -40,10 +40,10 @@ namespace BizHawk.Client.Common.cheats
 
 		private string CheatDomainName() => _systemId switch
 		{
-			"N64" => "RDRAM",
-			"PSX" => "MainRAM",
+			VSystemID.Raw.N64 => "RDRAM",
+			VSystemID.Raw.PSX => "MainRAM",
 #if false
-			"SAT" => "Work Ram High", // Work RAM High may be incorrect?
+			VSystemID.Raw.SAT => "Work Ram High", // Work RAM High may be incorrect?
 #endif
 			_ => null
 

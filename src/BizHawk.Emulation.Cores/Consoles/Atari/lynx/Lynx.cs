@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 	[ServiceNotApplicable(new[] { typeof(IDriveLight), typeof(IRegionable), typeof(ISettable<,>) })]
 	public partial class Lynx : IEmulator, IVideoProvider, ISoundProvider, ISaveRam, IStatable, IInputPollable
 	{
-		[CoreConstructor("Lynx")]
+		[CoreConstructor(VSystemID.Raw.Lynx)]
 		public Lynx(byte[] file, GameInfo game, CoreComm comm)
 		{
 			ServiceProvider = new BasicServiceProvider(this);
@@ -141,7 +141,7 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 
 		public int Frame { get; private set; }
 
-		public string SystemId => "Lynx";
+		public string SystemId => VSystemID.Raw.Lynx;
 
 		public bool DeterministicEmulation => true;
 

@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Belogic
 		private LibUzem _uze;
 		private readonly bool _mouseEnabled;
 
-		[CoreConstructor("UZE")]
+		[CoreConstructor(VSystemID.Raw.UZE)]
 		public Uzem(CoreComm comm, byte[] rom)
 			: base(comm, new Configuration
 			{
@@ -21,7 +21,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Belogic
 				MaxWidth = 720,
 				MaxHeight = 224,
 				MaxSamples = 4096,
-				SystemId = "UZE",
+				SystemId = VSystemID.Raw.UZE,
 				DefaultFpsNumerator = 28618182,
 				DefaultFpsDenominator = 476840
 			})

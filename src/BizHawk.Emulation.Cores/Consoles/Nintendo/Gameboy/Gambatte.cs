@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 
 using BizHawk.Common;
-using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
 
@@ -18,9 +17,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		IBoardInfo, IRomInfo, IDebuggable, ISettable<Gameboy.GambatteSettings, Gameboy.GambatteSyncSettings>,
 		IGameboyCommon, ICycleTiming, ILinkable
 	{
-		[CoreConstructor("GB")]
-		[CoreConstructor("GBC")]
-		[CoreConstructor("SGB")]
+		[CoreConstructor(VSystemID.Raw.GB)]
+		[CoreConstructor(VSystemID.Raw.GBC)]
+		[CoreConstructor(VSystemID.Raw.SGB)]
 		public Gameboy(CoreComm comm, GameInfo game, byte[] file, Gameboy.GambatteSettings settings, Gameboy.GambatteSyncSettings syncSettings, bool deterministic)
 		{
 			var ser = new BasicServiceProvider(this);
@@ -62,12 +61,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 						flags |= LibGambatte.LoadFlags.CGB_MODE | LibGambatte.LoadFlags.GBA_FLAG;
 						break;
 					default:
-						if (game.System == "GBC")
+						if (game.System == VSystemID.Raw.GBC)
 							flags |= LibGambatte.LoadFlags.CGB_MODE;
 						break;
 				}
 
-				if (game.System == "SGB")
+				if (game.System == VSystemID.Raw.SGB)
 				{
 					flags &= ~(LibGambatte.LoadFlags.CGB_MODE | LibGambatte.LoadFlags.GBA_FLAG);
 					flags |= LibGambatte.LoadFlags.SGB_MODE;
@@ -137,7 +136,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 				InitMemoryDomains();
 
-				RomDetails = $"{game.Name}\r\nSHA1:{file.HashSHA1()}\r\nMD5:{file.HashMD5()}\r\n";
+				RomDetails = $"{game.Name}\r\n{SHA1Checksum.ComputePrefixedHex(file)}\r\n{MD5Checksum.ComputePrefixedHex(file)}\r\n";
 
 				byte[] buff = new byte[32];
 				LibGambatte.gambatte_romtitle(GambatteState, buff);

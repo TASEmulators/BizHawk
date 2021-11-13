@@ -5,7 +5,6 @@ using System.Linq;
 using System.Xml;
 
 using BizHawk.Common;
-using BizHawk.Common.BufferExtensions;
 using BizHawk.Common.IOExtensions;
 using BizHawk.Emulation.Common;
 
@@ -99,12 +98,11 @@ namespace BizHawk.Client.Common
 
 						ret.Assets.Add(new KeyValuePair<string, byte[]>(filename, data));
 						ret.AssetFullPaths.Add(fullPath);
-						using var sha1 = System.Security.Cryptography.SHA1.Create();
-						sha1.TransformFinalBlock(data, 0, data.Length);
-						hashStream.Write(sha1.Hash, 0, sha1.Hash.Length);
+						var sha1 = SHA1Checksum.Compute(data);
+						hashStream.Write(sha1, 0, sha1.Length);
 					}
 
-					ret.GI.Hash = hashStream.GetBuffer().HashSHA1(0, (int)hashStream.Length);
+					ret.GI.Hash = SHA1Checksum.ComputeDigestHex(hashStream.GetBufferAsSpan());
 					hashStream.Close();
 					if (originalIndex != null)
 					{

@@ -15,11 +15,11 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 		private readonly LibHyperNyma _hyperNyma;
 		private readonly bool _hasCds;
 
-		[CoreConstructor("PCE", Priority = CorePriority.Low)]
-		[CoreConstructor("SGX", Priority = CorePriority.Low)]
-		[CoreConstructor("PCECD", Priority = CorePriority.Low)]
+		[CoreConstructor(VSystemID.Raw.PCE, Priority = CorePriority.Low)]
+		[CoreConstructor(VSystemID.Raw.SGX, Priority = CorePriority.Low)]
+		[CoreConstructor(VSystemID.Raw.PCECD, Priority = CorePriority.Low)]
 		public HyperNyma(CoreLoadParameters<NymaSettings, NymaSyncSettings> lp)
-			: base(lp.Comm, "PCE", "PC Engine Controller", lp.Settings, lp.SyncSettings)
+			: base(lp.Comm, VSystemID.Raw.PCE, "PC Engine Controller", lp.Settings, lp.SyncSettings)
 		{
 			var firmwares = new Dictionary<string, FirmwareID>();
 			if (lp.Discs.Count > 0)
@@ -32,8 +32,8 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 		}
 
 		public override string SystemId => IsSgx
-			? _hasCds ? "SGXCD" : "SGX"
-			: _hasCds ? "PCECD" : "PCE";
+			? _hasCds ? VSystemID.Raw.SGXCD : VSystemID.Raw.SGX
+			: _hasCds ? VSystemID.Raw.PCECD : VSystemID.Raw.PCE;
 
 		protected override IDictionary<string, SettingOverride> SettingOverrides { get; } = new Dictionary<string, SettingOverride>
 		{

@@ -13,7 +13,7 @@ namespace BizHawk.Client.Common
 	{
 		protected override void RunImport()
 		{
-			Result.Movie.HeaderEntries[HeaderKeys.Platform] = "NDS";
+			Result.Movie.HeaderEntries[HeaderKeys.Platform] = VSystemID.Raw.NDS;
 
 			var syncSettings = new NDS.NDSSyncSettings();
 

@@ -46,7 +46,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 
 		public bool do_frame_fill;
 
-		[CoreConstructor("GB4x")]
+		[CoreConstructor(VSystemID.Raw.GB4x)]
 		public GBHawkLink4x(CoreLoadParameters<GBLink4xSettings, GBLink4xSyncSettings> lp)
 		{
 			if (lp.Roms.Count != 4)

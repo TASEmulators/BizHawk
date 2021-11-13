@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 	[Core(CoreNames.ZXHawk, "Asnivor, Alyosha")]
 	public partial class ZXSpectrum : IRegionable, IDriveLight
 	{
-		[CoreConstructor("ZXSpectrum")]
+		[CoreConstructor(VSystemID.Raw.ZXSpectrum)]
 		public ZXSpectrum(
 			CoreLoadParameters<ZXSpectrumSettings, ZXSpectrumSyncSettings> lp)
 		{

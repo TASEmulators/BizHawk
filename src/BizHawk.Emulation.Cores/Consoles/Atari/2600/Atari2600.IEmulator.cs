@@ -82,7 +82,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public int Frame => _frame;
 
-		public string SystemId => "A26";
+		public string SystemId => VSystemID.Raw.A26;
 
 		public bool DeterministicEmulation => true;
 

@@ -8,7 +8,7 @@ using BizHawk.Emulation.Cores.Waterbox;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 {
-	[PortedCore(CoreNames.MelonDS, "Arisotura", "0.9.3", "http://melonds.kuribo64.net/", isReleased: false)]
+	[PortedCore(CoreNames.MelonDS, "Arisotura", "0.9.3", "http://melonds.kuribo64.net/")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight), typeof(IRegionable) })]
 	public partial class NDS : WaterboxCore
 	{
@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		private readonly NDSDisassembler _disassembler;
 		private SpeexResampler _resampler;
 
-		[CoreConstructor("NDS")]
+		[CoreConstructor(VSystemID.Raw.NDS)]
 		public NDS(CoreLoadParameters<NDSSettings, NDSSyncSettings> lp)
 			: this(lp, false)
 		{
@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				MaxSamples = 1024,
 				DefaultFpsNumerator = 33513982,
 				DefaultFpsDenominator = 560190,
-				SystemId = "NDS"
+				SystemId = VSystemID.Raw.NDS,
 			})
 		{
 			var roms = lp.Roms.Select(r => r.RomData).ToList();

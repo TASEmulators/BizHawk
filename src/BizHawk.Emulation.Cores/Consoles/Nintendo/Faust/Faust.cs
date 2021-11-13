@@ -7,10 +7,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Faust
 	[PortedCore(CoreNames.Faust, "Mednafen Team", "1.27.1", "https://mednafen.github.io/releases/")]
 	public class Faust : NymaCore, IRegionable
 	{
-		[CoreConstructor("SNES")]
+		[CoreConstructor(VSystemID.Raw.SNES)]
 		public Faust(GameInfo game, byte[] rom, CoreComm comm, string extension,
 			NymaSettings settings, NymaSyncSettings syncSettings, bool deterministic)
-			: base(comm, "SNES", "SNES Controller", settings, syncSettings)
+			: base(comm, VSystemID.Raw.SNES, "SNES Controller", settings, syncSettings)
 		{
 			if (deterministic)
 				// force ST renderer

@@ -79,7 +79,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		public int Frame => _frame;
 
-		public string SystemId => "C64";
+		public string SystemId => VSystemID.Raw.C64;
 
 		public bool DeterministicEmulation => true;
 

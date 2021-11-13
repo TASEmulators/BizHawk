@@ -63,20 +63,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// Adds a single metadata item to the Dictionary
 		/// </summary>
 		public void AddMetaData(BlockDescriptorTitle descriptor, string data)
-		{
-			// check whether entry already exists
-			bool check = MetaData.ContainsKey(descriptor);
-			if (check)
-			{
-				// already exists - update
-				MetaData[descriptor] = data;
-			}
-			else
-			{
-				// create new
-				MetaData.Add(descriptor, data);
-			}
-		}
+			=> MetaData[descriptor] = data;
 
 		/// <summary>
 		/// List containing the pulse timing values

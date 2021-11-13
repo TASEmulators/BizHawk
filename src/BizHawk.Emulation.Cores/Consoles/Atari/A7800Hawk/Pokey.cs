@@ -33,7 +33,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		public bool high_pass_1;
 		public bool high_pass_2;
 
-		// these are derived values and do not need to be save-stated
 		public bool[] clock_ch = new bool[4];
 		public int bit_xor;
 
@@ -306,6 +305,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		{
 			ser.BeginSection(nameof(Pokey));
 
+			ser.Sync(nameof(LocalAudioCycles), ref LocalAudioCycles);
+
 			ser.Sync(nameof(Regs), ref Regs, false);
 
 			ser.Sync(nameof(poly4), ref poly4);
@@ -319,6 +320,9 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			ser.Sync(nameof(ch_vol), ref ch_vol, false);
 			ser.Sync(nameof(high_pass_1), ref high_pass_1);
 			ser.Sync(nameof(high_pass_2), ref high_pass_2);
+
+			ser.Sync(nameof(clock_ch), ref clock_ch, false);
+			ser.Sync(nameof(bit_xor), ref bit_xor);
 
 			ser.EndSection();
 		}

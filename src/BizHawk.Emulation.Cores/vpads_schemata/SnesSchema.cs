@@ -10,7 +10,7 @@ using BizHawk.Emulation.Cores.Waterbox;
 
 namespace BizHawk.Emulation.Cores
 {
-	[Schema("SNES")]
+	[Schema(VSystemID.Raw.SNES)]
 	// ReSharper disable once UnusedMember.Global
 	public class SnesSchema : IVirtualPadSchema
 	{

@@ -352,12 +352,8 @@ namespace BizHawk.Client.Common
 			if (Movie.IsAtEnd() && Movie.Core == CoreNames.Gambatte)
 			{
 				var coreCycles = (ulong) ((Gameboy)Movie.Emulator).CycleCount;
-				var cyclesSaved = Movie.HeaderEntries.ContainsKey(HeaderKeys.CycleCount);
-				ulong previousCycles = 0;
-				if (cyclesSaved)
-				{
-					previousCycles = Convert.ToUInt64(Movie.HeaderEntries[HeaderKeys.CycleCount]);
-				}
+				var cyclesSaved = Movie.HeaderEntries.TryGetValue(HeaderKeys.CycleCount, out var previousCyclesStr);
+				var previousCycles = cyclesSaved ? Convert.ToUInt64(previousCyclesStr) : 0UL;
 				var cyclesMatch = previousCycles == coreCycles;
 				if (!cyclesSaved || !cyclesMatch)
 				{

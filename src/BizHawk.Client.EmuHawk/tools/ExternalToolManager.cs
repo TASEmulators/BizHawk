@@ -37,7 +37,7 @@ namespace BizHawk.Client.EmuHawk
 				DirectoryMonitor.Created -= DirectoryMonitor_Created;
 				DirectoryMonitor.Dispose();
 			}
-			var path = _paths["Global", "External Tools"].Path;
+			var path = _paths[PathEntryCollection.GLOBAL, "External Tools"].Path;
 			if (Directory.Exists(path))
 			{
 				DirectoryMonitor = new FileSystemWatcher(path, "*.dll")
@@ -86,7 +86,7 @@ namespace BizHawk.Client.EmuHawk
 				var toolAttribute = allAttrs.OfType<ExternalToolAttribute>().First();
 				if (toolAttribute.LoadAssemblyFiles != null)
 				{
-					foreach (var depFilename in toolAttribute.LoadAssemblyFiles) Assembly.LoadFrom($"{_paths["Global", "External Tools"].Path}/{depFilename}");
+					foreach (var depFilename in toolAttribute.LoadAssemblyFiles) Assembly.LoadFrom($"{_paths[PathEntryCollection.GLOBAL, "External Tools"].Path}/{depFilename}");
 				}
 				var embeddedIconAttr = allAttrs.OfType<ExternalToolEmbeddedIconAttribute>().FirstOrDefault();
 				if (embeddedIconAttr != null)

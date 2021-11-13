@@ -139,7 +139,7 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 
 		public int Frame => _frame;
 
-		public string SystemId => "MSX";
+		public string SystemId => VSystemID.Raw.MSX;
 
 		public bool DeterministicEmulation => true;
 

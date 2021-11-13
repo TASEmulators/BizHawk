@@ -434,7 +434,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// OpenRomMenuItem
 			// 
-			this.OpenRomMenuItem.Text = "&Open ROM";
+			this.OpenRomMenuItem.Text = "&Open ROM...";
 			this.OpenRomMenuItem.Click += new System.EventHandler(this.OpenRomMenuItem_Click);
 			// 
 			// RecentRomSubMenu
@@ -446,7 +446,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// OpenAdvancedMenuItem
 			// 
-			this.OpenAdvancedMenuItem.Text = "Open Ad&vanced";
+			this.OpenAdvancedMenuItem.Text = "Open Ad&vanced...";
 			this.OpenAdvancedMenuItem.Click += new System.EventHandler(this.OpenAdvancedMenuItem_Click);
 			// 
 			// CloseRomMenuItem
@@ -843,7 +843,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// ConfigAndRecordAVMenuItem
 			// 
-			this.ConfigAndRecordAVMenuItem.Text = "Config and Record AVI/WAV";
+			this.ConfigAndRecordAVMenuItem.Text = "Config and Record AVI/WAV...";
 			this.ConfigAndRecordAVMenuItem.Click += new System.EventHandler(this.ConfigAndRecordAVMenuItem_Click);
 			// 
 			// StopAVIMenuItem
@@ -1458,7 +1458,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// BatchRunnerMenuItem
 			// 
-			this.BatchRunnerMenuItem.Text = "Batch Runner";
+			this.BatchRunnerMenuItem.Text = "Batch Runner...";
 			this.BatchRunnerMenuItem.Visible = false;
 			this.BatchRunnerMenuItem.Click += new System.EventHandler(this.BatchRunnerMenuItem_Click);
 			// 
@@ -1975,12 +1975,12 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// OnlineHelpMenuItem
 			// 
-			this.OnlineHelpMenuItem.Text = "&Online Help...";
+			this.OnlineHelpMenuItem.Text = "Open TASVideos Wiki in Browser";
 			this.OnlineHelpMenuItem.Click += new System.EventHandler(this.OnlineHelpMenuItem_Click);
 			// 
 			// ForumsMenuItem
 			// 
-			this.ForumsMenuItem.Text = "Forums...";
+			this.ForumsMenuItem.Text = "Open Forums in Browser";
 			this.ForumsMenuItem.Click += new System.EventHandler(this.ForumsMenuItem_Click);
 			// 
 			// FeaturesMenuItem
@@ -1990,7 +1990,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// AboutMenuItem
 			// 
-			this.AboutMenuItem.Text = "&About";
+			this.AboutMenuItem.Text = "&About...";
 			this.AboutMenuItem.Click += new System.EventHandler(this.AboutMenuItem_Click);
 			// 
 			// A7800HawkCoreMenuItem

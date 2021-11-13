@@ -18,8 +18,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive
 		private readonly DiscSectorReader _cdReader;
 		private readonly bool _isPal;
 
-		[CoreConstructor("GEN", Priority = CorePriority.Low)]
-		[CoreConstructor("32X")]
+		[CoreConstructor(VSystemID.Raw.GEN, Priority = CorePriority.Low)]
+		[CoreConstructor(VSystemID.Raw.Sega32X)]
 		public PicoDrive(CoreComm comm, GameInfo game, byte[] rom, bool deterministic, SyncSettings syncSettings)
 			: this(comm, game, rom, null, deterministic, syncSettings)
 		{ }
@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive
 				DefaultHeight = 224,
 				MaxWidth = 320,
 				MaxHeight = 480,
-				SystemId = "GEN"
+				SystemId = VSystemID.Raw.GEN,
 			})
 		{
 			var biosg = comm.CoreFileProvider.GetFirmware(new("32X", "G"));

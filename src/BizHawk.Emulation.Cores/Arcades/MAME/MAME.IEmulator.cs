@@ -4,7 +4,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 {
 	public partial class MAME : IEmulator
 	{
-		public string SystemId => "MAME";
+		public string SystemId => VSystemID.Raw.MAME;
 		public bool DeterministicEmulation => true;
 		public int Frame { get; private set; }
 		public IEmulatorServiceProvider ServiceProvider { get; }

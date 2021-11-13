@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 	public partial class GPGX : IEmulator, IVideoProvider, ISaveRam, IStatable, IRegionable,
 		IInputPollable, IDebuggable, IDriveLight, ICodeDataLogger, IDisassemblable
 	{
-		[CoreConstructor("GEN")]
+		[CoreConstructor(VSystemID.Raw.GEN)]
 		public GPGX(CoreLoadParameters<GPGXSettings, GPGXSyncSettings> lp)
 		{
 			LoadCallback = new LibGPGX.load_archive_cb(load_archive);

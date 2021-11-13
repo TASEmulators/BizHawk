@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 
 		public bool do_frame_fill;
 
-		[CoreConstructor("DGB")]
+		[CoreConstructor(VSystemID.Raw.DGB)]
 		public GBHawkLink(CoreLoadParameters<GBHawkLink.GBLinkSettings, GBHawkLink.GBLinkSyncSettings> lp)
 		{
 			if (lp.Roms.Count != 2)

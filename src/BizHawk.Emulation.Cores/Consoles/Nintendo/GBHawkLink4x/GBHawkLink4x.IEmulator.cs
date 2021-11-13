@@ -999,7 +999,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 
 		public int Frame => _frame;
 
-		public string SystemId => "GB4x";
+		public string SystemId => VSystemID.Raw.GB4x;
 
 		public bool DeterministicEmulation { get; set; }
 

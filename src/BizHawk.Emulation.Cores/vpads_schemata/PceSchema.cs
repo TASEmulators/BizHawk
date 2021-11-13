@@ -10,15 +10,15 @@ using BizHawk.Emulation.Cores.Waterbox;
 
 namespace BizHawk.Emulation.Cores
 {
-	[Schema("PCECD")]
+	[Schema(VSystemID.Raw.PCECD)]
 	// ReSharper disable once UnusedMember.Global
 	public class PceCdSchema : PceSchema { }
 
-	[Schema("SGX")]
+	[Schema(VSystemID.Raw.SGX)]
 	// ReSharper disable once UnusedMember.Global
 	public class SgxSchema : PceSchema { }
 
-	[Schema("PCE")]
+	[Schema(VSystemID.Raw.PCE)]
 	public class PceSchema : IVirtualPadSchema
 	{
 		public virtual IEnumerable<PadSchema> GetPadSchemas(IEmulator core, Action<string> showMessageBox)

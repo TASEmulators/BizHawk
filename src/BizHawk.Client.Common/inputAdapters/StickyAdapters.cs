@@ -119,10 +119,10 @@ namespace BizHawk.Client.Common
 		{
 			var source = Source.IsPressed(button);
 			bool patternValue = false;
-			if (_boolPatterns.ContainsKey(button))
+			if (_boolPatterns.TryGetValue(button, out var pattern))
 			{
 				// I can't figure a way to determine right here if it should Peek or Get.
-				patternValue = _boolPatterns[button].PeekNextValue();
+				patternValue = pattern.PeekNextValue();
 			}
 
 			source ^= patternValue;
@@ -131,19 +131,9 @@ namespace BizHawk.Client.Common
 		}
 
 		public int AxisValue(string name)
-		{
-			if (_axisPatterns.ContainsKey(name))
-			{
-				return _axisPatterns[name].PeekNextValue();
-			}
-
-			if (Source == null)
-			{
-				return 0;
-			}
-
-			return Source.AxisValue(name);
-		}
+			=> _axisPatterns.TryGetValue(name, out var pattern)
+				? pattern.PeekNextValue()
+				: Source?.AxisValue(name) ?? 0;
 
 		public IReadOnlyCollection<(string Name, int Strength)> GetHapticsSnapshot() => Source.GetHapticsSnapshot();
 

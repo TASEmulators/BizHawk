@@ -7,6 +7,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using BizHawk.Client.Common;
 using BizHawk.Client.Common.cheats;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Tests.Client.Common.cheats
 {
@@ -40,13 +41,13 @@ namespace BizHawk.Tests.Client.Common.cheats
 
 		private static readonly IEnumerable<object?[]> NonsenseData = new[]
 		{
-			new[] { "GBA", "33003D0E0020", ERROR_GBA_CODEBREAKER },
+			new[] { VSystemID.Raw.GBA, "33003D0E0020", ERROR_GBA_CODEBREAKER },
 		};
 
 		private static readonly IEnumerable<object?[]> RealData = new[]
 		{
-			new object?[] { "GBA", "4012F5B7 3B7801A6", 0x00000006, 0xB7, NO_COMPARE, WatchSize.Byte },
-			new object?[] { "GBA", "686D7FC3 24B5B832", 0x00000032, 0x7FC3, NO_COMPARE, WatchSize.Word },
+			new object?[] { VSystemID.Raw.GBA, "4012F5B7 3B7801A6", 0x00000006, 0xB7, NO_COMPARE, WatchSize.Byte },
+			new object?[] { VSystemID.Raw.GBA, "686D7FC3 24B5B832", 0x00000032, 0x7FC3, NO_COMPARE, WatchSize.Word },
 		};
 
 		[DataTestMethod]

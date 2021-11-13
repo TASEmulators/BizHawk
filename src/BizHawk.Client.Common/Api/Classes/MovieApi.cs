@@ -23,7 +23,7 @@ namespace BizHawk.Client.Common
 
 		public bool StartsFromSaveram() => _movieSession.Movie.IsActive() && _movieSession.Movie.StartsFromSaveRam;
 
-		public IDictionary<string, object> GetInput(int frame, int? controller = null)
+		public IReadOnlyDictionary<string, object> GetInput(int frame, int? controller = null)
 		{
 			if (_movieSession.Movie.NotActive())
 			{

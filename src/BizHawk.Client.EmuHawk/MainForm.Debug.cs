@@ -5,12 +5,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Security.Cryptography;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.Properties;
-using BizHawk.Common.BufferExtensions;
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
 using BizHawk.Emulation.Cores.Nintendo.GBA;
@@ -88,9 +87,7 @@ namespace BizHawk.Client.EmuHawk
 							return;
 						}
 						// else something happened, figure out what it was
-						using var sha1 = SHA1.Create();
-						sha1.ComputeHash(@base);
-						var baseHash = sha1.Hash.BytesToHexString();
+						var baseHash = SHA1Checksum.ComputeDigestHex(@base);
 						this.ModalMessageBox(baseHash == fpo.BaseHash
 							? $"patchset declared with target\nSHA1:{fpo.TargetHash}\nbut produced\nSHA1:{actualHash}\n(is the patch wrong, or the hash?)"
 							: $"patchset declared for base\nSHA1:{fpo.BaseHash}\nbut\nSHA1:{baseHash}\nwas provided");

@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		/// <param name="file">Rom that should be loaded</param>
 		/// <param name="rom">rom data with consistent endianness/order</param>
 		/// <param name="syncSettings">N64SyncSettings object</param>
-		[CoreConstructor("N64")]
+		[CoreConstructor(VSystemID.Raw.N64)]
 		public N64(GameInfo game, byte[] file, byte[] rom, N64Settings settings, N64SyncSettings syncSettings)
 		{
 			ServiceProvider = new BasicServiceProvider(this);
@@ -242,7 +242,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			return true;
 		}
 
-		public string SystemId => "N64";
+		public string SystemId => VSystemID.Raw.N64;
 
 		public DisplayType Region => _display_type;
 

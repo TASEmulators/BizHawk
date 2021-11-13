@@ -42,7 +42,7 @@ namespace BizHawk.Client.EmuHawk.CoreExtensions
 		{
 			NullEmulator => string.Empty,
 #if false
-			IGameboyCommon gb when gb.IsCGBMode() => EmulatorExtensions.SystemIDToDisplayName("GBC"),
+			IGameboyCommon gb when gb.IsCGBMode() => EmulatorExtensions.SystemIDToDisplayName(VSystemID.Raw.GBC),
 #endif
 			_ => EmulatorExtensions.SystemIDToDisplayName(emulator.SystemId)
 		};

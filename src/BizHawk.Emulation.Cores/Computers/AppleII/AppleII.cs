@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			AppleIIController.BoolButtons.AddRange(ExtraButtons);
 		}
 
-		[CoreConstructor("AppleII")]
+		[CoreConstructor(VSystemID.Raw.AppleII)]
 		public AppleII(CoreLoadParameters<Settings, object> lp)
 		{
 			_romSet = lp.Roms.Select(r => r.RomData).ToList();

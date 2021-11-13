@@ -6,7 +6,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores
 {
-	[Schema("WSWAN")]
+	[Schema(VSystemID.Raw.WSWAN)]
 	// ReSharper disable once UnusedMember.Global
 	public class WonderSwanSchema : IVirtualPadSchema
 	{

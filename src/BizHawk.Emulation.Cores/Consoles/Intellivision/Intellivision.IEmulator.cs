@@ -131,7 +131,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 		public int Frame => _frame;
 
-		public string SystemId => "INTV";
+		public string SystemId => VSystemID.Raw.INTV;
 
 		public bool DeterministicEmulation => true;
 

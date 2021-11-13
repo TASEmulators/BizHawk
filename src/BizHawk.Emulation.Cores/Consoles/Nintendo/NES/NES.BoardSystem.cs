@@ -163,54 +163,35 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			//try generating a bootgod cart descriptor from the game database
 			var dict = gi.GetOptions();
 			cart.GameInfo = gi;
-			if (!dict.ContainsKey("board"))
-				throw new Exception("NES gamedb entries must have a board identifier!");
-			cart.BoardType = dict["board"];
-			if (dict.ContainsKey("system"))
-				cart.System = dict["system"];
-			cart.PrgSize = -1;
-			cart.VramSize = -1;
-			cart.WramSize = -1;
-			cart.ChrSize = -1;
-			if (dict.ContainsKey("PRG"))
-				cart.PrgSize = short.Parse(dict["PRG"]);
-			if (dict.ContainsKey("CHR"))
-				cart.ChrSize = short.Parse(dict["CHR"]);
-			if(dict.ContainsKey("VRAM"))
-				cart.VramSize = short.Parse(dict["VRAM"]);
-			if (dict.ContainsKey("WRAM"))
-				cart.WramSize = short.Parse(dict["WRAM"]);
-			if (dict.ContainsKey("PAD_H"))
-				cart.PadH = byte.Parse(dict["PAD_H"]);
-			if (dict.ContainsKey("PAD_V"))
-				cart.PadV = byte.Parse(dict["PAD_V"]);
-			if(dict.ContainsKey("MIR"))
-				if (dict["MIR"] == "H")
+			if (!dict.TryGetValue("board", out var board)) throw new Exception("NES gamedb entries must have a board identifier!");
+			cart.BoardType = board;
+			if (dict.TryGetValue("system", out var system)) cart.System = system;
+
+			cart.PrgSize = dict.TryGetValue("PRG", out var prgSizeStr) ? short.Parse(prgSizeStr) : -1;
+			cart.ChrSize = dict.TryGetValue("CHR", out var chrSizeStr) ? short.Parse(chrSizeStr) : -1;
+			cart.VramSize = dict.TryGetValue("VRAM", out var vramSizeStr) ? short.Parse(vramSizeStr) : -1;
+			cart.WramSize = dict.TryGetValue("WRAM", out var wramSizeStr) ? short.Parse(wramSizeStr) : -1;
+
+			if (dict.TryGetValue("PAD_H", out var padHStr)) cart.PadH = byte.Parse(padHStr);
+			if (dict.TryGetValue("PAD_V", out var padVStr)) cart.PadV = byte.Parse(padVStr);
+			if (dict.TryGetValue("MIR", out var mirStr))
+			{
+				if (mirStr == "H")
 				{
 					cart.PadV = 1; cart.PadH = 0;
 				}
-				else if (dict["MIR"] == "V")
+				else if (mirStr == "V")
 				{
 					cart.PadH = 1; cart.PadV = 0;
 				}
-			if (dict.ContainsKey("BAD"))
-				cart.Bad = true;
-			if (dict.ContainsKey("MMC3"))
-				cart.Chips.Add(dict["MMC3"]);
-			if (dict.ContainsKey("PCB"))
-				cart.Pcb = dict["PCB"];
-			if (dict.ContainsKey("BATT"))
-				cart.WramBattery = bool.Parse(dict["BATT"]);
-
-			if(dict.ContainsKey("palette"))
-			{
-				cart.Palette = dict["palette"];
 			}
 
-			if (dict.ContainsKey("vs_security"))
-			{
-				cart.VsSecurity = byte.Parse(dict["vs_security"]);
-			}
+			if (dict.ContainsKey("BAD")) cart.Bad = true;
+			if (dict.TryGetValue("MMC3", out var mmc3)) cart.Chips.Add(mmc3);
+			if (dict.TryGetValue("PCB", out var pcb)) cart.Pcb = pcb;
+			if (dict.TryGetValue("BATT", out var batteryStr)) cart.WramBattery = bool.Parse(batteryStr);
+			if (dict.TryGetValue("palette", out var palette)) cart.Palette = palette;
+			if (dict.TryGetValue("vs_security", out var vsSecurityStr)) cart.VsSecurity = byte.Parse(vsSecurityStr);
 
 			return cart;
 		}

@@ -9,7 +9,7 @@ using BizHawk.Emulation.Cores.Sega.MasterSystem;
 namespace BizHawk.Emulation.Cores
 {
 
-	[Schema("GG")]
+	[Schema(VSystemID.Raw.GG)]
 	public class GameGearSchema : IVirtualPadSchema
 	{
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core, Action<string> showMessageBox)
@@ -57,10 +57,10 @@ namespace BizHawk.Emulation.Cores
 		}
 	}
 
-	[Schema("SG")]
+	[Schema(VSystemID.Raw.SG)]
 	public class SG1000Schema : SMSSchema { } // are these really the same controller layouts? --yoshi
 
-	[Schema("SMS")]
+	[Schema(VSystemID.Raw.SMS)]
 	public class SMSSchema : IVirtualPadSchema
 	{
 		private static string StandardControllerName => typeof(SmsController).DisplayName();

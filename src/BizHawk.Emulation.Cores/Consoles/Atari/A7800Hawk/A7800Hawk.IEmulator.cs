@@ -315,7 +315,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		public int Frame => _frame;
 
-		public string SystemId => "A78"; 
+		public string SystemId => VSystemID.Raw.A78;
 
 		public bool DeterministicEmulation { get; set; }
 
@@ -414,7 +414,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			tia.AudioClocks = 0;
 			master_audio_clock = 0;
 			_blip.Clear();
-
 		}
 
 		public void DisposeSound()

@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 	[ServiceNotApplicable(new[] { typeof(IDriveLight), typeof(ISaveRam) })]
 	public sealed partial class ColecoVision : IEmulator, IDebuggable, IInputPollable, ISettable<ColecoVision.ColecoSettings, ColecoVision.ColecoSyncSettings>
 	{
-		[CoreConstructor("Coleco")]
+		[CoreConstructor(VSystemID.Raw.Coleco)]
 		public ColecoVision(CoreComm comm, GameInfo game, byte[] rom,
 			ColecoSettings settings,
 			ColecoSyncSettings syncSettings)

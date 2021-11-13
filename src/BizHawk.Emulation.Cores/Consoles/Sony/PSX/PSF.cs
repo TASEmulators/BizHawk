@@ -58,9 +58,9 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				Data = cbDeflater(fs, compressed_size);
 
 				//load lib if needed
-				if (TagsDictionary.ContainsKey("_lib"))
+				if (TagsDictionary.TryGetValue("_lib", out var relPath))
 				{
-					var fpLib = Path.Combine(Path.GetDirectoryName(fpPSF), TagsDictionary["_lib"]);
+					var fpLib = Path.Combine(Path.GetDirectoryName(fpPSF), relPath);
 					if (!File.Exists(fpLib))
 						return false;
 					PSF lib = new PSF();

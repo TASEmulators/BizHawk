@@ -7,7 +7,7 @@ using BizHawk.Emulation.Cores.ColecoVision;
 
 namespace BizHawk.Emulation.Cores
 {
-	[Schema("Coleco")]
+	[Schema(VSystemID.Raw.Coleco)]
 	// ReSharper disable once UnusedMember.Global
 	public class ColecoSchema : IVirtualPadSchema
 	{

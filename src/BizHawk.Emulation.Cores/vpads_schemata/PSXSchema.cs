@@ -8,7 +8,7 @@ using BizHawk.Emulation.Cores.Sony.PSX;
 
 namespace BizHawk.Emulation.Cores
 {
-	[Schema("PSX")]
+	[Schema(VSystemID.Raw.PSX)]
 	// ReSharper disable once UnusedMember.Global
 	public class PsxSchema : IVirtualPadSchema
 	{

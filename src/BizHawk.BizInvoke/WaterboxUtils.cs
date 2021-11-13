@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Security.Cryptography;
 
 namespace BizHawk.BizInvoke
 {
@@ -20,18 +19,6 @@ namespace BizHawk.BizInvoke
 				dst.Write(buff, 0, r);
 				len -= r;
 			}
-		}
-
-		public static byte[] Hash(byte[] data)
-		{
-			using var h = SHA1.Create();
-			return h.ComputeHash(data);
-		}
-
-		public static byte[] Hash(Stream s)
-		{
-			using var h = SHA1.Create();
-			return h.ComputeHash(s);
 		}
 
 		public static unsafe void ZeroMemory(IntPtr mem, long length)

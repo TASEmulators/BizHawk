@@ -1,4 +1,6 @@
 ﻿using System.IO;
+
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 
 namespace BizHawk.Client.Common.movie.import
@@ -32,7 +34,7 @@ namespace BizHawk.Client.Common.movie.import
 				return;
 			}
 
-			Result.Movie.HeaderEntries[HeaderKeys.Platform] = "NES";
+			Result.Movie.HeaderEntries[HeaderKeys.Platform] = VSystemID.Raw.NES;
 			var syncSettings = new NES.NESSyncSettings();
 
 			// other bits: unknown, set to 0

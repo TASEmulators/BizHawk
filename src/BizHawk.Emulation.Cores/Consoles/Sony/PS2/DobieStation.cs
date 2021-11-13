@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Sony.PS2
 	public unsafe class DobieStation : WaterboxCore, ISettable<object, DobieStation.DobieSyncSettings>
 	{
 		private readonly LibDobieStation _core;
-		[CoreConstructor("PS2")]
+		[CoreConstructor(VSystemID.Raw.PS2)]
 		public DobieStation(CoreLoadParameters<object, DobieSyncSettings> lp)
 			:base(lp.Comm, new Configuration
 			{
@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Cores.Sony.PS2
 				DefaultFpsNumerator = 294912000,
 				DefaultFpsDenominator = 4920115,
 				MaxSamples = 1024,
-				SystemId = "PS2"
+				SystemId = VSystemID.Raw.PS2,
 			})
 		{
 			if (lp.Discs.Count != 1)

@@ -192,7 +192,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 		public int Frame => _frame;
 
-		public string SystemId => "O2";
+		public string SystemId => VSystemID.Raw.O2;
 
 		public bool DeterministicEmulation { get; set; }
 

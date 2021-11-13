@@ -5,7 +5,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores
 {
-	[Schema("NDS")]
+	[Schema(VSystemID.Raw.NDS)]
 	// ReSharper disable once UnusedMember.Global
 	public class NdsSchema : IVirtualPadSchema
 	{

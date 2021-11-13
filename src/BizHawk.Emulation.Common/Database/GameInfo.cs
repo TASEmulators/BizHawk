@@ -46,7 +46,7 @@ namespace BizHawk.Emulation.Common
 		public static GameInfo NullInstance => new GameInfo
 		{
 			Name = "Null",
-			System = "NULL",
+			System = VSystemID.Raw.NULL,
 			Hash = "",
 			Region = "",
 			Status = RomStatus.GoodDump,
@@ -85,7 +85,7 @@ namespace BizHawk.Emulation.Common
 
 		public string OptionValue(string option)
 		{
-			return Options.ContainsKey(option) ? Options[option] : null;
+			return Options.TryGetValue(option, out var s) ? s : null;
 		}
 
 		public int GetIntValue(string option)
@@ -175,7 +175,7 @@ namespace BizHawk.Emulation.Common
 	{
 		public static bool IsNullInstance(this IGameInfo game)
 		{
-			return game == null || game.System == "NULL";
+			return game == null || game.System == VSystemID.Raw.NULL;
 		}
 
 		public static bool IsRomStatusBad(this IGameInfo game)
