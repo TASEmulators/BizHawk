@@ -18,6 +18,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		[CoreConstructor("NDS")]
 		public NDS(CoreLoadParameters<NDSSettings, NDSSyncSettings> lp)
+			:this(lp, false)
+		{
+		}
+
+		internal NDS(CoreLoadParameters<NDSSettings, NDSSyncSettings> lp, bool right)
 			: base(lp.Comm, new Configuration
 			{
 				DefaultWidth = 256,
@@ -44,7 +49,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 			_core = PreInit<LibMelonDS>(new WaterboxOptions
 			{
-				Filename = "melonDS.wbx",
+				Filename = "melonDS_" + (right ? "R" : "L") + ".wbx",
 				SbrkHeapSizeKB = 2 * 1024,
 				SealedHeapSizeKB = 4,
 				InvisibleHeapSizeKB = 4,
@@ -262,7 +267,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			}
 		}
 
-		public LibWaterboxCore.FrameInfo FrameStepPrep(IController controller, bool render, bool rendersound)
+		internal LibWaterboxCore.FrameInfo FrameStepPrep(IController controller, bool render, bool rendersound)
 		{
 			using (_exe.EnterExit())
 			{
@@ -272,7 +277,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			}
 		}
 
-		public bool FrameStep()
+		internal bool FrameStep()
 		{
 			using (_exe.EnterExit())
 			{
@@ -280,7 +285,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			}
 		}
 
-		public void FrameStepPost(LibWaterboxCore.FrameInfo frame)
+		internal void FrameStepPost(LibWaterboxCore.FrameInfo frame)
 		{
 			using (_exe.EnterExit())
 			{

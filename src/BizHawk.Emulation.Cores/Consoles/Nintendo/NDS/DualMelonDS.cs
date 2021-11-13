@@ -31,8 +31,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			DualNDSSettings dualSettings = lp.Settings ?? new DualNDSSettings();
 			DualNDSSyncSettings dualSyncSettings = lp.SyncSettings ?? new DualNDSSyncSettings();
 
-			L = new NDS(ExtractLoadParameters(lp, dualSettings, dualSyncSettings, false));
-			R = new NDS(ExtractLoadParameters(lp, dualSettings, dualSyncSettings, true));
+			L = new NDS(ExtractLoadParameters(lp, dualSettings, dualSyncSettings, false), false);
+			R = new NDS(ExtractLoadParameters(lp, dualSettings, dualSyncSettings, true), true);
 
 			_disassembler = new NDSDisassembler();
 			_serviceProvider.Register<IDisassemblable>(_disassembler);
