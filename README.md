@@ -2,7 +2,7 @@
 
 A multi-system emulator written in C#. As well as quality-of-life features for casual players, it also has recording/playback and debugging tools, making it the first choice for TASers (Tool-Assisted Speedrunners).
 
-[![(latest) release | GitHub](https://img.shields.io/github/release/TASEmulators/BizHawk.svg?logo=github&logoColor=333333&sort=semver&style=popout)](https://github.com/TASEmulators/BizHawk/releases/2.6.3)
+[![(latest) release | GitHub](https://img.shields.io/github/release/TASEmulators/BizHawk.svg?logo=github&logoColor=333333&sort=semver&style=popout)](https://github.com/TASEmulators/BizHawk/releases/latest)
 [![latest dev build | AppVeyor](https://img.shields.io/badge/latest_dev_build-AppVeyor-orange.svg?logo=appveyor&logoColor=333333&style=popout)](https://ci.appveyor.com/project/zeromus/bizhawk-udexo/build/artifacts)
 [![latest dev build | GitLab CI](https://img.shields.io/badge/latest_dev_build-GitLab_CI-orange.svg?logo=gitlab&style=popout)](https://gitlab.com/TASVideos/BizHawk/pipelines/master/latest)
 [![GitHub open issues counter](https://img.shields.io/github/issues-raw/TASEmulators/BizHawk.svg?logo=github&logoColor=333333&style=popout)](https://github.com/TASEmulators/BizHawk/issues)
@@ -44,7 +44,7 @@ The BizHawk common features (across all cores) are:
 * input, framerate, and more in a HUD over the game
 * rebindable hotkeys for controlling the frontend (keyboard+mouse+gamepad)
 * a comprehensive input mapper for the emulated gamepads and other peripherals
-* programmatic control over core and frontend with Lua (Windows only) or C#.NET
+* programmatic control over core and frontend with Lua or C#.NET
 
 Supported consoles and computers:
 
@@ -92,7 +92,7 @@ See [*Usage*](#usage) below for info on basic config needed to play games.
 
 Released binaries can be found right here on GitHub (also linked at the top of this readme):
 
-[![Windows | binaries](https://img.shields.io/badge/Windows-binaries-%230078D6.svg?logo=windows&logoColor=0078D6&style=popout)](https://github.com/TASEmulators/BizHawk/releases/2.6.3)
+[![Windows | binaries](https://img.shields.io/badge/Windows-binaries-%230078D6.svg?logo=windows&logoColor=0078D6&style=popout)](https://github.com/TASEmulators/BizHawk/releases/latest)
 
 Click `BizHawk-<version>.zip` to download it. Also note the changelog, the full version of which is [here at TASVideos](http://tasvideos.org/Bizhawk/ReleaseHistory.html).
 Extract it anywhere, but **don't mix different versions** of BizHawk, keep each version in its own folder. You may move or rename the folder containing `EmuHawk.exe`, even to another drive — as long as you keep all the files together, and the prerequisites are installed when you go to run it.
@@ -118,13 +118,14 @@ Install the listed package with your package manager (some buttons are links to 
 
 No package for your distro? Grab the latest release here on GitHub (it's the same as the Windows version):
 
-[![Misc. Linux | bizhawk-monort](https://img.shields.io/badge/Misc._Linux-bizhawk--monort-%23FCC624.svg?logo=linux&logoColor=black&style=popout)](https://github.com/TASEmulators/BizHawk/releases/2.6.3)
+[![Misc. Linux | bizhawk-monort](https://img.shields.io/badge/Misc._Linux-bizhawk--monort-%23FCC624.svg?logo=linux&logoColor=black&style=popout)](https://github.com/TASEmulators/BizHawk/releases/latest)
 
 If you download BizHawk this way, **don't mix different versions**, keep each version in its own folder. The runtime dependencies are glibc, Mono "complete", OpenAL, and `lsb_release`. .NET Core is **not** a runtime dependency, only Mono. WINE is also **not** a runtime dependency.
 
 Run `EmuHawkMono.sh` to start EmuHawk—you can run it from anywhere, so creating a `.desktop` file to wrap the script is fine. The shell script should print an error if it fails, otherwise it's safe to ignore console output. It takes mostly the same command-line arguments as on Windows: see [*Passing command-line arguments*](#passing-command-line-arguments).
 
-Most features and cores work, notable omissions being Lua support, Mupen64Plus (N64), and Octoshock (PSX). See [#1430](https://github.com/TASEmulators/BizHawk/issues/1430) for details.
+Most features and cores work, notable omissions being Mupen64Plus (N64) and Octoshock (PSX). See [#1430](https://github.com/TASEmulators/BizHawk/issues/1430) for details.
+Lua support is new in 2.7, and it requires Mono >= 6.12. Comment on [#2951](https://github.com/TASEmulators/BizHawk/issues/2951) if you run into any problems with it.
 
 [to top](#bizhawk)
 
@@ -159,7 +160,7 @@ To find the dev builds for a specific commit, you can click the green checkmark 
 If you have WSL, Git BASH, or similar, clone the repo with:
 ```
 git clone https://github.com/TASEmulators/BizHawk.git BizHawk_master
-# or ssh: git clone git@github.com:TASVideos/BizHawk.git BizHawk_master
+# or ssh: git clone git@github.com:TASEmulators/BizHawk.git BizHawk_master
 ```
 ...then go into the repo's `Dist` folder and run `QuickTestBuildAndPackage_Release.bat`. This is the same process used by AppVeyor.
 (Git is required for this script, but if you proceed to open the solution in VS then you can build without it.)
@@ -175,7 +176,7 @@ With VS, start the build by choosing the `BizHawk.Client.EmuHawk` executable in 
 Before you can build, you'll need the .NET 5 SDK or later (package name is usually `dotnet-sdk-5.0`, see [full instructions](https://docs.microsoft.com/en-gb/dotnet/core/install/linux)). You may need to uninstall MSBuild and/or the 3.1 SDK first. Once it's installed, run:
 ```sh
 git clone https://github.com/TASEmulators/BizHawk.git BizHawk_master && cd BizHawk_master
-# or ssh: git clone git@github.com:TASVideos/BizHawk.git BizHawk_master && cd BizHawk_master
+# or ssh: git clone git@github.com:TASEmulators/BizHawk.git BizHawk_master && cd BizHawk_master
 Dist/BuildRelease.sh
 ```
 
@@ -206,11 +207,10 @@ $proc.Start()
 ```
 
 On Linux, you can pass arguments to `EmuHawkMono.sh` as expected and they will be forwarded to `mono`. (You can also `export` env. vars.) All the arguments work as on Windows, with some caveats:
-* Lua scripts are ignored;
 * file paths must be absolute (or relative to the install dir, `EmuHawkMono.sh` changes the CWD to there);
 * `--mono-no-redirect`: if you pass this flag *as the first argument*, it will be eaten by the script itself, and stdout will *not* be redirected to a file. (It's redirected by default.)
 
-The same example as above would be `./EmuHawkMono.sh --lua=/path/to/script.lua /path/to/rom.n64` (but Lua is no-op).
+The same example as above would be `./EmuHawkMono.sh --lua=/path/to/script.lua /path/to/rom.n64`.
 
 For char escaping tips, see ~~Unix StackExchange~~ your shell's man/info page. BASH and Zsh have different rules!
 
@@ -245,8 +245,6 @@ To change which core is used where multiple cores emulate the same system (curre
 Cores have their own settings, which you can find in various windows under the system-specific menu (between `Tools` and `Help` when a rom is loaded). Some cores, like Mupen64Plus, have a labyrinth of menus while others have one.
 
 #### Running Lua scripts
-
-(Reminder that this feature is Windows-only for now.)
 
 Go to `Tools` > `Lua Console`. The opened window has two parts, the loaded script list and the console output. The buttons below the menubar are shortcuts for items in the menus, hover over them to see what they do.
 Any script you load is added to the list, and will start running immediately. Instead of using "Open script", you can drag-and-drop .lua files onto the console or game windows.
