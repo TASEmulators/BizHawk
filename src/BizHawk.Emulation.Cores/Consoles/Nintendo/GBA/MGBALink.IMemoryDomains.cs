@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			{
 				foreach (var md in _linkedCores[i].AsMemoryDomains() as MemoryDomainList)
 				{
-					mm.Add(new WrappedMemoryDomain($"{i + 1} " + md.Name, md));
+					mm.Add(new WrappedMemoryDomain($"P{i + 1} " + md.Name, md));
 				}
 			}
 

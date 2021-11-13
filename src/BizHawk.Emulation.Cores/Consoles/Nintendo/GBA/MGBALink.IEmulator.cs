@@ -17,13 +17,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		private ControllerDefinition CreateControllerDefinition()
 		{
 			var ret = new ControllerDefinition { Name = $"GBA Link {_numCores}x Controller" };
-			for (int i = 1; i <= _numCores; i++)
+			for (int i = 0; i < _numCores; i++)
 			{
 				ret.BoolButtons.AddRange(
 					new[] { "Up", "Down", "Left", "Right", "Start", "Select", "B", "A", "L", "R", "Power" }
-						.Select(s => $"P{i} {s}"));
-				ret.AddXYZTriple($"P{i} " + "Tilt {0}", (-32767).RangeTo(32767), 0);
-				ret.AddAxis($"P{i} " + "Light Sensor", 0.RangeTo(255), 0);
+						.Select(s => $"P{i + 1} {s}"));
+				ret.AddXYZTriple($"P{i + 1} " + "Tilt {0}", (-32767).RangeTo(32767), 0);
+				ret.AddAxis($"P{i + 1} " + "Light Sensor", 0.RangeTo(255), 0);
 			}
 			return ret;
 		}
@@ -67,6 +67,52 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				_linkedCores[i].FrameAdvance(_linkedConts[i], render, rendersound);
 			}
 
+			unsafe
+			{
+				for (int i = 0; i < _numCores; i++)
+				{
+					fixed (int* fb = &_linkedCores[i].GetVideoBuffer()[0], vb = &_videobuff[i * 240])
+					{
+						for (int j = 0; j < 160; j++)
+						{
+							for (int k = 0; k < 240; k++)
+							{
+								vb[j * BufferWidth + k] = fb[j * 240 + k];
+							}
+						}
+					}
+				}
+
+				_linkedCores[0].GetSamplesSync(out short[] lsamples, out int lnsamp);
+				fixed (short* ls = &lsamples[0], sb = &_soundbuff[0])
+				{
+					for (int i = 0; i < lnsamp; i++)
+					{
+						int lsamp = (lsamples[i * 2] + lsamples[i * 2 + 1]) / 2;
+						sb[i * 2] = (short)lsamp;
+					}
+				}
+
+				_linkedCores[1].GetSamplesSync(out short[] rsamples, out int rnsamp);
+				fixed (short* rs = &rsamples[0], sb = &_soundbuff[0])
+				{
+					for (int i = 0; i < rnsamp; i++)
+					{
+						int rsamp = (rsamples[i * 2] + rsamples[i * 2 + 1]) / 2;
+						sb[i * 2 + 1] = (short)rsamp;
+					}
+				}
+
+				if (rendersound)
+				{
+					_nsamp = Math.Max(lnsamp, rnsamp);
+				}
+				else
+				{
+					_nsamp = 0;
+				}
+			}
+
 			IsLagFrame = false;
 			for (int i = 0; i < _numCores; i++)
 			{
@@ -80,15 +126,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			}
 
 			Frame++;
-
-			if (rendersound)
-			{
-				_nsamp = 0;
-			}
-			else
-			{
-				_nsamp = 0;
-			}
 
 			return true;
 		}

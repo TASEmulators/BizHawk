@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			for (int i = 0; i < _numCores; i++)
 			{
 				linkedRegs[i] = _linkedCores[i].GetCpuFlagsAndRegisters()
-					.Select(reg => new KeyValuePair<string, RegisterValue>($"{i + 1} " + reg.Key, reg.Value));
+					.Select(reg => new KeyValuePair<string, RegisterValue>($"P{i + 1} " + reg.Key, reg.Value));
 			}
 
 			return _numCores switch
@@ -36,9 +36,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		{
 			for (int i = 0; i < _numCores; i++)
 			{
-				if (register.StartsWith($"{i + 1} "))
+				if (register.StartsWith($"P{i + 1} "))
 				{
-					_linkedCores[i].SetCpuRegister(register.Replace($"{i + 1} ", ""), value);
+					_linkedCores[i].SetCpuRegister(register.Replace($"P{i + 1} ", ""), value);
 				}
 			}
 		}
