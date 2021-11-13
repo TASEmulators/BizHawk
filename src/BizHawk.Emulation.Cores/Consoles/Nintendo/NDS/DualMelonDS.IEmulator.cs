@@ -89,7 +89,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				}
 			}
 
-			IsLagFrame = L.IsLagFrame && R.IsLagFrame;
+			IsLagFrame = lframe.Lagged != 0 && rframe.Lagged != 0;
 			if (IsLagFrame)
 			{
 				LagCount++;
