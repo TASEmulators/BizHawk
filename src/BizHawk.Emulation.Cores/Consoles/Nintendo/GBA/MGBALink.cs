@@ -10,6 +10,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 	{
 		private readonly MGBAHawk[] _linkedCores;
 		private readonly SaveController[] _linkedConts;
+		private readonly LibmGBA.LinkCallback[] _linkedCallbacks;
 		private int _numCores = 0;
 
 		private readonly BasicServiceProvider _serviceProvider;
@@ -31,13 +32,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 			_linkedCores = new MGBAHawk[_numCores];
 			_linkedConts = new SaveController[_numCores];
-			LibmGBA.LinkCallback[] linkedCallbacks = new LibmGBA.LinkCallback[4] { P1LinkCallback, P2LinkCallback, P3LinkCallback, P4LinkCallback };
+			_linkedCallbacks = new LibmGBA.LinkCallback[4] { P1LinkCallback, P2LinkCallback, P3LinkCallback, P4LinkCallback };
 
 			for (int i = 0; i < _numCores; i++)
 			{
 				_linkedCores[i] = new MGBAHawk(lp.Roms[i].RomData, lp.Comm, syncSettings._linkedSyncSettings[i], settings._linkedSettings[i], lp.DeterministicEmulationRequested, lp.Roms[i].Game);
 				_linkedConts[i] = new SaveController(MGBAHawk.GBAController);
-				MGBAHawk.LibmGBA.BizConnectLinkCable(_linkedCores[i].Core, linkedCallbacks[i]);
+				MGBAHawk.LibmGBA.BizConnectLinkCable(_linkedCores[i].Core, _linkedCallbacks[i]);
 			}
 
 			_disassembler = new ArmV4Disassembler();
