@@ -36,6 +36,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			{
 				_linkedCores[i] = new MGBAHawk(lp.Roms[i].RomData, lp.Comm, syncSettings._linkedSyncSettings[i], settings._linkedSettings[i], lp.DeterministicEmulationRequested, lp.Roms[i].Game);
 				_linkedConts[i] = new SaveController(MGBAHawk.GBAController);
+				MGBAHawk.LibmGBA.BizConnectLinkCable(_linkedCores[i].Core);
 			}
 
 			_disassembler = new ArmV4Disassembler();

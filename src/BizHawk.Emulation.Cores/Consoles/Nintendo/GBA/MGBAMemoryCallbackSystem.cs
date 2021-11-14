@@ -56,12 +56,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			{
 				_executeCallback = RunExecCallback;
 				_execPcs[callback.Address.Value] = callback;
-				MGBAHawk.ZZHacky.BizSetExecCallback(_mgba.Core, _executeCallback);
+				MGBAHawk.LibmGBA.BizSetExecCallback(_mgba.Core, _executeCallback);
 			}
 			else
 			{
-				MGBAHawk.ZZHacky.BizSetMemCallback(_mgba.Core, container.CallDelegate);
-				container.ID = MGBAHawk.ZZHacky.BizSetWatchpoint(_mgba.Core, callback.Address.Value, container.WatchPointType);
+				MGBAHawk.LibmGBA.BizSetMemCallback(_mgba.Core, container.CallDelegate);
+				container.ID = MGBAHawk.LibmGBA.BizSetWatchpoint(_mgba.Core, callback.Address.Value, container.WatchPointType);
 			}
 
 			_callbacks.Add(container);
@@ -69,7 +69,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		private void Remove(CallbackContainer cb)
 		{
-			if (MGBAHawk.ZZHacky.BizClearWatchpoint(_mgba.Core, cb.ID)) _callbacks.Remove(cb);
+			if (MGBAHawk.LibmGBA.BizClearWatchpoint(_mgba.Core, cb.ID)) _callbacks.Remove(cb);
 		}
 
 		public void Remove(MemoryCallbackDelegate action)
@@ -83,7 +83,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				if (!_callbacks.Any(cb => cb.Callback.Type is MemoryCallbackType.Execute))
 				{
 					_executeCallback = null;
-					MGBAHawk.ZZHacky.BizSetExecCallback(_mgba.Core, null);
+					MGBAHawk.LibmGBA.BizSetExecCallback(_mgba.Core, null);
 				}
 			}
 			else

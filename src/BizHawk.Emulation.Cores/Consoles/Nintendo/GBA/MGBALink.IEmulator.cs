@@ -28,6 +28,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			return ret;
 		}
 
+		private long RTCTime(int coreNum)
+		{
+			if (!_linkedCores[coreNum].DeterministicEmulation && _linkedCores[coreNum].GetSyncSettings().RTCUseRealTime)
+			{
+				return (long)DateTime.Now.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+			}
+
+			long baseTime = (long)_linkedCores[coreNum].GetSyncSettings().RTCInitialTime.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+			long increment = Frame * 4389L >> 18;
+			return baseTime + increment;
+		}
+
 		public bool FrameAdvance(IController controller, bool render, bool rendersound = true)
 		{
 			for (int i = 0; i < _numCores; i++)
@@ -60,11 +72,31 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				}
 			}
 
+			IsLagFrame = true;
+
 			// todo: actually step
 			// todo: link!
 			for (int i = 0; i < _numCores; i++)
 			{
-				_linkedCores[i].FrameAdvance(_linkedConts[i], render, rendersound);
+				if (_linkedConts[i].IsPressed("Power"))
+				{
+					_linkedCores[i].Reset();
+				}
+				MGBAHawk.LibmGBA.BizStepPrep(
+					_linkedCores[i].Core,
+					LibmGBA.GetButtons(_linkedConts[i]),
+					RTCTime(i),
+					(short)_linkedConts[i].AxisValue("Tilt X"),
+					(short)_linkedConts[i].AxisValue("Tilt Y"),
+					(short)_linkedConts[i].AxisValue("Tilt Z"),
+					(byte)(255 - _linkedConts[i].AxisValue("Light Sensor")));
+				bool running = true;
+				while (running)
+				{
+					running = MGBAHawk.LibmGBA.BizStep(_linkedCores[i].Core);
+				}
+				_linkedCores[i].GetSamplesSync(out short[] sb, out int ns);
+				IsLagFrame &= MGBAHawk.LibmGBA.BizStepPost(_linkedCores[i].Core, _linkedCores[i].GetVideoBuffer(), ref ns, sb);
 			}
 
 			unsafe
@@ -111,13 +143,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				{
 					_nsamp = 0;
 				}
-			}
-
-			IsLagFrame = false;
-			for (int i = 0; i < _numCores; i++)
-			{
-				if (_linkedCores[i].IsLagFrame)
-					IsLagFrame = true;
 			}
 
 			if (IsLagFrame)
