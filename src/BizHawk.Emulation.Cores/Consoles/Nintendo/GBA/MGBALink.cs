@@ -31,12 +31,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 			_linkedCores = new MGBAHawk[_numCores];
 			_linkedConts = new SaveController[_numCores];
+			LibmGBA.LinkCallback[] linkedCallbacks = new LibmGBA.LinkCallback[4] { P1LinkCallback, P2LinkCallback, P3LinkCallback, P4LinkCallback };
 
 			for (int i = 0; i < _numCores; i++)
 			{
 				_linkedCores[i] = new MGBAHawk(lp.Roms[i].RomData, lp.Comm, syncSettings._linkedSyncSettings[i], settings._linkedSettings[i], lp.DeterministicEmulationRequested, lp.Roms[i].Game);
 				_linkedConts[i] = new SaveController(MGBAHawk.GBAController);
-				MGBAHawk.LibmGBA.BizConnectLinkCable(_linkedCores[i].Core);
+				MGBAHawk.LibmGBA.BizConnectLinkCable(_linkedCores[i].Core, linkedCallbacks[i]);
 			}
 
 			_disassembler = new ArmV4Disassembler();
@@ -46,6 +47,30 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 			GBALinkController = CreateControllerDefinition();
 			SetMemoryDomains();
+		}
+
+		private ushort P1LinkCallback(IntPtr driver, uint address, ushort value)
+		{
+			Console.WriteLine("P1 Link CB called");
+			return value;
+		}
+
+		private ushort P2LinkCallback(IntPtr driver, uint address, ushort value)
+		{
+			Console.WriteLine("P2 Link CB called");
+			return value;
+		}
+
+		private ushort P3LinkCallback(IntPtr driver, uint address, ushort value)
+		{
+			Console.WriteLine("P3 Link CB called");
+			return value;
+		}
+
+		private ushort P4LinkCallback(IntPtr driver, uint address, ushort value)
+		{
+			Console.WriteLine("P4 Link CB called");
+			return value;
 		}
 	}
 }
