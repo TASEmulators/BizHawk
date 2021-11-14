@@ -86,6 +86,9 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				MemoryCallbacks = MemoryCallbacks,
 				OnExecFetch = OnExecMemory
 			};
+			
+			// set this before turning off GG system for GG_in_SMS games
+			bool sms_reg_compat = !IsGameGear && (_region == SmsSyncSettings.Regions.Japan);
 
 			if (game["GG_in_SMS"])
 			{
@@ -99,7 +102,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 			SystemId = game.System;
 
-			Vdp = new VDP(this, Cpu, IsGameGear ? VdpMode.GameGear : VdpMode.SMS, Region);
+			Vdp = new VDP(this, Cpu, IsGameGear ? VdpMode.GameGear : VdpMode.SMS, Region, sms_reg_compat);
 			ser.Register<IVideoProvider>(Vdp);
 			PSG = new SN76489sms();
 			YM2413 = new YM2413();

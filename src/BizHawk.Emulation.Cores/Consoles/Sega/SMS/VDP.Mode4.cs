@@ -47,7 +47,12 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				}
 
 				byte PaletteBase = 0;
-				int tileInfo = VRAM[mapBase + ((yTile * 32) + xTile) * 2] | (VRAM[mapBase + (((yTile * 32) + xTile) * 2) + 1] << 8);
+
+				int VRAM_addr = mapBase + ((yTile * 32) + xTile) * 2;
+				if (JPN_Compat) { VRAM_addr &= NameTableMaskBit; }
+
+				int tileInfo = VRAM[VRAM_addr] | (VRAM[VRAM_addr + 1] << 8);
+
 				int tileNo = tileInfo & 0x01FF;
 				if ((tileInfo & 0x800) != 0)
 					PaletteBase = 16;

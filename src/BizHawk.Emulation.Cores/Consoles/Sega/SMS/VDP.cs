@@ -1,6 +1,7 @@
 ﻿using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.Z80A;
+using System;
 
 namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 {
@@ -71,6 +72,11 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		private int TmsPatternNameTableBase;
 		private int TmsSpriteAttributeBase;
 
+		// older versions fo the SMS VDP have a masking bit in register two that effects mirroring.
+		// This is needed for Ys (JPN) in the status bar
+		private int NameTableMaskBit;
+		private bool JPN_Compat =false;
+
 		// preprocessed state assist stuff.
 		public int[] Palette = new int[32];
 		public byte[] PatternBuffer = new byte[0x8000];
@@ -81,7 +87,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		private static readonly byte[] SMSPalXlatTable = { 0, 85, 170, 255 };
 		private static readonly byte[] GGPalXlatTable = { 0, 17, 34, 51, 68, 85, 102, 119, 136, 153, 170, 187, 204, 221, 238, 255 };
 
-		public VDP(SMS sms, Z80A cpu, VdpMode mode, DisplayType displayType)
+		public VDP(SMS sms, Z80A cpu, VdpMode mode, DisplayType displayType, bool region_compat)
 		{
 			Sms = sms;
 			Cpu = cpu;
@@ -89,7 +95,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			if (mode == VdpMode.SMS) CRAM = new byte[32];
 			if (mode == VdpMode.GameGear) CRAM = new byte[64];
 			DisplayType = displayType;
-			NameTableBase = CalcNameTableBase();
+			if (mode == VdpMode.SMS) { JPN_Compat = region_compat; }
+			NameTableBase = CalcNameTableBase();	
 		}
 
 		public byte ReadData()
@@ -218,6 +225,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		public int CalcNameTableBase()
 		{
+			if (JPN_Compat) { NameTableMaskBit = 0xFBFF + ((Registers[2] & 1) << 10); }
 			if (FrameHeight == 192)
 				return 1024 * (Registers[2] & 0x0E);
 			return (1024 * (Registers[2] & 0x0C)) + 0x0700;
