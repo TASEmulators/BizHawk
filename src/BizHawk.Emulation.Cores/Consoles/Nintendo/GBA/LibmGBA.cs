@@ -143,7 +143,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		public abstract void BizStepPrep(IntPtr ctx, Buttons keys, long time, short gyrox, short gyroy, short gyroz, byte luma);
 
 		[BizImport(cc, Compatibility = true)]
-		public abstract bool BizStep(IntPtr ctx);
+		public abstract int BizStep(IntPtr ctx, int cycles);
 
 		[BizImport(cc, Compatibility = true)]
 		public abstract bool BizStepPost(IntPtr ctx, int[] vbuff, ref int nsamp, short[] sbuff);

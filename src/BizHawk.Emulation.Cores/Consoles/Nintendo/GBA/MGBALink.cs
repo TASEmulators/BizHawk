@@ -16,6 +16,26 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		private readonly BasicServiceProvider _serviceProvider;
 		private readonly ArmV4Disassembler _disassembler;
 
+		public enum ConnectionStatus : int
+		{
+			NO_CONNECTION = -1,
+			CONNECTED_TO_P1 = 0,
+			CONNECTED_TO_P2 = 1,
+			CONNECTED_TO_P3 = 2,
+			CONNECTED_TO_P4 = 3,
+		}
+
+		private ConnectionStatus _p1ConnectionStatus;
+		private ConnectionStatus _p2ConnectionStatus;
+		private ConnectionStatus _p3ConnectionStatus;
+		private ConnectionStatus _p4ConnectionStatus;
+
+		private int[] _frameOverflow = new int[4] { 0, 0, 0, 0 };
+		private int[] _stepOverflow = new int[4] { 0, 0, 0, 0 };
+
+		const int CyclesPerFrame = 280896;
+		const int StepLength = 1024;
+
 		[CoreConstructor("GBALink")]
 		public MGBALink(CoreLoadParameters<MGBALinkSettings, MGBALinkSyncSettings> lp)
 		{
@@ -39,6 +59,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				_linkedCores[i] = new MGBAHawk(lp.Roms[i].RomData, lp.Comm, syncSettings._linkedSyncSettings[i], settings._linkedSettings[i], lp.DeterministicEmulationRequested, lp.Roms[i].Game);
 				_linkedConts[i] = new SaveController(MGBAHawk.GBAController);
 				MGBAHawk.LibmGBA.BizConnectLinkCable(_linkedCores[i].Core, _linkedCallbacks[i]);
+			}
+
+			_p1ConnectionStatus = ConnectionStatus.CONNECTED_TO_P2;
+			_p2ConnectionStatus = ConnectionStatus.CONNECTED_TO_P1;
+
+			if (_numCores == 4)
+			{
+				_p3ConnectionStatus = ConnectionStatus.CONNECTED_TO_P4;
+				_p4ConnectionStatus = ConnectionStatus.CONNECTED_TO_P3;
+			}
+			else
+			{
+				_p3ConnectionStatus = ConnectionStatus.NO_CONNECTION;
+				_p4ConnectionStatus = ConnectionStatus.NO_CONNECTION;
 			}
 
 			_disassembler = new ArmV4Disassembler();

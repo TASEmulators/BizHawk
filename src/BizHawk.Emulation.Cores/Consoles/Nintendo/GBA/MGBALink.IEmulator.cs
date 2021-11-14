@@ -90,11 +90,49 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 					(short)_linkedConts[i].AxisValue("Tilt Y"),
 					(short)_linkedConts[i].AxisValue("Tilt Z"),
 					(byte)(255 - _linkedConts[i].AxisValue("Light Sensor")));
-				bool running = true;
-				while (running)
+			}
+
+			while (true)
+			{
+				for (int i = 0; i < _numCores; i++)
 				{
-					running = MGBAHawk.LibmGBA.BizStep(_linkedCores[i].Core);
+					if (_frameOverflow[i] < CyclesPerFrame)
+					{
+						if (_stepOverflow[i] < StepLength)
+						{
+							int stepTarget = StepLength - _stepOverflow[i];
+							if (_frameOverflow[i] + stepTarget > CyclesPerFrame)
+								stepTarget = _frameOverflow[i] + stepTarget - CyclesPerFrame;
+
+							_stepOverflow[i] = MGBAHawk.LibmGBA.BizStep(_linkedCores[i].Core, stepTarget);
+							_frameOverflow[i] += StepLength + _stepOverflow[i];
+						}
+						else
+						{
+							_stepOverflow[i] -= StepLength; // skip a step
+						}
+					}
 				}
+
+				bool exit = true;
+				for (int i = 0; i < _numCores; i++)
+				{
+					exit &= _frameOverflow[i] >= CyclesPerFrame;
+				}
+
+				if (exit)
+				{
+					for (int i = 0; i < _numCores; i++)
+					{
+						_frameOverflow[i] -= CyclesPerFrame;
+					}
+					break;
+				}
+			}
+
+			IsLagFrame = true;
+			for (int i = 0; i < _numCores; i++)
+			{
 				_linkedCores[i].GetSamplesSync(out short[] sb, out int ns);
 				IsLagFrame &= MGBAHawk.LibmGBA.BizStepPost(_linkedCores[i].Core, _linkedCores[i].GetVideoBuffer(), ref ns, sb);
 			}
@@ -163,12 +201,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		private bool LinkedDeterministicEmulation()
 		{
+			bool deterministicEmulation = true;
 			for (int i = 0; i < _numCores; i++)
 			{
-				if (_linkedCores[i].DeterministicEmulation)
-					return true;
+				deterministicEmulation &= _linkedCores[i].DeterministicEmulation;
 			}
-			return false;
+			return deterministicEmulation;
 		}
 
 		public void ResetCounters()
@@ -176,6 +214,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			Frame = 0;
 			LagCount = 0;
 			IsLagFrame = false;
+
+			for (int i = 0; i < 4; i++)
+			{
+				_frameOverflow[i] = 0;
+				_stepOverflow[i] = 0;
+			}
 		}
 
 		public void Dispose()
