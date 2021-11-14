@@ -18,20 +18,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		public enum ConnectionStatus : int
 		{
-			NO_CONNECTION = -1,
-			CONNECTED_TO_P1 = 0,
-			CONNECTED_TO_P2 = 1,
-			CONNECTED_TO_P3 = 2,
-			CONNECTED_TO_P4 = 3,
+			NONE = -1,
+			P1 = 0,
+			P2 = 1,
+			P3 = 2,
+			P4 = 3,
 		}
 
-		private ConnectionStatus _p1ConnectionStatus;
-		private ConnectionStatus _p2ConnectionStatus;
-		private ConnectionStatus _p3ConnectionStatus;
-		private ConnectionStatus _p4ConnectionStatus;
-
-		private int[] _frameOverflow = new int[4] { 0, 0, 0, 0 };
-		private int[] _stepOverflow = new int[4] { 0, 0, 0, 0 };
+		private readonly ConnectionStatus[] _connectionStatus;
+		private readonly int[] _frameOverflow;
+		private readonly int[] _stepOverflow;
 
 		const int CyclesPerFrame = 280896;
 		const int StepLength = 1024;
@@ -53,26 +49,31 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			_linkedCores = new MGBAHawk[_numCores];
 			_linkedConts = new SaveController[_numCores];
 			_linkedCallbacks = new LibmGBA.LinkCallback[4] { P1LinkCallback, P2LinkCallback, P3LinkCallback, P4LinkCallback };
+			_frameOverflow = new int[_numCores];
+			_stepOverflow = new int[_numCores];
+			_connectionStatus = new ConnectionStatus[4];
 
 			for (int i = 0; i < _numCores; i++)
 			{
 				_linkedCores[i] = new MGBAHawk(lp.Roms[i].RomData, lp.Comm, syncSettings._linkedSyncSettings[i], settings._linkedSettings[i], lp.DeterministicEmulationRequested, lp.Roms[i].Game);
 				_linkedConts[i] = new SaveController(MGBAHawk.GBAController);
+				_frameOverflow[i] = 0;
+				_stepOverflow[i] = 0;
 				MGBAHawk.LibmGBA.BizConnectLinkCable(_linkedCores[i].Core, _linkedCallbacks[i]);
 			}
 
-			_p1ConnectionStatus = ConnectionStatus.CONNECTED_TO_P2;
-			_p2ConnectionStatus = ConnectionStatus.CONNECTED_TO_P1;
+			_connectionStatus[(int)ConnectionStatus.P1] = ConnectionStatus.P2;
+			_connectionStatus[(int)ConnectionStatus.P2] = ConnectionStatus.P1;
 
 			if (_numCores == 4)
 			{
-				_p3ConnectionStatus = ConnectionStatus.CONNECTED_TO_P4;
-				_p4ConnectionStatus = ConnectionStatus.CONNECTED_TO_P3;
+				_connectionStatus[(int)ConnectionStatus.P3] = ConnectionStatus.P4;
+				_connectionStatus[(int)ConnectionStatus.P4] = ConnectionStatus.P3;
 			}
 			else
 			{
-				_p3ConnectionStatus = ConnectionStatus.NO_CONNECTION;
-				_p4ConnectionStatus = ConnectionStatus.NO_CONNECTION;
+				_connectionStatus[(int)ConnectionStatus.P3] = ConnectionStatus.NONE;
+				_connectionStatus[(int)ConnectionStatus.P4] = ConnectionStatus.NONE;
 			}
 
 			_disassembler = new ArmV4Disassembler();

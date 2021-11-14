@@ -215,7 +215,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			LagCount = 0;
 			IsLagFrame = false;
 
-			for (int i = 0; i < 4; i++)
+			for (int i = 0; i < _numCores; i++)
 			{
 				_frameOverflow[i] = 0;
 				_stepOverflow[i] = 0;
