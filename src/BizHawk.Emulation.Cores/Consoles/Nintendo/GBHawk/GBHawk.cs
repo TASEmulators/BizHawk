@@ -190,6 +190,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			Console.WriteLine(romHashMD5);
 			var romHashSHA1 = SHA1Checksum.ComputePrefixedHex(rom);
 			Console.WriteLine(romHashSHA1);
+
 			_rom = rom;
 			var mppr = Setup_Mapper(romHashMD5, romHashSHA1);
 			if (cart_RAM != null) { cart_RAM_vbls = new byte[cart_RAM.Length]; }
@@ -392,7 +393,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					// uninitialized RAM
 					for (int i = 0; i < RAM.Length; i++)
 					{
-						RAM[i] = 0;
+						RAM[i] = GBA_Init_RAM[i];
 					}
 				}
 				else

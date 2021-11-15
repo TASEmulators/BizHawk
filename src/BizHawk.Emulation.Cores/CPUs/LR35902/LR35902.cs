@@ -612,7 +612,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 
 					SetIntRegs(interrupt_src_reg);
 
-					if ((interrupt_src_reg & interrupt_enable_reg) == 0) { FlagI = false; }
+					if ((interrupt_src_reg & (interrupt_enable_reg & 0x1F)) == 0) { FlagI = false; }
 					// reset back to default state
 					int_src = 5;
 					int_clear = 0;
