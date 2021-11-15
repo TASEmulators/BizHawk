@@ -34,14 +34,6 @@ namespace BizHawk.Client.Common
 				new[] { CoreNames.TurboNyma, CoreNames.HyperNyma, CoreNames.PceHawk })
 		};
 
-		public static string DefaultIniPath { get; private set; } = Path.Combine(PathUtils.ExeDirectoryPath, "config.ini");
-
-		// Shenanigans
-		public static void SetDefaultIniPath(string newDefaultIniPath)
-		{
-			DefaultIniPath = newDefaultIniPath;
-		}
-
 		public Config()
 		{
 			if (AllTrollers.Count == 0

@@ -1122,7 +1122,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveConfigAsMenuItem_Click(object sender, EventArgs e)
 		{
-			var path = Config.DefaultIniPath;
+			var path = _getConfigPath();
 			using var sfd = new SaveFileDialog
 			{
 				InitialDirectory = Path.GetDirectoryName(path),
@@ -1139,12 +1139,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoadConfigMenuItem_Click(object sender, EventArgs e)
 		{
-			LoadConfigFile(Config.DefaultIniPath);
+			LoadConfigFile(_getConfigPath());
 		}
 
 		private void LoadConfigFromMenuItem_Click(object sender, EventArgs e)
 		{
-			var path = Config.DefaultIniPath;
+			var path = _getConfigPath();
 			using var ofd = new OpenFileDialog
 			{
 				InitialDirectory = Path.GetDirectoryName(path),

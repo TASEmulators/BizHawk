@@ -130,16 +130,16 @@ namespace BizHawk.Client.EmuHawk
 				new ExceptionBox(e.Message).ShowDialog();
 			}
 
-			if (cliFlags.cmdConfigFile != null) Config.SetDefaultIniPath(cliFlags.cmdConfigFile);
+			var configPath = cliFlags.cmdConfigFile ?? Path.Combine(PathUtils.ExeDirectoryPath, "config.json");
 
 			Config initialConfig;
 			try
 			{
-				if (!VersionInfo.DeveloperBuild && !ConfigService.IsFromSameVersion(Config.DefaultIniPath, out var msg))
+				if (!VersionInfo.DeveloperBuild && !ConfigService.IsFromSameVersion(configPath, out var msg))
 				{
 					new MsgBox(msg, "Mismatched version in config file", MessageBoxIcon.Warning).ShowDialog();
 				}
-				initialConfig = ConfigService.Load<Config>(Config.DefaultIniPath);
+				initialConfig = ConfigService.Load<Config>(configPath);
 			}
 			catch (Exception e)
 			{
@@ -149,8 +149,8 @@ namespace BizHawk.Client.EmuHawk
 					"The caught exception was:",
 					e.ToString()
 				)).ShowDialog();
-				File.Delete(Config.DefaultIniPath);
-				initialConfig = ConfigService.Load<Config>(Config.DefaultIniPath);
+				File.Delete(configPath);
+				initialConfig = ConfigService.Load<Config>(configPath);
 			}
 			initialConfig.ResolveDefaults();
 			// initialConfig should really be globalConfig as it's mutable
@@ -237,6 +237,7 @@ namespace BizHawk.Client.EmuHawk
 				MainForm mf = new(
 					cliFlags,
 					workingGL,
+					() => configPath,
 					() => initialConfig,
 					newSound => globalSound = newSound,
 					args,

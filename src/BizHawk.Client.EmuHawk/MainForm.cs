@@ -284,6 +284,7 @@ namespace BizHawk.Client.EmuHawk
 		public MainForm(
 			ParsedCLIFlags cliFlags,
 			IGL gl,
+			Func<string> getConfigPath,
 			Func<Config> getGlobalConfig,
 			Action<Sound> updateGlobalSound,
 			string[] args,
@@ -307,6 +308,7 @@ namespace BizHawk.Client.EmuHawk
 			BootGodDb.Initialize(Path.Combine(PathUtils.ExeDirectoryPath, "gamedb"));
 
 			_argParser = cliFlags;
+			_getConfigPath = getConfigPath;
 			GL = gl;
 			_updateGlobalSound = updateGlobalSound;
 
@@ -909,6 +911,8 @@ namespace BizHawk.Client.EmuHawk
 		private new Config Config => _getGlobalConfig();
 
 		public Action<string> LoadGlobalConfigFromFile { get; set; }
+
+		private readonly Func<string> _getConfigPath;
 
 		private readonly IGL GL;
 
@@ -2465,7 +2469,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (string.IsNullOrEmpty(path))
 			{
-				path = Config.DefaultIniPath;
+				path = _getConfigPath();
 			}
 
 			ConfigService.Save(path, Config);
