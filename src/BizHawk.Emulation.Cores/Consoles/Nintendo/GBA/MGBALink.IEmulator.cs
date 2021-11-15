@@ -74,7 +74,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 			IsLagFrame = true;
 
-			// todo: actually step
 			// todo: link!
 			for (int i = 0; i < _numCores; i++)
 			{
@@ -102,9 +101,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 						{
 							int stepTarget = StepLength - _stepOverflow[i];
 							if (_frameOverflow[i] + stepTarget > CyclesPerFrame)
+							{
 								stepTarget = _frameOverflow[i] + stepTarget - CyclesPerFrame;
-
-							_stepOverflow[i] = MGBAHawk.LibmGBA.BizStep(_linkedCores[i].Core, stepTarget);
+							}
+							unsafe
+							{
+								fixed (int* vbuff = &_videobuff[i * 240])
+								{
+									_stepOverflow[i] = MGBAHawk.LibmGBA.BizStep(_linkedCores[i].Core, stepTarget, vbuff, _numCores);
+								}
+							}
 							_frameOverflow[i] += StepLength + _stepOverflow[i];
 						}
 						else
@@ -133,26 +139,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			IsLagFrame = true;
 			for (int i = 0; i < _numCores; i++)
 			{
-				_linkedCores[i].GetSamplesSync(out short[] sb, out int ns);
-				IsLagFrame &= MGBAHawk.LibmGBA.BizStepPost(_linkedCores[i].Core, _linkedCores[i].GetVideoBuffer(), ref ns, sb);
+				IsLagFrame &= MGBAHawk.LibmGBA.BizStepPost(_linkedCores[i].Core, ref _linkedCores[i]._nsamp, _linkedCores[i]._soundbuff);
 			}
 
 			unsafe
 			{
-				for (int i = 0; i < _numCores; i++)
-				{
-					fixed (int* fb = &_linkedCores[i].GetVideoBuffer()[0], vb = &_videobuff[i * 240])
-					{
-						for (int j = 0; j < 160; j++)
-						{
-							for (int k = 0; k < 240; k++)
-							{
-								vb[j * BufferWidth + k] = fb[j * 240 + k];
-							}
-						}
-					}
-				}
-
 				_linkedCores[0].GetSamplesSync(out short[] lsamples, out int lnsamp);
 				fixed (short* ls = &lsamples[0], sb = &_soundbuff[0])
 				{
@@ -175,7 +166,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 				if (rendersound)
 				{
-					_nsamp = Math.Max(lnsamp, rnsamp);
+					_nsamp = Math.Min(lnsamp, rnsamp);
 				}
 				else
 				{

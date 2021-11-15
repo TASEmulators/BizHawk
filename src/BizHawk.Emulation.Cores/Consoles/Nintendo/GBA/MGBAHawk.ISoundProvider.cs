@@ -5,9 +5,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 {
 	public partial class MGBAHawk : ISoundProvider
 	{
-		private readonly short[] _soundbuff = new short[2048];
+		internal readonly short[] _soundbuff = new short[2048];
 		private readonly short[] _dummysoundbuff = new short[2048];
-		private int _nsamp;
+		internal int _nsamp;
 
 		public bool CanProvideAsync => false;
 
