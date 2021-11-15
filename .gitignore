@@ -8,6 +8,7 @@
 /output/**
 /output64/**
 /packaged_output
+/result
 /test_output
 **/Release/**
 **/Debug/**
