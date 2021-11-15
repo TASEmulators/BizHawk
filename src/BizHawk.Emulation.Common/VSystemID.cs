@@ -54,7 +54,6 @@ namespace BizHawk.Emulation.Common
 			public const string SMS = "SMS";
 			public const string SNES = "SNES";
 			public const string TI83 = "TI83";
-			public const string TI83P = "TI83P"; //TODO only used for CoreConstructor, SystemId is TI83
 			public const string UZE = "UZE";
 			public const string VB = "VB";
 			public const string VEC = "VEC";

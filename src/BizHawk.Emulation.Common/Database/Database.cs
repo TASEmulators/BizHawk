@@ -335,7 +335,7 @@ namespace BizHawk.Emulation.Common
 					break;
 
 				case ".83P":
-					game.System = VSystemID.Raw.TI83P;
+					game.System = VSystemID.Raw.TI83;
 					break;
 
 				case ".DSK":
