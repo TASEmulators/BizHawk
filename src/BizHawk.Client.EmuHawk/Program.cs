@@ -120,8 +120,17 @@ namespace BizHawk.Client.EmuHawk
 
 			HawkFile.DearchivalMethod = SharpCompressDearchivalMethod.Instance;
 
-			string cmdConfigFile = ArgParser.GetCmdConfigFile(args);
-			if (cmdConfigFile != null) Config.SetDefaultIniPath(cmdConfigFile);
+			ParsedCLIFlags cliFlags = default;
+			try
+			{
+				ArgParser.ParseArguments(out cliFlags, args);
+			}
+			catch (ArgParser.ArgParserException e)
+			{
+				new ExceptionBox(e.Message).ShowDialog();
+			}
+
+			if (cliFlags.cmdConfigFile != null) Config.SetDefaultIniPath(cliFlags.cmdConfigFile);
 
 			Config initialConfig;
 			try
@@ -224,7 +233,13 @@ namespace BizHawk.Client.EmuHawk
 			var exitCode = 0;
 			try
 			{
-				var mf = new MainForm(initialConfig, workingGL, newSound => globalSound = newSound, args, out var movieSession);
+				MainForm mf = new(
+					cliFlags,
+					initialConfig,
+					workingGL,
+					newSound => globalSound = newSound,
+					args,
+					out var movieSession);
 //				var title = mf.Text;
 				mf.Show();
 //				mf.Text = title;

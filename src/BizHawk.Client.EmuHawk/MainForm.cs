@@ -281,7 +281,13 @@ namespace BizHawk.Client.EmuHawk
 			CloseRomContextMenuItem.Image = Properties.Resources.Close;
 		}
 
-		public MainForm(Config config, IGL gl, Action<Sound> updateGlobalSound, string[] args, out IMovieSession movieSession)
+		public MainForm(
+			ParsedCLIFlags cliFlags,
+			Config config,
+			IGL gl,
+			Action<Sound> updateGlobalSound,
+			string[] args,
+			out IMovieSession movieSession)
 		{
 			movieSession = null;
 
@@ -298,6 +304,7 @@ namespace BizHawk.Client.EmuHawk
 			Database.InitializeDatabase(Path.Combine(PathUtils.ExeDirectoryPath, "gamedb", "gamedb.txt"), silent: true);
 			BootGodDb.Initialize(Path.Combine(PathUtils.ExeDirectoryPath, "gamedb"));
 
+			_argParser = cliFlags;
 			Config = config;
 			GL = gl;
 			_updateGlobalSound = updateGlobalSound;
@@ -360,15 +367,6 @@ namespace BizHawk.Client.EmuHawk
 
 			UpdateStatusSlots();
 			UpdateKeyPriorityIcon();
-
-			try
-			{
-				ArgParser.ParseArguments(out _argParser, args);
-			}
-			catch (ArgParser.ArgParserException e)
-			{
-				ShowMessageBox(owner: null, e.Message);
-			}
 
 			// TODO GL - a lot of disorganized wiring-up here
 			// installed separately on Unix (via package manager or from https://developer.nvidia.com/cg-toolkit-download), look in $PATH
