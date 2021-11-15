@@ -57,6 +57,9 @@ namespace BizHawk.Client.Common
 			[VSystemID.Raw.MSX] = "MSX",
 			[VSystemID.Raw.UZE] = "UZE",
 			[VSystemID.Raw.NDS] = "NDS",
+			[VSystemID.Raw.Sega32X] = "Sega 32X",
+			[VSystemID.Raw.GGL] = "Dual Game Gear",
+			[VSystemID.Raw.PS2] = "Playstation 2",
 		};
 
 		public static string GetDisplayNameFor(string sysID)
@@ -417,6 +420,27 @@ namespace BizHawk.Client.Common
 			new(VSystemID.Raw.NDS, 3, "Save RAM", Path.Combine(".", "SaveRAM")),
 			new(VSystemID.Raw.NDS, 4, "Screenshots", Path.Combine(".", "Screenshots")),
 			new(VSystemID.Raw.NDS, 5, "Cheats", Path.Combine(".", "Cheats")),
+
+			new(VSystemID.Raw.Sega32X, 0, "Base", Path.Combine(".", "32X")),
+			new(VSystemID.Raw.Sega32X, 1, "ROM", "."),
+			new(VSystemID.Raw.Sega32X, 2, "Savestates", Path.Combine(".", "State")),
+			new(VSystemID.Raw.Sega32X, 3, "Save RAM", Path.Combine(".", "SaveRAM")),
+			new(VSystemID.Raw.Sega32X, 4, "Screenshots", Path.Combine(".", "Screenshots")),
+			new(VSystemID.Raw.Sega32X, 5, "Cheats", Path.Combine(".", "Cheats")),
+
+			new(VSystemID.Raw.GGL, 0, "Base", Path.Combine(".", "Dual Game Gear")),
+			new(VSystemID.Raw.GGL, 1, "ROM", "."),
+			new(VSystemID.Raw.GGL, 2, "Savestates", Path.Combine(".", "State")),
+			new(VSystemID.Raw.GGL, 3, "Save RAM", Path.Combine(".", "SaveRAM")),
+			new(VSystemID.Raw.GGL, 4, "Screenshots", Path.Combine(".", "Screenshots")),
+			new(VSystemID.Raw.GGL, 5, "Cheats", Path.Combine(".", "Cheats")),
+
+			new(VSystemID.Raw.PS2, 0, "Base", Path.Combine(".", "PS2")),
+			new(VSystemID.Raw.PS2, 1, "ROM", "."),
+			new(VSystemID.Raw.PS2, 2, "Savestates", Path.Combine(".", "State")),
+			new(VSystemID.Raw.PS2, 3, "Save RAM", Path.Combine(".", "SaveRAM")),
+			new(VSystemID.Raw.PS2, 4, "Screenshots", Path.Combine(".", "Screenshots")),
+			new(VSystemID.Raw.PS2, 5, "Cheats", Path.Combine(".", "Cheats")),
 		};
 	}
 }

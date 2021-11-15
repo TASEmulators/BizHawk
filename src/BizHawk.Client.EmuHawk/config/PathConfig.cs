@@ -27,7 +27,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			string[] coresToHide = { VSystemID.Raw.GB4x, VSystemID.Raw.O2, VSystemID.Raw.ChannelF, VSystemID.Raw.AmstradCPC };
+			string[] coresToHide = { VSystemID.Raw.AmstradCPC, VSystemID.Raw.ChannelF, VSystemID.Raw.GGL, VSystemID.Raw.MSX, VSystemID.Raw.PS2 };
 
 			foreach (var core in coresToHide)
 			{
