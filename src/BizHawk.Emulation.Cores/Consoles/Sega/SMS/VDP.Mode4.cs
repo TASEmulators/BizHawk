@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 			for (int xTile = 0; xTile < 32; xTile++)
 			{
-				if (xTile == 24 && VerticalScrollLock)
+				if (xTile == lock_tile_start && VerticalScrollLock)
 				{
 					vertOffset = ScanLine;
 					yTile = vertOffset / 8;

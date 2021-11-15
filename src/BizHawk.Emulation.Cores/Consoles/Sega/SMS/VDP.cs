@@ -77,6 +77,10 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		private int NameTableMaskBit;
 		private bool JPN_Compat =false;
 
+		// For SMS, the last 8 x-tiles are fixed if vertscroll (reg[0].bit(7)) is set, but on GG it must be
+		// only the last 7 or Fray displays incorrectly
+		private int lock_tile_start;
+
 		// preprocessed state assist stuff.
 		public int[] Palette = new int[32];
 		public byte[] PatternBuffer = new byte[0x8000];
@@ -96,7 +100,9 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			if (mode == VdpMode.GameGear) CRAM = new byte[64];
 			DisplayType = displayType;
 			if (mode == VdpMode.SMS) { JPN_Compat = region_compat; }
-			NameTableBase = CalcNameTableBase();	
+			NameTableBase = CalcNameTableBase();
+
+			lock_tile_start = mode == VdpMode.SMS ? 24 : 25;
 		}
 
 		public byte ReadData()
