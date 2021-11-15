@@ -117,8 +117,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 						{
 							_stepOverflow[i] -= StepLength; // skip a step
 						}
+
+						if (_stepTransferCount[i] != 0 && --_stepTransferCount[i] == 0)
+						{
+							MGBAHawk.LibmGBA.BizFinishLinkTransfer(_linkedCores[i].Core, _linkedCores[(int)_connectionStatus[i]].Core, _linkData, i, (int)_connectionStatus[i]);
+						}
 					}
 				}
+
+
 
 				bool exit = true;
 				for (int i = 0; i < _numCores; i++)

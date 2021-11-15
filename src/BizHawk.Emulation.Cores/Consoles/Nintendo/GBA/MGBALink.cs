@@ -26,6 +26,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		}
 
 		private readonly ConnectionStatus[] _connectionStatus;
+		private readonly int[] _linkData;
 		private readonly int[] _stepTransferCount;
 		private readonly int[] _frameOverflow;
 		private readonly int[] _stepOverflow;
@@ -54,6 +55,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			_stepOverflow = new int[_numCores];
 			_connectionStatus = new ConnectionStatus[4];
 			_stepTransferCount = new int[_numCores];
+			_linkData = new int[_numCores];
 
 			for (int i = 0; i < _numCores; i++)
 			{
@@ -88,23 +90,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			SetMemoryDomains();
 		}
 
-		private bool CanMulti()
-		{
-			return _numCores == 4
-				&& _connectionStatus[(int)ConnectionStatus.P1] != ConnectionStatus.NONE
-				&& _connectionStatus[(int)ConnectionStatus.P2] != ConnectionStatus.NONE
-				&& _connectionStatus[(int)ConnectionStatus.P3] != ConnectionStatus.NONE
-				&& _connectionStatus[(int)ConnectionStatus.P4] != ConnectionStatus.NONE;
-		}
-
 		private ushort P1LinkCallback(IntPtr driver, uint address, ushort value)
 		{
 			if (_connectionStatus[(int)ConnectionStatus.P1] != ConnectionStatus.NONE)
 			{
-				value = MGBAHawk.LibmGBA.BizWriteLinkRegister(driver, address, value, ref _stepTransferCount[(int)ConnectionStatus.P1], CanMulti());
+				value = MGBAHawk.LibmGBA.BizWriteLinkRegister(driver, address, value, ref _stepTransferCount[(int)ConnectionStatus.P1], ConnectionStatus.P1 < _connectionStatus[(int)ConnectionStatus.P1]);
 				if (_stepTransferCount[(int)ConnectionStatus.P1] != 0)
 				{
-					// todo: actually init transfer
+					MGBAHawk.LibmGBA.BizStartLinkTransfer(driver, _linkData, (int)ConnectionStatus.P1, _linkedCores[(int)_connectionStatus[(int)ConnectionStatus.P1]].Core, (int)_connectionStatus[(int)ConnectionStatus.P1]);
 				}
 			}
 
@@ -115,10 +108,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		{
 			if (_connectionStatus[(int)ConnectionStatus.P2] != ConnectionStatus.NONE)
 			{
-				value = MGBAHawk.LibmGBA.BizWriteLinkRegister(driver, address, value, ref _stepTransferCount[(int)ConnectionStatus.P2], CanMulti());
+				value = MGBAHawk.LibmGBA.BizWriteLinkRegister(driver, address, value, ref _stepTransferCount[(int)ConnectionStatus.P2], ConnectionStatus.P2 < _connectionStatus[(int)ConnectionStatus.P2]);
 				if (_stepTransferCount[(int)ConnectionStatus.P2] != 0)
 				{
-					// todo: actually init transfer
+					MGBAHawk.LibmGBA.BizStartLinkTransfer(driver, _linkData, (int)ConnectionStatus.P2, _linkedCores[(int)_connectionStatus[(int)ConnectionStatus.P2]].Core, (int)_connectionStatus[(int)ConnectionStatus.P2]);
 				}
 			}
 
@@ -129,10 +122,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		{
 			if (_connectionStatus[(int)ConnectionStatus.P3] != ConnectionStatus.NONE)
 			{
-				value = MGBAHawk.LibmGBA.BizWriteLinkRegister(driver, address, value, ref _stepTransferCount[(int)ConnectionStatus.P3], CanMulti());
+				value = MGBAHawk.LibmGBA.BizWriteLinkRegister(driver, address, value, ref _stepTransferCount[(int)ConnectionStatus.P3], ConnectionStatus.P3 < _connectionStatus[(int)ConnectionStatus.P3]);
 				if (_stepTransferCount[(int)ConnectionStatus.P3] != 0)
 				{
-					// todo: actually init transfer
+					MGBAHawk.LibmGBA.BizStartLinkTransfer(driver, _linkData, (int)ConnectionStatus.P3, _linkedCores[(int)_connectionStatus[(int)ConnectionStatus.P3]].Core, (int)_connectionStatus[(int)ConnectionStatus.P3]);
 				}
 			}
 
@@ -143,10 +136,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		{
 			if (_connectionStatus[(int)ConnectionStatus.P4] != ConnectionStatus.NONE)
 			{
-				value = MGBAHawk.LibmGBA.BizWriteLinkRegister(driver, address, value, ref _stepTransferCount[(int)ConnectionStatus.P4], CanMulti());
+				value = MGBAHawk.LibmGBA.BizWriteLinkRegister(driver, address, value, ref _stepTransferCount[(int)ConnectionStatus.P4], ConnectionStatus.P4 < _connectionStatus[(int)ConnectionStatus.P4]);
 				if (_stepTransferCount[(int)ConnectionStatus.P4] != 0)
 				{
-					// todo: actually init transfer
+					MGBAHawk.LibmGBA.BizStartLinkTransfer(driver, _linkData, (int)ConnectionStatus.P4, _linkedCores[(int)_connectionStatus[(int)ConnectionStatus.P4]].Core, (int)_connectionStatus[(int)ConnectionStatus.P4]);
 				}
 			}
 
