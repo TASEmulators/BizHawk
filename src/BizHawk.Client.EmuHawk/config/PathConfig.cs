@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using BizHawk.Client.Common;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -17,24 +18,6 @@ namespace BizHawk.Client.EmuHawk
 		private readonly PathEntryCollection _pathEntries;
 
 		private readonly string _sysID;
-
-		// All path text boxes should do some kind of error checking
-		// Config path under base, config will default to %exe%
-		private void LockDownCores()
-		{
-			if (VersionInfo.DeveloperBuild)
-			{
-				return;
-			}
-
-			string[] coresToHide = { VSystemID.Raw.AmstradCPC, VSystemID.Raw.ChannelF, VSystemID.Raw.GGL, VSystemID.Raw.MSX, VSystemID.Raw.PS2 };
-
-			foreach (var core in coresToHide)
-			{
-				var tabPage = PathTabControl.TabPages().First(tp => tp.Name == core);
-				PathTabControl.TabPages.Remove(tabPage);
-			}
-		}
 
 		private static AutoCompleteStringCollection AutoCompleteOptions => new AutoCompleteStringCollection
 		{
@@ -153,6 +136,7 @@ namespace BizHawk.Client.EmuHawk
 				.Select(sys => (SysGroup: sys, DisplayName: PathEntryCollection.GetDisplayNameFor(sys)))
 				.OrderBy(tuple => tuple.DisplayName)
 				.ToList();
+
 			// add the Global tab first...
 			tpGlobal.Name = PathEntryCollection.GLOBAL; // required for SaveSettings
 			systems.RemoveAll(tuple => tuple.SysGroup == PathEntryCollection.GLOBAL);
@@ -165,7 +149,17 @@ namespace BizHawk.Client.EmuHawk
 			tpGlobal.Controls[tpGlobal.Controls.Count - 2].Location -= hack1; // Button
 			textBoxWidth -= hack;
 			widgetOffset -= hack;
-			// ...then continue with the others
+
+			// ...then continue with the others (after removing unreleased systems in Release builds)
+			if (!VersionInfo.DeveloperBuild)
+			{
+				var releasedCoreSysIDs = CoreInventory.Instance.AllCores.SelectMany(kvp => kvp.Value.Select(coreInfo => (SysID: kvp.Key, CoreInfo: coreInfo)))
+					.Where(tuple => tuple.CoreInfo.CoreAttr.Released)
+					.Select(tuple => tuple.SysID)
+					.Distinct().ToList();
+				releasedCoreSysIDs.Add(VSystemID.Raw.Libretro); // core not actually marked as released, but we still want to show it
+				systems.RemoveAll(tuple => !releasedCoreSysIDs.Any(sysID => PathEntryCollection.InGroup(sysID, tuple.SysGroup)));
+			}
 			foreach (var (sys, dispName) in systems) AddTabPageForSystem(sys, dispName);
 
 			if (IsTabPendingFocus(PathEntryCollection.GLOBAL))
@@ -242,7 +236,6 @@ namespace BizHawk.Client.EmuHawk
 		private void NewPathConfig_Load(object sender, EventArgs e)
 		{
 			LoadSettings();
-			LockDownCores();
 		}
 
 		private void RecentForRoms_CheckedChanged(object sender, EventArgs e)

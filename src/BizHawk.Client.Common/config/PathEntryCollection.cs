@@ -70,6 +70,9 @@ namespace BizHawk.Client.Common
 			return newDispName;
 		}
 
+		public static bool InGroup(string sysID, string group)
+			=> sysID == group || group.Split('_').Contains(sysID);
+
 		public List<PathEntry> Paths { get; }
 
 		[JsonConstructor]

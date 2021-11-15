@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
 namespace BizHawk.Client.Common
 {
@@ -25,8 +24,6 @@ namespace BizHawk.Client.Common
 		}
 
 		internal bool IsSystem(string systemID)
-		{
-			return systemID == System || System.Split('_').Contains(systemID);
-		}
+			=> PathEntryCollection.InGroup(systemID, System);
 	}
 }
