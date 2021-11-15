@@ -120,10 +120,9 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 							Run5();
 							break;
 						case 0x02:
-							if ((sr5 & 0x0f) == 0 || (sr5 & 0x0f) == 0x0f)
+							if ((sr5 == 31) || (sr5 == 16))
 							{
 								on = Run4();
-								Run5();
 							}
 							Run5();
 							break;
@@ -146,11 +145,11 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 						case 0x06:
 						case 0x0a:
 							Run5();
-							if ((sr5 & 0x0f) == 0)
+							if (sr5 == 16)
 							{
 								on = false;
 							}
-							else if ((sr5 & 0x0f) == 0x0f)
+							else if (sr5 == 31)
 							{
 								on = true;
 							}

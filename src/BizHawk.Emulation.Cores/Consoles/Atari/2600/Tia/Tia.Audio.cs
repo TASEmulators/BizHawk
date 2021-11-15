@@ -125,10 +125,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 							Run5_L();
 							break;
 						case 0x02:
-							if (((sr5_L & 0x0f) == 0) || ((sr5_L & 0x0f) == 0x0f))
+							if ((sr5_L == 31) || (sr5_L == 16))
 							{
 								on_L = Run4_L();
-								Run5_L();
 							}
 							Run5_L();
 							break;
@@ -153,11 +152,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 						case 0x06:
 						case 0x0a:
 							Run5_L();
-							if ((sr5_L & 0x0f) == 0)
+							if (sr5_L == 16)
 							{
 								on_L = false;
 							}
-							else if ((sr5_L & 0x0f) == 0x0f)
+							else if (sr5_L == 31)
 							{
 								on_L = true;
 							}
@@ -277,10 +276,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 							Run5_R();
 							break;
 						case 0x02:
-							if (((sr5_R & 0x0f) == 0) || ((sr5_R & 0x0f) == 0x0f))
+							if ((sr5_R == 31) || (sr5_R == 16))
 							{
 								on_R = Run4_R();
-								Run5_R();
 							}
 							Run5_R();
 							break;
@@ -305,11 +303,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 						case 0x06:
 						case 0x0a:
 							Run5_R();
-							if ((sr5_R & 0x0f) == 0)
+							if (sr5_R == 16)
 							{
 								on_R = false;
 							}
-							else if ((sr5_R & 0x0f) == 0x0f)
+							else if (sr5_R == 31)
 							{
 								on_R = true;
 							}
