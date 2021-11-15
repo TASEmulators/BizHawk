@@ -16,6 +16,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				writer.Write(_frameOverflow[i]);
 				writer.Write(_stepOverflow[i]);
 				writer.Write((int)_connectionStatus[i]);
+				writer.Write(_stepTransferCount[i]);
 			}
 			writer.Write(IsLagFrame);
 			writer.Write(LagCount);
@@ -34,6 +35,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				_frameOverflow[i] = reader.ReadInt32();
 				_stepOverflow[i] = reader.ReadInt32();
 				_connectionStatus[i] = (ConnectionStatus)reader.ReadInt32();
+				_stepTransferCount[i] = reader.ReadInt32();
 			}
 			IsLagFrame = reader.ReadBoolean();
 			LagCount = reader.ReadInt32();

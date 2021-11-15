@@ -26,11 +26,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		}
 
 		private readonly ConnectionStatus[] _connectionStatus;
+		private readonly int[] _stepTransferCount;
 		private readonly int[] _frameOverflow;
 		private readonly int[] _stepOverflow;
 
 		const int CyclesPerFrame = 280896;
-		const int StepLength = 1024;
+		const int StepLength = 64;
 
 		[CoreConstructor("GBALink")]
 		public MGBALink(CoreLoadParameters<MGBALinkSettings, MGBALinkSyncSettings> lp)
@@ -52,6 +53,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			_frameOverflow = new int[_numCores];
 			_stepOverflow = new int[_numCores];
 			_connectionStatus = new ConnectionStatus[4];
+			_stepTransferCount = new int[_numCores];
 
 			for (int i = 0; i < _numCores; i++)
 			{
@@ -59,6 +61,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				_linkedConts[i] = new SaveController(MGBAHawk.GBAController);
 				_frameOverflow[i] = 0;
 				_stepOverflow[i] = 0;
+				_stepTransferCount[i] = 0;
 				MGBAHawk.LibmGBA.BizConnectLinkCable(_linkedCores[i].Core, _linkedCallbacks[i]);
 			}
 
@@ -85,27 +88,68 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			SetMemoryDomains();
 		}
 
+		private bool CanMulti()
+		{
+			return _numCores == 4
+				&& _connectionStatus[(int)ConnectionStatus.P1] != ConnectionStatus.NONE
+				&& _connectionStatus[(int)ConnectionStatus.P2] != ConnectionStatus.NONE
+				&& _connectionStatus[(int)ConnectionStatus.P3] != ConnectionStatus.NONE
+				&& _connectionStatus[(int)ConnectionStatus.P4] != ConnectionStatus.NONE;
+		}
+
 		private ushort P1LinkCallback(IntPtr driver, uint address, ushort value)
 		{
-			Console.WriteLine("P1 Link CB called");
+			if (_connectionStatus[(int)ConnectionStatus.P1] != ConnectionStatus.NONE)
+			{
+				value = MGBAHawk.LibmGBA.BizWriteLinkRegister(driver, address, value, ref _stepTransferCount[(int)ConnectionStatus.P1], CanMulti());
+				if (_stepTransferCount[(int)ConnectionStatus.P1] != 0)
+				{
+					// todo: actually init transfer
+				}
+			}
+
 			return value;
 		}
 
 		private ushort P2LinkCallback(IntPtr driver, uint address, ushort value)
 		{
-			Console.WriteLine("P2 Link CB called");
+			if (_connectionStatus[(int)ConnectionStatus.P2] != ConnectionStatus.NONE)
+			{
+				value = MGBAHawk.LibmGBA.BizWriteLinkRegister(driver, address, value, ref _stepTransferCount[(int)ConnectionStatus.P2], CanMulti());
+				if (_stepTransferCount[(int)ConnectionStatus.P2] != 0)
+				{
+					// todo: actually init transfer
+				}
+			}
+
 			return value;
 		}
 
 		private ushort P3LinkCallback(IntPtr driver, uint address, ushort value)
 		{
-			Console.WriteLine("P3 Link CB called");
+			if (_connectionStatus[(int)ConnectionStatus.P3] != ConnectionStatus.NONE)
+			{
+				value = MGBAHawk.LibmGBA.BizWriteLinkRegister(driver, address, value, ref _stepTransferCount[(int)ConnectionStatus.P3], CanMulti());
+				if (_stepTransferCount[(int)ConnectionStatus.P3] != 0)
+				{
+					// todo: actually init transfer
+				}
+			}
+
 			return value;
 		}
 
 		private ushort P4LinkCallback(IntPtr driver, uint address, ushort value)
 		{
-			Console.WriteLine("P4 Link CB called");
+			if (_connectionStatus[(int)ConnectionStatus.P4] != ConnectionStatus.NONE)
+			{
+				value = MGBAHawk.LibmGBA.BizWriteLinkRegister(driver, address, value, ref _stepTransferCount[(int)ConnectionStatus.P4], CanMulti());
+				if (_stepTransferCount[(int)ConnectionStatus.P4] != 0)
+				{
+					// todo: actually init transfer
+				}
+			}
+
 			return value;
 		}
 	}

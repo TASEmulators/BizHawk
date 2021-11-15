@@ -111,7 +111,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 									_stepOverflow[i] = MGBAHawk.LibmGBA.BizStep(_linkedCores[i].Core, stepTarget, vbuff, _numCores);
 								}
 							}
-							_frameOverflow[i] += StepLength + _stepOverflow[i];
+							_frameOverflow[i] += stepTarget + _stepOverflow[i];
 						}
 						else
 						{

@@ -140,6 +140,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		public abstract void BizConnectLinkCable(IntPtr ctx, LinkCallback linkcb);
 
 		[BizImport(cc, Compatibility = true)]
+		public abstract ushort BizWriteLinkRegister(IntPtr driver, uint address, ushort value, ref int stepcnt, bool canmulti);
+
+		[BizImport(cc, Compatibility = true)]
 		public abstract int BizStepPrep(IntPtr ctx, Buttons keys, long time, short gyrox, short gyroy, short gyroz, byte luma);
 
 		[BizImport(cc, Compatibility = true)]
