@@ -152,8 +152,9 @@ namespace BizHawk.Client.EmuHawk
 				File.Delete(Config.DefaultIniPath);
 				initialConfig = ConfigService.Load<Config>(Config.DefaultIniPath);
 			}
-
 			initialConfig.ResolveDefaults();
+			// initialConfig should really be globalConfig as it's mutable
+
 			FFmpegService.FFmpegPath = Path.Combine(PathUtils.DllDirectoryPath, OSTC.IsUnixHost ? "ffmpeg" : "ffmpeg.exe");
 
 			StringLogUtil.DefaultToDisk = initialConfig.Movies.MoviesOnDisk;
@@ -235,11 +236,21 @@ namespace BizHawk.Client.EmuHawk
 			{
 				MainForm mf = new(
 					cliFlags,
-					initialConfig,
 					workingGL,
+					() => initialConfig,
 					newSound => globalSound = newSound,
 					args,
 					out var movieSession);
+				mf.LoadGlobalConfigFromFile = iniPath =>
+				{
+					if (!VersionInfo.DeveloperBuild && !ConfigService.IsFromSameVersion(iniPath, out var msg))
+					{
+						new MsgBox(msg, "Mismatched version in config file", MessageBoxIcon.Warning).ShowDialog();
+					}
+					initialConfig = ConfigService.Load<Config>(iniPath);
+					initialConfig.ResolveDefaults();
+					mf.Config = initialConfig;
+				};
 //				var title = mf.Text;
 				mf.Show();
 //				mf.Text = title;

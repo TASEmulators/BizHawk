@@ -283,15 +283,17 @@ namespace BizHawk.Client.EmuHawk
 
 		public MainForm(
 			ParsedCLIFlags cliFlags,
-			Config config,
 			IGL gl,
+			Func<Config> getGlobalConfig,
 			Action<Sound> updateGlobalSound,
 			string[] args,
 			out IMovieSession movieSession)
 		{
 			movieSession = null;
 
-			if (config.SingleInstanceMode)
+			_getGlobalConfig = getGlobalConfig;
+
+			if (Config.SingleInstanceMode)
 			{
 				if (SingleInstanceInit(args))
 				{
@@ -305,7 +307,6 @@ namespace BizHawk.Client.EmuHawk
 			BootGodDb.Initialize(Path.Combine(PathUtils.ExeDirectoryPath, "gamedb"));
 
 			_argParser = cliFlags;
-			Config = config;
 			GL = gl;
 			_updateGlobalSound = updateGlobalSound;
 
@@ -903,13 +904,11 @@ namespace BizHawk.Client.EmuHawk
 		private ISoundProvider _currentSoundProvider = new NullSound(44100 / 60); // Reasonable default until we have a core instance
 
 		/// <remarks>don't use this, use <see cref="Config"/></remarks>
-		private Config _config;
+		private readonly Func<Config> _getGlobalConfig;
 
-		private new Config Config
-		{
-			get => _config;
-			set => base.Config = _config = value;
-		}
+		private new Config Config => _getGlobalConfig();
+
+		public Action<string> LoadGlobalConfigFromFile { get; set; }
 
 		private readonly IGL GL;
 
@@ -2910,12 +2909,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoadConfigFile(string iniPath)
 		{
-			if (!VersionInfo.DeveloperBuild && !ConfigService.IsFromSameVersion(iniPath, out var msg))
-			{
-				new MsgBox(msg, "Mismatched version in config file", MessageBoxIcon.Warning).ShowDialog();
-			}
-			Config = ConfigService.Load<Config>(iniPath);
-			Config.ResolveDefaults();
+			LoadGlobalConfigFromFile(iniPath);
 			InitControls(); // rebind hotkeys
 			InputManager.SyncControls(Emulator, MovieSession, Config);
 			Tools.Restart(Config, Emulator, Game);
