@@ -16,23 +16,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		private readonly BasicServiceProvider _serviceProvider;
 		private readonly ArmV4Disassembler _disassembler;
 
-		public enum ConnectionStatus : int
-		{
-			NONE = -1,
-			P1 = 0,
-			P2 = 1,
-			P3 = 2,
-			P4 = 3,
-		}
+		const int NONE = -1;
+		const int P1 = 0;
+		const int P2 = 1;
+		const int P3 = 2;
+		const int P4 = 3;
 
-		private readonly ConnectionStatus[] _connectionStatus;
-		private readonly int[] _linkData;
-		private readonly int[] _stepTransferCount;
+		private readonly int[] _connectedTo;
+		private readonly bool[] _clockTrigger;
 		private readonly int[] _frameOverflow;
 		private readonly int[] _stepOverflow;
 
 		const int CyclesPerFrame = 280896;
 		const int StepLength = 64;
+
+		
 
 		[CoreConstructor("GBALink")]
 		public MGBALink(CoreLoadParameters<MGBALinkSettings, MGBALinkSyncSettings> lp)
@@ -53,9 +51,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			_linkedCallbacks = new LibmGBA.LinkCallback[4] { P1LinkCallback, P2LinkCallback, P3LinkCallback, P4LinkCallback };
 			_frameOverflow = new int[_numCores];
 			_stepOverflow = new int[_numCores];
-			_connectionStatus = new ConnectionStatus[4];
-			_stepTransferCount = new int[_numCores];
-			_linkData = new int[_numCores];
+			_connectedTo = new int[4];
+			_clockTrigger = new bool[_numCores];
 
 			for (int i = 0; i < _numCores; i++)
 			{
@@ -63,22 +60,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				_linkedConts[i] = new SaveController(MGBAHawk.GBAController);
 				_frameOverflow[i] = 0;
 				_stepOverflow[i] = 0;
-				_stepTransferCount[i] = 0;
+				_clockTrigger[i] = false;
 				MGBAHawk.LibmGBA.BizConnectLinkCable(_linkedCores[i].Core, _linkedCallbacks[i]);
 			}
 
-			_connectionStatus[(int)ConnectionStatus.P1] = ConnectionStatus.P2;
-			_connectionStatus[(int)ConnectionStatus.P2] = ConnectionStatus.P1;
+			_connectedTo[P1] = P2;
+			_connectedTo[P2] = P1;
 
 			if (_numCores == 4)
 			{
-				_connectionStatus[(int)ConnectionStatus.P3] = ConnectionStatus.P4;
-				_connectionStatus[(int)ConnectionStatus.P4] = ConnectionStatus.P3;
+				_connectedTo[P3] = P4;
+				_connectedTo[P4] = P3;
 			}
 			else
 			{
-				_connectionStatus[(int)ConnectionStatus.P3] = ConnectionStatus.NONE;
-				_connectionStatus[(int)ConnectionStatus.P4] = ConnectionStatus.NONE;
+				_connectedTo[P3] = NONE;
+				_connectedTo[P4] = NONE;
 			}
 
 			_disassembler = new ArmV4Disassembler();
@@ -90,60 +87,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			SetMemoryDomains();
 		}
 
-		private ushort P1LinkCallback(IntPtr driver, uint address, ushort value)
-		{
-			if (_connectionStatus[(int)ConnectionStatus.P1] != ConnectionStatus.NONE)
-			{
-				value = MGBAHawk.LibmGBA.BizWriteLinkRegister(driver, address, value, ref _stepTransferCount[(int)ConnectionStatus.P1], ConnectionStatus.P1 < _connectionStatus[(int)ConnectionStatus.P1]);
-				if (_stepTransferCount[(int)ConnectionStatus.P1] != 0)
-				{
-					MGBAHawk.LibmGBA.BizStartLinkTransfer(driver, _linkData, (int)ConnectionStatus.P1, _linkedCores[(int)_connectionStatus[(int)ConnectionStatus.P1]].Core, (int)_connectionStatus[(int)ConnectionStatus.P1]);
-				}
-			}
+		private void P1LinkCallback() => _clockTrigger[P1] = _connectedTo[P1] != NONE;
 
-			return value;
-		}
+		private void P2LinkCallback() => _clockTrigger[P2] = _connectedTo[P2] != NONE;
 
-		private ushort P2LinkCallback(IntPtr driver, uint address, ushort value)
-		{
-			if (_connectionStatus[(int)ConnectionStatus.P2] != ConnectionStatus.NONE)
-			{
-				value = MGBAHawk.LibmGBA.BizWriteLinkRegister(driver, address, value, ref _stepTransferCount[(int)ConnectionStatus.P2], ConnectionStatus.P2 < _connectionStatus[(int)ConnectionStatus.P2]);
-				if (_stepTransferCount[(int)ConnectionStatus.P2] != 0)
-				{
-					MGBAHawk.LibmGBA.BizStartLinkTransfer(driver, _linkData, (int)ConnectionStatus.P2, _linkedCores[(int)_connectionStatus[(int)ConnectionStatus.P2]].Core, (int)_connectionStatus[(int)ConnectionStatus.P2]);
-				}
-			}
+		private void P3LinkCallback() => _clockTrigger[P3] = _connectedTo[P3] != NONE;
 
-			return value;
-		}
-
-		private ushort P3LinkCallback(IntPtr driver, uint address, ushort value)
-		{
-			if (_connectionStatus[(int)ConnectionStatus.P3] != ConnectionStatus.NONE)
-			{
-				value = MGBAHawk.LibmGBA.BizWriteLinkRegister(driver, address, value, ref _stepTransferCount[(int)ConnectionStatus.P3], ConnectionStatus.P3 < _connectionStatus[(int)ConnectionStatus.P3]);
-				if (_stepTransferCount[(int)ConnectionStatus.P3] != 0)
-				{
-					MGBAHawk.LibmGBA.BizStartLinkTransfer(driver, _linkData, (int)ConnectionStatus.P3, _linkedCores[(int)_connectionStatus[(int)ConnectionStatus.P3]].Core, (int)_connectionStatus[(int)ConnectionStatus.P3]);
-				}
-			}
-
-			return value;
-		}
-
-		private ushort P4LinkCallback(IntPtr driver, uint address, ushort value)
-		{
-			if (_connectionStatus[(int)ConnectionStatus.P4] != ConnectionStatus.NONE)
-			{
-				value = MGBAHawk.LibmGBA.BizWriteLinkRegister(driver, address, value, ref _stepTransferCount[(int)ConnectionStatus.P4], ConnectionStatus.P4 < _connectionStatus[(int)ConnectionStatus.P4]);
-				if (_stepTransferCount[(int)ConnectionStatus.P4] != 0)
-				{
-					MGBAHawk.LibmGBA.BizStartLinkTransfer(driver, _linkData, (int)ConnectionStatus.P4, _linkedCores[(int)_connectionStatus[(int)ConnectionStatus.P4]].Core, (int)_connectionStatus[(int)ConnectionStatus.P4]);
-				}
-			}
-
-			return value;
-		}
+		private void P4LinkCallback() => _clockTrigger[P4] = _connectedTo[P4] != NONE;
 	}
 }

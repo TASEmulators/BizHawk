@@ -102,7 +102,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 							int stepTarget = StepLength - _stepOverflow[i];
 							if (_frameOverflow[i] + stepTarget > CyclesPerFrame)
 							{
-								stepTarget = _frameOverflow[i] + stepTarget - CyclesPerFrame;
+								stepTarget -= CyclesPerFrame - _frameOverflow[i];
 							}
 							unsafe
 							{
@@ -117,15 +117,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 						{
 							_stepOverflow[i] -= StepLength; // skip a step
 						}
-
-						if (_stepTransferCount[i] != 0 && --_stepTransferCount[i] == 0)
-						{
-							MGBAHawk.LibmGBA.BizFinishLinkTransfer(_linkedCores[i].Core, _linkedCores[(int)_connectionStatus[i]].Core, _linkData, i, (int)_connectionStatus[i]);
-						}
 					}
 				}
 
-
+				for (int i = 0; i < _numCores; i++)
+				{
+					if (_clockTrigger[i])
+					{
+						_clockTrigger[i] = false;
+						MGBAHawk.LibmGBA.BizLinkTransfer(_linkedCores[i].Core, _linkedCores[_connectedTo[i]].Core);
+					}
+				}
 
 				bool exit = true;
 				for (int i = 0; i < _numCores; i++)
