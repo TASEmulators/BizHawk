@@ -3922,7 +3922,7 @@ namespace BizHawk.Client.EmuHawk
 
 					RewireSound();
 					Tools.UpdateCheatRelatedTools(null, null);
-					if (Config.AutoLoadLastSaveSlot && HasSlot(Config.SaveSlot))
+					if (!MovieSession.NewMovieQueued && Config.AutoLoadLastSaveSlot && HasSlot(Config.SaveSlot))
 					{
 						LoadQuickSave($"QuickSave{Config.SaveSlot}");
 					}
