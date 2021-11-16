@@ -17,12 +17,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 			public MGBALinkSettings()
 			{
-				_linkedSettings = new MGBAHawk.Settings[4] { new(), new(), new(), new() };
+				_linkedSettings = new MGBAHawk.Settings[MAX_PLAYERS] { new(), new(), new(), new() };
 			}
 
 			public MGBALinkSettings(MGBAHawk.Settings one, MGBAHawk.Settings two, MGBAHawk.Settings three, MGBAHawk.Settings four)
 			{
-				_linkedSettings = new MGBAHawk.Settings[4] { one, two, three, four };
+				_linkedSettings = new MGBAHawk.Settings[MAX_PLAYERS] { one, two, three, four };
 			}
 		}
 
@@ -32,17 +32,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 			public MGBALinkSyncSettings Clone()
 			{
-				return new MGBALinkSyncSettings(_linkedSyncSettings[0].Clone(), _linkedSyncSettings[1].Clone(), _linkedSyncSettings[2].Clone(), _linkedSyncSettings[3].Clone());
+				return new MGBALinkSyncSettings(_linkedSyncSettings[P1].Clone(), _linkedSyncSettings[P2].Clone(), _linkedSyncSettings[P3].Clone(), _linkedSyncSettings[P4].Clone());
 			}
 
 			public MGBALinkSyncSettings()
 			{
-				_linkedSyncSettings = new MGBAHawk.SyncSettings[4] { new(), new(), new(), new() };
+				_linkedSyncSettings = new MGBAHawk.SyncSettings[MAX_PLAYERS] { new(), new(), new(), new() };
 			}
 
 			public MGBALinkSyncSettings(MGBAHawk.SyncSettings one, MGBAHawk.SyncSettings two, MGBAHawk.SyncSettings three, MGBAHawk.SyncSettings four)
 			{
-				_linkedSyncSettings = new MGBAHawk.SyncSettings[4] { one, two, three, four };
+				_linkedSyncSettings = new MGBAHawk.SyncSettings[MAX_PLAYERS] { one, two, three, four };
 			}
 		}
 
@@ -50,9 +50,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		{
 			return _numCores switch
 			{
-				2 => new MGBALinkSettings(_linkedCores[0].GetSettings(), _linkedCores[1].GetSettings(), null, null),
-				3 => new MGBALinkSettings(_linkedCores[0].GetSettings(), _linkedCores[1].GetSettings(), _linkedCores[2].GetSettings(), null),
-				4 => new MGBALinkSettings(_linkedCores[0].GetSettings(), _linkedCores[1].GetSettings(), _linkedCores[2].GetSettings(), _linkedCores[3].GetSettings()),
+				2 => new MGBALinkSettings(_linkedCores[P1].GetSettings(), _linkedCores[P2].GetSettings(), null, null),
+				3 => new MGBALinkSettings(_linkedCores[P1].GetSettings(), _linkedCores[P2].GetSettings(), _linkedCores[P3].GetSettings(), null),
+				4 => new MGBALinkSettings(_linkedCores[P1].GetSettings(), _linkedCores[P2].GetSettings(), _linkedCores[P3].GetSettings(), _linkedCores[P4].GetSettings()),
 				_ => throw new Exception()
 			};
 		}
@@ -61,9 +61,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		{
 			return _numCores switch
 			{
-				2 => new MGBALinkSyncSettings(_linkedCores[0].GetSyncSettings(), _linkedCores[1].GetSyncSettings(), null, null),
-				3 => new MGBALinkSyncSettings(_linkedCores[0].GetSyncSettings(), _linkedCores[1].GetSyncSettings(), _linkedCores[2].GetSyncSettings(), null),
-				4 => new MGBALinkSyncSettings(_linkedCores[0].GetSyncSettings(), _linkedCores[1].GetSyncSettings(), _linkedCores[2].GetSyncSettings(), _linkedCores[3].GetSyncSettings()),
+				2 => new MGBALinkSyncSettings(_linkedCores[P1].GetSyncSettings(), _linkedCores[P2].GetSyncSettings(), null, null),
+				3 => new MGBALinkSyncSettings(_linkedCores[P1].GetSyncSettings(), _linkedCores[P2].GetSyncSettings(), _linkedCores[P3].GetSyncSettings(), null),
+				4 => new MGBALinkSyncSettings(_linkedCores[P1].GetSyncSettings(), _linkedCores[P2].GetSyncSettings(), _linkedCores[P3].GetSyncSettings(), _linkedCores[P4].GetSyncSettings()),
 				_ => throw new Exception()
 			};
 		}

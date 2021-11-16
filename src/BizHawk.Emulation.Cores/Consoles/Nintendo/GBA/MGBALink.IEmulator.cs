@@ -153,7 +153,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 			unsafe
 			{
-				_linkedCores[0].GetSamplesSync(out short[] lsamples, out int lnsamp);
+				_linkedCores[P1].GetSamplesSync(out short[] lsamples, out int lnsamp);
 				fixed (short* ls = &lsamples[0], sb = &_soundbuff[0])
 				{
 					for (int i = 0; i < lnsamp; i++)
@@ -163,13 +163,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 					}
 				}
 
-				_linkedCores[1].GetSamplesSync(out short[] rsamples, out int rnsamp);
-				fixed (short* rs = &rsamples[0], sb = &_soundbuff[0])
+				_linkedCores[P2].GetSamplesSync(out short[] rsamples, out int rnsamp);
+				fixed (short* rs = &rsamples[0], sb = &_soundbuff[1])
 				{
 					for (int i = 0; i < rnsamp; i++)
 					{
 						int rsamp = (rsamples[i * 2] + rsamples[i * 2 + 1]) / 2;
-						sb[i * 2 + 1] = (short)rsamp;
+						sb[i * 2] = (short)rsamp;
 					}
 				}
 
