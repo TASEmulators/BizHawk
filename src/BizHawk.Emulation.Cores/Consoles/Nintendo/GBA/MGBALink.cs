@@ -10,13 +10,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 	{
 		private readonly MGBAHawk[] _linkedCores;
 		private readonly SaveController[] _linkedConts;
-		private readonly LibmGBA.LinkCallback[] _linkedCallbacks;
 		private int _numCores = 0;
 
 		private readonly BasicServiceProvider _serviceProvider;
 		private readonly ArmV4Disassembler _disassembler;
 
-		const int NONE = -1;
+		private IntPtr _lockstep = IntPtr.Zero;
+
 		const int P1 = 0;
 		const int P2 = 1;
 		const int P3 = 2;
@@ -24,8 +24,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		const int MIN_PLAYERS = 2;
 		const int MAX_PLAYERS = 4;
 
-		private readonly int[] _connectedTo;
-		private readonly bool[] _clockTrigger;
 		private readonly int[] _frameOverflow;
 		private readonly int[] _stepOverflow;
 
@@ -48,16 +46,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 			_linkedCores = new MGBAHawk[_numCores];
 			_linkedConts = new SaveController[_numCores];
-			_linkedCallbacks = new LibmGBA.LinkCallback[MAX_PLAYERS];
 			_frameOverflow = new int[_numCores];
 			_stepOverflow = new int[_numCores];
-			_connectedTo = new int[MAX_PLAYERS];
-			_clockTrigger = new bool[_numCores];
-
-			_linkedCallbacks[P1] = () => _clockTrigger[P1] = _connectedTo[P1] != NONE;
-			_linkedCallbacks[P2] = () => _clockTrigger[P2] = _connectedTo[P2] != NONE;
-			_linkedCallbacks[P3] = () => _clockTrigger[P3] = _connectedTo[P3] != NONE;
-			_linkedCallbacks[P4] = () => _clockTrigger[P4] = _connectedTo[P4] != NONE;
+			_lockstep = MGBAHawk.LibmGBA.BizCreateLockstep();
 
 			for (int i = 0; i < _numCores; i++)
 			{
@@ -65,22 +56,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				_linkedConts[i] = new SaveController(MGBAHawk.GBAController);
 				_frameOverflow[i] = 0;
 				_stepOverflow[i] = 0;
-				_clockTrigger[i] = false;
-				MGBAHawk.LibmGBA.BizConnectLinkCable(_linkedCores[i].Core, _linkedCallbacks[i]);
-			}
-
-			_connectedTo[P1] = P2;
-			_connectedTo[P2] = P1;
-
-			if (_numCores == MAX_PLAYERS)
-			{
-				_connectedTo[P3] = P4;
-				_connectedTo[P4] = P3;
-			}
-			else
-			{
-				_connectedTo[P3] = NONE;
-				_connectedTo[P4] = NONE;
+				MGBAHawk.LibmGBA.BizConnectLinkCable(_linkedCores[i].Core, _lockstep);
 			}
 
 			_disassembler = new ArmV4Disassembler();

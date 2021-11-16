@@ -120,15 +120,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 					}
 				}
 
-				for (int i = 0; i < _numCores; i++)
-				{
-					if (_clockTrigger[i])
-					{
-						_clockTrigger[i] = false;
-						MGBAHawk.LibmGBA.BizLinkTransfer(_linkedCores[i].Core, _linkedCores[_connectedTo[i]].Core);
-					}
-				}
-
 				bool exit = true;
 				for (int i = 0; i < _numCores; i++)
 				{
@@ -231,6 +222,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 					_linkedCores[i].Dispose();
 					_linkedCores[i] = null;
 				}
+
+				MGBAHawk.LibmGBA.BizDestroyLockstep(_lockstep);
+				_lockstep = IntPtr.Zero;
 
 				_numCores = 0;
 			}

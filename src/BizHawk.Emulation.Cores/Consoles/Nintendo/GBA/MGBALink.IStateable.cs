@@ -15,8 +15,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				_linkedCores[i].SaveStateBinary(writer);
 				writer.Write(_frameOverflow[i]);
 				writer.Write(_stepOverflow[i]);
-				writer.Write(_connectedTo[i]);
-				writer.Write(_clockTrigger[i]);
 			}
 			writer.Write(IsLagFrame);
 			writer.Write(LagCount);
@@ -34,8 +32,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				_linkedCores[i].LoadStateBinary(reader);
 				_frameOverflow[i] = reader.ReadInt32();
 				_stepOverflow[i] = reader.ReadInt32();
-				_connectedTo[i] = reader.ReadInt32();
-				_clockTrigger[i] = reader.ReadBoolean();
 			}
 			IsLagFrame = reader.ReadBoolean();
 			LagCount = reader.ReadInt32();
