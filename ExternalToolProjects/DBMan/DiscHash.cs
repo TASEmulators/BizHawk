@@ -72,7 +72,7 @@ namespace BizHawk.DBManTool
 			using (var outf = new StreamWriter(fpOutfile))
 			{
 
-				Dictionary<uint, string> FoundHashes = new Dictionary<uint, string>();
+				Dictionary<string, string> FoundHashes = new();
 				object olock = new object();
 
 				var todo = FindExtensionsRecurse(indir, ".CUE");
@@ -101,14 +101,14 @@ namespace BizHawk.DBManTool
 					{
 						var hasher = new DiscHasher(disc);
 
-						uint bizHashId = hasher.Calculate_PSX_BizIDHash();
+						var bizHashId = hasher.Calculate_PSX_BizIDHash();
 						uint redumpHash = hasher.Calculate_PSX_RedumpHash();
 
 						lock (olock)
 						{
 							progress++;
-							Console.WriteLine("{0}/{1} [{2:X8}] {3}", progress, todo.Count, bizHashId, Path.GetFileNameWithoutExtension(fiCue));
-							outf.WriteLine("bizhash:{0:X8} datahash:{1:X8} //{2}", bizHashId, redumpHash, name);
+							Console.WriteLine("{0}/{1} [{2}] {3}", progress, todo.Count, bizHashId, Path.GetFileNameWithoutExtension(fiCue));
+							outf.WriteLine("bizhash:{0} datahash:{1:X8} //{2}", bizHashId, redumpHash, name);
 							if (FoundHashes.ContainsKey(bizHashId))
 							{
 								Console.WriteLine("--> COLLISION WITH: {0}", FoundHashes[bizHashId]);
