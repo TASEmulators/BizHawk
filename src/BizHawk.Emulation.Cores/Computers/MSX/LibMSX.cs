@@ -71,6 +71,22 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 		public static extern uint MSX_get_audio(IntPtr core, int[] aud_buf,  ref uint n_samp);
 
 		/// <summary>
+		/// get messages length
+		/// </summary>
+		/// <param name="core">opaque state pointer</param>
+		[DllImport("MSXHawk.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern int MSX_getmessagelength(IntPtr core);
+
+		/// <summary>
+		/// get messages from the core
+		/// </summary>
+		/// <param name="core">opaque state pointer</param>
+		/// <param name="h">pointer to const char *</param>
+		/// <param name="l">length of message to fetch</param>
+		[DllImport("MSXHawk.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void MSX_getmessage(IntPtr core, StringBuilder h, int l);
+
+		/// <summary>
 		/// Save State
 		/// </summary>
 		/// <param name="core">opaque state pointer</param>

@@ -44,6 +44,9 @@ namespace MSXHawk
 
 		bool FrameAdvance(uint8_t controller_1, uint8_t controller_2, uint8_t* kb_rows_ptr, bool render, bool rendersound)
 		{
+			//MemMap.Mem_text_1.resize(2);
+			//MemMap.Mem_text_1 = " ";
+			
 			if ((MemMap.psg_pntr->Register[0xF] & 0x40) > 0)
 			{
 				MemMap.psg_pntr->Register[0xE] = controller_2;
@@ -159,6 +162,17 @@ namespace MSXHawk
 			n_samp[0] = psg.num_samples;
 
 			return psg.sampleclock;
+		}
+
+		int GetMessageLength() 
+		{
+			return (int)(MemMap.Mem_text_1.length() + 1);
+		}
+
+		// the copy length l must be supplied ahead of time from GetMessageLength
+		void GetMessage(char* h, int l)
+		{
+			memcpy(h, MemMap.Mem_text_1.c_str(), l);	
 		}
 
 		#pragma region State Save / Load

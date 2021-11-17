@@ -50,11 +50,20 @@ namespace MSXHawk
 
 		};
 
+		char msg[1000] = {};
+		int msg_len = 0;
+
+		string Mem_text_1 = " ";
+
 		uint8_t HardwareRead(uint32_t value);
 
 		void HardwareWrite(uint32_t addr, uint8_t value);
 
 		void remap();
+
+		uint8_t* remap_rom1(uint32_t, uint32_t);
+
+		uint8_t* remap_rom2(uint32_t, uint32_t);
 
 		// NOTE: only called from source when both are available and of correct size (0x4000)
 		void Load_BIOS(uint8_t* bios, uint8_t* basic) 
@@ -74,11 +83,24 @@ namespace MSXHawk
 			memcpy(rom_1, ext_rom_1, ext_rom_size_1);
 			memcpy(rom_2, ext_rom_2, ext_rom_size_2);
 
-			rom_size_1 = ext_rom_size_1 / 0x4000;
+			rom_size_1 = ext_rom_size_1 / 0x400 - 1;
 			rom_mapper_1 = ext_rom_mapper_1;
 
-			rom_size_2 = ext_rom_size_2 / 0x4000;
+			rom_size_2 = ext_rom_size_2 / 0x400 - 1;
 			rom_mapper_2 = ext_rom_mapper_2;
+
+			if (rom_mapper_1 == 1)
+			{
+				rom1_konami_page_1 = 1;
+				rom1_konami_page_2 = 2;
+				rom1_konami_page_3 = 3;
+			}
+			if (rom_mapper_2 == 1)
+			{
+				rom2_konami_page_1 = 1;
+				rom2_konami_page_2 = 2;
+				rom2_konami_page_3 = 3;
+			}
 
 			// default memory map setup
 			PortA8 = 0;
@@ -86,9 +108,26 @@ namespace MSXHawk
 			remap();
 		}
 
+		// mapper support and variables
+		uint8_t slot_0_has_rom, slot_1_has_rom, slot_2_has_rom, slot_3_has_rom;
+		uint8_t rom1_konami_page_1, rom1_konami_page_2, rom1_konami_page_3;
+		uint8_t rom2_konami_page_1, rom2_konami_page_2, rom2_konami_page_3;
+
 		void MemoryWrite(uint32_t addr, uint8_t value)
 		{
+			if (rom_mapper_1 == 1) 
+			{
+				if (addr >= 0x6000 && addr < 0x8000 && slot_1_has_rom == 1) { rom1_konami_page_1 = (uint8_t)(value & rom_size_1); remap(); }
+				if (addr >= 0x8000 && addr < 0xA000 && slot_2_has_rom == 1) { rom1_konami_page_2 = (uint8_t)(value & rom_size_1); remap(); }
+				if (addr >= 0xA000 && addr < 0xC000 && slot_2_has_rom == 1) { rom1_konami_page_3 = (uint8_t)(value & rom_size_1); remap(); }
+			}
 
+			if (rom_mapper_2 == 1)
+			{
+				if (addr >= 0x6000 && addr < 0x8000 && slot_1_has_rom == 2) { rom2_konami_page_1 = (uint8_t)(value & rom_size_2); remap(); }
+				if (addr >= 0x8000 && addr < 0xA000 && slot_2_has_rom == 2) { rom2_konami_page_2 = (uint8_t)(value & rom_size_2); remap(); }
+				if (addr >= 0xA000 && addr < 0xC000 && slot_2_has_rom == 2) { rom2_konami_page_3 = (uint8_t)(value & rom_size_2); remap(); }
+			}
 		}
 
 		#pragma region State Save / Load
@@ -105,6 +144,18 @@ namespace MSXHawk
 			*saver = reg_FFFD; saver++;
 			*saver = reg_FFFE; saver++;
 			*saver = reg_FFFF; saver++;
+
+			*saver = slot_0_has_rom; saver++;
+			*saver = slot_1_has_rom; saver++;
+			*saver = slot_2_has_rom; saver++;
+			*saver = slot_3_has_rom; saver++;
+
+			*saver = rom1_konami_page_1; saver++;
+			*saver = rom1_konami_page_2; saver++;
+			*saver = rom1_konami_page_3; saver++;
+			*saver = rom2_konami_page_1; saver++;
+			*saver = rom2_konami_page_2; saver++;
+			*saver = rom2_konami_page_3; saver++;
 
 			std::memcpy(saver, &ram, 0x10000); saver += 0x10000;
 			std::memcpy(saver, &cart_ram, 0x8000); saver += 0x8000;
@@ -124,6 +175,18 @@ namespace MSXHawk
 			reg_FFFD = *loader; loader++;
 			reg_FFFE = *loader; loader++;
 			reg_FFFF = *loader; loader++;
+
+			slot_0_has_rom = *loader; loader++;
+			slot_1_has_rom = *loader; loader++;
+			slot_2_has_rom = *loader; loader++;
+			slot_3_has_rom = *loader; loader++;
+
+			rom1_konami_page_1 = *loader; loader++;
+			rom1_konami_page_2 = *loader; loader++;
+			rom1_konami_page_3 = *loader; loader++;
+			rom2_konami_page_1 = *loader; loader++;
+			rom2_konami_page_2 = *loader; loader++;
+			rom2_konami_page_3 = *loader; loader++;
 
 			std::memcpy(&ram, loader, 0x10000); loader += 0x10000;
 			std::memcpy(&cart_ram, loader, 0x8000); loader += 0x8000;

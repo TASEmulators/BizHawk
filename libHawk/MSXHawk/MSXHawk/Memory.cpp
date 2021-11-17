@@ -96,6 +96,7 @@ namespace MSXHawk
 	{
 		if ((PortA8 & 3) == 0) 
 		{
+			slot_0_has_rom = 0;
 			for (uint32_t i = 0; i < 16; i++)
 			{
 				cpu_pntr->MemoryMap[i] = &bios_rom[(0x400 * i)];
@@ -104,22 +105,25 @@ namespace MSXHawk
 		}
 		else if ((PortA8 & 3) == 1)
 		{
+			slot_0_has_rom = 1;
 			for (uint32_t i = 0; i < 16; i++)
 			{
-				cpu_pntr->MemoryMap[i] = &rom_1[(0x400 * i)];
-				cpu_pntr->MemoryMapMask[i] = 0;
+				cpu_pntr->MemoryMap[i] = remap_rom1(0, i);
+				cpu_pntr->MemoryMapMask[i] = 0;	
 			}
 		}
 		else if ((PortA8 & 3) == 2)
 		{
+			slot_0_has_rom = 2;
 			for (uint32_t i = 0; i < 16; i++)
 			{
-				cpu_pntr->MemoryMap[i] = &rom_2[(0x400 * i)];
+				cpu_pntr->MemoryMap[i] = remap_rom2(0, i);
 				cpu_pntr->MemoryMapMask[i] = 0;
 			}
 		}
 		else if ((PortA8 & 3) == 3)
 		{
+			slot_0_has_rom = 0;
 			for (uint32_t i = 0; i < 16; i++)
 			{
 				cpu_pntr->MemoryMap[i] = &ram[(0x400 * i)];
@@ -129,6 +133,7 @@ namespace MSXHawk
 
 		if (((PortA8 >> 2) & 3) == 0)
 		{
+			slot_1_has_rom = 0;
 			for (uint32_t i = 0; i < 16; i++)
 			{
 				cpu_pntr->MemoryMap[i + 16] = &basic_rom[(0x400 * i)];
@@ -137,22 +142,25 @@ namespace MSXHawk
 		}
 		else if (((PortA8 >> 2) & 3) == 1)
 		{
+			slot_1_has_rom = 1;
 			for (uint32_t i = 0; i < 16; i++)
 			{
-				cpu_pntr->MemoryMap[i + 16] = &rom_1[0x4000 + (0x400 * i)];
-				cpu_pntr->MemoryMapMask[i + 16] = 0;
+				cpu_pntr->MemoryMap[i + 16] = remap_rom1(0x4000, i);
+				cpu_pntr->MemoryMapMask[i + 16] = 0;	
 			}
 		}
 		else if (((PortA8 >> 2) & 3) == 2)
 		{
+			slot_1_has_rom = 2;
 			for (uint32_t i = 0; i < 16; i++)
 			{
-				cpu_pntr->MemoryMap[i + 16] = &rom_2[0x4000 + (0x400 * i)];
+				cpu_pntr->MemoryMap[i + 16] = remap_rom2(0x4000, i);
 				cpu_pntr->MemoryMapMask[i + 16] = 0;
 			}
 		}
 		else if (((PortA8 >> 2) & 3) == 3)
 		{
+			slot_1_has_rom = 0;
 			for (uint32_t i = 0; i < 16; i++)
 			{
 				cpu_pntr->MemoryMap[i + 16] = &ram[0x4000 + (0x400 * i)];
@@ -162,6 +170,7 @@ namespace MSXHawk
 
 		if (((PortA8 >> 4) & 3) == 0)
 		{
+			slot_2_has_rom = 0;
 			for (uint32_t i = 0; i < 16; i++)
 			{
 				cpu_pntr->MemoryMap[i + 32] = &unmapped[0];
@@ -170,22 +179,25 @@ namespace MSXHawk
 		}
 		else if (((PortA8 >> 4) & 3) == 1)
 		{
+			slot_2_has_rom = 1;
 			for (uint32_t i = 0; i < 16; i++)
 			{
-				cpu_pntr->MemoryMap[i + 32] = &rom_1[0x8000 + (0x400 * i)];
-				cpu_pntr->MemoryMapMask[i + 32] = 0;
+				cpu_pntr->MemoryMap[i + 32] = remap_rom1(0x8000, i);
+				cpu_pntr->MemoryMapMask[i + 32] = 0;	
 			}
 		}
 		else if (((PortA8 >> 4) & 3) == 2)
 		{
+			slot_2_has_rom = 2;
 			for (uint32_t i = 0; i < 16; i++)
 			{
-				cpu_pntr->MemoryMap[i + 32] = &rom_2[0x8000 + (0x400 * i)];
+				cpu_pntr->MemoryMap[i + 32] = remap_rom2(0x8000, i);
 				cpu_pntr->MemoryMapMask[i + 32] = 0;
 			}
 		}
 		else if (((PortA8 >> 4) & 3) == 3)
 		{
+			slot_2_has_rom = 0;
 			for (uint32_t i = 0; i < 16; i++)
 			{
 				cpu_pntr->MemoryMap[i + 32] = &ram[0x8000 + (0x400 * i)];
@@ -195,6 +207,7 @@ namespace MSXHawk
 
 		if (((PortA8 >> 6) & 3) == 0)
 		{
+			slot_3_has_rom = 0;
 			for (uint32_t i = 0; i < 16; i++)
 			{
 				cpu_pntr->MemoryMap[i + 48] = &unmapped[0];
@@ -203,27 +216,156 @@ namespace MSXHawk
 		}
 		else if (((PortA8 >> 6) & 3) == 1)
 		{
+			slot_3_has_rom = 1;
 			for (uint32_t i = 0; i < 16; i++)
 			{
-				cpu_pntr->MemoryMap[i + 48] = &rom_1[0xC000 + (0x400 * i)];
+				cpu_pntr->MemoryMap[i + 48] = remap_rom1(0xC000, i);
 				cpu_pntr->MemoryMapMask[i + 48] = 0;
 			}
 		}
 		else if (((PortA8 >> 6) & 3) == 2)
 		{
+			slot_3_has_rom = 2;
 			for (uint32_t i = 0; i < 16; i++)
 			{
-				cpu_pntr->MemoryMap[i + 48] = &rom_2[0xC000 + (0x400 * i)];
+				cpu_pntr->MemoryMap[i + 48] = remap_rom2(0xC000, i);
 				cpu_pntr->MemoryMapMask[i + 48] = 0;
 			}
 		}
 		else if (((PortA8 >> 6) & 3) == 3)
 		{
+			slot_3_has_rom = 0;
 			for (uint32_t i = 0; i < 16; i++)
 			{
 				cpu_pntr->MemoryMap[i + 48] = &ram[0xC000 + (0x400 * i)];
 				cpu_pntr->MemoryMapMask[i + 48] = 0xFF;
 			}
+		}
+	}
+
+	uint8_t* MemoryManager::remap_rom1(uint32_t base_addr, uint32_t segment)
+	{
+		if (rom_mapper_1 == 0) 
+		{
+			return &rom_1[base_addr + (0x400 * segment)];
+		}
+		else if (rom_mapper_1 == 1) // basic konami mapper
+		{
+			if (base_addr == 0)
+			{
+				if (segment < 8)
+				{
+					return &rom_1[rom1_konami_page_2 * 0x2000 + (0x400 * segment)];
+				}
+				else
+				{
+					segment -= 8;
+					return &rom_1[rom1_konami_page_3 * 0x2000 + (0x400 * segment)];
+				}
+			}
+			else if (base_addr == 0x4000) 
+			{
+				if (segment < 8) 
+				{
+					return &rom_1[(0x400 * segment)];
+				}
+				else 
+				{
+					segment -= 8;
+					return &rom_1[rom1_konami_page_1 * 0x2000 + (0x400 * segment)];
+				}
+			}
+			else if (base_addr == 0x8000)
+			{
+				if (segment < 8)
+				{
+					return &rom_1[rom1_konami_page_2 * 0x2000 + (0x400 * segment)];
+				}
+				else
+				{
+					segment -= 8;
+					return &rom_1[rom1_konami_page_3 * 0x2000 + (0x400 * segment)];
+				}
+			}
+			else
+			{
+				if (segment < 8)
+				{
+					return &rom_1[(0x400 * segment)];
+				}
+				else
+				{
+					segment -= 8;
+					return &rom_1[rom1_konami_page_1 * 0x2000 + (0x400 * segment)];
+				}
+			}		
+		}
+		else 
+		{
+			return &unmapped[0];
+		}
+	}
+
+	uint8_t* MemoryManager::remap_rom2(uint32_t base_addr, uint32_t segment)
+	{
+		if (rom_mapper_2 == 0)
+		{
+			return &rom_2[base_addr + (0x400 * segment)];
+		}
+		else if (rom_mapper_2 == 1) // basic konami mapper
+		{
+			if (base_addr == 0)
+			{
+				if (segment < 8)
+				{
+					return &rom_2[rom2_konami_page_2 * 0x2000 + (0x400 * segment)];
+				}
+				else
+				{
+					segment -= 8;
+					return &rom_2[rom2_konami_page_3 * 0x2000 + (0x400 * segment)];
+				}
+			}
+			else if (base_addr == 0x4000)
+			{
+				if (segment < 8)
+				{
+					return &rom_2[(0x400 * segment)];
+				}
+				else
+				{
+					segment -= 8;
+					return &rom_2[rom2_konami_page_1 * 0x2000 + (0x400 * segment)];
+				}
+			}
+			else if (base_addr == 0x8000)
+			{
+				if (segment < 8)
+				{
+					return &rom_2[rom2_konami_page_2 * 0x2000 + (0x400 * segment)];
+				}
+				else
+				{
+					segment -= 8;
+					return &rom_2[rom2_konami_page_3 * 0x2000 + (0x400 * segment)];
+				}
+			}
+			else
+			{
+				if (segment < 8)
+				{
+					return &rom_2[(0x400 * segment)];
+				}
+				else
+				{
+					segment -= 8;
+					return &rom_2[rom2_konami_page_1 * 0x2000 + (0x400 * segment)];
+				}
+			}
+		}
+		else
+		{
+			return &unmapped[0];
 		}
 	}
 }

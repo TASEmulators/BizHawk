@@ -11,10 +11,7 @@ namespace MSXHawk
 {
 	void Z80A::Memory_Write(uint32_t addr, uint8_t value) 
 	{
-		if ((addr & 0xFFFF) >= 0xFFFC) 
-		{
-			mem_ctrl->MemoryWrite(addr, value);
-		}
+		mem_ctrl->MemoryWrite(addr, value);
 	}
 
 	void Z80A::HW_Write(uint32_t addr, uint8_t value)

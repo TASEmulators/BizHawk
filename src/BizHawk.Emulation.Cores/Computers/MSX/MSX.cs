@@ -15,8 +15,16 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 			Settings = (MSXSettings)settings ?? new MSXSettings();
 			SyncSettings = (MSXSyncSettings)syncSettings ?? new MSXSyncSettings();
 
-			RomData = rom;
+			RomData = new byte[rom.Length];
+			
+			for (int i = 0; i < rom.Length; i++)
+			{
+				RomData[i] = rom[i];
+			}
+
 			int size = RomData.Length;
+
+			int mapper_1 = 0;
 
 			if (RomData.Length % BankSize != 0)
 			{
@@ -24,9 +32,14 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 			}
 
 			// we want all ROMS to be multiples of 64K for easy memory mapping later
-			if (RomData.Length != 0x10000)
+			if (RomData.Length < 0x10000)
 			{
 				Array.Resize(ref RomData, 0x10000);
+			}
+			else
+			{
+				mapper_1 = 1;
+				Console.WriteLine("Konami Mapper");
 			}
 
 			// if the original was not 64 or 48 k, move it (may need to do this case by case)
@@ -53,18 +66,44 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 				}
 			}
 
-			Bios = comm.CoreFileProvider.GetFirmware(new("MSX", "bios_jp"), "BIOS Not Found, Cannot Load")
-				?? comm.CoreFileProvider.GetFirmwareOrThrow(new("MSX", "bios_test_ext"), "BIOS Not Found, Cannot Load");
-
-			//Basic = comm.CoreFileProvider.GetFirmware("MSX", "basic_test", true, "BIOS Not Found, Cannot Load");
+			// loook for combination BIOS + BASIC files first
+			byte[] loc_bios = null;
+			if (SyncSettings.Region_Setting == MSXSyncSettings.RegionType.USA)
+			{
+				loc_bios = comm.CoreFileProvider.GetFirmware(new("MSX", "bios_basic_usa"));
+			}
+			else
+			{
+				loc_bios = comm.CoreFileProvider.GetFirmwareOrThrow(new("MSX", "bios_basic_jpn"));
+			}
 			
+			// look for individual files (not implemented yet)
+			if (loc_bios == null)
+			{
+				throw new Exception("Cannot load, no BIOS files found for selected region.");
+			} 
 
-			Basic = new byte[0x4000];
+			if (loc_bios.Length == 32768)
+			{
+				Bios = new byte[0x4000];
+				Basic = new byte[0x4000];
 
+				for (int i = 0; i < 0x4000; i++)
+				{
+					Bios[i] = loc_bios[i];
+					Basic[i] = loc_bios[i + 0x4000];
+				}
+			}
+
+			//only use one rom cart for now
+			RomData2 = new byte[0x10000];
+
+			for (int i = 0; i < 0x10000; i++) { RomData2[i] = 0; }
+			
 			MSX_Pntr = LibMSX.MSX_create();
 
 			LibMSX.MSX_load_bios(MSX_Pntr, Bios, Basic);
-			LibMSX.MSX_load(MSX_Pntr, RomData, (uint)RomData.Length, 0, RomData, (uint)RomData.Length, 0);
+			LibMSX.MSX_load(MSX_Pntr, RomData, (uint)RomData.Length, mapper_1, RomData2, (uint)RomData2.Length, 0);
 
 			blip.SetRates(3579545, 44100);
 
@@ -104,7 +143,8 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 		private const int BankSize = 16384;
 
 		// ROM
-		public byte[] RomData;
+		public static byte[] RomData;
+		public static byte[] RomData2;
 
 		// Machine resources
 		private IController _controller = NullController.Instance;

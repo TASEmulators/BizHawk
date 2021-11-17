@@ -70,10 +70,21 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 				Keyboard
 			}
 
+			public enum RegionType
+			{
+				USA,
+				JPN
+			}
+
 			[DisplayName("Controller Configuration")]
 			[Description("Pick Between Controller Types")]
 			[DefaultValue(ContrType.Joystick)]
 			public ContrType Contr_Setting { get; set; }
+
+			[DisplayName("Region Configuration")]
+			[Description("Select Console Region")]
+			[DefaultValue(RegionType.USA)]
+			public RegionType Region_Setting { get; set; }
 
 
 			public MSXSyncSettings Clone()

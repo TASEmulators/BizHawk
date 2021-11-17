@@ -1,5 +1,6 @@
 ﻿using BizHawk.Emulation.Common;
 using System;
+using System.Text;
 
 namespace BizHawk.Emulation.Cores.Computers.MSX
 {
@@ -43,6 +44,13 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 			LibMSX.MSX_settracecallback(MSX_Pntr, tracecb);
 			
 			LibMSX.MSX_frame_advance(MSX_Pntr, ctrl1_byte, ctrl2_byte, kb_rows, true, true);
+			
+			/*
+			int msg_l = LibMSX.MSX_getmessagelength(MSX_Pntr);
+			StringBuilder new_msg = new StringBuilder(msg_l);
+			LibMSX.MSX_getmessage(MSX_Pntr, new_msg, msg_l - 1);
+			Console.WriteLine(new_msg);
+			*/
 
 			_frame++;
 
