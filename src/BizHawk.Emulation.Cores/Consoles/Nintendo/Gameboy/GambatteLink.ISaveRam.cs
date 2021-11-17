@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 using BizHawk.Emulation.Common;
 
@@ -6,26 +7,49 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
 	public partial class GambatteLink : ISaveRam
 	{
-		public bool SaveRamModified => L.SaveRamModified || R.SaveRamModified;
+		public bool SaveRamModified => LinkedSaveRamModified();
+
+		private bool LinkedSaveRamModified()
+		{
+			for (int i = 0; i < _numCores; i++)
+			{
+				if (_linkedCores[i].SaveRamModified)
+				{
+					return true;
+				}
+			}
+			return false;
+		}
 
 		public byte[] CloneSaveRam()
 		{
-			var lb = L.CloneSaveRam()!;
-			var rb = R.CloneSaveRam()!;
-			byte[] ret = new byte[lb.Length + rb.Length];
-			Buffer.BlockCopy(lb, 0, ret, 0, lb.Length);
-			Buffer.BlockCopy(rb, 0, ret, lb.Length, rb.Length);
+			var linkedBuffers = new List<byte[]>();
+			int len = 0;
+			for (int i = 0; i < _numCores; i++)
+			{
+				linkedBuffers.Add(_linkedCores[i].CloneSaveRam()!);
+				len += linkedBuffers[i].Length;
+			}
+			byte[] ret = new byte[len];
+			int pos = 0;
+			for (int i = 0; i < _numCores; i++)
+			{
+				Buffer.BlockCopy(linkedBuffers[i], 0, ret, pos, linkedBuffers[i].Length);
+				pos += linkedBuffers[i].Length;
+			}
 			return ret;
 		}
 
 		public void StoreSaveRam(byte[] data)
 		{
-			var lb = new byte[L.CloneSaveRam()!.Length];
-			var rb = new byte[R.CloneSaveRam()!.Length];
-			Buffer.BlockCopy(data, 0, lb, 0, lb.Length);
-			Buffer.BlockCopy(data, lb.Length, rb, 0, rb.Length);
-			L.StoreSaveRam(lb);
-			R.StoreSaveRam(rb);
+			int pos = 0;
+			for (int i = 0; i < _numCores; i++)
+			{
+				var b = new byte[_linkedCores[i].CloneSaveRam()!.Length];
+				Buffer.BlockCopy(data, pos, b, 0, b.Length);
+				pos += b.Length;
+				_linkedCores[i].StoreSaveRam(b);
+			}
 		}
 	}
 }

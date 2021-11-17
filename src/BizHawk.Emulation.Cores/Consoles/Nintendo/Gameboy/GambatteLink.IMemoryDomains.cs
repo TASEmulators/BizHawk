@@ -12,20 +12,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		{
 			var mm = new List<MemoryDomain>();
 
-			foreach (var md in L.MemoryDomains)
+			for (int i = 0; i < _numCores; i++)
 			{
-				mm.Add(new WrappedMemoryDomain("L " + md.Name, md));
-			}
-
-			foreach (var md in R.MemoryDomains)
-			{
-				mm.Add(new WrappedMemoryDomain("R " + md.Name, md));
+				foreach (var md in _linkedCores[i].AsMemoryDomains() as MemoryDomainList)
+				{
+					mm.Add(new WrappedMemoryDomain($"P{i + 1} " + md.Name, md));
+				}
 			}
 
 			_memoryDomains = new MemoryDomainList(mm);
-			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(_memoryDomains);
+			_serviceProvider.Register<IMemoryDomains>(_memoryDomains);
+			((MemoryDomainList)this.AsMemoryDomains()).SystemBus = _linkedCores[P1].AsMemoryDomains().SystemBus;
 		}
-		
+
 		// todo: clean this up
 		private class WrappedMemoryDomain : MemoryDomain
 		{

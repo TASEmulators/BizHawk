@@ -8,15 +8,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 	{
 		void ICodeDataLogger.SetCDL(ICodeDataLog cdl)
 		{
-			((ICodeDataLogger)L).SetCDL(cdl);
+			((ICodeDataLogger)_linkedCores[P1]).SetCDL(cdl);
 		}
 
 		void ICodeDataLogger.NewCDL(ICodeDataLog cdl)
 		{
-			((ICodeDataLogger)L).NewCDL(cdl);
+			((ICodeDataLogger)_linkedCores[P1]).NewCDL(cdl);
 		}
 
-		void ICodeDataLogger.DisassembleCDL(Stream s, ICodeDataLog cdl) { ((ICodeDataLogger)L).DisassembleCDL(s, cdl); }
+		void ICodeDataLogger.DisassembleCDL(Stream s, ICodeDataLog cdl) { ((ICodeDataLogger)_linkedCores[P1]).DisassembleCDL(s, cdl); }
 
 	}
 }

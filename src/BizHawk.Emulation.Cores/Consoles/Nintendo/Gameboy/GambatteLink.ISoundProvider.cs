@@ -35,44 +35,41 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		}
 
 		// i tried using the left and right buffers and then mixing them together... it was kind of a mess of code, and slow
-		private BlipBuffer _blipLeft;
-		private BlipBuffer _blipRight;
+		private BlipBuffer[] _linkedBlips;
 
-		private readonly short[] LeftBuffer = new short[(35112 + 2064) * 2];
-		private readonly short[] RightBuffer = new short[(35112 + 2064) * 2];
+		private readonly short[][] _linkedSoundBuffers;
 
 		private readonly short[] SampleBuffer = new short[1536];
 		private int _sampleBufferContains = 0;
 
-		private int _latchLeft;
-		private int _latchRight;
+		private readonly int[] _linkedLatches;
 
 		private unsafe void PrepSound()
 		{
-			fixed (short* sl = LeftBuffer, sr = RightBuffer)
+			fixed (short* sl = _linkedSoundBuffers[0], sr = _linkedSoundBuffers[1])
 			{
 				for (uint i = 0; i < SampPerFrame * 2; i += 2)
 				{
 					int s = (sl[i] + sl[i + 1]) / 2;
-					if (s != _latchLeft)
+					if (s != _linkedLatches[0])
 					{
-						_blipLeft.AddDelta(i, s - _latchLeft);
-						_latchLeft = s;
+						_linkedBlips[0].AddDelta(i, s - _linkedLatches[0]);
+						_linkedLatches[0] = s;
 					}
 
 					s = (sr[i] + sr[i + 1]) / 2;
-					if (s != _latchRight)
+					if (s != _linkedLatches[1])
 					{
-						_blipRight.AddDelta(i, s - _latchRight);
-						_latchRight = s;
+						_linkedBlips[1].AddDelta(i, s - _linkedLatches[1]);
+						_linkedLatches[1] = s;
 					}
 				}
 			}
 
-			_blipLeft.EndFrame(SampPerFrame * 2);
-			_blipRight.EndFrame(SampPerFrame * 2);
-			int count = _blipLeft.SamplesAvailable();
-			if (count != _blipRight.SamplesAvailable())
+			_linkedBlips[0].EndFrame(SampPerFrame * 2);
+			_linkedBlips[1].EndFrame(SampPerFrame * 2);
+			int count = _linkedBlips[0].SamplesAvailable();
+			if (count != _linkedBlips[1].SamplesAvailable())
 			{
 				throw new Exception("Sound problem?");
 			}
@@ -81,8 +78,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			// and if only one channel is muted, in subsequent frames we can be off by a sample or two
 			// not a big deal, but we didn't account for it.  so we actually complete the entire
 			// audio read and then stamp it out if muted.
-			_blipLeft.ReadSamplesLeft(SampleBuffer, count);
-			if (L.Muted)
+			_linkedBlips[0].ReadSamplesLeft(SampleBuffer, count);
+			if (_settings._linkedSettings[0].Muted)
 			{
 				fixed (short* p = SampleBuffer)
 				{
@@ -93,8 +90,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				}
 			}
 
-			_blipRight.ReadSamplesRight(SampleBuffer, count);
-			if (R.Muted)
+			_linkedBlips[1].ReadSamplesRight(SampleBuffer, count);
+			if (_settings._linkedSettings[1].Muted)
 			{
 				fixed (short* p = SampleBuffer)
 				{

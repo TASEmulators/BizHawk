@@ -6,26 +6,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
 	public partial class GambatteLink : IEmulator, IBoardInfo
 	{
-		public IEmulatorServiceProvider ServiceProvider { get; }
+		public IEmulatorServiceProvider ServiceProvider => _serviceProvider;
 
-		public ControllerDefinition ControllerDefinition => DualGbController;
+		public ControllerDefinition ControllerDefinition => GBLinkController;
 
 		public bool FrameAdvance(IController controller, bool render, bool rendersound = true)
 		{
-			LCont.Clear();
-			RCont.Clear();
+			for (int i = 0; i < _numCores; i++)
+			{
+				_linkedConts[i].Clear();
+			}
 
-			foreach (var s in DualGbController.BoolButtons)
+			foreach (var s in GBLinkController.BoolButtons)
 			{
 				if (controller.IsPressed(s))
 				{
-					if (s.Contains("P1 "))
+					for (int i = 0; i < _numCores; i++)
 					{
-						LCont.Set(s.Replace("P1 ", ""));
-					}
-					else if (s.Contains("P2 "))
-					{
-						RCont.Set(s.Replace("P2 ", ""));
+						if (s.Contains($"P{i + 1} "))
+						{
+							_linkedConts[i].Set(s.Replace($"P{i + 1} ", ""));
+						}
 					}
 				}
 			}
@@ -39,8 +40,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			_cablediscosignal = cablediscosignalNew;
 
-			L.FrameAdvancePrep(LCont);
-			R.FrameAdvancePrep(RCont);
+			for (int i = 0; i < _numCores; i++)
+			{
+				_linkedCores[i].FrameAdvancePrep(_linkedConts[i]);
+			}
 
 			unsafe
 			{
@@ -50,12 +53,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 					int* rightfbuff = leftfbuff + 160;
 					const int Pitch = 160 * 2;
 
-					fixed (short* leftsbuff = LeftBuffer, rightsbuff = RightBuffer)
+					fixed (short* leftsbuff = _linkedSoundBuffers[0], rightsbuff = _linkedSoundBuffers[1])
 					{
 						const int Step = 32; // could be 1024 for GB
 
-						int nL = _overflowL;
-						int nR = _overflowR;
+						int nL = _linkedOverflow[0];
+						int nR = _linkedOverflow[1];
 
 						// slowly step our way through the frame, while continually checking and resolving link cable status
 						for (int target = 0; target < SampPerFrame;)
@@ -70,7 +73,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 							while (nL < target)
 							{
 								uint nsamp = (uint)(target - nL);
-								if (LibGambatte.gambatte_runfor(L.GambatteState, leftfbuff, Pitch, leftsbuff + (nL * 2), ref nsamp) > 0)
+								if (LibGambatte.gambatte_runfor(_linkedCores[0].GambatteState, leftfbuff, Pitch, leftsbuff + (nL * 2), ref nsamp) > 0)
 								{
 									for (int i = 0; i < 144; i++)
 									{
@@ -84,7 +87,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 							while (nR < target)
 							{
 								uint nsamp = (uint)(target - nR);
-								if (LibGambatte.gambatte_runfor(R.GambatteState, rightfbuff, Pitch, rightsbuff + (nR * 2), ref nsamp) > 0)
+								if (LibGambatte.gambatte_runfor(_linkedCores[1].GambatteState, rightfbuff, Pitch, rightsbuff + (nR * 2), ref nsamp) > 0)
 								{
 									for (int i = 0; i < 144; i++)
 									{
@@ -101,28 +104,28 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 								continue;
 							}
 
-							if (LibGambatte.gambatte_linkstatus(L.GambatteState, 256) != 0) // ClockTrigger
+							if (LibGambatte.gambatte_linkstatus(_linkedCores[0].GambatteState, 256) != 0) // ClockTrigger
 							{
-								LibGambatte.gambatte_linkstatus(L.GambatteState, 257); // ack
-								int lo = LibGambatte.gambatte_linkstatus(L.GambatteState, 258); // GetOut
-								int ro = LibGambatte.gambatte_linkstatus(R.GambatteState, 258);
-								LibGambatte.gambatte_linkstatus(L.GambatteState, ro & 0xff); // ShiftIn
-								LibGambatte.gambatte_linkstatus(R.GambatteState, lo & 0xff); // ShiftIn
+								LibGambatte.gambatte_linkstatus(_linkedCores[0].GambatteState, 257); // ack
+								int lo = LibGambatte.gambatte_linkstatus(_linkedCores[0].GambatteState, 258); // GetOut
+								int ro = LibGambatte.gambatte_linkstatus(_linkedCores[1].GambatteState, 258);
+								LibGambatte.gambatte_linkstatus(_linkedCores[0].GambatteState, ro & 0xff); // ShiftIn
+								LibGambatte.gambatte_linkstatus(_linkedCores[1].GambatteState, lo & 0xff); // ShiftIn
 							}
 
-							if (LibGambatte.gambatte_linkstatus(R.GambatteState, 256) != 0) // ClockTrigger
+							if (LibGambatte.gambatte_linkstatus(_linkedCores[1].GambatteState, 256) != 0) // ClockTrigger
 							{
-								LibGambatte.gambatte_linkstatus(R.GambatteState, 257); // ack
-								int lo = LibGambatte.gambatte_linkstatus(L.GambatteState, 258); // GetOut
-								int ro = LibGambatte.gambatte_linkstatus(R.GambatteState, 258);
-								LibGambatte.gambatte_linkstatus(L.GambatteState, ro & 0xff); // ShiftIn
-								LibGambatte.gambatte_linkstatus(R.GambatteState, lo & 0xff); // ShiftIn
+								LibGambatte.gambatte_linkstatus(_linkedCores[1].GambatteState, 257); // ack
+								int lo = LibGambatte.gambatte_linkstatus(_linkedCores[0].GambatteState, 258); // GetOut
+								int ro = LibGambatte.gambatte_linkstatus(_linkedCores[1].GambatteState, 258);
+								LibGambatte.gambatte_linkstatus(_linkedCores[0].GambatteState, ro & 0xff); // ShiftIn
+								LibGambatte.gambatte_linkstatus(_linkedCores[1].GambatteState, lo & 0xff); // ShiftIn
 							}
 						}
 
-						_overflowL = nL - SampPerFrame;
-						_overflowR = nR - SampPerFrame;
-						if (_overflowL < 0 || _overflowR < 0)
+						_linkedOverflow[0] = nL - SampPerFrame;
+						_linkedOverflow[1] = nR - SampPerFrame;
+						if (_linkedOverflow[0] < 0 || _linkedOverflow[1] < 0)
 						{
 							throw new Exception("Timing problem?");
 						}
@@ -133,22 +136,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 						}
 
 						// copy extra samples back to beginning
-						for (int i = 0; i < _overflowL * 2; i++)
+						for (int i = 0; i < _linkedOverflow[0] * 2; i++)
 						{
-							LeftBuffer[i] = LeftBuffer[i + (SampPerFrame * 2)];
+							_linkedSoundBuffers[0][i] = _linkedSoundBuffers[0][i + (SampPerFrame * 2)];
 						}
 
-						for (int i = 0; i < _overflowR * 2; i++)
+						for (int i = 0; i < _linkedOverflow[1] * 2; i++)
 						{
-							RightBuffer[i] = RightBuffer[i + (SampPerFrame * 2)];
+							_linkedSoundBuffers[1][i] = _linkedSoundBuffers[1][i + (SampPerFrame * 2)];
 						}
 					}
 				}
 			}
 
-			L.FrameAdvancePost();
-			R.FrameAdvancePost();
-			IsLagFrame = L.IsLagFrame && R.IsLagFrame;
+			IsLagFrame = true;
+
+			for (int i = 0; i < _numCores; i++)
+			{
+				_linkedCores[i].FrameAdvancePost();
+				IsLagFrame &= _linkedCores[i].IsLagFrame;
+			}
+
 			if (IsLagFrame)
 			{
 				LagCount++;
@@ -163,34 +171,55 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public string SystemId => VSystemID.Raw.DGB;
 
-		public bool DeterministicEmulation => L.DeterministicEmulation && R.DeterministicEmulation;
+		public bool DeterministicEmulation => LinkedDeterministicEmulation();
 
-		public string BoardName => L.BoardName + '|' + R.BoardName;
+		private bool LinkedDeterministicEmulation()
+		{
+			bool deterministicEmulation = true;
+			for (int i = 0; i < _numCores; i++)
+			{
+				deterministicEmulation &= _linkedCores[i].DeterministicEmulation;
+			}
+			return deterministicEmulation;
+		}
+
+		public string BoardName => LinkedBoardName();
+
+		private string LinkedBoardName()
+		{
+			string boardName = "";
+			for (int i = 0; i < _numCores; i++)
+			{
+				boardName += _linkedCores[i].BoardName + "|";
+			}
+			return boardName.Remove(boardName.Length - 1);
+		}
 
 		public void ResetCounters()
 		{
 			Frame = 0;
 			LagCount = 0;
 			IsLagFrame = false;
+
+			for (int i = 0; i < _numCores; i++)
+			{
+				_linkedOverflow[i] = 0;
+			}
 		}
 
 		public void Dispose()
 		{
-			if (!_disposed)
+			if (_numCores > 0)
 			{
-				L.Dispose();
-				L = null;
+				for (int i = 0; i < _numCores; i++)
+				{
+					_linkedCores[i].Dispose();
+					_linkedCores[i] = null;
+					_linkedBlips[i].Dispose();
+					_linkedBlips[i] = null;
+				}
 
-				R.Dispose();
-				R = null;
-
-				_blipLeft.Dispose();
-				_blipLeft = null;
-
-				_blipRight.Dispose();
-				_blipRight = null;
-
-				_disposed = true;
+				_numCores = 0;
 			}
 		}
 	}

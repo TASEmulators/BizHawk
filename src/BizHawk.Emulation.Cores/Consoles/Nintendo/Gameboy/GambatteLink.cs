@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 using BizHawk.Emulation.Common;
 
@@ -12,26 +13,38 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		[CoreConstructor(VSystemID.Raw.DGB)]
 		public GambatteLink(CoreLoadParameters<GambatteLinkSettings, GambatteLinkSyncSettings> lp)
 		{
-			if (lp.Roms.Count != 2)
+			if (lp.Roms.Count < MIN_PLAYERS || lp.Roms.Count > MAX_PLAYERS)
 				throw new InvalidOperationException("Wrong number of roms");
 
-			ServiceProvider = new BasicServiceProvider(this);
-			GambatteLinkSettings linkSettings = lp.Settings ?? new GambatteLinkSettings();
-			GambatteLinkSyncSettings linkSyncSettings = lp.SyncSettings ?? new GambatteLinkSyncSettings();
+			_numCores = lp.Roms.Count;
 
-			L = new Gameboy(lp.Comm, lp.Roms[0].Game, lp.Roms[0].RomData, linkSettings.L, linkSyncSettings.L, lp.DeterministicEmulationRequested);
-			R = new Gameboy(lp.Comm, lp.Roms[1].Game, lp.Roms[1].RomData, linkSettings.R, linkSyncSettings.R, lp.DeterministicEmulationRequested);
+			_serviceProvider = new BasicServiceProvider(this);
+			_settings = lp.Settings ?? new GambatteLinkSettings();
+			_syncSettings = lp.SyncSettings ?? new GambatteLinkSyncSettings();
 
-			// connect link cable
-			LibGambatte.gambatte_linkstatus(L.GambatteState, 259);
-			LibGambatte.gambatte_linkstatus(R.GambatteState, 259);
+			_linkedCores = new Gameboy[_numCores];
+			_linkedConts = new SaveController[_numCores];
+			_linkedSoundBuffers = new short[_numCores][];
+			_linkedBlips = new BlipBuffer[_numCores];
+			_linkedLatches = new int[_numCores];
+			_linkedOverflow = new int[_numCores];
 
-			L.ConnectInputCallbackSystem(_inputCallbacks);
-			R.ConnectInputCallbackSystem(_inputCallbacks);
-			L.ConnectMemoryCallbackSystem(_memorycallbacks);
-			R.ConnectMemoryCallbackSystem(_memorycallbacks);
+			RomDetails = "";
 
-			RomDetails = "LEFT:\r\n" + L.RomDetails + "RIGHT:\r\n" + R.RomDetails;
+			for (int i = 0; i < _numCores; i++)
+			{
+				_linkedCores[i] = new Gameboy(lp.Comm, lp.Roms[i].Game, lp.Roms[i].RomData, _settings._linkedSettings[i], _syncSettings._linkedSyncSettings[i], lp.DeterministicEmulationRequested);
+				LibGambatte.gambatte_linkstatus(_linkedCores[i].GambatteState, 259); // connect link cable
+				_linkedCores[i].ConnectInputCallbackSystem(_inputCallbacks);
+				_linkedCores[i].ConnectMemoryCallbackSystem(_memorycallbacks);
+				_linkedConts[i] = new SaveController(Gameboy.CreateControllerDefinition(false, false));
+				_linkedSoundBuffers[i] = new short[(SampPerFrame + 2064) * 2];
+				_linkedBlips[i] = new BlipBuffer(1024);
+				_linkedBlips[i].SetRates(2097152 * 2, 44100);
+				_linkedOverflow[i] = 0;
+				_linkedLatches[i] = 0;
+				RomDetails += $"P{i + 1}:\r\n" + _linkedCores[i].RomDetails;
+			}
 
 			LinkConnected = true;
 
@@ -39,13 +52,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			LagCount = 0;
 			IsLagFrame = false;
 
-			_blipLeft = new BlipBuffer(1024);
-			_blipRight = new BlipBuffer(1024);
-			_blipLeft.SetRates(2097152 * 2, 44100);
-			_blipRight.SetRates(2097152 * 2, 44100);
+			FrameBuffer = CreateVideoBuffer();
+			VideoBuffer = CreateVideoBuffer();
+
+			GBLinkController = CreateControllerDefinition();
 
 			SetMemoryDomains();
 		}
+
+		private readonly BasicServiceProvider _serviceProvider;
 
 		public string RomDetails { get; }
 
@@ -55,14 +70,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			set => _cableconnected = value;
 		}
 
-		private bool _disposed = false;
+		private int _numCores = 0;
 
-		private Gameboy L;
-		private Gameboy R;
+		private readonly Gameboy[] _linkedCores;
 
-		// counter to ensure we do 35112 samples per frame
-		private int _overflowL = 0;
-		private int _overflowR = 0;
+		// counters to ensure we do 35112 samples per frame
+		private readonly int[] _linkedOverflow;
 
 		// if true, the link cable is currently connected
 		private bool _cableconnected = true;
@@ -72,23 +85,34 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		private const int SampPerFrame = 35112;
 
-		private readonly SaveController LCont = new SaveController(Gameboy.CreateControllerDefinition(false, false));
-		private readonly SaveController RCont = new SaveController(Gameboy.CreateControllerDefinition(false, false));
+		private readonly SaveController[] _linkedConts;
 
-		public bool IsCGBMode(bool right)
+		public bool IsCGBMode(int which)
 		{
-			return right ? R.IsCGBMode() : L.IsCGBMode();
+			return _linkedCores[which].IsCGBMode();
 		}
 
-		private static readonly ControllerDefinition DualGbController = new ControllerDefinition
+		private ControllerDefinition GBLinkController { get; }
+
+		private ControllerDefinition CreateControllerDefinition()
 		{
-			Name = "Dual Gameboy Controller",
-			BoolButtons =
+			var ret = new ControllerDefinition { Name = $"GB Link {_numCores}x Controller" };
+			for (int i = 0; i < _numCores; i++)
 			{
-				"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 A", "P1 B", "P1 Select", "P1 Start", "P1 Power",
-				"P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 A", "P2 B", "P2 Select", "P2 Start", "P2 Power",
-				"Toggle Cable"
+				ret.BoolButtons.AddRange(
+					new[] { "Up", "Down", "Left", "Right", "A", "B", "Select", "Start", "Power" }
+						.Select(s => $"P{i + 1} {s}"));
 			}
-		};
+			ret.BoolButtons.Add("Toggle Cable");
+			return ret;
+		}
+
+		private const int P1 = 0;
+		private const int P2 = 1;
+		private const int P3 = 2;
+		private const int P4 = 3;
+
+		private const int MIN_PLAYERS = 2;
+		private const int MAX_PLAYERS = 4;
 	}
 }
