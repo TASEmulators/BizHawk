@@ -12,8 +12,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		ISaveRam, IStatable, IInputPollable, ISettable<MGBAHawk.Settings, MGBAHawk.SyncSettings>,
 		IDebuggable
 	{
-		private static readonly LibmGBA LibmGBA;
-		public static LibmGBA ZZHacky => LibmGBA;
+		internal static readonly LibmGBA LibmGBA;
 
 		static MGBAHawk()
 		{
@@ -111,14 +110,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				registerInfo: sb.ToString());
 		}
 
+		internal void Reset()
+		{
+			LibmGBA.BizReset(Core);
+			// BizReset caused memorydomain pointers to change.
+			WireMemoryDomainPointers();
+		}
+
 		public bool FrameAdvance(IController controller, bool render, bool renderSound = true)
 		{
 			if (controller.IsPressed("Power"))
 			{
-				LibmGBA.BizReset(Core);
-
-				// BizReset caused memorydomain pointers to change.
-				WireMemoryDomainPointers();
+				Reset();
 			}
 
 			LibmGBA.BizSetTraceCallback(Core, Tracer.IsEnabled() ? _tracecb : null);

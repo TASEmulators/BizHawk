@@ -133,6 +133,30 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		public abstract bool BizAdvance(IntPtr ctx, Buttons keys, int[] vbuff, ref int nsamp, short[] sbuff,
 			long time, short gyrox, short gyroy, short gyroz, byte luma);
 
+		[UnmanagedFunctionPointer(cc)]
+		public delegate bool MasterWaitCallback(IntPtr lockstep, int mask);
+
+		[UnmanagedFunctionPointer(cc)]
+		public delegate int SlaveWaitCallback(IntPtr lockstep, int id);
+
+		[BizImport(cc, Compatibility = true)]
+		public abstract IntPtr BizCreateLockstep(MasterWaitCallback masterwaitcb, SlaveWaitCallback slavewaitcb);
+
+		[BizImport(cc, Compatibility = true)]
+		public abstract void BizDestroyLockstep(IntPtr lockstep);
+
+		[BizImport(cc, Compatibility = true)]
+		public abstract void BizConnectLinkCable(IntPtr ctx, IntPtr lockstep);
+
+		[BizImport(cc, Compatibility = true)]
+		public abstract int BizStepPrep(IntPtr ctx, Buttons keys, long time, short gyrox, short gyroy, short gyroz, byte luma);
+
+		[BizImport(cc, Compatibility = true)]
+		public abstract unsafe int BizStep(IntPtr ctx, int cycles, int* vbuff, int numcores);
+
+		[BizImport(cc, Compatibility = true)]
+		public abstract bool BizStepPost(IntPtr ctx, ref int nsamp, short[] sbuff);
+
 		[BizImport(cc, Compatibility = true)]
 		public abstract void BizSetPalette(IntPtr ctx, int[] palette);
 

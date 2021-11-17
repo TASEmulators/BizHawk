@@ -9,6 +9,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 {
 	public class ArmV4Disassembler : VerifiedDisassembler
 	{
+		public ArmV4Disassembler(string pcRegisterName = "R15")
+		{
+			_pcRegisterName = pcRegisterName;
+		}
+
+		private readonly string _pcRegisterName;
+
 		private readonly Darm _libdarm = BizInvoker.GetInvoker<Darm>(
 			new DynamicLibraryImportResolver(OSTailoredCode.IsUnixHost ? "libdarm.so" : "libdarm.dll", hasLimitedLifetime: false),
 			CallingConventionAdapters.Native
@@ -20,7 +27,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			"ARM v4 (Thumb)"
 		};
 
-		public override string PCRegisterName => "R15";
+		public override string PCRegisterName => _pcRegisterName;
 
 		public override string Disassemble(MemoryDomain m, uint addr, out int length)
 		{
