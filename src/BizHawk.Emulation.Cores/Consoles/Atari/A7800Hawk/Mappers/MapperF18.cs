@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					return Core._hsram[addr - 0x1000];
 				}
 
-				return 0xFF;
+				return 0;
 			}
 
 			if (addr < 0x4000)
@@ -29,7 +29,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					return Core._hsbios[addr - 0x3000];
 				}
 
-				return Core.RAM[0x800 + addr & 0x7FF];
+				return 0;
+				//return Core.RAM[0x800 + addr & 0x7FF];
 			}
 
 			// cartridge and other OPSYS
@@ -68,7 +69,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				}
 				else
 				{
-					Core.RAM[0x800 + addr & 0x7FF] = value;
+					// no mirror here on hardware
+					// Core.RAM[0x800 + addr & 0x7FF] = value;
 				}
 			}
 			else

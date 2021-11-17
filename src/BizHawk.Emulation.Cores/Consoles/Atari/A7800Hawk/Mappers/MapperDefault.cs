@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					return Core._hsram[addr - 0x1000];
 				}
 
-				return 0xFF;
+				return 0;
 			}
 
 			if (addr < 0x4000)
@@ -27,7 +27,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					return Core._hsbios[addr - 0x3000];
 				}
 
-				return Core.RAM[0x800 + addr & 0x7FF];
+				return 0;
+				// return Core.RAM[0x800 + addr & 0x7FF];
 			}
 
 			if (addr < 0x8000 && Core.is_pokey)
@@ -47,7 +48,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				return Core._bios[addr - (0x10000 - Core._bios.Length)];
 			}
 
-			return 0x00;
+			return 0;
 		}
 
 		public override void WriteMemory(ushort addr, byte value)
@@ -68,7 +69,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				}
 				else
 				{
-					Core.RAM[0x800 + addr & 0x7FF] = value;
+					// no mirror here on hardware
+					// Core.RAM[0x800 + addr & 0x7FF] = value;
 				}
 			}
 			else if (addr < 0x8000 && Core.is_pokey)

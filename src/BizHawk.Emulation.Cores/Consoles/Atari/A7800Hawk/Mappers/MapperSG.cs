@@ -1,5 +1,6 @@
 ﻿using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
+using System;
 
 namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 {
@@ -18,7 +19,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				{
 					return Core._hsram[addr - 0x1000];
 				}
-				return 0xFF;
+
+				return 0;
 			}
 
 			if (addr < 0x4000)
@@ -37,7 +39,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					return 0;
 				}
 
-				return Core.RAM[0x800 + addr & 0x7FF];
+				// This RAm mirror doesn't exist, otherwise Sumer Games has graphics glitches
+				return 0;
 			}
 
 			// cartridge and other OPSYS
@@ -74,8 +77,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					return Core._rom[tempAddr + 2 * 0x4000];
 				}
 
-				// Should never get here, but in case we do just return FF
-				return 0xFF;
+				// Should never get here, but in case we do just return 0
+				return 0;
 			}
 
 			if (Core.cart_RAM > 0)
@@ -92,8 +95,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				}
 
 				// this would correspond to reading from 0x4000-0x5FFF with only 8k of RAM
-				// Let's just return FF for now
-				return 0xFF;
+				// Let's just return 0 for now
+				return 0;
 			}
 
 			if (Core.is_pokey)
@@ -101,7 +104,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				return Core.pokey.ReadReg(addr & 0xF);
 			}
 
-			return 0xFF;
+			return 0;
 		}
 
 		public override void WriteMemory(ushort addr, byte value)
@@ -119,6 +122,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				// could be either RAM mirror or ROM
 				if (addr >= 0x3000 && Core._hsbios != null)
 				{
+
 				}
 				else if (Core.is_pokey_450 && (addr >= 0x450) && (addr < 0x480))
 				{
@@ -129,7 +133,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				}
 				else
 				{
-					Core.RAM[0x800 + addr & 0x7FF] = value;
+					// This mirror doesn't exist, otherwise Summer Games has graphics glitches
 				}
 			}
 			else
