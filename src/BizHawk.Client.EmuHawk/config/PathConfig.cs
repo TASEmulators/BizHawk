@@ -174,7 +174,7 @@ namespace BizHawk.Client.EmuHawk
 		private void BrowseFolder(TextBox box, string name, string system)
 		{
 			// Ugly hack, we don't want to pass in the system in for system base and global paths
-			if (name == "Base" || system == "Global" || system == PathEntryCollection.GLOBAL)
+			if (system is not null && (name is "Base" || system is "Global" || system == PathEntryCollection.GLOBAL))
 			{
 				BrowseFolder(box, name, system: null);
 				return;
