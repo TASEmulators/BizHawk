@@ -17,17 +17,32 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
 			var linkedRegs = new IEnumerable<KeyValuePair<string, RegisterValue>>[_numCores];
-			for (int i = 0; i < _numCores; i++)
+			// for some reason a simple for loop screws up, so this hack has to be used
+			switch (_numCores)
 			{
-				linkedRegs[i] = _linkedCores[i].GetCpuFlagsAndRegisters()
-					.Select(reg => new KeyValuePair<string, RegisterValue>($"P{i + 1} " + reg.Key, reg.Value));
+				case 4:
+					linkedRegs[P4] = _linkedCores[P4].GetCpuFlagsAndRegisters()
+						.Select(reg => new KeyValuePair<string, RegisterValue>("P4 " + reg.Key, reg.Value));
+					goto case 3; // hacky fallthrough
+				case 3:
+					linkedRegs[P3] = _linkedCores[P3].GetCpuFlagsAndRegisters()
+						.Select(reg => new KeyValuePair<string, RegisterValue>("P3 " + reg.Key, reg.Value));
+					goto case 2; // hacky fallthrough
+				case 2:
+					linkedRegs[P2] = _linkedCores[P2].GetCpuFlagsAndRegisters()
+						.Select(reg => new KeyValuePair<string, RegisterValue>("P2 " + reg.Key, reg.Value));
+					linkedRegs[P1] = _linkedCores[P1].GetCpuFlagsAndRegisters()
+						.Select(reg => new KeyValuePair<string, RegisterValue>("P1 " + reg.Key, reg.Value));
+					break;
+				default:
+					throw new Exception();
 			}
 
 			return _numCores switch
 			{
-				2 => linkedRegs[0].Union(linkedRegs[1]).ToDictionary(pair => pair.Key, pair => pair.Value),
-				3 => linkedRegs[0].Union(linkedRegs[1]).Union(linkedRegs[2]).ToDictionary(pair => pair.Key, pair => pair.Value),
-				4 => linkedRegs[0].Union(linkedRegs[1]).Union(linkedRegs[2]).Union(linkedRegs[3]).ToDictionary(pair => pair.Key, pair => pair.Value),
+				2 => linkedRegs[P1].Union(linkedRegs[P2]).ToDictionary(pair => pair.Key, pair => pair.Value),
+				3 => linkedRegs[P1].Union(linkedRegs[P2]).Union(linkedRegs[P3]).ToDictionary(pair => pair.Key, pair => pair.Value),
+				4 => linkedRegs[P1].Union(linkedRegs[P2]).Union(linkedRegs[P3]).Union(linkedRegs[P4]).ToDictionary(pair => pair.Key, pair => pair.Value),
 				_ => throw new Exception()
 			};
 		}

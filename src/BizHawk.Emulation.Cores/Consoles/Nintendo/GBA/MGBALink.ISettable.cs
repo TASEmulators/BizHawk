@@ -6,6 +6,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 {
 	public partial class MGBALink : ISettable<MGBALink.MGBALinkSettings, MGBALink.MGBALinkSyncSettings>
 	{
+		private readonly MGBALinkSettings _settings;
+		private readonly MGBALinkSyncSettings _syncSettings;
+
 		public class MGBALinkSettings
 		{
 			public MGBAHawk.Settings[] _linkedSettings;
@@ -48,24 +51,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		public MGBALinkSettings GetSettings()
 		{
-			return _numCores switch
-			{
-				2 => new MGBALinkSettings(_linkedCores[P1].GetSettings(), _linkedCores[P2].GetSettings(), null, null),
-				3 => new MGBALinkSettings(_linkedCores[P1].GetSettings(), _linkedCores[P2].GetSettings(), _linkedCores[P3].GetSettings(), null),
-				4 => new MGBALinkSettings(_linkedCores[P1].GetSettings(), _linkedCores[P2].GetSettings(), _linkedCores[P3].GetSettings(), _linkedCores[P4].GetSettings()),
-				_ => throw new Exception()
-			};
+			return _settings.Clone();
 		}
 
 		public MGBALinkSyncSettings GetSyncSettings()
 		{
-			return _numCores switch
-			{
-				2 => new MGBALinkSyncSettings(_linkedCores[P1].GetSyncSettings(), _linkedCores[P2].GetSyncSettings(), null, null),
-				3 => new MGBALinkSyncSettings(_linkedCores[P1].GetSyncSettings(), _linkedCores[P2].GetSyncSettings(), _linkedCores[P3].GetSyncSettings(), null),
-				4 => new MGBALinkSyncSettings(_linkedCores[P1].GetSyncSettings(), _linkedCores[P2].GetSyncSettings(), _linkedCores[P3].GetSyncSettings(), _linkedCores[P4].GetSyncSettings()),
-				_ => throw new Exception()
-			};
+			return _syncSettings.Clone();
 		}
 
 		public PutSettingsDirtyBits PutSettings(MGBALinkSettings o)

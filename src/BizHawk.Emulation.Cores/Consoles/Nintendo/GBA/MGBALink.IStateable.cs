@@ -7,6 +7,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 {
 	public partial class MGBALink : IStatable
 	{
+		// todo: save link state (somehow)
 		public void SaveStateBinary(BinaryWriter writer)
 		{
 			writer.Write(_numCores);

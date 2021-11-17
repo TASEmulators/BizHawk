@@ -22,6 +22,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 			_memoryDomains = new MemoryDomainList(mm);
 			_serviceProvider.Register<IMemoryDomains>(_memoryDomains);
+			((MemoryDomainList)this.AsMemoryDomains()).SystemBus = _linkedCores[P1].AsMemoryDomains().SystemBus;
 		}
 
 		private class WrappedMemoryDomain : MemoryDomain
