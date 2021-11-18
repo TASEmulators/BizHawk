@@ -64,10 +64,10 @@ namespace BizHawk.Client.Common
 		};
 
 		private static PathEntry BaseEntryFor(string sysID, string path)
-			=> new(sysID, 0x00, "Base", path);
+			=> new(sysID, "Base", path);
 
 		private static PathEntry CheatsEntryFor(string sysID)
-			=> new(sysID, 0x23, "Cheats", Path.Combine(".", "Cheats"));
+			=> new(sysID, "Cheats", Path.Combine(".", "Cheats"));
 
 		private static IEnumerable<PathEntry> CommonEntriesFor(string sysID, string basePath, bool omitSaveRAM = false)
 		{
@@ -91,19 +91,19 @@ namespace BizHawk.Client.Common
 			=> sysID == group || group.Split('_').Contains(sysID);
 
 		private static PathEntry PalettesEntryFor(string sysID)
-			=> new(sysID, 0x30, "Palettes", Path.Combine(".", "Palettes"));
+			=> new(sysID, "Palettes", Path.Combine(".", "Palettes"));
 
 		private static PathEntry ROMEntryFor(string sysID, string path = ".")
-			=> new(sysID, 0x01, "ROM", path);
+			=> new(sysID, "ROM", path);
 
 		private static PathEntry SaveRAMEntryFor(string sysID)
-			=> new(sysID, 0x21, "Save RAM", Path.Combine(".", "SaveRAM"));
+			=> new(sysID, "Save RAM", Path.Combine(".", "SaveRAM"));
 
 		private static PathEntry SavestatesEntryFor(string sysID)
-			=> new(sysID, 0x20, "Savestates", Path.Combine(".", "State"));
+			=> new(sysID, "Savestates", Path.Combine(".", "State"));
 
 		private static PathEntry ScreenshotsEntryFor(string sysID)
-			=> new(sysID, 0x22, "Screenshots", Path.Combine(".", "Screenshots"));
+			=> new(sysID, "Screenshots", Path.Combine(".", "Screenshots"));
 
 		public List<PathEntry> Paths { get; }
 
@@ -180,19 +180,19 @@ namespace BizHawk.Client.Common
 			new[] {
 				BaseEntryFor(GLOBAL, "."),
 				ROMEntryFor(GLOBAL),
-				new(GLOBAL, 0x10, "Firmware", Path.Combine(".", "Firmware")),
-				new(GLOBAL, 0x11, "Movies", Path.Combine(".", "Movies")),
-				new(GLOBAL, 0x12, "Movie backups", Path.Combine(".", "Movies", "backup")),
-				new(GLOBAL, 0x13, "A/V Dumps", "."),
-				new(GLOBAL, 0x14, "Tools", Path.Combine(".", "Tools")),
-				new(GLOBAL, 0x15, "Lua", Path.Combine(".", "Lua")),
-				new(GLOBAL, 0x16, "Watch (.wch)", Path.Combine(".", ".")),
-				new(GLOBAL, 0x17, "Debug Logs", Path.Combine(".", "")),
-				new(GLOBAL, 0x18, "Macros", Path.Combine(".", "Movies", "Macros")),
-				new(GLOBAL, 0x19, "TAStudio states", Path.Combine(".", "Movies", "TAStudio states")),
-				new(GLOBAL, 0x1A, "Multi-Disk Bundles", Path.Combine(".", "")),
-				new(GLOBAL, 0x1B, "External Tools", Path.Combine(".", "ExternalTools")),
-				new(GLOBAL, 0x1C, "Temp Files", ""),
+				new(GLOBAL, "Firmware", Path.Combine(".", "Firmware")),
+				new(GLOBAL, "Movies", Path.Combine(".", "Movies")),
+				new(GLOBAL, "Movie backups", Path.Combine(".", "Movies", "backup")),
+				new(GLOBAL, "A/V Dumps", "."),
+				new(GLOBAL, "Tools", Path.Combine(".", "Tools")),
+				new(GLOBAL, "Lua", Path.Combine(".", "Lua")),
+				new(GLOBAL, "Watch (.wch)", Path.Combine(".", ".")),
+				new(GLOBAL, "Debug Logs", Path.Combine(".", "")),
+				new(GLOBAL, "Macros", Path.Combine(".", "Movies", "Macros")),
+				new(GLOBAL, "TAStudio states", Path.Combine(".", "Movies", "TAStudio states")),
+				new(GLOBAL, "Multi-Disk Bundles", Path.Combine(".", "")),
+				new(GLOBAL, "External Tools", Path.Combine(".", "ExternalTools")),
+				new(GLOBAL, "Temp Files", ""),
 			},
 
 			CommonEntriesFor(VSystemID.Raw.Sega32X, basePath: Path.Combine(".", "32X")),
@@ -245,8 +245,8 @@ namespace BizHawk.Client.Common
 				// Really, "Open Rom" for instance doesn't make sense when you have a libretro core open.
 				// Well, this is better than nothing.
 				ROMEntryFor(VSystemID.Raw.Libretro, "%recent%"),
-				new(VSystemID.Raw.Libretro, 0x10, "Cores", Path.Combine(".", "Cores")),
-				new(VSystemID.Raw.Libretro, 0x11, "System", Path.Combine(".", "System")),
+				new(VSystemID.Raw.Libretro, "Cores", Path.Combine(".", "Cores")),
+				new(VSystemID.Raw.Libretro, "System", Path.Combine(".", "System")),
 				SavestatesEntryFor(VSystemID.Raw.Libretro),
 				SaveRAMEntryFor(VSystemID.Raw.Libretro),
 				ScreenshotsEntryFor(VSystemID.Raw.Libretro),
