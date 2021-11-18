@@ -16,7 +16,10 @@ namespace BizHawk.Common
 		internal const string PREFIX = "CRC32";
 
 		public static byte[] BytesAsDigest(uint digest)
-			=> BitConverter.GetBytes(digest);
+		{
+			var a = BitConverter.GetBytes(digest);
+			return new[] { a[3], a[2], a[1], a[0] };
+		}
 
 		public static byte[] Compute(ReadOnlySpan<byte> data)
 			=> BytesAsDigest(CRC32.Calculate(data));
