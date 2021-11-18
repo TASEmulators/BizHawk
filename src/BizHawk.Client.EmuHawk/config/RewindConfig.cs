@@ -34,7 +34,7 @@ namespace BizHawk.Client.EmuHawk
 			var rewinder = _getRewinder();
 			if (rewinder?.Active == true)
 			{
-				FullnessLabel.Text = $"{rewinder.FullnessRatio * 100:0.00}%";
+				FullnessLabel.Text = $"{rewinder.FullnessRatio:P2}";
 				RewindFramesUsedLabel.Text = rewinder.Count.ToString();
 				_avgStateSize = rewinder.Size * rewinder.FullnessRatio / rewinder.Count;
 			}

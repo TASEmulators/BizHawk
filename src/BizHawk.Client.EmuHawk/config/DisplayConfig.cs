@@ -317,9 +317,7 @@ namespace BizHawk.Client.EmuHawk
 		public void TbScanlineIntensity_Scroll(object sender, EventArgs e)
 		{
 			_config.TargetScanlineFilterIntensity = tbScanlineIntensity.Value;
-			int scanlines = _config.TargetScanlineFilterIntensity;
-			float percentage = (float) scanlines / 256 * 100;
-			lblScanlines.Text = $"{percentage:F2}%";
+			lblScanlines.Text = $"{_config.TargetScanlineFilterIntensity / 256.0:P2}";
 		}
 
 		private void TrackBarFrameSizeWindowed_ValueChanged(object sender, EventArgs e)

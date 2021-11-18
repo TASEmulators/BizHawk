@@ -172,7 +172,7 @@ namespace BizHawk.Client.EmuHawk
 				var lvi = _listContents[idx++] = new string[13];
 				lvi[0] = $"{addr:X8}";
 				lvi[1] = scope;
-				lvi[2] = $"{total / (float) dataA.Length * 100f:0.00}%";
+				lvi[2] = $"{total / (float) dataA.Length:P2}";
 				if (tsbViewStyle.SelectedIndex == 2)
 					lvi[3] = $"{total / 1024.0f:0.00}";
 				else
@@ -188,7 +188,7 @@ namespace BizHawk.Client.EmuHawk
 				for (int i = 0; i < 8; i++)
 				{
 					if (tsbViewStyle.SelectedIndex == 0)
-						lvi[5 + i] = $"{totals[i] / (float) dataA.Length * 100f:0.00}%";
+						lvi[5 + i] = $"{totals[i] / (float) dataA.Length:P2}";
 					if (tsbViewStyle.SelectedIndex == 1)
 						lvi[5 + i] = $"{totals[i]}";
 					if (tsbViewStyle.SelectedIndex == 2)
