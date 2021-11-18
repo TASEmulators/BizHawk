@@ -61,8 +61,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			_linkedMemoryDomains = new LinkedMemoryDomains(_linkedCores, _numCores);
 			_serviceProvider.Register<IMemoryDomains>(_linkedMemoryDomains);
-
-			_serviceProvider.Register<ICodeDataLogger>(_linkedCores[P1].AsCodeDataLogger());
 		}
 
 		private readonly BasicServiceProvider _serviceProvider;
