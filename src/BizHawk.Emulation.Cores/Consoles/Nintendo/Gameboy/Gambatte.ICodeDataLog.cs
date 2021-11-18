@@ -7,9 +7,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
 	public partial class Gameboy : ICodeDataLogger
 	{
-		public void SetCDL(ICodeDataLog cdl)
+		public void SetCDL(ICodeDataLog cdl) => SetCDL(cdl, "");
+
+		internal void SetCDL(ICodeDataLog cdl, string which)
 		{
 			_cdl = cdl;
+			_which = which;
 			LibGambatte.gambatte_setcdcallback(GambatteState, cdl == null ? null : _cdCallback);
 		}
 
@@ -35,6 +38,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		}
 
 		private ICodeDataLog _cdl;
+		private string _which;
 		private readonly LibGambatte.CDCallback _cdCallback;
 
 		private void CDCallbackProc(int addr, LibGambatte.CDLog_AddrType addrtype, LibGambatte.CDLog_Flags flags)
@@ -53,7 +57,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				_ => throw new InvalidOperationException("Juniper lightbulb proxy"),
 			};
 
-			_cdl[key][addr] |= (byte)flags;
+			_cdl[_which + key][addr] |= (byte)flags;
 		}
 
 	}
