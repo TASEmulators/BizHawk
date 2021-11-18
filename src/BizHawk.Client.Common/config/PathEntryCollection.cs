@@ -369,7 +369,7 @@ namespace BizHawk.Client.Common
 			new(VSystemID.Raw.PCFX, 4, "Screenshots", Path.Combine(".", "Screenshots")),
 			new(VSystemID.Raw.PCFX, 5, "Cheats", Path.Combine(".", "Cheats")),
 
-			new(VSystemID.Raw.ChannelF, 0, "Base", Path.Combine(".", "ZXSpectrum")),
+			new(VSystemID.Raw.ChannelF, 0, "Base", Path.Combine(".", "Channel F")),
 			new(VSystemID.Raw.ChannelF, 1, "ROM", "."),
 			new(VSystemID.Raw.ChannelF, 2, "Savestates", Path.Combine(".", "State")),
 			new(VSystemID.Raw.ChannelF, 4, "Screenshots", Path.Combine(".", "Screenshots")),
@@ -410,7 +410,7 @@ namespace BizHawk.Client.Common
 			new(VSystemID.Raw.MSX, 4, "Screenshots", Path.Combine(".", "Screenshots")),
 			new(VSystemID.Raw.MSX, 5, "Cheats", Path.Combine(".", "Cheats")),
 
-			new(VSystemID.Raw.UZE, 0, "Base", Path.Combine(".", "VEC")),
+			new(VSystemID.Raw.UZE, 0, "Base", Path.Combine(".", "Uzebox")),
 			new(VSystemID.Raw.UZE, 1, "ROM", "."),
 			new(VSystemID.Raw.UZE, 2, "Savestates", Path.Combine(".", "State")),
 			new(VSystemID.Raw.UZE, 3, "Save RAM", Path.Combine(".", "SaveRAM")),
