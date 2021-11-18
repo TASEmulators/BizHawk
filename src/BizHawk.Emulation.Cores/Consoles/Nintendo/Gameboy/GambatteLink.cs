@@ -7,8 +7,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
 	[PortedCore(CoreNames.DualGambatte, "sinamas/natt")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
-	public partial class GambatteLink : IEmulator, IVideoProvider, ISoundProvider, IInputPollable, ISaveRam, IStatable, ILinkable,
-		IBoardInfo, IRomInfo, IDebuggable, ISettable<GambatteLink.GambatteLinkSettings, GambatteLink.GambatteLinkSyncSettings>, ICodeDataLogger
+	public partial class GambatteLink : ILinkable, IRomInfo
 	{
 		[CoreConstructor(VSystemID.Raw.DGB)]
 		public GambatteLink(CoreLoadParameters<GambatteLinkSettings, GambatteLinkSyncSettings> lp)
@@ -57,6 +56,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			GBLinkController = CreateControllerDefinition();
 
+			_linkedSaveRam = new LinkedSaveRam(_linkedCores, _numCores);
+			_serviceProvider.Register<ISaveRam>(_linkedSaveRam);
+
 			SetMemoryDomains();
 		}
 
@@ -71,8 +73,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		}
 
 		private int _numCores = 0;
-
 		private readonly Gameboy[] _linkedCores;
+
+		private readonly LinkedSaveRam _linkedSaveRam;
 
 		// counters to ensure we do 35112 samples per frame
 		private readonly int[] _linkedOverflow;

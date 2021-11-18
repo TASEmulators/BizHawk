@@ -4,7 +4,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
-	public partial class GambatteLink 
+	public partial class GambatteLink
 	{
 		private IMemoryDomains _memoryDomains;
 
