@@ -1191,7 +1191,10 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void ColorSettingsMenuItem_Click(object sender, EventArgs e)
-			=> this.ShowDialogAsChild(new TAStudioColorSettingsForm(Palette, p => Settings.Palette = p));
+		{
+			using var colorSettings = new TAStudioColorSettingsForm(Palette, p => Settings.Palette = p);
+			this.ShowDialogAsChild(colorSettings);
+		}
 
 		private void WheelScrollSpeedMenuItem_Click(object sender, EventArgs e)
 		{
