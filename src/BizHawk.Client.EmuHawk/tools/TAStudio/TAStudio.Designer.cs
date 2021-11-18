@@ -129,6 +129,7 @@ namespace BizHawk.Client.EmuHawk
 			this.toolStripSeparator12 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.hideWasLagFramesToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.iconsToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.ColorSettingsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.DenoteStatesWithIconsToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.DenoteStatesWithBGColorToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.DenoteMarkersWithIconsToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -700,6 +701,7 @@ namespace BizHawk.Client.EmuHawk
             this.RotateMenuItem,
             this.HideLagFramesSubMenu,
             this.iconsToolStripMenuItem,
+            this.ColorSettingsMenuItem,
             this.toolStripSeparator23,
             this.followCursorToolStripMenuItem,
             this.toolStripSeparator25,
@@ -768,6 +770,11 @@ namespace BizHawk.Client.EmuHawk
             this.DenoteMarkersWithBGColorToolStripMenuItem});
 			this.iconsToolStripMenuItem.Text = "Icons";
 			this.iconsToolStripMenuItem.DropDownOpened += new System.EventHandler(this.IconsMenuItem_DropDownOpened);
+			// 
+			// ColorSettingsMenuItem
+			// 
+			this.ColorSettingsMenuItem.Text = "Edit TAStudio Colors...";
+			this.ColorSettingsMenuItem.Click += new System.EventHandler(this.ColorSettingsMenuItem_Click);
 			// 
 			// DenoteStatesWithIconsToolStripMenuItem
 			// 
@@ -1358,6 +1365,7 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.SplitContainer MainVertialSplit;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx StartANewProjectFromSaveRamMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx iconsToolStripMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ColorSettingsMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx DenoteStatesWithIconsToolStripMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx DenoteStatesWithBGColorToolStripMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx DenoteMarkersWithIconsToolStripMenuItem;

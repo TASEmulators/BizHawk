@@ -1190,6 +1190,9 @@ namespace BizHawk.Client.EmuHawk
 			RefreshDialog();
 		}
 
+		private void ColorSettingsMenuItem_Click(object sender, EventArgs e)
+			=> this.ShowDialogAsChild(new TAStudioColorSettingsForm(Palette, p => Settings.Palette = p));
+
 		private void WheelScrollSpeedMenuItem_Click(object sender, EventArgs e)
 		{
 			var inputPrompt = new InputPrompt
