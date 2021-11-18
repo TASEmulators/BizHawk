@@ -25,7 +25,7 @@
 		owner = "TASEmulators";
 		repo = "BizHawk";
 		rev = "dbaf2595625f79093eeec37d2d4a7a9a4d37f370";
-		hash = "sha256-+B3KIhiXTsZpgJ5LJ2iwx/Nsj8LNK1PtvnmjQvsIvFo=";
+		hash = "sha256-2M9+p5NYCJQlItcyLxU7bY6JC5/lacM5jfZoILGkHrU=";
 		leaveDotGit = true;
 	}
 # makedeps
