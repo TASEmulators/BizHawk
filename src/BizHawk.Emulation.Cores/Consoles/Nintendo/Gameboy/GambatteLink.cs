@@ -94,7 +94,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public bool IsCGBMode(int which)
 		{
-			return _linkedCores[which].IsCGBMode();
+			return which < _numCores && _linkedCores[which].IsCGBMode();
 		}
 
 		private ControllerDefinition GBLinkController { get; }

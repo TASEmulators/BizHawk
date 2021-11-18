@@ -4,8 +4,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
 	public partial class GambatteLink : ISettable<GambatteLink.GambatteLinkSettings, GambatteLink.GambatteLinkSyncSettings>
 	{
-		private readonly GambatteLinkSettings _settings;
-		private readonly GambatteLinkSyncSettings _syncSettings;
+		private GambatteLinkSettings _settings;
+		private GambatteLinkSyncSettings _syncSettings;
 
 		public GambatteLinkSettings GetSettings()
 		{
@@ -19,6 +19,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public PutSettingsDirtyBits PutSettings(GambatteLinkSettings o)
 		{
+			_settings = o;
 			var ret = PutSettingsDirtyBits.None;
 			for (int i = 0; i < _numCores; i++)
 			{
@@ -29,6 +30,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public PutSettingsDirtyBits PutSyncSettings(GambatteLinkSyncSettings o)
 		{
+			_syncSettings = o;
 			var ret = PutSettingsDirtyBits.None;
 			for (int i = 0; i < _numCores; i++)
 			{
