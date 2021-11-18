@@ -479,7 +479,7 @@ namespace BizHawk.Client.EmuHawk
 
 			Sound.StartSound();
 			InputManager.SyncControls(Emulator, MovieSession, Config);
-			CheatList = new CheatCollection(Config.Cheats);
+			CheatList = new CheatCollection(this, Config.Cheats);
 			CheatList.Changed += Tools.UpdateCheatRelatedTools;
 			RewireSound();
 

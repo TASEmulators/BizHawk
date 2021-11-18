@@ -24,13 +24,16 @@ namespace BizHawk.Client.Common
 		private const string TypeColumn = "DisplayTypeColumn";
 		private const string ComparisonType = "ComparisonTypeColumn";
 
+		private readonly IDialogParent _dialogParent;
+
 		private readonly ICheatConfig _config;
 		private List<Cheat> _cheatList = new List<Cheat>();
 		private string _defaultFileName = "";
 		private bool _changes;
 
-		public CheatCollection(ICheatConfig config)
+		public CheatCollection(IDialogParent dialogParent, ICheatConfig config)
 		{
+			_dialogParent = dialogParent;
 			_config = config;
 		}
 
@@ -131,8 +134,11 @@ namespace BizHawk.Client.Common
 
 		public void AddRange(IEnumerable<Cheat> cheats)
 		{
-			_cheatList.AddRange(
-				cheats.Where(c => !_cheatList.Contains(c)));
+			var toAdd = cheats.Where(c => !_cheatList.Contains(c)).ToList();
+			if (toAdd.Count is 0) return;
+			const int WARN_WHEN_ADDING_MORE_THAN = 200;
+			if (toAdd.Count > WARN_WHEN_ADDING_MORE_THAN && !_dialogParent.ModalMessageBox2($"Adding {toAdd.Count} freezes/cheats at once is probably a bad idea. Do it anyway?")) return;
+			_cheatList.AddRange(toAdd);
 			Changes = true;
 		}
 
