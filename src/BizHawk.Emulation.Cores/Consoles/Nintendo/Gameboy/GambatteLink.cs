@@ -59,7 +59,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			_linkedSaveRam = new LinkedSaveRam(_linkedCores, _numCores);
 			_serviceProvider.Register<ISaveRam>(_linkedSaveRam);
 
-			SetMemoryDomains();
+			_linkedMemoryDomains = new LinkedMemoryDomains(_linkedCores, _numCores);
+			_serviceProvider.Register<IMemoryDomains>(_linkedMemoryDomains);
+
+			_serviceProvider.Register<ICodeDataLogger>(_linkedCores[P1].AsCodeDataLogger());
 		}
 
 		private readonly BasicServiceProvider _serviceProvider;
@@ -76,6 +79,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		private readonly Gameboy[] _linkedCores;
 
 		private readonly LinkedSaveRam _linkedSaveRam;
+		private readonly LinkedMemoryDomains _linkedMemoryDomains;
 
 		// counters to ensure we do 35112 samples per frame
 		private readonly int[] _linkedOverflow;
