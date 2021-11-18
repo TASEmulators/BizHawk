@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		{
 			for (int i = 0; i < _numCores; i++)
 			{
-				_linkedCores[i].SetCDL(cdl);
+				_linkedCores[i].SetCDL(cdl, $"P{i + 1} ");
 			}
 		}
 
