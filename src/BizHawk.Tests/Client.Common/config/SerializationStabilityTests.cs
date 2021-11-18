@@ -16,7 +16,7 @@ namespace BizHawk.Tests.Client.Common.config
 	{
 		private const string BINDING_SER = @"{""DisplayName"":""Frame Advance"",""Bindings"":""F"",""DefaultBinding"":""F"",""TabGroup"":""General"",""ToolTip"":"""",""Ordinal"":0}";
 
-		private const string PATHENTRY_SER = @"{""Type"":""Movies"",""Path"":""./Movies"",""System"":""Global_NULL"",""Ordinal"":4}";
+		private const string PATHENTRY_SER = @"{""Type"":""Movies"",""Path"":""./Movies"",""System"":""Global_NULL""}";
 
 		private const string RECENT_SER = @"{""recentlist"":[],""MAX_RECENT_FILES"":8,""AutoLoad"":false,""Frozen"":false}";
 
