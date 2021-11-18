@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Reflection;
-using System.Collections.Generic;
 using System.IO;
 
 using BizHawk.Common;
 using BizHawk.Emulation.DiscSystem;
+
+using EXE_PROJECT.PathExtensions;
 
 using OSTC = EXE_PROJECT.OSTailoredCode;
 
@@ -33,15 +34,7 @@ namespace BizHawk.Client.DiscoHawk
 			// but before we even try doing that, whack the MOTW from everything in that directory (that's a dll)
 			// otherwise, some people will have crashes at boot-up due to .net security disliking MOTW.
 			// some people are getting MOTW through a combination of browser used to download BizHawk, and program used to dearchive it
-			static void RemoveMOTW(string path) => DeleteFileW($"{path}:Zone.Identifier");
-			var todo = new Queue<DirectoryInfo>(new[] { new DirectoryInfo(dllDir) });
-			while (todo.Count != 0)
-			{
-				var di = todo.Dequeue();
-				foreach (var diSub in di.GetDirectories()) todo.Enqueue(diSub);
-				foreach (var fi in di.GetFiles("*.dll")) RemoveMOTW(fi.FullName);
-				foreach (var fi in di.GetFiles("*.exe")) RemoveMOTW(fi.FullName);
-			}
+			foreach (var fi in new DirectoryInfo(dllDir).BreadthFirstSearch(new[] { "*.dll", "*.exe" })) DeleteFileW($"{fi.FullName}:Zone.Identifier");
 		}
 
 		[STAThread]

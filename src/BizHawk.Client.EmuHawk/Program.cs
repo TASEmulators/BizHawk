@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -10,11 +9,13 @@ using BizHawk.Bizware.BizwareGL;
 using BizHawk.Bizware.DirectX;
 using BizHawk.Bizware.OpenTK3;
 using BizHawk.Common;
-using BizHawk.Common.PathExtensions;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.CustomControls;
 
+using EXE_PROJECT.PathExtensions;
+
 using OSTC = EXE_PROJECT.OSTailoredCode;
+using PathUtils = BizHawk.Common.PathExtensions.PathUtils;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -60,15 +61,7 @@ namespace BizHawk.Client.EmuHawk
 				// otherwise, some people will have crashes at boot-up due to .net security disliking MOTW.
 				// some people are getting MOTW through a combination of browser used to download bizhawk, and program used to dearchive it
 				// We need to do it here too... otherwise people get exceptions when externaltools we distribute try to startup
-				static void RemoveMOTW(string path) => DeleteFileW($"{path}:Zone.Identifier");
-				var todo = new Queue<DirectoryInfo>(new[] { new DirectoryInfo(dllDir) });
-				while (todo.Count != 0)
-				{
-					var di = todo.Dequeue();
-					foreach (var disub in di.GetDirectories()) todo.Enqueue(disub);
-					foreach (var fi in di.GetFiles("*.dll")) RemoveMOTW(fi.FullName);
-					foreach (var fi in di.GetFiles("*.exe")) RemoveMOTW(fi.FullName);
-				}
+				foreach (var fi in new DirectoryInfo(dllDir).BreadthFirstSearch(new[] { "*.dll", "*.exe" })) DeleteFileW($"{fi.FullName}:Zone.Identifier");
 			}
 			catch (Exception e)
 			{
