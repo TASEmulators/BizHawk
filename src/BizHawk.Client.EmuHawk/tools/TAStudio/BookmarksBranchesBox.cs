@@ -131,13 +131,13 @@ namespace BizHawk.Client.EmuHawk
 				var record = Movie[branch.Frame];
 				if (index == Branches.Current)
 				{
-					color = TAStudio.CurrentFrame_InputLog;
+					color = Tastudio.Palette.CurrentFrame_InputLog;
 				}
 				else if (record.Lagged.HasValue)
 				{
 					color = record.Lagged.Value
-						? TAStudio.LagZone_InputLog
-						: TAStudio.GreenZone_InputLog;
+						? Tastudio.Palette.LagZone_InputLog
+						: Tastudio.Palette.GreenZone_InputLog;
 				}
 			}
 

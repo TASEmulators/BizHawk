@@ -73,7 +73,7 @@ namespace BizHawk.Client.EmuHawk
 			if (prev != null && index == Markers.IndexOf(prev))
 			{
 				// feos: taseditor doesn't have it, so we're free to set arbitrary color scheme. and I prefer consistency
-				color = TAStudio.CurrentFrame_InputLog;
+				color = Tastudio.Palette.CurrentFrame_InputLog;
 			}
 			else if (index < Markers.Count)
 			{
@@ -84,11 +84,15 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (record.Lagged.Value)
 					{
-						color = column.Name == "FrameColumn" ? TAStudio.LagZone_FrameCol : TAStudio.LagZone_InputLog;
+						color = column.Name == "FrameColumn"
+							? Tastudio.Palette.LagZone_FrameCol
+							: Tastudio.Palette.LagZone_InputLog;
 					}
 					else
 					{
-						color = column.Name == "LabelColumn" ? TAStudio.GreenZone_FrameCol : TAStudio.GreenZone_InputLog;
+						color = column.Name == "LabelColumn"
+							? Tastudio.Palette.GreenZone_FrameCol
+							: Tastudio.Palette.GreenZone_InputLog;
 					}
 				}
 			}

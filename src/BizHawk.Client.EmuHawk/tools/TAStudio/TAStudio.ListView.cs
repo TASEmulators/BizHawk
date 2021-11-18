@@ -126,23 +126,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		// public static Color CurrentFrame_FrameCol = Color.FromArgb(0xCF, 0xED, 0xFC); Why?
-		public static Color CurrentFrame_InputLog => Color.FromArgb(0xB5, 0xE7, 0xF7);
-		public static Color SeekFrame_InputLog => Color.FromArgb(0x70, 0xB5, 0xE7, 0xF7);
-
-		public static Color GreenZone_FrameCol => Color.FromArgb(0xDD, 0xFF, 0xDD);
-		public static Color GreenZone_InputLog => Color.FromArgb(0xD2, 0xF9, 0xD3);
-		public static Color GreenZone_InputLog_Stated => Color.FromArgb(0xC4, 0xF7, 0xC8);
-		public static Color GreenZone_InputLog_Invalidated => Color.FromArgb(0xE0, 0xFB, 0xE0);
-
-		public static Color LagZone_FrameCol => Color.FromArgb(0xFF, 0xDC, 0xDD);
-		public static Color LagZone_InputLog => Color.FromArgb(0xF4, 0xDA, 0xDA);
-		public static Color LagZone_InputLog_Stated => Color.FromArgb(0xF0, 0xD0, 0xD2);
-		public static Color LagZone_InputLog_Invalidated => Color.FromArgb(0xF7, 0xE5, 0xE5);
-
-		public static Color Marker_FrameCol => Color.FromArgb(0xF7, 0xFF, 0xC9);
-		public static Color AnalogEdit_Col => Color.FromArgb(0x90, 0x90, 0x70); // SuuperW: When editing an analog value, it will be a gray color.
-
 		private Bitmap ts_v_arrow_green_blue => Properties.Resources.ts_v_arrow_green_blue;
 		private Bitmap ts_h_arrow_green_blue => Properties.Resources.ts_h_arrow_green_blue;
 		private Bitmap ts_v_arrow_blue => Properties.Resources.ts_v_arrow_blue;
@@ -248,7 +231,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (Emulator.Frame != index && CurrentTasMovie.Markers.IsMarker(index) && Settings.DenoteMarkersWithBGColor)
 				{
-					color = Marker_FrameCol;
+					color = Palette.Marker_FrameCol;
 				}
 				else
 				{
@@ -259,7 +242,7 @@ namespace BizHawk.Client.EmuHawk
 				&& (index == _axisEditRow || _extraAxisRows.Contains(index))
 				&& columnName == _axisEditColumn)
 			{
-				color = AnalogEdit_Col;
+				color = Palette.AnalogEdit_Col;
 			}
 
 			int player = Emulator.ControllerDefinition.PlayerNumber(columnName);
@@ -280,32 +263,32 @@ namespace BizHawk.Client.EmuHawk
 
 			if (MainForm.IsSeeking && MainForm.PauseOnFrame == index)
 			{
-				color = CurrentFrame_InputLog;
+				color = Palette.CurrentFrame_InputLog;
 			}
 			else if (!MainForm.IsSeeking && Emulator.Frame == index)
 			{
-				color = CurrentFrame_InputLog;
+				color = Palette.CurrentFrame_InputLog;
 			}
 			else if (record.Lagged.HasValue)
 			{
 				if (!record.HasState && Settings.DenoteStatesWithBGColor)
 				{
 					color = record.Lagged.Value
-						? LagZone_InputLog
-						: GreenZone_InputLog;
+						? Palette.LagZone_InputLog
+						: Palette.GreenZone_InputLog;
 				}
 				else
 				{
 					color = record.Lagged.Value
-						? LagZone_InputLog_Stated
-						: GreenZone_InputLog_Stated;
+						? Palette.LagZone_InputLog_Stated
+						: Palette.GreenZone_InputLog_Stated;
 				}
 			}
 			else if (record.WasLagged.HasValue)
 			{
-				color = record.WasLagged.Value ?
-					LagZone_InputLog_Invalidated :
-					GreenZone_InputLog_Invalidated;
+				color = record.WasLagged.Value
+					? Palette.LagZone_InputLog_Invalidated
+					: Palette.GreenZone_InputLog_Invalidated;
 			}
 			else
 			{

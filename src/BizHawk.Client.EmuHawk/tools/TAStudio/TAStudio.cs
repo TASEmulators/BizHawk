@@ -53,6 +53,8 @@ namespace BizHawk.Client.EmuHawk
 		[ConfigPersist]
 		public TAStudioSettings Settings { get; set; } = new TAStudioSettings();
 
+		public TAStudioPalette Palette => Settings.Palette;
+
 		[ConfigPersist]
 		public Font TasViewFont { get; set; } = new Font("Arial", 8.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
 
@@ -82,6 +84,8 @@ namespace BizHawk.Client.EmuHawk
 				DenoteStatesWithBGColor = true;
 				DenoteMarkersWithIcons = false;
 				DenoteMarkersWithBGColor = true;
+
+				Palette = TAStudioPalette.Default;
 			}
 
 			public RecentFiles RecentTas { get; set; }
@@ -109,6 +113,7 @@ namespace BizHawk.Client.EmuHawk
 			public int BranchMarkerSplitDistance { get; set; }
 			public bool BindMarkersToInput { get; set; }
 			public bool CopyIncludesFrameNo { get; set; }
+			public TAStudioPalette Palette { get; set; }
 		}
 
 		public TAStudio()
