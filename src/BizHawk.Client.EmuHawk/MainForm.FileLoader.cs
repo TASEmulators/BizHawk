@@ -214,7 +214,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void FormDragDrop_internal(DragEventArgs e)
+		private string[] PathsFromDragDrop;
+
+		private void FormDragDrop_internal()
 		{
 			/*
 			 *  Refactor, moving the loading of particular files into separate functions that can
@@ -243,7 +245,6 @@ namespace BizHawk.Client.EmuHawk
 			 *	  Make that order easy to change in the code, heavily suggesting ROM and playback as first and last respectively.
 			 */
 
-			var filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
 			Dictionary<LoadOrdering, List<FileInformation>> sortedFiles = new Dictionary<LoadOrdering, List<FileInformation>>();
 
 			// Initialize the dictionary's lists.
@@ -252,7 +253,7 @@ namespace BizHawk.Client.EmuHawk
 				sortedFiles.Add(value, new List<FileInformation>());
 			}
 
-			ProcessFileList(filePaths.Select(EmuHawkUtil.ResolveShortcut), ref sortedFiles);
+			ProcessFileList(PathsFromDragDrop.Select(EmuHawkUtil.ResolveShortcut), ref sortedFiles);
 
 			// For each of the different types of item, if there are no items of that type, skip them.
 			// If there is exactly one of that type of item, load it.

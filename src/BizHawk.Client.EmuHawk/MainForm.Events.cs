@@ -2587,20 +2587,6 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void FormDragDrop(object sender, DragEventArgs e)
-		{
-			Sound.StopSound();
-			try
-			{
-				FormDragDrop_internal(e);
-			}
-			catch (Exception ex)
-			{
-				ShowMessageBox(owner: null, $"Exception on drag and drop:\n{ex}");
-			}
-			finally
-			{
-				Sound.StartSound();
-			}
-		}
+			=> PathsFromDragDrop = (string[]) e.Data.GetData(DataFormats.FileDrop);
 	}
 }
