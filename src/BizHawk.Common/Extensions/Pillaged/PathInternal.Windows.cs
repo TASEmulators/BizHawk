@@ -3,10 +3,10 @@
 
 #pragma warning disable
 
+using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Runtime.CompilerServices;
 
-namespace System.IO
+namespace BizHawk.Common.PathExtensions
 {
     /// <summary>Contains internal path helpers that are shared between many projects.</summary>
     internal static partial class PathInternal

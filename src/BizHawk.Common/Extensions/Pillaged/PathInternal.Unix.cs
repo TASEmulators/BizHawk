@@ -5,10 +5,9 @@
 
 using System;
 using System.Diagnostics;
-using System.Text;
-using BizHawk.Common;
+using System.IO;
 
-namespace System.IO
+namespace BizHawk.Common.PathExtensions
 {
     /// <summary>Contains internal path helpers that are shared between many projects.</summary>
     internal static partial class PathInternal
