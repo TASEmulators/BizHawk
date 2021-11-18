@@ -47,6 +47,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		public int[] FrameBuffer = new int[256 * 192];
 		public int[] GameGearFrameBuffer = new int[160 * 144];
 		public int[] OverscanFrameBuffer = null;
+		public int[] Backdrop_SL = new int[256];
 
 		public bool Mode1Bit => (Registers[1] & 16) > 0;
 		public bool Mode2Bit => (Registers[0] & 2) > 0;
@@ -382,6 +383,11 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		internal void RenderCurrentScanline(bool render)
 		{
+			if (ScanLine < FrameHeight)
+			{
+				Backdrop_SL[ScanLine] = Palette[(byte)(16 + (Registers[7] & 15))];
+			}
+			
 			// only mode 4 supports frameskip. deal with it
 			if (TmsMode == 4)
 			{
@@ -423,6 +429,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			ser.Sync(nameof(CRAM), ref CRAM, false);
 			ser.Sync(nameof(VRAM), ref VRAM, false);
 			ser.Sync(nameof(HCounter), ref HCounter);
+			ser.Sync(nameof(Backdrop_SL), ref Backdrop_SL, false);
 			ser.EndSection();
 
 			if (ser.IsReader)
