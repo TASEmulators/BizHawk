@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -62,6 +63,22 @@ namespace BizHawk.Client.Common
 			[VSystemID.Raw.PS2] = "Playstation 2",
 		};
 
+		private static PathEntry BaseEntryFor(string sysID, string path)
+			=> new(sysID, 0x00, "Base", path);
+
+		private static PathEntry CheatsEntryFor(string sysID)
+			=> new(sysID, 0x23, "Cheats", Path.Combine(".", "Cheats"));
+
+		private static IEnumerable<PathEntry> CommonEntriesFor(string sysID, string basePath, bool omitSaveRAM = false)
+		{
+			yield return BaseEntryFor(sysID, basePath);
+			yield return ROMEntryFor(sysID);
+			yield return SavestatesEntryFor(sysID);
+			if (!omitSaveRAM) yield return SaveRAMEntryFor(sysID);
+			yield return ScreenshotsEntryFor(sysID);
+			yield return CheatsEntryFor(sysID);
+		}
+
 		public static string GetDisplayNameFor(string sysID)
 		{
 			if (_displayNameLookup.TryGetValue(sysID, out var dispName)) return dispName;
@@ -73,6 +90,21 @@ namespace BizHawk.Client.Common
 		public static bool InGroup(string sysID, string group)
 			=> sysID == group || group.Split('_').Contains(sysID);
 
+		private static PathEntry PalettesEntryFor(string sysID)
+			=> new(sysID, 0x30, "Palettes", Path.Combine(".", "Palettes"));
+
+		private static PathEntry ROMEntryFor(string sysID, string path = ".")
+			=> new(sysID, 0x01, "ROM", path);
+
+		private static PathEntry SaveRAMEntryFor(string sysID)
+			=> new(sysID, 0x21, "Save RAM", Path.Combine(".", "SaveRAM"));
+
+		private static PathEntry SavestatesEntryFor(string sysID)
+			=> new(sysID, 0x20, "Savestates", Path.Combine(".", "State"));
+
+		private static PathEntry ScreenshotsEntryFor(string sysID)
+			=> new(sysID, 0x22, "Screenshots", Path.Combine(".", "Screenshots"));
+
 		public List<PathEntry> Paths { get; }
 
 		[JsonConstructor]
@@ -81,7 +113,7 @@ namespace BizHawk.Client.Common
 			Paths = paths;
 		}
 
-		public PathEntryCollection() : this(new List<PathEntry>(DefaultValues)) {}
+		public PathEntryCollection() : this(new List<PathEntry>(Defaults.Value)) {}
 
 		public bool UseRecentForRoms { get; set; }
 		public string LastRomPath { get; set; } = ".";
@@ -102,15 +134,7 @@ namespace BizHawk.Client.Common
 			}
 
 			// we don't have anything for the system in question.  add a set of stock paths
-			Paths.AddRange(new PathEntry[]
-			{
-				new(system, 0, "Base", Path.Combine(".", $"{system.RemoveInvalidFileSystemChars()}_INTERIM")),
-				new(system, 1, "ROM", "."),
-				new(system, 2, "Savestates", Path.Combine(".", "State")),
-				new(system, 3, "Save RAM", Path.Combine(".", "SaveRAM")),
-				new(system, 4, "Screenshots", Path.Combine(".", "Screenshots")),
-				new(system, 5, "Cheats", Path.Combine(".", "Cheats")),
-			});
+			Paths.AddRange(CommonEntriesFor(system, basePath: Path.Combine(".", $"{system.RemoveInvalidFileSystemChars()}_INTERIM")));
 
 			return this[system, type];
 		}
@@ -118,7 +142,7 @@ namespace BizHawk.Client.Common
 		public void ResolveWithDefaults()
 		{
 			// Add missing entries
-			foreach (PathEntry defaultPath in DefaultValues)
+			foreach (var defaultPath in Defaults.Value)
 			{
 				var path = Paths.FirstOrDefault(p => p.System == defaultPath.System && p.Type == defaultPath.Type);
 				if (path == null)
@@ -132,7 +156,7 @@ namespace BizHawk.Client.Common
 			// Remove entries that no longer exist in defaults
 			foreach (PathEntry pathEntry in Paths)
 			{
-				var path = DefaultValues.FirstOrDefault(p => p.System == pathEntry.System && p.Type == pathEntry.Type);
+				var path = Defaults.Value.FirstOrDefault(p => p.System == pathEntry.System && p.Type == pathEntry.Type);
 				if (path == null)
 				{
 					entriesToRemove.Add(pathEntry);
@@ -151,299 +175,128 @@ namespace BizHawk.Client.Common
 		[JsonIgnore]
 		internal string TempFilesFragment => this[GLOBAL, "Temp Files"].Path;
 
-		public static List<PathEntry> DefaultValues => new List<PathEntry>
+		public static Lazy<IReadOnlyList<PathEntry>> Defaults = new(() => new[]
 		{
-			new(GLOBAL, 1, "Base", "."),
-			new(GLOBAL, 2, "ROM", "."),
-			new(GLOBAL, 3, "Firmware", Path.Combine(".", "Firmware")),
-			new(GLOBAL, 4, "Movies", Path.Combine(".", "Movies")),
-			new(GLOBAL, 5, "Movie backups", Path.Combine(".", "Movies", "backup")),
-			new(GLOBAL, 6, "A/V Dumps", "."),
-			new(GLOBAL, 7, "Tools", Path.Combine(".", "Tools")),
-			new(GLOBAL, 8, "Lua", Path.Combine(".", "Lua")),
-			new(GLOBAL, 9, "Watch (.wch)", Path.Combine(".", ".")),
-			new(GLOBAL, 10, "Debug Logs", Path.Combine(".", "")),
-			new(GLOBAL, 11, "Macros", Path.Combine(".", "Movies", "Macros")),
-			new(GLOBAL, 12, "TAStudio states", Path.Combine(".", "Movies", "TAStudio states")),
-			new(GLOBAL, 13, "Multi-Disk Bundles", Path.Combine(".", "")),
-			new(GLOBAL, 14, "External Tools", Path.Combine(".", "ExternalTools")),
-			new(GLOBAL, 15, "Temp Files", ""),
+			new[] {
+				BaseEntryFor(GLOBAL, "."),
+				ROMEntryFor(GLOBAL),
+				new(GLOBAL, 0x10, "Firmware", Path.Combine(".", "Firmware")),
+				new(GLOBAL, 0x11, "Movies", Path.Combine(".", "Movies")),
+				new(GLOBAL, 0x12, "Movie backups", Path.Combine(".", "Movies", "backup")),
+				new(GLOBAL, 0x13, "A/V Dumps", "."),
+				new(GLOBAL, 0x14, "Tools", Path.Combine(".", "Tools")),
+				new(GLOBAL, 0x15, "Lua", Path.Combine(".", "Lua")),
+				new(GLOBAL, 0x16, "Watch (.wch)", Path.Combine(".", ".")),
+				new(GLOBAL, 0x17, "Debug Logs", Path.Combine(".", "")),
+				new(GLOBAL, 0x18, "Macros", Path.Combine(".", "Movies", "Macros")),
+				new(GLOBAL, 0x19, "TAStudio states", Path.Combine(".", "Movies", "TAStudio states")),
+				new(GLOBAL, 0x1A, "Multi-Disk Bundles", Path.Combine(".", "")),
+				new(GLOBAL, 0x1B, "External Tools", Path.Combine(".", "ExternalTools")),
+				new(GLOBAL, 0x1C, "Temp Files", ""),
+			},
 
-			new(VSystemID.Raw.INTV, 0, "Base", Path.Combine(".", "Intellivision")),
-			new(VSystemID.Raw.INTV, 1, "ROM", "."),
-			new(VSystemID.Raw.INTV, 2, "Savestates", Path.Combine(".", "State")),
-			new(VSystemID.Raw.INTV, 3, "Save RAM", Path.Combine(".", "SaveRAM")),
-			new(VSystemID.Raw.INTV, 4, "Screenshots", Path.Combine(".", "Screenshots")),
-			new(VSystemID.Raw.INTV, 5, "Cheats", Path.Combine(".", "Cheats")),
-			new(VSystemID.Raw.INTV, 6, "Palettes", Path.Combine(".", "Palettes")),
+			CommonEntriesFor(VSystemID.Raw.Sega32X, basePath: Path.Combine(".", "32X")),
 
-			new(VSystemID.Raw.NES, 0, "Base", Path.Combine(".", "NES")),
-			new(VSystemID.Raw.NES, 1, "ROM", "."),
-			new(VSystemID.Raw.NES, 2, "Savestates", Path.Combine(".", "State")),
-			new(VSystemID.Raw.NES, 3, "Save RAM", Path.Combine(".", "SaveRAM")),
-			new(VSystemID.Raw.NES, 4, "Screenshots", Path.Combine(".", "Screenshots")),
-			new(VSystemID.Raw.NES, 5, "Cheats", Path.Combine(".", "Cheats")),
-			new(VSystemID.Raw.NES, 6, "Palettes", Path.Combine(".", "Palettes")),
+			CommonEntriesFor(VSystemID.Raw.A26, basePath: Path.Combine(".", "Atari 2600"), omitSaveRAM: true),
 
-			new(VSystemID.Raw.SNES, 0, "Base", Path.Combine(".", "SNES")),
-			new(VSystemID.Raw.SNES, 1, "ROM", "."),
-			new(VSystemID.Raw.SNES, 2, "Savestates", Path.Combine(".", "State")),
-			new(VSystemID.Raw.SNES, 3, "Save RAM", Path.Combine(".", "SaveRAM")),
-			new(VSystemID.Raw.SNES, 4, "Screenshots", Path.Combine(".", "Screenshots")),
-			new(VSystemID.Raw.SNES, 5, "Cheats", Path.Combine(".", "Cheats")),
+			CommonEntriesFor(VSystemID.Raw.A78, basePath: Path.Combine(".", "Atari 7800")),
 
-			new(VSystemID.Raw.GBA, 0, "Base", Path.Combine(".", "GBA")),
-			new(VSystemID.Raw.GBA, 1, "ROM", "."),
-			new(VSystemID.Raw.GBA, 2, "Savestates", Path.Combine(".", "State")),
-			new(VSystemID.Raw.GBA, 3, "Save RAM", Path.Combine(".", "SaveRAM")),
-			new(VSystemID.Raw.GBA, 4, "Screenshots", Path.Combine(".", "Screenshots")),
-			new(VSystemID.Raw.GBA, 5, "Cheats", Path.Combine(".", "Cheats")),
+			CommonEntriesFor(VSystemID.Raw.AmstradCPC, basePath: Path.Combine(".", "AmstradCPC"), omitSaveRAM: true),
 
-			new(VSystemID.Raw.SMS, 0, "Base", Path.Combine(".", "SMS")),
-			new(VSystemID.Raw.SMS, 1, "ROM", "."),
-			new(VSystemID.Raw.SMS, 2, "Savestates", Path.Combine(".", "State")),
-			new(VSystemID.Raw.SMS, 3, "Save RAM", Path.Combine(".", "SaveRAM")),
-			new(VSystemID.Raw.SMS, 4, "Screenshots", Path.Combine(".", "Screenshots")),
-			new(VSystemID.Raw.SMS, 5, "Cheats", Path.Combine(".", "Cheats")),
+			CommonEntriesFor(VSystemID.Raw.AppleII, basePath: Path.Combine(".", "Apple II"), omitSaveRAM: true),
 
-			new(VSystemID.Raw.GG, 0, "Base", Path.Combine(".", "Game Gear")),
-			new(VSystemID.Raw.GG, 1, "ROM", "."),
-			new(VSystemID.Raw.GG, 2, "Savestates", Path.Combine(".", "State")),
-			new(VSystemID.Raw.GG, 3, "Save RAM", Path.Combine(".", "SaveRAM")),
-			new(VSystemID.Raw.GG, 4, "Screenshots", Path.Combine(".", "Screenshots")),
-			new(VSystemID.Raw.GG, 5, "Cheats", Path.Combine(".", "Cheats")),
+			CommonEntriesFor(VSystemID.Raw.C64, basePath: Path.Combine(".", "C64"), omitSaveRAM: true),
 
-			new(VSystemID.Raw.SG, 0, "Base", Path.Combine(".", "SG-1000")),
-			new(VSystemID.Raw.SG, 1, "ROM", "."),
-			new(VSystemID.Raw.SG, 2, "Savestates", Path.Combine(".", "State")),
-			new(VSystemID.Raw.SG, 3, "Save RAM", Path.Combine(".", "SaveRAM")),
-			new(VSystemID.Raw.SG, 4, "Screenshots", Path.Combine(".", "Screenshots")),
-			new(VSystemID.Raw.SG, 5, "Cheats", Path.Combine(".", "Cheats")),
+			CommonEntriesFor(VSystemID.Raw.ChannelF, basePath: Path.Combine(".", "Channel F"), omitSaveRAM: true),
 
-			new(VSystemID.Raw.GEN, 0, "Base", Path.Combine(".", "Genesis")),
-			new(VSystemID.Raw.GEN, 1, "ROM", "."),
-			new(VSystemID.Raw.GEN, 2, "Savestates", Path.Combine(".", "State")),
-			new(VSystemID.Raw.GEN, 3, "Save RAM", Path.Combine(".", "SaveRAM")),
-			new(VSystemID.Raw.GEN, 4, "Screenshots", Path.Combine(".", "Screenshots")),
-			new(VSystemID.Raw.GEN, 5, "Cheats", Path.Combine(".", "Cheats")),
+			CommonEntriesFor(VSystemID.Raw.Coleco, basePath: Path.Combine(".", "Coleco"), omitSaveRAM: true),
 
-			new(COMBINED_SYSIDS_PCE, 0, "Base", Path.Combine(".", "PC Engine")),
-			new(COMBINED_SYSIDS_PCE, 1, "ROM", "."),
-			new(COMBINED_SYSIDS_PCE, 2, "Savestates", Path.Combine(".", "State")),
-			new(COMBINED_SYSIDS_PCE, 3, "Save RAM", Path.Combine(".", "SaveRAM")),
-			new(COMBINED_SYSIDS_PCE, 4, "Screenshots", Path.Combine(".", "Screenshots")),
-			new(COMBINED_SYSIDS_PCE, 5, "Cheats", Path.Combine(".", "Cheats")),
+			CommonEntriesFor(VSystemID.Raw.DGB, basePath: Path.Combine(".", "Dual Gameboy")),
+			new[] {
+				PalettesEntryFor(VSystemID.Raw.DGB),
+			},
 
-			new(COMBINED_SYSIDS_GB, 0, "Base", Path.Combine(".", "Gameboy")),
-			new(COMBINED_SYSIDS_GB, 1, "ROM", "."),
-			new(COMBINED_SYSIDS_GB, 2, "Savestates", Path.Combine(".", "State")),
-			new(COMBINED_SYSIDS_GB, 3, "Save RAM", Path.Combine(".", "SaveRAM")),
-			new(COMBINED_SYSIDS_GB, 4, "Screenshots", Path.Combine(".", "Screenshots")),
-			new(COMBINED_SYSIDS_GB, 5, "Cheats", Path.Combine(".", "Cheats")),
-			new(COMBINED_SYSIDS_GB, 6, "Palettes", Path.Combine(".", "Palettes")),
+			CommonEntriesFor(COMBINED_SYSIDS_GB, basePath: Path.Combine(".", "Gameboy")),
+			new[] {
+				PalettesEntryFor(COMBINED_SYSIDS_GB),
+			},
 
-			new(VSystemID.Raw.DGB, 0, "Base", Path.Combine(".", "Dual Gameboy")),
-			new(VSystemID.Raw.DGB, 1, "ROM", "."),
-			new(VSystemID.Raw.DGB, 2, "Savestates", Path.Combine(".", "State")),
-			new(VSystemID.Raw.DGB, 3, "Save RAM", Path.Combine(".", "SaveRAM")),
-			new(VSystemID.Raw.DGB, 4, "Screenshots", Path.Combine(".", "Screenshots")),
-			new(VSystemID.Raw.DGB, 5, "Cheats", Path.Combine(".", "Cheats")),
-			new(VSystemID.Raw.DGB, 6, "Palettes", Path.Combine(".", "Palettes")),
+			CommonEntriesFor(VSystemID.Raw.GB3x, basePath: Path.Combine(".", "GB3x")),
 
-			new(VSystemID.Raw.TI83, 0, "Base", Path.Combine(".", "TI83")),
-			new(VSystemID.Raw.TI83, 1, "ROM", "."),
-			new(VSystemID.Raw.TI83, 2, "Savestates", Path.Combine(".", "State")),
-			new(VSystemID.Raw.TI83, 3, "Save RAM", Path.Combine(".", "SaveRAM")),
-			new(VSystemID.Raw.TI83, 4, "Screenshots", Path.Combine(".", "Screenshots")),
-			new(VSystemID.Raw.TI83, 5, "Cheats", Path.Combine(".", "Cheats")),
+			CommonEntriesFor(VSystemID.Raw.GB4x, basePath: Path.Combine(".", "GB4x")),
 
-			new(VSystemID.Raw.A26, 0, "Base", Path.Combine(".", "Atari 2600")),
-			new(VSystemID.Raw.A26, 1, "ROM", "."),
-			new(VSystemID.Raw.A26, 2, "Savestates", Path.Combine(".", "State")),
-			new(VSystemID.Raw.A26, 4, "Screenshots", Path.Combine(".", "Screenshots")),
-			new(VSystemID.Raw.A26, 5, "Cheats", Path.Combine(".", "Cheats")),
+			CommonEntriesFor(VSystemID.Raw.GBA, basePath: Path.Combine(".", "GBA")),
 
-			new(VSystemID.Raw.A78, 0, "Base", Path.Combine(".", "Atari 7800")),
-			new(VSystemID.Raw.A78, 1, "ROM", "."),
-			new(VSystemID.Raw.A78, 2, "Savestates", Path.Combine(".", "State")),
-			new(VSystemID.Raw.A78, 3, "Save RAM", Path.Combine(".", "SaveRAM")),
-			new(VSystemID.Raw.A78, 4, "Screenshots", Path.Combine(".", "Screenshots")),
-			new(VSystemID.Raw.A78, 5, "Cheats", Path.Combine(".", "Cheats")),
+			CommonEntriesFor(VSystemID.Raw.GEN, basePath: Path.Combine(".", "Genesis")),
 
-			new(VSystemID.Raw.C64, 0, "Base", Path.Combine(".", "C64")),
-			new(VSystemID.Raw.C64, 1, "ROM", "."),
-			new(VSystemID.Raw.C64, 2, "Savestates", Path.Combine(".", "State")),
-			new(VSystemID.Raw.C64, 4, "Screenshots", Path.Combine(".", "Screenshots")),
-			new(VSystemID.Raw.C64, 5, "Cheats", Path.Combine(".", "Cheats")),
+			CommonEntriesFor(VSystemID.Raw.GG, basePath: Path.Combine(".", "Game Gear")),
 
-			new(VSystemID.Raw.ZXSpectrum, 0, "Base", Path.Combine(".", "ZXSpectrum")),
-			new(VSystemID.Raw.ZXSpectrum, 1, "ROM", "."),
-			new(VSystemID.Raw.ZXSpectrum, 2, "Savestates", Path.Combine(".", "State")),
-			new(VSystemID.Raw.ZXSpectrum, 4, "Screenshots", Path.Combine(".", "Screenshots")),
-			new(VSystemID.Raw.ZXSpectrum, 5, "Cheats", Path.Combine(".", "Cheats")),
+			CommonEntriesFor(VSystemID.Raw.GGL, basePath: Path.Combine(".", "Dual Game Gear")),
 
-			new(VSystemID.Raw.AmstradCPC, 0, "Base", Path.Combine(".", "AmstradCPC")),
-			new(VSystemID.Raw.AmstradCPC, 1, "ROM", "."),
-			new(VSystemID.Raw.AmstradCPC, 2, "Savestates", Path.Combine(".", "State")),
-			new(VSystemID.Raw.AmstradCPC, 4, "Screenshots", Path.Combine(".", "Screenshots")),
-			new(VSystemID.Raw.AmstradCPC, 5, "Cheats", Path.Combine(".", "Cheats")),
+			CommonEntriesFor(VSystemID.Raw.INTV, basePath: Path.Combine(".", "Intellivision")),
+			new[] {
+				PalettesEntryFor(VSystemID.Raw.INTV),
+			},
 
-			new(VSystemID.Raw.PSX, 0, "Base", Path.Combine(".", "PSX")),
-			new(VSystemID.Raw.PSX, 1, "ROM", "."),
-			new(VSystemID.Raw.PSX, 2, "Savestates", Path.Combine(".", "State")),
-			new(VSystemID.Raw.PSX, 3, "Save RAM", Path.Combine(".", "SaveRAM")),
-			new(VSystemID.Raw.PSX, 4, "Screenshots", Path.Combine(".", "Screenshots")),
-			new(VSystemID.Raw.PSX, 5, "Cheats", Path.Combine(".", "Cheats")),
+			new[] {
+				BaseEntryFor(VSystemID.Raw.Libretro, Path.Combine(".", "Libretro")),
+				// It doesn't make much sense to have a ROM dir for libretro, but a lot of stuff is built around the assumption of a ROM dir existing
+				// also, note, sometimes when path gets used, it's for opening a rom, which will be... loaded by... the default system for that rom, i.e. NOT libretro.
+				// Really, "Open Rom" for instance doesn't make sense when you have a libretro core open.
+				// Well, this is better than nothing.
+				ROMEntryFor(VSystemID.Raw.Libretro, "%recent%"),
+				new(VSystemID.Raw.Libretro, 0x10, "Cores", Path.Combine(".", "Cores")),
+				new(VSystemID.Raw.Libretro, 0x11, "System", Path.Combine(".", "System")),
+				SavestatesEntryFor(VSystemID.Raw.Libretro),
+				SaveRAMEntryFor(VSystemID.Raw.Libretro),
+				ScreenshotsEntryFor(VSystemID.Raw.Libretro),
+				CheatsEntryFor(VSystemID.Raw.Libretro),
+			},
 
-			new(VSystemID.Raw.Coleco, 0, "Base", Path.Combine(".", "Coleco")),
-			new(VSystemID.Raw.Coleco, 1, "ROM", "."),
-			new(VSystemID.Raw.Coleco, 2, "Savestates", Path.Combine(".", "State")),
-			new(VSystemID.Raw.Coleco, 4, "Screenshots", Path.Combine(".", "Screenshots")),
-			new(VSystemID.Raw.Coleco, 5, "Cheats", Path.Combine(".", "Cheats")),
+			CommonEntriesFor(VSystemID.Raw.Lynx, basePath: Path.Combine(".", "Lynx")),
 
-			new(VSystemID.Raw.N64, 0, "Base", Path.Combine(".", "N64")),
-			new(VSystemID.Raw.N64, 1, "ROM", "."),
-			new(VSystemID.Raw.N64, 2, "Savestates", Path.Combine(".", "State")),
-			new(VSystemID.Raw.N64, 3, "Save RAM", Path.Combine(".", "SaveRAM")),
-			new(VSystemID.Raw.N64, 4, "Screenshots", Path.Combine(".", "Screenshots")),
-			new(VSystemID.Raw.N64, 5, "Cheats", Path.Combine(".", "Cheats")),
+			CommonEntriesFor(VSystemID.Raw.MSX, basePath: Path.Combine(".", "MSX")),
 
-			new(VSystemID.Raw.SAT, 0, "Base", Path.Combine(".", "Saturn")),
-			new(VSystemID.Raw.SAT, 1, "ROM", "."),
-			new(VSystemID.Raw.SAT, 2, "Savestates", Path.Combine(".", "State")),
-			new(VSystemID.Raw.SAT, 3, "Save RAM", Path.Combine(".", "SaveRAM")),
-			new(VSystemID.Raw.SAT, 4, "Screenshots", Path.Combine(".", "Screenshots")),
-			new(VSystemID.Raw.SAT, 5, "Cheats", Path.Combine(".", "Cheats")),
+			CommonEntriesFor(VSystemID.Raw.N64, basePath: Path.Combine(".", "N64")),
 
-			new(VSystemID.Raw.WSWAN, 0, "Base", Path.Combine(".", "WonderSwan")),
-			new(VSystemID.Raw.WSWAN, 1, "ROM", "."),
-			new(VSystemID.Raw.WSWAN, 2, "Savestates", Path.Combine(".", "State")),
-			new(VSystemID.Raw.WSWAN, 3, "Save RAM", Path.Combine(".", "SaveRAM")),
-			new(VSystemID.Raw.WSWAN, 4, "Screenshots", Path.Combine(".", "Screenshots")),
-			new(VSystemID.Raw.WSWAN, 5, "Cheats", Path.Combine(".", "Cheats")),
+			CommonEntriesFor(VSystemID.Raw.NDS, basePath: Path.Combine(".", "NDS")),
 
-			new(VSystemID.Raw.Lynx, 0, "Base", Path.Combine(".", "Lynx")),
-			new(VSystemID.Raw.Lynx, 1, "ROM", "."),
-			new(VSystemID.Raw.Lynx, 2, "Savestates", Path.Combine(".", "State")),
-			new(VSystemID.Raw.Lynx, 3, "Save RAM", Path.Combine(".", "SaveRAM")),
-			new(VSystemID.Raw.Lynx, 4, "Screenshots", Path.Combine(".", "Screenshots")),
-			new(VSystemID.Raw.Lynx, 5, "Cheats", Path.Combine(".", "Cheats")),
+			CommonEntriesFor(VSystemID.Raw.NES, basePath: Path.Combine(".", "NES")),
+			new[] {
+				PalettesEntryFor(VSystemID.Raw.NES),
+			},
 
-			new(VSystemID.Raw.AppleII, 0, "Base", Path.Combine(".", "Apple II")),
-			new(VSystemID.Raw.AppleII, 1, "ROM", "."),
-			new(VSystemID.Raw.AppleII, 2, "Savestates", Path.Combine(".", "State")),
-			new(VSystemID.Raw.AppleII, 4, "Screenshots", Path.Combine(".", "Screenshots")),
-			new(VSystemID.Raw.AppleII, 5, "Cheats", Path.Combine(".", "Cheats")),
+			CommonEntriesFor(VSystemID.Raw.NGP, basePath: Path.Combine(".", "NGP")),
 
-			new(VSystemID.Raw.Libretro, 0, "Base", Path.Combine(".", "Libretro")),
-			new(VSystemID.Raw.Libretro, 1, "Cores", Path.Combine(".", "Cores")),
-			new(VSystemID.Raw.Libretro, 2, "System", Path.Combine(".", "System")),
-			new(VSystemID.Raw.Libretro, 3, "Savestates", Path.Combine(".", "State")),
-			new(VSystemID.Raw.Libretro, 4, "Save RAM", Path.Combine(".", "SaveRAM")),
-			new(VSystemID.Raw.Libretro, 5, "Screenshots", Path.Combine(".", "Screenshots")),
-			new(VSystemID.Raw.Libretro, 6, "Cheats", Path.Combine(".", "Cheats")),
-			//It doesn't make much sense to have a ROM dir for libretro, but a lot of stuff is built around the assumption of a ROM dir existing
-			//also, note, sometimes when path gets used, it's for opening a rom, which will be... loaded by... the default system for that rom, i.e. NOT libretro.
-			//Really, "Open Rom" for instance doesn't make sense when you have a libretro core open.
-			//Well, this is better than nothing.
-			new(VSystemID.Raw.Libretro, 7, "ROM", "%recent%"),
+			CommonEntriesFor(VSystemID.Raw.O2, basePath: Path.Combine(".", "O2")),
 
-			new(VSystemID.Raw.VB, 0, "Base", Path.Combine(".", "VB")),
-			new(VSystemID.Raw.VB, 1, "ROM", "."),
-			new(VSystemID.Raw.VB, 2, "Savestates", Path.Combine(".", "State")),
-			new(VSystemID.Raw.VB, 3, "Save RAM", Path.Combine(".", "SaveRAM")),
-			new(VSystemID.Raw.VB, 4, "Screenshots", Path.Combine(".", "Screenshots")),
-			new(VSystemID.Raw.VB, 5, "Cheats", Path.Combine(".", "Cheats")),
+			CommonEntriesFor(COMBINED_SYSIDS_PCE, basePath: Path.Combine(".", "PC Engine")),
 
-			new(VSystemID.Raw.NGP, 0, "Base", Path.Combine(".", "NGP")),
-			new(VSystemID.Raw.NGP, 1, "ROM", "."),
-			new(VSystemID.Raw.NGP, 2, "Savestates", Path.Combine(".", "State")),
-			new(VSystemID.Raw.NGP, 3, "Save RAM", Path.Combine(".", "SaveRAM")),
-			new(VSystemID.Raw.NGP, 4, "Screenshots", Path.Combine(".", "Screenshots")),
-			new(VSystemID.Raw.NGP, 5, "Cheats", Path.Combine(".", "Cheats")),
+			CommonEntriesFor(VSystemID.Raw.PCFX, basePath: Path.Combine(".", "PCFX")),
 
-			new(VSystemID.Raw.PCFX, 0, "Base", Path.Combine(".", "PCFX")),
-			new(VSystemID.Raw.PCFX, 1, "ROM", "."),
-			new(VSystemID.Raw.PCFX, 2, "Savestates", Path.Combine(".", "State")),
-			new(VSystemID.Raw.PCFX, 3, "Save RAM", Path.Combine(".", "SaveRAM")),
-			new(VSystemID.Raw.PCFX, 4, "Screenshots", Path.Combine(".", "Screenshots")),
-			new(VSystemID.Raw.PCFX, 5, "Cheats", Path.Combine(".", "Cheats")),
+			CommonEntriesFor(VSystemID.Raw.PS2, basePath: Path.Combine(".", "PS2")),
 
-			new(VSystemID.Raw.ChannelF, 0, "Base", Path.Combine(".", "Channel F")),
-			new(VSystemID.Raw.ChannelF, 1, "ROM", "."),
-			new(VSystemID.Raw.ChannelF, 2, "Savestates", Path.Combine(".", "State")),
-			new(VSystemID.Raw.ChannelF, 4, "Screenshots", Path.Combine(".", "Screenshots")),
-			new(VSystemID.Raw.ChannelF, 5, "Cheats", Path.Combine(".", "Cheats")),
+			CommonEntriesFor(VSystemID.Raw.PSX, basePath: Path.Combine(".", "PSX")),
 
-			new(VSystemID.Raw.GB3x, 0, "Base", Path.Combine(".", "GB3x")),
-			new(VSystemID.Raw.GB3x, 1, "ROM", "."),
-			new(VSystemID.Raw.GB3x, 2, "Savestates", Path.Combine(".", "State")),
-			new(VSystemID.Raw.GB3x, 3, "Save RAM", Path.Combine(".", "SaveRAM")),
-			new(VSystemID.Raw.GB3x, 4, "Screenshots", Path.Combine(".", "Screenshots")),
-			new(VSystemID.Raw.GB3x, 5, "Cheats", Path.Combine(".", "Cheats")),
+			CommonEntriesFor(VSystemID.Raw.SAT, basePath: Path.Combine(".", "Saturn")),
 
-			new(VSystemID.Raw.GB4x, 0, "Base", Path.Combine(".", "GB4x")),
-			new(VSystemID.Raw.GB4x, 1, "ROM", "."),
-			new(VSystemID.Raw.GB4x, 2, "Savestates", Path.Combine(".", "State")),
-			new(VSystemID.Raw.GB4x, 3, "Save RAM", Path.Combine(".", "SaveRAM")),
-			new(VSystemID.Raw.GB4x, 4, "Screenshots", Path.Combine(".", "Screenshots")),
-			new(VSystemID.Raw.GB4x, 5, "Cheats", Path.Combine(".", "Cheats")),
+			CommonEntriesFor(VSystemID.Raw.SG, basePath: Path.Combine(".", "SG-1000")),
 
-			new(VSystemID.Raw.VEC, 0, "Base", Path.Combine(".", "VEC")),
-			new(VSystemID.Raw.VEC, 1, "ROM", "."),
-			new(VSystemID.Raw.VEC, 2, "Savestates", Path.Combine(".", "State")),
-			new(VSystemID.Raw.VEC, 3, "Save RAM", Path.Combine(".", "SaveRAM")),
-			new(VSystemID.Raw.VEC, 4, "Screenshots", Path.Combine(".", "Screenshots")),
-			new(VSystemID.Raw.VEC, 5, "Cheats", Path.Combine(".", "Cheats")),
+			CommonEntriesFor(VSystemID.Raw.SMS, basePath: Path.Combine(".", "SMS")),
 
-			new(VSystemID.Raw.O2, 0, "Base", Path.Combine(".", "O2")),
-			new(VSystemID.Raw.O2, 1, "ROM", "."),
-			new(VSystemID.Raw.O2, 2, "Savestates", Path.Combine(".", "State")),
-			new(VSystemID.Raw.O2, 3, "Save RAM", Path.Combine(".", "SaveRAM")),
-			new(VSystemID.Raw.O2, 4, "Screenshots", Path.Combine(".", "Screenshots")),
-			new(VSystemID.Raw.O2, 5, "Cheats", Path.Combine(".", "Cheats")),
+			CommonEntriesFor(VSystemID.Raw.SNES, basePath: Path.Combine(".", "SNES")),
 
-			new(VSystemID.Raw.MSX, 0, "Base", Path.Combine(".", "MSX")),
-			new(VSystemID.Raw.MSX, 1, "ROM", "."),
-			new(VSystemID.Raw.MSX, 2, "Savestates", Path.Combine(".", "State")),
-			new(VSystemID.Raw.MSX, 3, "Save RAM", Path.Combine(".", "SaveRAM")),
-			new(VSystemID.Raw.MSX, 4, "Screenshots", Path.Combine(".", "Screenshots")),
-			new(VSystemID.Raw.MSX, 5, "Cheats", Path.Combine(".", "Cheats")),
+			CommonEntriesFor(VSystemID.Raw.TI83, basePath: Path.Combine(".", "TI83")),
 
-			new(VSystemID.Raw.UZE, 0, "Base", Path.Combine(".", "Uzebox")),
-			new(VSystemID.Raw.UZE, 1, "ROM", "."),
-			new(VSystemID.Raw.UZE, 2, "Savestates", Path.Combine(".", "State")),
-			new(VSystemID.Raw.UZE, 3, "Save RAM", Path.Combine(".", "SaveRAM")),
-			new(VSystemID.Raw.UZE, 4, "Screenshots", Path.Combine(".", "Screenshots")),
-			new(VSystemID.Raw.UZE, 5, "Cheats", Path.Combine(".", "Cheats")),
+			CommonEntriesFor(VSystemID.Raw.UZE, basePath: Path.Combine(".", "Uzebox")),
 
-			new(VSystemID.Raw.NDS, 0, "Base", Path.Combine(".", "NDS")),
-			new(VSystemID.Raw.NDS, 1, "ROM", "."),
-			new(VSystemID.Raw.NDS, 2, "Savestates", Path.Combine(".", "State")),
-			new(VSystemID.Raw.NDS, 3, "Save RAM", Path.Combine(".", "SaveRAM")),
-			new(VSystemID.Raw.NDS, 4, "Screenshots", Path.Combine(".", "Screenshots")),
-			new(VSystemID.Raw.NDS, 5, "Cheats", Path.Combine(".", "Cheats")),
+			CommonEntriesFor(VSystemID.Raw.VB, basePath: Path.Combine(".", "VB")),
 
-			new(VSystemID.Raw.Sega32X, 0, "Base", Path.Combine(".", "32X")),
-			new(VSystemID.Raw.Sega32X, 1, "ROM", "."),
-			new(VSystemID.Raw.Sega32X, 2, "Savestates", Path.Combine(".", "State")),
-			new(VSystemID.Raw.Sega32X, 3, "Save RAM", Path.Combine(".", "SaveRAM")),
-			new(VSystemID.Raw.Sega32X, 4, "Screenshots", Path.Combine(".", "Screenshots")),
-			new(VSystemID.Raw.Sega32X, 5, "Cheats", Path.Combine(".", "Cheats")),
+			CommonEntriesFor(VSystemID.Raw.VEC, basePath: Path.Combine(".", "VEC")),
 
-			new(VSystemID.Raw.GGL, 0, "Base", Path.Combine(".", "Dual Game Gear")),
-			new(VSystemID.Raw.GGL, 1, "ROM", "."),
-			new(VSystemID.Raw.GGL, 2, "Savestates", Path.Combine(".", "State")),
-			new(VSystemID.Raw.GGL, 3, "Save RAM", Path.Combine(".", "SaveRAM")),
-			new(VSystemID.Raw.GGL, 4, "Screenshots", Path.Combine(".", "Screenshots")),
-			new(VSystemID.Raw.GGL, 5, "Cheats", Path.Combine(".", "Cheats")),
+			CommonEntriesFor(VSystemID.Raw.WSWAN, basePath: Path.Combine(".", "WonderSwan")),
 
-			new(VSystemID.Raw.PS2, 0, "Base", Path.Combine(".", "PS2")),
-			new(VSystemID.Raw.PS2, 1, "ROM", "."),
-			new(VSystemID.Raw.PS2, 2, "Savestates", Path.Combine(".", "State")),
-			new(VSystemID.Raw.PS2, 3, "Save RAM", Path.Combine(".", "SaveRAM")),
-			new(VSystemID.Raw.PS2, 4, "Screenshots", Path.Combine(".", "Screenshots")),
-			new(VSystemID.Raw.PS2, 5, "Cheats", Path.Combine(".", "Cheats")),
-		};
+			CommonEntriesFor(VSystemID.Raw.ZXSpectrum, basePath: Path.Combine(".", "ZXSpectrum"), omitSaveRAM: true),
+		}.SelectMany(a => a).ToArray());
 	}
 }

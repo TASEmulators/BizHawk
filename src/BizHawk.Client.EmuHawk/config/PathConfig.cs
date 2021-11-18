@@ -43,7 +43,7 @@ namespace BizHawk.Client.EmuHawk
 			DoRomToggle();
 		}
 
-		private void DoTabs(IList<PathEntry> pathCollection, string focusTabOfSystem)
+		private void DoTabs(IReadOnlyList<PathEntry> pathCollection, string focusTabOfSystem)
 		{
 			bool IsTabPendingFocus(string system) => system == focusTabOfSystem || system.Split('_').Contains(focusTabOfSystem);
 
@@ -254,7 +254,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void DefaultsBtn_Click(object sender, EventArgs e)
-			=> DoTabs(PathEntryCollection.DefaultValues, PathEntryCollection.GLOBAL);
+			=> DoTabs(PathEntryCollection.Defaults.Value, PathEntryCollection.GLOBAL);
 
 		private void Ok_Click(object sender, EventArgs e)
 		{
