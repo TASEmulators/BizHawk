@@ -35,7 +35,7 @@
 #, gtk2-x11 ? pkgs.gtk2-x11
 # rundeps for all Linux hosts
 , mesa ? pkgs.mesa
-, mono ? pkgs.mono
+, mono ? null
 , openal ? pkgs.openal
 , uname ? stdenv
 # other parameters
@@ -46,10 +46,13 @@
 , initConfig ? {} # pretend this is JSON; the following env. vars will be substituted by the wrapper script (if surrounded by double-percent e.g. `%%BIZHAWK_DATA_HOME%%`): `BIZHAWK_DATA_HOME`
 }:
 let
+	commentUnless = b: lib.optionalString (!b) "# ";
 	versionAtLeast = reqVer: drv: builtins.compareVersions reqVer drv.version <= 0;
-	monoFinal = if versionAtLeast "6.12.0.151" mono
+	monoFinal = if mono != null
 		then mono
-		else pkgs.callPackage ./mono-6.12.0.151.nix { inherit mono; };
+		else if versionAtLeast "6.12.0.151" pkgs.mono
+			then pkgs.mono
+			else pkgs.callPackage ./mono-6.12.0.151.nix {};
 	bizhawk = buildDotnetModule rec {
 		pname = "BizHawk";
 		version = hawkVersion;
@@ -60,6 +63,9 @@ let
 		nugetDeps = ./deps.nix;
 		extraDotnetBuildFlags = "-maxcpucount:$NIX_BUILD_CORES -p:BuildInParallel=true --no-restore";
 		buildPhase = ''
+			${commentUnless useCWDAsSource}cd src/BizHawk.Version
+			${commentUnless useCWDAsSource}dotnet build ${extraDotnetBuildFlags}
+			${commentUnless useCWDAsSource}cd ../..
 			Dist/Build${buildConfig}.sh ${extraDotnetBuildFlags}
 			printf "Nix" >output/dll/custombuild.txt
 			Dist/Package.sh linux-x64
@@ -80,7 +86,6 @@ let
 		'';
 		dontPatchELF = true;
 	};
-	commentUnless = b: lib.optionalString (!b) "# ";
 	initConfigFile = writeText "config.json" (builtins.toJSON ({
 		LastWrittenFrom = if builtins.length (builtins.splitVersion hawkVersion) < 3 then "${hawkVersion}.0" else hawkVersion;
 		PathEntries = {
@@ -149,26 +154,29 @@ let
 		export LIBGL_DRIVERS_PATH=/usr/lib/dri
 		exec ${wrapperScript}/bin/emuhawk-wrapper "$@"
 	'';
-in stdenv.mkDerivation rec {
-	pname = "emuhawk-monort";
-	version = hawkVersion;
-	nativeBuildInputs = [ makeWrapper ];
-	buildInputs = [ bizhawk ];
-	# there must be a helper for this somewhere...
-	dontUnpack = true;
-	dontPatch = true;
-	dontConfigure = true;
-	dontBuild = true;
-	installPhase = ''
-		mkdir -p $out/bin
-		makeWrapper ${if forNixOS then "${wrapperScript}/bin/emuhawk-wrapper" else "${wrapperScriptNonNixOS}/bin/emuhawk-wrapper-non-nixos"} $out/bin/${pname}-${version} \
-			--set BIZHAWK_HOME ${bizhawk}
-	'';
-	dontFixup = true;
-#	desktopItems = [ (makeDesktopItem rec {
-#		name = "emuhawk-monort-${version}"; # actually filename
-#		exec = "${pname}-monort-${version}";
-#		desktopName = "EmuHawk (Mono Runtime)"; # actually Name
-#	}) ];
-	inherit bizhawk;
+in {
+	bizhawkAssemblies = bizhawk;
+	emuhawk = stdenv.mkDerivation rec {
+		pname = "emuhawk-monort";
+		version = hawkVersion;
+		nativeBuildInputs = [ makeWrapper ];
+		buildInputs = [ bizhawk ];
+		# there must be a helper for this somewhere...
+		dontUnpack = true;
+		dontPatch = true;
+		dontConfigure = true;
+		dontBuild = true;
+		installPhase = ''
+			mkdir -p $out/bin
+			makeWrapper ${if forNixOS then "${wrapperScript}/bin/emuhawk-wrapper" else "${wrapperScriptNonNixOS}/bin/emuhawk-wrapper-non-nixos"} $out/bin/${pname}-${version} \
+				--set BIZHAWK_HOME ${bizhawk}
+		'';
+		dontFixup = true;
+#		desktopItems = [ (makeDesktopItem rec {
+#			name = "emuhawk-monort-${version}"; # actually filename
+#			exec = "${pname}-monort-${version}";
+#			desktopName = "EmuHawk (Mono Runtime)"; # actually Name
+#		}) ];
+	};
+	mono = monoFinal;
 }
