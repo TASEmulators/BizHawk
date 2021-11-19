@@ -2408,38 +2408,25 @@ namespace BizHawk.Client.EmuHawk
 			e.Settings = Config.GetCoreSettings(e.Core, e.SettingsType);
 		}
 
-		/// <summary>
-		/// send core settings to emu, setting reboot flag if needed
-		/// </summary>
-		public void PutCoreSettings(object o, SettingsAdapter settable)
+		private void HandlePutCoreSettings(PutSettingsDirtyBits dirty)
 		{
-			if (!settable.HasSettings)
-				return;
-			var dirty = settable.PutSettings(o);
-			if(dirty.HasFlag(PutSettingsDirtyBits.RebootCore))
-				FlagNeedsReboot();
-			if (dirty.HasFlag(PutSettingsDirtyBits.ScreenLayoutChanged))
-				FrameBufferResized();
+			if (dirty.HasFlag(PutSettingsDirtyBits.RebootCore)) FlagNeedsReboot();
+			if (dirty.HasFlag(PutSettingsDirtyBits.ScreenLayoutChanged)) FrameBufferResized();
 		}
 
-		// TODO: Get/Put settings/sync settings methods could become a service we instantiate and use and pass to other forms
-		/// <summary>
-		/// send core sync settings to emu, setting reboot flag if needed
-		/// </summary>
-		public void PutCoreSyncSettings(object o, SettingsAdapter settable)
+		private bool MayPutCoreSyncSettings()
 		{
 			if (MovieSession.Movie.IsActive())
 			{
 				AddOnScreenMessage("Attempt to change sync-relevant settings while recording BLOCKED.");
+				return false;
 			}
-			else
-			{
-				if (!settable.HasSyncSettings)
-					return;
-				var dirty = settable.PutSyncSettings(o);
-				if(dirty.HasFlag(PutSettingsDirtyBits.RebootCore))
-					FlagNeedsReboot();
-			}
+			return true;
+		}
+
+		private void HandlePutCoreSyncSettings(PutSettingsDirtyBits dirty)
+		{
+			if (dirty.HasFlag(PutSettingsDirtyBits.RebootCore)) FlagNeedsReboot();
 		}
 
 		public SettingsAdapter GetSettingsAdapterForLoadedCore<T>()
@@ -2450,7 +2437,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		public SettingsAdapter GetSettingsAdapterForLoadedCoreUntyped()
-			=> new(Emulator);
+			=> new(Emulator, static () => true, HandlePutCoreSettings, MayPutCoreSyncSettings, HandlePutCoreSyncSettings);
 
 		private void SaveConfig(string path = "")
 		{

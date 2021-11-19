@@ -141,7 +141,7 @@ namespace BizHawk.Client.EmuHawk
 		private void BtnOk_Click(object sender, EventArgs e)
 		{
 			_syncSettings.FIOConfig = UserConfigFromGui();
-			_mainForm.PutCoreSyncSettings(_syncSettings, _mainForm.GetSettingsAdapterForLoadedCore<Octoshock>());
+			_mainForm.GetSettingsAdapterForLoadedCore<Octoshock>().PutCoreSyncSettings(_syncSettings);
 			
 			DialogResult = DialogResult.OK;
 			Close();

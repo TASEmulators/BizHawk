@@ -10,7 +10,6 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private readonly SettingsAdapter _settable;
 
-		private readonly IMainFormForConfig _mainForm;
 		private object _s;
 		private object _ss;
 		private bool _syncSettingsChanged;
@@ -23,9 +22,8 @@ namespace BizHawk.Client.EmuHawk
 			bool ignoreSyncSettings = false)
 		{
 			InitializeComponent();
-			_mainForm = mainForm;
 
-			_settable = ((MainForm) _mainForm).GetSettingsAdapterForLoadedCoreUntyped(); //HACK
+			_settable = ((MainForm) mainForm).GetSettingsAdapterForLoadedCoreUntyped(); //HACK
 
 			if (_settable.HasSettings && !ignoreSettings) _s = _settable.GetSettings();
 
@@ -61,12 +59,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_s != null && _settingsChanged)
 			{
-				_mainForm.PutCoreSettings(_s, _settable);
+				_settable.PutCoreSettings(_s);
 			}
 
 			if (_ss != null && _syncSettingsChanged)
 			{
-				_mainForm.PutCoreSyncSettings(_ss, _settable);
+				_settable.PutCoreSyncSettings(_ss);
 			}
 
 			DialogResult = DialogResult.OK;

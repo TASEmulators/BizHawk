@@ -59,7 +59,7 @@ namespace BizHawk.Client.EmuHawk
 				_syncSettings.DeterministicEmulation = determEmucheckBox1.Checked;
 				_syncSettings.AutoStartStopTape = autoLoadcheckBox1.Checked;
 
-				_mainForm.PutCoreSyncSettings(_syncSettings, _mainForm.GetSettingsAdapterForLoadedCore<AmstradCPC>());
+				_mainForm.GetSettingsAdapterForLoadedCore<AmstradCPC>().PutCoreSyncSettings(_syncSettings);
 
 				DialogResult = DialogResult.OK;
 				Close();

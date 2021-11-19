@@ -58,7 +58,7 @@ namespace BizHawk.Client.EmuHawk
 				_settings.BackgroundColor = _bgColor;
 				_settings.UseCoreBorderForBackground = checkBoxShowCoreBrdColor.Checked;
 
-				_mainForm.PutCoreSettings(_settings, _mainForm.GetSettingsAdapterForLoadedCore<ZXSpectrum>());
+				_mainForm.GetSettingsAdapterForLoadedCore<ZXSpectrum>().PutCoreSettings(_settings);
 
 				DialogResult = DialogResult.OK;
 				Close();

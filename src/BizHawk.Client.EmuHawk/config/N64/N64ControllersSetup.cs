@@ -52,7 +52,7 @@ namespace BizHawk.Client.EmuHawk
 					_syncSettings.Controllers[c.ControllerNumber - 1].PakType = c.PakType;
 				});
 
-			_mainForm.PutCoreSyncSettings(_syncSettings, _mainForm.GetSettingsAdapterForLoadedCore<N64>());
+			_mainForm.GetSettingsAdapterForLoadedCore<N64>().PutCoreSyncSettings(_syncSettings);
 
 			DialogResult = DialogResult.OK;
 			Close();

@@ -257,7 +257,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_emulator is TEmulator)
 			{
-				_mainForm.PutCoreSyncSettings(o, _mainForm.GetSettingsAdapterForLoadedCore<TEmulator>());
+				_mainForm.GetSettingsAdapterForLoadedCore<TEmulator>().PutCoreSyncSettings(o);
 			}
 			else
 			{
