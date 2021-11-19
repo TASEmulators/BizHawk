@@ -9,7 +9,7 @@ using BizHawk.Client.Common;
 namespace BizHawk.Client.EmuHawk
 {
 	// TODO: don't use textboxes as labels
-	public partial class RamPoke : Form
+	public partial class RamPoke : Form, IDialogParent
 	{
 		private readonly List<Watch> _watchList;
 		private readonly CheatCollection _cheats;

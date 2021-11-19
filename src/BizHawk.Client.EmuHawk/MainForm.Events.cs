@@ -863,13 +863,19 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (e is RomLoader.RomErrorArgs args)
 			{
-				using var configForm = new FirmwaresConfig(FirmwareManager, Config.FirmwareUserSpecifications, this, Config.PathEntries, retryLoadRom: true, reloadRomPath: args.RomPath);
+				using var configForm = new FirmwaresConfig(
+					this,
+					FirmwareManager,
+					Config.FirmwareUserSpecifications,
+					Config.PathEntries,
+					retryLoadRom: true,
+					reloadRomPath: args.RomPath);
 				var result = configForm.ShowDialog();
 				args.Retry = result == DialogResult.Retry;
 			}
 			else
 			{
-				using var configForm = new FirmwaresConfig(FirmwareManager, Config.FirmwareUserSpecifications, this, Config.PathEntries);
+				using var configForm = new FirmwaresConfig(this, FirmwareManager, Config.FirmwareUserSpecifications, Config.PathEntries);
 				configForm.ShowDialog();
 			}
 		}
@@ -1877,7 +1883,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Emulator is ZXSpectrum speccy)
 			{
-				using var form = new ZxSpectrumPokeMemory(this, speccy);
+				using var form = new ZxSpectrumPokeMemory(speccy);
 				form.ShowDialog();
 			}
 		}
@@ -2006,7 +2012,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Emulator is AmstradCPC cpc)
 			{
-				using var form = new AmstradCpcPokeMemory(this, cpc);
+				using var form = new AmstradCpcPokeMemory(cpc);
 				form.ShowDialog();
 			}
 		}

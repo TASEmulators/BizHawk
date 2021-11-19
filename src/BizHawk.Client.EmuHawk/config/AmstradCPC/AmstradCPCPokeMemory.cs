@@ -7,12 +7,10 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class AmstradCpcPokeMemory : Form
 	{
-		private readonly IMainFormForConfig _mainForm;
 		private readonly AmstradCPC _cpc;
 
-		public AmstradCpcPokeMemory(IMainFormForConfig mainForm, AmstradCPC cpc)
+		public AmstradCpcPokeMemory(AmstradCPC cpc)
 		{
-			_mainForm = mainForm;
 			_cpc = cpc;
 			InitializeComponent();
 			Icon = Properties.Resources.GameControllerIcon;

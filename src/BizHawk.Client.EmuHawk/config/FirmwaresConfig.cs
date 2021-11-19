@@ -30,11 +30,9 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private readonly IDictionary<string, string> _firmwareUserSpecifications;
 
-		private readonly IMainFormForConfig _mainForm;
-
 		private readonly PathEntryCollection _pathEntries;
 
-		public IDialogController DialogController => _mainForm.DialogController;
+		public IDialogController DialogController { get; }
 
 		private readonly FirmwareManager Manager;
 
@@ -102,16 +100,16 @@ namespace BizHawk.Client.EmuHawk
 		private readonly ListViewSorter _listViewSorter;
 
 		public FirmwaresConfig(
+			IDialogController dialogController,
 			FirmwareManager firmwareManager,
 			IDictionary<string, string> firmwareUserSpecifications,
-			IMainFormForConfig mainForm,
 			PathEntryCollection pathEntries,
 			bool retryLoadRom = false,
 			string reloadRomPath = null)
 		{
 			_firmwareUserSpecifications = firmwareUserSpecifications;
-			_mainForm = mainForm;
 			_pathEntries = pathEntries;
+			DialogController = dialogController;
 			Manager = firmwareManager;
 
 			InitializeComponent();

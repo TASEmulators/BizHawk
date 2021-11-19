@@ -7,7 +7,7 @@ using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class SoundConfig : Form
+	public partial class SoundConfig : Form, IDialogParent
 	{
 		private readonly Config _config;
 

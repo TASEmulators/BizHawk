@@ -5,7 +5,7 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class GreenzoneSettings : Form
+	public partial class GreenzoneSettings : Form, IDialogParent
 	{
 		private readonly Action<ZwinderStateManagerSettings, bool> _saveSettings;
 		private ZwinderStateManagerSettings _settings;
