@@ -35,9 +35,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		}
 
 		// i tried using the left and right buffers and then mixing them together... it was kind of a mess of code, and slow
-		private BlipBuffer[] _linkedBlips;
+		private readonly BlipBuffer[] _linkedBlips;
 
-		private readonly short[][] _linkedSoundBuffers;
+		private readonly short[] SoundBuffer;
+
+		private readonly short[] ScratchBuffer = new short[1536];
 
 		private readonly short[] SampleBuffer = new short[1536];
 		private int _sampleBufferContains = 0;
@@ -46,60 +48,104 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		private unsafe void PrepSound()
 		{
-			fixed (short* sl = _linkedSoundBuffers[0], sr = _linkedSoundBuffers[1])
+			fixed (short* sb = &SoundBuffer[0])
 			{
-				for (uint i = 0; i < SampPerFrame * 2; i += 2)
+				for (int i = 0; i < _numCores; i++)
 				{
-					int s = (sl[i] + sl[i + 1]) / 2;
-					if (s != _linkedLatches[0])
+					for (uint j = 0; j < SampPerFrame * 2; j += 2)
 					{
-						_linkedBlips[0].AddDelta(i, s - _linkedLatches[0]);
-						_linkedLatches[0] = s;
+						int s = (sb[(i * MaxSampsPerFrame) + j] + sb[(i * MaxSampsPerFrame) + j + 1]) / 2;
+						if (s != _linkedLatches[i])
+						{
+							_linkedBlips[i].AddDelta(j, s - _linkedLatches[i]);
+							_linkedLatches[i] = s;
+						}
 					}
-
-					s = (sr[i] + sr[i + 1]) / 2;
-					if (s != _linkedLatches[1])
-					{
-						_linkedBlips[1].AddDelta(i, s - _linkedLatches[1]);
-						_linkedLatches[1] = s;
-					}
+					_linkedBlips[i].EndFrame(SampPerFrame * 2);
 				}
 			}
 
-			_linkedBlips[0].EndFrame(SampPerFrame * 2);
-			_linkedBlips[1].EndFrame(SampPerFrame * 2);
-			int count = _linkedBlips[0].SamplesAvailable();
-			if (count != _linkedBlips[1].SamplesAvailable())
+			int count = _linkedBlips[P1].SamplesAvailable();
+			for (int i = 1; i < _numCores; i++)
 			{
-				throw new Exception("Sound problem?");
+				if (count != _linkedBlips[i].SamplesAvailable())
+				{
+					throw new Exception("Sound problem?");
+				}
 			}
 
 			// calling blip.Clear() causes rounding fractions to be reset,
 			// and if only one channel is muted, in subsequent frames we can be off by a sample or two
 			// not a big deal, but we didn't account for it.  so we actually complete the entire
 			// audio read and then stamp it out if muted.
-			_linkedBlips[0].ReadSamplesLeft(SampleBuffer, count);
-			if (_settings._linkedSettings[0].Muted)
-			{
-				fixed (short* p = SampleBuffer)
-				{
-					for (int i = 0; i < SampleBuffer.Length; i += 2)
-					{
-						p[i] = 0;
-					}
-				}
-			}
 
-			_linkedBlips[1].ReadSamplesRight(SampleBuffer, count);
-			if (_settings._linkedSettings[1].Muted)
+			switch (_numCores)
 			{
-				fixed (short* p = SampleBuffer)
-				{
-					for (int i = 1; i < SampleBuffer.Length; i += 2)
+				case 2:
 					{
-						p[i] = 0;
+						// no need to do any complicated mixing
+						_linkedBlips[P1].ReadSamplesLeft(_settings._linkedSettings[P1].Muted ? ScratchBuffer : SampleBuffer, count);
+						_linkedBlips[P2].ReadSamplesRight(_settings._linkedSettings[P2].Muted ? ScratchBuffer : SampleBuffer, count);
+						break;
 					}
-				}
+				case 3:
+					{
+						// since P2 is center, mix its samples with P1 and P3
+						_linkedBlips[P1].ReadSamplesLeft(_settings._linkedSettings[P1].Muted ? ScratchBuffer : SampleBuffer, count);
+						_linkedBlips[P3].ReadSamplesRight(_settings._linkedSettings[P3].Muted ? ScratchBuffer : SampleBuffer, count);
+						_linkedBlips[P2].ReadSamples(ScratchBuffer, count, false);
+						if (!_settings._linkedSettings[P2].Muted)
+						{
+							fixed (short* p = SampleBuffer, q = ScratchBuffer)
+							{
+								for (int i = 0; i < SampleBuffer.Length; i++)
+								{
+									int s = (p[i] + q[i]) / 2;
+									p[i] = (short)s;
+								}
+							}
+						}
+						break;
+					}
+				case 4:
+					{
+						// since P1 and P2 are left side and P3 and P4 are right side, mix their samples accordingly
+						_linkedBlips[P1].ReadSamplesLeft(_settings._linkedSettings[P1].Muted ? ScratchBuffer : SampleBuffer, count);
+						_linkedBlips[P3].ReadSamplesRight(_settings._linkedSettings[P3].Muted ? ScratchBuffer : SampleBuffer, count);
+						_linkedBlips[P2].ReadSamplesLeft(ScratchBuffer, count);
+						_linkedBlips[P4].ReadSamplesRight(ScratchBuffer, count);
+						if (_settings._linkedSettings[P2].Muted)
+						{
+							fixed (short* p = ScratchBuffer)
+							{
+								for (int i = 0; i < ScratchBuffer.Length; i += 2)
+								{
+									p[i] = 0;
+								}
+							}
+						}
+						if (_settings._linkedSettings[P4].Muted)
+						{
+							fixed (short* p = ScratchBuffer)
+							{
+								for (int i = 1; i < ScratchBuffer.Length; i += 2)
+								{
+									p[i] = 0;
+								}
+							}
+						}
+						fixed (short* p = SampleBuffer, q = ScratchBuffer)
+						{
+							for (int i = 0; i < SampleBuffer.Length; i++)
+							{
+								int s = (p[i] + q[i]) / 2;
+								p[i] = (short)s;
+							}
+						}
+						break;
+					}
+				default:
+					throw new Exception();
 			}
 
 			_sampleBufferContains = count;

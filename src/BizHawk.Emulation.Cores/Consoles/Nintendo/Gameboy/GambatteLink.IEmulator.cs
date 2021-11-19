@@ -47,18 +47,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			unsafe
 			{
-				fixed (int* leftfbuff = &FrameBuffer[0])
+				fixed (int* fbuff = &FrameBuffer[0])
 				{
 					// use pitch to have both cores write to the same frame buffer, interleaved
-					int* rightfbuff = leftfbuff + 160;
-					const int Pitch = 160 * 2;
+					int Pitch = 160 * _numCores;
 
-					fixed (short* leftsbuff = _linkedSoundBuffers[0], rightsbuff = _linkedSoundBuffers[1])
+					fixed (short* sbuff = &SoundBuffer[0])
 					{
 						const int Step = 32; // could be 1024 for GB
 
-						int nL = _linkedOverflow[0];
-						int nR = _linkedOverflow[1];
+						int[] n = new int[_numCores];
+						for (int i = 0; i < _numCores; i++)
+						{
+							n[i] = _linkedOverflow[i];
+						}
 
 						// slowly step our way through the frame, while continually checking and resolving link cable status
 						for (int target = 0; target < SampPerFrame;)
@@ -69,33 +71,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 								target = SampPerFrame; // don't run for slightly too long depending on step
 							}
 
-							// gambatte_runfor() aborts early when a frame is produced, but we don't want that, hence the while()
-							while (nL < target)
+							for (int i = 0; i < _numCores; i++)
 							{
-								uint nsamp = (uint)(target - nL);
-								if (LibGambatte.gambatte_runfor(_linkedCores[0].GambatteState, leftfbuff, Pitch, leftsbuff + (nL * 2), ref nsamp) > 0)
+								// gambatte_runfor() aborts early when a frame is produced, but we don't want that, hence the while()
+								while (n[i] < target)
 								{
-									for (int i = 0; i < 144; i++)
+									uint nsamp = (uint)(target - n[i]);
+									if (LibGambatte.gambatte_runfor(_linkedCores[i].GambatteState, fbuff + (i * 160), Pitch, sbuff + (i * MaxSampsPerFrame) + (n[i] * 2), ref nsamp) > 0)
 									{
-										Array.Copy(FrameBuffer, Pitch * i, VideoBuffer, Pitch * i, 160);
+										for (int j = 0; j < 144; j++)
+										{
+											Array.Copy(FrameBuffer, (i * 160) + (j * Pitch), VideoBuffer, (i * 160) + (j * Pitch), 160);
+										}
 									}
+
+									n[i] += (int)nsamp;
 								}
-
-								nL += (int)nsamp;
-							}
-
-							while (nR < target)
-							{
-								uint nsamp = (uint)(target - nR);
-								if (LibGambatte.gambatte_runfor(_linkedCores[1].GambatteState, rightfbuff, Pitch, rightsbuff + (nR * 2), ref nsamp) > 0)
-								{
-									for (int i = 0; i < 144; i++)
-									{
-										Array.Copy(FrameBuffer, 160 + Pitch * i, VideoBuffer, 160 + Pitch * i, 160);
-									}
-								}
-
-								nR += (int)nsamp;
 							}
 
 							// poll link cable statuses, but not when the cable is disconnected
@@ -123,11 +114,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 							}
 						}
 
-						_linkedOverflow[0] = nL - SampPerFrame;
-						_linkedOverflow[1] = nR - SampPerFrame;
-						if (_linkedOverflow[0] < 0 || _linkedOverflow[1] < 0)
+						for (int i = 0; i < _numCores; i++)
 						{
-							throw new Exception("Timing problem?");
+							_linkedOverflow[i] = n[i] - SampPerFrame;
+							if (_linkedOverflow[i] < 0)
+							{
+								throw new Exception("Timing problem?");
+							}
 						}
 
 						if (rendersound)
@@ -136,14 +129,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 						}
 
 						// copy extra samples back to beginning
-						for (int i = 0; i < _linkedOverflow[0] * 2; i++)
+						for (int i = 0; i < _numCores; i++)
 						{
-							_linkedSoundBuffers[0][i] = _linkedSoundBuffers[0][i + (SampPerFrame * 2)];
-						}
-
-						for (int i = 0; i < _linkedOverflow[1] * 2; i++)
-						{
-							_linkedSoundBuffers[1][i] = _linkedSoundBuffers[1][i + (SampPerFrame * 2)];
+							for (int j = 0; j < _linkedOverflow[i] * 2; j++)
+							{
+								SoundBuffer[(i * MaxSampsPerFrame) + j] = SoundBuffer[(i * MaxSampsPerFrame) + j + (SampPerFrame * 2)];
+							}
 						}
 					}
 				}

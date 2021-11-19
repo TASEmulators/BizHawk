@@ -23,7 +23,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			_linkedCores = new Gameboy[_numCores];
 			_linkedConts = new SaveController[_numCores];
-			_linkedSoundBuffers = new short[_numCores][];
 			_linkedBlips = new BlipBuffer[_numCores];
 			_linkedLatches = new int[_numCores];
 			_linkedOverflow = new int[_numCores];
@@ -38,8 +37,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				_linkedCores[i].ConnectInputCallbackSystem(_inputCallbacks);
 				_linkedCores[i].ConnectMemoryCallbackSystem(_memoryCallbacks);
 				_linkedConts[i] = new SaveController(Gameboy.CreateControllerDefinition(false, false));
-				_linkedSoundBuffers[i] = new short[(SampPerFrame + 2064) * 2];
-				_linkedBlips[i] = new BlipBuffer(1024);
+				_linkedBlips[i] = new BlipBuffer(150000);
 				_linkedBlips[i].SetRates(2097152 * 2, 44100);
 				_linkedOverflow[i] = 0;
 				_linkedLatches[i] = 0;
@@ -51,6 +49,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			Frame = 0;
 			LagCount = 0;
 			IsLagFrame = false;
+
+			SoundBuffer = new short[MaxSampsPerFrame * _numCores];
 
 			FrameBuffer = CreateVideoBuffer();
 			VideoBuffer = CreateVideoBuffer();
@@ -96,6 +96,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		private bool _cablediscosignal = false;
 
 		private const int SampPerFrame = 35112;
+		private const int MaxSampsPerFrame = (SampPerFrame + 2064) * 2;
 
 		private readonly SaveController[] _linkedConts;
 
