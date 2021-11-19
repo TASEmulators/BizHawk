@@ -126,8 +126,6 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		/// <summary>
 		/// CPU is attempting to write to the specified IO port
 		/// </summary>
-		/// <param name="addr"></param>
-		/// <returns></returns>
 		public void WritePort(ushort addr, byte value)
 		{
 			switch (addr)
