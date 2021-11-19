@@ -29,13 +29,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			_linkedOverflow = new int[_numCores];
 
 			RomDetails = "";
+			_memoryCallbacks = new MemoryCallbackSystem(new[] { "System Bus" });
 
 			for (int i = 0; i < _numCores; i++)
 			{
 				_linkedCores[i] = new Gameboy(lp.Comm, lp.Roms[i].Game, lp.Roms[i].RomData, _settings._linkedSettings[i], _syncSettings._linkedSyncSettings[i], lp.DeterministicEmulationRequested);
 				LibGambatte.gambatte_linkstatus(_linkedCores[i].GambatteState, 259); // connect link cable
 				_linkedCores[i].ConnectInputCallbackSystem(_inputCallbacks);
-				_linkedCores[i].ConnectMemoryCallbackSystem(_memorycallbacks);
+				_linkedCores[i].ConnectMemoryCallbackSystem(_memoryCallbacks);
 				_linkedConts[i] = new SaveController(Gameboy.CreateControllerDefinition(false, false));
 				_linkedSoundBuffers[i] = new short[(SampPerFrame + 2064) * 2];
 				_linkedBlips[i] = new BlipBuffer(1024);
@@ -61,9 +62,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			_linkedMemoryDomains = new LinkedMemoryDomains(_linkedCores, _numCores);
 			_serviceProvider.Register<IMemoryDomains>(_linkedMemoryDomains);
+
+			_linkedDebuggable = new LinkedDebuggable(_linkedCores, _numCores, _memoryCallbacks);
+			_serviceProvider.Register<IDebuggable>(_linkedDebuggable);
 		}
 
 		private readonly BasicServiceProvider _serviceProvider;
+
+		private readonly MemoryCallbackSystem _memoryCallbacks;
 
 		public string RomDetails { get; }
 
@@ -78,6 +84,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		private readonly LinkedSaveRam _linkedSaveRam;
 		private readonly LinkedMemoryDomains _linkedMemoryDomains;
+		private readonly LinkedDebuggable _linkedDebuggable;
 
 		// counters to ensure we do 35112 samples per frame
 		private readonly int[] _linkedOverflow;

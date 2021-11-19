@@ -60,6 +60,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		internal void ConnectMemoryCallbackSystem(MemoryCallbackSystem mcs)
 		{
 			_memorycallbacks = mcs;
+			_memorycallbacks.ActiveChanged += SetMemoryCallbacks;
 		}
 
 		private void InitMemoryCallbacks()
@@ -78,12 +79,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			_writecb = CreateCallback(MemoryCallbackFlags.AccessWrite, () => MemoryCallbacks.HasWrites);
 			_execcb = CreateCallback(MemoryCallbackFlags.AccessExecute, () => MemoryCallbacks.HasExecutes);
 
-			_memorycallbacks.ActiveChanged += () =>
-			{
-				LibGambatte.gambatte_setreadcallback(GambatteState, MemoryCallbacks.HasReads ? _readcb : null);
-				LibGambatte.gambatte_setwritecallback(GambatteState, MemoryCallbacks.HasWrites ? _writecb : null);
-				LibGambatte.gambatte_setexeccallback(GambatteState, MemoryCallbacks.HasExecutes ? _execcb : null);
-			};
+			_memorycallbacks.ActiveChanged += SetMemoryCallbacks;
+		}
+
+		private void SetMemoryCallbacks()
+		{
+			LibGambatte.gambatte_setreadcallback(GambatteState, MemoryCallbacks.HasReads ? _readcb : null);
+			LibGambatte.gambatte_setwritecallback(GambatteState, MemoryCallbacks.HasWrites ? _writecb : null);
+			LibGambatte.gambatte_setexeccallback(GambatteState, MemoryCallbacks.HasExecutes ? _execcb : null);
 		}
 	}
 }
