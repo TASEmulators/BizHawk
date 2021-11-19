@@ -140,7 +140,7 @@ let
 			ln -fsvT "${lib.getOutput "drivers" mesa}/lib/libGLX_mesa.so.0" "$BIZHAWK_GLHACKDIR/libGLX_indirect.so.0"
 		fi
 		# collect links to certain GL libs (and their deps) from host, added to LD_LIBRARY_PATH without polluting it with all libs from host
-		for l in libdrm_amdgpu.so.1 libdrm_nouveau.so.2 libdrm_radeon.so.1 libedit.so.0 libelf.so.1 libffi.so.7 libGLdispatch.so.0 libicudata.so.69 libicuuc.so.69 libLLVM-11.so liblzma.so.5 libncursesw.so.6 libsensors.so.5 libstdc++.so.6 libvulkan.so.1 libxml2.so.2 libz.so.1 libzstd.so.1; do
+		for l in libbsd.so.0 libdrm_amdgpu.so.1 libdrm_nouveau.so.2 libdrm_radeon.so.1 libedit.so.0 libedit.so.2 libelf.so.1 libffi.so.7 libGLdispatch.so.0 libicudata.so.69 libicuuc.so.69 libLLVM-11.so libLLVM-12.so.1 liblzma.so.5 libncursesw.so.6 libsensors.so.5 libstdc++.so.6 libtinfo.so.6 libvulkan.so.1 libxml2.so.2 libz.so.1 libzstd.so.1; do
 			if [ -e "$BIZHAWK_GLHACKDIR/$l" ]; then continue; fi
 			# else it's either a broken link or it doesn't exist, we use ln -f to cover both
 			for d in /usr/lib /usr/lib/x86_64-linux-gnu /usr/lib64 /lib /lib64; do
@@ -151,7 +151,13 @@ let
 			done
 		done
 
-		export LIBGL_DRIVERS_PATH=/usr/lib/dri
+		for d in /usr/lib/dri /usr/lib/x86_64-linux-gnu/dri; do
+			if [ -e "$d" ]; then
+				export LIBGL_DRIVERS_PATH=$d
+				break
+			fi
+		done
+
 		exec ${wrapperScript}/bin/emuhawk-wrapper "$@"
 	'';
 in {
