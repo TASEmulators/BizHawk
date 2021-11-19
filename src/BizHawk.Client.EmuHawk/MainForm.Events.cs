@@ -889,7 +889,7 @@ namespace BizHawk.Client.EmuHawk
 		private void PathsMenuItem_Click(object sender, EventArgs e)
 		{
 			using var form = new PathConfig(this, Config.PathEntries, Game.System);
-			form.ShowDialog();
+			if (form.ShowDialog().IsOk()) AddOnScreenMessage("Path settings saved");
 		}
 
 		private void SoundMenuItem_Click(object sender, EventArgs e)
@@ -950,8 +950,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CustomizeMenuItem_Click(object sender, EventArgs e)
 		{
-			using var form = new EmuHawkOptions(BumpAutoFlushSaveRamTimer, Config, this.AddOnScreenMessage);
-			form.ShowDialog();
+			var prevLuaEngine = Config.LuaEngine;
+			using var form = new EmuHawkOptions(Config, BumpAutoFlushSaveRamTimer);
+			if (!form.ShowDialog().IsOk()) return;
+			AddOnScreenMessage("Custom configurations saved.");
+			if (Config.LuaEngine != prevLuaEngine) AddOnScreenMessage("Restart EmuHawk for Lua change to take effect");
 		}
 
 		private void ProfilesMenuItem_Click(object sender, EventArgs e)

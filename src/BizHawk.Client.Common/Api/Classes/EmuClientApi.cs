@@ -198,7 +198,7 @@ namespace BizHawk.Client.Common
 			{
 				_config.TargetZoomFactors[Emulator.SystemId] = size;
 				_mainForm.FrameBufferResized();
-				_mainForm.AddOnScreenMessage($"Window size set to {size}x");
+				_displayManager.OSD.AddMessage($"Window size set to {size}x");
 			}
 			else
 			{

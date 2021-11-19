@@ -18,7 +18,6 @@ namespace BizHawk.Client.Common
 
 		private readonly Action _pauseCallback;
 		private readonly Action _modeChangedCallback;
-		private readonly Action<string> _messageCallback;
 
 		private IMovie _queuedMovie;
 
@@ -29,13 +28,11 @@ namespace BizHawk.Client.Common
 			string backDirectory,
 			IDialogParent dialogParent,
 			IQuickBmpFile quickBmpFile,
-			Action<string> messageCallback,
 			Action pauseCallback,
 			Action modeChangedCallback)
 		{
 			Settings = settings;
 			BackupDirectory = backDirectory;
-			_messageCallback = messageCallback;
 			_dialogParent = dialogParent;
 			_quickBmpFile = quickBmpFile;
 			_pauseCallback = pauseCallback
@@ -326,9 +323,7 @@ namespace BizHawk.Client.Common
 		public void PopupMessage(string message) => _dialogParent.ModalMessageBox(message, "Warning", EMsgBoxIcon.Warning);
 
 		private void Output(string message)
-		{
-			_messageCallback?.Invoke(message);
-		}
+			=> _dialogParent.DialogController.AddOnScreenMessage(message);
 
 		private void LatchInputToUser()
 		{

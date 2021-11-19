@@ -32,8 +32,6 @@ namespace BizHawk.Client.Common
 		/// <remarks>only referenced from <c>EmuClientApi</c></remarks>
 		bool PauseAvi { set; }
 
-		void AddOnScreenMessage(string message);
-
 		/// <remarks>only referenced from <c>EmuClientApi</c></remarks>
 		void ClearHolds();
 

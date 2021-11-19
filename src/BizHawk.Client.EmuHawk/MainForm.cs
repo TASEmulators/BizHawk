@@ -172,6 +172,7 @@ namespace BizHawk.Client.EmuHawk
 			if (Config.SkipWaterboxIntegrityChecks)
 				prefs = CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck;
 
+			// can't pass self as IDialogParent :(
 			return new CoreComm(
 				message => this.ModalMessageBox(message, "Warning", EMsgBoxIcon.Warning),
 				AddOnScreenMessage,
@@ -334,7 +335,6 @@ namespace BizHawk.Client.EmuHawk
 				Config.PathEntries.MovieBackupsAbsolutePath(),
 				this,
 				QuickBmpFile,
-				AddOnScreenMessage,
 				PauseEmulator,
 				SetMainformMovieInfo);
 
@@ -2150,7 +2150,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (!LoadRom(romPath, args, out var failureIsFromAskSave))
 			{
-				if (failureIsFromAskSave) OSD.AddMessage("ROM loading cancelled; a tool had unsaved changes");
+				if (failureIsFromAskSave) AddOnScreenMessage("ROM loading cancelled; a tool had unsaved changes");
 				else Config.RecentRoms.HandleLoadError(this, romPath, rom);
 			}
 		}
@@ -3728,7 +3728,7 @@ namespace BizHawk.Client.EmuHawk
 					ChooseArchive = LoadArchiveChooser,
 					ChoosePlatform = ChoosePlatformForRom,
 					Deterministic = deterministic,
-					MessageCallback = OSD.AddMessage,
+					MessageCallback = AddOnScreenMessage,
 					OpenAdvanced = args.OpenAdvanced
 				};
 				FirmwareManager.RecentlyServed.Clear();

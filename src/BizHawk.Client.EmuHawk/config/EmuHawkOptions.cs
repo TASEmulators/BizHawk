@@ -11,13 +11,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly Config _config;
 
-		private readonly Action<string> _osdMessageCallback;
-
-		public EmuHawkOptions(Action autoFlushSaveRamTimerBumpCallback, Config config, Action<string> osdMessageCallback)
+		public EmuHawkOptions(Config config, Action autoFlushSaveRamTimerBumpCallback)
 		{
 			_autoFlushSaveRamTimerBumpCallback = autoFlushSaveRamTimerBumpCallback;
 			_config = config;
-			_osdMessageCallback = osdMessageCallback;
 			InitializeComponent();
 		}
 
@@ -138,7 +135,6 @@ namespace BizHawk.Client.EmuHawk
 			_config.SkipWaterboxIntegrityChecks = cbSkipWaterboxIntegrityChecks.Checked;
 			_config.NoMixedInputHokeyOverride = NoMixedKeyPriorityCheckBox.Checked;
 
-			var prevLuaEngine = _config.LuaEngine;
 			if (LuaInterfaceRadio.Checked)
 			{
 				_config.LuaEngine = ELuaEngine.LuaPlusLuaInterface;
@@ -146,12 +142,6 @@ namespace BizHawk.Client.EmuHawk
 			else if (NLuaRadio.Checked)
 			{
 				_config.LuaEngine = ELuaEngine.NLuaPlusKopiLua;
-			}
-
-			_osdMessageCallback("Custom configurations saved.");
-			if (prevLuaEngine != _config.LuaEngine)
-			{
-				_osdMessageCallback("Restart emulator for Lua change to take effect");
 			}
 
 			Close();

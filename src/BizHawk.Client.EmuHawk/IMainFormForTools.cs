@@ -47,8 +47,6 @@ namespace BizHawk.Client.EmuHawk
 		/// <remarks>only referenced from <see cref="GenericDebugger"/></remarks>
 		event Action<bool> OnPauseChanged;
 
-		void AddOnScreenMessage(string message);
-
 		BitmapBuffer CaptureOSD();
 
 		/// <remarks>only referenced from <see cref="TAStudio"/></remarks>

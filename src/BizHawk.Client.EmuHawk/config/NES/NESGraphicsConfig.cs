@@ -108,7 +108,7 @@ namespace BizHawk.Client.EmuHawk
 						var data = Palettes.Load_FCEUX_Palette(palette.ReadAllBytes());
 						if (showMsg)
 						{
-							_mainForm.AddOnScreenMessage($"Palette file loaded: {palette.Name}");
+							_mainForm.DialogController.AddOnScreenMessage($"Palette file loaded: {palette.Name}");
 						}
 
 						return data;
@@ -120,7 +120,7 @@ namespace BizHawk.Client.EmuHawk
 				// no filename: interpret this as "reset to default"
 				if (showMsg)
 				{
-					_mainForm.AddOnScreenMessage("Standard Palette set");
+					_mainForm.DialogController.AddOnScreenMessage("Standard Palette set");
 				}
 
 				return (byte[,])Palettes.QuickNESPalette.Clone();

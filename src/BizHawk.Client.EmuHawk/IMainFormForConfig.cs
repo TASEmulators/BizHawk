@@ -10,8 +10,6 @@ namespace BizHawk.Client.EmuHawk
 
 		IMovieSession MovieSession { get; }
 
-		void AddOnScreenMessage(string message);
-
 		void PutCoreSettings(object o);
 
 		void PutCoreSyncSettings(object o);
