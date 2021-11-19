@@ -32,7 +32,7 @@ namespace BizHawk.Client.EmuHawk
 			_settings.BGColor = (uint)BackgroundPanel.BackColor.ToArgb();
 			_settings.ForeColor = (uint)ForeGroundPanel.BackColor.ToArgb();
 
-			_mainForm.PutCoreSettings(_settings, _mainForm.GetSettingsAdapterForLoadedCore<TI83>());
+			_mainForm.GetSettingsAdapterForLoadedCore<TI83>().PutCoreSettings(_settings);
 
 			DialogResult = DialogResult.OK;
 			Close();

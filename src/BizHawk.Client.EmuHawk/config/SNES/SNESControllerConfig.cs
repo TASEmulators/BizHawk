@@ -44,7 +44,7 @@ namespace BizHawk.Client.EmuHawk
 				_syncSettings.RightPort = (LibsnesControllerDeck.ControllerType)Enum.Parse(typeof(LibsnesControllerDeck.ControllerType), Port2ComboBox.SelectedItem.ToString());
 				_syncSettings.LimitAnalogChangeSensitivity = LimitAnalogChangeCheckBox.Checked;
 
-				_mainForm.PutCoreSyncSettings(_syncSettings, _mainForm.GetSettingsAdapterForLoadedCore<LibsnesCore>());
+				_mainForm.GetSettingsAdapterForLoadedCore<LibsnesCore>().PutCoreSyncSettings(_syncSettings);
 			}
 
 			DialogResult = DialogResult.OK;

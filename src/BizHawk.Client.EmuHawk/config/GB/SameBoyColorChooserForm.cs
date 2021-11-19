@@ -316,7 +316,7 @@ namespace BizHawk.Client.EmuHawk
 
 			_settings.SetCustomPalette(colors);
 
-			_mainForm.PutCoreSettings(_settings, _mainForm.GetSettingsAdapterForLoadedCore<Sameboy>());
+			_mainForm.GetSettingsAdapterForLoadedCore<Sameboy>().PutCoreSettings(_settings);
 
 			DialogResult = DialogResult.OK;
 			Close();

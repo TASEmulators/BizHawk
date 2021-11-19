@@ -55,7 +55,7 @@ namespace BizHawk.Client.EmuHawk
 				_settings.EarVolume = earVolumetrackBar.Value;
 				_settings.AYVolume = ayVolumetrackBar.Value;
 
-				_mainForm.PutCoreSettings(_settings, _mainForm.GetSettingsAdapterForLoadedCore<ZXSpectrum>());
+				_mainForm.GetSettingsAdapterForLoadedCore<ZXSpectrum>().PutCoreSettings(_settings);
 			}
 			DialogResult = DialogResult.OK;
 			Close();

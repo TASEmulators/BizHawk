@@ -10,9 +10,5 @@ namespace BizHawk.Client.EmuHawk
 		/// <exception cref="InvalidOperationException">loaded emulator is not instance of <typeparamref name="T"/></exception>
 		SettingsAdapter GetSettingsAdapterForLoadedCore<T>()
 			where T : IEmulator;
-
-		void PutCoreSettings(object o, SettingsAdapter settable);
-
-		void PutCoreSyncSettings(object o, SettingsAdapter settable);
 	}
 }
