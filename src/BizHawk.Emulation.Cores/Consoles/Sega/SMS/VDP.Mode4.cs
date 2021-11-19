@@ -126,6 +126,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			{
 				renderHappens = false;
 				overflowHappens = false;
+				collisionHappens = false;
 			}
 
 			int SpriteBase = SpriteAttributeTableBase;
@@ -174,14 +175,15 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 					{
 						if (SpriteCollisionBuffer[x + xs] != 0)
 						{
-							if (collisionHappens) 
-								StatusByte |= 0x20; // Set Collision bit
+							if (collisionHappens)
+								StatusByte |= 0x20; // Set Collision bit	
 						}
 						else if (renderHappens && ScanlinePriorityBuffer[x + xs] == 0)
 						{
 							FrameBuffer[(ys + y) * 256 + x + xs] = Palette[(color + 16)];
 						}
-						SpriteCollisionBuffer[x + xs] = 1;
+						if (collisionHappens)
+							SpriteCollisionBuffer[x + xs] = (byte)i;
 					}
 				}
 				SpritesDrawnThisScanline++;
@@ -203,6 +205,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			{
 				renderHappens = false;
 				overflowHappens = false;
+				collisionHappens = false;
 			}
 
 			int SpriteBase = SpriteAttributeTableBase;
@@ -258,7 +261,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 						{
 							FrameBuffer[(ys + y) * 256 + x + xs] = Palette[(color + 16)];
 						}
-						SpriteCollisionBuffer[x + xs] = 1;
+						if (collisionHappens)
+							SpriteCollisionBuffer[x + xs] = 1;
 					}
 				}
 				SpritesDrawnThisScanline++;
