@@ -5,6 +5,11 @@
 	/// </summary>
 	public sealed partial class F3850
 	{
+		/// <summary>
+		/// LR - LOAD REGISTER 
+		/// The LR group of instructions move one or two bytes of data between a source and destination register.
+		/// No status bits are modified. 
+		/// </summary>
 		private void LR_A_KU()
 		{
 			PopulateCURINSTR(
@@ -15,6 +20,11 @@
 				END);
 		}
 
+		/// <summary>
+		/// LR - LOAD REGISTER 
+		/// The LR group of instructions move one or two bytes of data between a source and destination register.
+		/// No status bits are modified. 
+		/// </summary>
 		private void LR_A_KL()
 		{
 			PopulateCURINSTR(
@@ -25,6 +35,11 @@
 				END);
 		}
 
+		/// <summary>
+		/// LR - LOAD REGISTER 
+		/// The LR group of instructions move one or two bytes of data between a source and destination register.
+		/// No status bits are modified. 
+		/// </summary>
 		private void LR_A_QU()
 		{
 			PopulateCURINSTR(
@@ -35,6 +50,12 @@
 				END);
 		}
 
+
+		/// <summary>
+		/// LR - LOAD REGISTER 
+		/// The LR group of instructions move one or two bytes of data between a source and destination register.
+		/// No status bits are modified. 
+		/// </summary>
 		private void LR_A_QL()
 		{
 			PopulateCURINSTR(
@@ -45,6 +66,11 @@
 				END);
 		}
 
+		/// <summary>
+		/// LR - LOAD REGISTER 
+		/// The LR group of instructions move one or two bytes of data between a source and destination register.
+		/// No status bits are modified. 
+		/// </summary>
 		private void LR_KU_A()
 		{
 			PopulateCURINSTR(
@@ -55,6 +81,11 @@
 				END);
 		}
 
+		/// <summary>
+		/// LR - LOAD REGISTER 
+		/// The LR group of instructions move one or two bytes of data between a source and destination register.
+		/// No status bits are modified. 
+		/// </summary>
 		private void LR_KL_A()
 		{
 			PopulateCURINSTR(
@@ -65,6 +96,11 @@
 				END);
 		}
 
+		/// <summary>
+		/// LR - LOAD REGISTER 
+		/// The LR group of instructions move one or two bytes of data between a source and destination register.
+		/// No status bits are modified. 
+		/// </summary>
 		private void LR_QU_A()
 		{
 			PopulateCURINSTR(
@@ -75,6 +111,11 @@
 				END);
 		}
 
+		/// <summary>
+		/// LR - LOAD REGISTER 
+		/// The LR group of instructions move one or two bytes of data between a source and destination register.
+		/// No status bits are modified. 
+		/// </summary>
 		private void LR_QL_A()
 		{
 			PopulateCURINSTR(
@@ -85,6 +126,11 @@
 				END);
 		}
 
+		/// <summary>
+		/// LR - LOAD REGISTER 
+		/// The LR group of instructions move one or two bytes of data between a source and destination register.
+		/// No status bits are modified. 
+		/// </summary>
 		private void LR_K_P()
 		{
 			PopulateCURINSTR(
@@ -109,6 +155,11 @@
 				END);
 		}
 
+		/// <summary>
+		/// LR - LOAD REGISTER 
+		/// The LR group of instructions move one or two bytes of data between a source and destination register.
+		/// No status bits are modified. 
+		/// </summary>
 		private void LR_P_K()
 		{
 			PopulateCURINSTR(
@@ -133,6 +184,11 @@
 				END);
 		}
 
+		/// <summary>
+		/// LR - LOAD REGISTER 
+		/// The LR group of instructions move one or two bytes of data between a source and destination register.
+		/// No status bits are modified. 
+		/// </summary>
 		private void LR_A_IS()
 		{
 			PopulateCURINSTR(
@@ -143,6 +199,11 @@
 				END);
 		}
 
+		/// <summary>
+		/// LR - LOAD REGISTER 
+		/// The LR group of instructions move one or two bytes of data between a source and destination register.
+		/// No status bits are modified. 
+		/// </summary>
 		private void LR_IS_A()
 		{
 			PopulateCURINSTR(
@@ -153,6 +214,12 @@
 				END);
 		}
 
+		/// <summary>
+		/// PK - CALL TO SUBROUTINE DIRECT AND RETURN FROM SUBROUTINE DIRECT
+		/// The contents of the Program Counter Registers (PCO) are stored in the Stack Registers (PC1), 
+		/// then the contents of the Scratchpad K Registers (Registers 12 and 13 of scratchpad memory) are transferred into the Program Counter Registers.
+		/// No status bits are modified. 
+		/// </summary>
 		private void PK()
 		{
 			PopulateCURINSTR(
@@ -177,6 +244,11 @@
 				END);
 		}
 
+		/// <summary>
+		/// LR - LOAD REGISTER 
+		/// The LR group of instructions move one or two bytes of data between a source and destination register.
+		/// No status bits are modified. 
+		/// </summary>
 		private void LR_P0_Q()
 		{
 			PopulateCURINSTR(
@@ -201,6 +273,11 @@
 				END);
 		}
 
+		/// <summary>
+		/// LR - LOAD REGISTER 
+		/// The LR group of instructions move one or two bytes of data between a source and destination register.
+		/// No status bits are modified. 
+		/// </summary>
 		private void LR_Q_DC()
 		{
 			PopulateCURINSTR(
@@ -225,6 +302,11 @@
 				END);
 		}
 
+		/// <summary>
+		/// LR - LOAD REGISTER 
+		/// The LR group of instructions move one or two bytes of data between a source and destination register.
+		/// No status bits are modified. 
+		/// </summary>
 		private void LR_DC_Q()
 		{
 			PopulateCURINSTR(
@@ -249,6 +331,11 @@
 				END);
 		}
 
+		/// <summary>
+		/// LR - LOAD REGISTER 
+		/// The LR group of instructions move one or two bytes of data between a source and destination register.
+		/// No status bits are modified. 
+		/// </summary>
 		private void LR_DC_H()
 		{
 			PopulateCURINSTR(
@@ -273,6 +360,11 @@
 				END);
 		}
 
+		/// <summary>
+		/// LR - LOAD REGISTER 
+		/// The LR group of instructions move one or two bytes of data between a source and destination register.
+		/// No status bits are modified. 
+		/// </summary>
 		private void LR_H_DC()
 		{
 			PopulateCURINSTR(
@@ -297,7 +389,15 @@
 				END);
 		}
 
-		private void SHIFT_R(byte index)
+		/// <summary>
+		/// SR - SHIFT RIGHT
+		/// The contents of the accumulator are shifted right either one or four bit positions, depending on the value of the SR instruction operand.
+		/// Statuses modified: ZERO, SIGN 
+		/// Statuses reset: OVF, CARRY 
+		/// Statuses unaffected: ICB
+		/// </summary>
+		/// <param name="index"></param>
+		private void SR(byte index)
 		{
 			PopulateCURINSTR(
 				// S
@@ -307,7 +407,15 @@
 				END);
 		}
 
-		private void SHIFT_L(byte index)
+		/// <summary>
+		/// SL - SHIFT LEFT
+		/// The contents of the accumulator are shifted left either one or four bit positions, depending upon the value of the SL instruction operand. 
+		/// Statuses modified: ZERO, SIGN
+		/// Statuses reset: OVF, CARRY
+		/// Statuses unaffected: ICB
+		/// </summary>
+		/// <param name="index"></param>
+		private void SL(byte index)
 		{
 			PopulateCURINSTR(
 				// S
@@ -317,6 +425,12 @@
 				END);
 		}
 
+		/// <summary>
+		/// LM - LOAD ACCUMULATOR FROM MEMORY
+		/// The contents of the memory byte addressed by the DCO registers are loaded into the accumulator. 
+		/// The contents of the DCO registers are incremented as a resu It of the LM instruction execution.
+		/// No status bits are modified. 
+		/// </summary>
 		private void LM()
 		{
 			PopulateCURINSTR(
@@ -334,6 +448,12 @@
 				END);
 		}
 
+		/// <summary>
+		/// ST - STORE TO MEMORY
+		/// The contents of the accumulator are stored in the memory location addressed by the Data Counter (DCO) registers.
+		/// The DC registers' contents are incremented as a result of the instruction execution.
+		/// No status bits are modified. 
+		/// </summary>
 		private void ST()
 		{
 			PopulateCURINSTR(
@@ -351,17 +471,29 @@
 				END);
 		}
 
+		/// <summary>
+		/// COM - COMPLEMENT
+		/// The accumulator is loaded with its one's complement.
+		/// Statuses modified: ZERO, SIGN
+		/// Statuses reset: OVF, CARRY
+		/// Status unaffected: ICB
+		/// </summary>
 		private void COM()
 		{
 			PopulateCURINSTR(
 				// S
-				OP_XOR8, A, BYTE,           // A <- A XOR 0xFF (compliment accumulator)
-											//OP_COM,						// A <- A XOR 0xFF (compliment accumulator)
+				OP_COM,						// A <- A XOR 0xFF (compliment accumulator)
 				ROMC_00_S,                  // DB <- ((PC0)); PC0++
 				IDLE,
 				END);
 		}
 
+		/// <summary>
+		/// LNK - LlNK CARRY TO THE ACCUMULATOR
+		/// The carry bit is binary added to the least significant bit of the accumulator. The result is stored in the accumulator.
+		/// Statuses modified: OVF, ZERO, CARRY, SIGN
+		/// Statuses unaffected: ICB
+		/// </summary>
 		private void LNK()
 		{
 			PopulateCURINSTR(
@@ -372,6 +504,12 @@
 				END);
 		}
 
+		/// <summary>
+		/// DI - DISABLE INTERRUPT
+		/// The interrupt control bit, ICB, is reset; no interrupt requests will be acknowledged by the 3850 CPU
+		/// Statuses reset: ICB 
+		/// Statuses unaffected: OVF, ZERO, CARRY, SIGN
+		/// </summary>
 		private void DI()
 		{
 			PopulateCURINSTR(
@@ -387,6 +525,11 @@
 				END);
 		}
 
+		/// <summary>
+		/// EI - ENABLE INTERRUPT
+		/// The interrupt control bit is set. Interrupt requests will now be acknowledged by the CPU.
+		/// ICB is set to 1. All other status bits are unaffected. 
+		/// </summary>
 		private void EI()
 		{
 			PopulateCURINSTR(
@@ -402,6 +545,11 @@
 				END);
 		}
 
+		/// <summary>
+		/// POP - RETURN FROM SUBROUTINE
+		/// The contents of the Stack Registers (PC1) are transferred to the Program Counter Registers (PCO).
+		/// No status bits are modified.
+		/// </summary>
 		private void POP()
 		{
 			PopulateCURINSTR(
@@ -442,6 +590,12 @@
 				END);
 		}
 
+		/// <summary>
+		/// INC - INCREMENT ACCUMULATOR 
+		/// The content of the accumulator is increased by one binary count.
+		/// Statuses modified: OVF, ZERO, CARRY, SIGN
+		/// Statuses unaffected: ICB
+		/// </summary>
 		private void INC()
 		{
 			PopulateCURINSTR(
@@ -452,15 +606,20 @@
 				END);
 		}
 
+		/// <summary>
+		/// LI - LOAD IMMEDIATE 
+		/// The value provided by the operand of the LI instruction is !oaded into the accumuator. 
+		/// No status bits are affected. 
+		/// </summary>
 		private void LI()
 		{
 			PopulateCURINSTR(
 				// L
 				ROMC_03_L,					// DB <- ((PC0)); PC0++
 				IDLE,
-				IDLE, //OP_CLEAR_FLAGS,
+				IDLE,
 				OP_LR8, A, DB,				// A <- (DB)
-				IDLE, //OP_SET_FLAGS_SZ, A,
+				IDLE,
 				IDLE,
 				// S
 				ROMC_00_S,                  // DB <- ((PC0)); PC0++
@@ -469,6 +628,14 @@
 				END);
 		}
 
+		/// <summary>
+		/// NI - AND IMMEDIATE
+		/// An 8-bit value provided by the operand of the NI instruction is ANDed with the contents of the accumulator. 
+		/// The results are stored in the accumulator. 
+		/// Statuses reset to 0: OVF, CARRY
+		/// Statuses modified: ZERO, SIGN 
+		/// Statuses unaffected: ICB 
+		/// </summary>
 		private void NI()
 		{
 			PopulateCURINSTR(
@@ -486,6 +653,14 @@
 				END);
 		}
 
+		/// <summary>
+		/// OI - OR IMMEDIATE
+		/// An 8-bit value provided by the operand of the 1/0 instruction is ORed with the contents of the accumulator. 
+		/// The results are stored in the accumulator. 
+		/// Statuses modified: ZERO, SIGN
+		/// Statuses reset: OVF, CARRY 
+		/// Statuses unaffected: ICB
+		/// </summary>
 		private void OI()
 		{
 			PopulateCURINSTR(
@@ -503,6 +678,14 @@
 				END);
 		}
 
+		/// <summary>
+		/// XI - EXCLUSIVE-OR IMMEDIATE
+		/// The contents of the 8-bit value provided by the operand of the XI instruction are EXCLUSIVE-ORed with the contents of the accumulator. 
+		/// The results are stored in the accumulator. 
+		/// Statuses modified: ZERO, SIGN
+		/// Statuses reset: OVF, CARRY
+		/// Statuses unaffected: ICB
+		/// </summary>
 		private void XI()
 		{
 			PopulateCURINSTR(
@@ -520,6 +703,13 @@
 				END);
 		}
 
+		/// <summary>
+		/// AI - ADD IMMEDIATE TO ACCUMULATOR
+		/// The 8-bit (two hexadecimal digit) value provided by the instruction operand is added to the current contents of the accumulator. 
+		/// Binary addition is performed.
+		/// Statuses modified: OVF, ZERO, CARRY, SIGN
+		/// Statuses unaffected: ICB
+		/// </summary>
 		private void AI()
 		{
 			PopulateCURINSTR(
@@ -537,6 +727,13 @@
 				END);
 		}
 
+		/// <summary>
+		/// Compare Immediate
+		/// The contents of the accumulator are subtracted from the operand of the CI instruction. 
+		/// The result is not saved but the status bits are set or reset to reflect the results of the operation
+		/// Statuses modified: OVF, ZERO, CARRY, SIGN
+		/// Statuses unaffected: ICB
+		/// </summary>
 		private void CI()
 		{
 			PopulateCURINSTR(
@@ -565,6 +762,13 @@
 				END);
 		}
 
+		/// <summary>
+		/// IN - INPUT LONG ADDRESS
+		/// The data input to the 1/0 port specified by the operand of the IN instruction is stored in the accumulator.
+		/// Statuses modified: ZERO, SIGN 
+		/// Statuses reset: OVF, CARRY 
+		/// Statuses unaffected: ICB 
+		/// </summary>
 		private void IN()
 		{
 			PopulateCURINSTR(
@@ -589,6 +793,11 @@
 				END);
 		}
 
+		/// <summary>
+		/// OUT - OUTPUT LONG ADDRESS 
+		/// The I/O port addressed by the operand of the OUT instruction is loaded with the contents of the accumulator. 
+		/// No status bits are modified. 
+		/// </summary>
 		private void OUT()
 		{
 			PopulateCURINSTR(
@@ -613,6 +822,13 @@
 				END);
 		}
 
+		/// <summary>
+		/// PI - CALL TO SUBROUTINE IMMEDIATE
+		/// The contents of the Program Counters are stored in the Stack Registers, PC1, then the 16-bit address contained in the operand of the 
+		/// PI instruction is loaded into the Program Counters.· The accumulator is used as a temporary storage register during transfer of the most significant byte of the address. 
+		/// Previous accumulator results will be altered.
+		/// No status bits are modified. 
+		/// </summary>
 		private void PI()
 		{
 			PopulateCURINSTR(
@@ -649,6 +865,13 @@
 				END);
 		}
 
+		/// <summary>
+		/// JMP - Branch Immediate
+		/// As the result of a JMP instruction execution, a branch to the memory location addressed by the second and third bytes of the instruction occurs. 
+		/// The second byte contains the high order eight bits of the memory address; 
+		/// the third byte contains the low order eight bits of the memory address.
+		/// No status bits are affected. 
+		/// </summary>
 		private void JMP()
 		{
 			PopulateCURINSTR(
@@ -680,6 +903,12 @@
 				END);
 		}
 
+		/// <summary>
+		/// DCI - LOAD DC IMMEDIATE
+		/// The DCI instruction is a three-byte instruction. The contents of the second byte replace the high order byte of the DC0 registers; 
+		/// the contents of the third byte replace the low order byte of the DCO registers.
+		/// The status bits are not affected. 
+		/// </summary>
 		private void DCI()
 		{
 			PopulateCURINSTR(
@@ -714,6 +943,11 @@
 				END);
 		}
 
+		/// <summary>
+		/// NOP - NO OPERATION
+		/// No function is performed. 
+		/// No status bits are modified.
+		/// </summary>
 		private void NOP()
 		{
 			PopulateCURINSTR(
@@ -724,6 +958,12 @@
 				END);
 		}
 
+		/// <summary>
+		/// XDC - EXCHANGE DATA COUNTERS
+		/// Execution of the instruction XDC causes the contents of the auxiliary data counter registers (DC1) to be exchanged with the contents of the data counter registers (DCO). 
+		/// This instruction is only significant when a 3852 or 3853 Memory Interface device is part of the system configuration.
+		/// No status bits are modified. 
+		/// </summary>
 		private void XDC()
 		{
 			PopulateCURINSTR(
@@ -739,6 +979,14 @@
 				END);
 		}
 
+		/// <summary>
+		/// OS - DECREMENT SCRATCHPAD CONTENT
+		/// The content of the scratchpad register addressed by the operand (Sreg) is decremented by one binary count. 
+		/// The decrement is performed by adding H'FF' to the scratchpad register.
+		/// Statuses modified: OVF, ZERO, CARRY, SIGN
+		/// Statuses unaffected: ICB
+		/// </summary>
+		/// <param name="rIndex"></param>
 		private void DS(byte rIndex)
 		{
 			// only scratch registers 0-16
@@ -747,43 +995,56 @@
 			PopulateCURINSTR(
 				// L
 				IDLE,
-				OP_SUB8, rIndex, ONE,
-				//OP_ADD8, rIndex, BYTE,
-				IDLE,
-				ROMC_00_L,                  // DB <- ((PC0)); PC0++
-				IDLE,
-				END);
-		}
-		private void DS_ISAR()
-		{
-			PopulateCURINSTR(
-				// L
-				IDLE,
-				OP_SUB8, Regs[ISAR], ONE,	// r[ISAR] = r[ISAR] + 0xff
+				//OP_SUB8, rIndex, ONE,
+				OP_ADD8, rIndex, BYTE,
 				IDLE,
 				ROMC_00_L,                  // DB <- ((PC0)); PC0++
 				IDLE,
 				END);
 		}
 
+		/// <summary>
+		/// Same as DS, but the register pointed to by ISAR is affected
+		/// </summary>
+		private void DS_ISAR()
+		{
+			PopulateCURINSTR(
+				// L
+				IDLE,
+				//OP_SUB8, Regs[ISAR], ONE,	// r[ISAR] = r[ISAR] + 0xff
+				OP_ADD8, Regs[ISAR], BYTE,
+				IDLE,
+				ROMC_00_L,                  // DB <- ((PC0)); PC0++
+				IDLE,
+				END);
+		}
+
+		/// <summary>
+		/// Same as DS, but the register pointed to by ISAR is affected, then the ISAR itself is incremented
+		/// </summary>
 		private void DS_ISAR_INC()
 		{
 			PopulateCURINSTR(
 				// L
 				IDLE,
-				OP_SUB8, Regs[ISAR], ONE,  // r[ISAR] = r[ISAR] + 0xff
+				//OP_SUB8, Regs[ISAR], ONE,  // r[ISAR] = r[ISAR] + 0xff
+				OP_ADD8, Regs[ISAR], BYTE,
 				IDLE,
 				OP_IS_INC,                  // Inc ISAR
 				ROMC_00_L,                  // DB <- ((PC0)); PC0++
 				END);
 		}
 
+		/// <summary>
+		/// Same as DS, but the register pointed to by ISAR is affected, then the ISAR itself is decremented
+		/// </summary>
 		private void DS_ISAR_DEC()
 		{
 			PopulateCURINSTR(
 				// L
 				IDLE,
-				OP_SUB8, Regs[ISAR], ONE,  // r[ISAR] = r[ISAR] + 0xff
+				//OP_SUB8, Regs[ISAR], ONE,  // r[ISAR] = r[ISAR] + 0xff
+				OP_ADD8, Regs[ISAR], BYTE,
 				IDLE,
 				OP_IS_DEC,                  // Dec ISAR
 				ROMC_00_L,                  // DB <- ((PC0)); PC0++
@@ -876,6 +1137,12 @@
 				END);
 		}
 
+		/// <summary>
+		/// LISU - LOAD UPPER OCTAL DIGIT OF ISAR
+		/// A 3-bit value provided by the LlSU instruction operand is loaded into the three most significant bits of the ISAR. The three least significant bits of the ISAR are not altered. 
+		/// No status bits are affected. 
+		/// </summary>
+		/// <param name="octal"></param>
 		private void LISU(byte octal)
 		{
 			PopulateCURINSTR(
@@ -886,6 +1153,12 @@
 				END);
 		}
 
+		/// <summary>
+		/// LlSL - LOAD LOWER OCTAL DIGIT OF ISAR
+		/// A 3-bit value provided by the USL instruction operand is loaded into the three least significant bits of the ISAR. The three most significant bits of the ISAR are not altered.
+		/// No status bits are modified. 
+		/// </summary>
+		/// <param name="octal"></param>
 		private void LISL(byte octal)
 		{
 			PopulateCURINSTR(
@@ -896,6 +1169,13 @@
 				END);
 		}
 
+		/// <summary>
+		/// LIS - LOAD IMMEDIATE SHORT 
+		/// A 4-bit value provided by the LIS instruction operand is loaded into the four least significant bits of the accumulator. 
+		/// The most significant four bits of the accumulator are set to "0".
+		/// No status bits are modified. 
+		/// </summary>
+		/// <param name="index"></param>
 		private void LIS(byte index)
 		{
 			PopulateCURINSTR(
@@ -906,6 +1186,112 @@
 				END);
 		}
 
+		/// <summary>
+		/// Branch on True - Do not branch
+		/// </summary>
+		private void BTN()
+		{
+			PopulateCURINSTR(
+				// S
+				ROMC_1C_S,                  // Idle
+				IDLE,
+				IDLE,
+				OP_BTN);  
+		}
+
+		/// <summary>
+		/// Branch if positive (sign flag is set)
+		/// </summary>
+		private void BP()
+		{
+			PopulateCURINSTR(
+				// S
+				ROMC_1C_S,                  // Idle
+				IDLE,
+				IDLE,
+				OP_BP);
+		}
+
+		/// <summary>
+		/// Branch on carry (carry flag is set)
+		/// </summary>
+		private void BC()
+		{
+			PopulateCURINSTR(
+				// S
+				ROMC_1C_S,                  // Idle
+				IDLE,
+				IDLE,
+				OP_BC);
+		}
+
+		/// <summary>
+		/// Branch on carry (carry flag is set) or positive (sign flag is set)
+		/// </summary>
+		private void BT_CS()
+		{
+			PopulateCURINSTR(
+				// S
+				ROMC_1C_S,                  // Idle
+				IDLE,
+				IDLE,
+				OP_BT_CS);
+		}
+
+		/// <summary>
+		/// Branch if zero
+		/// </summary>
+		private void BZ()
+		{
+			PopulateCURINSTR(
+				// S
+				ROMC_1C_S,                  // Idle
+				IDLE,
+				IDLE,
+				OP_BZ);
+		}
+
+		/// <summary>
+		/// Branch if zero or positive
+		/// </summary>
+		private void BT_ZS()
+		{
+			PopulateCURINSTR(
+				// S
+				ROMC_1C_S,                  // Idle
+				IDLE,
+				IDLE,
+				OP_BT_ZS);
+		}
+
+		/// <summary>
+		/// Branch if zero or carry
+		/// </summary>
+		private void BT_ZC()
+		{
+			PopulateCURINSTR(
+				// S
+				ROMC_1C_S,                  // Idle
+				IDLE,
+				IDLE,
+				OP_BT_ZC);
+		}
+
+		/// <summary>
+		/// Branch if zero or carry or positive
+		/// </summary>
+		private void BT_ZCS()
+		{
+			PopulateCURINSTR(
+				// S
+				ROMC_1C_S,                  // Idle
+				IDLE,
+				IDLE,
+				OP_BT_ZCS);
+		}
+
+
+		/*
 		private void BT(byte index)
 		{
 			PopulateCURINSTR(
@@ -915,7 +1301,15 @@
 				IDLE,
 				OP_BT, index);				// no END as there is branching logic within OP_BT
 		}
+		*/
 
+		/// <summary>
+		/// AM - ADD (BINARY) MEMORY TO ACCUMULATOR 
+		/// The content of the memory iocation addressed by the DC0 registers is added to the accumulator. The sum is returned in the accumulator. 
+		/// Memory is not altered. Binary addition is performed. The contents of the DCO registers are incremented by 1
+		/// Statuses modified: OVF, ZERO, CARRY, SIGN
+		/// Statuses unaffected: ICB 
+		/// </summary>
 		private void AM()
 		{
 			PopulateCURINSTR(
@@ -933,6 +1327,14 @@
 				END);
 		}
 
+		/// <summary>
+		/// AMD - DECIMAL ADD. MEMORY TO ACCUMULATOR
+		/// The accumulator and the memory location addressed by the DCO registers are assumed to contain two BCD digits. 
+		/// The content of the address memory byte is added to the contents of the accumulator to give a BCD result in the accumulator
+		/// Statuses modified: CARRY, ZERO
+		/// Statuses not significant: OVF, SIGN 
+		/// Statuses unaffected: ICB 
+		/// </summary>
 		private void AMD()
 		{
 			PopulateCURINSTR(
@@ -950,6 +1352,14 @@
 				END);
 		}
 
+		/// <summary>
+		/// NM - LOGICAL AND FROM MEMORY
+		/// The content of memory addressed by the data counter registers is ANDed with the content of the accumulator. 
+		/// The results are stored in the accumulator. The contents of the data counter registers are incremented. 
+		/// Statuses reset to 0: OVF, CARRY 
+		/// Statuses modified: ZERO, SIGN 
+		/// Statuses unaffected: ICB 
+		/// </summary>
 		private void NM()
 		{
 			PopulateCURINSTR(
@@ -967,6 +1377,14 @@
 				END);
 		}
 
+		/// <summary>
+		/// OM - LOGICAL IIOR" FROM MEMORY
+		/// The content of memory byte addressed by the data counter registers is ORed with the content of the accumulator. 
+		/// The results are stored in the accumulator. The data counter registers are incremented. 
+		/// Statuses modified: ZERO, SIGN
+		/// Statuses reset: OVF, CARRY
+		/// Statuses unaffected: ICB 
+		/// </summary>
 		private void OM()
 		{
 			PopulateCURINSTR(
@@ -984,6 +1402,14 @@
 				END);
 		}
 
+		/// <summary>
+		/// XM - EXCLUSIVE-OR FROM MEMORY
+		/// The content of the memory location addressed by the DCO registers is EXCLUSIVE-ORed with the contents of the accumulator. 
+		/// The results are stored in the accumulator. The DCO registers are incremented.
+		/// Statuses modified: ZERO, SIGN 
+		/// Statuses reset: OVF, CARRY
+		/// Statuses unaffected: ICB
+		/// </summary>
 		private void XM()
 		{
 			PopulateCURINSTR(
@@ -1001,6 +1427,13 @@
 				END);
 		}
 
+		/// <summary>
+		/// CM - COMPARE MEMORY TO ACCUMULATOR 
+		/// The CM instruction is the same as the CI instruction except the memory contents addressed by the DCO registers, 
+		/// instead of an immediate value, are compared to the contents of the accumu lator.
+		/// Statuses modified: OVF, ZERO, CARRY, SIGN
+		/// Statuses unaffected: ICB
+		/// </summary>
 		private void CM()
 		{
 			PopulateCURINSTR(
@@ -1018,6 +1451,11 @@
 				END);
 		}
 
+		/// <summary>
+		/// ADC - ADD ACCUMULATOR TO DATA COUNTER
+		/// The contents of the accumulator are treated as a signed binary number, and are added to the contents of every DCO register. 
+		/// The result is stored in the DCO registers. The accumulator contents do not change.
+		/// </summary>
 		private void ADC()
 		{
 			PopulateCURINSTR(
@@ -1035,12 +1473,233 @@
 				END);
 		}
 
+		/*
+		private void BR7()
+		{
+			PopulateCURINSTR(
+				OP_BR7);  // no END as there is branching logic within OP_BR7
+		}
+		*/
+
+		/// <summary>
+		/// Branch if any of the 3 low bits of ISAR are reset
+		/// Testing of ISAR is immediate so we will have to lose a CPU tick in the next phase
+		/// </summary>
 		private void BR7()
 		{
 			PopulateCURINSTR(
 				OP_BR7);  // no END as there is branching logic within OP_BR7
 		}
 
+		/// <summary>
+		/// Unconditional Branch Relative
+		/// </summary>
+		private void BR()
+		{
+			PopulateCURINSTR(
+				// S
+				ROMC_1C_S,                  // Idle
+				IDLE,
+				IDLE,
+				OP_BR);						
+		}
+
+		/// <summary>
+		/// Branch on Negative (Sign bit is reset)
+		/// </summary>
+		private void BM()
+		{
+			PopulateCURINSTR(
+				// S
+				ROMC_1C_S,                  // Idle
+				IDLE,
+				IDLE,
+				OP_BM);                     
+		}
+
+		/// <summary>
+		/// Branch if no carry (carry bit is reset)
+		/// </summary>
+		private void BNC()
+		{
+			PopulateCURINSTR(
+				// S
+				ROMC_1C_S,                  // Idle
+				IDLE,
+				IDLE,
+				OP_BNC);
+		}
+
+		/// <summary>
+		/// Branch if no carry (carry bit is reset) and negative (sign bit is reset)
+		/// </summary>
+		private void BF_CS()
+		{
+			PopulateCURINSTR(
+				// S
+				ROMC_1C_S,                  // Idle
+				IDLE,
+				IDLE,
+				OP_BF_CS);
+		}
+
+		/// <summary>
+		/// Branch if not zero (zero bit is reset)
+		/// </summary>
+		private void BNZ()
+		{
+			PopulateCURINSTR(
+				// S
+				ROMC_1C_S,                  // Idle
+				IDLE,
+				IDLE,
+				OP_BNZ);
+		}
+
+		/// <summary>
+		/// Branch on negative (sign bit reset) and not zero (zero bit reset)
+		/// </summary>
+		private void BF_ZS()
+		{
+			PopulateCURINSTR(
+				// S
+				ROMC_1C_S,                  // Idle
+				IDLE,
+				IDLE,
+				OP_BF_ZS);
+		}
+
+		/// <summary>
+		/// Branch on no carry (carry bit reset) and not zero (zero bit reset)
+		/// </summary>
+		private void BF_ZC()
+		{
+			PopulateCURINSTR(
+				// S
+				ROMC_1C_S,                  // Idle
+				IDLE,
+				IDLE,
+				OP_BF_ZC);
+		}
+
+		/// <summary>
+		/// Branch on no carry (carry bit reset) and not zero (zero bit reset) and negative (sign bit reset)
+		/// </summary>
+		private void BF_ZCS()
+		{
+			PopulateCURINSTR(
+				// S
+				ROMC_1C_S,                  // Idle
+				IDLE,
+				IDLE,
+				OP_BF_ZCS);
+		}
+
+		/// <summary>
+		/// Branch on no overflow (overflow bit reset) and not zero (zero bit reset) and negative (sign bit reset)
+		/// </summary>
+		private void BNO()
+		{
+			PopulateCURINSTR(
+				// S
+				ROMC_1C_S,                  // Idle
+				IDLE,
+				IDLE,
+				OP_BNO);
+		}
+
+		/// <summary>
+		/// Branch on no overflow (overflow bit reset) and negative (sign bit reset)
+		/// </summary>
+		private void BF_OS()
+		{
+			PopulateCURINSTR(
+				// S
+				ROMC_1C_S,                  // Idle
+				IDLE,
+				IDLE,
+				OP_BF_OS);
+		}
+
+		/// <summary>
+		/// Branch on no overflow (overflow bit reset) and no carry (carry bit reset)
+		/// </summary>
+		private void BF_OC()
+		{
+			PopulateCURINSTR(
+				// S
+				ROMC_1C_S,                  // Idle
+				IDLE,
+				IDLE,
+				OP_BF_OC);
+		}
+
+		/// <summary>
+		/// Branch on no overflow (overflow bit reset) and no carry (carry bit reset) and negative (sign bit reset)
+		/// </summary>
+		private void BF_OCS()
+		{
+			PopulateCURINSTR(
+				// S
+				ROMC_1C_S,                  // Idle
+				IDLE,
+				IDLE,
+				OP_BF_OCS);
+		}
+
+		/// <summary>
+		/// Branch on no overflow (overflow bit reset) and not zero (zero bit reset)
+		/// </summary>
+		private void BF_OZ()
+		{
+			PopulateCURINSTR(
+				// S
+				ROMC_1C_S,                  // Idle
+				IDLE,
+				IDLE,
+				OP_BF_OZ);
+		}
+
+		/// <summary>
+		/// Branch on no overflow (overflow bit reset) and not zero (zero bit reset) and negative
+		/// </summary>
+		private void BF_OZS()
+		{
+			PopulateCURINSTR(
+				// S
+				ROMC_1C_S,                  // Idle
+				IDLE,
+				IDLE,
+				OP_BF_OZS);
+		}
+
+		/// <summary>
+		/// Branch on no overflow (overflow bit reset) and not zero (zero bit reset) and no carry (carry bit reset)
+		/// </summary>
+		private void BF_OZC()
+		{
+			PopulateCURINSTR(
+				// S
+				ROMC_1C_S,                  // Idle
+				IDLE,
+				IDLE,
+				OP_BF_OZC);
+		}
+
+		/// <summary>
+		/// Branch on no overflow (overflow bit reset) and not zero (zero bit reset) and no carry (carry bit reset) and negative
+		/// </summary>
+		private void BF_OZCS()
+		{
+			PopulateCURINSTR(
+				// S
+				ROMC_1C_S,                  // Idle
+				IDLE,
+				IDLE,
+				OP_BF_OZCS);
+		}
+
+		/*
 		private void BF(byte index)
 		{
 			PopulateCURINSTR(
@@ -1050,14 +1709,24 @@
 				IDLE,
 				OP_BF, index);				// no END as there is branching logic within OP_BF
 		}
+		*/
 
+		/// <summary>
+		/// INS - INPUT SHORT ADDRESS
+		/// Data input to the I/O port specified by the operand of the INS instruction is loaded into the accumulator. 
+		/// An I/O port with an address within the range 0 through 1 may be accessed by this instruction
+		/// Statuses modified: ZERO, SIGN
+		/// Statuses reset: OVF, CARRY
+		/// Statuses unaffected: ICB
+		/// </summary>
+		/// <param name="index"></param>
 		private void INS_0(byte index)
 		{
 			PopulateCURINSTR(
 				// S
 				ROMC_1C_S,                  // Idle
-				IDLE,
 				OP_IN, A, index,            // A <- ((Port index - 0/1))
+				IDLE,				
 				OP_LR_A_DB_IO, A, A,       // A <- (A) - flags set as result of IN or INS operation
 				// S
 				ROMC_00_S,                  // DB <- ((PC0)); PC0++
@@ -1066,6 +1735,15 @@
 				END);
 		}
 
+		/// <summary>
+		/// INS - INPUT SHORT ADDRESS
+		/// Data input to the I/O port specified by the operand of the INS instruction is loaded into the accumulator. 
+		/// An I/O port with an address within the range 4 through 15 may be accessed by this instruction
+		/// Statuses modified: ZERO, SIGN
+		/// Statuses reset: OVF, CARRY
+		/// Statuses unaffected: ICB
+		/// </summary>
+		/// <param name="index"></param>
 		private void INS_1(byte index)
 		{
 			Regs[IO] = index;				// latch port index early
@@ -1092,6 +1770,13 @@
 				END);
 		}
 
+		/// <summary>
+		/// OUTS - OUTPUT SHORT ADDRESS
+		/// The I/O port addressed by the operand of the OUTS instruction object code is loaded with the contents of the accumulator. 
+		/// I/O ports with addresses from 0 to 1 may be accessed by this instruction. (Outs O or 1 is CPU port only.)
+		/// No status bits are modified. 
+		/// </summary>
+		/// <param name="index"></param>
 		private void OUTS_0(byte index)
 		{
 			PopulateCURINSTR(
@@ -1107,6 +1792,13 @@
 				END);
 		}
 
+		/// <summary>
+		/// OUTS - OUTPUT SHORT ADDRESS
+		/// The I/O port addressed by the operand of the OUTS instruction object code is loaded with the contents of the accumulator. 
+		/// I/O ports with addresses from 3 to 15 may be accessed by this instruction.
+		/// No status bits are modified. 
+		/// </summary>
+		/// <param name="index"></param>
 		private void OUTS_1(byte index)
 		{
 			Regs[IO] = index;               // latch port index early
@@ -1133,6 +1825,14 @@
 				END);
 		}
 
+		/// <summary>
+		/// AS - BINARY ADDITION, SCRATCHPAD MEMORY TO ACCUMULATOR
+		/// The content of the scratchpad register referenced by the instruction operand (Sreg) is added to the accumulator using binary addition. 
+		/// The result of the binary addition is stored in the accumulator. 
+		/// Statuses modified: OVF, ZERO, CARRY, SIGN
+		/// Statuses unaffected: ICB 
+		/// </summary>
+		/// <param name="rIndex"></param>
 		private void AS(byte rIndex)
 		{
 			// only scratch registers 0-15
@@ -1146,39 +1846,68 @@
 				END);
 		}
 
+		/// <summary>
+		/// AS - BINARY ADDITION, SCRATCHPAD MEMORY TO ACCUMULATOR
+		/// The content of the scratchpad register referenced indirectly by ISAR is added to the accumulator using binary addition. 
+		/// The result of the binary addition is stored in the accumulator. 
+		/// Statuses modified: OVF, ZERO, CARRY, SIGN
+		/// Statuses unaffected: ICB 
+		/// </summary>
 		private void AS_IS()
 		{
 			PopulateCURINSTR(
 				// S
-				IDLE,
 				OP_ADD8, A, Regs[ISAR],		// A <- (A) + ((ISAR));
 				IDLE,
 				ROMC_00_S,                  // DB <- ((PC0)); PC0++
 				END);
 		}
 
+		/// <summary>
+		/// AS - BINARY ADDITION, SCRATCHPAD MEMORY TO ACCUMULATOR
+		/// The content of the scratchpad register referenced indirectly by ISAR is added to the accumulator using binary addition. 
+		/// The result of the binary addition is stored in the accumulator. 
+		/// The low order three bits of ISAR are incremented after the scratchpad register is accessed.
+		/// Statuses modified: OVF, ZERO, CARRY, SIGN
+		/// Statuses unaffected: ICB 
+		/// </summary>
 		private void AS_IS_INC()
 		{
 			PopulateCURINSTR(
 				// S
-				IDLE,
 				OP_ADD8, A, Regs[ISAR],     // A <- (A) + ((ISAR));
 				OP_IS_INC,					// Inc ISAR
 				ROMC_00_S,                  // DB <- ((PC0)); PC0++
 				END);
 		}
 
+		/// <summary>
+		/// AS - BINARY ADDITION, SCRATCHPAD MEMORY TO ACCUMULATOR
+		/// The content of the scratchpad register referenced indirectly by ISAR is added to the accumulator using binary addition. 
+		/// The result of the binary addition is stored in the accumulator. 
+		/// The low order three bits of ISAR are decremented after the scratchpad register is accessed.
+		/// Statuses modified: OVF, ZERO, CARRY, SIGN
+		/// Statuses unaffected: ICB 
+		/// </summary>
 		private void AS_IS_DEC()
 		{
 			PopulateCURINSTR(
 				// S
-				IDLE,
 				OP_ADD8, A, Regs[ISAR],     // A <- (A) + ((ISAR));
 				OP_IS_DEC,                  // Dec ISAR
 				ROMC_00_S,                  // DB <- ((PC0)); PC0++
 				END);
 		}
 
+		/// <summary>
+		/// ASD - DECIMAL ADD, SCRATCHPAD TO ACCUMULATOR
+		/// The ASD instruction is similar to the AMD instruction, except that instead of adding the contents of the memory byte addressed by the DCO registers, 
+		/// the content of the scratchpad byte addressed by operand (Sreg) is added to the accumulator. 
+		/// Statuses modified: CARRY, ZERO
+		/// Statuses not significant: OVF, SIGN
+		/// Statuses unaffected: ICB
+		/// </summary>
+		/// <param name="rIndex"></param>
 		private void ASD(byte rIndex)
 		{
 			// only scratch registers 0-15
@@ -1186,9 +1915,9 @@
 
 			PopulateCURINSTR(
 				// S
-				ROMC_1C_S,					// Idle
+				OP_ADD8D, A, rIndex,				
 				IDLE,
-				OP_ADD8D, A, rIndex,
+				ROMC_1C_S,                  // Idle
 				IDLE,
 				// S
 				ROMC_00_S,                  // DB <- ((PC0)); PC0++
@@ -1197,13 +1926,21 @@
 				END);
 		}
 
+		/// <summary>
+		/// ASD - DECIMAL ADD, SCRATCHPAD TO ACCUMULATOR
+		/// The ASD instruction is similar to the AMD instruction, except that instead of adding the contents of the memory byte addressed by the DCO registers, 
+		/// the content of the scratchpad byte referenced indirectly by ISAR is added to the accumulator. 
+		/// Statuses modified: CARRY, ZERO
+		/// Statuses not significant: OVF, SIGN
+		/// Statuses unaffected: ICB
+		/// </summary>
 		private void ASD_IS()
 		{
 			PopulateCURINSTR(
 				// S
-				ROMC_1C_S,					// Idle
+				OP_ADD8D, A, Regs[ISAR],				
 				IDLE,
-				OP_ADD8D, A, Regs[ISAR],
+				ROMC_1C_S,                  // Idle
 				IDLE,
 				// S
 				ROMC_00_S,                  // DB <- ((PC0)); PC0++
@@ -1212,14 +1949,23 @@
 				END);
 		}
 
+		/// <summary>
+		/// ASD - DECIMAL ADD, SCRATCHPAD TO ACCUMULATOR
+		/// The ASD instruction is similar to the AMD instruction, except that instead of adding the contents of the memory byte addressed by the DCO registers, 
+		/// the content of the scratchpad byte referenced indirectly by ISAR is added to the accumulator. 
+		/// The low order three bits of ISAR are incremented after the scratchpad register is accessed.
+		/// Statuses modified: CARRY, ZERO
+		/// Statuses not significant: OVF, SIGN
+		/// Statuses unaffected: ICB
+		/// </summary>
 		private void ASD_IS_INC()
 		{
 			PopulateCURINSTR(
 				// S
-				ROMC_1C_S,                  // Idle
-				IDLE,
 				OP_ADD8D, A, Regs[ISAR],
-				OP_IS_INC,					// Inc ISAR
+				OP_IS_INC,                  // Inc ISAR
+				ROMC_1C_S,                  // Idle
+				IDLE,				
 				// S
 				ROMC_00_S,                  // DB <- ((PC0)); PC0++
 				IDLE,
@@ -1227,14 +1973,23 @@
 				END);
 		}
 
+		/// <summary>
+		/// ASD - DECIMAL ADD, SCRATCHPAD TO ACCUMULATOR
+		/// The ASD instruction is similar to the AMD instruction, except that instead of adding the contents of the memory byte addressed by the DCO registers, 
+		/// the content of the scratchpad byte referenced indirectly by ISAR is added to the accumulator. 
+		/// The low order three bits of ISAR are decremented after the scratchpad register is accessed.
+		/// Statuses modified: CARRY, ZERO
+		/// Statuses not significant: OVF, SIGN
+		/// Statuses unaffected: ICB
+		/// </summary>
 		private void ASD_IS_DEC()
 		{
 			PopulateCURINSTR(
 				// S
-				ROMC_1C_S,                  // Idle
-				IDLE,
 				OP_ADD8D, A, Regs[ISAR],
 				OP_IS_DEC,                  // Dec ISAR
+				ROMC_1C_S,                  // Idle
+				IDLE,				
 				// S
 				ROMC_00_S,                  // DB <- ((PC0)); PC0++
 				IDLE,
@@ -1242,6 +1997,14 @@
 				END);
 		}
 
+		/// <summary>
+		/// XS - EXCLUSIVE-OR FROM SCRATCHPAD
+		/// The content of the scratchpad register referenced by the operand (Sreg) is EXCLUSIVE-ORed with the contents of the accumulator.
+		/// Statuses modified: ZERO, SIGN
+		/// Statuses reset: OVF, CARRY 
+		/// Statuses unaffected: ICB
+		/// </summary>
+		/// <param name="rIndex"></param>
 		private void XS(byte rIndex)
 		{
 			// only scratch registers 0-15
@@ -1249,13 +2012,19 @@
 
 			PopulateCURINSTR(
 				// S
-				IDLE,
 				OP_XOR8, A, rIndex,         // A <- (A) XOR (reg)
 				IDLE,
 				ROMC_00_S,                  // DB <- ((PC0)); PC0++
 				END);
 		}
 
+		/// <summary>
+		/// XS - EXCLUSIVE-OR FROM SCRATCHPAD
+		/// The content of the register referenced by ISAR is EXCLUSIVE-ORed with the contents of the accumulator.
+		/// Statuses modified: ZERO, SIGN
+		/// Statuses reset: OVF, CARRY 
+		/// Statuses unaffected: ICB
+		/// </summary>
 		private void XS_IS()
 		{
 			PopulateCURINSTR(
@@ -1266,6 +2035,14 @@
 				END);
 		}
 
+		/// <summary>
+		/// XS - EXCLUSIVE-OR FROM SCRATCHPAD
+		/// The content of the register referenced by ISAR is EXCLUSIVE-ORed with the contents of the accumulator.
+		/// ISAR is incremented
+		/// Statuses modified: ZERO, SIGN
+		/// Statuses reset: OVF, CARRY 
+		/// Statuses unaffected: ICB
+		/// </summary>
 		private void XS_IS_INC()
 		{
 			PopulateCURINSTR(
@@ -1276,6 +2053,14 @@
 				END);
 		}
 
+		/// <summary>
+		/// XS - EXCLUSIVE-OR FROM SCRATCHPAD
+		/// The content of the register referenced by ISAR is EXCLUSIVE-ORed with the contents of the accumulator.
+		/// ISAR is deccremented
+		/// Statuses modified: ZERO, SIGN
+		/// Statuses reset: OVF, CARRY 
+		/// Statuses unaffected: ICB
+		/// </summary>
 		private void XS_IS_DEC()
 		{
 			PopulateCURINSTR(
@@ -1286,6 +2071,15 @@
 				END);
 		}
 
+		/// <summary>
+		/// NS - LOGICAL AND FROM SCRATCHPAD MEMORY
+		/// The content of the scratch pad register addressed by the operand (Sreg) is ANDed with the content of the accumulator. 
+		/// The results are stored in the accumulator. 
+		/// Statuses reset to 0: OVF, CARRY
+		/// Statuses modified: ZERO, SIGN
+		/// Statuses unaffected: ICB
+		/// </summary>
+		/// <param name="rIndex"></param>
 		private void NS(byte rIndex)
 		{
 			// only scratch registers 0-15
@@ -1299,6 +2093,14 @@
 				END);
 		}
 
+		/// <summary>
+		/// NS - LOGICAL AND FROM SCRATCHPAD MEMORY
+		/// The content of the scratch pad register addressed by the Register ISAR is pointing at is ANDed with the content of the accumulator. 
+		/// The results are stored in the accumulator. 
+		/// Statuses reset to 0: OVF, CARRY
+		/// Statuses modified: ZERO, SIGN
+		/// Statuses unaffected: ICB
+		/// </summary>
 		private void NS_IS()
 		{
 			PopulateCURINSTR(
@@ -1309,6 +2111,15 @@
 				END);
 		}
 
+		/// <summary>
+		/// NS - LOGICAL AND FROM SCRATCHPAD MEMORY
+		/// The content of the scratch pad register addressed by the Register ISAR is pointing at is ANDed with the content of the accumulator. 
+		/// The results are stored in the accumulator. 
+		/// ISAR is incremented
+		/// Statuses reset to 0: OVF, CARRY
+		/// Statuses modified: ZERO, SIGN
+		/// Statuses unaffected: ICB
+		/// </summary>
 		private void NS_IS_INC()
 		{
 			PopulateCURINSTR(
@@ -1316,10 +2127,18 @@
 				OP_AND8, A, Regs[ISAR],     // A <- (A) AND ((ISAR))
 				OP_IS_INC,                  // Inc ISAR
 				ROMC_00_S,                  // DB <- ((PC0)); PC0++
-				IDLE,
 				END);
 		}
 
+		/// <summary>
+		/// NS - LOGICAL AND FROM SCRATCHPAD MEMORY
+		/// The content of the scratch pad register addressed by the Register ISAR is pointing at is ANDed with the content of the accumulator. 
+		/// The results are stored in the accumulator. 
+		/// ISAR is decremented
+		/// Statuses reset to 0: OVF, CARRY
+		/// Statuses modified: ZERO, SIGN
+		/// Statuses unaffected: ICB
+		/// </summary>
 		private void NS_IS_DEC()
 		{
 			PopulateCURINSTR(
@@ -1327,17 +2146,19 @@
 				OP_AND8, A, Regs[ISAR],     // A <- (A) AND ((ISAR))
 				OP_IS_DEC,                  // Dec ISAR
 				ROMC_00_S,                  // DB <- ((PC0)); PC0++
-				IDLE,
 				END);
 		}
 
-
-		private void DO_BRANCH()
+		/// <summary>
+		/// BF Operation Branching Timing
+		/// </summary>
+		private void DO_BF_BRANCH(int instPtr)
 		{
+			instr_pntr = instPtr;
 			PopulateCURINSTR(
 				// L
 				IDLE,
-				ROMC_01,			// forward or backward displacement
+				ROMC_01,            // PC0 <- PC0 + (DB)
 				IDLE,
 				IDLE,
 				IDLE,
@@ -1349,16 +2170,60 @@
 				END);
 		}
 
-		private void DONT_BRANCH()
+		/// <summary>
+		/// BF Operation No-Branching Timing
+		/// </summary>
+		private void DONT_BF_BRANCH(int instPtr)
 		{
+			instr_pntr = instPtr;
 			PopulateCURINSTR(
 				// S
 				IDLE,
-				ROMC_03_S,			// immediate operand fetch
+				ROMC_03_S,			// Immediate operand fetch
 				IDLE,
 				IDLE,
 				// S
-				ROMC_00_S,          // DB <- ((PC0)); PC0++
+				ROMC_00_S,          // DB <- ((PC0)); PC0++	
+				IDLE,
+				IDLE,
+				END);
+		}
+
+		/// <summary>
+		/// BT Operation Branching Timing
+		/// </summary>
+		private void DO_BT_BRANCH(int instPtr)
+		{
+			instr_pntr = instPtr;
+			PopulateCURINSTR(
+				// L
+				IDLE,
+				ROMC_01,            // PC0 <- PC0 + (DB)
+				IDLE,
+				IDLE,
+				IDLE,
+				IDLE,
+				// S
+				ROMC_00_S,          // DB <- ((PC0)); PC0++	
+				IDLE,
+				IDLE,
+				END);
+		}
+
+		/// <summary>
+		/// BT Operation No-Branching Timing
+		/// </summary>
+		private void DONT_BT_BRANCH(int instPtr)
+		{
+			instr_pntr = instPtr;
+			PopulateCURINSTR(
+				// S
+				IDLE,
+				ROMC_03_S,          // Immediate operand fetch
+				IDLE,
+				IDLE,
+				// S
+				ROMC_00_S,          // DB <- ((PC0)); PC0++	
 				IDLE,
 				IDLE,
 				END);

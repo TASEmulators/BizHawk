@@ -5,10 +5,10 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 {
 	public partial class ChannelF
 	{
-		public bool[] StateConsole = new bool[4];
+		public bool[] StateConsole = new bool[5];
 		public string[] ButtonsConsole =
 		{
-			"TIME", "MODE", "HOLD", "START"
+			"TIME", "MODE", "HOLD", "START", "RESET"
 		};
 
 		public byte DataConsole
@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			get
 			{
 				int w = 0;
-				for (int i = 0; i < 4; i++)
+				for (int i = 0; i < 5; i++)
 				{
 					byte mask = (byte) (1 << i);
 					w = StateConsole[i] ? w | mask : w & ~mask;

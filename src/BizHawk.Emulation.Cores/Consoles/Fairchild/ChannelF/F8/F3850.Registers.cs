@@ -93,6 +93,8 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 		/// <summary>
 		/// Status Register - Sign Flag
+		/// When the results of an ALU operation are being interpreted as a signed binary number, the high oidei bit (bit 7) represents the sign of the number
+		/// At the conclusion of instructions that may modify the Accumulator bit 7, the S bit (W register bit 0) is set to the complement of the Accumulator bit 7.
 		/// </summary>
 		public bool FlagS
 		{
@@ -102,6 +104,8 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 		/// <summary>
 		/// Status Register - Carry Flag
+		/// The C bit (W register bit 1) may be visualized as an extension of an 8-bit data unit; i.e., bit 8 of a 9-bit data unit. 
+		/// When two bytes are added and the sum is greater than 255, the carry out of bit 7 appears in the C bit.
 		/// </summary>
 		public bool FlagC
 		{
@@ -111,6 +115,8 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 		/// <summary>
 		/// Status Register - Zero Flag
+		/// The Z bit (W Register bit 2) is set whenever an arithmetic or logical operation generates a zero result. 
+		/// The Z bit is reset to 0 when an arithmetic or logical operation could have generated a zero result, but did not.
 		/// </summary>
 		public bool FlagZ
 		{
@@ -120,6 +126,9 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 		/// <summary>
 		/// Status Register - Overflow Flag
+		/// The high order Accumulator bit (bit 7) represents the sign of the number. 
+		/// When the Accumulator contents are being interpreted as a signed binary number, some method must be provided for indicating carries out of the highest numeric bit (bit 6 of the Accumulator). 
+		/// This is done using the 0 bit (W register bit 3). After arithmetic operations, the 0 bit is set to the EXCLUSIVE-OR of Carry Out of bits 6 and bits 7. This simplifies signed binary arithmetic. 
 		/// </summary>
 		public bool FlagO
 		{
@@ -129,6 +138,8 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 		/// <summary>
 		/// Status Register - Interrupt Master Enable Flag
+		/// External logic can alter the operations sequence within the CPU by interrupting ongoing operations. 
+		/// However, interrupts are allowed only when t (W register bit 4) is set to 1; interrupts are disallowed when the ICB bit is reset to O.
 		/// </summary>
 		public bool FlagICB
 		{

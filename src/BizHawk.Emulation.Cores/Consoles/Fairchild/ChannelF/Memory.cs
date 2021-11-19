@@ -31,6 +31,10 @@
 				//return 0;
 				return Rom[addr - 0x800];
 			}
+			else
+			{
+
+			}
 
 			return 0xFF;
 		}

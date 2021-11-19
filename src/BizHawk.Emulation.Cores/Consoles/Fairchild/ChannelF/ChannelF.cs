@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.ChannelF
@@ -8,10 +10,18 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 	public partial class ChannelF
 	{
 		[CoreConstructor(VSystemID.Raw.ChannelF)]
-		public ChannelF(CoreComm comm, GameInfo game, byte[] rom)
+		public ChannelF(CoreLoadParameters<ChannelFSettings, ChannelFSyncSettings> lp)
 		{
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
+			CoreComm = lp.Comm;
+			_gameInfo = lp.Roms.Select(r => r.Game).ToList();
+			_files = lp.Roms.Select(r => r.RomData).ToList();
+			
+
+			var settings = lp.Settings ?? new ChannelFSettings();
+			var syncSettings = lp.SyncSettings ?? new ChannelFSyncSettings();
+
 			MemoryCallbacks = new MemoryCallbackSystem(new[] { "System Bus" });
 
 			ControllerDefinition = ChannelFControllerDefinition;
@@ -27,11 +37,13 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 			_tracer = new TraceBuffer(CPU.TraceHeader);
 
-			var bios01 = comm.CoreFileProvider.GetFirmwareOrThrow(new("ChannelF", "ChannelF_sl131253"));
-			var bios02 = comm.CoreFileProvider.GetFirmwareOrThrow(new("ChannelF", "ChannelF_sl131254"));
+			var bios01 = CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("ChannelF", "ChannelF_sl131253"));
+			var bios02 = CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("ChannelF", "ChannelF_sl131254"));
 
 			BIOS01 = bios01;
 			BIOS02 = bios02;
+
+			var rom = _files.First();
 
 			Array.Copy(rom, 0, Rom, 0, rom.Length);
 
@@ -44,6 +56,11 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			ser.Register<IStatable>(new StateSerializer(SyncState));
 			SetupMemoryDomains();
 		}
+
+		internal CoreComm CoreComm { get; }
+
+		public List<GameInfo> _gameInfo;
+		private readonly List<byte[]> _files;
 
 		public F3850 CPU;
 		private readonly TraceBuffer _tracer;

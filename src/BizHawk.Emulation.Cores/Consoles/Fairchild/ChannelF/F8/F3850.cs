@@ -83,7 +83,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		public const byte OP_AND8 = 107;
 		public const byte OP_OR8 = 108;
 		public const byte OP_XOR8 = 109;
-		//public const byte OP_COM = 110;
+		public const byte OP_COM = 99;
 		public const byte OP_SUB8 = 110;
 		public const byte OP_ADD8 = 111;
 		public const byte OP_CI = 112;
@@ -94,17 +94,50 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		public const byte OP_BT = 117;
 		public const byte OP_ADD8D = 118;
 		public const byte OP_BR7 = 119;
-		public const byte OP_BF = 120;
-		public const byte OP_IN = 121;
-		public const byte OP_OUT = 122;
+		public const byte OP_BR = 120;
+		public const byte OP_BM = 121;
+		public const byte OP_BNC = 122;
+		public const byte OP_BF_CS = 123;
+		public const byte OP_BNZ = 124;
+		public const byte OP_BF_ZS = 125;
+		public const byte OP_BF_ZC = 126;
+		public const byte OP_BF_ZCS = 127;
+		public const byte OP_BNO = 128;
+		public const byte OP_BF_OS = 129;
+		public const byte OP_BF_OC = 130;
+		public const byte OP_BF_OCS = 131;
+		public const byte OP_BF_OZ = 132;
+		public const byte OP_BF_OZS = 133;
+		public const byte OP_BF_OZC = 134;
+		public const byte OP_BF_OZCS = 135;
+
+		public const byte OP_BTN = 136;
+		public const byte OP_BP = 137;
+		public const byte OP_BC = 138;
+		public const byte OP_BT_CS = 139;
+		public const byte OP_BZ = 140;
+		public const byte OP_BT_ZS = 141;
+		public const byte OP_BT_ZC = 142;
+		public const byte OP_BT_ZCS = 143;
+
+
+
+		public const byte OP_BF = 141;
+
+
+
+
+
+		public const byte OP_IN = 151;
+		public const byte OP_OUT = 152;
 		//public const byte OP_AS_IS = 123;
 		//public const byte OP_XS_IS = 124;
 		//public const byte OP_NS_IS = 125;
-		public const byte OP_LR_A_DB_IO = 126;
-		public const byte OP_DS = 127;
+		public const byte OP_LR_A_DB_IO = 156;
+		public const byte OP_DS = 157;
 		//public const byte OP_CLEAR_FLAGS = 126;
 		//public const byte OP_SET_FLAGS_SZ = 127;
-		public const byte OP_LIS = 128;
+		public const byte OP_LIS = 158;
 
 
 		public F3850()
@@ -200,7 +233,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 					LR_A_IO_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
 
-				// loads supplied index value into register
+				// loads supplied index value into the bottom 4 bits of a register (upper bits are set to 0)
 				case OP_LIS:
 					Regs[ALU1] = (byte)(cur_instr[instr_pntr++] & 0x0F);
 					LR_Func(A, ALU1);
@@ -252,6 +285,13 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 					XOR_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
 
+				// The accumulator is loaded with its one's complement
+				case OP_COM:
+					XOR_Func(A, BYTE);
+					//Regs[A] = (byte)(Regs[A] ^ 0xFF);
+					break;
+
+
 				// x <- (x) + 1
 				case OP_INC8:
 					ADD_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
@@ -274,7 +314,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 				// ISAR is incremented
 				case OP_IS_INC:
-					Regs[ISAR] = (byte)((Regs[ISAR]& 0x38) | ((Regs[ISAR] + 1) & 0x07));
+					Regs[ISAR] = (byte)((Regs[ISAR] & 0x38) | ((Regs[ISAR] + 1) & 0x07));
 					break;
 
 				// ISAR is decremented
@@ -282,184 +322,223 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 					Regs[ISAR] = (byte)((Regs[ISAR] & 0x38) | ((Regs[ISAR] - 1) & 0x07));
 					break;
 
-				// set the upper octal ISAR bits (b3,b4,b5)
+				// set the upper octal ISAR bits (b3,b4,b5) but do not alter the three least significant bits
 				case OP_LISU:
 					Regs[ISAR] = (byte)((((Regs[ISAR] & 0x07) | (cur_instr[instr_pntr++] & 0x07) << 3)) & 0x3F);
 					break;
 
-				// set the lower octal ISAR bits (b0,b1,b2)
+				// set the lower octal ISAR bits (b0,b1,b2) but do not alter the three most significant bits
 				case OP_LISL:
 					Regs[ISAR] = (byte) (((Regs[ISAR] & 0x38) | (cur_instr[instr_pntr++] & 0x07)) & 0x3F);
 					break;
 
-				// decrement scratchpad byte
-				//case OP_DS:
-					//SUB_Func(cur_instr[instr_pntr++], ONE);
-					//break;
-
-				// Branch on TRUE
-				case OP_BT:
-					bool branchBT = false;
-					switch (cur_instr[instr_pntr++])
-					{
-						case 0:
-							// do not branch
-							break;
-
-						case 1:
-							// branch if positive (sign bit is set)
-							if (FlagS) branchBT = true;
-							break;
-
-						case 2:
-							// branch on carry (carry bit is set)
-							if (FlagC) branchBT = true;
-							break;
-
-						case 3:
-							// branch if positive or on carry
-							if (FlagS || FlagC) branchBT = true;
-							break;
-
-						case 4:
-							// branch if zero (zero bit is set)
-							if (FlagZ) branchBT = true;
-							break;
-
-						case 5:
-							// branch if positive and zero
-							if (FlagS || FlagZ) branchBT = true;
-							break;
-
-						case 6:
-							// branch if zero or on carry
-							if (FlagZ || FlagC) branchBT = true;
-							break;
-						case 7:
-							// branch if positive or on carry or zero
-							if (FlagS || FlagC || FlagZ) branchBT = true;
-							break;
-					}
-
-					instr_pntr = 0;
-					if (branchBT) DO_BRANCH();
-					else DONT_BRANCH();
+				// Unconditional Branch (relative)
+				case OP_BR:
+					DO_BF_BRANCH(0);
 					break;
-					
-				// Branch on ISARL
-				case OP_BR7:
-					instr_pntr = 1;		// lose a cycle
-					if (Regs[ISAR].Bit(0) && Regs[ISAR].Bit(1) && Regs[ISAR].Bit(2))
-					{
-						DONT_BRANCH();
-					}
+
+				// Branch on Negative
+				case OP_BM:				
+					if (!FlagS)
+						DO_BF_BRANCH(0);
 					else
-					{
-						DO_BRANCH();
-					}
+						DONT_BF_BRANCH(0);
 					break;
 
-				//  Branch on FALSE
-				case OP_BF:
-					bool branchBF = false;
-					switch (cur_instr[instr_pntr++])
-					{
-						case 0:
-							// unconditional branch relative
-							branchBF = true;
-							break;
+				// Branch if no carry
+				case OP_BNC:
+					if (!FlagC)
+						DO_BF_BRANCH(0);
+					else
+						DONT_BF_BRANCH(0);
+					break;
 
-						case 1:
-							// branch on negative (sign bit is reset)
-							if (!FlagS) branchBF = true;
-							break;
+				// Branch if negative and no carry
+				case OP_BF_CS:
+					if (!FlagS && !FlagC)
+						DO_BF_BRANCH(0);
+					else
+						DONT_BF_BRANCH(0);
+					break;
 
-						case 2:
-							// branch if no carry (carry bit is reset)
-							if (!FlagC) branchBF = true;
-							break;
-
-						case 3:
-							// branch if no carry and negative
-							if (!FlagC && !FlagS) branchBF = true;
-							break;
-
-						case 4:
-							// branch if not zero (zero bit is reset)
-							if (!FlagZ) branchBF = true;
-							break;
-
-						case 5:
-							// branch if not zero and negative
-							if (!FlagS && !FlagZ) branchBF = true;
-							break;
-
-						case 6:
-							// branch if no carry and result is no zero
-							if (!FlagC && !FlagZ) branchBF = true;
-							break;
-
-						case 7:
-							// branch if not zero, carry and sign
-							if (!FlagS && !FlagC && !FlagZ) branchBF = true;
-							break;
-
-						case 8:
-							// branch if there is no overflow (OVF bit is reset)
-							if (!FlagO) branchBF = true;
-							break;
-
-						case 9:
-							// branch if negative and no overflow
-							if (!FlagS && !FlagO) branchBF = true;
-							break;
-
-						case 0xA:
-							// branch if no overflow and no carry
-							if (!FlagO && !FlagC) branchBF = true;
-							break;
-
-						case 0xB:
-							// branch if no overflow, no carry & negative
-							if (!FlagO && !FlagC && !FlagS) branchBF = true;
-							break;
-
-						case 0xC:
-							// branch if no overflow and not zero
-							if (!FlagO && !FlagZ) branchBF = true;
-							break;
-
-						case 0xD:
-							// branch if no overflow, not zero and neg
-							if (!FlagS && !FlagO && !FlagZ) branchBF = true;
-							break;
-
-						case 0xE:
-							// branch if no overflow, no carry & not zero
-							if (!FlagO && !FlagC && !FlagZ) branchBF = true;
-							break;
-
-						case 0xF:
-							// all neg
-							if (!FlagO && !FlagC && !FlagS && FlagZ) branchBF = true;
-							break;
-					}
-
+				// Branch if not zero
+				case OP_BNZ:
 					instr_pntr = 0;
-					if (branchBF) DO_BRANCH();
-					else DONT_BRANCH();
+					if (!FlagZ)
+						DO_BF_BRANCH(0);
+					else
+						DONT_BF_BRANCH(0);
 					break;
 
+				// Branch on Negative and not Zero (same thing as branch on negative)
+				case OP_BF_ZS:
+					if (!FlagS && !FlagZ)
+						DO_BF_BRANCH(0);
+					else
+						DONT_BF_BRANCH(0);
+					break;
+
+				// Branch on no Carry and not Zero
+				case OP_BF_ZC:
+					if (!FlagC && !FlagZ)
+						DO_BF_BRANCH(0);
+					else
+						DONT_BF_BRANCH(0);
+					break;
+
+				// Branch on no Carry and not Zero and Negative
+				case OP_BF_ZCS:
+					if (!FlagC && !FlagZ && !FlagS)
+						DO_BF_BRANCH(0);
+					else
+						DONT_BF_BRANCH(0);
+					break;
+
+				// Branch on no Overflow
+				case OP_BNO:
+					if (!FlagO)
+						DO_BF_BRANCH(0);
+					else
+						DONT_BF_BRANCH(0);
+					break;
+
+				// Branch on no overflow and Negative
+				case OP_BF_OS:
+					if (!FlagO && !FlagS)
+						DO_BF_BRANCH(0);
+					else
+						DONT_BF_BRANCH(0);
+					break;
+
+				// Branch on no overflow and Negative
+				case OP_BF_OC:
+					if (!FlagO && !FlagC)
+						DO_BF_BRANCH(0);
+					else
+						DONT_BF_BRANCH(0);
+					break;
+
+				// Branch on no overflow and no carry and Negative
+				case OP_BF_OCS:
+					if (!FlagO && !FlagC && !FlagS)
+						DO_BF_BRANCH(0);
+					else
+						DONT_BF_BRANCH(0);
+					break;
+
+				// Branch on no overflow and not zero
+				case OP_BF_OZ:
+					if (!FlagO && !FlagZ)
+						DO_BF_BRANCH(0);
+					else
+						DONT_BF_BRANCH(0);
+					break;
+
+				// Branch on no overflow and not zero and negative
+				case OP_BF_OZS:
+					if (!FlagO && !FlagZ && !FlagS)
+						DO_BF_BRANCH(0);
+					else
+						DONT_BF_BRANCH(0);
+					break;
+
+				// Branch on no overflow and not zero and no carry
+				case OP_BF_OZC:
+					if (!FlagO && !FlagZ && !FlagC)
+						DO_BF_BRANCH(0);
+					else
+						DONT_BF_BRANCH(0);
+					break;
+
+				// Branch on no overflow and not zero and no carry and negative
+				case OP_BF_OZCS:
+					if (!FlagO && !FlagZ && !FlagC && FlagS)
+						DO_BF_BRANCH(0);
+					else
+						DONT_BF_BRANCH(0);
+					break;
+
+				// Branch on true - no branch
+				case OP_BTN:
+					DONT_BT_BRANCH(0);
+					break;
+
+				// Branch if positive
+				case OP_BP:
+					if (FlagS)
+						DO_BT_BRANCH(0);
+					else
+						DONT_BT_BRANCH(0);
+					break;
+
+				// Branch on carry
+				case OP_BC:
+					if (FlagC)
+						DO_BT_BRANCH(0);
+					else
+						DONT_BT_BRANCH(0);
+					break;
+
+				// Branch on carry or positive
+				case OP_BT_CS:
+					if (FlagC || FlagS)
+						DO_BT_BRANCH(0);
+					else
+						DONT_BT_BRANCH(0);
+					break;
+
+				// Branch if zero
+				case OP_BZ:
+					if (FlagZ)
+						DO_BT_BRANCH(0);
+					else
+						DONT_BT_BRANCH(0);
+					break;
+
+				// Branch if zero or positive
+				case OP_BT_ZS:
+					if (FlagZ || FlagS)
+						DO_BT_BRANCH(0);
+					else
+						DONT_BT_BRANCH(0);
+					break;
+
+				// Branch if zero or carry
+				case OP_BT_ZC:
+					if (FlagZ || FlagC)
+						DO_BT_BRANCH(0);
+					else
+						DONT_BT_BRANCH(0);
+					break;
+
+				// Branch if zero or carry or positive
+				case OP_BT_ZCS:
+					if (FlagZ || FlagC || FlagS)
+						DO_BT_BRANCH(0);
+					else
+						DONT_BT_BRANCH(0);
+					break;
+
+				// Branch on ISARL - if any of the low 3 bits of ISAR are reset
+				case OP_BR7:
+					if (!Regs[ISAR].Bit(0) || !Regs[ISAR].Bit(1) || !Regs[ISAR].Bit(2))
+						DO_BF_BRANCH(1);
+					else
+						DONT_BF_BRANCH(1);
+					break;
+			
 				// A <- (I/O Port 0 or 1) 
 				case OP_IN:
-					instr_pntr++; // dest == A
-					Regs[ALU0] = cur_instr[instr_pntr++]; // src
-					IN_Func(A, ALU0);
+					IN_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+					//instr_pntr++; // dest == A
+					//Regs[ALU0] = cur_instr[instr_pntr++]; // src
+					//IN_Func(A, ALU0);
 					break;
 
 				// I/O Port 0 or 1 <- (A)
 				case OP_OUT:
 					WriteHardware(cur_instr[instr_pntr++], (byte)Regs[cur_instr[instr_pntr++]]);
+					//OUT_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
 
 				// instruction fetch
@@ -485,7 +564,22 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				// CYCLE LENGTH: L
 				case ROMC_01:
 					Read_Func(DB, PC0l, PC0h);
-					RegPC0 += (ushort)((sbyte) Regs[DB]);
+					RegPC0 = Regs[DB].Bit(7) ? (ushort)(RegPC0 - (byte)((Regs[DB] ^ 0xFF) + 1)) : (ushort)(RegPC0 + Regs[DB]);
+					/*
+					if (Regs[DB].Bit(7))
+					{
+						// sign bit set
+						var cN = (byte)((Regs[DB] ^ 0xFF) + 1);
+						// subtract  
+						RegPC0 -= cN;
+					}
+					else
+					{
+						// positive signed number
+						RegPC0 += Regs[DB];
+					}
+					//RegPC0 += (ushort)((sbyte) Regs[DB]);
+					*/
 					break;
 
 				// The device whose DC0 address addresses a memory word within the address space of that device must place on the data bus the contents
@@ -522,6 +616,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				// CYCLE LENGTH: L
 				case ROMC_05:
 					Write_Func(DC0l, DC0h, DB);
+					RegDC0++;
 					break;
 
 				// Place the high order byte of DC0 on the data bus
@@ -555,7 +650,24 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				// All devices add the 8-bit value on the data bus, treated as a signed binary number, to the data counter
 				// CYCLE LENGTH: L
 				case ROMC_0A:
-					RegDC0 += (ushort) ((sbyte) Regs[DB]);
+					// The contents of the accumulator are treated as a signed binary number, and are added to the contents of every DCO register.
+					RegDC0 = Regs[DB].Bit(7) ? (ushort)(RegDC0 - (byte)((Regs[DB] ^ 0xFF) + 1)) : (ushort)(RegDC0 + Regs[DB]);
+					/*
+					if (Regs[DB].Bit(7))
+					{
+						// sign bit set
+						var cN = (byte)((Regs[DB] ^ 0xFF) + 1);
+						// subtract  
+						RegDC0 -= cN;
+					}
+					else
+					{
+						// positive signed number
+						RegDC0 += Regs[DB];
+					}
+					*/
+					
+					//RegDC0 += (ushort) ((sbyte) Regs[DB]);
 					break;
 
 				// The device whose address space includes the value in PC1 must place the low order byte of PC1 on the data bus
@@ -771,7 +883,8 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		private void PopulateCURINSTR(byte d0 = 0, byte d1 = 0, byte d2 = 0, byte d3 = 0, byte d4 = 0, byte d5 = 0, byte d6 = 0, byte d7 = 0, byte d8 = 0,
 			byte d9 = 0, byte d10 = 0, byte d11 = 0, byte d12 = 0, byte d13 = 0, byte d14 = 0, byte d15 = 0, byte d16 = 0, byte d17 = 0, byte d18 = 0,
 			byte d19 = 0, byte d20 = 0, byte d21 = 0, byte d22 = 0, byte d23 = 0, byte d24 = 0, byte d25 = 0, byte d26 = 0, byte d27 = 0, byte d28 = 0,
-			byte d29 = 0, byte d30 = 0, byte d31 = 0, byte d32 = 0, byte d33 = 0, byte d34 = 0, byte d35 = 0, byte d36 = 0, byte d37 = 0)
+			byte d29 = 0, byte d30 = 0, byte d31 = 0, byte d32 = 0, byte d33 = 0, byte d34 = 0, byte d35 = 0, byte d36 = 0, byte d37 = 0,
+			byte d38 = 0, byte d39 = 0, byte d40 = 0, byte d41 = 0, byte d42 = 0, byte d43 = 0, byte d44 = 0, byte d45 = 0, byte d46 = 0, byte d47 = 0)
 		{
 			cur_instr[0] = d0; cur_instr[1] = d1; cur_instr[2] = d2;
 			cur_instr[3] = d3; cur_instr[4] = d4; cur_instr[5] = d5;
@@ -785,7 +898,10 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			cur_instr[27] = d27; cur_instr[28] = d28; cur_instr[29] = d29;
 			cur_instr[30] = d30; cur_instr[31] = d31; cur_instr[32] = d32;
 			cur_instr[33] = d33; cur_instr[34] = d34; cur_instr[35] = d35;
-			cur_instr[36] = d36; cur_instr[37] = d37;
+			cur_instr[36] = d36; cur_instr[37] = d37; cur_instr[37] = d38;
+			cur_instr[39] = d36; cur_instr[40] = d37; cur_instr[41] = d38;
+			cur_instr[42] = d36; cur_instr[43] = d37; cur_instr[44] = d38;
+			cur_instr[45] = d36; cur_instr[46] = d37; cur_instr[47] = d38;
 		}
 
 		public void SyncState(Serializer ser)
