@@ -40,7 +40,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				_settings.OSDMessageVerbosity = (AmstradCPC.OSDVerbosity)Enum.Parse(typeof(AmstradCPC.OSDVerbosity), osdMessageVerbositycomboBox1.SelectedItem.ToString());
 
-				_mainForm.PutCoreSettings(_settings);
+				_mainForm.PutCoreSettings(_settings, _mainForm.GetSettingsAdapterForLoadedCore<AmstradCPC>());
 
 				DialogResult = DialogResult.OK;
 				Close();

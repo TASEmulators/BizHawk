@@ -32,7 +32,7 @@ namespace BizHawk.Client.EmuHawk
 				gb.PutSettings(s);
 				if (dlg.gbPrefControl1.SyncSettingsChanged)
 				{
-					mainForm.PutCoreSyncSettings(ss);
+					mainForm.PutCoreSyncSettings(ss, mainForm.GetSettingsAdapterForLoadedCore<Gameboy>());
 				}
 			}
 			return result;

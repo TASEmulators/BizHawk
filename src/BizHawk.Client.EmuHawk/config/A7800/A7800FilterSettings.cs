@@ -39,7 +39,7 @@ namespace BizHawk.Client.EmuHawk
 			if (changed)
 			{
 				_syncSettings.Filter = Port1ComboBox.SelectedItem.ToString();
-				_mainForm.PutCoreSyncSettings(_syncSettings);
+				_mainForm.PutCoreSyncSettings(_syncSettings, _mainForm.GetSettingsAdapterForLoadedCore<A7800Hawk>());
 			}
 
 			DialogResult = DialogResult.OK;

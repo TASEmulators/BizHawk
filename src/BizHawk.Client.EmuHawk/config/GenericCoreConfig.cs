@@ -8,6 +8,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class GenericCoreConfig : Form
 	{
+		private readonly SettingsAdapter _settable;
+
 		private readonly IMainFormForConfig _mainForm;
 		private object _s;
 		private object _ss;
@@ -23,17 +25,11 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 			_mainForm = mainForm;
 
-			var settable = new SettingsAdapter(_mainForm.Emulator);
+			_settable = ((MainForm) _mainForm).GetSettingsAdapterForLoadedCoreUntyped(); //HACK
 
-			if (settable.HasSettings && !ignoreSettings)
-			{
-				_s = settable.GetSettings();
-			}
+			if (_settable.HasSettings && !ignoreSettings) _s = _settable.GetSettings();
 
-			if (settable.HasSyncSettings && !ignoreSyncSettings)
-			{
-				_ss = settable.GetSyncSettings();
-			}
+			if (_settable.HasSyncSettings && !ignoreSyncSettings) _ss = _settable.GetSyncSettings();
 
 			if (_s != null)
 			{
@@ -65,12 +61,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_s != null && _settingsChanged)
 			{
-				_mainForm.PutCoreSettings(_s);
+				_mainForm.PutCoreSettings(_s, _settable);
 			}
 
 			if (_ss != null && _syncSettingsChanged)
 			{
-				_mainForm.PutCoreSyncSettings(_ss);
+				_mainForm.PutCoreSyncSettings(_ss, _settable);
 			}
 
 			DialogResult = DialogResult.OK;

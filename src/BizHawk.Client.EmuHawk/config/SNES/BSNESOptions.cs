@@ -65,8 +65,9 @@ namespace BizHawk.Client.EmuHawk
 				s.ShowBG4_0 = dlg.ShowBg4_0;
 				s.ShowBG4_1 = dlg.ShowBg4_1;
 
-				mainForm.PutCoreSettings(s);
-				mainForm.PutCoreSyncSettings(ss);
+				var settable = mainForm.GetSettingsAdapterForLoadedCore<BsnesCore>();
+				mainForm.PutCoreSettings(s, settable);
+				mainForm.PutCoreSyncSettings(ss, settable);
 			}
 			return result;
 		}

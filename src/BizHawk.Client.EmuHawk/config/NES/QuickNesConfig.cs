@@ -106,7 +106,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ButtonOk_Click(object sender, EventArgs e)
 		{
-			_mainForm.PutCoreSettings(_settings);
+			_mainForm.PutCoreSettings(_settings, _mainForm.GetSettingsAdapterForLoadedCore<QuickNES>());
 			DialogResult = DialogResult.OK;
 			Close();
 		}
