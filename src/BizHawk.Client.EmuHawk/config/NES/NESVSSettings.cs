@@ -42,7 +42,7 @@ namespace BizHawk.Client.EmuHawk
 			_settings.VSDipswitches.Dip_Switch_7 = Dipswitch7CheckBox.Checked;
 			_settings.VSDipswitches.Dip_Switch_8 = Dipswitch8CheckBox.Checked;
 
-			_mainForm.PutCoreSyncSettings(_settings);
+			_mainForm.PutCoreSyncSettings(_settings, _mainForm.GetSettingsAdapterForLoadedCore<NES>());
 			Close();
 		}
 

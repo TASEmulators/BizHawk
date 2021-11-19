@@ -103,7 +103,7 @@ namespace BizHawk.Client.EmuHawk
 					_syncSettings.JoystickType2 = (JoystickType)Enum.Parse(typeof(JoystickType), Port2ComboBox.SelectedItem.ToString());
 					_syncSettings.JoystickType3 = (JoystickType)Enum.Parse(typeof(JoystickType), Port3ComboBox.SelectedItem.ToString());
 
-					_mainForm.PutCoreSyncSettings(_syncSettings);
+					_mainForm.PutCoreSyncSettings(_syncSettings, _mainForm.GetSettingsAdapterForLoadedCore<ZXSpectrum>());
 
 					DialogResult = DialogResult.OK;
 					Close();

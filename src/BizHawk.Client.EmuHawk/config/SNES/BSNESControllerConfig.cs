@@ -41,7 +41,7 @@ namespace BizHawk.Client.EmuHawk
 				_syncSettings.RightPort = (BsnesApi.BSNES_INPUT_DEVICE) Port2ComboBox.SelectedIndex;
 				_syncSettings.LimitAnalogChangeSensitivity = LimitAnalogChangeCheckBox.Checked;
 
-				_mainForm.PutCoreSyncSettings(_syncSettings);
+				_mainForm.PutCoreSyncSettings(_syncSettings, _mainForm.GetSettingsAdapterForLoadedCore<BsnesCore>());
 			}
 
 			DialogResult = DialogResult.OK;

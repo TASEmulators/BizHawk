@@ -42,7 +42,7 @@ namespace BizHawk.Client.EmuHawk
 				_syncSettings.Port1 = Port1ComboBox.SelectedItem.ToString();
 				_syncSettings.Port2 = Port2ComboBox.SelectedItem.ToString();
 
-				_mainForm.PutCoreSyncSettings(_syncSettings);
+				_mainForm.PutCoreSyncSettings(_syncSettings, _mainForm.GetSettingsAdapterForLoadedCore<ColecoVision>());
 			}
 
 			DialogResult = DialogResult.OK;

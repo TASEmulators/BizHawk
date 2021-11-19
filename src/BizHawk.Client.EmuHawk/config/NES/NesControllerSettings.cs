@@ -53,7 +53,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (changed)
 			{
-				_mainForm.PutCoreSyncSettings(_syncSettings);
+				_mainForm.PutCoreSyncSettings(_syncSettings, _mainForm.GetSettingsAdapterForLoadedCore<NES>());
 			}
 
 			DialogResult = DialogResult.OK;

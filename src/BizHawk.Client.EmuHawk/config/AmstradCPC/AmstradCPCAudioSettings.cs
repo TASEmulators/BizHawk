@@ -51,7 +51,7 @@ namespace BizHawk.Client.EmuHawk
 				_settings.TapeVolume = tapeVolumetrackBar.Value;
 				_settings.AYVolume = ayVolumetrackBar.Value;
 
-				_mainForm.PutCoreSettings(_settings);
+				_mainForm.PutCoreSettings(_settings, _mainForm.GetSettingsAdapterForLoadedCore<AmstradCPC>());
 			}
 			DialogResult = DialogResult.OK;
 			Close();

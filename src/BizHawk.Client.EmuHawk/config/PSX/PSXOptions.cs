@@ -125,8 +125,9 @@ namespace BizHawk.Client.EmuHawk
 
 			SyncSettingsFromGui(_settings, _syncSettings);
 			_settings.Validate();
-			_mainForm.PutCoreSettings(_settings);
-			_mainForm.PutCoreSyncSettings(_syncSettings);
+			var settable = _mainForm.GetSettingsAdapterForLoadedCore<Octoshock>();
+			_mainForm.PutCoreSettings(_settings, settable);
+			_mainForm.PutCoreSyncSettings(_syncSettings, settable);
 
 			DialogResult = DialogResult.OK;
 			Close();

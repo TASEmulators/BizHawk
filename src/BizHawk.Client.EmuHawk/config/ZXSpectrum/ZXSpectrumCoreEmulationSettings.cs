@@ -61,7 +61,7 @@ namespace BizHawk.Client.EmuHawk
 				_syncSettings.DeterministicEmulation = determEmucheckBox1.Checked;
 				_syncSettings.AutoLoadTape = autoLoadcheckBox1.Checked;
 
-				_mainForm.PutCoreSyncSettings(_syncSettings);
+				_mainForm.PutCoreSyncSettings(_syncSettings, _mainForm.GetSettingsAdapterForLoadedCore<ZXSpectrum>());
 			}
 			DialogResult = DialogResult.OK;
 			Close();

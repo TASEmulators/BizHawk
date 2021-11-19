@@ -149,7 +149,7 @@ namespace BizHawk.Client.EmuHawk
 				_settings.BackgroundColor &= 0x00FFFFFF;
 			}
 
-			_mainForm.PutCoreSettings(_settings);
+			_mainForm.PutCoreSettings(_settings, _mainForm.GetSettingsAdapterForLoadedCore<NES>());
 			Close();
 		}
 

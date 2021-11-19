@@ -123,8 +123,9 @@ namespace BizHawk.Client.EmuHawk
 
 			if (_emulator is N64)
 			{
-				_mainForm.PutCoreSettings(_s);
-				_mainForm.PutCoreSyncSettings(_ss);
+				var settable = _mainForm.GetSettingsAdapterForLoadedCore<N64>();
+				_mainForm.PutCoreSettings(_s, settable);
+				_mainForm.PutCoreSyncSettings(_ss, settable);
 			}
 			else
 			{
