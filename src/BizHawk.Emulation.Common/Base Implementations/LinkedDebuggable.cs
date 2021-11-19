@@ -13,11 +13,11 @@ namespace BizHawk.Emulation.Common
 		private readonly IEmulator[] _linkedCores;
 		private readonly int _numCores;
 
-		public LinkedDebuggable(IEmulator[] linkedCores, int numCores, MemoryCallbackSystem memorycallbacks)
+		public LinkedDebuggable(IEmulator[] linkedCores, int numCores, MemoryCallbackSystem memoryCallbacks)
 		{
 			_linkedCores = linkedCores;
 			_numCores = numCores;
-			MemoryCallbacks = memorycallbacks;
+			MemoryCallbacks = memoryCallbacks;
 		}
 
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
