@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Windows.Forms;
-using System.Reflection;
 using System.ComponentModel;
-using BizHawk.Client.Common;
+using System.Windows.Forms;
+
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -15,7 +14,11 @@ namespace BizHawk.Client.EmuHawk
 		private bool _syncSettingsChanged;
 		private bool _settingsChanged;
 
-		private GenericCoreConfig(IMainFormForConfig mainForm, bool ignoreSettings = false, bool ignoreSyncSettings = false)
+		private GenericCoreConfig(
+			IMainFormForConfig mainForm,
+			bool isMovieActive,
+			bool ignoreSettings = false,
+			bool ignoreSyncSettings = false)
 		{
 			InitializeComponent();
 			_mainForm = mainForm;
@@ -52,7 +55,7 @@ namespace BizHawk.Client.EmuHawk
 				tabControl1.TabPages.Remove(tabPage2);
 			}
 
-			if (_mainForm.MovieSession.Movie.IsActive())
+			if (isMovieActive)
 			{
 				propertyGrid2.Enabled = false; // disable changes to sync setting when movie, so as not to confuse user
 			}
@@ -74,7 +77,7 @@ namespace BizHawk.Client.EmuHawk
 			Close();
 		}
 
-		public static void DoDialog(IMainFormForConfig owner, string title)
+		public static void DoDialog(IMainFormForConfig owner, string title, bool isMovieActive)
 		{
 			if (owner.Emulator is Emulation.Cores.Waterbox.NymaCore core)
 			{
@@ -84,7 +87,7 @@ namespace BizHawk.Client.EmuHawk
 					// OH GOD THE HACKS WHY
 					TypeDescriptor.AddProvider(desc, typeof(Emulation.Cores.Waterbox.NymaCore.NymaSettings));
 					TypeDescriptor.AddProvider(desc, typeof(Emulation.Cores.Waterbox.NymaCore.NymaSyncSettings));
-					DoDialog(owner, "Nyma Core", !core.SettingsInfo.HasSettings, !core.SettingsInfo.HasSyncSettings);
+					DoDialog(owner, "Nyma Core", isMovieActive, !core.SettingsInfo.HasSettings, !core.SettingsInfo.HasSyncSettings);
 				}
 				finally
 				{
@@ -98,7 +101,7 @@ namespace BizHawk.Client.EmuHawk
 				try
 				{
 					TypeDescriptor.AddProvider(desc, typeof(Emulation.Cores.Arcades.MAME.MAME.MAMESyncSettings));
-					DoDialog(owner, "MAME", true, false);
+					DoDialog(owner, "MAME", isMovieActive, true, false);
 				}
 				finally
 				{
@@ -107,16 +110,28 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				using var dlg = new GenericCoreConfig(owner) { Text = title };
-				owner.ShowDialogAsChild(dlg);
+				DoDialog(owner, title, isMovieActive, false, false);
 			}
 		}
 
-		public static void DoDialog(IMainFormForConfig owner, string title, bool hideSettings, bool hideSyncSettings)
+		public static void DoDialog(
+			IMainFormForConfig owner,
+			string title,
+			bool isMovieActive,
+			bool hideSettings,
+			bool hideSyncSettings)
 		{
-			using var dlg = new GenericCoreConfig(owner, hideSettings, hideSyncSettings) { Text = title };
+			using var dlg = new GenericCoreConfig(
+				owner,
+				isMovieActive: isMovieActive,
+				ignoreSettings: hideSettings,
+				ignoreSyncSettings: hideSyncSettings)
+			{
+				Text = title,
+			};
 			owner.ShowDialogAsChild(dlg);
 		}
+
 		private void PropertyGrid2_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
 		{
 			_syncSettingsChanged = true;

@@ -888,7 +888,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PathsMenuItem_Click(object sender, EventArgs e)
 		{
-			using var form = new PathConfig(this, Config.PathEntries, Game.System);
+			using var form = new PathConfig(Config.PathEntries, Game.System, newPath => MovieSession.BackupDirectory = newPath);
 			if (form.ShowDialog().IsOk()) AddOnScreenMessage("Path settings saved");
 		}
 
@@ -1439,7 +1439,12 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (Emulator is QuickNES)
 			{
-				GenericCoreConfig.DoDialog(this, "QuickNES Controller Settings", true, false);
+				GenericCoreConfig.DoDialog(
+					this,
+					"QuickNES Controller Settings",
+					isMovieActive: MovieSession.Movie.IsActive(),
+					hideSettings: true,
+					hideSyncSettings: false);
 			}
 		}
 
@@ -1551,7 +1556,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				GenericCoreConfig.DoDialog(this, "Gameboy Settings");
+				OpenGenericCoreConfig("Gameboy Settings");
 			}
 		}
 
@@ -1748,15 +1753,18 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void OpenGenericCoreConfig(string title)
+			=> GenericCoreConfig.DoDialog(this, title, isMovieActive: MovieSession.Movie.IsActive());
+
 		private void GenericCoreSettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			var coreName = ((CoreAttribute) Attribute.GetCustomAttribute(Emulator.GetType(), typeof(CoreAttribute))).CoreName;
-			GenericCoreConfig.DoDialog(this, $"{coreName} Settings");
+			OpenGenericCoreConfig($"{coreName} Settings");
 		}
 
 		private void AppleIISettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			GenericCoreConfig.DoDialog(this, "Apple II Settings");
+			OpenGenericCoreConfig("Apple II Settings");
 		}
 
 		private void AppleSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -1829,7 +1837,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void C64SettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			GenericCoreConfig.DoDialog(this, "C64 Settings");
+			OpenGenericCoreConfig("C64 Settings");
 		}
 
 		private void IntVSubMenu_DropDownOpened(object sender, EventArgs e)

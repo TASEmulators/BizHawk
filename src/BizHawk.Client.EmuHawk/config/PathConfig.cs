@@ -13,9 +13,9 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class PathConfig : Form
 	{
-		private readonly IMainFormForConfig _mainForm;
-
 		private readonly PathEntryCollection _pathEntries;
+
+		private readonly Action<string> _setMovieBackupPath;
 
 		private readonly string _sysID;
 
@@ -26,10 +26,13 @@ namespace BizHawk.Client.EmuHawk
 			"%rom%",
 		};
 
-		public PathConfig(IMainFormForConfig mainForm, PathEntryCollection pathEntries, string sysID)
+		public PathConfig(
+			PathEntryCollection pathEntries,
+			string sysID,
+			Action<string> setMovieBackupPath)
 		{
-			_mainForm = mainForm;
 			_pathEntries = pathEntries;
+			_setMovieBackupPath = setMovieBackupPath;
 			_sysID = sysID;
 			InitializeComponent();
 			SpecialCommandsBtn.Image = Properties.Resources.Help;
@@ -219,7 +222,7 @@ namespace BizHawk.Client.EmuHawk
 				pathEntry.Path = t.Text;
 			}
 
-			_mainForm.MovieSession.BackupDirectory = _pathEntries.MovieBackupsAbsolutePath();
+			_setMovieBackupPath(_pathEntries.MovieBackupsAbsolutePath());
 		}
 
 		private void DoRomToggle()
