@@ -48,7 +48,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CancelBtn_Click(object sender, EventArgs e)
 		{
-			_mainForm.AddOnScreenMessage("Filter settings aborted");
 			DialogResult = DialogResult.Cancel;
 			Close();
 		}

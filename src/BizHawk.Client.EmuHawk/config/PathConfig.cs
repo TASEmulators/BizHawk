@@ -267,7 +267,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Cancel_Click(object sender, EventArgs e)
 		{
-			_mainForm.AddOnScreenMessage("Path config aborted");
 			Close();
 		}
 

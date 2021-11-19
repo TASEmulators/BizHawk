@@ -31,7 +31,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CancelBtn_Click(object sender, EventArgs e)
 		{
-			_mainForm.AddOnScreenMessage("POKE memory aborted");
 			DialogResult = DialogResult.Cancel;
 			Close();
 		}

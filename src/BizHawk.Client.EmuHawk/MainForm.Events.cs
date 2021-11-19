@@ -842,31 +842,21 @@ namespace BizHawk.Client.EmuHawk
 		private void ControllersMenuItem_Click(object sender, EventArgs e)
 		{
 			using var controller = new ControllerConfig(this, Emulator, Config);
-			if (controller.ShowDialog().IsOk())
-			{
-				AddOnScreenMessage("Controller settings saved");
-				InitControls();
-				InputManager.SyncControls(Emulator, MovieSession, Config);
-			}
-			else
-			{
-				AddOnScreenMessage("Controller config aborted");
-			}
+			if (!controller.ShowDialog().IsOk()) return;
+			AddOnScreenMessage("Controller settings saved");
+
+			InitControls();
+			InputManager.SyncControls(Emulator, MovieSession, Config);
 		}
 
 		private void HotkeysMenuItem_Click(object sender, EventArgs e)
 		{
 			using var hotkeyConfig = new HotkeyConfig(Config);
-			if (hotkeyConfig.ShowDialog().IsOk())
-			{
-				AddOnScreenMessage("Hotkey settings saved");
-				InitControls();
-				InputManager.SyncControls(Emulator, MovieSession, Config);
-			}
-			else
-			{
-				AddOnScreenMessage("Hotkey config aborted");
-			}
+			if (!hotkeyConfig.ShowDialog().IsOk()) return;
+			AddOnScreenMessage("Hotkey settings saved");
+
+			InitControls();
+			InputManager.SyncControls(Emulator, MovieSession, Config);
 		}
 
 		private void FirmwaresMenuItem_Click(object sender, EventArgs e)
@@ -887,10 +877,7 @@ namespace BizHawk.Client.EmuHawk
 		private void MessagesMenuItem_Click(object sender, EventArgs e)
 		{
 			using var form = new MessageConfig(Config);
-			var result = form.ShowDialog();
-			AddOnScreenMessage(result.IsOk()
-				? "Message settings saved"
-				: "Message config aborted");
+			if (form.ShowDialog().IsOk()) AddOnScreenMessage("Message settings saved");
 		}
 
 		private void PathsMenuItem_Click(object sender, EventArgs e)
@@ -909,13 +896,9 @@ namespace BizHawk.Client.EmuHawk
 				_ => Enumerable.Empty<string>()
 			};
 			using var form = new SoundConfig(this, Config, GetDeviceNamesCallback);
-			if (!form.ShowDialog().IsOk())
-			{
-				AddOnScreenMessage("Sound config aborted");
-				return;
-			}
-
+			if (!form.ShowDialog().IsOk()) return;
 			AddOnScreenMessage("Sound settings saved");
+
 			if (form.ApplyNewSoundDevice)
 			{
 				Sound.Dispose();
@@ -933,10 +916,7 @@ namespace BizHawk.Client.EmuHawk
 		private void AutofireMenuItem_Click(object sender, EventArgs e)
 		{
 			using var form = new AutofireConfig(Config, InputManager.AutoFireController, InputManager.AutofireStickyXorAdapter);
-			var result = form.ShowDialog();
-			AddOnScreenMessage(result.IsOk()
-				? "Autofire settings saved"
-				: "Autofire config aborted");
+			if (form.ShowDialog().IsOk()) AddOnScreenMessage("Autofire settings saved");
 		}
 
 		private void RewindOptionsMenuItem_Click(object sender, EventArgs e)
@@ -944,19 +924,14 @@ namespace BizHawk.Client.EmuHawk
 			if (Emulator.HasSavestates())
 			{
 				using var form = new RewindConfig(Config, CreateRewinder, () => this.Rewinder, Emulator.AsStatable());
-				AddOnScreenMessage(form.ShowDialog().IsOk()
-					? "Rewind and State settings saved"
-					: "Rewind config aborted");
+				if (form.ShowDialog().IsOk()) AddOnScreenMessage("Rewind and State settings saved");
 			}
 		}
 
 		private void FileExtensionsMenuItem_Click(object sender, EventArgs e)
 		{
 			using var form = new FileExtensionPreferences(Config.PreferredPlatformsForExtensions);
-			var result = form.ShowDialog();
-			AddOnScreenMessage(result.IsOk()
-				? "Rom Extension Preferences changed"
-				: "Rom Extension Preferences cancelled");
+			if (form.ShowDialog().IsOk()) AddOnScreenMessage("Rom Extension Preferences changed");
 		}
 
 		private void BumpAutoFlushSaveRamTimer()
@@ -976,19 +951,13 @@ namespace BizHawk.Client.EmuHawk
 		private void ProfilesMenuItem_Click(object sender, EventArgs e)
 		{
 			using var form = new ProfileConfig(this, Emulator, Config);
-			if (form.ShowDialog().IsOk())
-			{
-				AddOnScreenMessage("Profile settings saved");
+			if (!form.ShowDialog().IsOk()) return;
+			AddOnScreenMessage("Profile settings saved");
 
-				// We hide the FirstBoot items since the user setup a Profile
-				// Is it a bad thing to do this constantly?
-				Config.FirstBoot = false;
-				ProfileFirstBootLabel.Visible = false;
-			}
-			else
-			{
-				AddOnScreenMessage("Profile config aborted");
-			}
+			// We hide the FirstBoot items since the user setup a Profile
+			// Is it a bad thing to do this constantly?
+			Config.FirstBoot = false;
+			ProfileFirstBootLabel.Visible = false;
 		}
 
 		private void ClockThrottleMenuItem_Click(object sender, EventArgs e)
@@ -1536,9 +1505,7 @@ namespace BizHawk.Client.EmuHawk
 			if (Emulator is TI83 ti83)
 			{
 				using var form = new TI83PaletteConfig(this, ti83.GetSettings().Clone());
-				AddOnScreenMessage(form.ShowDialog().IsOk()
-					? "Palette settings saved"
-					: "Palette config aborted");
+				if (form.ShowDialog().IsOk()) AddOnScreenMessage("Palette settings saved");
 			}
 		}
 
@@ -1724,20 +1691,10 @@ namespace BizHawk.Client.EmuHawk
 		private void N64PluginSettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			using var form = new N64VideoPluginConfig(this, Config, Emulator);
-			if (form.ShowDialog().IsOk())
+			if (form.ShowDialog().IsOk()
+				&& Emulator is not N64) // If it's loaded, the reboot required message will appear
 			{
-				if (Emulator.IsNull())
-				{
-					AddOnScreenMessage("Plugin settings saved");
-				}
-				else
-				{
-					// Do nothing, Reboot is being flagged already if they changed anything
-				}
-			}
-			else
-			{
-				AddOnScreenMessage("Plugin settings aborted");
+				AddOnScreenMessage("Plugin settings saved");
 			}
 		}
 

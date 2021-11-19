@@ -162,7 +162,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Close();
 			DialogResult = DialogResult.Cancel;
-			_osdMessageCallback("Customizing aborted.");
 		}
 
 		private void AcceptBackgroundInputCheckbox_CheckedChanged(object sender, EventArgs e)
