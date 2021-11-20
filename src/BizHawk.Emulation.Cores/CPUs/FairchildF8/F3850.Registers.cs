@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using BizHawk.Emulation.Common;
 
-namespace BizHawk.Emulation.Cores.Consoles.ChannelF
+namespace BizHawk.Emulation.Cores.Components.FairchildF8
 {
 	/// <summary>
 	/// Internal Registers

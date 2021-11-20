@@ -3,10 +3,10 @@ using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
 
-namespace BizHawk.Emulation.Cores.Consoles.ChannelF
+namespace BizHawk.Emulation.Cores.Components.FairchildF8
 {
 	/// <summary>
-	/// Fairchild F3850 (F8) CPU (Channel F-specific implementation)
+	/// Fairchild F3850 (F8) CPU
 	/// 
 	/// The F8 microprocessor is made up of separate interchangeable devices
 	/// The Channel F has:
@@ -28,8 +28,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 	///		* Programmable timer
 	///		* Interrupt logic
 	///
-	/// However, the Channel F does not use the timer or interrupt logic at all (as far as I can see) so we can hopefully just
-	/// maintain the PC and DC here in the CPU and move the ROMs into the core.
+	/// Note: Programmable timer and interrupt logic from the F3851 is not currently emulated
 	/// </summary>
 	public sealed partial class F3850
 	{

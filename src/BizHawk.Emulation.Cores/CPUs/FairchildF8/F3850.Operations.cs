@@ -1,6 +1,6 @@
 ﻿using BizHawk.Common.NumberExtensions;
 
-namespace BizHawk.Emulation.Cores.Consoles.ChannelF
+namespace BizHawk.Emulation.Cores.Components.FairchildF8
 {
 	/// <summary>
 	/// ALU Operations

@@ -1,4 +1,4 @@
-﻿namespace BizHawk.Emulation.Cores.Consoles.ChannelF
+﻿namespace BizHawk.Emulation.Cores.Components.FairchildF8
 {
 	/// <summary>
 	/// Vectors of Instruction Operations
