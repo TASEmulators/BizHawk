@@ -75,8 +75,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public bool LinkConnected
 		{
-			get => _cableconnected;
-			set => _cableconnected = value;
+			get => _cableConnected;
+			set => _cableConnected = value;
 		}
 
 		private int _numCores = 0;
@@ -90,10 +90,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		private readonly int[] _linkedOverflow;
 
 		// if true, the link cable is currently connected
-		private bool _cableconnected = true;
+		private bool _cableConnected = true;
+
+		// if true, the link cable is currently shifted (3x/4x only)
+		private bool _cableShifted = false;
+
+		// if true, the link cable is currently spaced outwards (3x/4x only)
+		private bool _cableSpaced = false;
 
 		// if true, the link cable toggle signal is currently asserted
-		private bool _cablediscosignal = false;
+		private bool _cableDiscoSignal = false;
+
+		// if true, the link cable shift signal is currently asserted
+		private bool _cableShiftSignal = false;
+
+		// if true, the link cable spacing signal is currently asserted
+		private bool _cableSpaceSignal = false;
 
 		private const int SampPerFrame = 35112;
 		private const int MaxSampsPerFrame = (SampPerFrame + 2064) * 2;
@@ -116,7 +128,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 					new[] { "Up", "Down", "Left", "Right", "A", "B", "Select", "Start", "Power" }
 						.Select(s => $"P{i + 1} {s}"));
 			}
-			ret.BoolButtons.Add("Toggle Cable");
+			ret.BoolButtons.Add("Toggle Cable Connection");
+			if (_numCores > 2)
+			{
+				ret.BoolButtons.Add("Toggle Cable Shift");
+				ret.BoolButtons.Add("Toggle Cable Spacing");
+			}
 			return ret;
 		}
 

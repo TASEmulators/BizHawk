@@ -30,8 +30,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			IsLagFrame = s.IsLagFrame;
 			LagCount = s.LagCount;
 			Frame = s.Frame;
-			_cableconnected = s.cableconnected;
-			_cablediscosignal = s.cablediscosignal;
+			_cableConnected = s.CableConnected;
+			_cableDiscoSignal = s.CableDiscoSignal;
+			_cableShifted = s.CableShifted;
+			_cableShiftSignal = s.CableShiftSignal;
+			_cableSpaced = s.CableSpaced;
+			_cableSpaceSignal = s.CableSpaceSignal;
 		}
 
 		public void SaveStateBinary(BinaryWriter writer)
@@ -47,8 +51,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			writer.Write(IsLagFrame);
 			writer.Write(LagCount);
 			writer.Write(Frame);
-			writer.Write(_cableconnected);
-			writer.Write(_cablediscosignal);
+			writer.Write(_cableConnected);
+			writer.Write(_cableDiscoSignal);
+			writer.Write(_cableShifted);
+			writer.Write(_cableShiftSignal);
+			writer.Write(_cableSpaced);
+			writer.Write(_cableSpaceSignal);
 		}
 
 		public void LoadStateBinary(BinaryReader reader)
@@ -67,8 +75,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			IsLagFrame = reader.ReadBoolean();
 			LagCount = reader.ReadInt32();
 			Frame = reader.ReadInt32();
-			_cableconnected = reader.ReadBoolean();
-			_cablediscosignal = reader.ReadBoolean();
+			_cableConnected = reader.ReadBoolean();
+			_cableDiscoSignal = reader.ReadBoolean();
+			_cableShifted = reader.ReadBoolean();
+			_cableShiftSignal = reader.ReadBoolean();
+			_cableSpaced = reader.ReadBoolean();
+			_cableSpaceSignal = reader.ReadBoolean();
 		}
 
 		private readonly JsonSerializer ser = new JsonSerializer { Formatting = Formatting.Indented };
@@ -83,8 +95,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			public int Frame;
 			public int[] LinkedOverflow;
 			public int[] LinkedLatches;
-			public bool cableconnected;
-			public bool cablediscosignal;
+			public bool CableConnected;
+			public bool CableDiscoSignal;
+			public bool CableShifted;
+			public bool CableShiftSignal;
+			public bool CableSpaced;
+			public bool CableSpaceSignal;
 
 			public DGBSerialized(GambatteLink linkcore)
 			{
@@ -101,8 +117,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				IsLagFrame = linkcore.IsLagFrame;
 				LagCount = linkcore.LagCount;
 				Frame = linkcore.Frame;
-				cableconnected = linkcore._cableconnected;
-				cablediscosignal = linkcore._cablediscosignal;
+				CableConnected = linkcore._cableConnected;
+				CableDiscoSignal = linkcore._cableDiscoSignal;
+				CableShifted = linkcore._cableShifted;
+				CableShiftSignal = linkcore._cableShiftSignal;
+				CableSpaced = linkcore._cableSpaced;
+				CableSpaceSignal = linkcore._cableSpaceSignal;
 			}
 		}
 	}

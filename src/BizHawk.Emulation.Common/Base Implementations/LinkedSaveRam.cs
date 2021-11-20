@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace BizHawk.Emulation.Common
 {
 	/// <summary>
-	/// A generic implementation of ISaveRam that can be used by any link core
+	/// A generic linked implementation of ISaveRam that can be used by any link core
 	/// </summary>
 	/// <seealso cref="ISaveRam" />
 	public class LinkedSaveRam : ISaveRam

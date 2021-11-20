@@ -31,14 +31,35 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				}
 			}
 
-			bool cablediscosignalNew = controller.IsPressed("Toggle Cable");
-			if (cablediscosignalNew && !_cablediscosignal)
+			bool cableDiscoSignalNew = controller.IsPressed("Toggle Cable Connection");
+			if (cableDiscoSignalNew && !_cableDiscoSignal)
 			{
-				_cableconnected ^= true;
-				Console.WriteLine("Cable connect status to {0}", _cableconnected);
+				_cableConnected ^= true;
+				Console.WriteLine("Cable connect status to {0}", _cableConnected);
 			}
 
-			_cablediscosignal = cablediscosignalNew;
+			_cableDiscoSignal = cableDiscoSignalNew;
+
+			if (_numCores > 2)
+			{
+				bool cableShiftSignalNew = controller.IsPressed("Toggle Cable Shift");
+				if (cableShiftSignalNew && !_cableShiftSignal)
+				{
+					_cableShifted ^= true;
+					Console.WriteLine("Cable shift status to {0}", _cableShifted);
+				}
+
+				_cableShifted = cableShiftSignalNew;
+
+				bool cableSpaceSignalNew = controller.IsPressed("Toggle Cable Spacing");
+				if (cableSpaceSignalNew && !_cableSpaceSignal)
+				{
+					_cableSpaced ^= true;
+					Console.WriteLine("Cable spacing status to {0}", _cableSpaceSignal);
+				}
+
+				_cableSpaceSignal = cableSpaceSignalNew;
+			}
 
 			for (int i = 0; i < _numCores; i++)
 			{
@@ -90,27 +111,65 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 							}
 
 							// poll link cable statuses, but not when the cable is disconnected
-							if (!_cableconnected)
+							if (!_cableConnected)
 							{
 								continue;
 							}
 
-							if (LibGambatte.gambatte_linkstatus(_linkedCores[0].GambatteState, 256) != 0) // ClockTrigger
+							switch (_numCores)
 							{
-								LibGambatte.gambatte_linkstatus(_linkedCores[0].GambatteState, 257); // ack
-								int lo = LibGambatte.gambatte_linkstatus(_linkedCores[0].GambatteState, 258); // GetOut
-								int ro = LibGambatte.gambatte_linkstatus(_linkedCores[1].GambatteState, 258);
-								LibGambatte.gambatte_linkstatus(_linkedCores[0].GambatteState, ro & 0xff); // ShiftIn
-								LibGambatte.gambatte_linkstatus(_linkedCores[1].GambatteState, lo & 0xff); // ShiftIn
-							}
-
-							if (LibGambatte.gambatte_linkstatus(_linkedCores[1].GambatteState, 256) != 0) // ClockTrigger
-							{
-								LibGambatte.gambatte_linkstatus(_linkedCores[1].GambatteState, 257); // ack
-								int lo = LibGambatte.gambatte_linkstatus(_linkedCores[0].GambatteState, 258); // GetOut
-								int ro = LibGambatte.gambatte_linkstatus(_linkedCores[1].GambatteState, 258);
-								LibGambatte.gambatte_linkstatus(_linkedCores[0].GambatteState, ro & 0xff); // ShiftIn
-								LibGambatte.gambatte_linkstatus(_linkedCores[1].GambatteState, lo & 0xff); // ShiftIn
+								case 2:
+									{
+										TryCableBytewiseTransfer(P1, P2);
+										TryCableBytewiseTransfer(P2, P1);
+										break;
+									}
+								case 3:
+									{
+										if (_cableSpaced)
+										{
+											TryCableBytewiseTransfer(P1, P3);
+											TryCableBytewiseTransfer(P3, P1);
+										}
+										else if (_cableShifted)
+										{
+											TryCableBytewiseTransfer(P2, P3);
+											TryCableBytewiseTransfer(P3, P2);
+										}
+										else
+										{
+											TryCableBytewiseTransfer(P1, P2);
+											TryCableBytewiseTransfer(P2, P1);
+										}
+										break;
+									}
+								case 4:
+									{
+										if (_cableSpaced)
+										{
+											TryCableBytewiseTransfer(P1, P3);
+											TryCableBytewiseTransfer(P3, P1);
+											TryCableBytewiseTransfer(P2, P4);
+											TryCableBytewiseTransfer(P4, P2);
+										}
+										else if (_cableShifted)
+										{
+											TryCableBytewiseTransfer(P2, P3);
+											TryCableBytewiseTransfer(P3, P2);
+											TryCableBytewiseTransfer(P4, P1);
+											TryCableBytewiseTransfer(P1, P4);
+										}
+										else
+										{
+											TryCableBytewiseTransfer(P1, P2);
+											TryCableBytewiseTransfer(P2, P1);
+											TryCableBytewiseTransfer(P3, P4);
+											TryCableBytewiseTransfer(P4, P3);
+										}
+										break;
+									}
+								default:
+									throw new Exception();
 							}
 						}
 
@@ -156,6 +215,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			Frame++;
 
 			return true;
+		}
+
+		private void TryCableBytewiseTransfer(int master, int slave)
+		{
+			if (LibGambatte.gambatte_linkstatus(_linkedCores[master].GambatteState, 256) != 0) // ClockTrigger
+			{
+				LibGambatte.gambatte_linkstatus(_linkedCores[master].GambatteState, 257); // ack
+				int om = LibGambatte.gambatte_linkstatus(_linkedCores[master].GambatteState, 258); // GetOut
+				int os = LibGambatte.gambatte_linkstatus(_linkedCores[slave].GambatteState, 258);
+				LibGambatte.gambatte_linkstatus(_linkedCores[slave].GambatteState, om & 0xff); // ShiftIn
+				LibGambatte.gambatte_linkstatus(_linkedCores[master].GambatteState, os & 0xff); // ShiftIn
+			}
 		}
 
 		public int Frame { get; private set; }

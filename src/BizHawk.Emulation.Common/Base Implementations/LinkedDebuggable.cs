@@ -5,7 +5,7 @@ using System.Linq;
 namespace BizHawk.Emulation.Common
 {
 	/// <summary>
-	/// A generic implementation of IDebuggable that can be used by any link core
+	/// A generic linked implementation of IDebuggable that can be used by any link core
 	/// </summary>
 	/// <seealso cref="IDebuggable" />
 	public class LinkedDebuggable : IDebuggable

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace BizHawk.Emulation.Common
 {
 	/// <summary>
-	/// A generic implementation of IMemoryDomains that can be used by any link core
+	/// A generic linked implementation of IMemoryDomains that can be used by any link core
 	/// </summary>
 	/// <seealso cref="IMemoryDomains" />
 	public class LinkedMemoryDomains : MemoryDomainList
