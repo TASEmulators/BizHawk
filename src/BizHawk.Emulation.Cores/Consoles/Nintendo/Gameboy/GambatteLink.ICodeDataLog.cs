@@ -4,19 +4,34 @@ using System.IO;
 
 namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
-	partial class GambatteLink
+	partial class GambatteLink : ICodeDataLogger
 	{
 		void ICodeDataLogger.SetCDL(ICodeDataLog cdl)
 		{
-			((ICodeDataLogger)L).SetCDL(cdl);
+			for (int i = 0; i < _numCores; i++)
+			{
+				_linkedCores[i].SetCDL(cdl, $"P{i + 1} ");
+			}
 		}
 
 		void ICodeDataLogger.NewCDL(ICodeDataLog cdl)
 		{
-			((ICodeDataLogger)L).NewCDL(cdl);
+			for (int i = 0; i < _numCores; i++)
+			{
+				_linkedCores[i].NewCDL(cdl, $"P{i + 1} ");
+			}
 		}
 
-		void ICodeDataLogger.DisassembleCDL(Stream s, ICodeDataLog cdl) { ((ICodeDataLogger)L).DisassembleCDL(s, cdl); }
-
+		[FeatureNotImplemented]
+		void ICodeDataLogger.DisassembleCDL(Stream s, ICodeDataLog cdl)
+		{
+			// this doesn't actually do anything
+			/*
+			for (int i = 0; i < _numCores; i++)
+			{
+				_linkedCores[i].DisassembleCDL(s, cdl);
+			}
+			*/
+		}
 	}
 }

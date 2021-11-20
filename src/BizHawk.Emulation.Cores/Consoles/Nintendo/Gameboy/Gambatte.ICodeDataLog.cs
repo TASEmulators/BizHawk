@@ -7,21 +7,26 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
 	public partial class Gameboy : ICodeDataLogger
 	{
-		public void SetCDL(ICodeDataLog cdl)
+		public void SetCDL(ICodeDataLog cdl) => SetCDL(cdl, "");
+
+		internal void SetCDL(ICodeDataLog cdl, string which)
 		{
 			_cdl = cdl;
+			_which = which;
 			LibGambatte.gambatte_setcdcallback(GambatteState, cdl == null ? null : _cdCallback);
 		}
 
-		public void NewCDL(ICodeDataLog cdl)
+		public void NewCDL(ICodeDataLog cdl) => NewCDL(cdl, "");
+
+		internal void NewCDL(ICodeDataLog cdl, string which)
 		{
-			cdl["ROM"] = new byte[MemoryDomains["ROM"]!.Size];
+			cdl[which + "ROM"] = new byte[MemoryDomains["ROM"]!.Size];
 
 			// cdl["HRAM"] = new byte[_memoryDomains["HRAM"]!.Size]; //this is probably useless, but it's here if someone needs it
-			cdl["WRAM"] = new byte[MemoryDomains["WRAM"]!.Size];
+			cdl[which + "WRAM"] = new byte[MemoryDomains["WRAM"]!.Size];
 
 			var found = MemoryDomains["CartRAM"];
-			if (found is not null) cdl["CartRAM"] = new byte[found.Size];
+			if (found is not null) cdl[which + "CartRAM"] = new byte[found.Size];
 
 			cdl.SubType = "GB";
 			cdl.SubVer = 0;
@@ -33,6 +38,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		}
 
 		private ICodeDataLog _cdl;
+		private string _which;
 		private readonly LibGambatte.CDCallback _cdCallback;
 
 		private void CDCallbackProc(int addr, LibGambatte.CDLog_AddrType addrtype, LibGambatte.CDLog_Flags flags)
@@ -51,7 +57,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				_ => throw new InvalidOperationException("Juniper lightbulb proxy"),
 			};
 
-			_cdl[key][addr] |= (byte)flags;
+			_cdl[_which + key][addr] |= (byte)flags;
 		}
 
 	}

@@ -22,25 +22,31 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 			gbPrefControl1.DialogParent = this;
 			gbPrefControl2.DialogParent = this;
+			gbPrefControl3.DialogParent = this;
+			gbPrefControl4.DialogParent = this;
 			Icon = Properties.Resources.DualIcon;
 		}
 
 		private void PutSettings(GambatteLink.GambatteLinkSettings s, GambatteLink.GambatteLinkSyncSettings ss)
 		{
-			gbPrefControl1.PutSettings(_config, _game, _movieSession, s.L, ss.L);
-			gbPrefControl2.PutSettings(_config, _game, _movieSession, s.R, ss.R);
+			gbPrefControl1.PutSettings(_config, _game, _movieSession, s._linkedSettings[0], ss._linkedSyncSettings[0]);
+			gbPrefControl2.PutSettings(_config, _game, _movieSession, s._linkedSettings[1], ss._linkedSyncSettings[1]);
+			gbPrefControl3.PutSettings(_config, _game, _movieSession, s._linkedSettings[2], ss._linkedSyncSettings[2]);
+			gbPrefControl4.PutSettings(_config, _game, _movieSession, s._linkedSettings[3], ss._linkedSyncSettings[3]);
 		}
 
 		private void GetSettings(out GambatteLink.GambatteLinkSettings s, out GambatteLink.GambatteLinkSyncSettings ss)
 		{
-			gbPrefControl1.GetSettings(out var sl, out var ssl);
-			gbPrefControl2.GetSettings(out var sr, out var ssr);
+			gbPrefControl1.GetSettings(out var s1, out var ss1);
+			gbPrefControl2.GetSettings(out var s2, out var ss2);
+			gbPrefControl3.GetSettings(out var s3, out var ss3);
+			gbPrefControl4.GetSettings(out var s4, out var ss4);
 
-			s = new GambatteLink.GambatteLinkSettings(sl, sr);
-			ss = new GambatteLink.GambatteLinkSyncSettings(ssl, ssr);
+			s = new GambatteLink.GambatteLinkSettings(s1, s2, s3, s4);
+			ss = new GambatteLink.GambatteLinkSyncSettings(ss1, ss2, ss3, ss4);
 		}
 
-		private bool SyncSettingsChanged => gbPrefControl1.SyncSettingsChanged || gbPrefControl2.SyncSettingsChanged;
+		private bool SyncSettingsChanged => gbPrefControl1.SyncSettingsChanged || gbPrefControl2.SyncSettingsChanged || gbPrefControl3.SyncSettingsChanged || gbPrefControl4.SyncSettingsChanged;
 
 		public static void DoDGBPrefsDialog(IMainFormForConfig mainForm, Config config, IGameInfo game, IMovieSession movieSession, GambatteLink gambatte)
 		{
@@ -50,8 +56,10 @@ namespace BizHawk.Client.EmuHawk
 			using var dlg = new DGBPrefs(mainForm.DialogController, config, game, movieSession);
 			dlg.PutSettings(s, ss);
 
-			dlg.gbPrefControl1.ColorGameBoy = gambatte.IsCGBMode(false);
-			dlg.gbPrefControl2.ColorGameBoy = gambatte.IsCGBMode(true);
+			dlg.gbPrefControl1.ColorGameBoy = gambatte.IsCGBMode(0);
+			dlg.gbPrefControl2.ColorGameBoy = gambatte.IsCGBMode(1);
+			dlg.gbPrefControl3.ColorGameBoy = gambatte.IsCGBMode(2);
+			dlg.gbPrefControl4.ColorGameBoy = gambatte.IsCGBMode(3);
 
 			if (mainForm.ShowDialogAsChild(dlg) == DialogResult.OK)
 			{

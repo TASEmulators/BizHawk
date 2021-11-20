@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 using Newtonsoft.Json;
 
@@ -10,87 +11,119 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 	{
 		public void SaveStateText(TextWriter writer)
 		{
-			var s = new DGBSerialized
-			{
-				L = L.SaveState(),
-				R = R.SaveState(),
-				IsLagFrame = IsLagFrame,
-				LagCount = LagCount,
-				Frame = Frame,
-				overflowL = _overflowL,
-				overflowR = _overflowR,
-				LatchL = _latchLeft,
-				LatchR = _latchRight,
-				cableconnected = _cableconnected,
-				cablediscosignal = _cablediscosignal
-			};
-			ser.Serialize(writer, s);
+			ser.Serialize(writer, new DGBSerialized(this));
 		}
 
 		public void LoadStateText(TextReader reader)
 		{
 			var s = (DGBSerialized)ser.Deserialize(reader, typeof(DGBSerialized));
-			L.LoadState(s.L);
-			R.LoadState(s.R);
+			if (s.NumCores != _numCores)
+			{
+				throw new InvalidOperationException("Core number mismatch!");
+			}
+			for (int i = 0; i < _numCores; i++)
+			{
+				_linkedCores[i].LoadState(s.LinkedStates[i]);
+				_linkedOverflow[i] = s.LinkedOverflow[i];
+				_linkedLatches[i] = s.LinkedLatches[i];
+			}
 			IsLagFrame = s.IsLagFrame;
 			LagCount = s.LagCount;
 			Frame = s.Frame;
-			_overflowL = s.overflowL;
-			_overflowR = s.overflowR;
-			_latchLeft = s.LatchL;
-			_latchRight = s.LatchR;
-			_cableconnected = s.cableconnected;
-			_cablediscosignal = s.cablediscosignal;
+			_cableConnected = s.CableConnected;
+			_cableDiscoSignal = s.CableDiscoSignal;
+			_cableShifted = s.CableShifted;
+			_cableShiftSignal = s.CableShiftSignal;
+			_cableSpaced = s.CableSpaced;
+			_cableSpaceSignal = s.CableSpaceSignal;
 		}
 
 		public void SaveStateBinary(BinaryWriter writer)
 		{
-			L.SaveStateBinary(writer);
-			R.SaveStateBinary(writer);
+			writer.Write(_numCores);
+			for (int i = 0; i < _numCores; i++)
+			{
+				_linkedCores[i].SaveStateBinary(writer);
+				writer.Write(_linkedOverflow[i]);
+				writer.Write(_linkedLatches[i]);
+			}
 			// other variables
 			writer.Write(IsLagFrame);
 			writer.Write(LagCount);
 			writer.Write(Frame);
-			writer.Write(_overflowL);
-			writer.Write(_overflowR);
-			writer.Write(_latchLeft);
-			writer.Write(_latchRight);
-			writer.Write(_cableconnected);
-			writer.Write(_cablediscosignal);
+			writer.Write(_cableConnected);
+			writer.Write(_cableDiscoSignal);
+			writer.Write(_cableShifted);
+			writer.Write(_cableShiftSignal);
+			writer.Write(_cableSpaced);
+			writer.Write(_cableSpaceSignal);
 		}
 
 		public void LoadStateBinary(BinaryReader reader)
 		{
-			L.LoadStateBinary(reader);
-			R.LoadStateBinary(reader);
+			if (_numCores != reader.ReadInt32())
+			{
+				throw new InvalidOperationException("Core number mismatch!");
+			}
+			for (int i = 0; i < _numCores; i++)
+			{
+				_linkedCores[i].LoadStateBinary(reader);
+				_linkedOverflow[i] = reader.ReadInt32();
+				_linkedLatches[i] = reader.ReadInt32();
+			}
 			// other variables
 			IsLagFrame = reader.ReadBoolean();
 			LagCount = reader.ReadInt32();
 			Frame = reader.ReadInt32();
-			_overflowL = reader.ReadInt32();
-			_overflowR = reader.ReadInt32();
-			_latchLeft = reader.ReadInt32();
-			_latchRight = reader.ReadInt32();
-			_cableconnected = reader.ReadBoolean();
-			_cablediscosignal = reader.ReadBoolean();
+			_cableConnected = reader.ReadBoolean();
+			_cableDiscoSignal = reader.ReadBoolean();
+			_cableShifted = reader.ReadBoolean();
+			_cableShiftSignal = reader.ReadBoolean();
+			_cableSpaced = reader.ReadBoolean();
+			_cableSpaceSignal = reader.ReadBoolean();
 		}
 
 		private readonly JsonSerializer ser = new JsonSerializer { Formatting = Formatting.Indented };
 
 		private class DGBSerialized
 		{
-			public TextState<Gameboy.TextStateData> L;
-			public TextState<Gameboy.TextStateData> R;
+			public int NumCores;
+			public TextState<Gameboy.TextStateData>[] LinkedStates;
 			// other data
 			public bool IsLagFrame;
 			public int LagCount;
 			public int Frame;
-			public int overflowL;
-			public int overflowR;
-			public int LatchL;
-			public int LatchR;
-			public bool cableconnected;
-			public bool cablediscosignal;
+			public int[] LinkedOverflow;
+			public int[] LinkedLatches;
+			public bool CableConnected;
+			public bool CableDiscoSignal;
+			public bool CableShifted;
+			public bool CableShiftSignal;
+			public bool CableSpaced;
+			public bool CableSpaceSignal;
+
+			public DGBSerialized(GambatteLink linkcore)
+			{
+				NumCores = linkcore._numCores;
+				LinkedStates = new TextState<Gameboy.TextStateData>[NumCores];
+				LinkedOverflow = new int[NumCores];
+				LinkedLatches = new int[NumCores];
+				for (int i = 0; i < NumCores; i++)
+				{
+					LinkedStates[i] = linkcore._linkedCores[i].SaveState();
+					LinkedOverflow[i] = linkcore._linkedOverflow[i];
+					LinkedLatches[i] = linkcore._linkedLatches[i];
+				}
+				IsLagFrame = linkcore.IsLagFrame;
+				LagCount = linkcore.LagCount;
+				Frame = linkcore.Frame;
+				CableConnected = linkcore._cableConnected;
+				CableDiscoSignal = linkcore._cableDiscoSignal;
+				CableShifted = linkcore._cableShifted;
+				CableShiftSignal = linkcore._cableShiftSignal;
+				CableSpaced = linkcore._cableSpaced;
+				CableSpaceSignal = linkcore._cableSpaceSignal;
+			}
 		}
 	}
 }
