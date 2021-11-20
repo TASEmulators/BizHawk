@@ -118,26 +118,13 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 		public const byte OP_BT_ZS = 141;
 		public const byte OP_BT_ZC = 142;
 		public const byte OP_BT_ZCS = 143;
-
-
-
-		public const byte OP_BF = 141;
-
-
-
-
+		//public const byte OP_BF = 141;
 
 		public const byte OP_IN = 151;
 		public const byte OP_OUT = 152;
-		//public const byte OP_AS_IS = 123;
-		//public const byte OP_XS_IS = 124;
-		//public const byte OP_NS_IS = 125;
 		public const byte OP_LR_A_DB_IO = 156;
 		public const byte OP_DS = 157;
-		//public const byte OP_CLEAR_FLAGS = 126;
-		//public const byte OP_SET_FLAGS_SZ = 127;
 		public const byte OP_LIS = 158;
-
 
 		public F3850()
 		{
@@ -289,7 +276,6 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 					XOR_Func(A, BYTE);
 					//Regs[A] = (byte)(Regs[A] ^ 0xFF);
 					break;
-
 
 				// x <- (x) + 1
 				case OP_INC8:
@@ -564,21 +550,6 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 				case ROMC_01:
 					Read_Func(DB, PC0l, PC0h);
 					RegPC0 = Regs[DB].Bit(7) ? (ushort)(RegPC0 - (byte)((Regs[DB] ^ 0xFF) + 1)) : (ushort)(RegPC0 + Regs[DB]);
-					/*
-					if (Regs[DB].Bit(7))
-					{
-						// sign bit set
-						var cN = (byte)((Regs[DB] ^ 0xFF) + 1);
-						// subtract  
-						RegPC0 -= cN;
-					}
-					else
-					{
-						// positive signed number
-						RegPC0 += Regs[DB];
-					}
-					//RegPC0 += (ushort)((sbyte) Regs[DB]);
-					*/
 					break;
 
 				// The device whose DC0 address addresses a memory word within the address space of that device must place on the data bus the contents
@@ -651,22 +622,6 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 				case ROMC_0A:
 					// The contents of the accumulator are treated as a signed binary number, and are added to the contents of every DCO register.
 					RegDC0 = Regs[DB].Bit(7) ? (ushort)(RegDC0 - (byte)((Regs[DB] ^ 0xFF) + 1)) : (ushort)(RegDC0 + Regs[DB]);
-					/*
-					if (Regs[DB].Bit(7))
-					{
-						// sign bit set
-						var cN = (byte)((Regs[DB] ^ 0xFF) + 1);
-						// subtract  
-						RegDC0 -= cN;
-					}
-					else
-					{
-						// positive signed number
-						RegDC0 += Regs[DB];
-					}
-					*/
-					
-					//RegDC0 += (ushort) ((sbyte) Regs[DB]);
 					break;
 
 				// The device whose address space includes the value in PC1 must place the low order byte of PC1 on the data bus

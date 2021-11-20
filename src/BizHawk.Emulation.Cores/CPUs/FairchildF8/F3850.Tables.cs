@@ -50,7 +50,6 @@
 				END);
 		}
 
-
 		/// <summary>
 		/// LR - LOAD REGISTER 
 		/// The LR group of instructions move one or two bytes of data between a source and destination register.
@@ -565,6 +564,11 @@
 				END);
 		}
 
+		/// <summary>
+		/// LR - LOAD REGISTER 
+		/// The LR group of instructions move one or two bytes of data between a source and destination register.
+		/// No status bits are modified. 
+		/// </summary>
 		private void LR_W_J()
 		{
 			PopulateCURINSTR(
@@ -580,6 +584,11 @@
 				END);
 		}
 
+		/// <summary>
+		/// LR - LOAD REGISTER 
+		/// The LR group of instructions move one or two bytes of data between a source and destination register.
+		/// No status bits are modified. 
+		/// </summary>
 		private void LR_J_W()
 		{
 			PopulateCURINSTR(
@@ -751,7 +760,9 @@
 				END);
 		}
 
-
+		/// <summary>
+		/// Illegal Opcode
+		/// </summary>
 		private void ILLEGAL()
 		{
 			PopulateCURINSTR(
@@ -1064,6 +1075,11 @@
 				END);
 		}
 
+		/// <summary>
+		/// LR - LOAD REGISTER 
+		/// The LR group of instructions move one or two bytes of data between a source and destination register.
+		/// No status bits are modified. 
+		/// </summary>
 		private void LR_A_ISAR()
 		{
 			PopulateCURINSTR(
@@ -1074,6 +1090,12 @@
 				END);
 		}
 
+		/// <summary>
+		/// LR - LOAD REGISTER 
+		/// The LR group of instructions move one or two bytes of data between a source and destination register.
+		/// ISAR incremented
+		/// No status bits are modified. 
+		/// </summary>
 		private void LR_A_ISAR_INC()
 		{
 			PopulateCURINSTR(
@@ -1084,6 +1106,12 @@
 				END);
 		}
 
+		/// <summary>
+		/// LR - LOAD REGISTER 
+		/// The LR group of instructions move one or two bytes of data between a source and destination register.
+		/// ISAR deccremented
+		/// No status bits are modified. 
+		/// </summary>
 		private void LR_A_ISAR_DEC()
 		{
 			PopulateCURINSTR(
@@ -1094,6 +1122,11 @@
 				END);
 		}
 
+		/// <summary>
+		/// LR - LOAD REGISTER 
+		/// The LR group of instructions move one or two bytes of data between a source and destination register.
+		/// No status bits are modified. 
+		/// </summary>
 		private void LR_R_A(byte rIndex)
 		{
 			// only scratch registers 0-16
@@ -1107,6 +1140,11 @@
 				END);
 		}
 
+		/// <summary>
+		/// LR - LOAD REGISTER 
+		/// The LR group of instructions move one or two bytes of data between a source and destination register.
+		/// No status bits are modified. 
+		/// </summary>
 		private void LR_ISAR_A()
 		{
 			PopulateCURINSTR(
@@ -1117,6 +1155,12 @@
 				END);
 		}
 
+		/// <summary>
+		/// LR - LOAD REGISTER 
+		/// The LR group of instructions move one or two bytes of data between a source and destination register.
+		/// ISAR incremented
+		/// No status bits are modified. 
+		/// </summary>
 		private void LR_ISAR_A_INC()
 		{
 			PopulateCURINSTR(
@@ -1127,6 +1171,12 @@
 				END);
 		}
 
+		/// <summary>
+		/// LR - LOAD REGISTER 
+		/// The LR group of instructions move one or two bytes of data between a source and destination register.
+		/// ISAR decremented
+		/// No status bits are modified. 
+		/// </summary>
 		private void LR_ISAR_A_DEC()
 		{
 			PopulateCURINSTR(
@@ -1187,7 +1237,7 @@
 		}
 
 		/// <summary>
-		/// Branch on True - Do not branch
+		/// Branch on True - DO NOT BRANCH
 		/// </summary>
 		private void BTN()
 		{
@@ -1289,19 +1339,6 @@
 				IDLE,
 				OP_BT_ZCS);
 		}
-
-
-		/*
-		private void BT(byte index)
-		{
-			PopulateCURINSTR(
-				// S
-				ROMC_1C_S,					// Idle
-				IDLE,
-				IDLE,
-				OP_BT, index);				// no END as there is branching logic within OP_BT
-		}
-		*/
 
 		/// <summary>
 		/// AM - ADD (BINARY) MEMORY TO ACCUMULATOR 
@@ -1473,14 +1510,6 @@
 				END);
 		}
 
-		/*
-		private void BR7()
-		{
-			PopulateCURINSTR(
-				OP_BR7);  // no END as there is branching logic within OP_BR7
-		}
-		*/
-
 		/// <summary>
 		/// Branch if any of the 3 low bits of ISAR are reset
 		/// Testing of ISAR is immediate so we will have to lose a CPU tick in the next phase
@@ -1488,7 +1517,7 @@
 		private void BR7()
 		{
 			PopulateCURINSTR(
-				OP_BR7);  // no END as there is branching logic within OP_BR7
+				OP_BR7); 
 		}
 
 		/// <summary>
@@ -1698,19 +1727,7 @@
 				IDLE,
 				OP_BF_OZCS);
 		}
-
-		/*
-		private void BF(byte index)
-		{
-			PopulateCURINSTR(
-				// S
-				ROMC_1C_S,					// Idle
-				IDLE,
-				IDLE,
-				OP_BF, index);				// no END as there is branching logic within OP_BF
-		}
-		*/
-
+		
 		/// <summary>
 		/// INS - INPUT SHORT ADDRESS
 		/// Data input to the I/O port specified by the operand of the INS instruction is loaded into the accumulator. 
