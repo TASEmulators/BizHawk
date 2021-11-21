@@ -140,9 +140,7 @@
 			this.SystemDropDown.Items.AddRange(new object[] {
             "AppleII",
             "C64",
-            "DGB",
-            "GB3x",
-            "GB4x",
+            "GBL",
             "GEN",
             "NDS",
             "PCFX",
