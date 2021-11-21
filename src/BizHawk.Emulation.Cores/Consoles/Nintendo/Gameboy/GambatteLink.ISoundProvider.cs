@@ -93,15 +93,46 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 						// since P2 is center, mix its samples with P1 and P3
 						_linkedBlips[P1].ReadSamplesLeft(_settings._linkedSettings[P1].Muted ? ScratchBuffer : SampleBuffer, count);
 						_linkedBlips[P3].ReadSamplesRight(_settings._linkedSettings[P3].Muted ? ScratchBuffer : SampleBuffer, count);
-						_linkedBlips[P2].ReadSamples(ScratchBuffer, count, false);
+						_linkedBlips[P2].ReadSamplesLeft(ScratchBuffer, count);
 						if (!_settings._linkedSettings[P2].Muted)
 						{
 							fixed (short* p = SampleBuffer, q = ScratchBuffer)
 							{
-								for (int i = 0; i < SampleBuffer.Length; i++)
+								if (_settings._linkedSettings[P1].Muted && _settings._linkedSettings[P3].Muted)
 								{
-									int s = (p[i] + q[i]) / 2;
-									p[i] = (short)s;
+									for (int i = 0; i < SampleBuffer.Length; i += 2)
+									{
+										p[i] = q[i];
+										p[i + 1] = q[i];
+									}
+								}
+								else if (_settings._linkedSettings[P1].Muted)
+								{
+									for (int i = 0; i < SampleBuffer.Length; i += 2)
+									{
+										p[i] = q[i];
+										int s = (p[i + 1] + q[i]) / 2;
+										p[i + 1] = (short)s;
+									}
+								}
+								else if (_settings._linkedSettings[P3].Muted)
+								{
+									for (int i = 0; i < SampleBuffer.Length; i += 2)
+									{
+										int s = (p[i] + q[i]) / 2;
+										p[i] = (short)s;
+										p[i + 1] = q[i];
+									}
+								}
+								else
+								{
+									for (int i = 0; i < SampleBuffer.Length; i += 2)
+									{
+										int s = (p[i] + q[i]) / 2;
+										p[i] = (short)s;
+										s = (p[i + 1] + q[i]) / 2;
+										p[i + 1] = (short)s;
+									}
 								}
 							}
 						}
