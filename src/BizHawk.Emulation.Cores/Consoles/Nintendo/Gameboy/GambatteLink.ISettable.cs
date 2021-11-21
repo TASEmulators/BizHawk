@@ -19,23 +19,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public PutSettingsDirtyBits PutSettings(GambatteLinkSettings o)
 		{
-			_settings = o;
 			var ret = PutSettingsDirtyBits.None;
 			for (int i = 0; i < _numCores; i++)
 			{
 				ret |= _linkedCores[i].PutSettings(o._linkedSettings[i]);
 			}
+			_settings = o;
 			return ret;
 		}
 
 		public PutSettingsDirtyBits PutSyncSettings(GambatteLinkSyncSettings o)
 		{
-			_syncSettings = o;
 			var ret = PutSettingsDirtyBits.None;
 			for (int i = 0; i < _numCores; i++)
 			{
 				ret |= _linkedCores[i].PutSyncSettings(o._linkedSyncSettings[i]);
 			}
+			_syncSettings = o;
 			return ret;
 		}
 

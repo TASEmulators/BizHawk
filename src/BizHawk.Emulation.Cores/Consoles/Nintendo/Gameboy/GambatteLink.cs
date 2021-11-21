@@ -75,8 +75,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public bool LinkConnected
 		{
-			get => _cableConnected;
-			set => _cableConnected = value;
+			get => _linkConnected;
+			set => _linkConnected = value;
 		}
 
 		private int _numCores = 0;
@@ -89,23 +89,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		// counters to ensure we do 35112 samples per frame
 		private readonly int[] _linkedOverflow;
 
-		// if true, the link cable is currently connected
-		private bool _cableConnected = true;
+		// if true, the link connection is currently active
+		private bool _linkConnected = true;
 
-		// if true, the link cable is currently shifted (3x/4x only)
-		private bool _cableShifted = false;
+		// if true, the link is currently shifted (3x/4x only)
+		private bool _linkShifted = false;
 
-		// if true, the link cable is currently spaced outwards (3x/4x only)
-		private bool _cableSpaced = false;
+		// if true, the link is currently spaced outwards (3x/4x only)
+		private bool _linkSpaced = false;
 
-		// if true, the link cable toggle signal is currently asserted
-		private bool _cableDiscoSignal = false;
+		// if true, the link toggle signal is currently asserted
+		private bool _linkDiscoSignal = false;
 
-		// if true, the link cable shift signal is currently asserted
-		private bool _cableShiftSignal = false;
+		// if true, the link shift signal is currently asserted
+		private bool _linkShiftSignal = false;
 
 		// if true, the link cable spacing signal is currently asserted
-		private bool _cableSpaceSignal = false;
+		private bool _linkSpaceSignal = false;
 
 		private const int SampPerFrame = 35112;
 		private const int MaxSampsPerFrame = (SampPerFrame + 2064) * 2;
@@ -128,11 +128,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 					new[] { "Up", "Down", "Left", "Right", "A", "B", "Select", "Start", "Power" }
 						.Select(s => $"P{i + 1} {s}"));
 			}
-			ret.BoolButtons.Add("Toggle Cable Connection");
+			ret.BoolButtons.Add("Toggle Link Connection");
 			if (_numCores > 2)
 			{
-				ret.BoolButtons.Add("Toggle Cable Shift");
-				ret.BoolButtons.Add("Toggle Cable Spacing");
+				ret.BoolButtons.Add("Toggle Link Shift");
+				ret.BoolButtons.Add("Toggle Link Spacing");
 			}
 			return ret;
 		}
