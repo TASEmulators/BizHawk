@@ -48,22 +48,13 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			ser.Sync("old_s_L", ref OldSl);
 			ser.Sync("old_s_R", ref OldSr);
 
-			if (SaveRAM != null)
-			{
-				ser.Sync(nameof(SaveRAM), ref SaveRAM, false);
-			}
+			if (SaveRAM != null) { ser.Sync(nameof(SaveRAM), ref SaveRAM, false); }
 
 			ser.Sync(nameof(SaveRamBank), ref SaveRamBank);
 
-			if (ExtRam != null)
-			{
-				ser.Sync("ExtRAM", ref ExtRam, true);
-			}
+			if (ExtRam != null) { ser.Sync("ExtRAM", ref ExtRam, true); }
 
-			if (HasYM2413)
-			{
-				YM2413.SyncState(ser);
-			}
+			if (HasYM2413) { YM2413.SyncState(ser); }
 
 			EEPROM?.SyncState(ser);
 

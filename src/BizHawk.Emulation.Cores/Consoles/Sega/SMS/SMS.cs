@@ -40,6 +40,9 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			}
 
 			RomBanks = (byte)(RomData.Length / BankSize);
+			RomMask = RomData.Length - 1;
+			if (RomMask == 0x5FFF) { RomMask = 0x7FFF; }
+			if (RomMask == 0xBFFF) { RomMask = 0xFFFF; }
 
 			Region = DetermineDisplayType(SyncSettings.DisplayType, game.Region);
 			if (game["PAL"] && Region != DisplayType.PAL)
@@ -135,6 +138,10 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				InitTerebiOekaki();
 			else if (game["EEPROM"])
 				InitEEPROMMapper();
+			else if(game["SG_EX_A"])
+				Init_SG_EX_A();
+			else if (game["SG_EX_B"])
+				Init_SG_EX_B();
 			else
 				InitSegaMapper();
 
@@ -234,6 +241,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		// ROM
 		public byte[] RomData;
+		public int RomMask;
 		private byte RomBank0, RomBank1, RomBank2, RomBank3;
 		private byte Bios_bank;
 		private readonly byte RomBanks;
