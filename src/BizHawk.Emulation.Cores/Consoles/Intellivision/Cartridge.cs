@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 		private ushort[] Cart_Ram = new ushort[0x800];
 
-		// There are 10 mappers Intellivision games use (not counting intellicart which is handled seperately)
+		// There are several mappers Intellivision games use (not counting intellicart which is handled seperately)
 		// we will pick the mapper from the game DB and default to 0
 		private int _mapper = 0;
 
@@ -211,6 +211,17 @@ namespace BizHawk.Emulation.Cores.Intellivision
 					if (addr >= 0xD000 && addr <= 0xFFFF)
 					{
 						return Data[addr - 0x8000];
+					}
+					break;
+				case 11:
+					if (addr >= 0x5000 && addr <= 0x5FFF)
+					{
+						return Data[addr - 0x5000];
+					}
+
+					if (addr >= 0xD000 && addr <= 0xDFFF)
+					{
+						return Data[addr - 0xC000];
 					}
 					break;
 			}
