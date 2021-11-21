@@ -225,7 +225,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 
 		public int Frame => _frame;
 
-		public string SystemId => VSystemID.Raw.DGB;
+		public string SystemId => VSystemID.Raw.GBL;
 
 		public bool DeterministicEmulation { get; set; }
 

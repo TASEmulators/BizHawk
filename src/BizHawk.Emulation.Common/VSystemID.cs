@@ -20,12 +20,10 @@ namespace BizHawk.Emulation.Common
 			public const string ChannelF = "ChannelF";
 			public const string Coleco = "Coleco";
 			public const string DEBUG = "DEBUG";
-			public const string DGB = "DGB";
 			public const string GB = "GB";
-			public const string GB3x = "GB3x";
-			public const string GB4x = "GB4x";
 			public const string GBA = "GBA";
 			public const string GBC = "GBC";
+			public const string GBL = "GBL";
 			public const string GEN = "GEN";
 			public const string GG = "GG";
 			public const string GGL = "GGL";

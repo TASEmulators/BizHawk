@@ -367,22 +367,21 @@ namespace BizHawk.Client.Common
 				["DPad L"] = 'L',
 				["DPad R"] = 'R',
 			},
-			[VSystemID.Raw.DGB] = new()
+			[VSystemID.Raw.GBL] = new()
 			{
-				["Toggle Cable"] = 'L'
-			},
-			[VSystemID.Raw.GB3x] = new()
-			{
+				// gbhawk
+				["Toggle Cable"] = 'L',
 				["Toggle Cable LC"] = 'L',
 				["Toggle Cable CR"] = 'C',
-				["Toggle Cable RL"] = 'R'
-			},
-			[VSystemID.Raw.GB4x] = new()
-			{
+				["Toggle Cable RL"] = 'R',
 				["Toggle Cable UD"] = 'U',
 				["Toggle Cable LR"] = 'L',
 				["Toggle Cable X"] = 'X',
-				["Toggle Cable 4x"] = '4'
+				["Toggle Cable 4x"] = '4',
+				// gambatte
+				["Toggle Link Connection"] = 'L',
+				["Toggle Link Shift"] = 'F',
+				["Toggle Link Spacing"] = 'C',
 			},
 			[VSystemID.Raw.Lynx] = new()
 			{

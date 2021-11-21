@@ -19,9 +19,9 @@ namespace BizHawk.Emulation.Cores
 		public const string CPCHawk = "CPCHawk";
 		public const string Cygne = "Cygne/Mednafen";
 		public const string DobieStation = "DobieStation";
-		public const string DualGambatte = "DualGambatte";
 		public const string Faust = "Faust";
 		public const string Gambatte = "Gambatte";
+		public const string GambatteLink = "GambatteLink";
 		public const string GbHawk = "GBHawk";
 		public const string GBHawkLink = "GBHawkLink";
 		public const string GBHawkLink3x = "GBHawkLink3x";

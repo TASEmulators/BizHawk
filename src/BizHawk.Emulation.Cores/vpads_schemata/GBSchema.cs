@@ -111,7 +111,7 @@ namespace BizHawk.Emulation.Cores
 		}
 	}
 
-	[Schema(VSystemID.Raw.GB3x)]
+	[Schema(VSystemID.Raw.GBL)]
 	public class Gb3XSchema : GbSchema
 	{
 		public override IEnumerable<PadSchema> GetPadSchemas(IEmulator core, Action<string> showMessageBox)
@@ -123,7 +123,7 @@ namespace BizHawk.Emulation.Cores
 		}
 	}
 
-	[Schema(VSystemID.Raw.GB4x)]
+	[Schema(VSystemID.Raw.GBL)]
 	public class Gb4XSchema : GbSchema
 	{
 		public override IEnumerable<PadSchema> GetPadSchemas(IEmulator core, Action<string> showMessageBox)

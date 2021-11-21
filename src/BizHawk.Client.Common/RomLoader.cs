@@ -576,7 +576,7 @@ namespace BizHawk.Client.Common
 				}
 				catch
 				{
-					DoLoadErrorCallback(ex.ToString(), VSystemID.Raw.DGB, LoadErrorType.Xml);
+					DoLoadErrorCallback(ex.ToString(), VSystemID.Raw.GBL, LoadErrorType.Xml);
 					return false;
 				}
 			}

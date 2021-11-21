@@ -1997,7 +1997,7 @@ namespace BizHawk.Client.EmuHawk
 				case VSystemID.Raw.ZXSpectrum:
 					zXSpectrumToolStripMenuItem.Visible = true;
 					break;
-				case VSystemID.Raw.DGB when Emulator is GambatteLink:
+				case VSystemID.Raw.GBL when Emulator is GambatteLink:
 					DGBSubMenu.Visible = true;
 					break;
 				case VSystemID.Raw.GB:

@@ -28,8 +28,8 @@ namespace BizHawk.Client.Common
 				new[] { CoreNames.Gambatte, CoreNames.Bsnes, CoreNames.Bsnes115}),
 			(new[] { VSystemID.Raw.GB, VSystemID.Raw.GBC },
 				new[] { CoreNames.Gambatte, CoreNames.GbHawk, CoreNames.SubGbHawk }),
-			(new[] { VSystemID.Raw.DGB },
-				new[] { CoreNames.DualGambatte, CoreNames.GBHawkLink }),
+			(new[] { VSystemID.Raw.GBL },
+				new[] { CoreNames.GambatteLink, CoreNames.GBHawkLink, CoreNames.GBHawkLink3x, CoreNames.GBHawkLink4x }),
 			(new[] { VSystemID.Raw.PCE, VSystemID.Raw.PCECD, VSystemID.Raw.SGX },
 				new[] { CoreNames.TurboNyma, CoreNames.HyperNyma, CoreNames.PceHawk })
 		};
@@ -314,7 +314,7 @@ namespace BizHawk.Client.Common
 			[VSystemID.Raw.SNES] = CoreNames.Snes9X,
 			[VSystemID.Raw.GB] = CoreNames.Gambatte,
 			[VSystemID.Raw.GBC] = CoreNames.Gambatte,
-			[VSystemID.Raw.DGB] = CoreNames.DualGambatte,
+			[VSystemID.Raw.GBL] = CoreNames.GambatteLink,
 			[VSystemID.Raw.SGB] = CoreNames.Gambatte,
 			[VSystemID.Raw.PCE] = CoreNames.TurboNyma,
 			[VSystemID.Raw.PCECD] = CoreNames.TurboNyma,

@@ -420,7 +420,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 
 		public int Frame => _frame;
 
-		public string SystemId => VSystemID.Raw.GB3x;
+		public string SystemId => VSystemID.Raw.GBL;
 
 		public bool DeterministicEmulation { get; set; }
 

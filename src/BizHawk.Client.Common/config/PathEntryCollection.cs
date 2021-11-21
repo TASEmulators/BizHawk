@@ -32,7 +32,7 @@ namespace BizHawk.Client.Common
 			[VSystemID.Raw.GEN] = "Genesis",
 			[COMBINED_SYSIDS_PCE] = "PC Engine",
 			[COMBINED_SYSIDS_GB] = "Gameboy",
-			[VSystemID.Raw.DGB] = "Dual Gameboy",
+			[VSystemID.Raw.GBL] = "Gameboy Link",
 			[VSystemID.Raw.TI83] = "TI83",
 			[VSystemID.Raw.A26] = "Atari 2600",
 			[VSystemID.Raw.A78] = "Atari 7800",
@@ -51,8 +51,6 @@ namespace BizHawk.Client.Common
 			[VSystemID.Raw.NGP] = "NGP",
 			[VSystemID.Raw.PCFX] = "PCFX",
 			[VSystemID.Raw.ChannelF] = "Fairchild Channel F",
-			[VSystemID.Raw.GB3x] = "GB3x",
-			[VSystemID.Raw.GB4x] = "GB4x",
 			[VSystemID.Raw.VEC] = "VEC",
 			[VSystemID.Raw.O2] = "O2",
 			[VSystemID.Raw.MSX] = "MSX",
@@ -211,19 +209,15 @@ namespace BizHawk.Client.Common
 
 			CommonEntriesFor(VSystemID.Raw.Coleco, basePath: Path.Combine(".", "Coleco"), omitSaveRAM: true),
 
-			CommonEntriesFor(VSystemID.Raw.DGB, basePath: Path.Combine(".", "Dual Gameboy")),
+			CommonEntriesFor(VSystemID.Raw.GBL, basePath: Path.Combine(".", "Gameboy Link")),
 			new[] {
-				PalettesEntryFor(VSystemID.Raw.DGB),
+				PalettesEntryFor(VSystemID.Raw.GBL),
 			},
 
 			CommonEntriesFor(COMBINED_SYSIDS_GB, basePath: Path.Combine(".", "Gameboy")),
 			new[] {
 				PalettesEntryFor(COMBINED_SYSIDS_GB),
 			},
-
-			CommonEntriesFor(VSystemID.Raw.GB3x, basePath: Path.Combine(".", "GB3x")),
-
-			CommonEntriesFor(VSystemID.Raw.GB4x, basePath: Path.Combine(".", "GB4x")),
 
 			CommonEntriesFor(VSystemID.Raw.GBA, basePath: Path.Combine(".", "GBA")),
 

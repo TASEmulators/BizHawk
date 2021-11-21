@@ -5,11 +5,11 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
-	[PortedCore(CoreNames.DualGambatte, "sinamas/natt")]
+	[PortedCore(CoreNames.GambatteLink, "sinamas/natt")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class GambatteLink : ILinkable, IRomInfo
 	{
-		[CoreConstructor(VSystemID.Raw.DGB)]
+		[CoreConstructor(VSystemID.Raw.GBL)]
 		public GambatteLink(CoreLoadParameters<GambatteLinkSettings, GambatteLinkSyncSettings> lp)
 		{
 			if (lp.Roms.Count < MIN_PLAYERS || lp.Roms.Count > MAX_PLAYERS)

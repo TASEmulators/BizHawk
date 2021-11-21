@@ -267,7 +267,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public int Frame { get; private set; }
 
-		public string SystemId => VSystemID.Raw.DGB;
+		public string SystemId => VSystemID.Raw.GBL;
 
 		public bool DeterministicEmulation => LinkedDeterministicEmulation();
 
