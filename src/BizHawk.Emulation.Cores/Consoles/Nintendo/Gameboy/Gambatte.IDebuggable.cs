@@ -98,7 +98,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 						else if (address < 0xC000u) // sram (may be banked)
 						{
 							var bank = LibGambatte.gambatte_getsrambank(GambatteState); // this will return 0 in case there is only one bank
-							address += (uint)(bank * 0xA000);
+							address += (uint)(bank * 0x2000);
 							address -= 0xA000u;
 							MemoryCallbacks.CallMemoryCallbacks(address, 0, rawFlags, "SRAM");
 						}
