@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			_linkedOverflow = new int[_numCores];
 
 			RomDetails = "";
-			_memoryCallbacks = new MemoryCallbackSystem(new[] { "System Bus" });
+			_memoryCallbacks = new MemoryCallbackSystem(new[] { "System Bus", "ROM", "VRAM", "SRAM", "WRAM", "OAM", "HRAM" });
 
 			for (int i = 0; i < _numCores; i++)
 			{
