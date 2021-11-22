@@ -36,6 +36,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			_linkShiftSignal = s.LinkShiftSignal;
 			_linkSpaced = s.LinkSpaced;
 			_linkSpaceSignal = s.LinkSpaceSignal;
+			reader.ReadToEnd();
 		}
 
 		public void SaveStateBinary(BinaryWriter writer)
@@ -104,6 +105,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			public DGBSerialized(GambatteLink linkcore)
 			{
+				if (linkcore == null)
+				{
+					return;
+				}
+
 				NumCores = linkcore._numCores;
 				LinkedStates = new TextState<Gameboy.TextStateData>[NumCores];
 				LinkedOverflow = new int[NumCores];

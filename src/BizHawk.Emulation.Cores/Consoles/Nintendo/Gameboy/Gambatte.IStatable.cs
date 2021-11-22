@@ -21,6 +21,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		{
 			var s = (TextState<TextStateData>)ser.Deserialize(reader, typeof(TextState<TextStateData>));
 			LoadState(s);
+			reader.ReadToEnd();
 		}
 
 		public void SaveStateBinary(BinaryWriter writer)
