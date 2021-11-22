@@ -1745,7 +1745,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void DgbSettingsMenuItem_Click(object sender, EventArgs e)
+		private void GblSettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			if (Emulator is GambatteLink gambatte)
 			{

@@ -1953,7 +1953,7 @@ namespace BizHawk.Client.EmuHawk
 			PSXSubMenu.Visible = false;
 			ColecoSubMenu.Visible = false;
 			N64SubMenu.Visible = false;
-			DGBSubMenu.Visible = false;
+			GBLSubMenu.Visible = false;
 			AppleSubMenu.Visible = false;
 			C64SubMenu.Visible = false;
 			IntvSubMenu.Visible = false;
@@ -1998,7 +1998,7 @@ namespace BizHawk.Client.EmuHawk
 					zXSpectrumToolStripMenuItem.Visible = true;
 					break;
 				case VSystemID.Raw.GBL when Emulator is GambatteLink:
-					DGBSubMenu.Visible = true;
+					GBLSubMenu.Visible = true;
 					break;
 				case VSystemID.Raw.GB:
 				case VSystemID.Raw.GBC:

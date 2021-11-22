@@ -266,8 +266,8 @@ namespace BizHawk.Client.EmuHawk
 			this.N64CircularAnalogRangeMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.MupenStyleLagMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.N64ExpansionSlotMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.DGBSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.DGBsettingsToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.GBLSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.GBLsettingsToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.AppleSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.AppleDisksSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.toolStripSeparator31 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
@@ -395,7 +395,7 @@ namespace BizHawk.Client.EmuHawk
 			this.SNESSubMenu,
 			this.ColecoSubMenu,
 			this.N64SubMenu,
-			this.DGBSubMenu,
+			this.GBLSubMenu,
 			this.AppleSubMenu,
 			this.C64SubMenu,
 			this.IntvSubMenu,
@@ -1750,16 +1750,16 @@ namespace BizHawk.Client.EmuHawk
 			this.N64ExpansionSlotMenuItem.Text = "&Use Expansion Slot";
 			this.N64ExpansionSlotMenuItem.Click += new System.EventHandler(this.N64ExpansionSlotMenuItem_Click);
 			// 
-			// DGBSubMenu
+			// GBLSubMenu
 			// 
-			this.DGBSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.DGBsettingsToolStripMenuItem});
-			this.DGBSubMenu.Text = "&GB Link";
+			this.GBLSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			this.GBLsettingsToolStripMenuItem});
+			this.GBLSubMenu.Text = "&GB Link";
 			// 
-			// DGBsettingsToolStripMenuItem
+			// GBLsettingsToolStripMenuItem
 			// 
-			this.DGBsettingsToolStripMenuItem.Text = "Settings...";
-			this.DGBsettingsToolStripMenuItem.Click += new System.EventHandler(this.DgbSettingsMenuItem_Click);
+			this.GBLsettingsToolStripMenuItem.Text = "Settings...";
+			this.GBLsettingsToolStripMenuItem.Click += new System.EventHandler(this.GblSettingsMenuItem_Click);
 			// 
 			// AppleSubMenu
 			// 
@@ -2649,8 +2649,8 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx ShowMenuContextMenuSeparator;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx StopAVContextMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx FdsEjectDiskMenuItem;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx DGBSubMenu;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx DGBsettingsToolStripMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx GBLSubMenu;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx GBLsettingsToolStripMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx GenericCoreSubMenu;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx A7800ControllerSettingsMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx A7800FilterSettingsMenuItem;
