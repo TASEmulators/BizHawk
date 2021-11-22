@@ -60,9 +60,6 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 		public Func<ushort, bool, ushort> ReadMemory;
 		public Func<ushort, ushort, bool, bool> WriteMemory;
 
-		private static readonly bool Logging = false;
-		private static readonly StreamWriter Log;
-
 		public void SyncState(Serializer ser)
 		{
 			ser.BeginSection(nameof(CP1610));
@@ -87,13 +84,7 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 			ser.EndSection();
 		}
 
-	static CP1610()
-		{
-			if (Logging)
-			{
-				Log = new StreamWriter("log_CP1610.txt");
-			}
-		}
+		static CP1610() {}
 
 		public void Reset()
 		{
@@ -135,32 +126,6 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 		public void AddPendingCycles(int cycles)
 		{
 			PendingCycles += cycles;
-		}
-
-		public void LogData()
-		{
-			if (!Logging)
-			{
-				return;
-			}
-			Log.WriteLine("Total Executed Cycles = {0}", TotalExecutedCycles);
-			for (int register = 0; register <= 5; register++)
-			{
-				Log.WriteLine("R{0:d} = {1:X4}", register, Register[register]);
-			}
-			Log.WriteLine("SP = {0:X4}", RegisterSP);
-			Log.WriteLine("PC = {0:X4}", RegisterPC);
-			Log.WriteLine("S = {0}", FlagS);
-			Log.WriteLine("C = {0}", FlagC);
-			Log.WriteLine("Z = {0}", FlagZ);
-			Log.WriteLine("O = {0}", FlagO);
-			Log.WriteLine("I = {0}", FlagI);
-			Log.WriteLine("D = {0}", FlagD);
-			Log.WriteLine("INTRM = {0}", IntRM);
-			Log.WriteLine("BUSRQ = {0}", BusRq);
-			Log.WriteLine("BUSAK = {0}", BusAk);
-			// Log.WriteLine("MSYNC = {0}", MSync);
-			Log.Flush();
 		}
 
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()

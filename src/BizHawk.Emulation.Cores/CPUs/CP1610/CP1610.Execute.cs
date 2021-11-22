@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 							FlagO ? "O" : "o",
 							FlagI ? "I" : "i",
 							FlagD ? "D" : "d")
-					}.Concat(Register.Select((r, i) => $"R{i}:{4:X4}"))));
+					}.Concat(Register.Select((r, i) => $"R{i}:{r:X4}"))));
 
 		private void Calc_FlagC(int result)
 		{
@@ -132,13 +132,7 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 			*/
 			if (FlagI && Interruptible && !IntRM && !Interrupted)
 			{
-				if (Logging)
-				{
-					Log.WriteLine("------");
-					Log.WriteLine();
-					Log.WriteLine("Interrupt");
-					Log.Flush();
-				}
+				TraceCallback?.Invoke(new(disassembly: "====IRQ====", registerInfo: string.Empty));
 				Interrupted = true;
 				Interruptible = false;
 				Indirect_Set(6, 7);
@@ -154,16 +148,6 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 				PendingCycles--;
 				TotalExecutedCycles++;
 				return 1;
-			}
-
-
-			if (Logging)
-			{
-				int addrToAdvance;
-				Log.WriteLine("------");
-				Log.WriteLine();
-				Log.WriteLine(Disassemble(RegisterPC, out addrToAdvance));
-				Log.Flush();
 			}
 
 			byte dest, src, mem;
@@ -185,7 +169,11 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 			switch (opcode)
 			{
 				case 0x000: // HLT
-					throw new ArgumentException(UNEXPECTED_HLT);
+					// CPU is in an unrecoverable state
+					RegisterPC--;
+					cycles = 4;
+					Interruptible = false;
+					break;
 				case 0x001: // SDBD
 					FlagD = true;
 					cycles = 4;
@@ -362,7 +350,10 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 				// SIN
 				case 0x036:
 				case 0x037:
-					throw new ArgumentException(UNEXPECTED_SIN);
+					// pin that this opcode uses is not connected on intellivision, so treat it as a nop for now
+					cycles = 6;
+					Interruptible = false;
+					break;
 				// RSWD
 				case 0x038:
 				case 0x039:
