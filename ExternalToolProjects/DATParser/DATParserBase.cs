@@ -189,7 +189,7 @@ namespace BizHawk.DATTool
 		PCFX,
 		PCECD,
 		GB,
-		DGB,
+		GBL,
 		AppleII,
 		C64,
 		ZXSpectrum,
@@ -215,8 +215,6 @@ namespace BizHawk.DATTool
 		NGP,
 		ChannelF,
 		VEC,
-		GB3x,
-		GB4x,
 		O2,
 		MSX,
 		NDS

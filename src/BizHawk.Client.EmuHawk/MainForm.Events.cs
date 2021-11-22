@@ -1749,7 +1749,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Emulator is GambatteLink gambatte)
 			{
-				DGBPrefs.DoDGBPrefsDialog(this, Config, Game, MovieSession, gambatte);
+				GBLPrefs.DoGBLPrefsDialog(this, Config, Game, MovieSession, gambatte);
 			}
 		}
 

@@ -11,12 +11,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 	{
 		public void SaveStateText(TextWriter writer)
 		{
-			ser.Serialize(writer, new DGBSerialized(this));
+			ser.Serialize(writer, new GBLSerialized(this));
 		}
 
 		public void LoadStateText(TextReader reader)
 		{
-			var s = (DGBSerialized)ser.Deserialize(reader, typeof(DGBSerialized));
+			var s = (GBLSerialized)ser.Deserialize(reader, typeof(GBLSerialized));
 			if (s.NumCores != _numCores)
 			{
 				throw new InvalidOperationException("Core number mismatch!");
@@ -86,7 +86,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		private readonly JsonSerializer ser = new JsonSerializer { Formatting = Formatting.Indented };
 
-		private class DGBSerialized
+		private class GBLSerialized
 		{
 			public int NumCores;
 			public TextState<Gameboy.TextStateData>[] LinkedStates;
@@ -103,7 +103,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			public bool LinkSpaced;
 			public bool LinkSpaceSignal;
 
-			public DGBSerialized(GambatteLink linkcore)
+			public GBLSerialized(GambatteLink linkcore)
 			{
 				if (linkcore == null)
 				{

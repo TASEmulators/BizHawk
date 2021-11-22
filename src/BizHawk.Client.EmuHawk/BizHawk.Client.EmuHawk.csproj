@@ -135,9 +135,9 @@
 		<Compile Update="config/GB/ColorChooserForm.cs" SubType="Form" />
 		<Compile Update="config/GB/ColorChooserForm.Designer.cs" DependentUpon="ColorChooserForm.cs" />
 		<EmbeddedResource Update="config/GB/ColorChooserForm.resx" DependentUpon="ColorChooserForm.cs" />
-		<Compile Update="config/GB/DGBPrefs.cs" SubType="Form" />
-		<Compile Update="config/GB/DGBPrefs.Designer.cs" DependentUpon="DGBPrefs.cs" />
-		<EmbeddedResource Update="config/GB/DGBPrefs.resx" DependentUpon="DGBPrefs.cs" />
+		<Compile Update="config\GB\GBLPrefs.cs" SubType="Form" />
+		<Compile Update="config\GB\GBLPrefs.Designer.cs" DependentUpon="GBLPrefs.cs" />
+		<EmbeddedResource Update="config\GB\GBLPrefs.resx" DependentUpon="GBLPrefs.cs" />
 		<Compile Update="config/GB/GBPrefControl.cs" SubType="UserControl" />
 		<Compile Update="config/GB/GBPrefControl.Designer.cs" DependentUpon="GBPrefControl.cs" />
 		<EmbeddedResource Update="config/GB/GBPrefControl.resx" DependentUpon="GBPrefControl.cs" />

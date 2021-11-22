@@ -1,6 +1,6 @@
 ﻿namespace BizHawk.Client.EmuHawk
 {
-	partial class DGBPrefs
+	partial class GBLPrefs
 	{
 		/// <summary>
 		/// Required designer variable.
@@ -163,7 +163,7 @@
 			this.buttonOK.Text = "OK";
 			this.buttonOK.UseVisualStyleBackColor = true;
 			// 
-			// DGBPrefs
+			// GBLPrefs
 			// 
 			this.AcceptButton = this.buttonOK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -173,7 +173,7 @@
 			this.Controls.Add(this.buttonOK);
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.tabControl1);
-			this.Name = "DGBPrefs";
+			this.Name = "GBLPrefs";
 			this.Text = "Gameboy Link Settings";
 			this.tabControl1.ResumeLayout(false);
 			this.tabPage1.ResumeLayout(false);
