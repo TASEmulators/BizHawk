@@ -123,7 +123,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 						}
 						else if (address < 0xFEA0u) // oam
 						{
-							address -= 0xFEA0u;
+							address -= 0xFE00u;
 							MemoryCallbacks.CallMemoryCallbacks(address, 0, rawFlags, "OAM");
 						}
 						else if (address < 0xFF00u) // "extra" oam
