@@ -21,6 +21,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		public abstract void snes_set_layer_enables(ref BsnesApi.LayerEnables layerEnables);
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void snes_set_trace_enabled(bool enabled);
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract void snes_set_hooks_enabled(bool readHookEnabled, bool writeHookEnabled, bool executeHookEnabled);
 
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract BsnesApi.SNES_REGION snes_get_region();
