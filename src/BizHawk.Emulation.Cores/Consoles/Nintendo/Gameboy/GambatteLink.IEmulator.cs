@@ -75,7 +75,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 					fixed (short* sbuff = &SoundBuffer[0])
 					{
-						const int Step = 4;
+						int Step = _linkConnected ? 4 : SampPerFrame; // don't bother stepping if we aren't linked
 
 						int[] n = new int[_numCores];
 						for (int i = 0; i < _numCores; i++)
