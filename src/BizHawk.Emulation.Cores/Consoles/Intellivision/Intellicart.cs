@@ -66,7 +66,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			int offset = 0;
 
 			// Check to see if the header is valid.
-			if (Rom[offset++] != 0xA8 || Rom[offset++] != (0xFF ^ Rom[offset++]))
+			if (Rom[offset++] != 0xA8 | Rom[offset++] != (0xFF ^ Rom[offset++]))
 			{
 				return -1;
 			}
@@ -121,16 +121,16 @@ namespace BizHawk.Emulation.Cores.Intellivision
 				MemoryAttributes[range] = new bool[4];
 
 				// Readable.
-				MemoryAttributes[range][0] = (range & 0x1) != 0;
+				MemoryAttributes[range][0] = (attributes & 0x1) != 0;
 
 				// Writeable.
-				MemoryAttributes[range][1] = (range & 0x2) != 0;
+				MemoryAttributes[range][1] = (attributes & 0x2) != 0;
 
 				// Narrow.
-				MemoryAttributes[range][2] = (range & 0x4) != 0;
+				MemoryAttributes[range][2] = (attributes & 0x4) != 0;
 
 				// Bank-switched.
-				MemoryAttributes[range][3] = (range & 0x8) != 0;
+				MemoryAttributes[range][3] = (attributes & 0x8) != 0;
 			}
 
 			// Parse for fine addresses (Trimmed 2K ranges).
@@ -139,7 +139,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 				int index;
 
 				// The lower and upper 2K in a 4K range are 16 addresses away from each other.
-				if ((range & 0x1) != 0)
+				if ((range & 0x1) == 0)
 				{
 					index = offset + 16 + (range >> 1);
 				}
