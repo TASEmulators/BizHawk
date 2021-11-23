@@ -37,6 +37,7 @@ impl MemoryLayoutTemplate {
 			a
 		};
 		res.main_thread = add_area(1 << 20);
+		res.alt_thread = add_area(1 << 20);
 		res.sbrk = add_area(self.sbrk_size);
 		res.sealed = add_area(self.sealed_size);
 		res.invis = add_area(self.invis_size);

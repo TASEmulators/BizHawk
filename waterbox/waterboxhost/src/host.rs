@@ -42,7 +42,7 @@ impl WaterboxHost {
 			active: false,
 			sealed: false,
 			image_file,
-			context: Context::new(layout.main_thread.end(), syscall),
+			context: Context::new(layout.main_thread.end(), layout.alt_thread.end(), syscall),
 			thunks,
 			threads: GuestThreadSet::new(),
 		});

@@ -6,46 +6,12 @@ struc Context
 	.thread_area resq 1
 	.host_rsp resq 1
 	.guest_rsp resq 1
+	.host_rsp_alt resq 1
+	.guest_rsp_alt resq 1
 	.dispatch_syscall resq 1
 	.host_ptr resq 1
 	.extcall_slots resq 64
 endstruc
-
-times 0-($-$$) int3 ; CALL_GUEST_IMPL_ADDR
-; sets up guest stack and calls a function
-; r11 - guest entry point
-; r10 - address of context structure
-; regular arg registers are 0..6 args passed through to guest
-call_guest_impl:
-	; save host TIB data
-	mov rax, [gs:0x08]
-	push rax
-	mov rax, [gs:0x10]
-	push rax
-
-	; set guest TIB data
-	xor rax, rax
-	mov [gs:0x10], rax
-	sub rax, 1
-	mov [gs:0x08], rax
-
-	mov [gs:0x18], r10
-	mov [r10 + Context.host_rsp], rsp
-	mov rsp, [r10 + Context.guest_rsp]
-	call r11 ; stack hygiene note - this host address is saved on the guest stack
-	mov r10, [gs:0x18]
-	mov [r10 + Context.guest_rsp], rsp ; restore stack so next call using same Context will work
-	mov rsp, [r10 + Context.host_rsp]
-	mov r11, 0
-	mov [gs:0x18], r11
-
-	; restore host TIB data
-	pop r10
-	mov [gs:0x10], r10
-	pop r10
-	mov [gs:0x08], r10
-
-	ret
 
 times 0x80-($-$$) int3
 ; called by guest when it wishes to make a syscall
@@ -99,7 +65,74 @@ call_guest_simple:
 	mov r10, rsi
 	jmp call_guest_impl
 
-times 0x200-($-$$) int3 ; EXTCALL_THUNK_ADDR
+times 0x200-($-$$) int3 ; CALL_GUEST_IMPL_ADDR
+; sets up guest stack and calls a function
+; r11 - guest entry point
+; r10 - address of context structure
+; regular arg registers are 0..6 args passed through to guest
+call_guest_impl:
+	; check if we need to swap stacks for a reentrant call
+	mov rax, [r10 + Context.host_rsp]
+	test rax, rax
+	je do_tib
+	mov rax, [r10 + Context.host_rsp_alt]
+	test rax, rax
+	je do_swap
+	int3 ; both stacks exhausted
+
+do_swap:
+	mov rax, [r10 + Context.host_rsp]
+	mov [r10 + Context.host_rsp_alt], rax
+	mov rax, [r10 + Context.guest_rsp]
+	xchg rax, [r10 + Context.guest_rsp_alt]
+	mov [r10 + Context.guest_rsp], rax
+
+do_tib:
+	; save host TIB data
+	mov rax, [gs:0x08]
+	push rax
+	mov rax, [gs:0x10]
+	push rax
+
+	; set guest TIB data
+	xor rax, rax
+	mov [gs:0x10], rax
+	sub rax, 1
+	mov [gs:0x08], rax
+
+	mov [gs:0x18], r10
+	mov [r10 + Context.host_rsp], rsp
+	mov rsp, [r10 + Context.guest_rsp]
+	call r11 ; stack hygiene note - this host address is saved on the guest stack
+	mov r10, [gs:0x18]
+	mov [r10 + Context.guest_rsp], rsp ; restore stack so next call using same Context will work
+	mov rsp, [r10 + Context.host_rsp]
+	mov r11, 0
+	mov [r10 + Context.host_rsp], r11 ; zero out host_rsp so we'll know this callstack is no longer in use
+	mov [gs:0x18], r11
+
+	; check to see if we need to swap back stacks
+	mov r11, [r10 + Context.host_rsp_alt]
+	test r11, r11
+	je do_restore_tib
+
+	mov [r10 + Context.host_rsp], r11
+	mov r11, 0
+	mov [r10 + Context.host_rsp_alt], r11
+	mov r11, [r10 + Context.guest_rsp_alt]
+	xchg r11, [r10 + Context.guest_rsp]
+	mov [r10 + Context.guest_rsp_alt], r11
+
+do_restore_tib:
+	; restore host TIB data
+	pop r10
+	mov [gs:0x10], r10
+	pop r10
+	mov [gs:0x08], r10
+
+	ret
+
+times 0x300-($-$$) int3 ; EXTCALL_THUNK_ADDR
 ; individual thunks to each of 64 call slots
 ; should be in fixed locations for memory hygiene in the core, since they may be stored there for some time
 %macro guest_extcall_thunk 1
@@ -150,7 +183,7 @@ guest_extcall_impl:
 	ret
 guest_extcall_impl_end:
 
-times 0x700-($-$$) int3 ; RUNTIME_TABLE_ADDR
+times 0x800-($-$$) int3 ; RUNTIME_TABLE_ADDR
 runtime_function_table:
 	; https://docs.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-runtime_function
 	dd RVA(guest_syscall)

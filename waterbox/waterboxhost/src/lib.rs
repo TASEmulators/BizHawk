@@ -91,8 +91,11 @@ fn align_up(p: usize) -> usize {
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct WbxSysLayout {
+	// Keep this all in sync with the C code!
+
 	pub elf: AddressRange,
 	pub main_thread: AddressRange,
+	pub alt_thread: AddressRange,
 	pub sbrk: AddressRange,
 	pub sealed: AddressRange,
 	pub invis: AddressRange,

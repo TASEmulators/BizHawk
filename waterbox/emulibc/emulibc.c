@@ -10,6 +10,7 @@ struct __AddressRange {
 struct __WbxSysLayout {
 	struct __AddressRange elf;
 	struct __AddressRange main_thread;
+	struct __AddressRange alt_thread;
 	struct __AddressRange sbrk;
 	struct __AddressRange sealed;
 	struct __AddressRange invis;
