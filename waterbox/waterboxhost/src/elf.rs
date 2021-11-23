@@ -171,6 +171,10 @@ impl ElfLoader {
 		b.mprotect(AddressRange { start: layout.main_thread.start, size: PAGESIZE * 4 }, Protection::None)?;
 		b.mark_invisible(layout.main_thread)?;
 
+		b.mmap_fixed(layout.alt_thread, Protection::RWStack, true)?;
+		b.mprotect(AddressRange { start: layout.alt_thread.start, size: PAGESIZE * 4 }, Protection::None)?;
+		b.mark_invisible(layout.alt_thread)?;
+
 		Ok(ElfLoader {
 			sections,
 			exports,
